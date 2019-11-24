@@ -37,16 +37,25 @@ describe('route: namespace', () => {
       expect(json.exists).to.eql(true); // NB: Model exists after first save.
       expect(json.createdAt).to.not.eql(-1);
       expect(json.modifiedAt).to.not.eql(-1);
+      expect(json.changes).to.eql(undefined);
+
       expect(data.ns.id).to.eql('foo');
       expect(data.ns.hash).to.not.eql('-'); // NB: hash calculation tested seperately.
       expect(cells.A1 && cells.A1.value).to.eql('hello');
       expect(data.rows).to.eql(undefined);
       expect(data.columns).to.eql(undefined);
+    });
 
-      expect(json.changes.length).to.eql(4);
-      expect(json.changes.map(c => c.field)).to.eql(['value', 'hash', 'id', 'hash']);
+    it('POST return list of change details (?changes=true)', async () => {
+      const { res, json, data } = await post.ns('ns:foo?cells&changes', {
+        cells: { A1: { value: 'hello' } },
+      });
 
-      const change = json.changes[0];
+      const changes = json.changes || [];
+      expect(changes.length).to.eql(4);
+      expect(changes.map(c => c.field)).to.eql(['value', 'hash', 'id', 'hash']);
+
+      const change = changes[0];
       expect(change.uri).to.eql('cell:foo!A1');
       expect(change.field).to.eql('value');
       expect(change.from).to.eql(undefined);

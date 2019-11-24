@@ -182,9 +182,11 @@ async function postNsResponse(args: {
       }
     }
     const res = await getNsResponse({ db, id, query });
-    const data: t.IResPostNs = { ...res.data, changes };
-    const status = res.status;
-    return { status, data };
+    const data: t.IResPostNs = {
+      ...res.data,
+      changes: query.changes ? changes : undefined, // NB: only send change set if requested by caller.
+    };
+    return { status: res.status, data };
   } catch (err) {
     return toErrorPayload(err);
   }
