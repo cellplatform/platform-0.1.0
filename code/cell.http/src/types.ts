@@ -61,7 +61,6 @@ export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
  * Namespace: POST
  */
 export type IReqPostNsQuery = IReqNsQuery & {
-  calc?: boolean; // perform calcuations (default: false).
   changes?: boolean; // return change list (default: false).
 };
 
@@ -70,6 +69,7 @@ export type IReqPostNsBody = {
   cells?: t.IMap<t.ICellData>;
   columns?: t.IMap<t.IColumnData>;
   rows?: t.IMap<t.IRowData>;
+  calc?: boolean; // perform calcuations (default: false).
 };
 export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
 

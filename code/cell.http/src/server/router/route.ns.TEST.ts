@@ -46,8 +46,8 @@ describe('route: namespace', () => {
       expect(data.columns).to.eql(undefined);
     });
 
-    it('POST return list of change details (?changes=true)', async () => {
-      const { res, json, data } = await post.ns('ns:foo?cells&changes', {
+    it('POST return list of changes (?changes=true)', async () => {
+      const { json } = await post.ns('ns:foo?cells&changes', {
         cells: { A1: { value: 'hello' } },
       });
 
@@ -127,10 +127,10 @@ describe('route: namespace', () => {
         A1: { value: '=A2' },
         A2: { value: '123' },
       };
+
       const res1 = await post.ns('ns:foo?cells', { cells }); // Default: calc=false
-      const res2 = await post.ns('ns:foo?cells&calc', { cells });
-      const res3 = await post.ns('ns:foo?cells&calc=true', { cells });
-      const res4 = await post.ns('ns:foo?cells&calc=false', { cells });
+      const res2 = await post.ns('ns:foo?cells', { cells, calc: true });
+      const res3 = await post.ns('ns:foo?cells', { cells, calc: false });
 
       const cells1 = res1.data.cells || {};
       const cells2 = res2.data.cells || {};
@@ -141,21 +141,19 @@ describe('route: namespace', () => {
       expect(A1a.props).to.eql(undefined);
       expect(A1b.props && A1b.props.value).to.eql('123'); // NB: calculated REF value of A2.
       expect(A1a.hash).to.not.eql(A1b.hash); // NB: Hashes differ.
-
-      expect(res3.data).to.eql(res2.data); // Calculates.
-      expect(res4.data).to.eql(res1.data); // No calcuation.
+      expect(res3.data).to.eql(res1.data); // No calcuation.
     });
 
-    it('REF re-calculate', async () => {
+    it('REF re-calculate with different change set', async () => {
       const mock = await createMock();
       const cells = {
         A1: { value: '=A2' },
         A2: { value: 123 },
       };
-      const res1 = await post.ns('ns:foo?cells&calc', { cells }, { mock });
+      const res1 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
       cells.A2.value = 456;
-      const res2 = await post.ns('ns:foo?cells&calc', { cells }, { mock });
+      const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
       mock.dispose();
 
@@ -169,6 +167,9 @@ describe('route: namespace', () => {
       expect(A1b.props && A1b.props.value).to.eql(456); // NB: calculated REF value of A2.
       expect(A1a.hash).to.not.eql(A1b.hash); // NB: Hashes differ.
     });
+
+    it.skip('calc (operate on prior uncalculated changes)', async () => {});
+    it.skip('calc (operate on provided subset of keys)', async () => {});
   });
 
   describe('GET', () => {

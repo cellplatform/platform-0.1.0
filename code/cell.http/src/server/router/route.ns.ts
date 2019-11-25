@@ -145,7 +145,7 @@ async function postNsResponse(args: {
     const changes: t.IDbModelChange[] = [];
     let isNsChanged = false;
 
-    if (body.cells && query.calc === true) {
+    if (body.cells && body.calc === true) {
       const cells = await models.ns.getChildCells({ model: ns });
       const getCells: t.GetCells = async () => ({ ...cells, ...(body.cells || {}) });
       const calc = func.calc({ getCells });
