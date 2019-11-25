@@ -13,6 +13,8 @@ export class CellRange {
 
   /**
    * Create from key (eg: "A1:C4", "A:B", "2:99" etc).
+   * NOTE:
+   *  A single cell key (eg "A1") is converted to a range, eg: "A1:A1".
    */
   public static fromKey = (key: string) => new CellRange({ key });
 
@@ -95,7 +97,8 @@ export class CellRange {
    */
   private constructor(options: { key: string }) {
     // Prepare key.
-    const key = options.key.replace(/^[\s\=\!]*/, '').trimRight();
+    let key = options.key.replace(/^[\s\=\!]*/, '').trim();
+    key = key.includes(':') ? key : `${key}:${key}`;
 
     // Store state.
     this._.key = key;
