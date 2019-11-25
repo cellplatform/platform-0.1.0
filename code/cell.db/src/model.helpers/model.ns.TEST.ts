@@ -1,5 +1,6 @@
 import { t, expect, getTestDb } from '../test';
 import { models } from '..';
+import { setChildData } from './model.ns';
 
 describe('helpers: model.ns', () => {
   it('toSchema', async () => {
@@ -58,5 +59,26 @@ describe('helpers: model.ns', () => {
     const res4 = await models.ns.setProps({ ns, data: { name: undefined } });
     expect(res4.changes.map(c => c.field)).to.eql(['props', 'hash']);
     expect(ns.props.props && ns.props.props.name).to.eql(undefined);
+  });
+
+  describe('setChildData', () => {
+    it('return change set (un-changed values not reported)', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const res1 = await setChildData({ ns, data: { cells: { A1: { value: '=A2' } } } });
+
+      expect(res1.changes.length).to.eql(2);
+      expect(res1.changes.map(c => c.field)).to.eql(['value', 'hash']);
+
+      // NB: Change A1 "props", but "value" remains unchanged.
+      const res2 = await setChildData({
+        ns,
+        data: { cells: { A1: { value: '=A2', props: { value: 'hello' } } } },
+      });
+
+      expect(res2.changes.length).to.eql(2); // NB: not 3, as the "value" field has not changed ("=A2").
+      expect(res2.changes.map(c => c.field)).to.eql(['props', 'hash']);
+    });
   });
 });

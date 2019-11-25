@@ -142,6 +142,7 @@ export async function setChildData(args: { ns: t.IDbModelNs; data?: Partial<t.IN
   const { ns } = args;
   let changes: t.IDbModelChange[] = [];
   const saved = { cells: 0, rows: 0, columns: 0 };
+
   if (!args.data) {
     return { isChanged: false, saved, changes };
   }
