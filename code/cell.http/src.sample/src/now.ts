@@ -1,11 +1,5 @@
-import { t, server, log, fs, now } from './common';
+import { t, server, log, fs } from './common';
 import { MongoDb } from '@platform/fsdb.mongo';
-
-// server.config()
-
-const region = fs.env.value('NOW_REGION');
-const isCloud = typeof region === 'string' && region.length > 0 && !region.startsWith('dev');
-const isDev = !isCloud;
 
 /**
  * Connection string to Mongo database.
@@ -13,21 +7,21 @@ const isDev = !isCloud;
  *  - [.env] file when running locally.
  *  - The "env" field in [now.json] file and [zeit/now] secrets in the cloud.
  */
-const KEY = 'PLATFORM_MONGO';
+const KEY = 'CELLOS_MONGO';
 const uri = fs.env.value<string>(KEY, { throw: true }); // See [.env] file when running locally.
 log.info(`Mongo Connection: process.env.${KEY}`);
 
 /**
- * Connection to a hosted Mongo database.
+ * Connection to a Mongo database.
  */
 const db: t.IDb = MongoDb.create({
   uri,
-  db: isDev ? 'dev' : 'test',
-  collection: `cell.http`,
+  db: '__DB__',
+  collection: `__COLLECTION__`,
 });
 
 /**
  * Initialise the HTTP server.
  */
-const app = server.init({ title: 'Platform (Sample)', db });
+const app = server.init({ title: '__TITLE__', db });
 export default app.server;

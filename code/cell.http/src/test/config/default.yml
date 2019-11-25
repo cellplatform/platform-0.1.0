@@ -1,10 +1,6 @@
 title: My Title
-#
-# DEFAAULT VALUES
-#
-db:
-  dev: myDev
-#   test: test
-#   staging: staging
-#   prod: prod
-# collection: cell.http
+
+now:
+  name: my-deployment
+  domain: domain.com
+  mongo: platform-mongo

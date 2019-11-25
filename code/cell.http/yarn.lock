@@ -108,7 +108,7 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/exec@0.2.35", "@platform/exec@^0.2.35":
+"@platform/exec@0.2.35":
   version "0.2.35"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.35.tgz#97d964bd74de506dad3d62cd45ac9381c5a24549"
   integrity sha512-j31OW2ONQwHItEw6JfGRZc2Wx2vrA41L229odBLSq60DJUttHqYJB+fDMVNk1BMC3cv4lnKwtcASizGaZMR4VQ==

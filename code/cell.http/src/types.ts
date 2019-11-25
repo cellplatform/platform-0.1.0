@@ -8,15 +8,22 @@ import * as t from '@platform/cell.types';
  * Config
  */
 
-export type IHttpConfig = {
+export type IConfigCloud = {
   title: string;
   collection: string;
-  db: {
-    dev: string; //     database name: "development"  (local developer machine)
-    test: string; //    database name: "test"         (cloud test instance)
-    staging: string; // database name: "staging"      (cloud staging instance)
-    prod: string; //    database name: "production"   (cloud production)
+  now: {
+    name: string;
+    domain: string;
+    subdomain?: string; // Used as DB name (or "prod" if no specified).
+    mongo: string; // [zeit/now] secret key (eg "@mongo").  "@" not required.
   };
+};
+
+export type IConfigNowFile = {
+  version: number;
+  name: string;
+  alias: string;
+  env: { [key: string]: string };
 };
 
 /**

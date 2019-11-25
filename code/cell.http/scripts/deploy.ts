@@ -1,9 +1,8 @@
-import { fs, log } from './common';
+import { fs, log, config, t } from './common';
 import * as minimist from 'minimist';
 import { exec } from '@platform/exec';
 
 const argv = minimist(process.argv.slice(2));
-const path = fs.resolve(argv._[0] || '');
 
 const FILES = [
   'package.json',
@@ -38,24 +37,80 @@ async function copy(args: { sourceDir: string; targetDir: string }) {
 /**
  * Prepare and run a deployment.
  */
-async function deploy(args: { silent?: boolean } = {}) {
-  // const dir =
+async function deploy(args: { config: string }) {
+  log.info();
   const sourceDir = fs.resolve('src.sample');
   const targetDir = fs.resolve('tmp/.deploy');
-  await copy({ sourceDir, targetDir });
+
+  // Clear existing deloyment.
+  await fs.remove(targetDir);
+
+  // Copy deployment folder.
+  const { files } = await copy({ sourceDir, targetDir });
+
+  // Load configuration settings
+  const path = fs.resolve(args.config);
+  const settings = config.loadSync({ path });
+  if (!settings.exists) {
+    log.info.yellow(`😩  Config file does not exist [.yml]`);
+    log.info.gray(settings.path);
+    log.info();
+    return;
+  }
+
+  if (!settings.data.now.name) {
+    log.info.yellow(`😩  The [now] project cannot be unnamed.`);
+    log.info.gray(settings.path);
+    log.info();
+    return;
+  }
+
+  // Update: [now.json]
+  await (async () => {
+    const config = settings.data;
+    const now = config.now;
+    const file = files.find(path => path.to.endsWith('now.json'));
+    const json = await fs.file.loadAndParse<t.IConfigNowFile>(file.to);
+
+    let alias = now.domain;
+    alias = now.subdomain ? `${now.subdomain}.${alias}` : alias;
+
+    json.name = now.name;
+    json.alias = alias;
+    json.env = json.env || {};
+    json.env.CELLOS_MONGO = now.mongo;
+
+    fs.file.stringifyAndSaveSync(file.to, json);
+  })();
+
+  // Update: [now.ts]
+  await (async () => {
+    const config = settings.data;
+    const now = config.now;
+    const file = files.find(path => path.to.endsWith('now.ts'));
+    let text = (await fs.readFile(file.to)).toString();
+
+    text = text.replace(/__TITLE__/, config.title);
+    text = text.replace(/__DB__/, now.subdomain || 'prod');
+    text = text.replace(/__COLLECTION__/, config.collection);
+
+    await fs.writeFile(file.to, text);
+  })();
+
+  log.info(settings.data);
+  log.info();
 
   // Deploy.
   const cmd = exec.command('yarn deploy');
-
   const running = cmd.run({ cwd: targetDir, silent: true });
-  if (!args.silent) {
-    running.output$.subscribe(e => log.info(e.text));
-  }
-
+  running.output$.subscribe(e => log.info(e.text));
   await running;
 }
 
 /**
  * Run.
  */
-(async () => deploy())();
+(async () => {
+  const config = fs.join('.config', argv._[0] || '');
+  deploy({ config });
+})();
