@@ -416,6 +416,34 @@ describe('model', () => {
       expect(fields).to.include('region');
     });
 
+    it('does not register change when setting the same value (no change)', async () => {
+      const model = await (await createOrg({ put: true })).ready;
+      expect(model.props.name).to.eql('MyOrg');
+
+      model.props.name = 'MyOrg';
+      expect(model.isChanged).to.eql(false);
+      expect(model.changes.length).to.eql(0);
+
+      model.set({ name: 'MyOrg' });
+      expect(model.isChanged).to.eql(false);
+      expect(model.changes.length).to.eql(0);
+    });
+
+    it('does not register change when reverting to original value', async () => {
+      const model = await (await createOrg({ put: true })).ready;
+      expect(model.props.name).to.eql('MyOrg');
+
+      model.props.name = 'New Name';
+      expect(model.isChanged).to.eql(true);
+      expect(model.changes.length).to.eql(1);
+      expect(model.changes.list[0].reverted).to.eql(false);
+
+      model.set({ name: 'MyOrg' }); // NB: Revert to original name.
+      expect(model.isChanged).to.eql(false);
+      expect(model.changes.length).to.eql(2);
+      expect(model.changes.list[1].reverted).to.eql(true);
+    });
+
     it('set (via method)', async () => {
       const model = await (await createOrg({ put: true })).ready;
 
@@ -455,8 +483,12 @@ describe('model', () => {
       model.props.name = 'foo'; //         Same as current.
       model.set({ region: 'US/west' }); // Same as current.
 
-      expect(model.changes.length).to.eql(2); // NB: Changes are registered, but all values are current.
+      expect(model.changes.length).to.eql(0); // NB: Changes are not registered (all current values).
       expect(model.isChanged).to.eql(false);
+
+      model.set({ name: 'bar', region: 'US/west' }); // One change, one no-change.
+      expect(model.changes.length).to.eql(1);
+      expect(model.isChanged).to.eql(true);
 
       await model.save();
       expect(model.changes.length).to.eql(0); // Saving resets the changes.
