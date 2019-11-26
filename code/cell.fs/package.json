@@ -1,0 +1,34 @@
+{
+  "name": "@platform/cell.fs",
+  "version": "0.0.1",
+  "description": "File system support for CellOS.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/cell.types": "0.1.14",
+    "@platform/fs": "0.3.5",
+    "@platform/fs.s3": "0.3.13",
+    "@platform/libs": "0.1.5",
+    "@platform/types": "0.1.1"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.66",
+    "@platform/ts": "3.7.2"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}

@@ -575,46 +575,62 @@ export class Model<
   private changeField(kind: t.ModelValueKind, field: string, value: any) {
     const typename = this.typename;
     const changes = this.changes.map;
+    const hasChangeEntry = Object.keys(changes).includes(field);
     let isCancelled = false;
 
-    if (Object.keys(changes).includes(field) && changes[field] === value) {
-      // No change from current modification.
+    // Check: No change from current modification.
+    if (hasChangeEntry && changes[field] === value) {
       return { isValueChanged: false, isCancelled };
-    } else {
-      const change = this.getChange(kind, field, value);
-
-      // Fire BEFORE event.
-      this.fire({
-        type: 'MODEL/changing',
-        typename,
-        payload: {
-          change,
-          get isCancelled() {
-            return isCancelled;
-          },
-          cancel() {
-            isCancelled = true;
-          },
-        },
-      });
-
-      if (isCancelled) {
-        return { isValueChanged: false, isCancelled: true };
-      }
-
-      // Remove from cache.
-      if (Object.keys(this._linkCache).includes(field)) {
-        delete this._linkCache[field];
-      }
-
-      // Store the change entry.
-      this._changes = [...this._changes, change];
-      this.fire({ type: 'MODEL/changed', typename, payload: change });
-      return { isValueChanged: true, isCancelled };
     }
+
+    // Check: No change from current value (and is not a revert).
+    const isOriginalValue = R.equals(value, this.doc[field]);
+    if (!hasChangeEntry && isOriginalValue) {
+      // If the field has never been changed,
+      // do not register the same value as a change.
+      return { isValueChanged: false, isCancelled };
+    }
+
+    const reverted = hasChangeEntry && isOriginalValue;
+    const change = this.getChange({ kind, field, value, reverted });
+
+    // Fire BEFORE event.
+    this.fire({
+      type: 'MODEL/changing',
+      typename,
+      payload: {
+        change,
+        get isCancelled() {
+          return isCancelled;
+        },
+        cancel() {
+          isCancelled = true;
+        },
+      },
+    });
+
+    if (isCancelled) {
+      return { isValueChanged: false, isCancelled: true };
+    }
+
+    // Remove from cache.
+    if (Object.keys(this._linkCache).includes(field)) {
+      delete this._linkCache[field];
+    }
+
+    // Store the change entry.
+    this._changes = [...this._changes, change];
+    this.fire({ type: 'MODEL/changed', typename, payload: change });
+    return { isValueChanged: true, isCancelled };
   }
 
-  private getChange(kind: t.ModelValueKind, field: string, value: any): t.IModelChange<P, D> {
+  private getChange(args: {
+    kind: t.ModelValueKind;
+    field: string;
+    value: any;
+    reverted: boolean;
+  }): t.IModelChange<P, D> {
+    const { kind, field, value, reverted } = args;
     const to = { ...this.doc, [field]: value };
     return {
       kind,
@@ -623,6 +639,7 @@ export class Model<
       doc: { from: { ...this.doc }, to },
       modifiedAt: time.now.timestamp,
       value: { from: this.doc[field], to: value },
+      reverted,
     };
   }
 }

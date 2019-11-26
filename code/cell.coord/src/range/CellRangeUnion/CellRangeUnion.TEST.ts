@@ -30,6 +30,13 @@ describe('CellRangeUnion', () => {
       expect(union.ranges[1].key).to.eql('B:B');
       expect(union.ranges[2].key).to.eql('5:5');
     });
+    it('converts from single keys to ranges', () => {
+      const union = fromKey(['A1', 'B', '5']);
+      expect(union.length).to.eql(3);
+      expect(union.ranges[0].key).to.eql('A1:A1');
+      expect(union.ranges[1].key).to.eql('B:B');
+      expect(union.ranges[2].key).to.eql('5:5');
+    });
   });
 
   describe('fromKey (string, comma-seperated)', () => {

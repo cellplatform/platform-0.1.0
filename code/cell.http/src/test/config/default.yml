@@ -1,0 +1,6 @@
+title: My Title
+
+now:
+  name: my-deployment
+  domain: domain.com
+  mongo: platform-mongo

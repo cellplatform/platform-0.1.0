@@ -111,6 +111,7 @@ export type IModelChange<P extends object, D extends P> = {
   value: { from?: any; to?: any };
   doc: { from: D; to: D };
   modifiedAt: number;
+  reverted: boolean;
 };
 
 /**

@@ -1219,33 +1219,33 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.file@1.3.28":
-  version "1.3.28"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.file/-/fsdb.file-1.3.28.tgz#c633fbb481a3f2152ea982b99d22973209f1e047"
-  integrity sha512-BOGxX6YPlZm4S+pTTApqkvcGjKmjb2+MgHOzZTYaYiSb7NIuvp1oijSUMVxFTMVF9EnWx6XTZny+TCs3SI51iw==
+"@platform/fsdb.file@1.3.29":
+  version "1.3.29"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.file/-/fsdb.file-1.3.29.tgz#3cdab43c0ba5f318b752e34b7a69a9b47135bf66"
+  integrity sha512-EaaSBUurR99CUlmDb3WVwfQC1+VtTmAYPvF/eGm2gBoooJCSlVBubZw4IYNXt8Ak8pu40IfX7DMY74tmwEA6Sw==
   dependencies:
     "@platform/fs" "0.3.5"
-    "@platform/fsdb.types" "0.5.4"
+    "@platform/fsdb.types" "0.5.5"
     "@platform/libs" "0.1.5"
     "@platform/types" "0.1.1"
     "@platform/util.value" "0.5.11"
 
-"@platform/fsdb.nedb@1.3.36":
-  version "1.3.36"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.36.tgz#adfa6701751810e14a1b168b2691de55f8c011b7"
-  integrity sha512-9PgsW1DP/XeW7IvRZJklmzgbCQM1Efji3OT8u87SOmjeLa1kuEpXjgjlJr5HgHTEvKHTXJ3Iog/QuB6OxWZVeg==
+"@platform/fsdb.nedb@1.3.37":
+  version "1.3.37"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.37.tgz#bc84e844ea2737a4f81ffc4d514d03a88563a787"
+  integrity sha512-t7iP+/vqc6nuSbX+x9kfhswWmaieNNJEyru6MvyPmQs3UtST0sald4GDBTwMtcn5iUJISjJgxKFzGcu0MZVfdA==
   dependencies:
-    "@platform/fsdb.types" "0.5.4"
+    "@platform/fsdb.types" "0.5.5"
     "@platform/libs" "0.1.5"
     "@platform/react" "0.3.32"
     "@platform/types" "0.1.1"
     "@platform/util.value" "0.5.11"
     nedb "1.8.0"
 
-"@platform/fsdb.types@0.5.4":
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.5.4.tgz#0c2728da80b5d7296a037fbafd509c8b822eb602"
-  integrity sha512-m65FZ0MdJHfA5EUdFJi1Ulr4xnkGZp2OpKST3BZ2lnrFJC87J8WqClXZB5r/4M8Be9OkEXgC4+2g4Nq1gtrhSw==
+"@platform/fsdb.types@0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.5.5.tgz#79bc16fe5385a28777a1064b1f2dfe39166663c7"
+  integrity sha512-IqU0BjA3ELGhv0CBt4zDa4VdNpy07LM9pOhNv1vFYtDAxJ1yEYjbGUdlrSFWZQPQWl6YDh9NVpa8aR0qJM8j6g==
   dependencies:
     "@platform/libs" "0.1.5"
     "@platform/types" "0.1.1"

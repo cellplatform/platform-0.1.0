@@ -37,16 +37,25 @@ describe('route: namespace', () => {
       expect(json.exists).to.eql(true); // NB: Model exists after first save.
       expect(json.createdAt).to.not.eql(-1);
       expect(json.modifiedAt).to.not.eql(-1);
+      expect(json.changes).to.eql(undefined);
+
       expect(data.ns.id).to.eql('foo');
       expect(data.ns.hash).to.not.eql('-'); // NB: hash calculation tested seperately.
       expect(cells.A1 && cells.A1.value).to.eql('hello');
       expect(data.rows).to.eql(undefined);
       expect(data.columns).to.eql(undefined);
+    });
 
-      expect(json.changes.length).to.eql(4);
-      expect(json.changes.map(c => c.field)).to.eql(['value', 'hash', 'id', 'hash']);
+    it('POST return list of changes (?changes=true)', async () => {
+      const { json } = await post.ns('ns:foo?cells&changes', {
+        cells: { A1: { value: 'hello' } },
+      });
 
-      const change = json.changes[0];
+      const changes = json.changes || [];
+      expect(changes.length).to.eql(4);
+      expect(changes.map(c => c.field)).to.eql(['value', 'hash', 'id', 'hash']);
+
+      const change = changes[0];
       expect(change.uri).to.eql('cell:foo!A1');
       expect(change.field).to.eql('value');
       expect(change.from).to.eql(undefined);
@@ -118,8 +127,10 @@ describe('route: namespace', () => {
         A1: { value: '=A2' },
         A2: { value: '123' },
       };
+
       const res1 = await post.ns('ns:foo?cells', { cells }); // Default: calc=false
       const res2 = await post.ns('ns:foo?cells', { cells, calc: true });
+      const res3 = await post.ns('ns:foo?cells', { cells, calc: false });
 
       const cells1 = res1.data.cells || {};
       const cells2 = res2.data.cells || {};
@@ -130,30 +141,99 @@ describe('route: namespace', () => {
       expect(A1a.props).to.eql(undefined);
       expect(A1b.props && A1b.props.value).to.eql('123'); // NB: calculated REF value of A2.
       expect(A1a.hash).to.not.eql(A1b.hash); // NB: Hashes differ.
+      expect(res3.data).to.eql(res1.data); // No calcuation.
     });
 
-    it('REF re-calculate', async () => {
+    it('REF re-calculate when referenced value changes', async () => {
       const mock = await createMock();
-      const cells = {
+      let cells = {
         A1: { value: '=A2' },
         A2: { value: 123 },
       };
       const res1 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
-      cells.A2.value = 456;
+      cells = { ...cells, A2: { value: 456 } };
       const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
       mock.dispose();
 
       const cells1 = res1.data.cells || {};
       const cells2 = res2.data.cells || {};
-
       const A1a = cells1.A1 || {};
       const A1b = cells2.A1 || {};
 
       expect(A1a.props && A1a.props.value).to.eql(123); // NB: calculated REF value of A2.
-      expect(A1b.props && A1b.props.value).to.eql(456); // NB: calculated REF value of A2.
+      expect(A1b.props && A1b.props.value).to.eql(456); // NB: re-calculated REF value of A2.
       expect(A1a.hash).to.not.eql(A1b.hash); // NB: Hashes differ.
+    });
+
+    it('calc (operate on provided "range" subset of keys)', async () => {
+      const mock = await createMock();
+      const before = {
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+        B1: { value: '=A2' },
+        C1: { value: '=Z9' },
+        D1: { value: '=A1' },
+        Z9: { value: 'hello' },
+      };
+
+      const res = await post.ns('ns:foo?cells', { cells: before, calc: 'A1:B9,D' }, { mock }); // NB: C1 not included.
+      const after = res.data.cells || {};
+
+      mock.dispose();
+
+      expect((after.A1 || {}).props).to.eql({ value: 123 });
+      expect((after.A2 || {}).props).to.eql(undefined); // NB: simple value.
+      expect((after.B1 || {}).props).to.eql({ value: 123 });
+      expect((after.C1 || {}).props).to.eql(undefined); // NB: Excluded from calculation.
+      expect((after.D1 || {}).props).to.eql({ value: 123 });
+      expect((after.Z9 || {}).props).to.eql(undefined); // NB: simple value.
+    });
+
+    it('calculate prior uncalculated set of data (calc=true)', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+      };
+      const res1 = await post.ns('ns:foo?cells', { cells }, { mock }); // NB: calc=false (default).
+      const res2 = await post.ns('ns:foo?cells', { calc: true }, { mock });
+
+      mock.dispose();
+
+      const cells1 = res1.data.cells || {};
+      const cells2 = res2.data.cells || {};
+      const A1a = cells1.A1 || {};
+      const A1b = cells2.A1 || {};
+
+      expect(A1a.props).to.eql(undefined);
+      expect(A1b.props && A1b.props.value).to.eql(123);
+    });
+
+    it('calculate prior uncalculated set of data (calc=<range>)', async () => {
+      const mock = await createMock();
+      const before = {
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+        B1: { value: '=A2' },
+        C1: { value: '=Z9' },
+        D1: { value: '=A1' },
+        Z9: { value: 'hello' },
+      };
+
+      await post.ns('ns:foo?cells', { cells: before, calc: false }, { mock }); // NB: calc=false (default).
+      const res = await post.ns('ns:foo?cells', { calc: 'A1:B9,D' }, { mock });
+      const after = res.data.cells || {};
+
+      mock.dispose();
+
+      expect((after.A1 || {}).props).to.eql({ value: 123 });
+      expect((after.A2 || {}).props).to.eql(undefined); // NB: simple value.
+      expect((after.B1 || {}).props).to.eql({ value: 123 });
+      expect((after.C1 || {}).props).to.eql(undefined); // NB: Excluded from calculation.
+      expect((after.D1 || {}).props).to.eql({ value: 123 });
+      expect((after.Z9 || {}).props).to.eql(undefined); // NB: simple value.
     });
   });
 
@@ -166,7 +246,7 @@ describe('route: namespace', () => {
 
       expect(res.status).to.eql(200);
 
-      const body = res.json<t.IGetNsResponse>();
+      const body = res.json<t.IResGetNs>();
       const ns = body.data.ns;
 
       expect(body.uri).to.eql('ns:foo');
@@ -186,7 +266,7 @@ describe('route: namespace', () => {
     it('GET squashes null values', async () => {
       const mock = await createMock();
 
-      const payload: t.IPostNsBody = {
+      const payload: t.IReqPostNsBody = {
         cells: { A1: { value: 'hello', props: null } } as any, // NB: [any] because `null` is an illegal type.
         rows: { 1: { props: null } } as any,
         columns: { A: { props: null } } as any,
@@ -220,7 +300,7 @@ describe('route: namespace', () => {
         1: { props: { width: 350 } },
         3: { props: { width: 256 } },
       };
-      const body: t.IPostNsBody = { cells, columns, rows };
+      const body: t.IReqPostNsBody = { cells, columns, rows };
       await http.post(mock.url('ns:foo'), body);
 
       const test = async (path: string, expected?: any) => {
@@ -228,7 +308,7 @@ describe('route: namespace', () => {
         const res = await http.get(url);
 
         // Prepare a subset of the return data to compare with expected result-set.
-        const json = res.json<t.IPostNsResponse>().data;
+        const json = res.json<t.IResPostNs>().data;
         delete json.ns;
         stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
         expect(json).to.eql(expected);
@@ -282,7 +362,7 @@ describe('route: namespace', () => {
         1: { props: { width: 350 } },
         3: { props: { width: 256 } },
       };
-      const body: t.IPostNsBody = { cells, columns, rows };
+      const body: t.IReqPostNsBody = { cells, columns, rows };
       await http.post(mock.url('ns:foo'), body);
 
       const test = async (path: string, expected?: any) => {
@@ -290,7 +370,7 @@ describe('route: namespace', () => {
         const res = await http.get(url);
 
         // Prepare a subset of the return data to compare with expected result-set.
-        const json = res.json<t.IPostNsResponse>().data;
+        const json = res.json<t.IResPostNs>().data;
         delete json.ns;
         stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
         expect(json).to.eql(expected);

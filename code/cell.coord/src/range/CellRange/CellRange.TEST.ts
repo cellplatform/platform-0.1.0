@@ -31,9 +31,13 @@ describe('CellRange', () => {
         expect(res.key).to.eql(output);
         expect(res.isValid).to.eql(true);
       };
-      test('A1:A2', 'A1:A2');
+      test('A1:B9', 'A1:B9');
+      test('  A1:B9   ', 'A1:B9');
       test('A:A', 'A:A');
       test('1:1', '1:1');
+      test('A1', 'A1:A1');
+      test('A', 'A:A');
+      test('1', '1:1');
     });
 
     it('square', () => {
@@ -218,7 +222,7 @@ describe('CellRange', () => {
     it('error: INVALID RANGE', () => {
       const range = fromKey('..');
       expect(range.isValid).to.eql(false);
-      expect(range.error).to.contain('INVALID RANGE ".."');
+      expect(range.error).to.contain('INVALID RANGE "..:.."');
     });
 
     it('error: range spans different sheets', () => {
@@ -244,6 +248,11 @@ describe('CellRange', () => {
     valid('A:$B');
     valid('$1:3');
     valid('1:$3');
+
+    valid('A');
+    valid('1');
+    valid(' A  ');
+    valid('  1 ');
 
     valid('*:*');
     valid('Sheet1!*:*');
@@ -271,10 +280,6 @@ describe('CellRange', () => {
     invalid('');
     invalid(' ');
     invalid('..');
-    invalid('A');
-    invalid('1');
-    invalid(' A  ');
-    invalid('  1 ');
     invalid('A:B:C');
     invalid(':');
     invalid(' A1:');

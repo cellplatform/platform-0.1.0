@@ -3,7 +3,7 @@
   "name": "sample.cell.server",
   "alias": "cell.platform.uiharness.com",
   "env": {
-    "PLATFORM_MONGO": "@platform-mongo"
+    "CELLOS_MONGO": "@platform-mongo"
   },
   "routes": [
     {
