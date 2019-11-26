@@ -29,6 +29,7 @@ export type IConfigNowFile = {
 /**
  * Payloads
  */
+
 export type IErrorPayload = { status: number; data: t.IHttpError };
 export type INotFoundResponse = t.IHttpError<'HTTP/404'> & { status: 404; url: string };
 export type IGetResponse<D> = {
@@ -42,12 +43,13 @@ export type IGetResponse<D> = {
 /**
  * Namespace
  */
+
 export type IReqNsParams = { id: string };
 export type IReqNsQuery = {
   data?: boolean; // true: all (cells/rows/columns) - overrides other fields.
-  cells?: boolean | string; // true: all | string: key or range, eg "A1", "A1:C10"
-  columns?: boolean | string;
-  rows?: boolean | string;
+  cells?: boolean | string | Array<string | boolean>; // true: all | string: key or range, eg "A1", "A1:C10"
+  columns?: boolean | string | Array<string | boolean>;
+  rows?: boolean | string | Array<string | boolean>;
 };
 
 /**
@@ -61,7 +63,7 @@ export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
  * Namespace: POST
  */
 export type IReqPostNsQuery = IReqNsQuery & {
-  changes?: boolean; // return change list (default: false).
+  changes?: boolean; // return change-list (default: false).
 };
 
 export type IReqPostNsBody = {
@@ -69,13 +71,14 @@ export type IReqPostNsBody = {
   cells?: t.IMap<t.ICellData>;
   columns?: t.IMap<t.IColumnData>;
   rows?: t.IMap<t.IRowData>;
-  calc?: boolean; // perform calcuations (default: false).
+  calc?: boolean | string | Array<string | boolean>; // Perform calcuations (default: false), if string key/range of cells to calculate, eg "A1", "A1:C10"
 };
 export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
 
 /**
  * Coord: cell|row|col
  */
+
 export type IReqCoordParams = { id: string; key: string };
 export type IReqCoordQuery = {};
 
