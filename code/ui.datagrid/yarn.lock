@@ -1079,16 +1079,18 @@
     "@platform/libs" "0.1.5"
     "@platform/util.value" "0.5.11"
 
-"@platform/cell.http@0.2.14":
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.2.14.tgz#16f11f94c9fb4a474f6c989969a0a6a73e120eb1"
-  integrity sha512-tp2b2GbJPe+BACmDgqwelUlEwmuOOyIiSzGqzPIWfPwQIqeleXLqVQLOfhsGB5W5OoNWJdaVQ/0MaYHkY9J8+w==
+"@platform/cell.http@0.2.19":
+  version "0.2.19"
+  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.2.19.tgz#6fae6c0a7d22ece97dfc31eb7cf075f2dba12dc4"
+  integrity sha512-0Pt9u7P6YMGYqtIHghlUpmqV+og2oCPnCCGkoUHjvcoXSqVaGeFr+311qThzrsYdJqE8Z84i16flUQq/pMsBwQ==
   dependencies:
     "@platform/cell.db" "0.1.8"
     "@platform/cell.func" "0.0.47"
     "@platform/cell.schema" "0.0.20"
     "@platform/cell.types" "0.1.14"
     "@platform/cell.value" "0.1.6"
+    "@platform/cli" "0.4.9"
+    "@platform/cli.prompt" "^0.1.0"
     "@platform/exec" "0.2.35"
     "@platform/fs" "0.3.5"
     "@platform/fsdb.model" "0.5.0"
@@ -1168,6 +1170,14 @@
     "@platform/libs" "0.1.4"
     inquirer "7.0.0"
 
+"@platform/cli.prompt@0.1.0", "@platform/cli.prompt@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.1.0.tgz#cd4279482afa67f5acdb1938b191017a92b5a9a3"
+  integrity sha512-U+uFP6NefPUr8KoSNyH/b7upY1hMdB7n8GzxUagkUNxXwkuzkPGFeI2CK61XJ32UzOp7ZMEOOfy+GYGnJs852A==
+  dependencies:
+    "@platform/libs" "0.1.5"
+    inquirer "7.0.0"
+
 "@platform/cli.spec@0.1.64":
   version "0.1.64"
   resolved "https://registry.yarnpkg.com/@platform/cli.spec/-/cli.spec-0.1.64.tgz#00392dba8f4a32542cc318e40c711d09d51020f7"
@@ -1234,6 +1244,23 @@
     inquirer "7.0.0"
     listr "0.14.3"
     yargs "15.0.1"
+
+"@platform/cli@0.4.9":
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.4.9.tgz#dcbfd8220ee134273a79f602ae26e53699249c62"
+  integrity sha512-WV5QymJ5FkUm9XyCtqlYjF5jcebnifsfvjZf2gs6rhJ8tawvGk/jQnUpVwD5stLKywCj6pYn1Ac52CJU6sJHQA==
+  dependencies:
+    "@platform/cli.prompt" "0.1.0"
+    "@platform/exec" "0.2.35"
+    "@platform/fs" "0.3.5"
+    "@platform/libs" "0.1.5"
+    "@platform/log" "0.0.150"
+    "@platform/util.value" "0.5.11"
+    "@types/inquirer" "6.5.0"
+    "@types/yargs" "13.0.3"
+    inquirer "7.0.0"
+    listr "0.14.3"
+    yargs "15.0.2"
 
 "@platform/css@0.1.43":
   version "0.1.43"
@@ -10438,6 +10465,23 @@ yargs@15.0.1:
   version "15.0.1"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-15.0.1.tgz#558d03c3e5d873431d500f871168967ef673620e"
   integrity sha512-47i2DJb+gkLpioPBdMmnvb4QkAuyz7tLes9nCgYDXEdPf05tqjCQpUELea3MfmoomS9NKAZlZEifstKIXiASMw==
+  dependencies:
+    cliui "^6.0.0"
+    decamelize "^1.2.0"
+    find-up "^4.1.0"
+    get-caller-file "^2.0.1"
+    require-directory "^2.1.1"
+    require-main-filename "^2.0.0"
+    set-blocking "^2.0.0"
+    string-width "^4.2.0"
+    which-module "^2.0.0"
+    y18n "^4.0.0"
+    yargs-parser "^16.1.0"
+
+yargs@15.0.2:
+  version "15.0.2"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-15.0.2.tgz#4248bf218ef050385c4f7e14ebdf425653d13bd3"
+  integrity sha512-GH/X/hYt+x5hOat4LMnCqMd8r5Cv78heOMIJn1hr7QPPBqfeC6p89Y78+WB9yGDvfpCvgasfmWLzNzEioOUD9Q==
   dependencies:
     cliui "^6.0.0"
     decamelize "^1.2.0"
