@@ -103,23 +103,6 @@ async function getNsData(args: {
       return {};
     }
 
-    const formatQueryArray = (input: Array<string | boolean>) => {
-      if (input.some(item => item === true)) {
-        // NB: Any occurance of `true` negates narrower string ranges
-        //     so default to a blunt [true] so everything is returned.
-        return true;
-      } else {
-        const flat = input.filter(item => typeof item === 'string').join(',');
-        return flat ? flat : undefined;
-      }
-    };
-
-    const formatQuery = (
-      input?: boolean | string | Array<string | boolean>,
-    ): string | boolean | undefined => {
-      return Array.isArray(input) ? formatQueryArray(input) : input;
-    };
-
     const cells = query.data ? true : formatQuery(query.cells);
     const columns = query.data ? true : formatQuery(query.columns);
     const rows = query.data ? true : formatQuery(query.rows);
@@ -145,14 +128,36 @@ async function postNsResponse(args: {
     const changes: t.IDbModelChange[] = [];
     let isNsChanged = false;
 
-    if (body.cells && body.calc === true) {
-      const cells = await models.ns.getChildCells({ model: ns });
-      const getCells: t.GetCells = async () => ({ ...cells, ...(body.cells || {}) });
-      const calc = func.calc({ getCells });
-      const res = await calc.changes({ cells: Object.keys(body.cells) });
+    // Calculation REFs and functions.
+    const calc = formatQuery(body.calc);
+    if (body.cells && calc) {
+      let cells: t.IMap<t.ICellData> | undefined;
+      const getCells: t.GetCells = async () => {
+        cells = cells || (await models.ns.getChildCells({ model: ns }));
+        return { ...cells, ...(body.cells || {}) };
+      };
+      const calculate = func.calc({ getCells });
+
+      const keys = Object.keys(body.cells);
+      if (typeof calc === 'string') {
+        /**
+         * TODO 🐷
+         */
+        // console.log('keys', keys);
+        // console.log('calc', calc);
+        // const ranges = cell.coord.range.union(calc.split(','));
+        // // console.log('ranges.toString()', ranges.toString());
+        // console.log(
+        //   'ranges.ranges.map',
+        //   ranges.ranges.map(r => r.key),
+        // );
+      }
+
+      const res = await calculate.changes({ cells: keys });
       body = { ...body, cells: { ...(body.cells || {}), ...res.map } };
     }
 
+    // Data persistence.
     const saveChildData = async (body: t.IReqPostNsBody) => {
       const { cells, rows, columns } = body;
       if (cells || rows || columns) {
@@ -181,6 +186,8 @@ async function postNsResponse(args: {
         models.toChanges(uri, res.changes).forEach(change => changes.push(change));
       }
     }
+
+    // Finish up.
     const res = await getNsResponse({ db, id, query });
     const data: t.IResPostNs = {
       ...res.data,
@@ -191,3 +198,31 @@ async function postNsResponse(args: {
     return toErrorPayload(err);
   }
 }
+
+/**
+ * [Helpers]
+ */
+
+const formatQueryArray = (input: Array<string | boolean>) => {
+  if (input.some(item => item === false)) {
+    // NB: Any explicit FALSE refs win.
+    // The operation is not wanted irrespective of other requests.
+    return false;
+  }
+
+  if (input.some(item => item === true)) {
+    // NB: Any occurance of `true` negates narrower string ranges
+    //     so default to a blunt `true` so everything is returned.
+    return true;
+  }
+
+  // Convert array of string to a single-flat-string.
+  const flat = input.filter(item => typeof item === 'string').join(',');
+  return flat ? flat : undefined;
+};
+
+const formatQuery = (
+  input?: boolean | string | Array<string | boolean>,
+): string | boolean | undefined => {
+  return Array.isArray(input) ? formatQueryArray(input) : input;
+};

@@ -144,32 +144,77 @@ describe('route: namespace', () => {
       expect(res3.data).to.eql(res1.data); // No calcuation.
     });
 
-    it('REF re-calculate with different change set', async () => {
+    it('REF re-calculate when referenced value changes', async () => {
       const mock = await createMock();
-      const cells = {
+      let cells = {
         A1: { value: '=A2' },
         A2: { value: 123 },
       };
       const res1 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
-      cells.A2.value = 456;
+      cells = { ...cells, A2: { value: 456 } };
       const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
       mock.dispose();
 
       const cells1 = res1.data.cells || {};
       const cells2 = res2.data.cells || {};
-
       const A1a = cells1.A1 || {};
       const A1b = cells2.A1 || {};
 
       expect(A1a.props && A1a.props.value).to.eql(123); // NB: calculated REF value of A2.
-      expect(A1b.props && A1b.props.value).to.eql(456); // NB: calculated REF value of A2.
+      expect(A1b.props && A1b.props.value).to.eql(456); // NB: re-calculated REF value of A2.
       expect(A1a.hash).to.not.eql(A1b.hash); // NB: Hashes differ.
     });
 
-    it.skip('calc (operate on prior uncalculated changes)', async () => {});
-    it.skip('calc (operate on provided subset of keys)', async () => {});
+    it('calc=true (only operates on given set of cells)', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+      };
+      const res1 = await post.ns('ns:foo?cells', { cells }, { mock }); // NB: calc=false (default).
+      const res2 = await post.ns('ns:foo?cells', { calc: true }, { mock });
+
+      mock.dispose();
+      expect(res1.data).to.eql(res2.data);
+    });
+
+    it.skip('calc (operate on provided subset of keys)', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+        B1: { value: '=A2' },
+        C1: { value: '=A2' },
+        D1: { value: '=A2' },
+      };
+
+      const res1 = await post.ns('ns:foo?cells', { cells, calc: 'A1:B9,D' }, { mock });
+
+      mock.dispose();
+
+      // console.log('-------------------------------------------');
+      // console.log('res1.data', res1.data);
+    });
+
+    it.skip('calc (calculate prior uncalculated set of data)', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+        B1: { value: '=A2' },
+        C1: { value: '=A2' },
+        D1: { value: '=A2' },
+      };
+
+      const res1 = await post.ns('ns:foo?cells', { cells, calc: false }, { mock }); // NB: calc=false (default).
+      const res2 = await post.ns('ns:foo?cells', { cells, calc: 'A1:C9' }, { mock });
+
+      mock.dispose();
+
+      console.log('res1.data', res1.data);
+    });
   });
 
   describe('GET', () => {
