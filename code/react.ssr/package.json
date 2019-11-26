@@ -16,7 +16,7 @@
     "build": "ts build",
     "build-test": "ts build",
     "prepare": "ts prepare",
-    "deploy": "cd sample/server && yarn deploy"
+    "deploy": "cd src.sample/server && yarn deploy"
   },
   "dependencies": {
     "@platform/cli": "0.4.8",

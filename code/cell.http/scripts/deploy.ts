@@ -39,7 +39,7 @@ async function copy(args: { sourceDir: string; targetDir: string }) {
  */
 async function deploy(args: { config: string }) {
   log.info();
-  const sourceDir = fs.resolve('src.sample');
+  const sourceDir = fs.resolve('src.tmpl');
   const targetDir = fs.resolve('tmp/.deploy');
 
   // Clear existing deloyment.
