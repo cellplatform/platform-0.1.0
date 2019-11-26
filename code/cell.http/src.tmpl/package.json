@@ -2,7 +2,6 @@
   "name": "@platform/cell.http.tmpl",
   "version": "0.0.77",
   "scripts": {
-    "cell": "cell $@",
     "now": "now dev --listen 8080",
     "deploy": "now --prod --force $@",
     "start": "ts-node -T src/server",

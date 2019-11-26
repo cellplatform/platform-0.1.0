@@ -9,4 +9,5 @@ process.on('unhandledRejection', err => {
   throw err;
 });
 
-import './index';
+import { app } from './app';
+app.run();

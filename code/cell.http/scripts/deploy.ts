@@ -111,6 +111,6 @@ async function deploy(args: { config: string }) {
  * Run.
  */
 (async () => {
-  const config = fs.join('.config', argv._[0] || '');
+  const config = fs.join('config', argv._[0] || '');
   deploy({ config });
 })();

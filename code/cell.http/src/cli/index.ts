@@ -1,1 +1,1 @@
-console.log('CLI index1');
+export * from './app';

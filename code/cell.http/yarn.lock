@@ -96,7 +96,7 @@
     "@platform/util.hash" "0.0.5"
     "@platform/util.value" "0.5.11"
 
-"@platform/cli.prompt@0.0.16":
+"@platform/cli.prompt@0.0.16", "@platform/cli.prompt@^0.0.16":
   version "0.0.16"
   resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.0.16.tgz#45b2ee4303a79c32ba12d1b774f1d7ee1c838ffa"
   integrity sha512-ZQiB1eaEoBjX3izj+qknL/Nn7vI9cfx7zs4vGaK1cuDiyetUFI6uMfL/Ru7PHnkNUOlpzBr4l3QkjAY2ayjsIA==
