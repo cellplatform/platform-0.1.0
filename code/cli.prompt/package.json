@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli.prompt",
-  "version": "0.0.16",
+  "version": "0.1.0",
   "description": "Helpers for raising user prompts within a command-line-interface.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -10,7 +10,8 @@
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare",
-    "prompt": "ts-node -T scripts/prompt"
+    "prompt.list": "ts-node -T scripts/prompt.list",
+    "prompt.text": "ts-node -T scripts/prompt.text"
   },
   "dependencies": {
     "@platform/libs": "0.1.5",

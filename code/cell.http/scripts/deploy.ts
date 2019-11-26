@@ -39,16 +39,14 @@ async function copy(args: { sourceDir: string; targetDir: string }) {
  */
 async function deploy(args: { config: string }) {
   log.info();
-  const sourceDir = fs.resolve('src.sample');
+  const sourceDir = fs.resolve('src.tmpl');
   const targetDir = fs.resolve('tmp/.deploy');
-
-  // Clear existing deloyment.
-  await fs.remove(targetDir);
+  await fs.remove(targetDir); // Clear existing deloyment.
 
   // Copy deployment folder.
   const { files } = await copy({ sourceDir, targetDir });
 
-  // Load configuration settings
+  // Load configuration settings.
   const path = fs.resolve(args.config);
   const settings = config.loadSync({ path });
   if (!settings.exists) {
@@ -111,6 +109,6 @@ async function deploy(args: { config: string }) {
  * Run.
  */
 (async () => {
-  const config = fs.join('.config', argv._[0] || '');
+  const config = fs.join('config', argv._[0] || '');
   deploy({ config });
 })();
