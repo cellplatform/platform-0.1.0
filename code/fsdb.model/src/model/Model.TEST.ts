@@ -486,7 +486,7 @@ describe('model', () => {
       expect(model.changes.length).to.eql(0); // NB: Changes are not registered (all current values).
       expect(model.isChanged).to.eql(false);
 
-      model.set({ name: 'bar', region: 'US/west' }); // One change, one no-change.
+      model.set({ name: 'bar', region: 'US/west' }); // One actual change, and one "no change" (current value).
       expect(model.changes.length).to.eql(1);
       expect(model.isChanged).to.eql(true);
 
