@@ -131,29 +131,9 @@ async function postNsResponse(args: {
     // Calculation REFs and functions.
     const calc = formatQuery(body.calc);
     if (body.cells && calc) {
-      let cells: t.IMap<t.ICellData> | undefined;
-      const getCells: t.GetCells = async () => {
-        cells = cells || (await models.ns.getChildCells({ model: ns }));
-        return { ...cells, ...(body.cells || {}) };
-      };
-      const calculate = func.calc({ getCells });
-
-      const keys = Object.keys(body.cells);
-      if (typeof calc === 'string') {
-        /**
-         * TODO 🐷
-         */
-        // console.log('keys', keys);
-        // console.log('calc', calc);
-        // const ranges = cell.coord.range.union(calc.split(','));
-        // // console.log('ranges.toString()', ranges.toString());
-        // console.log(
-        //   'ranges.ranges.map',
-        //   ranges.ranges.map(r => r.key),
-        // );
-      }
-
-      const res = await calculate.changes({ cells: keys });
+      const calculate = func.calc({ ns, cells: body.cells || {} });
+      const range = typeof calc === 'string' ? calc : undefined;
+      const res = await calculate.changes({ range });
       body = { ...body, cells: { ...(body.cells || {}), ...res.map } };
     }
 

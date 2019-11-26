@@ -180,22 +180,28 @@ describe('route: namespace', () => {
       expect(res1.data).to.eql(res2.data);
     });
 
-    it.skip('calc (operate on provided subset of keys)', async () => {
+    it('calc (operate on provided subset of keys)', async () => {
       const mock = await createMock();
-      const cells = {
+      const before = {
         A1: { value: '=A2' },
         A2: { value: 123 },
         B1: { value: '=A2' },
-        C1: { value: '=A2' },
-        D1: { value: '=A2' },
+        C1: { value: '=Z9' },
+        D1: { value: '=A1' },
+        Z9: { value: 'hello' },
       };
 
-      const res1 = await post.ns('ns:foo?cells', { cells, calc: 'A1:B9,D' }, { mock });
+      const res = await post.ns('ns:foo?cells', { cells: before, calc: 'A1:B9,D' }, { mock }); // NB: C1 not included.
+      const after = res.data.cells || {};
 
       mock.dispose();
 
-      // console.log('-------------------------------------------');
-      // console.log('res1.data', res1.data);
+      expect((after.A1 || {}).props).to.eql({ value: 123 });
+      expect((after.A2 || {}).props).to.eql(undefined); // NB: simple value.
+      expect((after.B1 || {}).props).to.eql({ value: 123 });
+      expect((after.C1 || {}).props).to.eql(undefined); // NB: Excluded from calculation.
+      expect((after.D1 || {}).props).to.eql({ value: 123 });
+      expect((after.Z9 || {}).props).to.eql(undefined); // NB: simple value.
     });
 
     it.skip('calc (calculate prior uncalculated set of data)', async () => {
