@@ -104,7 +104,7 @@
     "@platform/libs" "0.1.5"
     inquirer "7.0.0"
 
-"@platform/cli@^0.4.8":
+"@platform/cli@0.4.8":
   version "0.4.8"
   resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.4.8.tgz#cc8ee19c4df56c466117e00e25c36a32cf5edb6a"
   integrity sha512-LFPZmG2HoFIZMN9izLfY63ef5o8VqUCD207mX75eWgrsh3RN4nEqF7XGKatrAnpMJvv2vTD/x/wwoPU/Tz49bg==

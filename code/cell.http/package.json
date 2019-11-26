@@ -1,13 +1,14 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.2.15",
+  "version": "0.2.18",
   "description": "HTTP cloud server, and client tools, for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
-    "cell.http": "lib/bin.js"
+    "cell": "lib/cli/bin.js"
   },
   "scripts": {
+    "cell": "cd src.tmpl && yarn cell",
     "start": "cd src.tmpl && yarn start $@",
     "watch": "cd src.tmpl && yarn watch $@",
     "now": "cd src.tmpl && yarn now $@",
