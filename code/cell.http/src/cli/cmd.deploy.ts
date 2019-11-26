@@ -32,8 +32,21 @@ export async function run() {
   // Load configuration settings.
   const settings = config.loadSync({ path });
   if (!settings.exists) {
+    log.info();
     log.info.yellow(`😩  Config file does not exist [.yml]`);
     log.info.gray(settings.path);
+    log.info();
+    return;
+  }
+
+  const validation = settings.validate();
+  if (!validation.isValid) {
+    log.info();
+    log.info.yellow(`😩  The configuration file is invalid.`);
+    log.info.gray(`   ${settings.path}`);
+    validation.errors.forEach(err => {
+      log.info.gray(`   ${log.red('Error:')} ${err.message}`);
+    });
     log.info();
     return;
   }
