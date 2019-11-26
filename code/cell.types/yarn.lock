@@ -53,10 +53,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.types@0.5.4":
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.5.4.tgz#0c2728da80b5d7296a037fbafd509c8b822eb602"
-  integrity sha512-m65FZ0MdJHfA5EUdFJi1Ulr4xnkGZp2OpKST3BZ2lnrFJC87J8WqClXZB5r/4M8Be9OkEXgC4+2g4Nq1gtrhSw==
+"@platform/fsdb.types@0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.5.5.tgz#79bc16fe5385a28777a1064b1f2dfe39166663c7"
+  integrity sha512-IqU0BjA3ELGhv0CBt4zDa4VdNpy07LM9pOhNv1vFYtDAxJ1yEYjbGUdlrSFWZQPQWl6YDh9NVpa8aR0qJM8j6g==
   dependencies:
     "@platform/libs" "0.1.5"
     "@platform/types" "0.1.1"
