@@ -3,7 +3,7 @@ import { t, cell, models } from '../common';
 /**
  * Executes calculations on a namespace.
  */
-export function calc(args: { ns: t.IDbModelNs; cells: t.IMap<t.ICellData> }) {
+export function calc(args: { ns: t.IDbModelNs; cells?: t.IMap<t.ICellData> }) {
   const { ns } = args;
 
   /**
@@ -37,15 +37,19 @@ export function calc(args: { ns: t.IDbModelNs; cells: t.IMap<t.ICellData> }) {
    * Calculate a set of changes.
    */
   const changes = async (options: { range?: string } = {}) => {
+    const { range } = options;
+    const cells = args.cells || (await getCells());
+
     // Determine the set of keys to evalutate.
-    let cellKeys = Object.keys(args.cells || {});
-    if (typeof options.range === 'string') {
-      const ranges = cell.coord.range.union(options.range.split(','));
-      cellKeys = cellKeys.filter(key => ranges.contains(key));
+    let keys: string[] | undefined;
+    keys = Object.keys(cells || {});
+    if (typeof range === 'string') {
+      const ranges = cell.coord.range.union(range.split(','));
+      keys = keys.filter(key => ranges.contains(key));
     }
 
     // Calculate the changes.
-    return table.calculate({ cells: cellKeys });
+    return table.calculate({ cells: keys });
   };
 
   // Finish up.

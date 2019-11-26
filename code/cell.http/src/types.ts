@@ -63,7 +63,7 @@ export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
  * Namespace: POST
  */
 export type IReqPostNsQuery = IReqNsQuery & {
-  changes?: boolean; // return change-list (default: false).
+  changes?: boolean; // return list of changes (default: false).
 };
 
 export type IReqPostNsBody = {

@@ -167,20 +167,7 @@ describe('route: namespace', () => {
       expect(A1a.hash).to.not.eql(A1b.hash); // NB: Hashes differ.
     });
 
-    it('calc=true (only operates on given set of cells)', async () => {
-      const mock = await createMock();
-      const cells = {
-        A1: { value: '=A2' },
-        A2: { value: 123 },
-      };
-      const res1 = await post.ns('ns:foo?cells', { cells }, { mock }); // NB: calc=false (default).
-      const res2 = await post.ns('ns:foo?cells', { calc: true }, { mock });
-
-      mock.dispose();
-      expect(res1.data).to.eql(res2.data);
-    });
-
-    it('calc (operate on provided subset of keys)', async () => {
+    it('calc (operate on provided "range" subset of keys)', async () => {
       const mock = await createMock();
       const before = {
         A1: { value: '=A2' },
@@ -204,22 +191,49 @@ describe('route: namespace', () => {
       expect((after.Z9 || {}).props).to.eql(undefined); // NB: simple value.
     });
 
-    it.skip('calc (calculate prior uncalculated set of data)', async () => {
+    it('calculate prior uncalculated set of data (calc=true)', async () => {
       const mock = await createMock();
       const cells = {
         A1: { value: '=A2' },
         A2: { value: 123 },
-        B1: { value: '=A2' },
-        C1: { value: '=A2' },
-        D1: { value: '=A2' },
       };
-
-      const res1 = await post.ns('ns:foo?cells', { cells, calc: false }, { mock }); // NB: calc=false (default).
-      const res2 = await post.ns('ns:foo?cells', { cells, calc: 'A1:C9' }, { mock });
+      const res1 = await post.ns('ns:foo?cells', { cells }, { mock }); // NB: calc=false (default).
+      const res2 = await post.ns('ns:foo?cells', { calc: true }, { mock });
 
       mock.dispose();
 
-      console.log('res1.data', res1.data);
+      const cells1 = res1.data.cells || {};
+      const cells2 = res2.data.cells || {};
+      const A1a = cells1.A1 || {};
+      const A1b = cells2.A1 || {};
+
+      expect(A1a.props).to.eql(undefined);
+      expect(A1b.props && A1b.props.value).to.eql(123);
+    });
+
+    it('calculate prior uncalculated set of data (calc=<range>)', async () => {
+      const mock = await createMock();
+      const before = {
+        A1: { value: '=A2' },
+        A2: { value: 123 },
+        B1: { value: '=A2' },
+        C1: { value: '=Z9' },
+        D1: { value: '=A1' },
+        Z9: { value: 'hello' },
+      };
+
+      await post.ns('ns:foo?cells', { cells: before, calc: false }, { mock }); // NB: calc=false (default).
+      const res = await post.ns('ns:foo?cells', { calc: 'A1:B9,D' }, { mock });
+      const after = res.data.cells || {};
+
+      mock.dispose();
+
+      expect((after.A1 || {}).props).to.eql({ value: 123 });
+      expect((after.A2 || {}).props).to.eql(undefined); // NB: simple value.
+      expect((after.B1 || {}).props).to.eql({ value: 123 });
+      expect((after.C1 || {}).props).to.eql(undefined); // NB: Excluded from calculation.
+      expect((after.D1 || {}).props).to.eql({ value: 123 });
+      expect((after.Z9 || {}).props).to.eql(undefined); // NB: simple value.
     });
   });
 
