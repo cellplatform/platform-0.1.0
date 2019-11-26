@@ -41,14 +41,12 @@ async function deploy(args: { config: string }) {
   log.info();
   const sourceDir = fs.resolve('src.tmpl');
   const targetDir = fs.resolve('tmp/.deploy');
-
-  // Clear existing deloyment.
-  await fs.remove(targetDir);
+  await fs.remove(targetDir); // Clear existing deloyment.
 
   // Copy deployment folder.
   const { files } = await copy({ sourceDir, targetDir });
 
-  // Load configuration settings
+  // Load configuration settings.
   const path = fs.resolve(args.config);
   const settings = config.loadSync({ path });
   if (!settings.exists) {

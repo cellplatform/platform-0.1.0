@@ -1,5 +1,6 @@
 import { fs } from '@platform/fs';
 import * as t from '../server/common/types';
+export { config } from '../server/config';
 
 export { fs, t };
 export { cli } from '@platform/cli';
