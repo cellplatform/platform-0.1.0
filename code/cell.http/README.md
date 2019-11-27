@@ -31,4 +31,25 @@ PLATFORM_MONGO="<connection-string>"
 ```
 
 <p>&nbsp;</p>
+
+## Command Line
+
+Insert a script in your `package.json` to easily access the command-line-interface:
+
+```json
+{
+  "scripts": {
+    "cell": "cell $@"
+  }
+}
+```
+
+Then run `yarn cell` to see available options, for instance:
+
+```bash
+yarn cell ls
+yarn cell deploy
+```
+
+<p>&nbsp;</p>
 <p>&nbsp;</p>

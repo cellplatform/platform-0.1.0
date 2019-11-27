@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "name": "sample.cell.server",
-  "alias": "cell.platform.uiharness.com",
+  "name": "name",
+  "alias": "domain.com",
   "env": {
     "CELLOS_MONGO": "@platform-mongo"
   },
@@ -16,7 +16,7 @@
       "src": "**/*.{ts,tsx}",
       "use": "@now/node",
       "config": {
-        "includeFiles": ["*.yml", "*.json"]
+        "includeFiles": ["*.json"]
       }
     }
   ]

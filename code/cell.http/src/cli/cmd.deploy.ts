@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { getConfigFiles, logNoConfigFiles } from './cmd.list';
-import { cli, config, fs, log, t } from './common';
+import { cli, config, fs, log, t, defaultValue, time } from './common';
 
 const FILES = [
   'package.json',
@@ -15,7 +15,7 @@ const FILES = [
 /**
  * Run a deployment.
  */
-export async function run() {
+export async function run(args: { target: 'now'; force?: boolean }) {
   // Read in the config files.
   const files = await getConfigFiles();
   const dir = files.dir;
@@ -52,7 +52,7 @@ export async function run() {
   }
 
   // Prepare directories.
-  const sourceDir = fs.resolve('src.tmpl');
+  const sourceDir = await getTmplDir();
   const targetDir = fs.resolve('tmp/.deploy');
   await fs.remove(targetDir); // Clear existing deloyment.
 
@@ -79,6 +79,27 @@ export async function run() {
     }
   })();
 
+  // Update: [package.json]
+  await (async () => {
+    const file = tmpl.files.find(path => path.to.endsWith('package.json'));
+    if (file) {
+      const pkg = await fs.file.loadAndParse<t.IPackage>(file.to);
+      if (pkg.dependencies) {
+        pkg.version = pkg.dependencies['@platform/cell.http'];
+      }
+      if (args.target === 'now') {
+        delete pkg.scripts;
+        if (pkg.dependencies) {
+          delete pkg.dependencies['@platform/fsdb.nedb'];
+        }
+        if (pkg.devDependencies) {
+          delete pkg.devDependencies;
+        }
+        fs.file.stringifyAndSaveSync(file.to, pkg);
+      }
+    }
+  })();
+
   // Update: [now.ts]
   await (async () => {
     const config = settings.data;
@@ -100,13 +121,15 @@ export async function run() {
   const tasks = deployTask({
     targetDir,
     prod: true,
-    force: false,
+    force: defaultValue(args.force, false),
     done: res => (info = res),
   });
   log.info();
   await cli.exec.tasks.run(tasks, { silent: false });
 
   // Finish up.
+  log.info();
+  log.info.gray(`Deployed: ${targetDir}`);
   log.info();
   info.forEach(line => log.info(line));
   log.info();
@@ -115,6 +138,27 @@ export async function run() {
 /**
  * [Helpers]
  */
+
+async function getTmplDir() {
+  const name = 'src.tmpl';
+
+  const get = async (dir: string) => {
+    dir = fs.resolve(dir);
+    return (await fs.pathExists(dir)) ? dir : undefined;
+  };
+
+  const local = await get(name);
+  if (local) {
+    return local;
+  }
+
+  const nodeModules = await get(`node_modules/@platform/cell.http/${name}`);
+  if (nodeModules) {
+    return nodeModules;
+  }
+
+  throw new Error(`The template directory could not be found.`);
+}
 
 function deployTask(args: {
   targetDir: string;
@@ -131,6 +175,11 @@ function deployTask(args: {
         const cmd = cli.exec.command(`now ${prod} ${force}`.trim());
         const running = cmd.run({ cwd: args.targetDir, silent: true });
 
+        const next = (text: string) => {
+          text = text.trim().replace(/^-\s*/, '');
+          observer.next(text);
+        };
+
         // Track output.
         const info: string[] = [];
         running.output$.subscribe(e => {
@@ -138,13 +187,16 @@ function deployTask(args: {
           if (info.length > 0 || text.includes('Deployment complete')) {
             info.push(text);
           }
-          observer.next(text);
+          next(text);
         });
 
         running.complete$.subscribe(async () => {
           args.done(info); // NB: Send result info back to caller before completing.
           observer.complete();
         });
+
+        // Set initial label.
+        time.delay(0, () => next('Connecting to cloud provider...'));
       });
     },
   };

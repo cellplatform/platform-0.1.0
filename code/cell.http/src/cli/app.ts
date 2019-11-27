@@ -34,9 +34,14 @@ app
    */
   .command(
     ['deploy', 'd'],
-    'Run a cloud deployment.',
+    'Deploy to the cloud.',
     yargs => {
-      return yargs;
+      return yargs.option('force', {
+        alias: 'f',
+        describe: 'Force a new deployment even if nothing has changed.',
+        type: 'boolean',
+        default: false,
+      });
     },
-    async argv => cmd.deploy.run(),
+    async argv => cmd.deploy.run({ target: 'now', force: argv.force }),
   );

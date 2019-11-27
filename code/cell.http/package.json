@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.3.0",
+  "version": "0.3.3",
   "description": "HTTP cloud server, and client tools, for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -48,7 +48,8 @@
     "lib",
     "!lib/test",
     "!*.TEST.{js, mjs, d.ts}",
-    "!*.INTEGRATION.{js, mjs, d.ts}"
+    "!*.INTEGRATION.{js, mjs, d.ts}",
+    "src.tmpl"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"
