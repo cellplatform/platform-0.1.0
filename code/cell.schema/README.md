@@ -18,6 +18,7 @@ ns:<id>             Namespace:  A set of cells/row/columns that exist in the sam
 cell:<ns>!<A1>      Cell:       A single cell (the core primitive data-structure of CellOS).
 row:<ns>!<1>        Row:        Meta-data for a single "row" within a namespace.
 col:<ns>!<A>        Column:     Meta-data for a single "column" within a namespace.
+file:<ns>:<id>      File:       A binary file.
 ```
 
 <p>&nbsp;</p>
