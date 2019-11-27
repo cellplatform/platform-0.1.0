@@ -3,7 +3,9 @@
 [![NPM](https://img.shields.io/npm/v/@platform/cell.db.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/cell.db)
 ![banner](https://user-images.githubusercontent.com/185555/67152142-52d0bc00-f32d-11e9-867c-5fe9f7e52ff0.png)
 
-Persistent state management for cells.
+Persistent state management for cells.  
+See [@platform/cell.schema](../cell.schema) for DB path and URI details.
+
 
 <p>&nbsp;</p>
 

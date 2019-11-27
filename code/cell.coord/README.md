@@ -3,9 +3,14 @@
 [![NPM](https://img.shields.io/npm/v/@platform/cell.coord.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/cell.coord)
 ![banner](https://user-images.githubusercontent.com/185555/66693573-dd4e6580-ed06-11e9-8e81-1de7077a5bca.png)
 
-Data types for working with grid cell cooridnates (eg "A1").
+Helpers for working with cell cooridnates (eg "A1").  
+See [@platform/cell.schema](../cell.schema) for URI details.
+
+<p>&nbsp;</p>
 
 ## Setup
 
     yarn add @platform/cell.coord
 
+<p>&nbsp;</p>
+<p>&nbsp;</p>

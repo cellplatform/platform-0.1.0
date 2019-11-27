@@ -1,7 +1,7 @@
 {
   "name": "@platform/cell.coord",
   "version": "0.6.11",
-  "description": "Data types for working with grid cell cooridnates (eg 'A1').",
+  "description": "Helpers for working with cell cooridnates (eg 'A1')",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
