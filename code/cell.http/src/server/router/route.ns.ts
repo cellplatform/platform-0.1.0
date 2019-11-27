@@ -1,9 +1,7 @@
-import { cell, t, models } from '../common';
+import { cell, t, models, Schema } from '../common';
 import { ROUTES } from './ROUTES';
 import { toErrorPayload } from './util';
 import { func } from '../func';
-
-const { Uri } = cell;
 
 /**
  * Namespace routes.
@@ -71,7 +69,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
 
 async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqGetNsQuery }) {
   const { db, id, query } = args;
-  const uri = Uri.string.ns(id);
+  const uri = Schema.uri.create.ns(id);
   const model = await models.Ns.create({ db, uri }).ready;
 
   const exists = Boolean(model.exists);
@@ -122,7 +120,7 @@ async function postNsResponse(args: {
   try {
     const { db, id, query } = args;
     let body = { ...args.body };
-    const uri = Uri.string.ns(id);
+    const uri = Schema.uri.create.ns(id);
     const ns = await models.Ns.create({ db, uri }).ready;
 
     const changes: t.IDbModelChange[] = [];

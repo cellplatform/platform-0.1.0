@@ -246,10 +246,10 @@ describe('Uri', () => {
     });
   });
 
-  describe('string', () => {
+  describe('create', () => {
     it('ns', () => {
       const test = (id: string, expected: string) => {
-        const res = Uri.string.ns(id);
+        const res = Uri.create.ns(id);
         expect(res).to.eql(expected);
       };
       test('foo', 'ns:foo');
@@ -260,7 +260,7 @@ describe('Uri', () => {
 
     it('file', () => {
       const test = (ns: string, file: string, expected: string) => {
-        const res = Uri.string.file(ns, file);
+        const res = Uri.create.file(ns, file);
         expect(res).to.eql(expected);
       };
       test('foo', '123', 'file:foo.123');
@@ -270,7 +270,7 @@ describe('Uri', () => {
 
     it('cell', () => {
       const test = (ns: string, key: string, expected: string) => {
-        const res = Uri.string.cell(ns, key);
+        const res = Uri.create.cell(ns, key);
         expect(res).to.eql(expected);
       };
       test('foo', 'A1', 'cell:foo!A1');
@@ -280,7 +280,7 @@ describe('Uri', () => {
 
     it('row', () => {
       const test = (ns: string, key: string, expected: string) => {
-        const res = Uri.string.row(ns, key);
+        const res = Uri.create.row(ns, key);
         expect(res).to.eql(expected);
       };
       test('foo', '1', 'row:foo!1');
@@ -290,7 +290,7 @@ describe('Uri', () => {
 
     it('column', () => {
       const test = (ns: string, key: string, expected: string) => {
-        const res = Uri.string.column(ns, key);
+        const res = Uri.create.column(ns, key);
         expect(res).to.eql(expected);
       };
       test('foo', 'A', 'col:foo!A');
@@ -303,57 +303,57 @@ describe('Uri', () => {
     };
 
     it('throws: ns', () => {
-      expect(() => Uri.string.ns(':')).to.throw();
-      expect(() => Uri.string.ns('ns:')).to.throw();
-      expect(() => Uri.string.ns('  ns:  ')).to.throw();
+      expect(() => Uri.create.ns(':')).to.throw();
+      expect(() => Uri.create.ns('ns:')).to.throw();
+      expect(() => Uri.create.ns('  ns:  ')).to.throw();
 
       // Illegal characters.
       ILLEGAL.NS.split('').forEach(char => {
         const id = `ns:abc${char}def`;
-        expect(() => Uri.string.ns(id)).to.throw();
+        expect(() => Uri.create.ns(id)).to.throw();
       });
     });
 
     it('throws: file', () => {
-      expect(() => Uri.string.file(':', 'fileid')).to.throw();
-      expect(() => Uri.string.file('ns:', 'fileid')).to.throw();
-      expect(() => Uri.string.file('  ns:  ', 'fileid')).to.throw();
+      expect(() => Uri.create.file(':', 'fileid')).to.throw();
+      expect(() => Uri.create.file('ns:', 'fileid')).to.throw();
+      expect(() => Uri.create.file('  ns:  ', 'fileid')).to.throw();
 
       // Illegal namespace characters.
       ILLEGAL.NS.split('').forEach(char => {
         const ns = `ns:abc${char}def`;
-        expect(() => Uri.string.file(ns, 'fileid')).to.throw();
+        expect(() => Uri.create.file(ns, 'fileid')).to.throw();
       });
 
       // Illegal file-id characters.
       ILLEGAL.NS.split('').forEach(char => {
         const file = `abc${char}def`;
-        expect(() => Uri.string.file('foo', file)).to.throw();
+        expect(() => Uri.create.file('foo', file)).to.throw();
       });
     });
 
     it('throws: cell', () => {
-      expect(() => Uri.string.cell('', 'A1')).to.throw();
-      expect(() => Uri.string.cell('foo', '')).to.throw();
-      expect(() => Uri.string.cell('foo', '!')).to.throw();
-      expect(() => Uri.string.cell('foo', 'A')).to.throw();
-      expect(() => Uri.string.cell('foo', '1')).to.throw();
+      expect(() => Uri.create.cell('', 'A1')).to.throw();
+      expect(() => Uri.create.cell('foo', '')).to.throw();
+      expect(() => Uri.create.cell('foo', '!')).to.throw();
+      expect(() => Uri.create.cell('foo', 'A')).to.throw();
+      expect(() => Uri.create.cell('foo', '1')).to.throw();
     });
 
     it('throws: column', () => {
-      expect(() => Uri.string.column('', 'A')).to.throw();
-      expect(() => Uri.string.column('foo', '')).to.throw();
-      expect(() => Uri.string.column('foo', '!')).to.throw();
-      expect(() => Uri.string.column('foo', 'A1')).to.throw();
-      expect(() => Uri.string.column('foo', '1')).to.throw();
+      expect(() => Uri.create.column('', 'A')).to.throw();
+      expect(() => Uri.create.column('foo', '')).to.throw();
+      expect(() => Uri.create.column('foo', '!')).to.throw();
+      expect(() => Uri.create.column('foo', 'A1')).to.throw();
+      expect(() => Uri.create.column('foo', '1')).to.throw();
     });
 
     it('throws: row', () => {
-      expect(() => Uri.string.row('', '1')).to.throw();
-      expect(() => Uri.string.row('foo', '')).to.throw();
-      expect(() => Uri.string.row('foo', '!')).to.throw();
-      expect(() => Uri.string.row('foo', 'A1')).to.throw();
-      expect(() => Uri.string.row('foo', 'A')).to.throw();
+      expect(() => Uri.create.row('', '1')).to.throw();
+      expect(() => Uri.create.row('foo', '')).to.throw();
+      expect(() => Uri.create.row('foo', '!')).to.throw();
+      expect(() => Uri.create.row('foo', 'A1')).to.throw();
+      expect(() => Uri.create.row('foo', 'A')).to.throw();
     });
   });
 });

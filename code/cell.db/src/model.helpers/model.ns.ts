@@ -172,7 +172,7 @@ export async function setChildCells(args: { ns: t.IDbModelNs; data?: t.IMap<t.IC
   const { data } = args;
   const id = toId(args.ns);
   const db = args.ns.db;
-  const getUri = (key: string) => Uri.string.cell(id, key);
+  const getUri = (key: string) => Uri.create.cell(id, key);
   return setChildren({
     data,
     getUri,
@@ -187,7 +187,7 @@ export async function setChildRows(args: { ns: t.IDbModelNs; data?: t.IMap<t.IRo
   const { data } = args;
   const id = toId(args.ns);
   const db = args.ns.db;
-  const getUri = (key: string) => Uri.string.row(id, key);
+  const getUri = (key: string) => Uri.create.row(id, key);
   return setChildren({
     data,
     getUri,
@@ -202,7 +202,7 @@ export async function setChildColumns(args: { ns: t.IDbModelNs; data?: t.IMap<t.
   const { data } = args;
   const id = toId(args.ns);
   const db = args.ns.db;
-  const getUri = (key: string) => Uri.string.column(id, key);
+  const getUri = (key: string) => Uri.create.column(id, key);
   return setChildren({
     data,
     getUri,

@@ -87,24 +87,24 @@ export class NsSchema {
 
     this.id = id;
     this.path = `NS/${id}`;
-    this.uri = Uri.string.ns(id);
+    this.uri = Uri.create.ns(id);
   }
 
   /**
    * [Methods]
    */
   public cell(key: string) {
-    const uri = Uri.string.cell(this.id, key);
+    const uri = Uri.create.cell(this.id, key);
     return new CoordSchema({ type: 'CELL', ns: this, id: key, uri });
   }
 
   public column(key: string) {
-    const uri = Uri.string.column(this.id, key);
+    const uri = Uri.create.column(this.id, key);
     return new CoordSchema({ type: 'COL', ns: this, id: key, uri });
   }
 
   public row(key: string) {
-    const uri = Uri.string.row(this.id, key);
+    const uri = Uri.create.row(this.id, key);
     return new CoordSchema({ type: 'ROW', ns: this, id: key, uri });
   }
 
@@ -114,7 +114,7 @@ export class NsSchema {
     const id = parts[1];
 
     if (type === 'NS') {
-      return Uri.string.ns(id);
+      return Uri.create.ns(id);
     }
 
     throw new Error(`Model path could not be converted to URI ("${args.path}")`);
@@ -146,13 +146,13 @@ export class CoordSchema {
     const key = parts[3];
 
     if (type === 'CELL') {
-      return Uri.string.cell(ns, key);
+      return Uri.create.cell(ns, key);
     }
     if (type === 'ROW') {
-      return Uri.string.row(ns, key);
+      return Uri.create.row(ns, key);
     }
     if (type === 'COL') {
-      return Uri.string.column(ns, key);
+      return Uri.create.column(ns, key);
     }
 
     throw new Error(`Model path could not be converted to URI ("${args.path}")`);

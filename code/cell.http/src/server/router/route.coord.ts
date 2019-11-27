@@ -1,8 +1,7 @@
-import { cell, t, models } from '../common';
+import { cell, t, models, Schema } from '../common';
 import { ROUTES } from './ROUTES';
 import { toErrorPayload } from './util';
 
-const { Uri } = cell;
 type GetModel = () => Promise<t.IModel>;
 
 /**
@@ -61,7 +60,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const { status, uri, error } = getParams({
       req,
       prefix: 'cell',
-      getUri: (id, key) => Uri.string.cell(id, key),
+      getUri: (id, key) => Schema.uri.create.cell(id, key),
     });
     const getModel: GetModel = () => models.Cell.create({ db, uri }).ready;
     return error ? { status, data: { error } } : getCoordResponse<t.IResGetCell>({ uri, getModel });
@@ -75,7 +74,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const { status, uri, error } = getParams({
       req,
       prefix: 'row',
-      getUri: (id, key) => Uri.string.row(id, key),
+      getUri: (id, key) => Schema.uri.create.row(id, key),
     });
     const getModel: GetModel = () => models.Row.create({ db, uri }).ready;
     return error ? { status, data: { error } } : getCoordResponse<t.IResGetRow>({ uri, getModel });
@@ -89,7 +88,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const { status, uri, error } = getParams({
       req,
       prefix: 'col',
-      getUri: (id, key) => Uri.string.column(id, key),
+      getUri: (id, key) => Schema.uri.create.column(id, key),
     });
     const getModel: GetModel = () => models.Column.create({ db, uri }).ready;
     return error ? { status, data: { error } } : getCoordResponse<t.IResGetRow>({ uri, getModel });

@@ -1,18 +1,21 @@
 import { t, cuid, slug, coord } from '../common';
 
-/**
- * TODO 🐷
- * - move Uri to schema (??)
- * - finish URI API (File)
- * - `string` => `create`
- */
-
 type UriPrefix = 'ns' | 'col' | 'row' | 'cell' | 'file';
-// const { cuid, shortid } = id;
 
 export class Uri {
   public static cuid = cuid;
   public static slug = slug;
+
+  /**
+   * Construct a URI string from arguments.
+   */
+  public static create = {
+    ns: (id: string) => toUri('ns', id),
+    cell: (ns: string, key: string) => toUri('cell', ns, key),
+    row: (ns: string, key: string) => toUri('row', ns, key),
+    column: (ns: string, key: string) => toUri('col', ns, key),
+    file: (ns: string, file: string) => toUri('file', ns, file), // NB: use `slug` for file-id.
+  };
 
   /**
    * Parse a URI into it's constituent pieces.
@@ -108,17 +111,6 @@ export class Uri {
     cell: (input?: string) => Uri.is.type('cell', input),
     row: (input?: string) => Uri.is.type('row', input),
     column: (input?: string) => Uri.is.type('col', input),
-  };
-
-  /**
-   * Construct a URI string from arguments.
-   */
-  public static string = {
-    ns: (id: string) => toUri('ns', id),
-    cell: (ns: string, key: string) => toUri('cell', ns, key),
-    row: (ns: string, key: string) => toUri('row', ns, key),
-    column: (ns: string, key: string) => toUri('col', ns, key),
-    file: (ns: string, file: string) => toUri('file', ns, file), // NB: use `slug` for file-id.
   };
 }
 
