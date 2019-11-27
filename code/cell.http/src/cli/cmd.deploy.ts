@@ -3,14 +3,6 @@ import { Observable } from 'rxjs';
 import { getConfigFiles, logNoConfigFiles } from './cmd.list';
 import { cli, config, fs, log, t, defaultValue, time } from './common';
 
-export type IPackage = {
-  name: string;
-  version: string;
-  scripts?: { [key: string]: string };
-  dependencies?: { [key: string]: string };
-  devDependencies?: { [key: string]: string };
-};
-
 const FILES = [
   'package.json',
   'now.json',
@@ -60,7 +52,7 @@ export async function run(args: { target: 'now'; force?: boolean }) {
   }
 
   // Prepare directories.
-  const sourceDir = fs.resolve('src.tmpl');
+  const sourceDir = await getTmplDir();
   const targetDir = fs.resolve('tmp/.deploy');
   await fs.remove(targetDir); // Clear existing deloyment.
 
@@ -91,16 +83,19 @@ export async function run(args: { target: 'now'; force?: boolean }) {
   await (async () => {
     const file = tmpl.files.find(path => path.to.endsWith('package.json'));
     if (file) {
-      const json = await fs.file.loadAndParse<IPackage>(file.to);
+      const pkg = await fs.file.loadAndParse<t.IPackage>(file.to);
+      if (pkg.dependencies) {
+        pkg.version = pkg.dependencies['@platform/cell.http'];
+      }
       if (args.target === 'now') {
-        delete json.scripts;
-        if (json.dependencies) {
-          delete json.dependencies['@platform/fsdb.nedb'];
+        delete pkg.scripts;
+        if (pkg.dependencies) {
+          delete pkg.dependencies['@platform/fsdb.nedb'];
         }
-        if (json.devDependencies) {
-          delete json.devDependencies;
+        if (pkg.devDependencies) {
+          delete pkg.devDependencies;
         }
-        fs.file.stringifyAndSaveSync(file.to, json);
+        fs.file.stringifyAndSaveSync(file.to, pkg);
       }
     }
   })();
@@ -134,6 +129,8 @@ export async function run(args: { target: 'now'; force?: boolean }) {
 
   // Finish up.
   log.info();
+  log.info.gray(`Deployed: ${targetDir}`);
+  log.info();
   info.forEach(line => log.info(line));
   log.info();
 }
@@ -141,6 +138,27 @@ export async function run(args: { target: 'now'; force?: boolean }) {
 /**
  * [Helpers]
  */
+
+async function getTmplDir() {
+  const name = 'src.tmpl';
+
+  const get = async (dir: string) => {
+    dir = fs.resolve(dir);
+    return (await fs.pathExists(dir)) ? dir : undefined;
+  };
+
+  const local = await get(name);
+  if (local) {
+    return local;
+  }
+
+  const nodeModules = await get(`node_modules/@platform/cell.http/${name}`);
+  if (nodeModules) {
+    return nodeModules;
+  }
+
+  throw new Error(`The template directory could not be found.`);
+}
 
 function deployTask(args: {
   targetDir: string;
@@ -158,7 +176,7 @@ function deployTask(args: {
         const running = cmd.run({ cwd: args.targetDir, silent: true });
 
         const next = (text: string) => {
-          text = text.trim().replace(/^-.*/, '');
+          text = text.trim().replace(/^-\s*/, '');
           observer.next(text);
         };
 
