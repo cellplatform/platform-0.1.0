@@ -27,9 +27,11 @@ File            file:<ns>:<id>          A binary file.
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
-<p>&nbsp;</p>
 
 ![diagram](https://user-images.githubusercontent.com/185555/69760850-7c052780-11ca-11ea-8f8e-ecc54949598b.png)
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 
 ## URI to DB Path Mapping
 
