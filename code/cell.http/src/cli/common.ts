@@ -5,6 +5,7 @@ export { config } from '../server/config';
 export { fs, t };
 export { cli } from '@platform/cli';
 export { log } from '@platform/log/lib/server';
+export { defaultValue, time } from '@platform/util.value';
 
 export const PATH = {
   CONFIG_DIR: fs.resolve('config'),

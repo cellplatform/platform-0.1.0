@@ -1,7 +1,15 @@
 import { Observable } from 'rxjs';
 
 import { getConfigFiles, logNoConfigFiles } from './cmd.list';
-import { cli, config, fs, log, t } from './common';
+import { cli, config, fs, log, t, defaultValue, time } from './common';
+
+export type IPackage = {
+  name: string;
+  version: string;
+  scripts?: { [key: string]: string };
+  dependencies?: { [key: string]: string };
+  devDependencies?: { [key: string]: string };
+};
 
 const FILES = [
   'package.json',
@@ -15,7 +23,7 @@ const FILES = [
 /**
  * Run a deployment.
  */
-export async function run() {
+export async function run(args: { target: 'now'; force?: boolean }) {
   // Read in the config files.
   const files = await getConfigFiles();
   const dir = files.dir;
@@ -79,6 +87,24 @@ export async function run() {
     }
   })();
 
+  // Update: [package.json]
+  await (async () => {
+    const file = tmpl.files.find(path => path.to.endsWith('package.json'));
+    if (file) {
+      const json = await fs.file.loadAndParse<IPackage>(file.to);
+      if (args.target === 'now') {
+        delete json.scripts;
+        if (json.dependencies) {
+          delete json.dependencies['@platform/fsdb.nedb'];
+        }
+        if (json.devDependencies) {
+          delete json.devDependencies;
+        }
+        fs.file.stringifyAndSaveSync(file.to, json);
+      }
+    }
+  })();
+
   // Update: [now.ts]
   await (async () => {
     const config = settings.data;
@@ -100,7 +126,7 @@ export async function run() {
   const tasks = deployTask({
     targetDir,
     prod: true,
-    force: false,
+    force: defaultValue(args.force, false),
     done: res => (info = res),
   });
   log.info();
@@ -131,6 +157,11 @@ function deployTask(args: {
         const cmd = cli.exec.command(`now ${prod} ${force}`.trim());
         const running = cmd.run({ cwd: args.targetDir, silent: true });
 
+        const next = (text: string) => {
+          text = text.trim().replace(/^-.*/, '');
+          observer.next(text);
+        };
+
         // Track output.
         const info: string[] = [];
         running.output$.subscribe(e => {
@@ -138,13 +169,16 @@ function deployTask(args: {
           if (info.length > 0 || text.includes('Deployment complete')) {
             info.push(text);
           }
-          observer.next(text);
+          next(text);
         });
 
         running.complete$.subscribe(async () => {
           args.done(info); // NB: Send result info back to caller before completing.
           observer.complete();
         });
+
+        // Set initial label.
+        time.delay(0, () => next('Connecting to cloud provider...'));
       });
     },
   };

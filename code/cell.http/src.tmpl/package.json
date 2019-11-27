@@ -3,7 +3,6 @@
   "version": "0.0.79",
   "scripts": {
     "now": "now dev --listen 8080",
-    "deploy": "now --prod --force $@",
     "start": "ts-node -T src/server",
     "watch": "nodemon --watch ../src --watch ../../cell.db/src -e ts,tsx --delay 2"
   },
@@ -18,6 +17,5 @@
   "engines": {
     "node": ">=10.x"
   },
-  "license": "MIT",
   "private": true
 }
