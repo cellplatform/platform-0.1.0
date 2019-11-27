@@ -127,10 +127,10 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.8.5":
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.8.5.tgz#47dcf10836885928af378a98c89731214c34616e"
-  integrity sha512-eWV87LXtESv+MhrfY6bPCIiRE3mea6Up85ORpXi4jOp4CMoMsCF5+qqgGxuwi0TGO/Vj8Q45Y7oI6ptOS2O87g==
+"@platform/micro@0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.9.0.tgz#f1c880c2b29b8eb3d7e7c838d218f8f2af1462e3"
+  integrity sha512-1y45wZNxGr5z+A5FeAcp6yNNzwFsof5widnPFY0rn3yLeRFyhNHUnm7ryzdiYJsZdo1cEfXWOu3DaeQ2ryZQEQ==
   dependencies:
     "@platform/libs" "0.1.5"
     "@platform/log" "0.0.150"

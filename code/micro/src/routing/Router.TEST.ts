@@ -64,6 +64,22 @@ describe('Router', () => {
       expect((tokens[1] as any).name).to.eql('id');
       expect(tokens[2]).to.eql('/bar');
     });
+
+    it('GET array of route-paths', () => {
+      const router = Router.create();
+
+      router.get(['/foo', '/bar'], handler);
+
+      expect(router.routes.map(m => m.path)).to.eql(['/foo', '/bar']);
+
+      const res1 = router.find({ method: 'GET', url: '/foo' });
+      const res2 = router.find({ method: 'GET', url: '/bar' });
+      const res3 = router.find({ method: 'GET', url: '/zoo' });
+
+      expect(res1 && res1.path).to.eql('/foo');
+      expect(res2 && res2.path).to.eql('/bar');
+      expect(res3 && res3.path).to.eql(undefined);
+    });
   });
 
   describe('params', () => {

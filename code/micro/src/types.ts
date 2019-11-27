@@ -57,13 +57,15 @@ export type IRouter = {
   routes: IRoute[];
   handler: RouteHandler;
   wildcard: IRoute | undefined;
-  add(method: HttpMethod, path: string, handler: RouteHandler): IRouter;
-  get(path: string, handler: RouteHandler): IRouter;
-  put(path: string, handler: RouteHandler): IRouter;
-  post(path: string, handler: RouteHandler): IRouter;
-  delete(path: string, handler: RouteHandler): IRouter;
+  add(method: HttpMethod, path: IRoutePath, handler: RouteHandler): IRouter;
+  get(path: IRoutePath, handler: RouteHandler): IRouter;
+  put(path: IRoutePath, handler: RouteHandler): IRouter;
+  post(path: IRoutePath, handler: RouteHandler): IRouter;
+  delete(path: IRoutePath, handler: RouteHandler): IRouter;
   find(req: { method?: string; url?: string }): IRoute | undefined;
 };
+
+export type IRoutePath = string | string[];
 
 /**
  * Server
