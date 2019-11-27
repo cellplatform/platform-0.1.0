@@ -2,7 +2,19 @@ import { expect } from 'chai';
 import { t } from '../common';
 import { Uri } from './Uri';
 
-describe('Uri', () => {
+describe.only('Uri', () => {
+  describe('ids', () => {
+    it('Uri.cuid', () => {
+      const res = Uri.cuid();
+      expect(res.length).to.greaterThan(15);
+    });
+
+    it('Uri.slug', () => {
+      const res = Uri.slug();
+      expect(res.length).to.eql(8);
+    });
+  });
+
   describe('is', () => {
     it('is.uri', () => {
       const test = (input?: string, expected?: boolean) => {
@@ -127,6 +139,18 @@ describe('Uri', () => {
       expect(res.toString()).to.eql(res.uri);
     });
 
+    it('file', () => {
+      const res = Uri.parse<t.IFileUri>('file:abc.123');
+      expect(res.ok).to.eql(true);
+      expect(res.error).to.eql(undefined);
+      expect(res.parts.type).to.eql('file');
+      expect(res.parts.id).to.eql('abc.123');
+      expect(res.parts.ns).to.eql('abc');
+      expect(res.parts.file).to.eql('123');
+      expect(res.uri).to.eql('file:abc.123');
+      expect(res.toString()).to.eql(res.uri);
+    });
+
     describe('error', () => {
       it('error: UNKNOWN', () => {
         const test = (input: string | undefined) => {
@@ -151,7 +175,7 @@ describe('Uri', () => {
         const test = (input?: string) => {
           const res = Uri.parse<t.INsUri>(input);
           expect(res.ok).to.eql(false);
-          expect(res.error && res.error.message).to.contain('Namespace ID not found');
+          expect(res.error && res.error.message).to.contain('Namespace URI identifier not found');
         };
         test('ns:');
         test('ns: ');
@@ -180,6 +204,17 @@ describe('Uri', () => {
         test('row:abcd', 'row');
         test('col:abcd', 'col');
       });
+
+      it('file', () => {
+        const test = (input: string, error: string) => {
+          const res = Uri.parse<t.IFileUri>(input);
+          expect(res.ok).to.eql(false);
+          expect(res.error && res.error.message).to.contain(error);
+        };
+        test('file:', 'File URI identifier not found');
+        test('  file:  ', 'File URI identifier not found');
+        test('file:foo', 'File identifier within namespace "foo" not found');
+      });
     });
   });
 
@@ -193,6 +228,16 @@ describe('Uri', () => {
       test('ns:foo', 'ns:foo');
       test(' ns::foo ', 'ns:foo');
       test('ns', 'ns:ns');
+    });
+
+    it('file', () => {
+      const test = (ns: string, file: string, expected: string) => {
+        const res = Uri.string.file(ns, file);
+        expect(res).to.eql(expected);
+      };
+      test('foo', '123', 'file:foo.123');
+      test(' foo ', ' 123 ', 'file:foo.123');
+      test('file:foo', '123', 'file:foo.123');
     });
 
     it('cell', () => {
@@ -225,16 +270,37 @@ describe('Uri', () => {
       test('foo', '!!A', 'col:foo!A');
     });
 
+    const ILLEGAL = {
+      NS: '~`!@#$%^&*()_-+=,./?;|[]{}',
+    };
+
     it('throws: ns', () => {
       expect(() => Uri.string.ns(':')).to.throw();
       expect(() => Uri.string.ns('ns:')).to.throw();
       expect(() => Uri.string.ns('  ns:  ')).to.throw();
 
       // Illegal characters.
-      const ILLEGAL = '~`!@#$%^&*()_-+=,./?;|[]{}';
-      ILLEGAL.split('').forEach(char => {
+      ILLEGAL.NS.split('').forEach(char => {
         const id = `ns:abc${char}def`;
         expect(() => Uri.string.ns(id)).to.throw();
+      });
+    });
+
+    it('throws: file', () => {
+      expect(() => Uri.string.file(':', 'fileid')).to.throw();
+      expect(() => Uri.string.file('ns:', 'fileid')).to.throw();
+      expect(() => Uri.string.file('  ns:  ', 'fileid')).to.throw();
+
+      // Illegal namespace characters.
+      ILLEGAL.NS.split('').forEach(char => {
+        const ns = `ns:abc${char}def`;
+        expect(() => Uri.string.file(ns, 'fileid')).to.throw();
+      });
+
+      // Illegal file-id characters.
+      ILLEGAL.NS.split('').forEach(char => {
+        const file = `abc${char}def`;
+        expect(() => Uri.string.file('foo', file)).to.throw();
       });
     });
 
@@ -260,102 +326,6 @@ describe('Uri', () => {
       expect(() => Uri.string.row('foo', '!')).to.throw();
       expect(() => Uri.string.row('foo', 'A1')).to.throw();
       expect(() => Uri.string.row('foo', 'A')).to.throw();
-    });
-  });
-
-  describe('generate', () => {
-    it('ns', () => {
-      const res1 = Uri.generate.ns();
-      const res2 = Uri.generate.ns('abcd');
-      const res3 = Uri.generate.ns('  ns:abcd  ');
-
-      const uri1 = Uri.parse<t.INsUri>(res1);
-      const uri2 = Uri.parse<t.INsUri>(res2);
-      const uri3 = Uri.parse<t.INsUri>(res3);
-
-      expect(uri1.parts.type).to.eql('ns');
-      expect(uri2.parts.type).to.eql('ns');
-
-      expect(uri1.parts.id.startsWith('c')).to.eql(true);
-      expect(uri1.parts.id.length).to.greaterThan(20);
-
-      expect(uri2.parts.id).to.eql('abcd');
-      expect(uri3.parts.id).to.eql('abcd');
-    });
-
-    it('cell', () => {
-      const res1 = Uri.generate.cell('A1');
-      const res2 = Uri.generate.cell('A1', 'abcd');
-      const res3 = Uri.generate.cell('A1', '  ns:abcd   ');
-
-      expect(res2).to.eql('cell:abcd!A1');
-
-      const uri1 = Uri.parse<t.ICellUri>(res1);
-      const uri2 = Uri.parse<t.ICellUri>(res2);
-      const uri3 = Uri.parse<t.ICellUri>(res3);
-
-      expect(uri1.parts.type).to.eql('cell');
-      expect(uri2.parts.type).to.eql('cell');
-
-      expect(uri1.parts.ns.startsWith('c')).to.eql(true);
-      expect(uri1.parts.ns.length).to.greaterThan(20);
-      expect(uri1.parts.key).to.eql('A1');
-
-      expect(uri2.parts.ns).to.eql('abcd');
-      expect(uri2.parts.key).to.eql('A1');
-
-      expect(uri3.parts.ns).to.eql('abcd');
-      expect(uri3.parts.key).to.eql('A1');
-    });
-
-    it('row', () => {
-      const res1 = Uri.generate.row('1');
-      const res2 = Uri.generate.row('1', 'abcd');
-      const res3 = Uri.generate.row('1', '  ns:abcd  ');
-
-      expect(res2).to.eql('row:abcd!1');
-
-      const uri1 = Uri.parse<t.IRowUri>(res1);
-      const uri2 = Uri.parse<t.IRowUri>(res2);
-      const uri3 = Uri.parse<t.IRowUri>(res3);
-
-      expect(uri1.parts.type).to.eql('row');
-      expect(uri2.parts.type).to.eql('row');
-
-      expect(uri1.parts.ns.startsWith('c')).to.eql(true);
-      expect(uri1.parts.ns.length).to.greaterThan(20);
-      expect(uri1.parts.key).to.eql('1');
-
-      expect(uri2.parts.ns).to.eql('abcd');
-      expect(uri2.parts.key).to.eql('1');
-
-      expect(uri3.parts.ns).to.eql('abcd');
-      expect(uri3.parts.key).to.eql('1');
-    });
-
-    it('column', () => {
-      const res1 = Uri.generate.column('A');
-      const res2 = Uri.generate.column('A', 'abcd');
-      const res3 = Uri.generate.column('A', '  ns:abcd  ');
-
-      expect(res2).to.eql('col:abcd!A');
-
-      const uri1 = Uri.parse<t.IColumnUri>(res1);
-      const uri2 = Uri.parse<t.IColumnUri>(res2);
-      const uri3 = Uri.parse<t.IColumnUri>(res3);
-
-      expect(uri1.parts.type).to.eql('col');
-      expect(uri2.parts.type).to.eql('col');
-
-      expect(uri1.parts.ns.startsWith('c')).to.eql(true);
-      expect(uri1.parts.ns.length).to.greaterThan(20);
-      expect(uri1.parts.key).to.eql('A');
-
-      expect(uri2.parts.ns).to.eql('abcd');
-      expect(uri2.parts.key).to.eql('A');
-
-      expect(uri3.parts.ns).to.eql('abcd');
-      expect(uri3.parts.key).to.eql('A');
     });
   });
 });

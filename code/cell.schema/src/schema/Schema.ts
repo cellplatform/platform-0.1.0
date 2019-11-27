@@ -115,7 +115,7 @@ export class NsSchema {
     const id = parts[1];
 
     if (type === 'NS') {
-      return Uri.generate.ns(id);
+      return Uri.string.ns(id);
     }
 
     throw new Error(`Model path could not be converted to URI ("${args.path}")`);

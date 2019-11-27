@@ -1,9 +1,13 @@
 import { t, id } from '../common';
 import { cell } from '../cell';
 
-const { cuid } = id;
+type UriPrefix = 'ns' | 'col' | 'row' | 'cell' | 'file';
+const { cuid, shortid } = id;
 
 export class Uri {
+  public static cuid = cuid;
+  public static slug = shortid;
+
   /**
    * Parse a URI into it's constituent pieces.
    */
@@ -49,9 +53,18 @@ export class Uri {
 
       if (left === 'ns') {
         const id = right;
-        setError(!id, 'Namespace ID not found');
-        const ns: t.INsUri = { type: 'ns', id };
-        data = ns;
+        setError(!id, 'Namespace URI identifier not found');
+        const uri: t.INsUri = { type: 'ns', id };
+        data = uri;
+      } else if (left === 'file') {
+        const id = right;
+        setError(!id, 'File URI identifier not found');
+        const parts = id.split('.');
+        const ns = (parts[0] || '').trim();
+        const file = (parts[1] || '').trim();
+        setError(!file, `File identifier within namespace "${ns}" not found`);
+        const uri: t.IFileUri = { type: 'file', id, ns, file };
+        data = uri;
       } else if (left === 'cell') {
         setCoord('cell');
       } else if (left === 'row') {
@@ -94,23 +107,14 @@ export class Uri {
     cell: (ns: string, key: string) => toUri('cell', ns, key),
     row: (ns: string, key: string) => toUri('row', ns, key),
     column: (ns: string, key: string) => toUri('col', ns, key),
-  };
-
-  /**
-   * Generate new URIs.
-   */
-  public static generate = {
-    ns: (id?: string) => Uri.string.ns(id || cuid()),
-    cell: (key: string, ns?: string) => Uri.string.cell(ns || cuid(), key),
-    row: (key: string, ns?: string) => Uri.string.row(ns || cuid(), key),
-    column: (key: string, ns?: string) => Uri.string.column(ns || cuid(), key),
+    file: (ns: string, file: string) => toUri('file', ns, file), // NB: use `slug` for file-id.
   };
 }
 
 /**
  * [Helpers]
  */
-const validIdRegex = new RegExp(/^[a-z0-9]+$/i); // NB: alpha-numeric.
+const alphaNumeric = new RegExp(/^[a-z0-9]+$/i); // NB: alpha-numeric.
 
 function trimPrefix(prefix: string, input: string) {
   const regex = new RegExp(`^${prefix}\:+`);
@@ -123,30 +127,39 @@ const PREFIX_MAP: { [key: string]: t.CoordType } = {
   row: 'ROW',
 };
 
-function toUri(prefix: 'ns' | 'col' | 'row' | 'cell', id: string, suffix?: string) {
+function toUri(prefix: UriPrefix, id: string, suffix?: string) {
   id = (id || '').trim();
   id = id === ':' ? '' : id;
   if (id) {
-    ['ns', 'col', 'row', 'cell'].forEach(prefix => (id = trimPrefix(prefix, id)));
+    ['ns', 'col', 'row', 'cell', 'file'].forEach(prefix => (id = trimPrefix(prefix, id)));
   }
   if (!id) {
     throw new Error(`The "${prefix}" URI was not supplied with an ID.`);
   }
-  if (!validIdRegex.test(id)) {
-    throw new Error(`The "${prefix}" URI contains an invalid ID, must be alpha-numeric ("${id}").`);
+  if (!alphaNumeric.test(id)) {
+    const err = `The "${prefix}" URI contains an invalid ID, must be alpha-numeric ("${id}").`;
+    throw new Error(err);
   }
   if (typeof suffix === 'string') {
-    suffix = suffix.replace(/^\!*/, '');
+    suffix = suffix.trim().replace(/^\!*/, '');
     if (!suffix) {
       throw new Error(`The "${prefix}" URI was not supplied with a suffix key.`);
     }
-    const type = cell.toType(suffix);
-    if (PREFIX_MAP[prefix] !== type) {
-      throw new Error(
-        `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${suffix}").`,
-      );
+    if (prefix === 'file') {
+      if (!alphaNumeric.test(suffix)) {
+        const err = `The "file" URI contains an invalid file-identifier, must be alpha-numeric ("${suffix}").`;
+        throw new Error(err);
+      }
+      suffix = `.${suffix}`;
+    } else {
+      const type = cell.toType(suffix);
+      if (PREFIX_MAP[prefix] !== type) {
+        throw new Error(
+          `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${suffix}").`,
+        );
+      }
+      suffix = `!${suffix}`;
     }
-    suffix = `!${suffix}`;
   }
   return `${prefix}:${id}${suffix || ''}`;
 }
