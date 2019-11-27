@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { t } from '../common';
 import { Uri } from './Uri';
 
-describe.only('Uri', () => {
+describe('Uri', () => {
   describe('ids', () => {
     it('Uri.cuid', () => {
       const res = Uri.cuid();
@@ -25,37 +25,66 @@ describe.only('Uri', () => {
       test('cell:abcd!A1', true);
       test('row:abcd!1', true);
       test('col:abcd!A', true);
+      test('file:abcd.123', true);
 
       test(undefined, false);
       test('', false);
       test('ns:', false);
       test('row:', false);
       test('col:', false);
+      test('cell:', false);
+      test('file:', false);
       test('cell:abcd', false);
       test('row:abcd', false);
       test('col:abcd', false);
+      test('file:abcd', false);
+      test('file:abcd:123', false);
+      test('file:abcd-123', false);
     });
 
     it('is.type', () => {
       const test = (type: t.UriType, input?: string, expected?: boolean) => {
-        expect(Uri.is.type(type, input)).to.eql(expected);
+        expect(Uri.is.type(type, input)).to.eql(expected, `${type} | input: ${input}`);
       };
 
       test('ns', 'ns:abcd', true);
       test('cell', 'cell:abcd!A1', true);
       test('col', 'col:abcd!A', true);
       test('row', 'row:abcd!1', true);
+      test('file', 'file:abc.123', true);
       test('UNKNOWN', 'foo:bar!1', true);
 
       test('ns', undefined, false);
       test('cell', undefined, false);
       test('col', undefined, false);
       test('row', undefined, false);
+      test('file', undefined, false);
 
       test('ns', '', false);
       test('cell', '', false);
       test('col', '', false);
       test('row', '', false);
+      test('file', '', false);
+    });
+
+    it('is.ns', () => {
+      const test = (input?: string, expected?: boolean) => {
+        expect(Uri.is.ns(input)).to.eql(expected);
+      };
+      test('ns:abcd', true);
+      test('', false);
+      test(undefined, false);
+    });
+
+    it('is.file', () => {
+      const test = (input?: string, expected?: boolean) => {
+        expect(Uri.is.file(input)).to.eql(expected);
+      };
+      test('file:abcd.123', true);
+      test('file:abcd', false);
+      test('ns:abcd', false);
+      test('', false);
+      test(undefined, false);
     });
 
     it('is.cell', () => {

@@ -22,13 +22,13 @@ Namespace       ns:<id>                 A set of cells/row/columns that exist in
 Cell            cell:<ns>!<A1>          A single cell (the core primitive data-structure of CellOS).
 Row             row:<ns>!<1>            Meta-data for a single "row" within a namespace.
 Column          col:<ns>!<A>            Meta-data for a single "column" within a namespace.
-File            file:<ns>:<id>          A binary file.
+File            file:<ns>.<id>          A binary file.
 ```
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 
-![diagram](https://user-images.githubusercontent.com/185555/69760850-7c052780-11ca-11ea-8f8e-ecc54949598b.png)
+![diagram](https://user-images.githubusercontent.com/185555/69764149-3c433d80-11d4-11ea-8f43-add586e2c04a.png)
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
@@ -37,7 +37,7 @@ File            file:<ns>:<id>          A binary file.
 
 See [@platform/cell.db](../cell.db) for database model implementation.
 
-![diagram](https://user-images.githubusercontent.com/185555/69760949-cbe3ee80-11ca-11ea-852b-dcaa028b67df.png)
+![diagram](https://user-images.githubusercontent.com/185555/69764162-4402e200-11d4-11ea-9004-84898d44ea0d.png)
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>

@@ -1,6 +1,13 @@
 import { t, id } from '../common';
 import { cell } from '../cell';
 
+/**
+ * TODO 🐷
+ * - move Uri to schema (??)
+ * - finish URI API (File)
+ * - `string` => `create`
+ */
+
 type UriPrefix = 'ns' | 'col' | 'row' | 'cell' | 'file';
 const { cuid, shortid } = id;
 
@@ -92,8 +99,13 @@ export class Uri {
     /**
      * Determine if the URI is of a specific type.
      */
-    type: (type: t.UriType, input?: string) => Uri.parse(input).parts.type === type,
+    type: (type: t.UriType, input?: string) => {
+      const uri = Uri.parse(input);
+      return uri.parts.type === type && (type === 'UNKNOWN' ? true : uri.ok);
+    },
+
     ns: (input?: string) => Uri.is.type('ns', input),
+    file: (input?: string) => Uri.is.type('file', input),
     cell: (input?: string) => Uri.is.type('cell', input),
     row: (input?: string) => Uri.is.type('row', input),
     column: (input?: string) => Uri.is.type('col', input),
