@@ -58,7 +58,7 @@ export class Router implements t.IRouter {
   /**
    * [Lifecycle]
    */
-  public static create = () => new Router();
+  public static create = (): t.IRouter => new Router();
   private constructor() {}
 
   /**
@@ -123,7 +123,13 @@ export class Router implements t.IRouter {
   /**
    * [Methods]
    */
-  public add(method: t.HttpMethod, path: string, handler: t.RouteHandler) {
+  public add(method: t.HttpMethod, path: t.IRoutePath, handler: t.RouteHandler) {
+    const paths = Array.isArray(path) ? path : [path];
+    paths.forEach(path => this._add(method, path, handler));
+    return this;
+  }
+
+  private _add(method: t.HttpMethod, path: string, handler: t.RouteHandler) {
     const exists = this.routes.find(route => route.method === method && route.path === path);
     if (exists) {
       throw new Error(`A ${method} route for path '${path}' already exists.`);
@@ -160,10 +166,12 @@ export class Router implements t.IRouter {
     this.routes = [...this.routes, route];
     return this;
   }
-  public get = (path: string, handler: t.RouteHandler) => this.add('GET', path, handler);
-  public put = (path: string, handler: t.RouteHandler) => this.add('PUT', path, handler);
-  public post = (path: string, handler: t.RouteHandler) => this.add('POST', path, handler);
-  public delete = (path: string, handler: t.RouteHandler) => this.add('DELETE', path, handler);
+
+  public get = (path: t.IRoutePath, handler: t.RouteHandler) => this.add('GET', path, handler);
+  public put = (path: t.IRoutePath, handler: t.RouteHandler) => this.add('PUT', path, handler);
+  public post = (path: t.IRoutePath, handler: t.RouteHandler) => this.add('POST', path, handler);
+  public delete = (path: t.IRoutePath, handler: t.RouteHandler) =>
+    this.add('DELETE', path, handler);
 
   /**
    * Find the route at the given url.

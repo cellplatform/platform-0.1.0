@@ -86,7 +86,7 @@ function redirect(res: t.ServerResponse, statusCode: number, location: string) {
   res.end();
 }
 
-function requestHandler(router: Router): t.RequestHandler {
+function requestHandler(router: t.IRouter): t.RequestHandler {
   return async (req, res) => {
     const handled = (await router.handler(req)) || NOT_FOUND;
     setHeaders(res, handled.headers);
