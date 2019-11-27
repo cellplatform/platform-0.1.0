@@ -1,5 +1,4 @@
-import { t, id } from '../common';
-import { cell } from '../cell';
+import { t, cuid, slug, coord } from '../common';
 
 /**
  * TODO 🐷
@@ -9,11 +8,11 @@ import { cell } from '../cell';
  */
 
 type UriPrefix = 'ns' | 'col' | 'row' | 'cell' | 'file';
-const { cuid, shortid } = id;
+// const { cuid, shortid } = id;
 
 export class Uri {
   public static cuid = cuid;
-  public static slug = shortid;
+  public static slug = slug;
 
   /**
    * Parse a URI into it's constituent pieces.
@@ -48,7 +47,7 @@ export class Uri {
         if (!id.includes('!')) {
           setError(true, `The '${type}' URI does not contain a "!" character.`);
         } else {
-          const parts = cell.toCell(id);
+          const parts = coord.cell.toCell(id);
           key = parts.key;
           ns = parts.ns;
           setError(!key, `Coordinate key of '${type}' not found`);
@@ -164,7 +163,7 @@ function toUri(prefix: UriPrefix, id: string, suffix?: string) {
       }
       suffix = `.${suffix}`;
     } else {
-      const type = cell.toType(suffix);
+      const type = coord.cell.toType(suffix);
       if (PREFIX_MAP[prefix] !== type) {
         throw new Error(
           `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${suffix}").`,

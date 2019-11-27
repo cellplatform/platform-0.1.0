@@ -1,6 +1,5 @@
-import { cuid, t, coord } from '../common';
-
-const { Uri } = coord;
+import { cuid, t } from '../common';
+import { Uri } from '../uri';
 
 export type SchemaCoordType = 'CELL' | 'COL' | 'ROW';
 
@@ -13,7 +12,7 @@ export type UriString = string;
  * Schema of DB paths.
  */
 export class Schema {
-  public static Uri = Uri;
+  public static uri = Uri;
 
   public static ns = (id?: string) => new NsSchema({ id });
 

@@ -13,7 +13,7 @@ URI and database schemas for the `CellOS`.
 
 ## URI Scheme
 
-See [@platform/cell.coord](../cell.schema) for URI helpers.
+See `Schema.uri` for URI helpers.
 
 ```
 KIND            URI                     DESCRIPTION

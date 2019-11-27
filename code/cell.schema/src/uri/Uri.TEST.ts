@@ -1,5 +1,4 @@
-import { expect } from 'chai';
-import { t } from '../common';
+import { expect, t } from '../test';
 import { Uri } from './Uri';
 
 describe('Uri', () => {
