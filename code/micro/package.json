@@ -29,7 +29,9 @@
     "@types/micro": "7.3.3"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }
