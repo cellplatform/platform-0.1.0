@@ -18,7 +18,7 @@ describe('Router', () => {
     expect(fn).to.throw();
   });
 
-  describe.only('find', () => {
+  describe('find', () => {
     it('no match', () => {
       const router = Router.create();
       router.get('/foo', handler);
