@@ -31,7 +31,7 @@ File            file:<ns>:<id>          A binary file.
 
 ![diagram](https://user-images.githubusercontent.com/185555/69760850-7c052780-11ca-11ea-8f8e-ecc54949598b.png)
 
-## Resource Mapping (DB)
+## URI to DB Path Mapping
 
 See [@platform/cell.db](../cell.db) for database model implementation.
 
