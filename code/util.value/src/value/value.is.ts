@@ -44,6 +44,28 @@ export function isBoolString(value?: string) {
 }
 
 /**
+ * Determines if the given value is [null].
+ */
+export function isNullString(value?: string) {
+  const asString = (value || '')
+    .toString()
+    .trim()
+    .toLowerCase();
+  return asString === 'null';
+}
+
+/**
+ * Determines if the given value is [undefined].
+ */
+export function isUndefinedString(value?: string) {
+  const asString = (value || '')
+    .toString()
+    .trim()
+    .toLowerCase();
+  return asString === 'undefined';
+}
+
+/**
  * Check whether a string is likely to be a date.
  * Example:
  *
@@ -73,10 +95,10 @@ export function isBlank(value: any): boolean {
   if (value === null || value === undefined) {
     return true;
   }
-  if (R.is(Array, value) && compact(value).length === 0) {
+  if (Array.isArray(value) && compact(value).length === 0) {
     return true;
   }
-  if (R.is(String, value) && value.trim() === '') {
+  if (typeof value === 'string' && value.trim() === '') {
     return true;
   }
   return false;

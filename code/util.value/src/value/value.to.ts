@@ -1,4 +1,4 @@
-import { isBlank } from './value.is';
+import * as is from './value.is';
 
 /**
  * Converts a value to a number if possible.
@@ -6,9 +6,10 @@ import { isBlank } from './value.is';
  * @returns the converted number, otherwise the original value.
  */
 export function toNumber(value: any) {
-  if (isBlank(value)) {
+  if (is.isBlank(value)) {
     return value;
   }
+  value = typeof value === 'string' ? value.trim() : value;
   const num = parseFloat(value);
   if (num === undefined) {
     return value;
@@ -51,21 +52,27 @@ export function toBool(value: any, defaultValue?: any) {
  * @return the original or converted value.
  */
 export function toType<T>(value: any) {
-  if (!(typeof value === 'string')) {
+  if (typeof value !== 'string') {
     return value as T;
   }
 
-  // Boolean.
-  const lowerCase = value.toLowerCase().trim();
-  if (lowerCase === 'true') {
-    return true;
+  // Boolean | null | undefined.
+  const asString = (value || '')
+    .toString()
+    .trim()
+    .toLowerCase();
+  if (asString === 'true' || asString === 'false') {
+    return toBool(value);
   }
-  if (lowerCase === 'false') {
-    return false;
+  if (asString === 'null') {
+    return null;
+  }
+  if (asString === 'undefined') {
+    return undefined;
   }
 
   // Number.
-  const num = toNumber(lowerCase);
+  const num = toNumber(value);
   if (typeof num === 'number') {
     return num;
   }
