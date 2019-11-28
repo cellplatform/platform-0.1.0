@@ -42,16 +42,30 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   };
 
   /**
-   * GET file.
-   *     eg:
-   *        - /file:foo.123
+   * GET file (model).
    */
   router.get(ROUTES.FILE.BASE, async req => {
     const query = req.query as t.IReqFileQuery;
     const { status, id, error, uri } = getParams(req);
     const getModel: t.GetModel = () => null as any;
+    return !id || error ? { status, data: { error } } : getFileResponse({ uri, getModel });
+  });
 
-    return !id ? { status, data: { error } } : getFileResponse({ uri, getModel });
+  /**
+   * POST binary-file.
+   */
+  router.post(ROUTES.FILE.BASE, async req => {
+    const query = req.query as t.IReqPostFileQuery;
+    const { status, id, error, uri } = getParams(req);
+    // const getModel: t.GetModel = () => null as any;
+
+    if (!id || error) {
+      return { status, data: { error } };
+    }
+
+    // return !id ? { status, data: { error } } : getFileResponse({ uri, getModel });
+
+    return { data: { foo: 123 } };
   });
 }
 

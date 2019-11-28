@@ -99,9 +99,18 @@ export type IResGetColumnData = t.IColumnData;
 /**
  * File
  */
-
 export type IReqFileParams = { id: string; file: string };
 export type IReqFileQuery = {};
 
+/**
+ * File: GET
+ */
 export type IResGetFile = IGetResponse<IResGetFileData>;
 export type IResGetFileData = {};
+
+/**
+ * File: POST
+ */
+export type IReqPostFileQuery = IReqFileQuery & {};
+export type IReqPostFileBody = {};
+export type IResPostFile = IResGetFile & {};

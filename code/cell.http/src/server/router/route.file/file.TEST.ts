@@ -1,6 +1,6 @@
 import { t, expect, http, createMock, stripHashes, post } from '../../../test';
 
-describe('route: file', () => {
+describe.only('route: file', () => {
   describe('invalid URI', () => {
     const test = async (path: string, expected: string) => {
       const mock = await createMock();
@@ -24,7 +24,6 @@ describe('route: file', () => {
 
   it.skip('TMP', async () => {
     const mock = await createMock();
-
     const url = mock.url('file:foo.123');
     const res = await http.get(url);
 
@@ -40,5 +39,17 @@ describe('route: file', () => {
     // console.log('cells', cells);
     console.log('res', res);
     console.log('res.body', res.body);
+  });
+
+  describe('POST', () => {
+    it('post binary file', async () => {
+      const mock = await createMock();
+      const url = mock.url('file:foo.123');
+
+      const res = await http.post(url, {});
+
+      console.log('-------------------------------------------');
+      console.log('res.body', res.body);
+    });
   });
 });
