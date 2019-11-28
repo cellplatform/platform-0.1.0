@@ -1,4 +1,4 @@
-import { func, models, ROUTES, Schema, t, toErrorPayload } from '../common';
+import { constants, func, models, ROUTES, Schema, t, toErrorPayload } from '../common';
 
 /**
  * Namespace routes.
@@ -12,7 +12,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
 
     if (!id) {
       const error: t.IError = {
-        type: 'HTTP/uri/malformed',
+        type: constants.ERROR.MALFORMED_URI,
         message: `Malformed "ns:" URI, does not contain an ID ("${req.url}").`,
       };
       return { status: 400, error };

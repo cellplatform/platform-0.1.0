@@ -1,4 +1,4 @@
-import { func, models, ROUTES, Schema, t, toErrorPayload } from '../common';
+import { constants, ROUTES, Schema, t, toErrorPayload } from '../common';
 
 /**
  * File-system routes (fs:).
@@ -15,7 +15,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     };
 
     const error: t.IError = {
-      type: 'HTTP/uri/malformed',
+      type: constants.ERROR.MALFORMED_URI,
       message: '',
     };
 
