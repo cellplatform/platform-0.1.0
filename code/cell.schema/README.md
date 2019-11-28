@@ -33,7 +33,7 @@ File            file:<ns>.<id>          A binary file.
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 
-## URI to DB Path Mapping
+## URI to DB Mapping (Path)
 
 See [@platform/cell.db](../cell.db) for database model implementation.
 

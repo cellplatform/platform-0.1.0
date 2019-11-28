@@ -18,7 +18,7 @@
     "build": "ts build",
     "prepare": "ts prepare",
     "reset": "ts-node -T scripts/reset",
-    "deploy": "ts-node -T scripts/deploy $@"
+    "deploy": "yarn cell deploy $@"
   },
   "dependencies": {
     "@platform/cell.db": "0.1.11",

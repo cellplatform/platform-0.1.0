@@ -86,7 +86,7 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
     const screen = view ? view.screen : undefined;
 
     if (data && !data.links) {
-      const uri = Uri.generate.ns();
+      const uri = Uri.create.ns(Uri.cuid());
       data = util.value.cellData(data).setLink('main', uri);
     }
 

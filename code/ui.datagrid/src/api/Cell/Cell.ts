@@ -1,4 +1,4 @@
-import { coord, R, t, defaultValue, util } from '../../common';
+import { coord, R, t, defaultValue, util, Schema } from '../../common';
 
 export type CellChangeField = keyof t.IGridCellProps | 'VALUE' | 'PROPS';
 
@@ -189,6 +189,6 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
    * Display string representation of the cell.
    */
   public toString() {
-    coord.Uri.string.cell(this.ns, this.key);
+    Schema.uri.create.cell(this.ns, this.key);
   }
 }

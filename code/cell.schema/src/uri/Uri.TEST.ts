@@ -10,7 +10,7 @@ describe('Uri', () => {
 
     it('Uri.slug', () => {
       const res = Uri.slug();
-      expect(res.length).to.eql(8);
+      expect(res.length).to.within(5, 10);
     });
   });
 

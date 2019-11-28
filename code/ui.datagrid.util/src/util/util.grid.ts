@@ -28,6 +28,6 @@ export function isDefaultGridValue(args: {
  */
 export function gridCellHash(grid: t.IGrid, key: string, data?: t.ICellData) {
   const ns = grid.data.ns.id;
-  const uri = cell.coord.Uri.string.cell(ns, key);
+  const uri = cell.Schema.uri.create.cell(ns, key);
   return cell.value.hash.cell({ uri, data });
 }
