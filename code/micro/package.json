@@ -18,6 +18,7 @@
     "@platform/log": "0.0.150",
     "@platform/types": "0.1.1",
     "@platform/util.value": "0.5.11",
+    "busboy": "0.3.1",
     "micro": "9.3.4",
     "micro-cors": "0.1.1",
     "path-to-regexp": "6.1.0"
@@ -26,6 +27,7 @@
     "@platform/http": "0.4.19",
     "@platform/test": "0.0.66",
     "@platform/ts": "3.7.2",
+    "@types/busboy": "0.2.3",
     "@types/micro": "7.3.3"
   },
   "files": [
