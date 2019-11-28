@@ -4,7 +4,7 @@ import { t, value as valueUtil } from '../common';
 /**
  * Parse form-data from an HTTP request.
  */
-export function parse(req: t.Request, options: { limits?: t.IFormLimits } = {}) {
+export function form(req: t.Request, options: { limits?: t.IFormLimits } = {}) {
   return new Promise<t.IForm>((resolve, reject) => {
     const { headers } = req;
     const { limits } = options;

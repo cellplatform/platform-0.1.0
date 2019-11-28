@@ -2,8 +2,6 @@ import { micro } from '..';
 import { log } from '../common';
 import { fs } from '@platform/fs';
 
-import * as form from '../body/form';
-
 const PKG = require('../../package.json') as { name: string; version: string };
 
 const app = micro.init({
@@ -32,7 +30,7 @@ app.router
  * POST: multipart/form-data
  */
 app.router.post('/file', async req => {
-  const formData = await form.parse(req);
+  const formData = await req.body.form();
   log.info(formData);
 
   const dir = fs.resolve('tmp/post');

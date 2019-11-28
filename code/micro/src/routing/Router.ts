@@ -94,11 +94,14 @@ export class Router implements t.IRouter {
 
         get body() {
           return {
-            async json<T>(options: t.BodyJsonOptions<T> = {}) {
+            async json<T>(options: t.IBodyJsonOptions<T> = {}) {
               return body.json(incoming, { ...options });
             },
-            async buffer(options: t.BodyBufferOptions = {}) {
+            async buffer(options: t.IBodyBufferOptions = {}) {
               return body.buffer(incoming, { ...options });
+            },
+            async form(options: t.IBodyFormOptions = {}) {
+              return body.form(incoming, { ...options });
             },
           };
         },

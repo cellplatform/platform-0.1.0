@@ -23,15 +23,17 @@ export type RequestQuery = {
 /**
  * Request body
  */
-export type BodyJsonOptions<T> = { default?: T; limit?: string | number; encoding?: string };
-export type BodyBufferOptions = {
+export type IBodyJsonOptions<T> = { default?: T; limit?: string | number; encoding?: string };
+export type IBodyBufferOptions = {
   default?: string | Buffer;
   limit?: string | number;
   encoding?: string;
 };
+export type IBodyFormOptions = { limits?: IFormLimits };
 export type RequestBody = {
-  json<T>(options?: BodyJsonOptions<T>): Promise<T>;
-  buffer(options?: BodyBufferOptions): Promise<string | Buffer>;
+  json<T>(options?: IBodyJsonOptions<T>): Promise<T>;
+  buffer(options?: IBodyBufferOptions): Promise<string | Buffer>;
+  form(options?: IBodyFormOptions): Promise<IForm>;
 };
 
 /**
