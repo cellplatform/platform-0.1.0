@@ -1,4 +1,4 @@
-import { t, expect, http, createMock, stripHashes, post } from '../../test';
+import { t, expect, http, createMock, stripHashes, post } from '../../../test';
 
 /**
  * TODO 🐷

@@ -1,6 +1,5 @@
 import { t } from '../common';
-import * as sys from './route.sys';
-import * as wildcard from './route.sys.404';
+import { sys, wildcard } from './route.sys';
 import * as ns from './route.ns';
 import * as coord from './route.coord';
 
