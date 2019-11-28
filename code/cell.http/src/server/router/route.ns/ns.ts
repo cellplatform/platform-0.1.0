@@ -34,7 +34,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   router.get(ROUTES.NS.BASE, async req => {
     const query = req.query as t.IReqGetNsQuery;
     const { status, id, error } = getParams(req);
-    return !id ? { status, data: { error } } : getNsResponse({ db, id, query });
+    return !id || error ? { status, data: { error } } : getNsResponse({ db, id, query });
   });
 
   /**
@@ -46,7 +46,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   router.get(ROUTES.NS.DATA, async req => {
     const query: t.IReqGetNsQuery = { cells: true, rows: true, columns: true };
     const { status, id, error } = getParams(req);
-    return !id ? { status, data: { error } } : getNsResponse({ db, id, query });
+    return !id || error ? { status, data: { error } } : getNsResponse({ db, id, query });
   });
 
   /**
@@ -56,7 +56,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     const query = req.query as t.IReqPostNsQuery;
     const { status, id, error } = getParams(req);
     const body = (await req.body.json<t.IReqPostNsBody>()) || {};
-    return !id ? { status, data: { error } } : postNsResponse({ db, id, body, query });
+    return !id || error ? { status, data: { error } } : postNsResponse({ db, id, body, query });
   });
 }
 
