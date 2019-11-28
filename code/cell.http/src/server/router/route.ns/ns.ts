@@ -3,7 +3,7 @@ import { func, models, ROUTES, Schema, t, toErrorPayload } from '../common';
 /**
  * Namespace routes.
  */
-export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
+export function init(args: { db: t.IDb; router: t.IRouter }) {
   const { db, router } = args;
 
   const getParams = (req: t.Request) => {

@@ -5,7 +5,7 @@ import * as t from '@platform/cell.types';
  */
 
 /**
- * Config
+ * Configuration
  */
 
 export type IConfigCloud = {
@@ -95,3 +95,13 @@ export type IResGetRowData = t.IRowData;
 
 export type IResGetColumn = IGetResponse<IResGetColumnData>;
 export type IResGetColumnData = t.IColumnData;
+
+/**
+ * File
+ */
+
+export type IReqFileParams = { id: string; file: string };
+export type IReqFileQuery = {};
+
+export type IResGetFile = IGetResponse<IResGetFileData>;
+export type IResGetFileData = {};

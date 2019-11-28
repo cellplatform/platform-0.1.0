@@ -20,9 +20,9 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
    */
   router.get(ROUTES.SYS.INFO, async req => {
     const version = {
-      [MODULE.SCHEMA]: DEPS[MODULE.SCHEMA],
+      [MODULE.SCHEMA]: (DEPS || {})[MODULE.SCHEMA],
       [PKG.name]: PKG.version,
-      [MODULE.DB]: DEPS[MODULE.DB],
+      [MODULE.DB]: (DEPS || {})[MODULE.DB],
     };
     return {
       status: 200,

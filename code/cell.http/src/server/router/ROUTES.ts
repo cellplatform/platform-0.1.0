@@ -19,4 +19,7 @@ export const ROUTES = {
   COLUMN: {
     BASE: `/col\\::id([A-Za-z0-9]*)\!:key([A-Z]+)(/?)`,
   },
+  FILE: {
+    BASE: `/file\\::id([A-Za-z0-9]*)\.:file([A-Za-z0-9]+)(/?)`,
+  },
 };

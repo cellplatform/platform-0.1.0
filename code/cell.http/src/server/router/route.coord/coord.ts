@@ -1,11 +1,9 @@
 import { cell, models, ROUTES, Schema, t, toErrorPayload } from '../common';
 
-type GetModel = () => Promise<t.IModel>;
-
 /**
  * Coordinate routes (cell: | row: | col:).
  */
-export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
+export function init(args: { db: t.IDb; router: t.IRouter }) {
   const { db, router } = args;
 
   type Prefix = 'cell' | 'col' | 'row';
@@ -31,7 +29,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const toMessage = (msg: string) => `Malformed "${prefix}:" URI, ${msg} ("${req.url}").`;
 
     if (!data.id) {
-      error.message = toMessage('does not contain an ID');
+      error.message = toMessage('does not contain a namespace-identifier');
       return { ...data, status: 400, error };
     }
 
@@ -60,7 +58,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
       prefix: 'cell',
       getUri: (id, key) => Schema.uri.create.cell(id, key),
     });
-    const getModel: GetModel = () => models.Cell.create({ db, uri }).ready;
+    const getModel: t.GetModel = () => models.Cell.create({ db, uri }).ready;
     return error ? { status, data: { error } } : getCoordResponse<t.IResGetCell>({ uri, getModel });
   });
 
@@ -74,7 +72,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
       prefix: 'row',
       getUri: (id, key) => Schema.uri.create.row(id, key),
     });
-    const getModel: GetModel = () => models.Row.create({ db, uri }).ready;
+    const getModel: t.GetModel = () => models.Row.create({ db, uri }).ready;
     return error ? { status, data: { error } } : getCoordResponse<t.IResGetRow>({ uri, getModel });
   });
 
@@ -88,7 +86,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
       prefix: 'col',
       getUri: (id, key) => Schema.uri.create.column(id, key),
     });
-    const getModel: GetModel = () => models.Column.create({ db, uri }).ready;
+    const getModel: t.GetModel = () => models.Column.create({ db, uri }).ready;
     return error ? { status, data: { error } } : getCoordResponse<t.IResGetRow>({ uri, getModel });
   });
 }
@@ -99,7 +97,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
 
 async function getCoordResponse<T extends t.IGetResponse<any>>(args: {
   uri: string;
-  getModel: GetModel;
+  getModel: t.GetModel;
 }) {
   try {
     const { uri } = args;
