@@ -6,7 +6,7 @@ import { list } from './list';
 export * from './get';
 export * from './put';
 
-export function init(args: { endpoint: string; accessKey: string; secret: string }): t.S3 {
+export function init(args: t.S3Config): t.S3 {
   const { endpoint } = args;
   const s3 = new AWS.S3({
     endpoint: new AWS.Endpoint(endpoint) as any,

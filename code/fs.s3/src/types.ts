@@ -1,5 +1,11 @@
 import { Json } from '@platform/types';
 
+export type S3Config = {
+  accessKey: string;
+  secret: string;
+  endpoint: string;
+};
+
 export type S3Permissions = 'private' | 'public-read' | 'public-read-write';
 export type S3StorageClass =
   | 'STANDARD'

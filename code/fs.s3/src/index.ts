@@ -1,4 +1,4 @@
-import { S3 } from './types';
+import { S3, S3Config } from './types';
 export * from './types';
 import { fs as base } from '@platform/fs';
 
@@ -7,7 +7,7 @@ export { s3 };
 
 export const fs = {
   ...base,
-  s3(args: { accessKey: string; secret: string; endpoint: string }): S3 {
+  s3(args: S3Config): S3 {
     return s3.init(args);
   },
 };
