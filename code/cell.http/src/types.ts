@@ -12,7 +12,7 @@ export type IConfigCloud = {
   title: string;
   collection: string;
   now: {
-    name: string;
+    deployment: string; // The "project name" of the now deployment. see CLI: `now ls`.
     domain: string;
     subdomain?: string; // Used as DB name (or "prod" if no specified).
     mongo: string; // [zeit/now] secret key (eg "@mongo").  "@" not required.

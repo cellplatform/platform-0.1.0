@@ -37,7 +37,7 @@ describe('settings.config', () => {
       title: 'My Title',
       now: {
         ...DEFAULT.now,
-        name: 'my-deployment',
+        deployment: 'my-deployment',
         domain: 'domain.com',
         mongo: '@platform-mongo',
       },
@@ -78,7 +78,7 @@ describe('settings.config', () => {
 
       test(c => (c.exists = false), 'Configuration file does not exist');
       test(c => (c.data.title = '  '), 'Missing [title] value');
-      test(c => (c.data.now.name = '  '), 'Missing [now.name] value');
+      test(c => (c.data.now.deployment = '  '), 'Missing [now.deployment] value');
       test(c => (c.data.now.domain = '  '), 'Missing [now.domain] value');
       test(c => (c.data.now.mongo = '  '), 'Missing [now.mongo] value');
     });

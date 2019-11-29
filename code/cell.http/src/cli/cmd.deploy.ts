@@ -29,7 +29,7 @@ export async function run(args: { target: 'now'; force?: boolean }) {
 
   // Prompt the user for which deployment to run.
   log.info();
-  const path = await files.prompt({ message: deployTitle({ force }) });
+  const path = await files.prompt({ message: deployTitle({ force, active: false }) });
 
   // Load configuration settings.
   const settings = config.loadSync({ path });
@@ -72,7 +72,7 @@ export async function run(args: { target: 'now'; force?: boolean }) {
       let alias = now.domain;
       alias = now.subdomain ? `${now.subdomain}.${alias}` : alias;
 
-      json.name = now.name;
+      json.name = now.deployment;
       json.alias = alias;
       json.env = json.env || {};
       json.env.CELLOS_MONGO = now.mongo;
@@ -141,8 +141,9 @@ export async function run(args: { target: 'now'; force?: boolean }) {
  * [Helpers]
  */
 
-function deployTitle(args: { force?: boolean }) {
-  const title = args.force ? 'Force Deploy' : 'Deploy';
+function deployTitle(args: { active: boolean; force?: boolean }) {
+  const deploy = args.active ? 'Deploying' : 'Deploy';
+  const title = args.force ? `${deploy} (forced)` : deploy;
   return title;
 }
 
@@ -175,7 +176,7 @@ function deployTask(args: {
 }) {
   const { force } = args;
   const task: cli.exec.ITask = {
-    title: deployTitle({ force }),
+    title: deployTitle({ force, active: true }),
     task: () => {
       return new Observable(observer => {
         const prod = args.prod ? '--prod' : '';

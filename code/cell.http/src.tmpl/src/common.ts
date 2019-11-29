@@ -6,4 +6,5 @@ export { t, fs, log };
 export { server } from '@platform/cell.http/lib/server';
 
 export const resolve = fs.resolve;
-export const util = { fs, log, resolve };
+export const env = fs.env;
+export const util = { fs, env, resolve };

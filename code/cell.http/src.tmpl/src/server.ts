@@ -2,18 +2,18 @@ import { server, util } from './common';
 import { NeDb } from '@platform/fsdb.nedb';
 import { local } from '@platform/cell.fs';
 
-const tmp = util.resolve('tmp');
+const TMP = util.resolve('tmp');
 
 /**
  * Database
  */
-const filename = `${tmp}/sample.db`;
+const filename = `${TMP}/sample.db`;
 const db = NeDb.create({ filename });
 
 /**
  * File system.
  */
-const fs = local.init({ root: `${tmp}/fs` });
+const fs = local.init({ root: `${TMP}/fs` });
 
 /**
  * Initialize and start the HTTP application server.
