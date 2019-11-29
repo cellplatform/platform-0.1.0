@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.3.21",
+  "version": "0.3.22",
   "description": "HTTP cloud server, and client tools, for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

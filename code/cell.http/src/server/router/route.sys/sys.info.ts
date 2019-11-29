@@ -19,7 +19,7 @@ export function init(args: { router: t.IRouter; title?: string }) {
    */
   router.get(ROUTES.SYS.INFO, async req => {
     const NOW_REGION = fs.env.value('NOW_REGION');
-    const region = NOW_REGION ? `cloud/${NOW_REGION}` : 'local';
+    const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local';
 
     const version = {
       [MODULE.SCHEMA]: (DEPS || {})[MODULE.SCHEMA],
