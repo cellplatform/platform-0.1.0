@@ -39,7 +39,7 @@ app.router.post('/file', async req => {
   const dir = fs.resolve('tmp/file');
   await Promise.all(
     data.files.map(async file => {
-      const path = fs.join(dir, file.filename);
+      const path = fs.join(dir, file.name);
       await fs.ensureDir(dir);
       await fs.writeFile(path, file.buffer);
     }),
@@ -47,13 +47,9 @@ app.router.post('/file', async req => {
 
   // Finish up.
   const { method, url } = req;
+  const files = data.files.map(f => f.name);
   return {
-    data: {
-      url,
-      method,
-      dir,
-      files: data.files.map(f => f.filename),
-    },
+    data: { url, method, dir, files },
   };
 });
 

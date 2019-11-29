@@ -119,7 +119,7 @@ export type IFormField = {
 
 export type IFormFile = {
   field: string;
-  filename: string;
+  name: string;
   encoding: string;
   mimetype: string;
   buffer: Buffer;

@@ -3,6 +3,8 @@ import { t, value as valueUtil } from '../common';
 
 /**
  * Parse form-data from an HTTP request.
+ * See:
+ *    https://github.com/mscdex/busboy#busboy-methods
  */
 export function form(req: t.Request, options: { limits?: t.IFormLimits } = {}) {
   return new Promise<t.IForm>((resolve, reject) => {
@@ -16,13 +18,13 @@ export function form(req: t.Request, options: { limits?: t.IFormLimits } = {}) {
     /**
      * Files
      */
-    busboy.on('file', (field, file, filename, encoding, mimetype) => {
+    busboy.on('file', (field, file, name, encoding, mimetype) => {
       const buffers: Buffer[] = [];
       file.on('data', data => buffers.push(data));
       file.on('end', () => {
         files.push({
           field,
-          filename,
+          name,
           encoding,
           mimetype,
           buffer: Buffer.concat(buffers),
