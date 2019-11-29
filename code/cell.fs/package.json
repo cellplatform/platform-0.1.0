@@ -14,6 +14,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/cell.schema": "0.1.2",
     "@platform/cell.types": "0.1.15",
     "@platform/fs": "0.3.5",
     "@platform/fs.s3": "0.3.14",

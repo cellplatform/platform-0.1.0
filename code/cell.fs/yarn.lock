@@ -25,6 +25,30 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
+"@platform/cell.coord@0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.7.1.tgz#4752c61fcb3eb7daf37844ccf8a8bc54e3e4b88b"
+  integrity sha512-PJ4o0ubvjEW49vklN0hzYmIgKNa1SL6+PzqGvCALAFeYkqdQVogJR+egNFuEQl0j5eImYYzsc80PVLl0umKuSA==
+  dependencies:
+    "@platform/cache" "0.2.5"
+    "@platform/cell.types" "0.1.15"
+    "@platform/types" "0.1.1"
+    "@platform/util.value" "0.6.0"
+    excel-formula-ast "1.1.1"
+    excel-formula-tokenizer "2.3.0"
+    toposort "2.0.2"
+
+"@platform/cell.schema@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.1.2.tgz#5945f69520fe27107b37f9994e8ddc33f5a98f67"
+  integrity sha512-eUwsgEMjGXdJB7eUAHHD1kA1AqNA56lUR+PjE9bKDWSwf00LfQGyBKYesn9e9R+ggRRMCJx9AhRWis/XBYYyJA==
+  dependencies:
+    "@platform/cell.coord" "0.7.1"
+    "@platform/cell.types" "0.1.15"
+    "@platform/fsdb.types" "0.5.5"
+    "@platform/libs" "0.1.5"
+    "@platform/util.value" "0.6.0"
+
 "@platform/cell.types@0.1.15":
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.1.15.tgz#833d320653ba0447a0320d3f05141e64a4508074"
@@ -47,16 +71,16 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3@0.3.13":
-  version "0.3.13"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.3.13.tgz#a4b998e963657fe3c27551212d01c5edabae3535"
-  integrity sha512-1+L/JCsHHkBEtgzNMrvaD8mLH3eB717juFtULBW48G46lLD0PBLy/xEw+KMJ/vFF9hLoNa+1IP+DAWA4YxNxmQ==
+"@platform/fs.s3@0.3.14":
+  version "0.3.14"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.3.14.tgz#a4d74f3b783bda4bd41d50f87cadb611e1b8a618"
+  integrity sha512-v7UtnsyAIYjrKgdoTZH5PjZ1gh+PxbEOpUL+mrmHkHkYIBexHV6bh3ji+yacHAidEXz9NU6HWfNuYDwArCwE5w==
   dependencies:
     "@platform/fs" "^0.3.5"
     "@platform/libs" "0.1.5"
     "@platform/log" "0.0.150"
     "@platform/types" "0.1.1"
-    "@platform/util.value" "0.5.11"
+    "@platform/util.value" "0.6.0"
     aws-sdk "2.578.0"
 
 "@platform/fs@0.3.5", "@platform/fs@^0.3.5":
@@ -157,10 +181,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.99.tgz#cec6784f9d33bd2ca44f5f1a67e05a0ba8148be7"
   integrity sha512-MVxN93c54YG3M+bDkW9mChte9uvxTQ0T0aOCSRuC9PQwcDHxFyepOCfqSSq3yQSEKRv+Op0K1kdgJMMRYxvAnw==
 
-"@platform/util.value@0.5.11":
-  version "0.5.11"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.5.11.tgz#d729981e842eca2de0d7a05fb4262b23a4026229"
-  integrity sha512-I8eoLRcSOKi50CkecXwnsYjRPXeC6JLgdV4i4RJypTIDPaC/IEtenpVLI/GXbpeDmSHtw9NjASK/qLnYDKe1jg==
+"@platform/util.value@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.6.0.tgz#dbacc8997d2c3c25cc0c66b606a12c06d06a77b0"
+  integrity sha512-0x9ooracbuSpWeeju6si2f8qgBIFRge7rozzyinMzsCn88K0muLgQ9pFMZCpsqX7hmWVHK1XnvXyur115RMCzg==
   dependencies:
     "@platform/libs" "0.1.5"
     "@platform/types" "0.1.1"
@@ -737,6 +761,16 @@ events@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
   integrity sha1-nr23Y1rQmccNzEwqH1AEKI6L2SQ=
+
+excel-formula-ast@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/excel-formula-ast/-/excel-formula-ast-1.1.1.tgz#44dd1379ae70e620691ad8063080ae62c1c2e944"
+  integrity sha512-DWVBtdSge+m4ickkAgljS/ub+RoPy1kz9XxkWUObEWHYGTge9NdzyUKri8OSZZlS+PoG6RcC7eoaRrwe3gzBUQ==
+
+excel-formula-tokenizer@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/excel-formula-tokenizer/-/excel-formula-tokenizer-2.3.0.tgz#e2ea4b217acb8a9c5cf0062fe783bf7c0928f5f4"
+  integrity sha512-9xqAUwL0hTyAopyuE8jhmmnLlxFjbC4t5bxrf+q0QgPxsKohJW90wD9zvLCNqc/DXN/O1TBDoiOd04txFVcl0w==
 
 expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   version "2.0.2"
@@ -1682,6 +1716,11 @@ to-regex-range@^5.0.1:
   integrity sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==
   dependencies:
     is-number "^7.0.0"
+
+toposort@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/toposort/-/toposort-2.0.2.tgz#ae21768175d1559d48bef35420b2f4962f09c330"
+  integrity sha1-riF2gXXRVZ1IvvNUILL0li8JwzA=
 
 ts-node@8.5.2:
   version "8.5.2"
