@@ -46,10 +46,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http@0.4.20":
-  version "0.4.20"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.20.tgz#6afdf0ca085df2fa25dd4bc8635387583f52b6b2"
-  integrity sha512-eYM2yTeigkuK0ROWuol09i+F4gKAvjXuWD5CCB5uSVMqGJ+LYEcvTjFUV2AU2615CWprRYPhZTBnJS9lSkKC/Q==
+"@platform/http@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.5.0.tgz#24e487daf76b4c0ad891ac600fe7d9caaa736dfc"
+  integrity sha512-RU9EPBAbfI5WR65A1kHVG7g9TXPGHS8THTqCGNk3uGuULfyihkEfwnyTo/Den/4FX15dbXas8rbA0qUDlk+Nnw==
   dependencies:
     "@platform/fs" "0.3.5"
     "@platform/types" "0.1.1"
@@ -825,7 +825,7 @@ flat@^4.1.0:
   dependencies:
     is-buffer "~2.0.3"
 
-form-data@*, form-data@^3.0.0:
+form-data@*, form-data@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-3.0.0.tgz#31b7e39c85f1355b7139ee0c647cf0de7f83c682"
   integrity sha512-CKMFDglpbMi6PyN+brwB9Q/GOw0eAnsrEZDgcsH5Krhz5Od/haKHAX0NmQfha2zPPz0JpWzA7GJHGSnvCRLWsg==

@@ -1,4 +1,4 @@
-import { t, toRawHeaders, fromRawHeaders, stringify } from '../common';
+import { t, toRawHeaders, fromRawHeaders, stringify, isFormData } from '../common';
 import * as isomorphic from 'isomorphic-fetch';
 
 /**
@@ -32,10 +32,7 @@ export function create(options: t.IFetchOptions = {}) {
      */
     async post(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const { mode, headers } = mergeOptions(options);
-      const body = stringify(
-        data,
-        () => `Failed to POST to '${url}', the data could not be serialized to JSON.`,
-      );
+      const body = toBody({ url, headers, data });
       const res = await isomorphic(url, { method: 'POST', body, headers, mode });
       return toResponse(url, res);
     },
@@ -50,6 +47,17 @@ export function create(options: t.IFetchOptions = {}) {
 /**
  * [Helpers]
  */
+
+function toBody(args: { url: string; headers: Headers; data?: any }) {
+  const { url, headers, data } = args;
+  if (isFormData(headers)) {
+    return data;
+  }
+  return stringify(
+    data,
+    () => `Failed to POST to '${url}', the data could not be serialized to JSON.`,
+  );
+}
 
 async function toResponse(url: string, res: Response) {
   const { ok, status, statusText } = res;

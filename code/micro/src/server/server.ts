@@ -1,6 +1,6 @@
 import micro, { send } from 'micro';
 
-import { log, t } from '../common';
+import { log, t, time } from '../common';
 import { Router } from '../routing';
 export * from '../types';
 
@@ -16,6 +16,7 @@ const NOT_FOUND: t.RouteResponse = {
  */
 export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } = {}) {
   // Setup initial conditions.
+  const timer = time.timer();
   const router = Router.create();
   let handler = requestHandler(router);
   handler = args.cors ? cors(handler) : handler;
@@ -29,7 +30,8 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
       const port = options.port || args.port || 3000;
 
       if (!options.silent) {
-        const url = log.cyan(`http://localhost:${log.magenta(port)}`);
+        const elapsed = log.gray(`[${timer.elapsed.toString()}]`);
+        const url = log.cyan(`http://localhost:${log.magenta(port)} ${elapsed}`);
         const props = { ...(options.log || args.log || {}), prod: IS_PROD };
         const keys = Object.keys(props);
         const max = keys.reduce((acc, next) => (next.length > acc ? next.length : acc), 0) + 2;
