@@ -2,7 +2,7 @@ import { NeDb } from '@platform/fsdb.nedb';
 import { local } from '@platform/cell.fs/lib/fs.local';
 
 import { server } from '../server';
-import { fs, value, t } from '../server/common';
+import { util, t } from '../server/common';
 
 export type IMock = {
   db: t.IDb;
@@ -16,16 +16,16 @@ export type IMock = {
   dispose(args?: { delete?: boolean }): Promise<void>;
 };
 
-const TMP = fs.resolve('tmp');
+const TMP = util.fs.resolve('tmp');
 const PATH = {
   TMP,
-  FS: fs.join(TMP, 'fs'),
+  FS: util.fs.join(TMP, 'fs'),
 };
 let count = 0;
 
 export const mock = {
   async reset() {
-    await fs.remove(TMP);
+    await util.fs.remove(TMP);
   },
   async create() {
     return create();
@@ -39,19 +39,17 @@ export const createMock = mock.create;
  */
 
 const randomPort = () => {
-  return value.toNumber(
-    `${value.random(6, 9)}${value.random(0, 9)}${value.random(0, 9)}${value.random(0, 9)}`,
-  );
+  const random = (min = 0, max = 9) => util.value.random(min, max);
+  return util.value.toNumber(`${random(6, 9)}${random()}${random()}${random()}`);
 };
 
 const create = async (args: { port?: number } = {}): Promise<IMock> => {
   count++;
-  const filename = fs.join(TMP, `mock/test-${count}.db`);
+  const filename = util.fs.join(TMP, `mock/test-${count}.db`);
   const port = args.port || randomPort();
 
   const db = NeDb.create({ filename });
-  const cellFs = local.init({ dir: PATH.FS });
-  // const fs = local()
+  const cellFs = local.init({ root: PATH.FS });
 
   const app = server.init({ title: 'Test', db, fs: cellFs });
   const router = app.router;
@@ -70,7 +68,7 @@ const create = async (args: { port?: number } = {}): Promise<IMock> => {
       await tryIgnore(() => db.dispose());
       await tryIgnore(() => instance.close());
       if (args.delete) {
-        await tryIgnore(() => fs.remove(filename));
+        await tryIgnore(() => util.fs.remove(filename));
       }
     },
   };

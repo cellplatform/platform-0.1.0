@@ -5,10 +5,15 @@ export * from '../types';
 /**
  * Initializes a "local" file-system API.
  */
-export function init(args: { dir: string }) {
-  const dir = fs.resolve(args.dir);
+export function init(args: { root: string }) {
+  const root = fs.resolve(args.root);
 
   const res: t.IFileSystem = {
+    /**
+     * Root directory of the file system.
+     */
+    root,
+
     /**
      * Convert the given string to an absolute path.
      */
@@ -25,7 +30,7 @@ export function init(args: { dir: string }) {
         throw new Error(msg);
       }
 
-      return fs.join(dir, `ns.${file.parts.ns}`, file.parts.file);
+      return fs.join(root, `ns.${file.parts.ns}`, file.parts.file);
     },
 
     /**

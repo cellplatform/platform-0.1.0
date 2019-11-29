@@ -1,9 +1,14 @@
 import { t, expect, util, PATH } from '../test';
 import { local } from '.';
 
-const init = () => local.init({ dir: PATH.LOCAL });
+const init = () => local.init({ root: PATH.LOCAL });
 
 describe('fs.local', () => {
+  it('exposes root (dir)', () => {
+    const fs = init();
+    expect(fs.root).to.eql(PATH.LOCAL);
+  });
+
   describe('resolve', () => {
     const fs = init();
 

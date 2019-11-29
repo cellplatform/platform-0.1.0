@@ -11,7 +11,7 @@ const MODULE = {
 /**
  * Root information.
  */
-export function init(args: { router: t.IRouter, title?: string }) {
+export function init(args: { router: t.IRouter; title?: string }) {
   const { router } = args;
   const region = fs.env.value('NOW_REGION') || 'local';
 
@@ -25,6 +25,7 @@ export function init(args: { router: t.IRouter, title?: string }) {
       status: 200,
       data: {
         system: args.title || 'Untitled',
+        host: 'TMP', // TODO 🐷
         region,
         version,
       },

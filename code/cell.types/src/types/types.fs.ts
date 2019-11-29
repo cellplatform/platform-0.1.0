@@ -1,15 +1,16 @@
 import { IError } from './types.error';
 
+export type IFileSystem = {
+  root: string; // Root directory of the file system.
+  resolve(uri: string): string;
+  read(uri: string): Promise<IFileReadResponse>;
+  write(uri: string, data: Buffer): Promise<IFileWriteResponse>;
+};
+
 export type IFile = {
   uri: string;
   path: string;
   data: Buffer;
-};
-
-export type IFileSystem = {
-  resolve(uri: string): string;
-  read(uri: string): Promise<IFileReadResponse>;
-  write(uri: string, data: Buffer): Promise<IFileWriteResponse>;
 };
 
 export type IFileReadResponse = {

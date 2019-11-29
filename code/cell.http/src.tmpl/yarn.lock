@@ -36,7 +36,7 @@
     "@platform/libs" "0.1.5"
     "@platform/util.value" "0.6.0"
 
-"@platform/cell.fs@0.0.4":
+"@platform/cell.fs@0.0.4", "@platform/cell.fs@^0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@platform/cell.fs/-/cell.fs-0.0.4.tgz#fcda5a70113e24552778694c245a0767a575e2e7"
   integrity sha512-g6MLgF2BJ8AIxLoLLm4Uar3diyM3br+h6vrqy9hFr19fbVxbqDaAF3rwyU1JWThfvGba+zfhVEiiMx2zdN2/+Q==

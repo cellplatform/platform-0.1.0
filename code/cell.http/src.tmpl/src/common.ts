@@ -1,6 +1,9 @@
 import * as t from './types';
+import { fs } from '@platform/fs';
+import { log } from '@platform/log/lib/server';
 
-export { t };
+export { t, fs, log };
 export { server } from '@platform/cell.http/lib/server';
-export { fs } from '@platform/fs';
-export { log } from '@platform/log/lib/server';
+
+export const resolve = fs.resolve;
+export const util = { fs, log, resolve };

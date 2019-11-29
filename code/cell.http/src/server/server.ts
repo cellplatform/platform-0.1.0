@@ -1,4 +1,4 @@
-import { t, micro, constants, log } from './common';
+import { t, micro, constants, log, util } from './common';
 import * as router from './router';
 
 export { config } from './config';
@@ -10,6 +10,8 @@ const { PKG } = constants;
  */
 export function init(args: { db: t.IDb; fs: t.IFileSystem; title?: string }) {
   const { db, title, fs } = args;
+  const base = util.fs.resolve('.');
+  const root = fs.root.startsWith(base) ? fs.root.substring(base.length) : fs.root;
 
   // Setup the micro-service.
   const deps = PKG.dependencies || {};
@@ -17,7 +19,8 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; title?: string }) {
     cors: true,
     log: {
       module: `${log.white(PKG.name)}@${PKG.version}`,
-      schema: deps['@platform/cell.schema'],
+      schema: log.yellow(deps['@platform/cell.schema']),
+      fs: root,
     },
   });
 
