@@ -1,7 +1,9 @@
 import { micro } from '..';
-import { log } from '../common';
+import { log, time } from '../common';
+
 import { fs } from '@platform/fs';
 
+const timer = time.timer();
 const PKG = require('../../package.json') as { name: string; version: string };
 
 const app = micro.init({
@@ -30,12 +32,13 @@ app.router
  * POST: multipart/form-data
  */
 app.router.post('/file', async req => {
-  const formData = await req.body.form();
-  log.info(formData);
+  const data = await req.body.form();
+  log.info(data);
+  log.info();
 
-  const dir = fs.resolve('tmp/post');
+  const dir = fs.resolve('tmp/file');
   await Promise.all(
-    formData.files.map(async file => {
+    data.files.map(async file => {
       const path = fs.join(dir, file.filename);
       await fs.ensureDir(dir);
       await fs.writeFile(path, file.buffer);
@@ -45,17 +48,24 @@ app.router.post('/file', async req => {
   // Finish up.
   const { method, url } = req;
   return {
-    data: { url, method, files: formData.files.map(f => f.filename) },
+    data: {
+      url,
+      method,
+      dir,
+      files: data.files.map(f => f.filename),
+    },
   };
 });
 
 (async () => {
   const service = await app.listen({ port: 8080 });
 
-  log.info('service:\n');
-  log.info(' • isRunning:', service.isRunning);
-  log.info(' • port:     ', service.port);
-  log.info();
+  log.info.green(`
+  started in:    ${timer.elapsed.toString()}
+  service:
+  • isRunning:   ${service.isRunning}
+  • port:        ${service.port}
+  `);
 
   // Example: stop the service.
   // setTimeout(() => service.close(), 1500);
