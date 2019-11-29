@@ -14,7 +14,7 @@ export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async args
 
     // Link new namespaces.
     links
-      .filter(link => link.uri === undefined || Schema.Uri.is.ns(link.uri))
+      .filter(link => link.uri === undefined || Schema.uri.is.ns(link.uri))
       .forEach(link => {
         const path = Schema.ns(link.uri).path;
         model.links.namespaces.link([path]);

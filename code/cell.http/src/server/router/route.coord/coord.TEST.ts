@@ -1,4 +1,4 @@
-import { t, expect, http, createMock, post } from '../../test';
+import { t, expect, http, createMock, post } from '../../../test';
 
 describe('route: coord (cell|row|col)', () => {
   describe('invalid URI', () => {
@@ -17,7 +17,7 @@ describe('route: coord (cell|row|col)', () => {
     };
 
     it('malformed: no id', async () => {
-      const msg = 'does not contain an ID';
+      const msg = 'does not contain a namespace-identifier';
       await test('/cell:!A1', msg);
       await test('/row:!1', msg);
       await test('/col:!A', msg);

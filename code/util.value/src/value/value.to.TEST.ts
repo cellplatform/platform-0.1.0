@@ -92,7 +92,21 @@ describe('toType', () => {
     expect(value.toType('0.0001')).to.equal(0.0001);
   });
 
-  it('converts does not convert', () => {
+  it('converts to null', () => {
+    expect(value.toType('null')).to.equal(null);
+    expect(value.toType('NULL')).to.equal(null);
+    expect(value.toType('Null')).to.equal(null);
+    expect(value.toType('  null  ')).to.equal(null);
+  });
+
+  it('converts to undefined', () => {
+    expect(value.toType('undefined')).to.equal(undefined);
+    expect(value.toType('UNDEFINED')).to.equal(undefined);
+    expect(value.toType('Undefined')).to.equal(undefined);
+    expect(value.toType('  undefined  ')).to.equal(undefined);
+  });
+
+  it('does not convert', () => {
     const now = new Date();
     expect(value.toType('foo')).to.eql('foo');
     expect(value.toType(undefined)).to.eql(undefined);

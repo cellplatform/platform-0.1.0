@@ -1,14 +1,9 @@
-import { cell, t, models } from '../common';
-import { ROUTES } from './ROUTES';
-import { toErrorPayload } from './util';
-
-const { Uri } = cell;
-type GetModel = () => Promise<t.IModel>;
+import { cell, constants, models, ROUTES, Schema, t, toErrorPayload } from '../common';
 
 /**
  * Coordinate routes (cell: | row: | col:).
  */
-export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
+export function init(args: { db: t.IDb; router: t.IRouter }) {
   const { db, router } = args;
 
   type Prefix = 'cell' | 'col' | 'row';
@@ -21,20 +16,20 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const params = args.req.params as t.IReqCoordParams;
 
     const data = {
-      id: (params.id || '').toString(),
+      ns: (params.ns || '').toString(),
       key: (params.key || '').toString(),
       uri: '',
     };
 
     const error: t.IError = {
-      type: 'HTTP/uri/malformed',
+      type: constants.ERROR.MALFORMED_URI,
       message: '',
     };
 
     const toMessage = (msg: string) => `Malformed "${prefix}:" URI, ${msg} ("${req.url}").`;
 
-    if (!data.id) {
-      error.message = toMessage('does not contain an ID');
+    if (!data.ns) {
+      error.message = toMessage('does not contain a namespace-identifier');
       return { ...data, status: 400, error };
     }
 
@@ -44,7 +39,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     }
 
     try {
-      data.uri = args.getUri(data.id, data.key);
+      data.uri = args.getUri(data.ns, data.key);
     } catch (err) {
       error.message = toMessage(err.message);
       return { ...data, status: 400, error };
@@ -61,9 +56,9 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const { status, uri, error } = getParams({
       req,
       prefix: 'cell',
-      getUri: (id, key) => Uri.string.cell(id, key),
+      getUri: (id, key) => Schema.uri.create.cell(id, key),
     });
-    const getModel: GetModel = () => models.Cell.create({ db, uri }).ready;
+    const getModel: t.GetModel = () => models.Cell.create({ db, uri }).ready;
     return error ? { status, data: { error } } : getCoordResponse<t.IResGetCell>({ uri, getModel });
   });
 
@@ -75,9 +70,9 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const { status, uri, error } = getParams({
       req,
       prefix: 'row',
-      getUri: (id, key) => Uri.string.row(id, key),
+      getUri: (id, key) => Schema.uri.create.row(id, key),
     });
-    const getModel: GetModel = () => models.Row.create({ db, uri }).ready;
+    const getModel: t.GetModel = () => models.Row.create({ db, uri }).ready;
     return error ? { status, data: { error } } : getCoordResponse<t.IResGetRow>({ uri, getModel });
   });
 
@@ -89,9 +84,9 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
     const { status, uri, error } = getParams({
       req,
       prefix: 'col',
-      getUri: (id, key) => Uri.string.column(id, key),
+      getUri: (id, key) => Schema.uri.create.column(id, key),
     });
-    const getModel: GetModel = () => models.Column.create({ db, uri }).ready;
+    const getModel: t.GetModel = () => models.Column.create({ db, uri }).ready;
     return error ? { status, data: { error } } : getCoordResponse<t.IResGetRow>({ uri, getModel });
   });
 }
@@ -102,7 +97,7 @@ export function init(args: { title?: string; db: t.IDb; router: t.IRouter }) {
 
 async function getCoordResponse<T extends t.IGetResponse<any>>(args: {
   uri: string;
-  getModel: GetModel;
+  getModel: t.GetModel;
 }) {
   try {
     const { uri } = args;

@@ -5,14 +5,14 @@ import * as t from '@platform/cell.types';
  */
 
 /**
- * Config
+ * Configuration
  */
 
 export type IConfigCloud = {
   title: string;
   collection: string;
   now: {
-    name: string;
+    deployment: string; // The "project name" of the now deployment. see CLI: `now ls`.
     domain: string;
     subdomain?: string; // Used as DB name (or "prod" if no specified).
     mongo: string; // [zeit/now] secret key (eg "@mongo").  "@" not required.
@@ -79,7 +79,7 @@ export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
  * Coord: cell|row|col
  */
 
-export type IReqCoordParams = { id: string; key: string };
+export type IReqCoordParams = { ns: string; key: string };
 export type IReqCoordQuery = {};
 
 /**
@@ -95,3 +95,22 @@ export type IResGetRowData = t.IRowData;
 
 export type IResGetColumn = IGetResponse<IResGetColumnData>;
 export type IResGetColumnData = t.IColumnData;
+
+/**
+ * File
+ */
+export type IReqFileParams = { ns: string; file: string };
+export type IReqFileQuery = {};
+
+/**
+ * File: GET
+ */
+export type IResGetFile = IGetResponse<IResGetFileData>;
+export type IResGetFileData = {};
+
+/**
+ * File: POST
+ */
+export type IReqPostFileQuery = IReqFileQuery & {};
+export type IReqPostFileBody = {};
+export type IResPostFile = IResGetFile & {};

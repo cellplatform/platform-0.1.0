@@ -9,4 +9,3 @@ export * from './range';
 export * from './table';
 
 export * from './refs';
-export * from './uri';

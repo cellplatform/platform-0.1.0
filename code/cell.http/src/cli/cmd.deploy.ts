@@ -16,6 +16,8 @@ const FILES = [
  * Run a deployment.
  */
 export async function run(args: { target: 'now'; force?: boolean }) {
+  const force = defaultValue(args.force, false);
+
   // Read in the config files.
   const files = await getConfigFiles();
   const dir = files.dir;
@@ -27,7 +29,7 @@ export async function run(args: { target: 'now'; force?: boolean }) {
 
   // Prompt the user for which deployment to run.
   log.info();
-  const path = await files.prompt();
+  const path = await files.prompt({ message: deployTitle({ force, active: false }) });
 
   // Load configuration settings.
   const settings = config.loadSync({ path });
@@ -70,7 +72,7 @@ export async function run(args: { target: 'now'; force?: boolean }) {
       let alias = now.domain;
       alias = now.subdomain ? `${now.subdomain}.${alias}` : alias;
 
-      json.name = now.name;
+      json.name = now.deployment;
       json.alias = alias;
       json.env = json.env || {};
       json.env.CELLOS_MONGO = now.mongo;
@@ -121,7 +123,7 @@ export async function run(args: { target: 'now'; force?: boolean }) {
   const tasks = deployTask({
     targetDir,
     prod: true,
-    force: defaultValue(args.force, false),
+    force,
     done: res => (info = res),
   });
   log.info();
@@ -138,6 +140,12 @@ export async function run(args: { target: 'now'; force?: boolean }) {
 /**
  * [Helpers]
  */
+
+function deployTitle(args: { active: boolean; force?: boolean }) {
+  const deploy = args.active ? 'Deploying' : 'Deploy';
+  const title = args.force ? `${deploy} (forced)` : deploy;
+  return title;
+}
 
 async function getTmplDir() {
   const name = 'src.tmpl';
@@ -166,8 +174,9 @@ function deployTask(args: {
   force: boolean;
   done: (info: string[]) => void;
 }) {
+  const { force } = args;
   const task: cli.exec.ITask = {
-    title: 'Deploying',
+    title: deployTitle({ force, active: true }),
     task: () => {
       return new Observable(observer => {
         const prod = args.prod ? '--prod' : '';

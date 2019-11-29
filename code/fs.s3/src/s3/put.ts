@@ -16,7 +16,13 @@ export async function put(args: {
   try {
     const ContentType = toContentType(key);
     const res = await s3
-      .upload({ Bucket: bucket, Key: key, Body, ACL: args.acl, ContentType })
+      .upload({
+        Bucket: bucket,
+        Key: key,
+        Body,
+        ACL: args.acl,
+        ContentType,
+      })
       .promise();
     const url = res.Location;
     const etag = formatETag(res.ETag);

@@ -3,7 +3,7 @@
   "name": "name",
   "alias": "domain.com",
   "env": {
-    "CELLOS_MONGO": "@platform-mongo"
+    "CELL_MONGO": "@platform-mongo"
   },
   "routes": [
     {

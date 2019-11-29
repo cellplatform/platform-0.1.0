@@ -289,13 +289,13 @@ describe('model', () => {
       await db.put(org.path, org.doc);
       await model.load();
 
-      expect(model.createdAt).to.be.within(now - 5, now + 10);
-      expect(model.modifiedAt).to.be.within(now - 5, now + 10);
+      expect(model.createdAt).to.be.within(now - 5, now + 20);
+      expect(model.modifiedAt).to.be.within(now - 5, now + 20);
 
       await time.wait(50);
       await db.put(org.path, org.doc);
       await model.load({ force: true });
-      expect(model.modifiedAt).to.be.within(now + 45, now + 65);
+      expect(model.modifiedAt).to.be.within(now + 45, now + 75);
     });
   });
 

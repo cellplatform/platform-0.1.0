@@ -11,9 +11,7 @@ app
   .command(
     ['init'],
     'Initialize a new deployment.',
-    yargs => {
-      return yargs;
-    },
+    yargs => yargs,
     async argv => cmd.init.run(),
   )
 
@@ -23,9 +21,7 @@ app
   .command(
     ['list', 'ls'],
     'List available deployment configurations.',
-    yargs => {
-      return yargs;
-    },
+    yargs => yargs,
     async argv => cmd.list.run(),
   )
 

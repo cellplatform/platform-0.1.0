@@ -13,12 +13,31 @@ URI and database schemas for the `CellOS`.
 
 ## URI Scheme
 
+See `Schema.uri` for URI helpers.
+
 ```
-ns:<id>             Namespace:  A set of cells/row/columns that exist in the same logical-space (aka "table" or "sheet").
-cell:<ns>!<A1>      Cell:       A single cell (the core primitive data-structure of CellOS).
-row:<ns>!<1>        Row:        Meta-data for a single "row" within a namespace.
-col:<ns>!<A>        Column:     Meta-data for a single "column" within a namespace.
+KIND            URI                     DESCRIPTION
+---------------------------------------------------------------------------------------------------------------------------------
+Namespace       ns:<id>                 A set of cells/row/columns that exist in the same logical-space (aka "table" or "sheet").
+Cell            cell:<ns>!<A1>          A single cell (the core primitive data-structure of CellOS).
+Row             row:<ns>!<1>            Meta-data for a single "row" within a namespace.
+Column          col:<ns>!<A>            Meta-data for a single "column" within a namespace.
+File            file:<ns>.<id>          A binary file.
 ```
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+![diagram](https://user-images.githubusercontent.com/185555/69764149-3c433d80-11d4-11ea-8f43-add586e2c04a.png)
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+## URI to DB Mapping (Path)
+
+See [@platform/cell.db](../cell.db) for database model implementation.
+
+![diagram](https://user-images.githubusercontent.com/185555/69764162-4402e200-11d4-11ea-9004-84898d44ea0d.png)
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>

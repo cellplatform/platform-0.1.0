@@ -112,8 +112,8 @@ describe('Router', () => {
 
       expect(res1.id).to.eql('foo');
       expect(res2.id).to.eql(123);
-      expect(res3.id).to.eql('undefined');
-      expect(res4.id).to.eql('null');
+      expect(res3.id).to.eql(undefined);
+      expect(res4.id).to.eql(null);
       expect(res5.id).to.eql(0);
       expect(res6.id).to.eql(true);
       expect(res7.id).to.eql(false);

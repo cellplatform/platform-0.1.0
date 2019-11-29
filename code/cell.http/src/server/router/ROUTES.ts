@@ -11,12 +11,15 @@ export const ROUTES = {
     DATA: `/ns\\::id([A-Za-z0-9]*)/data(/?)`,
   },
   CELL: {
-    BASE: `/cell\\::id([A-Za-z0-9]*)\!:key([A-Z]+[0-9]+)(/?)`,
+    BASE: `/cell\\::ns([A-Za-z0-9]*)\!:key([A-Z]+[0-9]+)(/?)`,
   },
   ROW: {
-    BASE: `/row\\::id([A-Za-z0-9]*)\!:key([0-9]+)(/?)`,
+    BASE: `/row\\::ns([A-Za-z0-9]*)\!:key([0-9]+)(/?)`,
   },
   COLUMN: {
-    BASE: `/col\\::id([A-Za-z0-9]*)\!:key([A-Z]+)(/?)`,
+    BASE: `/col\\::ns([A-Za-z0-9]*)\!:key([A-Z]+)(/?)`,
+  },
+  FILE: {
+    BASE: `/file\\::ns([A-Za-z0-9]*)\.:file([A-Za-z0-9]+)(/?)`,
   },
 };

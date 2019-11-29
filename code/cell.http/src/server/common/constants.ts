@@ -1,7 +1,6 @@
-type Package = {
-  name: string;
-  version: string;
-  dependencies: { [key: string]: string };
-};
+import { IPackage } from './types';
+export const PKG = require('../../../package.json') as IPackage;
 
-export const PKG = require('../../../package.json') as Package;
+export const ERROR = {
+  MALFORMED_URI: 'HTTP/uri/malformed',
+};

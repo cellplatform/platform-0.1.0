@@ -17,7 +17,7 @@ export const DEFAULT: t.IConfigCloud = {
   title: 'Untitled',
   collection: 'cell.http',
   now: {
-    name: '',
+    deployment: '',
     domain: '',
     subdomain: undefined,
     mongo: '',
@@ -96,7 +96,7 @@ function validate(config: IConfigResponse) {
     error('Missing [title] value.');
   }
 
-  ['name', 'domain', 'mongo'].forEach(field => {
+  ['deployment', 'domain', 'mongo'].forEach(field => {
     const value = ((data.now || {})[field] || '').trim();
     if (!value) {
       error(`Missing [now.${field}] value.`);

@@ -73,13 +73,11 @@ export class Router implements t.IRouter {
         return { status: 404, data: { status: 404, message: 'Not found.' } };
       }
 
+      // Append helpers peoperties to the request.
       let params: t.RequestParams | undefined;
       let query: t.RequestQuery | undefined;
       const path = incoming.url || '';
-
-      const req = {
-        ...incoming,
-
+      const helpers = {
         get params() {
           if (!params) {
             params = Router.params<t.RequestParams>({ route, path });
@@ -96,16 +94,21 @@ export class Router implements t.IRouter {
 
         get body() {
           return {
-            async json<T>(
-              options: { default?: T; limit?: string | number; encoding?: string } = {},
-            ) {
+            async json<T>(options: t.IBodyJsonOptions<T> = {}) {
               return body.json(incoming, { ...options });
+            },
+            async buffer(options: t.IBodyBufferOptions = {}) {
+              return body.buffer(incoming, { ...options });
+            },
+            async form(options: t.IBodyFormOptions = {}) {
+              return body.form(incoming, { ...options });
             },
           };
         },
       };
 
-      return route.handler(req as t.Request);
+      const request = Object.assign(incoming, helpers) as t.Request; // tslint:disable-line
+      return route.handler(request);
     } catch (err) {
       const url = incoming.url;
       const message = `Failed while finding handler for url "${url}". ${err.message}`;

@@ -21,19 +21,68 @@ describe('isPlainObject', () => {
 });
 
 describe('value.isBoolString', () => {
+  const test = (expected: boolean, input: any) => {
+    const res = value.isBoolString(input);
+    expect(res).to.eql(expected, input);
+  };
   it('is a boolean', () => {
-    expect(value.isBoolString('true')).to.eql(true);
-    expect(value.isBoolString('false')).to.eql(true);
-    expect(value.isBoolString('True')).to.eql(true);
-    expect(value.isBoolString('False')).to.eql(true);
-    expect(value.isBoolString('TRUE')).to.eql(true);
-    expect(value.isBoolString('FALSE')).to.eql(true);
+    test(true, 'true');
+    test(true, 'false');
+    test(true, 'True');
+    test(true, 'False');
+    test(true, 'TRUE');
+    test(true, 'FALSE');
   });
 
   it('is not a boolean', () => {
-    expect(value.isBoolString(undefined)).to.eql(false);
-    expect(value.isBoolString('')).to.eql(false);
-    expect(value.isBoolString('HELLO')).to.eql(false);
+    test(false, undefined);
+    test(false, '');
+    test(false, 'HELLO');
+    test(false, { foo: 123 });
+  });
+});
+
+describe('value.isNullString', () => {
+  const test = (expected: boolean, input: any) => {
+    const res = value.isNullString(input);
+    expect(res).to.eql(expected, input);
+  };
+  it('is null', () => {
+    test(true, 'null');
+    test(true, '  null  ');
+    test(true, 'NULL');
+    test(true, 'Null');
+  });
+
+  it('is not null', () => {
+    test(false, undefined);
+    test(false, '');
+    test(false, 'I am null');
+    test(false, 'HELLO');
+    test(false, 123);
+    test(false, { foo: 123 });
+  });
+});
+
+describe('value.isUndefinedString', () => {
+  const test = (expected: boolean, input: any) => {
+    const res = value.isUndefinedString(input);
+    expect(res).to.eql(expected, input);
+  };
+  it('is undefined', () => {
+    test(true, 'undefined');
+    test(true, '  undefined  ');
+    test(true, 'UNDEFINED');
+    test(true, 'Undefined');
+  });
+
+  it('is not undefined', () => {
+    test(false, null);
+    test(false, '');
+    test(false, 'I am undefined');
+    test(false, 'HELLO');
+    test(false, 123);
+    test(false, { foo: 123 });
   });
 });
 

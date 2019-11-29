@@ -1,9 +1,22 @@
-import { server, fs } from './common';
+import { server, util } from './common';
 import { NeDb } from '@platform/fsdb.nedb';
+import { local } from '@platform/cell.fs';
 
-const dir = fs.resolve('tmp');
-const filename = fs.join(dir, 'sample.db');
+const TMP = util.resolve('tmp');
+
+/**
+ * Database
+ */
+const filename = `${TMP}/sample.db`;
 const db = NeDb.create({ filename });
 
-const app = server.init({ title: 'Platform Sample', db });
+/**
+ * File system.
+ */
+const fs = local.init({ root: `${TMP}/fs` });
+
+/**
+ * Initialize and start the HTTP application server.
+ */
+const app = server.init({ title: 'sample (local)', db, fs });
 app.listen({ port: 8080 });

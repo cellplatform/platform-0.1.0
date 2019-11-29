@@ -1,7 +1,7 @@
-import { t, Model, coord, Schema } from '../common';
+import { Model, Schema, t } from '../common';
 import * as rules from './rules';
 
-const Uri = coord.Uri;
+const Uri = Schema.uri;
 const query = Schema.query;
 
 /**

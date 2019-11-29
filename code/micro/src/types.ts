@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse, Server } from 'http';
 import { Token, Key } from 'path-to-regexp';
-import { HttpMethod } from '@platform/types';
+import { HttpMethod, Json } from '@platform/types';
 
 /**
  * HTTP
@@ -20,8 +20,20 @@ export type RequestQuery = {
   [key: string]: string | number | boolean | Array<string | number | boolean>;
 };
 
+/**
+ * Request body
+ */
+export type IBodyJsonOptions<T> = { default?: T; limit?: string | number; encoding?: string };
+export type IBodyBufferOptions = {
+  default?: string | Buffer;
+  limit?: string | number;
+  encoding?: string;
+};
+export type IBodyFormOptions = { limits?: IFormLimits };
 export type RequestBody = {
-  json<T>(options?: { default?: T; limit?: string | number; encoding?: string }): Promise<T>;
+  json<T>(options?: IBodyJsonOptions<T>): Promise<T>;
+  buffer(options?: IBodyBufferOptions): Promise<string | Buffer>;
+  form(options?: IBodyFormOptions): Promise<IForm>;
 };
 
 /**
@@ -89,4 +101,36 @@ export type IMicroService = {
   port: number;
   isRunning: boolean;
   close(): Promise<{}>;
+};
+
+/**
+ * Form
+ */
+
+export type IForm = {
+  fields: IFormField[];
+  files: IFormFile[];
+};
+
+export type IFormField = {
+  key: string;
+  value: Json;
+};
+
+export type IFormFile = {
+  field: string;
+  name: string;
+  encoding: string;
+  mimetype: string;
+  buffer: Buffer;
+};
+
+export type IFormLimits = {
+  fieldNameSize?: number;
+  fieldSize?: number;
+  fields?: number;
+  fileSize?: number;
+  files?: number;
+  parts?: number;
+  headerPairs?: number;
 };

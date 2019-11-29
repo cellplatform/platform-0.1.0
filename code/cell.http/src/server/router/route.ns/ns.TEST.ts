@@ -1,11 +1,9 @@
-import { t, expect, http, createMock, stripHashes, post } from '../../test';
+import { t, expect, http, createMock, stripHashes, post } from '../../../test';
 
 /**
  * TODO 🐷
  * - query: hash (optional)
  * - refactor hash (lazy eval)
- * - POST: changes (optional flag)
- * - calculations on POST
  */
 
 describe('route: namespace', () => {

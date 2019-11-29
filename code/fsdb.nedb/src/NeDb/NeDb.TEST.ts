@@ -107,8 +107,8 @@ describe('NeDb', () => {
 
       const now = time.now.timestamp;
       const res2 = await db.put(key, 123);
-      expect(res2.props.createdAt).to.be.within(now - 5, now + 20);
-      expect(res2.props.modifiedAt).to.be.within(now - 5, now + 20);
+      expect(res2.props.createdAt).to.be.within(now - 5, now + 30);
+      expect(res2.props.modifiedAt).to.be.within(now - 5, now + 30);
 
       const res3 = await db.get(key);
       expect(res3.props.createdAt).to.eql(res2.props.createdAt);
@@ -118,7 +118,7 @@ describe('NeDb', () => {
       const res4 = await db.put(key, 456);
 
       expect(res4.props.createdAt).to.eql(res2.props.createdAt);
-      expect(res4.props.modifiedAt).to.be.within(now + 90, now + 120);
+      expect(res4.props.modifiedAt).to.be.within(now + 90, now + 130);
     });
 
     it('put (custom timestamps)', async () => {

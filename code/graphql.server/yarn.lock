@@ -92,12 +92,12 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/graphql@0.2.49":
-  version "0.2.49"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.49.tgz#33d01c9595219607672c80479400375101ce1fa4"
-  integrity sha512-wxJXgQNeEmP7eMGdG9iDH62jHpWZ8pZe7hHImuHz5xAv+uXJvvP2nRQP+FmAqGcNS88TtN9r2FN3ieubYN185A==
+"@platform/graphql@0.2.51":
+  version "0.2.51"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.51.tgz#68829a1decef9242e6d443bc6551cec8d3b57bfe"
+  integrity sha512-yXpvuKfqVlwsSi6BwpF2926B16IPSIrSvHqq2uVFevNCLE11axNtLtz+aQ051ELKDtQQjrzW85H6knTowXLAIw==
   dependencies:
-    "@platform/http" "0.4.19"
+    "@platform/http" "0.5.0"
     "@platform/libs" "0.1.5"
     "@types/graphql" "14.5.0"
     apollo-cache-inmemory "1.6.3"
@@ -109,14 +109,14 @@
     graphql "14.5.8"
     graphql-tag "2.10.1"
 
-"@platform/http@0.4.19":
-  version "0.4.19"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.4.19.tgz#cf3973339ec297280bc4a4d381609768b6a30e14"
-  integrity sha512-L3gcyiMjywrqo02xIakU1S18r/uf3g88WiV0MccUY0S9CMMBlN7DlpL79Fa7JQ+TM55295ycHbvifwvWm67stA==
+"@platform/http@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.5.0.tgz#24e487daf76b4c0ad891ac600fe7d9caaa736dfc"
+  integrity sha512-RU9EPBAbfI5WR65A1kHVG7g9TXPGHS8THTqCGNk3uGuULfyihkEfwnyTo/Den/4FX15dbXas8rbA0qUDlk+Nnw==
   dependencies:
     "@platform/fs" "0.3.5"
     "@platform/types" "0.1.1"
-    "@platform/util.value" "0.5.11"
+    "@platform/util.value" "0.6.0"
     "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
 
@@ -186,10 +186,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.99.tgz#cec6784f9d33bd2ca44f5f1a67e05a0ba8148be7"
   integrity sha512-MVxN93c54YG3M+bDkW9mChte9uvxTQ0T0aOCSRuC9PQwcDHxFyepOCfqSSq3yQSEKRv+Op0K1kdgJMMRYxvAnw==
 
-"@platform/util.value@0.5.11":
-  version "0.5.11"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.5.11.tgz#d729981e842eca2de0d7a05fb4262b23a4026229"
-  integrity sha512-I8eoLRcSOKi50CkecXwnsYjRPXeC6JLgdV4i4RJypTIDPaC/IEtenpVLI/GXbpeDmSHtw9NjASK/qLnYDKe1jg==
+"@platform/util.value@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.6.0.tgz#dbacc8997d2c3c25cc0c66b606a12c06d06a77b0"
+  integrity sha512-0x9ooracbuSpWeeju6si2f8qgBIFRge7rozzyinMzsCn88K0muLgQ9pFMZCpsqX7hmWVHK1XnvXyur115RMCzg==
   dependencies:
     "@platform/libs" "0.1.5"
     "@platform/types" "0.1.1"

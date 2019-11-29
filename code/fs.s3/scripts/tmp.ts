@@ -7,8 +7,8 @@
 
 import { log, fs } from './common';
 
-const dir = fs.resolve('./tmp');
-fs.ensureDirSync(dir);
+const tmp = fs.resolve('./tmp');
+fs.ensureDirSync(tmp);
 
 const ACCESS = {
   KEY: process.env.SPACES_KEY,
@@ -21,15 +21,20 @@ const s3 = fs.s3({
   secret: ACCESS.SECRET,
 });
 
-const bucket = s3.bucket('uih');
+const bucket = s3.bucket('platform');
 
 log.info();
 
 async function testUpload() {
+  const fileName = 'foo.json';
+  const filePath = fs.join(tmp, fileName);
+
+  await fs.writeJson(filePath, { foo: 123 });
+
   console.log('\n\nuploading');
 
   const res = await bucket.put({
-    source: fs.join(dir, 'myfile.json'),
+    source: filePath,
     key: 'tmp/foo.json',
     acl: 'public-read',
   });
@@ -37,8 +42,8 @@ async function testUpload() {
   console.log('-------------------------------------------');
   console.log('res', res);
 
-  const res1 = await bucket.get({ key: 'tmp/foo.json' });
-  await res1.save(fs.join(dir, 'saved.json'));
+  const res1 = await bucket.get({ key: `tmp/${fileName}` });
+  await res1.save(fs.join(tmp, 'saved.json'));
 
   console.log('res1', res1);
   console.log('res1.json', res1.json);
@@ -53,9 +58,16 @@ async function testUpload() {
 
   // // console.log('upload2', upload2);
 
-  const res2 = await bucket.get({ key: 'tmp/db.zip' });
+  const res2 = await bucket.get({ key: `tmp/${fileName}` });
   console.log('res2', res2);
-  await res2.save(fs.join(dir, 'saved.zip'));
+  await res2.save(fs.join(tmp, 'saved.zip'));
 }
 
 testUpload();
+
+
+/**
+ * 
+ * file:<id>
+ * 
+ */
