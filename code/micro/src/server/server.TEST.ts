@@ -1,4 +1,4 @@
-import { expect, http, t, mockServer } from '../test';
+import { expect, http, t, mockServer, FormData, fs } from '../test';
 
 describe('micro (server)', () => {
   it('200', async () => {
@@ -118,5 +118,38 @@ describe('micro (server)', () => {
     expect(queries[1]).to.eql({});
     expect(queries[2]).to.eql({ data: 123 });
     expect(queries[3]).to.eql({ count: [123, 456] });
+  });
+
+  it('POST file (multipart/form-data)', async () => {
+    const mock = await mockServer();
+    const dir = fs.resolve(`tmp/test`);
+
+    const files: string[] = [];
+    mock.router.post(`/binary`, async req => {
+      const data = await req.body.form();
+      await fs.ensureDir(dir);
+      for (const file of data.files) {
+        files.push(file.name);
+        await fs.writeFile(fs.join(dir, file.name), file.buffer);
+      }
+      return {};
+    });
+
+    // Prepare the [multipart/form-data] to post.
+    const png = await fs.readFile(fs.resolve('src/test/images/bird.png'));
+    const form = new FormData();
+    form.append('image', png, {
+      filename: `image.png`,
+      contentType: 'application/octet-stream',
+    });
+    const headers = form.getHeaders();
+    await http.post(mock.url('/binary'), form, { headers });
+    await mock.dispose();
+
+    expect(files).to.eql(['image.png']);
+
+    // NB: Ensure the saved PNG file matches the posted file.
+    const saved = await fs.readFile(fs.join(dir, 'image.png'));
+    expect(png.toString()).to.eql(saved.toString());
   });
 });

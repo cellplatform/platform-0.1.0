@@ -39,7 +39,8 @@ export function form(req: t.Request, options: { limits?: t.IFormLimits } = {}) {
       try {
         value = valueUtil.isJson(value) ? JSON.parse(value) : valueUtil.toType(value);
       } catch (error) {
-        // NB: Ignore JSON parse or type conversion error - raw value used instead.
+        // NB: Ignore JSON-parse or type-conversion error
+        //     (use raw value instead).
       }
       fields.push({ key, value });
     });
