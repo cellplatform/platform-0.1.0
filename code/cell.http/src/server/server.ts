@@ -8,8 +8,8 @@ const { PKG } = constants;
 /**
  * Initializes a new server instance.
  */
-export function init(args: { db: t.IDb; title?: string }) {
-  const { db, title } = args;
+export function init(args: { db: t.IDb; fs: t.IFileSystem; title?: string }) {
+  const { db, title, fs } = args;
 
   // Setup the micro-service.
   const deps = PKG.dependencies || {};
@@ -22,7 +22,7 @@ export function init(args: { db: t.IDb; title?: string }) {
   });
 
   // Routes.
-  router.init({ title, db, router: app.router });
+  router.init({ title, db, fs, router: app.router });
 
   // Finish up.
   return app;

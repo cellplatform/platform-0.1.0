@@ -1,5 +1,5 @@
 import { t, expect, util, PATH } from '../test';
-import * as local from '.';
+import { local } from '.';
 
 const init = () => local.init({ dir: PATH.LOCAL });
 

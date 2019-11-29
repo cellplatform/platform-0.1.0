@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@platform/cell.db": "0.1.13",
+    "@platform/cell.fs": "0.0.3",
     "@platform/cell.func": "0.0.50",
     "@platform/cell.schema": "0.1.2",
     "@platform/cell.types": "0.1.15",

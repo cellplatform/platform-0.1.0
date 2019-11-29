@@ -3,13 +3,13 @@ import { constants, ROUTES, Schema, t, toErrorPayload } from '../common';
 /**
  * File-system routes (fs:).
  */
-export function init(args: { db: t.IDb; router: t.IRouter }) {
-  const { db, router } = args;
+export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) {
+  const { db, fs, router } = args;
 
   const getParams = (req: t.Request) => {
     const params = req.params as t.IReqFileParams;
     const data = {
-      id: (params.id || '').toString(),
+      ns: (params.ns || '').toString(),
       file: (params.file || '').toString(),
       uri: '',
     };
@@ -21,7 +21,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
 
     const toMessage = (msg: string) => `Malformed "file:" URI, ${msg} ("${req.url}").`;
 
-    if (!data.id) {
+    if (!data.ns) {
       error.message = toMessage('does not contain a namespace-identifier');
       return { ...data, status: 400, error };
     }
@@ -32,7 +32,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     }
 
     try {
-      data.uri = Schema.uri.create.file(data.id, data.file);
+      data.uri = Schema.uri.create.file(data.ns, data.file);
     } catch (err) {
       error.message = toMessage(err.message);
       return { ...data, status: 400, error };
@@ -46,9 +46,9 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.get(ROUTES.FILE.BASE, async req => {
     const query = req.query as t.IReqFileQuery;
-    const { status, id, error, uri } = getParams(req);
+    const { status, ns, error, uri } = getParams(req);
     const getModel: t.GetModel = () => null as any;
-    return !id || error ? { status, data: { error } } : getFileResponse({ uri, getModel });
+    return !ns || error ? { status, data: { error } } : getFileResponse({ uri, getModel });
   });
 
   /**
@@ -56,11 +56,18 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.post(ROUTES.FILE.BASE, async req => {
     const query = req.query as t.IReqPostFileQuery;
-    const { status, id, error, uri } = getParams(req);
+    const { status, ns, error, uri } = getParams(req);
     // const getModel: t.GetModel = () => null as any;
 
-    if (!id || error) {
+    if (!ns || error) {
       return { status, data: { error } };
+    }
+
+    const data = await req.body.form();
+
+    for (const file of data.files) {
+      // TODO 🐷
+      const r = await fs.write(uri, file.buffer);
     }
 
     // return !id ? { status, data: { error } } : getFileResponse({ uri, getModel });

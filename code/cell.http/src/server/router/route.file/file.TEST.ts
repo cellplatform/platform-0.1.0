@@ -1,6 +1,6 @@
-import { t, expect, http, createMock, stripHashes, post } from '../../../test';
+import { t, expect, http, createMock, stripHashes, post, fs, FormData } from '../../../test';
 
-describe.only('route: file', () => {
+describe('route: file', () => {
   describe('invalid URI', () => {
     const test = async (path: string, expected: string) => {
       const mock = await createMock();
@@ -22,34 +22,29 @@ describe.only('route: file', () => {
     });
   });
 
-  it.skip('TMP', async () => {
-    const mock = await createMock();
-    const url = mock.url('file:foo.123');
-    const res = await http.get(url);
-
-    await mock.dispose();
-
-    // const { res, json, data } = await post.ns('ns:foo?cells', {
-    //   cells: { A1: { value: 'hello' } },
-    // });
-    // const cells = data.cells || {};
-
-    console.log('-------------------------------------------');
-    console.log('url', url);
-    // console.log('cells', cells);
-    console.log('res', res);
-    console.log('res.body', res.body);
-  });
-
   describe('POST', () => {
     it('post binary file', async () => {
       const mock = await createMock();
-      const url = mock.url('file:foo.123');
 
-      const res = await http.post(url, {});
+      // Prepare the [multipart/form-data] to post.
+      const png = await fs.readFile(fs.resolve('src/test/images/bird.png'));
+      const form = new FormData();
+      form.append('image', png, {
+        filename: `image.png`,
+        contentType: 'application/octet-stream',
+      });
+      const headers = form.getHeaders();
+      const uri = 'file:foo.bird';
+      const res = await http.post(mock.url(uri), form, { headers });
+
+      mock.dispose();
 
       console.log('-------------------------------------------');
-      console.log('res.body', res.body);
+      console.log('res', res);
+
+      // Ensure saved file matches POSTed file.
+      const file = await fs.readFile(fs.resolve('tmp/fs/ns.foo/bird'));
+      expect(file.toString()).to.eql(png.toString());
     });
   });
 });
