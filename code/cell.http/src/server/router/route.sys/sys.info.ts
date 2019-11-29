@@ -13,12 +13,14 @@ const MODULE = {
  */
 export function init(args: { router: t.IRouter; title?: string }) {
   const { router } = args;
-  const region = fs.env.value('NOW_REGION') || 'local';
 
   /**
    * GET: /
    */
   router.get(ROUTES.SYS.INFO, async req => {
+    const now = fs.env.value('NOW_REGION');
+    const region = now ? `cloud/${now}` : 'local';
+
     const version = {
       [MODULE.SCHEMA]: (DEPS || {})[MODULE.SCHEMA],
       [PKG.name]: PKG.version,
@@ -29,7 +31,7 @@ export function init(args: { router: t.IRouter; title?: string }) {
       status: 200,
       data: {
         system: args.title || 'Untitled',
-        host: req.headers.host,
+        domain: req.headers.host,
         region,
         version,
       },
