@@ -79,7 +79,7 @@ export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
  * Coord: cell|row|col
  */
 
-export type IReqCoordParams = { id: string; key: string };
+export type IReqCoordParams = { ns: string; key: string };
 export type IReqCoordQuery = {};
 
 /**
@@ -99,7 +99,7 @@ export type IResGetColumnData = t.IColumnData;
 /**
  * File
  */
-export type IReqFileParams = { id: string; file: string };
+export type IReqFileParams = { ns: string; file: string };
 export type IReqFileQuery = {};
 
 /**

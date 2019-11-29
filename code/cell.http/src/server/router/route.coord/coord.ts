@@ -16,7 +16,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     const params = args.req.params as t.IReqCoordParams;
 
     const data = {
-      id: (params.id || '').toString(),
+      ns: (params.ns || '').toString(),
       key: (params.key || '').toString(),
       uri: '',
     };
@@ -28,7 +28,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
 
     const toMessage = (msg: string) => `Malformed "${prefix}:" URI, ${msg} ("${req.url}").`;
 
-    if (!data.id) {
+    if (!data.ns) {
       error.message = toMessage('does not contain a namespace-identifier');
       return { ...data, status: 400, error };
     }
@@ -39,7 +39,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     }
 
     try {
-      data.uri = args.getUri(data.id, data.key);
+      data.uri = args.getUri(data.ns, data.key);
     } catch (err) {
       error.message = toMessage(err.message);
       return { ...data, status: 400, error };
