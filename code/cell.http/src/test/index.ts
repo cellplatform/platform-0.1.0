@@ -1,3 +1,6 @@
+import * as FormData from 'form-data';
+export { FormData };
+
 export { expect, expectError } from '@platform/test';
 import { mock, createMock } from './mock';
 
