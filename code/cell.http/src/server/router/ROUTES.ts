@@ -2,7 +2,7 @@ export * from '../common/constants';
 
 export const ROUTES = {
   SYS: {
-    INFO: '/',
+    INFO: ['/', '/.info'],
     UID: '/uid',
     WILDCARD: '*',
   },
