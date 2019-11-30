@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.info",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "Editor for meta-data info about a cell.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,8 +14,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.1.17",
-    "@platform/cell.ui": "0.0.31",
+    "@platform/cell.types": "0.1.18",
+    "@platform/cell.ui": "0.0.32",
     "@platform/libs": "0.1.5",
     "@platform/log": "0.0.150",
     "@platform/react": "0.3.33"

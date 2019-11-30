@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.debug",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "Debug UI components for the ui.datagrid",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,14 +13,14 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.coord": "0.7.2",
-    "@platform/cell.schema": "0.1.3",
-    "@platform/cell.types": "0.1.16",
+    "@platform/cell.coord": "0.7.4",
+    "@platform/cell.schema": "0.1.5",
+    "@platform/cell.types": "0.1.18",
     "@platform/libs": "0.1.5",
     "@platform/react": "0.3.33",
     "@platform/ui.button": "0.3.13",
-    "@platform/ui.datagrid.types": "0.7.42",
-    "@platform/ui.datagrid.util": "0.2.22",
+    "@platform/ui.datagrid.types": "0.7.43",
+    "@platform/ui.datagrid.util": "0.2.23",
     "@platform/ui.icon": "0.0.97",
     "@platform/ui.object": "0.0.153",
     "@platform/ui.text": "0.3.7"
