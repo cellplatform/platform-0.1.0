@@ -54,5 +54,6 @@ export async function checkbox<V>(args: {
   items: Array<string | IPromptCheckboxOption<V>>;
   pageSize?: number;
 }) {
-  return list({ ...args, type: 'checkbox' });
+  const res = await list({ ...args, type: 'checkbox' });
+  return (res as unknown) as V[];
 }
