@@ -86,4 +86,21 @@ describe('model.File', () => {
     await test('foo', undefined);
     await test('foo.unknown', undefined);
   });
+
+  it('does not write over existing mimetype', async () => {
+    const db = await getTestDb({});
+    const uri = 'file:foo.123';
+
+    const mimetype = 'application/x-x509-ca-cert';
+    const model1 = await File.create({ db, uri }).ready;
+    model1.set({ props: { mimetype } });
+    await model1.save();
+    expect((model1.props.props || {}).mimetype).to.eql(mimetype);
+
+    model1.set({ props: { ...model1.toObject().props, name: 'foo.png' } });
+    expect((model1.props.props || {}).mimetype).to.eql(mimetype);
+
+    const model2 = await File.create({ db, uri }).ready;
+    expect((model2.props.props || {}).mimetype).to.eql(mimetype);
+  });
 });
