@@ -21,9 +21,9 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
     const NOW_REGION = fs.env.value('NOW_REGION');
     const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local';
 
-    const version = {
+    const version: t.IResGetInfo['version'] = {
       [MODULE.SCHEMA]: (DEPS || {})[MODULE.SCHEMA],
-      [PKG.name]: PKG.version,
+      [PKG.name || '']: PKG.version || '-',
       [MODULE.DB]: (DEPS || {})[MODULE.DB],
     };
 

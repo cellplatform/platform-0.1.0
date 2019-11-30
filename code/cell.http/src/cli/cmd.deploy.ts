@@ -150,7 +150,7 @@ async function copyAndPrepare(args: {
   await (async () => {
     const file = tmpl.files.find(path => path.to.endsWith('package.json'));
     if (file) {
-      const pkg = await fs.file.loadAndParse<t.IPackage>(file.to);
+      const pkg = await fs.file.loadAndParse<t.INpmPackageJson>(file.to);
       if (pkg.dependencies) {
         pkg.version = pkg.dependencies['@platform/cell.http'];
       }
