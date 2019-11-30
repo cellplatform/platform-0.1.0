@@ -27,6 +27,20 @@ export type IDbModelNsChildren = {
 };
 
 /**
+ * File
+ */
+// export type IDbModelFile<P extends object = {}> = IModel<
+//   IDbModelFileProps<P>,
+//   IDbModelFileDataProps<P>,
+//   IDbModelFileLinks,
+//   IDbModelFileChildren
+// >;
+// export type IDbModelFileProps<P extends object = {}> = t.IFileData<IDbModelFileDataProps<P>>;
+// export type IDbModelFileDataProps<P extends object = {}> = t.IFileProps & P;
+// export type IDbModelFileLinks = {};
+// export type IDbModelFileChildren = {};
+
+/**
  * Cell
  */
 export type IDbModelCell<P extends object = {}> = IModel<

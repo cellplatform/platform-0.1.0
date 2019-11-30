@@ -62,7 +62,7 @@ describe('fs.local', () => {
       const uri = 'file:foo.noexist';
 
       const res = await fs.read(uri);
-      const error = res.error as t.IFileError;
+      const error = res.error as t.IFileSystemError;
 
       expect(res.status).to.eql(404);
       expect(res.file).to.eql(undefined);

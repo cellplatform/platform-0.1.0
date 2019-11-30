@@ -1,4 +1,4 @@
-import { IError } from './types.error';
+import { IFileSystemError } from './types.error';
 
 export type IFileSystem = {
   root: string; // Root directory of the file system.
@@ -6,10 +6,7 @@ export type IFileSystem = {
   read(uri: string): Promise<IFileReadResponse>;
   write(uri: string, data: Buffer): Promise<IFileWriteResponse>;
 };
-
-export type IS3FileSystem = IFileSystem & {
-  bucket: string;
-};
+export type IS3FileSystem = IFileSystem & { bucket: string };
 
 export type IFile = {
   uri: string;
@@ -20,14 +17,11 @@ export type IFile = {
 export type IFileReadResponse = {
   status: number;
   file?: IFile;
-  error?: IFileError;
+  error?: IFileSystemError;
 };
 
 export type IFileWriteResponse = {
   status: number;
   file: IFile;
-  error?: IFileError;
+  error?: IFileSystemError;
 };
-
-export type FileError = 'FS/read' | 'FS/read/404' | 'FS/read/cloud' | 'FS/write' | 'FS/write/cloud';
-export type IFileError = IError<FileError> & { path: string };

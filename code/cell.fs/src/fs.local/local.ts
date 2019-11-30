@@ -29,7 +29,7 @@ export function init(args: { root: string }): t.IFileSystem {
 
       // Ensure the file exists.
       if (!(await fs.pathExists(path))) {
-        const error: t.IFileError = {
+        const error: t.IFileSystemError = {
           type: 'FS/read/404',
           message: `A file with the URI "${uri}" does not exist.`,
           path,
@@ -43,7 +43,7 @@ export function init(args: { root: string }): t.IFileSystem {
         const file: t.IFile = { uri, path, data };
         return { status: 200, file };
       } catch (err) {
-        const error: t.IFileError = {
+        const error: t.IFileSystemError = {
           type: 'FS/read',
           message: `Failed to write file at URI "${uri}". ${err.message}`,
           path,
@@ -69,7 +69,7 @@ export function init(args: { root: string }): t.IFileSystem {
         await fs.writeFile(path, data);
         return { status: 200, file };
       } catch (err) {
-        const error: t.IFileError = {
+        const error: t.IFileSystemError = {
           type: 'FS/write',
           message: `Failed to write "${uri}". ${err.message}`,
           path,

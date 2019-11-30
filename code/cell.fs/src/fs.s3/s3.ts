@@ -58,7 +58,7 @@ export function init(args: IS3Init): t.IS3FileSystem {
         const res = await cloud.bucket.get({ key });
         const { status } = res;
         if (!res.ok || !res.data) {
-          const error: t.IFileError = {
+          const error: t.IFileSystemError = {
             type: 'FS/read/cloud',
             message: `Failed to read "${uri}". ${res.error ? res.error.message : ''}`.trim(),
             path,
@@ -73,7 +73,7 @@ export function init(args: IS3Init): t.IS3FileSystem {
           return { status, file };
         }
       } catch (err) {
-        const error: t.IFileError = {
+        const error: t.IFileSystemError = {
           type: 'FS/read',
           message: `Failed to read "${uri}". ${err.message}`,
           path,
@@ -105,7 +105,7 @@ export function init(args: IS3Init): t.IS3FileSystem {
         const { status } = res;
         file.path = res.url ? res.url : file.path;
         if (!res.ok) {
-          const error: t.IFileError = {
+          const error: t.IFileSystemError = {
             type: 'FS/write/cloud',
             message: `Failed to write "${uri}". ${res.error ? res.error.message : ''}`.trim(),
             path,
@@ -115,7 +115,7 @@ export function init(args: IS3Init): t.IS3FileSystem {
           return { status, file };
         }
       } catch (err) {
-        const error: t.IFileError = {
+        const error: t.IFileSystemError = {
           type: 'FS/write',
           message: `Failed to write "${uri}". ${err.message}`,
           path,
