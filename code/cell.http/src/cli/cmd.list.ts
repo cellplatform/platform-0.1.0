@@ -32,16 +32,28 @@ export async function getConfigFiles(args: { dir?: string } = {}) {
   const paths = names.map(name => fs.join(dir, name));
   const length = paths.length;
   const isEmpty = length === 0;
+
+  type P = { message?: string; pageSize?: number };
+  const prompt = async <T>(args: P & { type: 'list' | 'checkbox' }) => {
+    const { message = 'deploy:', pageSize = 10, type } = args;
+    const items = paths.map(value => {
+      const name = ` ${trimYaml(fs.basename(value))}`;
+      return { name, value };
+    });
+    return cli.prompt.list<T>({ message, items, pageSize, type });
+  };
+
   return {
     isEmpty,
     length,
     dir,
     names,
     paths,
-    async prompt(args: { message?: string; pageSize?: number } = {}) {
-      const { message = 'deploy:', pageSize = 10 } = args;
-      const items = paths.map(value => ({ name: ` ${trimYaml(fs.basename(value))}`, value }));
-      return cli.prompt.list({ message, items, pageSize });
+    async promptOne(args: P = {}) {
+      return prompt<string>({ ...args, type: 'list' });
+    },
+    async promptMany(args: P = ({} = {})) {
+      return prompt<string[]>({ ...args, type: 'checkbox' });
     },
   };
 }
