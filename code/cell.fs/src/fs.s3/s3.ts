@@ -1,4 +1,4 @@
-import { t, fs, path } from '../common';
+import { t, fs, path, sha256 } from '../common';
 export * from '../types';
 
 export type IS3Init = t.S3Config & { root: string };
@@ -69,6 +69,9 @@ export function init(args: IS3Init): t.IS3FileSystem {
             uri,
             path: cloud.bucket.url(path),
             data: res.data,
+            get hash() {
+              return sha256(res.data);
+            },
           };
           return { status, file };
         }
@@ -93,7 +96,14 @@ export function init(args: IS3Init): t.IS3FileSystem {
       uri = (uri || '').trim();
       const path = res.resolve(uri);
       const key = path.replace(/^\//, '');
-      const file: t.IFileSystemFile = { uri, path, data };
+      const file: t.IFileSystemFile = {
+        uri,
+        path,
+        data,
+        get hash() {
+          return sha256(data);
+        },
+      };
 
       try {
         const res = await cloud.bucket.put({

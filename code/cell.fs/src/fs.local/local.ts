@@ -1,4 +1,4 @@
-import { fs, path, t } from '../common';
+import { fs, path, t, sha256 } from '../common';
 
 export * from '../types';
 
@@ -40,7 +40,14 @@ export function init(args: { root: string }): t.IFileSystem {
       // Load the file.
       try {
         const data = await fs.readFile(path);
-        const file: t.IFileSystemFile = { uri, path, data };
+        const file: t.IFileSystemFile = {
+          uri,
+          path,
+          data,
+          get hash() {
+            return sha256(data);
+          },
+        };
         return { status: 200, file };
       } catch (err) {
         const error: t.IFileSystemError = {
@@ -62,7 +69,14 @@ export function init(args: { root: string }): t.IFileSystem {
 
       uri = (uri || '').trim();
       const path = res.resolve(uri);
-      const file: t.IFileSystemFile = { uri, path, data };
+      const file: t.IFileSystemFile = {
+        uri,
+        path,
+        data,
+        get hash() {
+          return sha256(data);
+        },
+      };
 
       try {
         await fs.ensureDir(fs.dirname(path));

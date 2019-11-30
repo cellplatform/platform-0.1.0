@@ -107,7 +107,7 @@
     "@platform/libs" "0.1.5"
     "@platform/types" "0.1.1"
 
-"@platform/libs@0.1.5":
+"@platform/libs@0.1.5", "@platform/libs@^0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@platform/libs/-/libs-0.1.5.tgz#fed211c5162b8af76611af8604ca9ee7451ceb6e"
   integrity sha512-q65CkaqFVVicFSV0OjZEQcU+jLBF6fdUOuGBy2h5LR4IFaZ7G6t3m0KDbYnodyHxt8gCBFShgTyAE66DJxhaNw==
@@ -175,6 +175,14 @@
   dependencies:
     "@types/deep-diff" "1.0.0"
     deep-diff "1.0.2"
+
+"@platform/util.hash@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/util.hash/-/util.hash-0.0.5.tgz#e413d26fd4e8c4260c84a611cb408e3332f50ded"
+  integrity sha512-cN1kZNBsOcCzYds7wpsOOogNYM96jEqtmI66oLyNM7E5liLqGoM2ToOxUW4M1O55XCyLeHjDDaFQseAR7pbVmQ==
+  dependencies:
+    "@platform/libs" "^0.1.5"
+    js-sha256 "0.9.0"
 
 "@platform/util.is@0.0.99":
   version "0.0.99"
@@ -1098,6 +1106,11 @@ jmespath@^0.15.0:
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
   integrity sha1-o/Iiqarp+Wb10nx5ZRDigJF2Qhc=
+
+js-sha256@0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/js-sha256/-/js-sha256-0.9.0.tgz#0b89ac166583e91ef9123644bd3c5334ce9d0966"
+  integrity sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==
 
 js-tokens@^4.0.0:
   version "4.0.0"

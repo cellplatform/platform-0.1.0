@@ -4,3 +4,4 @@ import * as path from './path';
 
 export { constants, path, t };
 export * from './libs';
+export * from './hash';
