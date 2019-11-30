@@ -8,7 +8,19 @@ import * as t from '@platform/cell.types';
  * Configuration
  */
 
-export type IConfigCloud = {
+export type IConfigFileArgs = { path?: string; throw?: boolean };
+export type IConfigFile = {
+  path: string;
+  exists: boolean;
+  data: IConfigDeployment;
+  validate(): IValidation;
+};
+export type IValidation = {
+  isValid: boolean;
+  errors: t.IError[];
+};
+
+export type IConfigDeployment = {
   title: string;
   collection: string;
   now: {
@@ -29,7 +41,6 @@ export type IConfigNowFile = {
 /**
  * Payloads
  */
-
 export type IErrorPayload = { status: number; data: t.IHttpError };
 export type INotFoundResponse = t.IHttpError<'HTTP/404'> & { status: 404; url: string };
 export type IGetResponse<D> = {

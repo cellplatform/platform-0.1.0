@@ -1,4 +1,4 @@
-import { log, util, fs, cli } from './common';
+import { log, util, fs, cli, Config } from './common';
 
 /**
  * List available deployment configurations.
@@ -34,10 +34,12 @@ export async function getConfigFiles(args: { dir?: string } = {}) {
   const isEmpty = length === 0;
 
   type P = { message?: string; pageSize?: number };
-  const prompt = async <T>(args: P & { type: 'list' | 'checkbox' }) => {
+  type PP = P & { type: 'list' | 'checkbox' };
+
+  const prompt = async <T>(args: PP) => {
     const { message = 'deploy:', pageSize = 10, type } = args;
     const items = paths.map(value => {
-      const name = ` ${trimYaml(fs.basename(value))}`;
+      const name = trimYaml(fs.basename(value));
       return { name, value };
     });
     return cli.prompt.list<T>({ message, items, pageSize, type });
@@ -50,10 +52,12 @@ export async function getConfigFiles(args: { dir?: string } = {}) {
     names,
     paths,
     async promptOne(args: P = {}) {
-      return prompt<string>({ ...args, type: 'list' });
+      const path = await prompt<string>({ ...args, type: 'list' });
+      return path ? Config.loadSync({ path }) : undefined;
     },
     async promptMany(args: P = ({} = {})) {
-      return prompt<string[]>({ ...args, type: 'checkbox' });
+      const paths = await prompt<string[]>({ ...args, type: 'checkbox' });
+      return Promise.all(paths.map(path => Config.loadSync({ path })));
     },
   };
 }

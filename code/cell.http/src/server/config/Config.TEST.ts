@@ -1,23 +1,21 @@
-import { config } from '.';
-import { expect, fs } from '../../test';
+import { Config } from '.';
+import { t, expect, fs } from '../../test';
 
-const { DEFAULT } = config;
-
-const loadSync = (args: config.IConfigArgs) => {
+const loadSync = (args: t.IConfigFileArgs) => {
   const path = args.path || 'default.yml';
   args = { ...args, path: fs.resolve('src/test/config', path) };
-  return config.loadSync(args);
+  return Config.loadSync(args);
 };
 
 describe('settings.config', () => {
   it('does not exist', () => {
-    const res = config.loadSync();
+    const res = Config.loadSync();
     expect(res.exists).to.eql(false);
     expect(res.path).to.eql(fs.resolve('config.yml'));
   });
 
   it('does not exist (throws)', () => {
-    const fn = () => config.loadSync({ throw: true });
+    const fn = () => Config.loadSync({ throw: true });
     expect(fn).to.throw(/does not exist/);
   });
 
@@ -25,7 +23,7 @@ describe('settings.config', () => {
     const res = loadSync({ path: 'empty.yml' });
     expect(res.path).to.eql(fs.resolve('src/test/config/empty.yml'));
     expect(res.exists).to.eql(true);
-    expect(res.data).to.eql(config.DEFAULT);
+    expect(res.data).to.eql(Config.DEFAULT);
   });
 
   it('default', () => {
@@ -33,10 +31,10 @@ describe('settings.config', () => {
     expect(res.path).to.eql(fs.resolve('src/test/config/default.yml'));
     expect(res.exists).to.eql(true);
     expect(res.data).to.eql({
-      ...config.DEFAULT,
+      ...Config.DEFAULT,
       title: 'My Title',
       now: {
-        ...DEFAULT.now,
+        ...Config.DEFAULT.now,
         deployment: 'my-deployment',
         domain: 'domain.com',
         mongo: '@platform-mongo',
@@ -65,7 +63,7 @@ describe('settings.config', () => {
     });
 
     it('invalid', () => {
-      const test = (modify: (config: config.IConfig) => void, error: string) => {
+      const test = (modify: (config: t.IConfigFile) => void, error: string) => {
         const config = loadSync({});
         modify(config);
 

@@ -1,7 +1,7 @@
 import { t, micro, constants, log, util, value } from './common';
 import * as router from './router';
 
-export { config } from './config';
+export { Config } from './config';
 
 const { PKG } = constants;
 
