@@ -1,10 +1,10 @@
 import { t, fs, R } from '../common';
 
 export type IConfigArgs = { path?: string; throw?: boolean };
-export type IConfigResponse = {
+export type IConfig = {
   path: string;
   exists: boolean;
-  data: t.IConfigCloud;
+  data: t.IConfigDeployment;
   validate(): IValidation;
 };
 
@@ -13,7 +13,7 @@ export type IValidation = {
   errors: t.IError[];
 };
 
-export const DEFAULT: t.IConfigCloud = {
+export const DEFAULT: t.IConfigDeployment = {
   title: 'Untitled',
   collection: 'cell.http',
   now: {
@@ -52,12 +52,12 @@ export function loadSync(args: IConfigArgs = {}) {
   // Load file.
   let data = DEFAULT;
   if (exists) {
-    const yaml = fs.file.loadAndParseSync<t.IConfigCloud>(file, DEFAULT);
+    const yaml = fs.file.loadAndParseSync<t.IConfigDeployment>(file, DEFAULT);
     data = R.mergeDeepRight(data, yaml);
     data.now.mongo = data.now.mongo ? `@${data.now.mongo.replace(/^\@/, '')}` : ''; // Prepend "@" symbol for `zeit/now`.
   }
 
-  const config: IConfigResponse = {
+  const config: IConfig = {
     path: exists ? file : path,
     exists,
     data,
@@ -72,7 +72,7 @@ export function loadSync(args: IConfigArgs = {}) {
  * [Helpers]
  */
 
-function validate(config: IConfigResponse) {
+function validate(config: IConfig) {
   const data = config.data;
   const errors: t.IError[] = [];
   const res: IValidation = {

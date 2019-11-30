@@ -65,7 +65,7 @@ describe('settings.config', () => {
     });
 
     it('invalid', () => {
-      const test = (modify: (config: config.IConfigResponse) => void, error: string) => {
+      const test = (modify: (config: config.IConfig) => void, error: string) => {
         const config = loadSync({});
         modify(config);
 
