@@ -58,6 +58,16 @@ describe('schema', () => {
     });
   });
 
+  describe('file', () => {
+    it('abc.123', () => {
+      const ns = Schema.ns('abc');
+      const res = ns.file('123');
+      expect(res.id).to.eql('123');
+      expect(res.path).to.eql('NS/abc/FILE/123');
+      expect(res.uri).to.eql('file:abc.123');
+    });
+  });
+
   describe('Schema.from', () => {
     it('ns', async () => {
       const uri = 'ns:abc';
@@ -70,11 +80,9 @@ describe('schema', () => {
         expect(res.parts.id).to.eql('abc');
         expect(res.path).to.eql(path);
       };
-      test(path);
       test(uri);
-
-      const model: any = { path };
-      test(model);
+      test(path);
+      test({ path } as any);
     });
 
     it('cell', async () => {
@@ -89,11 +97,9 @@ describe('schema', () => {
         expect(res.parts.id).to.eql('abc!A1');
         expect(res.path).to.eql(path);
       };
-      test(path);
       test(uri);
-
-      const model: any = { path };
-      test(model);
+      test(path);
+      test({ path } as any);
     });
 
     it('row', async () => {
@@ -108,11 +114,9 @@ describe('schema', () => {
         expect(res.parts.id).to.eql('abc!1');
         expect(res.path).to.eql(path);
       };
-      test(path);
       test(uri);
-
-      const model: any = { path };
-      test(model);
+      test(path);
+      test({ path } as any);
     });
 
     it('column', async () => {
@@ -127,11 +131,28 @@ describe('schema', () => {
         expect(res.parts.id).to.eql('abc!A');
         expect(res.path).to.eql(path);
       };
+      test(uri);
+      test(path);
+      test({ path } as any);
+    });
+
+    it('file', async () => {
+      const ns = 'ns:abc';
+      const uri = 'file:abc.123';
+      const path = Schema.ns(ns).file('123').path;
+
+      const test = (input: string | t.IDbModelFile) => {
+        const res = Schema.from.file(input);
+        expect(res.uri).to.eql(uri);
+        expect(res.toString()).to.eql(uri);
+        expect(res.parts.id).to.eql('abc.123');
+        expect(res.parts.ns).to.eql('abc');
+        expect(res.parts.file).to.eql('123');
+        expect(res.path).to.eql(path);
+      };
       test(path);
       test(uri);
-
-      const model: any = { path };
-      test(model);
+      test({ path } as any);
     });
   });
 });
