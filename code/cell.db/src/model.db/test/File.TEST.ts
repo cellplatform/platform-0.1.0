@@ -55,7 +55,35 @@ describe('model.File', () => {
     })();
   });
 
-  it.skip('auto sets [mimetype] on save', async () => {
-    //
+  it('auto sets [mimetype] on save', async () => {
+    const db = await getTestDb({});
+    const uri = 'file:foo.123';
+
+    const test = async (name: string, expected?: string) => {
+      const model1 = (await File.create({ db, uri }).ready).set({ props: { name } });
+      await model1.save();
+
+      const model2 = await File.create({ db, uri }).ready;
+
+      const value1 = (model1.props.props || {}).mimetype;
+      const value2 = (model2.props.props || {}).mimetype;
+
+      expect(value1).to.eql(expected);
+      expect(value2).to.eql(expected);
+    };
+
+    await test('image.png', 'image/png');
+    await test('image.jpg', 'image/jpeg');
+    await test('image.jpeg', 'image/jpeg');
+    await test('image.gif', 'image/gif');
+    await test('favicon.ico', 'image/x-icon');
+
+    await test('doc.txt', 'plain/text');
+    await test('style.css', 'text/css');
+    await test('doc.pdf', 'application/pdf');
+    await test('code.js', 'application/javascript');
+
+    await test('foo', undefined);
+    await test('foo.unknown', undefined);
   });
 });
