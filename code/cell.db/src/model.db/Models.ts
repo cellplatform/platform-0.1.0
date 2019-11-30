@@ -33,7 +33,7 @@ export class Ns {
     });
   };
 
-  public static create<P extends object = {}>(args: { db: t.IDb; uri?: string }) {
+  public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
     const { uri, db } = args;
     const ns = Schema.ns(uri);
     const path = ns.path;
@@ -42,7 +42,7 @@ export class Ns {
 }
 
 /**
- * Represetns a single [cell] within a namespace.
+ * Represents a single [cell] within a namespace.
  */
 export class Cell {
   public static factory: t.ModelFactory<t.IDbModelCell> = ({ path, db }) => {

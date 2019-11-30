@@ -1,4 +1,4 @@
-import { cuid, t } from '../common';
+import { cuid, slug, t } from '../common';
 import { Uri } from '../uri';
 
 export type SchemaFileType = 'FILE';
@@ -14,8 +14,10 @@ export type UriString = string;
  */
 export class Schema {
   public static uri = Uri;
+  public static cuid = cuid;
+  public static slug = slug;
 
-  public static ns = (id?: string) => new NsSchema({ id });
+  public static ns = (id: string) => new NsSchema({ id });
 
   public static query = {
     cells: '/CELL/*',
@@ -84,7 +86,7 @@ export class NsSchema {
   public readonly path: string;
   public readonly uri: string;
 
-  constructor(args: { id?: string }) {
+  constructor(args: { id: string }) {
     let id = args.id || cuid();
     if (Uri.is.uri(id)) {
       const uri = Uri.parse(id);

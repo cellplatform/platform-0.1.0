@@ -10,7 +10,7 @@ describe('schema', () => {
     });
 
     it('generated id', () => {
-      const ns = Schema.ns();
+      const ns = Schema.ns(Schema.cuid());
       expect(ns.id.length).to.greaterThan(10);
       expect(ns.uri).to.eql(`ns:${ns.id}`);
     });
