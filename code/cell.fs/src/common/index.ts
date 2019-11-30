@@ -1,5 +1,6 @@
 import * as t from './types';
 import * as constants from './constants';
+import * as path from './path';
 
-export { constants, t };
+export { constants, path, t };
 export * from './libs';

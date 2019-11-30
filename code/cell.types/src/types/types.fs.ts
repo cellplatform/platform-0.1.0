@@ -7,6 +7,10 @@ export type IFileSystem = {
   write(uri: string, data: Buffer): Promise<IFileWriteResponse>;
 };
 
+export type IS3FileSystem = IFileSystem & {
+  bucket: string;
+};
+
 export type IFile = {
   uri: string;
   path: string;
@@ -14,14 +18,16 @@ export type IFile = {
 };
 
 export type IFileReadResponse = {
+  status: number;
   file?: IFile;
   error?: IFileError;
 };
 
 export type IFileWriteResponse = {
+  status: number;
   file: IFile;
   error?: IFileError;
 };
 
-export type FileError = 'FS/404' | 'FS/write';
+export type FileError = 'FS/read' | 'FS/read/404' | 'FS/read/cloud' | 'FS/write' | 'FS/write/cloud';
 export type IFileError = IError<FileError> & { path: string };

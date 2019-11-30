@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.fs",
-  "version": "0.0.6",
+  "version": "0.1.1",
   "description": "File system support for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -9,15 +9,17 @@
     "watch": "nodemon .",
     "test": "ts test",
     "tdd": "ts test --watch",
+    "test:integration": "ts test --suffix INTEGRATION",
+    "tddi": "ts test --suffix INTEGRATION --watch",
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.schema": "0.1.4",
-    "@platform/cell.types": "0.1.17",
+    "@platform/cell.schema": "0.1.5",
+    "@platform/cell.types": "0.1.18",
     "@platform/fs": "0.3.5",
-    "@platform/fs.s3": "0.3.14",
+    "@platform/fs.s3": "0.4.0",
     "@platform/libs": "0.1.5",
     "@platform/types": "0.1.1"
   },
