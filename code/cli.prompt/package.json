@@ -10,8 +10,9 @@
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare",
-    "prompt.list": "ts-node -T scripts/prompt.list",
-    "prompt.text": "ts-node -T scripts/prompt.text"
+    "demo.txt": "ts-node -T scripts/prompt.text",
+    "demo.ls": "ts-node -T scripts/prompt.list",
+    "demo.chk": "ts-node -T scripts/prompt.checkbox"
   },
   "dependencies": {
     "@platform/libs": "0.1.5",
