@@ -23,7 +23,7 @@ export function init(args: { root: string }): t.IFileSystem {
     /**
      * Read from the local file=system.
      */
-    async read(uri: string): Promise<t.IFileReadResponse> {
+    async read(uri: string): Promise<t.IFileSystemRead> {
       uri = (uri || '').trim();
       const path = res.resolve(uri);
 
@@ -40,7 +40,7 @@ export function init(args: { root: string }): t.IFileSystem {
       // Load the file.
       try {
         const data = await fs.readFile(path);
-        const file: t.IFile = { uri, path, data };
+        const file: t.IFileSystemFile = { uri, path, data };
         return { status: 200, file };
       } catch (err) {
         const error: t.IFileSystemError = {
@@ -55,14 +55,14 @@ export function init(args: { root: string }): t.IFileSystem {
     /**
      * Write to the local file-system.
      */
-    async write(uri: string, data: Buffer): Promise<t.IFileWriteResponse> {
+    async write(uri: string, data: Buffer): Promise<t.IFileSystemWrite> {
       if (!data) {
         throw new Error(`Cannot write, no data provided.`);
       }
 
       uri = (uri || '').trim();
       const path = res.resolve(uri);
-      const file: t.IFile = { uri, path, data };
+      const file: t.IFileSystemFile = { uri, path, data };
 
       try {
         await fs.ensureDir(fs.dirname(path));

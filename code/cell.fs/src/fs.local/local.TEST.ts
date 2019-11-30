@@ -47,7 +47,7 @@ describe('fs.local', () => {
     await util.fs.writeFile(path, png);
 
     const res = await fs.read(uri);
-    const file = res.file as t.IFile;
+    const file = res.file as t.IFileSystemFile;
 
     expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);

@@ -49,7 +49,7 @@ export function init(args: IS3Init): t.IS3FileSystem {
     /**
      * Read from the local file=system.
      */
-    async read(uri: string): Promise<t.IFileReadResponse> {
+    async read(uri: string): Promise<t.IFileSystemRead> {
       uri = (uri || '').trim();
       const path = res.resolve(uri);
       const key = path.replace(/^\//, '');
@@ -65,7 +65,7 @@ export function init(args: IS3Init): t.IS3FileSystem {
           };
           return { status, error };
         } else {
-          const file: t.IFile = {
+          const file: t.IFileSystemFile = {
             uri,
             path: cloud.bucket.url(path),
             data: res.data,
@@ -85,7 +85,7 @@ export function init(args: IS3Init): t.IS3FileSystem {
     /**
      * Write to the local file-system.
      */
-    async write(uri: string, data: Buffer): Promise<t.IFileWriteResponse> {
+    async write(uri: string, data: Buffer): Promise<t.IFileSystemWrite> {
       if (!data) {
         throw new Error(`Cannot write, no data provided.`);
       }
@@ -93,7 +93,7 @@ export function init(args: IS3Init): t.IS3FileSystem {
       uri = (uri || '').trim();
       const path = res.resolve(uri);
       const key = path.replace(/^\//, '');
-      const file: t.IFile = { uri, path, data };
+      const file: t.IFileSystemFile = { uri, path, data };
 
       try {
         const res = await cloud.bucket.put({
