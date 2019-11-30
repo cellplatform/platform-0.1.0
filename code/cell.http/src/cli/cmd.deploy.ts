@@ -76,7 +76,7 @@ export async function run(args: { target: DeployTarget; force?: boolean }) {
         info: [] as string[],
         log: () => {
           log.info.green(`${dirname}`);
-          log.info.gray(`${targetDir}`);
+          log.info.gray(`${targetDir}/`);
           res.info.forEach(line => log.info(line));
           log.info();
         },
@@ -98,6 +98,7 @@ export async function run(args: { target: DeployTarget; force?: boolean }) {
   });
 
   // Run the deployment tasks.
+  log.info();
   await cli.exec.tasks.run(tasks, { silent: false, concurrent: true });
 
   // Finish up.
