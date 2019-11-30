@@ -10,7 +10,7 @@ app
    */
   .command(
     ['init'],
-    'Initialize a new deployment.',
+    'Initialize new deployment config.',
     yargs => yargs,
     async argv => cmd.init.run(),
   )
@@ -20,7 +20,7 @@ app
    */
   .command(
     ['list', 'ls'],
-    'List available deployment configurations.',
+    'List deployment configs.',
     yargs => yargs,
     async argv => cmd.list.run(),
   )
