@@ -1,7 +1,6 @@
 import { inquirer } from './common';
 
-export type IPromptListOption<V = string> = { name: string; value?: V };
-export type IPromptCheckboxOption<V = string> = { name: string; value?: V };
+export type IPromptListOption = { name: string; value?: any };
 
 /**
  * Prompts the user for a simple text value.
@@ -21,9 +20,9 @@ export async function text(args: { message: string; default?: string }) {
 /**
  * Prompts the user for selection from a list.
  */
-export async function list<V>(args: {
+export async function list<V = string>(args: {
   message: string;
-  items: Array<string | IPromptListOption<V>>;
+  items: Array<string | IPromptListOption>;
   pageSize?: number;
   type?: 'list' | 'checkbox';
 }) {
@@ -49,11 +48,10 @@ export async function list<V>(args: {
 /**
  * Prompts the user with a list of checkboxes (ie. multi-select).
  */
-export async function checkbox<V>(args: {
+export async function checkbox<V = string>(args: {
   message: string;
-  items: Array<string | IPromptCheckboxOption<V>>;
+  items: Array<string | IPromptListOption>;
   pageSize?: number;
 }) {
-  const res = await list({ ...args, type: 'checkbox' });
-  return (res as unknown) as V[];
+  return list<V[]>({ ...args, type: 'checkbox' });
 }
