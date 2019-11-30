@@ -4,7 +4,6 @@ import { expect, getTestDb } from '../../test';
 describe('model.Row', () => {
   it('create', async () => {
     const db = await getTestDb({ file: true });
-
     const uri = 'row:abcd!1';
     const res1 = await Row.create({ db, uri }).ready;
 
@@ -18,6 +17,7 @@ describe('model.Row', () => {
     const res2 = await Row.create({ db, uri }).ready;
     expect(res2.props.hash).to.eql(HASH.after);
     expect(res2.props.props).to.eql({ foo: 123 });
+    expect(res2.props.error).to.eql(undefined);
   });
 
   it('updates hash on save', async () => {

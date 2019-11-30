@@ -1,4 +1,3 @@
-import * as t from './types';
 import * as cell from './util.cell';
 
 export { cell };

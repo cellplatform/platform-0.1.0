@@ -17,6 +17,7 @@ describe('model.Column', () => {
     const res2 = await Column.create({ db, uri }).ready;
     expect(res2.props.hash).to.eql(HASH.after);
     expect(res2.props.props).to.eql({ foo: 123 });
+    expect(res2.props.error).to.eql(undefined);
   });
 
   it('updates hash on save (auto)', async () => {

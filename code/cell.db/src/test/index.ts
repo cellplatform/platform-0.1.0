@@ -7,6 +7,9 @@ export { expect, expectError } from '@platform/test';
 export { time } from '@platform/util.value';
 export * from '../common';
 
+import { util } from '../common';
+export const hash = util.cell.value.hash;
+
 let count = 0;
 const dir = fs.resolve('tmp/test');
 after(() => fs.remove(dir)); // Clean up after all tests.
@@ -36,4 +39,12 @@ export async function getTestDb(
   }
 
   return db;
+}
+
+/**
+ * Gets the hash of an image file.
+ */
+export async function getFileHash(filename = 'kitten.jpg') {
+  const image = await fs.readFile(fs.resolve(`src/test/images/${filename}`));
+  return hash.sha256(image);
 }

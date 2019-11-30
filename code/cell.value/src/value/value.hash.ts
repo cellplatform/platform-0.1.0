@@ -5,6 +5,8 @@ import { squash } from './value.cell';
  * Hashing algorithms for CellOS data objects.
  */
 export const hash = {
+  sha256,
+
   /**
    * Generate a uniform hash (SHA-256) of the given NS data.
    * NOTE:
@@ -42,7 +44,7 @@ export const hash = {
   /**
    * Generate a uniform hash (SHA-256) of the given file.
    */
-  file(args: { uri: string; buffer: Buffer; data?: t.IFileData }): string {
+  file(args: { uri: string; data?: t.IFileData }): string {
     const uri = (args.uri || '').trim();
     if (!uri.startsWith('file:')) {
       throw new Error(`Hashing requires a valid "file:" URI. Given "${uri}".`);
@@ -59,9 +61,6 @@ export const hash = {
     }
     if (error) {
       obj.error = error;
-    }
-    if (args.buffer) {
-      obj.buffer = args.buffer;
     }
 
     return sha256(obj);

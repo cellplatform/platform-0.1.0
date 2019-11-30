@@ -24,6 +24,7 @@ export type IDbModelNsChildren = {
   cells: IDbModelCell[];
   columns: IDbModelColumn[];
   rows: IDbModelRow[];
+  files: IDbModelFile[];
 };
 
 /**

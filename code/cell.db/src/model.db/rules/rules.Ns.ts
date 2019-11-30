@@ -18,6 +18,7 @@ export const beforeNsSave: t.BeforeModelSave<t.IDbModelNsProps> = async args => 
   if (args.force || args.isChanged) {
     const uri = schema.uri;
     const ns: t.INs = { ...value.deleteUndefined(model.toObject()), hash: undefined };
+    delete ns.hash;
     const data = await models.ns.getChildData({ model, cells: true, rows: true, columns: true });
     model.props.hash = util.hash.ns({ uri, ns, data });
   }

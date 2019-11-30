@@ -244,8 +244,8 @@ describe('hash', () => {
     beforeEach(() => (index = -1));
 
     let index = -1;
-    const test = (buffer: Buffer, data: t.IFileData | undefined, expected: string) => {
-      const hash = value.hash.file({ uri: 'file:foo.123', buffer, data });
+    const test = (data: t.IFileData | undefined, expected: string) => {
+      const hash = value.hash.file({ uri: 'file:foo.123', data });
 
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
@@ -255,9 +255,8 @@ describe('hash', () => {
     };
 
     it('throws (invalid URI)', async () => {
-      const buffer = await fs.readFile(fs.resolve('src/test/images/bird.png'));
       const invalid = (uri: string) => {
-        expect(() => value.hash.file({ uri, buffer })).to.throw();
+        expect(() => value.hash.file({ uri })).to.throw();
       };
       invalid('');
       invalid('  ');
@@ -268,16 +267,15 @@ describe('hash', () => {
     });
 
     it('hash props/error/buffer', async () => {
-      const png = await fs.readFile(fs.resolve('src/test/images/bird.png'));
       const jpg = await fs.readFile(fs.resolve('src/test/images/kitten.jpg'));
+      const fileHash = value.hash.sha256(jpg);
       const error = { type: 'FAIL', message: 'Bummer' };
 
-      test(png, { props: { name: 'image.png' } }, '4ce1b2d717');
-      test(jpg, { props: { name: 'image.png' } }, 'a99cde50');
-      test(jpg, { props: { name: 'image.png' } }, 'ba99cde50');
-      test(jpg, { props: { name: 'image.png', mimetype: 'image/png' } }, '6d5474592');
-      test(jpg, { props: {}, error }, 'f8a008452');
-      test(jpg, { props: { name: 'image.png' }, error }, 'b01d753597');
+      test({ props: { name: 'image.png' } }, 'e2e43515c3');
+      test({ props: { name: 'image.png', fileHash } }, '34ccb871c4');
+      test({ props: { name: 'image.png', mimetype: 'image/png', fileHash } }, '584f44d68e');
+      test({ props: {}, error }, 'b97a3f147a');
+      test({ props: { name: 'image.png', fileHash }, error }, 'ab36528007');
     });
   });
 });

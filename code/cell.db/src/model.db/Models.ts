@@ -13,6 +13,7 @@ export class Ns {
       cells: { query: query.cells, factory: Cell.factory },
       rows: { query: query.rows, factory: Row.factory },
       columns: { query: query.columns, factory: Column.factory },
+      files: { query: query.files, factory: File.factory },
     };
 
     const uri = Schema.from.ns(path);
@@ -145,5 +146,35 @@ export class Column {
     const ns = Schema.ns(uri.parts.ns);
     const path = ns.column(uri.parts.key).path;
     return Column.factory({ db, path }) as t.IDbModelColumn<P>;
+  }
+}
+
+/**
+ * Represetns a single [file] within a namespace.
+ */
+export class File {
+  public static factory: t.ModelFactory<t.IDbModelFile> = ({ path, db }) => {
+    const initial: t.IDbModelFileProps = {
+      props: {},
+      hash: undefined,
+      error: undefined,
+    };
+    return Model.create<t.IDbModelFileProps>({
+      db,
+      path,
+      initial,
+      beforeSave: rules.beforeFileSave,
+    });
+  };
+
+  public static create(args: { db: t.IDb; uri: string }) {
+    const { db } = args;
+    const uri = Uri.parse<t.IFileUri>(args.uri);
+    if (uri.error) {
+      throw new Error(uri.error.message);
+    }
+    const ns = Schema.ns(uri.parts.ns);
+    const path = ns.file(uri.parts.file).path;
+    return File.factory({ db, path }) as t.IDbModelFile;
   }
 }
