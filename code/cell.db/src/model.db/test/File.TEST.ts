@@ -76,9 +76,8 @@ describe('model.File', () => {
     await test('image.jpg', 'image/jpeg');
     await test('image.jpeg', 'image/jpeg');
     await test('image.gif', 'image/gif');
-    await test('favicon.ico', 'image/x-icon');
 
-    await test('doc.txt', 'plain/text');
+    await test('doc.txt', 'text/plain');
     await test('style.css', 'text/css');
     await test('doc.pdf', 'application/pdf');
     await test('code.js', 'application/javascript');
