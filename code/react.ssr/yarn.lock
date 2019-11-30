@@ -18,20 +18,20 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/cli.prompt@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.1.0.tgz#cd4279482afa67f5acdb1938b191017a92b5a9a3"
-  integrity sha512-U+uFP6NefPUr8KoSNyH/b7upY1hMdB7n8GzxUagkUNxXwkuzkPGFeI2CK61XJ32UzOp7ZMEOOfy+GYGnJs852A==
+"@platform/cli.prompt@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.1.1.tgz#eb32e2c0488805ea851a36d8b352837bc5c2e3e4"
+  integrity sha512-xn6jb+ExeottxuO5p9dfClcLYqKamW4n95gUxiKwcRIgTcn9anJgCm3UaNDcBd+pdEqlUURykxjVI9KivclLdA==
   dependencies:
     "@platform/libs" "0.1.5"
     inquirer "7.0.0"
 
-"@platform/cli@0.4.10":
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.4.10.tgz#23da222d504c48b8e7d6c3e671b815fdb9ef0f76"
-  integrity sha512-6m9fu6dIW3cCCofy9SmaTt9x7b1fcETyOhdT1Pz4E6wyomfEMf++ehxwhTvJ00ozKXpl7WwEe45RQX7W42tmvQ==
+"@platform/cli@0.4.11":
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.4.11.tgz#7c6269b96f52e50bb6af73626586e5cd6d9cdf12"
+  integrity sha512-Q83CDNrzJWDrhKj7yhn/Xbpt+fQ+W1h8lHwl818I0WoE4jeb9s8mSmShXDIlCiKjYPse0ZT0yNven0L6jg6/rA==
   dependencies:
-    "@platform/cli.prompt" "0.1.0"
+    "@platform/cli.prompt" "0.1.1"
     "@platform/exec" "0.2.35"
     "@platform/fs" "0.3.5"
     "@platform/libs" "0.1.5"
@@ -141,12 +141,12 @@
     micro-cors "0.1.1"
     path-to-regexp "6.1.0"
 
-"@platform/npm@0.2.23":
-  version "0.2.23"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.23.tgz#74b297103d2183947c108b20ba29aa7aa79c0d46"
-  integrity sha512-Fv417pzQXOCX3AgX0v/veUq6jUqObLdPs7kWfE/IYdlcNUbAkpvZyDTcCXImcWPFMXSeJK3jS65k5kst0yK2mA==
+"@platform/npm@0.2.24":
+  version "0.2.24"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.24.tgz#3b710643803619ce84cb0140a6af2c23e7075019"
+  integrity sha512-fDPZRsXFTZoEgupzH51T/zaCYI9eUNeySpbdSBMGYGnqr6XZ+/Fp97WV4iSFrrLSnILxsvCtk/3v9gzaS0HHrw==
   dependencies:
-    "@platform/cli.prompt" "0.1.0"
+    "@platform/cli.prompt" "0.1.1"
     "@platform/exec" "0.2.35"
     "@platform/fs" "0.3.5"
     "@platform/log" "0.0.150"

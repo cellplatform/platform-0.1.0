@@ -1091,10 +1091,10 @@
     "@platform/libs" "0.1.5"
     "@platform/util.value" "0.6.0"
 
-"@platform/cell.http@0.3.27":
-  version "0.3.27"
-  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.3.27.tgz#81b534bcb24dff621bd25f738af16838949eb60d"
-  integrity sha512-XkfOQLMdKUHYFwQkKDryOBAQaPY7cupiHzBUGqd36KNZsIaNN4oa2suChAH6WjP27yrWtlTsaz3bRyjYM85fkA==
+"@platform/cell.http@0.3.28":
+  version "0.3.28"
+  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.3.28.tgz#e8e4e7d849066af3ba0f0964a1288d4f908477b3"
+  integrity sha512-kpKipw4meR1P1fx+l2kpTN8z/4IWrBFhTwOxHAKyEaN4A6X+VPpTLNqqwfgeyUcnCu9oZlCFPNR6YRcRYCU0AQ==
   dependencies:
     "@platform/cell.db" "0.2.0"
     "@platform/cell.fs" "0.1.2"
@@ -1102,8 +1102,8 @@
     "@platform/cell.schema" "0.1.6"
     "@platform/cell.types" "0.1.19"
     "@platform/cell.value" "0.1.12"
-    "@platform/cli" "0.4.10"
-    "@platform/cli.prompt" "^0.1.0"
+    "@platform/cli" "0.4.11"
+    "@platform/cli.prompt" "^0.1.1"
     "@platform/exec" "0.2.35"
     "@platform/fs" "0.3.5"
     "@platform/fsdb.model" "0.5.2"
@@ -1183,10 +1183,10 @@
     "@platform/libs" "0.1.4"
     inquirer "7.0.0"
 
-"@platform/cli.prompt@0.1.0", "@platform/cli.prompt@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.1.0.tgz#cd4279482afa67f5acdb1938b191017a92b5a9a3"
-  integrity sha512-U+uFP6NefPUr8KoSNyH/b7upY1hMdB7n8GzxUagkUNxXwkuzkPGFeI2CK61XJ32UzOp7ZMEOOfy+GYGnJs852A==
+"@platform/cli.prompt@0.1.1", "@platform/cli.prompt@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.1.1.tgz#eb32e2c0488805ea851a36d8b352837bc5c2e3e4"
+  integrity sha512-xn6jb+ExeottxuO5p9dfClcLYqKamW4n95gUxiKwcRIgTcn9anJgCm3UaNDcBd+pdEqlUURykxjVI9KivclLdA==
   dependencies:
     "@platform/libs" "0.1.5"
     inquirer "7.0.0"
@@ -1224,12 +1224,12 @@
     "@platform/util.value" "0.5.8"
     react-icons "3.8.0"
 
-"@platform/cli@0.4.10":
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.4.10.tgz#23da222d504c48b8e7d6c3e671b815fdb9ef0f76"
-  integrity sha512-6m9fu6dIW3cCCofy9SmaTt9x7b1fcETyOhdT1Pz4E6wyomfEMf++ehxwhTvJ00ozKXpl7WwEe45RQX7W42tmvQ==
+"@platform/cli@0.4.11":
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.4.11.tgz#7c6269b96f52e50bb6af73626586e5cd6d9cdf12"
+  integrity sha512-Q83CDNrzJWDrhKj7yhn/Xbpt+fQ+W1h8lHwl818I0WoE4jeb9s8mSmShXDIlCiKjYPse0ZT0yNven0L6jg6/rA==
   dependencies:
-    "@platform/cli.prompt" "0.1.0"
+    "@platform/cli.prompt" "0.1.1"
     "@platform/exec" "0.2.35"
     "@platform/fs" "0.3.5"
     "@platform/libs" "0.1.5"

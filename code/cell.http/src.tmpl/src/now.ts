@@ -1,4 +1,4 @@
-import { t, server, log, util } from './common';
+import { t, server, log, util, time } from './common';
 import { MongoDb } from '@platform/fsdb.mongo';
 import { local } from '@platform/cell.fs';
 
@@ -33,5 +33,6 @@ const db: t.IDb = MongoDb.create({
  * Initialise the HTTP server.
  */
 const title = IS_CLOUD ? '__TITLE__' : 'local';
-const app = server.init({ title, db, fs });
+const deployedAt = (IS_CLOUD ? '__DEPLOYED_AT__' : time.now.timestamp) ;
+const app = server.init({ title, db, fs, deployedAt });
 export default app.server;
