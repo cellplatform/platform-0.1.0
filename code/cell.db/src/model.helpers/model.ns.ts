@@ -39,7 +39,7 @@ export function toSchema(input: t.IDbModelNs | string) {
 }
 
 /**
- * Get the child [cells] of the given namespace.
+ * Get the child [Cells] of the given namespace.
  */
 export async function getChildCells(args: { model: t.IDbModelNs; range?: string }) {
   const models = await args.model.children.cells;
@@ -54,7 +54,7 @@ export async function getChildCells(args: { model: t.IDbModelNs; range?: string 
 }
 
 /**
- * Get the child [rows] of the given namespace.
+ * Get the child [Rows] of the given namespace.
  */
 export async function getChildRows(args: { model: t.IDbModelNs; range?: string }) {
   const models = await args.model.children.rows;
@@ -69,7 +69,7 @@ export async function getChildRows(args: { model: t.IDbModelNs; range?: string }
 }
 
 /**
- * Get the child [columns] of the given namespace.
+ * Get the child [Columns] of the given namespace.
  */
 export async function getChildColumns(args: { model: t.IDbModelNs; range?: string }) {
   const models = await args.model.children.columns;
