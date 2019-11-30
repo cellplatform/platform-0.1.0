@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { getConfigFiles, logNoConfigFiles } from './cmd.list';
-import { cli, Config, fs, log, t, defaultValue, time } from './common';
+import { cli, defaultValue, fs, log, PKG, t, time } from './common';
 
 const FILES = [
   'package.json',
@@ -20,6 +20,8 @@ type DeployTarget = 'now';
 export async function run(args: { target: DeployTarget; force?: boolean }) {
   const { target } = args;
   const force = defaultValue(args.force, false);
+
+  log.info.gray(`${PKG.name}: v${log.white(PKG.version)}`);
 
   // Read in the config files.
   const files = await getConfigFiles();
