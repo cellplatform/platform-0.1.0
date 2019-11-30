@@ -1,8 +1,9 @@
+export { expect, expectError } from '@platform/test';
+export { log } from '@platform/log/lib/server';
+export * from '../common';
+
 import { fs } from '../common';
 fs.env.load();
-
-export { expect, expectError } from '@platform/test';
-export * from '../common';
 
 const TMP = fs.resolve('tmp');
 export const PATH = {

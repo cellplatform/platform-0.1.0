@@ -29,5 +29,5 @@ export type IFileWriteResponse = {
   error?: IFileError;
 };
 
-export type FileError = 'FS/read' | 'FS/read/404' | 'FS/write' | 'FS/write/cloud';
+export type FileError = 'FS/read' | 'FS/read/404' | 'FS/read/cloud' | 'FS/write' | 'FS/write/cloud';
 export type IFileError = IError<FileError> & { path: string };

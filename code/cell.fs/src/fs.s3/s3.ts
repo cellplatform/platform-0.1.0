@@ -50,8 +50,36 @@ export function init(args: IS3Init): t.IS3FileSystem {
      * Read from the local file=system.
      */
     async read(uri: string): Promise<t.IFileReadResponse> {
-      //
       uri = (uri || '').trim();
+      const path = res.resolve(uri);
+      const key = path.replace(/^\//, '');
+
+      try {
+        const res = await cloud.bucket.get({ key });
+        const { status } = res;
+        if (!res.ok || !res.data) {
+          const error: t.IFileError = {
+            type: 'FS/read/cloud',
+            message: `Failed to read "${uri}". ${res.error ? res.error.message : ''}`.trim(),
+            path,
+          };
+          return { status, error };
+        } else {
+          const file: t.IFile = {
+            uri,
+            path: cloud.bucket.url(path),
+            data: res.data,
+          };
+          return { status, file };
+        }
+      } catch (err) {
+        const error: t.IFileError = {
+          type: 'FS/read',
+          message: `Failed to read "${uri}". ${err.message}`,
+          path,
+        };
+        return { status: 404, error };
+      }
     },
 
     /**
@@ -74,10 +102,8 @@ export function init(args: IS3Init): t.IS3FileSystem {
           acl: 'public-read', // TODO 🐷
         });
 
-        const { status, url } = res;
-        if (url) {
-          file.path = url;
-        }
+        const { status } = res;
+        file.path = res.url ? res.url : file.path;
         if (!res.ok) {
           const error: t.IFileError = {
             type: 'FS/write/cloud',
