@@ -199,7 +199,7 @@
     "@platform/libs" "0.1.5"
     "@platform/ts.libs" "3.7.1"
 
-"@platform/types@0.1.1":
+"@platform/types@0.1.1", "@platform/types@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.1.1.tgz#9613c0a136b6b6416db84cebb9b6daa1fed8471a"
   integrity sha512-6f8+94oiZeUWqZEjVqZzFg6xCNMtudr8LFNkAa1cswqSFqr7uhyDpSCfm3QYQFBAxWjOte06JilyS2Vw4YPdxQ==

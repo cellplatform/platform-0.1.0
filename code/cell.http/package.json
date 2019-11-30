@@ -28,7 +28,7 @@
     "@platform/cell.types": "0.1.19",
     "@platform/cell.value": "0.1.12",
     "@platform/cli": "0.4.11",
-    "@platform/cli.prompt": "^0.1.1",
+    "@platform/cli.prompt": "0.1.1",
     "@platform/exec": "0.2.35",
     "@platform/fs": "0.3.5",
     "@platform/fsdb.model": "0.5.2",
@@ -44,8 +44,8 @@
     "@platform/fsdb.nedb": "1.3.39",
     "@platform/test": "0.0.66",
     "@platform/ts": "3.7.2",
-    "@types/form-data": "^2.5.0",
-    "form-data": "^3.0.0"
+    "@types/form-data": "2.5.0",
+    "form-data": "3.0.0"
   },
   "files": [
     "lib",
