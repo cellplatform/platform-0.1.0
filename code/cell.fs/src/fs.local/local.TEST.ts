@@ -4,29 +4,14 @@ import { local } from '.';
 const init = () => local.init({ root: PATH.LOCAL });
 
 describe('fs.local', () => {
-  it('exposes root (dir)', () => {
-    const fs = init();
-    expect(fs.root).to.eql(PATH.LOCAL);
-  });
-
-  describe('resolve', () => {
-    const fs = init();
-
-    it('throw on invalid URI', () => {
-      const test = (uri?: any) => {
-        const fn = () => fs.resolve(uri);
-        expect(fn).to.throw(/Invalid URI/);
-      };
-
-      test();
-      test('');
-      test('  ');
-      test('ns:foo');
-      test('cell:foo!A1');
-      test('file:boom');
+  describe('paths', () => {
+    it('exposes root (dir)', () => {
+      const fs = init();
+      expect(fs.root).to.eql(PATH.LOCAL);
     });
 
-    it('resolve URI as path', () => {
+    it('resolve URI to path', () => {
+      const fs = init();
       const test = (uri: string, expected: string) => {
         const res = fs.resolve(uri);
         expect(res).to.eql(`${PATH.LOCAL}/${expected}`);
@@ -42,8 +27,9 @@ describe('fs.local', () => {
 
     const png = await util.loadImage('bird.png');
     const uri = 'file:foo.bird';
-    const res = await fs.write(uri, png);
+    const res = await fs.write(`  ${uri} `, png); // NB: URI padded with spaces (corrected internally).
 
+    expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
     expect(res.file.uri).to.eql(uri);
     expect(res.file.path).to.eql(fs.resolve(uri));
@@ -62,22 +48,27 @@ describe('fs.local', () => {
 
     const res = await fs.read(uri);
     const file = res.file as t.IFile;
+
+    expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
     expect(file.path).to.eql(path);
     expect(file.data.toString()).to.eql((await util.fs.readFile(file.path)).toString());
   });
 
-  it('read file (404 - not found)', async () => {
-    await util.reset();
-    const fs = init();
-    const uri = 'file:foo.noexist';
+  describe('errors', () => {
+    it('read file (404 - not found)', async () => {
+      await util.reset();
+      const fs = init();
+      const uri = 'file:foo.noexist';
 
-    const res = await fs.read(uri);
-    const error = res.error as t.IFileError;
+      const res = await fs.read(uri);
+      const error = res.error as t.IFileError;
 
-    expect(res.file).to.eql(undefined);
-    expect(error.type).to.eql('FS/404');
-    expect(error.path).to.eql(fs.resolve(uri));
-    expect(error.message).to.contain(`"file:foo.noexist" does not exist`);
+      expect(res.status).to.eql(404);
+      expect(res.file).to.eql(undefined);
+      expect(error.type).to.eql('FS/read/404');
+      expect(error.path).to.eql(fs.resolve(uri));
+      expect(error.message).to.contain(`"file:foo.noexist" does not exist`);
+    });
   });
 });
