@@ -18,6 +18,7 @@ export type S3StorageClass =
 
 export type S3 = {
   endpoint: string;
+  url(bucket: string, path?: string): string;
   get(args: { bucket: string; key: string }): Promise<S3GetResponse>;
   put(args: {
     bucket: string;
@@ -31,6 +32,7 @@ export type S3 = {
 
 export type S3Bucket = {
   endpoint: string;
+  url(path?: string): string;
   get(args: { key: string }): Promise<S3GetResponse>;
   put(args: { key: string; source: string | Buffer; acl?: S3Permissions }): Promise<S3PutResponse>;
   list(args: { bucket: string; prefix?: string; max?: number }): S3List;

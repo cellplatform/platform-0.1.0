@@ -40,13 +40,13 @@ async function testUpload() {
   });
 
   console.log('-------------------------------------------');
-  console.log('res', res);
+  console.log('PUT', res);
 
   const res1 = await bucket.get({ key: `tmp/${fileName}` });
   await res1.save(fs.join(tmp, 'saved.json'));
 
-  console.log('res1', res1);
-  console.log('res1.json', res1.json);
+  console.log('GET', res1);
+  console.log('GET json', res1.json);
   console.log('-------------------------------------------');
 
   // console.log('uploading 2');
@@ -59,15 +59,14 @@ async function testUpload() {
   // // console.log('upload2', upload2);
 
   const res2 = await bucket.get({ key: `tmp/${fileName}` });
-  console.log('res2', res2);
+  console.log('GET', res2);
   await res2.save(fs.join(tmp, 'saved.zip'));
 }
 
 testUpload();
 
-
 /**
- * 
+ *
  * file:<id>
- * 
+ *
  */

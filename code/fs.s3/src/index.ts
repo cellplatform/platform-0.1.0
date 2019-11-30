@@ -2,7 +2,7 @@ import { S3, S3Config } from './types';
 export * from './types';
 import { fs as base } from '@platform/fs';
 
-import * as s3 from './s3';
+import { s3 } from './s3';
 export { s3 };
 
 export const fs = {
