@@ -2,8 +2,9 @@ import { t } from '../common';
 
 export type IFileProps = {
   name?: string;
-  mimetype?: string;
   fileHash?: string;
+  mimetype?: string;
+  encoding?: string;
 };
 export type IFileData = {
   props: IFileProps;

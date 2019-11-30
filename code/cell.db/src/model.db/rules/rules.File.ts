@@ -34,9 +34,9 @@ function toMimetype(name: string = '') {
     switch (ext) {
       case 'txt':
         return 'plain/text';
-        case 'css':
-            return 'text/css';
-          case 'jpg':
+      case 'css':
+        return 'text/css';
+      case 'jpg':
       case 'jpeg':
         return 'image/jpeg';
       case 'png':

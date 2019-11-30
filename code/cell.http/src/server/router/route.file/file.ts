@@ -1,4 +1,4 @@
-import { constants, ROUTES, Schema, t, toErrorPayload } from '../common';
+import { constants, ROUTES, Schema, t, toErrorPayload, models, util } from '../common';
 
 /**
  * File-system routes (fs:).
@@ -47,8 +47,8 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.get(ROUTES.FILE.BASE, async req => {
     const query = req.query as t.IReqFileQuery;
     const { status, ns, error, uri } = getParams(req);
-    const getModel: t.GetModel = () => null as any;
-    return !ns || error ? { status, data: { error } } : getFileResponse({ uri, getModel });
+    // const getModel: t.GetModel = () => null as any;
+    return !ns || error ? { status, data: { error } } : getFileResponse({ uri, db });
   });
 
   /**
@@ -65,14 +65,25 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
     const data = await req.body.form();
 
-    for (const file of data.files) {
+    for (const item of data.files) {
       // TODO 🐷
-      const r = await fs.write(uri, file.buffer);
+      /**
+       * TODO 🐷
+       * - sha
+       */
+
+      const { mimetype, buffer, name, encoding } = item;
+
+      const fileHash = util.hash.sha256(buffer);
+
+      const r = await fs.write(uri, item.buffer);
+
+      console.log('fileHash', fileHash);
     }
 
-    // return !id ? { status, data: { error } } : getFileResponse({ uri, getModel });
+    return error ? { status, data: { error } } : getFileResponse({ uri, db });
 
-    return { data: { foo: 123 } };
+    // return { data: { foo: 123 } };
   });
 }
 
@@ -80,13 +91,12 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
  * [Helpers]
  */
 
-export async function getFileResponse(args: { uri: string; getModel: t.GetModel }) {
+export async function getFileResponse(args: { db: t.IDb; uri: string }) {
+  const { db, uri } = args;
   try {
-    return { data: { foo: 123 } };
-    // TEMP 🐷
+    // TODO 🐷
 
-    const { uri } = args;
-    const model = await args.getModel();
+    const model = await models.File.create({ db, uri }).ready;
     const exists = Boolean(model.exists);
     const { createdAt, modifiedAt } = model;
 
