@@ -1,4 +1,4 @@
-import { constants, fs, ROUTES, t } from '../common';
+import { constants, fs, ROUTES, t, time } from '../common';
 
 const PKG = constants.PKG;
 const DEPS = PKG.dependencies;
@@ -11,11 +11,11 @@ const MODULE = {
 /**
  * Root information.
  */
-export function init(args: { router: t.IRouter; title?: string }) {
-  const { router } = args;
+export function init(args: { router: t.IRouter; title?: string; deployedAt?: number }) {
+  const { router, deployedAt = -1 } = args;
 
   /**
-   * GET: /
+   * GET: /, /.info
    */
   router.get(ROUTES.SYS.INFO, async req => {
     const NOW_REGION = fs.env.value('NOW_REGION');
@@ -27,14 +27,21 @@ export function init(args: { router: t.IRouter; title?: string }) {
       [MODULE.DB]: (DEPS || {})[MODULE.DB],
     };
 
+    const data: t.IResGetInfo = {
+      system: args.title || 'Untitled',
+      domain: req.headers.host || '',
+      region,
+      version,
+      deployedAt: {
+        datetime: time.day(deployedAt).format(`DD MMM YYYY, hh:mm A`),
+        timestamp: deployedAt,
+        timezone: fs.env.value('TZ') || '-',
+      },
+    };
+
     return {
       status: 200,
-      data: {
-        system: args.title || 'Untitled',
-        domain: req.headers.host,
-        region,
-        version,
-      },
+      data,
     };
   });
 }

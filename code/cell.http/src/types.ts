@@ -63,7 +63,7 @@ export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
  * Namespace: POST
  */
 export type IReqPostNsQuery = IReqNsQuery & {
-  changes?: boolean; // return list of changes (default: false).
+  changes?: boolean; // return list of changes (default: true).
 };
 
 export type IReqPostNsBody = {
@@ -114,3 +114,19 @@ export type IResGetFileData = {};
 export type IReqPostFileQuery = IReqFileQuery & {};
 export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & {};
+
+/**
+ * Info (System)
+ */
+
+export type IResGetInfo = {
+  system: string;
+  domain: string;
+  region: string;
+  version: { [key: string]: string };
+  deployedAt: {
+    datetime: string;
+    timestamp: number;
+    timezone: string;
+  };
+};

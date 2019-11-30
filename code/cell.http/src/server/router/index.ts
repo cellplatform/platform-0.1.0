@@ -7,7 +7,13 @@ import * as file from './route.file';
 /**
  * Register routes.
  */
-export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter; title?: string }) {
+export function init(args: {
+  db: t.IDb;
+  fs: t.IFileSystem;
+  router: t.IRouter;
+  title?: string;
+  deployedAt?: number;
+}) {
   sys.init(args);
   ns.init(args);
   coord.init(args);

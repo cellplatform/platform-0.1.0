@@ -1,4 +1,13 @@
-import { constants, func, models, ROUTES, Schema, t, toErrorPayload } from '../common';
+import {
+  constants,
+  defaultValue,
+  func,
+  models,
+  ROUTES,
+  Schema,
+  t,
+  toErrorPayload,
+} from '../common';
 
 /**
  * Namespace routes.
@@ -166,7 +175,7 @@ async function postNsResponse(args: {
     const res = await getNsResponse({ db, id, query });
     const data: t.IResPostNs = {
       ...res.data,
-      changes: query.changes ? changes : undefined, // NB: only send change set if requested by caller.
+      changes: defaultValue(query.changes, true) ? changes : undefined, // NB: don't send if suppressed in query-string (?changes=false)
     };
     return { status: res.status, data };
   } catch (err) {
