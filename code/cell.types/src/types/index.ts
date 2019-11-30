@@ -3,6 +3,7 @@ export * from './types.cell.coord';
 export * from './types.context';
 export * from './types.db';
 export * from './types.error';
+export * from './types.file';
 export * from './types.fs';
 export * from './types.func';
 export * from './types.get';
