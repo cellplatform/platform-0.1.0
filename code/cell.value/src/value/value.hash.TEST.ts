@@ -1,4 +1,4 @@
-import { expect, t } from '../test';
+import { expect, t, fs } from '../test';
 import { value } from '.';
 
 describe('hash', () => {
@@ -24,6 +24,7 @@ describe('hash', () => {
       expect(() => value.hash.ns({ uri: ' cell:foo!A1  ', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'row:foo!1', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'col:foo!A', ns })).to.throw();
+      expect(() => value.hash.ns({ uri: 'file:foo.123', ns })).to.throw();
     });
 
     it('excludes existing hash', () => {
@@ -161,6 +162,7 @@ describe('hash', () => {
       expect(() => value.hash.row({ uri: 'ns:foo' })).to.throw();
       expect(() => value.hash.row({ uri: 'cell:foo!A1' })).to.throw();
       expect(() => value.hash.row({ uri: 'col:foo!A' })).to.throw();
+      expect(() => value.hash.row({ uri: 'file:foo.123' })).to.throw();
     });
 
     it('no change between undefined/empty data', () => {
@@ -209,6 +211,7 @@ describe('hash', () => {
       expect(() => value.hash.column({ uri: 'ns:foo' })).to.throw();
       expect(() => value.hash.column({ uri: 'cell:foo!A1' })).to.throw();
       expect(() => value.hash.column({ uri: 'row:foo!1' })).to.throw();
+      expect(() => value.hash.column({ uri: 'file:foo.123' })).to.throw();
     });
 
     it('no change between undefined/empty data', () => {
@@ -234,6 +237,47 @@ describe('hash', () => {
       test({ props: { width: 250 }, hash: '' }, HASH);
       test({ props: { width: 250 }, hash: '-' }, HASH);
       test({ props: { width: 250 }, hash: 'yo' }, HASH);
+    });
+  });
+
+  describe('file', () => {
+    beforeEach(() => (index = -1));
+
+    let index = -1;
+    const test = (buffer: Buffer, data: t.IFileData | undefined, expected: string) => {
+      const hash = value.hash.file({ uri: 'file:foo.123', buffer, data });
+
+      index++;
+      const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
+
+      expect(hash.startsWith('sha256-')).to.eql(true, err);
+      expect(hash.endsWith(expected)).to.eql(true, err);
+    };
+
+    it('throws (invalid URI)', async () => {
+      const buffer = await fs.readFile(fs.resolve('src/test/images/bird.png'));
+      const invalid = (uri: string) => {
+        expect(() => value.hash.file({ uri, buffer })).to.throw();
+      };
+      invalid('');
+      invalid('  ');
+      invalid('ns:foo');
+      invalid('cell:foo!A1');
+      invalid('col:foo!A');
+      invalid('row:foo!1');
+    });
+
+    it('hash props/error/buffer', async () => {
+      const png = await fs.readFile(fs.resolve('src/test/images/bird.png'));
+      const jpg = await fs.readFile(fs.resolve('src/test/images/kitten.jpg'));
+      const error = { type: 'FAIL', message: 'Bummer' };
+
+      test(png, { props: { name: 'image.png' } }, '4ce1b2d717');
+      test(jpg, { props: { name: 'image.png' } }, 'a99cde50');
+      test(jpg, { props: { name: 'image.png' } }, 'ba99cde50');
+      test(jpg, { props: { name: 'image.png', mimetype: 'image/png' } }, '6d5474592');
+      test(jpg, { props: {}, error }, 'f8a008452');
+      test(jpg, { props: { name: 'image.png' }, error }, 'b01d753597');
     });
   });
 });

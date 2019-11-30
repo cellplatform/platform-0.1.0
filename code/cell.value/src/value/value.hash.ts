@@ -11,9 +11,9 @@ export const hash = {
    *    Ensure [cell/row/column] data already has hashes calculated.
    */
   ns(args: { uri: string; ns: t.INs; data?: Partial<t.INsDataCoord> }): string {
-    const uri = args.uri.trim();
+    const uri = (args.uri || '').trim();
     if (!uri.startsWith('ns:')) {
-      throw new Error(`Hashing requires a valid ns URI. Given uri "${uri}".`);
+      throw new Error(`Hashing requires a valid "ns:" URI. Given "${uri}".`);
     }
 
     // Format NS object.
@@ -40,12 +40,40 @@ export const hash = {
   },
 
   /**
+   * Generate a uniform hash (SHA-256) of the given file.
+   */
+  file(args: { uri: string; buffer: Buffer; data?: t.IFileData }): string {
+    const uri = (args.uri || '').trim();
+    if (!uri.startsWith('file:')) {
+      throw new Error(`Hashing requires a valid "file:" URI. Given "${uri}".`);
+    }
+
+    // Format data.
+    const data = args.data as t.IFileData;
+    const props = squash.object(data ? data.props : undefined);
+    const error = data ? data.error : undefined;
+
+    const obj: any = { uri };
+    if (props) {
+      obj.props = props;
+    }
+    if (error) {
+      obj.error = error;
+    }
+    if (args.buffer) {
+      obj.buffer = args.buffer;
+    }
+
+    return sha256(obj);
+  },
+
+  /**
    * Generate a uniform hash (SHA-256) of the given cell.
    */
   cell(args: { uri: string; data?: t.ICellData }): string {
-    const uri = args.uri.trim();
+    const uri = (args.uri || '').trim();
     if (!uri.startsWith('cell:')) {
-      throw new Error(`Hashing a cell requires a valid URI. Given "${uri}".`);
+      throw new Error(`Hashing requires a valid "cell:" URI. Given "${uri}".`);
     }
 
     const { data } = args;
