@@ -1,6 +1,6 @@
 import { t } from '../common';
 import * as file from './file';
-import * as cell from './file.cell';
+import * as cell from './cell.file';
 
 /**
  * Cell routes for operating with files.

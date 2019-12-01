@@ -95,7 +95,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
  * [Helpers]
  */
 
-async function getCoordResponse<T extends t.IGetResponse<any>>(args: {
+async function getCoordResponse<T extends t.IUriResponse<any>>(args: {
   uri: string;
   getModel: t.GetModel;
 }) {

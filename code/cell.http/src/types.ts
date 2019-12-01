@@ -50,7 +50,7 @@ export type IConfigNowFile = {
  * Payloads
  */
 export type IErrorPayload = { status: number; data: t.IHttpError };
-export type IGetResponse<D> = {
+export type IUriResponse<D> = {
   uri: string;
   exists: boolean;
   createdAt: number;
@@ -74,7 +74,7 @@ export type IReqNsQuery = {
  * Namespace: GET
  */
 export type IReqGetNsQuery = IReqNsQuery;
-export type IResGetNs = IGetResponse<IResGetNsData>;
+export type IResGetNs = IUriResponse<IResGetNsData>;
 export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
 
 /**
@@ -105,13 +105,13 @@ export type IReqCoordQuery = {};
  */
 export type IResGetCoord = IResGetCell | IResGetRow | IResGetColumn;
 
-export type IResGetCell = IGetResponse<IResGetCellData>;
+export type IResGetCell = IUriResponse<IResGetCellData>;
 export type IResGetCellData = t.ICellData;
 
-export type IResGetRow = IGetResponse<IResGetRowData>;
+export type IResGetRow = IUriResponse<IResGetRowData>;
 export type IResGetRowData = t.IRowData;
 
-export type IResGetColumn = IGetResponse<IResGetColumnData>;
+export type IResGetColumn = IUriResponse<IResGetColumnData>;
 export type IResGetColumnData = t.IColumnData;
 
 /**
@@ -124,7 +124,7 @@ export type IReqFilePullQuery = {};
 /**
  * File: GET
  */
-export type IResGetFile = IGetResponse<IResGetFileData>;
+export type IResGetFile = IUriResponse<IResGetFileData>;
 export type IResGetFileData = t.IFileData & {};
 
 /**
@@ -140,13 +140,14 @@ export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
  * Cell/File
  */
 
+export type IReqCellsFileParams = IReqCoordParams;
 export type IReqCellFileParams = IReqCoordParams & { filename: string };
 // export type IReqCoordParams = { ns: string; key: string };
 export type IReqPostCellFileQuery = {
   changes?: boolean; // return list of changes (default: true).
 };
 
-export type IResPostCellFile = IGetResponse<IResPostCellFileData>;
+export type IResPostCellFile = IUriResponse<IResPostCellFileData>;
 export type IResPostCellFileData = {
   cell: t.ICellData;
   changes?: t.IDbModelChange[];

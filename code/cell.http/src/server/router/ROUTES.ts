@@ -10,6 +10,9 @@ export const ROUTES = {
   },
   CELL: {
     BASE: `/cell\\::ns([A-Za-z0-9]*)\!:key([A-Z]+[0-9]+)(/?)`,
+    FILES: {
+      BASE: `/cell\\::ns([A-Za-z0-9]*)\!:key([A-Z]+[0-9]+)/files(/?)`,
+    },
     FILE: {
       BY_NAME: `/cell\\::ns([A-Za-z0-9]*)\!:key([A-Z]+[0-9]+)/files/:filename([A-Za-z0-9\.\-\_]*)`,
     },

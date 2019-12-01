@@ -8,7 +8,7 @@ import { postNsResponse } from '../route.ns';
 export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) {
   const { db, fs, router } = args;
 
-  const getParams = (req: t.Request) => {
+  const getParams = (req: t.Request, options: { fileRequired?: boolean } = {}) => {
     const params = req.params as t.IReqCellFileParams;
 
     const data = {
@@ -35,7 +35,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       return { ...data, status: 400, error };
     }
 
-    if (!data.filename) {
+    if (!data.filename && options.fileRequired !== false) {
       error.message = toMessage('does not contain a filename');
       return { ...data, status: 400, error };
     }
@@ -51,6 +51,48 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   };
 
   /**
+   * GET: A1/files
+   */
+  router.get(ROUTES.CELL.FILES.BASE, async req => {
+    const { status, ns, key, filename, error, uri } = getParams(req, { fileRequired: false });
+    if (!ns || error) {
+      return { status, data: { error } };
+    }
+
+    const host = req.headers.host || '';
+    const prefix = host.startsWith('localhost') ? 'http' : 'https';
+    const toUrl = (path: string) => {
+      return `${prefix}://${host}/${path}`;
+    };
+
+    const cell = await models.Cell.create({ db, uri }).ready;
+    const cellLinks = cell.props.links || {};
+
+    const links = Object.keys(cell.props.links || {})
+      .map(key => ({ key, value: cellLinks[key] }))
+      .filter(({ value }) => Schema.uri.is.file(value))
+      .map(({ key, value }) => {
+        const uri = value;
+        const name = key.replace(/^fs\//, '').replace(/\|/, '.');
+        return {
+          uri,
+          name,
+          info: toUrl(`${uri}`),
+          file: toUrl(`${uri}/pull`),
+        };
+      });
+
+    return {
+      status: 200,
+      data: {
+        parent: toUrl(uri),
+        uri,
+        links,
+      },
+    };
+  });
+
+  /**
    * POST a file to a cell
    */
   router.post(ROUTES.CELL.FILE.BY_NAME, async req => {
@@ -64,7 +106,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       // Prepare the file URI link.
       const cell = await models.Cell.create({ db, uri: cellUri }).ready;
       const links = cell.props.links || {};
-      const linkKey = `files/${filename}`.replace(/\./g, '_');
+      const linkKey = `fs/${filename}`.replace(/\./g, '|');
       const fileUri = links[linkKey] || Schema.uri.create.file(ns, Schema.slug());
 
       // Save to the file-system.
