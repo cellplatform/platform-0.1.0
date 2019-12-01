@@ -61,10 +61,10 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
 }
 
 /**
- * [Helpers]
+ * [Methods]
  */
 
-async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqGetNsQuery }) {
+export async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqGetNsQuery }) {
   const { db, id, query } = args;
   const uri = Schema.uri.create.ns(id);
   const model = await models.Ns.create({ db, uri }).ready;
@@ -108,7 +108,7 @@ async function getNsData(args: {
   }
 }
 
-async function postNsResponse(args: {
+export async function postNsResponse(args: {
   db: t.IDb;
   id: string;
   body: t.IReqPostNsBody;

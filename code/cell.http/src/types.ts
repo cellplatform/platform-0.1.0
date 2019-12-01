@@ -50,7 +50,7 @@ export type IConfigNowFile = {
  * Payloads
  */
 export type IErrorPayload = { status: number; data: t.IHttpError };
-export type INotFoundResponse = t.IHttpError<'HTTP/404'> & { status: 404; url: string };
+export type INotFoundResponse = t.IHttpError<'HTTP/notFound'> & { status: 404; url: string };
 export type IGetResponse<D> = {
   uri: string;
   exists: boolean;
@@ -136,6 +136,22 @@ export type IReqPostFileQuery = IReqFileQuery & {
 };
 export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
+
+/**
+ * Cell/File
+ */
+
+export type IReqCellFileParams = IReqCoordParams & { filename: string };
+// export type IReqCoordParams = { ns: string; key: string };
+export type IReqPostCellFileQuery = {
+  changes?: boolean; // return list of changes (default: true).
+};
+
+export type IResPostCellFile = IGetResponse<IResPostCellFileData>;
+export type IResPostCellFileData = {
+  cell: t.ICellData;
+  changes?: t.IDbModelChange[];
+};
 
 /**
  * Info (System)

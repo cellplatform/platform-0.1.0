@@ -12,6 +12,9 @@ export const ROUTES = {
   },
   CELL: {
     BASE: `/cell\\::ns([A-Za-z0-9]*)\!:key([A-Z]+[0-9]+)(/?)`,
+    FILE: {
+      BY_NAME: `/cell\\::ns([A-Za-z0-9]*)\!:key([A-Z]+[0-9]+)/files/:filename([A-Za-z0-9\.\-\_]*)`,
+    },
   },
   ROW: {
     BASE: `/row\\::ns([A-Za-z0-9]*)\!:key([0-9]+)(/?)`,

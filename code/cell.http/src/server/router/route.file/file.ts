@@ -64,7 +64,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     try {
       // Pull the file meta-data.
       const fileResponse = await getFileResponse({ uri, db, query });
-      if (!fileResponse.status.toString().startsWith('2')) {
+      if (!util.isOK(fileResponse.status)) {
         return fileResponse; // NB: This is an error.
       }
       const file = fileResponse.data as t.IResGetFile;
@@ -131,8 +131,8 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
  * [Helpers]
  */
 
-export async function getFileResponse(args: { db: t.IDb; uri: string; query: t.IReqFileQuery }) {
-  const { db, uri } = args;
+export async function getFileResponse(args: { db: t.IDb; uri: string; query?: t.IReqFileQuery }) {
+  const { db, uri, query = {} } = args;
   try {
     const model = await models.File.create({ db, uri }).ready;
     const exists = Boolean(model.exists);
@@ -155,10 +155,10 @@ export async function postFileResponse(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;
-  query: t.IReqPostFileQuery;
   form: t.IForm;
+  query?: t.IReqPostFileQuery;
 }) {
-  const { db, uri, query, form, fs } = args;
+  const { db, uri, query = {}, form, fs } = args;
   const sendChanges = defaultValue(query.changes, true);
   let changes: t.IDbModelChange[] = [];
 

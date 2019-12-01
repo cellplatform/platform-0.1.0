@@ -13,8 +13,8 @@ export function init(args: { router: t.IRouter }) {
     const data: t.INotFoundResponse = {
       url,
       status,
-      type: 'HTTP/404',
-      message: 'Not found',
+      type: 'HTTP/notFound',
+      message: 'Not found.',
     };
 
     return { status, data };
