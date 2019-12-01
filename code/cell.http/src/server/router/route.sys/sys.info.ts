@@ -12,7 +12,7 @@ const MODULE = {
  * Root information.
  */
 export function init(args: { router: t.IRouter; title?: string; deployedAt?: number }) {
-  const { router, deployedAt = -1 } = args;
+  const { router } = args;
 
   /**
    * GET: /, /.info
@@ -27,16 +27,20 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
       [MODULE.DB]: (DEPS || {})[MODULE.DB],
     };
 
+    const deployedAt = !args.deployedAt
+      ? undefined
+      : {
+          datetime: time.day(args.deployedAt).format(`DD MMM YYYY, hh:mm A`),
+          timestamp: args.deployedAt,
+          timezone: fs.env.value('TZ') || '-',
+        };
+
     const data: t.IResGetInfo = {
       system: args.title || 'Untitled',
       domain: req.headers.host || '',
       region,
       version,
-      deployedAt: {
-        datetime: time.day(deployedAt).format(`DD MMM YYYY, hh:mm A`),
-        timestamp: deployedAt,
-        timezone: fs.env.value('TZ') || '-',
-      },
+      deployedAt,
     };
 
     return {

@@ -137,7 +137,7 @@ export type IResGetInfo = {
   domain: string;
   region: string;
   version: { [key: string]: string };
-  deployedAt: {
+  deployedAt?: {
     datetime: string;
     timestamp: number;
     timezone: string;
