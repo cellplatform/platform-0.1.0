@@ -1,4 +1,4 @@
-import { AWS, t } from '../common';
+import { AWS, t, toContentType } from '../common';
 import { get } from './s3.get';
 import { put } from './s3.put';
 import { list } from './s3.list';
@@ -15,6 +15,7 @@ export function init(args: t.S3Config): t.S3 {
   });
 
   const res: t.S3 = {
+    toContentType,
     endpoint,
 
     url(bucket: string, path?: string) {
