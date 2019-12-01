@@ -30,6 +30,7 @@ describe('settings.config', () => {
     const res = loadSync({});
     expect(res.path).to.eql(fs.resolve('src/test/config/default.yml'));
     expect(res.exists).to.eql(true);
+
     expect(res.data).to.eql({
       ...Config.DEFAULT,
       title: 'My Title',
@@ -37,7 +38,10 @@ describe('settings.config', () => {
         ...Config.DEFAULT.now,
         deployment: 'my-deployment',
         domain: 'domain.com',
-        mongo: '@platform-mongo',
+        secret: {
+          ...Config.DEFAULT.now.secret,
+          mongo: '@platform-mongo',
+        },
       },
     });
   });
@@ -78,7 +82,7 @@ describe('settings.config', () => {
       test(c => (c.data.title = '  '), 'Missing [title] value');
       test(c => (c.data.now.deployment = '  '), 'Missing [now.deployment] value');
       test(c => (c.data.now.domain = '  '), 'Missing [now.domain] value');
-      test(c => (c.data.now.mongo = '  '), 'Missing [now.mongo] value');
+      test(c => (c.data.now.secret.mongo = '  '), 'Missing [now.secret.mongo] value');
     });
   });
 });

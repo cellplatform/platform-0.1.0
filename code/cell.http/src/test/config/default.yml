@@ -3,4 +3,5 @@ title: My Title
 now:
   deployment: my-deployment
   domain: domain.com
-  mongo: platform-mongo
+  secret:
+    mongo: platform-mongo

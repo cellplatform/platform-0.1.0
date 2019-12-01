@@ -142,7 +142,7 @@ async function copyAndPrepare(args: {
       json.name = now.deployment;
       json.alias = alias;
       json.env = json.env || {};
-      json.env.CELLOS_MONGO = now.mongo;
+      json.env.CELLOS_MONGO = now.secret.mongo;
 
       fs.file.stringifyAndSaveSync(file.to, json);
     }

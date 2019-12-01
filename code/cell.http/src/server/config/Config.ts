@@ -7,7 +7,9 @@ export const DEFAULT: t.IConfigDeployment = {
     deployment: '',
     domain: '',
     subdomain: undefined,
-    mongo: '',
+    secret: {
+      mongo: '',
+    },
   },
 };
 
@@ -44,7 +46,9 @@ export class Config {
     if (exists) {
       const yaml = fs.file.loadAndParseSync<t.IConfigDeployment>(file, DEFAULT);
       data = R.mergeDeepRight(data, yaml);
-      data.now.mongo = data.now.mongo ? `@${data.now.mongo.replace(/^\@/, '')}` : ''; // Prepend "@" symbol for `zeit/now`.
+      data.now = data.now || {};
+      const secret = (data.now.secret = data.now.secret || {});
+      secret.mongo = secret.mongo ? `@${secret.mongo.replace(/^\@/, '')}` : ''; // Prepend "@" symbol for `zeit/now`.
     }
 
     const config: t.IConfigFile = {
@@ -87,10 +91,19 @@ function validate(config: t.IConfigFile) {
     error('Missing [title] value.');
   }
 
-  ['deployment', 'domain', 'mongo'].forEach(field => {
-    const value = ((data.now || {})[field] || '').trim();
+  const now = data.now || {};
+  ['deployment', 'domain'].forEach(field => {
+    const value = (now[field] || '').trim();
     if (!value) {
       error(`Missing [now.${field}] value.`);
+    }
+  });
+
+  const secret = now.secret || {};
+  ['mongo'].forEach(field => {
+    const value = (secret[field] || '').trim();
+    if (!value) {
+      error(`Missing [now.secret.${field}] value.`);
     }
   });
 
