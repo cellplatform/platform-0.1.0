@@ -10,7 +10,7 @@ describe('model.File', () => {
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-4fa72e2366885a57ed47e236e3fe14adb1ae85ec1e049059403b21584f44d68e',
+      after: 'sha256-aed88b4704eb07ab683888c609189dc28514d8c351818fcf57785ac4b9b38ffd',
     };
 
     await res1
@@ -23,7 +23,7 @@ describe('model.File', () => {
     expect(res2.props.props).to.eql({
       name: 'image.png',
       mimetype: 'image/png',
-      fileHash: filehash,
+      filehash,
     });
     expect(res2.props.error).to.eql(undefined);
   });
