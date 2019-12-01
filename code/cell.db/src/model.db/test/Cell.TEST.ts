@@ -17,12 +17,12 @@ describe('model.Cell', () => {
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-59dd1b8ef637ae9c3c7c700ea162fc1f677eef29523944749488c60858e8927a',
+      after: 'sha256-dd73649779d5848c1166c3a525dae15d85e5fae498c3208652060af83b231944',
     };
 
     const value = '=A2';
     const error = { type: 'FAIL', message: 'Boo' };
-    const links = { main: 'ns:foo' };
+    const links = { main: 'ns:foo', image: 'file:foo.kitten' };
     const props = { style: { bold: true } };
     const data = { value, props, links, error, hash: HASH.before };
     await res1.set(data).save();

@@ -1,2 +1,1 @@
-import * as config from './config';
-export { config };
+export { Config } from './Config';

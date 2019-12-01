@@ -1,33 +1,34 @@
-import { IError } from './types.error';
+import { IFileSystemError } from './types.error';
 
-export type IFileSystem = {
-  root: string; // Root directory of the file system.
+export type IFileSystem = IFileSystemS3 | IFileSystemLocal;
+
+export type IFileSystemS3 = IFileSystemMembers & { type: 'S3'; bucket: string };
+export type IFileSystemLocal = IFileSystemMembers & { type: 'FS' };
+
+export type IFileSystemMembers = {
+  root: string; // Root directory of the file-system.
   resolve(uri: string): string;
-  read(uri: string): Promise<IFileReadResponse>;
-  write(uri: string, data: Buffer): Promise<IFileWriteResponse>;
+  read(uri: string): Promise<IFileSystemRead>;
+  write(uri: string, data: Buffer): Promise<IFileSystemWrite>;
 };
 
-export type IS3FileSystem = IFileSystem & {
-  bucket: string;
-};
-
-export type IFile = {
+export type IFileSystemFile = {
   uri: string;
   path: string;
   data: Buffer;
+  hash: string;
 };
 
-export type IFileReadResponse = {
+export type IFileSystemRead = {
   status: number;
-  file?: IFile;
-  error?: IFileError;
+  location: string;
+  file?: IFileSystemFile;
+  error?: IFileSystemError;
 };
 
-export type IFileWriteResponse = {
+export type IFileSystemWrite = {
   status: number;
-  file: IFile;
-  error?: IFileError;
+  location: string;
+  file: IFileSystemFile;
+  error?: IFileSystemError;
 };
-
-export type FileError = 'FS/read' | 'FS/read/404' | 'FS/read/cloud' | 'FS/write' | 'FS/write/cloud';
-export type IFileError = IError<FileError> & { path: string };

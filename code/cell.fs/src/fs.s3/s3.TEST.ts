@@ -1,20 +1,15 @@
 import { expect, util } from '../test';
-import { s3 } from '.';
-
-export const init = (args: { path?: string } = {}) => {
-  return s3.init({
-    endpoint: 'sfo2.digitaloceanspaces.com',
-    accessKey: util.env('SPACES_KEY'),
-    secret: util.env('SPACES_SECRET'),
-    root: args.path || 'platform/tmp/test',
-  });
-};
 
 describe('S3', () => {
+  it('type', () => {
+    const fs = util.initS3();
+    expect(fs.type).to.eql('S3');
+  });
+
   describe('paths', () => {
     it('throws if no bucket in path', () => {
       const test = (path: string) => {
-        const fn = () => init({ path });
+        const fn = () => util.initS3({ path });
         expect(fn).to.throw(/does not contain a bucket/);
       };
       test(' ');
@@ -26,7 +21,7 @@ describe('S3', () => {
 
     it('paths', () => {
       const test = (path: string, expectedBucket: string, expectedRoot: string) => {
-        const fs = init({ path });
+        const fs = util.initS3({ path });
         expect(fs.bucket).to.eql(expectedBucket, `bucket: ${expectedBucket}`);
         expect(fs.root).to.eql(expectedRoot, `root: ${expectedRoot}`);
       };
@@ -48,7 +43,7 @@ describe('S3', () => {
     });
 
     it('resolve URI to path', () => {
-      const fs = init();
+      const fs = util.initS3();
       const test = (uri: string, expected: string) => {
         const res = fs.resolve(uri);
         expect(res).to.eql(`/tmp/test/${expected}`);

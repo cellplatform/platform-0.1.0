@@ -10,7 +10,7 @@ export const beforeRowSave: t.BeforeModelSave<t.IDbModelRowProps> = async args =
   // Update hash.
   if (args.force || args.isChanged) {
     const uri = Schema.from.row(model.path).uri;
-    const data = { ...value.deleteUndefined(model.toObject()) };
+    const data: t.IRowData = { ...value.deleteUndefined(model.toObject()) };
     delete data.hash;
     model.props.hash = util.hash.row({ uri, data });
   }

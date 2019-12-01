@@ -10,7 +10,7 @@ export const beforeColumnSave: t.BeforeModelSave<t.IDbModelColumnProps> = async 
   // Update hash.
   if (args.force || args.isChanged) {
     const uri = Schema.from.column(model.path).uri;
-    const data = { ...value.deleteUndefined(model.toObject()) };
+    const data: t.IColumnData = { ...value.deleteUndefined(model.toObject()) };
     delete data.hash;
     model.props.hash = util.hash.column({ uri, data });
   }

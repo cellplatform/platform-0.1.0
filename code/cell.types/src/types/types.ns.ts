@@ -1,7 +1,10 @@
 import { t } from '../common';
 
 export type INs = { id: string; props?: INsProps; hash?: string };
-export type INsProps = { name?: string };
+export type INsProps = {
+  name?: string; // Display name.
+  schema?: string; // The semver of the [@platform/cell.schema] the namespace was last saved as.
+};
 
 /**
  * A "namespace" is a logically related set of cells

@@ -4,6 +4,11 @@ import { local } from '.';
 const init = () => local.init({ root: PATH.LOCAL });
 
 describe('fs.local', () => {
+  it('type', () => {
+    const fs = init();
+    expect(fs.type).to.eql('FS');
+  });
+
   describe('paths', () => {
     it('exposes root (dir)', () => {
       const fs = init();
@@ -25,34 +30,39 @@ describe('fs.local', () => {
     await util.reset();
     const fs = init();
 
-    const png = await util.loadImage('bird.png');
+    const png = await util.image('bird.png');
     const uri = 'file:foo.bird';
     const res = await fs.write(`  ${uri} `, png); // NB: URI padded with spaces (corrected internally).
+    const file = res.file;
 
     expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
-    expect(res.file.uri).to.eql(uri);
-    expect(res.file.path).to.eql(fs.resolve(uri));
-    expect(png.toString()).to.eql((await util.fs.readFile(res.file.path)).toString());
+    expect(res.location).to.eql(`file://${file.path}`);
+    expect(file.uri).to.eql(uri);
+    expect(file.path).to.eql(fs.resolve(uri));
+    expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
+    expect(png.toString()).to.eql((await util.fs.readFile(file.path)).toString());
   });
 
   it('read file', async () => {
     await util.reset();
     const fs = init();
 
-    const png = await util.loadImage('bird.png');
+    const png = await util.image('bird.png');
     const uri = 'file:foo.bird';
     const path = fs.resolve(uri);
     await util.fs.ensureDir(util.fs.dirname(path));
     await util.fs.writeFile(path, png);
 
     const res = await fs.read(uri);
-    const file = res.file as t.IFile;
+    const file = res.file as t.IFileSystemFile;
 
     expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
+    expect(res.location).to.eql(`file://${file.path}`);
     expect(file.path).to.eql(path);
     expect(file.data.toString()).to.eql((await util.fs.readFile(file.path)).toString());
+    expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
   });
 
   describe('errors', () => {
@@ -62,7 +72,7 @@ describe('fs.local', () => {
       const uri = 'file:foo.noexist';
 
       const res = await fs.read(uri);
-      const error = res.error as t.IFileError;
+      const error = res.error as t.IFileSystemError;
 
       expect(res.status).to.eql(404);
       expect(res.file).to.eql(undefined);

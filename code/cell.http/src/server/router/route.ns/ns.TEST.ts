@@ -24,8 +24,8 @@ describe('route: namespace', () => {
   });
 
   describe('POST', () => {
-    it('POST data', async () => {
-      const { res, json, data } = await post.ns('ns:foo?cells', {
+    it('POST data (?changes=false)', async () => {
+      const { res, json, data } = await post.ns('ns:foo?cells&changes=false', {
         cells: { A1: { value: 'hello' } },
       });
       const cells = data.cells || {};
@@ -44,14 +44,14 @@ describe('route: namespace', () => {
       expect(data.columns).to.eql(undefined);
     });
 
-    it('POST return list of changes (?changes=true)', async () => {
-      const { json } = await post.ns('ns:foo?cells&changes', {
+    it('POST data with changes (default: ?changes=true)', async () => {
+      const { json } = await post.ns('ns:foo?cells', {
         cells: { A1: { value: 'hello' } },
       });
 
       const changes = json.changes || [];
-      expect(changes.length).to.eql(4);
-      expect(changes.map(c => c.field)).to.eql(['value', 'hash', 'id', 'hash']);
+      expect(changes.length).to.eql(5);
+      expect(changes.map(c => c.field)).to.eql(['value', 'hash', 'id', 'props', 'hash']);
 
       const change = changes[0];
       expect(change.uri).to.eql('cell:foo!A1');

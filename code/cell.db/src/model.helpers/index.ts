@@ -1,2 +1,2 @@
 export * from './models';
-export { toChanges } from './util';
+export { toChanges, setProps } from './util';

@@ -8,14 +8,34 @@ import * as t from '@platform/cell.types';
  * Configuration
  */
 
-export type IConfigCloud = {
+export type IConfigFileArgs = { path?: string; throw?: boolean };
+export type IConfigFile = {
+  path: string;
+  exists: boolean;
+  data: IConfigDeployment;
+  validate(): IValidation;
+};
+export type IValidation = {
+  isValid: boolean;
+  errors: t.IError[];
+};
+
+export type IConfigDeployment = {
   title: string;
   collection: string;
+  fs: {
+    endpoint: string;
+    root: string;
+  };
   now: {
     deployment: string; // The "project name" of the now deployment. see CLI: `now ls`.
     domain: string;
-    subdomain?: string; // Used as DB name (or "prod" if no specified).
-    mongo: string; // [zeit/now] secret key (eg "@mongo").  "@" not required.
+    subdomain?: string; // NB: Used as DB name (uses "prod" if not specified).
+  };
+  secret: {
+    // Keys for [zeit/now] secrets. NB: the "@" prefix is not required (eg "@mongo").
+    mongo: string;
+    s3: { key: string; secret: string };
   };
 };
 
@@ -29,7 +49,6 @@ export type IConfigNowFile = {
 /**
  * Payloads
  */
-
 export type IErrorPayload = { status: number; data: t.IHttpError };
 export type INotFoundResponse = t.IHttpError<'HTTP/404'> & { status: 404; url: string };
 export type IGetResponse<D> = {
@@ -63,7 +82,7 @@ export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
  * Namespace: POST
  */
 export type IReqPostNsQuery = IReqNsQuery & {
-  changes?: boolean; // return list of changes (default: false).
+  changes?: boolean; // return list of changes (default: true).
 };
 
 export type IReqPostNsBody = {
@@ -101,16 +120,35 @@ export type IResGetColumnData = t.IColumnData;
  */
 export type IReqFileParams = { ns: string; file: string };
 export type IReqFileQuery = {};
+export type IReqFilePullQuery = {};
 
 /**
  * File: GET
  */
 export type IResGetFile = IGetResponse<IResGetFileData>;
-export type IResGetFileData = {};
+export type IResGetFileData = t.IFileData & {};
 
 /**
  * File: POST
  */
-export type IReqPostFileQuery = IReqFileQuery & {};
+export type IReqPostFileQuery = IReqFileQuery & {
+  changes?: boolean; // return list of changes (default: true).
+};
 export type IReqPostFileBody = {};
-export type IResPostFile = IResGetFile & {};
+export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
+
+/**
+ * Info (System)
+ */
+
+export type IResGetInfo = {
+  system: string;
+  domain: string;
+  region: string;
+  version: { [key: string]: string };
+  deployedAt?: {
+    datetime: string;
+    timestamp: number;
+    timezone: string;
+  };
+};

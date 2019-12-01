@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { getConfigFiles, logNoConfigFiles } from './cmd.list';
-import { cli, config, fs, log, t, defaultValue, time } from './common';
+import { cli, defaultValue, fs, log, PKG, t, time } from './common';
 
 const FILES = [
   'package.json',
@@ -12,11 +12,16 @@ const FILES = [
   'src/types.ts',
 ];
 
+type DeployTarget = 'now';
+
 /**
  * Run a deployment.
  */
-export async function run(args: { target: 'now'; force?: boolean }) {
+export async function run(args: { target: DeployTarget; force?: boolean; dry?: boolean }) {
+  const { target } = args;
   const force = defaultValue(args.force, false);
+
+  log.info.gray(`${PKG.name}: v${PKG.version}`);
 
   // Read in the config files.
   const files = await getConfigFiles();
@@ -28,43 +33,117 @@ export async function run(args: { target: 'now'; force?: boolean }) {
   }
 
   // Prompt the user for which deployment to run.
+  const deployTitle = (args: { active: boolean; force?: boolean }) => {
+    const deploy = args.active ? 'Deploying' : 'Deploy';
+    const title = args.force ? `${deploy} (forced)` : deploy;
+    return title;
+  };
   log.info();
-  const path = await files.prompt({ message: deployTitle({ force, active: false }) });
-
-  // Load configuration settings.
-  const settings = config.loadSync({ path });
-  if (!settings.exists) {
-    log.info();
-    log.info.yellow(`😩  Config file does not exist [.yml]`);
-    log.info.gray(settings.path);
-    log.info();
+  const configs = await files.promptMany({ message: deployTitle({ force, active: false }) });
+  if (configs.length === 0) {
     return;
   }
 
-  const validation = settings.validate();
-  if (!validation.isValid) {
+  // Ensure each configuration file is valid.
+  let isValid = true;
+  for (const config of configs) {
+    const validation = config.validate();
+    if (!validation.isValid) {
+      isValid = false;
+      log.info();
+      log.info.yellow(`😩  Invalid configuration file.`);
+      log.info.gray(`   ${fs.dirname(config.path)}/${log.cyan(fs.basename(config.path))}`);
+      validation.errors.forEach(err => {
+        log.info.gray(`   ${log.red('Error:')} ${log.white(err.message)}`);
+      });
+      log.info();
+    }
+  }
+  if (!isValid) {
+    return;
+  }
+
+  // Prepare folders.
+  const sourceDir = await getTmplDir();
+  const deployments = await Promise.all(
+    configs.map(async config => {
+      const dirname = fs.basename(config.path).replace(/\.yml$/, '');
+      const targetDir = fs.resolve(`tmp/.deploy/${dirname}`);
+      await fs.remove(targetDir); // Clear existing deloyment.
+      await copyAndPrepare({ sourceDir, targetDir, config: config.data, target });
+      const res = {
+        targetDir,
+        path: config.path,
+        config: config.data,
+        info: [] as string[],
+        log: () => {
+          log.info.green(`${dirname}`);
+          log.info.gray(`${targetDir}/`);
+          res.info.forEach(line => log.info(line));
+          log.info();
+        },
+      };
+      return res;
+    }),
+  );
+
+  // Build list of tasks.
+  const tasks = deployments.map(deployment => {
+    const { targetDir, config } = deployment;
+    return deployTask({
+      targetDir,
+      force,
+      prod: true,
+      title: `${config.now.domain}: ${config.title}`,
+      done: res => (deployment.info = res),
+    });
+  });
+
+  if (args.dry) {
     log.info();
-    log.info.yellow(`😩  The configuration file is invalid.`);
-    log.info.gray(`   ${settings.path}`);
-    validation.errors.forEach(err => {
-      log.info.gray(`   ${log.red('Error:')} ${err.message}`);
+    log.info(`DRY RUN 🐷`);
+    log.info(`Stopped without deploying.`);
+    log.info();
+    deployments.forEach(deployment => {
+      log.info.gray(`  ${deployment.targetDir}`);
     });
     log.info();
     return;
   }
 
-  // Prepare directories.
-  const sourceDir = await getTmplDir();
-  const targetDir = fs.resolve('tmp/.deploy');
-  await fs.remove(targetDir); // Clear existing deloyment.
+  // Run the deployment tasks.
+  log.info();
+  await cli.exec.tasks.run(tasks, { silent: false, concurrent: true });
+
+  // Finish up.
+  log.info();
+  deployments.forEach(deployment => deployment.log());
+  log.info();
+}
+
+/**
+ * [Helpers]
+ */
+
+/**
+ * Copy the deployment folder, and make file modifications
+ * to the resulting folder.
+ */
+async function copyAndPrepare(args: {
+  sourceDir: string;
+  targetDir: string;
+  config: t.IConfigDeployment;
+  target: DeployTarget;
+}) {
+  const { sourceDir, targetDir, config } = args;
 
   // Copy deployment folder.
   const tmpl = await copy({ sourceDir, targetDir });
 
   // Update: [now.json]
   await (async () => {
-    const config = settings.data;
-    const now = config.now;
+    const { now, secret } = config;
+
     const file = tmpl.files.find(path => path.to.endsWith('now.json'));
     if (file) {
       const json = await fs.file.loadAndParse<t.IConfigNowFile>(file.to);
@@ -75,7 +154,7 @@ export async function run(args: { target: 'now'; force?: boolean }) {
       json.name = now.deployment;
       json.alias = alias;
       json.env = json.env || {};
-      json.env.CELLOS_MONGO = now.mongo;
+      json.env.CELL_MONGO = secret.mongo;
 
       fs.file.stringifyAndSaveSync(file.to, json);
     }
@@ -85,7 +164,7 @@ export async function run(args: { target: 'now'; force?: boolean }) {
   await (async () => {
     const file = tmpl.files.find(path => path.to.endsWith('package.json'));
     if (file) {
-      const pkg = await fs.file.loadAndParse<t.IPackage>(file.to);
+      const pkg = await fs.file.loadAndParse<t.INpmPackageJson>(file.to);
       if (pkg.dependencies) {
         pkg.version = pkg.dependencies['@platform/cell.http'];
       }
@@ -104,7 +183,6 @@ export async function run(args: { target: 'now'; force?: boolean }) {
 
   // Update: [now.ts]
   await (async () => {
-    const config = settings.data;
     const now = config.now;
     const file = tmpl.files.find(path => path.to.endsWith('now.ts'));
     if (file) {
@@ -113,38 +191,34 @@ export async function run(args: { target: 'now'; force?: boolean }) {
       text = text.replace(/__TITLE__/, config.title);
       text = text.replace(/__DB__/, now.subdomain || 'prod');
       text = text.replace(/__COLLECTION__/, config.collection);
+      text = text.replace(/__DEPLOYED_AT__/, time.now.timestamp.toString());
+      text = text.replace(/__S3_ENDPOINT__/, config.fs.endpoint);
+      text = text.replace(/__S3_ROOT__/, config.fs.root);
 
       await fs.writeFile(file.to, text);
     }
   })();
-
-  // Prepare and run the deployment task.
-  let info: string[] = [];
-  const tasks = deployTask({
-    targetDir,
-    prod: true,
-    force,
-    done: res => (info = res),
-  });
-  log.info();
-  await cli.exec.tasks.run(tasks, { silent: false });
-
-  // Finish up.
-  log.info();
-  log.info.gray(`Deployed: ${targetDir}`);
-  log.info();
-  info.forEach(line => log.info(line));
-  log.info();
 }
 
 /**
- * [Helpers]
+ * Make a copy of the deployment folder.
  */
+async function copy(args: { sourceDir: string; targetDir: string }) {
+  // Create base directory.
+  const sourceDir = fs.resolve(args.sourceDir);
+  const targetDir = fs.resolve(args.targetDir);
+  await fs.ensureDir(targetDir);
 
-function deployTitle(args: { active: boolean; force?: boolean }) {
-  const deploy = args.active ? 'Deploying' : 'Deploy';
-  const title = args.force ? `${deploy} (forced)` : deploy;
-  return title;
+  // Copy files.
+  const files = FILES.map(path => {
+    const from = fs.join(sourceDir, path);
+    const to = fs.join(targetDir, path);
+    return { from, to };
+  });
+  await Promise.all(files.map(({ from, to }) => fs.copy(from, to)));
+
+  // Finish up.
+  return { files };
 }
 
 async function getTmplDir() {
@@ -169,20 +243,21 @@ async function getTmplDir() {
 }
 
 function deployTask(args: {
+  title: string;
   targetDir: string;
   prod: boolean;
   force: boolean;
   done: (info: string[]) => void;
 }) {
-  const { force } = args;
+  const { targetDir, title } = args;
   const task: cli.exec.ITask = {
-    title: deployTitle({ force, active: true }),
+    title,
     task: () => {
       return new Observable(observer => {
         const prod = args.prod ? '--prod' : '';
         const force = args.force ? '--force' : '';
         const cmd = cli.exec.command(`now ${prod} ${force}`.trim());
-        const running = cmd.run({ cwd: args.targetDir, silent: true });
+        const running = cmd.run({ cwd: targetDir, silent: true });
 
         const next = (text: string) => {
           text = text.trim().replace(/^-\s*/, '');
@@ -211,25 +286,4 @@ function deployTask(args: {
   };
 
   return task;
-}
-
-/**
- * Make a copy of the deployment folder.
- */
-async function copy(args: { sourceDir: string; targetDir: string }) {
-  // Create base directory.
-  const sourceDir = fs.resolve(args.sourceDir);
-  const targetDir = fs.resolve(args.targetDir);
-  await fs.ensureDir(targetDir);
-
-  // Copy files.
-  const files = FILES.map(path => {
-    const from = fs.join(sourceDir, path);
-    const to = fs.join(targetDir, path);
-    return { from, to };
-  });
-  await Promise.all(files.map(({ from, to }) => fs.copy(from, to)));
-
-  // Finish up.
-  return { files };
 }

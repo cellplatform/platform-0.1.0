@@ -32,7 +32,7 @@ export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async args
 
   // Update hash.
   if (args.force || args.isChanged) {
-    const data = { ...value.deleteUndefined(model.toObject()) };
+    const data: t.ICellData = { ...value.deleteUndefined(model.toObject()) };
     delete data.hash;
     model.props.hash = util.hash.cell({ uri: schema.uri, data });
   }

@@ -45,6 +45,16 @@ export type IFuncErrorCircularRef = t.IError<'REF/circular'> & FuncErrorProps;
 /**
  * URI errors
  */
-
 type UriErrorProps = { uri: string };
 export type IUriError = t.IError<'URI'> & UriErrorProps;
+
+/**
+ * FileSystem errors
+ */
+export type FileSystemError =
+  | 'FS/read'
+  | 'FS/read/404'
+  | 'FS/read/cloud'
+  | 'FS/write'
+  | 'FS/write/cloud';
+export type IFileSystemError = IError<FileSystemError> & { path: string };

@@ -1,6 +1,7 @@
-import { cuid, t } from '../common';
+import { cuid, slug, t } from '../common';
 import { Uri } from '../uri';
 
+export type SchemaFileType = 'FILE';
 export type SchemaCoordType = 'CELL' | 'COL' | 'ROW';
 
 export type SchemaType<T extends t.IUri> = t.IUriParts<T> & { path: string };
@@ -13,13 +14,16 @@ export type UriString = string;
  */
 export class Schema {
   public static uri = Uri;
+  public static cuid = cuid;
+  public static slug = slug;
 
-  public static ns = (id?: string) => new NsSchema({ id });
+  public static ns = (id: string) => new NsSchema({ id });
 
   public static query = {
     cells: '/CELL/*',
     rows: '/ROW/*',
     columns: '/COL/*',
+    files: '/FILE/*',
   };
 
   public static from = {
@@ -60,6 +64,16 @@ export class Schema {
         },
       });
     },
+    file(input: string | t.IDbModelFile) {
+      return from<t.IFileUri>({
+        input,
+        toUri: path => FileSchema.uri({ path }),
+        toPath: uri => {
+          const { parts } = Uri.parse<t.IFileUri>(uri);
+          return Schema.ns(parts.ns).file(parts.file).path;
+        },
+      });
+    },
   };
 }
 
@@ -72,7 +86,7 @@ export class NsSchema {
   public readonly path: string;
   public readonly uri: string;
 
-  constructor(args: { id?: string }) {
+  constructor(args: { id: string }) {
     let id = args.id || cuid();
     if (Uri.is.uri(id)) {
       const uri = Uri.parse(id);
@@ -106,6 +120,11 @@ export class NsSchema {
   public row(key: string) {
     const uri = Uri.create.row(this.id, key);
     return new CoordSchema({ type: 'ROW', ns: this, id: key, uri });
+  }
+
+  public file(file: string) {
+    const uri = Uri.create.file(this.id, file);
+    return new FileSchema({ ns: this, id: file, uri });
   }
 
   public static uri(args: { path: string }) {
@@ -160,6 +179,31 @@ export class CoordSchema {
 }
 
 /**
+ * Schema for a file.
+ */
+export class FileSchema {
+  public readonly type: SchemaFileType = 'FILE';
+  public readonly ns: NsSchema;
+  public readonly id: string;
+  public readonly path: string;
+  public readonly uri: string;
+
+  constructor(args: { ns: NsSchema; id: string; uri: string }) {
+    this.ns = args.ns;
+    this.id = args.id;
+    this.path = `${args.ns.path}/${this.type}/${this.id}`;
+    this.uri = args.uri;
+  }
+
+  public static uri(args: { path: string }) {
+    const parts = args.path.split('/');
+    const ns = parts[1];
+    const file = parts[3];
+    return Uri.create.file(ns, file);
+  }
+}
+
+/**
  * [Helpers]
  */
 
@@ -189,7 +233,7 @@ const from = <T extends t.IUri>(args: {
   }
 
   if (!uri) {
-    throw new Error(`Model [uri] could not be derived.`);
+    throw new Error(`Model URI could not be derived.`);
   }
 
   const parts = Uri.parse<T>(uri);

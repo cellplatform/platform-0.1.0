@@ -10,7 +10,7 @@ app
    */
   .command(
     ['init'],
-    'Initialize a new deployment.',
+    'Initialize new deployment config.',
     yargs => yargs,
     async argv => cmd.init.run(),
   )
@@ -20,7 +20,7 @@ app
    */
   .command(
     ['list', 'ls'],
-    'List available deployment configurations.',
+    'List deployment configs.',
     yargs => yargs,
     async argv => cmd.list.run(),
   )
@@ -32,12 +32,18 @@ app
     ['deploy', 'd'],
     'Deploy to the cloud.',
     yargs => {
-      return yargs.option('force', {
-        alias: 'f',
-        describe: 'Force a new deployment even if nothing has changed.',
-        type: 'boolean',
-        default: false,
-      });
+      return yargs
+        .option('force', {
+          alias: 'f',
+          describe: 'Force a new deployment even if nothing has changed.',
+          type: 'boolean',
+          default: false,
+        })
+        .option('dry', {
+          describe: 'Dry run (prepares but will not deploy).',
+          type: 'boolean',
+          default: false,
+        });
     },
-    async argv => cmd.deploy.run({ target: 'now', force: argv.force }),
+    async argv => cmd.deploy.run({ target: 'now', force: argv.force, dry: argv.dry }),
   );

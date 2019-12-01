@@ -1,4 +1,4 @@
-import { t, fs, path } from '../common';
+import { t, fs, path, sha256 } from '../common';
 export * from '../types';
 
 export type IS3Init = t.S3Config & { root: string };
@@ -9,7 +9,7 @@ export type IS3Init = t.S3Config & { root: string };
  *  - AWS "S3"
  *  - DigitalOcean "Spaces"
  */
-export function init(args: IS3Init): t.IS3FileSystem {
+export function init(args: IS3Init): t.IFileSystemS3 {
   const cloud = (() => {
     const { endpoint, accessKey, secret } = args;
     const s3 = fs.s3({ endpoint, accessKey, secret });
@@ -28,7 +28,9 @@ export function init(args: IS3Init): t.IS3FileSystem {
     return { path, s3, bucket };
   })();
 
-  const res: t.IS3FileSystem = {
+  const res: t.IFileSystemS3 = {
+    type: 'S3',
+
     /**
      * S3 bucket name.
      */
@@ -49,43 +51,47 @@ export function init(args: IS3Init): t.IS3FileSystem {
     /**
      * Read from the local file=system.
      */
-    async read(uri: string): Promise<t.IFileReadResponse> {
+    async read(uri: string): Promise<t.IFileSystemRead> {
       uri = (uri || '').trim();
       const path = res.resolve(uri);
       const key = path.replace(/^\//, '');
+      const location = cloud.bucket.url(path);
 
       try {
         const res = await cloud.bucket.get({ key });
         const { status } = res;
         if (!res.ok || !res.data) {
-          const error: t.IFileError = {
+          const error: t.IFileSystemError = {
             type: 'FS/read/cloud',
             message: `Failed to read "${uri}". ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { status, error };
+          return { status, location, error };
         } else {
-          const file: t.IFile = {
+          const file: t.IFileSystemFile = {
             uri,
-            path: cloud.bucket.url(path),
+            path: location,
             data: res.data,
+            get hash() {
+              return sha256(res.data);
+            },
           };
-          return { status, file };
+          return { status, location, file };
         }
       } catch (err) {
-        const error: t.IFileError = {
+        const error: t.IFileSystemError = {
           type: 'FS/read',
           message: `Failed to read "${uri}". ${err.message}`,
           path,
         };
-        return { status: 404, error };
+        return { status: 404, location, error };
       }
     },
 
     /**
      * Write to the local file-system.
      */
-    async write(uri: string, data: Buffer): Promise<t.IFileWriteResponse> {
+    async write(uri: string, data: Buffer): Promise<t.IFileSystemWrite> {
       if (!data) {
         throw new Error(`Cannot write, no data provided.`);
       }
@@ -93,7 +99,14 @@ export function init(args: IS3Init): t.IS3FileSystem {
       uri = (uri || '').trim();
       const path = res.resolve(uri);
       const key = path.replace(/^\//, '');
-      const file: t.IFile = { uri, path, data };
+      const file: t.IFileSystemFile = {
+        uri,
+        path,
+        data,
+        get hash() {
+          return sha256(data);
+        },
+      };
 
       try {
         const res = await cloud.bucket.put({
@@ -103,24 +116,26 @@ export function init(args: IS3Init): t.IS3FileSystem {
         });
 
         const { status } = res;
+        const location = res.url || '';
         file.path = res.url ? res.url : file.path;
+
         if (!res.ok) {
-          const error: t.IFileError = {
+          const error: t.IFileSystemError = {
             type: 'FS/write/cloud',
             message: `Failed to write "${uri}". ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { status, file, error };
+          return { status, location, file, error };
         } else {
-          return { status, file };
+          return { status, location, file };
         }
       } catch (err) {
-        const error: t.IFileError = {
+        const error: t.IFileSystemError = {
           type: 'FS/write',
           message: `Failed to write "${uri}". ${err.message}`,
           path,
         };
-        return { status: 404, file, error };
+        return { status: 404, location: '', file, error };
       }
     },
   };
