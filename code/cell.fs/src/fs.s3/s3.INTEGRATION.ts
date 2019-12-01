@@ -14,6 +14,10 @@ describe('S3 (INTEGRATION)', function() {
     const file = res.file;
 
     expect(res.status).to.eql(200);
+    expect(res.location).to.eql(
+      'https://platform.sfo2.digitaloceanspaces.com/tmp/test/ns.foo/bird',
+    );
+
     expect(file.uri).to.eql(uri);
     expect(file.path.startsWith('https://')).to.eql(true);
     expect(file.path).to.contains('digitaloceanspaces.com');
@@ -31,6 +35,10 @@ describe('S3 (INTEGRATION)', function() {
     const file = res.file as t.IFileSystemFile;
 
     expect(res.status).to.eql(200);
+    expect(res.location).to.eql(
+      'https://platform.sfo2.digitaloceanspaces.com/tmp/test/ns.foo/bird',
+    );
+
     expect(file.uri).to.eql(uri);
     expect(file.path.startsWith('https://')).to.eql(true);
     expect(file.path).to.contains('digitaloceanspaces.com');

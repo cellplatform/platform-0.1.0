@@ -37,6 +37,7 @@ describe('fs.local', () => {
 
     expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
+    expect(res.location).to.eql(`file://${file.path}`);
     expect(file.uri).to.eql(uri);
     expect(file.path).to.eql(fs.resolve(uri));
     expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
@@ -58,6 +59,7 @@ describe('fs.local', () => {
 
     expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
+    expect(res.location).to.eql(`file://${file.path}`);
     expect(file.path).to.eql(path);
     expect(file.data.toString()).to.eql((await util.fs.readFile(file.path)).toString());
     expect(file.hash).to.match(/^sha256-[a-z0-9]+/);

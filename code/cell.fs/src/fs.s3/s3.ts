@@ -55,6 +55,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       uri = (uri || '').trim();
       const path = res.resolve(uri);
       const key = path.replace(/^\//, '');
+      const location = cloud.bucket.url(path);
 
       try {
         const res = await cloud.bucket.get({ key });
@@ -65,17 +66,17 @@ export function init(args: IS3Init): t.IFileSystemS3 {
             message: `Failed to read "${uri}". ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { status, error };
+          return { status, location, error };
         } else {
           const file: t.IFileSystemFile = {
             uri,
-            path: cloud.bucket.url(path),
+            path: location,
             data: res.data,
             get hash() {
               return sha256(res.data);
             },
           };
-          return { status, file };
+          return { status, location, file };
         }
       } catch (err) {
         const error: t.IFileSystemError = {
@@ -83,7 +84,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
           message: `Failed to read "${uri}". ${err.message}`,
           path,
         };
-        return { status: 404, error };
+        return { status: 404, location, error };
       }
     },
 
@@ -115,16 +116,18 @@ export function init(args: IS3Init): t.IFileSystemS3 {
         });
 
         const { status } = res;
+        const location = res.url || '';
         file.path = res.url ? res.url : file.path;
+
         if (!res.ok) {
           const error: t.IFileSystemError = {
             type: 'FS/write/cloud',
             message: `Failed to write "${uri}". ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { status, file, error };
+          return { status, location, file, error };
         } else {
-          return { status, file };
+          return { status, location, file };
         }
       } catch (err) {
         const error: t.IFileSystemError = {
@@ -132,7 +135,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
           message: `Failed to write "${uri}". ${err.message}`,
           path,
         };
-        return { status: 404, file, error };
+        return { status: 404, location: '', file, error };
       }
     },
   };

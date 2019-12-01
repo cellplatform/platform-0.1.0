@@ -1,6 +1,7 @@
 import { fs, path, t, sha256 } from '../common';
 
 export * from '../types';
+const toLocation = (path: string) => `file://${path}`;
 
 /**
  * Initializes a "local" file-system API.
@@ -28,6 +29,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
     async read(uri: string): Promise<t.IFileSystemRead> {
       uri = (uri || '').trim();
       const path = res.resolve(uri);
+      const location = toLocation(path);
 
       // Ensure the file exists.
       if (!(await fs.pathExists(path))) {
@@ -36,7 +38,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
           message: `A file with the URI "${uri}" does not exist.`,
           path,
         };
-        return { status: 404, error };
+        return { status: 404, location, error };
       }
 
       // Load the file.
@@ -50,14 +52,14 @@ export function init(args: { root: string }): t.IFileSystemLocal {
             return sha256(data);
           },
         };
-        return { status: 200, file };
+        return { status: 200, location, file };
       } catch (err) {
         const error: t.IFileSystemError = {
           type: 'FS/read',
           message: `Failed to write file at URI "${uri}". ${err.message}`,
           path,
         };
-        return { status: 500, error };
+        return { status: 500, location, error };
       }
     },
 
@@ -71,9 +73,11 @@ export function init(args: { root: string }): t.IFileSystemLocal {
 
       uri = (uri || '').trim();
       const path = res.resolve(uri);
+      const location = toLocation(path);
       const file: t.IFileSystemFile = {
         uri,
         path,
+
         data,
         get hash() {
           return sha256(data);
@@ -83,14 +87,14 @@ export function init(args: { root: string }): t.IFileSystemLocal {
       try {
         await fs.ensureDir(fs.dirname(path));
         await fs.writeFile(path, data);
-        return { status: 200, file };
+        return { status: 200, location, file };
       } catch (err) {
         const error: t.IFileSystemError = {
           type: 'FS/write',
           message: `Failed to write "${uri}". ${err.message}`,
           path,
         };
-        return { status: 500, file, error };
+        return { status: 500, location, file, error };
       }
     },
   };
