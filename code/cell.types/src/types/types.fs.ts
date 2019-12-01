@@ -9,7 +9,7 @@ export type IFileSystemMembers = {
   root: string; // Root directory of the file-system.
   resolve(uri: string): string;
   read(uri: string): Promise<IFileSystemRead>;
-  write(uri: string, data: Buffer): Promise<IFileSystemWrite>;
+  write(uri: string, data: Buffer, options?: { filename?: string }): Promise<IFileSystemWrite>;
 };
 
 export type IFileSystemFile = {

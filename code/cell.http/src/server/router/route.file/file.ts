@@ -83,14 +83,9 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
       }
 
-      // Prepare headers that cause the browser's save-dialog to default to the file-name.
-      const headers = {
-        'Content-Disposition': `inline; filename="${props.name}"`,
-      };
-
       // Redirect if the location is an S3 link.
       if (util.isHttp(location)) {
-        return { status: 307, data: location, headers };
+        return { status: 307, data: location };
       }
 
       // Serve the file if local file-system.
@@ -101,7 +96,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
           const err = new Error(`File at the URI "${file.uri}" does on the local file-system.`);
           return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
         } else {
-          return { status: 200, data, headers };
+          return { status: 200, data };
         }
       }
 
@@ -121,9 +116,10 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const { status, ns, error, uri } = getParams(req);
     if (!ns || error) {
       return { status, data: { error } };
+    } else {
+      const form = await req.body.form();
+      return postFileResponse({ db, fs, uri, query, form });
     }
-    const form = await req.body.form();
-    return postFileResponse({ db, fs, uri, query, form });
   });
 }
 
@@ -176,12 +172,12 @@ export async function postFileResponse(args: {
     const file = form.files[0];
     const { buffer, name, encoding } = file;
     const writeResponse = await fs.write(uri, buffer);
-    const fileHash = writeResponse.file.hash;
+    const filehash = writeResponse.file.hash;
     const location = writeResponse.location;
 
     // Save the model.
     const model = await models.File.create({ db, uri }).ready;
-    models.setProps(model, { name, encoding, fileHash, location });
+    models.setProps(model, { name, encoding, filehash, location });
     const saveResponse = await model.save();
 
     // Store DB changes.

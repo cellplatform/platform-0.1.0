@@ -51,10 +51,10 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   };
 
   /**
-   * GET: A1/files
+   * GET: !A1/files
    */
   router.get(ROUTES.CELL.FILES.BASE, async req => {
-    const { status, ns, key, filename, error, uri } = getParams(req, { fileRequired: false });
+    const { status, ns, error, uri } = getParams(req, { fileRequired: false });
     if (!ns || error) {
       return { status, data: { error } };
     }
@@ -73,7 +73,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       .filter(({ value }) => Schema.uri.is.file(value))
       .map(({ key, value }) => {
         const uri = value;
-        const name = key.replace(/^fs\//, '').replace(/\|/, '.');
+        const name = Schema.file.links.toFilename(key);
         return {
           uri,
           name,
@@ -106,7 +106,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       // Prepare the file URI link.
       const cell = await models.Cell.create({ db, uri: cellUri }).ready;
       const links = cell.props.links || {};
-      const linkKey = `fs/${filename}`.replace(/\./g, '|');
+      const linkKey = Schema.file.links.toKey(filename);
       const fileUri = links[linkKey] || Schema.uri.create.file(ns, Schema.slug());
 
       // Save to the file-system.
