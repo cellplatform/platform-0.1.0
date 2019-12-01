@@ -2,7 +2,7 @@ import { t } from '../common';
 
 export type IFileProps = {
   name?: string;
-  fileHash?: string;
+  filehash?: string;
   mimetype?: string;
   encoding?: string;
   location?: string;
