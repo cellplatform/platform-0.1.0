@@ -38,10 +38,10 @@ describe('settings.config', () => {
         ...Config.DEFAULT.now,
         deployment: 'my-deployment',
         domain: 'domain.com',
-        secret: {
-          ...Config.DEFAULT.now.secret,
-          mongo: '@platform-mongo',
-        },
+      },
+      secret: {
+        ...Config.DEFAULT.secret,
+        mongo: '@platform-mongo',
       },
     });
   });
@@ -74,15 +74,15 @@ describe('settings.config', () => {
         const res = config.validate();
         const hasError = res.errors.some(e => e.message.includes(error));
 
-        expect(res.isValid).to.eql(false);
-        expect(hasError).to.eql(true);
+        expect(res.isValid).to.eql(false, error);
+        expect(hasError).to.eql(true, error);
       };
 
       test(c => (c.exists = false), 'Configuration file does not exist');
       test(c => (c.data.title = '  '), 'Missing [title] value');
       test(c => (c.data.now.deployment = '  '), 'Missing [now.deployment] value');
       test(c => (c.data.now.domain = '  '), 'Missing [now.domain] value');
-      test(c => (c.data.now.secret.mongo = '  '), 'Missing [now.secret.mongo] value');
+      test(c => (c.data.secret.mongo = '  '), 'Missing [secret.mongo] value');
     });
   });
 });

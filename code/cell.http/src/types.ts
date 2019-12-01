@@ -27,9 +27,12 @@ export type IConfigDeployment = {
     deployment: string; // The "project name" of the now deployment. see CLI: `now ls`.
     domain: string;
     subdomain?: string; // Used as DB name (or "prod" if no specified).
-    secret: {
-      mongo: string; // [zeit/now] secret key (eg "@mongo"). NB: the "@" prefix is not required.
-    };
+  };
+  secret: {
+    // Keys for [zeit/now] secrets.
+    // NB: the "@" prefix is not required (eg "@mongo").
+    mongo: string;
+    // s3: { accessKey: string; secret: string };
   };
 };
 

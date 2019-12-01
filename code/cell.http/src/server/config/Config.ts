@@ -7,9 +7,9 @@ export const DEFAULT: t.IConfigDeployment = {
     deployment: '',
     domain: '',
     subdomain: undefined,
-    secret: {
-      mongo: '',
-    },
+  },
+  secret: {
+    mongo: '',
   },
 };
 
@@ -47,8 +47,8 @@ export class Config {
       const yaml = fs.file.loadAndParseSync<t.IConfigDeployment>(file, DEFAULT);
       data = R.mergeDeepRight(data, yaml);
       data.now = data.now || {};
-      const secret = (data.now.secret = data.now.secret || {});
-      secret.mongo = secret.mongo ? `@${secret.mongo.replace(/^\@/, '')}` : ''; // Prepend "@" symbol for `zeit/now`.
+      data.secret = data.secret || {};
+      data.secret.mongo = data.secret.mongo ? `@${data.secret.mongo.replace(/^\@/, '')}` : ''; // Prepend "@" symbol for `zeit/now`.
     }
 
     const config: t.IConfigFile = {
@@ -99,11 +99,11 @@ function validate(config: t.IConfigFile) {
     }
   });
 
-  const secret = now.secret || {};
+  const secret = data.secret || {};
   ['mongo'].forEach(field => {
     const value = (secret[field] || '').trim();
     if (!value) {
-      error(`Missing [now.secret.${field}] value.`);
+      error(`Missing [secret.${field}] value.`);
     }
   });
 

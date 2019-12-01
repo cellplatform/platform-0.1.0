@@ -131,7 +131,8 @@ async function copyAndPrepare(args: {
 
   // Update: [now.json]
   await (async () => {
-    const now = config.now;
+    const { now, secret } = config;
+
     const file = tmpl.files.find(path => path.to.endsWith('now.json'));
     if (file) {
       const json = await fs.file.loadAndParse<t.IConfigNowFile>(file.to);
@@ -142,7 +143,7 @@ async function copyAndPrepare(args: {
       json.name = now.deployment;
       json.alias = alias;
       json.env = json.env || {};
-      json.env.CELLOS_MONGO = now.secret.mongo;
+      json.env.CELL_MONGO = secret.mongo;
 
       fs.file.stringifyAndSaveSync(file.to, json);
     }
