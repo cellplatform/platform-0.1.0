@@ -1,4 +1,4 @@
-import { cell, constants, models, ROUTES, Schema, t, toErrorPayload } from '../common';
+import { util, cell, constants, models, ROUTES, Schema, t } from '../common';
 
 /**
  * Coordinate routes (cell: | row: | col:).
@@ -117,6 +117,6 @@ async function getCoordResponse<T extends t.IGetResponse<any>>(args: {
 
     return { status: 200, data: res as T };
   } catch (err) {
-    return toErrorPayload(err);
+    return util.toErrorPayload(err);
   }
 }

@@ -120,6 +120,7 @@ export type IResGetColumnData = t.IColumnData;
  */
 export type IReqFileParams = { ns: string; file: string };
 export type IReqFileQuery = {};
+export type IReqFilePullQuery = {};
 
 /**
  * File: GET

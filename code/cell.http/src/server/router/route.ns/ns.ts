@@ -1,13 +1,4 @@
-import {
-  constants,
-  defaultValue,
-  func,
-  models,
-  ROUTES,
-  Schema,
-  t,
-  toErrorPayload,
-} from '../common';
+import { constants, defaultValue, func, models, ROUTES, Schema, t, util } from '../common';
 
 /**
  * Namespace routes.
@@ -113,7 +104,7 @@ async function getNsData(args: {
 
     return models.ns.getChildData({ model, cells, columns, rows });
   } catch (err) {
-    return toErrorPayload(err);
+    return util.toErrorPayload(err);
   }
 }
 
@@ -179,7 +170,7 @@ async function postNsResponse(args: {
     };
     return { status: res.status, data };
   } catch (err) {
-    return toErrorPayload(err);
+    return util.toErrorPayload(err);
   }
 }
 

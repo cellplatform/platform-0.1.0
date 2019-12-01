@@ -21,5 +21,6 @@ export const ROUTES = {
   },
   FILE: {
     BASE: `/file\\::ns([A-Za-z0-9]*)\.:file([A-Za-z0-9]+)(/?)`,
+    PULL: `/file\\::ns([A-Za-z0-9]*)\.:file([A-Za-z0-9]+)/pull(/?)`,
   },
 };

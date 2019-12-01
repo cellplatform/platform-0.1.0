@@ -1,13 +1,4 @@
-import {
-  defaultValue,
-  constants,
-  ROUTES,
-  Schema,
-  t,
-  toErrorPayload,
-  models,
-  util,
-} from '../common';
+import { defaultValue, constants, ROUTES, Schema, t, models, util } from '../common';
 
 /**
  * File-system routes (fs:).
@@ -60,6 +51,67 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
+   * GET /pull (download).
+   */
+  router.get(ROUTES.FILE.PULL, async req => {
+    const query = req.query as t.IReqFilePullQuery;
+    const { status, ns, error, uri } = getParams(req);
+
+    if (!ns || error) {
+      return { status, data: { error } };
+    }
+
+    try {
+      // Pull the file meta-data.
+      const fileResponse = await getFileResponse({ uri, db, query });
+      if (!fileResponse.status.toString().startsWith('2')) {
+        return fileResponse; // NB: This is an error.
+      }
+      const file = fileResponse.data as t.IResGetFile;
+
+      // Ensure the file exists.
+      if (!file.exists) {
+        const err = new Error(`File at the URI "${file.uri}" does not exist.`);
+        return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
+      }
+
+      // Get the location.
+      const props = file.data.props;
+      const location = (props.location || '').trim();
+      if (!location) {
+        const err = new Error(`File at the URI "${file.uri}" does not have a location.`);
+        return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
+      }
+
+      // Redirect if the location is an S3 link.
+      if (util.isHttp(location)) {
+        return { status: 307, data: location };
+      }
+
+      // Serve the file if local file-system.
+      if (util.isFile(location) && fs.type === 'FS') {
+        const local = await fs.read(uri);
+        const data = local.file ? local.file.data : undefined;
+        if (!data) {
+          const err = new Error(`File at the URI "${file.uri}" does on the local file-system.`);
+          return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
+        } else {
+          const headers = {
+            'Content-Disposition': `inline; filename="${props.name}"`, // NB: Causes save-dialog to default to the file-name.
+          };
+          return { status: 200, data, headers };
+        }
+      }
+
+      // Something went wrong if we got this far.
+      const err = new Error(`File at the URI "${file.uri}" could not be served.`);
+      return util.toErrorPayload(err, { status: 500 });
+    } catch (err) {
+      return util.toErrorPayload(err);
+    }
+  });
+
+  /**
    * POST binary-file.
    */
   router.post(ROUTES.FILE.BASE, async req => {
@@ -67,10 +119,9 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const { status, ns, error, uri } = getParams(req);
     if (!ns || error) {
       return { status, data: { error } };
-    } else {
-      const form = await req.body.form();
-      return postFileResponse({ db, fs, uri, query, form });
     }
+    const form = await req.body.form();
+    return postFileResponse({ db, fs, uri, query, form });
   });
 }
 
@@ -94,7 +145,7 @@ export async function getFileResponse(args: { db: t.IDb; uri: string; query: t.I
     };
     return { status: 200, data: res as t.IResGetFile };
   } catch (err) {
-    return toErrorPayload(err);
+    return util.toErrorPayload(err);
   }
 }
 
@@ -112,11 +163,11 @@ export async function postFileResponse(args: {
   try {
     if (form.files.length === 0) {
       const err = new Error(`No file data was posted to the URI ("${uri}").`);
-      return toErrorPayload(err, { status: 400 });
+      return util.toErrorPayload(err, { status: 400 });
     }
     if (form.files.length > 1) {
       const err = new Error(`Only a single file can be posted to the URI ("${uri}").`);
-      return toErrorPayload(err, { status: 400 });
+      return util.toErrorPayload(err, { status: 400 });
     }
 
     // Save to the abstract file-system (S3 or local).
@@ -147,6 +198,6 @@ export async function postFileResponse(args: {
 
     return res;
   } catch (err) {
-    return toErrorPayload(err);
+    return util.toErrorPayload(err);
   }
 }
