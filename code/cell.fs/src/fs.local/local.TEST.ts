@@ -30,7 +30,7 @@ describe('fs.local', () => {
     await util.reset();
     const fs = init();
 
-    const png = await util.loadImage('bird.png');
+    const png = await util.image('bird.png');
     const uri = 'file:foo.bird';
     const res = await fs.write(`  ${uri} `, png); // NB: URI padded with spaces (corrected internally).
     const file = res.file;
@@ -48,7 +48,7 @@ describe('fs.local', () => {
     await util.reset();
     const fs = init();
 
-    const png = await util.loadImage('bird.png');
+    const png = await util.image('bird.png');
     const uri = 'file:foo.bird';
     const path = fs.resolve(uri);
     await util.fs.ensureDir(util.fs.dirname(path));
