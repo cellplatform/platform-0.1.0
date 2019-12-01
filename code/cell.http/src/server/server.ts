@@ -26,7 +26,7 @@ export function init(args: {
     cors: true,
     log: {
       module: `${log.white(PKG.name)}@${PKG.version}`,
-      schema: log.yellow(deps['@platform/cell.schema']),
+      schema: log.green(deps['@platform/cell.schema']),
       fs: root,
     },
   });
