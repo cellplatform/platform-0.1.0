@@ -3,7 +3,9 @@
   "name": "name",
   "alias": "domain.com",
   "env": {
-    "CELL_MONGO": "@platform-mongo"
+    "CELL_MONGO": "@platform-mongo",
+    "CELL_S3_KEY": "@spaces-key",
+    "CELL_S3_SECRET": "@spaces-secret"
   },
   "routes": [
     {

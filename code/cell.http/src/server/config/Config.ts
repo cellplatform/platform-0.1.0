@@ -1,8 +1,12 @@
-import { t, fs, R } from '../common';
+import { t, fs, R, util, value as valueUtil } from '../common';
 
 export const DEFAULT: t.IConfigDeployment = {
   title: 'Untitled',
-  collection: 'cell.http',
+  collection: 'cell.data',
+  fs: {
+    endpoint: '',
+    root: '',
+  },
   now: {
     deployment: '',
     domain: '',
@@ -10,6 +14,7 @@ export const DEFAULT: t.IConfigDeployment = {
   },
   secret: {
     mongo: '',
+    s3: { key: '', secret: '' },
   },
 };
 
@@ -91,21 +96,42 @@ function validate(config: t.IConfigFile) {
     error('Missing [title] value.');
   }
 
+  const fs = data.fs || {};
+  ['endpoint', 'root'].forEach(field => {
+    const value = trim(fs[field]);
+    if (isEmpty(value)) {
+      error(`Missing [fs.${field}] value.`);
+    }
+  });
+
   const now = data.now || {};
   ['deployment', 'domain'].forEach(field => {
-    const value = (now[field] || '').trim();
-    if (!value) {
+    const value = trim(now[field]);
+    if (isEmpty(value)) {
       error(`Missing [now.${field}] value.`);
     }
   });
 
   const secret = data.secret || {};
-  ['mongo'].forEach(field => {
-    const value = (secret[field] || '').trim();
-    if (!value) {
+  ['mongo', 's3'].forEach(field => {
+    const value = trim(secret[field]);
+    if (isEmpty(value)) {
       error(`Missing [secret.${field}] value.`);
     }
   });
 
   return res;
 }
+
+const isEmpty = (value: any) => {
+  if (typeof value === 'object') {
+    const keys = Object.keys(valueUtil.deleteEmpty({ ...value }));
+    return keys.length === 0;
+  } else {
+    return !Boolean(value);
+  }
+};
+
+const trim = (value: any) => {
+  return typeof value === 'string' ? value.trim() : value;
+};

@@ -17,7 +17,7 @@ type DeployTarget = 'now';
 /**
  * Run a deployment.
  */
-export async function run(args: { target: DeployTarget; force?: boolean }) {
+export async function run(args: { target: DeployTarget; force?: boolean; dry?: boolean }) {
   const { target } = args;
   const force = defaultValue(args.force, false);
 
@@ -99,6 +99,18 @@ export async function run(args: { target: DeployTarget; force?: boolean }) {
     });
   });
 
+  if (args.dry) {
+    log.info();
+    log.info(`DRY RUN 🐷`);
+    log.info(`Stopped without deploying.`);
+    log.info();
+    deployments.forEach(deployment => {
+      log.info.gray(`  ${deployment.targetDir}`);
+    });
+    log.info();
+    return;
+  }
+
   // Run the deployment tasks.
   log.info();
   await cli.exec.tasks.run(tasks, { silent: false, concurrent: true });
@@ -106,7 +118,6 @@ export async function run(args: { target: DeployTarget; force?: boolean }) {
   // Finish up.
   log.info();
   deployments.forEach(deployment => deployment.log());
-  log.info();
   log.info();
 }
 
@@ -181,6 +192,8 @@ async function copyAndPrepare(args: {
       text = text.replace(/__DB__/, now.subdomain || 'prod');
       text = text.replace(/__COLLECTION__/, config.collection);
       text = text.replace(/__DEPLOYED_AT__/, time.now.timestamp.toString());
+      text = text.replace(/__S3_ENDPOINT__/, config.fs.endpoint);
+      text = text.replace(/__S3_ROOT__/, config.fs.root);
 
       await fs.writeFile(file.to, text);
     }

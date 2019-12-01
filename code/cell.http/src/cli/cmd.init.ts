@@ -3,11 +3,20 @@ import { cli, fs, log, util } from './common';
 const TMPL = `
 title:          # Title of this CellOS provider.
 
+fs:
+  endpoint:     # URL to S3 endpoint.
+  root:         # Root path within S3 to mount the file-system, starting with "/bucket/" name.
+
 now:
   name:         # Deployment name.
   domain:       # Domain name (eg "domain.com").
   subdomain:    # (optional) sub-domain, ommit if root domain (aka "prod").
+
+secret:
   mongo:        # Key to the [zeit/now] secret containing the mongo connection string.
+  s3:
+    key:        # Access key to S3 storage.
+    secret:     # S3 storage API password.
 
 `.substring(1);
 

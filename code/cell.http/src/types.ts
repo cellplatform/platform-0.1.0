@@ -23,16 +23,19 @@ export type IValidation = {
 export type IConfigDeployment = {
   title: string;
   collection: string;
+  fs: {
+    endpoint: string;
+    root: string;
+  };
   now: {
     deployment: string; // The "project name" of the now deployment. see CLI: `now ls`.
     domain: string;
-    subdomain?: string; // Used as DB name (or "prod" if no specified).
+    subdomain?: string; // NB: Used as DB name (uses "prod" if not specified).
   };
   secret: {
-    // Keys for [zeit/now] secrets.
-    // NB: the "@" prefix is not required (eg "@mongo").
+    // Keys for [zeit/now] secrets. NB: the "@" prefix is not required (eg "@mongo").
     mongo: string;
-    // s3: { accessKey: string; secret: string };
+    s3: { key: string; secret: string };
   };
 };
 

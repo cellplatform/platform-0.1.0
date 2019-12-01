@@ -34,6 +34,11 @@ describe('settings.config', () => {
     expect(res.data).to.eql({
       ...Config.DEFAULT,
       title: 'My Title',
+      fs: {
+        ...Config.DEFAULT.fs,
+        endpoint: 'sfo2.digitaloceanspaces.com',
+        root: 'platform/tmp/test',
+      },
       now: {
         ...Config.DEFAULT.now,
         deployment: 'my-deployment',
@@ -42,6 +47,7 @@ describe('settings.config', () => {
       secret: {
         ...Config.DEFAULT.secret,
         mongo: '@platform-mongo',
+        s3: { key: 's3-key', secret: 's3-secret' },
       },
     });
   });
@@ -83,6 +89,9 @@ describe('settings.config', () => {
       test(c => (c.data.now.deployment = '  '), 'Missing [now.deployment] value');
       test(c => (c.data.now.domain = '  '), 'Missing [now.domain] value');
       test(c => (c.data.secret.mongo = '  '), 'Missing [secret.mongo] value');
+      test(c => (c.data.secret.s3 = { key: '', secret: '' }), 'Missing [secret.s3] value');
+      test(c => (c.data.fs.endpoint = ' '), 'Missing [fs.endpoint] value');
+      test(c => (c.data.fs.root = ' '), 'Missing [fs.root] value');
     });
   });
 });
