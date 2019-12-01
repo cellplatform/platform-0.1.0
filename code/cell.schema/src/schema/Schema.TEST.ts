@@ -1,7 +1,7 @@
 import { expect, t } from '../test';
 import { Schema } from '.';
 
-describe('schema', () => {
+describe('Schema', () => {
   describe('namespace', () => {
     it('existing id', () => {
       const ns = Schema.ns('abc');
@@ -62,14 +62,14 @@ describe('schema', () => {
     it('abc.123', () => {
       const ns = Schema.ns('abc');
       const res = ns.file('123');
-      expect(res.id).to.eql('123');
+      expect(res.fileid).to.eql('123');
       expect(res.path).to.eql('NS/abc/FILE/123');
       expect(res.uri).to.eql('file:abc.123');
     });
   });
 
   describe('Schema.from', () => {
-    it('ns', async () => {
+    it('ns', () => {
       const uri = 'ns:abc';
       const path = Schema.ns(uri).path;
 
@@ -85,7 +85,7 @@ describe('schema', () => {
       test({ path } as any);
     });
 
-    it('cell', async () => {
+    it('cell', () => {
       const ns = 'ns:abc';
       const uri = 'cell:abc!A1';
       const path = Schema.ns(ns).cell('A1').path;
@@ -102,7 +102,7 @@ describe('schema', () => {
       test({ path } as any);
     });
 
-    it('row', async () => {
+    it('row', () => {
       const ns = 'ns:abc';
       const uri = 'row:abc!1';
       const path = Schema.ns(ns).row('1').path;
@@ -119,7 +119,7 @@ describe('schema', () => {
       test({ path } as any);
     });
 
-    it('column', async () => {
+    it('column', () => {
       const ns = 'ns:abc';
       const uri = 'col:abc!A';
       const path = Schema.ns(ns).column('A').path;
@@ -136,7 +136,7 @@ describe('schema', () => {
       test({ path } as any);
     });
 
-    it('file', async () => {
+    it('file', () => {
       const ns = 'ns:abc';
       const uri = 'file:abc.123';
       const path = Schema.ns(ns).file('123').path;

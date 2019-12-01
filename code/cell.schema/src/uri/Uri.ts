@@ -14,7 +14,7 @@ export class Uri {
     cell: (ns: string, key: string) => toUri('cell', ns, key),
     row: (ns: string, key: string) => toUri('row', ns, key),
     column: (ns: string, key: string) => toUri('col', ns, key),
-    file: (ns: string, file: string) => toUri('file', ns, file), // NB: use `slug` for file-id.
+    file: (ns: string, fileid: string) => toUri('file', ns, fileid), // NB: use `slug` for file-id.
   };
 
   /**

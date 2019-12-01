@@ -1,13 +1,38 @@
 import { cuid, slug, t } from '../common';
 import { Uri } from '../uri';
+import { FileLinks } from './FileLinks';
 
 export type SchemaFileType = 'FILE';
 export type SchemaCoordType = 'CELL' | 'COL' | 'ROW';
-
 export type SchemaType<T extends t.IUri> = t.IUriParts<T> & { path: string };
 
 export type PathString = string;
 export type UriString = string;
+
+/**
+ * Schema for a file.
+ */
+export class FileSchema {
+  public static links = FileLinks;
+
+  public readonly type: SchemaFileType = 'FILE';
+  public readonly fileid: string;
+  public readonly path: string;
+  public readonly uri: string;
+
+  constructor(args: { nsPath: string; fileid: string; uri: string }) {
+    this.fileid = args.fileid;
+    this.path = `${args.nsPath}/${this.type}/${this.fileid}`;
+    this.uri = args.uri;
+  }
+
+  public static uri(args: { path: string }) {
+    const parts = args.path.split('/');
+    const ns = parts[1];
+    const file = parts[3];
+    return Uri.create.file(ns, file);
+  }
+}
 
 /**
  * Schema of DB paths.
@@ -16,6 +41,7 @@ export class Schema {
   public static uri = Uri;
   public static cuid = cuid;
   public static slug = slug;
+  public static file = FileSchema;
 
   public static ns = (id: string) => new NsSchema({ id });
 
@@ -109,22 +135,22 @@ export class NsSchema {
    */
   public cell(key: string) {
     const uri = Uri.create.cell(this.id, key);
-    return new CoordSchema({ type: 'CELL', ns: this, id: key, uri });
+    return new CoordSchema({ type: 'CELL', nsPath: this.path, id: key, uri });
   }
 
   public column(key: string) {
     const uri = Uri.create.column(this.id, key);
-    return new CoordSchema({ type: 'COL', ns: this, id: key, uri });
+    return new CoordSchema({ type: 'COL', nsPath: this.path, id: key, uri });
   }
 
   public row(key: string) {
     const uri = Uri.create.row(this.id, key);
-    return new CoordSchema({ type: 'ROW', ns: this, id: key, uri });
+    return new CoordSchema({ type: 'ROW', nsPath: this.path, id: key, uri });
   }
 
-  public file(file: string) {
-    const uri = Uri.create.file(this.id, file);
-    return new FileSchema({ ns: this, id: file, uri });
+  public file(fileid: string) {
+    const uri = Uri.create.file(this.id, fileid);
+    return new FileSchema({ nsPath: this.path, fileid, uri });
   }
 
   public static uri(args: { path: string }) {
@@ -145,16 +171,14 @@ export class NsSchema {
  */
 export class CoordSchema {
   public readonly type: SchemaCoordType;
-  public readonly ns: NsSchema;
   public readonly id: string;
   public readonly path: string;
   public readonly uri: string;
 
-  constructor(args: { type: SchemaCoordType; ns: NsSchema; id: string; uri: string }) {
-    this.ns = args.ns;
+  constructor(args: { type: SchemaCoordType; nsPath: string; id: string; uri: string }) {
     this.id = args.id;
     this.type = args.type;
-    this.path = `${args.ns.path}/${args.type}/${this.id}`;
+    this.path = `${args.nsPath}/${args.type}/${this.id}`;
     this.uri = args.uri;
   }
 
@@ -175,31 +199,6 @@ export class CoordSchema {
     }
 
     throw new Error(`Model path could not be converted to URI ("${args.path}")`);
-  }
-}
-
-/**
- * Schema for a file.
- */
-export class FileSchema {
-  public readonly type: SchemaFileType = 'FILE';
-  public readonly ns: NsSchema;
-  public readonly id: string;
-  public readonly path: string;
-  public readonly uri: string;
-
-  constructor(args: { ns: NsSchema; id: string; uri: string }) {
-    this.ns = args.ns;
-    this.id = args.id;
-    this.path = `${args.ns.path}/${this.type}/${this.id}`;
-    this.uri = args.uri;
-  }
-
-  public static uri(args: { path: string }) {
-    const parts = args.path.split('/');
-    const ns = parts[1];
-    const file = parts[3];
-    return Uri.create.file(ns, file);
   }
 }
 
