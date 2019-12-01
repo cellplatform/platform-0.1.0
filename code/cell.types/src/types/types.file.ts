@@ -5,6 +5,7 @@ export type IFileProps = {
   fileHash?: string;
   mimetype?: string;
   encoding?: string;
+  location?: string;
 };
 export type IFileData = {
   props: IFileProps;

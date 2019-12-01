@@ -117,14 +117,16 @@ export type IReqFileQuery = {};
  * File: GET
  */
 export type IResGetFile = IGetResponse<IResGetFileData>;
-export type IResGetFileData = {};
+export type IResGetFileData = t.IFileData & {};
 
 /**
  * File: POST
  */
-export type IReqPostFileQuery = IReqFileQuery & {};
+export type IReqPostFileQuery = IReqFileQuery & {
+  changes?: boolean; // return list of changes (default: true).
+};
 export type IReqPostFileBody = {};
-export type IResPostFile = IResGetFile & {};
+export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 
 /**
  * Info (System)
