@@ -54,16 +54,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    * GET: !A1/files
    */
   router.get(ROUTES.CELL.FILES.BASE, async req => {
+    const host = req.host;
     const { status, ns, error, uri } = getParams(req, { fileRequired: false });
     if (!ns || error) {
       return { status, data: { error } };
     }
-
-    const host = req.headers.host || '';
-    const prefix = host.startsWith('localhost') ? 'http' : 'https';
-    const toUrl = (path: string) => {
-      return `${prefix}://${host}/${path}`;
-    };
 
     const cell = await models.Cell.create({ db, uri }).ready;
     const cellLinks = cell.props.links || {};
@@ -77,15 +72,15 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         return {
           uri,
           name,
-          info: toUrl(`${uri}`),
-          file: toUrl(`${uri}/pull`),
+          info: util.toUrl(host, `${uri}`),
+          file: util.toUrl(host, `${uri}/pull`),
         };
       });
 
     return {
       status: 200,
       data: {
-        parent: toUrl(uri),
+        parent: util.toUrl(host, uri),
         uri,
         links,
       },
@@ -96,6 +91,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    * POST a file to a cell
    */
   router.post(ROUTES.CELL.FILE.BY_NAME, async req => {
+    const host = req.host;
     const query = req.query as t.IReqPostCellFileQuery;
     const { status, ns, key, filename, error, uri: cellUri } = getParams(req);
     if (!ns || error) {
@@ -105,9 +101,9 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     try {
       // Prepare the file URI link.
       const cell = await models.Cell.create({ db, uri: cellUri }).ready;
-      const links = cell.props.links || {};
+      const cellLinks = cell.props.links || {};
       const linkKey = Schema.file.links.toKey(filename);
-      const fileUri = links[linkKey] || Schema.uri.create.file(ns, Schema.slug());
+      const fileUri = cellLinks[linkKey] || Schema.uri.create.file(ns, Schema.slug());
 
       // Save to the file-system.
       const form = await req.body.form();
@@ -117,10 +113,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         uri: fileUri,
         form,
         query: { changes: true },
+        host,
       });
       if (!util.isOK(fsResponse.status)) {
         const error = fsResponse.data as t.IHttpError;
-        const msg = `Failed while writing file to cell ${key}. ${error.message}`;
+        const msg = `Failed while writing file to cell [${key}]. ${error.message}`;
         return util.toErrorPayload(msg, { status: error.status });
       }
       const fsResponseData = fsResponse.data as t.IResPostFile;
@@ -132,13 +129,14 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         db,
         id: ns,
         body: {
-          cells: { [key]: { links: { ...links, [linkKey]: fileUri } } },
+          cells: { [key]: { links: { ...cellLinks, [linkKey]: fileUri } } },
         },
         query: { cells: key, changes: true },
+        host,
       });
       if (!util.isOK(nsResponse.status)) {
         const error = nsResponse.data as t.IHttpError;
-        const msg = `Failed while updating cell ${key} after writing file. ${error.message}`;
+        const msg = `Failed while updating cell [${key}] after writing file. ${error.message}`;
         return util.toErrorPayload(msg, { status: error.status });
       }
       const nsResponseData = nsResponse.data as t.IResPostNs;
@@ -150,6 +148,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         changes = [...(nsResponseData.changes || []), ...(fsResponseData.changes || [])];
       }
 
+      const links: t.IResPostCellLinks = { ...util.url(host).cellLinks(cellUri) };
       const res: t.IResPostCellFile = {
         uri: cellUri,
         createdAt: cell.createdAt,
@@ -159,6 +158,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
           cell: cell.toObject(),
           changes,
         },
+        links,
       };
 
       return { status: 200, data: res };

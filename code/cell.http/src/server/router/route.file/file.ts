@@ -42,18 +42,20 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   };
 
   /**
-   * GET file (model).
+   * GET file (info).
    */
   router.get(ROUTES.FILE.BASE, async req => {
+    const host = req.host;
     const query = req.query as t.IReqFileQuery;
     const { status, ns, error, uri } = getParams(req);
-    return !ns || error ? { status, data: { error } } : getFileResponse({ uri, db, query });
+    return !ns || error ? { status, data: { error } } : getFileResponse({ uri, db, query, host });
   });
 
   /**
    * GET /pull (download).
    */
   router.get(ROUTES.FILE.PULL, async req => {
+    const host = req.host;
     const query = req.query as t.IReqFilePullQuery;
     const { status, ns, error, uri } = getParams(req);
 
@@ -63,7 +65,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
     try {
       // Pull the file meta-data.
-      const fileResponse = await getFileResponse({ uri, db, query });
+      const fileResponse = await getFileResponse({ uri, db, query, host });
       if (!util.isOK(fileResponse.status)) {
         return fileResponse; // NB: This is an error.
       }
@@ -112,13 +114,14 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    * POST binary-file.
    */
   router.post(ROUTES.FILE.BASE, async req => {
+    const host = req.host;
     const query = req.query as t.IReqPostFileQuery;
     const { status, ns, error, uri } = getParams(req);
     if (!ns || error) {
       return { status, data: { error } };
     } else {
       const form = await req.body.form();
-      return postFileResponse({ db, fs, uri, query, form });
+      return postFileResponse({ db, fs, uri, query, form, host });
     }
   });
 }
@@ -127,19 +130,30 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
  * [Helpers]
  */
 
-export async function getFileResponse(args: { db: t.IDb; uri: string; query?: t.IReqFileQuery }) {
-  const { db, uri, query = {} } = args;
+export async function getFileResponse(args: {
+  db: t.IDb;
+  uri: string;
+  host: string;
+  query?: t.IReqFileQuery;
+}): Promise<t.IPayload<t.IResGetFile> | t.IErrorPayload> {
+  const { db, uri, query = {}, host } = args;
   try {
     const model = await models.File.create({ db, uri }).ready;
     const exists = Boolean(model.exists);
     const { createdAt, modifiedAt } = model;
     const data = util.squash.object(model.toObject()) || {};
+
+    const links: t.IResGetFileLinks = {
+      file: util.toUrl(host, `${uri}/pull`),
+    };
+
     const res = {
       uri,
       exists,
       createdAt,
       modifiedAt,
       data,
+      links,
     };
     return { status: 200, data: res as t.IResGetFile };
   } catch (err) {
@@ -152,9 +166,10 @@ export async function postFileResponse(args: {
   fs: t.IFileSystem;
   uri: string;
   form: t.IForm;
+  host: string;
   query?: t.IReqPostFileQuery;
-}) {
-  const { db, uri, query = {}, form, fs } = args;
+}): Promise<t.IPayload<t.IResPostFile> | t.IErrorPayload> {
+  const { db, uri, query = {}, form, fs, host } = args;
   const sendChanges = defaultValue(query.changes, true);
   let changes: t.IDbModelChange[] = [];
 
@@ -186,13 +201,16 @@ export async function postFileResponse(args: {
     }
 
     // Finish up.
-    const fileResponse = await getFileResponse({ uri, db, query });
-    const res = sendChanges
-      ? {
-          ...fileResponse,
-          data: { ...fileResponse.data, changes },
-        }
-      : fileResponse;
+    const fileResponse = await getFileResponse({ uri, db, query, host });
+    const { status } = fileResponse;
+    const fileResponseData = fileResponse.data as t.IResGetFile;
+    const res: t.IPayload<t.IResPostFile> = {
+      status,
+      data: {
+        ...fileResponseData,
+        changes: sendChanges ? changes : undefined,
+      },
+    };
 
     return res;
   } catch (err) {

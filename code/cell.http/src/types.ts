@@ -49,14 +49,18 @@ export type IConfigNowFile = {
 /**
  * Payloads
  */
-export type IErrorPayload = { status: number; data: t.IHttpError };
-export type IUriResponse<D> = {
+export type IPayload<D> = { status: number; data: D };
+export type IErrorPayload = IPayload<t.IHttpError>;
+export type IUriResponse<D, L extends ILinkMap> = {
   uri: string;
   exists: boolean;
   createdAt: number;
   modifiedAt: number;
   data: D;
+  links: L;
 };
+
+export type ILinkMap = { [key: string]: string };
 
 /**
  * Namespace
@@ -74,8 +78,9 @@ export type IReqNsQuery = {
  * Namespace: GET
  */
 export type IReqGetNsQuery = IReqNsQuery;
-export type IResGetNs = IUriResponse<IResGetNsData>;
+export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsLinks>;
 export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
+export type IResGetNsLinks = {};
 
 /**
  * Namespace: POST
@@ -105,14 +110,17 @@ export type IReqCoordQuery = {};
  */
 export type IResGetCoord = IResGetCell | IResGetRow | IResGetColumn;
 
-export type IResGetCell = IUriResponse<IResGetCellData>;
+export type IResGetCell = IUriResponse<IResGetCellData, IResGetCellLinks>;
 export type IResGetCellData = t.ICellData;
+export type IResGetCellLinks = { cell: string; files: string };
 
-export type IResGetRow = IUriResponse<IResGetRowData>;
+export type IResGetRow = IUriResponse<IResGetRowData, IResGetRowLinks>;
 export type IResGetRowData = t.IRowData;
+export type IResGetRowLinks = {};
 
-export type IResGetColumn = IUriResponse<IResGetColumnData>;
+export type IResGetColumn = IUriResponse<IResGetColumnData, IResGetColumnLinks>;
 export type IResGetColumnData = t.IColumnData;
+export type IResGetColumnLinks = {};
 
 /**
  * File
@@ -124,8 +132,9 @@ export type IReqFilePullQuery = {};
 /**
  * File: GET
  */
-export type IResGetFile = IUriResponse<IResGetFileData>;
+export type IResGetFile = IUriResponse<IResGetFileData, IResGetFileLinks>;
 export type IResGetFileData = t.IFileData & {};
+export type IResGetFileLinks = { file: string };
 
 /**
  * File: POST
@@ -142,16 +151,16 @@ export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 
 export type IReqCellsFileParams = IReqCoordParams;
 export type IReqCellFileParams = IReqCoordParams & { filename: string };
-// export type IReqCoordParams = { ns: string; key: string };
 export type IReqPostCellFileQuery = {
   changes?: boolean; // return list of changes (default: true).
 };
 
-export type IResPostCellFile = IUriResponse<IResPostCellFileData>;
+export type IResPostCellFile = IUriResponse<IResPostCellFileData, IResPostCellLinks>;
 export type IResPostCellFileData = {
   cell: t.ICellData;
   changes?: t.IDbModelChange[];
 };
+export type IResPostCellLinks = IResGetCellLinks & {};
 
 /**
  * Info (System)
