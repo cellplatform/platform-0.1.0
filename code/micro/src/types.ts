@@ -11,6 +11,7 @@ export type IHttpHeaders = { [key: string]: string };
  * Request
  */
 export type Request = IncomingMessage & {
+  host: string;
   params: RequestParams;
   query: RequestQuery;
   body: RequestBody;
