@@ -50,7 +50,6 @@ export type IConfigNowFile = {
  * Payloads
  */
 export type IErrorPayload = { status: number; data: t.IHttpError };
-export type INotFoundResponse = t.IHttpError<'HTTP/notFound'> & { status: 404; url: string };
 export type IGetResponse<D> = {
   uri: string;
   exists: boolean;

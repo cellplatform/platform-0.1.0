@@ -1,4 +1,4 @@
-import { util, cell, constants, models, ROUTES, Schema, t } from '../common';
+import { util, cell, ERROR, models, ROUTES, Schema, t } from '../common';
 
 /**
  * Coordinate routes (cell: | row: | col:).
@@ -22,7 +22,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     };
 
     const error: t.IError = {
-      type: constants.ERROR.MALFORMED_URI,
+      type: ERROR.MALFORMED_URI,
       message: '',
     };
 

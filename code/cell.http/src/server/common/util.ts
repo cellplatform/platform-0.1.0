@@ -1,5 +1,6 @@
 import * as t from './types';
 import { fs, cell, defaultValue } from './libs';
+import { ERROR } from './constants';
 
 export * from './libs';
 export const env = fs.env;
@@ -17,7 +18,7 @@ export function toErrorPayload(
   options: { status?: number; type?: string } = {},
 ): t.IErrorPayload {
   const status = defaultValue(options.status, 500);
-  const { type = 'HTTP/server' } = options;
+  const { type = ERROR.SERVER } = options;
   const message = typeof err === 'string' ? err : err.message;
   const data: t.IHttpError = { status, type, message };
   return { status, data };
