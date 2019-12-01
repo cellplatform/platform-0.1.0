@@ -4,6 +4,11 @@ import { local } from '.';
 const init = () => local.init({ root: PATH.LOCAL });
 
 describe('fs.local', () => {
+  it('type', () => {
+    const fs = init();
+    expect(fs.type).to.eql('FS');
+  });
+
   describe('paths', () => {
     it('exposes root (dir)', () => {
       const fs = init();

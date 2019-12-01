@@ -5,9 +5,11 @@ export * from '../types';
 /**
  * Initializes a "local" file-system API.
  */
-export function init(args: { root: string }): t.IFileSystem {
+export function init(args: { root: string }): t.IFileSystemLocal {
   const root = fs.resolve(args.root);
-  const res: t.IFileSystem = {
+  const res: t.IFileSystemLocal = {
+    type: 'FS',
+
     /**
      * Root directory of the file system.
      */

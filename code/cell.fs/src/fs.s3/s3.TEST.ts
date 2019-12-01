@@ -11,6 +11,11 @@ export const init = (args: { path?: string } = {}) => {
 };
 
 describe('S3', () => {
+  it('type', () => {
+    const fs = init();
+    expect(fs.type).to.eql('S3');
+  });
+
   describe('paths', () => {
     it('throws if no bucket in path', () => {
       const test = (path: string) => {

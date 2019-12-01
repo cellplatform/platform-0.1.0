@@ -9,7 +9,7 @@ export type IS3Init = t.S3Config & { root: string };
  *  - AWS "S3"
  *  - DigitalOcean "Spaces"
  */
-export function init(args: IS3Init): t.IS3FileSystem {
+export function init(args: IS3Init): t.IFileSystemS3 {
   const cloud = (() => {
     const { endpoint, accessKey, secret } = args;
     const s3 = fs.s3({ endpoint, accessKey, secret });
@@ -28,7 +28,9 @@ export function init(args: IS3Init): t.IS3FileSystem {
     return { path, s3, bucket };
   })();
 
-  const res: t.IS3FileSystem = {
+  const res: t.IFileSystemS3 = {
+    type: 'S3',
+
     /**
      * S3 bucket name.
      */
