@@ -83,9 +83,14 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
       }
 
+      // Prepare headers that cause the browser's save-dialog to default to the file-name.
+      const headers = {
+        'Content-Disposition': `inline; filename="${props.name}"`,
+      };
+
       // Redirect if the location is an S3 link.
       if (util.isHttp(location)) {
-        return { status: 307, data: location };
+        return { status: 307, data: location, headers };
       }
 
       // Serve the file if local file-system.
@@ -96,9 +101,6 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
           const err = new Error(`File at the URI "${file.uri}" does on the local file-system.`);
           return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
         } else {
-          const headers = {
-            'Content-Disposition': `inline; filename="${props.name}"`, // NB: Causes save-dialog to default to the file-name.
-          };
           return { status: 200, data, headers };
         }
       }
