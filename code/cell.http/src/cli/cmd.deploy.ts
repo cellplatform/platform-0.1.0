@@ -105,7 +105,7 @@ export async function run(args: { target: DeployTarget; force?: boolean }) {
 
   // Finish up.
   log.info();
-  deployments.forEach(d => d.log());
+  deployments.forEach(deployment => deployment.log());
   log.info();
   log.info();
 }
