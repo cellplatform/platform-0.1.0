@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.editor",
   "description": "Rich text/markdown editor for web and electron.",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",

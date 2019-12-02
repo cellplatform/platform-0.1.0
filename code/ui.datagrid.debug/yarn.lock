@@ -219,19 +219,19 @@
     "@platform/libs" "^0.1.5"
     "@platform/react" "0.3.34"
 
-"@platform/ui.datagrid.types@0.7.46":
-  version "0.7.46"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.46.tgz#99c8423a0e4e24c2e62628d45a1227a2e7490a7d"
-  integrity sha512-wkuYF/A3uBnJ2NW0ShJ/OsUzXKP0E0aVeFelsaN3qMaH974D7X+UqetSQquznviE4X1Tgck0L6ZlpJ04ZtLxvg==
+"@platform/ui.datagrid.types@0.7.47":
+  version "0.7.47"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.47.tgz#93108e566ce119dbc0d0a7290c8ef942f1b103e6"
+  integrity sha512-WQCFyhKlpxs8lsH47jt8CwdkXqDmHBRAaSRzxvZCmgEAN+MLuBhuLhraSTNU7K2HPwQfdxJb7INL96FrQi2RLA==
   dependencies:
     "@platform/cell.types" "0.2.0"
     "@platform/react" "0.3.34"
     "@platform/util.diff" "0.0.6"
 
-"@platform/ui.datagrid.util@0.2.26":
-  version "0.2.26"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.2.26.tgz#fb2d9325083409750e475a5ec62b818f1c02fc23"
-  integrity sha512-7fzMwowpEWSt507LsmgFq4XpT4j2TNibYQs68cun45YuuSbzPZIxu4oWyjEzqDBd0g1ioUNHgyjPQncXL/U+PA==
+"@platform/ui.datagrid.util@0.2.27":
+  version "0.2.27"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.2.27.tgz#707c8f79b6e040bd4965fd4044c0bc7b300b4f32"
+  integrity sha512-/xdNoi++wBK+pCRU6Ts6zyFcPn144kAm7GVKSI39yaH+oKgYKXwGmfVVOJbh2TKBa50EDqsdTVYrZDwDe8qlNA==
   dependencies:
     "@platform/cell.coord" "0.7.7"
     "@platform/cell.func" "0.0.56"
@@ -239,7 +239,7 @@
     "@platform/cell.types" "0.2.0"
     "@platform/cell.value" "0.1.14"
     "@platform/libs" "0.1.5"
-    "@platform/ui.datagrid.types" "0.7.46"
+    "@platform/ui.datagrid.types" "0.7.47"
     "@platform/util.value" "0.6.1"
 
 "@platform/ui.icon@0.0.98":
