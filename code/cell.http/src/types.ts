@@ -171,9 +171,9 @@ export type IResPostCellLinks = IResGetCellLinks & {};
 export type IReqCellFilesParams = IReqCellParams;
 export type IReqCellFilesQuery = {};
 export type IResGetCellFiles = {
-  parent: string;
+  cell: string;
   uri: string;
-  links: IResGetFilesLink[];
+  files: IResGetFilesLink[];
 };
 export type IResGetFilesLink = {
   uri: string;

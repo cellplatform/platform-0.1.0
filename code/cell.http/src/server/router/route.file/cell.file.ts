@@ -62,12 +62,12 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     }
 
     const cell = await models.Cell.create({ db, uri }).ready;
-    const links = util.url(req.host).cellFiles(cell.props.links || {});
+    const files = util.url(req.host).cellFiles(cell.props.links || {});
 
     const data: t.IResGetCellFiles = {
-      parent: util.toUrl(host, uri),
       uri,
-      links,
+      cell: util.toUrl(host, uri),
+      files,
     };
 
     return { status: 200, data };
