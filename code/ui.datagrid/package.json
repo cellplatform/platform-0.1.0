@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid",
-  "version": "0.7.99",
+  "version": "0.7.100",
   "description": "Isolated tabular DataGrid.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@platform/cell.func.sys": "0.0.44",
-    "@platform/cell.http": "0.4.7",
+    "@platform/cell.http": "0.4.9",
     "@platform/cell.ui.props": "0.0.32",
     "@platform/cli.spec": "0.1.69",
     "@platform/test": "0.0.66",

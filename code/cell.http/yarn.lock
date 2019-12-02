@@ -54,15 +54,15 @@
     "@platform/util.value" "0.6.1"
     mime-types "2.1.25"
 
-"@platform/cell.fs@0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@platform/cell.fs/-/cell.fs-0.1.5.tgz#5891dfab4b473cc895a285b961f04520b3c2e0e1"
-  integrity sha512-FMNOytEtM+MO0b/gu9VtuS2p/VlqendXLRieY+GPNDU6aZE/WCcg9NuIQTMuszq9WaLOuj9U4EUl5JSyesDtnQ==
+"@platform/cell.fs@0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@platform/cell.fs/-/cell.fs-0.1.6.tgz#0e1918ee57680841c08d0707b1b8c28f5d24f2f6"
+  integrity sha512-HduSqmlAEoW1SVO3IHfFCLt5yyL5osC8HcFqYgRoOxXrFWd7RuDzDdvL3OEFj01hnZj8cQZrtlTvK8BrMZB6yg==
   dependencies:
     "@platform/cell.schema" "0.1.8"
     "@platform/cell.types" "0.2.0"
     "@platform/fs" "0.3.5"
-    "@platform/fs.s3" "0.4.2"
+    "@platform/fs.s3" "0.4.3"
     "@platform/libs" "0.1.5"
     "@platform/types" "0.2.0"
     "@platform/util.hash" "0.0.5"
@@ -160,10 +160,10 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3@0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.4.2.tgz#2b66e7425156965bc77bdfafbab628d36e47c24e"
-  integrity sha512-JwzD1/NfvvkQ2sCAEbo+4EZiBeKvEtcaZjo6uaN35DxxRtyhvNbUoVEix05Qxrvx6QcUXKp+kR+TsttehE1IHA==
+"@platform/fs.s3@0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.4.3.tgz#2de508e03a76dba3c4d0e668f04ec0ac6fd32469"
+  integrity sha512-4xie1yZwWKRqUfYc+SZeH/3FupwD26gtxTA4ax8WLVka0+7GOwETnzloxBwP6rDrju9ViOhOZiVNWCgWFasRrg==
   dependencies:
     "@platform/fs" "^0.3.5"
     "@platform/libs" "0.1.5"

@@ -71,10 +71,10 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3@0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.4.2.tgz#2b66e7425156965bc77bdfafbab628d36e47c24e"
-  integrity sha512-JwzD1/NfvvkQ2sCAEbo+4EZiBeKvEtcaZjo6uaN35DxxRtyhvNbUoVEix05Qxrvx6QcUXKp+kR+TsttehE1IHA==
+"@platform/fs.s3@0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.4.3.tgz#2de508e03a76dba3c4d0e668f04ec0ac6fd32469"
+  integrity sha512-4xie1yZwWKRqUfYc+SZeH/3FupwD26gtxTA4ax8WLVka0+7GOwETnzloxBwP6rDrju9ViOhOZiVNWCgWFasRrg==
   dependencies:
     "@platform/fs" "^0.3.5"
     "@platform/libs" "0.1.5"
