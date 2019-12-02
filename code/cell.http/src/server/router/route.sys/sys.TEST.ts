@@ -13,7 +13,7 @@ describe('route: sys', () => {
       const body = res.json<t.IHttpError>();
 
       expect(body.status).to.eql(404);
-      expect(body.message).to.contain('Not found');
+      expect(body.message).to.contain('Resource not found');
       expect(body.type).to.eql('HTTP/notFound');
     });
   });

@@ -1,8 +1,8 @@
 export const ROUTES = {
+  WILDCARD: '*',
   SYS: {
-    INFO: ['/', '/.info'],
-    UID: '/uid',
-    WILDCARD: '*',
+    INFO: ['/', '/.sys'],
+    UID: '/.uid',
   },
   NS: {
     BASE: `/ns\\::id([A-Za-z0-9]*)(/?)`,
