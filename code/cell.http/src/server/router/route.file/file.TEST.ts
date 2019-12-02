@@ -1,5 +1,44 @@
 import { createMock, expect, FormData, fs, http, t } from '../../../test';
 
+const post = async (args: {
+  uri: string;
+  filename: string;
+  source?: string | string[];
+  queryString?: string;
+  dispose?: boolean;
+}) => {
+  const { uri, filename } = args;
+  const mock = await createMock();
+  const form = new FormData();
+
+  // Prepare the [multipart/form-data] to post.
+  if (args.source) {
+    const paths = Array.isArray(args.source) ? args.source : [args.source];
+    for (const path of paths) {
+      const img = await fs.readFile(fs.resolve(path));
+      form.append('image', img, {
+        filename,
+        contentType: 'application/octet-stream',
+      });
+    }
+  }
+
+  // POST to the service.
+  let url = mock.url(uri);
+  url = args.queryString ? `${url}?${args.queryString || ''}` : url;
+  const headers = form.getHeaders();
+  const res = await http.post(url, form, { headers });
+
+  // Finish up.
+  if (args.dispose !== false) {
+    mock.dispose();
+  }
+  const json = res.json<t.IResPostFile>();
+  const data = json.data;
+  const props = (data && data.props) || {};
+  return { res, json, data, props, mock };
+};
+
 describe('route: file', () => {
   describe('invalid URI', () => {
     const test = async (path: string, expected: string) => {
@@ -23,44 +62,6 @@ describe('route: file', () => {
   });
 
   describe('POST', () => {
-    const post = async (args: {
-      uri: string;
-      queryString?: string;
-      img?: string | string[];
-      dispose?: boolean;
-    }) => {
-      const { uri } = args;
-      const mock = await createMock();
-      const form = new FormData();
-
-      // Prepare the [multipart/form-data] to post.
-      if (args.img) {
-        const paths = Array.isArray(args.img) ? args.img : [args.img];
-        for (const path of paths) {
-          const img = await fs.readFile(fs.resolve(path));
-          form.append('image', img, {
-            filename: `image.png`,
-            contentType: 'application/octet-stream',
-          });
-        }
-      }
-
-      // POST to the service.
-      let url = mock.url(uri);
-      url = args.queryString ? `${url}?${args.queryString || ''}` : url;
-      const headers = form.getHeaders();
-      const res = await http.post(url, form, { headers });
-
-      // Finish up.
-      if (args.dispose !== false) {
-        mock.dispose();
-      }
-      const json = res.json<t.IResPostFile>();
-      const data = json.data;
-      const props = (data && data.props) || {};
-      return { res, json, data, props, mock };
-    };
-
     it('POST single file', async () => {
       const sourcePath = fs.resolve('src/test/assets/bird.png');
       const savePath = fs.resolve('tmp/fs/ns.foo/bird');
@@ -69,7 +70,8 @@ describe('route: file', () => {
       const uri = 'file:foo.bird';
       const { res, json, data, props } = await post({
         uri,
-        img: sourcePath,
+        filename: `image.png`,
+        source: sourcePath,
       });
 
       expect(res.status).to.eql(200);
@@ -89,14 +91,18 @@ describe('route: file', () => {
     it('POST no changes returned (via query-string flag)', async () => {
       const { json } = await post({
         uri: 'file:foo.bird',
-        img: 'src/test/assets/bird.png',
+        filename: `image.png`,
+        source: 'src/test/assets/bird.png',
         queryString: 'changes=false',
       });
       expect(json.changes).to.eql(undefined);
     });
 
     it('POST throws if no file posted', async () => {
-      const { res } = await post({ uri: 'file:foo.bird' });
+      const { res } = await post({
+        uri: 'file:foo.bird',
+        filename: `image.png`,
+      });
       expect(res.status).to.eql(400);
 
       const error = res.json<t.IHttpError>();
@@ -108,7 +114,8 @@ describe('route: file', () => {
     it('POST throws if no file posted', async () => {
       const { res } = await post({
         uri: 'file:foo.bird',
-        img: ['src/test/assets/bird.png', 'src/test/assets/kitten.jpg'],
+        filename: `image.png`,
+        source: ['src/test/assets/bird.png', 'src/test/assets/kitten.jpg'],
       });
       expect(res.status).to.eql(400);
 
@@ -122,7 +129,8 @@ describe('route: file', () => {
       const uri = 'file:foo.bird';
       const { mock } = await post({
         uri,
-        img: 'src/test/assets/bird.png',
+        filename: `image.png`,
+        source: 'src/test/assets/bird.png',
         dispose: false,
       });
 
