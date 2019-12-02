@@ -1,6 +1,6 @@
 import { t, expect, getTestDb } from '../test';
 import { models } from '..';
-import { setChildData } from './model.ns';
+import { setChildData, setChildCells, getChildCells } from './model.ns';
 
 describe('helpers: model.ns', () => {
   it('toSchema', async () => {
@@ -79,6 +79,34 @@ describe('helpers: model.ns', () => {
 
       expect(res2.changes.length).to.eql(2); // NB: not 3, as the "value" field has not changed ("=A2").
       expect(res2.changes.map(c => c.field)).to.eql(['props', 'hash']);
+    });
+  });
+
+  describe('setChildCells', () => {
+    it('sets error, then clear error', async () => {
+      const error = { type: 'FOO', message: 'Boo' };
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const getCells = async () => {
+        await ns.load({ force: true });
+        return getChildCells({ model: ns });
+      };
+      const getA1 = async () => ((await getCells()) || {}).A1 || {};
+
+      expect(await getCells()).to.eql({});
+      await setChildCells({ ns, data: { A1: { value: 123 } } });
+
+      expect((await getA1()).value).to.eql(123);
+      expect((await getA1()).error).to.eql(undefined);
+
+      await setChildCells({ ns, data: { A1: { error } } });
+      expect((await getA1()).value).to.eql(123);
+      expect((await getA1()).error).to.eql(error);
+
+      await setChildCells({ ns, data: { A1: { error: undefined } } });
+      expect((await getA1()).value).to.eql(123);
+      expect((await getA1()).error).to.eql(undefined); // NB: Error gone.
     });
   });
 });
