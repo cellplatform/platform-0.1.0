@@ -4,6 +4,8 @@ import * as ns from './route.ns';
 import * as coord from './route.coord';
 import * as file from './route.file';
 
+import { handleWasmTmp } from './TMP.wasm';
+
 /**
  * Register routes.
  */
@@ -23,11 +25,3 @@ export function init(args: {
 
   wildcard.init(args);
 }
-
-/**
- * TODO 🐷 TEMP
- */
-const handleWasmTmp: t.RouteHandler = async req => {
-  //
-  return { data: { foo: 23 } };
-};

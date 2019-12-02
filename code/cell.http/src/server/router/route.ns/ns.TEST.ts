@@ -233,6 +233,47 @@ describe('route: ns (namespace URI)', () => {
       expect((after.D1 || {}).props).to.eql({ value: 123 });
       expect((after.Z9 || {}).props).to.eql(undefined); // NB: simple value.
     });
+
+    it('reports error when function not found', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: '=A2 + 5' }, // NB: The SUM function is not available.
+        A2: { value: 123 },
+      };
+
+      const res = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+
+      const A1 = (res.data.cells || {}).A1 || {};
+      const error = A1.error;
+
+      expect(A1.props).to.eql(undefined);
+      expect(error && error.type).to.match(/^FUNC\//);
+      expect(error && error.message).to.contain(`operator '+' is not mapped`);
+    });
+
+    it('clears error when function is corrected', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: '=A2 + 5' }, // NB: The SUM function is not available.
+        A2: { value: 123 },
+      };
+
+      const res1 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+      cells.A1.value = '=A2'; // Remove error.
+
+      const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+
+      const A1a = (res1.data.cells || {}).A1 || {};
+      const A1b = (res2.data.cells || {}).A1 || {};
+      const error1 = A1a.error;
+      const error2 = A1b.error;
+
+      expect(A1a.props).to.eql(undefined);
+      expect(A1b.props).to.eql({ value: 123 });
+
+      expect(error1 && error1.type).to.match(/^FUNC\//);
+      expect(error2).to.eql(undefined);
+    });
   });
 
   describe('GET', () => {

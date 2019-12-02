@@ -10,7 +10,12 @@ export function calc(args: { ns: t.IDbModelNs; cells?: t.IMap<t.ICellData> }) {
    * TODO 🐷
    * - lookup functions from imports (TDB, external namespaces)
    */
-  const getFunc: t.GetFunc = async () => undefined; // TEMP 🐷
+  const getFunc: t.GetFunc = async args => {
+    // TEMP 🐷
+
+    console.log('args', args);
+    return undefined;
+  };
 
   /**
    * Cells lookup.

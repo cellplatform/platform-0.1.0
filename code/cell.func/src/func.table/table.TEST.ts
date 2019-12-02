@@ -125,7 +125,7 @@ describe('func.table', () => {
 
       expect(Object.keys(res1.map).sort()).to.eql(['A1', 'A2']);
       expect(res2.map).to.eql({
-        A2: { value: '=A3', props: { value: 456 } },
+        A2: { value: '=A3', props: { value: 456 }, error: undefined },
       });
     });
 
@@ -183,7 +183,7 @@ describe('func.table', () => {
       expect(util.value.cellData(res2.map.A1).getValue()).to.eql(3);
     });
 
-    it('reports error when function not found, then removed is', async () => {
+    it('reports error when function not found, then removes it', async () => {
       let A1 = '=NO_EXIST()';
       const ctx = await testContext({
         A1: { value: () => A1 },
@@ -208,6 +208,7 @@ describe('func.table', () => {
       // NB: Error removed from corrected re-calculation.
       expect(A1b.props).to.eql({ value: 3 });
       expect(A1b.error).to.eql(undefined);
+      expect(Object.keys(A1b)).to.include('error'); // NB: Key included: {error:undefined} (so that we know to remove it from the DB).
     });
 
     it.skip('calculates parallel paths at the same time', async () => {

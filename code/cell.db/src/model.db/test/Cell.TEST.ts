@@ -138,7 +138,7 @@ describe('model.Cell', () => {
     const model = await Cell.create({ db, uri }).ready;
     expect(model.props.error).to.eql(undefined);
 
-    const error = { type: 'FOO', message: 'Boo 🤯' };
+    const error = { type: 'FOO', message: 'Boo' };
     await model.set({ error }).save();
     expect(model.props.error).to.eql(error);
 

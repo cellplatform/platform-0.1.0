@@ -71,8 +71,12 @@ export function table(args: {
         const props = util.value.squash.props({ ...currentProps, value });
 
         // Prepare the return cell.
-        let cell: t.ICellData = args.current ? { ...args.current, props } : { props };
-        cell = util.value.setError(cell, error);
+        // NB: Errors are explicitly included (even if they are [undefined])
+        //     allowing the call-site to understand that an error may need to
+        //     be removed.
+        const cell: t.ICellData = args.current
+          ? { ...args.current, props, error }
+          : { props, error };
         if (cell.props === undefined) {
           delete cell.props;
         }

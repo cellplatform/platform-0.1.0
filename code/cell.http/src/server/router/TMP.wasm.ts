@@ -9,6 +9,9 @@ import { t, fs } from '../common';
  * - https://wasdk.github.io/WasmFiddle/
  *
  */
+
+let count = 0;
+
 export const handleWasmTmp: t.RouteHandler = async req => {
   const source = await fs.readFile(fs.resolve('../src/test/assets/func.wasm'));
   const typedArray = new Uint8Array(source);
@@ -26,7 +29,10 @@ export const handleWasmTmp: t.RouteHandler = async req => {
   const wasm = await WebAssembly.instantiate(typedArray, { env });
   const func = wasm.instance.exports;
 
+  count++;
   return {
-    data: { add: func.add(123, 1) },
+    data: {
+      sum: func.add(123, count),
+    },
   };
 };
