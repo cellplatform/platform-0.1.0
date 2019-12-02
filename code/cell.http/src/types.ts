@@ -190,7 +190,11 @@ export type IResGetInfo = {
   system: string;
   domain: string;
   region: string;
-  version: { [key: string]: string };
+  version: {
+    '@platform/cell.http': string;
+    '@platform/cell.schema': string;
+    '@platform/cell.types': string;
+  };
   deployedAt?: {
     datetime: string;
     timestamp: number;
