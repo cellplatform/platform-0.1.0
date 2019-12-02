@@ -2,8 +2,8 @@ import { IFileSystemError } from './types.error';
 
 export type IFileSystem = IFileSystemS3 | IFileSystemLocal;
 
-export type IFileSystemS3 = IFileSystemMembers & { type: 'S3'; bucket: string };
 export type IFileSystemLocal = IFileSystemMembers & { type: 'FS' };
+export type IFileSystemS3 = IFileSystemMembers & { type: 'S3'; bucket: string };
 
 export type IFileSystemMembers = {
   root: string; // Root directory of the file-system.
