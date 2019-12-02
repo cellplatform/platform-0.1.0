@@ -139,4 +139,20 @@ describe('helpers: model.ns', () => {
       expect((await getA1()).error).to.eql(undefined); // NB: Error gone.
     });
   });
+
+  describe('getChildCells', () => {
+    it('gets child cells (with links)', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const cell = models.Cell.create({ uri: 'cell:foo!A1', db });
+      await cell.set({ value: 123, links: { 'fs:foo:wasm': 'file:abc.123' } }).save();
+
+      const cells = await getChildCells({ model: ns });
+      const A1 = cells.A1 || {};
+
+      expect(A1.value).to.eql(123);
+      expect(A1.links).to.eql({ 'fs:foo:wasm': 'file:abc.123' });
+    });
+  });
 });

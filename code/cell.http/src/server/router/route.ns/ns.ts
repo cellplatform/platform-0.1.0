@@ -139,7 +139,7 @@ export async function postNsResponse(args: {
     // Calculation REFs and functions.
     const calc = formatQuery(body.calc);
     if (calc) {
-      const calculate = func.calc({ ns, cells: body.cells });
+      const calculate = func.calc({ host, ns, cells: body.cells });
       const range = typeof calc === 'string' ? calc : undefined;
       const res = await calculate.changes({ range });
       body = { ...body, cells: { ...(body.cells || {}), ...res.map } };

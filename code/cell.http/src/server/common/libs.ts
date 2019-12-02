@@ -5,6 +5,7 @@ export { micro } from '@platform/micro';
 export { log } from '@platform/log/lib/server';
 export { fs } from '@platform/fs';
 export { http } from '@platform/http';
+export { download } from '@platform/http/lib/download';
 export { value, id, defaultValue, time } from '@platform/util.value';
 
 import * as cell from './libs.cell';

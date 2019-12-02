@@ -6,6 +6,13 @@ import { t, expect, http, createMock, stripHashes, post } from '../../../test';
  * - refactor hash (lazy eval)
  */
 
+/**
+ * TODO 🐷
+ * Tests for:
+ * - FUNC: A1 references A2 stores value, the changes to REF =A3 (but does not exist) - value not reset.
+ * - Remove Cell from NS
+ */
+
 describe('route: ns (namespace URI)', function() {
   this.timeout(10000);
 

@@ -1,10 +1,12 @@
-import { t, cell, models } from '../common';
+import { t, cell, models, http, fs, Schema, util, download } from '../common';
 
 /**
  * Executes calculations on a namespace.
  */
-export function calc(args: { ns: t.IDbModelNs; cells?: t.IMap<t.ICellData> }) {
-  const { ns } = args;
+export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.ICellData> }) {
+  const { ns, host } = args;
+
+  const TMP = host.startsWith('localhost') ? fs.resolve('tmp') : fs.resolve('/tmp');
 
   /**
    * TODO 🐷
@@ -13,7 +15,54 @@ export function calc(args: { ns: t.IDbModelNs; cells?: t.IMap<t.ICellData> }) {
   const getFunc: t.GetFunc = async args => {
     // TEMP 🐷
 
-    console.log('args', args);
+    if (args.namespace === 'local') {
+      const cells = await models.ns.getChildCells({ model: ns });
+
+      // Look up a local cell with the func definition.
+      type FuncProp = { name: string; link: string };
+      type FuncLink = { key: string; link: string; uri: string };
+      let func: FuncLink | undefined;
+      Object.keys(cells).forEach(key => {
+        const cell = cells[key] || {};
+        const links = cell.links || {};
+        const props = (cell.props || {}) as { func?: FuncProp };
+        if (props.func && props.func.name === args.name) {
+          const link = props.func.link;
+          const uri = links[link];
+          func = { key, link, uri };
+        }
+      });
+
+      // Download the file.
+      if (func && Schema.uri.is.file(func.uri)) {
+        const url = util.url(host).cellFile(func.uri).file;
+        const saveTo = `${TMP}/cache/${func.uri.replace(/\:/g, '-')}`;
+        await fs.ensureDir(fs.dirname(saveTo));
+        await download(url).save(saveTo);
+
+        // Load the WASM
+        const source = await fs.readFile(saveTo);
+        const typedArray = new Uint8Array(source);
+        const env = {
+          memoryBase: 0,
+          tableBase: 0,
+          memory: new WebAssembly.Memory({ initial: 256 }),
+          table: new WebAssembly.Table({ initial: 0, element: 'anyfunc' }),
+        };
+
+        const wasm = await WebAssembly.instantiate(typedArray, { env });
+        const lib = wasm.instance.exports as any;
+
+        const invoker: t.FuncInvoker = args => {
+          const p1 = args.params[0] || 0;
+          const p2 = args.params[1] || 0;
+          return lib.add(p1, p2);
+        };
+        return invoker;
+      }
+    }
+
+    // Not found.
     return undefined;
   };
 

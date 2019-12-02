@@ -10,4 +10,6 @@ export type GetCell<P extends t.ICellProps = t.ICellProps> = (
 /**
  * Retrieve a table of cells.
  */
-export type GetCells<P extends t.ICellProps = t.ICellProps> = () => Promise<t.ICellMap<P>>;
+export type GetCells<P extends t.ICellProps = t.ICellProps> = () => Promise<
+  t.ICellMap<t.ICellData<P>>
+>;
