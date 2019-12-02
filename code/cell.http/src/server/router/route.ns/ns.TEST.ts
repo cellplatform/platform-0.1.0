@@ -6,7 +6,9 @@ import { t, expect, http, createMock, stripHashes, post } from '../../../test';
  * - refactor hash (lazy eval)
  */
 
-describe('route: ns (namespace URI)', () => {
+describe('route: ns (namespace URI)', function() {
+  this.timeout(10000);
+
   describe('invalid URI', () => {
     it('malformed: no id', async () => {
       const mock = await createMock();
@@ -243,6 +245,8 @@ describe('route: ns (namespace URI)', () => {
 
       const res = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
+      mock.dispose();
+
       const A1 = (res.data.cells || {}).A1 || {};
       const error = A1.error;
 
@@ -262,6 +266,8 @@ describe('route: ns (namespace URI)', () => {
       cells.A1.value = '=A2'; // Remove error.
 
       const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+
+      mock.dispose();
 
       const A1a = (res1.data.cells || {}).A1 || {};
       const A1b = (res2.data.cells || {}).A1 || {};

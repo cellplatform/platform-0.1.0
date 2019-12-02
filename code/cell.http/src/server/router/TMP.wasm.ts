@@ -27,7 +27,7 @@ export const handleWasmTmp: t.RouteHandler = async req => {
   };
 
   const wasm = await WebAssembly.instantiate(typedArray, { env });
-  const func = wasm.instance.exports;
+  const func = wasm.instance.exports as any;
 
   count++;
   return {
