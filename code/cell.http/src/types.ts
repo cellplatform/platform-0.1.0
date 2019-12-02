@@ -103,6 +103,9 @@ export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
  */
 
 export type IReqCoordParams = { ns: string; key: string };
+export type IReqCellParams = IReqCoordParams;
+export type IReqColumnParams = IReqCoordParams;
+export type IReqRowParams = IReqCoordParams;
 export type IReqCoordQuery = {};
 
 /**
@@ -134,7 +137,7 @@ export type IReqFilePullQuery = {};
  */
 export type IResGetFile = IUriResponse<IResGetFileData, IResGetFileLinks>;
 export type IResGetFileData = t.IFileData & {};
-export type IResGetFileLinks = { file: string };
+export type IResGetFileLinks = { file: string; info: string };
 
 /**
  * File: POST
@@ -161,6 +164,23 @@ export type IResPostCellFileData = {
   changes?: t.IDbModelChange[];
 };
 export type IResPostCellLinks = IResGetCellLinks & {};
+
+/**
+ * Cell/Files
+ */
+export type IReqCellFilesParams = IReqCellParams;
+export type IReqCellFilesQuery = {};
+export type IResGetCellFiles = {
+  parent: string;
+  uri: string;
+  links: IResGetFilesLink[];
+};
+export type IResGetFilesLink = {
+  uri: string;
+  name: string;
+  file: string;
+  info: string;
+};
 
 /**
  * Info (System)

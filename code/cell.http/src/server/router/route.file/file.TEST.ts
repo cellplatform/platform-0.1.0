@@ -126,7 +126,8 @@ describe('route: file', () => {
         dispose: false,
       });
 
-      const res = await http.get(mock.url(uri));
+      const url = mock.url(`${uri}/info`);
+      const res = await http.get(url);
       mock.dispose();
 
       expect(res.status).to.eql(200);

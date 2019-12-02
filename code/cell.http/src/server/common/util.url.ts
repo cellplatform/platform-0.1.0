@@ -1,10 +1,15 @@
+import { Schema } from './libs';
 import * as t from './types';
 
 /**
  * URL generator.
  */
 export function url(host: string) {
-  return {
+  const url = {
+    toUrl(path: string) {
+      return toUrl(host, path);
+    },
+
     nsLinks(uri: string): t.IResGetNsLinks {
       return {};
     },
@@ -15,13 +20,39 @@ export function url(host: string) {
         files: toUrl(host, `${uri}/files`),
       };
     },
+
+    cellFiles(links: t.ICellData['links']): t.IResGetFilesLink[] {
+      return Object.keys(links || {})
+        .map(key => ({ key, value: (links || {})[key] }))
+        .filter(({ value }) => Schema.uri.is.file(value))
+        .map(({ key, value }) => {
+          const uri = value;
+          const name = Schema.file.links.toFilename(key);
+          const link: t.IResGetFilesLink = {
+            uri,
+            name,
+            ...url.cellFile(uri),
+          };
+          return link;
+        });
+    },
+
+    cellFile(uri: string): t.IResGetFileLinks {
+      return {
+        file: toUrl(host, `${uri}`),
+        info: toUrl(host, `${uri}/info`),
+      };
+    },
+
     rowLinks(uri: string): t.IResGetRowLinks {
       return {};
     },
+
     columnLinks(uri: string): t.IResGetColumnLinks {
       return {};
     },
   };
+  return url;
 }
 
 /**

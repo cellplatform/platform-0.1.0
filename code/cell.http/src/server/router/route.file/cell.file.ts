@@ -55,36 +55,22 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.get(ROUTES.CELL.FILES.BASE, async req => {
     const host = req.host;
+    const query = req.query as t.IReqCellFilesQuery;
     const { status, ns, error, uri } = getParams(req, { fileRequired: false });
     if (!ns || error) {
       return { status, data: { error } };
     }
 
     const cell = await models.Cell.create({ db, uri }).ready;
-    const cellLinks = cell.props.links || {};
+    const links = util.url(req.host).cellFiles(cell.props.links || {});
 
-    const links = Object.keys(cell.props.links || {})
-      .map(key => ({ key, value: cellLinks[key] }))
-      .filter(({ value }) => Schema.uri.is.file(value))
-      .map(({ key, value }) => {
-        const uri = value;
-        const name = Schema.file.links.toFilename(key);
-        return {
-          uri,
-          name,
-          info: util.toUrl(host, `${uri}`),
-          file: util.toUrl(host, `${uri}/pull`),
-        };
-      });
-
-    return {
-      status: 200,
-      data: {
-        parent: util.toUrl(host, uri),
-        uri,
-        links,
-      },
+    const data: t.IResGetCellFiles = {
+      parent: util.toUrl(host, uri),
+      uri,
+      links,
     };
+
+    return { status: 200, data };
   });
 
   /**

@@ -42,9 +42,9 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   };
 
   /**
-   * GET file (info).
+   * GET (file-info).
    */
-  router.get(ROUTES.FILE.BASE, async req => {
+  router.get(ROUTES.FILE.INFO, async req => {
     const host = req.host;
     const query = req.query as t.IReqFileQuery;
     const { status, ns, error, uri } = getParams(req);
@@ -52,9 +52,9 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
-   * GET /pull (download).
+   * GET (download).
    */
-  router.get(ROUTES.FILE.PULL, async req => {
+  router.get(ROUTES.FILE.BASE, async req => {
     const host = req.host;
     const query = req.query as t.IReqFilePullQuery;
     const { status, ns, error, uri } = getParams(req);
@@ -142,18 +142,13 @@ export async function getFileResponse(args: {
     const exists = Boolean(model.exists);
     const { createdAt, modifiedAt } = model;
     const data = util.squash.object(model.toObject()) || {};
-
-    const links: t.IResGetFileLinks = {
-      file: util.toUrl(host, `${uri}/pull`),
-    };
-
     const res = {
       uri,
       exists,
       createdAt,
       modifiedAt,
       data,
-      links,
+      links: util.url(host).cellFile(uri),
     };
     return { status: 200, data: res as t.IResGetFile };
   } catch (err) {
