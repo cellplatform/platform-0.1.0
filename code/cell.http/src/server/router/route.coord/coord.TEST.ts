@@ -1,6 +1,6 @@
 import { t, expect, http, createMock, post } from '../../../test';
 
-describe('route: coord (cell|row|col)', () => {
+describe('route: coord (URI: cell|row|col)', () => {
   describe('invalid URI', () => {
     const test = async (path: string, expected: string) => {
       const mock = await createMock();

@@ -1,6 +1,8 @@
 import { createMock, expect, FormData, fs, http, t } from '../../../test';
 
-const post = async (args: {
+import { download } from '@platform/http/lib/download';
+
+const testPost = async (args: {
   uri: string;
   filename: string;
   source?: string | string[];
@@ -39,7 +41,7 @@ const post = async (args: {
   return { res, json, data, props, mock };
 };
 
-describe('route: file', () => {
+describe('route: file (URI)', () => {
   describe('invalid URI', () => {
     const test = async (path: string, expected: string) => {
       const mock = await createMock();
@@ -61,14 +63,82 @@ describe('route: file', () => {
     });
   });
 
+  describe('GET', () => {
+    it('GET binay image file (.png)', async () => {
+      const uri = 'file:foo.123';
+      const source = 'src/test/assets/bird.png';
+      const { mock } = await testPost({
+        uri,
+        filename: `image.png`,
+        source,
+        dispose: false,
+      });
+
+      const urlFile = mock.url(`${uri}`);
+      const urlInfo = mock.url(`${uri}/info`);
+      const resInfo = await http.get(urlInfo);
+
+      expect(resInfo.status).to.eql(200);
+
+      const json = resInfo.json<t.IResGetFile>();
+      const props = json.data.props;
+      expect(json.uri).to.eql(uri);
+      expect(props.name).to.eql('image.png');
+      expect(props.mimetype).to.eql('image/png');
+      expect(props.location).to.match(/^file:\/\//);
+
+      // Download the file from the route, and ensure it saves correctly.
+      const path = fs.resolve('tmp/file.png');
+      await download(urlFile).save(path);
+      mock.dispose();
+
+      const file1 = await fs.readFile(source);
+      const file2 = await fs.readFile(path);
+      expect(file1.toString()).to.eql(file2.toString());
+    });
+
+    it('GET web-assembly file (.wasm)', async () => {
+      const uri = 'file:foo.123';
+      const source = 'src/test/assets/func.wasm';
+      const { mock } = await testPost({
+        uri,
+        filename: `func.wasm`,
+        source,
+        dispose: false,
+      });
+
+      const urlFile = mock.url(`${uri}`);
+      const urlInfo = mock.url(`${uri}/info`);
+
+      const resFile = await http.get(urlFile);
+      const resInfo = await http.get(urlInfo);
+
+      expect(resInfo.status).to.eql(200);
+
+      const json = resInfo.json<t.IResGetFile>();
+      const props = json.data.props;
+      expect(json.uri).to.eql(uri);
+      expect(props.name).to.eql('func.wasm');
+
+      // Download the file from the route, and ensure it saves correctly.
+      const path = fs.resolve('tmp/file.wasm');
+      await download(urlFile).save(path);
+      mock.dispose();
+
+      const file1 = await fs.readFile(source);
+      const file2 = await fs.readFile(path);
+      expect(file1.toString()).to.eql(file2.toString());
+    });
+  });
+
   describe('POST', () => {
     it('POST single file', async () => {
       const sourcePath = fs.resolve('src/test/assets/bird.png');
-      const savePath = fs.resolve('tmp/fs/ns.foo/bird');
+      const savePath = fs.resolve('tmp/fs/ns.foo/123');
       await fs.remove(savePath);
 
-      const uri = 'file:foo.bird';
-      const { res, json, data, props } = await post({
+      const uri = 'file:foo.123';
+      const { res, json, data, props } = await testPost({
         uri,
         filename: `image.png`,
         source: sourcePath,
@@ -89,8 +159,8 @@ describe('route: file', () => {
     });
 
     it('POST no changes returned (via query-string flag)', async () => {
-      const { json } = await post({
-        uri: 'file:foo.bird',
+      const { json } = await testPost({
+        uri: 'file:foo.123',
         filename: `image.png`,
         source: 'src/test/assets/bird.png',
         queryString: 'changes=false',
@@ -98,54 +168,33 @@ describe('route: file', () => {
       expect(json.changes).to.eql(undefined);
     });
 
-    it('POST throws if no file posted', async () => {
-      const { res } = await post({
-        uri: 'file:foo.bird',
-        filename: `image.png`,
-      });
-      expect(res.status).to.eql(400);
+    describe('errors', () => {
+      it('throws if no file posted', async () => {
+        const { res } = await testPost({
+          uri: 'file:foo.123',
+          filename: `image.png`,
+        });
+        expect(res.status).to.eql(400);
 
-      const error = res.json<t.IHttpError>();
-      expect(error.status).to.eql(400);
-      expect(error.type).to.eql('HTTP/server');
-      expect(error.message).to.contain('No file data was posted');
-    });
-
-    it('POST throws if no file posted', async () => {
-      const { res } = await post({
-        uri: 'file:foo.bird',
-        filename: `image.png`,
-        source: ['src/test/assets/bird.png', 'src/test/assets/kitten.jpg'],
-      });
-      expect(res.status).to.eql(400);
-
-      const error = res.json<t.IHttpError>();
-      expect(error.status).to.eql(400);
-      expect(error.type).to.eql('HTTP/server');
-      expect(error.message).to.contain('Only a single file can be posted');
-    });
-
-    it('GET', async () => {
-      const uri = 'file:foo.bird';
-      const { mock } = await post({
-        uri,
-        filename: `image.png`,
-        source: 'src/test/assets/bird.png',
-        dispose: false,
+        const error = res.json<t.IHttpError>();
+        expect(error.status).to.eql(400);
+        expect(error.type).to.eql('HTTP/server');
+        expect(error.message).to.contain('No file data was posted');
       });
 
-      const url = mock.url(`${uri}/info`);
-      const res = await http.get(url);
-      mock.dispose();
+      it('throws if no file posted', async () => {
+        const { res } = await testPost({
+          uri: 'file:foo.123',
+          filename: `image.png`,
+          source: ['src/test/assets/bird.png', 'src/test/assets/kitten.jpg'],
+        });
+        expect(res.status).to.eql(400);
 
-      expect(res.status).to.eql(200);
-
-      const json = res.json<t.IResGetFile>();
-      const props = json.data.props;
-      expect(json.uri).to.eql(uri);
-      expect(props.name).to.eql('image.png');
-      expect(props.mimetype).to.eql('image/png');
-      expect(props.location).to.match(/^file:\/\//);
+        const error = res.json<t.IHttpError>();
+        expect(error.status).to.eql(400);
+        expect(error.type).to.eql('HTTP/server');
+        expect(error.message).to.contain('Only a single file can be posted');
+      });
     });
   });
 });

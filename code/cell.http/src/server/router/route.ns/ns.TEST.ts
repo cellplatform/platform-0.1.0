@@ -6,7 +6,7 @@ import { t, expect, http, createMock, stripHashes, post } from '../../../test';
  * - refactor hash (lazy eval)
  */
 
-describe('route: namespace', () => {
+describe('route: ns (namespace URI)', () => {
   describe('invalid URI', () => {
     it('malformed: no id', async () => {
       const mock = await createMock();
