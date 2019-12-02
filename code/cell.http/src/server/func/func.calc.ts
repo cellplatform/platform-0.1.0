@@ -15,7 +15,9 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
   const getFunc: t.GetFunc = async args => {
     // TEMP 🐷
 
-    if (args.namespace === 'local') {
+    console.log('getFunc', args);
+
+    if (args.namespace === 'local' || (args.namespace === 'sys' && args.name === 'SUM')) {
       const cells = await models.ns.getChildCells({ model: ns });
 
       // Look up a local cell with the func definition.
