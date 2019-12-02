@@ -1024,10 +1024,10 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
-"@platform/cell.types@0.1.20":
-  version "0.1.20"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.1.20.tgz#ec97ec423c4654d5f14099c146dc8f58b276b159"
-  integrity sha512-9oqLqW2jg2AsKRYoeIaMgJqS9nz7kPh7mTIgqVdPNFkpysF0iJGFebyoxkMpzOUeAXxNX9IZKdBGReSNQdirgw==
+"@platform/cell.types@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.2.0.tgz#464b5b3e5676c31cfc0c5359192085d7050d4759"
+  integrity sha512-e2KvOZM6P8ka5nY+vVYLyWG+6WhO3OUNNCgK2wHRpfeScDEiEbrA68GcnOwHN4K2MrUyp8OBC6vC0DHptH/sNg==
   dependencies:
     "@platform/cache" "0.2.5"
     "@platform/fsdb.types" "0.5.6"
@@ -1432,12 +1432,12 @@
     codemirror "5.49.2"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.7.45":
-  version "0.7.45"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.45.tgz#55e0cd0390f450925641deeab8e0299a67fff73f"
-  integrity sha512-/Xr5tNQcciINhZQ+8+EokxieCFvw3RS3NmhWvWU/28AK1D0HYPUu7P1l1N0rDMcU3x6pmgFQT8aX7V8ozfg2TA==
+"@platform/ui.datagrid.types@0.7.46":
+  version "0.7.46"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.46.tgz#99c8423a0e4e24c2e62628d45a1227a2e7490a7d"
+  integrity sha512-wkuYF/A3uBnJ2NW0ShJ/OsUzXKP0E0aVeFelsaN3qMaH974D7X+UqetSQquznviE4X1Tgck0L6ZlpJ04ZtLxvg==
   dependencies:
-    "@platform/cell.types" "0.1.20"
+    "@platform/cell.types" "0.2.0"
     "@platform/react" "0.3.34"
     "@platform/util.diff" "0.0.6"
 

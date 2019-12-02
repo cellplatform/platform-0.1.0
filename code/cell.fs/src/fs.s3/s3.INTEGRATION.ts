@@ -3,13 +3,14 @@ import { t, expect, util, log } from '../test';
 describe('S3 (INTEGRATION)', function() {
   this.timeout(30000);
 
-  it('write', async () => {
+  it.only('write: png', async () => {
     await util.reset();
     const fs = util.initS3();
 
-    const png = await util.image('bird.png');
+    const filename = 'bird.png';
+    const png = await util.image(filename);
     const uri = 'file:foo.bird';
-    const res = await fs.write(`  ${uri} `, png); // NB: URI padded with spaces (corrected internally).
+    const res = await fs.write(`  ${uri} `, png, { filename }); // NB: URI padded with spaces (corrected internally).
     const file = res.file;
 
     expect(res.status).to.eql(200);
@@ -25,7 +26,7 @@ describe('S3 (INTEGRATION)', function() {
     log.info('WRITE', res);
   });
 
-  it.only('read', async () => {
+  it('read', async () => {
     await util.reset();
     const fs = util.initS3();
 

@@ -91,10 +91,17 @@ export function init(args: IS3Init): t.IFileSystemS3 {
     /**
      * Write to the local file-system.
      */
-    async write(uri: string, data: Buffer): Promise<t.IFileSystemWrite> {
+    async write(
+      uri: string,
+      data: Buffer,
+      options: { filename?: string } = {},
+    ): Promise<t.IFileSystemWrite> {
       if (!data) {
         throw new Error(`Cannot write, no data provided.`);
       }
+
+      const { filename } = options;
+      const contentType = filename ? cloud.s3.toContentType(filename) : undefined;
 
       uri = (uri || '').trim();
       const path = res.resolve(uri);
@@ -110,9 +117,10 @@ export function init(args: IS3Init): t.IFileSystemS3 {
 
       try {
         const res = await cloud.bucket.put({
+          contentType,
           source: file.data,
           key,
-          acl: 'public-read', // TODO 🐷
+          acl: 'public-read', // TODO - S3 Access Control 🐷
         });
 
         const { status } = res;

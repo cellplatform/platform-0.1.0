@@ -1,4 +1,4 @@
-import { constants, defaultValue, func, models, ROUTES, Schema, t, util } from '../common';
+import { ERROR, defaultValue, func, models, ROUTES, Schema, t, util } from '../common';
 
 /**
  * Namespace routes.
@@ -12,7 +12,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
 
     if (!id) {
       const error: t.IError = {
-        type: constants.ERROR.MALFORMED_URI,
+        type: ERROR.MALFORMED_URI,
         message: `Malformed "ns:" URI, does not contain an ID ("${req.url}").`,
       };
       return { status: 400, error };
@@ -32,9 +32,10 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    *        - /ns:foo?cells&rows&columns   [NB: Same format for rows/columns query flags].
    */
   router.get(ROUTES.NS.BASE, async req => {
+    const host = req.host;
     const query = req.query as t.IReqGetNsQuery;
     const { status, id, error } = getParams(req);
-    return !id || error ? { status, data: { error } } : getNsResponse({ db, id, query });
+    return !id || error ? { status, data: { error } } : getNsResponse({ db, id, query, host });
   });
 
   /**
@@ -44,28 +45,37 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    *         -/ns:<id>?cells&rows&column
    */
   router.get(ROUTES.NS.DATA, async req => {
+    const host = req.host;
     const query: t.IReqGetNsQuery = { cells: true, rows: true, columns: true };
     const { status, id, error } = getParams(req);
-    return !id || error ? { status, data: { error } } : getNsResponse({ db, id, query });
+    return !id || error ? { status, data: { error } } : getNsResponse({ db, id, query, host });
   });
 
   /**
    * POST namespace data (save to database).
    */
   router.post(ROUTES.NS.BASE, async req => {
+    const host = req.host;
     const query = req.query as t.IReqPostNsQuery;
     const { status, id, error } = getParams(req);
     const body = (await req.body.json<t.IReqPostNsBody>()) || {};
-    return !id || error ? { status, data: { error } } : postNsResponse({ db, id, body, query });
+    return !id || error
+      ? { status, data: { error } }
+      : postNsResponse({ db, id, body, query, host });
   });
 }
 
 /**
- * [Helpers]
+ * [Methods]
  */
 
-async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqGetNsQuery }) {
-  const { db, id, query } = args;
+export async function getNsResponse(args: {
+  db: t.IDb;
+  id: string;
+  host: string;
+  query: t.IReqGetNsQuery;
+}) {
+  const { db, id, query, host } = args;
   const uri = Schema.uri.create.ns(id);
   const model = await models.Ns.create({ db, uri }).ready;
 
@@ -77,12 +87,14 @@ async function getNsResponse(args: { db: t.IDb; id: string; query: t.IReqGetNsQu
     ...(await getNsData({ model, query })),
   };
 
+  const links: t.IResGetNsLinks = util.url(host).nsLinks(uri);
   const res: t.IResGetNs = {
     uri,
     exists,
     createdAt,
     modifiedAt,
     data,
+    links,
   };
 
   return { status: 200, data: res };
@@ -108,14 +120,15 @@ async function getNsData(args: {
   }
 }
 
-async function postNsResponse(args: {
+export async function postNsResponse(args: {
   db: t.IDb;
   id: string;
   body: t.IReqPostNsBody;
   query: t.IReqPostNsQuery;
+  host: string;
 }) {
   try {
-    const { db, id, query } = args;
+    const { db, id, query, host } = args;
     let body = { ...args.body };
     const uri = Schema.uri.create.ns(id);
     const ns = await models.Ns.create({ db, uri }).ready;
@@ -163,7 +176,7 @@ async function postNsResponse(args: {
     }
 
     // Finish up.
-    const res = await getNsResponse({ db, id, query });
+    const res = await getNsResponse({ db, id, query, host });
     const data: t.IResPostNs = {
       ...res.data,
       changes: defaultValue(query.changes, true) ? changes : undefined, // NB: don't send if suppressed in query-string (?changes=false)

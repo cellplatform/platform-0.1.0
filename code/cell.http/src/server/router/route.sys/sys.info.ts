@@ -1,12 +1,7 @@
 import { constants, fs, ROUTES, t, time } from '../common';
 
 const PKG = constants.PKG;
-const DEPS = PKG.dependencies;
-
-const MODULE = {
-  SCHEMA: '@platform/cell.schema',
-  DB: '@platform/cell.db',
-};
+const DEPS = PKG.dependencies || {};
 
 /**
  * Root information.
@@ -22,9 +17,9 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
     const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local';
 
     const version: t.IResGetInfo['version'] = {
-      [MODULE.SCHEMA]: (DEPS || {})[MODULE.SCHEMA],
-      [PKG.name || '']: PKG.version || '-',
-      [MODULE.DB]: (DEPS || {})[MODULE.DB],
+      '@platform/cell.schema': DEPS['@platform/cell.schema'],
+      '@platform/cell.types': DEPS['@platform/cell.types'],
+      '@platform/cell.http': PKG.version || '',
     };
 
     const deployedAt = !args.deployedAt

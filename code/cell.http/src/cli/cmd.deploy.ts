@@ -72,6 +72,7 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
       await fs.remove(targetDir); // Clear existing deloyment.
       await copyAndPrepare({ sourceDir, targetDir, config: config.data, target });
       const res = {
+        title: `${config.data.now.domain}: ${config.data.title}`,
         targetDir,
         path: config.path,
         config: config.data,
@@ -89,12 +90,12 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
 
   // Build list of tasks.
   const tasks = deployments.map(deployment => {
-    const { targetDir, config } = deployment;
+    const { title, targetDir } = deployment;
     return deployTask({
       targetDir,
       force,
       prod: true,
-      title: `${config.now.domain}: ${config.title}`,
+      title,
       done: res => (deployment.info = res),
     });
   });

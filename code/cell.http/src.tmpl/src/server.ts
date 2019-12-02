@@ -5,7 +5,7 @@ import { local } from '@platform/cell.fs';
 const TMP = util.resolve('tmp');
 
 /**
- * Database
+ * Database.
  */
 const filename = `${TMP}/sample.db`;
 const db = NeDb.create({ filename });
@@ -18,5 +18,5 @@ const fs = local.init({ root: `${TMP}/fs` });
 /**
  * Initialize and start the HTTP application server.
  */
-const app = server.init({ title: 'sample (local)', db, fs });
+const app = server.init({ title: 'sample', db, fs });
 app.listen({ port: 8080 });

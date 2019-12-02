@@ -17,6 +17,7 @@ export type S3StorageClass =
   | 'DEEP_ARCHIVE';
 
 export type S3 = {
+  toContentType(key: string): string | undefined;
   endpoint: string;
   url(bucket: string, path?: string): string;
   get(args: { bucket: string; key: string }): Promise<S3GetResponse>;
@@ -25,6 +26,7 @@ export type S3 = {
     key: string;
     source: string | Buffer;
     acl?: S3Permissions;
+    contentType?: string;
   }): Promise<S3PutResponse>;
   list(args: { bucket: string; prefix?: string; max?: number }): S3List;
   bucket(name: string): S3Bucket;
@@ -34,7 +36,12 @@ export type S3Bucket = {
   endpoint: string;
   url(path?: string): string;
   get(args: { key: string }): Promise<S3GetResponse>;
-  put(args: { key: string; source: string | Buffer; acl?: S3Permissions }): Promise<S3PutResponse>;
+  put(args: {
+    key: string;
+    source: string | Buffer;
+    acl?: S3Permissions;
+    contentType?: string;
+  }): Promise<S3PutResponse>;
   list(args: { bucket: string; prefix?: string; max?: number }): S3List;
 };
 

@@ -10,12 +10,11 @@ describe('route: sys', () => {
 
       expect(res.status).to.eql(404);
 
-      const body = res.json<t.INotFoundResponse>();
+      const body = res.json<t.IHttpError>();
 
       expect(body.status).to.eql(404);
-      expect(body.url).to.eql('/NO_EXIST');
       expect(body.message).to.contain('Not found');
-      expect(body.type).to.eql('HTTP/404');
+      expect(body.type).to.eql('HTTP/notFound');
     });
   });
 });

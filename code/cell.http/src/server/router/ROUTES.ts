@@ -1,5 +1,3 @@
-export * from '../common/constants';
-
 export const ROUTES = {
   SYS: {
     INFO: ['/', '/.info'],
@@ -12,6 +10,12 @@ export const ROUTES = {
   },
   CELL: {
     BASE: `/cell\\::ns([A-Za-z0-9]*)\!:key([A-Z]+[0-9]+)(/?)`,
+    FILES: {
+      BASE: `/cell\\::ns([A-Za-z0-9]*)\!:key([A-Z]+[0-9]+)/files(/?)`,
+    },
+    FILE: {
+      BY_NAME: `/cell\\::ns([A-Za-z0-9]*)\!:key([A-Z]+[0-9]+)/files/:filename([A-Za-z0-9\.\-\_]*)`,
+    },
   },
   ROW: {
     BASE: `/row\\::ns([A-Za-z0-9]*)\!:key([0-9]+)(/?)`,
@@ -21,6 +25,6 @@ export const ROUTES = {
   },
   FILE: {
     BASE: `/file\\::ns([A-Za-z0-9]*)\.:file([A-Za-z0-9]+)(/?)`,
-    PULL: `/file\\::ns([A-Za-z0-9]*)\.:file([A-Za-z0-9]+)/pull(/?)`,
+    INFO: `/file\\::ns([A-Za-z0-9]*)\.:file([A-Za-z0-9]+)/info(/?)`,
   },
 };

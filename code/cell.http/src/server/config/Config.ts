@@ -1,4 +1,4 @@
-import { t, fs, R, util, value as valueUtil } from '../common';
+import { t, fs, R, util, value as valueUtil, ERROR } from '../common';
 
 export const DEFAULT: t.IConfigDeployment = {
   title: 'Untitled',
@@ -83,7 +83,7 @@ function validate(config: t.IConfigFile) {
   };
 
   const error = (message: string) => {
-    const error: t.IError = { type: 'HTTP/config', message };
+    const error: t.IError = { type: ERROR.CONFIG, message };
     errors.push(error);
     return res;
   };

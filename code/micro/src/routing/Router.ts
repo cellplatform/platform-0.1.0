@@ -77,7 +77,9 @@ export class Router implements t.IRouter {
       let params: t.RequestParams | undefined;
       let query: t.RequestQuery | undefined;
       const path = incoming.url || '';
+      const host = incoming.headers.host || '';
       const helpers = {
+        host,
         get params() {
           if (!params) {
             params = Router.params<t.RequestParams>({ route, path });

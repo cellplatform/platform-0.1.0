@@ -250,6 +250,8 @@ describe('hash', () => {
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
 
+      // console.log('hash', hash.substring(hash.length - 10));
+
       expect(hash.startsWith('sha256-')).to.eql(true, err);
       expect(hash.endsWith(expected)).to.eql(true, err);
     };
@@ -268,14 +270,14 @@ describe('hash', () => {
 
     it('hash props/error/buffer', async () => {
       const jpg = await fs.readFile(fs.resolve('src/test/images/kitten.jpg'));
-      const fileHash = value.hash.sha256(jpg);
+      const filehash = value.hash.sha256(jpg);
       const error = { type: 'FAIL', message: 'Bummer' };
 
       test({ props: { name: 'image.png' } }, 'e2e43515c3');
-      test({ props: { name: 'image.png', fileHash } }, '34ccb871c4');
-      test({ props: { name: 'image.png', mimetype: 'image/png', fileHash } }, '584f44d68e');
+      test({ props: { name: 'image.png', filehash } }, 'e4ca8e0b28');
+      test({ props: { name: 'image.png', mimetype: 'image/png', filehash } }, 'c4b9b38ffd');
       test({ props: {}, error }, 'b97a3f147a');
-      test({ props: { name: 'image.png', fileHash }, error }, 'ab36528007');
+      test({ props: { name: 'image.png', filehash }, error }, '79234c6567');
     });
   });
 });

@@ -77,8 +77,8 @@ describe('route: file', () => {
       expect(json.changes && json.changes.length).to.eql(3); // Changes returned by default.
 
       expect(data.hash).to.match(/^sha256-[0-9a-z]+/);
-      expect(props.fileHash).to.match(/^sha256-[0-9a-z]+/);
-      expect(data.hash).to.not.eql(props.fileHash); // Hash of model is different from raw file-data hash.
+      expect(props.filehash).to.match(/^sha256-[0-9a-z]+/);
+      expect(data.hash).to.not.eql(props.filehash); // Hash of model is different from raw file-data hash.
 
       // Ensure saved file matches POST'ed file.
       const sourceFile = await fs.readFile(sourcePath);
@@ -126,7 +126,8 @@ describe('route: file', () => {
         dispose: false,
       });
 
-      const res = await http.get(mock.url(uri));
+      const url = mock.url(`${uri}/info`);
+      const res = await http.get(url);
       mock.dispose();
 
       expect(res.status).to.eql(200);

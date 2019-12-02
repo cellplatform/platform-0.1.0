@@ -49,15 +49,18 @@ export type IConfigNowFile = {
 /**
  * Payloads
  */
-export type IErrorPayload = { status: number; data: t.IHttpError };
-export type INotFoundResponse = t.IHttpError<'HTTP/404'> & { status: 404; url: string };
-export type IGetResponse<D> = {
+export type IPayload<D> = { status: number; data: D };
+export type IErrorPayload = IPayload<t.IHttpError>;
+export type IUriResponse<D, L extends ILinkMap> = {
   uri: string;
   exists: boolean;
   createdAt: number;
   modifiedAt: number;
   data: D;
+  links: L;
 };
+
+export type ILinkMap = { [key: string]: string };
 
 /**
  * Namespace
@@ -75,8 +78,9 @@ export type IReqNsQuery = {
  * Namespace: GET
  */
 export type IReqGetNsQuery = IReqNsQuery;
-export type IResGetNs = IGetResponse<IResGetNsData>;
+export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsLinks>;
 export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
+export type IResGetNsLinks = {};
 
 /**
  * Namespace: POST
@@ -99,6 +103,9 @@ export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
  */
 
 export type IReqCoordParams = { ns: string; key: string };
+export type IReqCellParams = IReqCoordParams;
+export type IReqColumnParams = IReqCoordParams;
+export type IReqRowParams = IReqCoordParams;
 export type IReqCoordQuery = {};
 
 /**
@@ -106,14 +113,17 @@ export type IReqCoordQuery = {};
  */
 export type IResGetCoord = IResGetCell | IResGetRow | IResGetColumn;
 
-export type IResGetCell = IGetResponse<IResGetCellData>;
+export type IResGetCell = IUriResponse<IResGetCellData, IResGetCellLinks>;
 export type IResGetCellData = t.ICellData;
+export type IResGetCellLinks = { cell: string; files: string };
 
-export type IResGetRow = IGetResponse<IResGetRowData>;
+export type IResGetRow = IUriResponse<IResGetRowData, IResGetRowLinks>;
 export type IResGetRowData = t.IRowData;
+export type IResGetRowLinks = {};
 
-export type IResGetColumn = IGetResponse<IResGetColumnData>;
+export type IResGetColumn = IUriResponse<IResGetColumnData, IResGetColumnLinks>;
 export type IResGetColumnData = t.IColumnData;
+export type IResGetColumnLinks = {};
 
 /**
  * File
@@ -125,8 +135,9 @@ export type IReqFilePullQuery = {};
 /**
  * File: GET
  */
-export type IResGetFile = IGetResponse<IResGetFileData>;
+export type IResGetFile = IUriResponse<IResGetFileData, IResGetFileLinks>;
 export type IResGetFileData = t.IFileData & {};
+export type IResGetFileLinks = { file: string; info: string };
 
 /**
  * File: POST
@@ -138,6 +149,40 @@ export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 
 /**
+ * Cell/File
+ */
+
+export type IReqCellsFileParams = IReqCoordParams;
+export type IReqCellFileParams = IReqCoordParams & { filename: string };
+export type IReqPostCellFileQuery = {
+  changes?: boolean; // return list of changes (default: true).
+};
+
+export type IResPostCellFile = IUriResponse<IResPostCellFileData, IResPostCellLinks>;
+export type IResPostCellFileData = {
+  cell: t.ICellData;
+  changes?: t.IDbModelChange[];
+};
+export type IResPostCellLinks = IResGetCellLinks & {};
+
+/**
+ * Cell/Files
+ */
+export type IReqCellFilesParams = IReqCellParams;
+export type IReqCellFilesQuery = {};
+export type IResGetCellFiles = {
+  parent: string;
+  uri: string;
+  links: IResGetFilesLink[];
+};
+export type IResGetFilesLink = {
+  uri: string;
+  name: string;
+  file: string;
+  info: string;
+};
+
+/**
  * Info (System)
  */
 
@@ -145,7 +190,11 @@ export type IResGetInfo = {
   system: string;
   domain: string;
   region: string;
-  version: { [key: string]: string };
+  version: {
+    '@platform/cell.http': string;
+    '@platform/cell.schema': string;
+    '@platform/cell.types': string;
+  };
   deployedAt?: {
     datetime: string;
     timestamp: number;
