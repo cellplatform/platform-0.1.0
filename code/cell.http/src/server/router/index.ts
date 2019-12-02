@@ -18,5 +18,16 @@ export function init(args: {
   ns.init(args);
   coord.init(args);
   file.init(args);
+
+  args.router.get('/wasm', handleWasmTmp); // TEMP 🐷
+
   wildcard.init(args);
 }
+
+/**
+ * TODO 🐷 TEMP
+ */
+const handleWasmTmp: t.RouteHandler = async req => {
+  //
+  return { data: { foo: 23 } };
+};

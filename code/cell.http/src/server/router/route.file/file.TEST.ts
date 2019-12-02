@@ -62,7 +62,7 @@ describe('route: file', () => {
     };
 
     it('POST single file', async () => {
-      const sourcePath = fs.resolve('src/test/images/bird.png');
+      const sourcePath = fs.resolve('src/test/assets/bird.png');
       const savePath = fs.resolve('tmp/fs/ns.foo/bird');
       await fs.remove(savePath);
 
@@ -89,7 +89,7 @@ describe('route: file', () => {
     it('POST no changes returned (via query-string flag)', async () => {
       const { json } = await post({
         uri: 'file:foo.bird',
-        img: 'src/test/images/bird.png',
+        img: 'src/test/assets/bird.png',
         queryString: 'changes=false',
       });
       expect(json.changes).to.eql(undefined);
@@ -108,7 +108,7 @@ describe('route: file', () => {
     it('POST throws if no file posted', async () => {
       const { res } = await post({
         uri: 'file:foo.bird',
-        img: ['src/test/images/bird.png', 'src/test/images/kitten.jpg'],
+        img: ['src/test/assets/bird.png', 'src/test/assets/kitten.jpg'],
       });
       expect(res.status).to.eql(400);
 
@@ -122,7 +122,7 @@ describe('route: file', () => {
       const uri = 'file:foo.bird';
       const { mock } = await post({
         uri,
-        img: 'src/test/images/bird.png',
+        img: 'src/test/assets/bird.png',
         dispose: false,
       });
 
