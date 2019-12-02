@@ -12,7 +12,7 @@ export type IDownloadResponse = {
   ok: boolean;
 };
 export type IFetchDownloadResponse = IDownloadResponse & { stream?: ReadableStream<Uint8Array> };
-export type ISaveDownloadResponse = IDownloadResponse & { path: string };
+export type IFetchDownloadSaveResponse = IDownloadResponse & { path: string };
 
 /**
  * Setup a URL downloader.
@@ -37,7 +37,7 @@ export function download(url: string) {
      */
     async save(path: string) {
       const { status, error, ok, stream } = await download.fetch();
-      const res: ISaveDownloadResponse = { ok, status, error, path };
+      const res: IFetchDownloadSaveResponse = { ok, status, error, path };
 
       if (ok && stream) {
         try {
