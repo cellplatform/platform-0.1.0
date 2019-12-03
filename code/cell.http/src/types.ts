@@ -66,7 +66,7 @@ export type ILinkMap = { [key: string]: string };
  * Namespace
  */
 
-export type IReqNsParams = { id: string };
+export type IReqNsParams = { ns: string };
 export type IReqNsQuery = {
   data?: boolean; // true: all (cells/rows/columns) - overrides other fields.
   cells?: boolean | string | Array<string | boolean>; // true: all | string: key or range, eg "A1", "A1:C10"
