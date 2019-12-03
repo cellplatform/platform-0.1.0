@@ -26,12 +26,8 @@ export const ROUTES = {
   },
   CELL: {
     BASE: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
-    FILES: {
-      BASE: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
-    },
-    FILE: {
-      BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/files/:filename([A-Za-z0-9\.\-\_]*)`,
-    },
+    FILES: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
+    FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/files/:filename([A-Za-z0-9\.\-\_]*)`,
   },
   ROW: {
     BASE: `/row${KEY.NS}\!${KEY.ROW}(/?)`,

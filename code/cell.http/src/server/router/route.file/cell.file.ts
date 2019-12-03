@@ -53,7 +53,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET: !A1/files
    */
-  router.get(ROUTES.CELL.FILES.BASE, async req => {
+  router.get(ROUTES.CELL.FILES, async req => {
     const host = req.host;
     const query = req.query as t.IReqCellFilesQuery;
     const { status, ns, error, uri } = getParams(req, { fileRequired: false });
@@ -76,7 +76,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * POST a file to a cell
    */
-  router.post(ROUTES.CELL.FILE.BY_NAME, async req => {
+  router.post(ROUTES.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
     const query = req.query as t.IReqPostCellFileQuery;
     const { status, ns, key, filename, error, uri: cellUri } = getParams(req);
