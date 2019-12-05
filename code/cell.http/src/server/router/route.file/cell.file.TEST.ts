@@ -18,4 +18,8 @@ describe('route: !A1/file', () => {
      * - change log.
      */
   });
+
+  it.skip('reads a file (via /cell:foo!A1/files/kitten.js', async () => {
+    // TODO 🐷
+  });
 });

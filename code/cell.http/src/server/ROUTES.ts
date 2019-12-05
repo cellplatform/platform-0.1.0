@@ -4,6 +4,7 @@ const ID = {
   ROW: `([0-9]+)`,
   COLUMN: `([A-Z]+)`,
   FILE: `([A-Za-z0-9]+)`,
+  FILENAME: `([A-Za-z0-9\.\-\_]*)`,
 };
 
 const KEY = {
@@ -12,6 +13,7 @@ const KEY = {
   ROW: `\:key${ID.ROW}`,
   COLUMN: `\:key${ID.COLUMN}`,
   FILE: `\:file${ID.FILE}`,
+  FILENAME: `\:filename${ID.FILENAME}`,
 };
 
 export const ROUTES = {
@@ -27,7 +29,7 @@ export const ROUTES = {
   CELL: {
     BASE: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
     FILES: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
-    FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/files/:filename([A-Za-z0-9\.\-\_]*)`,
+    FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/files/${KEY.FILENAME}`,
   },
   ROW: {
     BASE: `/row${KEY.NS}\!${KEY.ROW}(/?)`,

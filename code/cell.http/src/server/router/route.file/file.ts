@@ -46,9 +46,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.get(ROUTES.FILE.INFO, async req => {
     const host = req.host;
-    const query = req.query as t.IReqFileQuery;
+    const query = req.query as t.IReqFileInfoQuery;
     const { status, ns, error, uri } = getParams(req);
-    return !ns || error ? { status, data: { error } } : getFileResponse({ uri, db, query, host });
+    return !ns || error
+      ? { status, data: { error } }
+      : getFileInfoResponse({ uri, db, query, host });
   });
 
   /**
@@ -56,58 +58,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.get(ROUTES.FILE.BASE, async req => {
     const host = req.host;
-    const query = req.query as t.IReqFilePullQuery;
+    const query = req.query as t.IReqFileDownloadQuery;
     const { status, ns, error, uri } = getParams(req);
-
-    if (!ns || error) {
-      return { status, data: { error } };
-    }
-
-    try {
-      // Pull the file meta-data.
-      const fileResponse = await getFileResponse({ uri, db, query, host });
-      if (!util.isOK(fileResponse.status)) {
-        return fileResponse; // NB: This is an error.
-      }
-      const file = fileResponse.data as t.IResGetFile;
-
-      // Ensure the file exists.
-      if (!file.exists) {
-        const err = new Error(`File at the URI "${file.uri}" does not exist.`);
-        return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
-      }
-
-      // Get the location.
-      const props = file.data.props;
-      const location = (props.location || '').trim();
-      if (!location) {
-        const err = new Error(`File at the URI "${file.uri}" does not have a location.`);
-        return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
-      }
-
-      // Redirect if the location is an S3 link.
-      if (util.isHttp(location)) {
-        return { status: 307, data: location };
-      }
-
-      // Serve the file if local file-system.
-      if (util.isFile(location) && fs.type === 'FS') {
-        const local = await fs.read(uri);
-        const data = local.file ? local.file.data : undefined;
-        if (!data) {
-          const err = new Error(`File at the URI "${file.uri}" does on the local file-system.`);
-          return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
-        } else {
-          return { status: 200, data };
-        }
-      }
-
-      // Something went wrong if we got this far.
-      const err = new Error(`File at the URI "${file.uri}" could not be served.`);
-      return util.toErrorPayload(err, { status: 500 });
-    } catch (err) {
-      return util.toErrorPayload(err);
-    }
+    return !ns || error
+      ? { status, data: { error } }
+      : getFileDownloadResponse({ db, fs, uri, host, query });
   });
 
   /**
@@ -127,14 +82,70 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 }
 
 /**
- * [Helpers]
+ * [Methods]
  */
 
-export async function getFileResponse(args: {
+export const getFileDownloadResponse = async (args: {
+  db: t.IDb;
+  fs: t.IFileSystem;
+  uri: string;
+  host: string;
+  query?: t.IReqFileDownloadQuery;
+}) => {
+  const { db, fs, uri, host, query } = args;
+
+  try {
+    // Pull the file meta-data.
+    const fileResponse = await getFileInfoResponse({ uri, db, query, host });
+    if (!util.isOK(fileResponse.status)) {
+      return fileResponse; // NB: This is an error.
+    }
+    const file = fileResponse.data as t.IResGetFile;
+
+    // Ensure the file exists.
+    if (!file.exists) {
+      const err = new Error(`File at the URI "${file.uri}" does not exist.`);
+      return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
+    }
+
+    // Get the location.
+    const props = file.data.props;
+    const location = (props.location || '').trim();
+    if (!location) {
+      const err = new Error(`File at the URI "${file.uri}" does not have a location.`);
+      return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
+    }
+
+    // Redirect if the location is an S3 link.
+    if (util.isHttp(location)) {
+      return { status: 307, data: location };
+    }
+
+    // Serve the file if local file-system.
+    if (util.isFile(location) && fs.type === 'FS') {
+      const local = await fs.read(uri);
+      const data = local.file ? local.file.data : undefined;
+      if (!data) {
+        const err = new Error(`File at the URI "${file.uri}" does on the local file-system.`);
+        return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
+      } else {
+        return { status: 200, data };
+      }
+    }
+
+    // Something went wrong if we got this far.
+    const err = new Error(`File at the URI "${file.uri}" could not be served.`);
+    return util.toErrorPayload(err, { status: 500 });
+  } catch (err) {
+    return util.toErrorPayload(err);
+  }
+};
+
+export async function getFileInfoResponse(args: {
   db: t.IDb;
   uri: string;
   host: string;
-  query?: t.IReqFileQuery;
+  query?: t.IReqFileInfoQuery;
 }): Promise<t.IPayload<t.IResGetFile> | t.IErrorPayload> {
   const { db, uri, query = {}, host } = args;
   try {
@@ -196,7 +207,7 @@ export async function postFileResponse(args: {
     }
 
     // Finish up.
-    const fileResponse = await getFileResponse({ uri, db, query, host });
+    const fileResponse = await getFileInfoResponse({ uri, db, query, host });
     const { status } = fileResponse;
     const fileResponseData = fileResponse.data as t.IResGetFile;
     const res: t.IPayload<t.IResPostFile> = {

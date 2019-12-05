@@ -127,11 +127,11 @@ export type IResGetColumnData = t.IColumnData;
 export type IResGetColumnLinks = {};
 
 /**
- * File
+ * File (info / meta-data)
  */
 export type IReqFileParams = { ns: string; file: string };
-export type IReqFileQuery = {};
-export type IReqFilePullQuery = {};
+export type IReqFileInfoQuery = {};
+export type IReqFileDownloadQuery = {};
 
 /**
  * File: GET
@@ -143,7 +143,7 @@ export type IResGetFileLinks = { file: string; info: string };
 /**
  * File: POST
  */
-export type IReqPostFileQuery = IReqFileQuery & {
+export type IReqPostFileQuery = IReqFileInfoQuery & {
   changes?: boolean; // return list of changes (default: true).
 };
 export type IReqPostFileBody = {};
