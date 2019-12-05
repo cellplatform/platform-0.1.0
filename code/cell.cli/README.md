@@ -12,6 +12,15 @@ Command-line-interface for CellOS.
     yarn add @platform/cell.cli
 
 <p>&nbsp;</p>
+
+## Development
+
+To develop the command-line tools locally and simulate the module installed globally:
+
+```bash
+cd <project root>
+npm link
+```
+
 <p>&nbsp;</p>
-
-
+<p>&nbsp;</p>
