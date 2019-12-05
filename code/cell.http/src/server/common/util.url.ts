@@ -31,7 +31,7 @@ export function url(host: string) {
         .reduce((acc, next) => {
           const { key } = next;
           const filename = Schema.file.links.toFilename(key);
-          acc[filename] = toUrl(`${uri}/files/${filename}`); // TODO 🐷 - ensure GET endpoint works
+          acc[filename] = toUrl(`${uri}/files/${filename}`);
           return acc;
         }, {});
     },
