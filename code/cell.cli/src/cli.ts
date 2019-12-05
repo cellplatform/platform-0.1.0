@@ -1,4 +1,4 @@
-import { t } from './common';
+import { t, defaultValue } from './common';
 import { cli } from '@platform/cli';
 
 /**
@@ -14,26 +14,40 @@ export function init(): t.ICliApp {
      * Add a command to the application.
      */
     command(args: t.ICliCommandArgs) {
-      const { name, description, alias } = args;
-
+      const { name, description, alias, handler } = args;
       const id = [name, alias].filter(value => Boolean(value)) as string[];
-      app.command(id, description, yargs => {
-        res.options.forEach(args => {
-          yargs.option(name, {
-            alias: args.alias,
-            describe: args.description,
-            type: args.type,
-            default: args.default,
+
+      app.command(
+        id,
+        description,
+        yargs => {
+          res.options.forEach(args => {
+            return yargs.option(name, {
+              alias: args.alias,
+              describe: args.description,
+              type: args.type,
+              default: args.default,
+            });
           });
-        });
-        return yargs;
-      });
+          return yargs;
+        },
+        async (argv: any) => {
+          const args = cmd.options.reduce((acc, next) => {
+            const { name, alias } = next;
+            const value = argv[name] || argv[alias || ''];
+            acc[name] = defaultValue(value, next.default);
+            return acc;
+          }, {});
+          return cmd.handler(args);
+        },
+      );
 
       const cmd: t.ICliCommand = {
         name,
         description,
         alias,
         options: [],
+        handler,
       };
 
       const res: t.ICliCommandResponse = {

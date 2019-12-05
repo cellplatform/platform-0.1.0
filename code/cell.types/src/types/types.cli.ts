@@ -10,7 +10,10 @@ export type ICliCommandArgs = {
   name: string;
   description: string;
   alias?: string;
+  handler: CommandHandler;
 };
+
+export type CommandHandler<T extends object = {}> = (args: T) => Promise<any>;
 
 export type ICliCommand = ICliCommandArgs & {
   options: Array<ICliOption<any>>;
