@@ -15,9 +15,12 @@
   },
   "dependencies": {
     "@platform/cell.types": "0.2.0",
+    "@platform/cli": "0.4.13",
+    "@platform/cli.prompt": "0.2.0",
     "@platform/fs": "0.3.5",
     "@platform/http": "0.5.1",
-    "@platform/libs": "0.1.5"
+    "@platform/libs": "0.1.5",
+    "@platform/types": "0.2.0"
   },
   "devDependencies": {
     "@platform/test": "0.0.66",

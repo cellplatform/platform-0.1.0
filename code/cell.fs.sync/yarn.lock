@@ -25,7 +25,7 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
-"@platform/cell.types@^0.2.0":
+"@platform/cell.types@0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.2.0.tgz#464b5b3e5676c31cfc0c5359192085d7050d4759"
   integrity sha512-e2KvOZM6P8ka5nY+vVYLyWG+6WhO3OUNNCgK2wHRpfeScDEiEbrA68GcnOwHN4K2MrUyp8OBC6vC0DHptH/sNg==
@@ -47,7 +47,7 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs@0.3.5", "@platform/fs@^0.3.5":
+"@platform/fs@0.3.5":
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.3.5.tgz#e3a9242dc46b38381ffcdc9b84d206746111a148"
   integrity sha512-lkjq1z5wjDx2NHW0wra8mAn34oD1l246HKWBDh5bV1FwkiIe383ZUIpZX2YjjgqpJCIHKrZVh2lj3NsoiBHTbQ==
@@ -71,7 +71,7 @@
     "@platform/libs" "0.1.5"
     "@platform/types" "0.2.0"
 
-"@platform/http@^0.5.1":
+"@platform/http@0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.5.1.tgz#a009993b56d2d926073ef99fe49aa4fb830994fc"
   integrity sha512-jub0zolrU9mNzJUV+mVvYirt0w/KfgH+cM0ixeCuXIf8+RHYEQ4m0JyTLqz/JjdP14zTavP+nTIIw1pzphEgGQ==
