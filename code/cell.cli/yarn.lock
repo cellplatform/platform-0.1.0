@@ -25,6 +25,16 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
+"@platform/cell.fs.sync@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.0.1.tgz#2d513358095fbf71f7b6bf8eb0532b52494a7b52"
+  integrity sha512-fRw2Pp2By4Glx5anGNHKT0dSfHxWhDiKQDbtPRJmYkdUh2BqpHZWbjKUhvPPoPyRAGqV+GeUNAJi242SNSOj0g==
+  dependencies:
+    "@platform/cell.types" "0.2.3"
+    "@platform/fs" "0.3.5"
+    "@platform/http" "0.5.1"
+    "@platform/libs" "0.1.5"
+
 "@platform/cell.types@0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.2.3.tgz#79125e797d8d65052b9d43ca834748fed0f73891"
