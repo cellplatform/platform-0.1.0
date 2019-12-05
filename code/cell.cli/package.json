@@ -16,7 +16,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.fs.sync": "^0.0.1",
+    "@platform/cell.fs.sync": "0.0.1",
     "@platform/cell.types": "0.2.3",
     "@platform/cli": "0.4.13",
     "@platform/cli.prompt": "0.2.0",

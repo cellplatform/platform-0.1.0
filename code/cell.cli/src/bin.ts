@@ -9,5 +9,21 @@ process.on('unhandledRejection', err => {
   throw err;
 });
 
-import { app } from './bin.api';
+/**
+ * Create a new "command-line-interface" application
+ * and register commands from the various modules
+ * within Cell/OS that expose a CLI/API.
+ */
+import { init } from './cli';
+export const app = init();
+
+/**
+ * Cell/OS commands.
+ */
+import * as fsSync from '@platform/cell.fs.sync/lib/cli';
+fsSync.init(app);
+
+/**
+ * Run the application.
+ */
 app.run();
