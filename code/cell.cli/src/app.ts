@@ -8,7 +8,7 @@ app
    */
   .command(
     ['foo'],
-    'Initialize new deployment config.',
+    'Sample dummy foo.',
     yargs => yargs,
     async argv => {
       log.info(`\nFOO\n`);
