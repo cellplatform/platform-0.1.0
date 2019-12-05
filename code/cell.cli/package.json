@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.cli",
-  "version": "0.0.3",
+  "version": "0.0.0",
   "description": "Command-line-interface for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -34,6 +34,5 @@
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }
