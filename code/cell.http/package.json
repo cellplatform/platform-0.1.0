@@ -1,9 +1,9 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.4.16",
+  "version": "0.4.19",
   "description": "HTTP cloud server, and client tools, for CellOS.",
   "main": "lib/index",
-  "types": "lib/types.d.ts",
+  "types": "lib/index.d.ts",
   "bin": {
     "cell": "lib/cli/bin.js"
   },
@@ -21,12 +21,12 @@
     "deploy": "yarn cell deploy $@"
   },
   "dependencies": {
-    "@platform/cell.db": "0.2.4",
-    "@platform/cell.fs": "0.1.6",
-    "@platform/cell.func": "0.1.1",
-    "@platform/cell.schema": "0.1.8",
-    "@platform/cell.types": "0.2.0",
-    "@platform/cell.value": "0.1.14",
+    "@platform/cell.db": "0.2.7",
+    "@platform/cell.fs": "0.1.9",
+    "@platform/cell.func": "0.1.4",
+    "@platform/cell.schema": "0.1.11",
+    "@platform/cell.types": "0.2.3",
+    "@platform/cell.value": "0.1.17",
     "@platform/cli": "0.4.13",
     "@platform/cli.prompt": "0.2.0",
     "@platform/exec": "0.2.35",
