@@ -2,15 +2,15 @@ export type CliInit = (app: ICliApp) => ICliApp;
 
 export type ICliApp = {
   commands: ICliCommand[];
-  command(cmd: ICliCommandArgs): ICliCommandResponse;
+  command<T extends object = {}>(cmd: ICliCommandArgs<T>): ICliCommandResponse;
   run(): void;
 };
 
-export type ICliCommandArgs = {
+export type ICliCommandArgs<T extends object = {}> = {
   name: string;
   description: string;
   alias?: string;
-  handler: CommandHandler;
+  handler: CommandHandler<T>;
 };
 
 export type CommandHandler<T extends object = {}> = (args: T) => Promise<any>;
