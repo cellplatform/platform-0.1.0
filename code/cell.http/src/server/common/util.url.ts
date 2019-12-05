@@ -5,33 +5,48 @@ import * as t from './types';
  * URL generator.
  */
 export function url(host: string) {
+  const toUrl = (path: string) => formatUrl(host, path);
   const url = {
-    toUrl(path: string) {
-      return toUrl(host, path);
+    nsLinks(uri: string): t.IResGetNsLinks {
+      return {
+        data: toUrl(`${uri}/data`),
+      };
     },
 
-    nsLinks(uri: string): t.IResGetNsLinks {
-      return {};
+    cell(uri: string) {
+      return toUrl(uri);
     },
 
     cellLinks(uri: string): t.IResGetCellLinks {
       return {
-        cell: toUrl(host, uri),
-        files: toUrl(host, `${uri}/files`),
+        cell: toUrl(uri),
+        files: toUrl(`${uri}/files`),
       };
     },
 
-    cellFiles(links: t.ICellData['links']): t.IResGetFilesLink[] {
+    cellFilesLinks(uri: string, links: t.ICellData['links']): t.IResGetCellFiles['links'] {
+      return Object.keys(links || {})
+        .map(key => ({ key, value: (links || {})[key] }))
+        .filter(({ value }) => Schema.uri.is.file(value))
+        .reduce((acc, next) => {
+          const { key } = next;
+          const filename = Schema.file.links.toFilename(key);
+          acc[filename] = toUrl(`${uri}/files/${filename}`); // TODO 🐷 - ensure GET endpoint works
+          return acc;
+        }, {});
+    },
+
+    cellFilesList(links: t.ICellData['links']): t.IResGetFilesLink[] {
       return Object.keys(links || {})
         .map(key => ({ key, value: (links || {})[key] }))
         .filter(({ value }) => Schema.uri.is.file(value))
         .map(({ key, value }) => {
-          const uri = value;
+          const fileUri = value;
           const name = Schema.file.links.toFilename(key);
           const link: t.IResGetFilesLink = {
-            uri,
+            uri: fileUri,
             name,
-            ...url.cellFile(uri),
+            ...url.cellFile(fileUri),
           };
           return link;
         });
@@ -39,8 +54,8 @@ export function url(host: string) {
 
     cellFile(uri: string): t.IResGetFileLinks {
       return {
-        file: toUrl(host, `${uri}`),
-        info: toUrl(host, `${uri}/info`),
+        file: toUrl(`${uri}`),
+        info: toUrl(`${uri}/info`),
       };
     },
 
@@ -52,13 +67,14 @@ export function url(host: string) {
       return {};
     },
   };
+
   return url;
 }
 
 /**
  * Generates a formatted URL.
  */
-export function toUrl(host: string | undefined, path: string) {
+export function formatUrl(host: string | undefined, path: string) {
   const prefix = (host || '').startsWith('localhost') ? 'http' : 'https';
   path = path.replace(/^\/*/, '');
   return `${prefix}://${host}/${path}`;

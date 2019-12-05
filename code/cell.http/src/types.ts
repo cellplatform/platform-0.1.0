@@ -80,7 +80,7 @@ export type IReqNsQuery = {
 export type IReqGetNsQuery = IReqNsQuery;
 export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsLinks>;
 export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
-export type IResGetNsLinks = {};
+export type IResGetNsLinks = { data: string };
 
 /**
  * Namespace: POST
@@ -174,6 +174,7 @@ export type IResGetCellFiles = {
   cell: string;
   uri: string;
   files: IResGetFilesLink[];
+  links: ILinkMap;
 };
 export type IResGetFilesLink = {
   uri: string;

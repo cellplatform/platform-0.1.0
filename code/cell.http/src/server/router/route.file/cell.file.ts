@@ -62,16 +62,25 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     }
 
     const cell = await models.Cell.create({ db, uri }).ready;
-    const files = util.url(req.host).cellFiles(cell.props.links || {});
+    const files = util.url(req.host).cellFilesList(cell.props.links || {});
+
+    const links = util.url(req.host).cellFilesLinks(uri, cell.props.links || {});
 
     const data: t.IResGetCellFiles = {
       uri,
-      cell: util.toUrl(host, uri),
+      cell: util.url(host).cell(uri),
+      links,
       files,
     };
 
     return { status: 200, data };
   });
+
+  /**
+   * TODO 🐷
+   * GET: FILE_BY_NAME, eg:
+   *        http://localhost:8080/cell:foo!A1/files/kitten.jpg
+   */
 
   /**
    * POST a file to a cell
