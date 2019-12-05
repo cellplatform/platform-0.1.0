@@ -3,7 +3,7 @@
   "version": "0.0.32",
   "description": "Editor for meta-data info about a cell.",
   "main": "lib/index",
-  "types": "lib/index.d.ts",
+  "types": "lib/types.d.ts",
   "scripts": {
     "start": "node .",
     "watch": "nodemon .",

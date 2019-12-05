@@ -3,7 +3,7 @@
   "version": "0.7.7",
   "description": "Helpers for working with cell cooridnates (eg 'A1')",
   "main": "lib/index",
-  "types": "lib/index.d.ts",
+  "types": "lib/types.d.ts",
   "scripts": {
     "test": "ts test",
     "tdd": "ts test --watch",

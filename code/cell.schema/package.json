@@ -3,7 +3,7 @@
   "version": "0.1.8",
   "description": "URI and database schemas for the `cell.os`.",
   "main": "lib/index",
-  "types": "lib/index.d.ts",
+  "types": "lib/types.d.ts",
   "scripts": {
     "test": "ts test",
     "tdd": "ts test --watch",

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Tools for local file-system syncing with cloud.",
   "main": "lib/index",
-  "types": "lib/index.d.ts",
+  "types": "lib/types.d.ts",
   "scripts": {
     "start": "node .",
     "watch": "nodemon .",

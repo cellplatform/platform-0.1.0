@@ -3,7 +3,7 @@
   "version": "0.2.4",
   "description": "Persistent state management for cells.",
   "main": "lib/index",
-  "types": "lib/index.d.ts",
+  "types": "lib/types.d.ts",
   "scripts": {
     "test": "ts test",
     "tdd": "ts test --watch",

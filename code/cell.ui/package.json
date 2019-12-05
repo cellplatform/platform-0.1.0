@@ -3,7 +3,7 @@
   "version": "0.0.35",
   "description": "Common UI used for working with cells.",
   "main": "lib/index",
-  "types": "lib/index.d.ts",
+  "types": "lib/types.d.ts",
   "scripts": {
     "test": "ts test",
     "tdd": "ts test --watch",

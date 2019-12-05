@@ -1,8 +1,9 @@
-import * as t from '@platform/cell.types';
+export * from '@platform/cell.types/lib/types/types.http';
 
 /**
- * TODO 🐷 Move to `cell.types`
+ * TODO 🐷 Move below types to `cell.types`
  */
+import * as t from '@platform/cell.types';
 
 /**
  * Configuration

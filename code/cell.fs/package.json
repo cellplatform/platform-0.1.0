@@ -3,7 +3,7 @@
   "version": "0.1.6",
   "description": "File system support for CellOS.",
   "main": "lib/index",
-  "types": "lib/index.d.ts",
+  "types": "lib/types.d.ts",
   "scripts": {
     "start": "node .",
     "watch": "nodemon .",

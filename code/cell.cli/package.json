@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "description": "Command-line-interface for CellOS.",
   "main": "lib/index",
-  "types": "lib/index.d.ts",
+  "types": "lib/types.d.ts",
+  "bin": {
+    "cell": "lib/cli/bin.js"
+  },
   "scripts": {
     "start": "node .",
     "watch": "nodemon .",

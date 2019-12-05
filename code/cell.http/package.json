@@ -3,7 +3,7 @@
   "version": "0.4.16",
   "description": "HTTP cloud server, and client tools, for CellOS.",
   "main": "lib/index",
-  "types": "lib/index.d.ts",
+  "types": "lib/types.d.ts",
   "bin": {
     "cell": "lib/cli/bin.js"
   },
