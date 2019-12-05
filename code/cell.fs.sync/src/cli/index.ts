@@ -10,11 +10,14 @@ export const init: t.CliInit = cli => {
 
   cli
     .command<T>({
-      name: 'foobar',
-      alias: 'fb',
-      description: 'My foobar thing yoooo',
+      name: 'syncdir',
+      alias: 'sd',
+      description: 'Synchronise a directory with the cloud.',
       async handler(args) {
         console.log('args >>>>>', args);
+        console.log(__dirname);
+        const dir = process.cwd();
+        console.log('dir', dir);
         // args.
         return;
       },
