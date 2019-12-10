@@ -144,9 +144,13 @@ describe('Router', () => {
   });
 
   describe('query-string', () => {
-    it('query', () => {
+    it('query (object)', () => {
       const test = (path: string, expected: any) => {
         const res = Router.query({ path });
+
+        expect(res.toString).to.be.an.instanceof(Function);
+        delete res.toString; // NB: Hack, remove the [toString] method for simpler test comparison.
+
         expect(res).to.eql(expected);
       };
       test('/foo', {});
@@ -164,6 +168,18 @@ describe('Router', () => {
         '/foo?q&q=123&q&q=false&q=hello', // NB: absence of value is converted to [true] flag.
         { q: [true, 123, true, false, 'hello'] },
       );
+    });
+
+    it('query.toString()', () => {
+      const test = (path: string, expected: string) => {
+        const res = Router.query({ path }).toString();
+        expect(res).to.eql(expected);
+      };
+
+      test('/foo', '');
+      test('/foo?q=123', '?q=123');
+      test('/foo?q', '?q');
+      test('/foo?q=123&color=red&force=true', '?q=123&color=red&force=true');
     });
   });
 });

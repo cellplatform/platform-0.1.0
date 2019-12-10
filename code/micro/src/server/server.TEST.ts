@@ -73,6 +73,9 @@ describe('micro (server)', () => {
       await http.get(mock.url(path));
       await mock.dispose();
 
+      if (query) {
+        delete query.toString; // NB: Hack, remove the [toString] method for simpler test comparison.
+      }
       expect(query).to.eql(expected);
     };
 
@@ -114,6 +117,9 @@ describe('micro (server)', () => {
     expect(params[3].id).to.eql('foo');
 
     expect(queries.length).to.eql(4);
+
+    queries.forEach(q => delete q.toString); // NB: Hack, remove the [toString] method for simpler test comparison.
+
     expect(queries[0]).to.eql({});
     expect(queries[1]).to.eql({});
     expect(queries[2]).to.eql({ data: 123 });
