@@ -3,6 +3,7 @@ import { sys } from './route.sys';
 import * as ns from './route.ns';
 import * as coord from './route.coord';
 import * as file from './route.file';
+import * as cell from './route.cell';
 
 import { handleWasmTmp } from './TMP.wasm';
 
@@ -21,6 +22,7 @@ export function init(args: {
   ns.init(args);
   coord.init(args);
   file.init(args);
+  cell.init(args);
 
   // TEMP 🐷
   args.router.get('/wasm', handleWasmTmp); // TEMP 🐷

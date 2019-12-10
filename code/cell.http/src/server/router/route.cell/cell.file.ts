@@ -1,5 +1,5 @@
 import { defaultValue, constants, ROUTES, Schema, t, models, util } from '../common';
-import { postFileResponse, getFileDownloadResponse } from './file';
+import { postFileResponse, getFileDownloadResponse } from '../route.file';
 import { postNsResponse } from '../route.ns';
 
 /**
@@ -11,10 +11,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   const getParams = (req: t.Request, options: { fileRequired?: boolean } = {}) => {
     const params = req.params as t.IReqCellFileParams;
 
+    const toString = (input?: any) => (input || '').toString().trim();
     const data = {
-      ns: (params.ns || '').toString().trim(),
-      key: (params.key || '').toString().trim(),
-      filename: (params.filename || '').toString().trim(),
+      ns: toString(params.ns || ''),
+      key: toString(params.key || ''),
+      filename: toString(params.filename || ''),
       uri: '',
     };
 
@@ -63,9 +64,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
     const cell = await models.Cell.create({ db, uri }).ready;
     const files = util.url(req.host).cellFilesList(cell.props.links || {});
-
     const links = util.url(req.host).cellFilesLinks(uri, cell.props.links || {});
-
     const data: t.IResGetCellFiles = {
       uri,
       cell: util.url(host).cell(uri),
@@ -81,7 +80,6 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *      Example: /cell:foo!A1/files/kitten.jpg
    *      NB: This is the same as calling the `/file:...` GET route point directly.
    */
-
   router.get(ROUTES.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
     const query = req.query as t.IReqFileDownloadQuery;
@@ -177,10 +175,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         createdAt: cell.createdAt,
         modifiedAt: cell.modifiedAt,
         exists: Boolean(cell.exists),
-        data: {
-          cell: cell.toObject(),
-          changes,
-        },
+        data: { cell: cell.toObject(), changes },
         links,
       };
 
