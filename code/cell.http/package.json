@@ -36,9 +36,7 @@
     "@platform/http": "0.5.1",
     "@platform/libs": "0.1.5",
     "@platform/micro": "0.11.0",
-    "@platform/types": "0.2.0",
-    "@types/minimist": "1.2.0",
-    "minimist": "1.2.0"
+    "@platform/types": "0.2.0"
   },
   "devDependencies": {
     "@platform/fsdb.nedb": "1.3.40",
