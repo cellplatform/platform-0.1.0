@@ -25,11 +25,13 @@ export const ROUTES = {
   NS: {
     BASE: `/ns${KEY.NS}(/?)`,
     DATA: `/ns${KEY.NS}/data(/?)`,
+    CELL: `/ns${KEY.NS}\!${KEY.CELL}(/?)`, // NB: Redirect to cell.
   },
   CELL: {
     BASE: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
     FILES: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
     FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/files/${KEY.FILENAME}`,
+    NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.
   },
   ROW: {
     BASE: `/row${KEY.NS}\!${KEY.ROW}(/?)`,

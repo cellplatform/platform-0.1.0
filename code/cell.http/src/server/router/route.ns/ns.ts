@@ -22,6 +22,16 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   };
 
   /**
+   * GET: /ns:<id>!A1
+   *      Redirect to the cell.
+   */
+  router.get(ROUTES.NS.CELL, async req => {
+    const params = req.params as t.IReqCellParams;
+    const path = `/cell:${params.ns}!${params.key}${req.query.toString()}`;
+    return req.redirect(path);
+  });
+
+  /**
    * GET namespace (root).
    *     Data can be retrieved selectively using query-string.
    *     eg:

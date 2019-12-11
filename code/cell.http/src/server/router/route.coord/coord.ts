@@ -51,6 +51,16 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   };
 
   /**
+   * GET: /cell:<id>  (NB: no cell key)
+   *      Redirect to the namespace.
+   */
+  router.get(ROUTES.CELL.NS, async req => {
+    const params = req.params as t.IReqNsParams;
+    const path = `/ns:${params.ns}${req.query.toString()}`;
+    return req.redirect(path);
+  });
+
+  /**
    * GET /cell:<id>!A1
    */
   router.get(ROUTES.CELL.BASE, async req => {

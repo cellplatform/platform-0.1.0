@@ -32,6 +32,26 @@ describe('route: ns (namespace URI)', function() {
     });
   });
 
+  describe('GET', () => {
+    it('redirects from "ns:foo!A1" to "cell:" end-point', async () => {
+      const test = async (path: string) => {
+        const mock = await createMock();
+        const res = await http.get(mock.url(path));
+        await mock.dispose();
+
+        const json = res.json() as t.IResGetCell;
+        expect(res.status).to.eql(200);
+        expect(json.uri).to.eql('cell:foo!A1'); // NB: The "cell:" URI, not "ns:".
+        expect(json.exists).to.eql(false);
+        expect(json.data).to.eql({});
+      };
+
+      await test('/ns:foo!A1');
+      await test('/ns:foo!A1/');
+      await test('/ns:foo!A1?cells');
+    });
+  });
+
   describe('POST', () => {
     it('POST data (?changes=false)', async () => {
       const { res, json, data } = await post.ns('ns:foo?cells&changes=false', {

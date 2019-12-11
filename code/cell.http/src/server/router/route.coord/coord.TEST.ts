@@ -52,6 +52,26 @@ describe('route: coord (URI: cell|row|col)', () => {
     });
   });
 
+  describe('GET', () => {
+    it('redirects from "cell:foo" to "ns:" end-point', async () => {
+      const test = async (path: string) => {
+        const mock = await createMock();
+        const res = await http.get(mock.url(path));
+        await mock.dispose();
+
+        const json = res.json() as t.IResGetNs;
+        expect(res.status).to.eql(200);
+        expect(json.uri).to.eql('ns:foo'); // NB: The "ns:" URI, not "cell:".
+        expect(json.exists).to.eql(false);
+        expect(json.data.ns.id).to.eql('foo');
+      };
+
+      await test('/cell:foo');
+      await test('/cell:foo/');
+      await test('/cell:foo?cells');
+    });
+  });
+
   describe('cell:', () => {
     it('cell', async () => {
       const mock = await createMock();

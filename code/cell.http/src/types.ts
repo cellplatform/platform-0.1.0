@@ -87,7 +87,7 @@ export type IResGetNsLinks = { data: string };
  * Namespace: POST
  */
 export type IReqPostNsQuery = IReqNsQuery & {
-  changes?: boolean; // return list of changes (default: true).
+  changes?: boolean; // NB: return list of changes (default: true).
 };
 
 export type IReqPostNsBody = {
@@ -144,7 +144,7 @@ export type IResGetFileLinks = { file: string; info: string };
  * File: POST
  */
 export type IReqPostFileQuery = IReqFileInfoQuery & {
-  changes?: boolean; // return list of changes (default: true).
+  changes?: boolean; // NB: return list of changes (default: true).
 };
 export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
@@ -156,7 +156,7 @@ export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 export type IReqCellsFileParams = IReqCoordParams;
 export type IReqCellFileParams = IReqCoordParams & { filename: string };
 export type IReqPostCellFileQuery = {
-  changes?: boolean; // return list of changes (default: true).
+  changes?: boolean; // NB: return list of changes (default: true).
 };
 
 export type IResPostCellFile = IUriResponse<IResPostCellFileData, IResPostCellLinks>;
