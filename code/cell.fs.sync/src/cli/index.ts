@@ -1,4 +1,5 @@
 import { t } from '../common';
+import * as cmd from './cmd';
 
 /**
  * Initialize the CLI.
@@ -6,6 +7,13 @@ import { t } from '../common';
 export const init: t.CliInit = cli => {
   type T = {
     force: string;
+    dry: boolean;
+  };
+
+  const syncDirHandler: t.CommandHandler<T> = async args => {
+    const dir = process.cwd();
+    const dryRun = args.dry;
+    await cmd.syncDir({ dir, dryRun });
   };
 
   cli
@@ -13,21 +21,14 @@ export const init: t.CliInit = cli => {
       name: 'syncdir',
       alias: 'sd',
       description: 'Synchronise a directory with the cloud.',
-      async handler(args) {
-        console.log('args >>>>>', args);
-        console.log(__dirname);
-        const dir = process.cwd();
-        console.log('dir', dir);
-        // args.
-        return;
-      },
+      handler: syncDirHandler,
     })
-    .option<'string'>({
-      name: 'force',
-      alias: 'f',
-      description: 'Do it man!',
-      type: 'string',
-      default: 'hello',
+    .option<'boolean'>({
+      name: 'dry',
+      alias: 'd',
+      description: 'Dry run.',
+      type: 'boolean',
+      default: false,
     });
 
   return cli;
