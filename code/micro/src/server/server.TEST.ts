@@ -41,47 +41,112 @@ describe('micro (server)', () => {
     expect(res2.json()).to.eql({ wildcard: true });
   });
 
-  it('has params', async () => {
-    const test = async (route: string, path: string, expected: any) => {
+  describe('req (request parameter)', () => {
+    it('req.params', async () => {
+      const test = async (route: string, path: string, expected: any) => {
+        const mock = await mockServer();
+        let params: t.RequestParams | undefined;
+        mock.router.get(route, async req => {
+          params = req.params;
+          return { status: 200, data: {} };
+        });
+
+        await http.get(mock.url(path));
+        await mock.dispose();
+
+        expect(params).to.eql(expected);
+      };
+
+      await test('/foo/:id/:name?', '/foo/123/sarah', { id: 123, name: 'sarah' });
+      await test('/foo/:id/:name?', '/foo/123', { id: 123 });
+      await test('/foo', '/foo', {});
+    });
+
+    it('req.query', async () => {
+      const test = async (path: string, expected: any) => {
+        const mock = await mockServer();
+        let query: t.RequestQuery | undefined;
+        mock.router.get('/foo', async req => {
+          query = req.query;
+          return { status: 200, data: {} };
+        });
+
+        await http.get(mock.url(path));
+        await mock.dispose();
+
+        if (query) {
+          delete query.toString; // NB: Hack, remove the [toString] method for simpler test comparison.
+        }
+        expect(query).to.eql(expected);
+      };
+
+      await test('/foo', {});
+      await test('/foo?q=123', { q: 123 });
+      await test('/foo?q=123&q=hello', { q: [123, 'hello'] });
+    });
+
+    it('req.host', async () => {
       const mock = await mockServer();
-      let params: t.RequestParams | undefined;
-      mock.router.get(route, async req => {
-        params = req.params;
-        return { status: 200, data: {} };
+      let req: t.Request | undefined;
+      mock.router.get('/foo', async r => {
+        req = r;
+        return {};
       });
 
-      await http.get(mock.url(path));
+      await http.get(mock.url('/foo'));
       await mock.dispose();
 
-      expect(params).to.eql(expected);
-    };
+      expect(req).to.not.eql(undefined);
+      expect(req && req.host.startsWith('localhost:')).to.eql(true);
+    });
 
-    await test('/foo/:id/:name?', '/foo/123/sarah', { id: 123, name: 'sarah' });
-    await test('/foo/:id/:name?', '/foo/123', { id: 123 });
-    await test('/foo', '/foo', {});
-  });
-
-  it('has query', async () => {
-    const test = async (path: string, expected: any) => {
+    it('req.toUrl', async () => {
       const mock = await mockServer();
-      let query: t.RequestQuery | undefined;
-      mock.router.get('/foo', async req => {
-        query = req.query;
-        return { status: 200, data: {} };
+      let req: t.Request | undefined;
+      mock.router.get('/foo', async r => {
+        req = r;
+        return {};
       });
 
-      await http.get(mock.url(path));
+      await http.get(mock.url('/foo'));
       await mock.dispose();
 
-      if (query) {
-        delete query.toString; // NB: Hack, remove the [toString] method for simpler test comparison.
+      expect(req).to.not.eql(undefined);
+      if (req) {
+        expect(req.toUrl('zoo?q=123')).to.eql(mock.url('/zoo?q=123'));
+        expect(req.toUrl('https://domain.com/foo')).to.eql('https://domain.com/foo'); // NB: No change because "https" protocol given.
+        expect(req.toUrl('')).to.eql(mock.url(''));
+        expect(req.toUrl(undefined as any)).to.eql(mock.url(''));
+        expect(req.toUrl(null as any)).to.eql(mock.url(''));
       }
-      expect(query).to.eql(expected);
-    };
+    });
 
-    await test('/foo', {});
-    await test('/foo?q=123', { q: 123 });
-    await test('/foo?q=123&q=hello', { q: [123, 'hello'] });
+    it('req.redirect', async () => {
+      const mock = await mockServer();
+      let req: t.Request | undefined;
+      mock.router.get('/foo', async r => {
+        req = r;
+        return {};
+      });
+
+      await http.get(mock.url('/foo'));
+      await mock.dispose();
+
+      expect(req).to.not.eql(undefined);
+      if (req) {
+        const headers = { 'x-foo': '123' };
+        const res1 = req.redirect('/foo');
+        const res2 = req.redirect(undefined as any, { headers });
+
+        expect(res1.status).to.eql(307);
+        expect(res1.data).to.eql(mock.url('/foo'));
+        expect(res1.headers).to.eql(undefined);
+
+        expect(res2.status).to.eql(307);
+        expect(res2.data).to.eql(mock.url(''));
+        expect(res2.headers).to.eql(headers);
+      }
+    });
   });
 
   it('complex route and query-string', async () => {

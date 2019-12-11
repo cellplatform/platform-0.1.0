@@ -111,6 +111,23 @@ export class Router implements t.IRouter {
             },
           };
         },
+
+        toUrl(path: string) {
+          path = path || '';
+          if (path.startsWith('https://') || path.startsWith('http://')) {
+            return path;
+          }
+          const prefix = host.startsWith('localhost') ? 'http' : 'https';
+          return `${prefix}://${host}/${path.replace(/^\/*/, '')}`;
+        },
+
+        redirect(path: string, options: { headers?: t.IHttpHeaders } = {}): t.RouteResponse {
+          return {
+            status: 307,
+            data: helpers.toUrl(path),
+            headers: options.headers,
+          };
+        },
       };
 
       const request = Object.assign(incoming, helpers) as t.Request; // tslint:disable-line

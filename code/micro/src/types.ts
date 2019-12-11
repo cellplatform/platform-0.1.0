@@ -15,6 +15,8 @@ export type Request = IncomingMessage & {
   params: RequestParams;
   query: RequestQuery;
   body: RequestBody;
+  toUrl(path: string): string;
+  redirect(path: string, options?: { headers?: IHttpHeaders }): RouteResponse;
 };
 export type RequestParams = { [key: string]: string | number | boolean };
 export type RequestQuery = {
