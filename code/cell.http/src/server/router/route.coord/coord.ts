@@ -56,15 +56,8 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.get(routes.CELL.NS, async req => {
     const params = req.params as t.IReqNsParams;
-
-    const url = Schema.url(req.host)
-      .ns(params.ns)
-      .base.query(req.query)
-      .toString();
-
-    // TODO 🐷 test
-
-    // const path = `/ns:${params.ns}${req.query.toString()}`;
+    const ns = Schema.url(req.host).ns(params.ns).base;
+    const url = ns.query(req.query).toString();
     return req.redirect(url);
   });
 

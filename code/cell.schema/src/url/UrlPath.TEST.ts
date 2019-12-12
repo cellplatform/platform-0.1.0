@@ -56,6 +56,7 @@ describe.only('UrlPath', () => {
     test({ force: true }, '?force=true');
     test({ force: true, color: ' blue' as any }, '?force=true&color=blue');
     test({ color: 'blue', force: true }, '?color=blue&force=true');
+    test({ force: true, toString: () => 'hello' } as any, '?force=true');
   });
 
   it('add [query] returns a new instance', () => {

@@ -24,7 +24,6 @@ export const ROUTES = {
   },
   NS: {
     BASE: `/ns${KEY.NS}(/?)`,
-    DATA: `/ns${KEY.NS}/data(/?)`,
     CELL: `/ns${KEY.NS}\!${KEY.CELL}(/?)`, // NB: Redirect to cell.
   },
   CELL: {

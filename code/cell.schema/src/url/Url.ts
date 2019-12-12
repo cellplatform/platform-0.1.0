@@ -57,7 +57,8 @@ export class Url {
   /**
    * [Internal]
    */
-  private toPath = <Q extends object>(path: string) => {
-    return new UrlPath<Q>({ origin: this.origin, path });
+  private toPath = <Q extends object>(path: string, options: { query?: Q } = {}) => {
+    const { query } = options;
+    return new UrlPath<Q>({ origin: this.origin, path, query });
   };
 }

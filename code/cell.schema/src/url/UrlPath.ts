@@ -38,11 +38,13 @@ export class UrlPath<Q extends object = {}> {
       return value;
     };
 
-    Object.keys(query).forEach((key, i) => {
-      res = res ? `${res}&` : res;
+    Object.keys(query).forEach(key => {
       let value = query[key];
-      value = Array.isArray(value) ? value.map(value => format(value)) : format(value);
-      res = value === undefined ? `${res}${key}` : `${res}${key}=${value}`;
+      if (typeof value !== 'function') {
+        res = res ? `${res}&` : res;
+        value = Array.isArray(value) ? value.map(value => format(value)) : format(value);
+        res = value === undefined ? `${res}${key}` : `${res}${key}=${value}`;
+      }
     });
 
     if (text) {

@@ -49,19 +49,6 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   });
 
   /**
-   * GET namespace (all data).
-   *     Same as calling the base URL with all data query-string flags.
-   *     eg:
-   *         -/ns:<id>?cells&rows&column
-   */
-  router.get(routes.NS.DATA, async req => {
-    const host = req.host;
-    const query: t.IReqGetNsQuery = { cells: true, rows: true, columns: true };
-    const { status, id, error } = getParams(req);
-    return !id || error ? { status, data: { error } } : getNsResponse({ db, id, query, host });
-  });
-
-  /**
    * POST namespace data (save to database).
    */
   router.post(routes.NS.BASE, async req => {

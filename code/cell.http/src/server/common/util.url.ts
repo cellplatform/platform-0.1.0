@@ -6,10 +6,11 @@ import * as t from './types';
  */
 export function url(host: string) {
   const toUrl = (path: string) => formatUrl(host, path);
+
   const url = {
     nsLinks(uri: string): t.IResGetNsLinks {
       return {
-        data: toUrl(`${uri}/data`),
+        data: toUrl(`${uri}?data=true`),
       };
     },
 
