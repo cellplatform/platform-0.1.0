@@ -45,7 +45,7 @@ export class Urls {
    */
 
   public get sys() {
-    const toPath = this.toPath;
+    const toPath = this.toUrl;
     return {
       get info() {
         return toPath('.sys');
@@ -61,7 +61,7 @@ export class Urls {
    */
 
   public ns(id: string) {
-    const toPath = this.toPath;
+    const toPath = this.toUrl;
     if (id.includes(':')) {
       const uri = Uri.parse(id);
       const type = uri.parts.type;
@@ -88,7 +88,7 @@ export class Urls {
   }
 
   public cell(uri: string) {
-    const toPath = this.toPath;
+    const toPath = this.toUrl;
     const cell = Uri.parse<t.ICellUri>(uri);
     if (cell.error) {
       throw new Error(cell.error.message);
@@ -122,7 +122,7 @@ export class Urls {
   }
 
   public file(uri: string) {
-    const toPath = this.toPath;
+    const toPath = this.toUrl;
     const file = Uri.parse<t.IFileUri>(uri);
     if (file.error) {
       throw new Error(file.error.message);
@@ -148,7 +148,7 @@ export class Urls {
   /**
    * [Internal]
    */
-  private toPath = <Q extends object>(path: string, options: { query?: Q } = {}) => {
+  private toUrl = <Q extends object>(path: string, options: { query?: Q } = {}): t.IUrl<Q> => {
     const { query } = options;
     return new Url<Q>({ origin: this.origin, path, query });
   };
