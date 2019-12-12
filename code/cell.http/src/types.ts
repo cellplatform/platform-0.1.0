@@ -123,8 +123,8 @@ export type IResGetColumnLinks = {};
  * File (info / meta-data)
  */
 export type IReqFileParams = { ns: string; file: string };
+export type IReqFileQuery = t.IUrlQueryCellFile;
 export type IReqFileInfoQuery = {};
-export type IReqFileDownloadQuery = {};
 
 /**
  * File: GET
@@ -148,9 +148,7 @@ export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 
 export type IReqCellsFileParams = IReqCoordParams;
 export type IReqCellFileParams = IReqCoordParams & { filename: string };
-export type IReqPostCellFileQuery = {
-  changes?: boolean; // NB: return list of changes (default: true).
-};
+export type IReqPostCellFileQuery = t.IUrlQueryPostFile;
 
 export type IResPostCellFile = IUriResponse<IResPostCellFileData, IResPostCellLinks>;
 export type IResPostCellFileData = {
@@ -160,10 +158,10 @@ export type IResPostCellFileData = {
 export type IResPostCellLinks = IResGetCellLinks & {};
 
 /**
- * Cell/Files
+ * Cell/Files (list)
  */
 export type IReqCellFilesParams = IReqCellParams;
-export type IReqCellFilesQuery = {};
+export type IReqCellFilesQuery = t.IUrlQueryCellFiles;
 export type IResGetCellFiles = {
   cell: string;
   uri: string;

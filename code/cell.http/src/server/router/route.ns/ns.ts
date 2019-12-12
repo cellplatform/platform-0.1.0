@@ -41,7 +41,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    *        - /ns:foo?cells=A1:A5,C3
    *        - /ns:foo?cells&rows&columns   [NB: Same format for rows/columns query flags].
    */
-  router.get(routes.NS.BASE, async req => {
+  router.get(routes.NS.INFO, async req => {
     const host = req.host;
     const query = req.query as t.IReqGetNsQuery;
     const { status, id, error } = getParams(req);
@@ -51,7 +51,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * POST namespace data (save to database).
    */
-  router.post(routes.NS.BASE, async req => {
+  router.post(routes.NS.INFO, async req => {
     const host = req.host;
     const query = req.query as t.IReqPostNsQuery;
     const { status, id, error } = getParams(req);

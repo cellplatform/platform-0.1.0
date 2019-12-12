@@ -56,7 +56,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.get(routes.CELL.NS, async req => {
     const params = req.params as t.IReqNsParams;
-    const ns = Schema.url(req.host).ns(params.ns).base;
+    const ns = Schema.url(req.host).ns(params.ns).info;
     const url = ns.query(req.query).toString();
     return req.redirect(url);
   });
@@ -64,7 +64,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * GET /cell:<id>!A1
    */
-  router.get(routes.CELL.BASE, async req => {
+  router.get(routes.CELL.INFO, async req => {
     const query = req.query as t.IReqCoordQuery;
     const { status, uri, error } = getParams({
       req,

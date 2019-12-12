@@ -11,7 +11,7 @@ export function urls(host: string) {
 
   const api = {
     ns(uri: string) {
-      const ns = url.ns(uri).base;
+      const ns = url.ns(uri).info;
       return {
         get links(): t.IResGetNsLinks {
           return {
@@ -39,7 +39,7 @@ export function urls(host: string) {
         .reduce((acc, next) => {
           const { key } = next;
           const filename = Schema.file.links.toFilename(key);
-          acc[filename] = toUrl(`${uri}/files/${filename}`);
+          acc[filename] = toUrl(`${uri}/file/${filename}`);
           return acc;
         }, {});
     },

@@ -12,3 +12,22 @@ export type IUrlQueryNs = {
  * URL query-string parameters for a [Cell].
  */
 export type IUrlQueryCell = {};
+
+/**
+ * URL query-string parameters for a [Cell]'s files.
+ */
+export type IUrlQueryCellFiles = {};
+
+/**
+ * URL query-string parameters for a single [Cell]'s file (by name).
+ */
+export type IUrlQueryCellFile = {};
+
+/**
+ * URL query-string parameters for a [File].
+ */
+export type IUrlQueryGetFile = {};
+export type IUrlQueryPostFile = {
+  changes?: boolean; // NB: return list of changes (default: true).
+};
+export type IUrlQueryGetFileInfo = {};

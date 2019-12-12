@@ -77,12 +77,12 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
   /**
    * GET: Get a file by name (download)
-   *      Example: /cell:foo!A1/files/kitten.jpg
+   *      Example: /cell:foo!A1/file/kitten.jpg
    *      NB: This is the same as calling the `/file:...` GET route point directly.
    */
   router.get(routes.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
-    const query = req.query as t.IReqFileDownloadQuery;
+    const query = req.query as t.IReqFileQuery;
     const { status, ns, key, filename, error, uri: cellUri } = getParams(req);
     if (!ns || error) {
       return { status, data: { error } };

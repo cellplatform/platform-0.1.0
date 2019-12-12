@@ -34,10 +34,27 @@ export class Url {
   /**
    * [Fields]
    */
+
   public readonly protocol: t.HttpProtocol;
   public readonly host: string;
   public readonly port: number;
   public readonly origin: string;
+
+  /**
+   * [Properties]
+   */
+
+  public get sys() {
+    const toPath = this.toPath;
+    return {
+      get info() {
+        return toPath('.sys');
+      },
+      get uid() {
+        return toPath('.uid');
+      },
+    };
+  }
 
   /**
    * [Methods]
@@ -64,7 +81,7 @@ export class Url {
     }
 
     return {
-      get base() {
+      get info() {
         return toPath<t.IUrlQueryNs>(`/ns:${id}`);
       },
     };
@@ -72,21 +89,58 @@ export class Url {
 
   public cell(uri: string) {
     const toPath = this.toPath;
-
-    const cell = Uri.parse(uri);
+    const cell = Uri.parse<t.ICellUri>(uri);
     if (cell.error) {
       throw new Error(cell.error.message);
     }
-
-    const parts = cell.parts as t.ICellUri;
-    if (parts.type !== 'cell') {
+    if (cell.parts.type !== 'cell') {
       const err = `The given URI is not of type "cell:" ("${uri}")`;
       throw new Error(err);
     }
+    const { ns, key } = cell.parts;
 
     return {
-      get base() {
-        return toPath<t.IUrlQueryCell>(`/cell:${parts.ns}!${parts.key}`);
+      get info() {
+        type Q = t.IUrlQueryCell;
+        return toPath<Q>(`/cell:${ns}!${key}`);
+      },
+      get files() {
+        type Q = t.IUrlQueryCellFiles;
+        return toPath<Q>(`/cell:${ns}!${key}/files`);
+      },
+      file: {
+        byName(name: string) {
+          type Q = t.IUrlQueryCellFile;
+          name = (name || '').trim();
+          if (!name) {
+            throw new Error(`Filename not provided.`);
+          }
+          return toPath<Q>(`/cell:${ns}!${key}/file/${name}`);
+        },
+      },
+    };
+  }
+
+  public file(uri: string) {
+    const toPath = this.toPath;
+    const file = Uri.parse<t.IFileUri>(uri);
+    if (file.error) {
+      throw new Error(file.error.message);
+    }
+    if (file.parts.type !== 'file') {
+      const err = `The given URI is not of type "file:" ("${uri}")`;
+      throw new Error(err);
+    }
+
+    const { id } = file.parts;
+    return {
+      get download() {
+        type Q = t.IUrlQueryGetFile;
+        return toPath<Q>(`/file:${id}`);
+      },
+      get info() {
+        type Q = t.IUrlQueryGetFileInfo;
+        return toPath<Q>(`/file:${id}/info`);
       },
     };
   }

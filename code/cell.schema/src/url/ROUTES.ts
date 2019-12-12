@@ -19,27 +19,30 @@ const KEY = {
 export const ROUTES = {
   WILDCARD: '*',
   SYS: {
-    INFO: ['/', '/.sys'],
+    INFO: ['/', '/.sys(/?)'],
     UID: '/.uid',
   },
   NS: {
-    BASE: `/ns${KEY.NS}(/?)`,
+    INFO: `/ns${KEY.NS}(/?)`,
     CELL: `/ns${KEY.NS}\!${KEY.CELL}(/?)`, // NB: Redirect to cell.
   },
   CELL: {
-    BASE: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
+    INFO: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
     FILES: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
-    FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/files/${KEY.FILENAME}`,
+    FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/file/${KEY.FILENAME}`,
     NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.
-  },
-  ROW: {
-    BASE: `/row${KEY.NS}\!${KEY.ROW}(/?)`,
-  },
-  COLUMN: {
-    BASE: `/col${KEY.NS}\!${KEY.COLUMN}(/?)`,
   },
   FILE: {
     BASE: `/file${KEY.NS}\.${KEY.FILE}(/?)`,
     INFO: `/file${KEY.NS}\.${KEY.FILE}/info(/?)`,
+  },
+
+  // TEMP 🐷 - Obsolete
+  ROW: {
+    BASE: `/row${KEY.NS}\!${KEY.ROW}(/?)`,
+  },
+  // TEMP 🐷 - Obsolete
+  COLUMN: {
+    BASE: `/col${KEY.NS}\!${KEY.COLUMN}(/?)`,
   },
 };
