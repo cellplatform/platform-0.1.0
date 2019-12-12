@@ -1,4 +1,4 @@
-import { defaultValue, constants, ROUTES, Schema, t, models, util } from '../common';
+import { defaultValue, constants, routes, Schema, t, models, util } from '../common';
 
 /**
  * File-system routes (fs:).
@@ -44,7 +44,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET (file-info).
    */
-  router.get(ROUTES.FILE.INFO, async req => {
+  router.get(routes.FILE.INFO, async req => {
     const host = req.host;
     const query = req.query as t.IReqFileInfoQuery;
     const { status, ns, error, uri } = getParams(req);
@@ -56,7 +56,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET (download).
    */
-  router.get(ROUTES.FILE.BASE, async req => {
+  router.get(routes.FILE.BASE, async req => {
     const host = req.host;
     const query = req.query as t.IReqFileDownloadQuery;
     const { status, ns, error, uri } = getParams(req);
@@ -68,7 +68,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * POST binary-file.
    */
-  router.post(ROUTES.FILE.BASE, async req => {
+  router.post(routes.FILE.BASE, async req => {
     const host = req.host;
     const query = req.query as t.IReqPostFileQuery;
     const { status, ns, error, uri } = getParams(req);

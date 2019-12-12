@@ -1,4 +1,4 @@
-import { defaultValue, constants, ROUTES, Schema, t, models, util } from '../common';
+import { defaultValue, constants, routes, Schema, t, models, util } from '../common';
 import { postFileResponse, getFileDownloadResponse } from '../route.file';
 import { postNsResponse } from '../route.ns';
 
@@ -54,7 +54,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET: !A1/files
    */
-  router.get(ROUTES.CELL.FILES, async req => {
+  router.get(routes.CELL.FILES, async req => {
     const host = req.host;
     const query = req.query as t.IReqCellFilesQuery;
     const { status, ns, error, uri } = getParams(req, { fileRequired: false });
@@ -80,7 +80,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *      Example: /cell:foo!A1/files/kitten.jpg
    *      NB: This is the same as calling the `/file:...` GET route point directly.
    */
-  router.get(ROUTES.CELL.FILE_BY_NAME, async req => {
+  router.get(routes.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
     const query = req.query as t.IReqFileDownloadQuery;
     const { status, ns, key, filename, error, uri: cellUri } = getParams(req);
@@ -111,7 +111,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * POST a file to a cell
    */
-  router.post(ROUTES.CELL.FILE_BY_NAME, async req => {
+  router.post(routes.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
     const query = req.query as t.IReqPostCellFileQuery;
     const { status, ns, key, filename, error, uri: cellUri } = getParams(req);

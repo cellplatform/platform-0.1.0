@@ -1,3 +1,5 @@
+import { cell } from '../common';
+export const routes = cell.Url.routes;
+
 export * from '../common';
-export * from '../ROUTES';
 export { func } from '../func';

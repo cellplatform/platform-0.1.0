@@ -1,4 +1,4 @@
-import { t, ROUTES, ERROR } from './common';
+import { t, routes, ERROR } from './common';
 import { sys } from './route.sys';
 import * as ns from './route.ns';
 import * as coord from './route.coord';
@@ -28,7 +28,7 @@ export function init(args: {
   args.router.get('/wasm', handleWasmTmp); // TEMP 🐷
 
   // Finish up (wildcard).
-  args.router.get(ROUTES.WILDCARD, notFoundHandler);
+  args.router.get(routes.WILDCARD, notFoundHandler);
 }
 
 /**

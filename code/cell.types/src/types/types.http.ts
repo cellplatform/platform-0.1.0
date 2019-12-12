@@ -1,4 +1,4 @@
-export type ICellHttp = {}; // TEMP 🐷
+export type CellHttpPlaceholder = 'CellHttpPlaceholder'; // TEMP 🐷
 
 /**
  * TODO 🐷

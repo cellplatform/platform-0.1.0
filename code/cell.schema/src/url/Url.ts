@@ -1,57 +1,63 @@
-import { value, R } from '../common';
+import { R, t } from '../common';
 import { Uri } from '../uri';
-
-export type IUrl = {
-  host: string;
-  port?: number;
-};
+import { UrlPath } from './UrlPath';
+import * as util from './util';
+import { ROUTES } from './ROUTES';
 
 /**
  * Standardised construction of URLs for the HTTP service.
  */
 export class Url {
   public static readonly uri = Uri;
+  public static readonly routes = ROUTES;
 
-  public static create(args: IUrl) {
-    return new Url(args);
+  public static parse(input?: string) {
+    input = (input || '').trim() || 'localhost';
+    const host = R.pipe(util.stripHttp, util.stripSlash, util.stripPort)(input);
+    const protocol = util.toProtocol(host);
+    const port = util.toPort(input) || 80;
+    const origin = port === 80 ? `${protocol}://${host}` : `${protocol}://${host}:${port}`;
+    return { protocol, host, port, origin };
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: IUrl) {
-    this.host = R.pipe(stripHttp, stripSlash, stripPort)(args.host);
-    this.protocol = this.host.startsWith('localhost') ? 'http' : 'https';
-    this.port = args.port || getPort(args.host) || 80;
-    this.origin = `${this.protocol}://${this.host}`;
-    this.origin = this.port === 80 ? this.origin : `${this.origin}:${this.port}`;
+  constructor(input?: string) {
+    const { protocol, host, port, origin } = Url.parse(input);
+    this.host = host;
+    this.protocol = protocol;
+    this.port = port;
+    this.origin = origin;
   }
 
   /**
    * [Fields]
    */
-  public readonly protocol: 'http' | 'https';
+  public readonly protocol: t.HttpProtocol;
   public readonly host: string;
   public readonly port: number;
   public readonly origin: string;
-}
 
-/**
- * [Helpers]
- */
-function getPort(input: string) {
-  const text = R.pipe(stripHttp, stripSlash)(input || '').split(':')[1];
-  return text === undefined ? undefined : value.toNumber(text);
-}
+  /**
+   * [Methods]
+   */
+  public ns(id: string) {
+    const toPath = this.toPath;
+    return {
+      get base() {
+        return toPath<t.IUrlQueryNs>(`/ns:${id}`);
+      },
+      get data() {
+        return toPath(`/ns:${id}/data`);
+      },
+    };
+  }
 
-function stripHttp(input: string) {
-  return (input || '').replace(/^http\:\/\//, '').replace(/^https\:\/\//, '');
-}
-
-function stripPort(input: string) {
-  return (input || '').replace(/\:\d*$/, '');
-}
-
-function stripSlash(input: string) {
-  return (input || '').replace(/^\/*/, '').replace(/\/*$/, '');
+  /**
+   * [Internal]
+   */
+  private toPath = <Q extends object>(path: string) => {
+    return new UrlPath<Q>({ origin: this.origin, path });
+  };
 }

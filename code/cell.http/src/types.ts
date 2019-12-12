@@ -66,14 +66,8 @@ export type ILinkMap = { [key: string]: string };
 /**
  * Namespace
  */
-
 export type IReqNsParams = { ns: string };
-export type IReqNsQuery = {
-  data?: boolean; // true: all (cells/rows/columns) - overrides other fields.
-  cells?: boolean | string | Array<string | boolean>; // true: all | string: key or range, eg "A1", "A1:C10"
-  columns?: boolean | string | Array<string | boolean>;
-  rows?: boolean | string | Array<string | boolean>;
-};
+export type IReqNsQuery = t.IUrlQueryNs;
 
 /**
  * Namespace: GET
@@ -102,12 +96,11 @@ export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
 /**
  * Coord: cell|row|col
  */
-
 export type IReqCoordParams = { ns: string; key: string };
 export type IReqCellParams = IReqCoordParams;
 export type IReqColumnParams = IReqCoordParams;
 export type IReqRowParams = IReqCoordParams;
-export type IReqCoordQuery = {};
+export type IReqCoordQuery = t.IUrlQueryCell;
 
 /**
  * GET

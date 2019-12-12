@@ -17,4 +17,5 @@ export * from './types.range';
 export * from './types.refs';
 export * from './types.schema';
 export * from './types.schema.uri';
+export * from './types.schema.url';
 export * from './types.value';

@@ -1,4 +1,4 @@
-import { util, cell, ERROR, models, ROUTES, Schema, t } from '../common';
+import { util, cell, ERROR, models, routes, Schema, t } from '../common';
 
 type GetLinks = () => t.ILinkMap;
 
@@ -51,19 +51,27 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   };
 
   /**
-   * GET: /cell:<id>  (NB: no cell key)
+   * GET: /cell:<id>  (NB: no cell-key on the URL)
    *      Redirect to the namespace.
    */
-  router.get(ROUTES.CELL.NS, async req => {
+  router.get(routes.CELL.NS, async req => {
     const params = req.params as t.IReqNsParams;
-    const path = `/ns:${params.ns}${req.query.toString()}`;
-    return req.redirect(path);
+
+    const url = Schema.url(req.host)
+      .ns(params.ns)
+      .base.query(req.query)
+      .toString();
+
+    // TODO 🐷 test
+
+    // const path = `/ns:${params.ns}${req.query.toString()}`;
+    return req.redirect(url);
   });
 
   /**
    * GET /cell:<id>!A1
    */
-  router.get(ROUTES.CELL.BASE, async req => {
+  router.get(routes.CELL.BASE, async req => {
     const query = req.query as t.IReqCoordQuery;
     const { status, uri, error } = getParams({
       req,
@@ -80,7 +88,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * GET /row:<id>!1
    */
-  router.get(ROUTES.ROW.BASE, async req => {
+  router.get(routes.ROW.BASE, async req => {
     const query = req.query as t.IReqCoordQuery;
     const { status, uri, error } = getParams({
       req,
@@ -97,7 +105,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * GET /col:<id>!A
    */
-  router.get(ROUTES.COLUMN.BASE, async req => {
+  router.get(routes.COLUMN.BASE, async req => {
     const query = req.query as t.IReqCoordQuery;
     const { status, uri, error } = getParams({
       req,

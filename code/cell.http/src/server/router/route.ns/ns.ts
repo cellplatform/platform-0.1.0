@@ -1,4 +1,4 @@
-import { ERROR, defaultValue, func, models, ROUTES, Schema, t, util } from '../common';
+import { ERROR, defaultValue, func, models, routes, Schema, t, util } from '../common';
 
 /**
  * Namespace routes.
@@ -25,7 +25,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    * GET: /ns:<id>!A1
    *      Redirect to the cell.
    */
-  router.get(ROUTES.NS.CELL, async req => {
+  router.get(routes.NS.CELL, async req => {
     const params = req.params as t.IReqCellParams;
     const path = `/cell:${params.ns}!${params.key}${req.query.toString()}`;
     return req.redirect(path);
@@ -41,7 +41,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    *        - /ns:foo?cells=A1:A5,C3
    *        - /ns:foo?cells&rows&columns   [NB: Same format for rows/columns query flags].
    */
-  router.get(ROUTES.NS.BASE, async req => {
+  router.get(routes.NS.BASE, async req => {
     const host = req.host;
     const query = req.query as t.IReqGetNsQuery;
     const { status, id, error } = getParams(req);
@@ -54,7 +54,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    *     eg:
    *         -/ns:<id>?cells&rows&column
    */
-  router.get(ROUTES.NS.DATA, async req => {
+  router.get(routes.NS.DATA, async req => {
     const host = req.host;
     const query: t.IReqGetNsQuery = { cells: true, rows: true, columns: true };
     const { status, id, error } = getParams(req);
@@ -64,7 +64,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * POST namespace data (save to database).
    */
-  router.post(ROUTES.NS.BASE, async req => {
+  router.post(routes.NS.BASE, async req => {
     const host = req.host;
     const query = req.query as t.IReqPostNsQuery;
     const { status, id, error } = getParams(req);
