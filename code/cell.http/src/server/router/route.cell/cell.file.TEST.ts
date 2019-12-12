@@ -16,7 +16,7 @@ describe('route: !A1/file', () => {
     form.append('foo', sourceFile, { contentType: 'application/octet-stream' });
 
     // POST the file to the service.
-    const url = mock.url(`cell:foo!A1/files/func.wasm`);
+    const url = mock.url(`cell:foo!A1/file/func.wasm`);
     const headers = form.getHeaders();
     const res2 = (await http.post(url, form, { headers })).json() as t.IResPostCellFile;
 
@@ -41,7 +41,7 @@ describe('route: !A1/file', () => {
     expect(changes[0].to).to.eql({ 'fs:func:wasm': uri.toString() });
   });
 
-  it.skip('reads a file (via /cell:foo!A1/files/kitten.js', async () => {
+  it.skip('reads a file (via /cell:foo!A1/file/kitten.js', async () => {
     // TODO 🐷
   });
 });
