@@ -159,7 +159,7 @@ export async function getFileInfoResponse(args: {
       createdAt,
       modifiedAt,
       data,
-      links: util.url(host).cellFile(uri),
+      links: util.urls(host).cellFile(uri),
     };
     return { status: 200, data: res as t.IResGetFile };
   } catch (err) {

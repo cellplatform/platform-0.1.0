@@ -9,7 +9,7 @@ type Q = {
   thing?: string | Array<boolean | string | number>;
 };
 
-describe.only('UrlPath', () => {
+describe('UrlPath', () => {
   it('origin/path', () => {
     const res = new UrlPath({ origin: 'https://domain.com/', path: '///foo/bar' });
     expect(res.origin).to.eql('https://domain.com');

@@ -37,7 +37,7 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
 
       // Download the file.
       if (func && Schema.uri.is.file(func.uri)) {
-        const url = util.url(host).cellFile(func.uri).file;
+        const url = util.urls(host).cellFile(func.uri).file;
         const saveTo = `${TMP}/cache/${func.uri.replace(/\:/g, '-')}`;
         await fs.ensureDir(fs.dirname(saveTo));
         await download(url).save(saveTo);

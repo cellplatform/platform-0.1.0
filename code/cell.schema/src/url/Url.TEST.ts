@@ -49,20 +49,50 @@ describe.only('Url', () => {
     });
   });
 
-  describe('namespace', () => {
+  describe('namespace (base)', () => {
     const url = new Url();
 
-    it('base', () => {
+    it('throw if non-namespace URI passed', () => {
+      expect(() => url.ns('foo:bar')).to.throw();
+      expect(() => url.ns('cell:foo')).to.throw(); // NB: No "!A1" key on the ns.
+    });
+
+    it('from id', () => {
       const res = url.ns('foo').base;
       expect(res.toString()).to.eql('http://localhost/ns:foo');
     });
 
-    it('base | query: cells', () => {
+    it('from URI', () => {
+      const res1 = url.ns('ns:foo').base;
+      const res2 = url.ns('cell:foo!A1').base;
+      expect(res1.toString()).to.eql('http://localhost/ns:foo');
+      expect(res2.toString()).to.eql('http://localhost/ns:foo');
+    });
+
+    it('query: cells', () => {
       const res1 = url.ns('foo').base.query({ cells: true });
       expect(res1.toString()).to.eql('http://localhost/ns:foo?cells=true');
 
       const res2 = url.ns('foo').base.query({ cells: ['A1', 'B2:Z9'] });
       expect(res2.toString()).to.eql('http://localhost/ns:foo?cells=A1,B2:Z9');
+    });
+  });
+
+  describe('cell (base)', () => {
+    const url = new Url();
+
+    it('throw if non-cell URI passed', () => {
+      expect(() => url.cell('foo:bar')).to.throw();
+      expect(() => url.cell('ns:foo')).to.throw();
+      expect(() => url.cell('cell:foo')).to.throw(); // NB: No "!A1" key on the ns.
+    });
+
+    it('from uri', async () => {
+      const res1 = url.cell('cell:foo!A1').base;
+
+      expect(res1.toString()).to.eql('http://localhost/cell:foo!A1');
+
+      console.log('res1', res1.toString());
     });
   });
 });

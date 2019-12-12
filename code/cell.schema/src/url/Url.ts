@@ -42,11 +42,51 @@ export class Url {
   /**
    * [Methods]
    */
+
   public ns(id: string) {
     const toPath = this.toPath;
+    if (id.includes(':')) {
+      const uri = Uri.parse(id);
+      const type = uri.parts.type;
+
+      if (uri.error) {
+        throw new Error(uri.error.message);
+      }
+
+      if (type === 'ns') {
+        id = (uri.parts as t.INsUri).id;
+      } else if (type === 'cell') {
+        id = (uri.parts as t.ICellUri).ns;
+      } else {
+        const err = `The id for the namespace is a URI, but not of type "ns:" or "cell:" ("${id}")`;
+        throw new Error(err);
+      }
+    }
+
     return {
       get base() {
         return toPath<t.IUrlQueryNs>(`/ns:${id}`);
+      },
+    };
+  }
+
+  public cell(uri: string) {
+    const toPath = this.toPath;
+
+    const cell = Uri.parse(uri);
+    if (cell.error) {
+      throw new Error(cell.error.message);
+    }
+
+    const parts = cell.parts as t.ICellUri;
+    if (parts.type !== 'cell') {
+      const err = `The given URI is not of type "cell:" ("${uri}")`;
+      throw new Error(err);
+    }
+
+    return {
+      get base() {
+        return toPath<t.IUrlQueryCell>(`/cell:${parts.ns}!${parts.key}`);
       },
     };
   }

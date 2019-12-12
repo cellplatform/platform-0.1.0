@@ -4,13 +4,20 @@ import * as t from './types';
 /**
  * URL generator.
  */
-export function url(host: string) {
+export function urls(host: string) {
   const toUrl = (path: string) => formatUrl(host, path);
 
-  const url = {
-    nsLinks(uri: string): t.IResGetNsLinks {
+  const url = Schema.url(host);
+
+  const api = {
+    ns(uri: string) {
+      const ns = url.ns(uri).base;
       return {
-        data: toUrl(`${uri}?data=true`),
+        get links(): t.IResGetNsLinks {
+          return {
+            data: ns.query({ data: true }).toString(),
+          };
+        },
       };
     },
 
@@ -47,7 +54,7 @@ export function url(host: string) {
           const link: t.IResGetFilesLink = {
             uri: fileUri,
             name,
-            ...url.cellFile(fileUri),
+            ...api.cellFile(fileUri),
           };
           return link;
         });
@@ -69,7 +76,7 @@ export function url(host: string) {
     },
   };
 
-  return url;
+  return api;
 }
 
 /**
