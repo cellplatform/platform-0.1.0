@@ -1,6 +1,6 @@
 import { R, t } from '../common';
 import { Uri } from '../uri';
-import { UrlPath } from './Url';
+import { Url } from './Url';
 import * as util from './util';
 import { ROUTES } from './ROUTES';
 
@@ -150,6 +150,6 @@ export class Urls {
    */
   private toPath = <Q extends object>(path: string, options: { query?: Q } = {}) => {
     const { query } = options;
-    return new UrlPath<Q>({ origin: this.origin, path, query });
+    return new Url<Q>({ origin: this.origin, path, query });
   };
 }

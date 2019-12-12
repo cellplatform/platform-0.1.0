@@ -2,7 +2,7 @@ import { expect } from '../test';
 import { Urls } from '.';
 import { Uri } from '../uri';
 
-describe('Url', () => {
+describe('Urls', () => {
   describe('static', () => {
     it('Url.uri', () => {
       expect(Urls.uri).to.equal(Uri);

@@ -1,15 +1,15 @@
-import { t } from '../common';
+import { t, defaultValue } from '../common';
 
 /**
  * Represents a URL path that can be converted to a proper URL via `toString()`.
  */
-export class UrlPath<Q extends object = {}> {
+export class Url<Q extends object = {}> implements t.IUrl<Q> {
   /**
    * [Lifecycle]
    */
   constructor(args: { origin: string; path?: string; query?: Partial<Q>; querystring?: string }) {
     this.origin = (args.origin || '').trim().replace(/\/*$/, '');
-    this.path = (args.path || '').trim().replace(/^\/*/, '');
+    this.path = `/${(args.path || '').trim().replace(/^\/*/, '')}`;
     this._.query = args.query || {};
     this._.querystring = typeof args.querystring === 'string' ? args.querystring.trim() : '';
   }
@@ -17,13 +17,12 @@ export class UrlPath<Q extends object = {}> {
   /**
    * [Fields]
    */
+  public readonly origin: string;
+  public readonly path: string;
   private readonly _ = {
     query: ({} as unknown) as Partial<Q>,
     querystring: '',
   };
-
-  public readonly origin: string;
-  public readonly path: string;
 
   /**
    * [Properties]
@@ -57,13 +56,13 @@ export class UrlPath<Q extends object = {}> {
   /**
    * [Methods]
    */
-  public query(input: Partial<t.UrlQuery>) {
+  public query(input: Partial<Q>) {
     const querystring = this._.querystring || '';
     let query = this._.query || {};
     if (typeof input === 'object') {
       query = { ...query, ...input };
     }
-    return new UrlPath({
+    return new Url({
       origin: this.origin,
       path: this.path,
       query,
@@ -71,11 +70,9 @@ export class UrlPath<Q extends object = {}> {
     });
   }
 
-  public toPath() {
-    return `/${this.path}${this.querystring}`;
-  }
-
-  public toString() {
-    return `${this.origin}${this.toPath()}`;
+  public toString(options: { origin?: boolean } = {}) {
+    const origin = defaultValue(options.origin, true);
+    const path = `${this.path}${this.querystring}`;
+    return origin ? `${this.origin}${path}` : path;
   }
 }
