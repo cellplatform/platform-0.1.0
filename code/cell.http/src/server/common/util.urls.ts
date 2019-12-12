@@ -5,13 +5,11 @@ import * as t from './types';
  * URL generator.
  */
 export function urls(host: string) {
-  const toUrl = (path: string) => formatUrl(host, path);
-
   const url = Schema.url(host);
 
   const api = {
-    ns(uri: string) {
-      const ns = url.ns(uri).info;
+    ns(nsUri: string) {
+      const ns = url.ns(nsUri).info;
       return {
         get links(): t.IResGetNsLinks {
           return {
@@ -21,49 +19,57 @@ export function urls(host: string) {
       };
     },
 
-    cell(uri: string) {
-      return toUrl(uri);
-    },
-
-    cellLinks(uri: string): t.IResGetCellLinks {
+    cell(cellUri: string) {
       return {
-        cell: toUrl(uri),
-        files: toUrl(`${uri}/files`),
+        get info() {
+          return url.cell(cellUri).info.toString();
+        },
+        get links(): t.IResGetCellLinks {
+          const cell = url.cell(cellUri);
+          return {
+            cell: cell.info.toString(),
+            files: cell.files.toString(),
+          };
+        },
+
+        files: {
+          links(links: t.ICellData['links']): t.IResGetCellFiles['links'] {
+            const urls = url.cell(cellUri);
+            return Object.keys(links || {})
+              .map(key => ({ key, value: (links || {})[key] }))
+              .filter(({ value }) => Schema.uri.is.file(value))
+              .reduce((acc, next) => {
+                const { key } = next;
+                const filename = Schema.file.links.toFilename(key);
+                acc[filename] = urls.file.byName(filename).toString();
+                return acc;
+              }, {});
+          },
+
+          list(links: t.ICellData['links']): t.IResGetFilesLink[] {
+            return Object.keys(links || {})
+              .map(key => ({ key, value: (links || {})[key] }))
+              .filter(({ value }) => Schema.uri.is.file(value))
+              .map(({ key, value }) => {
+                const fileUri = value;
+                const name = Schema.file.links.toFilename(key);
+                const link: t.IResGetFilesLink = {
+                  uri: fileUri,
+                  name,
+                  ...api.file(fileUri),
+                };
+                return link;
+              });
+          },
+        },
       };
     },
 
-    cellFilesLinks(uri: string, links: t.ICellData['links']): t.IResGetCellFiles['links'] {
-      return Object.keys(links || {})
-        .map(key => ({ key, value: (links || {})[key] }))
-        .filter(({ value }) => Schema.uri.is.file(value))
-        .reduce((acc, next) => {
-          const { key } = next;
-          const filename = Schema.file.links.toFilename(key);
-          acc[filename] = toUrl(`${uri}/file/${filename}`);
-          return acc;
-        }, {});
-    },
-
-    cellFilesList(links: t.ICellData['links']): t.IResGetFilesLink[] {
-      return Object.keys(links || {})
-        .map(key => ({ key, value: (links || {})[key] }))
-        .filter(({ value }) => Schema.uri.is.file(value))
-        .map(({ key, value }) => {
-          const fileUri = value;
-          const name = Schema.file.links.toFilename(key);
-          const link: t.IResGetFilesLink = {
-            uri: fileUri,
-            name,
-            ...api.cellFile(fileUri),
-          };
-          return link;
-        });
-    },
-
-    cellFile(uri: string): t.IResGetFileLinks {
+    file(fileUri: string): t.IResGetFileLinks {
+      const file = url.file(fileUri);
       return {
-        file: toUrl(`${uri}`),
-        info: toUrl(`${uri}/info`),
+        file: file.download.toString(),
+        info: file.info.toString(),
       };
     },
 
@@ -77,13 +83,4 @@ export function urls(host: string) {
   };
 
   return api;
-}
-
-/**
- * Generates a formatted URL.
- */
-export function formatUrl(host: string | undefined, path: string) {
-  const prefix = (host || '').startsWith('localhost') ? 'http' : 'https';
-  path = path.replace(/^\/*/, '');
-  return `${prefix}://${host}/${path}`;
 }

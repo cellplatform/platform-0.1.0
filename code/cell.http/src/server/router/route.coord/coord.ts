@@ -72,7 +72,8 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
       getUri: (id, key) => Schema.uri.create.cell(id, key),
     });
     const getModel: t.GetModel = () => models.Cell.create({ db, uri }).ready;
-    const getLinks: GetLinks = () => util.urls(req.host).cellLinks(uri);
+
+    const getLinks: GetLinks = () => util.urls(req.host).cell(uri).links;
     return error
       ? { status, data: { error } }
       : getCoordResponse<t.IResGetCell>({ uri, getModel, getLinks });

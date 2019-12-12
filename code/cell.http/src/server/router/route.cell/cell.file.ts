@@ -63,12 +63,14 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     }
 
     const cell = await models.Cell.create({ db, uri }).ready;
-    const files = util.urls(req.host).cellFilesList(cell.props.links || {});
-    const links = util.urls(req.host).cellFilesLinks(uri, cell.props.links || {});
+    const url = util.urls(req.host).cell(uri);
+    // const files = util.urls(req.host).cellFilesList(cell.props.links || {});
+    const files = url.files.list(cell.props.links || {});
+
     const data: t.IResGetCellFiles = {
       uri,
-      cell: util.urls(host).cell(uri),
-      links,
+      cell: url.info,
+      links: url.files.links(cell.props.links || {}),
       files,
     };
 
@@ -169,7 +171,8 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         changes = [...(nsResponseData.changes || []), ...(fsResponseData.changes || [])];
       }
 
-      const links: t.IResPostCellLinks = { ...util.urls(host).cellLinks(cellUri) };
+      const urls = util.urls(host).cell(cellUri);
+      const links: t.IResPostCellLinks = { ...urls.links };
       const res: t.IResPostCellFile = {
         uri: cellUri,
         createdAt: cell.createdAt,
