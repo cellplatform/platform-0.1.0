@@ -79,11 +79,13 @@ describe('UrlPath', () => {
     expect(res.querystring).to.eql('?color=blue&force=true&boom=bam');
   });
 
-  it('toString', () => {
+  it('toPath | toString', () => {
     let url = new UrlPath<Q>({ origin, path: '//foo/' });
+    expect(url.toPath()).to.eql('/foo/');
     expect(url.toString()).to.eql('https://domain.com/foo/');
 
     url = url.query({ force: true });
+    expect(url.toPath()).to.eql('/foo/?force=true');
     expect(url.toString()).to.eql('https://domain.com/foo/?force=true');
   });
 });

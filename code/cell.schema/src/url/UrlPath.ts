@@ -63,10 +63,19 @@ export class UrlPath<Q extends object = {}> {
     if (typeof input === 'object') {
       query = { ...query, ...input };
     }
-    return new UrlPath({ origin: this.origin, path: this.path, query, querystring });
+    return new UrlPath({
+      origin: this.origin,
+      path: this.path,
+      query,
+      querystring,
+    });
+  }
+
+  public toPath() {
+    return `/${this.path}${this.querystring}`;
   }
 
   public toString() {
-    return `${this.origin}/${this.path}${this.querystring}`;
+    return `${this.origin}${this.toPath()}`;
   }
 }
