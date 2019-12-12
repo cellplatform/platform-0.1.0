@@ -25,21 +25,23 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
-"@platform/cell.fs.sync@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.0.3.tgz#65af5f25675a9144fbb686864dcbdfbddf81cfea"
-  integrity sha512-PvNAA/y+zlJNB5h3D+4n17hs2JJtUaQOR0wSfwtRweUg6fCFPp0bJ9Z71sP8hFND3Td6pfn+g7TUGHEi6yC8zw==
+"@platform/cell.fs.sync@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.0.4.tgz#d46562506404e598f60a5838020fec041ee1d188"
+  integrity sha512-lurKJQRfBcJCy+YUdXT9H1E77PM/H/3ROywtr8saoyauaqNX5oSXr/umjCAGS3mFFXkvUjte/wseUFDL2msCIQ==
   dependencies:
-    "@platform/cell.types" "0.2.4"
+    "@platform/cell.types" "0.2.5"
     "@platform/fs" "0.3.5"
     "@platform/http" "0.5.1"
     "@platform/libs" "0.1.5"
+    "@platform/log" "^0.0.150"
     form-data "3.0.0"
+    semver "^6.3.0"
 
-"@platform/cell.types@0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.2.4.tgz#85f7c7f8caf58c3b9b513f7afeb5225c87f35095"
-  integrity sha512-ajdnkyg5/Sdb0e+OjKW0DnICO9LTTlSDjAnWjQWBlWmgMXSarDRh5cr2kpPdyRr1W9OyNuT/5tjaqA79u9gWZg==
+"@platform/cell.types@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.2.5.tgz#ed6db15013bf5f8d9755bf879ce81a823fd90391"
+  integrity sha512-UoQorZqgVV5+hLy6cawRSOoPefUEjKeJ/Qb5wbkheiAmnY5uU04Nq2MmGm6iYgsJpH77Cm1tY2kcBmJ9xPCeiQ==
   dependencies:
     "@platform/cache" "0.2.5"
     "@platform/fsdb.types" "0.5.6"
@@ -130,7 +132,7 @@
     rxjs "6.5.3"
     tslib "1.10.0"
 
-"@platform/log@0.0.150":
+"@platform/log@0.0.150", "@platform/log@^0.0.150":
   version "0.0.150"
   resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.0.150.tgz#ab4bb85cb6e8e6425e55d25506cc6539d1ff7eeb"
   integrity sha512-kxf1vJ1rveQ3dMBrrk/+op0CxJUdnVgnPBYJY3b37k/Twip+4PAj/RQ0kjwUGlCPBnMNEnS+hXSzgvesqHAujA==
@@ -1747,7 +1749,7 @@ safe-buffer@~5.2.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-semver@6.3.0:
+semver@6.3.0, semver@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"
   integrity sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
