@@ -345,7 +345,7 @@ describe('route: ns (namespace URI)', function() {
       };
       await http.post(mock.url('ns:foo'), payload);
 
-      const url = mock.url('ns:foo/data');
+      const url = mock.url('ns:foo?data');
       const res = await http.get(url);
       await mock.dispose();
 
@@ -415,41 +415,6 @@ describe('route: ns (namespace URI)', function() {
       await test('ns:foo?data', body);
       await test('ns:foo?data=true', body);
       await test('ns:foo?data=false', {});
-
-      await mock.dispose();
-    });
-
-    it('GET all data (/data)', async () => {
-      const mock = await createMock();
-      const cells = {
-        A1: { value: 'A1' },
-        B2: { value: 'B2' },
-        C1: { value: 'C1' },
-      };
-      const columns = {
-        A: { props: { height: 80 } },
-        C: { props: { height: 120 } },
-      };
-      const rows = {
-        1: { props: { width: 350 } },
-        3: { props: { width: 256 } },
-      };
-      const body: t.IReqPostNsBody = { cells, columns, rows };
-      await http.post(mock.url('ns:foo'), body);
-
-      const test = async (path: string, expected?: any) => {
-        const url = mock.url(path);
-        const res = await http.get(url);
-
-        // Prepare a subset of the return data to compare with expected result-set.
-        const json = res.json<t.IResPostNs>().data;
-        delete json.ns;
-        stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
-        expect(json).to.eql(expected);
-      };
-
-      await test('ns:foo', {});
-      await test('ns:foo/data', body);
 
       await mock.dispose();
     });
