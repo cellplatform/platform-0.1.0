@@ -64,10 +64,5 @@ describe.only('Url', () => {
       const res2 = url.ns('foo').base.query({ cells: ['A1', 'B2:Z9'] });
       expect(res2.toString()).to.eql('http://localhost/ns:foo?cells=A1,B2:Z9');
     });
-
-    it('ns/data', async () => {
-      const res = url.ns('foo').data;
-      expect(res.toString()).to.eql('http://localhost/ns:foo/data');
-    });
   });
 });

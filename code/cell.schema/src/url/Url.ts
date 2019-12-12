@@ -48,9 +48,6 @@ export class Url {
       get base() {
         return toPath<t.IUrlQueryNs>(`/ns:${id}`);
       },
-      get data() {
-        return toPath(`/ns:${id}/data`);
-      },
     };
   }
 
