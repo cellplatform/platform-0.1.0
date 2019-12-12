@@ -1,6 +1,6 @@
 import { cuid, slug, t } from '../common';
 import { Uri } from '../uri';
-import { Url } from '../url';
+import { Urls } from '../url';
 import { FileLinks } from './FileLinks';
 
 export type SchemaFileType = 'FILE';
@@ -44,7 +44,7 @@ export class Schema {
   public static slug = slug;
   public static file = FileSchema;
 
-  public static url = (host: string) => new Url(host);
+  public static url = (host: string) => new Urls(host);
   public static ns = (id: string) => new NsSchema({ id });
 
   public static query = {
