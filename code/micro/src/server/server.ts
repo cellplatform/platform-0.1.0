@@ -1,6 +1,6 @@
 import micro, { send } from 'micro';
 import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { filter, map, share } from 'rxjs/operators';
 
 import { log, t, time } from '../common';
 import { Router } from '../routing';
@@ -24,6 +24,11 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
 
   const _events$ = new Subject<t.MicroEvent>();
   const events$ = _events$.pipe(share());
+  const response$ = _events$.pipe(
+    filter(e => e.type === 'HTTP/response'),
+    map(e => e.payload as t.IMicroResponse),
+    share(),
+  );
   const fire: t.FireEvent = e => _events$.next(e);
 
   // Initialize the [micro] server.
@@ -64,7 +69,7 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
         });
       };
 
-      const service: t.IMicroService = { isRunning: true, events$, port, stop };
+      const service: t.IMicroService = { events$, response$, isRunning: true, port, stop };
       api.service = service;
 
       const listener = server.listen({ port }, () => {
@@ -103,7 +108,7 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
   const stop: t.IMicro['stop'] = async () => (api.service ? api.service.stop() : {});
 
   // Finish up.
-  const api: t.IMicro = { events$, server, router, handler, start, stop };
+  const api: t.IMicro = { events$, response$, server, router, handler, start, stop };
   return api;
 }
 
@@ -132,6 +137,9 @@ function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): t.Reque
     const timer = time.timer();
     const method = req.method as t.HttpMethod;
     const url = req.url || '';
+    const modifying = {
+      response: undefined as Promise<void> | undefined,
+    };
 
     // Fire BEFORE-event.
     fire({
@@ -140,18 +148,40 @@ function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): t.Reque
     });
 
     // Handle the request.
-    const handled = (await router.handler(req)) || NOT_FOUND;
-    const elapsed = timer.elapsed;
+    let handled = (await router.handler(req)) || NOT_FOUND;
 
     // Fire AFTER-event.
-    const payload: t.IMicroResponse = {
+    const after: t.IMicroResponse = {
+      elapsed: timer.elapsed,
+      isModified: false,
       method,
       url,
-      elapsed,
       req,
-      res: handled,
+      res: { ...handled },
+      modify(input) {
+        after.isModified = true;
+        if (typeof input !== 'function') {
+          handled = input;
+        } else {
+          modifying.response = new Promise(async (resolve, reject) => {
+            try {
+              handled = await input();
+              after.elapsed = timer.elapsed;
+              resolve();
+            } catch (error) {
+              after.error = error.message;
+            }
+          });
+        }
+      },
     };
-    fire({ type: 'HTTP/response', payload });
+    fire({ type: 'HTTP/response', payload: after });
+
+    // Wait for the response modification [Promise] to complete
+    // if an event listener modified the payload asynchronously.
+    if (modifying.response) {
+      await modifying.response;
+    }
 
     // Prepare for sending.
     setHeaders(res, handled.headers);

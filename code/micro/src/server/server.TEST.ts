@@ -1,5 +1,5 @@
 import { micro } from '..';
-import { time, expect, FormData, fs, http, mockServer, randomPort, t } from '../test';
+import { expect, FormData, fs, http, mockServer, randomPort, t, time } from '../test';
 
 describe('micro (server)', () => {
   it('200', async () => {
@@ -276,7 +276,6 @@ describe('micro (server)', () => {
 
     it('HTTP/request | HTTP/response', async () => {
       const mock = await mockServer();
-
       const events: t.MicroEvent[] = [];
       mock.app.events$.subscribe(e => events.push(e));
 
@@ -285,7 +284,6 @@ describe('micro (server)', () => {
         await time.wait(20);
         return res;
       });
-
       await http.get(mock.url('/foo'));
 
       const e1 = events[0] as t.IMicroRequestEvent;
@@ -297,13 +295,70 @@ describe('micro (server)', () => {
 
       const e2 = events[1] as t.IMicroResponseEvent;
       expect(e2.type).to.eql('HTTP/response');
+      expect(e2.payload.isModified).to.eql(false);
       expect(e2.payload.url).to.eql('/foo');
       expect(e2.payload.method).to.eql('GET');
       expect(e2.payload.req.url).to.eql('/foo');
       expect(e2.payload.res).to.eql(res);
-      expect(e2.payload.elapsed.msec).to.greaterThan(15);
+      expect(e2.payload.elapsed.msec).to.greaterThan(19); // NB: includes delay within route handler.
 
       await mock.dispose();
+    });
+
+    describe('HTTP/response: modify', () => {
+      it('sync', async () => {
+        const mock = await mockServer();
+
+        let event: micro.IMicroResponse | undefined;
+        mock.app.response$.subscribe(e => {
+          event = e;
+          e.modify({
+            ...e.res,
+            headers: { ...e.res.headers, 'x-foo': 'hello' },
+            data: { ...e.res.data, bar: 456 },
+          });
+        });
+
+        mock.router.get('/foo', async req => ({ data: { foo: 123 } }));
+        const res = await http.get(mock.url('/foo'));
+
+        expect(event && event.isModified).to.eql(true);
+        expect(event && event.res).to.eql({ data: { foo: 123 } }); // NB: modified response not changed on event.
+
+        expect(res.json()).to.eql({ foo: 123, bar: 456 }); // NB: modified response returned to HTTP call.
+        expect(res.headers['x-foo']).to.eql('hello');
+
+        await mock.dispose();
+      });
+
+      it('async', async () => {
+        const mock = await mockServer();
+
+        let event: micro.IMicroResponse | undefined;
+        mock.app.response$.subscribe(e => {
+          event = e;
+          e.modify(async () => {
+            await time.wait(20);
+            return {
+              ...e.res,
+              headers: { ...e.res.headers, 'x-foo': 'hello' },
+              data: { ...e.res.data, bar: 456 },
+            };
+          });
+        });
+
+        mock.router.get('/foo', async req => ({ data: { foo: 123 } }));
+        const res = await http.get(mock.url('/foo'));
+
+        expect(event && event.elapsed.msec).to.greaterThan(19);
+        expect(event && event.isModified).to.eql(true);
+        expect(event && event.res).to.eql({ data: { foo: 123 } }); // NB: modified response not changed on event.
+
+        expect(res.json()).to.eql({ foo: 123, bar: 456 }); // NB: modified response returned to HTTP call.
+        expect(res.headers['x-foo']).to.eql('hello');
+
+        await mock.dispose();
+      });
     });
   });
 });

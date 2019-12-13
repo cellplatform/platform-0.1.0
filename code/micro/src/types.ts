@@ -99,7 +99,8 @@ export type IMicro = {
   router: IRouter;
   handler: RequestHandler;
   service?: IMicroService;
-  events$: MicroEventObservable;
+  events$: Observable<MicroEvent>;
+  response$: Observable<IMicroResponse>;
   start: ServerStart;
   stop(): Promise<{}>;
 };
@@ -107,7 +108,8 @@ export type IMicro = {
 export type IMicroService = {
   port: number;
   isRunning: boolean;
-  events$: MicroEventObservable;
+  events$: Observable<MicroEvent>;
+  response$: Observable<IMicroResponse>;
   stop(): Promise<{}>;
 };
 
@@ -147,7 +149,6 @@ export type IFormLimits = {
  * [Events]
  */
 
-export type MicroEventObservable = Observable<MicroEvent>;
 export type MicroEvent =
   | IMicroStartedEvent
   | IMicroStoppedEvent
@@ -183,4 +184,7 @@ export type IMicroResponseEvent = {
 export type IMicroResponse = IMicroRequest & {
   elapsed: IDuration;
   res: RouteResponse;
+  error?: string;
+  isModified: boolean;
+  modify(input: RouteResponse | (() => Promise<RouteResponse>)): void;
 };
