@@ -1,6 +1,7 @@
-import { IncomingMessage, ServerResponse, Server } from 'http';
-import { Token, Key } from 'path-to-regexp';
-import { HttpMethod, Json } from '@platform/types';
+import { HttpMethod, Json, IDuration } from '@platform/types';
+import { IncomingMessage, Server, ServerResponse } from 'http';
+import { Key, Token } from 'path-to-regexp';
+import { Observable } from 'rxjs';
 
 /**
  * HTTP
@@ -60,18 +61,19 @@ export type RouteResponse = {
 };
 
 export type IRoute = {
-  method: HttpMethod;
-  path: string;
-  handler: RouteHandler;
-  regex: RegExp;
-  tokens: Token[];
-  keys: Key[];
+  readonly method: HttpMethod;
+  readonly path: string;
+  readonly handler: RouteHandler;
+  readonly regex: RegExp;
+  readonly tokens: Token[];
+  readonly keys: Key[];
 };
 
+export type IRoutePath = string | string[];
 export type IRouter = {
-  routes: IRoute[];
-  handler: RouteHandler;
-  wildcard: IRoute | undefined;
+  readonly routes: IRoute[];
+  readonly handler: RouteHandler;
+  readonly wildcard: IRoute | undefined;
   add(method: HttpMethod, path: IRoutePath, handler: RouteHandler): IRouter;
   get(path: IRoutePath, handler: RouteHandler): IRouter;
   put(path: IRoutePath, handler: RouteHandler): IRouter;
@@ -80,14 +82,13 @@ export type IRouter = {
   find(req: { method?: string; url?: string }): IRoute | undefined;
 };
 
-export type IRoutePath = string | string[];
-
 /**
  * Server
  */
+
 export type ILogProps = { [key: string]: string | number | boolean };
 
-export type Listen = (options?: {
+export type ServerStart = (options?: {
   port?: number;
   log?: ILogProps;
   silent?: boolean;
@@ -97,13 +98,17 @@ export type IMicro = {
   server: Server;
   router: IRouter;
   handler: RequestHandler;
-  listen: Listen;
+  service?: IMicroService;
+  events$: MicroEventObservable;
+  start: ServerStart;
+  stop(): Promise<{}>;
 };
 
 export type IMicroService = {
   port: number;
   isRunning: boolean;
-  close(): Promise<{}>;
+  events$: MicroEventObservable;
+  stop(): Promise<{}>;
 };
 
 /**
@@ -136,4 +141,46 @@ export type IFormLimits = {
   files?: number;
   parts?: number;
   headerPairs?: number;
+};
+
+/**
+ * [Events]
+ */
+
+export type MicroEventObservable = Observable<MicroEvent>;
+export type MicroEvent =
+  | IMicroStartedEvent
+  | IMicroStoppedEvent
+  | IMicroRequestEvent
+  | IMicroResponseEvent;
+
+export type IMicroStartedEvent = {
+  type: 'HTTP/started';
+  payload: IMicroStarted;
+};
+export type IMicroStarted = { elapsed: IDuration; port: number };
+
+export type IMicroStoppedEvent = {
+  type: 'HTTP/stopped';
+  payload: IMicroStopped;
+};
+export type IMicroStopped = { elapsed: IDuration; port: number; error?: string };
+
+export type IMicroRequestEvent = {
+  type: 'HTTP/request';
+  payload: IMicroRequest;
+};
+export type IMicroRequest = {
+  method: HttpMethod;
+  url: string;
+  req: Request;
+};
+
+export type IMicroResponseEvent = {
+  type: 'HTTP/response';
+  payload: IMicroResponse;
+};
+export type IMicroResponse = IMicroRequest & {
+  elapsed: IDuration;
+  res: RouteResponse;
 };

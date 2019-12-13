@@ -8,7 +8,7 @@ export async function mockServer(args: { port?: number; silent?: boolean } = {})
   const port = args.port || randomPort();
   const app = micro.init();
   const silent = value.defaultValue(args.silent, true);
-  const instance = await app.listen({ port, silent });
+  const instance = await app.start({ port, silent });
   const router = app.router;
   return {
     port,
@@ -17,15 +17,15 @@ export async function mockServer(args: { port?: number; silent?: boolean } = {})
     router,
     url: (path: string) => `http://localhost:${port}/${path.replace(/^\/*/, '')}`,
     async dispose() {
-      await instance.close();
+      await app.stop();
     },
   };
 }
 
 /**
- * Helpers
+ * Generate a random port number.
  */
-const randomPort = () => {
+export const randomPort = () => {
   return value.toNumber(
     `${value.random(6, 9)}${value.random(0, 9)}${value.random(0, 9)}${value.random(0, 9)}`,
   );

@@ -1,4 +1,5 @@
-import { expect, http, t, mockServer, FormData, fs } from '../test';
+import { micro } from '..';
+import { time, expect, FormData, fs, http, mockServer, randomPort, t } from '../test';
 
 describe('micro (server)', () => {
   it('200', async () => {
@@ -39,6 +40,22 @@ describe('micro (server)', () => {
 
     expect(res1.json()).to.eql({ url: '/foo' });
     expect(res2.json()).to.eql({ wildcard: true });
+  });
+
+  it('stores service instance', async () => {
+    const app = micro.init();
+    expect(app.service).to.eql(undefined);
+
+    const port = randomPort();
+    await app.start({ port, silent: true });
+
+    const service = app.service as t.IMicroService;
+    expect(service.port).to.eql(port);
+    expect(service.isRunning).to.eql(true);
+
+    await app.stop();
+    expect(app.service).to.eql(undefined);
+    expect(service.isRunning).to.eql(false);
   });
 
   describe('req (request parameter)', () => {
@@ -222,5 +239,71 @@ describe('micro (server)', () => {
     // NB: Ensure the saved PNG file matches the posted file.
     const saved = await fs.readFile(fs.join(dir, 'image.png'));
     expect(png.toString()).to.eql(saved.toString());
+  });
+
+  describe('events$', () => {
+    it('HTTP/started | MICRO/stopped', async () => {
+      const port = randomPort();
+      const app = micro.init({ port });
+
+      // Add sample routes (simulate startup time)
+      // NB: Would typically never be this high!!
+      Array.from({ length: 150 }).forEach((v, i) => {
+        app.router.get(`/foo/${i}`, async req => ({}));
+      });
+
+      const events: t.MicroEvent[] = [];
+      app.events$.subscribe(e => events.push(e));
+
+      await app.start({ silent: true });
+      expect(events.length).to.eql(1);
+
+      const e1 = events[0] as t.IMicroStartedEvent;
+      expect(e1.type).to.eql('HTTP/started');
+      expect(e1.payload.elapsed.msec).to.greaterThan(0);
+      expect(e1.payload.port).to.eql(port);
+
+      await time.wait(20);
+      await app.stop();
+      expect(events.length).to.eql(2);
+
+      const e2 = events[1] as t.IMicroStoppedEvent;
+      expect(e2.type).to.eql('HTTP/stopped');
+      expect(e2.payload.port).to.eql(port);
+      expect(e2.payload.error).to.eql(undefined);
+      expect(e2.payload.elapsed.msec).to.greaterThan(20);
+    });
+
+    it('HTTP/request | HTTP/response', async () => {
+      const mock = await mockServer();
+
+      const events: t.MicroEvent[] = [];
+      mock.app.events$.subscribe(e => events.push(e));
+
+      const res = { status: 200, data: { msg: 123 }, headers: { 'x-foo': 'hello' } };
+      mock.router.get('/foo', async req => {
+        await time.wait(20);
+        return res;
+      });
+
+      await http.get(mock.url('/foo'));
+
+      const e1 = events[0] as t.IMicroRequestEvent;
+      expect(e1.type).to.eql('HTTP/request');
+      expect(e1.payload.url).to.eql('/foo');
+      expect(e1.payload.method).to.eql('GET');
+      expect(e1.payload.req.url).to.eql('/foo');
+      expect(events.length).to.eql(2); // [request] AND [response] events.
+
+      const e2 = events[1] as t.IMicroResponseEvent;
+      expect(e2.type).to.eql('HTTP/response');
+      expect(e2.payload.url).to.eql('/foo');
+      expect(e2.payload.method).to.eql('GET');
+      expect(e2.payload.req.url).to.eql('/foo');
+      expect(e2.payload.res).to.eql(res);
+      expect(e2.payload.elapsed.msec).to.greaterThan(15);
+
+      await mock.dispose();
+    });
   });
 });
