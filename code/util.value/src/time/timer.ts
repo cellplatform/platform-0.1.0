@@ -55,8 +55,8 @@ export function elapsed(
     get day() {
       return to.day(msec, defaultPrecision);
     },
-    toString(unit?: t.TimerUnit) {
-      const format = (unit: t.TimerUnit, round: number = 0) => {
+    toString(unit?: t.TimeUnit) {
+      const format = (unit: t.TimeUnit, round: number = 0) => {
         switch (unit) {
           case 'ms':
           case 'msec':
