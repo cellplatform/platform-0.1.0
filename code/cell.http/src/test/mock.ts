@@ -10,7 +10,7 @@ export type IMock = {
   port: number;
   app: t.IMicro;
   router: t.IRouter;
-  instance: t.IMicroService;
+  service: t.IMicroService;
   filename: string;
   url: (path: string) => string;
   dispose(args?: { delete?: boolean }): Promise<void>;
@@ -53,7 +53,7 @@ const create = async (args: { port?: number } = {}): Promise<IMock> => {
 
   const app = server.init({ title: 'Test', db, fs: cellFs });
   const router = app.router;
-  const instance = await app.listen({ port, silent: true });
+  const service = await app.start({ port, silent: true });
 
   const mock: IMock = {
     db,
@@ -61,12 +61,12 @@ const create = async (args: { port?: number } = {}): Promise<IMock> => {
     port,
     app,
     router,
-    instance,
+    service,
     filename,
     url: (path: string) => `http://localhost:${port}/${path.replace(/^\/*/, '')}`,
     async dispose(args: { delete?: boolean } = {}) {
       await tryIgnore(() => db.dispose());
-      await tryIgnore(() => instance.close());
+      await tryIgnore(() => service.stop());
       if (args.delete) {
         await tryIgnore(() => util.fs.remove(filename));
       }
