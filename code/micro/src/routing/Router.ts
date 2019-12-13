@@ -70,7 +70,7 @@ export class Router implements t.IRouter {
    */
   public routes: t.IRoute[] = [];
 
-  public handler: t.RouteHandler = async incoming => {
+  public handler: t.RouteHandler = async (incoming, ctx) => {
     try {
       const route = this.find(incoming) as t.IRoute;
       if (!route) {
@@ -131,7 +131,8 @@ export class Router implements t.IRouter {
       };
 
       const request = Object.assign(incoming, helpers) as t.Request; // tslint:disable-line
-      return route.handler(request);
+
+      return route.handler(request, ctx);
     } catch (err) {
       const url = incoming.url;
       const message = `Failed while finding handler for url "${url}". ${err.message}`;

@@ -24,6 +24,11 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
 
   const _events$ = new Subject<t.MicroEvent>();
   const events$ = _events$.pipe(share());
+  const request$ = _events$.pipe(
+    filter(e => e.type === 'HTTP/request'),
+    map(e => e.payload as t.IMicroRequest),
+    share(),
+  );
   const response$ = _events$.pipe(
     filter(e => e.type === 'HTTP/response'),
     map(e => e.payload as t.IMicroResponse),
@@ -69,7 +74,14 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
         });
       };
 
-      const service: t.IMicroService = { events$, response$, isRunning: true, port, stop };
+      const service: t.IMicroService = {
+        isRunning: true,
+        events$,
+        request$,
+        response$,
+        port,
+        stop,
+      };
       api.service = service;
 
       const listener = server.listen({ port }, () => {
@@ -108,7 +120,7 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
   const stop: t.IMicro['stop'] = async () => (api.service ? api.service.stop() : {});
 
   // Finish up.
-  const api: t.IMicro = { events$, response$, server, router, handler, start, stop };
+  const api: t.IMicro = { events$, request$, response$, server, router, handler, start, stop };
   return api;
 }
 
@@ -137,41 +149,79 @@ function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): t.Reque
     const timer = time.timer();
     const method = req.method as t.HttpMethod;
     const url = req.url || '';
+
+    type P = Promise<void> | undefined;
     const modifying = {
-      response: undefined as Promise<void> | undefined,
+      request: undefined as P,
+      response: undefined as P,
     };
 
     // Fire BEFORE-event.
-    fire({
-      type: 'HTTP/request',
-      payload: { method, url, req },
-    });
+    let context: any = {};
+    const before: t.IMicroRequest = {
+      isModified: false,
+      method,
+      url,
+      req,
+      modify(input) {
+        if (input) {
+          before.isModified = true;
+          if (typeof input !== 'function') {
+            if (input.context) {
+              context = input.context;
+            }
+          } else {
+            modifying.request = new Promise(async resolve => {
+              try {
+                const res = await input();
+                if (res.context) {
+                  context = res.context;
+                }
+                resolve();
+              } catch (error) {
+                before.error = error.message;
+              }
+            });
+          }
+        }
+      },
+    };
+    fire({ type: 'HTTP/request', payload: before });
+
+    // Wait for the request modification [Promise] to complete
+    // if an event listener modified the payload asynchronously.
+    if (modifying.request) {
+      await modifying.request;
+    }
 
     // Handle the request.
-    let handled = (await router.handler(req)) || NOT_FOUND;
+    let handled = (await router.handler(req, context)) || NOT_FOUND;
 
     // Fire AFTER-event.
     const after: t.IMicroResponse = {
       elapsed: timer.elapsed,
       isModified: false,
+      context,
       method,
       url,
       req,
       res: { ...handled },
       modify(input) {
-        after.isModified = true;
-        if (typeof input !== 'function') {
-          handled = input;
-        } else {
-          modifying.response = new Promise(async (resolve, reject) => {
-            try {
-              handled = await input();
-              after.elapsed = timer.elapsed;
-              resolve();
-            } catch (error) {
-              after.error = error.message;
-            }
-          });
+        if (input) {
+          after.isModified = true;
+          if (typeof input !== 'function') {
+            handled = input;
+          } else {
+            modifying.response = new Promise(async resolve => {
+              try {
+                handled = await input();
+                after.elapsed = timer.elapsed;
+                resolve();
+              } catch (error) {
+                after.error = error.message;
+              }
+            });
+          }
         }
       },
     };

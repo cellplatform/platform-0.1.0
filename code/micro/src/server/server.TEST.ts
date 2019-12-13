@@ -58,6 +58,21 @@ describe('micro (server)', () => {
     expect(service.isRunning).to.eql(false);
   });
 
+  it('context (default)', async () => {
+    const mock = await mockServer();
+
+    let context: any;
+    mock.router.get('/foo', async (req, ctx) => {
+      context = ctx;
+      return {};
+    });
+
+    await http.get(mock.url('/foo'));
+    await mock.dispose();
+
+    expect(context).to.eql({});
+  });
+
   describe('req (request parameter)', () => {
     it('req.params', async () => {
       const test = async (route: string, path: string, expected: any) => {
@@ -286,12 +301,15 @@ describe('micro (server)', () => {
       });
       await http.get(mock.url('/foo'));
 
+      expect(events.length).to.eql(2); // [request] AND [response] events.
+
       const e1 = events[0] as t.IMicroRequestEvent;
       expect(e1.type).to.eql('HTTP/request');
+      expect(e1.payload.isModified).to.eql(false);
       expect(e1.payload.url).to.eql('/foo');
       expect(e1.payload.method).to.eql('GET');
       expect(e1.payload.req.url).to.eql('/foo');
-      expect(events.length).to.eql(2); // [request] AND [response] events.
+      expect(e1.payload.error).to.eql(undefined);
 
       const e2 = events[1] as t.IMicroResponseEvent;
       expect(e2.type).to.eql('HTTP/response');
@@ -301,8 +319,66 @@ describe('micro (server)', () => {
       expect(e2.payload.req.url).to.eql('/foo');
       expect(e2.payload.res).to.eql(res);
       expect(e2.payload.elapsed.msec).to.greaterThan(19); // NB: includes delay within route handler.
+      expect(e2.payload.context).to.eql({});
+      expect(e2.payload.error).to.eql(undefined);
 
       await mock.dispose();
+    });
+
+    describe('HTTP/request: modify', () => {
+      it('sync', async () => {
+        const mock = await mockServer();
+        const events: t.MicroEvent[] = [];
+        mock.app.events$.subscribe(e => events.push(e));
+
+        let event1: micro.IMicroRequest | undefined;
+        mock.app.request$.subscribe(e => {
+          event1 = e;
+          e.modify({ context: { user: 'Sarah' } });
+        });
+
+        let context: any;
+        mock.router.get('/foo', async (req, ctx) => {
+          context = ctx;
+          return { data: { foo: 123 } };
+        });
+        await http.get(mock.url('/foo'));
+
+        expect(event1 && event1.isModified).to.eql(true);
+        expect(event1 && event1.error).to.eql(undefined);
+
+        const event2 = (events[1] as t.IMicroResponseEvent).payload;
+        expect(event2.context).to.eql({ user: 'Sarah' });
+        expect(context).to.eql({ user: 'Sarah' });
+      });
+
+      it('async', async () => {
+        const mock = await mockServer();
+        const events: t.MicroEvent[] = [];
+        mock.app.events$.subscribe(e => events.push(e));
+
+        let event1: micro.IMicroRequest | undefined;
+        mock.app.request$.subscribe(e => {
+          event1 = e;
+          e.modify(async () => {
+            return { context: { user: 'Sarah' } };
+          });
+        });
+
+        let context: any;
+        mock.router.get('/foo', async (req, ctx) => {
+          context = ctx;
+          return { data: { foo: 123 } };
+        });
+        await http.get(mock.url('/foo'));
+
+        expect(event1 && event1.isModified).to.eql(true);
+        expect(event1 && event1.error).to.eql(undefined);
+
+        const event2 = (events[1] as t.IMicroResponseEvent).payload;
+        expect(event2.context).to.eql({ user: 'Sarah' });
+        expect(context).to.eql({ user: 'Sarah' });
+      });
     });
 
     describe('HTTP/response: modify', () => {

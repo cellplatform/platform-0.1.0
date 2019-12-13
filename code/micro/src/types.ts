@@ -49,7 +49,10 @@ export type Response = ServerResponse;
  * Handlers
  */
 export type RequestHandler = (req: Request, res: Response) => any;
-export type RouteHandler = (req: Request) => Promise<RouteResponse | undefined>;
+export type RouteHandler<C extends object = {}> = (
+  req: Request,
+  context: C,
+) => Promise<RouteResponse | undefined>;
 
 /**
  * Router
@@ -70,15 +73,15 @@ export type IRoute = {
 };
 
 export type IRoutePath = string | string[];
-export type IRouter = {
+export type IRouter<C extends object = {}> = {
   readonly routes: IRoute[];
   readonly handler: RouteHandler;
   readonly wildcard: IRoute | undefined;
-  add(method: HttpMethod, path: IRoutePath, handler: RouteHandler): IRouter;
-  get(path: IRoutePath, handler: RouteHandler): IRouter;
-  put(path: IRoutePath, handler: RouteHandler): IRouter;
-  post(path: IRoutePath, handler: RouteHandler): IRouter;
-  delete(path: IRoutePath, handler: RouteHandler): IRouter;
+  add(method: HttpMethod, path: IRoutePath, handler: RouteHandler): IRouter<C>;
+  get(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
+  put(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
+  post(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
+  delete(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
   find(req: { method?: string; url?: string }): IRoute | undefined;
 };
 
@@ -100,6 +103,7 @@ export type IMicro = {
   handler: RequestHandler;
   service?: IMicroService;
   events$: Observable<MicroEvent>;
+  request$: Observable<IMicroRequest>;
   response$: Observable<IMicroResponse>;
   start: ServerStart;
   stop(): Promise<{}>;
@@ -109,6 +113,7 @@ export type IMicroService = {
   port: number;
   isRunning: boolean;
   events$: Observable<MicroEvent>;
+  request$: Observable<IMicroRequest>;
   response$: Observable<IMicroResponse>;
   stop(): Promise<{}>;
 };
@@ -175,16 +180,24 @@ export type IMicroRequest = {
   method: HttpMethod;
   url: string;
   req: Request;
+  error?: string;
+  isModified: boolean;
+  modify(input: IMicroRequestModify | (() => Promise<IMicroRequestModify>)): void;
 };
+export type IMicroRequestModify<C extends object = {}> = { context?: C };
 
 export type IMicroResponseEvent = {
   type: 'HTTP/response';
   payload: IMicroResponse;
 };
-export type IMicroResponse = IMicroRequest & {
+export type IMicroResponse<C extends object = {}> = {
   elapsed: IDuration;
+  method: HttpMethod;
+  url: string;
+  req: Request;
   res: RouteResponse;
   error?: string;
   isModified: boolean;
+  context: C;
   modify(input: RouteResponse | (() => Promise<RouteResponse>)): void;
 };
