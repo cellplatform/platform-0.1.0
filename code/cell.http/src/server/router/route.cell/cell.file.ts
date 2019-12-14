@@ -19,7 +19,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       ns: toString(params.ns || ''),
       key: toString(params.key || ''),
       filename: toString(params.filename || ''),
-      index: defaultValue<number>(params.index, -1),
+      index: defaultValue<number>(params.index as number, -1),
       uri: '',
     };
 
