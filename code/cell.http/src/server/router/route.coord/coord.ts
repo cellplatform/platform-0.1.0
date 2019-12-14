@@ -82,7 +82,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * GET /row:<id>!1
    */
-  router.get(routes.ROW.BASE, async req => {
+  router.get(routes.ROW.INFO, async req => {
     const query = req.query as t.IReqCoordQuery;
     const { status, uri, error } = getParams({
       req,
@@ -99,7 +99,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * GET /col:<id>!A
    */
-  router.get(routes.COLUMN.BASE, async req => {
+  router.get(routes.COLUMN.INFO, async req => {
     const query = req.query as t.IReqCoordQuery;
     const { status, uri, error } = getParams({
       req,

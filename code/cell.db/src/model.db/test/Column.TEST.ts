@@ -4,12 +4,12 @@ import { expect, getTestDb } from '../../test';
 describe('model.Column', () => {
   it('create', async () => {
     const db = await getTestDb({ file: true });
-    const uri = 'col:abcd!A';
+    const uri = 'cell:abcd!A';
     const res1 = await Column.create({ db, uri }).ready;
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-1bcd59adb53a292e84018b78f95707add8b3c3aab4eab6c79e089644946390a2',
+      after: 'sha256-ca6a975b7583e2e10c5e2b18c32feb7d1c80f1a3806ffbe34b4472447b61be52',
     };
 
     await res1.set({ props: { foo: 123 }, hash: HASH.before }).save();
@@ -22,7 +22,7 @@ describe('model.Column', () => {
 
   it('updates hash on save (auto)', async () => {
     const db = await getTestDb({});
-    const uri = 'col:abcd!A';
+    const uri = 'cell:abcd!A';
 
     const model1 = await Column.create({ db, uri }).ready;
     expect(model1.props.hash).to.eql(undefined);

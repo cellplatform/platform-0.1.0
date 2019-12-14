@@ -141,7 +141,7 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
     throw new Error(err);
   }
   if (typeof suffix === 'string') {
-    suffix = suffix.trim().replace(/^\!*/, '');
+    suffix = (suffix || '').trim().replace(/^\!*/, '');
     if (!suffix) {
       throw new Error(`The "${prefix}" URI was not supplied with a suffix key.`);
     }
@@ -152,9 +152,15 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
       }
       suffix = `:${suffix}`;
     } else {
+      if (suffix === 'undefined') {
+        throw new Error('BOO');
+      }
+
+      suffix = suffix || '';
       const suffixType = coord.cell.toType(suffix) || '';
       if (suffixType !== type) {
-        const err = `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${suffix}").`;
+        const key = suffix || '';
+        const err = `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${key}").`;
         throw new Error(err);
       }
       suffix = `!${suffix}`;

@@ -4,12 +4,12 @@ import { expect, getTestDb } from '../../test';
 describe('model.Row', () => {
   it('create', async () => {
     const db = await getTestDb({ file: true });
-    const uri = 'row:abcd!1';
+    const uri = 'cell:abcd!1';
     const res1 = await Row.create({ db, uri }).ready;
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-4c706309ef9b942c560a6ad3809027dd7ca2fa1803a74d5bed010f6d311a5343',
+      after: 'sha256-8d57facef4ccf6789fa5aa75d7b28f281238e6967df244f950dd1c4a1a97ef22',
     };
 
     await res1.set({ props: { foo: 123 }, hash: HASH.before }).save();
@@ -22,7 +22,7 @@ describe('model.Row', () => {
 
   it('updates hash on save', async () => {
     const db = await getTestDb({});
-    const uri = 'row:abcd!1';
+    const uri = 'cell:abcd!1';
 
     const model1 = await Row.create({ db, uri }).ready;
     expect(model1.props.hash).to.eql(undefined);

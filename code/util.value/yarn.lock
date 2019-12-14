@@ -93,10 +93,10 @@
     "@platform/libs" "0.1.5"
     "@platform/ts.libs" "3.7.1"
 
-"@platform/types@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.2.1.tgz#77af2af211e7f58471573120a7105eef593663f1"
-  integrity sha512-kxzPnUpx0LTU92q2eHFUMt6BZ05+Cs3twEVqTpKqTzzgHwlBWTOB3hZB2k30wPUDfoFqyE6qaumSABJJDJPlSw==
+"@platform/types@0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.2.2.tgz#d6ae5b5babe9c5765eb4c5e2b0d54c64e3f019f3"
+  integrity sha512-Cbnwmj9TvwoItKTA5NyLstHKOqXie+oK+sKxkIRDlYpjOj520KnODzONAC5oszl/m87Ods2UFmLRRgDQN3h4BA==
 
 "@platform/util.is@0.0.99":
   version "0.0.99"

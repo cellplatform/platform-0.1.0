@@ -59,13 +59,14 @@ describe('route: file (URI)', () => {
 
     it('malformed: no id', async () => {
       const msg = 'does not contain a namespace-identifier';
-      await test('/file:.123', msg);
+      await test('/file::123', msg);
+      // await test('/file:.123', msg);
     });
   });
 
   describe('GET', () => {
     it('GET binay image file (.png)', async () => {
-      const uri = 'file:foo.123';
+      const uri = 'file:foo:123';
       const source = 'src/test/assets/bird.png';
       const { mock } = await testPost({
         uri,
@@ -98,7 +99,7 @@ describe('route: file (URI)', () => {
     });
 
     it('GET web-assembly file (.wasm)', async () => {
-      const uri = 'file:foo.123';
+      const uri = 'file:foo:123';
       const source = 'src/test/assets/func.wasm';
       const { mock } = await testPost({
         uri,
@@ -137,7 +138,7 @@ describe('route: file (URI)', () => {
       const savePath = fs.resolve('tmp/fs/ns.foo/123');
       await fs.remove(savePath);
 
-      const uri = 'file:foo.123';
+      const uri = 'file:foo:123';
       const { res, json, data, props } = await testPost({
         uri,
         filename: `image.png`,
@@ -160,7 +161,7 @@ describe('route: file (URI)', () => {
 
     it('POST no changes returned (via query-string flag)', async () => {
       const { json } = await testPost({
-        uri: 'file:foo.123',
+        uri: 'file:foo:123',
         filename: `image.png`,
         source: 'src/test/assets/bird.png',
         queryString: 'changes=false',
@@ -171,7 +172,7 @@ describe('route: file (URI)', () => {
     describe('errors', () => {
       it('throws if no file posted', async () => {
         const { res } = await testPost({
-          uri: 'file:foo.123',
+          uri: 'file:foo:123',
           filename: `image.png`,
         });
         expect(res.status).to.eql(400);
@@ -184,7 +185,7 @@ describe('route: file (URI)', () => {
 
       it('throws if no file posted', async () => {
         const { res } = await testPost({
-          uri: 'file:foo.123',
+          uri: 'file:foo:123',
           filename: `image.png`,
           source: ['src/test/assets/bird.png', 'src/test/assets/kitten.jpg'],
         });

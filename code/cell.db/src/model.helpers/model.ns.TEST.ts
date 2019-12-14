@@ -9,7 +9,7 @@ describe('helpers: model.ns', () => {
       const res = models.ns.toSchema(input);
       expect(res.uri).to.eql('ns:foo');
       expect(res.path).to.eql('NS/foo');
-      expect(res.parts.type).to.eql('ns');
+      expect(res.parts.type).to.eql('NS');
       expect(res.parts.id).to.eql('foo');
     };
     test('ns:foo');

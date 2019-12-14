@@ -5,12 +5,12 @@ describe('model.File', () => {
   it('create', async () => {
     const filehash = await getFileHash();
     const db = await getTestDb({ file: true });
-    const uri = 'file:foo.123';
+    const uri = 'file:foo:123';
     const res1 = await File.create({ db, uri }).ready;
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-aed88b4704eb07ab683888c609189dc28514d8c351818fcf57785ac4b9b38ffd',
+      after: 'sha256-bfc51d474b3060abf4a4b0d1f64e7b43fd15c44bd6943980dd9ebfc3fc50de3c',
     };
 
     await res1
@@ -30,7 +30,7 @@ describe('model.File', () => {
 
   it('updates hash on save', async () => {
     const db = await getTestDb({});
-    const uri = 'file:foo.123';
+    const uri = 'file:foo:123';
     const hash = {
       jpg: await getFileHash('kitten.jpg'),
       png: await getFileHash('bird.png'),
@@ -61,7 +61,7 @@ describe('model.File', () => {
 
   it('auto sets [mimetype] on save', async () => {
     const db = await getTestDb({});
-    const uri = 'file:foo.123';
+    const uri = 'file:foo:123';
 
     const test = async (name: string, expected?: string) => {
       const model1 = (await File.create({ db, uri }).ready).set({ props: { name } });
@@ -92,7 +92,7 @@ describe('model.File', () => {
 
   it('does not write over existing mimetype', async () => {
     const db = await getTestDb({});
-    const uri = 'file:foo.123';
+    const uri = 'file:foo:123';
 
     const mimetype = 'application/x-x509-ca-cert';
     const model1 = await File.create({ db, uri }).ready;

@@ -80,6 +80,9 @@ export class Cell {
   public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
     const { db } = args;
     const uri = Uri.parse<t.ICellUri>(args.uri);
+    if (uri.parts.type !== 'CELL') {
+      throw new Error(`The given URI does not represent a CELL ("${args.uri}").`);
+    }
     if (uri.error) {
       throw new Error(uri.error.message);
     }
@@ -110,6 +113,9 @@ export class Row {
   public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
     const { db } = args;
     const uri = Uri.parse<t.IRowUri>(args.uri);
+    if (uri.parts.type !== 'ROW') {
+      throw new Error(`The given URI does not represent a ROW ("${args.uri}").`);
+    }
     if (uri.error) {
       throw new Error(uri.error.message);
     }
@@ -140,6 +146,9 @@ export class Column {
   public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
     const { db } = args;
     const uri = Uri.parse<t.IColumnUri>(args.uri);
+    if (uri.parts.type !== 'COLUMN') {
+      throw new Error(`The given URI does not represent a COLUMN ("${args.uri}").`);
+    }
     if (uri.error) {
       throw new Error(uri.error.message);
     }
@@ -170,6 +179,9 @@ export class File {
   public static create(args: { db: t.IDb; uri: string }) {
     const { db } = args;
     const uri = Uri.parse<t.IFileUri>(args.uri);
+    if (uri.parts.type !== 'FILE') {
+      throw new Error(`The given URI does not represent a FILE ("${args.uri}").`);
+    }
     if (uri.error) {
       throw new Error(uri.error.message);
     }
