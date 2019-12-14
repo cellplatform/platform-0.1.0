@@ -6,11 +6,13 @@ import { Observable } from 'rxjs';
 /**
  * HTTP
  */
+
 export type IHttpHeaders = { [key: string]: string };
 
 /**
  * Request
  */
+
 export type Request = IncomingMessage & {
   host: string;
   params: RequestParams;
@@ -43,6 +45,7 @@ export type RequestBody = {
 /**
  * Response
  */
+
 export type Response = ServerResponse;
 
 /**
@@ -57,6 +60,7 @@ export type RouteHandler<C extends object = {}> = (
 /**
  * Router
  */
+
 export type RouteResponse = {
   status?: number;
   data?: any;
