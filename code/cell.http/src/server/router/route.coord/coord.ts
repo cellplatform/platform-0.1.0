@@ -1,4 +1,4 @@
-import { util, cell, ERROR, models, ROUTES, Schema, t } from '../common';
+import { util, cell, ERROR, models, routes, Schema, t } from '../common';
 
 type GetLinks = () => t.ILinkMap;
 
@@ -51,9 +51,20 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   };
 
   /**
+   * GET: /cell:<id>  (NB: no cell-key on the URL)
+   *      Redirect to the namespace.
+   */
+  router.get(routes.CELL.NS, async req => {
+    const params = req.params as t.IReqNsParams;
+    const ns = Schema.url(req.host).ns(params.ns).info;
+    const url = ns.query(req.query).toString();
+    return req.redirect(url);
+  });
+
+  /**
    * GET /cell:<id>!A1
    */
-  router.get(ROUTES.CELL.BASE, async req => {
+  router.get(routes.CELL.INFO, async req => {
     const query = req.query as t.IReqCoordQuery;
     const { status, uri, error } = getParams({
       req,
@@ -61,7 +72,8 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
       getUri: (id, key) => Schema.uri.create.cell(id, key),
     });
     const getModel: t.GetModel = () => models.Cell.create({ db, uri }).ready;
-    const getLinks: GetLinks = () => util.url(req.host).cellLinks(uri);
+
+    const getLinks: GetLinks = () => util.urls(req.host).cell(uri).links;
     return error
       ? { status, data: { error } }
       : getCoordResponse<t.IResGetCell>({ uri, getModel, getLinks });
@@ -70,7 +82,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * GET /row:<id>!1
    */
-  router.get(ROUTES.ROW.BASE, async req => {
+  router.get(routes.ROW.BASE, async req => {
     const query = req.query as t.IReqCoordQuery;
     const { status, uri, error } = getParams({
       req,
@@ -78,7 +90,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
       getUri: (id, key) => Schema.uri.create.row(id, key),
     });
     const getModel: t.GetModel = () => models.Row.create({ db, uri }).ready;
-    const getLinks: GetLinks = () => util.url(req.host).rowLinks(uri);
+    const getLinks: GetLinks = () => util.urls(req.host).rowLinks(uri);
     return error
       ? { status, data: { error } }
       : getCoordResponse<t.IResGetRow>({ uri, getModel, getLinks });
@@ -87,7 +99,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * GET /col:<id>!A
    */
-  router.get(ROUTES.COLUMN.BASE, async req => {
+  router.get(routes.COLUMN.BASE, async req => {
     const query = req.query as t.IReqCoordQuery;
     const { status, uri, error } = getParams({
       req,
@@ -95,7 +107,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
       getUri: (id, key) => Schema.uri.create.column(id, key),
     });
     const getModel: t.GetModel = () => models.Column.create({ db, uri }).ready;
-    const getLinks: GetLinks = () => util.url(req.host).columnLinks(uri);
+    const getLinks: GetLinks = () => util.urls(req.host).columnLinks(uri);
     return error
       ? { status, data: { error } }
       : getCoordResponse<t.IResGetRow>({ uri, getModel, getLinks });

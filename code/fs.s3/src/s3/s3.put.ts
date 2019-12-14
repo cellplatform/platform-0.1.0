@@ -10,6 +10,7 @@ export async function put(args: {
   key: string;
   acl?: t.S3Permissions;
   contentType?: string;
+  contentDisposition?: string;
 }): Promise<t.S3PutResponse> {
   const { s3, bucket, key } = args;
   const Body = typeof args.source === 'string' ? await fs.readFile(args.source) : args.source;
@@ -23,6 +24,7 @@ export async function put(args: {
         Body,
         ACL: args.acl,
         ContentType,
+        ContentDisposition: args.contentDisposition,
       })
       .promise();
     const url = res.Location;

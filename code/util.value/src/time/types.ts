@@ -1,5 +1,8 @@
 import { Dayjs, ConfigType } from 'dayjs';
 
+import { IDuration, TimeUnit } from '@platform/types';
+export { IDuration, TimeUnit };
+
 export type TimeDelay<T = any> = (msecs: number, callback?: () => T) => TimeDelayPromise<T>;
 export type TimeDelayPromise<T = any> = Promise<T> & {
   id: NodeJS.Timeout;
@@ -33,17 +36,6 @@ export type IDate = {
   unix: number;
   format(template?: string): string;
 };
-
-export type IDuration = {
-  msec: number;
-  sec: number;
-  min: number;
-  hour: number;
-  day: number;
-  toString(unit?: TimerUnit): string;
-};
-
-export type TimerUnit = 'msec' | 'ms' | 'sec' | 's' | 'min' | 'm' | 'hour' | 'h' | 'day' | 'd';
 
 export type ITimer = {
   startedAt: Date;

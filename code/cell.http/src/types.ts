@@ -1,8 +1,9 @@
-import * as t from '@platform/cell.types';
+export * from '@platform/cell.types/lib/types/types.http';
 
 /**
- * TODO 🐷 Move to `cell.types`
+ * TODO 🐷 Move below types to `cell.types`
  */
+import * as t from '@platform/cell.types';
 
 /**
  * Configuration
@@ -65,14 +66,8 @@ export type ILinkMap = { [key: string]: string };
 /**
  * Namespace
  */
-
-export type IReqNsParams = { id: string };
-export type IReqNsQuery = {
-  data?: boolean; // true: all (cells/rows/columns) - overrides other fields.
-  cells?: boolean | string | Array<string | boolean>; // true: all | string: key or range, eg "A1", "A1:C10"
-  columns?: boolean | string | Array<string | boolean>;
-  rows?: boolean | string | Array<string | boolean>;
-};
+export type IReqNsParams = { ns: string };
+export type IReqNsQuery = t.IUrlQueryNs;
 
 /**
  * Namespace: GET
@@ -80,13 +75,13 @@ export type IReqNsQuery = {
 export type IReqGetNsQuery = IReqNsQuery;
 export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsLinks>;
 export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
-export type IResGetNsLinks = {};
+export type IResGetNsLinks = { data: string };
 
 /**
  * Namespace: POST
  */
 export type IReqPostNsQuery = IReqNsQuery & {
-  changes?: boolean; // return list of changes (default: true).
+  changes?: boolean; // NB: return list of changes (default: true).
 };
 
 export type IReqPostNsBody = {
@@ -101,12 +96,11 @@ export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
 /**
  * Coord: cell|row|col
  */
-
 export type IReqCoordParams = { ns: string; key: string };
 export type IReqCellParams = IReqCoordParams;
 export type IReqColumnParams = IReqCoordParams;
 export type IReqRowParams = IReqCoordParams;
-export type IReqCoordQuery = {};
+export type IReqCoordQuery = t.IUrlQueryCell;
 
 /**
  * GET
@@ -126,11 +120,11 @@ export type IResGetColumnData = t.IColumnData;
 export type IResGetColumnLinks = {};
 
 /**
- * File
+ * File (info / meta-data)
  */
 export type IReqFileParams = { ns: string; file: string };
-export type IReqFileQuery = {};
-export type IReqFilePullQuery = {};
+export type IReqFileQuery = t.IUrlQueryCellFile;
+export type IReqFileInfoQuery = {};
 
 /**
  * File: GET
@@ -142,8 +136,8 @@ export type IResGetFileLinks = { file: string; info: string };
 /**
  * File: POST
  */
-export type IReqPostFileQuery = IReqFileQuery & {
-  changes?: boolean; // return list of changes (default: true).
+export type IReqPostFileQuery = IReqFileInfoQuery & {
+  changes?: boolean; // NB: return list of changes (default: true).
 };
 export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
@@ -154,9 +148,7 @@ export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 
 export type IReqCellsFileParams = IReqCoordParams;
 export type IReqCellFileParams = IReqCoordParams & { filename: string };
-export type IReqPostCellFileQuery = {
-  changes?: boolean; // return list of changes (default: true).
-};
+export type IReqPostCellFileQuery = t.IUrlQueryPostFile;
 
 export type IResPostCellFile = IUriResponse<IResPostCellFileData, IResPostCellLinks>;
 export type IResPostCellFileData = {
@@ -166,14 +158,15 @@ export type IResPostCellFileData = {
 export type IResPostCellLinks = IResGetCellLinks & {};
 
 /**
- * Cell/Files
+ * Cell/Files (list)
  */
 export type IReqCellFilesParams = IReqCellParams;
-export type IReqCellFilesQuery = {};
+export type IReqCellFilesQuery = t.IUrlQueryCellFiles;
 export type IResGetCellFiles = {
-  parent: string;
+  cell: string;
   uri: string;
-  links: IResGetFilesLink[];
+  files: IResGetFilesLink[];
+  links: ILinkMap;
 };
 export type IResGetFilesLink = {
   uri: string;

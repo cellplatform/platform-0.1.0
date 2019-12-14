@@ -1,6 +1,6 @@
 import { t, http, cell } from './common';
 
-const { Uri } = cell;
+type F = t.IFetchOptions;
 
 /**
  * Initializes a CellOS http client.
@@ -10,15 +10,17 @@ export function init(args: { host: string; port: number }) {
   const protocol = args.host === 'localhost' ? 'http' : 'https';
   const host = `${args.host}:${args.port}`;
   const origin = `${protocol}://${host}`;
+  const url = (path: string) => `${origin}/${(path || '').replace(/^\/*/, '')}`;
 
-  // Namespace methods.
-  const ns = {
-    // postData(uri: string, body: t.IReqPostNsBody) {
-    //   const url = `${origin}/${uri}/data`;
-    //   return http.post(url, body);
-    // },
+  // HTTP client.
+  const client = {
+    origin,
+    uri: cell.Uri,
+    url,
+    get: async (path: string, options: F = {}) => http.get(url(path), options),
+    post: async (path: string, data?: any, options: F = {}) => http.post(url(path), data, options),
   };
 
   // Finish up.
-  return { ns, Uri };
+  return client;
 }

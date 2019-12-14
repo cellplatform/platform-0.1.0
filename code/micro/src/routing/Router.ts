@@ -34,9 +34,10 @@ export class Router implements t.IRouter {
   public static query<T extends object>(args: { path: string }): T {
     const { path = '' } = args;
     const index = path.indexOf('?');
+    const toString = () => (index < 0 ? '' : path.substring(index) || '');
 
     if (index < 0) {
-      const empty = {};
+      const empty = { toString };
       return empty as T;
     }
 
@@ -45,13 +46,16 @@ export class Router implements t.IRouter {
       return value.toType(input);
     };
 
-    const query: any = querystring.parse(path.substring(index + 1));
+    const query: any = querystring.parse(toString().replace(/^\?/, ''));
     Object.keys(query).forEach(key => {
       const value = query[key];
       query[key] = Array.isArray(value) ? value.map(item => parseType(item)) : parseType(value);
     });
 
-    const res = { ...query }; // NB: Ensure a simple object is returned.
+    const res = {
+      ...query, // NB: Ensure a simple object is returned.
+      toString,
+    };
     return res as T;
   }
 
@@ -66,7 +70,7 @@ export class Router implements t.IRouter {
    */
   public routes: t.IRoute[] = [];
 
-  public handler: t.RouteHandler = async incoming => {
+  public handler: t.RouteHandler = async (incoming, ctx) => {
     try {
       const route = this.find(incoming) as t.IRoute;
       if (!route) {
@@ -107,10 +111,28 @@ export class Router implements t.IRouter {
             },
           };
         },
+
+        toUrl(path: string) {
+          path = path || '';
+          if (path.startsWith('https://') || path.startsWith('http://')) {
+            return path;
+          }
+          const prefix = host.startsWith('localhost') ? 'http' : 'https';
+          return `${prefix}://${host}/${path.replace(/^\/*/, '')}`;
+        },
+
+        redirect(path: string, options: { headers?: t.IHttpHeaders } = {}): t.RouteResponse {
+          return {
+            status: 307,
+            data: helpers.toUrl(path),
+            headers: options.headers,
+          };
+        },
       };
 
       const request = Object.assign(incoming, helpers) as t.Request; // tslint:disable-line
-      return route.handler(request);
+
+      return route.handler(request, ctx);
     } catch (err) {
       const url = incoming.url;
       const message = `Failed while finding handler for url "${url}". ${err.message}`;

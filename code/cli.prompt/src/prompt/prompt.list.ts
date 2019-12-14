@@ -1,28 +1,13 @@
-import { inquirer } from './common';
+import { inquirer, t } from '../common';
 
-export type IPromptListOption = { name: string; value?: any };
-
-/**
- * Prompts the user for a simple text value.
- */
-export async function text(args: { message: string; default?: string }) {
-  const { message } = args;
-  const question: inquirer.InputQuestion = {
-    type: 'input',
-    name: 'result',
-    message,
-    default: args.default,
-  };
-  const { result } = (await inquirer.prompt(question)) as { result: string };
-  return result;
-}
+export * from '../types';
 
 /**
  * Prompts the user for selection from a list.
  */
 export async function list<V = string>(args: {
   message: string;
-  items: Array<string | IPromptListOption>;
+  items: Array<string | t.IPromptListOption>;
   pageSize?: number;
   type?: 'list' | 'checkbox';
 }) {
@@ -50,7 +35,7 @@ export async function list<V = string>(args: {
  */
 export async function checkbox<V = string>(args: {
   message: string;
-  items: Array<string | IPromptListOption>;
+  items: Array<string | t.IPromptListOption>;
   pageSize?: number;
 }) {
   return list<V[]>({ ...args, type: 'checkbox' });

@@ -4,9 +4,7 @@ import { R, coord } from '../common';
  * Generates test data at the given size.
  */
 export function testData(args: { totalColumns: number; totalRows: number }) {
-  type Item = { key: string; value: string };
-
-  const list = R.flatten<Item>(
+  const list = R.flatten(
     Array.from({ length: args.totalColumns }).map((v, column) => {
       return Array.from({ length: args.totalRows }).map((v, row) => {
         const key = coord.cell.toKey(column, row);

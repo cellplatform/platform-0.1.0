@@ -102,6 +102,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
 
       const { filename } = options;
       const contentType = filename ? cloud.s3.toContentType(filename) : undefined;
+      const contentDisposition = filename ? `inline; filename="${filename}"` : undefined;
 
       uri = (uri || '').trim();
       const path = res.resolve(uri);
@@ -118,6 +119,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       try {
         const res = await cloud.bucket.put({
           contentType,
+          contentDisposition,
           source: file.data,
           key,
           acl: 'public-read', // TODO - S3 Access Control 🐷

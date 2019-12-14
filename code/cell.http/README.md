@@ -1,7 +1,7 @@
 ![Module](https://img.shields.io/badge/%40platform-cell.http-%23EA4E7E.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![NPM](https://img.shields.io/npm/v/@platform/cell.http.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/cell.http)
-![banner](https://user-images.githubusercontent.com/185555/69022072-e4137b00-0a1e-11ea-81e9-0c82e03f447f.png)
+![banner](https://user-images.githubusercontent.com/185555/70659889-d8d20900-1cc5-11ea-9ba8-f8c3bdabe4ea.png)
 
 HTTP cloud/server and client tools for CellOS.  
 Sample: https://cell.platform.uiharness.com

@@ -1,5 +1,5 @@
-import { defaultValue, constants, ROUTES, Schema, t, models, util } from '../common';
-import { postFileResponse } from './file';
+import { defaultValue, constants, routes, Schema, t, models, util } from '../common';
+import { postFileResponse, getFileDownloadResponse } from '../route.file';
 import { postNsResponse } from '../route.ns';
 
 /**
@@ -11,10 +11,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   const getParams = (req: t.Request, options: { fileRequired?: boolean } = {}) => {
     const params = req.params as t.IReqCellFileParams;
 
+    const toString = (input?: any) => (input || '').toString().trim();
     const data = {
-      ns: (params.ns || '').toString().trim(),
-      key: (params.key || '').toString().trim(),
-      filename: (params.filename || '').toString().trim(),
+      ns: toString(params.ns || ''),
+      key: toString(params.key || ''),
+      filename: toString(params.filename || ''),
       uri: '',
     };
 
@@ -53,7 +54,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET: !A1/files
    */
-  router.get(ROUTES.CELL.FILES.BASE, async req => {
+  router.get(routes.CELL.FILES, async req => {
     const host = req.host;
     const query = req.query as t.IReqCellFilesQuery;
     const { status, ns, error, uri } = getParams(req, { fileRequired: false });
@@ -62,21 +63,57 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     }
 
     const cell = await models.Cell.create({ db, uri }).ready;
-    const links = util.url(req.host).cellFiles(cell.props.links || {});
+    const url = util.urls(req.host).cell(uri);
+    // const files = util.urls(req.host).cellFilesList(cell.props.links || {});
+    const files = url.files.list(cell.props.links || {});
 
     const data: t.IResGetCellFiles = {
-      parent: util.toUrl(host, uri),
       uri,
-      links,
+      cell: url.info,
+      links: url.files.links(cell.props.links || {}),
+      files,
     };
 
     return { status: 200, data };
   });
 
   /**
+   * GET: Get a file by name (download)
+   *      Example: /cell:foo!A1/file/kitten.jpg
+   *      NB: This is the same as calling the `/file:...` GET route point directly.
+   */
+  router.get(routes.CELL.FILE_BY_NAME, async req => {
+    const host = req.host;
+    const query = req.query as t.IReqFileQuery;
+    const { status, ns, key, filename, error, uri: cellUri } = getParams(req);
+    if (!ns || error) {
+      return { status, data: { error } };
+    }
+
+    try {
+      // Retreive the [cell] info.
+      const cell = await models.Cell.create({ db, uri: cellUri }).ready;
+      const cellLinks = cell.props.links || {};
+      const linkKey = Schema.file.links.toKey(filename);
+      const fileUri = cellLinks[linkKey];
+
+      // 404 if file URI not found.
+      if (!fileUri) {
+        const err = `The file '${filename}' is not associated with the cell "${cellUri}".`;
+        return util.toErrorPayload(err, { status: 404 });
+      }
+
+      // Run the "file:" download handler.
+      return getFileDownloadResponse({ db, fs, uri: fileUri, query, host });
+    } catch (err) {
+      return util.toErrorPayload(err);
+    }
+  });
+
+  /**
    * POST a file to a cell
    */
-  router.post(ROUTES.CELL.FILE.BY_NAME, async req => {
+  router.post(routes.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
     const query = req.query as t.IReqPostCellFileQuery;
     const { status, ns, key, filename, error, uri: cellUri } = getParams(req);
@@ -134,16 +171,14 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         changes = [...(nsResponseData.changes || []), ...(fsResponseData.changes || [])];
       }
 
-      const links: t.IResPostCellLinks = { ...util.url(host).cellLinks(cellUri) };
+      const urls = util.urls(host).cell(cellUri);
+      const links: t.IResPostCellLinks = { ...urls.links };
       const res: t.IResPostCellFile = {
         uri: cellUri,
         createdAt: cell.createdAt,
         modifiedAt: cell.modifiedAt,
         exists: Boolean(cell.exists),
-        data: {
-          cell: cell.toObject(),
-          changes,
-        },
+        data: { cell: cell.toObject(), changes },
         links,
       };
 

@@ -245,9 +245,20 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   };
 
   private postData = async () => {
-    const data = this.grid.data;
-    const uri = http.Uri.generate.ns({ ns: data.ns.id });
-    await http.ns.postData(uri, { data });
+    const data = { ...this.grid.data };
+    const uri = http.uri.create.ns(data.ns.id);
+
+    /**
+     * TODO 🐷
+     */
+    delete data.rows; // TEMP 🐷
+
+    // const json = JSON.stringify(data);
+    // console.log(json);
+
+    console.log('POST', uri);
+    const res = await http.post(uri, data);
+    console.log('POST response: ', res.json());
   };
 
   /**

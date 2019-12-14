@@ -1,2 +1,1 @@
-import * as prompt from './prompt';
-export { prompt };
+export { prompt } from './prompt';

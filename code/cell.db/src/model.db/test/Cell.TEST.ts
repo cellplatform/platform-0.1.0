@@ -116,4 +116,33 @@ describe('model.Cell', () => {
       expect(model3.props.hash).to.eql(before); // NB: No change.
     })();
   });
+
+  it('sets then clears props', async () => {
+    const db = await getTestDb({});
+    const uri = 'cell:abcd!A1';
+
+    const model = await Cell.create({ db, uri }).ready;
+    expect(model.props.props).to.eql(undefined);
+
+    await model.set({ props: { value: 456 } }).save();
+    expect(model.props.props).to.eql({ value: 456 });
+
+    await model.set({ props: undefined }).save();
+    expect(model.props.props).to.eql(undefined);
+  });
+
+  it('sets then clears error', async () => {
+    const db = await getTestDb({});
+    const uri = 'cell:abcd!A1';
+
+    const model = await Cell.create({ db, uri }).ready;
+    expect(model.props.error).to.eql(undefined);
+
+    const error = { type: 'FOO', message: 'Boo' };
+    await model.set({ error }).save();
+    expect(model.props.error).to.eql(error);
+
+    await model.set({ error: undefined }).save();
+    expect(model.props.error).to.eql(undefined);
+  });
 });

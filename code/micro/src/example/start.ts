@@ -54,7 +54,7 @@ app.router.post('/file', async req => {
 });
 
 (async () => {
-  const service = await app.listen({ port: 8080 });
+  const service = await app.start({ port: 8080 });
 
   log.info.green(`
   started in:    ${timer.elapsed.toString()}

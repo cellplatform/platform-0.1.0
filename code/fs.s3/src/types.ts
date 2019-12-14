@@ -27,6 +27,7 @@ export type S3 = {
     source: string | Buffer;
     acl?: S3Permissions;
     contentType?: string;
+    contentDisposition?: string;
   }): Promise<S3PutResponse>;
   list(args: { bucket: string; prefix?: string; max?: number }): S3List;
   bucket(name: string): S3Bucket;
@@ -41,6 +42,7 @@ export type S3Bucket = {
     source: string | Buffer;
     acl?: S3Permissions;
     contentType?: string;
+    contentDisposition?: string;
   }): Promise<S3PutResponse>;
   list(args: { bucket: string; prefix?: string; max?: number }): S3List;
 };

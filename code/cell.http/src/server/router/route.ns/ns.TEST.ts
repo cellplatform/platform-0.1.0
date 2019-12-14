@@ -6,7 +6,16 @@ import { t, expect, http, createMock, stripHashes, post } from '../../../test';
  * - refactor hash (lazy eval)
  */
 
-describe('route: namespace', () => {
+/**
+ * TODO 🐷
+ * Tests for:
+ * - FUNC: A1 references A2 stores value, the changes to REF =A3 (but does not exist) - value not reset.
+ * - Remove Cell from NS
+ */
+
+describe('route: ns (namespace URI)', function() {
+  this.timeout(10000);
+
   describe('invalid URI', () => {
     it('malformed: no id', async () => {
       const mock = await createMock();
@@ -20,6 +29,26 @@ describe('route: namespace', () => {
       expect(body.error.type).to.eql('HTTP/uri/malformed');
       expect(body.error.message).to.contain('Malformed');
       expect(body.error.message).to.contain('does not contain an ID');
+    });
+  });
+
+  describe('GET', () => {
+    it('redirects from "ns:foo!A1" to "cell:" end-point', async () => {
+      const test = async (path: string) => {
+        const mock = await createMock();
+        const res = await http.get(mock.url(path));
+        await mock.dispose();
+
+        const json = res.json() as t.IResGetCell;
+        expect(res.status).to.eql(200);
+        expect(json.uri).to.eql('cell:foo!A1'); // NB: The "cell:" URI, not "ns:".
+        expect(json.exists).to.eql(false);
+        expect(json.data).to.eql({});
+      };
+
+      await test('/ns:foo!A1');
+      await test('/ns:foo!A1/');
+      await test('/ns:foo!A1?cells');
     });
   });
 
@@ -233,6 +262,51 @@ describe('route: namespace', () => {
       expect((after.D1 || {}).props).to.eql({ value: 123 });
       expect((after.Z9 || {}).props).to.eql(undefined); // NB: simple value.
     });
+
+    it('reports error when function not found', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: '=A2 + 5' }, // NB: The SUM function is not available.
+        A2: { value: 123 },
+      };
+
+      const res = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+
+      mock.dispose();
+
+      const A1 = (res.data.cells || {}).A1 || {};
+      const error = A1.error;
+
+      expect(A1.props).to.eql(undefined);
+      expect(error && error.type).to.match(/^FUNC\//);
+      expect(error && error.message).to.contain(`operator '+' is not mapped`);
+    });
+
+    it('clears error when function is corrected', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: '=A2 + 5' }, // NB: The SUM function is not available.
+        A2: { value: 123 },
+      };
+
+      const res1 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+      cells.A1.value = '=A2'; // Remove error.
+
+      const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+
+      mock.dispose();
+
+      const A1a = (res1.data.cells || {}).A1 || {};
+      const A1b = (res2.data.cells || {}).A1 || {};
+      const error1 = A1a.error;
+      const error2 = A1b.error;
+
+      expect(A1a.props).to.eql(undefined);
+      expect(A1b.props).to.eql({ value: 123 });
+
+      expect(error1 && error1.type).to.match(/^FUNC\//);
+      expect(error2).to.eql(undefined);
+    });
   });
 
   describe('GET', () => {
@@ -271,7 +345,7 @@ describe('route: namespace', () => {
       };
       await http.post(mock.url('ns:foo'), payload);
 
-      const url = mock.url('ns:foo/data');
+      const url = mock.url('ns:foo?data');
       const res = await http.get(url);
       await mock.dispose();
 
@@ -341,41 +415,6 @@ describe('route: namespace', () => {
       await test('ns:foo?data', body);
       await test('ns:foo?data=true', body);
       await test('ns:foo?data=false', {});
-
-      await mock.dispose();
-    });
-
-    it('GET all data (/data)', async () => {
-      const mock = await createMock();
-      const cells = {
-        A1: { value: 'A1' },
-        B2: { value: 'B2' },
-        C1: { value: 'C1' },
-      };
-      const columns = {
-        A: { props: { height: 80 } },
-        C: { props: { height: 120 } },
-      };
-      const rows = {
-        1: { props: { width: 350 } },
-        3: { props: { width: 256 } },
-      };
-      const body: t.IReqPostNsBody = { cells, columns, rows };
-      await http.post(mock.url('ns:foo'), body);
-
-      const test = async (path: string, expected?: any) => {
-        const url = mock.url(path);
-        const res = await http.get(url);
-
-        // Prepare a subset of the return data to compare with expected result-set.
-        const json = res.json<t.IResPostNs>().data;
-        delete json.ns;
-        stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
-        expect(json).to.eql(expected);
-      };
-
-      await test('ns:foo', {});
-      await test('ns:foo/data', body);
 
       await mock.dispose();
     });

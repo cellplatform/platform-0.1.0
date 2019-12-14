@@ -9,5 +9,5 @@ process.on('unhandledRejection', err => {
   throw err;
 });
 
-import { app } from './app';
+import { app } from './bin.api';
 app.run();

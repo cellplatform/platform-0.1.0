@@ -1,6 +1,6 @@
 import { t, expect, getTestDb } from '../test';
 import { models } from '..';
-import { setChildData } from './model.ns';
+import { setChildData, setChildCells, getChildCells } from './model.ns';
 
 describe('helpers: model.ns', () => {
   it('toSchema', async () => {
@@ -79,6 +79,80 @@ describe('helpers: model.ns', () => {
 
       expect(res2.changes.length).to.eql(2); // NB: not 3, as the "value" field has not changed ("=A2").
       expect(res2.changes.map(c => c.field)).to.eql(['props', 'hash']);
+    });
+
+    it('sets error, then clear error', async () => {
+      const error = { type: 'FOO', message: 'Boo' };
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const getCells = async () => {
+        await ns.load({ force: true });
+        return getChildCells({ model: ns });
+      };
+      const getA1 = async () => ((await getCells()) || {}).A1 || {};
+
+      expect(await getCells()).to.eql({});
+      await setChildData({ ns, data: { cells: { A1: { value: 123 } } } });
+
+      expect((await getA1()).value).to.eql(123);
+      expect((await getA1()).error).to.eql(undefined);
+
+      await setChildData({ ns, data: { cells: { A1: { error } } } });
+      expect((await getA1()).value).to.eql(123);
+      expect((await getA1()).error).to.eql(error);
+
+      await setChildData({ ns, data: { cells: { A1: {} } } }); // NB: Error not removed because not explicitly set to [undefined].
+      expect((await getA1()).value).to.eql(123);
+      expect((await getA1()).error).to.eql(error);
+
+      await setChildData({ ns, data: { cells: { A1: { error: undefined } } } });
+      expect((await getA1()).value).to.eql(123);
+      expect((await getA1()).error).to.eql(undefined); // NB: Error gone.
+    });
+  });
+
+  describe('setChildCells', () => {
+    it('sets error, then clear error', async () => {
+      const error = { type: 'FOO', message: 'Boo' };
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const getCells = async () => {
+        await ns.load({ force: true });
+        return getChildCells({ model: ns });
+      };
+      const getA1 = async () => ((await getCells()) || {}).A1 || {};
+
+      expect(await getCells()).to.eql({});
+      await setChildCells({ ns, data: { A1: { value: 123 } } });
+
+      expect((await getA1()).value).to.eql(123);
+      expect((await getA1()).error).to.eql(undefined);
+
+      await setChildCells({ ns, data: { A1: { error } } });
+      expect((await getA1()).value).to.eql(123);
+      expect((await getA1()).error).to.eql(error);
+
+      await setChildCells({ ns, data: { A1: { error: undefined } } });
+      expect((await getA1()).value).to.eql(123);
+      expect((await getA1()).error).to.eql(undefined); // NB: Error gone.
+    });
+  });
+
+  describe('getChildCells', () => {
+    it('gets child cells (with links)', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const cell = models.Cell.create({ uri: 'cell:foo!A1', db });
+      await cell.set({ value: 123, links: { 'fs:foo:wasm': 'file:abc.123' } }).save();
+
+      const cells = await getChildCells({ model: ns });
+      const A1 = cells.A1 || {};
+
+      expect(A1.value).to.eql(123);
+      expect(A1.links).to.eql({ 'fs:foo:wasm': 'file:abc.123' });
     });
   });
 });

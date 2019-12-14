@@ -125,7 +125,7 @@ describe('func.table', () => {
 
       expect(Object.keys(res1.map).sort()).to.eql(['A1', 'A2']);
       expect(res2.map).to.eql({
-        A2: { value: '=A3', props: { value: 456 } },
+        A2: { value: '=A3', props: { value: 456 }, error: undefined },
       });
     });
 
@@ -181,6 +181,34 @@ describe('func.table', () => {
       cells = cells2;
       const res2 = await table.calculate({ cells: 'A1' });
       expect(util.value.cellData(res2.map.A1).getValue()).to.eql(3);
+    });
+
+    it('reports error when function not found, then removes it', async () => {
+      let A1 = '=NO_EXIST()';
+      const ctx = await testContext({
+        A1: { value: () => A1 },
+      });
+      const table = func.table({ ...ctx });
+
+      const res1 = await table.calculate();
+      A1 = '=1+2'; // Correct the error.
+      const res2 = await table.calculate();
+
+      expect(res1.ok).to.eql(false);
+      expect(res2.ok).to.eql(true);
+
+      const A1a = res1.map.A1 || {};
+      const A1b = res2.map.A1 || {};
+      const error = A1a.error;
+
+      expect(A1a.props).to.eql(undefined);
+      expect(error && error.type).to.eql('FUNC/notFound');
+      expect(error && error.message).to.contain(`The function [sys.NO_EXIST] was not found`);
+
+      // NB: Error removed from corrected re-calculation.
+      expect(A1b.props).to.eql({ value: 3 });
+      expect(A1b.error).to.eql(undefined);
+      expect(Object.keys(A1b)).to.include('error'); // NB: Key included: {error:undefined} (so that we know to remove it from the DB).
     });
 
     it.skip('calculates parallel paths at the same time', async () => {

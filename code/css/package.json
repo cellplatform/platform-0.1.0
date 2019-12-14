@@ -1,6 +1,6 @@
 {
   "name": "@platform/css",
-  "version": "0.1.48",
+  "version": "0.1.49",
   "description": "Helpers for working with inline CSS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,7 +16,7 @@
   "dependencies": {
     "@platform/libs": "0.1.5",
     "@platform/util.is": "0.0.99",
-    "@platform/util.value": "0.6.1",
+    "@platform/util.value": "0.6.2",
     "@types/tinycolor2": "1.4.2",
     "glamor": "2.20.40",
     "tinycolor2": "1.4.1"

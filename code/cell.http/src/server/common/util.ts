@@ -3,7 +3,7 @@ import { fs, cell, defaultValue } from './libs';
 import { ERROR } from './constants';
 
 export * from './libs';
-export * from './util.url';
+export * from './util.urls';
 
 export const env = fs.env;
 export const resolve = fs.resolve;

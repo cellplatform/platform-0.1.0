@@ -186,11 +186,12 @@ describe('Uri', () => {
           expect(res.ok).to.eql(false);
           expect(res.parts.type).to.eql('UNKNOWN');
           expect(res.uri).to.eql((input || '').trim());
-          expect(res.error && res.error.message).to.contain('URI not specified');
         };
         test(undefined);
         test('');
         test('   ');
+        test('foo');
+        test('foo:bar');
       });
 
       it('no ":" seperated parts', () => {

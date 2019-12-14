@@ -1,0 +1,35 @@
+{
+  "name": "@platform/cell.client",
+  "version": "0.0.3",
+  "description": "A strongly typed HTTP client for operating the REST service API.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/cell.schema": "0.1.15",
+    "@platform/cell.types": "0.2.7",
+    "@platform/http": "0.5.2",
+    "@platform/libs": "0.1.5",
+    "@platform/types": "0.2.1",
+    "form-data": "3.0.0"
+  },
+  "devDependencies": {
+    "@platform/test": "0.0.66",
+    "@platform/ts": "3.7.2"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}
