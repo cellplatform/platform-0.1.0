@@ -1,6 +1,6 @@
 {
   "name": "@platform/exec",
-  "version": "0.2.35",
+  "version": "0.2.37",
   "description": "Tools for executing commands in child_process.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -22,9 +22,9 @@
     "listr": "0.14.3"
   },
   "devDependencies": {
-    "@platform/fs": "0.3.5",
-    "@platform/test": "0.0.66",
-    "@platform/ts.libs": "3.7.1",
+    "@platform/fs": "0.3.7",
+    "@platform/test": "0.1.0",
+    "@platform/ts.libs": "3.7.2",
     "@types/ansi-regex": "5.0.0"
   },
   "files": [

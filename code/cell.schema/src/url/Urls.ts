@@ -60,6 +60,9 @@ export class Urls {
    * [Methods]
    */
 
+  /**
+   * Builders for NAMESPACE urls.
+   */
   public ns(id: string) {
     const toPath = this.toUrl;
     if (id.includes(':')) {
@@ -81,42 +84,125 @@ export class Urls {
     }
 
     return {
+      /**
+       * Example: /ns:foo
+       */
       get info() {
-        return toPath<t.IUrlQueryNs>(`/ns:${id}`);
+        return toPath<t.IUrlQueryGetNs>(`/ns:${id}`);
       },
     };
   }
 
+  /**
+   * Builders for CELL urls.
+   */
   public cell(uri: string) {
     const toPath = this.toUrl;
     const cell = Uri.parse<t.ICellUri>(uri);
     if (cell.error) {
       throw new Error(cell.error.message);
     }
-    if (cell.parts.type !== 'CELL') {
-      const err = `The given URI is not of type "cell:" ("${uri}")`;
+    const { ns, key, type } = cell.parts;
+    if (type !== 'CELL') {
+      const err = `The given URI is a ${type} not a CELL ("${uri}")`;
       throw new Error(err);
     }
-    const { ns, key } = cell.parts;
 
     return {
+      /**
+       * Example: /cell:foo!A1
+       */
       get info() {
-        type Q = t.IUrlQueryCell;
+        type Q = t.IUrlQueryGetCell;
         return toPath<Q>(`/cell:${ns}!${key}`);
       },
+
+      /**
+       * Example: /cell:foo!A1/files
+       */
       get files() {
-        type Q = t.IUrlQueryCellFiles;
+        type Q = t.IUrlQueryGetCellFiles;
         return toPath<Q>(`/cell:${ns}!${key}/files`);
       },
+
+      /**
+       * Individual file.
+       */
       file: {
+        /**
+         * Example: /cell:foo!A1/file/kitten.png
+         */
         byName(name: string) {
-          type Q = t.IUrlQueryCellFile;
+          type Q = t.IUrlQueryGetCellFileByName;
           name = (name || '').trim();
           if (!name) {
             throw new Error(`Filename not provided.`);
           }
           return toPath<Q>(`/cell:${ns}!${key}/file/${name}`);
         },
+
+        /**
+         * Example: /cell:foo!A1/files/0
+         */
+        byIndex(index: number) {
+          type Q = t.IUrlQueryGetCellFileByIndex;
+          if (typeof index !== 'number') {
+            throw new Error(`File index not provided.`);
+          }
+          return toPath<Q>(`/cell:${ns}!${key}/files/${index}`);
+        },
+      },
+    };
+  }
+
+  /**
+   * Builders for ROW urls.
+   */
+  public row(uri: string) {
+    const toPath = this.toUrl;
+    const row = Uri.parse<t.IRowUri>(uri);
+    if (row.error) {
+      throw new Error(row.error.message);
+    }
+    const { ns, key, type } = row.parts;
+    if (type !== 'ROW') {
+      const err = `The given URI is a ${type} not a ROW ("${uri}")`;
+      throw new Error(err);
+    }
+
+    return {
+      /**
+       * Example: /cell:foo!1
+       */
+      get info() {
+        type Q = t.IUrlQueryGetRow;
+        return toPath<Q>(`/cell:${ns}!${key}`);
+      },
+    };
+  }
+
+  /**
+   * Builders for COLUMN urls.
+   */
+  public column(uri: string) {
+    const toPath = this.toUrl;
+    const column = Uri.parse<t.IColumnUri>(uri);
+    if (column.error) {
+      throw new Error(column.error.message);
+    }
+    const { ns, key, type } = column.parts;
+    if (type !== 'COLUMN') {
+      const err = `The given URI is a ${type} not a COLUMN ("${uri}")`;
+      throw new Error(err);
+    }
+
+    return {
+      /**
+       * Example: /cell:foo!A
+       */
+      get info() {
+        type Q = t.IUrlQueryGetColumn;
+        return toPath<Q>(`/cell:${ns}!${key}`);
       },
     };
   }
@@ -138,6 +224,7 @@ export class Urls {
         type Q = t.IUrlQueryGetFile;
         return toPath<Q>(`/file:${id}`);
       },
+
       get info() {
         type Q = t.IUrlQueryGetFileInfo;
         return toPath<Q>(`/file:${id}/info`);

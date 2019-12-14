@@ -1,20 +1,20 @@
 {
   "name": "instance",
-  "version": "0.0.22",
+  "version": "0.0.26",
   "scripts": {
     "now": "now dev --listen 8080",
     "start": "ts-node -T src/server",
     "watch": "nodemon --watch ../src --watch ../../cell.db/src -e ts,tsx --delay 2"
   },
   "dependencies": {
-    "@platform/cell.fs": "0.1.18",
-    "@platform/cell.http": "0.4.34",
-    "@platform/cell.schema": "^0.2.0",
-    "@platform/fsdb.mongo": "0.0.46",
-    "@platform/fsdb.nedb": "1.3.41"
+    "@platform/cell.fs": "0.1.22",
+    "@platform/cell.http": "0.4.38",
+    "@platform/cell.schema": "^0.2.4",
+    "@platform/fsdb.mongo": "0.0.49",
+    "@platform/fsdb.nedb": "1.3.44"
   },
   "devDependencies": {
-    "ts-node": "8.5.2"
+    "ts-node": "8.5.4"
   },
   "engines": {
     "node": ">=10.x"

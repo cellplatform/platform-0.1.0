@@ -1,4 +1,4 @@
-import { defaultValue, constants, routes, Schema, t, models, util } from '../common';
+import { defaultValue, constants, routes, Schema, t, models, util, ERROR } from '../common';
 
 /**
  * File-system routes (fs:).
@@ -58,7 +58,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.get(routes.FILE.BASE, async req => {
     const host = req.host;
-    const query = req.query as t.IReqFileByNameQuery;
+    const query = req.query as t.IUrlQueryGetCellFile;
     const { status, ns, error, uri } = getParams(req);
     return !ns || error
       ? { status, data: { error } }
@@ -70,7 +70,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.post(routes.FILE.BASE, async req => {
     const host = req.host;
-    const query = req.query as t.IReqPostFileQuery;
+    const query = req.query as t.IUrlQueryPostFile;
     const { status, ns, error, uri } = getParams(req);
     if (!ns || error) {
       return { status, data: { error } };
@@ -90,9 +90,9 @@ export const getFileDownloadResponse = async (args: {
   fs: t.IFileSystem;
   uri: string;
   host: string;
-  query?: t.IReqFileByNameQuery;
+  query?: t.IUrlQueryGetFile;
 }) => {
-  const { db, fs, uri, host, query } = args;
+  const { db, fs, uri, host, query = {} } = args;
 
   try {
     // Pull the file meta-data.
@@ -102,18 +102,24 @@ export const getFileDownloadResponse = async (args: {
     }
     const file = fileResponse.data as t.IResGetFile;
 
+    // Match hash if requested.
+    if (query.hash && file.data.hash !== query.hash) {
+      const err = new Error(`"${file.uri}" hash does not match requested hash.`);
+      return util.toErrorPayload(err, { status: 409, type: ERROR.HASH_MISMATCH });
+    }
+
     // Ensure the file exists.
     if (!file.exists) {
-      const err = new Error(`File at the URI "${file.uri}" does not exist.`);
-      return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
+      const err = new Error(`"${file.uri}" does not exist.`);
+      return util.toErrorPayload(err, { status: 404, type: ERROR.NOT_FOUND });
     }
 
     // Get the location.
     const props = file.data.props;
     const location = (props.location || '').trim();
     if (!location) {
-      const err = new Error(`File at the URI "${file.uri}" does not have a location.`);
-      return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
+      const err = new Error(`"${file.uri}" does not have a location.`);
+      return util.toErrorPayload(err, { status: 404, type: ERROR.NOT_FOUND });
     }
 
     // Redirect if the location is an S3 link.
@@ -127,7 +133,7 @@ export const getFileDownloadResponse = async (args: {
       const data = local.file ? local.file.data : undefined;
       if (!data) {
         const err = new Error(`File at the URI "${file.uri}" does on the local file-system.`);
-        return util.toErrorPayload(err, { status: 404, type: 'HTTP/notFound' });
+        return util.toErrorPayload(err, { status: 404, type: ERROR.NOT_FOUND });
       } else {
         return { status: 200, data };
       }
@@ -173,7 +179,7 @@ export async function postFileResponse(args: {
   uri: string;
   form: t.IForm;
   host: string;
-  query?: t.IReqPostFileQuery;
+  query?: t.IUrlQueryPostFile;
 }): Promise<t.IPayload<t.IResPostFile> | t.IErrorPayload> {
   const { db, uri, query = {}, form, fs, host } = args;
   const sendChanges = defaultValue(query.changes, true);

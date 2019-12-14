@@ -43,7 +43,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.get(routes.NS.INFO, async req => {
     const host = req.host;
-    const query = req.query as t.IReqGetNsQuery;
+    const query = req.query as t.IUrlQueryGetNs;
     const { status, id, error } = getParams(req);
     return !id || error ? { status, data: { error } } : getNsResponse({ db, id, query, host });
   });
@@ -53,7 +53,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.post(routes.NS.INFO, async req => {
     const host = req.host;
-    const query = req.query as t.IReqPostNsQuery;
+    const query = req.query as t.IUrlQueryPostNs;
     const { status, id, error } = getParams(req);
     const body = (await req.body.json<t.IReqPostNsBody>()) || {};
     return !id || error
@@ -70,7 +70,7 @@ export async function getNsResponse(args: {
   db: t.IDb;
   id: string;
   host: string;
-  query: t.IReqGetNsQuery;
+  query: t.IUrlQueryGetNs;
 }) {
   const { db, id, query, host } = args;
   const uri = Schema.uri.create.ns(id);
@@ -99,7 +99,7 @@ export async function getNsResponse(args: {
 
 async function getNsData(args: {
   model: t.IDbModelNs;
-  query: t.IReqGetNsQuery;
+  query: t.IUrlQueryGetNs;
 }): Promise<Partial<t.INsDataCoord> | t.IErrorPayload> {
   try {
     const { model, query } = args;
@@ -121,7 +121,7 @@ export async function postNsResponse(args: {
   db: t.IDb;
   id: string;
   body: t.IReqPostNsBody;
-  query: t.IReqPostNsQuery;
+  query: t.IUrlQueryPostNs;
   host: string;
 }) {
   try {

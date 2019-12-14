@@ -1,1 +1,1 @@
-export * from './Uri';
+export { Uri } from './Uri';

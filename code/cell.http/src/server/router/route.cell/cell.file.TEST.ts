@@ -43,5 +43,16 @@ describe('route: !A1/file', () => {
 
   it.skip('reads a file (via /cell:foo!A1/file/kitten.js', async () => {
     // TODO 🐷
+
+    /**
+     * TODO 🐷
+     * - post file from URL client
+     * - download file
+     * - download file (with hash, throw 409 if hash mismatch)
+     */
+
+    const mock = await createMock();
+
+    await mock.dispose();
   });
 });

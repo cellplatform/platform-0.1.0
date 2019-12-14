@@ -60,7 +60,6 @@ describe('route: file (URI)', () => {
     it('malformed: no id', async () => {
       const msg = 'does not contain a namespace-identifier';
       await test('/file::123', msg);
-      // await test('/file:.123', msg);
     });
   });
 
@@ -75,10 +74,11 @@ describe('route: file (URI)', () => {
         dispose: false,
       });
 
-      const urlFile = mock.url(`${uri}`);
-      const urlInfo = mock.url(`${uri}/info`);
-      const resInfo = await http.get(urlInfo);
+      const urls = mock.urls.file(uri);
+      const resDownload = await http.get(urls.download.toString());
+      const resInfo = await http.get(urls.info.toString());
 
+      expect(resDownload.status).to.eql(200);
       expect(resInfo.status).to.eql(200);
 
       const json = resInfo.json<t.IResGetFile>();
@@ -90,7 +90,7 @@ describe('route: file (URI)', () => {
 
       // Download the file from the route, and ensure it saves correctly.
       const path = fs.resolve('tmp/file.png');
-      await download(urlFile).save(path);
+      await download(urls.download.toString()).save(path);
       mock.dispose();
 
       const file1 = await fs.readFile(source);
@@ -108,12 +108,11 @@ describe('route: file (URI)', () => {
         dispose: false,
       });
 
-      const urlFile = mock.url(`${uri}`);
-      const urlInfo = mock.url(`${uri}/info`);
+      const urls = mock.urls.file(uri);
+      const resDownload = await http.get(urls.download.toString());
+      const resInfo = await http.get(urls.info.toString());
 
-      const resFile = await http.get(urlFile);
-      const resInfo = await http.get(urlInfo);
-
+      expect(resDownload.status).to.eql(200);
       expect(resInfo.status).to.eql(200);
 
       const json = resInfo.json<t.IResGetFile>();
@@ -123,12 +122,39 @@ describe('route: file (URI)', () => {
 
       // Download the file from the route, and ensure it saves correctly.
       const path = fs.resolve('tmp/file.wasm');
-      await download(urlFile).save(path);
+      await download(urls.download.toString()).save(path);
       mock.dispose();
 
       const file1 = await fs.readFile(source);
       const file2 = await fs.readFile(path);
       expect(file1.toString()).to.eql(file2.toString());
+    });
+
+    it('GET file with hash query-string', async () => {
+      const uri = 'file:foo:123';
+      const source = 'src/test/assets/func.wasm';
+      const { mock } = await testPost({
+        uri,
+        filename: `func.wasm`,
+        source,
+        dispose: false,
+      });
+
+      const urls = mock.urls.file(uri);
+      const info = (await http.get(urls.info.toString())).json<t.IResGetFile>();
+      const hash = info.data.hash;
+
+      const res1 = await http.get(urls.download.query({ hash }).toString());
+      const res2 = await http.get(urls.download.query({ hash: '123' }).toString());
+      mock.dispose();
+
+      expect(res1.status).to.eql(200);
+      expect(res2.status).to.eql(409);
+
+      const error = res2.json<t.IHttpError>();
+      expect(error.status).to.eql(409);
+      expect(error.type).to.eql('HTTP/hash/mismatch');
+      expect(error.message).to.contain('does not match requested hash');
     });
   });
 
