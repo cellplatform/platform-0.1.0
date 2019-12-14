@@ -58,7 +58,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.get(routes.FILE.BASE, async req => {
     const host = req.host;
-    const query = req.query as t.IReqFileQuery;
+    const query = req.query as t.IReqFileByNameQuery;
     const { status, ns, error, uri } = getParams(req);
     return !ns || error
       ? { status, data: { error } }
@@ -90,7 +90,7 @@ export const getFileDownloadResponse = async (args: {
   fs: t.IFileSystem;
   uri: string;
   host: string;
-  query?: t.IReqFileQuery;
+  query?: t.IReqFileByNameQuery;
 }) => {
   const { db, fs, uri, host, query } = args;
 

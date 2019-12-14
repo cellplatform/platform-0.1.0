@@ -33,6 +33,7 @@ export const ROUTES = {
   CELL: {
     INFO: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
     FILES: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
+    FILE_BY_INDEX: `/cell${KEY.NS}\!${KEY.CELL}/files/:index([0-9]+)`,
     FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/file/${KEY.FILENAME}`,
     NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.
   },
