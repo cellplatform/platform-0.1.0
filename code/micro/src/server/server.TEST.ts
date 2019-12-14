@@ -350,6 +350,8 @@ describe('micro (server)', () => {
         const event2 = (events[1] as t.IMicroResponseEvent).payload;
         expect(event2.context).to.eql({ user: 'Sarah' });
         expect(context).to.eql({ user: 'Sarah' });
+
+        await mock.dispose();
       });
 
       it('async', async () => {
@@ -378,6 +380,8 @@ describe('micro (server)', () => {
         const event2 = (events[1] as t.IMicroResponseEvent).payload;
         expect(event2.context).to.eql({ user: 'Sarah' });
         expect(context).to.eql({ user: 'Sarah' });
+
+        await mock.dispose();
       });
     });
 

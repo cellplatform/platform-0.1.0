@@ -19,4 +19,4 @@ const fs = local.init({ root: `${TMP}/fs` });
  * Initialize and start the HTTP application server.
  */
 const app = server.init({ title: 'sample', db, fs });
-app.listen({ port: 8080 });
+app.start({ port: 8080 });

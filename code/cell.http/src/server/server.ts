@@ -40,6 +40,18 @@ export function init(args: {
     deployedAt,
   });
 
+  // Prepare headers before final response is sent to client.
+  app.response$.subscribe(e => {
+    const headers = {
+      ...e.res.headers,
+      'Cache-Control': 's-maxage=1, stale-while-revalidate', // See https://zeit.co/docs/v2/network/caching/#stale-while-revalidate
+    };
+
+    console.log('headers', headers);
+
+    e.modify({ ...e.res, headers });
+  });
+
   // Finish up.
   return app;
 }
