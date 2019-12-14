@@ -1,4 +1,4 @@
-import { expect, t } from '../test';
+import { expect, t, cuid } from '../test';
 import { Uri } from './Uri';
 
 describe.only('Uri', () => {
@@ -258,7 +258,6 @@ describe.only('Uri', () => {
       test('foo', 'ns:foo');
       test('ns:foo', 'ns:foo');
       test(' ns::foo ', 'ns:foo');
-      test('ns', 'ns:ns');
     });
 
     it('file', () => {
@@ -312,9 +311,17 @@ describe.only('Uri', () => {
 
       // Illegal characters.
       ILLEGAL.NS.split('').forEach(char => {
-        const id = `ns:foo${char}def`;
+        const uid = cuid();
+        const id = `${uid.substring(0, 10)}${char}${uid.substring(11)}`;
         expect(() => Uri.create.ns(id)).to.throw();
+        expect(() => Uri.create.ns(`ns:${id}`)).to.throw();
       });
+    });
+
+    it('throws: ns (not cuid)', () => {
+      const err = /URI contains an invalid identifier/;
+      expect(() => Uri.create.ns('fail')).to.throw(err);
+      expect(() => Uri.create.ns('ns:fail')).to.throw(err);
     });
 
     it('throws: file', () => {
