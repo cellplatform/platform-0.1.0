@@ -1,12 +1,12 @@
 import { Cell } from '..';
-import { expect, getTestDb, util } from '../../test';
+import { expect, getTestDb, util, Schema } from '../../test';
 
 type P = { style?: { bold?: boolean } };
 
 describe('model.Cell', () => {
   it('saves', async () => {
     const db = await getTestDb({});
-    const uri = 'cell:abcd!A1';
+    const uri = 'cell:foo!A1';
 
     const res1 = await Cell.create<P>({ db, uri }).ready;
     expect(res1.props.value).to.eql(undefined);
@@ -17,12 +17,12 @@ describe('model.Cell', () => {
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-dd73649779d5848c1166c3a525dae15d85e5fae498c3208652060af83b231944',
+      after: 'sha256-048a5fd98795443ebf9bc1940ad5c90440860ffca6a8a8ab791af2e9d338ad40',
     };
 
     const value = '=A2';
     const error = { type: 'FAIL', message: 'Boo' };
-    const links = { main: 'ns:foo', image: 'file:foo.kitten' };
+    const links = { main: 'ns:foo', image: 'file:foo:kitten' };
     const props = { style: { bold: true } };
     const data = { value, props, links, error, hash: HASH.before };
     await res1.set(data).save();
@@ -37,7 +37,7 @@ describe('model.Cell', () => {
 
   it('updates DB namespace doc-links before saving', async () => {
     const db = await getTestDb({});
-    const uri = 'cell:abcd!A1';
+    const uri = 'cell:foo!A1';
 
     const model1 = await Cell.create({ db, uri }).ready;
     await model1.set({ value: '=A2' }).save(); // NB: `beforeSave` links routine not triggered.
@@ -46,8 +46,8 @@ describe('model.Cell', () => {
     model1.set({
       links: (
         util.cellData(model1.toObject()).mergeLinks({
-          foo: 'ns:foo',
-          bar: 'ns:bar',
+          foo: `ns:foo`,
+          bar: `ns:bar`,
           baz: 'data:random', // NB: not recognized, so not stored as namespace link.
         }) || {}
       ).links,
@@ -55,7 +55,7 @@ describe('model.Cell', () => {
     expect(model1.isChanged).to.eql(true);
     await model1.save();
 
-    expect(model1.doc.nsRefs).to.eql(['NS/bar', 'NS/foo']); // Added by rule.
+    expect(model1.doc.nsRefs).to.eql([`NS/bar`, `NS/foo`]); // Added by rule.
 
     // Assign and remove links.
     model1.set({
@@ -92,7 +92,7 @@ describe('model.Cell', () => {
 
   it('updates hash on save (auto)', async () => {
     const db = await getTestDb({});
-    const uri = 'cell:abcd!A1';
+    const uri = 'cell:foo!A1';
 
     const model1 = await Cell.create({ db, uri }).ready;
     expect(model1.props.hash).to.eql(undefined);
@@ -119,7 +119,7 @@ describe('model.Cell', () => {
 
   it('sets then clears props', async () => {
     const db = await getTestDb({});
-    const uri = 'cell:abcd!A1';
+    const uri = 'cell:foo!A1';
 
     const model = await Cell.create({ db, uri }).ready;
     expect(model.props.props).to.eql(undefined);
@@ -133,7 +133,7 @@ describe('model.Cell', () => {
 
   it('sets then clears error', async () => {
     const db = await getTestDb({});
-    const uri = 'cell:abcd!A1';
+    const uri = 'cell:foo!A1';
 
     const model = await Cell.create({ db, uri }).ready;
     expect(model.props.error).to.eql(undefined);

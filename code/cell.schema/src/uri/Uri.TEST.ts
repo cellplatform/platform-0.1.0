@@ -1,4 +1,4 @@
-import { expect, t } from '../test';
+import { expect, t, cuid } from '../test';
 import { Uri } from './Uri';
 
 describe.only('Uri', () => {
@@ -20,11 +20,11 @@ describe.only('Uri', () => {
         expect(Uri.is.uri(input)).to.eql(expected, input);
       };
 
-      test('ns:abcd', true);
-      test('cell:abcd!A1', true);
-      test('cell:abcd!1', true);
-      test('cell:abcd!A', true);
-      test('file:abcd:123', true);
+      test('ns:foo', true);
+      test('cell:foo!A1', true);
+      test('cell:foo!1', true);
+      test('cell:foo!A', true);
+      test('file:foo:123', true);
 
       test(undefined, false);
       test('', false);
@@ -33,12 +33,11 @@ describe.only('Uri', () => {
       test('col:', false);
       test('cell:', false);
       test('file:', false);
-      test('cell:abcd', false);
-      test('row:abcd', false);
-      test('col:abcd', false);
-      test('file:abcd', false);
-      test('file:abcd.123', false);
-      test('file:abcd-123', false);
+      test('cell:foo', false);
+      test('boo:foo', false);
+      test('file:foo', false);
+      test('file:foo.123', false);
+      test('file:foo-123', false);
     });
 
     it('is.type', () => {
@@ -46,11 +45,11 @@ describe.only('Uri', () => {
         expect(Uri.is.type(type, input)).to.eql(expected, `${type} | input: ${input}`);
       };
 
-      test('NS', 'ns:abcd', true);
-      test('CELL', 'cell:abcd!A1', true);
-      test('COLUMN', 'cell:abcd!A', true);
-      test('ROW', 'cell:abcd!1', true);
-      test('FILE', 'file:abc:123', true);
+      test('NS', 'ns:foo', true);
+      test('CELL', 'cell:foo!A1', true);
+      test('COLUMN', 'cell:foo!A', true);
+      test('ROW', 'cell:foo!1', true);
+      test('FILE', 'file:foo:123', true);
       test('UNKNOWN', 'foo:bar!1', true);
 
       test('NS', undefined, false);
@@ -70,23 +69,23 @@ describe.only('Uri', () => {
       const test = (input?: string, expected?: boolean) => {
         expect(Uri.is.ns(input)).to.eql(expected);
       };
-      test('ns:abcd', true);
+      test('ns:foo', true);
 
       test('', false);
       test(undefined, false);
-      test('cell:abcd!A1', false);
-      test('cell:abcd!1', false);
-      test('cell:abcd!A', false);
+      test('cell:foo!A1', false);
+      test('cell:foo!1', false);
+      test('cell:foo!A', false);
     });
 
     it('is.file', () => {
       const test = (input?: string, expected?: boolean) => {
         expect(Uri.is.file(input)).to.eql(expected);
       };
-      test('file:abcd:123', true);
+      test('file:foo:123', true);
 
-      test('file:abcd', false);
-      test('ns:abcd', false);
+      test('file:foo', false);
+      test('ns:foo', false);
       test('', false);
       test(undefined, false);
     });
@@ -95,95 +94,95 @@ describe.only('Uri', () => {
       const test = (input?: string, expected?: boolean) => {
         expect(Uri.is.cell(input)).to.eql(expected);
       };
-      test('cell:abcd!A1', true);
+      test('cell:foo!A1', true);
 
       test('', false);
       test(undefined, false);
-      test('ns:abcd', false);
-      test('col:abcd!A', false);
+      test('ns:foo', false);
+      test('col:foo!A', false);
     });
 
     it('is.row', () => {
       const test = (input?: string, expected?: boolean) => {
         expect(Uri.is.row(input)).to.eql(expected);
       };
-      test('cell:abcd!1', true);
+      test('cell:foo!1', true);
 
       test('', false);
       test(undefined, false);
-      test('ns:abcd', false);
-      test('cell:abcd!A', false);
+      test('ns:foo', false);
+      test('cell:foo!A', false);
     });
 
     it('is.column', () => {
       const test = (input?: string, expected?: boolean) => {
         expect(Uri.is.column(input)).to.eql(expected);
       };
-      test('cell:abcd!A', true);
+      test('cell:foo!A', true);
 
       test('', false);
       test(undefined, false);
-      test('ns:abcd', false);
-      test('row:abcd!1', false);
+      test('ns:foo', false);
+      test('row:foo!1', false);
     });
   });
 
   describe('parse', () => {
     it('ns', () => {
-      const res = Uri.parse<t.INsUri>('ns:abcd');
+      const res = Uri.parse<t.INsUri>('ns:foo');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
       expect(res.parts.type).to.eql('NS');
-      expect(res.parts.id).to.eql('abcd');
-      expect(res.uri).to.eql('ns:abcd');
+      expect(res.parts.id).to.eql('foo');
+      expect(res.uri).to.eql('ns:foo');
       expect(res.toString()).to.eql(res.uri);
     });
 
     it('cell', () => {
-      const res = Uri.parse<t.ICellUri>('cell:abc!A1');
+      const res = Uri.parse<t.ICellUri>('cell:foo!A1');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
       expect(res.parts.type).to.eql('CELL');
-      expect(res.parts.id).to.eql('abc!A1');
-      expect(res.parts.ns).to.eql('abc');
+      expect(res.parts.id).to.eql('foo!A1');
+      expect(res.parts.ns).to.eql('foo');
       expect(res.parts.key).to.eql('A1');
-      expect(res.uri).to.eql('cell:abc!A1');
+      expect(res.uri).to.eql('cell:foo!A1');
       expect(res.toString()).to.eql(res.uri);
     });
 
     it('cell (row)', () => {
-      const res = Uri.parse<t.IRowUri>('cell:abc!1');
+      const res = Uri.parse<t.IRowUri>('cell:foo!1');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
       expect(res.parts.type).to.eql('ROW');
-      expect(res.parts.id).to.eql('abc!1');
-      expect(res.parts.ns).to.eql('abc');
+      expect(res.parts.id).to.eql('foo!1');
+      expect(res.parts.ns).to.eql('foo');
       expect(res.parts.key).to.eql('1');
-      expect(res.uri).to.eql('cell:abc!1');
+      expect(res.uri).to.eql('cell:foo!1');
       expect(res.toString()).to.eql(res.uri);
     });
 
     it('cell (column)', () => {
-      const res = Uri.parse<t.IColumnUri>('cell:abc!A');
+      const res = Uri.parse<t.IColumnUri>('cell:foo!A');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
       expect(res.parts.type).to.eql('COLUMN');
-      expect(res.parts.id).to.eql('abc!A');
-      expect(res.parts.ns).to.eql('abc');
+      expect(res.parts.id).to.eql('foo!A');
+      expect(res.parts.ns).to.eql('foo');
       expect(res.parts.key).to.eql('A');
-      expect(res.uri).to.eql('cell:abc!A');
+      expect(res.uri).to.eql('cell:foo!A');
       expect(res.toString()).to.eql(res.uri);
     });
 
     it('file', () => {
-      const res = Uri.parse<t.IFileUri>('file:abc:123');
+      const res = Uri.parse<t.IFileUri>('file:foo:123');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
       expect(res.parts.type).to.eql('FILE');
-      expect(res.parts.id).to.eql('abc:123');
-      expect(res.parts.ns).to.eql('abc');
+      expect(res.parts.id).to.eql('foo:123');
+      expect(res.parts.ns).to.eql('foo');
       expect(res.parts.file).to.eql('123');
-      expect(res.uri).to.eql('file:abc:123');
+      expect(res.uri).to.eql('file:foo:123');
       expect(res.toString()).to.eql(res.uri);
     });
 
@@ -230,7 +229,7 @@ describe.only('Uri', () => {
       });
 
       it('cell: no key', () => {
-        const res = Uri.parse<t.ICellUri>('cell:abcd');
+        const res = Uri.parse<t.ICellUri>('cell:foo');
         expect(res.ok).to.eql(false);
         expect(res.error && res.error.message).to.contain(`URI does not contain a "!" character`);
         expect(res.parts.key).to.eql('');
@@ -259,7 +258,6 @@ describe.only('Uri', () => {
       test('foo', 'ns:foo');
       test('ns:foo', 'ns:foo');
       test(' ns::foo ', 'ns:foo');
-      test('ns', 'ns:ns');
     });
 
     it('file', () => {
@@ -313,9 +311,17 @@ describe.only('Uri', () => {
 
       // Illegal characters.
       ILLEGAL.NS.split('').forEach(char => {
-        const id = `ns:abc${char}def`;
+        const uid = cuid();
+        const id = `${uid.substring(0, 10)}${char}${uid.substring(11)}`;
         expect(() => Uri.create.ns(id)).to.throw();
+        expect(() => Uri.create.ns(`ns:${id}`)).to.throw();
       });
+    });
+
+    it('throws: ns (not cuid)', () => {
+      const err = /URI contains an invalid identifier/;
+      expect(() => Uri.create.ns('fail')).to.throw(err);
+      expect(() => Uri.create.ns('ns:fail')).to.throw(err);
     });
 
     it('throws: file', () => {
@@ -325,7 +331,7 @@ describe.only('Uri', () => {
 
       // Illegal namespace characters.
       ILLEGAL.NS.split('').forEach(char => {
-        const ns = `ns:abc${char}def`;
+        const ns = `ns:foo${char}def`;
         expect(() => Uri.create.file(ns, 'fileid')).to.throw();
       });
 
