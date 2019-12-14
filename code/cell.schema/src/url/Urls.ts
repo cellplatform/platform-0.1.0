@@ -60,6 +60,9 @@ export class Urls {
    * [Methods]
    */
 
+  /**
+   * Builders for NAMESPACE urls.
+   */
   public ns(id: string) {
     const toPath = this.toUrl;
     if (id.includes(':')) {
@@ -84,13 +87,15 @@ export class Urls {
       /**
        * Example: /ns:foo
        */
-
       get info() {
         return toPath<t.IUrlQueryNs>(`/ns:${id}`);
       },
     };
   }
 
+  /**
+   * Builders for CELL urls.
+   */
   public cell(uri: string) {
     const toPath = this.toUrl;
     const cell = Uri.parse<t.ICellUri>(uri);
@@ -139,6 +144,9 @@ export class Urls {
     };
   }
 
+  /**
+   * Builders for ROW urls.
+   */
   public row(uri: string) {
     const toPath = this.toUrl;
     const row = Uri.parse<t.IRowUri>(uri);
@@ -162,6 +170,9 @@ export class Urls {
     };
   }
 
+  /**
+   * Builders for COLUMN urls.
+   */
   public column(uri: string) {
     const toPath = this.toUrl;
     const column = Uri.parse<t.IColumnUri>(uri);

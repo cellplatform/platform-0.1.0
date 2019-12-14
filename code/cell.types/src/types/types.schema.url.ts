@@ -7,6 +7,10 @@ export type IUrl<Q extends object = {}> = {
 };
 
 /**
+ * NAMESPACE
+ */
+
+/**
  * URL query-string parameters for a [Namespace].
  */
 export type IUrlQueryNs = {
@@ -15,6 +19,10 @@ export type IUrlQueryNs = {
   columns?: boolean | string | Array<string | boolean>;
   rows?: boolean | string | Array<string | boolean>;
 };
+
+/**
+ * CELL
+ */
 
 /**
  * URL query-string parameters for a [Cell].
@@ -30,6 +38,28 @@ export type IUrlQueryCellFiles = {};
  * URL query-string parameters for a single [Cell]'s file (by name).
  */
 export type IUrlQueryCellFile = {};
+
+/**
+ * ROW
+ */
+
+/**
+ * URL query-string parameters for a cell [Row].
+ */
+export type IUrlQueryRow = {};
+
+/**
+ * COLUMN
+ */
+
+/**
+ * URL query-string parameters for a cell [Column].
+ */
+export type IUrlQueryColumn = {};
+
+/**
+ * FILE
+ */
 
 /**
  * URL query-string parameters for a [File].
