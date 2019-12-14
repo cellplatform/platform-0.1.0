@@ -48,7 +48,7 @@ export class Uri {
          */
         const id = right;
         setError(!id, 'Namespace URI identifier not found');
-        const uri: t.INsUri = { type: 'ns', id };
+        const uri: t.INsUri = { type: 'NS', id };
         data = uri;
       } else if (left === 'file') {
         /**
@@ -109,7 +109,7 @@ export class Uri {
       return uri.parts.type === type && (type === 'UNKNOWN' ? true : uri.ok);
     },
 
-    ns: (input?: string) => Uri.is.type('ns', input),
+    ns: (input?: string) => Uri.is.type('NS', input),
     file: (input?: string) => Uri.is.type('FILE', input),
     cell: (input?: string) => Uri.is.type('CELL', input),
     row: (input?: string) => Uri.is.type('ROW', input),

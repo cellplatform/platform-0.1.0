@@ -23,7 +23,7 @@ export type IUri = INsUri | ICoordUri | IFileUri | IUnknownUri;
  * Types
  */
 export type IUnknownUri = { type: 'UNKNOWN' };
-export type INsUri = { type: 'ns'; id: string };
+export type INsUri = { type: 'NS'; id: string };
 export type IFileUri = { type: 'FILE'; id: string; ns: string; file: string };
 
 export type ICoordUri = ICellUri | IRowUri | IColumnUri;

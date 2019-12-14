@@ -121,7 +121,7 @@ export class NsSchema {
       if (uri.error) {
         throw new Error(uri.error.message);
       }
-      if (uri.parts.type !== 'ns') {
+      if (uri.parts.type !== 'NS') {
         throw new Error(`The given URI does not represent a namespace ("${uri.toString()}").`);
       }
       id = uri.parts.id;

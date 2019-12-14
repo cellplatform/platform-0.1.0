@@ -46,20 +46,20 @@ describe('Uri', () => {
         expect(Uri.is.type(type, input)).to.eql(expected, `${type} | input: ${input}`);
       };
 
-      test('ns', 'ns:abcd', true);
+      test('NS', 'ns:abcd', true);
       test('CELL', 'cell:abcd!A1', true);
       test('COLUMN', 'cell:abcd!A', true);
       test('ROW', 'cell:abcd!1', true);
       test('FILE', 'file:abc.123', true);
       test('UNKNOWN', 'foo:bar!1', true);
 
-      test('ns', undefined, false);
+      test('NS', undefined, false);
       test('CELL', undefined, false);
       test('COLUMN', undefined, false);
       test('ROW', undefined, false);
       test('FILE', undefined, false);
 
-      test('ns', '', false);
+      test('NS', '', false);
       test('CELL', '', false);
       test('COLUMN', '', false);
       test('ROW', '', false);
@@ -128,7 +128,7 @@ describe('Uri', () => {
       const res = Uri.parse<t.INsUri>('ns:abcd');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
-      expect(res.parts.type).to.eql('ns');
+      expect(res.parts.type).to.eql('NS');
       expect(res.parts.id).to.eql('abcd');
       expect(res.uri).to.eql('ns:abcd');
       expect(res.toString()).to.eql(res.uri);

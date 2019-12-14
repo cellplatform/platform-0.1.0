@@ -70,7 +70,7 @@ export class Urls {
         throw new Error(uri.error.message);
       }
 
-      if (type === 'ns') {
+      if (type === 'NS') {
         id = (uri.parts as t.INsUri).id;
       } else if (type === 'CELL') {
         id = (uri.parts as t.ICellUri).ns;
