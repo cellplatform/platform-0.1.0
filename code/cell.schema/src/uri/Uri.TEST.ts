@@ -50,20 +50,20 @@ describe('Uri', () => {
       test('CELL', 'cell:abcd!A1', true);
       test('COLUMN', 'cell:abcd!A', true);
       test('ROW', 'cell:abcd!1', true);
-      test('file', 'file:abc.123', true);
+      test('FILE', 'file:abc.123', true);
       test('UNKNOWN', 'foo:bar!1', true);
 
       test('ns', undefined, false);
       test('CELL', undefined, false);
       test('COLUMN', undefined, false);
       test('ROW', undefined, false);
-      test('file', undefined, false);
+      test('FILE', undefined, false);
 
       test('ns', '', false);
       test('CELL', '', false);
       test('COLUMN', '', false);
       test('ROW', '', false);
-      test('file', '', false);
+      test('FILE', '', false);
     });
 
     it('is.ns', () => {
@@ -174,7 +174,7 @@ describe('Uri', () => {
       const res = Uri.parse<t.IFileUri>('file:abc.123');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
-      expect(res.parts.type).to.eql('file');
+      expect(res.parts.type).to.eql('FILE');
       expect(res.parts.id).to.eql('abc.123');
       expect(res.parts.ns).to.eql('abc');
       expect(res.parts.file).to.eql('123');

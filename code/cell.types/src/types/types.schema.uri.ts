@@ -24,7 +24,7 @@ export type IUri = INsUri | ICoordUri | IFileUri | IUnknownUri;
  */
 export type IUnknownUri = { type: 'UNKNOWN' };
 export type INsUri = { type: 'ns'; id: string };
-export type IFileUri = { type: 'file'; id: string; ns: string; file: string };
+export type IFileUri = { type: 'FILE'; id: string; ns: string; file: string };
 
 export type ICoordUri = ICellUri | IRowUri | IColumnUri;
 export type ICoordUriProps = { id: string; ns: string; key: string };

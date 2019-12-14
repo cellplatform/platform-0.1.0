@@ -127,7 +127,7 @@ export class Urls {
     if (file.error) {
       throw new Error(file.error.message);
     }
-    if (file.parts.type !== 'file') {
+    if (file.parts.type !== 'FILE') {
       const err = `The given URI is not of type "file:" ("${uri}")`;
       throw new Error(err);
     }

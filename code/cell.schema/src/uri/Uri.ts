@@ -60,7 +60,7 @@ export class Uri {
         const ns = (parts[0] || '').trim();
         const file = (parts[1] || '').trim();
         setError(!file, `File identifier within namespace "${ns}" not found`);
-        const uri: t.IFileUri = { type: 'file', id, ns, file };
+        const uri: t.IFileUri = { type: 'FILE', id, ns, file };
         data = uri;
       } else if (left === 'cell') {
         /**
@@ -110,7 +110,7 @@ export class Uri {
     },
 
     ns: (input?: string) => Uri.is.type('ns', input),
-    file: (input?: string) => Uri.is.type('file', input),
+    file: (input?: string) => Uri.is.type('FILE', input),
     cell: (input?: string) => Uri.is.type('CELL', input),
     row: (input?: string) => Uri.is.type('ROW', input),
     column: (input?: string) => Uri.is.type('COLUMN', input),
