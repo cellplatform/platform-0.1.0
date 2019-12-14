@@ -22,6 +22,10 @@ export const ROUTES = {
     INFO: ['/', '/.sys(/?)'],
     UID: '/.uid',
   },
+  FILE: {
+    BASE: `/file${KEY.NS}\\:${KEY.FILE}(/?)`,
+    INFO: `/file${KEY.NS}\\:${KEY.FILE}/info(/?)`,
+  },
   NS: {
     INFO: `/ns${KEY.NS}(/?)`,
     CELL: `/ns${KEY.NS}\!${KEY.CELL}(/?)`, // NB: Redirect to cell.
@@ -29,20 +33,14 @@ export const ROUTES = {
   CELL: {
     INFO: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
     FILES: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
+    FILE_BY_INDEX: `/cell${KEY.NS}\!${KEY.CELL}/files/:index([0-9]+)`,
     FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/file/${KEY.FILENAME}`,
     NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.
   },
-  FILE: {
-    BASE: `/file${KEY.NS}\.${KEY.FILE}(/?)`,
-    INFO: `/file${KEY.NS}\.${KEY.FILE}/info(/?)`,
-  },
-
-  // TEMP 🐷 - Obsolete
   ROW: {
-    BASE: `/row${KEY.NS}\!${KEY.ROW}(/?)`,
+    INFO: `/cell${KEY.NS}\!${KEY.ROW}(/?)`,
   },
-  // TEMP 🐷 - Obsolete
   COLUMN: {
-    BASE: `/col${KEY.NS}\!${KEY.COLUMN}(/?)`,
+    INFO: `/cell${KEY.NS}\!${KEY.COLUMN}(/?)`,
   },
 };

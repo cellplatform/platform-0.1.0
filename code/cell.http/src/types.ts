@@ -123,8 +123,9 @@ export type IResGetColumnLinks = {};
  * File (info / meta-data)
  */
 export type IReqFileParams = { ns: string; file: string };
-export type IReqFileQuery = t.IUrlQueryCellFile;
 export type IReqFileInfoQuery = {};
+export type IReqFileByNameQuery = t.IUrlQueryCellFile;
+export type IReqFileByIndexQuery = t.IUrlQueryCellFile;
 
 /**
  * File: GET

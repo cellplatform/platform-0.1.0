@@ -1,9 +1,11 @@
 import { t } from '../common';
-import * as cell from './cell.file';
+import * as coord from './cell.coord';
+import * as file from './cell.file';
 
 /**
  * Routes for operating with cells.
  */
 export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) {
-  cell.init(args);
+  coord.init(args);
+  file.init(args);
 }

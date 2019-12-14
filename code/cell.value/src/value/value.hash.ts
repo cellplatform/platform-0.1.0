@@ -1,4 +1,4 @@
-import { sha256, t } from '../common';
+import { sha256, t, Uri } from '../common';
 import { squash } from './value.cell';
 
 /**
@@ -14,8 +14,8 @@ export const hash = {
    */
   ns(args: { uri: string; ns: t.INs; data?: Partial<t.INsDataCoord> }): string {
     const uri = (args.uri || '').trim();
-    if (!uri.startsWith('ns:')) {
-      throw new Error(`Hashing requires a valid "ns:" URI. Given "${uri}".`);
+    if (!Uri.is.ns(uri)) {
+      throw new Error(`Hashing a NAMESPACE (NS) requires a valid URI. Given "${uri}"`);
     }
 
     // Format NS object.
@@ -46,8 +46,8 @@ export const hash = {
    */
   file(args: { uri: string; data?: t.IFileData }): string {
     const uri = (args.uri || '').trim();
-    if (!uri.startsWith('file:')) {
-      throw new Error(`Hashing requires a valid "file:" URI. Given "${uri}".`);
+    if (!Uri.is.file(uri)) {
+      throw new Error(`Hashing a FILE requires a valid URI. Given "${uri}"`);
     }
 
     // Format data.
@@ -71,8 +71,8 @@ export const hash = {
    */
   cell(args: { uri: string; data?: t.ICellData }): string {
     const uri = (args.uri || '').trim();
-    if (!uri.startsWith('cell:')) {
-      throw new Error(`Hashing requires a valid "cell:" URI. Given "${uri}".`);
+    if (!Uri.is.cell(uri)) {
+      throw new Error(`Hashing a CELL requires a valid URI. Given "${uri}"`);
     }
 
     const { data } = args;
@@ -102,16 +102,26 @@ export const hash = {
    * Generate a uniform hash (SHA-256) of the given row.
    */
   row(args: { uri: string; data?: t.IRowData }): string {
-    const { uri, data } = args;
-    return hashAxis({ axis: 'row', uriPrefix: 'row', uri, data });
+    const { data } = args;
+    const uri = (args.uri || '').trim();
+    if (!Uri.is.row(uri)) {
+      throw new Error(`Hashing a ROW requires a valid URI. Given "${uri}"`);
+    }
+
+    return hashAxis({ axis: 'row', uri, data });
   },
 
   /**
    * Generate a uniform hash (SHA-256) of the given column.
    */
   column(args: { uri: string; data?: t.IColumnData }): string {
-    const { uri, data } = args;
-    return hashAxis({ axis: 'column', uriPrefix: 'col', uri, data });
+    const { data } = args;
+    const uri = (args.uri || '').trim();
+    if (!Uri.is.column(uri)) {
+      throw new Error(`Hashing a COLUMN requires a valid URI. Given "${uri}"`);
+    }
+
+    return hashAxis({ axis: 'column', uri, data });
   },
 };
 
@@ -121,14 +131,10 @@ export const hash = {
 
 function hashAxis(args: {
   axis: 'row' | 'column';
-  uriPrefix: 'row' | 'col';
   uri: string;
   data?: t.IRowData | t.IColumnData;
 }) {
   const uri = (args.uri || '').trim();
-  if (!uri.startsWith(`${args.uriPrefix}:`)) {
-    throw new Error(`Hashing a ${args.axis} requires a valid URI. Given "${uri}".`);
-  }
 
   const { data } = args;
   const props = squash.props(data ? data.props : undefined);

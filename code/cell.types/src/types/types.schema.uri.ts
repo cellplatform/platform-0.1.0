@@ -23,11 +23,14 @@ export type IUri = INsUri | ICoordUri | IFileUri | IUnknownUri;
  * Types
  */
 export type IUnknownUri = { type: 'UNKNOWN' };
-export type INsUri = { type: 'ns'; id: string };
-export type IFileUri = { type: 'file'; id: string; ns: string; file: string };
+export type INsUri = { type: 'NS'; id: string };
+export type IFileUri = { type: 'FILE'; id: string; ns: string; file: string };
 
-export type ICoordUri = ICellUri | IRowUri | IColumnUri;
+export type ICoordUri = ICellUri | ICoordAxisUri;
 export type ICoordUriProps = { id: string; ns: string; key: string };
+
 export type ICellUri = ICoordUriProps & { type: 'CELL' };
+
+export type ICoordAxisUri = IRowUri | IColumnUri;
 export type IRowUri = ICoordUriProps & { type: 'ROW' };
 export type IColumnUri = ICoordUriProps & { type: 'COLUMN' };

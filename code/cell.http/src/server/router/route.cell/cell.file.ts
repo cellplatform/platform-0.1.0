@@ -8,14 +8,18 @@ import { postNsResponse } from '../route.ns';
 export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) {
   const { db, fs, router } = args;
 
-  const getParams = (req: t.Request, options: { fileRequired?: boolean } = {}) => {
-    const params = req.params as t.IReqCellFileParams;
+  const getParams = (
+    req: t.Request,
+    options: { filenameRequired?: boolean; indexRequired?: boolean } = {},
+  ) => {
+    const params = req.params;
 
     const toString = (input?: any) => (input || '').toString().trim();
     const data = {
       ns: toString(params.ns || ''),
       key: toString(params.key || ''),
       filename: toString(params.filename || ''),
+      index: defaultValue<number>(params.index as number, -1),
       uri: '',
     };
 
@@ -36,8 +40,13 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       return { ...data, status: 400, error };
     }
 
-    if (!data.filename && options.fileRequired !== false) {
+    if (!data.filename && options.filenameRequired) {
       error.message = toMessage('does not contain a filename');
+      return { ...data, status: 400, error };
+    }
+
+    if (data.index < 0 && options.indexRequired) {
+      error.message = toMessage('does not contain a file index');
       return { ...data, status: 400, error };
     }
 
@@ -57,14 +66,13 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.get(routes.CELL.FILES, async req => {
     const host = req.host;
     const query = req.query as t.IReqCellFilesQuery;
-    const { status, ns, error, uri } = getParams(req, { fileRequired: false });
+    const { status, ns, error, uri } = getParams(req);
     if (!ns || error) {
       return { status, data: { error } };
     }
 
     const cell = await models.Cell.create({ db, uri }).ready;
     const url = util.urls(req.host).cell(uri);
-    // const files = util.urls(req.host).cellFilesList(cell.props.links || {});
     const files = url.files.list(cell.props.links || {});
 
     const data: t.IResGetCellFiles = {
@@ -78,14 +86,15 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
-   * GET: Get a file by name (download)
+   * GET: File by name (download)
    *      Example: /cell:foo!A1/file/kitten.jpg
    *      NB: This is the same as calling the `/file:...` GET route point directly.
    */
   router.get(routes.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
-    const query = req.query as t.IReqFileQuery;
-    const { status, ns, key, filename, error, uri: cellUri } = getParams(req);
+    const query = req.query as t.IReqFileByNameQuery;
+    const params = getParams(req, { filenameRequired: true });
+    const { status, ns, key, filename, error, uri: cellUri } = params;
     if (!ns || error) {
       return { status, data: { error } };
     }
@@ -100,6 +109,38 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       // 404 if file URI not found.
       if (!fileUri) {
         const err = `The file '${filename}' is not associated with the cell "${cellUri}".`;
+        return util.toErrorPayload(err, { status: 404 });
+      }
+
+      // Run the "file:" download handler.
+      return getFileDownloadResponse({ db, fs, uri: fileUri, query, host });
+    } catch (err) {
+      return util.toErrorPayload(err);
+    }
+  });
+
+  /**
+   * GET  File by index (download).
+   *      Example: /cell:foo!A1/files/0
+   */
+  router.get(routes.CELL.FILE_BY_INDEX, async req => {
+    const host = req.host;
+    const query = req.query as t.IReqFileByNameQuery;
+    const params = getParams(req, { indexRequired: true });
+    const { status, ns, index, error, uri: cellUri } = params;
+    if (!ns || error) {
+      return { status, data: { error } };
+    }
+
+    try {
+      // Retreive the [cell] info.
+      const cell = await models.Cell.create({ db, uri: cellUri }).ready;
+      const cellLinks = cell.props.links || {};
+      const fileUri = cellLinks[Object.keys(cellLinks)[index]];
+
+      // 404 if file URI not found.
+      if (!fileUri) {
+        const err = `A file at index [${index}] does not exist within the cell "${cellUri}".`;
         return util.toErrorPayload(err, { status: 404 });
       }
 

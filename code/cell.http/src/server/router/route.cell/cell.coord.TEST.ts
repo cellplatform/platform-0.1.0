@@ -19,8 +19,8 @@ describe('route: coord (URI: cell|row|col)', () => {
     it('malformed: no id', async () => {
       const msg = 'does not contain a namespace-identifier';
       await test('/cell:!A1', msg);
-      await test('/row:!1', msg);
-      await test('/col:!A', msg);
+      await test('/cell:!1', msg);
+      await test('/cell:!A', msg);
     });
   });
 
@@ -39,16 +39,16 @@ describe('route: coord (URI: cell|row|col)', () => {
       expect(body.data).to.eql({});
     };
 
-    it('cell:foo!A1', async () => {
+    it('cell:foo!A1 (cell)', async () => {
       await test('cell:foo!A1');
     });
 
-    it('row:foo!1', async () => {
-      await test('row:foo!1');
+    it('cell:foo!1 (row)', async () => {
+      await test('cell:foo!1');
     });
 
-    it('col:foo!A', async () => {
-      await test('col:foo!A');
+    it('cell:foo!A (column)', async () => {
+      await test('cell:foo!A');
     });
   });
 
@@ -97,7 +97,7 @@ describe('route: coord (URI: cell|row|col)', () => {
       const mock = await createMock();
       await post.ns('ns:foo', { columns: { A: { props: { width: 123 } } } }, { mock });
 
-      const uri = 'col:foo!A';
+      const uri = 'cell:foo!A';
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
@@ -117,7 +117,7 @@ describe('route: coord (URI: cell|row|col)', () => {
       const mock = await createMock();
       await post.ns('ns:foo', { rows: { 1: { props: { height: 80 } } } }, { mock });
 
-      const uri = 'row:foo!1';
+      const uri = 'cell:foo!1';
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 

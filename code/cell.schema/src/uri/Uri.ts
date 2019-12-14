@@ -48,7 +48,7 @@ export class Uri {
          */
         const id = right;
         setError(!id, 'Namespace URI identifier not found');
-        const uri: t.INsUri = { type: 'ns', id };
+        const uri: t.INsUri = { type: 'NS', id };
         data = uri;
       } else if (left === 'file') {
         /**
@@ -56,11 +56,11 @@ export class Uri {
          */
         const id = right;
         setError(!id, 'File URI identifier not found');
-        const parts = id.split('.');
+        const parts = id.split(':');
         const ns = (parts[0] || '').trim();
         const file = (parts[1] || '').trim();
         setError(!file, `File identifier within namespace "${ns}" not found`);
-        const uri: t.IFileUri = { type: 'file', id, ns, file };
+        const uri: t.IFileUri = { type: 'FILE', id, ns, file };
         data = uri;
       } else if (left === 'cell') {
         /**
@@ -109,8 +109,8 @@ export class Uri {
       return uri.parts.type === type && (type === 'UNKNOWN' ? true : uri.ok);
     },
 
-    ns: (input?: string) => Uri.is.type('ns', input),
-    file: (input?: string) => Uri.is.type('file', input),
+    ns: (input?: string) => Uri.is.type('NS', input),
+    file: (input?: string) => Uri.is.type('FILE', input),
     cell: (input?: string) => Uri.is.type('CELL', input),
     row: (input?: string) => Uri.is.type('ROW', input),
     column: (input?: string) => Uri.is.type('COLUMN', input),
@@ -141,7 +141,7 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
     throw new Error(err);
   }
   if (typeof suffix === 'string') {
-    suffix = suffix.trim().replace(/^\!*/, '');
+    suffix = (suffix || '').trim().replace(/^\!*/, '');
     if (!suffix) {
       throw new Error(`The "${prefix}" URI was not supplied with a suffix key.`);
     }
@@ -150,11 +150,17 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
         const err = `The "file" URI contains an invalid file-identifier, must be alpha-numeric ("${suffix}").`;
         throw new Error(err);
       }
-      suffix = `.${suffix}`;
+      suffix = `:${suffix}`;
     } else {
+      if (suffix === 'undefined') {
+        throw new Error('BOO');
+      }
+
+      suffix = suffix || '';
       const suffixType = coord.cell.toType(suffix) || '';
       if (suffixType !== type) {
-        const err = `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${suffix}").`;
+        const key = suffix || '';
+        const err = `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${key}").`;
         throw new Error(err);
       }
       suffix = `!${suffix}`;

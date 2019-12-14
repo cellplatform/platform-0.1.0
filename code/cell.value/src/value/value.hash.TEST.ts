@@ -12,6 +12,8 @@ describe('hash', () => {
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
 
+      // console.log('hash', hash.substring(hash.length - 10));
+
       expect(hash.startsWith('sha256-')).to.eql(true, err);
       expect(hash.endsWith(expected)).to.eql(true, err);
     };
@@ -22,13 +24,13 @@ describe('hash', () => {
       expect(() => value.hash.ns({ uri: '  ', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'cell:foo!A1', ns })).to.throw();
       expect(() => value.hash.ns({ uri: ' cell:foo!A1  ', ns })).to.throw();
-      expect(() => value.hash.ns({ uri: 'row:foo!1', ns })).to.throw();
-      expect(() => value.hash.ns({ uri: 'col:foo!A', ns })).to.throw();
+      expect(() => value.hash.ns({ uri: 'cell:foo!1', ns })).to.throw();
+      expect(() => value.hash.ns({ uri: 'cell:foo!A', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'file:foo.123', ns })).to.throw();
     });
 
     it('excludes existing hash', () => {
-      const HASH = '951a0383ad8';
+      const HASH = '51a0383ad8';
       test({ id: 'foo', hash: '-' }, undefined, HASH);
       test({ id: 'foo', hash: '' }, undefined, HASH);
       test({ id: 'foo', hash: 'yo' }, undefined, HASH);
@@ -36,7 +38,7 @@ describe('hash', () => {
     });
 
     it('no change between undefined/empty data', () => {
-      const HASH = '951a0383ad8';
+      const HASH = '51a0383ad8';
       const ns: t.INs = { id: 'foo' };
       test(ns, undefined, HASH);
       test(ns, {}, HASH);
@@ -50,8 +52,8 @@ describe('hash', () => {
       //     tallies up the child data hashes if they exist.
       //     Make sure to pre-calculate the hashes.
 
-      test(ns, { cells: { A1: { value: 123, hash: 'HASH-A1a' } } }, 'dbdd2ad1de0fe4e279');
-      test(ns, { cells: { A1: { value: 124, hash: 'HASH-A1b' } } }, '33138a4244ea71fc');
+      test(ns, { cells: { A1: { value: 123, hash: 'HASH-A1a' } } }, 'de0fe4e279');
+      test(ns, { cells: { A1: { value: 124, hash: 'HASH-A1b' } } }, '4244ea71fc');
 
       test(
         ns,
@@ -60,7 +62,7 @@ describe('hash', () => {
           rows: { 1: { props: { height: 60 }, hash: 'HASH-1' } },
           columns: { A: { props: { width: 250 }, hash: 'HASH-A' } },
         },
-        '0a5491bc64dc5d25c932de6',
+        'd25c932de6',
       );
 
       test(
@@ -70,7 +72,7 @@ describe('hash', () => {
           rows: { 1: { props: { height: 60 } } },
           columns: { A: { props: { width: 250 } } },
         },
-        'fc60627f951a0383ad8',
+        '51a0383ad8',
       );
     });
   });
@@ -85,6 +87,8 @@ describe('hash', () => {
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
 
+      // console.log('hash', hash.substring(hash.length - 10));
+
       expect(hash.startsWith('sha256-')).to.eql(true, err);
       expect(hash.endsWith(expected)).to.eql(true, err);
     };
@@ -96,21 +100,21 @@ describe('hash', () => {
     });
 
     it('hashes a cell', () => {
-      test(undefined, '74cbb77a4112ea85f3a3');
-      test({ value: undefined }, '74cbb77a4112ea85f3a3');
-      test({ value: null }, '74cbb77a4112ea85f3a3');
-      test({ value: 123 }, 'd53be0bdbce2a25b2a36');
-      test({ value: 'hello' }, 'b3813001a7b30883363c');
-      test({ value: 'hello', props: {} }, 'b3813001a7b30883363c');
-      test({ value: 'hello', props: { style: { bold: true } } }, 'fab8857189a788c7af8e');
-      test({ links: { main: 'ns:abc' } }, '921f26767a2d39629');
+      test(undefined, '12ea85f3a3');
+      test({ value: undefined }, '12ea85f3a3');
+      test({ value: null }, '12ea85f3a3');
+      test({ value: 123 }, 'e2a25b2a36');
+      test({ value: 'hello' }, 'b30883363c');
+      test({ value: 'hello', props: {} }, 'b30883363c');
+      test({ value: 'hello', props: { style: { bold: true } } }, 'a788c7af8e');
+      test({ links: { main: 'ns:abc' } }, '67a2d39629');
 
       const error: t.IRefErrorCircular = { type: 'REF/circular', path: 'A1/A1', message: 'Fail' };
-      test({ value: 'hello', error }, '92a8675656f6818ec330');
+      test({ value: 'hello', error }, 'f6818ec330');
     });
 
     it('excludes existing hash', () => {
-      const HASH = '1a7b30883363c';
+      const HASH = 'b30883363c';
       test({ value: 'hello' }, HASH);
       test({ value: 'hello', hash: '-' }, HASH);
       test({ value: 'hello', hash: '' }, HASH);
@@ -118,10 +122,14 @@ describe('hash', () => {
     });
 
     it('same hash for no param AND no cell-value', () => {
-      const HASH = 'sha256-77f00fd1a859e597968d1987608778ac197505ea97d174cbb77a4112ea85f3a3';
+      const HASH = '12ea85f3a3';
       const test = (data?: t.ICellData) => {
         const hash = value.hash.cell({ uri: 'cell:abcd!A1', data });
-        expect(hash).to.eql(HASH);
+
+        // console.log('hash', hash.substring(hash.length - 10));
+
+        expect(hash.startsWith('sha256-')).to.eql(true);
+        expect(hash.endsWith(HASH)).to.eql(true);
       };
       test();
       test(undefined);
@@ -129,10 +137,14 @@ describe('hash', () => {
     });
 
     it('returns same hash for equivalent props variants', () => {
-      const HASH = 'sha256-4b3640ce563efa431406a23c8cb3683e9fe714349f07d5648106e98ac7d1f8e8';
+      const HASH = 'e2a25b2a36';
       const test = (props?: {}) => {
-        const hash = value.hash.cell({ uri: 'cell:abcd:A1', data: { value: 123, props } });
-        expect(hash).to.eql(HASH);
+        const hash = value.hash.cell({ uri: 'cell:abcd!A1', data: { value: 123, props } });
+
+        // console.log('hash', hash.substring(hash.length - 10));
+
+        expect(hash.startsWith('sha256-')).to.eql(true);
+        expect(hash.endsWith(HASH)).to.eql(true);
       };
       test();
       test({});
@@ -147,10 +159,12 @@ describe('hash', () => {
 
     let index = -1;
     const test = (data: t.IRowData | undefined, expected: string) => {
-      const hash = value.hash.row({ uri: 'row:foo!1', data });
+      const hash = value.hash.row({ uri: 'cell:foo!1', data });
 
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
+
+      // console.log('hash', hash.substring(hash.length - 10));
 
       expect(hash.startsWith('sha256-')).to.eql(true, err);
       expect(hash.endsWith(expected)).to.eql(true, err);
@@ -161,12 +175,12 @@ describe('hash', () => {
       expect(() => value.hash.row({ uri: '  ' })).to.throw();
       expect(() => value.hash.row({ uri: 'ns:foo' })).to.throw();
       expect(() => value.hash.row({ uri: 'cell:foo!A1' })).to.throw();
-      expect(() => value.hash.row({ uri: 'col:foo!A' })).to.throw();
+      expect(() => value.hash.row({ uri: 'cell:foo!A' })).to.throw();
       expect(() => value.hash.row({ uri: 'file:foo.123' })).to.throw();
     });
 
     it('no change between undefined/empty data', () => {
-      const EMPTY = 'f1d5f4580';
+      const EMPTY = '356cc0bfc9';
       test(undefined, EMPTY);
       test({}, EMPTY);
 
@@ -177,13 +191,13 @@ describe('hash', () => {
     });
 
     it('hash props/error', () => {
-      test({ props: { height: 123 } }, '6bc2a50012');
-      test({ error: { type: 'FAIL', message: 'Bummer' } }, '9276e9a61b2');
-      test({ props: { height: 123 }, error: { type: 'FAIL', message: 'Bummer' } }, '489635cc4f');
+      test({ props: { height: 123 } }, 'd35daa3855');
+      test({ error: { type: 'FAIL', message: 'Bummer' } }, '70ca03a602');
+      test({ props: { height: 123 }, error: { type: 'FAIL', message: 'Bummer' } }, '706cd0c7cc');
     });
 
     it('excludes existing hash', () => {
-      const HASH = '814e46bc2a50012';
+      const HASH = 'd35daa3855';
       test({ props: { height: 123 } }, HASH);
       test({ props: { height: 123 }, hash: '' }, HASH);
       test({ props: { height: 123 }, hash: '-' }, HASH);
@@ -196,10 +210,12 @@ describe('hash', () => {
 
     let index = -1;
     const test = (data: t.IRowData | undefined, expected: string) => {
-      const hash = value.hash.column({ uri: 'col:foo!1', data });
+      const hash = value.hash.column({ uri: 'cell:foo!A', data });
 
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
+
+      // console.log('hash', hash.substring(hash.length - 10));
 
       expect(hash.startsWith('sha256-')).to.eql(true, err);
       expect(hash.endsWith(expected)).to.eql(true, err);
@@ -210,12 +226,12 @@ describe('hash', () => {
       expect(() => value.hash.column({ uri: '  ' })).to.throw();
       expect(() => value.hash.column({ uri: 'ns:foo' })).to.throw();
       expect(() => value.hash.column({ uri: 'cell:foo!A1' })).to.throw();
-      expect(() => value.hash.column({ uri: 'row:foo!1' })).to.throw();
+      expect(() => value.hash.column({ uri: 'cell:foo!1' })).to.throw();
       expect(() => value.hash.column({ uri: 'file:foo.123' })).to.throw();
     });
 
     it('no change between undefined/empty data', () => {
-      const EMPTY = '60e123db802f7a5';
+      const EMPTY = '1311449838';
       test(undefined, EMPTY);
       test({}, EMPTY);
 
@@ -226,13 +242,13 @@ describe('hash', () => {
     });
 
     it('hash props/error', () => {
-      test({ props: { width: 250 } }, '32bf0eac44b45945');
-      test({ error: { type: 'FAIL', message: 'Bummer' } }, 'd5ca634bfddae2');
-      test({ props: { width: 250 }, error: { type: 'FAIL', message: 'Bummer' } }, 'ea2465e6bacf97');
+      test({ props: { width: 250 } }, '92b6c98c59');
+      test({ error: { type: 'FAIL', message: 'Bummer' } }, '13959c04f8');
+      test({ props: { width: 250 }, error: { type: 'FAIL', message: 'Bummer' } }, 'd7cad6af36');
     });
 
     it('excludes existing hash', () => {
-      const HASH = 'f0eac44b45945';
+      const HASH = '92b6c98c59';
       test({ props: { width: 250 } }, HASH);
       test({ props: { width: 250 }, hash: '' }, HASH);
       test({ props: { width: 250 }, hash: '-' }, HASH);
@@ -245,7 +261,7 @@ describe('hash', () => {
 
     let index = -1;
     const test = (data: t.IFileData | undefined, expected: string) => {
-      const hash = value.hash.file({ uri: 'file:foo.123', data });
+      const hash = value.hash.file({ uri: 'file:foo:123', data });
 
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
@@ -264,8 +280,8 @@ describe('hash', () => {
       invalid('  ');
       invalid('ns:foo');
       invalid('cell:foo!A1');
-      invalid('col:foo!A');
-      invalid('row:foo!1');
+      invalid('cell:foo!A');
+      invalid('cell:foo!1');
     });
 
     it('hash props/error/buffer', async () => {
@@ -273,11 +289,11 @@ describe('hash', () => {
       const filehash = value.hash.sha256(jpg);
       const error = { type: 'FAIL', message: 'Bummer' };
 
-      test({ props: { name: 'image.png' } }, 'e2e43515c3');
-      test({ props: { name: 'image.png', filehash } }, 'e4ca8e0b28');
-      test({ props: { name: 'image.png', mimetype: 'image/png', filehash } }, 'c4b9b38ffd');
-      test({ props: {}, error }, 'b97a3f147a');
-      test({ props: { name: 'image.png', filehash }, error }, '79234c6567');
+      test({ props: { name: 'image.png' } }, 'ef430dc33f');
+      test({ props: { name: 'image.png', filehash } }, 'c212ee6bcf');
+      test({ props: { name: 'image.png', mimetype: 'image/png', filehash } }, 'c3fc50de3c');
+      test({ props: {}, error }, '1fd68d1131');
+      test({ props: { name: 'image.png', filehash }, error }, '842c450c84');
     });
   });
 });
