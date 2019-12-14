@@ -1,7 +1,7 @@
 import { expect, t } from '../test';
 import { Uri } from './Uri';
 
-describe('Uri', () => {
+describe.only('Uri', () => {
   describe('ids', () => {
     it('Uri.cuid', () => {
       const res = Uri.cuid();
@@ -17,14 +17,14 @@ describe('Uri', () => {
   describe('is', () => {
     it('is.uri', () => {
       const test = (input?: string, expected?: boolean) => {
-        expect(Uri.is.uri(input)).to.eql(expected);
+        expect(Uri.is.uri(input)).to.eql(expected, input);
       };
 
       test('ns:abcd', true);
       test('cell:abcd!A1', true);
       test('cell:abcd!1', true);
       test('cell:abcd!A', true);
-      test('file:abcd.123', true);
+      test('file:abcd:123', true);
 
       test(undefined, false);
       test('', false);
@@ -37,7 +37,7 @@ describe('Uri', () => {
       test('row:abcd', false);
       test('col:abcd', false);
       test('file:abcd', false);
-      test('file:abcd:123', false);
+      test('file:abcd.123', false);
       test('file:abcd-123', false);
     });
 
@@ -50,7 +50,7 @@ describe('Uri', () => {
       test('CELL', 'cell:abcd!A1', true);
       test('COLUMN', 'cell:abcd!A', true);
       test('ROW', 'cell:abcd!1', true);
-      test('FILE', 'file:abc.123', true);
+      test('FILE', 'file:abc:123', true);
       test('UNKNOWN', 'foo:bar!1', true);
 
       test('NS', undefined, false);
@@ -71,6 +71,7 @@ describe('Uri', () => {
         expect(Uri.is.ns(input)).to.eql(expected);
       };
       test('ns:abcd', true);
+
       test('', false);
       test(undefined, false);
       test('cell:abcd!A1', false);
@@ -82,7 +83,8 @@ describe('Uri', () => {
       const test = (input?: string, expected?: boolean) => {
         expect(Uri.is.file(input)).to.eql(expected);
       };
-      test('file:abcd.123', true);
+      test('file:abcd:123', true);
+
       test('file:abcd', false);
       test('ns:abcd', false);
       test('', false);
@@ -94,6 +96,7 @@ describe('Uri', () => {
         expect(Uri.is.cell(input)).to.eql(expected);
       };
       test('cell:abcd!A1', true);
+
       test('', false);
       test(undefined, false);
       test('ns:abcd', false);
@@ -105,6 +108,7 @@ describe('Uri', () => {
         expect(Uri.is.row(input)).to.eql(expected);
       };
       test('cell:abcd!1', true);
+
       test('', false);
       test(undefined, false);
       test('ns:abcd', false);
@@ -116,6 +120,7 @@ describe('Uri', () => {
         expect(Uri.is.column(input)).to.eql(expected);
       };
       test('cell:abcd!A', true);
+
       test('', false);
       test(undefined, false);
       test('ns:abcd', false);
@@ -171,14 +176,14 @@ describe('Uri', () => {
     });
 
     it('file', () => {
-      const res = Uri.parse<t.IFileUri>('file:abc.123');
+      const res = Uri.parse<t.IFileUri>('file:abc:123');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
       expect(res.parts.type).to.eql('FILE');
-      expect(res.parts.id).to.eql('abc.123');
+      expect(res.parts.id).to.eql('abc:123');
       expect(res.parts.ns).to.eql('abc');
       expect(res.parts.file).to.eql('123');
-      expect(res.uri).to.eql('file:abc.123');
+      expect(res.uri).to.eql('file:abc:123');
       expect(res.toString()).to.eql(res.uri);
     });
 
@@ -262,9 +267,9 @@ describe('Uri', () => {
         const res = Uri.create.file(ns, file);
         expect(res).to.eql(expected);
       };
-      test('foo', '123', 'file:foo.123');
-      test(' foo ', ' 123 ', 'file:foo.123');
-      test('file:foo', '123', 'file:foo.123');
+      test('foo', '123', 'file:foo:123');
+      test(' foo ', ' 123 ', 'file:foo:123');
+      test('file:foo', '123', 'file:foo:123');
     });
 
     it('cell', () => {

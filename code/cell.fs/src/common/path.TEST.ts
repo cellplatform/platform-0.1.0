@@ -1,5 +1,4 @@
-import { expect } from 'chai';
-
+import { expect } from '../test';
 import { path } from '.';
 
 describe('path', () => {
@@ -19,7 +18,7 @@ describe('path', () => {
 
   it('throw if not root path provided', () => {
     const test = (root: any) => {
-      const fn = () => path.resolve({ uri: 'file:foo.123', root });
+      const fn = () => path.resolve({ uri: 'file:foo:123', root });
       expect(fn).to.throw(/Invalid root path/);
     };
     test(undefined);
@@ -32,8 +31,8 @@ describe('path', () => {
       const res = path.resolve({ uri, root });
       expect(res).to.eql(`${root}/${expected}`);
     };
-    test('file:foo.123', '/tmp', 'ns.foo/123');
-    test('file:foo.123', 'tmp', 'ns.foo/123');
-    test('file:ck3jldh1z00043fetc11ockko.1z53tcj', '/tmp', 'ns.ck3jldh1z00043fetc11ockko/1z53tcj');
+    test('file:foo:123', '/tmp', 'ns.foo/123');
+    test('file:foo:123', 'tmp', 'ns.foo/123');
+    test('file:ck3jldh1z00043fetc11ockko:1z53tcj', '/tmp', 'ns.ck3jldh1z00043fetc11ockko/1z53tcj');
   });
 });

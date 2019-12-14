@@ -48,8 +48,8 @@ describe('S3', () => {
         const res = fs.resolve(uri);
         expect(res).to.eql(`/tmp/test/${expected}`);
       };
-      test('file:foo.123', 'ns.foo/123');
-      test('file:ck3jldh1z00043fetc11ockko.1z53tcj', 'ns.ck3jldh1z00043fetc11ockko/1z53tcj');
+      test('file:foo:123', 'ns.foo/123');
+      test('file:ck3jldh1z00043fetc11ockko:1z53tcj', 'ns.ck3jldh1z00043fetc11ockko/1z53tcj');
     });
   });
 });

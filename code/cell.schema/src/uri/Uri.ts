@@ -56,7 +56,7 @@ export class Uri {
          */
         const id = right;
         setError(!id, 'File URI identifier not found');
-        const parts = id.split('.');
+        const parts = id.split(':');
         const ns = (parts[0] || '').trim();
         const file = (parts[1] || '').trim();
         setError(!file, `File identifier within namespace "${ns}" not found`);
@@ -150,7 +150,7 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
         const err = `The "file" URI contains an invalid file-identifier, must be alpha-numeric ("${suffix}").`;
         throw new Error(err);
       }
-      suffix = `.${suffix}`;
+      suffix = `:${suffix}`;
     } else {
       const suffixType = coord.cell.toType(suffix) || '';
       if (suffixType !== type) {

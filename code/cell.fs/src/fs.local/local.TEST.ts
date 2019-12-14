@@ -21,8 +21,8 @@ describe('fs.local', () => {
         const res = fs.resolve(uri);
         expect(res).to.eql(`${PATH.LOCAL}/${expected}`);
       };
-      test('file:foo.123', 'ns.foo/123');
-      test('file:ck3jldh1z00043fetc11ockko.1z53tcj', 'ns.ck3jldh1z00043fetc11ockko/1z53tcj');
+      test('file:foo:123', 'ns.foo/123');
+      test('file:ck3jldh1z00043fetc11ockko:1z53tcj', 'ns.ck3jldh1z00043fetc11ockko/1z53tcj');
     });
   });
 
@@ -31,7 +31,7 @@ describe('fs.local', () => {
     const fs = init();
 
     const png = await util.image('bird.png');
-    const uri = 'file:foo.bird';
+    const uri = 'file:foo:bird';
     const res = await fs.write(`  ${uri} `, png); // NB: URI padded with spaces (corrected internally).
     const file = res.file;
 
@@ -49,7 +49,7 @@ describe('fs.local', () => {
     const fs = init();
 
     const png = await util.image('bird.png');
-    const uri = 'file:foo.bird';
+    const uri = 'file:foo:bird';
     const path = fs.resolve(uri);
     await util.fs.ensureDir(util.fs.dirname(path));
     await util.fs.writeFile(path, png);
@@ -69,7 +69,7 @@ describe('fs.local', () => {
     it('read file (404 - not found)', async () => {
       await util.reset();
       const fs = init();
-      const uri = 'file:foo.noexist';
+      const uri = 'file:foo:noexist';
 
       const res = await fs.read(uri);
       const error = res.error as t.IFileSystemError;
@@ -78,7 +78,7 @@ describe('fs.local', () => {
       expect(res.file).to.eql(undefined);
       expect(error.type).to.eql('FS/read/404');
       expect(error.path).to.eql(fs.resolve(uri));
-      expect(error.message).to.contain(`"file:foo.noexist" does not exist`);
+      expect(error.message).to.contain(`"file:foo:noexist" does not exist`);
     });
   });
 });

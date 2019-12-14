@@ -12,7 +12,7 @@ export function resolve(args: { root: string; uri: string }) {
     const msg = `Invalid URI. ${err ? err.message : ''}`.trim();
     throw new Error(msg);
   }
-  if (file.parts.type !== 'file') {
+  if (file.parts.type !== 'FILE') {
     const msg = `Invalid URI. Not of type "file:" ("${uri}").`;
     throw new Error(msg);
   }

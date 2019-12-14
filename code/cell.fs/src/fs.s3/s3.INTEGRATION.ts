@@ -9,7 +9,7 @@ describe('S3 (INTEGRATION)', function() {
 
     const filename = 'bird.png';
     const png = await util.image(filename);
-    const uri = 'file:foo.bird';
+    const uri = 'file:foo:bird';
     const res = await fs.write(`  ${uri} `, png, { filename }); // NB: URI padded with spaces (corrected internally).
     const file = res.file;
 
@@ -30,7 +30,7 @@ describe('S3 (INTEGRATION)', function() {
     await util.reset();
     const fs = util.initS3();
 
-    const uri = 'file:foo.bird';
+    const uri = 'file:foo:bird';
     const res = await fs.read(uri);
     const file = res.file as t.IFileSystemFile;
 
