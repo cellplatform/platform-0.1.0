@@ -65,7 +65,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.get(routes.CELL.FILES, async req => {
     const host = req.host;
-    const query = req.query as t.IReqCellFilesQuery;
+    const query = req.query as t.IUrlQueryGetCellFiles;
     const { status, ns, error, uri } = getParams(req);
     if (!ns || error) {
       return { status, data: { error } };
@@ -92,7 +92,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.get(routes.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
-    const query = req.query as t.IReqFileByNameQuery;
+    const query = req.query as t.IUrlQueryGetCellFileByName;
     const params = getParams(req, { filenameRequired: true });
     const { status, ns, key, filename, error, uri: cellUri } = params;
     if (!ns || error) {
@@ -125,7 +125,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.get(routes.CELL.FILE_BY_INDEX, async req => {
     const host = req.host;
-    const query = req.query as t.IReqFileByNameQuery;
+    const query = req.query as t.IUrlQueryGetCellFileByIndex;
     const params = getParams(req, { indexRequired: true });
     const { status, ns, index, error, uri: cellUri } = params;
     if (!ns || error) {
@@ -156,7 +156,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.post(routes.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
-    const query = req.query as t.IReqPostCellFileQuery;
+    const query = req.query as t.IUrlQueryPostFile;
     const { status, ns, key, filename, error, uri: cellUri } = getParams(req);
     if (!ns || error) {
       return { status, data: { error } };

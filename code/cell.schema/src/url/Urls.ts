@@ -88,7 +88,7 @@ export class Urls {
        * Example: /ns:foo
        */
       get info() {
-        return toPath<t.IUrlQueryNs>(`/ns:${id}`);
+        return toPath<t.IUrlQueryGetNs>(`/ns:${id}`);
       },
     };
   }
@@ -113,7 +113,7 @@ export class Urls {
        * Example: /cell:foo!A1
        */
       get info() {
-        type Q = t.IUrlQueryCell;
+        type Q = t.IUrlQueryGetCell;
         return toPath<Q>(`/cell:${ns}!${key}`);
       },
 
@@ -121,7 +121,7 @@ export class Urls {
        * Example: /cell:foo!A1/files
        */
       get files() {
-        type Q = t.IUrlQueryCellFiles;
+        type Q = t.IUrlQueryGetCellFiles;
         return toPath<Q>(`/cell:${ns}!${key}/files`);
       },
 
@@ -133,7 +133,7 @@ export class Urls {
          * Example: /cell:foo!A1/file/kitten.png
          */
         byName(name: string) {
-          type Q = t.IUrlQueryCellFileByName;
+          type Q = t.IUrlQueryGetCellFileByName;
           name = (name || '').trim();
           if (!name) {
             throw new Error(`Filename not provided.`);
@@ -145,7 +145,7 @@ export class Urls {
          * Example: /cell:foo!A1/files/0
          */
         byIndex(index: number) {
-          type Q = t.IUrlQueryCellFileByIndex;
+          type Q = t.IUrlQueryGetCellFileByIndex;
           if (typeof index !== 'number') {
             throw new Error(`File index not provided.`);
           }
@@ -175,7 +175,7 @@ export class Urls {
        * Example: /cell:foo!1
        */
       get info() {
-        type Q = t.IUrlQueryRow;
+        type Q = t.IUrlQueryGetRow;
         return toPath<Q>(`/cell:${ns}!${key}`);
       },
     };
@@ -201,7 +201,7 @@ export class Urls {
        * Example: /cell:foo!A
        */
       get info() {
-        type Q = t.IUrlQueryColumn;
+        type Q = t.IUrlQueryGetColumn;
         return toPath<Q>(`/cell:${ns}!${key}`);
       },
     };

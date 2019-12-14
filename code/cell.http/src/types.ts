@@ -67,12 +67,10 @@ export type ILinkMap = { [key: string]: string };
  * Namespace
  */
 export type IReqNsParams = { ns: string };
-export type IReqNsQuery = t.IUrlQueryNs;
 
 /**
  * Namespace: GET
  */
-export type IReqGetNsQuery = IReqNsQuery;
 export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsLinks>;
 export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
 export type IResGetNsLinks = { data: string };
@@ -80,9 +78,6 @@ export type IResGetNsLinks = { data: string };
 /**
  * Namespace: POST
  */
-export type IReqPostNsQuery = IReqNsQuery & {
-  changes?: boolean; // NB: return list of changes (default: true).
-};
 
 export type IReqPostNsBody = {
   ns?: Partial<t.INsProps>;
@@ -100,7 +95,7 @@ export type IReqCoordParams = { ns: string; key: string };
 export type IReqCellParams = IReqCoordParams;
 export type IReqColumnParams = IReqCoordParams;
 export type IReqRowParams = IReqCoordParams;
-export type IReqCoordQuery = t.IUrlQueryCell;
+export type IReqCoordQuery = t.IUrlQueryGetCell;
 
 /**
  * GET
@@ -124,8 +119,6 @@ export type IResGetColumnLinks = {};
  */
 export type IReqFileParams = { ns: string; file: string };
 export type IReqFileInfoQuery = {};
-export type IReqFileByNameQuery = t.IUrlQueryCellFile;
-export type IReqFileByIndexQuery = t.IUrlQueryCellFile;
 
 /**
  * File: GET
@@ -137,9 +130,6 @@ export type IResGetFileLinks = { file: string; info: string };
 /**
  * File: POST
  */
-export type IReqPostFileQuery = IReqFileInfoQuery & {
-  changes?: boolean; // NB: return list of changes (default: true).
-};
 export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 
@@ -149,7 +139,6 @@ export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 
 export type IReqCellsFileParams = IReqCoordParams;
 export type IReqCellFileParams = IReqCoordParams & { filename: string };
-export type IReqPostCellFileQuery = t.IUrlQueryPostFile;
 
 export type IResPostCellFile = IUriResponse<IResPostCellFileData, IResPostCellLinks>;
 export type IResPostCellFileData = {
@@ -162,7 +151,6 @@ export type IResPostCellLinks = IResGetCellLinks & {};
  * Cell/Files (list)
  */
 export type IReqCellFilesParams = IReqCellParams;
-export type IReqCellFilesQuery = t.IUrlQueryCellFiles;
 export type IResGetCellFiles = {
   cell: string;
   uri: string;
