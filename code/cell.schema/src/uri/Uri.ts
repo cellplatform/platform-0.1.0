@@ -191,5 +191,5 @@ function isValidId(input: string) {
   }
 
   // HACK: Certain NS ids are allowed for testing.
-  return ['foo'].includes(input);
+  return ['foo', 'bar', 'zoo', 'foobar'].includes(input);
 }
