@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.types",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "Shared types for all cell (eg. 'A1') related modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

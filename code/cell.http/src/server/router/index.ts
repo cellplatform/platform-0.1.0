@@ -1,7 +1,6 @@
 import { t, routes, ERROR } from './common';
 import { sys } from './route.sys';
 import * as ns from './route.ns';
-import * as coord from './route.coord';
 import * as file from './route.file';
 import * as cell from './route.cell';
 
@@ -20,7 +19,6 @@ export function init(args: {
   // Initialize routes.
   sys.init(args);
   ns.init(args);
-  coord.init(args);
   file.init(args);
   cell.init(args);
 

@@ -25,12 +25,12 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
-"@platform/cell.fs.sync@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.0.8.tgz#6b741f517f0c21ac5ab4a0371590815ddee2ff8d"
-  integrity sha512-GeoifIpKS4hnet2us+yUu8YC3S41oB/0Ljog5ayzuQafbgkSRtvfQt5vJjrOHNFnncCTUBXKlvYQxkr+NQHR+Q==
+"@platform/cell.fs.sync@0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.0.9.tgz#4d57bad37fa197ae732fe638a370dfba6cb5455c"
+  integrity sha512-0+Q3JBEDS83UjRJsvQetUrnFyxIkRQ+M9AgsoHtasYMLzoxR39Hy+CAZxGxSrLGyGRBI3+SryScDu42dxuR6oQ==
   dependencies:
-    "@platform/cell.types" "0.2.9"
+    "@platform/cell.types" "0.2.10"
     "@platform/fs" "0.3.5"
     "@platform/http" "0.5.2"
     "@platform/libs" "0.1.5"
@@ -38,10 +38,10 @@
     form-data "3.0.0"
     semver "^6.3.0"
 
-"@platform/cell.types@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.2.9.tgz#37a5226b95a4e6e5eee60bd480acac7005b152fd"
-  integrity sha512-oZ+j0a7v/nu4X+guz+2EqrlbevX09a73qJDfbn8qkKYB/tyfsJ1PDTwIDHDn+aIWdHy2cmT0CAmAlGQ0izGtdg==
+"@platform/cell.types@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.2.10.tgz#02104cb884ba7c99013871454a2f4fa8cbc765dd"
+  integrity sha512-afAgM5fNOAP3IZQ1KXB12m+diWm0VXVigEUrfgWkBvXdM46LraX7IHRrWVOTJac2HxbvZ5Z/YEuezC3OKr07ZQ==
   dependencies:
     "@platform/cache" "0.2.5"
     "@platform/fsdb.types" "0.5.7"
