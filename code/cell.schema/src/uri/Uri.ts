@@ -1,6 +1,7 @@
 import { t, cuid, slug, coord } from '../common';
 
-type UriPrefix = 'ns' | 'col' | 'row' | 'cell' | 'file';
+type UriType = 'NS' | 'CELL' | 'ROW' | 'COLUMN' | 'FILE';
+type UriPrefix = 'ns' | 'cell' | 'file';
 
 export class Uri {
   public static cuid = cuid;
@@ -10,11 +11,11 @@ export class Uri {
    * Construct a URI string from arguments.
    */
   public static create = {
-    ns: (id: string) => toUri('ns', id),
-    cell: (ns: string, key: string) => toUri('cell', ns, key),
-    row: (ns: string, key: string) => toUri('row', ns, key),
-    column: (ns: string, key: string) => toUri('col', ns, key),
-    file: (ns: string, fileid: string) => toUri('file', ns, fileid), // NB: use `slug` for file-id.
+    ns: (id: string) => toUri('ns', 'NS', id),
+    cell: (ns: string, key: string) => toUri('cell', 'CELL', ns, key),
+    row: (ns: string, key: string) => toUri('cell', 'ROW', ns, key),
+    column: (ns: string, key: string) => toUri('cell', 'COLUMN', ns, key),
+    file: (ns: string, fileid: string) => toUri('file', 'FILE', ns, fileid), // NB: use `slug` for file-id.
   };
 
   /**
@@ -41,31 +42,18 @@ export class Uri {
       const left = text.substring(0, index);
       const right = text.substring(index + 1).trim();
 
-      const setCoord = (type: t.ICoordUri['type']) => {
-        const id = right || '';
-        setError(!id, `ID of '${type}' not found`);
-
-        let key = '';
-        let ns = '';
-        if (!id.includes('!')) {
-          setError(true, `The '${type}' URI does not contain a "!" character.`);
-        } else {
-          const parts = coord.cell.toCell(id);
-          key = parts.key;
-          ns = parts.ns;
-          setError(!key, `Coordinate key of '${type}' not found`);
-          setError(!ns, `Coordinate namespace of '${type}' not found`);
-        }
-
-        data = { type, id, ns, key } as any;
-      };
-
       if (left === 'ns') {
+        /**
+         * Namespace.
+         */
         const id = right;
         setError(!id, 'Namespace URI identifier not found');
         const uri: t.INsUri = { type: 'ns', id };
         data = uri;
       } else if (left === 'file') {
+        /**
+         * File
+         */
         const id = right;
         setError(!id, 'File URI identifier not found');
         const parts = id.split('.');
@@ -75,11 +63,26 @@ export class Uri {
         const uri: t.IFileUri = { type: 'file', id, ns, file };
         data = uri;
       } else if (left === 'cell') {
-        setCoord('cell');
-      } else if (left === 'row') {
-        setCoord('row');
-      } else if (left === 'col') {
-        setCoord('col');
+        /**
+         * Cell/Row/Column
+         */
+        const id = right || '';
+        setError(!id, `ID of 'cell' not found`);
+
+        let type = 'CELL';
+        let key = '';
+        let ns = '';
+        if (!id.includes('!')) {
+          setError(true, `The 'cell' URI does not contain a "!" character.`);
+        } else {
+          type = coord.cell.toType(id) as string;
+          const parts = coord.cell.toCell(id);
+          key = parts.key;
+          ns = parts.ns;
+          setError(!key, `Coordinate key of '${type}' not found`);
+          setError(!ns, `Coordinate namespace of '${type}' not found`);
+        }
+        data = { type, id, ns, key } as any;
       }
     }
 
@@ -108,9 +111,9 @@ export class Uri {
 
     ns: (input?: string) => Uri.is.type('ns', input),
     file: (input?: string) => Uri.is.type('file', input),
-    cell: (input?: string) => Uri.is.type('cell', input),
-    row: (input?: string) => Uri.is.type('row', input),
-    column: (input?: string) => Uri.is.type('col', input),
+    cell: (input?: string) => Uri.is.type('CELL', input),
+    row: (input?: string) => Uri.is.type('ROW', input),
+    column: (input?: string) => Uri.is.type('COLUMN', input),
   };
 }
 
@@ -124,17 +127,11 @@ function trimPrefix(prefix: string, input: string) {
   return input.trim().replace(regex, '');
 }
 
-const PREFIX_MAP: { [key: string]: t.CoordType } = {
-  cell: 'CELL',
-  col: 'COLUMN',
-  row: 'ROW',
-};
-
-function toUri(prefix: UriPrefix, id: string, suffix?: string) {
+function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
   id = (id || '').trim();
   id = id === ':' ? '' : id;
   if (id) {
-    ['ns', 'col', 'row', 'cell', 'file'].forEach(prefix => (id = trimPrefix(prefix, id)));
+    ['ns', 'cell', 'file'].forEach(prefix => (id = trimPrefix(prefix, id)));
   }
   if (!id) {
     throw new Error(`The "${prefix}" URI was not supplied with an ID.`);
@@ -155,11 +152,10 @@ function toUri(prefix: UriPrefix, id: string, suffix?: string) {
       }
       suffix = `.${suffix}`;
     } else {
-      const type = coord.cell.toType(suffix);
-      if (PREFIX_MAP[prefix] !== type) {
-        throw new Error(
-          `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${suffix}").`,
-        );
+      const suffixType = coord.cell.toType(suffix) || '';
+      if (suffixType !== type) {
+        const err = `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${suffix}").`;
+        throw new Error(err);
       }
       suffix = `!${suffix}`;
     }

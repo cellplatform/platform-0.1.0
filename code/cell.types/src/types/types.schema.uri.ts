@@ -28,6 +28,6 @@ export type IFileUri = { type: 'file'; id: string; ns: string; file: string };
 
 export type ICoordUri = ICellUri | IRowUri | IColumnUri;
 export type ICoordUriProps = { id: string; ns: string; key: string };
-export type ICellUri = ICoordUriProps & { type: 'cell' };
-export type IRowUri = ICoordUriProps & { type: 'row' };
-export type IColumnUri = ICoordUriProps & { type: 'col' };
+export type ICellUri = ICoordUriProps & { type: 'CELL' };
+export type IRowUri = ICoordUriProps & { type: 'ROW' };
+export type IColumnUri = ICoordUriProps & { type: 'COLUMN' };

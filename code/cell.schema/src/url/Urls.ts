@@ -72,7 +72,7 @@ export class Urls {
 
       if (type === 'ns') {
         id = (uri.parts as t.INsUri).id;
-      } else if (type === 'cell') {
+      } else if (type === 'CELL') {
         id = (uri.parts as t.ICellUri).ns;
       } else {
         const err = `The id for the namespace is a URI, but not of type "ns:" or "cell:" ("${id}")`;
@@ -93,7 +93,7 @@ export class Urls {
     if (cell.error) {
       throw new Error(cell.error.message);
     }
-    if (cell.parts.type !== 'cell') {
+    if (cell.parts.type !== 'CELL') {
       const err = `The given URI is not of type "cell:" ("${uri}")`;
       throw new Error(err);
     }
