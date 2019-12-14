@@ -21,7 +21,7 @@ export type IGridArgs = {
   table?: Handsontable;
   totalColumns?: number;
   totalRows?: number;
-  ns?: t.INs | string;
+  ns: t.INs | string;
   cells?: t.IGridData['cells'];
   columns?: t.IGridData['columns'];
   rows?: t.IGridData['rows'];

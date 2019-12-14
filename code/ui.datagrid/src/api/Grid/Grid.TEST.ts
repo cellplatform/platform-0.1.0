@@ -14,7 +14,7 @@ export const createTable = () => {
 
 export const createGrid = (args: Partial<IGridArgs> = {}) => {
   const table = createTable();
-  return Grid.create({ table, totalColumns: 3, totalRows: 5, ...args });
+  return Grid.create({ ns: 'foo', table, totalColumns: 3, totalRows: 5, ...args });
 };
 
 describe('Grid', () => {
@@ -59,14 +59,9 @@ describe('Grid', () => {
     expect(grid.data.rows).to.eql(rows);
   });
 
-  it('constructs (without namespace)', () => {
-    const grid = Grid.create({ totalColumns: 3, totalRows: 5 });
-    expect(grid.data.ns.id).to.eql('UNKNOWN');
-  });
-
   it('constructs without table (isInitialized: false)', () => {
     const table = createTable();
-    const grid1 = Grid.create({ totalColumns: 3, totalRows: 5 });
+    const grid1 = Grid.create({ ns: 'foo', totalColumns: 3, totalRows: 5 });
 
     expect(grid1.isInitialized).to.eql(false);
     expect(grid1.id).to.eql('');
@@ -76,6 +71,14 @@ describe('Grid', () => {
 
     expect(grid1.isInitialized).to.eql(true);
     expect(grid1.id.startsWith('grid/')).to.eql(true);
+  });
+
+  it('constructs with given NS identifier', () => {
+    const grid1 = Grid.create({ ns: 'foo' });
+    const grid2 = Grid.create({ ns: { id: 'foo' } });
+
+    expect(grid1.data.ns.id).to.eql('foo');
+    expect(grid2.data.ns.id).to.eql('foo');
   });
 
   it('dispose', () => {
@@ -96,30 +99,30 @@ describe('Grid', () => {
   describe('updateHashes', () => {
     it('force: true', () => {
       let cells = { A1: { value: 123 }, A2: { value: 456 } } as any;
-      const grid = createGrid({ cells, ns: 'abc' });
+      const grid = createGrid({ cells, ns: 'foo' });
       expect(grid.data.cells).to.eql(cells);
 
       grid.updateHashes({ force: true });
       cells = grid.data.cells;
 
       expect(cells.A1.hash).to.eql(
-        util.cell.value.hash.cell({ uri: 'cell:abc!A1', data: { value: 123 } }),
+        util.cell.value.hash.cell({ uri: 'cell:foo!A1', data: { value: 123 } }),
       );
       expect(cells.A2.hash).to.eql(
-        util.cell.value.hash.cell({ uri: 'cell:abc!A2', data: { value: 456 } }),
+        util.cell.value.hash.cell({ uri: 'cell:foo!A2', data: { value: 456 } }),
       );
     });
 
     it('force: false (default)', () => {
       let cells = { A1: { value: 123, hash: 'foo' }, A2: { value: 456 } } as any;
-      const grid = createGrid({ cells, ns: 'abc' });
+      const grid = createGrid({ cells, ns: 'foo' });
       expect(grid.data.cells).to.eql(cells);
 
       grid.updateHashes();
       cells = grid.data.cells;
       expect(cells.A1.hash).to.eql('foo');
       expect(cells.A2.hash).to.eql(
-        util.cell.value.hash.cell({ uri: 'cell:abc!A2', data: { value: 456 } }),
+        util.cell.value.hash.cell({ uri: 'cell:foo!A2', data: { value: 456 } }),
       );
     });
   });
@@ -219,7 +222,7 @@ describe('Grid', () => {
     });
 
     it('assigns hash (to changed values)', () => {
-      const grid = createGrid({ cells: { A1: { value: 123 } }, ns: 'abc' });
+      const grid = createGrid({ ns: 'foo', cells: { A1: { value: 123 } } });
       expect(grid.data.cells).to.eql({ A1: { value: 123 } });
       grid.changeCells({ A2: { value: 'hello' } });
 
@@ -227,7 +230,7 @@ describe('Grid', () => {
       expect(cells.A1).to.eql({ value: 123 });
       expect(cells.A2.value).to.eql('hello');
       expect(cells.A2.hash).to.eql(
-        util.cell.value.hash.cell({ uri: 'cell:abc!A2', data: { value: 'hello' } }),
+        util.cell.value.hash.cell({ uri: 'cell:foo!A2', data: { value: 'hello' } }),
       );
     });
 
