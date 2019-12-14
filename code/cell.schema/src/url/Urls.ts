@@ -133,12 +133,23 @@ export class Urls {
          * Example: /cell:foo!A1/file/kitten.png
          */
         byName(name: string) {
-          type Q = t.IUrlQueryCellFile;
+          type Q = t.IUrlQueryCellFileByName;
           name = (name || '').trim();
           if (!name) {
             throw new Error(`Filename not provided.`);
           }
           return toPath<Q>(`/cell:${ns}!${key}/file/${name}`);
+        },
+
+        /**
+         * Example: /cell:foo!A1/files/0
+         */
+        byIndex(index: number) {
+          type Q = t.IUrlQueryCellFileByIndex;
+          if (typeof index !== 'number') {
+            throw new Error(`File index not provided.`);
+          }
+          return toPath<Q>(`/cell:${ns}!${key}/files/${index}`);
         },
       },
     };

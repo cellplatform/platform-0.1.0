@@ -38,6 +38,8 @@ export type IUrlQueryCellFiles = {};
  * URL query-string parameters for a single [Cell]'s file (by name).
  */
 export type IUrlQueryCellFile = {};
+export type IUrlQueryCellFileByName = IUrlQueryCellFile
+export type IUrlQueryCellFileByIndex = IUrlQueryCellFile
 
 /**
  * ROW

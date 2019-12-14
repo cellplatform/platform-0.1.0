@@ -125,6 +125,16 @@ describe('Urls', () => {
       const fn = () => url.cell(URI).file.byName('     ');
       expect(fn).to.throw();
     });
+
+    it('file.byIndex', () => {
+      const res = url.cell(URI).file.byIndex(5);
+      expect(res.toString()).to.eql('http://localhost/cell:foo!A1/files/5');
+    });
+
+    it('file.byIndex (throws)', () => {
+      const fn = () => url.cell(URI).file.byIndex(undefined as any);
+      expect(fn).to.throw();
+    });
   });
 
   describe.only('row', () => {
