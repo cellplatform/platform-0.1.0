@@ -2,7 +2,7 @@ import { expect, t, cuid } from '../test';
 import { Uri } from '.';
 import { TEST } from './Uri';
 
-describe.only('Uri', () => {
+describe('Uri', () => {
   describe('ids', () => {
     it('Uri.cuid', () => {
       const res = Uri.cuid();

@@ -92,7 +92,7 @@ describe('Urls', () => {
     });
   });
 
-  describe.only('cell', () => {
+  describe('cell', () => {
     const URI = 'cell:foo!A1';
     const url = new Urls();
 
@@ -137,7 +137,7 @@ describe('Urls', () => {
     });
   });
 
-  describe.only('row', () => {
+  describe('row', () => {
     const URI = 'cell:foo!1';
     const url = new Urls();
 
@@ -157,7 +157,7 @@ describe('Urls', () => {
     });
   });
 
-  describe.only('column', () => {
+  describe('column', () => {
     const URI = 'cell:foo!A';
     const url = new Urls();
 
@@ -178,7 +178,7 @@ describe('Urls', () => {
   });
 
   describe('file', () => {
-    const uri = 'file:foo.123';
+    const uri = 'file:foo:123';
     const url = new Urls();
 
     it('throw if non-cell URI passed', () => {
@@ -190,12 +190,12 @@ describe('Urls', () => {
 
     it('download', () => {
       const res = url.file(uri).download;
-      expect(res.toString()).to.eql('http://localhost/file:foo.123');
+      expect(res.toString()).to.eql('http://localhost/file:foo:123');
     });
 
     it('info', () => {
       const res = url.file(uri).info;
-      expect(res.toString()).to.eql('http://localhost/file:foo.123/info');
+      expect(res.toString()).to.eql('http://localhost/file:foo:123/info');
     });
   });
 });

@@ -38,8 +38,8 @@ export type IUrlQueryCellFiles = {};
  * URL query-string parameters for a single [Cell]'s file (by name).
  */
 export type IUrlQueryCellFile = {};
-export type IUrlQueryCellFileByName = IUrlQueryCellFile
-export type IUrlQueryCellFileByIndex = IUrlQueryCellFile
+export type IUrlQueryCellFileByName = IUrlQueryCellFile;
+export type IUrlQueryCellFileByIndex = IUrlQueryCellFile;
 
 /**
  * ROW
@@ -66,8 +66,9 @@ export type IUrlQueryColumn = {};
 /**
  * URL query-string parameters for a [File].
  */
-export type IUrlQueryGetFile = {};
+export type IUrlQueryGetFile = { hash?: string };
+export type IUrlQueryGetFileInfo = {};
+
 export type IUrlQueryPostFile = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
-export type IUrlQueryGetFileInfo = {};
