@@ -1,5 +1,6 @@
 import { expect, t, cuid } from '../test';
-import { Uri } from './Uri';
+import { Uri } from '.';
+import { TEST } from './Uri';
 
 describe.only('Uri', () => {
   describe('ids', () => {
@@ -11,6 +12,15 @@ describe.only('Uri', () => {
     it('Uri.slug', () => {
       const res = Uri.slug();
       expect(res.length).to.within(5, 10);
+    });
+
+    it('test identifiers (ns)', () => {
+      TEST.NS.ALLOW.forEach(id => {
+        const uri1 = Uri.create.ns(id);
+        const uri2 = Uri.parse<t.INsUri>(`ns:${id}`);
+        expect(uri1).to.eql(`ns:${id}`);
+        expect(uri2.ok).to.eql(true);
+      });
     });
   });
 
@@ -319,9 +329,13 @@ describe.only('Uri', () => {
     });
 
     it('throws: ns (not cuid)', () => {
-      const err = /URI contains an invalid identifier/;
+      const err = /URI contains an invalid "ns" identifier/;
       expect(() => Uri.create.ns('fail')).to.throw(err);
       expect(() => Uri.create.ns('ns:fail')).to.throw(err);
+
+      const uri = Uri.parse(`ns:fail`);
+      expect(uri.ok).to.eql(false);
+      expect(uri.error && uri.error.message).to.match(err);
     });
 
     it('throws: file', () => {

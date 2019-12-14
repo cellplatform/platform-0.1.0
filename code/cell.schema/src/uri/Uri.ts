@@ -3,6 +3,12 @@ import { t, cuid, slug, coord } from '../common';
 type UriType = 'NS' | 'CELL' | 'ROW' | 'COLUMN' | 'FILE';
 type UriPrefix = 'ns' | 'cell' | 'file';
 
+export const TEST = {
+  NS: {
+    ALLOW: ['foo', 'bar', 'zoo', 'foobar'],
+  },
+};
+
 export class Uri {
   public static cuid = cuid;
   public static slug = slug;
@@ -48,7 +54,7 @@ export class Uri {
          */
         const id = right;
         setError(!id, 'Namespace URI identifier not found');
-        setError(!isValidId(id), 'Namespace URI identifier not valid');
+        setError(!isValidId(id), 'URI contains an invalid "ns" identifier');
         const uri: t.INsUri = { type: 'NS', id };
         data = uri;
       } else if (left === 'file') {
@@ -141,7 +147,7 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
   }
 
   if (!isValidId(id)) {
-    const err = `The "${prefix}" URI contains an invalid identifier, must be an alpha-numeric cuid ("${id}").`;
+    const err = `URI contains an invalid "${prefix}" identifier, must be an alpha-numeric cuid ("${id}").`;
     throw new Error(err);
   }
 
@@ -190,6 +196,7 @@ function isValidId(input: string) {
     return true;
   }
 
-  // HACK: Certain NS ids are allowed for testing.
-  return ['foo', 'bar', 'zoo', 'foobar'].includes(input);
+  // HACK:  Certain NS ids are allowed for testing
+  //        but may be shut off in production systems.
+  return TEST.NS.ALLOW.includes(input);
 }
