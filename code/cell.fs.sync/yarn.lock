@@ -25,10 +25,10 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
-"@platform/cell.types@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.2.13.tgz#5b5c102a330210bfb6ec82bb79fd38d236d5e902"
-  integrity sha512-+O8JxlWQdQBmCHdju5vKOId6L6C5DPb972ZzxcXMM2OeJgcuimKJgpkfpt9cV3ldtekAFSFHHeiJcyia7yuI1w==
+"@platform/cell.types@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.2.14.tgz#574821ec1062ddbc007dfbd83c407887af57f866"
+  integrity sha512-ybTcZhP9kbbzj94tmKkFj73H6OhTSU+SoQtDwJfTObJ4Zn62hjYlJCJzscxP4N3wFQVOjjB4Bx/S4d1BESQ/pQ==
   dependencies:
     "@platform/cache" "0.2.7"
     "@platform/fsdb.types" "0.5.10"
