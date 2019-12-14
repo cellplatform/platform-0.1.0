@@ -10,7 +10,7 @@ describe('Urls', () => {
   });
 
   describe('fields', () => {
-    it('constructs parsing default fields (protocol, host, port, origin)', () => {
+    it('prases default fields (protocol, host, port => origin)', () => {
       const test = (
         input: string | undefined,
         host: string,
@@ -92,34 +92,78 @@ describe('Urls', () => {
     });
   });
 
-  describe('cell', () => {
-    const A1 = 'cell:foo!A1';
+  describe.only('cell', () => {
+    const URI = 'cell:foo!A1';
     const url = new Urls();
 
     it('throw if non-cell URI passed', () => {
       expect(() => url.cell('foo:bar')).to.throw();
       expect(() => url.cell('ns:foo')).to.throw();
-      expect(() => url.cell('cell:foo')).to.throw(); // NB: No "!A1" key (invalid).
+
+      // Invalid cell key.
+      expect(() => url.cell('cell:foo')).to.throw(); //   NB: no "!A1" key (invalid).
+      expect(() => url.cell('cell:foo!A')).to.throw(); // NB: column.
+      expect(() => url.cell('cell:foo!1')).to.throw(); // NB: row.
     });
 
     it('info', () => {
-      const res = url.cell(A1).info;
+      const res = url.cell(URI).info;
       expect(res.toString()).to.eql('http://localhost/cell:foo!A1');
     });
 
     it('files', () => {
-      const res = url.cell(A1).files;
+      const res = url.cell(URI).files;
       expect(res.toString()).to.eql('http://localhost/cell:foo!A1/files');
     });
 
     it('file.byName', () => {
-      const res = url.cell(A1).file.byName('  kitten.png   ');
+      const res = url.cell(URI).file.byName('  kitten.png   ');
       expect(res.toString()).to.eql('http://localhost/cell:foo!A1/file/kitten.png');
     });
 
     it('file.byName (throws)', () => {
-      const fn = () => url.cell(A1).file.byName('     ');
+      const fn = () => url.cell(URI).file.byName('     ');
       expect(fn).to.throw();
+    });
+  });
+
+  describe.only('row', () => {
+    const URI = 'cell:foo!1';
+    const url = new Urls();
+
+    it('throw if non-row URI passed', () => {
+      expect(() => url.row('foo:bar')).to.throw();
+      expect(() => url.row('ns:foo')).to.throw();
+
+      // Invalid cell key.
+      expect(() => url.row('cell:foo')).to.throw(); //    NB: no "!A1" key (invalid).
+      expect(() => url.row('cell:foo!A1')).to.throw(); // NB: cell.
+      expect(() => url.row('cell:foo!A')).to.throw(); //  NB: column.
+    });
+
+    it('info', () => {
+      const res = url.row(URI).info;
+      expect(res.toString()).to.eql('http://localhost/cell:foo!1');
+    });
+  });
+
+  describe.only('column', () => {
+    const URI = 'cell:foo!A';
+    const url = new Urls();
+
+    it('throw if non-row URI passed', () => {
+      expect(() => url.column('foo:bar')).to.throw();
+      expect(() => url.column('ns:foo')).to.throw();
+
+      // Invalid cell key.
+      expect(() => url.column('cell:foo')).to.throw(); //    NB: no "!A1" key (invalid).
+      expect(() => url.column('cell:foo!A1')).to.throw(); // NB: cell.
+      expect(() => url.column('cell:foo!1')).to.throw(); //  NB: row.
+    });
+
+    it('info', () => {
+      const res = url.column(URI).info;
+      expect(res.toString()).to.eql('http://localhost/cell:foo!A');
     });
   });
 

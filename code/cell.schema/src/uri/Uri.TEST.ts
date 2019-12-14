@@ -30,24 +30,32 @@ describe.only('Uri', () => {
         expect(Uri.is.uri(input)).to.eql(expected, input);
       };
 
+      // Valid.
       test('ns:foo', true);
       test('cell:foo!A1', true);
       test('cell:foo!1', true);
       test('cell:foo!A', true);
       test('file:foo:123', true);
 
+      // Empty.
       test(undefined, false);
+      test(null as any, false);
       test('', false);
+      test('  ', false);
+
+      // Prefix match, but invalid.
       test('ns:', false);
-      test('row:', false);
-      test('col:', false);
       test('cell:', false);
       test('file:', false);
       test('cell:foo', false);
-      test('boo:foo', false);
       test('file:foo', false);
       test('file:foo.123', false);
       test('file:foo-123', false);
+
+      // Not a prefix match.
+      test('boo:foo', false);
+      test('row:', false);
+      test('col:', false);
     });
 
     it('is.type', () => {

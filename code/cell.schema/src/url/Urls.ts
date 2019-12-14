@@ -81,6 +81,10 @@ export class Urls {
     }
 
     return {
+      /**
+       * Example: /ns:foo
+       */
+
       get info() {
         return toPath<t.IUrlQueryNs>(`/ns:${id}`);
       },
@@ -93,22 +97,36 @@ export class Urls {
     if (cell.error) {
       throw new Error(cell.error.message);
     }
-    if (cell.parts.type !== 'CELL') {
-      const err = `The given URI is not of type "cell:" ("${uri}")`;
+    const { ns, key, type } = cell.parts;
+    if (type !== 'CELL') {
+      const err = `The given URI is a ${type} not a CELL ("${uri}")`;
       throw new Error(err);
     }
-    const { ns, key } = cell.parts;
 
     return {
+      /**
+       * Example: /cell:foo!A1
+       */
       get info() {
         type Q = t.IUrlQueryCell;
         return toPath<Q>(`/cell:${ns}!${key}`);
       },
+
+      /**
+       * Example: /cell:foo!A1/files
+       */
       get files() {
         type Q = t.IUrlQueryCellFiles;
         return toPath<Q>(`/cell:${ns}!${key}/files`);
       },
+
+      /**
+       * Individual file.
+       */
       file: {
+        /**
+         * Example: /cell:foo!A1/file/kitten.png
+         */
         byName(name: string) {
           type Q = t.IUrlQueryCellFile;
           name = (name || '').trim();
@@ -117,6 +135,52 @@ export class Urls {
           }
           return toPath<Q>(`/cell:${ns}!${key}/file/${name}`);
         },
+      },
+    };
+  }
+
+  public row(uri: string) {
+    const toPath = this.toUrl;
+    const row = Uri.parse<t.IRowUri>(uri);
+    if (row.error) {
+      throw new Error(row.error.message);
+    }
+    const { ns, key, type } = row.parts;
+    if (type !== 'ROW') {
+      const err = `The given URI is a ${type} not a ROW ("${uri}")`;
+      throw new Error(err);
+    }
+
+    return {
+      /**
+       * Example: /cell:foo!1
+       */
+      get info() {
+        type Q = t.IUrlQueryRow;
+        return toPath<Q>(`/cell:${ns}!${key}`);
+      },
+    };
+  }
+
+  public column(uri: string) {
+    const toPath = this.toUrl;
+    const column = Uri.parse<t.IColumnUri>(uri);
+    if (column.error) {
+      throw new Error(column.error.message);
+    }
+    const { ns, key, type } = column.parts;
+    if (type !== 'COLUMN') {
+      const err = `The given URI is a ${type} not a COLUMN ("${uri}")`;
+      throw new Error(err);
+    }
+
+    return {
+      /**
+       * Example: /cell:foo!A
+       */
+      get info() {
+        type Q = t.IUrlQueryColumn;
+        return toPath<Q>(`/cell:${ns}!${key}`);
       },
     };
   }
@@ -138,6 +202,7 @@ export class Urls {
         type Q = t.IUrlQueryGetFile;
         return toPath<Q>(`/file:${id}`);
       },
+
       get info() {
         type Q = t.IUrlQueryGetFileInfo;
         return toPath<Q>(`/file:${id}/info`);
