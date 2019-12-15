@@ -83,6 +83,11 @@ describe('Urls', () => {
       expect(res2.toString()).to.eql('http://localhost/ns:foo');
     });
 
+    it('info (from params object)', () => {
+      const res = url.ns({ ns: 'foo' }).info;
+      expect(res.toString()).to.eql('http://localhost/ns:foo');
+    });
+
     it('info (with query)', () => {
       const res1 = url.ns('foo').info.query({ cells: true });
       expect(res1.toString()).to.eql('http://localhost/ns:foo?cells=true');

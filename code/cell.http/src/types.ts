@@ -66,7 +66,6 @@ export type ILinkMap = { [key: string]: string };
 /**
  * Namespace
  */
-export type IReqNsParams = { ns: string };
 
 /**
  * Namespace: GET

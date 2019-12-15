@@ -63,8 +63,9 @@ export class Urls {
   /**
    * Builders for NAMESPACE urls.
    */
-  public ns(id: string) {
+  public ns(input: string | t.IUrlParamsNs) {
     const toPath = this.toUrl;
+    const id = typeof input === 'string' ? input : input.ns;
     if (id.includes(':')) {
       const uri = Uri.parse(id);
       const type = uri.parts.type;

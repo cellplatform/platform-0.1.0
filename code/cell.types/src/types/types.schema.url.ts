@@ -10,6 +10,8 @@ export type IUrl<Q extends object = {}> = {
  * NAMESPACE
  */
 
+export type IUrlParamsNs = { ns: string };
+
 /**
  * URL query-string parameters for a [Namespace].
  */

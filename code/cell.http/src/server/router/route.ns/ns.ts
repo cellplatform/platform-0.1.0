@@ -7,7 +7,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   const { db, router } = args;
 
   const getParams = (req: t.Request) => {
-    const params = req.params as t.IReqNsParams;
+    const params = req.params as t.IUrlParamsNs;
     const id = (params.ns || '').toString();
 
     if (!id) {
