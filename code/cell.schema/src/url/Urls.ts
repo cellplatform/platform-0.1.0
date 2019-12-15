@@ -1,4 +1,4 @@
-import { R, t } from '../common';
+import { R, t, value } from '../common';
 import { Uri } from '../uri';
 import { Url } from './Url';
 import * as util from './util';
@@ -65,7 +65,8 @@ export class Urls {
    */
   public ns(input: string | t.IUrlParamsNs) {
     const toPath = this.toUrl;
-    const id = typeof input === 'string' ? input : input.ns;
+    let id = typeof input === 'string' ? input : input.ns;
+
     if (id.includes(':')) {
       const uri = Uri.parse(id);
       const type = uri.parts.type;
@@ -97,8 +98,9 @@ export class Urls {
   /**
    * Builders for CELL urls.
    */
-  public cell(uri: string) {
+  public cell(input: string | t.IUrlParamsCell) {
     const toPath = this.toUrl;
+    const uri = typeof input === 'string' ? input : Uri.create.cell(input.ns, input.key);
     const cell = Uri.parse<t.ICellUri>(uri);
     if (cell.error) {
       throw new Error(cell.error.message);
@@ -145,8 +147,9 @@ export class Urls {
         /**
          * Example: /cell:foo!A1/files/0
          */
-        byIndex(index: number) {
+        byIndex(input: number | string) {
           type Q = t.IUrlQueryGetCellFileByIndex;
+          const index = value.toNumber(input);
           if (typeof index !== 'number') {
             throw new Error(`File index not provided.`);
           }
@@ -159,8 +162,9 @@ export class Urls {
   /**
    * Builders for ROW urls.
    */
-  public row(uri: string) {
+  public row(input: string | t.IUrlParamsRow) {
     const toPath = this.toUrl;
+    const uri = typeof input === 'string' ? input : Uri.create.row(input.ns, input.key);
     const row = Uri.parse<t.IRowUri>(uri);
     if (row.error) {
       throw new Error(row.error.message);
@@ -185,8 +189,9 @@ export class Urls {
   /**
    * Builders for COLUMN urls.
    */
-  public column(uri: string) {
+  public column(input: string | t.IUrlParamsColumn) {
     const toPath = this.toUrl;
+    const uri = typeof input === 'string' ? input : Uri.create.column(input.ns, input.key);
     const column = Uri.parse<t.IColumnUri>(uri);
     if (column.error) {
       throw new Error(column.error.message);
@@ -208,8 +213,9 @@ export class Urls {
     };
   }
 
-  public file(uri: string) {
+  public file(input: string | t.IUrlParamsFile) {
     const toPath = this.toUrl;
+    const uri = typeof input === 'string' ? input : Uri.create.file(input.ns, input.file);
     const file = Uri.parse<t.IFileUri>(uri);
     if (file.error) {
       throw new Error(file.error.message);

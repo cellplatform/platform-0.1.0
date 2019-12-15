@@ -7,7 +7,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   const { db, fs, router } = args;
 
   const getParams = (req: t.Request) => {
-    const params = req.params as t.IReqFileParams;
+    const params = req.params as t.IUrlParamsFile;
     const data = {
       ns: (params.ns || '').toString(),
       file: (params.file || '').toString(),

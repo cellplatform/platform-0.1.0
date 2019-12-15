@@ -71,21 +71,17 @@ describe('Urls', () => {
       expect(() => url.ns('cell:foo')).to.throw(); // NB: No "!A1" key on the ns.
     });
 
-    it('info (from id)', () => {
-      const res = url.ns('foo').info;
-      expect(res.toString()).to.eql('http://localhost/ns:foo');
-    });
+    it('info', () => {
+      const res1 = url.ns('foo').info;
+      const res2 = url.ns('ns:foo').info;
+      const res3 = url.ns('cell:foo!A1').info; // NB: Flips from "cell:" to "ns:"
+      const res4 = url.ns({ ns: 'foo' }).info;
 
-    it('info (from URI)', () => {
-      const res1 = url.ns('ns:foo').info;
-      const res2 = url.ns('cell:foo!A1').info;
-      expect(res1.toString()).to.eql('http://localhost/ns:foo');
-      expect(res2.toString()).to.eql('http://localhost/ns:foo');
-    });
-
-    it('info (from params object)', () => {
-      const res = url.ns({ ns: 'foo' }).info;
-      expect(res.toString()).to.eql('http://localhost/ns:foo');
+      const URL = 'http://localhost/ns:foo';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
+      expect(res3.toString()).to.eql(URL);
+      expect(res4.toString()).to.eql(URL);
     });
 
     it('info (with query)', () => {
@@ -112,18 +108,30 @@ describe('Urls', () => {
     });
 
     it('info', () => {
-      const res = url.cell(URI).info;
-      expect(res.toString()).to.eql('http://localhost/cell:foo!A1');
+      const res1 = url.cell(URI).info;
+      const res2 = url.cell({ ns: 'foo', key: 'A1' }).info;
+
+      const URL = 'http://localhost/cell:foo!A1';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
     });
 
     it('files', () => {
-      const res = url.cell(URI).files;
-      expect(res.toString()).to.eql('http://localhost/cell:foo!A1/files');
+      const res1 = url.cell(URI).files;
+      const res2 = url.cell({ ns: 'foo', key: 'A1' }).files;
+
+      const URL = 'http://localhost/cell:foo!A1/files';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
     });
 
     it('file.byName', () => {
-      const res = url.cell(URI).file.byName('  kitten.png   ');
-      expect(res.toString()).to.eql('http://localhost/cell:foo!A1/file/kitten.png');
+      const res1 = url.cell(URI).file.byName('  kitten.png   ');
+      const res2 = url.cell({ ns: 'foo', key: 'A1' }).file.byName('kitten.png');
+
+      const URL = 'http://localhost/cell:foo!A1/file/kitten.png';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
     });
 
     it('file.byName (throws)', () => {
@@ -132,8 +140,12 @@ describe('Urls', () => {
     });
 
     it('file.byIndex', () => {
-      const res = url.cell(URI).file.byIndex(5);
-      expect(res.toString()).to.eql('http://localhost/cell:foo!A1/files/5');
+      const res1 = url.cell(URI).file.byIndex(5);
+      const res2 = url.cell({ ns: 'foo', key: 'A1' }).file.byIndex('  5  ');
+
+      const URL = 'http://localhost/cell:foo!A1/files/5';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
     });
 
     it('file.byIndex (throws)', () => {
@@ -157,8 +169,12 @@ describe('Urls', () => {
     });
 
     it('info', () => {
-      const res = url.row(URI).info;
-      expect(res.toString()).to.eql('http://localhost/cell:foo!1');
+      const res1 = url.row(URI).info;
+      const res2 = url.row({ ns: 'foo', key: '1' }).info;
+
+      const URL = 'http://localhost/cell:foo!1';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
     });
   });
 
@@ -177,8 +193,12 @@ describe('Urls', () => {
     });
 
     it('info', () => {
-      const res = url.column(URI).info;
-      expect(res.toString()).to.eql('http://localhost/cell:foo!A');
+      const res1 = url.column(URI).info;
+      const res2 = url.column({ ns: 'foo', key: 'A' }).info;
+
+      const URL = 'http://localhost/cell:foo!A';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
     });
   });
 
@@ -194,13 +214,21 @@ describe('Urls', () => {
     });
 
     it('download', () => {
-      const res = url.file(uri).download;
-      expect(res.toString()).to.eql('http://localhost/file:foo:123');
+      const res1 = url.file(uri).download;
+      const res2 = url.file({ ns: 'foo', file: '123' }).download;
+
+      const URL = 'http://localhost/file:foo:123';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
     });
 
     it('info', () => {
-      const res = url.file(uri).info;
-      expect(res.toString()).to.eql('http://localhost/file:foo:123/info');
+      const res1 = url.file(uri).info;
+      const res2 = url.file({ ns: 'foo', file: '123' }).info;
+
+      const URL = 'http://localhost/file:foo:123/info';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
     });
   });
 });

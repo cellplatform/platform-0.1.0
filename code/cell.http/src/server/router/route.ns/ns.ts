@@ -26,7 +26,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    *      Redirect to the cell.
    */
   router.get(routes.NS.CELL, async req => {
-    const params = req.params as t.IReqCellParams;
+    const params = req.params as t.IUrlParamsCell;
     const path = `/cell:${params.ns}!${params.key}${req.query.toString()}`;
     return req.redirect(path);
   });

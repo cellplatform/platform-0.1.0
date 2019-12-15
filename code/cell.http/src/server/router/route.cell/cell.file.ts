@@ -2,19 +2,23 @@ import { defaultValue, constants, routes, Schema, t, models, util } from '../com
 import { postFileResponse, getFileDownloadResponse } from '../route.file';
 import { postNsResponse } from '../route.ns';
 
+type ParamOr = t.IUrlParamsCellFiles | t.IUrlParamsCellFileByName | t.IUrlParamsCellFileByIndex;
+type ParamAnd = t.IUrlParamsCellFiles & t.IUrlParamsCellFileByName & t.IUrlParamsCellFileByIndex;
+
 /**
  * Cell routes for operating with files.
  */
 export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) {
   const { db, fs, router } = args;
 
-  const getParams = (
-    req: t.Request,
-    options: { filenameRequired?: boolean; indexRequired?: boolean } = {},
-  ) => {
-    const params = req.params;
-
+  const getParams = (args: {
+    params: ParamOr;
+    filenameRequired?: boolean;
+    indexRequired?: boolean;
+  }) => {
+    const params = args.params as ParamAnd;
     const toString = (input?: any) => (input || '').toString().trim();
+
     const data = {
       ns: toString(params.ns || ''),
       key: toString(params.key || ''),
@@ -28,7 +32,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       message: '',
     };
 
-    const toMessage = (msg: string) => `Malformed URI, ${msg} ("${req.url}").`;
+    const toMessage = (msg: string) => `Malformed URI, ${msg}.`;
 
     if (!data.ns) {
       error.message = toMessage('does not contain a namespace-identifier');
@@ -40,12 +44,12 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       return { ...data, status: 400, error };
     }
 
-    if (!data.filename && options.filenameRequired) {
+    if (!data.filename && args.filenameRequired) {
       error.message = toMessage('does not contain a filename');
       return { ...data, status: 400, error };
     }
 
-    if (data.index < 0 && options.indexRequired) {
+    if (data.index < 0 && args.indexRequired) {
       error.message = toMessage('does not contain a file index');
       return { ...data, status: 400, error };
     }
@@ -66,7 +70,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.get(routes.CELL.FILES, async req => {
     const host = req.host;
     const query = req.query as t.IUrlQueryGetCellFiles;
-    const { status, ns, error, uri } = getParams(req);
+    const params = req.params as t.IUrlParamsCellFiles;
+
+    const paramData = getParams({ params });
+    const { status, ns, error, uri } = paramData;
+
     if (!ns || error) {
       return { status, data: { error } };
     }
@@ -93,8 +101,10 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.get(routes.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
     const query = req.query as t.IUrlQueryGetCellFileByName;
-    const params = getParams(req, { filenameRequired: true });
-    const { status, ns, key, filename, error, uri: cellUri } = params;
+    const params = req.params as t.IUrlParamsCellFileByName;
+
+    const paramData = getParams({ params, filenameRequired: true });
+    const { status, ns, key, filename, error, uri: cellUri } = paramData;
     if (!ns || error) {
       return { status, data: { error } };
     }
@@ -126,8 +136,10 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.get(routes.CELL.FILE_BY_INDEX, async req => {
     const host = req.host;
     const query = req.query as t.IUrlQueryGetCellFileByIndex;
-    const params = getParams(req, { indexRequired: true });
-    const { status, ns, index, error, uri: cellUri } = params;
+    const params = req.params as t.IUrlParamsCellFileByIndex;
+
+    const paramData = getParams({ params, indexRequired: true });
+    const { status, ns, index, error, uri: cellUri } = paramData;
     if (!ns || error) {
       return { status, data: { error } };
     }
@@ -157,7 +169,10 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.post(routes.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
     const query = req.query as t.IUrlQueryPostFile;
-    const { status, ns, key, filename, error, uri: cellUri } = getParams(req);
+    const params = req.params as t.IUrlParamsCellFileByName;
+
+    const paramData = getParams({ params });
+    const { status, ns, key, filename, error, uri: cellUri } = paramData;
     if (!ns || error) {
       return { status, data: { error } };
     }
