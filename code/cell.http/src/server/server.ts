@@ -51,37 +51,6 @@ export function init(args: {
     });
   });
 
-  const urls = Schema.url('db.team:80');
-
-  // const url = `localhost:8080/cell:foo!A1`
-  const uri = Schema.uri.create.cell('foo', 'A1');
-
-  console.log('uri', uri);
-
-  const url = urls.cell(uri);
-
-  // const
-
-  // const cell = Schema.uri.parse('cell:foo');
-
-  // console.log('cell', cell);
-
-  const cellUrl = url.info;
-  const nsUrl = urls.ns('foo');
-
-  // console.log('cellUrl', cellUrl.q);
-
-  console.log('nsUrl.toString()', nsUrl.info.toString());
-
-  const nsUrl2 = nsUrl.info.query({ cells: ['A1', 'B2:B9'] });
-
-  console.log('url.toString()', nsUrl2.toString());
-
-  app.response$.subscribe(e => {
-    // console.log(`${e.method} : ${e.url}`);
-    // e.
-  });
-
   // Finish up.
   return app;
 }
