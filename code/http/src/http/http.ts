@@ -61,25 +61,24 @@ function toBody(args: { url: string; headers: Headers; data?: any }) {
 
 async function toResponse(url: string, res: Response) {
   const { ok, status, statusText } = res;
-  const text = await res.text();
+  const headers = fromRawHeaders(res.headers);
+  const body = res.body || undefined;
+  const text = isTextBody(headers) ? await res.text() : '';
   let json: any;
 
   const result: t.IHttpResponse = {
     ok,
     status,
     statusText,
-    get headers() {
-      return fromRawHeaders(res.headers);
-    },
-    get body() {
-      return text || '';
-    },
-    json<T>() {
+    headers,
+    body,
+    text,
+    get json() {
       if (!json) {
         try {
-          json = JSON.parse(result.body) as T;
+          json = JSON.parse(result.text) as t.Json;
         } catch (error) {
-          const msg = `Failed while parsing JSON for '${url}'.\nParse Error: ${error.message}\nBody: ${result.body}`;
+          const msg = `Failed while parsing JSON for '${url}'.\nParse Error: ${error.message}\nBody: ${result.text}`;
           throw new Error(msg);
         }
       }
@@ -88,4 +87,13 @@ async function toResponse(url: string, res: Response) {
   };
 
   return result;
+}
+
+/**
+ * Helpers
+ */
+
+function isTextBody(headers: t.IHttpHeaders) {
+  const type = (headers['content-type'] || '').toString();
+  return type === 'application/json' || type.startsWith('text/');
 }
