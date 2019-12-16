@@ -1,6 +1,6 @@
 import { t, R, value } from '../common';
 
-export function toPort(input: string) {
+export function toPort(input: string): number | undefined {
   const text = R.pipe(stripHttp, stripSlash)(input || '').split(':')[1];
   return text === undefined ? undefined : value.toNumber(text);
 }

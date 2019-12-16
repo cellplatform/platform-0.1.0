@@ -10,9 +10,9 @@ describe('Urls', () => {
   });
 
   describe('fields', () => {
-    it('prases default fields (protocol, host, port => origin)', () => {
+    it('parses default fields (protocol, host, port => origin)', () => {
       const test = (
-        input: string | undefined,
+        input: string | number | undefined,
         host: string,
         port: number,
         protocol: 'http' | 'https',
@@ -37,6 +37,12 @@ describe('Urls', () => {
       test(undefined, 'localhost', 80, 'http', 'http://localhost');
       test('', 'localhost', 80, 'http', 'http://localhost');
       test('  ', 'localhost', 80, 'http', 'http://localhost');
+
+      test('1234', 'localhost', 1234, 'http', 'http://localhost:1234');
+      test(1234, 'localhost', 1234, 'http', 'http://localhost:1234');
+      test(80, 'localhost', 80, 'http', 'http://localhost');
+      test('80', 'localhost', 80, 'http', 'http://localhost');
+
       test('localhost', 'localhost', 80, 'http', 'http://localhost');
       test('localhost:1234', 'localhost', 1234, 'http', 'http://localhost:1234');
       test('localhost/', 'localhost', 80, 'http', 'http://localhost');

@@ -204,6 +204,19 @@ describe('Uri', () => {
       expect(res.toString()).to.eql(res.uri);
     });
 
+    it('strips query-string', () => {
+      const test = (uri: string) => {
+        const res = Uri.parse(uri);
+        expect(res.ok).to.eql(true);
+        expect(res.uri).to.eql(uri.split('?')[0]);
+      };
+      test('file:foo:123?hash=abc');
+      test('ns:foo?hash=abc');
+      test('cell:foo!A1?hash=abc');
+      test('cell:foo!A?hash=abc');
+      test('cell:foo!1?hash=abc');
+    });
+
     describe('error', () => {
       it('error: UNKNOWN', () => {
         const test = (input: string | undefined) => {

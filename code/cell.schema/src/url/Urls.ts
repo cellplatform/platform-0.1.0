@@ -11,11 +11,14 @@ export class Urls {
   public static readonly uri = Uri;
   public static readonly routes = ROUTES;
 
-  public static parse(input?: string) {
-    input = (input || '').trim() || 'localhost';
-    const host = R.pipe(util.stripHttp, util.stripSlash, util.stripPort)(input);
+  public static parse(input?: string | number) {
+    input = value.isNumeric(input) ? `localhost:${input}` : input?.toString();
+    let text = (input || '').trim();
+    text = text || 'localhost';
+
+    const host = R.pipe(util.stripHttp, util.stripSlash, util.stripPort)(text);
     const protocol = util.toProtocol(host);
-    const port = util.toPort(input) || 80;
+    const port = util.toPort(text) || 80;
     const origin = port === 80 ? `${protocol}://${host}` : `${protocol}://${host}:${port}`;
     return { protocol, host, port, origin };
   }
@@ -23,7 +26,7 @@ export class Urls {
   /**
    * [Lifecycle]
    */
-  constructor(input?: string) {
+  constructor(input?: string | number) {
     const { protocol, host, port, origin } = Urls.parse(input);
     this.host = host;
     this.protocol = protocol;
