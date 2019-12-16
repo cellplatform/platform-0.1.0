@@ -29,7 +29,6 @@ describe('client', () => {
     const uri = 'cell:foo!A1';
     const client = Client.create();
     const res = client.cell(uri);
-    expect(res.uri.toString()).to.eql(uri);
     expect(res.toString()).to.eql(uri);
   });
 });

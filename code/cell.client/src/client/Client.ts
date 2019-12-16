@@ -6,7 +6,7 @@ type F = t.IFetchOptions;
 /**
  * An HTTP client for the CellOS.
  */
-export class Client {
+export class Client implements t.IClient {
   public static create(host?: string | number) {
     return new Client({ host });
   }
