@@ -35,7 +35,7 @@ const testPost = async (args: {
   if (args.dispose !== false) {
     mock.dispose();
   }
-  const json = res.json<t.IResPostFile>();
+  const json = res.json as t.IResPostFile;
   const data = json.data;
   const props = (data && data.props) || {};
   return { res, json, data, props, mock };
@@ -49,7 +49,7 @@ describe('route: file (URI)', () => {
       const res = await http.get(url);
       await mock.dispose();
 
-      const body = res.json();
+      const body = res.json as any;
 
       expect(res.status).to.eql(400);
       expect(body.error.type).to.eql('HTTP/uri/malformed');
@@ -81,7 +81,7 @@ describe('route: file (URI)', () => {
       expect(resDownload.status).to.eql(200);
       expect(resInfo.status).to.eql(200);
 
-      const json = resInfo.json<t.IResGetFile>();
+      const json = resInfo.json as t.IResGetFile;
       const props = json.data.props;
       expect(json.uri).to.eql(uri);
       expect(props.name).to.eql('image.png');
@@ -115,7 +115,7 @@ describe('route: file (URI)', () => {
       expect(resDownload.status).to.eql(200);
       expect(resInfo.status).to.eql(200);
 
-      const json = resInfo.json<t.IResGetFile>();
+      const json = resInfo.json as t.IResGetFile;
       const props = json.data.props;
       expect(json.uri).to.eql(uri);
       expect(props.name).to.eql('func.wasm');
@@ -141,7 +141,7 @@ describe('route: file (URI)', () => {
       });
 
       const urls = mock.urls.file(uri);
-      const info = (await http.get(urls.info.toString())).json<t.IResGetFile>();
+      const info = (await http.get(urls.info.toString())).json as t.IResGetFile;
       const hash = info.data.hash;
 
       const res1 = await http.get(urls.download.query({ hash }).toString());
@@ -151,7 +151,7 @@ describe('route: file (URI)', () => {
       expect(res1.status).to.eql(200);
       expect(res2.status).to.eql(409);
 
-      const error = res2.json<t.IHttpError>();
+      const error = res2.json as t.IHttpError;
       expect(error.status).to.eql(409);
       expect(error.type).to.eql('HTTP/hash/mismatch');
       expect(error.message).to.contain('does not match requested hash');
@@ -203,7 +203,7 @@ describe('route: file (URI)', () => {
         });
         expect(res.status).to.eql(400);
 
-        const error = res.json<t.IHttpError>();
+        const error = res.json as t.IHttpError;
         expect(error.status).to.eql(400);
         expect(error.type).to.eql('HTTP/server');
         expect(error.message).to.contain('No file data was posted');
@@ -217,7 +217,7 @@ describe('route: file (URI)', () => {
         });
         expect(res.status).to.eql(400);
 
-        const error = res.json<t.IHttpError>();
+        const error = res.json as t.IHttpError;
         expect(error.status).to.eql(400);
         expect(error.type).to.eql('HTTP/server');
         expect(error.message).to.contain('Only a single file can be posted');

@@ -8,7 +8,7 @@ describe('route: coord (URI: cell|row|col)', () => {
       const res = await http.get(url);
       await mock.dispose();
 
-      const body = res.json();
+      const body = res.json as any;
 
       expect(res.status).to.eql(400);
       expect(body.error.type).to.eql('HTTP/uri/malformed');
@@ -30,7 +30,7 @@ describe('route: coord (URI: cell|row|col)', () => {
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
-      const body = res.json() as t.IResGetCoord;
+      const body = res.json as t.IResGetCoord;
 
       expect(body.uri).to.eql(uri);
       expect(body.exists).to.eql(false);
@@ -59,7 +59,7 @@ describe('route: coord (URI: cell|row|col)', () => {
         const res = await http.get(mock.url(path));
         await mock.dispose();
 
-        const json = res.json() as t.IResGetNs;
+        const json = res.json as t.IResGetNs;
         expect(res.status).to.eql(200);
         expect(json.uri).to.eql('ns:foo'); // NB: The "ns:" URI, not "cell:".
         expect(json.exists).to.eql(false);
@@ -81,7 +81,7 @@ describe('route: coord (URI: cell|row|col)', () => {
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
-      const body = res.json() as t.IResGetCell;
+      const body = res.json as t.IResGetCell;
       const data = body.data;
 
       expect(body.uri).to.eql(uri);
@@ -101,7 +101,7 @@ describe('route: coord (URI: cell|row|col)', () => {
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
-      const body = res.json() as t.IResGetColumn;
+      const body = res.json as t.IResGetColumn;
       const data = body.data;
 
       expect(body.uri).to.eql(uri);
@@ -121,7 +121,7 @@ describe('route: coord (URI: cell|row|col)', () => {
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
-      const body = res.json() as t.IResGetRow;
+      const body = res.json as t.IResGetRow;
       const data = body.data;
 
       expect(body.uri).to.eql(uri);

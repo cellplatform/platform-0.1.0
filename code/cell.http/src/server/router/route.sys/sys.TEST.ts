@@ -10,7 +10,7 @@ describe('route: sys', () => {
 
       expect(res.status).to.eql(404);
 
-      const body = res.json<t.IHttpError>();
+      const body = res.json as t.IHttpError;
 
       expect(body.status).to.eql(404);
       expect(body.message).to.contain('Resource not found');
