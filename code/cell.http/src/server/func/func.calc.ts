@@ -1,4 +1,4 @@
-import { t, cell, models, http, fs, Schema, util, download } from '../common';
+import { t, cell, models, http, fs, Schema, util } from '../common';
 
 /**
  * Executes calculations on a namespace.
@@ -39,8 +39,11 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
       if (func && Schema.uri.is.file(func.uri)) {
         const url = util.urls(host).file(func.uri).file;
         const saveTo = `${TMP}/cache/${func.uri.replace(/\:/g, '-')}`;
-        await fs.ensureDir(fs.dirname(saveTo));
-        await download(url).save(saveTo);
+
+        const res = await http.get(url);
+        if (res.body) {
+          await fs.stream.save(saveTo, res.body);
+        }
 
         // Load the WASM
         const source = await fs.readFile(saveTo);

@@ -1,6 +1,6 @@
-import { IJsonMap } from '@platform/util.value/lib/types';
+import { JsonMap } from '@platform/types';
 
 export * from './components/GraphqlEditor/types';
 
-export { IJsonMap };
-export type JsonFetcher = (params: any) => Promise<IJsonMap>;
+export { JsonMap };
+export type JsonFetcher = (params: any) => Promise<JsonMap>;

@@ -5,7 +5,7 @@ import { expect, getTestDb, t, time } from '../test';
 type IMyThingProps = { count: number };
 type IMyThing = t.IModel<IMyThingProps>;
 
-type IMyOrgProps = { id: string; name: string; region?: string; obj?: t.IJsonMap };
+type IMyOrgProps = { id: string; name: string; region?: string; obj?: t.JsonMap };
 type IMyOrgDoc = IMyOrgProps & { ref?: string; refs?: string[] };
 type IMyOrgLinks = { thing: IMyThing; things: IMyThing[] };
 type IMyOrgChildren = { things: IMyThing[]; subthings: IMyThing[]; all: IMyThing[] };

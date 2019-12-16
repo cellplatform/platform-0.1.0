@@ -30,7 +30,7 @@ export function init(args: { router: t.IRouter; getManifest: t.GetManifest }) {
 
     // Check if there is a direct route match and if found "server-side-render" the HTML.
     const url = parseUrl(req.url || '', false);
-    const route = site.route(url.pathname);
+    const route = site.route(url.pathname || '');
     const ext = fs.extname(url.pathname || ''); // NB: an extension indicates an asset resource, not the entry HTML.
 
     if (route && !ext) {
@@ -52,7 +52,7 @@ export function init(args: { router: t.IRouter; getManifest: t.GetManifest }) {
     }
 
     // Redirect the resource-request to S3.
-    const location = site.redirectUrl(url.pathname);
+    const location = site.redirectUrl(url.pathname || '');
     if (location) {
       return {
         status: 307,

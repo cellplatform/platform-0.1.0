@@ -87,7 +87,7 @@ const upload = async (args: { index: number; path: string }) => {
     log.info.green(msg);
   } else {
     log.info.yellow(msg);
-    log.info.yellow(`  `, res.json());
+    log.info.yellow(`  `, res.json);
   }
 };
 

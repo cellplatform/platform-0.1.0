@@ -185,7 +185,7 @@ export class AccessToken implements t.IAccessToken {
 
     const Authorization = `Bearer ${this.toString()}`;
     const result = await http.get(url, { headers: { Authorization } });
-    const data = result.json();
+    const data = result.json as any;
 
     const profile: t.IAuthProfile = {
       id: data.sub,

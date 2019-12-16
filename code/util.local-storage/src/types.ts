@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { Json } from '@platform/types';
-export { Json, IJsonMap, IJsonArray } from '@platform/types';
+export { Json, JsonMap } from '@platform/types';
 
 export type ILocalStorageProps<T> = { [P in keyof T]: T[P] };
 

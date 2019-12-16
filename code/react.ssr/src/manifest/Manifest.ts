@@ -71,7 +71,7 @@ export class Manifest {
 
       // Attempt to parse the yaml.
       const baseUrl = args.baseUrl || manifestUrl;
-      const manifest = await Manifest.fromYaml({ yaml: res.body, baseUrl, loadBundleManifest });
+      const manifest = await Manifest.fromYaml({ yaml: res.text, baseUrl, loadBundleManifest });
 
       // Finish up.
       return {

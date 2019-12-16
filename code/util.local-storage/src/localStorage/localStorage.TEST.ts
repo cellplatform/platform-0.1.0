@@ -23,7 +23,7 @@ const initial = {
  * [NOTE] An injected provider allows testing on server, whereas the
  *        `localStorage` really only exists in the browser.
  */
-const testProvider = (initial?: t.IJsonMap) => {
+const testProvider = (initial?: t.JsonMap) => {
   const data = initial ? { ...initial } : {};
   const provider: t.ILocalStorageProvider = {
     type: 'TEST',

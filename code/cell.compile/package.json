@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compile",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Code compilation tools for CellOS.",
   "scripts": {
     "start": "node .",
@@ -30,13 +30,13 @@
     }
   },
   "dependencies": {
-    "@platform/cell.types": "0.2.15",
+    "@platform/cell.types": "0.2.18",
     "@platform/libs": "0.1.5",
     "parcel": "^2.0.0-alpha.3.2"
   },
   "devDependencies": {
     "@platform/test": "0.1.0",
-    "@platform/ts": "3.7.4"
+    "@platform/ts": "3.7.5"
   },
   "files": [
     "lib",

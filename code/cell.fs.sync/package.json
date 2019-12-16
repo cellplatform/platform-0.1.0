@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.fs.sync",
-  "version": "0.0.14",
+  "version": "0.0.18",
   "description": "Tools for local file-system syncing with cloud.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,17 +14,17 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.2.15",
-    "@platform/fs": "0.3.7",
-    "@platform/http": "0.5.5",
+    "@platform/cell.types": "0.2.18",
+    "@platform/fs": "0.4.0",
+    "@platform/http": "0.6.1",
     "@platform/libs": "0.1.5",
-    "@platform/log": "^0.0.152",
+    "@platform/log": "^0.0.153",
     "form-data": "3.0.0",
     "semver": "^6.3.0"
   },
   "devDependencies": {
     "@platform/test": "0.1.0",
-    "@platform/ts": "3.7.4",
+    "@platform/ts": "3.7.5",
     "@types/form-data": "2.5.0",
     "@types/semver": "^6.2.0"
   },

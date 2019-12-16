@@ -85,7 +85,7 @@ export class Route {
     if (!res.ok) {
       status = res.status;
     }
-    let html = res.ok ? res.body : '';
+    let html = res.ok ? res.text : '';
     const version = this.version;
     html = this.formatHtml({ html, filename, version });
 

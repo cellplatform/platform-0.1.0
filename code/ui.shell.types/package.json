@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.shell.types",
-  "version": "0.1.14",
+  "version": "0.1.17",
   "description": "Shared types used by ui.shell components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,11 +13,11 @@
   },
   "dependencies": {
     "@platform/libs": "0.1.5",
-    "@platform/ui.tree": "0.4.12"
+    "@platform/ui.tree": "0.4.15"
   },
   "devDependencies": {
     "@platform/test": "0.1.0",
-    "@platform/ts": "3.7.4"
+    "@platform/ts": "3.7.5"
   },
   "files": [
     "lib",

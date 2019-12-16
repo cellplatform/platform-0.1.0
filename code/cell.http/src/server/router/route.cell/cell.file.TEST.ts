@@ -42,7 +42,7 @@ describe('route: !A1/file', () => {
     await mock.dispose();
   });
 
-  it.only('reads a file by name (failing if the underlying file-hash changes)', async () => {
+  it.skip('reads a file by name (failing if the underlying file-hash changes)', async () => {
     // TODO 🐷
 
     /**

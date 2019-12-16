@@ -1,7 +1,5 @@
 import { createMock, expect, FormData, fs, http, t } from '../../../test';
 
-import { download } from '@platform/http/lib/download';
-
 const testPost = async (args: {
   uri: string;
   filename: string;
@@ -90,7 +88,10 @@ describe('route: file (URI)', () => {
 
       // Download the file from the route, and ensure it saves correctly.
       const path = fs.resolve('tmp/file.png');
-      await download(urls.download.toString()).save(path);
+      if (resDownload.body) {
+        await fs.stream.save(path, resDownload.body);
+      }
+
       mock.dispose();
 
       const file1 = await fs.readFile(source);
@@ -122,7 +123,10 @@ describe('route: file (URI)', () => {
 
       // Download the file from the route, and ensure it saves correctly.
       const path = fs.resolve('tmp/file.wasm');
-      await download(urls.download.toString()).save(path);
+      if (resDownload.body) {
+        await fs.stream.save(path, resDownload.body);
+      }
+
       mock.dispose();
 
       const file1 = await fs.readFile(source);

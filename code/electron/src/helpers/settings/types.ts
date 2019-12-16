@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { IJsonMap } from '@platform/types';
+import { JsonMap } from '@platform/types';
 
 /**
  * [Client]
@@ -27,7 +27,7 @@ export type ISettingsKeyValue<T extends SettingsJson = any> = {
   value: T[keyof T] | undefined;
 };
 
-export type SettingsJson = IJsonMap;
+export type SettingsJson = JsonMap;
 
 export type ISettingsFile = {
   version: number;

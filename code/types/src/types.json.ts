@@ -4,7 +4,7 @@
  *  - https://devblogs.microsoft.com/typescript/announcing-typescript-3-7-beta
  */
 
-export type Json = string | number | boolean | null | JsonMap | Json[];
+export type Json = string | number | boolean | null | undefined | JsonMap | Json[];
 export type JsonMap = { [property: string]: Json };
 
 /**
