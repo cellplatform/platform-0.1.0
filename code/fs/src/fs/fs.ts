@@ -10,6 +10,7 @@ import { unzip, zip } from '../zip';
 import { ancestor } from '../ancestor';
 import { match } from '../match';
 import { env } from '../env';
+import { stream } from '../stream';
 
 /**
  * Extended [file-system] object.
@@ -21,6 +22,11 @@ export const fs = {
    * Helpers for determining the size of file-system items.
    */
   size,
+
+  /**
+   * Helpers for working with streams.
+   */
+  stream,
 
   /**
    * Helpers for searching for glob patterns.
