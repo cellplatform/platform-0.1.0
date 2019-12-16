@@ -20,7 +20,7 @@ export function toErrorPayload(
   options: { status?: number; type?: string } = {},
 ): t.IErrorPayload {
   const status = defaultValue(options.status, 500);
-  const { type = ERROR.SERVER } = options;
+  const { type = ERROR.HTTP.SERVER } = options;
   const message = typeof err === 'string' ? err : err.message;
   const data: t.IHttpError = { status, type, message };
   return { status, data };

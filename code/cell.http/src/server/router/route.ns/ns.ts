@@ -12,7 +12,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
 
     if (!id) {
       const error: t.IError = {
-        type: ERROR.MALFORMED_URI,
+        type: ERROR.HTTP.MALFORMED_URI,
         message: `Malformed "ns:" URI, does not contain an ID ("${req.url}").`,
       };
       return { status: 400, error };

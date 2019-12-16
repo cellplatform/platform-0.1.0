@@ -28,7 +28,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     };
 
     const error: t.IError = {
-      type: constants.ERROR.MALFORMED_URI,
+      type: constants.ERROR.HTTP.MALFORMED_URI,
       message: '',
     };
 

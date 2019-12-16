@@ -83,7 +83,7 @@ function validate(config: t.IConfigFile) {
   };
 
   const error = (message: string) => {
-    const error: t.IError = { type: ERROR.CONFIG, message };
+    const error: t.IError = { type: ERROR.HTTP.CONFIG, message };
     errors.push(error);
     return res;
   };

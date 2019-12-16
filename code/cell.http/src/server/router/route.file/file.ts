@@ -15,7 +15,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     };
 
     const error: t.IError = {
-      type: constants.ERROR.MALFORMED_URI,
+      type: constants.ERROR.HTTP.MALFORMED_URI,
       message: '',
     };
 
@@ -105,13 +105,13 @@ export const getFileDownloadResponse = async (args: {
     // Match hash if requested.
     if (query.hash && file.data.hash !== query.hash) {
       const err = new Error(`"${file.uri}" hash does not match requested hash.`);
-      return util.toErrorPayload(err, { status: 409, type: ERROR.HASH_MISMATCH });
+      return util.toErrorPayload(err, { status: 409, type: ERROR.HTTP.HASH_MISMATCH });
     }
 
     // Ensure the file exists.
     if (!file.exists) {
       const err = new Error(`"${file.uri}" does not exist.`);
-      return util.toErrorPayload(err, { status: 404, type: ERROR.NOT_FOUND });
+      return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_FOUND });
     }
 
     // Get the location.
@@ -119,7 +119,7 @@ export const getFileDownloadResponse = async (args: {
     const location = (props.location || '').trim();
     if (!location) {
       const err = new Error(`"${file.uri}" does not have a location.`);
-      return util.toErrorPayload(err, { status: 404, type: ERROR.NOT_FOUND });
+      return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_FOUND });
     }
 
     // Redirect if the location is an S3 link.
@@ -133,7 +133,7 @@ export const getFileDownloadResponse = async (args: {
       const data = local.file ? local.file.data : undefined;
       if (!data) {
         const err = new Error(`File at the URI "${file.uri}" does on the local file-system.`);
-        return util.toErrorPayload(err, { status: 404, type: ERROR.NOT_FOUND });
+        return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_FOUND });
       } else {
         return { status: 200, data };
       }
