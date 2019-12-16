@@ -44,7 +44,7 @@ export class Schema {
   public static slug = slug;
   public static file = FileSchema;
 
-  public static url = (host: string | number) => new Urls(host);
+  public static url = (host: string | number) => Urls.create(host);
   public static ns = (id: string) => new NsSchema({ id });
 
   public static query = {

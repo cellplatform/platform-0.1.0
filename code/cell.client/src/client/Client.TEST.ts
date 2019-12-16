@@ -1,5 +1,11 @@
 import { expect } from '../test';
-import { Client } from '.';
+import { Client } from '..';
+
+/**
+ * NOTE:
+ *    Tests aginst the actual service using this client
+ *    can be found in the [cell.http] module.
+ */
 
 describe('client', () => {
   it('parses host => origin', () => {

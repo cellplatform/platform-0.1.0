@@ -1,5 +1,5 @@
 import { t, http, Schema, Urls } from '../common';
-import { ClientCell } from '../client.cell';
+import { ClientCell } from './ClientCell';
 
 type F = t.IFetchOptions;
 
@@ -23,7 +23,7 @@ export class Client {
    * [Fields]
    */
   public readonly origin: string;
-  private readonly urls: Urls;
+  private readonly urls: t.IUrls;
 
   /**
    * [Methods]

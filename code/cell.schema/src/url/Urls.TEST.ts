@@ -18,7 +18,7 @@ describe('Urls', () => {
         protocol: 'http' | 'https',
         origin: string,
       ) => {
-        const res = new Urls(input);
+        const res = Urls.create(input);
         expect(res.protocol).to.eql(protocol);
         expect(res.host).to.eql(host);
         expect(res.port).to.eql(port);
@@ -56,7 +56,7 @@ describe('Urls', () => {
   });
 
   describe('sys', () => {
-    const url = new Urls();
+    const url = Urls.create();
 
     it('info', () => {
       const res = url.sys.info;
@@ -70,7 +70,13 @@ describe('Urls', () => {
   });
 
   describe('namespace', () => {
-    const url = new Urls();
+    const URI = 'ns:foo';
+    const url = Urls.create();
+
+    it('uri', () => {
+      const res = url.ns(URI);
+      expect(res.uri).to.eql(URI);
+    });
 
     it('throw if non-namespace URI passed', () => {
       expect(() => url.ns('foo:bar')).to.throw();
@@ -101,7 +107,12 @@ describe('Urls', () => {
 
   describe('cell', () => {
     const URI = 'cell:foo!A1';
-    const url = new Urls();
+    const url = Urls.create();
+
+    it('uri', () => {
+      const res = url.cell(URI);
+      expect(res.uri).to.eql(URI);
+    });
 
     it('throw if non-cell URI passed', () => {
       expect(() => url.cell('foo:bar')).to.throw();
@@ -111,11 +122,6 @@ describe('Urls', () => {
       expect(() => url.cell('cell:foo')).to.throw(); //   NB: no "!A1" key (invalid).
       expect(() => url.cell('cell:foo!A')).to.throw(); // NB: column.
       expect(() => url.cell('cell:foo!1')).to.throw(); // NB: row.
-    });
-
-    it('uri', () => {
-      const res = url.cell(URI);
-      expect(res.uri).to.eql(URI);
     });
 
     it('info', () => {
@@ -167,13 +173,12 @@ describe('Urls', () => {
 
   describe('row', () => {
     const URI = 'cell:foo!1';
-    const url = new Urls();
+    const url = Urls.create();
 
     it('uri', () => {
       const res = url.row(URI);
       expect(res.uri).to.eql(URI);
     });
-
 
     it('throw if non-row URI passed', () => {
       expect(() => url.row('foo:bar')).to.throw();
@@ -197,13 +202,12 @@ describe('Urls', () => {
 
   describe('column', () => {
     const URI = 'cell:foo!A';
-    const url = new Urls();
+    const url = Urls.create();
 
     it('uri', () => {
       const res = url.column(URI);
       expect(res.uri).to.eql(URI);
     });
-
 
     it('throw if non-row URI passed', () => {
       expect(() => url.column('foo:bar')).to.throw();
@@ -227,13 +231,12 @@ describe('Urls', () => {
 
   describe('file', () => {
     const URI = 'file:foo:123';
-    const url = new Urls();
+    const url = Urls.create();
 
     it('uri', () => {
       const res = url.file(URI);
       expect(res.uri).to.eql(URI);
     });
-
 
     it('throw if non-cell URI passed', () => {
       expect(() => url.file('foo:bar')).to.throw();

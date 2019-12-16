@@ -94,7 +94,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
-   * GET: File by name (download)
+   * GET: File by name (download).
    *      Example: /cell:foo!A1/file/kitten.jpg
    *      NB: This is the same as calling the `/file:...` GET route point directly.
    */
@@ -164,7 +164,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
-   * POST a file to a cell
+   * POST a file to a cell.
    */
   router.post(routes.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
@@ -181,8 +181,10 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       // Prepare the file URI link.
       const cell = await models.Cell.create({ db, uri: cellUri }).ready;
       const cellLinks = cell.props.links || {};
-      const linkKey = Schema.file.links.toKey(filename);
-      const fileUri = cellLinks[linkKey] || Schema.uri.create.file(ns, Schema.slug());
+      const fileLinkKey = Schema.file.links.toKey(filename);
+      const fileUri = cellLinks[fileLinkKey]
+        ? cellLinks[fileLinkKey].split('?')[0]
+        : Schema.uri.create.file(ns, Schema.slug());
 
       // Save to the file-system.
       const form = await req.body.form();
@@ -204,11 +206,14 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       // Update the [Cell] model with the file URI link.
       // NB: This is done through the master [Namespace] POST
       //     handler as this ensures all hashes are updated.
+      const fileLinkValue = `${fileUri}?hash=${fsResponseData.data.hash}`;
       const nsResponse = await postNsResponse({
         db,
         id: ns,
         body: {
-          cells: { [key]: { links: { ...cellLinks, [linkKey]: fileUri } } },
+          cells: {
+            [key]: { links: { ...cellLinks, [fileLinkKey]: fileLinkValue } },
+          },
         },
         query: { cells: key, changes: true },
         host,

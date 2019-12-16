@@ -7,9 +7,13 @@ import { ROUTES } from './ROUTES';
 /**
  * Standardised construction of URLs for the HTTP service.
  */
-export class Urls {
+export class Urls implements t.IUrls {
   public static readonly uri = Uri;
   public static readonly routes = ROUTES;
+
+  public static create(input?: string | number): t.IUrls {
+    return new Urls(input);
+  }
 
   public static parse(input?: string | number) {
     input = value.isNumeric(input) ? `localhost:${input}` : input?.toString();
@@ -26,7 +30,7 @@ export class Urls {
   /**
    * [Lifecycle]
    */
-  constructor(input?: string | number) {
+  private constructor(input?: string | number) {
     const { protocol, host, port, origin } = Urls.parse(input);
     this.host = host;
     this.protocol = protocol;
@@ -69,9 +73,9 @@ export class Urls {
   public ns(input: string | t.IUrlParamsNs) {
     const toPath = this.toUrl;
     let id = typeof input === 'string' ? input : input.ns;
+    const uri = Uri.parse(id);
 
     if (id.includes(':')) {
-      const uri = Uri.parse(id);
       const type = uri.parts.type;
 
       if (uri.error) {
@@ -89,6 +93,8 @@ export class Urls {
     }
 
     return {
+      uri: uri.toString(),
+
       /**
        * Example: /ns:foo
        */
@@ -140,13 +146,13 @@ export class Urls {
         /**
          * Example: /cell:foo!A1/file/kitten.png
          */
-        byName(name: string) {
+        byName(filename: string) {
           type Q = t.IUrlQueryGetCellFileByName;
-          name = (name || '').trim();
-          if (!name) {
+          filename = (filename || '').trim();
+          if (!filename) {
             throw new Error(`Filename not provided.`);
           }
-          return toPath<Q>(`/cell:${ns}!${key}/file/${name}`);
+          return toPath<Q>(`/cell:${ns}!${key}/file/${filename}`);
         },
 
         /**
