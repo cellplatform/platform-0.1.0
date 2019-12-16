@@ -1,7 +1,11 @@
 import { expect } from 'chai';
 import { http } from '..';
+import { fs } from '@platform/fs';
 
+const TMP = fs.resolve('./tmp');
 const URL = {
+  IMAGE: 'https://platform.sfo2.digitaloceanspaces.com/modules/http/image.png',
+  ZIP: 'https://platform.sfo2.digitaloceanspaces.com/modules/http/images.zip',
   JSON: 'https://platform.sfo2.digitaloceanspaces.com/modules/http/foo.json',
 };
 
@@ -13,12 +17,20 @@ describe('http (INTEGRATION)', function() {
   it('GET (string)', async () => {
     const res = await http.get(URL.JSON);
     expect(res.status).to.eql(200);
-    expect(res.body).to.include('"name": "foo"');
+    expect(res.text).to.include('"name": "foo"');
   });
 
   it('GET (JSON)', async () => {
     const res = await http.get(URL.JSON);
     expect(res.status).to.eql(200);
-    expect(res.json<IFoo>().name).to.eql('foo');
+    expect((res.json as IFoo).name).to.eql('foo');
+  });
+
+  it('download using http.get (and fs.stream)', async () => {
+    const res = await http.get(URL.ZIP);
+    const path = fs.join(TMP, 'images-2.zip');
+    if (res.body) {
+      await fs.stream.save(path, res.body);
+    }
   });
 });
