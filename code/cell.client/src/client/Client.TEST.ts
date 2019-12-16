@@ -19,14 +19,11 @@ describe('client', () => {
     test('domain.com:1234', 'https://domain.com:1234');
   });
 
-  it('exposes URI builder', () => {
-    const res = Client.create(8080);
-    expect(res.uri.parse).to.be.an.instanceof(Function);
-  });
-
-  it('exposes URL builder (matching origin)', () => {
-    const res = Client.create(8080);
-    expect(res.url.origin).to.eql(res.origin);
+  it('client.cell(...)', () => {
+    const uri = 'cell:foo!A1';
+    const client = Client.create();
+    const res = client.cell(uri);
+    expect(res.uri.toString()).to.eql(uri);
+    expect(res.toString()).to.eql(uri);
   });
 });
-  
