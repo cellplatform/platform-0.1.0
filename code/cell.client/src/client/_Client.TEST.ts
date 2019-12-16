@@ -1,10 +1,10 @@
 import { expect } from '../test';
-import { init } from '.';
+import { Client } from '.';
 
 describe('client', () => {
   it('parses host => origin', () => {
     const test = (host: string | number, expected: string) => {
-      const res = init(host);
+      const res = Client.create(host);
       expect(res.origin).to.eql(expected);
     };
 
@@ -20,12 +20,12 @@ describe('client', () => {
   });
 
   it('exposes URI builder', () => {
-    const res = init(8080);
+    const res = Client.create(8080);
     expect(res.uri.parse).to.be.an.instanceof(Function);
   });
 
   it('exposes URL builder (matching origin)', () => {
-    const res = init(8080);
+    const res = Client.create(8080);
     expect(res.url.origin).to.eql(res.origin);
   });
 });
