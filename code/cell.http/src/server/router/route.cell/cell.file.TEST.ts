@@ -1,9 +1,8 @@
 import { Schema, createMock, expect, fs, http, t } from '../../../test';
 
 describe('route: !A1/file', () => {
-  it.only('writes file to the filesystem and updates model', async () => {
+  it('writes file to the filesystem and updates model', async () => {
     const mock = await createMock();
-
     const cellUri = 'cell:foo!A1';
 
     // Cell model does not exist.
@@ -14,7 +13,7 @@ describe('route: !A1/file', () => {
     // POST the file to the service.
     const sourceFile = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
     const client = mock.client.cell(cellUri);
-    const res2 = await client.file.post({ filename: 'func.wasm', data: sourceFile });
+    const res2 = await client.file.name('func.wasm').post(sourceFile);
 
     // Ensure the URI to the file was stored.
     const cell = res2.json.data.cell;

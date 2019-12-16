@@ -34,22 +34,29 @@ export class ClientCell {
     const fileUrl = this.url.file;
     return {
       /**
-       * Upload a file and associate it with the cell.
+       * Operate on a file by name.
        */
-      async post(args: { filename: string; data: ArrayBuffer }) {
-        // Prepare the form data.
-        const form = new FormData();
-        form.append('file', args.data, { contentType: 'application/octet-stream' });
-        const headers = form.getHeaders();
+      name(filename: string) {
+        return {
+          /**
+           * Upload a file and associate it with the cell.
+           */
+          async post(data: ArrayBuffer) {
+            // Prepare the form data.
+            const form = new FormData();
+            form.append('file', data, { contentType: 'application/octet-stream' });
+            const headers = form.getHeaders();
 
-        // POST to the service.
-        const url = fileUrl.byName(args.filename);
-        const res = await http.post(url.toString(), form, { headers });
-        const json = res.json<t.IResPostCellFile>();
+            // POST to the service.
+            const url = fileUrl.byName(filename);
+            const res = await http.post(url.toString(), form, { headers });
+            const json = res.json<t.IResPostCellFile>();
 
-        // Finish up.
-        const { ok, status } = res;
-        return { ok, status, json };
+            // Finish up.
+            const { ok, status } = res;
+            return { ok, status, json };
+          },
+        };
       },
     };
   }
