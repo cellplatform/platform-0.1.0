@@ -113,6 +113,11 @@ describe('Urls', () => {
       expect(() => url.cell('cell:foo!1')).to.throw(); // NB: row.
     });
 
+    it('uri', () => {
+      const res = url.cell(URI);
+      expect(res.uri).to.eql(URI);
+    });
+
     it('info', () => {
       const res1 = url.cell(URI).info;
       const res2 = url.cell({ ns: 'foo', key: 'A1' }).info;
@@ -164,6 +169,12 @@ describe('Urls', () => {
     const URI = 'cell:foo!1';
     const url = new Urls();
 
+    it('uri', () => {
+      const res = url.row(URI);
+      expect(res.uri).to.eql(URI);
+    });
+
+
     it('throw if non-row URI passed', () => {
       expect(() => url.row('foo:bar')).to.throw();
       expect(() => url.row('ns:foo')).to.throw();
@@ -188,6 +199,12 @@ describe('Urls', () => {
     const URI = 'cell:foo!A';
     const url = new Urls();
 
+    it('uri', () => {
+      const res = url.column(URI);
+      expect(res.uri).to.eql(URI);
+    });
+
+
     it('throw if non-row URI passed', () => {
       expect(() => url.column('foo:bar')).to.throw();
       expect(() => url.column('ns:foo')).to.throw();
@@ -209,8 +226,14 @@ describe('Urls', () => {
   });
 
   describe('file', () => {
-    const uri = 'file:foo:123';
+    const URI = 'file:foo:123';
     const url = new Urls();
+
+    it('uri', () => {
+      const res = url.file(URI);
+      expect(res.uri).to.eql(URI);
+    });
+
 
     it('throw if non-cell URI passed', () => {
       expect(() => url.file('foo:bar')).to.throw();
@@ -220,7 +243,7 @@ describe('Urls', () => {
     });
 
     it('download', () => {
-      const res1 = url.file(uri).download;
+      const res1 = url.file(URI).download;
       const res2 = url.file({ ns: 'foo', file: '123' }).download;
 
       const URL = 'http://localhost/file:foo:123';
@@ -229,7 +252,7 @@ describe('Urls', () => {
     });
 
     it('info', () => {
-      const res1 = url.file(uri).info;
+      const res1 = url.file(URI).info;
       const res2 = url.file({ ns: 'foo', file: '123' }).info;
 
       const URL = 'http://localhost/file:foo:123/info';

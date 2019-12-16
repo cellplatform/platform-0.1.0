@@ -115,6 +115,8 @@ export class Urls {
     }
 
     return {
+      uri,
+
       /**
        * Example: /cell:foo!A1
        */
@@ -179,6 +181,8 @@ export class Urls {
     }
 
     return {
+      uri,
+
       /**
        * Example: /cell:foo!1
        */
@@ -206,6 +210,8 @@ export class Urls {
     }
 
     return {
+      uri,
+
       /**
        * Example: /cell:foo!A
        */
@@ -230,6 +236,8 @@ export class Urls {
 
     const { id } = file.parts;
     return {
+      uri,
+
       get download() {
         type Q = t.IUrlQueryGetFile;
         return toPath<Q>(`/file:${id}`);
