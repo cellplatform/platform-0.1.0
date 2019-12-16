@@ -1,5 +1,6 @@
 import { t, http, Schema, Urls } from '../common';
 import { ClientCell } from './ClientCell';
+import { ClientFile } from './ClientFile';
 
 type F = t.IFetchOptions;
 
@@ -32,5 +33,11 @@ export class Client implements t.IClient {
     const urls = this.urls;
     const uri = urls.cell(input).uri;
     return ClientCell.create({ uri, urls });
+  }
+
+  public file(input: string | t.IUrlParamsFile) {
+    const urls = this.urls;
+    const uri = urls.file(input).uri;
+    return ClientFile.create({ uri, urls });
   }
 }

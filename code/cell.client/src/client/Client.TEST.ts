@@ -1,5 +1,7 @@
 import { expect } from '../test';
 import { Client } from '..';
+import { ClientCellFile } from './ClientCellFile';
+import { ClientCellLinks } from './ClientCellLinks';
 
 /**
  * NOTE:
@@ -25,10 +27,17 @@ describe('client', () => {
     test('domain.com:1234', 'https://domain.com:1234');
   });
 
-  it('client.cell(...)', () => {
+  it('client.cell', () => {
     const uri = 'cell:foo!A1';
     const client = Client.create();
-    const res = client.cell(uri);
-    expect(res.toString()).to.eql(uri);
+    const cell = client.cell(uri);
+    expect(cell.toString()).to.eql(uri);
+  });
+
+  it('client.file', () => {
+    const uri = 'file:foo:123';
+    const client = Client.create();
+    const file = client.file(uri);
+    expect(file.toString()).to.eql(uri);
   });
 });

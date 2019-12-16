@@ -3,7 +3,7 @@ import { http, t, FormData, util, Schema, ERROR } from '../common';
 export type IClientCellFileArgs = { parent: t.IClientCell; urls: t.IUrls };
 
 /**
- * An HTTP client for operating on files associated with a [Cell].
+ * HTTP client for operating on files associated with a [Cell].
  */
 export class ClientCellFile implements t.IClientCellFile {
   public static create(args: IClientCellFileArgs): t.IClientCellFile {
