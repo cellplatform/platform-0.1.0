@@ -40,6 +40,19 @@ describe('FileLinks', () => {
     test('fs:fs:foo:png', 'fs.foo.png');
   });
 
+  it('parseLink', () => {
+    const test = (input: string, expectedUri: string, expectedHash: string | undefined) => {
+      const res = FileLinks.parseLink(input);
+      expect(res.uri).to.eql(expectedUri);
+      expect(res.hash).to.eql(expectedHash);
+    };
+    test('file:foo:123', 'file:foo:123', '');
+    test('file:foo:123?hash=abc', 'file:foo:123', 'abc');
+    test('  file:foo:123?hash=abc  ', 'file:foo:123', 'abc');
+    test('file:foo:123?bam=boo', 'file:foo:123', '');
+    test('file:foo:123?bam=boo&hash=abc ', 'file:foo:123', 'abc');
+  });
+
   describe('error', () => {
     it('toKey: throw if contains "/"', () => {
       const fn = () => FileLinks.toKey('foo/bar.png');

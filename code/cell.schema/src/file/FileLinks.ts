@@ -21,6 +21,22 @@ export class FileLinks {
     linksKey = shouldDecode(linksKey) ? decode(linksKey) : linksKey;
     return linksKey;
   }
+
+  public static parseLink(value: string) {
+    value = (value || '').trim();
+    const parts = value.split('?');
+    const uri = parts[0];
+
+    let hash = '';
+    if (parts[1]) {
+      const query = parts[1].split('&').find(item => item.startsWith('hash='));
+      if (query) {
+        hash = query.replace(/^hash\=/, '');
+      }
+    }
+
+    return { value, uri, hash };
+  }
 }
 
 /**
