@@ -10,6 +10,7 @@ lib.test
 .dev
 .uiharness
 .publish
+.parcel*
 
 .env
 .env*

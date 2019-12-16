@@ -1,4 +1,5 @@
 .env
+.parcel*
 node_modules
 /lib
 /tmp

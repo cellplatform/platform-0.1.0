@@ -2,8 +2,6 @@
   "name": "@platform/cell.compile",
   "version": "0.0.0",
   "description": "Code compilation tools for CellOS.",
-  "main": "lib/index",
-  "types": "lib/index.d.ts",
   "scripts": {
     "start": "node .",
     "watch": "nodemon .",
@@ -11,7 +9,25 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "bundle": "parcel build src/demo/page.ts",
+    "clean": "rm -rf dist && rm -rf .parcel-cache"
+  },
+  "targets": {
+    "main": {
+      "engines": {
+        "node": ">=4.x",
+        "electron": ">=2.x"
+      }
+    },
+    "browser": {
+      "engines": {
+        "browsers": [
+          "> 1%",
+          "not dead"
+        ]
+      }
+    }
   },
   "dependencies": {
     "@platform/cell.types": "0.2.14",
