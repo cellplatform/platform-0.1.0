@@ -78,7 +78,8 @@ async function toResponse(url: string, res: Response) {
         try {
           json = JSON.parse(result.text) as t.Json;
         } catch (error) {
-          const msg = `Failed while parsing JSON for '${url}'.\nParse Error: ${error.message}\nBody: ${result.text}`;
+          const body = result.text ? result.text : '<empty>';
+          const msg = `Failed while parsing JSON for '${url}'.\nParse Error: ${error.message}\nBody: ${body}`;
           throw new Error(msg);
         }
       }
@@ -95,5 +96,5 @@ async function toResponse(url: string, res: Response) {
 
 function isTextBody(headers: t.IHttpHeaders) {
   const type = (headers['content-type'] || '').toString();
-  return type === 'application/json' || type.startsWith('text/');
+  return type.includes('application/json') || type.includes('text/');
 }
