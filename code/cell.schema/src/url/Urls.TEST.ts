@@ -18,11 +18,18 @@ describe('Urls', () => {
         protocol: 'http' | 'https',
         origin: string,
       ) => {
-        const res = Urls.create(input);
-        expect(res.protocol).to.eql(protocol);
-        expect(res.host).to.eql(host);
-        expect(res.port).to.eql(port);
-        expect(res.origin).to.eql(origin);
+        const res1 = Urls.parse(input);
+        const res2 = Urls.create(input);
+
+        expect(res1.protocol).to.eql(protocol);
+        expect(res1.host).to.eql(host);
+        expect(res1.port).to.eql(port);
+        expect(res1.origin).to.eql(origin);
+
+        expect(res1.protocol).to.eql(res2.protocol);
+        expect(res1.host).to.eql(res2.host);
+        expect(res1.port).to.eql(res2.port);
+        expect(res1.origin).to.eql(res2.origin);
       };
 
       test('foo.com:1234', 'foo.com', 1234, 'https', 'https://foo.com:1234');
@@ -69,7 +76,7 @@ describe('Urls', () => {
     });
   });
 
-  describe('namespace', () => {
+  describe('namespace (ns)', () => {
     const URI = 'ns:foo';
     const url = Urls.create();
 
@@ -102,6 +109,15 @@ describe('Urls', () => {
 
       const res2 = url.ns('foo').info.query({ cells: ['A1', 'B2:Z9'] });
       expect(res2.toString()).to.eql('http://localhost/ns:foo?cells=A1,B2:Z9');
+
+      const res3 = url.ns('foo').info.query({ rows: '1:9' });
+      expect(res3.toString()).to.eql('http://localhost/ns:foo?rows=1:9');
+
+      const res4 = url.ns('foo').info.query({ columns: 'A:Z' });
+      expect(res4.toString()).to.eql('http://localhost/ns:foo?columns=A:Z');
+
+      const res5 = url.ns('foo').info.query({ files: true });
+      expect(res5.toString()).to.eql('http://localhost/ns:foo?files=true');
     });
   });
 

@@ -21,6 +21,7 @@ export type IUrlQueryGetNs = {
   cells?: boolean | string | Array<string | boolean>; // true: all | string: key or range, eg "A1", "A1:C10"
   columns?: boolean | string | Array<string | boolean>;
   rows?: boolean | string | Array<string | boolean>;
+  files?: boolean;
 };
 
 export type IUrlQueryPostNs = IUrlQueryGetNs & {

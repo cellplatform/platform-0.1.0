@@ -125,7 +125,7 @@ export async function getChildData(args: {
   return (await Promise.all(wait)).reduce((acc, next) => {
     acc[next.field] = next.value;
     return acc;
-  }, {}) as t.INsDataCoord;
+  }, {}) as t.INsDataChildren;
 }
 
 /**

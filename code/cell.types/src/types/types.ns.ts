@@ -13,15 +13,32 @@ export type INsProps = {
 export type INsData<
   V extends t.ICellData = t.ICellData,
   C extends t.IColumnData = t.IColumnData,
-  R extends t.IRowData = t.IRowData
-> = INsDataCoord<V, C, R> & { ns: INs };
+  R extends t.IRowData = t.IRowData,
+  F extends t.IFileData = t.IFileData
+> = INsDataChildren<V, C, R, F> & { ns: INs };
 
+/**
+ * Data structures that are addressable within the namespace
+ * with coordinates (eg "A1", "A", "1").
+ */
 export type INsDataCoord<
   V extends t.ICellData = t.ICellData,
   C extends t.IColumnData = t.IColumnData,
   R extends t.IRowData = t.IRowData
 > = {
-  cells: t.IMap<V>;
-  columns: t.IMap<C>;
-  rows: t.IMap<R>;
+  cells: t.ICellMap<V>;
+  columns: t.IColumnMap<C>;
+  rows: t.IRowMap<R>;
+};
+
+/**
+ * All child data structures within the namespace.
+ */
+export type INsDataChildren<
+  V extends t.ICellData = t.ICellData,
+  C extends t.IColumnData = t.IColumnData,
+  R extends t.IRowData = t.IRowData,
+  F extends t.IFileData = t.IFileData
+> = INsDataCoord<V, C, R> & {
+  files: t.IFileMap<F>;
 };

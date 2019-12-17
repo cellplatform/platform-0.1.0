@@ -79,14 +79,19 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       return { status, data: { error } };
     }
 
+    // Retrieve data.
     const cell = await models.Cell.create({ db, uri }).ready;
-    const url = util.urls(req.host).cell(uri);
-    const files = url.files.list(cell.props.links || {});
 
+    // Construct link objects.
+    const urlBuilder = util.urls(req.host).cell(uri);
+    const links = urlBuilder.files.links(cell.props.links || {});
+    const files = urlBuilder.files.list(cell.props.links || {});
+
+    // Result.
     const data: t.IResGetCellFiles = {
       uri,
-      cell: url.info,
-      links: url.files.links(cell.props.links || {}),
+      cell: urlBuilder.info,
+      links,
       files,
     };
 

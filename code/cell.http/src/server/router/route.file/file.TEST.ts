@@ -1,14 +1,15 @@
-import { createMock, expect, FormData, fs, http, t } from '../../../test';
+import { createMock, expect, FormData, fs, http, t, IMock } from '../../../test';
 
-const testPost = async (args: {
+export const testPostFile = async (args: {
   uri: string;
   filename: string;
   source?: string | string[];
   queryString?: string;
   dispose?: boolean;
+  mock?: IMock;
 }) => {
   const { uri, filename } = args;
-  const mock = await createMock();
+  const mock = args.mock || (await createMock());
   const form = new FormData();
 
   // Prepare the [multipart/form-data] to post.
@@ -65,7 +66,7 @@ describe('route: file (URI)', () => {
     it('GET binay image file (.png)', async () => {
       const uri = 'file:foo:123';
       const source = 'src/test/assets/bird.png';
-      const { mock } = await testPost({
+      const { mock } = await testPostFile({
         uri,
         filename: `image.png`,
         source,
@@ -102,7 +103,7 @@ describe('route: file (URI)', () => {
     it('GET web-assembly file (.wasm)', async () => {
       const uri = 'file:foo:123';
       const source = 'src/test/assets/func.wasm';
-      const { mock } = await testPost({
+      const { mock } = await testPostFile({
         uri,
         filename: `func.wasm`,
         source,
@@ -137,7 +138,7 @@ describe('route: file (URI)', () => {
     it('GET file with hash query-string', async () => {
       const uri = 'file:foo:123';
       const source = 'src/test/assets/func.wasm';
-      const { mock } = await testPost({
+      const { mock } = await testPostFile({
         uri,
         filename: `func.wasm`,
         source,
@@ -169,7 +170,7 @@ describe('route: file (URI)', () => {
       await fs.remove(savePath);
 
       const uri = 'file:foo:123';
-      const { res, json, data, props } = await testPost({
+      const { res, json, data, props } = await testPostFile({
         uri,
         filename: `image.png`,
         source: sourcePath,
@@ -190,7 +191,7 @@ describe('route: file (URI)', () => {
     });
 
     it('POST no changes returned (via query-string flag)', async () => {
-      const { json } = await testPost({
+      const { json } = await testPostFile({
         uri: 'file:foo:123',
         filename: `image.png`,
         source: 'src/test/assets/bird.png',
@@ -201,7 +202,7 @@ describe('route: file (URI)', () => {
 
     describe('errors', () => {
       it('throws if no file posted', async () => {
-        const { res } = await testPost({
+        const { res } = await testPostFile({
           uri: 'file:foo:123',
           filename: `image.png`,
         });
@@ -214,7 +215,7 @@ describe('route: file (URI)', () => {
       });
 
       it('throws if no file posted', async () => {
-        const { res } = await testPost({
+        const { res } = await testPostFile({
           uri: 'file:foo:123',
           filename: `image.png`,
           source: ['src/test/assets/bird.png', 'src/test/assets/kitten.jpg'],
