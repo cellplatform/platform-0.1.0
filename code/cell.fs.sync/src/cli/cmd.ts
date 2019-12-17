@@ -1,4 +1,4 @@
-import { log, t, fs, http, semver, Schema, Client, Value } from '../common';
+import { prompt, log, t, fs, http, semver, Schema, Client, Value } from '../common';
 
 import * as FormData from 'form-data';
 
@@ -28,6 +28,8 @@ const HOST = LOCAL;
 const ns = 'ck499h7u30000fwet3k7085t1';
 
 export async function syncDir(args: { dir: string; dryRun: boolean }) {
+  await promptConfig();
+
   const { dryRun = false } = args;
   const dir = fs.resolve(args.dir);
 
@@ -127,8 +129,13 @@ const upload = async (args: { client: t.IClient; index: number; path: string }) 
   // }
 };
 
-type T = { filename: string; version: string };
+export async function promptConfig() {
+  const res = await prompt.text({ message: 'domain' });
 
+  console.log('res', res);
+}
+
+type T = { filename: string; version: string };
 export function sortSemver(list: string[]): T[] {
   const ext = '.png'; // TEMP 🐷
 
