@@ -84,19 +84,33 @@ export async function getChildColumns(args: { model: t.IDbModelNs; range?: strin
 }
 
 /**
- * Retrieve the child data.
+ * Retrieve child file data.
+ */
+export async function getChildFiles(args: { model: t.IDbModelNs }) {
+  const models = await args.model.children.files;
+  return models.reduce((acc, next) => {
+    const { parts } = Schema.from.file(next);
+    acc[parts.file] = squash.object(next.toObject());
+    return acc;
+  }, {}) as t.IFileMap;
+}
+
+/**
+ * Retrieve child data.
  */
 export async function getChildData(args: {
   model: t.IDbModelNs;
   cells?: boolean | string; // true: <all> | string: key or range, eg "A1", "A1:C10"
   rows?: boolean | string;
   columns?: boolean | string;
+  files?: boolean;
 }) {
   const { model } = args;
   const wait = [
     { field: 'cells', fn: getChildCells },
     { field: 'rows', fn: getChildRows },
     { field: 'columns', fn: getChildColumns },
+    { field: 'files', fn: getChildFiles },
   ]
     .filter(item => Boolean(args[item.field]))
     .map(async ({ field, fn }) => {

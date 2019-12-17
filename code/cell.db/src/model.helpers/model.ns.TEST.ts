@@ -7,6 +7,7 @@ import {
   getChildCells,
   getChildColumns,
   getChildData,
+  getChildFiles,
 } from './model.ns';
 
 const { deleteUndefined } = value;
@@ -149,7 +150,7 @@ describe('helpers: model.ns', () => {
     });
   });
 
-  describe.only('get', () => {
+  describe('get (namespace child data)', () => {
     it('getChildCells (with links)', async () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
@@ -186,6 +187,17 @@ describe('helpers: model.ns', () => {
       expect(columns.A).to.eql(deleteUndefined(column.toObject()));
     });
 
+    it('getChildFiles', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const file = models.File.create({ uri: 'file:foo:abc', db });
+      await file.set({ props: { filename: 'image.png', mimetype: 'image/png' } }).save();
+
+      const files = await getChildFiles({ model: ns });
+      expect(files.abc).to.eql(deleteUndefined(file.toObject()));
+    });
+
     it('getChildData', async () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
@@ -199,27 +211,29 @@ describe('helpers: model.ns', () => {
       const column = models.Column.create({ uri: 'cell:foo!A', db });
       await column.set({ props: { width: 250 } }).save();
 
+      const file = models.File.create({ uri: 'file:foo:abc', db });
+      await file.set({ props: { filename: 'image.png', mimetype: 'image/png' } }).save();
+
       const res1 = await getChildData({ model: ns });
       expect(res1).to.eql({});
 
       const res2 = await getChildData({ model: ns, cells: true });
       expect(res2).to.eql({
-        cells: {
-          A1: deleteUndefined(cell.toObject()),
-        },
+        cells: { A1: deleteUndefined(cell.toObject()) },
       });
 
-      const res3 = await getChildData({ model: ns, cells: true, rows: true, columns: true });
+      const res3 = await getChildData({
+        model: ns,
+        cells: true,
+        rows: true,
+        columns: true,
+        files: true,
+      });
       expect(res3).to.eql({
-        cells: {
-          A1: deleteUndefined(cell.toObject()),
-        },
-        rows: {
-          '1': deleteUndefined(row.toObject()),
-        },
-        columns: {
-          A: deleteUndefined(column.toObject()),
-        },
+        cells: { A1: deleteUndefined(cell.toObject()) },
+        rows: { '1': deleteUndefined(row.toObject()) },
+        columns: { A: deleteUndefined(column.toObject()) },
+        files: { abc: deleteUndefined(file.toObject()) },
       });
     });
   });
