@@ -21,8 +21,8 @@ export function init(): t.ICliApp {
         id,
         description,
         yargs => {
-          res.options.forEach(args => {
-            return yargs.option(name, {
+          cmd.options.forEach(args => {
+            return yargs.option(args.name, {
               alias: args.alias,
               describe: args.description,
               type: args.type,
