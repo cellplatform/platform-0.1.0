@@ -1,8 +1,7 @@
-import { t, http, Schema, Urls } from '../common';
+import { Schema, t } from '../common';
 import { ClientCell } from './ClientCell';
 import { ClientFile } from './ClientFile';
-
-type F = t.IFetchOptions;
+import { ClientNs } from './ClientNs';
 
 /**
  * An HTTP client for the CellOS.
@@ -29,6 +28,12 @@ export class Client implements t.IClient {
   /**
    * [Methods]
    */
+  public ns(input: string | t.IUrlParamsNs) {
+    const urls = this.urls;
+    const uri = urls.ns(input).uri;
+    return ClientNs.create({ uri, urls });
+  }
+
   public cell(input: string | t.IUrlParamsCell) {
     const urls = this.urls;
     const uri = urls.cell(input).uri;

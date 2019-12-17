@@ -4,7 +4,7 @@ import { ClientFile } from './ClientFile';
 export type IClientCellFilesArgs = { parent: t.IClientCell; map: t.IFileMap; urls: t.IUrls };
 
 /**
- * HTTP client for operating on a [Cell]'s links.
+ * HTTP client for operating on a [Cell]'s files.
  */
 export class ClientCellFiles implements t.IClientCellFiles {
   public static create(args: IClientCellFilesArgs): t.IClientCellFiles {

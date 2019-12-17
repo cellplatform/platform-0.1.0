@@ -16,8 +16,17 @@ export type IClientResponse<T> = {
  */
 export type IClient = {
   readonly origin: string;
+  ns(input: string | t.IUrlParamsNs): IClientNs;
   cell(input: string | t.IUrlParamsCell): IClientCell;
   file(input: string | t.IUrlParamsFile): IClientFile;
+};
+
+/**
+ * NAMESPSACE
+ */
+export type IClientNs = {
+  readonly uri: t.IUriParts<t.INsUri>;
+  readonly url: t.IUrlsNs;
 };
 
 /**
