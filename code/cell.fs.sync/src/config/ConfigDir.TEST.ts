@@ -1,7 +1,8 @@
-import { fs, expect, t } from '../test';
+import { fs, expect, t, expectError } from '../test';
 import { ConfigDir } from '.';
 import { DEFAULT } from './ConfigDir';
 
+const VALID: t.IFsConfigDirData = { host: 'domain.com', target: 'cell:foo!A1' };
 const PATH = {
   ASSETS: 'sample/assets',
   TMP: fs.resolve('tmp'),
@@ -24,33 +25,43 @@ describe('ConfigDir', () => {
   });
 
   describe('load', () => {
-    it('creates dir and default config.yml', async () => {
+    it('does not know if file exists (load not called)', () => {
+      const config = ConfigDir.create({ dir: PATH.TMP });
+      expect(config.exists).to.eql(null);
+    });
+
+    it('does not exist', async () => {
       const config = await ConfigDir.load({ dir: PATH.TMP });
-
-      expect(fs.pathExistsSync(PATH.TMP)).to.eql(true);
-      expect(fs.pathExistsSync(`${PATH.TMP}/.cell`)).to.eql(true);
-      expect(fs.pathExistsSync(`${PATH.TMP}/.cell/config.yml`)).to.eql(true);
-
-      const file = await fs.file.loadAndParse(config.file);
-      expect(file).to.eql(DEFAULT);
+      expect(config.exists).to.eql(false);
     });
 
     it('load existing data', async () => {
       const config1 = await ConfigDir.load({ dir: PATH.TMP });
+      expect(config1.exists).to.eql(false);
 
       config1.data.host = 'domain.com:8080';
-      config1.data.target = 'foo';
+      config1.data.target = 'cell:foo!A1';
+
       await config1.save();
+      expect(config1.exists).to.eql(true);
 
       const config2 = await ConfigDir.load({ dir: PATH.TMP });
       expect(config2.data.host).to.eql('domain.com:8080');
-      expect(config2.data.target).to.eql('foo');
+      expect(config2.data.target).to.eql('cell:foo!A1');
+    });
+  });
+
+  describe('save', () => {
+    it('throws if saving invalid data', async () => {
+      const config = await ConfigDir.create({ dir: PATH.TMP }).save(VALID);
+
+      config.data.target = 'boo'; // NB: invalid.
+
+      await expectError(() => config.save());
     });
   });
 
   describe('validation', () => {
-    const VALID: t.IFsConfigDirData = { host: 'domain.com', target: 'cell:foo!A1' };
-
     it('valid', async () => {
       const config = await ConfigDir.create({ dir: PATH.TMP }).save(VALID);
       const res = config.validate();

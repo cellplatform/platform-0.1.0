@@ -27,7 +27,7 @@ export class ConfigDir implements t.IFsConfigDir {
   private constructor(args: IConfigDirArgs) {
     this.dir = fs.join(fs.resolve(args.dir || __dirname), '.cell');
     this.file = fs.join(this.dir, 'config.yml');
-    this.data = DEFAULT;
+    this.data = { ...DEFAULT };
   }
 
   /**
@@ -35,6 +35,7 @@ export class ConfigDir implements t.IFsConfigDir {
    */
   public readonly dir: string;
   public readonly file: string;
+  public exists: boolean | null = null;
   public data: t.IFsConfigDirData;
 
   /**
@@ -42,18 +43,20 @@ export class ConfigDir implements t.IFsConfigDir {
    */
   public async load() {
     await fs.ensureDir(this.dir);
-    if (!(await fs.pathExists(this.file))) {
-      this.data = DEFAULT;
-      await this.save();
-    } else {
+    this.exists = await fs.pathExists(this.file);
+    if (this.exists) {
       this.data = await fs.file.loadAndParse(this.file);
     }
     return this;
   }
 
   public async save(data?: t.IFsConfigDirData) {
-    this.data = data || this.data;
+    this.data = { ...(data || this.data) };
+    if (!this.validate().isValid) {
+      throw new Error(`Cannot save invalid configuration.`);
+    }
     await fs.file.stringifyAndSave(this.file, this.data);
+    this.exists = true;
     return this;
   }
 
