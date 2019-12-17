@@ -1,6 +1,6 @@
 {
   "name": "@platform/fsdb.model",
-  "version": "0.5.12",
+  "version": "0.5.13",
   "description": "Model system for working with IDb data.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "@platform/util.value": "0.6.9"
   },
   "devDependencies": {
-    "@platform/fsdb.nedb": "1.3.49",
+    "@platform/fsdb.nedb": "1.3.50",
     "@platform/fs": "0.4.0",
     "@platform/test": "0.1.0",
     "@platform/ts": "3.7.5"

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.fs.sync",
-  "version": "0.0.18",
+  "version": "0.0.20",
   "description": "Tools for local file-system syncing with cloud.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -11,22 +11,25 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "tmp": "cd sample/assets && cell $@"
   },
   "dependencies": {
-    "@platform/cell.types": "0.2.18",
+    "@platform/cell.client": "0.0.19",
+    "@platform/cell.types": "0.3.0",
     "@platform/fs": "0.4.0",
-    "@platform/http": "0.6.1",
+    "@platform/fs.watch": "0.2.20",
+    "@platform/http": "0.7.0",
     "@platform/libs": "0.1.5",
-    "@platform/log": "^0.0.153",
+    "@platform/log": "0.0.153",
     "form-data": "3.0.0",
-    "semver": "^6.3.0"
+    "semver": "6.3.0"
   },
   "devDependencies": {
     "@platform/test": "0.1.0",
     "@platform/ts": "3.7.5",
     "@types/form-data": "2.5.0",
-    "@types/semver": "^6.2.0"
+    "@types/semver": "6.2.0"
   },
   "files": [
     "lib",

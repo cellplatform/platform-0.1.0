@@ -1,6 +1,6 @@
 {
   "name": "@platform/fsdb.electron",
-  "version": "0.2.74",
+  "version": "0.2.75",
   "description": "",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,7 +18,7 @@
     "@platform/electron": "0.7.32",
     "@platform/fsdb.file": "1.3.38",
     "@platform/fsdb.types": "0.5.13",
-    "@platform/fsdb.nedb": "1.3.49",
+    "@platform/fsdb.nedb": "1.3.50",
     "@platform/react": "0.3.41",
     "@platform/types": "0.3.1"
   },
