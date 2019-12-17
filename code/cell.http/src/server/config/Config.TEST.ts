@@ -1,7 +1,7 @@
 import { Config } from '.';
 import { t, expect, fs } from '../../test';
 
-const loadSync = (args: t.IConfigFileArgs) => {
+const loadSync = (args: t.IHttpConfigFileArgs) => {
   const path = args.path || 'default.yml';
   args = { ...args, path: fs.resolve('src/test/config', path) };
   return Config.loadSync(args);
@@ -73,7 +73,7 @@ describe('settings.config', () => {
     });
 
     it('invalid', () => {
-      const test = (modify: (config: t.IConfigFile) => void, error: string) => {
+      const test = (modify: (config: t.IHttpConfigFile) => void, error: string) => {
         const config = loadSync({});
         modify(config);
 

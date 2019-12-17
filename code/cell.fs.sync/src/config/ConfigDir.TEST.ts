@@ -40,12 +40,12 @@ describe('ConfigDir', () => {
       const config1 = await ConfigDir.load({ dir: PATH.TMP });
 
       config1.data.host = 'domain.com:8080';
-      config1.data.ns = 'foo';
+      config1.data.target = 'foo';
       await config1.save();
 
       const config2 = await ConfigDir.load({ dir: PATH.TMP });
       expect(config2.data.host).to.eql('domain.com:8080');
-      expect(config2.data.ns).to.eql('foo');
+      expect(config2.data.target).to.eql('foo');
     });
   });
 });

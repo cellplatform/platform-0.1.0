@@ -6,19 +6,19 @@ export type HttpProtocol = 'http' | 'https';
  * Configuration
  */
 
-export type IConfigFileArgs = { path?: string; throw?: boolean };
-export type IConfigFile = {
+export type IHttpConfigFileArgs = { path?: string; throw?: boolean };
+export type IHttpConfigFile = {
   path: string;
   exists: boolean;
-  data: IConfigDeployment;
-  validate(): IValidation;
+  data: IHttpConfigDeployment;
+  validate(): IHttpConfigValidation;
 };
-export type IValidation = {
+export type IHttpConfigValidation = {
   isValid: boolean;
   errors: t.IError[];
 };
 
-export type IConfigDeployment = {
+export type IHttpConfigDeployment = {
   title: string;
   collection: string;
   fs: {
@@ -37,7 +37,7 @@ export type IConfigDeployment = {
   };
 };
 
-export type IConfigNowFile = {
+export type IHttpConfigNowFile = {
   version: number;
   name: string;
   alias: string;

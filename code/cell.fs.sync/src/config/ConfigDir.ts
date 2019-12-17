@@ -6,7 +6,7 @@ export type IConfigDirArgs = {
 
 export const DEFAULT: t.IConfigDir = {
   host: '',
-  ns: '',
+  target: '',
 };
 
 /**
@@ -52,7 +52,10 @@ export class ConfigDir {
   }
 
   public async save(data?: t.IConfigDir) {
-    await fs.file.stringifyAndSave(this.file, data || this.data);
+    this.data = data || this.data;
+    await fs.file.stringifyAndSave(this.file, this.data);
     return this;
   }
+
+  public async validate() {}
 }
