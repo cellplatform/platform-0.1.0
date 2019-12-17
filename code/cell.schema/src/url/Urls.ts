@@ -244,14 +244,19 @@ export class Urls implements t.IUrls {
     return {
       uri,
 
-      get download() {
-        type Q = t.IUrlQueryGetFile;
-        return toPath<Q>(`/file:${id}`);
-      },
-
       get info() {
         type Q = t.IUrlQueryGetFileInfo;
         return toPath<Q>(`/file:${id}/info`);
+      },
+
+      get upload() {
+        type Q = t.IUrlQueryPostFile;
+        return toPath<Q>(`/file:${id}`);
+      },
+
+      get download() {
+        type Q = t.IUrlQueryGetFile;
+        return toPath<Q>(`/file:${id}`);
       },
     };
   }

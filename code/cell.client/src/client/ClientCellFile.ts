@@ -14,21 +14,19 @@ export class ClientCellFile implements t.IClientCellFile {
    * [Lifecycle]
    */
   private constructor(args: IClientCellFileArgs) {
-    this.urls = args.urls;
-    this.parent = args.parent;
+    this.args = args;
   }
 
   /**
    * [Fields]
    */
-  private readonly urls: t.IUrls;
-  private readonly parent: t.IClientCell;
+  private readonly args: IClientCellFileArgs;
 
   /**
    * [Methods]
    */
   public name(filename: string) {
-    const parent = this.parent;
+    const parent = this.args.parent;
     return {
       /**
        * Upload a file and associate it with the cell.
@@ -36,7 +34,10 @@ export class ClientCellFile implements t.IClientCellFile {
       async upload(data: ArrayBuffer) {
         // Prepare the form data.
         const form = new FormData();
-        form.append('file', data, { contentType: 'application/octet-stream' });
+        form.append('file', data, {
+          filename,
+          contentType: 'application/octet-stream',
+        });
         const headers = form.getHeaders();
 
         // POST to the service.
@@ -78,8 +79,14 @@ export class ClientCellFile implements t.IClientCellFile {
         if (res.ok) {
           return util.toResponse<ReadableStream>(res, { bodyType: 'BINARY' });
         } else {
-          const err = `Failed while downloading file "${parent.uri.toString()}".`;
-          return util.toError<ReadableStream>(res.status, ERROR.HTTP.SERVER, err);
+          const message = `Failed while downloading file "${parent.uri.toString()}".`;
+          const httpError = res.contentType.is.json ? (res.json as t.IHttpError) : undefined;
+          if (httpError) {
+            const error = `${message} ${httpError.message}`;
+            return util.toError<ReadableStream>(res.status, httpError.type, error);
+          } else {
+            return util.toError<ReadableStream>(res.status, ERROR.HTTP.SERVER, message);
+          }
         }
       },
     };

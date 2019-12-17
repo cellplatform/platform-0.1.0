@@ -1,7 +1,5 @@
 import { Json } from '@platform/types';
 
-export type HttpProtocol = 'http' | 'https';
-
 export type IHttpHeaders = { [key: string]: string | number };
 
 export type IFetchOptions = {

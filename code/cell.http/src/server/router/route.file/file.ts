@@ -180,7 +180,7 @@ export async function postFileResponse(args: {
   form: t.IForm;
   host: string;
   query?: t.IUrlQueryPostFile;
-  filename?: string; // NB: overrides filename within form-data.
+  filename?: string; // NB: if specified overrides filename within form-data.
 }): Promise<t.IPayload<t.IResPostFile> | t.IErrorPayload> {
   const { db, uri, query = {}, form, fs, host } = args;
   const sendChanges = defaultValue(query.changes, true);

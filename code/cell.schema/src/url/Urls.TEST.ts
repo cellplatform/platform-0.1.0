@@ -245,20 +245,29 @@ describe('Urls', () => {
       expect(() => url.file('file:boo')).to.throw(); // NB: Invalid file URI.
     });
 
-    it('download', () => {
+    it('info', () => {
+      const res1 = url.file(URI).info;
+      const res2 = url.file({ ns: 'foo', file: '123' }).info;
+
+      const URL = 'http://localhost/file:foo:123/info';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
+    });
+
+    it('upload', () => {
       const res1 = url.file(URI).download;
-      const res2 = url.file({ ns: 'foo', file: '123' }).download;
+      const res2 = url.file({ ns: 'foo', file: '123' }).upload;
 
       const URL = 'http://localhost/file:foo:123';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });
 
-    it('info', () => {
-      const res1 = url.file(URI).info;
-      const res2 = url.file({ ns: 'foo', file: '123' }).info;
+    it('download', () => {
+      const res1 = url.file(URI).download;
+      const res2 = url.file({ ns: 'foo', file: '123' }).download;
 
-      const URL = 'http://localhost/file:foo:123/info';
+      const URL = 'http://localhost/file:foo:123';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });

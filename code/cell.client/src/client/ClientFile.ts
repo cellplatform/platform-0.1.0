@@ -1,4 +1,4 @@
-import { t, Uri, http, util } from '../common';
+import { FormData, t, Uri, http, util } from '../common';
 
 export type IClientFileArgs = { uri: string; urls: t.IUrls };
 
@@ -15,7 +15,7 @@ export class ClientFile implements t.IClientFile {
    */
   private constructor(args: IClientFileArgs) {
     const { urls } = args;
-    this.urls = urls;
+    this.args = args;
     this.uri = Uri.parse<t.IFileUri>(args.uri);
     this.url = urls.file(args.uri);
   }
@@ -23,7 +23,7 @@ export class ClientFile implements t.IClientFile {
   /**
    * [Fields]
    */
-  private readonly urls: t.IUrls;
+  private readonly args: IClientFileArgs;
 
   public readonly uri: t.IUriParts<t.IFileUri>;
   public readonly url: t.IUrlsFile;
@@ -39,5 +39,24 @@ export class ClientFile implements t.IClientFile {
     const url = this.url.info;
     const res = await http.get(url.toString());
     return util.toResponse<t.IResGetFile>(res);
+  }
+
+  public async upload(args: { filename: string; data: ArrayBuffer }) {
+    const { filename, data } = args;
+
+    // Prepare the form data.
+    const form = new FormData();
+    form.append('file', data, {
+      filename,
+      contentType: 'application/octet-stream',
+    });
+
+    // POST to the service.
+    const url = this.url.upload;
+    const headers = form.getHeaders();
+    const res = await http.post(url.toString(), form, { headers });
+
+    // Finish up.
+    return util.toResponse<t.IResPostFile>(res);
   }
 }

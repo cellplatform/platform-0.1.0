@@ -1,4 +1,5 @@
 import * as t from './types';
+import { ERROR } from './constants';
 
 /**
  * Prepare the standard client-response object.
@@ -14,15 +15,20 @@ export function toResponse<T>(
   body = bodyType === 'JSON' ? res.json : body;
   body = bodyType === 'BINARY' ? res.body : body;
 
-  return { ok, status, body: body as T };
+  return ok ? { ok, status, body: body as T } : toError(500, ERROR.HTTP.SERVER, `Failed`, body);
 }
 
 /**
  * Prepare the standard client-response error object.
  */
-export function toError<T>(status: number, type: string, message: string): t.IClientResponse<T> {
+export function toError<T>(
+  status: number,
+  type: string,
+  message: string,
+  body?: T,
+): t.IClientResponse<T> {
   const error: t.IHttpError = { status, type, message };
   const ok = false;
-  const body = ({} as unknown) as T; // HACK typescript sanity - because this is an error the calling code should beware.
+  body = body || (({} as unknown) as T); // HACK typescript sanity - because this is an error the calling code should beware.
   return { ok, status, body, error };
 }

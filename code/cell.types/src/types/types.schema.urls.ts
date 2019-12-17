@@ -45,6 +45,7 @@ export type IUrlsColumn = {
 
 export type IUrlsFile = {
   uri: string;
-  download: t.IUrl<t.IUrlQueryGetFile>;
   info: t.IUrl<t.IUrlQueryGetFileInfo>;
+  upload: t.IUrl<t.IUrlQueryPostFile>;
+  download: t.IUrl<t.IUrlQueryGetFile>;
 };

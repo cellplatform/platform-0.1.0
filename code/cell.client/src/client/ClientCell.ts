@@ -17,17 +17,17 @@ export class ClientCell implements t.IClientCell {
    */
   private constructor(args: IClientCellArgs) {
     const { urls } = args;
+    this.args = args;
     this.uri = Uri.parse<t.ICellUri>(args.uri);
-    this.urls = urls;
     this.url = urls.cell(args.uri);
   }
 
   /**
    * [Fields]
    */
-  private readonly urls: t.IUrls;
-  public _file: t.IClientCellFile;
-  public _links: t.IClientCellLinks;
+  private readonly args: IClientCellArgs;
+  private _file: t.IClientCellFile;
+  private _links: t.IClientCellLinks;
 
   public readonly uri: t.IUriParts<t.ICellUri>;
   public readonly url: t.IUrlsCell;
@@ -36,11 +36,8 @@ export class ClientCell implements t.IClientCell {
    * [Properties]
    */
   public get file(): t.IClientCellFile {
-    return this._file || (this._file = ClientCellFile.create({ parent: this, urls: this.urls }));
-  }
-
-  public get links(): t.IClientCellLinks {
-    return this._links || (this._links = ClientCellLinks.create({ parent: this, urls: this.urls }));
+    const urls = this.args.urls;
+    return this._file || (this._file = ClientCellFile.create({ parent: this, urls }));
   }
 
   /**
@@ -54,5 +51,22 @@ export class ClientCell implements t.IClientCell {
     const url = this.url.info;
     const res = await http.get(url.toString());
     return util.toResponse<t.IResGetCell>(res);
+  }
+
+  public async links() {
+    type T = t.IClientResponse<t.IClientCellLinks>;
+    const info = await this.info();
+    if (info.error) {
+      const err = `Failed to read links for "${this.uri.toString()}". ${info.error.message}`;
+      return util.toError(info.status, info.error.type, err) as T;
+    }
+
+    const cell = info.body.data;
+    const links = cell.links || {};
+    const urls = this.args.urls;
+    const body = ClientCellLinks.create({ links, urls });
+
+    const res: T = { ok: true, status: 200, body };
+    return res;
   }
 }

@@ -21,10 +21,12 @@ describe('route: !A1/file', () => {
     const uri = Schema.uri.parse<t.IFileUri>(link);
     expect(uri.ok).to.eql(true);
 
-    // Load the file info and compare hash.
+    // Load the file info and compare filename and hash.
     const res3 = await http.get(mock.urls.file(link.split('?')[0]).info.toString());
-    const fileHash = (res3.json as t.IResGetFile).data.hash;
+    const res3Data = (res3.json as t.IResGetFile).data;
+    const fileHash = res3Data.hash;
     expect(link.split('?')[1]).to.eql(`hash=${fileHash}`);
+    expect(res3Data.props.filename).to.eql('func.wasm');
 
     // Load the saved file and ensure it matches the source.
     const targetFilePath = fs.resolve(`tmp/fs/ns.${uri.parts.ns}/${uri.parts.file}`);
@@ -42,62 +44,53 @@ describe('route: !A1/file', () => {
     await mock.dispose();
   });
 
-  it.skip('reads a file by name (failing if the underlying file-hash changes)', async () => {
-    // TODO 🐷
-
-    /**
-     * TODO 🐷
-     * - post file from URL client
-     * - download file
-     * - download file (with hash, throw 409 if hash mismatch)
-     */
-
+  it('downloads a file by name (failing if the underlying file-hash changes)', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
-    const client = mock.client.cell(cellUri);
+    const cellClient = mock.client.cell(cellUri);
+
+    const file1 = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
+    const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
 
     // POST the file to the service.
-    const file1 = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
-    await client.file.name('func.wasm').upload(file1);
+    await cellClient.file.name('func.wasm').upload(file1);
 
-    // Download the file.
-    const res = await client.file.name('func.wasm').download();
-
-    console.log('-------------------------------------------');
-    console.log('res', res);
-    console.log('-------------------------------------------');
-
-    // Save the download stream.
+    // Save and compare the downloaded stream.
     const path = fs.resolve('tmp/test/download/func.wasm');
-    // await fs.ensureDir(fs.dirname(path));
-    // const output = fs.createWriteStream(path);
-
+    const res = await cellClient.file.name('func.wasm').download();
     if (res.body) {
-      await fs.stream.save(path, res.body as any);
+      await fs.stream.save(path, res.body);
     }
+    expect((await fs.readFile(path)).toString()).to.eql(file1.toString());
 
-    // const output = fs.createWriteStream(path);
-    // await streamPipeline(res.body , output);
+    const links = (await cellClient.links()).body;
+    const fileUri = links.files[0].uri;
 
-    console.log('path', path);
+    // Upload the same image, hashes should not change.
+    const before1 = (await links.files[0].file.info()).body;
+    await mock.client.file(fileUri).upload({ filename: 'func.wasm', data: file1 });
+    const after1 = (await links.files[0].file.info()).body;
+    expect(before1.data.hash).to.eql(after1.data.hash);
+
+    // Perform a download - should work find (because hashes still match).
+    const download1 = await cellClient.file.name('func.wasm').download();
+    expect(download1.status).to.eql(200);
+
+    // Upload a different image, with the same name.
+    // Hash should change.
+    const before2 = (await links.files[0].file.info()).body;
+    await mock.client.file(fileUri).upload({ filename: 'func.wasm', data: file2 });
+    const after2 = (await links.files[0].file.info()).body;
+    expect(before2.data.hash).to.not.eql(after2.data.hash);
+
+    // Attempt to download the image from the cell.
+    // ERROR should happen because of hash-mismatch.
+    const download2 = await cellClient.file.name('func.wasm').download();
+    expect(download2.ok).to.eql(false);
+    expect(download2.status).to.eql(409);
+    expect(download2.error && download2.error.message).to.contains('hash does not match');
 
     // Finish up.
     await mock.dispose();
   });
 });
-
-// const downloadFile = async (url: string, path: string) => {
-//   const res = await fetch(url);
-//   const fileStream = fs.createWriteStream(path);
-//   await new Promise((resolve, reject) => {
-//     if (res) {
-//       res.body.pipe(fileStream);
-//       res.body.on('error', err => {
-//         reject(err);
-//       });
-//       fileStream.on('finish', function() {
-//         resolve();
-//       });
-//     }
-//   });
-// };
