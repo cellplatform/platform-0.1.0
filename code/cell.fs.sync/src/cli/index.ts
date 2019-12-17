@@ -8,12 +8,14 @@ export const init: t.CliInit = cli => {
   type T = {
     force: string;
     dry: boolean;
+    silent: boolean;
   };
 
   const syncDirHandler: t.CommandHandler<T> = async args => {
     const dir = process.cwd();
     const dryRun = args.dry;
-    await cmd.syncDir({ dir, dryRun });
+    const silent = args.silent;
+    await cmd.syncDir({ dir, dryRun, silent });
   };
 
   cli
@@ -27,6 +29,12 @@ export const init: t.CliInit = cli => {
       name: 'dry',
       alias: 'd',
       description: 'Dry run without executing against service.',
+      type: 'boolean',
+      default: false,
+    })
+    .option<'boolean'>({
+      name: 'silent',
+      description: 'Suppress log output.',
       type: 'boolean',
       default: false,
     });

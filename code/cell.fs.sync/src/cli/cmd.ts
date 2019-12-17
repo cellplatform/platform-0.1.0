@@ -27,7 +27,7 @@ const HOST = LOCAL;
 
 const ns = 'ck499h7u30000fwet3k7085t1';
 
-export async function syncDir(args: { dir: string; dryRun: boolean }) {
+export async function syncDir(args: { dir: string; dryRun: boolean; silent: boolean }) {
   await promptConfig();
 
   const { dryRun = false } = args;
