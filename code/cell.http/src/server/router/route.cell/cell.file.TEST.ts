@@ -98,4 +98,34 @@ describe('route: !A1/file', () => {
     // Finish up.
     await mock.dispose();
   });
+
+  it('GET A1/files', async () => {
+    const mock = await createMock();
+    const A1 = 'cell:foo!A1';
+    const A2 = 'cell:foo!A2';
+    const clientA1 = mock.client.cell(A1);
+    const clientA2 = mock.client.cell(A2);
+
+    const file1 = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
+    const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
+    const file3 = await fs.readFile(fs.resolve('src/test/assets/bird.png'));
+
+    // POST the file to the service.
+    await clientA1.file.name('func.wasm').upload(file1);
+    await clientA1.file.name('kitten.jpg').upload(file2);
+    await clientA2.file.name('bird.png').upload(file3);
+
+    const res1 = await clientA1.files();
+    const res2 = await clientA2.files();
+
+    expect(res1.body.list.length).to.eql(2);
+    expect(res1.body.list[0].props.filename).to.eql('func.wasm');
+    expect(res1.body.list[1].props.filename).to.eql('kitten.jpg');
+
+    expect(res2.body.list.length).to.eql(1);
+    expect(res2.body.list[0].props.filename).to.eql('bird.png');
+
+    // Finish up.
+    await mock.dispose();
+  });
 });

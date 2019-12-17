@@ -1,6 +1,7 @@
 import { Schema, Urls, t, Uri, FormData, http, ERROR, util } from '../common';
-import { ClientCellFile } from './ClientCellFile';
 import { ClientCellLinks } from './ClientCellLinks';
+import { ClientCellFile } from './ClientCellFile';
+import { ClientCellFiles } from './ClientCellFiles';
 
 export type IClientCellArgs = { uri: string; urls: t.IUrls };
 
@@ -27,7 +28,6 @@ export class ClientCell implements t.IClientCell {
    */
   private readonly args: IClientCellArgs;
   private _file: t.IClientCellFile;
-  private _links: t.IClientCellLinks;
 
   public readonly uri: t.IUriParts<t.ICellUri>;
   public readonly url: t.IUrlsCell;
@@ -57,14 +57,36 @@ export class ClientCell implements t.IClientCell {
     type T = t.IClientResponse<t.IClientCellLinks>;
     const info = await this.info();
     if (info.error) {
-      const err = `Failed to read links for "${this.uri.toString()}". ${info.error.message}`;
-      return util.toError(info.status, info.error.type, err) as T;
+      const message = `Failed to get links for '${this.uri.toString()}'. ${info.error.message}`;
+      return util.toError(info.status, info.error.type, message) as T;
     }
 
     const cell = info.body.data;
     const links = cell.links || {};
     const urls = this.args.urls;
     const body = ClientCellLinks.create({ links, urls });
+
+    const res: T = { ok: true, status: 200, body };
+    return res;
+  }
+
+  public async files() {
+    type T = t.IClientResponse<t.IClientCellFiles>;
+
+    const urls = this.args.urls;
+    const url = this.url.files;
+
+    const resFiles = await http.get(url.toString());
+    if (!resFiles.ok) {
+      const status = resFiles.status;
+      const type = status === 404 ? ERROR.HTTP.NOT_FOUND : ERROR.HTTP.SERVER;
+      const message = `Failed to get files for '${this.uri.toString()}'.`;
+      return util.toError(status, type, message) as T;
+    }
+
+    const json = resFiles.json as t.IResGetCellFiles;
+    const map = json.files;
+    const body = ClientCellFiles.create({ parent: this, map, urls });
 
     const res: T = { ok: true, status: 200, body };
     return res;

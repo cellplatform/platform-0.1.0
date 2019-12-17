@@ -29,6 +29,13 @@ export type IClientCell = {
   readonly file: IClientCellFile;
   info(): t.IClientResponseAsync<t.IResGetCell>;
   links(): t.IClientResponseAsync<IClientCellLinks>;
+  files(): t.IClientResponseAsync<IClientCellFiles>;
+};
+
+export type IClientCellLinks = {
+  readonly list: IClientCellLink[];
+  readonly files: IClientCellLinkFile[];
+  toObject(): t.ICellData['links'];
 };
 
 export type IClientCellFile = {
@@ -41,10 +48,9 @@ export type IClientCellFileByName = {
   download(): t.IClientResponseAsync<ReadableStream>;
 };
 
-export type IClientCellLinks = {
-  readonly list: IClientCellLink[];
-  readonly files: IClientCellLinkFile[];
-  toObject(): t.ICellData['links'];
+export type IClientCellFiles = {
+  map: t.IFileMap;
+  list: Array<t.IFileData & { uri: string }>;
 };
 
 export type IClientCellLink = IClientCellLinkUnknown | IClientCellLinkFile;

@@ -135,13 +135,8 @@ export type IResPostCellLinks = IResGetCellLinks & {};
 export type IResGetCellFiles = {
   cell: string;
   uri: string;
-  files: IResGetFilesLink[];
   links: ILinkMap;
-};
-export type IResGetFilesLink = IResGetFileLinks & {
-  uri: string;
-  filename: string;
-  hash: string;
+  files: t.IFileMap;
 };
 
 /**

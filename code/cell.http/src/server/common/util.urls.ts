@@ -47,23 +47,6 @@ export function urls(host: string) {
                 return acc;
               }, {});
           },
-
-          list(links: t.ICellData['links']): t.IResGetFilesLink[] {
-            return Object.keys(links || {})
-              .map(key => ({ key, value: (links || {})[key] }))
-              .filter(({ value }) => Schema.uri.is.file(value))
-              .map(({ key, value }) => {
-                const { uri, hash } = Schema.file.links.parseLink(value);
-                const filename = Schema.file.links.toFilename(key);
-                const link: t.IResGetFilesLink = {
-                  uri,
-                  filename,
-                  hash,
-                  ...api.file(uri, hash),
-                };
-                return link;
-              });
-          },
         },
       };
     },
