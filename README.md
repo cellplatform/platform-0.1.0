@@ -123,7 +123,6 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/cli.ui](/code/cli.ui)
 - npm
   - [@platform/npm](/code/npm)
-  - [@platform/npm.electron](/code/npm.electron)
   - [@platform/npm.express](/code/npm.express)
 - auth
   - [@platform/auth](/code/auth)

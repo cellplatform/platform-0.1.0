@@ -14,8 +14,8 @@ process.on('unhandledRejection', err => {
  * and register commands from the various modules
  * within Cell/OS that expose a CLI/API.
  */
-import { init } from './cli';
-export const app = init();
+import { cli } from '.';
+export const app = cli.init();
 
 /**
  * Cell/OS commands.

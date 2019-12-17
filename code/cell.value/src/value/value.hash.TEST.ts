@@ -266,8 +266,6 @@ describe('hash', () => {
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
 
-      // console.log('hash', hash.substring(hash.length - 10));
-
       expect(hash.startsWith('sha256-')).to.eql(true, err);
       expect(hash.endsWith(expected)).to.eql(true, err);
     };
@@ -289,11 +287,11 @@ describe('hash', () => {
       const filehash = value.hash.sha256(jpg);
       const error = { type: 'FAIL', message: 'Bummer' };
 
-      test({ props: { name: 'image.png' } }, 'ef430dc33f');
-      test({ props: { name: 'image.png', filehash } }, 'c212ee6bcf');
-      test({ props: { name: 'image.png', mimetype: 'image/png', filehash } }, 'c3fc50de3c');
+      test({ props: { filename: 'image.png' } }, 'c260743951');
+      test({ props: { filename: 'image.png', filehash } }, '495d42fd62');
+      test({ props: { filename: 'image.png', mimetype: 'image/png', filehash } }, 'de247e4b74');
       test({ props: {}, error }, '1fd68d1131');
-      test({ props: { name: 'image.png', filehash }, error }, '842c450c84');
+      test({ props: { filename: 'image.png', filehash }, error }, 'b1500cf16c');
     });
   });
 });

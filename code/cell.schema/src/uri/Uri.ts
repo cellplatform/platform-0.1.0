@@ -28,7 +28,7 @@ export class Uri {
    * Parse a URI into it's constituent pieces.
    */
   public static parse<D extends t.IUri>(input?: string): t.IUriParts<D> {
-    const text = (input || '').trim();
+    const text = (input || '').trim().split('?')[0]; // NB: trim query-string.
 
     let data: t.IUri = { type: 'UNKNOWN' };
     let error: t.IUriError | undefined;

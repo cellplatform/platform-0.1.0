@@ -60,13 +60,13 @@ export type IGraphqlEditorFetched = {
   fetchId: string;
   url: string;
   params: object;
-  result: t.IJsonMap;
+  result: t.JsonMap;
   isError: boolean;
 };
 
 export type IGraphqlEditorSchemaFetchedEvent = {
   type: 'GRAPHQL_EDITOR/fetched/schema';
-  payload: { fetchId: string; url: string; schema: t.IJsonMap };
+  payload: { fetchId: string; url: string; schema: t.JsonMap };
 };
 
 export type IGraphqlEditorFetchErrorEvent = {

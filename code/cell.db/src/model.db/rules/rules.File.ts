@@ -8,8 +8,8 @@ export const beforeFileSave: t.BeforeModelSave<t.IDbModelFileProps> = async args
   const props = model.props.props || {};
 
   // Update the mime-type.
-  if (!props.mimetype && props.name) {
-    const mimetype = util.toMimetype(props.name);
+  if (!props.mimetype && props.filename) {
+    const mimetype = util.toMimetype(props.filename);
     model.set({ props: { ...props, mimetype } });
   }
 

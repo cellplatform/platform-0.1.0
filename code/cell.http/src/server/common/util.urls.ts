@@ -39,9 +39,11 @@ export function urls(host: string) {
               .map(key => ({ key, value: (links || {})[key] }))
               .filter(({ value }) => Schema.uri.is.file(value))
               .reduce((acc, next) => {
-                const { key } = next;
+                const { key, value } = next;
+                const { hash } = Schema.file.links.parseLink(value);
                 const filename = Schema.file.links.toFilename(key);
-                acc[filename] = urls.file.byName(filename).toString();
+                const url = urls.file.byName(filename).query({ hash });
+                acc[filename] = url.toString();
                 return acc;
               }, {});
           },
@@ -51,12 +53,13 @@ export function urls(host: string) {
               .map(key => ({ key, value: (links || {})[key] }))
               .filter(({ value }) => Schema.uri.is.file(value))
               .map(({ key, value }) => {
-                const fileUri = value;
-                const name = Schema.file.links.toFilename(key);
+                const { uri, hash } = Schema.file.links.parseLink(value);
+                const filename = Schema.file.links.toFilename(key);
                 const link: t.IResGetFilesLink = {
-                  uri: fileUri,
-                  name,
-                  ...api.file(fileUri),
+                  uri,
+                  filename,
+                  hash,
+                  ...api.file(uri, hash),
                 };
                 return link;
               });
@@ -65,11 +68,15 @@ export function urls(host: string) {
       };
     },
 
-    file(fileUri: string): t.IResGetFileLinks {
-      const file = url.file(fileUri);
+    file(fileUri: string, hash?: string): t.IResGetFileLinks {
+      const fileUrl = url.file(fileUri);
+      let file = fileUrl.download;
+      if (hash) {
+        file = file.query({ hash });
+      }
       return {
-        file: file.download.toString(),
-        info: file.info.toString(),
+        file: file.toString(),
+        info: fileUrl.info.toString(),
       };
     },
 

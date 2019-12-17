@@ -7,11 +7,14 @@ export type IUrl<Q extends object = {}> = {
 };
 
 /**
+ * ------------------------------------------------------------------
  * NAMESPACE
+ * ------------------------------------------------------------------
  */
+export type IUrlParamsNs = { ns: string };
 
 /**
- * URL query-string parameters for a [Namespace].
+ * Query-string parameters for a [Namespace].
  */
 export type IUrlQueryGetNs = {
   data?: boolean; // true: all (cells/rows/columns) - overrides other fields.
@@ -25,50 +28,73 @@ export type IUrlQueryPostNs = IUrlQueryGetNs & {
 };
 
 /**
- * CELL
+ * ------------------------------------------------------------------
+ * COORD (General coordinates for: CELL | ROW | COLUMN)
+ * ------------------------------------------------------------------
  */
+export type IUrlParamsCoord = IUrlParamsCell | IUrlParamsRow | IUrlParamsColumn;
 
 /**
- * URL query-string parameters for a [Cell].
+ * ------------------------------------------------------------------
+ * CELL
+ * ------------------------------------------------------------------
+ */
+export type IUrlParamsCell = { ns: string; key: string };
+
+export type IUrlParamsCellFiles = IUrlParamsCell;
+export type IUrlParamsCellFileByName = IUrlParamsCell & { filename: string };
+export type IUrlParamsCellFileByIndex = IUrlParamsCell & { index: number };
+
+/**
+ * Query-string parameters for a [Cell].
  */
 export type IUrlQueryGetCell = {};
 
 /**
- * URL query-string parameters for a [Cell]'s files.
+ * Query-string parameters for a [Cell]'s files.
  */
 export type IUrlQueryGetCellFiles = {};
 
 /**
- * URL query-string parameters for a single [Cell]'s file (by name).
+ * Query-string parameters for a single [Cell]'s file (by name).
  */
 export type IUrlQueryGetCellFile = IUrlQueryGetFile & {};
 export type IUrlQueryGetCellFileByName = IUrlQueryGetCellFile;
 export type IUrlQueryGetCellFileByIndex = IUrlQueryGetCellFile;
 
 /**
+ * ------------------------------------------------------------------
  * ROW
+ * ------------------------------------------------------------------
  */
+export type IUrlParamsRow = { ns: string; key: string };
 
 /**
- * URL query-string parameters for a cell [Row].
+ * Query-string parameters for a cell [Row].
  */
 export type IUrlQueryGetRow = {};
 
 /**
+ * ------------------------------------------------------------------
  * COLUMN
+ * ------------------------------------------------------------------
  */
+export type IUrlParamsColumn = { ns: string; key: string };
 
 /**
- * URL query-string parameters for a cell [Column].
+ * Query-string parameters for a cell [Column].
  */
 export type IUrlQueryGetColumn = {};
 
 /**
+ * ------------------------------------------------------------------
  * FILE
+ * ------------------------------------------------------------------
  */
+export type IUrlParamsFile = { ns: string; file: string };
 
 /**
- * URL query-string parameters for a [File].
+ * Query-string parameters for a [File].
  */
 export type IUrlQueryGetFile = { hash?: string };
 export type IUrlQueryGetFileInfo = {};

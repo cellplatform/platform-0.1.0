@@ -7,12 +7,12 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   const { db, router } = args;
 
   const getParams = (req: t.Request) => {
-    const params = req.params as t.IReqNsParams;
+    const params = req.params as t.IUrlParamsNs;
     const id = (params.ns || '').toString();
 
     if (!id) {
       const error: t.IError = {
-        type: ERROR.MALFORMED_URI,
+        type: ERROR.HTTP.MALFORMED_URI,
         message: `Malformed "ns:" URI, does not contain an ID ("${req.url}").`,
       };
       return { status: 400, error };
@@ -26,7 +26,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    *      Redirect to the cell.
    */
   router.get(routes.NS.CELL, async req => {
-    const params = req.params as t.IReqCellParams;
+    const params = req.params as t.IUrlParamsCell;
     const path = `/cell:${params.ns}!${params.key}${req.query.toString()}`;
     return req.redirect(path);
   });

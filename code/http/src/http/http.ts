@@ -61,31 +61,58 @@ function toBody(args: { url: string; headers: Headers; data?: any }) {
 
 async function toResponse(url: string, res: Response) {
   const { ok, status, statusText } = res;
-  const text = await res.text();
+  const headers = fromRawHeaders(res.headers);
+  const body = res.body || undefined;
+  const contentType = toContentType(headers);
+  const is = contentType.is;
+  const text = is.text || is.json ? await res.text() : '';
   let json: any;
 
   const result: t.IHttpResponse = {
     ok,
     status,
     statusText,
-    get headers() {
-      return fromRawHeaders(res.headers);
-    },
-    get body() {
-      return text || '';
-    },
-    json<T>() {
-      if (!json) {
-        try {
-          json = JSON.parse(result.body) as T;
-        } catch (error) {
-          const msg = `Failed while parsing JSON for '${url}'.\nParse Error: ${error.message}\nBody: ${result.body}`;
-          throw new Error(msg);
-        }
-      }
-      return json;
+    headers,
+    contentType,
+    body,
+    text,
+    get json() {
+      return json || (json = parseJson({ url, text }));
     },
   };
 
   return result;
+}
+
+/**
+ * Helpers
+ */
+
+function toContentType(headers: t.IHttpHeaders) {
+  const value = (headers['content-type'] || '').toString();
+  const res: t.IHttpContentType = {
+    value,
+    is: {
+      get json() {
+        return value.includes('application/json');
+      },
+      get text() {
+        return value.includes('text/');
+      },
+      get binary() {
+        return !res.is.json && !res.is.text;
+      },
+    },
+  };
+  return res;
+}
+
+function parseJson(args: { url: string; text: string }) {
+  try {
+    return JSON.parse(args.text) as t.Json;
+  } catch (error) {
+    const body = args.text ? args.text : '<empty>';
+    const msg = `Failed while parsing JSON for '${args.url}'.\nParse Error: ${error.message}\nBody: ${body}`;
+    throw new Error(msg);
+  }
 }

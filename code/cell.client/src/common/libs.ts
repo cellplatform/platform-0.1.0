@@ -1,5 +1,5 @@
 export { http } from '@platform/http';
-export { Schema } from '@platform/cell.schema';
+export { Schema, Urls, Uri } from '@platform/cell.schema';
 
 import * as FormData from 'form-data';
 export { FormData };

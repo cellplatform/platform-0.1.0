@@ -36,7 +36,7 @@ const notFoundHandler: t.RouteHandler = async req => {
   const status = 404;
   const data: t.IHttpError = {
     status,
-    type: ERROR.NOT_FOUND,
+    type: ERROR.HTTP.NOT_FOUND,
     message: 'Resource not found.',
   };
   return { status, data };

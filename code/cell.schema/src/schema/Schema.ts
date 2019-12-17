@@ -1,7 +1,7 @@
-import { cuid, slug, t } from '../common';
+import { cuid, slug, t, ERROR } from '../common';
 import { Uri } from '../uri';
 import { Urls } from '../url';
-import { FileLinks } from './FileLinks';
+import { FileLinks } from '../file';
 
 export type SchemaFileType = 'FILE';
 export type SchemaCoordType = 'CELL' | 'COL' | 'ROW';
@@ -15,6 +15,7 @@ export type UriString = string;
  */
 export class FileSchema {
   public static links = FileLinks;
+  public static ERROR = ERROR;
 
   public readonly type: SchemaFileType = 'FILE';
   public readonly fileid: string;
@@ -44,7 +45,7 @@ export class Schema {
   public static slug = slug;
   public static file = FileSchema;
 
-  public static url = (host: string) => new Urls(host);
+  public static url = (host: string | number) => Urls.create(host);
   public static ns = (id: string) => new NsSchema({ id });
 
   public static query = {

@@ -15,7 +15,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     getUri: (id: string, key: string) => string;
   }) => {
     const { req, prefix } = args;
-    const params = args.req.params as t.IReqCoordParams;
+    const params = args.req.params as t.IUrlParamsCoord;
 
     const data = {
       ns: (params.ns || '').toString(),
@@ -24,7 +24,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     };
 
     const error: t.IError = {
-      type: ERROR.MALFORMED_URI,
+      type: ERROR.HTTP.MALFORMED_URI,
       message: '',
     };
 
@@ -55,7 +55,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    *      Redirect to the namespace.
    */
   router.get(routes.CELL.NS, async req => {
-    const params = req.params as t.IReqNsParams;
+    const params = req.params as t.IUrlParamsNs;
     const ns = Schema.url(req.host).ns(params.ns).info;
     const url = ns.query(req.query).toString();
     return req.redirect(url);
@@ -65,7 +65,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    * GET /cell:<id>!A1
    */
   router.get(routes.CELL.INFO, async req => {
-    const query = req.query as t.IReqCoordQuery;
+    const query = req.query as t.IUrlParamsCoord;
     const { status, uri, error } = getParams({
       req,
       prefix: 'cell',
@@ -83,7 +83,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    * GET /row:<id>!1
    */
   router.get(routes.ROW.INFO, async req => {
-    const query = req.query as t.IReqCoordQuery;
+    const query = req.query as t.IUrlParamsCoord;
     const { status, uri, error } = getParams({
       req,
       prefix: 'row',
@@ -100,7 +100,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    * GET /col:<id>!A
    */
   router.get(routes.COLUMN.INFO, async req => {
-    const query = req.query as t.IReqCoordQuery;
+    const query = req.query as t.IUrlParamsCoord;
     const { status, uri, error } = getParams({
       req,
       prefix: 'col',

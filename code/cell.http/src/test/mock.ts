@@ -1,10 +1,8 @@
 import { NeDb } from '@platform/fsdb.nedb';
 import { local } from '@platform/cell.fs/lib/fs.local';
 
-import { Urls } from '@platform/cell.schema';
-
 import { server } from '../server';
-import { util, t, Schema } from '../server/common';
+import { util, t, Schema, Client } from '../server/common';
 
 export type IMock = {
   db: t.IDb;
@@ -15,7 +13,8 @@ export type IMock = {
   service: t.IMicroService;
   filename: string;
   url: (path: string) => string;
-  urls: Urls;
+  urls: t.IUrls;
+  client: Client;
   dispose(args?: { delete?: boolean }): Promise<void>;
 };
 
@@ -58,6 +57,9 @@ const create = async (args: { port?: number } = {}): Promise<IMock> => {
   const router = app.router;
   const service = await app.start({ port, silent: true });
 
+  const urls = Schema.url(`localhost:${port}`);
+  const client = Client.create(urls.origin);
+
   const mock: IMock = {
     db,
     fs: cellFs,
@@ -67,7 +69,8 @@ const create = async (args: { port?: number } = {}): Promise<IMock> => {
     service,
     filename,
     url: (path: string) => `http://localhost:${port}/${path.replace(/^\/*/, '')}`,
-    urls: Schema.url(`localhost:${port}`),
+    urls,
+    client,
     async dispose(args: { delete?: boolean } = {}) {
       await tryIgnore(() => db.dispose());
       await tryIgnore(() => app.stop());

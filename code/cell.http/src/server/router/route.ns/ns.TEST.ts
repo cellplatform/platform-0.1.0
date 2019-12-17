@@ -25,7 +25,7 @@ describe('route: ns (namespace URI)', function() {
 
       expect(res.status).to.eql(400);
 
-      const body = res.json();
+      const body = res.json as any;
       expect(body.error.type).to.eql('HTTP/uri/malformed');
       expect(body.error.message).to.contain('Malformed');
       expect(body.error.message).to.contain('does not contain an ID');
@@ -39,7 +39,7 @@ describe('route: ns (namespace URI)', function() {
         const res = await http.get(mock.url(path));
         await mock.dispose();
 
-        const json = res.json() as t.IResGetCell;
+        const json = res.json as t.IResGetCell;
         expect(res.status).to.eql(200);
         expect(json.uri).to.eql('cell:foo!A1'); // NB: The "cell:" URI, not "ns:".
         expect(json.exists).to.eql(false);
@@ -318,7 +318,7 @@ describe('route: ns (namespace URI)', function() {
 
       expect(res.status).to.eql(200);
 
-      const body = res.json<t.IResGetNs>();
+      const body = res.json as t.IResGetNs;
       const ns = body.data.ns;
 
       expect(body.uri).to.eql('ns:foo');
@@ -349,7 +349,7 @@ describe('route: ns (namespace URI)', function() {
       const res = await http.get(url);
       await mock.dispose();
 
-      const json = res.json();
+      const json = res.json as any;
       stripHashes(json.data); // NB: Ignore calculated hash values for the purposes of this test.
 
       expect(json.data.cells).to.eql({ A1: { value: 'hello' } });
@@ -380,7 +380,7 @@ describe('route: ns (namespace URI)', function() {
         const res = await http.get(url);
 
         // Prepare a subset of the return data to compare with expected result-set.
-        const json = res.json<t.IResPostNs>().data;
+        const json = (res.json as t.IResPostNs).data;
         delete json.ns;
         stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
         expect(json).to.eql(expected);

@@ -5,6 +5,11 @@
 
 Tools for working with cell value data.
 
+<p>&nbsp;</p>
+
 ## Setup
 
     yarn add @platform/cell.value
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>

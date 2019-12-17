@@ -1,6 +1,6 @@
 {
   "name": "@platform/auth0",
-  "version": "0.2.56",
+  "version": "0.2.61",
   "description": "Interfaces for working with Auth0.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,16 +16,16 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/http": "0.5.5",
-    "@platform/util.is": "0.0.101",
-    "@platform/util.string": "0.3.19",
+    "@platform/http": "0.7.0",
+    "@platform/util.is": "0.0.102",
+    "@platform/util.string": "0.3.20",
     "@types/jsonwebtoken": "8.3.5",
     "auth0-js": "9.12.0",
     "jsonwebtoken": "8.5.1",
     "jwks-rsa": "1.6.0"
   },
   "devDependencies": {
-    "@platform/react": "^0.3.38",
+    "@platform/react": "^0.3.41",
     "@types/auth0-js": "9.10.7",
     "@uiharness/dev": "0.9.10",
     "@uiharness/ui": "0.6.21",

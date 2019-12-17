@@ -13,7 +13,7 @@ describe('micro (server)', () => {
     await mock.dispose();
 
     expect(res.status).to.eql(200);
-    expect(await res.json()).to.eql({ msg: 'hello' });
+    expect(await res.json).to.eql({ msg: 'hello' });
   });
 
   it('404 (default)', async () => {
@@ -23,9 +23,9 @@ describe('micro (server)', () => {
 
     expect(res.status).to.eql(404);
 
-    const json = res.json();
-    expect(json.status).to.eql(404);
-    expect(json.message).to.contain('Not found');
+    const json = res.json as any;
+    expect(json && json.status).to.eql(404);
+    expect(json && json.message).to.contain('Not found');
   });
 
   it('* (wildcard)', async () => {
@@ -38,8 +38,8 @@ describe('micro (server)', () => {
     const res2 = await http.get(mock.url('/bar'));
     await mock.dispose();
 
-    expect(res1.json()).to.eql({ url: '/foo' });
-    expect(res2.json()).to.eql({ wildcard: true });
+    expect(res1.json).to.eql({ url: '/foo' });
+    expect(res2.json).to.eql({ wildcard: true });
   });
 
   it('stores service instance', async () => {
@@ -202,10 +202,10 @@ describe('micro (server)', () => {
 
     await mock.dispose();
 
-    expect(await res1.json()).to.eql({ count: 1 });
-    expect(await res2.json()).to.eql({ count: 2 });
-    expect(await res3.json()).to.eql({ count: 3 });
-    expect(await res4.json()).to.eql({ count: 4 });
+    expect(res1.json).to.eql({ count: 1 });
+    expect(res2.json).to.eql({ count: 2 });
+    expect(res3.json).to.eql({ count: 3 });
+    expect(res4.json).to.eql({ count: 4 });
 
     expect(params.length).to.eql(4);
     expect(params[0].id).to.eql('foo');
@@ -405,7 +405,7 @@ describe('micro (server)', () => {
         expect(event && event.isModified).to.eql(true);
         expect(event && event.res).to.eql({ data: { foo: 123 } }); // NB: modified response not changed on event.
 
-        expect(res.json()).to.eql({ foo: 123, bar: 456 }); // NB: modified response returned to HTTP call.
+        expect(res.json).to.eql({ foo: 123, bar: 456 }); // NB: modified response returned to HTTP call.
         expect(res.headers['x-foo']).to.eql('hello');
 
         await mock.dispose();
@@ -434,7 +434,7 @@ describe('micro (server)', () => {
         expect(event && event.isModified).to.eql(true);
         expect(event && event.res).to.eql({ data: { foo: 123 } }); // NB: modified response not changed on event.
 
-        expect(res.json()).to.eql({ foo: 123, bar: 456 }); // NB: modified response returned to HTTP call.
+        expect(res.json).to.eql({ foo: 123, bar: 456 }); // NB: modified response returned to HTTP call.
         expect(res.headers['x-foo']).to.eql('hello');
 
         await mock.dispose();

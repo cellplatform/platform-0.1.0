@@ -81,7 +81,7 @@ export class Site {
     if (args.loadBundleManifest) {
       const bundleUrl = `${baseUrl}/${bundle}/${constants.PATH.BUNDLE_MANIFEST}`;
       const res = await http.get(bundleUrl);
-      const bundleManifest = res.ok ? (jsYaml.safeLoad(res.body) as t.IBundleManifest) : undefined;
+      const bundleManifest = res.ok ? (jsYaml.safeLoad(res.text) as t.IBundleManifest) : undefined;
       if (bundleManifest) {
         size = bundleManifest.size;
         bytes = bundleManifest.bytes;

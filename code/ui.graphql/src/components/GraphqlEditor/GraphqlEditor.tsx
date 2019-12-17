@@ -27,8 +27,8 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
   private unmounted$ = new Subject<{}>();
   private state$ = new Subject<Partial<IGraphqlEditorState>>();
 
-  private _result: t.IJsonMap | undefined;
-  private _schema: t.IJsonMap | undefined;
+  private _result: t.JsonMap | undefined;
+  private _schema: t.JsonMap | undefined;
   private _events$ = new Subject<GraphqlEditorEvent>();
   public events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
 
@@ -57,7 +57,7 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
         this._result = e.result;
         const data = e.result.data;
         const fetchId = e.fetchId;
-        const schema = data ? ((data as any).__schema as t.IJsonMap) : undefined;
+        const schema = data ? ((data as any).__schema as t.JsonMap) : undefined;
         const { url } = this.props;
         if (url && schema) {
           this._schema = schema;

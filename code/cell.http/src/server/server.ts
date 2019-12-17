@@ -1,4 +1,4 @@
-import { t, micro, constants, log, util, value } from './common';
+import { t, micro, constants, log, util, value, Schema } from './common';
 import * as router from './router';
 
 export { Config } from './config';

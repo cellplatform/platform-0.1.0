@@ -1,4 +1,4 @@
-import { R, t } from '../common';
+import { R, t, value } from '../common';
 import { Uri } from '../uri';
 import { Url } from './Url';
 import * as util from './util';
@@ -7,15 +7,22 @@ import { ROUTES } from './ROUTES';
 /**
  * Standardised construction of URLs for the HTTP service.
  */
-export class Urls {
+export class Urls implements t.IUrls {
   public static readonly uri = Uri;
   public static readonly routes = ROUTES;
 
-  public static parse(input?: string) {
-    input = (input || '').trim() || 'localhost';
-    const host = R.pipe(util.stripHttp, util.stripSlash, util.stripPort)(input);
+  public static create(input?: string | number): t.IUrls {
+    return new Urls(input);
+  }
+
+  public static parse(input?: string | number) {
+    input = value.isNumeric(input) ? `localhost:${input}` : input?.toString();
+    let text = (input || '').trim();
+    text = text || 'localhost';
+
+    const host = R.pipe(util.stripHttp, util.stripSlash, util.stripPort)(text);
     const protocol = util.toProtocol(host);
-    const port = util.toPort(input) || 80;
+    const port = util.toPort(text) || 80;
     const origin = port === 80 ? `${protocol}://${host}` : `${protocol}://${host}:${port}`;
     return { protocol, host, port, origin };
   }
@@ -23,7 +30,7 @@ export class Urls {
   /**
    * [Lifecycle]
    */
-  constructor(input?: string) {
+  private constructor(input?: string | number) {
     const { protocol, host, port, origin } = Urls.parse(input);
     this.host = host;
     this.protocol = protocol;
@@ -63,10 +70,12 @@ export class Urls {
   /**
    * Builders for NAMESPACE urls.
    */
-  public ns(id: string) {
+  public ns(input: string | t.IUrlParamsNs) {
     const toPath = this.toUrl;
+    let id = typeof input === 'string' ? input : input.ns;
+    const uri = Uri.parse(id);
+
     if (id.includes(':')) {
-      const uri = Uri.parse(id);
       const type = uri.parts.type;
 
       if (uri.error) {
@@ -84,6 +93,8 @@ export class Urls {
     }
 
     return {
+      uri: uri.toString(),
+
       /**
        * Example: /ns:foo
        */
@@ -96,8 +107,9 @@ export class Urls {
   /**
    * Builders for CELL urls.
    */
-  public cell(uri: string) {
+  public cell(input: string | t.IUrlParamsCell) {
     const toPath = this.toUrl;
+    const uri = typeof input === 'string' ? input : Uri.create.cell(input.ns, input.key);
     const cell = Uri.parse<t.ICellUri>(uri);
     if (cell.error) {
       throw new Error(cell.error.message);
@@ -109,6 +121,8 @@ export class Urls {
     }
 
     return {
+      uri,
+
       /**
        * Example: /cell:foo!A1
        */
@@ -132,20 +146,21 @@ export class Urls {
         /**
          * Example: /cell:foo!A1/file/kitten.png
          */
-        byName(name: string) {
+        byName(filename: string) {
           type Q = t.IUrlQueryGetCellFileByName;
-          name = (name || '').trim();
-          if (!name) {
+          filename = (filename || '').trim();
+          if (!filename) {
             throw new Error(`Filename not provided.`);
           }
-          return toPath<Q>(`/cell:${ns}!${key}/file/${name}`);
+          return toPath<Q>(`/cell:${ns}!${key}/file/${filename}`);
         },
 
         /**
          * Example: /cell:foo!A1/files/0
          */
-        byIndex(index: number) {
+        byIndex(input: number | string) {
           type Q = t.IUrlQueryGetCellFileByIndex;
+          const index = value.toNumber(input);
           if (typeof index !== 'number') {
             throw new Error(`File index not provided.`);
           }
@@ -158,8 +173,9 @@ export class Urls {
   /**
    * Builders for ROW urls.
    */
-  public row(uri: string) {
+  public row(input: string | t.IUrlParamsRow) {
     const toPath = this.toUrl;
+    const uri = typeof input === 'string' ? input : Uri.create.row(input.ns, input.key);
     const row = Uri.parse<t.IRowUri>(uri);
     if (row.error) {
       throw new Error(row.error.message);
@@ -171,6 +187,8 @@ export class Urls {
     }
 
     return {
+      uri,
+
       /**
        * Example: /cell:foo!1
        */
@@ -184,8 +202,9 @@ export class Urls {
   /**
    * Builders for COLUMN urls.
    */
-  public column(uri: string) {
+  public column(input: string | t.IUrlParamsColumn) {
     const toPath = this.toUrl;
+    const uri = typeof input === 'string' ? input : Uri.create.column(input.ns, input.key);
     const column = Uri.parse<t.IColumnUri>(uri);
     if (column.error) {
       throw new Error(column.error.message);
@@ -197,6 +216,8 @@ export class Urls {
     }
 
     return {
+      uri,
+
       /**
        * Example: /cell:foo!A
        */
@@ -207,8 +228,9 @@ export class Urls {
     };
   }
 
-  public file(uri: string) {
+  public file(input: string | t.IUrlParamsFile) {
     const toPath = this.toUrl;
+    const uri = typeof input === 'string' ? input : Uri.create.file(input.ns, input.file);
     const file = Uri.parse<t.IFileUri>(uri);
     if (file.error) {
       throw new Error(file.error.message);
@@ -220,14 +242,21 @@ export class Urls {
 
     const { id } = file.parts;
     return {
-      get download() {
-        type Q = t.IUrlQueryGetFile;
-        return toPath<Q>(`/file:${id}`);
-      },
+      uri,
 
       get info() {
         type Q = t.IUrlQueryGetFileInfo;
         return toPath<Q>(`/file:${id}/info`);
+      },
+
+      get upload() {
+        type Q = t.IUrlQueryPostFile;
+        return toPath<Q>(`/file:${id}`);
+      },
+
+      get download() {
+        type Q = t.IUrlQueryGetFile;
+        return toPath<Q>(`/file:${id}`);
       },
     };
   }

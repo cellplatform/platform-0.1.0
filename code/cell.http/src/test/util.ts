@@ -21,7 +21,7 @@ export const post = {
   async ns(url: string, body: t.IReqPostNsBody, options: { mock?: IMock } = {}) {
     const mock = options.mock || (await createMock());
     const res = await http.post(mock.url(url), body);
-    const json = res.json<t.IResPostNs>();
+    const json = res.json as t.IResPostNs;
     if (!options.mock) {
       await mock.dispose();
     }
