@@ -1,5 +1,7 @@
 import { t } from '../common';
 
+export type HttpProtocol = 'http' | 'https';
+
 /**
  * Configuration
  */
