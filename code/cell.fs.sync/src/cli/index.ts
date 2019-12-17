@@ -26,7 +26,7 @@ export const init: t.CliInit = cli => {
     .option<'boolean'>({
       name: 'dry',
       alias: 'd',
-      description: 'Dry run.',
+      description: 'Dry run without executing against service.',
       type: 'boolean',
       default: false,
     });
