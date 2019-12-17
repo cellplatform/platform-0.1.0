@@ -90,6 +90,11 @@ describe('route: !A1/file', () => {
     expect(download2.status).to.eql(409);
     expect(download2.error && download2.error.message).to.contains('hash does not match');
 
+    // Get info about the file, from the `file.name` client.
+    const fileInfo = await cellClient.file.name('func.wasm').info();
+    expect(fileInfo.status).to.eql(200);
+    expect(fileInfo.body.data.props.filename).to.eql('func.wasm');
+
     // Finish up.
     await mock.dispose();
   });

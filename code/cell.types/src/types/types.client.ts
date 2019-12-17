@@ -36,6 +36,7 @@ export type IClientCellFile = {
 };
 
 export type IClientCellFileByName = {
+  info(): t.IClientResponseAsync<t.IResGetFile>;
   upload(data: ArrayBuffer): t.IClientResponseAsync<t.IResPostCellFile>;
   download(): t.IClientResponseAsync<ReadableStream>;
 };

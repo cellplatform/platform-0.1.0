@@ -147,7 +147,7 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
   }
 
   if (!isValidId(id)) {
-    const err = `URI contains an invalid "${prefix}" identifier, must be an alpha-numeric cuid ("${id}").`;
+    const err = `URI contains an invalid "${prefix}" identifier, must be an alpha-numeric cuid.`;
     throw new Error(err);
   }
 
