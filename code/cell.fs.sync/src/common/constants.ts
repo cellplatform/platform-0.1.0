@@ -1,1 +1,1 @@
-export const TEMP = 123;
+export { ERROR } from '@platform/cell.schema';

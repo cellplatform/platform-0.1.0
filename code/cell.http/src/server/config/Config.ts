@@ -74,17 +74,16 @@ export class Config {
 
 function validate(config: t.IHttpConfigFile) {
   const data = config.data;
-  const errors: t.IError[] = [];
   const res: t.IHttpConfigValidation = {
+    errors: [],
     get isValid() {
-      return errors.length === 0;
+      return res.errors.length === 0;
     },
-    errors,
   };
 
   const error = (message: string) => {
     const error: t.IError = { type: ERROR.HTTP.CONFIG, message };
-    errors.push(error);
+    res.errors.push(error);
     return res;
   };
 
