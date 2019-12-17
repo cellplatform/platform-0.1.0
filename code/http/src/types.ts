@@ -1,5 +1,7 @@
 import { Json } from '@platform/types';
 
+export type HttpProtocol = 'http' | 'https';
+
 export type IHttpHeaders = { [key: string]: string | number };
 
 export type IFetchOptions = {
@@ -12,7 +14,17 @@ export type IHttpResponse = {
   status: number;
   statusText: string;
   headers: IHttpHeaders;
+  contentType: IHttpContentType;
   body?: ReadableStream<Uint8Array>;
   text: string;
   json: Json;
+};
+
+export type IHttpContentType = {
+  value: string;
+  is: {
+    json: boolean;
+    text: boolean;
+    binary: boolean;
+  };
 };
