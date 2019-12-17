@@ -116,15 +116,9 @@ describe('route: ns (namespace URI)', function() {
         1: { props: { width: 350 } },
         3: { props: { width: 256 } },
       };
-      const body: t.IReqPostNsBody = { cells, columns, rows };
 
+      const body: t.IReqPostNsBody = { cells, columns, rows };
       await http.post(mock.url('ns:foo'), body);
-      await testPostFile({
-        uri: 'file:foo:123',
-        filename: `image.png`,
-        source: 'src/test/assets/bird.png',
-        dispose: false,
-      });
 
       const test = async (path: string, expected?: any) => {
         const url = mock.url(path);
