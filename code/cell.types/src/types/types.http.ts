@@ -111,7 +111,7 @@ export type IReqFileInfoQuery = {};
  */
 export type IResGetFile = IUriResponse<IResGetFileData, IResGetFileLinks>;
 export type IResGetFileData = t.IFileData & {};
-export type IResGetFileLinks = { file: string; info: string };
+export type IResGetFileLinks = { info: string; download: string };
 
 /**
  * File: POST
@@ -138,12 +138,10 @@ export type IResGetCellFiles = {
   files: IResGetFilesLink[];
   links: ILinkMap;
 };
-export type IResGetFilesLink = {
+export type IResGetFilesLink = IResGetFileLinks & {
   uri: string;
   filename: string;
   hash: string;
-  file: string;
-  info: string;
 };
 
 /**

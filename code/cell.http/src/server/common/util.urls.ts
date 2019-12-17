@@ -70,13 +70,10 @@ export function urls(host: string) {
 
     file(fileUri: string, hash?: string): t.IResGetFileLinks {
       const fileUrl = url.file(fileUri);
-      let file = fileUrl.download;
-      if (hash) {
-        file = file.query({ hash });
-      }
+      const download = fileUrl.download.query({ hash });
       return {
-        file: file.toString(),
         info: fileUrl.info.toString(),
+        download: download.toString(),
       };
     },
 
