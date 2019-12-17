@@ -39,7 +39,7 @@ export class Url<Q extends object = {}> implements t.IUrl<Q> {
 
     Object.keys(query).forEach(key => {
       let value = query[key];
-      if (typeof value !== 'function') {
+      if (typeof value !== 'function' && value !== undefined) {
         res = res ? `${res}&` : res;
         value = Array.isArray(value) ? value.map(value => format(value)) : format(value);
         res = value === undefined ? `${res}${key}` : `${res}${key}=${value}`;

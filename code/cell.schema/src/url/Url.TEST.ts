@@ -72,6 +72,11 @@ describe('Url', () => {
     expect(url.querystring).to.eql('?thing=true,foo,123');
   });
 
+  it('does not add [query] if value is undefined', () => {
+    const url = new Url<Q>({ origin }).query({ thing: undefined });
+    expect(url.querystring).to.eql('');
+  });
+
   it('build query-string (mixed from object and/or string)', () => {
     const res = new Url<Q>({ origin, querystring: 'boom=bam' })
       .query({ color: 'red' })
