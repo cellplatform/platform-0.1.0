@@ -16,7 +16,10 @@
   },
   "dependencies": {
     "@platform/cell.client": "0.0.19",
+    "@platform/cell.schema": "0.2.9",
     "@platform/cell.types": "0.3.0",
+    "@platform/cell.value": "0.1.35",
+    "@platform/cli.prompt": "0.2.3",
     "@platform/fs": "0.4.0",
     "@platform/fs.watch": "0.2.20",
     "@platform/http": "0.7.0",

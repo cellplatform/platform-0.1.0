@@ -1,11 +1,12 @@
-import { log, t, fs, http, semver } from '../common';
+import { log, t, fs, http, semver, Schema, Client, Value } from '../common';
 
 import * as FormData from 'form-data';
 
 const LOCAL = 'http://localhost:8080';
-const CLOUD = 'https://db.team';
-// const HOST = LOCAL;
-const HOST = CLOUD;
+const CLOUD = 'https://dev.db.team';
+
+const HOST = LOCAL;
+// const HOST = CLOUD;
 
 /**
  * TODO 🐷
@@ -24,10 +25,16 @@ const HOST = CLOUD;
  * Synchronize a folder with the cloud.
  */
 
+const ns = 'ck499h7u30000fwet3k7085t1';
+
 export async function syncDir(args: { dir: string; dryRun: boolean }) {
   const { dryRun = false } = args;
-  // console.log('syncDir', args);
   const dir = fs.resolve(args.dir);
+
+  const client = Client.create(HOST);
+
+  const urls = Schema.url(HOST);
+
   // console.log('dir', dir);
   log.info.gray(`HOST ${HOST}`);
   log.info();
@@ -39,16 +46,19 @@ export async function syncDir(args: { dir: string; dryRun: boolean }) {
   const sorted = sortSemver(files);
 
   sorted.forEach((item, i) => {
-    const url = toUrl(i, item.filename);
-    log.info(log.blue('>'), url);
+    const url = toUrl(HOST, i, item.filename);
+    // const url = urls.cell()
+    log.info(log.gray('>'), url.toString());
   });
+
+  // return;
 
   log.info();
   log.info(`Uploading...\n`);
   const wait = sorted.map(async (item, index) => {
     const path = fs.join(dir, item.filename);
     if (!dryRun) {
-      await upload({ index, path });
+      await upload({ client, index, path });
     }
   });
   await Promise.all(wait);
@@ -61,34 +71,60 @@ export async function syncDir(args: { dir: string; dryRun: boolean }) {
   log.info();
 }
 
-const toUrl = (index: number, filename: string) => {
+const toUrl = (host: string, index: number, filename: string) => {
+  const urls = Schema.url(host);
   const key = `A${index + 1}`;
-  const ns = 'pres';
-  const url = `${HOST}/cell:${ns}!${key}/files/${filename}`;
+  const url = urls.cell({ ns, key }).file.byName(filename);
   return url;
 };
 
-const upload = async (args: { index: number; path: string }) => {
-  const form = new FormData();
+const upload = async (args: { client: t.IClient; index: number; path: string }) => {
+  // const { client } = args;
+  // const r = await client.
+
+  console.log('args.path:', args.path);
+
+  const key = `A${args.index + 1}`;
+  const client = args.client.cell({ ns, key });
+
+  console.log('client.toString()', client.toString());
+
+  // const form = new FormData();
   const filename = fs.basename(args.path);
   const data = await fs.readFile(args.path);
 
-  form.append('file', data, {
-    filename,
-    contentType: 'application/octet-stream',
-  });
-
-  const url = toUrl(args.index, filename);
-  const headers = form.getHeaders();
-  const res = await http.post(url, form, { headers });
-  const msg = `${res.status} ${log.gray(url)}`;
-
-  if (res.ok) {
-    log.info.green(msg);
-  } else {
-    log.info.yellow(msg);
-    log.info.yellow(`  `, res.json);
+  // Compare the file-hash of the file to determine if the upload is required.
+  const info = await client.file.name(filename).info();
+  let isDiff = true;
+  if (info.body.exists) {
+    const localhash = Value.hash.sha256(data);
+    isDiff = info.body.data.props.filehash !== localhash;
   }
+
+  // console.log('filehash', filehash);
+
+  // const h = info.body.data.props.filehash;
+
+  console.log('-------------------------------------------');
+  console.log('isDiff', isDiff);
+  // console.log(h);
+
+  // form.append('file', data, {
+  //   filename,
+  //   contentType: 'application/octet-stream',
+  // });
+
+  // const url = toUrl(HOST, args.index, filename).toString();
+  // const headers = form.getHeaders();
+  // const res = await http.post(url, form, { headers });
+  // const msg = `${res.status} ${log.gray(url)}`;
+
+  // if (res.ok) {
+  //   log.info.green(msg);
+  // } else {
+  //   log.info.yellow(msg);
+  //   log.info.yellow(`  `, res.json);
+  // }
 };
 
 type T = { filename: string; version: string };
