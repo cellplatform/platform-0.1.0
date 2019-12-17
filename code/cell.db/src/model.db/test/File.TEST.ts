@@ -14,7 +14,7 @@ describe('model.File', () => {
     };
 
     await res1
-      .set({ props: { name: 'image.png', mimetype: 'image/png', filehash }, hash: HASH.before })
+      .set({ props: { filename: 'image.png', mimetype: 'image/png', filehash }, hash: HASH.before })
       .save();
 
     const res2 = await File.create({ db, uri }).ready;
@@ -39,7 +39,7 @@ describe('model.File', () => {
     const model1 = await File.create({ db, uri }).ready;
     expect(model1.props.hash).to.eql(undefined);
 
-    await model1.set({ props: { name: 'image.jpg', filehash: hash.jpg } }).save();
+    await model1.set({ props: { filename: 'image.jpg', filehash: hash.jpg } }).save();
     expect(model1.props.hash).to.not.eql(undefined);
 
     const model2 = await File.create({ db, uri }).ready;
@@ -63,8 +63,8 @@ describe('model.File', () => {
     const db = await getTestDb({});
     const uri = 'file:foo:123';
 
-    const test = async (name: string, expected?: string) => {
-      const model1 = (await File.create({ db, uri }).ready).set({ props: { name } });
+    const test = async (filename: string, expected?: string) => {
+      const model1 = (await File.create({ db, uri }).ready).set({ props: { filename } });
       await model1.save();
 
       const model2 = await File.create({ db, uri }).ready;
@@ -100,7 +100,7 @@ describe('model.File', () => {
     await model1.save();
     expect((model1.props.props || {}).mimetype).to.eql(mimetype);
 
-    model1.set({ props: { ...model1.toObject().props, name: 'foo.png' } });
+    model1.set({ props: { ...model1.toObject().props, filename: 'foo.png' } });
     expect((model1.props.props || {}).mimetype).to.eql(mimetype);
 
     const model2 = await File.create({ db, uri }).ready;

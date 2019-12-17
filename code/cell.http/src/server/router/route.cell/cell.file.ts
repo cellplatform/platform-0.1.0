@@ -189,12 +189,13 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       // Save to the file-system.
       const form = await req.body.form();
       const fsResponse = await postFileResponse({
+        host,
         db,
         fs,
         uri: fileUri,
         form,
         query: { changes: true },
-        host,
+        filename,
       });
       if (!util.isOK(fsResponse.status)) {
         const error = fsResponse.data as t.IHttpError;

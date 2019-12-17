@@ -289,11 +289,11 @@ describe('hash', () => {
       const filehash = value.hash.sha256(jpg);
       const error = { type: 'FAIL', message: 'Bummer' };
 
-      test({ props: { name: 'image.png' } }, 'ef430dc33f');
-      test({ props: { name: 'image.png', filehash } }, 'c212ee6bcf');
-      test({ props: { name: 'image.png', mimetype: 'image/png', filehash } }, 'c3fc50de3c');
+      test({ props: { filename: 'image.png' } }, 'ef430dc33f');
+      test({ props: { filename: 'image.png', filehash } }, 'c212ee6bcf');
+      test({ props: { filename: 'image.png', mimetype: 'image/png', filehash } }, 'c3fc50de3c');
       test({ props: {}, error }, '1fd68d1131');
-      test({ props: { name: 'image.png', filehash }, error }, '842c450c84');
+      test({ props: { filename: 'image.png', filehash }, error }, '842c450c84');
     });
   });
 });

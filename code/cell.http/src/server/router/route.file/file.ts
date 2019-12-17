@@ -180,6 +180,7 @@ export async function postFileResponse(args: {
   form: t.IForm;
   host: string;
   query?: t.IUrlQueryPostFile;
+  filename?: string; // NB: overrides filename within form-data.
 }): Promise<t.IPayload<t.IResPostFile> | t.IErrorPayload> {
   const { db, uri, query = {}, form, fs, host } = args;
   const sendChanges = defaultValue(query.changes, true);
@@ -197,14 +198,15 @@ export async function postFileResponse(args: {
 
     // Save to the abstract file-system (S3 or local).
     const file = form.files[0];
-    const { buffer, name, encoding } = file;
+    const { buffer, encoding } = file;
+    const filename = args.filename || file.name;
     const writeResponse = await fs.write(uri, buffer);
     const filehash = writeResponse.file.hash;
     const location = writeResponse.location;
 
     // Save the model.
     const model = await models.File.create({ db, uri }).ready;
-    models.setProps(model, { name, encoding, filehash, location });
+    models.setProps(model, { encoding, filename, filehash, location });
     const saveResponse = await model.save();
 
     // Store DB changes.

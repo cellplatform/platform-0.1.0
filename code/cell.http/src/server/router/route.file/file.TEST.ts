@@ -82,7 +82,7 @@ describe('route: file (URI)', () => {
       const json = resInfo.json as t.IResGetFile;
       const props = json.data.props;
       expect(json.uri).to.eql(uri);
-      expect(props.name).to.eql('image.png');
+      expect(props.filename).to.eql('image.png');
       expect(props.mimetype).to.eql('image/png');
       expect(props.location).to.match(/^file:\/\//);
 
@@ -119,7 +119,7 @@ describe('route: file (URI)', () => {
       const json = resInfo.json as t.IResGetFile;
       const props = json.data.props;
       expect(json.uri).to.eql(uri);
-      expect(props.name).to.eql('func.wasm');
+      expect(props.filename).to.eql('func.wasm');
 
       // Download the file from the route, and ensure it saves correctly.
       const path = fs.resolve('tmp/file.wasm');
