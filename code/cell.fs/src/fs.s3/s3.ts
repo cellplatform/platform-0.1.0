@@ -1,4 +1,4 @@
-import { t, fs, path, sha256 } from '../common';
+import { t, fs, path, sha256, util } from '../common';
 export * from '../types';
 
 export type IS3Init = t.S3Config & { root: string };
@@ -14,11 +14,11 @@ export function init(args: IS3Init): t.IFileSystemS3 {
     const { endpoint, accessKey, secret } = args;
     const s3 = fs.s3({ endpoint, accessKey, secret });
 
-    const root = trimSlashes(args.root);
+    const root = util.trimSlashes(args.root);
     const index = root.indexOf('/');
     const path = {
-      bucket: index === -1 ? root : trimSlashes(root.substring(0, index)),
-      dir: index === -1 ? '/' : `/${trimSlashes(root.substring(index))}`,
+      bucket: index === -1 ? root : util.trimSlashes(root.substring(0, index)),
+      dir: index === -1 ? '/' : `/${util.trimSlashes(root.substring(index))}`,
     };
     if (!path.bucket) {
       throw new Error(`The given 'root' path does not contain a bucket ("${args.root}").`);
@@ -60,13 +60,14 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       try {
         const res = await cloud.bucket.get({ key });
         const { status } = res;
-        if (!res.ok || !res.data) {
+        const ok = util.isOK(status);
+        if (!ok || !res.data) {
           const error: t.IFileSystemError = {
             type: 'FS/read/cloud',
             message: `Failed to read [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { status, location, error };
+          return { ok, status, location, error };
         } else {
           const file: t.IFileSystemFile = {
             uri,
@@ -76,7 +77,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
               return sha256(res.data);
             },
           };
-          return { status, location, file };
+          return { ok, status, location, file };
         }
       } catch (err) {
         const error: t.IFileSystemError = {
@@ -84,7 +85,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
           message: `Failed to read [${uri}]. ${err.message}`,
           path,
         };
-        return { status: 404, location, error };
+        return { ok: false, status: 404, location, error };
       }
     },
 
@@ -126,18 +127,19 @@ export function init(args: IS3Init): t.IFileSystemS3 {
         });
 
         const { status } = res;
+        const ok = util.isOK(status);
         const location = res.url || '';
         file.path = res.url ? res.url : file.path;
 
-        if (!res.ok) {
+        if (!ok) {
           const error: t.IFileSystemError = {
             type: 'FS/write/cloud',
             message: `Failed to write [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { status, location, file, error };
+          return { ok, status, location, file, error };
         } else {
-          return { status, location, file };
+          return { ok, status, location, file };
         }
       } catch (err) {
         const error: t.IFileSystemError = {
@@ -145,7 +147,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
           message: `Failed to write [${uri}]. ${err.message}`,
           path,
         };
-        return { status: 500, location: '', file, error };
+        return { ok: false, status: 500, location: '', file, error };
       }
     },
 
@@ -161,15 +163,16 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       try {
         const res = await cloud.bucket.deleteMany({ keys });
         const { status } = res;
+        const ok = util.isOK(status);
         if (!res.ok || res.error) {
           const error: t.IFileSystemError = {
             type: 'FS/delete/cloud',
             message: `Failed to delete [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path: paths.join(','),
           };
-          return { status, locations, error };
+          return { ok, status, locations, error };
         } else {
-          return { status, locations };
+          return { ok, status, locations };
         }
       } catch (err) {
         const error: t.IFileSystemError = {
@@ -177,20 +180,10 @@ export function init(args: IS3Init): t.IFileSystemS3 {
           message: `Failed to delete [${uri}]. ${err.message}`,
           path: paths.join(','),
         };
-        return { status: 500, locations, error };
+        return { ok: false, status: 500, locations, error };
       }
     },
   };
 
   return res;
 }
-
-/**
- * [Helpers]
- */
-const trimSlashes = (input: string) =>
-  (input || '')
-    .trim()
-    .replace(/^\/*/, '')
-    .replace(/\/*$/, '')
-    .trim();

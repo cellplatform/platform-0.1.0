@@ -38,7 +38,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
           message: `A file with the URI [${uri}] does not exist.`,
           path,
         };
-        return { status: 404, location, error };
+        return { ok: false, status: 404, location, error };
       }
 
       // Load the file.
@@ -52,14 +52,14 @@ export function init(args: { root: string }): t.IFileSystemLocal {
             return sha256(data);
           },
         };
-        return { status: 200, location, file };
+        return { ok: true, status: 200, location, file };
       } catch (err) {
         const error: t.IFileSystemError = {
           type: 'FS/read',
           message: `Failed to write file at URI [${uri}]. ${err.message}`,
           path,
         };
-        return { status: 500, location, error };
+        return { ok: false, status: 500, location, error };
       }
     },
 
@@ -86,14 +86,14 @@ export function init(args: { root: string }): t.IFileSystemLocal {
       try {
         await fs.ensureDir(fs.dirname(path));
         await fs.writeFile(path, data);
-        return { status: 200, location, file };
+        return { ok: true, status: 200, location, file };
       } catch (err) {
         const error: t.IFileSystemError = {
           type: 'FS/write',
           message: `Failed to write [${uri}]. ${err.message}`,
           path,
         };
-        return { status: 500, location, file, error };
+        return { ok: false, status: 500, location, file, error };
       }
     },
 
@@ -107,14 +107,14 @@ export function init(args: { root: string }): t.IFileSystemLocal {
 
       try {
         await Promise.all(paths.map(path => fs.remove(path)));
-        return { status: 200, locations };
+        return { ok: true, status: 200, locations };
       } catch (err) {
         const error: t.IFileSystemError = {
           type: 'FS/delete',
           message: `Failed to delete [${uri}]. ${err.message}`,
           path: paths.join(','),
         };
-        return { status: 500, locations, error };
+        return { ok: false, status: 500, locations, error };
       }
     },
   };

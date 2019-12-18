@@ -35,6 +35,7 @@ describe('fs.local', () => {
     const res = await fs.write(`  ${uri} `, png); // NB: URI padded with spaces (corrected internally).
     const file = res.file;
 
+    expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
     expect(res.location).to.eql(`file://${file.path}`);
@@ -57,6 +58,7 @@ describe('fs.local', () => {
     const res = await fs.read(uri);
     const file = res.file as t.IFileSystemFile;
 
+    expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
     expect(res.location).to.eql(`file://${file.path}`);
@@ -80,6 +82,7 @@ describe('fs.local', () => {
     const res = await fs.delete(uri);
     expect(await util.fs.pathExists(path)).to.eql(false);
 
+    expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.locations[0]).to.eql(`file://${path}`);
   });
@@ -108,6 +111,7 @@ describe('fs.local', () => {
     expect(await util.fs.pathExists(path1)).to.eql(false);
     expect(await util.fs.pathExists(path2)).to.eql(false);
 
+    expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.locations[0]).to.eql(`file://${path1}`);
     expect(res.locations[1]).to.eql(`file://${path2}`);
@@ -122,6 +126,7 @@ describe('fs.local', () => {
       const res = await fs.read(uri);
       const error = res.error as t.IFileSystemError;
 
+      expect(res.ok).to.eql(false);
       expect(res.status).to.eql(404);
       expect(res.file).to.eql(undefined);
       expect(error.type).to.eql('FS/read/404');

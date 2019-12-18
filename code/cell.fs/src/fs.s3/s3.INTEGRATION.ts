@@ -13,6 +13,7 @@ describe('S3 (INTEGRATION)', function() {
     const res = await fs.write(`  ${uri} `, png, { filename }); // NB: URI padded with spaces (corrected internally).
     const file = res.file;
 
+    expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.location).to.eql(
       'https://platform.sfo2.digitaloceanspaces.com/tmp/test/ns.foo/bird',
@@ -34,6 +35,7 @@ describe('S3 (INTEGRATION)', function() {
     const res = await fs.read(uri);
     const file = res.file as t.IFileSystemFile;
 
+    expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.location).to.eql(
       'https://platform.sfo2.digitaloceanspaces.com/tmp/test/ns.foo/bird',
@@ -56,6 +58,7 @@ describe('S3 (INTEGRATION)', function() {
     const png = await util.image(filename);
 
     const res1 = await fs.write(uri, png, { filename });
+    expect(res1.ok).to.eql(true);
     expect(res1.status).to.eql(200);
 
     const res2 = await fs.read(uri);
@@ -70,6 +73,7 @@ describe('S3 (INTEGRATION)', function() {
     );
 
     const res4 = await fs.read(uri);
+    expect(res4.ok).to.eql(false);
     expect(res4.status).to.eql(404);
   });
 
@@ -91,6 +95,7 @@ describe('S3 (INTEGRATION)', function() {
 
     const res = await fs.delete([uri1, uri2]);
 
+    expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
     expect(res.locations.length).to.eql(2);
