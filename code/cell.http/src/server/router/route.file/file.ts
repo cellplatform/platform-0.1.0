@@ -261,6 +261,12 @@ async function deleteFileResponse(args: {
     // Delete the file from disk.
     // await fs.
 
+    /**
+     * TODO 🐷
+     * - delete file (from fs).
+     * - delete model.
+     */
+
     return { data: { msg: 'TMP' } } as any;
   } catch (err) {
     return util.toErrorPayload(err);
