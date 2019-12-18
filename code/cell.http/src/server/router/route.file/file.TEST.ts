@@ -232,7 +232,7 @@ describe('route: file (URI)', () => {
   });
 
   describe('DELETE', () => {
-    it.skip('delete a file', async () => {
+    it.only('delete a file', async () => {
       const sourcePath = fs.resolve('src/test/assets/bird.png');
       const uri = 'file:foo:123';
       const { res, json, data, props, mock } = await testPostFile({
