@@ -6,7 +6,7 @@ import * as cmd from './cmd.syncDir';
  */
 export const init: t.CliInit = cli => {
   type T = {
-    force: string;
+    force: boolean;
     silent: boolean;
     config: boolean;
     delete: boolean;
@@ -16,9 +16,9 @@ export const init: t.CliInit = cli => {
     await cmd.syncDir({
       dir: process.cwd(),
       silent: args.silent,
+      force: args.force,
       config: args.config,
       delete: args.delete,
-      force: args.force,
     });
   };
 
@@ -39,7 +39,7 @@ export const init: t.CliInit = cli => {
     .option<'boolean'>({
       name: 'force',
       alias: 'f',
-      description: 'Force push unchanged files.',
+      description: 'Force push everything including unchanged files.',
       type: 'boolean',
       default: false,
     })
