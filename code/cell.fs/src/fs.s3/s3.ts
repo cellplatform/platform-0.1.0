@@ -49,7 +49,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
     },
 
     /**
-     * Read from the local file=system.
+     * Read from S3
      */
     async read(uri: string): Promise<t.IFileSystemRead> {
       uri = (uri || '').trim();
@@ -63,7 +63,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
         if (!res.ok || !res.data) {
           const error: t.IFileSystemError = {
             type: 'FS/read/cloud',
-            message: `Failed to read "${uri}". ${res.error ? res.error.message : ''}`.trim(),
+            message: `Failed to read [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
           return { status, location, error };
@@ -81,7 +81,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       } catch (err) {
         const error: t.IFileSystemError = {
           type: 'FS/read',
-          message: `Failed to read "${uri}". ${err.message}`,
+          message: `Failed to read [${uri}]. ${err.message}`,
           path,
         };
         return { status: 404, location, error };
@@ -89,7 +89,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
     },
 
     /**
-     * Write to the local file-system.
+     * Write to the S3.
      */
     async write(
       uri: string,
@@ -132,7 +132,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
         if (!res.ok) {
           const error: t.IFileSystemError = {
             type: 'FS/write/cloud',
-            message: `Failed to write "${uri}". ${res.error ? res.error.message : ''}`.trim(),
+            message: `Failed to write [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
           return { status, location, file, error };
@@ -142,10 +142,42 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       } catch (err) {
         const error: t.IFileSystemError = {
           type: 'FS/write',
-          message: `Failed to write "${uri}". ${err.message}`,
+          message: `Failed to write [${uri}]. ${err.message}`,
           path,
         };
-        return { status: 404, location: '', file, error };
+        return { status: 500, location: '', file, error };
+      }
+    },
+
+    /**
+     * Delete from S3.
+     */
+    async delete(uri: string | string[]): Promise<t.IFileSystemDelete> {
+      const uris = (Array.isArray(uri) ? uri : [uri]).map(uri => (uri || '').trim());
+      const paths = uris.map(uri => res.resolve(uri));
+      const keys = paths.map(path => path.replace(/^\//, ''));
+      const locations = paths.map(path => cloud.bucket.url(path));
+
+      try {
+        const res = await cloud.bucket.deleteMany({ keys });
+        const { status } = res;
+        if (!res.ok || res.error) {
+          const error: t.IFileSystemError = {
+            type: 'FS/delete/cloud',
+            message: `Failed to delete [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
+            path: paths.join(','),
+          };
+          return { status, locations, error };
+        } else {
+          return { status, locations };
+        }
+      } catch (err) {
+        const error: t.IFileSystemError = {
+          type: 'FS/delete',
+          message: `Failed to delete [${uri}]. ${err.message}`,
+          path: paths.join(','),
+        };
+        return { status: 500, locations, error };
       }
     },
   };

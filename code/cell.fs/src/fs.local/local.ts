@@ -24,7 +24,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
     },
 
     /**
-     * Read from the local file=system.
+     * Read from the local file-system.
      */
     async read(uri: string): Promise<t.IFileSystemRead> {
       uri = (uri || '').trim();
@@ -35,7 +35,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
       if (!(await fs.pathExists(path))) {
         const error: t.IFileSystemError = {
           type: 'FS/read/404',
-          message: `A file with the URI "${uri}" does not exist.`,
+          message: `A file with the URI [${uri}] does not exist.`,
           path,
         };
         return { status: 404, location, error };
@@ -56,7 +56,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
       } catch (err) {
         const error: t.IFileSystemError = {
           type: 'FS/read',
-          message: `Failed to write file at URI "${uri}". ${err.message}`,
+          message: `Failed to write file at URI [${uri}]. ${err.message}`,
           path,
         };
         return { status: 500, location, error };
@@ -77,7 +77,6 @@ export function init(args: { root: string }): t.IFileSystemLocal {
       const file: t.IFileSystemFile = {
         uri,
         path,
-
         data,
         get hash() {
           return sha256(data);
@@ -91,10 +90,31 @@ export function init(args: { root: string }): t.IFileSystemLocal {
       } catch (err) {
         const error: t.IFileSystemError = {
           type: 'FS/write',
-          message: `Failed to write "${uri}". ${err.message}`,
+          message: `Failed to write [${uri}]. ${err.message}`,
           path,
         };
         return { status: 500, location, file, error };
+      }
+    },
+
+    /**
+     * Delete from the local file-system.
+     */
+    async delete(uri: string | string[]): Promise<t.IFileSystemDelete> {
+      const uris = (Array.isArray(uri) ? uri : [uri]).map(uri => (uri || '').trim());
+      const paths = uris.map(uri => res.resolve(uri));
+      const locations = paths.map(path => toLocation(path));
+
+      try {
+        await Promise.all(paths.map(path => fs.remove(path)));
+        return { status: 200, locations };
+      } catch (err) {
+        const error: t.IFileSystemError = {
+          type: 'FS/delete',
+          message: `Failed to delete [${uri}]. ${err.message}`,
+          path: paths.join(','),
+        };
+        return { status: 500, locations, error };
       }
     },
   };
