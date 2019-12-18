@@ -318,7 +318,8 @@ export class Grid implements t.IGrid {
 
   public get data() {
     const { ns, cells, columns, rows } = this._;
-    return { ns, cells, columns, rows };
+    const files = {}; // NB: Supported in service, but no yet in UI.
+    return { ns, cells, columns, rows, files };
   }
 
   private setCells(cells: t.IGridData['cells']) {
