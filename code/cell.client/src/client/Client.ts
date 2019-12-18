@@ -7,7 +7,7 @@ import { ClientNs } from './ClientNs';
  * An HTTP client for the CellOS.
  */
 export class Client implements t.IClient {
-  public static create(host?: string | number) {
+  public static create(host?: string | number): t.IClient {
     return new Client({ host });
   }
 

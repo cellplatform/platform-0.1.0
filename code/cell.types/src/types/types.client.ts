@@ -36,9 +36,9 @@ export type IClientCell = {
   readonly uri: t.IUriParts<t.ICellUri>;
   readonly url: t.IUrlsCell;
   readonly file: IClientCellFile;
+  readonly files: IClientCellFiles;
   info(): t.IClientResponseAsync<t.IResGetCell>;
   links(): t.IClientResponseAsync<IClientCellLinks>;
-  files(): t.IClientResponseAsync<IClientCellFiles>;
 };
 
 export type IClientCellLinks = {
@@ -58,8 +58,8 @@ export type IClientCellFileByName = {
 };
 
 export type IClientCellFiles = {
-  map: t.IFileMap;
-  list: Array<t.IFileData & { uri: string }>;
+  map(): t.IClientResponseAsync<t.IFileMap>;
+  list(): t.IClientResponseAsync<IClientFileData[]>;
 };
 
 export type IClientCellLink = IClientCellLinkUnknown | IClientCellLinkFile;
@@ -88,3 +88,5 @@ export type IClientFile = {
   info(): t.IClientResponseAsync<t.IResGetFile>;
   upload(args: { filename: string; data: ArrayBuffer }): t.IClientResponseAsync<t.IResPostFile>;
 };
+
+export type IClientFileData = t.IFileData & { uri: string };

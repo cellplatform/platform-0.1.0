@@ -28,6 +28,7 @@ export class ClientCell implements t.IClientCell {
    */
   private readonly args: IClientCellArgs;
   private _file: t.IClientCellFile;
+  private _files: t.IClientCellFiles;
 
   public readonly uri: t.IUriParts<t.ICellUri>;
   public readonly url: t.IUrlsCell;
@@ -38,6 +39,11 @@ export class ClientCell implements t.IClientCell {
   public get file(): t.IClientCellFile {
     const urls = this.args.urls;
     return this._file || (this._file = ClientCellFile.create({ parent: this, urls }));
+  }
+
+  public get files(): t.IClientCellFiles {
+    const urls = this.args.urls;
+    return this._files || (this._files = ClientCellFiles.create({ parent: this, urls }));
   }
 
   /**
@@ -65,28 +71,6 @@ export class ClientCell implements t.IClientCell {
     const links = cell.links || {};
     const urls = this.args.urls;
     const body = ClientCellLinks.create({ links, urls });
-
-    const res: T = { ok: true, status: 200, body };
-    return res;
-  }
-
-  public async files() {
-    type T = t.IClientResponse<t.IClientCellFiles>;
-
-    const urls = this.args.urls;
-    const url = this.url.files;
-
-    const resFiles = await http.get(url.toString());
-    if (!resFiles.ok) {
-      const status = resFiles.status;
-      const type = status === 404 ? ERROR.HTTP.NOT_FOUND : ERROR.HTTP.SERVER;
-      const message = `Failed to get files for '${this.uri.toString()}'.`;
-      return util.toError(status, type, message) as T;
-    }
-
-    const json = resFiles.json as t.IResGetCellFiles;
-    const map = json.files;
-    const body = ClientCellFiles.create({ parent: this, map, urls });
 
     const res: T = { ok: true, status: 200, body };
     return res;

@@ -1,7 +1,6 @@
-import { t, Uri, Schema } from '../common';
-import { ClientFile } from './ClientFile';
+import { ERROR, http, Schema, t, util } from '../common';
 
-export type IClientCellFilesArgs = { parent: t.IClientCell; map: t.IFileMap; urls: t.IUrls };
+export type IClientCellFilesArgs = { parent: t.IClientCell; urls: t.IUrls };
 
 /**
  * HTTP client for operating on a [Cell]'s files.
@@ -16,32 +15,58 @@ export class ClientCellFiles implements t.IClientCellFiles {
    */
   private constructor(args: IClientCellFilesArgs) {
     this.args = args;
-    this.map = args.map;
   }
 
   /**
    * [Fields]
    */
-  public readonly map: t.IFileMap;
   private readonly args: IClientCellFilesArgs;
-  private _list: t.IClientCellFiles['list'];
 
   /**
-   * [Properties]
+   * [Methods]
    */
-  public get list() {
-    if (!this._list) {
-      const map = this.map;
-      const ns = this.args.parent.uri.parts.ns;
-      this._list = Object.keys(map).reduce((acc, fileid) => {
-        const value = map[fileid];
-        if (value) {
-          const uri = Schema.uri.create.file(ns, fileid);
-          acc.push({ uri, ...value });
-        }
-        return acc;
-      }, [] as t.IClientCellFiles['list']);
+  public async map() {
+    type T = t.IClientResponse<t.IFileMap>;
+    const parent = this.args.parent;
+    const url = parent.url.files;
+
+    const resFiles = await http.get(url.toString());
+    if (!resFiles.ok) {
+      const status = resFiles.status;
+      const type = status === 404 ? ERROR.HTTP.NOT_FOUND : ERROR.HTTP.SERVER;
+      const message = `Failed to get file map for '${parent.uri.toString()}'.`;
+      return util.toError(status, type, message) as T;
     }
-    return this._list;
+
+    const json = resFiles.json as t.IResGetCellFiles;
+    const body = json.files;
+    const res: T = { ok: true, status: 200, body };
+
+    return res;
+  }
+
+  public async list() {
+    type T = t.IClientResponse<t.IClientFileData[]>;
+    const parent = this.args.parent;
+
+    const resMap = await this.map();
+    if (!resMap.ok) {
+      return (resMap as unknown) as T;
+    }
+
+    const map = resMap.body;
+    const ns = parent.uri.parts.ns;
+
+    const body = Object.keys(map).reduce((acc, fileid) => {
+      const value = map[fileid];
+      if (value) {
+        const uri = Schema.uri.create.file(ns, fileid);
+        acc.push({ uri, ...value });
+      }
+      return acc;
+    }, [] as t.IClientFileData[]);
+
+    const res: T = { ok: true, status: 200, body };
+    return res;
   }
 }
