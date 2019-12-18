@@ -22,7 +22,8 @@ export type IFileSizeStringOptions = {
  * Helpers for working with sizes.
  */
 export const size = {
-  toString(bytes: number, options?: IFileSizeStringOptions) {
+  toString(input: number | Buffer, options?: IFileSizeStringOptions) {
+    const bytes = typeof input === 'number' ? input : Uint8Array.from(input).length;
     return filesize(bytes, options);
   },
 

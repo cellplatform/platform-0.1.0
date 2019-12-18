@@ -1,57 +1,21 @@
-import * as fsExtra from 'fs-extra';
-import { glob } from '../glob';
-import { resolve, join } from 'path';
-import * as filesize from 'filesize';
+import { expect } from 'chai';
+import { fs } from '..';
 
-export type IFileSize = {
-  path: string;
-  bytes: number;
-  toString(options?: IFileSizeStringOptions): string;
-};
+describe.only('size', () => {
+  it('bytes (from path)', async () => {
+    const path = fs.resolve('test/size/0.png');
+    const res = await fs.size.file(path);
+    expect(res.bytes).to.eql(1465);
+    expect(res.toString()).to.eql('1.43 KB');
+  });
 
-export type IFolderSize = IFileSize & {
-  files: IFileSize[];
-};
+  it('toString (from bytes)', async () => {
+    expect(fs.size.toString(1465)).to.eql('1.43 KB');
+  });
 
-export type IFileSizeStringOptions = {
-  spacer?: string;
-  round?: number;
-};
-
-/**
- * Helpers for working with sizes.
- */
-export const size = {
-  /**
-   * Calculates the size of a single file.
-   */
-  async file(path: string) {
-    const bytes = (await fsExtra.lstat(path)).size;
-    const size: IFileSize = {
-      path,
-      bytes,
-      toString(options?: IFileSizeStringOptions) {
-        return filesize(bytes, options);
-      },
-    };
-    return size;
-  },
-
-  /**
-   * Calculates the size of all files within a directory.
-   */
-  async dir(path: string) {
-    const pattern = resolve(join(path), '**');
-    const wait = (await glob.find(pattern)).map(async path => size.file(path));
-    const files = await Promise.all(wait);
-    const bytes = files.reduce((acc, next) => acc + next.bytes, 0);
-    return {
-      path,
-      bytes,
-      files,
-      toString(options?: IFileSizeStringOptions) {
-        return filesize(bytes, options);
-      },
-    };
-  },
-};
+  it('toString (from buffer)', async () => {
+    const path = fs.resolve('test/size/0.png');
+    const buffer = await fs.readFile(path);
+    expect(fs.size.toString(buffer)).to.eql('1.43 KB');
+  });
+});
