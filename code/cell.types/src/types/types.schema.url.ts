@@ -55,6 +55,9 @@ export type IUrlQueryGetCell = {};
  * Query-string parameters for a [Cell]'s files.
  */
 export type IUrlQueryGetCellFiles = {};
+export type IUrlQueryPostCellFiles = {
+  changes?: boolean; // NB: return list of changes (default: true).
+};
 
 /**
  * Query-string parameters for a single [Cell]'s file (by name).

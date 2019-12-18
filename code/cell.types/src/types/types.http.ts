@@ -122,12 +122,24 @@ export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 /**
  * Cell/File
  */
+
+// TEMP 🐷 - Delete when moved to plural
 export type IResPostCellFile = IUriResponse<IResPostCellFileData, IResPostCellLinks>;
 export type IResPostCellFileData = {
   cell: t.ICellData;
   changes?: t.IDbModelChange[];
 };
 export type IResPostCellLinks = IResGetCellLinks & {};
+
+// Plural
+export type IResPostCellFiles = IUriResponse<IResPostCellFilesData, IResPostCellLinks>;
+export type IResPostCellFilesData = {
+  cell: t.ICellData;
+  errors: IResPostCellFilesError[];
+  changes?: t.IDbModelChange[];
+};
+export type IResPostCellFilesError = { status: number; filename: string; message: string };
+// export type IResPostCellLinks = IResGetCellLinks & {};
 
 /**
  * Cell/Files (list)

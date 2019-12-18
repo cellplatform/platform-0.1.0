@@ -1,7 +1,8 @@
 import { Schema, createMock, expect, fs, http, t } from '../../../test';
 
 describe('route: !A1/file', () => {
-  it('writes file by name (updating the cell model)', async () => {
+  it.skip('TEMP ||| writes file by name (updating the cell model)', async () => {
+    // TEMP - DELETE 🐷
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
 
@@ -41,6 +42,56 @@ describe('route: !A1/file', () => {
     expect(changes[0].from).to.eql(undefined);
     expect(changes[0].to).to.eql({ 'fs:func:wasm': link });
 
+    await mock.dispose();
+  });
+
+  it('writes files by name (updating the cell model)', async () => {
+    const mock = await createMock();
+    const cellUri = 'cell:foo!A1';
+    const cellClient = mock.client.cell(cellUri);
+
+    const file1 = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
+    const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
+
+    // Cell model does not exist.
+    const res1 = (await http.get(mock.url(cellUri))).json as t.IResGetCell;
+    expect(res1.exists).to.eql(false);
+    expect(res1.data).to.eql({});
+
+    // Upload two files.
+    const res2 = await cellClient.files.upload([
+      { filename: 'func.wasm', data: file1 },
+      { filename: 'kitten.jpg', data: file2 },
+    ]);
+    (() => {
+      expect(res2.status).to.eql(200);
+      const cell = res2.body.data.cell;
+      const links = cell.links || {};
+      expect(links['fs:func:wasm']).to.match(/^file\:foo/);
+      expect(links['fs:kitten:jpg']).to.match(/^file\:foo/);
+    })();
+
+    // Compare the cell in the response with a new query to the cell from the service.
+    expect((await cellClient.info()).body.data).to.eql(res2.body.data.cell);
+
+    // Check the files exist.
+    const downloadAndSave = async (filename: string, path: string, compareWith: Buffer) => {
+      path = fs.resolve(path);
+      const res = await cellClient.file.name(filename).download();
+      await fs.stream.save(path, res.body);
+      const buffer = await fs.readFile(path);
+      expect(buffer.toString()).to.eql(compareWith.toString());
+    };
+    await downloadAndSave('func.wasm', 'tmp/file1', file1);
+    await downloadAndSave('kitten.jpg', 'tmp/file2', file2);
+
+    // Examine changes.
+    const changes = res2.body.data.changes || [];
+    expect(changes[0].uri).to.eql(cellUri);
+    expect(changes[0].field).to.eql('links');
+    expect(changes[0].from).to.eql(undefined);
+
+    // Finish up.
     await mock.dispose();
   });
 
@@ -115,15 +166,15 @@ describe('route: !A1/file', () => {
     await clientA1.file.name('kitten.jpg').upload(file2);
     await clientA2.file.name('bird.png').upload(file3);
 
-    const res1 = await clientA1.files();
-    const res2 = await clientA2.files();
+    const res1 = await clientA1.files.list();
+    const res2 = await clientA2.files.list();
 
-    expect(res1.body.list.length).to.eql(2);
-    expect(res1.body.list[0].props.filename).to.eql('func.wasm');
-    expect(res1.body.list[1].props.filename).to.eql('kitten.jpg');
+    expect(res1.body.length).to.eql(2);
+    expect(res1.body[0].props.filename).to.eql('func.wasm');
+    expect(res1.body[1].props.filename).to.eql('kitten.jpg');
 
-    expect(res2.body.list.length).to.eql(1);
-    expect(res2.body.list[0].props.filename).to.eql('bird.png');
+    expect(res2.body.length).to.eql(1);
+    expect(res2.body[0].props.filename).to.eql('bird.png');
 
     // Finish up.
     await mock.dispose();

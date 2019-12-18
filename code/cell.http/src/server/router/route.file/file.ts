@@ -76,7 +76,18 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       return { status, data: { error } };
     } else {
       const form = await req.body.form();
-      return postFileResponse({ db, fs, uri, query, form, host });
+
+      if (form.files.length === 0) {
+        const err = new Error(`No file data was posted to the URI ("${uri}").`);
+        return util.toErrorPayload(err, { status: 400 });
+      }
+      if (form.files.length > 1) {
+        const err = new Error(`Only a single file can be posted to the URI ("${uri}").`);
+        return util.toErrorPayload(err, { status: 400 });
+      }
+
+      const formFile = form.files[0];
+      return postFileResponse({ db, fs, uri, query, file: formFile, host });
     }
   });
 }
@@ -177,29 +188,18 @@ export async function postFileResponse(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;
-  form: t.IForm;
+  file: t.IFormFile;
   host: string;
   query?: t.IUrlQueryPostFile;
-  filename?: string; // NB: if specified overrides filename within form-data.
 }): Promise<t.IPayload<t.IResPostFile> | t.IErrorPayload> {
-  const { db, uri, query = {}, form, fs, host } = args;
+  const { db, uri, query = {}, file, fs, host } = args;
   const sendChanges = defaultValue(query.changes, true);
   let changes: t.IDbModelChange[] = [];
 
   try {
-    if (form.files.length === 0) {
-      const err = new Error(`No file data was posted to the URI ("${uri}").`);
-      return util.toErrorPayload(err, { status: 400 });
-    }
-    if (form.files.length > 1) {
-      const err = new Error(`Only a single file can be posted to the URI ("${uri}").`);
-      return util.toErrorPayload(err, { status: 400 });
-    }
-
     // Save to the abstract file-system (S3 or local).
-    const file = form.files[0];
     const { buffer, encoding } = file;
-    const filename = args.filename || file.name;
+    const filename = file.name;
     const writeResponse = await fs.write(uri, buffer);
     const filehash = writeResponse.file.hash;
     const location = writeResponse.location;

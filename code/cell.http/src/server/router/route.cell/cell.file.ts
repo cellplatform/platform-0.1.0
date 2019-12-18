@@ -192,6 +192,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    * POST a file to a cell.
    */
   router.post(routes.CELL.FILE_BY_NAME, async req => {
+    // TEMP - DELETE this post method 🐷
     const host = req.host;
     const query = req.query as t.IUrlQueryPostFile;
     const params = req.params as t.IUrlParamsCellFileByName;
@@ -213,15 +214,22 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
       // Save to the file-system.
       const form = await req.body.form();
+      if (form.files.length === 0) {
+        const err = new Error(`No file data was posted to the URI ("${cellUri}").`);
+        return util.toErrorPayload(err, { status: 400 });
+      }
+
+      const file = form.files[0]; // TEMP 🐷
+
       const fsResponse = await postFileResponse({
         host,
         db,
         fs,
         uri: fileUri,
-        form,
+        file,
         query: { changes: true },
-        filename,
       });
+
       if (!util.isOK(fsResponse.status)) {
         const error = fsResponse.data as t.IHttpError;
         const msg = `Failed while writing file to cell [${key}]. ${error.message}`;
@@ -267,6 +275,113 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         exists: Boolean(cell.exists),
         data: { cell: cell.toObject(), changes },
         links,
+      };
+
+      return { status: 200, data: res };
+    } catch (err) {
+      return util.toErrorPayload(err);
+    }
+  });
+
+  /**
+   * POST file(s) to a cell.
+   */
+  router.post(routes.CELL.FILES, async req => {
+    const host = req.host;
+    const query = req.query as t.IUrlQueryPostCellFiles;
+    const params = req.params as t.IUrlParamsCellFiles;
+
+    const paramData = getParams({ params });
+    const { status, error, ns, uri: cellUri, key: cellKey } = paramData;
+
+    if (!paramData.ns || error) {
+      return { status, data: { error } };
+    }
+
+    // Read in the form.
+    const form = await req.body.form();
+    if (form.files.length === 0) {
+      const err = new Error(`No file data was posted to the URI ("${cellUri}").`);
+      return util.toErrorPayload(err, { status: 400 });
+    }
+
+    const postFile = async (args: { ns: string; file: t.IFormFile; links: t.IUriMap }) => {
+      const { ns, file, links = {} } = args;
+      const filename = file.name;
+      const key = Schema.file.links.toKey(filename);
+      const uri = links[key] ? links[key].split('?')[0] : Schema.uri.create.file(ns, Schema.slug());
+      const query = { changes: true };
+      const res = await postFileResponse({ host, db, fs, uri, file, query });
+      const json = res.data as t.IResPostFile;
+      const status = res.status;
+      return { status, res, key, uri, filename, json };
+    };
+
+    try {
+      // Prepare the file URI link.
+      const cell = await models.Cell.create({ db, uri: cellUri }).ready;
+      const cellLinks = cell.props.links || {};
+
+      // Post each file to the file-system.
+      const wait = form.files.map(file => postFile({ ns, file, links: cellLinks }));
+      const postFilesRes = await Promise.all(wait);
+
+      // Check for file-save errors.
+      const errors: t.IResPostCellFilesError[] = [];
+      postFilesRes
+        .filter(item => !util.isOK(item.status))
+        .forEach(item => {
+          const { status, filename } = item;
+          const data: any = item.res.data || {};
+          const message = data.message || `Failed while writing '${filename}'`;
+          errors.push({ status, filename, message });
+        });
+
+      // Update the [Cell] model with the file URI link(s).
+      // NB: This is done through the master [Namespace] POST
+      //     handler as this ensures all hashes are updated.
+      const links = postFilesRes.reduce((links, next) => {
+        if (util.isOK(next.status)) {
+          const { key, uri } = next;
+          links[key] = `${uri}?hash=${next.json.data.hash}`;
+        }
+        return links;
+      }, cellLinks);
+
+      const postNsRes = await postNsResponse({
+        db,
+        id: ns,
+        body: { cells: { [cellKey]: { links } } },
+        query: { cells: cellKey, changes: true },
+        host,
+      });
+
+      if (!util.isOK(postNsRes.status)) {
+        const error = postNsRes.data as t.IHttpError;
+        const msg = `Failed while updating cell [${cellKey}] after writing file. ${error.message}`;
+        return util.toErrorPayload(msg, { status: error.status });
+      }
+      const postNsData = postNsRes.data as t.IResPostNs;
+
+      // Build change list.
+      let changes: t.IDbModelChange[] | undefined;
+      if (defaultValue(query.changes, true)) {
+        changes = [...(postNsData.changes || [])];
+        postFilesRes.forEach(item => {
+          changes = [...(changes || []), ...(item.json.changes || [])];
+        });
+      }
+
+      // Prepare response.
+      await cell.load({ force: true });
+      const urls = util.urls(host).cell(cellUri);
+      const res: t.IResPostCellFiles = {
+        uri: cellUri,
+        createdAt: cell.createdAt,
+        modifiedAt: cell.modifiedAt,
+        exists: Boolean(cell.exists),
+        data: { cell: cell.toObject(), errors, changes },
+        links: { ...urls.links },
       };
 
       return { status: 200, data: res };

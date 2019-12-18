@@ -53,15 +53,20 @@ export type IClientCellFile = {
 
 export type IClientCellFileByName = {
   info(): t.IClientResponseAsync<t.IResGetFile>;
-  upload(data: ArrayBuffer): t.IClientResponseAsync<t.IResPostCellFile>;
+  upload(data: ArrayBuffer): t.IClientResponseAsync<t.IResPostCellFile>; // TEMP 🐷
   download(): t.IClientResponseAsync<ReadableStream>;
 };
 
 export type IClientCellFiles = {
   map(): t.IClientResponseAsync<t.IFileMap>;
   list(): t.IClientResponseAsync<IClientFileData[]>;
+  upload(files: IClientCellFileUpload[]): t.IClientResponseAsync<t.IResPostCellFiles>;
 };
+export type IClientCellFileUpload = { filename: string; data: ArrayBuffer };
 
+/**
+ * Cell Links
+ */
 export type IClientCellLink = IClientCellLinkUnknown | IClientCellLinkFile;
 
 export type IClientCellLinkUnknown = {
