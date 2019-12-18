@@ -18,6 +18,7 @@ export const init: t.CliInit = cli => {
       silent: args.silent,
       config: args.config,
       delete: args.delete,
+      force: args.force,
     });
   };
 
@@ -32,6 +33,13 @@ export const init: t.CliInit = cli => {
       name: 'delete',
       alias: 'd',
       description: 'Delete remote files that are no longer in the local folder',
+      type: 'boolean',
+      default: false,
+    })
+    .option<'boolean'>({
+      name: 'force',
+      alias: 'f',
+      description: 'Force push unchanged files.',
       type: 'boolean',
       default: false,
     })

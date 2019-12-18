@@ -24,6 +24,7 @@ type PayloadItem = {
 
 export async function syncDir(args: {
   dir: string;
+  force: boolean;
   silent: boolean;
   config: boolean;
   delete: boolean;
@@ -34,7 +35,7 @@ export async function syncDir(args: {
     return;
   }
 
-  const { silent = false } = args;
+  const { silent = false, force = false } = args;
   const { dir, targetUri } = config;
   const host = config.data.host;
   const client = Client.create(host);
@@ -44,41 +45,56 @@ export async function syncDir(args: {
     log.info();
     log.info.gray(`host:   ${config.data.host}`);
     log.info.gray(`target: ${config.data.target}`);
+    if (force) {
+      log.info.gray(`force:  ${log.cyan(true)}`);
+    }
     log.info();
   }
 
-  const payload = await buildPayload({ dir, urls, targetUri, client, delete: args.delete });
+  const payload = await buildPayload({ dir, urls, targetUri, client, delete: args.delete, force });
   if (!silent) {
     payload.log();
     log.info();
   }
 
-  if (payload.items.filter(item => item.isPending).length === 0) {
+  // Exit if no changes to push.
+  if (!force && payload.items.filter(item => item.isPending).length === 0) {
     return;
   }
 
   if (!silent) {
-    const message = `change remote`;
-    const res = await cli.prompt.list({ message, items: ['no', 'yes'] });
+    const message = `push changes`;
+    const res = await cli.prompt.list({ message, items: ['yes', 'no'] });
     if (res === 'no') {
       log.info();
-      log.info.gray(`Cancelled (no change).`);
+      log.info.gray(`cancelled (no change).`);
       return;
     }
   }
 
   // Execute upload.
+  const count = {
+    uploaded: 0,
+  };
   const tasks = cli.tasks();
   tasks.task('Upload', async () => {
     const uri = config.targetUri.toString();
 
-    const files = payload.items
+    // Filter on set of items to push.
+    const items = payload.items
       .filter(item => item.status !== 'DELETE')
-      .filter(item => Boolean(item.data))
-      .map(({ filename, data }) => ({ filename, data })) as t.IClientCellFileUpload[];
+      .filter(item => (force ? true : item.status !== 'NO_CHANGE'))
+      .filter(item => Boolean(item.data));
+
+    const files = items.map(({ filename, data }) => ({
+      filename,
+      data,
+    })) as t.IClientCellFileUpload[];
 
     const res = await client.cell(uri).files.upload(files);
-    if (!res.body) {
+    if (res.ok) {
+      count.uploaded += items.length;
+    } else {
       const err = `${res.status} Failed upload.`;
       throw new Error(err);
     }
@@ -89,7 +105,7 @@ export async function syncDir(args: {
   if (!silent) {
     log.info();
     if (res.ok) {
-      log.info.green('success');
+      log.info.gray(`${log.green('success')} (${count.uploaded} uploaded)`);
     } else {
       res.errors.forEach(err => log.warn(err.error));
       log.info();
@@ -102,7 +118,7 @@ export async function syncDir(args: {
  * [Helpers]
  */
 
-function toStatusColor(args: { status: Status; text?: string; delete?: boolean }) {
+function toStatusColor(args: { status: Status; text?: string; delete?: boolean; force?: boolean }) {
   const { status } = args;
   const text = args.text || status;
   switch (status) {
@@ -111,7 +127,7 @@ function toStatusColor(args: { status: Status; text?: string; delete?: boolean }
     case 'CHANGE':
       return log.yellow(text);
     case 'NO_CHANGE':
-      return log.gray(text);
+      return args.force ? log.cyan(text) : log.gray(text);
     case 'DELETE':
       return args.delete ? log.red(text) : log.gray(text);
     default:
@@ -125,6 +141,7 @@ async function buildPayload(args: {
   targetUri: t.IUriParts<t.ICellUri>;
   client: t.IClient;
   delete: boolean;
+  force: boolean;
 }) {
   const cellUri = args.targetUri.toString();
   const cellUrls = args.urls.cell(cellUri);
@@ -184,9 +201,10 @@ async function buildPayload(args: {
           status: item.status,
           text: item.filename,
           delete: args.delete,
+          force: args.force,
         });
 
-        const url = `${urlPath}/${filename}`;
+        const url = log.gray(`${urlPath}/${filename}`);
 
         let statusText = item.status.toLowerCase().replace(/\_/g, ' ');
         if (!args.delete && item.status === 'DELETE') {
@@ -197,11 +215,12 @@ async function buildPayload(args: {
           status: item.status,
           text: statusText,
           delete: args.delete,
+          force: args.force,
         });
 
         const size = bytes > -1 ? fs.size.toString(bytes) : '';
 
-        table.add([status, log.gray(url), size]);
+        table.add([`${status}  `, `${url}  `, size]);
       });
       log.info(table.toString());
     },
