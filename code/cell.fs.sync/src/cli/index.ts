@@ -1,5 +1,5 @@
 import { t } from '../common';
-import * as cmd from './cmd';
+import * as cmd from './cmd.syncDir';
 
 /**
  * Initialize the CLI.
@@ -9,19 +9,21 @@ export const init: t.CliInit = cli => {
     force: string;
     dry: boolean;
     silent: boolean;
+    config: boolean;
   };
 
   const syncDirHandler: t.CommandHandler<T> = async args => {
     const dir = process.cwd();
     const dryRun = args.dry;
     const silent = args.silent;
-    await cmd.syncDir({ dir, dryRun, silent });
+    const config = args.config;
+    await cmd.syncDir({ dir, dryRun, silent, config });
   };
 
   cli
     .command<T>({
       name: 'syncdir',
-      alias: 'sd',
+      alias: 's',
       description: 'Synchronise a directory with the cloud.',
       handler: syncDirHandler,
     })
@@ -35,6 +37,13 @@ export const init: t.CliInit = cli => {
     .option<'boolean'>({
       name: 'silent',
       description: 'Suppress log output.',
+      type: 'boolean',
+      default: false,
+    })
+    .option<'boolean'>({
+      name: 'config',
+      alias: 'c',
+      description: 'Force new configuration for the directory.',
       type: 'boolean',
       default: false,
     });

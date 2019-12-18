@@ -1,3 +1,4 @@
 .env
+.cell
 /node_modules
 /tmp

@@ -1,6 +1,6 @@
 import { fs, expect, t, expectError } from '../test';
 import { ConfigDir } from '.';
-import { DEFAULT } from './ConfigDir';
+import { ERROR } from './ConfigDir';
 
 const VALID: t.IFsConfigDirData = { host: 'domain.com', target: 'cell:foo!A1' };
 const PATH = {
@@ -13,14 +13,14 @@ describe('ConfigDir', () => {
 
   it('uses __dirname by default', () => {
     const res = ConfigDir.create();
-    expect(res.dir).to.eql(`${__dirname}/.cell`);
+    expect(res.dir).to.eql(`${__dirname}`);
     expect(res.file).to.eql(`${__dirname}/.cell/config.yml`);
   });
 
   it('uses given directory path', () => {
     const dir = PATH.ASSETS;
     const res = ConfigDir.create({ dir });
-    expect(res.dir).to.eql(fs.resolve(`${PATH.ASSETS}/.cell`));
+    expect(res.dir).to.eql(fs.resolve(`${PATH.ASSETS}`));
     expect(res.file).to.eql(fs.resolve(`${PATH.ASSETS}/.cell/config.yml`));
   });
 
@@ -65,6 +65,7 @@ describe('ConfigDir', () => {
     it('valid', async () => {
       const config = await ConfigDir.create({ dir: PATH.TMP }).save(VALID);
       const res = config.validate();
+      expect(config.isValid).to.eql(true);
       expect(res.isValid).to.eql(true);
       expect(res.errors).to.eql([]);
     });
@@ -77,15 +78,16 @@ describe('ConfigDir', () => {
         const hasError = res.errors.some(e => e.message.includes(error));
         expect(res.isValid).to.eql(false, error);
         expect(hasError).to.eql(true, error);
+        expect(config.isValid).to.eql(false, error);
       };
 
-      await test(d => (d.target = ''), `Target must be a cell URI`);
-      await test(d => (d.target = 'ns:foo'), `Target must be a cell URI`);
-      await test(d => (d.target = 'cell:foo!A'), `Target must be a cell URI`);
-      await test(d => (d.target = 'cell:foo!1'), `Target must be a cell URI`);
+      await test(d => (d.target = ''), ERROR.TARGET.INVALID_URI);
+      await test(d => (d.target = 'ns:foo'), ERROR.TARGET.INVALID_URI);
+      await test(d => (d.target = 'cell:foo!A'), ERROR.TARGET.INVALID_URI);
+      await test(d => (d.target = 'cell:foo!1'), ERROR.TARGET.INVALID_URI);
 
-      await test(d => (d.host = ''), `Host not specified.`);
-      await test(d => (d.host = '  '), `Host not specified.`);
+      await test(d => (d.host = ''), ERROR.HOST.EMPTY);
+      await test(d => (d.host = '  '), ERROR.HOST.EMPTY);
     });
   });
 });
