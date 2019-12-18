@@ -72,26 +72,24 @@ export async function syncDir(args: {
     }
   }
 
+  // Filter on set of items to push.
+  const items = payload.items
+    .filter(item => item.status !== 'DELETE')
+    .filter(item => (force ? true : item.status !== 'NO_CHANGE'))
+    .filter(item => Boolean(item.data));
+
   // Execute upload.
-  const count = {
-    uploaded: 0,
-  };
+  const count = { uploaded: 0 };
   const tasks = cli.tasks();
-  tasks.task('Upload', async () => {
-    const uri = config.targetUri.toString();
-
-    // Filter on set of items to push.
-    const items = payload.items
-      .filter(item => item.status !== 'DELETE')
-      .filter(item => (force ? true : item.status !== 'NO_CHANGE'))
-      .filter(item => Boolean(item.data));
-
+  tasks.task(`Upload (${items.length})`, async () => {
     const files = items.map(({ filename, data }) => ({
       filename,
       data,
     })) as t.IClientCellFileUpload[];
 
+    const uri = config.targetUri.toString();
     const res = await client.cell(uri).files.upload(files);
+
     if (res.ok) {
       count.uploaded += items.length;
     } else {
