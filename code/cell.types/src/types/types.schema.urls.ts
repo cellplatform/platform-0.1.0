@@ -48,4 +48,5 @@ export type IUrlsFile = {
   info: t.IUrl<t.IUrlQueryGetFileInfo>;
   upload: t.IUrl<t.IUrlQueryPostFile>;
   download: t.IUrl<t.IUrlQueryGetFile>;
+  delete: t.IUrl<t.IUrlQueryDeleteFile>;
 };

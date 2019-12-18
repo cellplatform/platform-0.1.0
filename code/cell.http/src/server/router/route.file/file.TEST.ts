@@ -230,4 +230,30 @@ describe('route: file (URI)', () => {
       });
     });
   });
+
+  describe('DELETE', () => {
+    it.skip('delete a file', async () => {
+      const sourcePath = fs.resolve('src/test/assets/bird.png');
+      const uri = 'file:foo:123';
+      const { res, json, data, props, mock } = await testPostFile({
+        uri,
+        filename: `image.png`,
+        source: sourcePath,
+        dispose: false,
+      });
+
+      // Check the file exists.
+      const res1 = await mock.client.file(uri).info();
+      expect(res1.body.exists).to.eql(true);
+
+      // Delete the file.
+      const res2 = await mock.client.file(uri).delete();
+
+      console.log('-------------------------------------------');
+      console.log('res2', res2);
+
+      // Finish up.
+      await mock.dispose();
+    });
+  });
 });

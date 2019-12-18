@@ -258,6 +258,11 @@ export class Urls implements t.IUrls {
         type Q = t.IUrlQueryGetFile;
         return toPath<Q>(`/file:${id}`);
       },
+
+      get delete() {
+        type Q = t.IUrlQueryDeleteFile;
+        return toPath<Q>(`/file:${id}`);
+      },
     };
   }
 

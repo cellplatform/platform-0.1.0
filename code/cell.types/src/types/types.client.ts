@@ -93,6 +93,7 @@ export type IClientFile = {
   readonly url: t.IUrlsFile;
   info(): t.IClientResponseAsync<t.IResGetFile>;
   upload(args: { filename: string; data: ArrayBuffer }): t.IClientResponseAsync<t.IResPostFile>;
+  delete(): t.IClientResponseAsync<t.IResDeleteFile>;
 };
 
 export type IClientFileData = t.IFileData & { uri: string };

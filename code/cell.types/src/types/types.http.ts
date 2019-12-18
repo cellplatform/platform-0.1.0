@@ -120,7 +120,22 @@ export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 
 /**
- * Cell/File
+ * File: DELETE
+ */
+export type IResDeleteFile = { changes?: t.IDbModelChange[] };
+
+/**
+ * Cell/Files: GET
+ */
+export type IResGetCellFiles = {
+  cell: string;
+  uri: string;
+  links: ILinkMap;
+  files: t.IFileMap;
+};
+
+/**
+ * Cell/Files: POST
  */
 export type IResPostCellFiles = IUriResponse<IResPostCellFilesData, IResPostCellLinks>;
 export type IResPostCellFilesData = {
@@ -130,16 +145,6 @@ export type IResPostCellFilesData = {
 };
 export type IResPostCellFilesError = { status: number; filename: string; message: string };
 export type IResPostCellLinks = IResGetCellLinks & {};
-
-/**
- * Cell/Files (list)
- */
-export type IResGetCellFiles = {
-  cell: string;
-  uri: string;
-  links: ILinkMap;
-  files: t.IFileMap;
-};
 
 /**
  * Info (System)

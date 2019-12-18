@@ -90,6 +90,18 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       return postFileResponse({ db, fs, uri, query, file, host });
     }
   });
+
+  /**
+   * DELETE binary-file.
+   */
+  router.delete(routes.FILE.BASE, async req => {
+    const host = req.host;
+    const query = req.query as t.IUrlQueryDeleteFile;
+    const { status, ns, error, uri } = getParams(req);
+    return !ns || error
+      ? { status, data: { error } }
+      : deleteFileResponse({ fs, uri, db, query, host });
+  });
 }
 
 /**
@@ -228,6 +240,28 @@ export async function postFileResponse(args: {
     };
 
     return res;
+  } catch (err) {
+    return util.toErrorPayload(err);
+  }
+}
+
+async function deleteFileResponse(args: {
+  db: t.IDb;
+  fs: t.IFileSystem;
+  uri: string;
+  // file: t.IFormFile;
+  host: string;
+  query?: t.IUrlQueryDeleteFile;
+}): Promise<t.IPayload<t.IResDeleteFile> | t.IErrorPayload> {
+  console.log('-------------------------------------------');
+  console.log('uri', args.uri);
+  const { fs } = args;
+
+  try {
+    // Delete the file from disk.
+    // await fs.
+
+    return {} as any;
   } catch (err) {
     return util.toErrorPayload(err);
   }

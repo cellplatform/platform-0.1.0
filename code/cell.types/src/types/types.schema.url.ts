@@ -106,3 +106,6 @@ export type IUrlQueryGetFileInfo = {};
 export type IUrlQueryPostFile = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
+export type IUrlQueryDeleteFile = {
+  changes?: boolean; // NB: return list of changes (default: true).
+};

@@ -287,5 +287,14 @@ describe('Urls', () => {
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });
+
+    it('delete', () => {
+      const res1 = url.file(URI).delete;
+      const res2 = url.file({ ns: 'foo', file: '123' }).delete;
+
+      const URL = 'http://localhost/file:foo:123';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
+    });
   });
 });
