@@ -1,23 +1,19 @@
-import { prompt, log, t, fs, http, semver, Schema, Client, Value } from '../common';
+import { cli, Client, fs, log, Schema, t, Value } from '../common';
 import { promptConfig } from '../config';
 
-const LOCAL = 'http://localhost:8080';
-const CLOUD = 'https://dev.db.team';
-
-const HOST = LOCAL;
-// const HOST = CLOUD;
+type Status = 'NEW' | 'CHANGE' | 'NO_CHANGE' | 'DELETE';
+type PayloadItem = {
+  status: Status;
+  filename: string;
+  path: string;
+  url: string;
+  data?: Buffer;
+};
 
 /**
  * TODO 🐷
- * - FormData in HTTP client
- * - break out `cell.http.client` as module
- * - cli.types module (share prompt)
  * - Refactor: Move generalized CLI builder stuff into `@platform/cli`
- * - Pass `prompt` to the CLI command when it's run: {args:{ prompt, options }}
  * - DELETE file (verb)
- * - POST file with dir in name,
- *      eg: http://localhost:8080/cell:foo!A1/files/foo.txt?dir=/child/thing
- *      or  http://localhost:8080/cell:foo!A1/files/mydir/child/thing/foo.txt
  */
 
 /**
@@ -31,6 +27,7 @@ export async function syncDir(args: {
   dryRun: boolean;
   silent: boolean;
   config: boolean;
+  delete: boolean;
 }) {
   // Retrieve (or build) configuration file the directory.
   const config = await promptConfig({ dir: args.dir, force: args.config });
@@ -38,126 +35,172 @@ export async function syncDir(args: {
     return;
   }
 
-  const { dryRun = false } = args;
-  const dir = config.dir;
-  // const dir = fs.resolve(args.dir);
+  const { dryRun = false, silent = false } = args;
+  const { dir, targetUri } = config;
+  const host = config.data.host;
+  const client = Client.create(host);
+  const urls = Schema.url(host);
 
-  const client = Client.create(HOST);
-  // const urls = Schema.url(HOST);
-
-  log.info();
-  log.info.gray(`target: ${config.data.target}`);
-  log.info.gray(`host:   ${config.data.host}`);
-  log.info();
-
-  return;
-
-  // console.log('dir', dir);
-  log.info.gray(`HOST ${HOST}`);
-  log.info();
-
-  const filenames = await fs.readdir(dir);
-  const files = filenames
-    .filter(name => !name.startsWith('.'))
-    .filter(name => name.endsWith('.png')); // TEMP 🐷
-  const sorted = sortSemver(files);
-
-  sorted.forEach((item, i) => {
-    const url = toUrl(HOST, i, item.filename);
-    // const url = urls.cell()
-    log.info(log.gray('>'), url.toString());
-  });
-
-  // return;
-
-  log.info();
-  log.info(`Uploading...\n`);
-  const wait = sorted.map(async (item, index) => {
-    const path = fs.join(dir, item.filename);
-    if (!dryRun) {
-      await upload({ client, index, path });
-    }
-  });
-  await Promise.all(wait);
-
-  log.info();
-  log.info(`${files.length} files`);
-  if (dryRun) {
-    log.info.gray('NOTE: Dry run...nothing uploaded.');
+  if (!silent) {
+    log.info();
+    log.info.gray(`host:   ${config.data.host}`);
+    log.info.gray(`target: ${config.data.target}`);
+    log.info();
   }
-  log.info();
+
+  const payload = await buildPayload({ dir, urls, targetUri, client, delete: args.delete });
+  if (!silent) {
+    payload.log();
+    log.info();
+  }
+
+  if (!silent) {
+    const message = `change remote`;
+    const res = await cli.prompt.list({ message, items: ['no', 'yes'] });
+    if (res === 'no') {
+      log.info();
+      log.info.gray(`Cancelled (no change).`);
+      return;
+    }
+  }
+
+  /**
+   * TODO 🐷
+   * - post files all at once.
+   *
+   */
+
+  const tasks = cli.tasks();
+
+  payload.items
+    .filter(item => item.status !== 'DELETE')
+    .filter(item => Boolean(item.data))
+    .forEach(item => {
+      tasks.task(item.filename, async () => {
+        const uri = config.targetUri.toString();
+        const file = client.cell(uri).file.name(item.filename);
+        if (item.data) {
+          const res = await file.upload(item.data);
+
+          // throw new Error(res.status.toString());
+
+          if (!res.ok) {
+            // res.body.data.
+            const err = `${res.status} Failed upload.`;
+            throw new Error(err);
+          }
+        }
+        // const res = await client
+        //   .cell(uri)
+        //   .file.name(item.filename)
+        //   .upload(item.data);
+      });
+    });
+
+  const res = await tasks.run({ concurrent: true, silent });
+
+  console.log('res', res);
+
+  // tasks.task()
+
+  // tasks.
+
+  return res;
 }
 
-const toUrl = (host: string, index: number, filename: string) => {
-  const urls = Schema.url(host);
-  const key = `A${index + 1}`;
-  const url = urls.cell({ ns, key }).file.byName(filename);
-  return url;
-};
+/**
+ * [Helpers]
+ */
 
-const upload = async (args: { client: t.IClient; index: number; path: string }) => {
-  // const { client } = args;
-  // const r = await client.
-
-  console.log('args.path:', args.path);
-
-  const key = `A${args.index + 1}`;
-  const client = args.client.cell({ ns, key });
-
-  console.log('client.toString()', client.toString());
-
-  // const form = new FormData();
-  const filename = fs.basename(args.path);
-  const data = await fs.readFile(args.path);
-
-  // Compare the file-hash of the file to determine if the upload is required.
-  const info = await client.file.name(filename).info();
-  let isDiff = true;
-  if (info.body.exists) {
-    const localhash = Value.hash.sha256(data);
-    isDiff = info.body.data.props.filehash !== localhash;
+function toStatusColor(args: { status: Status; text?: string; delete?: boolean }) {
+  const { status } = args;
+  const text = args.text || status;
+  switch (status) {
+    case 'NEW':
+      return log.green(text);
+    case 'CHANGE':
+      return log.yellow(text);
+    case 'NO_CHANGE':
+      return log.gray(text);
+    case 'DELETE':
+      return args.delete ? log.red(text) : log.gray(text);
+    default:
+      return text;
   }
+}
 
-  // console.log('filehash', filehash);
+async function buildPayload(args: {
+  dir: string;
+  urls: t.IUrls;
+  targetUri: t.IUriParts<t.ICellUri>;
+  client: t.IClient;
+  delete: boolean;
+}) {
+  const cellUri = args.targetUri.toString();
+  const cellUrls = args.urls.cell(cellUri);
 
-  // const h = info.body.data.props.filehash;
+  const remoteFiles = (await args.client.cell(cellUri).files.list()).body;
+  const findRemote = (filename: string) => remoteFiles.find(f => f.props.filename === filename);
 
-  console.log('-------------------------------------------');
-  console.log('isDiff', isDiff);
-  // console.log(h);
+  // Prepare files.
+  const paths = await fs.glob.find(`${args.dir}/*`, { dot: false, includeDirs: false });
+  const wait = paths.map(async path => {
+    const data = await fs.readFile(path);
+    const filename = fs.basename(path);
+    const remoteFile = findRemote(filename);
 
-  // form.append('file', data, {
-  //   filename,
-  //   contentType: 'application/octet-stream',
-  // });
+    const hash = {
+      local: Value.hash.sha256(data),
+      remote: remoteFile ? remoteFile.props.filehash : '',
+    };
 
-  // const url = toUrl(HOST, args.index, filename).toString();
-  // const headers = form.getHeaders();
-  // const res = await http.post(url, form, { headers });
-  // const msg = `${res.status} ${log.gray(url)}`;
+    let status: Status = 'NEW';
+    if (remoteFile) {
+      status = hash.local === hash.remote ? 'NO_CHANGE' : 'CHANGE';
+    }
 
-  // if (res.ok) {
-  //   log.info.green(msg);
-  // } else {
-  //   log.info.yellow(msg);
-  //   log.info.yellow(`  `, res.json);
-  // }
-};
-
-type T = { filename: string; version: string };
-export function sortSemver(list: string[]): T[] {
-  const ext = '.png'; // TEMP 🐷
-
-  const items = list.map(filename => {
-    const name = filename.replace(new RegExp(`${ext}$`), '');
-    const parts = name.split('.');
-    const version = `${parts[0] || 0}.${parts[1] || 0}.${parts[2] || 0}`;
-    const res: T = { filename, version };
-    return res;
+    const url = cellUrls.file.byName(filename).toString();
+    const item: PayloadItem = { status, filename, path, url, data };
+    return item;
   });
+  const items = await Promise.all(wait);
 
-  const sorted = semver.sort(items.map(item => item.version));
-  return sorted
-    .map(version => items.find(item => item.version === version))
-    .filter(item => Boolean(item)) as T[];
+  // Add list of deleted files (on remote, but not local).
+  const isDeleted = (filename?: string) => !items.some(item => item.filename === filename);
+  remoteFiles
+    .filter(file => Boolean(file.props.filename))
+    .filter(file => isDeleted(file.props.filename))
+    .forEach(file => {
+      const filename = file.props.filename || '';
+      const path = '';
+      const url = cellUrls.file.byName(filename).toString();
+      items.push({ status: 'DELETE', filename, path, url });
+    });
+
+  // Finish up.
+  return {
+    items,
+    log() {
+      const table = log.table({ border: false });
+      items.forEach(item => {
+        const { filename } = item;
+        const urlPath = item.url.substring(0, item.url.lastIndexOf('/'));
+        const url = `${urlPath}/${log.cyan(filename)}`;
+
+        let statusText = item.status.toLowerCase().replace(/\_/g, ' ');
+        if (!args.delete && item.status === 'DELETE') {
+          statusText = `${statusText} (retain)`;
+        }
+
+        const status = toStatusColor({
+          status: item.status,
+          text: statusText,
+          delete: args.delete,
+        });
+
+        table.add([status, log.gray(url)]);
+      });
+      log.info(table.toString());
+    },
+  };
 }

@@ -24,6 +24,13 @@ describe('ConfigDir', () => {
     expect(res.file).to.eql(fs.resolve(`${PATH.ASSETS}/.cell/config.yml`));
   });
 
+  it('targetUri', async () => {
+    const config = await ConfigDir.create({ dir: PATH.TMP }).save(VALID);
+    const uri = config.targetUri;
+    expect(uri.ok).to.eql(true);
+    expect(uri.toString()).to.eql('cell:foo!A1');
+  });
+
   describe('load', () => {
     it('does not know if file exists (load not called)', () => {
       const config = ConfigDir.create({ dir: PATH.TMP });
@@ -54,9 +61,7 @@ describe('ConfigDir', () => {
   describe('save', () => {
     it('throws if saving invalid data', async () => {
       const config = await ConfigDir.create({ dir: PATH.TMP }).save(VALID);
-
       config.data.target = 'boo'; // NB: invalid.
-
       await expectError(() => config.save());
     });
   });

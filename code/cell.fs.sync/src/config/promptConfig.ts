@@ -1,4 +1,4 @@
-import { log, prompt, Schema, t, defaultValue } from '../common';
+import { log, cli, Schema, t, defaultValue } from '../common';
 import { ConfigDir } from './ConfigDir';
 
 import { parse as parseUrl } from 'url';
@@ -17,7 +17,7 @@ export async function promptConfig(args: { force?: boolean; dir?: string; save?:
   log.info.gray(`${config.dir}`);
   log.info();
 
-  const targetOption = await prompt.list({
+  const targetOption = await cli.prompt.list({
     message: 'target cell:',
     items: [
       { name: 'enter (uri)', value: 'URI' },
@@ -26,7 +26,7 @@ export async function promptConfig(args: { force?: boolean; dir?: string; save?:
   });
 
   if (targetOption === 'URI') {
-    const target = await prompt.text({ message: 'target cell (uri):' });
+    const target = await cli.prompt.text({ message: 'target cell (uri):' });
     if (target.startsWith('http:') || target.startsWith('https:')) {
       const url = parseUrl(target);
       config.data.host = url.host || '';
@@ -38,13 +38,13 @@ export async function promptConfig(args: { force?: boolean; dir?: string; save?:
 
   if (targetOption === 'NEW') {
     const ns = Schema.cuid();
-    const key = await prompt.text({ message: 'cell key (eg A1):' });
+    const key = await cli.prompt.text({ message: 'cell key (eg A1):' });
     const uri = Schema.uri.parse<t.ICellUri>(`cell:${ns}!${key || ''}`);
     config.data.target = uri.ok ? uri.toString() : `cell:${ns}!`;
   }
 
   if (!config.data.host) {
-    config.data.host = await prompt.text({ message: 'host domain' });
+    config.data.host = await cli.prompt.text({ message: 'host domain' });
   }
 
   const validation = config.validate();

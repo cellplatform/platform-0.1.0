@@ -24,9 +24,7 @@
     "@platform/fs.watch": "0.2.20",
     "@platform/http": "0.7.0",
     "@platform/libs": "0.1.5",
-    "@platform/log": "0.0.153",
-    "form-data": "3.0.0",
-    "semver": "6.3.0"
+    "@platform/log": "0.0.153"
   },
   "devDependencies": {
     "@platform/test": "0.1.0",
