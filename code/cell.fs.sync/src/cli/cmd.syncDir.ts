@@ -92,12 +92,12 @@ export async function syncDir(args: {
     }
   }
 
-  // Execute upload.
+  // Pepare tasks.
+  const tasks = cli.tasks();
   const count = { uploaded: 0, deleted: 0 };
   const title = {
     upload: `Upload ${items.length} ${plural.file.toString(items.length)}`,
   };
-  const tasks = cli.tasks();
 
   tasks.task(title.upload, async () => {
     const files = items.map(({ filename, data }) => ({
@@ -115,6 +115,8 @@ export async function syncDir(args: {
       throw new Error(err);
     }
   });
+
+  // Execute upload.
   const res = await tasks.run({ concurrent: true, silent });
 
   // Finish up.
