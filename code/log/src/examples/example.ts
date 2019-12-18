@@ -38,6 +38,16 @@ log
   .add([log.magenta('bar'), 456])
   .log();
 
+log
+  .table({
+    head: ['key', 'value'],
+    colWidths: [10, 25],
+    border: false,
+  })
+  .add(['foo', log.green(123)])
+  .add([log.magenta('bar'), 456])
+  .log();
+
 log.info();
 log.group('Group name:', 123);
 log.info.cyan('Line 1');
