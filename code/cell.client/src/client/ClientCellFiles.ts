@@ -70,8 +70,9 @@ export class ClientCellFiles implements t.IClientCellFiles {
     return res;
   }
 
-  public async upload(files: t.IClientCellFileUpload[]) {
+  public async upload(input: t.IClientCellFileUpload | t.IClientCellFileUpload[]) {
     const parent = this.args.parent;
+    const files = Array.isArray(input) ? input : [input];
 
     // Prepare the form data.
     const form = new FormData();

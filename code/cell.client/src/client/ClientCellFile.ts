@@ -1,4 +1,4 @@
-import { http, t, FormData, util, Schema, ERROR } from '../common';
+import { ERROR, http, Schema, t, util } from '../common';
 
 export type IClientCellFileArgs = { parent: t.IClientCell; urls: t.IUrls };
 
@@ -48,26 +48,6 @@ export class ClientCellFile implements t.IClientCellFile {
         // Call the service.
         const res = await http.get(url.toString());
         return util.toResponse<t.IResGetFile>(res);
-      },
-
-      /**
-       * Upload a file and associate it with the cell.
-       */
-      async upload(data: ArrayBuffer) {
-        // Prepare the form data.
-        const form = new FormData();
-        form.append('file', data, {
-          filename,
-          contentType: 'application/octet-stream',
-        });
-        const headers = form.getHeaders();
-
-        // POST to the service.
-        const url = parent.url.file.byName(filename);
-        const res = await http.post(url.toString(), form, { headers });
-
-        // Finish up.
-        return util.toResponse<t.IResPostCellFile>(res);
       },
 
       /**

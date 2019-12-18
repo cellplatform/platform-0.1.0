@@ -1,50 +1,6 @@
 import { Schema, createMock, expect, fs, http, t } from '../../../test';
 
 describe('route: !A1/file', () => {
-  it.skip('TEMP ||| writes file by name (updating the cell model)', async () => {
-    // TEMP - DELETE 🐷
-    const mock = await createMock();
-    const cellUri = 'cell:foo!A1';
-
-    // Cell model does not exist.
-    const res1 = (await http.get(mock.url(cellUri))).json as t.IResGetCell;
-    expect(res1.exists).to.eql(false);
-    expect(res1.data).to.eql({});
-
-    // POST the file to the service.
-    const sourceFile = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
-    const client = mock.client.cell(cellUri);
-    const res2 = await client.file.name('func.wasm').upload(sourceFile);
-
-    // Ensure the URI to the file was stored.
-    const cell = res2.body.data.cell;
-    const link = (cell.links || {})['fs:func:wasm'];
-    const uri = Schema.uri.parse<t.IFileUri>(link);
-    expect(uri.ok).to.eql(true);
-
-    // Load the file info and compare filename and hash.
-    const res3 = await http.get(mock.urls.file(link.split('?')[0]).info.toString());
-    const res3Data = (res3.json as t.IResGetFile).data;
-    const fileHash = res3Data.hash;
-    expect(link.split('?')[1]).to.eql(`hash=${fileHash}`);
-    expect(res3Data.props.filename).to.eql('func.wasm');
-
-    // Load the saved file and ensure it matches the source.
-    const targetFilePath = fs.resolve(`tmp/fs/ns.${uri.parts.ns}/${uri.parts.file}`);
-    const targetFile = await fs.readFile(targetFilePath);
-
-    expect(targetFile.toString()).to.eql(sourceFile.toString());
-
-    // Examine changes.
-    const changes = res2.body.data.changes || [];
-    expect(changes[0].uri).to.eql(cellUri);
-    expect(changes[0].field).to.eql('links');
-    expect(changes[0].from).to.eql(undefined);
-    expect(changes[0].to).to.eql({ 'fs:func:wasm': link });
-
-    await mock.dispose();
-  });
-
   it('writes files by name (updating the cell model)', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
@@ -104,7 +60,7 @@ describe('route: !A1/file', () => {
     const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
 
     // POST the file to the service.
-    await cellClient.file.name('func.wasm').upload(file1);
+    await cellClient.files.upload({ filename: 'func.wasm', data: file1 });
 
     // Save and compare the downloaded stream.
     const path = fs.resolve('tmp/test/download/func.wasm');
@@ -162,9 +118,11 @@ describe('route: !A1/file', () => {
     const file3 = await fs.readFile(fs.resolve('src/test/assets/bird.png'));
 
     // POST the file to the service.
-    await clientA1.file.name('func.wasm').upload(file1);
-    await clientA1.file.name('kitten.jpg').upload(file2);
-    await clientA2.file.name('bird.png').upload(file3);
+    await clientA1.files.upload([
+      { filename: 'func.wasm', data: file1 },
+      { filename: 'kitten.jpg', data: file2 },
+    ]);
+    await clientA2.files.upload({ filename: 'bird.png', data: file3 });
 
     const res1 = await clientA1.files.list();
     const res2 = await clientA2.files.list();

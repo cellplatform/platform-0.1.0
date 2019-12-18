@@ -1,5 +1,5 @@
-import { defaultValue, constants, routes, Schema, t, models, util } from '../common';
-import { postFileResponse, getFileDownloadResponse } from '../route.file';
+import { constants, defaultValue, models, routes, Schema, t, util } from '../common';
+import { getFileDownloadResponse, postFileResponse } from '../route.file';
 import { postNsResponse } from '../route.ns';
 
 type ParamOr = t.IUrlParamsCellFiles | t.IUrlParamsCellFileByName | t.IUrlParamsCellFileByIndex;
@@ -183,101 +183,6 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
       // Run the "file:" download handler.
       return getFileDownloadResponse({ db, fs, uri: fileUri, query, host });
-    } catch (err) {
-      return util.toErrorPayload(err);
-    }
-  });
-
-  /**
-   * POST a file to a cell.
-   */
-  router.post(routes.CELL.FILE_BY_NAME, async req => {
-    // TEMP - DELETE this post method 🐷
-    const host = req.host;
-    const query = req.query as t.IUrlQueryPostFile;
-    const params = req.params as t.IUrlParamsCellFileByName;
-
-    const paramData = getParams({ params });
-    const { status, ns, key, filename, error, uri: cellUri } = paramData;
-    if (!ns || error) {
-      return { status, data: { error } };
-    }
-
-    try {
-      // Prepare the file URI link.
-      const cell = await models.Cell.create({ db, uri: cellUri }).ready;
-      const cellLinks = cell.props.links || {};
-      const fileLinkKey = Schema.file.links.toKey(filename);
-      const fileUri = cellLinks[fileLinkKey]
-        ? cellLinks[fileLinkKey].split('?')[0]
-        : Schema.uri.create.file(ns, Schema.slug());
-
-      // Save to the file-system.
-      const form = await req.body.form();
-      if (form.files.length === 0) {
-        const err = new Error(`No file data was posted to the URI ("${cellUri}").`);
-        return util.toErrorPayload(err, { status: 400 });
-      }
-
-      const file = form.files[0]; // TEMP 🐷
-
-      const fsResponse = await postFileResponse({
-        host,
-        db,
-        fs,
-        uri: fileUri,
-        file,
-        query: { changes: true },
-      });
-
-      if (!util.isOK(fsResponse.status)) {
-        const error = fsResponse.data as t.IHttpError;
-        const msg = `Failed while writing file to cell [${key}]. ${error.message}`;
-        return util.toErrorPayload(msg, { status: error.status });
-      }
-      const fsResponseData = fsResponse.data as t.IResPostFile;
-
-      // Update the [Cell] model with the file URI link.
-      // NB: This is done through the master [Namespace] POST
-      //     handler as this ensures all hashes are updated.
-      const fileLinkValue = `${fileUri}?hash=${fsResponseData.data.hash}`;
-      const nsResponse = await postNsResponse({
-        db,
-        id: ns,
-        body: {
-          cells: {
-            [key]: { links: { ...cellLinks, [fileLinkKey]: fileLinkValue } },
-          },
-        },
-        query: { cells: key, changes: true },
-        host,
-      });
-      if (!util.isOK(nsResponse.status)) {
-        const error = nsResponse.data as t.IHttpError;
-        const msg = `Failed while updating cell [${key}] after writing file. ${error.message}`;
-        return util.toErrorPayload(msg, { status: error.status });
-      }
-      const nsResponseData = nsResponse.data as t.IResPostNs;
-
-      // Prepare response.
-      await cell.load({ force: true });
-      let changes: t.IDbModelChange[] | undefined;
-      if (defaultValue(query.changes, true)) {
-        changes = [...(nsResponseData.changes || []), ...(fsResponseData.changes || [])];
-      }
-
-      const urls = util.urls(host).cell(cellUri);
-      const links: t.IResPostCellLinks = { ...urls.links };
-      const res: t.IResPostCellFile = {
-        uri: cellUri,
-        createdAt: cell.createdAt,
-        modifiedAt: cell.modifiedAt,
-        exists: Boolean(cell.exists),
-        data: { cell: cell.toObject(), changes },
-        links,
-      };
-
-      return { status: 200, data: res };
     } catch (err) {
       return util.toErrorPayload(err);
     }
