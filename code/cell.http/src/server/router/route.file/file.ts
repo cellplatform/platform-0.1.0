@@ -86,8 +86,8 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         return util.toErrorPayload(err, { status: 400 });
       }
 
-      const formFile = form.files[0];
-      return postFileResponse({ db, fs, uri, query, file: formFile, host });
+      const file = form.files[0];
+      return postFileResponse({ db, fs, uri, query, file, host });
     }
   });
 }
@@ -203,10 +203,11 @@ export async function postFileResponse(args: {
     const writeResponse = await fs.write(uri, buffer);
     const filehash = writeResponse.file.hash;
     const location = writeResponse.location;
+    const bytes = Uint8Array.from(buffer).length;
 
     // Save the model.
     const model = await models.File.create({ db, uri }).ready;
-    models.setProps(model, { encoding, filename, filehash, location });
+    models.setProps(model, { encoding, filename, filehash, location, bytes });
     const saveResponse = await model.save();
 
     // Store DB changes.
