@@ -93,7 +93,7 @@ export async function syncDir(args: {
   }
 
   // Execute upload.
-  const count = { uploaded: 0 };
+  const count = { uploaded: 0, deleted: 0 };
   const title = {
     upload: `Upload ${items.length} ${plural.file.toString(items.length)}`,
   };
@@ -121,7 +121,10 @@ export async function syncDir(args: {
   if (!silent) {
     log.info();
     if (res.ok) {
-      log.info.gray(`${log.green('success')} (${count.uploaded} uploaded)`);
+      const { uploaded, deleted } = count;
+      const success = `${log.green('success')} (${uploaded} uploaded, ${deleted} deleted)`;
+      log.info.gray(success);
+      log.info();
     } else {
       res.errors.forEach(err => log.warn(err.error));
       log.info();
