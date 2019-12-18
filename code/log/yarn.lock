@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/exec@0.2.37":
-  version "0.2.37"
-  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.37.tgz#b82aeeaef81e135a5959c0768b54a93330eabdb7"
-  integrity sha512-mEEGk0Sbrqx9MhVqju5SW95ZFqnlBy77grxMXeBT2pxZi8ohYAjG4v4RiCMaJQns29DPq2q7AOk8F4ko2QXdEA==
+"@platform/exec@0.2.40":
+  version "0.2.40"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.40.tgz#209aeea26ec01e7593f186797c5a7662f5dbf2b4"
+  integrity sha512-NcnwlDxeKxnQ9wRW3rQbBls7x6hQJKrup8tsGcpegX5D8tYyvlu65QATVYMf/5FPjBr6e3s9F0vsVbRua8JPvg==
   dependencies:
     "@platform/libs" "0.1.5"
     "@types/chalk" "2.2.0"
@@ -30,10 +30,10 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs@0.3.7":
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.3.7.tgz#195d3ab7861d2ccbe4cb644c0b905da032eec1ff"
-  integrity sha512-DyChHwq48gHXMlQ1NiOhIXS/ryB/RLXXJlMYCL1mlfvk0s8gi/hkzO5VfqwPb7wugRVhM8uFpla3Ry5F4hatmw==
+"@platform/fs@0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.5.1.tgz#3de8be473911742e61d3a207b8c5d914656032b2"
+  integrity sha512-fUyAojkBLnmCNIEWXIzqEkMdqOtcvFKh2qhvdzBu2QkaA9kPIt4csfsOS/RJRjU66zZcV3fVp/CRYqZnt5NP0Q==
   dependencies:
     "@types/fs-extra" "8.0.1"
     "@types/js-yaml" "3.12.1"
@@ -83,13 +83,13 @@
     tslint-react "4.1.0"
     typescript "3.7.3"
 
-"@platform/ts@3.7.4":
-  version "3.7.4"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.7.4.tgz#a50b474208e15c7f7429bfe8d620749ecec4f335"
-  integrity sha512-9NKA5oIyaRPnWwsnh0zYTgkIeCEi/b5tof95hXp9YZUUoIoRFGGBDj+0rgs/2GGETvnDtdablrSr+1CMqqEH/A==
+"@platform/ts@3.7.7":
+  version "3.7.7"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.7.7.tgz#a43200789ac8dd498e0f37f775236b4992c9e855"
+  integrity sha512-8bKt/+xequJkpklyS62wUDQPfxVIHDLs9dTjPW1jqKAx+YSYKm/jSTCXjsKbCkIam36fcJBwtlAl9koEuJNRrA==
   dependencies:
-    "@platform/exec" "0.2.37"
-    "@platform/fs" "0.3.7"
+    "@platform/exec" "0.2.40"
+    "@platform/fs" "0.5.1"
     "@platform/libs" "0.1.5"
     "@platform/ts.libs" "3.7.2"
 

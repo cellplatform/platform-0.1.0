@@ -14,7 +14,7 @@ export type IServerLog = ILog & {
 export type ILogTableOptions = {
   head?: Array<string | number | undefined>;
   colWidths?: number[];
-  border?: boolean
+  border?: boolean;
 };
 
 export type ILogTable = {
