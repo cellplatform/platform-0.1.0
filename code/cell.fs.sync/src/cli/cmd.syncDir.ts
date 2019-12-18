@@ -136,7 +136,7 @@ async function buildPayload(args: {
   const paths = await fs.glob.find(`${args.dir}/*`, { dot: false, includeDirs: false });
   const wait = paths.map(async path => {
     const data = await fs.readFile(path);
-    const bytes = (await fs.size.file(path)).bytes;
+    const bytes = Uint8Array.from(data).length;
 
     const filename = fs.basename(path);
     const remoteFile = findRemote(filename);
