@@ -4,10 +4,12 @@ import { promptConfig } from '../config';
 type Status = 'NEW' | 'CHANGE' | 'NO_CHANGE' | 'DELETE';
 type PayloadItem = {
   status: Status;
+  isPending: boolean;
   filename: string;
   path: string;
   url: string;
   data?: Buffer;
+  bytes: number;
 };
 
 /**
@@ -20,11 +22,8 @@ type PayloadItem = {
  * Synchronize a folder with the cloud.
  */
 
-const ns = 'ck499h7u30000fwet3k7085t1';
-
 export async function syncDir(args: {
   dir: string;
-  dryRun: boolean;
   silent: boolean;
   config: boolean;
   delete: boolean;
@@ -35,7 +34,7 @@ export async function syncDir(args: {
     return;
   }
 
-  const { dryRun = false, silent = false } = args;
+  const { silent = false } = args;
   const { dir, targetUri } = config;
   const host = config.data.host;
   const client = Client.create(host);
@@ -54,6 +53,10 @@ export async function syncDir(args: {
     log.info();
   }
 
+  if (payload.items.filter(item => item.isPending).length === 0) {
+    return;
+  }
+
   if (!silent) {
     const message = `change remote`;
     const res = await cli.prompt.list({ message, items: ['no', 'yes'] });
@@ -64,47 +67,34 @@ export async function syncDir(args: {
     }
   }
 
-  /**
-   * TODO 🐷
-   * - post files all at once.
-   *
-   */
-
+  // Execute upload.
   const tasks = cli.tasks();
+  tasks.task('Upload', async () => {
+    const uri = config.targetUri.toString();
 
-  payload.items
-    .filter(item => item.status !== 'DELETE')
-    .filter(item => Boolean(item.data))
-    .forEach(item => {
-      tasks.task(item.filename, async () => {
-        const uri = config.targetUri.toString();
-        const file = client.cell(uri).file.name(item.filename);
-        if (item.data) {
-          const res = await file.upload(item.data);
+    const files = payload.items
+      .filter(item => item.status !== 'DELETE')
+      .filter(item => Boolean(item.data))
+      .map(({ filename, data }) => ({ filename, data })) as t.IClientCellFileUpload[];
 
-          // throw new Error(res.status.toString());
-
-          if (!res.ok) {
-            // res.body.data.
-            const err = `${res.status} Failed upload.`;
-            throw new Error(err);
-          }
-        }
-        // const res = await client
-        //   .cell(uri)
-        //   .file.name(item.filename)
-        //   .upload(item.data);
-      });
-    });
-
+    const res = await client.cell(uri).files.upload(files);
+    if (!res.body) {
+      const err = `${res.status} Failed upload.`;
+      throw new Error(err);
+    }
+  });
   const res = await tasks.run({ concurrent: true, silent });
 
-  console.log('res', res);
-
-  // tasks.task()
-
-  // tasks.
-
+  // Finish up.
+  if (!silent) {
+    log.info();
+    if (res.ok) {
+      log.info.green('success');
+    } else {
+      res.errors.forEach(err => log.warn(err.error));
+      log.info();
+    }
+  }
   return res;
 }
 
@@ -146,6 +136,8 @@ async function buildPayload(args: {
   const paths = await fs.glob.find(`${args.dir}/*`, { dot: false, includeDirs: false });
   const wait = paths.map(async path => {
     const data = await fs.readFile(path);
+    const bytes = (await fs.size.file(path)).bytes;
+
     const filename = fs.basename(path);
     const remoteFile = findRemote(filename);
 
@@ -160,7 +152,8 @@ async function buildPayload(args: {
     }
 
     const url = cellUrls.file.byName(filename).toString();
-    const item: PayloadItem = { status, filename, path, url, data };
+    const isPending = status !== 'NO_CHANGE';
+    const item: PayloadItem = { status, isPending, filename, path, url, data, bytes };
     return item;
   });
   const items = await Promise.all(wait);
@@ -174,7 +167,8 @@ async function buildPayload(args: {
       const filename = file.props.filename || '';
       const path = '';
       const url = cellUrls.file.byName(filename).toString();
-      items.push({ status: 'DELETE', filename, path, url });
+      const isPending = args.delete;
+      items.push({ status: 'DELETE', isPending, filename, path, url, bytes: -1 });
     });
 
   // Finish up.
@@ -183,9 +177,16 @@ async function buildPayload(args: {
     log() {
       const table = log.table({ border: false });
       items.forEach(item => {
-        const { filename } = item;
+        const { bytes } = item;
         const urlPath = item.url.substring(0, item.url.lastIndexOf('/'));
-        const url = `${urlPath}/${log.cyan(filename)}`;
+
+        const filename = toStatusColor({
+          status: item.status,
+          text: item.filename,
+          delete: args.delete,
+        });
+
+        const url = `${urlPath}/${filename}`;
 
         let statusText = item.status.toLowerCase().replace(/\_/g, ' ');
         if (!args.delete && item.status === 'DELETE') {
@@ -198,7 +199,9 @@ async function buildPayload(args: {
           delete: args.delete,
         });
 
-        table.add([status, log.gray(url)]);
+        const size = bytes > -1 ? fs.size.toString(bytes) : '';
+
+        table.add([status, log.gray(url), size]);
       });
       log.info(table.toString());
     },

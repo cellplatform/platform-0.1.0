@@ -7,7 +7,6 @@ import * as cmd from './cmd.syncDir';
 export const init: t.CliInit = cli => {
   type T = {
     force: string;
-    dry: boolean;
     silent: boolean;
     config: boolean;
     delete: boolean;
@@ -16,7 +15,6 @@ export const init: t.CliInit = cli => {
   const syncDirHandler: t.CommandHandler<T> = async args => {
     await cmd.syncDir({
       dir: process.cwd(),
-      dryRun: args.dry,
       silent: args.silent,
       config: args.config,
       delete: args.delete,
@@ -29,12 +27,6 @@ export const init: t.CliInit = cli => {
       alias: 's',
       description: 'Synchronise a folder with the cloud.',
       handler: syncDirHandler,
-    })
-    .option<'boolean'>({
-      name: 'dry',
-      description: 'Dry run without executing against service.',
-      type: 'boolean',
-      default: false,
     })
     .option<'boolean'>({
       name: 'delete',
