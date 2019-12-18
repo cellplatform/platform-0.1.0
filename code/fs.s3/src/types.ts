@@ -20,6 +20,7 @@ export type S3 = {
   toContentType(key: string): string | undefined;
   endpoint: string;
   url(bucket: string, path?: string): string;
+  list(args: { bucket: string; prefix?: string; max?: number }): S3List;
   get(args: { bucket: string; key: string }): Promise<S3GetResponse>;
   put(args: {
     bucket: string;
@@ -29,13 +30,15 @@ export type S3 = {
     contentType?: string;
     contentDisposition?: string;
   }): Promise<S3PutResponse>;
-  list(args: { bucket: string; prefix?: string; max?: number }): S3List;
+  deleteOne(args: { bucket: string; key: string }): Promise<S3DeleteOneResponse>;
+  deleteMany(args: { bucket: string; keys: string[] }): Promise<S3DeleteManyResponse>;
   bucket(name: string): S3Bucket;
 };
 
 export type S3Bucket = {
   endpoint: string;
   url(path?: string): string;
+  list(args: { prefix?: string; max?: number }): S3List;
   get(args: { key: string }): Promise<S3GetResponse>;
   put(args: {
     key: string;
@@ -44,7 +47,8 @@ export type S3Bucket = {
     contentType?: string;
     contentDisposition?: string;
   }): Promise<S3PutResponse>;
-  list(args: { bucket: string; prefix?: string; max?: number }): S3List;
+  deleteOne(args: { key: string }): Promise<S3DeleteOneResponse>;
+  deleteMany(args: { keys: string[] }): Promise<S3DeleteManyResponse>;
 };
 
 export type S3List = {
@@ -69,6 +73,7 @@ export type S3GetResponse = {
 };
 
 /**
+ *
  * Put
  */
 export type S3PutResponse = {
@@ -78,6 +83,24 @@ export type S3PutResponse = {
   bucket: string;
   url?: string;
   etag?: string;
+  error?: Error;
+};
+
+/**
+ * Delete
+ */
+export type S3DeleteOneResponse = {
+  ok: boolean;
+  status: number;
+  key: string;
+  bucket: string;
+  error?: Error;
+};
+export type S3DeleteManyResponse = {
+  ok: boolean;
+  status: number;
+  keys: string[];
+  bucket: string;
   error?: Error;
 };
 

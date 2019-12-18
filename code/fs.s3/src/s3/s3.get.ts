@@ -35,8 +35,6 @@ export async function get(args: {
   };
 
   try {
-    // s3.getSignedUrl()
-
     const obj = await s3.getObject({ Bucket: bucket, Key: key }).promise();
     response.modifiedAt = formatTimestamp((obj as any).LastModified);
     response.data = obj.Body instanceof Buffer ? obj.Body : undefined;

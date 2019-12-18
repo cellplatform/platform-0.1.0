@@ -39,6 +39,12 @@ async function testUpload() {
     acl: 'public-read',
   });
 
+  await bucket.put({
+    source: filePath,
+    key: 'tmp/bar.json',
+    acl: 'public-read',
+  });
+
   console.log('-------------------------------------------');
   console.log('PUT', res);
 
@@ -63,10 +69,22 @@ async function testUpload() {
   await res2.save(fs.join(tmp, 'saved.zip'));
 }
 
-testUpload();
+async function testDelete() {
+  // const fileName = 'foo.json';
 
-/**
- *
- * file:<id>
- *
- */
+  // const res = await bucket.deleteOne({
+  //   key: 'tmp/foo.json',
+  // });
+
+  const res = await bucket.deleteMany({
+    keys: ['tmp/foo.json', 'tmp/bar.json'],
+  });
+
+  console.log('-------------------------------------------');
+  console.log('DELETE', res);
+}
+
+(async () => {
+  // await testUpload();
+  await testDelete();
+})();
