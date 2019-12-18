@@ -1,7 +1,7 @@
-import { cli, Client, fs, log, Schema, t, Value } from '../common';
+import { cli, Client, fs, log, Schema, t, Value, util } from '../common';
 import { promptConfig } from '../config';
 
-type Status = 'NEW' | 'CHANGE' | 'NO_CHANGE' | 'DELETE';
+type Status = 'NEW' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
 type PayloadItem = {
   status: Status;
   isPending: boolean;
@@ -42,16 +42,24 @@ export async function syncDir(args: {
   const urls = Schema.url(host);
 
   if (!silent) {
+    const uri = config.targetUri.parts;
     log.info();
     log.info.gray(`host:   ${config.data.host}`);
-    log.info.gray(`target: ${config.data.target}`);
+    log.info.gray(`target: cell:${uri.ns}!${log.white(uri.key)}`);
     if (force) {
       log.info.gray(`force:  ${log.cyan(true)}`);
     }
     log.info();
   }
 
-  const payload = await buildPayload({ dir, urls, targetUri, client, delete: args.delete, force });
+  const payload = await buildPayload({
+    dir,
+    urls,
+    targetUri,
+    client,
+    force,
+    delete: args.delete,
+  });
   if (!silent) {
     payload.log();
     log.info();
@@ -62,8 +70,20 @@ export async function syncDir(args: {
     return;
   }
 
+  // Filter on set of items to push.
+  const items = payload.items
+    .filter(item => item.status !== 'DELETED')
+    .filter(item => (force ? true : item.status !== 'NO_CHANGE'))
+    .filter(item => Boolean(item.data));
+  const total = items.length;
+
+  const plural = {
+    change: util.plural('change', 'changes'),
+    file: util.plural('file', 'files'),
+  };
+
   if (!silent) {
-    const message = `push changes`;
+    const message = `push ${total} ${plural.change.toString(total)}`;
     const res = await cli.prompt.list({ message, items: ['yes', 'no'] });
     if (res === 'no') {
       log.info();
@@ -72,16 +92,14 @@ export async function syncDir(args: {
     }
   }
 
-  // Filter on set of items to push.
-  const items = payload.items
-    .filter(item => item.status !== 'DELETE')
-    .filter(item => (force ? true : item.status !== 'NO_CHANGE'))
-    .filter(item => Boolean(item.data));
-
   // Execute upload.
   const count = { uploaded: 0 };
+  const title = {
+    upload: `Upload ${items.length} ${plural.file.toString(items.length)}`,
+  };
   const tasks = cli.tasks();
-  tasks.task(`Upload (${items.length})`, async () => {
+
+  tasks.task(title.upload, async () => {
     const files = items.map(({ filename, data }) => ({
       filename,
       data,
@@ -122,11 +140,11 @@ function toStatusColor(args: { status: Status; text?: string; delete?: boolean; 
   switch (status) {
     case 'NEW':
       return log.green(text);
-    case 'CHANGE':
+    case 'CHANGED':
       return log.yellow(text);
     case 'NO_CHANGE':
       return args.force ? log.cyan(text) : log.gray(text);
-    case 'DELETE':
+    case 'DELETED':
       return args.delete ? log.red(text) : log.gray(text);
     default:
       return text;
@@ -163,7 +181,7 @@ async function buildPayload(args: {
 
     let status: Status = 'NEW';
     if (remoteFile) {
-      status = hash.local === hash.remote ? 'NO_CHANGE' : 'CHANGE';
+      status = hash.local === hash.remote ? 'NO_CHANGE' : 'CHANGED';
     }
 
     const url = cellUrls.file.byName(filename).toString();
@@ -183,7 +201,7 @@ async function buildPayload(args: {
       const path = '';
       const url = cellUrls.file.byName(filename).toString();
       const isPending = args.delete;
-      items.push({ status: 'DELETE', isPending, filename, path, url, bytes: -1 });
+      items.push({ status: 'DELETED', isPending, filename, path, url, bytes: -1 });
     });
 
   // Finish up.
@@ -205,7 +223,7 @@ async function buildPayload(args: {
         const url = log.gray(`${urlPath}/${filename}`);
 
         let statusText = item.status.toLowerCase().replace(/\_/g, ' ');
-        if (!args.delete && item.status === 'DELETE') {
+        if (!args.delete && item.status === 'DELETED') {
           statusText = `${statusText} (retain)`;
         }
 
