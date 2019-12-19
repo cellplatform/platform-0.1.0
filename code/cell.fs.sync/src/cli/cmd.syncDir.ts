@@ -1,6 +1,20 @@
-import { cli, Client, fs, log, Schema, t, Value, util, watch } from '../common';
+import { debounceTime, filter } from 'rxjs/operators';
+
+import { cli, Client, defaultValue, fs, log, Schema, t, util, Value, watch } from '../common';
 import { promptConfig } from '../config';
 
+type IRunSyncArgs = {
+  config: t.IFsConfigDir;
+  dir: string;
+  force: boolean;
+  silent: boolean;
+  delete: boolean;
+};
+type SyncCount = {
+  total: number;
+  uploaded: number;
+  deleted: number;
+};
 type Status = 'ADDED' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
 type PayloadItem = {
   status: Status;
@@ -10,6 +24,11 @@ type PayloadItem = {
   url: string;
   data?: Buffer;
   bytes: number;
+};
+
+const plural = {
+  change: util.plural('change', 'changes'),
+  file: util.plural('file', 'files'),
 };
 
 /**
@@ -36,53 +55,91 @@ export async function syncDir(args: {
     return;
   }
 
-  const { silent = false, force = false, watch = false } = args;
+  const { silent = false, force = false } = args;
   const { dir } = config;
 
   if (!silent) {
     const uri = config.targetUri.parts;
     log.info();
-    log.info.gray(`host:   ${config.data.host}`);
-    log.info.gray(`target: cell:${uri.ns}!${log.white(uri.key)}`);
+    log.info.gray(`host:     ${config.data.host}`);
+    log.info.gray(`target:   cell:${uri.ns}!${log.white(uri.key)}`);
+    if (watch) {
+      log.info.gray(`watching: active`);
+    }
     if (force) {
-      log.info.gray(`force:  ${log.cyan(true)}`);
+      log.info.gray(`force:    ${log.cyan(true)}`);
     }
     log.info();
   }
 
-  // Run the task.
-  const res = await sync({ config, dir, force, silent, delete: args.delete });
+  const sync = async (override: Partial<IRunSyncArgs> = {}) => {
+    return runSync({
+      config,
+      dir,
+      force,
+      silent,
+      delete: defaultValue(args.delete, false),
+      ...override,
+    });
+  };
 
-  // Finish up.
-  if (!silent) {
-    if (res.completed) {
-      log.info();
-      if (res.ok) {
-        const { uploaded, deleted } = res.count;
-        const success = `${log.green('success')} (${uploaded} uploaded, ${deleted} deleted)`;
-        log.info.gray(success);
+  if (args.watch) {
+    const dir$ = watch.start({ pattern: `${dir}/*` }).events$.pipe(
+      filter(e => e.isFile),
+      filter(e => !e.name.startsWith('.')),
+      debounceTime(1000),
+    );
+
+    dir$.subscribe(async e => {
+      const { count } = await sync({ silent: true });
+      const { total, uploaded, deleted } = count;
+      if (!silent && total > 0) {
+        let output = '';
+        output = uploaded === 0 ? output : `uploaded ${uploaded} ${plural.file.toString(uploaded)}`;
+        output = deleted !== 0 && output ? `${output}, ` : output;
+        output = deleted === 0 ? output : `deleted  ${deleted} ${plural.file.toString(deleted)}`;
+
+        let bullet = log.cyan;
+        if (uploaded > 0 && deleted > 0) {
+          bullet = log.yellow;
+        }
+        if (uploaded > 0 && deleted === 0) {
+          bullet = log.green;
+        }
+        if (uploaded === 0 && deleted > 0) {
+          bullet = log.red;
+        }
+
+        log.info.gray(`${bullet('•')} ${output}`);
+      }
+    });
+  } else {
+    // Run the task.
+    const res = await sync();
+
+    // Finish up.
+    if (!silent) {
+      if (res.completed) {
         log.info();
-      } else {
-        res.errors.forEach(err => log.warn(err.error));
-        log.info();
+        if (res.ok) {
+          const { uploaded, deleted } = res.count;
+          const success = `${log.green('success')} (${uploaded} uploaded, ${deleted} deleted)`;
+          log.info.gray(success);
+          log.info();
+        } else {
+          res.errors.forEach(err => log.warn(err.error));
+          log.info();
+        }
       }
     }
   }
-
-  return res;
 }
 
 /**
  * [Helpers]
  */
 
-export async function sync(args: {
-  config: t.IFsConfigDir;
-  dir: string;
-  force: boolean;
-  silent: boolean;
-  delete: boolean;
-}) {
+async function runSync(args: IRunSyncArgs) {
   const { config } = args;
   const { silent = false, force = false } = args;
   const { dir, targetUri } = config;
@@ -103,14 +160,20 @@ export async function sync(args: {
     log.info();
   }
 
-  const count = { uploaded: 0, deleted: 0 };
+  const count: SyncCount = {
+    uploaded: 0,
+    deleted: 0,
+    get total() {
+      return count.uploaded + count.deleted;
+    },
+  };
   const done = (complete: boolean, errors: cli.ITaskError[] = []) => {
     const ok = errors.length === 0;
     return { ok, errors, count, completed: complete, payload };
   };
 
   // Exit if no changes to push.
-  if (!force && payload.items.filter(item => item.isPending).length === 0) {
+  if (!silent && !force && payload.items.filter(item => item.isPending).length === 0) {
     const gray = log.info.gray;
     gray(`Nothing to sync.`);
     gray(`• Use ${log.cyan('--force')} to push everything (even if file is already on server).`);
@@ -126,11 +189,6 @@ export async function sync(args: {
     .filter(item => Boolean(item.data));
   const deletions = payload.items.filter(item => args.delete && item.status === 'DELETED');
   const total = changes.length + deletions.length;
-
-  const plural = {
-    change: util.plural('change', 'changes'),
-    file: util.plural('file', 'files'),
-  };
 
   if (!silent) {
     const message = `sync ${total} ${plural.change.toString(total)}`;

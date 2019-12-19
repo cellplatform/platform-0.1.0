@@ -47,6 +47,7 @@ export const init: t.CliInit = cli => {
     })
     .option<'boolean'>({
       name: 'silent',
+      alias: 's',
       description: 'Suppress log output.',
       type: 'boolean',
       default: false,
