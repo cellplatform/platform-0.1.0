@@ -243,7 +243,10 @@ async function buildPayload(args: {
       const table = log.table({ border: false });
       items.forEach(item => {
         const { bytes } = item;
-        const urlPath = item.url.substring(0, item.url.lastIndexOf('/'));
+        const urlPath = item.url
+          .substring(0, item.url.lastIndexOf('/'))
+          .replace(/^http\:\/\//, '')
+          .replace(/^https\:\/\//, '');
 
         const filename = toStatusColor({
           status: item.status,
