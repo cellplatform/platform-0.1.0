@@ -43,20 +43,26 @@ export type IModelMethods<
   load(options?: { force?: boolean; links?: boolean; silent?: boolean }): Promise<P>;
   reset(): IModel<P, D, L, C>;
   set(props: Partial<P>): IModel<P, D, L, C>;
-  beforeSave(options?: { force?: boolean }): Promise<{}>;
+  beforeSave(options?: { force?: boolean }): Promise<{ payload: IModelSave<P, D, L, C> }>;
+  beforeDelete(): Promise<{ payload: IModelDelete<P, D, L, C> }>;
   save(options?: { force?: boolean }): Promise<IModelSaveResponse<P, D, L, C>>;
+  delete(): Promise<IModelDeleteResponse>;
   toObject(): P;
 };
 
+/**
+ * [Save]
+ */
 export type IModelSaveResponse<
   P extends object,
   D extends P,
   L extends IModelLinksSchema,
   C extends IModelChildrenSchema = any
-> = { saved: boolean; isChanged: boolean; changes: IModelChanges<P, D> };
-
-export type ModelFactory<M extends IModel = IModel> = (args: ModelFactoryArgs) => M;
-export type ModelFactoryArgs = { path: string; db: t.IDb };
+> = {
+  saved: boolean;
+  isChanged: boolean;
+  changes: IModelChanges<P, D>;
+};
 
 export type BeforeModelSave<
   P extends object = {},
@@ -64,6 +70,27 @@ export type BeforeModelSave<
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
 > = (args: IModelSave<P, D, L, C>) => Promise<any>;
+
+/**
+ * [Delete]
+ */
+export type IModelDeleteResponse = {
+  deleted: boolean;
+  total: number;
+  children: number;
+};
+export type BeforeModelDelete<
+  P extends object = {},
+  D extends P = P,
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
+> = (args: IModelDelete<P, D, L, C>) => Promise<any>;
+
+/**
+ * [Factory]
+ */
+export type ModelFactory<M extends IModel = IModel> = (args: ModelFactoryArgs) => M;
+export type ModelFactoryArgs = { path: string; db: t.IDb };
 
 /**
  * [Children]
@@ -125,7 +152,9 @@ export type ModelEvent =
   | IModelChangingEvent
   | IModelChangedEvent
   | IModelBeforeSaveEvent
-  | IModelSavedEvent;
+  | IModelSavedEvent
+  | IModelBeforeDeleteEvent
+  | IModelDeletedEvent;
 
 /**
  * Data loading.
@@ -209,8 +238,10 @@ export type IModelSave<
 > = {
   force: boolean;
   isChanged: boolean;
+  isCancelled: boolean;
   model: IModel<P, D, L, C>;
   changes: IModelChanges<P, D>;
+  cancel(): void;
 };
 
 export type IModelBeforeSaveEvent<
@@ -233,4 +264,40 @@ export type IModelSavedEvent<
   type: 'MODEL/saved';
   typename: string;
   payload: IModelSave<P, D, L, C>;
+};
+
+/**
+ * Save.
+ */
+export type IModelDelete<
+  P extends object = {},
+  D extends P = P,
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
+> = {
+  model: IModel<P, D, L, C>;
+  isCancelled: boolean;
+  cancel(): void;
+};
+
+export type IModelBeforeDeleteEvent<
+  P extends object = {},
+  D extends P = P,
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
+> = {
+  type: 'MODEL/beforeDelete';
+  typename: string;
+  payload: IModelDelete<P, D, L, C>;
+};
+
+export type IModelDeletedEvent<
+  P extends object = {},
+  D extends P = P,
+  L extends IModelLinksSchema = any,
+  C extends IModelChildrenSchema = any
+> = {
+  type: 'MODEL/deleted';
+  typename: string;
+  payload: IModelDelete<P, D, L, C>;
 };
