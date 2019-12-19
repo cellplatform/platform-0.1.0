@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.func.sys",
-  "version": "0.0.71",
+  "version": "0.1.0",
   "description": "Standard library of system functions.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
