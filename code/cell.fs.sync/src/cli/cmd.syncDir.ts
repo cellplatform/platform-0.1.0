@@ -11,9 +11,9 @@ type IRunSyncArgs = {
   delete: boolean;
 };
 type SyncCount = {
-  total: number;
-  uploaded: number;
-  deleted: number;
+  readonly total: number;
+  readonly uploaded: number;
+  readonly deleted: number;
 };
 type Status = 'ADDED' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
 type PayloadItem = {
@@ -63,7 +63,7 @@ export async function syncDir(args: {
     log.info();
     log.info.gray(`host:     ${config.data.host}`);
     log.info.gray(`target:   cell:${uri.ns}!${log.white(uri.key)}`);
-    if (watch) {
+    if (args.watch) {
       log.info.gray(`watching: active`);
     }
     if (force) {
@@ -91,26 +91,39 @@ export async function syncDir(args: {
     );
 
     dir$.subscribe(async e => {
-      const { count } = await sync({ silent: true });
+      const { count, results, errors } = await sync({ silent: true });
       const { total, uploaded, deleted } = count;
-      if (!silent && total > 0) {
+      if (!silent) {
         let output = '';
-        output = uploaded === 0 ? output : `uploaded ${uploaded} ${plural.file.toString(uploaded)}`;
-        output = deleted !== 0 && output ? `${output}, ` : output;
-        output = deleted === 0 ? output : `deleted  ${deleted} ${plural.file.toString(deleted)}`;
+        if (uploaded > 0) {
+          output = `uploaded ${uploaded} ${plural.file.toString(uploaded)}`;
+          output = `${output}: ${results.uploaded.join(', ')}`;
+        }
+        if (deleted > 0) {
+          output = output ? `${output}, ` : output;
+          output = `deleted  ${deleted} ${plural.file.toString(deleted)}`;
+          output = `${output}: ${results.deleted.join(', ')}`;
+        }
+        output = output.trim();
 
-        let bullet = log.cyan;
-        if (uploaded > 0 && deleted > 0) {
-          bullet = log.yellow;
-        }
-        if (uploaded > 0 && deleted === 0) {
-          bullet = log.green;
-        }
-        if (uploaded === 0 && deleted > 0) {
-          bullet = log.red;
+        if (output) {
+          let bullet = log.cyan;
+          if (uploaded > 0 && deleted > 0) {
+            bullet = log.yellow;
+          }
+          if (uploaded > 0 && deleted === 0) {
+            bullet = log.green;
+          }
+          if (uploaded === 0 && deleted > 0) {
+            bullet = log.red;
+          }
+          log.info.gray(`${bullet('•')} ${output}`);
         }
 
-        log.info.gray(`${bullet('•')} ${output}`);
+        if (errors.length > 0) {
+          const errs = errors.map(item => item.error);
+          log.info.yellow(`${log.yellow('•')} ${errs}`);
+        }
       }
     });
   } else {
@@ -160,16 +173,24 @@ async function runSync(args: IRunSyncArgs) {
     log.info();
   }
 
+  const results = {
+    uploaded: [] as string[],
+    deleted: [] as string[],
+  };
   const count: SyncCount = {
-    uploaded: 0,
-    deleted: 0,
+    get uploaded() {
+      return results.uploaded.length;
+    },
+    get deleted() {
+      return results.deleted.length;
+    },
     get total() {
       return count.uploaded + count.deleted;
     },
   };
-  const done = (complete: boolean, errors: cli.ITaskError[] = []) => {
+  const done = (completed: boolean, errors: cli.ITaskError[] = []) => {
     const ok = errors.length === 0;
-    return { ok, errors, count, completed: complete, payload };
+    return { ok, errors, count, completed, payload, results };
   };
 
   // Exit if no changes to push.
@@ -218,7 +239,8 @@ async function runSync(args: IRunSyncArgs) {
     if (uploadFiles.length > 0) {
       const res = await clientFiles.upload(uploadFiles);
       if (res.ok) {
-        count.uploaded += uploadFiles.length;
+        // count.uploaded += uploadFiles.length;
+        results.uploaded = [...results.uploaded, ...uploadFiles.map(item => item.filename)];
       } else {
         const err = `${res.status} Failed while uploading.`;
         throw new Error(err);
@@ -233,7 +255,8 @@ async function runSync(args: IRunSyncArgs) {
     if (deleteFiles.length > 0) {
       const res = await clientFiles.delete(deleteFiles);
       if (res.ok) {
-        count.deleted += deleteFiles.length;
+        // count.deleted += deleteFiles.length;
+        results.deleted = [...results.deleted, ...deleteFiles];
       } else {
         const err = `${res.status} Failed while deleting.`;
         throw new Error(err);
