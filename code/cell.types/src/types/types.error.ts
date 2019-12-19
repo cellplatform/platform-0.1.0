@@ -56,5 +56,7 @@ export type FileSystemError =
   | 'FS/read/404'
   | 'FS/read/cloud'
   | 'FS/write'
-  | 'FS/write/cloud';
+  | 'FS/write/cloud'
+  | 'FS/delete'
+  | 'FS/delete/cloud';
 export type IFileSystemError = IError<FileSystemError> & { path: string };

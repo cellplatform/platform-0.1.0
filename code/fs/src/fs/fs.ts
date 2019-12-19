@@ -11,6 +11,7 @@ import { ancestor } from '../ancestor';
 import { match } from '../match';
 import { env } from '../env';
 import { stream } from '../stream';
+import { sort } from '../sort';
 
 /**
  * Extended [file-system] object.
@@ -32,6 +33,11 @@ export const fs = {
    * Helpers for searching for glob patterns.
    */
   glob,
+
+  /**
+   * Helpers for semantically sorting filenames and paths.
+   */
+  sort,
 
   /**
    * Helpers for working with file content.

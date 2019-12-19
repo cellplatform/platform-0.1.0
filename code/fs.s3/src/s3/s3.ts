@@ -2,6 +2,7 @@ import { AWS, t, toContentType } from '../common';
 import { get } from './s3.get';
 import { put } from './s3.put';
 import { list } from './s3.list';
+import { deleteOne, deleteMany } from './s3.delete';
 
 export * from './s3.get';
 export * from './s3.put';
@@ -30,6 +31,10 @@ export function init(args: t.S3Config): t.S3 {
       return `https://${bucket}.${endpoint}/${path}`;
     },
 
+    list(args: { bucket: string; prefix?: string; max?: number }) {
+      return list({ ...args, s3 });
+    },
+
     get(args: { bucket: string; key: string }) {
       return get({ ...args, s3 });
     },
@@ -38,8 +43,12 @@ export function init(args: t.S3Config): t.S3 {
       return put({ ...args, s3 });
     },
 
-    list(args: { bucket: string; prefix?: string; max?: number }) {
-      return list({ ...args, s3 });
+    deleteOne(args: { bucket: string; key: string }) {
+      return deleteOne({ ...args, s3 });
+    },
+
+    deleteMany(args: { bucket: string; keys: string[] }) {
+      return deleteMany({ ...args, s3 });
     },
 
     bucket(name: string) {
@@ -50,14 +59,20 @@ export function init(args: t.S3Config): t.S3 {
         url(path?: string) {
           return res.url(bucket, path);
         },
+        list(args: { prefix?: string; max?: number }) {
+          return res.list({ ...args, bucket });
+        },
         get(args: { key: string }) {
           return res.get({ ...args, bucket });
         },
         put(args: { key: string; source: string | Buffer; acl?: t.S3Permissions }) {
           return res.put({ ...args, bucket });
         },
-        list(args: { prefix?: string; max?: number }) {
-          return res.list({ ...args, bucket });
+        deleteOne(args: { key: string }) {
+          return res.deleteOne({ ...args, bucket });
+        },
+        deleteMany(args: { keys: string[] }) {
+          return res.deleteMany({ ...args, bucket });
         },
       };
     },

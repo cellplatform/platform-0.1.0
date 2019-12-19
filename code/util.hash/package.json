@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.hash",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "Object and value hashing (SHA-256 / SHA-224).",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@platform/test": "0.1.0",
-    "@platform/ts": "3.7.5"
+    "@platform/ts": "3.7.7"
   },
   "files": [
     "lib",

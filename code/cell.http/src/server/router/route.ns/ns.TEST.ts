@@ -1,4 +1,5 @@
 import { t, expect, http, createMock, stripHashes, post } from '../../../test';
+import { testPostFile } from '../route.file/file.TEST';
 
 /**
  * TODO 🐷
@@ -32,8 +33,8 @@ describe('route: ns (namespace URI)', function() {
     });
   });
 
-  describe('GET', () => {
-    it('redirects from "ns:foo!A1" to "cell:" end-point', async () => {
+  describe('redirects', () => {
+    it('GET redirects from "ns:foo!A1" to "cell:" end-point', async () => {
       const test = async (path: string) => {
         const mock = await createMock();
         const res = await http.get(mock.url(path));
@@ -49,6 +50,142 @@ describe('route: ns (namespace URI)', function() {
       await test('/ns:foo!A1');
       await test('/ns:foo!A1/');
       await test('/ns:foo!A1?cells');
+    });
+  });
+
+  describe('GET', () => {
+    it('GET ns does not exist', async () => {
+      const mock = await createMock();
+      const url = mock.url('ns:foo');
+      const res = await http.get(url);
+      await mock.dispose();
+
+      expect(res.status).to.eql(200);
+
+      const body = res.json as t.IResGetNs;
+      const ns = body.data.ns;
+
+      expect(body.uri).to.eql('ns:foo');
+      expect(body.exists).to.eql(false);
+      expect(body.createdAt).to.eql(-1);
+      expect(body.modifiedAt).to.eql(-1);
+
+      expect(ns.id).to.eql('foo');
+      expect(ns.hash).to.eql('-'); // NB: default when does not exist.
+
+      // NB: No cell data by default (requires query-string).
+      expect(body.data.cells).to.eql(undefined);
+      expect(body.data.rows).to.eql(undefined);
+      expect(body.data.columns).to.eql(undefined);
+    });
+
+    it('GET squashes null values', async () => {
+      const mock = await createMock();
+
+      const payload: t.IReqPostNsBody = {
+        cells: { A1: { value: 'hello', props: null } } as any, // NB: [any] because `null` is an illegal type.
+        rows: { 1: { props: null } } as any,
+        columns: { A: { props: null } } as any,
+      };
+      await http.post(mock.url('ns:foo'), payload);
+
+      const url = mock.url('ns:foo?data');
+      const res = await http.get(url);
+      await mock.dispose();
+
+      const json = res.json as any;
+      stripHashes(json.data); // NB: Ignore calculated hash values for the purposes of this test.
+
+      expect(json.data.cells).to.eql({ A1: { value: 'hello' } });
+      expect(json.data.rows).to.eql({});
+      expect(json.data.columns).to.eql({});
+    });
+
+    it('GET selective data via query-string (boolean|ranges)', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: 'A1' },
+        B2: { value: 'B2' },
+        C1: { value: 'C1' },
+      };
+      const columns = {
+        A: { props: { height: 80 } },
+        C: { props: { height: 120 } },
+      };
+      const rows = {
+        1: { props: { width: 350 } },
+        3: { props: { width: 256 } },
+      };
+
+      const body: t.IReqPostNsBody = { cells, columns, rows };
+      await http.post(mock.url('ns:foo'), body);
+
+      const test = async (path: string, expected?: any) => {
+        const url = mock.url(path);
+        const res = await http.get(url);
+
+        // Prepare a subset of the return data to compare with expected result-set.
+        const json = (res.json as t.IResGetNs).data;
+        delete json.ns;
+        stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
+        expect(json).to.eql(expected);
+      };
+
+      await test('ns:foo', {});
+      await test('ns:foo?cells=false&rows=false&columns=false', {}); // Same as default (line above).
+
+      await test('ns:foo?cells', { cells });
+      await test('ns:foo?cells=true', { cells });
+      await test('ns:foo?cells=A1', { cells: { A1: cells.A1 } });
+      await test('ns:foo?cells=A1,B1:B10&cells=C9', { cells: { A1: cells.A1, B2: cells.B2 } });
+      await test('ns:foo?cells=A1:Z9', { cells });
+
+      await test('ns:foo?rows', { rows });
+      await test('ns:foo?rows=true', { rows });
+      await test('ns:foo?rows=1', { rows: { 1: rows['1'] } });
+      await test('ns:foo?rows=1:2', { rows: { 1: rows['1'] } });
+      await test('ns:foo?rows=1:9', { rows });
+      await test('ns:foo?rows=1,2:5', { rows });
+      await test('ns:foo?rows=2:5', { rows: { 3: rows['3'] } });
+
+      await test('ns:foo?columns', { columns });
+      await test('ns:foo?columns=true', { columns });
+      await test('ns:foo?columns=A', { columns: { A: columns.A } });
+      await test('ns:foo?columns=A:B', { columns: { A: columns.A } });
+      await test('ns:foo?columns=A:D', { columns });
+      await test('ns:foo?columns=B:D', { columns: { C: columns.C } });
+      await test('ns:foo?columns=B:D,A', { columns });
+
+      await test('ns:foo?cells&rows&columns', body);
+
+      const data = { ...body, files: {} };
+      await test('ns:foo?data', data);
+      await test('ns:foo?data=true', data);
+      await test('ns:foo?data=false', {});
+
+      await mock.dispose();
+    });
+
+    it('GET files via query-string', async () => {
+      const mock = await createMock();
+      const post = await testPostFile({
+        uri: 'file:foo:123',
+        filename: `image.png`,
+        source: 'src/test/assets/bird.png',
+        dispose: false,
+        mock,
+      });
+
+      const res1 = await http.get(mock.url('ns:foo'));
+      const res2 = await http.get(mock.url('ns:foo?files'));
+      await mock.dispose();
+
+      const json1 = (res1.json as t.IResGetNs).data;
+      const json2 = (res2.json as t.IResGetNs).data;
+      expect(json1.files).to.eql(undefined);
+
+      const file = (json2.files && json2.files['123']) as t.IFileData;
+      expect(file.props).to.eql(post.props);
     });
   });
 
@@ -306,117 +443,6 @@ describe('route: ns (namespace URI)', function() {
 
       expect(error1 && error1.type).to.match(/^FUNC\//);
       expect(error2).to.eql(undefined);
-    });
-  });
-
-  describe('GET', () => {
-    it('GET does not exist', async () => {
-      const mock = await createMock();
-      const url = mock.url('ns:foo');
-      const res = await http.get(url);
-      await mock.dispose();
-
-      expect(res.status).to.eql(200);
-
-      const body = res.json as t.IResGetNs;
-      const ns = body.data.ns;
-
-      expect(body.uri).to.eql('ns:foo');
-      expect(body.exists).to.eql(false);
-      expect(body.createdAt).to.eql(-1);
-      expect(body.modifiedAt).to.eql(-1);
-
-      expect(ns.id).to.eql('foo');
-      expect(ns.hash).to.eql('-'); // NB: default when does not exist.
-
-      // NB: No cell data by default (requires query-string).
-      expect(body.data.cells).to.eql(undefined);
-      expect(body.data.rows).to.eql(undefined);
-      expect(body.data.columns).to.eql(undefined);
-    });
-
-    it('GET squashes null values', async () => {
-      const mock = await createMock();
-
-      const payload: t.IReqPostNsBody = {
-        cells: { A1: { value: 'hello', props: null } } as any, // NB: [any] because `null` is an illegal type.
-        rows: { 1: { props: null } } as any,
-        columns: { A: { props: null } } as any,
-      };
-      await http.post(mock.url('ns:foo'), payload);
-
-      const url = mock.url('ns:foo?data');
-      const res = await http.get(url);
-      await mock.dispose();
-
-      const json = res.json as any;
-      stripHashes(json.data); // NB: Ignore calculated hash values for the purposes of this test.
-
-      expect(json.data.cells).to.eql({ A1: { value: 'hello' } });
-      expect(json.data.rows).to.eql({});
-      expect(json.data.columns).to.eql({});
-    });
-
-    it('GET selective data via query-string (boolean|ranges)', async () => {
-      const mock = await createMock();
-      const cells = {
-        A1: { value: 'A1' },
-        B2: { value: 'B2' },
-        C1: { value: 'C1' },
-      };
-      const columns = {
-        A: { props: { height: 80 } },
-        C: { props: { height: 120 } },
-      };
-      const rows = {
-        1: { props: { width: 350 } },
-        3: { props: { width: 256 } },
-      };
-      const body: t.IReqPostNsBody = { cells, columns, rows };
-      await http.post(mock.url('ns:foo'), body);
-
-      const test = async (path: string, expected?: any) => {
-        const url = mock.url(path);
-        const res = await http.get(url);
-
-        // Prepare a subset of the return data to compare with expected result-set.
-        const json = (res.json as t.IResPostNs).data;
-        delete json.ns;
-        stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
-        expect(json).to.eql(expected);
-      };
-
-      await test('ns:foo', {});
-      await test('ns:foo?cells=false&rows=false&columns=false', {}); // Same as default (line above).
-
-      await test('ns:foo?cells', { cells });
-      await test('ns:foo?cells=true', { cells });
-      await test('ns:foo?cells=A1', { cells: { A1: cells.A1 } });
-      await test('ns:foo?cells=A1,B1:B10&cells=C9', { cells: { A1: cells.A1, B2: cells.B2 } });
-      await test('ns:foo?cells=A1:Z9', { cells });
-
-      await test('ns:foo?rows', { rows });
-      await test('ns:foo?rows=true', { rows });
-      await test('ns:foo?rows=1', { rows: { 1: rows['1'] } });
-      await test('ns:foo?rows=1:2', { rows: { 1: rows['1'] } });
-      await test('ns:foo?rows=1:9', { rows });
-      await test('ns:foo?rows=1,2:5', { rows });
-      await test('ns:foo?rows=2:5', { rows: { 3: rows['3'] } });
-
-      await test('ns:foo?columns', { columns });
-      await test('ns:foo?columns=true', { columns });
-      await test('ns:foo?columns=A', { columns: { A: columns.A } });
-      await test('ns:foo?columns=A:B', { columns: { A: columns.A } });
-      await test('ns:foo?columns=A:D', { columns });
-      await test('ns:foo?columns=B:D', { columns: { C: columns.C } });
-      await test('ns:foo?columns=B:D,A', { columns });
-
-      await test('ns:foo?cells&rows&columns', body);
-      await test('ns:foo?data', body);
-      await test('ns:foo?data=true', body);
-      await test('ns:foo?data=false', {});
-
-      await mock.dispose();
     });
   });
 });

@@ -16,8 +16,17 @@ export type IClientResponse<T> = {
  */
 export type IClient = {
   readonly origin: string;
+  ns(input: string | t.IUrlParamsNs): IClientNs;
   cell(input: string | t.IUrlParamsCell): IClientCell;
   file(input: string | t.IUrlParamsFile): IClientFile;
+};
+
+/**
+ * NAMESPSACE
+ */
+export type IClientNs = {
+  readonly uri: t.IUriParts<t.INsUri>;
+  readonly url: t.IUrlsNs;
 };
 
 /**
@@ -27,17 +36,9 @@ export type IClientCell = {
   readonly uri: t.IUriParts<t.ICellUri>;
   readonly url: t.IUrlsCell;
   readonly file: IClientCellFile;
+  readonly files: IClientCellFiles;
   info(): t.IClientResponseAsync<t.IResGetCell>;
   links(): t.IClientResponseAsync<IClientCellLinks>;
-};
-
-export type IClientCellFile = {
-  name(filename: string): IClientCellFileByName;
-};
-
-export type IClientCellFileByName = {
-  upload(data: ArrayBuffer): t.IClientResponseAsync<t.IResPostCellFile>;
-  download(): t.IClientResponseAsync<ReadableStream>;
 };
 
 export type IClientCellLinks = {
@@ -46,6 +47,29 @@ export type IClientCellLinks = {
   toObject(): t.ICellData['links'];
 };
 
+export type IClientCellFile = {
+  name(filename: string): IClientCellFileByName;
+};
+
+export type IClientCellFileByName = {
+  info(): t.IClientResponseAsync<t.IResGetFile>;
+  download(): t.IClientResponseAsync<ReadableStream>;
+};
+
+export type IClientCellFiles = {
+  map(): t.IClientResponseAsync<t.IFileMap>;
+  list(): t.IClientResponseAsync<IClientFileData[]>;
+  upload(
+    files: IClientCellFileUpload | IClientCellFileUpload[],
+  ): t.IClientResponseAsync<t.IResPostCellFiles>;
+  delete(filename: string | string[]): t.IClientResponseAsync<t.IResDeleteCellFilesData>;
+  unlink(filename: string | string[]): t.IClientResponseAsync<t.IResDeleteCellFilesData>;
+};
+export type IClientCellFileUpload = { filename: string; data: ArrayBuffer };
+
+/**
+ * Cell Links
+ */
 export type IClientCellLink = IClientCellLinkUnknown | IClientCellLinkFile;
 
 export type IClientCellLinkUnknown = {
@@ -71,4 +95,7 @@ export type IClientFile = {
   readonly url: t.IUrlsFile;
   info(): t.IClientResponseAsync<t.IResGetFile>;
   upload(args: { filename: string; data: ArrayBuffer }): t.IClientResponseAsync<t.IResPostFile>;
+  delete(): t.IClientResponseAsync<t.IResDeleteFile>;
 };
+
+export type IClientFileData = t.IFileData & { uri: string };

@@ -100,7 +100,7 @@ export async function getNsResponse(args: {
 async function getNsData(args: {
   model: t.IDbModelNs;
   query: t.IUrlQueryGetNs;
-}): Promise<Partial<t.INsDataCoord> | t.IErrorPayload> {
+}): Promise<Partial<t.INsDataChildren> | t.IErrorPayload> {
   try {
     const { model, query } = args;
     if (Object.keys(query).length === 0) {
@@ -110,8 +110,9 @@ async function getNsData(args: {
     const cells = query.data ? true : formatQuery(query.cells);
     const columns = query.data ? true : formatQuery(query.columns);
     const rows = query.data ? true : formatQuery(query.rows);
+    const files = query.data ? true : query.files; // NB: boolean flag, no range selection.
 
-    return models.ns.getChildData({ model, cells, columns, rows });
+    return models.ns.getChildData({ model, cells, columns, rows, files });
   } catch (err) {
     return util.toErrorPayload(err);
   }

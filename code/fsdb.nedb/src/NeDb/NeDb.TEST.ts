@@ -265,16 +265,6 @@ describe('NeDb', () => {
     });
   });
 
-  // describe('key/path validity', () => {
-
-  //   it('is valid', () => {});
-
-  //   it('is not valid', () => {
-
-  //   });
-
-  // });
-
   describe('find (path)', () => {
     it('nothing (no match)', async () => {
       const items = [

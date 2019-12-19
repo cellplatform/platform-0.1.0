@@ -37,7 +37,7 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
 
       // Download the file.
       if (func && Schema.uri.is.file(func.uri)) {
-        const url = util.urls(host).file(func.uri).file;
+        const url = util.urls(host).file(func.uri).download;
         const saveTo = `${TMP}/cache/${func.uri.replace(/\:/g, '-')}`;
 
         const res = await http.get(url);
@@ -45,7 +45,7 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
           await fs.stream.save(saveTo, res.body);
         }
 
-        // Load the WASM
+        // Load the WASM.
         const source = await fs.readFile(saveTo);
         const typedArray = new Uint8Array(source);
         const env = {

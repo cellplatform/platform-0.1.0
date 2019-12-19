@@ -243,9 +243,9 @@ export class NeDb implements t.INeDb {
    * [Delete]
    */
 
-  public async delete(key: string): Promise<t.IDbValue> {
+  public async delete(key: string, options: { silent?: boolean } = {}): Promise<t.IDbValue> {
     this.throwIfDisposed('delete');
-    return (await this.deleteMany([key]))[0];
+    return (await this.deleteMany([key], options))[0];
   }
   public async deleteMany(
     keys: string[],
@@ -269,7 +269,7 @@ export class NeDb implements t.INeDb {
       return res;
     });
 
-    // Fire read events.
+    // Fire events.
     if (!options.silent) {
       result.forEach(item => {
         const { value, props } = item;

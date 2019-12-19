@@ -28,7 +28,7 @@ export function urls(host: string) {
           const cell = url.cell(cellUri);
           return {
             cell: cell.info.toString(),
-            files: cell.files.toString(),
+            files: cell.files.list.toString(),
           };
         },
 
@@ -47,36 +47,16 @@ export function urls(host: string) {
                 return acc;
               }, {});
           },
-
-          list(links: t.ICellData['links']): t.IResGetFilesLink[] {
-            return Object.keys(links || {})
-              .map(key => ({ key, value: (links || {})[key] }))
-              .filter(({ value }) => Schema.uri.is.file(value))
-              .map(({ key, value }) => {
-                const { uri, hash } = Schema.file.links.parseLink(value);
-                const filename = Schema.file.links.toFilename(key);
-                const link: t.IResGetFilesLink = {
-                  uri,
-                  filename,
-                  hash,
-                  ...api.file(uri, hash),
-                };
-                return link;
-              });
-          },
         },
       };
     },
 
     file(fileUri: string, hash?: string): t.IResGetFileLinks {
       const fileUrl = url.file(fileUri);
-      let file = fileUrl.download;
-      if (hash) {
-        file = file.query({ hash });
-      }
+      const download = fileUrl.download.query({ hash });
       return {
-        file: file.toString(),
         info: fileUrl.info.toString(),
+        download: download.toString(),
       };
     },
 

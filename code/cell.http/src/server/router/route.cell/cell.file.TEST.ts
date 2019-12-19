@@ -1,46 +1,59 @@
 import { Schema, createMock, expect, fs, http, t } from '../../../test';
 
+const expectFileInFs = async (fileUri: string, exists: boolean) => {
+  const { file, ns } = Schema.uri.parse<t.IFileUri>(fileUri).parts;
+  const path = fs.resolve(`tmp/fs/ns.${ns}/${file}`);
+  expect(await fs.pathExists(path)).to.eql(exists);
+};
+
 describe('route: !A1/file', () => {
-  it('writes file by name (updating the cell model)', async () => {
+  it('writes files by name (updating the cell model)', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
+    const cellClient = mock.client.cell(cellUri);
+
+    const file1 = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
+    const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
 
     // Cell model does not exist.
     const res1 = (await http.get(mock.url(cellUri))).json as t.IResGetCell;
     expect(res1.exists).to.eql(false);
     expect(res1.data).to.eql({});
 
-    // POST the file to the service.
-    const sourceFile = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
-    const client = mock.client.cell(cellUri);
-    const res2 = await client.file.name('func.wasm').upload(sourceFile);
+    // Upload two files.
+    const res2 = await cellClient.files.upload([
+      { filename: 'func.wasm', data: file1 },
+      { filename: 'kitten.jpg', data: file2 },
+    ]);
+    (() => {
+      expect(res2.status).to.eql(200);
+      const cell = res2.body.data.cell;
+      const links = cell.links || {};
+      expect(links['fs:func:wasm']).to.match(/^file\:foo/);
+      expect(links['fs:kitten:jpg']).to.match(/^file\:foo/);
+    })();
 
-    // Ensure the URI to the file was stored.
-    const cell = res2.body.data.cell;
-    const link = (cell.links || {})['fs:func:wasm'];
-    const uri = Schema.uri.parse<t.IFileUri>(link);
-    expect(uri.ok).to.eql(true);
+    // Compare the cell in the response with a new query to the cell from the service.
+    expect((await cellClient.info()).body.data).to.eql(res2.body.data.cell);
 
-    // Load the file info and compare filename and hash.
-    const res3 = await http.get(mock.urls.file(link.split('?')[0]).info.toString());
-    const res3Data = (res3.json as t.IResGetFile).data;
-    const fileHash = res3Data.hash;
-    expect(link.split('?')[1]).to.eql(`hash=${fileHash}`);
-    expect(res3Data.props.filename).to.eql('func.wasm');
-
-    // Load the saved file and ensure it matches the source.
-    const targetFilePath = fs.resolve(`tmp/fs/ns.${uri.parts.ns}/${uri.parts.file}`);
-    const targetFile = await fs.readFile(targetFilePath);
-
-    expect(targetFile.toString()).to.eql(sourceFile.toString());
+    // Check the files exist.
+    const downloadAndSave = async (filename: string, path: string, compareWith: Buffer) => {
+      path = fs.resolve(path);
+      const res = await cellClient.file.name(filename).download();
+      await fs.stream.save(path, res.body);
+      const buffer = await fs.readFile(path);
+      expect(buffer.toString()).to.eql(compareWith.toString());
+    };
+    await downloadAndSave('func.wasm', 'tmp/file1', file1);
+    await downloadAndSave('kitten.jpg', 'tmp/file2', file2);
 
     // Examine changes.
     const changes = res2.body.data.changes || [];
     expect(changes[0].uri).to.eql(cellUri);
     expect(changes[0].field).to.eql('links');
     expect(changes[0].from).to.eql(undefined);
-    expect(changes[0].to).to.eql({ 'fs:func:wasm': link });
 
+    // Finish up.
     await mock.dispose();
   });
 
@@ -53,7 +66,7 @@ describe('route: !A1/file', () => {
     const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
 
     // POST the file to the service.
-    await cellClient.file.name('func.wasm').upload(file1);
+    await cellClient.files.upload({ filename: 'func.wasm', data: file1 });
 
     // Save and compare the downloaded stream.
     const path = fs.resolve('tmp/test/download/func.wasm');
@@ -89,6 +102,133 @@ describe('route: !A1/file', () => {
     expect(download2.ok).to.eql(false);
     expect(download2.status).to.eql(409);
     expect(download2.error && download2.error.message).to.contains('hash does not match');
+
+    // Get info about the file, from the `file.name` client.
+    const fileInfo = await cellClient.file.name('func.wasm').info();
+    expect(fileInfo.status).to.eql(200);
+    expect(fileInfo.body.data.props.filename).to.eql('func.wasm');
+
+    // Finish up.
+    await mock.dispose();
+  });
+
+  it('GET A1/files', async () => {
+    const mock = await createMock();
+    const A1 = 'cell:foo!A1';
+    const A2 = 'cell:foo!A2';
+    const clientA1 = mock.client.cell(A1);
+    const clientA2 = mock.client.cell(A2);
+
+    const file1 = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
+    const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
+    const file3 = await fs.readFile(fs.resolve('src/test/assets/bird.png'));
+
+    // POST the file to the service.
+    await clientA1.files.upload([
+      { filename: 'func.wasm', data: file1 },
+      { filename: 'kitten.jpg', data: file2 },
+    ]);
+    await clientA2.files.upload({ filename: 'bird.png', data: file3 });
+
+    const res1 = await clientA1.files.list();
+    const res2 = await clientA2.files.list();
+
+    expect(res1.body.length).to.eql(2);
+    expect(res1.body[0].props.filename).to.eql('func.wasm');
+    expect(res1.body[1].props.filename).to.eql('kitten.jpg');
+
+    expect(res2.body.length).to.eql(1);
+    expect(res2.body[0].props.filename).to.eql('bird.png');
+
+    // Finish up.
+    await mock.dispose();
+  });
+
+  it('DELETE A1/files (delete and/or unlink)', async () => {
+    const mock = await createMock();
+    const A1 = 'cell:foo!A1';
+    const clientA1 = mock.client.cell(A1);
+
+    const file1 = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
+    const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
+    const file3 = await fs.readFile(fs.resolve('src/test/assets/bird.png'));
+    const file4 = await fs.readFile(fs.resolve('src/test/assets/foo.json'));
+
+    await clientA1.files.upload([
+      { filename: 'func.wasm', data: file1 },
+      { filename: 'kitten.jpg', data: file2 },
+      { filename: 'cat&bird.png', data: file3 },
+      { filename: 'foo.json', data: file4 },
+    ]);
+
+    const res1 = await clientA1.files.list();
+    expect(res1.body.length).to.eql(4);
+
+    await expectFileInFs(res1.body[0].uri, true);
+    await expectFileInFs(res1.body[1].uri, true);
+    await expectFileInFs(res1.body[2].uri, true);
+    await expectFileInFs(res1.body[3].uri, true);
+
+    const res2 = await clientA1.files.delete(['', '  ']); // NB: All values collapse to nothing.
+    expect(res2.status).to.eql(200);
+    expect(res2.body.deleted).to.eql([]);
+    expect(res2.body.unlinked).to.eql([]);
+    expect(res2.body.errors).to.eql([]);
+
+    // Delete single file.
+    const res3 = await clientA1.files.delete('cat&bird.png');
+    expect(res3.ok).to.eql(true);
+    expect(res3.status).to.eql(200);
+    expect(res3.body.uri).to.eql('cell:foo!A1');
+    expect(res3.body.deleted).to.eql(['cat&bird.png']);
+    expect(res3.body.unlinked).to.eql(['cat&bird.png']);
+    expect(res3.body.errors).to.eql([]);
+
+    // Ensure files have been deleted from the underlying file-system.
+    await expectFileInFs(res1.body[0].uri, true);
+    await expectFileInFs(res1.body[1].uri, true);
+    await expectFileInFs(res1.body[2].uri, false);
+    await expectFileInFs(res1.body[3].uri, true);
+    expect((await clientA1.files.list()).body.length).to.eql(3);
+
+    // Ensure the links is removed from the cell.
+    const links = (await clientA1.info()).body.data.links || {};
+    expect(links['fs:cat&bird:png']).to.eql(undefined); //   Unlinked and deleted.
+    expect(links['fs:func:wasm']).to.not.eql(undefined); //  Remains.
+    expect(links['fs:kitten:jpg']).to.not.eql(undefined); // Remains.
+
+    // Remove multiple-files at once.
+    const res4 = await clientA1.files.delete(['func.wasm', 'foo.json']);
+    expect(res4.body.deleted.sort()).to.eql(['foo.json', 'func.wasm']);
+    expect(res4.body.unlinked.sort()).to.eql(['foo.json', 'func.wasm']);
+    expect(res4.body.errors).to.eql([]);
+
+    // Ensure files have been deleted from the underlying file-system.
+    await expectFileInFs(res1.body[0].uri, false);
+    await expectFileInFs(res1.body[1].uri, true);
+    await expectFileInFs(res1.body[2].uri, false);
+    await expectFileInFs(res1.body[3].uri, false);
+    expect((await clientA1.files.list()).body.length).to.eql(1);
+
+    // Report error for a delete request that is not linked to the cell.
+    const res5 = await clientA1.files.delete('not-linked.pdf');
+    expect(res5.ok).to.eql(false);
+    expect(res5.status).to.eql(500);
+    expect(res5.body.errors.length).to.eql(1);
+    expect(res5.body.errors[0].error).to.eql('NOT_LINKED');
+
+    // Unlink only.
+    const res6 = await clientA1.files.unlink('kitten.jpg');
+    expect(res6.body.deleted).to.eql([]);
+    expect(res6.body.unlinked).to.eql(['kitten.jpg']);
+    expect(res6.body.errors).to.eql([]);
+
+    // Ensure file remains on file-system, but is not linked to the cell model.
+    await expectFileInFs(res1.body[0].uri, false);
+    await expectFileInFs(res1.body[1].uri, true);
+    await expectFileInFs(res1.body[2].uri, false);
+    await expectFileInFs(res1.body[3].uri, false);
+    expect((await clientA1.files.list()).body.length).to.eql(0);
 
     // Finish up.
     await mock.dispose();

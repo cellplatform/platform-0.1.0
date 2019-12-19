@@ -76,8 +76,31 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       return { status, data: { error } };
     } else {
       const form = await req.body.form();
-      return postFileResponse({ db, fs, uri, query, form, host });
+
+      if (form.files.length === 0) {
+        const err = new Error(`No file data was posted to the URI ("${uri}").`);
+        return util.toErrorPayload(err, { status: 400 });
+      }
+      if (form.files.length > 1) {
+        const err = new Error(`Only a single file can be posted to the URI ("${uri}").`);
+        return util.toErrorPayload(err, { status: 400 });
+      }
+
+      const file = form.files[0];
+      return postFileResponse({ db, fs, uri, query, file, host });
     }
+  });
+
+  /**
+   * DELETE binary-file.
+   */
+  router.delete(routes.FILE.BASE, async req => {
+    const host = req.host;
+    const query = req.query as t.IUrlQueryDeleteFile;
+    const { status, ns, error, uri } = getParams(req);
+    return !ns || error
+      ? { status, data: { error } }
+      : deleteFileResponse({ fs, uri, db, query, host });
   });
 }
 
@@ -177,36 +200,26 @@ export async function postFileResponse(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;
-  form: t.IForm;
+  file: t.IFormFile;
   host: string;
   query?: t.IUrlQueryPostFile;
-  filename?: string; // NB: if specified overrides filename within form-data.
 }): Promise<t.IPayload<t.IResPostFile> | t.IErrorPayload> {
-  const { db, uri, query = {}, form, fs, host } = args;
+  const { db, uri, query = {}, file, fs, host } = args;
   const sendChanges = defaultValue(query.changes, true);
   let changes: t.IDbModelChange[] = [];
 
   try {
-    if (form.files.length === 0) {
-      const err = new Error(`No file data was posted to the URI ("${uri}").`);
-      return util.toErrorPayload(err, { status: 400 });
-    }
-    if (form.files.length > 1) {
-      const err = new Error(`Only a single file can be posted to the URI ("${uri}").`);
-      return util.toErrorPayload(err, { status: 400 });
-    }
-
     // Save to the abstract file-system (S3 or local).
-    const file = form.files[0];
     const { buffer, encoding } = file;
-    const filename = args.filename || file.name;
+    const filename = file.name;
     const writeResponse = await fs.write(uri, buffer);
     const filehash = writeResponse.file.hash;
     const location = writeResponse.location;
+    const bytes = Uint8Array.from(buffer).length;
 
     // Save the model.
     const model = await models.File.create({ db, uri }).ready;
-    models.setProps(model, { encoding, filename, filehash, location });
+    models.setProps(model, { encoding, filename, filehash, location, bytes });
     const saveResponse = await model.save();
 
     // Store DB changes.
@@ -226,6 +239,38 @@ export async function postFileResponse(args: {
       },
     };
 
+    return res;
+  } catch (err) {
+    return util.toErrorPayload(err);
+  }
+}
+
+export async function deleteFileResponse(args: {
+  db: t.IDb;
+  fs: t.IFileSystem;
+  uri: string;
+  host: string;
+  query?: t.IUrlQueryDeleteFile;
+}): Promise<t.IPayload<t.IResDeleteFile> | t.IErrorPayload> {
+  const { db, fs, uri } = args;
+
+  try {
+    // Delete the file from disk.
+    const resDeleteFile = await fs.delete(uri);
+    const fsError = resDeleteFile.error;
+    if (fsError) {
+      const { type } = fsError;
+      return util.toErrorPayload(fsError.message, { type });
+    }
+
+    // Delete the model.
+    const model = await models.File.create({ db, uri }).ready;
+    await model.delete();
+
+    const res: t.IPayload<t.IResDeleteFile> = {
+      status: 200,
+      data: { deleted: true, uri },
+    };
     return res;
   } catch (err) {
     return util.toErrorPayload(err);

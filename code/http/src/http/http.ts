@@ -36,6 +36,26 @@ export function create(options: t.IFetchOptions = {}) {
       const res = await isomorphic(url, { method: 'POST', body, headers, mode });
       return toResponse(url, res);
     },
+
+    /**
+     * `PUT`
+     */
+    async put(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
+      const { mode, headers } = mergeOptions(options);
+      const body = toBody({ url, headers, data });
+      const res = await isomorphic(url, { method: 'PUT', body, headers, mode });
+      return toResponse(url, res);
+    },
+
+    /**
+     * `DELETE`
+     */
+    async delete(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
+      const { mode, headers } = mergeOptions(options);
+      const body = toBody({ url, headers, data });
+      const res = await isomorphic(url, { method: 'DELETE', body, headers, mode });
+      return toResponse(url, res);
+    },
   };
 
   /**

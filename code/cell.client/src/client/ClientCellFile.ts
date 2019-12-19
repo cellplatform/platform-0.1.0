@@ -1,4 +1,4 @@
-import { http, t, FormData, util, Schema, ERROR } from '../common';
+import { ERROR, http, Schema, t, util } from '../common';
 
 export type IClientCellFileArgs = { parent: t.IClientCell; urls: t.IUrls };
 
@@ -26,53 +26,45 @@ export class ClientCellFile implements t.IClientCellFile {
    * [Methods]
    */
   public name(filename: string) {
+    const self = this;
     const parent = this.args.parent;
     return {
       /**
-       * Upload a file and associate it with the cell.
+       * Meta-data about the file.
        */
-      async upload(data: ArrayBuffer) {
-        // Prepare the form data.
-        const form = new FormData();
-        form.append('file', data, {
-          filename,
-          contentType: 'application/octet-stream',
-        });
-        const headers = form.getHeaders();
+      async info() {
+        const linkRes = await self.getCellLinkByFilename(filename);
+        if (linkRes.error) {
+          return linkRes.error as any;
+        }
+        if (!linkRes.link) {
+          throw new Error(`Link should exist.`);
+        }
 
-        // POST to the service.
-        const url = parent.url.file.byName(filename);
-        const res = await http.post(url.toString(), form, { headers });
+        // Prepare the URL.
+        const link = linkRes.link;
+        const url = self.args.urls.file(link.uri).info;
 
-        // Finish up.
-        return util.toResponse<t.IResPostCellFile>(res);
+        // Call the service.
+        const res = await http.get(url.toString());
+        return util.toResponse<t.IResGetFile>(res);
       },
 
       /**
        * Retrieve the info about the given file.
        */
       async download(): Promise<t.IClientResponse<ReadableStream>> {
-        // Get cell info.
-        const cellRes = await parent.info();
-        if (!cellRes.body) {
-          const err = `Info about the cell "${parent.uri.toString()}" not found.`;
-          return util.toError(404, ERROR.HTTP.NOT_FOUND, err);
+        const linkRes = await self.getCellLinkByFilename(filename);
+        if (linkRes.error) {
+          return linkRes.error as any;
         }
-
-        // Look up link reference.
-        const cellInfo = cellRes.body.data;
-        const links = cellInfo.links || {};
-        const fileLinkKey = Schema.file.links.toKey(filename);
-        const fileLinkValue = links[fileLinkKey];
-        if (!fileLinkValue) {
-          const err = `A link within "${parent.uri.toString()}" to the filename '${filename}' does not exist.`;
-          return util.toError(404, ERROR.HTTP.NOT_FOUND, err);
+        if (!linkRes.link) {
+          throw new Error(`Link should exist.`);
         }
 
         // Prepare the URL.
-        let url = parent.url.file.byName(filename);
-        const link = Schema.file.links.parseLink(fileLinkValue);
-        url = link.hash ? url.query({ hash: link.hash }) : url;
+        const link = linkRes.link;
+        const url = parent.url.file.byName(filename).query({ hash: link.hash });
 
         // Request the download.
         const res = await http.get(url.toString());
@@ -90,5 +82,41 @@ export class ClientCellFile implements t.IClientCellFile {
         }
       },
     };
+  }
+
+  /**
+   * [Helpers]
+   */
+  private async getCellInfo() {
+    const parent = this.args.parent;
+    const res = await parent.info();
+    if (!res.body) {
+      const message = `Info about the cell "${parent.uri.toString()}" not found.`;
+      const error = util.toError(404, ERROR.HTTP.NOT_FOUND, message);
+      return { res, error };
+    } else {
+      const data = res.body.data;
+      return { res, data };
+    }
+  }
+
+  private async getCellLinkByFilename(filename: string) {
+    const parent = this.args.parent;
+    const { error, data } = await this.getCellInfo();
+    if (!data || error) {
+      return { error };
+    }
+
+    const links = data.links || {};
+    const linkKey = Schema.file.links.toKey(filename);
+    const linkValue = links[linkKey];
+    if (!linkValue) {
+      const message = `A link within "${parent.uri.toString()}" to the filename '${filename}' does not exist.`;
+      const error = util.toError(404, ERROR.HTTP.NOT_FOUND, message);
+      return { error };
+    }
+
+    const link = Schema.file.links.parseLink(linkValue);
+    return { link };
   }
 }

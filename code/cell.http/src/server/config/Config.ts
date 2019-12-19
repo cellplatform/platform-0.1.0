@@ -1,6 +1,6 @@
 import { t, fs, R, util, value as valueUtil, ERROR } from '../common';
 
-export const DEFAULT: t.IConfigDeployment = {
+export const DEFAULT: t.IHttpConfigDeployment = {
   title: 'Untitled',
   collection: 'cell.data',
   fs: {
@@ -24,7 +24,7 @@ export class Config {
   /**
    * Loads the configuration.
    */
-  public static loadSync(args: t.IConfigFileArgs = {}) {
+  public static loadSync(args: t.IHttpConfigFileArgs = {}) {
     // Path.
     const path = args.path ? fs.resolve(args.path) : fs.resolve('config.yml');
     const dir = fs.dirname(path);
@@ -49,14 +49,14 @@ export class Config {
     // Load file.
     let data = DEFAULT;
     if (exists) {
-      const yaml = fs.file.loadAndParseSync<t.IConfigDeployment>(file, DEFAULT);
+      const yaml = fs.file.loadAndParseSync<t.IHttpConfigDeployment>(file, DEFAULT);
       data = R.mergeDeepRight(data, yaml);
       data.now = data.now || {};
       data.secret = data.secret || {};
       data.secret.mongo = data.secret.mongo ? `@${data.secret.mongo.replace(/^\@/, '')}` : ''; // Prepend "@" symbol for `zeit/now`.
     }
 
-    const config: t.IConfigFile = {
+    const config: t.IHttpConfigFile = {
       path: exists ? file : path,
       exists,
       data,
@@ -72,19 +72,18 @@ export class Config {
  * [Helpers]
  */
 
-function validate(config: t.IConfigFile) {
+function validate(config: t.IHttpConfigFile) {
   const data = config.data;
-  const errors: t.IError[] = [];
-  const res: t.IValidation = {
+  const res: t.IHttpConfigValidation = {
+    errors: [],
     get isValid() {
-      return errors.length === 0;
+      return res.errors.length === 0;
     },
-    errors,
   };
 
   const error = (message: string) => {
     const error: t.IError = { type: ERROR.HTTP.CONFIG, message };
-    errors.push(error);
+    res.errors.push(error);
     return res;
   };
 

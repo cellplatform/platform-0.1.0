@@ -9,7 +9,7 @@ const pipeline = util.promisify(stream.pipeline);
 /**
  * Saves a readable stream to disk.
  */
-export async function save(path: string, data: NodeJS.ReadableStream) {
+export async function save(path: string, data: ReadableStream) {
   try {
     await ensureDir(dirname(path));
     const output = createWriteStream(path);

@@ -132,11 +132,32 @@ export class Urls implements t.IUrls {
       },
 
       /**
-       * Example: /cell:foo!A1/files
+       * All files related to the cell.
        */
-      get files() {
-        type Q = t.IUrlQueryGetCellFiles;
-        return toPath<Q>(`/cell:${ns}!${key}/files`);
+      files: {
+        /**
+         * Example: /cell:foo!A1/files
+         */
+        get list() {
+          type Q = t.IUrlQueryGetCellFiles;
+          return toPath<Q>(`/cell:${ns}!${key}/files`);
+        },
+
+        /**
+         * Example: /cell:foo!A1/files
+         */
+        get delete() {
+          type Q = t.IUrlQueryDeleteCellFiles;
+          return toPath<Q>(`/cell:${ns}!${key}/files`);
+        },
+
+        /**
+         * Example: /cell:foo!A1/files
+         */
+        get upload() {
+          type Q = t.IUrlQueryUploadCellFiles;
+          return toPath<Q>(`/cell:${ns}!${key}/files`);
+        },
       },
 
       /**
@@ -256,6 +277,11 @@ export class Urls implements t.IUrls {
 
       get download() {
         type Q = t.IUrlQueryGetFile;
+        return toPath<Q>(`/file:${id}`);
+      },
+
+      get delete() {
+        type Q = t.IUrlQueryDeleteFile;
         return toPath<Q>(`/file:${id}`);
       },
     };

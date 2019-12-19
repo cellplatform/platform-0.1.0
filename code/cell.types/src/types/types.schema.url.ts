@@ -21,6 +21,7 @@ export type IUrlQueryGetNs = {
   cells?: boolean | string | Array<string | boolean>; // true: all | string: key or range, eg "A1", "A1:C10"
   columns?: boolean | string | Array<string | boolean>;
   rows?: boolean | string | Array<string | boolean>;
+  files?: boolean;
 };
 
 export type IUrlQueryPostNs = IUrlQueryGetNs & {
@@ -54,6 +55,10 @@ export type IUrlQueryGetCell = {};
  * Query-string parameters for a [Cell]'s files.
  */
 export type IUrlQueryGetCellFiles = {};
+export type IUrlQueryUploadCellFiles = {
+  changes?: boolean; // NB: return list of changes (default: true).
+};
+export type IUrlQueryDeleteCellFiles = {};
 
 /**
  * Query-string parameters for a single [Cell]'s file (by name).
@@ -100,5 +105,8 @@ export type IUrlQueryGetFile = { hash?: string };
 export type IUrlQueryGetFileInfo = {};
 
 export type IUrlQueryPostFile = {
+  changes?: boolean; // NB: return list of changes (default: true).
+};
+export type IUrlQueryDeleteFile = {
   changes?: boolean; // NB: return list of changes (default: true).
 };

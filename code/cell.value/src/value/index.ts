@@ -1,2 +1,2 @@
 import * as value from './value';
-export { value };
+export { value, value as Value };

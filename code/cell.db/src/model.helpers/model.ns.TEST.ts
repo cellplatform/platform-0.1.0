@@ -1,6 +1,16 @@
-import { t, expect, getTestDb } from '../test';
+import { t, expect, getTestDb, value } from '../test';
 import { models } from '..';
-import { setChildData, setChildCells, getChildCells } from './model.ns';
+import {
+  getChildRows,
+  setChildData,
+  setChildCells,
+  getChildCells,
+  getChildColumns,
+  getChildData,
+  getChildFiles,
+} from './model.ns';
+
+const { deleteUndefined } = value;
 
 describe('helpers: model.ns', () => {
   it('toSchema', async () => {
@@ -140,8 +150,8 @@ describe('helpers: model.ns', () => {
     });
   });
 
-  describe('getChildCells', () => {
-    it('gets child cells (with links)', async () => {
+  describe('get (namespace child data)', () => {
+    it('getChildCells (with links)', async () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
 
@@ -153,6 +163,78 @@ describe('helpers: model.ns', () => {
 
       expect(A1.value).to.eql(123);
       expect(A1.links).to.eql({ 'fs:foo:wasm': 'file:abc.123' });
+    });
+
+    it('getChildRows', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const row = models.Row.create({ uri: 'cell:foo!1', db });
+      await row.set({ props: { height: 250 } }).save();
+
+      const rows = await getChildRows({ model: ns });
+      expect(rows['1']).to.eql(deleteUndefined(row.toObject()));
+    });
+
+    it('getChildColumns', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const column = models.Column.create({ uri: 'cell:foo!A', db });
+      await column.set({ props: { width: 250 } }).save();
+
+      const columns = await getChildColumns({ model: ns });
+      expect(columns.A).to.eql(deleteUndefined(column.toObject()));
+    });
+
+    it('getChildFiles', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const file = models.File.create({ uri: 'file:foo:abc', db });
+      await file.set({ props: { filename: 'image.png', mimetype: 'image/png' } }).save();
+
+      const files = await getChildFiles({ model: ns });
+      expect(files.abc).to.eql(deleteUndefined(file.toObject()));
+    });
+
+    it('getChildData', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const cell = models.Cell.create({ uri: 'cell:foo!A1', db });
+      await cell.set({ value: 123, links: { 'fs:foo:wasm': 'file:abc.123' } }).save();
+
+      const row = models.Row.create({ uri: 'cell:foo!1', db });
+      await row.set({ props: { height: 250 } }).save();
+
+      const column = models.Column.create({ uri: 'cell:foo!A', db });
+      await column.set({ props: { width: 250 } }).save();
+
+      const file = models.File.create({ uri: 'file:foo:abc', db });
+      await file.set({ props: { filename: 'image.png', mimetype: 'image/png' } }).save();
+
+      const res1 = await getChildData({ model: ns });
+      expect(res1).to.eql({});
+
+      const res2 = await getChildData({ model: ns, cells: true });
+      expect(res2).to.eql({
+        cells: { A1: deleteUndefined(cell.toObject()) },
+      });
+
+      const res3 = await getChildData({
+        model: ns,
+        cells: true,
+        rows: true,
+        columns: true,
+        files: true,
+      });
+      expect(res3).to.eql({
+        cells: { A1: deleteUndefined(cell.toObject()) },
+        rows: { '1': deleteUndefined(row.toObject()) },
+        columns: { A: deleteUndefined(column.toObject()) },
+        files: { abc: deleteUndefined(file.toObject()) },
+      });
     });
   });
 });

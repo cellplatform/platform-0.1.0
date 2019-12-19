@@ -133,7 +133,7 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
 async function copyAndPrepare(args: {
   sourceDir: string;
   targetDir: string;
-  config: t.IConfigDeployment;
+  config: t.IHttpConfigDeployment;
   target: DeployTarget;
 }) {
   const { sourceDir, targetDir, config } = args;
@@ -147,7 +147,7 @@ async function copyAndPrepare(args: {
 
     const file = tmpl.files.find(path => path.to.endsWith('now.json'));
     if (file) {
-      const json = await fs.file.loadAndParse<t.IConfigNowFile>(file.to);
+      const json = await fs.file.loadAndParse<t.IHttpConfigNowFile>(file.to);
 
       let alias = now.domain;
       alias = now.subdomain ? `${now.subdomain}.${alias}` : alias;

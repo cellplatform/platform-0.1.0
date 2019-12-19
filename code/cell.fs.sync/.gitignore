@@ -1,2 +1,4 @@
-node_modules
 .env
+.cell
+/node_modules
+/tmp

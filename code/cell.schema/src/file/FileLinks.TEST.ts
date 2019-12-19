@@ -28,6 +28,7 @@ describe('FileLinks', () => {
     test('foo', 'fs:foo');
     test('foo.png', 'fs:foo:png');
     test('fs.foo.png', 'fs:fs:foo:png');
+    test('cat&bird.png', 'fs:cat&bird:png');
   });
 
   it('toFilename (decoded)', () => {

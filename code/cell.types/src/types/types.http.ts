@@ -6,19 +6,19 @@ export type HttpProtocol = 'http' | 'https';
  * Configuration
  */
 
-export type IConfigFileArgs = { path?: string; throw?: boolean };
-export type IConfigFile = {
+export type IHttpConfigFileArgs = { path?: string; throw?: boolean };
+export type IHttpConfigFile = {
   path: string;
   exists: boolean;
-  data: IConfigDeployment;
-  validate(): IValidation;
+  data: IHttpConfigDeployment;
+  validate(): IHttpConfigValidation;
 };
-export type IValidation = {
+export type IHttpConfigValidation = {
   isValid: boolean;
   errors: t.IError[];
 };
 
-export type IConfigDeployment = {
+export type IHttpConfigDeployment = {
   title: string;
   collection: string;
   fs: {
@@ -37,7 +37,7 @@ export type IConfigDeployment = {
   };
 };
 
-export type IConfigNowFile = {
+export type IHttpConfigNowFile = {
   version: number;
   name: string;
   alias: string;
@@ -49,7 +49,7 @@ export type IConfigNowFile = {
  */
 export type IPayload<D> = { status: number; data: D };
 export type IErrorPayload = IPayload<t.IHttpError>;
-export type IUriResponse<D, L extends ILinkMap> = {
+export type IUriResponse<D, L extends ILinkMap = {}> = {
   uri: string;
   exists: boolean;
   createdAt: number;
@@ -68,7 +68,7 @@ export type ILinkMap = { [key: string]: string };
  * Namespace: GET
  */
 export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsLinks>;
-export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataCoord>;
+export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataChildren>;
 export type IResGetNsLinks = { data: string };
 
 /**
@@ -77,9 +77,9 @@ export type IResGetNsLinks = { data: string };
 
 export type IReqPostNsBody = {
   ns?: Partial<t.INsProps>;
-  cells?: t.IMap<t.ICellData>;
-  columns?: t.IMap<t.IColumnData>;
-  rows?: t.IMap<t.IRowData>;
+  cells?: t.ICellMap;
+  columns?: t.IColumnMap;
+  rows?: t.IRowMap;
   calc?: boolean | string | Array<string | boolean>; // Perform calcuations (default: false), if string key/range of cells to calculate, eg "A1", "A1:C10"
 };
 export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
@@ -111,7 +111,7 @@ export type IReqFileInfoQuery = {};
  */
 export type IResGetFile = IUriResponse<IResGetFileData, IResGetFileLinks>;
 export type IResGetFileData = t.IFileData & {};
-export type IResGetFileLinks = { file: string; info: string };
+export type IResGetFileLinks = { info: string; download: string };
 
 /**
  * File: POST
@@ -120,30 +120,45 @@ export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 
 /**
- * Cell/File
+ * File: DELETE
  */
-export type IResPostCellFile = IUriResponse<IResPostCellFileData, IResPostCellLinks>;
-export type IResPostCellFileData = {
-  cell: t.ICellData;
-  changes?: t.IDbModelChange[];
-};
-export type IResPostCellLinks = IResGetCellLinks & {};
+export type IResDeleteFile = { uri: string; deleted: boolean };
 
 /**
- * Cell/Files (list)
+ * Cell/Files: GET
  */
 export type IResGetCellFiles = {
   cell: string;
   uri: string;
-  files: IResGetFilesLink[];
   links: ILinkMap;
+  files: t.IFileMap;
 };
-export type IResGetFilesLink = {
+
+/**
+ * Cell/Files: POST
+ */
+export type IResPostCellFiles = IUriResponse<IResPostCellFilesData, IResPostCellLinks>;
+export type IResPostCellFilesData = {
+  cell: t.ICellData;
+  errors: IResPostCellFilesError[];
+  changes?: t.IDbModelChange[];
+};
+export type IResPostCellFilesError = { status: number; filename: string; message: string };
+export type IResPostCellLinks = IResGetCellLinks & {};
+
+/**
+ * Cell/Files: DELETE
+ */
+export type IReqDeleteCellFilesBody = {
+  filenames: string[];
+  action: 'DELETE' | 'UNLINK';
+};
+export type IResDeleteCellFiles = IUriResponse<IResDeleteCellFilesData>;
+export type IResDeleteCellFilesData = {
   uri: string;
-  filename: string;
-  hash: string;
-  file: string;
-  info: string;
+  deleted: string[];
+  unlinked: string[];
+  errors: Array<{ error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED'; filename: string }>;
 };
 
 /**

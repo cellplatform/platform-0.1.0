@@ -44,7 +44,11 @@ describe('model', () => {
   };
 
   const createOrg = async (
-    options: { put?: boolean; beforeSave?: t.BeforeModelSave<IMyOrgProps> } = {},
+    options: {
+      put?: boolean;
+      beforeSave?: t.BeforeModelSave<IMyOrgProps>;
+      beforeDelete?: t.BeforeModelDelete<IMyOrgProps>;
+    } = {},
   ) => {
     if (options.put) {
       await db.put(org.path, org.doc);
@@ -54,6 +58,7 @@ describe('model', () => {
       path: org.path,
       initial: org.initial,
       beforeSave: options.beforeSave,
+      beforeDelete: options.beforeDelete,
     });
   };
 
@@ -88,7 +93,7 @@ describe('model', () => {
       { key: `${path}/info/a`, value: { count: 123 } },
       { key: `${path}/info/b`, value: { count: 456 } },
     ]);
-    const model = Model.create<IMyOrgProps, IMyOrgDoc, {}, IMyOrgChildren>({
+    const model = Model.create<IMyOrgProps, IMyOrgDoc, IMyOrgLinks, IMyOrgChildren>({
       db,
       path,
       initial: org.initial,
@@ -527,7 +532,6 @@ describe('model', () => {
 
       const events: t.ModelEvent[] = [];
       model.events$.subscribe(e => events.push(e));
-
       model.events$
         .pipe(
           filter(e => e.type === 'MODEL/changing'),
@@ -611,8 +615,9 @@ describe('model', () => {
       const dbValue = await db.getValue<IMyOrgProps>(org.path);
       expect(dbValue.name).to.eql('Acme');
 
-      expect(events.length).to.eql(1);
-      expect(events[0].type).to.eql('MODEL/saved');
+      expect(events.length).to.eql(2);
+      expect(events[0].type).to.eql('MODEL/beforeSave');
+      expect(events[1].type).to.eql('MODEL/saved');
 
       const e = events[0].payload as t.IModelSave;
       expect(e.model).to.equal(model);
@@ -632,18 +637,21 @@ describe('model', () => {
 
       const res1 = await model.save();
       expect(res1.saved).to.eql(false);
-      expect(events.length).to.eql(0);
+      expect(events.length).to.eql(1);
 
       await time.wait(10);
 
       const res2 = await model.save({ force: true });
       expect(res2.saved).to.eql(true);
 
-      expect(events.length).to.eql(1);
+      expect(events.length).to.eql(3);
       expect(model.modifiedAt).to.greaterThan(modifiedAt);
 
-      expect(events[0].type).to.eql('MODEL/saved');
-      const e = events[0].payload as t.IModelSave;
+      expect(events[0].type).to.eql('MODEL/beforeSave');
+      expect(events[1].type).to.eql('MODEL/beforeSave');
+      expect(events[2].type).to.eql('MODEL/saved');
+
+      const e = events[2].payload as t.IModelSave;
       expect(e.force).to.eql(true);
       expect(e.isChanged).to.eql(false);
     });
@@ -703,16 +711,6 @@ describe('model', () => {
       expect(events[1].type).to.eql('MODEL/saved');
     });
 
-    it('does not run [beforeSave] when handler not provided to model', async () => {
-      const model = await (await createOrg({ put: false })).ready;
-
-      const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
-
-      await model.beforeSave();
-      expect(events.length).to.eql(0);
-    });
-
     it('runs [beforeSave] even if no changes made', async () => {
       let count = 0;
       let makeChange = false;
@@ -767,6 +765,41 @@ describe('model', () => {
 
       const model2 = await (await createOrg({ put: false })).ready;
       expect(model2.toObject().region).to.eql('US/west-1'); // NB: Modified value.
+    });
+
+    it('cancels save (via beforeSave handler)', async () => {
+      const beforeSave: t.BeforeModelSave = async args => {
+        args.cancel();
+      };
+
+      const model = await (await createOrg({ put: false, beforeSave })).ready;
+      model.props.name = 'Mary';
+      expect(model.isChanged).to.eql(true);
+      const res = await model.save();
+
+      expect(res.saved).to.eql(false);
+      expect(res.isChanged).to.eql(true);
+      expect(res.changes).to.eql(model.changes);
+      expect(model.isChanged).to.eql(true); // NB: Still true because the save was cancelled.
+    });
+
+    it('cancels save (via beforeSave event)', async () => {
+      const model = await (await createOrg({ put: false })).ready;
+      model.events$
+        .pipe(
+          filter(e => e.type === 'MODEL/beforeSave'),
+          map(e => e.payload as t.IModelSave),
+        )
+        .subscribe(e => e.cancel());
+
+      model.props.name = 'Mary';
+      expect(model.isChanged).to.eql(true);
+      const res = await model.save();
+
+      expect(res.saved).to.eql(false);
+      expect(res.isChanged).to.eql(true);
+      expect(res.changes).to.eql(model.changes);
+      expect(model.isChanged).to.eql(true); // NB: Still true because the save was cancelled.
     });
   });
 
@@ -1080,7 +1113,7 @@ describe('model', () => {
       const res = await model.children.all;
       const paths = res.map(model => model.path);
       expect(paths).to.eql([
-        'ORG/123',
+        // 'ORG/123', // NB: The model itself is not included in [all].
         'ORG/123/1',
         'ORG/123/2',
         'ORG/123/3',
@@ -1170,6 +1203,93 @@ describe('model', () => {
       expect(linkEvents[0].payload.field).to.eql('things');
       expect(linkEvents[1].payload.field).to.eql('subthings');
       expect(linkEvents[2].payload.field).to.eql('all');
+    });
+  });
+
+  describe('delete', () => {
+    it('deletes model (and children)', async () => {
+      expect((await db.find('**')).length).to.eql(0);
+
+      const model = await createOrgWithChildren();
+      const children1 = {
+        all: await model.children.all,
+        things: await model.children.things,
+        subthings: await model.children.subthings,
+      };
+
+      const events: t.ModelEvent[] = [];
+      model.events$.subscribe(e => events.push(e));
+
+      // Assert that everything exists.
+      expect(model.isLoaded).to.eql(true);
+      expect(model.exists).to.eql(true);
+
+      expect(children1.all.length).to.eql(5);
+      expect(children1.things.length).to.eql(3);
+      expect(children1.subthings.length).to.eql(2);
+
+      children1.things.forEach(child => expect(child.exists).to.eql(true));
+      children1.subthings.forEach(child => expect(child.exists).to.eql(true));
+
+      expect((await db.find('**')).length).to.eql(7);
+
+      // Delete the model.
+      const res = await model.delete();
+      expect(res.deleted).to.eql(true);
+      expect(res.total).to.eql(6);
+      expect(res.children).to.eql(5);
+
+      expect((await db.find('**')).length).to.eql(1); // NB: Only ~sys model remains.
+      expect(model.exists).to.eql(undefined);
+
+      expect(events.length).to.eql(2);
+      expect(events[0].payload).to.equal(events[1].payload);
+      expect(events[0].type).to.eql('MODEL/beforeDelete');
+      expect(events[1].type).to.eql('MODEL/deleted');
+
+      const payload = events[0].payload as t.IModelDelete;
+      expect(payload.isCancelled).to.eql(false);
+      expect(payload.model).to.equal(model);
+
+      const children2 = {
+        all: await model.children.all,
+        things: await model.children.things,
+        subthings: await model.children.subthings,
+      };
+      expect(children2.things).to.eql([]);
+      expect(children2.subthings).to.eql([]);
+      expect(children2.all).to.eql([]);
+    });
+
+    it('cancels delete (via beforeDelete)', async () => {
+      const beforeDelete: t.BeforeModelDelete = async args => {
+        args.cancel();
+      };
+
+      const model = await (await createOrg({ put: true, beforeDelete })).ready;
+      expect(model.exists).to.eql(true);
+
+      const res = await model.delete();
+      expect(res.deleted).to.eql(false);
+      expect(res.total).to.eql(0);
+      expect(res.children).to.eql(0);
+    });
+
+    it('cancels delete (via event)', async () => {
+      const model = await (await createOrg({ put: true })).ready;
+      expect(model.exists).to.eql(true);
+
+      model.events$
+        .pipe(
+          filter(e => e.type === 'MODEL/beforeDelete'),
+          map(e => e.payload as t.IModelDelete),
+        )
+        .subscribe(e => e.cancel());
+
+      const res = await model.delete();
+      expect(res.deleted).to.eql(false);
+      expect(res.total).to.eql(0);
+      expect(res.children).to.eql(0);
     });
   });
 });

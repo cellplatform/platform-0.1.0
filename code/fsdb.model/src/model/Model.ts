@@ -17,6 +17,7 @@ export type IModelArgs<
   links?: t.IModelLinkDefs<L>;
   children?: t.IModelChildrenDefs<C>;
   beforeSave?: t.BeforeModelSave<P, D, L, C>;
+  beforeDelete?: t.BeforeModelDelete<P, D, L, C>;
 };
 
 /**
@@ -314,18 +315,31 @@ export class Model<
   public async beforeSave(options: { force?: boolean } = {}) {
     this.throwIfDisposed('beforeSave');
     const { beforeSave } = this._args;
-    if (!beforeSave) {
-      return {};
-    }
-
     const { force = false } = options;
     const typename = this.typename;
     let changes = this.changes;
     let isChanged = changes.length > 0;
 
+    // Prepare handler
+    let isCancelled = false;
+    const payload: t.IModelSave<P, D, L, C> = {
+      force,
+      isChanged,
+      model: this,
+      changes,
+      get isCancelled() {
+        return isCancelled;
+      },
+      cancel() {
+        isCancelled = true;
+      },
+    };
+
     // Invoke handler.
-    const payload: t.IModelSave<P, D, L, C> = { force, isChanged, model: this, changes };
-    await beforeSave(payload);
+    if (beforeSave) {
+      // return { payload };
+      await beforeSave(payload);
+    }
 
     // Finish up.
     changes = this.changes;
@@ -335,7 +349,7 @@ export class Model<
       typename,
       payload: { ...payload, changes, isChanged },
     });
-    return {};
+    return { payload };
   }
 
   /**
@@ -346,7 +360,12 @@ export class Model<
     const { force = false } = options;
 
     // Run BEFORE operation.
-    await this.beforeSave({ force });
+    const res = await this.beforeSave({ force });
+    if (res.payload.isCancelled) {
+      const changes = this.changes;
+      const isChanged = changes.length > 0;
+      return { saved: false, isChanged, changes };
+    }
 
     if (!force && this.exists && !this.isChanged) {
       this._changes = [];
@@ -366,15 +385,87 @@ export class Model<
     this._changes = [];
     await this.load({ force: true, silent: true });
 
-    // Finish up.
+    // Fire AFTER event.
     const isChanged = changes.length > 0;
-    const typename = this.typename;
+    const payload = res.payload;
+    payload.isChanged = isChanged;
+    payload.changes = changes;
     this.fire({
       type: 'MODEL/saved',
-      typename,
-      payload: { force, isChanged, model: this, changes },
+      typename: this.typename,
+      payload,
     });
+
+    // Finish up.
     return { saved: true, isChanged, changes };
+  }
+
+  /**
+   * Runs the `beforeDelete` handler (if one was given to the constructor).
+   */
+  public async beforeDelete() {
+    this.throwIfDisposed('beforeDelete');
+    const { beforeDelete } = this._args;
+
+    // Prepare handler.
+    let isCancelled = false;
+    const payload: t.IModelDelete<P, D, L, C> = {
+      model: this,
+      get isCancelled() {
+        return isCancelled;
+      },
+      cancel() {
+        isCancelled = true;
+      },
+    };
+
+    // Invoke handler.
+    if (beforeDelete) {
+      await beforeDelete(payload);
+    }
+
+    // Finish up.
+    this.fire({
+      type: 'MODEL/beforeDelete',
+      typename: this.typename,
+      payload,
+    });
+    return { payload };
+  }
+
+  /**
+   * Deletes the model and all dependent children.
+   */
+  public async delete(): Promise<t.IModelDeleteResponse> {
+    // Run BEFORE operation.
+    const res = await this.beforeDelete();
+    if (res.payload.isCancelled) {
+      return { deleted: false, total: 0, children: 0 };
+    }
+
+    // Delete children models.
+    const children = (await this.children.all) || [];
+    if (children.length > 0) {
+      const wait = children.map(child => child.delete());
+      await Promise.all(wait);
+    }
+
+    // Delete the model itself.
+    await this.db.delete(this.path);
+    this.reset();
+
+    this.fire({
+      type: 'MODEL/deleted',
+      typename: this.typename,
+      payload: res.payload,
+    });
+
+    // Finish up.
+    return {
+      deleted: true,
+      total: children.length + 1,
+      children: children.length,
+    };
   }
 
   /**
@@ -532,8 +623,9 @@ export class Model<
       if (!this.isLoaded && defaultValue(options.autoLoad, true)) {
         await this.load();
       }
-
-      const paths = (await db.find(query)).list.map(item => item.props.key);
+      const paths = (await db.find(query)).list
+        .filter(item => item.props.key !== this.path)
+        .map(item => item.props.key);
       const children = await Promise.all(paths.map(path => def.factory({ db, path }).ready));
       this._childrenCache[field] = children;
 

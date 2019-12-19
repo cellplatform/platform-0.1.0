@@ -10,6 +10,7 @@ export type IFileSystemMembers = {
   resolve(uri: string): string;
   read(uri: string): Promise<IFileSystemRead>;
   write(uri: string, data: Buffer, options?: { filename?: string }): Promise<IFileSystemWrite>;
+  delete(uri: string | string[]): Promise<IFileSystemDelete>;
 };
 
 export type IFileSystemFile = {
@@ -20,6 +21,7 @@ export type IFileSystemFile = {
 };
 
 export type IFileSystemRead = {
+  ok: boolean;
   status: number;
   location: string;
   file?: IFileSystemFile;
@@ -27,8 +29,16 @@ export type IFileSystemRead = {
 };
 
 export type IFileSystemWrite = {
+  ok: boolean;
   status: number;
   location: string;
   file: IFileSystemFile;
+  error?: IFileSystemError;
+};
+
+export type IFileSystemDelete = {
+  ok: boolean;
+  status: number;
+  locations: string[];
   error?: IFileSystemError;
 };

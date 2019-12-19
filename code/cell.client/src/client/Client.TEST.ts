@@ -1,7 +1,5 @@
 import { expect } from '../test';
 import { Client } from '..';
-import { ClientCellFile } from './ClientCellFile';
-import { ClientCellLinks } from './ClientCellLinks';
 
 /**
  * NOTE:
@@ -25,6 +23,13 @@ describe('client', () => {
     test('https://domain.com', 'https://domain.com');
     test('https://domain.com:1234', 'https://domain.com:1234');
     test('domain.com:1234', 'https://domain.com:1234');
+  });
+
+  it('client.ns', () => {
+    const uri = 'ns:foo';
+    const client = Client.create();
+    const ns = client.ns(uri);
+    expect(ns.toString()).to.eql(uri);
   });
 
   it('client.cell', () => {

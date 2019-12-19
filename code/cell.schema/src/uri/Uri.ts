@@ -86,8 +86,8 @@ export class Uri {
           const parts = coord.cell.toCell(id);
           key = parts.key;
           ns = parts.ns;
-          setError(!key, `Coordinate key of '${type}' not found`);
-          setError(!ns, `Coordinate namespace of '${type}' not found`);
+          setError(!key, `Coordinate key of '${type || '<empty>'}' not found`);
+          setError(!ns, `Coordinate namespace of '${type || '<empty>'}' not found`);
         }
         data = { type, id, ns, key } as any;
       }
@@ -147,7 +147,7 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
   }
 
   if (!isValidId(id)) {
-    const err = `URI contains an invalid "${prefix}" identifier, must be an alpha-numeric cuid ("${id}").`;
+    const err = `URI contains an invalid "${prefix}" identifier, must be an alpha-numeric cuid.`;
     throw new Error(err);
   }
 

@@ -35,6 +35,7 @@ describe('fs.local', () => {
     const res = await fs.write(`  ${uri} `, png); // NB: URI padded with spaces (corrected internally).
     const file = res.file;
 
+    expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
     expect(res.location).to.eql(`file://${file.path}`);
@@ -57,6 +58,7 @@ describe('fs.local', () => {
     const res = await fs.read(uri);
     const file = res.file as t.IFileSystemFile;
 
+    expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
     expect(res.location).to.eql(`file://${file.path}`);
@@ -65,8 +67,58 @@ describe('fs.local', () => {
     expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
   });
 
+  it('delete file (one)', async () => {
+    await util.reset();
+    const fs = init();
+
+    const png = await util.image('bird.png');
+    const uri = 'file:foo:bird';
+    const path = fs.resolve(uri);
+
+    expect(await util.fs.pathExists(path)).to.eql(false);
+    await fs.write(uri, png);
+    expect(await util.fs.pathExists(path)).to.eql(true);
+
+    const res = await fs.delete(uri);
+    expect(await util.fs.pathExists(path)).to.eql(false);
+
+    expect(res.ok).to.eql(true);
+    expect(res.status).to.eql(200);
+    expect(res.locations[0]).to.eql(`file://${path}`);
+  });
+
+  it('delete file (many)', async () => {
+    await util.reset();
+    const fs = init();
+
+    const png = await util.image('bird.png');
+    const jpg = await util.image('kitten.jpg');
+    const uri1 = 'file:foo:bird';
+    const uri2 = 'file:foo:kitten';
+    const path1 = fs.resolve(uri1);
+    const path2 = fs.resolve(uri2);
+
+    expect(await util.fs.pathExists(path1)).to.eql(false);
+    expect(await util.fs.pathExists(path2)).to.eql(false);
+
+    await fs.write(uri1, png);
+    await fs.write(uri2, jpg);
+    expect(await util.fs.pathExists(path1)).to.eql(true);
+    expect(await util.fs.pathExists(path2)).to.eql(true);
+
+    const res = await fs.delete([uri1, uri2]);
+
+    expect(await util.fs.pathExists(path1)).to.eql(false);
+    expect(await util.fs.pathExists(path2)).to.eql(false);
+
+    expect(res.ok).to.eql(true);
+    expect(res.status).to.eql(200);
+    expect(res.locations[0]).to.eql(`file://${path1}`);
+    expect(res.locations[1]).to.eql(`file://${path2}`);
+  });
+
   describe('errors', () => {
-    it('read file (404 - not found)', async () => {
+    it('404 while reading file', async () => {
       await util.reset();
       const fs = init();
       const uri = 'file:foo:noexist';
@@ -74,11 +126,12 @@ describe('fs.local', () => {
       const res = await fs.read(uri);
       const error = res.error as t.IFileSystemError;
 
+      expect(res.ok).to.eql(false);
       expect(res.status).to.eql(404);
       expect(res.file).to.eql(undefined);
       expect(error.type).to.eql('FS/read/404');
       expect(error.path).to.eql(fs.resolve(uri));
-      expect(error.message).to.contain(`"file:foo:noexist" does not exist`);
+      expect(error.message).to.contain(`[file:foo:noexist] does not exist`);
     });
   });
 });

@@ -18,17 +18,17 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/cache@0.2.8":
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/@platform/cache/-/cache-0.2.8.tgz#00ce34cc54eda66a1c86876818defc05d184b1e1"
-  integrity sha512-lgLwdN4r8CjQ6Al+kLy/kFoA2v2t7OLz+y1G8XLY9sf/5ASGeFKqcCKj3lMfIDHAvf5YlRdmg3ggXa2hOzOnAg==
+"@platform/cache@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@platform/cache/-/cache-0.2.10.tgz#0f6891977c816fd4350d0df3ed2fcae43fc946d7"
+  integrity sha512-hlFpxb7pdOg0O3abTFgcSaCcEi3B05GRk1XWKImG9yUuywg+aBhDHPwXOb/soUTPQa74aFLevYLGKbs/+Hy1ug==
   dependencies:
     "@platform/libs" "0.1.5"
 
-"@platform/exec@0.2.38":
-  version "0.2.38"
-  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.38.tgz#faa5f2da2ca39bf52ec564bf61bc02e96b94e393"
-  integrity sha512-CKciFaZOdOFKUGvyLmKg0op/fTkPJyfa+1CynCViyL8qbwSLWcGE2vZxklj24EVI19QTqxHANny9TLJUAMN9BA==
+"@platform/exec@0.2.40":
+  version "0.2.40"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.40.tgz#209aeea26ec01e7593f186797c5a7662f5dbf2b4"
+  integrity sha512-NcnwlDxeKxnQ9wRW3rQbBls7x6hQJKrup8tsGcpegX5D8tYyvlu65QATVYMf/5FPjBr6e3s9F0vsVbRua8JPvg==
   dependencies:
     "@platform/libs" "0.1.5"
     "@types/chalk" "2.2.0"
@@ -37,10 +37,10 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.4.0.tgz#7931c026b22636f68cdb03ebfdbe9ef52b75e3f8"
-  integrity sha512-pqI8NEYvN5omovf/eRg97AvEMejuIJQPEaz0eJytS12ckrI8wgW+0u+q0UTLGOAFi0+ry2u8sQV12fD9Gyljnw==
+"@platform/fs@0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.5.1.tgz#3de8be473911742e61d3a207b8c5d914656032b2"
+  integrity sha512-fUyAojkBLnmCNIEWXIzqEkMdqOtcvFKh2qhvdzBu2QkaA9kPIt4csfsOS/RJRjU66zZcV3fVp/CRYqZnt5NP0Q==
   dependencies:
     "@types/fs-extra" "8.0.1"
     "@types/js-yaml" "3.12.1"
@@ -53,13 +53,13 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.types@0.5.13":
-  version "0.5.13"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.5.13.tgz#2c56ae6ba545fcd2652b8c3bb6c87368c73e1bcb"
-  integrity sha512-dbi2wMjROc4obSi6DjwmfVsJfg3bfBw7cWofouV3khcqAcFEeBw4PBTFAounXg5WZDFIpvYUtYIdKHV9yguwjA==
+"@platform/fsdb.types@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.6.0.tgz#26d529c4d52136bb3b078d773224f0e0dc05058e"
+  integrity sha512-UsBqUv8Gji3deghhhmSeImqH3fh6cxQqtLt15SOKzAV62AVZgFL4nRhhsDICE/tCW76whAmpUCMLIzuvCJ9xCQ==
   dependencies:
     "@platform/libs" "0.1.5"
-    "@platform/types" "0.3.1"
+    "@platform/types" "0.3.3"
 
 "@platform/libs@0.1.5":
   version "0.1.5"
@@ -98,25 +98,25 @@
     tslint-react "4.1.0"
     typescript "3.7.3"
 
-"@platform/ts@3.7.5":
-  version "3.7.5"
-  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.7.5.tgz#8df0e94b732fafcf16495ef58cede48d41536a88"
-  integrity sha512-LUvT6JPXLeIjuvW4NSfFWPKEDaXiyc/IJtM3k/a0U7d/JErzAZ3wr/Ir9t6D1hstttWPBQLvonyStksleNkzEw==
+"@platform/ts@3.7.7":
+  version "3.7.7"
+  resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.7.7.tgz#a43200789ac8dd498e0f37f775236b4992c9e855"
+  integrity sha512-8bKt/+xequJkpklyS62wUDQPfxVIHDLs9dTjPW1jqKAx+YSYKm/jSTCXjsKbCkIam36fcJBwtlAl9koEuJNRrA==
   dependencies:
-    "@platform/exec" "0.2.38"
-    "@platform/fs" "0.4.0"
+    "@platform/exec" "0.2.40"
+    "@platform/fs" "0.5.1"
     "@platform/libs" "0.1.5"
     "@platform/ts.libs" "3.7.2"
 
-"@platform/types@0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.3.1.tgz#d3b1ff1d4012e6091525e407cacc112a4df6de09"
-  integrity sha512-BRWm+67ud3WBIMEQqTVDkGrLhmdxsWlqn5xCumeWoyovhmJHVrqFERFRXvzI3WtjWSKk0/efZeHDwVRlNlYwDw==
+"@platform/types@0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.3.3.tgz#3d8f2eecaa84a54357647f48ceef3a3b24855aa7"
+  integrity sha512-wIupgZo9hhKd9ATEoKX32ZZDarBOhxIej7+bVo/wgr9spaPbqcAOBQos69WsKs6Vh1dA5Uv/NsJNlAnldr7UpQ==
 
-"@platform/util.diff@0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@platform/util.diff/-/util.diff-0.0.9.tgz#35744773dca259a783d83fc0a25e90e7e7f4cc8f"
-  integrity sha512-8XXkgw6E1x7giBG9DGWxMhuGJmfnvdyrga+rxQnddTHK0CW9fBzCQEBYMp+dzrivb+JBH8uYxrajj3cmLmGpcQ==
+"@platform/util.diff@0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@platform/util.diff/-/util.diff-0.0.11.tgz#f9f585c5813abddb2188d57343cb3d401d6f6371"
+  integrity sha512-CbCOyrmV69+QuU/i9iIC2361YLEwnAecS9/yzUdLNkTLURQku8TzxltE4XUukLnoIT6Bv0qGZ7H0txz8N+VnrA==
   dependencies:
     "@types/deep-diff" "1.0.0"
     deep-diff "1.0.2"

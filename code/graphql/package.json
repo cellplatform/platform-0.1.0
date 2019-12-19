@@ -1,6 +1,6 @@
 {
   "name": "@platform/graphql",
-  "version": "0.2.62",
+  "version": "0.2.66",
   "description": "Tools for working with GraphQL.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,7 +16,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/http": "0.7.0",
+    "@platform/http": "0.8.2",
     "@platform/libs": "0.1.5",
     "apollo-cache-inmemory": "1.6.3",
     "apollo-client": "2.6.4",

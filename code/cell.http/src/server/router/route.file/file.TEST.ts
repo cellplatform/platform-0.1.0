@@ -1,14 +1,15 @@
-import { createMock, expect, FormData, fs, http, t } from '../../../test';
+import { createMock, expect, FormData, fs, http, t, IMock } from '../../../test';
 
-const testPost = async (args: {
+export const testPostFile = async (args: {
   uri: string;
   filename: string;
   source?: string | string[];
   queryString?: string;
   dispose?: boolean;
+  mock?: IMock;
 }) => {
   const { uri, filename } = args;
-  const mock = await createMock();
+  const mock = args.mock || (await createMock());
   const form = new FormData();
 
   // Prepare the [multipart/form-data] to post.
@@ -65,7 +66,7 @@ describe('route: file (URI)', () => {
     it('GET binay image file (.png)', async () => {
       const uri = 'file:foo:123';
       const source = 'src/test/assets/bird.png';
-      const { mock } = await testPost({
+      const { mock } = await testPostFile({
         uri,
         filename: `image.png`,
         source,
@@ -102,7 +103,7 @@ describe('route: file (URI)', () => {
     it('GET web-assembly file (.wasm)', async () => {
       const uri = 'file:foo:123';
       const source = 'src/test/assets/func.wasm';
-      const { mock } = await testPost({
+      const { mock } = await testPostFile({
         uri,
         filename: `func.wasm`,
         source,
@@ -137,7 +138,7 @@ describe('route: file (URI)', () => {
     it('GET file with hash query-string', async () => {
       const uri = 'file:foo:123';
       const source = 'src/test/assets/func.wasm';
-      const { mock } = await testPost({
+      const { mock } = await testPostFile({
         uri,
         filename: `func.wasm`,
         source,
@@ -169,7 +170,7 @@ describe('route: file (URI)', () => {
       await fs.remove(savePath);
 
       const uri = 'file:foo:123';
-      const { res, json, data, props } = await testPost({
+      const { res, json, data, props } = await testPostFile({
         uri,
         filename: `image.png`,
         source: sourcePath,
@@ -179,9 +180,10 @@ describe('route: file (URI)', () => {
       expect(json.uri).to.eql(uri);
       expect(json.changes && json.changes.length).to.eql(3); // Changes returned by default.
 
+      expect(data.hash).to.not.eql(props.filehash); // Hash of model is different from raw file-data hash.
       expect(data.hash).to.match(/^sha256-[0-9a-z]+/);
       expect(props.filehash).to.match(/^sha256-[0-9a-z]+/);
-      expect(data.hash).to.not.eql(props.filehash); // Hash of model is different from raw file-data hash.
+      expect(props.bytes).to.greaterThan(1000);
 
       // Ensure saved file matches POST'ed file.
       const sourceFile = await fs.readFile(sourcePath);
@@ -190,7 +192,7 @@ describe('route: file (URI)', () => {
     });
 
     it('POST no changes returned (via query-string flag)', async () => {
-      const { json } = await testPost({
+      const { json } = await testPostFile({
         uri: 'file:foo:123',
         filename: `image.png`,
         source: 'src/test/assets/bird.png',
@@ -201,7 +203,7 @@ describe('route: file (URI)', () => {
 
     describe('errors', () => {
       it('throws if no file posted', async () => {
-        const { res } = await testPost({
+        const { res } = await testPostFile({
           uri: 'file:foo:123',
           filename: `image.png`,
         });
@@ -214,7 +216,7 @@ describe('route: file (URI)', () => {
       });
 
       it('throws if no file posted', async () => {
-        const { res } = await testPost({
+        const { res } = await testPostFile({
           uri: 'file:foo:123',
           filename: `image.png`,
           source: ['src/test/assets/bird.png', 'src/test/assets/kitten.jpg'],
@@ -226,6 +228,43 @@ describe('route: file (URI)', () => {
         expect(error.type).to.eql('HTTP/server');
         expect(error.message).to.contain('Only a single file can be posted');
       });
+    });
+  });
+
+  describe('DELETE', () => {
+    it('delete a file', async () => {
+      const sourcePath = fs.resolve('src/test/assets/bird.png');
+      const targetPath = fs.resolve('tmp/fs/ns.foo/123');
+      const uri = 'file:foo:123';
+      const { mock } = await testPostFile({
+        uri,
+        filename: `image.png`,
+        source: sourcePath,
+        dispose: false,
+      });
+
+      // Check the file exists.
+      const res1 = await mock.client.file(uri).info();
+      expect(res1.body.exists).to.eql(true);
+      expect(await fs.pathExists(targetPath)).to.eql(true);
+
+      // Delete the file.
+      const res2 = await mock.client.file(uri).delete();
+
+      expect(res2.ok).to.eql(true);
+      expect(res2.status).to.eql(200);
+      expect(res2.body.deleted).to.eql(true);
+      expect(res2.body.uri).to.eql(uri);
+
+      // Ensure the file has been removed from the file-system.
+      expect(await fs.pathExists(targetPath)).to.eql(false);
+
+      // Ensure the model has been deleted.
+      const res3 = await mock.client.file(uri).info();
+      expect(res3.body.exists).to.eql(false);
+
+      // Finish up.
+      await mock.dispose();
     });
   });
 });

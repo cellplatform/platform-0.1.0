@@ -1,5 +1,5 @@
-import { defaultValue, constants, routes, Schema, t, models, util } from '../common';
-import { postFileResponse, getFileDownloadResponse } from '../route.file';
+import { constants, defaultValue, models, routes, Schema, t, util } from '../common';
+import { getFileDownloadResponse, postFileResponse, deleteFileResponse } from '../route.file';
 import { postNsResponse } from '../route.ns';
 
 type ParamOr = t.IUrlParamsCellFiles | t.IUrlParamsCellFileByName | t.IUrlParamsCellFileByIndex;
@@ -73,20 +73,45 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const params = req.params as t.IUrlParamsCellFiles;
 
     const paramData = getParams({ params });
-    const { status, ns, error, uri } = paramData;
+    const { status, error } = paramData;
 
-    if (!ns || error) {
+    if (!paramData.ns || error) {
       return { status, data: { error } };
     }
 
-    const cell = await models.Cell.create({ db, uri }).ready;
-    const url = util.urls(req.host).cell(uri);
-    const files = url.files.list(cell.props.links || {});
+    // Prepare URIs.
+    const cellUri = Schema.uri.parse<t.ICellUri>(paramData.uri);
+    const nsUri = Schema.uri.parse<t.INsUri>(Schema.uri.create.ns(paramData.ns));
 
+    // Retrieve data.
+    const cell = await models.Cell.create({ db, uri: cellUri.toString() }).ready;
+    const ns = await models.Ns.create({ db, uri: nsUri.toString() }).ready;
+
+    // Construct links object.
+    const urlBuilder = util.urls(req.host).cell(cellUri.toString());
+    const cellLinks = cell.props.links || {};
+    const links = urlBuilder.files.links(cellLinks);
+    const linkUris = Object.keys(cellLinks)
+      .map(key => cellLinks[key])
+      .map(value => Schema.file.links.parseLink(value));
+    const linkExists = (fileid: string) => {
+      const fileUri = Schema.uri.create.file(nsUri.parts.id, fileid);
+      return linkUris.some(item => item.uri === fileUri);
+    };
+
+    // Prepare files map.
+    const files = { ...(await models.ns.getChildFiles({ model: ns })) };
+    Object.keys(files).forEach(fileid => {
+      if (!linkExists(fileid)) {
+        delete files[fileid]; // NB: Trim off files that are not referenced by this cell.
+      }
+    });
+
+    // Response.
     const data: t.IResGetCellFiles = {
-      uri,
-      cell: url.info,
-      links: url.files.links(cell.props.links || {}),
+      uri: cellUri.toString(),
+      cell: urlBuilder.info,
+      links,
       files,
     };
 
@@ -164,87 +189,225 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
-   * POST a file to a cell.
+   * POST upload file(s) to a cell.
    */
-  router.post(routes.CELL.FILE_BY_NAME, async req => {
+  router.post(routes.CELL.FILES, async req => {
     const host = req.host;
-    const query = req.query as t.IUrlQueryPostFile;
-    const params = req.params as t.IUrlParamsCellFileByName;
+    const query = req.query as t.IUrlQueryUploadCellFiles;
+    const params = req.params as t.IUrlParamsCellFiles;
 
     const paramData = getParams({ params });
-    const { status, ns, key, filename, error, uri: cellUri } = paramData;
-    if (!ns || error) {
+    const { status, error, ns, uri: cellUri, key: cellKey } = paramData;
+
+    if (!paramData.ns || error) {
       return { status, data: { error } };
     }
+
+    // Read in the form.
+    const form = await req.body.form();
+    if (form.files.length === 0) {
+      const err = new Error(`No file data was posted to the URI ("${cellUri}").`);
+      return util.toErrorPayload(err, { status: 400 });
+    }
+
+    const postFile = async (args: { ns: string; file: t.IFormFile; links: t.IUriMap }) => {
+      const { ns, file, links = {} } = args;
+      const filename = file.name;
+      const key = Schema.file.links.toKey(filename);
+      const uri = links[key] ? links[key].split('?')[0] : Schema.uri.create.file(ns, Schema.slug());
+      const query = { changes: true };
+      const res = await postFileResponse({ host, db, fs, uri, file, query });
+      const json = res.data as t.IResPostFile;
+      const status = res.status;
+      return { status, res, key, uri, filename, json };
+    };
 
     try {
       // Prepare the file URI link.
       const cell = await models.Cell.create({ db, uri: cellUri }).ready;
       const cellLinks = cell.props.links || {};
-      const fileLinkKey = Schema.file.links.toKey(filename);
-      const fileUri = cellLinks[fileLinkKey]
-        ? cellLinks[fileLinkKey].split('?')[0]
-        : Schema.uri.create.file(ns, Schema.slug());
 
-      // Save to the file-system.
-      const form = await req.body.form();
-      const fsResponse = await postFileResponse({
-        host,
-        db,
-        fs,
-        uri: fileUri,
-        form,
-        query: { changes: true },
-        filename,
-      });
-      if (!util.isOK(fsResponse.status)) {
-        const error = fsResponse.data as t.IHttpError;
-        const msg = `Failed while writing file to cell [${key}]. ${error.message}`;
-        return util.toErrorPayload(msg, { status: error.status });
-      }
-      const fsResponseData = fsResponse.data as t.IResPostFile;
+      // Post each file to the file-system.
+      const wait = form.files.map(file => postFile({ ns, file, links: cellLinks }));
+      const postFilesRes = await Promise.all(wait);
 
-      // Update the [Cell] model with the file URI link.
+      // Check for file-save errors.
+      const errors: t.IResPostCellFilesError[] = [];
+      postFilesRes
+        .filter(item => !util.isOK(item.status))
+        .forEach(item => {
+          const { status, filename } = item;
+          const data: any = item.res.data || {};
+          const message = data.message || `Failed while writing '${filename}'`;
+          errors.push({ status, filename, message });
+        });
+
+      // Update the [Cell] model with the file URI link(s).
       // NB: This is done through the master [Namespace] POST
       //     handler as this ensures all hashes are updated.
-      const fileLinkValue = `${fileUri}?hash=${fsResponseData.data.hash}`;
-      const nsResponse = await postNsResponse({
+      const links = postFilesRes.reduce((links, next) => {
+        if (util.isOK(next.status)) {
+          const { key, uri } = next;
+          links[key] = `${uri}?hash=${next.json.data.hash}`;
+        }
+        return links;
+      }, cellLinks);
+
+      const postNsRes = await postNsResponse({
         db,
         id: ns,
-        body: {
-          cells: {
-            [key]: { links: { ...cellLinks, [fileLinkKey]: fileLinkValue } },
-          },
-        },
-        query: { cells: key, changes: true },
+        body: { cells: { [cellKey]: { links } } },
+        query: { cells: cellKey, changes: true },
         host,
       });
-      if (!util.isOK(nsResponse.status)) {
-        const error = nsResponse.data as t.IHttpError;
-        const msg = `Failed while updating cell [${key}] after writing file. ${error.message}`;
+
+      if (!util.isOK(postNsRes.status)) {
+        const error = postNsRes.data as t.IHttpError;
+        const msg = `Failed while updating cell [${cellKey}] after writing file. ${error.message}`;
         return util.toErrorPayload(msg, { status: error.status });
       }
-      const nsResponseData = nsResponse.data as t.IResPostNs;
+      const postNsData = postNsRes.data as t.IResPostNs;
+
+      // Build change list.
+      let changes: t.IDbModelChange[] | undefined;
+      if (defaultValue(query.changes, true)) {
+        changes = [...(postNsData.changes || [])];
+        postFilesRes.forEach(item => {
+          changes = [...(changes || []), ...(item.json.changes || [])];
+        });
+      }
 
       // Prepare response.
       await cell.load({ force: true });
-      let changes: t.IDbModelChange[] | undefined;
-      if (defaultValue(query.changes, true)) {
-        changes = [...(nsResponseData.changes || []), ...(fsResponseData.changes || [])];
-      }
-
       const urls = util.urls(host).cell(cellUri);
-      const links: t.IResPostCellLinks = { ...urls.links };
-      const res: t.IResPostCellFile = {
+      const res: t.IResPostCellFiles = {
         uri: cellUri,
         createdAt: cell.createdAt,
         modifiedAt: cell.modifiedAt,
         exists: Boolean(cell.exists),
-        data: { cell: cell.toObject(), changes },
-        links,
+        data: { cell: cell.toObject(), errors, changes },
+        links: { ...urls.links },
       };
 
       return { status: 200, data: res };
+    } catch (err) {
+      return util.toErrorPayload(err);
+    }
+  });
+
+  /**
+   * DELETE file(s) from a cell.
+   */
+  router.delete(routes.CELL.FILES, async req => {
+    const host = req.host;
+    const query = req.query as t.IUrlQueryDeleteCellFiles;
+    const params = req.params as t.IUrlParamsCellFiles;
+
+    const paramData = getParams({ params });
+    const { status, error, ns, uri: cellUri, key: cellKey } = paramData;
+    if (!paramData.ns || error) {
+      return { status, data: { error } };
+    }
+
+    try {
+      // Extract values from request body.
+      const body = (await req.body.json()) as t.IReqDeleteCellFilesBody;
+      const action = body.action;
+      const filenames = (body.filenames || [])
+        .map(text => (text || '').trim())
+        .filter(text => Boolean(text));
+
+      const data: t.IResDeleteCellFilesData = {
+        uri: cellUri,
+        deleted: [],
+        unlinked: [],
+        errors: [],
+      };
+
+      const error = (error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED', filename: string) => {
+        data.errors = [...data.errors, { error, filename }];
+      };
+
+      const done = () => {
+        const status = data.errors.length === 0 ? 200 : 500;
+        return { status, data };
+      };
+
+      // Exit if there are no files to operate on.
+      if (filenames.length === 0) {
+        return done();
+      }
+
+      // Retrieve the [Cell] model.
+      const cell = await models.Cell.create({ db, uri: cellUri }).ready;
+      if (!cell.exists) {
+        const msg = `The cell [${cellUri}] does not exist.`;
+        return util.toErrorPayload(msg, { status: 404 });
+      }
+
+      // Parse file-names into usable link details.
+      const links = cell.props.links || {};
+      const items = filenames.map(filename => {
+        const key = Schema.file.links.toKey(filename);
+        const value = links[key];
+        const parts = value ? Schema.file.links.parseLink(value) : undefined;
+        const uri = parts ? parts.uri : '';
+        const hash = parts ? parts.hash : '';
+        return { filename, key, uri, hash, exists: Boolean(value) };
+      });
+
+      // Report any requested filenames that are not linked to the cell.
+      items
+        .filter(({ uri }) => !Boolean(uri))
+        .forEach(({ filename }) => error('NOT_LINKED', filename));
+
+      const deleteFile = async (filename: string, uri: string) => {
+        const res = await deleteFileResponse({ db, fs, uri, host });
+        if (util.isOK(res.status)) {
+          data.deleted = [...data.deleted, filename];
+        } else {
+          error('DELETING', filename);
+        }
+      };
+
+      const deleteFiles = async () => {
+        const wait = items
+          .filter(({ uri }) => Boolean(uri))
+          .map(async ({ uri, filename }) => deleteFile(filename, uri));
+        await Promise.all(wait);
+      };
+
+      const unlinkFiles = async () => {
+        try {
+          const after = { ...links };
+          items
+            .filter(({ uri }) => Boolean(uri))
+            .forEach(({ key, filename }) => {
+              delete after[key];
+              data.unlinked = [...data.unlinked, filename];
+            });
+          await cell.set({ links: after }).save();
+        } catch (error) {
+          items
+            .filter(({ uri }) => Boolean(uri))
+            .forEach(({ filename }) => error('UNLINKING', filename));
+        }
+      };
+
+      // Perform requested actions.
+      switch (action) {
+        case 'DELETE':
+          await deleteFiles();
+          await unlinkFiles();
+          return done();
+        case 'UNLINK':
+          await unlinkFiles();
+          return done();
+        default:
+          const invalidAction = action || '<empty>';
+          const msg = `A valid action (DELETE | UNLINK) was not provided in the body, given:${invalidAction}.`;
+          return util.toErrorPayload(msg, { status: 400 });
+      }
     } catch (err) {
       return util.toErrorPayload(err);
     }
