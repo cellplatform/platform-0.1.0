@@ -10,6 +10,7 @@ export const init: t.CliInit = cli => {
     silent: boolean;
     config: boolean;
     delete: boolean;
+    watch: boolean;
   };
 
   const syncDirHandler: t.CommandHandler<T> = async args => {
@@ -19,6 +20,7 @@ export const init: t.CliInit = cli => {
       force: args.force,
       config: args.config,
       delete: args.delete,
+      watch: args.watch,
     });
   };
 
@@ -53,6 +55,13 @@ export const init: t.CliInit = cli => {
       name: 'config',
       alias: 'c',
       description: 'Force new configuration for the folder.',
+      type: 'boolean',
+      default: false,
+    })
+    .option<'boolean'>({
+      name: 'watch',
+      alias: 'w',
+      description: 'Watch directory and auto-sync on change.',
       type: 'boolean',
       default: false,
     });

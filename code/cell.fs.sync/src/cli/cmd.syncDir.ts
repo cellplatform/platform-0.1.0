@@ -1,4 +1,4 @@
-import { cli, Client, fs, log, Schema, t, Value, util } from '../common';
+import { cli, Client, fs, log, Schema, t, Value, util, watch } from '../common';
 import { promptConfig } from '../config';
 
 type Status = 'ADDED' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
@@ -28,6 +28,7 @@ export async function syncDir(args: {
   silent: boolean;
   config: boolean;
   delete: boolean;
+  watch: boolean;
 }) {
   // Retrieve (or build) configuration file the directory.
   const config = await promptConfig({ dir: args.dir, force: args.config });
@@ -35,11 +36,8 @@ export async function syncDir(args: {
     return;
   }
 
-  const { silent = false, force = false } = args;
-  const { dir, targetUri } = config;
-  const host = config.data.host;
-  const client = Client.create(host);
-  const urls = Schema.url(host);
+  const { silent = false, force = false, watch = false } = args;
+  const { dir } = config;
 
   if (!silent) {
     const uri = config.targetUri.parts;
@@ -51,6 +49,46 @@ export async function syncDir(args: {
     }
     log.info();
   }
+
+  // Run the task.
+  const res = await sync({ config, dir, force, silent, delete: args.delete });
+
+  // Finish up.
+  if (!silent) {
+    if (res.completed) {
+      log.info();
+      if (res.ok) {
+        const { uploaded, deleted } = res.count;
+        const success = `${log.green('success')} (${uploaded} uploaded, ${deleted} deleted)`;
+        log.info.gray(success);
+        log.info();
+      } else {
+        res.errors.forEach(err => log.warn(err.error));
+        log.info();
+      }
+    }
+  }
+
+  return res;
+}
+
+/**
+ * [Helpers]
+ */
+
+export async function sync(args: {
+  config: t.IFsConfigDir;
+  dir: string;
+  force: boolean;
+  silent: boolean;
+  delete: boolean;
+}) {
+  const { config } = args;
+  const { silent = false, force = false } = args;
+  const { dir, targetUri } = config;
+  const host = config.data.host;
+  const client = Client.create(host);
+  const urls = Schema.url(host);
 
   const payload = await buildPayload({
     dir,
@@ -65,6 +103,12 @@ export async function syncDir(args: {
     log.info();
   }
 
+  const count = { uploaded: 0, deleted: 0 };
+  const done = (complete: boolean, errors: cli.ITaskError[] = []) => {
+    const ok = errors.length === 0;
+    return { ok, errors, count, completed: complete, payload };
+  };
+
   // Exit if no changes to push.
   if (!force && payload.items.filter(item => item.isPending).length === 0) {
     const gray = log.info.gray;
@@ -72,7 +116,7 @@ export async function syncDir(args: {
     gray(`• Use ${log.cyan('--force')} to push everything (even if file is already on server).`);
     gray(`• Use ${log.cyan('--delete')} to sync deletions.`);
     log.info();
-    return;
+    return done(false);
   }
 
   // Filter on set of items to push.
@@ -94,18 +138,14 @@ export async function syncDir(args: {
     if (res === 'no') {
       log.info();
       log.info.gray(`cancelled (no change).`);
-      return;
+      return done(false);
     }
   }
 
   // Pepare tasks.
   const tasks = cli.tasks();
-  const count = { uploaded: 0, deleted: 0 };
-  const title = {
-    upload: `Upload ${changes.length} ${plural.file.toString(changes.length)}`,
-  };
-
-  tasks.task(title.upload, async () => {
+  const title = `Upload ${changes.length} ${plural.file.toString(changes.length)}`;
+  tasks.task(title, async () => {
     const uri = config.targetUri.toString();
     const clientFiles = client.cell(uri).files;
 
@@ -147,24 +187,8 @@ export async function syncDir(args: {
   const res = await tasks.run({ concurrent: true, silent });
 
   // Finish up.
-  if (!silent) {
-    log.info();
-    if (res.ok) {
-      const { uploaded, deleted } = count;
-      const success = `${log.green('success')} (${uploaded} uploaded, ${deleted} deleted)`;
-      log.info.gray(success);
-      log.info();
-    } else {
-      res.errors.forEach(err => log.warn(err.error));
-      log.info();
-    }
-  }
-  return res;
+  return done(true, res.errors);
 }
-
-/**
- * [Helpers]
- */
 
 function toStatusColor(args: { status: Status; text?: string; delete?: boolean; force?: boolean }) {
   const { status } = args;
