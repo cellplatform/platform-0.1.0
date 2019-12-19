@@ -232,11 +232,11 @@ describe('route: file (URI)', () => {
   });
 
   describe('DELETE', () => {
-    it.only('delete a file', async () => {
+    it('delete a file', async () => {
       const sourcePath = fs.resolve('src/test/assets/bird.png');
       const targetPath = fs.resolve('tmp/fs/ns.foo/123');
       const uri = 'file:foo:123';
-      const { res, json, data, props, mock } = await testPostFile({
+      const { mock } = await testPostFile({
         uri,
         filename: `image.png`,
         source: sourcePath,
@@ -251,11 +251,17 @@ describe('route: file (URI)', () => {
       // Delete the file.
       const res2 = await mock.client.file(uri).delete();
 
-      console.log('-------------------------------------------');
-      console.log('res2', res2);
+      expect(res2.ok).to.eql(true);
+      expect(res2.status).to.eql(200);
+      expect(res2.body.deleted).to.eql(true);
+      expect(res2.body.uri).to.eql(uri);
 
       // Ensure the file has been removed from the file-system.
       expect(await fs.pathExists(targetPath)).to.eql(false);
+
+      // Ensure the model has been deleted.
+      const res3 = await mock.client.file(uri).info();
+      expect(res3.body.exists).to.eql(false);
 
       // Finish up.
       await mock.dispose();

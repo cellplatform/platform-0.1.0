@@ -249,38 +249,29 @@ async function deleteFileResponse(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;
-  // file: t.IFormFile;
   host: string;
   query?: t.IUrlQueryDeleteFile;
 }): Promise<t.IPayload<t.IResDeleteFile> | t.IErrorPayload> {
-  console.log('-------------------------------------------');
-  console.log('uri', args.uri);
   const { db, fs, uri } = args;
 
   try {
     // Delete the file from disk.
-    const deleteFsRes = await fs.delete(uri);
-    const fsError = deleteFsRes.error;
+    const resDeleteFile = await fs.delete(uri);
+    const fsError = resDeleteFile.error;
     if (fsError) {
       const { type } = fsError;
       return util.toErrorPayload(fsError.message, { type });
     }
 
-    console.log('deleteFsRes', deleteFsRes);
-
-    /**
-     * TODO 🐷
-     * - delete file (from fs).
-     * - delete model.
-     */
-
     // Delete the model.
     const model = await models.File.create({ db, uri }).ready;
+    await model.delete();
 
-    // model.de
-    console.log('model.toObject()', model.toObject());
-
-    return { data: { msg: 'TMP' } } as any;
+    const res: t.IPayload<t.IResDeleteFile> = {
+      status: 200,
+      data: { deleted: true, uri },
+    };
+    return res;
   } catch (err) {
     return util.toErrorPayload(err);
   }

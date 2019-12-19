@@ -122,7 +122,7 @@ export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 /**
  * File: DELETE
  */
-export type IResDeleteFile = { changes?: t.IDbModelChange[] };
+export type IResDeleteFile = { uri: string; deleted: boolean };
 
 /**
  * Cell/Files: GET
