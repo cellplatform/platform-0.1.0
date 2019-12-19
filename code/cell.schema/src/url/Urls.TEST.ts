@@ -149,13 +149,33 @@ describe('Urls', () => {
       expect(res2.toString()).to.eql(URL);
     });
 
-    it('files', () => {
-      const res1 = url.cell(URI).files;
-      const res2 = url.cell({ ns: 'foo', key: 'A1' }).files;
+    it('files.list', () => {
+      const res1 = url.cell(URI).files.list;
+      const res2 = url.cell({ ns: 'foo', key: 'A1' }).files.list;
+
+      const URL = 'http://localhost/cell:foo!A1/files';
+      expect(res1.query({}).toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
+    });
+
+    it('files.delete', () => {
+      const res1 = url.cell(URI).files.delete;
+      const res2 = url.cell({ ns: 'foo', key: 'A1' }).files.delete;
 
       const URL = 'http://localhost/cell:foo!A1/files';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
+    });
+
+    it('files.upload', () => {
+      const res1 = url.cell(URI).files.upload;
+      const res2 = res1.query({ changes: true });
+      const res3 = url.cell({ ns: 'foo', key: 'A1' }).files.upload;
+
+      const URL = 'http://localhost/cell:foo!A1/files';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(`${URL}?changes=true`);
+      expect(res3.toString()).to.eql(URL);
     });
 
     it('file.byName', () => {

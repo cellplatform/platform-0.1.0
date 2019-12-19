@@ -245,7 +245,7 @@ export async function postFileResponse(args: {
   }
 }
 
-async function deleteFileResponse(args: {
+export async function deleteFileResponse(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;

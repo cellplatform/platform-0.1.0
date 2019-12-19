@@ -26,11 +26,19 @@ export type IUrlsNs = {
 export type IUrlsCell = {
   uri: string;
   info: t.IUrl<t.IUrlQueryGetCell>;
-  files: t.IUrl<t.IUrlQueryGetCellFiles>;
-  file: {
-    byName(filename: string): t.IUrl<t.IUrlQueryGetCellFileByName>;
-    byIndex(index: number | string): t.IUrl<t.IUrlQueryGetCellFileByIndex>;
-  };
+  files: IUrlsCellFiles;
+  file: IUrlsCellFile;
+};
+
+export type IUrlsCellFile = {
+  byName(filename: string): t.IUrl<t.IUrlQueryGetCellFileByName>;
+  byIndex(index: number | string): t.IUrl<t.IUrlQueryGetCellFileByIndex>;
+};
+
+export type IUrlsCellFiles = {
+  list: t.IUrl<t.IUrlQueryGetCellFiles>;
+  upload: t.IUrl<t.IUrlQueryUploadCellFiles>;
+  delete: t.IUrl<t.IUrlQueryDeleteCellFiles>;
 };
 
 export type IUrlsRow = {

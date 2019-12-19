@@ -28,7 +28,7 @@ export class ClientCellFiles implements t.IClientCellFiles {
   public async map() {
     type T = t.IClientResponse<t.IFileMap>;
     const parent = this.args.parent;
-    const url = parent.url.files;
+    const url = parent.url.files.list;
 
     const resFiles = await http.get(url.toString());
     if (!resFiles.ok) {
@@ -85,10 +85,37 @@ export class ClientCellFiles implements t.IClientCellFiles {
     const headers = form.getHeaders();
 
     // POST to the service.
-    const url = parent.url.files.toString();
+    const url = parent.url.files.upload.toString();
     const res = await http.post(url, form, { headers });
 
     // Finish up.
     return util.toResponse<t.IResPostCellFiles>(res);
   }
+
+  public async delete(filename: string | string[]) {
+    const urls = this.args.parent.url;
+    return deleteFiles({ urls, filename, action: 'DELETE' });
+  }
+
+  public async unlink(filename: string | string[]) {
+    const urls = this.args.parent.url;
+    return deleteFiles({ urls, filename, action: 'UNLINK' });
+  }
+}
+
+/**
+ * Helpers
+ */
+
+export async function deleteFiles(args: {
+  urls: t.IUrlsCell;
+  action: t.IReqDeleteCellFilesBody['action'];
+  filename: string | string[];
+}) {
+  const { urls, action, filename } = args;
+  const filenames = Array.isArray(filename) ? filename : [filename];
+  const body: t.IReqDeleteCellFilesBody = { filenames, action };
+  const url = urls.files.delete;
+  const res = await http.delete(url.toString(), body);
+  return util.toResponse<t.IResDeleteCellFilesData>(res);
 }

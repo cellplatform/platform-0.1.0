@@ -49,7 +49,7 @@ export type IHttpConfigNowFile = {
  */
 export type IPayload<D> = { status: number; data: D };
 export type IErrorPayload = IPayload<t.IHttpError>;
-export type IUriResponse<D, L extends ILinkMap> = {
+export type IUriResponse<D, L extends ILinkMap = {}> = {
   uri: string;
   exists: boolean;
   createdAt: number;
@@ -145,6 +145,21 @@ export type IResPostCellFilesData = {
 };
 export type IResPostCellFilesError = { status: number; filename: string; message: string };
 export type IResPostCellLinks = IResGetCellLinks & {};
+
+/**
+ * Cell/Files: DELETE
+ */
+export type IReqDeleteCellFilesBody = {
+  filenames: string[];
+  action: 'DELETE' | 'UNLINK';
+};
+export type IResDeleteCellFiles = IUriResponse<IResDeleteCellFilesData>;
+export type IResDeleteCellFilesData = {
+  uri: string;
+  deleted: string[];
+  unlinked: string[];
+  errors: Array<{ error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED'; filename: string }>;
+};
 
 /**
  * Info (System)

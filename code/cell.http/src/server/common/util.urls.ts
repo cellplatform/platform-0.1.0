@@ -28,7 +28,7 @@ export function urls(host: string) {
           const cell = url.cell(cellUri);
           return {
             cell: cell.info.toString(),
-            files: cell.files.toString(),
+            files: cell.files.list.toString(),
           };
         },
 

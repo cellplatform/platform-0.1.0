@@ -50,9 +50,10 @@ export function create(options: t.IFetchOptions = {}) {
     /**
      * `DELETE`
      */
-    async delete(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
+    async delete(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const { mode, headers } = mergeOptions(options);
-      const res = await isomorphic(url, { method: 'DELETE', headers, mode });
+      const body = toBody({ url, headers, data });
+      const res = await isomorphic(url, { method: 'DELETE', body, headers, mode });
       return toResponse(url, res);
     },
   };
