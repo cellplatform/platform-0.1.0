@@ -60,7 +60,6 @@ export type IUrlQueryUploadCellFiles = {
 };
 export type IUrlQueryDeleteCellFiles = {};
 
-
 /**
  * Query-string parameters for a single [Cell]'s file (by name).
  */
