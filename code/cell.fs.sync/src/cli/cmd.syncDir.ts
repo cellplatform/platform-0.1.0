@@ -1,7 +1,7 @@
 import { cli, Client, fs, log, Schema, t, Value, util } from '../common';
 import { promptConfig } from '../config';
 
-type Status = 'NEW' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
+type Status = 'ADDED' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
 type PayloadItem = {
   status: Status;
   isPending: boolean;
@@ -67,15 +67,21 @@ export async function syncDir(args: {
 
   // Exit if no changes to push.
   if (!force && payload.items.filter(item => item.isPending).length === 0) {
+    const gray = log.info.gray;
+    gray(`Nothing to sync.`);
+    gray(`• Use ${log.cyan('--force')} to push everything (even if file is already on server).`);
+    gray(`• Use ${log.cyan('--delete')} to sync deletions.`);
+    log.info();
     return;
   }
 
   // Filter on set of items to push.
-  const items = payload.items
+  const changes = payload.items
     .filter(item => item.status !== 'DELETED')
     .filter(item => (force ? true : item.status !== 'NO_CHANGE'))
     .filter(item => Boolean(item.data));
-  const total = items.length;
+  const deletions = payload.items.filter(item => args.delete && item.status === 'DELETED');
+  const total = changes.length + deletions.length;
 
   const plural = {
     change: util.plural('change', 'changes'),
@@ -83,7 +89,7 @@ export async function syncDir(args: {
   };
 
   if (!silent) {
-    const message = `push ${total} ${plural.change.toString(total)}`;
+    const message = `sync ${total} ${plural.change.toString(total)}`;
     const res = await cli.prompt.list({ message, items: ['yes', 'no'] });
     if (res === 'no') {
       log.info();
@@ -96,23 +102,44 @@ export async function syncDir(args: {
   const tasks = cli.tasks();
   const count = { uploaded: 0, deleted: 0 };
   const title = {
-    upload: `Upload ${items.length} ${plural.file.toString(items.length)}`,
+    upload: `Upload ${changes.length} ${plural.file.toString(changes.length)}`,
   };
 
   tasks.task(title.upload, async () => {
-    const files = items.map(({ filename, data }) => ({
-      filename,
-      data,
-    })) as t.IClientCellFileUpload[];
-
     const uri = config.targetUri.toString();
-    const res = await client.cell(uri).files.upload(files);
+    const clientFiles = client.cell(uri).files;
 
-    if (res.ok) {
-      count.uploaded += items.length;
-    } else {
-      const err = `${res.status} Failed upload.`;
-      throw new Error(err);
+    // Changes.
+    const uploadFiles = changes
+      .filter(item => item.status !== 'DELETED')
+      .map(({ filename, data }) => ({
+        filename,
+        data,
+      })) as t.IClientCellFileUpload[];
+
+    if (uploadFiles.length > 0) {
+      const res = await clientFiles.upload(uploadFiles);
+      if (res.ok) {
+        count.uploaded += uploadFiles.length;
+      } else {
+        const err = `${res.status} Failed while uploading.`;
+        throw new Error(err);
+      }
+    }
+
+    // Deletions.
+    const deleteFiles = deletions
+      .filter(item => item.status === 'DELETED')
+      .map(item => item.filename);
+
+    if (deleteFiles.length > 0) {
+      const res = await clientFiles.delete(deleteFiles);
+      if (res.ok) {
+        count.deleted += deleteFiles.length;
+      } else {
+        const err = `${res.status} Failed while deleting.`;
+        throw new Error(err);
+      }
     }
   });
 
@@ -143,7 +170,7 @@ function toStatusColor(args: { status: Status; text?: string; delete?: boolean; 
   const { status } = args;
   const text = args.text || status;
   switch (status) {
-    case 'NEW':
+    case 'ADDED':
       return log.green(text);
     case 'CHANGED':
       return log.yellow(text);
@@ -184,7 +211,7 @@ async function buildPayload(args: {
       remote: remoteFile ? remoteFile.props.filehash : '',
     };
 
-    let status: Status = 'NEW';
+    let status: Status = 'ADDED';
     if (remoteFile) {
       status = hash.local === hash.remote ? 'NO_CHANGE' : 'CHANGED';
     }
@@ -227,10 +254,7 @@ async function buildPayload(args: {
 
         const url = log.gray(`${urlPath}/${filename}`);
 
-        let statusText = item.status.toLowerCase().replace(/\_/g, ' ');
-        if (!args.delete && item.status === 'DELETED') {
-          statusText = `${statusText} (retain)`;
-        }
+        const statusText = item.status.toLowerCase().replace(/\_/g, ' ');
 
         const status = toStatusColor({
           status: item.status,
