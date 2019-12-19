@@ -21,6 +21,7 @@ export type IFileSystemFile = {
 };
 
 export type IFileSystemRead = {
+  ok: boolean;
   status: number;
   location: string;
   file?: IFileSystemFile;
@@ -28,6 +29,7 @@ export type IFileSystemRead = {
 };
 
 export type IFileSystemWrite = {
+  ok: boolean;
   status: number;
   location: string;
   file: IFileSystemFile;
@@ -35,6 +37,7 @@ export type IFileSystemWrite = {
 };
 
 export type IFileSystemDelete = {
+  ok: boolean;
   status: number;
   locations: string[];
   error?: IFileSystemError;
