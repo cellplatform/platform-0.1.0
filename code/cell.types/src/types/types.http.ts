@@ -171,9 +171,10 @@ export type IResGetSysInfo = {
   region: string;
   time: string;
   version: {
-    '@platform/cell.http': string;
-    '@platform/cell.schema': string;
-    '@platform/cell.types': string;
+    hash: string;
+    schema: string;
+    types: string;
+    server: string;
   };
   deployedAt?: {
     datetime: string;

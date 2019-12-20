@@ -16,10 +16,16 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
     const NOW_REGION = fs.env.value('NOW_REGION');
     const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local';
 
+    const toDepVersion = (key: string, version?: string) => {
+      version = version || DEPS[key] || '-';
+      return `${key}@${version}`;
+    };
+
     const version: t.IResGetSysInfo['version'] = {
-      '@platform/cell.schema': DEPS['@platform/cell.schema'],
-      '@platform/cell.types': DEPS['@platform/cell.types'],
-      '@platform/cell.http': PKG.version || '',
+      hash: 'sha256',
+      schema: toDepVersion('@platform/cell.schema'),
+      types: toDepVersion('@platform/cell.types'),
+      server: toDepVersion('@platform/cell.http', PKG.version),
     };
 
     const deployedAt = !args.deployedAt
