@@ -92,7 +92,7 @@ export async function syncDir(args: {
 
     dir$.subscribe(async e => {
       const { count, results, errors } = await sync({ silent: true });
-      const { total, uploaded, deleted } = count;
+      const { uploaded, deleted } = count;
       if (!silent) {
         let output = '';
         if (uploaded > 0) {
@@ -167,6 +167,7 @@ async function runSync(args: IRunSyncArgs) {
     client,
     force,
     delete: args.delete,
+    silent,
   });
   if (!silent) {
     payload.log();
@@ -295,11 +296,26 @@ async function buildPayload(args: {
   client: t.IClient;
   delete: boolean;
   force: boolean;
+  silent: boolean;
 }) {
+  const { silent } = args;
+  const host = args.client.origin;
   const cellUri = args.targetUri.toString();
+  const cellKey = args.targetUri.parts.key;
   const cellUrls = args.urls.cell(cellUri);
 
-  const remoteFiles = (await args.client.cell(cellUri).files.list()).body;
+  // Retrieve the list of remote files.
+  let remoteFiles: t.IClientFileData[] = [];
+  const tasks = cli.tasks();
+  tasks.task(`Retrieve current files from ${cellKey} on ${host}`, async () => {
+    const res = await args.client.cell(cellUri).files.list();
+    remoteFiles = res.body;
+  });
+  await tasks.run({ silent });
+  if (!silent) {
+    log.info();
+  }
+
   const findRemote = (filename: string) => remoteFiles.find(f => f.props.filename === filename);
 
   // Prepare files.
