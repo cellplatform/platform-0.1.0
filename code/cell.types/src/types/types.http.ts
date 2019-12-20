@@ -165,10 +165,11 @@ export type IResDeleteCellFilesData = {
  * Info (System)
  */
 
-export type IResGetInfo = {
+export type IResGetSysInfo = {
   system: string;
   domain: string;
   region: string;
+  time: string;
   version: {
     '@platform/cell.http': string;
     '@platform/cell.schema': string;
@@ -177,6 +178,5 @@ export type IResGetInfo = {
   deployedAt?: {
     datetime: string;
     timestamp: number;
-    timezone: string;
   };
 };
