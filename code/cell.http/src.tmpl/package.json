@@ -1,6 +1,6 @@
 {
   "name": "instance",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "scripts": {
     "now": "now dev --listen 8080",
     "start": "ts-node -T src/server",
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@platform/cell.fs": "0.3.0",
-    "@platform/cell.http": "0.5.1",
+    "@platform/cell.http": "0.5.2",
     "@platform/cell.schema": "^0.3.0",
     "@platform/fsdb.mongo": "0.0.61",
     "@platform/fsdb.nedb": "1.3.56"
