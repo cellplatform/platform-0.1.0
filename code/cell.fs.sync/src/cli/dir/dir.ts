@@ -1,3 +1,5 @@
+import { log } from '../common';
+
 /**
  * Inspect or configure a folder.
  */
@@ -7,6 +9,5 @@ export async function dir(args: {
   local: boolean;
   remote: boolean;
 }) {
-  console.log('-------------------------------------------');
-  console.log('DIR', args);
+  log.info('TODO', args);
 }
