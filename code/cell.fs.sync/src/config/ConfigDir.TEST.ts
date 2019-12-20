@@ -1,6 +1,6 @@
 import { fs, expect, t, expectError } from '../test';
 import { ConfigDir } from '.';
-import { ERROR } from './ConfigDir';
+import { CONFIG } from './ConfigDir';
 
 const VALID: t.IFsConfigDirData = { host: 'domain.com', target: 'cell:foo!A1' };
 const PATH = {
@@ -86,13 +86,13 @@ describe('ConfigDir', () => {
         expect(config.isValid).to.eql(false, error);
       };
 
-      await test(d => (d.target = ''), ERROR.TARGET.INVALID_URI);
-      await test(d => (d.target = 'ns:foo'), ERROR.TARGET.INVALID_URI);
-      await test(d => (d.target = 'cell:foo!A'), ERROR.TARGET.INVALID_URI);
-      await test(d => (d.target = 'cell:foo!1'), ERROR.TARGET.INVALID_URI);
+      await test(d => (d.target = ''), CONFIG.ERROR.TARGET.INVALID_URI);
+      await test(d => (d.target = 'ns:foo'), CONFIG.ERROR.TARGET.INVALID_URI);
+      await test(d => (d.target = 'cell:foo!A'), CONFIG.ERROR.TARGET.INVALID_URI);
+      await test(d => (d.target = 'cell:foo!1'), CONFIG.ERROR.TARGET.INVALID_URI);
 
-      await test(d => (d.host = ''), ERROR.HOST.EMPTY);
-      await test(d => (d.host = '  '), ERROR.HOST.EMPTY);
+      await test(d => (d.host = ''), CONFIG.ERROR.HOST.EMPTY);
+      await test(d => (d.host = '  '), CONFIG.ERROR.HOST.EMPTY);
     });
   });
 });

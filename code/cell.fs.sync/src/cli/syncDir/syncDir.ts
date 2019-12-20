@@ -1,7 +1,17 @@
 import { debounceTime, filter } from 'rxjs/operators';
-
-import { cli, Client, defaultValue, fs, log, Schema, t, util, Value, watch } from '../common';
-import { promptConfig } from '../config';
+import {
+  cli,
+  Client,
+  defaultValue,
+  fs,
+  log,
+  Schema,
+  t,
+  util,
+  Value,
+  watch,
+  promptConfig,
+} from '../common';
 
 type IRunSyncArgs = {
   config: t.IFsConfigDir;
@@ -34,23 +44,21 @@ const plural = {
 /**
  * TODO 🐷
  * - Refactor: Move generalized CLI builder stuff into `@platform/cli`
- * - DELETE file (verb)
  */
 
 /**
  * Synchronize a folder with the cloud.
  */
-
 export async function syncDir(args: {
   dir: string;
   force: boolean;
   silent: boolean;
-  config: boolean;
+  configure: boolean;
   delete: boolean;
   watch: boolean;
 }) {
   // Retrieve (or build) configuration file the directory.
-  const config = await promptConfig({ dir: args.dir, force: args.config });
+  const config = await promptConfig({ dir: args.dir, force: args.configure });
   if (!config.isValid) {
     return;
   }

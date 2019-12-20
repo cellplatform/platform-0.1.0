@@ -72,7 +72,7 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
       await fs.remove(targetDir); // Clear existing deloyment.
       await copyAndPrepare({ sourceDir, targetDir, config: config.data, target });
       const res = {
-        title: `${config.data.now.domain}: ${config.data.title}`,
+        title: `${config.data.title}`,
         targetDir,
         path: config.path,
         config: config.data,

@@ -9,12 +9,14 @@ export const DEFAULT: t.IFsConfigDirData = {
   target: '',
 };
 
-export const ERROR = {
-  TARGET: {
-    INVALID_URI: `Target cell URI is invalid (valid example 'cell:ck499h7u30000fwet3k7085t1!A1')`,
-  },
-  HOST: {
-    EMPTY: `Domain host not specified`,
+export const CONFIG = {
+  ERROR: {
+    TARGET: {
+      INVALID_URI: `Target cell URI is invalid (valid example 'cell:ck499h7u30000fwet3k7085t1!A1')`,
+    },
+    HOST: {
+      EMPTY: `Domain host not specified`,
+    },
   },
 };
 
@@ -98,14 +100,14 @@ export class ConfigDir implements t.IFsConfigDir {
 
     const target = this.targetUri;
     if (!target.ok || target.parts.type !== 'CELL') {
-      error(ERROR.TARGET.INVALID_URI);
+      error(CONFIG.ERROR.TARGET.INVALID_URI);
     }
     if (target.error) {
       error(`Target problem: ${target.error.message}`);
     }
 
     if (!(data.host || '').trim()) {
-      error(ERROR.HOST.EMPTY);
+      error(CONFIG.ERROR.HOST.EMPTY);
     }
 
     return res;
