@@ -16,7 +16,7 @@ type SyncCount = {
   readonly deleted: number;
 };
 type Status = 'ADDED' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
-type PayloadItem = {
+type IPayloadItem = {
   status: Status;
   isPending: boolean;
   filename: string;
@@ -197,23 +197,29 @@ async function runSync(args: IRunSyncArgs) {
   // Exit if no changes to push.
   if (!silent && !force && payload.items.filter(item => item.isPending).length === 0) {
     const gray = log.info.gray;
-    gray(`Nothing to sync.`);
-    gray(`• Use ${log.cyan('--force')} to push everything (even if file is already on server).`);
-    gray(`• Use ${log.cyan('--delete')} to sync deletions.`);
+    log.info.yellow(`Nothing to sync`);
+    gray(`• Use ${log.cyan('--force')} to push everything`);
+
+    const deletions = payload.items.filter(p => p.status === 'DELETED').length;
+    if (deletions > 0) {
+      gray(`• Use ${log.cyan('--delete')} to sync deletions`);
+    }
+
     log.info();
     return done(false);
   }
 
   // Filter on set of items to push.
-  const changes = payload.items
+  const pushes = payload.items
     .filter(item => item.status !== 'DELETED')
     .filter(item => (force ? true : item.status !== 'NO_CHANGE'))
     .filter(item => Boolean(item.data));
   const deletions = payload.items.filter(item => args.delete && item.status === 'DELETED');
-  const total = changes.length + deletions.length;
+  const total = pushes.length + deletions.length;
 
   if (!silent) {
-    const message = `sync ${total} ${plural.change.toString(total)}`;
+    let message = `sync ${total} ${plural.change.toString(total)}`;
+    message = pushes.length === 0 ? message : `${message}, ${toPayloadSize(pushes).toString()}`;
     const res = await cli.prompt.list({ message, items: ['yes', 'no'] });
     if (res === 'no') {
       log.info();
@@ -224,13 +230,22 @@ async function runSync(args: IRunSyncArgs) {
 
   // Pepare tasks.
   const tasks = cli.tasks();
-  const title = `Upload ${changes.length} ${plural.file.toString(changes.length)}`;
+
+  const toPayloadTitle = (items: IPayloadItem[]) => {
+    const size = toPayloadSize(items);
+    const total = pushes.length + deletions.length;
+    let title = `${total} ${plural.file.toString(total)}`;
+    title = size.bytes === 0 ? title : `${title}, ${size.toString()}`;
+    return title;
+  };
+
+  const title = toPayloadTitle(pushes);
   tasks.task(title, async () => {
     const uri = config.targetUri.toString();
     const clientFiles = client.cell(uri).files;
 
     // Changes.
-    const uploadFiles = changes
+    const uploadFiles = pushes
       .filter(item => item.status !== 'DELETED')
       .map(({ filename, data }) => ({
         filename,
@@ -256,7 +271,6 @@ async function runSync(args: IRunSyncArgs) {
     if (deleteFiles.length > 0) {
       const res = await clientFiles.delete(deleteFiles);
       if (res.ok) {
-        // count.deleted += deleteFiles.length;
         results.deleted = [...results.deleted, ...deleteFiles];
       } else {
         const err = `${res.status} Failed while deleting.`;
@@ -289,6 +303,17 @@ function toStatusColor(args: { status: Status; text?: string; delete?: boolean; 
   }
 }
 
+const toPayloadSize = (items: IPayloadItem[]) => {
+  const bytes = items
+    .filter(item => item.bytes > -1)
+    .map(item => item.bytes)
+    .reduce((acc, next) => acc + next, 0);
+  return {
+    bytes,
+    toString: () => fs.size.toString(bytes),
+  };
+};
+
 async function buildPayload(args: {
   dir: string;
   urls: t.IUrls;
@@ -307,7 +332,7 @@ async function buildPayload(args: {
   // Retrieve the list of remote files.
   let remoteFiles: t.IClientFileData[] = [];
   const tasks = cli.tasks();
-  tasks.task(`Retrieve current files from ${cellKey} on ${host}`, async () => {
+  tasks.task(`Read [${cellKey}] from ${host}`, async () => {
     const res = await args.client.cell(cellUri).files.list();
     remoteFiles = res.body;
   });
@@ -339,7 +364,7 @@ async function buildPayload(args: {
 
     const url = cellUrls.file.byName(filename).toString();
     const isPending = status !== 'NO_CHANGE';
-    const item: PayloadItem = { status, isPending, filename, path, url, data, bytes };
+    const item: IPayloadItem = { status, isPending, filename, path, url, data, bytes };
     return item;
   });
   const items = await Promise.all(wait);
