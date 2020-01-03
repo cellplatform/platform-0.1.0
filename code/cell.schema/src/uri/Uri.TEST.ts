@@ -168,7 +168,7 @@ describe('Uri', () => {
       expect(res.toString()).to.eql(res.uri);
     });
 
-    it.only('lowercase key (cell | column)', () => {
+    it('lowercase key (cell | column)', () => {
       const test = (input: string, uri: string) => {
         const res = Uri.parse<t.ICoordUri>(input);
         expect(res.ok).to.eql(true);

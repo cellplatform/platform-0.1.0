@@ -4,9 +4,7 @@ type UriType = 'NS' | 'CELL' | 'ROW' | 'COLUMN' | 'FILE';
 type UriPrefix = 'ns' | 'cell' | 'file';
 
 export const TEST = {
-  NS: {
-    ALLOW: ['foo', 'bar', 'zoo', 'foobar'],
-  },
+  NS: { ALLOW: ['foo'] },
 };
 
 export class Uri {
@@ -28,8 +26,7 @@ export class Uri {
    * Parse a URI into it's constituent pieces.
    */
   public static parse<D extends t.IUri>(input?: string): t.IUriParts<D> {
-    const text = (input || '').trim().split('?')[0]; // NB: trim query-string.
-
+    let text = (input || '').trim().split('?')[0]; // NB: trim query-string.
     let data: t.IUri = { type: 'UNKNOWN' };
     let error: t.IUriError | undefined;
 
@@ -76,24 +73,28 @@ export class Uri {
         const id = right || '';
         setError(!id, `ID of 'cell' not found`);
 
-        let type = 'CELL';
+        let type = 'CELL' as UriType;
         let key = '';
         let ns = '';
         if (!id.includes('!')) {
           setError(true, `The 'cell' URI does not contain a "!" character.`);
         } else {
-          type = coord.cell.toType(id) as string;
+          type = coord.cell.toType(id) as UriType;
           const parts = coord.cell.toCell(id);
           key = parts.key;
           ns = parts.ns;
           setError(!key, `Coordinate key of '${type || '<empty>'}' not found`);
           setError(!ns, `Coordinate namespace of '${type || '<empty>'}' not found`);
+          if (!error) {
+            text = toUri('cell', type, ns, key); // Ensure any loose input parts are now correct.
+          }
         }
         data = { type, id, ns, key } as any;
       }
     }
 
     // Finish up.
+    // console.log('text', text);
     const ok = !Boolean(error) && data.type !== 'UNKNOWN';
     const res: t.IUriParts<D> = { ok, uri: text, parts: data as D, toString: () => text };
     return error ? { ...res, error } : res;

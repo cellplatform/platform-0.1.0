@@ -1,4 +1,4 @@
-import { expect, t, fs } from '../test';
+import { expect, t, fs, Uri } from '../test';
 import { value } from '.';
 
 describe('hash', () => {
@@ -78,7 +78,9 @@ describe('hash', () => {
   });
 
   describe('hash.cell', () => {
-    beforeEach(() => (index = -1));
+    beforeEach(() => {
+      index = -1;
+    });
 
     let index = -1;
     const test = (data: {} | undefined, expected: string) => {
@@ -108,7 +110,6 @@ describe('hash', () => {
       test({ value: 'hello', props: {} }, 'b30883363c');
       test({ value: 'hello', props: { style: { bold: true } } }, 'a788c7af8e');
       test({ links: { main: 'ns:abc' } }, '67a2d39629');
-
       const error: t.IRefErrorCircular = { type: 'REF/circular', path: 'A1/A1', message: 'Fail' };
       test({ value: 'hello', error }, 'f6818ec330');
     });
