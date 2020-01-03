@@ -73,9 +73,12 @@ describe('cell', () => {
         expect(res.row).to.eql(row);
       };
       test('A1', 'A1', 0, 0);
+      test('a1', 'A1', 0, 0);
       test('abc!A1', 'A1', 0, 0, 'abc');
+      test('abc!a1', 'A1', 0, 0, 'abc');
       test('  abc!A1  ', 'A1', 0, 0, 'abc');
       test({ key: 'A1' }, 'A1', 0, 0);
+      test({ key: 'a1' }, 'A1', 0, 0);
       test({ key: 'B2', ns: '' }, 'B2', 1, 1);
       test({ key: 'C3', ns: 'foo' }, 'C3', 2, 2, 'foo');
       test({ key: 'A1', ns: '   ' }, 'A1', 0, 0, '');

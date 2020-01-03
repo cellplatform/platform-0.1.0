@@ -168,6 +168,17 @@ describe('Uri', () => {
       expect(res.toString()).to.eql(res.uri);
     });
 
+    it.only('lowercase key (cell | column)', () => {
+      const test = (input: string, uri: string) => {
+        const res = Uri.parse<t.ICoordUri>(input);
+        expect(res.ok).to.eql(true);
+        expect(res.error).to.eql(undefined);
+        expect(res.uri).to.eql(uri);
+      };
+      test('cell:foo!a1', 'cell:foo!A1');
+      test('cell:foo!a', 'cell:foo!A');
+    });
+
     it('cell (row)', () => {
       const res = Uri.parse<t.IRowUri>('cell:foo!1');
       expect(res.ok).to.eql(true);
