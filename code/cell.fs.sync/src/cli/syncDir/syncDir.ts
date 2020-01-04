@@ -36,6 +36,8 @@ type IPayloadItem = {
   bytes: number;
 };
 
+const gray = log.info.gray;
+
 const plural = {
   change: util.plural('change', 'changes'),
   file: util.plural('file', 'files'),
@@ -203,9 +205,8 @@ async function runSync(args: IRunSyncArgs) {
 
   // Exit if no changes to push.
   if (!silent && !force && payload.items.filter(item => item.isPending).length === 0) {
-    const gray = log.info.gray;
     log.info.yellow(`Nothing to sync`);
-    gray(`• Use ${log.cyan('--force')} to push everything`);
+    gray(`• Use ${log.cyan('--force (-f)')} to push everything`);
 
     const deletions = payload.items.filter(p => p.status === 'DELETED').length;
     if (deletions > 0) {

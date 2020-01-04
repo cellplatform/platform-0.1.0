@@ -1,4 +1,6 @@
-import { util, log, promptConfig } from '../common';
+import { open, log, promptConfig } from '../common';
+
+const gray = log.info.gray;
 
 /**
  * Inspect or configure a folder.
@@ -17,14 +19,31 @@ export async function dir(args: {
 
   // Print the target URL.
   const uri = config.target.uri;
-  const parts = uri.parts;
-  const host = util.url.stripHttp(config.data.host);
-  const http = util.url.httpPrefix(config.data.host);
-  const domain = log.gray(`${http}://${log.gray(host)}/`);
-  const path = log.gray(`${log.cyan('cell')}:${log.magenta(parts.ns)}!${log.cyan(parts.key)}`);
-  const url = log.white(`${domain}${path}`);
 
   log.info();
-  log.info(`${url}`);
+  gray(`host:     ${config.data.host}`);
+  gray(`target:   cell:${uri.parts.ns}!${log.white(uri.parts.key)}`);
   log.info();
+
+  let printFinalBlankLine = false;
+
+  // Open the local folder.
+  if (args.local) {
+    open(config.dir);
+  } else {
+    gray(`• Use ${log.cyan('--local (-l)')} to open folder locally`);
+    printFinalBlankLine = true;
+  }
+
+  // Open the remote target cell (browser).
+  if (args.remote) {
+    open(config.target.url);
+  } else {
+    gray(`• Use ${log.cyan('--remote (-r)')} to open remote target in browser`);
+    printFinalBlankLine = true;
+  }
+
+  if (printFinalBlankLine) {
+    log.info();
+  }
 }

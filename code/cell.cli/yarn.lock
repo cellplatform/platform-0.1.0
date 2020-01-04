@@ -50,10 +50,10 @@
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.fs.sync@0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.1.7.tgz#2d259b5aa660ebc0027f8bd2afbb817a4f042a04"
-  integrity sha512-dt5Vbg4VTIH1gST2K1lowB8b9KdzjYC8HQ/Tvd4ZtoxwiCfWwj6QoQnCcC8fqNUpHm2r0f5C8rHQew7bcZyScQ==
+"@platform/cell.fs.sync@0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.1.8.tgz#69e84e45ffa6653a9c41492aac6d4617a57378cb"
+  integrity sha512-YhHUHYqhtm84wzKRx619gRbi6q494GyRWvhNSh7v+H4H2znoOt0dwbYYVpdKisOs42MeBSwmM11eznN2T2SZig==
   dependencies:
     "@platform/cell.client" "0.0.32"
     "@platform/cell.schema" "0.3.4"
@@ -65,6 +65,7 @@
     "@platform/http" "0.8.2"
     "@platform/libs" "0.1.5"
     "@platform/log" "0.1.1"
+    open "^7.0.0"
 
 "@platform/cell.schema@0.3.4":
   version "0.3.4"
@@ -1345,6 +1346,11 @@ is-windows@^1.0.1:
   resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-1.0.2.tgz#d1850eb9791ecd18e6182ce12a30f396634bb19d"
   integrity sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA==
 
+is-wsl@^2.1.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/is-wsl/-/is-wsl-2.1.1.tgz#4a1c152d429df3d441669498e2486d3596ebaf1d"
+  integrity sha512-umZHcSrwlDHo2TGMXv0DZ8dIUGunZ2Iv68YZnrmCiBPkZ4aaOhtv7pXJKeki9k3qJ3RJr0cDyitcl5wEH3AYog==
+
 isarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
@@ -1689,6 +1695,13 @@ onetime@^5.1.0:
   integrity sha512-5NcSkPHhwTVFIQN+TUqXoS5+dlElHXdpAWu9I0HP20YOtIi+aZ0Ct82jdlILDxjLEAWwvm+qj1m6aEtsDVmm6Q==
   dependencies:
     mimic-fn "^2.1.0"
+
+open@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/open/-/open-7.0.0.tgz#7e52999b14eb73f90f0f0807fe93897c4ae73ec9"
+  integrity sha512-K6EKzYqnwQzk+/dzJAQSBORub3xlBTxMz+ntpZpH/LyCa1o6KjXhuN+2npAaI9jaSmU3R1Q8NWf4KUWcyytGsQ==
+  dependencies:
+    is-wsl "^2.1.0"
 
 os-tmpdir@~1.0.2:
   version "1.0.2"
