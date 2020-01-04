@@ -4,7 +4,6 @@ import { syncDir } from './syncDir';
 export type ISyncDirArgs = {
   force: boolean;
   silent: boolean;
-  configure: boolean;
   delete: boolean;
   watch: boolean;
 };
@@ -15,7 +14,6 @@ export const init: t.CliInit = cli => {
       dir: process.cwd(),
       silent: args.silent,
       force: args.force,
-      configure: args.configure,
       delete: args.delete,
       watch: args.watch,
     });
@@ -46,13 +44,6 @@ export const init: t.CliInit = cli => {
       name: 'silent',
       alias: 's',
       description: 'Suppress log output',
-      type: 'boolean',
-      default: false,
-    })
-    .option<'boolean'>({
-      name: 'configure',
-      alias: 'c',
-      description: 'Reconfigure the folder settings',
       type: 'boolean',
       default: false,
     })

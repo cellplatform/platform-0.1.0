@@ -7,7 +7,10 @@ export type IFsConfigDir = {
   dir: string;
   file: string;
   data: IFsConfigDirData;
-  targetUri: t.IUriParts<t.ICellUri>;
+  target: {
+    uri: t.IUriParts<t.ICellUri>;
+    url: string;
+  };
   load(): Promise<IFsConfigDir>;
   save(data?: t.IFsConfigDirData): Promise<IFsConfigDir>;
   validate(): IFsConfigDirValidation;

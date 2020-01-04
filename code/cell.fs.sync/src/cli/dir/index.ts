@@ -5,13 +5,14 @@ export type IDirArgs = {
   browser: boolean;
   local: boolean;
   remote: boolean;
+  configure: boolean;
 };
 
 export const init: t.CliInit = cli => {
   const handler: t.CommandHandler<IDirArgs> = async args => {
     await dir({
       dir: process.cwd(),
-      configure: args.remote,
+      configure: args.configure,
       local: args.local,
       remote: args.remote,
     });

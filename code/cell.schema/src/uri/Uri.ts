@@ -4,7 +4,9 @@ type UriType = 'NS' | 'CELL' | 'ROW' | 'COLUMN' | 'FILE';
 type UriPrefix = 'ns' | 'cell' | 'file';
 
 export const TEST = {
-  NS: { ALLOW: ['foo'] },
+  NS: {
+    ALLOW: ['foo'],
+  },
 };
 
 export class Uri {

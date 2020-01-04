@@ -24,11 +24,17 @@ describe('ConfigDir', () => {
     expect(res.file).to.eql(fs.resolve(`${PATH.ASSETS}/.cell/config.yml`));
   });
 
-  it('targetUri', async () => {
+  it('target.uri', async () => {
     const config = await ConfigDir.create({ dir: PATH.TMP }).save(VALID);
-    const uri = config.targetUri;
+    const uri = config.target.uri;
     expect(uri.ok).to.eql(true);
     expect(uri.toString()).to.eql('cell:foo!A1');
+  });
+
+  it('target.url', async () => {
+    const config = await ConfigDir.create({ dir: PATH.TMP }).save(VALID);
+    const url = config.target.url;
+    expect(url).to.eql('https://domain.com/cell:foo!A1');
   });
 
   describe('load', () => {

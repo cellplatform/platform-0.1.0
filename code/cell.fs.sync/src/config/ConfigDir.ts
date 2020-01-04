@@ -1,4 +1,4 @@
-import { t, fs, constants, Schema } from '../common';
+import { t, fs, constants, Schema, util } from '../common';
 
 export type IConfigDirArgs = {
   dir?: string;
@@ -52,8 +52,10 @@ export class ConfigDir implements t.IFsConfigDir {
   /**
    * [Properties]
    */
-  public get targetUri() {
-    return Schema.uri.parse<t.ICellUri>(this.data.target);
+  public get target() {
+    const uri = Schema.uri.parse<t.ICellUri>(this.data.target);
+    const url = util.url.withHttp(`${this.data.host}/${uri.toString()}`);
+    return { uri, url };
   }
 
   public get isValid() {
@@ -98,7 +100,7 @@ export class ConfigDir implements t.IFsConfigDir {
       return res;
     };
 
-    const target = this.targetUri;
+    const target = this.target.uri;
     if (!target.ok || target.parts.type !== 'CELL') {
       error(CONFIG.ERROR.TARGET.INVALID_URI);
     }

@@ -53,12 +53,11 @@ export async function syncDir(args: {
   dir: string;
   force: boolean;
   silent: boolean;
-  configure: boolean;
   delete: boolean;
   watch: boolean;
 }) {
   // Retrieve (or build) configuration file the directory.
-  const config = await promptConfig({ dir: args.dir, force: args.configure });
+  const config = await promptConfig({ dir: args.dir });
   if (!config.isValid) {
     return;
   }
@@ -67,7 +66,7 @@ export async function syncDir(args: {
   const { dir } = config;
 
   if (!silent) {
-    const uri = config.targetUri.parts;
+    const uri = config.target.uri.parts;
     log.info();
     log.info.gray(`host:     ${config.data.host}`);
     log.info.gray(`target:   cell:${uri.ns}!${log.white(uri.key)}`);
@@ -163,7 +162,7 @@ export async function syncDir(args: {
 async function runSync(args: IRunSyncArgs) {
   const { config } = args;
   const { silent = false, force = false } = args;
-  const { dir, targetUri } = config;
+  const { dir, target } = config;
   const host = config.data.host;
   const client = Client.create(host);
   const urls = Schema.url(host);
@@ -171,7 +170,7 @@ async function runSync(args: IRunSyncArgs) {
   const payload = await buildPayload({
     dir,
     urls,
-    targetUri,
+    targetUri: target.uri,
     client,
     force,
     delete: args.delete,
@@ -249,7 +248,7 @@ async function runSync(args: IRunSyncArgs) {
 
   const title = toPayloadTitle(pushes);
   tasks.task(title, async () => {
-    const uri = config.targetUri.toString();
+    const uri = config.target.uri.toString();
     const clientFiles = client.cell(uri).files;
 
     // Changes.
@@ -397,11 +396,7 @@ async function buildPayload(args: {
       const table = log.table({ border: false });
       items.forEach(item => {
         const { bytes } = item;
-        const urlPath = item.url
-          .substring(0, item.url.lastIndexOf('/'))
-          .replace(/^http\:\/\//, '')
-          .replace(/^https\:\/\//, '');
-
+        const urlPath = util.url.stripHttp(item.url.substring(0, item.url.lastIndexOf('/')));
         const filename = toStatusColor({
           status: item.status,
           text: item.filename,
