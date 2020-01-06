@@ -9,6 +9,7 @@ export type IRunSyncArgs = {
   force: boolean;
   silent: boolean;
   delete: boolean;
+  maxBytes: number;
 };
 
 export type SyncCount = {

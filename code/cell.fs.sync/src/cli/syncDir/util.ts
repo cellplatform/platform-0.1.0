@@ -1,5 +1,5 @@
 import * as t from './types';
-import { log } from '../common';
+import { log, util } from '../common';
 
 export * from '../../common/util';
 
@@ -27,3 +27,11 @@ export function toStatusColor(args: {
       return text;
   }
 }
+
+/**
+ * Pluralised words.
+ */
+export const plural = {
+  change: util.plural('change', 'changes'),
+  file: util.plural('file', 'files'),
+};
