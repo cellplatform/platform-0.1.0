@@ -90,7 +90,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
       getUri: (id, key) => Schema.uri.create.row(id, key),
     });
     const getModel: t.GetModel = () => models.Row.create({ db, uri }).ready;
-    const getUrls: GetUrls = () => util.urls(req.host).rowLinks(uri);
+    const getUrls: GetUrls = () => util.urls(req.host).rowUrls(uri);
     return error
       ? { status, data: { error } }
       : getCoordResponse<t.IResGetRow>({ uri, getModel, getUrls });
@@ -107,7 +107,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
       getUri: (id, key) => Schema.uri.create.column(id, key),
     });
     const getModel: t.GetModel = () => models.Column.create({ db, uri }).ready;
-    const getUrls: GetUrls = () => util.urls(req.host).columnLinks(uri);
+    const getUrls: GetUrls = () => util.urls(req.host).columnUrls(uri);
     return error
       ? { status, data: { error } }
       : getCoordResponse<t.IResGetRow>({ uri, getModel, getUrls });
