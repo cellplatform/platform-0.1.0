@@ -24,6 +24,7 @@ export function urls(host: string) {
         get info() {
           return url.cell(cellUri).info.toString();
         },
+
         get urls(): t.IResGetCellLinks {
           const cell = url.cell(cellUri);
           return {
@@ -41,9 +42,9 @@ export function urls(host: string) {
               .reduce((acc, next) => {
                 const { key, value } = next;
                 const { hash } = Schema.file.links.parseLink(value);
-                const filename = Schema.file.links.toFilename(key).name;
-                const url = urls.file.byName(filename).query({ hash });
-                acc[filename] = url.toString();
+                const path = Schema.file.links.toFilename(key).path;
+                const url = urls.file.byName(path).query({ hash });
+                acc[path] = url.toString();
                 return acc;
               }, {});
           },

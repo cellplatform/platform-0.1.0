@@ -67,9 +67,9 @@ export type IUrlMap = { [key: string]: string };
 /**
  * Namespace: GET
  */
-export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsLinks>;
+export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsUrls>;
 export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataChildren>;
-export type IResGetNsLinks = { data: string };
+export type IResGetNsUrls = { data: string };
 
 /**
  * Namespace: POST
@@ -89,17 +89,17 @@ export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
  */
 export type IResGetCoord = IResGetCell | IResGetRow | IResGetColumn;
 
-export type IResGetCell = IUriResponse<IResGetCellData, IResGetCellLinks>;
+export type IResGetCell = IUriResponse<IResGetCellData, IResGetCellUrls>;
 export type IResGetCellData = t.ICellData;
-export type IResGetCellLinks = { cell: string; files: string };
+export type IResGetCellUrls = { cell: string; files: string };
 
-export type IResGetRow = IUriResponse<IResGetRowData, IResGetRowLinks>;
+export type IResGetRow = IUriResponse<IResGetRowData, IResGetRowUrls>;
 export type IResGetRowData = t.IRowData;
-export type IResGetRowLinks = {};
+export type IResGetRowUrls = {};
 
-export type IResGetColumn = IUriResponse<IResGetColumnData, IResGetColumnLinks>;
+export type IResGetColumn = IUriResponse<IResGetColumnData, IResGetColumnUrls>;
 export type IResGetColumnData = t.IColumnData;
-export type IResGetColumnLinks = {};
+export type IResGetColumnUrls = {};
 
 /**
  * File (info / meta-data)
@@ -109,9 +109,9 @@ export type IReqFileInfoQuery = {};
 /**
  * File: GET
  */
-export type IResGetFile = IUriResponse<IResGetFileData, IResGetFileLinks>;
+export type IResGetFile = IUriResponse<IResGetFileData, IResGetFileUrls>;
 export type IResGetFileData = t.IFileData & {};
-export type IResGetFileLinks = { info: string; download: string };
+export type IResGetFileUrls = { info: string; download: string };
 
 /**
  * File: POST
@@ -137,14 +137,14 @@ export type IResGetCellFiles = {
 /**
  * Cell/Files: POST
  */
-export type IResPostCellFiles = IUriResponse<IResPostCellFilesData, IResPostCellLinks>;
+export type IResPostCellFiles = IUriResponse<IResPostCellFilesData, IResPostCellUrls>;
 export type IResPostCellFilesData = {
   cell: t.ICellData;
   errors: IResPostCellFilesError[];
   changes?: t.IDbModelChange[];
 };
 export type IResPostCellFilesError = { status: number; filename: string; message: string };
-export type IResPostCellLinks = IResGetCellLinks & {};
+export type IResPostCellUrls = IResGetCellUrls & {};
 
 /**
  * Cell/Files: DELETE
