@@ -82,7 +82,9 @@ export type IClientCellLinkFile = {
   type: 'FILE';
   key: string;
   uri: string;
-  filename: string;
+  name: string;
+  dir: string;
+  path: string;
   hash: string;
   file: IClientFile;
 };

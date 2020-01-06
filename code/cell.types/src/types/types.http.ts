@@ -49,16 +49,16 @@ export type IHttpConfigNowFile = {
  */
 export type IPayload<D> = { status: number; data: D };
 export type IErrorPayload = IPayload<t.IHttpError>;
-export type IUriResponse<D, L extends ILinkMap = {}> = {
+export type IUriResponse<D, L extends IUrlMap = {}> = {
   uri: string;
   exists: boolean;
   createdAt: number;
   modifiedAt: number;
   data: D;
-  links: L;
+  urls: L;
 };
 
-export type ILinkMap = { [key: string]: string };
+export type IUrlMap = { [key: string]: string };
 
 /**
  * Namespace
@@ -130,7 +130,7 @@ export type IResDeleteFile = { uri: string; deleted: boolean };
 export type IResGetCellFiles = {
   cell: string;
   uri: string;
-  links: ILinkMap;
+  urls: IUrlMap;
   files: t.IFileMap;
 };
 

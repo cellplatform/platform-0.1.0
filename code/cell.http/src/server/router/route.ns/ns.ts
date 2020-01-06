@@ -84,14 +84,14 @@ export async function getNsResponse(args: {
     ...(await getNsData({ model, query })),
   };
 
-  const links: t.IResGetNsLinks = util.urls(host).ns(uri).links;
+  const urls: t.IResGetNsLinks = util.urls(host).ns(uri).urls;
   const res: t.IResGetNs = {
     uri,
     exists,
     createdAt,
     modifiedAt,
     data,
-    links,
+    urls,
   };
 
   return { status: 200, data: res };

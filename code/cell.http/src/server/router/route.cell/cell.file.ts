@@ -90,7 +90,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     // Construct links object.
     const urlBuilder = util.urls(req.host).cell(cellUri.toString());
     const cellLinks = cell.props.links || {};
-    const links = urlBuilder.files.links(cellLinks);
+    const urls = urlBuilder.files.urls(cellLinks);
     const linkUris = Object.keys(cellLinks)
       .map(key => cellLinks[key])
       .map(value => Schema.file.links.parseLink(value));
@@ -111,7 +111,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const data: t.IResGetCellFiles = {
       uri: cellUri.toString(),
       cell: urlBuilder.info,
-      links,
+      urls,
       files,
     };
 
@@ -286,7 +286,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         modifiedAt: cell.modifiedAt,
         exists: Boolean(cell.exists),
         data: { cell: cell.toObject(), errors, changes },
-        links: { ...urls.links },
+        urls: { ...urls.urls },
       };
 
       return { status: 200, data: res };

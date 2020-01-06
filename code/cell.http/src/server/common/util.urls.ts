@@ -11,7 +11,7 @@ export function urls(host: string) {
     ns(nsUri: string) {
       const ns = url.ns(nsUri).info;
       return {
-        get links(): t.IResGetNsLinks {
+        get urls(): t.IResGetNsLinks {
           return {
             data: ns.query({ data: true }).toString(),
           };
@@ -24,7 +24,7 @@ export function urls(host: string) {
         get info() {
           return url.cell(cellUri).info.toString();
         },
-        get links(): t.IResGetCellLinks {
+        get urls(): t.IResGetCellLinks {
           const cell = url.cell(cellUri);
           return {
             cell: cell.info.toString(),
@@ -33,7 +33,7 @@ export function urls(host: string) {
         },
 
         files: {
-          links(links: t.ICellData['links']): t.IResGetCellFiles['links'] {
+          urls(links: t.ICellData['links']): t.IResGetCellFiles['urls'] {
             const urls = url.cell(cellUri);
             return Object.keys(links || {})
               .map(key => ({ key, value: (links || {})[key] }))
@@ -41,7 +41,7 @@ export function urls(host: string) {
               .reduce((acc, next) => {
                 const { key, value } = next;
                 const { hash } = Schema.file.links.parseLink(value);
-                const filename = Schema.file.links.toFilename(key);
+                const filename = Schema.file.links.toFilename(key).name;
                 const url = urls.file.byName(filename).query({ hash });
                 acc[filename] = url.toString();
                 return acc;
