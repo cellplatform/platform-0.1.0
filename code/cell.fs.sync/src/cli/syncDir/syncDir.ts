@@ -6,37 +6,41 @@ import {
   fs,
   log,
   Schema,
-  t,
   util,
   Value,
   watch,
   promptConfig,
 } from '../common';
 
-type LogResults = (args: { uploaded?: string[]; deleted?: string[] }) => void;
+import * as t from './types';
 
-type IRunSyncArgs = {
-  config: t.IFsConfigDir;
-  dir: string;
-  force: boolean;
-  silent: boolean;
-  delete: boolean;
-};
-type SyncCount = {
-  readonly total: number;
-  readonly uploaded: number;
-  readonly deleted: number;
-};
-type Status = 'ADDED' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
-type IPayloadItem = {
-  status: Status;
-  isPending: boolean;
-  filename: string;
-  path: string;
-  url: string;
-  data?: Buffer;
-  bytes: number;
-};
+import { buildPayload, toPayloadSize } from './syncDir.payload';
+
+// type LogResults = (args: { uploaded?: string[]; deleted?: string[] }) => void;
+
+// type IRunSyncArgs = {
+//   config: t.IFsConfigDir;
+//   dir: string;
+//   force: boolean;
+//   silent: boolean;
+//   delete: boolean;
+// };
+
+// type SyncCount = {
+//   readonly total: number;
+//   readonly uploaded: number;
+//   readonly deleted: number;
+// };
+// type Status = 'ADDED' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
+// type t.IPayloadItem = {
+//   status: Status;
+//   isPending: boolean;
+//   filename: string;
+//   path: string;
+//   url: string;
+//   data?: Buffer;
+//   bytes: number;
+// };
 
 const MAX_PAYLOAD_BYTES = 4 * 1000000; // 4MB
 const gray = log.info.gray;
@@ -83,7 +87,7 @@ export async function syncDir(args: {
     log.info();
   }
 
-  const sync = async (override: Partial<IRunSyncArgs> = {}) => {
+  const sync = async (override: Partial<t.IRunSyncArgs> = {}) => {
     return runSync({
       config,
       dir,
@@ -162,8 +166,8 @@ export async function syncDir(args: {
 /**
  * [Helpers]
  */
-function toBatches(args: { items: IPayloadItem[]; maxBytes: number }) {
-  const result: IPayloadItem[][] = [];
+function toBatches(args: { items: t.IPayloadItem[]; maxBytes: number }) {
+  const result: t.IPayloadItem[][] = [];
   let bytes = 0;
   let index = 0;
   fs.sort
@@ -182,7 +186,7 @@ function toBatches(args: { items: IPayloadItem[]; maxBytes: number }) {
   return result;
 }
 
-const payloadTitle = (args: { pushes: IPayloadItem[]; deletions: IPayloadItem[] }) => {
+const taskTitle = (args: { pushes: t.IPayloadItem[]; deletions: t.IPayloadItem[] }) => {
   const { pushes, deletions } = args;
 
   let title = '';
@@ -207,16 +211,16 @@ const payloadTitle = (args: { pushes: IPayloadItem[]; deletions: IPayloadItem[] 
 
 function addTask(args: {
   tasks: cli.ITasks;
-  items: IPayloadItem[];
+  items: t.IPayloadItem[];
   targetUri: t.IUriParts<t.ICellUri>;
   client: t.IClient;
-  logResults: LogResults;
+  logResults: t.LogResults;
 }) {
   const { tasks, logResults } = args;
   const clientFiles = args.client.cell(args.targetUri.toString()).files;
   const pushes = args.items.filter(item => item.status !== 'DELETED');
   const deletions = args.items.filter(item => item.status === 'DELETED');
-  const title = payloadTitle({ pushes, deletions });
+  const title = taskTitle({ pushes, deletions });
 
   tasks.task(title, async () => {
     // Changes.
@@ -252,7 +256,7 @@ function addTask(args: {
   return tasks;
 }
 
-async function runSync(args: IRunSyncArgs) {
+async function runSync(args: t.IRunSyncArgs) {
   const { config } = args;
   const { silent = false, force = false } = args;
   const dir = config.dir;
@@ -279,12 +283,12 @@ async function runSync(args: IRunSyncArgs) {
     uploaded: [] as string[],
     deleted: [] as string[],
   };
-  const logResults: LogResults = args => {
+  const logResults: t.LogResults = args => {
     results.uploaded = [...results.uploaded, ...(args.uploaded || [])];
     results.deleted = [...results.deleted, ...(args.deleted || [])];
   };
 
-  const count: SyncCount = {
+  const count: t.SyncCount = {
     get uploaded() {
       return results.uploaded.length;
     },
@@ -360,155 +364,4 @@ async function runSync(args: IRunSyncArgs) {
   // Execute upload.
   const res = await tasks.run({ concurrent: false, silent });
   return done(true, res.errors);
-}
-
-function toStatusColor(args: { status: Status; text?: string; delete?: boolean; force?: boolean }) {
-  const { status } = args;
-  const text = args.text || status;
-  switch (status) {
-    case 'ADDED':
-      return log.green(text);
-    case 'CHANGED':
-      return log.yellow(text);
-    case 'NO_CHANGE':
-      return args.force ? log.cyan(text) : log.gray(text);
-    case 'DELETED':
-      return args.delete ? log.red(text) : log.gray(text);
-    default:
-      return text;
-  }
-}
-
-const toPayloadSize = (items: IPayloadItem[]) => {
-  const bytes = items
-    .filter(item => item.bytes > -1)
-    .map(item => item.bytes)
-    .reduce((acc, next) => acc + next, 0);
-  return {
-    bytes,
-    toString: () => fs.size.toString(bytes),
-  };
-};
-
-async function buildPayload(args: {
-  dir: string;
-  urls: t.IUrls;
-  targetUri: t.IUriParts<t.ICellUri>;
-  client: t.IClient;
-  delete: boolean;
-  force: boolean;
-  silent: boolean;
-}) {
-  const { silent, client } = args;
-  let ok = true;
-  const cellUri = args.targetUri.toString();
-  const cellKey = args.targetUri.parts.key;
-  const cellUrls = args.urls.cell(cellUri);
-
-  // Retrieve the list of remote files.
-  let remoteFiles: t.IClientFileData[] = [];
-  const tasks = cli.tasks();
-
-  const urls = Schema.url(client.origin);
-  const filesUrl = urls.cell(cellUri).files.list;
-
-  tasks.task(`Read [${cellKey}] from ${filesUrl.toString()}`, async () => {
-    const res = await args.client.cell(cellUri).files.list();
-    if (!res.ok) {
-      throw new Error(res.error?.message);
-    }
-    remoteFiles = res.body;
-  });
-
-  const taskRes = await tasks.run({ silent });
-  if (!taskRes.ok) {
-    ok = false;
-  }
-
-  if (!silent) {
-    log.info();
-  }
-
-  const findRemote = (filename: string) => remoteFiles.find(f => f.props.filename === filename);
-
-  // Prepare files.
-  const paths = await fs.glob.find(`${args.dir}/*`, { dot: false, includeDirs: false });
-  const wait = paths.map(async path => {
-    const data = await fs.readFile(path);
-    const bytes = Uint8Array.from(data).length;
-
-    const filename = fs.basename(path);
-    const remoteFile = findRemote(filename);
-
-    const hash = {
-      local: Value.hash.sha256(data),
-      remote: remoteFile ? remoteFile.props.filehash : '',
-    };
-
-    let status: Status = 'ADDED';
-    if (remoteFile) {
-      status = hash.local === hash.remote ? 'NO_CHANGE' : 'CHANGED';
-    }
-
-    const url = cellUrls.file.byName(filename).toString();
-    const isPending = status !== 'NO_CHANGE';
-    const item: IPayloadItem = { status, isPending, filename, path, url, data, bytes };
-    return item;
-  });
-  const items = await Promise.all(wait);
-
-  // Add list of deleted files (on remote, but not local).
-  const isDeleted = (filename?: string) => !items.some(item => item.filename === filename);
-  remoteFiles
-    .filter(file => Boolean(file.props.filename))
-    .filter(file => isDeleted(file.props.filename))
-    .forEach(file => {
-      const filename = file.props.filename || '';
-      const path = '';
-      const url = cellUrls.file.byName(filename).toString();
-      const isPending = args.delete;
-      items.push({ status: 'DELETED', isPending, filename, path, url, bytes: -1 });
-    });
-
-  // Finish up.
-  return {
-    ok,
-    items,
-    log() {
-      let count = 0;
-      const table = log.table({ border: false });
-      const list = items.filter(item => (item.status === 'DELETED' ? args.delete : true));
-      fs.sort
-        .objects(list, item => item.filename)
-        .forEach(item => {
-          const { bytes } = item;
-          const filename = toStatusColor({
-            status: item.status,
-            text: item.filename,
-            delete: args.delete,
-            force: args.force,
-          });
-
-          const filePath = log.gray(`${filename}`);
-
-          const statusText = item.status.toLowerCase().replace(/\_/g, ' ');
-
-          const status = toStatusColor({
-            status: item.status,
-            text: statusText,
-            delete: args.delete,
-            force: args.force,
-          });
-
-          const size = bytes > -1 ? fs.size.toString(bytes) : '';
-
-          table.add([`${status}  `, `${filePath}  `, size]);
-          count++;
-        });
-
-      if (count > 0) {
-        log.info(table.toString());
-      }
-    },
-  };
 }
