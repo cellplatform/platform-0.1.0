@@ -14,7 +14,6 @@ type IHistoryItem = {
  */
 export async function watchDir(args: {
   config: t.IFsConfigDir;
-  // dir: string;
   silent: boolean;
   sync: t.RunSyncCurry;
   debounce?: number;
