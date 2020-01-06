@@ -59,14 +59,14 @@ export async function buildPayload(args: {
       remote: remoteFile ? remoteFile.props.filehash : '',
     };
 
-    let status: t.Status = 'ADDED';
+    let status: t.FileStatus = 'ADDED';
     if (remoteFile) {
       status = hash.local === hash.remote ? 'NO_CHANGE' : 'CHANGED';
     }
 
     const url = cellUrls.file.byName(filename).toString();
     const isPending = status !== 'NO_CHANGE';
-    const item: t.IPayloadItem = { status, isPending, filename, path, url, data, bytes };
+    const item: t.IPayloadFile = { status, isPending, filename, path, url, data, bytes };
     return item;
   });
   const items = await Promise.all(wait);
@@ -95,7 +95,7 @@ export async function buildPayload(args: {
 /**
  * Calculate the size of a set of payload items.
  */
-export function toPayloadSize(items: t.IPayloadItem[]) {
+export function toPayloadSize(items: t.IPayloadFile[]) {
   const bytes = items
     .filter(item => item.bytes > -1)
     .map(item => item.bytes)
@@ -109,7 +109,7 @@ export function toPayloadSize(items: t.IPayloadItem[]) {
 /**
  * Logs a set of payload items.
  */
-export function logPayload(args: { items: t.IPayloadItem[]; delete: boolean; force: boolean }) {
+export function logPayload(args: { items: t.IPayloadFile[]; delete: boolean; force: boolean }) {
   const { items } = args;
   let count = 0;
   const table = log.table({ border: false });

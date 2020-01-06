@@ -6,8 +6,8 @@ import * as util from './util';
 /**
  * Converts a set of payload items into batches of sync tasks.
  */
-export function toBatches(args: { items: t.IPayloadItem[]; maxBytes: number }) {
-  const result: t.IPayloadItem[][] = [];
+export function toBatches(args: { items: t.IPayloadFile[]; maxBytes: number }) {
+  const result: t.IPayloadFile[][] = [];
   let bytes = 0;
   let index = 0;
   fs.sort
@@ -31,10 +31,10 @@ export function toBatches(args: { items: t.IPayloadItem[]; maxBytes: number }) {
  */
 export function addTask(args: {
   tasks: cli.ITasks;
-  items: t.IPayloadItem[];
+  items: t.IPayloadFile[];
   targetUri: t.IUriParts<t.ICellUri>;
   client: t.IClient;
-  logResults: t.LogResults;
+  logResults: t.LogSyncResults;
 }) {
   const { tasks, logResults } = args;
   const clientFiles = args.client.cell(args.targetUri.toString()).files;
@@ -80,7 +80,7 @@ export function addTask(args: {
  * [Helpers]
  */
 
-const taskTitle = (args: { pushes: t.IPayloadItem[]; deletions: t.IPayloadItem[] }) => {
+const taskTitle = (args: { pushes: t.IPayloadFile[]; deletions: t.IPayloadFile[] }) => {
   const { pushes, deletions } = args;
 
   let title = '';

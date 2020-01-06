@@ -1,7 +1,11 @@
 import * as t from '../../common/types';
 export * from '../../common/types';
 
-export type LogResults = (args: { uploaded?: string[]; deleted?: string[] }) => void;
+export type ISyncResults = { uploaded: string[]; deleted: string[] };
+export type LogSyncResults = (args: Partial<ISyncResults>) => void;
+
+export type RunSync = (args: IRunSyncArgs) => Promise<IRunSyncResponse>;
+export type RunSyncCurry = (override?: Partial<IRunSyncArgs>) => Promise<IRunSyncResponse>;
 
 export type IRunSyncArgs = {
   config: t.IFsConfigDir;
@@ -12,16 +16,23 @@ export type IRunSyncArgs = {
   maxBytes: number;
 };
 
-export type SyncCount = {
+export type IRunSyncResponse = {
+  ok: boolean;
+  errors: t.ITaskError[];
+  count: ISyncCount;
+  completed: boolean;
+  results: ISyncResults;
+};
+
+export type ISyncCount = {
   readonly total: number;
   readonly uploaded: number;
   readonly deleted: number;
 };
 
-export type Status = 'ADDED' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
-
-export type IPayloadItem = {
-  status: Status;
+export type FileStatus = 'ADDED' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
+export type IPayloadFile = {
+  status: FileStatus;
   isPending: boolean;
   filename: string;
   path: string;

@@ -7,7 +7,7 @@ export * from '../../common/util';
  * Convert a sync status to a log color.
  */
 export function toStatusColor(args: {
-  status: t.Status;
+  status: t.FileStatus;
   text?: string;
   delete?: boolean;
   force?: boolean;

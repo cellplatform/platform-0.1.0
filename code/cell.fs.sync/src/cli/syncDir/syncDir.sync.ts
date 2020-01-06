@@ -5,13 +5,12 @@ import * as t from './types';
 import { toBatches, addTask } from './syncDir.task';
 import * as util from './util';
 
-// const MAX_PAYLOAD_BYTES = 4 * 1000000; // 4MB
 const gray = log.info.gray;
 
 /**
  * Ryns a sync operation.
  */
-export async function runSync(args: t.IRunSyncArgs) {
+export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
   const { config, maxBytes } = args;
   const { silent = false, force = false } = args;
   const dir = config.dir;
@@ -34,16 +33,16 @@ export async function runSync(args: t.IRunSyncArgs) {
     payload.log();
   }
 
-  const results = {
+  const results: t.ISyncResults = {
     uploaded: [] as string[],
     deleted: [] as string[],
   };
-  const logResults: t.LogResults = args => {
+  const logResults: t.LogSyncResults = args => {
     results.uploaded = [...results.uploaded, ...(args.uploaded || [])];
     results.deleted = [...results.deleted, ...(args.deleted || [])];
   };
 
-  const count: t.SyncCount = {
+  const count: t.ISyncCount = {
     get uploaded() {
       return results.uploaded.length;
     },
@@ -54,9 +53,11 @@ export async function runSync(args: t.IRunSyncArgs) {
       return count.uploaded + count.deleted;
     },
   };
+
   const done = (completed: boolean, errors: cli.ITaskError[] = []) => {
     const ok = errors.length === 0;
-    return { ok, errors, count, completed, payload, results };
+    const res: t.IRunSyncResponse = { ok, errors, count, completed, results };
+    return res;
   };
 
   // Exit if payload not OK.
@@ -119,4 +120,4 @@ export async function runSync(args: t.IRunSyncArgs) {
   // Execute upload.
   const res = await tasks.run({ concurrent: false, silent });
   return done(true, res.errors);
-}
+};

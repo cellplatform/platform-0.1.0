@@ -1,9 +1,7 @@
-import { debounceTime, filter } from 'rxjs/operators';
-
-import { defaultValue, log, promptConfig, watch } from '../common';
+import { defaultValue, log, promptConfig } from '../common';
 import { runSync } from './syncDir.sync';
+import { watchDir } from './syncDir.watch';
 import * as t from './types';
-import * as util from './util';
 
 const MAX_PAYLOAD_BYTES = 4 * 1000000; // 4MB
 
@@ -45,7 +43,7 @@ export async function syncDir(args: {
     log.info();
   }
 
-  const sync = async (override: Partial<t.IRunSyncArgs> = {}) => {
+  const sync: t.RunSyncCurry = async (override: Partial<t.IRunSyncArgs> = {}) => {
     return runSync({
       config,
       dir,
@@ -58,53 +56,11 @@ export async function syncDir(args: {
   };
 
   if (args.watch) {
-    const dir$ = watch.start({ pattern: `${dir}/*` }).events$.pipe(
-      filter(e => e.isFile),
-      filter(e => !e.name.startsWith('.')),
-      debounceTime(1000),
-    );
-
-    dir$.subscribe(async e => {
-      const { count, results, errors } = await sync({ silent: true });
-      const { uploaded, deleted } = count;
-      if (!silent) {
-        let output = '';
-        if (uploaded > 0) {
-          output = `uploaded ${uploaded} ${util.plural.file.toString(uploaded)}`;
-          output = `${output}: ${results.uploaded.join(', ')}`;
-        }
-        if (deleted > 0) {
-          output = output ? `${output}, ` : output;
-          output = `deleted  ${deleted} ${util.plural.file.toString(deleted)}`;
-          output = `${output}: ${results.deleted.join(', ')}`;
-        }
-        output = output.trim();
-
-        if (output) {
-          let bullet = log.cyan;
-          if (uploaded > 0 && deleted > 0) {
-            bullet = log.yellow;
-          }
-          if (uploaded > 0 && deleted === 0) {
-            bullet = log.green;
-          }
-          if (uploaded === 0 && deleted > 0) {
-            bullet = log.red;
-          }
-          log.info.gray(`${bullet('•')} ${output}`);
-        }
-
-        if (errors.length > 0) {
-          const errs = errors.map(item => item.error);
-          log.info.yellow(`${log.yellow('•')} ${errs}`);
-        }
-      }
-    });
+    // Watch directory.
+    await watchDir({ dir, sync, silent });
   } else {
     // Run the task.
     const res = await sync();
-
-    // Finish up.
     if (!silent) {
       if (res.completed) {
         log.info();
