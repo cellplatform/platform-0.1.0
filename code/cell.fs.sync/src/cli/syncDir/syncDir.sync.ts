@@ -1,5 +1,5 @@
-import { cli, Client, log, Schema } from '../common';
-import { buildPayload, toPayloadSize } from './syncDir.payload';
+import { cli, Client, log, Schema, defaultValue } from '../common';
+import { buildPayload } from './syncDir.payload';
 import * as t from './types';
 
 import { toBatches, addTask } from './syncDir.task';
@@ -56,7 +56,8 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
 
   const done = (completed: boolean, errors: cli.ITaskError[] = []) => {
     const ok = errors.length === 0;
-    const res: t.IRunSyncResponse = { ok, errors, count, completed, results };
+    const bytes = util.toPayloadSize(pushes).bytes;
+    const res: t.IRunSyncResponse = { ok, errors, count, bytes, completed, results };
     return res;
   };
 
@@ -88,9 +89,10 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
   const deletions = payload.items.filter(item => args.delete && item.status === 'DELETED');
   const total = pushes.length + deletions.length;
 
-  if (!silent) {
+  if (args.prompt && !silent) {
     let message = `sync ${total} ${util.plural.change.toString(total)}`;
-    message = pushes.length === 0 ? message : `${message}, ${toPayloadSize(pushes).toString()}`;
+    const size = util.toPayloadSize(pushes).toString();
+    message = pushes.length === 0 ? message : `${message}, ${size}`;
     log.info();
     const res = await cli.prompt.list({ message, items: ['yes', 'no'] });
     log.info();

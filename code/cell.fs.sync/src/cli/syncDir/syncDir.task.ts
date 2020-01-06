@@ -1,5 +1,4 @@
 import { cli, fs } from '../common';
-import { toPayloadSize } from './syncDir.payload';
 import * as t from './types';
 import * as util from './util';
 
@@ -90,7 +89,7 @@ const taskTitle = (args: { pushes: t.IPayloadFile[]; deletions: t.IPayloadFile[]
   };
 
   if (pushes.length > 0) {
-    const size = toPayloadSize(pushes);
+    const size = util.toPayloadSize(pushes);
     const total = pushes.length;
     append(`push ${total} ${util.plural.file.toString(total)} (${size.toString()})`);
   }

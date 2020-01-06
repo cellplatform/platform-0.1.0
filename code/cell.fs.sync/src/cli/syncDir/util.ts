@@ -1,5 +1,5 @@
 import * as t from './types';
-import { log, util } from '../common';
+import { log, util, fs } from '../common';
 
 export * from '../../common/util';
 
@@ -35,3 +35,17 @@ export const plural = {
   change: util.plural('change', 'changes'),
   file: util.plural('file', 'files'),
 };
+
+/**
+ * Calculate the size of a set of payload items.
+ */
+export function toPayloadSize(items: t.IPayloadFile[]) {
+  const bytes = items
+    .filter(item => item.bytes > -1)
+    .map(item => item.bytes)
+    .reduce((acc, next) => acc + next, 0);
+  return {
+    bytes,
+    toString: () => fs.size.toString(bytes),
+  };
+}

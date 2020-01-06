@@ -13,6 +13,7 @@ export type IRunSyncArgs = {
   force: boolean;
   silent: boolean;
   delete: boolean;
+  prompt: boolean;
   maxBytes: number;
 };
 
@@ -20,6 +21,7 @@ export type IRunSyncResponse = {
   ok: boolean;
   errors: t.ITaskError[];
   count: ISyncCount;
+  bytes: number;
   completed: boolean;
   results: ISyncResults;
 };

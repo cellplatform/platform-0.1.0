@@ -93,20 +93,6 @@ export async function buildPayload(args: {
 }
 
 /**
- * Calculate the size of a set of payload items.
- */
-export function toPayloadSize(items: t.IPayloadFile[]) {
-  const bytes = items
-    .filter(item => item.bytes > -1)
-    .map(item => item.bytes)
-    .reduce((acc, next) => acc + next, 0);
-  return {
-    bytes,
-    toString: () => fs.size.toString(bytes),
-  };
-}
-
-/**
  * Logs a set of payload items.
  */
 export function logPayload(args: { items: t.IPayloadFile[]; delete: boolean; force: boolean }) {

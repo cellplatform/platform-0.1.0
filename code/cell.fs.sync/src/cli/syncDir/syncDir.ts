@@ -50,6 +50,7 @@ export async function syncDir(args: {
       force,
       silent,
       delete: defaultValue(args.delete, false),
+      prompt: true,
       maxBytes: MAX_PAYLOAD_BYTES,
       ...override,
     });
@@ -57,9 +58,9 @@ export async function syncDir(args: {
 
   if (args.watch) {
     // Watch directory.
-    await watchDir({ dir, sync, silent });
+    await watchDir({ config, sync, silent });
   } else {
-    // Run the task.
+    // Run sync operation.
     const res = await sync();
     if (!silent) {
       if (res.completed) {
