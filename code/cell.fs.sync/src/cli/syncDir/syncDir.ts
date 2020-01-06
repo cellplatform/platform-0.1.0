@@ -13,6 +13,8 @@ import {
   promptConfig,
 } from '../common';
 
+type LogResults = (args: { uploaded?: string[]; deleted?: string[] }) => void;
+
 type IRunSyncArgs = {
   config: t.IFsConfigDir;
   dir: string;
@@ -36,8 +38,8 @@ type IPayloadItem = {
   bytes: number;
 };
 
+const MAX_PAYLOAD_BYTES = 4 * 1000000; // 4MB
 const gray = log.info.gray;
-
 const plural = {
   change: util.plural('change', 'changes'),
   file: util.plural('file', 'files'),
@@ -71,7 +73,7 @@ export async function syncDir(args: {
     const uri = config.target.uri.parts;
     log.info();
     log.info.gray(`host:     ${config.data.host}`);
-    log.info.gray(`target:   cell:${uri.ns}!${log.white(uri.key)}`);
+    log.info.gray(`target:   cell:${uri.ns}!${log.blue(uri.key)}`);
     if (args.watch) {
       log.info.gray(`watching: ${log.cyan('active')}`);
     }
@@ -160,11 +162,101 @@ export async function syncDir(args: {
 /**
  * [Helpers]
  */
+function toBatches(args: { items: IPayloadItem[]; maxBytes: number }) {
+  const result: IPayloadItem[][] = [];
+  let bytes = 0;
+  let index = 0;
+  fs.sort
+    .objects(args.items, item => item.filename)
+    .forEach(item => {
+      bytes += item.bytes;
+      const increment = bytes >= args.maxBytes;
+      if (increment) {
+        bytes = item.bytes;
+        index++;
+      }
+      result[index] = result[index] || [];
+      result[index].push(item);
+    });
+
+  return result;
+}
+
+const payloadTitle = (args: { pushes: IPayloadItem[]; deletions: IPayloadItem[] }) => {
+  const { pushes, deletions } = args;
+
+  let title = '';
+  const append = (text: string, divider = ' ') => {
+    title = title.trim();
+    title = `${title}${title ? divider : ''}${text}`.trim();
+  };
+
+  if (pushes.length > 0) {
+    const size = toPayloadSize(pushes);
+    const total = pushes.length;
+    append(`push ${total} ${plural.file.toString(total)} (${size.toString()})`);
+  }
+
+  if (deletions.length > 0) {
+    const total = deletions.length;
+    append(`delete ${total} ${plural.file.toString(total)}`, ', ');
+  }
+
+  return title;
+};
+
+function addTask(args: {
+  tasks: cli.ITasks;
+  items: IPayloadItem[];
+  targetUri: t.IUriParts<t.ICellUri>;
+  client: t.IClient;
+  logResults: LogResults;
+}) {
+  const { tasks, logResults } = args;
+  const clientFiles = args.client.cell(args.targetUri.toString()).files;
+  const pushes = args.items.filter(item => item.status !== 'DELETED');
+  const deletions = args.items.filter(item => item.status === 'DELETED');
+  const title = payloadTitle({ pushes, deletions });
+
+  tasks.task(title, async () => {
+    // Changes.
+    const uploadFiles = pushes.map(({ filename, data }) => ({
+      filename,
+      data,
+    })) as t.IClientCellFileUpload[];
+
+    if (uploadFiles.length > 0) {
+      const res = await clientFiles.upload(uploadFiles);
+      if (res.ok) {
+        logResults({ uploaded: uploadFiles.map(item => item.filename) });
+      } else {
+        const err = `${res.status} Failed while uploading.`;
+        throw new Error(err);
+      }
+    }
+
+    // Deletions.
+    const deleteFiles = deletions.map(item => item.filename);
+    if (deleteFiles.length > 0) {
+      const res = await clientFiles.delete(deleteFiles);
+      if (res.ok) {
+        logResults({ deleted: deleteFiles });
+      } else {
+        const err = `${res.status} Failed while deleting.`;
+        throw new Error(err);
+      }
+    }
+  });
+
+  // Finish up.
+  return tasks;
+}
 
 async function runSync(args: IRunSyncArgs) {
   const { config } = args;
   const { silent = false, force = false } = args;
-  const { dir, target } = config;
+  const dir = config.dir;
+  const targetUri = config.target.uri;
   const host = config.data.host;
   const client = Client.create(host);
   const urls = Schema.url(host);
@@ -172,7 +264,7 @@ async function runSync(args: IRunSyncArgs) {
   const payload = await buildPayload({
     dir,
     urls,
-    targetUri: target.uri,
+    targetUri,
     client,
     force,
     delete: args.delete,
@@ -187,6 +279,11 @@ async function runSync(args: IRunSyncArgs) {
     uploaded: [] as string[],
     deleted: [] as string[],
   };
+  const logResults: LogResults = args => {
+    results.uploaded = [...results.uploaded, ...(args.uploaded || [])];
+    results.deleted = [...results.deleted, ...(args.deleted || [])];
+  };
+
   const count: SyncCount = {
     get uploaded() {
       return results.uploaded.length;
@@ -203,13 +300,14 @@ async function runSync(args: IRunSyncArgs) {
     return { ok, errors, count, completed, payload, results };
   };
 
-  // Exit if payload not OK
+  // Exit if payload not OK.
   if (!payload.ok) {
     return done(false);
   }
 
   // Exit if no changes to push.
   if (!silent && !force && payload.items.filter(item => item.isPending).length === 0) {
+    log.info();
     log.info.green(`Nothing to update\n`);
     gray(`• Use ${log.cyan('--force (-f)')} to push everything`);
 
@@ -244,59 +342,23 @@ async function runSync(args: IRunSyncArgs) {
 
   // Pepare tasks.
   const tasks = cli.tasks();
+  const batches = toBatches({
+    items: [...pushes, ...deletions],
+    maxBytes: MAX_PAYLOAD_BYTES,
+  });
 
-  const toPayloadTitle = (items: IPayloadItem[]) => {
-    const size = toPayloadSize(items);
-    const total = pushes.length + deletions.length;
-    let title = `${total} ${plural.file.toString(total)}`;
-    title = size.bytes === 0 ? title : `${title}, ${size.toString()}`;
-    return title;
-  };
-
-  const title = toPayloadTitle(pushes);
-  tasks.task(title, async () => {
-    const uri = config.target.uri.toString();
-    const clientFiles = client.cell(uri).files;
-
-    // Changes.
-    const uploadFiles = pushes
-      .filter(item => item.status !== 'DELETED')
-      .map(({ filename, data }) => ({
-        filename,
-        data,
-      })) as t.IClientCellFileUpload[];
-
-    if (uploadFiles.length > 0) {
-      const res = await clientFiles.upload(uploadFiles);
-      if (res.ok) {
-        // count.uploaded += uploadFiles.length;
-        results.uploaded = [...results.uploaded, ...uploadFiles.map(item => item.filename)];
-      } else {
-        const err = `${res.status} Failed while uploading.`;
-        throw new Error(err);
-      }
-    }
-
-    // Deletions.
-    const deleteFiles = deletions
-      .filter(item => item.status === 'DELETED')
-      .map(item => item.filename);
-
-    if (deleteFiles.length > 0) {
-      const res = await clientFiles.delete(deleteFiles);
-      if (res.ok) {
-        results.deleted = [...results.deleted, ...deleteFiles];
-      } else {
-        const err = `${res.status} Failed while deleting.`;
-        throw new Error(err);
-      }
-    }
+  batches.forEach(items => {
+    addTask({
+      tasks,
+      items,
+      client,
+      targetUri,
+      logResults,
+    });
   });
 
   // Execute upload.
-  const res = await tasks.run({ concurrent: true, silent });
-
-  // Finish up.
+  const res = await tasks.run({ concurrent: false, silent });
   return done(true, res.errors);
 }
 
@@ -337,9 +399,8 @@ async function buildPayload(args: {
   force: boolean;
   silent: boolean;
 }) {
-  const { silent } = args;
+  const { silent, client } = args;
   let ok = true;
-  const host = args.client.origin;
   const cellUri = args.targetUri.toString();
   const cellKey = args.targetUri.parts.key;
   const cellUrls = args.urls.cell(cellUri);
@@ -347,7 +408,11 @@ async function buildPayload(args: {
   // Retrieve the list of remote files.
   let remoteFiles: t.IClientFileData[] = [];
   const tasks = cli.tasks();
-  tasks.task(`Read [${cellKey}] from ${host}`, async () => {
+
+  const urls = Schema.url(client.origin);
+  const filesUrl = urls.cell(cellUri).files.list;
+
+  tasks.task(`Read [${cellKey}] from ${filesUrl.toString()}`, async () => {
     const res = await args.client.cell(cellUri).files.list();
     if (!res.ok) {
       throw new Error(res.error?.message);
@@ -358,7 +423,6 @@ async function buildPayload(args: {
   const taskRes = await tasks.run({ silent });
   if (!taskRes.ok) {
     ok = false;
-    // return;
   }
 
   if (!silent) {
@@ -413,11 +477,11 @@ async function buildPayload(args: {
     log() {
       let count = 0;
       const table = log.table({ border: false });
-      items
-        .filter(item => (item.status === 'DELETED' ? args.delete : true))
+      const list = items.filter(item => (item.status === 'DELETED' ? args.delete : true));
+      fs.sort
+        .objects(list, item => item.filename)
         .forEach(item => {
           const { bytes } = item;
-          const urlPath = util.url.stripHttp(item.url.substring(0, item.url.lastIndexOf('/')));
           const filename = toStatusColor({
             status: item.status,
             text: item.filename,
@@ -425,7 +489,7 @@ async function buildPayload(args: {
             force: args.force,
           });
 
-          const url = log.gray(`${urlPath}/${filename}`);
+          const filePath = log.gray(`${filename}`);
 
           const statusText = item.status.toLowerCase().replace(/\_/g, ' ');
 
@@ -438,7 +502,7 @@ async function buildPayload(args: {
 
           const size = bytes > -1 ? fs.size.toString(bytes) : '';
 
-          table.add([`${status}  `, `${url}  `, size]);
+          table.add([`${status}  `, `${filePath}  `, size]);
           count++;
         });
 

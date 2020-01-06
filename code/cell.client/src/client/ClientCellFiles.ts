@@ -28,9 +28,9 @@ export class ClientCellFiles implements t.IClientCellFiles {
   public async map() {
     type T = t.IClientResponse<t.IFileMap>;
     const parent = this.args.parent;
-    const url = parent.url.files.list;
+    const url = parent.url.files.list.toString();
 
-    const resFiles = await http.get(url.toString());
+    const resFiles = await http.get(url);
     if (!resFiles.ok) {
       const status = resFiles.status;
       const type = status === 404 ? ERROR.HTTP.NOT_FOUND : ERROR.HTTP.SERVER;
