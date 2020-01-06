@@ -178,6 +178,7 @@ async function runSync(args: IRunSyncArgs) {
     delete: args.delete,
     silent,
   });
+
   if (!silent) {
     payload.log();
     log.info();
@@ -202,6 +203,11 @@ async function runSync(args: IRunSyncArgs) {
     const ok = errors.length === 0;
     return { ok, errors, count, completed, payload, results };
   };
+
+  // Exit if payload not OK
+  if (!payload.ok) {
+    return done(false);
+  }
 
   // Exit if no changes to push.
   if (!silent && !force && payload.items.filter(item => item.isPending).length === 0) {
@@ -332,6 +338,7 @@ async function buildPayload(args: {
   silent: boolean;
 }) {
   const { silent } = args;
+  let ok = true;
   const host = args.client.origin;
   const cellUri = args.targetUri.toString();
   const cellKey = args.targetUri.parts.key;
@@ -342,9 +349,18 @@ async function buildPayload(args: {
   const tasks = cli.tasks();
   tasks.task(`Read [${cellKey}] from ${host}`, async () => {
     const res = await args.client.cell(cellUri).files.list();
+    if (!res.ok) {
+      throw new Error(res.error?.message);
+    }
     remoteFiles = res.body;
   });
-  await tasks.run({ silent });
+
+  const taskRes = await tasks.run({ silent });
+  if (!taskRes.ok) {
+    ok = false;
+    // return;
+  }
+
   if (!silent) {
     log.info();
   }
@@ -392,6 +408,7 @@ async function buildPayload(args: {
 
   // Finish up.
   return {
+    ok,
     items,
     log() {
       const table = log.table({ border: false });

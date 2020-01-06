@@ -51,16 +51,17 @@ export class ClientCellFiles implements t.IClientCellFiles {
 
     const resMap = await this.map();
     if (!resMap.ok) {
-      return (resMap as unknown) as T;
+      const res: T = { ...resMap, body: [] };
+      return res;
     }
 
     const map = resMap.body;
     const ns = parent.uri.parts.ns;
 
-    const body = Object.keys(map).reduce((acc, fileid) => {
-      const value = map[fileid];
+    const body = Object.keys(map).reduce((acc, fid) => {
+      const value = map[fid];
       if (value) {
-        const uri = Schema.uri.create.file(ns, fileid);
+        const uri = Schema.uri.create.file(ns, fid);
         acc.push({ uri, ...value });
       }
       return acc;
