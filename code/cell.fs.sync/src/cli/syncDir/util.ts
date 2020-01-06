@@ -40,7 +40,7 @@ export const plural = {
  * Calculate the size of a set of payload items.
  */
 export function toPayloadSize(items: t.IPayloadFile[]) {
-  const bytes = items
+  const bytes = (items || [])
     .filter(item => item.bytes > -1)
     .map(item => item.bytes)
     .reduce((acc, next) => acc + next, 0);

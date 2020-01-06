@@ -2,7 +2,6 @@ import { debounceTime, filter } from 'rxjs/operators';
 
 import { log, watch, defaultValue, time, fs } from '../common';
 import * as t from './types';
-import * as util from './util';
 
 type IHistoryItem = {
   createdAt: number;
@@ -22,6 +21,7 @@ export async function watchDir(args: {
 }) {
   const { config, silent, sync } = args;
   const debounce = defaultValue(args.debounce, 1000);
+  let isStarted = false;
 
   const history: IHistoryItem[] = [];
   const appendHistory = (response: t.IRunSyncResponse) => {
@@ -41,7 +41,6 @@ export async function watchDir(args: {
 
   const logPage = (status?: string) => {
     log.clear();
-    // log.info(status);
     logHost(status);
     logHistory();
     log.info();
@@ -77,14 +76,16 @@ export async function watchDir(args: {
 
   dir$.subscribe(async e => {
     if (!silent) {
-      logPage(`change pending`);
+      logPage(isStarted ? `pending` : `starting...`);
     }
   });
 
   dir$.pipe(debounceTime(debounce)).subscribe(async e => {
-    logPage(log.yellow(`syncing...`));
+    logPage(log.yellow(isStarted ? `syncing...` : `starting...`));
 
     const res = await sync({ silent: true });
+    isStarted = true;
+
     const { errors } = res;
     appendHistory(res);
 
