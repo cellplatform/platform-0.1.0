@@ -10,9 +10,12 @@ export class FileLinks {
   }
 
   public static toFilename(linksKey: string) {
-    linksKey = linksKey.replace(/^fs\:/, '');
-    linksKey = shouldDecode(linksKey) ? decode(linksKey) : linksKey;
-    return linksKey;
+    let path = linksKey.replace(/^fs\:/, '');
+    path = shouldDecode(path) ? decode(path) : path;
+    const index = path.lastIndexOf('/');
+    const name = index < 0 ? path : path.substring(index + 1);
+    const dir = index < 0 ? '' : path.substring(0, index);
+    return { path, name, dir };
   }
 
   public static parseLink(value: string) {
@@ -48,7 +51,7 @@ function encode(input: string): string {
   });
 
   // Trim surrounding "/" characters.
-  input = input.replace(/^\/*/, '').replace(/\/*$/, '');
+  input = trimSlashes(input);
 
   // Special escaping multi-period characters (".." => "[..]").
   const escapeMultiPeriods = (input: string): string => {
@@ -96,6 +99,11 @@ function decode(input: string): string {
     .replace(/:/g, '.'); // Single period (.) characters escaped.
   return input;
 }
+
 function shouldDecode(input: string) {
   return input.includes(':');
+}
+
+function trimSlashes(input: string) {
+  return (input || '').replace(/^\/*/, '').replace(/\/*$/, '');
 }

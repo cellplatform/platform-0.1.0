@@ -1,4 +1,4 @@
-import { expect } from '../test';
+import { fs, expect } from '../test';
 import { FileLinks } from '.';
 
 describe('FileLinks', () => {
@@ -50,9 +50,11 @@ describe('FileLinks', () => {
   });
 
   it('toFilename (decoded)', () => {
-    const test = (input: string, output: string) => {
+    const test = (input: string, path: string) => {
       const res = FileLinks.toFilename(input);
-      expect(res).to.eql(output);
+      expect(res.path).to.eql(path);
+      expect(res.name).to.eql(fs.basename(res.path));
+      expect(res.dir).to.eql(fs.dirname(res.path).replace(/^\./, ''));
     };
     test('fs:foo', 'foo');
     test('fs:foo:png', 'foo.png');
@@ -60,6 +62,7 @@ describe('FileLinks', () => {
     test('fs:foo::bar:png', 'foo/bar.png');
     test('fs:foo::bar::zoo:png', 'foo/bar/zoo.png');
     test('fs:[::]foo:png', '..foo.png');
+    test('fs:foo[::]png', 'foo..png');
   });
 
   it('parseLink', () => {
