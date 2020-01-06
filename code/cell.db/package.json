@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.db",
-  "version": "0.2.44",
+  "version": "0.2.45",
   "description": "Persistent state management for cells.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

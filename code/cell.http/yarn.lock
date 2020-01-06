@@ -50,10 +50,10 @@
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.db@0.2.44":
-  version "0.2.44"
-  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.2.44.tgz#2570928d3985e37f7b8860896df23fcc259df60f"
-  integrity sha512-7yh/xjU8OK2oKcahblAUYCcR4LHlI/xcVtwnDwNjDCygH37Iinpx2xOdI5oLQ80GqgNJ0cBr4CisK8o5fnFmfA==
+"@platform/cell.db@0.2.45":
+  version "0.2.45"
+  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.2.45.tgz#7bc3a5dc0f00ffcffc3b5cbf0939f08eadca6ba8"
+  integrity sha512-15ssAuCiGo82DW42FhPHUkC5ZkJe2sURuCzUsnFSAYqWdASFVuE7jDyg79MBot0xfcC6LliNmu+qkd7S4ZEsAg==
   dependencies:
     "@platform/cell.coord" "0.8.1"
     "@platform/cell.schema" "0.3.5"
