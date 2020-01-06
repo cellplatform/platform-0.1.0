@@ -108,8 +108,7 @@ export function toHistoryItem(item: IHistoryItem) {
 
   let output = '';
   if (uploaded > 0) {
-    output = `uploaded ${uploaded} ${util.plural.file.toString(uploaded)}`;
-    output = bytes > 0 ? `${output} (${fs.size.toString(bytes)})` : output;
+    output = `uploaded (${fs.size.toString(bytes)})`;
     if (results.uploaded.length === 1) {
       output = `${output}: ${results.uploaded[0]}`;
     } else {
@@ -119,7 +118,7 @@ export function toHistoryItem(item: IHistoryItem) {
   }
   if (deleted > 0) {
     output = output ? `${output}\n` : output;
-    output = `deleted ${deleted} ${util.plural.file.toString(deleted)}`;
+    output = `deleted`;
     if (results.deleted.length === 1) {
       output = `${output}: ${results.deleted[0]}`;
     } else {
