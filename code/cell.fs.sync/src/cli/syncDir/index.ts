@@ -29,9 +29,9 @@ export const init: t.CliInit = cli => {
     .option<'boolean'>({
       name: 'delete',
       alias: 'd',
-      description: 'Delete remote files that were removed locally',
+      description: 'Delete remote files that are removed locally',
       type: 'boolean',
-      default: false,
+      default: true,
     })
     .option<'boolean'>({
       name: 'force',

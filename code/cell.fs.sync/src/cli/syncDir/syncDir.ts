@@ -73,7 +73,7 @@ export async function syncDir(args: {
     log.info.gray(`host:     ${config.data.host}`);
     log.info.gray(`target:   cell:${uri.ns}!${log.white(uri.key)}`);
     if (args.watch) {
-      log.info.gray(`watching: active`);
+      log.info.gray(`watching: ${log.cyan('active')}`);
     }
     if (force) {
       log.info.gray(`force:    ${log.cyan(true)}`);
@@ -181,7 +181,6 @@ async function runSync(args: IRunSyncArgs) {
 
   if (!silent) {
     payload.log();
-    log.info();
   }
 
   const results = {
@@ -211,7 +210,7 @@ async function runSync(args: IRunSyncArgs) {
 
   // Exit if no changes to push.
   if (!silent && !force && payload.items.filter(item => item.isPending).length === 0) {
-    log.info.yellow(`Nothing to sync`);
+    log.info.green(`Nothing to update\n`);
     gray(`• Use ${log.cyan('--force (-f)')} to push everything`);
 
     const deletions = payload.items.filter(p => p.status === 'DELETED').length;
@@ -234,9 +233,10 @@ async function runSync(args: IRunSyncArgs) {
   if (!silent) {
     let message = `sync ${total} ${plural.change.toString(total)}`;
     message = pushes.length === 0 ? message : `${message}, ${toPayloadSize(pushes).toString()}`;
+    log.info();
     const res = await cli.prompt.list({ message, items: ['yes', 'no'] });
+    log.info();
     if (res === 'no') {
-      log.info();
       log.info.gray(`cancelled (no change).`);
       return done(false);
     }
@@ -411,33 +411,40 @@ async function buildPayload(args: {
     ok,
     items,
     log() {
+      let count = 0;
       const table = log.table({ border: false });
-      items.forEach(item => {
-        const { bytes } = item;
-        const urlPath = util.url.stripHttp(item.url.substring(0, item.url.lastIndexOf('/')));
-        const filename = toStatusColor({
-          status: item.status,
-          text: item.filename,
-          delete: args.delete,
-          force: args.force,
+      items
+        .filter(item => (item.status === 'DELETED' ? args.delete : true))
+        .forEach(item => {
+          const { bytes } = item;
+          const urlPath = util.url.stripHttp(item.url.substring(0, item.url.lastIndexOf('/')));
+          const filename = toStatusColor({
+            status: item.status,
+            text: item.filename,
+            delete: args.delete,
+            force: args.force,
+          });
+
+          const url = log.gray(`${urlPath}/${filename}`);
+
+          const statusText = item.status.toLowerCase().replace(/\_/g, ' ');
+
+          const status = toStatusColor({
+            status: item.status,
+            text: statusText,
+            delete: args.delete,
+            force: args.force,
+          });
+
+          const size = bytes > -1 ? fs.size.toString(bytes) : '';
+
+          table.add([`${status}  `, `${url}  `, size]);
+          count++;
         });
 
-        const url = log.gray(`${urlPath}/${filename}`);
-
-        const statusText = item.status.toLowerCase().replace(/\_/g, ' ');
-
-        const status = toStatusColor({
-          status: item.status,
-          text: statusText,
-          delete: args.delete,
-          force: args.force,
-        });
-
-        const size = bytes > -1 ? fs.size.toString(bytes) : '';
-
-        table.add([`${status}  `, `${url}  `, size]);
-      });
-      log.info(table.toString());
+      if (count > 0) {
+        log.info(table.toString());
+      }
     },
   };
 }
