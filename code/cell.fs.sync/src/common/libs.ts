@@ -1,3 +1,6 @@
+import * as open from 'open';
+export { open };
+
 export { fs } from '@platform/fs';
 export { watch } from '@platform/fs.watch';
 export { defaultValue, time } from '@platform/util.value';

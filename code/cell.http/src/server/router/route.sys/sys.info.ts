@@ -16,10 +16,16 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
     const NOW_REGION = fs.env.value('NOW_REGION');
     const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local';
 
-    const version: t.IResGetInfo['version'] = {
-      '@platform/cell.schema': DEPS['@platform/cell.schema'],
-      '@platform/cell.types': DEPS['@platform/cell.types'],
-      '@platform/cell.http': PKG.version || '',
+    const toDepVersion = (key: string, version?: string) => {
+      version = version || DEPS[key] || '-';
+      return `${key}@${version}`;
+    };
+
+    const version: t.IResGetSysInfo['version'] = {
+      hash: 'sha256',
+      schema: toDepVersion('@platform/cell.schema'),
+      types: toDepVersion('@platform/cell.types'),
+      server: toDepVersion('@platform/cell.http', PKG.version),
     };
 
     const deployedAt = !args.deployedAt
@@ -27,13 +33,13 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
       : {
           datetime: time.day(args.deployedAt).format(`DD MMM YYYY, hh:mm A`),
           timestamp: args.deployedAt,
-          timezone: fs.env.value('TZ') || '-',
         };
 
-    const data: t.IResGetInfo = {
+    const data: t.IResGetSysInfo = {
       system: args.title || 'Untitled',
       domain: req.headers.host || '',
       region,
+      time: 'UTC',
       version,
       deployedAt,
     };

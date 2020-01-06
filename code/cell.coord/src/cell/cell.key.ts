@@ -104,6 +104,9 @@ export function toCell(input: CellInput, options: { relative?: boolean } = {}): 
   // Strip absolute "$" characters (if required).
   key = options.relative ? toRelative(key) : key;
 
+  // Ensure the key is uppercase.
+  key = key.toUpperCase();
+
   // Clean up namespace.
   if (ns) {
     ns = ns.trim().replace(/\!$/, '');

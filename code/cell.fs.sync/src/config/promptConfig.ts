@@ -13,14 +13,14 @@ export async function promptConfig(args: { force?: boolean; dir?: string; save?:
   }
 
   log.info();
-  log.info.gray(`Setup for directory:`);
-  log.info.gray(`${config.dir}`);
+  log.info.gray(`Cell/OS`);
+  log.info.gray(`  configure: ${config.dir}`);
   log.info();
 
   const targetOption = await cli.prompt.list({
     message: 'target cell:',
     items: [
-      { name: 'enter (uri)', value: 'URI' },
+      { name: 'existing (uri)', value: 'URI' },
       { name: 'create new', value: 'NEW' },
     ],
   });

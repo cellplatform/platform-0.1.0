@@ -42,13 +42,16 @@ export function init(args: {
 
   // Prepare headers before final response is sent to client.
   app.response$.subscribe(e => {
-    e.modify({
-      ...e.res,
-      headers: {
-        ...e.res.headers,
-        'Cache-Control': 's-maxage=1, stale-while-revalidate', // See https://zeit.co/docs/v2/network/caching/#stale-while-revalidate
-      },
-    });
+    // Add default cache headers.
+    let headers = e.res.headers || {};
+    if (!headers['Cache-Control']) {
+      headers = {
+        ...headers,
+        'Cache-Control': 'no-cache', // Ensure data-api responses reflect current state of data.
+        // 'Cache-Control': 's-maxage=1, stale-while-revalidate', // See https://zeit.co/docs/v2/network/caching/#stale-while-revalidate
+      };
+      e.modify({ ...e.res, headers });
+    }
   });
 
   // Finish up.

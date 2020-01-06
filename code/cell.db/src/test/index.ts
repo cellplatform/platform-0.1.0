@@ -1,3 +1,4 @@
+import { TEST as URI_TEST } from '@platform/cell.schema/lib/uri/Uri';
 import { fs } from '@platform/fs';
 import { NeDb } from '@platform/fsdb.nedb';
 
@@ -12,6 +13,11 @@ export const hash = util.cell.value.hash;
 
 let count = 0;
 const dir = fs.resolve('tmp/test');
+
+before(() => {
+  URI_TEST.NS.ALLOW = ['abcd', 'foo', 'bar', 'zoo', 'foobar'];
+});
+
 after(() => fs.remove(dir)); // Clean up after all tests.
 
 /**

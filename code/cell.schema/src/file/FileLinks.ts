@@ -6,20 +6,16 @@ export class FileLinks {
   public static decodeKey = decode;
 
   public static toKey(filename: string) {
-    const ILLEGAL = ['/', ':'];
-    ILLEGAL.forEach(char => {
-      if (filename.includes(char)) {
-        throw new Error(`File-link key cannot contain "${char}" character.`);
-      }
-    });
-
     return `fs:${encode(filename)}`;
   }
 
   public static toFilename(linksKey: string) {
-    linksKey = linksKey.replace(/^fs\:/, '');
-    linksKey = shouldDecode(linksKey) ? decode(linksKey) : linksKey;
-    return linksKey;
+    let path = linksKey.replace(/^fs\:/, '');
+    path = shouldDecode(path) ? decode(path) : path;
+    const index = path.lastIndexOf('/');
+    const name = index < 0 ? path : path.substring(index + 1);
+    const dir = index < 0 ? '' : path.substring(0, index);
+    return { path, name, dir };
   }
 
   public static parseLink(value: string) {
@@ -47,7 +43,34 @@ export class FileLinks {
  * Escapes illegal characters from a field key.
  */
 function encode(input: string): string {
-  input = input.replace(/\./g, ':'); // Period (.) characters are not allowed.
+  const ILLEGAL = [':'];
+  ILLEGAL.forEach(char => {
+    if (input.includes(char)) {
+      throw new Error(`File-link key cannot contain "${char}" character.`);
+    }
+  });
+
+  // Trim surrounding "/" characters.
+  input = trimSlashes(input);
+
+  // Special escaping multi-period characters (".." => "[..]").
+  const escapeMultiPeriods = (input: string): string => {
+    const regex = new RegExp(/\.{2,}/g);
+    const match = regex.exec(input);
+    if (match && match[0]) {
+      const left = input.substring(0, match.index);
+      const middle = ':'.repeat(match[0].length);
+      const right = input.substring(match.index + match[0].length);
+      input = `${left}[${middle}]${right}`;
+      return escapeMultiPeriods(input); // <== RECURSION 🌳
+    } else {
+      return input;
+    }
+  };
+
+  input = escapeMultiPeriods(input)
+    .replace(/\//g, '::') // Path seperator (/) characters escaped.
+    .replace(/\./g, ':'); // Single period (.) characters escaped.
   return input;
 }
 
@@ -55,9 +78,32 @@ function encode(input: string): string {
  * Converts escaped key values back to their original form.
  */
 function decode(input: string): string {
-  input = input.replace(/\:/g, '.');
+  // Unescape the special multi-period escaping ("[..]" => "..").
+  const unescapeMultiPeriods = (input: string): string => {
+    const regex = new RegExp(/\[:{2,}\]/g);
+    const match = regex.exec(input);
+    if (match && match[0]) {
+      const left = input.substring(0, match.index);
+      const middle = '.'.repeat(match[0].length - 2);
+      const right = input.substring(match.index + match[0].length);
+      input = `${left}${middle}${right}`;
+      return unescapeMultiPeriods(input); // <== RECURSION 🌳
+    } else {
+      return input;
+    }
+  };
+
+  // Replace escaped characters.
+  input = unescapeMultiPeriods(input)
+    .replace(/::/g, '/') // Path seperator (/) characters escaped.
+    .replace(/:/g, '.'); // Single period (.) characters escaped.
   return input;
 }
+
 function shouldDecode(input: string) {
   return input.includes(':');
+}
+
+function trimSlashes(input: string) {
+  return (input || '').replace(/^\/*/, '').replace(/\/*$/, '');
 }

@@ -11,7 +11,7 @@ export function urls(host: string) {
     ns(nsUri: string) {
       const ns = url.ns(nsUri).info;
       return {
-        get links(): t.IResGetNsLinks {
+        get urls(): t.IResGetNsUrls {
           return {
             data: ns.query({ data: true }).toString(),
           };
@@ -24,7 +24,8 @@ export function urls(host: string) {
         get info() {
           return url.cell(cellUri).info.toString();
         },
-        get links(): t.IResGetCellLinks {
+
+        get urls(): t.IResGetCellUrls {
           const cell = url.cell(cellUri);
           return {
             cell: cell.info.toString(),
@@ -33,7 +34,7 @@ export function urls(host: string) {
         },
 
         files: {
-          links(links: t.ICellData['links']): t.IResGetCellFiles['links'] {
+          urls(links: t.ICellData['links']): t.IResGetCellFiles['urls'] {
             const urls = url.cell(cellUri);
             return Object.keys(links || {})
               .map(key => ({ key, value: (links || {})[key] }))
@@ -41,9 +42,9 @@ export function urls(host: string) {
               .reduce((acc, next) => {
                 const { key, value } = next;
                 const { hash } = Schema.file.links.parseLink(value);
-                const filename = Schema.file.links.toFilename(key);
-                const url = urls.file.byName(filename).query({ hash });
-                acc[filename] = url.toString();
+                const path = Schema.file.links.toFilename(key).path;
+                const url = urls.file.byName(path).query({ hash });
+                acc[path] = url.toString();
                 return acc;
               }, {});
           },
@@ -51,7 +52,7 @@ export function urls(host: string) {
       };
     },
 
-    file(fileUri: string, hash?: string): t.IResGetFileLinks {
+    file(fileUri: string, hash?: string): t.IResGetFileUrls {
       const fileUrl = url.file(fileUri);
       const download = fileUrl.download.query({ hash });
       return {
@@ -60,11 +61,11 @@ export function urls(host: string) {
       };
     },
 
-    rowLinks(uri: string): t.IResGetRowLinks {
+    rowUrls(uri: string): t.IResGetRowUrls {
       return {};
     },
 
-    columnLinks(uri: string): t.IResGetColumnLinks {
+    columnUrls(uri: string): t.IResGetColumnUrls {
       return {};
     },
   };

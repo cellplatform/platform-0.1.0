@@ -1,6 +1,6 @@
 import { util, cell, ERROR, models, routes, Schema, t } from '../common';
 
-type GetLinks = () => t.ILinkMap;
+type GetUrls = () => t.IUrlMap;
 
 /**
  * Coordinate routes (cell: | row: | col:).
@@ -73,10 +73,10 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     });
     const getModel: t.GetModel = () => models.Cell.create({ db, uri }).ready;
 
-    const getLinks: GetLinks = () => util.urls(req.host).cell(uri).links;
+    const getUrls: GetUrls = () => util.urls(req.host).cell(uri).urls;
     return error
       ? { status, data: { error } }
-      : getCoordResponse<t.IResGetCell>({ uri, getModel, getLinks });
+      : getCoordResponse<t.IResGetCell>({ uri, getModel, getUrls });
   });
 
   /**
@@ -90,10 +90,10 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
       getUri: (id, key) => Schema.uri.create.row(id, key),
     });
     const getModel: t.GetModel = () => models.Row.create({ db, uri }).ready;
-    const getLinks: GetLinks = () => util.urls(req.host).rowLinks(uri);
+    const getUrls: GetUrls = () => util.urls(req.host).rowUrls(uri);
     return error
       ? { status, data: { error } }
-      : getCoordResponse<t.IResGetRow>({ uri, getModel, getLinks });
+      : getCoordResponse<t.IResGetRow>({ uri, getModel, getUrls });
   });
 
   /**
@@ -107,10 +107,10 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
       getUri: (id, key) => Schema.uri.create.column(id, key),
     });
     const getModel: t.GetModel = () => models.Column.create({ db, uri }).ready;
-    const getLinks: GetLinks = () => util.urls(req.host).columnLinks(uri);
+    const getUrls: GetUrls = () => util.urls(req.host).columnUrls(uri);
     return error
       ? { status, data: { error } }
-      : getCoordResponse<t.IResGetRow>({ uri, getModel, getLinks });
+      : getCoordResponse<t.IResGetRow>({ uri, getModel, getUrls });
   });
 }
 
@@ -121,7 +121,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
 async function getCoordResponse<T extends t.IUriResponse<any, any>>(args: {
   uri: string;
   getModel: t.GetModel;
-  getLinks: GetLinks;
+  getUrls: GetUrls;
 }) {
   try {
     const { uri } = args;
@@ -130,7 +130,7 @@ async function getCoordResponse<T extends t.IUriResponse<any, any>>(args: {
     const { createdAt, modifiedAt } = model;
 
     const data = cell.value.squash.object(model.toObject()) || {};
-    const links = args.getLinks();
+    const urls = args.getUrls();
 
     const res = {
       uri,
@@ -138,7 +138,7 @@ async function getCoordResponse<T extends t.IUriResponse<any, any>>(args: {
       createdAt,
       modifiedAt,
       data,
-      links,
+      urls,
     };
 
     return { status: 200, data: res as T };

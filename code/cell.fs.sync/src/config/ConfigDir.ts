@@ -1,4 +1,4 @@
-import { t, fs, constants, Schema } from '../common';
+import { t, fs, constants, Schema, util } from '../common';
 
 export type IConfigDirArgs = {
   dir?: string;
@@ -9,12 +9,14 @@ export const DEFAULT: t.IFsConfigDirData = {
   target: '',
 };
 
-export const ERROR = {
-  TARGET: {
-    INVALID_URI: `Target cell URI is invalid (valid example 'cell:ck499h7u30000fwet3k7085t1!A1')`,
-  },
-  HOST: {
-    EMPTY: `Domain host not specified`,
+export const CONFIG = {
+  ERROR: {
+    TARGET: {
+      INVALID_URI: `Target cell URI is invalid (valid example 'cell:ck499h7u30000fwet3k7085t1!A1')`,
+    },
+    HOST: {
+      EMPTY: `Domain host not specified`,
+    },
   },
 };
 
@@ -50,8 +52,10 @@ export class ConfigDir implements t.IFsConfigDir {
   /**
    * [Properties]
    */
-  public get targetUri() {
-    return Schema.uri.parse<t.ICellUri>(this.data.target);
+  public get target() {
+    const uri = Schema.uri.parse<t.ICellUri>(this.data.target);
+    const url = util.url.withHttp(`${this.data.host}/${uri.toString()}`);
+    return { uri, url };
   }
 
   public get isValid() {
@@ -96,16 +100,16 @@ export class ConfigDir implements t.IFsConfigDir {
       return res;
     };
 
-    const target = this.targetUri;
+    const target = this.target.uri;
     if (!target.ok || target.parts.type !== 'CELL') {
-      error(ERROR.TARGET.INVALID_URI);
+      error(CONFIG.ERROR.TARGET.INVALID_URI);
     }
     if (target.error) {
       error(`Target problem: ${target.error.message}`);
     }
 
     if (!(data.host || '').trim()) {
-      error(ERROR.HOST.EMPTY);
+      error(CONFIG.ERROR.HOST.EMPTY);
     }
 
     return res;
