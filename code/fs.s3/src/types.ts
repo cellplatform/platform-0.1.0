@@ -37,7 +37,7 @@ export type S3 = {
 
 export type S3Bucket = {
   endpoint: string;
-  url(path?: string): string;
+  url(path?: string, options?: S3PresignedUrlArgs): string;
   list(args: { prefix?: string; max?: number }): S3List;
   get(args: { key: string }): Promise<S3GetResponse>;
   put(args: {
@@ -49,6 +49,18 @@ export type S3Bucket = {
   }): Promise<S3PutResponse>;
   deleteOne(args: { key: string }): Promise<S3DeleteOneResponse>;
   deleteMany(args: { keys: string[] }): Promise<S3DeleteManyResponse>;
+};
+
+export type S3PresignedUrlArgs = S3PresignedUrlGetObjectArgs | S3PresignedUrlPutObjectArgs;
+export type S3PresignedUrlGetObjectArgs = {
+  operation: 'getObject';
+  seconds?: number;
+};
+export type S3PresignedUrlPutObjectArgs = {
+  operation: 'putObject';
+  seconds?: number;
+  body?: Buffer;
+  md5?: string;
 };
 
 export type S3List = {

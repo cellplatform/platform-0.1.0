@@ -20,15 +20,11 @@ export function init(args: t.S3Config): t.S3 {
     endpoint,
 
     url(bucket: string, path?: string) {
-      bucket = (bucket || '')
-        .trim()
-        .replace(/^\.*/, '')
-        .replace(/\.*$/, '');
-      path = (path || '').trim().replace(/^\/*/, '');
+      bucket = formatBucket(bucket);
       if (!bucket) {
         throw new Error(`No bucket provided.`);
       }
-      return `https://${bucket}.${endpoint}/${path}`;
+      return `https://${bucket}.${endpoint}/${formatKeyPath(path)}`;
     },
 
     list(args: { bucket: string; prefix?: string; max?: number }) {
@@ -56,8 +52,8 @@ export function init(args: t.S3Config): t.S3 {
       return {
         bucket,
         endpoint,
-        url(path?: string) {
-          return res.url(bucket, path);
+        url(path?: string, options?: t.S3PresignedUrlArgs) {
+          return options ? toPresignedUrl({ s3, bucket, path, options }) : res.url(bucket, path);
         },
         list(args: { prefix?: string; max?: number }) {
           return res.list({ ...args, bucket });
@@ -79,4 +75,48 @@ export function init(args: t.S3Config): t.S3 {
   };
 
   return res;
+}
+
+/**
+ * [Helpers]
+ */
+
+function formatBucket(input?: string) {
+  return (input || '')
+    .trim()
+    .replace(/^\.*/, '')
+    .replace(/\.*$/, '');
+}
+
+function formatKeyPath(input?: string) {
+  return (input || '').trim().replace(/^\/*/, '');
+}
+
+function toPresignedUrl(args: {
+  s3: AWS.S3;
+  bucket: string;
+  path?: string;
+  options: t.S3PresignedUrlArgs;
+}) {
+  const { s3, bucket } = args;
+  const path = formatKeyPath(args.path);
+  if (!path) {
+    throw new Error(`Object key path must be specified for pre-signed URLs.`);
+  }
+
+  const { operation, seconds } = args.options;
+
+  const params: any = {
+    Bucket: bucket,
+    Key: path,
+    Expires: seconds,
+  };
+
+  if (operation === 'putObject') {
+    const options = args.options as t.S3PresignedUrlPutObjectArgs;
+    params.Body = options.body;
+    params.ContentMD5 = options.md5;
+  }
+
+  return s3.getSignedUrl(operation, params);
 }
