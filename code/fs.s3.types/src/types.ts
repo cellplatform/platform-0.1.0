@@ -43,7 +43,7 @@ export type S3Bucket = {
   list(args: { prefix?: string; max?: number }): S3List;
   get(args: { key: string }): Promise<S3GetResponse>;
   put(args: S3BucketPutArgs): Promise<S3PutResponse>;
-  post(args: S3BucketPostArgs): S3SignedPost;
+  post(args: S3SignedPostBucketArgs): S3SignedPost;
   deleteOne(args: { key: string }): Promise<S3DeleteOneResponse>;
   deleteMany(args: { keys: string[] }): Promise<S3DeleteManyResponse>;
 };
@@ -113,9 +113,9 @@ export type S3PutResponse = {
  */
 export type S3ByteSizeRange = { min: number; max: number };
 
-export type S3SignedPostArgs = S3BucketPostArgs & { bucket: string };
-export type S3BucketPostArgs = S3BucketPostOptions & { key: string };
-export type S3BucketPostOptions = {
+export type S3SignedPostArgs = S3SignedPostBucketArgs & { bucket: string };
+export type S3SignedPostBucketArgs = S3SignedPostOptions & { key: string };
+export type S3SignedPostOptions = {
   acl?: S3Permissions;
   contentType?: string;
   contentDisposition?: string;

@@ -22,7 +22,34 @@ export function init(args: t.S3Config): t.S3 {
     endpoint,
 
     url(bucket: string, path?: string) {
-      return util.toObjectUrl({ s3, bucket, path });
+      const object = util.toObjectUrl({ s3, bucket, path });
+      return {
+        object,
+        signedGet(options: t.S3SignedUrlGetObjectOptions = {}) {
+          return util.toPresignedUrl({
+            s3,
+            bucket,
+            path,
+            options: { ...options, operation: 'getObject' },
+          });
+        },
+        signedPut(options: t.S3SignedUrlPutObjectOptions = {}) {
+          return util.toPresignedUrl({
+            s3,
+            bucket,
+            path,
+            options: { ...options, operation: 'putObject' },
+          });
+        },
+        signedPost(options: t.S3SignedPostArgs) {
+          return util.toPresignedPost({
+            s3,
+            bucket,
+            key: path,
+            ...options,
+          });
+        },
+      };
     },
 
     list(args: { bucket: string; prefix?: string; max?: number }) {
@@ -69,10 +96,8 @@ export function init(args: t.S3Config): t.S3 {
       return {
         bucket,
         endpoint,
-        url(path?: string, options?: t.S3PresignedUrlArgs) {
-          return options
-            ? util.toPresignedUrl({ s3, bucket, path, options })
-            : res.url(bucket, path);
+        url(path?: string) {
+          return res.url(bucket, path);
         },
         list(args: { prefix?: string; max?: number }) {
           return res.list({ ...args, bucket });

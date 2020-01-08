@@ -10,40 +10,17 @@ import { AWS, FormData, http, t, util, value } from '../common';
  * NOTE:
  *    This is useful for
  */
-export function post(args: t.S3PostArgs & { s3: AWS.S3 }): t.S3Post {
-  const { s3, bucket, seconds, acl } = args;
+export function post(args: t.S3SignedPostArgs & { s3: AWS.S3 }): t.S3SignedPost {
+  const { s3, bucket } = args;
   const key = util.formatKeyPath(args.key);
-  const contentType = args.contentType || util.toContentType(key, 'application/octet-stream');
-
-  const fields = {
-    'content-type': contentType,
-    'content-disposition': args.contentDisposition,
-    acl,
-    key,
-  };
-
-  const Conditions: any[] = [];
-  if (args.size) {
-    const { min, max } = args.size;
-    Conditions.push(['content-length-range', min, max]);
-  }
-
-  // Generate the presigned URL.
-  const presignedPost = s3.createPresignedPost({
-    Expires: seconds,
-    Bucket: bucket,
-    Conditions,
-    Fields: value.deleteUndefined(fields),
-  });
+  const presignedPost = util.toPresignedPost(args);
+  const props = presignedPost.props;
 
   // Prepare the POST return API object.
   const url = util.toObjectUrl({ s3, bucket, path: key });
-  const res: t.S3Post = {
-    /**
-     * Properties.
-     */
+  const res: t.S3SignedPost = {
     url: { form: presignedPost.url, object: url },
-    fields: presignedPost.fields,
+    props,
 
     /**
      * Prepare and POST the multi-part form to S3.
@@ -51,9 +28,10 @@ export function post(args: t.S3PostArgs & { s3: AWS.S3 }): t.S3Post {
     send(data: Buffer, options: { headers?: t.IHttpHeaders } = {}): Promise<t.S3PostResponse> {
       return new Promise<t.S3PostResponse>(async (resolve, reject) => {
         // Build the form.
+        const contentType = presignedPost.props['content-type'];
         const form = new FormData();
-        Object.keys(presignedPost.fields)
-          .map(key => ({ key, value: presignedPost.fields[key] }))
+        Object.keys(props)
+          .map(key => ({ key, value: props[key] }))
           .forEach(({ key, value }) => form.append(key, value));
         form.append('file', data, { contentType }); // NB: file-data must be added last for S3.
 
