@@ -71,7 +71,8 @@ export async function bundle(args: {
       return {
         title: `${size} ${file}`,
         task: async () => {
-          const res = await bucket.put({ source, key, acl: 'public-read' });
+          const data = await fs.readFile(source);
+          const res = await bucket.put({ data, key, acl: 'public-read' });
           if (!res.ok) {
             throw res.error;
           }
@@ -131,7 +132,8 @@ export async function manifest(args: {
   // Push to S3.
   const title = `push ${fs.basename(source)}`;
   const tasks = cli.task(title, async e => {
-    await bucket.put({ source, key: target, acl: 'public-read' });
+    const data = await fs.readFile(source);
+    await bucket.put({ data, key: target, acl: 'public-read' });
   });
 
   await tasks.run({ silent });
