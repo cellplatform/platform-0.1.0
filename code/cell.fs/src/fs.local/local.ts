@@ -19,7 +19,11 @@ export function init(args: { root: string }): t.IFileSystemLocal {
     /**
      * Convert the given string to an absolute path.
      */
-    resolve(uri: string) {
+    resolve(uri: string, options?: t.IFileSystemResolveArgs) {
+      const type = options ? options.type : 'DEFAULT';
+      if (type !== 'DEFAULT') {
+        throw new Error(`Local file-system resolve only supports DEFAULT operation.`);
+      }
       return {
         path: path.resolve({ uri, root }),
         props: {},

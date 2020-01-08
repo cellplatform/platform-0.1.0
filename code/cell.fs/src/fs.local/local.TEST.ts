@@ -1,35 +1,48 @@
 import { t, expect, util, PATH } from '../test';
 import { local } from '.';
 
-const init = () => local.init({ root: PATH.LOCAL });
+const initLocal = () => local.init({ root: PATH.LOCAL });
 
 describe('fs.local', () => {
   it('type', () => {
-    const fs = init();
+    const fs = initLocal();
     expect(fs.type).to.eql('FS');
   });
 
   describe('paths', () => {
     it('exposes root (dir)', () => {
-      const fs = init();
+      const fs = initLocal();
       expect(fs.root).to.eql(PATH.LOCAL);
     });
 
-    it('resolve URI to path', () => {
-      const fs = init();
+    it('resolve (uri => path)', () => {
+      const fs = initLocal();
       const test = (uri: string, expected: string) => {
         const res = fs.resolve(uri);
         expect(res.path).to.eql(`${PATH.LOCAL}/${expected}`);
-        expect(res.props).to.eql({});
+        expect(res.props).to.eql({}); // NB: only relevant for S3 (pre-signed POST).
       };
       test('file:foo:123', 'ns.foo/123');
       test('file:ck3jldh1z00043fetc11ockko:1z53tcj', 'ns.ck3jldh1z00043fetc11ockko/1z53tcj');
+    });
+
+    it('resolve - throws if non-DEFAULT operation specified', () => {
+      const fs = initLocal();
+      const test = (options: t.IFileSystemResolveArgs) => {
+        const fn = () => {
+          fs.resolve('file:foo:123', options);
+        };
+        expect(fn).to.throw();
+      };
+      test({ type: 'SIGNED/get' });
+      test({ type: 'SIGNED/put' });
+      test({ type: 'SIGNED/post' });
     });
   });
 
   it('write file', async () => {
     await util.reset();
-    const fs = init();
+    const fs = initLocal();
 
     const png = await util.image('bird.png');
     const uri = 'file:foo:bird';
@@ -48,7 +61,7 @@ describe('fs.local', () => {
 
   it('read file', async () => {
     await util.reset();
-    const fs = init();
+    const fs = initLocal();
 
     const png = await util.image('bird.png');
     const uri = 'file:foo:bird';
@@ -70,7 +83,7 @@ describe('fs.local', () => {
 
   it('delete file (one)', async () => {
     await util.reset();
-    const fs = init();
+    const fs = initLocal();
 
     const png = await util.image('bird.png');
     const uri = 'file:foo:bird';
@@ -90,7 +103,7 @@ describe('fs.local', () => {
 
   it('delete file (many)', async () => {
     await util.reset();
-    const fs = init();
+    const fs = initLocal();
 
     const png = await util.image('bird.png');
     const jpg = await util.image('kitten.jpg');
@@ -121,7 +134,7 @@ describe('fs.local', () => {
   describe('errors', () => {
     it('404 while reading file', async () => {
       await util.reset();
-      const fs = init();
+      const fs = initLocal();
       const uri = 'file:foo:noexist';
 
       const res = await fs.read(uri);
