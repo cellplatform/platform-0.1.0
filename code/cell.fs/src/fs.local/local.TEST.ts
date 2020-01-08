@@ -19,7 +19,8 @@ describe('fs.local', () => {
       const fs = init();
       const test = (uri: string, expected: string) => {
         const res = fs.resolve(uri);
-        expect(res).to.eql(`${PATH.LOCAL}/${expected}`);
+        expect(res.path).to.eql(`${PATH.LOCAL}/${expected}`);
+        expect(res.props).to.eql({});
       };
       test('file:foo:123', 'ns.foo/123');
       test('file:ck3jldh1z00043fetc11ockko:1z53tcj', 'ns.ck3jldh1z00043fetc11ockko/1z53tcj');
@@ -40,7 +41,7 @@ describe('fs.local', () => {
     expect(res.error).to.eql(undefined);
     expect(res.location).to.eql(`file://${file.path}`);
     expect(file.uri).to.eql(uri);
-    expect(file.path).to.eql(fs.resolve(uri));
+    expect(file.path).to.eql(fs.resolve(uri).path);
     expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
     expect(png.toString()).to.eql((await util.fs.readFile(file.path)).toString());
   });
@@ -51,7 +52,7 @@ describe('fs.local', () => {
 
     const png = await util.image('bird.png');
     const uri = 'file:foo:bird';
-    const path = fs.resolve(uri);
+    const path = fs.resolve(uri).path;
     await util.fs.ensureDir(util.fs.dirname(path));
     await util.fs.writeFile(path, png);
 
@@ -73,7 +74,7 @@ describe('fs.local', () => {
 
     const png = await util.image('bird.png');
     const uri = 'file:foo:bird';
-    const path = fs.resolve(uri);
+    const path = fs.resolve(uri).path;
 
     expect(await util.fs.pathExists(path)).to.eql(false);
     await fs.write(uri, png);
@@ -95,8 +96,8 @@ describe('fs.local', () => {
     const jpg = await util.image('kitten.jpg');
     const uri1 = 'file:foo:bird';
     const uri2 = 'file:foo:kitten';
-    const path1 = fs.resolve(uri1);
-    const path2 = fs.resolve(uri2);
+    const path1 = fs.resolve(uri1).path;
+    const path2 = fs.resolve(uri2).path;
 
     expect(await util.fs.pathExists(path1)).to.eql(false);
     expect(await util.fs.pathExists(path2)).to.eql(false);
@@ -130,7 +131,7 @@ describe('fs.local', () => {
       expect(res.status).to.eql(404);
       expect(res.file).to.eql(undefined);
       expect(error.type).to.eql('FS/read/404');
-      expect(error.path).to.eql(fs.resolve(uri));
+      expect(error.path).to.eql(fs.resolve(uri).path);
       expect(error.message).to.contain(`[file:foo:noexist] does not exist`);
     });
   });

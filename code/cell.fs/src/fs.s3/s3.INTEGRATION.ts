@@ -3,7 +3,7 @@ import { t, expect, util, log } from '../test';
 describe('S3 (INTEGRATION)', function() {
   this.timeout(900000);
 
-  it.only('write', async () => {
+  it('write', async () => {
     await util.reset();
     const fs = util.initS3();
 

@@ -1,7 +1,6 @@
 import { t, fs, path, sha256, util } from '../common';
-import { s3 } from '@platform/fs.s3';
-export * from '../types';
 
+export * from '../types';
 export type IS3Init = t.S3Config & { root: string };
 
 /**
@@ -46,7 +45,10 @@ export function init(args: IS3Init): t.IFileSystemS3 {
      * Convert the given string to an absolute path.
      */
     resolve(uri: string) {
-      return path.resolve({ uri, root: res.root });
+      return {
+        path: path.resolve({ uri, root: res.root }),
+        props: {},
+      };
     },
 
     /**
@@ -54,7 +56,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
      */
     async read(uri: string): Promise<t.IFileSystemRead> {
       uri = (uri || '').trim();
-      const path = res.resolve(uri);
+      const path = res.resolve(uri).path;
       const key = path.replace(/^\//, '');
       const location = cloud.bucket.url(path);
 
@@ -107,7 +109,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       const contentDisposition = filename ? `inline; filename="${filename}"` : undefined;
 
       uri = (uri || '').trim();
-      const path = res.resolve(uri);
+      const path = res.resolve(uri).path;
       const key = path.replace(/^\//, '');
       let hash = '';
       const file: t.IFileSystemFile = {
@@ -159,7 +161,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
      */
     async delete(uri: string | string[]): Promise<t.IFileSystemDelete> {
       const uris = (Array.isArray(uri) ? uri : [uri]).map(uri => (uri || '').trim());
-      const paths = uris.map(uri => res.resolve(uri));
+      const paths = uris.map(uri => res.resolve(uri).path);
       const keys = paths.map(path => path.replace(/^\//, ''));
       const locations = paths.map(path => cloud.bucket.url(path));
 

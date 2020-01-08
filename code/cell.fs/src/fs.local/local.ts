@@ -20,7 +20,10 @@ export function init(args: { root: string }): t.IFileSystemLocal {
      * Convert the given string to an absolute path.
      */
     resolve(uri: string) {
-      return path.resolve({ uri, root });
+      return {
+        path: path.resolve({ uri, root }),
+        props: {},
+      };
     },
 
     /**
@@ -28,7 +31,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
      */
     async read(uri: string): Promise<t.IFileSystemRead> {
       uri = (uri || '').trim();
-      const path = res.resolve(uri);
+      const path = res.resolve(uri).path;
       const location = toLocation(path);
 
       // Ensure the file exists.
@@ -72,7 +75,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
       }
 
       uri = (uri || '').trim();
-      const path = res.resolve(uri);
+      const path = res.resolve(uri).path;
       const location = toLocation(path);
       const file: t.IFileSystemFile = {
         uri,
@@ -102,7 +105,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
      */
     async delete(uri: string | string[]): Promise<t.IFileSystemDelete> {
       const uris = (Array.isArray(uri) ? uri : [uri]).map(uri => (uri || '').trim());
-      const paths = uris.map(uri => res.resolve(uri));
+      const paths = uris.map(uri => res.resolve(uri).path);
       const locations = paths.map(path => toLocation(path));
 
       try {
