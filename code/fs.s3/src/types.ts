@@ -31,6 +31,15 @@ export type S3 = {
     contentType?: string;
     contentDisposition?: string;
   }): Promise<S3PutResponse>;
+  post(args: {
+    bucket: string;
+    key: string;
+    acl?: S3Permissions;
+    contentType?: string;
+    contentDisposition?: string;
+    size?: S3ByteSizeRange;
+    seconds?: number;
+  }): S3Post;
   deleteOne(args: { bucket: string; key: string }): Promise<S3DeleteOneResponse>;
   deleteMany(args: { bucket: string; keys: string[] }): Promise<S3DeleteManyResponse>;
   bucket(name: string): S3Bucket;
@@ -48,6 +57,14 @@ export type S3Bucket = {
     contentType?: string;
     contentDisposition?: string;
   }): Promise<S3PutResponse>;
+  post(args: {
+    key: string;
+    acl?: S3Permissions;
+    contentType?: string;
+    contentDisposition?: string;
+    size?: S3ByteSizeRange;
+    seconds?: number;
+  }): S3Post;
   deleteOne(args: { key: string }): Promise<S3DeleteOneResponse>;
   deleteMany(args: { keys: string[] }): Promise<S3DeleteManyResponse>;
 };
@@ -94,14 +111,17 @@ export type S3PutResponse = {
   status: number;
   key: string;
   bucket: string;
-  url?: string;
-  etag?: string;
+  url: string;
+  contentType: string;
+  etag: string;
   error?: Error;
 };
 
 /**
  * Post (form data)
  */
+export type S3ByteSizeRange = { min: number; max: number };
+
 export type S3Post = {
   url: string;
   fields: { [key: string]: string };
@@ -113,7 +133,8 @@ export type S3PostResponse = {
   key: string;
   bucket: string;
   url: string;
-  etag?: string;
+  contentType: string;
+  etag: string;
   error?: Error;
 };
 

@@ -15,23 +15,23 @@ export function post(args: {
   acl?: t.S3Permissions;
   contentType?: string;
   contentDisposition?: string;
-  bytesRange?: { min: number; max: number };
+  size?: t.S3ByteSizeRange;
   seconds?: number;
-}) {
+}): t.S3Post {
   const { s3, bucket, seconds, acl } = args;
   const key = util.formatKeyPath(args.key);
-  const contentType = args.contentType || util.toContentType(key) || 'application/octet-stream';
+  const contentType = args.contentType || util.toContentType(key, 'application/octet-stream');
 
   const fields = {
-    'Content-Type': contentType,
-    'Content-Disposition': args.contentDisposition,
+    'content-type': contentType,
+    'content-disposition': args.contentDisposition,
     acl,
     key,
   };
 
   const Conditions: any[] = [];
-  if (args.bytesRange) {
-    const { min, max } = args.bytesRange;
+  if (args.size) {
+    const { min, max } = args.size;
     Conditions.push(['content-length-range', min, max]);
   }
 
@@ -80,15 +80,15 @@ export function post(args: {
           s3.headObject({ Bucket: bucket, Key: key }, (err, meta) => {
             if (err) {
               const error = new Error(`Failed getting object meta-data. ${err.message}`.trim());
-              resolve({ ok: false, status: 500, key, bucket, url, error });
+              resolve({ ok: false, status: 500, key, bucket, url, contentType, etag: '', error });
             } else {
               const etag = util.formatETag(meta.ETag);
-              resolve({ ok: true, status, key, bucket, url, etag });
+              resolve({ ok: true, status, key, bucket, url, contentType, etag });
             }
           });
         } else {
           const error = new Error(`Failed to post object. ${res.statusText}`.trim());
-          resolve({ ok: false, status, key, bucket, url, error });
+          resolve({ ok: false, status, key, bucket, url, contentType, etag: '', error });
         }
       });
     },

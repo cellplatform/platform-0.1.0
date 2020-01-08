@@ -3,9 +3,11 @@ import { deleteMany, deleteOne } from './s3.delete';
 import { get } from './s3.get';
 import { list } from './s3.list';
 import { put } from './s3.put';
+import { post } from './s3.post';
 
 export * from './s3.get';
 export * from './s3.put';
+export * from './s3.post';
 
 export function init(args: t.S3Config): t.S3 {
   const endpoint = (args.endpoint || '').trim();
@@ -31,8 +33,27 @@ export function init(args: t.S3Config): t.S3 {
       return get({ ...args, s3 });
     },
 
-    put(args: { bucket: string; key: string; source: string | Buffer; acl?: t.S3Permissions }) {
+    put(args: {
+      bucket: string;
+      key: string;
+      source: string | Buffer;
+      acl?: t.S3Permissions;
+      contentType?: string;
+      contentDisposition?: string;
+    }) {
       return put({ ...args, s3 });
+    },
+
+    post(args: {
+      bucket: string;
+      key: string;
+      acl?: t.S3Permissions;
+      contentType?: string;
+      contentDisposition?: string;
+      size?: t.S3ByteSizeRange;
+      seconds?: number;
+    }) {
+      return post({ ...args, s3 });
     },
 
     deleteOne(args: { bucket: string; key: string }) {
@@ -59,9 +80,26 @@ export function init(args: t.S3Config): t.S3 {
         get(args: { key: string }) {
           return res.get({ ...args, bucket });
         },
-        put(args: { key: string; source: string | Buffer; acl?: t.S3Permissions }) {
+        put(args: {
+          key: string;
+          source: string | Buffer;
+          acl?: t.S3Permissions;
+          contentType?: string;
+          contentDisposition?: string;
+        }) {
           return res.put({ ...args, bucket });
         },
+        post(args: {
+          key: string;
+          acl?: t.S3Permissions;
+          contentType?: string;
+          contentDisposition?: string;
+          size?: t.S3ByteSizeRange;
+          seconds?: number;
+        }) {
+          return res.post({ ...args, bucket });
+        },
+
         deleteOne(args: { key: string }) {
           return res.deleteOne({ ...args, bucket });
         },

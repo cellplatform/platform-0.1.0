@@ -2,7 +2,7 @@ import { time } from './libs';
 export * from './util.url';
 
 export function formatETag(value?: string) {
-  return value ? value.replace(/^\"/, '').replace(/\"$/, '') : undefined;
+  return value ? value.replace(/^\"/, '').replace(/\"$/, '') : '';
 }
 
 export function formatTimestamp(input?: string) {
@@ -23,7 +23,7 @@ export function formatKeyPath(input?: string) {
 /**
  * - https://en.wikipedia.org/wiki/Media_type
  */
-export function toContentType(key: string) {
+export function toContentType(key: string, defaultType: string = '') {
   if (key.endsWith('.js')) {
     return 'application/javascript';
   }
@@ -72,5 +72,5 @@ export function toContentType(key: string) {
     return 'text/csv';
   }
 
-  return undefined;
+  return defaultType;
 }
