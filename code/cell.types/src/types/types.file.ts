@@ -4,7 +4,6 @@ export type IFileProps = {
   filename?: string;
   filehash?: string;
   mimetype?: string;
-  encoding?: string;
   location?: string;
   bytes?: number;
 };
