@@ -5,4 +5,4 @@ import * as util from './util';
 
 export { constants, path, t, util };
 export * from './libs';
-export * from './hash';
+// export * from './hash';

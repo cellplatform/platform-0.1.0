@@ -59,6 +59,18 @@
     "@platform/libs" "0.1.5"
     "@platform/util.diff" "0.0.11"
 
+"@platform/cell.value@0.1.47":
+  version "0.1.47"
+  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.1.47.tgz#8eb5cb1892614b8d773a2bffcc706550a98137c9"
+  integrity sha512-aorGsoDRehqh5Dkmi31NwotRTHW8qpg88VOBgE6G3PZg3b8xnFngCVojxUFLEKcleFxClEF/f9+mhKncdjP3KA==
+  dependencies:
+    "@platform/cell.schema" "0.3.5"
+    "@platform/cell.types" "0.3.8"
+    "@platform/libs" "0.1.5"
+    "@platform/util.diff" "0.0.11"
+    "@platform/util.hash" "0.0.10"
+    "@platform/util.value" "0.6.11"
+
 "@platform/exec@0.2.40":
   version "0.2.40"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.40.tgz#209aeea26ec01e7593f186797c5a7662f5dbf2b4"

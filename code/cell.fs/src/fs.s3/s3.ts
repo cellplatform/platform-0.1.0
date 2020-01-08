@@ -1,4 +1,5 @@
 import { t, fs, path, sha256, util } from '../common';
+import { s3 } from '@platform/fs.s3';
 export * from '../types';
 
 export type IS3Init = t.S3Config & { root: string };
@@ -108,12 +109,14 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       uri = (uri || '').trim();
       const path = res.resolve(uri);
       const key = path.replace(/^\//, '');
+      let hash = '';
       const file: t.IFileSystemFile = {
         uri,
         path,
         data,
         get hash() {
-          return sha256(data);
+          hash = hash || sha256(data);
+          return hash;
         },
       };
 
@@ -121,7 +124,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
         const res = await cloud.bucket.put({
           contentType,
           contentDisposition,
-          source: file.data,
+          data: file.data,
           key,
           acl: 'public-read', // TODO - S3 Access Control 🐷
         });
