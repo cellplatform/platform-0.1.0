@@ -6,5 +6,4 @@ export { FormData };
 export { AWS };
 export { defaultValue, time, value } from '@platform/util.value';
 export { log } from '@platform/log/lib/server';
-export { fs } from '@platform/fs';
 export { http } from '@platform/http';

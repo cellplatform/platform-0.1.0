@@ -36,7 +36,7 @@ export function init(args: t.S3Config): t.S3 {
     put(args: {
       bucket: string;
       key: string;
-      source: string | Buffer;
+      data: Buffer;
       acl?: t.S3Permissions;
       contentType?: string;
       contentDisposition?: string;
@@ -82,7 +82,7 @@ export function init(args: t.S3Config): t.S3 {
         },
         put(args: {
           key: string;
-          source: string | Buffer;
+          data: Buffer;
           acl?: t.S3Permissions;
           contentType?: string;
           contentDisposition?: string;

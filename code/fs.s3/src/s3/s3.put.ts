@@ -1,11 +1,11 @@
-import { AWS, fs, t, util } from '../common';
+import { AWS, t, util } from '../common';
 
 /**
  * Write a file to S3.
  */
 export async function put(args: {
   s3: AWS.S3;
-  source: string | Buffer;
+  data: Buffer;
   bucket: string;
   key: string;
   acl?: t.S3Permissions;
@@ -13,7 +13,6 @@ export async function put(args: {
   contentDisposition?: string;
 }): Promise<t.S3PutResponse> {
   const { s3, bucket, key } = args;
-  const Body = typeof args.source === 'string' ? await fs.readFile(args.source) : args.source;
   const url = util.toObjectUrl({ s3, bucket, path: key });
   const contentType = args.contentType || util.toContentType(key, 'application/octet-stream');
   try {
@@ -21,7 +20,7 @@ export async function put(args: {
       .upload({
         Bucket: bucket,
         Key: key,
-        Body,
+        Body: args.data,
         ACL: args.acl,
         ContentType: contentType,
         ContentDisposition: args.contentDisposition,

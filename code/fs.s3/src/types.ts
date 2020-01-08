@@ -26,7 +26,7 @@ export type S3 = {
   put(args: {
     bucket: string;
     key: string;
-    source: string | Buffer;
+    data: Buffer;
     acl?: S3Permissions;
     contentType?: string;
     contentDisposition?: string;
@@ -52,7 +52,7 @@ export type S3Bucket = {
   get(args: { key: string }): Promise<S3GetResponse>;
   put(args: {
     key: string;
-    source: string | Buffer;
+    data: Buffer;
     acl?: S3Permissions;
     contentType?: string;
     contentDisposition?: string;
@@ -99,7 +99,6 @@ export type S3GetResponse = {
   content: { type: string; length: number };
   data?: Buffer;
   json: Json;
-  save(path: string): Promise<{}>;
 };
 
 /**
@@ -125,7 +124,7 @@ export type S3ByteSizeRange = { min: number; max: number };
 export type S3Post = {
   url: string;
   fields: { [key: string]: string };
-  send: (source: string | Buffer, options?: { headers?: IHttpHeaders }) => Promise<S3PostResponse>;
+  send: (data: Buffer, options?: { headers?: IHttpHeaders }) => Promise<S3PostResponse>;
 };
 export type S3PostResponse = {
   ok: boolean;

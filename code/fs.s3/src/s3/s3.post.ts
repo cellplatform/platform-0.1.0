@@ -1,4 +1,4 @@
-import { AWS, t, util, value, fs, FormData, http } from '../common';
+import { AWS, FormData, http, t, util, value } from '../common';
 
 /**
  * AWS conditions
@@ -55,14 +55,8 @@ export function post(args: {
     /**
      * Prepare and POST the multi-part form to S3.
      */
-    send(
-      source: string | Buffer,
-      options: { headers?: t.IHttpHeaders } = {},
-    ): Promise<t.S3PostResponse> {
+    send(data: Buffer, options: { headers?: t.IHttpHeaders } = {}): Promise<t.S3PostResponse> {
       return new Promise<t.S3PostResponse>(async (resolve, reject) => {
-        // Load the file buffer to send.
-        const data = typeof source === 'string' ? await fs.readFile(source) : source;
-
         // Build the form.
         const form = new FormData();
         Object.keys(presignedPost.fields)
