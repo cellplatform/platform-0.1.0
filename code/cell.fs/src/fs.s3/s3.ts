@@ -44,11 +44,39 @@ export function init(args: IS3Init): t.IFileSystemS3 {
     /**
      * Convert the given string to an absolute path.
      */
-    resolve(uri: string) {
-      return {
-        path: path.resolve({ uri, root: res.root }),
-        props: {},
-      };
+    resolve(uri: string, options?: t.IFileSystemResolveArgs) {
+      const type = (options ? options.type : 'DEFAULT') as t.IFileSystemResolveArgs['type'];
+      const key = path.resolve({ uri, root: res.root });
+
+      /**
+       * TODO 🐷
+       * - ensure options types works
+       */
+
+      if (type === 'SIGNED/get') {
+        return {
+          path: cloud.s3.url(res.bucket, key).signedGet(options),
+          props: {},
+        };
+      }
+
+      if (type === 'SIGNED/put') {
+        return {
+          path: cloud.s3.url(res.bucket, key).signedPut(options),
+          props: {},
+        };
+      }
+
+      if (type === 'SIGNED/post') {
+        const post = cloud.s3.url(res.bucket, key).signedPost(options);
+        return {
+          path: post.url,
+          props: post.props,
+        };
+      }
+
+      // DEFAULT.
+      return { path: key, props: {} };
     },
 
     /**
@@ -58,7 +86,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       uri = (uri || '').trim();
       const path = res.resolve(uri).path;
       const key = path.replace(/^\//, '');
-      const location = cloud.bucket.url(path);
+      const location = cloud.bucket.url(path).object;
 
       try {
         const res = await cloud.bucket.get({ key });
@@ -131,6 +159,23 @@ export function init(args: IS3Init): t.IFileSystemS3 {
           acl: 'public-read', // TODO - S3 Access Control 🐷
         });
 
+        // const f = cloud.bucket.post({
+        //   contentType,
+        //   contentDisposition,
+        //   // data: file.data,
+        //   key,
+        //   acl: 'public-read', // TODO - S3 Access Control 🐷
+        // });
+
+        // console.log('-------------------------------------------');
+        // console.log('f', f);
+        // const res2 = await f.send(file.data);
+        // console.log('res2', res2);
+
+        /**
+         * TODO - Delete sample code 🐷
+         */
+
         const { status } = res;
         const ok = util.isOK(status);
         const location = res.url || '';
@@ -163,7 +208,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       const uris = (Array.isArray(uri) ? uri : [uri]).map(uri => (uri || '').trim());
       const paths = uris.map(uri => res.resolve(uri).path);
       const keys = paths.map(path => path.replace(/^\//, ''));
-      const locations = paths.map(path => cloud.bucket.url(path));
+      const locations = paths.map(path => cloud.bucket.url(path).object);
 
       try {
         const res = await cloud.bucket.deleteMany({ keys });

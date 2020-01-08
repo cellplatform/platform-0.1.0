@@ -83,6 +83,13 @@
     chalk "3.0.0"
     listr "0.14.3"
 
+"@platform/fs.s3.types@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.0.0.tgz#262a9574c9d8df8b3b463dbfa13ccd1d1dc9b015"
+  integrity sha512-1DuCG9C9HvocoDTHMiqRmI61PG9BCgqWhKXmDkduwQJFY2WmJ/tPRWFa2wvQISlv58S69vujKNQKmpfG498DDw==
+  dependencies:
+    "@platform/types" "0.3.3"
+
 "@platform/fs.s3@0.6.0":
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.0.tgz#0017bde5b5423311c2c2e1fa791df03d75bf13fd"
