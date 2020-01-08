@@ -102,7 +102,7 @@ export type IResGetColumnData = t.IColumnData;
 export type IResGetColumnUrls = {};
 
 /**
- * File (info / meta-data)
+ * File Info (meta-data)
  */
 export type IReqFileInfoQuery = {};
 
@@ -117,7 +117,14 @@ export type IResGetFileUrls = { info: string; download: string };
  * File: POST
  */
 export type IReqPostFileBody = {};
-export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
+export type IResPostFile = IResGetFile & {
+  upload: IResPostFileUploadLink;
+  changes?: t.IDbModelChange[];
+};
+
+export type IResPostFileUploadLink = {
+  url: string;
+};
 
 /**
  * File: DELETE

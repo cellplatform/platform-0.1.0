@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@platform/cache": "0.2.10",
+    "@platform/fs.s3.types": "0.0.0",
     "@platform/fsdb.types": "0.6.0",
     "@platform/libs": "0.1.5",
     "@platform/util.diff": "0.0.11"

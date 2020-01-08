@@ -227,6 +227,15 @@ export async function postFileResponse(args: {
       changes = [...changes, ...models.toChanges(uri, saveResponse.changes)];
     }
 
+    // fs
+    /**
+     * TODO 🐷
+     * - generate POST upload link
+     */
+    const upload: t.IResPostFileUploadLink = {
+      url: 'http://',
+    };
+
     // Finish up.
     const fileResponse = await getFileInfoResponse({ uri, db, query, host });
     const { status } = fileResponse;
@@ -235,6 +244,7 @@ export async function postFileResponse(args: {
       status,
       data: {
         ...fileResponseData,
+        upload,
         changes: sendChanges ? changes : undefined,
       },
     };
