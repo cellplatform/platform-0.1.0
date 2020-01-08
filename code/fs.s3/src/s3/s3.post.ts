@@ -6,18 +6,11 @@ import { AWS, FormData, http, t, util, value } from '../common';
  */
 
 /**
- * Generates a pre-signed POST-able multi-part form.
+ * Generate a pre-signed POST-able multi-part form.
+ * NOTE:
+ *    This is useful for
  */
-export function post(args: {
-  s3: AWS.S3;
-  bucket: string;
-  key: string;
-  acl?: t.S3Permissions;
-  contentType?: string;
-  contentDisposition?: string;
-  size?: t.S3ByteSizeRange;
-  seconds?: number;
-}): t.S3Post {
+export function post(args: t.S3PostArgs & { s3: AWS.S3 }): t.S3Post {
   const { s3, bucket, seconds, acl } = args;
   const key = util.formatKeyPath(args.key);
   const contentType = args.contentType || util.toContentType(key, 'application/octet-stream');
@@ -49,7 +42,7 @@ export function post(args: {
     /**
      * Properties.
      */
-    url,
+    url: { form: presignedPost.url, object: url },
     fields: presignedPost.fields,
 
     /**

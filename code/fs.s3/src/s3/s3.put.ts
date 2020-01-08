@@ -1,17 +1,9 @@
 import { AWS, t, util } from '../common';
 
 /**
- * Write a file to S3.
+ * Write a file to S3 using PUT.
  */
-export async function put(args: {
-  s3: AWS.S3;
-  data: Buffer;
-  bucket: string;
-  key: string;
-  acl?: t.S3Permissions;
-  contentType?: string;
-  contentDisposition?: string;
-}): Promise<t.S3PutResponse> {
+export async function put(args: t.S3PutArgs & { s3: AWS.S3 }): Promise<t.S3PutResponse> {
   const { s3, bucket, key } = args;
   const url = util.toObjectUrl({ s3, bucket, path: key });
   const contentType = args.contentType || util.toContentType(key, 'application/octet-stream');

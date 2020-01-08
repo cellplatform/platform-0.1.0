@@ -23,23 +23,8 @@ export type S3 = {
   url(bucket: string, path?: string): string;
   list(args: { bucket: string; prefix?: string; max?: number }): S3List;
   get(args: { bucket: string; key: string }): Promise<S3GetResponse>;
-  put(args: {
-    bucket: string;
-    key: string;
-    data: Buffer;
-    acl?: S3Permissions;
-    contentType?: string;
-    contentDisposition?: string;
-  }): Promise<S3PutResponse>;
-  post(args: {
-    bucket: string;
-    key: string;
-    acl?: S3Permissions;
-    contentType?: string;
-    contentDisposition?: string;
-    size?: S3ByteSizeRange;
-    seconds?: number;
-  }): S3Post;
+  put(args: S3PutArgs): Promise<S3PutResponse>;
+  post(args: S3PostArgs): S3Post;
   deleteOne(args: { bucket: string; key: string }): Promise<S3DeleteOneResponse>;
   deleteMany(args: { bucket: string; keys: string[] }): Promise<S3DeleteManyResponse>;
   bucket(name: string): S3Bucket;
@@ -50,21 +35,8 @@ export type S3Bucket = {
   url(path?: string, options?: S3PresignedUrlArgs): string;
   list(args: { prefix?: string; max?: number }): S3List;
   get(args: { key: string }): Promise<S3GetResponse>;
-  put(args: {
-    key: string;
-    data: Buffer;
-    acl?: S3Permissions;
-    contentType?: string;
-    contentDisposition?: string;
-  }): Promise<S3PutResponse>;
-  post(args: {
-    key: string;
-    acl?: S3Permissions;
-    contentType?: string;
-    contentDisposition?: string;
-    size?: S3ByteSizeRange;
-    seconds?: number;
-  }): S3Post;
+  put(args: S3BucketPutArgs): Promise<S3PutResponse>;
+  post(args: S3BucketPostArgs): S3Post;
   deleteOne(args: { key: string }): Promise<S3DeleteOneResponse>;
   deleteMany(args: { keys: string[] }): Promise<S3DeleteManyResponse>;
 };
@@ -102,9 +74,17 @@ export type S3GetResponse = {
 };
 
 /**
- *
  * Put
  */
+export type S3PutArgs = S3BucketPutArgs & { bucket: string };
+export type S3BucketPutArgs = {
+  key: string;
+  data: Buffer;
+  acl?: S3Permissions;
+  contentType?: string;
+  contentDisposition?: string;
+};
+
 export type S3PutResponse = {
   ok: boolean;
   status: number;
@@ -121,8 +101,18 @@ export type S3PutResponse = {
  */
 export type S3ByteSizeRange = { min: number; max: number };
 
+export type S3PostArgs = S3BucketPostArgs & { bucket: string };
+export type S3BucketPostArgs = {
+  key: string;
+  acl?: S3Permissions;
+  contentType?: string;
+  contentDisposition?: string;
+  size?: S3ByteSizeRange;
+  seconds?: number;
+};
+
 export type S3Post = {
-  url: string;
+  url: {form:string, object:string};
   fields: { [key: string]: string };
   send: (data: Buffer, options?: { headers?: IHttpHeaders }) => Promise<S3PostResponse>;
 };
