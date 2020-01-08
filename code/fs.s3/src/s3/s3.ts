@@ -1,8 +1,9 @@
-import { AWS, t, toContentType } from '../common';
+import { util, AWS, t, toContentType } from '../common';
 import { get } from './s3.get';
 import { put } from './s3.put';
 import { list } from './s3.list';
 import { deleteOne, deleteMany } from './s3.delete';
+import { toPresignedUrl } from './s3.url';
 
 export * from './s3.get';
 export * from './s3.put';
@@ -20,11 +21,12 @@ export function init(args: t.S3Config): t.S3 {
     endpoint,
 
     url(bucket: string, path?: string) {
-      bucket = formatBucket(bucket);
+      bucket = util.formatBucket(bucket);
       if (!bucket) {
         throw new Error(`No bucket provided.`);
       }
-      return `https://${bucket}.${endpoint}/${formatKeyPath(path)}`;
+      path = util.formatKeyPath(path);
+      return `https://${bucket}.${endpoint}/${path}`;
     },
 
     list(args: { bucket: string; prefix?: string; max?: number }) {
@@ -75,48 +77,4 @@ export function init(args: t.S3Config): t.S3 {
   };
 
   return res;
-}
-
-/**
- * [Helpers]
- */
-
-function formatBucket(input?: string) {
-  return (input || '')
-    .trim()
-    .replace(/^\.*/, '')
-    .replace(/\.*$/, '');
-}
-
-function formatKeyPath(input?: string) {
-  return (input || '').trim().replace(/^\/*/, '');
-}
-
-function toPresignedUrl(args: {
-  s3: AWS.S3;
-  bucket: string;
-  path?: string;
-  options: t.S3PresignedUrlArgs;
-}) {
-  const { s3, bucket } = args;
-  const path = formatKeyPath(args.path);
-  if (!path) {
-    throw new Error(`Object key path must be specified for pre-signed URLs.`);
-  }
-
-  const { operation, seconds } = args.options;
-
-  const params: any = {
-    Bucket: bucket,
-    Key: path,
-    Expires: seconds,
-  };
-
-  if (operation === 'putObject') {
-    const options = args.options as t.S3PresignedUrlPutObjectArgs;
-    params.Body = options.body;
-    params.ContentMD5 = options.md5;
-  }
-
-  return s3.getSignedUrl(operation, params);
 }

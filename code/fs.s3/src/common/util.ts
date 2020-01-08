@@ -8,6 +8,17 @@ export function formatTimestamp(input?: string) {
   return input ? time.utc(new Date(input)).timestamp : -1;
 }
 
+export function formatBucket(input?: string) {
+  return (input || '')
+    .trim()
+    .replace(/^\.*/, '')
+    .replace(/\.*$/, '');
+}
+
+export function formatKeyPath(input?: string) {
+  return (input || '').trim().replace(/^\/*/, '');
+}
+
 /**
  * - https://en.wikipedia.org/wiki/Media_type
  */
