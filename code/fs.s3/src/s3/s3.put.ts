@@ -7,6 +7,19 @@ export async function put(args: t.S3PutArgs & { s3: AWS.S3 }): Promise<t.S3PutRe
   const { s3, bucket, key } = args;
   const url = util.toObjectUrl({ s3, bucket, path: key });
   const contentType = args.contentType || util.toContentType(key, 'application/octet-stream');
+
+  const done = (status: number, options: { etag?: string; error?: Error } = {}) => {
+    const ok = util.isOK(status);
+    const etag = util.formatETag(options.etag);
+    const error = options.error;
+    return { ok, status, key, bucket, url, contentType, etag, error };
+  };
+
+  if (!args.data) {
+    const error = new Error(`No data provided.`);
+    return done(400, { error });
+  }
+
   try {
     const res = await s3
       .upload({
@@ -18,11 +31,11 @@ export async function put(args: t.S3PutArgs & { s3: AWS.S3 }): Promise<t.S3PutRe
         ContentDisposition: args.contentDisposition,
       })
       .promise();
-    const etag = util.formatETag(res.ETag);
-    return { ok: true, status: 200, key, bucket, url, contentType, etag };
+    const etag = res.ETag;
+    return done(200, { etag });
   } catch (err) {
-    const status = err.statusCode;
+    const status = err.statusCode || 500;
     const error = new Error(err.code);
-    return { ok: false, status, key, bucket, url, contentType, etag: '', error };
+    return done(status, { error });
   }
 }
