@@ -112,7 +112,7 @@ export type S3BucketPostArgs = {
 };
 
 export type S3Post = {
-  url: {form:string, object:string};
+  url: { form: string; object: string };
   fields: { [key: string]: string };
   send: (data: Buffer, options?: { headers?: IHttpHeaders }) => Promise<S3PostResponse>;
 };
@@ -123,6 +123,7 @@ export type S3PostResponse = {
   bucket: string;
   url: string;
   contentType: string;
+  bytes: number;
   etag: string;
   error?: Error;
 };

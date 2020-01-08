@@ -62,20 +62,45 @@ export function post(args: t.S3PostArgs & { s3: AWS.S3 }): t.S3Post {
         const res = await http.post(presignedPost.url, form, { headers });
         const { status } = res;
 
+        const done = (
+          status: number,
+          options: { etag?: string; error?: Error; bytes?: number } = {},
+        ) => {
+          const ok = util.isOK(status);
+          const etag = util.formatETag(options.etag);
+          const error = options.error;
+          const bytes = value.defaultValue(options.bytes, -1);
+          const res: t.S3PostResponse = {
+            ok,
+            status,
+            key,
+            bucket,
+            url,
+            contentType,
+            etag,
+            bytes,
+            error,
+          };
+          resolve(res);
+        };
+
         // Finish up.
         if (res.ok) {
           s3.headObject({ Bucket: bucket, Key: key }, (err, meta) => {
             if (err) {
+              // Fail.
               const error = new Error(`Failed getting object meta-data. ${err.message}`.trim());
-              resolve({ ok: false, status: 500, key, bucket, url, contentType, etag: '', error });
+              done(500, { error });
             } else {
-              const etag = util.formatETag(meta.ETag);
-              resolve({ ok: true, status, key, bucket, url, contentType, etag });
+              // Success.
+              const etag = meta.ETag;
+              const bytes = meta.ContentLength;
+              done(status, { etag, bytes });
             }
           });
         } else {
           const error = new Error(`Failed to post object. ${res.statusText}`.trim());
-          resolve({ ok: false, status, key, bucket, url, contentType, etag: '', error });
+          done(status, { error });
         }
       });
     },
