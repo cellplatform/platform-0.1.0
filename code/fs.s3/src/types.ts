@@ -1,4 +1,5 @@
 import { Json } from '@platform/types';
+import { IHttpHeaders } from '@platform/http/lib/types';
 
 export type S3Config = {
   accessKey: string;
@@ -94,6 +95,24 @@ export type S3PutResponse = {
   key: string;
   bucket: string;
   url?: string;
+  etag?: string;
+  error?: Error;
+};
+
+/**
+ * Post (form data)
+ */
+export type S3Post = {
+  url: string;
+  fields: { [key: string]: string };
+  send: (source: string | Buffer, options?: { headers?: IHttpHeaders }) => Promise<S3PostResponse>;
+};
+export type S3PostResponse = {
+  ok: boolean;
+  status: number;
+  key: string;
+  bucket: string;
+  url: string;
   etag?: string;
   error?: Error;
 };

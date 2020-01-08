@@ -1,4 +1,27 @@
 import { AWS, t, util } from '../common';
+import { parse as parseUrl } from 'url';
+
+/**
+ * Derive the endpoint to a bucket.
+ */
+export function toBucketUrl(args: { s3: AWS.S3; bucket: string }) {
+  const bucket = util.formatBucket(args.bucket);
+  if (!bucket) {
+    throw new Error(`No bucket provided.`);
+  }
+  const url = parseUrl(args.s3.endpoint.href, false);
+  return `https://${bucket}.${url.host}`;
+}
+
+/**
+ * Generate a simple URL to the object.
+ */
+export function toObjectUrl(args: { s3: AWS.S3; bucket: string; path?: string }) {
+  const { s3, bucket } = args;
+  const endpoint = toBucketUrl({ s3, bucket });
+  const path = util.formatKeyPath(args.path);
+  return `${endpoint}/${path}`;
+}
 
 /**
  * Generate a pre-signed URL.

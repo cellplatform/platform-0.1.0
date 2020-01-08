@@ -1,4 +1,5 @@
 import { time } from './libs';
+export * from './util.url';
 
 export function formatETag(value?: string) {
   return value ? value.replace(/^\"/, '').replace(/\"$/, '') : undefined;

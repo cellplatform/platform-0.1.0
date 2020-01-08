@@ -1,0 +1,99 @@
+import { AWS, t, util, value, fs, FormData, http } from '../common';
+
+/**
+ * AWS conditions
+ * - https://docs.aws.amazon.com/AmazonS3/latest/dev/amazon-s3-policy-keys.html
+ */
+
+/**
+ * Generates a pre-signed POST-able multi-part form.
+ */
+export function post(args: {
+  s3: AWS.S3;
+  bucket: string;
+  key: string;
+  acl?: t.S3Permissions;
+  contentType?: string;
+  contentDisposition?: string;
+  bytesRange?: { min: number; max: number };
+  seconds?: number;
+}) {
+  const { s3, bucket, seconds, acl } = args;
+  const key = util.formatKeyPath(args.key);
+  const contentType = args.contentType || util.toContentType(key) || 'application/octet-stream';
+
+  const fields = {
+    'Content-Type': contentType,
+    'Content-Disposition': args.contentDisposition,
+    acl,
+    key,
+  };
+
+  const Conditions: any[] = [];
+  if (args.bytesRange) {
+    const { min, max } = args.bytesRange;
+    Conditions.push(['content-length-range', min, max]);
+  }
+
+  // Generate the presigned URL.
+  const presignedPost = s3.createPresignedPost({
+    Expires: seconds,
+    Bucket: bucket,
+    Conditions,
+    Fields: value.deleteUndefined(fields),
+  });
+
+  // Prepare the POST return API object.
+  const url = util.toObjectUrl({ s3, bucket, path: key });
+  const res: t.S3Post = {
+    /**
+     * Properties.
+     */
+    url,
+    fields: presignedPost.fields,
+
+    /**
+     * Prepare and POST the multi-part form to S3.
+     */
+    send(
+      source: string | Buffer,
+      options: { headers?: t.IHttpHeaders } = {},
+    ): Promise<t.S3PostResponse> {
+      return new Promise<t.S3PostResponse>(async (resolve, reject) => {
+        // Load the file buffer to send.
+        const data = typeof source === 'string' ? await fs.readFile(source) : source;
+
+        // Build the form.
+        const form = new FormData();
+        Object.keys(presignedPost.fields)
+          .map(key => ({ key, value: presignedPost.fields[key] }))
+          .forEach(({ key, value }) => form.append(key, value));
+        form.append('file', data, { contentType }); // NB: file-data must be added last for S3.
+
+        // Send to S3.
+        const headers = { ...options.headers, ...form.getHeaders() };
+        const res = await http.post(presignedPost.url, form, { headers });
+        const { status } = res;
+
+        // Finish up.
+        if (res.ok) {
+          s3.headObject({ Bucket: bucket, Key: key }, (err, meta) => {
+            if (err) {
+              const error = new Error(`Failed getting object meta-data. ${err.message}`.trim());
+              resolve({ ok: false, status: 500, key, bucket, url, error });
+            } else {
+              const etag = util.formatETag(meta.ETag);
+              resolve({ ok: true, status, key, bucket, url, etag });
+            }
+          });
+        } else {
+          const error = new Error(`Failed to post object. ${res.statusText}`.trim());
+          resolve({ ok: false, status, key, bucket, url, error });
+        }
+      });
+    },
+  };
+
+  // Finish up.
+  return res;
+}

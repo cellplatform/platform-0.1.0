@@ -14,12 +14,14 @@
     "tmp": "ts-node -T scripts/tmp"
   },
   "dependencies": {
-    "@platform/fs": "^0.5.1",
+    "@platform/fs": "0.5.1",
+    "@platform/http": "0.8.2",
     "@platform/libs": "0.1.5",
     "@platform/log": "0.1.1",
     "@platform/types": "0.3.3",
     "@platform/util.value": "0.6.11",
-    "aws-sdk": "2.590.0"
+    "aws-sdk": "2.599.0",
+    "form-data": "3.0.0"
   },
   "devDependencies": {
     "@platform/test": "0.1.0",

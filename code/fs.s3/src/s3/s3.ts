@@ -1,9 +1,8 @@
-import { util, AWS, t, toContentType } from '../common';
+import { AWS, t, toContentType, util } from '../common';
+import { deleteMany, deleteOne } from './s3.delete';
 import { get } from './s3.get';
-import { put } from './s3.put';
 import { list } from './s3.list';
-import { deleteOne, deleteMany } from './s3.delete';
-import { toPresignedUrl } from './s3.url';
+import { put } from './s3.put';
 
 export * from './s3.get';
 export * from './s3.put';
@@ -21,12 +20,7 @@ export function init(args: t.S3Config): t.S3 {
     endpoint,
 
     url(bucket: string, path?: string) {
-      bucket = util.formatBucket(bucket);
-      if (!bucket) {
-        throw new Error(`No bucket provided.`);
-      }
-      path = util.formatKeyPath(path);
-      return `https://${bucket}.${endpoint}/${path}`;
+      return util.toObjectUrl({ s3, bucket, path });
     },
 
     list(args: { bucket: string; prefix?: string; max?: number }) {
@@ -55,7 +49,9 @@ export function init(args: t.S3Config): t.S3 {
         bucket,
         endpoint,
         url(path?: string, options?: t.S3PresignedUrlArgs) {
-          return options ? toPresignedUrl({ s3, bucket, path, options }) : res.url(bucket, path);
+          return options
+            ? util.toPresignedUrl({ s3, bucket, path, options })
+            : res.url(bucket, path);
         },
         list(args: { prefix?: string; max?: number }) {
           return res.list({ ...args, bucket });
