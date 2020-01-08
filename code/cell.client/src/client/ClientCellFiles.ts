@@ -76,12 +76,10 @@ export class ClientCellFiles implements t.IClientCellFiles {
     const files = Array.isArray(input) ? input : [input];
 
     // Prepare the form data.
+    const contentType = 'application/octet-stream';
     const form = new FormData();
     files.forEach(({ filename, data }) => {
-      form.append('file', data, {
-        filename,
-        contentType: 'application/octet-stream',
-      });
+      form.append('file', data, { filename, contentType });
     });
     const headers = form.getHeaders();
 

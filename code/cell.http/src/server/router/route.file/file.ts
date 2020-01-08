@@ -210,7 +210,7 @@ export async function postFileResponse(args: {
 
   try {
     // Save to the abstract file-system (S3 or local).
-    const { buffer, encoding } = file;
+    const { buffer } = file;
     const filename = file.name;
     const writeResponse = await fs.write(uri, buffer);
     const filehash = writeResponse.file.hash;
@@ -219,7 +219,7 @@ export async function postFileResponse(args: {
 
     // Save the model.
     const model = await models.File.create({ db, uri }).ready;
-    models.setProps(model, { encoding, filename, filehash, location, bytes });
+    models.setProps(model, { filename, filehash, location, bytes });
     const saveResponse = await model.save();
 
     // Store DB changes.

@@ -1,17 +1,33 @@
 import { time } from './libs';
+export * from './util.url';
+
+export function isOK(status: number) {
+  return (status.toString() || '').startsWith('2');
+}
 
 export function formatETag(value?: string) {
-  return value ? value.replace(/^\"/, '').replace(/\"$/, '') : undefined;
+  return value ? value.replace(/^\"/, '').replace(/\"$/, '') : '';
 }
 
 export function formatTimestamp(input?: string) {
   return input ? time.utc(new Date(input)).timestamp : -1;
 }
 
+export function formatBucket(input?: string) {
+  return (input || '')
+    .trim()
+    .replace(/^\.*/, '')
+    .replace(/\.*$/, '');
+}
+
+export function formatKeyPath(input?: string) {
+  return (input || '').trim().replace(/^\/*/, '');
+}
+
 /**
  * - https://en.wikipedia.org/wiki/Media_type
  */
-export function toContentType(key: string) {
+export function toContentType(key: string, defaultType: string = '') {
   if (key.endsWith('.js')) {
     return 'application/javascript';
   }
@@ -60,5 +76,5 @@ export function toContentType(key: string) {
     return 'text/csv';
   }
 
-  return undefined;
+  return defaultType;
 }

@@ -1,38 +1,41 @@
-import { AWS, fs, t, formatETag, toContentType } from '../common';
+import { AWS, t, util } from '../common';
 
 /**
- * Write a file to S3.
+ * Write a file to S3 using PUT.
  */
-export async function put(args: {
-  s3: AWS.S3;
-  source: string | Buffer;
-  bucket: string;
-  key: string;
-  acl?: t.S3Permissions;
-  contentType?: string;
-  contentDisposition?: string;
-}): Promise<t.S3PutResponse> {
+export async function put(args: t.S3PutArgs & { s3: AWS.S3 }): Promise<t.S3PutResponse> {
   const { s3, bucket, key } = args;
-  const Body = typeof args.source === 'string' ? await fs.readFile(args.source) : args.source;
+  const url = util.toObjectUrl({ s3, bucket, path: key });
+  const contentType = args.contentType || util.toContentType(key, 'application/octet-stream');
+
+  const done = (status: number, options: { etag?: string; error?: Error } = {}) => {
+    const ok = util.isOK(status);
+    const etag = util.formatETag(options.etag);
+    const error = options.error;
+    return { ok, status, key, bucket, url, contentType, etag, error };
+  };
+
+  if (!args.data) {
+    const error = new Error(`No data provided.`);
+    return done(400, { error });
+  }
 
   try {
-    const ContentType = args.contentType || toContentType(key);
     const res = await s3
       .upload({
         Bucket: bucket,
         Key: key,
-        Body,
+        Body: args.data,
         ACL: args.acl,
-        ContentType,
+        ContentType: contentType,
         ContentDisposition: args.contentDisposition,
       })
       .promise();
-    const url = res.Location;
-    const etag = formatETag(res.ETag);
-    return { ok: true, status: 200, key, bucket, url, etag };
+    const etag = res.ETag;
+    return done(200, { etag });
   } catch (err) {
-    const status = err.statusCode;
+    const status = err.statusCode || 500;
     const error = new Error(err.code);
-    return { ok: false, status, key, bucket, error };
+    return done(status, { error });
   }
 }

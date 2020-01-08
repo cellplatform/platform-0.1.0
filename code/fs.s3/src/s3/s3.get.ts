@@ -1,4 +1,4 @@
-import { AWS, fs, t, formatTimestamp } from '../common';
+import { AWS, formatTimestamp, t } from '../common';
 
 /**
  * Read a file from S3.
@@ -17,10 +17,7 @@ export async function get(args: {
     key,
     modifiedAt: -1,
     content: { type: '', length: -1 },
-    async save(path: string) {
-      await fs.writeFile(path, response.data);
-      return {};
-    },
+    data: undefined,
     get json(): t.Json {
       if (!json) {
         try {
