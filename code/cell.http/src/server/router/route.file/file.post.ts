@@ -37,11 +37,12 @@ export async function postFileResponse(args: {
       .getTime();
 
     const upload: t.IFileUploadUrl = {
+      method: 'POST',
+      expiresAt,
       filename,
       uri,
       url: presignedPost.path,
       props: presignedPost.props,
-      expiresAt,
     };
 
     // Update the model.

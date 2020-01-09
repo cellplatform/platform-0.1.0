@@ -212,7 +212,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const seconds = body.seconds;
     const files = body.files || [];
     if (files.length === 0) {
-      const err = new Error(`No file info was posted to the URI ("${cellUri}").`);
+      const err = new Error(`No file(s) info was posted in the body for [${cellUri}]`);
       return util.toErrorPayload(err, { status: 400 });
     }
 

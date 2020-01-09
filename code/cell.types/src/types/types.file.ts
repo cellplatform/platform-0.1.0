@@ -38,9 +38,10 @@ export type IFileIntegrity = {
  * Upload (presigned URL)
  */
 export type IFileUploadUrl = {
+  method: 'POST';
+  expiresAt: number;
   filename: string;
   uri: string;
   url: string;
   props: { [key: string]: string };
-  expiresAt: number;
 };
