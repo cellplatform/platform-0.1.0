@@ -1,29 +1,34 @@
 import { File } from '..';
-import { expect, getFileHash, getTestDb } from '../../test';
+import { expect, getFileHash, getTestDb, t } from '../../test';
+
+const INTEGRITY: t.IFileIntegrity = {
+  ok: true,
+  status: 'VALID',
+  filehash: 'sha256-abc',
+  verifiedAt: 123,
+  uploadedAt: 456,
+};
 
 describe('model.File', () => {
   it('create', async () => {
-    const filehash = await getFileHash();
     const db = await getTestDb({ file: true });
     const uri = 'file:foo:123';
     const res1 = await File.create({ db, uri }).ready;
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-54ca3758688c673c032335a070cb5f0329eefb8ec8a02ed4218ed1de247e4b74',
+      after: 'sha256-7f0885466cc530172f8b97d0a057e397e08979c9001e82e3327d28f24bc37b52',
     };
 
     await res1
-      .set({ props: { filename: 'image.png', mimetype: 'image/png', filehash }, hash: HASH.before })
+      .set({ props: { filename: 'image.png', mimetype: 'image/png' }, hash: HASH.before })
       .save();
 
     const res2 = await File.create({ db, uri }).ready;
     expect(res2.props.hash).to.eql(HASH.after);
-
     expect(res2.props.props).to.eql({
       filename: 'image.png',
       mimetype: 'image/png',
-      filehash,
     });
     expect(res2.props.error).to.eql(undefined);
   });
@@ -39,14 +44,25 @@ describe('model.File', () => {
     const model1 = await File.create({ db, uri }).ready;
     expect(model1.props.hash).to.eql(undefined);
 
-    await model1.set({ props: { filename: 'image.jpg', filehash: hash.jpg } }).save();
+    await model1
+      .set({
+        props: {
+          filename: 'image.jpg',
+          integrity: { ...INTEGRITY, filehash: hash.jpg },
+        },
+      })
+      .save();
     expect(model1.props.hash).to.not.eql(undefined);
 
     const model2 = await File.create({ db, uri }).ready;
     expect(model2.toObject().hash).to.eql(model1.props.hash);
 
     const before = model2.props.hash;
-    await model2.set({ props: { filehash: hash.png } }).save();
+    await model2
+      .set({
+        props: { integrity: { ...INTEGRITY, filehash: hash.png } },
+      })
+      .save();
     expect(model2.props.hash).to.not.eql(before);
 
     const model3 = await File.create({ db, uri }).ready;
