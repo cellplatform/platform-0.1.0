@@ -28,6 +28,15 @@ export function create(options: t.IFetchOptions = {}) {
     },
 
     /**
+     * `HEAD`
+     */
+    async head(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
+      const { mode, headers } = mergeOptions(options);
+      const res = await isomorphic(url, { method: 'HEAD', headers, mode });
+      return toResponse(url, res);
+    },
+
+    /**
      * `POST`
      */
     async post(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
@@ -44,6 +53,16 @@ export function create(options: t.IFetchOptions = {}) {
       const { mode, headers } = mergeOptions(options);
       const body = toBody({ url, headers, data });
       const res = await isomorphic(url, { method: 'PUT', body, headers, mode });
+      return toResponse(url, res);
+    },
+
+    /**
+     * `PATCH`
+     */
+    async patch(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
+      const { mode, headers } = mergeOptions(options);
+      const body = toBody({ url, headers, data });
+      const res = await isomorphic(url, { method: 'PATCH', body, headers, mode });
       return toResponse(url, res);
     },
 
