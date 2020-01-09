@@ -21,7 +21,6 @@ export function toBatches(args: { items: t.IPayloadFile[]; maxBytes: number }) {
       result[index] = result[index] || [];
       result[index].push(item);
     });
-
   return result;
 }
 

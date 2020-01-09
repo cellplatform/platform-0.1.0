@@ -2,7 +2,7 @@ import { cli, Client, log, Schema, defaultValue } from '../common';
 import { buildPayload } from './syncDir.payload';
 import * as t from './types';
 
-import { toBatches, addTask } from './syncDir.task';
+import { toBatches, addTask } from './syncDir.sync.task';
 import * as util from './util';
 
 const gray = log.info.gray;

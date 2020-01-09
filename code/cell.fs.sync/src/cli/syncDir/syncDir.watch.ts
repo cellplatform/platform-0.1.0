@@ -9,6 +9,16 @@ type IHistoryItem = {
   log?: string;
 };
 
+const EMPTY_SYNC_COUNT: t.ISyncCount = { total: 0, uploaded: 0, deleted: 0 };
+const EMPTY_SYNC_RESPONSE: t.IRunSyncResponse = {
+  ok: true,
+  errors: [],
+  count: EMPTY_SYNC_COUNT,
+  bytes: -1,
+  completed: true,
+  results: { uploaded: [], deleted: [] },
+};
+
 /**
  * Sarts a file-watcher on the directory.
  */
@@ -19,8 +29,10 @@ export async function watchDir(args: {
   debounce?: number;
 }) {
   const { config, silent, sync } = args;
-  const debounce = defaultValue(args.debounce, 1000);
+  const debounce = defaultValue(args.debounce, 1500);
   let isStarted = false;
+  const pattern = `${config.dir}/*`;
+  const initialCount = (await fs.glob.find(pattern, { dot: false })).length;
 
   const history: IHistoryItem[] = [];
   const appendHistory = (response: t.IRunSyncResponse) => {
@@ -28,12 +40,11 @@ export async function watchDir(args: {
     if (history.length === MAX) {
       history.shift();
     }
-
     const createdAt = time.now.timestamp;
     history.push({ createdAt, response });
   };
 
-  const dir$ = watch.start({ pattern: `${config.dir}/*` }).events$.pipe(
+  const dir$ = watch.start({ pattern }).events$.pipe(
     filter(e => e.isFile),
     filter(e => !e.name.startsWith('.')),
   );
@@ -106,6 +117,16 @@ export async function watchDir(args: {
       }
     }
   });
+
+  // Draw the initial log page if the folder is empty.
+  // NB:
+  //    If there are items in the folder, then the page will be drawn
+  //    via the normal "change" handlers.
+  if (initialCount === 0) {
+    isStarted = true;
+    appendHistory(EMPTY_SYNC_RESPONSE);
+    logPage();
+  }
 }
 
 /**
