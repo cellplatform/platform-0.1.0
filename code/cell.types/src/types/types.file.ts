@@ -21,15 +21,17 @@ export type FileIntegrityStatus =
   | 'VALID'
   | 'INVALID'
   | 'INVALID/filehash'
-  | 'INVALID/fileMissing'; // TODO 🐷 implement on integrity object.
+  | 'INVALID/fileMissing' // TODO 🐷 implement on integrity object.
+  | 'UNKNOWN';
 
 export type IFileIntegrity = {
-  // status: FileIntegrityStatus; // TODO 🐷
   ok: boolean | null;
+  exists: boolean | null; // File verified to exist on storage media.
+  status: FileIntegrityStatus;
   filehash: string;
   verifiedAt: number;
   uploadedAt: number;
-  uploadExpiresAt: number;
+  uploadExpiresAt?: number;
 };
 
 /**

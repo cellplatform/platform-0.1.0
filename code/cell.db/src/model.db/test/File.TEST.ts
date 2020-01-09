@@ -3,6 +3,7 @@ import { expect, getFileHash, getTestDb, t } from '../../test';
 
 const INTEGRITY: t.IFileIntegrity = {
   ok: true,
+  exists: true,
   status: 'VALID',
   filehash: 'sha256-abc',
   verifiedAt: 123,
