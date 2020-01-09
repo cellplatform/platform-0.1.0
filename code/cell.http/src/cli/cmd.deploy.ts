@@ -8,6 +8,7 @@ const FILES = [
   'now.json',
   'yarn.lock',
   'src/common.ts',
+  'src/constants.ts',
   'src/now.ts',
   'src/types.ts',
 ];
