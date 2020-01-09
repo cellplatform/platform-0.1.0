@@ -75,20 +75,85 @@ export class ClientCellFiles implements t.IClientCellFiles {
     const parent = this.args.parent;
     const files = Array.isArray(input) ? input : [input];
 
-    // Prepare the form data.
-    const contentType = 'application/octet-stream';
-    const form = new FormData();
-    files.forEach(({ filename, data }) => {
-      form.append('file', data, { filename, contentType });
-    });
-    const headers = form.getHeaders();
-
-    // POST to the service.
+    // 1. Initial POST to the service.
+    //    This sets up the models, and retrieves the pre-signed S3 urls to upload to.
     const url = parent.url.files.upload.toString();
-    const res = await http.post(url, form, { headers });
+    const body: t.IReqPostCellFilesBody = {
+      seconds: undefined, // Expires.
+      files: files.map(item => ({ filename: item.filename })),
+    };
+
+    const res1 = await http.post(url, body);
+    if (!res1.ok) {
+      const type = ERROR.HTTP.SERVER;
+      const message = `Failed during initial file-upload step to '${parent.uri.toString()}'.`;
+      return util.toError(res1.status, type, message);
+    }
+
+    // 2. Upload files to S3.
+    const uploads = (res1.json as t.IResPostCellFiles).urls.uploads;
+    const uploadWait = uploads
+      .map(upload => {
+        const file = files.find(item => item.filename === upload.filename);
+        const data = file ? file.data : undefined;
+        return { data, upload };
+      })
+      .filter(({ data }) => Boolean(data))
+      .map(async ({ upload, data }) => {
+        // Prepare upload multi-part form.
+        const props = upload.props;
+        const contentType = upload.props['content-type'];
+        const form = new FormData();
+        Object.keys(props)
+          .map(key => ({ key, value: props[key] }))
+          .forEach(({ key, value }) => form.append(key, value));
+        form.append('file', data, { contentType }); // NB: file-data must be added last for S3.
+
+        // Send to S3.
+        const headers = form.getHeaders();
+        const res = await http.post(upload.url, form, { headers });
+
+        // Finish up.
+        const { ok, status } = res;
+        const { uri, filename, expiresAt } = upload;
+        return { ok, status, uri, filename, expiresAt };
+      });
+
+    const res2 = await Promise.all(uploadWait);
+    const uploadErrors = res2.filter(item => !item.ok);
+    const uploadSuccess = res2.filter(item => item.ok);
+
+    /**
+     * TODO 🐷
+     * - return list of upload errors.
+     * - clean up upload errors.
+     */
+
+    // 3. Perform verification on each file-upload causing
+    //    the underlying model(s) to be updated with file
+    //    meta-data and the new file-hash.
+    const verifyWait = uploadSuccess.map(async item => {
+      const url = this.args.urls.file(item.uri).verify.toString();
+      const body: t.IReqPostFileVerifiedBody = { overwrite: true };
+      const res = await http.post(url, body);
+      return res;
+    });
+
+    const res3 = await Promise.all(verifyWait);
+
+    // console.log('-------------------------------------------');
+    // console.log(
+    //   'res3',
+    //   res3.map(s => s.status),
+    // );
+
+    /**
+     * TODO 🐷
+     * - Return a comprehensive response object
+     */
 
     // Finish up.
-    return util.toResponse<t.IResPostCellFiles>(res);
+    return util.toResponse<t.IResPostCellFiles>(res1) as any;
   }
 
   public async delete(filename: string | string[]) {

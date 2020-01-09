@@ -41,6 +41,13 @@ export class ClientFile implements t.IClientFile {
     return util.toResponse<t.IResGetFile>(res);
   }
 
+  /**
+   * TODO 🐷
+   * - DELETE upload direct on file (done via /files)
+   * - Remove URL builder
+   * - Remove HTTP endpoint.
+   */
+
   public async upload(args: { filename: string; data: ArrayBuffer }) {
     const { filename, data } = args;
 
