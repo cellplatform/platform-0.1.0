@@ -56,7 +56,7 @@ export async function buildPayload(args: {
 
     const hash = {
       local: Value.hash.sha256(data),
-      remote: remoteFile ? remoteFile.props.filehash : '',
+      remote: remoteFile ? remoteFile.props.verification?.filehash : '',
     };
 
     let status: t.FileStatus = 'ADDED';

@@ -48,9 +48,9 @@ export async function watchDir(args: {
   const logHost = (status?: string) => {
     status = status || 'listening';
     const uri = config.target.uri.parts;
-    log.info.gray(`host:     ${config.data.host}`);
-    log.info.gray(`target:   cell:${uri.ns}!${log.blue(uri.key)}`);
-    log.info.gray(`status:   ${status}`);
+    log.info.gray(`host:        ${config.data.host}`);
+    log.info.gray(`target:      cell:${uri.ns}!${log.blue(uri.key)}`);
+    log.info.gray(`status:      ${status}`);
     log.info();
   };
 
@@ -58,16 +58,26 @@ export async function watchDir(args: {
     log.info.gray('-------------------------------------------');
   };
 
-  const logHistory = (max: number = 3) => {
+  const logHistory = (max: number = 5) => {
     const items = history.length < max ? history : history.slice(history.length - max);
     if (items.length > 0) {
       logDivider();
       const table = log.table({ border: false });
-      items.forEach(item => {
+      items.forEach((item, i) => {
+        const isLast = i === items.length - 1;
         item.log = item.log || toHistoryItem(item);
-        const createdAt = time.day(item.createdAt).format('HH:mm:ss');
-        const ts = log.gray(`[${createdAt}]`);
-        table.add([ts, item.log]);
+        const createdAt = time.day(item.createdAt).format('hh:mm:ss');
+        const ts = log.gray(`[${isLast ? log.white(createdAt) : createdAt}]`);
+
+        let line = item.log;
+        if (!isLast) {
+          const lines = line.split('\n');
+          const suffix = log.gray(`...[${lines.length - 1}]`);
+          line = `${lines[0]}`;
+          line = lines.length < 2 ? line : `${line} ${suffix}`;
+        }
+
+        table.add([ts, line]);
       });
       log.info(table.toString());
     }
