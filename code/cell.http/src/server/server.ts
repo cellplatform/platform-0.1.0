@@ -27,7 +27,7 @@ export function init(args: {
     log: {
       module: `${log.white(PKG.name)}@${PKG.version}`,
       schema: log.green(deps['@platform/cell.schema']),
-      fs: root,
+      fs: `${root} [${fs.type}]`,
     },
   });
 
