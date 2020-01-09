@@ -69,7 +69,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.get(routes.CELL.FILES, async req => {
     const host = req.host;
-    const query = req.query as t.IUrlQueryGetCellFiles;
+    const query = req.query as t.IUrlQueryCellFilesList;
     const params = req.params as t.IUrlParamsCellFiles;
 
     const paramData = getParams({ params });
@@ -125,7 +125,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.get(routes.CELL.FILE_BY_NAME, async req => {
     const host = req.host;
-    const query = req.query as t.IUrlQueryGetCellFileByName;
+    const query = req.query as t.IUrlQueryCellFileByName;
     const params = req.params as t.IUrlParamsCellFileByName;
 
     const paramData = getParams({ params, filenameRequired: true });
@@ -160,7 +160,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.get(routes.CELL.FILE_BY_INDEX, async req => {
     const host = req.host;
-    const query = req.query as t.IUrlQueryGetCellFileByIndex;
+    const query = req.query as t.IUrlQueryCellFileByIndex;
     const params = req.params as t.IUrlParamsCellFileByIndex;
 
     const paramData = getParams({ params, indexRequired: true });
@@ -189,11 +189,16 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
-   * POST upload file(s) to a cell.
+   * POST initial a file(s) upload process, creating the model and
+   *      returning pre-signed S3 url(s) to upload file-data to.
+   *      Usage:
+   *      1. Invoke this POST to initiate the upload.
+   *      2. Upload to the returned signed S3 url(s).
+   *      3. Invoke a [/verify] POST on each uploaded file.
    */
   router.post(routes.CELL.FILES, async req => {
     const host = req.host;
-    const query = req.query as t.IUrlQueryUploadCellFiles;
+    const query = req.query as t.IUrlQueryCellFilesListUpload;
     const params = req.params as t.IUrlParamsCellFiles;
 
     const paramData = getParams({ params });
@@ -203,20 +208,25 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       return { status, data: { error } };
     }
 
-    // Read in the form.
-    const form = await req.body.form();
-    if (form.files.length === 0) {
-      const err = new Error(`No file data was posted to the URI ("${cellUri}").`);
+    const body = ((await req.body.json()) || {}) as t.IReqPostCellFilesBody;
+    const seconds = body.seconds;
+    const files = body.files || [];
+    if (files.length === 0) {
+      const err = new Error(`No file info was posted to the URI ("${cellUri}").`);
       return util.toErrorPayload(err, { status: 400 });
     }
 
-    const postFile = async (args: { ns: string; file: t.IFormFile; links: t.IUriMap }) => {
+    const postFileModel = async (args: {
+      ns: string;
+      file: t.IReqPostCellFile;
+      links: t.IUriMap;
+    }) => {
       const { ns, file, links = {} } = args;
-      const filename = file.name;
+      const { filename, filehash } = file;
       const key = Schema.file.links.toKey(filename);
       const uri = links[key] ? links[key].split('?')[0] : Schema.uri.create.file(ns, Schema.slug());
       const query = { changes: true };
-      const res = await postFileResponse({ host, db, fs, uri, file, query });
+      const res = await postFileResponse({ host, db, fs, uri, filename, filehash, query, seconds });
       const json = res.data as t.IResPostFile;
       const status = res.status;
       return { status, res, key, uri, filename, json };
@@ -227,8 +237,8 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const cell = await models.Cell.create({ db, uri: cellUri }).ready;
       const cellLinks = cell.props.links || {};
 
-      // Post each file to the file-system.
-      const wait = form.files.map(file => postFile({ ns, file, links: cellLinks }));
+      // Post each file to the file-system as a model getting it's signed upload-link.
+      const wait = files.map(file => postFileModel({ ns, file, links: cellLinks }));
       const postFilesRes = await Promise.all(wait);
 
       // Check for file-save errors.
@@ -277,16 +287,21 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
         });
       }
 
+      // Prepare response URLs.
+      const urls = {
+        ...util.urls(host).cell(cellUri).urls,
+        uploads: postFilesRes.map(item => item.json.upload),
+      };
+
       // Prepare response.
       await cell.load({ force: true });
-      const urls = util.urls(host).cell(cellUri);
       const res: t.IResPostCellFiles = {
         uri: cellUri,
         createdAt: cell.createdAt,
         modifiedAt: cell.modifiedAt,
         exists: Boolean(cell.exists),
         data: { cell: cell.toObject(), errors, changes },
-        urls: { ...urls.urls },
+        urls,
       };
 
       return { status: 200, data: res };
@@ -300,7 +315,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.delete(routes.CELL.FILES, async req => {
     const host = req.host;
-    const query = req.query as t.IUrlQueryDeleteCellFiles;
+    const query = req.query as t.IUrlQueryCellFilesDelete;
     const params = req.params as t.IUrlParamsCellFiles;
 
     const paramData = getParams({ params });

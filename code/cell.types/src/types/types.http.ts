@@ -113,15 +113,8 @@ export type IResGetFileUrls = { info: string; download: string };
  */
 export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & {
-  upload: IResFileUploadUrl;
+  upload: t.IFileUploadUrl;
   changes?: t.IDbModelChange[];
-};
-
-export type IResFileUploadUrl = {
-  filename: string;
-  uri: string;
-  url: string;
-  props: { [key: string]: string };
 };
 
 /**
@@ -168,7 +161,7 @@ export type IResPostCellFilesData = {
 };
 export type IResPostCellFilesError = { status: number; filename: string; message: string };
 export type IResPostCellFilesUrls = IResGetCellUrls & {
-  uploads: IResFileUploadUrl[];
+  uploads: t.IFileUploadUrl[];
 };
 
 /**

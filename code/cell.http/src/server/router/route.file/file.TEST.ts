@@ -180,9 +180,9 @@ describe('route: file (URI)', () => {
       expect(json.uri).to.eql(uri);
       expect(json.changes && json.changes.length).to.eql(3); // Changes returned by default.
 
-      expect(data.hash).to.not.eql(props.filehash); // Hash of model is different from raw file-data hash.
+      expect(data.hash).to.not.eql(props.integrity?.filehash); // Hash of model is different from raw file-data hash.
       expect(data.hash).to.match(/^sha256-[0-9a-z]+/);
-      expect(props.filehash).to.match(/^sha256-[0-9a-z]+/);
+      expect(props.integrity?.filehash).to.match(/^sha256-[0-9a-z]+/);
       expect(props.bytes).to.greaterThan(1000);
 
       // Ensure saved file matches POST'ed file.
