@@ -5,7 +5,7 @@ import { IFileSystemError } from './types.error';
  * API
  */
 export type IFileSystem = IFileSystemS3 | IFileSystemLocal;
-export type IFileSystemLocal = IFileSystemMembers & { type: 'FS' };
+export type IFileSystemLocal = IFileSystemMembers & { type: 'LOCAL' };
 export type IFileSystemS3 = IFileSystemMembers & { type: 'S3'; bucket: string };
 
 /**

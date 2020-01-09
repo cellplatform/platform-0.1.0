@@ -9,7 +9,7 @@ const toLocation = (path: string) => `file://${path}`;
 export function init(args: { root: string }): t.IFileSystemLocal {
   const root = fs.resolve(args.root);
   const res: t.IFileSystemLocal = {
-    type: 'FS',
+    type: 'LOCAL',
 
     /**
      * Root directory of the file system.

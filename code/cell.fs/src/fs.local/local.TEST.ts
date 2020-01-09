@@ -6,7 +6,7 @@ const initLocal = () => local.init({ root: PATH.LOCAL });
 describe('fs.local', () => {
   it('type', () => {
     const fs = initLocal();
-    expect(fs.type).to.eql('FS');
+    expect(fs.type).to.eql('LOCAL');
   });
 
   describe('paths', () => {

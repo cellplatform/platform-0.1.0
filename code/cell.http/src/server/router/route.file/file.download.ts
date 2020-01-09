@@ -43,8 +43,8 @@ export const getFileDownloadResponse = async (args: {
       return { status: 307, data: location };
     }
 
-    // Serve the file if local file-system.
-    if (util.isFile(location) && fs.type === 'FS') {
+    // Serve the file if LOCAL file-system.
+    if (util.isFile(location) && fs.type === 'LOCAL') {
       const local = await fs.read(uri);
       const data = local.file ? local.file.data : undefined;
       if (!data) {

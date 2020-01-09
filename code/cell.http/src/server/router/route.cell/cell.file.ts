@@ -290,7 +290,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       // Prepare response URLs.
       const urls = {
         ...util.urls(host).cell(cellUri).urls,
-        uploads: postFilesRes.map(item => item.json.upload),
+        uploads: postFilesRes.map(item => item.json.upload).filter(item => Boolean(item)),
       };
 
       // Prepare response.
