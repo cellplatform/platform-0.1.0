@@ -1,57 +1,59 @@
+import { ToMimetype } from '../types';
+
 /**
  * Convert a key-path into it's "content-type" (mimetype).
  * - https://en.wikipedia.org/wiki/Media_type
  */
-export function toMimetype(key: string, defaultType: string = '') {
-  key = (key || '').trim();
+export const toMimetype: ToMimetype = (input, defaultType = '') => {
+  input = (input || '').trim();
 
-  if (key.endsWith('.js')) {
+  if (input.endsWith('.js')) {
     return 'application/javascript';
   }
 
-  if (key.endsWith('.json')) {
+  if (input.endsWith('.json')) {
     return 'application/json';
   }
 
-  if (key.endsWith('.yaml') || key.endsWith('.yml')) {
+  if (input.endsWith('.yaml') || input.endsWith('.yml')) {
     return 'text/plain';
   }
 
-  if (key.endsWith('.txt')) {
+  if (input.endsWith('.txt')) {
     return 'text/plain';
   }
 
-  if (key.endsWith('.html') || key.endsWith('.htm')) {
+  if (input.endsWith('.html') || input.endsWith('.htm')) {
     return 'text/html';
   }
 
-  if (key.endsWith('.css')) {
+  if (input.endsWith('.css')) {
     return 'text/css';
   }
 
-  if (key.endsWith('.png')) {
+  if (input.endsWith('.png')) {
     return 'image/png';
   }
 
-  if (key.endsWith('.jpg') || key.endsWith('.jpeg')) {
+  if (input.endsWith('.jpg') || input.endsWith('.jpeg')) {
     return 'image/jpeg';
   }
 
-  if (key.endsWith('.gif')) {
+  if (input.endsWith('.gif')) {
     return 'image/gif';
   }
 
-  if (key.endsWith('.zip')) {
+  if (input.endsWith('.zip')) {
     return 'application/zip';
   }
 
-  if (key.endsWith('.pdf')) {
+  if (input.endsWith('.pdf')) {
     return 'application/pdf';
   }
 
-  if (key.endsWith('.csv') || key.endsWith('.tsv')) {
+  if (input.endsWith('.csv') || input.endsWith('.tsv')) {
     return 'text/csv';
   }
 
   return defaultType;
-}
+};
