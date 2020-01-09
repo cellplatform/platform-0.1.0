@@ -83,4 +83,5 @@ export type IFileSystemFile = {
   path: string;
   hash: string;
   data: Buffer;
+  bytes: number;
 };

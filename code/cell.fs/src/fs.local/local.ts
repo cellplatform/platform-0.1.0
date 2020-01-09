@@ -58,6 +58,9 @@ export function init(args: { root: string }): t.IFileSystemLocal {
           get hash() {
             return sha256(data);
           },
+          get bytes() {
+            return Uint8Array.from(file.data).length;
+          },
         };
         return { ok: true, status: 200, location, file };
       } catch (err) {
@@ -87,6 +90,9 @@ export function init(args: { root: string }): t.IFileSystemLocal {
         data,
         get hash() {
           return sha256(data);
+        },
+        get bytes() {
+          return Uint8Array.from(file.data).length;
         },
       };
 

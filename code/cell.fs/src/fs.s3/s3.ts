@@ -102,6 +102,9 @@ export function init(args: IS3Init): t.IFileSystemS3 {
             get hash() {
               return sha256(res.data);
             },
+            get bytes() {
+              return Uint8Array.from(file.data).length;
+            },
           };
           return { ok, status, location, file };
         }
@@ -142,6 +145,9 @@ export function init(args: IS3Init): t.IFileSystemS3 {
         get hash() {
           hash = hash || sha256(data);
           return hash;
+        },
+        get bytes() {
+          return Uint8Array.from(file.data).length;
         },
       };
 
