@@ -1,11 +1,14 @@
-import { AWS, t, util, value } from '../common';
 import { parse as parseUrl } from 'url';
+
+import { AWS, toMimetype, value } from './libs';
+import * as t from './types';
+import { formatBucket, formatKeyPath } from './util.format';
 
 /**
  * Derive the endpoint to a bucket.
  */
 export function toBucketUrl(args: { s3: AWS.S3; bucket: string }) {
-  const bucket = util.formatBucket(args.bucket);
+  const bucket = formatBucket(args.bucket);
   if (!bucket) {
     throw new Error(`No bucket provided.`);
   }
@@ -19,7 +22,7 @@ export function toBucketUrl(args: { s3: AWS.S3; bucket: string }) {
 export function toObjectUrl(args: { s3: AWS.S3; bucket: string; path?: string }) {
   const { s3, bucket } = args;
   const endpoint = toBucketUrl({ s3, bucket });
-  const path = util.formatKeyPath(args.path);
+  const path = formatKeyPath(args.path);
   return `${endpoint}/${path}`;
 }
 
@@ -33,7 +36,7 @@ export function toPresignedUrl(args: {
   options: t.S3SignedUrlArgs;
 }) {
   const { s3, bucket } = args;
-  const path = util.formatKeyPath(args.path);
+  const path = formatKeyPath(args.path);
   if (!path) {
     throw new Error(`Object key path must be specified for pre-signed URLs.`);
   }
@@ -61,12 +64,12 @@ export function toPresignedUrl(args: {
 export function toPresignedPost(args: t.S3SignedPostArgs & { s3: AWS.S3 }) {
   const { s3, seconds, acl, bucket } = args;
 
-  const key = util.formatKeyPath(args.key);
+  const key = formatKeyPath(args.key);
   if (!key) {
     throw new Error(`Object key path must be specified for pre-signed URLs.`);
   }
 
-  const contentType = args.contentType || util.toContentType(key, 'application/octet-stream');
+  const contentType = args.contentType || toMimetype(key, 'application/octet-stream');
   const fields = {
     'content-type': contentType,
     'content-disposition': args.contentDisposition,

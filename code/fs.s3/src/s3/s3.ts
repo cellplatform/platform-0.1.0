@@ -1,4 +1,4 @@
-import { AWS, t, toContentType, util } from '../common';
+import { AWS, t, toMimetype, util } from '../common';
 import { deleteMany, deleteOne } from './s3.delete';
 import { get } from './s3.get';
 import { list } from './s3.list';
@@ -18,7 +18,7 @@ export function init(args: t.S3Config): t.S3 {
   });
 
   const res: t.S3 = {
-    toContentType,
+    toMimetype,
     endpoint,
 
     url(bucket: string, path?: string) {
