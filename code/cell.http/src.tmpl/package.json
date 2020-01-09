@@ -1,6 +1,6 @@
 {
   "name": "instance",
-  "version": "0.0.61",
+  "version": "0.0.0",
   "scripts": {
     "now": "now dev --listen 8080",
     "start": "ts-node -T src/server",

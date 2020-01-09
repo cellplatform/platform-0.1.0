@@ -118,12 +118,14 @@ export type IResGetFileUrls = { info: string; download: string };
  */
 export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & {
-  upload: IResPostFileUploadLink;
+  upload: IResPostFileUploadUrl;
   changes?: t.IDbModelChange[];
 };
 
-export type IResPostFileUploadLink = {
+export type IResPostFileUploadUrl = {
+  method: 'POST';
   url: string;
+  props: { [key: string]: string };
 };
 
 /**

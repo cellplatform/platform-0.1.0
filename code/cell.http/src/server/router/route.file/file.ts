@@ -227,13 +227,13 @@ export async function postFileResponse(args: {
       changes = [...changes, ...models.toChanges(uri, saveResponse.changes)];
     }
 
-    // fs
-    /**
-     * TODO 🐷
-     * - generate POST upload link
-     */
-    const upload: t.IResPostFileUploadLink = {
-      url: 'http://',
+    // Generate the pre-signed POST link.
+    const contentType = model.props.props.mimetype || 'application/octet-stream';
+    const presignedPost = fs.resolve(uri, { type: 'SIGNED/post', contentType });
+    const upload: t.IResPostFileUploadUrl = {
+      method: 'POST',
+      url: presignedPost.path,
+      props: presignedPost.props,
     };
 
     // Finish up.

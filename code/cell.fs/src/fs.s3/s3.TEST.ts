@@ -81,6 +81,7 @@ describe('S3', () => {
       expect(res.props.bucket).to.eql('platform');
       expect(res.props.key).to.eql('tmp/test/ns.foo/123');
       expect(typeof res.props.Policy).to.eql('string');
+      expect(typeof res.props['X-Amz-Signature']).to.eql('string');
     });
   });
 });
