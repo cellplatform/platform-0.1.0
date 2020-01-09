@@ -16,7 +16,7 @@ export type IUrlParamsNs = { ns: string };
 /**
  * Query-string parameters for a [Namespace].
  */
-export type IUrlQueryGetNs = {
+export type IUrlQueryNsInfo = {
   data?: boolean; // true: all (cells/rows/columns) - overrides other fields.
   cells?: boolean | string | Array<string | boolean>; // true: all | string: key or range, eg "A1", "A1:C10"
   columns?: boolean | string | Array<string | boolean>;
@@ -24,7 +24,7 @@ export type IUrlQueryGetNs = {
   files?: boolean;
 };
 
-export type IUrlQueryPostNs = IUrlQueryGetNs & {
+export type IUrlQueryNsUpdate = IUrlQueryNsInfo & {
   changes?: boolean; // NB: return list of changes (default: true).
 };
 
@@ -49,23 +49,23 @@ export type IUrlParamsCellFileByIndex = IUrlParamsCell & { index: number };
 /**
  * Query-string parameters for a [Cell].
  */
-export type IUrlQueryGetCell = {};
+export type IUrlQueryCellInfo = {};
 
 /**
  * Query-string parameters for a [Cell]'s files.
  */
-export type IUrlQueryGetCellFiles = {};
-export type IUrlQueryUploadCellFiles = {
+export type IUrlQueryCellFilesList = {};
+export type IUrlQueryCellFilesListUpload = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
-export type IUrlQueryDeleteCellFiles = {};
+export type IUrlQueryCellFilesDelete = {};
 
 /**
  * Query-string parameters for a single [Cell]'s file (by name).
  */
-export type IUrlQueryGetCellFile = IUrlQueryGetFile & {};
-export type IUrlQueryGetCellFileByName = IUrlQueryGetCellFile;
-export type IUrlQueryGetCellFileByIndex = IUrlQueryGetCellFile;
+export type IUrlQueryCellFileInfo = IUrlQueryFileInfo & {};
+export type IUrlQueryCellFileByName = IUrlQueryCellFileInfo;
+export type IUrlQueryCellFileByIndex = IUrlQueryCellFileInfo;
 
 /**
  * ------------------------------------------------------------------
@@ -77,7 +77,7 @@ export type IUrlParamsRow = { ns: string; key: string };
 /**
  * Query-string parameters for a cell [Row].
  */
-export type IUrlQueryGetRow = {};
+export type IUrlQueryRowInfo = {};
 
 /**
  * ------------------------------------------------------------------
@@ -89,7 +89,7 @@ export type IUrlParamsColumn = { ns: string; key: string };
 /**
  * Query-string parameters for a cell [Column].
  */
-export type IUrlQueryGetColumn = {};
+export type IUrlQueryColumnInfo = {};
 
 /**
  * ------------------------------------------------------------------
@@ -101,12 +101,15 @@ export type IUrlParamsFile = { ns: string; file: string };
 /**
  * Query-string parameters for a [File].
  */
-export type IUrlQueryGetFile = { hash?: string };
-export type IUrlQueryGetFileInfo = {};
+export type IUrlQueryFileInfo = {};
+export type IUrlQueryFileDownload = { hash?: string };
 
-export type IUrlQueryPostFile = {
+export type IUrlQueryFileUpload = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
-export type IUrlQueryDeleteFile = {
+export type IUrlQueryFileDelete = {
+  changes?: boolean; // NB: return list of changes (default: true).
+};
+export type IUrlQueryFileVerified = {
   changes?: boolean; // NB: return list of changes (default: true).
 };

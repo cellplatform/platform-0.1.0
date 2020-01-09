@@ -25,36 +25,37 @@ export type IUrlsNs = {
 
 export type IUrlsCell = {
   uri: string;
-  info: t.IUrl<t.IUrlQueryGetCell>;
+  info: t.IUrl<t.IUrlQueryCellInfo>;
   files: IUrlsCellFiles;
   file: IUrlsCellFile;
 };
 
 export type IUrlsCellFile = {
-  byName(filename: string): t.IUrl<t.IUrlQueryGetCellFileByName>;
-  byIndex(index: number | string): t.IUrl<t.IUrlQueryGetCellFileByIndex>;
+  byName(filename: string): t.IUrl<t.IUrlQueryCellFileByName>;
+  byIndex(index: number | string): t.IUrl<t.IUrlQueryCellFileByIndex>;
 };
 
 export type IUrlsCellFiles = {
-  list: t.IUrl<t.IUrlQueryGetCellFiles>;
-  upload: t.IUrl<t.IUrlQueryUploadCellFiles>;
-  delete: t.IUrl<t.IUrlQueryDeleteCellFiles>;
+  list: t.IUrl<t.IUrlQueryCellFilesList>;
+  upload: t.IUrl<t.IUrlQueryCellFilesListUpload>;
+  delete: t.IUrl<t.IUrlQueryCellFilesDelete>;
 };
 
 export type IUrlsRow = {
   uri: string;
-  info: t.IUrl<t.IUrlQueryGetRow>;
+  info: t.IUrl<t.IUrlQueryRowInfo>;
 };
 
 export type IUrlsColumn = {
   uri: string;
-  info: t.IUrl<t.IUrlQueryGetColumn>;
+  info: t.IUrl<t.IUrlQueryColumnInfo>;
 };
 
 export type IUrlsFile = {
   uri: string;
-  info: t.IUrl<t.IUrlQueryGetFileInfo>;
-  upload: t.IUrl<t.IUrlQueryPostFile>;
-  download: t.IUrl<t.IUrlQueryGetFile>;
-  delete: t.IUrl<t.IUrlQueryDeleteFile>;
+  info: t.IUrl<t.IUrlQueryFileInfo>;
+  upload: t.IUrl<t.IUrlQueryFileUpload>; // TEMP 🐷 - delete, handled on Cell.
+  download: t.IUrl<t.IUrlQueryFileDownload>;
+  delete: t.IUrl<t.IUrlQueryFileDelete>;
+  verify: t.IUrl<t.IUrlQueryFileVerified>;
 };

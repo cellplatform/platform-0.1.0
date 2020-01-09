@@ -102,11 +102,6 @@ export type IResGetColumnData = t.IColumnData;
 export type IResGetColumnUrls = {};
 
 /**
- * File Info (meta-data)
- */
-export type IReqFileInfoQuery = {};
-
-/**
  * File: GET
  */
 export type IResGetFile = IUriResponse<IResGetFileData, IResGetFileUrls>;
@@ -118,14 +113,24 @@ export type IResGetFileUrls = { info: string; download: string };
  */
 export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & {
-  upload: IResPostFileUploadUrl;
+  upload: IResFileUploadUrl;
   changes?: t.IDbModelChange[];
 };
 
-export type IResPostFileUploadUrl = {
-  method: 'POST';
+export type IResFileUploadUrl = {
+  filename: string;
+  uri: string;
   url: string;
   props: { [key: string]: string };
+};
+
+/**
+ * File: POST (verify)
+ */
+export type IReqPostFileVerifiedBody = { overwrite?: boolean };
+export type IResPostFileVerified = IResGetFile & {
+  isValid: boolean;
+  changes?: t.IDbModelChange[];
 };
 
 /**
@@ -146,14 +151,25 @@ export type IResGetCellFiles = {
 /**
  * Cell/Files: POST
  */
-export type IResPostCellFiles = IUriResponse<IResPostCellFilesData, IResPostCellUrls>;
+export type IReqPostCellFilesBody = {
+  files: Array<{ filename: string; filehash?: string }>;
+  seconds?: number; // Expires.
+};
+export type IReqPostCellFile = {
+  filename: string;
+  filehash?: string;
+};
+
+export type IResPostCellFiles = IUriResponse<IResPostCellFilesData, IResPostCellFilesUrls>;
 export type IResPostCellFilesData = {
   cell: t.ICellData;
   errors: IResPostCellFilesError[];
   changes?: t.IDbModelChange[];
 };
 export type IResPostCellFilesError = { status: number; filename: string; message: string };
-export type IResPostCellUrls = IResGetCellUrls & {};
+export type IResPostCellFilesUrls = IResGetCellUrls & {
+  uploads: IResFileUploadUrl[];
+};
 
 /**
  * Cell/Files: DELETE

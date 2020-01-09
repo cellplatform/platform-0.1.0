@@ -290,15 +290,6 @@ describe('Urls', () => {
       expect(res2.toString()).to.eql(URL);
     });
 
-    it('upload', () => {
-      const res1 = url.file(URI).download;
-      const res2 = url.file({ ns: 'foo', file: '123' }).upload;
-
-      const URL = 'http://localhost/file:foo:123';
-      expect(res1.toString()).to.eql(URL);
-      expect(res2.toString()).to.eql(URL);
-    });
-
     it('download', () => {
       const res1 = url.file(URI).download;
       const res2 = url.file({ ns: 'foo', file: '123' }).download;
@@ -313,6 +304,15 @@ describe('Urls', () => {
       const res2 = url.file({ ns: 'foo', file: '123' }).delete;
 
       const URL = 'http://localhost/file:foo:123';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
+    });
+
+    it('verify', () => {
+      const res1 = url.file(URI).verify;
+      const res2 = url.file({ ns: 'foo', file: '123' }).verify;
+
+      const URL = 'http://localhost/file:foo:123/verified';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });

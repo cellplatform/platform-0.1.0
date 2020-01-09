@@ -8,7 +8,11 @@ import { AWS, FormData, http, t, util, value } from '../common';
 /**
  * Generate a pre-signed POST-able multi-part form.
  * NOTE:
- *    This is useful for
+ *    This is useful for uploading large files directly to S3 thereby
+ *    avoiding passing data through a lambda, which may be restricted
+ *    in the size of payload it can recieve, not to mention consuming
+ *    unnecessary bandwidth passing the payload through the lambda
+ *    to S3.
  */
 export function post(args: t.S3SignedPostArgs & { s3: AWS.S3 }): t.S3SignedPost {
   const { s3, bucket } = args;

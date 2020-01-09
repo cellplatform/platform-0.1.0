@@ -6,9 +6,15 @@ export type IFileProps = {
   mimetype?: string;
   location?: string;
   bytes?: number;
+  verification?: IFileVerification;
 };
 export type IFileData = {
   props: IFileProps;
   hash?: string;
   error?: t.IError;
+};
+
+export type IFileVerification = {
+  isValid: boolean;
+  verifiedAt?: number;
 };
