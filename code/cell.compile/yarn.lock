@@ -1382,12 +1382,13 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
-"@platform/cell.types@0.3.8":
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.3.8.tgz#1a1f30e37f3bb9861762d5223f37ce5d4958d2b5"
-  integrity sha512-f11ccHupXdUMqAO50rYx53rezA6+TRq9K2Y42bIVA+2ReQfYMBoBBwwekN5XnVb1cPKJ14Ium92scRBAuxozkQ==
+"@platform/cell.types@0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.3.11.tgz#a71698093c422a18a68ee30d243bf0c94eedcbe8"
+  integrity sha512-3XAilxqHzA70v42WiiYxo6CpMtuHL/4Iuv7tAWgdyBEc237AlF7ayfLppoKQtYdKxt04/fhjVZ8SGT4ykG607Q==
   dependencies:
     "@platform/cache" "0.2.10"
+    "@platform/fs.s3.types" "0.0.2"
     "@platform/fsdb.types" "0.6.0"
     "@platform/libs" "0.1.5"
     "@platform/util.diff" "0.0.11"
@@ -1403,6 +1404,13 @@
     ansi-regex "5.0.0"
     chalk "3.0.0"
     listr "0.14.3"
+
+"@platform/fs.s3.types@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.0.2.tgz#ce03bfb7d7c482d3f106ade5a1f34e15308b4905"
+  integrity sha512-ru2GK7m0hVoThxHTpCf2/9jivJV/W+DNaiSXBskUMRn8kRt/Qy3+/GcZ5cH/ejaKfqgYEi/qn5KrW80Ob54sGg==
+  dependencies:
+    "@platform/types" "0.3.3"
 
 "@platform/fs@0.5.1":
   version "0.5.1"

@@ -34,7 +34,7 @@ export type S3Url = {
   object: string;
   signedGet(options?: S3SignedUrlGetObjectOptions): string;
   signedPut(options?: S3SignedUrlPutObjectOptions): string;
-  signedPost(options?: S3SignedPostArgs): S3SignedPostUrl;
+  signedPost(options?: S3SignedPostOptions): S3SignedPostUrl;
 };
 
 export type S3Bucket = {

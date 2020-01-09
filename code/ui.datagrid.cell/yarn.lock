@@ -1651,12 +1651,13 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
-"@platform/cell.types@0.3.5":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.3.5.tgz#86f70c434e5fa452f231b213383072eba9c3e80a"
-  integrity sha512-iW+XtozKIm1IPVrxsELNPfVz4J5b0UL/txu6NYoy0DIP3cWX0+czQlYmrtbn/lY30kS62j+jdwaFj2GpRey8Fg==
+"@platform/cell.types@0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.3.11.tgz#a71698093c422a18a68ee30d243bf0c94eedcbe8"
+  integrity sha512-3XAilxqHzA70v42WiiYxo6CpMtuHL/4Iuv7tAWgdyBEc237AlF7ayfLppoKQtYdKxt04/fhjVZ8SGT4ykG607Q==
   dependencies:
     "@platform/cache" "0.2.10"
+    "@platform/fs.s3.types" "0.0.2"
     "@platform/fsdb.types" "0.6.0"
     "@platform/libs" "0.1.5"
     "@platform/util.diff" "0.0.11"
@@ -1773,6 +1774,13 @@
     ansi-regex "5.0.0"
     chalk "3.0.0"
     listr "0.14.3"
+
+"@platform/fs.s3.types@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.0.2.tgz#ce03bfb7d7c482d3f106ade5a1f34e15308b4905"
+  integrity sha512-ru2GK7m0hVoThxHTpCf2/9jivJV/W+DNaiSXBskUMRn8kRt/Qy3+/GcZ5cH/ejaKfqgYEi/qn5KrW80Ob54sGg==
+  dependencies:
+    "@platform/types" "0.3.3"
 
 "@platform/fs@0.3.5":
   version "0.3.5"
@@ -1975,12 +1983,12 @@
     codemirror "5.49.2"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.7.60":
-  version "0.7.60"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.60.tgz#7b451d490ad66ef4ed147eeae62f7464293b8dcf"
-  integrity sha512-Pj+iQEZMkCPp4FwEsXCJt9AAJZseXeGV77DJSD1alJUkTKJCmXEc0AIwv5qRfMBrdYhljLhK3MzSzhH3gRwViw==
+"@platform/ui.datagrid.types@0.7.64":
+  version "0.7.64"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.64.tgz#24b3e2b78f1216f2bdb1d0b236e080634bbac619"
+  integrity sha512-Ye8586F+qVu9etl73drI0RE3qP8Fms1VfxktJCIjhW0HpVxw//IEt6VxnVjy9NHwxR/BlZV0/eYdYDRCmPD5gQ==
   dependencies:
-    "@platform/cell.types" "0.3.5"
+    "@platform/cell.types" "0.3.11"
     "@platform/react" "0.3.43"
 
 "@platform/ui.editor@0.2.21":
