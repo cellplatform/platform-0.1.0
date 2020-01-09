@@ -48,27 +48,22 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       const type = (options ? options.type : 'DEFAULT') as t.IFileSystemResolveArgs['type'];
       const key = path.resolve({ uri, root: res.root });
 
-      /**
-       * TODO 🐷
-       * - ensure options types works
-       */
-
       if (type === 'SIGNED/get') {
         return {
-          path: cloud.s3.url(res.bucket, key).signedGet(options),
+          path: cloud.s3.url(res.bucket, key).signedGet(options as t.S3SignedUrlGetObjectOptions),
           props: {},
         };
       }
 
       if (type === 'SIGNED/put') {
         return {
-          path: cloud.s3.url(res.bucket, key).signedPut(options),
+          path: cloud.s3.url(res.bucket, key).signedPut(options as t.S3SignedUrlPutObjectOptions),
           props: {},
         };
       }
 
       if (type === 'SIGNED/post') {
-        const post = cloud.s3.url(res.bucket, key).signedPost(options);
+        const post = cloud.s3.url(res.bucket, key).signedPost(options as t.S3SignedPostOptions);
         return {
           path: post.url,
           props: post.props,
