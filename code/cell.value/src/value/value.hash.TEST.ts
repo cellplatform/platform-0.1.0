@@ -1,6 +1,15 @@
 import { expect, t, fs, Uri } from '../test';
 import { value } from '.';
 
+const INTEGRITY: t.IFileIntegrity = {
+  ok: true,
+  exists: true,
+  status: 'VALID',
+  filehash: 'sha256-abc',
+  verifiedAt: 123,
+  uploadedAt: 456,
+};
+
 describe('hash', () => {
   describe('hash.ns', () => {
     beforeEach(() => (index = -1));
@@ -263,6 +272,7 @@ describe('hash', () => {
     let index = -1;
     const test = (data: t.IFileData | undefined, expected: string) => {
       const hash = value.hash.file({ uri: 'file:foo:123', data });
+      // console.log('hash', hash.substring(hash.length - 10));
 
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
@@ -284,15 +294,14 @@ describe('hash', () => {
     });
 
     it('hash props/error/buffer', async () => {
-      const jpg = await fs.readFile(fs.resolve('src/test/images/kitten.jpg'));
-      const filehash = value.hash.sha256(jpg);
       const error = { type: 'FAIL', message: 'Bummer' };
+      const integrity = INTEGRITY;
 
       test({ props: { filename: 'image.png' } }, 'c260743951');
-      test({ props: { filename: 'image.png', filehash } }, '495d42fd62');
-      test({ props: { filename: 'image.png', mimetype: 'image/png', filehash } }, 'de247e4b74');
+      test({ props: { filename: 'image.png', integrity } }, '42f00b1b33');
+      test({ props: { filename: 'image.png', mimetype: 'image/png', integrity } }, '672349467d');
       test({ props: {}, error }, '1fd68d1131');
-      test({ props: { filename: 'image.png', filehash }, error }, 'b1500cf16c');
+      test({ props: { filename: 'image.png', integrity }, error }, '442cbad97b');
     });
   });
 });

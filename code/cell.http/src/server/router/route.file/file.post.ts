@@ -1,4 +1,4 @@
-import { defaultValue, models, t, time, util } from '../common';
+import { defaultValue, models, t, time, Schema, util } from '../common';
 import { getFileInfoResponse } from './file.info';
 
 export async function postFileResponse(args: {
@@ -37,11 +37,11 @@ export async function postFileResponse(args: {
       .getTime();
 
     const upload: t.IFileUploadUrl = {
-      method: 'POST',
       expiresAt,
+      method: 'POST',
       filename,
       uri,
-      url: presignedPost.path,
+      url: fs.type === 'LOCAL' ? Schema.url(host).local.fs.toString() : presignedPost.path,
       props: presignedPost.props,
     };
 
