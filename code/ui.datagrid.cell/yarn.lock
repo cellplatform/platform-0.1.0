@@ -1651,13 +1651,13 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
-"@platform/cell.types@0.3.11":
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.3.11.tgz#a71698093c422a18a68ee30d243bf0c94eedcbe8"
-  integrity sha512-3XAilxqHzA70v42WiiYxo6CpMtuHL/4Iuv7tAWgdyBEc237AlF7ayfLppoKQtYdKxt04/fhjVZ8SGT4ykG607Q==
+"@platform/cell.types@0.3.14":
+  version "0.3.14"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.3.14.tgz#94fac8cc9db5e3f417b91678a09d863548fd8c29"
+  integrity sha512-0/HzCBJ/BVR0KU/3riZmyFuT8W09p/ClZiGmN7POB7TlhbZ0LiHZjMwWC6TKj/Udl4QizG2Uwne3CvcAXz30Sg==
   dependencies:
     "@platform/cache" "0.2.10"
-    "@platform/fs.s3.types" "0.0.2"
+    "@platform/fs.s3.types" "0.1.0"
     "@platform/fsdb.types" "0.6.0"
     "@platform/libs" "0.1.5"
     "@platform/util.diff" "0.0.11"
@@ -1775,10 +1775,10 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.0.2.tgz#ce03bfb7d7c482d3f106ade5a1f34e15308b4905"
-  integrity sha512-ru2GK7m0hVoThxHTpCf2/9jivJV/W+DNaiSXBskUMRn8kRt/Qy3+/GcZ5cH/ejaKfqgYEi/qn5KrW80Ob54sGg==
+"@platform/fs.s3.types@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.0.tgz#993214ad53e8c56518b1f38f28371bcaeb6b02e0"
+  integrity sha512-xovNqMiRon/MF4j5UEKzVzf9QnXttfpjYz0/YVL68EHe3EaBLsXAlR+HWFIUfA5YmVB1cK+FA1fee2tV2keQiQ==
   dependencies:
     "@platform/types" "0.3.3"
 
@@ -1983,12 +1983,12 @@
     codemirror "5.49.2"
     react-codemirror2 "6.0.0"
 
-"@platform/ui.datagrid.types@0.7.64":
-  version "0.7.64"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.64.tgz#24b3e2b78f1216f2bdb1d0b236e080634bbac619"
-  integrity sha512-Ye8586F+qVu9etl73drI0RE3qP8Fms1VfxktJCIjhW0HpVxw//IEt6VxnVjy9NHwxR/BlZV0/eYdYDRCmPD5gQ==
+"@platform/ui.datagrid.types@0.7.66":
+  version "0.7.66"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.66.tgz#20f2126c1113cb5bcb0cbe746ed26704b15f04e2"
+  integrity sha512-mFAn6HYqLzH7InA8BKgCpvKRSDzVgP0PcHyVyPnnhdQfEVYC8XQD3fLNgnXUlV6ChCNwbs7fy4mWLBBltF5a+g==
   dependencies:
-    "@platform/cell.types" "0.3.11"
+    "@platform/cell.types" "0.3.14"
     "@platform/react" "0.3.43"
 
 "@platform/ui.editor@0.2.21":

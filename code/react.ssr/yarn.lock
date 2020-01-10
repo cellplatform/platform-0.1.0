@@ -67,24 +67,25 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.0.2.tgz#ce03bfb7d7c482d3f106ade5a1f34e15308b4905"
-  integrity sha512-ru2GK7m0hVoThxHTpCf2/9jivJV/W+DNaiSXBskUMRn8kRt/Qy3+/GcZ5cH/ejaKfqgYEi/qn5KrW80Ob54sGg==
+"@platform/fs.s3.types@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.0.tgz#993214ad53e8c56518b1f38f28371bcaeb6b02e0"
+  integrity sha512-xovNqMiRon/MF4j5UEKzVzf9QnXttfpjYz0/YVL68EHe3EaBLsXAlR+HWFIUfA5YmVB1cK+FA1fee2tV2keQiQ==
   dependencies:
     "@platform/types" "0.3.3"
 
-"@platform/fs.s3@0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.3.tgz#b3be2923d6cc6e7a405f1230ef5532d71e89840a"
-  integrity sha512-g8MPFXM3FM8xZ/GrAjnTSwDbXNdhAC2NoCXnmWt507xmMSonEoFsbbUvSEaTaGiCZxqSKGn8atyUM0B3QzyCNw==
+"@platform/fs.s3@0.6.5":
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.5.tgz#709293b6d2b9910f14e1a1185d670b448979e5cd"
+  integrity sha512-soPnyE1G/Tnk3HgXa3DUNnIVyQhzJ7+ea1OYOkB7e7g4H5yO9OeA69xZnZ00/+YKSZJH872r46LbjnEMU+0xkQ==
   dependencies:
     "@platform/fs" "0.5.1"
-    "@platform/fs.s3.types" "0.0.2"
+    "@platform/fs.s3.types" "0.1.0"
     "@platform/http" "0.8.2"
     "@platform/libs" "0.1.5"
     "@platform/log" "0.1.1"
     "@platform/types" "0.3.3"
+    "@platform/util.mimetype" "0.0.1"
     "@platform/util.value" "0.6.11"
     aws-sdk "2.599.0"
     form-data "3.0.0"
@@ -222,6 +223,11 @@
   version "0.0.104"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.104.tgz#311e0584f819dc2e5665c4fd3a15cfc7b8aafc7f"
   integrity sha512-hPwXjkTtD02kGKrfKbwKKguLOFaBOZhv/k3X8npP8EyiIOSQm65jsXNsPFcdp/xhSMdsQD/BMBELkXsH2gva8A==
+
+"@platform/util.mimetype@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.mimetype/-/util.mimetype-0.0.1.tgz#21d79bbc58fca9430bf827ecd0e309436d72aec0"
+  integrity sha512-Mr3UWZFZoUXt0ijpq6osU2Z5/na4hQfcLbuHWBtWFVry5j96Ja/H/xOwAPBuEQPKOith91WHeLs6V3FyiKhYcw==
 
 "@platform/util.value@0.6.11":
   version "0.6.11"
