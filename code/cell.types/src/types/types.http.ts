@@ -119,7 +119,7 @@ export type IResPostFile = IResGetFile & {
 
 export type IResPostFileUploadLocal = {
   path: string;
-}
+};
 
 /**
  * File: POST (verify)

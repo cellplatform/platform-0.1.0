@@ -25,48 +25,48 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
-"@platform/cell.coord@0.8.5":
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.5.tgz#48400739965c583b462f975ca226fd1bd8243eff"
-  integrity sha512-jIfTSeFwonr4X7DSKohmmIO8kwIuPgocpgs8Jjqq/6fMXnunJnWv94ltVM3LZj5rXe+xz399jbBoVuhGNjEPxA==
+"@platform/cell.coord@0.8.8":
+  version "0.8.8"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.8.tgz#3d8bbdc2ecd938bb3ba1262cac96ad8b5fd83a5b"
+  integrity sha512-KPRjwp5m2K6DSuLTZTaGpFkJLHIJqpz9ScT3OCzNi89QxoYHOEN3ZC/UdGxaC3xYyUPRuaqi8aT+0ECs0kNzFg==
   dependencies:
     "@platform/cache" "0.2.10"
-    "@platform/cell.types" "0.3.12"
+    "@platform/cell.types" "0.3.15"
     "@platform/types" "0.3.3"
     "@platform/util.value" "0.6.11"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.schema@0.3.9":
-  version "0.3.9"
-  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.3.9.tgz#37e6d91552c072f10a1ddec1b09e3f9dab97ae99"
-  integrity sha512-rRVWce9xNyuXzRMPM0JIorM/VaLsybdtbgE3IQyT4kU2B568a/XcGyPvGVXtkuAqlXpQCKq0fLl9BrGb1ikhUA==
+"@platform/cell.schema@0.3.12":
+  version "0.3.12"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.3.12.tgz#b8d171407b03297597490dc20b3bb68b89daeceb"
+  integrity sha512-y1DdKF0uTbHh+iBjnlYaNeuYPGyLcWgnUV8WwHQ1Z3TbrUR+803GcyuRAoYSjnnxDt9Z5JvT8jpm4XLmcQRzcg==
   dependencies:
-    "@platform/cell.coord" "0.8.5"
-    "@platform/cell.types" "0.3.12"
+    "@platform/cell.coord" "0.8.8"
+    "@platform/cell.types" "0.3.15"
     "@platform/fsdb.types" "0.6.0"
     "@platform/libs" "0.1.5"
     "@platform/util.value" "0.6.11"
 
-"@platform/cell.types@0.3.12":
-  version "0.3.12"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.3.12.tgz#fe499bbb28b00148fa3387d30e06e9487efdcde9"
-  integrity sha512-d4FEEft/rDmaJrlt8NxMpTybYAfhHkySz15t3TRAZgElR8MeD+EofLRjG81iCn6kKLZi+MGDPDvvaVD7J/TTWg==
+"@platform/cell.types@0.3.15":
+  version "0.3.15"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.3.15.tgz#1aae1437fd60019f6fe49b1aa800c735bbc74c5d"
+  integrity sha512-i0iMYKBcwLamKfR3KwZr3yUry/yVDNYRpmzJZNRycpJUzZ4p5ReVv/aTDFsW6Tpeh+T6SG6jFK6EP/pmyH5hEA==
   dependencies:
     "@platform/cache" "0.2.10"
-    "@platform/fs.s3.types" "0.0.2"
+    "@platform/fs.s3.types" "0.1.0"
     "@platform/fsdb.types" "0.6.0"
     "@platform/libs" "0.1.5"
     "@platform/util.diff" "0.0.11"
 
-"@platform/cell.value@0.1.51":
-  version "0.1.51"
-  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.1.51.tgz#b12c61f7f4039c4e28eebf18ccb2a0cafcde3093"
-  integrity sha512-gUe1cQJn5F55V+ISuq/vFnJKPDi7V6El6e/v9rXf7h8hojgL2+i1EXoLlm3f9vPlJwx2dwwIf3NAPjAaDrgu4Q==
+"@platform/cell.value@0.1.54":
+  version "0.1.54"
+  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.1.54.tgz#348f9569488b5d841a2b6f0d0392443846326025"
+  integrity sha512-i/LfnjgPTnJXxLH7nEeNCT/1zOv8OCfw9JAlPBD+Q9t5ViA0CLES5Tsno/uWDqslFHm6bk/mNN2w1viK/tgDPw==
   dependencies:
-    "@platform/cell.schema" "0.3.9"
-    "@platform/cell.types" "0.3.12"
+    "@platform/cell.schema" "0.3.12"
+    "@platform/cell.types" "0.3.15"
     "@platform/libs" "0.1.5"
     "@platform/util.diff" "0.0.11"
     "@platform/util.hash" "0.0.10"
@@ -84,10 +84,10 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.0.2.tgz#ce03bfb7d7c482d3f106ade5a1f34e15308b4905"
-  integrity sha512-ru2GK7m0hVoThxHTpCf2/9jivJV/W+DNaiSXBskUMRn8kRt/Qy3+/GcZ5cH/ejaKfqgYEi/qn5KrW80Ob54sGg==
+"@platform/fs.s3.types@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.0.tgz#993214ad53e8c56518b1f38f28371bcaeb6b02e0"
+  integrity sha512-xovNqMiRon/MF4j5UEKzVzf9QnXttfpjYz0/YVL68EHe3EaBLsXAlR+HWFIUfA5YmVB1cK+FA1fee2tV2keQiQ==
   dependencies:
     "@platform/types" "0.3.3"
 
