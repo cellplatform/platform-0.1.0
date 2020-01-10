@@ -22,10 +22,11 @@ export async function postFileVerifiedResponse(args: {
       return util.toErrorPayload(message, { status });
     }
     const file = readResponse.file;
-    if (!file) {
-      const error = `Data for file [${uri}] was not found on file-system.`;
-      return util.toErrorPayload(error, { status: 404 });
-    }
+    const exists = Boolean(file?.data);
+    // if (!file) {
+    //   const error = `Data for file [${uri}] was not found on file-system.`;
+    //   return util.toErrorPayload(error, { status: 404 });
+    // }
 
     // Read in file-data.
     const model = await models.File.create({ db, uri }).ready;
@@ -35,23 +36,26 @@ export async function postFileVerifiedResponse(args: {
 
     // Update the model with latest data from downloaded file (if required).
     if (args.overwrite || !after.integrity) {
-      after.bytes = file.bytes;
-      after.location = file.path;
+      after.bytes = file ? file.bytes : -1;
+      after.location = file?.path || '';
 
       after.integrity = {
         ...((after.integrity || {}) as t.IFileIntegrity),
         ok: null,
-        filehash: file.hash,
+        exists,
+        filehash: file?.hash || '',
         uploadedAt: now,
         verifiedAt: now,
       };
     }
 
     // Perform verification.
-    const ok = after.integrity?.filehash === file.hash;
+    const ok = after.integrity?.filehash === (file?.hash || ''); // TODO 🐷 - ensure filehash exists to be OK
     if (after.integrity) {
       const integrity = after.integrity;
+      const status: t.FileIntegrityStatus = ok ? 'VALID' : exists ? 'INVALID' : 'UPLOADING'; // TODO 🐷 - better
       integrity.ok = ok;
+      integrity.status = status;
       integrity.verifiedAt = now;
       integrity.uploadedAt = integrity.uploadedAt === undefined ? now : integrity.uploadedAt;
     }
