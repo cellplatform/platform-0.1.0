@@ -1,9 +1,11 @@
+import * as chalk from 'chalk';
 import { debounceTime, filter } from 'rxjs/operators';
 
-import { log, watch, defaultValue, time, fs } from '../common';
+import { defaultValue, fs, log, time, watch } from '../common';
 import * as t from './types';
 
 type IHistoryItem = {
+  index: number;
   createdAt: number;
   response: t.IRunSyncResponse;
   log?: string;
@@ -18,6 +20,9 @@ const EMPTY_SYNC_RESPONSE: t.IRunSyncResponse = {
   completed: true,
   results: { uploaded: [], deleted: [] },
 };
+
+const DIV = '-------------------------------------------------------';
+const logDivider = () => log.info.gray(DIV);
 
 /**
  * Sarts a file-watcher on the directory.
@@ -41,7 +46,8 @@ export async function watchDir(args: {
       history.shift();
     }
     const createdAt = time.now.timestamp;
-    history.push({ createdAt, response });
+    const index = history.length;
+    history.push({ index, createdAt, response });
   };
 
   const dir$ = watch.start({ pattern }).events$.pipe(
@@ -57,28 +63,63 @@ export async function watchDir(args: {
   };
 
   const logHost = (status?: string) => {
-    status = status || 'listening';
+    status = status || 'watching';
+    const isSyncing = status?.includes('syncing');
+    const dirname = fs.basename(config.dir);
+    const dir = `${fs.dirname(config.dir)}/${isSyncing ? log.yellow(dirname) : dirname}/`;
     const uri = config.target.uri.parts;
-    log.info.gray(`host:        ${config.data.host}`);
-    log.info.gray(`target:      cell:${uri.ns}!${log.blue(uri.key)}`);
-    log.info.gray(`status:      ${status}`);
-    log.info();
-  };
 
-  const logDivider = () => {
-    log.info.gray('-------------------------------------------');
+    const cellKey = !isStarted
+      ? log.gray(uri.key)
+      : isSyncing
+      ? log.yellow(uri.key)
+      : log.blue(uri.key);
+
+    let keyTitle = ` ${uri.key} `;
+    keyTitle = isSyncing
+      ? chalk.default.bgYellow.black(keyTitle)
+      : chalk.default.bgBlue.black(keyTitle);
+
+    const formatLength = (line: string, max: number) => {
+      if (line.length <= max) {
+        return line;
+      } else {
+        const ellipsis = '..';
+        const index = line.length - (max + ellipsis.length - 2);
+        line = line.substring(index);
+        line = `${ellipsis}${line}`;
+        return line;
+      }
+    };
+
+    const table = log.table({ border: false });
+    const add = (key: string, value: string = '') => {
+      table.add([log.gray(key), '   ', log.gray(value)]);
+    };
+
+    log.info(`${keyTitle}`);
+    log.info();
+    add('status:', status);
+    add('local:', formatLength(dir, 40));
+    add('remote:');
+    add('  host:', config.data.host.replace(/\/*$/, ''));
+    add('  target:', `cell:${uri.ns}!${cellKey}`);
+
+    log.info(table.toString());
+    log.info();
+    logDivider();
   };
 
   const logHistory = (max: number = 5) => {
     const items = history.length < max ? history : history.slice(history.length - max);
     if (items.length > 0) {
-      logDivider();
       const table = log.table({ border: false });
       items.forEach((item, i) => {
         const isLast = i === items.length - 1;
         item.log = item.log || toHistoryItem(item);
         const createdAt = time.day(item.createdAt).format('hh:mm:ss');
-        const ts = log.gray(`[${isLast ? log.white(createdAt) : createdAt}]`);
+        const number = item.index + 1;
+        const ts = log.gray(`${number} [${isLast ? log.white(createdAt) : createdAt}]`);
 
         let line = item.log;
         if (!isLast) {
@@ -96,12 +137,12 @@ export async function watchDir(args: {
 
   dir$.subscribe(async e => {
     if (!silent) {
-      logPage(isStarted ? `pending` : `starting...`);
+      logPage(isStarted ? `pending changes` : `starting`);
     }
   });
 
   dir$.pipe(debounceTime(debounce)).subscribe(async e => {
-    logPage(log.yellow(isStarted ? `syncing...` : `starting...`));
+    logPage(log.yellow(isStarted ? `syncing` : `starting`));
 
     const res = await sync({ silent: true });
     isStarted = true;
