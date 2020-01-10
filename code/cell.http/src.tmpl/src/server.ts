@@ -30,7 +30,7 @@ const getRemoteFs = () =>
 const app = server.init({
   title: 'sample',
   db,
-  // fs: getRemoteFs(), // TEMP 🐷 - revert to local FS.
-  fs: getLocalFs(),
+  fs: getRemoteFs(), // TEMP 🐷 - revert to local FS.
+  // fs: getLocalFs(),
 });
 app.start({ port: 8080 });

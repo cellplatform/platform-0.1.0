@@ -1,4 +1,4 @@
-import { constants, routes, Schema, t } from '../common';
+import { util, constants, routes, Schema, t } from '../common';
 import { deleteFileResponse } from './file.delete';
 import { getFileDownloadResponse } from './file.download';
 import { getFileInfoResponse } from './file.info';
@@ -90,6 +90,46 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    * - ensure URL/types have also been deleted
    * - ensure ROUTE is deleted.
    */
+
+  /**
+   * POST (local file upload)
+   */
+  router.post(routes.LOCAL.FS, async req => {
+    const query = req.query as t.IUrlQueryLocalFs;
+    try {
+      // Read in the file data.
+      const buffer = await req.body.buffer();
+      if (buffer.length === 0) {
+        const err = new Error(`No file data provided.`);
+        return util.toErrorPayload(err, { status: 400 });
+      }
+
+      // Read in the path.
+      let path = (req.headers.path || '').toString().trim();
+      if (!path) {
+        const err = new Error(`No file [path] passed in headers.`);
+        return util.toErrorPayload(err, { status: 400 });
+      }
+
+      // Prepare the path.
+      path = path.replace(new RegExp(`^${fs.root}/`), '');
+      path = `${fs.root}/${path}`;
+      await util.fs.ensureDir(util.fs.dirname(path));
+
+      // Save the file.
+      await util.fs.writeFile(path, buffer);
+
+      // Finish up.
+      const res: t.IPayload<t.IResPostFileUploadLocal> = {
+        status: 200,
+        data: { path },
+      };
+
+      return res;
+    } catch (err) {
+      return util.toErrorPayload(err);
+    }
+  });
 
   /**
    * POST binary-file.

@@ -109,13 +109,17 @@ export type IResGetFileData = t.IFileData & {};
 export type IResGetFileUrls = { info: string; download: string };
 
 /**
- * File: POST
+ * File: POST (upload)
  */
 export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & {
   upload: t.IFileUploadUrl;
   changes?: t.IDbModelChange[];
 };
+
+export type IResPostFileUploadLocal = {
+  path: string;
+}
 
 /**
  * File: POST (verify)

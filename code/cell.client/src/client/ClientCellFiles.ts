@@ -80,7 +80,7 @@ export class ClientCellFiles implements t.IClientCellFiles {
     const url = parent.url.files.upload.toString();
     const body: t.IReqPostCellFilesBody = {
       seconds: undefined, // Expires.
-      files: files.map(item => ({ filename: item.filename })),
+      files: files.map(({ filename }) => ({ filename })),
     };
 
     const res1 = await http.post(url, body);
@@ -100,18 +100,34 @@ export class ClientCellFiles implements t.IClientCellFiles {
       })
       .filter(({ data }) => Boolean(data))
       .map(async ({ upload, data }) => {
-        // Prepare upload multi-part form.
-        const props = upload.props;
-        const contentType = upload.props['content-type'];
-        const form = new FormData();
-        Object.keys(props)
-          .map(key => ({ key, value: props[key] }))
-          .forEach(({ key, value }) => form.append(key, value));
-        form.append('file', data, { contentType }); // NB: file-data must be added last for S3.
+        const { url } = upload;
 
-        // Send to S3.
-        const headers = form.getHeaders();
-        const res = await http.post(upload.url, form, { headers });
+        const uploadToS3 = async () => {
+          // Prepare upload multi-part form.
+          const props = upload.props;
+          const contentType = props['content-type'];
+          const form = new FormData();
+          Object.keys(props)
+            .map(key => ({ key, value: props[key] }))
+            .forEach(({ key, value }) => form.append(key, value));
+          form.append('file', data, { contentType }); // NB: file-data must be added last for S3.
+
+          // Send form to S3.
+          const headers = form.getHeaders();
+          return http.post(url, form, { headers });
+        };
+
+        const uploadToLocal = async () => {
+          // HACK:  There is a problem sending the multi-part form to the local
+          //        service, however just posting the data as a buffer works fine.
+          const path = upload.props.key;
+          const headers = { 'content-type': 'multipart/form-data', path };
+          return http.post(url, data, { headers });
+        };
+
+        // Upload data.
+        const isLocal = url.startsWith('http://localhost');
+        const res = await (isLocal ? uploadToLocal() : uploadToS3());
 
         // Finish up.
         const { ok, status } = res;
