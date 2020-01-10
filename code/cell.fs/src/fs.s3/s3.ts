@@ -131,7 +131,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       }
 
       const { filename } = options;
-      const contentType = filename ? cloud.s3.toContentType(filename) : undefined;
+      const contentType = filename ? cloud.s3.toMimetype(filename) : undefined;
       const contentDisposition = filename ? `inline; filename="${filename}"` : undefined;
 
       uri = (uri || '').trim();

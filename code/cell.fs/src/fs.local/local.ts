@@ -1,4 +1,4 @@
-import { fs, path, t, sha256 } from '../common';
+import { fs, path, t, sha256, Urls, toMimetype } from '../common';
 
 export * from '../types';
 const toLocation = (path: string) => `file://${path}`;
@@ -19,8 +19,22 @@ export function init(args: { root: string }): t.IFileSystemLocal {
     /**
      * Convert the given string to an absolute path.
      */
-    resolve(uri: string, options?: t.IFileSystemResolveArgs) {
+    resolve(uri: string, options?: t.IFileSystemResolveArgs): t.IFileSystemLocation {
       const type = options ? options.type : 'DEFAULT';
+
+      if (type === 'SIGNED/post') {
+        // NB: A local simulated end-point of an AWS/S3 "presignedPost" URL.
+        const args = options as t.S3SignedPostOptions;
+        const key = path.resolve({ uri, root });
+        return {
+          path: Urls.routes.LOCAL.FS,
+          props: {
+            'content-type': args.contentType || toMimetype(key, 'application/octet-stream'),
+            key,
+          },
+        };
+      }
+
       if (type !== 'DEFAULT') {
         throw new Error(`Local file-system resolve only supports DEFAULT operation.`);
       }

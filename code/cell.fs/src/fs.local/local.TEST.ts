@@ -26,6 +26,22 @@ describe('fs.local', () => {
       test('file:ck3jldh1z00043fetc11ockko:1z53tcj', 'ns.ck3jldh1z00043fetc11ockko/1z53tcj');
     });
 
+    it('resolve: SIGNED/post', () => {
+      const fs = initLocal();
+
+      const res1 = fs.resolve('file:foo:123', { type: 'SIGNED/post' });
+      const res2 = fs.resolve('file:foo:123', { type: 'SIGNED/post', contentType: 'image/png' });
+
+      expect(res1.path).to.eql('/local/fs');
+      expect(res2.path).to.eql(res1.path);
+
+      expect(res1.props['content-type']).to.eql('application/octet-stream');
+      expect(res2.props['content-type']).to.eql('image/png');
+
+      expect(res1.props.key).to.match(/tmp\/local\/ns.foo\/123$/);
+      expect(res2.props.key).to.eql(res1.props.key);
+    });
+
     it('resolve - throws if non-DEFAULT operation specified', () => {
       const fs = initLocal();
       const test = (options: t.IFileSystemResolveArgs) => {
@@ -36,7 +52,6 @@ describe('fs.local', () => {
       };
       test({ type: 'SIGNED/get' });
       test({ type: 'SIGNED/put' });
-      test({ type: 'SIGNED/post' });
     });
   });
 

@@ -223,6 +223,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.104.tgz#311e0584f819dc2e5665c4fd3a15cfc7b8aafc7f"
   integrity sha512-hPwXjkTtD02kGKrfKbwKKguLOFaBOZhv/k3X8npP8EyiIOSQm65jsXNsPFcdp/xhSMdsQD/BMBELkXsH2gva8A==
 
+"@platform/util.mimetype@0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.mimetype/-/util.mimetype-0.0.0.tgz#43e6933fc6d9203a972be5dd41a64d2e93018052"
+  integrity sha512-cYVFoOQiHmaRiXY93rACyHQkkYGtyhbywz/c3csixvniZrCIRC6K7KG/FoaY1PV/70PoLgVpMhTrnf93uuaQzg==
+
 "@platform/util.value@0.6.11":
   version "0.6.11"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.6.11.tgz#523e17ceb3a7182da0265e03294c25c73a2fae27"
