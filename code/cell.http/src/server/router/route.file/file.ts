@@ -96,18 +96,24 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.post(routes.LOCAL.FS, async req => {
     const query = req.query as t.IUrlQueryLocalFs;
+
+    if (fs.type !== 'LOCAL') {
+      const err = `Local routes can only be invoked when running on [localhost]. ${req.url}`;
+      return util.toErrorPayload(err, { status: 500 });
+    }
+
     try {
       // Read in the file data.
       const buffer = await req.body.buffer();
       if (buffer.length === 0) {
-        const err = new Error(`No file data provided.`);
+        const err = `No file data provided.`;
         return util.toErrorPayload(err, { status: 400 });
       }
 
       // Read in the path.
       let path = (req.headers.path || '').toString().trim();
       if (!path) {
-        const err = new Error(`No file [path] passed in headers.`);
+        const err = `No file [path] passed in headers.`;
         return util.toErrorPayload(err, { status: 400 });
       }
 
@@ -130,32 +136,6 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       return util.toErrorPayload(err);
     }
   });
-
-  /**
-   * POST binary-file.
-   */
-  // router.post(routes.FILE.BASE, async req => {
-  //   const host = req.host;
-  //   const query = req.query as t.IUrlQueryPostFile;
-  //   const { status, ns, error, uri } = getParams(req);
-  //   if (!ns || error) {
-  //     return { status, data: { error } };
-  //   } else {
-  //     const form = await req.body.form();
-
-  //     if (form.files.length === 0) {
-  //       const err = new Error(`No file data was posted to the URI ("${uri}").`);
-  //       return util.toErrorPayload(err, { status: 400 });
-  //     }
-  //     if (form.files.length > 1) {
-  //       const err = new Error(`Only a single file can be posted to the URI ("${uri}").`);
-  //       return util.toErrorPayload(err, { status: 400 });
-  //     }
-
-  //     const file = form.files[0];
-  //     return postFileResponse({ db, fs, uri, query, file, host });
-  //   }
-  // });
 
   /**
    * DELETE binary-file.
