@@ -76,6 +76,14 @@ describe('Urls', () => {
     });
   });
 
+  describe('local', () => {
+    const url = Urls.create();
+    it('fs', () => {
+      const res = url.local.fs;
+      expect(res.toString()).to.eql('http://localhost/local/fs');
+    });
+  });
+
   describe('namespace (ns)', () => {
     const URI = 'ns:foo';
     const url = Urls.create();

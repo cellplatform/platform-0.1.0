@@ -6,6 +6,7 @@ export type IUrls = {
   readonly port: number;
   readonly origin: string;
   readonly sys: IUrlsSys;
+  readonly local: IUrlsLocal;
   ns(input: string | t.IUrlParamsNs): IUrlsNs;
   cell(input: string | t.IUrlParamsCell): IUrlsCell;
   row(input: string | t.IUrlParamsRow): IUrlsRow;
@@ -58,4 +59,13 @@ export type IUrlsFile = {
   download: t.IUrl<t.IUrlQueryFileDownload>;
   delete: t.IUrl<t.IUrlQueryFileDelete>;
   verify: t.IUrl<t.IUrlQueryFileVerified>;
+};
+
+/**
+ * Special URLs only available when running on [localhost]
+ * NB:
+ *    These allow calls to external systems (eg "S3") to be simulated.
+ */
+export type IUrlsLocal = {
+  fs: t.IUrl<t.IUrlQueryLocalFs>;
 };

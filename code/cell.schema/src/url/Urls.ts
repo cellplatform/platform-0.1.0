@@ -63,6 +63,16 @@ export class Urls implements t.IUrls {
     };
   }
 
+  public get local() {
+    const toPath = this.toUrl;
+    return {
+      get fs() {
+        type Q = t.IUrlQueryLocalFs;
+        return toPath<Q>(`/local/fs`);
+      },
+    };
+  }
+
   /**
    * [Methods]
    */

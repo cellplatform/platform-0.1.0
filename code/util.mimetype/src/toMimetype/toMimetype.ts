@@ -1,5 +1,9 @@
 import { ToMimetype } from '../types';
 
+export const TYPES = {
+  BINARY: 'application/octet-stream',
+};
+
 /**
  * Convert a key-path into it's "content-type" (mimetype).
  * - https://en.wikipedia.org/wiki/Media_type

@@ -22,6 +22,9 @@ export const ROUTES = {
     INFO: ['/', '/.sys(/?)'],
     UID: '/.uid',
   },
+  LOCAL: {
+    FS: `/local/fs`,
+  },
   FILE: {
     INFO: `/file${KEY.NS}\\:${KEY.FILE}/info(/?)`,
     BASE: `/file${KEY.NS}\\:${KEY.FILE}(/?)`,
