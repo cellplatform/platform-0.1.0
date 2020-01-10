@@ -194,13 +194,12 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *      Usage:
    *      1. Invoke this POST to initiate the upload.
    *      2. Upload to the returned signed S3 url(s).
-   *      3. Invoke a [/verify] POST on each uploaded file.
+   *      3. POST to [/verify] for each uploaded file.
    */
   router.post(routes.CELL.FILES, async req => {
     const host = req.host;
     const query = req.query as t.IUrlQueryCellFilesListUpload;
     const params = req.params as t.IUrlParamsCellFiles;
-
     const paramData = getParams({ params });
     const { status, error, ns, uri: cellUri, key: cellKey } = paramData;
 
