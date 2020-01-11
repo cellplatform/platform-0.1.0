@@ -1,3 +1,6 @@
+import * as log from './util.log';
+export { log };
+
 /**
  * Retrieves the singular or plural version of a word.
  */

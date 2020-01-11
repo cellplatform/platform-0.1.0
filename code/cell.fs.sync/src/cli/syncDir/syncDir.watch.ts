@@ -1,7 +1,6 @@
-import * as chalk from 'chalk';
 import { debounceTime, filter } from 'rxjs/operators';
 
-import { defaultValue, fs, log, time, watch } from '../common';
+import { defaultValue, fs, log, time, watch, util } from '../common';
 import * as t from './types';
 
 type IHistoryItem = {
@@ -63,22 +62,14 @@ export async function watchDir(args: {
   };
 
   const logHost = (status?: string) => {
-    status = status || 'watching';
+    status = status || '<watching>';
     const isSyncing = status?.includes('syncing');
     const dirname = fs.basename(config.dir);
     const dir = `${fs.dirname(config.dir)}/${isSyncing ? log.yellow(dirname) : dirname}/`;
-    const uri = config.target.uri.parts;
+    const uri = config.target.uri;
 
-    const cellKey = !isStarted
-      ? log.gray(uri.key)
-      : isSyncing
-      ? log.yellow(uri.key)
-      : log.blue(uri.key);
-
-    let keyTitle = ` ${uri.key} `;
-    keyTitle = isSyncing
-      ? chalk.default.bgYellow.black(keyTitle)
-      : chalk.default.bgBlue.black(keyTitle);
+    const cellColor: util.log.Color = !isStarted ? 'gray' : isSyncing ? 'yellow' : 'blue';
+    const cellTitle = util.log.cellKeyBg(uri.parts.key, isSyncing ? 'yellow' : 'blue');
 
     const formatLength = (line: string, max: number) => {
       if (line.length <= max) {
@@ -97,13 +88,13 @@ export async function watchDir(args: {
       table.add([log.gray(key), '   ', log.gray(value)]);
     };
 
-    log.info(`${keyTitle}`);
+    log.info(cellTitle);
     log.info();
     add('status:', status);
     add('local:', formatLength(dir, 40));
     add('remote:');
     add('  host:', config.data.host.replace(/\/*$/, ''));
-    add('  target:', `cell:${uri.ns}!${cellKey}`);
+    add('  target:', util.log.cellUri(uri, cellColor));
 
     log.info(table.toString());
     log.info();
@@ -142,7 +133,7 @@ export async function watchDir(args: {
   });
 
   dir$.pipe(debounceTime(debounce)).subscribe(async e => {
-    logPage(log.yellow(isStarted ? `syncing` : `starting`));
+    logPage(isStarted ? log.yellow(`syncing`) : `starting`);
 
     const res = await sync({ silent: true });
     isStarted = true;

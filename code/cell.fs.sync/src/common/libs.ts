@@ -1,3 +1,6 @@
+import chalk from 'chalk';
+export { chalk };
+
 import * as open from 'open';
 export { open };
 
