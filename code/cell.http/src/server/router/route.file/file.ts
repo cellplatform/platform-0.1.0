@@ -3,6 +3,7 @@ import { deleteFileResponse } from './file.delete';
 import { getFileDownloadResponse } from './file.download';
 import { getFileInfoResponse } from './file.info';
 import { postFileVerifiedResponse } from './file.verify';
+import { fileUploadLocalResponse } from './file.local';
 
 /**
  * File-system routes (fs:).
@@ -96,45 +97,9 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    */
   router.post(routes.LOCAL.FS, async req => {
     const query = req.query as t.IUrlQueryLocalFs;
-
-    if (fs.type !== 'LOCAL') {
-      const err = `Local routes can only be invoked when running on [localhost]. ${req.url}`;
-      return util.toErrorPayload(err, { status: 500 });
-    }
-
-    try {
-      // Read in the file data.
-      const buffer = await req.body.buffer();
-      if (buffer.length === 0) {
-        const err = `No file data provided.`;
-        return util.toErrorPayload(err, { status: 400 });
-      }
-
-      // Read in the path.
-      let path = (req.headers.path || '').toString().trim();
-      if (!path) {
-        const err = `No file [path] passed in headers.`;
-        return util.toErrorPayload(err, { status: 400 });
-      }
-
-      // Prepare the path.
-      path = path.replace(new RegExp(`^${fs.root}/`), '');
-      path = `${fs.root}/${path}`;
-      await util.fs.ensureDir(util.fs.dirname(path));
-
-      // Save the file.
-      await util.fs.writeFile(path, buffer);
-
-      // Finish up.
-      const res: t.IPayload<t.IResPostFileUploadLocal> = {
-        status: 200,
-        data: { path },
-      };
-
-      return res;
-    } catch (err) {
-      return util.toErrorPayload(err);
-    }
+    const path = (req.headers.path || '').toString().trim();
+    const data = await req.body.buffer();
+    return fileUploadLocalResponse({ db, fs, path, data, query });
   });
 
   /**

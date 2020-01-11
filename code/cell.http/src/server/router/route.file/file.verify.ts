@@ -23,10 +23,6 @@ export async function postFileVerifiedResponse(args: {
     }
     const file = readResponse.file;
     const exists = Boolean(file?.data);
-    // if (!file) {
-    //   const error = `Data for file [${uri}] was not found on file-system.`;
-    //   return util.toErrorPayload(error, { status: 404 });
-    // }
 
     // Read in file-data.
     const model = await models.File.create({ db, uri }).ready;
