@@ -22,6 +22,17 @@ const EMPTY_SYNC_RESPONSE: t.IRunSyncResponse = {
 
 const DIV = '-------------------------------------------------------';
 const logDivider = () => log.info.gray(DIV);
+const formatLength = (line: string, max: number) => {
+  if (line.length <= max) {
+    return line;
+  } else {
+    const ellipsis = '..';
+    const index = line.length - (max + ellipsis.length - 2);
+    line = line.substring(index);
+    line = `${ellipsis}${line}`;
+    return line;
+  }
+};
 
 /**
  * Sarts a file-watcher on the directory.
@@ -64,24 +75,14 @@ export async function watchDir(args: {
   const logHost = (status?: string) => {
     status = status || '<watching>';
     const isSyncing = status?.includes('syncing');
-    const dirname = fs.basename(config.dir);
-    const dir = `${fs.dirname(config.dir)}/${isSyncing ? log.yellow(dirname) : dirname}/`;
     const uri = config.target.uri;
 
     const cellColor: util.log.Color = !isStarted ? 'gray' : isSyncing ? 'yellow' : 'blue';
     const cellTitle = util.log.cellKeyBg(uri.parts.key, isSyncing ? 'yellow' : 'blue');
 
-    const formatLength = (line: string, max: number) => {
-      if (line.length <= max) {
-        return line;
-      } else {
-        const ellipsis = '..';
-        const index = line.length - (max + ellipsis.length - 2);
-        line = line.substring(index);
-        line = `${ellipsis}${line}`;
-        return line;
-      }
-    };
+    const dir = formatLength(config.dir, 40);
+    const dirname = fs.basename(dir);
+    const local = `${fs.dirname(dir)}/${isSyncing ? log.yellow(dirname) : dirname}/`;
 
     const table = log.table({ border: false });
     const add = (key: string, value: string = '') => {
@@ -91,7 +92,7 @@ export async function watchDir(args: {
     log.info(cellTitle);
     log.info();
     add('status:', status);
-    add('local:', formatLength(dir, 40));
+    add('local:', local);
     add('remote:');
     add('  host:', config.data.host.replace(/\/*$/, ''));
     add('  target:', util.log.cellUri(uri, cellColor));
