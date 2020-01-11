@@ -1,3 +1,4 @@
+import * as chalk from 'chalk';
 import { open, log, promptConfig } from '../common';
 
 const gray = log.info.gray;
@@ -19,10 +20,15 @@ export async function dir(args: {
 
   // Print the target URL.
   const uri = config.target.uri;
+  const key = uri.parts.key;
+  const keyTitle = chalk.default.bgBlue.black(` ${key} `);
 
   log.info();
-  gray(`host:     ${config.data.host}`);
-  gray(`target:   cell:${uri.parts.ns}!${log.white(uri.parts.key)}`);
+  log.info(keyTitle);
+  log.info();
+
+  gray(`host:     ${config.data.host.replace(/\/*$/, '')}`);
+  gray(`target:   cell:${uri.parts.ns}!${log.blue(key)}`);
   log.info();
 
   let printFinalBlankLine = false;
