@@ -79,6 +79,21 @@ describe('s3', () => {
       expect(res.props.bucket).to.eql('foo');
       expect(typeof res.props.Policy).to.eql('string');
     });
+
+    it('url.signedPost props are NOT idempotent (differs for each call, more secure)', () => {
+      const res1 = s3.url('foo', 'file.png').signedPost();
+      const res2 = s3.url('foo', 'file.png').signedPost();
+
+      const props1 = res1.props;
+      const props2 = res2.props;
+
+      expect(res1.url).to.eql(res2.url);
+      expect(Object.keys(res1.props)).to.eql(Object.keys(res1.props));
+
+      expect(props1.uid).to.not.eql(props2.uid);
+      expect(props1.Policy).to.not.eql(props2.Policy);
+      expect(props1['X-Amz-Signature']).to.not.eql(props2['X-Amz-Signature']);
+    });
   });
 
   describe('bucket', () => {

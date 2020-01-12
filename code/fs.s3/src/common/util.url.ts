@@ -1,6 +1,6 @@
 import { parse as parseUrl } from 'url';
 
-import { AWS, toMimetype, value } from './libs';
+import { AWS, toMimetype, value, id } from './libs';
 import * as t from './types';
 import { formatBucket, formatKeyPath } from './util.format';
 
@@ -73,6 +73,7 @@ export function toPresignedPost(args: t.S3SignedPostArgs & { s3: AWS.S3 }) {
   const fields = {
     'content-type': contentType,
     'content-disposition': args.contentDisposition,
+    uid: id.cuid(), // NB: Prevents idempotent result props (Policy/Signature). Makes it harder to spoof with repeat calls.
     acl,
     key,
   };
