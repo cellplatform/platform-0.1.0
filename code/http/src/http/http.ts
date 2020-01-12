@@ -1,30 +1,31 @@
-import { t, toRawHeaders, fromRawHeaders, stringify, isFormData } from '../common';
-import * as isomorphic from 'isomorphic-fetch';
+import {
+  t,
+  fetch,
+  toRawHeaders,
+  fromRawHeaders,
+  stringify,
+  isFormData,
+  parseJson,
+} from '../common';
+export { fetch };
 
 /**
  * Native fetch.
  */
-export const fetch = isomorphic;
 
-export function create(options: t.IFetchOptions = {}) {
+export const create: t.HttpCreate = (options = {}) => {
   const mergeOptions = (methodOptions: t.IFetchOptions) => {
-    const res = { ...options, ...methodOptions };
-    const { mode = 'cors' } = res;
-    const headers = toRawHeaders(res.headers);
+    const args = { ...options, ...methodOptions };
+    const { mode = 'cors' } = args;
+    const headers = toRawHeaders(args.headers);
     return { mode, headers };
   };
 
-  const http = {
+  const http: t.IHttp = {
     create,
-    fetch,
 
-    /**
-     * `GET`
-     */
-    async get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const { mode, headers } = mergeOptions(options);
-      const res = await isomorphic(url, { method: 'GET', headers, mode });
-      return toResponse(url, res);
+    get headers() {
+      return { ...options.headers };
     },
 
     /**
@@ -32,17 +33,16 @@ export function create(options: t.IFetchOptions = {}) {
      */
     async head(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const { mode, headers } = mergeOptions(options);
-      const res = await isomorphic(url, { method: 'HEAD', headers, mode });
+      const res = await fetch(url, { method: 'HEAD', headers, mode });
       return toResponse(url, res);
     },
 
     /**
-     * `POST`
+     * `GET`
      */
-    async post(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
+    async get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const { mode, headers } = mergeOptions(options);
-      const body = toBody({ url, headers, data });
-      const res = await isomorphic(url, { method: 'POST', body, headers, mode });
+      const res = await fetch(url, { method: 'GET', headers, mode });
       return toResponse(url, res);
     },
 
@@ -52,7 +52,17 @@ export function create(options: t.IFetchOptions = {}) {
     async put(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const { mode, headers } = mergeOptions(options);
       const body = toBody({ url, headers, data });
-      const res = await isomorphic(url, { method: 'PUT', body, headers, mode });
+      const res = await fetch(url, { method: 'PUT', body, headers, mode });
+      return toResponse(url, res);
+    },
+
+    /**
+     * `POST`
+     */
+    async post(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
+      const { mode, headers } = mergeOptions(options);
+      const body = toBody({ url, headers, data });
+      const res = await fetch(url, { method: 'POST', body, headers, mode });
       return toResponse(url, res);
     },
 
@@ -62,7 +72,7 @@ export function create(options: t.IFetchOptions = {}) {
     async patch(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const { mode, headers } = mergeOptions(options);
       const body = toBody({ url, headers, data });
-      const res = await isomorphic(url, { method: 'PATCH', body, headers, mode });
+      const res = await fetch(url, { method: 'PATCH', body, headers, mode });
       return toResponse(url, res);
     },
 
@@ -72,16 +82,12 @@ export function create(options: t.IFetchOptions = {}) {
     async delete(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const { mode, headers } = mergeOptions(options);
       const body = toBody({ url, headers, data });
-      const res = await isomorphic(url, { method: 'DELETE', body, headers, mode });
+      const res = await fetch(url, { method: 'DELETE', body, headers, mode });
       return toResponse(url, res);
     },
   };
-
-  /**
-   * [API]
-   */
   return http;
-}
+};
 
 /**
  * [Helpers]
@@ -123,10 +129,6 @@ async function toResponse(url: string, res: Response) {
   return result;
 }
 
-/**
- * Helpers
- */
-
 function toContentType(headers: t.IHttpHeaders) {
   const value = (headers['content-type'] || '').toString();
   const res: t.IHttpContentType = {
@@ -144,14 +146,4 @@ function toContentType(headers: t.IHttpHeaders) {
     },
   };
   return res;
-}
-
-function parseJson(args: { url: string; text: string }) {
-  try {
-    return JSON.parse(args.text) as t.Json;
-  } catch (error) {
-    const body = args.text ? args.text : '<empty>';
-    const msg = `Failed while parsing JSON for '${args.url}'.\nParse Error: ${error.message}\nBody: ${body}`;
-    throw new Error(msg);
-  }
 }

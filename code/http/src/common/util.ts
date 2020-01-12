@@ -1,5 +1,5 @@
 import { value } from './libs';
-import * as t from '../types';
+import * as t from './types';
 import { IS_PROD } from './constants';
 
 /**
@@ -12,6 +12,19 @@ export function stringify(data: any, errorMessage: () => string) {
     let message = errorMessage();
     message = !IS_PROD ? `${message} ${err.message}` : message;
     throw new Error(message);
+  }
+}
+
+/**
+ * Attempts to parse JSON.
+ */
+export function parseJson(args: { url: string; text: string }) {
+  try {
+    return JSON.parse(args.text) as t.Json;
+  } catch (error) {
+    const body = args.text ? args.text : '<empty>';
+    const msg = `Failed while parsing JSON for '${args.url}'.\nParse Error: ${error.message}\nBody: ${body}`;
+    throw new Error(msg);
   }
 }
 

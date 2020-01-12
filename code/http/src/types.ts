@@ -26,3 +26,14 @@ export type IHttpContentType = {
     binary: boolean;
   };
 };
+
+export type HttpCreate = (options?: IFetchOptions) => IHttp;
+export type IHttp = IHttpMethods & { create: HttpCreate; headers: IHttpHeaders };
+export type IHttpMethods = {
+  head(url: string, options?: IFetchOptions): Promise<IHttpResponse>;
+  get(url: string, options?: IFetchOptions): Promise<IHttpResponse>;
+  put(url: string, data?: any, options?: IFetchOptions): Promise<IHttpResponse>;
+  post(url: string, data?: any, options?: IFetchOptions): Promise<IHttpResponse>;
+  patch(url: string, data?: any, options?: IFetchOptions): Promise<IHttpResponse>;
+  delete(url: string, options?: IFetchOptions): Promise<IHttpResponse>;
+};
