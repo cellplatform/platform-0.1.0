@@ -1,7 +1,7 @@
 import { defaultValue, models, t, time, Schema, util } from '../common';
-import { getFileInfoResponse } from './file.info';
+import { getFileInfoHandler } from './file.info';
 
-export async function postFileResponse(args: {
+export async function postFileUploadStartHandler(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;
@@ -66,7 +66,7 @@ export async function postFileResponse(args: {
     }
 
     // Finish up.
-    const fileResponse = await getFileInfoResponse({ uri, db, query, host });
+    const fileResponse = await getFileInfoHandler({ uri, db, query, host });
     const { status } = fileResponse;
     const fileResponseData = fileResponse.data as t.IResGetFile;
     const res: t.IPayload<t.IResPostFile> = {

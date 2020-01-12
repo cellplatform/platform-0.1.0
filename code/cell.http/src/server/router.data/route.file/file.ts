@@ -1,9 +1,9 @@
-import { util, constants, routes, Schema, t } from '../common';
-import { deleteFileResponse } from './file.delete';
-import { getFileDownloadResponse } from './file.download';
-import { getFileInfoResponse } from './file.info';
-import { postFileVerifiedResponse } from './file.verify';
-import { fileUploadLocalResponse } from './file.local';
+import { constants, routes, Schema, t } from '../common';
+import { deleteFileHandler } from './file.delete';
+import { getFileDownloadHandler } from './file.download';
+import { getFileInfoHandler } from './file.info';
+import { fileUploadLocalHandler } from './file.local';
+import { postFileUploadCompleteHandler } from './file.upload.complete';
 
 /**
  * File-system routes (fs:).
@@ -55,7 +55,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const { status, ns, error, uri } = getParams(req);
     return !ns || error
       ? { status, data: { error } }
-      : getFileInfoResponse({ uri, db, query, host });
+      : getFileInfoHandler({ uri, db, query, host });
   });
 
   /**
@@ -67,7 +67,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const { status, ns, error, uri } = getParams(req);
     return !ns || error
       ? { status, data: { error } }
-      : getFileDownloadResponse({ db, fs, uri, host, query });
+      : getFileDownloadHandler({ db, fs, uri, host, query });
   });
 
   /**
@@ -82,7 +82,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const { overwrite } = body;
     return !ns || error
       ? { status, data: { error } }
-      : postFileVerifiedResponse({ db, fs, uri, host, query, overwrite });
+      : postFileUploadCompleteHandler({ db, fs, uri, host, query, overwrite });
   });
 
   /**
@@ -99,7 +99,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const query = req.query as t.IUrlQueryLocalFs;
     const path = (req.headers.path || '').toString().trim();
     const data = await req.body.buffer();
-    return fileUploadLocalResponse({ db, fs, path, data, query });
+    return fileUploadLocalHandler({ db, fs, path, data, query });
   });
 
   /**
@@ -111,6 +111,6 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const { status, ns, error, uri } = getParams(req);
     return !ns || error
       ? { status, data: { error } }
-      : deleteFileResponse({ fs, uri, db, query, host });
+      : deleteFileHandler({ fs, uri, db, query, host });
   });
 }

@@ -1,7 +1,7 @@
 import { ERROR, t, util } from '../common';
-import { getFileInfoResponse } from './file.info';
+import { getFileInfoHandler } from './file.info';
 
-export const getFileDownloadResponse = async (args: {
+export const getFileDownloadHandler = async (args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;
@@ -12,7 +12,7 @@ export const getFileDownloadResponse = async (args: {
 
   try {
     // Pull the file meta-data.
-    const fileResponse = await getFileInfoResponse({ uri, db, query, host });
+    const fileResponse = await getFileInfoHandler({ uri, db, query, host });
     if (!util.isOK(fileResponse.status)) {
       return fileResponse; // NB: This is an error.
     }

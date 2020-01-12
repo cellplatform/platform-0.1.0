@@ -1,6 +1,6 @@
 import { models, t, util } from '../common';
 
-export async function getFileInfoResponse(args: {
+export async function getFileInfoHandler(args: {
   db: t.IDb;
   uri: string;
   host: string;

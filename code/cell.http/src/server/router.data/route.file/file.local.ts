@@ -1,6 +1,6 @@
 import { t, util } from '../common';
 
-export async function fileUploadLocalResponse(args: {
+export async function fileUploadLocalHandler(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   path: string;

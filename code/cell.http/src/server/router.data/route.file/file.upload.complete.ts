@@ -1,7 +1,7 @@
 import { defaultValue, ERROR, models, t, time, util } from '../common';
-import { getFileInfoResponse } from './file.info';
+import { getFileInfoHandler } from './file.info';
 
-export async function postFileVerifiedResponse(args: {
+export async function postFileUploadCompleteHandler(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;
@@ -88,7 +88,7 @@ export async function postFileVerifiedResponse(args: {
     console.log('after (verify)', after);
 
     // Finish up.
-    const fileResponse = await getFileInfoResponse({ uri, db, query, host });
+    const fileResponse = await getFileInfoHandler({ uri, db, query, host });
     const fileResponseData = fileResponse.data as t.IResGetFile;
     const res: t.IPayload<t.IResPostFileVerified> = {
       status: fileResponse.status,
