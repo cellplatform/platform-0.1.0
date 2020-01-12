@@ -131,7 +131,7 @@ export async function watchDir(args: {
 
   dir$.subscribe(async e => {
     if (!silent) {
-      logPage(isStarted ? `pending changes` : `starting`);
+      logPage(isStarted ? log.yellow(`pending`) : `starting`);
     }
   });
 
