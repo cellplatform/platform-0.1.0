@@ -47,7 +47,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
     /**
      * Read from the local file-system.
      */
-    async read(uri: string): Promise<t.IFileSystemRead> {
+    async read(uri: string): Promise<t.IFileSystemReadLocal> {
       uri = (uri || '').trim();
       const path = res.resolve(uri).path;
       const location = toLocation(path);
@@ -90,7 +90,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
     /**
      * Write to the local file-system.
      */
-    async write(uri: string, data: Buffer): Promise<t.IFileSystemWrite> {
+    async write(uri: string, data: Buffer): Promise<t.IFileSystemWriteLocal> {
       if (!data) {
         throw new Error(`Cannot write, no data provided.`);
       }
@@ -127,7 +127,7 @@ export function init(args: { root: string }): t.IFileSystemLocal {
     /**
      * Delete from the local file-system.
      */
-    async delete(uri: string | string[]): Promise<t.IFileSystemDelete> {
+    async delete(uri: string | string[]): Promise<t.IFileSystemDeleteLocal> {
       const uris = (Array.isArray(uri) ? uri : [uri]).map(uri => (uri || '').trim());
       const paths = uris.map(uri => res.resolve(uri).path);
       const locations = paths.map(path => toLocation(path));
