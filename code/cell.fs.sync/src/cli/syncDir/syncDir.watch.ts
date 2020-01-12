@@ -67,13 +67,13 @@ export async function watchDir(args: {
 
   const logPage = (status?: string) => {
     log.clear();
-    logHost(status);
-    logHistory();
+    logHost({ status });
+    logHistory({ status });
     log.info();
   };
 
-  const logHost = (status?: string) => {
-    status = status || '<watching>';
+  const logHost = (args: { status?: string } = {}) => {
+    const status = args.status || '<watching>';
     const isSyncing = status?.includes('syncing');
     const uri = config.target.uri;
 
@@ -102,7 +102,9 @@ export async function watchDir(args: {
     logDivider();
   };
 
-  const logHistory = (max: number = 5) => {
+  const logHistory = (args: { max?: number; status?: string } = {}) => {
+    const { max = 5, status } = args;
+    const isSyncing = status?.includes('syncing');
     const items = history.length < max ? history : history.slice(history.length - max);
     if (items.length > 0) {
       const table = log.table({ border: false });
@@ -111,7 +113,7 @@ export async function watchDir(args: {
         item.log = item.log || toHistoryItem(item);
         const createdAt = time.day(item.createdAt).format('hh:mm:ss');
         const number = item.index + 1;
-        const ts = log.gray(`${number} [${isLast ? log.white(createdAt) : createdAt}]`);
+        const ts = `${number} [${isLast && !isSyncing ? log.white(createdAt) : createdAt}]`;
 
         let line = item.log;
         if (!isLast) {
@@ -121,7 +123,7 @@ export async function watchDir(args: {
           line = lines.length < 2 ? line : `${line} ${suffix}`;
         }
 
-        table.add([ts, line]);
+        table.add([log.gray(ts), line]);
       });
       log.info(table.toString());
     }
