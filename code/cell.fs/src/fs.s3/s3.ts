@@ -77,7 +77,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
     /**
      * Read from S3
      */
-    async read(uri: string): Promise<t.IFileSystemRead> {
+    async read(uri: string): Promise<t.IFileSystemReadS3> {
       uri = (uri || '').trim();
       const path = res.resolve(uri).path;
       const key = path.replace(/^\//, '');
@@ -85,7 +85,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
 
       try {
         const res = await cloud.bucket.get({ key });
-        const { status } = res;
+        const { status, etag = '' } = res;
         const ok = util.isOK(status);
         if (!ok || !res.data) {
           const error: t.IFileSystemError = {
@@ -93,7 +93,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
             message: `Failed to read [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { ok, status, location, error };
+          return { ok, status, location, error, 'S3:ETAG': etag };
         } else {
           const file: t.IFileSystemFile = {
             uri,
@@ -106,7 +106,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
               return Uint8Array.from(file.data).length;
             },
           };
-          return { ok, status, location, file };
+          return { ok, status, location, file, 'S3:ETAG': etag };
         }
       } catch (err) {
         const error: t.IFileSystemError = {
@@ -125,7 +125,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       uri: string,
       data: Buffer,
       options: { filename?: string } = {},
-    ): Promise<t.IFileSystemWrite> {
+    ): Promise<t.IFileSystemWriteS3> {
       if (!data) {
         throw new Error(`Cannot write, no data provided.`);
       }
@@ -152,7 +152,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       };
 
       try {
-        // 🌳 NB: All files are stored within a [private] security context.
+        // 🌳 NB: All files are stored within a [PRIVATE] security context.
         //        User's gain access to the file download via temporary access
         //        which is provided via "pre-signed" S3 url generated on
         //        each request.
@@ -165,7 +165,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
           acl,
         });
 
-        const { status } = res;
+        const { status, etag = '' } = res;
         const ok = util.isOK(status);
         const location = res.url || '';
         file.path = res.url ? res.url : file.path;
@@ -176,9 +176,9 @@ export function init(args: IS3Init): t.IFileSystemS3 {
             message: `Failed to write [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { ok, status, location, file, error };
+          return { ok, status, location, file, error, 'S3:ETAG': etag };
         } else {
-          return { ok, status, location, file };
+          return { ok, status, location, file, 'S3:ETAG': etag };
         }
       } catch (err) {
         const error: t.IFileSystemError = {
@@ -193,7 +193,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
     /**
      * Delete from S3.
      */
-    async delete(uri: string | string[]): Promise<t.IFileSystemDelete> {
+    async delete(uri: string | string[]): Promise<t.IFileSystemDeleteS3> {
       const uris = (Array.isArray(uri) ? uri : [uri]).map(uri => (uri || '').trim());
       const paths = uris.map(uri => res.resolve(uri).path);
       const keys = paths.map(path => path.replace(/^\//, ''));

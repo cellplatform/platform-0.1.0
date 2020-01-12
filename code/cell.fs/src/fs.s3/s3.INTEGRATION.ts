@@ -16,13 +16,13 @@ describe('S3 (INTEGRATION)', function() {
     expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.location).to.eql(
-      'https://platform.sfo2.digitaloceanspaces.com/tmp/test/ns.foo/bird',
+      'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/bird',
     );
 
     expect(file.uri).to.eql(uri);
     expect(file.path.startsWith('https://')).to.eql(true);
     expect(file.path).to.contains('digitaloceanspaces.com');
-    expect(file.path).to.contains('tmp/test/ns.foo/bird');
+    expect(file.path).to.contains('tmp/test.cell.fs/ns.foo/bird');
 
     log.info('WRITE', res);
   });
@@ -32,19 +32,22 @@ describe('S3 (INTEGRATION)', function() {
     const fs = util.initS3();
 
     const uri = 'file:foo:bird';
+    const filename = 'bird.png';
+    const png = await util.image(filename);
+    await fs.write(uri, png, { filename });
     const res = await fs.read(uri);
     const file = res.file as t.IFileSystemFile;
 
     expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.location).to.eql(
-      'https://platform.sfo2.digitaloceanspaces.com/tmp/test/ns.foo/bird',
+      'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/bird',
     );
 
     expect(file.uri).to.eql(uri);
     expect(file.path.startsWith('https://')).to.eql(true);
     expect(file.path).to.contains('digitaloceanspaces.com');
-    expect(file.path).to.contains('tmp/test/ns.foo/bird');
+    expect(file.path).to.contains('tmp/test.cell.fs/ns.foo/bird');
 
     log.info('READ', res);
   });
@@ -69,7 +72,7 @@ describe('S3 (INTEGRATION)', function() {
     expect(res3.error).to.eql(undefined);
     expect(res3.locations.length).to.eql(1);
     expect(res3.locations[0]).to.eql(
-      'https://platform.sfo2.digitaloceanspaces.com/tmp/test/ns.foo/bird',
+      'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/bird',
     );
 
     const res4 = await fs.read(uri);
@@ -100,10 +103,10 @@ describe('S3 (INTEGRATION)', function() {
     expect(res.error).to.eql(undefined);
     expect(res.locations.length).to.eql(2);
     expect(res.locations[0]).to.eql(
-      'https://platform.sfo2.digitaloceanspaces.com/tmp/test/ns.foo/bird',
+      'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/bird',
     );
     expect(res.locations[1]).to.eql(
-      'https://platform.sfo2.digitaloceanspaces.com/tmp/test/ns.foo/kitten',
+      'https://platform.sfo2.digitaloceanspaces.com/tmp/test.cell.fs/ns.foo/kitten',
     );
 
     expect((await fs.read(uri1)).status).to.eql(404);
