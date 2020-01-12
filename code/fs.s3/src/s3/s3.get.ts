@@ -1,4 +1,4 @@
-import { AWS, formatTimestamp, t } from '../common';
+import { AWS, formatTimestamp, formatETag, t, defaultValue } from '../common';
 
 /**
  * Read a file from S3.
@@ -16,7 +16,9 @@ export async function get(args: {
     status: 200,
     key,
     modifiedAt: -1,
-    content: { type: '', length: -1 },
+    etag: '',
+    contentType: '',
+    bytes: -1,
     data: undefined,
     get json(): t.Json {
       if (!json) {
@@ -34,7 +36,10 @@ export async function get(args: {
   try {
     const obj = await s3.getObject({ Bucket: bucket, Key: key }).promise();
     response.modifiedAt = formatTimestamp((obj as any).LastModified);
+    response.etag = formatETag(obj.ETag);
     response.data = obj.Body instanceof Buffer ? obj.Body : undefined;
+    response.contentType = obj.ContentType || '';
+    response.bytes = defaultValue(obj.ContentLength, -1);
   } catch (err) {
     const error = new Error(err.code);
     response.status = err.statusCode;

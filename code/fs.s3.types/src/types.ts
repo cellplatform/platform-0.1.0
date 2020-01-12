@@ -77,9 +77,10 @@ export type S3GetResponse = {
   status: number;
   key: string;
   modifiedAt: number;
-  etag?: string;
+  etag: string;
   error?: Error;
-  content: { type: string; length: number };
+  contentType: string;
+  bytes: number;
   data?: Buffer;
   json: Json;
 };
