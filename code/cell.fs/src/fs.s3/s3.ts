@@ -1,4 +1,4 @@
-import { t, fs, path, sha256, util } from '../common';
+import { t, fs, path, sha256, util, toMimetype } from '../common';
 
 export * from '../types';
 export type IS3Init = t.S3Config & { root: string };
@@ -131,7 +131,7 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       }
 
       const { filename } = options;
-      const contentType = filename ? cloud.s3.toMimetype(filename) : undefined;
+      const contentType = filename ? toMimetype(filename) : undefined;
       const contentDisposition = filename ? `inline; filename="${filename}"` : undefined;
 
       uri = (uri || '').trim();

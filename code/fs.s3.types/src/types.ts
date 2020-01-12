@@ -18,7 +18,6 @@ export type S3StorageClass =
   | 'DEEP_ARCHIVE';
 
 export type S3 = {
-  toMimetype(key: string, defaultType?: string): string;
   endpoint: string;
   url(bucket: string, path?: string): S3Url;
   list(args: { bucket: string; prefix?: string; max?: number }): S3List;

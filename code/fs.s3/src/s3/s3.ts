@@ -1,9 +1,9 @@
-import { AWS, t, toMimetype, util } from '../common';
+import { AWS, t, util } from '../common';
 import { deleteMany, deleteOne } from './s3.delete';
 import { get } from './s3.get';
 import { list } from './s3.list';
-import { put } from './s3.put';
 import { post } from './s3.post';
+import { put } from './s3.put';
 
 export * from './s3.get';
 export * from './s3.put';
@@ -18,7 +18,6 @@ export function init(args: t.S3Config): t.S3 {
   });
 
   const res: t.S3 = {
-    toMimetype,
     endpoint,
 
     url(bucket: string, path?: string) {
