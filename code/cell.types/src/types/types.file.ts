@@ -28,7 +28,8 @@ export type IFileIntegrity = {
   ok: boolean | null;
   exists: boolean | null; // File verified to exist on storage media.
   status: FileIntegrityStatus;
-  filehash: string;
+  filehash?: string;
+  'S3:ETAG'?: string;
   verifiedAt: number;
   uploadedAt: number;
   uploadExpiresAt?: number;

@@ -39,10 +39,18 @@ export async function postFileVerifiedResponse(args: {
         ...((after.integrity || {}) as t.IFileIntegrity),
         ok: null,
         exists,
-        filehash: file?.hash || '',
+        filehash: file?.hash,
         uploadedAt: now,
         verifiedAt: now,
       };
+
+      // If the response came from S3 then store the "etag".
+      if (fs.type === 'S3') {
+        const s3Response = readResponse as t.IFileSystemReadS3;
+        if (s3Response['S3:ETAG']) {
+          after.integrity['S3:ETAG'] = s3Response['S3:ETAG'];
+        }
+      }
     }
 
     // Perform verification.
