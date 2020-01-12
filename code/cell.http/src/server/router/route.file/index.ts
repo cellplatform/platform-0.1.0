@@ -5,7 +5,7 @@ import * as file from './file';
 
 export { getFileInfoResponse } from './file.info';
 export { getFileDownloadResponse } from './file.download';
-export { postFileResponse } from './file.post';
+export { postFileResponse } from './file.upload';
 export { postFileVerifiedResponse } from './file.verify';
 export { deleteFileResponse } from './file.delete';
 

@@ -152,30 +152,18 @@ export function init(args: IS3Init): t.IFileSystemS3 {
       };
 
       try {
+        // 🌳 NB: All files are stored within a [private] security context.
+        //        User's gain access to the file download via temporary access
+        //        which is provided via "pre-signed" S3 url generated on
+        //        each request.
+        const acl: t.S3Permissions = 'private';
         const res = await cloud.bucket.put({
           contentType,
           contentDisposition,
           data: file.data,
           key,
-          acl: 'public-read', // TODO - S3 Access Control 🐷
+          acl,
         });
-
-        // const f = cloud.bucket.post({
-        //   contentType,
-        //   contentDisposition,
-        //   // data: file.data,
-        //   key,
-        //   acl: 'public-read', // TODO - S3 Access Control 🐷
-        // });
-
-        // console.log('-------------------------------------------');
-        // console.log('f', f);
-        // const res2 = await f.send(file.data);
-        // console.log('res2', res2);
-
-        /**
-         * TODO - Delete sample code 🐷
-         */
 
         const { status } = res;
         const ok = util.isOK(status);
