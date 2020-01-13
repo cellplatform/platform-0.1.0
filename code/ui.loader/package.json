@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.loader",
-  "version": "0.2.23",
+  "version": "0.2.25",
   "description": "Bootstrapper for progressively loading UI modules dynamically.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,12 +19,12 @@
     "deploy": "cd src.server && yarn deploy"
   },
   "dependencies": {
-    "@platform/react": "0.3.43",
-    "@platform/util.value": "0.6.11"
+    "@platform/react": "0.3.45",
+    "@platform/util.value": "0.6.13"
   },
   "devDependencies": {
-    "@platform/test": "0.1.0",
-    "@platform/ts": "3.7.7",
+    "@platform/test": "0.1.2",
+    "@platform/ts": "3.7.9",
     "@uiharness/dev": "0.9.10",
     "@uiharness/ui": "0.6.21"
   },

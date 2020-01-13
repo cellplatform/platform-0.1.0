@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.value",
-  "version": "0.6.11",
+  "version": "0.6.13",
   "description": "Helpers for working with, transforming, and formatting values.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,16 +13,16 @@
   },
   "dependencies": {
     "@platform/libs": "0.1.5",
-    "@platform/types": "0.3.3",
-    "@platform/util.is": "0.0.104",
+    "@platform/types": "0.3.5",
+    "@platform/util.is": "0.0.106",
     "@types/semver": "6.2.0",
-    "cuid": "2.1.6",
-    "dayjs": "1.8.17",
-    "semver": "6.3.0"
+    "cuid": "2.1.8",
+    "dayjs": "1.8.19",
+    "semver": "7.1.1"
   },
   "devDependencies": {
-    "@platform/test": "0.1.0",
-    "@platform/ts": "3.7.7"
+    "@platform/test": "0.1.2",
+    "@platform/ts": "3.7.9"
   },
   "files": [
     "lib"

@@ -1,6 +1,6 @@
 {
   "name": "@platform/graphql",
-  "version": "0.2.72",
+  "version": "0.2.74",
   "description": "Tools for working with GraphQL.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,10 +16,10 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/http": "0.9.5",
+    "@platform/http": "0.9.7",
     "@platform/libs": "0.1.5",
-    "apollo-cache-inmemory": "1.6.3",
-    "apollo-client": "2.6.4",
+    "apollo-cache-inmemory": "1.6.5",
+    "apollo-client": "2.6.8",
     "apollo-link": "1.2.13",
     "apollo-link-batch-http": "1.2.13",
     "apollo-link-error": "1.1.12",
@@ -28,11 +28,11 @@
     "graphql-tag": "2.10.1"
   },
   "devDependencies": {
-    "@platform/test": "0.1.0",
+    "@platform/test": "0.1.2",
     "@uiharness/dev": "0.9.10",
     "@uiharness/ui": "0.6.21",
-    "apollo-server-micro": "2.9.13",
-    "electron": "7.1.5"
+    "apollo-server-micro": "2.9.16",
+    "electron": "7.1.8"
   },
   "files": [
     "lib"

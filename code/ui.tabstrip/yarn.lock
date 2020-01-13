@@ -1712,14 +1712,14 @@
     glamor "2.20.40"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.1.57":
-  version "0.1.57"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.57.tgz#822b309e387c84c9f37cfed4a892ad6dbc3b01fe"
-  integrity sha512-jjBsvCE9qLjJtYBlKyJG3eSKKTVwRiz8J20Kwj3dw/++1s/XMogI08hd7u3cZhuNwfVD+WLNDcOB3c9B6gvM7g==
+"@platform/css@0.1.59":
+  version "0.1.59"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.1.59.tgz#e1450f6a005a7f4148ec4b248e6bf6dab89e0b63"
+  integrity sha512-7fNRKJSmNu8a2cIV/hoXPfL6+AtiIyEZ1uI9kfqemwtPLQWqr081lsyu+p4NG07z8l8gRqu2PaLRsZJ9zXibQw==
   dependencies:
     "@platform/libs" "0.1.5"
-    "@platform/util.is" "0.0.104"
-    "@platform/util.value" "0.6.11"
+    "@platform/util.is" "0.0.106"
+    "@platform/util.value" "0.6.13"
     "@types/tinycolor2" "1.4.2"
     glamor "2.20.40"
     tinycolor2 "1.4.1"
@@ -1831,14 +1831,14 @@
     react "16.12.0"
     react-dom "16.12.0"
 
-"@platform/react@0.3.43":
-  version "0.3.43"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.43.tgz#e624f7ad5a49922b63f931dfdd6d3c921d9f9aa0"
-  integrity sha512-YAn6rivvxn+3T4etK28uL02B6a+wLpd5C+3QdW6+zTAOw5O6S2i1CGF3xLQKNtslCdc1F5lz8gU5nM7w8BqJGA==
+"@platform/react@0.3.45":
+  version "0.3.45"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.45.tgz#231f80d67f14a25550ddff70bd40784e5f97c179"
+  integrity sha512-Hfc4RUmAq5mf9ZJ3eZaWjD+CRnyJ67NZI52xZo1FK8KSr6fzf7elubDDYtXIikwzHlfMqslmCQ9nYJblvQg+9A==
   dependencies:
-    "@platform/css" "0.1.57"
-    "@platform/util.is" "0.0.104"
-    "@types/react" "16.9.16"
+    "@platform/css" "0.1.59"
+    "@platform/util.is" "0.0.106"
+    "@types/react" "16.9.17"
     "@types/react-dom" "16.9.4"
     react "16.12.0"
     react-dom "16.12.0"
@@ -1877,10 +1877,10 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.2.1.tgz#77af2af211e7f58471573120a7105eef593663f1"
   integrity sha512-kxzPnUpx0LTU92q2eHFUMt6BZ05+Cs3twEVqTpKqTzzgHwlBWTOB3hZB2k30wPUDfoFqyE6qaumSABJJDJPlSw==
 
-"@platform/types@0.3.3":
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.3.3.tgz#3d8f2eecaa84a54357647f48ceef3a3b24855aa7"
-  integrity sha512-wIupgZo9hhKd9ATEoKX32ZZDarBOhxIej7+bVo/wgr9spaPbqcAOBQos69WsKs6Vh1dA5Uv/NsJNlAnldr7UpQ==
+"@platform/types@0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.3.5.tgz#9d6c08cd1eeeb049b19914c5cafdfc3ed68fc054"
+  integrity sha512-PueDaq8rTACDCGGo9UCklSBXgCDFWN3rRV3Vs8xybL7lrQuVsmRsG9ZRg+MTVz+UekQbCtj1yJHi1I8aaHdO5g==
 
 "@platform/ui.icon@0.0.98":
   version "0.0.98"
@@ -1942,10 +1942,10 @@
     "@platform/libs" "0.1.5"
     dynamics.js "1.1.5"
 
-"@platform/util.is@0.0.104":
-  version "0.0.104"
-  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.104.tgz#311e0584f819dc2e5665c4fd3a15cfc7b8aafc7f"
-  integrity sha512-hPwXjkTtD02kGKrfKbwKKguLOFaBOZhv/k3X8npP8EyiIOSQm65jsXNsPFcdp/xhSMdsQD/BMBELkXsH2gva8A==
+"@platform/util.is@0.0.106":
+  version "0.0.106"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.106.tgz#95d79ca3ba69dec1a8db49a5aa02e7d3a3161db1"
+  integrity sha512-9gIU2DLsb1LyxCSko0riENpxV58/j2rLHLotnKQdsHCcf6eohr1ObhPRwEuJz+Kw1Fucz+oh50RGmAVYescZFw==
 
 "@platform/util.is@0.0.99":
   version "0.0.99"
@@ -1982,18 +1982,18 @@
     dayjs "1.8.17"
     semver "6.3.0"
 
-"@platform/util.value@0.6.11":
-  version "0.6.11"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.6.11.tgz#523e17ceb3a7182da0265e03294c25c73a2fae27"
-  integrity sha512-JeUhiTjhrHdOdNfdwhRzAok62MN++ePXog6q012cGtqsTQmQi+cihbcVbHuBReEoP+JlrgxIE/ANu2AcYWyBZw==
+"@platform/util.value@0.6.13":
+  version "0.6.13"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.6.13.tgz#2893a2ba58ac16ce127aff6dca598a66e5a2d4b0"
+  integrity sha512-J140Yjds4fEqshApviGgnn5R/BnSY2WBKlqe+scxpSNu17bxby7YRbeiTg2eAOBZwZCuvCRtg3ARZbAwwumIKg==
   dependencies:
     "@platform/libs" "0.1.5"
-    "@platform/types" "0.3.3"
-    "@platform/util.is" "0.0.104"
+    "@platform/types" "0.3.5"
+    "@platform/util.is" "0.0.106"
     "@types/semver" "6.2.0"
-    cuid "2.1.6"
-    dayjs "1.8.17"
-    semver "6.3.0"
+    cuid "2.1.8"
+    dayjs "1.8.19"
+    semver "7.1.1"
 
 "@platform/util.value@0.6.2":
   version "0.6.2"
@@ -2139,10 +2139,10 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/react@16.9.16":
-  version "16.9.16"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.16.tgz#4f12515707148b1f53a8eaa4341dae5dfefb066d"
-  integrity sha512-dQ3wlehuBbYlfvRXfF5G+5TbZF3xqgkikK7DWAsQXe2KnzV+kjD4W2ea+ThCrKASZn9h98bjjPzoTYzfRqyBkw==
+"@types/react@16.9.17":
+  version "16.9.17"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.17.tgz#58f0cc0e9ec2425d1441dd7b623421a867aa253e"
+  integrity sha512-UP27In4fp4sWF5JgyV6pwVPAQM83Fj76JOcg02X5BZcpSu5Wx+fP9RMqc2v0ssBoQIFvD5JdKY41gjJJKmw6Bg==
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -3790,6 +3790,11 @@ cuid@2.1.6:
   resolved "https://registry.yarnpkg.com/cuid/-/cuid-2.1.6.tgz#dc3a20b5a7497d36d32c0bf8a2997524c9c796c4"
   integrity sha512-ZFp7PS6cSYMJNch9fc3tyHdE4T8TDo3Y5qAxb0KSA9mpiYDo7z9ql1CznFuuzxea9STVIDy0tJWm2lYiX2ZU1Q==
 
+cuid@2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/cuid/-/cuid-2.1.8.tgz#cbb88f954171e0d5747606c0139fb65c5101eac0"
+  integrity sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==
+
 dashdash@^1.12.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
@@ -3820,6 +3825,11 @@ dayjs@1.8.17:
   version "1.8.17"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.17.tgz#53ec413f2a7b02afbea1846d61bb260fa8567cea"
   integrity sha512-47VY/htqYqr9GHd7HW/h56PpQzRBSJcxIQFwqL3P20bMF/3az5c3PWdVY3LmPXFl6cQCYHL7c79b9ov+2bOBbw==
+
+dayjs@1.8.19:
+  version "1.8.19"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.19.tgz#5117dc390d8f8e586d53891dbff3fa308f51abfe"
+  integrity sha512-7kqOoj3oQSmqbvtvGFLU5iYqies+SqUiEGNT0UtUPPxcPYgY1BrkXR0Cq2R9HYSimBXN+xHkEN4Hi399W+Ovlg==
 
 deasync@^0.1.14:
   version "0.1.15"
@@ -7951,6 +7961,11 @@ semver@6.3.0, semver@^6.2.0, semver@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.0.tgz#ee0a64c8af5e8ceea67687b133761e1becbd1d3d"
   integrity sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
+
+semver@7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.1.1.tgz#29104598a197d6cbe4733eeecbe968f7b43a9667"
+  integrity sha512-WfuG+fl6eh3eZ2qAf6goB7nhiCd7NPXhmyFxigB/TOkQyeLP8w8GsVehvtGNtnNmyboz4TgeK40B1Kbql/8c5A==
 
 send@0.17.1:
   version "0.17.1"
