@@ -9,12 +9,12 @@ export type IDirArgs = {
 };
 
 export const init: t.CliInit = cli => {
-  const handler: t.CmdPluginHandler<IDirArgs> = async args => {
+  const handler: t.CmdPluginHandler<IDirArgs> = async argv => {
     await dir({
       dir: process.cwd(),
-      configure: args.configure,
-      local: args.local,
-      remote: args.remote,
+      configure: argv.configure,
+      local: argv.local,
+      remote: argv.remote,
     });
   };
 
