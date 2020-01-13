@@ -1,37 +1,40 @@
-export type CliInit = (app: ICliApp) => ICliApp;
+export type CliInit = (app: ICmdPlugins) => ICmdPlugins;
 
-export type ICliApp = {
-  commands: ICliCommand[];
-  command<T extends object = {}>(cmd: ICliCommandArgs<T>): ICliCommandResponse;
+/**
+ * CLI Plugins
+ */
+
+export type ICmdPlugins = {
+  commands: ICmdPlugin[];
+  command<T extends object = {}>(cmd: ICmdPluginCommandArgs<T>): ICmdPluginResponse;
   run(): void;
 };
 
-export type ICliCommandArgs<T extends object = {}> = {
+export type ICmdPluginCommandArgs<T extends object = {}> = {
   name: string;
   description: string;
   alias?: string;
-  handler: CommandHandler<T>;
+  handler: CmdPluginHandler<T>;
+};
+export type ICmdPlugin = ICmdPluginCommandArgs & {
+  options: Array<ICmdPluginOption<any>>;
 };
 
-export type CommandHandler<T extends object = {}> = (args: T) => Promise<any>;
+export type CmdPluginHandler<T extends object = {}> = (args: T) => Promise<any>;
 
-export type ICliCommand = ICliCommandArgs & {
-  options: Array<ICliOption<any>>;
+export type ICmdPluginResponse = ICmdPlugin & {
+  option<T extends keyof ICmdPluginType>(args: ICmdPluginOption<T>): ICmdPluginResponse;
 };
 
-export type ICliCommandResponse = ICliCommand & {
-  option<T extends keyof ICliOptionType>(args: ICliOption<T>): ICliCommandResponse;
-};
-
-export type ICliOption<T extends keyof ICliOptionType> = {
+export type ICmdPluginOption<T extends keyof ICmdPluginType> = {
   name: string;
   description: string;
   alias?: string;
   type: T;
-  default: ICliOptionType[T];
+  default: ICmdPluginType[T];
 };
 
-export type ICliOptionType = {
+export type ICmdPluginType = {
   boolean: boolean;
   string: string;
   number: number;

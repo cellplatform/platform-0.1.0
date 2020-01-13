@@ -1,4 +1,7 @@
-import { log, yargs, t } from '../common';
+import { Subject } from 'rxjs';
+import { share } from 'rxjs/operators';
+
+import { log, t, yargs } from '../common';
 import { tasks } from '../tasks';
 
 export { tasks };
@@ -33,6 +36,22 @@ export function create(name: string) {
   const COMMAND = log.cyan('<command>');
   const OPTIONS = log.gray('[options]');
 
+  const events$ = new Subject<t.CmdAppEvent>();
+  const fire = (e: t.CmdAppEvent) => events$.next(e);
+
+  const showHelp = (argv: t.ICmdArgv) => {
+    fire({ type: 'CLI/showHelp', payload: { stage: 'BEFORE', argv } });
+    program.showHelp();
+    fire({ type: 'CLI/showHelp', payload: { stage: 'AFTER', argv } });
+  };
+
+  const exit = (code: number) => {
+    const ok = code === 0;
+    fire({ type: 'CLI/exit', payload: { ok, code } });
+    log.info();
+    process.exit(code);
+  };
+
   const program = yargs
     // Setup command header.
     .scriptName('')
@@ -40,11 +59,12 @@ export function create(name: string) {
 
   const { command, option } = program;
 
-  const api: t.IApp = {
+  const api: t.ICmdApp = {
     program,
     command,
     option,
     exit,
+    events$: events$.pipe(share()),
     task(title: string, task: t.Task) {
       return tasks().task(title, task);
     },
@@ -54,19 +74,11 @@ export function create(name: string) {
     run() {
       const argv = program.argv;
       if (!argv._[0]) {
-        program.showHelp();
+        showHelp(argv);
         exit(0);
       }
     },
   };
 
   return api;
-}
-
-/**
- * Exits with the given code.
- */
-export function exit(code: number) {
-  log.info();
-  process.exit(code);
 }
