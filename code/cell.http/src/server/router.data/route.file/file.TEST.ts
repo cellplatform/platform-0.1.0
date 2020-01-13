@@ -24,6 +24,20 @@ export const testPostFile = async (args: {
     }
   }
 
+  // const clientCell = mock.client.cell('cell:foo!A1');
+  // const paths = (Array.isArray(args.source)
+  //   ? args.source
+  //   : [args.source].filter(m => Boolean(m))) as string[];
+  // const files = await Promise.all(
+  //   paths.map(async path => {
+  //     const filename = fs.basename(path);
+  //     const data = await fs.readFile(fs.resolve(path));
+  //     const res: t.IClientCellFileUpload = { filename, data };
+  //     return res;
+  //   }),
+  // );
+  // const res = await clientCell.files.upload(files);
+
   // POST to the service.
   let url = mock.url(uri);
   url = args.queryString ? `${url}?${args.queryString || ''}` : url;
