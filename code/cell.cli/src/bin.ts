@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { cli } from '.';
+import { log, chalk } from './common';
 
 /**
  * Makes the script crash on unhandled rejections instead of silently
@@ -14,7 +16,6 @@ process.on('unhandledRejection', err => {
  * and register commands from the various modules
  * within Cell/OS that expose a CLI/API.
  */
-import { cli } from '.';
 export const app = cli.init();
 
 /**
@@ -26,4 +27,6 @@ fsSync.init(app);
 /**
  * Run the application.
  */
+log.info(chalk.bgCyan.black(` CellOS `));
+log.info();
 app.run();
