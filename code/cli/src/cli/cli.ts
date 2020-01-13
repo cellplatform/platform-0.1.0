@@ -3,10 +3,11 @@ import { share } from 'rxjs/operators';
 
 import { log, t, yargs } from '../common';
 import { tasks } from '../tasks';
+import { initKeyboard } from './cli.keyboard';
+import { init as initPlugins } from './cli.plugins';
 
 export { tasks };
 export { fs, exec, inquirer, yargs, log, Listr, prompt } from '../common';
-import { initKeyboardEvents } from './cli.keyboard';
 export * from '../types';
 
 /**
@@ -32,13 +33,14 @@ export function task(title: string, task: t.Task) {
  *    https://devhints.io/yargs
  *
  */
-export function create(name: string, options: { keyboardEvents?: boolean } = {}) {
+export function create(name: string) {
   const SCRIPT = log.magenta(name);
   const COMMAND = log.cyan('<command>');
   const OPTIONS = log.gray('[options]');
 
-  const events$ = new Subject<t.CmdAppEvent>();
-  const fire: t.FireEvent = e => events$.next(e);
+  const _events$ = new Subject<t.CmdAppEvent>();
+  const events$ = _events$.pipe(share());
+  const fire: t.FireEvent = e => _events$.next(e);
 
   const showHelp = (argv: t.ICmdArgv) => {
     const payload = { argv };
@@ -47,16 +49,12 @@ export function create(name: string, options: { keyboardEvents?: boolean } = {})
     fire({ type: 'CLI/showHelp/after', payload });
   };
 
-  const exit: t.Exit = code => {
+  const exit: t.CmdAppExit = code => {
     const ok = code === 0;
     fire({ type: 'CLI/exit', payload: { ok, code } });
     log.info();
     process.exit(code);
   };
-
-  if (options.keyboardEvents) {
-    initKeyboardEvents({ fire, exit });
-  }
 
   const program = yargs
     // Setup command header.
@@ -64,12 +62,21 @@ export function create(name: string, options: { keyboardEvents?: boolean } = {})
     .usage(`${'Usage:'} ${SCRIPT} ${COMMAND} ${OPTIONS}`);
 
   const { command, option } = program;
-  const api: t.ICmdApp = {
+  let plugins: undefined | t.ICmdPlugins;
+  let keyboard: undefined | t.ICmdKeyboard;
+
+  const cli: t.ICmdApp = {
     program,
     command,
     option,
     exit,
-    events$: events$.pipe(share()),
+    events$,
+    get plugins() {
+      return plugins || (plugins = initPlugins({ cli, events$, exit }));
+    },
+    get keyboard() {
+      return keyboard || (keyboard = initKeyboard({ fire, events$, exit }));
+    },
     task(title: string, task: t.Task) {
       return tasks().task(title, task);
     },
@@ -85,5 +92,5 @@ export function create(name: string, options: { keyboardEvents?: boolean } = {})
     },
   };
 
-  return api;
+  return cli;
 }
