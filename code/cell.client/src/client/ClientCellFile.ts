@@ -1,6 +1,6 @@
-import { ERROR, http, Schema, t, util } from '../common';
+import { ERROR, Schema, t, util } from '../common';
 
-export type IClientCellFileArgs = { parent: t.IClientCell; urls: t.IUrls };
+export type IClientCellFileArgs = { parent: t.IClientCell; urls: t.IUrls; http: t.IHttp };
 
 /**
  * HTTP client for operating on files associated with a [Cell].
@@ -26,6 +26,7 @@ export class ClientCellFile implements t.IClientCellFile {
    * [Methods]
    */
   public name(filename: string) {
+    const http = this.args.http;
     const self = this;
     const parent = this.args.parent;
     return {
@@ -46,6 +47,7 @@ export class ClientCellFile implements t.IClientCellFile {
         const url = self.args.urls.file(link.uri).info;
 
         // Call the service.
+
         const res = await http.get(url.toString());
         return util.toResponse<t.IResGetFile>(res);
       },

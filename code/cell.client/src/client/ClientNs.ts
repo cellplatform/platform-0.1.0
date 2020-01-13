@@ -1,7 +1,6 @@
-import { t, Uri, Schema } from '../common';
-import { ClientFile } from './ClientFile';
+import { t, Uri } from '../common';
 
-export type IClientNsArgs = { uri: string; urls: t.IUrls };
+export type IClientNsArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
 
 /**
  * HTTP client for operating on a [Namespace].

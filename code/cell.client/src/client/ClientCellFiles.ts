@@ -1,6 +1,6 @@
-import { ERROR, http, Schema, t, util, FormData } from '../common';
+import { ERROR, FormData, Schema, t, util } from '../common';
 
-export type IClientCellFilesArgs = { parent: t.IClientCell; urls: t.IUrls };
+export type IClientCellFilesArgs = { parent: t.IClientCell; urls: t.IUrls; http: t.IHttp };
 
 /**
  * HTTP client for operating on a [Cell]'s files.
@@ -27,6 +27,7 @@ export class ClientCellFiles implements t.IClientCellFiles {
    */
   public async map() {
     type T = t.IClientResponse<t.IFileMap>;
+    const http = this.args.http;
     const parent = this.args.parent;
     const url = parent.url.files.list.toString();
 
@@ -72,6 +73,7 @@ export class ClientCellFiles implements t.IClientCellFiles {
   }
 
   public async upload(input: t.IClientCellFileUpload | t.IClientCellFileUpload[]) {
+    const http = this.args.http;
     const parent = this.args.parent;
     const files = Array.isArray(input) ? input : [input];
 
@@ -174,12 +176,15 @@ export class ClientCellFiles implements t.IClientCellFiles {
 
   public async delete(filename: string | string[]) {
     const urls = this.args.parent.url;
-    return deleteFiles({ urls, filename, action: 'DELETE' });
+    const http = this.args.http;
+    return deleteFiles({ http, urls, filename, action: 'DELETE' });
   }
 
   public async unlink(filename: string | string[]) {
     const urls = this.args.parent.url;
-    return deleteFiles({ urls, filename, action: 'UNLINK' });
+    const http = this.args.http;
+
+    return deleteFiles({ http, urls, filename, action: 'UNLINK' });
   }
 }
 
@@ -191,8 +196,9 @@ export async function deleteFiles(args: {
   urls: t.IUrlsCell;
   action: t.IReqDeleteCellFilesBody['action'];
   filename: string | string[];
+  http: t.IHttp;
 }) {
-  const { urls, action, filename } = args;
+  const { urls, action, filename, http } = args;
   const filenames = Array.isArray(filename) ? filename : [filename];
   const body: t.IReqDeleteCellFilesBody = { filenames, action };
   const url = urls.files.delete;

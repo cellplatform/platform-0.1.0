@@ -1,7 +1,7 @@
-import { t, Uri, Schema } from '../common';
+import { Schema, t, Uri } from '../common';
 import { ClientFile } from './ClientFile';
 
-export type IClientCellLinksArgs = { links: t.ICellData['links']; urls: t.IUrls };
+export type IClientCellLinksArgs = { links: t.ICellData['links']; urls: t.IUrls; http: t.IHttp };
 
 /**
  * HTTP client for operating on a [Cell]'s links.
@@ -47,7 +47,7 @@ export class ClientCellLinks implements t.IClientCellLinks {
    * Helpers
    */
   private toLink(key: string, value: string): t.IClientCellLink {
-    const urls = this.args.urls;
+    const { http, urls } = this.args;
     const uri = Uri.parse(value);
     const type = uri.parts.type;
 
@@ -64,7 +64,7 @@ export class ClientCellLinks implements t.IClientCellLinks {
         path,
         hash,
         get file() {
-          return file || (file = ClientFile.create({ uri, urls }));
+          return file || (file = ClientFile.create({ uri, urls, http }));
         },
       };
       return res;

@@ -1,9 +1,9 @@
-import { Schema, Urls, t, Uri, FormData, http, ERROR, util } from '../common';
-import { ClientCellLinks } from './ClientCellLinks';
+import { t, Uri, util } from '../common';
 import { ClientCellFile } from './ClientCellFile';
 import { ClientCellFiles } from './ClientCellFiles';
+import { ClientCellLinks } from './ClientCellLinks';
 
-export type IClientCellArgs = { uri: string; urls: t.IUrls };
+export type IClientCellArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
 
 /**
  * An HTTP client for operating on [Cell]'s.
@@ -38,12 +38,14 @@ export class ClientCell implements t.IClientCell {
    */
   public get file(): t.IClientCellFile {
     const urls = this.args.urls;
-    return this._file || (this._file = ClientCellFile.create({ parent: this, urls }));
+    const http = this.args.http;
+    return this._file || (this._file = ClientCellFile.create({ parent: this, urls, http }));
   }
 
   public get files(): t.IClientCellFiles {
     const urls = this.args.urls;
-    return this._files || (this._files = ClientCellFiles.create({ parent: this, urls }));
+    const http = this.args.http;
+    return this._files || (this._files = ClientCellFiles.create({ parent: this, urls, http }));
   }
 
   /**
@@ -54,6 +56,7 @@ export class ClientCell implements t.IClientCell {
   }
 
   public async info() {
+    const http = this.args.http;
     const url = this.url.info;
     const res = await http.get(url.toString());
     return util.toResponse<t.IResGetCell>(res);
@@ -67,10 +70,11 @@ export class ClientCell implements t.IClientCell {
       return util.toError(info.status, info.error.type, message) as T;
     }
 
+    const http = this.args.http;
     const cell = info.body.data;
     const links = cell.links || {};
     const urls = this.args.urls;
-    const body = ClientCellLinks.create({ links, urls });
+    const body = ClientCellLinks.create({ links, urls, http });
 
     const res: T = { ok: true, status: 200, body };
     return res;

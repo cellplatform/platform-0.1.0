@@ -1,6 +1,6 @@
-import { FormData, t, Uri, http, util } from '../common';
+import { FormData, t, Uri, util } from '../common';
 
-export type IClientFileArgs = { uri: string; urls: t.IUrls };
+export type IClientFileArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
 
 /**
  * HTTP client for operating on files.
@@ -36,6 +36,7 @@ export class ClientFile implements t.IClientFile {
   }
 
   public async info() {
+    const http = this.args.http;
     const url = this.url.info;
     const res = await http.get(url.toString());
     return util.toResponse<t.IResGetFile>(res);
@@ -49,6 +50,7 @@ export class ClientFile implements t.IClientFile {
    */
 
   public async upload(args: { filename: string; data: ArrayBuffer }) {
+    const http = this.args.http;
     const { filename, data } = args;
 
     // Prepare the form data.
@@ -68,6 +70,7 @@ export class ClientFile implements t.IClientFile {
   }
 
   public async delete() {
+    const http = this.args.http;
     const url = this.url.delete;
     const res = await http.delete(url.toString());
     return util.toResponse<t.IResDeleteFile>(res);
