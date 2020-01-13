@@ -19,13 +19,24 @@ export type ICmdApp = {
 /**
  * EVENTS
  */
-export type CmdAppEvent = ICmdAppExitEvent | ICmdAppShowHelpEvent;
+export type CmdAppEvent =
+  | ICmdAppExitEvent
+  | ICmdAppShowHelpBeforeEvent
+  | ICmdAppShowHelpAfterEvent
+  | ICmdAppKeyboardEvent;
 
 export type ICmdAppExitEvent = { type: 'CLI/exit'; payload: ICmdAppExit };
 export type ICmdAppExit = { ok: boolean; code: number };
 
-export type ICmdAppShowHelpEvent = { type: 'CLI/showHelp'; payload: ICmdAppShowHelp };
-export type ICmdAppShowHelp = {
-  stage: 'BEFORE' | 'AFTER';
-  argv: ICmdArgv<{}>;
+export type ICmdAppShowHelpBeforeEvent = { type: 'CLI/showHelp/before'; payload: ICmdAppShowHelp };
+export type ICmdAppShowHelpAfterEvent = { type: 'CLI/showHelp/after'; payload: ICmdAppShowHelp };
+export type ICmdAppShowHelp = { argv: ICmdArgv<{}> };
+
+export type ICmdAppKeyboardEvent = { type: 'CLI/keyboard'; payload: ICmdAppKeyboard };
+export type ICmdAppKeyboard = {
+  sequence: string;
+  key: string;
+  ctrl: boolean;
+  meta: boolean;
+  shift: boolean;
 };

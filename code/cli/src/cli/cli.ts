@@ -6,6 +6,7 @@ import { tasks } from '../tasks';
 
 export { tasks };
 export { fs, exec, inquirer, yargs, log, Listr, prompt } from '../common';
+import { initKeyboardEvents } from './cli.keyboard';
 export * from '../types';
 
 /**
@@ -31,26 +32,31 @@ export function task(title: string, task: t.Task) {
  *    https://devhints.io/yargs
  *
  */
-export function create(name: string) {
+export function create(name: string, options: { keyboardEvents?: boolean } = {}) {
   const SCRIPT = log.magenta(name);
   const COMMAND = log.cyan('<command>');
   const OPTIONS = log.gray('[options]');
 
   const events$ = new Subject<t.CmdAppEvent>();
-  const fire = (e: t.CmdAppEvent) => events$.next(e);
+  const fire: t.FireEvent = e => events$.next(e);
 
   const showHelp = (argv: t.ICmdArgv) => {
-    fire({ type: 'CLI/showHelp', payload: { stage: 'BEFORE', argv } });
+    const payload = { argv };
+    fire({ type: 'CLI/showHelp/before', payload });
     program.showHelp();
-    fire({ type: 'CLI/showHelp', payload: { stage: 'AFTER', argv } });
+    fire({ type: 'CLI/showHelp/after', payload });
   };
 
-  const exit = (code: number) => {
+  const exit: t.Exit = code => {
     const ok = code === 0;
     fire({ type: 'CLI/exit', payload: { ok, code } });
     log.info();
     process.exit(code);
   };
+
+  if (options.keyboardEvents) {
+    initKeyboardEvents({ fire, exit });
+  }
 
   const program = yargs
     // Setup command header.
@@ -58,7 +64,6 @@ export function create(name: string) {
     .usage(`${'Usage:'} ${SCRIPT} ${COMMAND} ${OPTIONS}`);
 
   const { command, option } = program;
-
   const api: t.ICmdApp = {
     program,
     command,
