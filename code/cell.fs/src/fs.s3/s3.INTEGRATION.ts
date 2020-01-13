@@ -1,11 +1,13 @@
 import { t, expect, util, log } from '../test';
 
+const initS3 = () => util.initS3({ path: 'platform/tmp/test.cell.fs' });
+
 describe('S3 (INTEGRATION)', function() {
   this.timeout(900000);
 
   it('write', async () => {
     await util.reset();
-    const fs = util.initS3();
+    const fs = initS3();
 
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
@@ -29,7 +31,7 @@ describe('S3 (INTEGRATION)', function() {
 
   it('read', async () => {
     await util.reset();
-    const fs = util.initS3();
+    const fs = initS3();
 
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
@@ -54,7 +56,7 @@ describe('S3 (INTEGRATION)', function() {
 
   it('delete (one)', async () => {
     await util.reset();
-    const fs = util.initS3();
+    const fs = initS3();
 
     const uri = 'file:foo:bird';
     const filename = 'bird.png';
@@ -82,7 +84,7 @@ describe('S3 (INTEGRATION)', function() {
 
   it('delete (many)', async () => {
     await util.reset();
-    const fs = util.initS3();
+    const fs = initS3();
 
     const uri1 = 'file:foo:bird';
     const uri2 = 'file:foo:kitten';

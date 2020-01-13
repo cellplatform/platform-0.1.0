@@ -35,5 +35,5 @@ export type IHttpMethods = {
   put(url: string, data?: any, options?: IFetchOptions): Promise<IHttpResponse>;
   post(url: string, data?: any, options?: IFetchOptions): Promise<IHttpResponse>;
   patch(url: string, data?: any, options?: IFetchOptions): Promise<IHttpResponse>;
-  delete(url: string, options?: IFetchOptions): Promise<IHttpResponse>;
+  delete(url: string, data?: any, options?: IFetchOptions): Promise<IHttpResponse>;
 };

@@ -1844,10 +1844,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http@0.8.1":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.8.1.tgz#d9f79f871c10163d175c7d9f6eb5e7b24c87d916"
-  integrity sha512-yGp+FsGgabJzLoOjr0skHGzgMNo7nOcCR1fXeCNeLhpWrDTs4Uut+A3j0WLN6V6+dcB22RTf+sCBv3p9mtA21Q==
+"@platform/http@0.9.5":
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.9.5.tgz#6f978ac826abfab1352b7a636843d1bb9784d332"
+  integrity sha512-ZEblE8rAG9qD7XI7fO5qKRhxLgdS2IFIRVxx5+Gl1s8j+NrIbXVWogi55wpjlSfyuLvo+IrL+o7TMKqsI2yZVw==
   dependencies:
     "@platform/fs" "0.5.1"
     "@platform/types" "0.3.3"

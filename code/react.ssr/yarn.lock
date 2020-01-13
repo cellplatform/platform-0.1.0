@@ -67,21 +67,21 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.0.tgz#993214ad53e8c56518b1f38f28371bcaeb6b02e0"
-  integrity sha512-xovNqMiRon/MF4j5UEKzVzf9QnXttfpjYz0/YVL68EHe3EaBLsXAlR+HWFIUfA5YmVB1cK+FA1fee2tV2keQiQ==
+"@platform/fs.s3.types@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.1.tgz#6e3fcef4b9acb22cd9a08a0fcc7beab2ca1e019c"
+  integrity sha512-8wxugA4YobUeicBJov1dcN+ncYcNpKG6JueEvfLz1apaxL0ZXc9HVnhKJQfAuAwFGMj5jnrjLijHgeYY4lC2Uw==
   dependencies:
     "@platform/types" "0.3.3"
 
-"@platform/fs.s3@0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.5.tgz#709293b6d2b9910f14e1a1185d670b448979e5cd"
-  integrity sha512-soPnyE1G/Tnk3HgXa3DUNnIVyQhzJ7+ea1OYOkB7e7g4H5yO9OeA69xZnZ00/+YKSZJH872r46LbjnEMU+0xkQ==
+"@platform/fs.s3@0.6.12":
+  version "0.6.12"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.12.tgz#e8dcdff637c8d90cab1df5d711b347603e40ace0"
+  integrity sha512-wiVWcLa+9Z4P7Yl+KSgjDzNJEoT9m/ufh1Xq5lUllsm7ZTXEwpHdTNEgPdgvYtPVGoAAzgliQwIC6XT6Z8pm0Q==
   dependencies:
     "@platform/fs" "0.5.1"
-    "@platform/fs.s3.types" "0.1.0"
-    "@platform/http" "0.8.2"
+    "@platform/fs.s3.types" "0.1.1"
+    "@platform/http" "0.9.5"
     "@platform/libs" "0.1.5"
     "@platform/log" "0.1.1"
     "@platform/types" "0.3.3"
@@ -106,10 +106,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http@0.8.2":
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.8.2.tgz#bf3f5de1c2213c5449ce8ff3ced28d69a07f5ab7"
-  integrity sha512-7bI3SeKKcZ8Rxe1HHCjy12Q4wxUerZ7tz2ETiq5PgmW6kv9zaRt57VKq+AvZ1aLMvA5pyQC6uv2idOpl+vT/BQ==
+"@platform/http@0.9.5":
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.9.5.tgz#6f978ac826abfab1352b7a636843d1bb9784d332"
+  integrity sha512-ZEblE8rAG9qD7XI7fO5qKRhxLgdS2IFIRVxx5+Gl1s8j+NrIbXVWogi55wpjlSfyuLvo+IrL+o7TMKqsI2yZVw==
   dependencies:
     "@platform/fs" "0.5.1"
     "@platform/types" "0.3.3"
@@ -138,10 +138,10 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.12.15":
-  version "0.12.15"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.12.15.tgz#6fc28798a7192a63b2fc2fafa086d3d714d4abab"
-  integrity sha512-L2Txkb5j5eK5ihg7sla5rr9zNkqVykNmuMGzLgCtYxIigB//xwci3Jn0XRJobHsCOFqT9NA28Xjf1PSCZjvCcw==
+"@platform/micro@0.12.21":
+  version "0.12.21"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.12.21.tgz#a8888b3d704d8bf9727f2364c1c8bbec77121e75"
+  integrity sha512-WdnZ4OtdjzdqgKJdqeTcuuvacKn2OZCI9xOz8W/PQ83mtfgmRkiXhhMQ3WiIF0teUpbqQOc1pReUCI2LzPLjmA==
   dependencies:
     "@platform/libs" "0.1.5"
     "@platform/log" "0.1.1"

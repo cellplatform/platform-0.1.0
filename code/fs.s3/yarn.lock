@@ -30,10 +30,10 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.0.2.tgz#ce03bfb7d7c482d3f106ade5a1f34e15308b4905"
-  integrity sha512-ru2GK7m0hVoThxHTpCf2/9jivJV/W+DNaiSXBskUMRn8kRt/Qy3+/GcZ5cH/ejaKfqgYEi/qn5KrW80Ob54sGg==
+"@platform/fs.s3.types@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.1.tgz#6e3fcef4b9acb22cd9a08a0fcc7beab2ca1e019c"
+  integrity sha512-8wxugA4YobUeicBJov1dcN+ncYcNpKG6JueEvfLz1apaxL0ZXc9HVnhKJQfAuAwFGMj5jnrjLijHgeYY4lC2Uw==
   dependencies:
     "@platform/types" "0.3.3"
 
@@ -53,10 +53,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http@0.8.2":
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.8.2.tgz#bf3f5de1c2213c5449ce8ff3ced28d69a07f5ab7"
-  integrity sha512-7bI3SeKKcZ8Rxe1HHCjy12Q4wxUerZ7tz2ETiq5PgmW6kv9zaRt57VKq+AvZ1aLMvA5pyQC6uv2idOpl+vT/BQ==
+"@platform/http@0.9.5":
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.9.5.tgz#6f978ac826abfab1352b7a636843d1bb9784d332"
+  integrity sha512-ZEblE8rAG9qD7XI7fO5qKRhxLgdS2IFIRVxx5+Gl1s8j+NrIbXVWogi55wpjlSfyuLvo+IrL+o7TMKqsI2yZVw==
   dependencies:
     "@platform/fs" "0.5.1"
     "@platform/types" "0.3.3"
@@ -130,10 +130,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.104.tgz#311e0584f819dc2e5665c4fd3a15cfc7b8aafc7f"
   integrity sha512-hPwXjkTtD02kGKrfKbwKKguLOFaBOZhv/k3X8npP8EyiIOSQm65jsXNsPFcdp/xhSMdsQD/BMBELkXsH2gva8A==
 
-"@platform/util.mimetype@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/util.mimetype/-/util.mimetype-0.0.0.tgz#43e6933fc6d9203a972be5dd41a64d2e93018052"
-  integrity sha512-cYVFoOQiHmaRiXY93rACyHQkkYGtyhbywz/c3csixvniZrCIRC6K7KG/FoaY1PV/70PoLgVpMhTrnf93uuaQzg==
+"@platform/util.mimetype@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.mimetype/-/util.mimetype-0.0.1.tgz#21d79bbc58fca9430bf827ecd0e309436d72aec0"
+  integrity sha512-Mr3UWZFZoUXt0ijpq6osU2Z5/na4hQfcLbuHWBtWFVry5j96Ja/H/xOwAPBuEQPKOith91WHeLs6V3FyiKhYcw==
 
 "@platform/util.value@0.6.11":
   version "0.6.11"

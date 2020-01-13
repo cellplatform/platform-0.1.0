@@ -14,7 +14,7 @@ export const PATH = {
 
 export const initS3 = (args: { path?: string } = {}) => {
   return s3.init({
-    root: args.path || 'platform/tmp/test.cell.fs',
+    root: args.path || 'platform/tmp/test',
     endpoint: 'sfo2.digitaloceanspaces.com',
     accessKey: util.env('SPACES_KEY'),
     secret: util.env('SPACES_SECRET'),
