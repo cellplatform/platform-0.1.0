@@ -4,16 +4,22 @@ import { cli } from '@platform/cli';
 /**
  * Initializes a new "command-line-interface" application.
  */
-export function init(): t.ICliApp {
+
+/**
+ * TODO 🐷
+ * - move to `@platform/cli` as [plugins] extension method on the `cli.IApp`.
+ */
+
+export function init() {
   const app = cli.create('cell');
 
-  const api: t.ICliApp = {
+  const plugins: t.ICmdPlugins = {
     commands: [],
 
     /**
      * Add a command to the application.
      */
-    command(args: t.ICliCommandArgs) {
+    command(args: t.ICmdPluginCommandArgs) {
       const { name, description, alias, handler } = args;
       const id = [name, alias].filter(value => Boolean(value)) as string[];
 
@@ -42,7 +48,7 @@ export function init(): t.ICliApp {
         },
       );
 
-      const cmd: t.ICliCommand = {
+      const cmd: t.ICmdPlugin = {
         name,
         description,
         alias,
@@ -50,16 +56,16 @@ export function init(): t.ICliApp {
         handler,
       };
 
-      const res: t.ICliCommandResponse = {
+      const res: t.ICmdPluginResponse = {
         ...cmd,
-        option<T extends keyof t.ICliOptionType>(args: t.ICliOption<T>) {
+        option<T extends keyof t.ICmdPluginType>(args: t.ICmdPluginOption<T>) {
           cmd.options = [...cmd.options, args];
           return res;
         },
       };
 
       // Finish up.
-      api.commands = [...api.commands, cmd];
+      plugins.commands = [...plugins.commands, cmd];
       return res;
     },
 
@@ -72,5 +78,6 @@ export function init(): t.ICliApp {
   };
 
   // Finish up.
-  return api;
+  const { events$ } = app;
+  return { events$, plugins };
 }

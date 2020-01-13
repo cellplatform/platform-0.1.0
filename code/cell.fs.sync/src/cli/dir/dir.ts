@@ -22,10 +22,7 @@ export async function dir(args: {
   const key = uri.parts.key;
   const keyTitle = util.log.cellKeyBg(key);
 
-  const f = util.log.cellUri(config.target.uri);
-
-  log.info();
-  log.info(keyTitle);
+  log.info(`${keyTitle}`);
   log.info();
 
   gray(`host:     ${config.data.host.replace(/\/*$/, '')}`);

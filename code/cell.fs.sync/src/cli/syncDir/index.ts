@@ -9,7 +9,7 @@ export type ISyncDirArgs = {
 };
 
 export const init: t.CliInit = cli => {
-  const handler: t.CommandHandler<ISyncDirArgs> = async args => {
+  const handler: t.CmdPluginHandler<ISyncDirArgs> = async args => {
     await syncDir({
       dir: process.cwd(),
       silent: args.silent,

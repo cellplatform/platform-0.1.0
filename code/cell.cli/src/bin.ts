@@ -1,6 +1,9 @@
 #!/usr/bin/env node
+import * as fsSync from '@platform/cell.fs.sync/lib/cli';
+import { filter, map } from 'rxjs/operators';
+
 import { cli } from '.';
-import { log, chalk } from './common';
+import { chalk, log, t } from './common';
 
 /**
  * Makes the script crash on unhandled rejections instead of silently
@@ -21,12 +24,23 @@ export const app = cli.init();
 /**
  * Cell/OS commands.
  */
-import * as fsSync from '@platform/cell.fs.sync/lib/cli';
-fsSync.init(app);
+fsSync.init(app.plugins);
+
+/**
+ * Show title before Help
+ */
+app.events$
+  .pipe(
+    filter(e => e.type === 'CLI/showHelp'),
+    map(e => e.payload as t.ICmdAppShowHelp),
+    filter(e => e.stage === 'BEFORE'),
+  )
+  .subscribe(() => {
+    log.info(chalk.bgCyan.black(` CellOS `));
+    log.info();
+  });
 
 /**
  * Run the application.
  */
-log.info(chalk.bgCyan.black(` CellOS `));
-log.info();
-app.run();
+app.plugins.run();
