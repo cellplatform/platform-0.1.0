@@ -1,5 +1,5 @@
 import { defaultValue, models, t, time, Schema, util } from '../common';
-import { getFileInfoHandler } from './file.info';
+import { getFileInfoHandler } from './handler.info';
 
 export async function postFileUploadStartHandler(args: {
   db: t.IDb;

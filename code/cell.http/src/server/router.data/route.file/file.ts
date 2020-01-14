@@ -1,9 +1,9 @@
 import { constants, routes, Schema, t } from '../common';
-import { deleteFileHandler } from './file.delete';
-import { getFileDownloadHandler } from './file.download';
-import { getFileInfoHandler } from './file.info';
-import { fileUploadLocalHandler } from './file.local';
-import { postFileUploadCompleteHandler } from './file.upload.complete';
+import { deleteFileHandler } from './handler.delete';
+import { getFileDownloadHandler } from './handler.download';
+import { getFileInfoHandler } from './handler.info';
+import { fileUploadLocalHandler } from './handler.local';
+import { postFileUploadCompleteHandler } from './handler.upload.complete';
 
 /**
  * File-system routes (fs:).

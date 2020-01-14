@@ -1,5 +1,5 @@
 import { ERROR, t, util } from '../common';
-import { getFileInfoHandler } from './file.info';
+import { getFileInfoHandler } from './handler.info';
 
 export const getFileDownloadHandler = async (args: {
   db: t.IDb;
