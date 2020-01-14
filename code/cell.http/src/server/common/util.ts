@@ -27,9 +27,17 @@ export function toErrorPayload(
 }
 
 /**
+ * Determine if the status code represents an OK status (200).
+ */
+export function isOK(status: number | string = 200) {
+  return status.toString().startsWith('2');
+}
+
+/**
  * Determines if the given string is an HTTP link.
  */
 export function isHttp(input: string = '') {
+  input = input.trim();
   return input.startsWith('https://') || input.startsWith('http://');
 }
 
@@ -37,12 +45,5 @@ export function isHttp(input: string = '') {
  * Determines if the given string is a FILE link.
  */
 export function isFile(input: string = '') {
-  return input.startsWith('file://');
-}
-
-/**
- * Determine if the status code represents an OK status (200).
- */
-export function isOK(status: number | string = 200) {
-  return status.toString().startsWith('2');
+  return input.trim().startsWith('file://');
 }
