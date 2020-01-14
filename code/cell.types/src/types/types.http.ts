@@ -111,6 +111,9 @@ export type IResGetFileUrls = { info: string; download: string };
 /**
  * File: POST (upload)
  */
+
+ // TODO 🐷 - delete single file upload types(??)
+
 export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & {
   upload: t.IFileUploadUrl;
@@ -146,13 +149,13 @@ export type IResGetCellFiles = {
 };
 
 /**
- * Cell/Files: POST
+ * Cell/Files: POST (Upload)
  */
-export type IReqPostCellFilesBody = {
+export type IReqPostCellUploadFilesBody = {
   files: Array<{ filename: string; filehash?: string }>;
   seconds?: number; // Expires.
 };
-export type IReqPostCellFile = {
+export type IReqPostCellUploadFile = {
   filename: string;
   filehash?: string;
 };

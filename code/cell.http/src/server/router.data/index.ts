@@ -1,10 +1,10 @@
-import { t, routes, ERROR } from './common';
-import { sys } from './route.sys';
-import * as ns from './route.ns';
-import * as file from './route.file';
+import { ERROR, routes, t } from './common';
 import * as cell from './route.cell';
 import * as cellFile from './route.cell.file';
-
+import * as cellFiles from './route.cell.files';
+import * as file from './route.file';
+import * as ns from './route.ns';
+import { sys } from './route.sys';
 import { handleWasmTmp } from './TMP.wasm';
 
 /**
@@ -23,6 +23,7 @@ export function init(args: {
   file.init(args);
   cell.init(args);
   cellFile.init(args);
+  cellFiles.init(args);
 
   // TEMP 🐷
   args.router.get('/wasm', handleWasmTmp); // TEMP 🐷

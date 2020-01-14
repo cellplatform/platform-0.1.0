@@ -10,104 +10,98 @@ export async function deleteCellFilesHandler(args: {
 }) {
   const { host, db, fs, cellUri, body } = args;
 
-  try {
-    // Extract values from request body.
-    const action = body.action;
-    const filenames = (body.filenames || [])
-      .map(text => (text || '').trim())
-      .filter(text => Boolean(text));
+  // Extract values from request body.
+  const action = body.action;
+  const filenames = (body.filenames || [])
+    .map(text => (text || '').trim())
+    .filter(text => Boolean(text));
 
-    const data: t.IResDeleteCellFilesData = {
-      uri: cellUri,
-      deleted: [],
-      unlinked: [],
-      errors: [],
-    };
+  const data: t.IResDeleteCellFilesData = {
+    uri: cellUri,
+    deleted: [],
+    unlinked: [],
+    errors: [],
+  };
 
-    const error = (error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED', filename: string) => {
-      data.errors = [...data.errors, { error, filename }];
-    };
+  const error = (error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED', filename: string) => {
+    data.errors = [...data.errors, { error, filename }];
+  };
 
-    const done = () => {
-      const status = data.errors.length === 0 ? 200 : 500;
-      return { status, data };
-    };
+  const done = () => {
+    const status = data.errors.length === 0 ? 200 : 500;
+    return { status, data };
+  };
 
-    // Exit if there are no files to operate on.
-    if (filenames.length === 0) {
-      return done();
-    }
+  // Exit if there are no files to operate on.
+  if (filenames.length === 0) {
+    return done();
+  }
 
-    // Retrieve the [Cell] model.
-    const cell = await models.Cell.create({ db, uri: cellUri }).ready;
-    if (!cell.exists) {
-      const msg = `The cell [${cellUri}] does not exist.`;
-      return util.toErrorPayload(msg, { status: 404 });
-    }
+  // Retrieve the [Cell] model.
+  const cell = await models.Cell.create({ db, uri: cellUri }).ready;
+  if (!cell.exists) {
+    const msg = `The cell [${cellUri}] does not exist.`;
+    return util.toErrorPayload(msg, { status: 404 });
+  }
 
-    // Parse file-names into usable link details.
-    const links = cell.props.links || {};
-    const items = filenames.map(filename => {
-      const key = Schema.file.links.toKey(filename);
-      const value = links[key];
-      const parts = value ? Schema.file.links.parseLink(value) : undefined;
-      const uri = parts ? parts.uri : '';
-      const hash = parts ? parts.hash : '';
-      return { filename, key, uri, hash, exists: Boolean(value) };
-    });
+  // Parse file-names into usable link details.
+  const links = cell.props.links || {};
+  const items = filenames.map(filename => {
+    const key = Schema.file.links.toKey(filename);
+    const value = links[key];
+    const parts = value ? Schema.file.links.parseLink(value) : undefined;
+    const uri = parts ? parts.uri : '';
+    const hash = parts ? parts.hash : '';
+    return { filename, key, uri, hash, exists: Boolean(value) };
+  });
 
-    // Report any requested filenames that are not linked to the cell.
-    items
-      .filter(({ uri }) => !Boolean(uri))
-      .forEach(({ filename }) => error('NOT_LINKED', filename));
+  // Report any requested filenames that are not linked to the cell.
+  items.filter(({ uri }) => !Boolean(uri)).forEach(({ filename }) => error('NOT_LINKED', filename));
 
-    const deleteFile = async (filename: string, uri: string) => {
-      const res = await deleteFileResponse({ db, fs, uri, host });
-      if (util.isOK(res.status)) {
-        data.deleted = [...data.deleted, filename];
-      } else {
-        error('DELETING', filename);
-      }
-    };
-
-    const deleteFiles = async () => {
-      const wait = items
-        .filter(({ uri }) => Boolean(uri))
-        .map(async ({ uri, filename }) => deleteFile(filename, uri));
-      await Promise.all(wait);
-    };
-
-    const unlinkFiles = async () => {
-      try {
-        const after = { ...links };
-        items
-          .filter(({ uri }) => Boolean(uri))
-          .forEach(({ key, filename }) => {
-            delete after[key];
-            data.unlinked = [...data.unlinked, filename];
-          });
-        await cell.set({ links: after }).save();
-      } catch (error) {
-        items
-          .filter(({ uri }) => Boolean(uri))
-          .forEach(({ filename }) => error('UNLINKING', filename));
-      }
-    };
-
-    // Perform requested actions.
-    if (action === 'DELETE') {
-      await deleteFiles();
-      await unlinkFiles();
-      return done();
-    } else if (action === 'UNLINK') {
-      await unlinkFiles();
-      return done();
+  const deleteFile = async (filename: string, uri: string) => {
+    const res = await deleteFileResponse({ db, fs, uri, host });
+    if (util.isOK(res.status)) {
+      data.deleted = [...data.deleted, filename];
     } else {
-      const invalidAction = action || '<empty>';
-      const msg = `A valid action (DELETE | UNLINK) was not provided in the body, given:${invalidAction}.`;
-      return util.toErrorPayload(msg, { status: 400 });
+      error('DELETING', filename);
     }
-  } catch (err) {
-    return util.toErrorPayload(err);
+  };
+
+  const deleteFiles = async () => {
+    const wait = items
+      .filter(({ uri }) => Boolean(uri))
+      .map(async ({ uri, filename }) => deleteFile(filename, uri));
+    await Promise.all(wait);
+  };
+
+  const unlinkFiles = async () => {
+    try {
+      const after = { ...links };
+      items
+        .filter(({ uri }) => Boolean(uri))
+        .forEach(({ key, filename }) => {
+          delete after[key];
+          data.unlinked = [...data.unlinked, filename];
+        });
+      await cell.set({ links: after }).save();
+    } catch (error) {
+      items
+        .filter(({ uri }) => Boolean(uri))
+        .forEach(({ filename }) => error('UNLINKING', filename));
+    }
+  };
+
+  // Perform requested actions.
+  if (action === 'DELETE') {
+    await deleteFiles();
+    await unlinkFiles();
+    return done();
+  } else if (action === 'UNLINK') {
+    await unlinkFiles();
+    return done();
+  } else {
+    const invalidAction = action || '<empty>';
+    const msg = `A valid action (DELETE | UNLINK) was not provided in the body, given:${invalidAction}.`;
+    return util.toErrorPayload(msg, { status: 400 });
   }
 }

@@ -1,3 +1,15 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import { t, micro, constants, log, util, value, Schema } from './common';
 import * as router from './router';
 
@@ -13,8 +25,10 @@ export function init(args: {
   fs: t.IFileSystem;
   title?: string;
   deployedAt?: number | string;
+  log?: Array<'ROUTES'>;
 }) {
   const { db, title, fs } = args;
+  const logTypes = args.log || [];
   const base = util.fs.resolve('.');
   const root = fs.root.startsWith(base) ? fs.root.substring(base.length) : fs.root;
   const deployedAt =
@@ -44,15 +58,29 @@ export function init(args: {
   app.response$.subscribe(e => {
     // Add default cache headers.
     let headers = e.res.headers || {};
+
+    /**
+     * TODO 🐷
+     * - Cache-Control: only for data API, allow caching for the UI routes.
+     */
+
     if (!headers['Cache-Control']) {
       headers = {
         ...headers,
-        'Cache-Control': 'no-cache', // Ensure data-api responses reflect current state of data.
+        'cache-control': 'no-cache', // Ensure the data-api responses reflect current state of data.
         // 'Cache-Control': 's-maxage=1, stale-while-revalidate', // See https://zeit.co/docs/v2/network/caching/#stale-while-revalidate
       };
       e.modify({ ...e.res, headers });
     }
   });
+
+  // Log routes.
+  app.events$
+    .pipe(
+      filter(() => logTypes.includes('ROUTES')),
+      filter(e => e.type === 'HTTP/started'),
+    )
+    .subscribe(e => log.info(app.router.log({ indent: 3 })));
 
   // Finish up.
   return app;
