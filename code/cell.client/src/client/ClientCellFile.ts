@@ -66,10 +66,13 @@ export class ClientCellFile implements t.IClientCellFile {
 
         // Prepare the URL.
         const link = linkRes.link;
-        const url = parent.url.file.byName(filename).query({ hash: link.hash });
+        const url = parent.url.file
+          .byName(filename)
+          .query({ hash: link.hash })
+          .toString();
 
         // Request the download.
-        const res = await http.get(url.toString());
+        const res = await http.get(url);
         if (res.ok) {
           return util.toResponse<ReadableStream>(res, { bodyType: 'BINARY' });
         } else {
