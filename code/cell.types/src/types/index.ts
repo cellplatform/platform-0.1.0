@@ -2,7 +2,6 @@ export * from './types.cell.context';
 export * from './types.cell.coord';
 export * from './types.cell.get';
 export * from './types.cell';
-export * from './types.cli';
 export * from './types.client';
 export * from './types.db';
 export * from './types.error';

@@ -5,7 +5,7 @@ import * as syncDir from './syncDir';
 /**
  * Initialize the command-line-interface (CLI).
  */
-export const init: t.CliInit = cli => {
+export const init: t.CmdPluginsInit = cli => {
   dir.init(cli);
   syncDir.init(cli);
   return cli;

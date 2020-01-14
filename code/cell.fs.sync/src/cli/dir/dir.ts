@@ -33,7 +33,7 @@ export async function dir(args: {
 
   // Open the local folder.
   if (args.local) {
-    open(config.dir);
+    util.open(config).local();
   } else {
     gray(`• Use ${log.cyan('--local (-l)')} to open folder locally`);
     printFinalBlankLine = true;
@@ -41,7 +41,7 @@ export async function dir(args: {
 
   // Open the remote target cell (browser).
   if (args.remote) {
-    open(config.target.url);
+    util.open(config).remote();
   } else {
     gray(`• Use ${log.cyan('--remote (-r)')} to open remote target in browser`);
     printFinalBlankLine = true;

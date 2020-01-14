@@ -19,6 +19,7 @@ export async function syncDir(args: {
   silent: boolean;
   delete: boolean;
   watch: boolean;
+  keyboard: t.ICmdKeyboard;
 }) {
   // Retrieve (or build) configuration file the directory.
   const config = await promptConfig({ dir: args.dir });
@@ -26,7 +27,7 @@ export async function syncDir(args: {
     return;
   }
 
-  const { silent = false, force = false } = args;
+  const { silent = false, force = false, keyboard } = args;
   const { dir } = config;
 
   if (!silent) {
@@ -58,7 +59,7 @@ export async function syncDir(args: {
 
   if (args.watch) {
     // Watch directory.
-    await watchDir({ config, sync, silent });
+    await watchDir({ config, sync, silent, keyboard });
   } else {
     // Run sync operation.
     const res = await sync();

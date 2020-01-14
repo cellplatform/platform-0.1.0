@@ -8,14 +8,16 @@ export type ISyncDirArgs = {
   watch: boolean;
 };
 
-export const init: t.CliInit = cli => {
-  const handler: t.CmdPluginHandler<ISyncDirArgs> = async argv => {
+export const init: t.CmdPluginsInit = cli => {
+  const handler: t.CmdPluginHandler<ISyncDirArgs> = async e => {
+    const { argv, keyboard } = e;
     await syncDir({
       dir: process.cwd(),
       silent: argv.silent,
       force: argv.force,
       delete: argv.delete,
       watch: argv.watch,
+      keyboard,
     });
   };
 

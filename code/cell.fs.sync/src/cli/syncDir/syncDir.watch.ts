@@ -3,6 +3,8 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { defaultValue, fs, log, time, watch, util } from '../common';
 import * as t from './types';
 
+const gray = log.info.gray;
+
 type IHistoryItem = {
   index: number;
   createdAt: number;
@@ -21,7 +23,12 @@ const EMPTY_SYNC_RESPONSE: t.IRunSyncResponse = {
 };
 
 const DIV = '-------------------------------------------------------';
-const logDivider = () => log.info.gray(DIV);
+const logDivider = (show?: boolean) => {
+  if (show !== false) {
+    log.info.gray(DIV);
+  }
+};
+
 const formatLength = (line: string, max: number) => {
   if (line.length <= max) {
     return line;
@@ -42,12 +49,22 @@ export async function watchDir(args: {
   silent: boolean;
   sync: t.RunSyncCurry;
   debounce?: number;
+  keyboard: t.ICmdKeyboard;
 }) {
-  const { config, silent, sync } = args;
+  const { config, silent, sync, keyboard } = args;
   const debounce = defaultValue(args.debounce, 1500);
   let isStarted = false;
   const pattern = `${config.dir}/*`;
   const initialCount = (await fs.glob.find(pattern, { dot: false })).length;
+
+  keyboard.keypress$.subscribe(e => {
+    if (e.key === 'l') {
+      util.open(config).local();
+    }
+    if (e.key === 'r') {
+      util.open(config).remote();
+    }
+  });
 
   const history: IHistoryItem[] = [];
   const appendHistory = (response: t.IRunSyncResponse) => {
@@ -68,8 +85,20 @@ export async function watchDir(args: {
   const logPage = (status?: string) => {
     log.clear();
     logHost({ status });
-    logHistory({ status });
     log.info();
+    logDivider();
+    logHistory({ status });
+    logDivider(history.length > 0);
+    log.info();
+    logCommands();
+    log.info();
+  };
+
+  const logCommands = () => {
+    gray(`Commands:`);
+    gray(`• [${log.cyan('l')}] to open local folder`);
+    gray(`• [${log.cyan('r')}] to open remote target in browser`);
+    gray(`• [${log.cyan('ctrl + c')}] to exit`);
   };
 
   const logHost = (args: { status?: string } = {}) => {
@@ -98,8 +127,6 @@ export async function watchDir(args: {
     add('  target:', util.log.cellUri(uri, cellColor));
 
     log.info(table.toString());
-    log.info();
-    logDivider();
   };
 
   const logHistory = (args: { max?: number; status?: string } = {}) => {
