@@ -112,7 +112,7 @@ export type IResGetFileUrls = { info: string; download: string };
  * File: POST (upload)
  */
 
- // TODO 🐷 - delete single file upload types(??)
+// TODO 🐷 - delete single file upload types(??)
 
 export type IReqPostFileBody = {};
 export type IResPostFile = IResGetFile & {
