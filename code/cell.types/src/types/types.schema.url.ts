@@ -111,9 +111,6 @@ export type IUrlParamsFile = { ns: string; file: string };
 export type IUrlQueryFileInfo = {};
 export type IUrlQueryFileDownload = { hash?: string };
 
-export type IUrlQueryFileUpload = {
-  changes?: boolean; // NB: return list of changes (default: true).
-};
 export type IUrlQueryFileDelete = {
   changes?: boolean; // NB: return list of changes (default: true).
 };

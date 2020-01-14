@@ -3,7 +3,7 @@ import { deleteFileHandler } from './handler.delete';
 import { getFileDownloadHandler } from './handler.download';
 import { getFileInfoHandler } from './handler.info';
 import { fileUploadLocalHandler } from './handler.local';
-import { postFileUploadCompleteHandler } from './handler.upload.complete';
+import { fileUploadCompleteHandler } from './handler.upload.complete';
 
 /**
  * File-system routes (fs:).
@@ -91,15 +91,8 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const { overwrite } = body;
     return !ns || error
       ? { status, data: { error } }
-      : postFileUploadCompleteHandler({ db, fs, uri, host, query, overwrite });
+      : fileUploadCompleteHandler({ db, fs, uri, host, query, overwrite });
   });
-
-  /**
-   * TODO 🐷
-   * - delete commented out POST
-   * - ensure URL/types have also been deleted
-   * - ensure ROUTE is deleted.
-   */
 
   /**
    * POST (local file upload)

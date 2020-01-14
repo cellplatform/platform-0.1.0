@@ -55,7 +55,6 @@ export type IUrlsColumn = {
 export type IUrlsFile = {
   uri: string;
   info: t.IUrl<t.IUrlQueryFileInfo>;
-  upload: t.IUrl<t.IUrlQueryFileUpload>; // TEMP 🐷 - delete, handled on Cell.
   download: t.IUrl<t.IUrlQueryFileDownload>;
   delete: t.IUrl<t.IUrlQueryFileDelete>;
   verify: t.IUrl<t.IUrlQueryFileVerified>;

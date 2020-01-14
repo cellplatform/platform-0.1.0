@@ -1,7 +1,7 @@
 import { defaultValue, ERROR, models, t, time, util } from '../common';
 import { getFileInfoHandler } from './handler.info';
 
-export async function postFileUploadCompleteHandler(args: {
+export async function fileUploadCompleteHandler(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;

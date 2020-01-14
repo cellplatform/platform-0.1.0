@@ -1,19 +1,19 @@
 import { defaultValue, models, t, time, Schema, util } from '../common';
 import { getFileInfoHandler } from './handler.info';
 
-export async function postFileUploadStartHandler(args: {
+export async function fileUploadStartHandler(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;
   filename: string;
   filehash?: string;
   host: string;
-  query?: t.IUrlQueryFileUpload;
+  sendChanges?: boolean;
   seconds?: number; // Expires.
 }): Promise<t.IPayload<t.IResPostFileUploadStart> | t.IErrorPayload> {
-  const { db, uri, query = {}, fs, host } = args;
+  const { db, uri, fs, host } = args;
   const seconds = defaultValue(args.seconds, 10 * 60); // Default: 10 minutes.
-  const sendChanges = defaultValue(query.changes, true);
+  const sendChanges = defaultValue(args.sendChanges, true);
   let changes: t.IDbModelChange[] = [];
 
   try {
@@ -66,7 +66,12 @@ export async function postFileUploadStartHandler(args: {
     }
 
     // Finish up.
-    const fileResponse = await getFileInfoHandler({ uri, db, query, host });
+    const fileResponse = await getFileInfoHandler({
+      uri,
+      db,
+      host,
+      query: { changes: sendChanges },
+    });
     const { status } = fileResponse;
     const fileResponseData = fileResponse.data as t.IResGetFile;
     const res: t.IPayload<t.IResPostFileUploadStart> = {

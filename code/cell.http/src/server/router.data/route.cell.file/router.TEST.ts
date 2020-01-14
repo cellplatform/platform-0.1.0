@@ -77,11 +77,10 @@ describe('route: !A1/file', () => {
     expect((await fs.readFile(path)).toString()).to.eql(file1.toString());
 
     const links = (await cellClient.links()).body;
-    const fileUri = links.files[0].uri;
 
     // Upload the same image, hashes should not change.
     const before1 = (await links.files[0].file.info()).body;
-    await mock.client.file(fileUri).upload({ filename: 'func.wasm', data: file1 });
+    await cellClient.files.upload({ filename: 'func.wasm', data: file1 });
     const after1 = (await links.files[0].file.info()).body;
     expect(before1.data.hash).to.eql(after1.data.hash);
 
@@ -92,7 +91,7 @@ describe('route: !A1/file', () => {
     // Upload a different image, with the same name.
     // Hash should change.
     const before2 = (await links.files[0].file.info()).body;
-    await mock.client.file(fileUri).upload({ filename: 'func.wasm', data: file2 });
+    await cellClient.files.upload({ filename: 'func.wasm', data: file2 });
     const after2 = (await links.files[0].file.info()).body;
     expect(before2.data.hash).to.not.eql(after2.data.hash);
 

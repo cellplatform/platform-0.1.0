@@ -61,7 +61,7 @@ export type IUriResponse<D, L extends IUrlMap = {}> = {
 export type IUrlMap = { [key: string]: string };
 
 /**
- * Namespace
+ * NAMESPACE
  */
 
 /**

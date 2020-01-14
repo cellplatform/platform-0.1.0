@@ -31,7 +31,6 @@ export async function uploadCellFilesStartHandler(args: {
     const { filename, filehash } = file;
     const key = Schema.file.links.toKey(filename);
     const uri = links[key] ? links[key].split('?')[0] : Schema.uri.create.file(ns, Schema.slug());
-    const query = { changes: true };
     const res = await postFileUploadStartHandler({
       host,
       db,
@@ -39,8 +38,8 @@ export async function uploadCellFilesStartHandler(args: {
       uri,
       filename,
       filehash,
-      query,
-      seconds,
+      sendChanges: true,
+      seconds: seconds,
     });
     const json = res.data as t.IResPostFileUploadStart;
     const status = res.status;

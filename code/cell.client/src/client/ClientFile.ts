@@ -42,33 +42,6 @@ export class ClientFile implements t.IClientFile {
     return util.toResponse<t.IResGetFile>(res);
   }
 
-  /**
-   * TODO 🐷
-   * - DELETE upload direct on file (done via /files)
-   * - Remove URL builder
-   * - Remove HTTP endpoint.
-   */
-
-  public async upload(args: { filename: string; data: ArrayBuffer }) {
-    const http = this.args.http;
-    const { filename, data } = args;
-
-    // Prepare the form data.
-    const form = new FormData();
-    form.append('file', data, {
-      filename,
-      contentType: 'application/octet-stream',
-    });
-
-    // POST to the service.
-    const url = this.url.upload;
-    const headers = form.getHeaders();
-    const res = await http.post(url.toString(), form, { headers });
-
-    // Finish up.
-    return util.toResponse<t.IResPostFile>(res);
-  }
-
   public async delete() {
     const http = this.args.http;
     const url = this.url.delete;
