@@ -221,11 +221,9 @@ export class Router implements t.IRouter {
     this.routes.forEach(route => {
       const method = methodColor(route.method)(route.method);
       const pattern = gray(`${route.path}`);
-
       let line: string[] = [];
-      line = prefix ? [...line, prefix.substring(1)] : line;
+      line = prefix ? [prefix.substring(1)] : line;
       line = [...line, `${method} `, pattern];
-
       table.add(line);
     });
 
