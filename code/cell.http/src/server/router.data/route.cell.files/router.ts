@@ -2,9 +2,9 @@ import { t, routes, util } from '../common';
 
 import { getParams } from './params';
 
-import { deleteCellFilesHandler } from './handler.delete';
-import { listCellFilesHandler } from './handler.list';
-import { uploadCellFilesStartHandler } from './handler.upload';
+import { deleteCellFiles } from './handler.delete';
+import { listCellFiles } from './handler.list';
+import { uploadCellFilesStart } from './handler.upload';
 
 /**
  * Routes for operating on a set of cell files.
@@ -25,7 +25,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : listCellFilesHandler({ db, fs, cellUri, host });
+        : listCellFiles({ db, fs, cellUri, host });
     } catch (err) {
       return util.toErrorPayload(err);
     }
@@ -54,7 +54,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : uploadCellFilesStartHandler({ db, fs, cellUri, body, host, changes });
+        : uploadCellFilesStart({ db, fs, cellUri, body, host, changes });
     } catch (err) {
       return util.toErrorPayload(err);
     }
@@ -74,7 +74,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : deleteCellFilesHandler({ db, fs, cellUri, body, host });
+        : deleteCellFiles({ db, fs, cellUri, body, host });
     } catch (err) {
       return util.toErrorPayload(err);
     }

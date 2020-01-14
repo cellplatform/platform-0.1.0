@@ -1,6 +1,6 @@
 import { routes, t, util } from '../common';
-import { getFileByIndexHandler } from './handler.byIndex';
-import { getFileByNameHandler } from './handler.byName';
+import { fileByIndex } from './handler.byIndex';
+import { fileByName } from './handler.byName';
 import { getParams } from './params';
 
 /**
@@ -24,7 +24,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : getFileByNameHandler({ db, fs, cellUri, filename, query, host });
+        : fileByName({ db, fs, cellUri, filename, query, host });
     } catch (err) {
       return util.toErrorPayload(err);
     }
@@ -44,7 +44,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : getFileByIndexHandler({ db, fs, cellUri, index, query, host });
+        : fileByIndex({ db, fs, cellUri, index, query, host });
     } catch (err) {
       return util.toErrorPayload(err);
     }

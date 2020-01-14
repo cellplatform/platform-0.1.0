@@ -1,5 +1,5 @@
 import { models, routes, Schema, t, util } from '../common';
-import { getCoordHandler } from './handler.getCoord';
+import { getCoord } from './handler.getCoord';
 import { getParams } from './params';
 
 /**
@@ -39,7 +39,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
 
       return error
         ? { status, data: { error } }
-        : getCoordHandler<t.IResGetCell>({ uri, getModel, getUrls });
+        : getCoord<t.IResGetCell>({ uri, getModel, getUrls });
     } catch (err) {
       return util.toErrorPayload(err);
     }
@@ -61,7 +61,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
 
       return error
         ? { status, data: { error } }
-        : getCoordHandler<t.IResGetRow>({ uri, getModel, getUrls });
+        : getCoord<t.IResGetRow>({ uri, getModel, getUrls });
     } catch (err) {
       return util.toErrorPayload(err);
     }
@@ -83,7 +83,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
 
       return error
         ? { status, data: { error } }
-        : getCoordHandler<t.IResGetRow>({ uri, getModel, getUrls });
+        : getCoord<t.IResGetRow>({ uri, getModel, getUrls });
     } catch (err) {
       return util.toErrorPayload(err);
     }

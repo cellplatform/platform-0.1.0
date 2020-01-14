@@ -1,7 +1,7 @@
 import { models, Schema, t, util } from '../common';
 import { deleteFileResponse } from '../route.file';
 
-export async function deleteCellFilesHandler(args: {
+export async function deleteCellFiles(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   cellUri: string;

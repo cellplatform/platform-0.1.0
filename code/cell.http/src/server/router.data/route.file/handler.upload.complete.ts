@@ -1,7 +1,7 @@
 import { defaultValue, ERROR, models, t, time, util } from '../common';
-import { getFileInfoHandler } from './handler.info';
+import { fileInfo } from './handler.info';
 
-export async function fileUploadCompleteHandler(args: {
+export async function uploadFileComplete(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;
@@ -88,7 +88,7 @@ export async function fileUploadCompleteHandler(args: {
     console.log('after (verify)', after);
 
     // Finish up.
-    const fileResponse = await getFileInfoHandler({ uri, db, query, host });
+    const fileResponse = await fileInfo({ uri, db, query, host });
     const fileResponseData = fileResponse.data as t.IResGetFile;
     const res: t.IPayload<t.IResPostFileVerified> = {
       status: fileResponse.status,

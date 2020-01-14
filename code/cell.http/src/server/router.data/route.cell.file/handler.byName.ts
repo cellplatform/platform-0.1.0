@@ -1,7 +1,7 @@
 import { models, Schema, t, util } from '../common';
 import { getFileDownloadResponse } from '../route.file';
 
-export async function getFileByNameHandler(args: {
+export async function fileByName(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   cellUri: string;

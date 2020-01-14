@@ -1,9 +1,9 @@
 import { routes, t } from '../common';
-import { deleteFileHandler } from './handler.delete';
-import { getFileDownloadHandler } from './handler.download';
-import { getFileInfoHandler } from './handler.info';
-import { fileUploadLocalHandler } from './handler.local';
-import { fileUploadCompleteHandler } from './handler.upload.complete';
+import { deleteFile } from './handler.delete';
+import { downloadFile } from './handler.download';
+import { fileInfo } from './handler.info';
+import { uploadLocalFile } from './handler.upload.local';
+import { uploadFileComplete } from './handler.upload.complete';
 import { getParams } from './params';
 
 /**
@@ -20,9 +20,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const query = req.query as t.IUrlQueryFileInfo;
     const params = req.params as t.IUrlParamsFile;
     const { status, ns, error, uri } = getParams(params);
-    return !ns || error
-      ? { status, data: { error } }
-      : getFileInfoHandler({ uri, db, query, host });
+    return !ns || error ? { status, data: { error } } : fileInfo({ uri, db, query, host });
   });
 
   /**
@@ -33,9 +31,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const query = req.query as t.IUrlQueryFileDownload;
     const params = req.params as t.IUrlParamsFile;
     const { status, ns, error, uri } = getParams(params);
-    return !ns || error
-      ? { status, data: { error } }
-      : getFileDownloadHandler({ db, fs, uri, host, query });
+    return !ns || error ? { status, data: { error } } : downloadFile({ db, fs, uri, host, query });
   });
 
   /**
@@ -60,7 +56,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const { overwrite } = body;
     return !ns || error
       ? { status, data: { error } }
-      : fileUploadCompleteHandler({ db, fs, uri, host, query, overwrite });
+      : uploadFileComplete({ db, fs, uri, host, query, overwrite });
   });
 
   /**
@@ -70,7 +66,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const query = req.query as t.IUrlQueryLocalFs;
     const path = (req.headers.path || '').toString().trim();
     const data = await req.body.buffer();
-    return fileUploadLocalHandler({ db, fs, path, data, query });
+    return uploadLocalFile({ db, fs, path, data, query });
   });
 
   /**
@@ -81,6 +77,6 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const query = req.query as t.IUrlQueryFileDelete;
     const params = req.params as t.IUrlParamsFile;
     const { status, ns, error, uri } = getParams(params);
-    return !ns || error ? { status, data: { error } } : deleteFileHandler({ fs, uri, db, host });
+    return !ns || error ? { status, data: { error } } : deleteFile({ fs, uri, db, host });
   });
 }

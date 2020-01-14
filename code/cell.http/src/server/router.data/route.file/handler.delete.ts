@@ -1,6 +1,6 @@
 import { models, t, util } from '../common';
 
-export async function deleteFileHandler(args: {
+export async function deleteFile(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;

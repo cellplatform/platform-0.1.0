@@ -2,7 +2,7 @@ import { defaultValue, models, Schema, t, util } from '../common';
 import { postFileUploadStartHandler } from '../route.file';
 import { postNsResponse } from '../route.ns';
 
-export async function uploadCellFilesStartHandler(args: {
+export async function uploadCellFilesStart(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   cellUri: string;

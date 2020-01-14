@@ -1,6 +1,6 @@
-import { cell, t, util } from '../common';
+import { cell, t } from '../common';
 
-export async function getCoordHandler<T extends t.IUriResponse<any, any>>(args: {
+export async function getCoord<T extends t.IUriResponse<any, any>>(args: {
   uri: string;
   getModel: t.GetModel;
   getUrls: t.GetUrls;

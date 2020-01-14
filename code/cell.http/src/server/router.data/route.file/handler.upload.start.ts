@@ -1,7 +1,7 @@
 import { defaultValue, models, t, time, Schema, util } from '../common';
-import { getFileInfoHandler } from './handler.info';
+import { fileInfo } from './handler.info';
 
-export async function fileUploadStartHandler(args: {
+export async function uploadFileStart(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   uri: string;
@@ -66,7 +66,7 @@ export async function fileUploadStartHandler(args: {
     }
 
     // Finish up.
-    const fileResponse = await getFileInfoHandler({
+    const fileResponse = await fileInfo({
       uri,
       db,
       host,

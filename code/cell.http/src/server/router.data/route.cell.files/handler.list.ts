@@ -1,6 +1,6 @@
 import { models, Schema, t, util } from '../common';
 
-export async function listCellFilesHandler(args: {
+export async function listCellFiles(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   cellUri: string;
