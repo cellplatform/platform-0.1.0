@@ -28,7 +28,7 @@ export const ROUTES = {
   FILE: {
     INFO: `/file${KEY.NS}\\:${KEY.FILE}/info(/?)`,
     BASE: `/file${KEY.NS}\\:${KEY.FILE}(/?)`,
-    VERIFIED: `/file${KEY.NS}\\:${KEY.FILE}/verified(/?)`,
+    UPLOADED: `/file${KEY.NS}\\:${KEY.FILE}/uploaded(/?)`,
   },
   NS: {
     INFO: `/ns${KEY.NS}(/?)`,

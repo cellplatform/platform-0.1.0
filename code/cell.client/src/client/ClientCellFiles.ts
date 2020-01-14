@@ -151,7 +151,7 @@ export class ClientCellFiles implements t.IClientCellFiles {
     //    the underlying model(s) to be updated with file
     //    meta-data and the new file-hash.
     const verifyWait = uploadSuccess.map(async item => {
-      const url = this.args.urls.file(item.uri).verify.toString();
+      const url = this.args.urls.file(item.uri).uploaded.toString();
       const body: t.IReqPostFileVerifiedBody = { overwrite: true };
       const res = await http.post(url, body);
       return res;

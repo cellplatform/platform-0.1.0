@@ -165,7 +165,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo!A1/files
          */
         get upload() {
-          type Q = t.IUrlQueryCellFilesListUpload;
+          type Q = t.IUrlQueryCellFilesUpload;
           return toPath<Q>(`/cell:${ns}!${key}/files`);
         },
       },
@@ -290,9 +290,9 @@ export class Urls implements t.IUrls {
         return toPath<Q>(`/file:${id}`);
       },
 
-      get verify() {
-        type Q = t.IUrlQueryFileVerified;
-        return toPath<Q>(`/file:${id}/verified`);
+      get uploaded() {
+        type Q = t.IUrlQueryFileUploadComplete;
+        return toPath<Q>(`/file:${id}/uploaded`);
       },
     };
   }

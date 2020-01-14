@@ -6,7 +6,7 @@ export async function uploadFileComplete(args: {
   fs: t.IFileSystem;
   uri: string;
   host: string;
-  query?: t.IUrlQueryFileVerified;
+  query?: t.IUrlQueryFileUploadComplete;
   overwrite?: boolean;
 }): Promise<t.IPayload<t.IResPostFileVerified> | t.IErrorPayload> {
   const { db, uri, query = {}, fs, host } = args;

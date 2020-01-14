@@ -35,21 +35,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
-   * POST (file verify)
+   * POST (file upload complete)
    */
-  router.post(routes.FILE.VERIFIED, async req => {
-    /**
-     * TODO 🐷
-     * - rename URL to:    /<file-uri>/upload/complete
-     *
-     *
-     *
-     *                      /<file-uri>/upload/start
-     *                      /<file-uri>/upload/complete
-     */
-
+  router.post(routes.FILE.UPLOADED, async req => {
     const host = req.host;
-    const query = req.query as t.IUrlQueryFileVerified;
+    const query = req.query as t.IUrlQueryFileUploadComplete;
     const body = await req.body.json<t.IReqPostFileVerifiedBody>({ default: { overwrite: false } });
     const params = req.params as t.IUrlParamsFile;
     const { status, ns, error, uri } = getParams(params);

@@ -38,7 +38,7 @@ export type IUrlsCellFile = {
 
 export type IUrlsCellFiles = {
   list: t.IUrl<t.IUrlQueryCellFilesList>;
-  upload: t.IUrl<t.IUrlQueryCellFilesListUpload>;
+  upload: t.IUrl<t.IUrlQueryCellFilesUpload>;
   delete: t.IUrl<t.IUrlQueryCellFilesDelete>;
 };
 
@@ -57,7 +57,7 @@ export type IUrlsFile = {
   info: t.IUrl<t.IUrlQueryFileInfo>;
   download: t.IUrl<t.IUrlQueryFileDownload>;
   delete: t.IUrl<t.IUrlQueryFileDelete>;
-  verify: t.IUrl<t.IUrlQueryFileVerified>;
+  uploaded: t.IUrl<t.IUrlQueryFileUploadComplete>;
 };
 
 /**

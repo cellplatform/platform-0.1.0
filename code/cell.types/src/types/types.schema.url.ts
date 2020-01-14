@@ -62,7 +62,7 @@ export type IUrlQueryCellInfo = {};
  * Query-string parameters for a [Cell]'s files.
  */
 export type IUrlQueryCellFilesList = {};
-export type IUrlQueryCellFilesListUpload = {
+export type IUrlQueryCellFilesUpload = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
 export type IUrlQueryCellFilesDelete = {};
@@ -114,6 +114,6 @@ export type IUrlQueryFileDownload = { hash?: string };
 export type IUrlQueryFileDelete = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
-export type IUrlQueryFileVerified = {
+export type IUrlQueryFileUploadComplete = {
   changes?: boolean; // NB: return list of changes (default: true).
 };

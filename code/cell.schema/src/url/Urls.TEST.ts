@@ -316,11 +316,11 @@ describe('Urls', () => {
       expect(res2.toString()).to.eql(URL);
     });
 
-    it('verify', () => {
-      const res1 = url.file(URI).verify;
-      const res2 = url.file({ ns: 'foo', file: '123' }).verify;
+    it('uploaded', () => {
+      const res1 = url.file(URI).uploaded;
+      const res2 = url.file({ ns: 'foo', file: '123' }).uploaded;
 
-      const URL = 'http://localhost/file:foo:123/verified';
+      const URL = 'http://localhost/file:foo:123/uploaded';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });

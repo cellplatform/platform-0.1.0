@@ -45,7 +45,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.post(routes.CELL.FILES, async req => {
     try {
       const host = req.host;
-      const query = req.query as t.IUrlQueryCellFilesListUpload;
+      const query = req.query as t.IUrlQueryCellFilesUpload;
       const params = req.params as t.IUrlParamsCellFiles;
       const paramData = getParams({ params });
       const { status, error, cellUri } = paramData;
