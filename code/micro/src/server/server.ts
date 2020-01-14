@@ -102,7 +102,7 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
           log.info();
           keys.forEach(key => {
             const prefix = `${key}:${' '.repeat(10)}`.substring(0, max);
-            log.info.gray(`   - ${prefix} ${props[key].toString()}`);
+            log.info.gray(`   • ${prefix} ${props[key].toString()}`);
           });
           log.info();
         }
