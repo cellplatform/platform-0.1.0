@@ -162,6 +162,7 @@ export type IReqPostCellUploadFile = {
 export type IResPostCellFiles = IUriResponse<IResPostCellFilesData, IResPostCellFilesUrls>;
 export type IResPostCellFilesData = {
   cell: t.ICellData;
+  files: t.IFileData[];
   errors: IResPostCellFilesError[];
   changes?: t.IDbModelChange[];
 };

@@ -1,5 +1,5 @@
 import { defaultValue, models, Schema, t, util } from '../common';
-import { postFileUploadStartHandler } from '../route.file';
+import { uploadFileStart } from '../route.file';
 import { postNsResponse } from '../route.ns';
 
 export async function uploadCellFilesStart(args: {
@@ -22,7 +22,7 @@ export async function uploadCellFilesStart(args: {
     return util.toErrorPayload(err, { status: 400 });
   }
 
-  const postUploadStart = async (args: {
+  const startUpload = async (args: {
     ns: string;
     file: t.IReqPostCellUploadFile;
     links: t.IUriMap;
@@ -31,7 +31,7 @@ export async function uploadCellFilesStart(args: {
     const { filename, filehash } = file;
     const key = Schema.file.links.toKey(filename);
     const uri = links[key] ? links[key].split('?')[0] : Schema.uri.create.file(ns, Schema.slug());
-    const res = await postFileUploadStartHandler({
+    const res = await uploadFileStart({
       host,
       db,
       fs,
@@ -51,7 +51,7 @@ export async function uploadCellFilesStart(args: {
   const cellLinks = cell.props.links || {};
 
   // Post each file to the file-system as a model getting it's signed upload-link.
-  const wait = files.map(file => postUploadStart({ ns, file, links: cellLinks }));
+  const wait = files.map(file => startUpload({ ns, file, links: cellLinks }));
   const postFilesRes = await Promise.all(wait);
 
   // Check for file-save errors.
@@ -113,7 +113,12 @@ export async function uploadCellFilesStart(args: {
     createdAt: cell.createdAt,
     modifiedAt: cell.modifiedAt,
     exists: Boolean(cell.exists),
-    data: { cell: cell.toObject(), errors, changes },
+    data: {
+      cell: cell.toObject(),
+      files: postFilesRes.map(res => res.json.data),
+      errors,
+      changes,
+    },
     urls,
   };
 

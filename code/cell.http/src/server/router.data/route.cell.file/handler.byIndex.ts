@@ -1,5 +1,5 @@
 import { models, t, util } from '../common';
-import { getFileDownloadResponse } from '../route.file';
+import { downloadFile } from '../route.file';
 
 export async function fileByIndex(args: {
   db: t.IDb;
@@ -23,5 +23,5 @@ export async function fileByIndex(args: {
   }
 
   // Run the "file:" download handler.
-  return getFileDownloadResponse({ db, fs, uri: fileUri, query, host });
+  return downloadFile({ db, fs, uri: fileUri, query, host });
 }

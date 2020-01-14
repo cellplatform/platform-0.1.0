@@ -1,5 +1,5 @@
 import { models, Schema, t, util } from '../common';
-import { deleteFileResponse } from '../route.file';
+import { deleteFile } from '../route.file';
 
 export async function deleteCellFiles(args: {
   db: t.IDb;
@@ -58,8 +58,8 @@ export async function deleteCellFiles(args: {
   // Report any requested filenames that are not linked to the cell.
   items.filter(({ uri }) => !Boolean(uri)).forEach(({ filename }) => error('NOT_LINKED', filename));
 
-  const deleteFile = async (filename: string, uri: string) => {
-    const res = await deleteFileResponse({ db, fs, uri, host });
+  const deleteOne = async (filename: string, uri: string) => {
+    const res = await deleteFile({ db, fs, uri, host });
     if (util.isOK(res.status)) {
       data.deleted = [...data.deleted, filename];
     } else {
@@ -67,10 +67,10 @@ export async function deleteCellFiles(args: {
     }
   };
 
-  const deleteFiles = async () => {
+  const deleteMany = async () => {
     const wait = items
       .filter(({ uri }) => Boolean(uri))
-      .map(async ({ uri, filename }) => deleteFile(filename, uri));
+      .map(async ({ uri, filename }) => deleteOne(filename, uri));
     await Promise.all(wait);
   };
 
@@ -93,7 +93,7 @@ export async function deleteCellFiles(args: {
 
   // Perform requested actions.
   if (action === 'DELETE') {
-    await deleteFiles();
+    await deleteMany();
     await unlinkFiles();
     return done();
   } else if (action === 'UNLINK') {
