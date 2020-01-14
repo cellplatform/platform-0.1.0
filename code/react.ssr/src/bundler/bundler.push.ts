@@ -1,4 +1,4 @@
-import { fs, Listr, log, S3, t, util, cli } from '../common';
+import { fs, Listr, log, S3, t, util } from '../common';
 
 type IBundleArgs = {
   bundleDir: string;
@@ -12,11 +12,12 @@ type IManifestArgs = { bucket: string; source: string; target: string; silent?: 
 /**
  * Push API.
  */
-export function push(args: t.IS3Config) {
+export function push(args: t.IS3Config & { cli: t.ICmdApp }) {
   const s3 = fs.s3(args);
+  const { cli } = args;
   return {
-    bundle: (args: IBundleArgs) => bundle({ ...args, s3 }),
-    manifest: (args: IManifestArgs) => manifest({ ...args, s3 }),
+    bundle: (args: IBundleArgs) => bundle({ ...args, s3, cli }),
+    manifest: (args: IManifestArgs) => manifest({ ...args, s3, cli }),
   };
 }
 
@@ -24,12 +25,14 @@ export function push(args: t.IS3Config) {
  * Pushes the specified bundle to S3.
  */
 export async function bundle(args: {
+  cli: t.ICmdApp;
   s3: S3;
   bundleDir: string;
   bucket: string;
   bucketKey: string;
   silent?: boolean;
 }) {
+  const { cli } = args;
   const bucket = args.s3.bucket(args.bucket);
   const bundleDir = fs.resolve(args.bundleDir);
 
@@ -101,13 +104,14 @@ export async function bundle(args: {
  * Pushes the overall manifest to S3.
  */
 export async function manifest(args: {
+  cli: t.ICmdApp;
   s3: S3;
   bucket: string;
   source: string;
   target: string;
   silent?: boolean;
 }) {
-  const { silent } = args;
+  const { cli, silent } = args;
   const source = fs.resolve(args.source);
   const bucket = args.s3.bucket(args.bucket);
 

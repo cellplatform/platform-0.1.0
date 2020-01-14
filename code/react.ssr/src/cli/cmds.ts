@@ -3,11 +3,13 @@ import * as pull from './cmd.pull';
 import * as push from './cmd.push';
 import * as release from './cmd.release';
 import * as status from './cmd.status';
-import { cli } from './common';
+// import { cli } from './common';
 
-const app = cli.create('ssr');
+import { cli as cliLib } from '@platform/cli';
 
-app
+const cli = cliLib.create('ssr');
+
+cli
   /**
    * Status.
    */
@@ -17,7 +19,7 @@ app
     yargs => {
       return yargs;
     },
-    async argv => status.run(),
+    async argv => status.run({ cli }),
   )
 
   /**
@@ -45,7 +47,7 @@ app
     },
     async argv => {
       const { v: version, push, manifest } = argv;
-      return bundle.run({ version, push, manifest });
+      return bundle.run({ cli, version, push, manifest });
     },
   )
 
@@ -71,14 +73,14 @@ app
     async argv => {
       const { bundle, manifest } = argv;
       if (bundle) {
-        await push.run({ type: 'BUNDLE' });
+        await push.run({ cli, type: 'BUNDLE' });
       }
       if (manifest) {
-        await push.run({ type: 'MANIFEST' });
+        await push.run({ cli, type: 'MANIFEST' });
       }
       if (!bundle && !manifest) {
         // No options specified, run with prompts.
-        await push.run();
+        await push.run({ cli });
       }
     },
   )
@@ -92,7 +94,7 @@ app
     yargs => {
       return yargs;
     },
-    async argv => release.run(),
+    async argv => release.run({ cli }),
   )
 
   /**
@@ -104,10 +106,10 @@ app
     yargs => {
       return yargs;
     },
-    async argv => pull.run(),
+    async argv => pull.run({ cli }),
   );
 
 /**
  * Run.
  */
-app.run();
+cli.run();

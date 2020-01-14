@@ -12,6 +12,7 @@ export type ICmdApp = {
   events$: Observable<t.CmdAppEvent>;
   plugins: t.ICmdPlugins;
   keyboard: t.ICmdKeyboard;
+  prompt: t.IPrompt;
   program: Argv<{}>;
   command: Argv<{}>['command'];
   option: Argv<{}>['option'];
@@ -20,4 +21,3 @@ export type ICmdApp = {
   exit: CmdAppExit;
   run(): void;
 };
-

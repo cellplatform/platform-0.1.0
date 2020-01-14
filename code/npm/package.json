@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm",
-  "version": "0.2.38",
+  "version": "0.2.41",
   "description": "Helpers for working with NPM.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -15,7 +15,7 @@
     "pv": "ts-node -T scripts/prompt-version.ts"
   },
   "dependencies": {
-    "@platform/cli.prompt": "0.2.7",
+    "@platform/cli.prompt": "0.2.10",
     "@platform/exec": "0.2.42",
     "@platform/fs": "0.5.3",
     "@platform/log": "0.1.3",

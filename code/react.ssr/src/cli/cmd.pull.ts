@@ -1,18 +1,18 @@
 import { Config } from '../config';
 import { Manifest } from '../manifest';
-import { cli, log } from './common';
+import { t, log } from './common';
 
 /**
  * Pull latest manifest.
  */
-export async function run() {
+export async function run(args: { cli: t.ICmdApp }) {
+  const { cli } = args;
   const config = await Config.create();
   let manifest: Manifest | undefined;
 
   // Pull data from cloud.
   log.info();
   await cli
-    .tasks()
     .task('pull manifest', async e => {
       manifest = await config.manifest.local.ensureLatest({ minimal: true });
     })

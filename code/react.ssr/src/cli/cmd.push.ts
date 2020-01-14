@@ -1,6 +1,6 @@
 import { bundler } from '../bundler';
 import { Config } from '../config';
-import { cli, fs, log } from './common';
+import { t, fs, log } from './common';
 import * as status from './cmd.status';
 
 type PayloadType = 'MANIFEST' | 'BUNDLE';
@@ -8,8 +8,8 @@ type PayloadType = 'MANIFEST' | 'BUNDLE';
 /**
  * Push a bundle or manifest to S3.
  */
-export async function run(args: { type?: PayloadType; silent?: boolean } = {}) {
-  const { silent } = args;
+export async function run(args: { cli: t.ICmdApp; type?: PayloadType; silent?: boolean }) {
+  const { cli, silent } = args;
   const config = await Config.create();
 
   let type = args.type;
@@ -24,11 +24,11 @@ export async function run(args: { type?: PayloadType; silent?: boolean } = {}) {
   }
 
   if (type === 'MANIFEST') {
-    await manifest({ config, silent });
+    await manifest({ cli, config, silent });
   }
 
   if (type === 'BUNDLE') {
-    await bundle({ config, silent, prompt: true });
+    await bundle({ cli, config, silent, prompt: true });
   }
 
   // Finish up.
@@ -40,10 +40,14 @@ export async function run(args: { type?: PayloadType; silent?: boolean } = {}) {
 /**
  * Push bundle to S3.
  */
-export async function bundle(
-  args: { config?: Config; version?: string; prompt?: boolean; silent?: boolean } = {},
-) {
-  const { silent } = args;
+export async function bundle(args: {
+  cli: t.ICmdApp;
+  config?: Config;
+  version?: string;
+  prompt?: boolean;
+  silent?: boolean;
+}) {
+  const { cli, silent } = args;
   const config = args.config || (await Config.create());
   const bundlesDir = config.builder.bundles;
 
@@ -74,7 +78,7 @@ export async function bundle(
   }
 
   // Push.
-  await bundler.push(s3).bundle({
+  await bundler.push({ ...s3, cli }).bundle({
     bundleDir,
     bucket,
     bucketKey,
@@ -91,8 +95,8 @@ export async function bundle(
 /**
  * Push manifest to S3.
  */
-export async function manifest(args: { config?: Config; silent?: boolean } = {}) {
-  const { silent } = args;
+export async function manifest(args: { cli: t.ICmdApp; config?: Config; silent?: boolean }) {
+  const { cli, silent } = args;
   const config = args.config || (await Config.create());
   const s3 = config.s3;
 
@@ -100,7 +104,7 @@ export async function manifest(args: { config?: Config; silent?: boolean } = {})
   const bucket = s3.bucket;
   const source = config.manifest.local.path;
   const target = fs.join(s3.path.base, s3.path.manifest);
-  await bundler.push(s3.config).manifest({ bucket, source, target, silent });
+  await bundler.push({ ...s3.config, cli }).manifest({ bucket, source, target, silent });
 
   // Finish up.
   if (!silent) {

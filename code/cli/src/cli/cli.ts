@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
-import { log, t, yargs } from '../common';
+import { log, t, yargs, prompt } from '../common';
 import { tasks } from '../tasks';
 import { initKeyboard } from './cli.keyboard';
 import { init as initPlugins } from './cli.plugins';
@@ -71,6 +71,7 @@ export function create(name: string) {
     option,
     exit,
     events$,
+    prompt,
     get plugins() {
       return plugins || (plugins = initPlugins({ cli, events$, exit }));
     },

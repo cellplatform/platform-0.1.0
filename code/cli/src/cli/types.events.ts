@@ -7,7 +7,7 @@ export type CmdAppEvent =
   | ICmdAppExitEvent
   | ICmdAppShowHelpBeforeEvent
   | ICmdAppShowHelpAfterEvent
-  | CmdAppKeyboardEvent;
+  | ICmdAppKeypressEvent;
 
 export type ICmdAppExitEvent = { type: 'CLI/exit'; payload: ICmdAppExit };
 export type ICmdAppExit = { ok: boolean; code: number };
@@ -19,16 +19,8 @@ export type ICmdAppShowHelp = { argv: t.ICmdArgv<{}> };
 /**
  * Keyboard
  */
-export type CmdAppKeyboardEvent = ICmdAppKeypressEvent | ICmdAppKeyboardStartedEvent;
-
-export type ICmdAppKeyboardStartedEvent = {
-  type: 'CLI/keyboard/started';
-  payload: ICmdAppKeyboardStarted;
-};
-export type ICmdAppKeyboardStarted = {};
-
 export type ICmdAppKeypressEvent = {
-  type: 'CLI/keyboard/keypress';
+  type: 'CLI/keypress';
   payload: ICmdAppKeypress;
 };
 export type ICmdAppKeypress = {

@@ -1,18 +1,18 @@
 import { Config } from '../config';
 import { Manifest } from '../manifest';
-import { cli, log } from './common';
+import { t, log } from './common';
 
 /**
  * Print status summary of the manifest.
  */
-export async function run(args: { config?: Config } = {}) {
+export async function run(args: { cli: t.ICmdApp; config?: Config }) {
+  const { cli } = args;
   const config = args.config || (await Config.create());
   let manifest: Manifest | undefined;
 
   // Pull data from cloud.
   log.info();
   await cli
-    .tasks()
     .task('pull manifest', async e => {
       manifest = await config.manifest.s3.pull({ force: true, loadBundleManifest: true });
     })

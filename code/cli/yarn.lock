@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/cli.prompt@0.2.7":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.2.7.tgz#ca398ea889dbacdeaa302bddc5d6d851f3ac6cb7"
-  integrity sha512-5kgu5cep/PyITE+AR5VFtMx1aok1ldewCG6XCgkOArknrmkk32K4O1pxUUvxQnTgguH/bGSwdv/Ztl+2Xl23jg==
+"@platform/cli.prompt@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.2.10.tgz#1aac323d04f399083f540908cd98c6867790fc2d"
+  integrity sha512-k3V0TchyizYS2ihj38g12Xe9bRl0zxfctXS450AJnqiW7F+InVZdFGHStxXmTrg43tW1OGs/CRTxwdG4bUom4w==
   dependencies:
     "@platform/libs" "0.1.5"
     inquirer "7.0.3"

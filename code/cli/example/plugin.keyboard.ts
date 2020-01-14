@@ -11,10 +11,10 @@ export const init: t.CmdPluginsInit = cli => {
   const handler: t.CmdPluginHandler<IMyKeyboard> = async args => {
     const { keyboard } = args;
 
-    keyboard.started$.subscribe(e => {
-      log.info('keyboard started 🌳');
-      log.info();
-    });
+    log.info();
+    log.info('keyboard started 🌳');
+    log.info.gray('Hit any key to log events...');
+    log.info();
 
     keyboard.keypress$.subscribe(e => {
       log.info('keypress', e);

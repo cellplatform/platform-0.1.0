@@ -1,15 +1,20 @@
 import { bundler } from '../bundler';
 import { Config } from '../config';
-import { cli, exec, fs, log, npm, t } from './common';
+import { exec, fs, log, npm, t } from './common';
 import * as push from './cmd.push';
 
 /**
  * Bundle script.
  */
-export async function run(
-  args: { config?: Config; version?: string; push?: boolean; manifest?: boolean } = {},
-) {
+export async function run(args: {
+  cli: t.ICmdApp;
+  config?: Config;
+  version?: string;
+  push?: boolean;
+  manifest?: boolean;
+}) {
   // Setup initial conditions.
+  const { cli } = args;
   const config = args.config || (await Config.create());
   const { endpoint } = config.s3;
   let manifest: t.IBundleManifest | undefined;
@@ -41,7 +46,6 @@ export async function run(
   // Task list.
   log.info();
   const tasks = cli
-    .tasks()
     .task('build', async e => execScript(pkg, e, 'build'), { skip: args.manifest })
     .task('bundle', async e => execScript(pkg, e, 'bundle'), { skip: args.manifest })
     .task('manifest', async e => {
@@ -69,7 +73,7 @@ export async function run(
 
   // Push to S3.
   if (isPush) {
-    await push.bundle({ config, version });
+    await push.bundle({ cli, config, version });
   } else if (manifest) {
     bundler.log.bundle({ bundleDir, manifest });
   }
@@ -82,7 +86,7 @@ export async function run(
  * [Helpers]
  */
 
-async function execScript(pkg: npm.NpmPackage, e: cli.TaskArgs, scriptName: string) {
+async function execScript(pkg: npm.NpmPackage, e: t.TaskArgs, scriptName: string) {
   // Ensure the script exists.
   const exists = Boolean(pkg.scripts.bundle);
   if (!exists) {
