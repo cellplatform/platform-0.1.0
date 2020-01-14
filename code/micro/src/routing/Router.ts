@@ -3,7 +3,7 @@ import * as querystring from 'querystring';
 import { parse as parseUrl } from 'url';
 
 import * as body from '../body';
-import { t, value } from '../common';
+import { t, value, log, methodColor } from '../common';
 
 export class Router implements t.IRouter {
   /**
@@ -208,6 +208,28 @@ export class Router implements t.IRouter {
       return req.method === route.method && route.regex.test(toPath(req.url));
     });
     return route || this.wildcard;
+  }
+
+  /**
+   * Creates a console loggable table of the routes.
+   */
+  public log(options: { indent?: number } = {}) {
+    const table = log.table({ border: false });
+    const gray = log.gray;
+    const prefix = ' '.repeat(Math.max(0, options.indent || 0));
+
+    this.routes.forEach(route => {
+      const method = methodColor(route.method)(route.method);
+      const pattern = gray(`${route.path}`);
+
+      let line: string[] = [];
+      line = prefix ? [...line, prefix.substring(1)] : line;
+      line = [...line, `${method} `, pattern];
+
+      table.add(line);
+    });
+
+    return table.toString();
   }
 }
 

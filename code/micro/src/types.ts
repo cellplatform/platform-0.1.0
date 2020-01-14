@@ -87,6 +87,7 @@ export type IRouter<C extends object = {}> = {
   post(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
   delete(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
   find(req: { method?: string; url?: string }): IRoute | undefined;
+  log(options?: { indent?: number }): string;
 };
 
 /**

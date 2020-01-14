@@ -35,6 +35,7 @@
   "files": [
     "lib",
     "!lib/test",
+    "!lib/example",
     "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
