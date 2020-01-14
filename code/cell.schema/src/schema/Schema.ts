@@ -1,40 +1,7 @@
-import { cuid, slug, t, ERROR } from '../common';
+import { cuid, slug, t } from '../common';
+import { FileSchema } from '../file';
 import { Uri } from '../uri';
 import { Urls } from '../url';
-import { FileLinks } from '../file';
-
-export type SchemaFileType = 'FILE';
-export type SchemaCoordType = 'CELL' | 'COL' | 'ROW';
-export type SchemaType<T extends t.IUri> = t.IUriParts<T> & { path: string };
-
-export type PathString = string;
-export type UriString = string;
-
-/**
- * Schema for a file.
- */
-export class FileSchema {
-  public static links = FileLinks;
-  public static ERROR = ERROR;
-
-  public readonly type: SchemaFileType = 'FILE';
-  public readonly fileid: string;
-  public readonly path: string;
-  public readonly uri: string;
-
-  constructor(args: { nsPath: string; fileid: string; uri: string }) {
-    this.fileid = args.fileid;
-    this.path = `${args.nsPath}/${this.type}/${this.fileid}`;
-    this.uri = args.uri;
-  }
-
-  public static uri(args: { path: string }) {
-    const parts = args.path.split('/');
-    const ns = parts[1];
-    const file = parts[3];
-    return Uri.create.file(ns, file);
-  }
-}
 
 /**
  * Schema of DB paths.
@@ -173,12 +140,12 @@ export class NsSchema {
  * Schema for a NS coordinate such as a `cell`, `column` or `row`.
  */
 export class CoordSchema {
-  public readonly type: SchemaCoordType;
+  public readonly type: t.SchemaCoordType;
   public readonly id: string;
   public readonly path: string;
   public readonly uri: string;
 
-  constructor(args: { type: SchemaCoordType; nsPath: string; id: string; uri: string }) {
+  constructor(args: { type: t.SchemaCoordType; nsPath: string; id: string; uri: string }) {
     this.id = args.id;
     this.type = args.type;
     this.path = `${args.nsPath}/${args.type}/${this.id}`;
@@ -188,7 +155,7 @@ export class CoordSchema {
   public static uri(args: { path: string }) {
     const parts = args.path.split('/');
     const ns = parts[1];
-    const type = parts[2] as SchemaCoordType;
+    const type = parts[2] as t.SchemaCoordType;
     const key = parts[3];
 
     if (type === 'CELL') {
@@ -210,10 +177,10 @@ export class CoordSchema {
  */
 
 const from = <T extends t.IUri>(args: {
-  input: PathString | UriString | { path: string };
+  input: t.DbPathString | t.UriString | { path: string };
   toUri: (path: string) => string;
   toPath: (uri: string) => string;
-}): SchemaType<T> => {
+}): t.SchemaType<T> => {
   let path = '';
   let uri = '';
 
