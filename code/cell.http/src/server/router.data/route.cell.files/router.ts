@@ -21,7 +21,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const query = req.query as t.IUrlQueryCellFilesList;
       const params = req.params as t.IUrlParamsCellFiles;
       const paramData = getParams({ params });
-      const { status, error, uri: cellUri } = paramData;
+      const { status, error, cellUri } = paramData;
 
       return !paramData.ns || error
         ? { status, data: { error } }
@@ -48,7 +48,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const query = req.query as t.IUrlQueryCellFilesListUpload;
       const params = req.params as t.IUrlParamsCellFiles;
       const paramData = getParams({ params });
-      const { status, error, ns, uri: cellUri, key: cellKey } = paramData;
+      const { status, error, cellUri } = paramData;
       const changes = query.changes;
       const body = ((await req.body.json()) || {}) as t.IReqPostCellUploadFilesBody;
 
@@ -70,7 +70,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const params = req.params as t.IUrlParamsCellFiles;
       const paramData = getParams({ params });
       const body = (await req.body.json()) as t.IReqDeleteCellFilesBody;
-      const { status, error, uri: cellUri } = paramData;
+      const { status, error, cellUri: cellUri } = paramData;
 
       return !paramData.ns || error
         ? { status, data: { error } }

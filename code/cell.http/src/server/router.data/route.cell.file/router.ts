@@ -1,5 +1,6 @@
-import { models, routes, Schema, t, util } from '../common';
-import { getFileDownloadResponse } from '../route.file';
+import { routes, t, util } from '../common';
+import { getFileByIndexHandler } from './handler.byIndex';
+import { getFileByNameHandler } from './handler.byName';
 import { getParams } from './params';
 
 /**
@@ -14,31 +15,16 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *      NB: This is the same as calling the `/file:...` GET route point directly.
    */
   router.get(routes.CELL.FILE_BY_NAME, async req => {
-    const host = req.host;
-    const query = req.query as t.IUrlQueryCellFileByName;
-    const params = req.params as t.IUrlParamsCellFileByName;
-
-    const paramData = getParams({ params, filenameRequired: true });
-    const { status, ns, filename, error, uri: cellUri } = paramData;
-    if (!ns || error) {
-      return { status, data: { error } };
-    }
-
     try {
-      // Retreive the [cell] info.
-      const cell = await models.Cell.create({ db, uri: cellUri }).ready;
-      const cellLinks = cell.props.links || {};
-      const linkKey = Schema.file.links.toKey(filename);
-      const fileUri = cellLinks[linkKey];
+      const host = req.host;
+      const query = req.query as t.IUrlQueryCellFileByName;
+      const params = req.params as t.IUrlParamsCellFileByName;
+      const paramData = getParams({ params, filenameRequired: true });
+      const { status, filename, error, cellUri } = paramData;
 
-      // 404 if file URI not found.
-      if (!fileUri) {
-        const err = `The file '${filename}' is not associated with the cell "${cellUri}".`;
-        return util.toErrorPayload(err, { status: 404 });
-      }
-
-      // Run the "file:" download handler.
-      return getFileDownloadResponse({ db, fs, uri: fileUri, query, host });
+      return !paramData.ns || error
+        ? { status, data: { error } }
+        : getFileByNameHandler({ db, fs, cellUri, filename, query, host });
     } catch (err) {
       return util.toErrorPayload(err);
     }
@@ -49,30 +35,16 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *      Example: /cell:foo!A1/files/0
    */
   router.get(routes.CELL.FILE_BY_INDEX, async req => {
-    const host = req.host;
-    const query = req.query as t.IUrlQueryCellFileByIndex;
-    const params = req.params as t.IUrlParamsCellFileByIndex;
-
-    const paramData = getParams({ params, indexRequired: true });
-    const { status, ns, index, error, uri: cellUri } = paramData;
-    if (!ns || error) {
-      return { status, data: { error } };
-    }
-
     try {
-      // Retreive the [cell] info.
-      const cell = await models.Cell.create({ db, uri: cellUri }).ready;
-      const cellLinks = cell.props.links || {};
-      const fileUri = cellLinks[Object.keys(cellLinks)[index]];
+      const host = req.host;
+      const query = req.query as t.IUrlQueryCellFileByIndex;
+      const params = req.params as t.IUrlParamsCellFileByIndex;
+      const paramData = getParams({ params, indexRequired: true });
+      const { status, index, error, cellUri } = paramData;
 
-      // 404 if file URI not found.
-      if (!fileUri) {
-        const err = `A file at index [${index}] does not exist within the cell "${cellUri}".`;
-        return util.toErrorPayload(err, { status: 404 });
-      }
-
-      // Run the "file:" download handler.
-      return getFileDownloadResponse({ db, fs, uri: fileUri, query, host });
+      return !paramData.ns || error
+        ? { status, data: { error } }
+        : getFileByIndexHandler({ db, fs, cellUri, index, query, host });
     } catch (err) {
       return util.toErrorPayload(err);
     }

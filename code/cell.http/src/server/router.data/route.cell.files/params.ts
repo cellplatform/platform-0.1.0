@@ -17,7 +17,7 @@ export const getParams = (args: { params: ParamOr }) => {
   const data = {
     ns: toString(params.ns || ''),
     key: toString(params.key || ''),
-    uri: '',
+    cellUri: '',
   };
 
   const error: t.IError = {
@@ -36,7 +36,7 @@ export const getParams = (args: { params: ParamOr }) => {
   }
 
   try {
-    data.uri = Schema.uri.create.cell(data.ns, data.key);
+    data.cellUri = Schema.uri.create.cell(data.ns, data.key);
   } catch (err) {
     error.message = toMessage(err.message);
     return { ...data, status: 400, error };

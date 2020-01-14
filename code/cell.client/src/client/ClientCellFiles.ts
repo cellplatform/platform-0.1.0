@@ -80,7 +80,7 @@ export class ClientCellFiles implements t.IClientCellFiles {
     // 1. Initial POST to the service.
     //    This sets up the models, and retrieves the pre-signed S3 urls to upload to.
     const url = parent.url.files.upload.toString();
-    const body: t.IReqPostCellFilesBody = {
+    const body: t.IReqPostCellUploadFilesBody = {
       seconds: undefined, // Expires.
       files: files.map(({ filename }) => ({ filename })),
     };

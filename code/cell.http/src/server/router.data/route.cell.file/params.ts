@@ -11,11 +11,11 @@ export const getParams = (args: {
   const toMessage = (msg: string) => `Malformed URI, ${msg}`;
 
   const res = getParamsFiles({ params });
-  const { ns, key, uri } = res;
+  const { ns, key, cellUri } = res;
   const data = {
     ns,
     key,
-    uri,
+    cellUri,
     filename: toString(params.filename || ''),
     index: defaultValue<number>(params.index as number, -1),
   };
