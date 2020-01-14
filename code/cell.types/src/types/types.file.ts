@@ -38,7 +38,7 @@ export type IFileIntegrity = {
 /**
  * Upload (presigned URL)
  */
-export type IFileUploadUrl = {
+export type IFilePresignedUploadUrl = {
   method: 'POST';
   expiresAt: number;
   filename: string;

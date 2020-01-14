@@ -22,7 +22,7 @@ export async function uploadCellFilesStartHandler(args: {
     return util.toErrorPayload(err, { status: 400 });
   }
 
-  const postFileModel = async (args: {
+  const postUploadStart = async (args: {
     ns: string;
     file: t.IReqPostCellUploadFile;
     links: t.IUriMap;
@@ -42,7 +42,7 @@ export async function uploadCellFilesStartHandler(args: {
       query,
       seconds,
     });
-    const json = res.data as t.IResPostFile;
+    const json = res.data as t.IResPostFileUploadStart;
     const status = res.status;
     return { status, res, key, uri, filename, json };
   };
@@ -52,7 +52,7 @@ export async function uploadCellFilesStartHandler(args: {
   const cellLinks = cell.props.links || {};
 
   // Post each file to the file-system as a model getting it's signed upload-link.
-  const wait = files.map(file => postFileModel({ ns, file, links: cellLinks }));
+  const wait = files.map(file => postUploadStart({ ns, file, links: cellLinks }));
   const postFilesRes = await Promise.all(wait);
 
   // Check for file-save errors.

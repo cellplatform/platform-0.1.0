@@ -10,7 +10,7 @@ export async function postFileUploadStartHandler(args: {
   host: string;
   query?: t.IUrlQueryFileUpload;
   seconds?: number; // Expires.
-}): Promise<t.IPayload<t.IResPostFile> | t.IErrorPayload> {
+}): Promise<t.IPayload<t.IResPostFileUploadStart> | t.IErrorPayload> {
   const { db, uri, query = {}, fs, host } = args;
   const seconds = defaultValue(args.seconds, 10 * 60); // Default: 10 minutes.
   const sendChanges = defaultValue(query.changes, true);
@@ -36,7 +36,7 @@ export async function postFileUploadStartHandler(args: {
       .toDate()
       .getTime();
 
-    const upload: t.IFileUploadUrl = {
+    const upload: t.IFilePresignedUploadUrl = {
       expiresAt,
       method: 'POST',
       filename,
@@ -69,7 +69,7 @@ export async function postFileUploadStartHandler(args: {
     const fileResponse = await getFileInfoHandler({ uri, db, query, host });
     const { status } = fileResponse;
     const fileResponseData = fileResponse.data as t.IResGetFile;
-    const res: t.IPayload<t.IResPostFile> = {
+    const res: t.IPayload<t.IResPostFileUploadStart> = {
       status,
       data: {
         ...fileResponseData,

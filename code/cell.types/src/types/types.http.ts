@@ -112,14 +112,13 @@ export type IResGetFileUrls = { info: string; download: string };
  * File: POST (upload)
  */
 
-// TODO 🐷 - delete single file upload types(??)
-
-export type IReqPostFileBody = {};
-export type IResPostFile = IResGetFile & {
-  upload: t.IFileUploadUrl;
+export type IResPostFileUploadStart = IResGetFile & {
+  upload: t.IFilePresignedUploadUrl;
   changes?: t.IDbModelChange[];
 };
 
+// Used on locally running instances to recieve bindary file data to save.
+// When working against S3, this is the cloud end-point (using a presigned-url).
 export type IResPostFileUploadLocal = {
   path: string;
 };
@@ -168,7 +167,7 @@ export type IResPostCellFilesData = {
 };
 export type IResPostCellFilesError = { status: number; filename: string; message: string };
 export type IResPostCellFilesUrls = IResGetCellUrls & {
-  uploads: t.IFileUploadUrl[];
+  uploads: t.IFilePresignedUploadUrl[];
 };
 
 /**

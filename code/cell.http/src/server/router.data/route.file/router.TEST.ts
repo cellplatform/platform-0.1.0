@@ -48,7 +48,7 @@ export const testPostFile = async (args: {
   if (args.dispose !== false) {
     mock.dispose();
   }
-  const json = res.json as t.IResPostFile;
+  const json = res.json as t.IResPostFileUploadStart;
   const data = json.data;
   const props = (data && data.props) || {};
   return { res, json, data, props, mock };
