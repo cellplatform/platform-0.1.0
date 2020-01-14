@@ -32,5 +32,6 @@ const app = server.init({
   db,
   fs: getRemoteFs(), // TEMP 🐷 - revert to local FS.
   // fs: getLocalFs(),
+  log: ['ROUTES'],
 });
 app.start({ port: 8080 });
