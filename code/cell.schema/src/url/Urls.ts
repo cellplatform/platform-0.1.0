@@ -2,7 +2,7 @@ import { R, t, value } from '../common';
 import { Uri } from '../uri';
 import { Url } from './Url';
 import * as util from './util';
-import { ROUTES } from './ROUTES';
+import { ROUTES } from './Urls.ROUTES';
 
 /**
  * Standardised construction of URLs for the HTTP service.
