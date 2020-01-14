@@ -10,5 +10,9 @@ export function init(args: {
   title?: string;
   deployedAt?: number;
 }) {
-  console.log('\n🐷 TODO register UI routes (/router.ui/index.ts)\n');
+  /**
+   * TODO 🐷
+   * - register UI routes
+   */
+  // console.log('\n🐷 TODO register UI routes (/router.ui/index.ts)\n');
 }
