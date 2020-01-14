@@ -1,7 +1,7 @@
 import { defaultValue, models, routes, Schema, t, util } from '../common';
 import { postFileUploadStartHandler } from '../route.file';
 import { postNsResponse } from '../route.ns';
-import { getParams } from './cell.files.params';
+import { getParams } from './params';
 
 /**
  * Cell routes for operating with files.

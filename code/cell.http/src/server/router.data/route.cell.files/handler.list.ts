@@ -1,36 +1,24 @@
-import { models, routes, Schema, t, util } from '../common';
-import { getParams } from './cell.files.params';
+import { models, Schema, t, util } from '../common';
 
-/**
- * Cell routes for operating with files.
- */
-export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) {
-  const { db, router } = args;
-
-  /**
-   * GET: !A1/files
-   */
-  router.get(routes.CELL.FILES, async req => {
-    const query = req.query as t.IUrlQueryCellFilesList;
-    const params = req.params as t.IUrlParamsCellFiles;
-
-    const paramData = getParams({ params });
-    const { status, error } = paramData;
-
-    if (!paramData.ns || error) {
-      return { status, data: { error } };
-    }
-
+export async function listCellFilesHandler(args: {
+  db: t.IDb;
+  fs: t.IFileSystem;
+  cellUri: string;
+  host: string;
+}) {
+  try {
+    const { db, host } = args;
+    //
     // Prepare URIs.
-    const cellUri = Schema.uri.parse<t.ICellUri>(paramData.uri);
-    const nsUri = Schema.uri.parse<t.INsUri>(Schema.uri.create.ns(paramData.ns));
+    const cellUri = Schema.uri.parse<t.ICellUri>(args.cellUri);
+    const nsUri = Schema.uri.parse<t.INsUri>(Schema.uri.create.ns(cellUri.parts.ns));
 
-    // Retrieve data.
+    // Retrieve data models.
     const cell = await models.Cell.create({ db, uri: cellUri.toString() }).ready;
     const ns = await models.Ns.create({ db, uri: nsUri.toString() }).ready;
 
     // Construct links object.
-    const urlBuilder = util.urls(req.host).cell(cellUri.toString());
+    const urlBuilder = util.urls(host).cell(cellUri.toString());
     const cellLinks = cell.props.links || {};
     const urls = urlBuilder.files.urls(cellLinks);
     const linkUris = Object.keys(cellLinks)
@@ -49,7 +37,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       }
     });
 
-    // Response.
+    // Finish up.
     const data: t.IResGetCellFiles = {
       uri: cellUri.toString(),
       cell: urlBuilder.info,
@@ -58,5 +46,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     };
 
     return { status: 200, data };
-  });
+  } catch (err) {
+    return util.toErrorPayload(err);
+  }
 }

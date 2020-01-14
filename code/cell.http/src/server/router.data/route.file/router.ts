@@ -118,8 +118,6 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const host = req.host;
     const query = req.query as t.IUrlQueryFileDelete;
     const { status, ns, error, uri } = getParams(req);
-    return !ns || error
-      ? { status, data: { error } }
-      : deleteFileHandler({ fs, uri, db, query, host });
+    return !ns || error ? { status, data: { error } } : deleteFileHandler({ fs, uri, db, host });
   });
 }

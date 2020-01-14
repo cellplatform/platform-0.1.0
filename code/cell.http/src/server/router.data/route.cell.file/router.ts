@@ -1,9 +1,9 @@
 import { models, routes, Schema, t, util } from '../common';
 import { getFileDownloadResponse } from '../route.file';
-import { getParams } from './cell.files.params';
+import { getParams } from './params';
 
 /**
- * Cell routes for operating with files.
+ * Routes for operating on a single cell file.
  */
 export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) {
   const { db, fs, router } = args;
@@ -19,7 +19,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const params = req.params as t.IUrlParamsCellFileByName;
 
     const paramData = getParams({ params, filenameRequired: true });
-    const { status, ns, key, filename, error, uri: cellUri } = paramData;
+    const { status, ns, filename, error, uri: cellUri } = paramData;
     if (!ns || error) {
       return { status, data: { error } };
     }

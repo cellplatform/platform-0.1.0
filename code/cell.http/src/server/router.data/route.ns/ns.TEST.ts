@@ -1,5 +1,5 @@
 import { t, expect, http, createMock, stripHashes, post } from '../../../test';
-import { testPostFile } from '../route.file/file.TEST';
+import { testPostFile } from '../route.file/router.TEST';
 
 /**
  * TODO 🐷

@@ -5,7 +5,6 @@ export async function deleteFileHandler(args: {
   fs: t.IFileSystem;
   uri: string;
   host: string;
-  query?: t.IUrlQueryFileDelete;
 }): Promise<t.IPayload<t.IResDeleteFile> | t.IErrorPayload> {
   const { db, fs, uri } = args;
 
