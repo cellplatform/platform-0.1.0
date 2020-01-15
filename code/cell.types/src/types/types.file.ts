@@ -20,18 +20,18 @@ export type FileIntegrityStatus =
   | 'UPLOADING'
   | 'VALID'
   | 'INVALID'
-  | 'INVALID/filehash'
   | 'INVALID/fileMissing' // TODO 🐷 implement on integrity object.
+  | 'INVALID/filehash'
+  | 'INVALID/s3:etag'
   | 'UNKNOWN';
 
 export type IFileIntegrity = {
   ok: boolean | null;
-  exists: boolean | null; // File verified to exist on storage media.
   status: FileIntegrityStatus;
-  filehash?: string;
-  'S3:ETAG'?: string;
   verifiedAt: number;
   uploadedAt: number;
+  filehash?: string;
+  's3:etag'?: string;
 };
 
 /**

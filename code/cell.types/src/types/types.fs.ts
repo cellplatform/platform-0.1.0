@@ -69,7 +69,7 @@ type IFsMetaCommon = {
 };
 export type IFsMeta = IFsMetaLocal | IFsMetaS3;
 export type IFsMetaLocal = IFsMetaCommon;
-export type IFsMetaS3 = IFsMetaCommon & { 'S3:ETAG'?: string };
+export type IFsMetaS3 = IFsMetaCommon & { 's3:etag'?: string };
 
 /**
  * File (info + data)
@@ -123,6 +123,6 @@ export type IFsDeleteLocal = IFsDeleteCommon & {};
  * S3 (Extensions)
  */
 export type IFsInfoS3 = IFsInfoCommon & IFsMetaS3;
-export type IFsReadS3 = IFsReadCommon & { file?: IFsFileData<IFsMetaS3>; 'S3:ETAG'?: string };
-export type IFsWriteS3 = IFsWriteCommon & { file: IFsFileData<IFsMetaS3>; 'S3:ETAG'?: string };
+export type IFsReadS3 = IFsReadCommon & { file?: IFsFileData<IFsMetaS3>; 's3:etag'?: string };
+export type IFsWriteS3 = IFsWriteCommon & { file: IFsFileData<IFsMetaS3>; 's3:etag'?: string };
 export type IFsDeleteS3 = IFsDeleteCommon & {};

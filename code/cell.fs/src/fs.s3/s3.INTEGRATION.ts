@@ -45,7 +45,7 @@ describe('S3 (INTEGRATION)', function() {
     expect(res.location).to.eql(location);
     expect(res.path).to.eql('/tmp/test.cell.fs/ns.foo/bird');
 
-    expect(res['S3:ETAG']?.length).to.greaterThan(0);
+    expect(res['s3:etag']?.length).to.greaterThan(0);
 
     log.info('INFO', res);
   });

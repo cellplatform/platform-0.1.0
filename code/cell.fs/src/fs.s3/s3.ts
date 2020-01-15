@@ -96,7 +96,7 @@ export function init(args: IS3Init): t.IFsS3 {
           location,
           hash: '', // NB: Unknown from raw S3 data (without downloading).
           bytes: res.bytes,
-          'S3:ETAG': res.etag,
+          's3:etag': res.etag,
         };
       } catch (err) {
         return { uri, exists: false, path, location, hash: '', bytes: -1 };
@@ -119,7 +119,7 @@ export function init(args: IS3Init): t.IFsS3 {
             message: `Failed to read [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { ok, status, uri, error, 'S3:ETAG': etag };
+          return { ok, status, uri, error, 's3:etag': etag };
         } else {
           const file: t.IFsFileData = {
             path,
@@ -132,7 +132,7 @@ export function init(args: IS3Init): t.IFsS3 {
               return Uint8Array.from(file.data).length;
             },
           };
-          return { ok, status, file, uri, 'S3:ETAG': etag };
+          return { ok, status, file, uri, 's3:etag': etag };
         }
       } catch (err) {
         const error: t.IFsError = {
@@ -201,9 +201,9 @@ export function init(args: IS3Init): t.IFsS3 {
             message: `Failed to write [${uri}]. ${res.error ? res.error.message : ''}`.trim(),
             path,
           };
-          return { ok, status, file, uri, error, 'S3:ETAG': etag };
+          return { ok, status, file, uri, error, 's3:etag': etag };
         } else {
-          return { ok, status, file, uri, 'S3:ETAG': etag };
+          return { ok, status, file, uri, 's3:etag': etag };
         }
       } catch (err) {
         const error: t.IFsError = {
