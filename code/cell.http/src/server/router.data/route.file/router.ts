@@ -43,10 +43,10 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const body = await req.body.json<t.IReqPostFileVerifiedBody>({ default: { overwrite: false } });
     const params = req.params as t.IUrlParamsFile;
     const { status, ns, error, uri } = getParams(params);
-    const { overwrite } = body;
+    const sendChanges = query.changes;
     return !ns || error
       ? { status, data: { error } }
-      : uploadFileComplete({ db, fs, uri, host, query, overwrite });
+      : uploadFileComplete({ db, fs, uri, host, sendChanges });
   });
 
   /**
