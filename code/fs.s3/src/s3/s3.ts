@@ -55,7 +55,7 @@ export function init(args: t.S3Config): t.S3 {
       return list({ ...args, s3 });
     },
 
-    get(args: { bucket: string; key: string }) {
+    get(args: { bucket: string; key: string; metaOnly?: boolean }) {
       return get({ ...args, s3 });
     },
 
@@ -101,7 +101,7 @@ export function init(args: t.S3Config): t.S3 {
         list(args: { prefix?: string; max?: number }) {
           return res.list({ ...args, bucket });
         },
-        get(args: { key: string }) {
+        get(args: { key: string; metaOnly?: boolean }) {
           return res.get({ ...args, bucket });
         },
         put(args: {

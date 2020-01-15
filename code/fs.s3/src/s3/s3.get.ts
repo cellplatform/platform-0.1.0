@@ -7,6 +7,7 @@ export async function get(args: {
   s3: AWS.S3;
   bucket: string;
   key: string;
+  metaOnly?: boolean;
 }): Promise<t.S3GetResponse> {
   const { s3, bucket, key } = args;
   let json: t.Json | undefined;
@@ -34,12 +35,24 @@ export async function get(args: {
   };
 
   try {
-    const obj = await s3.getObject({ Bucket: bucket, Key: key }).promise();
-    response.modifiedAt = formatTimestamp((obj as any).LastModified);
-    response.etag = formatETag(obj.ETag);
-    response.data = obj.Body instanceof Buffer ? obj.Body : undefined;
-    response.contentType = obj.ContentType || '';
-    response.bytes = defaultValue(obj.ContentLength, -1);
+    const readProps = (obj: AWS.S3.GetObjectOutput | AWS.S3.HeadObjectOutput) => {
+      response.modifiedAt = formatTimestamp((obj as any).LastModified);
+      response.etag = formatETag(obj.ETag);
+      response.contentType = obj.ContentType || '';
+      response.bytes = defaultValue(obj.ContentLength, -1);
+      return obj;
+    };
+
+    if (args.metaOnly) {
+      // Metadata only.
+      const obj = await s3.headObject({ Bucket: bucket, Key: key }).promise();
+      readProps(obj);
+    } else {
+      // Metadata AND file-data.
+      const obj = await s3.getObject({ Bucket: bucket, Key: key }).promise();
+      readProps(obj);
+      response.data = obj.Body instanceof Buffer ? obj.Body : undefined;
+    }
   } catch (err) {
     const error = new Error(err.code);
     response.status = err.statusCode;

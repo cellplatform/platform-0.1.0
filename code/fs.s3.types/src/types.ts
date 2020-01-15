@@ -21,7 +21,7 @@ export type S3 = {
   endpoint: string;
   url(bucket: string, path?: string): S3Url;
   list(args: { bucket: string; prefix?: string; max?: number }): S3List;
-  get(args: { bucket: string; key: string }): Promise<S3GetResponse>;
+  get(args: { bucket: string; key: string; metaOnly?: boolean }): Promise<S3GetResponse>;
   put(args: S3PutArgs): Promise<S3PutResponse>;
   post(args: S3SignedPostArgs): S3SignedPost;
   deleteOne(args: { bucket: string; key: string }): Promise<S3DeleteOneResponse>;
@@ -40,7 +40,7 @@ export type S3Bucket = {
   endpoint: string;
   url(path?: string): S3Url;
   list(args: { prefix?: string; max?: number }): S3List;
-  get(args: { key: string }): Promise<S3GetResponse>;
+  get(args: { key: string; metaOnly?: boolean }): Promise<S3GetResponse>;
   put(args: S3BucketPutArgs): Promise<S3PutResponse>;
   post(args: S3SignedPostBucketArgs): S3SignedPost;
   deleteOne(args: { key: string }): Promise<S3DeleteOneResponse>;
