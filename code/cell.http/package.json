@@ -12,7 +12,7 @@
     "start": "cd src.tmpl && yarn start $@",
     "watch": "cd src.tmpl && yarn watch $@",
     "now": "cd src.tmpl && yarn now $@",
-    "test": "echo ts test",
+    "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
