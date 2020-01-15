@@ -1,7 +1,7 @@
 export { expect, expectError } from '@platform/test';
 export { log } from '@platform/log/lib/server';
 export * from '../common';
-import { s3 } from '..';
+import { s3, local } from '..';
 
 import { fs } from '../common';
 fs.env.load();
@@ -10,6 +10,11 @@ const TMP = fs.resolve('tmp');
 export const PATH = {
   TMP,
   LOCAL: fs.join(TMP, 'local'),
+};
+
+export const writeFile = async (path: string, data: Buffer) => {
+  await fs.ensureDir(fs.dirname(path));
+  await fs.writeFile(path, data);
 };
 
 export const initS3 = (args: { path?: string } = {}) => {
@@ -21,10 +26,14 @@ export const initS3 = (args: { path?: string } = {}) => {
   });
 };
 
+export const initLocal = () => local.init({ root: PATH.LOCAL });
+
 export const util = {
   initS3,
+  initLocal,
   PATH,
   fs,
+  writeFile,
   env: fs.env.value,
   async image(path: string) {
     return fs.readFile(fs.join(fs.resolve(`src/test/images`), path));

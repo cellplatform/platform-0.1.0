@@ -1,16 +1,16 @@
-import { expect, util } from '../test';
+import { expect, initS3 } from '../test';
 import { parse as parseUrl } from 'url';
 
 describe('S3', () => {
   it('type', () => {
-    const fs = util.initS3();
+    const fs = initS3();
     expect(fs.type).to.eql('S3');
   });
 
   describe('paths', () => {
     it('throws if no bucket in path', () => {
       const test = (path: string) => {
-        const fn = () => util.initS3({ path });
+        const fn = () => initS3({ path });
         expect(fn).to.throw(/does not contain a bucket/);
       };
       test(' ');
@@ -22,7 +22,7 @@ describe('S3', () => {
 
     it('paths', () => {
       const test = (path: string, expectedBucket: string, expectedRoot: string) => {
-        const fs = util.initS3({ path });
+        const fs = initS3({ path });
         expect(fs.bucket).to.eql(expectedBucket, `bucket: ${expectedBucket}`);
         expect(fs.root).to.eql(expectedRoot, `root: ${expectedRoot}`);
       };
@@ -44,7 +44,7 @@ describe('S3', () => {
     });
 
     it('resolve (uri => path)', () => {
-      const fs = util.initS3();
+      const fs = initS3();
       const test = (uri: string, expected: string) => {
         const res = fs.resolve(uri);
         expect(res.path).to.eql(`/tmp/test/${expected}`);
@@ -55,7 +55,7 @@ describe('S3', () => {
     });
 
     it('resolve (SIGNED/get)', () => {
-      const fs = util.initS3();
+      const fs = initS3();
       const res = fs.resolve('file:foo:123', { type: 'SIGNED/get', seconds: 5 });
       const url = parseUrl(res.path, true);
       expect(res.props).to.eql({});
@@ -65,7 +65,7 @@ describe('S3', () => {
     });
 
     it('resolve (SIGNED/put)', () => {
-      const fs = util.initS3();
+      const fs = initS3();
       const res = fs.resolve('file:foo:123', { type: 'SIGNED/put', seconds: 5 });
       const url = parseUrl(res.path, true);
       expect(res.props).to.eql({});
@@ -75,7 +75,7 @@ describe('S3', () => {
     });
 
     it('resolve (SIGNED/post)', () => {
-      const fs = util.initS3();
+      const fs = initS3();
       const res = fs.resolve('file:foo:123', { type: 'SIGNED/post', seconds: 5 });
       expect(res.path).to.eql('https://sfo2.digitaloceanspaces.com/platform');
       expect(res.props.bucket).to.eql('platform');

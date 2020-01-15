@@ -1,7 +1,4 @@
-import { t, expect, util, PATH } from '../test';
-import { local } from '.';
-
-const initLocal = () => local.init({ root: PATH.LOCAL });
+import { t, expect, util, PATH, initLocal } from '../test';
 
 describe('fs.local', () => {
   it('type', () => {
@@ -44,10 +41,8 @@ describe('fs.local', () => {
 
     it('resolve - throws if non-DEFAULT operation specified', () => {
       const fs = initLocal();
-      const test = (options: t.IFileSystemResolveArgs) => {
-        const fn = () => {
-          fs.resolve('file:foo:123', options);
-        };
+      const test = (options: t.IFsResolveArgs) => {
+        const fn = () => fs.resolve('file:foo:123', options);
         expect(fn).to.throw();
       };
       test({ type: 'SIGNED/get' });
@@ -55,7 +50,58 @@ describe('fs.local', () => {
     });
   });
 
-  it('write file', async () => {
+  it('info', async () => {
+    await util.reset();
+    const fs = initLocal();
+
+    const png = await util.image('bird.png');
+    const uri = 'file:foo:bird';
+    const path = fs.resolve(uri).path;
+    await util.writeFile(path, png);
+
+    const res = await fs.info(uri);
+    expect(res.uri).to.eql(uri);
+    expect(res.exists).to.eql(true);
+    expect(res.bytes).to.greaterThan(-1);
+    expect(res.hash).to.match(/^sha256-/);
+  });
+
+  it('info (404)', async () => {
+    await util.reset();
+    const fs = initLocal();
+    const uri = 'file:foo:boo';
+    const res = await fs.info(uri);
+
+    expect(res.uri).to.eql(uri);
+    expect(res.exists).to.eql(false);
+    expect(res.bytes).to.eql(-1);
+    expect(res.hash).to.eql('');
+    expect(res.path).to.match(/ns.foo\/boo/);
+  });
+
+  it('read', async () => {
+    await util.reset();
+    const fs = initLocal();
+
+    const png = await util.image('bird.png');
+    const uri = 'file:foo:bird';
+    const path = fs.resolve(uri).path;
+    await util.writeFile(path, png);
+
+    const res = await fs.read(uri);
+    const file = res.file as t.IFsFileData;
+
+    expect(res.uri).to.eql(uri);
+    expect(res.ok).to.eql(true);
+    expect(res.status).to.eql(200);
+    expect(res.error).to.eql(undefined);
+    expect(file.location).to.eql(`file://${file.path}`);
+    expect(file.path).to.eql(path);
+    expect(file.data.toString()).to.eql((await util.fs.readFile(file.path)).toString());
+    expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
+  });
+
+  it('write', async () => {
     await util.reset();
     const fs = initLocal();
 
@@ -64,39 +110,17 @@ describe('fs.local', () => {
     const res = await fs.write(`  ${uri} `, png); // NB: URI padded with spaces (corrected internally).
     const file = res.file;
 
+    expect(res.uri).to.eql(uri);
     expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
     expect(res.error).to.eql(undefined);
-    expect(res.location).to.eql(`file://${file.path}`);
-    expect(file.uri).to.eql(uri);
+    expect(file.location).to.eql(`file://${file.path}`);
     expect(file.path).to.eql(fs.resolve(uri).path);
     expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
     expect(png.toString()).to.eql((await util.fs.readFile(file.path)).toString());
   });
 
-  it('read file', async () => {
-    await util.reset();
-    const fs = initLocal();
-
-    const png = await util.image('bird.png');
-    const uri = 'file:foo:bird';
-    const path = fs.resolve(uri).path;
-    await util.fs.ensureDir(util.fs.dirname(path));
-    await util.fs.writeFile(path, png);
-
-    const res = await fs.read(uri);
-    const file = res.file as t.IFileSystemFile;
-
-    expect(res.ok).to.eql(true);
-    expect(res.status).to.eql(200);
-    expect(res.error).to.eql(undefined);
-    expect(res.location).to.eql(`file://${file.path}`);
-    expect(file.path).to.eql(path);
-    expect(file.data.toString()).to.eql((await util.fs.readFile(file.path)).toString());
-    expect(file.hash).to.match(/^sha256-[a-z0-9]+/);
-  });
-
-  it('delete file (one)', async () => {
+  it('delete (one)', async () => {
     await util.reset();
     const fs = initLocal();
 
@@ -113,10 +137,11 @@ describe('fs.local', () => {
 
     expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
+    expect(res.uris).to.eql([uri]);
     expect(res.locations[0]).to.eql(`file://${path}`);
   });
 
-  it('delete file (many)', async () => {
+  it('delete (many)', async () => {
     await util.reset();
     const fs = initLocal();
 
@@ -142,6 +167,7 @@ describe('fs.local', () => {
 
     expect(res.ok).to.eql(true);
     expect(res.status).to.eql(200);
+    expect(res.uris).to.eql([uri1, uri2]);
     expect(res.locations[0]).to.eql(`file://${path1}`);
     expect(res.locations[1]).to.eql(`file://${path2}`);
   });
@@ -153,8 +179,9 @@ describe('fs.local', () => {
       const uri = 'file:foo:noexist';
 
       const res = await fs.read(uri);
-      const error = res.error as t.IFileSystemError;
+      const error = res.error as t.IFsError;
 
+      expect(res.uri).to.eql(uri);
       expect(res.ok).to.eql(false);
       expect(res.status).to.eql(404);
       expect(res.file).to.eql(undefined);
