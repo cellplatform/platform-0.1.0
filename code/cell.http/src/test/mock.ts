@@ -12,6 +12,7 @@ export type IMock = {
   router: t.IRouter;
   service: t.IMicroService;
   filename: string;
+  host: string;
   url: (path: string) => string;
   urls: t.IUrls;
   client: t.IClient;
@@ -25,27 +26,22 @@ const PATH = {
 };
 let count = 0;
 
+/**
+ * Mocking object.
+ */
 export const mock = {
   async reset() {
     await util.fs.remove(TMP);
   },
   async create() {
-    return create();
+    return createMock();
   },
 };
 
-export const createMock = mock.create;
-
 /**
- * Helpers.
+ * Create a mock server.
  */
-
-const randomPort = () => {
-  const random = (min = 0, max = 9) => util.value.random(min, max);
-  return util.value.toNumber(`${random(6, 9)}${random()}${random()}${random()}`);
-};
-
-const create = async (args: { port?: number } = {}): Promise<IMock> => {
+export const createMock = async (args: { port?: number } = {}): Promise<IMock> => {
   count++;
   const filename = util.fs.join(TMP, `mock/test-${count}.db`);
   const port = args.port || randomPort();
@@ -58,6 +54,7 @@ const create = async (args: { port?: number } = {}): Promise<IMock> => {
   const service = await app.start({ port, silent: true });
 
   const urls = Schema.url(`localhost:${port}`);
+  const host = urls.host;
   const client = Client.create(urls.origin);
 
   const mock: IMock = {
@@ -68,6 +65,7 @@ const create = async (args: { port?: number } = {}): Promise<IMock> => {
     router,
     service,
     filename,
+    host,
     url: (path: string) => `http://localhost:${port}/${path.replace(/^\/*/, '')}`,
     urls,
     client,
@@ -88,4 +86,13 @@ const tryIgnore = async (fn: () => any) => {
   } catch (error) {
     // Ignore.
   }
+};
+
+/**
+ * Helpers.
+ */
+
+const randomPort = () => {
+  const random = (min = 0, max = 9) => util.value.random(min, max);
+  return util.value.toNumber(`${random(6, 9)}${random()}${random()}${random()}`);
 };
