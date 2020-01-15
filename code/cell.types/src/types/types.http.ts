@@ -126,7 +126,7 @@ export type IResPostFileUploadLocal = {
 /**
  * File: POST (verify)
  */
-export type IReqPostFileVerifiedBody = { overwrite?: boolean };
+export type IReqPostFileVerifiedBody = {};
 export type IResPostFileVerified = IResGetFile & {
   isValid: boolean;
   changes?: t.IDbModelChange[];

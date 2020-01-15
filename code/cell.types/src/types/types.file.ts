@@ -32,7 +32,6 @@ export type IFileIntegrity = {
   'S3:ETAG'?: string;
   verifiedAt: number;
   uploadedAt: number;
-  uploadExpiresAt?: number;
 };
 
 /**
