@@ -5,16 +5,15 @@ export async function upload(args: {
   http: t.IHttp;
   urls: t.IUrls;
   cellUri: string;
-  // uri: t.IUriParts<t.ICellUri>;
 }) {
   //
   const { http, urls, cellUri } = args;
   const input = Array.isArray(args.input) ? args.input : [args.input];
 
+  //
   // 1. Initial POST to the service.
   //    This sets up the models, and retrieves the pre-signed S3 urls to upload to.
   const url = urls.cell(cellUri).files.upload.toString();
-
   const res1 = await http.post(url, {
     seconds: undefined, // Expires.
     files: input.map(({ filename }) => ({ filename })),
@@ -24,11 +23,12 @@ export async function upload(args: {
     const message = `Failed during initial file-upload step to '${cellUri}'.`;
     return util.toError(res1.status, type, message);
   }
+  const uploadStart = res1.json as t.IResPostCellUploadFiles;
 
-  const start = res1.json as t.IResPostCellUploadFiles;
-
+  //
   // 2. Upload files to S3.
-  const uploads = start.urls.uploads;
+  //
+  const uploads = uploadStart.urls.uploads;
   const uploadWait = uploads
     .map(upload => {
       const file = input.find(item => item.filename === upload.filename);
@@ -56,7 +56,8 @@ export async function upload(args: {
 
       const uploadToLocal = async () => {
         // HACK:  There is a problem sending the multi-part form to the local
-        //        service, however just posting the data as a buffer works fine.
+        //        service, however just posting the data as a buffer (rather than the form)
+        //        seems to work fine.
         const path = upload.props.key;
         const headers = { 'content-type': 'multipart/form-data', path };
         return http.post(url, data, { headers });
@@ -82,9 +83,11 @@ export async function upload(args: {
    * - clean up upload errors.
    */
 
+  //
   // 3. Perform verification on each file-upload causing
   //    the underlying model(s) to be updated with file
   //    meta-data and the new file-hash.
+  //
   const uploadCompletedWait = uploadSuccess.map(async item => {
     const url = urls.file(item.uri).uploaded.toString();
     const body: t.IReqPostFileUploadCompleteBody = {};
@@ -93,19 +96,17 @@ export async function upload(args: {
   });
   const res3 = await Promise.all(uploadCompletedWait);
 
-  // Weave in AFTER file objects.
-  const files = start.data.files.map(({ uri, before }) => {
+  // Weave in the AFTER file objects.
+  const files = uploadStart.data.files.map(({ uri, before }) => {
     const file = res3.find(item => item.uri === uri);
     const after = file ? file.data : undefined;
     return { uri, before, after };
   });
 
-  // Prepare the COMPLETE copy of the START json.
-  const complete: t.IResPostCellUploadFiles = {
-    ...start,
-    data: { ...start.data, files },
-  };
-
   // Finish up.
-  return util.toClientResponse<t.IResPostCellUploadFiles>(200, complete);
+  const body: t.IResPostCellUploadFiles = {
+    ...uploadStart,
+    data: { ...uploadStart.data, files },
+  };
+  return util.toClientResponse<t.IResPostCellUploadFiles>(200, body);
 }
