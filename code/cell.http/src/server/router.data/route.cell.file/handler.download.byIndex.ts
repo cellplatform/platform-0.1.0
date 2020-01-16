@@ -1,15 +1,15 @@
 import { models, t, util } from '../common';
 import { downloadFile } from '../route.file';
 
-export async function fileByIndex(args: {
+export async function downloadFileByIndex(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   cellUri: string;
   index: number;
   host: string;
-  query?: t.IUrlQueryCellFileByName;
+  matchHash?: string;
 }) {
-  const { db, fs, cellUri, index, query, host } = args;
+  const { db, fs, cellUri, index, matchHash, host } = args;
 
   // Retreive the [cell] info.
   const cell = await models.Cell.create({ db, uri: cellUri }).ready;
@@ -23,5 +23,5 @@ export async function fileByIndex(args: {
   }
 
   // Run the "file:" download handler.
-  return downloadFile({ db, fs, uri: fileUri, query, host });
+  return downloadFile({ db, fs, fileUri, matchHash, host });
 }

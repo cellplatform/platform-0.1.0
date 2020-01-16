@@ -1,15 +1,15 @@
 import { models, Schema, t, util } from '../common';
 import { downloadFile } from '../route.file';
 
-export async function fileByName(args: {
+export async function downloadFileByName(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   cellUri: string;
   filename: string;
   host: string;
-  query?: t.IUrlQueryCellFileByName;
+  matchHash?: string;
 }) {
-  const { db, fs, cellUri, filename, query, host } = args;
+  const { db, fs, cellUri, filename, matchHash, host } = args;
 
   // Retreive the [cell] info.
   const cell = await models.Cell.create({ db, uri: cellUri }).ready;
@@ -24,5 +24,5 @@ export async function fileByName(args: {
   }
 
   // Run the "file:" download handler.
-  return downloadFile({ db, fs, uri: fileUri, query, host });
+  return downloadFile({ db, fs, fileUri, matchHash, host });
 }
