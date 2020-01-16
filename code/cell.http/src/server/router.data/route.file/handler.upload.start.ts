@@ -2,16 +2,16 @@ import { defaultValue, models, t, time, Schema, util } from '../common';
 import { fileInfo } from './handler.info';
 
 export async function uploadFileStart(args: {
+  host: string;
   db: t.IDb;
   fs: t.IFileSystem;
-  uri: string;
+  fileUri: string;
   filename: string;
   filehash?: string;
-  host: string;
   sendChanges?: boolean;
   seconds?: number; // Expires.
 }): Promise<t.IPayload<t.IResPostFileUploadStart> | t.IErrorPayload> {
-  const { db, uri, fs, host } = args;
+  const { db, fileUri, fs, host } = args;
   const seconds = defaultValue(args.seconds, 10 * 60); // Default: 10 minutes.
   const sendChanges = defaultValue(args.sendChanges, true);
   let changes: t.IDbModelChange[] = [];
@@ -20,16 +20,16 @@ export async function uploadFileStart(args: {
     const filename = (args.filename || '').trim();
     const filehash = (args.filehash || '').trim();
     if (!filename) {
-      const error = `A filename for [${uri}] was not specified.`;
+      const error = `A filename for [${fileUri}] was not specified.`;
       return util.toErrorPayload(error, { status: 400 });
     }
 
     // Retrieve the model.
-    const model = await models.File.create({ db, uri }).ready;
+    const model = await models.File.create({ db, uri: fileUri }).ready;
 
     // Generate the pre-signed POST link.
     const contentType = model.props.props?.mimetype || 'application/octet-stream';
-    const presignedPost = fs.resolve(uri, { type: 'SIGNED/post', contentType, seconds });
+    const presignedPost = fs.resolve(fileUri, { type: 'SIGNED/post', contentType, seconds });
     const expiresAt = time
       .day()
       .add(seconds, 's')
@@ -40,20 +40,15 @@ export async function uploadFileStart(args: {
       expiresAt,
       method: 'POST',
       filename,
-      uri,
+      uri: fileUri,
       url: fs.type === 'LOCAL' ? Schema.url(host).local.fs.toString() : presignedPost.path,
       props: presignedPost.props,
     };
 
     // Update the model.
     const integrity: t.IFileIntegrity = {
-      ok: null,
-      exists: null, // TODO 🐷
-      status: 'UNKNOWN', // TODO 🐷
-      filehash,
-      verifiedAt: -1,
-      uploadedAt: -1,
-      uploadExpiresAt: upload.expiresAt,
+      status: 'UPLOADING',
+      filehash: filehash || undefined,
     };
     models.setProps(model, { filename, integrity });
 
@@ -61,16 +56,15 @@ export async function uploadFileStart(args: {
     if (model.isChanged) {
       const saveResponse = await model.save();
       if (sendChanges) {
-        changes = [...changes, ...models.toChanges(uri, saveResponse.changes)];
+        changes = [...changes, ...models.toChanges(fileUri, saveResponse.changes)];
       }
     }
 
     // Finish up.
     const fileResponse = await fileInfo({
-      uri,
+      fileUri,
       db,
       host,
-      query: { changes: sendChanges },
     });
     const { status } = fileResponse;
     const fileResponseData = fileResponse.data as t.IResGetFile;

@@ -1,4 +1,4 @@
-import { Schema, createMock, expect, fs, http, t } from '../../../test';
+import { createMock, expect, fs, http, readFile, Schema, t } from '..';
 
 const expectFileInFs = async (fileUri: string, exists: boolean) => {
   const { file, ns } = Schema.uri.parse<t.IFileUri>(fileUri).parts;
@@ -6,14 +6,14 @@ const expectFileInFs = async (fileUri: string, exists: boolean) => {
   expect(await fs.pathExists(path)).to.eql(exists);
 };
 
-describe('route: !A1/file', () => {
-  it('writes files by name (updating the cell model)', async () => {
+describe.only('uploading files to cell', () => {
+  it('upload files by name (updating the cell model)', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const cellClient = mock.client.cell(cellUri);
 
-    const file1 = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
-    const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
+    const file1 = await readFile('src/test/assets/func.wasm');
+    const file2 = await readFile('src/test/assets/kitten.jpg');
 
     // Cell model does not exist.
     const res1 = (await http.get(mock.url(cellUri))).json as t.IResGetCell;
@@ -25,23 +25,37 @@ describe('route: !A1/file', () => {
       { filename: 'func.wasm', data: file1 },
       { filename: 'kitten.jpg', data: file2 },
     ]);
+
     (() => {
       expect(res2.status).to.eql(200);
-      const cell = res2.body.data.cell;
+      const data = res2.body.data;
+      const cell = data.cell;
       const links = cell.links || {};
       expect(links['fs:func:wasm']).to.match(/^file\:foo/);
       expect(links['fs:kitten:jpg']).to.match(/^file\:foo/);
+
+      const filenames = data.files.map(file => file.after?.props.filename);
+      expect(filenames).to.include('func.wasm');
+      expect(filenames).to.include('kitten.jpg');
     })();
 
     // Compare the cell in the response with a new query to the cell from the service.
     expect((await cellClient.info()).body.data).to.eql(res2.body.data.cell);
 
+    // Ensure the file location has been stored.
+    await (async () => {
+      const files = (await cellClient.files.list()).body;
+      expect(files.length).to.eql(2);
+      expect(files.every(f => f.props.location?.startsWith('file:///'))).to.eql(true);
+    })();
+
     // Check the files exist.
     const downloadAndSave = async (filename: string, path: string, compareWith: Buffer) => {
       path = fs.resolve(path);
-      const res = await cellClient.file.name(filename).download();
+      const client = cellClient.file.name(filename);
+      const res = await client.download();
       await fs.stream.save(path, res.body);
-      const buffer = await fs.readFile(path);
+      const buffer = await readFile(path);
       expect(buffer.toString()).to.eql(compareWith.toString());
     };
     await downloadAndSave('func.wasm', 'tmp/file1', file1);
@@ -57,13 +71,54 @@ describe('route: !A1/file', () => {
     await mock.dispose();
   });
 
-  it('downloads a file by name (failing if the underlying file-hash changes)', async () => {
+  it.only('uploads file and stores "integrity" details (aka "filehash")', async () => {
+    const mock = await createMock();
+    const cellUri = 'cell:foo!A1';
+    const client = mock.client.cell(cellUri);
+
+    const file = await readFile('src/test/assets/func.wasm');
+    const res = await client.files.upload([{ filename: 'func.wasm', data: file }]);
+
+    // Ensure before/after state of the uploaded file.
+    await (async () => {
+      const file = res.body.data.files[0];
+      const before = file.before;
+      const after = file.after;
+
+      expect(before.hash).to.not.eql(after?.hash);
+
+      // Before.
+      expect(before.props.integrity?.status).to.eql('UPLOADING');
+      expect(before.props.integrity?.uploadedAt).to.eql(undefined);
+
+      // After.
+      expect(after?.props.integrity?.status).to.eql('UNKNOWN');
+      expect(after?.props.integrity?.uploadedAt).to.be.a('number');
+
+      // const res1 = (await cellClient.file.name('func.wasm').info()).body.data;
+      // console.log('res1', res1);
+    })();
+
+    // Finish up.
+    await mock.dispose();
+  });
+
+  /**
+   * TODO 🐷
+   * - file upload hash integrity
+   * - pass filehash (sha256) in upload body
+   * - fix all tests
+   * - verify endpoint (download) - different URL to "complete upload" endpoint.
+   *
+   */
+
+  it.skip('downloads a file by name (failing if the underlying file-hash changes)', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const cellClient = mock.client.cell(cellUri);
 
-    const file1 = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
-    const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
+    const file1 = await readFile('src/test/assets/func.wasm');
+    const file2 = await readFile('src/test/assets/kitten.jpg');
 
     // POST the file to the service.
     await cellClient.files.upload({ filename: 'func.wasm', data: file1 });
@@ -74,7 +129,7 @@ describe('route: !A1/file', () => {
     if (res.body) {
       await fs.stream.save(path, res.body);
     }
-    expect((await fs.readFile(path)).toString()).to.eql(file1.toString());
+    expect((await readFile(path)).toString()).to.eql(file1.toString());
 
     const links = (await cellClient.links()).body;
 
@@ -118,9 +173,9 @@ describe('route: !A1/file', () => {
     const clientA1 = mock.client.cell(A1);
     const clientA2 = mock.client.cell(A2);
 
-    const file1 = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
-    const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
-    const file3 = await fs.readFile(fs.resolve('src/test/assets/bird.png'));
+    const file1 = await readFile('src/test/assets/func.wasm');
+    const file2 = await readFile('src/test/assets/kitten.jpg');
+    const file3 = await readFile('src/test/assets/bird.png');
 
     // POST the file to the service.
     await clientA1.files.upload([
@@ -148,10 +203,10 @@ describe('route: !A1/file', () => {
     const A1 = 'cell:foo!A1';
     const clientA1 = mock.client.cell(A1);
 
-    const file1 = await fs.readFile(fs.resolve('src/test/assets/func.wasm'));
-    const file2 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
-    const file3 = await fs.readFile(fs.resolve('src/test/assets/bird.png'));
-    const file4 = await fs.readFile(fs.resolve('src/test/assets/foo.json'));
+    const file1 = await readFile('src/test/assets/func.wasm');
+    const file2 = await readFile('src/test/assets/kitten.jpg');
+    const file3 = await readFile('src/test/assets/bird.png');
+    const file4 = await readFile('src/test/assets/foo.json');
 
     await clientA1.files.upload([
       { filename: 'func.wasm', data: file1 },

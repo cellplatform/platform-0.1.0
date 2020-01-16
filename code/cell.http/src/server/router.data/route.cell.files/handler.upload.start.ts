@@ -16,8 +16,8 @@ export async function uploadCellFilesStart(args: {
   const ns = parts.ns;
 
   const seconds = body.seconds;
-  const files = body.files || [];
-  if (files.length === 0) {
+  const fileDefs = body.files || [];
+  if (fileDefs.length === 0) {
     const err = new Error(`No file(s) info was posted in the body for [${cellUri}]`);
     return util.toErrorPayload(err, { status: 400 });
   }
@@ -30,20 +30,22 @@ export async function uploadCellFilesStart(args: {
     const { ns, file, links = {} } = args;
     const { filename, filehash } = file;
     const key = Schema.file.links.toKey(filename);
-    const uri = links[key] ? links[key].split('?')[0] : Schema.uri.create.file(ns, Schema.slug());
+    const fileUri = links[key]
+      ? links[key].split('?')[0]
+      : Schema.uri.create.file(ns, Schema.slug());
     const res = await uploadFileStart({
       host,
       db,
       fs,
-      uri,
+      fileUri,
       filename,
       filehash,
+      seconds,
       sendChanges: true,
-      seconds: seconds,
     });
     const json = res.data as t.IResPostFileUploadStart;
     const status = res.status;
-    return { status, res, key, uri, filename, json };
+    return { status, res, key, uri: fileUri, filename, json };
   };
 
   // Prepare the file URI link.
@@ -51,12 +53,12 @@ export async function uploadCellFilesStart(args: {
   const cellLinks = cell.props.links || {};
 
   // Post each file to the file-system as a model getting it's signed upload-link.
-  const wait = files.map(file => startUpload({ ns, file, links: cellLinks }));
-  const postFilesRes = await Promise.all(wait);
+  const wait = fileDefs.map(file => startUpload({ ns, file, links: cellLinks }));
+  const uploadStartResponses = await Promise.all(wait);
 
   // Check for file-save errors.
-  const errors: t.IResPostCellFilesError[] = [];
-  postFilesRes
+  const errors: t.IResPostCellUploadFilesError[] = [];
+  uploadStartResponses
     .filter(item => !util.isOK(item.status))
     .forEach(item => {
       const { status, filename } = item;
@@ -68,7 +70,7 @@ export async function uploadCellFilesStart(args: {
   // Update the [Cell] model with the file URI link(s).
   // NB: This is done through the master [Namespace] POST
   //     handler as this ensures all hashes are updated.
-  const links = postFilesRes.reduce((links, next) => {
+  const links = uploadStartResponses.reduce((links, next) => {
     if (util.isOK(next.status)) {
       const { key, uri } = next;
       links[key] = `${uri}?hash=${next.json.data.hash}`;
@@ -95,7 +97,7 @@ export async function uploadCellFilesStart(args: {
   let changes: t.IDbModelChange[] | undefined;
   if (defaultValue(args.changes, true)) {
     changes = [...(postNsData.changes || [])];
-    postFilesRes.forEach(item => {
+    uploadStartResponses.forEach(item => {
       changes = [...(changes || []), ...(item.json.changes || [])];
     });
   }
@@ -103,19 +105,28 @@ export async function uploadCellFilesStart(args: {
   // Prepare response URLs.
   const urls = {
     ...util.urls(host).cell(cellUri).urls,
-    uploads: postFilesRes.map(item => item.json.upload).filter(item => Boolean(item)),
+    uploads: uploadStartResponses.map(item => item.json.upload).filter(item => Boolean(item)),
   };
+
+  // Prepare response files.
+  const files = uploadStartResponses.map(res => {
+    return {
+      uri: res.uri,
+      before: { ...res.json.data },
+      after: undefined, // NB: This is empty on the "start" and the client fills it in after upload(s) complete.
+    };
+  });
 
   // Prepare response.
   await cell.load({ force: true });
-  const res: t.IResPostCellFiles = {
+  const res: t.IResPostCellUploadFiles = {
     uri: cellUri,
     createdAt: cell.createdAt,
     modifiedAt: cell.modifiedAt,
     exists: Boolean(cell.exists),
     data: {
       cell: cell.toObject(),
-      files: postFilesRes.map(res => res.json.data),
+      files,
       errors,
       changes,
     },
