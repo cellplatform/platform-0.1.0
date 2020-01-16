@@ -25,9 +25,10 @@ export class FileLinks {
 
     let hash = '';
     if (parts[1]) {
-      const query = parts[1].split('&').find(item => item.startsWith('hash='));
-      if (query) {
-        hash = query.replace(/^hash\=/, '');
+      const queries = parts[1].split('&');
+      const hashQuery = queries.find(item => item.startsWith('hash='));
+      if (hashQuery) {
+        hash = hashQuery.replace(/^hash\=/, '');
       }
     }
 

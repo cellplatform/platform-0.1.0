@@ -7,6 +7,7 @@ type Q = {
   force?: boolean;
   color: 'red' | 'blue';
   thing?: string | Array<boolean | string | number>;
+  text?: string;
 };
 
 describe('Url', () => {
@@ -51,12 +52,17 @@ describe('Url', () => {
       const res = new Url<Q>({ origin, query });
       expect(res.querystring).to.eql(expected);
     };
+
     test(undefined, '');
     test({ color: 'red' }, '?color=red');
     test({ force: true }, '?force=true');
     test({ force: true, color: ' blue' as any }, '?force=true&color=blue');
     test({ color: 'blue', force: true }, '?color=blue&force=true');
     test({ force: true, toString: () => 'hello' } as any, '?force=true');
+
+    // NB: Empty strings not inserted into query-string.
+    test({ text: '' }, '');
+    test({ text: '', force: true }, '?force=true');
   });
 
   it('add [query] returns a new instance', () => {
