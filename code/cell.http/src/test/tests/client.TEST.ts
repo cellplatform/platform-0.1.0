@@ -1,8 +1,8 @@
-import { t, expect, createMock } from '.';
+import { t, expect, createMock } from '..';
 import * as semver from 'semver';
 
 describe('client', () => {
-  it('sends client/schema version in header', async () => {
+  it('sends headers (client/schema version)', async () => {
     const mock = await createMock();
     const client = mock.client;
 
