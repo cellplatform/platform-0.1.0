@@ -26,10 +26,8 @@ export type FileIntegrityStatus =
   | 'UNKNOWN';
 
 export type IFileIntegrity = {
-  ok: boolean | null;
   status: FileIntegrityStatus;
-  verifiedAt: number;
-  uploadedAt: number;
+  uploadedAt?: number;
   filehash?: string;
   's3:etag'?: string;
 };

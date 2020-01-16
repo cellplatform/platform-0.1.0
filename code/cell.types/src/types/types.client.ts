@@ -61,7 +61,7 @@ export type IClientCellFiles = {
   list(): t.IClientResponseAsync<IClientFileData[]>;
   upload(
     files: IClientCellFileUpload | IClientCellFileUpload[],
-  ): t.IClientResponseAsync<t.IResPostCellFiles>;
+  ): t.IClientResponseAsync<t.IResPostCellUploadFiles>;
   delete(filename: string | string[]): t.IClientResponseAsync<t.IResDeleteCellFilesData>;
   unlink(filename: string | string[]): t.IClientResponseAsync<t.IResDeleteCellFilesData>;
 };

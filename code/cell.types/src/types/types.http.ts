@@ -109,11 +109,18 @@ export type IResGetFileData = t.IFileData & {};
 export type IResGetFileUrls = { info: string; download: string };
 
 /**
- * File: POST (upload)
+ * File: POST (upload "start")
  */
-
 export type IResPostFileUploadStart = IResGetFile & {
   upload: t.IFilePresignedUploadUrl;
+  changes?: t.IDbModelChange[];
+};
+
+/**
+ * File: POST (upload "complete")
+ */
+export type IReqPostFileUploadCompleteBody = {};
+export type IResPostFileUploadComplete = IResGetFile & {
   changes?: t.IDbModelChange[];
 };
 
@@ -121,15 +128,6 @@ export type IResPostFileUploadStart = IResGetFile & {
 // When working against S3, this is the cloud end-point (using a presigned-url).
 export type IResPostFileUploadLocal = {
   path: string;
-};
-
-/**
- * File: POST (verify)
- */
-export type IReqPostFileVerifiedBody = {};
-export type IResPostFileVerified = IResGetFile & {
-  isValid: boolean;
-  changes?: t.IDbModelChange[];
 };
 
 /**
@@ -159,15 +157,22 @@ export type IReqPostCellUploadFile = {
   filehash?: string;
 };
 
-export type IResPostCellFiles = IUriResponse<IResPostCellFilesData, IResPostCellFilesUrls>;
-export type IResPostCellFilesData = {
+export type IResPostCellUploadFiles = IUriResponse<
+  IResPostCellUploadFilesData,
+  IResPostCellUploadFilesUrls
+>;
+export type IResPostCellUploadFilesData = {
   cell: t.ICellData;
-  files: t.IFileData[];
-  errors: IResPostCellFilesError[];
+  files: Array<{
+    uri: string;
+    before: t.IFileData;
+    after?: t.IFileData; // NB: This is empty on the "start" and the client fills it in after upload(s) complete.
+  }>;
+  errors: IResPostCellUploadFilesError[];
   changes?: t.IDbModelChange[];
 };
-export type IResPostCellFilesError = { status: number; filename: string; message: string };
-export type IResPostCellFilesUrls = IResGetCellUrls & {
+export type IResPostCellUploadFilesError = { status: number; filename: string; message: string };
+export type IResPostCellUploadFilesUrls = IResGetCellUrls & {
   uploads: t.IFilePresignedUploadUrl[];
 };
 

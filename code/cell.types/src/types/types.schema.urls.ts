@@ -32,8 +32,8 @@ export type IUrlsCell = {
 };
 
 export type IUrlsCellFile = {
-  byName(filename: string): t.IUrl<t.IUrlQueryCellFileByName>;
-  byIndex(index: number | string): t.IUrl<t.IUrlQueryCellFileByIndex>;
+  byName(filename: string): t.IUrl<t.IUrlQueryCellFileDownloadByName>;
+  byIndex(index: number | string): t.IUrl<t.IUrlQueryCellFileDownloadByIndex>;
 };
 
 export type IUrlsCellFiles = {
