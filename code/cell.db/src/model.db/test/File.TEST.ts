@@ -2,12 +2,10 @@ import { File } from '..';
 import { expect, getFileHash, getTestDb, t } from '../../test';
 
 const INTEGRITY: t.IFileIntegrity = {
-  ok: true,
-  exists: true,
   status: 'VALID',
   filehash: 'sha256-abc',
-  verifiedAt: 123,
-  uploadedAt: 456,
+  uploadedAt: 123456789,
+  's3:etag': 'abcd-12345',
 };
 
 describe('model.File', () => {
