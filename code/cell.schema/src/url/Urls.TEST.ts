@@ -175,12 +175,23 @@ describe('Urls', () => {
       expect(res2.toString()).to.eql(URL);
     });
 
-    it('files.upload', () => {
+    it('files.upload (start)', () => {
       const res1 = url.cell(URI).files.upload;
       const res2 = res1.query({ changes: true });
       const res3 = url.cell({ ns: 'foo', key: 'A1' }).files.upload;
 
-      const URL = 'http://localhost/cell:foo!A1/files';
+      const URL = 'http://localhost/cell:foo!A1/files/upload';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(`${URL}?changes=true`);
+      expect(res3.toString()).to.eql(URL);
+    });
+
+    it('files.uploaded (complete)', () => {
+      const res1 = url.cell(URI).files.uploaded;
+      const res2 = res1.query({ changes: true });
+      const res3 = url.cell({ ns: 'foo', key: 'A1' }).files.uploaded;
+
+      const URL = 'http://localhost/cell:foo!A1/files/uploaded';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(`${URL}?changes=true`);
       expect(res3.toString()).to.eql(URL);

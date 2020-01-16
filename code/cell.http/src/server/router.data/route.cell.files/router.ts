@@ -14,7 +14,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET: !A1/files
    */
-  router.get(routes.CELL.FILES, async req => {
+  router.get(routes.CELL.FILES.BASE, async req => {
     try {
       const host = req.host;
       const query = req.query as t.IUrlQueryCellFilesList;
@@ -41,7 +41,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *        3. POST file to the upload link (either "pre-signed S3 URL" or the local file-system endpoint).
    *        4. POST to the "upload complete" endpoint for each uploaded file to capture its meta-data and verify its state.
    */
-  router.post(routes.CELL.FILES, async req => {
+  router.post(routes.CELL.FILES.UPLOAD, async req => {
     try {
       const host = req.host;
       const query = req.query as t.IUrlQueryCellFilesUpload;
@@ -62,7 +62,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * DELETE file(s) from a cell.
    */
-  router.delete(routes.CELL.FILES, async req => {
+  router.delete(routes.CELL.FILES.BASE, async req => {
     try {
       const host = req.host;
       const query = req.query as t.IUrlQueryCellFilesDelete;

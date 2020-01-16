@@ -26,8 +26,8 @@ export const ROUTES = {
     FS: `/local/fs`,
   },
   FILE: {
-    INFO: `/file${KEY.NS}\\:${KEY.FILE}/info(/?)`,
     BASE: `/file${KEY.NS}\\:${KEY.FILE}(/?)`,
+    INFO: `/file${KEY.NS}\\:${KEY.FILE}/info(/?)`,
     UPLOADED: `/file${KEY.NS}\\:${KEY.FILE}/uploaded(/?)`,
   },
   NS: {
@@ -39,8 +39,11 @@ export const ROUTES = {
     INFO: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
     FILE_BY_INDEX: `/cell${KEY.NS}\!${KEY.CELL}/files/:index([0-9]+)`,
     FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/file/${KEY.FILENAME}`,
-    FILES: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
-    // FILES: {} todo
+    FILES: {
+      BASE: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
+      UPLOAD: `/cell${KEY.NS}\!${KEY.CELL}/files/upload`,
+      UPLOADED: `/cell${KEY.NS}\!${KEY.CELL}/files/uploaded`,
+    },
   },
   ROW: {
     INFO: `/cell${KEY.NS}\!${KEY.ROW}(/?)`,

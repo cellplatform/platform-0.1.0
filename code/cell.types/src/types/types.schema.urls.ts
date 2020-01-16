@@ -39,6 +39,7 @@ export type IUrlsCellFile = {
 export type IUrlsCellFiles = {
   list: t.IUrl<t.IUrlQueryCellFilesList>;
   upload: t.IUrl<t.IUrlQueryCellFilesUpload>;
+  uploaded: t.IUrl<t.IUrlQueryCellFilesUploaded>;
   delete: t.IUrl<t.IUrlQueryCellFilesDelete>;
 };
 

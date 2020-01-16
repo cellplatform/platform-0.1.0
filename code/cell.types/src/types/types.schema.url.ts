@@ -65,6 +65,9 @@ export type IUrlQueryCellFilesList = {};
 export type IUrlQueryCellFilesUpload = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
+export type IUrlQueryCellFilesUploaded = {
+  changes?: boolean; // NB: return list of changes (default: true).
+};
 export type IUrlQueryCellFilesDelete = {};
 
 /**

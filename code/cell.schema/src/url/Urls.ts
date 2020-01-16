@@ -162,11 +162,19 @@ export class Urls implements t.IUrls {
         },
 
         /**
-         * Example: /cell:foo!A1/files
+         * Example: /cell:foo!A1/files/upload
          */
         get upload() {
           type Q = t.IUrlQueryCellFilesUpload;
-          return toPath<Q>(`/cell:${ns}!${key}/files`);
+          return toPath<Q>(`/cell:${ns}!${key}/files/upload`);
+        },
+
+        /**
+         * Example: /cell:foo!A1/files/uploaded
+         */
+        get uploaded() {
+          type Q = t.IUrlQueryCellFilesUploaded;
+          return toPath<Q>(`/cell:${ns}!${key}/files/uploaded`);
         },
       },
 
