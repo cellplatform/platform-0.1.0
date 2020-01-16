@@ -71,7 +71,7 @@ describe.only('uploading files to cell', () => {
     await mock.dispose();
   });
 
-  it.only('uploads file and stores "integrity" details (aka "filehash")', async () => {
+  it.only('uploads file, stores upload time and filehash (sha256) from client', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const client = mock.client.cell(cellUri);

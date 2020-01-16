@@ -47,6 +47,8 @@ export async function uploadFileComplete(args: {
       uploadedAt: status === 'UPLOADING' ? -1 : now,
     };
 
+    
+
     // Update model integrity object.
     // integrity;
     // after.
@@ -64,14 +66,13 @@ export async function uploadFileComplete(args: {
     //     verifiedAt: now,
     //   };
 
-    //   // If the response came from S3 then store the "etag".
-    //   if (fs.type === 'S3') {
-    //     const s3Response = readResponse as t.IFileSystemReadS3;
-    //     if (s3Response['s3:etag']) {
-    //       after.integrity['s3:etag'] = s3Response['s3:etag'];
-    //     }
-    //   }
-    // }
+    // Store S3 specific details.
+    if (fs.type === 'S3') {
+      const s3 = beforeFileInfoResponse as t.IFsInfoS3;
+      if (s3['s3:etag']) {
+        after.integrity['s3:etag'] = s3['s3:etag'];
+      }
+    }
 
     // Perform verification.
     // const ok = after.integrity?.filehash === (file?.hash || ''); // TODO 🐷 - ensure filehash exists to be OK
