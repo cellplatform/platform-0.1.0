@@ -1,4 +1,4 @@
-import * as isomorphic from 'isomorphic-fetch';
-export const fetch = isomorphic;
+import * as isomorphicFetch from 'isomorphic-fetch';
+export const fetch = isomorphicFetch;
 
-export { value } from '@platform/util.value';
+export { value, time, id } from '@platform/util.value';

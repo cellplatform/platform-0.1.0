@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@platform/fs": "0.5.3",
+    "@platform/libs": "0.1.5",
     "@platform/types": "0.3.5",
     "@platform/util.value": "0.6.13",
     "@types/isomorphic-fetch": "0.0.35",
@@ -27,7 +28,10 @@
     "@platform/ts": "3.7.9"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"

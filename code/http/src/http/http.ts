@@ -1,12 +1,9 @@
-import {
-  t,
-  fetch,
-  toRawHeaders,
-  fromRawHeaders,
-  stringify,
-  isFormData,
-  parseJson,
-} from '../common';
+import { Subject } from 'rxjs';
+import { filter, map, share } from 'rxjs/operators';
+
+import { fetch, t } from '../common';
+import { send } from './http.send';
+
 export { fetch };
 
 /**
@@ -15,14 +12,35 @@ export { fetch };
 
 export const create: t.HttpCreate = (options = {}) => {
   const mergeOptions = (methodOptions: t.IFetchOptions) => {
-    const args = { ...options, ...methodOptions };
-    const { mode = 'cors' } = args;
-    const headers = toRawHeaders(args.headers);
+    const args = {
+      ...options,
+      ...methodOptions,
+      headers: { ...options.headers, ...methodOptions.headers },
+    };
+    const { mode = 'cors', headers } = args;
     return { mode, headers };
   };
 
+  const _events$ = new Subject<t.HttpEvent>();
+  const fire: t.Fire = e => _events$.next(e);
+
+  const events$ = _events$.pipe(share());
+  const before$ = _events$.pipe(
+    filter(e => e.type === 'HTTP/before'),
+    map(e => e.payload as t.IHttpBefore),
+    share(),
+  );
+  const after$ = _events$.pipe(
+    filter(e => e.type === 'HTTP/after'),
+    map(e => e.payload as t.IHttpAfter),
+    share(),
+  );
+
   const http: t.IHttp = {
     create,
+    events$,
+    before$,
+    after$,
 
     get headers() {
       return { ...options.headers };
@@ -32,118 +50,54 @@ export const create: t.HttpCreate = (options = {}) => {
      * `HEAD`
      */
     async head(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const { mode, headers } = mergeOptions(options);
-      const res = await fetch(url, { method: 'HEAD', headers, mode });
-      return toResponse(url, res);
+      const method: t.HttpMethod = 'HEAD';
+      return send({ url, method, options: mergeOptions(options), fire });
     },
 
     /**
      * `GET`
      */
     async get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const { mode, headers } = mergeOptions(options);
-      const res = await fetch(url, { method: 'GET', headers, mode });
-      return toResponse(url, res);
+      const method: t.HttpMethod = 'GET';
+      return send({ url, method, options: mergeOptions(options), fire });
     },
 
     /**
      * `PUT`
      */
     async put(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const { mode, headers } = mergeOptions(options);
-      const body = toBody({ url, headers, data });
-      const res = await fetch(url, { method: 'PUT', body, headers, mode });
-      return toResponse(url, res);
+      const method: t.HttpMethod = 'PUT';
+      return send({ url, method, data, options: mergeOptions(options), fire });
     },
 
     /**
      * `POST`
      */
     async post(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const { mode, headers } = mergeOptions(options);
-      const body = toBody({ url, headers, data });
-      const res = await fetch(url, { method: 'POST', body, headers, mode });
-      return toResponse(url, res);
+      const method: t.HttpMethod = 'POST';
+      return send({ url, method, data, options: mergeOptions(options), fire });
     },
 
     /**
      * `PATCH`
      */
     async patch(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const { mode, headers } = mergeOptions(options);
-      const body = toBody({ url, headers, data });
-      const res = await fetch(url, { method: 'PATCH', body, headers, mode });
-      return toResponse(url, res);
+      const method: t.HttpMethod = 'PATCH';
+      return send({ url, method, data, options: mergeOptions(options), fire });
     },
 
     /**
      * `DELETE`
      */
     async delete(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const { mode, headers } = mergeOptions(options);
-      const body = toBody({ url, headers, data });
-      const res = await fetch(url, { method: 'DELETE', body, headers, mode });
-      return toResponse(url, res);
+      const method: t.HttpMethod = 'DELETE';
+      return send({ url, method, data, options: mergeOptions(options), fire });
     },
   };
+
   return http;
 };
 
 /**
  * [Helpers]
  */
-
-function toBody(args: { url: string; headers: Headers; data?: any }) {
-  const { url, headers, data } = args;
-  if (isFormData(headers)) {
-    return data;
-  }
-  return stringify(
-    data,
-    () => `Failed to POST to '${url}', the data could not be serialized to JSON.`,
-  );
-}
-
-async function toResponse(url: string, res: Response) {
-  const { ok, status, statusText } = res;
-  const headers = fromRawHeaders(res.headers);
-  const body = res.body || undefined;
-  const contentType = toContentType(headers);
-  const is = contentType.is;
-  const text = is.text || is.json ? await res.text() : '';
-  let json: any;
-
-  const result: t.IHttpResponse = {
-    ok,
-    status,
-    statusText,
-    headers,
-    contentType,
-    body,
-    text,
-    get json() {
-      return json || (json = parseJson({ url, text }));
-    },
-  };
-
-  return result;
-}
-
-function toContentType(headers: t.IHttpHeaders) {
-  const value = (headers['content-type'] || '').toString();
-  const res: t.IHttpContentType = {
-    value,
-    is: {
-      get json() {
-        return value.includes('application/json');
-      },
-      get text() {
-        return value.includes('text/');
-      },
-      get binary() {
-        return !res.is.json && !res.is.text;
-      },
-    },
-  };
-  return res;
-}

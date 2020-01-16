@@ -1,6 +1,5 @@
-import { expect } from 'chai';
+import { expect, fs } from '../test';
 import { http } from '..';
-import { fs } from '@platform/fs';
 
 const TMP = fs.resolve('./tmp');
 const URL = {
@@ -39,8 +38,8 @@ describe('http (INTEGRATION)', function() {
 
   it('download using http.get (and fs.stream)', async () => {
     const res = await http.get(URL.ZIP);
-    const path = fs.join(TMP, 'images-2.zip');
     if (res.body) {
+      const path = fs.join(TMP, 'images-2.zip');
       await fs.stream.save(path, res.body);
     }
 
