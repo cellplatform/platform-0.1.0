@@ -16,6 +16,7 @@
     "@platform/cell.types": "0.3.20",
     "@platform/fsdb.types": "0.6.2",
     "@platform/libs": "0.1.5",
+    "@platform/util.hash": "0.0.12",
     "@platform/util.value": "0.6.13"
   },
   "devDependencies": {

@@ -178,7 +178,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo!A1/file/kitten.png
          */
         byName(filename: string) {
-          type Q = t.IUrlQueryCellFileByName;
+          type Q = t.IUrlQueryCellFileDownloadByName;
           filename = (filename || '').trim();
           if (!filename) {
             throw new Error(`Filename not provided.`);
@@ -190,7 +190,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo!A1/files/0
          */
         byIndex(input: number | string) {
-          type Q = t.IUrlQueryCellFileByIndex;
+          type Q = t.IUrlQueryCellFileDownloadByIndex;
           const index = value.toNumber(input);
           if (typeof index !== 'number') {
             throw new Error(`File index not provided.`);
