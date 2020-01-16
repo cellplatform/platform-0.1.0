@@ -9,7 +9,7 @@ import {
 import { FetchResult, Operation } from 'apollo-link';
 import { GraphQLError, ExecutionResult } from 'graphql';
 import { ServerError, ServerParseError } from 'apollo-link-http-common';
-import { IHttpHeaders } from '@platform/http';
+import { IHttpHeaders } from '@platform/types';
 
 export { IHttpHeaders };
 export type IGqlVariables = OperationVariables;

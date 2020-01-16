@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.util",
-  "version": "0.2.52",
+  "version": "0.2.53",
   "description": "Shared utilities between `ui.datagrid.*` modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,14 +12,14 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.coord": "0.8.13",
-    "@platform/cell.func": "0.1.46",
-    "@platform/cell.schema": "^0.3.17",
-    "@platform/cell.types": "0.3.20",
-    "@platform/cell.value": "0.1.59",
+    "@platform/cell.coord": "0.8.14",
+    "@platform/cell.func": "0.1.47",
+    "@platform/cell.schema": "^0.3.18",
+    "@platform/cell.types": "0.3.21",
+    "@platform/cell.value": "0.1.60",
     "@platform/libs": "0.1.5",
-    "@platform/ui.datagrid.types": "0.7.71",
-    "@platform/util.value": "0.6.13"
+    "@platform/ui.datagrid.types": "0.7.72",
+    "@platform/util.value": "0.6.14"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",

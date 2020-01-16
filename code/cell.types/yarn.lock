@@ -37,12 +37,12 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.3.tgz#e188e4c5395b2902d397da0814d1986963d6efa7"
-  integrity sha512-wH7a7yld1O+FnPvpepCxzT9xTKLq8KWs7gWhpxZb28iFlE/QaddokmHCw8NzrbOHhS3EQZBQBZGVkrgfHhfiIg==
+"@platform/fs.s3.types@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.4.tgz#510f296b9b7e7f702a5fe935801eac891aa8d268"
+  integrity sha512-qJHP7ZcqKF/qSEoxVzt3tfM7JmpmqV9TGldAiOHejQ7l7vjBS1PrzjkkSQbbF0oIs949HM7OiVFfhiy33BrxSg==
   dependencies:
-    "@platform/types" "0.3.5"
+    "@platform/types" "0.3.6"
 
 "@platform/fs@0.5.3":
   version "0.5.3"
@@ -60,13 +60,13 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.types@0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.6.2.tgz#1a03c3fe2968a2784511567be8fdd6e71870d26d"
-  integrity sha512-ebBvwClsMlIN1lDg9z/DHFGyPXyOWQheeEVHJ/hvRnJ48I89uwzYK808q7ePKVIsjFGoALgPbkg/58OeZISDKQ==
+"@platform/fsdb.types@0.6.3":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.6.3.tgz#a06cb36a58879c9817e2f07c64b2218d3321c6f5"
+  integrity sha512-AEcjWaBHXwUcaXE/52H+j3rRzN5Ot4buk8mv4qmaOZCk4s8LepUMJK5dgTSbuVSC5VkWELpuZ45fitTAWuRxQw==
   dependencies:
     "@platform/libs" "0.1.5"
-    "@platform/types" "0.3.5"
+    "@platform/types" "0.3.6"
 
 "@platform/libs@0.1.5":
   version "0.1.5"
@@ -115,10 +115,10 @@
     "@platform/libs" "0.1.5"
     "@platform/ts.libs" "3.7.3"
 
-"@platform/types@0.3.5":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.3.5.tgz#9d6c08cd1eeeb049b19914c5cafdfc3ed68fc054"
-  integrity sha512-PueDaq8rTACDCGGo9UCklSBXgCDFWN3rRV3Vs8xybL7lrQuVsmRsG9ZRg+MTVz+UekQbCtj1yJHi1I8aaHdO5g==
+"@platform/types@0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.3.6.tgz#a59647717bcabbbbf9a79b7aca452342f7462df8"
+  integrity sha512-suqMJlRoOha5YpykdMOh/hn1ARLRpV9cg1atkFdRyOYpzOfKed3aA7bJQ+3tTERfbiA2FvkdNVomBzIdxZ5wzA==
 
 "@platform/util.diff@0.0.13":
   version "0.0.13"

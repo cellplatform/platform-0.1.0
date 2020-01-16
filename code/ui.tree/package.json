@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.tree",
   "description": "Hierarchical tree view.",
-  "version": "0.4.19",
+  "version": "0.4.20",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -15,12 +15,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "0.1.59",
-    "@platform/react": "0.3.45",
-    "@platform/ui.icon": "0.0.109",
-    "@platform/ui.panel": "0.1.25",
-    "@platform/ui.spinner": "0.0.108",
-    "@platform/ui.text": "0.3.19",
+    "@platform/css": "0.1.60",
+    "@platform/react": "0.3.46",
+    "@platform/ui.icon": "0.0.110",
+    "@platform/ui.panel": "0.1.26",
+    "@platform/ui.spinner": "0.0.109",
+    "@platform/ui.text": "0.3.20",
     "@platform/util.animate": "0.0.67"
   },
   "devDependencies": {

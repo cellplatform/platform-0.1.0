@@ -2,10 +2,9 @@ import * as t from './common/types';
 
 import { Observable } from 'rxjs';
 
-export type IHttpHeaders = t.IHttpHeaders;
 export type HttpMode = 'cors' | 'no-cors' | 'same-origin';
 export type IFetchOptions = {
-  headers?: IHttpHeaders;
+  headers?: t.IHttpHeaders;
   mode?: HttpMode;
 };
 
@@ -13,7 +12,7 @@ export type IHttpResponse = {
   ok: boolean;
   status: number;
   statusText: string;
-  headers: IHttpHeaders;
+  headers: t.IHttpHeaders;
   contentType: IHttpContentType;
   body?: ReadableStream<Uint8Array>;
   text: string;
@@ -36,7 +35,7 @@ export type HttpCreate = (options?: IFetchOptions) => IHttp;
 
 export type IHttp = IHttpMethods & {
   create: HttpCreate;
-  headers: IHttpHeaders;
+  headers: t.IHttpHeaders;
   events$: Observable<HttpEvent>;
   before$: Observable<IHttpBefore>;
   after$: Observable<IHttpAfter>;
@@ -63,9 +62,9 @@ export type IHttpBefore = {
   method: t.HttpMethod;
   url: string;
   data?: any;
-  headers: IHttpHeaders;
+  headers: t.IHttpHeaders;
   isModified: boolean;
-  modify(args: { data?: any | Buffer; headers?: IHttpHeaders }): void;
+  modify(args: { data?: any | Buffer; headers?: t.IHttpHeaders }): void;
   respond: t.EventRespond; // NB: Used for mocking/testing.
 };
 

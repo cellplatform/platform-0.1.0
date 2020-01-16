@@ -1,9 +1,8 @@
 import * as t from '../types';
+import { Json, HttpMethod, IDuration, IHttpHeaders } from '@platform/types';
 
+export { Json, HttpMethod, IDuration, IHttpHeaders };
 export * from '../types';
-export { Json, HttpMethod, IDuration } from '@platform/types';
-
-export type IHttpHeaders = { [key: string]: string | number };
 
 export type ResponseLike = {
   ok: boolean;

@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.value",
-  "version": "0.6.13",
+  "version": "0.6.14",
   "description": "Helpers for working with, transforming, and formatting values.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.1.5",
-    "@platform/types": "0.3.5",
+    "@platform/types": "0.3.6",
     "@platform/util.is": "0.0.106",
     "@types/semver": "6.2.0",
     "cuid": "2.1.8",

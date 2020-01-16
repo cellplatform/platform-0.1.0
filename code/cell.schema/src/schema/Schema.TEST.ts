@@ -16,7 +16,8 @@ describe('Schema', () => {
 
     it('slug', () => {
       const res = Schema.slug();
-      expect(res.length).to.eql(8);
+      expect(res.length).to.greaterThan(5);
+      expect(res.length).to.lessThan(10);
     });
   });
 

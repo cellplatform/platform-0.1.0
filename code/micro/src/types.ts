@@ -1,25 +1,24 @@
-import { HttpMethod, Json, IDuration } from '@platform/types';
-import { IncomingMessage, Server, ServerResponse } from 'http';
-import { Key, Token } from 'path-to-regexp';
+// import { HttpMethod, Json, IDuration, IHttpHeaders } from '@platform/types';
+// import { IncomingMessage, Server, ServerResponse } from 'http';
+// import { Key, Token } from 'path-to-regexp';
+import * as t from './common/types';
 import { Observable } from 'rxjs';
 
 /**
  * HTTP
  */
 
-export type IHttpHeaders = { [key: string]: string };
-
 /**
  * Request
  */
 
-export type Request = IncomingMessage & {
+export type Request = t.IncomingMessage & {
   host: string;
   params: RequestParams;
   query: RequestQuery;
   body: RequestBody;
   toUrl(path: string): string;
-  redirect(path: string, options?: { headers?: IHttpHeaders }): RouteResponse;
+  redirect(path: string, options?: { headers?: t.IHttpHeaders }): RouteResponse;
 };
 export type RequestParams = { [key: string]: string | number | boolean };
 export type RequestQuery = {
@@ -46,7 +45,7 @@ export type RequestBody = {
  * Response
  */
 
-export type Response = ServerResponse;
+export type Response = t.ServerResponse;
 
 /**
  * Handlers
@@ -64,16 +63,16 @@ export type RouteHandler<C extends object = {}> = (
 export type RouteResponse = {
   status?: number;
   data?: any;
-  headers?: IHttpHeaders;
+  headers?: t.IHttpHeaders;
 };
 
 export type IRoute = {
-  readonly method: HttpMethod;
+  readonly method: t.HttpMethod;
   readonly path: string;
   readonly handler: RouteHandler;
   readonly regex: RegExp;
-  readonly tokens: Token[];
-  readonly keys: Key[];
+  readonly tokens: t.Token[];
+  readonly keys: t.Key[];
 };
 
 export type IRoutePath = string | string[];
@@ -81,7 +80,7 @@ export type IRouter<C extends object = {}> = {
   readonly routes: IRoute[];
   readonly handler: RouteHandler;
   readonly wildcard: IRoute | undefined;
-  add(method: HttpMethod, path: IRoutePath, handler: RouteHandler): IRouter<C>;
+  add(method: t.HttpMethod, path: IRoutePath, handler: RouteHandler): IRouter<C>;
   get(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
   put(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
   post(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
@@ -103,7 +102,7 @@ export type ServerStart = (options?: {
 }) => Promise<IMicroService>;
 
 export type IMicro = {
-  server: Server;
+  server: t.Server;
   router: IRouter;
   handler: RequestHandler;
   service?: IMicroService;
@@ -134,7 +133,7 @@ export type IForm = {
 
 export type IFormField = {
   key: string;
-  value: Json;
+  value: t.Json;
 };
 
 export type IFormFile = {
@@ -169,20 +168,20 @@ export type IMicroStartedEvent = {
   type: 'HTTP/started';
   payload: IMicroStarted;
 };
-export type IMicroStarted = { elapsed: IDuration; port: number };
+export type IMicroStarted = { elapsed: t.IDuration; port: number };
 
 export type IMicroStoppedEvent = {
   type: 'HTTP/stopped';
   payload: IMicroStopped;
 };
-export type IMicroStopped = { elapsed: IDuration; port: number; error?: string };
+export type IMicroStopped = { elapsed: t.IDuration; port: number; error?: string };
 
 export type IMicroRequestEvent = {
   type: 'HTTP/request';
   payload: IMicroRequest;
 };
 export type IMicroRequest = {
-  method: HttpMethod;
+  method: t.HttpMethod;
   url: string;
   req: Request;
   error?: string;
@@ -196,8 +195,8 @@ export type IMicroResponseEvent = {
   payload: IMicroResponse;
 };
 export type IMicroResponse<C extends object = {}> = {
-  elapsed: IDuration;
-  method: HttpMethod;
+  elapsed: t.IDuration;
+  method: t.HttpMethod;
   url: string;
   req: Request;
   res: RouteResponse;
