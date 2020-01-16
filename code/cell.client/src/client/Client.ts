@@ -17,10 +17,12 @@ export class Client implements t.IClient {
   private constructor(args: { host?: string | number }) {
     this.urls = Schema.url(args.host ?? 8080);
     this.origin = this.urls.origin;
+
+    const VERSION = constants.VERSION;
+    const header = `client@${VERSION['@platform/cell.client']}, schema@${VERSION['@platform/cell.schema']}`;
     this.http = http.create({
       headers: {
-        'cell-os-client': constants.VERSION['@platform/cell.client'],
-        'cell-os-schema': constants.VERSION['@platform/cell.schema'],
+        'cell-os': header,
       },
     });
   }

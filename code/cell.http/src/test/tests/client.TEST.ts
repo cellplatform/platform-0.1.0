@@ -13,14 +13,17 @@ describe('client', () => {
 
     expect(requests.length).to.eql(1);
     const headers = requests[0].req.headers || {};
-    console.log('headers', headers);
 
-    const testValid = (key: string) => {
-      const header = headers[key] as string;
-      expect(semver.valid(header)).to.not.eql(null);
-    };
+    const isValidVersion = (version: string) => semver.valid(version) !== null;
 
-    testValid('cell-os-schema');
-    testValid('cell-os-client');
+    const header = (headers['cell-os'] || '') as string;
+    expect(header).to.include('client@');
+    expect(header).to.include('schema@');
+
+    const parts = header.split(',');
+    parts.forEach(item => {
+      const version = item.split('@')[1];
+      expect(isValidVersion(version)).to.eql(true);
+    });
   });
 });
