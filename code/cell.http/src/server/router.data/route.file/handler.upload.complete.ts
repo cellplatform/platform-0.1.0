@@ -15,73 +15,43 @@ export async function uploadFileComplete(args: {
 
   try {
     // Retrieve the file (S3 or local).
-
-    const beforeFileInfoResponse = await fs.info(fileUri); // temp
-
-    // if (!infoResponse.ok) {
-    //   const { status, error } = infoResponse;
-    //   const message = error?.message || `Failed to read [${uri}] from file-system.`;
-    //   return util.toErrorPayload(message, { status });
-    // }
-    // const file = infoResponse.file;
-    // const exists = Boolean(file?.data);
+    const fsFileInfo = await fs.info(fileUri); // temp
 
     // Read in file-data.
     const model = await models.File.create({ db, uri: fileUri }).ready;
     const after = { ...model.props.props };
-    // const before = model.props.props;
-
-    console.log('-------------------------------------------');
-    console.log('COMPLETE upload');
+    if (fsFileInfo.exists) {
+      const { location, bytes } = fsFileInfo;
+      after.location = location;
+      after.bytes = bytes;
+    }
 
     const getStatus = (): t.FileIntegrityStatus => {
-      // TODO 🐷
-      return 'UNKNOWN';
+      const { exists } = fsFileInfo;
+      if (!exists) {
+        return 'INVALID/fileMissing'; // TODO 🐷 - write error for missing file.
+      }
+      return 'VALID';
     };
 
     const status = getStatus();
-
+    const ok = !status.startsWith('INVALID');
     after.integrity = {
       ...after.integrity,
+      ok,
       status,
       uploadedAt: status === 'UPLOADING' ? -1 : now,
     };
 
-    
-
-    // Update model integrity object.
-    // integrity;
-    // after.
-
-    // Update the model with latest data from downloaded file (if required).
-    // if (args.overwrite || !after.integrity) {
-    //   after.bytes = file ? file.bytes : -1;
-    //   after.location = file?.path ? Schema.file.toFileLocation(file.path) : '';
-    //   after.integrity = {
-    //     ...((after.integrity || {}) as t.IFileIntegrity),
-    //     ok: null,
-    //     exists,
-    //     filehash: file?.hash,
-    //     uploadedAt: now,
-    //     verifiedAt: now,
-    //   };
-
     // Store S3 specific details.
     if (fs.type === 'S3') {
-      const s3 = beforeFileInfoResponse as t.IFsInfoS3;
+      const s3 = fsFileInfo as t.IFsInfoS3;
       if (s3['s3:etag']) {
         after.integrity['s3:etag'] = s3['s3:etag'];
       }
     }
 
-    // Perform verification.
-    // const ok = after.integrity?.filehash === (file?.hash || ''); // TODO 🐷 - ensure filehash exists to be OK
-    // if (after.integrity) {
-    //   const integrity = after.integrity;
-    //   const status: t.FileIntegrityStatus = ok ? 'VALID' : exists ? 'INVALID' : 'UPLOADING'; // TODO 🐷 - better
-    //   integrity.status = status;
-    //   integrity.uploadedAt = integrity.uploadedAt === undefined ? now : integrity.uploadedAt;
-    // }
+    // TODO 🐷 Perform verification (on different rount)
 
     // Update error.
     // if (!ok) {
@@ -90,15 +60,14 @@ export async function uploadFileComplete(args: {
     //     type: ERROR.HTTP.HASH_MISMATCH,
     //   };
     // }
-    // if (ok && model.props.error && model.props.error.type === ERROR.HTTP.HASH_MISMATCH) {
-    //   model.props.error = undefined;
-    // }
+
+    // Clear any invalid errors if the model is OK.
+    if (ok && model.props.error && model.props.error.type.startsWith('INVALID')) {
+      model.props.error = undefined;
+    }
 
     // Save any changes to the model (DB).
     models.setProps(model, after);
-
-    // console.log('model.isChanged', model.isChanged);
-
     if (model.isChanged) {
       const res = await model.save();
       if (sendChanges) {
@@ -106,19 +75,12 @@ export async function uploadFileComplete(args: {
       }
     }
 
-    // TEMP 🐷
-    // console.log('model.isChanged', model.isChanged);
-    // console.log('-------------------------------------------');
-    // console.log('after (verify)', after);
-    // console.log('model.toObject()', model.toObject());
-
     // Finish up.
-    const afterFileInfoResponse = await fileInfo({ fileUri, db, host });
-    const afterFileInfoData = afterFileInfoResponse.data as t.IResGetFile;
+    const fileInfoAfter = await fileInfo({ fileUri, db, host });
     const res: t.IPayload<t.IResPostFileUploadComplete> = {
-      status: afterFileInfoResponse.status,
+      status: fileInfoAfter.status,
       data: {
-        ...afterFileInfoData,
+        ...(fileInfoAfter.data as t.IResGetFile),
         changes: sendChanges ? changes : undefined,
       },
     };

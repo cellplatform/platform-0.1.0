@@ -7,7 +7,7 @@ const expectFileInFs = async (fileUri: string, exists: boolean) => {
 };
 
 describe.only('uploading files to cell', () => {
-  it('upload files by name (updating the cell model)', async () => {
+  it('upload files by name', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const cellClient = mock.client.cell(cellUri);
@@ -71,12 +71,13 @@ describe.only('uploading files to cell', () => {
     await mock.dispose();
   });
 
-  it.only('uploads file, stores upload time and filehash (sha256) from client', async () => {
+  it.only('uploads file, stores upload time, filehash (sha256) from client, and other props', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const client = mock.client.cell(cellUri);
 
     const file = await readFile('src/test/assets/func.wasm');
+    const filehash = Schema.hash.sha256(file);
     const res = await client.files.upload([{ filename: 'func.wasm', data: file }]);
 
     // Ensure before/after state of the uploaded file.
@@ -92,15 +93,12 @@ describe.only('uploading files to cell', () => {
       expect(before.props.integrity?.uploadedAt).to.eql(undefined);
 
       // After.
-      expect(after?.props.integrity?.status).to.eql('UNKNOWN');
+      expect(after?.props.integrity?.ok).to.eql(true);
+      expect(after?.props.integrity?.status).to.eql('VALID');
       expect(after?.props.integrity?.uploadedAt).to.be.a('number');
-
-      // const res1 = (await cellClient.file.name('func.wasm').info()).body.data;
-      // console.log('res1', res1);
-
-      console.log('-------------------------------------------');
-      console.log('file.uri', file.uri);
-      console.log('after', after);
+      expect(after?.props.integrity?.filehash).to.eql(filehash);
+      expect(after?.props.bytes).to.be.a('number');
+      expect(after?.props.location).to.be.match(/^file:\/\/\//);
     })();
 
     // Finish up.

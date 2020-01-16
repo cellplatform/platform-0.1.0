@@ -22,10 +22,10 @@ export type FileIntegrityStatus =
   | 'INVALID'
   | 'INVALID/fileMissing' // TODO 🐷 implement on integrity object.
   | 'INVALID/filehash'
-  | 'INVALID/s3:etag'
-  | 'UNKNOWN';
+  | 'INVALID/s3:etag';
 
 export type IFileIntegrity = {
+  ok?: boolean;
   status: FileIntegrityStatus;
   uploadedAt?: number;
   filehash?: string;

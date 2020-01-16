@@ -1,4 +1,4 @@
-import { t, util, ERROR, FormData } from '../common';
+import { t, util, ERROR, FormData, Schema } from '../common';
 
 export async function upload(args: {
   input: t.IClientCellFileUpload | t.IClientCellFileUpload[];
@@ -6,7 +6,6 @@ export async function upload(args: {
   urls: t.IUrls;
   cellUri: string;
 }) {
-  //
   const { http, urls, cellUri } = args;
   const input = Array.isArray(args.input) ? args.input : [args.input];
 
@@ -14,10 +13,14 @@ export async function upload(args: {
   // 1. Initial POST to the service.
   //    This sets up the models, and retrieves the pre-signed S3 urls to upload to.
   const url = urls.cell(cellUri).files.upload.toString();
-  const res1 = await http.post(url, {
+  const postBody: t.IReqPostCellUploadFilesBody = {
     seconds: undefined, // Expires.
-    files: input.map(({ filename }) => ({ filename })),
-  });
+    files: input.map(({ filename, data }) => {
+      const filehash = Schema.hash.sha256(data);
+      return { filename, filehash };
+    }),
+  };
+  const res1 = await http.post(url, postBody);
   if (!res1.ok) {
     const type = ERROR.HTTP.SERVER;
     const message = `Failed during initial file-upload step to '${cellUri}'.`;

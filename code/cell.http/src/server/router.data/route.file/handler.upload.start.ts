@@ -19,8 +19,14 @@ export async function uploadFileStart(args: {
   try {
     const filename = (args.filename || '').trim();
     const filehash = (args.filehash || '').trim();
+
     if (!filename) {
       const error = `A filename for [${fileUri}] was not specified.`;
+      return util.toErrorPayload(error, { status: 400 });
+    }
+
+    if (!filehash) {
+      const error = `A filehash for [${fileUri}] was not specified.`;
       return util.toErrorPayload(error, { status: 400 });
     }
 
