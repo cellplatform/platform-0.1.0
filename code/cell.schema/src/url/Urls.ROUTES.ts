@@ -31,15 +31,16 @@ export const ROUTES = {
     UPLOADED: `/file${KEY.NS}\\:${KEY.FILE}/uploaded(/?)`,
   },
   NS: {
-    INFO: `/ns${KEY.NS}(/?)`,
     CELL: `/ns${KEY.NS}\!${KEY.CELL}(/?)`, // NB: Redirect to cell.
+    INFO: `/ns${KEY.NS}(/?)`,
   },
   CELL: {
+    NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.
     INFO: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
-    FILES: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
     FILE_BY_INDEX: `/cell${KEY.NS}\!${KEY.CELL}/files/:index([0-9]+)`,
     FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/file/${KEY.FILENAME}`,
-    NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.
+    FILES: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
+    // FILES: {} todo
   },
   ROW: {
     INFO: `/cell${KEY.NS}\!${KEY.ROW}(/?)`,
