@@ -4,11 +4,9 @@ import { filter, map, share } from 'rxjs/operators';
 import { fetch, t } from '../common';
 import { send } from './http.send';
 
+// Export native fetch in case it's ever needed.
+// Typically it won't be, use the [IHttp] client.
 export { fetch };
-
-/**
- * Native fetch.
- */
 
 export const create: t.HttpCreate = (options = {}) => {
   const mergeOptions = (methodOptions: t.IFetchOptions) => {
@@ -47,7 +45,7 @@ export const create: t.HttpCreate = (options = {}) => {
     },
 
     /**
-     * `HEAD`
+     * HEAD
      */
     async head(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const method: t.HttpMethod = 'HEAD';
@@ -55,7 +53,7 @@ export const create: t.HttpCreate = (options = {}) => {
     },
 
     /**
-     * `GET`
+     * GET
      */
     async get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const method: t.HttpMethod = 'GET';
@@ -63,7 +61,7 @@ export const create: t.HttpCreate = (options = {}) => {
     },
 
     /**
-     * `PUT`
+     * PUT
      */
     async put(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const method: t.HttpMethod = 'PUT';
@@ -71,7 +69,7 @@ export const create: t.HttpCreate = (options = {}) => {
     },
 
     /**
-     * `POST`
+     * POST
      */
     async post(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const method: t.HttpMethod = 'POST';
@@ -79,7 +77,7 @@ export const create: t.HttpCreate = (options = {}) => {
     },
 
     /**
-     * `PATCH`
+     * PATCH
      */
     async patch(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const method: t.HttpMethod = 'PATCH';
@@ -87,7 +85,7 @@ export const create: t.HttpCreate = (options = {}) => {
     },
 
     /**
-     * `DELETE`
+     * DELETE
      */
     async delete(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
       const method: t.HttpMethod = 'DELETE';
@@ -97,7 +95,3 @@ export const create: t.HttpCreate = (options = {}) => {
 
   return http;
 };
-
-/**
- * [Helpers]
- */

@@ -20,7 +20,6 @@ export type EventResponseOptions = {
   data?: object;
   delay?: number;
 };
-
 export type EventRespond = (status: number, options?: EventResponseOptions) => void;
 
-export type Fire = (e: t.HttpEvent) => void
+export type Fire = (e: t.HttpEvent) => void;

@@ -75,5 +75,5 @@ export type IHttpAfter = {
   method: t.HttpMethod;
   url: string;
   response: IHttpResponse;
-  elapsed: t.IDuration
+  elapsed: t.IDuration;
 };
