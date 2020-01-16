@@ -97,6 +97,10 @@ describe.only('uploading files to cell', () => {
 
       // const res1 = (await cellClient.file.name('func.wasm').info()).body.data;
       // console.log('res1', res1);
+
+      console.log('-------------------------------------------');
+      console.log('file.uri', file.uri);
+      console.log('after', after);
     })();
 
     // Finish up.

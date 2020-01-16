@@ -1,4 +1,4 @@
-import { FormData, t, Uri, util } from '../common';
+import { t, Uri, util } from '../common';
 
 export type IClientFileArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
 
