@@ -73,7 +73,7 @@ export async function uploadCellFilesStart(args: {
   const links = uploadStartResponses.reduce((links, next) => {
     if (util.isOK(next.status)) {
       const { key, uri } = next;
-      links[key] = `${uri}`;
+      links[key] = `${uri}?status=uploading`;
     }
     return links;
   }, cellLinks);
