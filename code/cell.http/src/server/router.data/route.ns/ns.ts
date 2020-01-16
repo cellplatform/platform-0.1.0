@@ -112,7 +112,7 @@ async function getNsData(args: {
     const rows = query.data ? true : formatQuery(query.rows);
     const files = query.data ? true : query.files; // NB: boolean flag, no range selection.
 
-    return models.ns.getChildData({ model, cells, columns, rows, files });
+    return await models.ns.getChildData({ model, cells, columns, rows, files });
   } catch (err) {
     return util.toErrorPayload(err);
   }

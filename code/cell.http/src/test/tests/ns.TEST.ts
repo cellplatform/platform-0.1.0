@@ -1,5 +1,5 @@
-import { t, expect, http, createMock, stripHashes, post } from '../../../test';
-import { testPostFile } from '../route.file/router.TEST';
+import { t, expect, http, createMock, stripHashes, post } from '..';
+import { testPostFile } from './file.TEST';
 
 /**
  * TODO 🐷
@@ -14,8 +14,8 @@ import { testPostFile } from '../route.file/router.TEST';
  * - Remove Cell from NS
  */
 
-describe('route: ns (namespace URI)', function() {
-  this.timeout(10000);
+describe('ns:', function() {
+  this.timeout(15000);
 
   describe('invalid URI', () => {
     it('malformed: no id', async () => {
@@ -34,7 +34,7 @@ describe('route: ns (namespace URI)', function() {
   });
 
   describe('redirects', () => {
-    it('GET redirects from "ns:foo!A1" to "cell:" end-point', async () => {
+    it('redirects from "ns:foo!A1" to "cell:" end-point', async () => {
       const test = async (path: string) => {
         const mock = await createMock();
         const res = await http.get(mock.url(path));
@@ -54,7 +54,7 @@ describe('route: ns (namespace URI)', function() {
   });
 
   describe('GET', () => {
-    it('GET ns does not exist', async () => {
+    it('ns does not exist', async () => {
       const mock = await createMock();
       const url = mock.url('ns:foo');
       const res = await http.get(url);
@@ -79,7 +79,7 @@ describe('route: ns (namespace URI)', function() {
       expect(body.data.columns).to.eql(undefined);
     });
 
-    it('GET squashes null values', async () => {
+    it('squashes null values', async () => {
       const mock = await createMock();
 
       const payload: t.IReqPostNsBody = {
@@ -101,7 +101,7 @@ describe('route: ns (namespace URI)', function() {
       expect(json.data.columns).to.eql({});
     });
 
-    it('GET selective data via query-string (boolean|ranges)', async () => {
+    it('selective data via query-string (boolean|ranges)', async () => {
       const mock = await createMock();
       const cells = {
         A1: { value: 'A1' },
@@ -166,11 +166,9 @@ describe('route: ns (namespace URI)', function() {
       await mock.dispose();
     });
 
-    it('GET files via query-string', async () => {
+    it('files via query-string', async () => {
       const mock = await createMock();
       const post = await testPostFile({
-        uri: 'file:foo:123',
-        filename: `image.png`,
         source: 'src/test/assets/bird.png',
         dispose: false,
         mock,
@@ -182,15 +180,17 @@ describe('route: ns (namespace URI)', function() {
 
       const json1 = (res1.json as t.IResGetNs).data;
       const json2 = (res2.json as t.IResGetNs).data;
+
       expect(json1.files).to.eql(undefined);
 
-      const file = (json2.files && json2.files['123']) as t.IFileData;
-      expect(file.props).to.eql(post.props);
+      const filename = post.fileUri.split(':')[2];
+      const file = (json2.files && json2.files[filename]) as t.IFileData;
+      expect(file.props).to.eql(post.file?.props);
     });
   });
 
   describe('POST', () => {
-    it('POST data (?changes=false)', async () => {
+    it('data (?changes=false)', async () => {
       const { res, json, data } = await post.ns('ns:foo?cells&changes=false', {
         cells: { A1: { value: 'hello' } },
       });
@@ -210,7 +210,7 @@ describe('route: ns (namespace URI)', function() {
       expect(data.columns).to.eql(undefined);
     });
 
-    it('POST data with changes (default: ?changes=true)', async () => {
+    it('data with changes (default: ?changes=true)', async () => {
       const { json } = await post.ns('ns:foo?cells', {
         cells: { A1: { value: 'hello' } },
       });
@@ -226,7 +226,7 @@ describe('route: ns (namespace URI)', function() {
       expect(change.to).to.eql('hello');
     });
 
-    it('POST namespace props ("name", etc)', async () => {
+    it('namespace props ("name", etc)', async () => {
       const res1 = await post.ns('ns:foo?ns', {});
       expect(res1.data.ns.hash).to.eql('-');
       expect(res1.data.ns.id).to.eql('foo');

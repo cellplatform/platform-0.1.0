@@ -25,7 +25,6 @@ export type FileIntegrityStatus =
   | 'INVALID/s3:etag';
 
 export type IFileIntegrity = {
-  ok?: boolean;
   status: FileIntegrityStatus;
   uploadedAt?: number;
   filehash?: string;

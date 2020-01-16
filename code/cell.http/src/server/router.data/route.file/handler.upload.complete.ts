@@ -38,7 +38,6 @@ export async function uploadFileComplete(args: {
     const ok = !status.startsWith('INVALID');
     after.integrity = {
       ...after.integrity,
-      ok,
       status,
       uploadedAt: status === 'UPLOADING' ? -1 : now,
     };

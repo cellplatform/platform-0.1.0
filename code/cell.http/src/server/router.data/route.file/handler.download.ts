@@ -19,13 +19,9 @@ export const downloadFile = async (args: {
     const file = fileResponse.data as t.IResGetFile;
 
     // Match hash if requested.
-    if (matchHash && file.data.hash !== matchHash) {
-      /**
-       * TODO 🐷
-       * - put file-hash checking on download back in.
-       */
-      // const err = new Error(`[${file.uri}] hash of file-data does not match requested hash.`);
-      // return util.toErrorPayload(err, { status: 409, type: ERROR.HTTP.HASH_MISMATCH });
+    if (typeof matchHash === 'string' && file.data.hash !== matchHash) {
+      const err = new Error(`[${file.uri}] hash of file-data does not match requested hash.`);
+      return util.toErrorPayload(err, { status: 409, type: ERROR.HTTP.HASH_MISMATCH });
     }
 
     // Ensure the file exists.
@@ -44,7 +40,6 @@ export const downloadFile = async (args: {
 
     // Redirect if the location is an S3 link.
     if (util.isHttp(location)) {
-      console.log('location', location);
       return { status: 307, data: location };
     }
 

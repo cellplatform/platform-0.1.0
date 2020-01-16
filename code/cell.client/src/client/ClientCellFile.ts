@@ -68,7 +68,7 @@ export class ClientCellFile implements t.IClientCellFile {
         const link = linkRes.link;
         const url = parent.url.file
           .byName(filename)
-          .query({ hash: link.hash })
+          .query({ hash: link.hash || false })
           .toString();
 
         // Request the download.

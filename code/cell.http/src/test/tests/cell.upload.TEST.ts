@@ -6,11 +6,11 @@ const expectFileInFs = async (fileUri: string, exists: boolean) => {
   expect(await fs.pathExists(path)).to.eql(exists);
 };
 
-describe.only('uploading files to cell', () => {
+describe('cell: file upload', () => {
   it('upload files by name', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
-    const cellClient = mock.client.cell(cellUri);
+    const client = mock.client.cell(cellUri);
 
     const file1 = await readFile('src/test/assets/func.wasm');
     const file2 = await readFile('src/test/assets/kitten.jpg');
@@ -21,7 +21,7 @@ describe.only('uploading files to cell', () => {
     expect(res1.data).to.eql({});
 
     // Upload two files.
-    const res2 = await cellClient.files.upload([
+    const res2 = await client.files.upload([
       { filename: 'func.wasm', data: file1 },
       { filename: 'kitten.jpg', data: file2 },
     ]);
@@ -40,26 +40,27 @@ describe.only('uploading files to cell', () => {
     })();
 
     // Compare the cell in the response with a new query to the cell from the service.
-    expect((await cellClient.info()).body.data).to.eql(res2.body.data.cell);
+    expect((await client.info()).body.data).to.eql(res2.body.data.cell);
 
     // Ensure the file location has been stored.
-    await (async () => {
-      const files = (await cellClient.files.list()).body;
-      expect(files.length).to.eql(2);
-      expect(files.every(f => f.props.location?.startsWith('file:///'))).to.eql(true);
-    })();
+    const files = (await client.files.list()).body;
+    expect(files.length).to.eql(2);
+    expect(files.every(f => f.props.location?.startsWith('file:///'))).to.eql(true);
 
     // Check the files exist.
-    const downloadAndSave = async (filename: string, path: string, compareWith: Buffer) => {
-      path = fs.resolve(path);
-      const client = cellClient.file.name(filename);
-      const res = await client.download();
+    const downloadAndSave = async (filename: string, compareWith: Buffer) => {
+      const file = files.find(f => f.props.filename === filename);
+      const path = file?.props.location?.replace(/^file\:\/\//, '') || '';
+      const byName = client.file.name(filename);
+      const res = await byName.download();
+
       await fs.stream.save(path, res.body);
       const buffer = await readFile(path);
       expect(buffer.toString()).to.eql(compareWith.toString());
     };
-    await downloadAndSave('func.wasm', 'tmp/file1', file1);
-    await downloadAndSave('kitten.jpg', 'tmp/file2', file2);
+
+    await downloadAndSave('func.wasm', file1);
+    await downloadAndSave('kitten.jpg', file2);
 
     // Examine changes.
     const changes = res2.body.data.changes || [];
@@ -71,7 +72,7 @@ describe.only('uploading files to cell', () => {
     await mock.dispose();
   });
 
-  it.only('uploads file, stores upload time, filehash (sha256) from client, and other props', async () => {
+  it('stores "integrity" data after upload, eg filehash (sha256) etc', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const client = mock.client.cell(cellUri);
@@ -93,7 +94,6 @@ describe.only('uploading files to cell', () => {
       expect(before.props.integrity?.uploadedAt).to.eql(undefined);
 
       // After.
-      expect(after?.props.integrity?.ok).to.eql(true);
       expect(after?.props.integrity?.status).to.eql('VALID');
       expect(after?.props.integrity?.uploadedAt).to.be.a('number');
       expect(after?.props.integrity?.filehash).to.eql(filehash);
