@@ -39,13 +39,13 @@ export class ClientFile implements t.IClientFile {
     const http = this.args.http;
     const url = this.url.info;
     const res = await http.get(url.toString());
-    return util.toResponse<t.IResGetFile>(res);
+    return util.fromHttpResponse(res).toClientResponse<t.IResGetFile>();
   }
 
   public async delete() {
     const http = this.args.http;
     const url = this.url.delete;
     const res = await http.delete(url.toString());
-    return util.toResponse<t.IResDeleteFile>(res);
+    return util.fromHttpResponse(res).toClientResponse<t.IResDeleteFile>();
   }
 }

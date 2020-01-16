@@ -75,28 +75,29 @@ export class ClientCellFiles implements t.IClientCellFiles {
   public async upload(input: t.IClientCellFileUpload | t.IClientCellFileUpload[]) {
     const http = this.args.http;
     const parent = this.args.parent;
-    const files = Array.isArray(input) ? input : [input];
+    const inputFiles = Array.isArray(input) ? input : [input];
 
     // 1. Initial POST to the service.
     //    This sets up the models, and retrieves the pre-signed S3 urls to upload to.
     const url = parent.url.files.upload.toString();
-    const body: t.IReqPostCellUploadFilesBody = {
-      seconds: undefined, // Expires.
-      files: files.map(({ filename }) => ({ filename })),
-    };
 
-    const res1 = await http.post(url, body);
+    const res1 = await http.post(url, {
+      seconds: undefined, // Expires.
+      files: inputFiles.map(({ filename }) => ({ filename })),
+    });
     if (!res1.ok) {
       const type = ERROR.HTTP.SERVER;
       const message = `Failed during initial file-upload step to '${parent.uri.toString()}'.`;
       return util.toError(res1.status, type, message);
     }
 
+    const start = res1.json as t.IResPostCellUploadFiles;
+
     // 2. Upload files to S3.
-    const uploads = (res1.json as t.IResPostCellFiles).urls.uploads;
+    const uploads = start.urls.uploads;
     const uploadWait = uploads
       .map(upload => {
-        const file = files.find(item => item.filename === upload.filename);
+        const file = inputFiles.find(item => item.filename === upload.filename);
         const data = file ? file.data : undefined;
         return { data, upload };
       })
@@ -150,28 +151,29 @@ export class ClientCellFiles implements t.IClientCellFiles {
     // 3. Perform verification on each file-upload causing
     //    the underlying model(s) to be updated with file
     //    meta-data and the new file-hash.
-    const verifyWait = uploadSuccess.map(async item => {
+    const uploadCompletedWait = uploadSuccess.map(async item => {
       const url = this.args.urls.file(item.uri).uploaded.toString();
-      const body: t.IReqPostFileVerifiedBody = { overwrite: true };
+      const body: t.IReqPostFileUploadCompleteBody = {};
       const res = await http.post(url, body);
-      return res;
+      return res.json as t.IResPostFileUploadComplete;
+    });
+    const res3 = await Promise.all(uploadCompletedWait);
+
+    // Weave in AFTER file objects.
+    const files = start.data.files.map(({ uri, before }) => {
+      const file = res3.find(item => item.uri === uri);
+      const after = file ? file.data : undefined;
+      return { uri, before, after };
     });
 
-    const res3 = await Promise.all(verifyWait);
-
-    // console.log('-------------------------------------------');
-    // console.log(
-    //   'res3',
-    //   res3.map(s => s.status),
-    // );
-
-    /**
-     * TODO 🐷
-     * - Return a comprehensive response object
-     */
+    // Prepare the COMPLETE copy of the START json.
+    const complete: t.IResPostCellUploadFiles = {
+      ...start,
+      data: { ...start.data, files },
+    };
 
     // Finish up.
-    return util.toResponse<t.IResPostCellFiles>(res1) as any;
+    return util.toClientResponse<t.IResPostCellUploadFiles>(200, complete) as any;
   }
 
   public async delete(filename: string | string[]) {
@@ -203,5 +205,5 @@ export async function deleteFiles(args: {
   const body: t.IReqDeleteCellFilesBody = { filenames, action };
   const url = urls.files.delete;
   const res = await http.delete(url.toString(), body);
-  return util.toResponse<t.IResDeleteCellFilesData>(res);
+  return util.fromHttpResponse(res).toClientResponse<t.IResDeleteCellFilesData>();
 }

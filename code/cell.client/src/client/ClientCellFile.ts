@@ -49,7 +49,7 @@ export class ClientCellFile implements t.IClientCellFile {
         // Call the service.
 
         const res = await http.get(url.toString());
-        return util.toResponse<t.IResGetFile>(res);
+        return util.fromHttpResponse(res).toClientResponse<t.IResGetFile>();
       },
 
       /**
@@ -74,7 +74,9 @@ export class ClientCellFile implements t.IClientCellFile {
         // Request the download.
         const res = await http.get(url);
         if (res.ok) {
-          return util.toResponse<ReadableStream>(res, { bodyType: 'BINARY' });
+          return util
+            .fromHttpResponse(res)
+            .toClientResponse<ReadableStream>({ bodyType: 'BINARY' });
         } else {
           const message = `Failed while downloading file "${parent.uri.toString()}".`;
           const httpError = res.contentType.is.json ? (res.json as t.IHttpError) : undefined;
