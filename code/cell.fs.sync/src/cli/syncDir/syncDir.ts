@@ -6,11 +6,6 @@ import * as t from './types';
 const MAX_PAYLOAD_BYTES = 4 * 1000000; // 4MB
 
 /**
- * TODO 🐷
- * - Refactor: Move generalized CLI builder stuff into `@platform/cli`
- */
-
-/**
  * Synchronize a folder with the cloud.
  */
 export async function syncDir(args: {
@@ -19,7 +14,7 @@ export async function syncDir(args: {
   silent: boolean;
   delete: boolean;
   watch: boolean;
-  keyboard: t.ICmdKeyboard;
+  keyboard?: t.ICmdKeyboard;
 }) {
   // Retrieve (or build) configuration file the directory.
   const config = await promptConfig({ dir: args.dir });
@@ -57,7 +52,7 @@ export async function syncDir(args: {
     });
   };
 
-  if (args.watch) {
+  if (args.watch && keyboard) {
     // Watch directory.
     await watchDir({ config, sync, silent, keyboard });
   } else {

@@ -37,6 +37,7 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
     uploaded: [] as string[],
     deleted: [] as string[],
   };
+
   const logResults: t.LogSyncResults = args => {
     results.uploaded = [...results.uploaded, ...(args.uploaded || [])];
     results.deleted = [...results.deleted, ...(args.deleted || [])];

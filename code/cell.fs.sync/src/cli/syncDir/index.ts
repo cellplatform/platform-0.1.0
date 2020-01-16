@@ -10,13 +10,18 @@ export type ISyncDirArgs = {
 
 export const init: t.CmdPluginsInit = cli => {
   const handler: t.CmdPluginHandler<ISyncDirArgs> = async e => {
-    const { argv, keyboard } = e;
+    const { argv } = e;
+
+    // NB:  Keyboard is only activated if needed to avoid an event-loop preventing
+    //      the CLI from stopping after completing its operation.
+    const watch = argv.watch;
+    const keyboard = watch ? e.keyboard : undefined;
     await syncDir({
       dir: process.cwd(),
       silent: argv.silent,
       force: argv.force,
       delete: argv.delete,
-      watch: argv.watch,
+      watch,
       keyboard,
     });
   };

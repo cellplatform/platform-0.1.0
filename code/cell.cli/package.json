@@ -18,6 +18,7 @@
   "dependencies": {
     "@platform/cell.client": "0.0.53",
     "@platform/cell.fs.sync": "0.2.24",
+    "@platform/cell.schema": "0.3.18",
     "@platform/cell.types": "0.3.21",
     "@platform/cell.value": "0.1.60",
     "@platform/cli": "0.5.4",
