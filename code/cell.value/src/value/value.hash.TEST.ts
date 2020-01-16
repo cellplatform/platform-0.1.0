@@ -2,12 +2,10 @@ import { expect, t, fs, Uri } from '../test';
 import { value } from '.';
 
 const INTEGRITY: t.IFileIntegrity = {
-  ok: true,
-  exists: true,
   status: 'VALID',
   filehash: 'sha256-abc',
-  verifiedAt: 123,
-  uploadedAt: 456,
+  uploadedAt: 123456789,
+  's3:etag': 'abcd-12345',
 };
 
 describe('hash', () => {
@@ -32,7 +30,7 @@ describe('hash', () => {
       expect(() => value.hash.ns({ uri: '', ns })).to.throw();
       expect(() => value.hash.ns({ uri: '  ', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'cell:foo!A1', ns })).to.throw();
-      expect(() => value.hash.ns({ uri: ' cell:foo!A1  ', ns })).to.throw();
+      expect(() => value.hash.ns({ uri: '  cell:foo!A1  ', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'cell:foo!1', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'cell:foo!A', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'file:foo.123', ns })).to.throw();
@@ -272,7 +270,6 @@ describe('hash', () => {
     let index = -1;
     const test = (data: t.IFileData | undefined, expected: string) => {
       const hash = value.hash.file({ uri: 'file:foo:123', data });
-      // console.log('hash', hash.substring(hash.length - 10));
 
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
@@ -298,10 +295,10 @@ describe('hash', () => {
       const integrity = INTEGRITY;
 
       test({ props: { filename: 'image.png' } }, 'c260743951');
-      test({ props: { filename: 'image.png', integrity } }, '42f00b1b33');
-      test({ props: { filename: 'image.png', mimetype: 'image/png', integrity } }, '672349467d');
+      test({ props: { filename: 'image.png', integrity } }, 'f69e28613e');
+      test({ props: { filename: 'image.png', mimetype: 'image/png', integrity } }, '75adc5a9ab');
       test({ props: {}, error }, '1fd68d1131');
-      test({ props: { filename: 'image.png', integrity }, error }, '442cbad97b');
+      test({ props: { filename: 'image.png', integrity }, error }, '2f48ee6d04');
     });
   });
 });
