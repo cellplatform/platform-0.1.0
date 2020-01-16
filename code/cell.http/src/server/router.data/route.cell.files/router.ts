@@ -1,10 +1,9 @@
 import { t, routes, util } from '../common';
 
 import { getParams } from './params';
-
 import { deleteCellFiles } from './handler.delete';
 import { listCellFiles } from './handler.list';
-import { uploadCellFilesStart } from './handler.upload';
+import { uploadCellFilesStart } from './handler.upload.start';
 
 /**
  * Routes for operating on a set of cell files.
@@ -37,10 +36,10 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *      Initiate a file(s) upload, creating the model and
    *      returning pre-signed S3 url(s) to upload to.
    *      Usage:
-   *        1. Invoke this POST to initiate the upload (save model).
-   *        2. Invoke [file/uploadStart] handler for each file.
-   *        3. Upload to the pre-signed S3 url(s) given by the file/uploadStart.
-   *        4. POST to [/file/upload/completed] for each uploaded file to flesh out meta-data and verify.
+   *        1. POST (here) to initiate the upload by saving the model.
+   *        2. POST to the "upload start" handler for each file.
+   *        3. POST file to the upload link (either "pre-signed S3 URL" or the local file-system endpoint).
+   *        4. POST to the "upload complete" endpoint for each uploaded file to capture its meta-data and verify its state.
    */
   router.post(routes.CELL.FILES, async req => {
     try {

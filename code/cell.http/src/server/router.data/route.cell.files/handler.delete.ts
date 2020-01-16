@@ -58,8 +58,8 @@ export async function deleteCellFiles(args: {
   // Report any requested filenames that are not linked to the cell.
   items.filter(({ uri }) => !Boolean(uri)).forEach(({ filename }) => error('NOT_LINKED', filename));
 
-  const deleteOne = async (filename: string, uri: string) => {
-    const res = await deleteFile({ db, fs, uri, host });
+  const deleteOne = async (filename: string, fileUri: string) => {
+    const res = await deleteFile({ db, fs, fileUri, host });
     if (util.isOK(res.status)) {
       data.deleted = [...data.deleted, filename];
     } else {

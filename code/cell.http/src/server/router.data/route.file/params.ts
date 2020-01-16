@@ -4,7 +4,7 @@ export const getParams = (params: t.IUrlParamsFile) => {
   const data = {
     ns: (params.ns || '').toString(),
     file: (params.file || '').toString(),
-    uri: '',
+    fileUri: '',
   };
 
   const error: t.IError = {
@@ -25,7 +25,7 @@ export const getParams = (params: t.IUrlParamsFile) => {
   }
 
   try {
-    data.uri = Schema.uri.create.file(data.ns, data.file);
+    data.fileUri = Schema.uri.create.file(data.ns, data.file);
   } catch (err) {
     error.message = toMessage(err.message);
     return { ...data, status: 400, error };

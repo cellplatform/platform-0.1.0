@@ -2,11 +2,10 @@ import { models, t, util } from '../common';
 
 export async function fileInfo(args: {
   db: t.IDb;
-  uri: string;
+  fileUri: string;
   host: string;
-  query?: t.IUrlQueryFileInfo;
 }): Promise<t.IPayload<t.IResGetFile> | t.IErrorPayload> {
-  const { db, uri, query = {}, host } = args;
+  const { db, fileUri: uri, host } = args;
   try {
     const model = await models.File.create({ db, uri }).ready;
     const exists = Boolean(model.exists);

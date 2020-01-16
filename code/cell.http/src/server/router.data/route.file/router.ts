@@ -19,8 +19,8 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const host = req.host;
     const query = req.query as t.IUrlQueryFileInfo;
     const params = req.params as t.IUrlParamsFile;
-    const { status, ns, error, uri } = getParams(params);
-    return !ns || error ? { status, data: { error } } : fileInfo({ uri, db, query, host });
+    const { status, ns, error, fileUri } = getParams(params);
+    return !ns || error ? { status, data: { error } } : fileInfo({ fileUri, db, host });
   });
 
   /**
@@ -30,8 +30,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const host = req.host;
     const query = req.query as t.IUrlQueryFileDownload;
     const params = req.params as t.IUrlParamsFile;
-    const { status, ns, error, uri } = getParams(params);
-    return !ns || error ? { status, data: { error } } : downloadFile({ db, fs, uri, host, query });
+    const { status, ns, error, fileUri } = getParams(params);
+    const matchHash = query.hash;
+    return !ns || error
+      ? { status, data: { error } }
+      : downloadFile({ db, fs, fileUri, host, matchHash });
   });
 
   /**
@@ -40,13 +43,13 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.post(routes.FILE.UPLOADED, async req => {
     const host = req.host;
     const query = req.query as t.IUrlQueryFileUploadComplete;
-    const body = await req.body.json<t.IReqPostFileVerifiedBody>({ default: { overwrite: false } });
+    const body = await req.body.json<t.IReqPostFileUploadCompleteBody>({ default: { overwrite: false } });
     const params = req.params as t.IUrlParamsFile;
-    const { status, ns, error, uri } = getParams(params);
+    const { status, ns, error, fileUri } = getParams(params);
     const sendChanges = query.changes;
     return !ns || error
       ? { status, data: { error } }
-      : uploadFileComplete({ db, fs, uri, host, sendChanges });
+      : uploadFileComplete({ db, fs, fileUri, host, sendChanges });
   });
 
   /**
@@ -60,13 +63,13 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
-   * DELETE binary-file.
+   * DELETE (file).
    */
   router.delete(routes.FILE.BASE, async req => {
     const host = req.host;
     const query = req.query as t.IUrlQueryFileDelete;
     const params = req.params as t.IUrlParamsFile;
-    const { status, ns, error, uri } = getParams(params);
-    return !ns || error ? { status, data: { error } } : deleteFile({ fs, uri, db, host });
+    const { status, ns, error, fileUri } = getParams(params);
+    return !ns || error ? { status, data: { error } } : deleteFile({ fs, fileUri, db, host });
   });
 }
