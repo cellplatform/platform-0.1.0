@@ -23,7 +23,7 @@ export const init: t.CmdPluginsInit = cli => {
     .command<IDirArgs>({
       name: 'dir',
       alias: 'd',
-      description: 'Inspect and configure a folder',
+      description: 'Configure and inspect a folder',
       handler,
     })
     .option<'boolean'>({

@@ -26,4 +26,5 @@ fsSync.init(app.plugins);
 /**
  * Run the application.
  */
+cli.log.info('🌳');
 app.run();
