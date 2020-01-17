@@ -57,12 +57,24 @@ export async function watchDir(args: {
   const pattern = `${config.dir}/*`;
   const initialCount = (await fs.glob.find(pattern, { dot: false })).length;
 
+  const state = {
+    status: '',
+    isSyncing() {
+      return state.status?.includes('syncing');
+    },
+  };
+
   keyboard.keypress$.subscribe(e => {
     if (e.key === 'l') {
       util.open(config).local();
     }
     if (e.key === 'r') {
       util.open(config).remote();
+    }
+    if (e.key === 'p') {
+      if (!state.isSyncing()) {
+        push();
+      }
     }
   });
 
@@ -84,8 +96,9 @@ export async function watchDir(args: {
   );
 
   const logPage = (status?: string) => {
+    state.status = status || '';
     log.clear();
-    logHost({ status });
+    logHost({ status: state.status });
     log.info();
     logDivider();
     logHistory({ status });
@@ -96,10 +109,16 @@ export async function watchDir(args: {
   };
 
   const logCommands = () => {
+    const isSyncing = state.isSyncing();
+    const color = (text: string, isActive: boolean = true) => {
+      return isActive ? log.cyan(text) : log.gray(text);
+    };
+
     gray(`Commands:`);
-    gray(`• [${log.cyan('l')}] to open local folder`);
-    gray(`• [${log.cyan('r')}] to open remote target in browser`);
-    gray(`• [${log.cyan('ctrl + c')}] to exit`);
+    gray(`• [${color('l')}] to open local folder`);
+    gray(`• [${color('r')}] to open remote target in browser`);
+    gray(`• [${color('p', !isSyncing)}] to push to remote target`);
+    gray(`• [${color('ctrl + c')}] to exit`);
   };
 
   const logHost = (args: { status?: string } = {}) => {
@@ -138,7 +157,7 @@ export async function watchDir(args: {
       const table = log.table({ border: false });
       items.forEach((item, i) => {
         const isLast = i === items.length - 1;
-        item.log = item.log || toHistoryItem(item);
+        item.log = item.log || toHistoryItem({ item, isFirst: item.index === 0 });
         const createdAt = time.day(item.createdAt).format('hh:mm:ss');
         const number = item.index + 1;
         const ts = `${number} [${isLast && !isSyncing ? log.white(createdAt) : createdAt}]`;
@@ -164,12 +183,17 @@ export async function watchDir(args: {
   });
 
   dir$.pipe(debounceTime(debounce)).subscribe(async e => {
+    push();
+  });
+
+  const push = async () => {
     logPage(isStarted ? log.yellow(`syncing`) : `starting`);
+    isStarted = true;
 
     const res = await sync({
       silent: true,
       onPayload: payload => {
-        // Print the file upload size.
+        // Print the file upload size (KB) when it's been calculated.
         const bytes = payload.files
           .filter(payload => payload.isPending)
           .reduce((acc, payload) => (payload.bytes > 0 ? acc + payload.bytes : acc), 0);
@@ -182,6 +206,7 @@ export async function watchDir(args: {
     isStarted = true;
 
     const { errors } = res;
+
     appendHistory(res);
 
     if (!silent) {
@@ -191,7 +216,7 @@ export async function watchDir(args: {
         log.info.yellow(`${log.yellow('•')} ${errs}`);
       }
     }
-  });
+  };
 
   // Draw the initial log page if the folder is empty.
   // NB:
@@ -208,7 +233,8 @@ export async function watchDir(args: {
  * [Helpers]
  */
 
-export function toHistoryItem(item: IHistoryItem) {
+export function toHistoryItem(args: { item: IHistoryItem; isFirst: boolean }) {
+  const { item, isFirst } = args;
   const { results, bytes } = item.response;
   const { uploaded, deleted } = item.response.count;
 
@@ -248,6 +274,6 @@ export function toHistoryItem(item: IHistoryItem) {
     output = `${bullet('•')} ${output}`;
   }
 
-  output = output ? output : '• started';
+  output = output ? output : isFirst ? '• started' : '• pushed';
   return log.gray(output);
 }
