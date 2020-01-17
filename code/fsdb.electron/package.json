@@ -1,6 +1,6 @@
 {
   "name": "@platform/fsdb.electron",
-  "version": "0.2.91",
+  "version": "0.2.92",
   "description": "",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,12 +15,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/electron": "0.7.38",
-    "@platform/fsdb.file": "1.3.44",
-    "@platform/fsdb.types": "0.6.3",
-    "@platform/fsdb.nedb": "1.3.66",
-    "@platform/react": "0.3.46",
-    "@platform/types": "0.3.6"
+    "@platform/electron": "0.7.39",
+    "@platform/fsdb.file": "1.3.45",
+    "@platform/fsdb.types": "0.6.4",
+    "@platform/fsdb.nedb": "1.3.67",
+    "@platform/react": "0.3.47",
+    "@platform/types": "0.4.0"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",

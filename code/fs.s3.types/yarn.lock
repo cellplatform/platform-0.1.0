@@ -46,13 +46,13 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http.types@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.0.tgz#1eea331ac523a4e20015c7eb2736eee5d7129e8b"
-  integrity sha512-vKExNjRTzEOU8PLjOMwrp6J/Qi+CllOph6hSbYMDksgINdSdZNXD9rtT3jfq8bi1ItuO2zPcnPIEayEETxz2fQ==
+"@platform/http.types@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.1.tgz#580f30bf32c1fa658bc5898d312431bb53b3b873"
+  integrity sha512-Lmv6riaVnlHrHb4zVqZ5+VV9QviYT1GB5aSZWJ83DIJFQPnIqeqisdiW4CIeVMEND3pVd9HiLJiggRuyQ0MYNA==
   dependencies:
     "@platform/libs" "0.1.5"
-    "@platform/types" "0.3.6"
+    "@platform/types" "0.4.0"
 
 "@platform/libs@0.1.5":
   version "0.1.5"
@@ -101,10 +101,10 @@
     "@platform/libs" "0.1.5"
     "@platform/ts.libs" "3.7.3"
 
-"@platform/types@0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.3.6.tgz#a59647717bcabbbbf9a79b7aca452342f7462df8"
-  integrity sha512-suqMJlRoOha5YpykdMOh/hn1ARLRpV9cg1atkFdRyOYpzOfKed3aA7bJQ+3tTERfbiA2FvkdNVomBzIdxZ5wzA==
+"@platform/types@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.0.tgz#93fb9606e7e889c8810df2f85e4ec41a0fd54ac2"
+  integrity sha512-fT//XaToCyytmuRxjvIVqPV+Lm5SG5XoH4j1/HzFofmEOqC650XjzXCDzUhtSkEzblyQFengPgw7m5jh8S5yCg==
 
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"

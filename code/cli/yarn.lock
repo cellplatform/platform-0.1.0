@@ -110,23 +110,23 @@
     "@platform/libs" "0.1.5"
     "@platform/ts.libs" "3.7.3"
 
-"@platform/types@0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.3.6.tgz#a59647717bcabbbbf9a79b7aca452342f7462df8"
-  integrity sha512-suqMJlRoOha5YpykdMOh/hn1ARLRpV9cg1atkFdRyOYpzOfKed3aA7bJQ+3tTERfbiA2FvkdNVomBzIdxZ5wzA==
+"@platform/types@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.0.tgz#93fb9606e7e889c8810df2f85e4ec41a0fd54ac2"
+  integrity sha512-fT//XaToCyytmuRxjvIVqPV+Lm5SG5XoH4j1/HzFofmEOqC650XjzXCDzUhtSkEzblyQFengPgw7m5jh8S5yCg==
 
 "@platform/util.is@0.0.106":
   version "0.0.106"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.106.tgz#95d79ca3ba69dec1a8db49a5aa02e7d3a3161db1"
   integrity sha512-9gIU2DLsb1LyxCSko0riENpxV58/j2rLHLotnKQdsHCcf6eohr1ObhPRwEuJz+Kw1Fucz+oh50RGmAVYescZFw==
 
-"@platform/util.value@0.6.14":
-  version "0.6.14"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.6.14.tgz#e1e6fb77624313b56f771e4c9275fb183a6a9462"
-  integrity sha512-BZX5VBH8O5a2RVUNZl+uje+PhRm1Mmv5gzw51ZomkP/yqYvT9yvEcmQ88Wzy7btCCxAr31IHBLn8YSr4GN/eKg==
+"@platform/util.value@0.6.15":
+  version "0.6.15"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.6.15.tgz#288fdfe273bf239c1bbf3e4e1d4b5cbb6a62afe1"
+  integrity sha512-O4gLTO/SBd4FV1J1s7we82+IFp1ieKTT3JtCeFXEvcOoKA6ZchcLjRBLid+Z09uINd5iMJqqmvVgeeDDoWvxHg==
   dependencies:
     "@platform/libs" "0.1.5"
-    "@platform/types" "0.3.6"
+    "@platform/types" "0.4.0"
     "@platform/util.is" "0.0.106"
     "@types/semver" "6.2.0"
     cuid "2.1.8"

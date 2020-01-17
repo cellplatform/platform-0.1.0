@@ -1,4 +1,4 @@
-import * as t from '../types';
+import * as t from './types';
 import { fetch } from './libs';
 
 type GetHeaders = (headers?: t.IHttpHeaders) => Promise<t.IHttpHeaders>;

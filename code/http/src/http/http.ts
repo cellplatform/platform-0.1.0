@@ -20,7 +20,7 @@ export const create: t.HttpCreate = (options = {}) => {
   };
 
   const _events$ = new Subject<t.HttpEvent>();
-  const fire: t.Fire = e => _events$.next(e);
+  const fire: t.FireEvent = e => _events$.next(e);
 
   const events$ = _events$.pipe(share());
   const before$ = _events$.pipe(

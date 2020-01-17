@@ -5,7 +5,7 @@ export const send = async (args: {
   method: t.HttpMethod;
   data?: any;
   options: t.IFetchOptions;
-  fire: t.Fire;
+  fire: t.FireEvent;
 }) => {
   // Prepare arguments.
   const timer = time.timer();
