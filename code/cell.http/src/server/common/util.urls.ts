@@ -42,7 +42,7 @@ export function urls(host: string) {
               .reduce((acc, next) => {
                 const { key, value } = next;
                 const { hash } = Schema.file.links.parseLink(value);
-                const path = Schema.file.links.toFilename(key).path;
+                const path = Schema.file.links.parseKey(key).path;
                 const url = urls.file.byName(path).query({ hash });
                 acc[path] = url.toString();
                 return acc;

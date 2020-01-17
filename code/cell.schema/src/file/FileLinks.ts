@@ -30,13 +30,15 @@ export class FileLinks {
     return `fs:${encode(filename)}`;
   }
 
-  public static toFilename(linksKey: string) {
-    let path = linksKey.replace(/^fs\:/, '');
+  public static parseKey(linkKey: string) {
+    const key = (linkKey || '').trim();
+    let path = key.replace(/^fs\:/, '');
     path = shouldDecode(path) ? decode(path) : path;
     const index = path.lastIndexOf('/');
     const name = index < 0 ? path : path.substring(index + 1);
     const dir = index < 0 ? '' : path.substring(0, index);
-    return { path, name, dir };
+
+    return { key, path, name, dir };
   }
 
   public static parseLink(value: string) {
@@ -72,10 +74,8 @@ export class FileLinks {
             query = `${query}${key}=${value}`;
           }
         };
-
         add('status', args.status === null ? null : args.status || status);
         add('hash', args.hash === null ? null : args.hash || hash);
-
         return `${uri.trim()}${query}`;
       },
     };

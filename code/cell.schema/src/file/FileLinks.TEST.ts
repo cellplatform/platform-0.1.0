@@ -51,67 +51,53 @@ describe('FileLinks', () => {
     });
   });
 
-  it('encodeKey => decodeKey', () => {
-    const test = (input: string, encoded: string) => {
-      const res = {
-        encoded: FileLinks.encodeKey(input),
-        decoded: FileLinks.decodeKey(FileLinks.encodeKey(input)),
+  describe('encoding', () => {
+    it('encodeKey => decodeKey', () => {
+      const test = (input: string, encoded: string) => {
+        const res = {
+          encoded: FileLinks.encodeKey(input),
+          decoded: FileLinks.decodeKey(FileLinks.encodeKey(input)),
+        };
+        expect(res.encoded).to.eql(encoded);
+        expect(res.decoded).to.eql(input);
       };
-      expect(res.encoded).to.eql(encoded);
-      expect(res.decoded).to.eql(input);
-    };
 
-    test('foo', 'foo');
-    test('foo|bar', 'foo|bar');
-    test('[foo]', '[foo]');
-    test('.foo', ':foo');
-    test('[.foo]', '[:foo]');
-    test('foo.png', 'foo:png');
-    test('foo.bar.baz', 'foo:bar:baz');
-    test('foo/bar', 'foo::bar');
-    test('foo/bar/baz', 'foo::bar::baz');
+      test('foo', 'foo');
+      test('foo|bar', 'foo|bar');
+      test('[foo]', '[foo]');
+      test('.foo', ':foo');
+      test('[.foo]', '[:foo]');
+      test('foo.png', 'foo:png');
+      test('foo.bar.baz', 'foo:bar:baz');
+      test('foo/bar', 'foo::bar');
+      test('foo/bar/baz', 'foo::bar::baz');
 
-    test('.foo.', ':foo:');
-    test('..foo...', '[::]foo[:::]');
-    test('...foo.', '[:::]foo:');
-    test('...foo.png', '[:::]foo:png');
-    test('...foo/bar..png', '[:::]foo::bar[::]png');
-    test('[..]foo[...]', '[[::]]foo[[:::]]');
-  });
+      test('.foo.', ':foo:');
+      test('..foo...', '[::]foo[:::]');
+      test('...foo.', '[:::]foo:');
+      test('...foo.png', '[:::]foo:png');
+      test('...foo/bar..png', '[:::]foo::bar[::]png');
+      test('[..]foo[...]', '[[::]]foo[[:::]]');
+    });
 
-  it('toKey (encoded)', () => {
-    const test = (input: string, output: string) => {
-      const res = FileLinks.toKey(input);
-      expect(res).to.eql(output);
-    };
-    test('foo', 'fs:foo');
-    test('foo.png', 'fs:foo:png');
-    test('/foo.png', 'fs:foo:png');
-    test('//foo.png', 'fs:foo:png');
-    test('fs.foo.png', 'fs:fs:foo:png');
-    test('cat&bird.png', 'fs:cat&bird:png');
-    test('foo/bar.png', 'fs:foo::bar:png');
-    test('foo/bar/zoo.png', 'fs:foo::bar::zoo:png');
-    test('/foo/bar.png', 'fs:foo::bar:png');
-    test('///foo/bar.png', 'fs:foo::bar:png');
-    test('foo/bar/', 'fs:foo::bar');
-    test('foo/bar.png/', 'fs:foo::bar:png');
-  });
-
-  it('toFilename (decoded)', () => {
-    const test = (input: string, path: string) => {
-      const res = FileLinks.toFilename(input);
-      expect(res.path).to.eql(path);
-      expect(res.name).to.eql(fs.basename(res.path));
-      expect(res.dir).to.eql(fs.dirname(res.path).replace(/^\./, ''));
-    };
-    test('fs:foo', 'foo');
-    test('fs:foo:png', 'foo.png');
-    test('fs:fs:foo:png', 'fs.foo.png');
-    test('fs:foo::bar:png', 'foo/bar.png');
-    test('fs:foo::bar::zoo:png', 'foo/bar/zoo.png');
-    test('fs:[::]foo:png', '..foo.png');
-    test('fs:foo[::]png', 'foo..png');
+    it('toKey (encoded)', () => {
+      const test = (input: string, output: string) => {
+        const res = FileLinks.toKey(input);
+        expect(res).to.eql(output);
+      };
+      test('foo', 'fs:foo');
+      test('foo.png', 'fs:foo:png');
+      test('/foo.png', 'fs:foo:png');
+      test('//foo.png', 'fs:foo:png');
+      test('fs.foo.png', 'fs:fs:foo:png');
+      test('cat&bird.png', 'fs:cat&bird:png');
+      test('foo/bar.png', 'fs:foo::bar:png');
+      test('foo/bar/zoo.png', 'fs:foo::bar::zoo:png');
+      test('/foo/bar.png', 'fs:foo::bar:png');
+      test('///foo/bar.png', 'fs:foo::bar:png');
+      test('foo/bar/', 'fs:foo::bar');
+      test('foo/bar.png/', 'fs:foo::bar:png');
+    });
   });
 
   describe('parseLink', () => {
@@ -184,11 +170,48 @@ describe('FileLinks', () => {
       test({ hash: null }, 'file:foo:123?status=uploading');
       test({ hash: null, status: null }, 'file:foo:123');
     });
+
+    it('throw: file URI not provided', () => {
+      const fn = () => FileLinks.parseLink('cell:foo!A1');
+      expect(fn).to.throw();
+    });
   });
 
-  it('parseLink (throws)', () => {
-    const fn = () => FileLinks.parseLink('cell:foo!A1');
-    expect(fn).to.throw();
+  describe.only('parseKey', () => {
+    it('filename', () => {
+      const key = FileLinks.toKey('image.png');
+      const res = FileLinks.parseKey(` ${key} `);
+      expect(res.key).to.eql(key);
+      expect(res.path).to.eql('image.png');
+      expect(res.name).to.eql('image.png');
+      expect(res.dir).to.eql('');
+    });
+
+    it('path: dir/name', () => {
+      const key = FileLinks.toKey('///foo/bar/image.png');
+      const res = FileLinks.parseKey(` ${key} `);
+      expect(res.key).to.eql(key);
+      expect(res.path).to.eql('foo/bar/image.png');
+      expect(res.name).to.eql('image.png');
+      expect(res.dir).to.eql('foo/bar');
+    });
+
+    it('path variants', () => {
+      const test = (input: string, path: string) => {
+        const res = FileLinks.parseKey(input);
+        expect(res.key).to.eql(input.trim());
+        expect(res.path).to.eql(path);
+        expect(res.name).to.eql(fs.basename(res.path));
+        expect(res.dir).to.eql(fs.dirname(res.path).replace(/^\./, ''));
+      };
+      test('fs:foo', 'foo');
+      test('fs:foo:png', 'foo.png');
+      test('fs:fs:foo:png', 'fs.foo.png');
+      test('fs:foo::bar:png', 'foo/bar.png');
+      test('fs:foo::bar::zoo:png', 'foo/bar/zoo.png');
+      test('fs:[::]foo:png', '..foo.png');
+      test('fs:foo[::]png', 'foo..png');
+    });
   });
 
   describe('error', () => {
