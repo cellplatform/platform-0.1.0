@@ -61,7 +61,39 @@ describe('cell/file: upload', () => {
     await mock.dispose();
   });
 
-  it('upload: does not send changes by default', async () => {
+  it('upload: then list (A1/files)', async () => {
+    const mock = await createMock();
+    const A1 = 'cell:foo!A1';
+    const A2 = 'cell:foo!A2';
+    const clientA1 = mock.client.cell(A1);
+    const clientA2 = mock.client.cell(A2);
+
+    const file1 = await readFile('src/test/assets/func.wasm');
+    const file2 = await readFile('src/test/assets/kitten.jpg');
+    const file3 = await readFile('src/test/assets/bird.png');
+
+    // POST the file to the service.
+    await clientA1.files.upload([
+      { filename: 'func.wasm', data: file1 },
+      { filename: 'kitten.jpg', data: file2 },
+    ]);
+    await clientA2.files.upload({ filename: 'bird.png', data: file3 });
+
+    const res1 = await clientA1.files.list();
+    const res2 = await clientA2.files.list();
+
+    expect(res1.body.length).to.eql(2);
+    expect(res1.body[0].props.filename).to.eql('func.wasm');
+    expect(res1.body[1].props.filename).to.eql('kitten.jpg');
+
+    expect(res2.body.length).to.eql(1);
+    expect(res2.body[0].props.filename).to.eql('bird.png');
+
+    // Finish up.
+    await mock.dispose();
+  });
+
+  it('upload: does not send changes (by default)', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const client = mock.client.cell(cellUri);
@@ -98,7 +130,7 @@ describe('cell/file: upload', () => {
     expect(uris.some(uri => uri.startsWith('file:foo:'))).to.eql(true);
   });
 
-  it('stores "integrity" data after upload, eg filehash (sha256) etc', async () => {
+  it('upload: stores "integrity" data after upload, eg filehash (sha256) etc', async () => {
     const mock = await createMock();
     const client = mock.client.cell('cell:foo!A1');
 
@@ -215,38 +247,6 @@ describe('cell/file: upload', () => {
     const fileInfo = await cellClient.file.name('func.wasm').info();
     expect(fileInfo.status).to.eql(200);
     expect(fileInfo.body.data.props.filename).to.eql('func.wasm');
-
-    // Finish up.
-    await mock.dispose();
-  });
-
-  it('upload then list', async () => {
-    const mock = await createMock();
-    const A1 = 'cell:foo!A1';
-    const A2 = 'cell:foo!A2';
-    const clientA1 = mock.client.cell(A1);
-    const clientA2 = mock.client.cell(A2);
-
-    const file1 = await readFile('src/test/assets/func.wasm');
-    const file2 = await readFile('src/test/assets/kitten.jpg');
-    const file3 = await readFile('src/test/assets/bird.png');
-
-    // POST the file to the service.
-    await clientA1.files.upload([
-      { filename: 'func.wasm', data: file1 },
-      { filename: 'kitten.jpg', data: file2 },
-    ]);
-    await clientA2.files.upload({ filename: 'bird.png', data: file3 });
-
-    const res1 = await clientA1.files.list();
-    const res2 = await clientA2.files.list();
-
-    expect(res1.body.length).to.eql(2);
-    expect(res1.body[0].props.filename).to.eql('func.wasm');
-    expect(res1.body[1].props.filename).to.eql('kitten.jpg');
-
-    expect(res2.body.length).to.eql(1);
-    expect(res2.body[0].props.filename).to.eql('bird.png');
 
     // Finish up.
     await mock.dispose();
