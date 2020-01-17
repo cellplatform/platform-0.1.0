@@ -163,16 +163,7 @@ export type IResPostCellFilesUploadStart = IUriResponse<
 >;
 export type IResPostCellFilesUploadStartData = {
   cell: t.ICellData;
-  files: Array<{
-    uri: string;
-    before: t.IFileData;
-
-    /**
-     * TODO 🐷 - remove "after" (?), as the client is now not using this type directly.
-     */
-
-    after?: t.IFileData; // NB: This is empty on the "start" and the client fills it in after upload(s) complete.
-  }>;
+  files: Array<t.IUriData<t.IFileData>>;
   errors: t.IFileUploadError[];
   changes?: t.IDbModelChange[];
 };

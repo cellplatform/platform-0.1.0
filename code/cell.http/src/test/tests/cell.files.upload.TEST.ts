@@ -133,7 +133,7 @@ describe('cell: file upload', () => {
     const filesRes = await client.files.list();
     const cellRes = await client.info();
 
-    const links = uploadRes.body.cell.links;
+    const links = uploadRes.body.cell.links || {};
     expect(cellRes.body.data.links).to.eql(links); // Cell links match on upload response with current cell info..
 
     const fileUri = links['fs:func:wasm'];
