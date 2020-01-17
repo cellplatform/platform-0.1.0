@@ -104,6 +104,14 @@
     "@platform/libs" "0.1.5"
     "@platform/types" "0.3.6"
 
+"@platform/http.types@0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.0.tgz#1eea331ac523a4e20015c7eb2736eee5d7129e8b"
+  integrity sha512-vKExNjRTzEOU8PLjOMwrp6J/Qi+CllOph6hSbYMDksgINdSdZNXD9rtT3jfq8bi1ItuO2zPcnPIEayEETxz2fQ==
+  dependencies:
+    "@platform/libs" "0.1.5"
+    "@platform/types" "0.3.6"
+
 "@platform/http@0.10.0":
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.10.0.tgz#d5109b2b1d5dd79977f446f0b88e828f1c0d4d31"
