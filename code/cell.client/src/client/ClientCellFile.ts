@@ -47,7 +47,6 @@ export class ClientCellFile implements t.IClientCellFile {
         const url = self.args.urls.file(link.uri).info;
 
         // Call the service.
-
         const res = await http.get(url.toString());
         return util.fromHttpResponse(res).toClientResponse<t.IResGetFile>();
       },
@@ -55,7 +54,11 @@ export class ClientCellFile implements t.IClientCellFile {
       /**
        * Retrieve the info about the given file.
        */
-      async download(): Promise<t.IClientResponse<ReadableStream>> {
+      async download(
+        options: { seconds?: number } = {},
+      ): Promise<t.IClientResponse<ReadableStream>> {
+        const { seconds } = options;
+
         const linkRes = await self.getCellLinkByFilename(filename);
         if (linkRes.error) {
           return linkRes.error as any;
@@ -68,7 +71,7 @@ export class ClientCellFile implements t.IClientCellFile {
         const link = linkRes.link;
         const url = parent.url.file
           .byName(filename)
-          .query({ hash: link.hash || undefined })
+          .query({ hash: link.hash || undefined, seconds })
           .toString();
 
         // Request the download.

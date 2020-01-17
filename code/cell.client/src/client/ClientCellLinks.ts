@@ -23,14 +23,12 @@ export class ClientCellLinks implements t.IClientCellLinks {
   /**
    * [Fields]
    */
-
   private readonly args: IClientCellLinksArgs;
   public readonly list: t.IClientCellLink[];
 
   /**
    * [Properties]
    */
-
   public get files() {
     return this.list.filter(item => item.type === 'FILE') as t.IClientCellLinkFile[];
   }
@@ -38,7 +36,6 @@ export class ClientCellLinks implements t.IClientCellLinks {
   /**
    * [Methods]
    */
-
   public toObject() {
     return this.args.links;
   }

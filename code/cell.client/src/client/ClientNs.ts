@@ -24,7 +24,6 @@ export class ClientNs implements t.IClientNs {
    * [Fields]
    */
   private readonly args: IClientNsArgs;
-
   public readonly uri: t.IUriParts<t.INsUri>;
   public readonly url: t.IUrlsNs;
 

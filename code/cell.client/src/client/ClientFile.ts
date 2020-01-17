@@ -24,7 +24,6 @@ export class ClientFile implements t.IClientFile {
    * [Fields]
    */
   private readonly args: IClientFileArgs;
-
   public readonly uri: t.IUriParts<t.IFileUri>;
   public readonly url: t.IUrlsFile;
 
@@ -40,12 +39,5 @@ export class ClientFile implements t.IClientFile {
     const url = this.url.info;
     const res = await http.get(url.toString());
     return util.fromHttpResponse(res).toClientResponse<t.IResGetFile>();
-  }
-
-  public async delete() {
-    const http = this.args.http;
-    const url = this.url.delete;
-    const res = await http.delete(url.toString());
-    return util.fromHttpResponse(res).toClientResponse<t.IResDeleteFile>();
   }
 }
