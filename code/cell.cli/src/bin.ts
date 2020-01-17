@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import * as fsSync from '@platform/cell.fs.sync/lib/cli';
-import { filter } from 'rxjs/operators';
-import { chalk, log, cli } from './common';
+import { cli } from './common';
 
 /**
  * Makes the script crash on unhandled rejections instead of silently
@@ -23,15 +22,6 @@ export const app = cli.create('cell');
  * Register [Cell/OS] plugin commands from child modules.
  */
 fsSync.init(app.plugins);
-
-/**
- * Show title before [Help] is displayed.
- * NB: This is done when no command is passed to the app.
- */
-app.events$.pipe(filter(e => e.type === 'CLI/showHelp/before')).subscribe(() => {
-  log.info(chalk.bgCyan.black(` CellOS `));
-  log.info();
-});
 
 /**
  * Run the application.
