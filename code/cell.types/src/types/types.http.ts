@@ -139,9 +139,11 @@ export type IResDeleteFile = { uri: string; deleted: boolean };
  * Cell Files: GET
  */
 export type IResGetCellFiles = {
-  cell: string;
   uri: string;
-  urls: IUrlMap;
+  urls: {
+    cell: string;
+    files: IUrlMap;
+  };
   files: t.IFileMap;
 };
 

@@ -26,27 +26,31 @@ export function urls(host: string) {
         },
 
         get urls(): t.IResGetCellUrls {
-          const cell = url.cell(cellUri);
+          const builder = url.cell(cellUri);
           return {
-            cell: cell.info.toString(),
-            files: cell.files.list.toString(),
+            cell: builder.info.toString(),
+            files: builder.files.list.toString(),
           };
         },
 
         files: {
           urls(links: t.ICellData['links']): t.IResGetCellFiles['urls'] {
-            const urls = url.cell(cellUri);
-            return Object.keys(links || {})
+            const builder = url.cell(cellUri);
+            const files = Object.keys(links || {})
               .map(key => ({ key, value: (links || {})[key] }))
               .filter(({ value }) => Schema.uri.is.file(value))
               .reduce((acc, next) => {
                 const { key, value } = next;
                 const { hash } = Schema.file.links.parseLink(value);
                 const path = Schema.file.links.parseKey(key).path;
-                const url = urls.file.byName(path).query({ hash });
+                const url = builder.file.byName(path).query({ hash });
                 acc[path] = url.toString();
                 return acc;
               }, {});
+            return {
+              cell: builder.info.toString(),
+              files,
+            };
           },
         },
       };

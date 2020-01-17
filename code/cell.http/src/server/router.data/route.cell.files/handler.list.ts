@@ -27,7 +27,6 @@ export async function listCellFiles(args: {
   // Finish up.
   const data: t.IResGetCellFiles = {
     uri: cellUri.toString(),
-    cell: urlBuilder.info,
     urls,
     files,
   };
