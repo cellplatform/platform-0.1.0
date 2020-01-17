@@ -61,6 +61,42 @@ describe('cell/file: upload', () => {
     await mock.dispose();
   });
 
+  it.only('upload: file within folder-path', async () => {
+    const mock = await createMock();
+    const cellUri = 'cell:foo!A1';
+    const client = mock.client.cell(cellUri);
+
+    const kitten = await readFile('src/test/assets/kitten.jpg');
+    const filename = 'foo/bar/kitten.jpg';
+    const uploaded = await client.files.upload({ filename, data: kitten });
+
+    // Ensure folder path is encoded in key.
+    const cellLinks = uploaded.body.cell.links || {};
+    const key = 'fs:foo::bar::kitten:jpg';
+    expect(typeof cellLinks[key]).to.eql('string');
+    expect(Schema.file.links.toKey(filename)).to.eql(key);
+
+    console.log('-------------------------------------------');
+    console.log('uploadRes', uploaded.body);
+    console.log('-------------------------------------------');
+
+    const files = await client.files.list();
+    console.log('files', files.body);
+
+    /**
+     * TODO 🐷
+     * IFileData
+     *  - filename (name only)
+     *  - dir ("" or directory)
+     *
+     */
+
+    // const r = Schema.file.links.p
+
+    // Finish up.
+    await mock.dispose();
+  });
+
   it('upload: then list (A1/files)', async () => {
     const mock = await createMock();
     const A1 = 'cell:foo!A1';

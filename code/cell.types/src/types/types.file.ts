@@ -1,16 +1,16 @@
 import { t } from '../common';
 
+export type IFileData = {
+  props: IFileProps;
+  hash?: string;
+  error?: t.IError;
+};
 export type IFileProps = {
   filename?: string;
   mimetype?: string;
   location?: string;
   bytes?: number;
   integrity?: IFileIntegrity;
-};
-export type IFileData = {
-  props: IFileProps;
-  hash?: string;
-  error?: t.IError;
 };
 
 /**
