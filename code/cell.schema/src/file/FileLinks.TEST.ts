@@ -177,7 +177,7 @@ describe('FileLinks', () => {
     });
   });
 
-  describe.only('parseKey', () => {
+  describe('parseKey', () => {
     it('filename', () => {
       const key = FileLinks.toKey('image.png');
       const res = FileLinks.parseKey(` ${key} `);
