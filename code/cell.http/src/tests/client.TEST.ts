@@ -1,4 +1,4 @@
-import { t, expect, createMock } from '..';
+import { t, expect, createMock } from '../test';
 import * as semver from 'semver';
 
 describe('client (http)', () => {

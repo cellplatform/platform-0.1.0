@@ -49,6 +49,7 @@
   "files": [
     "lib",
     "!lib/test",
+    "!lib/tests",
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}",
     "src.tmpl",

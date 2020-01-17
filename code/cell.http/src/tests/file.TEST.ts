@@ -1,4 +1,4 @@
-import { createMock, expect, fs, http, IMock, t } from '..';
+import { createMock, expect, fs, http, IMock, t } from '../test';
 
 export const testPostFile = async (args: {
   source?: string | string[];
