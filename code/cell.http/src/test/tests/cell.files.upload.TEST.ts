@@ -154,8 +154,6 @@ describe('cell: file upload', () => {
 
     console.log('data', data);
 
-    // mock.client.ht
-
     // Finish up.
     await mock.dispose();
   });
