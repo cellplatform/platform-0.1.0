@@ -115,7 +115,7 @@ export async function watchDir(args: {
 
     const table = log.table({ border: false });
     const add = (key: string, value: string = '') => {
-      table.add([log.gray(key), '   ', log.gray(value)]);
+      table.add([log.gray(key), '    ', log.gray(value)]);
     };
 
     log.info(cellTitle);
