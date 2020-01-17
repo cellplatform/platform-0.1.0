@@ -49,7 +49,7 @@ type UriErrorProps = { uri: string };
 export type IUriError = t.IError<'URI'> & UriErrorProps;
 
 /**
- * FileSystem errors
+ * File-system errors
  */
 export type FsError =
   | 'FS/read'
@@ -59,4 +59,11 @@ export type FsError =
   | 'FS/write/cloud'
   | 'FS/delete'
   | 'FS/delete/cloud';
-export type IFsError = IError<FsError> & { path: string };
+export type IFsError<E extends FsError = FsError> = IError<E> & { path: string };
+
+/**
+ * File errors.
+ */
+export type FileError = 'FILE/upload';
+export type IFileError<E extends FileError = FileError> = IError<E> & { filename: string };
+export type IFileUploadError = IFileError<'FILE/upload'>;

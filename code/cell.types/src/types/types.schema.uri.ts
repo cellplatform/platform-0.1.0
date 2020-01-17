@@ -1,6 +1,7 @@
 import { t } from '../common';
 
 export type IUriMap = { [key: string]: string };
+export type IUriData<D> = { uri: string; data: D };
 
 /**
  * URI Parts (parsed).

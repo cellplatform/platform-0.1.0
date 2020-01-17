@@ -136,7 +136,7 @@ export type IResPostFileUploadLocal = {
 export type IResDeleteFile = { uri: string; deleted: boolean };
 
 /**
- * Cell/Files: GET
+ * Cell Files: GET
  */
 export type IResGetCellFiles = {
   cell: string;
@@ -146,10 +146,10 @@ export type IResGetCellFiles = {
 };
 
 /**
- * Cell/Files: POST (Upload)
+ * Cell Files: POST (Upload Start)
  */
-export type IReqPostCellUploadFilesBody = {
-  files: Array<{ filename: string; filehash?: string }>;
+export type IReqPostCellFilesUploadStartBody = {
+  files: IReqPostCellUploadFile[];
   seconds?: number; // Expires.
 };
 export type IReqPostCellUploadFile = {
@@ -157,27 +157,42 @@ export type IReqPostCellUploadFile = {
   filehash?: string;
 };
 
-export type IResPostCellUploadFiles = IUriResponse<
-  IResPostCellUploadFilesData,
-  IResPostCellUploadFilesUrls
+export type IResPostCellFilesUploadStart = IUriResponse<
+  IResPostCellFilesUploadStartData,
+  IResPostCellFilesUploadUrls
 >;
-export type IResPostCellUploadFilesData = {
+export type IResPostCellFilesUploadStartData = {
   cell: t.ICellData;
   files: Array<{
     uri: string;
     before: t.IFileData;
+
+    /**
+     * TODO 🐷 - remove "after" (?), as the client is now not using this type directly.
+     */
+
     after?: t.IFileData; // NB: This is empty on the "start" and the client fills it in after upload(s) complete.
   }>;
-  errors: IResPostCellUploadFilesError[];
+  errors: t.IFileUploadError[];
   changes?: t.IDbModelChange[];
 };
-export type IResPostCellUploadFilesError = { status: number; filename: string; message: string };
-export type IResPostCellUploadFilesUrls = IResGetCellUrls & {
+export type IResPostCellFilesUploadUrls = IResGetCellUrls & {
   uploads: t.IFilePresignedUploadUrl[];
 };
 
 /**
- * Cell/Files: DELETE
+ * Cell Files: POST (Upload Complete)
+ */
+export type IReqPostCellFilesUploadCompleteBody = {};
+export type IResPostCellFilesUploadComplete = IUriResponse<IResPostCellFilesUploadCompleteData>;
+export type IResPostCellFilesUploadCompleteData = {
+  cell: t.ICellData;
+  files: Array<t.IUriData<t.IFileData>>;
+  changes?: t.IDbModelChange[];
+};
+
+/**
+ * Cell Files: DELETE
  */
 export type IReqDeleteCellFilesBody = {
   filenames: string[];

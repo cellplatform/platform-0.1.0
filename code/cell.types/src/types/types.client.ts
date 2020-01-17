@@ -3,7 +3,7 @@ import { t } from '../common';
 /**
  * Response.
  */
-export type IClientResponseAsync<T> = Promise<IClientResponse<T>>;
+export type IClientAsync<T> = Promise<IClientResponse<T>>;
 export type IClientResponse<T> = {
   ok: boolean;
   status: number;
@@ -37,8 +37,8 @@ export type IClientCell = {
   readonly url: t.IUrlsCell;
   readonly file: IClientCellFile;
   readonly files: IClientCellFiles;
-  info(): t.IClientResponseAsync<t.IResGetCell>;
-  links(): t.IClientResponseAsync<IClientCellLinks>;
+  info(): t.IClientAsync<t.IResGetCell>;
+  links(): t.IClientAsync<IClientCellLinks>;
 };
 
 export type IClientCellLinks = {
@@ -52,20 +52,29 @@ export type IClientCellFile = {
 };
 
 export type IClientCellFileByName = {
-  info(): t.IClientResponseAsync<t.IResGetFile>;
-  download(): t.IClientResponseAsync<ReadableStream>;
+  info(): t.IClientAsync<t.IResGetFile>;
+  download(): t.IClientAsync<ReadableStream>;
 };
 
 export type IClientCellFiles = {
-  map(): t.IClientResponseAsync<t.IFileMap>;
-  list(): t.IClientResponseAsync<IClientFileData[]>;
+  map(): t.IClientAsync<t.IFileMap>;
+  list(): t.IClientAsync<IClientFileData[]>;
   upload(
     files: IClientCellFileUpload | IClientCellFileUpload[],
-  ): t.IClientResponseAsync<t.IResPostCellUploadFiles>;
-  delete(filename: string | string[]): t.IClientResponseAsync<t.IResDeleteCellFilesData>;
-  unlink(filename: string | string[]): t.IClientResponseAsync<t.IResDeleteCellFilesData>;
+    options?: { changes?: boolean },
+  ): t.IClientAsync<IClientCellFileUploadResponse>;
+  delete(filename: string | string[]): t.IClientAsync<t.IResDeleteCellFilesData>;
+  unlink(filename: string | string[]): t.IClientAsync<t.IResDeleteCellFilesData>;
 };
 export type IClientCellFileUpload = { filename: string; data: ArrayBuffer };
+
+export type IClientCellFileUploadResponse = {
+  uri: string;
+  cell: t.ICellData;
+  files: Array<t.IUriData<t.IFileData>>;
+  errors: t.IFileUploadError[];
+  changes?: t.IDbModelChange[];
+};
 
 /**
  * Cell Links
@@ -95,8 +104,8 @@ export type IClientCellLinkFile = {
 export type IClientFile = {
   readonly uri: t.IUriParts<t.IFileUri>;
   readonly url: t.IUrlsFile;
-  info(): t.IClientResponseAsync<t.IResGetFile>;
-  delete(): t.IClientResponseAsync<t.IResDeleteFile>;
+  info(): t.IClientAsync<t.IResGetFile>;
+  delete(): t.IClientAsync<t.IResDeleteFile>;
 };
 
 export type IClientFileData = t.IFileData & { uri: string };
