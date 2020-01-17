@@ -93,6 +93,7 @@ export async function upload(args: {
     });
 
   const res2 = await Promise.all(fileUploadWait);
+
   const fileUploadSuccesses = res2.filter(item => item.ok);
   const fileUploadFails = res2.filter(item => !item.ok);
   const fileUploadErrors = fileUploadFails.map(item => {

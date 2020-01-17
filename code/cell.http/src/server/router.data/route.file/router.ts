@@ -60,7 +60,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.post(routes.LOCAL.FS, async req => {
     const query = req.query as t.IUrlQueryLocalFs;
     const path = (req.headers.path || '').toString().trim();
-    const data = await req.body.buffer();
+    const data = await req.body.buffer({ limit: '1gb' });
     return uploadLocalFile({ db, fs, path, data, query });
   });
 
