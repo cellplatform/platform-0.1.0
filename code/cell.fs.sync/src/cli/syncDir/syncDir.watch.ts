@@ -66,15 +66,16 @@ export async function watchDir(args: {
     }
   });
 
-  const history: IHistoryItem[] = [];
+  let history: IHistoryItem[] = [];
+  let historyIndex = -1;
   const appendHistory = (response: t.IRunSyncResponse) => {
-    const MAX = 50;
-    if (history.length === MAX) {
-      history.shift();
+    const MAX = 10;
+    if (history.length >= MAX) {
+      history = history.slice(history.length - MAX);
     }
     const createdAt = time.now.timestamp;
-    const index = history.length;
-    history.push({ index, createdAt, response });
+    historyIndex++;
+    history.push({ index: historyIndex, createdAt, response });
   };
 
   const dir$ = watch.start({ pattern }).events$.pipe(
