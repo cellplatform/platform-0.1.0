@@ -1,5 +1,6 @@
 import * as t from './types';
 import { ERROR } from './constants';
+import { value } from './libs';
 
 /**
  * Determine if the status code represents an OK status (200).
@@ -34,6 +35,7 @@ export function fromHttpResponse(res: t.IHttpResponse) {
  */
 export function toClientResponse<T>(status: number, body: T): t.IClientResponse<T> {
   const ok = isOK(status);
+  body = typeof body === 'object' ? value.deleteUndefined(body as any) : body;
   if (ok) {
     return { ok, status, body };
   } else {
