@@ -1,5 +1,6 @@
 import { t } from '../common';
 import { syncDir } from './syncDir';
+export { syncDir };
 
 export type ISyncDirArgs = {
   force: boolean;
