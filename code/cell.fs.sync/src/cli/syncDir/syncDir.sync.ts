@@ -30,7 +30,7 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
   });
 
   if (!silent) {
-    payload.log();
+    log.info(payload.log());
   }
 
   const results: t.ISyncResults = {
@@ -68,12 +68,12 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
   }
 
   // Exit if no changes to push.
-  if (!silent && !force && payload.items.filter(item => item.isPending).length === 0) {
+  if (!silent && !force && payload.files.filter(item => item.isPending).length === 0) {
     log.info();
     log.info.green(`Nothing to update\n`);
     gray(`• Use ${log.cyan('--force (-f)')} to push everything`);
 
-    const deletions = payload.items.filter(p => p.status === 'DELETED').length;
+    const deletions = payload.files.filter(p => p.status === 'DELETED').length;
     if (deletions > 0) {
       gray(`• Use ${log.cyan('--delete')} to sync deletions`);
     }
@@ -83,11 +83,11 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
   }
 
   // Filter on set of items to push.
-  const pushes = payload.items
+  const pushes = payload.files
     .filter(item => item.status !== 'DELETED')
     .filter(item => (force ? true : item.status !== 'NO_CHANGE'))
     .filter(item => Boolean(item.data));
-  const deletions = payload.items.filter(item => args.delete && item.status === 'DELETED');
+  const deletions = payload.files.filter(item => args.delete && item.status === 'DELETED');
   const total = pushes.length + deletions.length;
 
   if (args.prompt && !silent) {

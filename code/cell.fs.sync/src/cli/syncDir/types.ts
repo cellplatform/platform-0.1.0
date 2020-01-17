@@ -42,3 +42,8 @@ export type IPayloadFile = {
   data?: Buffer;
   bytes: number;
 };
+export type IPayload = {
+  ok: boolean;
+  files: IPayloadFile[];
+  log(): string;
+};

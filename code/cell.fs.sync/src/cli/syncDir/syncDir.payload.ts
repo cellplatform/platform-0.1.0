@@ -69,10 +69,10 @@ export async function buildPayload(args: {
     const item: t.IPayloadFile = { status, isPending, filename, path, url, data, bytes };
     return item;
   });
-  const items = await Promise.all(wait);
+  const files = await Promise.all(wait);
 
   // Add list of deleted files (on remote, but not local).
-  const isDeleted = (filename?: string) => !items.some(item => item.filename === filename);
+  const isDeleted = (filename?: string) => !files.some(item => item.filename === filename);
   remoteFiles
     .filter(file => Boolean(file.props.filename))
     .filter(file => isDeleted(file.props.filename))
@@ -81,25 +81,26 @@ export async function buildPayload(args: {
       const path = '';
       const url = cellUrls.file.byName(filename).toString();
       const isPending = args.delete;
-      items.push({ status: 'DELETED', isPending, filename, path, url, bytes: -1 });
+      files.push({ status: 'DELETED', isPending, filename, path, url, bytes: -1 });
     });
 
   // Finish up.
-  return {
+  const payload: t.IPayload = {
     ok,
-    items,
-    log: () => logPayload({ items, force: args.force, delete: args.delete }),
+    files,
+    log: () => logPayload({ files, force: args.force, delete: args.delete }),
   };
+  return payload;
 }
 
 /**
  * Logs a set of payload items.
  */
-export function logPayload(args: { items: t.IPayloadFile[]; delete: boolean; force: boolean }) {
-  const { items } = args;
+export function logPayload(args: { files: t.IPayloadFile[]; delete: boolean; force: boolean }) {
+  const { files } = args;
   let count = 0;
   const table = log.table({ border: false });
-  const list = items.filter(item => (item.status === 'DELETED' ? args.delete : true));
+  const list = files.filter(item => (item.status === 'DELETED' ? args.delete : true));
   fs.sort
     .objects(list, item => item.filename)
     .forEach(item => {
@@ -128,7 +129,5 @@ export function logPayload(args: { items: t.IPayloadFile[]; delete: boolean; for
       count++;
     });
 
-  if (count > 0) {
-    log.info(table.toString());
-  }
+  return count > 0 ? table.toString() : '';
 }
