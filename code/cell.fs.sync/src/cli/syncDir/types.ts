@@ -1,4 +1,5 @@
 import * as t from '../../common/types';
+
 export * from '../../common/types';
 
 export type ISyncResults = { uploaded: string[]; deleted: string[] };
@@ -15,6 +16,7 @@ export type IRunSyncArgs = {
   delete: boolean;
   prompt: boolean;
   maxBytes: number;
+  onPayload?: (payload: IPayload) => void;
 };
 
 export type IRunSyncResponse = {

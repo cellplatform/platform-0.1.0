@@ -1,8 +1,7 @@
-import { cli, Client, log, Schema, defaultValue } from '../common';
+import { cli, Client, log, Schema } from '../common';
 import { buildPayload } from './syncDir.payload';
+import { addTask, toBatches } from './syncDir.sync.task';
 import * as t from './types';
-
-import { toBatches, addTask } from './syncDir.sync.task';
 import * as util from './util';
 
 const gray = log.info.gray;
@@ -11,7 +10,7 @@ const gray = log.info.gray;
  * Ryns a sync operation.
  */
 export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
-  const { config, maxBytes } = args;
+  const { config, maxBytes, onPayload } = args;
   const { silent = false, force = false } = args;
   const dir = config.dir;
   const targetUri = config.target.uri;
@@ -28,6 +27,10 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
     delete: args.delete,
     silent,
   });
+
+  if (onPayload) {
+    onPayload(payload);
+  }
 
   if (!silent) {
     log.info(payload.log());

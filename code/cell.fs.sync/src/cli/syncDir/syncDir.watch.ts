@@ -1,6 +1,6 @@
 import { debounceTime, filter } from 'rxjs/operators';
 
-import { defaultValue, fs, log, time, watch, util } from '../common';
+import { defaultValue, fs, log, time, util, watch } from '../common';
 import * as t from './types';
 
 const gray = log.info.gray;
@@ -165,7 +165,19 @@ export async function watchDir(args: {
   dir$.pipe(debounceTime(debounce)).subscribe(async e => {
     logPage(isStarted ? log.yellow(`syncing`) : `starting`);
 
-    const res = await sync({ silent: true });
+    const res = await sync({
+      silent: true,
+      onPayload: payload => {
+        // Print the file upload size.
+        const bytes = payload.files
+          .filter(payload => payload.isPending)
+          .reduce((acc, payload) => (payload.bytes > 0 ? acc + payload.bytes : acc), 0);
+        if (isStarted && bytes > 0) {
+          const message = `${log.yellow('syncing')} (${fs.size.toString(bytes)})`;
+          logPage(gray(message));
+        }
+      },
+    });
     isStarted = true;
 
     const { errors } = res;
