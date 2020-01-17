@@ -17,7 +17,7 @@ export const send = async (args: {
   const modifications: {
     data?: any | Buffer;
     headers?: t.IHttpHeaders;
-    response?: t.ResponseLike;
+    response?: t.IHttpResponseLike;
     responseDelay?: number;
   } = {
     data: undefined,
@@ -26,7 +26,7 @@ export const send = async (args: {
     responseDelay: undefined,
   };
 
-  const respond: t.EventRespond = (status, options = {}) => {
+  const respond: t.HttpRespond = (status, options = {}) => {
     const ok = status.toString()[0] === '2';
     const { statusText = '' } = options;
     const data = options.data || modifications.data || args.data;

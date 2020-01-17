@@ -69,7 +69,7 @@ export function toBody(args: { url: string; headers: Headers; data?: any }) {
   );
 }
 
-export async function toResponse(url: string, res: t.ResponseLike) {
+export async function toResponse(url: string, res: t.IHttpResponseLike) {
   const { ok, status, statusText } = res;
   const headers = fromRawHeaders(res.headers);
   const body = res.body || undefined;
