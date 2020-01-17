@@ -29,10 +29,10 @@ export const testPostFile = async (args: {
     mock.dispose();
   }
 
-  const file = res.body.data.files[0];
+  const file = res.body.files[0];
   const fileUri = file.uri;
 
-  return { res, mock, cellUri, fileUri, file: file.after };
+  return { res, mock, cellUri, fileUri, file: file.data };
 };
 
 describe('file:', () => {

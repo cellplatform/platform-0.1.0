@@ -1,4 +1,4 @@
-import { value, t, http, fs } from '../server/common';
+import { value, t, http, fs, Schema } from '../server/common';
 import { createMock, IMock } from './mock';
 
 /**

@@ -1,9 +1,9 @@
-import { t, routes, util } from '../common';
-
-import { getParams } from './params';
+import { routes, t, util } from '../common';
 import { deleteCellFiles } from './handler.delete';
 import { listCellFiles } from './handler.list';
+import { uploadCellFilesComplete } from './handler.upload.complete';
 import { uploadCellFilesStart } from './handler.upload.start';
+import { getParams } from './params';
 
 /**
  * Routes for operating on a set of cell files.
@@ -31,15 +31,19 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   });
 
   /**
-   * POST start upload.
+   * POST upload start.
    *
    *      Initiate a file(s) upload, creating the model and
    *      returning pre-signed S3 url(s) to upload to.
-   *      Usage:
-   *        1. POST (here) to initiate the upload by saving the model.
-   *        2. POST to the "upload start" handler for each file.
-   *        3. POST file to the upload link (either "pre-signed S3 URL" or the local file-system endpoint).
-   *        4. POST to the "upload complete" endpoint for each uploaded file to capture its meta-data and verify its state.
+   *
+   *      Usage sequence for clients:
+   *        1. POST (here) to initiate the upload by saving the model. This:
+   *           - Prepares the cell model with the new link-refs to the files
+   *           - POSTs to the "upload start" handler for each file which generates
+   *             an upload link (either "pre-signed S3 URL" or the local file-system endpoint)
+   *        2. POST the file binary to the given upload link(s).
+   *        3. POST to the "upload complete" endpoint for each uploaded file to capture its meta-data and verify its state.
+   *        4. POST to the "upload complete" endpoint for the cell.
    */
   router.post(routes.CELL.FILES.UPLOAD, async req => {
     try {
@@ -49,11 +53,36 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const paramData = getParams({ params });
       const { status, error, cellUri } = paramData;
       const changes = query.changes;
-      const body = ((await req.body.json()) || {}) as t.IReqPostCellUploadFilesBody;
+      const body = ((await req.body.json()) || {}) as t.IReqPostCellFilesUploadStartBody;
 
       return !paramData.ns || error
         ? { status, data: { error } }
         : uploadCellFilesStart({ db, fs, cellUri, body, host, changes });
+    } catch (err) {
+      return util.toErrorPayload(err);
+    }
+  });
+
+  /**
+   * POST upload complete.
+   *
+   *      Complete the file(s) upload by updating the model
+   *      and running any validation which is necessary.
+   *
+   */
+  router.post(routes.CELL.FILES.UPLOADED, async req => {
+    try {
+      const host = req.host;
+      const query = req.query as t.IUrlQueryCellFilesUploaded;
+      const params = req.params as t.IUrlParamsCellFiles;
+      const paramData = getParams({ params });
+      const { status, error, cellUri } = paramData;
+      const changes = query.changes;
+      const body = ((await req.body.json()) || {}) as t.IReqPostCellFilesUploadCompleteBody;
+
+      return !paramData.ns || error
+        ? { status, data: { error } }
+        : uploadCellFilesComplete({ db, cellUri, body, host, changes });
     } catch (err) {
       return util.toErrorPayload(err);
     }

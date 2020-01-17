@@ -6,14 +6,15 @@ export async function uploadCellFilesStart(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   cellUri: string;
-  body: t.IReqPostCellUploadFilesBody;
+  body: t.IReqPostCellFilesUploadStartBody;
   host: string;
   changes?: boolean;
 }) {
   const { db, fs, cellUri, body, host } = args;
-  const parts = Schema.uri.parse<t.ICellUri>(cellUri).parts;
-  const cellKey = parts.key;
-  const ns = parts.ns;
+  const cellUriParts = Schema.uri.parse<t.ICellUri>(cellUri).parts;
+  const cellKey = cellUriParts.key;
+  const ns = cellUriParts.ns;
+  const sendChanges = defaultValue(args.changes, true);
 
   const seconds = body.seconds;
   const fileDefs = body.files || [];
@@ -29,6 +30,7 @@ export async function uploadCellFilesStart(args: {
   }) => {
     const { ns, file, links = {} } = args;
     const { filename, filehash } = file;
+
     const key = Schema.file.links.toKey(filename);
     const fileUri = links[key]
       ? links[key].split('?')[0]
@@ -52,19 +54,20 @@ export async function uploadCellFilesStart(args: {
   const cell = await models.Cell.create({ db, uri: cellUri }).ready;
   const cellLinks = cell.props.links || {};
 
-  // Post each file to the file-system as a model getting it's signed upload-link.
+  // POST each file to the file-system creating the model
+  //      and retrieving it's signed upload-link.
   const wait = fileDefs.map(file => startUpload({ ns, file, links: cellLinks }));
   const uploadStartResponses = await Promise.all(wait);
 
-  // Check for file-save errors.
-  const errors: t.IResPostCellUploadFilesError[] = [];
+  // Check for errors.
+  const errors: t.IFileUploadError[] = [];
   uploadStartResponses
     .filter(item => !util.isOK(item.status))
     .forEach(item => {
       const { status, filename } = item;
       const data: any = item.res.data || {};
-      const message = data.message || `Failed while writing '${filename}'`;
-      errors.push({ status, filename, message });
+      const message = data.message || `Failed while starting upload of '${filename}' (${status})`;
+      errors.push({ type: 'FILE/upload', filename, message });
     });
 
   // Update the [Cell] model with the file URI link(s).
@@ -82,7 +85,7 @@ export async function uploadCellFilesStart(args: {
     db,
     id: ns,
     body: { cells: { [cellKey]: { links } } },
-    query: { cells: cellKey, changes: true },
+    query: { cells: cellKey, changes: sendChanges },
     host,
   });
 
@@ -95,7 +98,7 @@ export async function uploadCellFilesStart(args: {
 
   // Build change list.
   let changes: t.IDbModelChange[] | undefined;
-  if (defaultValue(args.changes, true)) {
+  if (sendChanges) {
     changes = [...(postNsData.changes || [])];
     uploadStartResponses.forEach(item => {
       changes = [...(changes || []), ...(item.json.changes || [])];
@@ -119,7 +122,7 @@ export async function uploadCellFilesStart(args: {
 
   // Prepare response.
   await cell.load({ force: true });
-  const res: t.IResPostCellUploadFiles = {
+  const res: t.IResPostCellFilesUploadStart = {
     uri: cellUri,
     createdAt: cell.createdAt,
     modifiedAt: cell.modifiedAt,

@@ -50,16 +50,6 @@ export async function uploadFileComplete(args: {
       }
     }
 
-    // TODO 🐷 Perform verification (on different rount)
-
-    // Update error.
-    // if (!ok) {
-    //   model.props.error = {
-    //     message: `DANGER the file-hash does not match the underlying data.`,
-    //     type: ERROR.HTTP.HASH_MISMATCH,
-    //   };
-    // }
-
     // Clear any invalid errors if the model is OK.
     if (ok && model.props.error && model.props.error.type.startsWith('INVALID')) {
       model.props.error = undefined;
