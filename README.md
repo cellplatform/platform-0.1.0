@@ -63,6 +63,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/fs](/code/fs)
   - [@platform/fs.watch](/code/fs.watch)
   - [@platform/fs.s3](/code/fs.s3)
+  - [@platform/fs.s3](/code/fs.s3.types)
 - fsdb
   - [@platform/fsdb.types](/code/fsdb.types)
   - [@platform/fsdb.file](/code/fsdb.file)
@@ -72,6 +73,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/fsdb.electron](/code/fsdb.electron)
 - network
   - [@platform/http](/code/http)
+  - [@platform/http](/code/http.types)
   - [@platform/graphql](/code/graphql)
 - cell
   - [@platform/cell](/code/cell)
