@@ -1,6 +1,6 @@
 import { createMock, expect, http, t } from '../../../test';
 
-describe('route: sys', () => {
+describe('sys:', () => {
   describe('errors', () => {
     it('GET: 404', async () => {
       const mock = await createMock();

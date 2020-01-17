@@ -1,7 +1,7 @@
 import { parse as parseUrl } from 'url';
 import { createMock, expect, fs, http, readFile, Schema, t } from '..';
 
-describe('cell: file upload', () => {
+describe('cell/file: upload', () => {
   it('upload 2 files', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
