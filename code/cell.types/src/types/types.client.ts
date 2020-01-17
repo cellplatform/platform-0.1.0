@@ -105,7 +105,6 @@ export type IClientFile = {
   readonly uri: t.IUriParts<t.IFileUri>;
   readonly url: t.IUrlsFile;
   info(): t.IClientAsync<t.IResGetFile>;
-  delete(): t.IClientAsync<t.IResDeleteFile>;
 };
 
 export type IClientFileData = t.IFileData & { uri: string };

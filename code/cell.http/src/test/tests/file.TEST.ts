@@ -117,38 +117,4 @@ describe('file:', () => {
       expect(error.message).to.contain('does not match the hash of the stored file');
     });
   });
-
-  describe('DELETE', () => {
-    it('delete a file', async () => {
-      const sourcePath = fs.resolve('src/test/assets/bird.png');
-      const { mock, fileUri, file } = await testPostFile({
-        source: sourcePath,
-        dispose: false,
-      });
-      const targetPath = file?.props.location?.replace(/^file\:\/\//, '') || '';
-
-      // Check the file exists.
-      const res1 = await mock.client.file(fileUri).info();
-      expect(res1.body.exists).to.eql(true);
-      expect(await fs.pathExists(targetPath)).to.eql(true);
-
-      // Delete the file.
-      const res2 = await mock.client.file(fileUri).delete();
-
-      expect(res2.ok).to.eql(true);
-      expect(res2.status).to.eql(200);
-      expect(res2.body.deleted).to.eql(true);
-      expect(res2.body.uri).to.eql(fileUri);
-
-      // Ensure the file has been removed from the file-system.
-      expect(await fs.pathExists(targetPath)).to.eql(false);
-
-      // Ensure the model has been deleted.
-      const res3 = await mock.client.file(fileUri).info();
-      expect(res3.body.exists).to.eql(false);
-
-      // Finish up.
-      await mock.dispose();
-    });
-  });
 });
