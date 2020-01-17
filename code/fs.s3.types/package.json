@@ -12,6 +12,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/http.types": "0.0.0",
     "@platform/types": "0.3.6"
   },
   "devDependencies": {

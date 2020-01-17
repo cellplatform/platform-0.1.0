@@ -1,5 +1,5 @@
 import { Json } from '@platform/types';
-type IHttpHeaders = { [key: string]: string | number };
+import { IHttpHeaders } from '@platform/http.types';
 
 export type S3Config = {
   accessKey: string;
