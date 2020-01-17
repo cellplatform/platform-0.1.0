@@ -53,11 +53,11 @@ export async function watchDir(args: {
 }) {
   const { config, silent, sync, keyboard } = args;
   const debounce = defaultValue(args.debounce, 1500);
-  let isStarted = false;
   const pattern = `${config.dir}/*`;
   const initialCount = (await fs.glob.find(pattern, { dot: false })).length;
 
   const state = {
+    isStarted: false,
     status: '',
     isSyncing() {
       return state.status?.includes('syncing');
@@ -126,7 +126,7 @@ export async function watchDir(args: {
     const isSyncing = status?.includes('syncing');
     const uri = config.target.uri;
 
-    const cellColor: util.log.Color = !isStarted ? 'gray' : isSyncing ? 'yellow' : 'blue';
+    const cellColor: util.log.Color = !state.isStarted ? 'gray' : isSyncing ? 'yellow' : 'blue';
     const cellTitle = util.log.cellKeyBg(uri.parts.key, isSyncing ? 'yellow' : 'blue');
 
     const dir = formatLength(config.dir, 40);
@@ -178,7 +178,7 @@ export async function watchDir(args: {
 
   dir$.subscribe(async e => {
     if (!silent) {
-      logPage(isStarted ? log.yellow(`pending`) : `starting`);
+      logPage(state.isStarted ? log.yellow(`pending`) : `starting`);
     }
   });
 
@@ -187,8 +187,8 @@ export async function watchDir(args: {
   });
 
   const push = async () => {
-    logPage(isStarted ? log.yellow(`syncing`) : `starting`);
-    isStarted = true;
+    logPage(state.isStarted ? log.yellow(`syncing`) : `starting`);
+    state.isStarted = true;
 
     const res = await sync({
       silent: true,
@@ -197,13 +197,13 @@ export async function watchDir(args: {
         const bytes = payload.files
           .filter(payload => payload.isPending)
           .reduce((acc, payload) => (payload.bytes > 0 ? acc + payload.bytes : acc), 0);
-        if (isStarted && bytes > 0) {
+        if (state.isStarted && bytes > 0) {
           const message = `${log.yellow('syncing')} (${fs.size.toString(bytes)})`;
           logPage(gray(message));
         }
       },
     });
-    isStarted = true;
+    state.isStarted = true;
 
     const { errors } = res;
 
@@ -223,7 +223,7 @@ export async function watchDir(args: {
   //    If there are items in the folder, then the page will be drawn
   //    via the normal "change" handlers.
   if (initialCount === 0) {
-    isStarted = true;
+    state.isStarted = true;
     appendHistory(EMPTY_SYNC_RESPONSE);
     logPage();
   }
