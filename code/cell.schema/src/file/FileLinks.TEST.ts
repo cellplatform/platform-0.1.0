@@ -2,6 +2,55 @@ import { fs, expect } from '../test';
 import { FileLinks } from '.';
 
 describe('FileLinks', () => {
+  describe('is', () => {
+    it('fileKey', () => {
+      const test = (key: string | undefined, expected: boolean) => {
+        const res = FileLinks.is.fileKey(key);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, false);
+      test('', false);
+      test('  ', false);
+
+      test('fs:func:wasm', true);
+      test('  fs:func:wasm  ', true);
+    });
+
+    it('fileValue', () => {
+      const test = (key: string | undefined, expected: boolean) => {
+        const res = FileLinks.is.fileValue(key);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, false);
+      test('', false);
+      test('  ', false);
+      test('fs:func:wasm', false);
+
+      test('file:foo:abc', true);
+    });
+
+    it('fileUploading', () => {
+      const test = (key: string | undefined, expected: boolean) => {
+        const res = FileLinks.is.fileUploading(key);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, false);
+      test('', false);
+      test('  ', false);
+      test('fs:func:wasm', false);
+
+      test('file:foo:abc', false);
+      test('file:foo:abc?status=', false);
+      test('file:foo:abc?status=derp', false);
+
+      test('  file:foo:abc?status=uploading  ', true);
+      test('file:foo:abc?something=true&status=uploading  ', true);
+    });
+  });
+
   it('encodeKey => decodeKey', () => {
     const test = (input: string, encoded: string) => {
       const res = {
@@ -65,17 +114,81 @@ describe('FileLinks', () => {
     test('fs:foo[::]png', 'foo..png');
   });
 
-  it('parseLink', () => {
-    const test = (input: string, expectedUri: string, expectedHash: string | undefined) => {
-      const res = FileLinks.parseLink(input);
-      expect(res.uri).to.eql(expectedUri);
-      expect(res.hash).to.eql(expectedHash);
-    };
-    test('file:foo:123', 'file:foo:123', '');
-    test('file:foo:123?hash=abc', 'file:foo:123', 'abc');
-    test('  file:foo:123?hash=abc  ', 'file:foo:123', 'abc');
-    test('file:foo:123?bam=boo', 'file:foo:123', '');
-    test('file:foo:123?bam=boo&hash=abc ', 'file:foo:123', 'abc');
+  describe('parseLink', () => {
+    it('(uri)', () => {
+      const test = (input: string, expectedUri: string) => {
+        const res = FileLinks.parseLink(input);
+        expect(res.uri).to.eql(expectedUri);
+      };
+      test('file:foo:123', 'file:foo:123');
+      test('file:foo:123?hash=abc', 'file:foo:123');
+      test('  file:foo:123?hash=abc  ', 'file:foo:123');
+      test('file:foo:123?bam=boo&hash=abc ', 'file:foo:123');
+    });
+
+    it('(hash)', () => {
+      const test = (input: string, expectedHash?: string) => {
+        const res = FileLinks.parseLink(input);
+        expect(res.hash).to.eql(expectedHash);
+      };
+      test('file:foo:123', undefined);
+      test('file:foo:123?hash=abc', 'abc');
+      test('  file:foo:123?hash=abc  ', 'abc');
+      test('file:foo:123?bam=boo', undefined);
+      test('file:foo:123?bam=boo&hash=abc ', 'abc');
+    });
+
+    it('(status)', () => {
+      const test = (input: string, expectedStatus?: string) => {
+        const res = FileLinks.parseLink(input);
+        expect(res.status).to.eql(expectedStatus);
+      };
+      test('file:foo:123', undefined);
+      test('file:foo:123?hash=abc', undefined);
+      test('  file:foo:123?hash=abc&status=uploading  ', 'uploading');
+      test('file:foo:123?hash=abc&status=foo', 'foo');
+    });
+
+    it('toString', () => {
+      const test = (input: string, expected: string) => {
+        const res = FileLinks.parseLink(input);
+        expect(res.toString()).to.eql(expected);
+      };
+
+      test('file:foo:123', 'file:foo:123');
+      test('  file:foo:123  ', 'file:foo:123');
+      test('file:foo:123?', 'file:foo:123');
+      test('  file:foo:123?hash=abc  ', 'file:foo:123?hash=abc');
+      test('  file:foo:123?status=uploading  ', 'file:foo:123?status=uploading');
+      test('  file:foo:123?hash=abc&status=uploading  ', 'file:foo:123?status=uploading&hash=abc'); // NB: order corrected.
+    });
+
+    it('toString: modify query-string values', () => {
+      const test = (args: { hash?: string | null; status?: string | null }, expected: string) => {
+        expect(FileLinks.parseLink('file:foo:123').toString(args)).to.eql(expected);
+        expect(FileLinks.parseLink('  file:foo:123  ').toString(args)).to.eql(expected);
+      };
+      test({}, 'file:foo:123');
+      test({ hash: 'abc' }, 'file:foo:123?hash=abc');
+      test({ status: 'uploading' }, 'file:foo:123?status=uploading');
+      test({ hash: 'abc', status: 'uploading' }, 'file:foo:123?status=uploading&hash=abc');
+    });
+
+    it('toString: remove query-string values', () => {
+      const test = (args: { hash?: string | null; status?: string | null }, expected: string) => {
+        const res = FileLinks.parseLink('file:foo:123?status=uploading&hash=abc').toString(args);
+        expect(res).to.eql(expected);
+      };
+      test({}, 'file:foo:123?status=uploading&hash=abc'); // NB: No change.
+      test({ status: null }, 'file:foo:123?hash=abc'); // NB: No change.
+      test({ hash: null }, 'file:foo:123?status=uploading');
+      test({ hash: null, status: null }, 'file:foo:123');
+    });
+  });
+
+  it('parseLink (throws)', () => {
+    const fn = () => FileLinks.parseLink('cell:foo!A1');
+    expect(fn).to.throw();
   });
 
   describe('error', () => {
