@@ -2,13 +2,14 @@ import { ERROR, t, util } from '../common';
 import { fileInfo } from './handler.info';
 
 export const downloadFile = async (args: {
+  host: string;
   db: t.IDb;
   fs: t.IFileSystem;
   fileUri: string;
-  host: string;
   matchHash?: string;
+  seconds?: number;
 }) => {
-  const { db, fs, fileUri, host, matchHash } = args;
+  const { db, fs, fileUri, host, matchHash, seconds } = args;
 
   try {
     // Pull the file meta-data.
@@ -40,8 +41,9 @@ export const downloadFile = async (args: {
     }
 
     // Redirect if the location is an S3 link.
-    if (util.isHttp(location)) {
-      return { status: 307, data: location };
+    if (fs.type === 'S3') {
+      const data = fs.resolve(fileUri, { type: 'SIGNED/get', seconds }).path;
+      return { status: 307, data };
     }
 
     // Serve the file if LOCAL file-system.

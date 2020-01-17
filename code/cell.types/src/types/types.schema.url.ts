@@ -74,8 +74,14 @@ export type IUrlQueryCellFilesDelete = {};
  * Query-string parameters for a single [Cell]'s file (by name).
  */
 export type IUrlQueryCellFileInfo = IUrlQueryFileInfo & {};
-export type IUrlQueryCellFileDownloadByName = IUrlQueryCellFileInfo & { hash?: string };
-export type IUrlQueryCellFileDownloadByIndex = IUrlQueryCellFileInfo & { hash?: string };
+export type IUrlQueryCellFileDownloadByName = IUrlQueryCellFileInfo & {
+  hash?: string;
+  seconds?: number; // Expires
+};
+export type IUrlQueryCellFileDownloadByIndex = IUrlQueryCellFileInfo & {
+  hash?: string;
+  seconds?: number; // Expires
+};
 
 /**
  * ------------------------------------------------------------------

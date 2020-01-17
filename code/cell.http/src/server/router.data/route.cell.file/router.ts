@@ -21,15 +21,16 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const params = req.params as t.IUrlParamsCellFileByName;
       const paramData = getParams({ params, filenameRequired: true });
       const { status, filename, error, cellUri } = paramData;
-      const matchHash = query.hash;
+      const { hash: matchHash, seconds } = query;
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : downloadFileByName({ db, fs, cellUri, filename, host, matchHash });
+        : downloadFileByName({ db, fs, cellUri, filename, host, matchHash, seconds });
     } catch (err) {
       return util.toErrorPayload(err);
     }
   });
+
   /**
    * GET  File by index (download).
    *      Example: /cell:foo!A1/files/0
@@ -41,11 +42,11 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
       const params = req.params as t.IUrlParamsCellFileByIndex;
       const paramData = getParams({ params, indexRequired: true });
       const { status, index, error, cellUri } = paramData;
-      const matchHash = query.hash;
+      const { hash: matchHash, seconds } = query;
 
       return !paramData.ns || error
         ? { status, data: { error } }
-        : downloadFileByIndex({ db, fs, cellUri, index, host, matchHash });
+        : downloadFileByIndex({ db, fs, cellUri, index, host, matchHash, seconds });
     } catch (err) {
       return util.toErrorPayload(err);
     }
