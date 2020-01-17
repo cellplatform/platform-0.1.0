@@ -75,10 +75,14 @@ export class ClientCellFiles implements t.IClientCellFiles {
     return res;
   }
 
-  public async upload(input: t.IClientCellFileUpload | t.IClientCellFileUpload[]) {
+  public async upload(
+    input: t.IClientCellFileUpload | t.IClientCellFileUpload[],
+    options: { changes?: boolean } = {},
+  ) {
+    const { changes } = options;
     const { http, urls } = this.args;
     const cellUri = this.uri.toString();
-    return upload({ input, http, urls, cellUri }) as any;
+    return upload({ input, http, urls, cellUri, changes }) as any;
   }
 
   public async delete(filename: string | string[]) {
@@ -90,7 +94,6 @@ export class ClientCellFiles implements t.IClientCellFiles {
   public async unlink(filename: string | string[]) {
     const urls = this.args.parent.url;
     const http = this.args.http;
-
     return deleteFiles({ http, urls, filename, action: 'UNLINK' });
   }
 }

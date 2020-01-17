@@ -1,38 +1,54 @@
-import { t, util, ERROR, FormData, Schema } from '../common';
+import { defaultValue, t, util, ERROR, FormData, Schema } from '../common';
 
 export async function upload(args: {
   input: t.IClientCellFileUpload | t.IClientCellFileUpload[];
   http: t.IHttp;
   urls: t.IUrls;
   cellUri: string;
+  changes?: boolean;
 }) {
   const { http, urls, cellUri } = args;
   const input = Array.isArray(args.input) ? args.input : [args.input];
+  const sendChanges = defaultValue(args.changes, false);
+
+  let changes: t.IDbModelChange[] | undefined;
+  const addChanges = (input?: t.IDbModelChange[]) => {
+    if (sendChanges && input && input.length > 0) {
+      changes = changes || [];
+      changes = [...changes, ...input];
+    }
+  };
+
+  const cellUrls = urls.cell(cellUri);
+  const url = {
+    start: cellUrls.files.upload.query({ changes: sendChanges }).toString(),
+    complete: cellUrls.files.uploaded.query({ changes: sendChanges }).toString(),
+  };
 
   //
-  // 1. Initial POST to the service.
-  //    This sets up the models, and retrieves the pre-signed S3 urls to upload to.
-  const url = urls.cell(cellUri).files.upload.toString();
-  const postBody: t.IReqPostCellUploadFilesBody = {
+  // [1]. Initial POST to the service.
+  //      This sets up the models, and retrieves the pre-signed S3 urls to upload to.
+  const uploadStartBody: t.IReqPostCellFilesUploadStartBody = {
     seconds: undefined, // Expires.
     files: input.map(({ filename, data }) => {
       const filehash = Schema.hash.sha256(data);
       return { filename, filehash };
     }),
   };
-  const res1 = await http.post(url, postBody);
+  const res1 = await http.post(url.start, uploadStartBody);
   if (!res1.ok) {
     const type = ERROR.HTTP.SERVER;
     const message = `Failed during initial file-upload step to '${cellUri}'.`;
     return util.toError(res1.status, type, message);
   }
-  const uploadStart = res1.json as t.IResPostCellUploadFiles;
+  const uploadStart = res1.json as t.IResPostCellFilesUploadStart;
+  addChanges(uploadStart.data.changes);
 
   //
-  // 2. Upload files to S3.
+  // [2]. Upload files to S3 (or the local file-system).
   //
-  const uploads = uploadStart.urls.uploads;
-  const uploadWait = uploads
+  const uploadUrls = uploadStart.urls.uploads;
+  const fileUploadWait = uploadUrls
     .map(upload => {
       const file = input.find(item => item.filename === upload.filename);
       const data = file ? file.data : undefined;
@@ -76,40 +92,70 @@ export async function upload(args: {
       return { ok, status, uri, filename, expiresAt };
     });
 
-  const res2 = await Promise.all(uploadWait);
-  const uploadErrors = res2.filter(item => !item.ok);
-  const uploadSuccess = res2.filter(item => item.ok);
-
-  /**
-   * TODO 🐷
-   * - return list of upload errors.
-   * - clean up upload errors.
-   */
+  const res2 = await Promise.all(fileUploadWait);
+  const fileUploadSuccesses = res2.filter(item => item.ok);
+  const fileUploadFails = res2.filter(item => !item.ok);
+  const fileUploadErrors = fileUploadFails.map(item => {
+    const { filename } = item;
+    const message = `Failed while uploading file '${filename}'`;
+    const error: t.IFileUploadError = { type: 'FILE/upload', filename, message };
+    return error;
+  });
 
   //
-  // 3. Perform verification on each file-upload causing
-  //    the underlying model(s) to be updated with file
-  //    meta-data and the new file-hash.
+  // [3]. POST "complete" for each file-upload causing
+  //      the underlying model(s) to be updated with file
+  //      meta-data retrieved from the file-system.
   //
-  const uploadCompletedWait = uploadSuccess.map(async item => {
-    const url = urls.file(item.uri).uploaded.toString();
-    const body: t.IReqPostFileUploadCompleteBody = {};
-    const res = await http.post(url, body);
-    return res.json as t.IResPostFileUploadComplete;
-  });
-  const res3 = await Promise.all(uploadCompletedWait);
+  const res3 = await Promise.all(
+    fileUploadSuccesses.map(async item => {
+      const url = urls
+        .file(item.uri)
+        .uploaded.query({ changes: sendChanges })
+        .toString();
+      const body: t.IReqPostFileUploadCompleteBody = {};
+      const res = await http.post(url, body);
+      const { status, ok } = res;
+      const json = res.json as t.IResPostFileUploadComplete;
+      const data = json.data;
+      return { status, ok, json, data };
+    }),
+  );
+  res3.forEach(res => addChanges(res.json.changes));
 
-  // Weave in the AFTER file objects.
-  const files = uploadStart.data.files.map(({ uri, before }) => {
-    const file = res3.find(item => item.uri === uri);
-    const after = file ? file.data : undefined;
-    return { uri, before, after };
+  const fileCompleteFails = res3.filter(res => !res.ok);
+  const fileCompleteFailErrors = fileCompleteFails.map(res => {
+    const filename = res.data.props.filename || 'UNKNOWN';
+    const message = `Failed while completing upload of file '${filename}'`;
+    const error: t.IFileUploadError = { type: 'FILE/upload', filename, message };
+    return error;
   });
+
+  //
+  // [4]. POST "complete" for the upload to the owner cell.
+  //
+  const cellUploadCompleteBody: t.IReqPostCellFilesUploadCompleteBody = {};
+  const res4 = await http.post(url.complete, cellUploadCompleteBody);
+  const cellUploadComplete = res4.json as t.IResPostCellFilesUploadComplete;
+  const files = cellUploadComplete.data.files;
+  addChanges(cellUploadComplete.data.changes);
+
+  // Build an aggregate list of upload errors.
+  const errors: t.IFileUploadError[] = [
+    ...uploadStart.data.errors,
+    ...fileUploadErrors,
+    ...fileCompleteFailErrors,
+  ];
 
   // Finish up.
-  const body: t.IResPostCellUploadFiles = {
-    ...uploadStart,
-    data: { ...uploadStart.data, files },
+  type R = t.IClientCellFileUploadResponse;
+  const status = errors.length === 0 ? 200 : 500;
+  const responseBody: R = {
+    uri: cellUri,
+    cell: cellUploadComplete.data.cell,
+    files,
+    errors,
+    changes,
   };
-  return util.toClientResponse<t.IResPostCellUploadFiles>(200, body);
+  return util.toClientResponse<R>(status, responseBody);
 }
