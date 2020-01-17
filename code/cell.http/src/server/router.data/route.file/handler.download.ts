@@ -20,7 +20,8 @@ export const downloadFile = async (args: {
 
     // Match hash if requested.
     if (typeof matchHash === 'string' && file.data.hash !== matchHash) {
-      const err = new Error(`[${file.uri}] hash of file-data does not match requested hash.`);
+      const filename = file.data.props.filename;
+      const err = `The requested hash of '${filename}' does not match the hash of the stored file.`;
       return util.toErrorPayload(err, { status: 409, type: ERROR.HTTP.HASH_MISMATCH });
     }
 

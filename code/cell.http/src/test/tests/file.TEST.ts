@@ -58,7 +58,7 @@ describe('file:', () => {
   });
 
   describe('GET', () => {
-    it('GET binay image file (.png)', async () => {
+    it('binay image file (.png)', async () => {
       const source = 'src/test/assets/bird.png';
       const { mock, fileUri } = await testPostFile({
         source,
@@ -93,7 +93,7 @@ describe('file:', () => {
       expect(file1.toString()).to.eql(file2.toString());
     });
 
-    it('GET file with hash query-string', async () => {
+    it('file with hash query-string', async () => {
       const source = 'src/test/assets/func.wasm';
       const { mock, fileUri } = await testPostFile({
         source,
@@ -114,7 +114,7 @@ describe('file:', () => {
       const error = res2.json as t.IHttpError;
       expect(error.status).to.eql(409);
       expect(error.type).to.eql('HTTP/hash/mismatch');
-      expect(error.message).to.contain('does not match requested hash');
+      expect(error.message).to.contain('does not match the hash of the stored file');
     });
   });
 
