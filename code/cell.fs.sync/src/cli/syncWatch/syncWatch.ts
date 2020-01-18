@@ -1,4 +1,4 @@
-import { log, t } from '../common';
+import { t } from '../common';
 import { syncDir } from '../syncDir';
 
 /**

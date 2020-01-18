@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t } from './common';
 import * as dir from './dir';
 import * as syncDir from './syncDir';
 import * as syncWatch from './syncWatch';

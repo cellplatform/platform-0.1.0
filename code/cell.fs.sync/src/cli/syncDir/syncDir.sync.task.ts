@@ -1,21 +1,20 @@
-import { cli, fs } from '../common';
-import * as t from './types';
-import * as util from './util';
+import { cli, fs, t } from '../common';
+import * as util from '../util';
 
 /**
  * Converts a set of payload items into batches of sync tasks.
  */
-export function toBatches(args: { items: t.IPayloadFile[]; maxBytes: number }) {
-  const result: t.IPayloadFile[][] = [];
+export function toBatches(args: { items: t.IFsSyncPayloadFile[]; maxBytes: number }) {
+  const result: t.IFsSyncPayloadFile[][] = [];
   let bytes = 0;
   let index = 0;
   fs.sort
     .objects(args.items, item => item.filename)
     .forEach(item => {
-      bytes += item.bytes;
+      bytes += item.localBytes;
       const increment = bytes >= args.maxBytes;
       if (increment) {
-        bytes = item.bytes;
+        bytes = item.localBytes;
         index++;
       }
       result[index] = result[index] || [];
@@ -29,10 +28,10 @@ export function toBatches(args: { items: t.IPayloadFile[]; maxBytes: number }) {
  */
 export function addTask(args: {
   tasks: cli.ITasks;
-  items: t.IPayloadFile[];
+  items: t.IFsSyncPayloadFile[];
   targetUri: t.IUriParts<t.ICellUri>;
   client: t.IClient;
-  logResults: t.LogSyncResults;
+  logResults: t.FsSyncLogResults;
 }) {
   const { tasks, logResults } = args;
   const clientFiles = args.client.cell(args.targetUri.toString()).files;
@@ -78,7 +77,7 @@ export function addTask(args: {
  * [Helpers]
  */
 
-const taskTitle = (args: { pushes: t.IPayloadFile[]; deletions: t.IPayloadFile[] }) => {
+const taskTitle = (args: { pushes: t.IFsSyncPayloadFile[]; deletions: t.IFsSyncPayloadFile[] }) => {
   const { pushes, deletions } = args;
 
   let title = '';

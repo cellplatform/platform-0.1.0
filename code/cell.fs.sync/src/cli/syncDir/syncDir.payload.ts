@@ -1,6 +1,23 @@
-import { cli, fs, log, Schema } from '../common';
-import * as t from './types';
-import * as util from './util';
+import { cli, Client, defaultValue, fs, log, Schema, t } from '../common';
+import * as util from '../util';
+
+export const getPayload: t.FsSyncGetPayload = async (args: t.IFsSyncGetPayloadArgs) => {
+  const { config, silent = false, force = false } = args;
+  const dir = config.dir;
+  const targetUri = config.target.uri;
+  const host = config.data.host;
+  const client = Client.create(host);
+  const urls = Schema.url(host);
+  return buildPayload({
+    dir,
+    urls,
+    targetUri,
+    client,
+    force,
+    delete: defaultValue(args.delete, true),
+    silent,
+  });
+};
 
 /**
  * Builds the sync payload.
@@ -50,7 +67,7 @@ export async function buildPayload(args: {
 
   const wait = paths.map(async localPath => {
     const data = await fs.readFile(localPath);
-    const bytes = Uint8Array.from(data).length;
+    const localBytes = Uint8Array.from(data).length;
     const localHash = Schema.hash.sha256(data);
 
     const filename = fs.basename(localPath);
@@ -65,14 +82,16 @@ export async function buildPayload(args: {
     const remoteFile = findRemote(path);
     const remoteHash = remoteFile ? remoteFile.props.integrity?.filehash : '';
 
-    let status: t.FileStatus = 'ADDED';
+    let status: t.FsSyncFileStatus = 'ADDED';
+    let remoteBytes = -1;
     if (remoteFile) {
       status = localHash === remoteHash ? 'NO_CHANGE' : 'CHANGED';
+      remoteBytes = defaultValue(remoteFile.props.bytes, -1);
     }
 
     const url = cellUrls.file.byName(filename).toString();
     const isPending = status !== 'NO_CHANGE';
-    const item: t.IPayloadFile = {
+    const item: t.IFsSyncPayloadFile = {
       status,
       isPending,
       localPath,
@@ -82,7 +101,8 @@ export async function buildPayload(args: {
       filehash: localHash,
       url,
       data,
-      bytes,
+      localBytes,
+      remoteBytes,
     };
     return item;
   });
@@ -94,26 +114,28 @@ export async function buildPayload(args: {
     .filter(file => Boolean(file.path))
     .filter(file => isDeleted(file.path))
     .forEach(file => {
-      const { filename, dir, path: localPath } = file;
+      const { filename, dir } = file;
       const path = fs.join(dir, filename);
       const url = cellUrls.file.byName(path).toString();
       const isPending = args.delete;
       const filehash = file.props.integrity?.filehash || '';
+      const remoteBytes = defaultValue(file.props.bytes, -1);
       files.push({
         status: 'DELETED',
         isPending,
-        localPath,
+        localPath: fs.join(args.dir, path),
         path,
         dir,
         filename,
         filehash,
         url,
-        bytes: -1,
+        localBytes: -1,
+        remoteBytes,
       });
     });
 
   // Finish up.
-  const payload: t.IPayload = {
+  const payload: t.IFsSyncPayload = {
     ok,
     files,
     log: () => logPayload({ files, force: args.force, delete: args.delete }),
@@ -124,7 +146,11 @@ export async function buildPayload(args: {
 /**
  * Logs a set of payload items.
  */
-export function logPayload(args: { files: t.IPayloadFile[]; delete: boolean; force: boolean }) {
+export function logPayload(args: {
+  files: t.IFsSyncPayloadFile[];
+  delete: boolean;
+  force: boolean;
+}) {
   const { files } = args;
   let count = 0;
   const table = log.table({ border: false });
@@ -132,7 +158,7 @@ export function logPayload(args: { files: t.IPayloadFile[]; delete: boolean; for
   fs.sort
     .objects(list, item => item.filename)
     .forEach(item => {
-      const { bytes } = item;
+      const { localBytes: bytes } = item;
 
       const path = util.toStatusColor({
         status: item.status,

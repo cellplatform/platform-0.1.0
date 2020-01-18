@@ -1,32 +1,20 @@
-import { cli, Client, log, Schema } from '../common';
-import { buildPayload } from './syncDir.payload';
+import { cli, Client, log, t } from '../common';
+import { getPayload } from './syncDir.payload';
 import { addTask, toBatches } from './syncDir.sync.task';
-import * as t from './types';
-import * as util from './util';
+import * as util from '../util';
 
 const gray = log.info.gray;
 
 /**
  * Ryns a sync operation.
  */
-export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
+export const runSync: t.FsSyncRun = async (args: t.IFsSyncRunArgs) => {
   const { config, maxBytes, onPayload } = args;
   const { silent = false, force = false } = args;
-  const dir = config.dir;
   const targetUri = config.target.uri;
   const host = config.data.host;
   const client = Client.create(host);
-  const urls = Schema.url(host);
-
-  const payload = await buildPayload({
-    dir,
-    urls,
-    targetUri,
-    client,
-    force,
-    delete: args.delete,
-    silent,
-  });
+  const payload = await getPayload({ config, silent, force, delete: args.delete });
 
   if (onPayload) {
     onPayload(payload);
@@ -36,17 +24,17 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
     log.info(payload.log());
   }
 
-  const results: t.ISyncResults = {
+  const results: t.IFsSyncResults = {
     uploaded: [] as string[],
     deleted: [] as string[],
   };
 
-  const logResults: t.LogSyncResults = args => {
+  const logResults: t.FsSyncLogResults = args => {
     results.uploaded = [...results.uploaded, ...(args.uploaded || [])];
     results.deleted = [...results.deleted, ...(args.deleted || [])];
   };
 
-  const count: t.ISyncCount = {
+  const count: t.IFsSyncCount = {
     get uploaded() {
       return results.uploaded.length;
     },
@@ -61,7 +49,7 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
   const done = (completed: boolean, errors: cli.ITaskError[] = []) => {
     const ok = errors.length === 0;
     const bytes = util.toPayloadSize(pushes).bytes;
-    const res: t.IRunSyncResponse = { ok, errors, count, bytes, completed, results };
+    const res: t.IFsRunSyncResponse = { ok, errors, count, bytes, completed, results };
     return res;
   };
 

@@ -1,19 +1,17 @@
 import { debounceTime, filter } from 'rxjs/operators';
-
-import { defaultValue, fs, log, time, util, watch } from '../common';
-import * as t from './types';
+import { t, defaultValue, fs, log, time, util, watch } from '../common';
 
 const gray = log.info.gray;
 
 type IHistoryItem = {
   index: number;
   createdAt: number;
-  response: t.IRunSyncResponse;
+  response: t.IFsRunSyncResponse;
   log?: string;
 };
 
-const EMPTY_SYNC_COUNT: t.ISyncCount = { total: 0, uploaded: 0, deleted: 0 };
-const EMPTY_SYNC_RESPONSE: t.IRunSyncResponse = {
+const EMPTY_SYNC_COUNT: t.IFsSyncCount = { total: 0, uploaded: 0, deleted: 0 };
+const EMPTY_SYNC_RESPONSE: t.IFsRunSyncResponse = {
   ok: true,
   errors: [],
   count: EMPTY_SYNC_COUNT,
@@ -47,7 +45,7 @@ const formatLength = (line: string, max: number) => {
 export async function watchDir(args: {
   config: t.IFsConfigDir;
   silent: boolean;
-  sync: t.RunSyncCurry;
+  sync: t.FsSyncRunCurry;
   debounce?: number;
   keyboard: t.ICmdKeyboard;
 }) {
@@ -80,7 +78,7 @@ export async function watchDir(args: {
 
   let history: IHistoryItem[] = [];
   let historyIndex = -1;
-  const appendHistory = (response: t.IRunSyncResponse) => {
+  const appendHistory = (response: t.IFsRunSyncResponse) => {
     const MAX = 10;
     if (history.length >= MAX) {
       history = history.slice(history.length - MAX);
@@ -196,7 +194,7 @@ export async function watchDir(args: {
         // Print the file upload size (KB) when it's been calculated.
         const bytes = payload.files
           .filter(payload => payload.isPending)
-          .reduce((acc, payload) => (payload.bytes > 0 ? acc + payload.bytes : acc), 0);
+          .reduce((acc, payload) => (payload.localBytes > 0 ? acc + payload.localBytes : acc), 0);
         if (state.isStarted && bytes > 0) {
           const message = `${log.yellow('syncing')} (${fs.size.toString(bytes)})`;
           logPage(gray(message));

@@ -1,13 +1,12 @@
-import * as t from './types';
-import { log, util, fs } from '../common';
+import { fs, log, t, util } from '../common';
 
-export * from '../../common/util';
+export * from '../common/util';
 
 /**
  * Convert a sync status to a log color.
  */
 export function toStatusColor(args: {
-  status: t.FileStatus;
+  status: t.FsSyncFileStatus;
   text?: string;
   delete?: boolean;
   force?: boolean;
@@ -39,10 +38,17 @@ export const plural = {
 /**
  * Calculate the size of a set of payload items.
  */
-export function toPayloadSize(items: t.IPayloadFile[]) {
+export function toPayloadSize(
+  items: t.IFsSyncPayloadFile[],
+  options: { target?: 'LOCAL' | 'REMOTE' } = {},
+) {
+  const { target = 'LOCAL' } = options;
+  const getBytes = (item: t.IFsSyncPayloadFile) =>
+    target === 'LOCAL' ? item.localBytes : item.remoteBytes;
+
   const bytes = (items || [])
-    .filter(item => item.bytes > -1)
-    .map(item => item.bytes)
+    .filter(item => getBytes(item) > -1)
+    .map(item => getBytes(item))
     .reduce((acc, next) => acc + next, 0);
   return {
     bytes,

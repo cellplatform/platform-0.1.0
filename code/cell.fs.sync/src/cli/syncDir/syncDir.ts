@@ -1,7 +1,6 @@
-import { defaultValue, log, promptConfig } from '../common';
+import { defaultValue, log, promptConfig, t } from '../common';
 import { runSync } from './syncDir.sync';
 import { watchDir } from './syncDir.watch';
-import * as t from './types';
 
 const MAX_PAYLOAD_BYTES = 4 * 1000000; // 4MB
 
@@ -39,7 +38,7 @@ export async function syncDir(args: {
     log.info();
   }
 
-  const sync: t.RunSyncCurry = async (override: Partial<t.IRunSyncArgs> = {}) => {
+  const sync: t.FsSyncRunCurry = async (override: Partial<t.IFsSyncRunArgs> = {}) => {
     return runSync({
       config,
       dir,

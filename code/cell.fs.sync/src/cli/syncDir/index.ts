@@ -1,5 +1,7 @@
 import { t } from '../common';
 import { syncDir } from './syncDir';
+
+export { getPayload } from './syncDir.payload';
 export { syncDir };
 
 export type ISyncDirArgs = {
