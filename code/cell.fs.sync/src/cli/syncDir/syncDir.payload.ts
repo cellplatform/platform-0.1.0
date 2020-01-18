@@ -114,7 +114,7 @@ export async function buildPayload(args: {
     .filter(file => Boolean(file.path))
     .filter(file => isDeleted(file.path))
     .forEach(file => {
-      const { filename, dir } = file;
+      const { filename, dir, uri } = file;
       const path = fs.join(dir, filename);
       const url = cellUrls.file.byName(path).toString();
       const isPending = args.delete;
@@ -128,6 +128,7 @@ export async function buildPayload(args: {
         dir,
         filename,
         filehash,
+        uri,
         url,
         localBytes: -1,
         remoteBytes,

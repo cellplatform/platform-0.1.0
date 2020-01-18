@@ -58,7 +58,6 @@ export class ClientCellFile implements t.IClientCellFile {
         options: { seconds?: number } = {},
       ): Promise<t.IClientResponse<ReadableStream>> {
         const { seconds } = options;
-
         const linkRes = await self.getCellLinkByFilename(filename);
         if (linkRes.error) {
           return linkRes.error as any;
@@ -68,10 +67,14 @@ export class ClientCellFile implements t.IClientCellFile {
         }
 
         // Prepare the URL.
-        const link = linkRes.link;
+        const { link, key } = linkRes;
+        const fileid = Schema.uri.parse<t.IFileUri>(link.uri).parts.file;
+        const linkName = key.ext ? `${fileid}.${key.ext}` : fileid;
+        const hash = link.hash || undefined;
+
         const url = parent.url.file
-          .byName(filename)
-          .query({ hash: link.hash || undefined, seconds })
+          .byName(linkName)
+          .query({ hash, seconds })
           .toString();
 
         // Request the download.
@@ -127,7 +130,9 @@ export class ClientCellFile implements t.IClientCellFile {
       return { error };
     }
 
-    const link = Schema.file.links.parseLink(linkValue);
-    return { link };
+    return {
+      key: Schema.file.links.parseKey(linkKey),
+      link: Schema.file.links.parseLink(linkValue),
+    };
   }
 }

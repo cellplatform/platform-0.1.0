@@ -82,6 +82,7 @@ export type IFsSyncPayloadFile = {
   dir: string;
   filename: string;
   filehash: string;
+  uri: string;
   url: string;
   data?: Buffer;
   localBytes: number;

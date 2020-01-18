@@ -1,6 +1,7 @@
-import { defaultValue, log, t, promptConfig, cli, time, fs, Client } from '../common';
+import { cli, Client, defaultValue, fs, log, promptConfig, t } from '../common';
 import { getPayload } from '../syncDir';
 import * as util from '../util';
+
 const gray = log.gray;
 
 /**
