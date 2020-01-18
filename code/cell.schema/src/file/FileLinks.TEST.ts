@@ -112,7 +112,7 @@ describe('FileLinks', () => {
       test('file:foo:123?bam=boo&hash=abc ', 'file:foo:123');
     });
 
-    it.only('(fileid)', () => {
+    it('(fileid)', () => {
       const test = (input: string, expectedFileid: string) => {
         const res = FileLinks.parseLink(input);
         expect(res.fileid).to.eql(expectedFileid);
