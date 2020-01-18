@@ -97,6 +97,8 @@ describe('cell/file: upload', function() {
     expect(typeof cellLinks[key]).to.eql('string');
     expect(Schema.file.links.toKey(filename)).to.eql(key);
 
+    const link = Schema.file.links.parseLink(cellLinks[key]);
+
     // Ensure the file (and all relevant path data)
     // is represented within the cells "files" list.
     const urls = (await client.files.urls()).body;
@@ -108,7 +110,7 @@ describe('cell/file: upload', function() {
     expect(urls[0].path).to.eql('foo/bar/kitten.jpg');
 
     expect(urls[0].url).to.match(/^http:/);
-    expect(urls[0].url).to.match(/cell:foo!A1\/file\/foo\/bar\/kitten.jpg\?/);
+    expect(urls[0].url).to.include(`cell:foo!A1/file/${link.fileid}.jpg`);
     expect(urls[0].url).to.match(/hash=sha256-/);
 
     // Data returned on list.

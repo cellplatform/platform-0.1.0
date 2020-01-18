@@ -50,6 +50,7 @@ export class FileLinks {
     value = (value || '').trim();
     const parts = value.split('?');
     const uri = parts[0];
+    const fileid = uri.split(':')[2];
     const queries = (parts[1] || '').split('&');
 
     const get = (key: string, defaultValue?: string) => {
@@ -64,6 +65,7 @@ export class FileLinks {
     return {
       value,
       uri,
+      fileid,
       hash,
       status,
       toString(args: { hash?: string | null; status?: string | null } = {}) {

@@ -112,6 +112,17 @@ describe('FileLinks', () => {
       test('file:foo:123?bam=boo&hash=abc ', 'file:foo:123');
     });
 
+    it.only('(fileid)', () => {
+      const test = (input: string, expectedFileid: string) => {
+        const res = FileLinks.parseLink(input);
+        expect(res.fileid).to.eql(expectedFileid);
+      };
+      test('file:foo:123', '123');
+      test('file:foo:123?hash=abc', '123');
+      test('  file:foo:123?hash=abc  ', '123');
+      test('file:foo:123?bam=boo&hash=abc ', '123');
+    });
+
     it('(hash)', () => {
       const test = (input: string, expectedHash?: string) => {
         const res = FileLinks.parseLink(input);
