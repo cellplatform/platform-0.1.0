@@ -113,10 +113,10 @@ export async function watchDir(args: {
     };
 
     gray(`Commands:`);
-    gray(`• [${color('l')}] to open local folder`);
-    gray(`• [${color('r')}] to open remote target in browser`);
-    gray(`• [${color('s', !isSyncing)}] to sync push to remote target`);
-    gray(`• [${color('ctrl + c')}] to exit`);
+    gray(`• [${color('l')}] open local folder`);
+    gray(`• [${color('r')}] open remote target in browser`);
+    gray(`• [${color('s', !isSyncing)}] sync push to remote target`);
+    gray(`• [${color('ctrl + c')}] exit`);
   };
 
   const logHost = (args: { status?: string } = {}) => {

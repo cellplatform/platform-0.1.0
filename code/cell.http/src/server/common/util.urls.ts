@@ -38,7 +38,6 @@ export function urls(host: string) {
             links: t.ICellData['links'],
             options: { seconds?: number } = {},
           ): t.IResGetCellFiles['urls'] {
-            const { seconds } = options;
             const builder = url.cell(cellUri);
             const files = Object.keys(links || {})
               .map(key => ({ key, value: (links || {})[key] }))
@@ -51,6 +50,9 @@ export function urls(host: string) {
                 const fileUri = Schema.uri.parse<t.IFileUri>(uri).parts;
                 let filename = `${fileUri.file}`;
                 filename = ext ? `${filename}.${ext}` : filename;
+
+                const DEFAULT_MAX = 3600; // Expire in 1-hour.
+                const seconds = Math.min(DEFAULT_MAX, options.seconds || DEFAULT_MAX);
 
                 const url = builder.file
                   .byName(filename)
