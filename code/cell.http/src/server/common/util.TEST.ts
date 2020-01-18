@@ -1,4 +1,4 @@
-import { expect } from '../test';
+import { expect } from '../../test';
 import { util } from '.';
 
 describe('util', () => {
