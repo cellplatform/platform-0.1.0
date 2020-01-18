@@ -107,13 +107,15 @@ export const send = async (args: {
       headers: prepareHeaders(),
     });
 
-    // Finish up.
+    // Prepare response.
     const response = await toResponse(url, fetched);
     const elapsed = timer.elapsed;
     fire({
       type: 'HTTP/after',
       payload: { eid, method, url, response, elapsed },
     });
+
+    // Finish up.
     return response;
   }
 };
