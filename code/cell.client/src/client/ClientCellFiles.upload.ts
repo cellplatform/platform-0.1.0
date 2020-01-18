@@ -93,7 +93,6 @@ export async function upload(args: {
     });
 
   const res2 = await Promise.all(fileUploadWait);
-
   const fileUploadSuccesses = res2.filter(item => item.ok);
   const fileUploadFails = res2.filter(item => !item.ok);
   const fileUploadErrors = fileUploadFails.map(item => {
@@ -114,19 +113,20 @@ export async function upload(args: {
         .file(item.uri)
         .uploaded.query({ changes: sendChanges })
         .toString();
-      const body: t.IReqPostFileUploadCompleteBody = {};
+      const { filename } = item;
+      const body: t.IReqPostFileUploadCompleteBody = { filename };
       const res = await http.post(url, body);
       const { status, ok } = res;
       const json = res.json as t.IResPostFileUploadComplete;
-      const data = json.data;
-      return { status, ok, json, data };
+      const file = json.data;
+      return { status, ok, json, file, filename };
     }),
   );
   res3.forEach(res => addChanges(res.json.changes));
 
   const fileCompleteFails = res3.filter(res => !res.ok);
   const fileCompleteFailErrors = fileCompleteFails.map(res => {
-    const filename = res.data.props.filename || 'UNKNOWN';
+    const filename = res.filename || 'UNKNOWN';
     const message = `Failed while completing upload of file '${filename}'`;
     const error: t.IFileUploadError = { type: 'FILE/upload', filename, message };
     return error;
