@@ -1,6 +1,13 @@
 import { expect, t, fs, Uri } from '../test';
 import { value } from '.';
 
+const INTEGRITY: t.IFileIntegrity = {
+  status: 'VALID',
+  filehash: 'sha256-abc',
+  uploadedAt: 123456789,
+  's3:etag': 'abcd-12345',
+};
+
 describe('hash', () => {
   describe('hash.ns', () => {
     beforeEach(() => (index = -1));
@@ -23,7 +30,7 @@ describe('hash', () => {
       expect(() => value.hash.ns({ uri: '', ns })).to.throw();
       expect(() => value.hash.ns({ uri: '  ', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'cell:foo!A1', ns })).to.throw();
-      expect(() => value.hash.ns({ uri: ' cell:foo!A1  ', ns })).to.throw();
+      expect(() => value.hash.ns({ uri: '  cell:foo!A1  ', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'cell:foo!1', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'cell:foo!A', ns })).to.throw();
       expect(() => value.hash.ns({ uri: 'file:foo.123', ns })).to.throw();
@@ -263,6 +270,7 @@ describe('hash', () => {
     let index = -1;
     const test = (data: t.IFileData | undefined, expected: string) => {
       const hash = value.hash.file({ uri: 'file:foo:123', data });
+      // return console.log(hash.substring(hash.length - 10));
 
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
@@ -284,15 +292,14 @@ describe('hash', () => {
     });
 
     it('hash props/error/buffer', async () => {
-      const jpg = await fs.readFile(fs.resolve('src/test/images/kitten.jpg'));
-      const filehash = value.hash.sha256(jpg);
       const error = { type: 'FAIL', message: 'Bummer' };
+      const integrity = INTEGRITY;
 
-      test({ props: { filename: 'image.png' } }, 'c260743951');
-      test({ props: { filename: 'image.png', filehash } }, '495d42fd62');
-      test({ props: { filename: 'image.png', mimetype: 'image/png', filehash } }, 'de247e4b74');
+      test({ props: {} }, 'ca6edf2f56');
+      test({ props: { integrity } }, '628532e6a7');
+      test({ props: { mimetype: 'image/png', integrity } }, '38d6e3ca08');
       test({ props: {}, error }, '1fd68d1131');
-      test({ props: { filename: 'image.png', filehash }, error }, 'b1500cf16c');
+      test({ props: { integrity }, error }, '94153af4ab');
     });
   });
 });

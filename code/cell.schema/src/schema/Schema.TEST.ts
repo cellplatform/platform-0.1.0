@@ -1,7 +1,26 @@
-import { expect, t } from '../test';
 import { Schema } from '.';
+import { expect, t } from '../test';
 
 describe('Schema', () => {
+  describe('static', () => {
+    it('hash', () => {
+      const res = Schema.hash.sha256({ msg: 'abc' });
+      expect(res).to.eql('sha256-88e2147d5ed37885f807e219fc43e5e32c150c83a121086b84b6ae43991ca7b7');
+    });
+
+    it('cuid', () => {
+      const res = Schema.cuid();
+      expect(res.length).to.greaterThan(20);
+      expect(res[0]).to.eql('c');
+    });
+
+    it('slug', () => {
+      const res = Schema.slug();
+      expect(res.length).to.greaterThan(5);
+      expect(res.length).to.lessThan(10);
+    });
+  });
+
   describe('namespace', () => {
     it('existing id', () => {
       const ns = Schema.ns('foo');

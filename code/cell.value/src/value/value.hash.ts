@@ -1,5 +1,7 @@
-import { sha256, t, Uri } from '../common';
+import { Schema, t, Uri } from '../common';
 import { squash } from './value.cell';
+
+const { sha256 } = Schema.hash;
 
 /**
  * Hashing algorithms for CellOS data objects.

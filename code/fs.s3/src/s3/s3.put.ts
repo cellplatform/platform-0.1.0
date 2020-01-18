@@ -1,4 +1,4 @@
-import { AWS, t, util } from '../common';
+import { AWS, t, util, toMimetype } from '../common';
 
 /**
  * Write a file to S3 using PUT.
@@ -6,7 +6,7 @@ import { AWS, t, util } from '../common';
 export async function put(args: t.S3PutArgs & { s3: AWS.S3 }): Promise<t.S3PutResponse> {
   const { s3, bucket, key } = args;
   const url = util.toObjectUrl({ s3, bucket, path: key });
-  const contentType = args.contentType || util.toContentType(key, 'application/octet-stream');
+  const contentType = args.contentType || toMimetype(key, 'application/octet-stream');
 
   const done = (status: number, options: { etag?: string; error?: Error } = {}) => {
     const ok = util.isOK(status);

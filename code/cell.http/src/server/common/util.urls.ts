@@ -26,27 +26,46 @@ export function urls(host: string) {
         },
 
         get urls(): t.IResGetCellUrls {
-          const cell = url.cell(cellUri);
+          const builder = url.cell(cellUri);
           return {
-            cell: cell.info.toString(),
-            files: cell.files.list.toString(),
+            cell: builder.info.toString(),
+            files: builder.files.list.toString(),
           };
         },
 
         files: {
-          urls(links: t.ICellData['links']): t.IResGetCellFiles['urls'] {
-            const urls = url.cell(cellUri);
-            return Object.keys(links || {})
+          urls(
+            links: t.ICellData['links'],
+            options: { seconds?: number } = {},
+          ): t.IResGetCellFiles['urls'] {
+            const builder = url.cell(cellUri);
+            const files = Object.keys(links || {})
               .map(key => ({ key, value: (links || {})[key] }))
               .filter(({ value }) => Schema.uri.is.file(value))
               .reduce((acc, next) => {
                 const { key, value } = next;
-                const { hash } = Schema.file.links.parseLink(value);
-                const path = Schema.file.links.toFilename(key).path;
-                const url = urls.file.byName(path).query({ hash });
-                acc[path] = url.toString();
+                const { hash, uri } = Schema.file.links.parseLink(value);
+                const { path, ext } = Schema.file.links.parseKey(key);
+
+                const fileUri = Schema.uri.parse<t.IFileUri>(uri).parts;
+                let filename = `${fileUri.file}`;
+                filename = ext ? `${filename}.${ext}` : filename;
+
+                const DEFAULT_MAX = 3600; // Expire in 1-hour.
+                const seconds = Math.min(DEFAULT_MAX, options.seconds || DEFAULT_MAX);
+
+                const url = builder.file
+                  .byName(filename)
+                  .query({ hash, seconds })
+                  .toString();
+                acc.push({ uri, path, url });
                 return acc;
-              }, {});
+              }, [] as t.IResGetCellFilesFileUrl[]);
+
+            return {
+              cell: builder.info.toString(),
+              files,
+            };
           },
         },
       };

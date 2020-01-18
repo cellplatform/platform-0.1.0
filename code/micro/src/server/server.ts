@@ -85,10 +85,7 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
       api.service = service;
 
       const listener = server.listen({ port }, () => {
-        fire({
-          type: 'HTTP/started',
-          payload: { elapsed: timer.elapsed, port },
-        });
+        const elapsed = timer.elapsed;
 
         if (!options.silent) {
           const elapsed = log.gray(`[${timer.elapsed.toString()}]`);
@@ -102,10 +99,15 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
           log.info();
           keys.forEach(key => {
             const prefix = `${key}:${' '.repeat(10)}`.substring(0, max);
-            log.info.gray(`   - ${prefix} ${props[key].toString()}`);
+            log.info.gray(`   • ${prefix} ${props[key].toString()}`);
           });
           log.info();
         }
+
+        fire({
+          type: 'HTTP/started',
+          payload: { elapsed, port },
+        });
 
         resolve(service);
       });

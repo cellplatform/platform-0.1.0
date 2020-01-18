@@ -1,3 +1,6 @@
+import chalk from 'chalk';
+
+export { chalk };
 export * from '@platform/fs';
 export * from '@platform/http';
 

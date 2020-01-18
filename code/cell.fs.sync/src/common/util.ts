@@ -1,3 +1,9 @@
+import { open as openTarget } from './libs';
+import * as t from './types';
+import * as log from './util.log';
+
+export { log };
+
 /**
  * Retrieves the singular or plural version of a word.
  */
@@ -32,3 +38,17 @@ export const url = {
     }
   },
 };
+
+/**
+ * Helpers for opening parts of the configuration.
+ */
+export function open(config: t.IFsConfigDir) {
+  return {
+    local() {
+      openTarget(config.dir);
+    },
+    remote() {
+      openTarget(config.target.url);
+    },
+  };
+}

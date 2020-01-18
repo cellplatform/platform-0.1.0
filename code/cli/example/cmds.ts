@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-import { cli, log, time } from './libs';
+import { filter } from 'rxjs/operators';
+import { chalk, cli, log, time } from './libs';
+import * as plugins from './plugins';
 
 /**
  * Initialize.
@@ -7,7 +9,20 @@ import { cli, log, time } from './libs';
 const app = cli.create('my-app');
 
 /**
+ * Show title before [Help] is displayed.
+ * NB: This is done when no command is passed to the app.
+ */
+app.events$.pipe(filter(e => e.type === 'CLI/showHelp/before')).subscribe(() => {
+  log.info(chalk.bgCyan.black(` My Title `));
+  log.info();
+});
+
+/**
  * Configure.
+ *
+ * NB:  This is simple/direct "Yargs" style configuration.
+ *      If the command-line is pulling commands from multiple sub-modules
+ *      consider using the the [plugins] helper.
  */
 app
   .command(
@@ -69,7 +84,7 @@ app
       log.info('res', res);
       log.info();
 
-      cli.exit(res.code);
+      app.exit(res.code);
     },
   )
   .command(
@@ -90,4 +105,6 @@ app
 /**
  * Run.
  */
+
+plugins.init(app.plugins);
 app.run();

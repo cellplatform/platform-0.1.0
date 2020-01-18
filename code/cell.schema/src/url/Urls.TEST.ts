@@ -76,6 +76,14 @@ describe('Urls', () => {
     });
   });
 
+  describe('local', () => {
+    const url = Urls.create();
+    it('fs', () => {
+      const res = url.local.fs;
+      expect(res.toString()).to.eql('http://localhost/local/fs');
+    });
+  });
+
   describe('namespace (ns)', () => {
     const URI = 'ns:foo';
     const url = Urls.create();
@@ -167,12 +175,23 @@ describe('Urls', () => {
       expect(res2.toString()).to.eql(URL);
     });
 
-    it('files.upload', () => {
+    it('files.upload (start)', () => {
       const res1 = url.cell(URI).files.upload;
       const res2 = res1.query({ changes: true });
       const res3 = url.cell({ ns: 'foo', key: 'A1' }).files.upload;
 
-      const URL = 'http://localhost/cell:foo!A1/files';
+      const URL = 'http://localhost/cell:foo!A1/files/upload';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(`${URL}?changes=true`);
+      expect(res3.toString()).to.eql(URL);
+    });
+
+    it('files.uploaded (complete)', () => {
+      const res1 = url.cell(URI).files.uploaded;
+      const res2 = res1.query({ changes: true });
+      const res3 = url.cell({ ns: 'foo', key: 'A1' }).files.uploaded;
+
+      const URL = 'http://localhost/cell:foo!A1/files/uploaded';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(`${URL}?changes=true`);
       expect(res3.toString()).to.eql(URL);
@@ -290,15 +309,6 @@ describe('Urls', () => {
       expect(res2.toString()).to.eql(URL);
     });
 
-    it('upload', () => {
-      const res1 = url.file(URI).download;
-      const res2 = url.file({ ns: 'foo', file: '123' }).upload;
-
-      const URL = 'http://localhost/file:foo:123';
-      expect(res1.toString()).to.eql(URL);
-      expect(res2.toString()).to.eql(URL);
-    });
-
     it('download', () => {
       const res1 = url.file(URI).download;
       const res2 = url.file({ ns: 'foo', file: '123' }).download;
@@ -313,6 +323,15 @@ describe('Urls', () => {
       const res2 = url.file({ ns: 'foo', file: '123' }).delete;
 
       const URL = 'http://localhost/file:foo:123';
+      expect(res1.toString()).to.eql(URL);
+      expect(res2.toString()).to.eql(URL);
+    });
+
+    it('uploaded', () => {
+      const res1 = url.file(URI).uploaded;
+      const res2 = url.file({ ns: 'foo', file: '123' }).uploaded;
+
+      const URL = 'http://localhost/file:foo:123/uploaded';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });

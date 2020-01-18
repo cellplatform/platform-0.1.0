@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import * as fsSync from '@platform/cell.fs.sync/lib/cli';
+import { cli } from './common';
 
 /**
  * Makes the script crash on unhandled rejections instead of silently
@@ -14,16 +16,15 @@ process.on('unhandledRejection', err => {
  * and register commands from the various modules
  * within Cell/OS that expose a CLI/API.
  */
-import { cli } from '.';
-export const app = cli.init();
+export const app = cli.create('cell');
 
 /**
- * Cell/OS commands.
+ * Register [Cell/OS] plugin commands from child modules.
  */
-import * as fsSync from '@platform/cell.fs.sync/lib/cli';
-fsSync.init(app);
+fsSync.init(app.plugins);
 
 /**
  * Run the application.
  */
+cli.log.info('');
 app.run();

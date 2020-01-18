@@ -1,6 +1,6 @@
 {
   "name": "@platform/http",
-  "version": "0.8.2",
+  "version": "0.10.1",
   "description": "Tools for working with HTTP.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,18 +16,23 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/fs": "0.5.1",
-    "@platform/types": "0.3.3",
-    "@platform/util.value": "0.6.11",
+    "@platform/fs": "0.5.3",
+    "@platform/http.types": "0.0.1",
+    "@platform/libs": "0.1.5",
+    "@platform/types": "0.4.0",
+    "@platform/util.value": "0.6.15",
     "@types/isomorphic-fetch": "0.0.35",
     "isomorphic-fetch": "2.2.1"
   },
   "devDependencies": {
-    "@platform/test": "0.1.0",
-    "@platform/ts": "3.7.7"
+    "@platform/test": "0.1.2",
+    "@platform/ts": "3.7.9"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"

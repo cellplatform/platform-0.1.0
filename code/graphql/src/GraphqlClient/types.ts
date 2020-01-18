@@ -1,30 +1,18 @@
-import { Observable } from 'rxjs';
-import {
-  ApolloQueryResult,
-  OperationVariables,
-  QueryOptions,
-  MutationOptions,
-  FetchPolicy,
-} from 'apollo-client';
-import { FetchResult, Operation } from 'apollo-link';
-import { GraphQLError, ExecutionResult } from 'graphql';
-import { ServerError, ServerParseError } from 'apollo-link-http-common';
-import { IHttpHeaders } from '@platform/http';
+import * as t from '../common/types';
 
-export { IHttpHeaders };
-export type IGqlVariables = OperationVariables;
+export type IGqlVariables = t.OperationVariables;
 
-export type IGqlFetchPolicy = FetchPolicy;
-export type IGqlQueryOptions<V> = QueryOptions<V>;
-export type IGqlQueryResult<D> = ApolloQueryResult<D>;
+export type IGqlFetchPolicy = t.FetchPolicy;
+export type IGqlQueryOptions<V> = t.QueryOptions<V>;
+export type IGqlQueryResult<D> = t.ApolloQueryResult<D>;
 
-export type IGqlMutateOptions<D, V> = MutationOptions<D, V>;
-export type IGqlMutateResult<D> = FetchResult<D>;
+export type IGqlMutateOptions<D, V> = t.MutationOptions<D, V>;
+export type IGqlMutateResult<D> = t.FetchResult<D>;
 
 export type IGqlClient = {
-  readonly dispose$: Observable<{}>;
-  readonly events$: Observable<GqlEvent>;
-  readonly headers$: Observable<IGqlHttpHeaders>;
+  readonly dispose$: t.Observable<{}>;
+  readonly events$: t.Observable<GqlEvent>;
+  readonly headers$: t.Observable<IGqlHttpHeaders>;
   readonly isDisposed: boolean;
   dispose(): void;
   query<D = any, V = IGqlVariables>(request: IGqlQueryOptions<V>): Promise<IGqlQueryResult<D>>;
@@ -50,10 +38,10 @@ export type IGqlErrorEvent = {
 };
 export type IGqlError = {
   total: number;
-  errors?: ReadonlyArray<GraphQLError>;
-  network?: Error | ServerError | ServerParseError;
-  response?: ExecutionResult;
-  operation: Operation;
+  errors?: ReadonlyArray<t.GraphQLError>;
+  network?: Error | t.ServerError | t.ServerParseError;
+  response?: t.ExecutionResult;
+  operation: t.Operation;
 };
 
 export type IGqlHttpHeadersEvent = {
@@ -61,8 +49,8 @@ export type IGqlHttpHeadersEvent = {
   payload: IGqlHttpHeaders;
 };
 export type IGqlHttpHeaders = {
-  headers: { from: IHttpHeaders; to: IHttpHeaders };
-  merge(headers: IHttpHeaders): IGqlHttpHeaders;
+  headers: { from: t.IHttpHeaders; to: t.IHttpHeaders };
+  merge(headers: t.IHttpHeaders): IGqlHttpHeaders;
   add(header: string, value?: string | number): IGqlHttpHeaders;
   auth(token?: string): IGqlHttpHeaders;
 };

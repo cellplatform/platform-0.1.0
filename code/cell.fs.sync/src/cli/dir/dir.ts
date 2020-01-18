@@ -1,4 +1,4 @@
-import { open, log, promptConfig } from '../common';
+import { util, open, log, promptConfig } from '../common';
 
 const gray = log.info.gray;
 
@@ -19,17 +19,21 @@ export async function dir(args: {
 
   // Print the target URL.
   const uri = config.target.uri;
+  const key = uri.parts.key;
+  const keyTitle = util.log.cellKeyBg(key);
 
+  log.info(`${keyTitle}`);
   log.info();
-  gray(`host:     ${config.data.host}`);
-  gray(`target:   cell:${uri.parts.ns}!${log.white(uri.parts.key)}`);
+
+  gray(`host:     ${config.data.host.replace(/\/*$/, '')}`);
+  gray(`target:   ${util.log.cellUri(uri, 'blue')}`);
   log.info();
 
   let printFinalBlankLine = false;
 
   // Open the local folder.
   if (args.local) {
-    open(config.dir);
+    util.open(config).local();
   } else {
     gray(`• Use ${log.cyan('--local (-l)')} to open folder locally`);
     printFinalBlankLine = true;
@@ -37,7 +41,7 @@ export async function dir(args: {
 
   // Open the remote target cell (browser).
   if (args.remote) {
-    open(config.target.url);
+    util.open(config).remote();
   } else {
     gray(`• Use ${log.cyan('--remote (-r)')} to open remote target in browser`);
     printFinalBlankLine = true;

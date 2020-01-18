@@ -1,5 +1,5 @@
 import { value } from './libs';
-import * as t from '../types';
+import * as t from './types';
 import { IS_PROD } from './constants';
 
 /**
@@ -12,6 +12,19 @@ export function stringify(data: any, errorMessage: () => string) {
     let message = errorMessage();
     message = !IS_PROD ? `${message} ${err.message}` : message;
     throw new Error(message);
+  }
+}
+
+/**
+ * Attempts to parse JSON.
+ */
+export function parseJson(args: { url: string; text: string }) {
+  try {
+    return JSON.parse(args.text) as t.Json;
+  } catch (error) {
+    const body = args.text ? args.text : '<empty>';
+    const msg = `Failed while parsing JSON for '${args.url}'.\nParse Error: ${error.message}\nBody: ${body}`;
+    throw new Error(msg);
   }
 }
 
@@ -43,4 +56,59 @@ export function fromRawHeaders(input: Headers): t.IHttpHeaders {
 export function isFormData(input: Headers) {
   const contentType = input.get('content-type') || '';
   return contentType.includes('multipart/form-data');
+}
+
+export function toBody(args: { url: string; headers: Headers; data?: any }) {
+  const { url, headers, data } = args;
+  if (isFormData(headers)) {
+    return data;
+  }
+  return stringify(
+    data,
+    () => `Failed to POST to '${url}', the data could not be serialized to JSON.`,
+  );
+}
+
+export async function toResponse(url: string, res: t.IHttpResponseLike) {
+  const { ok, status, statusText } = res;
+  const headers = fromRawHeaders(res.headers);
+  const body = res.body || undefined;
+  const contentType = toContentType(headers);
+  const is = contentType.is;
+  const text = is.text || is.json ? await res.text() : '';
+  let json: any;
+
+  const result: t.IHttpResponse = {
+    ok,
+    status,
+    statusText,
+    headers,
+    contentType,
+    body,
+    text,
+    get json() {
+      return json || (json = parseJson({ url, text }));
+    },
+  };
+
+  return result;
+}
+
+export function toContentType(headers: t.IHttpHeaders) {
+  const value = (headers['content-type'] || '').toString();
+  const res: t.IHttpContentType = {
+    value,
+    is: {
+      get json() {
+        return value.includes('application/json');
+      },
+      get text() {
+        return value.includes('text/');
+      },
+      get binary() {
+        return !res.is.json && !res.is.text;
+      },
+    },
+  };
+  return res;
 }

@@ -2,6 +2,8 @@ import * as t from './types';
 import { fs, cell, defaultValue } from './libs';
 import { ERROR } from './constants';
 
+import * as mime from 'mime-types';
+
 export * from './libs';
 export * from './util.urls';
 
@@ -27,9 +29,17 @@ export function toErrorPayload(
 }
 
 /**
+ * Determine if the status code represents an OK status (200).
+ */
+export function isOK(status: number | string = 200) {
+  return status.toString().startsWith('2');
+}
+
+/**
  * Determines if the given string is an HTTP link.
  */
 export function isHttp(input: string = '') {
+  input = input.trim();
   return input.startsWith('https://') || input.startsWith('http://');
 }
 
@@ -37,12 +47,14 @@ export function isHttp(input: string = '') {
  * Determines if the given string is a FILE link.
  */
 export function isFile(input: string = '') {
-  return input.startsWith('file://');
+  return input.trim().startsWith('file://');
 }
 
 /**
- * Determine if the status code represents an OK status (200).
+ * Get the mime-type for the given filename.
+ * Derived from extension.
  */
-export function isOK(status: number | string = 200) {
-  return status.toString().startsWith('2');
+export function toMimetype(filename: string = '') {
+  const type = mime.lookup(filename);
+  return typeof type === 'string' ? type : undefined;
 }

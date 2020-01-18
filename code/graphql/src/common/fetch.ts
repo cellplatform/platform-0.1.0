@@ -1,5 +1,5 @@
-import * as t from '../types';
-import { http } from './libs';
+import * as t from './types';
+import { fetch } from './libs';
 
 type GetHeaders = (headers?: t.IHttpHeaders) => Promise<t.IHttpHeaders>;
 
@@ -10,6 +10,6 @@ type GetHeaders = (headers?: t.IHttpHeaders) => Promise<t.IHttpHeaders>;
 export function fetcher(args: { headers?: GetHeaders }) {
   return async (url: string, options: { headers: t.IHttpHeaders }) => {
     options.headers = args.headers ? await args.headers(options.headers) : options.headers;
-    return http.fetch(url, options as any);
+    return fetch(url, options as any);
   };
 }

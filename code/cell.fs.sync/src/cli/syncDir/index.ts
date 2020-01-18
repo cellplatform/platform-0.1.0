@@ -1,6 +1,9 @@
 import { t } from '../common';
 import { syncDir } from './syncDir';
 
+export { getPayload } from './syncDir.payload';
+export { syncDir };
+
 export type ISyncDirArgs = {
   force: boolean;
   silent: boolean;
@@ -8,14 +11,21 @@ export type ISyncDirArgs = {
   watch: boolean;
 };
 
-export const init: t.CliInit = cli => {
-  const handler: t.CommandHandler<ISyncDirArgs> = async args => {
+export const init: t.CmdPluginsInit = cli => {
+  const handler: t.CmdPluginHandler<ISyncDirArgs> = async e => {
+    const { argv } = e;
+
+    // NB:  Keyboard is only activated if needed to avoid an event-loop preventing
+    //      the CLI from stopping after completing its operation.
+    const watch = argv.watch;
+    const keyboard = watch ? e.keyboard : undefined;
     await syncDir({
       dir: process.cwd(),
-      silent: args.silent,
-      force: args.force,
-      delete: args.delete,
-      watch: args.watch,
+      silent: argv.silent,
+      force: argv.force,
+      delete: argv.delete,
+      watch,
+      keyboard,
     });
   };
 

@@ -8,13 +8,14 @@ export type IDirArgs = {
   configure: boolean;
 };
 
-export const init: t.CliInit = cli => {
-  const handler: t.CommandHandler<IDirArgs> = async args => {
+export const init: t.CmdPluginsInit = cli => {
+  const handler: t.CmdPluginHandler<IDirArgs> = async e => {
+    const { argv } = e;
     await dir({
       dir: process.cwd(),
-      configure: args.configure,
-      local: args.local,
-      remote: args.remote,
+      configure: argv.configure,
+      local: argv.local,
+      remote: argv.remote,
     });
   };
 
@@ -22,7 +23,7 @@ export const init: t.CliInit = cli => {
     .command<IDirArgs>({
       name: 'dir',
       alias: 'd',
-      description: 'Inspect and configure a folder',
+      description: 'Configure and inspect a folder',
       handler,
     })
     .option<'boolean'>({

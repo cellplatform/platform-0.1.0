@@ -1,48 +1,40 @@
-import { cli, Client, log, Schema, defaultValue } from '../common';
-import { buildPayload } from './syncDir.payload';
-import * as t from './types';
-
-import { toBatches, addTask } from './syncDir.task';
-import * as util from './util';
+import { cli, Client, log, t } from '../common';
+import { getPayload } from './syncDir.payload';
+import { addTask, toBatches } from './syncDir.sync.task';
+import * as util from '../util';
 
 const gray = log.info.gray;
 
 /**
  * Ryns a sync operation.
  */
-export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
-  const { config, maxBytes } = args;
+export const runSync: t.FsSyncRun = async (args: t.IFsSyncRunArgs) => {
+  const { config, maxBytes, onPayload } = args;
   const { silent = false, force = false } = args;
-  const dir = config.dir;
   const targetUri = config.target.uri;
   const host = config.data.host;
   const client = Client.create(host);
-  const urls = Schema.url(host);
+  const payload = await getPayload({ config, silent, force, delete: args.delete });
 
-  const payload = await buildPayload({
-    dir,
-    urls,
-    targetUri,
-    client,
-    force,
-    delete: args.delete,
-    silent,
-  });
-
-  if (!silent) {
-    payload.log();
+  if (onPayload) {
+    onPayload(payload);
   }
 
-  const results: t.ISyncResults = {
+  if (!silent) {
+    log.info(payload.log());
+  }
+
+  const results: t.IFsSyncResults = {
     uploaded: [] as string[],
     deleted: [] as string[],
   };
-  const logResults: t.LogSyncResults = args => {
+
+  const logResults: t.FsSyncLogResults = args => {
     results.uploaded = [...results.uploaded, ...(args.uploaded || [])];
     results.deleted = [...results.deleted, ...(args.deleted || [])];
   };
 
-  const count: t.ISyncCount = {
+  const count: t.IFsSyncCount = {
     get uploaded() {
       return results.uploaded.length;
     },
@@ -57,7 +49,7 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
   const done = (completed: boolean, errors: cli.ITaskError[] = []) => {
     const ok = errors.length === 0;
     const bytes = util.toPayloadSize(pushes).bytes;
-    const res: t.IRunSyncResponse = { ok, errors, count, bytes, completed, results };
+    const res: t.IFsRunSyncResponse = { ok, errors, count, bytes, completed, results };
     return res;
   };
 
@@ -67,12 +59,12 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
   }
 
   // Exit if no changes to push.
-  if (!silent && !force && payload.items.filter(item => item.isPending).length === 0) {
+  if (!silent && !force && payload.files.filter(item => item.isPending).length === 0) {
     log.info();
     log.info.green(`Nothing to update\n`);
     gray(`• Use ${log.cyan('--force (-f)')} to push everything`);
 
-    const deletions = payload.items.filter(p => p.status === 'DELETED').length;
+    const deletions = payload.files.filter(p => p.status === 'DELETED').length;
     if (deletions > 0) {
       gray(`• Use ${log.cyan('--delete')} to sync deletions`);
     }
@@ -82,11 +74,11 @@ export const runSync: t.RunSync = async (args: t.IRunSyncArgs) => {
   }
 
   // Filter on set of items to push.
-  const pushes = payload.items
+  const pushes = payload.files
     .filter(item => item.status !== 'DELETED')
     .filter(item => (force ? true : item.status !== 'NO_CHANGE'))
     .filter(item => Boolean(item.data));
-  const deletions = payload.items.filter(item => args.delete && item.status === 'DELETED');
+  const deletions = payload.files.filter(item => args.delete && item.status === 'DELETED');
   const total = pushes.length + deletions.length;
 
   if (args.prompt && !silent) {

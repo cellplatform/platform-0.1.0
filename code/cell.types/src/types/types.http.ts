@@ -61,7 +61,7 @@ export type IUriResponse<D, L extends IUrlMap = {}> = {
 export type IUrlMap = { [key: string]: string };
 
 /**
- * Namespace
+ * NAMESPACE
  */
 
 /**
@@ -102,11 +102,6 @@ export type IResGetColumnData = t.IColumnData;
 export type IResGetColumnUrls = {};
 
 /**
- * File (info / meta-data)
- */
-export type IReqFileInfoQuery = {};
-
-/**
  * File: GET
  */
 export type IResGetFile = IUriResponse<IResGetFileData, IResGetFileUrls>;
@@ -114,10 +109,26 @@ export type IResGetFileData = t.IFileData & {};
 export type IResGetFileUrls = { info: string; download: string };
 
 /**
- * File: POST
+ * File: POST (upload "start")
  */
-export type IReqPostFileBody = {};
-export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
+export type IResPostFileUploadStart = IResGetFile & {
+  upload: t.IFilePresignedUploadUrl;
+  changes?: t.IDbModelChange[];
+};
+
+/**
+ * File: POST (upload "complete")
+ */
+export type IReqPostFileUploadCompleteBody = {};
+export type IResPostFileUploadComplete = IResGetFile & {
+  changes?: t.IDbModelChange[];
+};
+
+// Used on locally running instances to recieve bindary file data to save.
+// When working against S3, this is the cloud end-point (using a presigned-url).
+export type IResPostFileUploadLocal = {
+  path: string;
+};
 
 /**
  * File: DELETE
@@ -125,29 +136,62 @@ export type IResPostFile = IResGetFile & { changes?: t.IDbModelChange[] };
 export type IResDeleteFile = { uri: string; deleted: boolean };
 
 /**
- * Cell/Files: GET
+ * Cell Files: GET
  */
 export type IResGetCellFiles = {
-  cell: string;
   uri: string;
-  urls: IUrlMap;
+  urls: {
+    cell: string;
+    files: IResGetCellFilesFileUrl[];
+  };
   files: t.IFileMap;
 };
+export type IResGetCellFilesFileUrl = {
+  uri: string;
+  url: string;
+  path: string;
+};
 
 /**
- * Cell/Files: POST
+ * Cell Files: POST (Upload Start)
  */
-export type IResPostCellFiles = IUriResponse<IResPostCellFilesData, IResPostCellUrls>;
-export type IResPostCellFilesData = {
+export type IReqPostCellFilesUploadStartBody = {
+  files: IReqPostCellUploadFile[];
+  seconds?: number; // Expires.
+};
+export type IReqPostCellUploadFile = {
+  filename: string;
+  filehash?: string;
+  mimetype?: string;
+};
+
+export type IResPostCellFilesUploadStart = IUriResponse<
+  IResPostCellFilesUploadStartData,
+  IResPostCellFilesUploadUrls
+>;
+export type IResPostCellFilesUploadStartData = {
   cell: t.ICellData;
-  errors: IResPostCellFilesError[];
+  files: Array<t.IUriData<t.IFileData>>;
+  errors: t.IFileUploadError[];
   changes?: t.IDbModelChange[];
 };
-export type IResPostCellFilesError = { status: number; filename: string; message: string };
-export type IResPostCellUrls = IResGetCellUrls & {};
+export type IResPostCellFilesUploadUrls = IResGetCellUrls & {
+  uploads: t.IFilePresignedUploadUrl[];
+};
 
 /**
- * Cell/Files: DELETE
+ * Cell Files: POST (Upload Complete)
+ */
+export type IReqPostCellFilesUploadCompleteBody = {};
+export type IResPostCellFilesUploadComplete = IUriResponse<IResPostCellFilesUploadCompleteData>;
+export type IResPostCellFilesUploadCompleteData = {
+  cell: t.ICellData;
+  files: Array<t.IUriData<t.IFileData>>;
+  changes?: t.IDbModelChange[];
+};
+
+/**
+ * Cell Files: DELETE
  */
 export type IReqDeleteCellFilesBody = {
   filenames: string[];

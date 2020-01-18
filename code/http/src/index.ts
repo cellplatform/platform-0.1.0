@@ -1,6 +1,6 @@
 import { http } from './http';
 
 export { http };
-export * from './types';
+export { fetch } from './common';
 
 export default http;

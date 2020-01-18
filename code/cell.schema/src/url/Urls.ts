@@ -2,7 +2,7 @@ import { R, t, value } from '../common';
 import { Uri } from '../uri';
 import { Url } from './Url';
 import * as util from './util';
-import { ROUTES } from './ROUTES';
+import { ROUTES } from './Urls.ROUTES';
 
 /**
  * Standardised construction of URLs for the HTTP service.
@@ -63,6 +63,16 @@ export class Urls implements t.IUrls {
     };
   }
 
+  public get local() {
+    const toPath = this.toUrl;
+    return {
+      get fs() {
+        type Q = t.IUrlQueryLocalFs;
+        return toPath<Q>(`/local/fs`);
+      },
+    };
+  }
+
   /**
    * [Methods]
    */
@@ -99,7 +109,7 @@ export class Urls implements t.IUrls {
        * Example: /ns:foo
        */
       get info() {
-        return toPath<t.IUrlQueryGetNs>(`/ns:${id}`);
+        return toPath<t.IUrlQueryNsInfo>(`/ns:${id}`);
       },
     };
   }
@@ -127,7 +137,7 @@ export class Urls implements t.IUrls {
        * Example: /cell:foo!A1
        */
       get info() {
-        type Q = t.IUrlQueryGetCell;
+        type Q = t.IUrlQueryCellInfo;
         return toPath<Q>(`/cell:${ns}!${key}`);
       },
 
@@ -139,7 +149,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo!A1/files
          */
         get list() {
-          type Q = t.IUrlQueryGetCellFiles;
+          type Q = t.IUrlQueryCellFilesList;
           return toPath<Q>(`/cell:${ns}!${key}/files`);
         },
 
@@ -147,16 +157,24 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo!A1/files
          */
         get delete() {
-          type Q = t.IUrlQueryDeleteCellFiles;
+          type Q = t.IUrlQueryCellFilesDelete;
           return toPath<Q>(`/cell:${ns}!${key}/files`);
         },
 
         /**
-         * Example: /cell:foo!A1/files
+         * Example: /cell:foo!A1/files/upload
          */
         get upload() {
-          type Q = t.IUrlQueryUploadCellFiles;
-          return toPath<Q>(`/cell:${ns}!${key}/files`);
+          type Q = t.IUrlQueryCellFilesUpload;
+          return toPath<Q>(`/cell:${ns}!${key}/files/upload`);
+        },
+
+        /**
+         * Example: /cell:foo!A1/files/uploaded
+         */
+        get uploaded() {
+          type Q = t.IUrlQueryCellFilesUploaded;
+          return toPath<Q>(`/cell:${ns}!${key}/files/uploaded`);
         },
       },
 
@@ -168,7 +186,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo!A1/file/kitten.png
          */
         byName(filename: string) {
-          type Q = t.IUrlQueryGetCellFileByName;
+          type Q = t.IUrlQueryCellFileDownloadByName;
           filename = (filename || '').trim();
           if (!filename) {
             throw new Error(`Filename not provided.`);
@@ -180,7 +198,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo!A1/files/0
          */
         byIndex(input: number | string) {
-          type Q = t.IUrlQueryGetCellFileByIndex;
+          type Q = t.IUrlQueryCellFileDownloadByIndex;
           const index = value.toNumber(input);
           if (typeof index !== 'number') {
             throw new Error(`File index not provided.`);
@@ -214,7 +232,7 @@ export class Urls implements t.IUrls {
        * Example: /cell:foo!1
        */
       get info() {
-        type Q = t.IUrlQueryGetRow;
+        type Q = t.IUrlQueryRowInfo;
         return toPath<Q>(`/cell:${ns}!${key}`);
       },
     };
@@ -243,7 +261,7 @@ export class Urls implements t.IUrls {
        * Example: /cell:foo!A
        */
       get info() {
-        type Q = t.IUrlQueryGetColumn;
+        type Q = t.IUrlQueryColumnInfo;
         return toPath<Q>(`/cell:${ns}!${key}`);
       },
     };
@@ -266,23 +284,23 @@ export class Urls implements t.IUrls {
       uri,
 
       get info() {
-        type Q = t.IUrlQueryGetFileInfo;
+        type Q = t.IUrlQueryFileInfo;
         return toPath<Q>(`/file:${id}/info`);
       },
 
-      get upload() {
-        type Q = t.IUrlQueryPostFile;
-        return toPath<Q>(`/file:${id}`);
-      },
-
       get download() {
-        type Q = t.IUrlQueryGetFile;
+        type Q = t.IUrlQueryFileDownload;
         return toPath<Q>(`/file:${id}`);
       },
 
       get delete() {
-        type Q = t.IUrlQueryDeleteFile;
+        type Q = t.IUrlQueryFileDelete;
         return toPath<Q>(`/file:${id}`);
+      },
+
+      get uploaded() {
+        type Q = t.IUrlQueryFileUploadComplete;
+        return toPath<Q>(`/file:${id}/uploaded`);
       },
     };
   }

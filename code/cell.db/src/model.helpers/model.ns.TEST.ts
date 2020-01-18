@@ -192,7 +192,7 @@ describe('helpers: model.ns', () => {
       const ns = models.Ns.create({ uri: 'ns:foo', db });
 
       const file = models.File.create({ uri: 'file:foo:abc', db });
-      await file.set({ props: { filename: 'image.png', mimetype: 'image/png' } }).save();
+      await file.set({ props: { mimetype: 'image/png' } }).save();
 
       const files = await getChildFiles({ model: ns });
       expect(files.abc).to.eql(deleteUndefined(file.toObject()));
@@ -212,7 +212,7 @@ describe('helpers: model.ns', () => {
       await column.set({ props: { width: 250 } }).save();
 
       const file = models.File.create({ uri: 'file:foo:abc', db });
-      await file.set({ props: { filename: 'image.png', mimetype: 'image/png' } }).save();
+      await file.set({ props: { mimetype: 'image/png' } }).save();
 
       const res1 = await getChildData({ model: ns });
       expect(res1).to.eql({});

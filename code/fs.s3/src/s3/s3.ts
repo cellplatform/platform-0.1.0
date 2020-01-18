@@ -1,9 +1,9 @@
-import { AWS, t, toContentType, util } from '../common';
+import { AWS, t, util } from '../common';
 import { deleteMany, deleteOne } from './s3.delete';
 import { get } from './s3.get';
 import { list } from './s3.list';
-import { put } from './s3.put';
 import { post } from './s3.post';
+import { put } from './s3.put';
 
 export * from './s3.get';
 export * from './s3.put';
@@ -18,18 +18,44 @@ export function init(args: t.S3Config): t.S3 {
   });
 
   const res: t.S3 = {
-    toContentType,
     endpoint,
 
     url(bucket: string, path?: string) {
-      return util.toObjectUrl({ s3, bucket, path });
+      const object = util.toObjectUrl({ s3, bucket, path });
+      return {
+        object,
+        signedGet(options: t.S3SignedUrlGetObjectOptions = {}) {
+          return util.toPresignedUrl({
+            s3,
+            bucket,
+            path,
+            options: { ...options, operation: 'getObject' },
+          });
+        },
+        signedPut(options: t.S3SignedUrlPutObjectOptions = {}) {
+          return util.toPresignedUrl({
+            s3,
+            bucket,
+            path,
+            options: { ...options, operation: 'putObject' },
+          });
+        },
+        signedPost(options: t.S3SignedPostArgs) {
+          return util.toPresignedPost({
+            s3,
+            bucket,
+            key: path,
+            ...options,
+          });
+        },
+      };
     },
 
     list(args: { bucket: string; prefix?: string; max?: number }) {
       return list({ ...args, s3 });
     },
 
-    get(args: { bucket: string; key: string }) {
+    get(args: { bucket: string; key: string; metaOnly?: boolean }) {
       return get({ ...args, s3 });
     },
 
@@ -69,15 +95,13 @@ export function init(args: t.S3Config): t.S3 {
       return {
         bucket,
         endpoint,
-        url(path?: string, options?: t.S3PresignedUrlArgs) {
-          return options
-            ? util.toPresignedUrl({ s3, bucket, path, options })
-            : res.url(bucket, path);
+        url(path?: string) {
+          return res.url(bucket, path);
         },
         list(args: { prefix?: string; max?: number }) {
           return res.list({ ...args, bucket });
         },
-        get(args: { key: string }) {
+        get(args: { key: string; metaOnly?: boolean }) {
           return res.get({ ...args, bucket });
         },
         put(args: {

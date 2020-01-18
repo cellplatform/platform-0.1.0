@@ -1,5 +1,12 @@
-import { value, t, http } from '../server/common';
+import { value, t, http, fs, Schema } from '../server/common';
 import { createMock, IMock } from './mock';
+
+/**
+ * Reads a resolved file-path.
+ */
+export function readFile(path: string) {
+  return fs.readFile(fs.resolve(path));
+}
 
 /**
  * Walks an object tree stripping hash values.

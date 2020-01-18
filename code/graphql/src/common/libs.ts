@@ -2,4 +2,4 @@ import gql from 'graphql-tag';
 
 export { gql };
 export { value } from '@platform/util.value';
-export { http } from '@platform/http';
+export { http, fetch } from '@platform/http';

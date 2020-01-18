@@ -57,11 +57,14 @@ app.router.post('/file', async req => {
   const service = await app.start({ port: 8080 });
 
   log.info.green(`
-  started in:    ${timer.elapsed.toString()}
-  service:
-  • isRunning:   ${service.isRunning}
-  • port:        ${service.port}
+started in:    ${timer.elapsed.toString()}
+service:
+• isRunning:   ${service.isRunning}
+• port:        ${service.port}
   `);
+
+  log.info.gray(`routes:`);
+  log.info(app.router.log({ indent: 1 }));
 
   // Example: stop the service.
   // setTimeout(() => service.close(), 1500);

@@ -1,12 +1,13 @@
 import { Config } from '../config';
 import { Manifest } from '../manifest';
 import * as push from './cmd.push';
-import { cli, fs, log } from './common';
+import { t, fs, log } from './common';
 
 /**
  * Release new version.
  */
-export async function run() {
+export async function run(args: { cli: t.ICmdApp }) {
+  const { cli } = args;
   const config = await Config.create();
 
   let manifest: Manifest | undefined;
@@ -15,7 +16,6 @@ export async function run() {
   // Pull data from cloud.
   log.info();
   await cli
-    .tasks()
     .task('pull manifest', async e => {
       manifest = await config.manifest.local.ensureLatest({ minimal: true });
     })
@@ -34,7 +34,7 @@ export async function run() {
   log.info();
 
   // Prompt for which site to update.
-  const sites = await promptForSites({ manifest });
+  const sites = await promptForSites({ cli, manifest });
   if (sites.length === 0) {
     log.error(`The site named '${name}' does not exist in the manifest.`);
     return cli.exit(1);
@@ -42,7 +42,7 @@ export async function run() {
 
   // Prompt for which version to update to.
   const current = sites.map(({ version, name }) => ({ version, name }));
-  const version = await promptForVersion({ current, versions });
+  const version = await promptForVersion({ cli, current, versions });
 
   // Save change to the manifest.
   const s3 = config.s3;
@@ -53,7 +53,7 @@ export async function run() {
   }
 
   // Push change to S3 and reset cache.
-  await push.manifest({ config, silent: false });
+  await push.manifest({ cli, config, silent: false });
 
   // Finish up.
   log.info();
@@ -62,8 +62,8 @@ export async function run() {
 /**
  * [Helpers]
  */
-async function promptForSites(args: { manifest: Manifest }) {
-  const { manifest } = args;
+async function promptForSites(args: { cli: t.ICmdApp; manifest: Manifest }) {
+  const { cli, manifest } = args;
   let sites = manifest.sites.map(site => site.name || 'Unnamed');
   sites = ['all', ...sites];
   const name = await cli.prompt.list<string>({ message: 'site', items: sites });
@@ -76,9 +76,11 @@ async function promptForSites(args: { manifest: Manifest }) {
 }
 
 async function promptForVersion(args: {
+  cli: t.ICmdApp;
   current: Array<{ version: string; name: string }>;
   versions: string[];
 }) {
+  const { cli } = args;
   const versions = args.versions.map(value => {
     const matches = args.current.filter(item => item.version === value);
     const current =
