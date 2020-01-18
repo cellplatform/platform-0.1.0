@@ -71,9 +71,9 @@ export async function watchDir(args: {
     if (e.key === 'r') {
       util.open(config).remote();
     }
-    if (e.key === 'p') {
+    if (e.key === 's') {
       if (!state.isSyncing()) {
-        push();
+        syncPush();
       }
     }
   });
@@ -117,7 +117,7 @@ export async function watchDir(args: {
     gray(`Commands:`);
     gray(`• [${color('l')}] to open local folder`);
     gray(`• [${color('r')}] to open remote target in browser`);
-    gray(`• [${color('p', !isSyncing)}] to push to remote target`);
+    gray(`• [${color('s', !isSyncing)}] to sync push to remote target`);
     gray(`• [${color('ctrl + c')}] to exit`);
   };
 
@@ -183,10 +183,10 @@ export async function watchDir(args: {
   });
 
   dir$.pipe(debounceTime(debounce)).subscribe(async e => {
-    push();
+    syncPush();
   });
 
-  const push = async () => {
+  const syncPush = async () => {
     logPage(state.isStarted ? log.yellow(`syncing`) : `starting`);
     state.isStarted = true;
 
@@ -274,6 +274,6 @@ export function toHistoryItem(args: { item: IHistoryItem; isFirst: boolean }) {
     output = `${bullet('•')} ${output}`;
   }
 
-  output = output ? output : isFirst ? '• started' : '• pushed';
+  output = output ? output : isFirst ? '• started' : '• synced';
   return log.gray(output);
 }

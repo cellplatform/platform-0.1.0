@@ -1,8 +1,6 @@
 import { log, t } from '../common';
 import { syncDir } from '../syncDir';
 
-const gray = log.info.gray;
-
 /**
  * Synchronise folder in watch mode.
  */
