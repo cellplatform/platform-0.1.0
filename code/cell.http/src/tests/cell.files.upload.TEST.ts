@@ -1,8 +1,32 @@
 import { parse as parseUrl } from 'url';
 import { createMock, expect, fs, http, readFile, Schema, t } from '../test';
 
-describe('cell/file: upload', () => {
-  it.only('upload 2 files', async () => {
+describe('cell/file: upload', function() {
+  this.timeout(50000);
+
+  it('upload/download: 1 file', async () => {
+    const mock = await createMock();
+    const cellUri = 'cell:foo!A1';
+    const client = mock.client.cell(cellUri);
+    const data = await readFile('src/test/assets/bird.png');
+    const filename = 'bird.png';
+
+    // Upload => download.
+    await client.files.upload([{ filename, data }]);
+    const res = await client.file.name(filename).download();
+
+    // Save and compare.
+    const path = fs.resolve('tmp/tmp-download');
+    if (res.body) {
+      await fs.stream.save(path, res.body);
+    }
+    expect((await fs.readFile(path)).toString()).to.eql(data.toString());
+
+    // Finish up.
+    await mock.dispose();
+  });
+
+  it('upload/download 2: files', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const client = mock.client.cell(cellUri);
@@ -49,19 +73,26 @@ describe('cell/file: upload', () => {
       const byName = client.file.name(filename);
       const res = await byName.download();
 
+      console.log('-------------------------------------------');
+      console.log('res', res.status);
+      // console.log('res.body', res.body);
+
       await fs.stream.save(path, res.body);
+      console.log('-------------------------------------------');
       const buffer = await readFile(path);
       expect(buffer.toString()).to.eql(compareWith.toString());
     };
 
-    await downloadAndSave('func.wasm', file1);
+    // await downloadAndSave('func.wasm', file1);
+    // return; // TEMP 🐷
+    console.log(file2);
     await downloadAndSave('kitten.jpg', file2);
 
     // Finish up.
     await mock.dispose();
   });
 
-  it.only('upload: file within folder-path', async () => {
+  it('upload: file within folder-path', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const client = mock.client.cell(cellUri);
@@ -70,28 +101,25 @@ describe('cell/file: upload', () => {
     const filename = 'foo/bar/kitten.jpg';
     const uploaded = await client.files.upload({ filename, data: kitten });
 
-    // Ensure folder path is encoded in key.
+    // Ensure folder path is encoded within link-key on the cell.
     const cellLinks = uploaded.body.cell.links || {};
     const key = 'fs:foo::bar::kitten:jpg';
     expect(typeof cellLinks[key]).to.eql('string');
     expect(Schema.file.links.toKey(filename)).to.eql(key);
 
-    console.log('-------------------------------------------');
-    console.log('uploadRes', uploaded.body);
-    console.log('-------------------------------------------');
+    // Ensure the file (and all relevant path data)
+    // is represented within the cells "files" list.
+    const urls = (await client.files.urls()).body;
 
-    const files = await client.files.list();
-    console.log('files', files.body);
+    expect(urls.length).to.eql(1);
+    expect(urls[0].uri).to.match(/^file:foo:/);
+    expect(urls[0].filename).to.eql('kitten.jpg');
+    expect(urls[0].dir).to.eql('foo/bar');
+    expect(urls[0].path).to.eql('foo/bar/kitten.jpg');
 
-    /**
-     * TODO 🐷
-     * IFileData
-     *  - filename (name only)
-     *  - dir ("" or directory)
-     *
-     */
-
-    // const r = Schema.file.links.p
+    expect(urls[0].url).to.match(/^http:/);
+    expect(urls[0].url).to.match(/cell:foo!A1\/file\/foo\/bar\/kitten.jpg\?/);
+    expect(urls[0].url).to.match(/hash=sha256-/);
 
     // Finish up.
     await mock.dispose();
