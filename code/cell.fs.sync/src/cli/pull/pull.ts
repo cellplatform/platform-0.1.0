@@ -33,7 +33,8 @@ export async function pull(args: { dir: string; silent?: boolean }) {
   const pullList = payload.files.filter(item => item.status === 'DELETED');
   if (pullList.length === 0) {
     if (!silent) {
-      log.info.gray(`No files need pulling.`);
+      log.info.green(`No files need pulling.`);
+      log.info();
     }
     return done(true);
   }
