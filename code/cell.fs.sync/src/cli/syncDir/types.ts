@@ -38,9 +38,11 @@ export type FileStatus = 'ADDED' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
 export type IPayloadFile = {
   status: FileStatus;
   isPending: boolean;
+  localPath: string;
+  path: string;
+  dir: string;
   filename: string;
   filehash: string;
-  path: string;
   url: string;
   data?: Buffer;
   bytes: number;

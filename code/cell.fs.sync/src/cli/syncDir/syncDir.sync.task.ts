@@ -42,8 +42,8 @@ export function addTask(args: {
 
   tasks.task(title, async () => {
     // Changes.
-    const uploadFiles = pushes.map(({ filename, data }) => ({
-      filename,
+    const uploadFiles = pushes.map(({ path, data }) => ({
+      filename: path,
       data,
     })) as t.IClientCellFileUpload[];
 
@@ -58,7 +58,7 @@ export function addTask(args: {
     }
 
     // Deletions.
-    const deleteFiles = deletions.map(item => item.filename);
+    const deleteFiles = deletions.map(item => item.path);
     if (deleteFiles.length > 0) {
       const res = await clientFiles.delete(deleteFiles);
       if (res.ok) {
