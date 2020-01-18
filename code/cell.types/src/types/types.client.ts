@@ -99,7 +99,7 @@ export type IClientCellLinkFile = {
   type: 'FILE';
   key: string;
   uri: string;
-  name: string; // TODO - rename to "filename"
+  filename: string;
   dir: string;
   path: string;
   hash: string;

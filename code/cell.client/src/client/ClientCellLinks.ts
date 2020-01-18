@@ -51,14 +51,14 @@ export class ClientCellLinks implements t.IClientCellLinks {
     if (type === 'FILE') {
       let file: t.IClientFile | undefined;
       const { uri, hash = '' } = Schema.file.links.parseLink(value);
-      const { name, dir, path } = Schema.file.links.parseKey(key);
+      const { name: filename, dir, path } = Schema.file.links.parseKey(key);
       const res: t.IClientCellLinkFile = {
         type: 'FILE',
         uri,
         key,
-        name,
-        dir,
         path,
+        filename,
+        dir,
         hash,
         get file() {
           return file || (file = ClientFile.create({ uri, urls, http }));
