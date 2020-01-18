@@ -35,6 +35,7 @@ export async function buildPayload(args: {
   let ok = true;
   const cellUri = args.targetUri.toString();
   const cellKey = args.targetUri.parts.key;
+  const ns = args.targetUri.parts.ns;
   const cellUrls = args.urls.cell(cellUri);
 
   // Retrieve the list of remote files.
@@ -45,7 +46,9 @@ export async function buildPayload(args: {
   const filesUrl = urls.cell(cellUri).files.list;
 
   const tasks = cli.tasks();
-  tasks.task(`Read [${cellKey}] from ${filesUrl.toString()}`, async () => {
+  const title = log.gray(`read cell:${log.magenta(ns)}!${log.blue(cellKey)} on ${filesUrl.origin}`);
+
+  tasks.task(title, async () => {
     const res = await args.client.cell(cellUri).files.list();
     if (!res.ok) {
       throw new Error(res.error?.message);
