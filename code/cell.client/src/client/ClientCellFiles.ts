@@ -12,6 +12,13 @@ export class ClientCellFiles implements t.IClientCellFiles {
     return new ClientCellFiles(args);
   }
 
+  private static parsePath(path: string) {
+    const index = path.lastIndexOf('/');
+    const filename = index < 0 ? path : path.substring(index + 1);
+    const dir = index < 0 ? '' : path.substring(0, index);
+    return { path, filename, dir };
+  }
+
   /**
    * [Lifecycle]
    */
@@ -42,9 +49,7 @@ export class ClientCellFiles implements t.IClientCellFiles {
 
     const toUrl = (args: { path: string; uri: string; url: string }): t.IClientCellFileUrl => {
       const { path, uri, url } = args;
-      const index = path.lastIndexOf('/');
-      const filename = index < 0 ? path : path.substring(index + 1);
-      const dir = index < 0 ? '' : path.substring(0, index);
+      const { filename, dir } = ClientCellFiles.parsePath(path);
       const res: t.IClientCellFileUrl = { uri, filename, dir, path, url };
       return res;
     };
@@ -69,21 +74,29 @@ export class ClientCellFiles implements t.IClientCellFiles {
 
   public async list() {
     type T = t.IClientResponse<t.IClientFileData[]>;
-
-    const mapResponse = await this.map();
-    if (!mapResponse.ok) {
-      const res: T = { ...mapResponse, body: [] };
+    const getError: GetError = () => `Failed to get file list for [${this.uri.toString()}]`;
+    const base = await this.base({ getError });
+    if (!base.ok) {
+      const { ok, status } = base;
+      const body = {} as any;
+      const error = base.error;
+      const res: T = { ok, status, body, error };
       return res;
     }
 
-    const map = mapResponse.body;
+    const urls = base.body.urls.files;
+    const map = base.body.files;
     const ns = this.uri.parts.ns;
 
-    const body = Object.keys(map).reduce((acc, fid) => {
-      const value = map[fid];
+    const body = Object.keys(map).reduce((acc, fileid) => {
+      const value = map[fileid];
       if (value) {
-        const uri = Schema.uri.create.file(ns, fid);
-        acc.push({ uri, ...value });
+        const uri = Schema.uri.create.file(ns, fileid);
+        const url = urls.find(item => item.uri === uri);
+        if (url) {
+          const { path, filename, dir } = ClientCellFiles.parsePath(url.path);
+          acc.push({ uri, path, filename, dir, ...value });
+        }
       }
       return acc;
     }, [] as t.IClientFileData[]);
