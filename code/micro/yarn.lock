@@ -46,7 +46,7 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http.types@0.0.1", "@platform/http.types@^0.0.1":
+"@platform/http.types@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.1.tgz#580f30bf32c1fa658bc5898d312431bb53b3b873"
   integrity sha512-Lmv6riaVnlHrHb4zVqZ5+VV9QviYT1GB5aSZWJ83DIJFQPnIqeqisdiW4CIeVMEND3pVd9HiLJiggRuyQ0MYNA==

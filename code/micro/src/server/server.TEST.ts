@@ -256,6 +256,24 @@ describe('micro (server)', () => {
     expect(png.toString()).to.eql(saved.toString());
   });
 
+  it('GET binary file (download, save, compare)', async () => {
+    const mock = await mockServer();
+    const png = await fs.readFile(fs.resolve('src/test/images/bird.png'));
+    mock.router.get(`/image`, async req => ({ status: 200, data: png }));
+
+    // Download the image from the HTTP server.
+    const res = await http.get(mock.url('/image'));
+    await mock.dispose();
+
+    // Save and compare the downloaded file.
+    const path = fs.resolve('tmp/download.bird.png');
+    if (res.body) {
+      await fs.stream.save(path, res.body);
+    }
+    const downloaded = await fs.readFile(path);
+    expect(png.toString()).to.eql(downloaded.toString());
+  });
+
   describe('events$', () => {
     it('HTTP/started | MICRO/stopped', async () => {
       const port = randomPort();
