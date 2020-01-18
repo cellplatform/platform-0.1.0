@@ -22,7 +22,8 @@ export async function buildPayload(args: {
 
   // Retrieve the list of remote files.
   let remoteFiles: t.IClientFileData[] = [];
-  const findRemote = (filename: string) => remoteFiles.find(f => f.props.filename === filename);
+  const findRemote = (filehash: string) =>
+    remoteFiles.find(f => f.props.integrity?.filehash === filehash);
 
   const urls = Schema.url(client.origin);
   const filesUrl = urls.cell(cellUri).files.list;
@@ -50,23 +51,29 @@ export async function buildPayload(args: {
   const wait = paths.map(async path => {
     const data = await fs.readFile(path);
     const bytes = Uint8Array.from(data).length;
+    const localHash = Schema.hash.sha256(data);
 
     const filename = fs.basename(path);
-    const remoteFile = findRemote(filename);
-
-    const hash = {
-      local: Value.hash.sha256(data),
-      remote: remoteFile ? remoteFile.props.integrity?.filehash : '',
-    };
+    const remoteFile = findRemote(localHash);
+    const remoteHash = remoteFile ? remoteFile.props.integrity?.filehash : '';
 
     let status: t.FileStatus = 'ADDED';
     if (remoteFile) {
-      status = hash.local === hash.remote ? 'NO_CHANGE' : 'CHANGED';
+      status = localHash === remoteHash ? 'NO_CHANGE' : 'CHANGED';
     }
 
     const url = cellUrls.file.byName(filename).toString();
     const isPending = status !== 'NO_CHANGE';
-    const item: t.IPayloadFile = { status, isPending, filename, path, url, data, bytes };
+    const item: t.IPayloadFile = {
+      status,
+      isPending,
+      filename,
+      filehash: localHash,
+      path,
+      url,
+      data,
+      bytes,
+    };
     return item;
   });
   const files = await Promise.all(wait);
@@ -74,14 +81,15 @@ export async function buildPayload(args: {
   // Add list of deleted files (on remote, but not local).
   const isDeleted = (filename?: string) => !files.some(item => item.filename === filename);
   remoteFiles
-    .filter(file => Boolean(file.props.filename))
-    .filter(file => isDeleted(file.props.filename))
+    .filter(file => Boolean(file.filename))
+    .filter(file => isDeleted(file.filename))
     .forEach(file => {
-      const filename = file.props.filename || '';
+      const filename = file.filename || '';
       const path = '';
       const url = cellUrls.file.byName(filename).toString();
       const isPending = args.delete;
-      files.push({ status: 'DELETED', isPending, filename, path, url, bytes: -1 });
+      const filehash = file.props.integrity?.filehash || '';
+      files.push({ status: 'DELETED', isPending, filename, filehash, path, url, bytes: -1 });
     });
 
   // Finish up.

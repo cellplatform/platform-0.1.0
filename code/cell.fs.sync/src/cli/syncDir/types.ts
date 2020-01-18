@@ -39,6 +39,7 @@ export type IPayloadFile = {
   status: FileStatus;
   isPending: boolean;
   filename: string;
+  filehash: string;
   path: string;
   url: string;
   data?: Buffer;
