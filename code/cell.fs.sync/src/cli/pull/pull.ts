@@ -48,9 +48,9 @@ export async function pull(args: { dir: string; silent?: boolean }) {
     const table = log.table({ border: false });
     pullList.forEach(file => {
       const pull = gray(`pull`);
-      const path = ` ${log.green(file.path)}`;
-      const size = ` ${toBytesString(file.remoteBytes)}`;
-      table.add([pull, path, gray(size)]);
+      const path = ` ${log.gray(file.path)}`;
+      const size = log.white` ${toBytesString(file.remoteBytes)}`;
+      table.add([pull, path, log.white(size)]);
     });
     log.info(table.toString());
 
