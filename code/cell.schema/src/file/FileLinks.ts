@@ -34,11 +34,12 @@ export class FileLinks {
     const key = (linkKey || '').trim();
     let path = key.replace(/^fs\:/, '');
     path = shouldDecode(path) ? decode(path) : path;
-    const index = path.lastIndexOf('/');
-    const name = index < 0 ? path : path.substring(index + 1);
-    const dir = index < 0 ? '' : path.substring(0, index);
-
-    return { key, path, name, dir };
+    const lastSlash = path.lastIndexOf('/');
+    const lastPeriod = path.lastIndexOf('.');
+    const filename = lastSlash < 0 ? path : path.substring(lastSlash + 1);
+    const dir = lastSlash < 0 ? '' : path.substring(0, lastSlash);
+    const ext = lastPeriod < 0 ? '' : path.substring(lastPeriod + 1);
+    return { key, path, filename, dir, ext };
   }
 
   public static parseLink(value: string) {

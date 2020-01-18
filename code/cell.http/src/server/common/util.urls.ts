@@ -42,9 +42,14 @@ export function urls(host: string) {
               .reduce((acc, next) => {
                 const { key, value } = next;
                 const { hash, uri } = Schema.file.links.parseLink(value);
-                const { path } = Schema.file.links.parseKey(key);
+                const { path, ext } = Schema.file.links.parseKey(key);
+
+                const fileUri = Schema.uri.parse<t.IFileUri>(uri).parts;
+                let filename = `${fileUri.file}`;
+                filename = ext ? `${filename}.${ext}` : filename;
+
                 const url = builder.file
-                  .byName(path)
+                  .byName(filename)
                   .query({ hash })
                   .toString();
                 acc.push({ uri, path, url });

@@ -1,4 +1,4 @@
-import { models, Schema, t, util } from '../common';
+import { Schema, t, util } from '../common';
 import { downloadFile } from '../route.file';
 
 export async function downloadFileByName(args: {
@@ -12,11 +12,9 @@ export async function downloadFileByName(args: {
 }) {
   const { db, fs, cellUri, filename, matchHash, host, seconds } = args;
 
-  // Retreive the [cell] info.
-  const cell = await models.Cell.create({ db, uri: cellUri }).ready;
-  const cellLinks = cell.props.links || {};
-  const linkKey = Schema.file.links.toKey(filename);
-  const fileUri = cellLinks[linkKey];
+  const fileid = filename.split('.')[0];
+  const ns = Schema.uri.parse<t.ICellUri>(cellUri).parts.ns;
+  const fileUri = Schema.uri.create.file(ns, fileid);
 
   // 404 if file URI not found.
   if (!fileUri) {

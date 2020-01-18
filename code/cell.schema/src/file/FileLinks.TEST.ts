@@ -183,8 +183,9 @@ describe('FileLinks', () => {
       const res = FileLinks.parseKey(` ${key} `);
       expect(res.key).to.eql(key);
       expect(res.path).to.eql('image.png');
-      expect(res.name).to.eql('image.png');
+      expect(res.filename).to.eql('image.png');
       expect(res.dir).to.eql('');
+      expect(res.ext).to.eql('png');
     });
 
     it('path: dir/name', () => {
@@ -192,8 +193,9 @@ describe('FileLinks', () => {
       const res = FileLinks.parseKey(` ${key} `);
       expect(res.key).to.eql(key);
       expect(res.path).to.eql('foo/bar/image.png');
-      expect(res.name).to.eql('image.png');
+      expect(res.filename).to.eql('image.png');
       expect(res.dir).to.eql('foo/bar');
+      expect(res.ext).to.eql('png');
     });
 
     it('path variants', () => {
@@ -201,8 +203,9 @@ describe('FileLinks', () => {
         const res = FileLinks.parseKey(input);
         expect(res.key).to.eql(input.trim());
         expect(res.path).to.eql(path);
-        expect(res.name).to.eql(fs.basename(res.path));
+        expect(res.filename).to.eql(fs.basename(res.path));
         expect(res.dir).to.eql(fs.dirname(res.path).replace(/^\./, ''));
+        expect(res.ext).to.eql(fs.extname(res.path).replace(/^\./, ''));
       };
       test('fs:foo', 'foo');
       test('fs:foo:png', 'foo.png');
