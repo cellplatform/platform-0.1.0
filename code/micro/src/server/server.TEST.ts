@@ -256,7 +256,7 @@ describe('micro (server)', () => {
     expect(png.toString()).to.eql(saved.toString());
   });
 
-  it('GET binary file (download, save, compare)', async () => {
+  it('GET binary file (download => save => compare)', async () => {
     const mock = await mockServer();
     const png = await fs.readFile(fs.resolve('src/test/images/bird.png'));
     mock.router.get(`/image`, async req => ({ status: 200, data: png }));
