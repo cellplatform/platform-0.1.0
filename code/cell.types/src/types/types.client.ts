@@ -57,6 +57,7 @@ export type IClientCellFileByName = {
 };
 
 export type IClientCellFiles = {
+  urls(): t.IClientAsync<IClientCellFileUrl[]>;
   map(): t.IClientAsync<t.IFileMap>;
   list(): t.IClientAsync<IClientFileData[]>;
   upload(
@@ -67,6 +68,7 @@ export type IClientCellFiles = {
   unlink(filename: string | string[]): t.IClientAsync<t.IResDeleteCellFilesData>;
 };
 export type IClientCellFileUpload = { filename: string; data: ArrayBuffer };
+export type IClientCellFileUrl = { uri: string; url: string; path:string, filename: string; dir: string };
 
 export type IClientCellFileUploadResponse = {
   uri: string;

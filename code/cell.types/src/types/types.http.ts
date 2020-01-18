@@ -142,10 +142,11 @@ export type IResGetCellFiles = {
   uri: string;
   urls: {
     cell: string;
-    files: IUrlMap;
+    files: IResGetCellFilesFileUrl[];
   };
   files: t.IFileMap;
 };
+export type IResGetCellFilesFileUrl = { uri: string; url: string; path: string };
 
 /**
  * Cell Files: POST (Upload Start)

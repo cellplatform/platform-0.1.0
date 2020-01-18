@@ -41,12 +41,16 @@ export function urls(host: string) {
               .filter(({ value }) => Schema.uri.is.file(value))
               .reduce((acc, next) => {
                 const { key, value } = next;
-                const { hash } = Schema.file.links.parseLink(value);
-                const path = Schema.file.links.parseKey(key).path;
-                const url = builder.file.byName(path).query({ hash });
-                acc[path] = url.toString();
+                const { hash, uri } = Schema.file.links.parseLink(value);
+                const { path } = Schema.file.links.parseKey(key);
+                const url = builder.file
+                  .byName(path)
+                  .query({ hash })
+                  .toString();
+                acc.push({ uri, path, url });
                 return acc;
-              }, {});
+              }, [] as t.IResGetCellFilesFileUrl[]);
+
             return {
               cell: builder.info.toString(),
               files,
