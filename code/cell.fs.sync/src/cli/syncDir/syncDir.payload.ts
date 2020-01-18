@@ -81,7 +81,6 @@ export async function buildPayload(args: {
       .trim();
 
     const path = fs.join(dir, filename);
-
     const remoteFile = findRemote(path);
     const remoteHash = remoteFile ? remoteFile.props.integrity?.filehash : '';
 
@@ -92,6 +91,7 @@ export async function buildPayload(args: {
       remoteBytes = defaultValue(remoteFile.props.bytes, -1);
     }
 
+    const uri = '';
     const url = cellUrls.file.byName(filename).toString();
     const isPending = status !== 'NO_CHANGE';
     const item: t.IFsSyncPayloadFile = {
@@ -102,6 +102,7 @@ export async function buildPayload(args: {
       dir,
       filename,
       filehash: localHash,
+      uri,
       url,
       data,
       localBytes,
