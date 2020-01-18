@@ -61,7 +61,9 @@ export type IUrlQueryCellInfo = {};
 /**
  * Query-string parameters for a [Cell]'s files.
  */
-export type IUrlQueryCellFilesList = {};
+export type IUrlQueryCellFilesList = {
+  seconds?: number; // Links expire.
+};
 export type IUrlQueryCellFilesUpload = {
   changes?: boolean; // NB: return list of changes (default: true).
 };

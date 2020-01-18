@@ -34,7 +34,11 @@ export function urls(host: string) {
         },
 
         files: {
-          urls(links: t.ICellData['links']): t.IResGetCellFiles['urls'] {
+          urls(
+            links: t.ICellData['links'],
+            options: { seconds?: number } = {},
+          ): t.IResGetCellFiles['urls'] {
+            const { seconds } = options;
             const builder = url.cell(cellUri);
             const files = Object.keys(links || {})
               .map(key => ({ key, value: (links || {})[key] }))
@@ -50,7 +54,7 @@ export function urls(host: string) {
 
                 const url = builder.file
                   .byName(filename)
-                  .query({ hash })
+                  .query({ hash, seconds })
                   .toString();
                 acc.push({ uri, path, url });
                 return acc;
