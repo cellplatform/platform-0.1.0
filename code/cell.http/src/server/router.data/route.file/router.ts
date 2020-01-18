@@ -43,9 +43,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.post(routes.FILE.UPLOADED, async req => {
     const host = req.host;
     const query = req.query as t.IUrlQueryFileUploadComplete;
-    const body = await req.body.json<t.IReqPostFileUploadCompleteBody>({
-      default: { overwrite: false },
-    });
+    const body = await req.body.json<t.IReqPostFileUploadCompleteBody>();
     const params = req.params as t.IUrlParamsFile;
     const { status, ns, error, fileUri } = getParams(params);
     const sendChanges = query.changes;
