@@ -2,7 +2,7 @@ import { parse as parseUrl } from 'url';
 import { createMock, expect, fs, http, readFile, Schema, t } from '../test';
 
 describe('cell/file: upload', () => {
-  it('upload 2 files', async () => {
+  it.only('upload 2 files', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const client = mock.client.cell(cellUri);
