@@ -76,6 +76,7 @@ export class ClientCellFile implements t.IClientCellFile {
 
         // Request the download.
         const res = await http.get(url);
+
         if (res.ok) {
           return util
             .fromHttpResponse(res)

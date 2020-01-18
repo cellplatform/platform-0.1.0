@@ -1,7 +1,8 @@
-import { ERROR, FormData, Schema, t, util } from '../common';
+import { ERROR, Schema, t, util } from '../common';
+import { upload } from './ClientCellFiles.upload';
 
 export type IClientCellFilesArgs = { parent: t.IClientCell; urls: t.IUrls; http: t.IHttp };
-import { upload } from './ClientCellFiles.upload';
+type GetError = (args: { status: number }) => string;
 
 /**
  * HTTP client for operating on a [Cell]'s files.
@@ -28,39 +29,55 @@ export class ClientCellFiles implements t.IClientCellFiles {
   /**
    * [Methods]
    */
-  public async map() {
-    type T = t.IClientResponse<t.IFileMap>;
-    const http = this.args.http;
-    const parent = this.args.parent;
-    const url = parent.url.files.list.toString();
+  public async urls() {
+    type T = t.IClientResponse<t.IClientCellFileUrl[]>;
 
-    const resFiles = await http.get(url);
-    if (!resFiles.ok) {
-      const status = resFiles.status;
-      const type = status === 404 ? ERROR.HTTP.NOT_FOUND : ERROR.HTTP.SERVER;
-      const message = `Failed to get file map for '${parent.uri.toString()}'.`;
-      return util.toError(status, type, message) as T;
+    const getError: GetError = () => `Failed to get file URLs for [${this.uri.toString()}]`;
+    const base = await this.base({ getError });
+
+    const { ok, status, error } = base;
+    if (!ok) {
+      return { ok, status, body: {}, error };
     }
 
-    const json = resFiles.json as t.IResGetCellFiles;
-    const body = json.files;
-    const res: T = { ok: true, status: 200, body };
+    const toUrl = (args: { path: string; uri: string; url: string }): t.IClientCellFileUrl => {
+      const { path, uri, url } = args;
+      const index = path.lastIndexOf('/');
+      const filename = index < 0 ? path : path.substring(index + 1);
+      const dir = index < 0 ? '' : path.substring(0, index);
+      const res: t.IClientCellFileUrl = { uri, filename, dir, path, url };
+      return res;
+    };
 
+    const body = base.body.urls.files.map(item => toUrl(item));
+    const res: T = { ok, status, body };
+    return res as any;
+  }
+
+  public async map() {
+    type T = t.IClientResponse<t.IFileMap>;
+    const getError: GetError = () => `Failed to get file map for [${this.uri.toString()}]`;
+    const base = await this.base({ getError });
+
+    const { ok, status } = base;
+    const body = ok ? base.body.files : ({} as any);
+    const error = base.error;
+
+    const res: T = { ok, status, body, error };
     return res;
   }
 
   public async list() {
     type T = t.IClientResponse<t.IClientFileData[]>;
-    const parent = this.args.parent;
 
-    const resMap = await this.map();
-    if (!resMap.ok) {
-      const res: T = { ...resMap, body: [] };
+    const mapResponse = await this.map();
+    if (!mapResponse.ok) {
+      const res: T = { ...mapResponse, body: [] };
       return res;
     }
 
-    const map = resMap.body;
-    const ns = parent.uri.parts.ns;
+    const map = mapResponse.body;
+    const ns = this.uri.parts.ns;
 
     const body = Object.keys(map).reduce((acc, fid) => {
       const value = map[fid];
@@ -95,6 +112,32 @@ export class ClientCellFiles implements t.IClientCellFiles {
     const urls = this.args.parent.url;
     const http = this.args.http;
     return deleteFiles({ http, urls, filename, action: 'UNLINK' });
+  }
+
+  /**
+   * Internal
+   */
+
+  private async base(args: { getError?: GetError } = {}) {
+    type T = t.IClientResponse<t.IResGetCellFiles>;
+    const http = this.args.http;
+    const parent = this.args.parent;
+    const url = parent.url.files.list.toString();
+
+    const files = await http.get(url);
+
+    if (!files.ok) {
+      const status = files.status;
+      const type = status === 404 ? ERROR.HTTP.NOT_FOUND : ERROR.HTTP.SERVER;
+      const message = args.getError
+        ? args.getError({ status })
+        : `Failed to get files data for '${this.uri.toString()}'.`;
+      return util.toError(status, type, message) as T;
+    }
+
+    const body = files.json as t.IResGetCellFiles;
+    const res: T = { ok: true, status: 200, body };
+    return res;
   }
 }
 
