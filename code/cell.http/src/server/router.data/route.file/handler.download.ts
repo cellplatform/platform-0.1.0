@@ -6,10 +6,11 @@ export const downloadFile = async (args: {
   db: t.IDb;
   fs: t.IFileSystem;
   fileUri: string;
+  filename?: string;
   matchHash?: string;
   seconds?: number;
 }) => {
-  const { db, fs, fileUri, host, matchHash, seconds } = args;
+  const { db, fs, fileUri, filename, host, matchHash, seconds } = args;
 
   try {
     // Pull the file meta-data.
@@ -21,8 +22,8 @@ export const downloadFile = async (args: {
 
     // Match hash if requested.
     if (typeof matchHash === 'string' && file.data.hash !== matchHash) {
-      const filename = file.data.props.filename;
-      const err = `The requested hash of '${filename}' does not match the hash of the stored file.`;
+      const identifier = filename ? `'${filename}'` : `[${fileUri}]`;
+      const err = `The requested hash of ${identifier} does not match the hash of the stored file.`;
       return util.toErrorPayload(err, { status: 409, type: ERROR.HTTP.HASH_MISMATCH });
     }
 

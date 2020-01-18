@@ -52,10 +52,6 @@ describe('cell/file: upload', function() {
       const links = cell.links || {};
       expect(links['fs:func:wasm']).to.match(/^file\:foo/);
       expect(links['fs:kitten:jpg']).to.match(/^file\:foo/);
-
-      const filenames = data.files.map(file => file.data.props.filename);
-      expect(filenames).to.include('func.wasm');
-      expect(filenames).to.include('kitten.jpg');
     })();
 
     // Compare the cell in the response with a new query to the cell from the service.
@@ -66,26 +62,20 @@ describe('cell/file: upload', function() {
     expect(files.length).to.eql(2);
     expect(files.every(f => f.props.location?.startsWith('file:///'))).to.eql(true);
 
+    const urls = (await client.files.urls()).body;
+
     // Check the files exist.
     const downloadAndSave = async (filename: string, compareWith: Buffer) => {
-      const file = files.find(file => file.props.filename === filename);
-      const path = file?.props.location?.replace(/^file\:\/\//, '') || '';
       const byName = client.file.name(filename);
       const res = await byName.download();
-
-      console.log('-------------------------------------------');
-      console.log('res', res.status);
-      // console.log('res.body', res.body);
-
+      const path = fs.resolve(`tmp/download`);
       await fs.stream.save(path, res.body);
-      console.log('-------------------------------------------');
+
       const buffer = await readFile(path);
       expect(buffer.toString()).to.eql(compareWith.toString());
     };
 
-    // await downloadAndSave('func.wasm', file1);
-    // return; // TEMP 🐷
-    console.log(file2);
+    await downloadAndSave('func.wasm', file1);
     await downloadAndSave('kitten.jpg', file2);
 
     // Finish up.
@@ -121,6 +111,36 @@ describe('cell/file: upload', function() {
     expect(urls[0].url).to.match(/cell:foo!A1\/file\/foo\/bar\/kitten.jpg\?/);
     expect(urls[0].url).to.match(/hash=sha256-/);
 
+    // Data returned on list.
+    const list = (await client.files.list()).body;
+    console.log('list', list);
+
+    expect(list.length).to.eql(1);
+    expect(list[0].uri).to.match(/^file:foo:/);
+    expect(list[0].filename).to.eql('kitten.jpg');
+    expect(list[0].dir).to.eql('foo/bar');
+    expect(list[0].path).to.eql('foo/bar/kitten.jpg');
+    expect(list[0].props.bytes).to.eql(kitten.length);
+
+    // Finish up.
+    await mock.dispose();
+  });
+
+  it('upload with explicit mimetype', async () => {
+    const mock = await createMock();
+    const cellUri = 'cell:foo!A1';
+    const client = mock.client.cell(cellUri);
+
+    const data = await readFile('src/test/assets/kitten.jpg');
+    const uploaded = await client.files.upload([
+      { filename: 'one', data },
+      { filename: 'two', data, mimetype: 'image/jpeg' },
+    ]);
+    const files = uploaded.body.files;
+
+    expect(files[0].data.props.mimetype).to.eql('application/octet-stream');
+    expect(files[1].data.props.mimetype).to.eql('image/jpeg');
+
     // Finish up.
     await mock.dispose();
   });
@@ -143,15 +163,27 @@ describe('cell/file: upload', function() {
     ]);
     await clientA2.files.upload({ filename: 'bird.png', data: file3 });
 
-    const res1 = await clientA1.files.list();
-    const res2 = await clientA2.files.list();
+    const res1 = (await clientA1.files.list()).body;
+    const res2 = (await clientA2.files.list()).body;
 
-    expect(res1.body.length).to.eql(2);
-    expect(res1.body[0].props.filename).to.eql('func.wasm');
-    expect(res1.body[1].props.filename).to.eql('kitten.jpg');
+    expect(res1.length).to.eql(2);
+    expect(res1[0].props.bytes).to.eql(file1.length);
+    expect(res1[1].props.bytes).to.eql(file2.length);
 
-    expect(res2.body.length).to.eql(1);
-    expect(res2.body[0].props.filename).to.eql('bird.png');
+    expect(res1[0].filename).to.eql('func.wasm');
+    expect(res1[1].filename).to.eql('kitten.jpg');
+
+    expect(res1[0].path).to.eql('func.wasm');
+    expect(res1[1].path).to.eql('kitten.jpg');
+
+    expect(res1[0].dir).to.eql('');
+    expect(res1[1].dir).to.eql('');
+
+    expect(res2.length).to.eql(1);
+    expect(res2[0].props.bytes).to.eql(file3.length);
+    expect(res2[0].filename).to.eql('bird.png');
+    expect(res2[0].path).to.eql('bird.png');
+    expect(res2[0].dir).to.eql('');
 
     // Finish up.
     await mock.dispose();
@@ -242,18 +274,6 @@ describe('cell/file: upload', function() {
     await mock.dispose();
   });
 
-  it.skip('failed if filehash not sent to server', async () => {
-    const mock = await createMock();
-    const cellUri = 'cell:foo!A1';
-    const client = mock.client.cell(cellUri);
-    const data = await readFile('src/test/assets/func.wasm');
-
-    console.log('data', data);
-
-    // Finish up.
-    await mock.dispose();
-  });
-
   /**
    * TODO 🐷
    * - pass filehash (sha256) in upload body
@@ -310,7 +330,7 @@ describe('cell/file: upload', function() {
     // Get info about the file, from the `file.name` client.
     const fileInfo = await cellClient.file.name('func.wasm').info();
     expect(fileInfo.status).to.eql(200);
-    expect(fileInfo.body.data.props.filename).to.eql('func.wasm');
+    expect(fileInfo.body.data.props.bytes).to.eql(file1.length);
 
     // Finish up.
     await mock.dispose();

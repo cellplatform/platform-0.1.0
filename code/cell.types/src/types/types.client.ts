@@ -67,8 +67,14 @@ export type IClientCellFiles = {
   delete(filename: string | string[]): t.IClientAsync<t.IResDeleteCellFilesData>;
   unlink(filename: string | string[]): t.IClientAsync<t.IResDeleteCellFilesData>;
 };
-export type IClientCellFileUpload = { filename: string; data: ArrayBuffer };
-export type IClientCellFileUrl = { uri: string; url: string; path:string, filename: string; dir: string };
+export type IClientCellFileUpload = { filename: string; data: ArrayBuffer; mimetype?: string };
+export type IClientCellFileUrl = {
+  uri: string;
+  url: string;
+  path: string;
+  filename: string;
+  dir: string;
+};
 
 export type IClientCellFileUploadResponse = {
   uri: string;
@@ -93,7 +99,7 @@ export type IClientCellLinkFile = {
   type: 'FILE';
   key: string;
   uri: string;
-  name: string;
+  name: string; // TODO - rename to "filename"
   dir: string;
   path: string;
   hash: string;
@@ -109,4 +115,9 @@ export type IClientFile = {
   info(): t.IClientAsync<t.IResGetFile>;
 };
 
-export type IClientFileData = t.IFileData & { uri: string };
+export type IClientFileData = t.IFileData & {
+  uri: string;
+  filename: string;
+  dir: string;
+  path: string;
+};

@@ -76,7 +76,6 @@ describe('file:', () => {
       const props = json.data.props;
 
       expect(json.uri).to.eql(fileUri);
-      expect(props.filename).to.eql('bird.png');
       expect(props.mimetype).to.eql('image/png');
       expect(props.location).to.match(/^file:\/\//);
 

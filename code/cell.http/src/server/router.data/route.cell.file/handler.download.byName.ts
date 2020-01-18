@@ -20,10 +20,10 @@ export async function downloadFileByName(args: {
 
   // 404 if file URI not found.
   if (!fileUri) {
-    const err = `The file '${filename}' is not associated with the cell "${cellUri}".`;
+    const err = `The file '${filename}' is not associated with the cell [${cellUri}].`;
     return util.toErrorPayload(err, { status: 404 });
   }
 
   // Run the "file:" download handler.
-  return downloadFile({ host, db, fs, fileUri, matchHash, seconds });
+  return downloadFile({ host, db, fs, fileUri, filename, matchHash, seconds });
 }

@@ -1,4 +1,4 @@
-import { models, t, util } from '../common';
+import { models, t, util, Schema } from '../common';
 import { downloadFile } from '../route.file';
 
 export async function downloadFileByIndex(args: {
@@ -15,14 +15,18 @@ export async function downloadFileByIndex(args: {
   // Retreive the [cell] info.
   const cell = await models.Cell.create({ db, uri: cellUri }).ready;
   const cellLinks = cell.props.links || {};
-  const fileUri = cellLinks[Object.keys(cellLinks)[index]];
+  const cellLinkKey = Object.keys(cellLinks)[index];
+  const cellLink = cellLinks[cellLinkKey];
 
   // 404 if file URI not found.
-  if (!fileUri) {
-    const err = `A file at index [${index}] does not exist within the cell "${cellUri}".`;
+  if (!cellLink) {
+    const err = `A file at index [${index}] does not exist within the cell [${cellUri}].`;
     return util.toErrorPayload(err, { status: 404 });
   }
 
+  const fileUri = Schema.file.links.parseLink(cellLink).uri;
+  const filename = Schema.file.links.parseKey(cellLinkKey).path;
+
   // Run the "file:" download handler.
-  return downloadFile({ host, db, fs, fileUri, matchHash, seconds });
+  return downloadFile({ host, db, fs, fileUri, filename, matchHash, seconds });
 }

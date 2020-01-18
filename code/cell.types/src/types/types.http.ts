@@ -146,7 +146,11 @@ export type IResGetCellFiles = {
   };
   files: t.IFileMap;
 };
-export type IResGetCellFilesFileUrl = { uri: string; url: string; path: string };
+export type IResGetCellFilesFileUrl = {
+  uri: string;
+  url: string;
+  path: string;
+};
 
 /**
  * Cell Files: POST (Upload Start)
@@ -158,6 +162,7 @@ export type IReqPostCellFilesUploadStartBody = {
 export type IReqPostCellUploadFile = {
   filename: string;
   filehash?: string;
+  mimetype?: string;
 };
 
 export type IResPostCellFilesUploadStart = IUriResponse<
