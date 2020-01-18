@@ -2,6 +2,8 @@ import * as t from './types';
 import { fs, cell, defaultValue } from './libs';
 import { ERROR } from './constants';
 
+import * as mime from 'mime-types';
+
 export * from './libs';
 export * from './util.urls';
 
@@ -46,4 +48,13 @@ export function isHttp(input: string = '') {
  */
 export function isFile(input: string = '') {
   return input.trim().startsWith('file://');
+}
+
+/**
+ * Get the mime-type for the given filename.
+ * Derived from extension.
+ */
+export function toMimetype(filename: string = '') {
+  const type = mime.lookup(filename);
+  return typeof type === 'string' ? type : undefined;
 }

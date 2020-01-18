@@ -30,9 +30,9 @@ export async function upload(args: {
   //      This sets up the models, and retrieves the pre-signed S3 urls to upload to.
   const uploadStartBody: t.IReqPostCellFilesUploadStartBody = {
     seconds: undefined, // Expires.
-    files: input.map(({ filename, data }) => {
+    files: input.map(({ filename, data, mimetype }) => {
       const filehash = Schema.hash.sha256(data);
-      return { filename, filehash };
+      return { filename, filehash, mimetype };
     }),
   };
   const res1 = await http.post(url.start, uploadStartBody);

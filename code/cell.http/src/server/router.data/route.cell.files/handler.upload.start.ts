@@ -19,7 +19,7 @@ export async function uploadCellFilesStart(args: {
   const seconds = body.seconds;
   const fileDefs = body.files || [];
   if (fileDefs.length === 0) {
-    const err = new Error(`No file(s) info was posted in the body for [${cellUri}]`);
+    const err = new Error(`No file details posted in the body for [${cellUri}]`);
     return util.toErrorPayload(err, { status: 400 });
   }
 
@@ -30,15 +30,18 @@ export async function uploadCellFilesStart(args: {
   }) => {
     const { ns, file, links = {} } = args;
     const { filename, filehash } = file;
+    const mimetype = file.mimetype || util.toMimetype(filename) || 'application/octet-stream';
 
     const key = Schema.file.links.toKey(filename);
     const fileUri = links[key]
       ? links[key].split('?')[0]
       : Schema.uri.create.file(ns, Schema.slug());
+
     const res = await uploadFileStart({
       host,
       db,
       fs,
+      mimetype,
       fileUri,
       filename,
       filehash,
