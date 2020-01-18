@@ -270,6 +270,7 @@ describe('hash', () => {
     let index = -1;
     const test = (data: t.IFileData | undefined, expected: string) => {
       const hash = value.hash.file({ uri: 'file:foo:123', data });
+      // return console.log(hash.substring(hash.length - 10));
 
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
@@ -294,11 +295,11 @@ describe('hash', () => {
       const error = { type: 'FAIL', message: 'Bummer' };
       const integrity = INTEGRITY;
 
-      test({ props: { filename: 'image.png' } }, 'c260743951');
-      test({ props: { filename: 'image.png', integrity } }, 'f69e28613e');
-      test({ props: { filename: 'image.png', mimetype: 'image/png', integrity } }, '75adc5a9ab');
+      test({ props: {} }, 'ca6edf2f56');
+      test({ props: { integrity } }, '628532e6a7');
+      test({ props: { mimetype: 'image/png', integrity } }, '38d6e3ca08');
       test({ props: {}, error }, '1fd68d1131');
-      test({ props: { filename: 'image.png', integrity }, error }, '2f48ee6d04');
+      test({ props: { integrity }, error }, '94153af4ab');
     });
   });
 });
