@@ -1,1 +1,1 @@
-export * from './types';
+import '@platform/cell.cli/lib/bin';

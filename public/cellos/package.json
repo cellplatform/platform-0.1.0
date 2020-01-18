@@ -4,6 +4,9 @@
   "description": "The CellOS (Spreadsheet Based Operating System)",
   "main": "lib/index",
   "types": "lib/index.d.ts",
+  "bin": {
+    "cell": "lib/bin.js"
+  },
   "scripts": {
     "start": "node .",
     "watch": "nodemon .",
@@ -14,7 +17,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.1.5"
+    "@platform/cell.cli": "0.1.39"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",
