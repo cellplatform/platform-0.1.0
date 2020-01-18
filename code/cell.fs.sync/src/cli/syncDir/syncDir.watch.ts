@@ -53,7 +53,7 @@ export async function watchDir(args: {
 }) {
   const { config, silent, sync, keyboard } = args;
   const debounce = defaultValue(args.debounce, 1500);
-  const pattern = `${config.dir}/*`;
+  const pattern = `${config.dir}/**`;
   const initialCount = (await fs.glob.find(pattern, { dot: false })).length;
 
   const state = {
