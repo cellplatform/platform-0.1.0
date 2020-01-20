@@ -16,16 +16,22 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
     const deployedAt = !args.deployedAt
       ? undefined
       : {
-          datetime: time.day(args.deployedAt).format(`DD MMM YYYY, hh:mm A`),
-          timestamp: args.deployedAt,
+          date: time.day(args.deployedAt).format(`DD MMM YYYY, hh:mm A`),
+          time: args.deployedAt,
         };
 
+    const { system } = constants.getSystem();
+    let host = req.headers.host || '-';
+    host = host.startsWith('localhost') ? `http://${host}` : `https://${host}`;
+
+    console.log('req', req);
+
     const data: t.IResGetSysInfo = {
-      system: args.title || 'Untitled',
-      domain: req.headers.host || '',
+      provider: args.title || 'Untitled',
+      system,
+      host,
       region,
       time: 'UTC',
-      version: constants.getVersions(),
       deployedAt,
     };
 
