@@ -7,7 +7,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
   const { router } = args;
 
   /**
-   * GET: /, /.info
+   * GET: /, /.sys
    */
   router.get(routes.SYS.INFO, async req => {
     const NOW_REGION = fs.env.value('NOW_REGION');
@@ -34,9 +34,6 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
       deployedAt,
     };
 
-    return {
-      status: 200,
-      data,
-    };
+    return { status: 200, data };
   });
 }

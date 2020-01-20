@@ -20,7 +20,6 @@ export const ROUTES = {
   WILDCARD: '*',
   SYS: {
     INFO: ['/', '/.sys(/?)'],
-    UID: '/.uid',
   },
   LOCAL: {
     FS: `/local/fs`,
