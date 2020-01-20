@@ -20,14 +20,13 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
           time: args.deployedAt,
         };
 
-    const { system } = constants.getSystem();
+    const provider = args.title || 'Untitled';
+    const system = constants.getSystem().system;
     let host = req.headers.host || '-';
     host = host.startsWith('localhost') ? `http://${host}` : `https://${host}`;
 
-    console.log('req', req);
-
     const data: t.IResGetSysInfo = {
-      provider: args.title || 'Untitled',
+      provider,
       system,
       host,
       region,
