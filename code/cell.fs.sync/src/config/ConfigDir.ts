@@ -55,10 +55,18 @@ export class ConfigDir implements t.IFsConfigDir {
   public get target() {
     const host = this.data.host;
     const uri = Schema.uri.parse<t.ICellUri>(this.data.target);
-    const url = Schema.url(host)
-      .cell(uri.toString())
-      .files.list.toString();
-    return { uri, url };
+
+    const toUrl = () => {
+      try {
+        return Schema.urls(host)
+          .cell(uri.toString())
+          .files.list.toString();
+      } catch (error) {
+        return '';
+      }
+    };
+
+    return { uri, url: toUrl() };
   }
 
   public get isValid() {

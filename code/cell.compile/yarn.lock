@@ -846,10 +846,10 @@
   dependencies:
     "@platform/libs" "0.1.5"
 
-"@platform/cell.types@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.1.tgz#1d687758ffeb7d89a2c4b48336818a5ad34b32be"
-  integrity sha512-kHZTV6zCjI7nuY1e60HA+pf163VApJi4QidDNeXdFLfEi2fFi+SE/rvpLlT1WIi0nliliZ2jLd5aMTGLlkhEpw==
+"@platform/cell.types@0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.3.tgz#375e70b0b5c39bad1f006b539d16d67ca2c0c111"
+  integrity sha512-jmOkt0oVA0JKiD6ye5KqYP2xwbX2q53Ws/9vArdBsGYyq/FNQr78k/YJ5HsFKmkfh1PYYhGMs5ug++92NaYQWg==
   dependencies:
     "@platform/cache" "0.2.12"
     "@platform/fs.s3.types" "0.1.5"

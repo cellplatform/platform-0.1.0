@@ -34,7 +34,7 @@ describe('ConfigDir', () => {
   it('target.url', async () => {
     const config = await ConfigDir.create({ dir: PATH.TMP }).save(VALID);
     const url = config.target.url;
-    expect(url).to.eql('https://domain.com/cell:foo!A1');
+    expect(url).to.eql('https://domain.com/cell:foo!A1/files');
   });
 
   describe('load', () => {
