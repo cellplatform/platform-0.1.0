@@ -1,19 +1,19 @@
 import { t } from '../common';
-import { syncWatch } from './syncWatch';
+import { dirWatch } from './dirWatch';
 
 export type ISyncWatchArgs = {};
 
 export const init: t.CmdPluginsInit = cli => {
   const handler: t.CmdPluginHandler<ISyncWatchArgs> = async e => {
     const { argv, keyboard } = e;
-    await syncWatch({
+    await dirWatch({
       dir: process.cwd(),
       keyboard,
     });
   };
 
   cli.command<ISyncWatchArgs>({
-    name: 'syncWatch',
+    name: 'dirwatch',
     alias: 'w',
     description: 'Synchronise folder in watch mode',
     handler,

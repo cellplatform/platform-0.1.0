@@ -1,6 +1,6 @@
 import { cli, Client, log, t } from '../common';
-import { getPayload } from './syncDir.payload';
-import { addTask, toBatches } from './syncDir.sync.task';
+import { getPayload } from './dirSync.payload';
+import { addTask, toBatches } from './dirSync.sync.task';
 import * as util from '../util';
 
 const gray = log.info.gray;
