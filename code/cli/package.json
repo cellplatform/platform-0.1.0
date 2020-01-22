@@ -30,7 +30,10 @@
     "@platform/ts": "3.7.9"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"

@@ -25,7 +25,10 @@
     "@uiharness/ui": "0.6.21"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }

@@ -27,7 +27,10 @@
     "babel-preset-env": "^1.7.0"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }
