@@ -31,7 +31,10 @@
   "files": [
     "lib",
     "css",
-    "reset.css"
+    "reset.css",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"
