@@ -1,6 +1,5 @@
 import { css as glamor } from 'glamor';
-import { CssProps, GlobalCssRules } from '../types';
-import { R } from '../common';
+import { R, t } from '../common';
 
 /**
  * Applies global CSS rules.
@@ -22,8 +21,8 @@ import { R } from '../common';
  *        global(styles, { prefix: '.markdown' });
  *
  */
-export const global: GlobalCssRules = (
-  styles: { [selector: string]: CssProps },
+export const global: t.GlobalCssRules = (
+  styles: { [selector: string]: t.CssProps },
   options: { prefix?: string } = {},
 ) => {
   if (R.isEmpty(styles)) {
