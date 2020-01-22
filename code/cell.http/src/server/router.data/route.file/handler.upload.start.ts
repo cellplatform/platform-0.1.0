@@ -10,10 +10,9 @@ export async function uploadFileStart(args: {
   filename: string;
   filehash?: string;
   sendChanges?: boolean;
-  seconds?: number; // Expires.
+  expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
 }): Promise<t.IPayload<t.IResPostFileUploadStart> | t.IErrorPayload> {
   const { db, fileUri, fs, host, mimetype } = args;
-  const seconds = defaultValue(args.seconds, 10 * 60); // Default: 10 minutes.
   const sendChanges = defaultValue(args.sendChanges, true);
   let changes: t.IDbModelChange[] = [];
 
@@ -35,8 +34,10 @@ export async function uploadFileStart(args: {
     const model = await models.File.create({ db, uri: fileUri }).ready;
 
     // Generate the pre-signed POST link.
+    const expires = args.expires || '1h';
+    const seconds = util.toSeconds(expires) || 3600;
     const contentType = mimetype;
-    const presignedPost = fs.resolve(fileUri, { type: 'SIGNED/post', contentType, seconds });
+    const presignedPost = fs.resolve(fileUri, { type: 'SIGNED/post', contentType, expires });
     const expiresAt = time
       .day()
       .add(seconds, 's')

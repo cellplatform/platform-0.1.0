@@ -1,6 +1,6 @@
 {
   "name": "@platform/fsdb.types",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Common types for a file-system like JSON document database.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.1.5",
-    "@platform/types": "0.4.0"
+    "@platform/types": "0.4.1"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",

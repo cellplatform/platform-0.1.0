@@ -11,12 +11,12 @@ export async function uploadCellFilesStart(args: {
   changes?: boolean;
 }) {
   const { db, fs, cellUri, body, host } = args;
+  const expires = body.expires;
   const cellUriParts = Schema.uri.parse<t.ICellUri>(cellUri).parts;
   const cellKey = cellUriParts.key;
   const ns = cellUriParts.ns;
   const sendChanges = defaultValue(args.changes, true);
 
-  const seconds = util.toSeconds(body.expires);
   const fileDefs = body.files || [];
   if (fileDefs.length === 0) {
     const err = new Error(`No file details posted in the body for [${cellUri}]`);
@@ -45,7 +45,7 @@ export async function uploadCellFilesStart(args: {
       fileUri,
       filename,
       filehash,
-      seconds,
+      expires,
       sendChanges: true,
     });
     const json = res.data as t.IResPostFileUploadStart;

@@ -1,6 +1,6 @@
 {
   "name": "@platform/http.types",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Types for the @platform/http library.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.1.5",
-    "@platform/types": "0.4.0"
+    "@platform/types": "0.4.1"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",

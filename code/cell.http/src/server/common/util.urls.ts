@@ -50,7 +50,7 @@ export function urls(host: string) {
 
                 let expires = options.expires || '1h';
                 const seconds = toSeconds(expires);
-                expires = typeof seconds === 'string' && seconds > 3600 ? '1h' : expires;
+                expires = typeof seconds === 'number' && seconds > 3600 ? '1h' : expires;
 
                 const url = builder.file
                   .byFileUri(uri, ext)
