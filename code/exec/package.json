@@ -1,6 +1,6 @@
 {
   "name": "@platform/exec",
-  "version": "0.2.42",
+  "version": "0.2.43",
   "description": "Tools for executing commands in child_process.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,7 +14,7 @@
     "tmp": "node lib/example/tmp"
   },
   "dependencies": {
-    "@platform/libs": "0.1.5",
+    "@platform/libs": "0.2.0",
     "@types/listr": "0.14.2",
     "ansi-regex": "5.0.0",
     "chalk": "3.0.0",

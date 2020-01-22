@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm",
-  "version": "0.2.45",
+  "version": "0.2.46",
   "description": "Helpers for working with NPM.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -15,19 +15,19 @@
     "pv": "ts-node -T scripts/prompt-version.ts"
   },
   "dependencies": {
-    "@platform/cli.prompt": "0.2.10",
-    "@platform/exec": "0.2.42",
+    "@platform/cli.prompt": "0.2.11",
+    "@platform/exec": "0.2.43",
     "@platform/fs": "0.5.3",
-    "@platform/log": "0.1.3",
-    "@platform/types": "0.4.1",
-    "@platform/util.value": "0.7.0",
+    "@platform/log": "0.1.4",
+    "@platform/types": "0.4.2",
+    "@platform/util.value": "0.7.1",
     "@types/semver": "6.2.0",
     "inquirer": "7.0.3",
     "semver": "7.1.1"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.9",
+    "@platform/ts": "3.7.10",
     "@types/dotenv": "8.2.0",
     "@types/inquirer": "6.5.0",
     "dotenv": "8.2.0"
