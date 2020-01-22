@@ -18,8 +18,8 @@
   },
   "devDependencies": {
     "@platform/ts": "3.7.10",
-    "@uiharness/dev": "0.9.10",
-    "electron": "7.1.8"
+    "@uiharness/dev": "0.10.1",
+    "electron": "7.1.9"
   },
   "files": [
     "lib",

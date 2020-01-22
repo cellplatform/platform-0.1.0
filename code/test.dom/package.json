@@ -13,7 +13,7 @@
   "dependencies": {
     "@platform/test": "0.1.2",
     "@types/jsdom": "12.2.4",
-    "jsdom": "15.2.1",
+    "jsdom": "16.0.1",
     "jsdom-global": "3.0.2"
   },
   "devDependencies": {

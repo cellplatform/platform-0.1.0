@@ -14,7 +14,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@babel/polyfill": "7.8.0",
+    "@babel/polyfill": "7.8.3",
     "@platform/cache": "0.2.13",
     "@platform/cell.coord": "0.8.25",
     "@platform/cell.func": "0.1.59",
@@ -41,9 +41,9 @@
     "@platform/ts": "3.7.10",
     "@platform/ui.datagrid.cell": "0.2.32",
     "@platform/ui.datagrid.debug": "0.0.66",
-    "@uiharness/dev": "0.9.10",
-    "@uiharness/ui": "0.6.21",
-    "electron": "7.1.8"
+    "@uiharness/dev": "0.10.1",
+    "@uiharness/ui": "0.7.1",
+    "electron": "7.1.9"
   },
   "resolutions": {
     "prosemirror-state": "1.3.2"
