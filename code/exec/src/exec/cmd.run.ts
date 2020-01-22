@@ -105,7 +105,7 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
        * For list of unix signals:
        * - http://man7.org/linux/man-pages/man7/signal.7.html
        */
-      child.kill(signal || 'SIGTERM');
+      child.kill(signal || ('SIGTERM' as any));
       child = undefined;
     }
   };
