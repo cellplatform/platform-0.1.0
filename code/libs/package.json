@@ -1,21 +1,17 @@
 {
   "name": "@platform/libs",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Common external toolbelt libs used accross modules.",
   "scripts": {
     "test": "echo no-op"
   },
   "dependencies": {
     "@types/ramda": "0.26.39",
-    "core-js": "3.6.3",
     "ramda": "0.26.1",
-    "regenerator-runtime": "0.13.3",
     "rxjs": "6.5.4",
     "tslib": "1.10.0"
   },
-  "files": [
-    "polyfill.js"
-  ],
+  "files": [],
   "repository": "uiharness/platform",
   "license": "MIT"
 }

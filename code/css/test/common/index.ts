@@ -1,5 +1,5 @@
 import '../../reset.css';
-import '@platform/libs/polyfill';
+import '@platform/polyfill';
 
 import * as t from './types';
 

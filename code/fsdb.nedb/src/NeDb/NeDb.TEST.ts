@@ -479,7 +479,7 @@ describe('NeDb', () => {
       const ts2 = await db.sys.timestamps();
       expect(ts2).to.eql(res2);
       expect(ts2.createdAt).to.eql(ts1.createdAt);
-      expect(ts2.modifiedAt).to.be.within(now - 45, now + 60);
+      expect(ts2.modifiedAt).to.be.within(now - 45, now + 70);
     });
 
     it('increments timestamps on put', async () => {
@@ -491,7 +491,7 @@ describe('NeDb', () => {
 
       await db.put('foo', 123);
       const ts1 = await db.sys.timestamps();
-      expect(ts1.createdAt).to.be.within(now - 5, now + 15);
+      expect(ts1.createdAt).to.be.within(now - 5, now + 30);
       expect(ts1.modifiedAt).to.eql(ts1.createdAt);
 
       await time.wait(50);

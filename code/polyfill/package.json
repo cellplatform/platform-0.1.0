@@ -1,0 +1,18 @@
+{
+  "name": "@platform/polyfill",
+  "version": "0.0.1",
+  "description": "Standard JS polyfills.",
+  "main": "polyfill.js",
+  "scripts": {
+    "test": "echo no-op"
+  },
+  "dependencies": {
+    "core-js": "3.6.4",
+    "regenerator-runtime": "0.13.3"
+  },
+  "files": [
+    "polyfill.js"
+  ],
+  "repository": "uiharness/platform",
+  "license": "MIT"
+}

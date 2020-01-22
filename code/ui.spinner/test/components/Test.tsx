@@ -1,4 +1,4 @@
-import '@platform/libs/polyfill';
+import '@platform/polyfill';
 import '../../node_modules/@platform/css/reset.css';
 
 import * as React from 'react';

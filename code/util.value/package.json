@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.value",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Helpers for working with, transforming, and formatting values.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,9 +12,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.1.5",
-    "@platform/types": "0.4.1",
-    "@platform/util.is": "0.0.106",
+    "@platform/libs": "0.2.0",
+    "@platform/types": "0.4.2",
+    "@platform/util.is": "0.0.107",
     "@types/semver": "6.2.0",
     "cuid": "2.1.8",
     "dayjs": "1.8.19",
@@ -22,10 +22,13 @@
   },
   "devDependencies": {
     "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.9"
+    "@platform/ts": "3.7.10"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"

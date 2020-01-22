@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.types",
-  "version": "0.7.77",
+  "version": "0.7.79",
   "description": "Abstract types for @platform/ui.datagrid",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,15 +12,18 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.4.6",
-    "@platform/react": "0.3.49"
+    "@platform/cell.types": "0.4.7",
+    "@platform/react": "0.3.51"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.9"
+    "@platform/ts": "3.7.10"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"

@@ -1,5 +1,5 @@
 import './styles';
-import '@platform/libs/polyfill';
+import '@platform/polyfill';
 
 import * as t from './types';
 export { t };

@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.animate",
-  "version": "0.0.67",
+  "version": "0.0.68",
   "description": "Programmatic animation.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,15 +12,18 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.1.5",
+    "@platform/libs": "0.2.0",
     "dynamics.js": "1.1.5"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.9"
+    "@platform/ts": "3.7.10"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"

@@ -1,2 +1,2 @@
-import '@platform/libs/polyfill';
+import '@platform/polyfill';
 export * from './libs';

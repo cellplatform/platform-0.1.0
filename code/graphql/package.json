@@ -1,6 +1,6 @@
 {
   "name": "@platform/graphql",
-  "version": "0.2.79",
+  "version": "0.2.81",
   "description": "Tools for working with GraphQL.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,10 +16,10 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/http": "0.10.3",
-    "@platform/http.types": "0.0.2",
-    "@platform/libs": "0.1.5",
-    "@platform/types": "0.4.1",
+    "@platform/http": "0.10.4",
+    "@platform/http.types": "0.0.3",
+    "@platform/libs": "0.2.0",
+    "@platform/types": "0.4.2",
     "apollo-cache-inmemory": "1.6.5",
     "apollo-client": "2.6.8",
     "apollo-link": "1.2.13",
@@ -30,14 +30,18 @@
     "graphql-tag": "2.10.1"
   },
   "devDependencies": {
+    "@platform/polyfill": "0.0.1",
     "@platform/test": "0.1.2",
-    "@uiharness/dev": "0.9.10",
-    "@uiharness/ui": "0.6.21",
+    "@uiharness/dev": "0.10.1",
+    "@uiharness/ui": "0.7.1",
     "apollo-server-micro": "2.9.16",
-    "electron": "7.1.8"
+    "electron": "7.1.9"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"

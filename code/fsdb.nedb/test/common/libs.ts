@@ -1,4 +1,4 @@
-import '@platform/libs/polyfill';
+import '@platform/polyfill';
 
 export { css, color } from '@platform/react';
 export { Button, ObjectView, CommandShell, CommandState, Command, Hr } from '@uiharness/ui';

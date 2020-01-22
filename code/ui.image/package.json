@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.image",
-  "version": "0.2.23",
+  "version": "0.2.25",
   "description": "Image related components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,18 +15,22 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.3.49",
-    "@platform/ui.icon": "0.0.113",
+    "@platform/react": "0.3.51",
+    "@platform/ui.icon": "0.0.115",
     "gravatar-url": "3.1.0",
     "react-icons": "3.8.0"
   },
   "devDependencies": {
-    "@uiharness/dev": "0.9.10",
-    "@uiharness/ui": "0.6.21",
-    "electron": "7.1.8"
+    "@platform/polyfill": "0.0.1",
+    "@uiharness/dev": "0.10.1",
+    "@uiharness/ui": "0.7.1",
+    "electron": "7.1.9"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"
