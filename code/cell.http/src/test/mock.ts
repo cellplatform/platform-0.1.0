@@ -53,7 +53,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
   const router = app.router;
   const service = await app.start({ port, silent: true });
 
-  const urls = Schema.url(`localhost:${port}`);
+  const urls = Schema.urls(`localhost:${port}`);
   const host = urls.host;
   const client = Client.create(urls.origin);
 

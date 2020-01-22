@@ -5,7 +5,7 @@ import * as t from './types';
  * URL generator.
  */
 export function urls(host: string) {
-  const urls = Schema.url(host);
+  const urls = Schema.urls(host);
 
   const api = {
     ns(nsUri: string) {

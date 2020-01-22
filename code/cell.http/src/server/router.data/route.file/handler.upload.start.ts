@@ -48,7 +48,7 @@ export async function uploadFileStart(args: {
       method: 'POST',
       filename,
       uri: fileUri,
-      url: fs.type === 'LOCAL' ? Schema.url(host).local.fs.toString() : presignedPost.path,
+      url: fs.type === 'LOCAL' ? Schema.urls(host).local.fs.toString() : presignedPost.path,
       props: presignedPost.props,
     };
 

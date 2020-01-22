@@ -13,7 +13,7 @@ export class Schema {
   public static slug = slug;
   public static hash = hash;
 
-  public static url = (host: string | number) => Urls.create(host);
+  public static urls = (host: string | number) => Urls.create(host);
   public static ns = (id: string) => new NsSchema({ id });
 
   public static query = {
