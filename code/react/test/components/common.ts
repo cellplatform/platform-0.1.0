@@ -1,4 +1,4 @@
-import '@platform/libs/polyfill';
+import '@platform/polyfill';
 
 export * from '../../src/common';
 export { Button, ObjectView, Hr } from '@uiharness/ui';

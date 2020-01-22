@@ -1,5 +1,5 @@
 import '../../node_modules/@platform/css/reset.css';
-import '@platform/libs/polyfill';
+import '@platform/polyfill';
 
 export * from '../../src';
 export * from '../../src/common';
