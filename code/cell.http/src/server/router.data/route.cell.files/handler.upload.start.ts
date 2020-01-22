@@ -16,7 +16,7 @@ export async function uploadCellFilesStart(args: {
   const ns = cellUriParts.ns;
   const sendChanges = defaultValue(args.changes, true);
 
-  const seconds = body.seconds;
+  const seconds = util.toSeconds(body.expires);
   const fileDefs = body.files || [];
   if (fileDefs.length === 0) {
     const err = new Error(`No file details posted in the body for [${cellUri}]`);

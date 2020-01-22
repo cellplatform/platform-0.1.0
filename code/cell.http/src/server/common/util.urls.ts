@@ -1,5 +1,6 @@
 import { Schema } from './libs';
 import * as t from './types';
+import { toSeconds } from './util.helpers';
 
 /**
  * URL generator.
@@ -36,7 +37,7 @@ export function urls(host: string) {
         files: {
           urls(
             links: t.ICellData['links'],
-            options: { seconds?: number } = {},
+            options: { expires?: string } = {},
           ): t.IResGetCellFiles['urls'] {
             const builder = urls.cell(cellUri);
             const files = Object.keys(links || {})
@@ -47,13 +48,15 @@ export function urls(host: string) {
                 const { hash, uri } = Schema.file.links.parseLink(value);
                 const { path, ext } = Schema.file.links.parseKey(key);
 
-                const DEFAULT_MAX = 3600; // Expire in 1-hour.
-                const seconds = Math.min(DEFAULT_MAX, options.seconds || DEFAULT_MAX);
+                let expires = options.expires || '1h';
+                const seconds = toSeconds(expires);
+                expires = typeof seconds === 'string' && seconds > 3600 ? '1h' : expires;
 
                 const url = builder.file
                   .byFileUri(uri, ext)
-                  .query({ hash, seconds })
+                  .query({ hash, expires })
                   .toString();
+
                 acc.push({ uri, path, url });
                 return acc;
               }, [] as t.IResGetCellFilesFileUrl[]);

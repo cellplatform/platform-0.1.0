@@ -157,7 +157,7 @@ export type IResGetCellFilesFileUrl = {
  */
 export type IReqPostCellFilesUploadStartBody = {
   files: IReqPostCellUploadFile[];
-  seconds?: number; // Expires.
+  expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
 };
 export type IReqPostCellUploadFile = {
   filename: string;
