@@ -5,11 +5,11 @@ import * as t from './types';
  * URL generator.
  */
 export function urls(host: string) {
-  const url = Schema.url(host);
+  const urls = Schema.url(host);
 
   const api = {
     ns(nsUri: string) {
-      const ns = url.ns(nsUri).info;
+      const ns = urls.ns(nsUri).info;
       return {
         get urls(): t.IResGetNsUrls {
           return {
@@ -22,11 +22,11 @@ export function urls(host: string) {
     cell(cellUri: string) {
       return {
         get info() {
-          return url.cell(cellUri).info.toString();
+          return urls.cell(cellUri).info.toString();
         },
 
         get urls(): t.IResGetCellUrls {
-          const builder = url.cell(cellUri);
+          const builder = urls.cell(cellUri);
           return {
             cell: builder.info.toString(),
             files: builder.files.list.toString(),
@@ -38,7 +38,7 @@ export function urls(host: string) {
             links: t.ICellData['links'],
             options: { seconds?: number } = {},
           ): t.IResGetCellFiles['urls'] {
-            const builder = url.cell(cellUri);
+            const builder = urls.cell(cellUri);
             const files = Object.keys(links || {})
               .map(key => ({ key, value: (links || {})[key] }))
               .filter(({ value }) => Schema.uri.is.file(value))
@@ -47,15 +47,11 @@ export function urls(host: string) {
                 const { hash, uri } = Schema.file.links.parseLink(value);
                 const { path, ext } = Schema.file.links.parseKey(key);
 
-                const fileUri = Schema.uri.parse<t.IFileUri>(uri).parts;
-                let filename = `${fileUri.file}`;
-                filename = ext ? `${filename}.${ext}` : filename;
-
                 const DEFAULT_MAX = 3600; // Expire in 1-hour.
                 const seconds = Math.min(DEFAULT_MAX, options.seconds || DEFAULT_MAX);
 
                 const url = builder.file
-                  .byName(filename)
+                  .byFileUri(uri, ext)
                   .query({ hash, seconds })
                   .toString();
                 acc.push({ uri, path, url });
@@ -72,7 +68,7 @@ export function urls(host: string) {
     },
 
     file(fileUri: string, hash?: string): t.IResGetFileUrls {
-      const fileUrl = url.file(fileUri);
+      const fileUrl = urls.file(fileUri);
       const download = fileUrl.download.query({ hash });
       return {
         info: fileUrl.info.toString(),
