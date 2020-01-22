@@ -38,14 +38,14 @@ describe('duration', () => {
     expect(Duration.create(-0.000001).msec).to.eql(-1);
   });
 
-  it('isValid: true', () => {
-    expect(time.duration(123).isValid).to.eql(true);
-    expect(time.duration(0).isValid).to.eql(true);
+  it('ok: true', () => {
+    expect(time.duration(123).ok).to.eql(true);
+    expect(time.duration(0).ok).to.eql(true);
   });
 
-  it('isValid: false', () => {
-    expect(time.duration(-1).isValid).to.eql(false);
-    expect(time.duration(-0.001).isValid).to.eql(false);
+  it('ok: false', () => {
+    expect(time.duration(-1).ok).to.eql(false);
+    expect(time.duration(-0.001).ok).to.eql(false);
   });
 
   it('parse', () => {

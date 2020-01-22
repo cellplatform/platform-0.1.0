@@ -1,5 +1,5 @@
 export type IDuration = {
-  isValid: boolean;
+  ok: boolean;
   msec: number;
   sec: number;
   min: number;

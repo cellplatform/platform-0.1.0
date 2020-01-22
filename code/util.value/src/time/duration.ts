@@ -119,7 +119,7 @@ export class Duration implements t.IDuration {
    * [Properties]
    */
 
-  public get isValid() {
+  public get ok() {
     return this.msec >= 0;
   }
 
