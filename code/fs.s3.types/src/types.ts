@@ -52,14 +52,14 @@ export type S3SignedUrlGetObjectArgs = S3SignedUrlGetObjectOptions & {
   operation: 'getObject';
 };
 export type S3SignedUrlGetObjectOptions = {
-  seconds?: number;
+  expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
 };
 
 export type S3SignedUrlPutObjectArgs = S3SignedUrlPutObjectOptions & {
   operation: 'putObject';
 };
 export type S3SignedUrlPutObjectOptions = {
-  seconds?: number;
+  expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
   body?: Buffer;
   md5?: string;
 };
@@ -120,7 +120,7 @@ export type S3SignedPostOptions = {
   contentType?: string;
   contentDisposition?: string;
   size?: S3ByteSizeRange;
-  seconds?: number;
+  expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
 };
 
 export type S3SignedPostUrl = {

@@ -3,6 +3,7 @@ import { parse as parseUrl } from 'url';
 import { AWS, toMimetype, value, id } from './libs';
 import * as t from './types';
 import { formatBucket, formatKeyPath } from './util.format';
+import { toSeconds } from './util.time';
 
 /**
  * Derive the endpoint to a bucket.
@@ -41,12 +42,11 @@ export function toPresignedUrl(args: {
     throw new Error(`Object key path must be specified for pre-signed URLs.`);
   }
 
-  const { operation, seconds } = args.options;
-
+  const { operation, expires } = args.options;
   const params: any = {
     Bucket: bucket,
     Key: path,
-    Expires: seconds,
+    Expires: toSeconds(expires),
   };
 
   if (operation === 'putObject') {
@@ -62,7 +62,7 @@ export function toPresignedUrl(args: {
  * Generate a pre-signed URL (POST).
  */
 export function toPresignedPost(args: t.S3SignedPostArgs & { s3: AWS.S3 }) {
-  const { s3, seconds, acl, bucket } = args;
+  const { s3, expires, acl, bucket } = args;
 
   const key = formatKeyPath(args.key);
   if (!key) {
@@ -86,7 +86,7 @@ export function toPresignedPost(args: t.S3SignedPostArgs & { s3: AWS.S3 }) {
 
   // Generate the presigned URL.
   const post = s3.createPresignedPost({
-    Expires: seconds,
+    Expires: toSeconds(expires),
     Bucket: bucket,
     Conditions,
     Fields: value.deleteUndefined(fields),

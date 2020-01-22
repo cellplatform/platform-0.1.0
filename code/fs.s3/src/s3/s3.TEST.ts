@@ -39,7 +39,7 @@ describe('s3', () => {
 
     it('url.signedGet', () => {
       const res1 = s3.url('foo', '//tmp/file.png').signedGet();
-      const res2 = s3.url('foo', 'tmp/file.png').signedGet({ seconds: 5 });
+      const res2 = s3.url('foo', 'tmp/file.png').signedGet({ expires: '5s' });
 
       const url1 = parseUrl(res1, true);
       const url2 = parseUrl(res2, true);
@@ -52,7 +52,7 @@ describe('s3', () => {
 
     it('url.signedPut', () => {
       const res1 = s3.url('foo', '//tmp/file.png').signedPut();
-      const res2 = s3.url('foo', 'file.png').signedPut({ seconds: 5 });
+      const res2 = s3.url('foo', 'file.png').signedPut({ expires: '5s' });
 
       const url1 = parseUrl(res1, true);
       const url2 = parseUrl(res2, true);
@@ -132,9 +132,9 @@ describe('s3', () => {
           expect(query.Signature).to.match(/=$/);
           expect(typeof query.Expires).to.eql('string');
 
-          if (options.seconds !== undefined) {
+          if (options.expires !== undefined) {
             const args = { ...options };
-            delete args.seconds;
+            delete args.expires;
             const urlDefault = parseUrl(bucket.url(path).signedGet(args), true);
             expect(query.Expires).to.not.eql(urlDefault.query.Expires); // Explicit expiry differs from default.
           }
@@ -144,7 +144,7 @@ describe('s3', () => {
         test('foo/image.png', { operation: 'getObject' });
         test('/foo/image.png', { operation: 'getObject' });
         test('///foo/image.png', { operation: 'getObject' });
-        test('image.png', { operation: 'getObject', seconds: 5 });
+        test('image.png', { operation: 'getObject', expires: '5s' });
       });
 
       it('putObject', () => {
@@ -162,9 +162,9 @@ describe('s3', () => {
           expect(query.Signature).to.match(/=$/);
           expect(typeof query.Expires).to.eql('string');
 
-          if (options.seconds !== undefined) {
+          if (options.expires !== undefined) {
             const args = { ...options };
-            delete args.seconds;
+            delete args.expires;
             const urlDefault = parseUrl(bucket.url(path).signedGet(args), true);
             expect(query.Expires).to.not.eql(urlDefault.query.Expires); // Explicit expiry differs from default.
           }
@@ -184,7 +184,7 @@ describe('s3', () => {
         test('foo/image.png', { operation: 'putObject' });
         test('/foo/image.png', { operation: 'putObject' });
         test('///foo/image.png', { operation: 'putObject' });
-        test('image.png', { operation: 'putObject', seconds: 5 });
+        test('image.png', { operation: 'putObject', expires: '5s' });
 
         test('image.png', { operation: 'putObject', body: Buffer.from('foobar') });
         test('image.png', { operation: 'putObject', md5: '12345678==' });
