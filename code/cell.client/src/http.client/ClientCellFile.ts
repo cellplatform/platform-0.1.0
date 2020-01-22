@@ -55,9 +55,9 @@ export class ClientCellFile implements t.IClientCellFile {
        * Retrieve the info about the given file.
        */
       async download(
-        options: { seconds?: number } = {},
+        options: { expires?: string } = {},
       ): Promise<t.IClientResponse<ReadableStream>> {
-        const { seconds } = options;
+        const { expires } = options;
         const linkRes = await self.getCellLinkByFilename(filename);
         if (linkRes.error) {
           return linkRes.error as any;
@@ -74,7 +74,7 @@ export class ClientCellFile implements t.IClientCellFile {
 
         const url = parent.url.file
           .byName(linkName)
-          .query({ hash, seconds })
+          .query({ hash, expires })
           .toString();
 
         // Request the download.
