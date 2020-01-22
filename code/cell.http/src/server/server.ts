@@ -56,17 +56,10 @@ export function init(args: {
        * - Cache-Control: only for data API, allow caching for the UI routes.
        */
 
-      // Prepare the "Cell|OS" HTTP header.
-      const versions = constants.getVersions();
-      const version = {
-        server: versions.toVersion(versions.server),
-        schema: versions.toVersion(versions.schema),
-      };
-      const os = `Cell|OS; cell.http@${version.server}; cell.schema@${version.schema}`;
-
+      const { system } = constants.getSystem();
       changes.headers = {
         ...headers,
-        System: os,
+        system,
         'cache-control': 'no-cache', // Ensure the data-api responses reflect current state of data.
         // 'Cache-Control': 's-maxage=1, stale-while-revalidate', // See https://zeit.co/docs/v2/network/caching/#stale-while-revalidate
       };

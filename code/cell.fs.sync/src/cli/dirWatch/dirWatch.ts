@@ -1,10 +1,10 @@
 import { t } from '../common';
-import { syncDir } from '../syncDir';
+import { syncDir } from '../dirSync';
 
 /**
  * Synchronise folder in watch mode.
  */
-export async function syncWatch(args: { dir: string; keyboard?: t.ICmdKeyboard }) {
+export async function dirWatch(args: { dir: string; keyboard?: t.ICmdKeyboard }) {
   const { dir, keyboard } = args;
   await syncDir({
     dir,

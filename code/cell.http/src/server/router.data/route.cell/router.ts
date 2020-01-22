@@ -15,7 +15,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   router.get(routes.CELL.NS, async req => {
     try {
       const params = req.params as t.IUrlParamsNs;
-      const ns = Schema.url(req.host).ns(params.ns).info;
+      const ns = Schema.urls(req.host).ns(params.ns).info;
       const url = ns.query(req.query).toString();
       return req.redirect(url);
     } catch (err) {

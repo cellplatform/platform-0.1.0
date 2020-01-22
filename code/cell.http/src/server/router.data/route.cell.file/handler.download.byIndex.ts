@@ -8,9 +8,9 @@ export async function downloadFileByIndex(args: {
   cellUri: string;
   index: number;
   matchHash?: string;
-  seconds?: number;
+  expires?: string;
 }) {
-  const { host, db, fs, cellUri, index, matchHash, seconds } = args;
+  const { host, db, fs, cellUri, index, matchHash, expires } = args;
 
   // Retreive the [cell] info.
   const cell = await models.Cell.create({ db, uri: cellUri }).ready;
@@ -28,5 +28,5 @@ export async function downloadFileByIndex(args: {
   const filename = Schema.file.links.parseKey(cellLinkKey).path;
 
   // Run the "file:" download handler.
-  return downloadFile({ host, db, fs, fileUri, filename, matchHash, seconds });
+  return downloadFile({ host, db, fs, fileUri, filename, matchHash, expires });
 }

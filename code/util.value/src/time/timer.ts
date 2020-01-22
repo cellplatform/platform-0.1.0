@@ -1,14 +1,5 @@
-import * as day from 'dayjs';
-import { value as valueUtil } from '../value';
+import { Duration } from './duration';
 import * as t from './types';
-
-const { round } = valueUtil;
-
-const MSEC = 1;
-const SEC = MSEC * 1000;
-const MIN = SEC * 60;
-const HOUR = MIN * 60;
-const DAY = HOUR * 24;
 
 /**
  * Starts a timer.
@@ -35,88 +26,9 @@ export function elapsed(
   from: t.DateInput,
   options: { to?: t.DateInput; round?: number } = {},
 ): t.IDuration {
-  const start = to.date(from);
-  const end = options.to ? to.date(options.to) : new Date();
+  const start = Duration.to.date(from);
+  const end = options.to ? Duration.to.date(options.to) : new Date();
   const msec = end.getTime() - start.getTime();
-  const defaultPrecision = options.round === undefined ? 1 : options.round;
-  const duration: t.IDuration = {
-    get msec() {
-      return msec;
-    },
-    get sec() {
-      return to.sec(msec, defaultPrecision);
-    },
-    get min() {
-      return to.min(msec, defaultPrecision);
-    },
-    get hour() {
-      return to.hour(msec, defaultPrecision);
-    },
-    get day() {
-      return to.day(msec, defaultPrecision);
-    },
-    toString(unit?: t.TimeUnit) {
-      const format = (unit: t.TimeUnit, round: number = 0) => {
-        switch (unit) {
-          case 'ms':
-          case 'msec':
-            return `${msec}ms`;
-
-          case 's':
-          case 'sec':
-            return `${to.sec(msec, round)}s`;
-
-          case 'm':
-          case 'min':
-            // const min = to.min(msec)
-            return `${to.min(msec, round)}m`;
-
-          case 'h':
-          case 'hour':
-            return `${to.hour(msec, round)}h`;
-
-          case 'd':
-          case 'day':
-            return `${to.day(msec, round)}d`;
-
-          default:
-            throw new Error(`Unit '${unit}' not supported `);
-        }
-      };
-
-      if (unit !== undefined) {
-        return format(unit);
-      }
-
-      if (msec < SEC) {
-        return format('ms');
-      }
-
-      if (msec < MIN) {
-        return format('s');
-      }
-
-      if (msec < HOUR) {
-        return format('m');
-      }
-
-      if (msec < DAY) {
-        return format('h');
-      }
-
-      return format('d');
-    },
-  };
-  return duration;
+  const precision = options.round === undefined ? 1 : options.round;
+  return Duration.create(msec, { round: precision });
 }
-
-/**
- * [Helpers]
- */
-const to = {
-  sec: (msec: number, precision: number) => round(msec / 1000, precision),
-  min: (msec: number, precision: number) => round(msec / 1000 / 60, precision),
-  hour: (msec: number, precision: number) => round(msec / 1000 / 60 / 60, precision),
-  day: (msec: number, precision: number) => round(msec / 1000 / 60 / 60 / 24, precision),
-  date: (input: t.DateInput) => day(input).toDate(),
-};

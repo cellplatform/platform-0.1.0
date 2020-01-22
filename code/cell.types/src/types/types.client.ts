@@ -53,7 +53,9 @@ export type IClientCellFile = {
 
 export type IClientCellFileByName = {
   info(): t.IClientAsync<t.IResGetFile>;
-  download(options?: { seconds?: number }): t.IClientAsync<ReadableStream>;
+  download(options?: {
+    expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
+  }): t.IClientAsync<ReadableStream>;
 };
 
 export type IClientCellFiles = {

@@ -15,7 +15,7 @@ export class Client implements t.IClient {
    * [Lifecycle]
    */
   private constructor(args: { host?: string | number }) {
-    this.urls = Schema.url(args.host ?? 8080);
+    this.urls = Schema.urls(args.host ?? 8080);
     this.origin = this.urls.origin;
 
     const VERSION = constants.VERSION;

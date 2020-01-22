@@ -211,6 +211,24 @@ describe('Urls', () => {
       expect(fn).to.throw();
     });
 
+    it('file.byFileUri', () => {
+      const test = (fileUri: string, fileExtension: string | undefined, expected: string) => {
+        const res = url.cell(URI).file.byFileUri(fileUri, fileExtension);
+        expect(res.toString()).to.eql(expected);
+      };
+
+      test('file:foo:123', 'png', 'http://localhost/cell:foo!A1/file/123.png');
+      test('  file:foo:123  ', '  png  ', 'http://localhost/cell:foo!A1/file/123.png');
+      test('file:foo:123', '', 'http://localhost/cell:foo!A1/file/123');
+      test('file:foo:123', '  ', 'http://localhost/cell:foo!A1/file/123');
+      test('file:foo:123', undefined, 'http://localhost/cell:foo!A1/file/123');
+    });
+
+    it('file.byFileUri (throws)', () => {
+      expect(() => url.cell(URI).file.byFileUri('cell:foo!A1')).to.throw(); // Not a [file:] URI.
+      expect(() => url.cell(URI).file.byFileUri('')).to.throw();
+    });
+
     it('file.byIndex', () => {
       const res1 = url.cell(URI).file.byIndex(5);
       const res2 = url.cell({ ns: 'foo', key: 'A1' }).file.byIndex('  5  ');

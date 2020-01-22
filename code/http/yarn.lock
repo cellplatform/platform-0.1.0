@@ -46,13 +46,13 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http.types@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.1.tgz#580f30bf32c1fa658bc5898d312431bb53b3b873"
-  integrity sha512-Lmv6riaVnlHrHb4zVqZ5+VV9QviYT1GB5aSZWJ83DIJFQPnIqeqisdiW4CIeVMEND3pVd9HiLJiggRuyQ0MYNA==
+"@platform/http.types@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.2.tgz#4ae5954373db1b7a48720c2df163a237edad5dac"
+  integrity sha512-Gb9ZetWMk9PBeZCbB8ZaB5rEuJ8hRlfuoARj9KLMI////jPp2wq1lDTEv5jFhlWwk9woMMPgurfJWnU/CMyHlg==
   dependencies:
     "@platform/libs" "0.1.5"
-    "@platform/types" "0.4.0"
+    "@platform/types" "0.4.1"
 
 "@platform/libs@0.1.5":
   version "0.1.5"
@@ -101,23 +101,23 @@
     "@platform/libs" "0.1.5"
     "@platform/ts.libs" "3.7.3"
 
-"@platform/types@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.0.tgz#93fb9606e7e889c8810df2f85e4ec41a0fd54ac2"
-  integrity sha512-fT//XaToCyytmuRxjvIVqPV+Lm5SG5XoH4j1/HzFofmEOqC650XjzXCDzUhtSkEzblyQFengPgw7m5jh8S5yCg==
+"@platform/types@0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.1.tgz#cf34898a9f06693c1299f470f02f57270608320a"
+  integrity sha512-dUEZGLxN/2+p2cYa27ZWerXSyUjUSI+5wdAkSyd9jak+SZ0PGB1kC24iXcLWPacdKW6wxFiyzcHEZhVG/Evazg==
 
 "@platform/util.is@0.0.106":
   version "0.0.106"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.106.tgz#95d79ca3ba69dec1a8db49a5aa02e7d3a3161db1"
   integrity sha512-9gIU2DLsb1LyxCSko0riENpxV58/j2rLHLotnKQdsHCcf6eohr1ObhPRwEuJz+Kw1Fucz+oh50RGmAVYescZFw==
 
-"@platform/util.value@0.6.15":
-  version "0.6.15"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.6.15.tgz#288fdfe273bf239c1bbf3e4e1d4b5cbb6a62afe1"
-  integrity sha512-O4gLTO/SBd4FV1J1s7we82+IFp1ieKTT3JtCeFXEvcOoKA6ZchcLjRBLid+Z09uINd5iMJqqmvVgeeDDoWvxHg==
+"@platform/util.value@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.0.tgz#042d7bb3c9d0df062dcbf0227b2d28f694e08e20"
+  integrity sha512-p0eDCdFQlIgH74vlpQYCr5OraFjSoBpnjXGmf4ki6txiTaN1lSydeXA2caqkszUxYj8SzPBke2UOK3TMAEBy8A==
   dependencies:
     "@platform/libs" "0.1.5"
-    "@platform/types" "0.4.0"
+    "@platform/types" "0.4.1"
     "@platform/util.is" "0.0.106"
     "@types/semver" "6.2.0"
     cuid "2.1.8"

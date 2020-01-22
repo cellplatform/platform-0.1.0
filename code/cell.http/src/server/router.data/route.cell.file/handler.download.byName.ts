@@ -8,9 +8,9 @@ export async function downloadFileByName(args: {
   cellUri: string;
   filename: string;
   matchHash?: string;
-  seconds?: number;
+  expires?: string;
 }) {
-  const { db, fs, cellUri, filename, matchHash, host, seconds } = args;
+  const { db, fs, cellUri, filename, matchHash, host, expires } = args;
 
   const fileid = filename.split('.')[0];
   const ns = Schema.uri.parse<t.ICellUri>(cellUri).parts.ns;
@@ -23,5 +23,5 @@ export async function downloadFileByName(args: {
   }
 
   // Run the "file:" download handler.
-  return downloadFile({ host, db, fs, fileUri, filename, matchHash, seconds });
+  return downloadFile({ host, db, fs, fileUri, filename, matchHash, expires });
 }

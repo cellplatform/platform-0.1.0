@@ -28,6 +28,7 @@ export type ITime = {
   now: IDate;
   utc(input?: Date | number): IDate;
   timer(start?: Date, options?: { round?: number }): ITimer;
+  duration(msec: number | string, options?: { round?: number }): IDuration;
 };
 
 export type IDate = {

@@ -157,7 +157,7 @@ export type IResGetCellFilesFileUrl = {
  */
 export type IReqPostCellFilesUploadStartBody = {
   files: IReqPostCellUploadFile[];
-  seconds?: number; // Expires.
+  expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
 };
 export type IReqPostCellUploadFile = {
   filename: string;
@@ -210,18 +210,10 @@ export type IResDeleteCellFilesData = {
  */
 
 export type IResGetSysInfo = {
+  provider: string;
   system: string;
-  domain: string;
+  host: string;
   region: string;
   time: string;
-  version: {
-    hash: string;
-    schema: string;
-    types: string;
-    server: string;
-  };
-  deployedAt?: {
-    datetime: string;
-    timestamp: number;
-  };
+  deployedAt?: { date: string; time: number };
 };

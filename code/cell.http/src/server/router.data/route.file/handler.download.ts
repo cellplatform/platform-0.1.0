@@ -8,9 +8,9 @@ export const downloadFile = async (args: {
   fileUri: string;
   filename?: string;
   matchHash?: string;
-  seconds?: number;
+  expires?: string;
 }) => {
-  const { db, fs, fileUri, filename, host, matchHash, seconds } = args;
+  const { db, fs, fileUri, filename, host, matchHash, expires } = args;
 
   try {
     // Pull the file meta-data.
@@ -43,7 +43,7 @@ export const downloadFile = async (args: {
 
     // Redirect if the location is an S3 link.
     if (fs.type === 'S3') {
-      const data = fs.resolve(fileUri, { type: 'SIGNED/get', seconds }).path;
+      const data = fs.resolve(fileUri, { type: 'SIGNED/get', expires }).path;
       return { status: 307, data };
     }
 

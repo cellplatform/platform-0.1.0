@@ -1,13 +1,13 @@
 import { defaultValue, log, promptConfig, t } from '../common';
-import { runSync } from './syncDir.sync';
-import { watchDir } from './syncDir.watch';
+import { runSync } from './dirSync.sync';
+import { watchDir } from './dirSync.watch';
 
 const MAX_PAYLOAD_BYTES = 4 * 1000000; // 4MB
 
 /**
  * Synchronize a folder with the cloud.
  */
-export async function syncDir(args: {
+export async function dirSync(args: {
   dir: string;
   force: boolean;
   silent: boolean;

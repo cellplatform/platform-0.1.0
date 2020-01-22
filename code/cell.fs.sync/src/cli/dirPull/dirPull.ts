@@ -1,5 +1,5 @@
 import { cli, Client, defaultValue, fs, log, promptConfig, t } from '../common';
-import { getPayload } from '../syncDir';
+import { getPayload } from '../dirSync';
 import * as util from '../util';
 
 const gray = log.gray;
@@ -7,7 +7,7 @@ const gray = log.gray;
 /**
  * Pull folder from remote.
  */
-export async function pull(args: { dir: string; silent?: boolean }) {
+export async function dirPull(args: { dir: string; silent?: boolean }) {
   const { dir, silent = false } = args;
 
   // Retrieve (or build) configuration file the directory.

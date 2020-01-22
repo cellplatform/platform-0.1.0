@@ -1,8 +1,8 @@
 import { t } from '../common';
-import { syncDir } from './syncDir';
+import { dirSync } from './dirSync';
 
-export { getPayload } from './syncDir.payload';
-export { syncDir };
+export { getPayload } from './dirSync.payload';
+export { dirSync as syncDir };
 
 export type ISyncDirArgs = {
   force: boolean;
@@ -19,7 +19,7 @@ export const init: t.CmdPluginsInit = cli => {
     //      the CLI from stopping after completing its operation.
     const watch = argv.watch;
     const keyboard = watch ? e.keyboard : undefined;
-    await syncDir({
+    await dirSync({
       dir: process.cwd(),
       silent: argv.silent,
       force: argv.force,
@@ -31,7 +31,7 @@ export const init: t.CmdPluginsInit = cli => {
 
   cli
     .command<ISyncDirArgs>({
-      name: 'syncdir',
+      name: 'dirsync',
       alias: 's',
       description: 'Synchronise local folder with remote',
       handler,

@@ -130,7 +130,7 @@ export class Urls implements t.IUrls {
       throw new Error(err);
     }
 
-    return {
+    const api = {
       uri,
 
       /**
@@ -194,6 +194,16 @@ export class Urls implements t.IUrls {
           return toPath<Q>(`/cell:${ns}!${key}/file/${filename}`);
         },
 
+        byFileUri(fileUri: string, fileExtension?: string) {
+          fileExtension = (fileExtension || '').trim();
+          const uri = Uri.parse<t.IFileUri>(fileUri).parts;
+          if (uri.type !== 'FILE') {
+            throw new Error(`The given URI [${fileUri}] is not of type [file:]`);
+          }
+          const ext = (fileExtension || '').trim();
+          return api.file.byName(`${uri.file}${ext ? `.${ext}` : ''}`);
+        },
+
         /**
          * Example: /cell:foo!A1/files/0
          */
@@ -207,6 +217,8 @@ export class Urls implements t.IUrls {
         },
       },
     };
+
+    return api;
   }
 
   /**

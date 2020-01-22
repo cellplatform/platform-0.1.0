@@ -5,9 +5,9 @@ export async function listCellFiles(args: {
   fs: t.IFileSystem;
   cellUri: string;
   host: string;
-  seconds?: number; // Links expire.
+  expires?: string; // Links expire.
 }) {
-  const { db, host, seconds } = args;
+  const { db, host, expires } = args;
 
   // Prepare URIs.
   const cellUri = Schema.uri.parse<t.ICellUri>(args.cellUri);
@@ -20,7 +20,7 @@ export async function listCellFiles(args: {
   // Construct links object.
   const urlBuilder = util.urls(host).cell(cellUri.toString());
   const cellLinks = cell.props.links || {};
-  const urls = urlBuilder.files.urls(cellLinks, { seconds });
+  const urls = urlBuilder.files.urls(cellLinks, { expires });
 
   // Prepare files map.
   const files = (await getCellFiles({ ns, cellLinks })).map;

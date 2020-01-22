@@ -1,18 +1,18 @@
 import { t } from '../common';
-import { pull } from './pull';
+import { dirPull } from './dirPull';
 
 export type IPullArgs = {};
 
 export const init: t.CmdPluginsInit = cli => {
   const handler: t.CmdPluginHandler<IPullArgs> = async e => {
     const { argv } = e;
-    await pull({
+    await dirPull({
       dir: process.cwd(),
     });
   };
 
   cli.command<IPullArgs>({
-    name: 'pull',
+    name: 'dirpull',
     description: 'Pull folder from remote',
     handler,
   });

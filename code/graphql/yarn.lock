@@ -1126,24 +1126,24 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http.types@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.1.tgz#580f30bf32c1fa658bc5898d312431bb53b3b873"
-  integrity sha512-Lmv6riaVnlHrHb4zVqZ5+VV9QviYT1GB5aSZWJ83DIJFQPnIqeqisdiW4CIeVMEND3pVd9HiLJiggRuyQ0MYNA==
+"@platform/http.types@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.2.tgz#4ae5954373db1b7a48720c2df163a237edad5dac"
+  integrity sha512-Gb9ZetWMk9PBeZCbB8ZaB5rEuJ8hRlfuoARj9KLMI////jPp2wq1lDTEv5jFhlWwk9woMMPgurfJWnU/CMyHlg==
   dependencies:
     "@platform/libs" "0.1.5"
-    "@platform/types" "0.4.0"
+    "@platform/types" "0.4.1"
 
-"@platform/http@0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.10.1.tgz#6e2c762829bf1b5828cc29e739fd5cb3d0ee10e5"
-  integrity sha512-8wK/yqeywZqvp5hdfXRbKv24jxddbP9sXecuAj5uTlgaZWESe3wQ5NSi+3z3lkef9SfA1HxxtYtQwsZsJ5PTbA==
+"@platform/http@0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.10.3.tgz#63d67647d3989c7ef4535dc4c609ff5e251a8437"
+  integrity sha512-Gvr6aWc821t0h9+BjTq7zoQefCx7lCPCRygzZViaQ3R71VrlyuyMiJgXzvdNTQRMrFblqwpQIL9ceDqsDL4k0Q==
   dependencies:
     "@platform/fs" "0.5.3"
-    "@platform/http.types" "0.0.1"
+    "@platform/http.types" "0.0.2"
     "@platform/libs" "0.1.5"
-    "@platform/types" "0.4.0"
-    "@platform/util.value" "0.6.15"
+    "@platform/types" "0.4.1"
+    "@platform/util.value" "0.7.0"
     "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
 
@@ -1264,10 +1264,10 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.2.5.tgz#0320f7e58303cab6a2dff40ede5373e90b4f1eb6"
   integrity sha512-YamJlalMExgpN/jeCZZwiIBRttnpd7suadKV9BuQn/P6roiqkAnPegHzryo9XnrTub3NOxo1y5u2eFIaxIiAGg==
 
-"@platform/types@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.0.tgz#93fb9606e7e889c8810df2f85e4ec41a0fd54ac2"
-  integrity sha512-fT//XaToCyytmuRxjvIVqPV+Lm5SG5XoH4j1/HzFofmEOqC650XjzXCDzUhtSkEzblyQFengPgw7m5jh8S5yCg==
+"@platform/types@0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.1.tgz#cf34898a9f06693c1299f470f02f57270608320a"
+  integrity sha512-dUEZGLxN/2+p2cYa27ZWerXSyUjUSI+5wdAkSyd9jak+SZ0PGB1kC24iXcLWPacdKW6wxFiyzcHEZhVG/Evazg==
 
 "@platform/ui.icon@0.0.98":
   version "0.0.98"
@@ -1374,19 +1374,6 @@
     dayjs "1.8.17"
     semver "6.3.0"
 
-"@platform/util.value@0.6.15":
-  version "0.6.15"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.6.15.tgz#288fdfe273bf239c1bbf3e4e1d4b5cbb6a62afe1"
-  integrity sha512-O4gLTO/SBd4FV1J1s7we82+IFp1ieKTT3JtCeFXEvcOoKA6ZchcLjRBLid+Z09uINd5iMJqqmvVgeeDDoWvxHg==
-  dependencies:
-    "@platform/libs" "0.1.5"
-    "@platform/types" "0.4.0"
-    "@platform/util.is" "0.0.106"
-    "@types/semver" "6.2.0"
-    cuid "2.1.8"
-    dayjs "1.8.19"
-    semver "7.1.1"
-
 "@platform/util.value@0.6.6":
   version "0.6.6"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.6.6.tgz#1668ba978545bc321a80eda07c114f6349ca6768"
@@ -1399,6 +1386,19 @@
     cuid "2.1.6"
     dayjs "1.8.17"
     semver "6.3.0"
+
+"@platform/util.value@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.0.tgz#042d7bb3c9d0df062dcbf0227b2d28f694e08e20"
+  integrity sha512-p0eDCdFQlIgH74vlpQYCr5OraFjSoBpnjXGmf4ki6txiTaN1lSydeXA2caqkszUxYj8SzPBke2UOK3TMAEBy8A==
+  dependencies:
+    "@platform/libs" "0.1.5"
+    "@platform/types" "0.4.1"
+    "@platform/util.is" "0.0.106"
+    "@types/semver" "6.2.0"
+    cuid "2.1.8"
+    dayjs "1.8.19"
+    semver "7.1.1"
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"

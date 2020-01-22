@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@platform/libs": "0.1.5",
-    "@types/chalk": "2.2.0",
     "@types/listr": "0.14.2",
     "ansi-regex": "5.0.0",
     "chalk": "3.0.0",
@@ -28,7 +27,9 @@
     "@types/ansi-regex": "5.0.0"
   },
   "files": [
-    "lib"
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "repository": "uiharness/platform",
   "license": "MIT"

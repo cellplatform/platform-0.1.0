@@ -7,7 +7,7 @@ export const getPayload: t.FsSyncGetPayload = async (args: t.IFsSyncGetPayloadAr
   const targetUri = config.target.uri;
   const host = config.data.host;
   const client = Client.create(host);
-  const urls = Schema.url(host);
+  const urls = Schema.urls(host);
   return buildPayload({
     dir,
     urls,
@@ -42,7 +42,7 @@ export async function buildPayload(args: {
   let remoteFiles: t.IClientFileData[] = [];
   const findRemote = (path: string) => remoteFiles.find(f => f.path === path);
 
-  const urls = Schema.url(client.origin);
+  const urls = Schema.urls(client.origin);
   const filesUrl = urls.cell(cellUri).files.list;
 
   const tasks = cli.tasks();
