@@ -56,7 +56,7 @@ describe('S3', () => {
 
     it('resolve (SIGNED/get)', () => {
       const fs = initS3();
-      const res = fs.resolve('file:foo:123', { type: 'SIGNED/get', seconds: 5 });
+      const res = fs.resolve('file:foo:123', { type: 'SIGNED/get', expires: '5m' });
       const url = parseUrl(res.path, true);
       expect(res.props).to.eql({});
       expect(url.host).to.eql('platform.sfo2.digitaloceanspaces.com');
@@ -66,7 +66,7 @@ describe('S3', () => {
 
     it('resolve (SIGNED/put)', () => {
       const fs = initS3();
-      const res = fs.resolve('file:foo:123', { type: 'SIGNED/put', seconds: 5 });
+      const res = fs.resolve('file:foo:123', { type: 'SIGNED/put', expires: '5m' });
       const url = parseUrl(res.path, true);
       expect(res.props).to.eql({});
       expect(url.host).to.eql('platform.sfo2.digitaloceanspaces.com');
@@ -76,7 +76,7 @@ describe('S3', () => {
 
     it('resolve (SIGNED/post)', () => {
       const fs = initS3();
-      const res = fs.resolve('file:foo:123', { type: 'SIGNED/post', seconds: 5 });
+      const res = fs.resolve('file:foo:123', { type: 'SIGNED/post', expires: '5m' });
       expect(res.path).to.eql('https://sfo2.digitaloceanspaces.com/platform');
       expect(res.props.bucket).to.eql('platform');
       expect(res.props.key).to.eql('tmp/test/ns.foo/123');
