@@ -240,7 +240,7 @@
   resolved "https://registry.yarnpkg.com/@platform/util.mimetype/-/util.mimetype-0.0.3.tgz#3153fb9ae6fb69b919f09b47b476b26eeb3b358e"
   integrity sha512-NWpjgIYHW8RkDb9wIpb5zQ8B1d4Vwlt0hRffTj/rmLizBMlaU3wv4vIg8zVww0+fDTdhSHC8AesM73dQchOrJg==
 
-"@platform/util.value@0.6.15":
+"@platform/util.value@0.6.15", "@platform/util.value@^0.6.15":
   version "0.6.15"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.6.15.tgz#288fdfe273bf239c1bbf3e4e1d4b5cbb6a62afe1"
   integrity sha512-O4gLTO/SBd4FV1J1s7we82+IFp1ieKTT3JtCeFXEvcOoKA6ZchcLjRBLid+Z09uINd5iMJqqmvVgeeDDoWvxHg==

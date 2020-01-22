@@ -38,6 +38,7 @@
     "@platform/libs": "0.1.5",
     "@platform/micro": "0.12.28",
     "@platform/types": "0.4.0",
+    "@platform/util.value": "0.6.15",
     "mime-types": "2.1.26"
   },
   "devDependencies": {
