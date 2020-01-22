@@ -1,5 +1,4 @@
-import { valueUtil, R, t } from '../common';
-import { css as glamorCss } from 'glamor';
+import { jss, R, t, valueUtil } from '../common';
 import { toEdges } from './util';
 
 export * from './util';
@@ -234,7 +233,7 @@ function convertMainAlignToFlex(token: string): string | undefined {
  * Format a flex css helper
  * Format: [<direction>]-<crossAlignment>-<mainAlignment>
  */
-function formatFlexPosition(key: string, value: string, target: React.CSSProperties) {
+function formatFlexPosition(key: string, value: string, target: t.CssProps) {
   let direction: 'row' | 'column' | undefined; // Assume horizontal
   let mainAlignment: string | undefined;
   let crossAlignment: string | undefined;
@@ -283,8 +282,8 @@ function formatFlexPosition(key: string, value: string, target: React.CSSPropert
 }
 
 export const transformStyle = (
-  style: React.CSSProperties | t.GlamorValue | t.Falsy = {},
-): React.CSSProperties | t.GlamorValue => {
+  style: t.CssProps | t.GlamorValue | t.Falsy = {},
+): t.CssProps | t.GlamorValue => {
   if (style == null) {
     return {};
   }
@@ -352,13 +351,11 @@ export const transformStyle = (
  * Helpers for constructing a CSS object.
  * NB: This doesn't *actually* return React.CSSProperties
  */
-const formatCss = (
-  ...styles: Array<React.CSSProperties | t.GlamorValue | t.Falsy>
-): t.GlamorValue => {
+const formatCss = (...styles: Array<t.CssProps | t.GlamorValue | t.Falsy>): t.GlamorValue => {
   const newStyles = styles.map(transformStyle);
 
   // Finish up.
-  return glamorCss(...newStyles) as {};
+  return jss.css(...newStyles) as {};
 };
 
 (formatCss as any).image = image;

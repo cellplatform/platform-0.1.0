@@ -3,6 +3,13 @@ import { css, color } from '../common';
 
 export type ITestProps = {};
 
+css.global({
+  body: {
+    color: 'white',
+    background: '#ED3C6E',
+  },
+});
+
 export class Test extends React.PureComponent<ITestProps> {
   /**
    * [Render]
@@ -17,11 +24,12 @@ export class Test extends React.PureComponent<ITestProps> {
       sample: css({
         Absolute: [30, 50, null, null],
         border: `dashed 1px ${color.format(-0.3)}`,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        backgroundColor: 'rgba(255, 0, 0, 0.4)' /* RED */,
         width: 250,
         height: 120,
         padding: 15,
         borderRadius: 5,
+        boxShadow: `0 2px 14px 0 ${color.format(-0.1)}`,
       }),
     };
     return (
