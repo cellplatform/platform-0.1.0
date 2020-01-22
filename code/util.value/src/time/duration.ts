@@ -10,16 +10,18 @@ const MIN = SEC * 60;
 const HOUR = MIN * 60;
 const DAY = HOUR * 24;
 
-export type IDurationArgs = { msecs: number; round?: number };
+export type IDurationOptions = { round?: number };
 
 export class Duration implements t.IDuration {
-  public static create = (args: IDurationArgs) => new Duration(args) as t.IDuration;
+  public static create(msec: number, options?: IDurationOptions) {
+    return new Duration(msec, options) as t.IDuration;
+  }
 
   public static to = {
-    sec: (msecs: number, precision?: number) => round(msecs / 1000, precision),
-    min: (msecs: number, precision?: number) => round(msecs / 1000 / 60, precision),
-    hour: (msecs: number, precision?: number) => round(msecs / 1000 / 60 / 60, precision),
-    day: (msecs: number, precision?: number) => round(msecs / 1000 / 60 / 60 / 24, precision),
+    sec: (msec: number, precision?: number) => round(msec / 1000, precision),
+    min: (msec: number, precision?: number) => round(msec / 1000 / 60, precision),
+    hour: (msec: number, precision?: number) => round(msec / 1000 / 60 / 60, precision),
+    day: (msec: number, precision?: number) => round(msec / 1000 / 60 / 60 / 24, precision),
     date: (input: t.DateInput) => day(input).toDate(),
   };
 
@@ -51,8 +53,8 @@ export class Duration implements t.IDuration {
     }
   }
 
-  public static parse(input: string | number, options: { round?: number } = {}) {
-    const done = (msecs: number) => Duration.create({ ...options, msecs });
+  public static parse(input: string | number, options: IDurationOptions = {}) {
+    const done = (msecs: number) => Duration.create(msecs, options);
 
     if (typeof input === 'number') {
       return done(input);
@@ -102,10 +104,9 @@ export class Duration implements t.IDuration {
   /**
    * [Lifecycle]
    */
-  private constructor(args: IDurationArgs) {
-    const msecs = args.msecs;
-    this.msec = msecs < 0 ? -1 : msecs;
-    this.round = args.round === undefined ? 1 : args.round;
+  private constructor(msec: number, options: IDurationOptions = {}) {
+    this.msec = msec < 0 ? -1 : msec;
+    this.round = options.round === undefined ? 1 : options.round;
   }
 
   /**

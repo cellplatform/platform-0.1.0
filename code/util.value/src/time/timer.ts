@@ -30,5 +30,5 @@ export function elapsed(
   const end = options.to ? Duration.to.date(options.to) : new Date();
   const msec = end.getTime() - start.getTime();
   const precision = options.round === undefined ? 1 : options.round;
-  return Duration.create({ msecs: msec, round: precision });
+  return Duration.create(msec, { round: precision });
 }

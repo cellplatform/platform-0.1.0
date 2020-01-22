@@ -17,8 +17,10 @@ export const time: ITime = {
   get now() {
     return utc();
   },
-  duration(msecs: number, options: { round?: number } = {}) {
+  duration(msec: number | string, options: { round?: number } = {}) {
     const { round } = options;
-    return Duration.create({ msecs, round });
+    return typeof msec === 'string'
+      ? Duration.parse(msec, { round })
+      : Duration.create(msec, { round });
   },
 };
