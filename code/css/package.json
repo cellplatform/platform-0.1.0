@@ -22,6 +22,7 @@
     "tinycolor2": "1.4.1"
   },
   "devDependencies": {
+    "@platform/polyfill": "0.0.0",
     "@platform/test": "0.1.2",
     "@types/react": "16.9.17",
     "@uiharness/dev": "0.9.10",

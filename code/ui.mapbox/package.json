@@ -20,6 +20,7 @@
     "mapbox-gl": "1.6.1"
   },
   "devDependencies": {
+    "@platform/polyfill": "0.0.0",
     "@uiharness/dev": "0.9.10",
     "@uiharness/ui": "0.6.21",
     "babel-core": "^6.26.3",

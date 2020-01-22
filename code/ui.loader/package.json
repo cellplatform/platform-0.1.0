@@ -19,6 +19,7 @@
     "deploy": "cd src.server && yarn deploy"
   },
   "dependencies": {
+    "@platform/polyfill": "0.0.0",
     "@platform/react": "0.3.49",
     "@platform/util.value": "0.7.0"
   },

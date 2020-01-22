@@ -24,6 +24,7 @@
     "@platform/util.animate": "0.0.67"
   },
   "devDependencies": {
+    "@platform/polyfill": "0.0.0",
     "@platform/test": "0.1.2",
     "@platform/ts": "3.7.9",
     "@uiharness/dev": "0.9.10",

@@ -31,6 +31,7 @@
     "handsontable": "6.2.2"
   },
   "devDependencies": {
+    "@platform/polyfill": "0.0.0",
     "@platform/cell.func.sys": "0.2.25",
     "@platform/cell.http": "0.5.51",
     "@platform/cell.ui.props": "0.0.83",

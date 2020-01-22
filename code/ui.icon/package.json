@@ -20,6 +20,7 @@
     "react-icons": "3.8.0"
   },
   "devDependencies": {
+    "@platform/polyfill": "0.0.0",
     "@platform/ts": "3.7.9",
     "@uiharness/dev": "0.9.10",
     "@uiharness/ui": "0.6.21",

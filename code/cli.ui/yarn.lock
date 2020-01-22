@@ -1894,6 +1894,14 @@
     inquirer "7.0.0"
     semver "6.3.0"
 
+"@platform/polyfill@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/polyfill/-/polyfill-0.0.0.tgz#ed99b93aecf7fcb637bbedcf9d3e63ba4bfac53e"
+  integrity sha512-UzL6+uHZ/zuJYfxQ1Ol7NbzdF5ucERQwsNh3UQTX4SOwHugKocgWy11HJo197HvvLEgtE+VMNzazYfnRt2PaIg==
+  dependencies:
+    core-js "3.6.4"
+    regenerator-runtime "0.13.3"
+
 "@platform/react@0.3.34":
   version "0.3.34"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.34.tgz#c5d12946bfce2097d5628b31c0f4e3f7ef144c41"
@@ -3631,6 +3639,11 @@ core-js@3.4.2:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.4.2.tgz#ee2b1a60b50388d8ddcda8cdb44a92c7a9ea76df"
   integrity sha512-bUTfqFWtNKWp73oNIfRkqwYZJeNT3lstzZcAkhhiuvDraRSgOH1/+F9ZklbpR4zpdKuo4cpXN8tKP7s61yjX+g==
+
+core-js@3.6.4:
+  version "3.6.4"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.4.tgz#440a83536b458114b9cb2ac1580ba377dc470647"
+  integrity sha512-4paDGScNgZP2IXXilaffL9X7968RuvwlkK3xWtZRVqgd8SYNiVKRJvkFd1aqqEuPfN7E68ZHEp9hDj6lHj4Hyw==
 
 core-js@^1.0.0:
   version "1.2.7"

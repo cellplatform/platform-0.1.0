@@ -20,6 +20,7 @@
     "react-select": "3.0.8"
   },
   "devDependencies": {
+    "@platform/polyfill": "0.0.0",
     "@types/react-select": "3.0.9",
     "@uiharness/dev": "0.9.10",
     "@uiharness/ui": "0.6.21",
