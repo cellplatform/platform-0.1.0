@@ -6,16 +6,14 @@
 Common external low-level libs used accross all modules.  
 Referenced in this one module so that consistent versions across [@platform](https://www.npmjs.com/org/platform) are maintained.
 
+<p>&nbsp;<p>
+
 ## Setup
 
 ```
 yarn add @platform/libs
 ```
 
+<p>&nbsp;<p>
+<p>&nbsp;<p>
 
-## Polyfills
-
-```typescript
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
-```
