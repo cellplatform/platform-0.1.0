@@ -1,17 +1,17 @@
 import { parse as parseUrl } from 'url';
 import { createMock, expect, fs, http, readFile, Schema, t } from '../test';
 
-describe('cell/file: upload', function() {
+describe('cell/files: upload', function() {
   this.timeout(50000);
 
   it('upload/download: 1 file', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const client = mock.client.cell(cellUri);
-    const data = await readFile('src/test/assets/bird.png');
-    const filename = 'bird.png';
 
     // Upload => download.
+    const filename = 'bird.png';
+    const data = await readFile('src/test/assets/bird.png');
     await client.files.upload([{ filename, data }]);
     const res = await client.file.name(filename).download();
 
