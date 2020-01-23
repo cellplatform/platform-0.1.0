@@ -136,12 +136,14 @@ export async function watchDir(args: {
       table.add([log.gray(key), '    ', log.gray(value)]);
     };
 
+    const host = config.data.host.replace(/\/*$/, '');
+
     log.info(cellTitle);
     log.info();
     add('status:', status);
     add('local:', local);
     add('remote:');
-    add('  host:', config.data.host.replace(/\/*$/, ''));
+    add('  host:', log.blue(host));
     add('  target:', util.log.cellUri(uri, cellColor));
 
     log.info(table.toString());
