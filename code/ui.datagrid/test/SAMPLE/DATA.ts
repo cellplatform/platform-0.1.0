@@ -51,7 +51,7 @@ const ROWS: t.IGridData['rows'] = {
 };
 
 export const SAMPLE = {
-  NS: 'ns:sample1', // NB: the "ns:" uri prefix is stripped.
+  NS: 'ns:foo', // NB: the "ns:" uri prefix is stripped.
   CELLS,
   COLUMNS,
   ROWS,

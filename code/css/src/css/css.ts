@@ -1,6 +1,4 @@
-import { valueUtil, R } from '../common';
-import { IFormatCss, IImageOptions, IBackgroundImageStyles, Falsy, GlamorValue } from '../types';
-import { css as glamorCss } from 'glamor';
+import { jss, R, t, valueUtil } from '../common';
 import { toEdges } from './util';
 
 export * from './util';
@@ -20,8 +18,8 @@ export const MEDIA_QUERY_RETINA = `@media (-webkit-min-device-pixel-ratio: 2), (
 export const image = (
   image1x: string | undefined,
   image2x: string | undefined,
-  options: IImageOptions = { width: 10, height: 10 },
-): IBackgroundImageStyles => {
+  options: t.IImageOptions = { width: 10, height: 10 },
+): t.IBackgroundImageStyles => {
   // Prepare image based on current screen density.
   if (!image1x) {
     throw new Error('Must have at least a 1x image.');
@@ -235,7 +233,7 @@ function convertMainAlignToFlex(token: string): string | undefined {
  * Format a flex css helper
  * Format: [<direction>]-<crossAlignment>-<mainAlignment>
  */
-function formatFlexPosition(key: string, value: string, target: React.CSSProperties) {
+function formatFlexPosition(key: string, value: string, target: t.CssProps) {
   let direction: 'row' | 'column' | undefined; // Assume horizontal
   let mainAlignment: string | undefined;
   let crossAlignment: string | undefined;
@@ -284,8 +282,8 @@ function formatFlexPosition(key: string, value: string, target: React.CSSPropert
 }
 
 export const transformStyle = (
-  style: React.CSSProperties | GlamorValue | Falsy = {},
-): React.CSSProperties | GlamorValue => {
+  style: t.CssProps | t.GlamorValue | t.Falsy = {},
+): t.CssProps | t.GlamorValue => {
   if (style == null) {
     return {};
   }
@@ -351,14 +349,11 @@ export const transformStyle = (
 
 /**
  * Helpers for constructing a CSS object.
- * NB: This doesn't *actually* return React.CSSProperties, but
+ * NB: This doesn't *actually* return React.CSSProperties
  */
-const formatCss = (...styles: Array<React.CSSProperties | GlamorValue | Falsy>): GlamorValue => {
-  const newStyles = styles.map(transformStyle);
-
-  // Finish up.
-  return glamorCss(...newStyles) as {};
+const formatCss = (...styles: Array<t.CssProps | t.GlamorValue | t.Falsy>): t.GlamorValue => {
+  return jss.css(...styles.map(transformStyle));
 };
 
 (formatCss as any).image = image;
-export const format = formatCss as IFormatCss;
+export const format = formatCss as t.IFormatCss;

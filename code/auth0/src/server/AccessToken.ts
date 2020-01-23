@@ -10,7 +10,7 @@ export type IAccessTokenArgs = {
   token: string;
   audience: string;
   issuer: string;
-  algorithms: string[];
+  algorithms: jwt.Algorithm[];
 };
 
 export type IAccessTokenOptions = {

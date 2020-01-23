@@ -1,15 +1,13 @@
+import { Debug } from '@platform/ui.datagrid.debug';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { debounceTime, delay, filter, map, takeUntil, debounce } from 'rxjs/operators';
-
-import { Debug } from '@platform/ui.datagrid.debug';
+import { debounceTime, delay, filter, map, takeUntil } from 'rxjs/operators';
 
 import {
-  http,
-  constants,
   Button,
   color,
   COLORS,
+  constants,
   coord,
   css,
   datagrid,
@@ -246,19 +244,19 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
   private postData = async () => {
     const data = { ...this.grid.data };
-    const uri = http.uri.create.ns(data.ns.id);
+    // const uri = http.uri.create.ns(data.ns.id);
 
-    /**
-     * TODO 🐷
-     */
-    delete data.rows; // TEMP 🐷
+    // /**
+    //  * TODO 🐷
+    //  */
+    // delete data.rows; // TEMP 🐷
 
-    // const json = JSON.stringify(data);
-    // console.log(json);
+    // // const json = JSON.stringify(data);
+    // // console.log(json);
 
-    console.log('POST', uri);
-    const res = await http.post(uri, data);
-    console.log('POST response: ', res.json());
+    // console.log('POST', uri);
+    // const res = await http.post(uri, data);
+    // console.log('POST response: ', res.json());
   };
 
   /**

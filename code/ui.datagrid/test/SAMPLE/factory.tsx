@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import { color, CellEditor, css, markdown, t, datagrid } from '../common';
-import { DebugEditor } from '../components/Debug.Editor';
+import { CellEditor, color, css, datagrid, markdown, t } from '../common';
 import { MyScreen } from '../components/MyScreen';
 import { TestGridView } from '../components/Test.Grid.view';
 
@@ -50,7 +49,7 @@ function renderScreen(req: t.IGridFactoryRequest) {
   const type = req.view.screen ? req.view.screen.type : 'DEFAULT';
 
   if (type === 'GRID') {
-    const grid = datagrid.Grid.create({});
+    const grid = datagrid.Grid.create({ ns: 'foo' });
 
     const styles = {
       base: css({

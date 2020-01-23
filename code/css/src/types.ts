@@ -1,4 +1,4 @@
-import { CSSProperties } from 'glamor';
+import * as t from './common/types';
 import { transformStyle } from './css/css';
 
 export type IImageOptions = {
@@ -23,7 +23,7 @@ export type FormatImage = (
 export type Falsy = undefined | null | false;
 export class GlamorValue {}
 export type IFormatCss = {
-  (...styles: Array<React.CSSProperties | GlamorValue | Falsy>): GlamorValue;
+  (...styles: Array<t.CssProps | GlamorValue | Falsy>): GlamorValue;
   image: FormatImage;
 };
 
@@ -32,18 +32,22 @@ export type GlobalCssRules = (
   options?: { prefix?: string },
 ) => void;
 
-export type CssProps = CSSProperties;
+export type CssProps = React.CSSProperties;
+export type CssPropsMap = { [selector: string]: CssProps };
+
 export type ClassName = (...styles: Array<CssProps | undefined>) => string;
 
 export type ICssHead = { importStylesheet: ImportStylesheet };
 export type ImportStylesheet = (url: string) => ICssHead;
+
+export type MergeCssRules = (...rules: any[]) => CssProps;
 
 export type IStyle = IFormatCss & {
   global: GlobalCssRules;
   className: ClassName;
   transform: typeof transformStyle;
   head: ICssHead;
-  merge: (...rules: any[]) => CssProps;
+  merge: MergeCssRules;
   toEdges: ToCssEdges<IEdges>;
   toMargins: ToCssEdges<IMarginEdges>;
   toPadding: ToCssEdges<IPaddingEdges>;
