@@ -91,10 +91,10 @@
     "@platform/util.diff" "0.0.14"
     "@platform/util.value" "0.7.1"
 
-"@platform/css@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.0.tgz#9e768483e79f3e1a5d0eea4c2ac60cf320307a2f"
-  integrity sha512-ezTJkMs8+94ONG4t8twDPHMsW3zlNeSPSOwHG1TD8zhqTDHjRS4/lWeHR+GYGxt/0SE3IeHNGm7IO4YPaQvD8Q==
+"@platform/css@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.1.tgz#5f0908b89d70ffe788995c44f71e3dbeb017a73c"
+  integrity sha512-IWTwGHjS6tHSmAn08/3RmC48la7uvTgC1VTN1PBAgyjDkuautxEaEerblHTjKrVRIMXDKyHgW+DanQ2M5jNjmg==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/util.is" "0.0.107"
@@ -165,12 +165,12 @@
     rxjs "6.5.4"
     tslib "1.10.0"
 
-"@platform/react@0.3.52":
-  version "0.3.52"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.52.tgz#1c2aed1ce5d2f1c9bb16a94169094112519343e4"
-  integrity sha512-pfhNFPWqj+jcO/lD3NpsAv76zApf046yHNK8QIg4JD7hMkAyCHB9uQv+7ZHTvG2raUBF/SOynTVv+KxJkJAzgA==
+"@platform/react@0.3.53":
+  version "0.3.53"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.53.tgz#2f75776631ca08567d98af43765c01fc015fe7dc"
+  integrity sha512-/UQziixJA4Q+ZOL2d9N/YXN7orqbfCKQ9hBBs4ngySYQTrbOm2096aSgLHeZcC0OA5AIa75j71DuNyZLhvS84A==
   dependencies:
-    "@platform/css" "0.2.0"
+    "@platform/css" "0.2.1"
     "@platform/util.is" "0.0.107"
     "@types/react" "16.9.19"
     "@types/react-dom" "16.9.5"
@@ -217,13 +217,13 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.2.tgz#bb9865bf7e1531d8604814c70e54278a56eaf995"
   integrity sha512-85+IPOj3RGp5w7iOnEkqWAO6AcY4elO8MYymbgwuh01skziQaRixtVYEXjNjxfjP5/PM+clnAT/SuTVTEgRulQ==
 
-"@platform/ui.datagrid.types@0.7.80":
-  version "0.7.80"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.80.tgz#a05e3bfd08fb4bc723ecbc2f61135891cead3806"
-  integrity sha512-BOw21ai7No2jvnEMTdrUvt8LublIQd0aVV5FCG1wJ/wQiuVSrhpqUfvEDZyT0x6A1X2w4j92u9TmNxeUXTyF7w==
+"@platform/ui.datagrid.types@0.7.81":
+  version "0.7.81"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.81.tgz#0c989fb4008d976e3213a823d2758012e013dca0"
+  integrity sha512-FIQY1E6lkEndbZ7Z8t5z2txL0Ey8pGCdKUlehxb5xNpFW6Tt19phkQomywhx+4DDJBBfsceFsgMGr6JfRuPyUw==
   dependencies:
     "@platform/cell.types" "0.4.7"
-    "@platform/react" "0.3.52"
+    "@platform/react" "0.3.53"
 
 "@platform/util.diff@0.0.14":
   version "0.0.14"

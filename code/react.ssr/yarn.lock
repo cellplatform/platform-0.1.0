@@ -50,10 +50,10 @@
     listr "0.14.3"
     yargs "15.1.0"
 
-"@platform/css@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.0.tgz#9e768483e79f3e1a5d0eea4c2ac60cf320307a2f"
-  integrity sha512-ezTJkMs8+94ONG4t8twDPHMsW3zlNeSPSOwHG1TD8zhqTDHjRS4/lWeHR+GYGxt/0SE3IeHNGm7IO4YPaQvD8Q==
+"@platform/css@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.1.tgz#5f0908b89d70ffe788995c44f71e3dbeb017a73c"
+  integrity sha512-IWTwGHjS6tHSmAn08/3RmC48la7uvTgC1VTN1PBAgyjDkuautxEaEerblHTjKrVRIMXDKyHgW+DanQ2M5jNjmg==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/util.is" "0.0.107"
@@ -192,12 +192,12 @@
     core-js "3.6.4"
     regenerator-runtime "0.13.3"
 
-"@platform/react@0.3.52":
-  version "0.3.52"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.52.tgz#1c2aed1ce5d2f1c9bb16a94169094112519343e4"
-  integrity sha512-pfhNFPWqj+jcO/lD3NpsAv76zApf046yHNK8QIg4JD7hMkAyCHB9uQv+7ZHTvG2raUBF/SOynTVv+KxJkJAzgA==
+"@platform/react@0.3.53":
+  version "0.3.53"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.53.tgz#2f75776631ca08567d98af43765c01fc015fe7dc"
+  integrity sha512-/UQziixJA4Q+ZOL2d9N/YXN7orqbfCKQ9hBBs4ngySYQTrbOm2096aSgLHeZcC0OA5AIa75j71DuNyZLhvS84A==
   dependencies:
-    "@platform/css" "0.2.0"
+    "@platform/css" "0.2.1"
     "@platform/util.is" "0.0.107"
     "@types/react" "16.9.19"
     "@types/react-dom" "16.9.5"

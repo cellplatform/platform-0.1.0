@@ -470,7 +470,7 @@ describe('NeDb', () => {
       const res1 = await db.sys.increment();
       const ts1 = await db.sys.timestamps();
       expect(ts1).to.eql(res1);
-      expect(ts1.createdAt).to.be.within(now - 5, now + 10);
+      expect(ts1.createdAt).to.be.within(now - 5, now + 30);
       expect(ts1.modifiedAt).to.eql(ts1.createdAt);
 
       await time.wait(50);

@@ -101,10 +101,10 @@
     "@platform/util.diff" "0.0.14"
     "@platform/util.value" "0.7.1"
 
-"@platform/css@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.0.tgz#9e768483e79f3e1a5d0eea4c2ac60cf320307a2f"
-  integrity sha512-ezTJkMs8+94ONG4t8twDPHMsW3zlNeSPSOwHG1TD8zhqTDHjRS4/lWeHR+GYGxt/0SE3IeHNGm7IO4YPaQvD8Q==
+"@platform/css@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.1.tgz#5f0908b89d70ffe788995c44f71e3dbeb017a73c"
+  integrity sha512-IWTwGHjS6tHSmAn08/3RmC48la7uvTgC1VTN1PBAgyjDkuautxEaEerblHTjKrVRIMXDKyHgW+DanQ2M5jNjmg==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/util.is" "0.0.107"
@@ -175,12 +175,12 @@
     rxjs "6.5.4"
     tslib "1.10.0"
 
-"@platform/react@0.3.52":
-  version "0.3.52"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.52.tgz#1c2aed1ce5d2f1c9bb16a94169094112519343e4"
-  integrity sha512-pfhNFPWqj+jcO/lD3NpsAv76zApf046yHNK8QIg4JD7hMkAyCHB9uQv+7ZHTvG2raUBF/SOynTVv+KxJkJAzgA==
+"@platform/react@0.3.53":
+  version "0.3.53"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.53.tgz#2f75776631ca08567d98af43765c01fc015fe7dc"
+  integrity sha512-/UQziixJA4Q+ZOL2d9N/YXN7orqbfCKQ9hBBs4ngySYQTrbOm2096aSgLHeZcC0OA5AIa75j71DuNyZLhvS84A==
   dependencies:
-    "@platform/css" "0.2.0"
+    "@platform/css" "0.2.1"
     "@platform/util.is" "0.0.107"
     "@types/react" "16.9.19"
     "@types/react-dom" "16.9.5"
@@ -227,26 +227,26 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.2.tgz#bb9865bf7e1531d8604814c70e54278a56eaf995"
   integrity sha512-85+IPOj3RGp5w7iOnEkqWAO6AcY4elO8MYymbgwuh01skziQaRixtVYEXjNjxfjP5/PM+clnAT/SuTVTEgRulQ==
 
-"@platform/ui.button@0.3.32":
-  version "0.3.32"
-  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.3.32.tgz#2bcc64205ae70232ffd89771d8dfe8a8abbee2bf"
-  integrity sha512-tjMXla2iMQdJodic/bUILIcK51c+OEHdc9KTJGcI5aPyyaKkwoy4dyGYGAPKMEAgEijLL1N7NEr7Gbp6j9k2wQ==
+"@platform/ui.button@0.3.33":
+  version "0.3.33"
+  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.3.33.tgz#7c89d0522c445e9d6c8e505c5b93a433facf16f1"
+  integrity sha512-7Vzj2Mpmh0dNjThlAKp9FV5uXe+pXKesrG6E4yBVsEChXZbKNDe2YJxTUaAiQtRmfqNZN98zqURTlZIj1Tvv9g==
   dependencies:
     "@platform/libs" "^0.2.0"
-    "@platform/react" "0.3.52"
+    "@platform/react" "0.3.53"
 
-"@platform/ui.datagrid.types@0.7.80":
-  version "0.7.80"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.80.tgz#a05e3bfd08fb4bc723ecbc2f61135891cead3806"
-  integrity sha512-BOw21ai7No2jvnEMTdrUvt8LublIQd0aVV5FCG1wJ/wQiuVSrhpqUfvEDZyT0x6A1X2w4j92u9TmNxeUXTyF7w==
+"@platform/ui.datagrid.types@0.7.81":
+  version "0.7.81"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.81.tgz#0c989fb4008d976e3213a823d2758012e013dca0"
+  integrity sha512-FIQY1E6lkEndbZ7Z8t5z2txL0Ey8pGCdKUlehxb5xNpFW6Tt19phkQomywhx+4DDJBBfsceFsgMGr6JfRuPyUw==
   dependencies:
     "@platform/cell.types" "0.4.7"
-    "@platform/react" "0.3.52"
+    "@platform/react" "0.3.53"
 
-"@platform/ui.datagrid.util@0.2.61":
-  version "0.2.61"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.2.61.tgz#e7ddd7aa3f6601208a7780b2a27aac75eb32f6c0"
-  integrity sha512-WTbsAAOye+6tU77Ey5jjJCl6ZlLWsnOXrobMWP20HJUylX8dIQ55bJRxx6U6K7iAvWsauTR5F2gfiyUNJ+bqeg==
+"@platform/ui.datagrid.util@0.2.62":
+  version "0.2.62"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.2.62.tgz#cc1797f76d7b8d2e3be42af9473b90ff93fbbefa"
+  integrity sha512-l9n7pAXHUn+u2bh/ibYJvoThFqOUdf/7U8dc4qSeUxg7/jtZl9Fs6WhG7xtS/WsyB+KcgtAzv5QQCffzhX4cng==
   dependencies:
     "@platform/cell.coord" "0.8.25"
     "@platform/cell.func" "0.1.59"
@@ -254,31 +254,31 @@
     "@platform/cell.types" "0.4.7"
     "@platform/cell.value" "0.1.72"
     "@platform/libs" "0.2.0"
-    "@platform/ui.datagrid.types" "0.7.80"
+    "@platform/ui.datagrid.types" "0.7.81"
     "@platform/util.value" "0.7.1"
 
-"@platform/ui.icon@0.0.116":
-  version "0.0.116"
-  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.116.tgz#b79bae05a69fec718e48b51f4e5a383fbe4c1e61"
-  integrity sha512-zJ4hBIZ7rxZbDddZJYI6hghbcsOIZtVtbRnS1AWQN3Zr39oaH7RzQZTzsHY6WvEddXCofyRNiNHEzY0QiPEKFg==
+"@platform/ui.icon@0.0.117":
+  version "0.0.117"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.117.tgz#01246a31775650ccc59a640f39e89d496fbd4d1b"
+  integrity sha512-U9j+CvQ9enaaqMsX//QzG5yzXheev42yBR4IQFON0LNxChLjrVcNRsmcDTp+R6B8Ye/9KMGxsqz2QrNKnp89Ig==
   dependencies:
-    "@platform/react" "0.3.52"
+    "@platform/react" "0.3.53"
 
-"@platform/ui.object@0.0.172":
-  version "0.0.172"
-  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.172.tgz#0336cbc3f9a13e4379af8efbe7348da42fa39322"
-  integrity sha512-OkhAknk40SO8Z8TG7tGNj1xk2uQSi7isAmgD+lj1n5KH7wE4Z8GGXv5f/ZzRIiJZL4rHaeU46BYt9GOAHgTOHA==
+"@platform/ui.object@0.0.173":
+  version "0.0.173"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.173.tgz#bd0b0efca10973aa750df817d1afd6a5248dd241"
+  integrity sha512-o+iQFt0Z7aUWkHKUdDL+FLxsHrxSAiHGVuZ5kBpPC0xRrT3OByCO0KstOzu72CGkPgCE/hIsMsBkIJrEUTectA==
   dependencies:
-    "@platform/react" "0.3.52"
+    "@platform/react" "0.3.53"
     react-inspector "4.0.0"
 
-"@platform/ui.text@0.3.26":
-  version "0.3.26"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.26.tgz#463c760f2fb11111cb825cd41a83fd8007a4a389"
-  integrity sha512-3RIYali8K5tI7/fX1jDG+wrcLg2uRpA+ZBLqzVtQlBMx023Eb7T0ARY1gOoeo8TG6blSD5KAwmBdOUOxWHvg4g==
+"@platform/ui.text@0.3.27":
+  version "0.3.27"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.27.tgz#67cca6ce5c967fe598c42124de8475c5341a1e06"
+  integrity sha512-Hz+s/N/7xiwU3/5XkCJwCk1pfMaPcHxbkM4QMZBrppirk4mSiqIsF0sW9U2I+s/5S3l64IEZC4Lub3WkBY1grg==
   dependencies:
     "@platform/libs" "0.2.0"
-    "@platform/react" "0.3.52"
+    "@platform/react" "0.3.53"
     "@platform/util.value" "0.7.1"
 
 "@platform/util.diff@0.0.14":

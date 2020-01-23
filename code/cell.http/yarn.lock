@@ -58,16 +58,16 @@
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.db@0.2.79":
-  version "0.2.79"
-  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.2.79.tgz#42afc8903beb6bb6b285905e010d3140246bd67b"
-  integrity sha512-Uc21mLla3mogk8BMtQHxgDoaPEbwskdt8tZF/qaGYbZdz1Qwo8rDvJvXZQKvKgpbnX4M+7LNdWawGmmoVVNJvw==
+"@platform/cell.db@0.2.80":
+  version "0.2.80"
+  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.2.80.tgz#8c8ee4f7c8389534ff95fd75ba951024ec044a12"
+  integrity sha512-xGRx3cBXXCvaz/1iweH0DtF35v2jv+Fc70JPS6YJZBb5rB7h2Gm+tETI4PLw59rRKJHOW3s28nmR8G84YdZfkg==
   dependencies:
     "@platform/cell.coord" "0.8.25"
     "@platform/cell.schema" "0.4.8"
     "@platform/cell.types" "0.4.7"
     "@platform/cell.value" "0.1.72"
-    "@platform/fsdb.model" "0.6.17"
+    "@platform/fsdb.model" "0.6.18"
     "@platform/fsdb.types" "0.6.6"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.2"
@@ -160,10 +160,10 @@
     listr "0.14.3"
     yargs "15.1.0"
 
-"@platform/css@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.0.tgz#9e768483e79f3e1a5d0eea4c2ac60cf320307a2f"
-  integrity sha512-ezTJkMs8+94ONG4t8twDPHMsW3zlNeSPSOwHG1TD8zhqTDHjRS4/lWeHR+GYGxt/0SE3IeHNGm7IO4YPaQvD8Q==
+"@platform/css@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.1.tgz#5f0908b89d70ffe788995c44f71e3dbeb017a73c"
+  integrity sha512-IWTwGHjS6tHSmAn08/3RmC48la7uvTgC1VTN1PBAgyjDkuautxEaEerblHTjKrVRIMXDKyHgW+DanQ2M5jNjmg==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/util.is" "0.0.107"
@@ -224,24 +224,24 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.model@0.6.17":
-  version "0.6.17"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.6.17.tgz#824e56ca5d609c69b0acca9b9ea89e20c3e92e62"
-  integrity sha512-IqkpWHNZpiR3+TH6TEOOqt+x234beUAugj+ooqZGZdAfMMNq/yY8t78/iPjnSDxClaSTOuG9wUkoGDLi/jzPQg==
+"@platform/fsdb.model@0.6.18":
+  version "0.6.18"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.6.18.tgz#218e5702d4c957710dd764e82453900e94babcf4"
+  integrity sha512-mhUWL/NjoU71eGY5sRqSZhXab6Tt9RbAVPWnkZwcF8MHdCUB6+hBxDz/Nz6Aw1Cj3llK9N1uU5EUbjlXacUAHA==
   dependencies:
     "@platform/fsdb.types" "0.6.6"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.2"
     "@platform/util.value" "0.7.1"
 
-"@platform/fsdb.nedb@1.3.72":
-  version "1.3.72"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.72.tgz#5251c3b80ae57dc032bbc3a1993d0b98692beea5"
-  integrity sha512-VryBrZUbbaFxouzOJpHigOts3XGRezV9y9BSLuycYtKub/46quL60FZLujfKz+ox01IUyCGrQiMazMg0+xxYbg==
+"@platform/fsdb.nedb@1.3.73":
+  version "1.3.73"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.73.tgz#e476e9f7a988d69d18638228466ad8dc1ea55c4c"
+  integrity sha512-qkEDUwTq48PWheEEIOVyV5RDlZ37bE+60X3kA8ELZz7rDMDZJJt8LHJqKNCY0pdPct8kN4cDHvK5uRwXbyZRQg==
   dependencies:
     "@platform/fsdb.types" "0.6.6"
     "@platform/libs" "0.2.0"
-    "@platform/react" "0.3.52"
+    "@platform/react" "0.3.53"
     "@platform/types" "0.4.2"
     "@platform/util.value" "0.7.1"
     nedb "1.8.0"
@@ -309,12 +309,12 @@
     micro-cors "0.1.1"
     path-to-regexp "6.1.0"
 
-"@platform/react@0.3.52":
-  version "0.3.52"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.52.tgz#1c2aed1ce5d2f1c9bb16a94169094112519343e4"
-  integrity sha512-pfhNFPWqj+jcO/lD3NpsAv76zApf046yHNK8QIg4JD7hMkAyCHB9uQv+7ZHTvG2raUBF/SOynTVv+KxJkJAzgA==
+"@platform/react@0.3.53":
+  version "0.3.53"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.53.tgz#2f75776631ca08567d98af43765c01fc015fe7dc"
+  integrity sha512-/UQziixJA4Q+ZOL2d9N/YXN7orqbfCKQ9hBBs4ngySYQTrbOm2096aSgLHeZcC0OA5AIa75j71DuNyZLhvS84A==
   dependencies:
-    "@platform/css" "0.2.0"
+    "@platform/css" "0.2.1"
     "@platform/util.is" "0.0.107"
     "@types/react" "16.9.19"
     "@types/react-dom" "16.9.5"
