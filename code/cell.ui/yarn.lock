@@ -117,10 +117,10 @@
     rxjs "6.5.4"
     tslib "1.10.0"
 
-"@platform/react@0.3.53":
-  version "0.3.53"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.3.53.tgz#2f75776631ca08567d98af43765c01fc015fe7dc"
-  integrity sha512-/UQziixJA4Q+ZOL2d9N/YXN7orqbfCKQ9hBBs4ngySYQTrbOm2096aSgLHeZcC0OA5AIa75j71DuNyZLhvS84A==
+"@platform/react@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.0.tgz#0055f5ba2edaa84b8f6f901a24a9a0c825074876"
+  integrity sha512-mvHSQF2L9h9k72kxKyAiXW+cQossijbTLI6JhYzh7LDZJfUz5o5GpluzdRbx/h5eV1uEJo748KN8p7/bIITr0Q==
   dependencies:
     "@platform/css" "0.2.1"
     "@platform/util.is" "0.0.107"
