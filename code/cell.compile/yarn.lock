@@ -820,22 +820,22 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.compile.react@^0.0.0":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@platform/cell.compile.react/-/cell.compile.react-0.0.0.tgz#fde7b891d87878cf49189325cd8a5fcae8d3255c"
-  integrity sha512-3OiqyVAj/Fr75NFeVrhQMOlApro5zc6Gl+xedUesYiJMk2wAIB818FGoFvHG97LlR525uscChz0R+mGbA5aRaA==
+"@platform/cell.compile.react@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/cell.compile.react/-/cell.compile.react-0.0.1.tgz#c7e40001e8a3620faf96a4907075811d9a3e4463"
+  integrity sha512-l07EWjlTOHnjZSHhMNZSLubcbmnHjqn9+GysWhVhPU9X1sL5gAXw04Abem0xjuvP8sGBlxHUbyk27mWU8K/zvw==
   dependencies:
-    "@platform/cell.types" "0.4.8"
+    "@platform/cell.types" "0.4.9"
     "@platform/libs" "0.2.0"
     "@platform/log" "^0.1.4"
     "@platform/react" "^0.4.0"
     "@platform/ui.spinner" "^0.0.116"
     parcel "^1.12.4"
 
-"@platform/cell.types@0.4.8":
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.8.tgz#8be0ed2d72e7a2c9cb3808145fce8dd9fd43b2e5"
-  integrity sha512-v7yfCfmFWxrQEP8WEss7j+KO3SntS8VpXnFz6BCvySU6NazYUFERPDghpdm9giKTojQuQs6uWtCeTexS+nEUgQ==
+"@platform/cell.types@0.4.9":
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.9.tgz#6059dc4c4121fdb72b7df4696642f3369a8b76e2"
+  integrity sha512-8jDEAPdfohRyM1dFkklOqZUJB9XKavFhiio2PHF/JZmuHmObofsiAEhcCuA+VlQpHSxTrmQzrBMG+Kz9epmoYg==
   dependencies:
     "@platform/cache" "0.2.13"
     "@platform/fs.s3.types" "0.1.8"
