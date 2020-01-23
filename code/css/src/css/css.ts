@@ -352,10 +352,7 @@ export const transformStyle = (
  * NB: This doesn't *actually* return React.CSSProperties
  */
 const formatCss = (...styles: Array<t.CssProps | t.GlamorValue | t.Falsy>): t.GlamorValue => {
-  const newStyles = styles.map(transformStyle);
-
-  // Finish up.
-  return jss.css(...newStyles) as {};
+  return jss.css(...styles.map(transformStyle));
 };
 
 (formatCss as any).image = image;
