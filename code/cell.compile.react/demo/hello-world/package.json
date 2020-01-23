@@ -1,0 +1,28 @@
+{
+  "name": "demo.hello-world",
+  "version": "0.0.0",
+  "source": "src/index.html",
+  "node": "dist/node/index.html",
+  "browser": "dist/browser/index.html",
+  "browserslist": [
+    "> 1%",
+    "not dead"
+  ],
+  "targets": {
+    "node": {
+      "engines": {
+        "node": ">=11.x",
+        "electron": ">=7.x"
+      }
+    },
+    "browser": {
+      "engines": {
+        "browsers": [
+          "> 1%",
+          "not dead"
+        ]
+      }
+    }
+  },
+  "private": true
+}

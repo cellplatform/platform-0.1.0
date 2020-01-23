@@ -1,0 +1,39 @@
+{
+  "name": "demo.react",
+  "version": "0.0.0",
+  "source": "src/index.html",
+  "node": "dist/node/index.html",
+  "browser": "dist/browser/index.html",
+  "dependencies": {
+    "@platform/cell.types": "0.4.10",
+    "@platform/libs": "0.2.0",
+    "@platform/log": "^0.1.4",
+    "@platform/react": "^0.4.0",
+    "@platform/ui.spinner": "^0.0.116"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.2",
+    "@platform/ts": "3.7.10"
+  },
+  "browserslist": [
+    "> 1%",
+    "not dead"
+  ],
+  "targets": {
+    "node": {
+      "engines": {
+        "node": ">=11.x",
+        "electron": ">=7.x"
+      }
+    },
+    "browser": {
+      "engines": {
+        "browsers": [
+          "> 1%",
+          "not dead"
+        ]
+      }
+    }
+  },
+  "private": true
+}

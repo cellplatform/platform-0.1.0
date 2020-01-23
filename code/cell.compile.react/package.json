@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "CellOS code compilation toolchain for React.",
   "scripts": {
-    "start": "parcel demo/react/src/index.html",
+    "start": "parcel demo/hello-world/src/index.html",
     "watch": "yarn start",
     "test": "ts test",
     "tdd": "ts test --watch",
@@ -13,29 +13,13 @@
     "clean": "sh sh/clean.sh",
     "bundle": "sh sh/bundle.sh"
   },
-  "targets": {
-    "main": {
-      "engines": {
-        "node": ">=4.x",
-        "electron": ">=7.x"
-      }
-    },
-    "browser": {
-      "engines": {
-        "browsers": [
-          "> 1%",
-          "not dead"
-        ]
-      }
-    }
-  },
   "dependencies": {
     "@platform/cell.types": "0.4.10",
     "@platform/libs": "0.2.0",
     "@platform/log": "^0.1.4",
     "@platform/react": "^0.4.0",
     "@platform/ui.spinner": "^0.0.116",
-    "parcel": "^1.12.4"
+    "parcel": "^2.0.0-alpha.3.2"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",

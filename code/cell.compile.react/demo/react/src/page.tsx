@@ -1,23 +1,8 @@
-import { css } from '@platform/react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Foo } from './component';
 
-console.log('👋 Hello World from Typescript');
-
-// const f = import('./m');
-// f.then(e => {
-//   console.log('e', e);
-// });
-
-// Setup global styles.
-css.global({
-  body: {
-    fontFamily: 'Sans-Serif',
-  },
-});
+console.log('👋 Hello React from TypeScript');
 
 // Render root react element.
-const el = document.getElementById('root');
-const app = <Foo />;
-ReactDOM.render(app, el);
+const root = <div>Hello Div</div>;
+ReactDOM.render(root, document.getElementById('root'));
