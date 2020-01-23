@@ -195,7 +195,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
   }
 
   private setGlobalStyles() {
-    const style = {
+    const styles = {
       '.CodeMirror': {
         fontSize: this.fontSize,
         background: 'none',
@@ -205,7 +205,8 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
         fontWeight: 'bold',
       },
     };
-    css.global(style, { prefix: `.${this.className}` });
+
+    css.global(styles as any, { prefix: `.${this.className}` });
   }
 
   /**

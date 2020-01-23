@@ -97,5 +97,5 @@ const STYLES = {
 /**
  * Initialize.
  */
-css.global(STYLES.CELL);
-css.global(STYLES.MARKDOWN, { prefix: `.${CELL.MARKDOWN}` });
+css.global(STYLES.CELL as any);
+css.global(STYLES.MARKDOWN as any, { prefix: `.${CELL.MARKDOWN}` });

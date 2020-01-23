@@ -33,6 +33,8 @@ export type GlobalCssRules = (
 ) => void;
 
 export type CssProps = React.CSSProperties;
+export type CssPropsMap = { [selector: string]: CssProps };
+
 export type ClassName = (...styles: Array<CssProps | undefined>) => string;
 
 export type ICssHead = { importStylesheet: ImportStylesheet };

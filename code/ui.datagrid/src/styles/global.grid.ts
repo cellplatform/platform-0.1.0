@@ -70,4 +70,4 @@ const STYLES = {
 /**
  * Initialize.
  */
-css.global(STYLES, { prefix: `.${CSS.CLASS.GRID.BASE}.handsontable` });
+css.global(STYLES as any, { prefix: `.${CSS.CLASS.GRID.BASE}.handsontable` });

@@ -26,7 +26,7 @@ let isInitialized = false;
  *
  */
 export const global: t.GlobalCssRules = (
-  styles: { [selector: string]: t.CssProps },
+  styles: t.CssPropsMap,
   options: { prefix?: string } = {},
 ) => {
   if (R.isEmpty(styles)) {

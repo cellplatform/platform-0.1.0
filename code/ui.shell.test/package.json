@@ -1,6 +1,6 @@
 {
   "name": "ui.shell.test",
-  "version": "0.1.191",
+  "version": "0.1.192",
   "description": "Test module for ui.shell (and associated modules).",
   "scripts": {
     "ssr": "cd src.server && yarn ssr $@",
@@ -18,14 +18,14 @@
     "nuke": "rm -rf node_modules && cd src.server && rm -rf node_modules"
   },
   "dependencies": {
-    "@platform/react": "0.3.51",
-    "@platform/ui.button": "0.3.31",
-    "@platform/ui.datagrid": "0.7.165",
-    "@platform/ui.icon": "0.0.115",
-    "@platform/ui.loader": "0.2.31",
-    "@platform/ui.shell": "0.2.30",
-    "@platform/ui.shell.doc": "0.0.45",
-    "@platform/ui.shell.types": "0.1.27"
+    "@platform/react": "0.3.52",
+    "@platform/ui.button": "0.3.32",
+    "@platform/ui.datagrid": "0.7.166",
+    "@platform/ui.icon": "0.0.116",
+    "@platform/ui.loader": "0.2.32",
+    "@platform/ui.shell": "0.2.31",
+    "@platform/ui.shell.doc": "0.0.46",
+    "@platform/ui.shell.types": "0.1.28"
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
