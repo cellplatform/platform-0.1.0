@@ -1,5 +1,5 @@
 import { cli, Client, defaultValue, fs, log, promptConfig, t } from '../common';
-import { getPayload } from '../dirSync';
+import { getPayload } from '../cmd.dirSync';
 import * as util from '../util';
 
 const gray = log.gray;

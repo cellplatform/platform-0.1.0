@@ -1,5 +1,5 @@
 import { t } from '../common';
-import { syncDir } from '../dirSync';
+import { syncDir } from '../cmd.dirSync';
 
 /**
  * Synchronise folder in watch mode.
