@@ -1,11 +1,7 @@
-// console.log('hello', 1235);
+console.log('👋 Hello World from Typescript');
 
-// const f = import('./m');
+const f = import('./m');
 
-// f.then(e => {
-//   console.log('e', e);
-// });
-
-// import * as parcel from 'parcel';
-
-// console.log('parcel', parcel);
+f.then(e => {
+  console.log('e', e);
+});

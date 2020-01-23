@@ -10,7 +10,7 @@
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare",
-    "bundle": "parcel build src/demo/page.ts",
+    "bundle": "parcel build src/demo/index.html",
     "clean": "rm -rf dist && rm -rf .parcel-cache"
   },
   "targets": {
