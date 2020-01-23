@@ -214,6 +214,5 @@ export type IResGetSysInfo = {
   system: string;
   host: string;
   region: string;
-  time: string;
-  deployedAt?: { date: string; time: number };
+  deployedAt?: { date: string; utc: number };
 };

@@ -17,7 +17,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
       ? undefined
       : {
           date: time.day(args.deployedAt).format(`DD MMM YYYY, hh:mm A`),
-          time: args.deployedAt,
+          utc: args.deployedAt,
         };
 
     const provider = args.title || 'Untitled';
@@ -30,7 +30,6 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
       system,
       host,
       region,
-      time: 'UTC',
       deployedAt,
     };
 
