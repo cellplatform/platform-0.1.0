@@ -25,48 +25,48 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.client@0.1.9":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.1.9.tgz#2ef049d1c09b5931c9a4978eacad14d5273f49fc"
-  integrity sha512-bnQxRgdtTyw3EmiIrPd4rOAp0JJig85RiBC09rX5cFpB/npWphTpCuhxusSqqxrSEWOYC2Hivjp33d/kdYVxCg==
+"@platform/cell.client@0.1.10":
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.1.10.tgz#98a786b7bd4c2ebde64b5cff362fea6fb2de4602"
+  integrity sha512-KbIlO0NBREnpGMbYJfGscEcQJjlit5RTHR3l/f+aZfHkfZAm7aiqqJNypemYqK6m8xLVtUUloPaPUgtmXXLxQw==
   dependencies:
-    "@platform/cell.schema" "0.4.10"
-    "@platform/cell.types" "0.4.9"
+    "@platform/cell.schema" "0.4.11"
+    "@platform/cell.types" "0.4.10"
     "@platform/http" "0.10.4"
     "@platform/http.types" "0.0.3"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.2"
     form-data "3.0.0"
 
-"@platform/cell.coord@0.8.27":
-  version "0.8.27"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.27.tgz#c4848819825dafb9dfb6de654102b2e14c0622ba"
-  integrity sha512-jeReVi3zLGwtBhJiSXzR7WUQKlLUcBQoq3QHZHwAUPkrTHkuyHEJlxhVNheSYSdm6Yoiut8PcxZeV7iCzINXSQ==
+"@platform/cell.coord@0.8.28":
+  version "0.8.28"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.28.tgz#9adaf9f40a1df8d318ec98319a18c510d92182ba"
+  integrity sha512-qvsLxS6ptQXy/nD7ZeCUifIa5moFJSOmsz0zk+ZC3oaMXhjiAGr152xOHlCI8kLeFbXIvZGJqELlfSf6ixrvZg==
   dependencies:
     "@platform/cache" "0.2.13"
-    "@platform/cell.types" "0.4.9"
+    "@platform/cell.types" "0.4.10"
     "@platform/types" "0.4.2"
     "@platform/util.value" "0.7.1"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.schema@0.4.10":
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.10.tgz#88fe7b5cb9fd16785c16e3eb988b63c1f30579cb"
-  integrity sha512-AvFVbn8rQTfdLQPslj/wZlq9qOWR/fS/N6FBqn12OFdcq5QCU4CPZGGHkU70fvzavmdnze+AwRWOM2/J2tDk8g==
+"@platform/cell.schema@0.4.11":
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.11.tgz#7c203335e8bb7dda82836d0d784aa37485fd67d9"
+  integrity sha512-fMTZQ3QJQhPqo3SbXNl6HHxJZORDCLC3LHIkBalP4ozTLn27JmuVWEHq0zvVdiVVFIqNCXWAiNcdYDxd6M4d0Q==
   dependencies:
-    "@platform/cell.coord" "0.8.27"
-    "@platform/cell.types" "0.4.9"
+    "@platform/cell.coord" "0.8.28"
+    "@platform/cell.types" "0.4.10"
     "@platform/fsdb.types" "0.6.6"
     "@platform/libs" "0.2.0"
     "@platform/util.hash" "0.0.13"
     "@platform/util.value" "0.7.1"
 
-"@platform/cell.types@0.4.9":
-  version "0.4.9"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.9.tgz#6059dc4c4121fdb72b7df4696642f3369a8b76e2"
-  integrity sha512-8jDEAPdfohRyM1dFkklOqZUJB9XKavFhiio2PHF/JZmuHmObofsiAEhcCuA+VlQpHSxTrmQzrBMG+Kz9epmoYg==
+"@platform/cell.types@0.4.10":
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.10.tgz#106c475da65c06614d791d8cd506871e5f8544da"
+  integrity sha512-AMM2VFiBslL4NRLKASieg80bTAeMaRuvzgUUZUUZ6jsRTheN9B1Wddtv3t6cWF33AF+Q2eXLwVzZk9VaH+jAWw==
   dependencies:
     "@platform/cache" "0.2.13"
     "@platform/fs.s3.types" "0.1.8"
@@ -74,13 +74,13 @@
     "@platform/libs" "0.2.0"
     "@platform/util.diff" "0.0.14"
 
-"@platform/cell.value@0.1.74":
-  version "0.1.74"
-  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.1.74.tgz#aac5f37720c1b122af9aeea5df5160913ee97496"
-  integrity sha512-VvL1QEy7VuioQMqGMA5xC7MeetoKyBZuzJGaVhNxrUXQw7kNx/xMEl1dJaBQxfh/gWBDLPscRWyxx24Hz1EmOQ==
+"@platform/cell.value@0.1.75":
+  version "0.1.75"
+  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.1.75.tgz#c8f38276c33a5ff350b6e61de7e9f055c1d5b605"
+  integrity sha512-LxFTDKZnUDFFF7LgMuqdArxg596gnWJ3OkiobyZCCs8B305eiBDlCgVU8T3/f3aUhcvGzTFKcXn1QNNUBdFieA==
   dependencies:
-    "@platform/cell.schema" "0.4.10"
-    "@platform/cell.types" "0.4.9"
+    "@platform/cell.schema" "0.4.11"
+    "@platform/cell.types" "0.4.10"
     "@platform/libs" "0.2.0"
     "@platform/util.diff" "0.0.14"
     "@platform/util.value" "0.7.1"
