@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@platform/cell.client": "0.1.9",
+    "@platform/cell.compile": "0.0.34",
     "@platform/cell.fs.sync": "0.3.14",
     "@platform/cell.schema": "0.4.10",
     "@platform/cell.types": "0.4.9",
@@ -38,5 +39,6 @@
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
+  "repository": "uiharness/platform",
   "license": "MIT"
 }
