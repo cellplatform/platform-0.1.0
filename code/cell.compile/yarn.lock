@@ -820,6 +820,18 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
+"@platform/cell.compile.react@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.compile.react/-/cell.compile.react-0.0.0.tgz#fde7b891d87878cf49189325cd8a5fcae8d3255c"
+  integrity sha512-3OiqyVAj/Fr75NFeVrhQMOlApro5zc6Gl+xedUesYiJMk2wAIB818FGoFvHG97LlR525uscChz0R+mGbA5aRaA==
+  dependencies:
+    "@platform/cell.types" "0.4.8"
+    "@platform/libs" "0.2.0"
+    "@platform/log" "^0.1.4"
+    "@platform/react" "^0.4.0"
+    "@platform/ui.spinner" "^0.0.116"
+    parcel "^1.12.4"
+
 "@platform/cell.types@0.4.8":
   version "0.4.8"
   resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.8.tgz#8be0ed2d72e7a2c9cb3808145fce8dd9fd43b2e5"

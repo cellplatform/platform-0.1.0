@@ -1,9 +1,9 @@
 {
   "name": "@platform/cell.compile.react",
-  "version": "0.0.33",
+  "version": "0.0.0",
   "description": "CellOS code compilation toolchain for React.",
   "scripts": {
-    "start": "parcel demo/react/index.html",
+    "start": "parcel demo/react/src/index.html",
     "watch": "yarn start",
     "test": "ts test",
     "tdd": "ts test --watch",
