@@ -1,3 +1,3 @@
-import { client } from '@platform/cell.http/lib/client';
+import { Client } from '@platform/cell.client';
 
-export const http = client.init({ host: 'localhost', port: 8080 });
+export const http = Client.create('localhost:8080');
