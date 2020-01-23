@@ -43,9 +43,10 @@ export const global: t.GlobalCssRules = (
   const { prefix } = options;
   const global = {};
   Object.keys(styles).forEach(key => {
+    const style = styles[key];
     key.split(',').forEach(key => {
       const selector = toCssSelector({ key, prefix });
-      global[selector] = styles[key];
+      global[selector] = style;
     });
   });
 
