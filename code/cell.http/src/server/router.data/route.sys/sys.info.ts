@@ -13,7 +13,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
     const NOW_REGION = fs.env.value('NOW_REGION');
     const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local';
 
-    const deployedAt = !args.deployedAt
+    const deployed = !args.deployedAt
       ? undefined
       : {
           date: time.day(args.deployedAt).format(`DD MMM YYYY, hh:mm A`),
@@ -30,7 +30,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
       system,
       host,
       region,
-      deployedAt,
+      deployed,
     };
 
     return { status: 200, data };
