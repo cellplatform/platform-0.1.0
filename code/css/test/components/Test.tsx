@@ -7,6 +7,7 @@ css.global({
   body: {
     color: 'white',
     background: '#ED3C6E',
+    fontFamily: undefined,
   },
 });
 
@@ -20,6 +21,7 @@ export class Test extends React.PureComponent<ITestProps> {
         Absolute: 0,
         PaddingX: 30,
         PaddingY: 40,
+        fontFamily: undefined,
       }),
       sample: css({
         Absolute: [30, 50, null, null],
