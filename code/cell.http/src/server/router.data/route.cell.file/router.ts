@@ -31,6 +31,8 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     }
   });
 
+  // TODO 🐷 - remove downloadByIndex
+
   /**
    * GET  File by index (download).
    *      Example: /cell:foo!A1/files/0

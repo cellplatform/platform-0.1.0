@@ -48,14 +48,16 @@ export const downloadFile = async (args: {
     }
 
     // Serve the file if LOCAL file-system.
-    if (util.isFile(location) && fs.type === 'LOCAL') {
+    if (fs.type === 'LOCAL' && util.isFile(location)) {
       const local = await fs.read(fileUri);
       const data = local.file ? local.file.data : undefined;
       if (!data) {
         const err = new Error(`File at the URI [${file.uri}] does on the local file-system.`);
         return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_FOUND });
       } else {
-        return { status: 200, data };
+        const mime = util.toMimetype(filename) || 'application/octet-stream';
+        const headers = { 'content-type': mime };
+        return { status: 200, data, headers };
       }
     }
 

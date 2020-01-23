@@ -12,7 +12,7 @@ export async function downloadFileByName(args: {
 }) {
   const { db, fs, cellUri, filename, matchHash, host, expires } = args;
 
-  const fileid = filename.split('.')[0];
+  const fileid = filename.split('.')[0] || '';
   const ns = Schema.uri.parse<t.ICellUri>(cellUri).parts.ns;
   const fileUri = Schema.uri.create.file(ns, fileid);
 
