@@ -148,8 +148,9 @@ export type IResGetCellFiles = {
 };
 export type IResGetCellFilesFileUrl = {
   uri: string;
-  url: string;
   path: string;
+  url: string;
+  'url:latest': string;
 };
 
 /**
