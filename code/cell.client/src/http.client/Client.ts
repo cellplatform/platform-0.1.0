@@ -3,6 +3,13 @@ import { ClientCell } from './ClientCell';
 import { ClientFile } from './ClientFile';
 import { ClientNs } from './ClientNs';
 
+function clientHeader() {
+  const VERSION = constants.VERSION;
+  const client = `client@${VERSION['@platform/cell.client']}`;
+  const schema = `schema@${VERSION['@platform/cell.schema']}`;
+  return `CellOS; ${client}; ${schema}`;
+}
+
 /**
  * An HTTP client for the CellOS.
  */
@@ -19,10 +26,8 @@ export class Client implements t.IClient {
     this.origin = this.urls.origin;
 
     // Create the HTTP client.
-    const VERSION = constants.VERSION;
-    const header = `client@${VERSION['@platform/cell.client']}, schema@${VERSION['@platform/cell.schema']}`;
     const headers = {
-      'cell-os': header,
+      client: clientHeader(),
     };
     const client = http.create({ headers });
 
