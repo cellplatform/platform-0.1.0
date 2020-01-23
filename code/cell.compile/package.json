@@ -3,20 +3,21 @@
   "version": "0.0.33",
   "description": "Code compilation tools for CellOS.",
   "scripts": {
-    "start": "parcel src/demo/index.html",
+    "start": "parcel demo/react/index.html",
+    "watch": "yarn start",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare",
-    "bundle": "parcel build src/demo/index.html",
-    "clean": "rm -rf dist && rm -rf .parcel-cache"
+    "clean": "sh sh/clean.sh",
+    "bundle": "sh sh/bundle.sh"
   },
   "targets": {
     "main": {
       "engines": {
         "node": ">=4.x",
-        "electron": ">=2.x"
+        "electron": ">=7.x"
       }
     },
     "browser": {
@@ -31,7 +32,9 @@
   "dependencies": {
     "@platform/cell.types": "0.4.8",
     "@platform/libs": "0.2.0",
+    "@platform/log": "^0.1.4",
     "@platform/react": "^0.4.0",
+    "@platform/ui.spinner": "^0.0.116",
     "parcel": "^1.12.4"
   },
   "devDependencies": {
