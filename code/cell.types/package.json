@@ -17,6 +17,7 @@
     "@platform/cache": "0.2.13",
     "@platform/fs.s3.types": "0.1.8",
     "@platform/fsdb.types": "0.6.6",
+    "@platform/http.types": "0.0.3",
     "@platform/libs": "0.2.0",
     "@platform/util.diff": "0.0.14"
   },

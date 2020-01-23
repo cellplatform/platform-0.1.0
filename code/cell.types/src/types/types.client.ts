@@ -16,6 +16,9 @@ export type IClientResponse<T> = {
  */
 export type IClient = {
   readonly origin: string;
+  request$: t.Observable<t.IHttpBefore>;
+  response$: t.Observable<t.IHttpAfter>;
+
   ns(input: string | t.IUrlParamsNs): IClientNs;
   cell(input: string | t.IUrlParamsCell): IClientCell;
   file(input: string | t.IUrlParamsFile): IClientFile;

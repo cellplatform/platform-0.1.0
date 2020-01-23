@@ -18,19 +18,27 @@ export class Client implements t.IClient {
     this.urls = Schema.urls(args.host ?? 8080);
     this.origin = this.urls.origin;
 
+    // Create the HTTP client.
     const VERSION = constants.VERSION;
     const header = `client@${VERSION['@platform/cell.client']}, schema@${VERSION['@platform/cell.schema']}`;
-    this.http = http.create({
-      headers: {
-        'cell-os': header,
-      },
-    });
+    const headers = {
+      'cell-os': header,
+    };
+    const client = http.create({ headers });
+
+    // Store fields.
+    this.http = client;
+    this.request$ = client.before$;
+    this.response$ = client.after$;
   }
 
   /**
    * [Fields]
    */
   public readonly origin: string;
+  public readonly request$: t.IClient['request$'];
+  public readonly response$: t.IClient['response$'];
+
   private readonly urls: t.IUrls;
   private readonly http: t.IHttp;
 
