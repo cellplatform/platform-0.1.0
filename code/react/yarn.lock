@@ -1793,10 +1793,10 @@
     jss-plugin-global "10.0.3"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.2.tgz#f67954e93d2b43f1e0963c1e790d0c2d1c5885f0"
-  integrity sha512-cs8IApMhwExqQcXclWa4lcVrv4MU3I0ZuJPVTLDYGIoxTQ/eeyeDza/lM0eKirAk9lqD2NShlLeHiekQCZOXbg==
+"@platform/css@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.3.tgz#9d8cb70bceb4d31da7239038d61e7ccef1e58411"
+  integrity sha512-odQ23XCqPTqyP3zZ3Z1tX/592V0ol+bWncRtd/vEFTyD0xyvQmifYq2znmWwv32u1GrfHqgkOtcW04b42lNOWw==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/util.is" "0.0.108"

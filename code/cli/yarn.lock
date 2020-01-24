@@ -63,10 +63,10 @@
     rxjs "6.5.4"
     tslib "1.10.0"
 
-"@platform/log@0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.5.tgz#63861786a33f129b6722d9212afe9251f645d034"
-  integrity sha512-P7/FjWwoYNQapttpCXrX4Qy6hqZO6C4VWsJIIqTG9CdmwgDSdxA5kN2OoPXEpYU6PvvIvxX0yS3KGUERO2esXA==
+"@platform/log@0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.6.tgz#558086a8c093f84ff8e89820b2d4d666e61a80fd"
+  integrity sha512-kJS73TlpCaJIwmXjGTu2Llsr3xwcw+bN3Clcn46dTYGbLQEAdVyUGAiKMskfi9/CwVrirucEkOIG1pblyC7+Yg==
   dependencies:
     "@platform/libs" "0.2.0"
     chalk "3.0.0"

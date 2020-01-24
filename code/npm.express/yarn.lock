@@ -63,24 +63,24 @@
     rxjs "6.5.4"
     tslib "1.10.0"
 
-"@platform/log@0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.5.tgz#63861786a33f129b6722d9212afe9251f645d034"
-  integrity sha512-P7/FjWwoYNQapttpCXrX4Qy6hqZO6C4VWsJIIqTG9CdmwgDSdxA5kN2OoPXEpYU6PvvIvxX0yS3KGUERO2esXA==
+"@platform/log@0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.6.tgz#558086a8c093f84ff8e89820b2d4d666e61a80fd"
+  integrity sha512-kJS73TlpCaJIwmXjGTu2Llsr3xwcw+bN3Clcn46dTYGbLQEAdVyUGAiKMskfi9/CwVrirucEkOIG1pblyC7+Yg==
   dependencies:
     "@platform/libs" "0.2.0"
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/npm@0.2.47":
-  version "0.2.47"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.47.tgz#ec624ad081b824204d28387994f224503b41a001"
-  integrity sha512-PhP6gkraomX0Ch4aqRk63YJ2pe5ENLm024vZIRfrM+qJev7qOsm4iwLppVnQdg3Z3ElS4PvPgw6yMeHJoOCcMg==
+"@platform/npm@0.2.48":
+  version "0.2.48"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.48.tgz#69e34f7433eb528a21f7ab1608b747958775f061"
+  integrity sha512-cIzkUANtbIkmZ0gPTfNeKbUxESLncosdHr5njSjP1ZUUcZIHmL3HTYfiw1Uk/VataLWlb5TfusUfR0KBPmhfWA==
   dependencies:
     "@platform/cli.prompt" "0.2.12"
     "@platform/exec" "0.2.44"
     "@platform/fs" "0.5.4"
-    "@platform/log" "0.1.5"
+    "@platform/log" "0.1.6"
     "@platform/types" "0.4.3"
     "@platform/util.value" "0.7.2"
     "@types/semver" "6.2.0"

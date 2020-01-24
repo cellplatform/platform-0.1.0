@@ -1793,10 +1793,10 @@
     jss-plugin-global "10.0.3"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.2.tgz#f67954e93d2b43f1e0963c1e790d0c2d1c5885f0"
-  integrity sha512-cs8IApMhwExqQcXclWa4lcVrv4MU3I0ZuJPVTLDYGIoxTQ/eeyeDza/lM0eKirAk9lqD2NShlLeHiekQCZOXbg==
+"@platform/css@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.3.tgz#9d8cb70bceb4d31da7239038d61e7ccef1e58411"
+  integrity sha512-odQ23XCqPTqyP3zZ3Z1tX/592V0ol+bWncRtd/vEFTyD0xyvQmifYq2znmWwv32u1GrfHqgkOtcW04b42lNOWw==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/util.is" "0.0.108"
@@ -1903,12 +1903,12 @@
     react "16.12.0"
     react-dom "16.12.0"
 
-"@platform/react@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.1.tgz#b2fa82ddf16570f6bbee4841ee9c159def513946"
-  integrity sha512-fObbFo+HUk5fde5YrFWT1bjPqpd0qbDyrshpeRV6zVeDKJop1/dGsyik3z6a5TYtNqAacqo5PLMjYrciLj/aww==
+"@platform/react@0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.3.tgz#69e765df6c4c41bcb566b72fed3d5d6fca44e2d8"
+  integrity sha512-Z+g8XyR1Y3JqQiXdP8/mbVMro88ncoons4c5eoHE1Av3/ClYkRrBxmwyZn/sFiKWr7jm9AMTtNBCp0OVw0RJpw==
   dependencies:
-    "@platform/css" "0.2.2"
+    "@platform/css" "0.2.3"
     "@platform/util.is" "0.0.108"
     "@types/react" "16.9.19"
     "@types/react-dom" "16.9.5"
@@ -1956,12 +1956,12 @@
   dependencies:
     "@platform/react" "0.3.52"
 
-"@platform/ui.icon@0.0.118":
-  version "0.0.118"
-  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.118.tgz#8fd98eb9e3c600a9cbb4d9bd1b860c68bbebce9e"
-  integrity sha512-Uw69/HnVCjEUA8GfT9I9Jv/EMcnSGC6HbnWZh7qch6BTnIbMueh4lmzlf66zy5rKb5sKrfAUs3SbyoC892N/Dg==
+"@platform/ui.icon@0.0.120":
+  version "0.0.120"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.120.tgz#21919910a611158003fa29fa15e090ba13193c26"
+  integrity sha512-qMIC/ZFghqx65d30RTfmhWDPLcbdUuzaW8GWy4rHmsMWib2yl2/wfpDcOnPiFRn+Xo/btEM1TU0xk3/8/179iA==
   dependencies:
-    "@platform/react" "0.4.1"
+    "@platform/react" "0.4.3"
 
 "@platform/ui.object@0.0.172":
   version "0.0.172"

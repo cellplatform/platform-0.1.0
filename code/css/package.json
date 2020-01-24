@@ -1,6 +1,6 @@
 {
   "name": "@platform/css",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Helpers for working with inline CSS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
