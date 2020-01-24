@@ -1,19 +1,18 @@
 #!/bin/bash
-parcel --version
 
 echo 
 cd demo
 
-cd hello-world
-echo Demo: Hello World
-parcel build src/index.html
+echo "hello-world (parcel v1)"
+cd parcel-v1.hello-world && yarn bundle && cd ..
+echo 
+
+echo "react (parcel v1)"
+cd parcel-v1.react && yarn bundle && cd ..
+echo 
+
+echo "hello-world (parcel v2)"
+cd parcel-v2.hello-world && yarn bundle && cd ..
 echo 
 
 
-cd ..
-
-
-# cd react
-# echo Demo: React
-# parcel build src/index.html
-# echo 
