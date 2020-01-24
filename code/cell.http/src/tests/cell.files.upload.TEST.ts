@@ -117,7 +117,6 @@ describe('cell/files: upload', function() {
 
     // Data returned on list.
     const list = (await client.files.list()).body;
-    console.log('list', list);
 
     expect(list.length).to.eql(1);
     expect(list[0].uri).to.match(/^file:foo:/);

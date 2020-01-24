@@ -1,3 +1,6 @@
+import * as cheerio from 'cheerio';
+export { cheerio };
+
 import { uniq, mergeDeepRight } from 'ramda';
 export const R = { uniq, mergeDeepRight };
 

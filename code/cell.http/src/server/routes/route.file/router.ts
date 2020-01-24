@@ -1,6 +1,5 @@
 import { routes, t } from '../common';
-import { deleteFile } from './handler.delete';
-import { downloadFile } from './handler.download';
+import { downloadBinaryFile } from './handler.download.binary';
 import { fileInfo } from './handler.info';
 import { uploadLocalFile } from './handler.upload.local';
 import { uploadFileComplete } from './handler.upload.complete';
@@ -34,7 +33,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const matchHash = query.hash;
     return !ns || error
       ? { status, data: { error } }
-      : downloadFile({ db, fs, fileUri, host, matchHash });
+      : downloadBinaryFile({ db, fs, fileUri, host, matchHash });
   });
 
   /**

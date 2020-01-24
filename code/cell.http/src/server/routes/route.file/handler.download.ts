@@ -1,77 +1,62 @@
 import { ERROR, t, util } from '../common';
 import { fileInfo } from './handler.info';
-import { downloadHtmlFile } from './handler.download.html';
 
-export const downloadFile = async (args: {
+export const downloadFilePreflight = async (args: {
   host: string;
   db: t.IDb;
-  fs: t.IFileSystem;
   fileUri: string;
   filename?: string;
   matchHash?: string;
-  expires?: string;
 }) => {
   try {
-    const { db, fs, fileUri, filename, host, matchHash, expires } = args;
+    const { db, fileUri, filename, host, matchHash } = args;
     const mime = util.toMimetype(filename) || 'application/octet-stream';
+
+    let error: t.IHttpError | undefined;
 
     // Pull the file meta-data.
     const fileResponse = await fileInfo({ fileUri, db, host });
     if (!util.isOK(fileResponse.status)) {
-      return fileResponse; // NB: This is an error.
+      // NB: This is an error.
+      error = (fileResponse as unknown) as t.IHttpError;
+      return { error };
     }
     const file = fileResponse.data as t.IResGetFile;
 
     // Match hash if requested.
     if (typeof matchHash === 'string' && file.data.hash !== matchHash) {
       const identifier = filename ? `'${filename}'` : `[${fileUri}]`;
-      const err = `The requested hash of ${identifier} does not match the hash of the stored file.`;
-      return util.toErrorPayload(err, { status: 409, type: ERROR.HTTP.HASH_MISMATCH });
+      const message = `The requested hash of ${identifier} does not match the hash of the stored file.`;
+      const type = ERROR.HTTP.HASH_MISMATCH;
+      error = { status: 409, type, message };
+      return { error };
     }
 
     // Ensure the file exists.
     if (!file.exists) {
-      const err = new Error(`[${file.uri}] does not exist.`);
-      return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_FOUND });
+      const message = `[${file.uri}] does not exist.`;
+      const type = ERROR.HTTP.NOT_FOUND;
+      error = { status: 404, type, message };
+      return { error };
     }
 
     // Get the location.
     const props = file.data.props;
     const location = (props.location || '').trim();
     if (!location) {
-      const err = new Error(`[${file.uri}] does not have a location.`);
-      return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_FOUND });
+      const message = `[${file.uri}] does not have a location.`;
+      const type = ERROR.HTTP.NOT_FOUND;
+      error = { status: 404, type, message };
+      return { error };
     }
 
-    // HTML: download and serve directly
-    //       dynamically rewriting links.
-    if (mime === 'text/html') {
-      return downloadHtmlFile({ host, db, fs, fileUri, filename, location, expires });
-    }
-
-    // Redirect if the location is an S3 link.
-    if (fs.type === 'S3') {
-      const data = fs.resolve(fileUri, { type: 'SIGNED/get', expires }).path;
-      return { status: 307, data };
-    }
-
-    // Serve the file if LOCAL file-system.
-    if (fs.type === 'LOCAL' && util.isFile(location)) {
-      const local = await fs.read(fileUri);
-      const data = local.file ? local.file.data : undefined;
-      if (!data) {
-        const err = new Error(`File at the URI [${file.uri}] does on the local file-system.`);
-        return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_FOUND });
-      } else {
-        const headers = { 'content-type': mime };
-        return { status: 200, data, headers };
-      }
-    }
-
-    // Something went wrong if we got this far.
-    const err = new Error(`[${file.uri}] could not be served.`);
-    return util.toErrorPayload(err, { status: 500 });
+    // Finish up.
+    return { mime, location, file };
   } catch (err) {
-    return util.toErrorPayload(err);
+    // Fail.
+    const message = err.message;
+    const type = ERROR.HTTP.SERVER;
+    const error = { status: 500, type, message };
+    return { error };
   }
 };

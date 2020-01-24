@@ -1,3 +1,4 @@
+import { t } from '../common';
 import { Uri } from '../uri';
 
 /**
@@ -48,10 +49,13 @@ export class FileLinks {
     }
 
     value = (value || '').trim();
-    const parts = value.split('?');
-    const uri = parts[0];
-    const fileid = uri.split(':')[2];
-    const queries = (parts[1] || '').split('&');
+    const valueParts = value.split('?');
+    const uri = valueParts[0] || '';
+    const uriParts = uri.split(':');
+
+    const ns = uriParts[1];
+    const fileid = uriParts[2];
+    const queries = (valueParts[1] || '').split('&');
 
     const get = (key: string, defaultValue?: string) => {
       const item = queries.find(item => item.startsWith(`${key}=`));
@@ -65,6 +69,7 @@ export class FileLinks {
     return {
       value,
       uri,
+      ns,
       fileid,
       hash,
       status,
@@ -82,6 +87,27 @@ export class FileLinks {
         return `${uri.trim()}${query}`;
       },
     };
+  }
+
+  /**
+   * Converts a links URI map into a list of parsed file refs.
+   */
+  public static toList(links: t.IUriMap = {}) {
+    return Object.keys(links)
+      .map(key => ({ key, value: links[key] }))
+      .filter(({ key }) => FileLinks.is.fileKey(key))
+      .map(({ key, value }) => {
+        const { dir, path, filename, ext } = FileLinks.parseKey(key);
+        const { uri, ns, fileid: id, hash, status } = FileLinks.parseLink(value);
+        return {
+          uri,
+          key,
+          value,
+          file: { ns, id, path, dir, filename, ext },
+          hash,
+          status,
+        };
+      });
   }
 }
 
