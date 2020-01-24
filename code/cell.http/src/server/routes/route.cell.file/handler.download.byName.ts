@@ -78,7 +78,7 @@ async function rewriteRelativePaths(args: {
 
   const updateLink = (args: { attr: string; value: string; el: Cheerio }) => {
     const { attr, value, el } = args;
-    const path = value.replace(/^\.\//, '');
+    const path = value.replace(/^\./, '').replace(/^\//, '');
     const link = fileLinks.find(link => link.file.path === path);
     if (link) {
       const hash = link.hash;
