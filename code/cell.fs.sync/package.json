@@ -25,6 +25,7 @@
     "@platform/http": "0.10.5",
     "@platform/libs": "0.2.0",
     "@platform/log": "0.1.5",
+    "chalk": "3.0.0",
     "open": "7.0.0"
   },
   "devDependencies": {
