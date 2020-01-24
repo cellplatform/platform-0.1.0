@@ -1,10 +1,13 @@
 {
-  "name": "demo.hello-world",
+  "name": "demo.hello-world.v2",
   "version": "0.0.0",
   "source": "src/index.html",
   "scripts": {
     "bundle": "parcel build src/index.html",
     "clean": "rm -rf dist && rm -rf .parcel-cache"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-alpha.3.2"
   },
   "node": "dist/node/index.html",
   "browser": "dist/browser/index.html",
@@ -27,9 +30,6 @@
         ]
       }
     }
-  },
-  "devDependencies": {
-    "parcel": "^2.0.0-alpha.3.2"
   },
   "private": true
 }

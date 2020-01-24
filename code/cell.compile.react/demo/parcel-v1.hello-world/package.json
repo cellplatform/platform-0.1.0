@@ -1,0 +1,12 @@
+{
+  "name": "demo.hello-world.v1",
+  "version": "0.0.0",
+  "scripts": {
+    "bundle": "parcel build src/index.html",
+    "clean": "rm -rf dist && rm -rf .cache"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "private": true
+}
