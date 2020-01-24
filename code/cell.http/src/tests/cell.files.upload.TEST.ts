@@ -17,7 +17,7 @@ describe('cell/files: upload', function() {
 
     // Save and compare.
     const path = fs.resolve('tmp/tmp-download');
-    if (res.body) {
+    if (typeof res.body === 'object') {
       await fs.stream.save(path, res.body);
     }
     expect((await fs.readFile(path)).toString()).to.eql(data.toString());
@@ -69,7 +69,9 @@ describe('cell/files: upload', function() {
       const byName = client.file.name(filename);
       const res = await byName.download();
       const path = fs.resolve(`tmp/download`);
-      await fs.stream.save(path, res.body);
+      if (typeof res.body === 'object') {
+        await fs.stream.save(path, res.body);
+      }
 
       const buffer = await readFile(path);
       expect(buffer.toString()).to.eql(compareWith.toString());
@@ -298,7 +300,7 @@ describe('cell/files: upload', function() {
     // Save and compare the downloaded stream.
     const path = fs.resolve('tmp/test/download/func.wasm');
     const res = await cellClient.file.name('func.wasm').download();
-    if (res.body) {
+    if (typeof res.body === 'object') {
       await fs.stream.save(path, res.body);
     }
     expect((await readFile(path)).toString()).to.eql(file1.toString());

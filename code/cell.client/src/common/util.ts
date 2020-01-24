@@ -23,6 +23,7 @@ export function fromHttpResponse(res: t.IHttpResponse) {
       let body: any = {};
       body = bodyType === 'JSON' ? res.json : body;
       body = bodyType === 'BINARY' ? res.body : body;
+      body = bodyType === 'TEXT' ? res.text : body;
 
       return toClientResponse<T>(status, body);
     },

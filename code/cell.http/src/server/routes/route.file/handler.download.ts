@@ -1,5 +1,6 @@
 import { ERROR, t, util } from '../common';
 import { fileInfo } from './handler.info';
+import { downloadHtmlFile } from './handler.download.html';
 
 export const downloadFile = async (args: {
   host: string;
@@ -13,10 +14,6 @@ export const downloadFile = async (args: {
   try {
     const { db, fs, fileUri, filename, host, matchHash, expires } = args;
     const mime = util.toMimetype(filename) || 'application/octet-stream';
-    const isHtml = mime === 'text/html';
-
-    console.log('mime', mime);
-    console.log('isHtml', isHtml);
 
     // Pull the file meta-data.
     const fileResponse = await fileInfo({ fileUri, db, host });
@@ -44,6 +41,12 @@ export const downloadFile = async (args: {
     if (!location) {
       const err = new Error(`[${file.uri}] does not have a location.`);
       return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_FOUND });
+    }
+
+    // HTML: download and serve directly
+    //       dynamically rewriting links.
+    if (mime === 'text/html') {
+      return downloadHtmlFile({ host, db, fs, fileUri, filename, location, expires });
     }
 
     // Redirect if the location is an S3 link.
