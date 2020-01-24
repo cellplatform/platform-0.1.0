@@ -1,8 +1,8 @@
 #!/bin/bash
 parcel --version
 
-cd demo
 echo 
+cd demo
 
 cd hello-world
 echo Demo: Hello World

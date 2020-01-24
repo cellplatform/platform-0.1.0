@@ -4,6 +4,10 @@
   "source": "src/index.html",
   "node": "dist/node/index.html",
   "browser": "dist/browser/index.html",
+  "scripts": {
+    "bundle": "parcel build src/index.html",
+    "clean": "rm -rf dist && rm -rf .parcel-cache"
+  },
   "dependencies": {
     "@platform/cell.types": "0.4.10",
     "@platform/libs": "0.2.0",

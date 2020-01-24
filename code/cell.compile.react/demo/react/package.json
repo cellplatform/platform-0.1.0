@@ -5,7 +5,8 @@
   "node": "dist/node/index.html",
   "browser": "dist/browser/index.html",
   "scripts": {
-    "bundle": "parcel build src/index.html"
+    "bundle": "parcel build src/index.html",
+    "clean": "rm -rf dist && rm -rf .parcel-cache"
   },
   "dependencies": {
     "react": "^16.12.0"

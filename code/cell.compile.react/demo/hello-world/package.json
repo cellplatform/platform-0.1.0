@@ -2,6 +2,10 @@
   "name": "demo.hello-world",
   "version": "0.0.0",
   "source": "src/index.html",
+  "scripts": {
+    "bundle": "parcel build src/index.html",
+    "clean": "rm -rf dist && rm -rf .parcel-cache"
+  },
   "node": "dist/node/index.html",
   "browser": "dist/browser/index.html",
   "browserslist": [
@@ -23,6 +27,9 @@
         ]
       }
     }
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-alpha.3.2"
   },
   "private": true
 }
