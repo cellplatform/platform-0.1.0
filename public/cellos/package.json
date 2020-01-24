@@ -1,6 +1,6 @@
 {
   "name": "cellos",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "The CellOS (Spreadsheet Based Operating System)",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,11 +17,11 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.cli": "0.2.8"
+    "@platform/cell.cli": "0.2.15"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.10"
+    "@platform/ts": "3.7.11"
   },
   "files": [
     "lib",

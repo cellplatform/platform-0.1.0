@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/exec@0.2.43":
-  version "0.2.43"
-  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.43.tgz#1351c1f97d5b7283ad5727e29e4a33eb34605535"
-  integrity sha512-IjDwIrv3Ns+mrwTPwBYAgUj9Zaq8kC3ZX7VAF62gskCHtcg+xAdco9EjIiKXZzkk/pSAWFyiowbGU/dvZTNE1w==
+"@platform/exec@0.2.44":
+  version "0.2.44"
+  resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.44.tgz#a491104902cd30a3236a5ac911325b009016835e"
+  integrity sha512-zcesKEiZm6/kmib6oNTSaEjOXcvwGYp+TzenkPMY221OHmaaeSoXH15ZhMGEXaIXh80CgMNXN3NJOIJb5FYAHA==
   dependencies:
     "@platform/libs" "0.2.0"
     "@types/listr" "0.14.2"
@@ -29,10 +29,10 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs@0.5.3":
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.5.3.tgz#09f39211c0b42c17c2e248b8d580467e66baaacd"
-  integrity sha512-SdohMYS3kshQA42L+BSl2hLuPyrMMc+1uezixGs1wWdq+gAB4260B4HQetyMKezRqkKs/k2BlDJhNAqZ/5Wxtw==
+"@platform/fs@0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.5.4.tgz#ad845ee304b2177ff78634701595e939c4173c60"
+  integrity sha512-hb5S3yRORGtxqTv0p4zhFeKzTtF+c+ryrfNUGjKbRqpcjP588PE8xbrG8y5AW5z5kYVW4fSeMiUtd7PWk61rgA==
   dependencies:
     "@types/fs-extra" "8.0.1"
     "@types/js-yaml" "3.12.1"

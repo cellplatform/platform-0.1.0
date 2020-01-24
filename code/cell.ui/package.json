@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui",
-  "version": "0.0.95",
+  "version": "0.0.96",
   "description": "Common UI used for working with cells.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,13 +12,13 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.4.12",
+    "@platform/cell.types": "0.4.13",
     "@platform/libs": "0.2.0",
-    "@platform/react": "^0.4.0"
+    "@platform/react": "^0.4.1"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.10"
+    "@platform/ts": "3.7.11"
   },
   "files": [
     "lib",

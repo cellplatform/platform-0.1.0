@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "File-system tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
