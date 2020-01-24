@@ -1,2 +1,1 @@
-import { uniq } from 'ramda';
-export const R = { uniq };
+export { cli, chalk, log } from '@platform/cli';

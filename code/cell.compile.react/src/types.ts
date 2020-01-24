@@ -1,1 +1,1 @@
-export type TEMP = string;
+export type TEMP_Compile_Reat = string; // TEMP 🐷
