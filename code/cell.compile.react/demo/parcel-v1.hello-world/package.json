@@ -1,9 +1,11 @@
 {
-  "name": "demo.hello-world.v1",
+  "name": "parcel-v1.hello-world",
   "version": "0.0.0",
   "scripts": {
+    "watch": "parcel src/index.html",
     "bundle": "parcel build src/index.html",
-    "clean": "rm -rf dist && rm -rf .cache"
+    "clean": "rm -rf dist && rm -rf .cache",
+    "serve": "cd dist && serve"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4"

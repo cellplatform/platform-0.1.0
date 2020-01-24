@@ -1,10 +1,12 @@
 {
-  "name": "demo.hello-world.v2",
+  "name": "parcel-v2.hello-world",
   "version": "0.0.0",
   "source": "src/index.html",
   "scripts": {
+    "watch": "parcel src/index.html",
     "bundle": "parcel build src/index.html",
-    "clean": "rm -rf dist && rm -rf .parcel-cache"
+    "clean": "rm -rf dist && rm -rf .parcel-cache",
+    "serve": "cd dist/browser && serve"
   },
   "devDependencies": {
     "parcel": "^2.0.0-alpha.3.2"
