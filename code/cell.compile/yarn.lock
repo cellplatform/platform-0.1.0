@@ -1447,22 +1447,22 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.compile.react@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@platform/cell.compile.react/-/cell.compile.react-0.0.3.tgz#0b3315ae7cb7e671600a1cb3d657cef1ce3e1d24"
-  integrity sha512-/8zaYXjVL7fvqYA7sX100LiEnOPYNAvTcm7GPlE4aePm0MzMSKBlkcVqA2y1s7EknJdD5P5ea+Q1LulNSCE9gA==
+"@platform/cell.compile.react@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/cell.compile.react/-/cell.compile.react-0.0.4.tgz#c52408a98b8caf0c0d0b6fcb933f757d708e9086"
+  integrity sha512-KEUP0a/vUQQx6Bv9tF1nOSCzjppDJBm+nfQ/7DLijH3pESgSAVQPmYf89avqAlhD7pW6MfX6XqgU+UhLvLxQ3A==
   dependencies:
-    "@platform/cell.types" "0.4.11"
+    "@platform/cell.types" "0.4.12"
     "@platform/libs" "0.2.0"
     "@platform/log" "^0.1.4"
     "@platform/react" "^0.4.0"
     "@platform/ui.spinner" "^0.0.116"
     parcel "^2.0.0-alpha.3.2"
 
-"@platform/cell.types@0.4.11":
-  version "0.4.11"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.11.tgz#0709b9eeb60fdf9950a1f7eb66931192bf93fa93"
-  integrity sha512-p7jubQ83jKnAUZavqOBh0/ga1w2NHMC3VXia2ab/h+OzX2f1ma8rfP4hwZ4r9BwD5jW4Xa23cRFWFWipIvqQDw==
+"@platform/cell.types@0.4.12":
+  version "0.4.12"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.12.tgz#fcf0c410a64f06618be8c4988d3c44e04e9cf708"
+  integrity sha512-6//JYURi9Lh5xumgvDVbQhM3wSPWkCocAeo+qdPJAyQb2+c4Ehgpvvrkn9kLKE/WCba4cg2Qh0gIxjPfPzm3fg==
   dependencies:
     "@platform/cache" "0.2.13"
     "@platform/fs.s3.types" "0.1.8"

@@ -1447,10 +1447,10 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.types@0.4.11":
-  version "0.4.11"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.11.tgz#0709b9eeb60fdf9950a1f7eb66931192bf93fa93"
-  integrity sha512-p7jubQ83jKnAUZavqOBh0/ga1w2NHMC3VXia2ab/h+OzX2f1ma8rfP4hwZ4r9BwD5jW4Xa23cRFWFWipIvqQDw==
+"@platform/cell.types@0.4.12":
+  version "0.4.12"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.12.tgz#fcf0c410a64f06618be8c4988d3c44e04e9cf708"
+  integrity sha512-6//JYURi9Lh5xumgvDVbQhM3wSPWkCocAeo+qdPJAyQb2+c4Ehgpvvrkn9kLKE/WCba4cg2Qh0gIxjPfPzm3fg==
   dependencies:
     "@platform/cache" "0.2.13"
     "@platform/fs.s3.types" "0.1.8"
