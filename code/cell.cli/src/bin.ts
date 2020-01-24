@@ -2,6 +2,8 @@
 import * as fsSync from '@platform/cell.fs.sync/lib/cli';
 // import * as compile from '@platform/cell.compile/lib/cli';
 
+const pkg = require('../package.json') as { version: string };
+
 import { cli } from './common';
 
 /**
@@ -29,5 +31,6 @@ fsSync.init(app.plugins);
 /**
  * Run the application.
  */
+cli.log.info.gray(`v${pkg.version}`);
 cli.log.info('');
 app.run();

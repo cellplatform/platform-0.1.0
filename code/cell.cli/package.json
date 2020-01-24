@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@platform/cell.client": "0.1.13",
-    "@platform/cell.compile": "0.0.39",
     "@platform/cell.fs.sync": "0.3.18",
     "@platform/cell.schema": "0.4.14",
     "@platform/cell.types": "0.4.13",
@@ -27,7 +26,9 @@
     "@platform/fs": "0.5.4",
     "@platform/http": "0.10.5",
     "@platform/libs": "0.2.0",
-    "@platform/types": "0.4.3"
+    "@platform/log": "^0.1.5",
+    "@platform/types": "0.4.3",
+    "chalk": "^3.0.0"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",
