@@ -1,11 +1,7 @@
 import { defaultValue, ERROR, t } from '../common';
 import { getParams as getParamsFiles, ParamAnd, ParamOr } from '../route.cell.files/params';
 
-export const getParams = (args: {
-  params: ParamOr;
-  filenameRequired?: boolean;
-  indexRequired?: boolean;
-}) => {
+export const getParams = (args: { params: ParamOr; filenameRequired?: boolean }) => {
   const params = args.params as ParamAnd;
   const toString = (input?: any) => (input || '').toString().trim();
   const toMessage = (msg: string) => `Malformed URI, ${msg}`;
@@ -17,7 +13,6 @@ export const getParams = (args: {
     key,
     cellUri,
     filename: toString(params.filename || ''),
-    index: defaultValue<number>(params.index as number, -1),
   };
 
   const error: t.IError = {
@@ -27,11 +22,6 @@ export const getParams = (args: {
 
   if (!data.filename && args.filenameRequired) {
     error.message = toMessage('does not contain a filename');
-    return { ...data, status: 400, error };
-  }
-
-  if (data.index < 0 && args.indexRequired) {
-    error.message = toMessage('does not contain a file index');
     return { ...data, status: 400, error };
   }
 

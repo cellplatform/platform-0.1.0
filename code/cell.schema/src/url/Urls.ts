@@ -203,18 +203,6 @@ export class Urls implements t.IUrls {
           const ext = (fileExtension || '').trim();
           return api.file.byName(`${uri.file}${ext ? `.${ext}` : ''}`);
         },
-
-        /**
-         * Example: /cell:foo!A1/files/0
-         */
-        byIndex(input: number | string) {
-          type Q = t.IUrlQueryCellFileDownloadByIndex;
-          const index = value.toNumber(input);
-          if (typeof index !== 'number') {
-            throw new Error(`File index not provided.`);
-          }
-          return toPath<Q>(`/cell:${ns}!${key}/files/${index}`);
-        },
       },
     };
 

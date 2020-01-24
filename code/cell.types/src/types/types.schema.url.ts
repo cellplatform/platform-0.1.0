@@ -51,7 +51,6 @@ export type IUrlParamsCell = { ns: string; key: string };
 
 export type IUrlParamsCellFiles = IUrlParamsCell;
 export type IUrlParamsCellFileByName = IUrlParamsCell & { filename: string };
-export type IUrlParamsCellFileByIndex = IUrlParamsCell & { index: number };
 
 /**
  * Query-string parameters for a [Cell].
@@ -77,10 +76,6 @@ export type IUrlQueryCellFilesDelete = {};
  */
 export type IUrlQueryCellFileInfo = IUrlQueryFileInfo & {};
 export type IUrlQueryCellFileDownloadByName = IUrlQueryCellFileInfo & {
-  hash?: string;
-  expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
-};
-export type IUrlQueryCellFileDownloadByIndex = IUrlQueryCellFileInfo & {
   hash?: string;
   expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
 };
