@@ -1,8 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-console.log('👋 Hello React from TypeScript');
-
 const MyApp = () => {
   return (
     <div>

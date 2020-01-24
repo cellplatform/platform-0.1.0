@@ -6,7 +6,7 @@
   "browser": "dist/browser/index.html",
   "scripts": {
     "watch": "parcel src/index.html",
-    "bundle": "parcel build src/index.html",
+    "bundle": "parcel build src/index.html --experimental-scope-hoisting",
     "clean": "rm -rf dist && rm -rf .cache",
     "serve": "cd dist && serve"
   },
