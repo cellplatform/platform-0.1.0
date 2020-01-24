@@ -2,7 +2,7 @@ import { filter } from 'rxjs/operators';
 
 import { constants, log, micro, t, util, value } from './common';
 import * as router from './router';
-import { beforeResponse } from './server.beforeResponse';
+import { prepareResponse } from './server.prepareResponse';
 
 export { Config } from './config';
 
@@ -47,7 +47,7 @@ export function init(args: {
 
   // Make common checks/adjustments to responses
   // before they are sent over the wire.
-  app.response$.subscribe(beforeResponse);
+  app.response$.subscribe(prepareResponse);
 
   // Log routes.
   app.events$

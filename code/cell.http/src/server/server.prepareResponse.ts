@@ -4,7 +4,7 @@ import { constants, micro } from './common';
  * Make common checks/adjustments to responses
  * before they are sent over the wire.
  */
-export function beforeResponse(e: micro.IMicroResponse) {
+export function prepareResponse(e: micro.IMicroResponse) {
   const changes: any = {};
 
   // Add default cache headers.
