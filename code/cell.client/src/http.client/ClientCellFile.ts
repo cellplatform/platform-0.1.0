@@ -80,6 +80,9 @@ export class ClientCellFile implements t.IClientCellFile {
         // Request the download.
         const res = await http.get(url);
         if (res.ok) {
+          console.log('res.text', res.text);
+          console.log('res.headers', res.headers);
+
           return util
             .fromHttpResponse(res)
             .toClientResponse<ReadableStream>({ bodyType: 'BINARY' });

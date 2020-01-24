@@ -3,11 +3,13 @@ import { t } from '../common';
 /**
  * Response.
  */
+export type ClientBodyType = 'JSON' | 'TEXT' | 'BINARY';
 export type IClientAsync<T> = Promise<IClientResponse<T>>;
 export type IClientResponse<T> = {
   ok: boolean;
   status: number;
   body: T;
+  bodyType: ClientBodyType;
   error?: t.IHttpError;
 };
 

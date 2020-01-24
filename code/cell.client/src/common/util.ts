@@ -1,6 +1,5 @@
 import * as t from './types';
 import { ERROR } from './constants';
-import { value } from './libs';
 
 /**
  * Determine if the status code represents an OK status (200).
@@ -17,7 +16,7 @@ export function fromHttpResponse(res: t.IHttpResponse) {
     /**
      * Convert raw HTTP response to the standard client-response object.
      */
-    toClientResponse<T>(options: { bodyType?: 'JSON' | 'BINARY' } = {}): t.IClientResponse<T> {
+    toClientResponse<T>(options: { bodyType?: t.ClientBodyType } = {}): t.IClientResponse<T> {
       const { bodyType = 'JSON' } = options;
       const { status } = res;
 
@@ -33,10 +32,15 @@ export function fromHttpResponse(res: t.IHttpResponse) {
 /**
  * Prepare the standard client-response object.
  */
-export function toClientResponse<T>(status: number, body: T): t.IClientResponse<T> {
+export function toClientResponse<T>(
+  status: number,
+  body: T,
+  options: { bodyType?: t.ClientBodyType; error?: t.IHttpError } = {},
+): t.IClientResponse<T> {
+  const { bodyType = 'JSON', error } = options;
   const ok = isOK(status);
   if (ok) {
-    return { ok, status, body };
+    return { ok, status, body, bodyType, error };
   } else {
     if (isError(body)) {
       // NB:  The body that has been returned is an [IHttpError] rather than
@@ -60,9 +64,10 @@ export function toError<T>(
   body?: T,
 ): t.IClientResponse<T> {
   const error: t.IHttpError = { status, type, message };
-  const ok = false;
+  status = isOK(status) ? 500 : status; // NB: Ensure no OK status is handed back with the error.
   body = body || (({} as unknown) as T); // HACK typescript sanity - because this is an error the calling code should beware.
-  return { ok, status, body, error };
+  const res = { ok: false, status, body, bodyType: 'JSON', error };
+  return res as t.IClientResponse<T>;
 }
 
 /**
