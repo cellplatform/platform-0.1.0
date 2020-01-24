@@ -5,7 +5,13 @@ body {
 }
 
 h1 {
-  font-size: 64px;
+  font-size: 74px;
   margin: 0px;
-  margin-bottom: 20px;
+  margin-bottom: 45px;
+  letter-spacing: -2.5px;
+}
+
+#root {
+  font-size: 26px;
+  line-height: 1.4em;
 }
