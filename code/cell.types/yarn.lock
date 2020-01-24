@@ -68,7 +68,7 @@
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.2"
 
-"@platform/http.types@0.0.3", "@platform/http.types@^0.0.3":
+"@platform/http.types@0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.3.tgz#77f750f2d3090f2682a1e5edc76711d569fff35a"
   integrity sha512-3iRoeH5jGKKkh4WwnXcbk0hSUGekfsLCKI+6IKQJXAN4Uw+Yk6LZPamHCeoA5IE/DwhUucdVipt2NK8DyeOtaA==
