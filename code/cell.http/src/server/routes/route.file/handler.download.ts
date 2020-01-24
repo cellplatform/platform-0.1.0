@@ -10,9 +10,14 @@ export const downloadFile = async (args: {
   matchHash?: string;
   expires?: string;
 }) => {
-  const { db, fs, fileUri, filename, host, matchHash, expires } = args;
-
   try {
+    const { db, fs, fileUri, filename, host, matchHash, expires } = args;
+    const mime = util.toMimetype(filename) || 'application/octet-stream';
+    const isHtml = mime === 'text/html';
+
+    console.log('mime', mime);
+    console.log('isHtml', isHtml);
+
     // Pull the file meta-data.
     const fileResponse = await fileInfo({ fileUri, db, host });
     if (!util.isOK(fileResponse.status)) {
@@ -55,7 +60,6 @@ export const downloadFile = async (args: {
         const err = new Error(`File at the URI [${file.uri}] does on the local file-system.`);
         return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_FOUND });
       } else {
-        const mime = util.toMimetype(filename) || 'application/octet-stream';
         const headers = { 'content-type': mime };
         return { status: 200, data, headers };
       }
