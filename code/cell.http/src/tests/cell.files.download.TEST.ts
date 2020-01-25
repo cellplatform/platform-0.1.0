@@ -63,43 +63,72 @@ describe('cell/files: download', function() {
     await mock.dispose();
   });
 
-  it('download HTML and re-write relative links', async () => {
-    const mock = await createMock();
-    const cellUri = 'cell:foo!A1';
-    const client = mock.client.cell(cellUri);
-
-    // Upload HTML file.
-    const filename = 'index.html';
-    const file = {
-      html: await readFile('src/test/assets/index.html'),
-      css: await readFile('src/test/assets/style.css'),
-      js: await readFile('src/test/assets/file.js'),
+  describe.only('download HTML and dynamically re-write relative links', () => {
+    const readFiles = async () => {
+      return {
+        html: await readFile('src/test/assets/index.html'),
+        css: await readFile('src/test/assets/style.css'),
+        js: await readFile('src/test/assets/file.js'),
+      };
     };
 
-    await client.files.upload([
-      { filename, data: file.html },
-      { filename: 'assets/style.css', data: file.css },
-      { filename: 'file.js', data: file.js },
-    ]);
+    it('from root: /index.html', async () => {
+      const mock = await createMock();
+      const cellUri = 'cell:foo!A1';
+      const client = mock.client.cell(cellUri);
 
-    // Download the file and check headers.
-    let headers: undefined | t.IHttpHeaders;
-    mock.client.response$.subscribe(e => (headers = e.response.headers));
-    const res = await client.file.name(filename).download();
-    const html = await bodyToText(res.body);
+      // Upload HTML file.
+      const files = await readFiles();
+      // const filename = ;
+      await client.files.upload([
+        { filename: 'index.html', data: files.html },
+        { filename: 'assets/style.css', data: files.css },
+        { filename: 'file.js', data: files.js },
+      ]);
 
-    expect(headers && headers['content-type']).to.eql('text/html');
+      // Download the file and check headers.
+      let headers: undefined | t.IHttpHeaders;
+      mock.client.response$.subscribe(e => (headers = e.response.headers));
+      const res = await client.file.name('/index.html').download();
+      const html = await bodyToText(res.body);
 
-    // Ensure absolute links remain unchanged
-    expect(html).to.contain('<link rel="stylesheet" href="style.css">');
-    expect(html).to.contain('<link rel="stylesheet" href="https://foo.com/style.css">');
-    expect(html).to.contain('<script src="https://foo.com/file.js"></script>');
+      expect(headers && headers['content-type']).to.eql('text/html');
 
-    // Ensure relative links have been updated.
-    expect(html).to.contain('<script id="app" src="http://localhost:');
-    expect(html).to.contain('<link id="styles" rel="stylesheet" href="http://localhost:');
+      // Ensure absolute links remain unchanged
+      expect(html).to.contain('<link rel="stylesheet" href="style.css">');
+      expect(html).to.contain('<link rel="stylesheet" href="https://foo.com/style.css">');
+      expect(html).to.contain('<script src="https://foo.com/file.js"></script>');
 
-    // Finish up.
-    await mock.dispose();
+      // Ensure relative links have been updated.
+      expect(html).to.contain('<script id="app" src="http://localhost:');
+      expect(html).to.contain('<link id="styles" rel="stylesheet" href="http://localhost:');
+
+      // Finish up.
+      await mock.dispose();
+    });
+
+    it('from sub-folder: /foo/index.html', async () => {
+      const mock = await createMock();
+      const cellUri = 'cell:foo!A1';
+      const client = mock.client.cell(cellUri);
+
+      // Upload HTML file.
+      const files = await readFiles();
+      // const filename = 'index.html';
+      await client.files.upload([
+        { filename: '/foo/index.html', data: files.html },
+        { filename: '/foo/assets/style.css', data: files.css },
+        { filename: '/foo/file.js', data: files.js },
+      ]);
+
+      const res = await client.file.name('/foo/index.html').download();
+      const html = await bodyToText(res.body);
+
+      console.log('-------------------------------------------');
+      console.log('html', html);
+
+      // Finish up.
+      await mock.dispose();
+    });
   });
 });

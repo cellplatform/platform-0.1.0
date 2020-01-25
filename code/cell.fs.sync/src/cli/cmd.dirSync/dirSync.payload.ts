@@ -66,7 +66,11 @@ export async function buildPayload(args: {
   }
 
   // Prepare files.
-  const paths = await fs.glob.find(`${args.dir}/**`, { dot: false, includeDirs: false });
+  const paths = await fs.glob.find(`${args.dir}/**`, {
+    dot: false,
+    includeDirs: false,
+    ignore: ['**/node_modules/**'],
+  });
 
   const wait = paths.map(async localPath => {
     const data = await fs.readFile(localPath);
