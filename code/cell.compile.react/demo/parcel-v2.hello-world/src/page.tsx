@@ -6,6 +6,18 @@ console.log('👋 console.log():');
 console.log('👋   Hello World!');
 console.log('👋');
 
+const url = {
+  future: 'https://youtu.be/JvoCIPKWobs',
+};
+
 const el = document.getElementById('root');
-const message = `Text updated from TypeScript. (Parcel v2)`;
-el.innerHTML = `<strong>${message}</strong> ${LOREM}`;
+const message = `Text updated from TypeScript (Bundler: Parcel v2).`;
+el.innerHTML = `
+  <strong>${message}</strong> 
+  ${LOREM}
+  <ul>
+    <li>
+      <a href="${url.future}">The History of the Future</a>
+    </li>
+  </ul>
+`;

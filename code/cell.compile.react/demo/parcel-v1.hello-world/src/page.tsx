@@ -7,5 +7,5 @@ console.log('👋   Hello World!');
 console.log('👋');
 
 const el = document.getElementById('root');
-const message = `Text updated from TypeScript. (Parcel v1)`;
+const message = `Text updated from TypeScript. (Bundler: Parcel v1)`;
 el.innerHTML = `<strong>${message}</strong> ${LOREM}`;

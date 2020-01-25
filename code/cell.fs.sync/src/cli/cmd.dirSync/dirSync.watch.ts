@@ -81,6 +81,9 @@ export async function watchDir(args: {
         syncPush();
       }
     }
+    if (e.key === 'c') {
+      util.openConfig();
+    }
   });
 
   let history: IHistoryItem[] = [];
@@ -128,6 +131,7 @@ export async function watchDir(args: {
     gray(`• [${color('l')}] open local folder`);
     gray(`• [${color('r')}] open remote target in browser`);
     gray(`• [${color('s', !isSyncing)}] sync push to remote target`);
+    gray(`• [${color('c')}] edit configuration`);
     gray(`• [${color('ctrl + c')}] exit`);
   };
 

@@ -11,7 +11,8 @@
     "build": "ts build",
     "prepare": "ts prepare",
     "clean": "sh sh/clean.sh",
-    "bundle": "sh sh/bundle.sh"
+    "bundle": "sh sh/bundle.sh",
+    "update": "sh sh/update.sh"
   },
   "dependencies": {
     "@platform/cell.types": "0.4.15",

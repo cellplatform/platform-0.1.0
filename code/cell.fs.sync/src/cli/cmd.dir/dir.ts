@@ -1,6 +1,8 @@
-import { log, promptConfig, util } from '../common';
+import { log, promptConfig, util, fs, open } from '../common';
 
 const gray = log.info.gray;
+
+// import { open as openTarget } from './libs';
 
 /**
  * Inspect or configure a folder.
@@ -11,6 +13,12 @@ export async function dir(args: {
   local: boolean;
   remote: boolean;
 }) {
+  // Open configuation in code-editor if re-edit is required
+  // and the folder has already been configured.
+  if (args.configure) {
+    return util.openConfig();
+  }
+
   // Retrieve (or build) configuration file for the directory.
   const config = await promptConfig({ dir: args.dir, force: args.configure });
   if (!config.isValid) {
@@ -45,7 +53,7 @@ export async function dir(args: {
   if (args.local) {
     util.open(config).local();
   } else {
-    gray(`• Use ${cmd('--local', 'l')} to open folder locally`);
+    gray(`• Use ${cmd('--local', '-l')} to open folder locally`);
     count++;
   }
 
@@ -53,9 +61,12 @@ export async function dir(args: {
   if (args.remote) {
     util.open(config).remote();
   } else {
-    gray(`• Use ${cmd('--remote', 'r')} to open remote target in browser`);
+    gray(`• Use ${cmd('--remote', '-r')} to open remote target in browser`);
     count++;
   }
+
+  gray(`• Use ${cmd('--configure', '-c')} to reconfigure the folder`);
+  count++;
 
   // Watch command.
   if (count > 0) {
