@@ -12,7 +12,7 @@
     "parcel": "^2.0.0-alpha.3.2"
   },
   "node": "dist/node/index.html",
-  "browser": "dist/browser/index.html",
+  "web": "dist/web/index.html",
   "browserslist": [
     "> 1%",
     "not dead"
@@ -24,7 +24,7 @@
         "electron": ">=7.x"
       }
     },
-    "browser": {
+    "web": {
       "engines": {
         "browsers": [
           "> 1%",
