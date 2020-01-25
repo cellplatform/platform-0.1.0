@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { toPositionEdges } from '../css/css';
+import { toPositionEdges } from '../css';
 import { style } from '..';
 
 describe('React: transformStyle - positioning', () => {

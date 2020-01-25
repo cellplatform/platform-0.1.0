@@ -1,8 +1,19 @@
 import { expect } from 'chai';
-// import { transform } from '../css/css';
-import { style } from '..';
+import { style, css } from '..';
 
 describe('css', () => {
+  it('is a function', () => {
+    expect(css).to.be.an.instanceof(Function);
+  });
+});
+
+describe('style', () => {
+  describe('format', () => {
+    it('is a function', () => {
+      expect(style.format).to.be.an.instanceof(Function);
+    });
+  });
+
   describe('transform', () => {
     it('is a function', () => {
       expect(style.transform).to.be.an.instanceof(Function);

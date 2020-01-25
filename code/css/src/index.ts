@@ -1,7 +1,6 @@
-import { ICssStyle } from './types';
+import { ICssStyle, CssValue, CssProps } from './types';
 
-export { CssValue, CssProps } from './types';
-export { css } from './css';
+export { CssValue, CssProps };
 export { color } from './color';
 
 /**
@@ -9,3 +8,4 @@ export { color } from './color';
  */
 import * as api from './style';
 export const style = api as ICssStyle;
+export const css = style.format;

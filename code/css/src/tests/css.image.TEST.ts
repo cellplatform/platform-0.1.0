@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { MEDIA_QUERY_RETINA, image } from '../css/css';
+import { MEDIA_QUERY_RETINA, image } from '../css';
 import { style } from '..';
 
 const browserWindow: any = global;

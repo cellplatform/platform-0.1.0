@@ -14,16 +14,15 @@ export type CssMergeRules = (...rules: any[]) => CssProps;
 export type CssFormat = (...styles: Array<t.CssProps | CssValue | Falsy>) => CssValue;
 
 export type ICssStyle = {
-  global: CssGlobal;
   transform: typeof transform;
+  format: CssFormat;
+  global: CssGlobal;
   head: ICssHead;
+  image: CssFormatImage;
   toEdges: CssToEdges<ICssEdges>;
   toMargins: CssToEdges<ICssMarginEdges>;
   toPadding: CssToEdges<ICssPaddingEdges>;
-  image: CssFormatImage;
 };
-
-export type ICssStyleFormat = ICssStyle & CssFormat;
 
 /**
  * Global
