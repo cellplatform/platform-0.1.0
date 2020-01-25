@@ -8,7 +8,7 @@ import {
   coord,
   css,
   func,
-  GlamorValue,
+  CssValue,
   Uri,
   t,
   util,
@@ -25,7 +25,7 @@ export type IDebugCellProps = {
   refs?: any;
   isCurrent?: boolean;
   theme?: 'DARK';
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IDebugCellState = {};
 

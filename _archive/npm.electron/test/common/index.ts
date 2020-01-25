@@ -7,7 +7,7 @@ export * from '@platform/cli.spec';
 export { Npm } from '../../src/renderer';
 export { renderer } from '@platform/electron/lib/renderer';
 export { ObjectView, Button, Hr, CommandShell } from '@uiharness/ui';
-export { css, color, GlamorValue } from '@platform/react';
+export { css, color, CssValue } from '@platform/react';
 
 export { t };
 

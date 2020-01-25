@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, MONOSPACE, t } from '../common';
+import { color, css, CssValue, MONOSPACE, t } from '../common';
 import { ObjectView } from './primitives';
 
 export type IActionProps = {
   index: number;
   event: t.IStoreEvent;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IActionState = {
   isOpen?: boolean;

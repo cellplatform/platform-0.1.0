@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
 import { drag } from '../../src';
-import { color, css, GlamorValue } from './common';
+import { color, css, CssValue } from './common';
 
 const RED = 'rgba(255, 0, 0, 0.1)';
 const CLI = {
@@ -17,7 +17,7 @@ const CLI = {
   PURPLE: '#8F2298',
 };
 
-export type IDragTestProps = { style?: GlamorValue };
+export type IDragTestProps = { style?: CssValue };
 export type IDragTestState = { event?: drag.IDragPositionEvent };
 
 export class DragTest extends React.PureComponent<IDragTestProps, IDragTestState> {

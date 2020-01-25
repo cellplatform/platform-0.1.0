@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { Button } from '../Button';
-import { color, css, defaultValue, GlamorValue, mouse, R, t } from '../common';
+import { color, css, defaultValue, CssValue, mouse, R, t } from '../common';
 import { SwitchTheme } from './SwitchTheme';
 
 export type ISwitchProps = mouse.IMouseEventProps & {
@@ -18,7 +18,7 @@ export type ISwitchProps = mouse.IMouseEventProps & {
   theme?: t.SwitchThemeName | Partial<t.ISwitchTheme>;
   transitionSpeed?: number;
   events$?: Subject<t.SwitchEvent>;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type ISwitchState = {
   isDown?: boolean;

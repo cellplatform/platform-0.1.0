@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, IMAGES, t, constants } from '../../../common';
+import { color, COLORS, css, CssValue, IMAGES, t, constants } from '../../../common';
 import { TextInput, TextInputChangeEvent } from '../../primitives';
 
 const { MONOSPACE } = constants.FONT;
 
 export type IDbHeaderProps = {
   db: t.ITestRendererDb;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IDbHeaderState = {
   name?: string;

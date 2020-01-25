@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, css, defaultValue, GlamorValue, mouse, t } from '../common';
+import { color, css, CssValue, defaultValue, mouse, style, t } from '../common';
 import { ButtonTheme } from './ButtonTheme';
 
 export type IButtonProps = mouse.IMouseEventProps & {
@@ -18,7 +18,7 @@ export type IButtonProps = mouse.IMouseEventProps & {
   minWidth?: number;
   tooltip?: string;
   events$?: Subject<t.ButtonEvent>;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export type IButtonState = {
@@ -138,7 +138,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
 
     const styles = {
       base: css({
-        ...css.toMargins(this.props.margin),
+        ...style.toMargins(this.props.margin),
         boxSizing: 'border-box',
         position: 'relative',
         display: block ? 'block' : 'inline-block',
@@ -156,7 +156,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
       border:
         theme.border.isVisible &&
         css({
-          ...css.toPadding(theme.border.padding),
+          ...style.toPadding(theme.border.padding),
           border: `solid ${theme.border.thickness}px ${color.format(theme.border.color)}`,
           borderRadius: theme.border.radius,
         }),

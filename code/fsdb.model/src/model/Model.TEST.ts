@@ -1,4 +1,5 @@
 import { filter, map } from 'rxjs/operators';
+
 import { Model } from '.';
 import { expect, getTestDb, t, time } from '../test';
 
@@ -300,7 +301,7 @@ describe('model', () => {
       await time.wait(50);
       await db.put(org.path, org.doc);
       await model.load({ force: true });
-      expect(model.modifiedAt).to.be.within(now + 45, now + 75);
+      expect(model.modifiedAt).to.be.within(now + 45, now + 90);
     });
   });
 

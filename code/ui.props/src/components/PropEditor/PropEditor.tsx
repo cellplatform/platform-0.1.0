@@ -9,7 +9,7 @@ import {
   COLORS,
   constants,
   css,
-  GlamorValue,
+  CssValue,
   Icons,
   Button,
   IIcon,
@@ -34,7 +34,7 @@ export type IPropEditorProps = {
   renderValue?: t.PropValueFactory;
   isDeletable?: boolean;
   events$: Subject<t.PropsEvent>;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export type IPropEditorState = {

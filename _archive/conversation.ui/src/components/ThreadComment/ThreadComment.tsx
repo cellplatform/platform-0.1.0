@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, CSS, css, GlamorValue, markdown, t, COLORS } from '../../common';
+import { color, CSS, css, CssValue, markdown, t, COLORS } from '../../common';
 import { Avatar, Text } from '../primitives';
 import { Editor } from './components/Editor';
 import { Triangle } from './components/Triangle';
@@ -16,7 +16,7 @@ export type IThreadCommentProps = {
   body?: string;
   isEditing?: boolean;
   editor$?: Subject<t.TextEditorEvent>;
-  style?: GlamorValue;
+  style?: CssValue;
   onComment?: (e: {}) => void;
 };
 export type IThreadCommentState = {};
@@ -177,7 +177,7 @@ export class ThreadComment extends React.PureComponent<IThreadCommentProps, IThr
     );
   }
 
-  private renderEmpty(props: { message?: string; style?: GlamorValue } = {}) {
+  private renderEmpty(props: { message?: string; style?: CssValue } = {}) {
     const { message = 'Nothing to display.' } = props;
     const styles = {
       base: css({

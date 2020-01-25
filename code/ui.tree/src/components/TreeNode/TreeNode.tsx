@@ -2,8 +2,9 @@ import * as React from 'react';
 
 import {
   color,
+  style,
   css,
-  GlamorValue,
+  CssValue,
   ITreeNode,
   mouse,
   t,
@@ -53,7 +54,7 @@ export type ITreeNodeProps = {
   isInline?: boolean;
   isFirst: boolean;
   isLast: boolean;
-  style?: GlamorValue;
+  style?: CssValue;
   onMouse?: TreeNodeMouseEventHandler;
 };
 
@@ -171,7 +172,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   public render() {
     const props = this.nodeProps;
     const isEnabled = this.isEnabled;
-    const padding = css.toPadding(props.padding, { defaultValue: DEFAULT.PADDING });
+    const padding = style.toPadding(props.padding, { defaultValue: DEFAULT.PADDING });
     const opacity = this.opacity;
     const styles = {
       base: css({

@@ -13,7 +13,7 @@ import {
   css,
   defaultValue,
   events,
-  GlamorValue,
+  CssValue,
   Handsontable as TableLib,
   t,
 } from '../common';
@@ -30,7 +30,7 @@ export type IDataGridProps = {
   events$?: Subject<t.GridEvent>;
   initial?: t.IInitialGridState;
   canSelectAll?: boolean;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IDataGridState = { size?: t.ISize };
 

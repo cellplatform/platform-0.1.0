@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 
-import { events, GlamorValue, Keyboard, str, t, defaultValue } from '../../common';
+import { events, CssValue, Keyboard, str, t, defaultValue } from '../../common';
 import { CommandPromptInput } from '../CommandPromptInput';
 import { History } from './History';
 import { ICommandPromptTheme } from './types';
@@ -19,7 +19,7 @@ export type ICommandPromptProps = {
   keyMap?: Partial<t.ICommandPromptKeyMap>;
   keyPress$?: events.KeypressObservable;
   events$?: Subject<t.CommandPromptEvent>;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {

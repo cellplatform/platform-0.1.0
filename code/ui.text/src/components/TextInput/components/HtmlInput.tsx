@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { color as colorUtil, containsFocus, css, events, GlamorValue, R, t, util } from '../common';
+import { color as colorUtil, containsFocus, css, events, CssValue, R, t, util } from '../common';
 
 export const DEFAULT_TEXT_STYLE: t.ITextInputStyle = {
   opacity: 1,
@@ -30,7 +30,7 @@ export type IHtmlInputProps = t.ITextInputFocusAction &
     isEnabled?: boolean;
     isPassword?: boolean;
     disabledOpacity?: number;
-    style?: GlamorValue;
+    style?: CssValue;
     valueStyle?: t.ITextInputStyle;
     selectionBackground?: number | string;
     spellCheck?: boolean;

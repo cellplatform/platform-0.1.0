@@ -1,4 +1,4 @@
-import { css } from '../../common';
+import { style } from '../../common';
 
 export const CLASS_NAME = 'p-cli-input';
 
@@ -6,4 +6,4 @@ const styles = {
   input: { lineHeight: 1 },
 };
 
-css.global(styles, { prefix: `.${CLASS_NAME}` });
+style.global(styles, { prefix: `.${CLASS_NAME}` });

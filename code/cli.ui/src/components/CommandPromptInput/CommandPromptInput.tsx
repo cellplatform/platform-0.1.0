@@ -9,7 +9,7 @@ import {
   containsFocus,
   css,
   events,
-  GlamorValue,
+  CssValue,
   ICommandChange,
   ICommandNamespace,
 } from '../../common';
@@ -26,7 +26,7 @@ export type ICommandPromptInputProps = {
   theme?: ICommandPromptTheme | 'DARK';
   placeholder?: string;
   keyPress$?: events.KeypressObservable;
-  style?: GlamorValue;
+  style?: CssValue;
   onChange?: CommandChangeDispatcher;
 };
 export type ICommandPromptInputState = {

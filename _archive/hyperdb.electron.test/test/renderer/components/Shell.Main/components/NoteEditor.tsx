@@ -13,13 +13,13 @@ import {
   containsFocus,
   css,
   events,
-  GlamorValue,
+  CssValue,
   t,
 } from '../../../common';
 
 export type INoteEditorProps = {
   db: t.ITestRendererDb;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type INoteEditorState = {
   cellKey?: string;

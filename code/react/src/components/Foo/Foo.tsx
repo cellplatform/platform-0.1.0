@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { css, color, GlamorValue } from '../../common';
+import { css, color, CssValue } from '../../common';
 
 export type IFooProps = {
   children?: any;
@@ -12,7 +12,7 @@ export type IFooProps = {
   maxWidth?: number | string;
   maxHeight?: number | string;
   block?: boolean;
-  style?: GlamorValue;
+  style?: CssValue;
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
   onMouseUp?: (e: React.MouseEvent<HTMLDivElement>) => void;

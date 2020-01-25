@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { value, color, constants, containsFocus, css, GlamorValue, t, R, time } from '../../common';
+import { value, color, constants, containsFocus, css, CssValue, t, R, time } from '../../common';
 
 import * as p from '../primitives';
 import { THEMES } from './themes';
@@ -27,7 +27,7 @@ export type ICellEditorViewProps = {
   width?: number;
   height?: number;
   theme?: t.ICellEditorTheme | 'DEFAULT';
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {

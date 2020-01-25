@@ -11,7 +11,7 @@ import {
   coord,
   css,
   datagrid,
-  GlamorValue,
+  CssValue,
   Hr,
   log,
   t,
@@ -22,7 +22,7 @@ import { TestGridView } from './Test.Grid.view';
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type ITestGridState = {
   data?: any;
@@ -438,7 +438,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
  * [Helpers]
  */
 
-const Label = (props: { children?: React.ReactNode; tooltip?: string; style?: GlamorValue }) => {
+const Label = (props: { children?: React.ReactNode; tooltip?: string; style?: CssValue }) => {
   const styles = {
     base: css({
       fontSize: 12,

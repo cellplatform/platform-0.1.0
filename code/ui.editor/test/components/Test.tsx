@@ -8,7 +8,7 @@ import {
   color,
   COLORS,
   css,
-  GlamorValue,
+  CssValue,
   ObjectView,
   t,
   Button,
@@ -97,7 +97,7 @@ const MY_STYLES: Partial<t.IEditorStyles> = {
 };
 
 export type ITestProps = {
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export type ITestState = {

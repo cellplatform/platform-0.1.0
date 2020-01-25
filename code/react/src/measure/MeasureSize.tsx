@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { css, GlamorValue } from '../common';
+import { css, CssValue } from '../common';
 
 export type IMeasureSizeStyle = {
   width?: number;
@@ -14,7 +14,7 @@ export type IMeasureSizeStyle = {
 
 export type IMeasureSizeProps = IMeasureSizeStyle & {
   content?: React.ReactNode;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 const HIDDEN = {

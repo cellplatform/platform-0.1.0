@@ -1,4 +1,4 @@
-export { css, color, GlamorValue } from '@platform/react';
+export { css, style, color, CssValue } from '@platform/react';
 
 /**
  * Ramda

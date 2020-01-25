@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { Body } from '../Body';
-import { COLORS, Context, css, DEFAULT, GlamorValue, t, util } from '../common';
+import { COLORS, Context, css, DEFAULT, CssValue, t, util } from '../common';
 import { Sidebar } from '../Sidebar';
 import { Tree } from '../Tree';
 
@@ -11,7 +11,7 @@ const SHELL = DEFAULT.STATE.SHELL;
 
 export type IRootColumnsProps = {
   tree$: Subject<t.TreeViewEvent>;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IRootColumnsState = {};
 

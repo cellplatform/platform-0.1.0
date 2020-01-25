@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Text } from '../Text';
 import {
   css,
-  GlamorValue,
+  CssValue,
   MeasureSize,
   mouse,
   R,
@@ -44,7 +44,7 @@ export type ITextInputProps = t.ITextInputFocusAction &
     autoComplete?: boolean;
     selectionBackground?: number | string;
     className?: string;
-    style?: GlamorValue;
+    style?: CssValue;
   };
 
 export type ITextInputState = {

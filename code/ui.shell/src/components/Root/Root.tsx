@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { createProvider, css, GlamorValue, loader, Shell, t } from '../common';
+import { createProvider, css, CssValue, loader, Shell, t } from '../common';
 import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Progress } from '../Progress';
@@ -10,7 +10,7 @@ import { RootColumns } from './Root.Columns';
 
 export type IRootProps = {
   shell: Shell;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IRootState = {};
 

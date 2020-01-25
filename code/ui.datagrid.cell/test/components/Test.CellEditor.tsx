@@ -6,12 +6,12 @@ import {
   CellEditorView,
   ICellEditorViewProps,
 } from '../../src/components/CellEditor/CellEditorView';
-import { color, css, GlamorValue, t } from '../common';
+import { color, css, CssValue, t } from '../common';
 
 export type ITestCellEditorProps = {
   title: string;
   mode: t.CellEditorMode;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type ITestCellEditorState = {
   value?: string;

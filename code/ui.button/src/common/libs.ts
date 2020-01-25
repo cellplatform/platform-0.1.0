@@ -1,7 +1,7 @@
 import { value } from '@platform/util.value';
 
 export { value };
-export { color, css, GlamorValue, mouse } from '@platform/react';
+export { color, css, style, CssValue, mouse } from '@platform/react';
 
 export const defaultValue = value.defaultValue;
 

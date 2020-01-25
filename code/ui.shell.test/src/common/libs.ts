@@ -1,7 +1,7 @@
 // export { loader } from '@platform/ui.loader';
 export { shell } from '@platform/ui.shell';
 
-export { css, color, GlamorValue, is } from '@platform/react';
+export { css, color, CssValue, is } from '@platform/react';
 export { time, defaultValue, id, props } from '@platform/util.value';
 export { log } from '@platform/log/lib/client';
 

@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, t, renderer } from '../../../common';
+import { css, CssValue, t, renderer } from '../../../common';
 import { Hr, ObjectView } from '../../primitives';
 
 export type IInfoProps = {
   db?: t.ITestRendererDb;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IInfoState = {
   db?: any;

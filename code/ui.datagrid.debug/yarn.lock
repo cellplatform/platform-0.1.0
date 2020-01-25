@@ -102,10 +102,10 @@
     "@platform/util.diff" "0.0.16"
     "@platform/util.value" "0.7.3"
 
-"@platform/css@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.5.tgz#3db1b279075669d550af45196036b86b46d44af4"
-  integrity sha512-sdHWD9VelU6LhFfp+U3LM7WMJW24/xvwdH8/mOPv0Qxxw68iZ5P2PSRE9hPp/QWG/qthY8fGCT7YOaAqsb4v7A==
+"@platform/css@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.3.0.tgz#82acc15ec2ccd8328b44a19a02dff17d331c822b"
+  integrity sha512-s89KWkKOzdK/LhFnsqnTmpUWD25dPcOBATt4deV+Z7NJLWzqKMeze3XxpkUkXV8d0ZfFh05N4LBpNm8Xx+0o7w==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/util.is" "0.0.109"
@@ -176,12 +176,12 @@
     rxjs "6.5.4"
     tslib "1.10.0"
 
-"@platform/react@0.4.5":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.5.tgz#4adc0f051a82913009f1a96f377d17aafb6119d7"
-  integrity sha512-5V5cw4B9MDuug3GkiqNxvTtGWzaSyp1lFNSa/V2YzpfSEfAX3baAl4Iayfgj7j4Q4YmsX+bS+kHsytV8aeMTdQ==
+"@platform/react@0.4.6":
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.6.tgz#1b29ab4b420636ec5377ef36b359c4295c1c4c39"
+  integrity sha512-2FNPZYlQlYHhm9MOru2gewio90A+hf19kL9jLuZTwPjP3vm3tsaWYCgsDhVTtBpQ2jZeslgWIiwzS4gR8FUHyw==
   dependencies:
-    "@platform/css" "0.2.5"
+    "@platform/css" "0.3.0"
     "@platform/util.is" "0.0.109"
     "@types/react" "16.9.19"
     "@types/react-dom" "16.9.5"
@@ -228,26 +228,26 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.4.tgz#2532baba63d8bef3bf8c690dd20b628ca911932a"
   integrity sha512-MT+z3cjOxQYBqvByRPuNRCLNaqgSP1g91T1a7Pc/QvYXI7goXE+o3NIPWiVH7915KlK7Sl41gMznFieTxg9N7Q==
 
-"@platform/ui.button@0.3.38":
-  version "0.3.38"
-  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.3.38.tgz#a1c524b0c5c46f7786db25f57154f9b522304aa2"
-  integrity sha512-wgQSg9RyCsEVnJhLenECf28yU5CogwY8lgvOMn3Tfc2GyK5olA71z/Ph/lMT/4cfiGMswNmL8K5PxvmOgK4sEA==
+"@platform/ui.button@0.3.39":
+  version "0.3.39"
+  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.3.39.tgz#5b5480a0dbcfc3187a4228dbed69df947f501d29"
+  integrity sha512-iTOIXWRMmU2znYSz1AHOIHKLtWa5dTrGCkpOqvVMZTCo7vAbTnp/z/nAfF3Y3keseWJ6E5nr3gCBY/ivvpeoMA==
   dependencies:
     "@platform/libs" "^0.2.0"
-    "@platform/react" "0.4.5"
+    "@platform/react" "0.4.6"
 
-"@platform/ui.datagrid.types@0.7.87":
-  version "0.7.87"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.87.tgz#9ed7c960f7f281f0b300169bfa863730dc602f71"
-  integrity sha512-/qokI76M3Zb8NSGWB0sMjF6jv04RceL4GARBJs5Bn/PK+HEYYgBDq2aBtE3jcKA6JBgyAH5OdrwtuwRjPMiCUA==
+"@platform/ui.datagrid.types@0.7.88":
+  version "0.7.88"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.88.tgz#468206d9062ac5465cba1dc3fc2659ed32e9bee8"
+  integrity sha512-DHbJJETCiE9YaOtQ9SfUeWQfPhXdGaw1xepawYDldmqHJ8SClSERvznhYEENcWoTSDq89SIl0WN+/NOSHVgoLQ==
   dependencies:
     "@platform/cell.types" "0.4.15"
-    "@platform/react" "0.4.5"
+    "@platform/react" "0.4.6"
 
-"@platform/ui.datagrid.util@0.2.68":
-  version "0.2.68"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.2.68.tgz#833cdfae328fc4c94ca0670399e2e8ba21318db3"
-  integrity sha512-cVN6bgkZ3wthkyY4Fybo827Fe3atlSTDC7FEB0BNcm0ShMRuHgcjHNLwEwzGSDM122S+uAD2l+ow3oWw1I06lA==
+"@platform/ui.datagrid.util@0.2.69":
+  version "0.2.69"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.util/-/ui.datagrid.util-0.2.69.tgz#c209523526ae47766c9e7dba127fb444f6a17d32"
+  integrity sha512-poTVAysMItXX9HNfd5XhrVZ/exBNj8+J3cBi3lzW/okjrdywKdQ57Tkxwcu0qT2KKyTW8OXeHiv6YT07sJME/A==
   dependencies:
     "@platform/cell.coord" "0.8.33"
     "@platform/cell.func" "0.1.67"
@@ -255,31 +255,31 @@
     "@platform/cell.types" "0.4.15"
     "@platform/cell.value" "0.1.80"
     "@platform/libs" "0.2.0"
-    "@platform/ui.datagrid.types" "0.7.87"
+    "@platform/ui.datagrid.types" "0.7.88"
     "@platform/util.value" "0.7.3"
 
-"@platform/ui.icon@0.0.122":
-  version "0.0.122"
-  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.122.tgz#16b8056da999a0f489246a50deab04c2d0ab853e"
-  integrity sha512-vocilNQP/V+hHzRBMMhjLMghw9ww6FQ+41XfEvzK4QTSFKCjZe4slUVgKoW31KVGhMnMHwijxiMhOR7xE8SUqg==
+"@platform/ui.icon@0.0.123":
+  version "0.0.123"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.123.tgz#54daa3e051d3553e360be82ff5de8f5cdb5ddca7"
+  integrity sha512-pORQL7mzh9QT8ky6rTPacMZKGQ88gN3Wpqi7QN4GgoVP4TpYISSdUkd+pomcsnYHxQbIfiScPrLmkMB544dGHA==
   dependencies:
-    "@platform/react" "0.4.5"
+    "@platform/react" "0.4.6"
 
-"@platform/ui.object@0.0.178":
-  version "0.0.178"
-  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.178.tgz#386e0f681585da2a56a89b479f1e917d2c36b193"
-  integrity sha512-JlfF5a9HtBiLcA5So9xChdaQurQCszLLSwSdrmnf2o26rbOId2vpjBqFoWfvlDpHLCvK2VnW63wmDVR40fHcIw==
+"@platform/ui.object@0.0.179":
+  version "0.0.179"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.179.tgz#dc5e7deb27f87533cf2fe340a815694c14633ec9"
+  integrity sha512-bz7jb88YylI2heeU8G3xm2UA5NVQp9UF4ZuPMAUlx4+MlEvrMu/9IFKuqAxuJyd+Kdltv+8aECjLWVOViQLgGg==
   dependencies:
-    "@platform/react" "0.4.5"
+    "@platform/react" "0.4.6"
     react-inspector "4.0.0"
 
-"@platform/ui.text@0.3.32":
-  version "0.3.32"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.32.tgz#ed47b52305a4808a2ea9627e84bf259ea1b3d26c"
-  integrity sha512-TOY3IEgoPjtoVTVJa7EF2wbAvOVy0wmwhgCfbs+ZQQNGE14Vs2hW3qvxghJsh5FXaaiKhIUugoTpd+AaO+V9Xg==
+"@platform/ui.text@0.3.33":
+  version "0.3.33"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.33.tgz#dc397e290eceae307e1322a92fff4971e6727c25"
+  integrity sha512-PPLoGghC5w0vk/cPChmK7z8dDZxYAM4I7AYa+v8tOqI9FIjAnr4Y+tf35mDeAlcjDNn6K8DES6Pwz/isf1bKUg==
   dependencies:
     "@platform/libs" "0.2.0"
-    "@platform/react" "0.4.5"
+    "@platform/react" "0.4.6"
     "@platform/util.value" "0.7.3"
 
 "@platform/util.diff@0.0.16":

@@ -1,4 +1,4 @@
-import { GlamorValue, IMouseEventProps } from '@platform/react';
+import { CssValue, IMouseEventProps } from '@platform/react';
 import { Subject } from 'rxjs';
 
 export type ImageResolution = 'x1' | 'x2';
@@ -7,7 +7,7 @@ export type ImageLoadStatus = 'LOADING' | 'LOADED' | 'FAILED';
 export type ImageLoadedEventHandler = (e: IImageLoad) => void;
 
 export type IImageProps = IMouseEventProps & {
-  style?: GlamorValue;
+  style?: CssValue;
   opacity?: number;
   scale?: number;
   origin?: string;

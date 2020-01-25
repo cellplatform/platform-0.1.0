@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
 
-import { GlamorValue, IEditorSettings, ISize, monaco, value } from '../../../common';
+import { CssValue, IEditorSettings, ISize, monaco, value } from '../../../common';
 import * as config from '../../../config';
 
 export type IMonacoProps = {
   settings: IEditorSettings;
   size$: Observable<ISize>;
   focusOnLoad?: boolean;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class Monaco extends React.PureComponent<IMonacoProps> {

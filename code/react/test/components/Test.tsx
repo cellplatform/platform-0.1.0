@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Button, color, css, GlamorValue } from './common';
+import { Button, color, css, CssValue } from './common';
 import { DragTest } from './DragTest';
 import { EventsTest } from './EventsTest';
 import { KeyboardTest } from './KeyboardTest';
@@ -12,7 +12,7 @@ import { KeyboardTest } from './KeyboardTest';
 const STORAGE = { VIEW: 'TEST/REACT/view' };
 type View = 'drag' | 'events' | 'keyboard';
 
-export type ITestProps = { style?: GlamorValue };
+export type ITestProps = { style?: CssValue };
 export type ITestState = {
   view?: View;
 };

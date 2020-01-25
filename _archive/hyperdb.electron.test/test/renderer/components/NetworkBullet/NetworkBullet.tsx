@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, t } from '../../common';
+import { color, css, CssValue, t } from '../../common';
 
 const BULLET_SIZE = 10;
 
 export type INetworkBulletProps = {
   db: t.IDb;
   network: t.INetwork;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type INetworkBulletState = {
   isConnected?: boolean;

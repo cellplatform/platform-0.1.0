@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, t } from '../../../common';
+import { css, CssValue, t } from '../../../common';
 import { Hr, ObjectView } from '../../primitives';
 
 export type INetworkProps = {
   network: t.INetwork;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type INetworkState = {
   network?: any;

@@ -1,4 +1,4 @@
-// export { css, GlamorValue, color, is } from '@platform/react';
+// export { css, CssValue, color, is } from '@platform/react';
 export { value, time } from '@platform/util.value';
 export { is } from '@platform/util.is';
 

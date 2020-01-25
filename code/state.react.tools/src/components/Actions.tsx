@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, t, value } from '../common';
+import { css, CssValue, t, value } from '../common';
 import { Action } from './Action';
 
 export type IActionsProps = {
   events: t.IStoreEvent[];
   total?: number;
   direction?: 'ASC' | 'DESC';
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IActionsState = {};
 

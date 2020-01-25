@@ -8,7 +8,7 @@
  *        import `@platform/ui.graphql/css/index.css`
  *
  */
-import { css, color, constants, COLORS } from './common';
+import { color, COLORS, constants, style } from './common';
 
 const CLI = COLORS.CLI;
 const ROOT = constants.CSS.ROOT;
@@ -95,4 +95,4 @@ const styles = {
 };
 
 const prefix = `.${ROOT} .graphiql-container`;
-css.global(styles, { prefix });
+style.global(styles, { prefix });

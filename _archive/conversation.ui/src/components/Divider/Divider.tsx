@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { css, color, GlamorValue } from '../../common';
+import { css, color, CssValue } from '../../common';
 
 export type IDividerProps = {
   height: number;
   left?: number;
   marginY?: number;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class Divider extends React.PureComponent<IDividerProps> {

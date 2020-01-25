@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, t, time } from '../../common';
+import { CssValue, t, time } from '../../common';
 import { ConversationView } from './ConversationView';
 
 export type IConversationProps = {
   context: t.IThreadStoreContext;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class Conversation extends React.PureComponent<IConversationProps> {

@@ -2,19 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import {
-  util,
-  color,
-  COLORS,
-  constants,
-  coord,
-  css,
-  func,
-  GlamorValue,
-  R,
-  t,
-  value,
-} from '../common';
+import { util, color, COLORS, constants, coord, css, func, CssValue, R, t, value } from '../common';
 import { ObjectView } from '../primitives';
 import { Badge, Hr, HrDashed, Label, LinkButton, Panel } from '../widgets';
 import { DebugCell } from './Debug.Cell';
@@ -22,7 +10,7 @@ import { DebugCell } from './Debug.Cell';
 export type IDebugProps = {
   grid: t.IGrid;
   theme?: 'DARK';
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IDebugState = {
   grid?: any;
@@ -419,7 +407,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 //   children?: React.ReactNode;
 //   tooltip?: string;
 //   color?: string | number;
-//   style?: GlamorValue;
+//   style?: CssValue;
 // }) => {
 //   const styles = {
 //     base: css({
@@ -441,7 +429,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 //   children?: React.ReactNode;
 //   color: string;
 //   backgroundColor: string;
-//   style?: GlamorValue;
+//   style?: CssValue;
 // }) => {
 //   const styles = {
 //     base: css({
@@ -459,7 +447,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 //   return <div {...css(styles.base, props.style)}>{props.children}</div>;
 // };
 
-// const Panel = (props: { title?: string; children?: React.ReactNode; style?: GlamorValue }) => {
+// const Panel = (props: { title?: string; children?: React.ReactNode; style?: CssValue }) => {
 //   const styles = {
 //     base: css({
 //       position: 'relative',

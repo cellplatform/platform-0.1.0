@@ -3,9 +3,9 @@ import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { FormulaInput, IFormulaInputProps } from '../../src';
-import { color, css, GlamorValue, t, Button, Hr } from '../common';
+import { color, css, CssValue, t, Button, Hr } from '../common';
 
-export type ITestProps = { style?: GlamorValue };
+export type ITestProps = { style?: CssValue };
 export type ITestState = {
   value?: string;
 };

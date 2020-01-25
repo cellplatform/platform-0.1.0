@@ -11,7 +11,7 @@ import {
   constants,
   containsFocus,
   events,
-  GlamorValue,
+  CssValue,
   css,
   IEditorStyles,
   markdown,
@@ -32,8 +32,8 @@ export type ITextEditorProps = {
   selectAllOnLoad?: boolean;
   cursorToEndOnLoad?: boolean;
   className?: string;
-  style?: GlamorValue;
-  editorStyle?: GlamorValue;
+  style?: CssValue;
+  editorStyle?: CssValue;
   contentStyle?: Partial<IEditorStyles>;
   fontSize?: number | string;
 
