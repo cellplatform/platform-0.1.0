@@ -1,19 +1,28 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { css, CssValue } from '@platform/css';
+import { css, CssValue, style } from '@platform/css';
 
-console.log('css', css);
-console.log('css.global', css.global);
-console.log('css.merge', css.merge);
-console.log('css.head', css.head);
+/**
+ * NOTE: A mixure of styles applied both globally in the <head>
+ *       and scoped onto the elements themselves.
+ */
+style.global({
+  body: {
+    backgroundColor: '#ececec',
+    fontFamily: 'sans-serif',
+    padding: 25,
+  },
+});
 
-// css.global({
-//   body: {
-//     fontFamily: 'sans-serif',
-//     backgroundColor: '#ececec',
-//     padding: 25,
-//   },
-// });
+style.global(
+  {
+    h1: {
+      letterSpacing: '-2.5px',
+      fontSize: 74,
+    },
+  },
+  { prefix: '.foo' }, // NB: class-name prefix scoping on style.
+);
 
 const MyApp = (props: { style?: CssValue }) => {
   const styles = {
@@ -22,19 +31,19 @@ const MyApp = (props: { style?: CssValue }) => {
       padding: 30,
     }),
     h1: css({
-      fontSize: 74,
-      marginBottom: 45,
-      letterSpacing: '-2.5px',
+      textDecoration: 'underline',
+      ':hover': {
+        color: 'blue',
+        cursor: 'pointer',
+      },
     }),
   };
 
   return (
-    <div {...css(styles.base, props.style)}>
+    <div {...css(styles.base, props.style)} className={'foo'}>
       <h1 {...styles.h1}>Hello, CSS</h1>
     </div>
   );
 };
 
-const el = <MyApp style={{ color: 'red' }} />;
-
-ReactDOM.render(el, document.getElementById('root'));
+ReactDOM.render(<MyApp style={{ color: 'red' }} />, document.getElementById('root'));
