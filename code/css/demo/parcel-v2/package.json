@@ -1,0 +1,43 @@
+{
+  "name": "parcel-v2.css",
+  "version": "0.0.0",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "watch": "yarn start",
+    "bundle": "parcel build src/index.html",
+    "clean": "rm -rf dist && rm -rf .parcel-cache",
+    "serve": "cd dist/browser && serve"
+  },
+  "node": "dist/node/index.html",
+  "web": "dist/web/index.html",
+  "dependencies": {
+    "@platform/css": "^0.2.5",
+    "react": "^16.12.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.19",
+    "parcel": "^2.0.0-alpha.3.2"
+  },
+  "browserslist": [
+    "> 1%",
+    "not dead"
+  ],
+  "targets": {
+    "node": {
+      "engines": {
+        "node": ">=11.x",
+        "electron": ">=7.x"
+      }
+    },
+    "web": {
+      "engines": {
+        "browsers": [
+          "> 1%",
+          "not dead"
+        ]
+      }
+    }
+  },
+  "private": true
+}

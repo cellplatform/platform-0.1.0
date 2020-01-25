@@ -1,8 +1,9 @@
 {
-  "name": "parcel-v1.css",
+  "name": "parcel-v2.css",
   "version": "0.0.0",
   "scripts": {
-    "watch": "parcel src/index.html",
+    "start": "parcel src/index.html",
+    "watch": "yarn start",
     "bundle": "parcel build src/index.html",
     "clean": "rm -rf dist && rm -rf .cache",
     "serve": "cd dist && serve"
