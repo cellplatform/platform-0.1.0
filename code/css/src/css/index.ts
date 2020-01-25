@@ -18,5 +18,5 @@ api.toEdges = toEdges;
 api.toMargins = toMargins;
 api.toPadding = toPadding;
 
-export { CssValue as GlamorValue, CssProps };
+export { CssValue, CssProps };
 export const css = format as ICssStyle;

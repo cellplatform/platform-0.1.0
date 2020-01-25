@@ -1,2 +1,2 @@
-export { GlamorValue, CssProps, css } from './css';
+export { CssValue, CssProps, css } from './css';
 export * from './color';
