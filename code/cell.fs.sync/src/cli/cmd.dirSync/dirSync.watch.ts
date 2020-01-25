@@ -51,10 +51,17 @@ export async function watchDir(args: {
 }) {
   const { config, silent, sync, keyboard } = args;
   const debounce = defaultValue(args.debounce, 1500);
+
   const pattern = `${config.dir}/**`;
-  const initialCount = (await fs.glob.find(pattern, { dot: false })).length;
+  const paths = await fs.glob.find(pattern, {
+    dot: false,
+    includeDirs: false,
+    ignore: ['**/node_modules/**'],
+  });
+  const initialCount = paths.length;
 
   const state = {
+    renderCount: 0,
     isStarted: false,
     status: '',
     isSyncing() {
@@ -93,7 +100,11 @@ export async function watchDir(args: {
     filter(e => !e.name.startsWith('.')),
   );
 
-  const logPage = (status?: string) => {
+  const render = (status?: string) => {
+    if (!state.isStarted && state.renderCount > 0) {
+      return;
+    }
+
     state.status = status || '';
     log.clear();
     logHost({ status: state.status });
@@ -104,6 +115,7 @@ export async function watchDir(args: {
     log.info();
     logCommands();
     log.info();
+    state.renderCount++;
   };
 
   const logCommands = () => {
@@ -178,7 +190,7 @@ export async function watchDir(args: {
 
   dir$.subscribe(async e => {
     if (!silent) {
-      logPage(state.isStarted ? log.yellow(`pending`) : `starting`);
+      render(state.isStarted ? log.yellow(`pending`) : `starting`);
     }
   });
 
@@ -187,7 +199,7 @@ export async function watchDir(args: {
   });
 
   const syncPush = async () => {
-    logPage(state.isStarted ? log.yellow(`syncing`) : `starting`);
+    render(state.isStarted ? log.yellow(`syncing`) : `starting`);
     state.isStarted = true;
 
     const res = await sync({
@@ -199,7 +211,7 @@ export async function watchDir(args: {
           .reduce((acc, payload) => (payload.localBytes > 0 ? acc + payload.localBytes : acc), 0);
         if (state.isStarted && bytes > 0) {
           const message = `${log.yellow('syncing')} (${fs.size.toString(bytes)})`;
-          logPage(gray(message));
+          render(gray(message));
         }
       },
     });
@@ -210,7 +222,7 @@ export async function watchDir(args: {
     appendHistory(res);
 
     if (!silent) {
-      logPage();
+      render();
       if (errors.length > 0) {
         const errs = errors.map(item => item.error);
         log.info.yellow(`${log.yellow('•')} ${errs}`);
@@ -225,7 +237,7 @@ export async function watchDir(args: {
   if (initialCount === 0) {
     state.isStarted = true;
     appendHistory(EMPTY_SYNC_RESPONSE);
-    logPage();
+    render();
   }
 }
 
