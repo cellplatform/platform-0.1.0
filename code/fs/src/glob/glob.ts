@@ -6,6 +6,7 @@ export type IGlobOptions = {
   cache?: {};
   statCache?: {};
   realpathCache?: {};
+  ignore?: string | string[];
 };
 
 /**
@@ -15,7 +16,7 @@ export type IGlobOptions = {
  */
 export function find(pattern: string, options: IGlobOptions = {}): Promise<string[]> {
   return new Promise<string[]>(async (resolve, reject) => {
-    const { dot = false, cache, statCache, realpathCache } = options;
+    const { dot = false, cache, statCache, realpathCache, ignore } = options;
     const includeDirs =
       typeof options.includeDirs === 'boolean'
         ? options.includeDirs
@@ -23,7 +24,7 @@ export function find(pattern: string, options: IGlobOptions = {}): Promise<strin
         ? true
         : Boolean(options.includeDirs);
     const nodir = !includeDirs;
-    const args = { dot, nodir, cache, statCache, realpathCache };
+    const args = { dot, nodir, cache, statCache, realpathCache, ignore };
     glob(pattern, args, (err, paths) => {
       if (err) {
         reject(err);
