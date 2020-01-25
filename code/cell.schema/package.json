@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.schema",
-  "version": "0.4.14",
+  "version": "0.4.15",
   "description": "URI and database schemas for the `cell.os`.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,8 +12,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.coord": "0.8.31",
-    "@platform/cell.types": "0.4.13",
+    "@platform/cell.coord": "0.8.32",
+    "@platform/cell.types": "0.4.14",
     "@platform/fsdb.types": "0.6.7",
     "@platform/libs": "0.2.0",
     "@platform/util.hash": "0.0.14",
