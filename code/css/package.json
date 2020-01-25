@@ -11,7 +11,9 @@
     "lint": "ts lint",
     "build": "ts build",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "bundle": "sh sh/bundle.sh",
+    "clean": "sh sh/clean.sh"
   },
   "dependencies": {
     "@platform/libs": "0.2.0",
