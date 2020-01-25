@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "File-system tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@types/fs-extra": "8.0.1",
-    "@types/js-yaml": "3.12.1",
+    "@types/js-yaml": "3.12.2",
     "archiver": "3.1.1",
     "dotenv": "8.2.0",
     "extract-zip": "1.6.7",

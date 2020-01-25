@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.props",
-  "version": "0.0.98",
+  "version": "0.0.100",
   "description": "An extensible property editor for cells.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,15 +14,15 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.4.14",
-    "@platform/cell.ui": "0.0.99",
+    "@platform/cell.types": "0.4.15",
+    "@platform/cell.ui": "0.0.101",
     "@platform/libs": "0.2.0",
-    "@platform/log": "0.1.6",
-    "@platform/react": "0.4.3"
+    "@platform/log": "0.1.7",
+    "@platform/react": "0.4.5"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.11"
+    "@platform/ts": "3.7.12"
   },
   "files": [
     "lib",

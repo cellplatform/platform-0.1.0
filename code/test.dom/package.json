@@ -1,6 +1,6 @@
 {
   "name": "@platform/test.dom",
-  "version": "0.0.68",
+  "version": "0.0.69",
   "description": "JSDom configuration for testing HTML document objects on the server.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,7 +17,7 @@
     "jsdom-global": "3.0.2"
   },
   "devDependencies": {
-    "@platform/ts": "3.7.11"
+    "@platform/ts": "3.7.12"
   },
   "files": [
     "lib",
