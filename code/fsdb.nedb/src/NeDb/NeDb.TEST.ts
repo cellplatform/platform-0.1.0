@@ -491,7 +491,7 @@ describe('NeDb', () => {
 
       await db.put('foo', 123);
       const ts1 = await db.sys.timestamps();
-      expect(ts1.createdAt).to.be.within(now - 5, now + 30);
+      expect(ts1.createdAt).to.be.within(now - 5, now + 40);
       expect(ts1.modifiedAt).to.eql(ts1.createdAt);
 
       await time.wait(50);
@@ -502,7 +502,7 @@ describe('NeDb', () => {
 
       const ts2 = await db.sys.timestamps();
       expect(ts2.createdAt).to.eql(ts1.createdAt);
-      expect(ts2.modifiedAt).to.be.within(now - 50, now + 70);
+      expect(ts2.modifiedAt).to.be.within(now - 50, now + 80);
 
       const res = await db.find('**');
       const ts3 = res.list.find(item => item.props.key === '~sys/timestamps');

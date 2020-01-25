@@ -1,8 +1,8 @@
 import { t } from './common';
-import * as dir from './dir';
-import * as dirSync from './dirSync';
-import * as dirWatch from './dirWatch';
-import * as dirPull from './dirPull';
+import * as dir from './cmd.dir';
+import * as dirSync from './cmd.dirSync';
+import * as dirWatch from './cmd.dirWatch';
+import * as dirPull from './cmd.dirPull';
 
 /**
  * Initialize the command-line-interface (CLI).

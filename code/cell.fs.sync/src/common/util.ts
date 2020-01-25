@@ -1,4 +1,4 @@
-import { open as openTarget } from './libs';
+import { open as openTarget, fs, log as logger } from './libs';
 import * as t from './types';
 import * as log from './util.log';
 
@@ -51,4 +51,17 @@ export function open(config: t.IFsConfigDir) {
       openTarget(config.target.url);
     },
   };
+}
+
+export async function openConfig(args: { silent?: boolean } = {}) {
+  const configPath = '.cell/config.yml';
+  const path = fs.resolve(`${process.cwd()}/${configPath}`);
+  const exists = await fs.pathExists(path);
+  if (exists) {
+    if (!args.silent) {
+      logger.info.gray(`opening: ${configPath}`);
+      logger.info();
+    }
+    await openTarget(path);
+  }
 }

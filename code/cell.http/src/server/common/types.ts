@@ -4,6 +4,7 @@ import * as t from '../../types';
 export * from '@platform/types';
 export * from '@platform/fsdb.types';
 export * from '@platform/cell.types';
+export * from '@platform/http.types';
 export * from '@platform/micro/lib/types';
 export * from '../../types';
 

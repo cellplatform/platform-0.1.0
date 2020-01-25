@@ -3,6 +3,7 @@ export * from './types.cell.coord';
 export * from './types.cell.get';
 export * from './types.cell';
 export * from './types.client';
+export * from './types.compile';
 export * from './types.db';
 export * from './types.error';
 export * from './types.file';

@@ -228,20 +228,6 @@ describe('Urls', () => {
       expect(() => url.cell(URI).file.byFileUri('cell:foo!A1')).to.throw(); // Not a [file:] URI.
       expect(() => url.cell(URI).file.byFileUri('')).to.throw();
     });
-
-    it('file.byIndex', () => {
-      const res1 = url.cell(URI).file.byIndex(5);
-      const res2 = url.cell({ ns: 'foo', key: 'A1' }).file.byIndex('  5  ');
-
-      const URL = 'http://localhost/cell:foo!A1/files/5';
-      expect(res1.toString()).to.eql(URL);
-      expect(res2.toString()).to.eql(URL);
-    });
-
-    it('file.byIndex (throws)', () => {
-      const fn = () => url.cell(URI).file.byIndex(undefined as any);
-      expect(fn).to.throw();
-    });
   });
 
   describe('row', () => {

@@ -1,6 +1,5 @@
 import { t } from './common';
-import { init as initData } from './router.data';
-import { init as initUi } from './router.ui';
+import * as routes from './routes';
 
 /**
  * Register routes.
@@ -12,6 +11,5 @@ export function init(args: {
   title?: string;
   deployedAt?: number;
 }) {
-  initData(args);
-  initUi(args);
+  routes.init(args);
 }

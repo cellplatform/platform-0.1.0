@@ -1,0 +1,23 @@
+{
+  "name": "parcel-v1.react",
+  "version": "0.0.0",
+  "source": "src/index.html",
+  "node": "dist/node/index.html",
+  "browser": "dist/browser/index.html",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "watch": "yarn start",
+    "bundle": "parcel build src/index.html",
+    "clean": "rm -rf dist && rm -rf .cache",
+    "serve": "cd dist && serve"
+  },
+  "dependencies": {
+    "react": "^16.12.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.19",
+    "typescript": "^3.7.5",
+    "parcel-bundler": "^1.12.4"
+  },
+  "private": true
+}

@@ -148,8 +148,9 @@ export type IResGetCellFiles = {
 };
 export type IResGetCellFilesFileUrl = {
   uri: string;
-  url: string;
   path: string;
+  url: string;
+  'url:latest': string;
 };
 
 /**
@@ -214,6 +215,5 @@ export type IResGetSysInfo = {
   system: string;
   host: string;
   region: string;
-  time: string;
-  deployedAt?: { date: string; time: number };
+  deployed?: { date: string; utc: number };
 };

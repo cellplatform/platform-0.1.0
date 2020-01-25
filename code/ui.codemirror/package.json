@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.codemirror",
-  "version": "0.1.27",
+  "version": "0.1.32",
   "description": "Strongly typed wrapper around codemirror.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@platform/libs": "0.2.0",
-    "@platform/react": "0.3.53",
-    "@platform/ui.text": "0.3.27",
+    "@platform/react": "0.4.5",
+    "@platform/ui.text": "0.3.32",
     "@types/codemirror": "0.0.82",
     "codemirror": "5.49.2",
     "react-codemirror2": "6.0.0"
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
     "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.10",
+    "@platform/ts": "3.7.12",
     "@uiharness/dev": "0.10.2",
     "@uiharness/ui": "0.7.2",
     "electron": "7.1.10"

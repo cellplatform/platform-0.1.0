@@ -37,14 +37,14 @@ export class ClientCellFiles implements t.IClientCellFiles {
    * [Methods]
    */
   public async urls() {
-    type T = t.IClientResponse<t.IClientCellFileUrl[]>;
+    type T = t.IClientCellFileUrl[];
 
     const getError: GetError = () => `Failed to get file URLs for [${this.uri.toString()}]`;
     const base = await this.base({ getError });
 
     const { ok, status, error } = base;
     if (!ok) {
-      return { ok, status, body: {}, error };
+      return util.toClientResponse<T>(status, {} as any, { error });
     }
 
     const toUrl = (args: { path: string; uri: string; url: string }): t.IClientCellFileUrl => {
@@ -55,12 +55,11 @@ export class ClientCellFiles implements t.IClientCellFiles {
     };
 
     const body = base.body.urls.files.map(item => toUrl(item));
-    const res: T = { ok, status, body };
-    return res as any;
+    return util.toClientResponse<T>(status, body);
   }
 
   public async map() {
-    type T = t.IClientResponse<t.IFileMap>;
+    type T = t.IFileMap;
     const getError: GetError = () => `Failed to get file map for [${this.uri.toString()}]`;
     const base = await this.base({ getError });
 
@@ -68,20 +67,18 @@ export class ClientCellFiles implements t.IClientCellFiles {
     const body = ok ? base.body.files : ({} as any);
     const error = base.error;
 
-    const res: T = { ok, status, body, error };
-    return res;
+    return util.toClientResponse<T>(status, body, { error });
   }
 
   public async list() {
-    type T = t.IClientResponse<t.IClientFileData[]>;
+    type T = t.IClientFileData[];
     const getError: GetError = () => `Failed to get file list for [${this.uri.toString()}]`;
     const base = await this.base({ getError });
     if (!base.ok) {
-      const { ok, status } = base;
+      const { status } = base;
       const body = {} as any;
       const error = base.error;
-      const res: T = { ok, status, body, error };
-      return res;
+      return util.toClientResponse<T>(status, body, { error });
     }
 
     const urls = base.body.urls.files;
@@ -101,8 +98,7 @@ export class ClientCellFiles implements t.IClientCellFiles {
       return acc;
     }, [] as t.IClientFileData[]);
 
-    const res: T = { ok: true, status: 200, body };
-    return res;
+    return util.toClientResponse<T>(200, body);
   }
 
   public async upload(
@@ -132,7 +128,7 @@ export class ClientCellFiles implements t.IClientCellFiles {
    */
 
   private async base(args: { getError?: GetError } = {}) {
-    type T = t.IClientResponse<t.IResGetCellFiles>;
+    type T = t.IResGetCellFiles;
     const http = this.args.http;
     const parent = this.args.parent;
     const url = parent.url.files.list.toString();
@@ -145,12 +141,11 @@ export class ClientCellFiles implements t.IClientCellFiles {
       const message = args.getError
         ? args.getError({ status })
         : `Failed to get files data for '${this.uri.toString()}'.`;
-      return util.toError(status, type, message) as T;
+      return util.toError<T>(status, type, message);
     }
 
     const body = files.json as t.IResGetCellFiles;
-    const res: T = { ok: true, status: 200, body };
-    return res;
+    return util.toClientResponse<T>(200, body);
   }
 }
 

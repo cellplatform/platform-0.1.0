@@ -16,14 +16,18 @@ describe('client (http)', () => {
 
     const isValidVersion = (version: string) => semver.valid(version) !== null;
 
-    const header = (headers['cell-os'] || '') as string;
+    const header = (headers.client || '') as string;
+
+    expect(header).to.include('CellOS');
     expect(header).to.include('client@');
     expect(header).to.include('schema@');
 
-    const parts = header.split(',');
-    parts.forEach(item => {
-      const version = item.split('@')[1];
-      expect(isValidVersion(version)).to.eql(true);
-    });
+    const parts = header.split(';');
+    parts
+      .filter(item => item.includes('@'))
+      .forEach(item => {
+        const version = item.split('@')[1];
+        expect(isValidVersion(version)).to.eql(true);
+      });
   });
 });

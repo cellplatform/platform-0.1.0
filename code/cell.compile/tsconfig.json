@@ -1,7 +1,9 @@
 {
   "extends": "@platform/ts/tsconfig.json",
+  "include": ["src"],
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "lib"
+    "outDir": "lib",
+
+    "noUnusedLocals": false
   }
 }

@@ -1,23 +1,23 @@
 import { parse as parseUrl } from 'url';
 import { createMock, expect, fs, http, readFile, Schema, t } from '../test';
 
-describe('cell/file: upload', function() {
+describe('cell/files: upload', function() {
   this.timeout(50000);
 
   it('upload/download: 1 file', async () => {
     const mock = await createMock();
     const cellUri = 'cell:foo!A1';
     const client = mock.client.cell(cellUri);
-    const data = await readFile('src/test/assets/bird.png');
-    const filename = 'bird.png';
 
     // Upload => download.
+    const filename = 'bird.png';
+    const data = await readFile('src/test/assets/bird.png');
     await client.files.upload([{ filename, data }]);
     const res = await client.file.name(filename).download();
 
     // Save and compare.
     const path = fs.resolve('tmp/tmp-download');
-    if (res.body) {
+    if (typeof res.body === 'object') {
       await fs.stream.save(path, res.body);
     }
     expect((await fs.readFile(path)).toString()).to.eql(data.toString());
@@ -69,7 +69,9 @@ describe('cell/file: upload', function() {
       const byName = client.file.name(filename);
       const res = await byName.download();
       const path = fs.resolve(`tmp/download`);
-      await fs.stream.save(path, res.body);
+      if (typeof res.body === 'object') {
+        await fs.stream.save(path, res.body);
+      }
 
       const buffer = await readFile(path);
       expect(buffer.toString()).to.eql(compareWith.toString());
@@ -115,7 +117,6 @@ describe('cell/file: upload', function() {
 
     // Data returned on list.
     const list = (await client.files.list()).body;
-    console.log('list', list);
 
     expect(list.length).to.eql(1);
     expect(list[0].uri).to.match(/^file:foo:/);
@@ -298,7 +299,7 @@ describe('cell/file: upload', function() {
     // Save and compare the downloaded stream.
     const path = fs.resolve('tmp/test/download/func.wasm');
     const res = await cellClient.file.name('func.wasm').download();
-    if (res.body) {
+    if (typeof res.body === 'object') {
       await fs.stream.save(path, res.body);
     }
     expect((await readFile(path)).toString()).to.eql(file1.toString());

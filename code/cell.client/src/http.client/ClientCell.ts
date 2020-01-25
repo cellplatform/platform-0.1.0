@@ -63,11 +63,12 @@ export class ClientCell implements t.IClientCell {
   }
 
   public async links() {
-    type T = t.IClientResponse<t.IClientCellLinks>;
+    type T = t.IClientCellLinks;
+
     const info = await this.info();
     if (info.error) {
       const message = `Failed to get links for '${this.uri.toString()}'. ${info.error.message}`;
-      return util.toError(info.status, info.error.type, message) as T;
+      return util.toError<T>(info.status, info.error.type, message);
     }
 
     const http = this.args.http;
@@ -76,7 +77,6 @@ export class ClientCell implements t.IClientCell {
     const urls = this.args.urls;
     const body = ClientCellLinks.create({ links, urls, http });
 
-    const res: T = { ok: true, status: 200, body };
-    return res;
+    return util.toClientResponse<T>(200, body);
   }
 }

@@ -6,6 +6,7 @@ lib
 lib.test
 
 .build
+.cell
 .cache
 .dev
 .uiharness

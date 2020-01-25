@@ -1,2 +1,2 @@
 export * from './cli';
-export { log } from './common';
+export { log, chalk } from './common';

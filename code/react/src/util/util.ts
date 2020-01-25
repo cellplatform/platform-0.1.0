@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { log } from '../common';
+// import { log } from '../common';
 
 /**
  * Determines whether any element within the child DOM hierarchy
@@ -30,6 +30,7 @@ export function copyToClipboard(text: string) {
     document.execCommand('copy');
     document.body.removeChild(el);
   } catch (error) {
-    log.error(`Failed to copy text to clipboard.\n\n${text}`);
+    const err = `Failed to copy text to clipboard.\n\n${text}`;
+    console.error(err); // tslint:disable-line
   }
 }

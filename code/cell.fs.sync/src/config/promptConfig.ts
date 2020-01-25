@@ -19,8 +19,8 @@ export async function promptConfig(args: { force?: boolean; dir?: string; save?:
   const targetOption = await cli.prompt.list({
     message: 'target cell:',
     items: [
-      { name: 'existing URI', value: 'URI' },
       { name: 'create new', value: 'NEW' },
+      { name: 'existing uri', value: 'URI' },
     ],
   });
 

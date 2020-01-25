@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { fs } from '..';
 
-describe.only('size', () => {
+describe('size', () => {
   it('bytes (from path)', async () => {
     const path = fs.resolve('test/size/0.png');
     const res = await fs.size.file(path);

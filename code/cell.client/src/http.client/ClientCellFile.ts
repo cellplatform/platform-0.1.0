@@ -56,7 +56,8 @@ export class ClientCellFile implements t.IClientCellFile {
        */
       async download(
         options: { expires?: string } = {},
-      ): Promise<t.IClientResponse<ReadableStream>> {
+      ): Promise<t.IClientResponse<ReadableStream | string>> {
+        type T = ReadableStream | string;
         const { expires } = options;
         const linkRes = await self.getCellLinkByFilename(filename);
         if (linkRes.error) {
@@ -79,19 +80,18 @@ export class ClientCellFile implements t.IClientCellFile {
 
         // Request the download.
         const res = await http.get(url);
-
         if (res.ok) {
-          return util
-            .fromHttpResponse(res)
-            .toClientResponse<ReadableStream>({ bodyType: 'BINARY' });
+          const mime = (res.headers['content-type'] || '').toString().trim();
+          const bodyType: t.ClientBodyType = mime.startsWith('text/') ? 'TEXT' : 'BINARY';
+          return util.fromHttpResponse(res).toClientResponse<T>({ bodyType });
         } else {
           const message = `Failed while downloading file "${parent.uri.toString()}".`;
           const httpError = res.contentType.is.json ? (res.json as t.IHttpError) : undefined;
           if (httpError) {
             const error = `${message} ${httpError.message}`;
-            return util.toError<ReadableStream>(res.status, httpError.type, error);
+            return util.toError<T>(res.status, httpError.type, error);
           } else {
-            return util.toError<ReadableStream>(res.status, ERROR.HTTP.SERVER, message);
+            return util.toError<T>(res.status, ERROR.HTTP.SERVER, message);
           }
         }
       },

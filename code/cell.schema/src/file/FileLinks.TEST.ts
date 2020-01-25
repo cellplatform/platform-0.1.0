@@ -102,9 +102,9 @@ describe('FileLinks', () => {
 
   describe('parseLink', () => {
     it('(uri)', () => {
-      const test = (input: string, expectedUri: string) => {
+      const test = (input: string, expected: string) => {
         const res = FileLinks.parseLink(input);
-        expect(res.uri).to.eql(expectedUri);
+        expect(res.uri).to.eql(expected);
       };
       test('file:foo:123', 'file:foo:123');
       test('file:foo:123?hash=abc', 'file:foo:123');
@@ -112,10 +112,21 @@ describe('FileLinks', () => {
       test('file:foo:123?bam=boo&hash=abc ', 'file:foo:123');
     });
 
-    it('(fileid)', () => {
-      const test = (input: string, expectedFileid: string) => {
+    it('(ns)', () => {
+      const test = (input: string, expected: string) => {
         const res = FileLinks.parseLink(input);
-        expect(res.fileid).to.eql(expectedFileid);
+        expect(res.ns).to.eql(expected);
+      };
+      test('file:foo:123', 'foo');
+      test('file:foo:123?hash=abc', 'foo');
+      test('  file:foo:123?hash=abc  ', 'foo');
+      test('file:foo:123?bam=boo&hash=abc ', 'foo');
+    });
+
+    it('(fileid)', () => {
+      const test = (input: string, expected: string) => {
+        const res = FileLinks.parseLink(input);
+        expect(res.fileid).to.eql(expected);
       };
       test('file:foo:123', '123');
       test('file:foo:123?hash=abc', '123');
@@ -124,9 +135,9 @@ describe('FileLinks', () => {
     });
 
     it('(hash)', () => {
-      const test = (input: string, expectedHash?: string) => {
+      const test = (input: string, expected?: string) => {
         const res = FileLinks.parseLink(input);
-        expect(res.hash).to.eql(expectedHash);
+        expect(res.hash).to.eql(expected);
       };
       test('file:foo:123', undefined);
       test('file:foo:123?hash=abc', 'abc');
@@ -136,9 +147,9 @@ describe('FileLinks', () => {
     });
 
     it('(status)', () => {
-      const test = (input: string, expectedStatus?: string) => {
+      const test = (input: string, expected?: string) => {
         const res = FileLinks.parseLink(input);
-        expect(res.status).to.eql(expectedStatus);
+        expect(res.status).to.eql(expected);
       };
       test('file:foo:123', undefined);
       test('file:foo:123?hash=abc', undefined);

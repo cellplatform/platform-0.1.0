@@ -1121,6 +1121,11 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.2.tgz#bb9865bf7e1531d8604814c70e54278a56eaf995"
   integrity sha512-85+IPOj3RGp5w7iOnEkqWAO6AcY4elO8MYymbgwuh01skziQaRixtVYEXjNjxfjP5/PM+clnAT/SuTVTEgRulQ==
 
+"@platform/types@0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.4.tgz#2532baba63d8bef3bf8c690dd20b628ca911932a"
+  integrity sha512-MT+z3cjOxQYBqvByRPuNRCLNaqgSP1g91T1a7Pc/QvYXI7goXE+o3NIPWiVH7915KlK7Sl41gMznFieTxg9N7Q==
+
 "@platform/ui.icon@0.0.116":
   version "0.0.116"
   resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.116.tgz#b79bae05a69fec718e48b51f4e5a383fbe4c1e61"
@@ -1186,6 +1191,11 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.107.tgz#858116ffaadbd1318b22ecb5660ac7634ea44d37"
   integrity sha512-JlbF+m+TQmCeEzLpx/k8AioKNFhvUxXTRKVw1zne5WSmIkcrC9d0G2iQ+xYHmySQeyc+hCEh6vq8WL9jx1nzoQ==
 
+"@platform/util.is@0.0.109":
+  version "0.0.109"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.109.tgz#bcfbd93c54ad7d89b815cff9c8bd0724afb5f63c"
+  integrity sha512-U43eUsgWuJlox2kitjDRaAx0E+rI/w7qpUuqckDy1cJRyUWBVIkjNk4zwZAvheJvoyGNzM2lq2yR6WD1aNFe3g==
+
 "@platform/util.local-storage@0.0.66":
   version "0.0.66"
   resolved "https://registry.yarnpkg.com/@platform/util.local-storage/-/util.local-storage-0.0.66.tgz#a7f465e3fd4d8203896904c424061398aadbb9fb"
@@ -1211,6 +1221,19 @@
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.2"
     "@platform/util.is" "0.0.107"
+    "@types/semver" "6.2.0"
+    cuid "2.1.8"
+    dayjs "1.8.19"
+    semver "7.1.1"
+
+"@platform/util.value@0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.3.tgz#ba89b7bbc516eabde74835ce8ec664851172567c"
+  integrity sha512-LFS+w9re1tgbKbfqJXvRJBAY2j6TbO1K1BdmAUyHcE1RYT/Rt0uj+py6dvKUvjMKrpXg8oW4zJD68VQxOAA3Ww==
+  dependencies:
+    "@platform/libs" "0.2.0"
+    "@platform/types" "0.4.4"
+    "@platform/util.is" "0.0.109"
     "@types/semver" "6.2.0"
     cuid "2.1.8"
     dayjs "1.8.19"

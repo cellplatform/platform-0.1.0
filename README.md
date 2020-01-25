@@ -87,6 +87,8 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/cell.http.client](/code/cell.http.client)
   - [@platform/cell.fs](/code/cell.fs)
   - [@platform/cell.fs.sync](/code/cell.fs.sync)
+  - [@platform/cell.compile](/code/cell.compile)
+  - [@platform/cell.compile.react](/code/cell.compile.react)
   - ui
     - [@platform/cell.ui](/code/cell.ui)
     - [@platform/cell.ui.props](/code/cell.ui.props)

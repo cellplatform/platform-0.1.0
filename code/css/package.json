@@ -1,6 +1,6 @@
 {
   "name": "@platform/css",
-  "version": "0.2.1",
+  "version": "0.2.5",
   "description": "Helpers for working with inline CSS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -11,12 +11,14 @@
     "lint": "ts lint",
     "build": "ts build",
     "build-test": "ts build --tsconfig=tsconfig.test $@",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "bundle": "sh sh/bundle.sh",
+    "clean": "sh sh/clean.sh"
   },
   "dependencies": {
     "@platform/libs": "0.2.0",
-    "@platform/util.is": "0.0.107",
-    "@platform/util.value": "0.7.1",
+    "@platform/util.is": "0.0.109",
+    "@platform/util.value": "0.7.3",
     "@types/tinycolor2": "1.4.2",
     "glamor-jss": "1.4.1",
     "jss-plugin-global": "10.0.3",

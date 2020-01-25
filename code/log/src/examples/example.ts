@@ -1,11 +1,18 @@
 import { log } from '../server';
 
+const HR = '━'.repeat(40);
 const err = new Error('Foo');
+
+log.info();
+log.info.gray('NB: The following printed errors are sample output');
+log.info.gray('    (info, warn, error) not actual errors thrown by the lib.');
+log.info(HR);
+
 log.info(err);
 log.warn(err);
 log.error(err);
 
-log.info();
+log.info(HR);
 
 log.info();
 log.info('info');

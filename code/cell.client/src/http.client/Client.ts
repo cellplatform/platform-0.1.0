@@ -3,6 +3,13 @@ import { ClientCell } from './ClientCell';
 import { ClientFile } from './ClientFile';
 import { ClientNs } from './ClientNs';
 
+function clientHeader() {
+  const VERSION = constants.VERSION;
+  const client = `client@${VERSION['@platform/cell.client']}`;
+  const schema = `schema@${VERSION['@platform/cell.schema']}`;
+  return `CellOS; ${client}; ${schema}`;
+}
+
 /**
  * An HTTP client for the CellOS.
  */
@@ -18,19 +25,25 @@ export class Client implements t.IClient {
     this.urls = Schema.urls(args.host ?? 8080);
     this.origin = this.urls.origin;
 
-    const VERSION = constants.VERSION;
-    const header = `client@${VERSION['@platform/cell.client']}, schema@${VERSION['@platform/cell.schema']}`;
-    this.http = http.create({
-      headers: {
-        'cell-os': header,
-      },
-    });
+    // Create the HTTP client.
+    const headers = {
+      client: clientHeader(),
+    };
+    const client = http.create({ headers });
+
+    // Store fields.
+    this.http = client;
+    this.request$ = client.before$;
+    this.response$ = client.after$;
   }
 
   /**
    * [Fields]
    */
   public readonly origin: string;
+  public readonly request$: t.IClient['request$'];
+  public readonly response$: t.IClient['response$'];
+
   private readonly urls: t.IUrls;
   private readonly http: t.IHttp;
 
