@@ -24,15 +24,19 @@ export async function downloadFileByName(args: {
     return util.toErrorPayload(err, { status: 404 });
   }
 
-  // Run the appropriate download handler.
-  if (mime === 'text/html') {
+  const downloadHtmlAndRewritePaths = async () => {
     const res = await downloadTextFile({ host, db, fs, fileUri, filename, matchHash, mime });
     if (typeof res.data === 'string') {
-      const data = await rewritePaths({ host, db, cellUri, html: res.data });
-      return { ...res, data };
+      const html = res.data;
+      return { ...res, data: await rewritePaths({ host, db, cellUri, html }) };
     } else {
       return res;
     }
+  };
+
+  // Run the appropriate download handler.
+  if (mime === 'text/html') {
+    return downloadHtmlAndRewritePaths();
   } else {
     return downloadBinaryFile({ host, db, fs, fileUri, filename, matchHash, expires });
   }
