@@ -3,16 +3,18 @@
   "version": "0.0.0",
   "source": "src/index.html",
   "scripts": {
-    "watch": "parcel src/index.html",
+    "start": "parcel src/index.html",
+    "watch": "yarn start",
     "bundle": "parcel build src/index.html",
     "clean": "rm -rf dist && rm -rf .parcel-cache",
     "serve": "cd dist/browser && serve"
   },
+  "node": "dist/node/index.html",
+  "web": "dist/web/index.html",
+  "dependencies": {},
   "devDependencies": {
     "parcel": "^2.0.0-alpha.3.2"
   },
-  "node": "dist/node/index.html",
-  "web": "dist/web/index.html",
   "browserslist": [
     "> 1%",
     "not dead"

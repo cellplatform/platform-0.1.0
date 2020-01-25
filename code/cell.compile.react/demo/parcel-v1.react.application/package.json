@@ -5,7 +5,8 @@
   "node": "dist/node/index.html",
   "browser": "dist/browser/index.html",
   "scripts": {
-    "watch": "parcel src/index.html",
+    "start": "parcel src/index.html",
+    "watch": "yarn start",
     "bundle": "parcel build src/index.html --experimental-scope-hoisting",
     "clean": "rm -rf dist && rm -rf .cache",
     "serve": "cd dist && serve"
