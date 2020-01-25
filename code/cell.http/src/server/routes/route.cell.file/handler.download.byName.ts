@@ -28,7 +28,7 @@ export async function downloadFileByName(args: {
     const res = await downloadTextFile({ host, db, fs, fileUri, filename, matchHash, mime });
     if (typeof res.data === 'string') {
       const html = res.data;
-      return { ...res, data: await rewritePaths({ host, db, cellUri, html }) };
+      return { ...res, data: await rewritePaths({ host, db, cellUri, html, filename }) };
     } else {
       return res;
     }

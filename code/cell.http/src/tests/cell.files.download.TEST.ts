@@ -63,13 +63,24 @@ describe('cell/files: download', function() {
     await mock.dispose();
   });
 
-  describe.only('download HTML and dynamically re-write relative links', () => {
+  describe('download HTML and dynamically re-write relative links', () => {
     const readFiles = async () => {
       return {
         html: await readFile('src/test/assets/index.html'),
         css: await readFile('src/test/assets/style.css'),
         js: await readFile('src/test/assets/file.js'),
       };
+    };
+
+    const expectUrlsRewritten = (html: string) => {
+      // Ensure absolute links remain unchanged
+      expect(html).to.contain('<link rel="stylesheet" href="style.css">');
+      expect(html).to.contain('<link rel="stylesheet" href="https://foo.com/style.css">');
+      expect(html).to.contain('<script src="https://foo.com/file.js"></script>');
+
+      // Ensure relative links have been updated.
+      expect(html).to.contain('<script id="app" src="http://localhost:');
+      expect(html).to.contain('<link id="styles" rel="stylesheet" href="http://localhost:');
     };
 
     it('from root: /index.html', async () => {
@@ -79,7 +90,6 @@ describe('cell/files: download', function() {
 
       // Upload HTML file.
       const files = await readFiles();
-      // const filename = ;
       await client.files.upload([
         { filename: 'index.html', data: files.html },
         { filename: 'assets/style.css', data: files.css },
@@ -91,44 +101,30 @@ describe('cell/files: download', function() {
       mock.client.response$.subscribe(e => (headers = e.response.headers));
       const res = await client.file.name('/index.html').download();
       const html = await bodyToText(res.body);
+      await mock.dispose();
 
       expect(headers && headers['content-type']).to.eql('text/html');
-
-      // Ensure absolute links remain unchanged
-      expect(html).to.contain('<link rel="stylesheet" href="style.css">');
-      expect(html).to.contain('<link rel="stylesheet" href="https://foo.com/style.css">');
-      expect(html).to.contain('<script src="https://foo.com/file.js"></script>');
-
-      // Ensure relative links have been updated.
-      expect(html).to.contain('<script id="app" src="http://localhost:');
-      expect(html).to.contain('<link id="styles" rel="stylesheet" href="http://localhost:');
-
-      // Finish up.
-      await mock.dispose();
+      expectUrlsRewritten(html);
     });
 
-    it('from sub-folder: /foo/index.html', async () => {
+    it('from sub-folder: /foo/bar/index.html', async () => {
       const mock = await createMock();
       const cellUri = 'cell:foo!A1';
       const client = mock.client.cell(cellUri);
 
       // Upload HTML file.
       const files = await readFiles();
-      // const filename = 'index.html';
       await client.files.upload([
-        { filename: '/foo/index.html', data: files.html },
-        { filename: '/foo/assets/style.css', data: files.css },
-        { filename: '/foo/file.js', data: files.js },
+        { filename: '/foo/bar/index.html', data: files.html },
+        { filename: 'foo/bar/assets/style.css', data: files.css }, // NB: alternative without root "/" (should not make a difference).
+        { filename: '/foo/bar/file.js', data: files.js },
       ]);
 
-      const res = await client.file.name('/foo/index.html').download();
+      const res = await client.file.name('/foo/bar/index.html').download();
       const html = await bodyToText(res.body);
-
-      console.log('-------------------------------------------');
-      console.log('html', html);
-
-      // Finish up.
       await mock.dispose();
+
+      expectUrlsRewritten(html);
     });
   });
 });
