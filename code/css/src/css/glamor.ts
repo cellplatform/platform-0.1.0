@@ -9,7 +9,7 @@
 import { t, jss } from '../common';
 import { format } from './css';
 
-export const merge: t.MergeCssRules = jss.merge;
+export const merge: t.CssMergeRules = jss.merge;
 
 /**
  * Converts a set of properties into hashed CSS class-names.

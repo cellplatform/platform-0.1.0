@@ -1,4 +1,4 @@
-import { CssProps, GlamorValue, IStyle } from '../types';
+import { CssProps, CssValue, ICssStyle } from '../types';
 import { format, transformStyle } from './css';
 import { className, merge } from './glamor';
 import { global } from './global';
@@ -18,5 +18,5 @@ api.toEdges = toEdges;
 api.toMargins = toMargins;
 api.toPadding = toPadding;
 
-export { GlamorValue, CssProps };
-export const css = format as IStyle;
+export { CssValue as GlamorValue, CssProps };
+export const css = format as ICssStyle;

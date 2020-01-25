@@ -5,7 +5,7 @@ export function init(): t.ICssHead {
    * Adds an `@import` stylesheet reference to the <head>
    * if it does not already exist.
    */
-  const importStylesheet: t.ImportStylesheet = (url: string) => {
+  const importStylesheet: t.ICssHead['importStylesheet'] = (url: string) => {
     if (!is.browser) {
       return res;
     }

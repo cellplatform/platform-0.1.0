@@ -25,7 +25,7 @@ let isInitialized = false;
  *        global(styles, { prefix: '.markdown' });
  *
  */
-export const global: t.GlobalCssRules = (
+export const global: t.CssGlobal = (
   styles: t.CssPropsMap,
   options: { prefix?: string } = {},
 ) => {

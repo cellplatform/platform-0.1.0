@@ -18,8 +18,8 @@ export const MEDIA_QUERY_RETINA = `@media (-webkit-min-device-pixel-ratio: 2), (
 export const image = (
   image1x: string | undefined,
   image2x: string | undefined,
-  options: t.IImageOptions = { width: 10, height: 10 },
-): t.IBackgroundImageStyles => {
+  options: t.CssFormatImageOptions = { width: 10, height: 10 },
+): t.ICssBackgroundImage => {
   // Prepare image based on current screen density.
   if (!image1x) {
     throw new Error('Must have at least a 1x image.');
@@ -282,8 +282,8 @@ function formatFlexPosition(key: string, value: string, target: t.CssProps) {
 }
 
 export const transformStyle = (
-  style: t.CssProps | t.GlamorValue | t.Falsy = {},
-): t.CssProps | t.GlamorValue => {
+  style: t.CssProps | t.CssValue | t.Falsy = {},
+): t.CssProps | t.CssValue => {
   if (style == null) {
     return {};
   }
@@ -351,9 +351,9 @@ export const transformStyle = (
  * Helpers for constructing a CSS object.
  * NB: This doesn't *actually* return React.CSSProperties
  */
-const formatCss = (...styles: Array<t.CssProps | t.GlamorValue | t.Falsy>): t.GlamorValue => {
+const formatCss = (...styles: Array<t.CssProps | t.CssValue | t.Falsy>): t.CssValue => {
   return jss.css(...styles.map(transformStyle));
 };
 
 (formatCss as any).image = image;
-export const format = formatCss as t.IFormatCss;
+export const format = formatCss as t.CssFormat;
