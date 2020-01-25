@@ -10,9 +10,9 @@
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare",
-    "clean": "sh sh/clean.sh",
+    "update": "sh sh/update.sh",
     "bundle": "sh sh/bundle.sh",
-    "update": "sh sh/update.sh"
+    "clean": "sh sh/clean.sh"
   },
   "dependencies": {
     "@platform/cell.types": "0.4.15",
