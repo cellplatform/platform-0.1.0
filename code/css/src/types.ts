@@ -1,5 +1,5 @@
 import * as t from './common/types';
-import { transformStyle } from './css/css';
+import { transform } from './css/css';
 
 export class CssValue {}
 export type Falsy = undefined | null | false;
@@ -13,17 +13,17 @@ export type CssMergeRules = (...rules: any[]) => CssProps;
  */
 export type CssFormat = (...styles: Array<t.CssProps | CssValue | Falsy>) => CssValue;
 
-export type ICssStyle = CssFormat & {
+export type ICssStyle = {
   global: CssGlobal;
-  className: CssClassName;
-  transform: typeof transformStyle;
+  transform: typeof transform;
   head: ICssHead;
-  merge: CssMergeRules;
   toEdges: CssToEdges<ICssEdges>;
   toMargins: CssToEdges<ICssMarginEdges>;
   toPadding: CssToEdges<ICssPaddingEdges>;
   image: CssFormatImage;
 };
+
+export type ICssStyleFormat = ICssStyle & CssFormat;
 
 /**
  * Global

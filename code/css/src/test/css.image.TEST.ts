@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { transformStyle, MEDIA_QUERY_RETINA } from '../css/css';
+import { transform, MEDIA_QUERY_RETINA } from '../css/css';
 import { css } from '..';
 const browserWindow: any = global;
 const { image } = css;
@@ -64,7 +64,7 @@ describe('React: CSS - image', () => {
   describe('Image replacement via css() method', () => {
     it('replaces `Image` with style settings (1x)', () => {
       browserWindow.devicePixelRatio = 1;
-      const style = transformStyle({ Image: ['1x', '2x', 20, 30] }) as any;
+      const style = transform({ Image: ['1x', '2x', 20, 30] }) as any;
       expect(style.Image).to.equal(undefined);
       expect(style.backgroundImage).to.equal('url(1x)');
       expect(style.width).to.equal(20);
@@ -75,7 +75,7 @@ describe('React: CSS - image', () => {
 
     it('replaces `Image` with style settings (2x)', () => {
       browserWindow.devicePixelRatio = 2;
-      const style = transformStyle({
+      const style = transform({
         Image: ['1x.JPG', '2x.JPG', 20, 30],
       }) as any;
       expect(style.Image).to.equal(undefined);

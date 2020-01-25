@@ -1,5 +1,4 @@
-import * as t from '../types';
-import { valueUtil } from '../common';
+import { valueUtil, t } from '../common';
 
 const isBlank = (value: t.CssEdgesInput) => {
   if (value === undefined || value === null) {

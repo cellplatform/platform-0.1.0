@@ -281,7 +281,7 @@ function formatFlexPosition(key: string, value: string, target: t.CssProps) {
   mergeAndReplace(key, styles, target);
 }
 
-export const transformStyle = (
+export const transform = (
   style: t.CssProps | t.CssValue | t.Falsy = {},
 ): t.CssProps | t.CssValue => {
   if (style == null) {
@@ -299,7 +299,7 @@ export const transformStyle = (
       delete style[key];
     } else if (valueUtil.isPlainObject(value)) {
       // NB: This is not using formatCss, as we only want the transform, we don't want to convert it to a glamor value.
-      style[key] = transformStyle(value); // <== RECURSION.
+      style[key] = transform(value); // <== RECURSION.
     } else {
       switch (key) {
         case 'Image':
@@ -352,7 +352,7 @@ export const transformStyle = (
  * NB: This doesn't *actually* return React.CSSProperties
  */
 const formatCss = (...styles: Array<t.CssProps | t.CssValue | t.Falsy>): t.CssValue => {
-  return jss.css(...styles.map(transformStyle));
+  return jss.css(...styles.map(transform));
 };
 
 (formatCss as any).image = image;

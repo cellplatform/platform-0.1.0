@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-import { transformStyle } from '../css/css';
+import { transform } from '../css/css';
 
 describe('padding', function() {
   it('PaddingX', () => {
-    const result = transformStyle({
+    const result = transform({
       PaddingX: 14,
       paddingLeft: 1234, // Overwritten.
     }) as any;
@@ -12,7 +12,7 @@ describe('padding', function() {
   });
 
   it('PaddingY', () => {
-    const result = transformStyle({
+    const result = transform({
       PaddingY: 20,
     }) as any;
     expect(result.paddingTop).to.equal(20);
@@ -20,7 +20,7 @@ describe('padding', function() {
   });
 
   it('Padding (10)', () => {
-    const result = transformStyle({
+    const result = transform({
       Padding: 20,
     }) as any;
     expect(result.paddingTop).to.equal(20);
@@ -30,7 +30,7 @@ describe('padding', function() {
   });
 
   it('Padding ([10, null, "5em", "30px"])', () => {
-    const result = transformStyle({
+    const result = transform({
       Padding: [10, null, '5em', '30px'],
     }) as any;
     expect(result.paddingTop).to.equal(10);
@@ -42,7 +42,7 @@ describe('padding', function() {
 
 describe('margin', function() {
   it('MarginX', () => {
-    const result = transformStyle({
+    const result = transform({
       MarginX: 14,
       marginLeft: 1234, // Overwritten.
     }) as any;
@@ -51,7 +51,7 @@ describe('margin', function() {
   });
 
   it('MarginY', () => {
-    const result = transformStyle({
+    const result = transform({
       MarginY: 20,
     }) as any;
     expect(result.marginTop).to.equal(20);
@@ -59,7 +59,7 @@ describe('margin', function() {
   });
 
   it('Margin (10)', () => {
-    const result = transformStyle({
+    const result = transform({
       Margin: 20,
     }) as any;
     expect(result.marginTop).to.equal(20);
@@ -69,7 +69,7 @@ describe('margin', function() {
   });
 
   it('Margin ([10, null, "5em", "30px"])', () => {
-    const result = transformStyle({
+    const result = transform({
       Margin: [10, null, '5em', '30px'],
     }) as any;
     expect(result.marginTop).to.equal(10);

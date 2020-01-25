@@ -1,22 +1,18 @@
-import { CssProps, CssValue, ICssStyle } from '../types';
-import { format, transformStyle } from './css';
-import { className, merge } from './glamor';
+import { CssProps, CssValue, ICssStyleFormat } from '../types';
+import { format, transform } from './css';
 import { global } from './global';
-import * as head from './head';
+import { head } from '../head';
 import { toEdges, toMargins, toPadding } from './util';
 
 const api = format as any;
 
-api.className = className;
-api.merge = merge;
-api.transform = transformStyle;
-
+api.transform = transform;
 api.global = global;
-api.head = head.init();
+api.head = head;
 
 api.toEdges = toEdges;
 api.toMargins = toMargins;
 api.toPadding = toPadding;
 
 export { CssValue, CssProps };
-export const css = format as ICssStyle;
+export const css = format as ICssStyleFormat;

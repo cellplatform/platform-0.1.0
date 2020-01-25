@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import { transformStyle, toPositionEdges } from '../css/css';
+import { transform, toPositionEdges } from '../css/css';
 
 describe('React: transformStyle - positioning', () => {
   describe('converting from transformStyle - function', () => {
     it('converts an `Absolute` value (deep)', () => {
-      const style = transformStyle({ Absolute: '10 20em 30px 40' }) as any;
+      const style = transform({ Absolute: '10 20em 30px 40' }) as any;
       expect(style.position).to.equal('absolute');
       expect(style.top).to.equal(10);
       expect(style.right).to.equal('20em');
@@ -13,7 +13,7 @@ describe('React: transformStyle - positioning', () => {
     });
 
     it('converts a `Fixed` value', () => {
-      const style = transformStyle({ Fixed: '10 20em 30px 40' }) as any;
+      const style = transform({ Fixed: '10 20em 30px 40' }) as any;
       expect(style.position).to.equal('fixed');
       expect(style.top).to.equal(10);
       expect(style.right).to.equal('20em');
@@ -22,7 +22,7 @@ describe('React: transformStyle - positioning', () => {
     });
 
     it('converts array value (with null)', () => {
-      const style = transformStyle({
+      const style = transform({
         Absolute: ['10', null, '30px', '40em'],
       }) as any;
       expect(style.position).to.equal('absolute');
@@ -34,7 +34,7 @@ describe('React: transformStyle - positioning', () => {
 
     it('single value', () => {
       const test = (style: {}, position: string, value: number) => {
-        const res = transformStyle(style);
+        const res = transform(style);
         expect(res).to.eql({
           position,
           top: value,
@@ -53,17 +53,17 @@ describe('React: transformStyle - positioning', () => {
     });
 
     it('does nothing with an [undefined] value', () => {
-      expect(transformStyle({ Absolute: undefined })).to.eql({});
+      expect(transform({ Absolute: undefined })).to.eql({});
     });
 
     it('does nothing with an [empty-string] value', () => {
-      expect(transformStyle({ Absolute: '' })).to.eql({});
+      expect(transform({ Absolute: '' })).to.eql({});
     });
   });
 
   describe('AbsoluteCenter', function() {
     it('converts `x`', () => {
-      const style = transformStyle({ AbsoluteCenter: 'x' }) as any;
+      const style = transform({ AbsoluteCenter: 'x' }) as any;
       expect(style.position).to.equal('absolute');
       expect(style.left).to.equal('50%');
       expect(style.top).to.equal(undefined);
@@ -71,7 +71,7 @@ describe('React: transformStyle - positioning', () => {
     });
 
     it('converts `y`', () => {
-      const style = transformStyle({ AbsoluteCenter: 'y' }) as any;
+      const style = transform({ AbsoluteCenter: 'y' }) as any;
       expect(style.position).to.equal('absolute');
       expect(style.left).to.equal(undefined);
       expect(style.top).to.equal('50%');
@@ -79,7 +79,7 @@ describe('React: transformStyle - positioning', () => {
     });
 
     it('converts `xy`', () => {
-      const style = transformStyle({ AbsoluteCenter: 'xy' }) as any;
+      const style = transform({ AbsoluteCenter: 'xy' }) as any;
       expect(style.position).to.equal('absolute');
       expect(style.left).to.equal('50%');
       expect(style.top).to.equal('50%');
@@ -87,7 +87,7 @@ describe('React: transformStyle - positioning', () => {
     });
 
     it('retains top value (x)', () => {
-      const style = transformStyle({
+      const style = transform({
         left: 0,
         top: 0,
         AbsoluteCenter: 'x',
@@ -99,7 +99,7 @@ describe('React: transformStyle - positioning', () => {
     });
 
     it('retains left value (y)', () => {
-      const style = transformStyle({
+      const style = transform({
         left: 0,
         top: 0,
         AbsoluteCenter: 'y',
