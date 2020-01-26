@@ -5,6 +5,7 @@ import * as router from './router';
 import { prepareResponse } from './server.prepareResponse';
 
 export { Config } from './config';
+export { logger } from './logger';
 
 const { PKG } = constants;
 
