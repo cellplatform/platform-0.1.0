@@ -10,6 +10,19 @@ const url = {
   future: 'https://youtu.be/JvoCIPKWobs',
 };
 
+/**
+ * Dynamically load a module (aka: "code-splitting").
+ */
+setTimeout(() => {
+  const load = import('./m');
+  load.then(e => {
+    console.log('Dynamically loaded module:', e);
+    e.init();
+  });
+}, 2000);
+
+console.log('waiting...');
+
 const el = document.getElementById('root');
 const message = `Text updated from TypeScript (Bundler: Parcel v2).`;
 el.innerHTML = `

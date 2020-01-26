@@ -845,6 +845,19 @@
     jss-plugin-global "10.0.3"
     tinycolor2 "1.4.1"
 
+"@platform/css@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.3.0.tgz#82acc15ec2ccd8328b44a19a02dff17d331c822b"
+  integrity sha512-s89KWkKOzdK/LhFnsqnTmpUWD25dPcOBATt4deV+Z7NJLWzqKMeze3XxpkUkXV8d0ZfFh05N4LBpNm8Xx+0o7w==
+  dependencies:
+    "@platform/libs" "0.2.0"
+    "@platform/util.is" "0.0.109"
+    "@platform/util.value" "0.7.3"
+    "@types/tinycolor2" "1.4.2"
+    glamor-jss "1.4.1"
+    jss-plugin-global "10.0.3"
+    tinycolor2 "1.4.1"
+
 "@platform/exec@0.2.45":
   version "0.2.45"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.45.tgz#ced01da2d3da8bdeb0acadad6fe8e2697bb630fc"
@@ -915,12 +928,24 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/react@0.4.5", "@platform/react@^0.4.0":
+"@platform/react@0.4.5":
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.5.tgz#4adc0f051a82913009f1a96f377d17aafb6119d7"
   integrity sha512-5V5cw4B9MDuug3GkiqNxvTtGWzaSyp1lFNSa/V2YzpfSEfAX3baAl4Iayfgj7j4Q4YmsX+bS+kHsytV8aeMTdQ==
   dependencies:
     "@platform/css" "0.2.5"
+    "@platform/util.is" "0.0.109"
+    "@types/react" "16.9.19"
+    "@types/react-dom" "16.9.5"
+    react "16.12.0"
+    react-dom "16.12.0"
+
+"@platform/react@^0.4.0":
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.6.tgz#1b29ab4b420636ec5377ef36b359c4295c1c4c39"
+  integrity sha512-2FNPZYlQlYHhm9MOru2gewio90A+hf19kL9jLuZTwPjP3vm3tsaWYCgsDhVTtBpQ2jZeslgWIiwzS4gR8FUHyw==
+  dependencies:
+    "@platform/css" "0.3.0"
     "@platform/util.is" "0.0.109"
     "@types/react" "16.9.19"
     "@types/react-dom" "16.9.5"
@@ -1704,9 +1729,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001022:
-  version "1.0.30001022"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001022.tgz#9eeffe580c3a8f110b7b1742dcf06a395885e4c6"
-  integrity sha512-FjwPPtt/I07KyLPkBQ0g7/XuZg6oUkYBVnPHNj3VHJbOjmmJ/GdSo/GUY6MwINEQvjhP6WZVbX8Tvms8xh0D5A==
+  version "1.0.30001023"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001023.tgz#b82155827f3f5009077bdd2df3d8968bcbcc6fc4"
+  integrity sha512-C5TDMiYG11EOhVOA62W1p3UsJ2z4DsHtMBQtjzp3ZsUglcQn62WOUgW0y795c7A5uZ+GCEIvzkMatLIlAsbNTA==
 
 caseless@~0.12.0:
   version "0.12.0"
