@@ -11,7 +11,7 @@
     "build": "ts build",
     "prepare": "ts prepare",
     "update": "sh sh/update.sh",
-    "bundle": "sh sh/bundle.sh",
+    "bundle": "ts-node -T scripts/bundle.ts",
     "clean": "sh sh/clean.sh"
   },
   "dependencies": {
