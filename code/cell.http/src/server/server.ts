@@ -2,7 +2,7 @@ import { filter } from 'rxjs/operators';
 
 import { constants, log, micro, t, util, value } from './common';
 import * as router from './router';
-import { prepareResponse } from './server.prepareResponse';
+import { prepareResponse } from './server.global';
 
 export { Config } from './config';
 export { logger } from './logger';
