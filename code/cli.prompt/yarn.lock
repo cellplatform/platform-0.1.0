@@ -29,7 +29,7 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs@0.5.5", "@platform/fs@^0.5.5":
+"@platform/fs@0.5.5":
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.5.5.tgz#2755ae88400313731caf7fdd5cd4fc15536e53f3"
   integrity sha512-xRD3QCwgRHWAKtPsvJRNa8say0m2ShlzQ6W1wC+0v5kgfDtK0Dxp3XWAmxkAiR/JZkGEk63fkw3VzqdPVPNtTQ==
@@ -55,7 +55,7 @@
     rxjs "6.5.4"
     tslib "1.10.0"
 
-"@platform/log@^0.1.7":
+"@platform/log@0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.7.tgz#1fb726267692c83a09e2e4be983e53de92d0d5e8"
   integrity sha512-qZ1JqphkXw2n3Ui72GQ90ocCzYkEMv1ooBo7tDco6F0SOZnGVWZ0EhfI/EMfpkqIFE4qPVHS34kGZXAM0OsIFQ==

@@ -211,7 +211,7 @@ export async function watchDir(args: {
       onPayload: payload => {
         // Print the file upload size (KB) when it's been calculated.
         const bytes = payload.files
-          .filter(payload => payload.isPending)
+          .filter(payload => payload.isChanged)
           .reduce((acc, payload) => (payload.localBytes > 0 ? acc + payload.localBytes : acc), 0);
         if (state.isStarted && bytes > 0) {
           const message = `${log.yellow('syncing')} (${fs.size.toString(bytes)})`;

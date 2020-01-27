@@ -46,7 +46,8 @@ export async function buildPayload(args: {
   const filesUrl = urls.cell(cellUri).files.list;
 
   const tasks = cli.tasks();
-  const title = log.gray(`read cell:${log.magenta(ns)}!${log.blue(cellKey)} on ${filesUrl.origin}`);
+  const cell = log.white(`cell:${log.magenta(ns)}!${log.blue(cellKey)}`);
+  const title = log.gray(`read ${cell} on ${filesUrl.origin}`);
 
   tasks.task(title, async () => {
     const res = await args.client.cell(cellUri).files.list();
@@ -97,10 +98,10 @@ export async function buildPayload(args: {
 
     const uri = '';
     const url = cellUrls.file.byName(filename).toString();
-    const isPending = status !== 'NO_CHANGE';
+    const isChanged = status !== 'NO_CHANGE';
     const item: t.IFsSyncPayloadFile = {
       status,
-      isPending,
+      isChanged,
       localPath,
       path,
       dir,
@@ -125,12 +126,12 @@ export async function buildPayload(args: {
       const { filename, dir, uri } = file;
       const path = fs.join(dir, filename);
       const url = cellUrls.file.byName(path).toString();
-      const isPending = args.delete;
+      const isChanged = args.delete;
       const filehash = file.props.integrity?.filehash || '';
       const remoteBytes = defaultValue(file.props.bytes, -1);
       files.push({
         status: 'DELETED',
-        isPending,
+        isChanged,
         localPath: fs.join(args.dir, path),
         path,
         dir,
@@ -168,6 +169,9 @@ export function logPayload(args: {
     .objects(list, item => item.filename)
     .forEach(item => {
       const { localBytes: bytes } = item;
+      // const isChanged = item.status !== 'NO_CHANGE';
+
+      // item.isChanged;
 
       const path = util.toStatusColor({
         status: item.status,
@@ -186,7 +190,10 @@ export function logPayload(args: {
         force: args.force,
       });
 
-      const size = bytes > -1 ? fs.size.toString(bytes) : '';
+      // item.
+
+      let size = bytes > -1 ? fs.size.toString(bytes) : '';
+      size = item.isChanged ? log.white(size) : log.gray(size);
 
       table.add([`${status}  `, `${file}  `, size]);
       count++;

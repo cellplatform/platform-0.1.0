@@ -51,16 +51,16 @@
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.fs.sync@0.3.25":
-  version "0.3.25"
-  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.3.25.tgz#3a7129fbdeb028657bb482cbc06dc8a57b3413c9"
-  integrity sha512-2dtLULvWRAVo6zVzPPCcBRdhOcrl8OfmmuP7WZ2CMahpzU1CfZAMm7iW7ebsDcd5VP1UAui/P2sgmzxNs9q7kQ==
+"@platform/cell.fs.sync@0.3.26":
+  version "0.3.26"
+  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.3.26.tgz#a9926cfefad6a7edbd5a124453cbb1b8719bb90a"
+  integrity sha512-RmcHOAr3AUhX6C7uA8/JirUuVb7OSeG/E0mRCTHFYsdy6yRxRNgvB6UWtEGzPV8aI/RJokoRGX7Iw7Uv7ooh3w==
   dependencies:
     "@platform/cell.client" "0.1.18"
     "@platform/cell.schema" "0.4.19"
     "@platform/cell.types" "0.4.17"
     "@platform/cell.value" "0.1.83"
-    "@platform/cli" "0.5.12"
+    "@platform/cli" "0.5.13"
     "@platform/fs" "0.5.5"
     "@platform/fs.watch" "0.2.27"
     "@platform/http" "0.10.6"
@@ -104,20 +104,22 @@
     "@platform/util.diff" "0.0.16"
     "@platform/util.value" "0.7.3"
 
-"@platform/cli.prompt@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.2.13.tgz#b06b0908980c1a22cdd188e22a5f43d699af5dfd"
-  integrity sha512-D9+P00UE5T8BAkvT1aSB05Q44RB2XtUal7sRBXXUvG5D2ch+IBorEEWKu8OmZ41DiaGC37mxqJmP+wfNVzJFaQ==
+"@platform/cli.prompt@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.3.0.tgz#e1d669dcedbb2117018bd03cdb3e66c1ffedb7e0"
+  integrity sha512-S7D6Rsbq1hMPxMotQfDEge1VjhLm9Ba2VZWR2m6XfhV/o+VZXeuSkSAcMaNGSP3gFgdvFh6fkPWvaOatvrEFmg==
   dependencies:
+    "@platform/fs" "0.5.5"
     "@platform/libs" "0.2.0"
+    "@platform/log" "0.1.7"
     inquirer "7.0.3"
 
-"@platform/cli@0.5.12":
-  version "0.5.12"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.12.tgz#155e3d234f08c83fd1f3ab01d1caa4b48eb55b27"
-  integrity sha512-310FB43WxDewXwzG7/CRlix3RKe1qgsLZfriXyKKZvGjLBO5Dg2VxjEjILT4WI31UK0nIpfeWqyDKn2BSU50+w==
+"@platform/cli@0.5.13":
+  version "0.5.13"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.13.tgz#835e19c00dc99e1f23a44dbd625a62688e595bff"
+  integrity sha512-mfvWY00NXHY6eFDWvILkcxOqcQf676F6KQJc2Z1yoFm7If/DvO5j/S2Qy0usB5TV3MaQGO1z3anEVaCDpFBmow==
   dependencies:
-    "@platform/cli.prompt" "0.2.13"
+    "@platform/cli.prompt" "0.3.0"
     "@platform/exec" "0.2.45"
     "@platform/fs" "0.5.5"
     "@platform/libs" "0.2.0"

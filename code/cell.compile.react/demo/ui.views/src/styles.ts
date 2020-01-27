@@ -1,8 +1,12 @@
-// import '@platform/css/css/normalize.css';
-// import { style } from './common';
+import { style } from '@platform/react';
 
-// style.global({
-//   body: {
-//     fontFamily: 'sans-serif',
-//   },
-// });
+style.global({
+  body: {
+    fontFamily: 'sans-serif',
+    padding: 25,
+  },
+  h1: {
+    fontSize: 64,
+    margin: 0,
+  },
+});
