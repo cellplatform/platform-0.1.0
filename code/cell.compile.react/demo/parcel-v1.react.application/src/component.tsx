@@ -29,8 +29,8 @@ export class Foo extends React.PureComponent<IFooProps, IFooState> {
     };
     return (
       <div {...styles.base}>
-        <div>Foo</div>
-        <Spinner />
+        <Spinner size={32} color={1} />
+        <div id={'STATUS'}>Loading</div>
       </div>
     );
   }
