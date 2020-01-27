@@ -1,0 +1,38 @@
+{
+  "name": "ui.views",
+  "version": "0.0.0",
+  "description": "CellCode UI views (isolated modules).",
+  "source": "src/index.html",
+  "node": "dist/node/index.html",
+  "browser": "dist/browser/index.html",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "watch": "yarn start",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare",
+    "bundle": "parcel build src/index.html --experimental-scope-hoisting",
+    "clean": "rm -rf dist && rm -rf .cache",
+    "serve": "cd dist && serve"
+  },
+  "dependencies": {
+    "@platform/cell.client": "0.1.18",
+    "@platform/libs": "0.2.0",
+    "@platform/react": "^0.4.6"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.2",
+    "@platform/ts": "3.7.12",
+    "parcel": "1.12.4"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
+  ],
+  "license": "MIT",
+  "private": true
+}

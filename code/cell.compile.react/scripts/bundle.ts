@@ -1,8 +1,8 @@
 import { cli } from '@platform/cli';
-const { fs, prompt, log } = cli;
+const { fs, log } = cli;
 
 (async () => {
-  const dirs = await promptDirs('demo');
+  const dirs = await cli.prompt.fs.paths('demo').checkbox();
   const info: string[] = [];
 
   const tasks = cli.tasks();
@@ -25,32 +25,3 @@ const { fs, prompt, log } = cli;
   log.info();
   info.forEach(line => cli.log.info(line));
 })();
-
-/**
- * TODO 🐷
- * - move promptDirs to: @platform/cli.prompt
- * - LIST and CHECKBOX option
- * - single string (=== "parent") or string[] (=== list of paths to select)
- */
-
-/**
- * Prompt user for selection of a directory.
- */
-async function promptDirs(dir: string) {
-  const paths = await fs.glob.find(fs.join(fs.resolve(dir), '*/package.json'));
-  const items = paths.map(path => {
-    const dir = fs.dirname(path);
-    const name = fs.basename(dir);
-    return {
-      name: log.gray(`• demo/${log.white(name)}/`),
-      value: dir,
-    };
-  });
-
-  const res = await prompt.list({
-    message: 'folder',
-    items: ['all', '---', ...items],
-  });
-
-  return res === 'all' ? items.map(item => item.value) : [res];
-}

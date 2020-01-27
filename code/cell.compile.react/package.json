@@ -17,6 +17,7 @@
   "dependencies": {
     "@platform/cell.types": "0.4.17",
     "@platform/cli": "0.5.12",
+    "@platform/cli.prompt": "^0.2.13",
     "@platform/libs": "0.2.0"
   },
   "devDependencies": {

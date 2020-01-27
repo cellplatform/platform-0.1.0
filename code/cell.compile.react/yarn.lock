@@ -37,7 +37,7 @@
     "@platform/libs" "0.2.0"
     "@platform/util.diff" "0.0.16"
 
-"@platform/cli.prompt@0.2.13":
+"@platform/cli.prompt@0.2.13", "@platform/cli.prompt@^0.2.13":
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.2.13.tgz#b06b0908980c1a22cdd188e22a5f43d699af5dfd"
   integrity sha512-D9+P00UE5T8BAkvT1aSB05Q44RB2XtUal7sRBXXUvG5D2ch+IBorEEWKu8OmZ41DiaGC37mxqJmP+wfNVzJFaQ==
