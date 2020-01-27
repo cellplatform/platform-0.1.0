@@ -53,26 +53,45 @@ describe('cell/files: download', function() {
       const client = mock.client.cell(cellUri);
       const urls = mock.urls.cell(cellUri);
 
-      const test = async (filename: string) => {
-        const data = await readFile('src/test/assets/file.js');
+      const test = async (source: string, filename: string, matchContent?: string) => {
+        const path = fs.join('src/test/assets', source);
+        const data = await readFile(path);
         await client.files.upload({ filename, data });
 
         const url = urls.file.byName(filename).toString();
         const res = await http.get(url);
 
         expect(res.status).to.eql(200);
-        expect(await bodyToText(res.body)).to.eql(data.toString());
 
+        const contentType = (res.headers['content-type'] || '').toString();
         const mime = util.toMimetype(filename) || 'application/octet-stream';
-        expect(res.headers['content-type']).to.eql(mime);
+        expect(contentType).to.eql(mime);
+
+        const content = contentType.startsWith('text/') ? res.text : await bodyToText(res.body);
+        if (matchContent) {
+          expect(content).to.include(matchContent);
+        } else {
+          expect(content).to.eql(data.toString());
+        }
       };
 
-      await test('file.js');
-      await test('//file.js');
-      await test('m.foo.png');
-      await test('m.foo.bar.z.pdf');
-      await test('m.foo.bar');
-      await test('m.foo.bar/foo/z/p.file.js');
+      await test('file.js', 'file.js');
+      await test('file.js', '//file.js');
+      await test('file.js', 'm.foo.png');
+      await test('file.js', 'm.foo.bar.z.pdf');
+      await test('file.js', 'm.foo.bar');
+      await test('file.js', 'm.foo.bar/foo/z/p.file.js');
+      await test('file.js', 'parcel-v1.react.application/dist/foo.js');
+      await test('file.js', 'foobar/index.html');
+
+      await test('file.js', 'root/foobar/index.js');
+      await test('file.js', 'root/foo_bar/index.js');
+      await test('file.js', 'root/foo-bar/index.js');
+
+      const html = '<title>My Title</title>';
+      await test('index.html', 'index.html', html);
+      await test('index.html', 'foo/bar_zoo.v1/dist/index.html', html);
+      await test('index.html', 'foo/bar-zoo.v2/dist/index.html', html);
 
       // Finish up.
       await mock.dispose();

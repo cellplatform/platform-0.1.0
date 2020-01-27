@@ -4,7 +4,7 @@ const ID = {
   ROW: `([0-9]+)`,
   COLUMN: `([A-Z]+)`,
   FILE: `([A-Za-z0-9]+)`,
-  FILENAME: `([A-Za-z0-9\.\-\_]*)`,
+  FILENAME: `([\-A-Za-z0-9\.\_\/]*)`,
 };
 
 const KEY = {
@@ -53,3 +53,5 @@ export const ROUTES = {
     INFO: `/cell${KEY.NS}\!${KEY.COLUMN}(/?)`,
   },
 };
+
+// console.log('ROUTES', ROUTES.CELL.FILE.BY_NAME);
