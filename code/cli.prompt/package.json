@@ -11,11 +11,15 @@
     "build": "ts build",
     "prepare": "ts prepare",
     "demo.txt": "ts-node -T scripts/prompt.text",
-    "demo.ls": "ts-node -T scripts/prompt.list",
-    "demo.chk": "ts-node -T scripts/prompt.checkbox"
+    "demo.rdo": "ts-node -T scripts/prompt.radio",
+    "demo.chk": "ts-node -T scripts/prompt.checkbox",
+    "demo.fs.chk": "ts-node -T scripts/prompt.fs.checkbox",
+    "demo.fs.rdo": "ts-node -T scripts/prompt.fs.radio"
   },
   "dependencies": {
+    "@platform/fs": "0.5.5",
     "@platform/libs": "0.2.0",
+    "@platform/log": "0.1.7",
     "inquirer": "7.0.3"
   },
   "devDependencies": {
