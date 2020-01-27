@@ -1,5 +1,6 @@
 import { debounceTime, filter } from 'rxjs/operators';
 import { t, defaultValue, fs, log, time, util, watch } from '../common';
+import { formatLength } from '../util';
 
 const gray = log.info.gray;
 
@@ -24,18 +25,6 @@ const DIV = '-------------------------------------------------------';
 const logDivider = (show?: boolean) => {
   if (show !== false) {
     log.info.gray(DIV);
-  }
-};
-
-const formatLength = (line: string, max: number) => {
-  if (line.length <= max) {
-    return line;
-  } else {
-    const ellipsis = '..';
-    const index = line.length - (max + ellipsis.length - 2);
-    line = line.substring(index);
-    line = `${ellipsis}${line}`;
-    return line;
   }
 };
 

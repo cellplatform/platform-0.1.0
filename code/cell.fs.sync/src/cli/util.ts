@@ -55,3 +55,17 @@ export function toPayloadSize(
     toString: () => fs.size.toString(bytes),
   };
 }
+
+/**
+ * Format the length of a line.
+ */
+export const formatLength = (line: string, max: number) => {
+  if (line.length <= max) {
+    return line;
+  } else {
+    const ellipsis = '..';
+    const index = line.length - (max + ellipsis.length - 2);
+    line = line.substring(index);
+    line = `${ellipsis}${line}`;
+    return line;
+  }
