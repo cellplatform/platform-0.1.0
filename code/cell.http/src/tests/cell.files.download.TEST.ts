@@ -88,7 +88,7 @@ describe('cell/files: download', function() {
       // Upload HTML file.
       const filename = 'foo';
       const data = await readFile('src/test/assets/index.html');
-      await client.files.upload([{ filename, data }]);
+      await client.files.upload({ filename, data });
 
       // Download the file and check headers.
       let headers: undefined | t.IHttpHeaders;
@@ -105,6 +105,29 @@ describe('cell/files: download', function() {
       await mock.dispose();
     });
 
+    it('file path', async () => {
+      const mock = await createMock();
+      const cellUri = 'cell:foo!A1';
+      const client = mock.client.cell(cellUri);
+
+      // Upload HTML file.
+      const data = await readFile('src/test/assets/index.html');
+      await client.files.upload({ filename: 'foo/bar/m.root.html', data });
+
+      // Download the file and check headers.
+      let headers: undefined | t.IHttpHeaders;
+      mock.client.response$.subscribe(e => (headers = e.response.headers));
+
+      const res = await client.file.name('  ///foo/bar/m.root.html  ').download(); // NB: path prefix slahses "/" are trimmed.
+      const html = await bodyToText(res.body);
+
+      expect(res.ok).to.eql(true);
+      expect(html).to.contain('<title>My Title</title>');
+
+      // Finish up.
+      await mock.dispose();
+    });
+
     it('[.html] file extension (content-type: "text/html")', async () => {
       const mock = await createMock();
       const cellUri = 'cell:foo!A1';
@@ -113,7 +136,7 @@ describe('cell/files: download', function() {
       // Upload HTML file.
       const filename = 'index.html';
       const data = await readFile('src/test/assets/index.html');
-      await client.files.upload([{ filename, data }]);
+      await client.files.upload({ filename, data });
 
       // Download the file and check headers.
       let headers: undefined | t.IHttpHeaders;
