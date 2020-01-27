@@ -25,12 +25,12 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.client@0.1.16":
-  version "0.1.16"
-  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.1.16.tgz#0dfa7d9daaa2820be78bbd22adddd6c7b6df0e89"
-  integrity sha512-KZ5M+QDKazLh+gjSQUUa2Ij7T4bvA128ESL7q2hVA/HaCDVsPdZIaf7voLJi8DUphUpkjLmA3CHGX7dWmCtcWw==
+"@platform/cell.client@0.1.17":
+  version "0.1.17"
+  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.1.17.tgz#73e7b08113bf8cff2f9be20b509e66effe05488b"
+  integrity sha512-s7AfiEOj8+5Vhy1mSewohq02lBA55nOQVOGtC7Xxjb2JbhhVBgUopBGRfiOi4eykYX/TPI8Zcb5BXcefzGxkpA==
   dependencies:
-    "@platform/cell.schema" "0.4.17"
+    "@platform/cell.schema" "0.4.18"
     "@platform/cell.types" "0.4.16"
     "@platform/http" "0.10.6"
     "@platform/http.types" "0.0.5"
@@ -51,15 +51,15 @@
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.fs.sync@0.3.23":
-  version "0.3.23"
-  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.3.23.tgz#c514ba224abdbd2f2fb74750a7f02adaa5d2b960"
-  integrity sha512-fP3LLpCQyrHNDe7ShsPR4kbtzIrx92yhz4ARZGC5unyW7J4KT6UO0DPo5Y9bbJgFPuPdz2YpxG3GwGljyPHPjg==
+"@platform/cell.fs.sync@0.3.24":
+  version "0.3.24"
+  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.3.24.tgz#3aa3ec038742e26faeb031500438e36ba1e4f485"
+  integrity sha512-MTKKcsxlVjakYKp7DlOX4jL5/LpB2es45DU/J57p/X+MzKjFHH5Axc2yjUfxzIwKcbUO4jK0ijVx7HqNlbMxvQ==
   dependencies:
-    "@platform/cell.client" "0.1.16"
-    "@platform/cell.schema" "0.4.17"
+    "@platform/cell.client" "0.1.17"
+    "@platform/cell.schema" "0.4.18"
     "@platform/cell.types" "0.4.16"
-    "@platform/cell.value" "0.1.81"
+    "@platform/cell.value" "0.1.82"
     "@platform/cli" "0.5.12"
     "@platform/fs" "0.5.5"
     "@platform/fs.watch" "0.2.27"
@@ -69,10 +69,10 @@
     chalk "3.0.0"
     open "7.0.0"
 
-"@platform/cell.schema@0.4.17":
-  version "0.4.17"
-  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.17.tgz#42a53e3deff1443f5c96d81b34a51f912349625f"
-  integrity sha512-5yWgLoY7YTXwLntKmNa1gUO+FZsVhojvknQMMt+8AEzXpT6BYxQ+Din/UJdnHZckxWvKl9rdPi/0V9DDo+NFug==
+"@platform/cell.schema@0.4.18":
+  version "0.4.18"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.18.tgz#5ed475e5e795d7637fb2c7f884541b9fdcc7ea94"
+  integrity sha512-QC8bKqNgMYgyTzQNrGOxwZ0Wbtjq8VuazxjTVXQi9tkSmbgQXZntItvwleH/YaHI6r21GFFU+wBQr2JMsxLfmg==
   dependencies:
     "@platform/cell.coord" "0.8.34"
     "@platform/cell.types" "0.4.16"
@@ -93,12 +93,12 @@
     "@platform/libs" "0.2.0"
     "@platform/util.diff" "0.0.16"
 
-"@platform/cell.value@0.1.81":
-  version "0.1.81"
-  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.1.81.tgz#1d902f1735d0b3941066d281cafab12f07b3ce3f"
-  integrity sha512-BZUk+Br7iuJoA6D0JQgmNLy3SLgfLCCpnn+7uibrWb8aYPgSr/ARjdJx415EkZjvsxUjZuT6c8U7w1/l3Ebdkg==
+"@platform/cell.value@0.1.82":
+  version "0.1.82"
+  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.1.82.tgz#84f3ca31bb4d6369321c961e27ef066543f22bae"
+  integrity sha512-dDnnVqNfDbhmOXVelmprTAeYc3IWxSDKNkn+wBSwmMYYHuisOwwfBFbEf/FQc8y1TpnYHdRrhh4WePFooTebgg==
   dependencies:
-    "@platform/cell.schema" "0.4.17"
+    "@platform/cell.schema" "0.4.18"
     "@platform/cell.types" "0.4.16"
     "@platform/libs" "0.2.0"
     "@platform/util.diff" "0.0.16"
