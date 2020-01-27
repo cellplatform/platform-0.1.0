@@ -6,7 +6,7 @@ import { cheerio, models, Schema, t, util } from '../common';
  * and rewrite the values to fully-qualified
  * CellOS file paths.
  */
-export async function rewritePaths(args: {
+export async function rewriteHtmlPaths(args: {
   filename: string;
   html: string;
   host: string;

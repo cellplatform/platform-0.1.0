@@ -1,6 +1,12 @@
 import * as t from './types';
+import { fs } from './libs';
 
 export { ERROR } from '@platform/cell.schema';
+
+export const IS_CLOUD = Boolean(process.env.NOW_REGION);
+export const PATH = {
+  TMP: IS_CLOUD ? '/tmp' : fs.resolve('tmp'),
+};
 
 /**
  * Versions (from PACKAGE.json)
