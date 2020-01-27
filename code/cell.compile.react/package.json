@@ -12,6 +12,7 @@
     "prepare": "ts prepare",
     "update": "sh sh/update.sh",
     "bundle": "ts-node -T scripts/bundle.ts",
+    "serve": "ts-node -T scripts/serve.ts",
     "clean": "sh sh/clean.sh"
   },
   "dependencies": {

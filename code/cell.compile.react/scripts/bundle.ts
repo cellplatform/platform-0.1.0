@@ -33,7 +33,5 @@ const { fs, log } = cli;
 
   if (errors.length > 0) {
     errors.forEach(line => cli.log.error(line));
-
-    // log.error(error);
   }
 })();
