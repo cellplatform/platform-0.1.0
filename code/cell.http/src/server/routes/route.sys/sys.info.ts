@@ -22,12 +22,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
 
     const provider = args.title || 'Untitled';
     const system = constants.getSystem().system;
-
-    const prefixProtocol = (host: string) =>
-      host.startsWith('localhost') ? `http://${host}` : `https://${host}`;
-
-    let host = req.headers.host || '-';
-    host = prefixProtocol(host);
+    const host = req.headers.host || '-';
 
     const data: t.IResGetSysInfo = {
       provider,
