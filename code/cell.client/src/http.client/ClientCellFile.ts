@@ -25,7 +25,7 @@ export class ClientCellFile implements t.IClientCellFile {
   /**
    * [Methods]
    */
-  public name(filename: string) {
+  public name(path: string) {
     const http = this.args.http;
     const self = this;
     const parent = this.args.parent;
@@ -34,7 +34,7 @@ export class ClientCellFile implements t.IClientCellFile {
        * Meta-data about the file.
        */
       async info() {
-        const linkRes = await self.getCellLinkByFilename(filename);
+        const linkRes = await self.getCellLinkByFilename(path);
         if (linkRes.error) {
           return linkRes.error as any;
         }
@@ -59,7 +59,7 @@ export class ClientCellFile implements t.IClientCellFile {
       ): Promise<t.IClientResponse<ReadableStream | string>> {
         type T = ReadableStream | string;
         const { expires } = options;
-        const linkRes = await self.getCellLinkByFilename(filename);
+        const linkRes = await self.getCellLinkByFilename(path);
         if (linkRes.error) {
           return linkRes.error as any;
         }

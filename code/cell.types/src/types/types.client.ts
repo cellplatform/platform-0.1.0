@@ -53,7 +53,7 @@ export type IClientCellLinks = {
 };
 
 export type IClientCellFile = {
-  name(filename: string): IClientCellFileByName;
+  name(path: string): IClientCellFileByName;
 };
 
 export type IClientCellFileByName = {
