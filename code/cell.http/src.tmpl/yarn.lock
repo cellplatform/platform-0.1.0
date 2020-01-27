@@ -85,10 +85,10 @@
     "@platform/libs" "0.2.0"
     "@platform/util.value" "0.7.3"
 
-"@platform/cell.http@0.5.71":
-  version "0.5.71"
-  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.5.71.tgz#d9183b1759d841a0b98af854e2ab8250990289e8"
-  integrity sha512-dW4WRirdhg6XE3SQocHfBW9HCo++30pGh1GcbnBTRFvLjv0iht1A/guXfU0bSM+q1NuX4LD/ry/TpUrUE20vEQ==
+"@platform/cell.http@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.6.0.tgz#f6f173a98468a494424623d1b0dfaddf81d4b53b"
+  integrity sha512-QPHNMxKVFiCUN5O9ZZNU5lAyAC0kRwdXvaT3tUI7rgBC1l9cCHJ1L/z3+zmJCLVsx92YSEjjCQ7ZzwrbI8EFeg==
   dependencies:
     "@platform/cell.client" "0.1.17"
     "@platform/cell.db" "0.2.95"
