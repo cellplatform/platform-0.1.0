@@ -163,41 +163,42 @@ export function logPayload(args: {
 }) {
   const { files } = args;
   let count = 0;
-  const table = log.table({ border: false });
   const list = files.filter(item => (item.status === 'DELETED' ? args.delete : true));
-  fs.sort
-    .objects(list, item => item.filename)
-    .forEach(item => {
-      const { localBytes: bytes } = item;
-      // const isChanged = item.status !== 'NO_CHANGE';
 
-      // item.isChanged;
+  const table = log.table({ border: false });
+  const add = (item: t.IFsSyncPayloadFile) => {
+    const { localBytes: bytes } = item;
 
-      const path = util.toStatusColor({
-        status: item.status,
-        text: item.path,
-        delete: args.delete,
-        force: args.force,
-      });
-      const file = log.gray(`${path}`);
-
-      const statusText = item.status.toLowerCase().replace(/\_/g, ' ');
-
-      const status = util.toStatusColor({
-        status: item.status,
-        text: statusText,
-        delete: args.delete,
-        force: args.force,
-      });
-
-      // item.
-
-      let size = bytes > -1 ? fs.size.toString(bytes) : '';
-      size = item.isChanged ? log.white(size) : log.gray(size);
-
-      table.add([`${status}  `, `${file}  `, size]);
-      count++;
+    const path = util.toStatusColor({
+      status: item.status,
+      text: item.path,
+      delete: args.delete,
+      force: args.force,
     });
+    const file = log.gray(`${path}`);
+
+    const statusText = item.status.toLowerCase().replace(/\_/g, ' ');
+
+    const status = util.toStatusColor({
+      status: item.status,
+      text: statusText,
+      delete: args.delete,
+      force: args.force,
+    });
+
+    let size = bytes > -1 ? fs.size.toString(bytes) : '';
+    size = item.isChanged ? log.white(size) : log.gray(size);
+
+    table.add([`${status}  `, `${file}  `, size]);
+    count++;
+  };
+
+  const sortAndAdd = (files: t.IFsSyncPayloadFile[]) => {
+    fs.sort.objects(files, file => file.filename).forEach(file => add(file));
+  };
+
+  sortAndAdd(list.filter(item => !item.isChanged)); // Unchanged.
+  sortAndAdd(list.filter(item => item.isChanged)); //   Changed ("sync pending").
 
   return count > 0 ? table.toString() : '';
 }
