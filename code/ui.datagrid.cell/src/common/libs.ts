@@ -1,7 +1,7 @@
 /**
  * Util
  */
-export { css, color, GlamorValue, events, containsFocus } from '@platform/react';
+export { css, color, CssValue, events, containsFocus } from '@platform/react';
 export { value, time } from '@platform/util.value';
 export { markdown } from '@platform/util.markdown';
 

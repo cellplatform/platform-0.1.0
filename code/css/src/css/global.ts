@@ -1,7 +1,7 @@
 import { R, t, jss } from '../common';
 
 const PluginGlobal = require('jss-plugin-global').default;
-let isInitialized = false;
+jss.jss.use(PluginGlobal);
 
 /**
  * Applies global CSS rules.
@@ -25,18 +25,9 @@ let isInitialized = false;
  *        global(styles, { prefix: '.markdown' });
  *
  */
-export const global: t.GlobalCssRules = (
-  styles: t.CssPropsMap,
-  options: { prefix?: string } = {},
-) => {
+export const global: t.CssGlobal = (styles: t.CssPropsMap, options: { prefix?: string } = {}) => {
   if (R.isEmpty(styles)) {
     return;
-  }
-
-  // Ensure the "global" plugin is enabled.
-  if (!isInitialized) {
-    jss.jss.use(PluginGlobal);
-    isInitialized = true;
   }
 
   // Prepare styles for global insertion.
@@ -53,6 +44,10 @@ export const global: t.GlobalCssRules = (
   // Load the global styles into the document.
   jss.jss.createStyleSheet({ '@global': global }).attach();
 };
+
+/**
+ * [Helpers]
+ */
 
 function toCssSelector(args: { key: string; prefix?: string }) {
   const { key, prefix } = args;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, t } from '../../../common';
+import { css, color, CssValue, t } from '../../../common';
 import * as buttons from '../../buttons';
 import { TextEditor } from '../../primitives';
 import { Icons } from '../../Icons';
@@ -9,7 +9,7 @@ import { Icons } from '../../Icons';
 export type IEditorProps = {
   editor$: Subject<t.TextEditorEvent>;
   value?: string;
-  style?: GlamorValue;
+  style?: CssValue;
   onComment?: (e: {}) => void;
 };
 export type IEditorState = {

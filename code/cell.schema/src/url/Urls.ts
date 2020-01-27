@@ -2,7 +2,7 @@ import { R, t, value } from '../common';
 import { Uri } from '../uri';
 import { Url } from './Url';
 import * as util from './util';
-import { ROUTES } from './Urls.ROUTES';
+import { ROUTES } from './ROUTES';
 
 /**
  * Standardised construction of URLs for the HTTP service.
@@ -194,14 +194,23 @@ export class Urls implements t.IUrls {
           return toPath<Q>(`/cell:${ns}!${key}/file/${filename}`);
         },
 
+        /**
+         * Example: /cell:foo!A1/file:abc123.png
+         */
         byFileUri(fileUri: string, fileExtension?: string) {
+          type Q = t.IUrlQueryCellFileDownloadByFileUri;
           fileExtension = (fileExtension || '').trim();
           const uri = Uri.parse<t.IFileUri>(fileUri).parts;
           if (uri.type !== 'FILE') {
             throw new Error(`The given URI [${fileUri}] is not of type [file:]`);
           }
-          const ext = (fileExtension || '').trim();
-          return api.file.byName(`${uri.file}${ext ? `.${ext}` : ''}`);
+          const ext = (fileExtension || '').trim().replace(/^\.*/, '');
+          const filename = `${uri.file}${ext ? `.${ext}` : ''}`.trim();
+          if (!filename) {
+            throw new Error(`File uri/name could not be derived..`);
+          }
+          const file = `file:${filename}`;
+          return toPath<Q>(`/cell:${ns}!${key}/${file}`);
         },
       },
     };

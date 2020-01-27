@@ -1,4 +1,4 @@
-import { GlamorValue, IMouseEventProps } from '@platform/react';
+import { CssValue, IMouseEventProps } from '@platform/react';
 
 export * from './components/TextInput/types';
 
@@ -24,5 +24,5 @@ export type ITextProps = ITextStyle &
     tooltip?: string;
     cursor?: string;
     isSelectable?: boolean;
-    style?: GlamorValue;
+    style?: CssValue;
   };

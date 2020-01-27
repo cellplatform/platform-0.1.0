@@ -5,7 +5,7 @@
 
 import * as React from 'react';
 
-import { css, GlamorValue, isPromise, DEFAULTS } from '../../common';
+import { css, CssValue, isPromise, DEFAULTS } from '../../common';
 import { Editor } from './Editor';
 
 import { ReactInspector, ObjectLabel, ObjectRootLabel, ObjectName, THEME } from './libs';
@@ -18,7 +18,7 @@ export type IObjectViewProps = {
   expandPaths?: string | string[];
   fontSize?: number;
   theme?: 'LIGHT' | 'DARK';
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export type IObjectViewState = {

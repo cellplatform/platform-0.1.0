@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, share, takeUntil } from 'rxjs/operators';
 
-import { COLORS, GlamorValue, R, t } from '../../common';
+import { COLORS, CssValue, R, t } from '../../common';
 import { Icons } from '../Icons';
 import { ITreeViewProps, TreeView } from '../primitives';
 import * as util from './util';
@@ -16,7 +16,7 @@ export type ICommandTreeViewProps = {
   theme?: ITreeViewProps['theme'];
   background?: ITreeViewProps['background'];
   events$?: Subject<t.CommandTreeEvent>;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type ICommandTreeViewState = {
   treeRoot?: t.ITreeNode;

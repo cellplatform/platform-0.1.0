@@ -32,10 +32,10 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.types@0.4.15":
-  version "0.4.15"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.15.tgz#4095ad307885addfcc12aa211b8bd2b21043b92c"
-  integrity sha512-5z+4+wIMnLcu9nCTgvOQnmsJyW3y8LpsToqW5wkRtxgKVpDBZfrmJHPAYIzVt02qQacTM+XBF1f0picDEm+uNw==
+"@platform/cell.types@0.4.16":
+  version "0.4.16"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.16.tgz#533c6f086c487fcbf06512618e10009245d352a6"
+  integrity sha512-UWHeht968rPOo67+ct1mar7ZZQOuNGW69zQeTu5sIrEI1JGgNP2uHeMEZ0aoNJbyP0toDAcUGzX7cVazT5WDrg==
   dependencies:
     "@platform/cache" "0.2.15"
     "@platform/fs.s3.types" "0.1.10"
@@ -44,19 +44,19 @@
     "@platform/libs" "0.2.0"
     "@platform/util.diff" "0.0.16"
 
-"@platform/cell.ui@0.0.101":
-  version "0.0.101"
-  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.0.101.tgz#08f2bd85ca715e7b7156765431cfef70fdcabaa1"
-  integrity sha512-ITfG1JLeptUmtGjzba4+l4EsTrdYEGZE0hb4Sh5yl8BJyuxJhuAQ0x8K17fnMPifhG9MWYgEdHf9Yt+H2RkpTw==
+"@platform/cell.ui@0.0.103":
+  version "0.0.103"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.0.103.tgz#5cd3ab07d7f19c16c65e88ac73a295d18e62f3e0"
+  integrity sha512-fhyyax7CrC4zdZpPD6taglNM3S/D0lomWUt+EAgNTSjBv0DVX2AUV8XCmAG8IvlLd9CAbJeBKwGlIOR9wTDybA==
   dependencies:
-    "@platform/cell.types" "0.4.15"
+    "@platform/cell.types" "0.4.16"
     "@platform/libs" "0.2.0"
-    "@platform/react" "^0.4.5"
+    "@platform/react" "^0.4.6"
 
-"@platform/css@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.2.5.tgz#3db1b279075669d550af45196036b86b46d44af4"
-  integrity sha512-sdHWD9VelU6LhFfp+U3LM7WMJW24/xvwdH8/mOPv0Qxxw68iZ5P2PSRE9hPp/QWG/qthY8fGCT7YOaAqsb4v7A==
+"@platform/css@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.3.0.tgz#82acc15ec2ccd8328b44a19a02dff17d331c822b"
+  integrity sha512-s89KWkKOzdK/LhFnsqnTmpUWD25dPcOBATt4deV+Z7NJLWzqKMeze3XxpkUkXV8d0ZfFh05N4LBpNm8Xx+0o7w==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/util.is" "0.0.109"
@@ -136,12 +136,12 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/react@0.4.5", "@platform/react@^0.4.5":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.5.tgz#4adc0f051a82913009f1a96f377d17aafb6119d7"
-  integrity sha512-5V5cw4B9MDuug3GkiqNxvTtGWzaSyp1lFNSa/V2YzpfSEfAX3baAl4Iayfgj7j4Q4YmsX+bS+kHsytV8aeMTdQ==
+"@platform/react@0.4.6", "@platform/react@^0.4.6":
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.6.tgz#1b29ab4b420636ec5377ef36b359c4295c1c4c39"
+  integrity sha512-2FNPZYlQlYHhm9MOru2gewio90A+hf19kL9jLuZTwPjP3vm3tsaWYCgsDhVTtBpQ2jZeslgWIiwzS4gR8FUHyw==
   dependencies:
-    "@platform/css" "0.2.5"
+    "@platform/css" "0.3.0"
     "@platform/util.is" "0.0.109"
     "@types/react" "16.9.19"
     "@types/react-dom" "16.9.5"

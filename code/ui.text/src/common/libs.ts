@@ -6,7 +6,7 @@ export {
   color,
   mouse,
   events,
-  GlamorValue,
+  CssValue,
   MouseEvent,
   MouseEventHandler,
   MeasureSize,

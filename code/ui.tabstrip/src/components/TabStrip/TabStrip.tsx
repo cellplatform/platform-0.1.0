@@ -5,7 +5,7 @@ import { takeUntil, filter, map, distinctUntilChanged, delay, debounceTime } fro
 import {
   css,
   defaultValue,
-  GlamorValue,
+  CssValue,
   R,
   s,
   t,
@@ -27,7 +27,7 @@ export type ITabStripProps<D = any> = {
   tabIndex?: number;
   events$?: Subject<t.TabstripEvent>;
   keyPress$?: events.KeypressObservable;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type ITabStripState = {
   isFocused?: boolean;

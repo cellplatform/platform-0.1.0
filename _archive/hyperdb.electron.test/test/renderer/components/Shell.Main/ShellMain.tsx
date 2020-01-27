@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, renderer, t } from '../../common';
+import { css, CssValue, renderer, t } from '../../common';
 import { DbHeader } from './components/DbHeader';
 import { DbWatch } from './components/DbWatch';
 import { Info } from './components/Info';
@@ -13,7 +13,7 @@ import { DbGrid } from './components/DbGrid';
 export type IShellMainProps = {
   db?: t.ITestRendererDb;
   network?: t.INetwork;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IShellMainState = {};
 

@@ -4,11 +4,11 @@ import { ActionMeta, ValueType } from 'react-select/lib/types';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue } from '../common';
+import { css, CssValue } from '../common';
 
 type OptionType = any;
 
-export type ISelectTestProps = { style?: GlamorValue };
+export type ISelectTestProps = { style?: CssValue };
 export type ISelectTestState = {};
 
 /**

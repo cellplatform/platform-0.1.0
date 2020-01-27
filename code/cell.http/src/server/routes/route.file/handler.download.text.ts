@@ -1,5 +1,5 @@
-import { ERROR, t, util, http } from '../common';
-import { downloadFilePreflight } from './handler.download';
+import { ERROR, t, util, fileCache } from '../common';
+import { downloadFilePreflight } from './handler.download.preflight';
 
 /**
  * Download an HTML file and dynamically rewrite the links.
@@ -16,6 +16,18 @@ export const downloadTextFile = async (args: {
   const { host, db, fs, fileUri, filename, matchHash, mime = 'text/html' } = args;
 
   try {
+    const done = (data: string) => {
+      const headers = { 'content-type': mime };
+      return { status: 200, data, headers };
+    };
+
+    // Check the cache for the file before doing anything.
+    const cache = fileCache({ name: fileUri, mime, hash: matchHash });
+    const cachedFile = await cache.get();
+    if (cachedFile) {
+      return done(cachedFile.toString());
+    }
+
     // Perform preliminary argument checks.
     const preflight = await downloadFilePreflight({ host, db, fileUri, filename, matchHash });
     const { error, file, location } = preflight;
@@ -41,8 +53,8 @@ export const downloadTextFile = async (args: {
     }
 
     // Finish up.
-    const headers = { 'content-type': mime };
-    return { status: 200, data, headers };
+    await cache.put(data);
+    return done(data);
   } catch (err) {
     return util.toErrorPayload(err);
   }

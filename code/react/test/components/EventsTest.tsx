@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, ObjectView, Hr } from './common';
+import { css, color, CssValue, ObjectView, Hr } from './common';
 import { events } from '../../src';
 
-export type IEventsTestProps = { style?: GlamorValue };
+export type IEventsTestProps = { style?: CssValue };
 export type IEventsTestState = { keyPress?: any; mouseDown?: any; focus?: any };
 
 export class EventsTest extends React.PureComponent<IEventsTestProps, IEventsTestState> {

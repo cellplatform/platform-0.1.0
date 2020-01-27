@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, Icons, t, TreeView, util } from '../common';
+import { css, CssValue, Icons, t, TreeView, util } from '../common';
 import { PropEditor } from '../PropEditor';
 
 const ROOT = 'ROOT';
@@ -19,7 +19,7 @@ export type IPropsProps = {
   insertable?: boolean | t.PropDataObjectType | t.PropDataObjectType[];
   deletable?: boolean | t.PropDataObjectType | t.PropDataObjectType[];
   theme?: t.PropsTheme;
-  style?: GlamorValue;
+  style?: CssValue;
   events$?: Subject<t.PropsEvent>;
   onChange?: ChangedEventHandler;
 };

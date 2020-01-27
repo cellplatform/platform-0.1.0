@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, renderer, time } from '../../common';
+import { css, CssValue, renderer, time } from '../../common';
 import * as t from '../../types';
 import { Button } from '../primitives';
 import { TestPanel } from '../TestPanel';
@@ -11,7 +11,7 @@ import { TestPanel } from '../TestPanel';
  * Test component.
  */
 export type IIpcTestProps = {
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class IpcTest extends React.PureComponent<IIpcTestProps> {

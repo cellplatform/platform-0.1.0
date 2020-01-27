@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, color, css, GlamorValue, t } from '../../common';
+import { COLORS, color, css, CssValue, t } from '../../common';
 import { Dialog } from '../Dialog';
 
 export type IErrorDialogProps = {
   error: string;
   command?: t.ICommand;
-  style?: GlamorValue;
+  style?: CssValue;
   onClose?: (e: {}) => void;
 };
 export type IErrorDialogState = {};

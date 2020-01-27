@@ -10,7 +10,7 @@ export { fs, S3, S3Bucket } from '@platform/fs.s3';
 export { log } from '@platform/log/lib/server';
 export { is } from '@platform/util.is';
 export { value, time, defaultValue } from '@platform/util.value';
-export { css, GlamorValue } from '@platform/react';
+export { css, CssValue } from '@platform/react';
 export { http } from '@platform/http';
 export { micro } from '@platform/micro';
 export { cli } from '@platform/cli';

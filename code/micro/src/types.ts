@@ -1,8 +1,5 @@
-// import { HttpMethod, Json, IDuration, IHttpHeaders } from '@platform/types';
-// import { IncomingMessage, Server, ServerResponse } from 'http';
-// import { Key, Token } from 'path-to-regexp';
-import * as t from './common/types';
 import { Observable } from 'rxjs';
+import * as t from './common/types';
 
 /**
  * HTTP
@@ -18,7 +15,7 @@ export type Request = t.IncomingMessage & {
   query: RequestQuery;
   body: RequestBody;
   toUrl(path: string): string;
-  redirect(path: string, options?: { headers?: t.IHttpHeaders }): RouteResponse;
+  redirect(path: string, options?: { headers?: t.IHttpHeaders; status?: 307 | 303 }): RouteResponse;
 };
 export type RequestParams = { [key: string]: string | number | boolean };
 export type RequestQuery = {

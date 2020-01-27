@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Subject, merge } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, t, time } from '../../common';
+import { CssValue, t, time } from '../../common';
 import { CellEditorView } from './CellEditorView';
 
 export type ICellEditorProps = {
   events$?: Subject<t.CellEditorEvent>;
   theme?: t.ICellEditorTheme | 'DEFAULT';
   textMode?: 'MARKDOWN' | 'TEXT';
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export type ICellEditorState = {

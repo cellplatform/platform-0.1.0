@@ -96,24 +96,42 @@ export class FileLinks {
     return Object.keys(links)
       .map(key => ({ key, value: links[key] }))
       .filter(({ key }) => FileLinks.is.fileKey(key))
-      .map(({ key, value }) => {
-        const { dir, path, filename, ext } = FileLinks.parseKey(key);
-        const { uri, ns, fileid: id, hash, status } = FileLinks.parseLink(value);
-        return {
-          uri,
-          key,
-          value,
-          file: { ns, id, path, dir, filename, ext },
-          hash,
-          status,
-        };
-      });
+      .map(({ key, value }) => toFileLink(key, value));
+  }
+
+  /**
+   * Lookup a file on the given links.
+   */
+  public static find(links: t.IUriMap = {}) {
+    return {
+      byName(path?: string) {
+        path = (path || '').trim().replace(/^\/*/, '');
+        const match = Object.keys(links)
+          .map(key => ({ key, value: links[key] }))
+          .filter(({ key }) => FileLinks.is.fileKey(key))
+          .find(({ key }) => FileLinks.parseKey(key).path === path);
+        return match ? toFileLink(match.key, match.value) : undefined;
+      },
+    };
   }
 }
 
 /**
  * [Helpers]
  */
+
+function toFileLink(key: string, value: string): t.IFileLink {
+  const { dir, path, filename, ext } = FileLinks.parseKey(key);
+  const { uri, ns, fileid: id, hash, status } = FileLinks.parseLink(value);
+  return {
+    uri,
+    key,
+    value,
+    hash,
+    status,
+    file: { ns, id, path, dir, filename, ext },
+  };
+}
 
 /**
  * Escapes illegal characters from a field key.

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, renderer } from '../../common';
+import { css, CssValue, renderer } from '../../common';
 import * as t from '../../types';
 import { Button, ObjectView } from '../primitives';
 import { TestPanel } from '../TestPanel';
@@ -10,7 +10,7 @@ import { TestPanel } from '../TestPanel';
 /**
  * Test component.
  */
-export type ISettingsProps = { style?: GlamorValue };
+export type ISettingsProps = { style?: CssValue };
 export type ISettingsState = {
   data?: object;
 };

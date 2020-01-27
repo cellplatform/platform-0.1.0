@@ -1,7 +1,7 @@
 /**
  * Util
  */
-export { css, color, GlamorValue, events } from '@platform/react';
+export { css, color, CssValue, events } from '@platform/react';
 export { value, is } from '@platform/util.value';
 
 /**

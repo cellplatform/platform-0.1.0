@@ -15,7 +15,7 @@ const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, GlamorValue, t } from '../../common';
+import { css, CssValue, t } from '../../common';
 
 const DEFAULT = {
   MAP_STYLE: 'mapbox://styles/mapbox/streets-v11',
@@ -26,7 +26,7 @@ export type IMapProps = {
   center?: mapboxgl.LngLatLike;
   mapStyle?: mapboxgl.Style | string; // https://docs.mapbox.com/api/maps/#styles
   zoom?: number;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IMapState = {};
 

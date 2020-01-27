@@ -8,7 +8,7 @@ import {
   Command,
   CommandState,
   css,
-  GlamorValue,
+  CssValue,
   t,
   value,
 } from '../../common';
@@ -21,7 +21,7 @@ export type ICommandShellProps = {
   tree?: t.ICommandShellTreeOptions;
   localStorage?: boolean;
   focusOnLoad?: boolean;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type ICommandShellState = {};
 

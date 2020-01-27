@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil, map, delay } from 'rxjs/operators';
-import { css, GlamorValue, t, datagrid, value as valueUtil, renderer } from '../../../common';
+import { css, CssValue, t, datagrid, value as valueUtil, renderer } from '../../../common';
 import { DbGridEditor } from './DbGrid.Editor';
 import { updateWatch, ITestGridState } from '../../../cli';
 
-export type IDbGridProps = { db: t.ITestRendererDb; style?: GlamorValue };
+export type IDbGridProps = { db: t.ITestRendererDb; style?: CssValue };
 export type IDbGridState = { values?: datagrid.IGridValues };
 
 const PATTERN = {

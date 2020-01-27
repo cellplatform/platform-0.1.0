@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, t, value } from '../common';
+import { CssValue, t, value } from '../common';
 import { SplitPanel } from './SplitPanel';
 import { Panel } from './Panel';
 
@@ -12,7 +12,7 @@ export type IStoreProps = {
   name?: string;
   expandPaths?: string | string[];
   maxActions?: number;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IStoreState = {
   total?: number;

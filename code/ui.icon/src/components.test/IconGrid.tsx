@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { css, constants, color, GlamorValue } from '../common';
+import { css, constants, color, CssValue } from '../common';
 import { IIcon, IIconProps } from '..';
 
 export { IIconProps };
 
 export type IIconGridProps = {
   icons?: Array<{ name: string; icon: IIcon }>;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export const IconGrid = (props: IIconGridProps) => {

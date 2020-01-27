@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, Hr, IconGrid, ImageSprite } from './common';
+import { css, CssValue, Hr, IconGrid, ImageSprite } from './common';
 import { Icons } from './Icons';
 
 const SAMPLE_1X = require('../images/ImageSprite.test/sample.png');
@@ -10,7 +10,7 @@ const SAMPLE_2X = require('../images/ImageSprite.test/sample@2x.png');
 
 const MAGENTA = '#F93B76';
 
-export type ITestProps = { style?: GlamorValue };
+export type ITestProps = { style?: CssValue };
 export type ITestState = {};
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {

@@ -1,4 +1,4 @@
-import { color, COLORS, css, constants } from '../common';
+import { color, COLORS, constants, style } from '../common';
 
 const { CSS, ROBOTO } = constants;
 const BLUE = COLORS.BLUE;
@@ -70,4 +70,4 @@ const STYLES = {
 /**
  * Initialize.
  */
-css.global(STYLES as any, { prefix: `.${CSS.CLASS.GRID.BASE}.handsontable` });
+style.global(STYLES as any, { prefix: `.${CSS.CLASS.GRID.BASE}.handsontable` });

@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { css, GlamorValue, value } from '../../common';
+import { css, CssValue, value } from '../../common';
 
 export type ITestPanelProps = {
   title?: string;
   marginBottom?: number;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class TestPanel extends React.PureComponent<ITestPanelProps> {

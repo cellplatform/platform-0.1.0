@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil, map, filter, distinctUntilChanged, pairwise } from 'rxjs/operators';
-import { R, css, GlamorValue, value, time } from '../../common';
+import { R, css, CssValue, value, time } from '../../common';
 import { IStackPanel, StackPanelSlideEvent, StackPanelSlideEventHandler } from './types';
 import { Panel } from './Panel';
 
@@ -10,7 +10,7 @@ export type IStackPanelProps = {
   index?: number;
   panels?: IStackPanel[];
   duration?: number;
-  style?: GlamorValue;
+  style?: CssValue;
   onSlide?: StackPanelSlideEventHandler;
 };
 

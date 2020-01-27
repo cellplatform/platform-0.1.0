@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
-import { css, color, GlamorValue, value, events } from '../../common';
+import { css, color, CssValue, value, events } from '../../common';
 import { Button } from '../primitives';
 
 export type IDialogProps = {
   children?: React.ReactNode;
-  style?: GlamorValue;
+  style?: CssValue;
   padding?: number;
   onClose?: (e: {}) => void;
 };

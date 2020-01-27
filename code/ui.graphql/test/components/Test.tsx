@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { GraphqlEditor, GraphqlEditorEvent } from '../../src';
-import { color, Button, css, GlamorValue, Hr, FormulaInput } from './common';
+import { color, Button, css, CssValue, Hr, FormulaInput } from './common';
 
 const VARIABLES = {
   DEFAULT: `
@@ -63,7 +63,7 @@ const QUERY: { [key: string]: ISample } = {
   },
 };
 
-export type ITestProps = { style?: GlamorValue };
+export type ITestProps = { style?: CssValue };
 export type ITestState = {
   url?: string;
   query?: string;

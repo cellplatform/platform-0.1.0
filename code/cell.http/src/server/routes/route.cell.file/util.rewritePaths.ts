@@ -6,7 +6,7 @@ import { cheerio, models, Schema, t, util } from '../common';
  * and rewrite the values to fully-qualified
  * CellOS file paths.
  */
-export async function rewritePaths(args: {
+export async function rewriteHtmlPaths(args: {
   filename: string;
   html: string;
   host: string;
@@ -57,7 +57,7 @@ export async function rewritePaths(args: {
     if (link) {
       const hash = link.hash;
       const url = cellUrls.file
-        .byFileUri(link.uri, link.file.ext)
+        .byName(link.file.path)
         .query({ hash, expires })
         .toString();
       el.attr(attr, url);

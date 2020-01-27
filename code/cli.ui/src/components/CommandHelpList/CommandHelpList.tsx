@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, GlamorValue, t } from '../../common';
+import { color, css, CssValue, t } from '../../common';
 import { Icons } from '../Icons';
 
 export type ICommandHelpListProps = {
   cli: t.ICommandState;
-  style?: GlamorValue;
+  style?: CssValue;
   onCommandClick?: t.CommandClickEventHandler;
 };
 export type ICommandHelpListState = {};

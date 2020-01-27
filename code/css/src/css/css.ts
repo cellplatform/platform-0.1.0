@@ -18,8 +18,8 @@ export const MEDIA_QUERY_RETINA = `@media (-webkit-min-device-pixel-ratio: 2), (
 export const image = (
   image1x: string | undefined,
   image2x: string | undefined,
-  options: t.IImageOptions = { width: 10, height: 10 },
-): t.IBackgroundImageStyles => {
+  options: t.CssFormatImageOptions = { width: 10, height: 10 },
+): t.ICssBackgroundImage => {
   // Prepare image based on current screen density.
   if (!image1x) {
     throw new Error('Must have at least a 1x image.');
@@ -281,9 +281,9 @@ function formatFlexPosition(key: string, value: string, target: t.CssProps) {
   mergeAndReplace(key, styles, target);
 }
 
-export const transformStyle = (
-  style: t.CssProps | t.GlamorValue | t.Falsy = {},
-): t.CssProps | t.GlamorValue => {
+export const transform = (
+  style: t.CssProps | t.CssValue | t.Falsy = {},
+): t.CssProps | t.CssValue => {
   if (style == null) {
     return {};
   }
@@ -299,7 +299,7 @@ export const transformStyle = (
       delete style[key];
     } else if (valueUtil.isPlainObject(value)) {
       // NB: This is not using formatCss, as we only want the transform, we don't want to convert it to a glamor value.
-      style[key] = transformStyle(value); // <== RECURSION.
+      style[key] = transform(value); // <== RECURSION.
     } else {
       switch (key) {
         case 'Image':
@@ -351,9 +351,9 @@ export const transformStyle = (
  * Helpers for constructing a CSS object.
  * NB: This doesn't *actually* return React.CSSProperties
  */
-const formatCss = (...styles: Array<t.CssProps | t.GlamorValue | t.Falsy>): t.GlamorValue => {
-  return jss.css(...styles.map(transformStyle));
+const formatCss = (...styles: Array<t.CssProps | t.CssValue | t.Falsy>): t.CssValue => {
+  return jss.css(...styles.map(transform));
 };
 
 (formatCss as any).image = image;
-export const format = formatCss as t.IFormatCss;
+export const format = formatCss as t.CssFormat;

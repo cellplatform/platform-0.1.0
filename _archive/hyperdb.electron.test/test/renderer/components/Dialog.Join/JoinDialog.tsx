@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
-import { css, color, GlamorValue, IMAGES, events } from '../../common';
+import { css, color, CssValue, IMAGES, events } from '../../common';
 import { Dialog } from '../Dialog';
 import { TextInput, TextInputChangeEvent, Button } from '../primitives';
 import { JoinWithKeyEventHandler } from './types';
 
 export type IJoinDialogProps = {
-  style?: GlamorValue;
+  style?: CssValue;
   onJoin?: JoinWithKeyEventHandler;
   onClose?: (e: {}) => void;
 };

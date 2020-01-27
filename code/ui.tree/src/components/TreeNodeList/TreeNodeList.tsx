@@ -4,7 +4,7 @@ import {
   color,
   css,
   defaultValue,
-  GlamorValue,
+  CssValue,
   ITreeNode,
   t,
   TreeNodeMouseEventHandler,
@@ -30,7 +30,7 @@ export type ITreeNodeListProps = {
   isInline?: boolean;
   theme?: themes.ITreeTheme;
   background?: 'THEME' | 'NONE';
-  style?: GlamorValue;
+  style?: CssValue;
   onNodeMouse?: TreeNodeMouseEventHandler;
 };
 

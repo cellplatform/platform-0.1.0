@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, renderer, t } from '../../../common';
+import { css, CssValue, renderer, t } from '../../../common';
 import { Hr, ObjectView } from '../../primitives';
 
 const SYS_WATCH = '.sys/watch';
 
 export type IDbWatchProps = {
   db: t.ITestRendererDb;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IDbWatchState = {
   watchingKeys: string[];

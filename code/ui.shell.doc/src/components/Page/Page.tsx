@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { COLORS, css, color, GlamorValue } from '../../common';
+import { COLORS, css, color, CssValue } from '../../common';
 
 export type IPageMargin = {
   color: string;
@@ -12,7 +12,7 @@ export type IPageMargin = {
 export type IPageProps = {
   pageMargin?: Partial<IPageMargin>;
   children?: React.ReactNode;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IPageState = {};
 

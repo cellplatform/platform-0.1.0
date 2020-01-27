@@ -1,5 +1,6 @@
 export {
-  GlamorValue,
+  CssValue,
+  style,
   css,
   color,
   MouseEvent,

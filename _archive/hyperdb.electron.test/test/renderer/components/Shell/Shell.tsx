@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, ICommand, renderer, t } from '../../common';
+import { color, COLORS, css, CssValue, ICommand, renderer, t } from '../../common';
 import { ErrorDialog } from '../Dialog.Error';
 import { JoinDialog } from '../Dialog.Join';
 import { JoinWithKeyEvent } from '../Dialog.Join/types';
@@ -12,7 +12,7 @@ import { ShellIndex, ShellIndexSelectEvent } from '../Shell.Index';
 import { ShellMain } from '../Shell.Main';
 
 export type IShellProps = {
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export type IShellState = {

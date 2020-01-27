@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { css, GlamorValue } from '../../../common';
+import { css, CssValue } from '../../../common';
 import { color } from '@platform/css';
 
 export type ITriangleProps = {
   backgroundColor?: number | string;
   borderColor?: number | string;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export const Triangle = (props: ITriangleProps) => {

@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil, share } from 'rxjs/operators';
 import { Monaco } from './components/Monaco';
 
-import { css, events, GlamorValue, IEditorSettings, value, ISize } from '../../common';
+import { css, events, CssValue, IEditorSettings, value, ISize } from '../../common';
 import * as themes from '../../themes';
 
 const BG = {
@@ -15,7 +15,7 @@ const BG = {
 export type IEditorProps = {
   settings?: Partial<IEditorSettings>;
   focusOnLoad?: boolean;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export type IEditorState = {

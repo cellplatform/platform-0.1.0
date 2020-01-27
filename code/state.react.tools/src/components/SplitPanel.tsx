@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { color, COLORS, css, GlamorValue, t, value } from '../common';
+import { color, COLORS, css, CssValue, t, value } from '../common';
 import { Actions } from './Actions';
 import { Text } from './primitives';
 import { State } from './State';
@@ -12,7 +12,7 @@ export type ISplitPanelProps = {
   data: object;
   name?: string;
   expandPaths?: string | string[];
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class SplitPanel extends React.PureComponent<ISplitPanelProps> {

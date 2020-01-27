@@ -1,82 +1,78 @@
 import * as t from './common/types';
-import { transformStyle } from './css/css';
+import { transform } from './css/css';
 
-export type IImageOptions = {
-  width?: number;
-  height?: number;
-};
-
-export type IBackgroundImageStyles = {
-  backgroundImage: string;
-  width?: number;
-  height?: number;
-  backgroundSize: string;
-  backgroundRepeat: string;
-};
-
-export type FormatImage = (
-  image1x: string | undefined,
-  image2x: string | undefined,
-  options?: IImageOptions,
-) => IBackgroundImageStyles;
-
+export class CssValue {}
 export type Falsy = undefined | null | false;
-export class GlamorValue {}
-export type IFormatCss = {
-  (...styles: Array<t.CssProps | GlamorValue | Falsy>): GlamorValue;
-  image: FormatImage;
-};
-
-export type GlobalCssRules = (
-  styles: { [selector: string]: CssProps },
-  options?: { prefix?: string },
-) => void;
-
 export type CssProps = React.CSSProperties;
 export type CssPropsMap = { [selector: string]: CssProps };
+export type CssClassName = (...styles: Array<CssProps | undefined>) => string;
+export type CssMergeRules = (...rules: any[]) => CssProps;
 
-export type ClassName = (...styles: Array<CssProps | undefined>) => string;
+/**
+ * API
+ */
+export type CssFormat = (...styles: Array<t.CssProps | CssValue | Falsy>) => CssValue;
 
-export type ICssHead = { importStylesheet: ImportStylesheet };
-export type ImportStylesheet = (url: string) => ICssHead;
-
-export type MergeCssRules = (...rules: any[]) => CssProps;
-
-export type IStyle = IFormatCss & {
-  global: GlobalCssRules;
-  className: ClassName;
-  transform: typeof transformStyle;
+export type ICssStyle = {
+  transform: typeof transform;
+  format: CssFormat;
+  global: CssGlobal;
   head: ICssHead;
-  merge: MergeCssRules;
-  toEdges: ToCssEdges<IEdges>;
-  toMargins: ToCssEdges<IMarginEdges>;
-  toPadding: ToCssEdges<IPaddingEdges>;
+  image: CssFormatImage;
+  toEdges: CssToEdges<ICssEdges>;
+  toMargins: CssToEdges<ICssMarginEdges>;
+  toPadding: CssToEdges<ICssPaddingEdges>;
 };
 
-export type EdgesInput = string | number | undefined | null | Array<string | number | null>;
+/**
+ * Global
+ */
+export type CssGlobal = (styles: CssPropsMap, options?: { prefix?: string }) => void;
+export type ICssHead = {
+  importStylesheet(url: string): ICssHead;
+};
 
-export type ToCssEdges<T> = (
-  input?: EdgesInput,
-  options?: { defaultValue?: EdgesInput },
+/**
+ * Edges
+ */
+export type CssEdgesInput = string | number | undefined | null | Array<string | number | null>;
+export type CssToEdges<T> = (
+  input?: CssEdgesInput,
+  options?: { defaultValue?: CssEdgesInput },
 ) => Partial<T>;
-
-export type IEdges = {
+export type ICssEdges = {
   top: string | number;
   right: string | number;
   bottom: string | number;
   left: string | number;
 };
-
-export type IMarginEdges = {
+export type ICssMarginEdges = {
   marginTop: string | number;
   marginRight: string | number;
   marginBottom: string | number;
   marginLeft: string | number;
 };
-
-export type IPaddingEdges = {
+export type ICssPaddingEdges = {
   paddingTop: string | number;
   paddingRight: string | number;
   paddingBottom: string | number;
   paddingLeft: string | number;
+};
+
+/**
+ * Image
+ */
+export type CssFormatImageOptions = { width?: number; height?: number };
+export type CssFormatImage = (
+  image1x: string | undefined,
+  image2x: string | undefined,
+  options?: CssFormatImageOptions,
+) => ICssBackgroundImage;
+
+export type ICssBackgroundImage = {
+  backgroundImage: string;
+  width?: number;
+  height?: number;
+  backgroundSize: string;
+  backgroundRepeat: string;
 };

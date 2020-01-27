@@ -16,7 +16,7 @@ import {
   containsFocus,
   css,
   defaultValue,
-  GlamorValue,
+  CssValue,
   ITreeNode,
   R,
   t,
@@ -47,7 +47,7 @@ export type ITreeViewProps = {
   mouse$?: Subject<t.TreeNodeMouseEvent>;
   tabIndex?: number;
   slideDuration?: number;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export type ITreeViewState = {

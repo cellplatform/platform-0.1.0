@@ -1,5 +1,5 @@
 export { is } from '@platform/util.is';
-export { GlamorValue, css, color } from '@platform/css';
+export { CssValue, css, color } from '@platform/css';
 
 /**
  * Ramda

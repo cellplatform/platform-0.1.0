@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, GlamorValue, renderer, t } from '../../common';
+import { color, COLORS, css, CssValue, renderer, t } from '../../common';
 import { NetworkBullet } from '../NetworkBullet';
 import { Button } from '../primitives';
 import {
@@ -12,7 +12,7 @@ import {
 } from './types';
 
 export type IShellIndexProps = {
-  style?: GlamorValue;
+  style?: CssValue;
   selected?: string;
   onSelect?: ShellIndexSelectEventHandler;
   onNew?: ShellIndexNewEventHandler;

@@ -25,7 +25,7 @@ export class ClientCellFile implements t.IClientCellFile {
   /**
    * [Methods]
    */
-  public name(filename: string) {
+  public name(path: string) {
     const http = this.args.http;
     const self = this;
     const parent = this.args.parent;
@@ -34,7 +34,7 @@ export class ClientCellFile implements t.IClientCellFile {
        * Meta-data about the file.
        */
       async info() {
-        const linkRes = await self.getCellLinkByFilename(filename);
+        const linkRes = await self.getCellLinkByFilename(path);
         if (linkRes.error) {
           return linkRes.error as any;
         }
@@ -59,7 +59,7 @@ export class ClientCellFile implements t.IClientCellFile {
       ): Promise<t.IClientResponse<ReadableStream | string>> {
         type T = ReadableStream | string;
         const { expires } = options;
-        const linkRes = await self.getCellLinkByFilename(filename);
+        const linkRes = await self.getCellLinkByFilename(path);
         if (linkRes.error) {
           return linkRes.error as any;
         }
@@ -68,13 +68,10 @@ export class ClientCellFile implements t.IClientCellFile {
         }
 
         // Prepare the URL.
-        const { link, key } = linkRes;
-        const fileid = Schema.uri.parse<t.IFileUri>(link.uri).parts.file;
-        const linkName = key.ext ? `${fileid}.${key.ext}` : fileid;
+        const { link } = linkRes;
         const hash = link.hash || undefined;
-
         const url = parent.url.file
-          .byName(linkName)
+          .byFileUri(link.uri, link.file.ext)
           .query({ hash, expires })
           .toString();
 
@@ -114,25 +111,20 @@ export class ClientCellFile implements t.IClientCellFile {
     }
   }
 
-  private async getCellLinkByFilename(filename: string) {
+  private async getCellLinkByFilename(path: string) {
     const parent = this.args.parent;
     const { error, data } = await this.getCellInfo();
     if (!data || error) {
       return { error };
     }
 
-    const links = data.links || {};
-    const linkKey = Schema.file.links.toKey(filename);
-    const linkValue = links[linkKey];
-    if (!linkValue) {
-      const message = `A link within "${parent.uri.toString()}" to the filename '${filename}' does not exist.`;
-      const error = util.toError(404, ERROR.HTTP.NOT_FOUND, message);
+    const link = Schema.file.links.find(data.links).byName(path);
+    if (!link) {
+      const message = `A link within "${parent.uri.toString()}" to the filename '${path}' does not exist.`;
+      const error = util.toError(404, ERROR.HTTP.NOT_LINKED, message);
       return { error };
     }
 
-    return {
-      key: Schema.file.links.parseKey(linkKey),
-      link: Schema.file.links.parseLink(linkValue),
-    };
+    return { link };
   }
 }

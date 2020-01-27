@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, GlamorValue, ObjectView, state, t, Button, Hr, log } from '../common';
+import { css, color, CssValue, ObjectView, state, t, Button, Hr, log } from '../common';
 
 export type IChildProps = {
   children?: React.ReactNode;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class Child extends React.PureComponent<IChildProps> {

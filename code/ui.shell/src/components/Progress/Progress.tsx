@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Subject, VirtualTimeScheduler } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { time, Context, css, GlamorValue, t } from '../common';
+import { time, Context, css, CssValue, t } from '../common';
 
 export type IProgressProps = {
   height?: number;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IProgressState = {
   inProgress?: boolean;

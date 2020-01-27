@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, ObjectView, t } from '../common';
+import { css, CssValue, ObjectView, t } from '../common';
 
 export type IAuthStateProps = {
   data?: t.IWebAuthProps;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class AuthState extends React.PureComponent<IAuthStateProps, t.ITestState> {

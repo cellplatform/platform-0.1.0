@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { color, COLORS, constants, css, defaultValue, GlamorValue } from './common';
+import { color, COLORS, constants, css, defaultValue, CssValue } from './common';
 import { Button, IButtonProps } from './primitives';
 
 const STYLES = {
@@ -36,7 +36,7 @@ export const Label = (props: {
   children?: React.ReactNode;
   tooltip?: string;
   color?: string | number;
-  style?: GlamorValue;
+  style?: CssValue;
 }) => {
   const styles = {
     base: css({
@@ -58,7 +58,7 @@ export const Badge = (props: {
   children?: React.ReactNode;
   color: string;
   backgroundColor: string;
-  style?: GlamorValue;
+  style?: CssValue;
 }) => {
   const styles = {
     base: css({
@@ -80,7 +80,7 @@ export const Panel = (props: {
   title?: string;
   children?: React.ReactNode;
   padding?: number;
-  style?: GlamorValue;
+  style?: CssValue;
 }) => {
   const styles = {
     base: css({
@@ -109,7 +109,7 @@ export const PanelTitle = (props: {
   left?: React.ReactNode;
   center?: React.ReactNode;
   right?: React.ReactNode;
-  style?: GlamorValue;
+  style?: CssValue;
 }) => {
   const styles = {
     base: css({

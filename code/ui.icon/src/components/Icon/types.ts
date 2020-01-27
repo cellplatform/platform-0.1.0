@@ -1,4 +1,4 @@
-import { GlamorValue, MouseEvent, MouseEventHandler, mouse } from '../../common';
+import { CssValue, MouseEvent, MouseEventHandler, mouse } from '../../common';
 export { MouseEvent, MouseEventHandler };
 
 /**
@@ -13,5 +13,5 @@ export type IIconProps = mouse.IMouseEventProps & {
   size?: number;
   color?: number | string;
   opacity?: number;
-  style?: GlamorValue;
+  style?: CssValue;
 };

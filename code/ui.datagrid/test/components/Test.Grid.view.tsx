@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { datagrid, GlamorValue, Handsontable as HandsontableLib, t } from '../common';
+import { datagrid, CssValue, Handsontable as HandsontableLib, t } from '../common';
 import { factory } from '../SAMPLE';
 
 export type DataGrid = datagrid.DataGrid;
@@ -11,7 +11,7 @@ export type ITestGridViewProps = {
   grid: datagrid.Grid;
   events$?: Subject<t.GridEvent>;
   editorType?: t.TestEditorType;
-  style?: GlamorValue;
+  style?: CssValue;
   Table?: Handsontable;
 };
 export type ITestGridViewState = {};

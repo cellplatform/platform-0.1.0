@@ -41,3 +41,22 @@ export type IFilePresignedUploadUrl = {
   url: string;
   props: { [key: string]: string };
 };
+
+/**
+ * Parsed properties of a file linked to a cell.
+ */
+export type IFileLink = {
+  uri: string;
+  key: string;
+  value: string;
+  hash?: string;
+  status?: string;
+  file: {
+    ns: string;
+    id: string;
+    path: string;
+    dir: string;
+    filename: string;
+    ext: string;
+  };
+};

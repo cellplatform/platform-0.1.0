@@ -1,6 +1,7 @@
-import { server, util } from './common';
-import { NeDb } from '@platform/fsdb.nedb';
 import { local, s3 } from '@platform/cell.fs';
+import { NeDb } from '@platform/fsdb.nedb';
+
+import { server, util } from './common';
 import { SECRETS } from './constants';
 
 const TMP = util.resolve('tmp');
@@ -30,8 +31,11 @@ const getRemoteFs = () =>
 const app = server.init({
   title: 'sample',
   db,
-  // fs: getRemoteFs(), // TEMP 🐷 - revert to local FS.
-  fs: getLocalFs(),
+  fs: getRemoteFs(), // TEMP 🐷 - revert to local FS.
+  // fs: getLocalFs(),
   // log: ['ROUTES'],
 });
+
 app.start({ port: 8080 });
+
+server.logger.start({ app });

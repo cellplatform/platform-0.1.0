@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, GlamorValue, ITreeNode, color } from '../../common';
+import { css, CssValue, ITreeNode, color } from '../../common';
 import * as themes from '../../themes';
 import { Icons } from '../Icons';
 import { Text } from '../Text';
@@ -18,7 +18,7 @@ export type ITreeHeaderProps = {
   theme?: themes.ITreeTheme;
   background?: 'THEME' | 'NONE';
   isFocused: boolean;
-  style?: GlamorValue;
+  style?: CssValue;
   onMouseParent?: TreeNodeMouseEventHandler;
 };
 

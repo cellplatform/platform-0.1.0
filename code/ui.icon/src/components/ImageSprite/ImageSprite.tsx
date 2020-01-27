@@ -1,6 +1,6 @@
 import { clamp } from 'ramda';
 import * as React from 'react';
-import { css, GlamorValue } from '../../common';
+import { css, CssValue } from '../../common';
 
 const MEDIA_QUERY_RETINA = `@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)`;
 
@@ -13,7 +13,7 @@ export type IImageSpriteProps = {
   x?: number;
   y?: number;
   tooltip?: string;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 /**

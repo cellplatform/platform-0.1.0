@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, COLORS, GlamorValue, ObjectView, t, cell } from '../common';
+import { css, color, COLORS, CssValue, ObjectView, t, cell } from '../common';
 
 export type IMyScreenProps = {
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IMyScreenState = {};
 

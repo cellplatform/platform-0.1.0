@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { t, css, color, GlamorValue, value, gravatar, mouse } from '../../common';
+import { t, css, color, CssValue, value, gravatar, mouse } from '../../common';
 import { Icons, IIcon } from '../Icons';
 
 export type IAvatarProps = mouse.IMouseEventProps & {
@@ -16,7 +16,7 @@ export type IAvatarProps = mouse.IMouseEventProps & {
   placeholderIconColor?: number | string;
   gravatarDefault?: gravatar.GravatarDefault;
   events$?: Subject<t.AvatarEvent>;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IAvatarState = {
   isLoaded?: boolean | null;

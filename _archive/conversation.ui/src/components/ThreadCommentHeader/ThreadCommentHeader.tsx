@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, time, UserIdentityType } from '../../common';
+import { css, CssValue, time, UserIdentityType } from '../../common';
 import { Text } from '../primitives';
 
 export type IThreadCommentHeaderProps = {
   name?: string;
   timestamp?: number;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IThreadCommentHeaderState = {};
 

@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { css, GlamorValue, t, util, constants, createProvider, R } from '../common';
+import { css, CssValue, t, util, constants, createProvider, R } from '../common';
 
 const CSS = constants.CSS;
 
 export type IDataGridOverlayProps = {
   grid: t.IGrid;
   factory: t.GridFactory;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type IDataGridOverlayState = {
   key?: string;

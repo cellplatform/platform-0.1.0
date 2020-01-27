@@ -1,9 +1,9 @@
-import { Subject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { t, css, time } from '../../common';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { style, t, time } from '../../common';
 
 type Cache = {
   status: t.ImageLoadStatus;
@@ -21,7 +21,7 @@ export function containerElement() {
     const el = (elContainer = document.createElement('div'));
     const className = 'p-Image-loader';
     el.setAttribute('class', className);
-    css.global({
+    style.global({
       [`.${className}`]: {
         position: 'absolute',
         top: -99999,
@@ -69,7 +69,7 @@ export function isLoaded(src: t.ImageSrc): boolean {
   return status(src) === 'LOADED';
 }
 
-// import { css, color, GlamorValue } from '../../common';
+// import { css, color, CssValue } from '../../common';
 
 type ILoaderViewProps = {
   src: t.ImageSrc;

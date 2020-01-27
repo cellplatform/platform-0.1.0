@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject, merge } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { GlamorValue, t } from '../../common';
+import { CssValue, t } from '../../common';
 import { CommandTreeView, ICommandTreeViewProps } from './CommandTreeView';
 
 export type ICommandTreeProps = {
@@ -10,7 +10,7 @@ export type ICommandTreeProps = {
   theme?: ICommandTreeViewProps['theme'];
   background?: ICommandTreeViewProps['background'];
   events$?: Subject<t.CommandTreeEvent>;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 export type ICommandTreeState = {};
 

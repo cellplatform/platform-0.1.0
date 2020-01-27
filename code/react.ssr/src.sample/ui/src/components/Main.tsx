@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, GlamorValue, is } from '../common';
+import { css, CssValue, is } from '../common';
 
-export type IMainProps = { style?: GlamorValue };
+export type IMainProps = { style?: CssValue };
 export type IMainState = { count?: number; foo?: JSX.Element };
 
 export class Main extends React.PureComponent<IMainProps, IMainState> {

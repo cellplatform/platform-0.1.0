@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { COLORS, css, GlamorValue, t, value } from '../common';
+import { COLORS, css, CssValue, t, value } from '../common';
 import { Actions } from './Actions';
 import { State } from './State';
 
@@ -11,7 +11,7 @@ export type IPanelProps = {
   maxActions?: number;
   name?: string;
   expandPaths?: string | string[];
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class Panel extends React.PureComponent<IPanelProps> {

@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { IStackPanel, StackPanel, StackPanelSlideEvent } from '../../src';
-import { color, css, Foo, GlamorValue, Button } from './common';
+import { color, css, Foo, CssValue, Button } from './common';
 
 const TestPanel = (props: { label: string }) => (
   <Foo style={{ flex: 1, margin: 5 }} children={props.label} />
@@ -15,7 +15,7 @@ const PANELS: IStackPanel[] = [
   { el: <TestPanel label={'three'} />, offsetOpacity: 0 },
 ];
 
-export type ITestProps = { style?: GlamorValue };
+export type ITestProps = { style?: CssValue };
 export type ITestState = {
   index?: number;
   panels?: IStackPanel[];

@@ -4,7 +4,7 @@ const ID = {
   ROW: `([0-9]+)`,
   COLUMN: `([A-Z]+)`,
   FILE: `([A-Za-z0-9]+)`,
-  FILENAME: `([A-Za-z0-9\.\-\_]*)`,
+  FILENAME: `([\-A-Za-z0-9\.\_\/]*)`,
 };
 
 const KEY = {
@@ -36,7 +36,10 @@ export const ROUTES = {
   CELL: {
     NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.
     INFO: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
-    FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/file/${KEY.FILENAME}`,
+    FILE: {
+      BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/file/${KEY.FILENAME}`,
+      BY_FILE_URI: `/cell${KEY.NS}\!${KEY.CELL}/file\\:${KEY.FILENAME}`,
+    },
     FILES: {
       BASE: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
       UPLOAD: `/cell${KEY.NS}\!${KEY.CELL}/files/upload`,
@@ -50,3 +53,5 @@ export const ROUTES = {
     INFO: `/cell${KEY.NS}\!${KEY.COLUMN}(/?)`,
   },
 };
+
+// console.log('ROUTES', ROUTES.CELL.FILE.BY_NAME);

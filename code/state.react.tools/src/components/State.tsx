@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-import { css, GlamorValue } from '../common';
+import { css, CssValue } from '../common';
 import { ObjectView } from './primitives';
 
 export type IStateProps = {
   name?: string;
   expandPaths?: string | string[];
   data?: object;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export class State extends React.PureComponent<IStateProps> {

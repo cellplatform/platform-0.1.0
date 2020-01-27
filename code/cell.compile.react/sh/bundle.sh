@@ -15,8 +15,10 @@ cd demo
 # cd parcel-v1.react.application && yarn && yarn bundle && cd ..
 # echo 
 
-echo "hello-world (parcel v2)"
-cd parcel-v2.hello-world && yarn && yarn bundle && cd ..
+echo "react.datagrid (parcel v1)"
+cd parcel-v1.datagrid && yarn && yarn bundle && cd ..
 echo 
 
-
+# echo "hello-world (parcel v2)"
+# cd parcel-v2.hello-world && yarn && yarn bundle && cd ..
+# echo 

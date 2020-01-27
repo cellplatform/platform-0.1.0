@@ -1,6 +1,6 @@
-import { css } from '@platform/react';
+import { style } from '@platform/react';
 
-css.global({
+style.global({
   body: {
     fontFamily: 'sans-serif',
     padding: 25,

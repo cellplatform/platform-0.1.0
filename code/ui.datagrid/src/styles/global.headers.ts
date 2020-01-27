@@ -1,4 +1,4 @@
-import { color, css, constants } from '../common';
+import { color, constants, style } from '../common';
 
 const { CSS } = constants;
 
@@ -46,4 +46,4 @@ const STYLES = {
 /**
  * Initialize.
  */
-css.global(STYLES, { prefix: `.${CSS.CLASS.GRID.BASE}.handsontable` });
+style.global(STYLES, { prefix: `.${CSS.CLASS.GRID.BASE}.handsontable` });

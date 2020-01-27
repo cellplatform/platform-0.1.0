@@ -6,7 +6,7 @@ export * from './libs.Handsontable';
  * Util.
  */
 export { util };
-export { css, color, GlamorValue, events, containsFocus, Keyboard } from '@platform/react';
+export { css, color, style, CssValue, events, containsFocus, Keyboard } from '@platform/react';
 export { value, time, defaultValue } from '@platform/util.value';
 export { log } from '@platform/log/lib/client';
 export { MemoryCache } from '@platform/cache';

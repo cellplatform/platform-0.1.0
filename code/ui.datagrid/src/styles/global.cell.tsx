@@ -1,4 +1,4 @@
-import { color, css, constants } from '../common';
+import { color, constants, style } from '../common';
 
 export const CLASS = constants.CSS.CLASS;
 const { CELL, GRID } = CLASS;
@@ -97,5 +97,5 @@ const STYLES = {
 /**
  * Initialize.
  */
-css.global(STYLES.CELL as any);
-css.global(STYLES.MARKDOWN as any, { prefix: `.${CELL.MARKDOWN}` });
+style.global(STYLES.CELL as any);
+style.global(STYLES.MARKDOWN as any, { prefix: `.${CELL.MARKDOWN}` });

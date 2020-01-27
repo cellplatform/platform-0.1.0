@@ -121,9 +121,12 @@ export class Router implements t.IRouter {
           return `${prefix}://${host}/${path.replace(/^\/*/, '')}`;
         },
 
-        redirect(path: string, options: { headers?: t.IHttpHeaders } = {}): t.RouteResponse {
+        redirect(
+          path: string,
+          options: { headers?: t.IHttpHeaders; status?: 307 | 303 } = {},
+        ): t.RouteResponse {
           return {
-            status: 307,
+            status: options.status || 307,
             data: helpers.toUrl(path),
             headers: options.headers,
           };

@@ -8,7 +8,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { share, map, takeUntil, filter } from 'rxjs/operators';
 
-import { constants, css, GlamorValue, hjson, t, graphqlFetcher } from '../../common';
+import { constants, css, CssValue, hjson, t, graphqlFetcher } from '../../common';
 import { GraphqlEditorEvent } from './types';
 import { DEFAULT_MESSAGE } from './default';
 
@@ -17,7 +17,7 @@ const GraphiQL = require('graphiql');
 export type IGraphqlEditorProps = {
   query?: string;
   url?: string;
-  style?: GlamorValue;
+  style?: CssValue;
   events$?: Subject<GraphqlEditorEvent>;
 };
 export type IGraphqlEditorState = {};

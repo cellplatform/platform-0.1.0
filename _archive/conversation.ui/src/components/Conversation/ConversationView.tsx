@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil, debounceTime } from 'rxjs/operators';
 
-import { css, GlamorValue, log, t, UserIdentityType } from '../../common';
+import { css, CssValue, log, t, UserIdentityType } from '../../common';
 import { Divider } from '../Divider';
 import { ThreadComment } from '../ThreadComment';
 import { ThreadCommentHeader } from '../ThreadCommentHeader';
@@ -10,7 +10,7 @@ import { ThreadCommentHeader } from '../ThreadCommentHeader';
 export type IConversationViewProps = {
   model: t.IThreadStoreModel;
   dispatch$: Subject<t.ThreadEvent>;
-  style?: GlamorValue;
+  style?: CssValue;
   onComment?: (e: {}) => void;
 };
 

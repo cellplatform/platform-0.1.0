@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Controlled as CodeMirrorControlled } from 'react-codemirror2';
-import { Subject, ReplaySubject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { css, events, GlamorValue, is, t, value as valueUtil, constants } from '../../common';
+import { constants, css, CssValue, events, is, style, t, value as valueUtil } from '../../common';
 
 /**
  * For more syntax modes, see:
@@ -25,7 +25,7 @@ export type IFormulaInputProps = {
   maxLength?: number;
   height?: number;
   events$?: Subject<t.FormulaInputEvent>;
-  style?: GlamorValue;
+  style?: CssValue;
 };
 
 export type IFormulaInputState = {
@@ -205,8 +205,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
         fontWeight: 'bold',
       },
     };
-
-    css.global(styles as any, { prefix: `.${this.className}` });
+    style.global(styles as any, { prefix: `.${this.className}` });
   }
 
   /**
