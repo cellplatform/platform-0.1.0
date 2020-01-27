@@ -9,6 +9,8 @@ console.log('👋 console.log():');
 console.log('👋   Hello World!');
 console.log('👋');
 
+const DELAY = 1; // second.
+
 /**
  * Dynamically load a module (aka: "code-splitting").
  */
@@ -19,8 +21,8 @@ setTimeout(() => {
     console.log('Dynamically loaded module:', e);
     e.init();
   });
-}, 2000);
-console.log('waiting (2s)...');
+}, DELAY * 1000);
+console.log(`waiting (${DELAY}s)...`);
 
 /**
  * Render root React element.
