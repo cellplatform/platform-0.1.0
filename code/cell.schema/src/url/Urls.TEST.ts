@@ -216,17 +216,20 @@ describe('Urls', () => {
         const res = url.cell(URI).file.byFileUri(fileUri, fileExtension);
         expect(res.toString()).to.eql(expected);
       };
-
-      test('file:foo:123', 'png', 'http://localhost/cell:foo!A1/file/123.png');
-      test('  file:foo:123  ', '  png  ', 'http://localhost/cell:foo!A1/file/123.png');
-      test('file:foo:123', '', 'http://localhost/cell:foo!A1/file/123');
-      test('file:foo:123', '  ', 'http://localhost/cell:foo!A1/file/123');
-      test('file:foo:123', undefined, 'http://localhost/cell:foo!A1/file/123');
+      test('file:foo:123', 'png', 'http://localhost/cell:foo!A1/file:123.png');
+      test('file:foo:123', '.png', 'http://localhost/cell:foo!A1/file:123.png');
+      test('file:foo:123', ' ...png ', 'http://localhost/cell:foo!A1/file:123.png');
+      test('  file:foo:123  ', '  png  ', 'http://localhost/cell:foo!A1/file:123.png');
+      test('file:foo:123', '', 'http://localhost/cell:foo!A1/file:123');
+      test('file:foo:123', '  ', 'http://localhost/cell:foo!A1/file:123');
+      test('file:foo:123', undefined, 'http://localhost/cell:foo!A1/file:123');
     });
 
     it('file.byFileUri (throws)', () => {
       expect(() => url.cell(URI).file.byFileUri('cell:foo!A1')).to.throw(); // Not a [file:] URI.
+      expect(() => url.cell(URI).file.byFileUri('foo:123')).to.throw();
       expect(() => url.cell(URI).file.byFileUri('')).to.throw();
+      expect(() => url.cell(URI).file.byFileUri('  ')).to.throw();
     });
   });
 

@@ -1,13 +1,24 @@
-import { defaultValue, ERROR, t } from '../common';
-import { getParams as getParamsFiles, ParamAnd, ParamOr } from '../route.cell.files/params';
+import { ERROR, t } from '../common';
+import { getParams as getParamsFiles, ParamAnd } from '../route.cell.files/params';
 
-export const getParams = (args: { params: ParamOr; filenameRequired?: boolean }) => {
+const toString = (input?: any) => (input || '').toString().trim();
+const toMessage = (msg: string) => `Malformed URI, ${msg}`;
+
+/**
+ * URL params for cell/file:uri
+ * Note: This shares most of the URL pattern parts as the "by filename" route.
+ */
+export const getFileUriParams = (args: { params: t.IUrlParamsCellFileByFileUri }) => {
+  return getFilenameParams(args);
+};
+
+/**
+ * URL params for cell/file-name.
+ */
+export const getFilenameParams = (args: { params: t.IUrlParamsCellFileByName }) => {
   const params = args.params as ParamAnd;
-  const toString = (input?: any) => (input || '').toString().trim();
-  const toMessage = (msg: string) => `Malformed URI, ${msg}`;
 
-  const res = getParamsFiles({ params });
-  const { ns, key, cellUri } = res;
+  const { ns, key, cellUri } = getParamsFiles({ params });
   const data = {
     ns,
     key,
@@ -20,7 +31,7 @@ export const getParams = (args: { params: ParamOr; filenameRequired?: boolean })
     message: '',
   };
 
-  if (!data.filename && args.filenameRequired) {
+  if (!data.filename) {
     error.message = toMessage('does not contain a filename');
     return { ...data, status: 400, error };
   }

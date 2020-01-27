@@ -1,7 +1,13 @@
 import { ERROR, Schema, t } from '../common';
 
-export type ParamOr = t.IUrlParamsCellFiles | t.IUrlParamsCellFileByName;
-export type ParamAnd = t.IUrlParamsCellFiles & t.IUrlParamsCellFileByName;
+export type ParamOr =
+  | t.IUrlParamsCellFiles
+  | t.IUrlParamsCellFileByName
+  | t.IUrlParamsCellFileByFileUri;
+
+export type ParamAnd = t.IUrlParamsCellFiles &
+  t.IUrlParamsCellFileByName &
+  t.IUrlParamsCellFileByFileUri;
 
 export const getParams = (args: { params: ParamOr }) => {
   const params = args.params as ParamAnd;

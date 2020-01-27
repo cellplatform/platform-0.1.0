@@ -36,7 +36,10 @@ export const ROUTES = {
   CELL: {
     NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.
     INFO: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
-    FILE_BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/file/${KEY.FILENAME}`,
+    FILE: {
+      BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/file/${KEY.FILENAME}`,
+      BY_FILE_URI: `/cell${KEY.NS}\!${KEY.CELL}/file\\:${KEY.FILENAME}`,
+    },
     FILES: {
       BASE: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
       UPLOAD: `/cell${KEY.NS}\!${KEY.CELL}/files/upload`,

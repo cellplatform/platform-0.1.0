@@ -51,6 +51,7 @@ export type IUrlParamsCell = { ns: string; key: string };
 
 export type IUrlParamsCellFiles = IUrlParamsCell;
 export type IUrlParamsCellFileByName = IUrlParamsCell & { filename: string };
+export type IUrlParamsCellFileByFileUri = IUrlParamsCell & { filename: string };
 
 /**
  * Query-string parameters for a [Cell].
@@ -79,6 +80,7 @@ export type IUrlQueryCellFileDownloadByName = IUrlQueryCellFileInfo & {
   hash?: string;
   expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
 };
+export type IUrlQueryCellFileDownloadByFileUri = IUrlQueryCellFileDownloadByName;
 
 /**
  * ------------------------------------------------------------------

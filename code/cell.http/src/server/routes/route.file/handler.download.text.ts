@@ -1,5 +1,5 @@
-import { ERROR, t, util, http } from '../common';
-import { downloadFilePreflight } from './handler.download';
+import { ERROR, t, util } from '../common';
+import { downloadFilePreflight } from './handler.download.preflight';
 
 /**
  * Download an HTML file and dynamically rewrite the links.

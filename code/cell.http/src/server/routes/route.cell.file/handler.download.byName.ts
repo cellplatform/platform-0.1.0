@@ -1,6 +1,5 @@
-import { Schema, t, util } from '../common';
-import { downloadBinaryFile, downloadTextFile } from '../route.file';
-import { rewritePaths } from './util.rewritePaths';
+import { ERROR, models, Schema, t, util } from '../common';
+import { downloadFileByFileId } from './handler.download.byFileId';
 
 export async function downloadFileByName(args: {
   host: string;
@@ -11,33 +10,22 @@ export async function downloadFileByName(args: {
   matchHash?: string;
   expires?: string;
 }) {
-  const { db, fs, cellUri, filename, matchHash, host, expires } = args;
-  const mime = util.toMimetype(filename) || 'application/octet-stream';
+  const { db, fs, cellUri, matchHash, host, expires } = args;
 
-  const fileid = filename.split('.')[0] || '';
-  const ns = Schema.uri.parse<t.ICellUri>(cellUri).parts.ns;
-  const fileUri = Schema.uri.create.file(ns, fileid);
+  // Retrieve DB model.
+  const cell = await models.Cell.create({ db, uri: cellUri }).ready;
 
-  // 404 if file URI not found.
-  if (!fileUri) {
-    const err = `The file '${filename}' is not linked to the cell [${cellUri}].`;
-    return util.toErrorPayload(err, { status: 404 });
+  // Lookup the requested file as a link.
+  const link = Schema.file.links.find(cell.props.links).byName(args.filename);
+  if (!link) {
+    const err = `The file '${args.filename}' is not linked to the cell [${cellUri}].`;
+    return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_LINKED });
   }
 
-  const downloadHtmlAndRewritePaths = async () => {
-    const res = await downloadTextFile({ host, db, fs, fileUri, filename, matchHash, mime });
-    if (typeof res.data === 'string') {
-      const html = res.data;
-      return { ...res, data: await rewritePaths({ host, db, cellUri, html, filename }) };
-    } else {
-      return res;
-    }
-  };
+  // Construct the underlying FS filename.
+  const { id, ext } = link.file;
+  const filename = ext ? `${id}.${ext}` : id;
 
-  // Run the appropriate download handler.
-  if (mime === 'text/html') {
-    return downloadHtmlAndRewritePaths();
-  } else {
-    return downloadBinaryFile({ host, db, fs, fileUri, filename, matchHash, expires });
-  }
+  // Finish up.
+  return downloadFileByFileId({ host, db, fs, cellUri, filename, matchHash, expires });
 }

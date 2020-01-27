@@ -45,7 +45,7 @@ export function isFile(input: string = '') {
  * Derived from extension.
  */
 export function toMimetype(filename: string = '') {
-  const type = mime.lookup(filename);
+  const type = mime.lookup((filename || '').trim());
   return typeof type === 'string' ? type : undefined;
 }
 

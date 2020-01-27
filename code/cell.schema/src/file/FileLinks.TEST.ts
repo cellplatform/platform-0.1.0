@@ -1,4 +1,4 @@
-import { fs, expect } from '../test';
+import { t, fs, expect } from '../test';
 import { FileLinks } from '.';
 
 describe('FileLinks', () => {
@@ -236,6 +236,94 @@ describe('FileLinks', () => {
       test('fs:foo::bar::zoo:png', 'foo/bar/zoo.png');
       test('fs:[::]foo:png', '..foo.png');
       test('fs:foo[::]png', 'foo..png');
+    });
+  });
+
+  describe('toList', () => {
+    it('empty', () => {
+      const test = (keys?: t.IUriMap) => {
+        const res = FileLinks.toList(keys);
+        expect(res).to.eql([]);
+      };
+      test();
+      test({});
+      test({ 'SOMETHING:ELSE': 'foo' });
+    });
+
+    it('converts to list', () => {
+      const keys = {
+        'fs:main:js': 'file:foo:abc123?status=uploading',
+        'fs:images/foo/kitten:png': 'file:foo:def456?hash=sha256-abc',
+      };
+      const list = FileLinks.toList(keys);
+
+      expect(list.length).to.eql(2);
+
+      expect(list[0].uri).to.eql('file:foo:abc123');
+      expect(list[0].hash).to.eql(undefined);
+      expect(list[0].status).to.eql('uploading');
+      expect(list[0].file.ns).to.eql('foo');
+      expect(list[0].file.id).to.eql('abc123');
+      expect(list[0].file.path).to.eql('main.js');
+      expect(list[0].file.dir).to.eql('');
+      expect(list[0].file.filename).to.eql('main.js');
+      expect(list[0].file.ext).to.eql('js');
+
+      expect(list[1].uri).to.eql('file:foo:def456');
+      expect(list[1].hash).to.eql('sha256-abc');
+      expect(list[1].status).to.eql(undefined);
+      expect(list[1].file.ns).to.eql('foo');
+      expect(list[1].file.id).to.eql('def456');
+      expect(list[1].file.path).to.eql('images/foo/kitten.png');
+      expect(list[1].file.dir).to.eql('images/foo');
+      expect(list[1].file.filename).to.eql('kitten.png');
+      expect(list[1].file.ext).to.eql('png');
+    });
+  });
+
+  describe('find: byName', () => {
+    const KEYS = {
+      'fs:main:js': 'file:foo:abc123?status=uploading',
+      'fs:images/foo/kitten:png': 'file:foo:def456?hash=sha256-abc',
+    };
+
+    it('no match', () => {
+      const test = (keys: t.IUriMap | undefined, path?: string) => {
+        const res = FileLinks.find(keys).byName(path);
+        expect(res).to.eql(undefined);
+      };
+      test(undefined, 'main.js');
+      test(undefined, undefined);
+      test({}, 'main.js');
+      test(KEYS, 'no-match.pdf');
+      test(KEYS, '');
+      test(KEYS, '  ');
+      test(KEYS, undefined);
+      test(KEYS, 'main.js/');
+    });
+
+    it('match: main.js', () => {
+      const test = (path?: string) => {
+        const res = FileLinks.find(KEYS).byName(path);
+        expect(res?.uri).to.eql('file:foo:abc123');
+        expect(res?.file.path).to.eql('main.js');
+      };
+      test('main.js');
+      test('   main.js   ');
+      test('/main.js');
+      test(' //main.js ');
+    });
+
+    it('match: images/foo/kitten.png', () => {
+      const test = (path?: string) => {
+        const res = FileLinks.find(KEYS).byName(path);
+        expect(res?.uri).to.eql('file:foo:def456');
+        expect(res?.file.path).to.eql('images/foo/kitten.png');
+      };
+      test('images/foo/kitten.png');
+      test('   images/foo/kitten.png   ');
+      test('/images/foo/kitten.png');
+      test('///images/foo/kitten.png');
     });
   });
 
