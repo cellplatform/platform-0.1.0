@@ -27,6 +27,13 @@ const { fs, prompt, log } = cli;
 })();
 
 /**
+ * TODO 🐷
+ * - move promptDirs to: @platform/cli.prompt
+ * - LIST and CHECKBOX option
+ * - single string (=== "parent") or string[] (=== list of paths to select)
+ */
+
+/**
  * Prompt user for selection of a directory.
  */
 async function promptDirs(dir: string) {
