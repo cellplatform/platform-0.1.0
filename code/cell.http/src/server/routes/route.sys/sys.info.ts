@@ -11,7 +11,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
    */
   router.get(routes.SYS.INFO, async req => {
     const NOW_REGION = fs.env.value('NOW_REGION');
-    const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local';
+    const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local:device';
 
     const deployed = !args.deployedAt
       ? undefined
@@ -22,13 +22,17 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
 
     const provider = args.title || 'Untitled';
     const system = constants.getSystem().system;
+
+    const prefixProtocol = (host: string) =>
+      host.startsWith('localhost') ? `http://${host}` : `https://${host}`;
+
     let host = req.headers.host || '-';
-    host = host.startsWith('localhost') ? `http://${host}` : `https://${host}`;
+    host = prefixProtocol(host);
 
     const data: t.IResGetSysInfo = {
       provider,
-      system,
       host,
+      system,
       region,
       deployed,
     };
