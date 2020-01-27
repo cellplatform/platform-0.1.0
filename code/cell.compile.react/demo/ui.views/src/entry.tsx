@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 // import { Foo } from './components/Foo';
-import { Foo } from './component';
+import { Foo } from './components/Tmp';
 import './styles';
 
 console.log('👋');
