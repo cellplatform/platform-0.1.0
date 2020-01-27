@@ -23,11 +23,12 @@ export async function dirSync(args: {
 
   const { silent = false, force = false, keyboard } = args;
   const { dir } = config;
+  const host = config.data.host;
 
   if (!silent) {
     const uri = config.target.uri.parts;
     log.info();
-    log.info.gray(`host:     ${config.data.host}`);
+    log.info.gray(`host:     ${host}`);
     log.info.gray(`target:   cell:${uri.ns}!${log.blue(uri.key)}`);
     if (args.watch) {
       log.info.gray(`watching: ${log.cyan('active')}`);

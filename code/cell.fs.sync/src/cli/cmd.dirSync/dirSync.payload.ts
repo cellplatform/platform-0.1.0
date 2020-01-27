@@ -46,8 +46,8 @@ export async function buildPayload(args: {
   const filesUrl = urls.cell(cellUri).files.list;
 
   const tasks = cli.tasks();
-  const cell = log.white(`cell:${log.magenta(ns)}!${log.blue(cellKey)}`);
-  const title = log.gray(`read ${cell} on ${filesUrl.origin}`);
+  const cell = log.white(`cell:${log.blue(cellKey)}`);
+  const title = log.gray(`read ${cell} from ${filesUrl.origin}`);
 
   tasks.task(title, async () => {
     const res = await args.client.cell(cellUri).files.list();
