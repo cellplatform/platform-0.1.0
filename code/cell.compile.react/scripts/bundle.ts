@@ -4,8 +4,9 @@ const { fs, log } = cli;
 (async () => {
   const dirs = await cli.prompt.fs.paths('demo').checkbox();
   const info: string[] = [];
-
+  const errors: string[] = [];
   const tasks = cli.tasks();
+
   dirs.forEach(dir => {
     const dirname = fs.basename(dir);
     const title = log.gray(`bundle: ${log.white(dirname)}`);
@@ -16,6 +17,11 @@ const { fs, log } = cli;
         .filter(line => line.startsWith('dist/'))
         .forEach(line => info.push(`  ${log.gray(line)}`));
       info.push('');
+
+      if (res.error) {
+        res.errors.forEach(line => errors.push(`${log.white(dirname)} ${line}`));
+        throw res.error;
+      }
     });
   });
 
@@ -24,4 +30,10 @@ const { fs, log } = cli;
 
   log.info();
   info.forEach(line => cli.log.info(line));
+
+  if (errors.length > 0) {
+    errors.forEach(line => cli.log.error(line));
+
+    // log.error(error);
+  }
 })();

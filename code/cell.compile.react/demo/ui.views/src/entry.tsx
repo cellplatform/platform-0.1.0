@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+// import { Foo } from './components/Foo';
 import { Foo } from './component';
 import './styles';
 
