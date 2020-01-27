@@ -23,6 +23,7 @@ export function getSystem() {
 export function getVersions() {
   const depVersion = (key: string, version?: string) => {
     version = version || DEPS[key] || '-';
+    version = version.replace(/^\^/, '').replace(/^\~/, '');
     return `${key}@${version}`;
   };
   const version = {
