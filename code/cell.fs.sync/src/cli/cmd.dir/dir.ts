@@ -1,8 +1,6 @@
-import { log, promptConfig, util, fs, open } from '../common';
+import { log, promptConfig, util } from '../common';
 
 const gray = log.info.gray;
-
-// import { open as openTarget } from './libs';
 
 /**
  * Inspect or configure a folder.
@@ -29,12 +27,7 @@ export async function dir(args: {
   const uri = config.target.uri;
   const key = uri.parts.key;
   const keyTitle = util.log.cellKeyBg(key);
-
-  const hostParts = config.data.host.replace(/\/*$/, '').split('.');
-  const host = hostParts
-    .map((part, i) => ({ part, isLast: i === hostParts.length - 1 }))
-    .map(({ part, isLast }) => (isLast ? part : log.blue(part)))
-    .join('.');
+  const host = log.blue(config.data.host);
 
   log.info(`${keyTitle}`);
   log.info();
