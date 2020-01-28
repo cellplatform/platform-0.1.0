@@ -5,7 +5,7 @@ export async function listCellFiles(args: {
   fs: t.IFileSystem;
   cellUri: string;
   host: string;
-  expires?: string; // Links expire.
+  expires?: string; // File link expires.
   includeFiles?: boolean;
   includeUrls?: boolean;
 }) {
