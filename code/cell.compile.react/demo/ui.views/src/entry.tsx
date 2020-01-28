@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { ViewsIndex as Index } from './components/ViewsIndex';
+import { Index as Index } from './components';
 import { LoadSplash } from './components/LoadSplash';
 import { VIEWS, load } from './views';
 import './styles/global';

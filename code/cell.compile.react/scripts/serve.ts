@@ -8,6 +8,6 @@ const { log, fs } = cli;
   } else {
     log.info();
     log.info(fs.basename(cwd));
-    await cli.exec.command('yarn serve').run({ cwd });
+    await cli.exec.command('yarn serve --open').run({ cwd });
   }
 })();

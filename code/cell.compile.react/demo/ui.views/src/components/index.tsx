@@ -1,16 +1,16 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { log, css, color, CssValue, t } from '../../common';
-import { load } from '../../views';
 
-export type IViewsIndexProps = { views: t.View[]; style?: CssValue };
-export type IViewsIndexState = {};
+import { css, CssValue, t } from '../common';
+import { load } from '../views';
 
-export class ViewsIndex extends React.PureComponent<IViewsIndexProps, IViewsIndexState> {
-  public state: IViewsIndexState = {};
-  private state$ = new Subject<Partial<IViewsIndexState>>();
+export type IIndexProps = { views: t.View[]; style?: CssValue };
+export type IIndexState = {};
+
+export class Index extends React.PureComponent<IIndexProps, IIndexState> {
+  public state: IIndexState = {};
+  private state$ = new Subject<Partial<IIndexState>>();
   private unmounted$ = new Subject<{}>();
 
   /**
@@ -43,6 +43,7 @@ export class ViewsIndex extends React.PureComponent<IViewsIndexProps, IViewsInde
         margin: 0,
         padding: 0,
         marginLeft: 30,
+        cursor: 'pointer',
       }),
     };
 
@@ -57,7 +58,11 @@ export class ViewsIndex extends React.PureComponent<IViewsIndexProps, IViewsInde
     return (
       <div {...css(styles.base, this.props.style)}>
         <div>ui.views:</div>
-        <ul {...styles.ul}>{elList}</ul>
+        <ul {...styles.ul}>
+          {elList}
+
+          <li onClick={this.tmp}>tmp</li>
+        </ul>
       </div>
     );
   }
@@ -65,9 +70,7 @@ export class ViewsIndex extends React.PureComponent<IViewsIndexProps, IViewsInde
   private renderListItem(props: { view: t.View }) {
     const { view } = props;
     const styles = {
-      base: css({
-        cursor: 'pointer',
-      }),
+      base: css({}),
     };
     return (
       <div {...styles.base}>
@@ -78,5 +81,9 @@ export class ViewsIndex extends React.PureComponent<IViewsIndexProps, IViewsInde
 
   private onListItemClick = (view: t.View) => {
     return () => load(view);
+  };
+
+  private tmp = () => {
+    console.log(tmp);
   };
 }
