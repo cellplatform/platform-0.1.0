@@ -31,7 +31,7 @@ export class Index extends React.PureComponent<IIndexProps, IIndexState> {
   public render() {
     const styles = {
       base: css({
-        fontSize: 16,
+        fontSize: 26,
         padding: 20,
         lineHeight: '1.4em',
       }),
@@ -86,13 +86,12 @@ export class Index extends React.PureComponent<IIndexProps, IIndexState> {
   };
 
   private tmp = async () => {
-    // const url = 'https://reqres.in/api/users/1';
-    const url = 'http://localhost:8080/cell:ck5st4aop0000ffet9pi2fkvp!B1';
+    const url =
+      'http://localhost:8080/cell:ck5st4aop0000ffet9pi2fkvp!B1/files?files=false&urls=false';
+
     console.log('url', url);
+
     const res = await http.get(url);
-    console.log('res.status', res.status);
-    console.log('res', res);
-    console.log('res.headers', res.headers);
     console.log('res.json', res.json);
   };
 }
