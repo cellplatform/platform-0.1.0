@@ -1,6 +1,6 @@
 import { fetch, id, t, time, toRawHeaders, toBody, toResponse } from '../common';
 
-export const send = async (args: {
+export const httpFetch = async (args: {
   url: string;
   method: t.HttpMethod;
   data?: any;
@@ -85,8 +85,7 @@ export const send = async (args: {
   };
 
   if (modifications.response) {
-    // Exit with faked response if one was
-    // returned from the BEFORE event.
+    // Exit with faked response if one was returned from the BEFORE event.
     const delay = modifications.responseDelay;
     if (typeof delay === 'number') {
       await time.wait(delay);
