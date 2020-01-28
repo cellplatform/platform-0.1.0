@@ -5,8 +5,8 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "node lib/example/start",
-    "watch": "nodemon lib/example/start",
+    "start": "ts-node -T example/start",
+    "watch": "nodemon --watch src -e ts,tsx --exec 'ts-node' example/start",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
@@ -36,7 +36,6 @@
   "files": [
     "lib",
     "!lib/test",
-    "!lib/example",
     "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"

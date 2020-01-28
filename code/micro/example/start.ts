@@ -1,10 +1,10 @@
 import { micro } from '..';
-import { log, time } from '../common';
+import { log, time } from '../src/common';
 
 import { fs } from '@platform/fs';
 
 const timer = time.timer();
-const PKG = require('../../package.json') as { name: string; version: string };
+const PKG = require('../package.json') as { name: string; version: string };
 
 const app = micro.init({
   cors: true,
@@ -65,6 +65,7 @@ service:
 
   log.info.gray(`routes:`);
   log.info(app.router.log({ indent: 1 }));
+  log.info();
 
   // Example: stop the service.
   // setTimeout(() => service.close(), 1500);
