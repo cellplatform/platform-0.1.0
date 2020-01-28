@@ -1,5 +1,6 @@
-import { ERROR, t, util, fileCache } from '../common';
+import { ERROR, t, util } from '../common';
 import { downloadFilePreflight } from './handler.download.preflight';
+import { fileCache } from '../../fs.cache';
 
 /**
  * Download an HTML file and dynamically rewrite the links.
