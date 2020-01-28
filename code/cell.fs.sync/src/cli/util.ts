@@ -69,3 +69,4 @@ export const formatLength = (line: string, max: number) => {
     line = `${ellipsis}${line}`;
     return line;
   }
+};

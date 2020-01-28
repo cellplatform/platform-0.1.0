@@ -13,6 +13,7 @@ const { fs, log } = cli;
     tasks.task(title, async () => {
       const res = await cli.exec.command(`yarn bundle`).run({ cwd: dir, silent: true });
       info.push(`${log.green(title)}`);
+
       res.info
         .filter(line => line.startsWith('dist/'))
         .forEach(line => info.push(`  ${log.gray(line)}`));

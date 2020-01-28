@@ -198,7 +198,9 @@ export function logPayload(args: {
   };
 
   sortAndAdd(list.filter(item => !item.isChanged)); // Unchanged.
-  sortAndAdd(list.filter(item => item.isChanged)); //   Changed ("sync pending").
+  sortAndAdd(list.filter(item => item.status === 'ADDED'));
+  sortAndAdd(list.filter(item => item.status === 'CHANGED'));
+  sortAndAdd(list.filter(item => item.status === 'DELETED'));
 
   return count > 0 ? table.toString() : '';
 }

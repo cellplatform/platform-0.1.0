@@ -12,16 +12,17 @@
     "serve": "cd dist && serve"
   },
   "dependencies": {
+    "@platform/cell.client": "^0.1.18",
     "@platform/cell.types": "0.4.15",
     "@platform/libs": "0.2.0",
-    "@platform/log": "^0.1.4",
-    "@platform/react": "^0.4.0",
-    "@platform/ui.spinner": "^0.0.121"
+    "@platform/log": "0.1.4",
+    "@platform/react": "0.4.0",
+    "@platform/ui.spinner": "0.0.121"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",
     "@platform/ts": "3.7.12",
-    "parcel-bundler": "^1.12.4"
+    "parcel-bundler": "1.12.4"
   },
   "private": true
 }

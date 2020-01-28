@@ -1,4 +1,4 @@
 import * as t from './types';
 
 export { t };
-export * from './libs';
+export { css, color, CssValue } from './libs';

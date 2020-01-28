@@ -1,1 +1,1 @@
-export type Temp = 'TEMP';
+export * from '../types';

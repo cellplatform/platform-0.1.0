@@ -1,20 +1,20 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue } from '../common';
+import { css, color, CssValue } from '../../common';
 
-export type IFooProps = { style?: CssValue };
-export type IFooState = {};
+export type IInviteProps = { style?: CssValue };
+export type IInviteState = {};
 
-export class Foo extends React.PureComponent<IFooProps, IFooState> {
-  public state: IFooState = {};
-  private state$ = new Subject<Partial<IFooState>>();
+export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
+  public state: IInviteState = {};
+  private state$ = new Subject<Partial<IInviteState>>();
   private unmounted$ = new Subject<{}>();
 
   /**
    * [Lifecycle]
    */
-  constructor(props: IFooProps) {
+  constructor(props: IInviteProps) {
     super(props);
   }
 
@@ -34,7 +34,7 @@ export class Foo extends React.PureComponent<IFooProps, IFooState> {
     const styles = { base: css({}) };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>Foo</div>
+        <div>Invite</div>
       </div>
     );
   }
