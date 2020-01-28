@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.text",
   "description": "Text components.",
-  "version": "0.3.33",
+  "version": "0.3.35",
   "main": "lib/index",
   "scripts": {
     "ui": "ui $@",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.2.0",
-    "@platform/react": "0.4.6",
+    "@platform/react": "0.4.8",
     "@platform/util.value": "0.7.3"
   },
   "devDependencies": {

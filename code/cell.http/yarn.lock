@@ -58,16 +58,16 @@
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.db@0.2.96":
-  version "0.2.96"
-  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.2.96.tgz#6915919156874e733272263180327a4d1b3fcb96"
-  integrity sha512-LZLgCUFsKZLJ3ksKKZ8e36XlDPv3xi2K6Qqb0pSv2N62jjunzNrf2cbPKKulZZHk1ApSvq7YxCPa5jsHhFdSzA==
+"@platform/cell.db@0.2.98":
+  version "0.2.98"
+  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.2.98.tgz#d2804200c871c3c1721250c18f2294a6d87455ea"
+  integrity sha512-mUT7KWyjYCtVjz7dIdhSht0lw0z63xZ0qrHbMYNBJ3fIrR1l85HvHoAiAvTpXrDJhfMvuD5hgLGVowXe7mswfQ==
   dependencies:
     "@platform/cell.coord" "0.8.35"
     "@platform/cell.schema" "0.4.19"
     "@platform/cell.types" "0.4.17"
     "@platform/cell.value" "0.1.83"
-    "@platform/fsdb.model" "0.6.25"
+    "@platform/fsdb.model" "0.6.27"
     "@platform/fsdb.types" "0.6.8"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
@@ -101,7 +101,7 @@
     "@platform/libs" "0.2.0"
     "@platform/util.value" "0.7.3"
 
-"@platform/cell.schema@0.4.19", "@platform/cell.schema@^0.4.19":
+"@platform/cell.schema@0.4.19":
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.19.tgz#373cd628b22c00bf11a0e9373963492d329aa904"
   integrity sha512-6m7uZQmz15lhj0PZKpzIIks0eIe/udxjUzSgNvvBnVu3l9xFLg9AYWsME8AERvjFuK7mxTHwUsBF+pyRkHMwGA==
@@ -163,10 +163,10 @@
     listr "0.14.3"
     yargs "15.1.0"
 
-"@platform/css@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.3.0.tgz#82acc15ec2ccd8328b44a19a02dff17d331c822b"
-  integrity sha512-s89KWkKOzdK/LhFnsqnTmpUWD25dPcOBATt4deV+Z7NJLWzqKMeze3XxpkUkXV8d0ZfFh05N4LBpNm8Xx+0o7w==
+"@platform/css@0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.3.1.tgz#8da5e0e73a18857770ef8ec99dfe17de88854400"
+  integrity sha512-Nn7r+BEQvny1Wk63UImeEwhQA3gnr2xNq2W/L0/xjxpK1nvuo+ZElsKClaqziL+OUK89nqefHiTxRd/INMOCag==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/util.is" "0.0.109"
@@ -227,24 +227,24 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.model@0.6.25":
-  version "0.6.25"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.6.25.tgz#05ebd71d38f57539bb0b6dbf5e5bbdcf01eb300d"
-  integrity sha512-QnLjclk0zXx0DL/sPsL6GU2Bi6uBnjF2UyHmUXA5gR6rwcWyVsf2s13Sx22Ooitd8lv+k/Y2pDE4AYrTsbl2cQ==
+"@platform/fsdb.model@0.6.27":
+  version "0.6.27"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.6.27.tgz#81c56e0d2ccfdf0908e593f36921255e0c7fe9fa"
+  integrity sha512-p2iPEt+dRr+Eq6DZRCHp16GlZFkrGBrWE7jbPOHLCH9P8gVE2RxvueN1wxhGwHVjToqO+eu7u5Zk/WWSamlQxw==
   dependencies:
     "@platform/fsdb.types" "0.6.8"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
     "@platform/util.value" "0.7.3"
 
-"@platform/fsdb.nedb@1.3.80":
-  version "1.3.80"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.80.tgz#303944961601314c7854ac9b7b49f52011d2d3bd"
-  integrity sha512-7pDH8r9pDOE1IfbcxE61Ma2d1kF7/YWNadM4xSlT0xPm8rjTRceHDj4zwegMfKspxyTfYXI5hDQZXRyVFMmLqw==
+"@platform/fsdb.nedb@1.3.82":
+  version "1.3.82"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.82.tgz#bbce21a96f9b0eec4c21701e816bb65c116a30e7"
+  integrity sha512-JaPRRTyKF9m5QCVI3nJTdJhwXtsKe3fr+mUWnO/DPef69kd/FFGWn1hVfX2G+fx9500VgmiJ7SR0HK4Kbl+YgQ==
   dependencies:
     "@platform/fsdb.types" "0.6.8"
     "@platform/libs" "0.2.0"
-    "@platform/react" "0.4.6"
+    "@platform/react" "0.4.8"
     "@platform/types" "0.4.4"
     "@platform/util.value" "0.7.3"
     nedb "1.8.0"
@@ -312,12 +312,12 @@
     micro-cors "0.1.1"
     path-to-regexp "6.1.0"
 
-"@platform/react@0.4.6":
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.6.tgz#1b29ab4b420636ec5377ef36b359c4295c1c4c39"
-  integrity sha512-2FNPZYlQlYHhm9MOru2gewio90A+hf19kL9jLuZTwPjP3vm3tsaWYCgsDhVTtBpQ2jZeslgWIiwzS4gR8FUHyw==
+"@platform/react@0.4.8":
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.8.tgz#a673b01db2dec7a95ab118b394930ba9d48de722"
+  integrity sha512-+PrwwRPiGSSRFE+6zacRGAImqsl1df4AsRfqFyFCY9EFFqz1K24HiPk8R5mFLSUnmdLqVkGHUGbcuShgwabD6A==
   dependencies:
-    "@platform/css" "0.3.0"
+    "@platform/css" "0.3.1"
     "@platform/util.is" "0.0.109"
     "@types/react" "16.9.19"
     "@types/react-dom" "16.9.5"

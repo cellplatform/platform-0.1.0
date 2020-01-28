@@ -1,6 +1,6 @@
 {
   "name": "parcel-v2.css",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "source": "src/index.html",
   "scripts": {
     "start": "parcel src/index.html",
@@ -12,7 +12,7 @@
   "node": "dist/node/index.html",
   "web": "dist/web/index.html",
   "dependencies": {
-    "@platform/css": "^0.3.0",
+    "@platform/css": "^0.3.1",
     "react": "^16.12.0"
   },
   "devDependencies": {
