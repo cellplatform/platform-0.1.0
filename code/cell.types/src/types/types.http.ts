@@ -136,15 +136,16 @@ export type IResPostFileUploadLocal = {
 export type IResDeleteFile = { uri: string; deleted: boolean };
 
 /**
- * Cell Files: GET
+ * Cell/Files: GET
  */
 export type IResGetCellFiles = {
+  total: number;
   uri: string;
-  urls: {
+  urls?: {
     cell: string;
     files: IResGetCellFilesFileUrl[];
   };
-  files: t.IFileMap;
+  files?: t.IFileMap;
 };
 export type IResGetCellFilesFileUrl = {
   uri: string;
@@ -154,7 +155,7 @@ export type IResGetCellFilesFileUrl = {
 };
 
 /**
- * Cell Files: POST (Upload Start)
+ * Cell/Files: POST (Upload Start)
  */
 export type IReqPostCellFilesUploadStartBody = {
   files: IReqPostCellUploadFile[];
@@ -181,7 +182,7 @@ export type IResPostCellFilesUploadUrls = IResGetCellUrls & {
 };
 
 /**
- * Cell Files: POST (Upload Complete)
+ * Cell/Files: POST (Upload Complete)
  */
 export type IReqPostCellFilesUploadCompleteBody = {};
 export type IResPostCellFilesUploadComplete = IUriResponse<IResPostCellFilesUploadCompleteData>;
@@ -192,7 +193,7 @@ export type IResPostCellFilesUploadCompleteData = {
 };
 
 /**
- * Cell Files: DELETE
+ * Cell/Files: DELETE
  */
 export type IReqDeleteCellFilesBody = {
   filenames: string[];

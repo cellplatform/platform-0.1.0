@@ -27,6 +27,12 @@ export class FileLinks {
     },
   };
 
+  public static total(links: t.IUriMap = {}) {
+    return Object.keys(links).reduce((acc, next) => {
+      return FileLinks.is.fileKey(next) ? acc + 1 : acc;
+    }, 0);
+  }
+
   public static toKey(filename: string) {
     return `fs:${encode(filename)}`;
   }

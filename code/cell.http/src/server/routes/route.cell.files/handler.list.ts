@@ -1,4 +1,4 @@
-import { models, Schema, t, util } from '../common';
+import { models, Schema, t, util, defaultValue } from '../common';
 
 export async function listCellFiles(args: {
   db: t.IDb;
@@ -6,33 +6,48 @@ export async function listCellFiles(args: {
   cellUri: string;
   host: string;
   expires?: string; // Links expire.
+  includeFiles?: boolean;
+  includeUrls?: boolean;
 }) {
-  const { db, host, expires } = args;
+  try {
+    const { db, host, expires } = args;
+    const includeFiles = defaultValue(args.includeFiles, true);
+    const includeUrls = defaultValue(args.includeUrls, true);
 
-  // Prepare URIs.
-  const cellUri = Schema.uri.parse<t.ICellUri>(args.cellUri);
-  const nsUri = Schema.uri.parse<t.INsUri>(Schema.uri.create.ns(cellUri.parts.ns));
+    // Prepare URIs.
+    const cellUri = Schema.uri.parse<t.ICellUri>(args.cellUri);
+    const nsUri = Schema.uri.parse<t.INsUri>(Schema.uri.create.ns(cellUri.parts.ns));
 
-  // Retrieve data models.
-  const ns = await models.Ns.create({ db, uri: nsUri.toString() }).ready;
-  const cell = await models.Cell.create({ db, uri: cellUri.toString() }).ready;
+    // Retrieve data models.
+    const ns = await models.Ns.create({ db, uri: nsUri.toString() }).ready;
+    const cell = await models.Cell.create({ db, uri: cellUri.toString() }).ready;
+    const cellLinks = cell.props.links || {};
 
-  // Construct links object.
-  const urlBuilder = util.urls(host).cell(cellUri.toString());
-  const cellLinks = cell.props.links || {};
-  const urls = urlBuilder.files.urls(cellLinks, { expires });
+    const getUrls = () => {
+      const urlBuilder = util.urls(host).cell(cellUri.toString());
+      return urlBuilder.files.urls(cellLinks, { expires });
+    };
 
-  // Prepare files map.
-  const files = (await getCellFiles({ ns, cellLinks })).map;
+    const getFiles = async () => {
+      return (await getCellFiles({ ns, cellLinks })).map;
+    };
 
-  // Finish up.
-  const data: t.IResGetCellFiles = {
-    uri: cellUri.toString(),
-    urls,
-    files,
-  };
+    // Prepare response.
+    const urls = includeUrls ? getUrls() : undefined;
+    const files = includeFiles ? await getFiles() : undefined;
+    const total = urls ? urls.files.length : Schema.file.links.total(cellLinks);
+    const data: t.IResGetCellFiles = {
+      total,
+      uri: cellUri.toString(),
+      urls,
+      files,
+    };
 
-  return { status: 200, data };
+    // Finish up.
+    return { status: 200, data };
+  } catch (err) {
+    return util.toErrorPayload(err);
+  }
 }
 
 /**
