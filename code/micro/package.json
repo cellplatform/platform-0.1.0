@@ -5,8 +5,8 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "ts-node -T example/start",
-    "watch": "nodemon --watch src -e ts,tsx --exec 'ts-node' example/start",
+    "start": "ts-node -T demo/start",
+    "watch": "nodemon --watch src -e ts,tsx --exec 'ts-node' demo/start",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
