@@ -6,7 +6,7 @@ import { VIEWS } from './views';
 import './styles';
 
 console.log('👋');
-console.log('👋 CellOS View:');
+console.log('👋 CellOS Views:');
 console.log('👋   Hello World!');
 console.log('👋');
 

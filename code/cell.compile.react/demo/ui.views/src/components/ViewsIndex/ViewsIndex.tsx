@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, t } from '../../common';
+import { log, css, color, CssValue, t } from '../../common';
 
 export type IViewsIndexProps = { views: t.View[]; style?: CssValue };
 export type IViewsIndexState = {};
@@ -33,7 +33,6 @@ export class ViewsIndex extends React.PureComponent<IViewsIndexProps, IViewsInde
         fontSize: 16,
         padding: 20,
         lineHeight: '1.4em',
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       }),
       ul: css({
         margin: 0,
@@ -79,9 +78,10 @@ export class ViewsIndex extends React.PureComponent<IViewsIndexProps, IViewsInde
   private onListItemClick = (view: t.View) => {
     return async () => {
       try {
-        console.log('loading view:', view.name);
-
+        log.info('loading view:', view.name);
         const res = await view.load();
+        log.info('loaded', res);
+
         const el = <res.default />;
         ReactDOM.render(el, document.getElementById('root'));
       } catch (error) {

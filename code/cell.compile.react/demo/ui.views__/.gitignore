@@ -1,8 +1,0 @@
-node_modules
-lib
-.DS_Store
-.npmrc
-.env
-*.log
-/TEMP.md
-/tmp
