@@ -1,1 +1,1 @@
-export * from './LoadSplash'
+export * from './LoadSplash';
