@@ -98,13 +98,13 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         overflow: 'hidden',
       }),
       top: css({
-        flex: 1.5,
+        flex: 1,
         Flex: 'center-center',
       }),
       bottom: css({
-        flex: 1,
         borderTop: `dashed 1px ${color.format(0.8)}`,
         display: 'flex',
+        height: 200,
       }),
       title: css({
         fontSize: 45,
