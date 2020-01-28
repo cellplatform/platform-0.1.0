@@ -53,6 +53,7 @@
   },
   "files": [
     "lib",
+    "static",
     "!lib/test",
     "!lib/tests",
     "!*.TEST.{js, mjs, d.ts}",

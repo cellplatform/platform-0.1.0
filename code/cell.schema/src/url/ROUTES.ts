@@ -19,6 +19,7 @@ const KEY = {
 export const ROUTES = {
   WILDCARD: '*',
   SYS: {
+    FAVICON: '/favicon.ico',
     INFO: ['/', '/.sys(/?)'],
   },
   LOCAL: {

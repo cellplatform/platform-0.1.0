@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@platform/cell.http": "0.6.9",
+    "@platform/cell.schema": "^0.4.19",
     "@platform/fsdb.mongo": "0.0.87",
     "@platform/fsdb.nedb": "1.3.82"
   },
