@@ -10,7 +10,7 @@ export const downloadBinaryFile = async (args: {
   matchHash?: string;
   expires?: string;
 }) => {
-  const { db, fs, fileUri, filename, host, matchHash, expires } = args;
+  const { host, db, fs, fileUri, filename, matchHash, expires } = args;
 
   try {
     // Perform preliminary argument checks.

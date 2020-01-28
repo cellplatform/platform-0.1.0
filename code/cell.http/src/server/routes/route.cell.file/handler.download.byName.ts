@@ -10,7 +10,7 @@ export async function downloadFileByName(args: {
   matchHash?: string;
   expires?: string;
 }) {
-  const { db, fs, cellUri, matchHash, host, expires } = args;
+  const { db, fs, cellUri, host, expires } = args;
 
   // Retrieve DB model.
   const cell = await models.Cell.create({ db, uri: cellUri }).ready;
@@ -25,6 +25,7 @@ export async function downloadFileByName(args: {
   // Construct the underlying FS filename.
   const { id, ext } = link.file;
   const filename = ext ? `${id}.${ext}` : id;
+  const matchHash = args.matchHash || link.hash;
 
   // Finish up.
   return downloadFileByFileId({ host, db, fs, cellUri, filename, matchHash, expires });

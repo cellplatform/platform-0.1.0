@@ -23,10 +23,16 @@ export const downloadTextFile = async (args: {
     };
 
     // Check the cache for the file before doing anything.
-    const cache = fileCache({ name: fileUri, mime, hash: matchHash });
-    const cachedFile = await cache.get();
-    if (cachedFile) {
-      return done(cachedFile.toString());
+    // NOTE:
+    //      Only cache the download if a comparison hash is provided
+    //      otherwise it is not possible to determine if the cached
+    //      file is what the request is actually looking for.
+    const cache = matchHash && fileCache({ name: fileUri, mime, hash: matchHash });
+    if (cache) {
+      const file = await cache.get();
+      if (file) {
+        return done(file.toString());
+      }
     }
 
     // Perform preliminary argument checks.
@@ -53,8 +59,12 @@ export const downloadTextFile = async (args: {
       return util.toErrorPayload(err, { status, type });
     }
 
+    // Cache the downloaded file.
+    if (cache) {
+      await cache.put(data);
+    }
+
     // Finish up.
-    await cache.put(data);
     return done(data);
   } catch (err) {
     return util.toErrorPayload(err);
