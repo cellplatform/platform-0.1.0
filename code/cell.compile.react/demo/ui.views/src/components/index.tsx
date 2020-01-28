@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t } from '../common';
-import { load } from '../views';
+import { css, CssValue, t, http } from '../common';
+import { loadModule } from '../views';
 
 export type IIndexProps = { views: t.View[]; style?: CssValue };
 export type IIndexState = {};
@@ -61,7 +61,9 @@ export class Index extends React.PureComponent<IIndexProps, IIndexState> {
         <ul {...styles.ul}>
           {elList}
 
-          <li onClick={this.tmp}>tmp</li>
+          <li onClick={this.tmp} {...styles.li}>
+            tmp
+          </li>
         </ul>
       </div>
     );
@@ -80,10 +82,15 @@ export class Index extends React.PureComponent<IIndexProps, IIndexState> {
   }
 
   private onListItemClick = (view: t.View) => {
-    return () => load(view);
+    return () => loadModule(view);
   };
 
-  private tmp = () => {
-    console.log(tmp);
+  private tmp = async () => {
+    const url = 'https://reqres.in/api/users/1';
+    console.log('url', url);
+    const res = await http.get(url);
+    console.log('res.status', res.status);
+    console.log('res', res);
+    console.log('res.json', res.json);
   };
 }

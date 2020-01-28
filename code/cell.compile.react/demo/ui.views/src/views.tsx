@@ -4,10 +4,12 @@ import { t, log } from './common';
 
 export const VIEWS: t.View[] = [
   { name: 'invite 1', load: () => import('./components/Invite') as any },
-  { name: 'invite 2', load: () => import('./components/Invite') },
 ];
 
-export async function load(view: t.View) {
+/**
+ * Dymamically load a view module.
+ */
+export async function loadModule(view: t.View) {
   try {
     log.info('loading view:', view.name);
     const res = await view.load();
@@ -18,5 +20,4 @@ export async function load(view: t.View) {
   } catch (error) {
     console.log('error', error);
   }
-
 }
