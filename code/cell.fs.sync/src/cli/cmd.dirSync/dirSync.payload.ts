@@ -66,11 +66,20 @@ export async function buildPayload(args: {
     log.info();
   }
 
+  // Load the ignore file.
+  let ignore = ['**/node_modules/**'];
+  const ignorePath = fs.join(args.dir, '.cellignore');
+  if (await fs.pathExists(ignorePath)) {
+    const file = (await fs.readFile(ignorePath)).toString();
+    const lines = file.split('\n').filter(line => Boolean(line.trim()));
+    ignore = [...ignore, ...lines];
+  }
+
   // Prepare files.
   const paths = await fs.glob.find(`${args.dir}/**`, {
     dot: false,
     includeDirs: false,
-    ignore: ['**/node_modules/**'],
+    ignore,
   });
 
   const wait = paths.map(async localPath => {

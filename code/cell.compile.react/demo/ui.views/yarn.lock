@@ -820,7 +820,7 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.client@0.1.18":
+"@platform/cell.client@^0.1.18":
   version "0.1.18"
   resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.1.18.tgz#f86fd3928ca030c7ff1c124de0143efe5690a22f"
   integrity sha512-lXYxwwsm0g8XFyYaU8jDixlBk9O4nw6s6XaFtOT5ZtvrcqZo/r9tIH6leB1RvCTcSEQ5sPP0lviylOdfRiadoA==
@@ -957,7 +957,7 @@
     rxjs "6.5.4"
     tslib "1.10.0"
 
-"@platform/log@0.1.7":
+"@platform/log@^0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.7.tgz#1fb726267692c83a09e2e4be983e53de92d0d5e8"
   integrity sha512-qZ1JqphkXw2n3Ui72GQ90ocCzYkEMv1ooBo7tDco6F0SOZnGVWZ0EhfI/EMfpkqIFE4qPVHS34kGZXAM0OsIFQ==
@@ -966,7 +966,7 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/react@0.4.8":
+"@platform/react@0.4.8", "@platform/react@^0.4.8":
   version "0.4.8"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.8.tgz#a673b01db2dec7a95ab118b394930ba9d48de722"
   integrity sha512-+PrwwRPiGSSRFE+6zacRGAImqsl1df4AsRfqFyFCY9EFFqz1K24HiPk8R5mFLSUnmdLqVkGHUGbcuShgwabD6A==
@@ -978,7 +978,7 @@
     react "16.12.0"
     react-dom "16.12.0"
 
-"@platform/test@0.1.2":
+"@platform/test@^0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.1.2.tgz#8a08113de218efa4ae5296287c53219b8f02efd0"
   integrity sha512-H6b0lKyj7fr3GitNZAGMJ9BFYDLC3A3UNi78AQjMideft8OxlMXgpfRRin0XlVSvXblxGZnVk5TX7hWS+UvTVw==
@@ -1003,7 +1003,7 @@
     tslint-react "4.1.0"
     typescript "3.7.4"
 
-"@platform/ts@3.7.12":
+"@platform/ts@^3.7.12":
   version "3.7.12"
   resolved "https://registry.yarnpkg.com/@platform/ts/-/ts-3.7.12.tgz#36c25ae9dbfe849006924609b096f4acd435a85b"
   integrity sha512-hxszRreQ3FBpbjmBHXoro9UzvKS3tz0nr9qBma+zZ7k0t9PacpTlGiZ2+SkrwPLsAwI1PkOFEt+csJXwLmuCog==
@@ -1018,7 +1018,7 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.4.tgz#2532baba63d8bef3bf8c690dd20b628ca911932a"
   integrity sha512-MT+z3cjOxQYBqvByRPuNRCLNaqgSP1g91T1a7Pc/QvYXI7goXE+o3NIPWiVH7915KlK7Sl41gMznFieTxg9N7Q==
 
-"@platform/ui.spinner@0.0.124":
+"@platform/ui.spinner@^0.0.124":
   version "0.0.124"
   resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.124.tgz#e6d67be6d45afcd7c08064e908ce7dd33a29a7b0"
   integrity sha512-4hyoAfCqbBBCHOAV1UKQtTNPwPBdyWE/4lfo7gY34G3plcPqy40FVzg+IdVRf8B06f4s32dkCkUXZtBtMF4fGA==
@@ -4699,7 +4699,7 @@ pako@~1.0.5:
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.10.tgz#4328badb5086a426aa90f541977d4955da5c9732"
   integrity sha512-0DTvPVU3ed8+HNXOu5Bs+o//Mbdj9VNQMUOe9oKCwh8l0GNwpTDMKCWbRjgtD291AWnkAgkqA/LOnQS8AmS1tw==
 
-parcel-bundler@1.12.4:
+parcel-bundler@^1.12.4:
   version "1.12.4"
   resolved "https://registry.yarnpkg.com/parcel-bundler/-/parcel-bundler-1.12.4.tgz#31223f4ab4d00323a109fce28d5e46775409a9ee"
   integrity sha512-G+iZGGiPEXcRzw0fiRxWYCKxdt/F7l9a0xkiU4XbcVRJCSlBnioWEwJMutOCCpoQmaQtjB4RBHDGIHN85AIhLQ==

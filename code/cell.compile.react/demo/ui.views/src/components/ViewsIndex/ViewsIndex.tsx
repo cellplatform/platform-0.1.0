@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { log, css, color, CssValue, t } from '../../common';
+import { load } from '../../views';
 
 export type IViewsIndexProps = { views: t.View[]; style?: CssValue };
 export type IViewsIndexState = {};
@@ -76,17 +77,6 @@ export class ViewsIndex extends React.PureComponent<IViewsIndexProps, IViewsInde
   }
 
   private onListItemClick = (view: t.View) => {
-    return async () => {
-      try {
-        log.info('loading view:', view.name);
-        const res = await view.load();
-        log.info('loaded', res);
-
-        const el = <res.default />;
-        ReactDOM.render(el, document.getElementById('root'));
-      } catch (error) {
-        console.log('error', error);
-      }
-    };
+    return () => load(view);
   };
 }
