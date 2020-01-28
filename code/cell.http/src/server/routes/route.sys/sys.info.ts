@@ -6,6 +6,11 @@ import { constants, fs, routes, t, time } from '../common';
 export function init(args: { router: t.IRouter; title?: string; deployedAt?: number }) {
   const { router } = args;
 
+  const formatDate = (timestamp: number) => {
+    const date = time.day(args.deployedAt).toString();
+    return `${date}|UTC:${timestamp}`;
+  };
+
   /**
    * GET: /, /.sys
    */
@@ -13,16 +18,10 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
     const NOW_REGION = fs.env.value('NOW_REGION');
     const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local:device';
 
-    const deployed = !args.deployedAt
-      ? undefined
-      : {
-          date: time.day(args.deployedAt).format(`DD MMM YYYY, hh:mm A`),
-          utc: args.deployedAt,
-        };
-
     const provider = args.title || 'Untitled';
     const system = constants.getSystem().system;
     const host = req.headers.host || '-';
+    const deployed = !args.deployedAt ? undefined : formatDate(args.deployedAt);
 
     const data: t.IResGetSysInfo = {
       provider,

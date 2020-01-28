@@ -11,6 +11,7 @@ const FILES = [
   'src/constants.ts',
   'src/now.ts',
   'src/types.ts',
+  'static/favicon.ico',
 ];
 
 type DeployTarget = 'now';
