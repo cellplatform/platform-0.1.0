@@ -3,6 +3,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, CssValue, client, Client, http, COLORS, Spinner } from '../../common';
 
+import { Avatar } from '@platform/ui.image';
+
 import { URLS } from './urls';
 
 export type IInviteProps = { style?: CssValue };
@@ -37,7 +39,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   public async tmp() {
     // console.log('client', client);
 
-    const host = 'dev.db.team';
+    const host = 'localhost:8080';
     const uri = 'cell:ck5st4aop0000ffet9pi2fkvp!B1';
 
     const client = Client.create(host);
@@ -45,7 +47,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
 
     // client.
 
-    const url = 'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1';
+    // const url = 'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1';
     // const r = await http.get(url);
     // console.log('r', r);
     // console.log('r.body', r.body);
@@ -176,8 +178,48 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         <div {...styles.topShadow} />
         <div {...styles.bgMask} />
         <div {...styles.body}>
-          <Spinner size={32} color={1} />
+          {/* <Spinner size={32} color={1} /> */}
+          {this.renderAvatars()}
         </div>
+      </div>
+    );
+  }
+
+  private renderAvatars() {
+    const styles = {
+      base: css({
+        Flex: 'horizontal-center-center',
+      }),
+      divider: css({
+        width: 120,
+        border: `solid 2px ${color.format(1)}`,
+        MarginX: 8,
+      }),
+    };
+    const phil = 'https://s.gravatar.com/avatar/99d0b4f26c68a563507c9e5a3d724126?s=80';
+    const size = 50;
+
+    return (
+      <div {...styles.base}>
+        {/* <Avatar src={phil} size={size} borderRadius={size / 2} borderColor={0.15} borderWidth={5} /> */}
+        {this.renderAvatar({ src: phil })}
+        <div {...styles.divider} />
+        {this.renderAvatar({ src: phil })}
+      </div>
+    );
+  }
+
+  private renderAvatar(props: { src: string }) {
+    const { src } = props;
+    const styles = {
+      base: css({}),
+    };
+    // const phil = 'https://s.gravatar.com/avatar/99d0b4f26c68a563507c9e5a3d724126?s=80';
+    const size = 50;
+
+    return (
+      <div {...styles.base}>
+        <Avatar src={src} size={size} borderRadius={size / 2} borderColor={0.1} borderWidth={6} />
       </div>
     );
   }

@@ -27,7 +27,7 @@ const methodColor = (method: t.HttpMethod) => {
   if (is(['POST', 'PUT'])) {
     return log.green;
   }
-  if (is(['PATCH'])) {
+  if (is(['PATCH', 'OPTIONS'])) {
     return log.yellow;
   }
   if (is(['DELETE'])) {
@@ -38,7 +38,7 @@ const methodColor = (method: t.HttpMethod) => {
 
 const logRequest = (req: t.IMicroRequest) => {
   const MAX = {
-    PREFIX: 'DELETE'.length,
+    PREFIX: 'OPTIONS'.length,
     URL: 60,
   };
   const url = shorten(req.url, MAX.URL);
