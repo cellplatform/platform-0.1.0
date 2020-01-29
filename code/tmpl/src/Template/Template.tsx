@@ -9,7 +9,7 @@ import {
   ITemplateFile,
   ITemplateResponse,
   ITemplateSource,
-  IVariables,
+  ITemplateVariables,
   TemplateFilter,
   TemplateMiddleware,
   TemplatePathFilter,
@@ -30,7 +30,7 @@ export type ITemplateArgs = {
   processors?: TemplateMiddleware[];
 };
 
-export type Handler<V extends IVariables = {}> = TemplateMiddleware<V> & {
+export type Handler<V extends ITemplateVariables = {}> = TemplateMiddleware<V> & {
   pathFilters?: TemplatePathFilter[];
 };
 
@@ -136,12 +136,12 @@ export class Template {
   /**
    * Register a template processor.
    */
-  public use<V extends IVariables = {}>(fn: TemplateMiddleware<V>): Template;
+  public use<V extends ITemplateVariables = {}>(fn: TemplateMiddleware<V>): Template;
 
   /**
    * Register a template processor with a path filter.
    */
-  public use<V extends IVariables = {}>(
+  public use<V extends ITemplateVariables = {}>(
     pathFilter: TemplatePathFilter | TemplatePathFilter[],
     fn: TemplateMiddleware<V>,
   ): Template;
@@ -206,7 +206,7 @@ export class Template {
   /**
    * Runs the execution pipeline.
    */
-  public async execute<V extends IVariables = {}>(
+  public async execute<V extends ITemplateVariables = {}>(
     args: {
       variables?: V;
       cache?: boolean;
@@ -292,7 +292,7 @@ async function getFiles(source: ITemplateSource) {
 }
 
 function runProcessors(args: {
-  variables: IVariables;
+  variables: ITemplateVariables;
   processors: Handler[];
   file: ITemplateFile;
   events$: Subject<ITemplateEvent>;

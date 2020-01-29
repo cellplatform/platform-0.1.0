@@ -20,7 +20,7 @@ export type ITemplateFile = {
 /**
  * Represents a set of custom values passed in to a template.
  */
-export type IVariables = { [key: string]: any };
+export type ITemplateVariables = { [key: string]: any };
 
 /**
  * Filter.
@@ -30,7 +30,7 @@ export type TemplateFilter = (file: ITemplateFile) => boolean;
 /**
  * [MIDDLEWARE]
  */
-export type TemplateMiddleware<V extends IVariables = {}> = (
+export type TemplateMiddleware<V extends ITemplateVariables = {}> = (
   req: ITemplateRequest<V>,
   res: ITemplateResponse,
 ) => any | Promise<any>;
@@ -39,7 +39,7 @@ export type TemplatePathFilter = RegExp;
 /**
  * Middleware: [Request]
  */
-export type ITemplateRequest<V extends IVariables = {}> = {
+export type ITemplateRequest<V extends ITemplateVariables = {}> = {
   path: {
     source: string;
     target: string;
@@ -53,7 +53,7 @@ export type ITemplateRequest<V extends IVariables = {}> = {
 /**
  * Middleware: [Response]
  */
-export type AfterTemplateMiddleware = 'NEXT' | 'COMPLETE';
+export type TemplateAfterMiddleware = 'NEXT' | 'COMPLETE';
 
 export type ITemplateResponse = {
   text: string | undefined;
@@ -61,7 +61,7 @@ export type ITemplateResponse = {
   alert: <T extends ITemplateAlert>(e: T) => ITemplateResponse;
   next: () => void;
   complete: () => void;
-  done: (next?: AfterTemplateMiddleware) => void;
+  done: (next?: TemplateAfterMiddleware) => void;
 };
 
 // NB: Taken from the [lib.dom.d.ts] types.

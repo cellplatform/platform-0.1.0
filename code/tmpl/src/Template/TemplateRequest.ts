@@ -1,4 +1,4 @@
-import { ITemplateRequest, IVariables } from '../types';
+import { ITemplateRequest, ITemplateVariables } from '../types';
 
 /**
  * A request that is passed to a middleware processor.
@@ -6,12 +6,12 @@ import { ITemplateRequest, IVariables } from '../types';
 export class TemplateRequest implements ITemplateRequest {
   private readonly content: Buffer | string;
   public readonly path: ITemplateRequest['path'];
-  public readonly variables: IVariables;
+  public readonly variables: ITemplateVariables;
 
   constructor(args: {
     path: ITemplateRequest['path'];
     content: Buffer | string;
-    variables: IVariables;
+    variables: ITemplateVariables;
   }) {
     const { path, content, variables } = args;
     this.path = path;
