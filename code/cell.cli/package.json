@@ -14,7 +14,8 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "clean": "rm -rf tmp"
   },
   "dependencies": {
     "@platform/cell.fs.sync": "0.3.31",
@@ -22,6 +23,7 @@
     "@platform/cell.types": "0.4.21",
     "@platform/cli": "0.5.13",
     "@platform/cli.prompt": "0.3.0",
+    "@platform/npm": "0.2.50",
     "@platform/tmpl": "0.1.0"
   },
   "devDependencies": {

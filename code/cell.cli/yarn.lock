@@ -130,6 +130,16 @@
     "@platform/log" "0.1.7"
     inquirer "7.0.3"
 
+"@platform/cli.prompt@0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.3.1.tgz#7573409e6b4c2acafc45257d8bda968a6a497478"
+  integrity sha512-XHNPCknsIK+PJb0NvTNZqUqxf3i9ALEyHSE6QVv8yvTmcGNoA/HR46gS7RFjdVk3VeUE9Wg4osdKtesv2UWt+A==
+  dependencies:
+    "@platform/fs" "0.5.5"
+    "@platform/libs" "0.2.0"
+    "@platform/log" "0.1.7"
+    inquirer "7.0.3"
+
 "@platform/cli@0.5.12":
   version "0.5.12"
   resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.12.tgz#155e3d234f08c83fd1f3ab01d1caa4b48eb55b27"
@@ -302,6 +312,21 @@
     "@platform/log" "0.1.4"
     "@platform/types" "0.4.2"
     "@platform/util.value" "0.7.1"
+    "@types/semver" "6.2.0"
+    inquirer "7.0.3"
+    semver "7.1.1"
+
+"@platform/npm@0.2.50":
+  version "0.2.50"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.50.tgz#5bfe2acb771a415c3a16dbdb28e4628686fe498d"
+  integrity sha512-KB9NO4laxVWj+OZ1B3ZyTJf0Okz7wAMUcrpqNyk7OIBs3kkWU+y8+3rBo/5ZtNacBxQHKxpp13OL8zaloomWTA==
+  dependencies:
+    "@platform/cli.prompt" "0.3.1"
+    "@platform/exec" "0.2.45"
+    "@platform/fs" "0.5.5"
+    "@platform/log" "0.1.7"
+    "@platform/types" "0.4.4"
+    "@platform/util.value" "0.7.3"
     "@types/semver" "6.2.0"
     inquirer "7.0.3"
     semver "7.1.1"
