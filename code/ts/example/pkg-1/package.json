@@ -4,14 +4,14 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "ts test",
-    "tdd": "ts test --watch",
-    "lint": "ts lint",
-    "build": "ts build",
-    "prepare": "ts prepare"
+    "test": "ts test $@",
+    "tdd": "ts test --watch $@",
+    "lint": "ts lint $@",
+    "build": "ts build $@",
+    "prepare": "ts prepare $@"
   },
   "devDependencies": {
-    "@platform/ts": "3.3.52"
+    "@platform/ts": "3.7.12"
   },
   "license": "MIT"
 }
