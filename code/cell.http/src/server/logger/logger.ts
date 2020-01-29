@@ -48,5 +48,13 @@ const logRequest = (req: t.IMicroRequest) => {
 };
 
 const shorten = (text: string, max: number) => {
-  return text.length < max ? text : `${text.substring(0, max)}...`;
+  if (text.length < max) {
+    return text;
+  } else {
+    const DIV = '[..]';
+    const length = max / 2 - DIV.length / 2;
+    const left = text.substring(0, length);
+    const right = text.substring(text.length - length);
+    return `${left}${log.white(DIV)}${right}`;
+  }
 };
