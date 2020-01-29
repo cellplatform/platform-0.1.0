@@ -6,7 +6,6 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "start": "node .",
-    "watch": "nodemon .",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
@@ -14,7 +13,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.2.0"
+    "@platform/cli": "0.5.12",
+    "@platform/fs": "0.5.5",
+    "@platform/npm": "0.2.46",
+    "@types/inquirer": "6.5.0",
+    "inquirer": "7.0.4",
+    "isbinaryfile": "4.0.4"
   },
   "devDependencies": {
     "@platform/test": "0.1.2",
@@ -26,5 +30,6 @@
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
+  "repository": "uiharness/platform",
   "license": "MIT"
 }
