@@ -8,6 +8,7 @@
     "cell": "lib/bin.js"
   },
   "scripts": {
+    "demo": "yarn cell $@",
     "cell": "node lib/bin $@",
     "test": "ts test",
     "tdd": "ts test --watch",
@@ -20,6 +21,7 @@
     "@platform/cell.schema": "0.4.23",
     "@platform/cell.types": "0.4.21",
     "@platform/cli": "0.5.13",
+    "@platform/cli.prompt": "0.3.0",
     "@platform/tmpl": "0.1.0"
   },
   "devDependencies": {
