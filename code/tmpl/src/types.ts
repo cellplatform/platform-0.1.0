@@ -85,11 +85,11 @@ export type ITemplateEvent =
  */
 export type IExecuteTemplate = { files: ITemplateFile[] };
 export type IExecuteTemplateStartEvent = {
-  type: 'EXECUTE/start';
+  type: 'TMPL/execute/start';
   payload: IExecuteTemplate;
 };
 export type IExecuteTemplateCompleteEvent = {
-  type: 'EXECUTE/complete';
+  type: 'TMPL/execute/complete';
   payload: IExecuteTemplate;
 };
 
@@ -103,6 +103,6 @@ export type IExecuteTemplateCompleteEvent = {
  */
 export type ITemplateAlert = { message: string };
 export type ITemplateAlertEvent = {
-  type: 'ALERT';
+  type: 'TMPL/alert';
   payload: ITemplateAlert;
 };

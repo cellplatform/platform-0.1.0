@@ -346,7 +346,7 @@ describe('Template', () => {
 
       expect(events.length).to.be.greaterThan(0);
       const e = events
-        .filter(e => e.type === 'ALERT')
+        .filter(e => e.type === 'TMPL/alert')
         .map(e => e.payload as MyAlert)
         .find(e => e.path.endsWith('.babelrc'));
 
@@ -372,8 +372,8 @@ describe('Template', () => {
     const first = events[0] as t.IExecuteTemplateStartEvent;
     const last = events[events.length - 1] as t.IExecuteTemplateCompleteEvent;
 
-    expect(first.type).to.eql('EXECUTE/start');
-    expect(last.type).to.eql('EXECUTE/complete');
+    expect(first.type).to.eql('TMPL/execute/start');
+    expect(last.type).to.eql('TMPL/execute/complete');
 
     expect(first.payload.files).to.eql(files);
     expect(last.payload.files).to.eql(files);

@@ -222,14 +222,14 @@ export class Template {
     const files = await this.files({ cache });
     const events$ = this._events$;
     const payload: IExecuteTemplate = { files };
-    events$.next({ type: 'EXECUTE/start', payload });
+    events$.next({ type: 'TMPL/execute/start', payload });
 
     // Run the processor pipe-line.
     const wait = files.map(file => runProcessors({ processors, file, variables, events$ }));
 
     // Finish up.
     await Promise.all(wait);
-    events$.next({ type: 'EXECUTE/complete', payload });
+    events$.next({ type: 'TMPL/execute/complete', payload });
   }
 }
 
@@ -330,7 +330,7 @@ function runProcessors(args: {
         },
 
         alert<T extends ITemplateAlert>(payload: T) {
-          args.events$.next({ type: 'ALERT', payload });
+          args.events$.next({ type: 'TMPL/alert', payload });
           return this;
         },
       };
