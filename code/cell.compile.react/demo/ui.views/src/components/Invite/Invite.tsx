@@ -97,6 +97,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         Flex: 'vertical-stretch-stretch',
         flex: 0.5,
         minWidth: 400,
+        maxWidth: 500,
         overflow: 'hidden',
       }),
       top: css({
@@ -119,7 +120,8 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       <div {...styles.base}>
         <div {...styles.top}>
           <div {...styles.title}>
-            <div>Conversation</div>
+            {/* <div>Conversation</div> */}
+            <div>Dinner</div>
             <div>invite.</div>
           </div>
         </div>
@@ -187,9 +189,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
 
   private renderAvatars() {
     const styles = {
-      base: css({
-        Flex: 'horizontal-center-center',
-      }),
+      base: css({ Flex: 'horizontal-center-center' }),
       divider: css({
         width: 120,
         border: `solid 2px ${color.format(1)}`,
@@ -197,30 +197,21 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       }),
     };
     const phil = 'https://s.gravatar.com/avatar/99d0b4f26c68a563507c9e5a3d724126?s=80';
-    const size = 50;
-
+    const nic = 'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:ck10bc6.png';
     return (
       <div {...styles.base}>
-        {/* <Avatar src={phil} size={size} borderRadius={size / 2} borderColor={0.15} borderWidth={5} /> */}
         {this.renderAvatar({ src: phil })}
         <div {...styles.divider} />
-        {this.renderAvatar({ src: phil })}
+        {this.renderAvatar({ src: nic })}
       </div>
     );
   }
 
   private renderAvatar(props: { src: string }) {
     const { src } = props;
-    const styles = {
-      base: css({}),
-    };
-    // const phil = 'https://s.gravatar.com/avatar/99d0b4f26c68a563507c9e5a3d724126?s=80';
-    const size = 50;
-
+    const size = 55;
     return (
-      <div {...styles.base}>
-        <Avatar src={src} size={size} borderRadius={size / 2} borderColor={0.1} borderWidth={6} />
-      </div>
+      <Avatar src={src} size={size} borderRadius={size / 2} borderColor={0.1} borderWidth={6} />
     );
   }
 }
