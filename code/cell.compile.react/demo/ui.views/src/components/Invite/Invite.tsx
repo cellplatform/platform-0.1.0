@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { css, color, CssValue, client, Client, http, COLORS, Spinner } from '../../common';
 
 import { Avatar } from '@platform/ui.image';
+import { Log } from './components/Log';
 
 import { URLS } from './urls';
 
@@ -120,8 +121,8 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       <div {...styles.base}>
         <div {...styles.top}>
           <div {...styles.title}>
-            {/* <div>Conversation</div> */}
-            <div>Dinner</div>
+            {/* <div>Dinner</div> */}
+            <div>Conversation</div>
             <div>invite.</div>
           </div>
         </div>
@@ -148,6 +149,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     return (
       <div {...styles.base}>
         <div {...styles.bevel} />
+        {this.renderLog()}
       </div>
     );
   }
@@ -189,7 +191,9 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
 
   private renderAvatars() {
     const styles = {
-      base: css({ Flex: 'horizontal-center-center' }),
+      base: css({
+        Flex: 'horizontal-center-center',
+      }),
       divider: css({
         width: 120,
         border: `solid 2px ${color.format(1)}`,
@@ -212,6 +216,33 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     const size = 55;
     return (
       <Avatar src={src} size={size} borderRadius={size / 2} borderColor={0.1} borderWidth={6} />
+    );
+  }
+
+  private renderLog() {
+    const styles = {
+      base: css({
+        Absolute: [0, 0, 0, null],
+        width: 300,
+        backgroundColor: color.format(0.6),
+        // Scroll: true,
+        // overflow: 'auto',
+      }),
+      log: css({
+        Absolute: 0,
+        // Scroll: true,
+      }),
+      bevel: css({
+        Absolute: [0, null, 0, -10],
+        width: 10,
+        backgroundColor: color.format(0.15),
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.bevel} />
+        <Log style={styles.log} />
+      </div>
     );
   }
 }
