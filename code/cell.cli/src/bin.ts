@@ -1,6 +1,7 @@
 #!/usr/bin/env node
+
 import * as fsSync from '@platform/cell.fs.sync/lib/cli';
-// import * as compile from '@platform/cell.compile/lib/cli';
+import * as tmpl from './cli.tmpl';
 
 const pkg = require('../package.json') as { version: string };
 
@@ -26,7 +27,7 @@ export const app = cli.create('cell');
  * Register [Cell/OS] plugin commands from child modules.
  */
 fsSync.init(app.plugins);
-// compile.init(app.plugins);
+tmpl.init(app.plugins);
 
 /**
  * Run the application.
