@@ -1,21 +1,28 @@
 import { cli } from '@platform/cli';
-const { fs, prompt, log } = cli;
+const { fs, log } = cli;
 
 (async () => {
-  const dirs = await promptDirs('demo');
+  const dirs = await cli.prompt.fs.paths('demo').checkbox();
   const info: string[] = [];
-
+  const errors: string[] = [];
   const tasks = cli.tasks();
+
   dirs.forEach(dir => {
     const dirname = fs.basename(dir);
     const title = log.gray(`bundle: ${log.white(dirname)}`);
     tasks.task(title, async () => {
       const res = await cli.exec.command(`yarn bundle`).run({ cwd: dir, silent: true });
       info.push(`${log.green(title)}`);
+
       res.info
         .filter(line => line.startsWith('dist/'))
         .forEach(line => info.push(`  ${log.gray(line)}`));
       info.push('');
+
+      if (res.error) {
+        res.errors.forEach(line => errors.push(`${log.white(dirname)} ${line}`));
+        throw res.error;
+      }
     });
   });
 
@@ -24,33 +31,8 @@ const { fs, prompt, log } = cli;
 
   log.info();
   info.forEach(line => cli.log.info(line));
+
+  if (errors.length > 0) {
+    errors.forEach(line => cli.log.error(line));
+  }
 })();
-
-/**
- * TODO 🐷
- * - move promptDirs to: @platform/cli.prompt
- * - LIST and CHECKBOX option
- * - single string (=== "parent") or string[] (=== list of paths to select)
- */
-
-/**
- * Prompt user for selection of a directory.
- */
-async function promptDirs(dir: string) {
-  const paths = await fs.glob.find(fs.join(fs.resolve(dir), '*/package.json'));
-  const items = paths.map(path => {
-    const dir = fs.dirname(path);
-    const name = fs.basename(dir);
-    return {
-      name: log.gray(`• demo/${log.white(name)}/`),
-      value: dir,
-    };
-  });
-
-  const res = await prompt.list({
-    message: 'folder',
-    items: ['all', '---', ...items],
-  });
-
-  return res === 'all' ? items.map(item => item.value) : [res];
-}

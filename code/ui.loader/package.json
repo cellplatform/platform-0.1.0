@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.loader",
-  "version": "0.2.39",
+  "version": "0.2.41",
   "description": "Bootstrapper for progressively loading UI modules dynamically.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@platform/polyfill": "0.0.1",
-    "@platform/react": "0.4.6",
+    "@platform/react": "0.4.8",
     "@platform/util.value": "0.7.3"
   },
   "devDependencies": {

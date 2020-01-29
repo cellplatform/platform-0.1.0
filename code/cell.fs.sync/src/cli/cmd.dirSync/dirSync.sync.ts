@@ -59,7 +59,7 @@ export const runSync: t.FsSyncRun = async (args: t.IFsSyncRunArgs) => {
   }
 
   // Exit if no changes to push.
-  if (!silent && !force && payload.files.filter(item => item.isPending).length === 0) {
+  if (!silent && !force && payload.files.filter(item => item.isChanged).length === 0) {
     log.info();
     log.info.green(`Nothing to update\n`);
     gray(`• Use ${log.cyan('--force (-f)')} to push everything`);

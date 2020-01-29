@@ -1,8 +1,10 @@
-import { defaultValue, log, promptConfig, t } from '../common';
+import { defaultValue, log, promptConfig, t, util } from '../common';
 import { runSync } from './dirSync.sync';
 import { watchDir } from './dirSync.watch';
+import { formatLength } from '../util';
 
 const MAX_PAYLOAD_BYTES = 4 * 1000000; // 4MB
+const gray = log.info.gray;
 
 /**
  * Synchronize a folder with the cloud.
@@ -25,10 +27,19 @@ export async function dirSync(args: {
   const { dir } = config;
 
   if (!silent) {
-    const uri = config.target.uri.parts;
+    const uri = config.target.uri;
+    const key = uri.parts.key;
+    const keyTitle = util.log.cellKeyBg(key);
+    const host = config.data.host;
+
+    log.info(`${keyTitle}`);
     log.info();
-    log.info.gray(`host:     ${config.data.host}`);
-    log.info.gray(`target:   cell:${uri.ns}!${log.blue(uri.key)}`);
+
+    gray(`local:    ${formatLength(args.dir, 40)}/`);
+    gray(`host:     ${host}`);
+    gray(`target:   ${util.log.cellUri(uri, 'blue')}`);
+    log.info();
+
     if (args.watch) {
       log.info.gray(`watching: ${log.cyan('active')}`);
     }

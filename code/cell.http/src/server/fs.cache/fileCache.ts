@@ -1,15 +1,14 @@
-import { PATH } from './constants';
-import { fs } from './libs';
+import { fs, constants } from '../common';
 
-export function fileCache(args: { name: string; mime: string; hash?: string }) {
+export function fileCache(args: { name: string; mime: string; hash: string }) {
   let path = '';
   const cache = {
     get path() {
       if (!path) {
         const mime = args.mime.replace(/\//g, '-');
-        const dir = fs.join(PATH.TMP, '.download', mime);
+        const dir = fs.join(constants.PATH.TMP, '.download', mime);
         let filename = args.name.replace(/\:/g, '-');
-        filename = args.hash ? `${filename}?hash=${args.hash || '|'}` : filename;
+        filename = args.hash ? `${filename}?hash=${args.hash}` : filename;
         path = fs.join(dir, `${filename}`);
       }
       return path;

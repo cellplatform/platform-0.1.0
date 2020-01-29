@@ -1,4 +1,4 @@
-import { prompt } from './common';
+import { prompt, log } from './common';
 
 (async () => {
   const res = await prompt.checkbox({
@@ -6,6 +6,6 @@ import { prompt } from './common';
     items: ['one', { name: 'two' }, '----', { name: 'three', value: 3 }],
   });
 
-  console.log('-------------------------------------------');
-  console.log(res);
+  log.info('-------------------------------------------');
+  log.info(res);
 })();

@@ -54,8 +54,8 @@ export class ClientCellFiles implements t.IClientCellFiles {
       return res;
     };
 
-    const body = base.body.urls.files.map(item => toUrl(item));
-    return util.toClientResponse<T>(status, body);
+    const body = base.body.urls?.files.map(item => toUrl(item));
+    return util.toClientResponse<T>(status, body || []);
   }
 
   public async map() {
@@ -81,8 +81,8 @@ export class ClientCellFiles implements t.IClientCellFiles {
       return util.toClientResponse<T>(status, body, { error });
     }
 
-    const urls = base.body.urls.files;
-    const map = base.body.files;
+    const urls = base.body.urls?.files || [];
+    const map = base.body.files || {};
     const ns = this.uri.parts.ns;
 
     const body = Object.keys(map).reduce((acc, fileid) => {

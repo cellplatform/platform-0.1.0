@@ -46,7 +46,8 @@ export async function buildPayload(args: {
   const filesUrl = urls.cell(cellUri).files.list;
 
   const tasks = cli.tasks();
-  const title = log.gray(`read cell:${log.magenta(ns)}!${log.blue(cellKey)} on ${filesUrl.origin}`);
+  const cell = log.white(`cell:${log.blue(cellKey)}`);
+  const title = log.gray(`read ${cell} from ${filesUrl.origin}`);
 
   tasks.task(title, async () => {
     const res = await args.client.cell(cellUri).files.list();
@@ -65,11 +66,20 @@ export async function buildPayload(args: {
     log.info();
   }
 
+  // Load the ignore file.
+  let ignore = ['**/node_modules/**'];
+  const ignorePath = fs.join(args.dir, '.cellignore');
+  if (await fs.pathExists(ignorePath)) {
+    const file = (await fs.readFile(ignorePath)).toString();
+    const lines = file.split('\n').filter(line => Boolean(line.trim()));
+    ignore = [...ignore, ...lines];
+  }
+
   // Prepare files.
   const paths = await fs.glob.find(`${args.dir}/**`, {
     dot: false,
     includeDirs: false,
-    ignore: ['**/node_modules/**'],
+    ignore,
   });
 
   const wait = paths.map(async localPath => {
@@ -97,10 +107,10 @@ export async function buildPayload(args: {
 
     const uri = '';
     const url = cellUrls.file.byName(filename).toString();
-    const isPending = status !== 'NO_CHANGE';
+    const isChanged = status !== 'NO_CHANGE';
     const item: t.IFsSyncPayloadFile = {
       status,
-      isPending,
+      isChanged,
       localPath,
       path,
       dir,
@@ -125,12 +135,12 @@ export async function buildPayload(args: {
       const { filename, dir, uri } = file;
       const path = fs.join(dir, filename);
       const url = cellUrls.file.byName(path).toString();
-      const isPending = args.delete;
+      const isChanged = args.delete;
       const filehash = file.props.integrity?.filehash || '';
       const remoteBytes = defaultValue(file.props.bytes, -1);
       files.push({
         status: 'DELETED',
-        isPending,
+        isChanged,
         localPath: fs.join(args.dir, path),
         path,
         dir,
@@ -162,35 +172,44 @@ export function logPayload(args: {
 }) {
   const { files } = args;
   let count = 0;
-  const table = log.table({ border: false });
   const list = files.filter(item => (item.status === 'DELETED' ? args.delete : true));
-  fs.sort
-    .objects(list, item => item.filename)
-    .forEach(item => {
-      const { localBytes: bytes } = item;
 
-      const path = util.toStatusColor({
-        status: item.status,
-        text: item.path,
-        delete: args.delete,
-        force: args.force,
-      });
-      const file = log.gray(`${path}`);
+  const table = log.table({ border: false });
+  const add = (item: t.IFsSyncPayloadFile) => {
+    const { localBytes: bytes } = item;
 
-      const statusText = item.status.toLowerCase().replace(/\_/g, ' ');
-
-      const status = util.toStatusColor({
-        status: item.status,
-        text: statusText,
-        delete: args.delete,
-        force: args.force,
-      });
-
-      const size = bytes > -1 ? fs.size.toString(bytes) : '';
-
-      table.add([`${status}  `, `${file}  `, size]);
-      count++;
+    const path = util.toStatusColor({
+      status: item.status,
+      text: item.path,
+      delete: args.delete,
+      force: args.force,
     });
+    const file = log.gray(`${path}`);
+
+    const statusText = item.status.toLowerCase().replace(/\_/g, ' ');
+
+    const status = util.toStatusColor({
+      status: item.status,
+      text: statusText,
+      delete: args.delete,
+      force: args.force,
+    });
+
+    let size = bytes > -1 ? fs.size.toString(bytes) : '';
+    size = item.isChanged ? log.white(size) : log.gray(size);
+
+    table.add([`${status}  `, `${file}  `, size]);
+    count++;
+  };
+
+  const sortAndAdd = (files: t.IFsSyncPayloadFile[]) => {
+    fs.sort.objects(files, file => file.filename).forEach(file => add(file));
+  };
+
+  sortAndAdd(list.filter(item => !item.isChanged)); // Unchanged.
+  sortAndAdd(list.filter(item => item.status === 'ADDED'));
+  sortAndAdd(list.filter(item => item.status === 'CHANGED'));
+  sortAndAdd(list.filter(item => item.status === 'DELETED'));
 
   return count > 0 ? table.toString() : '';
 }

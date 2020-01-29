@@ -25,10 +25,10 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@platform/css@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.3.0.tgz#82acc15ec2ccd8328b44a19a02dff17d331c822b"
-  integrity sha512-s89KWkKOzdK/LhFnsqnTmpUWD25dPcOBATt4deV+Z7NJLWzqKMeze3XxpkUkXV8d0ZfFh05N4LBpNm8Xx+0o7w==
+"@platform/css@0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.3.1.tgz#8da5e0e73a18857770ef8ec99dfe17de88854400"
+  integrity sha512-Nn7r+BEQvny1Wk63UImeEwhQA3gnr2xNq2W/L0/xjxpK1nvuo+ZElsKClaqziL+OUK89nqefHiTxRd/INMOCag==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/util.is" "0.0.109"
@@ -75,12 +75,12 @@
     rxjs "6.5.4"
     tslib "1.10.0"
 
-"@platform/react@0.4.6":
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.6.tgz#1b29ab4b420636ec5377ef36b359c4295c1c4c39"
-  integrity sha512-2FNPZYlQlYHhm9MOru2gewio90A+hf19kL9jLuZTwPjP3vm3tsaWYCgsDhVTtBpQ2jZeslgWIiwzS4gR8FUHyw==
+"@platform/react@0.4.8":
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.8.tgz#a673b01db2dec7a95ab118b394930ba9d48de722"
+  integrity sha512-+PrwwRPiGSSRFE+6zacRGAImqsl1df4AsRfqFyFCY9EFFqz1K24HiPk8R5mFLSUnmdLqVkGHUGbcuShgwabD6A==
   dependencies:
-    "@platform/css" "0.3.0"
+    "@platform/css" "0.3.1"
     "@platform/util.is" "0.0.109"
     "@types/react" "16.9.19"
     "@types/react-dom" "16.9.5"
@@ -127,48 +127,48 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.4.tgz#2532baba63d8bef3bf8c690dd20b628ca911932a"
   integrity sha512-MT+z3cjOxQYBqvByRPuNRCLNaqgSP1g91T1a7Pc/QvYXI7goXE+o3NIPWiVH7915KlK7Sl41gMznFieTxg9N7Q==
 
-"@platform/ui.icon@0.0.123":
-  version "0.0.123"
-  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.123.tgz#54daa3e051d3553e360be82ff5de8f5cdb5ddca7"
-  integrity sha512-pORQL7mzh9QT8ky6rTPacMZKGQ88gN3Wpqi7QN4GgoVP4TpYISSdUkd+pomcsnYHxQbIfiScPrLmkMB544dGHA==
+"@platform/ui.icon@0.0.125":
+  version "0.0.125"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.125.tgz#3618b819e4b6ece4cf7849560f7f4f404ca16484"
+  integrity sha512-0JZoGh/jikSFegrkZ3gbR5aok3zVzYCfsy/xABq9gjJyeLPGD6S+6sOGrT9ZwWXU3C4/hbNrBHvLB7G3jcIXcg==
   dependencies:
-    "@platform/react" "0.4.6"
+    "@platform/react" "0.4.8"
 
-"@platform/ui.panel@0.1.39":
-  version "0.1.39"
-  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.1.39.tgz#4d6898e5f257bce6b51ad6ade8dcee80e12087e4"
-  integrity sha512-1nAErPhXmcEGGIRJp9nBmmVmIcd9pQTblngMp2T3eChiNq7SmjRgyynyavKUurZSrCJXs2Q7VuvQzqNhP1jSig==
+"@platform/ui.panel@0.1.41":
+  version "0.1.41"
+  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.1.41.tgz#d87a24aabe2d6e1a8d08cb83c849a35bd9a0fd2c"
+  integrity sha512-Ea3TDIe1/SHvvPglauKq+MIE4x3l4NjmBHetBcck5BS/2t0wcvlEF3asqDm2Ql00TkfYYzv5A+0+0kjfNZsozQ==
   dependencies:
-    "@platform/react" "0.4.6"
+    "@platform/react" "0.4.8"
     "@platform/util.animate" "0.0.70"
 
-"@platform/ui.spinner@0.0.122":
-  version "0.0.122"
-  resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.122.tgz#c6a1abb9b79653de24b9b44ec2980b63931c08ea"
-  integrity sha512-MMVKHod8HylsCYGgSVhC7o3pQEP2/pihEBwwHH3lByfAEp7LYKuZE5kLy2VWGCfU3nrI3yuP+P73M9mkMcHCeA==
+"@platform/ui.spinner@0.0.124":
+  version "0.0.124"
+  resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.124.tgz#e6d67be6d45afcd7c08064e908ce7dd33a29a7b0"
+  integrity sha512-4hyoAfCqbBBCHOAV1UKQtTNPwPBdyWE/4lfo7gY34G3plcPqy40FVzg+IdVRf8B06f4s32dkCkUXZtBtMF4fGA==
   dependencies:
-    "@platform/react" "0.4.6"
+    "@platform/react" "0.4.8"
 
-"@platform/ui.text@0.3.33":
-  version "0.3.33"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.33.tgz#dc397e290eceae307e1322a92fff4971e6727c25"
-  integrity sha512-PPLoGghC5w0vk/cPChmK7z8dDZxYAM4I7AYa+v8tOqI9FIjAnr4Y+tf35mDeAlcjDNn6K8DES6Pwz/isf1bKUg==
+"@platform/ui.text@0.3.35":
+  version "0.3.35"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.35.tgz#d2aa2775a306442ae55e21a7a1313949dde4fe8e"
+  integrity sha512-6vFOHCnJ2eNFpqdqnuJy0ajM8Lhi0yVMmBkrMP15ck0xczg8JHN914OJrxAQb6ZPg978S66hfBb8LHW5pr6Mrw==
   dependencies:
     "@platform/libs" "0.2.0"
-    "@platform/react" "0.4.6"
+    "@platform/react" "0.4.8"
     "@platform/util.value" "0.7.3"
 
-"@platform/ui.tree@0.4.33":
-  version "0.4.33"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.4.33.tgz#789482030908d520dd21e498a0edea272f152493"
-  integrity sha512-fTqTt/zhfqAaXXDpwONaROK2Wjg6kollF8Wfy5DwwugROxAs0phvOPEW/LJLbQc1yz9+iARXtugmA2KgtPF/qw==
+"@platform/ui.tree@0.4.35":
+  version "0.4.35"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.4.35.tgz#d52f4716afb7ab86bdf26a6381348cca100ddbbf"
+  integrity sha512-/rIBBfc+S6TSiUZw/jbiP1pvy/xSoVzQyNoO6qZomdovmVkSfqoilLDYh2HY8Qho0uzcP6Jsglbpi4zhm59XKg==
   dependencies:
-    "@platform/css" "0.3.0"
-    "@platform/react" "0.4.6"
-    "@platform/ui.icon" "0.0.123"
-    "@platform/ui.panel" "0.1.39"
-    "@platform/ui.spinner" "0.0.122"
-    "@platform/ui.text" "0.3.33"
+    "@platform/css" "0.3.1"
+    "@platform/react" "0.4.8"
+    "@platform/ui.icon" "0.0.125"
+    "@platform/ui.panel" "0.1.41"
+    "@platform/ui.spinner" "0.0.124"
+    "@platform/ui.text" "0.3.35"
     "@platform/util.animate" "0.0.70"
 
 "@platform/util.animate@0.0.70":

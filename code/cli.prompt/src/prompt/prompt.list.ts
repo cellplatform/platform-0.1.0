@@ -19,6 +19,7 @@ export async function list<V = string>(args: {
         : { name: item }
       : item;
   });
+
   const question: inquirer.DistinctQuestion = {
     type,
     name: 'result',
@@ -28,6 +29,17 @@ export async function list<V = string>(args: {
   };
   const { result } = (await inquirer.prompt(question)) as { result: V };
   return result;
+}
+
+/**
+ * Prompts the user with a list of checkboxes (ie. single-select).
+ */
+export async function radio<V = string>(args: {
+  message: string;
+  items: Array<string | t.IPromptListOption>;
+  pageSize?: number;
+}) {
+  return list<V>({ ...args, type: 'list' });
 }
 
 /**

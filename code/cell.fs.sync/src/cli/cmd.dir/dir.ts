@@ -1,4 +1,5 @@
 import { log, promptConfig, util } from '../common';
+import { formatLength } from '../util';
 
 const gray = log.info.gray;
 
@@ -27,12 +28,13 @@ export async function dir(args: {
   const uri = config.target.uri;
   const key = uri.parts.key;
   const keyTitle = util.log.cellKeyBg(key);
-  const host = log.blue(config.data.host);
+  const host = config.data.host;
 
   log.info(`${keyTitle}`);
   log.info();
 
-  gray(`host:     ${host}`);
+  gray(`local:    ${formatLength(args.dir, 40)}/`);
+  gray(`host:     ${log.blue(host)}`);
   gray(`target:   ${util.log.cellUri(uri, 'blue')}`);
   log.info();
 

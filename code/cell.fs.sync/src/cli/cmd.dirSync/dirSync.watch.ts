@@ -1,5 +1,6 @@
 import { debounceTime, filter } from 'rxjs/operators';
 import { t, defaultValue, fs, log, time, util, watch } from '../common';
+import { formatLength } from '../util';
 
 const gray = log.info.gray;
 
@@ -24,18 +25,6 @@ const DIV = '-------------------------------------------------------';
 const logDivider = (show?: boolean) => {
   if (show !== false) {
     log.info.gray(DIV);
-  }
-};
-
-const formatLength = (line: string, max: number) => {
-  if (line.length <= max) {
-    return line;
-  } else {
-    const ellipsis = '..';
-    const index = line.length - (max + ellipsis.length - 2);
-    line = line.substring(index);
-    line = `${ellipsis}${line}`;
-    return line;
   }
 };
 
@@ -211,7 +200,7 @@ export async function watchDir(args: {
       onPayload: payload => {
         // Print the file upload size (KB) when it's been calculated.
         const bytes = payload.files
-          .filter(payload => payload.isPending)
+          .filter(payload => payload.isChanged)
           .reduce((acc, payload) => (payload.localBytes > 0 ? acc + payload.localBytes : acc), 0);
         if (state.isStarted && bytes > 0) {
           const message = `${log.yellow('syncing')} (${fs.size.toString(bytes)})`;

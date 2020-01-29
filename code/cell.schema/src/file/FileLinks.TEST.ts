@@ -2,6 +2,27 @@ import { t, fs, expect } from '../test';
 import { FileLinks } from '.';
 
 describe('FileLinks', () => {
+  it.only('total', () => {
+    const test = (links: t.IUriMap | undefined, expected: number) => {
+      const res = FileLinks.total(links);
+      expect(res).to.eql(expected);
+    };
+    test(undefined, 0);
+    test({}, 0);
+    test({ foo: 'bar' }, 0);
+
+    test({ 'fs:foo:png': '...' }, 1);
+    test({ foo: 'bar', 'fs:foo:png': '...' }, 1);
+    test(
+      {
+        foo: 'bar',
+        'fs:file1:png': '...',
+        'fs:file2:jpg': '...',
+      },
+      2,
+    );
+  });
+
   describe('is', () => {
     it('fileKey', () => {
       const test = (key: string | undefined, expected: boolean) => {

@@ -1,4 +1,4 @@
-import { value } from './libs';
+import { value as valueUtil } from './libs';
 import * as t from './types';
 import { IS_PROD } from './constants';
 
@@ -43,12 +43,32 @@ export function toRawHeaders(input?: t.IHttpHeaders) {
  * Converts fetch [Headers] to a simple object.
  */
 export function fromRawHeaders(input: Headers): t.IHttpHeaders {
-  const obj = ((input as any) || {})._headers || {};
+  const hasEntries = typeof input.entries === 'function';
+
+  const obj = hasEntries
+    ? walkHeaderEntries(input) // NB: Properly formed fetch object (probably in browser)
+    : ((input as any) || {})._headers || {}; // HACK: reach into the server object's internals.
+
   return Object.keys(obj).reduce((acc, key) => {
-    acc[key] = value.toType(obj[key][0]);
+    const value = Array.isArray(obj[key]) ? obj[key][0] : obj[key];
+    acc[key] = valueUtil.toType(value);
     return acc;
   }, {});
 }
+
+const walkHeaderEntries = (input: Headers) => {
+  const res: t.IHttpHeaders = {};
+  const entries = input.entries();
+  let next: IteratorResult<[string, string], any> | undefined;
+  do {
+    next = entries.next();
+    if (next.value) {
+      const [key, value] = next.value;
+      res[key] = value;
+    }
+  } while (!next?.done);
+  return res;
+};
 
 /**
  * Determine if the given headers reperesents form data.
@@ -71,10 +91,12 @@ export function toBody(args: { url: string; headers: Headers; data?: any }) {
 
 export async function toResponse(url: string, res: t.IHttpResponseLike) {
   const { ok, status, statusText } = res;
-  const headers = fromRawHeaders(res.headers);
+
   const body = res.body || undefined;
+  const headers = fromRawHeaders(res.headers);
   const contentType = toContentType(headers);
   const is = contentType.is;
+
   const text = is.text || is.json ? await res.text() : '';
   let json: any;
 

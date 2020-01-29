@@ -57,8 +57,8 @@ export function urls(host: string) {
                 acc.push({
                   uri,
                   path,
+                  'url:latest': fileUrl.toString(), // NB: Simple, no query-string.
                   url: fileUrl.query({ hash, expires }).toString(),
-                  'url:latest': fileUrl.query({ expires }).toString(),
                 });
                 return acc;
               }, [] as t.IResGetCellFilesFileUrl[]);

@@ -76,7 +76,7 @@ export type IFsSyncCount = {
 export type FsSyncFileStatus = 'ADDED' | 'CHANGED' | 'NO_CHANGE' | 'DELETED';
 export type IFsSyncPayloadFile = {
   status: FsSyncFileStatus;
-  isPending: boolean;
+  isChanged: boolean;
   localPath: string;
   path: string;
   dir: string;
