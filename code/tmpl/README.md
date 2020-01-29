@@ -7,9 +7,23 @@
 Succinct, composable, template stamping pipeline.  
 Think of it as your scaffolding superpower.
 
+For the out-of-box CLI experience see [create-tmpl](https://www.npmjs.com/package/create-tmpl):
+
+```
+yarn create tmpl
+```
+
 <p>&nbsp;</p>
 
-### Introduction
+## Setup
+
+```
+yarn install @platform/tmpl
+```
+
+<p>&nbsp;</p>
+
+## Introduction
 
 Compose directories and files together with [glob](<https://en.wikipedia.org/wiki/Glob_(programming)>) patterns into a powerful `Template` that can be copied anywhere...to the file-system, to memory, wherever.
 
@@ -20,7 +34,7 @@ Add simple `middleware` functions to the pipeline to precisely customize each fi
 - Simple, flexible programmatic control via the [API](#API)
 - or rich command-line interaction via the [CLI](#CLI).
 
-### Philosophy
+## Philosophy
 
 The [best programmers are lazy](http://threevirtues.com). If you do anything [more than three times](http://wiki.c2.com/?ThreeStrikesAndYouAutomate), it might be a [good idea to automate it](http://wiki.c2.com/?AutomationIsOurFriend) 🤖
 
