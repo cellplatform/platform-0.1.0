@@ -31,7 +31,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
     const params = req.params as t.IUrlParamsFile;
     const { status, ns, error, fileUri } = getParams(params);
     const matchHash = query.hash;
-    
+
     return !ns || error
       ? { status, data: { error } }
       : downloadBinaryFile({ db, fs, fileUri, host, matchHash });

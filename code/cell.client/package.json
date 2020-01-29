@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.client",
-  "version": "0.1.20",
+  "version": "0.1.22",
   "description": "A strongly typed HTTP client for operating the REST service API.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,10 +14,10 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.schema": "0.4.21",
-    "@platform/cell.types": "0.4.19",
-    "@platform/http": "0.10.6",
-    "@platform/http.types": "0.0.5",
+    "@platform/cell.schema": "0.4.22",
+    "@platform/cell.types": "0.4.20",
+    "@platform/http": "0.11.0",
+    "@platform/http.types": "0.1.0",
     "@platform/libs": "0.2.0",
     "@platform/types": "0.4.4",
     "form-data": "3.0.0"

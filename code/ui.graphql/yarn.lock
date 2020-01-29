@@ -1913,13 +1913,13 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/graphql@0.2.83":
-  version "0.2.83"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.83.tgz#40d93fbd532d4ceca9c914e870bf46a89ce3d2bb"
-  integrity sha512-zKV3/Rjk0mCAHouqhNKi4+WdP19+ERwXgQrPi8i9rquyHq5unq5hva7w9iqifiUmEcs9cINFqsJWEPQGbAQJ7A==
+"@platform/graphql@0.2.85":
+  version "0.2.85"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.85.tgz#7dd0a89c1ea3cccf4eb333968e67f79739ae474a"
+  integrity sha512-UZJcLCkzRCgRs7jw6BLgLXdJd5u8jIvL8LNfOPXC5OCpkfxiNDEnT3SYL6bX0Lma6nI6ltN2KzR1mUIiSFFACA==
   dependencies:
-    "@platform/http" "0.10.6"
-    "@platform/http.types" "0.0.5"
+    "@platform/http" "0.11.0"
+    "@platform/http.types" "0.1.0"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
     apollo-cache-inmemory "1.6.5"
@@ -1931,21 +1931,21 @@
     graphql "14.5.8"
     graphql-tag "2.10.1"
 
-"@platform/http.types@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.5.tgz#660b8ddcc0d620c6bc47d4e09d5c7c8b302a13d0"
-  integrity sha512-jwIOFYShxlHjN4w5IslILXS64YQ9aursYRk/UqBhtL/YvPm7MVITs+6cOxhWe939/wrWfans3zhCDJ4/zDfZYw==
+"@platform/http.types@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.0.tgz#cb5eb95e46b043846f945cc09ccb7828cc2a719f"
+  integrity sha512-1XMz8E6OtYMaSS9ug8crM8dpvLXGflJM/5U/QzHYkPSVxrTw4m1D89akO9Wzlxt5/eMCrR3tz+rsuNkEpIhI2Q==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
 
-"@platform/http@0.10.6":
-  version "0.10.6"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.10.6.tgz#27e44bd46b1f9707c525d9148d9d0debb9743c75"
-  integrity sha512-2QHM7liXnc1NuelKJW+zZlIR9WgDLCxNJny2QBLlLPjGPRNnodZzV33PdiYXvUF6tWuoKjvp6KDfE172Zc3WSw==
+"@platform/http@0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.0.tgz#f7a83b5ff6fbde39ae6c43a2b93f8e1b8edf19af"
+  integrity sha512-MuTwEoFIW+x5WhIplwqHoxyNxO1EY4HjBGBYSTtIedh6Ei7fvJD7ELMaQRm2QAvlTMXT+HsOks1SzDOooJLvHw==
   dependencies:
     "@platform/fs" "0.5.5"
-    "@platform/http.types" "0.0.5"
+    "@platform/http.types" "0.1.0"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
     "@platform/util.value" "0.7.3"

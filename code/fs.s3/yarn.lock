@@ -29,12 +29,12 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.10.tgz#a36e92343530730fa05b327459342a4cde841ffa"
-  integrity sha512-arKiXxTQ8Sxswk+fUS5313nudnJ2lPesF31y6FHlOLr+SOhUM4JU1OEQN16cN2hHs4U3xu7VbuQkIVju+tPVKg==
+"@platform/fs.s3.types@0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.11.tgz#be9ce8c90084f0155d6ed313aad7e66d4753191b"
+  integrity sha512-pbVdItyBCigYmtWntJLPz5kfagfp/7TUPoZWiriALHKMK3oEF/+lxqAiz83pdcLKK6AL1vZQuBaINpDKfMYJsw==
   dependencies:
-    "@platform/http.types" "0.0.5"
+    "@platform/http.types" "0.1.0"
     "@platform/types" "0.4.4"
 
 "@platform/fs@0.5.5":
@@ -53,21 +53,21 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http.types@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.5.tgz#660b8ddcc0d620c6bc47d4e09d5c7c8b302a13d0"
-  integrity sha512-jwIOFYShxlHjN4w5IslILXS64YQ9aursYRk/UqBhtL/YvPm7MVITs+6cOxhWe939/wrWfans3zhCDJ4/zDfZYw==
+"@platform/http.types@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.0.tgz#cb5eb95e46b043846f945cc09ccb7828cc2a719f"
+  integrity sha512-1XMz8E6OtYMaSS9ug8crM8dpvLXGflJM/5U/QzHYkPSVxrTw4m1D89akO9Wzlxt5/eMCrR3tz+rsuNkEpIhI2Q==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
 
-"@platform/http@0.10.6":
-  version "0.10.6"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.10.6.tgz#27e44bd46b1f9707c525d9148d9d0debb9743c75"
-  integrity sha512-2QHM7liXnc1NuelKJW+zZlIR9WgDLCxNJny2QBLlLPjGPRNnodZzV33PdiYXvUF6tWuoKjvp6KDfE172Zc3WSw==
+"@platform/http@0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.0.tgz#f7a83b5ff6fbde39ae6c43a2b93f8e1b8edf19af"
+  integrity sha512-MuTwEoFIW+x5WhIplwqHoxyNxO1EY4HjBGBYSTtIedh6Ei7fvJD7ELMaQRm2QAvlTMXT+HsOks1SzDOooJLvHw==
   dependencies:
     "@platform/fs" "0.5.5"
-    "@platform/http.types" "0.0.5"
+    "@platform/http.types" "0.1.0"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
     "@platform/util.value" "0.7.3"

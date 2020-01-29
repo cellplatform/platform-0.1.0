@@ -25,15 +25,15 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.types@0.4.19":
-  version "0.4.19"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.19.tgz#20c2242b3879a7bc58613304d37900e1364fa3c6"
-  integrity sha512-WgVBG1CofMSF372xQGhOYLUd3cv6utz0YWrNwq4BKjOik9DPw8E3rqJFFFYWKahgYECcw0+9nMuHjHt4IzlWKA==
+"@platform/cell.types@0.4.20":
+  version "0.4.20"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.20.tgz#c4d8ad34b5229b9f14f6867260987933aa2e90e7"
+  integrity sha512-Kuu43vcnqJy8Mum0HGjjc7qMjp9niTQoECu099NHF4YTQoVHaiEBcbp+ASiIRaSd0nPwJdggzalhhpbdhkjPBg==
   dependencies:
     "@platform/cache" "0.2.15"
-    "@platform/fs.s3.types" "0.1.10"
+    "@platform/fs.s3.types" "0.1.11"
     "@platform/fsdb.types" "0.6.8"
-    "@platform/http.types" "0.0.5"
+    "@platform/http.types" "0.1.0"
     "@platform/libs" "0.2.0"
     "@platform/util.diff" "0.0.16"
 
@@ -75,12 +75,12 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.1.10":
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.10.tgz#a36e92343530730fa05b327459342a4cde841ffa"
-  integrity sha512-arKiXxTQ8Sxswk+fUS5313nudnJ2lPesF31y6FHlOLr+SOhUM4JU1OEQN16cN2hHs4U3xu7VbuQkIVju+tPVKg==
+"@platform/fs.s3.types@0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.11.tgz#be9ce8c90084f0155d6ed313aad7e66d4753191b"
+  integrity sha512-pbVdItyBCigYmtWntJLPz5kfagfp/7TUPoZWiriALHKMK3oEF/+lxqAiz83pdcLKK6AL1vZQuBaINpDKfMYJsw==
   dependencies:
-    "@platform/http.types" "0.0.5"
+    "@platform/http.types" "0.1.0"
     "@platform/types" "0.4.4"
 
 "@platform/fs@0.5.5":
@@ -107,10 +107,10 @@
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
 
-"@platform/http.types@0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.0.5.tgz#660b8ddcc0d620c6bc47d4e09d5c7c8b302a13d0"
-  integrity sha512-jwIOFYShxlHjN4w5IslILXS64YQ9aursYRk/UqBhtL/YvPm7MVITs+6cOxhWe939/wrWfans3zhCDJ4/zDfZYw==
+"@platform/http.types@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.0.tgz#cb5eb95e46b043846f945cc09ccb7828cc2a719f"
+  integrity sha512-1XMz8E6OtYMaSS9ug8crM8dpvLXGflJM/5U/QzHYkPSVxrTw4m1D89akO9Wzlxt5/eMCrR3tz+rsuNkEpIhI2Q==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
