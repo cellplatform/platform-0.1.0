@@ -3,8 +3,8 @@ import { share, takeUntil } from 'rxjs/operators';
 
 import { fs, fsPath, isBinaryFile, R, value } from '../common';
 import {
-  IExecutePayload,
-  ITemplateAlertPayload,
+  IExecuteTemplate,
+  ITemplateAlert,
   ITemplateEvent,
   ITemplateFile,
   ITemplateResponse,
@@ -221,7 +221,7 @@ export class Template {
     // Prepare.
     const files = await this.files({ cache });
     const events$ = this._events$;
-    const payload: IExecutePayload = { files };
+    const payload: IExecuteTemplate = { files };
     events$.next({ type: 'EXECUTE/start', payload });
 
     // Run the processor pipe-line.
@@ -329,7 +329,7 @@ function runProcessors(args: {
           return res;
         },
 
-        alert<T extends ITemplateAlertPayload>(payload: T) {
+        alert<T extends ITemplateAlert>(payload: T) {
           args.events$.next({ type: 'ALERT', payload });
           return this;
         },

@@ -332,7 +332,7 @@ describe('Template', () => {
     });
 
     it('fires alert event from middleware', async () => {
-      type MyAlert = t.ITemplateAlertPayload & { path: string };
+      type MyAlert = t.ITemplateAlert & { path: string };
       let events: t.ITemplateEvent[] = [];
       const tmpl = Template.create()
         .add('./example/tmpl-1')
@@ -369,8 +369,8 @@ describe('Template', () => {
     await tmpl.execute();
     expect(events.length).to.be.greaterThan(2);
 
-    const first = events[0] as t.IExecuteTemplateStart;
-    const last = events[events.length - 1] as t.IExecuteTemplateComplete;
+    const first = events[0] as t.IExecuteTemplateStartEvent;
+    const last = events[events.length - 1] as t.IExecuteTemplateCompleteEvent;
 
     expect(first.type).to.eql('EXECUTE/start');
     expect(last.type).to.eql('EXECUTE/complete');

@@ -1,4 +1,3 @@
-
 /**
  * The source location of template file(s).
  */
@@ -27,40 +26,6 @@ export type IVariables = { [key: string]: any };
  * Filter.
  */
 export type TemplateFilter = (file: ITemplateFile) => boolean;
-
-/**
- * [EVENTS]
- */
-export type ITemplateEvent = IExecuteTemplateStart | IExecuteTemplateComplete | ITemplateAlert;
-
-/**
- * Event: [Executing]
- */
-export type IExecutePayload = {
-  files: ITemplateFile[];
-};
-export type IExecuteTemplateStart = {
-  type: 'EXECUTE/start';
-  payload: IExecutePayload;
-};
-export type IExecuteTemplateComplete = {
-  type: 'EXECUTE/complete';
-  payload: IExecutePayload;
-};
-
-/**
- * Event: [Alerting]
- *
- * An alert notification fired from middleware.
- * Example usage:
- *    Communicating progress or state change to a
- *    running [Listr] task.
- */
-export type ITemplateAlertPayload = { message: string };
-export type ITemplateAlert = {
-  type: 'ALERT';
-  payload: ITemplateAlertPayload;
-};
 
 /**
  * [MIDDLEWARE]
@@ -93,7 +58,7 @@ export type AfterTemplateMiddleware = 'NEXT' | 'COMPLETE';
 export type ITemplateResponse = {
   text: string | undefined;
   replaceText: ReplaceTemplateText;
-  alert: <T extends ITemplateAlertPayload>(e: T) => ITemplateResponse;
+  alert: <T extends ITemplateAlert>(e: T) => ITemplateResponse;
   next: () => void;
   complete: () => void;
   done: (next?: AfterTemplateMiddleware) => void;
@@ -106,3 +71,38 @@ export type ReplaceTemplateText = (
   },
   replaceValue: string,
 ) => ITemplateResponse;
+
+/**
+ * [EVENTS]
+ */
+export type ITemplateEvent =
+  | IExecuteTemplateStartEvent
+  | IExecuteTemplateCompleteEvent
+  | ITemplateAlertEvent;
+
+/**
+ * Event: [Executing]
+ */
+export type IExecuteTemplate = { files: ITemplateFile[] };
+export type IExecuteTemplateStartEvent = {
+  type: 'EXECUTE/start';
+  payload: IExecuteTemplate;
+};
+export type IExecuteTemplateCompleteEvent = {
+  type: 'EXECUTE/complete';
+  payload: IExecuteTemplate;
+};
+
+/**
+ * Event: [Alerting]
+ *
+ * An alert notification fired from middleware.
+ * Example usage:
+ *    Communicating progress or state change to a
+ *    running [Listr] task.
+ */
+export type ITemplateAlert = { message: string };
+export type ITemplateAlertEvent = {
+  type: 'ALERT';
+  payload: ITemplateAlert;
+};
