@@ -89,7 +89,7 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fs@0.5.5", "@platform/fs@^0.5.5":
+"@platform/fs@0.5.5":
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.5.5.tgz#2755ae88400313731caf7fdd5cd4fc15536e53f3"
   integrity sha512-xRD3QCwgRHWAKtPsvJRNa8say0m2ShlzQ6W1wC+0v5kgfDtK0Dxp3XWAmxkAiR/JZkGEk63fkw3VzqdPVPNtTQ==

@@ -1,6 +1,6 @@
 {
   "name": "@platform/tmpl",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Succinct powerful template stamper.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
