@@ -197,25 +197,42 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       divider: css({
         width: 120,
         border: `solid 2px ${color.format(1)}`,
-        MarginX: 8,
       }),
+      dividerLeft: css({
+        width: 6,
+        marginRight: 4,
+      }),
+      dividerRight: css({}),
     };
     const phil = 'https://s.gravatar.com/avatar/99d0b4f26c68a563507c9e5a3d724126?s=80';
     const nic = 'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:ck10bc6.png';
     return (
       <div {...styles.base}>
         {this.renderAvatar({ src: phil })}
-        <div {...styles.divider} />
+
+        <div {...css(styles.divider, styles.dividerLeft)} style={{ width: 3 }} />
+        <div {...css(styles.divider, styles.dividerLeft)} />
+        <div {...css(styles.divider, styles.dividerRight)} />
+
         {this.renderAvatar({ src: nic })}
       </div>
     );
   }
 
-  private renderAvatar(props: { src: string }) {
-    const { src } = props;
-    const size = 55;
+  private renderAvatar(props: { src: string; size?: number }) {
+    const { src, size = 55 } = props;
+    const styles = {
+      base: css({ MarginX: 8 }),
+    };
     return (
-      <Avatar src={src} size={size} borderRadius={size / 2} borderColor={0.1} borderWidth={6} />
+      <Avatar
+        style={styles.base}
+        src={src}
+        size={size}
+        borderRadius={size / 2}
+        borderColor={0.1}
+        borderWidth={6}
+      />
     );
   }
 

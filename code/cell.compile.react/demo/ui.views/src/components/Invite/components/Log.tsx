@@ -52,7 +52,7 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
         fontSize: 14,
       }),
       margin: css({
-        Absolute: [0, null, 0, 20],
+        Absolute: [0, null, 0, 19],
         borderLeft: `solid 1px ${color.format(0.7)}`,
       }),
       body: css({
@@ -60,7 +60,6 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
         paddingTop: 30,
         display: 'flex',
         backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-        // Scroll: true,
       }),
     };
     const items = this.list;
@@ -79,12 +78,21 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
         margin: 0,
         padding: 0,
         paddingLeft: 34,
+        paddingRight: 10,
         backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         alignSelf: 'flex-end',
         flex: 1,
+        color: COLORS.WHITE,
       }),
       li: css({
         marginBottom: 20,
+        fontSize: 17,
+      }),
+      liBody: css({
+        color: COLORS.DARK,
+      }),
+      label: css({
+        fontSize: 14,
       }),
       detail: css({
         fontSize: 12,
@@ -99,8 +107,10 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
     const elItems = items.map((item, i) => {
       return (
         <li key={i} {...styles.li}>
-          {item.label}
-          <div {...styles.detail}>{DETAIL}</div>
+          <div {...styles.liBody}>
+            <div {...styles.label}>{item.label}</div>
+            <div {...styles.detail}>{DETAIL}</div>
+          </div>
         </li>
       );
     });
