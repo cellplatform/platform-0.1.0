@@ -65,10 +65,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.nedb@1.3.84":
-  version "1.3.84"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.84.tgz#6ed9ab51703475e1ae369eaeb8f34f6c36f804b7"
-  integrity sha512-gQeWbO98REguLRtPzfj2DRFive8epTUJHAigy0ywDqpvFCzGIcW1NRviEyXb1laLNMX1B47UNrsmcDOqcuLsNA==
+"@platform/fsdb.nedb@1.3.85":
+  version "1.3.85"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.85.tgz#be6c0a4985754defe4666896e2970fd9a85f9755"
+  integrity sha512-sa2Qc35+BoEerABgJIxBVK4PB9QA9N30qggNjdpiovXOV1BzpbPjmqrnQAZZKhtpocnmOVNBWJYVXBK8/vSZIw==
   dependencies:
     "@platform/fsdb.types" "0.6.8"
     "@platform/libs" "0.2.0"

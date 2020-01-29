@@ -10,7 +10,8 @@ export function start(args: { app: t.IMicro; debounce?: number }) {
 
   const hr$ = new Subject();
   hr$.pipe(debounceTime(debounce)).subscribe(e => {
-    log.info.gray('━'.repeat(70));
+    // OPTIONS
+    log.info.gray('━'.repeat(7));
   });
 
   app.request$.subscribe(e => {
