@@ -50,6 +50,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - [@platform/log](/code/log)
 - [@platform/exec](/code/exec)
 - [@platform/electron](/code/electron)
+- [@platform/tmpl](/code/tmpl)
 - util
   - [@platform/util.animate](/code/util.animate)
   - [@platform/util.diff](/code/util.diff)
