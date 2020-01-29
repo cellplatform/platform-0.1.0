@@ -113,7 +113,7 @@ describe('file:', () => {
       const error = res2.json as t.IHttpError;
       expect(error.status).to.eql(409);
       expect(error.type).to.eql('HTTP/hash/mismatch');
-      expect(error.message).to.contain('does not match the hash of the stored file');
+      expect(error.message).to.contain('does not match the stored file');
     });
   });
 });
