@@ -1,5 +1,5 @@
 {
-  "name": "parcel-v1.hello-world",
+  "name": "demo.parcel-v1.hello-world",
   "version": "0.0.0",
   "scripts": {
     "start": "parcel src/index.html",

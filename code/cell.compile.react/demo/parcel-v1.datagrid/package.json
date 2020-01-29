@@ -1,5 +1,5 @@
 {
-  "name": "parcel-v1.react.application",
+  "name": "demo.parcel-v1.react.application",
   "version": "0.0.0",
   "source": "src/index.html",
   "node": "dist/node/index.html",
