@@ -1,10 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { App } from './components/App';
+import { GridScreen } from './components/GridScreen';
 
 /**
  * Render root React element.
  */
-const app = <App />;
+const app = <GridScreen />;
 ReactDOM.render(app, document.getElementById('root'));

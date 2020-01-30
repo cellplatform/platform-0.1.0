@@ -7,7 +7,7 @@
   "scripts": {
     "start": "parcel src/index.html",
     "watch": "yarn start",
-    "bundle": "yarn clean && parcel build src/index.html  --no-source-maps",
+    "bundle": "yarn clean && parcel build src/index.html --no-source-maps",
     "clean": "rm -rf dist && rm -rf .cache",
     "serve": "cd dist && serve"
   },

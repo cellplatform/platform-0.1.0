@@ -12,7 +12,7 @@
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare",
-    "bundle": "yarn clean && parcel build src/index.html --experimental-scope-hoisting",
+    "bundle": "yarn clean && parcel build src/index.html --experimental-scope-hoisting --no-source-maps",
     "clean": "rm -rf dist && rm -rf .cache",
     "serve": "cd dist && serve"
   },

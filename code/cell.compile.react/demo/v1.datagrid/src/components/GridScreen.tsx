@@ -1,35 +1,19 @@
 import '@platform/css/reset.css';
 import '@platform/ui.datagrid/import.css';
 
-import { css, color } from '@platform/react';
-import * as React from 'react';
 import { DataGrid, Grid } from '@platform/ui.datagrid';
-import { DATA } from './DATA';
+import * as React from 'react';
+import { Subject } from 'rxjs';
 
-import * as t from '@platform/ui.datagrid.types';
+import { css, t } from '../common';
+import { DATA, factory } from '../SAMPLE';
 
-export type IAppProps = {};
-export type IAppState = {};
+export type IGridScreenProps = {};
+export type IGridScreenState = {};
 
-export const factory: t.GridFactory = req => {
-  // if (req.type === 'EDITOR') {
-  //   return renderEditor(req);
-  // }
-
-  // if (req.type === 'SCREEN') {
-  //   return renderScreen(req);
-  // }
-
-  // if (req.type === 'CELL') {
-  //   return renderCell(req);
-  // }
-
-  console.log(`Factory type '${req.type}' not supported by test.`, req);
-  return null;
-};
-
-export class App extends React.PureComponent<IAppProps, IAppState> {
-  public state: IAppState = {};
+export class GridScreen extends React.PureComponent<IGridScreenProps, IGridScreenState> {
+  public state: IGridScreenState = {};
+  private events$ = new Subject<t.GridEvent>();
 
   public grid = Grid.create({
     totalColumns: 52,
@@ -46,7 +30,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IAppProps) {
+  constructor(props: IGridScreenProps) {
     super(props);
   }
 
@@ -56,8 +40,8 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   public render() {
     const styles = {
       base: css({
-        Absolute: 50,
-        border: `solid 1px ${color.format(-0.2)}`,
+        Absolute: 0,
+        // border: `solid 1px ${color.format(-0.2)}`,
         display: 'flex',
       }),
       grid: css({ flex: 1 }),
@@ -67,8 +51,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
         <DataGrid
           grid={this.grid}
           factory={factory}
-          // Handsontable={this.Table}
-          // events$={this.events$}
+          events$={this.events$}
           initial={{ selection: 'A1' }}
           style={styles.grid}
           canSelectAll={false}
