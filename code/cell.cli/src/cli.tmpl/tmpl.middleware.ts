@@ -13,8 +13,8 @@ export function saveFile(
   return async (req, res) => {
     const { rename = [] } = args;
     const { dir } = req.variables;
-
     let target = fs.join(dir, req.path.target);
+
     rename
       .filter(item => target.endsWith(item.from))
       .forEach(item => {
@@ -25,7 +25,7 @@ export function saveFile(
     const message = `saving: ${target}`;
     res.alert({ message });
 
-    await fs.ensureDir(dir);
+    await fs.ensureDir(fs.dirname(target));
     await fs.writeFile(target, req.buffer);
 
     res.done(args.done);

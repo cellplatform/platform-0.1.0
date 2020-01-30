@@ -15,7 +15,7 @@ export const init: t.CmdPluginsInit = cli => {
 
   cli.command<ITmplArgs>({
     name: 'tmpl',
-    description: 'Create files from template.',
+    description: 'Create from template.',
     handler,
   });
 

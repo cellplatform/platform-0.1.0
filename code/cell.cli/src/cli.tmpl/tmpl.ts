@@ -56,6 +56,8 @@ export async function tmpl(args: { dir: string }) {
 
   // Finish up.
   log.info();
-  log.info.gray(variables.dir);
+  log.info.cyan(`  cd ${fs.basename(variables.dir)}`);
+  log.info.cyan(`  yarn start`);
   log.info();
+  log.info.gray(variables.dir);
 }
