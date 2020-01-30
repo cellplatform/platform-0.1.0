@@ -25,24 +25,18 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.cli@0.2.28":
-  version "0.2.28"
-  resolved "https://registry.yarnpkg.com/@platform/cell.cli/-/cell.cli-0.2.28.tgz#946997ebe98e1b80b088d051e5c8c50bcce917a8"
-  integrity sha512-Zz76KqMIJp92jwKIqgyx6X7deEG5zVZyCFaFJaFmgV3cvo5cDR5v+uhsqxn8Bt1G4r/ddTlornqA5eex+beRBA==
+"@platform/cell.cli@0.2.32":
+  version "0.2.32"
+  resolved "https://registry.yarnpkg.com/@platform/cell.cli/-/cell.cli-0.2.32.tgz#f9bba3ebe19c2f61c54c28f944c5e239066c12d1"
+  integrity sha512-6jdqiyimMrxJDiPAq/aFg7adtDctvFFUhTnRwq/fAgOSqci8Ms32redAZgtFh4F10QKMp7FQBupU4LwHHX3DYw==
   dependencies:
-    "@platform/cell.client" "0.1.23"
-    "@platform/cell.fs.sync" "0.3.31"
+    "@platform/cell.fs.sync" "0.3.33"
     "@platform/cell.schema" "0.4.23"
     "@platform/cell.types" "0.4.21"
-    "@platform/cell.value" "0.1.87"
-    "@platform/cli" "0.5.13"
-    "@platform/cli.prompt" "0.3.0"
-    "@platform/fs" "0.5.5"
-    "@platform/http" "0.11.1"
-    "@platform/libs" "0.2.0"
-    "@platform/log" "^0.1.7"
-    "@platform/types" "0.4.4"
-    chalk "^3.0.0"
+    "@platform/cli" "0.5.15"
+    "@platform/cli.prompt" "0.3.2"
+    "@platform/npm" "0.2.51"
+    "@platform/tmpl" "0.1.4"
 
 "@platform/cell.client@0.1.23":
   version "0.1.23"
@@ -70,16 +64,16 @@
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.fs.sync@0.3.31":
-  version "0.3.31"
-  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.3.31.tgz#b3180a0a440acf824e87df34ac0bcdb1d3c3b7fb"
-  integrity sha512-uy0Rh/QjK3j2rgLHiv8KJJ3esCQIyIdU7bQ4h9ELdb7SpRcXw58GNfscblmEs2NeyZDHbyWAPax5sGlfu/bPmA==
+"@platform/cell.fs.sync@0.3.33":
+  version "0.3.33"
+  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.3.33.tgz#253a5558dd0a5e729ec327c594bd25e180e4c81f"
+  integrity sha512-vorJGHBIYRBUcHGm9TPZzRnewUF4PdRtW3ayMXO2vertbGQPfJwC0R++cMZ8QXuK+w2ehqEjTwmpFtjIjALNmA==
   dependencies:
     "@platform/cell.client" "0.1.23"
     "@platform/cell.schema" "0.4.23"
     "@platform/cell.types" "0.4.21"
     "@platform/cell.value" "0.1.87"
-    "@platform/cli" "0.5.13"
+    "@platform/cli" "0.5.15"
     "@platform/fs" "0.5.5"
     "@platform/fs.watch" "0.2.27"
     "@platform/http" "0.11.1"
@@ -123,22 +117,22 @@
     "@platform/util.diff" "0.0.16"
     "@platform/util.value" "0.7.3"
 
-"@platform/cli.prompt@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.3.0.tgz#e1d669dcedbb2117018bd03cdb3e66c1ffedb7e0"
-  integrity sha512-S7D6Rsbq1hMPxMotQfDEge1VjhLm9Ba2VZWR2m6XfhV/o+VZXeuSkSAcMaNGSP3gFgdvFh6fkPWvaOatvrEFmg==
+"@platform/cli.prompt@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.3.2.tgz#40f511827fb13f817207527b57d45a19dca2ed7a"
+  integrity sha512-UW1gxGyO1ls/0ppBuRrCkGTppsT6l138FJoU3kqYpohLni+wWEebL1aj686SRXFG7RYg1Z2BUtzIoFBQo8U9pg==
   dependencies:
     "@platform/fs" "0.5.5"
     "@platform/libs" "0.2.0"
     "@platform/log" "0.1.7"
     inquirer "7.0.3"
 
-"@platform/cli@0.5.13":
-  version "0.5.13"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.13.tgz#835e19c00dc99e1f23a44dbd625a62688e595bff"
-  integrity sha512-mfvWY00NXHY6eFDWvILkcxOqcQf676F6KQJc2Z1yoFm7If/DvO5j/S2Qy0usB5TV3MaQGO1z3anEVaCDpFBmow==
+"@platform/cli@0.5.15":
+  version "0.5.15"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.15.tgz#d4a57692e970f8b315cbe39061917665aaf91777"
+  integrity sha512-/p/9fYpyFbW+J+UwQmOn5NdwZnePbpniw2XSZDkCTuGlFsd+Gmoag2T3gl68kCmkCcHGDdJZuM6MLNvo+Vwj6w==
   dependencies:
-    "@platform/cli.prompt" "0.3.0"
+    "@platform/cli.prompt" "0.3.2"
     "@platform/exec" "0.2.45"
     "@platform/fs" "0.5.5"
     "@platform/libs" "0.2.0"
@@ -232,7 +226,7 @@
     rxjs "6.5.4"
     tslib "1.10.0"
 
-"@platform/log@0.1.7", "@platform/log@^0.1.7":
+"@platform/log@0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.7.tgz#1fb726267692c83a09e2e4be983e53de92d0d5e8"
   integrity sha512-qZ1JqphkXw2n3Ui72GQ90ocCzYkEMv1ooBo7tDco6F0SOZnGVWZ0EhfI/EMfpkqIFE4qPVHS34kGZXAM0OsIFQ==
@@ -240,6 +234,21 @@
     "@platform/libs" "0.2.0"
     chalk "3.0.0"
     cli-table "0.3.1"
+
+"@platform/npm@0.2.51":
+  version "0.2.51"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.51.tgz#dd2a32fd500ead7151aaffa92dc954d5b6f9af58"
+  integrity sha512-zJVNuKrAMpeEIVwNQHF8harSJDxHFHvNXnaNuh8S/64TPdOGJEkJrr6E51xo9GFHAtDLCrbPA9GQla49LJwzbA==
+  dependencies:
+    "@platform/cli.prompt" "0.3.2"
+    "@platform/exec" "0.2.45"
+    "@platform/fs" "0.5.5"
+    "@platform/log" "0.1.7"
+    "@platform/types" "0.4.4"
+    "@platform/util.value" "0.7.3"
+    "@types/semver" "6.2.0"
+    inquirer "7.0.3"
+    semver "7.1.1"
 
 "@platform/test@0.1.2":
   version "0.1.2"
@@ -251,6 +260,18 @@
     chai "4.2.0"
     findup-sync "4.0.0"
     mocha "7.0.0"
+
+"@platform/tmpl@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@platform/tmpl/-/tmpl-0.1.4.tgz#c28d618b1d8825c00edcdc9494e6d01f0b0a332c"
+  integrity sha512-d5PeFwYX79JXXPhgDooyuCSB1ZVHlw1bBoAJ9ltnaW+qSyDNcbnI5ts6au5azotVICIcS+Ttv8Do/wc133CKeQ==
+  dependencies:
+    "@platform/cli" "0.5.15"
+    "@platform/fs" "0.5.5"
+    "@platform/npm" "0.2.51"
+    "@types/inquirer" "6.5.0"
+    inquirer "7.0.4"
+    isbinaryfile "4.0.4"
 
 "@platform/ts.libs@3.7.3":
   version "3.7.3"
@@ -626,7 +647,7 @@ chai@4.2.0:
     pathval "^1.1.0"
     type-detect "^4.0.5"
 
-chalk@3.0.0, chalk@^3.0.0:
+chalk@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-3.0.0.tgz#3f73c2bf526591f574cc492c51e2456349f844e4"
   integrity sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg==
@@ -1298,6 +1319,25 @@ inquirer@7.0.3:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
+inquirer@7.0.4:
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-7.0.4.tgz#99af5bde47153abca23f5c7fc30db247f39da703"
+  integrity sha512-Bu5Td5+j11sCkqfqmUTiwv+tWisMtP0L7Q8WrqA2C/BbBhy1YTdFrvjjlrKq8oagA/tLQBski2Gcx/Sqyi2qSQ==
+  dependencies:
+    ansi-escapes "^4.2.1"
+    chalk "^2.4.2"
+    cli-cursor "^3.1.0"
+    cli-width "^2.0.0"
+    external-editor "^3.0.3"
+    figures "^3.0.0"
+    lodash "^4.17.15"
+    mute-stream "0.0.8"
+    run-async "^2.2.0"
+    rxjs "^6.5.3"
+    string-width "^4.1.0"
+    strip-ansi "^5.1.0"
+    through "^2.3.6"
+
 is-binary-path@~2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/is-binary-path/-/is-binary-path-2.1.0.tgz#ea1f7f3b80f064236e83470f86c09c254fb45b09"
@@ -1399,6 +1439,11 @@ isarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
   integrity sha1-u5NdSFgsuhaMBoNJV6VKPgcSTxE=
+
+isbinaryfile@4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/isbinaryfile/-/isbinaryfile-4.0.4.tgz#6803f81a8944201c642b6e17da041e24deb78712"
+  integrity sha512-pEutbN134CzcjlLS1myKX/uxNjwU5eBVSprvkpv3+3dqhBHUZLIWJQowC40w5c0Zf19vBY8mrZl88y5J4RAPbQ==
 
 isexe@^2.0.0:
   version "2.0.0"

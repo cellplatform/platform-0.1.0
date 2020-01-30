@@ -25,14 +25,14 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.compile.react@0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@platform/cell.compile.react/-/cell.compile.react-0.0.16.tgz#372c9e7c37e30843c5fc44b84bec614824591f35"
-  integrity sha512-63E/86mDCbMf7ikK1BTGmHXRPdFsVNrYstV7nbjhfkfc4ZtrIXPqdrvtZpiRd6R0p6u8FGR2hyQjbAJ/aOKwmA==
+"@platform/cell.compile.react@0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@platform/cell.compile.react/-/cell.compile.react-0.0.18.tgz#62ab4035e393e8e225de7973048ecc025c26c6a0"
+  integrity sha512-DfjaEG2CAlCZAfeb6mSRoCxfK8V4FJPjRR5zN7vFXq7K+Fr6SZd+3Efne4/xa1D7L8XYJbzYWLZxs2A0SgzWNw==
   dependencies:
     "@platform/cell.types" "0.4.21"
-    "@platform/cli" "0.5.13"
-    "@platform/cli.prompt" "^0.3.0"
+    "@platform/cli" "0.5.15"
+    "@platform/cli.prompt" "^0.3.2"
     "@platform/libs" "0.2.0"
 
 "@platform/cell.types@0.4.21":
@@ -47,22 +47,22 @@
     "@platform/libs" "0.2.0"
     "@platform/util.diff" "0.0.16"
 
-"@platform/cli.prompt@0.3.0", "@platform/cli.prompt@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.3.0.tgz#e1d669dcedbb2117018bd03cdb3e66c1ffedb7e0"
-  integrity sha512-S7D6Rsbq1hMPxMotQfDEge1VjhLm9Ba2VZWR2m6XfhV/o+VZXeuSkSAcMaNGSP3gFgdvFh6fkPWvaOatvrEFmg==
+"@platform/cli.prompt@0.3.2", "@platform/cli.prompt@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.3.2.tgz#40f511827fb13f817207527b57d45a19dca2ed7a"
+  integrity sha512-UW1gxGyO1ls/0ppBuRrCkGTppsT6l138FJoU3kqYpohLni+wWEebL1aj686SRXFG7RYg1Z2BUtzIoFBQo8U9pg==
   dependencies:
     "@platform/fs" "0.5.5"
     "@platform/libs" "0.2.0"
     "@platform/log" "0.1.7"
     inquirer "7.0.3"
 
-"@platform/cli@0.5.13":
-  version "0.5.13"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.13.tgz#835e19c00dc99e1f23a44dbd625a62688e595bff"
-  integrity sha512-mfvWY00NXHY6eFDWvILkcxOqcQf676F6KQJc2Z1yoFm7If/DvO5j/S2Qy0usB5TV3MaQGO1z3anEVaCDpFBmow==
+"@platform/cli@0.5.15":
+  version "0.5.15"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.15.tgz#d4a57692e970f8b315cbe39061917665aaf91777"
+  integrity sha512-/p/9fYpyFbW+J+UwQmOn5NdwZnePbpniw2XSZDkCTuGlFsd+Gmoag2T3gl68kCmkCcHGDdJZuM6MLNvo+Vwj6w==
   dependencies:
-    "@platform/cli.prompt" "0.3.0"
+    "@platform/cli.prompt" "0.3.2"
     "@platform/exec" "0.2.45"
     "@platform/fs" "0.5.5"
     "@platform/libs" "0.2.0"
