@@ -25,20 +25,22 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@platform/cli.prompt@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.2.13.tgz#b06b0908980c1a22cdd188e22a5f43d699af5dfd"
-  integrity sha512-D9+P00UE5T8BAkvT1aSB05Q44RB2XtUal7sRBXXUvG5D2ch+IBorEEWKu8OmZ41DiaGC37mxqJmP+wfNVzJFaQ==
+"@platform/cli.prompt@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.3.2.tgz#40f511827fb13f817207527b57d45a19dca2ed7a"
+  integrity sha512-UW1gxGyO1ls/0ppBuRrCkGTppsT6l138FJoU3kqYpohLni+wWEebL1aj686SRXFG7RYg1Z2BUtzIoFBQo8U9pg==
   dependencies:
+    "@platform/fs" "0.5.5"
     "@platform/libs" "0.2.0"
+    "@platform/log" "0.1.7"
     inquirer "7.0.3"
 
-"@platform/cli@0.5.12":
-  version "0.5.12"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.12.tgz#155e3d234f08c83fd1f3ab01d1caa4b48eb55b27"
-  integrity sha512-310FB43WxDewXwzG7/CRlix3RKe1qgsLZfriXyKKZvGjLBO5Dg2VxjEjILT4WI31UK0nIpfeWqyDKn2BSU50+w==
+"@platform/cli@0.5.15":
+  version "0.5.15"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.15.tgz#d4a57692e970f8b315cbe39061917665aaf91777"
+  integrity sha512-/p/9fYpyFbW+J+UwQmOn5NdwZnePbpniw2XSZDkCTuGlFsd+Gmoag2T3gl68kCmkCcHGDdJZuM6MLNvo+Vwj6w==
   dependencies:
-    "@platform/cli.prompt" "0.2.13"
+    "@platform/cli.prompt" "0.3.2"
     "@platform/exec" "0.2.45"
     "@platform/fs" "0.5.5"
     "@platform/libs" "0.2.0"
@@ -74,22 +76,22 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.11.tgz#be9ce8c90084f0155d6ed313aad7e66d4753191b"
-  integrity sha512-pbVdItyBCigYmtWntJLPz5kfagfp/7TUPoZWiriALHKMK3oEF/+lxqAiz83pdcLKK6AL1vZQuBaINpDKfMYJsw==
+"@platform/fs.s3.types@0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.12.tgz#2e6f2c90ee28ce9a1ac80f9b355e228ccd44fd9e"
+  integrity sha512-bP/oeDNccgzyCG/jfrVMACbMYgOAwMJWsH1YnuBsdTHipFVM6/qgCrfp3vRuMZpx+14mRdfmo4DPnIi6lsAeLQ==
   dependencies:
-    "@platform/http.types" "0.1.0"
+    "@platform/http.types" "0.1.1"
     "@platform/types" "0.4.4"
 
-"@platform/fs.s3@0.6.26":
-  version "0.6.26"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.26.tgz#1f65fa97102b922c2c42256b023f29ddbf2c2acf"
-  integrity sha512-+Iq5BbKXwOvAqsoAi2XAzCF+BHl3f/RbmXkHUtshTyxLckWQQpAU5/wRJwYBKiQjW9AtBKSpLuEJeTyEtM4qEQ==
+"@platform/fs.s3@0.6.27":
+  version "0.6.27"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.27.tgz#ceadfbaaa8a07449cdcc4434cb93faed3d89d9a5"
+  integrity sha512-Ay277LCQXpWjUKAZSy0kSRFAQbJjrnS1FnSISSk9llYE4fBuqdB+5GDN+uuMnBK088qSkT5TiB74zVhxI9r4Nw==
   dependencies:
     "@platform/fs" "0.5.5"
-    "@platform/fs.s3.types" "0.1.11"
-    "@platform/http" "0.11.0"
+    "@platform/fs.s3.types" "0.1.12"
+    "@platform/http" "0.11.1"
     "@platform/libs" "0.2.0"
     "@platform/log" "0.1.7"
     "@platform/types" "0.4.4"
@@ -114,21 +116,21 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http.types@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.0.tgz#cb5eb95e46b043846f945cc09ccb7828cc2a719f"
-  integrity sha512-1XMz8E6OtYMaSS9ug8crM8dpvLXGflJM/5U/QzHYkPSVxrTw4m1D89akO9Wzlxt5/eMCrR3tz+rsuNkEpIhI2Q==
+"@platform/http.types@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.1.tgz#878ef5ca1a214dd90c7f999bb9fc8677f9577750"
+  integrity sha512-XVBk/hm9xj8UVRrm9nsV5OG4tq7rE1bppLH17407Zdz6gBF6LKDuaqgLWDhLmGzXt1cvLYkPF0cMGPCoSL9bog==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
 
-"@platform/http@0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.0.tgz#f7a83b5ff6fbde39ae6c43a2b93f8e1b8edf19af"
-  integrity sha512-MuTwEoFIW+x5WhIplwqHoxyNxO1EY4HjBGBYSTtIedh6Ei7fvJD7ELMaQRm2QAvlTMXT+HsOks1SzDOooJLvHw==
+"@platform/http@0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.1.tgz#249780a27e662884cdacfc6f6057e8cfb0320ec1"
+  integrity sha512-mDEgVb657KgQpJbPA2oSy3KlNkSfl9Ac8FFkZ9yHyyaDiGGYdb1CiF1OC07A3PCIH09jB9hvjve6oeyfp1kJsQ==
   dependencies:
     "@platform/fs" "0.5.5"
-    "@platform/http.types" "0.1.0"
+    "@platform/http.types" "0.1.1"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
     "@platform/util.value" "0.7.3"
@@ -154,12 +156,12 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.12.36":
-  version "0.12.36"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.12.36.tgz#6ec6b4ac93f2bd6c9b2f3a3463da8739ee6c1515"
-  integrity sha512-rBNUorIErf9WVkntd0gnEUVJFdA+XzslLvJjSke//lOS8x1YLiRn6NQIwpuBk9i3x6Qb7GPrqpo57AgD0t95/Q==
+"@platform/micro@0.12.37":
+  version "0.12.37"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.12.37.tgz#adca3ba0b21a007c7d489f933fc856874daf4026"
+  integrity sha512-HAviyeHpj89TtARoksjxp1H83WYKeDE2MsiwspgpdhXHosh0LVELq13Z+qBddf3BOZPQt6j3sHfHfOT/tC2u3g==
   dependencies:
-    "@platform/http.types" "0.1.0"
+    "@platform/http.types" "0.1.1"
     "@platform/libs" "0.2.0"
     "@platform/log" "0.1.7"
     "@platform/types" "0.4.4"
@@ -169,12 +171,12 @@
     micro-cors "0.1.1"
     path-to-regexp "6.1.0"
 
-"@platform/npm@0.2.49":
-  version "0.2.49"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.49.tgz#49193e5859a14bb9edb965da8fa94dffc3e138c7"
-  integrity sha512-ckED+2tWExu3WiN7PazlAAN4JksP5dCqsMVS+GUnR1/RRhr6l6gpfzCCpPbqRxQHL22iGJqGgrBDxO8+d8nQug==
+"@platform/npm@0.2.51":
+  version "0.2.51"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.51.tgz#dd2a32fd500ead7151aaffa92dc954d5b6f9af58"
+  integrity sha512-zJVNuKrAMpeEIVwNQHF8harSJDxHFHvNXnaNuh8S/64TPdOGJEkJrr6E51xo9GFHAtDLCrbPA9GQla49LJwzbA==
   dependencies:
-    "@platform/cli.prompt" "0.2.13"
+    "@platform/cli.prompt" "0.3.2"
     "@platform/exec" "0.2.45"
     "@platform/fs" "0.5.5"
     "@platform/log" "0.1.7"

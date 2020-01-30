@@ -1,4 +1,4 @@
-import { fs, log } from '../common';
+import { fs, log, t } from '../common';
 import { list } from './prompt.list';
 
 /**
@@ -6,9 +6,10 @@ import { list } from './prompt.list';
  */
 export function paths(
   parentDirOrPaths: string | string[],
-  options: { pageSize?: number; message?: string } = {},
+  options: { message?: string; pageSize?: number; all?: boolean } = {},
 ) {
   const { pageSize = 15 } = options;
+  const all = options.all === undefined ? true : options.all;
 
   const toPaths = async (input: string | string[]) => {
     return Array.isArray(input)
@@ -31,7 +32,12 @@ export function paths(
   const ALL = '__ALL__';
   const toItems = async (input: string | string[]) => {
     const paths = await toPaths(input);
-    const options = [{ name: 'all', value: ALL, type: 'list' }, '---', ...toPathList(paths)];
+
+    let options: Array<t.IPromptListOption | string> = toPathList(paths);
+    if (all) {
+      options = [{ name: 'all', value: ALL }, '---', ...options];
+    }
+
     const count = paths.length;
     const isEmpty = count === 0;
     return { options, paths, count, isEmpty };

@@ -18,12 +18,14 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@platform/cli.prompt@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.2.13.tgz#b06b0908980c1a22cdd188e22a5f43d699af5dfd"
-  integrity sha512-D9+P00UE5T8BAkvT1aSB05Q44RB2XtUal7sRBXXUvG5D2ch+IBorEEWKu8OmZ41DiaGC37mxqJmP+wfNVzJFaQ==
+"@platform/cli.prompt@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.3.2.tgz#40f511827fb13f817207527b57d45a19dca2ed7a"
+  integrity sha512-UW1gxGyO1ls/0ppBuRrCkGTppsT6l138FJoU3kqYpohLni+wWEebL1aj686SRXFG7RYg1Z2BUtzIoFBQo8U9pg==
   dependencies:
+    "@platform/fs" "0.5.5"
     "@platform/libs" "0.2.0"
+    "@platform/log" "0.1.7"
     inquirer "7.0.3"
 
 "@platform/exec@0.2.45":
@@ -72,12 +74,12 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/npm@0.2.49":
-  version "0.2.49"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.49.tgz#49193e5859a14bb9edb965da8fa94dffc3e138c7"
-  integrity sha512-ckED+2tWExu3WiN7PazlAAN4JksP5dCqsMVS+GUnR1/RRhr6l6gpfzCCpPbqRxQHL22iGJqGgrBDxO8+d8nQug==
+"@platform/npm@0.2.51":
+  version "0.2.51"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.51.tgz#dd2a32fd500ead7151aaffa92dc954d5b6f9af58"
+  integrity sha512-zJVNuKrAMpeEIVwNQHF8harSJDxHFHvNXnaNuh8S/64TPdOGJEkJrr6E51xo9GFHAtDLCrbPA9GQla49LJwzbA==
   dependencies:
-    "@platform/cli.prompt" "0.2.13"
+    "@platform/cli.prompt" "0.3.2"
     "@platform/exec" "0.2.45"
     "@platform/fs" "0.5.5"
     "@platform/log" "0.1.7"

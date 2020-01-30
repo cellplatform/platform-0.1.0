@@ -20,4 +20,4 @@ const el = <Index views={VIEWS} />;
 ReactDOM.render(el, document.getElementById('root'));
 
 // TEMP 🐷
-// load(VIEWS[0]);
+loadModule(VIEWS[0]);

@@ -3,6 +3,9 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, CssValue, client, Client, http, COLORS, Spinner } from '../../common';
 
+import { Avatar } from '@platform/ui.image';
+import { Log } from './components/Log';
+
 import { URLS } from './urls';
 
 export type IInviteProps = { style?: CssValue };
@@ -37,7 +40,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   public async tmp() {
     // console.log('client', client);
 
-    const host = 'dev.db.team';
+    const host = 'localhost:8080';
     const uri = 'cell:ck5st4aop0000ffet9pi2fkvp!B1';
 
     const client = Client.create(host);
@@ -45,7 +48,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
 
     // client.
 
-    const url = 'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1';
+    // const url = 'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1';
     // const r = await http.get(url);
     // console.log('r', r);
     // console.log('r.body', r.body);
@@ -95,6 +98,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         Flex: 'vertical-stretch-stretch',
         flex: 0.5,
         minWidth: 400,
+        maxWidth: 500,
         overflow: 'hidden',
       }),
       top: css({
@@ -117,6 +121,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       <div {...styles.base}>
         <div {...styles.top}>
           <div {...styles.title}>
+            {/* <div>Dinner</div> */}
             <div>Conversation</div>
             <div>invite.</div>
           </div>
@@ -144,6 +149,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     return (
       <div {...styles.base}>
         <div {...styles.bevel} />
+        {this.renderLog()}
       </div>
     );
   }
@@ -176,8 +182,83 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         <div {...styles.topShadow} />
         <div {...styles.bgMask} />
         <div {...styles.body}>
-          <Spinner size={32} color={1} />
+          {/* <Spinner size={32} color={1} /> */}
+          {this.renderAvatars()}
         </div>
+      </div>
+    );
+  }
+
+  private renderAvatars() {
+    const styles = {
+      base: css({
+        Flex: 'horizontal-center-center',
+      }),
+      divider: css({
+        width: 120,
+        border: `solid 2px ${color.format(1)}`,
+      }),
+      dividerLeft: css({
+        width: 6,
+        marginRight: 4,
+      }),
+      dividerRight: css({}),
+    };
+    const phil = 'https://s.gravatar.com/avatar/99d0b4f26c68a563507c9e5a3d724126?s=80';
+    const nic = 'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:ck10bc6.png';
+    return (
+      <div {...styles.base}>
+        {this.renderAvatar({ src: phil })}
+
+        <div {...css(styles.divider, styles.dividerLeft)} style={{ width: 3 }} />
+        <div {...css(styles.divider, styles.dividerLeft)} />
+        <div {...css(styles.divider, styles.dividerRight)} />
+
+        {this.renderAvatar({ src: nic })}
+      </div>
+    );
+  }
+
+  private renderAvatar(props: { src: string; size?: number }) {
+    const { src, size = 55 } = props;
+    const styles = {
+      base: css({ MarginX: 8 }),
+    };
+    return (
+      <Avatar
+        style={styles.base}
+        src={src}
+        size={size}
+        borderRadius={size / 2}
+        borderColor={0.1}
+        borderWidth={6}
+      />
+    );
+  }
+
+  private renderLog() {
+    const styles = {
+      base: css({
+        Absolute: [0, 0, 0, null],
+        width: 300,
+        backgroundColor: color.format(0.6),
+        // Scroll: true,
+        // overflow: 'auto',
+      }),
+      log: css({
+        Absolute: 0,
+        // Scroll: true,
+      }),
+      bevel: css({
+        Absolute: [0, null, 0, -10],
+        width: 10,
+        backgroundColor: color.format(0.15),
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.bevel} />
+        <Log style={styles.log} />
       </div>
     );
   }

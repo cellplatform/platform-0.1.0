@@ -26,7 +26,7 @@ export const downloadFilePreflight = async (args: {
     // Match hash if requested.
     if (typeof matchHash === 'string' && file.data.hash !== matchHash) {
       const identifier = filename ? `'${filename}'` : `[${fileUri}]`;
-      const message = `The requested hash of ${identifier} does not match the hash of the stored file.`;
+      const message = `The requested hash of ${identifier} does not match the stored file.`;
       const type = ERROR.HTTP.HASH_MISMATCH;
       error = { status: 409, type, message };
       return { error };

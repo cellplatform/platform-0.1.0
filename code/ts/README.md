@@ -30,6 +30,19 @@ Adds the `ts` command to your module's `bin`. You can optionally use the followi
 }
 ```
 
+To build without ESM module compilation:
+
+```json
+{
+  "scripts: {
+    "build": "ts build --no-esm",
+  }
+}
+```
+
+
+
+
 ## ESModules
 When setting the `main` of package.json make sure to not include the `.js` file extensions allowing environments that as using [ESModule's](https://developers.google.com/web/fundamentals/primers/modules) to infer the `.msj` version.
 

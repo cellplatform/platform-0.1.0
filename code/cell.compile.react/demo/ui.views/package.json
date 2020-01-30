@@ -1,6 +1,6 @@
 {
-  "name": "ui.views",
-  "version": "0.0.2",
+  "name": "demo.ui.views",
+  "version": "0.0.3",
   "source": "src/index.html",
   "node": "dist/node/index.html",
   "browser": "dist/browser/index.html",
@@ -9,18 +9,19 @@
     "watch": "yarn start",
     "test": "ts test",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "echo ts build",
     "prepare": "ts prepare",
-    "bundle": "parcel build src/index.html --experimental-scope-hoisting",
+    "bundle": "yarn clean && parcel build src/index.html --experimental-scope-hoisting",
     "clean": "rm -rf dist && rm -rf .cache",
     "serve": "cd dist && serve"
   },
   "dependencies": {
-    "@platform/cell.client": "^0.1.22",
-    "@platform/http": "^0.11.0",
+    "@platform/cell.client": "^0.1.23",
+    "@platform/http": "^0.11.1",
     "@platform/libs": "^0.2.0",
     "@platform/log": "^0.1.7",
     "@platform/react": "^0.4.8",
+    "@platform/ui.image": "^0.2.35",
     "@platform/ui.spinner": "^0.0.124"
   },
   "devDependencies": {

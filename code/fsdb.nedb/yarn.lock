@@ -1793,13 +1793,13 @@
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
 
-"@platform/graphql.server@0.1.91":
-  version "0.1.91"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.91.tgz#485ef5a9b328b6c1f023d6d50f920997287e3506"
-  integrity sha512-YW/bH5viLMjdFnyd7L1Hwoi2Qu8uj74kejeM5lpfNH+XMETRq4M2pojElZe6GyScNB0BNvoT05+3BcO8Q03xhA==
+"@platform/graphql.server@0.1.92":
+  version "0.1.92"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.92.tgz#9dec68a3cda3bacdd2246bab48c89c26a74b6642"
+  integrity sha512-iak8MpgBI084zBlt8EW0RcvhccHdKiTkD6hcbo9p/fwjSvwK81Xvi+wHxVqlkVR/ZpCtp+dXELMoqsLmvKqKKg==
   dependencies:
     "@platform/cache" "0.2.15"
-    "@platform/graphql" "0.2.85"
+    "@platform/graphql" "0.2.86"
     "@platform/libs" "0.2.0"
     "@platform/log" "0.1.7"
     "@platform/util.is" "0.0.109"
@@ -1812,13 +1812,13 @@
     graphql "14.5.8"
     graphql-tools "4.0.6"
 
-"@platform/graphql@0.2.85":
-  version "0.2.85"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.85.tgz#7dd0a89c1ea3cccf4eb333968e67f79739ae474a"
-  integrity sha512-UZJcLCkzRCgRs7jw6BLgLXdJd5u8jIvL8LNfOPXC5OCpkfxiNDEnT3SYL6bX0Lma6nI6ltN2KzR1mUIiSFFACA==
+"@platform/graphql@0.2.86":
+  version "0.2.86"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.86.tgz#0b102b60ccd8f8b97ba74e208e01c07748b267b0"
+  integrity sha512-qwh8WBWP2lc6olsljy7LFr97OzrZAz41eRI01MZcm4k13W4/b6s45vPX1j1d4ZTBpL5BklOsF8SAo/tdCxRnSQ==
   dependencies:
-    "@platform/http" "0.11.0"
-    "@platform/http.types" "0.1.0"
+    "@platform/http" "0.11.1"
+    "@platform/http.types" "0.1.1"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
     apollo-cache-inmemory "1.6.5"
@@ -1830,21 +1830,21 @@
     graphql "14.5.8"
     graphql-tag "2.10.1"
 
-"@platform/http.types@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.0.tgz#cb5eb95e46b043846f945cc09ccb7828cc2a719f"
-  integrity sha512-1XMz8E6OtYMaSS9ug8crM8dpvLXGflJM/5U/QzHYkPSVxrTw4m1D89akO9Wzlxt5/eMCrR3tz+rsuNkEpIhI2Q==
+"@platform/http.types@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.1.tgz#878ef5ca1a214dd90c7f999bb9fc8677f9577750"
+  integrity sha512-XVBk/hm9xj8UVRrm9nsV5OG4tq7rE1bppLH17407Zdz6gBF6LKDuaqgLWDhLmGzXt1cvLYkPF0cMGPCoSL9bog==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
 
-"@platform/http@0.11.0":
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.0.tgz#f7a83b5ff6fbde39ae6c43a2b93f8e1b8edf19af"
-  integrity sha512-MuTwEoFIW+x5WhIplwqHoxyNxO1EY4HjBGBYSTtIedh6Ei7fvJD7ELMaQRm2QAvlTMXT+HsOks1SzDOooJLvHw==
+"@platform/http@0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.1.tgz#249780a27e662884cdacfc6f6057e8cfb0320ec1"
+  integrity sha512-mDEgVb657KgQpJbPA2oSy3KlNkSfl9Ac8FFkZ9yHyyaDiGGYdb1CiF1OC07A3PCIH09jB9hvjve6oeyfp1kJsQ==
   dependencies:
     "@platform/fs" "0.5.5"
-    "@platform/http.types" "0.1.0"
+    "@platform/http.types" "0.1.1"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
     "@platform/util.value" "0.7.3"

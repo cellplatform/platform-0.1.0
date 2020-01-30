@@ -25,28 +25,28 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.coord@0.8.38":
-  version "0.8.38"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.38.tgz#ea636fa4057daf1cb466e2f6131ebac5bb23ae97"
-  integrity sha512-SHnrT+OhEBcW7iXbsCtU6rnjdG0cyheQB3kBChWipsNpLEnBcHKQiC50eTg2onweLLxyXFvXzKlawXz63EriZw==
+"@platform/cell.coord@0.8.39":
+  version "0.8.39"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.39.tgz#e1f232a9d9b2464f106fa49c2cf15ac8bfa7622e"
+  integrity sha512-w270zrtkNSl8sHgu687QLNKY+nd9Ad/HeEodtgSF7Py6m6fe7juknTZyyZZi151UiNR40XHi8+wRxvppNMIxrA==
   dependencies:
     "@platform/cache" "0.2.15"
-    "@platform/cell.types" "0.4.20"
+    "@platform/cell.types" "0.4.21"
     "@platform/types" "0.4.4"
     "@platform/util.value" "0.7.3"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.types@0.4.20":
-  version "0.4.20"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.20.tgz#c4d8ad34b5229b9f14f6867260987933aa2e90e7"
-  integrity sha512-Kuu43vcnqJy8Mum0HGjjc7qMjp9niTQoECu099NHF4YTQoVHaiEBcbp+ASiIRaSd0nPwJdggzalhhpbdhkjPBg==
+"@platform/cell.types@0.4.21":
+  version "0.4.21"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.21.tgz#40a1c3193800ad3f2069d37ea014e77a7a28015a"
+  integrity sha512-YBVy6UkKo0tOqB/y0Pi03Zu045y0knCMPpaHcZwYxnJMuD/t3h9b5S5HsMtsO0kRJolb30em7Ui5ohwKRrAYiQ==
   dependencies:
     "@platform/cache" "0.2.15"
-    "@platform/fs.s3.types" "0.1.11"
+    "@platform/fs.s3.types" "0.1.12"
     "@platform/fsdb.types" "0.6.8"
-    "@platform/http.types" "0.1.0"
+    "@platform/http.types" "0.1.1"
     "@platform/libs" "0.2.0"
     "@platform/util.diff" "0.0.16"
 
@@ -61,12 +61,12 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.11.tgz#be9ce8c90084f0155d6ed313aad7e66d4753191b"
-  integrity sha512-pbVdItyBCigYmtWntJLPz5kfagfp/7TUPoZWiriALHKMK3oEF/+lxqAiz83pdcLKK6AL1vZQuBaINpDKfMYJsw==
+"@platform/fs.s3.types@0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.12.tgz#2e6f2c90ee28ce9a1ac80f9b355e228ccd44fd9e"
+  integrity sha512-bP/oeDNccgzyCG/jfrVMACbMYgOAwMJWsH1YnuBsdTHipFVM6/qgCrfp3vRuMZpx+14mRdfmo4DPnIi6lsAeLQ==
   dependencies:
-    "@platform/http.types" "0.1.0"
+    "@platform/http.types" "0.1.1"
     "@platform/types" "0.4.4"
 
 "@platform/fs@0.5.5":
@@ -93,10 +93,10 @@
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
 
-"@platform/http.types@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.0.tgz#cb5eb95e46b043846f945cc09ccb7828cc2a719f"
-  integrity sha512-1XMz8E6OtYMaSS9ug8crM8dpvLXGflJM/5U/QzHYkPSVxrTw4m1D89akO9Wzlxt5/eMCrR3tz+rsuNkEpIhI2Q==
+"@platform/http.types@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.1.tgz#878ef5ca1a214dd90c7f999bb9fc8677f9577750"
+  integrity sha512-XVBk/hm9xj8UVRrm9nsV5OG4tq7rE1bppLH17407Zdz6gBF6LKDuaqgLWDhLmGzXt1cvLYkPF0cMGPCoSL9bog==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"

@@ -10,7 +10,8 @@ export function start(args: { app: t.IMicro; debounce?: number }) {
 
   const hr$ = new Subject();
   hr$.pipe(debounceTime(debounce)).subscribe(e => {
-    log.info.gray('━'.repeat(70));
+    // OPTIONS
+    log.info.gray('━'.repeat(7));
   });
 
   app.request$.subscribe(e => {
@@ -27,7 +28,7 @@ const methodColor = (method: t.HttpMethod) => {
   if (is(['POST', 'PUT'])) {
     return log.green;
   }
-  if (is(['PATCH'])) {
+  if (is(['PATCH', 'OPTIONS'])) {
     return log.yellow;
   }
   if (is(['DELETE'])) {
@@ -38,7 +39,7 @@ const methodColor = (method: t.HttpMethod) => {
 
 const logRequest = (req: t.IMicroRequest) => {
   const MAX = {
-    PREFIX: 'DELETE'.length,
+    PREFIX: 'OPTIONS'.length,
     URL: 60,
   };
   const url = shorten(req.url, MAX.URL);

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli.prompt",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "Helpers for raising user prompts within a command-line-interface.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
