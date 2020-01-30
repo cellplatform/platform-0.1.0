@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.6.23",
+  "version": "0.6.26",
   "description": "HTTP cloud server, and client tools, for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,7 +18,8 @@
     "build": "ts build",
     "prepare": "ts prepare",
     "reset": "ts-node -T scripts/reset",
-    "deploy": "yarn cell deploy $@"
+    "deploy": "yarn cell deploy $@",
+    "logs": "now logs dev.db.team"
   },
   "dependencies": {
     "@platform/cell.client": "0.1.23",

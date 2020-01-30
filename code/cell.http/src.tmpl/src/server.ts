@@ -37,5 +37,4 @@ const app = server.init({
 });
 
 app.start({ port: 8080 });
-
 server.logger.start({ app });
