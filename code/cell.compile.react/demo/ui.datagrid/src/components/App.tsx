@@ -4,8 +4,9 @@ import '@platform/ui.datagrid/import.css';
 import { css, color } from '@platform/react';
 import * as React from 'react';
 import { DataGrid, Grid } from '@platform/ui.datagrid';
-import { SAMPLE } from './SAMPLE';
-import { t } from './common';
+import { DATA } from './DATA';
+
+import * as t from '@platform/ui.datagrid.types';
 
 export type IAppProps = {};
 export type IAppState = {};
@@ -36,10 +37,10 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     // getFunc,
     // keyBindings: [{ command: 'COPY', key: 'CMD+D' }],
     // defaults: { rowHeight: 200 },
-    ns: SAMPLE.NS,
-    cells: SAMPLE.CELLS,
-    columns: SAMPLE.COLUMNS,
-    rows: SAMPLE.ROWS,
+    ns: DATA.NS,
+    cells: DATA.CELLS,
+    columns: DATA.COLUMNS,
+    rows: DATA.ROWS,
   });
 
   /**

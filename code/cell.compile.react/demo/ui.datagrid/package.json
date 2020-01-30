@@ -1,5 +1,5 @@
 {
-  "name": "demo.parcel-v1.datagrid",
+  "name": "demo.ui.datagrid",
   "version": "0.0.0",
   "source": "src/index.html",
   "node": "dist/node/index.html",
@@ -7,7 +7,7 @@
   "scripts": {
     "start": "parcel src/index.html",
     "watch": "yarn start",
-    "bundle": "parcel build src/index.html --experimental-scope-hoisting",
+    "bundle": "yarn clean && parcel build src/index.html  --no-source-maps",
     "clean": "rm -rf dist && rm -rf .cache",
     "serve": "cd dist && serve"
   },
@@ -16,7 +16,6 @@
     "@platform/ui.datagrid": "^0.7.172"
   },
   "devDependencies": {
-    "@platform/test": "^0.1.2",
     "@platform/ts": "^3.7.10",
     "parcel-bundler": "^1.12.4"
   },

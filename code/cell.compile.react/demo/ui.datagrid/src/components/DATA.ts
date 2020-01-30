@@ -1,4 +1,4 @@
-import { t } from './common';
+import * as t from '@platform/ui.datagrid.types';
 
 const CELLS: t.IGridData['cells'] = {
   A1: { value: '=A5' },
@@ -50,7 +50,7 @@ const ROWS: t.IGridData['rows'] = {
   A: { props: {} },
 };
 
-export const SAMPLE = {
+export const DATA = {
   NS: 'ns:foo', // NB: the "ns:" uri prefix is stripped.
   CELLS,
   COLUMNS,
