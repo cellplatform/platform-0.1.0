@@ -1,0 +1,12 @@
+{
+  "name": "demo.go",
+  "version": "0.0.0",
+  "description": "Go => WASM compilation tutorial",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn clean && sh sh/build.sh",
+    "serve": "yarn build && cd dist && serve"
+  },
+  "license": "MIT",
+  "private": true
+}
