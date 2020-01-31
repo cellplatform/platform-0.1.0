@@ -1,7 +1,7 @@
 {
-  "name": "@platform/cell.compile",
-  "version": "0.0.52",
-  "description": "Code compilation tools for CellOS.",
+  "name": "@platform/cell.compile.wasm",
+  "version": "0.0.0",
+  "description": "CellOS code compilation toolchain for WebAssembly.",
   "scripts": {
     "start": "node lib/cli/bin $@",
     "test": "ts test",

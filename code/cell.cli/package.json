@@ -9,7 +9,7 @@
   },
   "scripts": {
     "demo": "mkdir -p tmp && cd tmp && node ../lib/bin $@",
-    "cell": "node lib/bin $@",
+    "start": "node lib/bin $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",

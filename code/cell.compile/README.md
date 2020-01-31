@@ -12,11 +12,4 @@ Code compilation toolchains for CellOS.
     yarn add @platform/cell.compile
 
 <p>&nbsp;</p>
-
-## Refs
-
-- Parcel V2:
-  https://github.com/parcel-bundler/parcel/tree/v2
-
-<p>&nbsp;</p>
 <p>&nbsp;</p>

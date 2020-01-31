@@ -14,6 +14,7 @@ export type INpmPackageJson = {
   license?: string;
   private?: boolean;
 };
+
 export type INpmPackageFields = { [key: string]: string };
 export type NpmPackageFieldsKey =
   | 'scripts'
