@@ -28,15 +28,20 @@ license that can be found in the LICENSE file.
       WebAssembly.instantiateStreaming(fetch('lib.wasm'), go.importObject).then(result => {
         mod = result.module;
         inst = result.instance;
-        document.getElementById('runButton').disabled = false;
+        // document.getElementById('runButton').disabled = false;
+        run();
       });
 
       async function run() {
         await go.run(inst);
         inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
+
+        // const btn = document.getElementById('runButton');
+        // btn.disabled = true;
+        // btn.innerHTML = 'Running';
       }
     </script>
 
-    <button onClick="run();" id="runButton" disabled>Run</button>
+    <!-- <button onClick="run();" id="runButton" disabled>Run</button> -->
   </body>
 </html>
