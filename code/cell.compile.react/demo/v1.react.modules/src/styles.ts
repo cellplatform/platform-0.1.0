@@ -2,6 +2,7 @@ import { style } from '@platform/react';
 
 style.global({
   body: {
+    backgroundColor: '#ececec',
     fontFamily: 'sans-serif',
     padding: 25,
   },

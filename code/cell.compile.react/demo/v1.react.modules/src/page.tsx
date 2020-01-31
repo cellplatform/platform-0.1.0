@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { Foo } from './component';
+import { Foo } from './components/Foo';
 import './styles';
 
 console.log('👋');
@@ -15,7 +15,7 @@ const DELAY = 1; // second.
  * Dynamically load a module (aka: "code-splitting").
  */
 setTimeout(() => {
-  const load = import('./m');
+  const load = import('./components/Bar');
   load.then(e => {
     console.log('-------------------------------------------');
     console.log('Dynamically loaded module:', e);
