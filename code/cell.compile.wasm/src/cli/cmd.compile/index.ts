@@ -12,7 +12,7 @@ export const init: t.CmdPluginsInit = cli => {
   };
 
   cli.command<IPullArgs>({
-    name: 'compile wasm',
+    name: 'compile-wasm',
     description: 'Compile cell-code',
     handler,
   });

@@ -12,7 +12,7 @@ export const init: t.CmdPluginsInit = cli => {
   };
 
   cli.command<IPullArgs>({
-    name: 'dirpull',
+    name: 'dir-pull',
     description: 'Pull folder from remote',
     handler,
   });
