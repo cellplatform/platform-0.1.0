@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
-import * as fsSync from '@platform/cell.fs.sync/lib/cli';
-import * as tmpl from './cli.tmpl';
+import * as compile from './cmd.compile';
 import { cli } from './common';
-
 const log = cli.log;
 
 /**
@@ -16,16 +14,13 @@ process.on('unhandledRejection', err => {
 });
 
 /**
- * Create a new "command-line-interface" application
- * and register commands from the various modules
- * within Cell/OS that expose a CLI/API.
+ * Create a new "command-line-interface" application and register commands.
  */
-export const app = cli.create('cell');
-fsSync.init(app.plugins);
-tmpl.init(app.plugins);
+const app = cli.create('cell');
+compile.init(app.plugins);
 
 // Log header (meta-data).
-const pkg = require('../package.json') as { name: string; version: string };
+const pkg = require('../../package.json') as { name: string; version: string };
 const header = `${pkg.name}@${pkg.version}`;
 log.info.gray(`${header}\n${log.magenta('━'.repeat(header.length))}\n`);
 

@@ -3,6 +3,7 @@
   "version": "0.0.52",
   "description": "Code compilation tools for CellOS.",
   "scripts": {
+    "start": "node lib/cli/bin",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
