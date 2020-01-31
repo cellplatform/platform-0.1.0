@@ -1,4 +1,4 @@
-import { Schema, t, util, ERROR } from '../common';
+import { ERROR, Schema, t, util } from '../common';
 import { downloadBinaryFile, downloadTextFile } from '../route.file';
 import { rewriteHtmlPaths } from './util.rewritePaths';
 
@@ -28,7 +28,7 @@ export async function downloadFileByFileId(args: {
     return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.NOT_LINKED });
   }
 
-  const downloadHtmlAndRewritePaths = async (args: { mime: string }) => {
+  const downloadAndRewritePaths = async (args: { mime: string }) => {
     const res = await downloadTextFile({ host, db, fs, fileUri, filename, matchHash, mime });
     if (typeof res.data !== 'string') {
       return res;
@@ -43,12 +43,12 @@ export async function downloadFileByFileId(args: {
 
   // Run the appropriate download handler.
 
-  if (mime === 'text/html' || mime === 'application/javascript') {
-    // NOTE: Html and javascript files are downloaded and served directly
+  if (mime === 'text/html') {
+    // NOTE: Html files are downloaded and served directly
     //       so that any interal relative links (from src/href of dynamic
     //       loading of module) keep the CellOS host as their origin
     //       and avoid being shut-out by S3 security.
-    return downloadHtmlAndRewritePaths({ mime });
+    return downloadAndRewritePaths({ mime });
   } else {
     return downloadBinaryFile({ host, db, fs, fileUri, filename, matchHash, expires });
   }

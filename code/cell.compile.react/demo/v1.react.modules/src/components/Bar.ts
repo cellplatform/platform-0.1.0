@@ -1,5 +1,5 @@
 export function init() {
-  console.log('👋  loaded: m.ts');
+  console.log('👋  loaded: Bar.tsx');
 
   const el = document.getElementById('STATUS');
   if (el) {

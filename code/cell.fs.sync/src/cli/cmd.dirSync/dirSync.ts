@@ -16,6 +16,7 @@ export async function dirSync(args: {
   delete: boolean;
   watch: boolean;
   keyboard?: t.ICmdKeyboard;
+  openRemote?: boolean;
 }) {
   // Retrieve (or build) configuration file the directory.
   const config = await promptConfig({ dir: args.dir });
@@ -81,6 +82,10 @@ export async function dirSync(args: {
           log.info();
         }
       }
+    }
+
+    if (args.openRemote) {
+      util.open(config).remote();
     }
   }
 }

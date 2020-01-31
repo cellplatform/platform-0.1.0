@@ -9,6 +9,7 @@ export type ISyncDirArgs = {
   silent: boolean;
   delete: boolean;
   watch: boolean;
+  remote: boolean;
 };
 
 export const init: t.CmdPluginsInit = cli => {
@@ -26,6 +27,7 @@ export const init: t.CmdPluginsInit = cli => {
       delete: argv.delete,
       watch,
       keyboard,
+      openRemote: argv.remote,
     });
   };
 
@@ -61,6 +63,13 @@ export const init: t.CmdPluginsInit = cli => {
       name: 'watch',
       alias: 'w',
       description: 'Watch folder and sync on change',
+      type: 'boolean',
+      default: false,
+    })
+    .option<'boolean'>({
+      name: 'remote',
+      alias: 'r',
+      description: 'Open remote after sync ompletes',
       type: 'boolean',
       default: false,
     });
