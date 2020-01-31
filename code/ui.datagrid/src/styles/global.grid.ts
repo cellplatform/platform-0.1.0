@@ -33,7 +33,7 @@ const STYLES = {
   },
   'span.colHeader': {
     position: 'relative',
-    top: 4, // NB: Ensure vertically centered.
+    // top: 4, // NB: Ensure vertically centered.
   },
 
   /**
