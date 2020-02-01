@@ -1,8 +1,11 @@
-# Go WASM
+# GoLang ➔ WebAssembly
 
 <p>&nbsp;</p>
 
 ## Refs
+
+- Go  
+  https://golang.org
 
 - Go WebAssembly Tutorial  
   https://www.youtube.com/watch?v=4kBvvk2Bzis  
