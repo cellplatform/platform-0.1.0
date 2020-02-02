@@ -15,11 +15,7 @@ import { fs } from '@platform/fs';
     const buffer = await fs.readFile(fs.resolve('dist/lib.wasm'));
     const typedArray = new Uint8Array(buffer);
 
-    // console.log('f', f);
-    // console.log('global.Go', Go);
     const go = new (global as any).Go();
-
-    // console.log('go.importObject', go.importObject);
 
     // const wasm = await WebAssembly.instantiate(typedArray, { env });
     const importObject = { ...go.importObject };
