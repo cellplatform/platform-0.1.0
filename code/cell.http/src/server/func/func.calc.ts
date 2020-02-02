@@ -1,15 +1,11 @@
 import { t, cell, models, http, fs, Schema, util } from '../common';
-import { fileCache } from '../fs.cache';
 
 /**
  * Executes calculations on a namespace.
  */
 export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.ICellData> }) {
   const { ns, host } = args;
-
   const TMP = host.startsWith('localhost') ? fs.resolve('tmp') : fs.resolve('/tmp');
-
-  console.log('args.cells', args.cells);
 
   /**
    * TODO 🐷
