@@ -1,15 +1,14 @@
 import { fs, constants } from '../common';
 
-export function fileCache(args: { name: string; mime: string; hash: string }) {
+export function fileCache(args: { hash: string }) {
+  const { hash } = args;
   let path = '';
   const cache = {
+    hash,
     get path() {
       if (!path) {
-        const mime = args.mime.replace(/\//g, '-');
-        const dir = fs.join(constants.PATH.TMP, '.download', mime);
-        let filename = args.name.replace(/\:/g, '-');
-        filename = args.hash ? `${filename}?hash=${args.hash}` : filename;
-        path = fs.join(dir, `${filename}`);
+        const dir = fs.join(constants.PATH.TMP, '.cache');
+        path = fs.join(dir, hash);
       }
       return path;
     },
@@ -19,9 +18,8 @@ export function fileCache(args: { name: string; mime: string; hash: string }) {
     },
 
     async get() {
-      const path = cache.path;
       const exists = await cache.exists();
-      return exists ? fs.readFile(path) : undefined;
+      return exists ? fs.readFile(cache.path) : undefined;
     },
 
     async put(data: string | Buffer) {

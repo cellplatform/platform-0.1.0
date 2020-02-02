@@ -28,7 +28,7 @@ export function init(args: {
   // TEMP 🐷
   args.router.get('/wasm', handleWasmTmp); // TEMP 🐷
 
-  // Finish up (wildcard).
+  // 404 (wildcard).
   args.router.get(routes.WILDCARD, notFoundHandler);
 }
 

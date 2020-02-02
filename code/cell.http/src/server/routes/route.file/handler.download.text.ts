@@ -27,7 +27,7 @@ export const downloadTextFile = async (args: {
     //      Only cache the download if a comparison hash is provided
     //      otherwise it is not possible to determine if the cached
     //      file is what the request is actually looking for.
-    const cache = matchHash && fileCache({ name: fileUri, mime, hash: matchHash });
+    const cache = matchHash && fileCache({ hash: matchHash });
     if (cache) {
       const file = await cache.get();
       if (file) {

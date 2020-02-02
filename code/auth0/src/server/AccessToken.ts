@@ -92,7 +92,7 @@ export class AccessToken implements t.IAccessToken {
       type Key = { publicKey?: string; rsaPublicKey?: string };
       const getKey: jwt.GetPublicKeyOrSecret = (header, callback) => {
         jwks.getSigningKey(header.kid || '', (err, key: Key) => {
-          const signingKey = key.publicKey || key.rsaPublicKey;
+          const signingKey = key ? key.publicKey || key.rsaPublicKey : undefined;
           if (!signingKey) {
             throw new Error(`Failed to decode JWT. A signing-key could not be found.`);
           }

@@ -13,7 +13,7 @@ export const init: t.CmdPluginsInit = cli => {
   };
 
   cli.command<ISyncWatchArgs>({
-    name: 'dirwatch',
+    name: 'dir-watch',
     alias: 'w',
     description: 'Synchronise folder in watch mode',
     handler,

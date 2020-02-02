@@ -1,4 +1,5 @@
 import { t, cell, models, http, fs, Schema, util } from '../common';
+import { fileCache } from '../fs.cache';
 
 /**
  * Executes calculations on a namespace.
@@ -8,9 +9,11 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
 
   const TMP = host.startsWith('localhost') ? fs.resolve('tmp') : fs.resolve('/tmp');
 
+  console.log('args.cells', args.cells);
+
   /**
    * TODO 🐷
-   * - lookup functions from imports (TDB, external namespaces)
+   * - lookup functions from imports (TBD, external namespaces)
    */
   const getFunc: t.GetFunc = async args => {
     // TEMP 🐷
@@ -26,17 +29,19 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
       let func: FuncLink | undefined;
       Object.keys(cells).forEach(key => {
         const cell = cells[key] || {};
-        const links = cell.links || {};
+        const cellLinks = cell.links || {};
         const props = (cell.props || {}) as { func?: FuncProp };
         if (props.func && props.func.name === args.name) {
           const link = props.func.link;
-          const uri = links[link];
+          const uri = cellLinks[link];
           func = { key, link, uri };
         }
       });
 
       // Download the file.
       if (func && Schema.uri.is.file(func.uri)) {
+        console.log('func.uri', func.uri);
+
         const url = util.urls(host).file(func.uri).download;
         const saveTo = `${TMP}/cache/${func.uri.replace(/\:/g, '-')}`;
 
@@ -58,6 +63,7 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
         const wasm = await WebAssembly.instantiate(typedArray, { env });
         const lib = wasm.instance.exports as any;
 
+        // TEMP
         const invoker: t.FuncInvoker = args => {
           const p1 = args.params[0] || 0;
           const p2 = args.params[1] || 0;

@@ -33,7 +33,7 @@ export const init: t.CmdPluginsInit = cli => {
 
   cli
     .command<ISyncDirArgs>({
-      name: 'dirsync',
+      name: 'dir-sync',
       alias: 's',
       description: 'Synchronise local folder with remote',
       handler,

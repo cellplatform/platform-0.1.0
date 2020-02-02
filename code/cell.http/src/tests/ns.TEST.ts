@@ -15,7 +15,7 @@ import { testPostFile } from './file.TEST';
  */
 
 describe('ns:', function() {
-  this.timeout(15000);
+  this.timeout(20000);
 
   describe('invalid URI', () => {
     it('malformed: no id', async () => {
@@ -285,7 +285,7 @@ describe('ns:', function() {
     });
   });
 
-  describe('POST calculate', () => {
+  describe.only('POST calculate', () => {
     it('REF', async () => {
       const cells = {
         A1: { value: '=A2' },
@@ -319,7 +319,7 @@ describe('ns:', function() {
       cells = { ...cells, A2: { value: 456 } };
       const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
-      mock.dispose();
+      await mock.dispose();
 
       const cells1 = res1.data.cells || {};
       const cells2 = res2.data.cells || {};
@@ -345,7 +345,7 @@ describe('ns:', function() {
       const res = await post.ns('ns:foo?cells', { cells: before, calc: 'A1:B9,D' }, { mock }); // NB: C1 not included.
       const after = res.data.cells || {};
 
-      mock.dispose();
+      await mock.dispose();
 
       expect((after.A1 || {}).props).to.eql({ value: 123 });
       expect((after.A2 || {}).props).to.eql(undefined); // NB: simple value.
@@ -364,7 +364,7 @@ describe('ns:', function() {
       const res1 = await post.ns('ns:foo?cells', { cells }, { mock }); // NB: calc=false (default).
       const res2 = await post.ns('ns:foo?cells', { calc: true }, { mock });
 
-      mock.dispose();
+      await mock.dispose();
 
       const cells1 = res1.data.cells || {};
       const cells2 = res2.data.cells || {};
@@ -390,7 +390,7 @@ describe('ns:', function() {
       const res = await post.ns('ns:foo?cells', { calc: 'A1:B9,D' }, { mock });
       const after = res.data.cells || {};
 
-      mock.dispose();
+      await mock.dispose();
 
       expect((after.A1 || {}).props).to.eql({ value: 123 });
       expect((after.A2 || {}).props).to.eql(undefined); // NB: simple value.
@@ -409,7 +409,7 @@ describe('ns:', function() {
 
       const res = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
-      mock.dispose();
+      await mock.dispose();
 
       const A1 = (res.data.cells || {}).A1 || {};
       const error = A1.error;
@@ -427,11 +427,11 @@ describe('ns:', function() {
       };
 
       const res1 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
-      cells.A1.value = '=A2'; // Remove error.
+      cells.A1.value = '=A2'; // Remove function, clearing error.
 
       const res2 = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
 
-      mock.dispose();
+      await mock.dispose();
 
       const A1a = (res1.data.cells || {}).A1 || {};
       const A1b = (res2.data.cells || {}).A1 || {};
@@ -443,6 +443,24 @@ describe('ns:', function() {
 
       expect(error1 && error1.type).to.match(/^FUNC\//);
       expect(error2).to.eql(undefined);
+    });
+
+    it.only('calculates SUM from imported func', async () => {
+      const mock = await createMock();
+      const cells = {
+        A1: { value: '=10 + A2', links: {} },
+        A2: { value: 123 },
+      };
+
+      const res = await post.ns('ns:foo?cells', { cells, calc: true }, { mock });
+      await mock.dispose();
+
+      const A1 = (res.data.cells || {}).A1 || {};
+
+      console.log('-------------------------------------------');
+      // console.log('res1', res.json);
+      console.log('-------------------------------------------');
+      console.log('A1', A1);
     });
   });
 });
