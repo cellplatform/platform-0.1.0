@@ -112,6 +112,10 @@ export class Router implements t.IRouter {
           };
         },
 
+        header(key: string) {
+          return incoming.headers[key]?.toString() || '';
+        },
+
         toUrl(path: string) {
           path = path || '';
           if (path.startsWith('https://') || path.startsWith('http://')) {

@@ -14,6 +14,7 @@ export type Request = t.IncomingMessage & {
   params: RequestParams;
   query: RequestQuery;
   body: RequestBody;
+  header(key: string): string;
   toUrl(path: string): string;
   redirect(path: string, options?: { headers?: t.IHttpHeaders; status?: 307 | 303 }): RouteResponse;
 };
