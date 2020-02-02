@@ -1,3 +1,6 @@
+// const f = require('../dist/wasm-exec.js');
+import '../dist/wasm-exec';
+
 import { fs } from '@platform/fs';
 
 /**
@@ -8,22 +11,39 @@ import { fs } from '@platform/fs';
  *
  */
 (async () => {
-  const buffer = await fs.readFile(fs.resolve('dist/lib.wasm'));
-  const typedArray = new Uint8Array(buffer);
+  try {
+    const buffer = await fs.readFile(fs.resolve('dist/lib.wasm'));
+    const typedArray = new Uint8Array(buffer);
 
-  const env = {
-    memoryBase: 0,
-    tableBase: 0,
-    memory: new WebAssembly.Memory({ initial: 256 }),
-    table: new WebAssembly.Table({
-      initial: 0,
-      element: 'anyfunc',
-    }),
-  };
+    // console.log('f', f);
+    // console.log('global.Go', Go);
+    const go = new (global as any).Go();
 
-  const wasm = await WebAssembly.instantiate(typedArray, { env });
-  const func = wasm.instance.exports as any;
+    // console.log('go.importObject', go.importObject);
 
-  console.log('-------------------------------------------');
-  console.log('func', func);
+    // const wasm = await WebAssembly.instantiate(typedArray, { env });
+    const importObject = { ...go.importObject };
+    const wasm = await WebAssembly.instantiate(typedArray, importObject);
+
+    console.log('-------------------------------------------');
+    go.run(wasm.instance);
+    console.log('-------------------------------------------');
+
+    // console.log('instance.add(1,2)', instance.add(1, 2));
+
+    const g = global as any;
+
+    console.log('global.add', g.add(1, 20, 5));
+
+    // const r = g.obj();
+
+    const obj = [{ msg: 'hello' }];
+
+    const json = JSON.parse(g.obj('red'));
+    console.log('json:', json);
+
+    console.log('-------------------------------------------');
+  } catch (error) {
+    console.log('ERROR', error);
+  }
 })();
