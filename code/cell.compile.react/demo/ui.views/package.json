@@ -21,6 +21,7 @@
     "@platform/libs": "^0.2.0",
     "@platform/log": "^0.1.7",
     "@platform/react": "^0.4.8",
+    "@platform/ui.button": "^0.3.41",
     "@platform/ui.image": "^0.2.35",
     "@platform/ui.spinner": "^0.0.124"
   },

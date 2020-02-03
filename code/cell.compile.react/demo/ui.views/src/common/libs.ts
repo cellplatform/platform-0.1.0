@@ -5,3 +5,4 @@ export { log } from '@platform/log/lib/client';
 export { http } from '@platform/http';
 
 export { Spinner } from '@platform/ui.spinner';
+export { Button } from '@platform/ui.button';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, client, Client, http, COLORS, Spinner } from '../../common';
+import { css, color, CssValue, client, Client, http, COLORS, Spinner, Button } from '../../common';
 
 import { Avatar } from '@platform/ui.image';
 import { Log } from './components/Log';
@@ -25,8 +25,6 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-
-    this.tmp();
   }
 
   public componentWillUnmount() {
@@ -37,7 +35,8 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   /**
    * [Methods]
    */
-  public async tmp() {
+
+  private tmp = async () => {
     // console.log('client', client);
 
     const host = 'localhost:8080';
@@ -45,6 +44,8 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
 
     const client = Client.create(host);
     const cellClient = client.cell(uri);
+
+    console.log('client', client);
 
     // client.
 
@@ -69,7 +70,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     } catch (error) {
       console.log('error', error);
     }
-  }
+  };
 
   /**
    * [Render]
@@ -175,7 +176,13 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         filter: `blur(5px)`,
         opacity: 0.4,
       }),
+      bottom: css({
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        Absolute: [0, 0, null, 0],
+      }),
     };
+
+    console.log('Button', Button);
 
     return (
       <div {...styles.base}>
@@ -184,6 +191,12 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         <div {...styles.body}>
           {/* <Spinner size={32} color={1} /> */}
           {this.renderAvatars()}
+
+          <div {...styles.bottom}>
+            <div>
+              <Button onClick={this.tmp}>Click me</Button>
+            </div>
+          </div>
         </div>
       </div>
     );
