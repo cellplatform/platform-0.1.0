@@ -1,4 +1,4 @@
-import { constants, fs, routes, t, time } from '../common';
+import { constants, fs, routes, t, time, id } from '../common';
 
 /**
  * Root information.
@@ -31,6 +31,16 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
       deployed,
     };
 
+    return { status: 200, data };
+  });
+
+  /**
+   * GET: /uid
+   */
+  router.get(routes.SYS.UID, async req => {
+    const data: t.IResGetSysUid = {
+      uid: id.cuid(),
+    };
     return { status: 200, data };
   });
 }

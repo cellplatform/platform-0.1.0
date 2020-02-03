@@ -218,3 +218,7 @@ export type IResGetSysInfo = {
   region: string;
   deployed?: string;
 };
+
+export type IResGetSysUid = {
+  uid: string;
+};
