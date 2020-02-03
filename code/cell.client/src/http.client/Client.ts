@@ -29,7 +29,7 @@ export class Client implements t.IClient {
     const headers = {
       client: clientHeader(),
     };
-    const client = http.create({ headers });
+    const client = http.create({ headers, mode: 'cors' });
 
     // Store fields.
     this.http = client;
