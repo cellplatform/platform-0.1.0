@@ -220,5 +220,5 @@ export type IResGetSysInfo = {
 };
 
 export type IResGetSysUid = {
-  uid: string;
+  ids: string[];
 };

@@ -38,9 +38,8 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
    * GET: /uid
    */
   router.get(routes.SYS.UID, async req => {
-    const data: t.IResGetSysUid = {
-      uid: id.cuid(),
-    };
+    const ids = Array.from({ length: 10 }).map(() => id.cuid());
+    const data: t.IResGetSysUid = { ids };
     return { status: 200, data };
   });
 }
