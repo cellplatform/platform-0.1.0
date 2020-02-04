@@ -109,7 +109,6 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
       prod: true,
       title,
       done: res => (deployment.info = res),
-      // deploy: false, // TEMP 🐷
     });
   });
 
