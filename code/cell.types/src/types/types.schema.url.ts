@@ -8,7 +8,7 @@ export type IUrl<Q extends object = {}> = {
 
 /**
  * ------------------------------------------------------------------
- * LOCAL (simulate external systems)
+ * LOCAL (local device stand-in for external/cloud systems)
  * ------------------------------------------------------------------
  */
 export type IUrlQueryLocalFs = {};
@@ -127,3 +127,10 @@ export type IUrlQueryFileDelete = {
 export type IUrlQueryFileUploadComplete = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
+
+/**
+ * ------------------------------------------------------------------
+ * SYS
+ * ------------------------------------------------------------------
+ */
+export type IUrlSysUidQuery = { total?: number };

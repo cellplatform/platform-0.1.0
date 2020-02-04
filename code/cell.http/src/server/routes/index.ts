@@ -5,7 +5,9 @@ import * as cellFiles from './route.cell.files';
 import * as file from './route.file';
 import * as ns from './route.ns';
 import { sys } from './route.sys';
-import { handleWasmTmp } from './TMP.wasm';
+import { wildcard } from './wildcard';
+
+import { handleWasmTmp } from './__TMP.wasm'; // TEMP 🐷
 
 /**
  * Register routes.
@@ -28,19 +30,6 @@ export function init(args: {
   // TEMP 🐷
   args.router.get('/wasm', handleWasmTmp); // TEMP 🐷
 
-  // 404 (wildcard).
-  args.router.get(routes.WILDCARD, notFoundHandler);
+  // No match.
+  args.router.get(routes.WILDCARD, wildcard);
 }
-
-/**
- * 404 - not found (wildcard).
- */
-const notFoundHandler: t.RouteHandler = async req => {
-  const status = 404;
-  const data: t.IHttpError = {
-    status,
-    type: ERROR.HTTP.NOT_FOUND,
-    message: 'Resource not found.',
-  };
-  return { status, data };
-};

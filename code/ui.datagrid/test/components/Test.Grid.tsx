@@ -22,6 +22,7 @@ import { TestGridView } from './Test.Grid.view';
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;
+  left: boolean;
   style?: CssValue;
 };
 export type ITestGridState = {
@@ -265,15 +266,15 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   public render() {
     const styles = {
       base: css({
+        Absolute: 0,
         Flex: 'horizontal',
-        flex: 1,
         backgroundColor: color.format(-0.08),
       }),
     };
 
     return (
       <div {...styles.base}>
-        {this.renderLeft()}
+        {this.props.left && this.renderLeft()}
         {this.renderMain()}
         {this.renderRight()}
       </div>
@@ -289,6 +290,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
         Scroll: true,
         fontSize: 13,
         lineHeight: 1.6,
+        borderRight: `solid 1px ${color.format(-0.1)}`,
       }),
     };
     return (
@@ -386,8 +388,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const styles = {
       base: css({ position: 'relative', flex: 1 }),
       inner: css({
-        Absolute: 10,
-        border: `solid 1px ${color.format(-0.2)}`,
+        Absolute: 0,
+        // borderLeft: `solid 1px ${color.format(-0.2)}`,
       }),
       grid: css({ Absolute: 0 }),
     };

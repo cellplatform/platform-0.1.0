@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compile.react",
-  "version": "0.0.18",
+  "version": "0.0.20",
   "description": "CellOS code compilation toolchain for React.",
   "scripts": {
     "start": "parcel demo/hello-world/src/index.html",
@@ -16,7 +16,7 @@
     "clean": "sh sh/clean.sh"
   },
   "dependencies": {
-    "@platform/cell.types": "0.4.21",
+    "@platform/cell.types": "0.4.23",
     "@platform/cli": "0.5.15",
     "@platform/cli.prompt": "^0.3.2",
     "@platform/libs": "0.2.0"

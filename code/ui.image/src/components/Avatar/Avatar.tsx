@@ -51,7 +51,7 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
     this.mouse = mouse.fromProps(props);
   }
 
-  public componentWillMount() {
+  public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
 

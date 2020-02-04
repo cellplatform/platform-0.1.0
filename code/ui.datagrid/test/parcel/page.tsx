@@ -1,5 +1,7 @@
+import '@platform/polyfill';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Test } from '../components/Test';
+import { TestGrid } from '../components/Test.Grid';
 
-ReactDOM.render(<Test />, document.getElementById('root'));
+const el = <TestGrid left={false} editorType={'default'} />;
+ReactDOM.render(el, document.getElementById('root'));

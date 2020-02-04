@@ -156,10 +156,10 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.12.37":
-  version "0.12.37"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.12.37.tgz#adca3ba0b21a007c7d489f933fc856874daf4026"
-  integrity sha512-HAviyeHpj89TtARoksjxp1H83WYKeDE2MsiwspgpdhXHosh0LVELq13Z+qBddf3BOZPQt6j3sHfHfOT/tC2u3g==
+"@platform/micro@0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.14.0.tgz#1c9fcbac0a16dd66aff38bab1b0be67a9d0f4cde"
+  integrity sha512-QAM4aHCuWepawd1M0KEIj4bMHC72RUDzUAB0Npf50jonx0tZ3WRBq8mTUqi2ayIcrV5XzjCr7T9va2QbuBAmrg==
   dependencies:
     "@platform/http.types" "0.1.1"
     "@platform/libs" "0.2.0"

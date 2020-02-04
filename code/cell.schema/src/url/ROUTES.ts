@@ -21,6 +21,7 @@ export const ROUTES = {
   SYS: {
     FAVICON: '/favicon.ico',
     INFO: ['/', '/.sys(/?)'],
+    UID: '/uid(/?)',
   },
   LOCAL: {
     FS: `/local/fs`,
