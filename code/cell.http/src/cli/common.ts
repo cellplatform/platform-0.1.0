@@ -6,6 +6,7 @@ export { fs, t };
 export { cli } from '@platform/cli';
 export { log } from '@platform/log/lib/server';
 export { defaultValue, time } from '@platform/util.value';
+export { http } from '@platform/http';
 
 export const PKG = require('../../package.json') as t.INpmPackageJson;
 export const PATH = {

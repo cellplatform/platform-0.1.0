@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { getConfigFiles, logNoConfigFiles } from './cmd.list';
-import { cli, defaultValue, fs, log, PKG, t, time } from './common';
+import { cli, defaultValue, fs, log, PKG, t, time, http } from './common';
 
 const FILES = [
   'package.json',
@@ -79,9 +79,19 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
         path: config.path,
         config: config.data,
         info: [] as string[],
-        log: () => {
+        async log() {
+          const { domain, subdomain } = config.data.now;
+
+          let url = domain;
+          url = subdomain ? `${subdomain}.${domain}` : url;
+          url = `https://${url}`;
+          const info = (await http.get(url)).json as t.IResGetSysInfo;
+
           log.info.green(`${dirname}`);
-          log.info.gray(`${targetDir}/`);
+          log.info.gray(`• system:     ${info.system}`);
+          log.info.gray(`• region:     ${info.region}`);
+          log.info.gray(`• provider:   ${info.provider}`);
+          log.info();
           res.info.forEach(line => log.info(line));
           log.info();
         },
@@ -99,6 +109,7 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
       prod: true,
       title,
       done: res => (deployment.info = res),
+      // deploy: false, // TEMP 🐷
     });
   });
 
@@ -120,7 +131,9 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
 
   // Finish up.
   log.info();
-  deployments.forEach(deployment => deployment.log());
+  for (const deployment of deployments) {
+    await deployment.log();
+  }
   log.info();
 }
 
@@ -251,12 +264,17 @@ function deployTask(args: {
   prod: boolean;
   force: boolean;
   done: (info: string[]) => void;
+  deploy?: boolean; // Debug.
 }) {
   const { targetDir, title } = args;
   const task: cli.exec.ITask = {
     title,
     task: () => {
       return new Observable(observer => {
+        if (args.deploy === false) {
+          return observer.complete();
+        }
+
         const prod = args.prod ? '--prod' : '';
         const force = args.force ? '--force' : '';
         const cmd = cli.exec.command(`now ${prod} ${force}`.trim());
