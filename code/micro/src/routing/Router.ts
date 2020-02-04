@@ -113,7 +113,11 @@ export class Router implements t.IRouter {
         },
 
         header(key: string) {
-          return incoming.headers[key]?.toString() || '';
+          key = key.toLowerCase();
+          const headers = incoming.headers;
+          const matches = Object.keys(headers).filter(headerKey => headerKey.toLowerCase() === key);
+          const value = matches[0] ? headers[matches[0]] : '';
+          return value?.toString() || '';
         },
 
         toUrl(path: string) {

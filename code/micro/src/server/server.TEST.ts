@@ -179,6 +179,25 @@ describe('micro (server)', () => {
         expect(res2.headers).to.eql(headers);
       }
     });
+
+    it('req.header (case-insensitive)', async () => {
+      const mock = await mockServer();
+      let req: t.Request | undefined;
+      mock.router.get('/foo', async r => {
+        req = r;
+        return {};
+      });
+
+      await http.get(mock.url('/foo'), { headers: { 'x-FOO-bar': 'hello' } });
+
+      expect(req?.header('host')).to.match(/^localhost/);
+      expect(req?.header('Accept')).to.eql('*/*'); //        NB: case-insensitive
+      expect(req?.header('x-FOO-bar')).to.eql('hello'); //   NB: case-insensitive
+
+      expect(req?.header('no-exist')).to.eql('');
+
+      await mock.dispose();
+    });
   });
 
   it('complex route and query-string', async () => {
