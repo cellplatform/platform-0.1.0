@@ -285,7 +285,7 @@ describe('ns:', function() {
     });
   });
 
-  describe.only('POST calculate', () => {
+  describe('POST calculate', () => {
     it('REF', async () => {
       const cells = {
         A1: { value: '=A2' },
@@ -445,7 +445,7 @@ describe('ns:', function() {
       expect(error2).to.eql(undefined);
     });
 
-    it.only('calculates SUM from imported func', async () => {
+    it.skip('calculates SUM from imported func', async () => {
       const mock = await createMock();
       const cells = {
         A1: { value: '=10 + A2', links: {} },

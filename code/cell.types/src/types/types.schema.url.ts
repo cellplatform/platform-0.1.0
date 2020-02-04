@@ -31,7 +31,7 @@ export type IUrlQueryNsInfo = {
   files?: boolean;
 };
 
-export type IUrlQueryNsUpdate = IUrlQueryNsInfo & {
+export type IUrlQueryNsWrite = IUrlQueryNsInfo & {
   changes?: boolean; // NB: return list of changes (default: true).
 };
 

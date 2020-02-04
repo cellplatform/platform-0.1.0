@@ -33,6 +33,7 @@ export type IClientNs = {
   readonly uri: t.IUriParts<t.INsUri>;
   readonly url: t.IUrlsNs;
   read(options?: t.IUrlQueryNsInfo): t.IClientAsync<t.IResGetNs>;
+  write(data: t.IReqPostNsBody, options?: t.IUrlQueryNsWrite): t.IClientAsync<t.IResPostNs>;
 };
 
 /**

@@ -55,7 +55,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.post(routes.NS.INFO, async req => {
     const host = req.host;
-    const query = req.query as t.IUrlQueryNsUpdate;
+    const query = req.query as t.IUrlQueryNsWrite;
     const { status, id, error } = getParams(req);
     const body = (await req.body.json<t.IReqPostNsBody>()) || {};
     return !id || error ? { status, data: { error } } : postNs({ db, id, body, query, host });
