@@ -83,23 +83,25 @@ export class Urls implements t.IUrls {
   public ns(input: string | t.IUrlParamsNs) {
     const toPath = this.toUrl;
     let id = typeof input === 'string' ? input : input.ns;
+
+    if (!id.includes(':')) {
+      id = `ns:${id}`; // NB: Only the ID (cuid) was passed. Prepend with namespace token.
+    }
+
     const uri = Uri.parse(id);
+    const type = uri.parts.type;
 
-    if (id.includes(':')) {
-      const type = uri.parts.type;
+    if (uri.error) {
+      throw new Error(uri.error.message);
+    }
 
-      if (uri.error) {
-        throw new Error(uri.error.message);
-      }
-
-      if (type === 'NS') {
-        id = (uri.parts as t.INsUri).id;
-      } else if (type === 'CELL') {
-        id = (uri.parts as t.ICellUri).ns;
-      } else {
-        const err = `The id for the namespace is a URI, but not of type "ns:" or "cell:" ("${id}")`;
-        throw new Error(err);
-      }
+    if (type === 'NS') {
+      id = (uri.parts as t.INsUri).id;
+    } else if (type === 'CELL') {
+      id = (uri.parts as t.ICellUri).ns;
+    } else {
+      const err = `The id for the namespace is a URI, but not of type "ns:" or "cell:" ("${id}")`;
+      throw new Error(err);
     }
 
     return {

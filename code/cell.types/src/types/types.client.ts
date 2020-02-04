@@ -32,6 +32,7 @@ export type IClient = {
 export type IClientNs = {
   readonly uri: t.IUriParts<t.INsUri>;
   readonly url: t.IUrlsNs;
+  read(options?: t.IUrlQueryNsInfo): t.IClientAsync<t.IResGetNs>;
 };
 
 /**
@@ -42,7 +43,7 @@ export type IClientCell = {
   readonly url: t.IUrlsCell;
   readonly file: IClientCellFile;
   readonly files: IClientCellFiles;
-  info(): t.IClientAsync<t.IResGetCell>;
+  info(options?: t.IUrlQueryCellInfo): t.IClientAsync<t.IResGetCell>;
   links(): t.IClientAsync<IClientCellLinks>;
 };
 

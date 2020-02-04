@@ -32,6 +32,12 @@ describe('client', () => {
     expect(ns.toString()).to.eql(uri);
   });
 
+  it('client.ns (without "ns:" prefix)', () => {
+    const client = Client.create();
+    const ns = client.ns('foo');
+    expect(ns.toString()).to.eql('ns:foo'); // NB: prepended with "ns:"
+  });
+
   it('client.cell', () => {
     const uri = 'cell:foo!A1';
     const client = Client.create();

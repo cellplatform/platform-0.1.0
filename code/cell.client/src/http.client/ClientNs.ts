@@ -1,4 +1,4 @@
-import { t, Uri } from '../common';
+import { t, Uri, util } from '../common';
 
 export type IClientNsArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
 
@@ -32,5 +32,12 @@ export class ClientNs implements t.IClientNs {
    */
   public toString() {
     return this.uri.toString();
+  }
+
+  public async read(options?: t.IUrlQueryNsInfo) {
+    const http = this.args.http;
+    const url = this.url.info.query(options || {});
+    const res = await http.get(url.toString());
+    return util.fromHttpResponse(res).toClientResponse<t.IResGetNs>();
   }
 }

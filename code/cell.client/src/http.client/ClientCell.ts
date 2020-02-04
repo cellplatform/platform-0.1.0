@@ -55,9 +55,9 @@ export class ClientCell implements t.IClientCell {
     return this.uri.toString();
   }
 
-  public async info() {
+  public async info(options?: t.IUrlQueryCellInfo) {
     const http = this.args.http;
-    const url = this.url.info;
+    const url = this.url.info.query(options || {});
     const res = await http.get(url.toString());
     return util.fromHttpResponse(res).toClientResponse<t.IResGetCell>();
   }
