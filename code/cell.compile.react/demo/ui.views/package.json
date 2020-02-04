@@ -1,6 +1,6 @@
 {
   "name": "demo.ui.views",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "source": "src/index.html",
   "node": "dist/node/index.html",
   "browser": "dist/browser/index.html",
@@ -16,7 +16,7 @@
     "serve": "cd dist && serve"
   },
   "dependencies": {
-    "@platform/cell.client": "^0.1.23",
+    "@platform/cell.client": "^0.1.24",
     "@platform/http": "^0.11.1",
     "@platform/libs": "^0.2.0",
     "@platform/log": "^0.1.7",
