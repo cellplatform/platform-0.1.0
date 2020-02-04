@@ -1,4 +1,4 @@
-import { constants, fs, routes, t, time, id } from '../common';
+import { constants, fs, routes, t, time, id, defaultValue } from '../common';
 
 /**
  * Root information.
@@ -38,8 +38,10 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
    * GET: /uid
    */
   router.get(routes.SYS.UID, async req => {
-    const ids = Array.from({ length: 10 }).map(() => id.cuid());
-    const data: t.IResGetSysUid = { ids };
+    const query = req.query as t.IUrlSysUidQuery;
+    const length = Math.min(100, defaultValue(query.total, 10));
+    const ids = Array.from({ length }).map(() => id.cuid());
+    const data: t.IResGetSysUid = ids;
     return { status: 200, data };
   });
 }

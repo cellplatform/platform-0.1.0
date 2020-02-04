@@ -219,6 +219,4 @@ export type IResGetSysInfo = {
   deployed?: string;
 };
 
-export type IResGetSysUid = {
-  ids: string[];
-};
+export type IResGetSysUid = string[];
