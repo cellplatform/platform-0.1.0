@@ -9,10 +9,30 @@ describe('queryString', () => {
 
   describe('toObject', () => {
     it('handles empty/nothing', () => {
-      expect(queryString.toObject('')).to.eql({});
-      expect(queryString.toObject('  ')).to.eql({});
-      expect(queryString.toObject(undefined)).to.eql({});
-      expect(queryString.toObject()).to.eql({});
+      const test = (input?: any) => {
+        expect(queryString.toObject(input)).to.eql({});
+      };
+      test('');
+      test('  ');
+      test();
+      test(undefined);
+      test(null);
+    });
+
+    it('parses href (full URL)', () => {
+      const test = (input: string | undefined) => {
+        const res = queryString.toObject(input);
+        expect(res).to.eql({ foo: '123' });
+      };
+
+      test('http://domain.com?foo=123');
+      test(' http://domain.com/?foo=123 ');
+      test('domain.com/?foo=123');
+      test('domain.com?foo=123');
+      test('domain.com?foo=123');
+      test('http://localhost?foo=123');
+      test('http://localhost:8080/?foo=123');
+      test('localhost:8080/?foo=123');
     });
 
     it('reads key:value (without "?" prefix)', () => {
@@ -21,7 +41,7 @@ describe('queryString', () => {
     });
 
     it('reads key:value (with "?" prefix)', () => {
-      const result = queryString.toObject('?search=abc');
+      const result = queryString.toObject('  ?search=abc  ');
       expect(result).to.eql({ search: 'abc' });
     });
 
