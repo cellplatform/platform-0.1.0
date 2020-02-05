@@ -9,7 +9,7 @@ import { Log } from './components/Log';
 
 const { URLS } = constants;
 
-type Invitee = { email: string; avatar: string; accepted?: boolean };
+type Invitee = { row: number; email: string; avatar: string; accepted?: boolean };
 
 export type IInviteProps = { style?: CssValue };
 export type IInviteState = {
@@ -61,7 +61,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       const email = toString(cells[`B${row + 1}`]?.value);
       const avatar = toString(cells[`C${row + 1}`]?.value);
       const accepted = cells[`D${row + 1}`]?.value as boolean | undefined;
-      const res: Invitee = { accepted, email, avatar };
+      const res: Invitee = { row, accepted, email, avatar };
       return res;
     };
 
@@ -218,8 +218,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
 
     const elList = invitees.map((person, i) => {
       const isLast = i === invitees.length - 1;
-      const { email, avatar } = person;
-      const elAvatar = this.renderAvatar({ key: `avatar-${i}`, email, src: avatar });
+      const elAvatar = this.renderAvatar({ index: i, person });
       const elDivider = isLast ? undefined : this.renderAvatarDivider({ key: `div-${i}` });
       return [elAvatar, elDivider];
     });
@@ -243,19 +242,14 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       dividerMain: css({}),
     };
     return (
-      <div {...styles.base}>
+      <div {...styles.base} key={props.key}>
         <div {...css(styles.divider, styles.dividerMain)} />
       </div>
     );
   }
 
-  private renderAvatar(props: {
-    key?: string | number;
-    email: string;
-    src: string;
-    size?: number;
-  }) {
-    const { email, src, size = 55 } = props;
+  private renderAvatar(props: { index: number; person: Invitee; size?: number }) {
+    const { index, person, size = 55 } = props;
     const styles = {
       base: css({
         position: 'relative',
@@ -271,14 +265,30 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         fontSize: 11,
         textAlign: 'center',
       }),
+      emoji: css({
+        Absolute: [null, -8, 5, null],
+        fontSize: 20,
+      }),
     };
+
+    const label = person.accepted ? 'Accepted' : 'Accept';
+
+    const emoji = person.accepted && <div {...styles.emoji}>🎉</div>;
+
     return (
-      <div {...styles.base} key={props.key}>
+      <div {...styles.base} key={`avatar-${index}`}>
         <div {...styles.accept}>
-          <Button label={'Accept'} />
+          <Button label={label} onClick={this.acceptHandler(index)} />
         </div>
-        <Avatar src={src} size={size} borderRadius={size / 2} borderColor={0.1} borderWidth={6} />
-        <div {...styles.name}>{email}</div>
+        <Avatar
+          src={person.avatar}
+          size={size}
+          borderRadius={size / 2}
+          borderColor={0.1}
+          borderWidth={6}
+        />
+        {emoji}
+        <div {...styles.name}>{person.email}</div>
       </div>
     );
   }
@@ -319,4 +329,22 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     const date = time.day(this.state.date);
     return <div {...styles.base}>{date.format('ddd D MMM, h:mma')}</div>;
   }
+
+  private acceptHandler = (index: number) => {
+    return async () => {
+      const person = (this.state.invitees || [])[index];
+      if (person) {
+        // Write the updated status for the person.
+        const key = `D${person.row + 1}`;
+        const cells: t.ICellMap = {
+          [key]: { value: !person.accepted },
+        };
+        const client = this.client.ns(this.ns);
+        await client.write({ cells });
+
+        // Redraw the screen.
+        this.load();
+      }
+    };
+  };
 }
