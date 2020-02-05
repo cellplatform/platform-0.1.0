@@ -40,10 +40,11 @@ const ns = client.ns(DEF);
   cells.B5 = { value: 'ns:ck68ivf06000008l44wpo1dxl' };
 
   // State.
-  cells.A6 = { value: 'state:' };
+  cells.B6 = { value: 'date:' };
+  cells.C6 = { value: 'Thu Feb 06 2020 11:00:00 GMT+1300' };
 
-  cells.B7 = { value: 'date:' };
-  cells.C7 = { value: 'Thu Feb 06 2020 11:00:00 GMT+1300' };
+  cells.B7 = { value: '' };
+  cells.C7 = { value: '' };
 
   await ns.write({ cells });
   const res = await ns.read({ data: true });
@@ -51,4 +52,7 @@ const ns = client.ns(DEF);
   // console.log('res.changes', res.);
   console.log('-------------------------------------------');
   console.log('res', res.body.data);
+  console.log('-------------------------------------------');
+  console.log('HOST ', HOST);
+  console.log('DEF  ', DEF);
 })();
