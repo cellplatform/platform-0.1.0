@@ -61,6 +61,14 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   }
 
   /**
+   * Properties
+   */
+  private get date() {
+    const date = this.state.date;
+    return date ? time.day(date) : undefined;
+  }
+
+  /**
    * [Methods]
    */
 
@@ -187,6 +195,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       <div {...styles.base}>
         <div {...styles.bevel} />
         {this.renderLog()}
+        {this.renderDateCountdown()}
         {this.renderDate()}
       </div>
     );
@@ -339,8 +348,40 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     );
   }
 
+  private renderDateCountdown() {
+    const date = this.state.date;
+    // const date = this.date;
+    if (!date) {
+      return null;
+    }
+
+    const now = time.now.timestamp;
+    const meetingAt = new Date(date).getTime();
+
+    const duration = time.duration(meetingAt - now);
+
+    const styles = {
+      base: css({
+        Absolute: [-20, null, null, 15],
+      }),
+      text: css({
+        fontSize: 200,
+        fontWeight: 'bold',
+        letterSpacing: '-0.03em',
+        opacity: 0.5,
+      }),
+    };
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.text}>{duration.toString()}</div>
+      </div>
+    );
+  }
+
   private renderDate() {
-    if (!this.state.date) {
+    const date = this.date;
+    if (!date) {
       return null;
     }
     const styles = {
@@ -350,9 +391,12 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         fontSize: 32,
       }),
     };
-    const date = time.day(this.state.date);
     return <div {...styles.base}>{date.format('ddd D MMM, h:mma')}</div>;
   }
+
+  /**
+   * [Handlers]
+   */
 
   private acceptHandler = (index: number) => {
     return async () => {

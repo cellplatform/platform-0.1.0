@@ -5,11 +5,12 @@ export function parseClient(href: string) {
   const query = queryString.toObject<{ def: string }>(href);
   const parts = (query.def || '').split('ns:');
 
-  const host = parts[0] || location.host;
-  const ns = parts[1];
+  const host = (parts[0] || location.host).replace(/\:$/, '');
+  const ns = parts[1] || '';
 
   const def = `ns:${ns}`;
   const client = Client.create(host);
 
-  return { host, def, client };
+  const res = { host, def, client };
+  return res;
 }
