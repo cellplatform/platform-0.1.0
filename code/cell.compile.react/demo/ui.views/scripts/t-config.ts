@@ -1,11 +1,12 @@
 import { constants, Client, Schema, t } from '../src/common';
 
-const HOST = 'dev.db.team';
+// const HOST = 'dev.db.team';
+const HOST = 'alpha.hypersheet.io';
 // const HOST = 'localhost:8080';
-const NS = 'ns:ck68bc6f2000b08l59z4v14g2';
+const DEF = 'ns:ck68bc6f2000b08l59z4v14g2';
 
 const client = Client.create(HOST);
-const ns = client.ns(NS);
+const ns = client.ns(DEF);
 
 (async () => {
   const cells: t.ICellMap = {};
