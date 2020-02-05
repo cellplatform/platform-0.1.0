@@ -25,23 +25,23 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.coord@0.8.41":
-  version "0.8.41"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.41.tgz#b5359a02f9a5968ca4670c41b937e5dfd4a632fe"
-  integrity sha512-WuPYjpue+z23qdgIQ6w7VNVMCdgqNNGx+CaBHlt2DrToe7xujAXl2C+YNrunI2iDs0z7Tnjh0ZiErtiPitAheA==
+"@platform/cell.coord@0.8.42":
+  version "0.8.42"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.42.tgz#2839ed61037d5b7dbf357db5222894183f084d2d"
+  integrity sha512-LnDF6F3kXCE6ihwxP8ZFlHQ4vzgjmAPRh/iyiK9LBrzL/ZxwHXbNO6rpKfute1kgpO3tBgul9lHmskvjjklbQA==
   dependencies:
     "@platform/cache" "0.2.15"
-    "@platform/cell.types" "0.4.23"
+    "@platform/cell.types" "0.4.24"
     "@platform/types" "0.4.4"
     "@platform/util.value" "0.7.3"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.types@0.4.23":
-  version "0.4.23"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.23.tgz#0f3bc6a5a0286771d3549af60f0ec91509c71ec0"
-  integrity sha512-SYFgzgeVGdAdPLkWyjtBNZ/FRlDbSxIEFpLuybTik9KQK3BoTE7f4KcHlBhpEBDe+oXZ7IijF5M37ddrNvjYxA==
+"@platform/cell.types@0.4.24":
+  version "0.4.24"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.24.tgz#4102ed3b6df2230272a1d2e2519779f809420e12"
+  integrity sha512-yB/qLvBFl+vrblIvA38bmKYEP50JLYE/8DmimarkBQvUa2ouy9Bi8/rU2SmGLEnQleh4cRxLkYtClV1nOz/Tzw==
   dependencies:
     "@platform/cache" "0.2.15"
     "@platform/fs.s3.types" "0.1.12"

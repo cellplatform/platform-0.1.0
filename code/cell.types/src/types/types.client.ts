@@ -32,6 +32,8 @@ export type IClient = {
 export type IClientNs = {
   readonly uri: t.IUriParts<t.INsUri>;
   readonly url: t.IUrlsNs;
+  read(options?: t.IUrlQueryNsInfo): t.IClientAsync<t.IResGetNs>;
+  write(data: t.IReqPostNsBody, options?: t.IUrlQueryNsWrite): t.IClientAsync<t.IResPostNs>;
 };
 
 /**
@@ -42,7 +44,7 @@ export type IClientCell = {
   readonly url: t.IUrlsCell;
   readonly file: IClientCellFile;
   readonly files: IClientCellFiles;
-  info(): t.IClientAsync<t.IResGetCell>;
+  info(options?: t.IUrlQueryCellInfo): t.IClientAsync<t.IResGetCell>;
   links(): t.IClientAsync<IClientCellLinks>;
 };
 

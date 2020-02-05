@@ -10,18 +10,22 @@ export type UrlQuery = Record<string, string | string[] | number | boolean | und
 /**
  * Takes a query-string value and parses it into an object.
  */
-export function toObject<T>(queryString?: string): T {
+export function toObject<T>(href?: string): T {
   // Setup initial conditions.
   const EMPTY = {};
-  if (!queryString) {
+  if (!href) {
     return EMPTY as T;
   }
-  if (!queryString.trim()) {
+  if (!href.trim()) {
     return EMPTY as T;
   }
 
+  // Parse URL if provided.
+  href = href.trim();
+  href = href.includes('?') ? href.substring(href.indexOf('?')) : href;
+
   // Remove "#" and "?" prefix.
-  let text = queryString.trim();
+  let text = href;
   text = !text.startsWith('?') ? text : text.substring(1);
   text = !text.startsWith('#') ? text : text.substring(1);
 

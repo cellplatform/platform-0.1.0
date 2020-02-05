@@ -93,6 +93,11 @@ describe('Urls', () => {
       expect(res.uri).to.eql(URI);
     });
 
+    it('uri (from raw namespace id)', () => {
+      const res = url.ns('foo');
+      expect(res.uri).to.eql('ns:foo');
+    });
+
     it('throw if non-namespace URI passed', () => {
       expect(() => url.ns('foo:bar')).to.throw();
       expect(() => url.ns('cell:foo')).to.throw(); // NB: No "!A1" key on the ns.

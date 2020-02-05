@@ -52,13 +52,14 @@ export function urls(host: string) {
                 const seconds = toSeconds(expires);
                 expires = typeof seconds === 'number' && seconds > 3600 ? '1h' : expires;
 
-                const fileUrl = builder.file.byFileUri(uri, ext);
+                const fileByUri = builder.file.byFileUri(uri, ext);
+                const fileByName = builder.file.byName(path);
 
                 acc.push({
                   uri,
                   path,
-                  'url:latest': fileUrl.toString(), // NB: Simple, no query-string.
-                  url: fileUrl.query({ hash, expires }).toString(),
+                  'url:latest': fileByName.toString(), // NB: "latest" because hash is not included.
+                  url: fileByUri.query({ hash, expires }).toString(),
                 });
                 return acc;
               }, [] as t.IResGetCellFilesFileUrl[]);

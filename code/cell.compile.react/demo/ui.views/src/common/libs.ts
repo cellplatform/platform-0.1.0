@@ -1,8 +1,12 @@
 export { css, color, style, CssValue } from '@platform/react';
 
 export { Client } from '@platform/cell.client';
+export { Schema } from '@platform/cell.schema';
 export { log } from '@platform/log/lib/client';
-export { http } from '@platform/http';
+export { coord } from '@platform/cell.coord';
 
-export { Spinner } from '@platform/ui.spinner';
-export { Button } from '@platform/ui.button';
+export { http } from '@platform/http';
+export { time, defaultValue } from '@platform/util.value';
+
+import { prop, sortBy } from 'ramda';
+export const R = { prop, sortBy };

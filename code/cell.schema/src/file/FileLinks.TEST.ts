@@ -2,7 +2,7 @@ import { t, fs, expect } from '../test';
 import { FileLinks } from '.';
 
 describe('FileLinks', () => {
-  it.only('total', () => {
+  it('total', () => {
     const test = (links: t.IUriMap | undefined, expected: number) => {
       const res = FileLinks.total(links);
       expect(res).to.eql(expected);
