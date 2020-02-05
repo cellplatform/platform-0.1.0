@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, COLORS, R, time } from '../../../common';
+import { css, color, CssValue, COLORS, R, time } from '../../common';
 
 export type ILogItem = { id: string; date: number; title: string; detail: string };
 

@@ -15,13 +15,19 @@ import {
   coord,
 } from '../../common';
 
+import { Spinner } from '@platform/ui.spinner';
 import { Button } from '@platform/ui.button';
 import { Avatar } from '@platform/ui.image';
-import { Log, ILogItem } from './components/Log';
+import { Log, ILogItem } from './Log';
 
 const { URLS } = constants;
 
-type Invitee = { row: number; email: string; avatar: string; accepted?: boolean };
+type Invitee = {
+  row: number;
+  email: string;
+  avatar: string;
+  accepted?: boolean;
+};
 
 export type IInviteProps = { style?: CssValue };
 export type IInviteState = {
@@ -30,6 +36,7 @@ export type IInviteState = {
   invitees?: Invitee[];
   logRef?: string;
   log?: ILogItem[];
+  spinning?: number[];
 };
 
 export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
@@ -245,9 +252,11 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       }),
     };
 
+    const { spinning = [] } = this.state;
     const elList = invitees.map((person, i) => {
       const isLast = i === invitees.length - 1;
-      const elAvatar = this.renderAvatar({ index: i, person });
+      const isSpinning = spinning.includes(person.row);
+      const elAvatar = this.renderAvatar({ index: i, person, isSpinning });
       const elDivider = isLast ? undefined : this.renderAvatarDivider({ key: `div-${i}` });
       return [elAvatar, elDivider];
     });
@@ -258,6 +267,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   private renderAvatarDivider(props: { key?: string | number } = {}) {
     const styles = {
       base: css({
+        position: 'relative',
         Flex: 'horizontal-center-center',
       }),
       divider: css({
@@ -277,8 +287,14 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     );
   }
 
-  private renderAvatar(props: { index: number; person: Invitee; size?: number }) {
-    const { index, person, size = 55 } = props;
+  private renderAvatar(props: {
+    index: number;
+    person: Invitee;
+    size?: number;
+    isSpinning?: boolean;
+  }) {
+    const { index, person, size = 55, isSpinning } = props;
+
     const styles = {
       base: css({
         position: 'relative',
@@ -298,16 +314,20 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         Absolute: [null, -8, 5, null],
         fontSize: 20,
       }),
+      spinner: css({
+        Absolute: [-28, null, null, 16],
+      }),
     };
 
     const label = person.accepted ? 'Accepted' : 'Accept';
     const emoji = person.accepted && <div {...styles.emoji}>🎉</div>;
 
+    const elButton = !isSpinning && <Button label={label} onClick={this.acceptHandler(index)} />;
+    const elSpinner = isSpinning && <Spinner color={1} style={styles.spinner} />;
+
     return (
       <div {...styles.base} key={`avatar-${index}`}>
-        <div {...styles.accept}>
-          <Button label={label} onClick={this.acceptHandler(index)} />
-        </div>
+        <div {...styles.accept}>{elButton}</div>
         <Avatar
           src={person.avatar}
           size={size}
@@ -315,6 +335,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
           borderColor={0.1}
           borderWidth={6}
         />
+        {elSpinner}
         {emoji}
         <div {...styles.name}>{person.email}</div>
       </div>
@@ -350,7 +371,6 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
 
   private renderDateCountdown() {
     const date = this.state.date;
-    // const date = this.date;
     if (!date) {
       return null;
     }
@@ -403,6 +423,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       const person = (this.state.invitees || [])[index];
       if (person) {
         const accepted = !person.accepted;
+        this.state$.next({ spinning: [person.row] }); // Start spinner.
 
         // Write the updated status for the person.
         const key = `D${person.row + 1}`;
@@ -418,7 +439,8 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         await this.writeLog({ title, message });
 
         // Redraw the screen.
-        this.load();
+        await this.load();
+        this.state$.next({ spinning: undefined }); // Stop spinner.
       }
     };
   };
