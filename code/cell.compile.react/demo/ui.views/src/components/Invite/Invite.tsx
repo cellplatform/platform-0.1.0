@@ -1,11 +1,23 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { constants, css, color, CssValue, COLORS, parseClient, t, time, log } from '../../common';
+import {
+  constants,
+  css,
+  color,
+  CssValue,
+  COLORS,
+  parseClient,
+  t,
+  time,
+  log,
+  defaultValue,
+  coord,
+} from '../../common';
 
 import { Button } from '@platform/ui.button';
 import { Avatar } from '@platform/ui.image';
-import { Log } from './components/Log';
+import { Log, ILogItem } from './components/Log';
 
 const { URLS } = constants;
 
@@ -16,6 +28,8 @@ export type IInviteState = {
   title?: string;
   date?: string;
   invitees?: Invitee[];
+  logRef?: string;
+  log?: ILogItem[];
 };
 
 export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
@@ -66,19 +80,25 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     };
 
     const title = toString(cells.B1?.value);
-    const date = toString(cells.C6?.value);
+    const date = toString(cells.C7?.value);
     const invitees = [getInvittee(1), getInvittee(2), getInvittee(3)];
+    const logNs = toString(cells.B5?.value);
 
     this.state$.next({
       title,
       date,
       invitees,
+      logRef: logNs,
     });
+
+    const logItems = await this.readLog({ range: true });
+    this.state$.next({ log: logItems });
 
     log.group('data');
     log.info('host:', this.client.origin);
-    log.info('ns:', this.ns);
-    log.info('cells:', cells);
+    log.info('def:', this.ns);
+    log.info('log:', logNs);
+    log.info('def.cells:', cells);
     log.info('state:', this.state);
     log.groupEnd();
   };
@@ -272,7 +292,6 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     };
 
     const label = person.accepted ? 'Accepted' : 'Accept';
-
     const emoji = person.accepted && <div {...styles.emoji}>🎉</div>;
 
     return (
@@ -294,6 +313,11 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   }
 
   private renderLog() {
+    const { log: items = [] } = this.state;
+    if (items.length === 0) {
+      return null;
+    }
+
     const styles = {
       base: css({
         Absolute: [0, 0, 0, null],
@@ -310,7 +334,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     return (
       <div {...styles.base}>
         <div {...styles.bevel} />
-        <Log style={styles.log} />
+        <Log style={styles.log} items={items} />
       </div>
     );
   }
@@ -334,17 +358,65 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     return async () => {
       const person = (this.state.invitees || [])[index];
       if (person) {
+        const accepted = !person.accepted;
+
         // Write the updated status for the person.
         const key = `D${person.row + 1}`;
         const cells: t.ICellMap = {
-          [key]: { value: !person.accepted },
+          [key]: { value: accepted },
         };
         const client = this.client.ns(this.ns);
         await client.write({ cells });
+
+        // Write log.
+        const title = `Invite ${accepted ? 'Accepted' : 'Declined'}`;
+        const message = `${person.email} ${accepted ? 'is going' : 'is not going'} to the meeting.`;
+        await this.writeLog({ title, message });
 
         // Redraw the screen.
         this.load();
       }
     };
+  };
+
+  private readLog = async (args: { range?: string | boolean } = {}): Promise<ILogItem[]> => {
+    const ns = this.state.logRef;
+    if (!ns) {
+      return [];
+    }
+    const client = this.client.ns(ns);
+    const range = defaultValue(args.range, true);
+    const cells = (await client.read({ cells: range })).body.data.cells || {};
+
+    return Object.keys(cells)
+      .filter(key => key.startsWith('A'))
+      .reduce((acc, next) => {
+        const { row } = coord.cell.fromKey(next);
+        const id = next;
+        const date = (cells[next]?.value || -1) as number;
+        const title = cells[`B${row + 1}`]?.value as string;
+        const detail = cells[`C${row + 1}`]?.value as string;
+        acc.push({ id, date, title, detail });
+        return acc;
+      }, [] as ILogItem[]);
+  };
+
+  private writeLog = async (args: { title: string; message: string }) => {
+    if (!this.state.logRef) {
+      return;
+    }
+    const client = this.client.ns(this.state.logRef);
+    const current = await this.readLog({ range: 'A' });
+
+    const row = current.length;
+    const now = time.now.timestamp;
+    const { title, message } = args;
+
+    const cells: t.ICellMap = {
+      [`A${row + 1}`]: { value: now },
+      [`B${row + 1}`]: { value: title },
+      [`C${row + 1}`]: { value: message },
+    };
+    await client.write({ cells }, { cells: true });
   };
 }

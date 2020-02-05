@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, COLORS } from '../../../common';
+import { css, color, CssValue, COLORS, R, time } from '../../../common';
 
-type Item = { id: string; label: string };
+export type ILogItem = { id: string; date: number; title: string; detail: string };
 
-export type ILogProps = { style?: CssValue };
+export type ILogProps = {
+  items: ILogItem[];
+  style?: CssValue;
+};
 export type ILogState = {};
 
 export class Log extends React.PureComponent<ILogProps, ILogState> {
@@ -32,13 +35,9 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
   /**
    * [Properties]
    */
-  public get list(): Item[] {
-    return Array.from({ length: 4 })
-      .map((v, i) => ({
-        id: i.toString(),
-        label: `transaction-${i + 1}`,
-      }))
-      .reverse();
+  public get list(): ILogItem[] {
+    const { items = [] } = this.props;
+    return R.sortBy(R.prop('date'), items);
   }
 
   /**
@@ -59,7 +58,6 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
         Absolute: 0,
         paddingTop: 30,
         display: 'flex',
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       }),
     };
     const items = this.list;
@@ -71,7 +69,7 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
     );
   }
 
-  private renderList(props: { items: Item[] }) {
+  private renderList(props: { items: ILogItem[] }) {
     const { items = [] } = props;
     const styles = {
       base: css({
@@ -79,37 +77,40 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
         padding: 0,
         paddingLeft: 34,
         paddingRight: 10,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         alignSelf: 'flex-end',
         flex: 1,
         color: COLORS.WHITE,
       }),
       li: css({
-        marginBottom: 20,
+        marginBottom: 28,
         fontSize: 17,
       }),
       liBody: css({
         color: COLORS.DARK,
       }),
-      label: css({
-        fontSize: 14,
+      title: css({
+        fontSize: 13,
+        fontWeight: 'bold',
       }),
       detail: css({
-        fontSize: 12,
-        marginTop: 8,
-        opacity: 0.8,
+        fontSize: 13,
+        marginTop: 5,
+      }),
+      date: css({
+        fontSize: 10,
+        marginTop: 5,
+        opacity: 0.7,
       }),
     };
 
-    const DETAIL =
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. ';
-
     const elItems = items.map((item, i) => {
+      const date = time.day(item.date).format('h:mma D MMM YYYY');
       return (
         <li key={i} {...styles.li}>
           <div {...styles.liBody}>
-            <div {...styles.label}>{item.label}</div>
-            <div {...styles.detail}>{DETAIL}</div>
+            <div {...styles.title}>{item.title}</div>
+            <div {...styles.detail}>{item.detail}</div>
+            <div {...styles.date}>logged: {date}</div>
           </div>
         </li>
       );

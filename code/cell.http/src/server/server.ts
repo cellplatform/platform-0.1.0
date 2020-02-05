@@ -9,6 +9,12 @@ export { logger } from './logger';
 
 const { PKG } = constants;
 
+process.on('uncaughtException', function(err) {
+  log.error('UNCAUGHT EXCEPTION');
+  log.error(err.message);
+  log.info();
+});
+
 /**
  * Initializes a new server instance.
  */

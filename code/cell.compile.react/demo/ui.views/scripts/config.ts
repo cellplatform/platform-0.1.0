@@ -27,13 +27,13 @@ const ns = client.ns(NS);
   cells.A2 = { value: 'invitees:' };
 
   cells.B2 = { value: 'phil@hypersheet.io' };
-  cells.C2 = { value: 'http://localhost:8080/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:621bttku.png' };
+  cells.C2 = { value: 'http://localhost:8080/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:9vrkt56.png' };
 
   cells.B3 = { value: 'woo@hypersheet.io' };
-  cells.C3 = { value: 'http://localhost:8080/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:2z14tt2l.jpg' };
+  cells.C3 = { value: 'http://localhost:8080/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:9wvktzr.jpg' };
 
   cells.B4 = { value: 'gautam@hypersheet.io' };
-  cells.C4 = { value: 'http://localhost:8080/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:2y10ttxl.jpg' };
+  cells.C4 = { value: 'http://localhost:8080/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:zo1ktof.jpg' };
 
   // Activity log (REF).
   cells.A5 = { value: 'activity log' };
@@ -44,9 +44,6 @@ const ns = client.ns(NS);
 
   cells.B7 = { value: 'date:' };
   cells.C7 = { value: 'Thu Feb 06 2020 11:00:00 GMT+1300' };
-
-  // add(1, 'title', 'string', 'Meeting Invite.');
-  // add(2, 'to', 'email', 'phil@hypersheet.io, woo@hypersheet.io, gautam@hypersheet.io');
 
   await ns.write({ cells });
   const res = await ns.read({ data: true });
