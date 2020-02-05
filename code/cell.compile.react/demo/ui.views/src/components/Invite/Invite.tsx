@@ -1,20 +1,30 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, client, Client, http, COLORS, Spinner, Button } from '../../common';
+import { constants, css, color, CssValue, COLORS, parseClient, t, time, log } from '../../common';
 
+import { Button } from '@platform/ui.button';
 import { Avatar } from '@platform/ui.image';
 import { Log } from './components/Log';
 
-import { URLS } from './urls';
+const { URLS } = constants;
+
+type Invitee = { email: string; avatar: string; accepted?: boolean };
 
 export type IInviteProps = { style?: CssValue };
-export type IInviteState = {};
+export type IInviteState = {
+  title?: string;
+  date?: string;
+  invitees?: Invitee[];
+};
 
 export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   public state: IInviteState = {};
   private state$ = new Subject<Partial<IInviteState>>();
   private unmounted$ = new Subject<{}>();
+
+  private client: t.IClient;
+  private ns: string;
 
   /**
    * [Lifecycle]
@@ -24,7 +34,11 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   }
 
   public componentDidMount() {
+    const res = parseClient(location.href);
+    this.client = res.client;
+    this.ns = res.def;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.load();
   }
 
   public componentWillUnmount() {
@@ -36,40 +50,37 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
    * [Methods]
    */
 
-  private tmp = async () => {
-    // console.log('client', client);
+  private load = async () => {
+    const client = this.client.ns(this.ns);
+    const def = await client.read({ cells: true });
+    const cells = def.body.data.cells || {};
 
-    const host = 'localhost:8080';
-    const uri = 'cell:ck5st4aop0000ffet9pi2fkvp!B1';
+    const toString = (input?: any) => (input || '').toString();
 
-    const client = Client.create(host);
-    const cellClient = client.cell(uri);
+    const getInvittee = (row: number) => {
+      const email = toString(cells[`B${row + 1}`]?.value);
+      const avatar = toString(cells[`C${row + 1}`]?.value);
+      const accepted = cells[`D${row + 1}`]?.value as boolean | undefined;
+      const res: Invitee = { accepted, email, avatar };
+      return res;
+    };
 
-    console.log('client', client);
+    const title = toString(cells.B1?.value);
+    const date = toString(cells.C6?.value);
+    const invitees = [getInvittee(1), getInvittee(2), getInvittee(3)];
 
-    // client.
+    this.state$.next({
+      title,
+      date,
+      invitees,
+    });
 
-    // const url = 'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1';
-    // const r = await http.get(url);
-    // console.log('r', r);
-    // console.log('r.body', r.body);
-
-    // console.log('url', url);
-    // console.log('r.text', r.text);
-    // console.log('r.contentType', r.contentType);
-    // console.log('r.headers', r.headers);
-
-    // const rr = await fetch(url);
-    // console.log('rr', rr);
-
-    // const cellClient = client.cell(uri);
-
-    try {
-      const res = await cellClient.info();
-      console.log('res', res);
-    } catch (error) {
-      console.log('error', error);
-    }
+    log.group('data');
+    log.info('host:', this.client.origin);
+    log.info('ns:', this.ns);
+    log.info('cells:', cells);
+    log.info('state:', this.state);
+    log.groupEnd();
   };
 
   /**
@@ -117,15 +128,20 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         lineHeight: '1em',
         userSelect: 'none',
       }),
+      refresh: css({
+        Absolute: [10, null, null, 10],
+        fontSize: 12,
+      }),
     };
+
+    const title = this.state.title || 'Title.';
+    const elTitle = title.split(' ').map((value, i) => <div key={i}>{value}</div>);
+
     return (
       <div {...styles.base}>
         <div {...styles.top}>
-          <div {...styles.title}>
-            {/* <div>Dinner</div> */}
-            <div>Conversation</div>
-            <div>invite.</div>
-          </div>
+          <Button onClick={this.load} style={styles.refresh} label={'Refresh'} />
+          <div {...styles.title}>{elTitle}</div>
         </div>
         <div {...styles.bottom}>{this.renderBottomLeft()}</div>
       </div>
@@ -151,6 +167,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       <div {...styles.base}>
         <div {...styles.bevel} />
         {this.renderLog()}
+        {this.renderDate()}
       </div>
     );
   }
@@ -176,76 +193,93 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         filter: `blur(5px)`,
         opacity: 0.4,
       }),
-      bottom: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-        Absolute: [0, 0, null, 0],
-      }),
     };
-
-    console.log('Button', Button);
 
     return (
       <div {...styles.base}>
         <div {...styles.topShadow} />
         <div {...styles.bgMask} />
-        <div {...styles.body}>
-          {/* <Spinner size={32} color={1} /> */}
-          {this.renderAvatars()}
-
-          <div {...styles.bottom}>
-            <div>
-              <Button onClick={this.tmp}>Click me</Button>
-            </div>
-          </div>
-        </div>
+        <div {...styles.body}>{this.renderAvatars()}</div>
       </div>
     );
   }
 
   private renderAvatars() {
+    const { invitees = [] } = this.state;
+    if (invitees.length === 0) {
+      return null;
+    }
+
+    const styles = {
+      base: css({
+        Flex: 'horizontal-center-center',
+      }),
+    };
+
+    const elList = invitees.map((person, i) => {
+      const isLast = i === invitees.length - 1;
+      const { email, avatar } = person;
+      const elAvatar = this.renderAvatar({ key: `avatar-${i}`, email, src: avatar });
+      const elDivider = isLast ? undefined : this.renderAvatarDivider({ key: `div-${i}` });
+      return [elAvatar, elDivider];
+    });
+
+    return <div {...styles.base}>{elList}</div>;
+  }
+
+  private renderAvatarDivider(props: { key?: string | number } = {}) {
     const styles = {
       base: css({
         Flex: 'horizontal-center-center',
       }),
       divider: css({
-        width: 120,
+        width: 75,
         border: `solid 2px ${color.format(1)}`,
       }),
-      dividerLeft: css({
+      dividerEdge: css({
         width: 6,
         marginRight: 4,
       }),
-      dividerRight: css({}),
+      dividerMain: css({}),
     };
-    const phil = 'https://s.gravatar.com/avatar/99d0b4f26c68a563507c9e5a3d724126?s=80';
-    const nic = 'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:ck10bc6.png';
     return (
       <div {...styles.base}>
-        {this.renderAvatar({ src: phil })}
-
-        <div {...css(styles.divider, styles.dividerLeft)} style={{ width: 3 }} />
-        <div {...css(styles.divider, styles.dividerLeft)} />
-        <div {...css(styles.divider, styles.dividerRight)} />
-
-        {this.renderAvatar({ src: nic })}
+        <div {...css(styles.divider, styles.dividerMain)} />
       </div>
     );
   }
 
-  private renderAvatar(props: { src: string; size?: number }) {
-    const { src, size = 55 } = props;
+  private renderAvatar(props: {
+    key?: string | number;
+    email: string;
+    src: string;
+    size?: number;
+  }) {
+    const { email, src, size = 55 } = props;
     const styles = {
-      base: css({ MarginX: 8 }),
+      base: css({
+        position: 'relative',
+        MarginX: 8,
+      }),
+      accept: css({
+        Absolute: [-26, -35, null, -35],
+        fontSize: 14,
+        textAlign: 'center',
+      }),
+      name: css({
+        Absolute: [null, -35, -16, -35],
+        fontSize: 11,
+        textAlign: 'center',
+      }),
     };
     return (
-      <Avatar
-        style={styles.base}
-        src={src}
-        size={size}
-        borderRadius={size / 2}
-        borderColor={0.1}
-        borderWidth={6}
-      />
+      <div {...styles.base} key={props.key}>
+        <div {...styles.accept}>
+          <Button label={'Accept'} />
+        </div>
+        <Avatar src={src} size={size} borderRadius={size / 2} borderColor={0.1} borderWidth={6} />
+        <div {...styles.name}>{email}</div>
+      </div>
     );
   }
 
@@ -255,13 +289,8 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         Absolute: [0, 0, 0, null],
         width: 300,
         backgroundColor: color.format(0.6),
-        // Scroll: true,
-        // overflow: 'auto',
       }),
-      log: css({
-        Absolute: 0,
-        // Scroll: true,
-      }),
+      log: css({ Absolute: 0 }),
       bevel: css({
         Absolute: [0, null, 0, -10],
         width: 10,
@@ -274,5 +303,20 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         <Log style={styles.log} />
       </div>
     );
+  }
+
+  private renderDate() {
+    if (!this.state.date) {
+      return null;
+    }
+    const styles = {
+      base: css({
+        Absolute: [null, null, 10, 28],
+        fontWeight: 'bold',
+        fontSize: 32,
+      }),
+    };
+    const date = time.day(this.state.date);
+    return <div {...styles.base}>{date.format('ddd D MMM, h:mma')}</div>;
   }
 }

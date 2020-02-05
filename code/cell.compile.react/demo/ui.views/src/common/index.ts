@@ -2,7 +2,7 @@ import * as t from './types';
 import * as constants from './constants';
 
 export { t, constants };
-export { css, color, CssValue, log, Client, http, Spinner, Button } from './libs';
+export { Client, Schema, css, color, CssValue, log, http, time, defaultValue } from './libs';
 export * from './client';
 
 export const COLORS = constants.COLORS;
