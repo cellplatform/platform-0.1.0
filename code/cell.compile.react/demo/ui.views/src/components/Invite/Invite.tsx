@@ -154,7 +154,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       }),
     };
 
-    const title = this.state.title || 'Title.';
+    const title = this.state.title || 'Loading...';
     const elTitle = title.split(' ').map((value, i) => <div key={i}>{value}</div>);
 
     return (

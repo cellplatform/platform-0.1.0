@@ -1,24 +1,14 @@
 import { constants, Client, Schema, t } from '../src/common';
 
-// const HOST = 'dev.db.team';
-const HOST = 'localhost:8080';
+const HOST = 'dev.db.team';
+// const HOST = 'localhost:8080';
 const NS = 'ns:ck68bc6f2000b08l59z4v14g2';
 
 const client = Client.create(HOST);
 const ns = client.ns(NS);
 
 (async () => {
-  const cells: t.ICellMap = {
-    // A1: { value: 'title' },
-    // B1: { value: 'string' },
-    // C1: { value: 'Meeting Invite.' },
-  };
-
-  const add = (row: number, key: string, type: string, value: string) => {
-    cells[`A${row}`] = { value: key };
-    cells[`B${row}`] = { value: type };
-    cells[`C${row}`] = { value: value };
-  };
+  const cells: t.ICellMap = {};
 
   cells.A1 = { value: 'title' };
   cells.B1 = { value: 'Meeting Invite.' };
@@ -27,13 +17,22 @@ const ns = client.ns(NS);
   cells.A2 = { value: 'invitees:' };
 
   cells.B2 = { value: 'phil@hypersheet.io' };
-  cells.C2 = { value: 'http://localhost:8080/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:9vrkt56.png' };
+  cells.C2 = {
+    value:
+      'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1/file/static/images/avatar/phil.png',
+  };
 
   cells.B3 = { value: 'woo@hypersheet.io' };
-  cells.C3 = { value: 'http://localhost:8080/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:9wvktzr.jpg' };
+  cells.C3 = {
+    value:
+      'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1/file/static/images/avatar/willy.jpg',
+  };
 
   cells.B4 = { value: 'gautam@hypersheet.io' };
-  cells.C4 = { value: 'http://localhost:8080/cell:ck5st4aop0000ffet9pi2fkvp!B1/file:zo1ktof.jpg' };
+  cells.C4 = {
+    value:
+      'https://dev.db.team/cell:ck5st4aop0000ffet9pi2fkvp!B1/file/static/images/avatar/gautam.jpg',
+  };
 
   // Activity log (REF).
   cells.A5 = { value: 'activity log' };

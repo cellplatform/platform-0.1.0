@@ -6,9 +6,6 @@ export type INsProps = {
   schema?: string; // The semver of the [@platform/cell.schema] the namespace was last saved as.
 };
 
-
-
-
 /**
  * A "namespace" is a logically related set of cells
  * (aka: a "sheet", "table" or "grid").

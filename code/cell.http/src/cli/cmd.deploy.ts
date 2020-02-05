@@ -85,13 +85,21 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
           let url = domain;
           url = subdomain ? `${subdomain}.${domain}` : url;
           url = `https://${url}`;
-          const info = (await http.get(url)).json as t.IResGetSysInfo;
+
+          let info: t.IResGetSysInfo | undefined;
+          try {
+            info = (await http.get(url)).json as t.IResGetSysInfo;
+          } catch (err) {
+            log.error(`Failed to read info from ${url}`);
+          }
 
           log.info.green(`${dirname}`);
-          log.info.gray(`• system:     ${info.system}`);
-          log.info.gray(`• region:     ${info.region}`);
-          log.info.gray(`• provider:   ${info.provider}`);
-          log.info();
+          if (info) {
+            log.info.gray(`• system:     ${info.system}`);
+            log.info.gray(`• region:     ${info.region}`);
+            log.info.gray(`• provider:   ${info.provider}`);
+            log.info();
+          }
           res.info.forEach(line => log.info(line));
           log.info();
         },
