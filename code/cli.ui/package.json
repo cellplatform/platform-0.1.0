@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli.ui",
-  "version": "0.2.92",
+  "version": "0.2.93",
   "description": "Components for building cli (command-line-interface) related user-interfaces.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cli.spec": "0.1.87",
+    "@platform/cli.spec": "0.1.88",
     "@platform/polyfill": "^0.0.1",
     "@platform/react": "0.4.8",
     "@platform/ui.panel": "0.1.41",
