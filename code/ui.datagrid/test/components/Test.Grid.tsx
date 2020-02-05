@@ -17,12 +17,15 @@ import {
   t,
   util,
 } from '../common';
-import { getFunc, SAMPLE } from '../SAMPLE';
+import { getFunc, SAMPLE, ISampleData } from '../SAMPLE';
 import { TestGridView } from './Test.Grid.view';
+
+export {ISampleData}
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;
   left: boolean;
+  data?: ISampleData;
   style?: CssValue;
 };
 export type ITestGridState = {
@@ -42,10 +45,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     getFunc,
     // keyBindings: [{ command: 'COPY', key: 'CMD+D' }],
     // defaults: { rowHeight: 200 },
-    ns: SAMPLE.NS,
-    cells: SAMPLE.CELLS,
-    columns: SAMPLE.COLUMNS,
-    rows: SAMPLE.ROWS,
+    ns: this.props.data.ns || SAMPLE.ns,
+    cells: this.props.data.cells || SAMPLE.cells,
+    columns: this.props.data.columns || SAMPLE.columns,
+    rows: this.props.data.rows || SAMPLE.rows,
   });
 
   private getValueSync = (key: string) => {

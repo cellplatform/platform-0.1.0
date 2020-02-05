@@ -35,7 +35,7 @@
     "handsontable": "6.2.2"
   },
   "devDependencies": {
-    "@platform/cell.client": "0.1.24",
+    "@platform/cell.client": "^0.1.26",
     "@platform/cell.func.sys": "0.2.41",
     "@platform/cell.http": "0.6.29",
     "@platform/cell.ui.props": "0.0.110",
@@ -46,6 +46,7 @@
     "@platform/ts": "3.7.12",
     "@platform/ui.datagrid.cell": "0.2.46",
     "@platform/ui.datagrid.debug": "0.0.80",
+    "@platform/util.string": "^0.3.27",
     "@uiharness/dev": "0.10.4",
     "@uiharness/ui": "0.7.4",
     "electron": "7.1.10"

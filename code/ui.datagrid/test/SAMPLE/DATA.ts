@@ -50,9 +50,16 @@ const ROWS: t.IGridData['rows'] = {
   A: { props: {} },
 };
 
-export const SAMPLE = {
-  NS: 'ns:foo', // NB: the "ns:" uri prefix is stripped.
-  CELLS,
-  COLUMNS,
-  ROWS,
+export type ISampleData = {
+  ns: string;
+  cells: t.ICellMap;
+  columns: t.IColumnMap;
+  rows: t.IRowMap;
+};
+
+export const SAMPLE: ISampleData = {
+  ns: 'ns:foo', // NB: the "ns:" uri prefix is stripped.
+  cells: CELLS,
+  columns: COLUMNS,
+  rows: ROWS,
 };
