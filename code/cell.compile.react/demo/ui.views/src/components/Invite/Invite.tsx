@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
+import { Subject, interval } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import {
   constants,
@@ -60,6 +60,10 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     this.ns = res.def;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     this.load();
+
+    // Redraw interval.
+    // Ensure "date countdown" is refreshed
+    interval(1000 * 1).subscribe(() => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -378,7 +382,8 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     const now = time.now.timestamp;
     const meetingAt = new Date(date).getTime();
 
-    const duration = time.duration(meetingAt - now);
+    const diff = Math.max(0, meetingAt - now);
+    const duration = time.duration(diff);
 
     const styles = {
       base: css({
