@@ -19,6 +19,7 @@ import { Spinner } from '@platform/ui.spinner';
 import { Button } from '@platform/ui.button';
 import { Avatar } from '@platform/ui.image';
 import { Log, ILogItem } from './Log';
+import { TimeChooser } from '../TimeChooser';
 
 const { URLS } = constants;
 
@@ -37,6 +38,8 @@ export type IInviteState = {
   logRef?: string;
   log?: ILogItem[];
   spinning?: number[];
+  isTimeChooserShowing?: boolean;
+  isTimeChooserSpinning?: boolean;
 };
 
 export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
@@ -188,6 +191,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   }
 
   private renderRight() {
+    const { isTimeChooserShowing = false } = this.state;
     const styles = {
       base: css({
         flex: 1,
@@ -201,13 +205,27 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         width: 10,
         backgroundColor: color.format(0.15),
       }),
+      timeChooser: css({
+        Absolute: [50, 50, 70, 50],
+      }),
     };
+
+    const elTimeEditor = isTimeChooserShowing && (
+      <TimeChooser
+        current={this.date?.toDate().getTime()}
+        isSpinning={this.state.isTimeChooserSpinning}
+        style={styles.timeChooser}
+        onChanged={this.onTimeChanged}
+      />
+    );
+
     return (
       <div {...styles.base}>
         <div {...styles.bevel} />
         {this.renderLog()}
-        {this.renderDateCountdown()}
+        {this.renderCountdown()}
         {this.renderDate()}
+        {elTimeEditor}
       </div>
     );
   }
@@ -373,7 +391,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     );
   }
 
-  private renderDateCountdown() {
+  private renderCountdown() {
     const date = this.state.date;
     if (!date) {
       return null;
@@ -385,9 +403,13 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     const diff = Math.max(0, meetingAt - now);
     const duration = time.duration(diff);
 
+    if (diff <= 0) {
+      return null;
+    }
+
     const styles = {
       base: css({
-        Absolute: [-20, null, null, 15],
+        Absolute: [-10, null, null, 30],
       }),
       text: css({
         fontSize: 200,
@@ -414,9 +436,16 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         Absolute: [null, null, 10, 28],
         fontWeight: 'bold',
         fontSize: 32,
+        // Flex: 'horizontal',
       }),
     };
-    return <div {...styles.base}>{date.format('ddd D MMM, h:mma')}</div>;
+    return (
+      <div {...styles.base}>
+        {/* <div></div> */}
+        {date.format('ddd D MMM, h:mma')}{' '}
+        <Button label={'change'} onClick={this.onChangeTimeClick} />
+      </div>
+    );
   }
 
   /**
@@ -489,5 +518,32 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       [`C${row + 1}`]: { value: message },
     };
     await client.write({ cells }, { cells: true });
+  };
+
+  private onChangeTimeClick = () => {
+    const isTimeChooserShowing = !Boolean(this.state.isTimeChooserShowing);
+    this.state$.next({ isTimeChooserShowing });
+  };
+
+  private onTimeChanged = async (e: { from: number; to: number }) => {
+    this.state$.next({ isTimeChooserSpinning: true });
+    const client = this.client.ns(this.ns);
+
+    const from = time.day(e.from);
+    const to = time.day(e.to);
+
+    const cells: t.ICellMap = {
+      C6: { value: to.toString() },
+    };
+    await client.write({ cells });
+
+    const format = 'ddd h:mma';
+    const title = 'Meeting Time Changed';
+    const message = `From ${from.format(format)} to ${to.format(format)}`;
+    await this.writeLog({ title, message });
+
+    // Redraw.
+    await this.load();
+    this.state$.next({ isTimeChooserShowing: false, isTimeChooserSpinning: false });
   };
 }

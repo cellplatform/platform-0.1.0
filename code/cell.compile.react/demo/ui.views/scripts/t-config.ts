@@ -2,14 +2,14 @@ import { Client, t } from '../src/common';
 
 /**
  * Invite (UI):
- *    Cloud:        https://alpha.hypersheet.io/cell:ck5st4aop0000ffet9pi2fkvp!B1/file/dist/index.html?def=ns:ck68bc6f2000b08l59z4v14g2
- *    Local (Dev):  http://localhost:1234/?def=localhost:8080:ns:ck68bc6f2000b08l59z4v14g2
+ *    Cloud:        https://alpha.hypersheet.io/cell:ck6bmume4000008mqhkkdaebj!A1/file/dist/index.html?def=ns:ck6bm01wa000a08mc89cyego0
+ *    Local (Dev):  http://localhost:1234/?def=localhost:8080:ns:ck6bm01wa000a08mc89cyego0
  *
  *
  * Definition/State:
- *    Datagrid (UI):      https://alpha.hypersheet.io/cell:ck68sk05x0000ktetfz8w5zyr!A1/file/dist/parcel/index.html?def=ns:ck68bc6f2000b08l59z4v14g2
+ *    Datagrid (UI):      https://alpha.hypersheet.io/cell:ck68sk05x0000ktetfz8w5zyr!A1/file/dist/parcel/index.html?def=ns:ck6bm01wa000a08mc89cyego0
  *    Activity Log:       https://alpha.hypersheet.io/cell:ck68sk05x0000ktetfz8w5zyr!A1/file/dist/parcel/index.html?def=ns:ck68ivf06000008l44wpo1dxl
- *    Namespace (JSON):   https://alpha.hypersheet.io/ns:ck68bc6f2000b08l59z4v14g2
+ *    Namespace (JSON):   https://alpha.hypersheet.io/ns:ck6bm01wa000a08mc89cyego0
  *
  *
  * Code Editor:
@@ -17,9 +17,9 @@ import { Client, t } from '../src/common';
  */
 
 // const HOST = 'dev.db.team';
-// const HOST = 'alpha.hypersheet.io';
-const HOST = 'localhost:8080';
-const DEF = 'ns:ck68bc6f2000b08l59z4v14g2';
+const HOST = 'alpha.hypersheet.io';
+// const HOST = 'localhost:8080';
+const DEF = 'ns:ck6bm01wa000a08mc89cyego0';
 
 const client = Client.create(HOST);
 const ns = client.ns(DEF);
@@ -53,11 +53,11 @@ const ns = client.ns(DEF);
 
   // Activity log (REF).
   cells.A5 = { value: 'activity log' };
-  cells.B5 = { value: 'ns:ck68ivf06000008l44wpo1dxl' };
+  cells.B5 = { value: 'ns:ck6bm01wa000b08mcbk311n19' };
 
   // State.
   cells.B6 = { value: 'date:' };
-  cells.C6 = { value: 'Thu Feb 06 2020 11:00:00 GMT+1300' };
+  cells.C6 = { value: 'Feb 08 2020 10:00:00 GMT+1300' };
 
   cells.B7 = { value: '' };
   cells.C7 = { value: '' };
