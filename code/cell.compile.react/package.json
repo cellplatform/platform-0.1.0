@@ -3,17 +3,11 @@
   "version": "0.0.22",
   "description": "CellOS code compilation toolchain for React.",
   "scripts": {
-    "start": "parcel demo/hello-world/src/index.html",
-    "watch": "yarn start",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare",
-    "update": "sh sh/update.sh",
-    "bundle": "ts-node -T scripts/bundle.ts",
-    "serve": "ts-node -T scripts/serve.ts",
-    "clean": "sh sh/clean.sh"
+    "prepare": "ts prepare"
   },
   "dependencies": {
     "@platform/cell.types": "0.4.25",
