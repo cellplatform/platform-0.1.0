@@ -14,7 +14,7 @@
     "bundle": "yarn clean && parcel build src/index.html --experimental-scope-hoisting",
     "clean": "rm -rf dist && rm -rf .cache",
     "serve": "cd dist && serve",
-    "t-config": "ts-node -T scripts/t-config"
+    "cell-write": "ts-node -T scripts/t-cell"
   },
   "dependencies": {
     "@platform/cell.client": "^0.1.27",

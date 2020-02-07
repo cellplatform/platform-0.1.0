@@ -39,6 +39,8 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
    * [Render]
    */
   public render() {
+    const { current = -1 } = this.props;
+
     const styles = {
       base: css({
         color: COLORS.DARK,
@@ -64,7 +66,7 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
       }),
     };
 
-    // HACK: hard coded days.
+    // 🐷HACK: hard coded days.
     const today = time
       .day('Feb 08 2020 GMT+1300')
       .toDate()
@@ -83,16 +85,17 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
-          {this.renderDay({ day: today })}
+          {this.renderDay({ day: today, current })}
           <div {...styles.divider} />
-          {this.renderDay({ day: tomorrow })}
+          {this.renderDay({ day: tomorrow, current })}
         </div>
         {elSpinner}
       </div>
     );
   }
 
-  private renderDay(props: { day: number }) {
+  private renderDay(props: { day: number; current: number }) {
+    const { current } = props;
     const day = time.day(props.day).startOf('day');
 
     const styles = {
@@ -106,7 +109,6 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
         marginBottom: 10,
       }),
       days: css({
-        // PaddingX: 20,
         textAlign: 'center',
         lineHeight: '2em',
       }),
@@ -119,7 +121,7 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
         .add(hour, 'h')
         .toDate()
         .getTime();
-      return this.renderTime({ key: i.toString(), time });
+      return this.renderTime({ key: i.toString(), time, current });
     });
 
     return (
@@ -130,20 +132,39 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
     );
   }
 
-  private renderTime(props: { time: number; key: string }) {
-    const day = time.day(props.time);
+  private renderTime(props: { time: number; current: number; key: string }) {
+    const hour = time.day(props.time);
+    const current = time.day(props.current);
     const styles = {
       base: css({
         fontSize: 26,
       }),
+      current: css({
+        color: 'red',
+        backgroundColor: color.format(-0.03),
+        border: `solid 1px ${color.format(-0.1)}`,
+        borderRadius: 5,
+      }),
     };
 
-    const label = day.format('hh:mm a');
-    const date = day.toDate().getTime();
+    const label = hour.format('hh:mm a');
+    const date = hour.toDate().getTime();
+
+    const dayFormat = 'D/MM/YYYY';
+    const isSameDay = hour.format(dayFormat) === current.format(dayFormat);
+    const isSameHour = hour.hour() === current.hour();
+    const isCurrent = isSameDay && isSameHour;
 
     return (
-      <div key={props.key} {...styles.base}>
-        <Button label={label} onClick={this.changeClickHandler(date)} />
+      <div key={props.key} {...css(styles.base, isCurrent && styles.current)}>
+        <Button
+          isEnabled={!isCurrent}
+          label={label}
+          onClick={this.changeClickHandler(date)}
+          theme={{
+            disabledOpacity: 1,
+          }}
+        />
       </div>
     );
   }
