@@ -40,7 +40,7 @@ export function npmInstall(
 ): t.TemplateMiddleware<t.ITemplateVariables> {
   return async (req, res) => {
     const { dir } = req.variables;
-    const message = `running NPM install...🌼`;
+    const message = `installing modules...🌼`;
     res.alert({ message });
 
     await npm.install({ dir });

@@ -8,13 +8,13 @@ export type ITmplArgs = {};
  */
 export const init: t.CmdPluginsInit = cli => {
   const handler: t.CmdPluginHandler<ITmplArgs> = async e => {
-    await tmpl({
-      dir: process.cwd(),
-    });
+    const dir = process.cwd();
+    await tmpl({ dir });
   };
 
   cli.command<ITmplArgs>({
     name: 'tmpl',
+    alias: 't',
     description: 'Create from template.',
     handler,
   });
