@@ -1,4 +1,5 @@
-import { Client, t } from '../src/common';
+import { Client, t, Schema } from '../src/common';
+import { log } from '@platform/log/lib/server';
 
 /**
  * Invite (UI):
@@ -16,16 +17,12 @@ import { Client, t } from '../src/common';
  *  - https://alpha.hypersheet.io/cell:ck68v714w0000afetfheb662w!A1/file/dist/parcel/index.html
  */
 
-// const HOST = 'dev.db.team';
-const HOST = 'alpha.hypersheet.io';
-// const HOST = 'localhost:8080';
-const DEF = 'ns:ck6bm01wa000a08mc89cyego0';
-
-const client = Client.create(HOST);
-const ns = client.ns(DEF);
-
-(async () => {
+const write = async (args: { host: string; def: string }) => {
+  const { host, def } = args;
   const cells: t.ICellMap = {};
+
+  const client = Client.create(host);
+  const ns = client.ns(def);
 
   cells.A1 = { value: 'title' };
   cells.B1 = { value: 'Meeting Invite.' };
@@ -66,9 +63,55 @@ const ns = client.ns(DEF);
   const res = await ns.read({ data: true });
 
   // console.log('res.changes', res.);
-  console.log('-------------------------------------------');
-  console.log('res', res.body.data);
-  console.log('-------------------------------------------');
-  console.log('HOST ', HOST);
-  console.log('DEF  ', DEF);
+  // console.log('-------------------------------------------');
+  // console.log('res', res.body.data);
+  // console.log('-------------------------------------------');
+  // console.log('HOST ', HOST);
+  // console.log('DEF  ', DEF);
+  await logUrls({ host, def });
+};
+
+const logUrls = async (args: { host: string; def: string }) => {
+  const { host, def } = args;
+  const ns = Schema.uri.parse<t.INsUri>(def).parts.id;
+
+  const client = Client.create(host);
+  const origin = client.origin;
+
+  // const ns = client.ns(def);
+
+  const gray = log.info.gray;
+
+  gray();
+  gray(`def:   ${origin}/${log.cyan(def)}?cells=true`);
+  gray(`invite:`);
+  // gray(`  cloud:   ${origin}/cell:${}`)
+};
+
+/**
+ * Initialize
+ */
+(async () => {
+  // const HOST = 'localhost:8080';
+  const host = 'alpha.hypersheet.io';
+  const def = 'ns:ck6bm01wa000a08mc89cyego0';
+
+  await write({ host, def });
+  // await logUrls({ host, def });
 })();
+
+/**
+ * Invite (UI):
+ *    Cloud:        https://alpha.hypersheet.io/cell:ck6bmume4000008mqhkkdaebj!A1/file/dist/index.html?def=ns:ck6bm01wa000a08mc89cyego0
+ *    Local (Dev):  http://localhost:1234/?def=localhost:8080:ns:ck6bm01wa000a08mc89cyego0
+ *
+ *
+ * Definition/State:
+ *    Datagrid (UI):      https://alpha.hypersheet.io/cell:ck68sk05x0000ktetfz8w5zyr!A1/file/dist/parcel/index.html?def=ns:ck6bm01wa000a08mc89cyego0
+ *    Activity Log:       https://alpha.hypersheet.io/cell:ck68sk05x0000ktetfz8w5zyr!A1/file/dist/parcel/index.html?def=ns:ck68ivf06000008l44wpo1dxl
+ *    Namespace (JSON):   https://alpha.hypersheet.io/ns:ck6bm01wa000a08mc89cyego0
+ *
+ *
+ * Code Editor:
+ *  - https://alpha.hypersheet.io/cell:ck68v714w0000afetfheb662w!A1/file/dist/parcel/index.html
+ */
