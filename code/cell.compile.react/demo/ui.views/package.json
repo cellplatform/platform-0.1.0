@@ -1,6 +1,6 @@
 {
   "name": "demo.ui.views",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "source": "src/index.html",
   "node": "dist/node/index.html",
   "browser": "dist/browser/index.html",
@@ -17,8 +17,8 @@
     "cell-write": "ts-node -T scripts/cell-write"
   },
   "dependencies": {
-    "@platform/cell.client": "^0.1.27",
-    "@platform/cell.types": "^0.4.25",
+    "@platform/cell.client": "^0.1.28",
+    "@platform/cell.types": "^0.4.26",
     "@platform/http": "^0.11.1",
     "@platform/libs": "^0.2.0",
     "@platform/log": "^0.1.7",

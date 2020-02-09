@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compile.react",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "CellOS code compilation toolchain for React.",
   "scripts": {
     "test": "ts test",
@@ -10,7 +10,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.4.25",
+    "@platform/cell.types": "0.4.26",
     "@platform/cli": "0.5.15",
     "@platform/cli.prompt": "^0.3.2",
     "@platform/libs": "0.2.0"
