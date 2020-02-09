@@ -103,7 +103,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
 
     const title = toString(cells.B1?.value);
     const date = toString(cells.C6?.value);
-    const invitees = [getInvittee(1), getInvittee(2), getInvittee(3)];
+    const invitees = [getInvittee(1), getInvittee(2)];
     const logNs = toString(cells.B5?.value);
 
     this.state$.next({

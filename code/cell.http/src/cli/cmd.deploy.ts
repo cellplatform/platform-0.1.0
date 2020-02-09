@@ -71,14 +71,32 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
     configs.map(async config => {
       const dirname = fs.basename(config.path).replace(/\.yml$/, '');
       const targetDir = fs.resolve(`tmp/.deploy/${dirname}`);
+
       await fs.remove(targetDir); // Clear existing deloyment.
       await copyAndPrepare({ sourceDir, targetDir, config: config.data, target });
-      const res = {
+
+      const options = {
+        prod: '--prod',
+        force: force ? '--force' : '',
+        confirm: '--confirm',
+        toString() {
+          return Object.keys(options)
+            .map(key => options[key])
+            .filter(value => typeof value !== 'function')
+            .reduce((acc, next) => `${acc} ${next}`.trim(), '')
+            .trim();
+        },
+      };
+      const cmd = `now ${options.toString()}`;
+
+      const deployment = {
         title: `${config.data.title}`,
         targetDir,
         path: config.path,
         config: config.data,
+        cmd,
         info: [] as string[],
+        errors: [] as string[],
         async log() {
           const { domain, subdomain } = config.data.now;
 
@@ -100,34 +118,41 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
             log.info.gray(`• provider:   ${info.provider}`);
             log.info();
           }
-          res.info.forEach(line => log.info(line));
+          deployment.info.forEach(line => log.info(line));
+          deployment.errors.forEach(line => log.error(line));
           log.info();
         },
       };
-      return res;
+      return deployment;
     }),
   );
 
   // Build list of tasks.
   const tasks = deployments.map(deployment => {
-    const { title, targetDir } = deployment;
+    const { title, targetDir, cmd } = deployment;
     return deployTask({
       targetDir,
-      force,
-      prod: true,
+      cmd,
       title,
-      done: res => (deployment.info = res),
+      done: res => {
+        const { info, errors } = res;
+        deployment.info = info;
+        deployment.errors = errors;
+      },
     });
+  });
+
+  // Log list of deployment folders.
+  log.info();
+  deployments.forEach(deployment => {
+    const { targetDir, cmd } = deployment;
+    log.info.gray(`cd ${targetDir} && ${cmd}`);
   });
 
   if (args.dry) {
     log.info();
-    log.info(`DRY RUN 🐷`);
-    log.info(`Stopped without deploying.`);
-    log.info();
-    deployments.forEach(deployment => {
-      log.info.gray(`  ${deployment.targetDir}`);
-    });
+    log.info.yellow(`DRY RUN 🐷`);
+    log.info.green(`Prepared deployment folder but stopped short of deploying.`);
     log.info();
     return;
   }
@@ -268,12 +293,14 @@ async function getTmplDir() {
 function deployTask(args: {
   title: string;
   targetDir: string;
-  prod: boolean;
-  force: boolean;
-  done: (info: string[]) => void;
+  cmd: string;
+  // prod: boolean;
+  // force: boolean;
+  done: (args: { info: string[]; errors: string[] }) => void;
   deploy?: boolean; // Debug.
 }) {
   const { targetDir, title } = args;
+
   const task: cli.exec.ITask = {
     title,
     task: () => {
@@ -282,9 +309,9 @@ function deployTask(args: {
           return observer.complete();
         }
 
-        const prod = args.prod ? '--prod' : '';
-        const force = args.force ? '--force' : '';
-        const cmd = cli.exec.command(`now ${prod} ${force}`.trim());
+        // const prod = args.prod ? '--prod' : '';
+        // const force = args.force ? '--force' : '';
+        const cmd = cli.exec.command(args.cmd);
         const running = cmd.run({ cwd: targetDir, silent: true });
 
         const next = (text: string) => {
@@ -294,16 +321,23 @@ function deployTask(args: {
 
         // Track output.
         const info: string[] = [];
+        const errors: string[] = [];
         running.output$.subscribe(e => {
+          const isError = e.type === 'stderr';
           const text = e.text;
-          if (info.length > 0 || text.includes('Deployment complete')) {
+          if ((!isError && info.length > 0) || text.includes('Deployment complete')) {
             info.push(text);
+          }
+          if (isError) {
+            errors.push(text);
           }
           next(text);
         });
 
+        // running.er
+
         running.complete$.subscribe(async () => {
-          args.done(info); // NB: Send result info back to caller before completing.
+          args.done({ info, errors }); // NB: Send result info back to caller before completing.
           observer.complete();
         });
 

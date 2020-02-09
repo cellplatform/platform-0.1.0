@@ -67,12 +67,16 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
     };
 
     // 🐷HACK: hard coded days.
-    const today = time
-      .day('Feb 08 2020 GMT+1300')
+    const dayBefore = time
+      .day('Feb 11 2020 GMT+1300')
       .toDate()
       .getTime();
-    const tomorrow = time
-      .day('Feb 09 2020 GMT+1300')
+    const dayOf = time
+      .day('Feb 12 2020 GMT+1300')
+      .toDate()
+      .getTime();
+    const dayAfter = time
+      .day('Feb 13 2020 GMT+1300')
       .toDate()
       .getTime();
 
@@ -85,9 +89,11 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
-          {this.renderDay({ day: today, current })}
+          {this.renderDay({ day: dayBefore, current })}
           <div {...styles.divider} />
-          {this.renderDay({ day: tomorrow, current })}
+          {this.renderDay({ day: dayOf, current })}
+          <div {...styles.divider} />
+          {this.renderDay({ day: dayAfter, current })}
         </div>
         {elSpinner}
       </div>
@@ -101,7 +107,7 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
     const styles = {
       base: css({}),
       title: css({
-        fontSize: 36,
+        fontSize: 26,
         fontWeight: 'bold',
         borderBottom: `solid 3px ${color.format(-0.2)}`,
         PaddingX: 20,
@@ -137,7 +143,7 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
     const current = time.day(props.current);
     const styles = {
       base: css({
-        fontSize: 26,
+        fontSize: 20,
       }),
       current: css({
         color: 'red',
