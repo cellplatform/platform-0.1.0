@@ -3,9 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, style, color, CssValue, COLORS, defaultValue, time } from '../../common';
 
-import { markdown } from '@platform/util.markdown';
-import { Button } from '@platform/ui.button';
-import { Icons } from '../Icons';
+import { Button, Icons } from '../primitives';
 
 export type IAgendaProps = {
   isExpanded?: boolean;
@@ -65,8 +63,8 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
 - ...other emergent goodness...
 
      `;
-    const html = await markdown.toHtml(md);
-    this.state$.next({ html });
+    // const html = await markdown.toHtml(md);
+    this.state$.next({ html: md });
   }
 
   /**
@@ -83,7 +81,7 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
       top: css({
         minHeight: 40,
         flex: isExpanded ? 0 : 1000,
-        transition: `flex ${isExpanded ? 400 : 400}ms ease-out`,
+        // transition: `flex ${isExpanded ? 400 : 400}ms ease-out`,
       }),
       body: css({
         position: 'relative',

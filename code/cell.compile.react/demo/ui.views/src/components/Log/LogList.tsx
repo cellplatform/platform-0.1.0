@@ -40,7 +40,7 @@ export class LogList extends React.PureComponent<ILogListProps, ILogState> {
   public render() {
     const styles = {
       base: css({
-        position: 'relative',
+        Absolute: 0,
         color: COLORS.DARK,
         fontSize: 14,
       }),

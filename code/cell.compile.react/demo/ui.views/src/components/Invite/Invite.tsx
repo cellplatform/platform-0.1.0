@@ -15,9 +15,8 @@ import {
   coord,
 } from '../../common';
 
-import { Spinner } from '@platform/ui.spinner';
-import { Button } from '@platform/ui.button';
-import { Avatar } from '@platform/ui.image';
+import { Spinner, Button, Avatar, Icons } from '../primitives';
+
 import { Log } from '../Log';
 import { TimeChooser } from '../TimeChooser';
 import { Agenda } from './Agenda';
@@ -37,11 +36,12 @@ export type IInviteState = {
   date?: string;
   invitees?: Invitee[];
   logRef?: string;
-  log?: t.ILogItem[];
+  logItems?: t.ILogItem[];
   spinning?: number[];
   isTimeChooserShowing?: boolean;
   isTimeChooserSpinning?: boolean;
   isAgendaExpanded?: boolean;
+  isLogExpanded?: boolean;
 };
 
 export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
@@ -116,7 +116,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     });
 
     const logItems = await this.readLog({ range: true });
-    this.state$.next({ log: logItems });
+    this.state$.next({ logItems: logItems });
 
     log.group('data');
     log.info('host:', this.client.origin);
@@ -180,8 +180,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         transition: `filter 1.3s`,
       }),
       refresh: css({
-        Absolute: [10, null, null, 10],
-        fontSize: 12,
+        Absolute: [5, null, null, 5],
       }),
     };
 
@@ -196,7 +195,9 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         <div {...styles.agenda} onClick={this.toggleAgendaExpanded}>
           <Agenda isExpanded={this.state.isAgendaExpanded} />
         </div>
-        <Button onClick={this.load} style={styles.refresh} label={'Refresh'} />
+        <Button onClick={this.load} style={styles.refresh}>
+          <Icons.Refresh color={1} size={18} />
+        </Button>
         <div {...styles.bottom}>{this.renderBottomLeft()}</div>
       </div>
     );
@@ -377,31 +378,19 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   }
 
   private renderLog() {
-    const { log: items = [] } = this.state;
-    if (items.length === 0) {
-      return null;
-    }
-
-    const styles = {
-      base: css({
-        Absolute: [0, 0, 0, null],
-        width: 300,
-        backgroundColor: color.format(0.6),
-      }),
-      log: css({ Absolute: 0 }),
-      bevel: css({
-        Absolute: [0, null, 0, -10],
-        width: 10,
-        backgroundColor: color.format(0.15),
-      }),
-    };
+    const { logItems = [] } = this.state;
+    const isExpanded = this.state.isLogExpanded;
     return (
-      <div {...styles.base}>
-        <div {...styles.bevel} />
-        <Log style={styles.log} items={items} />
-      </div>
+      <Log
+        items={logItems}
+        isExpanded={isExpanded}
+        onCollapseClick={this.collapseLog}
+        onExpandClick={this.expandLog}
+      />
     );
   }
+  private collapseLog = () => this.state$.next({ isLogExpanded: false });
+  private expandLog = () => this.state$.next({ isLogExpanded: true });
 
   private renderCountdown() {
     const date = this.state.date;

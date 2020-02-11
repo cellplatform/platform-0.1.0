@@ -3,6 +3,8 @@ export { IIcon, IIconProps };
 
 import {
   MdClose,
+  MdRefresh,
+  MdHistory,
 
   // Arrow.
   MdArrowBack,
@@ -27,6 +29,8 @@ import {
 const icon = Icon.renderer;
 export class Icons {
   public static Close = icon(MdClose);
+  public static Refresh = icon(MdRefresh);
+  public static History = icon(MdHistory);
 
   // Arrow.
   public static ArrowLeft = icon(MdArrowBack);
