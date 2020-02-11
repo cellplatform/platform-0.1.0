@@ -4,6 +4,8 @@ import { takeUntil } from 'rxjs/operators';
 import { css, style, color, CssValue, COLORS, defaultValue, time } from '../../common';
 
 import { markdown } from '@platform/util.markdown';
+import { Button } from '@platform/ui.button';
+import { Icons } from '../Icons';
 
 export type IAgendaProps = {
   isExpanded?: boolean;
@@ -80,8 +82,8 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
       }),
       top: css({
         minHeight: 40,
-        flex: isExpanded ? 0 : 100,
-        transition: `flex ${isExpanded ? 400 : 1000}ms ease-out`,
+        flex: isExpanded ? 0 : 1000,
+        transition: `flex ${isExpanded ? 400 : 400}ms ease-out`,
       }),
       body: css({
         position: 'relative',
@@ -102,8 +104,6 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
     const styles = {
       base: css({
         boxSizing: 'border-box',
-        // padding: 10,
-        // PaddingX: 20,
         pointerEvents: 'auto',
         Absolute: [0, 20, 0, 20],
 
@@ -114,29 +114,8 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
         overflow: 'hidden',
         boxShadow: `0 0px 20px 0 ${color.format(-0.9)}`,
       }),
-      body: css({
-        // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-        PaddingX: 8,
-      }),
-      title: css({
-        position: 'relative',
-        boxSizing: 'border-box',
-        PaddingY: 8,
-        PaddingX: 8,
-        MarginX: 3,
-        textAlign: 'center',
-        userSelect: 'none',
-        cursor: 'pointer',
-      }),
-      titleHr: css({
-        //
-        Absolute: [null, 0, -5, 0],
-        height: 5,
-        backgroundColor: color.format(-0.1),
-      }),
-      md: css({
-        color: COLORS.DARK,
-      }),
+      body: css({ PaddingX: 8 }),
+      md: css({ color: COLORS.DARK }),
     };
 
     const { html } = this.state;
@@ -147,13 +126,51 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
     return (
       <div {...styles.base}>
         <div {...styles.body}>
-          <div {...styles.title}>
-            <div>Agenda</div>
-            <div {...styles.titleHr} />
-          </div>
+          {this.renderTitle({})}
 
           {elMarkdown}
         </div>
+      </div>
+    );
+  }
+
+  private renderTitle(props: { text?: string } = {}) {
+    const { text = 'Agenda' } = props;
+    const { isExpanded = false } = this.props;
+    const styles = {
+      base: css({
+        position: 'relative',
+        boxSizing: 'border-box',
+        PaddingY: 8,
+        PaddingX: 8,
+        MarginX: 0,
+        textAlign: 'center',
+        userSelect: 'none',
+        cursor: 'pointer',
+      }),
+      hr: css({
+        Absolute: [null, 0, -5, 0],
+        height: 5,
+        backgroundColor: color.format(-0.1),
+      }),
+      closeButton: css({
+        Absolute: [5, 0, null, null],
+      }),
+    };
+
+    const elExpand = !isExpanded && <Icons.ChevronUp />;
+    const elClose = isExpanded && <Icons.ChevronDown />;
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.hr} />
+        <div>{text}</div>
+        <Button style={styles.closeButton}>
+          <div>
+            {elExpand}
+            {elClose}
+          </div>
+        </Button>
       </div>
     );
   }

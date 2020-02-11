@@ -1026,7 +1026,7 @@
     "@platform/libs" "^0.2.0"
     "@platform/react" "0.4.8"
 
-"@platform/ui.icon@0.0.125":
+"@platform/ui.icon@0.0.125", "@platform/ui.icon@^0.0.125":
   version "0.0.125"
   resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.125.tgz#3618b819e4b6ece4cf7849560f7f4f404ca16484"
   integrity sha512-0JZoGh/jikSFegrkZ3gbR5aok3zVzYCfsy/xABq9gjJyeLPGD6S+6sOGrT9ZwWXU3C4/hbNrBHvLB7G3jcIXcg==
