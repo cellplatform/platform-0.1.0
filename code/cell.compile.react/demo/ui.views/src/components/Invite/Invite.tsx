@@ -18,7 +18,7 @@ import {
 import { Spinner } from '@platform/ui.spinner';
 import { Button } from '@platform/ui.button';
 import { Avatar } from '@platform/ui.image';
-import { Log, ILogItem } from './Log';
+import { Log } from '../Log';
 import { TimeChooser } from '../TimeChooser';
 import { Agenda } from './Agenda';
 
@@ -37,7 +37,7 @@ export type IInviteState = {
   date?: string;
   invitees?: Invitee[];
   logRef?: string;
-  log?: ILogItem[];
+  log?: t.ILogItem[];
   spinning?: number[];
   isTimeChooserShowing?: boolean;
   isTimeChooserSpinning?: boolean;
@@ -490,7 +490,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     };
   };
 
-  private readLog = async (args: { range?: string | boolean } = {}): Promise<ILogItem[]> => {
+  private readLog = async (args: { range?: string | boolean } = {}): Promise<t.ILogItem[]> => {
     const ns = this.state.logRef;
     if (!ns) {
       return [];
@@ -509,7 +509,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         const detail = cells[`C${row + 1}`]?.value as string;
         acc.push({ id, date, title, detail });
         return acc;
-      }, [] as ILogItem[]);
+      }, [] as t.ILogItem[]);
   };
 
   private writeLog = async (args: { title: string; message: string }) => {
