@@ -57,7 +57,7 @@ const writeConfig = async (args: { id: string; host: string; def: string; invite
 
   // State.
   cells.B6 = { value: 'date:' };
-  cells.C6 = { value: '14 Feb 2020 10:00:00' };
+  cells.C6 = { value: '14 Feb 2020 2:30:00' };
 
   cells.B7 = { value: '' };
   cells.C7 = { value: '' };

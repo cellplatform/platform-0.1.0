@@ -6,6 +6,7 @@ export {
   Client,
   Schema,
   css,
+  style,
   color,
   CssValue,
   log,

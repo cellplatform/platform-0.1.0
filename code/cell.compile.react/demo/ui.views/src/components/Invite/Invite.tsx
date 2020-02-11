@@ -20,6 +20,7 @@ import { Button } from '@platform/ui.button';
 import { Avatar } from '@platform/ui.image';
 import { Log, ILogItem } from './Log';
 import { TimeChooser } from '../TimeChooser';
+import { Agenda } from './Agenda';
 
 const { URLS } = constants;
 
@@ -40,6 +41,7 @@ export type IInviteState = {
   spinning?: number[];
   isTimeChooserShowing?: boolean;
   isTimeChooserSpinning?: boolean;
+  isAgendaExpanded?: boolean;
 };
 
 export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
@@ -149,6 +151,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   private renderLeft() {
     const styles = {
       base: css({
+        position: 'relative',
         Flex: 'vertical-stretch-stretch',
         flex: 0.5,
         minWidth: 400,
@@ -164,11 +167,17 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         display: 'flex',
         height: 200,
       }),
+      agenda: css({
+        position: 'relative',
+        Absolute: [0, 0, 200, 0],
+      }),
       title: css({
         fontSize: 45,
         fontWeight: 'bold',
         lineHeight: '1em',
         userSelect: 'none',
+        filter: `blur(${this.state.isAgendaExpanded ? 4 : 0}px)`,
+        transition: `filter 1.3s`,
       }),
       refresh: css({
         Absolute: [10, null, null, 10],
@@ -182,9 +191,12 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     return (
       <div {...styles.base}>
         <div {...styles.top}>
-          <Button onClick={this.load} style={styles.refresh} label={'Refresh'} />
           <div {...styles.title}>{elTitle}</div>
         </div>
+        <div {...styles.agenda} onClick={this.toggleAgendaExpanded}>
+          <Agenda isExpanded={this.state.isAgendaExpanded} />
+        </div>
+        <Button onClick={this.load} style={styles.refresh} label={'Refresh'} />
         <div {...styles.bottom}>{this.renderBottomLeft()}</div>
       </div>
     );
@@ -416,6 +428,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         fontWeight: 'bold',
         letterSpacing: '-0.03em',
         opacity: 0.5,
+        userSelect: 'none',
       }),
     };
 
@@ -436,12 +449,10 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         Absolute: [null, null, 10, 28],
         fontWeight: 'bold',
         fontSize: 32,
-        // Flex: 'horizontal',
       }),
     };
     return (
       <div {...styles.base}>
-        {/* <div></div> */}
         {date.format('ddd D MMM, h:mma')}{' '}
         <Button label={'change'} onClick={this.onChangeTimeClick} />
       </div>
@@ -545,5 +556,10 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     // Redraw.
     await this.load();
     this.state$.next({ isTimeChooserShowing: false, isTimeChooserSpinning: false });
+  };
+
+  private toggleAgendaExpanded = () => {
+    const isAgendaExpanded = !Boolean(this.state.isAgendaExpanded);
+    this.state$.next({ isAgendaExpanded });
   };
 }
