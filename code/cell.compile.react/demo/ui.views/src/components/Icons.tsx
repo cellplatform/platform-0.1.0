@@ -23,6 +23,8 @@ import {
   MdMoreHoriz,
 } from 'react-icons/md';
 
+import { FiAward } from 'react-icons/fi';
+
 /**
  * Icon collection.
  */
@@ -31,6 +33,7 @@ export class Icons {
   public static Close = icon(MdClose);
   public static Refresh = icon(MdRefresh);
   public static History = icon(MdHistory);
+  public static Award = icon(FiAward);
 
   // Arrow.
   public static ArrowLeft = icon(MdArrowBack);

@@ -19,7 +19,7 @@ import { Spinner, Button, Avatar, Icons } from '../primitives';
 
 import { Log } from '../Log';
 import { TimeChooser } from '../TimeChooser';
-import { Agenda } from './Agenda';
+import { Agenda } from '../Agenda';
 
 const { URLS } = constants;
 
@@ -228,10 +228,11 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
 
     const elTimeEditor = isTimeChooserShowing && (
       <TimeChooser
-        current={this.date?.toDate().getTime()}
+        meetingTime={this.date?.toDate().getTime()}
         isSpinning={this.state.isTimeChooserSpinning}
         style={styles.timeChooser}
         onChanged={this.onTimeChanged}
+        onCloseClick={this.hideTimeChooser}
       />
     );
 
@@ -525,6 +526,10 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   private onChangeTimeClick = () => {
     const isTimeChooserShowing = !Boolean(this.state.isTimeChooserShowing);
     this.state$.next({ isTimeChooserShowing });
+  };
+
+  private hideTimeChooser = () => {
+    this.state$.next({ isTimeChooserShowing: false });
   };
 
   private onTimeChanged = async (e: { from: number; to: number }) => {

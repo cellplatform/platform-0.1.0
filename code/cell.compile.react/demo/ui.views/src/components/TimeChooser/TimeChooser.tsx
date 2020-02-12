@@ -3,14 +3,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { COLORS, css, color, CssValue, t, time } from '../../common';
 
-import { Button } from '@platform/ui.button';
-import { Spinner } from '@platform/ui.spinner';
+import { Button, Spinner, Icons } from '../primitives';
 
 export type ITimeChooserProps = {
-  current?: number;
+  meetingTime?: number;
   isSpinning?: boolean;
   style?: CssValue;
   onChanged?: (e: { from: number; to: number }) => void;
+  onCloseClick?: (e: {}) => void;
 };
 export type ITimeChooserState = {};
 
@@ -39,7 +39,7 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
    * [Render]
    */
   public render() {
-    const { current = -1 } = this.props;
+    const { meetingTime = -1 } = this.props;
 
     const styles = {
       base: css({
@@ -57,26 +57,25 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
       }),
       divider: css({
         MarginX: 50,
-        borderLeft: `solid 5px ${color.format(-0.1)}`,
+        // borderLeft: `solid 5px ${color.format(-0.1)}`,
       }),
       spinner: css({
         Absolute: 0,
         Flex: 'center-center',
         backgroundColor: color.format(0.8),
       }),
+      closeButton: css({
+        Absolute: [10, 10, null, null],
+      }),
     };
 
-    // 🐷HACK: hard coded days.
-    const dayBefore = time
-      .day('Feb 11 2020 GMT+1300')
+    const dayOf = time.day(this.props.meetingTime);
+    const dayBefore = dayOf
+      .subtract(1, 'day')
       .toDate()
       .getTime();
-    const dayOf = time
-      .day('Feb 12 2020 GMT+1300')
-      .toDate()
-      .getTime();
-    const dayAfter = time
-      .day('Feb 13 2020 GMT+1300')
+    const dayAfter = dayOf
+      .add(1, 'day')
       .toDate()
       .getTime();
 
@@ -89,19 +88,22 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
-          {this.renderDay({ day: dayBefore, current })}
+          {this.renderDay({ day: dayBefore, meetingTime })}
           <div {...styles.divider} />
-          {this.renderDay({ day: dayOf, current })}
+          {this.renderDay({ day: dayOf.toDate().getTime(), meetingTime })}
           <div {...styles.divider} />
-          {this.renderDay({ day: dayAfter, current })}
+          {this.renderDay({ day: dayAfter, meetingTime })}
         </div>
         {elSpinner}
+        <Button {...styles.closeButton} onClick={this.onCloseClick} style={styles.closeButton}>
+          <Icons.Close />
+        </Button>
       </div>
     );
   }
 
-  private renderDay(props: { day: number; current: number }) {
-    const { current } = props;
+  private renderDay(props: { day: number; meetingTime: number }) {
+    const { meetingTime } = props;
     const day = time.day(props.day).startOf('day');
 
     const styles = {
@@ -109,25 +111,55 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
       title: css({
         fontSize: 26,
         fontWeight: 'bold',
-        borderBottom: `solid 3px ${color.format(-0.2)}`,
+        borderBottom: `solid 8px ${color.format(-0.1)}`,
         PaddingX: 20,
         paddingBottom: 5,
         marginBottom: 10,
       }),
       days: css({
         textAlign: 'center',
-        lineHeight: '2em',
+        lineHeight: '1.8em',
+      }),
+      day: css({
+        Flex: 'horizontal-stetch-stretch',
+        // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        marginBottom: 10,
+      }),
+      divider: css({
+        borderLeft: `solid 1px ${color.format(-0.2)}`,
+        MarginX: 20,
       }),
     };
 
     const hours = Array.from({ length: 10 }).map((v, i) => i + 8);
-
+    // const elDays: any[] = [];
     const elDays = hours.map((hour, i) => {
-      const time = day
-        .add(hour, 'h')
-        .toDate()
-        .getTime();
-      return this.renderTime({ key: i.toString(), time, current });
+      const left = this.renderTime({
+        key: `hour-${i}`,
+        meetingTime,
+        time: day
+          .add(hour, 'h')
+          .toDate()
+          .getTime(),
+      });
+
+      const right = this.renderTime({
+        key: `half-hour-${i}`,
+        meetingTime,
+        time: day
+          .add(hour, 'h')
+          .add(30, 'm')
+          .toDate()
+          .getTime(),
+      });
+
+      return (
+        <div key={i} {...styles.day}>
+          {left}
+          <div {...styles.divider} />
+          {right}
+        </div>
+      );
     });
 
     return (
@@ -138,12 +170,12 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
     );
   }
 
-  private renderTime(props: { time: number; current: number; key: string }) {
+  private renderTime(props: { time: number; meetingTime: number; key: string }) {
     const hour = time.day(props.time);
-    const current = time.day(props.current);
+    const meetingTime = time.day(props.meetingTime);
     const styles = {
       base: css({
-        fontSize: 20,
+        fontSize: 16,
       }),
       current: css({
         color: 'red',
@@ -157,8 +189,8 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
     const date = hour.toDate().getTime();
 
     const dayFormat = 'D/MM/YYYY';
-    const isSameDay = hour.format(dayFormat) === current.format(dayFormat);
-    const isSameHour = hour.hour() === current.hour();
+    const isSameDay = hour.format(dayFormat) === meetingTime.format(dayFormat);
+    const isSameHour = hour.hour() === meetingTime.hour();
     const isCurrent = isSameDay && isSameHour;
 
     return (
@@ -167,9 +199,7 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
           isEnabled={!isCurrent}
           label={label}
           onClick={this.changeClickHandler(date)}
-          theme={{
-            disabledOpacity: 1,
-          }}
+          theme={{ disabledOpacity: 1 }}
         />
       </div>
     );
@@ -183,11 +213,18 @@ export class TimeChooser extends React.PureComponent<ITimeChooserProps, ITimeCho
     return async () => {
       const { onChanged } = this.props;
       if (onChanged) {
-        const { current } = this.props;
+        const { meetingTime: current } = this.props;
         const from = time.day(current);
         const to = time.day(date);
         onChanged({ from: from.toDate().getTime(), to: to.toDate().getTime() });
       }
     };
+  };
+
+  private onCloseClick = () => {
+    const { onCloseClick } = this.props;
+    if (onCloseClick) {
+      onCloseClick({});
+    }
   };
 }

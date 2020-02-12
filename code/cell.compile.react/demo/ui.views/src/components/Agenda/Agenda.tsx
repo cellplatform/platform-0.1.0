@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, style, color, CssValue, COLORS, defaultValue, time } from '../../common';
+import { css, t, style, color, CssValue, COLORS, defaultValue, time } from '../../common';
 
 import { Button, Icons } from '../primitives';
+import { AgendaList } from './AgendaList';
 
 export type IAgendaProps = {
   isExpanded?: boolean;
@@ -11,19 +12,8 @@ export type IAgendaProps = {
   onExpandClick?: (e: { isExpanded: boolean }) => void;
 };
 export type IAgendaState = {
-  html?: string;
+  items?: t.IAgendaItem[];
 };
-
-style.global({
-  '.agenda-md': {
-    // color: 'blue',
-    lineHeight: '1.8em',
-    fontSize: 14,
-    // li: {
-    //   color: 'red',
-    // },
-  },
-});
 
 export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
   public state: IAgendaState = {};
@@ -52,16 +42,29 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
    */
 
   public async load() {
-    const md = `
+    const agenda = `
      
-- Hello/catch up
-- Review Deb's organisation strategy
-- Talk about TEAM(DB), Phil, colloboration primitives etc.
-- ...other emergent goodness...
+      - Hello/catch up
+      - Review Deb's organisation strategy
+      - Talk TEAM(DB), Phil, colloboration primitives, "subtle space engineering" etc.
+      - ...any other emergent goodness...
 
      `;
-    // const html = await markdown.toHtml(md);
-    this.state$.next({ html: md });
+
+    const items: t.IAgendaItem[] = agenda
+      .trim()
+      .replace(/^\n*/, '')
+      .replace(/\n*$/, '')
+      .split('\n')
+      .map(detail =>
+        detail
+          .trim()
+          .replace(/^-/, '')
+          .trim(),
+      )
+      .map(detail => ({ detail }));
+
+    this.state$.next({ items });
   }
 
   /**
@@ -113,16 +116,14 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
       md: css({ color: COLORS.DARK }),
     };
 
-    const { html } = this.state;
-    const elList = html && (
-      <div {...styles.md} className={'agenda-md'} dangerouslySetInnerHTML={{ __html: html }} />
-    );
+    // const { html } = this.state;
+    // const elList = html && <div {...styles.md} dangerouslySetInnerHTML={{ __html: html }} />;
 
     return (
       <div {...styles.base}>
         <div {...styles.body}>
           {this.renderTitle({})}
-          {elList}
+          <AgendaList items={this.state.items} />
         </div>
       </div>
     );
@@ -138,6 +139,7 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
         PaddingY: 8,
         PaddingX: 8,
         MarginX: 0,
+        marginBottom: 8,
         textAlign: 'center',
         userSelect: 'none',
         cursor: 'pointer',

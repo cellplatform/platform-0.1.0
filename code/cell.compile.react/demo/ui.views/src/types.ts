@@ -6,6 +6,18 @@ export type View = {
 };
 
 /**
- * Log
+ * History/Log
  */
-export type ILogItem = { id: string; date: number; title: string; detail: string };
+export type ILogItem = {
+  id: string;
+  date: number;
+  title: string;
+  detail: string;
+};
+
+/**
+ * Agenda
+ */
+export type IAgendaItem = {
+  detail: string;
+};
