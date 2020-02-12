@@ -8,6 +8,7 @@ import { Button, Icons } from '../primitives';
 export type IAgendaProps = {
   isExpanded?: boolean;
   style?: CssValue;
+  onExpandClick?: (e: { isExpanded: boolean }) => void;
 };
 export type IAgendaState = {
   html?: string;
@@ -39,10 +40,6 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     this.load();
-
-    // time.delay(1200, () => {
-    //   this.state$.next({ isExpanded: true });
-    // });
   }
 
   public componentWillUnmount() {
@@ -117,7 +114,7 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
     };
 
     const { html } = this.state;
-    const elMarkdown = html && (
+    const elList = html && (
       <div {...styles.md} className={'agenda-md'} dangerouslySetInnerHTML={{ __html: html }} />
     );
 
@@ -125,8 +122,7 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
       <div {...styles.base}>
         <div {...styles.body}>
           {this.renderTitle({})}
-
-          {elMarkdown}
+          {elList}
         </div>
       </div>
     );
@@ -160,7 +156,7 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
     const elClose = isExpanded && <Icons.ChevronDown />;
 
     return (
-      <div {...styles.base}>
+      <div {...styles.base} onClick={this.expandHandler(!isExpanded)}>
         <div {...styles.hr} />
         <div>{text}</div>
         <Button style={styles.closeButton}>
@@ -172,4 +168,16 @@ export class Agenda extends React.PureComponent<IAgendaProps, IAgendaState> {
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+  private expandHandler = (isExpanded: boolean) => {
+    return () => {
+      const { onExpandClick } = this.props;
+      if (onExpandClick) {
+        onExpandClick({ isExpanded });
+      }
+    };
+  };
 }

@@ -53,7 +53,7 @@ export class LogCollapsed extends React.PureComponent<ILogCollapsedProps, ILogCo
         paddingLeft: 10,
         paddingRight: 14,
         PaddingY: 4,
-        borderRight: `solid 1px ${color.format(1)}`,
+        borderRight: `solid 1px ${color.format(0.5)}`,
       }),
       leftText: css({
         paddingLeft: 4,

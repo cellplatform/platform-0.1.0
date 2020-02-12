@@ -192,8 +192,11 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         <div {...styles.top}>
           <div {...styles.title}>{elTitle}</div>
         </div>
-        <div {...styles.agenda} onClick={this.toggleAgendaExpanded}>
-          <Agenda isExpanded={this.state.isAgendaExpanded} />
+        <div {...styles.agenda}>
+          <Agenda
+            isExpanded={this.state.isAgendaExpanded}
+            onExpandClick={this.onAgendaExpandClick}
+          />
         </div>
         <Button onClick={this.load} style={styles.refresh}>
           <Icons.Refresh color={1} size={18} />
@@ -380,17 +383,8 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   private renderLog() {
     const { logItems = [] } = this.state;
     const isExpanded = this.state.isLogExpanded;
-    return (
-      <Log
-        items={logItems}
-        isExpanded={isExpanded}
-        onCollapseClick={this.collapseLog}
-        onExpandClick={this.expandLog}
-      />
-    );
+    return <Log items={logItems} isExpanded={isExpanded} onExpandClick={this.onLogExpandClick} />;
   }
-  private collapseLog = () => this.state$.next({ isLogExpanded: false });
-  private expandLog = () => this.state$.next({ isLogExpanded: true });
 
   private renderCountdown() {
     const date = this.state.date;
@@ -451,6 +445,14 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   /**
    * [Handlers]
    */
+
+  private onLogExpandClick = (e: { isExpanded: boolean }) => {
+    this.state$.next({ isLogExpanded: e.isExpanded });
+  };
+
+  private onAgendaExpandClick = (e: { isExpanded: boolean }) => {
+    this.state$.next({ isAgendaExpanded: e.isExpanded });
+  };
 
   private acceptHandler = (index: number) => {
     return async () => {
@@ -545,10 +547,5 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     // Redraw.
     await this.load();
     this.state$.next({ isTimeChooserShowing: false, isTimeChooserSpinning: false });
-  };
-
-  private toggleAgendaExpanded = () => {
-    const isAgendaExpanded = !Boolean(this.state.isAgendaExpanded);
-    this.state$.next({ isAgendaExpanded });
   };
 }

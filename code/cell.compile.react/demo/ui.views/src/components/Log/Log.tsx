@@ -2,18 +2,16 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t } from '../../common';
+import { css, CssValue, t } from '../../common';
+import { LogCollapsed } from './LogCollapsed';
 import { LogExpanded } from './LogExpanded';
 import { LogList } from './LogList';
-import { Button, Icons } from '../primitives';
-import { LogCollapsed } from './LogCollapsed';
 
 export type ILogProps = {
   isExpanded?: boolean;
   items?: t.ILogItem[];
   style?: CssValue;
-  onExpandClick?: (e: {}) => void;
-  onCollapseClick?: (e: {}) => void;
+  onExpandClick?: (e: { isExpanded: boolean }) => void;
 };
 export type ILogState = {};
 
@@ -45,8 +43,6 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
       }),
     };
 
-    const { isExpanded } = this.props;
-
     return (
       <div {...css(styles.base, this.props.style)}>
         {this.renderCollapsed()}
@@ -60,7 +56,7 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
     if (isExpanded) {
       return null;
     }
-    return <LogCollapsed items={items} onExpandClick={this.props.onExpandClick} />;
+    return <LogCollapsed items={items} onExpandClick={this.expandHandler(true)} />;
   }
 
   private renderExpanded() {
@@ -70,6 +66,18 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
       return null;
     }
     const elList = count > 0 && <LogList items={items} />;
-    return <LogExpanded children={elList} onCloseClick={this.props.onCollapseClick} />;
+    return <LogExpanded children={elList} onCloseClick={this.expandHandler(false)} />;
   }
+
+  /**
+   * Handlers
+   */
+  private expandHandler = (isExpanded: boolean) => {
+    return () => {
+      const { onExpandClick } = this.props;
+      if (onExpandClick) {
+        onExpandClick({ isExpanded });
+      }
+    };
+  };
 }
