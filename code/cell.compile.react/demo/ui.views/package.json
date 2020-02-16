@@ -27,7 +27,6 @@
     "@platform/ui.icon": "^0.0.125",
     "@platform/ui.image": "^0.2.35",
     "@platform/ui.spinner": "^0.0.124",
-    "@platform/util.markdown": "^0.0.57",
     "@platform/util.string": "^0.4.0"
   },
   "devDependencies": {

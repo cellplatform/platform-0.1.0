@@ -53,9 +53,10 @@ export class AgendaList extends React.PureComponent<IAgendaListProps, IAgendaLis
         marginRight: 15,
         minWidth: 24,
       }),
-      right: css({
+      detail: css({
         flex: 1,
         fontSize: 14,
+        lineHeight: '1.6em',
       }),
     };
     return (
@@ -63,7 +64,7 @@ export class AgendaList extends React.PureComponent<IAgendaListProps, IAgendaLis
         <div {...styles.icon}>
           <Icons.Award />
         </div>
-        <div>{item.detail}</div>
+        <div {...styles.detail}>{item.detail}</div>
       </div>
     );
   }
