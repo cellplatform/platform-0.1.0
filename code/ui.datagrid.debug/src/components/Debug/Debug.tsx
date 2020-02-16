@@ -7,10 +7,14 @@ import { ObjectView } from '../primitives';
 import { Badge, Hr, HrDashed, Label, LinkButton, Panel } from '../widgets';
 import { DebugCell } from './Debug.Cell';
 
+export type DebugRefreshEvent = { force: boolean };
+export type DebugRefreshEventHandler = (e: DebugRefreshEvent) => void;
+
 export type IDebugProps = {
   grid: t.IGrid;
   theme?: 'DARK';
   style?: CssValue;
+  onRefresh?: DebugRefreshEventHandler;
 };
 export type IDebugState = {
   grid?: any;
@@ -365,8 +369,12 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
    */
   private refreshHandler = (args: { force?: boolean }) => {
     return () => {
-      const { force } = args;
+      const { onRefresh } = this.props;
+      const force = Boolean(args.force);
       this.updateState({ force });
+      if (onRefresh) {
+        onRefresh({ force });
+      }
     };
   };
 }

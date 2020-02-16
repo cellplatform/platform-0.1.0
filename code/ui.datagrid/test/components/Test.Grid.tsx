@@ -17,13 +17,17 @@ import {
   t,
   util,
 } from '../common';
-import { getFunc, SAMPLE } from '../SAMPLE';
+import { getFunc, SAMPLE, ISampleData } from '../SAMPLE';
 import { TestGridView } from './Test.Grid.view';
+
+export { ISampleData };
 
 export type ITestGridProps = {
   editorType: t.TestEditorType;
   left: boolean;
+  data?: ISampleData;
   style?: CssValue;
+  onRefresh?: (e: { force: boolean }) => void;
 };
 export type ITestGridState = {
   data?: any;
@@ -42,10 +46,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     getFunc,
     // keyBindings: [{ command: 'COPY', key: 'CMD+D' }],
     // defaults: { rowHeight: 200 },
-    ns: SAMPLE.NS,
-    cells: SAMPLE.CELLS,
-    columns: SAMPLE.COLUMNS,
-    rows: SAMPLE.ROWS,
+    ns: this.props.data?.ns || SAMPLE.ns,
+    cells: this.props.data?.cells || SAMPLE.cells,
+    columns: this.props.data?.columns || SAMPLE.columns,
+    rows: this.props.data?.rows || SAMPLE.rows,
   });
 
   private getValueSync = (key: string) => {
@@ -423,16 +427,24 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     };
     return (
       <div {...styles.base}>
-        <Debug grid={this.grid} />
+        <Debug grid={this.grid} onRefresh={this.handleRefresh} />
       </div>
     );
   }
 
+  private button = (label: string, handler: () => void) => {
+    return <Button label={label} onClick={handler} block={true} />;
+  };
+
   /**
    * [Handlers]
    */
-  private button = (label: string, handler: () => void) => {
-    return <Button label={label} onClick={handler} block={true} />;
+
+  private handleRefresh = (e: { force: boolean }) => {
+    const { onRefresh } = this.props;
+    if (onRefresh) {
+      onRefresh(e);
+    }
   };
 }
 

@@ -8,7 +8,8 @@ export const Test = () => {
       Absolute: 0,
     }),
     editor: css({
-      Absolute: [20, 20, 20, 300],
+      // Absolute: [20, 20, 20, 300],
+      Absolute: 0,
       border: `solid 1px ${color.format(-0.1)}`,
     }),
   };

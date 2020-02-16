@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
+import { Subject, interval } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import {
   constants,
@@ -15,13 +15,20 @@ import {
   coord,
 } from '../../common';
 
-import { Button } from '@platform/ui.button';
-import { Avatar } from '@platform/ui.image';
-import { Log, ILogItem } from './components/Log';
+import { Spinner, Button, Avatar, Icons } from '../primitives';
+
+import { Log } from '../Log';
+import { TimeChooser } from '../TimeChooser';
+import { Agenda } from '../Agenda';
 
 const { URLS } = constants;
 
-type Invitee = { row: number; email: string; avatar: string; accepted?: boolean };
+type Invitee = {
+  row: number;
+  email: string;
+  avatar: string;
+  accepted?: boolean;
+};
 
 export type IInviteProps = { style?: CssValue };
 export type IInviteState = {
@@ -29,7 +36,12 @@ export type IInviteState = {
   date?: string;
   invitees?: Invitee[];
   logRef?: string;
-  log?: ILogItem[];
+  logItems?: t.ILogItem[];
+  spinning?: number[];
+  isTimeChooserShowing?: boolean;
+  isTimeChooserSpinning?: boolean;
+  isAgendaExpanded?: boolean;
+  isLogExpanded?: boolean;
 };
 
 export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
@@ -53,11 +65,23 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     this.ns = res.def;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
     this.load();
+
+    // Redraw interval.
+    // Ensure "date countdown" is refreshed
+    interval(1000 * 1).subscribe(() => this.forceUpdate());
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * Properties
+   */
+  private get date() {
+    const date = this.state.date;
+    return date ? time.day(date) : undefined;
   }
 
   /**
@@ -80,8 +104,8 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     };
 
     const title = toString(cells.B1?.value);
-    const date = toString(cells.C7?.value);
-    const invitees = [getInvittee(1), getInvittee(2), getInvittee(3)];
+    const date = toString(cells.C6?.value);
+    const invitees = [getInvittee(1), getInvittee(2)];
     const logNs = toString(cells.B5?.value);
 
     this.state$.next({
@@ -92,7 +116,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     });
 
     const logItems = await this.readLog({ range: true });
-    this.state$.next({ log: logItems });
+    this.state$.next({ logItems: logItems });
 
     log.group('data');
     log.info('host:', this.client.origin);
@@ -127,6 +151,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   private renderLeft() {
     const styles = {
       base: css({
+        position: 'relative',
         Flex: 'vertical-stretch-stretch',
         flex: 0.5,
         minWidth: 400,
@@ -142,15 +167,20 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         display: 'flex',
         height: 200,
       }),
+      agenda: css({
+        position: 'relative',
+        Absolute: [0, 0, 200, 0],
+      }),
       title: css({
         fontSize: 45,
         fontWeight: 'bold',
         lineHeight: '1em',
         userSelect: 'none',
+        filter: `blur(${this.state.isAgendaExpanded ? 4 : 0}px)`,
+        transition: `filter 1.3s`,
       }),
       refresh: css({
-        Absolute: [10, null, null, 10],
-        fontSize: 12,
+        Absolute: [5, null, null, 5],
       }),
     };
 
@@ -160,15 +190,24 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     return (
       <div {...styles.base}>
         <div {...styles.top}>
-          <Button onClick={this.load} style={styles.refresh} label={'Refresh'} />
           <div {...styles.title}>{elTitle}</div>
         </div>
+        <div {...styles.agenda}>
+          <Agenda
+            isExpanded={this.state.isAgendaExpanded}
+            onExpandClick={this.onAgendaExpandClick}
+          />
+        </div>
+        <Button onClick={this.load} style={styles.refresh}>
+          <Icons.Refresh color={1} size={18} />
+        </Button>
         <div {...styles.bottom}>{this.renderBottomLeft()}</div>
       </div>
     );
   }
 
   private renderRight() {
+    const { isTimeChooserShowing = false } = this.state;
     const styles = {
       base: css({
         flex: 1,
@@ -182,12 +221,28 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         width: 10,
         backgroundColor: color.format(0.15),
       }),
+      timeChooser: css({
+        Absolute: [50, 50, 70, 50],
+      }),
     };
+
+    const elTimeEditor = isTimeChooserShowing && (
+      <TimeChooser
+        meetingTime={this.date?.toDate().getTime()}
+        isSpinning={this.state.isTimeChooserSpinning}
+        style={styles.timeChooser}
+        onChanged={this.onTimeChanged}
+        onCloseClick={this.hideTimeChooser}
+      />
+    );
+
     return (
       <div {...styles.base}>
         <div {...styles.bevel} />
         {this.renderLog()}
+        {this.renderCountdown()}
         {this.renderDate()}
+        {elTimeEditor}
       </div>
     );
   }
@@ -236,9 +291,11 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       }),
     };
 
+    const { spinning = [] } = this.state;
     const elList = invitees.map((person, i) => {
       const isLast = i === invitees.length - 1;
-      const elAvatar = this.renderAvatar({ index: i, person });
+      const isSpinning = spinning.includes(person.row);
+      const elAvatar = this.renderAvatar({ index: i, person, isSpinning });
       const elDivider = isLast ? undefined : this.renderAvatarDivider({ key: `div-${i}` });
       return [elAvatar, elDivider];
     });
@@ -249,6 +306,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   private renderAvatarDivider(props: { key?: string | number } = {}) {
     const styles = {
       base: css({
+        position: 'relative',
         Flex: 'horizontal-center-center',
       }),
       divider: css({
@@ -268,8 +326,14 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
     );
   }
 
-  private renderAvatar(props: { index: number; person: Invitee; size?: number }) {
-    const { index, person, size = 55 } = props;
+  private renderAvatar(props: {
+    index: number;
+    person: Invitee;
+    size?: number;
+    isSpinning?: boolean;
+  }) {
+    const { index, person, size = 55, isSpinning } = props;
+
     const styles = {
       base: css({
         position: 'relative',
@@ -289,16 +353,20 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         Absolute: [null, -8, 5, null],
         fontSize: 20,
       }),
+      spinner: css({
+        Absolute: [-28, null, null, 16],
+      }),
     };
 
     const label = person.accepted ? 'Accepted' : 'Accept';
     const emoji = person.accepted && <div {...styles.emoji}>🎉</div>;
 
+    const elButton = !isSpinning && <Button label={label} onClick={this.acceptHandler(index)} />;
+    const elSpinner = isSpinning && <Spinner color={1} style={styles.spinner} />;
+
     return (
       <div {...styles.base} key={`avatar-${index}`}>
-        <div {...styles.accept}>
-          <Button label={label} onClick={this.acceptHandler(index)} />
-        </div>
+        <div {...styles.accept}>{elButton}</div>
         <Avatar
           src={person.avatar}
           size={size}
@@ -306,6 +374,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
           borderColor={0.1}
           borderWidth={6}
         />
+        {elSpinner}
         {emoji}
         <div {...styles.name}>{person.email}</div>
       </div>
@@ -313,34 +382,50 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
   }
 
   private renderLog() {
-    const { log: items = [] } = this.state;
-    if (items.length === 0) {
+    const { logItems = [] } = this.state;
+    const isExpanded = this.state.isLogExpanded;
+    return <Log items={logItems} isExpanded={isExpanded} onExpandClick={this.onLogExpandClick} />;
+  }
+
+  private renderCountdown() {
+    const date = this.state.date;
+    if (!date) {
+      return null;
+    }
+
+    const now = time.now.timestamp;
+    const meetingAt = new Date(date).getTime();
+
+    const diff = Math.max(0, meetingAt - now);
+    const duration = time.duration(diff);
+
+    if (diff <= 0) {
       return null;
     }
 
     const styles = {
       base: css({
-        Absolute: [0, 0, 0, null],
-        width: 300,
-        backgroundColor: color.format(0.6),
+        Absolute: [-10, null, null, 30],
       }),
-      log: css({ Absolute: 0 }),
-      bevel: css({
-        Absolute: [0, null, 0, -10],
-        width: 10,
-        backgroundColor: color.format(0.15),
+      text: css({
+        fontSize: 200,
+        fontWeight: 'bold',
+        letterSpacing: '-0.03em',
+        opacity: 0.5,
+        userSelect: 'none',
       }),
     };
+
     return (
       <div {...styles.base}>
-        <div {...styles.bevel} />
-        <Log style={styles.log} items={items} />
+        <div {...styles.text}>{duration.toString()}</div>
       </div>
     );
   }
 
   private renderDate() {
-    if (!this.state.date) {
+    const date = this.date;
+    if (!date) {
       return null;
     }
     const styles = {
@@ -350,15 +435,32 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         fontSize: 32,
       }),
     };
-    const date = time.day(this.state.date);
-    return <div {...styles.base}>{date.format('ddd D MMM, h:mma')}</div>;
+    return (
+      <div {...styles.base}>
+        {date.format('ddd D MMM, h:mma')}{' '}
+        <Button label={'change'} onClick={this.onChangeTimeClick} />
+      </div>
+    );
   }
+
+  /**
+   * [Handlers]
+   */
+
+  private onLogExpandClick = (e: { isExpanded: boolean }) => {
+    this.state$.next({ isLogExpanded: e.isExpanded });
+  };
+
+  private onAgendaExpandClick = (e: { isExpanded: boolean }) => {
+    this.state$.next({ isAgendaExpanded: e.isExpanded });
+  };
 
   private acceptHandler = (index: number) => {
     return async () => {
       const person = (this.state.invitees || [])[index];
       if (person) {
         const accepted = !person.accepted;
+        this.state$.next({ spinning: [person.row] }); // Start spinner.
 
         // Write the updated status for the person.
         const key = `D${person.row + 1}`;
@@ -374,12 +476,13 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         await this.writeLog({ title, message });
 
         // Redraw the screen.
-        this.load();
+        await this.load();
+        this.state$.next({ spinning: undefined }); // Stop spinner.
       }
     };
   };
 
-  private readLog = async (args: { range?: string | boolean } = {}): Promise<ILogItem[]> => {
+  private readLog = async (args: { range?: string | boolean } = {}): Promise<t.ILogItem[]> => {
     const ns = this.state.logRef;
     if (!ns) {
       return [];
@@ -398,7 +501,7 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
         const detail = cells[`C${row + 1}`]?.value as string;
         acc.push({ id, date, title, detail });
         return acc;
-      }, [] as ILogItem[]);
+      }, [] as t.ILogItem[]);
   };
 
   private writeLog = async (args: { title: string; message: string }) => {
@@ -418,5 +521,36 @@ export class Invite extends React.PureComponent<IInviteProps, IInviteState> {
       [`C${row + 1}`]: { value: message },
     };
     await client.write({ cells }, { cells: true });
+  };
+
+  private onChangeTimeClick = () => {
+    const isTimeChooserShowing = !Boolean(this.state.isTimeChooserShowing);
+    this.state$.next({ isTimeChooserShowing });
+  };
+
+  private hideTimeChooser = () => {
+    this.state$.next({ isTimeChooserShowing: false });
+  };
+
+  private onTimeChanged = async (e: { from: number; to: number }) => {
+    this.state$.next({ isTimeChooserSpinning: true });
+    const client = this.client.ns(this.ns);
+
+    const from = time.day(e.from);
+    const to = time.day(e.to);
+
+    const cells: t.ICellMap = {
+      C6: { value: to.toString() },
+    };
+    await client.write({ cells });
+
+    const format = 'ddd h:mma';
+    const title = 'Meeting Time Changed';
+    const message = `From ${from.format(format)} to ${to.format(format)}`;
+    await this.writeLog({ title, message });
+
+    // Redraw.
+    await this.load();
+    this.state$.next({ isTimeChooserShowing: false, isTimeChooserSpinning: false });
   };
 }

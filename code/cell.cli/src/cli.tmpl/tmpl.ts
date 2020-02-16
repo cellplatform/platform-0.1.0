@@ -9,7 +9,7 @@ export async function tmpl(args: { dir: string }) {
   // Prompt the user for which template to load.
   const tmplDir = fs.resolve(fs.join(__dirname, '../../tmpl'));
   const fsPrompt = cli.prompt.fs.paths(tmplDir, { pageSize: 10, all: false });
-  const dir = (await fsPrompt.radio('template'))[0];
+  const dir = (await fsPrompt.radio('create from:'))[0];
 
   // Prompt for module name.
   const name = await cli.prompt.text({ message: 'module name' });

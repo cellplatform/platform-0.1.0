@@ -1,17 +1,15 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, COLORS, R, time } from '../../../common';
+import { css, color, CssValue, COLORS, R, time, t } from '../../common';
 
-export type ILogItem = { id: string; date: number; title: string; detail: string };
-
-export type ILogProps = {
-  items: ILogItem[];
+export type ILogListProps = {
+  items: t.ILogItem[];
   style?: CssValue;
 };
 export type ILogState = {};
 
-export class Log extends React.PureComponent<ILogProps, ILogState> {
+export class LogList extends React.PureComponent<ILogListProps, ILogState> {
   public state: ILogState = {};
   private state$ = new Subject<Partial<ILogState>>();
   private unmounted$ = new Subject<{}>();
@@ -19,10 +17,6 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: ILogProps) {
-    super(props);
-  }
-
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
   }
@@ -35,7 +29,7 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
   /**
    * [Properties]
    */
-  public get list(): ILogItem[] {
+  public get list(): t.ILogItem[] {
     const { items = [] } = this.props;
     return R.sortBy(R.prop('date'), items);
   }
@@ -46,7 +40,7 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
   public render() {
     const styles = {
       base: css({
-        position: 'relative',
+        Absolute: 0,
         color: COLORS.DARK,
         fontSize: 14,
       }),
@@ -69,7 +63,7 @@ export class Log extends React.PureComponent<ILogProps, ILogState> {
     );
   }
 
-  private renderList(props: { items: ILogItem[] }) {
+  private renderList(props: { items: t.ILogItem[] }) {
     const { items = [] } = props;
     const styles = {
       base: css({
