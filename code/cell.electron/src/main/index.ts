@@ -2,8 +2,10 @@ import { app, BrowserWindow } from 'electron';
 import { fs, log } from './common';
 
 import { Client } from '@platform/cell.client';
-import { startServer } from './server';
-import { exec } from '@platform/exec';
+import * as server from './server';
+import * as tray from './tray';
+
+let appTray: any;
 
 /**
  * Initialize
@@ -12,11 +14,9 @@ import { exec } from '@platform/exec';
 (async () => {
   // app.allowRendererProcessReuse = true; // https://github.com/electron/electron/issues/18397
 
-  const f = await startServer();
-
+  const f = await server.start();
 
   // exec.process.spawn('')
-
 
   await app.whenReady();
   createWindow();
@@ -33,9 +33,12 @@ import { exec } from '@platform/exec';
   // log.info(logger);
 
   try {
+    appTray = tray.init();
     // const f = startServer();
     // await f.
-    // const client = Client.create('https://dev.db.team/');
+    const client = Client.create('localhost:8080');
+    const res = await client.cell('cell:foo!A1').info();
+    log.info(res);
     // const res = await client.cell('cell:ck5n7xoka0000p5et9suq5ygv!A1').files.list();
     // log.info('res', res);
   } catch (error) {

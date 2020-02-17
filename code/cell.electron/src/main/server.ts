@@ -6,14 +6,10 @@ import { fs, t } from './common';
 /**
  * Configure and initialize a CellOS http server.
  */
-export function createServer() {
-  console.log('log - init server');
-
+export function init() {
   const dir = fs.resolve('tmp');
   const filename = `${dir}/local.db`;
   const db = NeDb.create({ filename });
-
-  console.log('filename', filename);
 
   const app = server.init({
     title: 'local',
@@ -28,8 +24,8 @@ export function createServer() {
 /**
  * Initialize and start a CellOS http server.
  */
-export async function startServer() {
-  const { app } = createServer();
+export async function start() {
+  const { app } = init();
 
   const port = 8080;
   const instance = await app.start({ port });
