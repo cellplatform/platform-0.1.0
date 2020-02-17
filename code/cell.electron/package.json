@@ -1,0 +1,34 @@
+{
+  "name": "@platform/cell.electron",
+  "version": "0.0.0",
+  "description": "Electron shell for CellOS.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "electron lib/main.js",
+    "watch": "yarn start",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/cell.client": "^0.1.28",
+    "@platform/fs": "^0.5.5",
+    "@platform/libs": "0.2.0",
+    "electron-log": "^4.0.6"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.2",
+    "@platform/ts": "3.7.12",
+    "electron": "^8.0.1"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}
