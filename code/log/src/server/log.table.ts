@@ -36,13 +36,13 @@ export function table(log: t.ILog, options: t.ILogTableOptions = {}) {
     };
   }
 
-  const t = new Table(args);
+  const tbl = new Table(args);
   const api: t.ILogTable = {
     /**
      * Adds a new row to the table.
      */
     add(columns: Array<string | number | undefined>) {
-      t.push(columns.map(row => (row === undefined ? '' : row.toString())));
+      tbl.push(columns.map(row => (row === undefined ? '' : row.toString())));
       return api;
     },
 
@@ -50,7 +50,7 @@ export function table(log: t.ILog, options: t.ILogTableOptions = {}) {
      * Converts the table to a string.
      */
     toString() {
-      return t.toString();
+      return tbl.toString();
     },
 
     /**
@@ -61,5 +61,6 @@ export function table(log: t.ILog, options: t.ILogTableOptions = {}) {
       return api;
     },
   };
+
   return api;
 }

@@ -90,6 +90,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
   - [@platform/cell.fs.sync](/code/cell.fs.sync)
   - [@platform/cell.compile](/code/cell.compile)
   - [@platform/cell.compile.react](/code/cell.compile.react)
+  - [@platform/cell.electron](/code/cell.electron)
   - ui
     - [@platform/cell.ui](/code/cell.ui)
     - [@platform/cell.ui.props](/code/cell.ui.props)
