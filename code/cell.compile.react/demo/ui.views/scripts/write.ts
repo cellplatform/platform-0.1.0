@@ -142,8 +142,8 @@ const logUrls = async (args: { id: string; host: string; def: string; inviteUrl:
     },
     {
       id: 'deb',
-      host: 'dev.db.team',
-      // host: 'localhost:8080',
+      // host: 'dev.db.team',
+      host: 'localhost:8080',
       def: 'ns:ck6h33tit000008mt36b74r2v',
       inviteUrl: 'https://dev.db.team/cell:ck6bmume4000008mqhkkdaebj!A2/file/dist/index.html',
     },
