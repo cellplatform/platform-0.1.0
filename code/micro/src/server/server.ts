@@ -17,10 +17,13 @@ const NOT_FOUND: t.RouteResponse = {
 /**
  * Initialize the [server].
  */
-export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } = {}) {
+export function init(
+  args: { log?: t.ILogProps; cors?: boolean; port?: number; logger?: t.ILog } = {},
+) {
   // Setup initial conditions.
   const timer = time.timer();
   const router = Router.create();
+  const logger = args.logger || log;
 
   const _events$ = new Subject<t.MicroEvent>();
   const events$ = _events$.pipe(share());
@@ -94,14 +97,14 @@ export function init(args: { port?: number; log?: t.ILogProps; cors?: boolean } 
           const keys = Object.keys(props);
           const max = keys.reduce((acc, next) => (next.length > acc ? next.length : acc), 0) + 2;
 
-          log.info();
-          log.info.gray(`👋  Running on ${url}`);
-          log.info();
+          logger.info();
+          logger.info.gray(`👋  Running on ${url}`);
+          logger.info();
           keys.forEach(key => {
             const prefix = `${key}:${' '.repeat(10)}`.substring(0, max);
-            log.info.gray(`   • ${prefix} ${props[key].toString()}`);
+            logger.info.gray(`   • ${prefix} ${props[key].toString()}`);
           });
-          log.info();
+          logger.info();
         }
 
         fire({
