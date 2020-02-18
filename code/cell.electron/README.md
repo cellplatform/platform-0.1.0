@@ -5,6 +5,36 @@
 
 Electron shell for CellOS.
 
+<p>&nbsp;<p>
+
 ## Setup
 
     yarn add @platform/cell.electron
+
+<p>&nbsp;<p>
+
+## Development
+
+To run the app:
+
+    yarn start
+
+Or to run with in live system UI development mode:
+
+    yarn dev
+
+and in a seperate terminal, run the UI [parcel](https://parceljs.org) server:
+
+    yarn ui
+
+<p>&nbsp;<p>
+
+## Packaging
+
+[Package](https://www.electronforge.io/cli#package) the application as an executable (while testing), or [Make](https://www.electronforge.io/cli#make) the executable into a distributable format:
+
+    yarn package
+    yarn make
+
+<p>&nbsp;<p>
+<p>&nbsp;<p>

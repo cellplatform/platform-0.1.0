@@ -1,12 +1,13 @@
 import { Tray, Menu } from 'electron';
 import { fs } from './common';
+import { createWindow } from './window';
 
 export function init() {
-  const icon = fs.resolve('assets/icons/tray.png');
+  const icon = fs.join(__dirname, '../../assets/icons/tray.png');
   const tray = new Tray(icon);
 
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'radio' },
+    { label: 'Create Window', type: 'radio', click: () => createWindow() },
     { label: 'Item2', type: 'radio' },
     { label: 'Item3', type: 'radio', checked: true },
     { label: 'Item4', type: 'radio' },

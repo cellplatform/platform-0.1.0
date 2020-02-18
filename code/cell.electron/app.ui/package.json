@@ -1,0 +1,30 @@
+{
+  "name": "@platform/cell.electron.ui",
+  "version": "0.0.0",
+  "description": "UI components used by [cell.electron].",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "watch": "yarn start",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "echo ts build",
+    "bundle": "yarn clean && parcel build src/index.html --experimental-scope-hoisting --no-source-maps",
+    "clean": "rm -rf dist && rm -rf .cache",
+    "serve": "cd dist && serve"
+  },
+  "dependencies": {
+    "@platform/cell.client": "0.1.28",
+    "@platform/react": "0.4.8",
+    "@platform/libs": "0.2.0"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.2",
+    "@platform/ts": "3.7.12",
+    "parcel-bundler": "1.12.4"
+  },
+  "license": "MIT",
+  "private": true
+}

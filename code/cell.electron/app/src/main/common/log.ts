@@ -7,7 +7,18 @@ const logger = require('electron-log');
 /**
  * Create default log that writes to the console.
  */
-export const log = create();
+export const log: t.IElectronLog = {
+  ...create(),
+
+  /**
+   * Meta-data about the file the log is stored within.
+   */
+  get file() {
+    return {
+      path: logger.transports.file.getFile().path as string,
+    };
+  },
+};
 
 /**
  * Write log events to the `electron-log` module.

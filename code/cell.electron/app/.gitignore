@@ -1,0 +1,10 @@
+node_modules
+lib
+.DS_Store
+.npmrc
+.env
+.data
+*.log
+/TEMP.md
+/tmp
+/out
