@@ -1,6 +1,5 @@
 import { expect, t, cuid } from '../test';
 import { Uri } from '.';
-import { TEST } from './Uri';
 
 describe('Uri', () => {
   describe('ids', () => {
@@ -15,7 +14,7 @@ describe('Uri', () => {
     });
 
     it('test identifiers (ns)', () => {
-      TEST.NS.ALLOW.forEach(id => {
+      Uri.ALLOW.NS.forEach(id => {
         const uri1 = Uri.create.ns(id);
         const uri2 = Uri.parse<t.INsUri>(`ns:${id}`);
         expect(uri1).to.eql(`ns:${id}`);

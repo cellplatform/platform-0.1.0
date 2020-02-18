@@ -3,15 +3,12 @@ import { t, cuid, slug, coord } from '../common';
 type UriType = 'NS' | 'CELL' | 'ROW' | 'COLUMN' | 'FILE';
 type UriPrefix = 'ns' | 'cell' | 'file';
 
-export const TEST = {
-  NS: {
-    ALLOW: ['foo'],
-  },
-};
-
 export class Uri {
   public static cuid = cuid;
   public static slug = slug;
+  public static ALLOW = {
+    NS: ['foo'],
+  };
 
   /**
    * Construct a URI string from arguments.
@@ -201,5 +198,5 @@ function isValidId(input: string) {
 
   // HACK:  Certain NS ids are allowed for testing
   //        but may be shut off in production systems.
-  return TEST.NS.ALLOW.includes(input);
+  return Uri.ALLOW.NS.includes(input);
 }
