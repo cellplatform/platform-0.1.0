@@ -28,7 +28,7 @@ export function createWindow() {
   const urls = Schema.urls(constants.HOST);
 
   const index = urls
-    .cell(constants.URI.UI)
+    .cell(constants.URI.UI_FILES)
     .file.byName('index.html')
     .toString();
 

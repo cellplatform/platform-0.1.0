@@ -25,10 +25,10 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.types@0.4.26":
-  version "0.4.26"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.26.tgz#2b8f946f70e2961ce35c225bdfa061a30f5ebe15"
-  integrity sha512-S2nmTwgQM6xAzWfSQKQIRd9mFComCYiddi0o5VZwuv4g+cYCiozdM5MU4KEkCbFV2JOiEJmUc2HDozraf23Ifw==
+"@platform/cell.types@0.4.27":
+  version "0.4.27"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.27.tgz#a1766a2a9f38613e9ca07ddd654c85435c5d118e"
+  integrity sha512-wPgN1igoR66rnet+CkwKOiA2dgMgrR1BF6edz+FPPFuzOGXeGNSDSeu8UKzvASQVJ0IOmJdjveEWnXdFcwunxA==
   dependencies:
     "@platform/cache" "0.2.15"
     "@platform/fs.s3.types" "0.1.12"
@@ -37,26 +37,26 @@
     "@platform/libs" "0.2.0"
     "@platform/util.diff" "0.0.16"
 
-"@platform/cli.prompt@0.3.2", "@platform/cli.prompt@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.3.2.tgz#40f511827fb13f817207527b57d45a19dca2ed7a"
-  integrity sha512-UW1gxGyO1ls/0ppBuRrCkGTppsT6l138FJoU3kqYpohLni+wWEebL1aj686SRXFG7RYg1Z2BUtzIoFBQo8U9pg==
+"@platform/cli.prompt@0.3.4", "@platform/cli.prompt@^0.3.4":
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.3.4.tgz#198d9edb19512b885220779cf7a0b428f1506919"
+  integrity sha512-vr+M0vdUsV+StJG/dpuzy1QGMXc5uvHuh6O3PpyZL+I4Pt7+7S1yO+ClNOH8Iwj+iz2Qc7879P7x6eqqh9rVsg==
   dependencies:
     "@platform/fs" "0.5.5"
     "@platform/libs" "0.2.0"
-    "@platform/log" "0.1.7"
+    "@platform/log" "0.1.9"
     inquirer "7.0.3"
 
-"@platform/cli@0.5.15":
-  version "0.5.15"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.15.tgz#d4a57692e970f8b315cbe39061917665aaf91777"
-  integrity sha512-/p/9fYpyFbW+J+UwQmOn5NdwZnePbpniw2XSZDkCTuGlFsd+Gmoag2T3gl68kCmkCcHGDdJZuM6MLNvo+Vwj6w==
+"@platform/cli@0.5.17":
+  version "0.5.17"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.17.tgz#1416c420ab115778fd8468947cafc46e20ac3490"
+  integrity sha512-HeJIBq+KZxZsoMGqGfrv9r2LwRE5rumB3Tq9+9qo0iBmYTxsXGZrRzZrTVJ+Vzzo4PcKsaH1p1lObZ76SrQ8eA==
   dependencies:
-    "@platform/cli.prompt" "0.3.2"
+    "@platform/cli.prompt" "0.3.4"
     "@platform/exec" "0.2.45"
     "@platform/fs" "0.5.5"
     "@platform/libs" "0.2.0"
-    "@platform/log" "0.1.7"
+    "@platform/log" "0.1.9"
     "@platform/util.value" "0.7.3"
     "@types/inquirer" "6.5.0"
     "@types/yargs" "15.0.1"
@@ -125,10 +125,10 @@
     rxjs "6.5.4"
     tslib "1.10.0"
 
-"@platform/log@0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.7.tgz#1fb726267692c83a09e2e4be983e53de92d0d5e8"
-  integrity sha512-qZ1JqphkXw2n3Ui72GQ90ocCzYkEMv1ooBo7tDco6F0SOZnGVWZ0EhfI/EMfpkqIFE4qPVHS34kGZXAM0OsIFQ==
+"@platform/log@0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.9.tgz#b93612e15e7a5e280b5b71c56f83877ea44beaba"
+  integrity sha512-lkahpqH6gyY6P2KvOxdz33jpkvjC25A56zgjtlQc/kTkgcCnbGGklqLTdLW3fSXr1bpUZoeZMPw3omuWtlPVag==
   dependencies:
     "@platform/libs" "0.2.0"
     chalk "3.0.0"

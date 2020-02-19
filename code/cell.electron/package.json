@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.electron",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Electron shell for CellOS.",
   "scripts": {
     "ui": "cd app.ui && yarn start",
@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@platform/exec": "0.2.45",
-    "@platform/log": "0.1.7",
+    "@platform/log": "0.1.9",
     "@platform/ts": "3.7.12"
   },
   "files": [
@@ -24,5 +24,6 @@
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }

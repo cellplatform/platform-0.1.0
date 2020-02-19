@@ -1793,15 +1793,15 @@
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
 
-"@platform/graphql.server@0.1.92":
-  version "0.1.92"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.92.tgz#9dec68a3cda3bacdd2246bab48c89c26a74b6642"
-  integrity sha512-iak8MpgBI084zBlt8EW0RcvhccHdKiTkD6hcbo9p/fwjSvwK81Xvi+wHxVqlkVR/ZpCtp+dXELMoqsLmvKqKKg==
+"@platform/graphql.server@0.1.94":
+  version "0.1.94"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.94.tgz#622b63da827603b75549edfef4aeab21961e2939"
+  integrity sha512-xXbsB0eIppNWUOhO6Lu+1tE4S7UUJ5NnmFJVC/ZSmeGHJS6b2RTNwtUXcPLpMIeLCEQ31u0j7w+3sM3dZw+ufQ==
   dependencies:
     "@platform/cache" "0.2.15"
     "@platform/graphql" "0.2.86"
     "@platform/libs" "0.2.0"
-    "@platform/log" "0.1.7"
+    "@platform/log" "0.1.9"
     "@platform/util.is" "0.0.109"
     "@platform/util.value" "0.7.3"
     "@types/dotenv" "8.2.0"
@@ -1874,6 +1874,15 @@
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.7.tgz#1fb726267692c83a09e2e4be983e53de92d0d5e8"
   integrity sha512-qZ1JqphkXw2n3Ui72GQ90ocCzYkEMv1ooBo7tDco6F0SOZnGVWZ0EhfI/EMfpkqIFE4qPVHS34kGZXAM0OsIFQ==
+  dependencies:
+    "@platform/libs" "0.2.0"
+    chalk "3.0.0"
+    cli-table "0.3.1"
+
+"@platform/log@0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.9.tgz#b93612e15e7a5e280b5b71c56f83877ea44beaba"
+  integrity sha512-lkahpqH6gyY6P2KvOxdz33jpkvjC25A56zgjtlQc/kTkgcCnbGGklqLTdLW3fSXr1bpUZoeZMPw3omuWtlPVag==
   dependencies:
     "@platform/libs" "0.2.0"
     chalk "3.0.0"
