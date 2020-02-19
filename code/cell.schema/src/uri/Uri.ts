@@ -96,7 +96,6 @@ export class Uri {
     }
 
     // Finish up.
-    // console.log('text', text);
     const ok = !Boolean(error) && data.type !== 'UNKNOWN';
     const res: t.IUriParts<D> = { ok, uri: text, parts: data as D, toString: () => text };
     return error ? { ...res, error } : res;
