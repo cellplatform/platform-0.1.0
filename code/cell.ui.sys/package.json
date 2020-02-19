@@ -1,16 +1,12 @@
 {
-  "name": "@platform/cell.electron.ui",
+  "name": "@platform/cell.ui.sys",
   "version": "0.0.0",
-  "description": "UI components used by [cell.electron].",
+  "description": "Base system UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "start": "parcel src/index.html",
     "watch": "yarn start",
-    "test": "ts test",
-    "tdd": "ts test --watch",
-    "lint": "ts lint",
-    "build": "echo ts build",
     "bundle": "yarn clean && parcel build src/index.html --experimental-scope-hoisting --no-source-maps",
     "clean": "rm -rf dist && rm -rf .cache",
     "serve": "cd dist && serve"
@@ -21,10 +17,10 @@
     "@platform/libs": "0.2.0"
   },
   "devDependencies": {
-    "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.12",
     "parcel-bundler": "1.12.4"
   },
-  "license": "MIT",
-  "private": true
+  "files": [
+    "src"
+  ],
+  "license": "MIT"
 }

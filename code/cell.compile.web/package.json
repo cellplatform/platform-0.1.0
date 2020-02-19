@@ -1,7 +1,7 @@
 {
-  "name": "@platform/cell.compile.react",
-  "version": "0.0.26",
-  "description": "CellOS code compilation toolchain for React.",
+  "name": "@platform/cell.compile.web",
+  "version": "0.0.0",
+  "description": "CellOS code compilation toolchain for web (JS/CSS).",
   "scripts": {
     "test": "ts test",
     "tdd": "ts test --watch",
