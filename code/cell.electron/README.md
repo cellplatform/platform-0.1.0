@@ -33,8 +33,9 @@ and in a seperate terminal, run the UI [parcel](https://parceljs.org) server:
 
 [Package](https://www.electronforge.io/cli#package) the application as an executable (while testing), or [Make](https://www.electronforge.io/cli#make) the executable into a distributable format:
 
-    yarn package
-    yarn make
+    yarn bundle     # Bundle UI assets.
+    yarn package    # Package application into an executable (testing), or
+    yarn make       # Package application and compile into distributable format.
 
 <p>&nbsp;<p>
 <p>&nbsp;<p>

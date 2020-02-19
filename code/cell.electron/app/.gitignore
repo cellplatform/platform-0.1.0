@@ -3,7 +3,7 @@ lib
 .DS_Store
 .npmrc
 .env
-.data
+/.data
 *.log
 /TEMP.md
 /tmp

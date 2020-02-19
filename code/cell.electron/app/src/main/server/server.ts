@@ -2,8 +2,9 @@ import { local } from '@platform/cell.fs';
 import { server } from '@platform/cell.http/lib/server';
 import { NeDb } from '@platform/fsdb.nedb';
 import { filter } from 'rxjs/operators';
+import { app as electron } from 'electron';
 
-import { constants, fs, t, Urls } from '../common';
+import { constants, fs, t, Urls, log } from '../common';
 import { upload } from './upload';
 
 type IInitArgs = {
@@ -34,29 +35,42 @@ export function init(args: IInitArgs = {}) {
 export async function start(args: IInitArgs = {}) {
   const { app, paths } = init(args);
 
-  // Start the srever.
+  // Start the server.
   const port = 8080;
   const instance = await app.start({ port });
+
+  // Return extra information about the app on the sys-info route.
+  type Info = t.IResGetSysInfoElectronApp;
+  const info = ((): Info => {
+    const env = process.env.NODE_ENV as Info['env'];
+    const versions = process.versions;
+    return {
+      packaged: electron.isPackaged,
+      env,
+      paths: {
+        db: paths.db,
+        fs: paths.fs,
+        log: log.file.path,
+      },
+      versions: {
+        node: versions.node,
+        electron: versions.electron,
+        chrome: versions.chrome,
+        v8: versions.v8,
+      },
+    };
+  })();
 
   app.response$
     // Add electron specific meta-data to sys info.
     .pipe(filter(e => Urls.routes.SYS.INFO.includes(e.url)))
     .subscribe(e => {
-      // console.log('Schema', Schema.Urls.routes);
-      console.log('Urls', Urls);
-      console.log('e', e.res);
-
-      /**
-       * TODO 🐷
-       * - add more details specific to electron;
-       *  - eg: logfile path
-       * db path
-       * fs path
-       */
-
-      // const data = e
-      // e.res
-      e.modify(e.res);
+      const data: t.IResGetElectronSysInfo = {
+        ...e.res.data,
+        region: 'local:app',
+        app: info,
+      };
+      e.modify({ ...e.res, data });
     });
 
   // Upload the bundled system.

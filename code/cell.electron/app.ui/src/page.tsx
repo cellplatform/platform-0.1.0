@@ -13,19 +13,22 @@ const url =
 
 const styles = {
   base: css({
-    Absolute: 0,
+    Absolute: 10,
+    backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+    padding: 10,
   }),
-  iframe: css({
-    Absolute: 0,
-    width: '100%',
-    height: '100%',
-    border: 'none',
-  }),
+  // iframe: css({
+  //   Absolute: 0,
+  //   width: '100%',
+  //   height: '100%',
+  //   border: 'none',
+  // }),
 };
 
 const el = (
   <div {...styles.base}>
-    <iframe src={url} {...styles.iframe} />
+    {/* <iframe src={url} {...styles.iframe} /> */}
+    Hello World
   </div>
 );
 
