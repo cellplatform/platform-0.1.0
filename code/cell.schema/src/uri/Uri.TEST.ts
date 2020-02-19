@@ -1,5 +1,6 @@
 import { expect, t, cuid } from '../test';
 import { Uri } from '.';
+import { DEFAULT } from './Uri';
 
 describe('Uri', () => {
   describe('ids', () => {
@@ -12,14 +13,57 @@ describe('Uri', () => {
       const res = Uri.slug();
       expect(res.length).to.within(5, 10);
     });
+  });
 
-    it('test identifiers (ns)', () => {
+  describe('ns: allowed identifiers', () => {
+    afterEach(() => {
+      Uri.ALLOW = { ...DEFAULT.ALLOW };
+    });
+
+    it('allows "foo" by default', () => {
+      expect(Uri.ALLOW.NS).to.eql(['foo']);
+      expect(Uri.parse('ns:foo').ok).to.eql(true);
+    });
+
+    it('allowed identifiers (ns)', () => {
       Uri.ALLOW.NS.forEach(id => {
-        const uri1 = Uri.create.ns(id);
-        const uri2 = Uri.parse<t.INsUri>(`ns:${id}`);
-        expect(uri1).to.eql(`ns:${id}`);
-        expect(uri2.ok).to.eql(true);
+        if (typeof id === 'string') {
+          const uri1 = Uri.create.ns(id);
+          const uri2 = Uri.parse<t.INsUri>(`ns:${id}`);
+          expect(uri1).to.eql(`ns:${id}`);
+          expect(uri2.ok).to.eql(true);
+        }
       });
+    });
+
+    it('fails when non-cuid identifier not on the ALLOW list', () => {
+      const uri1 = Uri.parse<t.INsUri>('ns:foo');
+      const uri2 = Uri.parse<t.INsUri>('ns:bonkers');
+      expect(uri1.ok).to.eql(true);
+      expect(uri2.ok).to.eql(false);
+    });
+
+    it('supports wildcards in ALLOW list ', () => {
+      const test = (allow: string, uri: string, ok: boolean) => {
+        Uri.ALLOW.NS = [allow];
+        expect(Uri.parse(uri).ok).to.eql(ok);
+      };
+      test('sys*', 'ns:sys', true);
+      test('sys*', 'ns:sys.foo', true);
+      test('sys*', 'ns:foo.sys', false);
+      test('*sys*', 'ns:foo.sys', true);
+      test('*sys', 'ns:foo.sys', true);
+      test('*sys', 'ns:foo.sys.bar', false);
+    });
+
+    it('supports functions in ALLOW list ', () => {
+      const test = (allow: (input: string) => boolean, uri: string, ok: boolean) => {
+        Uri.ALLOW.NS = [allow];
+        expect(Uri.parse(uri).ok).to.eql(ok);
+      };
+      test(input => input.startsWith('sys'), 'ns:sys', true);
+      test(input => input.startsWith('sys'), 'ns:sys.foo', true);
+      test(input => input.startsWith('sys'), 'ns:foo', false);
     });
   });
 

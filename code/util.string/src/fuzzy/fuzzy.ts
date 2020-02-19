@@ -14,7 +14,7 @@ export type IFuzzyMatch = {
 export type IFuzzyFilterMatch = IFuzzyMatch & { index: number };
 
 /**
- * Determines whether there is a match in the input stirng with the given fuzzy pattern.
+ * Determines whether there is a match in the input string with the given fuzzy pattern.
  */
 export function match(pattern: string, input: string): IFuzzyMatch | undefined {
   const res = fuzzy.match(pattern, input);

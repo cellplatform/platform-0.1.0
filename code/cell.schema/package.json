@@ -17,6 +17,7 @@
     "@platform/fsdb.types": "0.6.8",
     "@platform/libs": "0.2.0",
     "@platform/util.hash": "0.0.15",
+    "@platform/util.string": "0.4.0",
     "@platform/util.value": "0.7.3"
   },
   "devDependencies": {
