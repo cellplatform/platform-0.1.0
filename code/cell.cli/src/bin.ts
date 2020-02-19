@@ -1,19 +1,10 @@
 #!/usr/bin/env node
 
 import * as fsSync from '@platform/cell.fs.sync/lib/cli';
-import * as tmpl from './cli.tmpl';
+import * as tmpl from '@platform/cell.tmpl/lib/cli';
 import { cli } from './common';
 
 const log = cli.log;
-
-/**
- * Makes the script crash on unhandled rejections instead of silently
- * ignoring them. In the future, promise rejections that are not handled will
- * terminate the Node.js process with a non-zero exit code.
- */
-process.on('unhandledRejection', err => {
-  throw err;
-});
 
 /**
  * Create a new "command-line-interface" application

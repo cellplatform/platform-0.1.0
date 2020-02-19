@@ -1,5 +1,5 @@
 import { t } from '../common';
-import { tmpl } from './tmpl';
+import { tmpl } from './cmd.tmpl';
 
 export type ITmplArgs = {};
 

@@ -1,13 +1,12 @@
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
-import { cli, fs, log, Template } from '../common';
-import * as middleware from './tmpl.middleware';
-import * as t from './types';
+import { cli, fs, log, Template, t } from '../common';
+import * as middleware from './cmd.tmpl.middleware';
 
 export async function tmpl(args: { dir: string }) {
   // Prompt the user for which template to load.
-  const tmplDir = fs.resolve(fs.join(__dirname, '../../tmpl'));
+  const tmplDir = fs.resolve(fs.join(__dirname, '../../templates'));
   const fsPrompt = cli.prompt.fs.paths(tmplDir, { pageSize: 10, all: false });
   const dir = (await fsPrompt.radio('create from:'))[0];
 

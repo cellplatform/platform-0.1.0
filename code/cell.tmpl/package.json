@@ -1,37 +1,33 @@
 {
-  "name": "@platform/cell.cli",
-  "version": "0.2.41",
-  "description": "Command-line-interface for CellOS.",
+  "name": "@platform/cell.tmpl",
+  "version": "0.0.1",
+  "description": "Template generator for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
-  "bin": {
-    "cell": "lib/bin.js"
-  },
   "scripts": {
-    "demo": "mkdir -p tmp && cd tmp && node ../lib/bin $@",
     "start": "node lib/bin $@",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare",
-    "clean": "rm -rf tmp"
+    "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.fs.sync": "0.3.41",
-    "@platform/cell.schema": "0.4.29",
-    "@platform/cell.tmpl": "0.0.1",
     "@platform/cell.types": "0.4.27",
     "@platform/cli": "0.5.17",
-    "@platform/cli.prompt": "0.3.4"
+    "@platform/fs": "0.5.5",
+    "@platform/libs": "0.0.12",
+    "@platform/npm": "0.2.53",
+    "@platform/tmpl": "0.1.6",
+    "@platform/types": "0.4.4"
   },
   "devDependencies": {
-    "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.12"
+    "@platform/test": "0.0.50",
+    "@platform/ts": "3.4.17"
   },
   "files": [
     "lib",
-    "tmpl",
+    "templates",
     "!lib/test",
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"

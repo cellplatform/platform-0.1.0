@@ -1,5 +1,5 @@
-import { fs, npm } from '../common';
-import * as t from './types';
+import { fs, npm, t } from '../common';
+// import * as t from './types';
 
 /**
  * Saves a template file.
