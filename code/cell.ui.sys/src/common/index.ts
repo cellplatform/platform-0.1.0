@@ -1,7 +1,9 @@
+import * as constants from './constants';
 import * as t from './types';
 import * as util from './util';
 
-export { t, util };
+export { t, util, constants };
+export const COLORS = constants.COLORS;
 
 /**
  * Libs

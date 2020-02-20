@@ -3,11 +3,11 @@ import * as ReactDOM from 'react-dom';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, util, Client, time } from '../common';
-import { loader } from '../loader';
-import { Button } from './primitives';
+import { Client, color, COLORS, css, t } from '../../common';
+import { loader } from '../../loader';
+import { Button } from './../primitives';
 
-export type IRootProps = { style?: CssValue };
+export type IRootProps = {};
 export type IRootState = {
   env?: t.IEnv;
   info?: t.IResGetElectronSysInfo;
@@ -67,6 +67,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     // TEMP 🐷NOTE: this reference seems to be required to trigger the load state. Investigate!
     const f = await loader.Bar(); // TODO: Make this load the IFrame as a child compoent.
+    console.log('f', f);
   }
 
   /**
@@ -79,20 +80,38 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         Absolute: 0,
         backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         padding: 20,
+        overflow: 'hidden',
       }),
-      ref: css({
-        marginTop: 15,
+      title: css({
+        Absolute: [6, 6, null, null],
+        fontSize: 12,
         fontFamily: 'monospace',
+        color: COLORS.CLI.MAGENTA,
+      }),
+      code: css({
+        fontFamily: 'monospace',
+        fontSize: 11,
+        marginRight: 50,
+      }),
+      objects: css({
+        Flex: 'horizontal-stretch-stetch',
+        marginTop: 15,
       }),
     };
 
     const elLoadButton = this.isTop && <Button onClick={this.loadIframe}>load IFrame</Button>;
 
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div {...styles.base}>
+        <div {...styles.title}>{`<Root>`}</div>
         {elLoadButton}
-        <pre {...styles.ref}>{JSON.stringify(env)}</pre>
-        <pre {...styles.ref}>{info && JSON.stringify(info.app, null, 2)}</pre>
+
+        <div {...styles.objects}>
+          <pre {...styles.code}>{JSON.stringify(env, null, 2)}</pre>
+          {info && <pre {...styles.code}>{JSON.stringify(info.app, null, 2)}</pre>}
+          {/* {info && <ObjectView name={'info.app'} data={info.app} style={styles.object} />} */}
+        </div>
+
         <div ref={this.iframeContainerRef} />
       </div>
     );

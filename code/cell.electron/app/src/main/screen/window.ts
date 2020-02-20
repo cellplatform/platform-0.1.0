@@ -33,13 +33,13 @@ export function createWindow(args: { host: string; def: string }) {
   // Log state.
   (() => {
     const table = log.table({ border: false });
-    const add = (key: string, value: any) => table.add([`• ${log.green(key)} `, value]);
+    const add = (key: string, value: any) => table.add([` • ${log.green(key)} `, value]);
     add('def:', args.def);
     add('url:', entryUrl);
     if (isDev) {
       add('url (dev):', url);
     }
-    add('query-string:', querystring);
+    add('query:', querystring);
 
     const output = `
 ${log.white('window')}

@@ -14,7 +14,8 @@
   "dependencies": {
     "@platform/cell.client": "latest",
     "@platform/react": "latest",
-    "@platform/libs": "latest"
+    "@platform/libs": "latest",
+    "@platform/polyfill": "latest"
   },
   "devDependencies": {
     "parcel-bundler": "latest"

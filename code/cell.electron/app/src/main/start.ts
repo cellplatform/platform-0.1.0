@@ -41,7 +41,7 @@ export async function start() {
   (() => {
     const table = log.table({ border: false });
     const add = (key: string, value: any) => {
-      key = `• ${log.green(key)} `;
+      key = ` • ${log.green(key)} `;
       table.add([key, value]);
     };
 

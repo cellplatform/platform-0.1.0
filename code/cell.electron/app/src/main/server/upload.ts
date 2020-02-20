@@ -45,10 +45,10 @@ export async function upload(args: {
 
     if (!res.ok) {
       log.info.yellow(`Failed to upload files.`);
-      log.info.gray('• packaged:', app.isPackaged);
-      log.info.gray('• dir:     ', sourceDir);
-      log.info.gray('• host:    ', host);
-      log.info.gray('• errors:');
+      log.info.gray(' • packaged:', app.isPackaged);
+      log.info.gray(' • dir:     ', sourceDir);
+      log.info.gray(' • host:    ', host);
+      log.info.gray(' • errors:');
       res.body.errors.forEach(err => {
         log.info();
         log.info.gray(`  • filename: ${log.yellow(err.filename)}`);

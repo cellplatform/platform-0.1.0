@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.sys",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Base system UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,8 +15,9 @@
     "@platform/cell.client": "0.2.2",
     "@platform/cell.types": "0.4.30",
     "@platform/libs": "0.2.0",
+    "@platform/polyfill": "^0.0.1",
     "@platform/react": "0.4.8",
-    "@platform/ui.button": "^0.3.41"
+    "@platform/ui.button": "0.3.41"
   },
   "devDependencies": {
     "parcel-bundler": "1.12.4"
