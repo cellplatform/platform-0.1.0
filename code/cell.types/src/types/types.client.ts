@@ -21,6 +21,7 @@ export type IClient = {
   request$: t.Observable<t.IHttpBefore>;
   response$: t.Observable<t.IHttpAfter>;
 
+  info<T extends t.IResGetSysInfo>(): t.IClientAsync<T>;
   ns(input: string | t.IUrlParamsNs): IClientNs;
   cell(input: string | t.IUrlParamsCell): IClientCell;
   file(input: string | t.IUrlParamsFile): IClientFile;
