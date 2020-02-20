@@ -1,0 +1,28 @@
+{
+  "name": "@platform/cell.electron",
+  "version": "0.0.11",
+  "description": "Electron shell for CellOS.",
+  "scripts": {
+    "ui": "cd app.ui && yarn start",
+    "start": "cd app && yarn start",
+    "dev": "cd app && yarn dev",
+    "package": "cd app && yarn package",
+    "make": "cd app && yarn make",
+    "build": "cd app && yarn build",
+    "clean": "sh sh/clean.sh",
+    "bundle": "ts-node -T scripts/bundle.ui",
+    "open": "cd app/out/cell-darwin-x64 && open cell.app"
+  },
+  "devDependencies": {
+    "@platform/cell.compile.web": "0.0.10",
+    "@platform/ts": "3.7.12"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
+  ],
+  "license": "MIT",
+  "private": true
+}

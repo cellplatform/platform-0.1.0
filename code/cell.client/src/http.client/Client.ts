@@ -1,4 +1,4 @@
-import { Schema, t, http, constants } from '../common';
+import { Schema, t, http, constants, util } from '../common';
 import { ClientCell } from './ClientCell';
 import { ClientFile } from './ClientFile';
 import { ClientNs } from './ClientNs';
@@ -50,6 +50,15 @@ export class Client implements t.IClient {
   /**
    * [Methods]
    */
+
+  public async info<T extends t.IResGetSysInfo>() {
+    const http = this.http;
+    const url = this.urls.sys.info.toString();
+
+    const res = await http.get(url);
+    return util.fromHttpResponse(res).toClientResponse<T>();
+  }
+
   public ns(input: string | t.IUrlParamsNs) {
     const urls = this.urls;
     const uri = urls.ns(input).uri;

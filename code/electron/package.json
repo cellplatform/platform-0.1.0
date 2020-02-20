@@ -1,11 +1,11 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.7.54",
+  "version": "0.7.56",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
-    "platform.electron": "lib/bin/index.js"
+    "platform-electron": "lib/bin/index.js"
   },
   "scripts": {
     "test": "echo no-op",
@@ -20,7 +20,7 @@
   "dependencies": {
     "@platform/fs": "0.5.5",
     "@platform/libs": "0.2.0",
-    "@platform/log": "0.1.7",
+    "@platform/log": "0.1.9",
     "@platform/react": "0.4.8",
     "@platform/types": "0.4.4",
     "@types/app-root-path": "1.2.4",

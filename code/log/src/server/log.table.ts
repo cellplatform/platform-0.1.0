@@ -1,7 +1,6 @@
-const Table = require('cli-table');
-import { compact } from '../common';
-import { ILog, ILogTable, ILogTableOptions } from './types';
+import { t, compact } from './common';
 
+const Table = require('cli-table');
 const DEFAULTS = {
   BORDERLESS: {
     top: '',
@@ -25,7 +24,7 @@ const DEFAULTS = {
 /**
  * Creates a new table builder.
  */
-export function table(log: ILog, options: ILogTableOptions = {}) {
+export function table(log: t.ILog, options: t.ILogTableOptions = {}) {
   const { head = [], colWidths = [] } = options;
 
   let args: any = { head: compact(head), colWidths };
@@ -37,13 +36,13 @@ export function table(log: ILog, options: ILogTableOptions = {}) {
     };
   }
 
-  const t = new Table(args);
-  const api: ILogTable = {
+  const tbl = new Table(args);
+  const api: t.ILogTable = {
     /**
      * Adds a new row to the table.
      */
     add(columns: Array<string | number | undefined>) {
-      t.push(columns.map(row => (row === undefined ? '' : row.toString())));
+      tbl.push(columns.map(row => (row === undefined ? '' : row.toString())));
       return api;
     },
 
@@ -51,7 +50,7 @@ export function table(log: ILog, options: ILogTableOptions = {}) {
      * Converts the table to a string.
      */
     toString() {
-      return t.toString();
+      return tbl.toString();
     },
 
     /**
@@ -62,5 +61,6 @@ export function table(log: ILog, options: ILogTableOptions = {}) {
       return api;
     },
   };
+
   return api;
 }

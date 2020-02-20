@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.s3",
-  "version": "0.6.27",
+  "version": "0.6.29",
   "description": "Filesystem like API into AWS S3 (and Digital Ocean Spaces)",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,7 +18,7 @@
     "@platform/fs.s3.types": "0.1.12",
     "@platform/http": "0.11.1",
     "@platform/libs": "0.2.0",
-    "@platform/log": "0.1.7",
+    "@platform/log": "0.1.9",
     "@platform/types": "0.4.4",
     "@platform/util.mimetype": "0.0.6",
     "@platform/util.value": "0.7.3",

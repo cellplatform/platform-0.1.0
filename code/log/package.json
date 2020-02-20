@@ -1,6 +1,6 @@
 {
   "name": "@platform/log",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "description": "Client and server logging.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

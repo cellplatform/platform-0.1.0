@@ -1,0 +1,12 @@
+node_modules
+lib
+.DS_Store
+.npmrc
+.env
+.bundle
+*.log
+
+/TEMP.md
+/tmp
+/out
+

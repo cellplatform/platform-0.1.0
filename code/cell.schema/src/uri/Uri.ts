@@ -1,17 +1,17 @@
-import { t, cuid, slug, coord } from '../common';
+import { t, cuid, slug, coord, wildcard } from '../common';
 
 type UriType = 'NS' | 'CELL' | 'ROW' | 'COLUMN' | 'FILE';
 type UriPrefix = 'ns' | 'cell' | 'file';
+type AllowPattern = string | ((input: string) => boolean);
+type Allow = { NS: AllowPattern[] };
 
-export const TEST = {
-  NS: {
-    ALLOW: ['foo'],
-  },
-};
+const ALLOW: Allow = { NS: ['foo'] };
+export const DEFAULT = { ALLOW };
 
 export class Uri {
   public static cuid = cuid;
   public static slug = slug;
+  public static ALLOW = { ...DEFAULT.ALLOW };
 
   /**
    * Construct a URI string from arguments.
@@ -96,7 +96,6 @@ export class Uri {
     }
 
     // Finish up.
-    // console.log('text', text);
     const ok = !Boolean(error) && data.type !== 'UNKNOWN';
     const res: t.IUriParts<D> = { ok, uri: text, parts: data as D, toString: () => text };
     return error ? { ...res, error } : res;
@@ -185,21 +184,24 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
 }
 
 function isCuid(input: string) {
-  return input.length === 25 && input[0] === 'c';
+  return input.length === 25 && input[0] === 'c' && alphaNumeric.test(input);
 }
 
 function isValidId(input: string) {
   input = (input || '').replace(/^ns\:/, '');
 
-  if (!alphaNumeric.test(input)) {
-    return false;
-  }
-
   if (isCuid(input)) {
     return true;
   }
 
-  // HACK:  Certain NS ids are allowed for testing
-  //        but may be shut off in production systems.
-  return TEST.NS.ALLOW.includes(input);
+  // NOTE:  Certain NS ids are allowed for testing or for
+  //        special environments like locally running apps
+  //        (equivalent of "local" IP addresses).
+  return Uri.ALLOW.NS.some(pattern => {
+    return typeof pattern === 'string'
+      ? pattern.includes('*')
+        ? wildcard.isMatch(input, pattern)
+        : pattern === input
+      : pattern(input);
+  });
 }

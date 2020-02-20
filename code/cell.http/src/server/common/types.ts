@@ -6,6 +6,7 @@ export * from '@platform/fsdb.types';
 export * from '@platform/cell.types';
 export * from '@platform/http.types';
 export * from '@platform/micro/lib/types';
+export * from '@platform/log/lib/types';
 export * from '../../types';
 
 export type GetModel = () => Promise<IModel>;

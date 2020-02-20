@@ -9,12 +9,6 @@ export { logger } from './logger';
 
 const { PKG } = constants;
 
-process.on('uncaughtException', function(err) {
-  log.error('UNCAUGHT EXCEPTION');
-  log.error(err.message);
-  log.info();
-});
-
 /**
  * Initializes a new server instance.
  */
@@ -23,19 +17,30 @@ export function init(args: {
   fs: t.IFileSystem;
   title?: string;
   deployedAt?: number | string;
-  log?: Array<'ROUTES'>;
+  // log?: Array<'ROUTES'>;
+  logger?: t.ILog;
+  prod?: boolean;
 }) {
   const { db, title, fs } = args;
-  const logTypes = args.log || [];
+  const logger = args.logger || log;
+  // const logTypes = args.log || [];
   const base = util.fs.resolve('.');
   const root = fs.root.startsWith(base) ? fs.root.substring(base.length) : fs.root;
   const deployedAt =
     typeof args.deployedAt === 'string' ? value.toNumber(args.deployedAt) : args.deployedAt;
 
+  // Log uncaught exceptions.
+  process.on('uncaughtException', err => {
+    logger.error('UNCAUGHT EXCEPTION');
+    logger.error(err.message);
+    logger.info();
+  });
+
   // Setup the micro-service.
   const deps = PKG.dependencies || {};
   const app = micro.init({
     cors: true,
+    logger,
     log: {
       module: `${log.white(PKG.name)}@${PKG.version}`,
       schema: log.green(deps['@platform/cell.schema']),
@@ -55,14 +60,6 @@ export function init(args: {
   // Make common checks/adjustments to responses
   // before they are sent over the wire.
   app.response$.subscribe(prepareResponse);
-
-  // Log routes.
-  app.events$
-    .pipe(
-      filter(() => logTypes.includes('ROUTES')),
-      filter(e => e.type === 'HTTP/started'),
-    )
-    .subscribe(e => log.info(app.router.log({ indent: 3 })));
 
   // Finish up.
   return app;

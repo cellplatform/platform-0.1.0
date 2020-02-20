@@ -1,0 +1,25 @@
+{
+  "name": "__NAME__",
+  "version": "0.0.0",
+  "description": "",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "watch": "yarn start",
+    "bundle": "yarn clean && parcel build src/index.html --experimental-scope-hoisting --no-source-maps",
+    "clean": "sh sh/clean.sh",
+    "serve": "cd dist && serve"
+  },
+  "dependencies": {
+    "@platform/cell.client": "latest",
+    "@platform/react": "latest",
+    "@platform/libs": "latest",
+    "@platform/polyfill": "latest"
+  },
+  "devDependencies": {
+    "parcel-bundler": "latest"
+  },
+  "files": ["lib", "!lib/test", "!*.TEST.{js, mjs, d.ts}", "!*.INTEGRATION.{js, mjs, d.ts}"],
+  "license": "MIT"
+}
