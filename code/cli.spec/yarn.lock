@@ -100,10 +100,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.109.tgz#bcfbd93c54ad7d89b815cff9c8bd0724afb5f63c"
   integrity sha512-U43eUsgWuJlox2kitjDRaAx0E+rI/w7qpUuqckDy1cJRyUWBVIkjNk4zwZAvheJvoyGNzM2lq2yR6WD1aNFe3g==
 
-"@platform/util.string@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.4.1.tgz#c4609e11cb20e85ac7d6a352fb20583b6b92dc6f"
-  integrity sha512-Kke5TAh6kG0xZh3m1ABTYDq0szJzBGgCJgPwDO4E8rl4QARHGhpfN25onwXFsyB31BRGOQtGg1Yp730yKe+mHA==
+"@platform/util.string@0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.4.2.tgz#b5c0a12b93a4a8865dc42227233fac220a585147"
+  integrity sha512-KBk9CWMFgAkV3ck7y8vy0wSJSgAXzJFirVNzsgtB7SObz4kfJ1dJDkxGG7rGS5PTSHuKUQ3w1XcnPJXaD75PVA==
   dependencies:
     "@types/underscore.string" "0.0.38"
     escape-string-regexp "2.0.0"

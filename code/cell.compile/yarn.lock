@@ -47,6 +47,19 @@
     "@platform/libs" "0.2.0"
     "@platform/util.diff" "0.0.16"
 
+"@platform/cell.types@0.4.28":
+  version "0.4.28"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.28.tgz#9ba9e92688491a7fb8b6a05b5b550ec1ce011a9a"
+  integrity sha512-TLY1EmGzDvW7t9Li37DlD2vHGs7z4SU1pN02/3bIeFRW7B7a8wPQ7cL3AxjpQC7RQXn1ktllS03tY/PipK5IUg==
+  dependencies:
+    "@platform/cache" "0.2.15"
+    "@platform/fs.s3.types" "0.1.12"
+    "@platform/fsdb.types" "0.6.8"
+    "@platform/http.types" "0.1.1"
+    "@platform/libs" "0.2.0"
+    "@platform/log" "0.1.9"
+    "@platform/util.diff" "0.0.16"
+
 "@platform/cli.prompt@0.3.4", "@platform/cli.prompt@^0.3.4":
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/@platform/cli.prompt/-/cli.prompt-0.3.4.tgz#198d9edb19512b885220779cf7a0b428f1506919"
