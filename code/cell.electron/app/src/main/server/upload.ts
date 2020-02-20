@@ -1,5 +1,5 @@
 import { app } from 'electron';
-import { Client, constants, fs, log, t } from '../common';
+import { Client, constants, fs, log, t, time } from '../common';
 
 type File = t.IClientCellFileUpload;
 
@@ -29,6 +29,7 @@ export async function upload(args: {
   files?: File[];
   silent?: boolean;
 }) {
+  const timer = time.timer();
   const { sourceDir } = args;
   const targetCell = args.targetCell || constants.URI.UI_FILES;
   const files = args.files ? args.files : await getFiles({ sourceDir });
@@ -47,12 +48,20 @@ export async function upload(args: {
       log.info.gray('• packaged:', app.isPackaged);
       log.info.gray('• dir:     ', sourceDir);
       log.info.gray('• host:    ', host);
-      log.info();
+      log.info.gray('• errors:');
+      res.body.errors.forEach(err => {
+        log.info();
+        log.info.gray(`  • filename: ${log.yellow(err.filename)}`);
+        log.info.gray(`    type:     ${err.type}`);
+        log.info.gray(`    message:  ${err.message}`);
+      });
+
       return done(false);
     }
 
     if (!args.silent) {
-      logUpload({ sourceDir: sourceDir, host, files });
+      const elapsed = timer.elapsed.toString();
+      logUpload({ sourceDir, host, files, elapsed });
     }
 
     return done(true);
@@ -69,8 +78,8 @@ export async function upload(args: {
  * Helpers
  */
 
-function logUpload(args: { sourceDir: string; host: string; files: File[] }) {
-  const { host, files, sourceDir } = args;
+function logUpload(args: { sourceDir: string; host: string; files: File[]; elapsed: string }) {
+  const { host, files, sourceDir, elapsed } = args;
   const bytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
   const size = fs.size.toString(bytes);
 
@@ -90,7 +99,7 @@ function logUpload(args: { sourceDir: string; host: string; files: File[] }) {
 
   log.info(`
 
-${log.blue(`uploaded`)}   ${log.gray(`(${size})`)}
+${log.blue(`uploaded`)}   ${log.gray(`(${size} in ${elapsed})`)}
 ${log.gray(`from:      ${sourceDir}`)}
 ${log.gray(`to:`)}
 ${log.gray(table)}

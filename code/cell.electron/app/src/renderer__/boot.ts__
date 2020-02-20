@@ -1,0 +1,63 @@
+console.log('document', document);
+
+// const url =
+//   'http://localhost:8080/cell:ck6bmume4000008mqhkkdaebj!A2/file/dist/index.html?def=ns:ck6h33tit000008mt36b74r2v';
+
+const url = 'http://localhost:5000/';
+
+const iframe = document.createElement('iframe');
+
+iframe.width = '100%';
+iframe.height = '100%';
+iframe.frameBorder = 'none';
+
+iframe.style.position = 'absolute';
+iframe.style.top = '0px';
+iframe.style.left = '0px';
+iframe.style.background = 'transparent';
+
+const script = '';
+
+console.log('window.location', window.location);
+
+type Query = { entry: string };
+
+const query = window.location.search
+  .replace(/^\?/, '')
+  .split('&')
+  .map(item => item.split('='))
+  .reduce((acc, next) => {
+    const key = next[0];
+    const value = decodeURIComponent(next[1]);
+    acc[key] = value;
+    return acc;
+  }, {}) as Query;
+
+// console.log('entry', entry);
+console.log('query', query);
+
+// const html = `
+
+//   <!DOCTYPE html>
+//   <html lang="en">
+//     <head>
+//       <meta charset="utf-8" />
+//       <meta
+//         http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' http://localhost:8080;" />
+//       <title>cell.ui.sys</title>
+//       <link rel="stylesheet" href="css/normalize.css" />
+//       <link rel="stylesheet" href="css/global.css" />
+//       </head>
+//     <body>
+//       <div id="root">
+//         <div class="loading">Loading...</div>
+//       </div>
+//       <script src="${query.entry}"></script>
+
+//     </body>
+//   </html>
+
+// `;
+iframe.src = query.entry;
+// iframe.srcdoc = html;
+document.body.appendChild(iframe);

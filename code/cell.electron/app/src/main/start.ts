@@ -5,7 +5,7 @@ import { Client } from '@platform/cell.client';
 import * as server from './server';
 import * as tray from './tray';
 
-import { createWindow } from './window';
+import { createWindow } from './screen';
 
 const refs: any = {};
 
@@ -38,25 +38,31 @@ export async function start() {
   const { paths } = await server.start({ log, prod });
 
   // Log state.
-  const table = log.table({ border: false });
+  (() => {
+    const table = log.table({ border: false });
+    const add = (key: string, value: any) => {
+      key = `• ${log.green(key)} `;
+      table.add([key, value]);
+    };
 
-  // log.info
+    add('env:', process.env.NODE_ENV || '<empty>');
+    add('packaged:', app.isPackaged);
+    add('log:', log.file.path);
+    add('db:', paths.db);
+    add('fs:', paths.fs);
 
-  const add = (key: string, value: any) => {
-    key = `• ${log.green(key)} `;
-    table.add([key, value]);
-  };
+    log.info.gray(`
+${log.white('main')}
+${table}
+`);
 
-  add('env:', process.env.NODE_ENV || '<empty>');
-  add('packaged:', app.isPackaged);
-  add('log:', log.file.path);
-  add('db:', paths.db);
-  add('fs:', paths.fs);
-
-  log.info.gray(`\n\n${table}\n`);
+    // log.info.gray(`\n\n${table}\n`);
+  })();
 
   await app.whenReady();
-  createWindow();
+
+  const def = 'cell:sys!A1';
+  createWindow({ def });
 
   // TEMP 🐷
   refs.tray = tray.init().tray;
