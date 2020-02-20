@@ -1,6 +1,6 @@
 {
   "name": "@platform/react.ssr",
-  "version": "1.1.104",
+  "version": "1.1.105",
   "description": "A lightweight SSR (server-side-rendering) system for react apps bundled with ParcelJS and hosted on S3.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "deploy": "cd src.sample/server && yarn deploy"
   },
   "dependencies": {
-    "@platform/cli": "0.5.17",
+    "@platform/cli": "0.5.18",
     "@platform/exec": "0.2.45",
     "@platform/fs": "0.5.5",
     "@platform/fs.s3": "0.6.29",

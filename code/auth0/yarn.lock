@@ -2147,10 +2147,10 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.string@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.4.0.tgz#7e496abf02b639577286c2febc5978ede4b96bff"
-  integrity sha512-0/IRNEy0AxDxR4VL9Er0Hdto1vReXDm2C7sdFa4X0BLXKki0DoR4T6h5N7oH50v+c+rOH7i1IUSW+hvyO4DRSA==
+"@platform/util.string@0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.4.1.tgz#c4609e11cb20e85ac7d6a352fb20583b6b92dc6f"
+  integrity sha512-Kke5TAh6kG0xZh3m1ABTYDq0szJzBGgCJgPwDO4E8rl4QARHGhpfN25onwXFsyB31BRGOQtGg1Yp730yKe+mHA==
   dependencies:
     "@types/underscore.string" "0.0.38"
     escape-string-regexp "2.0.0"

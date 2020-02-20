@@ -70,10 +70,10 @@
     "@types/yargs" "13.0.0"
     yargs "13.2.2"
 
-"@platform/cli@0.5.17":
-  version "0.5.17"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.17.tgz#1416c420ab115778fd8468947cafc46e20ac3490"
-  integrity sha512-HeJIBq+KZxZsoMGqGfrv9r2LwRE5rumB3Tq9+9qo0iBmYTxsXGZrRzZrTVJ+Vzzo4PcKsaH1p1lObZ76SrQ8eA==
+"@platform/cli@0.5.18":
+  version "0.5.18"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.18.tgz#e1a7f310d31bf098a58e385153bfe8c6ac3c9b04"
+  integrity sha512-SFnd4D5/jJLo7M+sucGGzwCm4uTtMMZBwj4004MVC+ev8+ZP1O3YVAfJO6h0a8B3rFePvaVYC2T/LPzuiYGU2A==
   dependencies:
     "@platform/cli.prompt" "0.3.4"
     "@platform/exec" "0.2.45"
@@ -216,12 +216,12 @@
     findup-sync "3.0.0"
     mocha "6.1.4"
 
-"@platform/tmpl@0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@platform/tmpl/-/tmpl-0.1.6.tgz#30dae115817cd45c6d7af9e54adc73eb3e870627"
-  integrity sha512-XBRbKYnYGrXUFCrieF5XkaMpcZ9A2bCkrdVFWlWzGISrq3JdBUnRcJoYCaYS1mEGqjyoKpQZft6x2I0qL5S3wQ==
+"@platform/tmpl@0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@platform/tmpl/-/tmpl-0.1.7.tgz#22d5152b746dd9114dd35a5c64be31509ea458ab"
+  integrity sha512-gJwxQ9b5YAJF/sqVoHCjSZ30A+dezDlEkM3IJECehBtMaVOiMnLKfPRI5aw3sYvXU46FW3urw0GXieyj0IfFRw==
   dependencies:
-    "@platform/cli" "0.5.17"
+    "@platform/cli" "0.5.18"
     "@platform/fs" "0.5.5"
     "@platform/npm" "0.2.53"
     "@types/inquirer" "6.5.0"
