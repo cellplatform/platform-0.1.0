@@ -38,7 +38,7 @@ export function createWindow(args: { host: string; def: string }) {
     add('def:', args.def);
     add('url:', entryUrl);
     if (isDev) {
-      add('url (dev):', url);
+      add(`url ${log.cyan('(dev)')}:`, log.cyan(url));
     }
     add('query:', querystring);
 
