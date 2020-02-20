@@ -1,5 +1,5 @@
 import { Schema, t, Uri } from '../common';
-import { squash } from './value.cell';
+import { squash } from './value.squash';
 
 const { sha256 } = Schema.hash;
 

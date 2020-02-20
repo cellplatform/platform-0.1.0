@@ -1,5 +1,5 @@
-import { expect, t, fs, Uri } from '../test';
 import { value } from '.';
+import { expect, t } from '../test';
 
 const INTEGRITY: t.IFileIntegrity = {
   status: 'VALID',
@@ -8,12 +8,19 @@ const INTEGRITY: t.IFileIntegrity = {
   's3:etag': 'abcd-12345',
 };
 
+type R = t.IRowProps & { height?: number };
+type C = t.IColumnProps & { width?: number };
+
 describe('hash', () => {
   describe('hash.ns', () => {
     beforeEach(() => (index = -1));
 
     let index = -1;
-    const test = (ns: t.INs, data: Partial<t.INsDataCoord> | undefined, expected: string) => {
+    const test = (
+      ns: t.INs,
+      data: Partial<t.INsDataCoord<any, any, any>> | undefined,
+      expected: string,
+    ) => {
       const hash = value.hash.ns({ uri: 'ns:foo', ns, data });
 
       index++;
@@ -166,7 +173,7 @@ describe('hash', () => {
     beforeEach(() => (index = -1));
 
     let index = -1;
-    const test = (data: t.IRowData | undefined, expected: string) => {
+    const test = (data: t.IRowData<R> | undefined, expected: string) => {
       const hash = value.hash.row({ uri: 'cell:foo!1', data });
 
       index++;
@@ -217,7 +224,7 @@ describe('hash', () => {
     beforeEach(() => (index = -1));
 
     let index = -1;
-    const test = (data: t.IRowData | undefined, expected: string) => {
+    const test = (data: t.IColumnData<C> | undefined, expected: string) => {
       const hash = value.hash.column({ uri: 'cell:foo!A', data });
 
       index++;

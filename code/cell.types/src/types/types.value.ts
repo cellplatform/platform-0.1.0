@@ -1,1 +1,1 @@
-export type IValue = {}; // TEMP 🐷
+export type CellValue = string | boolean | number | object | null | undefined;

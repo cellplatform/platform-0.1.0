@@ -90,58 +90,6 @@ describe('cell', () => {
     test({ foo: 'ns:abc' }, false);
   });
 
-  describe('squash', () => {
-    it('squash.props', () => {
-      const test = (props?: Partial<P>, expected?: any) => {
-        const res = value.squash.props(props);
-        expect(res).to.eql(expected);
-      };
-      test();
-      test({});
-      test({ style: {} });
-      test({ merge: {} });
-      test({ style: {}, merge: {} });
-      test({ style: { bold: true }, merge: {} }, { style: { bold: true } });
-    });
-
-    it('squash.cell', () => {
-      const test = (cell?: t.ICellData, expected?: any, empty?: any) => {
-        const res = value.squash.cell(cell, { empty });
-        expect(res).to.eql(expected);
-      };
-      test();
-      test({});
-      test({ value: undefined });
-      test({ value: null });
-      test({ value: 123 }, { value: 123 });
-      test({ value: 123, links: {} }, { value: 123 });
-      test({ value: 0, links: {} }, { value: 0 });
-      test({ hash: 'sha256...' }); // NB: Hash ignored on empty object.
-      test({ value: 123, hash: 'sha256...' }, { value: 123, hash: 'sha256...' });
-      test(
-        { value: undefined, error: { type: 'UNKNOWN', message: 'Fail' } },
-        { error: { type: 'UNKNOWN', message: 'Fail' } },
-      );
-
-      test({ value: undefined }, {}, {}); // NB: Squash to {} not undefined.
-    });
-
-    it('squash.object', () => {
-      const test = (obj?: object, expected?: any, options?: { empty?: undefined | {} }) => {
-        const res = value.squash.object(obj, options);
-        expect(res).to.eql(expected);
-      };
-      test();
-      test({});
-      test({ hash: 'sha256...' }); // NB: Hash ignored on empty object.
-      test({ foo: undefined, hash: 'sha256...' });
-      test({ foo: 123, hash: 'sha256...' }, { foo: 123, hash: 'sha256...' });
-      test({ foo: undefined });
-      test({ foo: null });
-      test({ foo: { value: null } }, { foo: { value: null } }); // NB: null only squashed on root keys.
-    });
-  });
-
   describe('cellDiff', () => {
     it('no difference', () => {
       const cell: t.ICellData<{}> = { value: 1, props: { style: { bold: true } } };
