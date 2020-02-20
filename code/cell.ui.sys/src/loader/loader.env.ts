@@ -1,4 +1,4 @@
-import { t, util } from './common';
+import { t, util } from '../common';
 
 const getEnv: t.GetEnv = (callback: t.GetEnvCallback) => {
   if (typeof callback !== 'function') {
@@ -22,11 +22,12 @@ const getEnv: t.GetEnv = (callback: t.GetEnvCallback) => {
   callback(env);
 };
 
+/**
+ * Initialize the environment.
+ */
 export function init() {
   if (typeof window === 'object' && window === window.top) {
     const win = (window as unknown) as t.ITopWindow;
     win.getEnv = getEnv;
-
-    console.log('getEnv', getEnv);
   }
 }

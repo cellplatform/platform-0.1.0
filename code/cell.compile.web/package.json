@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compile.web",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "CellOS code compilation toolchain for web (JS/CSS).",
   "main": "lib/index",
   "types": "lib/index.d.ts",

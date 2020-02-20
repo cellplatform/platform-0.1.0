@@ -38,6 +38,7 @@ async function runTasks(args: {
 }) {
   const { sourceDir, targetDir, silent } = args;
   const cwd = sourceDir;
+  const dirname = fs.basename(cwd);
 
   const run = async (cmd: string) => exec.cmd.run(cmd, { cwd, silent: true });
 
@@ -46,8 +47,8 @@ async function runTasks(args: {
   };
 
   if (!silent) {
-    log.info.gray(`source: ${sourceDir}`);
-    log.info.gray(`target: ${targetDir}`);
+    log.info.gray(`source (${log.cyan('cwd')}): ${sourceDir}`);
+    log.info.gray(`target:       ${targetDir}`);
     log.info();
   }
 
@@ -63,11 +64,11 @@ async function runTasks(args: {
   await exec.tasks.run(
     [
       {
-        title: 'yarn install',
+        title: log.gray(`${dirname}/${log.white('yarn install')}`),
         task: () => run('yarn install'),
       },
       {
-        title: 'bundle',
+        title: log.gray(`${dirname}/${log.white('yarn bundle')}`),
         task: async () => {
           const res = await run('yarn bundle');
           res.info.forEach(line => output.push(line));
@@ -79,9 +80,11 @@ async function runTasks(args: {
         task: async () => {
           const from = fs.join(cwd, args.sourceDist);
           const to = targetDir;
-          await fs.remove(to);
-          await fs.ensureDir(to);
-          await fs.copy(from, to);
+          if (await fs.pathExists(from)) {
+            await fs.remove(to);
+            await fs.ensureDir(to);
+            await fs.copy(from, to);
+          }
           return { code: 0 };
         },
       },
@@ -120,7 +123,7 @@ const copyLocal = async (args: { moduleName: string }) => {
     await fs.copy(from, to);
   };
 
-  const files = ['package.json', 'yarn.lock', 'src'];
+  const files = ['package.json', 'yarn.lock', 'src', 'sh'];
   await Promise.all(files.map(copy));
 
   return { files, sourceDir, targetDir };
