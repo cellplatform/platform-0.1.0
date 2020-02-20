@@ -27,7 +27,7 @@ export async function run<T>(
   const renderer = silent ? 'silent' : 'default';
 
   let errors: ITaskError[] = [];
-  tasks = Array.isArray(tasks) ? tasks : [tasks];
+  tasks = (Array.isArray(tasks) ? tasks : [tasks]).filter(task => typeof task === 'object');
 
   const run = async (index: number, title: string, task: ITask['task']) => {
     try {

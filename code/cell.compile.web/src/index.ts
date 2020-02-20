@@ -1,2 +1,2 @@
 export * from './types';
-console.log('index.ts');
+export * from './node';

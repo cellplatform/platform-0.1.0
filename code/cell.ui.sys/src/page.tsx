@@ -28,7 +28,7 @@ const styles = {
 const el = (
   <div {...styles.base}>
     {/* <iframe src={url} {...styles.iframe} /> */}
-    Hello World
+    Hello World Foobar
   </div>
 );
 
