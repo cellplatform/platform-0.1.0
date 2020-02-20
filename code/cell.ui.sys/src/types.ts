@@ -1,5 +1,6 @@
 export type IEnv = {
   def: IDef;
+  host: string;
 };
 
 export type IDef = {

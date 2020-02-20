@@ -35,7 +35,7 @@ if (prod) {
  */
 
 export async function start() {
-  const { paths } = await server.start({ log, prod });
+  const { paths, host } = await server.start({ log, prod });
 
   // Log state.
   (() => {
@@ -61,11 +61,11 @@ ${table}
 
   await app.whenReady();
 
-  const def = 'cell:sys!A1';
-  createWindow({ def });
+  const def = 'cell:sys!A1'; // TODO 🐷
+  createWindow({ host, def });
 
   // TEMP 🐷
-  refs.tray = tray.init().tray;
+  refs.tray = tray.init({ host, def }).tray;
 
   try {
     // const f = await exec.process.spawn('node -v');

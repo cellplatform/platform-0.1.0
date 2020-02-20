@@ -2,9 +2,7 @@ import { IServerLog } from '@platform/log/lib/server/types';
 import { IResGetSysInfo } from './types.http';
 
 export type IElectronLog = IServerLog & {
-  file: {
-    path: string;
-  };
+  file: { path: string };
 };
 
 /**

@@ -2,7 +2,9 @@ import { Tray, Menu } from 'electron';
 import { fs } from './common';
 import { createWindow } from './screen';
 
-export function init() {
+export function init(args: { host: string; def: string }) {
+  const { host, def } = args;
+
   const icon = fs.join(__dirname, '../../assets/icons/tray.png');
   const tray = new Tray(icon);
 
@@ -10,7 +12,7 @@ export function init() {
     {
       label: 'Create Window',
       type: 'radio',
-      click: () => createWindow({ def: 'cell:sys!A2' }), // TEMP 🐷
+      click: () => createWindow({ host, def }), // TEMP 🐷
     },
     { label: 'Item2', type: 'radio' },
     { label: 'Item3', type: 'radio', checked: true },

@@ -2,7 +2,7 @@ import { BrowserWindow } from 'electron';
 
 import { constants, log, Schema } from '../common';
 
-export function createWindow(args: { def: string }) {
+export function createWindow(args: { def: string; host: string }) {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 1400,
@@ -19,7 +19,7 @@ export function createWindow(args: { def: string }) {
     .file.byName('index.html')
     .toString();
 
-  const query = `def=${args.def}`;
+  const query = `host=${args.host}&def=${args.def}`;
   const url = isDev ? 'http://localhost:1234' : entryUrl;
 
   win.loadURL(`${url}?${query}`);

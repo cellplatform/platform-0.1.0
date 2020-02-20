@@ -3,11 +3,14 @@ import * as ReactDOM from 'react-dom';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, util } from '../common';
+import { color, css, CssValue, t, util, Client, time } from '../common';
 import { loader } from '../loader';
 
 export type IRootProps = { style?: CssValue };
-export type IRootState = { env?: t.IEnv };
+export type IRootState = {
+  env?: t.IEnv;
+  info?: t.IResGetElectronSysInfo;
+};
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
@@ -24,10 +27,14 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   public async componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
-    // Retrieve environment API.
+    // Initialize the IFrame within the window.
     const top = (window.top as unknown) as t.ITopWindow;
+
+    console.log('top', top);
+    console.log('top.getEnv', top.getEnv);
+
     if (typeof top.getEnv === 'function') {
-      top.getEnv(env => this.state$.next({ env }));
+      top.getEnv(env => this.init(env));
     }
   }
 
@@ -37,49 +44,53 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   /**
+   * Methods
+   */
+  public async init(env: t.IEnv) {
+    this.state$.next({ env });
+
+    // TEMP 🐷
+    const client = Client.create(env.host);
+    const res = await client.info<t.IResGetElectronSysInfo>();
+    console.log('info', res);
+
+    this.state$.next({ info: res.body });
+
+    // TEMP 🐷NOTE: this reference seems to be required to trigger the load state. Investigate!
+    const f = await loader.Bar(); // TODO: Make this load the IFrame as a child compoent.
+  }
+
+  /**
    * [Render]
    */
   public render() {
-    const { env } = this.state;
+    const { env, info } = this.state;
     const styles = {
       base: css({
         Absolute: 0,
         backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         padding: 20,
       }),
+      ref: css({
+        marginTop: 15,
+        fontFamily: 'monospace',
+      }),
     };
-
-    const str = JSON.stringify(env);
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>Foo</div>
-        <div onClick={this.onLoadClick}>load</div>
         <div onClick={this.loadIframe}>load iframe</div>
+        <pre {...styles.ref}>{JSON.stringify(env)}</pre>
+        <pre {...styles.ref}>{info && JSON.stringify(info.app, null, 2)}</pre>
         <div ref={this.iframeContainerRef} />
-        <div>{str}</div>
       </div>
     );
   }
 
-  private onLoadClick = async () => {
-    // const url = 'http://localhost:8080/cell:sys!A1/file/Bar.42168384.js';
-    // console.log('url', url);
-    // console.log('window.location', window.location);
-
-    const res = await loader.Bar();
-
-    console.log('res', res);
-    const { Bar } = res;
-    const el = <Bar />;
-
-    ReactDOM.render(el, document.getElementById('root'));
-  };
-
   private loadIframe = () => {
     const styles = {
       base: css({
-        Absolute: 50,
+        Absolute: [300, 20, 20, 20],
         border: `solid 1px ${color.format(-0.1)}`,
       }),
       iframe: css({
@@ -90,8 +101,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     };
 
     const src = window.location.href;
-
-    console.log('src', src);
+    console.log('iframe.src:', src);
 
     const el = (
       <div {...styles.base}>

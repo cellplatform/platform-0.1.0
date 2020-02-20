@@ -1,10 +1,10 @@
 import { local } from '@platform/cell.fs';
 import { server } from '@platform/cell.http/lib/server';
 import { NeDb } from '@platform/fsdb.nedb';
-import { filter } from 'rxjs/operators';
 import { app as electron } from 'electron';
+import { filter } from 'rxjs/operators';
 
-import { constants, fs, t, Urls, log } from '../common';
+import { constants, fs, log, t } from '../common';
 import { upload } from './upload';
 
 type IInitArgs = {
@@ -38,6 +38,7 @@ export async function start(args: IInitArgs = {}) {
   // Start the server.
   const port = 8080;
   const instance = await app.start({ port });
+  const host = `localhost:${port}`;
 
   // Return extra information about the app on the sys-info route.
   type Info = t.IResGetSysInfoElectronApp;
@@ -63,7 +64,12 @@ export async function start(args: IInitArgs = {}) {
 
   app.response$
     // Add electron specific meta-data to sys info.
-    .pipe(filter(e => Urls.routes.SYS.INFO.includes(e.url)))
+
+    //
+    // TODO 🐷 do the filter using [isMatch] on the router using Routes
+    //
+    // .pipe(filter(e => Urls.routes.SYS.INFO.includes(e.url)))
+    .pipe(filter(e => ['/', '/.sys', '/.sys/'].includes(e.url)))
     .subscribe(e => {
       const data: t.IResGetElectronSysInfo = {
         ...e.res.data,
@@ -77,5 +83,5 @@ export async function start(args: IInitArgs = {}) {
   await upload({ sourceDir: constants.paths.assets.ui });
 
   // Finish up.
-  return { app, instance, paths };
+  return { app, instance, paths, host };
 }
