@@ -5,6 +5,7 @@ export * from './types.cell';
 export * from './types.client';
 export * from './types.compile';
 export * from './types.db';
+export * from './types.electron';
 export * from './types.error';
 export * from './types.file';
 export * from './types.fs';

@@ -4,35 +4,38 @@ import { log } from '@platform/log/lib/server';
 import { constants } from '../app/src/main/common';
 // import { upload } from '../src/main/server';
 
-async function bundle(args: { cwd: string; targetDir: string }) {
-  const { cwd, targetDir } = args;
+async function bundle(args: { cwd: string; targetDir: string; silent?: boolean }) {
+  const { cwd, targetDir, silent } = args;
   const run = async (cmd: string) => exec.cmd.run(cmd, { cwd, silent: true });
 
   const output: string[] = [];
 
-  await exec.tasks.run([
-    {
-      title: 'yarn install',
-      task: () => run('yarn install'),
-    },
-    {
-      title: 'bundle',
-      task: async () => {
-        const res = await run('yarn bundle');
-        res.info.forEach(line => output.push(line));
-        return res;
+  await exec.tasks.run(
+    [
+      {
+        title: 'yarn install',
+        task: () => run('yarn install'),
       },
-    },
-    {
-      title: `copy`,
-      task: async () => {
-        const sourceDir = fs.join(cwd, 'dist');
-        await fs.ensureDir(targetDir);
-        await fs.copy(sourceDir, targetDir);
-        return { code: 0 };
+      {
+        title: 'bundle',
+        task: async () => {
+          const res = await run('yarn bundle');
+          res.info.forEach(line => output.push(line));
+          return res;
+        },
       },
-    },
-  ]);
+      {
+        title: `copy`,
+        task: async () => {
+          const sourceDir = fs.join(cwd, 'dist');
+          await fs.ensureDir(targetDir);
+          await fs.copy(sourceDir, targetDir);
+          return { code: 0 };
+        },
+      },
+    ],
+    { silent },
+  );
 
   log.info();
   output
