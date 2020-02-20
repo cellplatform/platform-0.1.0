@@ -81,10 +81,10 @@
     "@platform/util.string" "0.4.1"
     "@platform/util.value" "0.7.3"
 
-"@platform/cell.tmpl@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/cell.tmpl/-/cell.tmpl-0.0.2.tgz#673f831d70baf13775e6688132af973dccb57796"
-  integrity sha512-Sv/GdxzyoAwG3GREb2vsztbSUr+GPZHO0auEz+u+ftQMTol5ACAKhLS8Wsj5drScODaHDUgHvQRFyUfY6nolxg==
+"@platform/cell.tmpl@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/cell.tmpl/-/cell.tmpl-0.0.3.tgz#78da70c752faf72dcf96589a26481e5648688270"
+  integrity sha512-VtNJRsYLXAp3jlEWm5du8Q1HxbB2DmlIIt6xJ/4JqjuqGHQRI4k4sW8+gudlWK0dPILrMhZkTeyJllInQ8rc1w==
   dependencies:
     "@platform/cell.types" "0.4.27"
     "@platform/cli" "0.5.18"
