@@ -1,8 +1,10 @@
 import { BrowserWindow } from 'electron';
 
-import { constants, log, Schema } from '../common';
+import { constants, log, Schema, t } from '../common';
 
-export function createWindow(args: { def: string; host: string }) {
+export function createWindow(args: { host: string; def: string }) {
+  const { host, def } = args;
+
   // Create the browser window.
   const win = new BrowserWindow({
     width: 1400,
@@ -19,25 +21,25 @@ export function createWindow(args: { def: string; host: string }) {
     .file.byName('index.html')
     .toString();
 
-  const query = `host=${args.host}&def=${args.def}`;
+  const query: t.IEnvLoaderQuery = { host, def };
+  const querystring = Object.keys(query)
+    .reduce((acc, key) => `${acc}&${key}=${query[key]}`, '')
+    .replace(/^\&/, '');
   const url = isDev ? 'http://localhost:1234' : entryUrl;
 
-  win.loadURL(`${url}?${query}`);
+  win.loadURL(`${url}?${querystring}`);
   win.webContents.openDevTools(); // TEMP 🐷
 
   // Log state.
   (() => {
     const table = log.table({ border: false });
-    const add = (key: string, value: any) => {
-      key = `• ${log.green(key)} `;
-      table.add([key, value]);
-    };
+    const add = (key: string, value: any) => table.add([`• ${log.green(key)} `, value]);
     add('def:', args.def);
     add('url:', entryUrl);
     if (isDev) {
       add('url (dev):', url);
     }
-    add('query string:', query);
+    add('query-string:', querystring);
 
     const output = `
 ${log.white('window')}

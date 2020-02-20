@@ -90,13 +90,18 @@ async function runTasks(args: {
   );
 
   if (!silent) {
+    const files = await fs.readdir(targetDir);
+    const size = (await fs.size.dir(targetDir)).toString();
+
     output
       .filter(line => line.startsWith('dist/'))
       .forEach(line => {
         log.info.gray(`    • ${line}`);
       });
     log.info();
-    log.info.green(`copied to: ${log.gray(targetDir)}`);
+    log.info.green(`copied:`);
+    log.info.gray(` • ${files.length} files (${log.blue(size)})`);
+    log.info.gray(` • ${targetDir}`);
     log.info();
   }
 
