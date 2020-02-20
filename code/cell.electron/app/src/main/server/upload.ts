@@ -84,9 +84,9 @@ function logUpload(args: { sourceDir: string; host: string; files: File[]; elaps
   const size = fs.size.toString(bytes);
 
   const table = log.table({ border: false });
-  table.add([' • host', host]);
-  table.add([' • cell', constants.URI.UI_FILES]);
-  table.add([' • files: ']);
+  table.add(['  • host', host]);
+  table.add(['  • cell', constants.URI.UI_FILES]);
+  table.add(['  • files: ']);
 
   const addFile = (file: File) => {
     const { filename, data } = file;
@@ -99,9 +99,9 @@ function logUpload(args: { sourceDir: string; host: string; files: File[]; elaps
 
   log.info(`
 
-${log.blue(`uploaded`)}   ${log.gray(`(${size} in ${elapsed})`)}
-${log.gray(`from:      ${sourceDir}`)}
-${log.gray(`to:`)}
+${log.blue(`uploaded`)}    ${log.gray(`(${size} in ${elapsed})`)}
+${log.gray(` from:      ${sourceDir}`)}
+${log.gray(` to:`)}
 ${log.gray(table)}
 `);
 }
