@@ -18,7 +18,7 @@ tmpl.init(app.plugins);
 // Log header (meta-data).
 const pkg = require('../package.json') as { name: string; version: string };
 const header = `${pkg.name}@${pkg.version}`;
-log.info.gray(`${header}\n${log.magenta('━'.repeat(header.length))}\n`);
+log.info.gray(`${header}\n${log.cyan('━'.repeat(header.length))}\n`);
 
 /**
  * Run the application.
