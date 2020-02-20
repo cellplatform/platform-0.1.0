@@ -3,8 +3,10 @@ lib
 .DS_Store
 .npmrc
 .env
-/.data
+.bundle
 *.log
+
 /TEMP.md
 /tmp
 /out
+

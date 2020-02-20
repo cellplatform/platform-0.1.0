@@ -4,11 +4,9 @@ import { fs } from '@platform/fs';
 import { constants } from '../app/src/main/common';
 
 (async () => {
-  // const f = require('@platform/cell.compile.web');
-
+  const paths = constants.paths;
   const base = fs.resolve('.');
-  const path = constants.paths.assets.ui.substring(base.length + 1);
-  const targetDir = fs.join(base, 'app', path);
+  const targetDir = fs.join(base, 'app', paths.bundle.ui.substring(base.length + 1));
 
   await bundle({ moduleName: '@platform/cell.ui.sys', targetDir });
 })();

@@ -80,7 +80,7 @@ export async function start(args: IInitArgs = {}) {
     });
 
   // Upload the bundled system.
-  await upload({ sourceDir: constants.paths.assets.ui });
+  await upload({ sourceDir: constants.paths.bundle.ui });
 
   // Finish up.
   return { app, instance, paths, host };

@@ -19,6 +19,8 @@ export const paths = {
   },
   assets: {
     icons: resolve('assets/icons'),
-    ui: resolve('assets/ui.bundle'),
+  },
+  bundle: {
+    ui: resolve('.bundle/ui'),
   },
 };
