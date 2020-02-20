@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Client, color, COLORS, css, t } from '../../common';
+import { Client, color, COLORS, css, t, Schema } from '../../common';
 import { loader } from '../../loader';
 import { Button } from './../primitives';
 
@@ -99,7 +99,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
     };
 
-    const elLoadButton = this.isTop && <Button onClick={this.loadIframe}>load IFrame</Button>;
+    const elLoadButton = this.isTop && <Button onClick={this.loadIframe}>load</Button>;
 
     return (
       <div {...styles.base}>
@@ -109,7 +109,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         <div {...styles.objects}>
           <pre {...styles.code}>{JSON.stringify(env, null, 2)}</pre>
           {info && <pre {...styles.code}>{JSON.stringify(info.app, null, 2)}</pre>}
-          {/* {info && <ObjectView name={'info.app'} data={info.app} style={styles.object} />} */}
         </div>
 
         <div ref={this.iframeContainerRef} />
@@ -130,8 +129,14 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
     };
 
-    const src = window.location.href;
-    console.log('iframe.src:', src);
+    const { info } = this.state;
+    if (!info) {
+      return null;
+    }
+
+    Schema.uri.ALLOW.NS.push('sys*'); // HACK
+    const urls = Schema.urls(info.host).cell('cell:sys!A1');
+    const src = urls.file.byName('sys.html').toString();
 
     const el = (
       <div {...styles.base}>

@@ -18,14 +18,15 @@ export function createWindow(args: { host: string; def: string }) {
   const urls = Schema.urls(constants.HOST);
   const entryUrl = urls
     .cell(constants.URI.UI_FILES)
-    .file.byName('index.html')
+    .file.byName('env.html')
     .toString();
+
+  const url = isDev ? 'http://localhost:1234' : entryUrl;
 
   const query: t.IEnvLoaderQuery = { host, def };
   const querystring = Object.keys(query)
     .reduce((acc, key) => `${acc}&${key}=${query[key]}`, '')
     .replace(/^\&/, '');
-  const url = isDev ? 'http://localhost:1234' : entryUrl;
 
   win.loadURL(`${url}?${querystring}`);
   win.webContents.openDevTools(); // TEMP 🐷
