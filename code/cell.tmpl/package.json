@@ -5,12 +5,13 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "node lib/bin $@",
+    "start": "sh sh/demo.sh",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare",
+    "clean": "sh sh/clean.sh"
   },
   "dependencies": {
     "@platform/cell.types": "0.4.27",

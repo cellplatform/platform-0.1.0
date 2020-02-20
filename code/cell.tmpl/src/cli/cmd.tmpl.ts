@@ -21,6 +21,7 @@ export async function tmpl(args: { dir: string }) {
     // Prepare the template.
     .create(dir)
     .use(middleware.processPackage({ filename: 'pkg.json' }))
+    .use(middleware.replaceText())
     .use(middleware.saveFile({ rename }))
     .use(middleware.npmInstall({ done: 'COMPLETE' }));
 

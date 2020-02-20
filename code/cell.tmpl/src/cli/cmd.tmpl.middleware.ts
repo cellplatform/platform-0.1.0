@@ -1,5 +1,7 @@
 import { fs, npm, t } from '../common';
-// import * as t from './types';
+
+type M = t.TemplateMiddleware<t.ICellTemplateVariables>;
+type D = t.TemplateAfterMiddleware;
 
 /**
  * Saves a template file.
@@ -7,9 +9,9 @@ import { fs, npm, t } from '../common';
 export function saveFile(
   args: {
     rename?: Array<{ from: string; to: string }>;
-    done?: t.TemplateAfterMiddleware;
+    done?: D;
   } = {},
-): t.TemplateMiddleware<t.ITemplateVariables> {
+): M {
   return async (req, res) => {
     const { rename = [] } = args;
     const { dir } = req.variables;
@@ -33,11 +35,19 @@ export function saveFile(
 }
 
 /**
+ * Replace placeholder text with template variables.
+ */
+export function replaceText(args: { done?: D } = {}): M {
+  return (req, res) => {
+    res.replaceText(/__NAME__/g, req.variables.name);
+    res.done(args.done);
+  };
+}
+
+/**
  * Run NPM install on the package.
  */
-export function npmInstall(
-  args: { done?: t.TemplateAfterMiddleware } = {},
-): t.TemplateMiddleware<t.ITemplateVariables> {
+export function npmInstall(args: { done?: D } = {}): M {
   return async (req, res) => {
     const { dir } = req.variables;
     const message = `installing modules...🌼`;
@@ -52,10 +62,7 @@ export function npmInstall(
 /**
  * Processes a [package.json] file.
  */
-export function processPackage(args: {
-  filename: string;
-  done?: t.TemplateAfterMiddleware;
-}): t.TemplateMiddleware<t.ICellTemplateVariables> {
+export function processPackage(args: { filename: string; done?: D }): M {
   return async (req, res) => {
     if (!req.path.source.endsWith(args.filename)) {
       return res.next();
