@@ -29,9 +29,9 @@ and in a seperate terminal, run the UI [parcel](https://parceljs.org) server:
 
 <p>&nbsp;<p>
 
-## Packaging
+## Packaging Toolchain
 
-[Package](https://www.electronforge.io/cli#package) the application as an executable (while testing), or [Make](https://www.electronforge.io/cli#make) the executable into a distributable format:
+[Package](https://www.electronforge.io/cli#package) the application as an executable (while testing), or [Make](https://www.electronforge.io/cli#make) the executable into a distributable format ([asar](https://www.electronjs.org/docs/tutorial/application-packaging)):
 
     yarn bundle     # First bundle the UI assets.
 
