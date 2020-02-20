@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue, t, util, Client, time } from '../common';
 import { loader } from '../loader';
+import { Button } from './primitives';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {
@@ -44,7 +45,15 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   /**
-   * Methods
+   * [Properties]
+   */
+
+  public get isTop() {
+    return window === window.top;
+  }
+
+  /**
+   * [Methods]
    */
   public async init(env: t.IEnv) {
     this.state$.next({ env });
@@ -77,9 +86,11 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
     };
 
+    const elLoadButton = this.isTop && <Button onClick={this.loadIframe}>load IFrame</Button>;
+
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div onClick={this.loadIframe}>load iframe</div>
+        {elLoadButton}
         <pre {...styles.ref}>{JSON.stringify(env)}</pre>
         <pre {...styles.ref}>{info && JSON.stringify(info.app, null, 2)}</pre>
         <div ref={this.iframeContainerRef} />
