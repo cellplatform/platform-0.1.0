@@ -8,8 +8,8 @@ type P = t.ICellProps & {
   merge?: { colspan?: number; rowspan?: number };
 };
 
-type R = t.IRowProps & { height?: number };
-type C = t.IColumnProps & { width?: number };
+type R = t.IRowProps & { grid?: { height?: number } };
+type C = t.IColumnProps & { grid?: { width?: number } };
 
 describe('squash', () => {
   it('squash.props (cell)', () => {
@@ -32,9 +32,10 @@ describe('squash', () => {
     };
     test();
     test({});
-    test({ height: undefined });
-    test({ height: 0 }, { height: 0 });
-    test({ height: 123 }, { height: 123 });
+    test({ grid: undefined });
+    test({ grid: {} });
+    test({ grid: { height: 0 } }, { grid: { height: 0 } });
+    test({ grid: { height: 123 } }, { grid: { height: 123 } });
   });
 
   it('squash.props (column)', () => {
@@ -44,9 +45,10 @@ describe('squash', () => {
     };
     test();
     test({});
-    test({ width: undefined });
-    test({ width: 0 }, { width: 0 });
-    test({ width: 123 }, { width: 123 });
+    test({ grid: undefined });
+    test({ grid: {} });
+    test({ grid: { width: 0 } }, { grid: { width: 0 } });
+    test({ grid: { width: 123 } }, { grid: { width: 123 } });
   });
 
   it('squash.cell', () => {

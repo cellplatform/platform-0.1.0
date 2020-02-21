@@ -1,5 +1,4 @@
-import { defaultValue, t } from '../common';
-import { isNilOrEmptyObject } from './util';
+import { isNilOrEmptyObject, defaultValue, t } from '../common';
 
 /**
  * Collapses empty values on data objects.
