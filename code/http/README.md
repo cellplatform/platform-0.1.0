@@ -6,4 +6,11 @@
 Tools for working with [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol).
 
 <p>&nbsp;<p>
+
+## Setup
+
+    yarn add @platform/http
+
+
+<p>&nbsp;<p>
 <p>&nbsp;<p>
