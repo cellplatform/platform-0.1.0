@@ -1,4 +1,4 @@
-import { t, Schema, Uri, util, coord } from '../common';
+import { coord, Schema, t, Uri, util } from '../common';
 import { Cell, Column, Row } from '../model.db';
 import { toChanges } from './util';
 
@@ -131,7 +131,10 @@ export async function getChildData(args: {
 /**
  * Update the Namespace props.
  */
-export async function setProps(args: { ns: t.IDbModelNs; data?: Partial<t.INsProps> }) {
+export async function setProps<P extends t.INsProps = t.INsProps>(args: {
+  ns: t.IDbModelNs;
+  data?: Partial<P>;
+}) {
   const { ns, data } = args;
   let changes: t.IDbModelChange[] = [];
 
