@@ -23,3 +23,4 @@ export * from './types.schema.uri';
 export * from './types.schema.url';
 export * from './types.schema.urls';
 export * from './types.value';
+export * from './types.type';

@@ -47,12 +47,13 @@ export type IDbModelCellChilden = {};
  */
 export type IDbModelRow<P extends object = {}> = IModel<
   IDbModelRowProps<P>,
-  IDbModelRowDataProps<P>,
+  IDbModelRowDoc<P>,
   IDbModelRowLinks,
   IDbModelRowChildren
 >;
 export type IDbModelRowProps<P extends object = {}> = t.IRowData<IDbModelRowDataProps<P>>;
 export type IDbModelRowDataProps<P extends object = {}> = t.IRowProps & P;
+export type IDbModelRowDoc<P extends object = {}> = IDbModelRowProps<P> & {};
 export type IDbModelRowLinks = {};
 export type IDbModelRowChildren = {};
 
@@ -61,12 +62,13 @@ export type IDbModelRowChildren = {};
  */
 export type IDbModelColumn<P extends object = {}> = IModel<
   IDbModelColumnProps<P>,
-  IDbModelColumnDataProps<P>,
+  IDbModelColumnDoc<P>,
   IDbModelColumnLinks,
   IDbModelColumnChildren
 >;
 export type IDbModelColumnProps<P extends object = {}> = t.IColumnData<IDbModelColumnDataProps<P>>;
 export type IDbModelColumnDataProps<P extends object = {}> = t.IColumnProps & P;
+export type IDbModelColumnDoc<P extends object = {}> = IDbModelColumnProps<P> & {};
 export type IDbModelColumnLinks = {};
 export type IDbModelColumnChildren = {};
 

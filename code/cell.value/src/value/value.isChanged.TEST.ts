@@ -1,12 +1,14 @@
-import { expect } from '../test';
-import { t } from '../common';
 import { value } from '.';
+import { t } from '../common';
+import { expect } from '../test';
 
-type Axis = t.IColumnData | t.IRowData;
+type R = t.IRowData;
+type C = t.IColumnData;
+type A = C | R;
 
 describe('axis (column/row)', () => {
   it('isAxisChanged', () => {
-    const test = <T = Axis>(left: T | undefined, right: T | undefined, expected: boolean) => {
+    const test = <T = A>(left: T | undefined, right: T | undefined, expected: boolean) => {
       const res = value.isAxisChanged(left, right);
       expect(res).to.eql(expected);
     };
@@ -23,7 +25,7 @@ describe('axis (column/row)', () => {
   });
 
   it('isRowChanged', () => {
-    const test = <T = t.IRowData>(left: T | undefined, right: T | undefined, expected: boolean) => {
+    const test = <T = R>(left: T | undefined, right: T | undefined, expected: boolean) => {
       const res = value.isRowChanged(left, right);
       expect(res).to.eql(expected);
     };
@@ -35,11 +37,7 @@ describe('axis (column/row)', () => {
   });
 
   it('isColumnChanged', () => {
-    const test = <T = t.IColumnData>(
-      left: T | undefined,
-      right: T | undefined,
-      expected: boolean,
-    ) => {
+    const test = <T = C>(left: T | undefined, right: T | undefined, expected: boolean) => {
       const res = value.isColumnChanged(left, right);
       expect(res).to.eql(expected);
     };

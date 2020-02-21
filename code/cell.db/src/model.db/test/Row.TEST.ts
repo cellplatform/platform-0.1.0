@@ -1,22 +1,26 @@
 import { Row } from '..';
-import { expect, getTestDb } from '../../test';
+import { expect, getTestDb, t } from '../../test';
+
+type P = t.ICellProps;
+type R = t.IRowProps & { grid: { height?: number } };
+type C = t.IRowProps & { grid: { width?: number } };
 
 describe('model.Row', () => {
   it('create', async () => {
     const db = await getTestDb({ file: true });
     const uri = 'cell:foo!1';
-    const res1 = await Row.create({ db, uri }).ready;
+    const res1 = await Row.create<R>({ db, uri }).ready;
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-6051ddfcd5d291bdbff06416940e5a6580b17dfbd2c6094c3cfc1c8b867dc349',
+      after: 'sha256-287332276f0c24b5861101e135a5915d38c69e14ab3d2d6ae4fae112505e3a69',
     };
 
-    await res1.set({ props: { foo: 123 }, hash: HASH.before }).save();
-
+    await res1.set({ props: { grid: { height: 50 } }, hash: HASH.before }).save();
     const res2 = await Row.create({ db, uri }).ready;
+
     expect(res2.props.hash).to.eql(HASH.after);
-    expect(res2.props.props).to.eql({ foo: 123 });
+    expect(res2.props.props).to.eql({ grid: { height: 50 } });
     expect(res2.props.error).to.eql(undefined);
   });
 
@@ -24,17 +28,17 @@ describe('model.Row', () => {
     const db = await getTestDb({});
     const uri = 'cell:foo!1';
 
-    const model1 = await Row.create({ db, uri }).ready;
+    const model1 = await Row.create<R>({ db, uri }).ready;
     expect(model1.props.hash).to.eql(undefined);
 
-    await model1.set({ props: { height: 250 } }).save();
+    await model1.set({ props: { grid: { height: 250 } } }).save();
     expect(model1.props.hash).to.not.eql(undefined);
 
-    const model2 = await Row.create({ db, uri }).ready;
+    const model2 = await Row.create<R>({ db, uri }).ready;
     expect(model2.toObject().hash).to.eql(model1.props.hash);
 
     const before = model2.props.hash;
-    await model2.set({ props: { height: 251 } }).save();
+    await model2.set({ props: { grid: { height: 251 } } }).save();
     expect(model2.props.hash).to.not.eql(before);
 
     const model3 = await Row.create({ db, uri }).ready;

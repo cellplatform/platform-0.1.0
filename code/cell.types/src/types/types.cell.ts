@@ -4,14 +4,13 @@ import { Diff } from '@platform/util.diff/lib/types';
 /**
  * Cell
  */
-export type CellValue = string | boolean | number | object | null | undefined;
-
 export type ICellProps = {
-  value?: CellValue; // The calculated display value if different from the raw cell value.
+  value?: t.CellValue; // The calculated display value if different from the raw cell value.
+  type?: t.ICellType;
 };
 
 export type ICellData<P extends ICellProps = ICellProps> = {
-  value?: CellValue;
+  value?: t.CellValue;
   props?: P;
   hash?: string;
   error?: t.IError;
@@ -26,20 +25,20 @@ export type ICellDiff<P extends ICellProps = ICellProps> = {
 };
 
 /**
- * Column
+ * Row
  */
-export type IColumnProps = {};
-export type IColumnData<P extends IColumnProps = IColumnProps> = {
+export type IRowProps = { type?: t.ICellType };
+export type IRowData<P extends IRowProps = IRowProps> = {
   props?: P;
   hash?: string;
   error?: t.IError;
 };
 
 /**
- * Row
+ * Column
  */
-export type IRowProps = {};
-export type IRowData<P extends IRowProps = IRowProps> = {
+export type IColumnProps = { type?: t.ICellType };
+export type IColumnData<P extends IColumnProps = IColumnProps> = {
   props?: P;
   hash?: string;
   error?: t.IError;

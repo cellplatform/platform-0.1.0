@@ -1,5 +1,5 @@
-import { expect, t, fs, Uri } from '../test';
 import { value } from '.';
+import { expect, t } from '../test';
 
 const INTEGRITY: t.IFileIntegrity = {
   status: 'VALID',
@@ -8,12 +8,19 @@ const INTEGRITY: t.IFileIntegrity = {
   's3:etag': 'abcd-12345',
 };
 
+type R = t.IRowProps & { grid?: { height?: number } };
+type C = t.IColumnProps & { grid?: { width?: number } };
+
 describe('hash', () => {
   describe('hash.ns', () => {
     beforeEach(() => (index = -1));
 
     let index = -1;
-    const test = (ns: t.INs, data: Partial<t.INsDataCoord> | undefined, expected: string) => {
+    const test = (
+      ns: t.INs,
+      data: Partial<t.INsDataCoord<any, any, any>> | undefined,
+      expected: string,
+    ) => {
       const hash = value.hash.ns({ uri: 'ns:foo', ns, data });
 
       index++;
@@ -90,7 +97,7 @@ describe('hash', () => {
     });
 
     let index = -1;
-    const test = (data: {} | undefined, expected: string) => {
+    const test = (expected: string, data: {} | undefined) => {
       const hash = value.hash.cell({ uri: 'cell:abcd!A1', data });
 
       index++;
@@ -109,24 +116,24 @@ describe('hash', () => {
     });
 
     it('hashes a cell', () => {
-      test(undefined, '12ea85f3a3');
-      test({ value: undefined }, '12ea85f3a3');
-      test({ value: null }, '12ea85f3a3');
-      test({ value: 123 }, 'e2a25b2a36');
-      test({ value: 'hello' }, 'b30883363c');
-      test({ value: 'hello', props: {} }, 'b30883363c');
-      test({ value: 'hello', props: { style: { bold: true } } }, 'a788c7af8e');
-      test({ links: { main: 'ns:abc' } }, '67a2d39629');
+      test('12ea85f3a3', undefined);
+      test('12ea85f3a3', { value: undefined });
+      test('12ea85f3a3', { value: null });
+      test('e2a25b2a36', { value: 123 });
+      test('b30883363c', { value: 'hello' });
+      test('b30883363c', { value: 'hello', props: {} });
+      test('a788c7af8e', { value: 'hello', props: { style: { bold: true } } });
+      test('67a2d39629', { links: { main: 'ns:abc' } });
       const error: t.IRefErrorCircular = { type: 'REF/circular', path: 'A1/A1', message: 'Fail' };
-      test({ value: 'hello', error }, 'f6818ec330');
+      test('f6818ec330', { value: 'hello', error });
     });
 
     it('excludes existing hash', () => {
       const HASH = 'b30883363c';
-      test({ value: 'hello' }, HASH);
-      test({ value: 'hello', hash: '-' }, HASH);
-      test({ value: 'hello', hash: '' }, HASH);
-      test({ value: 'hello', hash: 'yo' }, HASH);
+      test(HASH, { value: 'hello' });
+      test(HASH, { value: 'hello', hash: '-' });
+      test(HASH, { value: 'hello', hash: '' });
+      test(HASH, { value: 'hello', hash: 'yo' });
     });
 
     it('same hash for no param AND no cell-value', () => {
@@ -166,7 +173,7 @@ describe('hash', () => {
     beforeEach(() => (index = -1));
 
     let index = -1;
-    const test = (data: t.IRowData | undefined, expected: string) => {
+    const test = (expected: string, data: t.IRowData<R> | undefined) => {
       const hash = value.hash.row({ uri: 'cell:foo!1', data });
 
       index++;
@@ -189,27 +196,30 @@ describe('hash', () => {
 
     it('no change between undefined/empty data', () => {
       const EMPTY = '356cc0bfc9';
-      test(undefined, EMPTY);
-      test({}, EMPTY);
+      test(EMPTY, undefined);
+      test(EMPTY, {});
 
       // NB: Squashed.
-      test({ props: {} }, EMPTY);
-      test({ error: undefined }, EMPTY);
-      test({ props: {}, error: undefined }, EMPTY);
+      test(EMPTY, { props: {} });
+      test(EMPTY, { error: undefined });
+      test(EMPTY, { props: {}, error: undefined });
     });
 
     it('hash props/error', () => {
-      test({ props: { height: 123 } }, 'd35daa3855');
-      test({ error: { type: 'FAIL', message: 'Bummer' } }, '70ca03a602');
-      test({ props: { height: 123 }, error: { type: 'FAIL', message: 'Bummer' } }, '706cd0c7cc');
+      test('fa5a89cc0f', { props: { grid: { height: 123 } } });
+      test('70ca03a602', { error: { type: 'FAIL', message: 'Bummer' } });
+      test('e5cb40c02f', {
+        props: { grid: { height: 123 } },
+        error: { type: 'FAIL', message: 'Bummer' },
+      });
     });
 
     it('excludes existing hash', () => {
-      const HASH = 'd35daa3855';
-      test({ props: { height: 123 } }, HASH);
-      test({ props: { height: 123 }, hash: '' }, HASH);
-      test({ props: { height: 123 }, hash: '-' }, HASH);
-      test({ props: { height: 123 }, hash: 'yo' }, HASH);
+      const HASH = 'fa5a89cc0f';
+      test(HASH, { props: { grid: { height: 123 } } });
+      test(HASH, { props: { grid: { height: 123 } }, hash: '' });
+      test(HASH, { props: { grid: { height: 123 } }, hash: '-' });
+      test(HASH, { props: { grid: { height: 123 } }, hash: 'yo' });
     });
   });
 
@@ -217,7 +227,7 @@ describe('hash', () => {
     beforeEach(() => (index = -1));
 
     let index = -1;
-    const test = (data: t.IRowData | undefined, expected: string) => {
+    const test = (expected: string, data: t.IColumnData<C> | undefined) => {
       const hash = value.hash.column({ uri: 'cell:foo!A', data });
 
       index++;
@@ -240,27 +250,30 @@ describe('hash', () => {
 
     it('no change between undefined/empty data', () => {
       const EMPTY = '1311449838';
-      test(undefined, EMPTY);
-      test({}, EMPTY);
+      test(EMPTY, undefined);
+      test(EMPTY, {});
 
       // NB: Squashed.
-      test({ props: {} }, EMPTY);
-      test({ error: undefined }, EMPTY);
-      test({ props: {}, error: undefined }, EMPTY);
+      test(EMPTY, { props: {} });
+      test(EMPTY, { error: undefined });
+      test(EMPTY, { props: {}, error: undefined });
     });
 
     it('hash props/error', () => {
-      test({ props: { width: 250 } }, '92b6c98c59');
-      test({ error: { type: 'FAIL', message: 'Bummer' } }, '13959c04f8');
-      test({ props: { width: 250 }, error: { type: 'FAIL', message: 'Bummer' } }, 'd7cad6af36');
+      test('969c76ece5', { props: { grid: { width: 250 } } });
+      test('13959c04f8', { error: { type: 'FAIL', message: 'Bummer' } });
+      test('c6469bbf42', {
+        props: { grid: { width: 250 } },
+        error: { type: 'FAIL', message: 'Bummer' },
+      });
     });
 
     it('excludes existing hash', () => {
-      const HASH = '92b6c98c59';
-      test({ props: { width: 250 } }, HASH);
-      test({ props: { width: 250 }, hash: '' }, HASH);
-      test({ props: { width: 250 }, hash: '-' }, HASH);
-      test({ props: { width: 250 }, hash: 'yo' }, HASH);
+      const HASH = '969c76ece5';
+      test(HASH, { props: { grid: { width: 250 } } });
+      test(HASH, { props: { grid: { width: 250 } }, hash: '' });
+      test(HASH, { props: { grid: { width: 250 } }, hash: '-' });
+      test(HASH, { props: { grid: { width: 250 } }, hash: 'yo' });
     });
   });
 
