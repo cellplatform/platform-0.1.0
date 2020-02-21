@@ -12,34 +12,27 @@ export const hash = {
   /**
    * Generate a uniform hash (SHA-256) of the given NS data.
    * NOTE:
-   *    Ensure [cell/row/column] data already has hashes calculated.
+   *    The hash of the namespace is the "ns" object only.
+   *
+   *    It does not include the combined hashes of child data within the namespace.
+   *    This is for performance reasons.
+   *
+   *    To work with hashes of the entire set of the namespace calculate
+   *    these on a case-by-case bases as needed accounting for the cost
+   *    of hashing potentially large datasets relative to the needs of
+   *    the use-case.
    */
-  ns(args: { uri: string; ns: t.INs; data?: Partial<t.INsDataCoord> }): string {
+  ns(args: { uri: string; ns: t.INs }): string {
     const uri = (args.uri || '').trim();
     if (!Uri.is.ns(uri)) {
-      throw new Error(`Hashing a NAMESPACE (NS) requires a valid URI. Given "${uri}"`);
+      throw new Error(`Hashing a NAMESPACE (NS) requires a valid URI. Given [${uri}]`);
     }
 
     // Format NS object.
     const ns = { ...args.ns };
     delete ns.hash; // NB: Any existing hash is excluded (this is a calculation of current value only).
 
-    // Build list of child hashes.
-    let children: string[] = [];
-    const { data = {} } = args;
-    const { cells, rows, columns } = data;
-
-    if (cells && !isEmptyObject(cells)) {
-      children = [...children, ...getHashes(cells)];
-    }
-    if (rows && !isEmptyObject(rows)) {
-      children = [...children, ...getHashes(rows)];
-    }
-    if (columns && !isEmptyObject(columns)) {
-      children = [...children, ...getHashes(columns)];
-    }
-
-    const obj = { uri, ns, children };
+    const obj = { uri, ns };
     return sha256(obj);
   },
 
@@ -49,7 +42,7 @@ export const hash = {
   file(args: { uri: string; data?: t.IFileData }): string {
     const uri = (args.uri || '').trim();
     if (!Uri.is.file(uri)) {
-      throw new Error(`Hashing a FILE requires a valid URI. Given "${uri}"`);
+      throw new Error(`Hashing a FILE requires a valid URI. Given [${uri}]`);
     }
 
     // Format data.
@@ -74,7 +67,7 @@ export const hash = {
   cell(args: { uri: string; data?: t.ICellData }): string {
     const uri = (args.uri || '').trim();
     if (!Uri.is.cell(uri)) {
-      throw new Error(`Hashing a CELL requires a valid URI. Given "${uri}"`);
+      throw new Error(`Hashing a CELL requires a valid URI. Given [${uri}]`);
     }
 
     const { data } = args;
@@ -107,7 +100,7 @@ export const hash = {
     const { data } = args;
     const uri = (args.uri || '').trim();
     if (!Uri.is.row(uri)) {
-      throw new Error(`Hashing a ROW requires a valid URI. Given "${uri}"`);
+      throw new Error(`Hashing a ROW requires a valid URI. Given [${uri}]`);
     }
 
     return hashAxis({ axis: 'row', uri, data });
@@ -120,7 +113,7 @@ export const hash = {
     const { data } = args;
     const uri = (args.uri || '').trim();
     if (!Uri.is.column(uri)) {
-      throw new Error(`Hashing a COLUMN requires a valid URI. Given "${uri}"`);
+      throw new Error(`Hashing a COLUMN requires a valid URI. Given [${uri}]`);
     }
 
     return hashAxis({ axis: 'column', uri, data });
