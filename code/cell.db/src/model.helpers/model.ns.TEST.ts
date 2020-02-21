@@ -10,6 +10,10 @@ import {
   getChildFiles,
 } from './model.ns';
 
+type P = t.ICellProps;
+type R = t.IRowProps & { grid: { height?: number } };
+type C = t.IRowProps & { grid: { width?: number } };
+
 const { deleteUndefined } = value;
 
 describe('helpers: model.ns', () => {
@@ -169,8 +173,8 @@ describe('helpers: model.ns', () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
 
-      const row = models.Row.create({ uri: 'cell:foo!1', db });
-      await row.set({ props: { height: 250 } }).save();
+      const row = models.Row.create<R>({ uri: 'cell:foo!1', db });
+      await row.set({ props: { grid: { height: 250 } } }).save();
 
       const rows = await getChildRows({ model: ns });
       expect(rows['1']).to.eql(deleteUndefined(row.toObject()));
@@ -180,8 +184,8 @@ describe('helpers: model.ns', () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
 
-      const column = models.Column.create({ uri: 'cell:foo!A', db });
-      await column.set({ props: { width: 250 } }).save();
+      const column = models.Column.create<C>({ uri: 'cell:foo!A', db });
+      await column.set({ props: { grid: { width: 250 } } }).save();
 
       const columns = await getChildColumns({ model: ns });
       expect(columns.A).to.eql(deleteUndefined(column.toObject()));
@@ -205,11 +209,11 @@ describe('helpers: model.ns', () => {
       const cell = models.Cell.create({ uri: 'cell:foo!A1', db });
       await cell.set({ value: 123, links: { 'fs:foo:wasm': 'file:abc.123' } }).save();
 
-      const row = models.Row.create({ uri: 'cell:foo!1', db });
-      await row.set({ props: { height: 250 } }).save();
+      const row = models.Row.create<R>({ uri: 'cell:foo!1', db });
+      await row.set({ props: { grid: { height: 250 } } }).save();
 
-      const column = models.Column.create({ uri: 'cell:foo!A', db });
-      await column.set({ props: { width: 250 } }).save();
+      const column = models.Column.create<C>({ uri: 'cell:foo!A', db });
+      await column.set({ props: { grid: { width: 250 } } }).save();
 
       const file = models.File.create({ uri: 'file:foo:abc', db });
       await file.set({ props: { mimetype: 'image/png' } }).save();

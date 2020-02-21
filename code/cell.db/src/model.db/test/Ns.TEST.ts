@@ -1,5 +1,9 @@
-import { Ns, Cell, Column, Row } from '..';
-import { expect, getTestDb, Schema, constants } from '../../test';
+import { Cell, Column, Ns, Row } from '..';
+import { constants, expect, getTestDb, Schema, t } from '../../test';
+
+type P = t.ICellProps;
+type R = t.IRowProps & { grid: { height?: number } };
+type C = t.IRowProps & { grid: { width?: number } };
 
 describe('model.db.Ns (Namespace)', () => {
   it('creates (with child cells)', async () => {
@@ -65,9 +69,13 @@ describe('model.db.Ns (Namespace)', () => {
       // Save child data.
       // NB: hashes on child data auto-generated on save.
       const children = {
-        A1: (await Cell.create({ db, uri: 'cell:foo!A1' }).ready).set({ value: 123 }),
-        A: (await Column.create({ db, uri: 'cell:foo!A' }).ready).set({ props: { width: 500 } }),
-        1: (await Row.create({ db, uri: 'cell:foo!1' }).ready).set({ props: { height: 80 } }),
+        A1: (await Cell.create<P>({ db, uri: 'cell:foo!A1' }).ready).set({ value: 123 }),
+        A: (await Column.create<C>({ db, uri: 'cell:foo!A' }).ready).set({
+          props: { grid: { width: 500 } },
+        }),
+        1: (await Row.create<R>({ db, uri: 'cell:foo!1' }).ready).set({
+          props: { grid: { height: 30 } },
+        }),
       };
       await children.A1.save();
       await children.A.save();
