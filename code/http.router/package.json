@@ -1,7 +1,7 @@
 {
   "name": "@platform/http.router",
   "version": "0.0.0",
-  "description": "Logical HTTP route builder.",
+  "description": "HTTP route builder.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
