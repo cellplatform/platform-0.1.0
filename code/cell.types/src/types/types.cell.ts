@@ -4,7 +4,6 @@ import { Diff } from '@platform/util.diff/lib/types';
 /**
  * Cell
  */
-
 export type ICellProps = {
   value?: t.CellValue; // The calculated display value if different from the raw cell value.
   type?: t.ICellType;
