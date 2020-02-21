@@ -16,12 +16,8 @@ describe('hash', () => {
     beforeEach(() => (index = -1));
 
     let index = -1;
-    const test = (
-      ns: t.INs,
-      data: Partial<t.INsDataCoord<any, any, any>> | undefined,
-      expected: string,
-    ) => {
-      const hash = value.hash.ns({ uri: 'ns:foo', ns, data });
+    const test = (expected: string, ns: t.INs) => {
+      const hash = value.hash.ns({ uri: 'ns:foo', ns });
 
       index++;
       const err = `\nFail ${index}\n  ${hash}\n  should end with:\n  ${expected}\n\n`;
@@ -44,50 +40,18 @@ describe('hash', () => {
     });
 
     it('excludes existing hash', () => {
-      const HASH = '51a0383ad8';
-      test({ id: 'foo', hash: '-' }, undefined, HASH);
-      test({ id: 'foo', hash: '' }, undefined, HASH);
-      test({ id: 'foo', hash: 'yo' }, undefined, HASH);
-      test({ id: 'foo' }, undefined, HASH);
+      const HASH = 'b3ba839bac';
+      test(HASH, { id: 'foo', hash: '-' });
+      test(HASH, { id: 'foo', hash: '' });
+      test(HASH, { id: 'foo', hash: 'yo' });
+      test(HASH, { id: 'foo' });
     });
 
     it('no change between undefined/empty data', () => {
-      const HASH = '51a0383ad8';
+      const HASH = 'b3ba839bac';
       const ns: t.INs = { id: 'foo' };
-      test(ns, undefined, HASH);
-      test(ns, {}, HASH);
-    });
-
-    it('child hashes', () => {
-      const ns: t.INs = { id: 'foo' };
-
-      // NB: Fake hash values on cell/row/column data.
-      //     The `hash.ns` function does not calculate hashes on child data, just
-      //     tallies up the child data hashes if they exist.
-      //     Make sure to pre-calculate the hashes.
-
-      test(ns, { cells: { A1: { value: 123, hash: 'HASH-A1a' } } }, 'de0fe4e279');
-      test(ns, { cells: { A1: { value: 124, hash: 'HASH-A1b' } } }, '4244ea71fc');
-
-      test(
-        ns,
-        {
-          cells: { A1: { value: 123, hash: 'HASH-A1' } },
-          rows: { 1: { props: { height: 60 }, hash: 'HASH-1' } },
-          columns: { A: { props: { width: 250 }, hash: 'HASH-A' } },
-        },
-        'd25c932de6',
-      );
-
-      test(
-        ns,
-        {
-          cells: { A1: { value: 123 } },
-          rows: { 1: { props: { height: 60 } } },
-          columns: { A: { props: { width: 250 } } },
-        },
-        '51a0383ad8',
-      );
+      test(HASH, ns);
+      test(HASH, ns);
     });
   });
 

@@ -4,7 +4,7 @@ import * as models from '../../model.helpers';
 const { SCHEMA_VERSION } = constants;
 
 /**
- * Invoked before an [Ns] is persisted to the DB.
+ * Invoked before an [ns] is persisted to the DB.
  */
 export const beforeNsSave: t.BeforeModelSave<t.IDbModelNsProps> = async args => {
   const { isChanged } = args;
@@ -28,7 +28,6 @@ export const beforeNsSave: t.BeforeModelSave<t.IDbModelNsProps> = async args => 
     const uri = schema.uri;
     const ns: t.INs = { ...value.deleteUndefined(model.toObject()), hash: undefined };
     delete ns.hash;
-    const data = await models.ns.getChildData({ model, cells: true, rows: true, columns: true });
-    model.props.hash = util.hash.ns({ uri, ns, data });
+    model.props.hash = util.hash.ns({ uri, ns });
   }
 };

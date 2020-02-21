@@ -77,9 +77,9 @@ export type IResGetNsUrls = { data: string };
 
 export type IReqPostNsBody = {
   ns?: Partial<t.INsProps>;
-  cells?: t.ICellMap;
-  columns?: t.IColumnMap;
-  rows?: t.IRowMap;
+  cells?: t.ICellMap<any>;
+  columns?: t.IColumnMap<any>;
+  rows?: t.IRowMap<any>;
   calc?: boolean | string | Array<string | boolean>; // Perform calcuations (default: false), if string key/range of cells to calculate, eg "A1", "A1:C10"
 };
 export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
