@@ -2,8 +2,9 @@ import { expect } from '../test';
 import { t } from '../common';
 import { value } from '.';
 
-type R = t.IRowProps & { grid?: { height?: number } };
-type C = t.IColumnProps & { grid?: { width?: number } };
+type N = t.INsProps & { owner: { people?: string[] } };
+type R = t.IRowProps & { grid: { height?: number } };
+type C = t.IColumnProps & { grid: { width?: number } };
 
 describe('isEmpty (cell)', () => {
   it('isEmptyCell', () => {
@@ -84,7 +85,7 @@ describe('isEmpty (cell)', () => {
 
 describe('isEmpty (row)', () => {
   it('isEmptyRowProps', () => {
-    const test = (input: R | undefined, expected: boolean) => {
+    const test = (input: Partial<R> | undefined, expected: boolean) => {
       expect(value.isEmptyRowProps(input)).to.eql(expected);
     };
     test(undefined, true);
@@ -98,7 +99,7 @@ describe('isEmpty (row)', () => {
 
 describe('isEmpty (column)', () => {
   it('isEmptyColumnProps', () => {
-    const test = (input: C | undefined, expected: boolean) => {
+    const test = (input: Partial<C> | undefined, expected: boolean) => {
       expect(value.isEmptyColumnProps(input)).to.eql(expected);
     };
     test(undefined, true);
@@ -107,5 +108,17 @@ describe('isEmpty (column)', () => {
 
     test({ grid: { width: 0 } }, false);
     test({ grid: { width: 123 } }, false);
+  });
+});
+
+describe('isEmpty (ns)', () => {
+  it('isEmptyNsProps', () => {
+    const test = (input: Partial<N> | undefined, expected: boolean) => {
+      expect(value.isEmptyNsProps(input)).to.eql(expected);
+    };
+    test(undefined, true);
+    test({}, true);
+    test({ owner: {} }, true);
+    test({ owner: { people: [] } }, false);
   });
 });

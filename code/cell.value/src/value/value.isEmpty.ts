@@ -1,6 +1,6 @@
 import { t } from '../common';
 
-type Props = t.ICellProps | t.IColumnProps | t.IRowProps;
+type Props = t.ICellProps | t.IColumnProps | t.IRowProps | t.INsProps;
 
 /**
  * Determine if the given props are empty.

@@ -7,6 +7,7 @@ export * from './value.isEmpty';
 export * from './value.isEmpty.cell';
 export * from './value.isEmpty.column';
 export * from './value.isEmpty.row';
+export * from './value.isEmpty.ns';
 export * from './value.setProp';
 export * from './value.squash';
 export * from './value.toggleProp';
