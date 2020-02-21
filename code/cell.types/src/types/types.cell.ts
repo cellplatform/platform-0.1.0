@@ -7,7 +7,7 @@ import { Diff } from '@platform/util.diff/lib/types';
 
 export type ICellProps = {
   value?: t.CellValue; // The calculated display value if different from the raw cell value.
-  type?: t.ICellType;
+  // type?: t.ICellType;
 };
 
 export type ICellData<P extends ICellProps = ICellProps> = {
@@ -28,7 +28,8 @@ export type ICellDiff<P extends ICellProps = ICellProps> = {
 /**
  * Column
  */
-export type IColumnProps = { type?: t.ICellType };
+// export type IColumnProps = { type?: t.ICellType };
+export type IColumnProps = {};
 export type IColumnData<P extends IColumnProps = IColumnProps> = {
   props?: P;
   hash?: string;
@@ -38,7 +39,8 @@ export type IColumnData<P extends IColumnProps = IColumnProps> = {
 /**
  * Row
  */
-export type IRowProps = { type?: t.ICellType };
+// export type IRowProps = { type?: t.ICellType };
+export type IRowProps = {};
 export type IRowData<P extends IRowProps = IRowProps> = {
   props?: P;
   hash?: string;
