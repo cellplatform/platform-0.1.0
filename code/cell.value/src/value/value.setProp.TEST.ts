@@ -10,6 +10,7 @@ type P = t.ICellProps & {
 
 type R = t.IRowProps & { grid: { height?: number } };
 type C = t.IColumnProps & { grid: { width?: number } };
+type N = t.INsProps & { owner: { people?: string[] } };
 
 const styleDefaults: P['style'] = {
   bold: false,
@@ -133,14 +134,15 @@ describe('setProp on type: cell/row/column', () => {
   });
 
   it('setColumnProp', () => {
+    const defaults = { width: 120 };
     const res1 = value.setColumnProp<C, 'grid'>({
-      defaults: { width: 120 },
+      defaults,
       section: 'grid',
       field: 'width',
       value: 120,
     });
     const res2 = value.setColumnProp<C, 'grid'>({
-      defaults: { width: 120 },
+      defaults,
       props: { grid: { width: 120 } },
       section: 'grid',
       field: 'width',
@@ -151,14 +153,15 @@ describe('setProp on type: cell/row/column', () => {
   });
 
   it('setRowProp', () => {
+    const defaults = { height: 25 };
     const res1 = value.setRowProp<R, 'grid'>({
-      defaults: { height: 25 },
+      defaults,
       section: 'grid',
       field: 'height',
       value: 25,
     });
     const res2 = value.setRowProp<R, 'grid'>({
-      defaults: { height: 25 },
+      defaults,
       props: { grid: { height: 25 } },
       section: 'grid',
       field: 'height',
@@ -167,5 +170,23 @@ describe('setProp on type: cell/row/column', () => {
     expect(res1).to.eql(undefined);
     expect(res2).to.eql({ grid: { height: 80 } });
   });
-});
 
+  it('setNsProp', () => {
+    const defaults = { people: [] };
+    const res1 = value.setNsProp<N, 'owner'>({
+      defaults,
+      section: 'owner',
+      field: 'people',
+      value: [],
+    });
+    const res2 = value.setNsProp<N, 'owner'>({
+      defaults,
+      props: { owner: { people: ['person-1'] } },
+      section: 'owner',
+      field: 'people',
+      value: ['person-2'],
+    });
+    expect(res1).to.eql(undefined);
+    expect(res2).to.eql({ owner: { people: ['person-2'] } });
+  });
+});

@@ -10,6 +10,7 @@ type P = t.ICellProps & {
 
 type R = t.IRowProps & { grid: { isEnabled?: boolean } };
 type C = t.IColumnProps & { grid: { isEnabled?: boolean } };
+type N = t.INsProps & { grid: { isEnabled?: boolean } };
 
 describe('toggleProp', () => {
   describe('cell', () => {
@@ -77,6 +78,23 @@ describe('toggleProp', () => {
       const res1 = value.toggleRowProp<R, 'grid'>({ defaults, section, field });
       const res2 = value.toggleRowProp<R, 'grid'>({ defaults, props: res1, section, field });
       const res3 = value.toggleRowProp<R, 'grid'>({ defaults, props: res2, section, field });
+
+      expect(res1?.grid.isEnabled).to.eql(false);
+      expect(res2).to.eql(undefined);
+      expect(res3?.grid.isEnabled).to.eql(false);
+    });
+  });
+
+  describe('ns', () => {
+    const defaults = { isEnabled: true };
+
+    it('ns: toggles', () => {
+      const section = 'grid';
+      const field = 'isEnabled';
+
+      const res1 = value.toggleNsProp<N, 'grid'>({ defaults, section, field });
+      const res2 = value.toggleNsProp<N, 'grid'>({ defaults, props: res1, section, field });
+      const res3 = value.toggleNsProp<N, 'grid'>({ defaults, props: res2, section, field });
 
       expect(res1?.grid.isEnabled).to.eql(false);
       expect(res2).to.eql(undefined);

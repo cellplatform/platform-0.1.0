@@ -2,8 +2,9 @@ import { R, t } from '../common';
 import { isEmptyCellProps } from './value.isEmpty.cell';
 import { isEmptyColumnProps } from './value.isEmpty.column';
 import { isEmptyRowProps } from './value.isEmpty.row';
+import { isEmptyNsProps } from './value.isEmpty.ns';
 
-type Props = t.ICellProps | t.IColumnProps | t.IRowProps;
+type Props = t.ICellProps | t.IColumnProps | t.IRowProps | t.INsProps;
 
 /**
  * Assigns a property field to {props}, removing it from the object
@@ -58,8 +59,7 @@ export function setCellProp<P extends t.ICellProps, K extends keyof P>(args: {
   field: keyof P[K];
   value?: P[K][keyof P[K]];
 }): P | undefined {
-  const isEmpty = isEmptyCellProps;
-  return setProp<P, K>({ ...args, isEmpty });
+  return setProp<P, K>({ ...args, isEmpty: isEmptyCellProps });
 }
 
 /**
@@ -73,8 +73,7 @@ export function setRowProp<P extends t.IRowProps, K extends keyof P>(args: {
   field: keyof P[K];
   value?: P[K][keyof P[K]];
 }): P | undefined {
-  const isEmpty = isEmptyRowProps;
-  return setProp<P, K>({ ...args, isEmpty });
+  return setProp<P, K>({ ...args, isEmpty: isEmptyRowProps });
 }
 
 /**
@@ -88,6 +87,19 @@ export function setColumnProp<P extends t.IColumnProps, K extends keyof P>(args:
   field: keyof P[K];
   value?: P[K][keyof P[K]];
 }): P | undefined {
-  const isEmpty = isEmptyColumnProps;
-  return setProp<P, K>({ ...args, isEmpty });
+  return setProp<P, K>({ ...args, isEmpty: isEmptyColumnProps });
+}
+
+/**
+ * Assigns a property field to {props}, removing it from the object
+ * if it's the default value.
+ */
+export function setNsProp<P extends t.INsProps, K extends keyof P>(args: {
+  props?: Partial<P>;
+  defaults: P[K];
+  section: K;
+  field: keyof P[K];
+  value?: P[K][keyof P[K]];
+}): P | undefined {
+  return setProp<P, K>({ ...args, isEmpty: isEmptyNsProps });
 }

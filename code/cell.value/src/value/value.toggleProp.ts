@@ -3,8 +3,9 @@ import { setProp } from './value.setProp';
 import { isEmptyCellProps } from './value.isEmpty.cell';
 import { isEmptyColumnProps } from './value.isEmpty.column';
 import { isEmptyRowProps } from './value.isEmpty.row';
+import { isEmptyNsProps } from './value.isEmpty.ns';
 
-type Props = t.ICellProps | t.IRowProps | t.IColumnProps;
+type Props = t.ICellProps | t.IRowProps | t.IColumnProps | t.INsProps;
 
 /**
  * Toggles the given [boolean] property field, removing it from the object
@@ -38,8 +39,7 @@ export function toggleCellProp<P extends t.ICellProps, K extends keyof P>(args: 
   section: K;
   field: keyof P[K];
 }): P | undefined {
-  const isEmpty = isEmptyCellProps;
-  return toggleProp<P, K>({ ...args, isEmpty });
+  return toggleProp<P, K>({ ...args, isEmpty: isEmptyCellProps });
 }
 
 /**
@@ -51,8 +51,7 @@ export function toggleRowProp<P extends t.IRowProps, K extends keyof P>(args: {
   section: K;
   field: keyof P[K];
 }): P | undefined {
-  const isEmpty = isEmptyRowProps;
-  return toggleProp<P, K>({ ...args, isEmpty });
+  return toggleProp<P, K>({ ...args, isEmpty: isEmptyRowProps });
 }
 
 /**
@@ -64,6 +63,17 @@ export function toggleColumnProp<P extends t.IColumnProps, K extends keyof P>(ar
   section: K;
   field: keyof P[K];
 }): P | undefined {
-  const isEmpty = isEmptyColumnProps;
-  return toggleProp<P, K>({ ...args, isEmpty });
+  return toggleProp<P, K>({ ...args, isEmpty: isEmptyColumnProps });
+}
+
+/**
+ * Toggles the namespace [boolean] property value.
+ */
+export function toggleNsProp<P extends t.INsProps, K extends keyof P>(args: {
+  props?: Partial<P>;
+  defaults: P[K];
+  section: K;
+  field: keyof P[K];
+}): P | undefined {
+  return toggleProp<P, K>({ ...args, isEmpty: isEmptyNsProps });
 }
