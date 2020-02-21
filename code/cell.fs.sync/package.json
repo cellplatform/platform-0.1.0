@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.fs.sync",
-  "version": "0.3.52",
+  "version": "0.3.53",
   "description": "Tools for local file-system syncing with cloud.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,7 +18,7 @@
     "@platform/cell.client": "0.2.5",
     "@platform/cell.schema": "0.4.38",
     "@platform/cell.types": "0.4.33",
-    "@platform/cell.value": "0.1.102",
+    "@platform/cell.value": "0.2.0",
     "@platform/cli": "0.5.18",
     "@platform/fs": "0.5.5",
     "@platform/fs.watch": "0.2.27",

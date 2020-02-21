@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.value",
-  "version": "0.1.102",
+  "version": "0.2.0",
   "description": "Tools for working with cell value data.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

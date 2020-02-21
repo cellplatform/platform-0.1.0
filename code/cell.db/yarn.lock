@@ -71,10 +71,10 @@
     "@platform/log" "0.1.9"
     "@platform/util.diff" "0.0.16"
 
-"@platform/cell.value@0.1.102":
-  version "0.1.102"
-  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.1.102.tgz#060eeccb64048bd5f8db39690a34aba08f5e4d1d"
-  integrity sha512-+lqYqvBD8rVCzPh4hoeK3XyenLNe7QGBDU1SPxgxl4pNgcTU93exkjKvFJuJoXmPknVav1WLkrLl/7In5nT8xQ==
+"@platform/cell.value@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.2.0.tgz#3d1e9a08479da1ac9d34ab0ced2d5684904fcd34"
+  integrity sha512-MAYZC11ClLh7YZt9WoJSLQBBayjh0h5x2W2Fi8rWqdNv6+0O2C7qP6dGLl1AZKCWcN8uclOybnePqL5bmsucjA==
   dependencies:
     "@platform/cell.schema" "0.4.38"
     "@platform/cell.types" "0.4.33"

@@ -4,7 +4,7 @@ import * as models from '../../model.helpers';
 const { SCHEMA_VERSION } = constants;
 
 /**
- * Invoked before an [Ns] is persisted to the DB.
+ * Invoked before an [ns] is persisted to the DB.
  */
 export const beforeNsSave: t.BeforeModelSave<t.IDbModelNsProps> = async args => {
   const { isChanged } = args;
