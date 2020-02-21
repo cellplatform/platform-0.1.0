@@ -75,6 +75,7 @@ Don’t hesitate to throw away the clumsy parts and rebuild them.
 - network
   - [@platform/http](/code/http)
   - [@platform/http](/code/http.types)
+  - [@platform/http.router](/code/http.router)
   - [@platform/graphql](/code/graphql)
 - cell
   - [@platform/cell](/code/cell)
