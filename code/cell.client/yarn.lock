@@ -25,36 +25,36 @@
   dependencies:
     "@platform/libs" "0.2.0"
 
-"@platform/cell.coord@0.8.50":
-  version "0.8.50"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.50.tgz#897d21472bca2afce48ab9a41c91411498c3f74c"
-  integrity sha512-gSYCLWmBYA+04Ad/sIjog6LkZoloByxVNGQjnmHD+ZWvxC9M7eOE1mRBiSmowuWOT0VxkPSBkp8bs2Kb96ea8w==
+"@platform/cell.coord@0.8.51":
+  version "0.8.51"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.51.tgz#a125ea561e940ddc62b143e5f5265875f0577ed5"
+  integrity sha512-rDxsRtsMNlxcUVxfYlTbOP2yKp/Uvo4COkVineOJe+Kfl83y4H1w1pLFSbhGmMc1Sdi1a8E6lyafPQ5SRkATRQ==
   dependencies:
     "@platform/cache" "0.2.15"
-    "@platform/cell.types" "0.4.32"
+    "@platform/cell.types" "0.4.33"
     "@platform/types" "0.4.4"
     "@platform/util.value" "0.7.3"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.schema@0.4.37":
-  version "0.4.37"
-  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.37.tgz#b1510566ac2e7cb1c0b7c17c218b2b26423f14fe"
-  integrity sha512-d7QBw+bPEMhPoVBy+Qs3ccC5stp6lC1NCgsUmzYuXuWalwWGmxf7yoXh8vcn9G01nQXIf8H1rKfTUNRuLtZq2g==
+"@platform/cell.schema@0.4.38":
+  version "0.4.38"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.38.tgz#64e78cb3492713bf99804d0dec904c9b9cf9277f"
+  integrity sha512-7cgl1RKVDFobhPBe4dXvHwHkPuRdQj0c5VzPCdUje61fiqzOMnYZUhCqBcBKKBpi2FWLqyfYI/1ToQS/7tswew==
   dependencies:
-    "@platform/cell.coord" "0.8.50"
-    "@platform/cell.types" "0.4.32"
+    "@platform/cell.coord" "0.8.51"
+    "@platform/cell.types" "0.4.33"
     "@platform/fsdb.types" "0.6.8"
     "@platform/libs" "0.2.0"
     "@platform/util.hash" "0.0.15"
     "@platform/util.string" "0.4.2"
     "@platform/util.value" "0.7.3"
 
-"@platform/cell.types@0.4.32":
-  version "0.4.32"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.32.tgz#521fc19d909a295fcb9d36be04409b62637de54c"
-  integrity sha512-3Vv+PO+pi03mWpOHF4x5gE6v07XbJwMivQ7PuV8eOZoAV8Wwf7LNbRJgpHcGkBZgSukIHqUfIAZ0PX466kF8yw==
+"@platform/cell.types@0.4.33":
+  version "0.4.33"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.33.tgz#b6bbc92e20e832f0682a1d1594cb7701fce65b0d"
+  integrity sha512-UGvR2hGU0/OZMp6y50Yx42PTVxi23XfK+evrZBrmWkChH+zlfn7I7osm/AFusiNMT101joUr0DrNj4B+ydjjMA==
   dependencies:
     "@platform/cache" "0.2.15"
     "@platform/fs.s3.types" "0.1.12"
