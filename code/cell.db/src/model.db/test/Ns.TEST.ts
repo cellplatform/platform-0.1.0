@@ -107,12 +107,14 @@ describe('model.db.Ns (Namespace)', () => {
         expect(A1.props.hash).to.not.eql(before); // A1 hash changed.
       })();
 
-      // Force save the NS (causing the hash to update).
+      // Force save the NS.
+      // (NOTE: The hash of the containing namespace will not change,
+      //        because none of its actual props are different).
       await (async () => {
         const before = ns2.props.hash;
         expect(ns2.isChanged).to.eql(false);
         await ns2.save({ force: true });
-        expect(ns2.props.hash).to.not.eql(before); // NS hash changed.
+        expect(ns2.props.hash).to.eql(before); // NS hash NOT changed.
       })();
     });
 
