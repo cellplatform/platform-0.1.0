@@ -43,18 +43,18 @@ const CELLS: t.IGridData['cells'] = {
 };
 
 const COLUMNS: t.IGridData['columns'] = {
-  A: { props: { width: 250 } },
+  A: { props: { grid: { width: 250 } } },
 };
 
 const ROWS: t.IGridData['rows'] = {
-  A: { props: {} },
+  2: { props: { grid: { height: 80 } } },
 };
 
 export type ISampleData = {
   ns: string;
-  cells: t.ICellMap;
-  columns: t.IColumnMap;
-  rows: t.IRowMap;
+  cells: t.IGridData['cells'];
+  columns: t.IGridData['columns'];
+  rows: t.IGridData['rows'];
 };
 
 export const SAMPLE: ISampleData = {

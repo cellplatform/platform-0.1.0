@@ -329,16 +329,16 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
         <Hr margin={5} />
         {this.button('columns (width) - A:200', () =>
-          this.grid.changeColumns({ A: { props: { width: 200 } } }),
+          this.grid.changeColumns({ A: { props: { grid: { width: 200 } } } }),
         )}
         {this.button('columns (width) - A:300', () =>
-          this.grid.changeColumns({ A: { props: { width: 300 } } }),
+          this.grid.changeColumns({ A: { props: { grid: { width: 300 } } } }),
         )}
         {this.button('rows (height) - 1:0', () =>
-          this.grid.changeRows({ '1': { props: { height: 0 } } }),
+          this.grid.changeRows({ '1': { props: { grid: { height: 0 } } } }),
         )}
         {this.button('rows (height) - 1:120', () =>
-          this.grid.changeRows({ '1': { props: { height: 120 } } }),
+          this.grid.changeRows({ '1': { props: { grid: { height: 120 } } } }),
         )}
         <Hr margin={5} />
         {this.button('select: A1', () => this.grid.select({ cell: 'A1' }))}

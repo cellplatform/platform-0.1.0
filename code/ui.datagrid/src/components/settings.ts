@@ -24,7 +24,7 @@ export function getSettings(args: { grid: Grid }) {
     if (grid.isInitialized) {
       const row = grid.data.rows[index];
       const props = row ? row.props : undefined;
-      height = props && props.height !== undefined ? props.height : height;
+      height = props && props.grid?.height !== undefined ? props.grid?.height : height;
     }
     return height;
   };
@@ -35,7 +35,7 @@ export function getSettings(args: { grid: Grid }) {
       const key = coord.cell.toKey(index);
       const column = grid.data.columns[key];
       const props = column ? column.props : undefined;
-      width = props && props.width !== undefined ? props.width : width;
+      width = props && props.grid?.width !== undefined ? props.grid?.width : width;
     }
     return width;
   };

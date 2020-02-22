@@ -13,13 +13,17 @@ export type GetGridCellPromise<P = t.IGridCellProps> = Promise<t.IGridCellData<P
 /**
  * Column
  */
-export type IGridColumnPropsAll = t.IColumnProps & { width: number };
+export type IGridColumnPropsAll = t.IColumnProps & {
+  grid: { width?: number };
+};
 export type IGridColumnProps = Partial<IGridColumnPropsAll>;
 export type IGridColumnData = t.IColumnData<IGridColumnProps>;
 
 /**
  * Row
  */
-export type IGridRowPropsAll = t.IRowProps & { height: number };
+export type IGridRowPropsAll = t.IRowProps & {
+  grid: { height?: number };
+};
 export type IGridRowProps = Partial<IGridRowPropsAll>;
 export type IGridRowData = t.IRowData<IGridRowProps>;

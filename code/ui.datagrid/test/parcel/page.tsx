@@ -26,7 +26,7 @@ const parseClient = (href: string) => {
 
 const loadFromClient = async (client: t.IClient, ns: string): Promise<ISampleData> => {
   const res = await client.ns(ns).read({ data: true });
-  const data = res.body.data;
+  const data = res.body.data as t.IGridData;
   const cells = data.cells || {};
   const columns = data.columns || {};
   const rows = data.rows || {};
