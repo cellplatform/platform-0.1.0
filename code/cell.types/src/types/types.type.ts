@@ -1,16 +1,26 @@
 /**
- * Reference to the type of a cell/row/column.
+ * Reference to the type of a [column] or individual [cell].
  * Either:
  *
  *  - a simple primitive type: [string], [number], [boolean].
  *
- *  - or a reference to a complex type defined in another sheet,
- *    eg. "=ns:foo" where the referenced sheet itself defines a complex type.
+ *  - or a reference to a complex type defined in another sheet via:
+ *
+ *      "=ref:<ns:uri>", or
+ *      "=inline:<ns:uri>"
+ *
+ *    the prefix "ref" or "inline" dictate whether the corresponding
+ *    complex object is stored in a seperate/linked sheet ("ref"), or
+ *    is stored locally within the cell ("inline").
  *
  */
-export type ICellType = { name: string };
+export type CellType = string;
+export type ColumnType = CellType;
 
 /**
  * Reference to a namespace that contains the type definitions for the sheet.
  */
-// export type NsTypeDef = string;
+export type INsType = {
+  name?: string; // Name of the complex type/object this namespace defines.
+  implements?: string; // URI of another namespace containing the type definition to conform to.
+};
