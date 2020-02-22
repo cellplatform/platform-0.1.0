@@ -24,6 +24,7 @@ export type IGridArgs = {
   ns: t.INs | string;
   cells?: t.IGridData['cells'];
   columns?: t.IGridData['columns'];
+  // columns?: t.IGridColumnData;
   rows?: t.IGridData['rows'];
   defaults?: Partial<t.IGridDefaults>;
   keyBindings?: t.KeyBindings<t.GridCommand>;
@@ -675,9 +676,12 @@ export class Grid implements t.IGrid {
     let changes: t.IGridColumnChange[] = [];
 
     Object.keys(columns).forEach(key => {
-      const prev = from[key] || { props: { width: -1 } };
-      const next = columns[key] || { props: { width: this.defaults.columnWidth } };
-      const isDefault = (next.props || {}).width === this.defaults.columnWidth;
+      const prev = from[key] || { props: { grid: { width: -1 } } };
+      const next = columns[key] || { props: { grid: { width: this.defaults.columnWidth } } };
+
+      const nextProps = next.props || {};
+      const isDefault = nextProps.grid && nextProps.grid.width === this.defaults.columnWidth;
+
       if (isDefault) {
         delete to[key];
       } else {
@@ -704,9 +708,12 @@ export class Grid implements t.IGrid {
     let changes: t.IGridRowChange[] = [];
 
     Object.keys(rows).forEach(key => {
-      const prev = from[key] || { props: { height: -1 } };
-      const next = rows[key] || { props: { height: this.defaults.rowHeight } };
-      const isDefault = (next.props || {}).height === this.defaults.rowHeight;
+      const prev = from[key] || { props: { grid: { height: -1 } } };
+      const next = rows[key] || { props: { grid: { height: this.defaults.rowHeight } } };
+
+      const nextProps = next.props || {};
+      const isDefault = nextProps.grid && nextProps.grid.height === this.defaults.rowHeight;
+
       if (isDefault) {
         delete to[key];
       } else {

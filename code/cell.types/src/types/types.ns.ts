@@ -2,7 +2,7 @@ import { t } from '../common';
 
 export type INs = { id: string; props?: INsProps; hash?: string };
 export type INsProps = {
-  name?: string; // Display name.
+  name?: string; // Display name of the namespace.
   schema?: string; // The semver of the [@platform/cell.schema] the namespace was last saved as.
 };
 
@@ -18,8 +18,8 @@ export type INsData<
 > = INsDataChildren<V, C, R, F> & { ns: INs };
 
 /**
- * Data structures that are addressable within the namespace
- * with coordinates (eg "A1", "A", "1").
+ * Data structures that are addressable within the
+ * namespace via a coordinate location (eg "A1", "A", "1").
  */
 export type INsDataCoord<
   V extends t.ICellData = t.ICellData,

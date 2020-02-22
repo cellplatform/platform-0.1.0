@@ -45,8 +45,8 @@ describe('Grid', () => {
 
   it('constructs (initialized)', () => {
     const cells = { A1: { value: 123 } };
-    const columns = { A: { props: { width: 200 } } };
-    const rows = { '10': { props: { height: 200 } } };
+    const columns = { A: { props: { grid: { width: 200 } } } };
+    const rows = { '10': { props: { grid: { height: 200 } } } };
     const ns = 'ns:foo';
     const grid = createGrid({ totalColumns: 10, totalRows: 5, ns, cells, columns, rows });
     expect(grid.isInitialized).to.eql(true);
