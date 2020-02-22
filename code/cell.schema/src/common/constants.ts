@@ -7,5 +7,6 @@ export const ERROR = {
     FILE: 'HTTP/file',
     MALFORMED_URI: 'HTTP/uri/malformed',
     HASH_MISMATCH: 'HTTP/hash/mismatch',
+    TYPE: 'HTTP/type',
   },
 };

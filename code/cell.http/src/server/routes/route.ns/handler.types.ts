@@ -1,5 +1,6 @@
-import { models, Schema, t } from '../common';
+import { models, Schema, t, ERROR } from '../common';
 import * as util from './util';
+import { TypeNs } from './TEMP';
 
 export async function getTypes(args: {
   host: string;
@@ -7,18 +8,39 @@ export async function getTypes(args: {
   id: string;
   query: t.IUrlQueryNsTypes;
 }) {
-  const { db, id, query, host } = args;
-  const uri = Schema.uri.create.ns(id);
-  const model = await models.Ns.create({ db, uri }).ready;
-  const columns = await models.ns.getChildColumns({ model });
+  try {
+    const { db, id, query, host } = args;
+    const uri = Schema.uri.create.ns(id);
+    const model = await models.Ns.create({ db, uri }).ready;
+    const columns = await models.ns.getChildColumns({ model });
 
-  const props = model.props.props || {};
-  const name = props.name || 'Unnamed';
+    const props = model.props.props || {};
+    const nsType = props.type;
 
-  const typescript = toTypescriptDeclaration({ name, columns });
-  const data: t.IResGetNsTypes = { typescript };
+    if (!nsType) {
+      const err = `The namespace does not contain a type declaration. (${uri})`;
+      return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.TYPE });
+    }
 
-  return { status: 200, data };
+    // const title = props.title || 'Unnamed';
+    const name = (nsType.name || '').trim() || 'Unnamed';
+
+    console.log('model.toObject()', model.toObject());
+
+    const tns = TypeNs.create({});
+
+    console.log('tns', tns);
+
+    const typescript = toTypescriptDeclaration({ name, columns });
+    const data: t.IResGetNsTypes = {
+      uri,
+      'types.d.ts': typescript,
+    };
+
+    return { status: 200, data };
+  } catch (err) {
+    return util.toErrorPayload(err);
+  }
 }
 
 /**

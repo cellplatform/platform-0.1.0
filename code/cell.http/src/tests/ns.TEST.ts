@@ -232,12 +232,12 @@ describe('ns:', function() {
       expect(res1.data.ns.id).to.eql('foo');
       expect(res1.data.ns.props).to.eql(undefined);
 
-      const res2 = await post.ns('ns:foo?ns', { ns: { name: 'MySheet' } });
+      const res2 = await post.ns('ns:foo?ns', { ns: { title: 'MySheet' } });
 
       expect(res2.data.ns.hash).to.not.eql(res1.data.ns.hash); // Hash updated.
-      expect((res2.data.ns.props || {}).name).to.eql('MySheet');
+      expect((res2.data.ns.props || {}).title).to.eql('MySheet');
 
-      const res3 = await post.ns('ns:foo?ns', { ns: { name: undefined } });
+      const res3 = await post.ns('ns:foo?ns', { ns: { title: undefined } });
       expect(res3.data.ns.hash).to.not.eql(res2.data.ns.hash); // Hash updated.
       expect(res3.data.ns.props).to.eql(undefined); // NB: Squashed.
     });
@@ -252,7 +252,7 @@ describe('ns:', function() {
     });
 
     it('recalculate hash on namespace (ns props changed)', async () => {
-      const res1 = await post.ns('ns:foo?cells', { ns: { name: 'hello world' } });
+      const res1 = await post.ns('ns:foo?cells', { ns: { title: 'hello world' } });
       expect(res1.data.ns.hash).to.match(/^sha256-/);
 
       const res2 = await post.ns('ns:foo?cells', { cells: { A1: { value: 124 } } });

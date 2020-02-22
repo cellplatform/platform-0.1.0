@@ -34,7 +34,7 @@ export const ROUTES = {
   NS: {
     CELL: `/ns${KEY.NS}\!${KEY.CELL}(/?)`, // NB: Redirect to cell.
     INFO: `/ns${KEY.NS}(/?)`,
-    TYPES: `/ns${KEY.NS}/types.d.ts`,
+    TYPES: `/ns${KEY.NS}/types`,
   },
   CELL: {
     NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.

@@ -1,4 +1,4 @@
-import { t, expect, http, createMock, stripHashes, post } from '../test';
+import { t, expect, http, createMock, stripHashes, post, Schema } from '../test';
 
 describe.only('type system', () => {
   it('sample', async () => {
@@ -11,7 +11,10 @@ describe.only('type system', () => {
     //
     // mock.url()
     const res1 = await mock.client.ns('foo').write({
-      ns: { name: 'foo' },
+      ns: {
+        title: 'My Title',
+        type: { name: 'MySheet' }, // TODO - error check type name on write
+      },
       columns: { A, B, C },
     });
     const res2 = await mock.client.ns('foo').read({ data: true });
@@ -19,12 +22,14 @@ describe.only('type system', () => {
     console.log('-------------------------------------------');
     console.log('columns:\n', res2.body.data.columns);
 
-    const url = mock.url('ns:foo/types.d.ts');
+    console.log('-------------------------------------------');
+    const url = mock.url('ns:foo/types');
     const res3 = await http.get(url);
 
     console.log('-------------------------------------------');
-    console.log('status', res3.status);
-    console.log('res3.text', res3.json);
+    // console.log('status', res3.status);
+    // console.log('res3.text', res3.json);
+    // console.log('Schema.uri.allow', Schema.uri.ALLOW);
 
     await mock.dispose();
   });
