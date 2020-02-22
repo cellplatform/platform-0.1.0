@@ -251,7 +251,7 @@ describe('ns:', function() {
       expect(hash && hash.length).to.greaterThan(20);
     });
 
-    it.only('recalculate hash on namespace (ns props changed)', async () => {
+    it('recalculate hash on namespace (ns props changed)', async () => {
       const res1 = await post.ns('ns:foo?cells', { ns: { name: 'hello world' } });
       expect(res1.data.ns.hash).to.match(/^sha256-/);
 

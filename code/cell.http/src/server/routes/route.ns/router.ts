@@ -1,6 +1,7 @@
 import { ERROR, routes, t } from '../common';
 import { getNs } from './handler.get';
 import { postNs } from './handler.post';
+import { getTypes } from './handler.types';
 
 /**
  * Namespace routes.
@@ -47,7 +48,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     const host = req.host;
     const query = req.query as t.IUrlQueryNsInfo;
     const { status, id, error } = getParams(req);
-    return !id || error ? { status, data: { error } } : getNs({ db, id, query, host });
+    return !id || error ? { status, data: { error } } : getNs({ host, db, id, query });
   });
 
   /**
@@ -58,6 +59,16 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
     const query = req.query as t.IUrlQueryNsWrite;
     const { status, id, error } = getParams(req);
     const body = (await req.body.json<t.IReqPostNsBody>()) || {};
-    return !id || error ? { status, data: { error } } : postNs({ db, id, body, query, host });
+    return !id || error ? { status, data: { error } } : postNs({ host, db, id, body, query });
+  });
+
+  /**
+   * GET types
+   */
+  router.get(routes.NS.TYPES, async req => {
+    const host = req.host;
+    const query = req.query as t.IUrlQueryNsTypes;
+    const { status, id, error } = getParams(req);
+    return !id || error ? { status, data: { error } } : getTypes({ host, db, id, query });
   });
 }

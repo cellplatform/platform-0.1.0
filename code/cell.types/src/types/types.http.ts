@@ -71,6 +71,8 @@ export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsUrls>;
 export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataChildren>;
 export type IResGetNsUrls = { data: string };
 
+export type IResGetNsTypes = { typescript: string };
+
 /**
  * Namespace: POST
  */

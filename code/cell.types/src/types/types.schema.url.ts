@@ -35,6 +35,8 @@ export type IUrlQueryNsWrite = IUrlQueryNsInfo & {
   changes?: boolean; // NB: return list of changes (default: true).
 };
 
+export type IUrlQueryNsTypes = {};
+
 /**
  * ------------------------------------------------------------------
  * COORD (General coordinates for: CELL | ROW | COLUMN)

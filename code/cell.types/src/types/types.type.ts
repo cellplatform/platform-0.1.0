@@ -9,3 +9,8 @@
  *
  */
 export type ICellType = { name: string };
+
+/**
+ * Reference to a namespace that contains the type definitions for the sheet.
+ */
+// export type NsTypeDef = string;
