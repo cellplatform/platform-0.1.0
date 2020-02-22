@@ -678,7 +678,10 @@ export class Grid implements t.IGrid {
     Object.keys(columns).forEach(key => {
       const prev = from[key] || { props: { grid: { width: -1 } } };
       const next = columns[key] || { props: { grid: { width: this.defaults.columnWidth } } };
-      const isDefault = (next.props || {}).grid?.width === this.defaults.columnWidth;
+
+      const nextProps = next.props || {};
+      const isDefault = nextProps.grid && nextProps.grid.width === this.defaults.columnWidth;
+
       if (isDefault) {
         delete to[key];
       } else {
@@ -707,7 +710,10 @@ export class Grid implements t.IGrid {
     Object.keys(rows).forEach(key => {
       const prev = from[key] || { props: { grid: { height: -1 } } };
       const next = rows[key] || { props: { grid: { height: this.defaults.rowHeight } } };
-      const isDefault = (next.props || {}).grid?.height === this.defaults.rowHeight;
+
+      const nextProps = next.props || {};
+      const isDefault = nextProps.grid && nextProps.grid.height === this.defaults.rowHeight;
+
       if (isDefault) {
         delete to[key];
       } else {
