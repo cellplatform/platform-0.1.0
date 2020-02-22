@@ -1,4 +1,4 @@
-import { cli, Client, log, t } from '../common';
+import { cli, HttpClient, log, t } from '../common';
 import { getPayload } from './dirSync.payload';
 import { addTask, toBatches } from './dirSync.sync.task';
 import * as util from '../util';
@@ -13,7 +13,7 @@ export const runSync: t.FsSyncRun = async (args: t.IFsSyncRunArgs) => {
   const { silent = false, force = false } = args;
   const targetUri = config.target.uri;
   const host = config.data.host;
-  const client = Client.create(host);
+  const client = HttpClient.create(host);
   const payload = await getPayload({ config, silent, force, delete: args.delete });
 
   if (onPayload) {

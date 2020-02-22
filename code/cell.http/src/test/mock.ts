@@ -2,7 +2,7 @@ import { NeDb } from '@platform/fsdb.nedb';
 import { local } from '@platform/cell.fs/lib/fs.local';
 
 import { server } from '../server';
-import { util, t, Schema, Client } from '../server/common';
+import { util, t, Schema, HttpClient } from '../server/common';
 
 export type IMock = {
   db: t.IDb;
@@ -55,7 +55,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
 
   const urls = Schema.urls(`localhost:${port}`);
   const host = urls.host;
-  const client = Client.create(urls.origin);
+  const client = HttpClient.create(urls.origin);
 
   const mock: IMock = {
     db,

@@ -5,9 +5,9 @@ export type IClientCellFileArgs = { parent: t.IClientCell; urls: t.IUrls; http: 
 /**
  * HTTP client for operating on files associated with a [Cell].
  */
-export class ClientCellFile implements t.IClientCellFile {
+export class HttpClientCellFile implements t.IClientCellFile {
   public static create(args: IClientCellFileArgs): t.IClientCellFile {
-    return new ClientCellFile(args);
+    return new HttpClientCellFile(args);
   }
 
   /**

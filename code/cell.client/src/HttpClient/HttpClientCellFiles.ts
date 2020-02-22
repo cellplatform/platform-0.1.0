@@ -1,5 +1,5 @@
 import { ERROR, Schema, t, util } from '../common';
-import { upload } from './ClientCellFiles.upload';
+import { upload } from './HttpClientCellFiles.upload';
 
 export type IClientCellFilesArgs = { parent: t.IClientCell; urls: t.IUrls; http: t.IHttp };
 type GetError = (args: { status: number }) => string;
@@ -7,9 +7,9 @@ type GetError = (args: { status: number }) => string;
 /**
  * HTTP client for operating on a [Cell]'s files.
  */
-export class ClientCellFiles implements t.IClientCellFiles {
+export class HttpClientCellFiles implements t.IClientCellFiles {
   public static create(args: IClientCellFilesArgs): t.IClientCellFiles {
-    return new ClientCellFiles(args);
+    return new HttpClientCellFiles(args);
   }
 
   private static parsePath(path: string) {
@@ -49,7 +49,7 @@ export class ClientCellFiles implements t.IClientCellFiles {
 
     const toUrl = (args: { path: string; uri: string; url: string }): t.IClientCellFileUrl => {
       const { path, uri, url } = args;
-      const { filename, dir } = ClientCellFiles.parsePath(path);
+      const { filename, dir } = HttpClientCellFiles.parsePath(path);
       const res: t.IClientCellFileUrl = { uri, filename, dir, path, url };
       return res;
     };
@@ -91,7 +91,7 @@ export class ClientCellFiles implements t.IClientCellFiles {
         const uri = Schema.uri.create.file(ns, fileid);
         const url = urls.find(item => item.uri === uri);
         if (url) {
-          const { path, filename, dir } = ClientCellFiles.parsePath(url.path);
+          const { path, filename, dir } = HttpClientCellFiles.parsePath(url.path);
           acc.push({ uri, path, filename, dir, ...value });
         }
       }

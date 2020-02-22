@@ -1,16 +1,16 @@
 import { t, Uri, util } from '../common';
-import { ClientCellFile } from './ClientCellFile';
-import { ClientCellFiles } from './ClientCellFiles';
-import { ClientCellLinks } from './ClientCellLinks';
+import { HttpClientCellFile } from './HttpClientCellFile';
+import { HttpClientCellFiles } from './HttpClientCellFiles';
+import { HttpClientCellLinks } from './HttpClientCellLinks';
 
 export type IClientCellArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
 
 /**
  * An HTTP client for operating on [Cell]'s.
  */
-export class ClientCell implements t.IClientCell {
+export class HttpClientCell implements t.IClientCell {
   public static create(args: IClientCellArgs): t.IClientCell {
-    return new ClientCell(args);
+    return new HttpClientCell(args);
   }
 
   /**
@@ -39,13 +39,13 @@ export class ClientCell implements t.IClientCell {
   public get file(): t.IClientCellFile {
     const urls = this.args.urls;
     const http = this.args.http;
-    return this._file || (this._file = ClientCellFile.create({ parent: this, urls, http }));
+    return this._file || (this._file = HttpClientCellFile.create({ parent: this, urls, http }));
   }
 
   public get files(): t.IClientCellFiles {
     const urls = this.args.urls;
     const http = this.args.http;
-    return this._files || (this._files = ClientCellFiles.create({ parent: this, urls, http }));
+    return this._files || (this._files = HttpClientCellFiles.create({ parent: this, urls, http }));
   }
 
   /**
@@ -75,7 +75,7 @@ export class ClientCell implements t.IClientCell {
     const cell = info.body.data;
     const links = cell.links || {};
     const urls = this.args.urls;
-    const body = ClientCellLinks.create({ links, urls, http });
+    const body = HttpClientCellLinks.create({ links, urls, http });
 
     return util.toClientResponse<T>(200, body);
   }

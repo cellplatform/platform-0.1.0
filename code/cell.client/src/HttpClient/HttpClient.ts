@@ -1,7 +1,7 @@
 import { Schema, t, http, constants, util } from '../common';
-import { ClientCell } from './ClientCell';
-import { ClientFile } from './ClientFile';
-import { ClientNs } from './ClientNs';
+import { HttpClientCell } from './HttpClientCell';
+import { HttpClientFile } from './HttpClientFile';
+import { HttpClientNs } from './HttpClientNs';
 
 function clientHeader() {
   const VERSION = constants.VERSION;
@@ -13,9 +13,9 @@ function clientHeader() {
 /**
  * An HTTP client for the CellOS.
  */
-export class Client implements t.IClient {
+export class HttpClient implements t.IClient {
   public static create(host?: string | number): t.IClient {
-    return new Client({ host });
+    return new HttpClient({ host });
   }
 
   /**
@@ -63,20 +63,20 @@ export class Client implements t.IClient {
     const urls = this.urls;
     const uri = urls.ns(input).uri;
     const http = this.http;
-    return ClientNs.create({ uri, urls, http });
+    return HttpClientNs.create({ uri, urls, http });
   }
 
   public cell(input: string | t.IUrlParamsCell) {
     const urls = this.urls;
     const uri = urls.cell(input).uri;
     const http = this.http;
-    return ClientCell.create({ uri, urls, http });
+    return HttpClientCell.create({ uri, urls, http });
   }
 
   public file(input: string | t.IUrlParamsFile) {
     const urls = this.urls;
     const uri = urls.file(input).uri;
     const http = this.http;
-    return ClientFile.create({ uri, urls, http });
+    return HttpClientFile.create({ uri, urls, http });
   }
 }

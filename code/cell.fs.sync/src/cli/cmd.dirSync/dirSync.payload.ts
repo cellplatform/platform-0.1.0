@@ -1,4 +1,4 @@
-import { cli, Client, defaultValue, fs, log, Schema, t } from '../common';
+import { cli, HttpClient, defaultValue, fs, log, Schema, t } from '../common';
 import * as util from '../util';
 
 export const getPayload: t.FsSyncGetPayload = async (args: t.IFsSyncGetPayloadArgs) => {
@@ -6,7 +6,7 @@ export const getPayload: t.FsSyncGetPayload = async (args: t.IFsSyncGetPayloadAr
   const dir = config.dir;
   const targetUri = config.target.uri;
   const host = config.data.host;
-  const client = Client.create(host);
+  const client = HttpClient.create(host);
   const urls = Schema.urls(host);
   return buildPayload({
     dir,

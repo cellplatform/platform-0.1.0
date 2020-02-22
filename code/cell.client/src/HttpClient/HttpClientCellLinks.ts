@@ -1,14 +1,14 @@
 import { Schema, t, Uri } from '../common';
-import { ClientFile } from './ClientFile';
+import { HttpClientFile } from './HttpClientFile';
 
 export type IClientCellLinksArgs = { links: t.ICellData['links']; urls: t.IUrls; http: t.IHttp };
 
 /**
  * HTTP client for operating on a [Cell]'s links.
  */
-export class ClientCellLinks implements t.IClientCellLinks {
+export class HttpClientCellLinks implements t.IClientCellLinks {
   public static create(args: IClientCellLinksArgs): t.IClientCellLinks {
-    return new ClientCellLinks(args);
+    return new HttpClientCellLinks(args);
   }
 
   /**
@@ -61,7 +61,7 @@ export class ClientCellLinks implements t.IClientCellLinks {
         dir,
         hash,
         get file() {
-          return file || (file = ClientFile.create({ uri, urls, http }));
+          return file || (file = HttpClientFile.create({ uri, urls, http }));
         },
       };
       return res;

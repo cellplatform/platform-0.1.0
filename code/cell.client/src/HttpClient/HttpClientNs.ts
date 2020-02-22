@@ -5,9 +5,9 @@ export type IClientNsArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
 /**
  * HTTP client for operating on a [Namespace].
  */
-export class ClientNs implements t.IClientNs {
+export class HttpClientNs implements t.IClientNs {
   public static create(args: IClientNsArgs): t.IClientNs {
-    return new ClientNs(args);
+    return new HttpClientNs(args);
   }
 
   /**
