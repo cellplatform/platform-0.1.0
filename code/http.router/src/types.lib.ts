@@ -2,8 +2,6 @@
  * Inlined from the [node] `http` module
  */
 
-
-
 export type IncomingMessage = {
   // NB: Subset of full [node] props.
   method?: string;
