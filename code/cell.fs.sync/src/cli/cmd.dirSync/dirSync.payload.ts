@@ -26,7 +26,7 @@ export async function buildPayload(args: {
   dir: string;
   urls: t.IUrls;
   targetUri: t.IUriParts<t.ICellUri>;
-  client: t.IClient;
+  client: t.IHttpClient;
   delete: boolean;
   force: boolean;
   silent: boolean;
@@ -39,7 +39,7 @@ export async function buildPayload(args: {
   const cellUrls = args.urls.cell(cellUri);
 
   // Retrieve the list of remote files.
-  let remoteFiles: t.IClientFileData[] = [];
+  let remoteFiles: t.IHttpClientFileData[] = [];
   const findRemote = (path: string) => remoteFiles.find(f => f.path === path);
 
   const urls = Schema.urls(client.origin);

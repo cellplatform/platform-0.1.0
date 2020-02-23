@@ -1,20 +1,24 @@
 import { Schema, t, Uri } from '../common';
 import { HttpClientFile } from './HttpClientFile';
 
-export type IClientCellLinksArgs = { links: t.ICellData['links']; urls: t.IUrls; http: t.IHttp };
+type IHttpClientCellLinksArgs = {
+  links: t.ICellData['links'];
+  urls: t.IUrls;
+  http: t.IHttp;
+};
 
 /**
  * HTTP client for operating on a [Cell]'s links.
  */
-export class HttpClientCellLinks implements t.IClientCellLinks {
-  public static create(args: IClientCellLinksArgs): t.IClientCellLinks {
+export class HttpClientCellLinks implements t.IHttpClientCellLinks {
+  public static create(args: IHttpClientCellLinksArgs): t.IHttpClientCellLinks {
     return new HttpClientCellLinks(args);
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: IClientCellLinksArgs) {
+  private constructor(args: IHttpClientCellLinksArgs) {
     const { links = {} } = args;
     this.args = args;
     this.list = Object.keys(links).map(key => this.toLink(key, links[key]));
@@ -23,14 +27,14 @@ export class HttpClientCellLinks implements t.IClientCellLinks {
   /**
    * [Fields]
    */
-  private readonly args: IClientCellLinksArgs;
-  public readonly list: t.IClientCellLink[];
+  private readonly args: IHttpClientCellLinksArgs;
+  public readonly list: t.IHttpClientCellLink[];
 
   /**
    * [Properties]
    */
   public get files() {
-    return this.list.filter(item => item.type === 'FILE') as t.IClientCellLinkFile[];
+    return this.list.filter(item => item.type === 'FILE') as t.IHttpClientCellLinkFile[];
   }
 
   /**
@@ -43,16 +47,16 @@ export class HttpClientCellLinks implements t.IClientCellLinks {
   /**
    * Helpers
    */
-  private toLink(key: string, value: string): t.IClientCellLink {
+  private toLink(key: string, value: string): t.IHttpClientCellLink {
     const { http, urls } = this.args;
     const uri = Uri.parse(value);
     const type = uri.parts.type;
 
     if (type === 'FILE') {
-      let file: t.IClientFile | undefined;
+      let file: t.IHttpClientFile | undefined;
       const { uri, hash = '' } = Schema.file.links.parseLink(value);
       const { filename, dir, path } = Schema.file.links.parseKey(key);
-      const res: t.IClientCellLinkFile = {
+      const res: t.IHttpClientCellLinkFile = {
         type: 'FILE',
         uri,
         key,
@@ -68,7 +72,7 @@ export class HttpClientCellLinks implements t.IClientCellLinks {
     }
 
     // Type unknown.
-    const res: t.IClientCellLinkUnknown = { type: 'UNKNOWN', key, uri: value };
+    const res: t.IHttpClientCellLinkUnknown = { type: 'UNKNOWN', key, uri: value };
     return res;
   }
 }

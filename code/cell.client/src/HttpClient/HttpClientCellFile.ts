@@ -1,12 +1,12 @@
 import { ERROR, Schema, t, util } from '../common';
 
-export type IClientCellFileArgs = { parent: t.IClientCell; urls: t.IUrls; http: t.IHttp };
+type IClientCellFileArgs = { parent: t.IHttpClientCell; urls: t.IUrls; http: t.IHttp };
 
 /**
  * HTTP client for operating on files associated with a [Cell].
  */
-export class HttpClientCellFile implements t.IClientCellFile {
-  public static create(args: IClientCellFileArgs): t.IClientCellFile {
+export class HttpClientCellFile implements t.IHttpClientCellFile {
+  public static create(args: IClientCellFileArgs): t.IHttpClientCellFile {
     return new HttpClientCellFile(args);
   }
 
@@ -56,7 +56,7 @@ export class HttpClientCellFile implements t.IClientCellFile {
        */
       async download(
         options: { expires?: string } = {},
-      ): Promise<t.IClientResponse<ReadableStream | string>> {
+      ): Promise<t.IHttpClientResponse<ReadableStream | string>> {
         type T = ReadableStream | string;
         const { expires } = options;
         const linkRes = await self.getCellLinkByFilename(path);
@@ -79,7 +79,7 @@ export class HttpClientCellFile implements t.IClientCellFile {
         const res = await http.get(url);
         if (res.ok) {
           const mime = (res.headers['content-type'] || '').toString().trim();
-          const bodyType: t.ClientBodyType = mime.startsWith('text/') ? 'TEXT' : 'BINARY';
+          const bodyType: t.HttpClientBodyType = mime.startsWith('text/') ? 'TEXT' : 'BINARY';
           return util.fromHttpResponse(res).toClientResponse<T>({ bodyType });
         } else {
           const message = `Failed while downloading file "${parent.uri.toString()}".`;

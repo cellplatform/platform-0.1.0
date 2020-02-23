@@ -5,8 +5,8 @@ export type IClientFileArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
 /**
  * HTTP client for operating on files.
  */
-export class HttpClientFile implements t.IClientFile {
-  public static create(args: IClientFileArgs): t.IClientFile {
+export class HttpClientFile implements t.IHttpClientFile {
+  public static create(args: IClientFileArgs): t.IHttpClientFile {
     return new HttpClientFile(args);
   }
 

@@ -1,7 +1,7 @@
 import { defaultValue, t, util, ERROR, FormData, Schema } from '../common';
 
 export async function upload(args: {
-  input: t.IClientCellFileUpload | t.IClientCellFileUpload[];
+  input: t.IHttpClientCellFileUpload | t.IHttpClientCellFileUpload[];
   http: t.IHttp;
   urls: t.IUrls;
   cellUri: string;
@@ -149,7 +149,7 @@ export async function upload(args: {
   ];
 
   // Finish up.
-  type R = t.IClientCellFileUploadResponse;
+  type R = t.IHttpClientCellFileUploadResponse;
   const status = errors.length === 0 ? 200 : 500;
   const responseBody: R = {
     uri: cellUri,

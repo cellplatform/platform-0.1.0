@@ -3,28 +3,28 @@ import { t } from '../common';
 /**
  * Response.
  */
-export type ClientBodyType = 'JSON' | 'TEXT' | 'BINARY';
-export type IClientAsync<T> = Promise<IClientResponse<T>>;
-export type IClientResponse<T> = {
+export type HttpClientBodyType = 'JSON' | 'TEXT' | 'BINARY';
+export type IHttpClientAsync<T> = Promise<IHttpClientResponse<T>>;
+export type IHttpClientResponse<T> = {
   ok: boolean;
   status: number;
   body: T;
-  bodyType: ClientBodyType;
+  bodyType: HttpClientBodyType;
   error?: t.IHttpError;
 };
 
 /**
  * ROOT (CLIENT)
  */
-export type IClient = {
+export type IHttpClient = {
   readonly origin: string;
   request$: t.Observable<t.IHttpBefore>;
   response$: t.Observable<t.IHttpAfter>;
 
-  info<T extends t.IResGetSysInfo>(): t.IClientAsync<T>;
+  info<T extends t.IResGetSysInfo>(): t.IHttpClientAsync<T>;
   ns(input: string | t.IUrlParamsNs): IClientNs;
-  cell(input: string | t.IUrlParamsCell): IClientCell;
-  file(input: string | t.IUrlParamsFile): IClientFile;
+  cell(input: string | t.IUrlParamsCell): IHttpClientCell;
+  file(input: string | t.IUrlParamsFile): IHttpClientFile;
 };
 
 /**
@@ -33,52 +33,52 @@ export type IClient = {
 export type IClientNs = {
   readonly uri: t.IUriParts<t.INsUri>;
   readonly url: t.IUrlsNs;
-  read(options?: t.IUrlQueryNsInfo): t.IClientAsync<t.IResGetNs>;
-  write(data: t.IReqPostNsBody, options?: t.IUrlQueryNsWrite): t.IClientAsync<t.IResPostNs>;
+  read(options?: t.IUrlQueryNsInfo): t.IHttpClientAsync<t.IResGetNs>;
+  write(data: t.IReqPostNsBody, options?: t.IUrlQueryNsWrite): t.IHttpClientAsync<t.IResPostNs>;
 };
 
 /**
  * CELL
  */
-export type IClientCell = {
+export type IHttpClientCell = {
   readonly uri: t.IUriParts<t.ICellUri>;
   readonly url: t.IUrlsCell;
-  readonly file: IClientCellFile;
-  readonly files: IClientCellFiles;
-  info(options?: t.IUrlQueryCellInfo): t.IClientAsync<t.IResGetCell>;
-  links(): t.IClientAsync<IClientCellLinks>;
+  readonly file: IHttpClientCellFile;
+  readonly files: IHttpClientCellFiles;
+  info(options?: t.IUrlQueryCellInfo): t.IHttpClientAsync<t.IResGetCell>;
+  links(): t.IHttpClientAsync<IHttpClientCellLinks>;
 };
 
-export type IClientCellLinks = {
-  readonly list: IClientCellLink[];
-  readonly files: IClientCellLinkFile[];
+export type IHttpClientCellLinks = {
+  readonly list: IHttpClientCellLink[];
+  readonly files: IHttpClientCellLinkFile[];
   toObject(): t.ICellData['links'];
 };
 
-export type IClientCellFile = {
-  name(path: string): IClientCellFileByName;
+export type IHttpClientCellFile = {
+  name(path: string): IHttpClientCellFileByName;
 };
 
-export type IClientCellFileByName = {
-  info(): t.IClientAsync<t.IResGetFile>;
+export type IHttpClientCellFileByName = {
+  info(): t.IHttpClientAsync<t.IResGetFile>;
   download(options?: {
     expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
-  }): t.IClientAsync<ReadableStream | string>;
+  }): t.IHttpClientAsync<ReadableStream | string>;
 };
 
-export type IClientCellFiles = {
-  urls(): t.IClientAsync<IClientCellFileUrl[]>;
-  map(): t.IClientAsync<t.IFileMap>;
-  list(): t.IClientAsync<IClientFileData[]>;
+export type IHttpClientCellFiles = {
+  urls(): t.IHttpClientAsync<IHttpClientCellFileUrl[]>;
+  map(): t.IHttpClientAsync<t.IFileMap>;
+  list(): t.IHttpClientAsync<IHttpClientFileData[]>;
   upload(
-    files: IClientCellFileUpload | IClientCellFileUpload[],
+    files: IHttpClientCellFileUpload | IHttpClientCellFileUpload[],
     options?: { changes?: boolean },
-  ): t.IClientAsync<IClientCellFileUploadResponse>;
-  delete(filename: string | string[]): t.IClientAsync<t.IResDeleteCellFilesData>;
-  unlink(filename: string | string[]): t.IClientAsync<t.IResDeleteCellFilesData>;
+  ): t.IHttpClientAsync<IHttpClientCellFileUploadResponse>;
+  delete(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
+  unlink(filename: string | string[]): t.IHttpClientAsync<t.IResDeleteCellFilesData>;
 };
-export type IClientCellFileUpload = { filename: string; data: ArrayBuffer; mimetype?: string };
-export type IClientCellFileUrl = {
+export type IHttpClientCellFileUpload = { filename: string; data: ArrayBuffer; mimetype?: string };
+export type IHttpClientCellFileUrl = {
   uri: string;
   url: string;
   path: string;
@@ -86,7 +86,7 @@ export type IClientCellFileUrl = {
   dir: string;
 };
 
-export type IClientCellFileUploadResponse = {
+export type IHttpClientCellFileUploadResponse = {
   uri: string;
   cell: t.ICellData;
   files: Array<t.IUriData<t.IFileData>>;
@@ -97,15 +97,15 @@ export type IClientCellFileUploadResponse = {
 /**
  * Cell Links
  */
-export type IClientCellLink = IClientCellLinkUnknown | IClientCellLinkFile;
+export type IHttpClientCellLink = IHttpClientCellLinkUnknown | IHttpClientCellLinkFile;
 
-export type IClientCellLinkUnknown = {
+export type IHttpClientCellLinkUnknown = {
   type: 'UNKNOWN';
   key: string;
   uri: string;
 };
 
-export type IClientCellLinkFile = {
+export type IHttpClientCellLinkFile = {
   type: 'FILE';
   key: string;
   uri: string;
@@ -113,19 +113,19 @@ export type IClientCellLinkFile = {
   dir: string;
   path: string;
   hash: string;
-  file: IClientFile;
+  file: IHttpClientFile;
 };
 
 /**
  * FILE
  */
-export type IClientFile = {
+export type IHttpClientFile = {
   readonly uri: t.IUriParts<t.IFileUri>;
   readonly url: t.IUrlsFile;
-  info(): t.IClientAsync<t.IResGetFile>;
+  info(): t.IHttpClientAsync<t.IResGetFile>;
 };
 
-export type IClientFileData = t.IFileData & {
+export type IHttpClientFileData = t.IFileData & {
   uri: string;
   filename: string;
   dir: string;

@@ -1,14 +1,14 @@
 import { ERROR, Schema, t, util } from '../common';
 import { upload } from './HttpClientCellFiles.upload';
 
-export type IClientCellFilesArgs = { parent: t.IClientCell; urls: t.IUrls; http: t.IHttp };
+type IClientCellFilesArgs = { parent: t.IHttpClientCell; urls: t.IUrls; http: t.IHttp };
 type GetError = (args: { status: number }) => string;
 
 /**
  * HTTP client for operating on a [Cell]'s files.
  */
-export class HttpClientCellFiles implements t.IClientCellFiles {
-  public static create(args: IClientCellFilesArgs): t.IClientCellFiles {
+export class HttpClientCellFiles implements t.IHttpClientCellFiles {
+  public static create(args: IClientCellFilesArgs): t.IHttpClientCellFiles {
     return new HttpClientCellFiles(args);
   }
 
@@ -37,7 +37,7 @@ export class HttpClientCellFiles implements t.IClientCellFiles {
    * [Methods]
    */
   public async urls() {
-    type T = t.IClientCellFileUrl[];
+    type T = t.IHttpClientCellFileUrl[];
 
     const getError: GetError = () => `Failed to get file URLs for [${this.uri.toString()}]`;
     const base = await this.base({ getError });
@@ -47,10 +47,10 @@ export class HttpClientCellFiles implements t.IClientCellFiles {
       return util.toClientResponse<T>(status, {} as any, { error });
     }
 
-    const toUrl = (args: { path: string; uri: string; url: string }): t.IClientCellFileUrl => {
+    const toUrl = (args: { path: string; uri: string; url: string }): t.IHttpClientCellFileUrl => {
       const { path, uri, url } = args;
       const { filename, dir } = HttpClientCellFiles.parsePath(path);
-      const res: t.IClientCellFileUrl = { uri, filename, dir, path, url };
+      const res: t.IHttpClientCellFileUrl = { uri, filename, dir, path, url };
       return res;
     };
 
@@ -71,7 +71,7 @@ export class HttpClientCellFiles implements t.IClientCellFiles {
   }
 
   public async list() {
-    type T = t.IClientFileData[];
+    type T = t.IHttpClientFileData[];
     const getError: GetError = () => `Failed to get file list for [${this.uri.toString()}]`;
     const base = await this.base({ getError });
     if (!base.ok) {
@@ -96,13 +96,13 @@ export class HttpClientCellFiles implements t.IClientCellFiles {
         }
       }
       return acc;
-    }, [] as t.IClientFileData[]);
+    }, [] as t.IHttpClientFileData[]);
 
     return util.toClientResponse<T>(200, body);
   }
 
   public async upload(
-    input: t.IClientCellFileUpload | t.IClientCellFileUpload[],
+    input: t.IHttpClientCellFileUpload | t.IHttpClientCellFileUpload[],
     options: { changes?: boolean } = {},
   ) {
     const { changes } = options;

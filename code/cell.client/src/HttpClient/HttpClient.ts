@@ -13,8 +13,8 @@ function clientHeader() {
 /**
  * An HTTP client for the CellOS.
  */
-export class HttpClient implements t.IClient {
-  public static create(host?: string | number): t.IClient {
+export class HttpClient implements t.IHttpClient {
+  public static create(host?: string | number): t.IHttpClient {
     return new HttpClient({ host });
   }
 
@@ -41,8 +41,8 @@ export class HttpClient implements t.IClient {
    * [Fields]
    */
   public readonly origin: string;
-  public readonly request$: t.IClient['request$'];
-  public readonly response$: t.IClient['response$'];
+  public readonly request$: t.IHttpClient['request$'];
+  public readonly response$: t.IHttpClient['response$'];
 
   private readonly urls: t.IUrls;
   private readonly http: t.IHttp;

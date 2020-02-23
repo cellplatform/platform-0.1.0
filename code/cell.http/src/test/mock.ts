@@ -15,7 +15,7 @@ export type IMock = {
   host: string;
   url: (path: string) => string;
   urls: t.IUrls;
-  client: t.IClient;
+  client: t.IHttpClient;
   dispose(args?: { delete?: boolean }): Promise<void>;
 };
 

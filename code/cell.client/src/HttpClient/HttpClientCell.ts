@@ -3,20 +3,20 @@ import { HttpClientCellFile } from './HttpClientCellFile';
 import { HttpClientCellFiles } from './HttpClientCellFiles';
 import { HttpClientCellLinks } from './HttpClientCellLinks';
 
-export type IClientCellArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
+type IHttpClientCellArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
 
 /**
  * An HTTP client for operating on [Cell]'s.
  */
-export class HttpClientCell implements t.IClientCell {
-  public static create(args: IClientCellArgs): t.IClientCell {
+export class HttpClientCell implements t.IHttpClientCell {
+  public static create(args: IHttpClientCellArgs): t.IHttpClientCell {
     return new HttpClientCell(args);
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: IClientCellArgs) {
+  private constructor(args: IHttpClientCellArgs) {
     const { urls } = args;
     this.args = args;
     this.uri = Uri.parse<t.ICellUri>(args.uri);
@@ -26,9 +26,9 @@ export class HttpClientCell implements t.IClientCell {
   /**
    * [Fields]
    */
-  private readonly args: IClientCellArgs;
-  private _file: t.IClientCellFile;
-  private _files: t.IClientCellFiles;
+  private readonly args: IHttpClientCellArgs;
+  private _file: t.IHttpClientCellFile;
+  private _files: t.IHttpClientCellFiles;
 
   public readonly uri: t.IUriParts<t.ICellUri>;
   public readonly url: t.IUrlsCell;
@@ -36,13 +36,13 @@ export class HttpClientCell implements t.IClientCell {
   /**
    * [Properties]
    */
-  public get file(): t.IClientCellFile {
+  public get file(): t.IHttpClientCellFile {
     const urls = this.args.urls;
     const http = this.args.http;
     return this._file || (this._file = HttpClientCellFile.create({ parent: this, urls, http }));
   }
 
-  public get files(): t.IClientCellFiles {
+  public get files(): t.IHttpClientCellFiles {
     const urls = this.args.urls;
     const http = this.args.http;
     return this._files || (this._files = HttpClientCellFiles.create({ parent: this, urls, http }));
@@ -63,7 +63,7 @@ export class HttpClientCell implements t.IClientCell {
   }
 
   public async links() {
-    type T = t.IClientCellLinks;
+    type T = t.IHttpClientCellLinks;
 
     const info = await this.info();
     if (info.error) {
