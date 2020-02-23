@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.6.50",
+  "version": "0.6.51",
   "description": "HTTP cloud server, and client tools, for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -22,13 +22,13 @@
     "logs": "now logs dev.db.team"
   },
   "dependencies": {
-    "@platform/cell.client": "0.2.5",
-    "@platform/cell.db": "0.3.0",
-    "@platform/cell.fs": "0.3.75",
-    "@platform/cell.func": "0.1.90",
-    "@platform/cell.schema": "0.4.38",
-    "@platform/cell.types": "0.4.33",
-    "@platform/cell.value": "0.2.0",
+    "@platform/cell.client": "0.2.6",
+    "@platform/cell.db": "0.3.1",
+    "@platform/cell.fs": "0.3.76",
+    "@platform/cell.func": "0.1.91",
+    "@platform/cell.schema": "0.4.39",
+    "@platform/cell.types": "0.4.34",
+    "@platform/cell.value": "0.2.1",
     "@platform/cli": "0.5.18",
     "@platform/cli.prompt": "0.3.4",
     "@platform/exec": "0.2.45",
