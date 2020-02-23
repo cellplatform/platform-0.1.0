@@ -100,7 +100,7 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
         },
       };
 
-      const request = Object.assign(incoming, helpers) as t.Request; // tslint:disable-line
+      const request = Object.assign(incoming, helpers) as t.HttpRequest; // tslint:disable-line
 
       return route.handler(request, ctx);
     } catch (err) {

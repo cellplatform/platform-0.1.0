@@ -23,17 +23,18 @@ export type IRouter<C extends object = {}> = {
 /**
  * Handler
  */
-export type RequestHandler = (req: Request, res: Response) => void;
+export type HttpResponse = Response;
+export type RequestHandler = (req: HttpRequest, res: HttpResponse) => void;
 
 export type RouteHandler<C extends object = {}> = (
-  req: Request,
+  req: HttpRequest,
   context: C,
 ) => Promise<RouteResponse | undefined>;
 
 /**
  * Request
  */
-export type Request = IncomingMessage & {
+export type HttpRequest = IncomingMessage & {
   host: string;
   params: RequestParams;
   query: RequestQuery;

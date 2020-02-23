@@ -66,7 +66,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
     }
 
     // Handle the request.
-    let handled = (await router.handler((req as unknown) as t.Request, context)) || NOT_FOUND;
+    let handled = (await router.handler((req as unknown) as t.HttpRequest, context)) || NOT_FOUND;
 
     // Fire AFTER-event.
     const after: t.IMicroResponse = {
