@@ -4,23 +4,50 @@ describe.only('type system', () => {
   it('sample', async () => {
     const mock = await createMock();
 
-    const A: t.IColumnData = { props: { name: 'title', type: 'string' } };
-    const B: t.IColumnData = { props: { name: 'color', type: 'string' } };
-    const C: t.IColumnData = { props: { name: 'isEnabled', type: 'boolean' } };
+    /**
+     * TODO 🐷TESTS
+     * - ref: not NS URI
+     * - ref: not found (404)
+     * - n-level deep type refs.
+     * - circular ref safe on referenced type
+     * - different types
+     */
+
+    /**
+     * TODO 🐷 Features
+     * - different scalar types
+     * - handle enums (?)
+     * - error check typename on NS upon writing (Captialised, no spaces)
+     */
 
     //
-    // mock.url()
-    const res1 = await mock.client.ns('foo').write({
+
+    await mock.client.ns('foo').write({
       ns: {
         title: 'My Title',
-        type: { name: 'MySheet' }, // TODO - error check type name on write
+        type: { typename: 'MySheet' },
       },
-      columns: { A, B, C },
+      columns: {
+        A: { props: { typename: 'title', type: 'string' } },
+        B: { props: { typename: 'isEnabled', type: 'boolean' } },
+        C: { props: { typename: 'obj', type: '=ns:foo.bar' } },
+      },
     });
-    const res2 = await mock.client.ns('foo').read({ data: true });
+
+    await mock.client.ns('foo.bar').write({
+      ns: {
+        type: { typename: 'FooBar' },
+      },
+      columns: {
+        A: { props: { typename: 'label', type: 'string' } },
+        B: { props: { typename: 'color', type: '"red" | "green" | "blue"' } },
+      },
+    });
+
+    // const res2 = await mock.client.ns('foo').read({ data: true });
 
     console.log('-------------------------------------------');
-    console.log('columns:\n', res2.body.data.columns);
+    // console.log('columns:\n', res2.body.data.columns);
 
     console.log('-------------------------------------------');
     const url = mock.url('ns:foo/types');
@@ -34,9 +61,3 @@ describe.only('type system', () => {
     await mock.dispose();
   });
 });
-
-export type Foo = {
-  title: string;
-  color: string;
-  isEnabled: boolean;
-};

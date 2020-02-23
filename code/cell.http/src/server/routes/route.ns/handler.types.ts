@@ -1,6 +1,6 @@
 import { models, Schema, t, ERROR } from '../common';
 import * as util from './util';
-import { TypeNs } from './TEMP';
+import { Type } from '../../type';
 
 export async function getTypes(args: {
   host: string;
@@ -15,23 +15,25 @@ export async function getTypes(args: {
     const columns = await models.ns.getChildColumns({ model });
 
     const props = model.props.props || {};
-    const nsType = props.type;
+    // const nsType = props.type;
 
-    if (!nsType) {
+    if (!props.type) {
       const err = `The namespace does not contain a type declaration. (${uri})`;
       return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.TYPE });
     }
 
     // const title = props.title || 'Unnamed';
-    const name = (nsType.name || '').trim() || 'Unnamed';
+    // const typename = (props.type.typename || '').trim() || 'Unnamed';
+    const type = await Type.Ns.read({ client: host, ns: uri });
 
-    console.log('model.toObject()', model.toObject());
+    console.log('\n-------------------------------------------');
+    console.log('uri', type.uri);
+    console.log('type.typename', type.typename);
+    console.log('type.types', type.types);
+    console.log('type.errors', type.errors);
+    console.log('\ntype.typescript:\n\n', type.typescript);
 
-    const tns = TypeNs.create({});
-
-    console.log('tns', tns);
-
-    const typescript = toTypescriptDeclaration({ name, columns });
+    const typescript = 'TMP 🐷'; // TEMP 🐷
     const data: t.IResGetNsTypes = {
       uri,
       'types.d.ts': typescript,
@@ -39,28 +41,7 @@ export async function getTypes(args: {
 
     return { status: 200, data };
   } catch (err) {
+    console.log('err', err);
     return util.toErrorPayload(err);
   }
-}
-
-/**
- * [Helpers]
- */
-
-function toTypescriptDeclaration(args: { name: string; columns: t.IColumnData }) {
-  const name = `${args.name[0].toUpperCase()}${args.name.substring(1)}`;
-
-  const lines = Object.keys(args.columns)
-    .sort()
-    .map(key => ({ key, props: args.columns[key].props }))
-    .filter(({ props }) => Boolean(props))
-    .map(({ key, props }) => {
-      const { name, type } = props;
-      return `    ${name}: ${type};`;
-    });
-
-  return `
-export declare type ${name} = {
-${lines.join('\n')}
-};`.substring(1);
 }

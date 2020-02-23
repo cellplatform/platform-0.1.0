@@ -1,8 +1,8 @@
 import * as cheerio from 'cheerio';
 export { cheerio };
 
-import { uniq, mergeDeepRight } from 'ramda';
-export const R = { uniq, mergeDeepRight };
+import { uniq, mergeDeepRight, prop, sortBy } from 'ramda';
+export const R = { uniq, mergeDeepRight, prop, sortBy };
 
 export { micro } from '@platform/micro';
 export { log } from '@platform/log/lib/server';

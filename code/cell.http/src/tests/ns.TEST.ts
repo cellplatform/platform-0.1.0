@@ -79,6 +79,24 @@ describe('ns:', function() {
       expect(body.data.columns).to.eql(undefined);
     });
 
+    it.only('supported ns ID characters', async () => {
+      const mock = await createMock();
+
+      const test = async (ns: string) => {
+        const client = mock.client.ns(ns);
+        await client.write({ ns: { title: 'hello' } });
+        const res = await client.read();
+        expect(res.status).to.eql(200);
+        expect(res.body.data.ns.props?.title).to.eql('hello');
+      };
+
+      // NB: period only allowed by [Schema.uri.ALLOW.NS] - setup in local tests.
+      await test('foo');
+      await test('foo.bar');
+
+      await mock.dispose();
+    });
+
     it('squashes null values', async () => {
       const mock = await createMock();
 
