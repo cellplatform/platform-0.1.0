@@ -1,6 +1,6 @@
 import { models, Schema, t, ERROR } from '../common';
 import * as util from './util';
-import { Type } from '../../type';
+import { TypeSystem } from '../../TypeSystem';
 
 export async function getTypes(args: {
   host: string;
@@ -24,7 +24,7 @@ export async function getTypes(args: {
 
     // const title = props.title || 'Unnamed';
     // const typename = (props.type.typename || '').trim() || 'Unnamed';
-    const type = await Type.Ns.read({ client: host, ns: uri });
+    const type = await TypeSystem.Ns.read({ client: host, ns: uri });
 
     console.log('\n-------------------------------------------');
     console.log('uri', type.uri);

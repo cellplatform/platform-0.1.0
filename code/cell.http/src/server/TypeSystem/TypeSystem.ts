@@ -1,5 +1,5 @@
 import { NsType } from './Type.NsType';
 
-export class Type {
+export class TypeSystem {
   public static Ns = NsType;
 }
