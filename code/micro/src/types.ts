@@ -1,11 +1,6 @@
 import * as t from './common/types';
 
 /**
- * Handlers
- */
-export type RequestHandler = (req: Request, res: Response) => any;
-
-/**
  * Server
  */
 export type ILogProps = { [key: string]: string | number | boolean };
@@ -19,7 +14,7 @@ export type ServerStart = (options?: {
 export type IMicro = {
   server: t.Server;
   router: t.IRouter;
-  handler: RequestHandler;
+  handler: t.RequestHandler;
   service?: IMicroService;
   events$: t.Observable<MicroEvent>;
   request$: t.Observable<IMicroRequest>;

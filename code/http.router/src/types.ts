@@ -23,6 +23,8 @@ export type IRouter<C extends object = {}> = {
 /**
  * Handler
  */
+export type RequestHandler = (req: Request, res: Response) => void;
+
 export type RouteHandler<C extends object = {}> = (
   req: Request,
   context: C,
