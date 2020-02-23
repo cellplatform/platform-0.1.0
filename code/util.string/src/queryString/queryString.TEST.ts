@@ -55,14 +55,29 @@ describe('queryString', () => {
       expect(queryString.toObject('  search=cat ')).to.eql({ search: 'cat' });
     });
 
-    it('reads a key with no value', () => {
+    it('boolean <empty> key (defaults to true)', () => {
       const result = queryString.toObject('?red');
-      expect(result).to.eql({ red: undefined });
+      expect(result).to.eql({ red: true });
+    });
+
+    it('boolean key (true)', () => {
+      const result = queryString.toObject('?red=true');
+      expect(result).to.eql({ red: true });
+    });
+
+    it('boolean key (false)', () => {
+      const result = queryString.toObject('?red=false');
+      expect(result).to.eql({ red: false });
     });
 
     it('multiple key:value pairs', () => {
       const result = queryString.toObject('?color=red&width=50px');
       expect(result).to.eql({ color: 'red', width: '50px' });
+    });
+
+    it('multiple keys stack up into array', () => {
+      const result = queryString.toObject('?item=one&item&item=false');
+      expect(result.item).to.eql(['one', true, false]);
     });
 
     it('decodeURIComponent', () => {
