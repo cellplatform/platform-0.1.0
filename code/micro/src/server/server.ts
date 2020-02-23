@@ -2,8 +2,8 @@ import micro, { send } from 'micro';
 import { Subject } from 'rxjs';
 import { filter, map, share } from 'rxjs/operators';
 
-import { log, t, time } from '../common';
-import { Router } from '../routing';
+import { log, t, time, Router } from '../common';
+import { bodyParser } from '../body';
 
 export * from '../types';
 
@@ -22,7 +22,7 @@ export function init(
 ) {
   // Setup initial conditions.
   const timer = time.timer();
-  const router = Router.create();
+  const router = Router.create({ bodyParser });
   const logger = args.logger || log;
 
   const _events$ = new Subject<t.MicroEvent>();
@@ -150,7 +150,11 @@ function setHeaders(res: t.ServerResponse, headers?: t.IHttpHeaders) {
 
 function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): t.RequestHandler {
   const { router, fire } = args;
-  return async (req, res) => {
+
+  return async (incoming, outgoing) => {
+    const req = (incoming as unknown) as t.IncomingMessage;
+    const res = (outgoing as unknown) as t.ServerResponse;
+
     const timer = time.timer();
     const method = req.method as t.HttpMethod;
     const url = req.url || '';
@@ -200,7 +204,13 @@ function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): t.Reque
     }
 
     // Handle the request.
-    let handled = (await router.handler(req, context)) || NOT_FOUND;
+
+    /**
+     * TODO 🐷
+     * - do this via an observable.
+     */
+
+    let handled = (await router.handler((req as unknown) as t.Request, context)) || NOT_FOUND;
 
     // Fire AFTER-event.
     const after: t.IMicroResponse = {

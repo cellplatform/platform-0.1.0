@@ -45,6 +45,14 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
+"@platform/http.router@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/http.router/-/http.router-0.0.0.tgz#ad10016b59ebde2b7961848accb42143dbc18287"
+  integrity sha512-A4/bIHUqFy1MFkhREabFJTkJUjL+ikct71PzuUfECleTtJUM0KitqtrrcUEJgwI57cLWFwiW3BCiIZstrEGf5A==
+  dependencies:
+    "@platform/http.types" "0.1.1"
+    "@platform/libs" "0.2.0"
+
 "@platform/http.types@0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.1.tgz#878ef5ca1a214dd90c7f999bb9fc8677f9577750"

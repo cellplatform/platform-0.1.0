@@ -6,8 +6,8 @@ import { t, value as valueUtil } from '../common';
  * See:
  *    https://github.com/mscdex/busboy#busboy-methods
  */
-export function form(req: t.Request, options: { limits?: t.IFormLimits } = {}) {
-  return new Promise<t.IForm>((resolve, reject) => {
+export function form(req: t.Request, options: t.ParseBodyFormOptions = {}) {
+  return new Promise<t.IForm>(resolve => {
     const { headers } = req;
     const { limits } = options;
     const busboy = new Busboy({ headers, limits });
@@ -47,6 +47,6 @@ export function form(req: t.Request, options: { limits?: t.IFormLimits } = {}) {
 
     // Finish up.
     busboy.on('finish', () => resolve({ fields, files }));
-    req.pipe(busboy);
+    (req as any).pipe(busboy);
   });
 }
