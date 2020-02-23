@@ -4,7 +4,7 @@ export async function uploadLocalFile(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   path: string;
-  data: string | Buffer;
+  data: string | Uint8Array;
   query?: t.IUrlQueryLocalFs;
 }): Promise<t.IPayload<t.IResPostFileUploadLocal> | t.IErrorPayload> {
   const { fs, data } = args;
