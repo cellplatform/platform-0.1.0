@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Client, color, COLORS, css, t, Schema } from '../../common';
+import { HttpClient, color, COLORS, css, t, Schema } from '../../common';
 import { loader } from '../../loader';
 import { Button } from './../primitives';
 
@@ -59,7 +59,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     this.state$.next({ env });
 
     // TEMP 🐷
-    const client = Client.create(env.host);
+    const client = HttpClient.create(env.host);
     const res = await client.info<t.IResGetElectronSysInfo>();
     console.log('info', res);
 

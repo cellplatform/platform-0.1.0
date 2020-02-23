@@ -1,5 +1,8 @@
 import { toBool } from '../common';
 
+type QueryValue = string | boolean;
+type QueryObject = { [key: string]: QueryValue | QueryValue[] };
+
 /**
  * Represents a query-string.
  * NB: this record type is derived from NextJS's declaration
@@ -10,7 +13,7 @@ export type UrlQuery = Record<string, string | string[] | number | boolean | und
 /**
  * Takes a query-string value and parses it into an object.
  */
-export function toObject<T>(href?: string): T {
+export function toObject<T extends QueryObject>(href?: string): T {
   // Setup initial conditions.
   const EMPTY = {};
   if (!href) {
@@ -29,6 +32,13 @@ export function toObject<T>(href?: string): T {
   text = !text.startsWith('?') ? text : text.substring(1);
   text = !text.startsWith('#') ? text : text.substring(1);
 
+  const parseType = (input: any) => {
+    input = input === '' ? true : input; // NB: existence of key into flag, eg: `/foo?q` => `/foo?q=true`
+    input = input === 'true' ? true : input;
+    input = input === 'false' ? false : input;
+    return input;
+  };
+
   // Convert to object.
   const pairs = text.split('&');
   const obj = {};
@@ -39,8 +49,15 @@ export function toObject<T>(href?: string): T {
     }
     pair = pairs[i].split('=');
     const key = decodeURIComponent(pair[0]);
-    const value = pair[1] ? decodeURIComponent(pair[1]) : undefined;
-    obj[key] = value;
+    const value = parseType(pair[1] ? decodeURIComponent(pair[1]) : '');
+    if (obj[key] === undefined) {
+      obj[key] = value;
+    } else {
+      if (!Array.isArray(obj[key])) {
+        obj[key] = [obj[key]];
+      }
+      obj[key].push(value);
+    }
   }
 
   // Finish up.

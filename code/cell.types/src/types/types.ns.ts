@@ -2,8 +2,9 @@ import { t } from '../common';
 
 export type INs = { id: string; props?: INsProps; hash?: string };
 export type INsProps = {
-  name?: string; // Display name of the namespace.
-  schema?: string; // The semver of the [@platform/cell.schema] the namespace was last saved as.
+  title?: string; //    Display name of the namespace.
+  schema?: string; //   The semver of the [@platform/cell.schema] the namespace was last saved as.
+  type?: t.INsType; //  Strongly typed namespace settings.
 };
 
 /**

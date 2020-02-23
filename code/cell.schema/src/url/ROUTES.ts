@@ -1,5 +1,5 @@
 const ID = {
-  NS: `([A-Za-z0-9]*)`,
+  NS: `([A-Za-z0-9\.]*)`,
   CELL: `([A-Z]+[0-9]+)`,
   ROW: `([0-9]+)`,
   COLUMN: `([A-Z]+)`,
@@ -34,6 +34,7 @@ export const ROUTES = {
   NS: {
     CELL: `/ns${KEY.NS}\!${KEY.CELL}(/?)`, // NB: Redirect to cell.
     INFO: `/ns${KEY.NS}(/?)`,
+    TYPES: `/ns${KEY.NS}/types`,
   },
   CELL: {
     NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.
@@ -55,5 +56,3 @@ export const ROUTES = {
     INFO: `/cell${KEY.NS}\!${KEY.COLUMN}(/?)`,
   },
 };
-
-// console.log('ROUTES', ROUTES.CELL.FILE.BY_NAME);

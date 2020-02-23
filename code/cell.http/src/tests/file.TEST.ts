@@ -18,7 +18,7 @@ export const testPostFile = async (args: {
   const wait = paths.map(async path => {
     const filename = fs.basename(path);
     const data = await fs.readFile(fs.resolve(path));
-    const res: t.IClientCellFileUpload = { filename, data };
+    const res: t.IHttpClientCellFileUpload = { filename, data };
     return res;
   });
   const files = await Promise.all(wait);

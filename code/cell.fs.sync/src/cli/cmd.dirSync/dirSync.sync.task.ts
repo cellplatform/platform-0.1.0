@@ -30,7 +30,7 @@ export function addTask(args: {
   tasks: cli.ITasks;
   items: t.IFsSyncPayloadFile[];
   targetUri: t.IUriParts<t.ICellUri>;
-  client: t.IClient;
+  client: t.IHttpClient;
   logResults: t.FsSyncLogResults;
 }) {
   const { tasks, logResults } = args;
@@ -44,7 +44,7 @@ export function addTask(args: {
     const uploadFiles = pushes.map(({ path, data }) => ({
       filename: path,
       data,
-    })) as t.IClientCellFileUpload[];
+    })) as t.IHttpClientCellFileUpload[];
 
     if (uploadFiles.length > 0) {
       const res = await clientFiles.upload(uploadFiles);

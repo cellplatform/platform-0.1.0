@@ -1,3 +1,3 @@
-export * from './types';
-export * from './routing';
+export { Router } from './common';
 export { init } from './server';
+export * from './types';

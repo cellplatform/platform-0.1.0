@@ -1,96 +1,8 @@
-import { Observable } from 'rxjs';
 import * as t from './common/types';
-
-/**
- * HTTP
- */
-
-/**
- * Request
- */
-
-export type Request = t.IncomingMessage & {
-  host: string;
-  params: RequestParams;
-  query: RequestQuery;
-  body: RequestBody;
-  header(key: string): string;
-  toUrl(path: string): string;
-  redirect(path: string, options?: { headers?: t.IHttpHeaders; status?: 307 | 303 }): RouteResponse;
-};
-export type RequestParams = { [key: string]: string | number | boolean };
-export type RequestQuery = {
-  [key: string]: string | number | boolean | Array<string | number | boolean>;
-};
-
-/**
- * Request body
- */
-export type IBodyJsonOptions<T> = { default?: T; limit?: string | number; encoding?: string };
-export type IBodyBufferOptions = {
-  default?: string | Buffer;
-  limit?: string | number;
-  encoding?: string;
-};
-export type IBodyFormOptions = { limits?: IFormLimits };
-export type RequestBody = {
-  json<T>(options?: IBodyJsonOptions<T>): Promise<T>;
-  buffer(options?: IBodyBufferOptions): Promise<string | Buffer>;
-  form(options?: IBodyFormOptions): Promise<IForm>;
-};
-
-/**
- * Response
- */
-
-export type Response = t.ServerResponse;
-
-/**
- * Handlers
- */
-export type RequestHandler = (req: Request, res: Response) => any;
-export type RouteHandler<C extends object = {}> = (
-  req: Request,
-  context: C,
-) => Promise<RouteResponse | undefined>;
-
-/**
- * Router
- */
-
-export type RouteResponse = {
-  status?: number;
-  data?: any;
-  headers?: t.IHttpHeaders;
-};
-
-export type IRoute = {
-  readonly method: t.HttpMethod;
-  readonly path: string;
-  readonly handler: RouteHandler;
-  readonly regex: RegExp;
-  readonly tokens: t.Token[];
-  readonly keys: t.Key[];
-};
-
-export type IRoutePath = string | string[];
-export type IRouter<C extends object = {}> = {
-  readonly routes: IRoute[];
-  readonly handler: RouteHandler;
-  readonly wildcard: IRoute | undefined;
-  add(method: t.HttpMethod, path: IRoutePath, handler: RouteHandler): IRouter<C>;
-  get(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
-  put(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
-  post(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
-  delete(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
-  find(req: { method?: string; url?: string }): IRoute | undefined;
-  log(options?: { indent?: number }): string;
-};
 
 /**
  * Server
  */
-
 export type ILogProps = { [key: string]: string | number | boolean };
 
 export type ServerStart = (options?: {
@@ -101,12 +13,12 @@ export type ServerStart = (options?: {
 
 export type IMicro = {
   server: t.Server;
-  router: IRouter;
-  handler: RequestHandler;
+  router: t.IRouter;
+  handler: t.RequestHandler;
   service?: IMicroService;
-  events$: Observable<MicroEvent>;
-  request$: Observable<IMicroRequest>;
-  response$: Observable<IMicroResponse>;
+  events$: t.Observable<MicroEvent>;
+  request$: t.Observable<IMicroRequest>;
+  response$: t.Observable<IMicroResponse>;
   start: ServerStart;
   stop(): Promise<{}>;
 };
@@ -114,42 +26,10 @@ export type IMicro = {
 export type IMicroService = {
   port: number;
   isRunning: boolean;
-  events$: Observable<MicroEvent>;
-  request$: Observable<IMicroRequest>;
-  response$: Observable<IMicroResponse>;
+  events$: t.Observable<MicroEvent>;
+  request$: t.Observable<IMicroRequest>;
+  response$: t.Observable<IMicroResponse>;
   stop(): Promise<{}>;
-};
-
-/**
- * Form
- */
-
-export type IForm = {
-  fields: IFormField[];
-  files: IFormFile[];
-};
-
-export type IFormField = {
-  key: string;
-  value: t.Json;
-};
-
-export type IFormFile = {
-  field: string;
-  name: string;
-  encoding: string;
-  mimetype: string;
-  buffer: Buffer;
-};
-
-export type IFormLimits = {
-  fieldNameSize?: number;
-  fieldSize?: number;
-  fields?: number;
-  fileSize?: number;
-  files?: number;
-  parts?: number;
-  headerPairs?: number;
 };
 
 /**
@@ -181,7 +61,7 @@ export type IMicroRequestEvent = {
 export type IMicroRequest = {
   method: t.HttpMethod;
   url: string;
-  req: Request;
+  req: t.IncomingMessage;
   error?: string;
   isModified: boolean;
   modify(input: IMicroRequestModify | (() => Promise<IMicroRequestModify>)): void;
@@ -196,10 +76,10 @@ export type IMicroResponse<C extends object = {}> = {
   elapsed: t.IDuration;
   method: t.HttpMethod;
   url: string;
-  req: Request;
-  res: RouteResponse;
+  req: t.IncomingMessage;
+  res: t.RouteResponse;
   error?: string;
   isModified: boolean;
   context: C;
-  modify(input: RouteResponse | (() => Promise<RouteResponse>)): void;
+  modify(input: t.RouteResponse | (() => Promise<t.RouteResponse>)): void;
 };

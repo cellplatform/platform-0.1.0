@@ -1,4 +1,4 @@
-import { cli, Client, defaultValue, fs, log, Schema, t } from '../common';
+import { cli, HttpClient, defaultValue, fs, log, Schema, t } from '../common';
 import * as util from '../util';
 
 export const getPayload: t.FsSyncGetPayload = async (args: t.IFsSyncGetPayloadArgs) => {
@@ -6,7 +6,7 @@ export const getPayload: t.FsSyncGetPayload = async (args: t.IFsSyncGetPayloadAr
   const dir = config.dir;
   const targetUri = config.target.uri;
   const host = config.data.host;
-  const client = Client.create(host);
+  const client = HttpClient.create(host);
   const urls = Schema.urls(host);
   return buildPayload({
     dir,
@@ -26,7 +26,7 @@ export async function buildPayload(args: {
   dir: string;
   urls: t.IUrls;
   targetUri: t.IUriParts<t.ICellUri>;
-  client: t.IClient;
+  client: t.IHttpClient;
   delete: boolean;
   force: boolean;
   silent: boolean;
@@ -39,7 +39,7 @@ export async function buildPayload(args: {
   const cellUrls = args.urls.cell(cellUri);
 
   // Retrieve the list of remote files.
-  let remoteFiles: t.IClientFileData[] = [];
+  let remoteFiles: t.IHttpClientFileData[] = [];
   const findRemote = (path: string) => remoteFiles.find(f => f.path === path);
 
   const urls = Schema.urls(client.origin);

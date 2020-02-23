@@ -20,7 +20,7 @@ describe('model.db.Ns (Namespace)', () => {
       .save();
 
     const ns = Ns.create({ db, uri });
-    expect((ns.props.props || {}).name).to.eql(undefined);
+    expect((ns.props.props || {}).title).to.eql(undefined);
     expect(ns.props.hash).to.eql(undefined);
 
     const cells = (await ns.children.cells).map(c => c.toObject());
@@ -40,10 +40,10 @@ describe('model.db.Ns (Namespace)', () => {
     const uri = 'ns:foo';
 
     const ns1 = await Ns.create({ db, uri }).ready;
-    await ns1.set({ props: { name: 'My Namespace' } }).save();
+    await ns1.set({ props: { title: 'My Namespace' } }).save();
 
     const ns2 = await Ns.create({ db, uri }).ready;
-    expect((ns2.props.props || {}).name).to.eql('My Namespace');
+    expect((ns2.props.props || {}).title).to.eql('My Namespace');
   });
 
   describe('auto save (rules)', () => {
@@ -85,7 +85,7 @@ describe('model.db.Ns (Namespace)', () => {
       const ns1 = await Ns.create({ db, uri }).ready;
       expect(ns1.props.hash).to.eql(undefined);
 
-      await ns1.set({ props: { name: 'My Sheet' } }).save();
+      await ns1.set({ props: { title: 'My Sheet' } }).save();
       expect(ns1.props.hash).to.not.eql(undefined);
 
       const ns2 = await Ns.create({ db, uri }).ready;
@@ -126,7 +126,7 @@ describe('model.db.Ns (Namespace)', () => {
       const ns1 = await Ns.create({ db, uri: 'ns:foo' }).ready;
       expect((ns1.props.props || {}).schema).to.eql(undefined);
 
-      await ns1.set({ props: { name: 'My Sheet' } }).save();
+      await ns1.set({ props: { title: 'My Sheet' } }).save();
       expect((ns1.props.props || {}).schema).to.eql(constants.SCHEMA_VERSION);
 
       // Auto saves version, when no changes.

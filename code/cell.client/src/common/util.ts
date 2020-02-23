@@ -16,7 +16,9 @@ export function fromHttpResponse(res: t.IHttpResponse) {
     /**
      * Convert raw HTTP response to the standard client-response object.
      */
-    toClientResponse<T>(options: { bodyType?: t.ClientBodyType } = {}): t.IClientResponse<T> {
+    toClientResponse<T>(
+      options: { bodyType?: t.HttpClientBodyType } = {},
+    ): t.IHttpClientResponse<T> {
       const { bodyType = 'JSON' } = options;
       const { status } = res;
 
@@ -36,8 +38,8 @@ export function fromHttpResponse(res: t.IHttpResponse) {
 export function toClientResponse<T>(
   status: number,
   body: T,
-  options: { bodyType?: t.ClientBodyType; error?: t.IHttpError } = {},
-): t.IClientResponse<T> {
+  options: { bodyType?: t.HttpClientBodyType; error?: t.IHttpError } = {},
+): t.IHttpClientResponse<T> {
   const { bodyType = 'JSON', error } = options;
   const ok = isOK(status);
   if (ok) {
@@ -63,12 +65,12 @@ export function toError<T>(
   type: string,
   message: string,
   body?: T,
-): t.IClientResponse<T> {
+): t.IHttpClientResponse<T> {
   const error: t.IHttpError = { status, type, message };
   status = isOK(status) ? 500 : status; // NB: Ensure no OK status is handed back with the error.
   body = body || (({} as unknown) as T); // HACK typescript sanity - because this is an error the calling code should beware.
   const res = { ok: false, status, body, bodyType: 'JSON', error };
-  return res as t.IClientResponse<T>;
+  return res as t.IHttpClientResponse<T>;
 }
 
 /**

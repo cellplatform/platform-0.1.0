@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { Json, IDuration } from '@platform/types';
 
 export type HttpMethod = 'HEAD' | 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTIONS';
-export type IHttpHeaders = { [key: string]: string | number };
+export type IHttpHeaders = { [key: string]: string };
 
 export type HttpMode = 'cors' | 'no-cors' | 'same-origin';
 export type IFetchOptions = {

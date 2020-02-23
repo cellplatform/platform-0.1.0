@@ -31,7 +31,7 @@ export const wildcard: t.RouteHandler = async req => {
  *    the request to pass the "CORS pre-flight" check
  *    if certain conditions are met.
  */
-const corsPreflight = (req: t.Request) => {
+const corsPreflight = (req: t.HttpRequest) => {
   const KEY = {
     ORIGIN: 'origin',
     REQUEST: {

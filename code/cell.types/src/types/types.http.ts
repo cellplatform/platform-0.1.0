@@ -70,6 +70,10 @@ export type IUrlMap = { [key: string]: string };
 export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsUrls>;
 export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataChildren>;
 export type IResGetNsUrls = { data: string };
+export type IResGetNsTypes = {
+  uri: string;
+  'types.d.ts': string;
+};
 
 /**
  * Namespace: POST

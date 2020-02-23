@@ -119,7 +119,7 @@ describe('micro (server)', () => {
 
     it('req.host', async () => {
       const mock = await mockServer();
-      let req: t.Request | undefined;
+      let req: t.HttpRequest | undefined;
       mock.router.get('/foo', async r => {
         req = r;
         return {};
@@ -134,7 +134,7 @@ describe('micro (server)', () => {
 
     it('req.toUrl', async () => {
       const mock = await mockServer();
-      let req: t.Request | undefined;
+      let req: t.HttpRequest | undefined;
       mock.router.get('/foo', async r => {
         req = r;
         return {};
@@ -155,7 +155,7 @@ describe('micro (server)', () => {
 
     it('req.redirect', async () => {
       const mock = await mockServer();
-      let req: t.Request | undefined;
+      let req: t.HttpRequest | undefined;
       mock.router.get('/foo', async r => {
         req = r;
         return {};
@@ -182,7 +182,7 @@ describe('micro (server)', () => {
 
     it('req.header (case-insensitive)', async () => {
       const mock = await mockServer();
-      let req: t.Request | undefined;
+      let req: t.HttpRequest | undefined;
       mock.router.get('/foo', async r => {
         req = r;
         return {};

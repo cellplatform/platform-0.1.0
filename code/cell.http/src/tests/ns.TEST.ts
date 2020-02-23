@@ -79,6 +79,24 @@ describe('ns:', function() {
       expect(body.data.columns).to.eql(undefined);
     });
 
+    it.only('supported ns ID characters', async () => {
+      const mock = await createMock();
+
+      const test = async (ns: string) => {
+        const client = mock.client.ns(ns);
+        await client.write({ ns: { title: 'hello' } });
+        const res = await client.read();
+        expect(res.status).to.eql(200);
+        expect(res.body.data.ns.props?.title).to.eql('hello');
+      };
+
+      // NB: period only allowed by [Schema.uri.ALLOW.NS] - setup in local tests.
+      await test('foo');
+      await test('foo.bar');
+
+      await mock.dispose();
+    });
+
     it('squashes null values', async () => {
       const mock = await createMock();
 
@@ -232,12 +250,12 @@ describe('ns:', function() {
       expect(res1.data.ns.id).to.eql('foo');
       expect(res1.data.ns.props).to.eql(undefined);
 
-      const res2 = await post.ns('ns:foo?ns', { ns: { name: 'MySheet' } });
+      const res2 = await post.ns('ns:foo?ns', { ns: { title: 'MySheet' } });
 
       expect(res2.data.ns.hash).to.not.eql(res1.data.ns.hash); // Hash updated.
-      expect((res2.data.ns.props || {}).name).to.eql('MySheet');
+      expect((res2.data.ns.props || {}).title).to.eql('MySheet');
 
-      const res3 = await post.ns('ns:foo?ns', { ns: { name: undefined } });
+      const res3 = await post.ns('ns:foo?ns', { ns: { title: undefined } });
       expect(res3.data.ns.hash).to.not.eql(res2.data.ns.hash); // Hash updated.
       expect(res3.data.ns.props).to.eql(undefined); // NB: Squashed.
     });
@@ -251,8 +269,8 @@ describe('ns:', function() {
       expect(hash && hash.length).to.greaterThan(20);
     });
 
-    it.only('recalculate hash on namespace (ns props changed)', async () => {
-      const res1 = await post.ns('ns:foo?cells', { ns: { name: 'hello world' } });
+    it('recalculate hash on namespace (ns props changed)', async () => {
+      const res1 = await post.ns('ns:foo?cells', { ns: { title: 'hello world' } });
       expect(res1.data.ns.hash).to.match(/^sha256-/);
 
       const res2 = await post.ns('ns:foo?cells', { cells: { A1: { value: 124 } } });

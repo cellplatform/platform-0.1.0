@@ -1,14 +1,14 @@
 {
   "name": "instance",
-  "version": "0.0.90",
+  "version": "0.0.91",
   "scripts": {
     "now": "now dev --listen 8080",
     "start": "ts-node -T src/server",
     "watch": "nodemon --watch ../src --watch ../../cell.db/src -e ts,tsx --delay 2"
   },
   "dependencies": {
-    "@platform/cell.http": "^0.6.50",
-    "@platform/cell.schema": "^0.4.38",
+    "@platform/cell.http": "^0.6.51",
+    "@platform/cell.schema": "^0.4.39",
     "@platform/fsdb.mongo": "0.0.91",
     "@platform/fsdb.nedb": "1.3.86"
   },

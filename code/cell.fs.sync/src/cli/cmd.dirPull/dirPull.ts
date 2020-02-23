@@ -1,4 +1,4 @@
-import { cli, Client, defaultValue, fs, log, promptConfig, t } from '../common';
+import { cli, HttpClient, defaultValue, fs, log, promptConfig, t } from '../common';
 import { getPayload } from '../cmd.dirSync';
 import * as util from '../util';
 
@@ -68,7 +68,7 @@ export async function dirPull(args: { dir: string; silent?: boolean }) {
   }
 
   const targetUri = config.target.uri;
-  const client = Client.create(config.data.host).cell(targetUri.toString());
+  const client = HttpClient.create(config.data.host).cell(targetUri.toString());
 
   const tasks = cli.tasks();
   const addPullTask = (file: t.IFsSyncPayloadFile) => {

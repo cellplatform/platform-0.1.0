@@ -2,9 +2,9 @@ import { models, Schema, t } from '../common';
 import * as util from './util';
 
 export async function getNs(args: {
+  host: string;
   db: t.IDb;
   id: string;
-  host: string;
   query: t.IUrlQueryNsInfo;
 }) {
   const { db, id, query, host } = args;
