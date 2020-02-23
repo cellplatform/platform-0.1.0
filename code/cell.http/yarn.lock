@@ -259,10 +259,10 @@
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.4"
 
-"@platform/http.router@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/http.router/-/http.router-0.0.1.tgz#f0d0afa696f9fbc11eba11feb962f76e77f18af1"
-  integrity sha512-VJcB4ZbJ+hsO1bj0oHlmCfexwDmZRUU40YWA/wKmGzx5hlrUDiog8VIHQNvOwH5d3tdj2AQ45WY/NocKoTFh2g==
+"@platform/http.router@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/http.router/-/http.router-0.0.2.tgz#abfc5f331719ea9dbc60a06ab4d146f644ff8474"
+  integrity sha512-JJIzgnMQ+0Bi9yvqSMuiuKjSwan3sqJU/b7botBHVdkYAR8eNeXODI80ChBv9HpheSDVFq8iUVmQVFCz16ykNQ==
   dependencies:
     "@platform/http.types" "0.1.1"
     "@platform/libs" "0.2.0"
@@ -310,12 +310,12 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.14.3":
-  version "0.14.3"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.14.3.tgz#0ad376754b90db8d66fdea08550380ff1687a4b9"
-  integrity sha512-Dw0xJsFcBbcrST+mxj30Df8BqaLkgiW98PXoC6OHs9OzN2fgpb/4Nj2Vnv1k0dsjxeRUGNtFrBJa+sRrd5yWcw==
+"@platform/micro@0.14.4":
+  version "0.14.4"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.14.4.tgz#38f3546ee5534c4062946178e054936c30302b1b"
+  integrity sha512-zh9vgugo+CypUsCEigqtkChVSicYZj6zL4B3TgwUlD7eejRm0yC08dkz5ScmHc5wyDHB7kD8IDyHMEQy/0X91w==
   dependencies:
-    "@platform/http.router" "0.0.1"
+    "@platform/http.router" "0.0.2"
     "@platform/http.types" "0.1.1"
     "@platform/libs" "0.2.0"
     "@platform/log" "0.1.9"

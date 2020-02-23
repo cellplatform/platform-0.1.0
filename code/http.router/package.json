@@ -1,6 +1,6 @@
 {
   "name": "@platform/http.router",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "HTTP route builder.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

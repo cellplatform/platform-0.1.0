@@ -9,7 +9,7 @@ import { getTypes } from './handler.types';
 export function init(args: { db: t.IDb; router: t.IRouter }) {
   const { db, router } = args;
 
-  const getParams = (req: t.Request) => {
+  const getParams = (req: t.HttpRequest) => {
     const params = req.params as t.IUrlParamsNs;
     const id = (params.ns || '').toString();
 

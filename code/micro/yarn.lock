@@ -45,10 +45,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http.router@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/http.router/-/http.router-0.0.1.tgz#f0d0afa696f9fbc11eba11feb962f76e77f18af1"
-  integrity sha512-VJcB4ZbJ+hsO1bj0oHlmCfexwDmZRUU40YWA/wKmGzx5hlrUDiog8VIHQNvOwH5d3tdj2AQ45WY/NocKoTFh2g==
+"@platform/http.router@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/http.router/-/http.router-0.0.2.tgz#abfc5f331719ea9dbc60a06ab4d146f644ff8474"
+  integrity sha512-JJIzgnMQ+0Bi9yvqSMuiuKjSwan3sqJU/b7botBHVdkYAR8eNeXODI80ChBv9HpheSDVFq8iUVmQVFCz16ykNQ==
   dependencies:
     "@platform/http.types" "0.1.1"
     "@platform/libs" "0.2.0"

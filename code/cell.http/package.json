@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.6.53",
+  "version": "0.6.54",
   "description": "HTTP cloud server, and client tools, for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -37,7 +37,7 @@
     "@platform/fsdb.types": "0.6.8",
     "@platform/http": "0.11.1",
     "@platform/libs": "0.2.0",
-    "@platform/micro": "0.14.3",
+    "@platform/micro": "0.14.4",
     "@platform/types": "0.4.4",
     "@platform/util.value": "0.7.3",
     "cheerio": "1.0.0-rc.3",
