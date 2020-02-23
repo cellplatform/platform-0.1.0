@@ -34,7 +34,7 @@ describe('http', () => {
 
   describe('headers', () => {
     it('headers immutable', () => {
-      const lib = http.create({ headers: { foo: 123 } });
+      const lib = http.create({ headers: { foo: 'hello' } });
       const res1 = lib.headers;
       const res2 = lib.headers;
 
