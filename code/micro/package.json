@@ -1,6 +1,6 @@
 {
   "name": "@platform/micro",
-  "version": "0.14.4",
+  "version": "0.14.5",
   "description": "Wrapper and helpers around micro.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,7 +14,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/http.router": "0.0.2",
+    "@platform/http.router": "0.0.3",
     "@platform/http.types": "0.1.1",
     "@platform/libs": "0.2.0",
     "@platform/log": "0.1.9",

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.value",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Tools for working with cell value data.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,8 +14,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.schema": "0.4.41",
-    "@platform/cell.types": "0.4.35",
+    "@platform/cell.schema": "0.4.42",
+    "@platform/cell.types": "0.4.36",
     "@platform/libs": "0.2.0",
     "@platform/util.diff": "0.0.16",
     "@platform/util.value": "0.7.3"
