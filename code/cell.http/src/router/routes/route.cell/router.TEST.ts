@@ -53,16 +53,17 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
   });
 
   describe('GET', () => {
-    it('redirects from "cell:foo" to "ns:" end-point', async () => {
+    it('redirects from "cell:" to "ns:" end-point', async () => {
       const test = async (path: string) => {
         const mock = await createMock();
+        await mock.client.ns('foo').write({ ns: { title: 'Hello' } }); // NB: Force the URI into existence in the DB.
         const res = await http.get(mock.url(path));
         await mock.dispose();
 
         const json = res.json as t.IResGetNs;
-        expect(res.status).to.eql(200);
         expect(json.uri).to.eql('ns:foo'); // NB: The "ns:" URI, not "cell:".
-        expect(json.exists).to.eql(false);
+        expect(res.status).to.eql(200);
+        expect(json.exists).to.eql(true);
         expect(json.data.ns.id).to.eql('foo');
       };
 

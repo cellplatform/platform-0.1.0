@@ -22,5 +22,6 @@ export async function getCoord<T extends t.IUriResponse<any, any>>(args: {
     urls,
   };
 
-  return { status: 200, data: res as T };
+  const status = exists ? 200 : 404;
+  return { status, data: res as T };
 }

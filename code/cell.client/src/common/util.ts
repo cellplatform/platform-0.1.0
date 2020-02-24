@@ -42,8 +42,10 @@ export function toClientResponse<T>(
 ): t.IHttpClientResponse<T> {
   const { bodyType = 'JSON', error } = options;
   const ok = isOK(status);
+  const res = { ok, status, body, bodyType, error };
+
   if (ok) {
-    return { ok, status, body, bodyType, error };
+    return res;
   } else {
     if (isError(body)) {
       // NB:  The body that has been returned is an [IHttpError] rather than
@@ -52,7 +54,7 @@ export function toClientResponse<T>(
       const error = (body as unknown) as t.IHttpError;
       return toError<any>(error.status, error.type, error.message, {});
     } else {
-      return toError<T>(500, ERROR.HTTP.SERVER, `Failed`, body);
+      return res;
     }
   }
 }

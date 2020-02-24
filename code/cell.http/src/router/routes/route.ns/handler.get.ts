@@ -29,7 +29,8 @@ export async function getNs(args: {
     urls,
   };
 
-  return { status: 200, data: res };
+  const status = exists ? 200 : 404;
+  return { status, data: res };
 }
 
 export async function getNsData(args: {

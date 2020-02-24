@@ -12,7 +12,7 @@ export const getParams = (params: t.IUrlParamsFile) => {
     message: '',
   };
 
-  const toMessage = (msg: string) => `Malformed "file:" URI, ${msg}.`;
+  const toMessage = (msg: string) => `Malformed "file:" URI. ${msg}`;
 
   if (!data.ns) {
     error.message = toMessage('does not contain a namespace-identifier');

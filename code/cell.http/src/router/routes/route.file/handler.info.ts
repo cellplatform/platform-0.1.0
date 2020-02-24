@@ -19,7 +19,8 @@ export async function fileInfo(args: {
       data,
       urls: util.urls(host).file(uri),
     };
-    return { status: 200, data: res as t.IResGetFile };
+    const status = exists ? 200 : 404;
+    return { status, data: res as t.IResGetFile };
   } catch (err) {
     return util.toErrorPayload(err);
   }
