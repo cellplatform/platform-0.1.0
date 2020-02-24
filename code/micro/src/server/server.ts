@@ -2,7 +2,7 @@ import micro from 'micro';
 import { Subject } from 'rxjs';
 import { filter, map, share } from 'rxjs/operators';
 
-import { bodyParser } from '../body';
+import { body } from '../body';
 import { log, Router, t, time } from '../common';
 import { requestHandler } from './server.requestHandler';
 
@@ -14,7 +14,7 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 /**
  * Initialize the [server].
  */
-export function init(
+export function create(
   args: {
     log?: t.ILogProps;
     cors?: boolean;
@@ -25,7 +25,7 @@ export function init(
 ) {
   // Setup initial conditions.
   const timer = time.timer();
-  const router = args.router || Router.create({ bodyParser });
+  const router = args.router || Router.create({ body });
   const logger = args.logger || log;
 
   const _events$ = new Subject<t.MicroEvent>();

@@ -1,5 +1,5 @@
 import { fs } from '@platform/fs';
-import * as t from '../server/common/types';
+import * as t from '../common/types';
 export { Config } from '../server/config';
 
 export { fs, t };
@@ -8,7 +8,7 @@ export { log } from '@platform/log/lib/server';
 export { defaultValue, time } from '@platform/util.value';
 export { http } from '@platform/http';
 
-export const PKG = require('../../package.json') as t.INpmPackageJson;
+export { PKG } from '../common/constants';
 export const PATH = {
   CONFIG_DIR: fs.resolve('config'),
 };

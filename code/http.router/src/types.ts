@@ -5,7 +5,7 @@ import { IncomingMessage } from './types.lib';
  * Router
  */
 export type IRouterArgs = {
-  bodyParser: t.BodyParser;
+  body: t.BodyParser;
 };
 
 export type IRouter<C extends object = {}> = {

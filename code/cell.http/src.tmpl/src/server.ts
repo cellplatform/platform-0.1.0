@@ -28,7 +28,7 @@ const getRemoteFs = () =>
 /**
  * Initialize and start the HTTP application server.
  */
-const app = server.init({
+const app = server.create({
   title: 'sample',
   db,
   // fs: getRemoteFs(), // TEMP 🐷 - revert to local FS.

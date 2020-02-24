@@ -1,4 +1,4 @@
-export * from '../../common/util';
+export * from '../../../common/util';
 
 export const formatQueryArray = (input: Array<string | boolean>) => {
   if (input.some(item => item === false)) {

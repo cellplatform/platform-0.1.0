@@ -1,8 +1,6 @@
-import { filter } from 'rxjs/operators';
-
 import { constants, log, micro, t, util, value } from './common';
-import * as router from './router';
-import { prepareResponse } from './server.global';
+import { router } from '../router';
+import { prepareResponse } from './global';
 
 export { Config } from './config';
 export { logger } from './logger';
@@ -12,18 +10,16 @@ const { PKG } = constants;
 /**
  * Initializes a new server instance.
  */
-export function init(args: {
+export function create(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   title?: string;
   deployedAt?: number | string;
-  // log?: Array<'ROUTES'>;
   logger?: t.ILog;
   prod?: boolean;
 }) {
   const { db, title, fs } = args;
   const logger = args.logger || log;
-  // const logTypes = args.log || [];
   const base = util.fs.resolve('.');
   const root = fs.root.startsWith(base) ? fs.root.substring(base.length) : fs.root;
   const deployedAt =
@@ -38,7 +34,7 @@ export function init(args: {
 
   // Setup the micro-service.
   const deps = PKG.dependencies || {};
-  const app = micro.init({
+  const app = micro.create({
     cors: true,
     logger,
     log: {

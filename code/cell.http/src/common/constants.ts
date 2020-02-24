@@ -12,7 +12,7 @@ export const PATH = {
 /**
  * Versions (from PACKAGE.json)
  */
-export const PKG = require('../../../package.json') as t.INpmPackageJson;
+export const PKG = require('../../package.json') as t.INpmPackageJson;
 const DEPS = PKG.dependencies || {};
 
 const toVersion = (input: string) => (input || '').split('@')[2];
