@@ -1,4 +1,5 @@
-import { t, HttpClient, Schema, ERROR, R } from '../common';
+import { t, HttpClient, Schema, ERROR, R } from './common';
+import { toTypescriptDeclaration } from '../ts.def';
 
 type ITypeNsArgs = {
   client: string | t.IHttpClient;
@@ -6,36 +7,11 @@ type ITypeNsArgs = {
 };
 
 /**
- * TODO 🐷 move to [cell.types]
- */
-export type INsType = {
-  readonly ok: boolean;
-  readonly uri: string;
-  readonly typename: string;
-  readonly errors: t.IError[];
-  readonly types: IColumnType[];
-  readonly typescript: string;
-};
-
-export type IColumnType = {
-  column: string;
-  typename: string;
-  type: string | IRefType;
-  error?: t.IError;
-};
-
-export type IRefType = {
-  uri: string;
-  typename: string;
-  types: IColumnType[];
-};
-
-/**
  * The type-system for a namespace.
  */
-export class NsType implements INsType {
-  public static create = (args: ITypeNsArgs) => new NsType(args);
-  public static read = (args: ITypeNsArgs) => NsType.create(args).read();
+export class TypeSystemNs implements t.ITypeSystemNs {
+  public static create = (args: ITypeNsArgs) => new TypeSystemNs(args);
+  public static read = (args: ITypeNsArgs) => TypeSystemNs.create(args).read();
 
   /**
    * [Lifecycle]
@@ -63,7 +39,7 @@ export class NsType implements INsType {
   public readonly uri: string;
   public typename: string;
   public errors: t.IError[] = [];
-  public types: IColumnType[] = [];
+  public types: t.ITypeDef[] = [];
 
   /**
    * [Properties]
@@ -73,17 +49,9 @@ export class NsType implements INsType {
   }
 
   public get typescript() {
-    // const columns = this.col
-
-    console.log('-------------------//////------------------------');
     const typename = this.typename;
     const types = this.types;
-
-    console.log('types', types);
-
-    const ts = toTypescriptDeclaration({ typename, types });
-
-    return ts;
+    return toTypescriptDeclaration({ typename, types });
   }
 
   /**
@@ -93,7 +61,7 @@ export class NsType implements INsType {
   /**
    * Reads in namespace data from the network.
    */
-  public async read(): Promise<INsType> {
+  public async read(): Promise<t.ITypeSystemNs> {
     if (!this.ok) {
       return this;
     }
@@ -131,20 +99,23 @@ export class NsType implements INsType {
     return error;
   }
 
-  private async readColumns(args: { columns: t.IColumnData }): Promise<IColumnType[]> {
+  private async readColumns(args: { columns: t.IColumnMap }): Promise<t.ITypeDef[]> {
     const wait = Object.keys(args.columns)
-      .map(column => ({ column, props: args.columns[column].props }))
-      .filter(({ props }) => Boolean(props))
-      .map(async ({ column, props }) => {
-        const { typename } = props;
-        const type = (props.type || '').trim();
-        const res: IColumnType = { column, typename, type };
+      .map(column => ({
+        column,
+        prop: args.columns[column]?.props?.prop as t.CellPropType,
+      }))
+      .filter(({ prop }) => Boolean(prop))
+      .map(async ({ column, prop }) => {
+        const { name } = prop;
+        const type = (prop.type || '').trim();
+        const res: t.ITypeDef = { column, prop: name, type };
         return type.startsWith('=') ? this.readRef(res) : res;
       });
     return R.sortBy(R.prop('column'), await Promise.all(wait));
   }
 
-  private async readRef(column: IColumnType): Promise<IColumnType> {
+  private async readRef(column: t.ITypeDef): Promise<t.ITypeDef> {
     const { type } = column;
     if (typeof type === 'object' || !type.startsWith('=')) {
       return column;
@@ -159,7 +130,7 @@ export class NsType implements INsType {
 
     // Retrieve the referenced namespace.
     const client = this.client;
-    const nsType = await NsType.read({ client, ns });
+    const nsType = await TypeSystemNs.read({ client, ns });
     if (!nsType.ok) {
       const msg = `The referenced type in column '${column.column}' (${ns}) could not be retrieved.`;
       const children = nsType.errors;
@@ -171,30 +142,4 @@ export class NsType implements INsType {
     const { uri, typename, types: columns } = nsType;
     return { ...column, type: { uri, typename, types: columns } };
   }
-}
-
-/**
- * [Helpers]
- */
-
-function toTypescriptDeclaration(args: { typename: string; types: IColumnType[] }) {
-  const lines = args.types.map(item => {
-    const name = item.typename;
-    const type = typeof item.type === 'string' ? item.type : item.type.typename;
-    return `    ${name}: ${type};`;
-  });
-
-  let res = `
-export declare type ${args.typename} = {
-${lines.join('\n')}
-};`.substring(1);
-
-  args.types.forEach(({ type }) => {
-    if (typeof type === 'object') {
-      const { typename, types } = type;
-      res = `${res}\n\n${toTypescriptDeclaration({ typename, types })}`;
-    }
-  });
-
-  return res;
 }

@@ -72,7 +72,8 @@ export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataChildren>;
 export type IResGetNsUrls = { data: string };
 export type IResGetNsTypes = {
   uri: string;
-  'types.d.ts': string;
+  types: t.ITypeDef[];
+  typescript: string;
 };
 
 /**
