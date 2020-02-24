@@ -5,6 +5,7 @@ import { uniq, mergeDeepRight, prop, sortBy } from 'ramda';
 export const R = { uniq, mergeDeepRight, prop, sortBy };
 
 export { micro } from '@platform/micro';
+export { Router } from '@platform/http.router';
 export { log } from '@platform/log/lib/server';
 export { fs } from '@platform/fs';
 export { http } from '@platform/http';

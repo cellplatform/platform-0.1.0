@@ -1,5 +1,5 @@
 import { constants, log, micro, t, util, value } from './common';
-import { router } from '../router';
+import { CellRouter } from '../router';
 import { prepareResponse } from './global';
 
 export { Config } from './config';
@@ -32,25 +32,21 @@ export function create(args: {
     logger.info();
   });
 
+  // Routes.
+  const body = micro.body;
+  const router = CellRouter.create({ title, db, fs, body, deployedAt });
+
   // Setup the micro-service.
   const deps = PKG.dependencies || {};
   const app = micro.create({
     cors: true,
     logger,
+    router,
     log: {
       module: `${log.white(PKG.name)}@${PKG.version}`,
       schema: log.green(deps['@platform/cell.schema']),
       fs: `[${fs.type === 'LOCAL' ? 'local' : fs.type}]${root}`,
     },
-  });
-
-  // Routes.
-  router.init({
-    title,
-    db,
-    fs,
-    router: app.router,
-    deployedAt,
   });
 
   // Make common checks/adjustments to responses
