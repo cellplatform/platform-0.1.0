@@ -57,7 +57,7 @@ export type RequestQuery = {
 
 export type RequestBody = {
   json<T>(options?: ParseBodyJsonOptions<T>): Promise<T>;
-  buffer(options?: ParseBodyBufferOptions): Promise<string | Uint8Array>;
+  buffer(options?: ParseBodyBufferOptions): Promise<string | Uint8Array>; // NB: in node [Uint8Array] is a [Buffer].
   form(options?: ParseBodyFormOptions): Promise<IForm>;
 };
 

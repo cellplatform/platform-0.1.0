@@ -15,11 +15,17 @@ const IS_PROD = process.env.NODE_ENV === 'production';
  * Initialize the [server].
  */
 export function init(
-  args: { log?: t.ILogProps; cors?: boolean; port?: number; logger?: t.ILog } = {},
+  args: {
+    log?: t.ILogProps;
+    cors?: boolean;
+    port?: number;
+    logger?: t.ILog;
+    router?: t.IRouter;
+  } = {},
 ) {
   // Setup initial conditions.
   const timer = time.timer();
-  const router = Router.create({ bodyParser });
+  const router = args.router || Router.create({ bodyParser });
   const logger = args.logger || log;
 
   const _events$ = new Subject<t.MicroEvent>();

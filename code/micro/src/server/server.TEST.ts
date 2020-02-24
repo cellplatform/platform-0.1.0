@@ -2,6 +2,20 @@ import { micro } from '..';
 import { expect, FormData, fs, http, mockServer, randomPort, t, time } from '../test';
 
 describe('micro (server)', () => {
+  describe('init', () => {
+    it('initializes with default router', () => {
+      const app = micro.init();
+      expect(app.router.routes).to.eql([]);
+    });
+
+    it('initializes with given router', () => {
+      const bodyParser = micro.bodyParser;
+      const router = micro.Router.create({ bodyParser });
+      const app = micro.init({ router });
+      expect(app.router).to.eql(router);
+    });
+  });
+
   it('200', async () => {
     const mock = await mockServer();
 
