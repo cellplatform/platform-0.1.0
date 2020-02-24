@@ -7,7 +7,7 @@ import * as ns from './route.ns';
 import { sys } from './route.sys';
 import { wildcard } from './wildcard';
 
-import { handleWasmTmp } from './__TMP.wasm'; // TEMP 🐷
+import { handleWasmTmp } from '../../__TMP.wasm'; // TEMP 🐷
 
 /**
  * Register routes.

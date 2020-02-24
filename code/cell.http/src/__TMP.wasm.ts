@@ -1,4 +1,4 @@
-import { t, fs } from '../common';
+import { t, fs } from './common';
 
 /**
  * TODO 🐷
