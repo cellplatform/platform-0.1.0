@@ -1,5 +1,3 @@
-import { t } from '../common';
-
 /**
  * Reference to the type of a [column] or individual [cell].
  * Either:
@@ -26,32 +24,4 @@ export type CellTypeTarget = string;
 export type INsType = {
   typename?: string; //     Name of the complex type/object this namespace defines.
   implements?: string; //   URI of another namespace containing the type definition to conform to.
-};
-
-/**
- * TypeSystem
- */
-
-export type ITypeClient = {
-  readonly ok: boolean;
-  readonly uri: string;
-  readonly typename: string;
-  readonly errors: t.IError[];
-  readonly types: ITypeDef[];
-  readonly typescript: string;
-  load(): Promise<ITypeClient>;
-};
-
-export type ITypeDef = {
-  column: string;
-  prop: string;
-  type: string | ITypeRef;
-  target?: CellTypeTarget;
-  error?: t.IError;
-};
-
-export type ITypeRef = {
-  uri: string;
-  typename: string;
-  types: ITypeDef[];
 };

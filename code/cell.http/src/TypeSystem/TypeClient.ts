@@ -98,6 +98,23 @@ export class TypeClient implements t.ITypeClient {
     return this;
   }
 
+  public async save(args: { fs: t.IFs; dir: string; filename?: string }) {
+    const { fs } = args;
+    const data = this.typescript;
+
+    // Prepare directory.
+    const dir = fs.resolve(args.dir);
+    await fs.ensureDir(dir);
+
+    // Prepare file path.
+    let path = fs.join(dir, args.filename || this.typename);
+    path = path.endsWith('.d.ts') ? path : `${path}.d.ts`;
+
+    // Save file.
+    await fs.writeFile(path, data);
+    return { path, data };
+  }
+
   /**
    * [Internal]
    */

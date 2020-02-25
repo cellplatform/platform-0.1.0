@@ -60,7 +60,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    * [Fields]
    */
   private readonly fetch: t.ISheetFetcher;
-  private readonly type: t.ITypeClient;
+  public readonly type: t.ITypeClient;
   public readonly uri: string;
 
   private readonly _dispose$ = new Subject<{}>();

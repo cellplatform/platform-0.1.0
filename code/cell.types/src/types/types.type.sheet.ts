@@ -1,17 +1,11 @@
-/**
- * TODO 🐷
- * Move to [cell.types]
- */
-
-import { t } from './common';
-
-export * from '../common/types';
+import { t } from '../common';
 
 export type ITypedSheet<T> = {
   readonly ok: boolean;
   readonly uri: string;
+  readonly type: t.ITypeClient;
   readonly types: t.ITypeDef[];
-  readonly events$: t.Observable<t.TypedSheetEvent>;
+  readonly events$: t.Observable<TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;
   dispose(): void;
@@ -37,7 +31,7 @@ export type ITypedSheetRow<T> = {
 };
 
 /**
- * Data fetching
+ * Data fetching.
  */
 export type ISheetFetcher = {
   getType: FetchSheetType;
@@ -68,7 +62,6 @@ export type FetchSheetColumnsResult = {
 /**
  * [Events]
  */
-
 export type TypedSheetEvent = ITypedSheetFetchEvent;
 
 export type ITypedSheetFetch = {};

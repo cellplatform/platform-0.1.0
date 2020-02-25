@@ -37,5 +37,5 @@ ${lines.join('\n')}
     return res;
   };
 
-  return write({ ...args, written: [] });
+  return `${write({ ...args, written: [] })}\n`;
 }

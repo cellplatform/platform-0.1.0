@@ -20,6 +20,7 @@
     "@platform/http.types": "0.1.1",
     "@platform/libs": "0.2.0",
     "@platform/log": "0.1.9",
+    "@platform/types": "0.4.4",
     "@platform/util.diff": "0.0.16"
   },
   "devDependencies": {
