@@ -1,4 +1,4 @@
-import { toTypescriptDeclaration } from '../ts.def';
+import { ts } from '../ts.def';
 import { ERROR, R, Schema, t } from './common';
 import { fetcher } from './fetch';
 
@@ -60,7 +60,7 @@ export class TypeClient implements t.ITypeClient {
   public get typescript() {
     const typename = this.typename;
     const types = this.types;
-    return toTypescriptDeclaration({ typename, types });
+    return ts.toDeclaration({ typename, types });
   }
 
   /**
