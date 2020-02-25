@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { fs } from '.';
+import { t } from '../common';
 
 describe('size', () => {
   it('match', () => {
@@ -50,6 +51,50 @@ describe('size', () => {
       expect(fs.size.toString(9999, { spacer: '' })).to.eql('9.76KB');
       expect(fs.size.toString(9999, { round: 1 })).to.eql('9.8 KB');
       expect(fs.size.toString(9999, { round: 0 })).to.eql('10 KB');
+    });
+  });
+
+  describe('IFs (interface)', () => {
+    beforeEach(() => f.remove(f.resolve('tmp')));
+    const f: t.IFs = fs;
+
+    it('exists (resolve, join)', async () => {
+      const res1 = await f.exists(f.resolve('tmp/no-exist'));
+      const res2 = await f.exists(f.join(__dirname, 'fs.ts'));
+      expect(res1).to.eql(false);
+      expect(res2).to.eql(true);
+    });
+
+    it('ensureDir', async () => {
+      const dir = f.resolve('tmp/ensure-dir');
+      expect(await f.exists(dir)).to.eql(false);
+
+      await f.ensureDir(dir);
+      expect(await f.exists(dir)).to.eql(true);
+    });
+
+    it('writeFile/readFile', async () => {
+      const text = 'Hello World';
+      const path = f.resolve('tmp/file.txt');
+
+      await f.ensureDir(f.resolve('tmp'));
+      await f.writeFile(path, text);
+      const res = await f.readFile(path);
+      expect(res.toString()).to.eql(text);
+    });
+
+    it('is (file/dir)', async () => {
+      expect(await f.is.dir(f.resolve('tmp'))).to.eql(false);
+      expect(await f.is.file(f.resolve('tmp/file'))).to.eql(false);
+
+      await f.ensureDir(f.resolve('tmp'));
+      await f.writeFile(f.resolve('tmp/file'), 'hello');
+
+      expect(await f.is.dir(f.resolve('tmp'))).to.eql(true);
+      expect(await f.is.file(f.resolve('tmp/file'))).to.eql(true);
+
+      expect(await f.is.file(f.resolve('tmp'))).to.eql(false);
+      expect(await f.is.dir(f.resolve('tmp/file'))).to.eql(false);
     });
   });
 });
