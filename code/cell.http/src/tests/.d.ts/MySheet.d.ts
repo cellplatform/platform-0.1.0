@@ -4,9 +4,10 @@
  *      ns:foo
  * 
  * Notes: 
+ * 
  *    - Do NOT manually edit this file.
  *    - Do check this file into source control.
- *    - Import the [.d.ts] file within the consuming module
+ *    - Import the [.d.ts] file within your consuming module
  *      that uses [TypedSheet]'s to operate on the namespace
  *      programatically with strong-typing.
  */
