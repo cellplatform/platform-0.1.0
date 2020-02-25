@@ -33,9 +33,9 @@ describe('Url', () => {
   });
 
   it('querystring (from constructor string)', () => {
-    const test = (input: string | undefined, querystring: string) => {
+    const test = (input: string | undefined, expected: string) => {
       const res = new Url({ origin, querystring: input });
-      expect(res.querystring).to.eql(querystring);
+      expect(res.querystring).to.eql(expected);
     };
 
     test(undefined, '');
@@ -47,7 +47,7 @@ describe('Url', () => {
     test('  foo=bar&force  ', '?foo=bar&force');
   });
 
-  it('querystring (from constructor object)', () => {
+  it.only('querystring (from constructor object)', () => {
     const test = (query: Partial<Q> | undefined, expected: string) => {
       const res = new Url<Q>({ origin, query });
       expect(res.querystring).to.eql(expected);
@@ -59,6 +59,10 @@ describe('Url', () => {
     test({ force: true, color: ' blue' as any }, '?force=true&color=blue');
     test({ color: 'blue', force: true }, '?color=blue&force=true');
     test({ force: true, toString: () => 'hello' } as any, '?force=true');
+
+    // Array (multiple keys)
+    test({ thing: ['one', true, false] }, '?thing=one&thing=true&thing=false');
+    test({ thing: [] }, '');
 
     // NB: Empty strings not inserted into query-string.
     test({ text: '' }, '');

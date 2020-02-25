@@ -37,12 +37,20 @@ export class Url<Q extends object = {}> implements t.IUrl<Q> {
       return value;
     };
 
+    const append = (key: string, value?: string) => {
+      res = res ? `${res}&` : res;
+      value = value === undefined ? undefined : format(value);
+      res = value === undefined ? `${res}${key}` : `${res}${key}=${value}`;
+    };
+
     Object.keys(query).forEach(key => {
-      let value = query[key];
+      const value = query[key];
       if (typeof value !== 'function' && value !== undefined && value !== '') {
-        res = res ? `${res}&` : res;
-        value = Array.isArray(value) ? value.map(value => format(value)) : format(value);
-        res = value === undefined ? `${res}${key}` : `${res}${key}=${value}`;
+        if (Array.isArray(value)) {
+          value.forEach(value => append(key, value));
+        } else {
+          append(key, value);
+        }
       }
     });
 
