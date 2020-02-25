@@ -2,7 +2,7 @@
 import * as g from './types.foo';
 
 import { t, expect, http, createMock, stripHashes, post, Schema, HttpClient } from '../test';
-import { Sheet } from '../TypeSystem/Sheet';
+import { Sheet, fetcher } from '../TypeSystem';
 
 /**
  * TODO 🐷TESTS
@@ -23,6 +23,7 @@ import { Sheet } from '../TypeSystem/Sheet';
  * - ns (read): query string {ns:false} - omit ns data.
  * - change handler (pending => save)
  * - read/write: linked sheet
+ * - save types (abstract FS)
  */
 
 const writeData = async (args: { client: t.IHttpClient }) => {
@@ -114,10 +115,8 @@ describe.only('type system', () => {
       },
     });
 
-    const sheet = await Sheet.load<g.MySheet>({ client, ns: 'foo.mySheet' });
-
-    // const f: g.MySheet = {} as any;
-
+    const fetch = fetcher.fromClient({ client });
+    const sheet = await Sheet.load<g.MySheet>({ fetch, ns: 'foo.mySheet' });
     const cursor = await sheet.cursor({ index: -5 });
 
     // console.log('rows', rows);

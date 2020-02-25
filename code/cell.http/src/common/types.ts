@@ -1,3 +1,4 @@
+export { Observable, Subject } from 'rxjs';
 import { IModel } from '@platform/fsdb.types';
 import * as t from '../types';
 

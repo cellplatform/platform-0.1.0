@@ -5,7 +5,8 @@ import { SheetCursor } from './SheetCursor';
 
 type ISheetArgs = {
   ns: string; // "ns:<uri>"
-  client: string | t.IHttpClient;
+  // client: string | t.IHttpClient;
+  fetch: t.ISheetFetcher;
 };
 
 /**
@@ -13,15 +14,19 @@ type ISheetArgs = {
  */
 export class Sheet<T> implements t.ISheet<T> {
   public static async load<T>(args: ISheetArgs) {
-    const client = typeof args.client === 'string' ? HttpClient.create(args.client) : args.client;
+    /**
+     * TODO 🐷
+     * - delete client ref.
+     * - change data-fetcher to use a sigle method:
+     *    `.readNs(args)` <== same args as client `client.ns(..).read({})`
+     */
 
-    const sheet = (await client.ns(args.ns).read()).body;
-    if (!sheet.exists) {
-      const err = `The namespace [${args.ns}] does not exist.`;
-      throw new Error(err);
+    const res = await args.fetch.getType({ ns: args.ns });
+    if (res.error) {
+      throw new Error(res.error.message);
     }
 
-    const type = sheet.data.ns.props?.type;
+    const type = res.type;
     if (!type) {
       const err = `The namespace [${args.ns}] does not contain a type reference.`;
       throw new Error(err);
@@ -41,17 +46,15 @@ export class Sheet<T> implements t.ISheet<T> {
    * [Lifecycle]
    */
   private constructor(args: ISheetArgs & { typeNs: string }) {
+    this.fetch = args.fetch;
     this.uri = args.ns;
-    this.client = typeof args.client === 'string' ? HttpClient.create(args.client) : args.client;
-
-    const client = this.client;
-    this.type = TypeClient.create({ client, ns: args.typeNs });
+    this.type = TypeClient.create({ fetch: args.fetch, ns: args.typeNs });
   }
 
   /**
    * [Fields]
    */
-  private readonly client: t.IHttpClient;
+  private readonly fetch: t.ISheetFetcher;
   private readonly type: t.ITypeClient;
   public readonly uri: string;
 
@@ -76,10 +79,10 @@ export class Sheet<T> implements t.ISheet<T> {
 
   public async cursor(args: { index?: number; take?: number } = {}) {
     const ns = this.uri;
-    const client = this.client;
+    const fetch = this.fetch;
     const types = this.types;
     const index = Math.max(0, defaultValue(args.index, 0));
     const { take } = args;
-    return SheetCursor.load<T>({ ns, client, types, index, take });
+    return SheetCursor.load<T>({ ns, fetch, types, index, take });
   }
 }

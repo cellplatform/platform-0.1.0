@@ -1,9 +1,10 @@
-import { t, HttpClient, Schema, ERROR, R } from './common';
+import { HttpClient, Schema, ERROR, R } from './common';
 import { toTypescriptDeclaration } from '../ts.def';
+import * as t from './_types';
 
 type ITypeNsArgs = {
-  client: string | t.IHttpClient;
   ns: string; // "ns:<uri>"
+  fetch: t.ISheetFetcher;
 };
 
 /**
@@ -28,13 +29,13 @@ export class TypeClient implements t.ITypeClient {
     }
 
     this.uri = args.ns;
-    this.client = typeof args.client === 'string' ? HttpClient.create(args.client) : args.client;
+    this.fetch = args.fetch;
   }
 
   /**
    * [Fields]
    */
-  private readonly client: t.IHttpClient;
+  private readonly fetch: t.ISheetFetcher;
   public readonly uri: string;
   public typename: string;
   public errors: t.IError[] = [];
@@ -58,25 +59,29 @@ export class TypeClient implements t.ITypeClient {
    */
 
   public async load(): Promise<t.ITypeClient> {
+    const self = this as t.ITypeClient;
     if (!this.ok) {
-      return this;
+      return self;
     }
     this.errors = []; // NB: Reset any prior errors.
 
     // Retrieve namespace.
-    const res = await this.client.ns(this.uri).read({ columns: true });
-    const exists = res.body.exists;
-    if (res.error || !exists) {
-      let message = `Failed while retrieving namespace info (${this.uri}).`;
-      message = res.error ? `${message} ${res.error.message}` : message;
-      const errorType = res.status === 404 || !exists ? ERROR.TYPE.NS_NOT_FOUND : ERROR.TYPE.NS;
-      this.error(message, { errorType });
-      return this;
+    const resColumns = await this.fetch.getColumns({ ns: this.uri });
+    const { columns } = resColumns;
+
+    if (resColumns.error) {
+      this.error(resColumns.error.message);
+      return self;
+    }
+
+    const resType = await this.fetch.getType({ ns: this.uri });
+    if (resType.error) {
+      this.error(resType.error.message);
+      return self;
     }
 
     // Parse type details.
-    const { ns, columns = {} } = res.body.data;
-    this.typename = ns?.props?.type?.typename || '';
+    this.typename = (resType.type?.typename || '').trim();
     this.types = await this.readColumns({ columns });
 
     // Finish up.
@@ -125,8 +130,8 @@ export class TypeClient implements t.ITypeClient {
     }
 
     // Retrieve the referenced namespace.
-    const client = this.client;
-    const nsType = await TypeClient.load({ client, ns });
+    const fetch = this.fetch;
+    const nsType = await TypeClient.load({ fetch, ns });
     if (!nsType.ok) {
       const msg = `The referenced type in column '${column.column}' (${ns}) could not be retrieved.`;
       const children = nsType.errors;

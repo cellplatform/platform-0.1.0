@@ -31,3 +31,33 @@ export type ISheetRow<T> = {
   readonly types: t.ITypeDef[];
   readonly props: T;
 };
+
+/**
+ * Data fetching
+ */
+
+export type ISheetFetcher = {
+  events$: t.Subject<SheetEvent>;
+  getType(args: {
+    ns: string;
+  }): Promise<{ exists: boolean; type: t.INsProps['type']; error?: t.IHttpError }>;
+  getCells(args: {
+    ns: string;
+    query: string;
+  }): Promise<{ exists: boolean; cells: t.ICellMap; error?: t.IHttpError }>;
+  getColumns(args: {
+    ns: string;
+  }): Promise<{ exists: boolean; columns: t.IColumnMap; error?: t.IHttpError }>;
+};
+
+/**
+ * [Events]
+ */
+
+export type SheetEvent = ISheetFetchEvent;
+
+export type ISheetFetch = {};
+export type ISheetFetchEvent = {
+  type: 'SHEET/fetch';
+  payload: ISheetFetch;
+};

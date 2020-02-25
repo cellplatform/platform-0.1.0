@@ -1,6 +1,6 @@
 import { models, Schema, t, ERROR } from '../common';
 import * as util from './util';
-import { TypeSystem } from '../../../TypeSystem';
+import { TypeSystem, fetcher } from '../../../TypeSystem';
 
 export async function getTypes(args: {
   host: string;
@@ -27,7 +27,9 @@ export async function getTypes(args: {
      */
     // const title = props.title || 'Unnamed';
     // const typename = (props.type.typename || '').trim() || 'Unnamed';
-    const type = await TypeSystem.Ns.load({ client: host, ns: uri });
+    const fetch = fetcher.fromClient({ client: host });
+
+    const type = await TypeSystem.Ns.load({ fetch, ns: uri });
 
     const data: t.IResGetNsTypes = {
       uri,

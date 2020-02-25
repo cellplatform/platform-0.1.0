@@ -5,3 +5,4 @@
 
 export * from './TypeSystem';
 export * from './Sheet';
+export * from './fetch';

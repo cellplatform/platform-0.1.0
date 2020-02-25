@@ -4,7 +4,7 @@ import { SheetRow } from './SheetRow';
 
 type ISheetCursorArgs = {
   ns: string; // "ns:<uri>"
-  client: t.IHttpClient;
+  fetch: t.ISheetFetcher;
   types: t.ITypeDef[];
   index: number;
   take?: number;
@@ -22,7 +22,7 @@ export class SheetCursor<T> implements t.ISheetCursor<T> {
    */
   private constructor(args: ISheetCursorArgs) {
     this.uri = args.ns;
-    this.client = args.client;
+    this.fetch = args.fetch;
     this.types = args.types;
     this.index = args.index;
     this.take = args.take;
@@ -31,7 +31,7 @@ export class SheetCursor<T> implements t.ISheetCursor<T> {
   /**
    * [Fields]
    */
-  private readonly client: t.IHttpClient;
+  private readonly fetch: t.ISheetFetcher;
   private readonly types: t.ITypeDef[];
 
   public readonly uri: string;
@@ -45,8 +45,7 @@ export class SheetCursor<T> implements t.ISheetCursor<T> {
    */
 
   public row(index: number): T | undefined {
-    const row = this.rows[index];
-    return row?.props;
+    return this.rows[index]?.props;
   }
 
   /**
@@ -60,17 +59,15 @@ export class SheetCursor<T> implements t.ISheetCursor<T> {
       return self;
     }
 
-    // Query for cell data.
+    // Query cell data from the network.
     const query = `${types[0].column}:${types[types.length - 1].column}`;
     const ns = this.uri;
-    const res = await this.client.ns(ns).read({ cells: query });
-    if (res.error) {
-      const err = `Failed to retrieve cells "${query}" within namespace [${ns}]. ${res.error.message}`;
-      throw new Error(err);
+    const { cells, error } = await this.fetch.getCells({ ns, query });
+    if (error) {
+      throw new Error(error.message);
     }
-    const cells = res.body.data.cells || {};
 
-    // Construct the raw row data from the result-set.
+    // Extract the raw-row-data from the retrieved cells.
     type RowData = {
       key: string;
       index: number;
