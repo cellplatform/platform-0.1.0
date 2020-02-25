@@ -101,8 +101,9 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     const fetch = this.fetch;
     const types = this.types;
     const index = Math.max(0, defaultValue(args.index, 0));
+    const events$ = this._events$;
     const { take } = args;
-    return TypedSheetCursor.load<T>({ ns, fetch, types, index, take });
+    return TypedSheetCursor.load<T>({ ns, fetch, types, index, take, events$ });
   }
 
   /**

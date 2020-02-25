@@ -1,36 +1,39 @@
 import { t, value } from './common';
 
-type IRowTypeData = {
+type ITypedRowData = {
   type: t.ITypeDef;
   data: t.ICellData;
 };
 
-type ISheetRowArgs = {
+type ITypedSheetRowArgs = {
   index: number;
   uri: string;
-  columns: IRowTypeData[];
+  columns: ITypedRowData[];
+  events$: t.Subject<t.TypedSheetEvent>;
 };
 
 /**
  * A strongly-typed row.
  */
 export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
-  public static create = <T>(args: ISheetRowArgs) =>
+  public static create = <T>(args: ITypedSheetRowArgs) =>
     new TypedSheetRow<T>(args) as t.ITypedSheetRow<T>;
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: ISheetRowArgs) {
+  private constructor(args: ITypedSheetRowArgs) {
     this.index = args.index;
     this.uri = args.uri;
     this._columns = args.columns;
+    this._events$ = args.events$;
   }
 
   /**
    * [Fields]
    */
-  private _columns: IRowTypeData[] = [];
+  private readonly _events$: t.Subject<t.TypedSheetEvent>;
+  private readonly _columns: ITypedRowData[] = [];
   private _props: T;
 
   public readonly index: number;
@@ -61,7 +64,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * [Internal]
    */
 
-  private readProp(column: IRowTypeData) {
+  private readProp(column: ITypedRowData) {
     // console.log(this.index, 'READ', column.type.column, column.type.prop);
     const { type, data } = column;
     const { prop, target } = type;
@@ -93,7 +96,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     // data.
   }
 
-  private writeProp(column: IRowTypeData, value: any) {
+  private writeProp(column: ITypedRowData, value: any) {
     console.log(this.index, 'WRITE', column.type.column, column.type.prop, value);
   }
 }

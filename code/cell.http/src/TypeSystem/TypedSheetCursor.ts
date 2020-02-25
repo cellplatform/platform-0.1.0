@@ -1,10 +1,11 @@
 import { Schema, t } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
 
-type ISheetCursorArgs = {
+type ITypedSheetCursorArgs = {
   ns: string; // "ns:<uri>"
   fetch: t.ISheetFetcher;
   types: t.ITypeDef[];
+  events$: t.Subject<t.TypedSheetEvent>;
   index: number;
   take?: number;
 };
@@ -13,23 +14,25 @@ type ISheetCursorArgs = {
  * A cursor for iterating over a set of sheet rows
  */
 export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
-  public static create = <T>(args: ISheetCursorArgs) => new TypedSheetCursor<T>(args);
-  public static load = <T>(args: ISheetCursorArgs) => TypedSheetCursor.create<T>(args).load();
+  public static create = <T>(args: ITypedSheetCursorArgs) => new TypedSheetCursor<T>(args);
+  public static load = <T>(args: ITypedSheetCursorArgs) => TypedSheetCursor.create<T>(args).load();
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: ISheetCursorArgs) {
+  private constructor(args: ITypedSheetCursorArgs) {
     this.uri = args.ns;
     this.fetch = args.fetch;
     this.types = args.types;
     this.index = args.index;
     this.take = args.take;
+    this._events$ = args.events$;
   }
 
   /**
    * [Fields]
    */
+  private readonly _events$: t.Subject<t.TypedSheetEvent>;
   private readonly fetch: t.ISheetFetcher;
   private readonly types: t.ITypeDef[];
 
@@ -92,7 +95,8 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
       const index = data[0].index;
       const uri = Schema.uri.create.row(ns, (index + 1).toString());
       const columns = data.map(({ data, type }) => ({ data, type }));
-      return TypedSheetRow.create<T>({ index, uri, columns });
+      const events$ = this._events$;
+      return TypedSheetRow.create<T>({ index, uri, columns, events$ });
     });
 
     // Finish up.
