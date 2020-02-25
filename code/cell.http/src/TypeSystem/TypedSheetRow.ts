@@ -14,8 +14,9 @@ type ISheetRowArgs = {
 /**
  * A strongly-typed row.
  */
-export class TypedSheetRow<T> implements t.ISheetRow<T> {
-  public static create = <T>(args: ISheetRowArgs) => new TypedSheetRow<T>(args) as t.ISheetRow<T>;
+export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
+  public static create = <T>(args: ISheetRowArgs) =>
+    new TypedSheetRow<T>(args) as t.ITypedSheetRow<T>;
 
   /**
    * [Lifecycle]

@@ -12,7 +12,7 @@ type ISheetCursorArgs = {
 /**
  * A cursor for iterating over a set of sheet rows
  */
-export class TypedSheetCursor<T> implements t.ISheetCursor<T> {
+export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
   public static create = <T>(args: ISheetCursorArgs) => new TypedSheetCursor<T>(args);
   public static load = <T>(args: ISheetCursorArgs) => TypedSheetCursor.create<T>(args).load();
 
@@ -37,7 +37,7 @@ export class TypedSheetCursor<T> implements t.ISheetCursor<T> {
   public readonly index: number = -1;
   public readonly take: number | undefined = undefined;
   public readonly total: number = -1;
-  public rows: Array<t.ISheetRow<T>> = [];
+  public rows: Array<t.ITypedSheetRow<T>> = [];
 
   /**
    * [Methods]
@@ -53,7 +53,7 @@ export class TypedSheetCursor<T> implements t.ISheetCursor<T> {
 
   public async load() {
     const types = this.types;
-    const self = this as t.ISheetCursor<T>;
+    const self = this as t.ITypedSheetCursor<T>;
     if (types.length === 0) {
       return self;
     }

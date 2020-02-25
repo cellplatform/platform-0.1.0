@@ -1,3 +1,6 @@
+import { Observable, Subject } from 'rxjs';
+import { share, takeUntil } from 'rxjs/operators';
+
 import { defaultValue, Schema, t } from './common';
 import { fetcher } from './fetch';
 import { TypeClient } from './TypeClient';
@@ -6,12 +9,13 @@ import { TypedSheetCursor } from './TypedSheetCursor';
 type ISheetArgs = {
   ns: string; // "ns:<uri>"
   fetch: t.ISheetFetcher;
+  events$?: t.Subject<t.TypedSheetEvent>;
 };
 
 /**
  * Represents a namespace as a logical sheet of cells.
  */
-export class TypedSheet<T> implements t.ISheet<T> {
+export class TypedSheet<T> implements t.ITypedSheet<T> {
   public static async load<T>(args: ISheetArgs) {
     const res = await args.fetch.getType({ ns: args.ns });
     if (res.error) {
@@ -43,6 +47,13 @@ export class TypedSheet<T> implements t.ISheet<T> {
     this.fetch = args.fetch;
     this.uri = args.ns;
     this.type = TypeClient.create({ fetch: args.fetch, ns: args.typeNs });
+    this._events$ = args.events$ || new Subject<t.TypedSheetEvent>();
+    this.events$ = this._events$.asObservable().pipe(takeUntil(this._dispose$), share());
+  }
+
+  public dispose() {
+    this._dispose$.next();
+    this._dispose$.complete();
   }
 
   /**
@@ -52,14 +63,26 @@ export class TypedSheet<T> implements t.ISheet<T> {
   private readonly type: t.ITypeClient;
   public readonly uri: string;
 
+  private readonly _dispose$ = new Subject<{}>();
+  public readonly dispose$ = this._dispose$.asObservable();
+
+  private readonly _events$: Subject<t.TypedSheetEvent>;
+  public readonly events$: Observable<t.TypedSheetEvent>;
+
   /**
    * [Properties]
    */
+  public get isDisposed() {
+    return this._dispose$.isStopped;
+  }
+
   public get ok() {
+    this.throwIfDisposed('ok');
     return this.type.ok;
   }
 
   public get types() {
+    this.throwIfDisposed('types');
     return this.type.types;
   }
 
@@ -67,16 +90,27 @@ export class TypedSheet<T> implements t.ISheet<T> {
    * [Methods]
    */
   public async load() {
+    this.throwIfDisposed('load');
     await this.type.load();
-    return this as t.ISheet<T>;
+    return this as t.ITypedSheet<T>;
   }
 
   public async cursor(args: { index?: number; take?: number } = {}) {
+    this.throwIfDisposed('cursor');
     const ns = this.uri;
     const fetch = this.fetch;
     const types = this.types;
     const index = Math.max(0, defaultValue(args.index, 0));
     const { take } = args;
     return TypedSheetCursor.load<T>({ ns, fetch, types, index, take });
+  }
+
+  /**
+   * [Helpers]
+   */
+  private throwIfDisposed(action: string) {
+    if (this.isDisposed) {
+      throw new Error(`Cannot ${action} because [TypedSheet] is disposed.`);
+    }
   }
 }

@@ -7,25 +7,29 @@ import { t } from './common';
 
 export * from '../common/types';
 
-export type ISheet<T> = {
+export type ITypedSheet<T> = {
   readonly ok: boolean;
   readonly uri: string;
   readonly types: t.ITypeDef[];
-  cursor(args?: ISheetRowsArgs): Promise<ISheetCursor<T>>;
+  readonly events$: t.Observable<t.TypedSheetEvent>;
+  readonly dispose$: t.Observable<{}>;
+  readonly isDisposed: boolean;
+  dispose(): void;
+  cursor(args?: ITypedSheetRowsArgs): Promise<ITypedSheetCursor<T>>;
 };
 
-export type ISheetRowsArgs = { index?: number; take?: number };
+export type ITypedSheetRowsArgs = { index?: number; take?: number };
 
-export type ISheetCursor<T> = {
+export type ITypedSheetCursor<T> = {
   readonly uri: string;
   readonly index: number;
   readonly take?: number;
   readonly total: number;
-  readonly rows: Array<ISheetRow<T>>;
+  readonly rows: Array<ITypedSheetRow<T>>;
   row(index: number): T | undefined;
 };
 
-export type ISheetRow<T> = {
+export type ITypedSheetRow<T> = {
   readonly index: number;
   readonly uri: string;
   readonly types: t.ITypeDef[];
@@ -65,10 +69,10 @@ export type FetchSheetColumnsResult = {
  * [Events]
  */
 
-export type SheetEvent = ISheetFetchEvent;
+export type TypedSheetEvent = ITypedSheetFetchEvent;
 
-export type ISheetFetch = {};
-export type ISheetFetchEvent = {
+export type ITypedSheetFetch = {};
+export type ITypedSheetFetchEvent = {
   type: 'SHEET/fetch';
-  payload: ISheetFetch;
+  payload: ITypedSheetFetch;
 };
