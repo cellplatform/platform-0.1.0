@@ -141,6 +141,6 @@ describe.only('type system', () => {
 
     const dir = fs.join(__dirname, '.d.ts');
     const saved = await sheet.type.save({ dir, fs });
-    console.log('saved', saved);
+    console.log('saved to:', saved.path);
   });
 });

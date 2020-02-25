@@ -3,7 +3,7 @@ import { t } from './common';
 /**
  * Generates a typescript declaration file.
  */
-export function toDeclaration(args: { typename: string; types: t.ITypeDef[] }) {
+export function toDeclaration(args: { typename: string; types: t.ITypeDef[]; header?: string }) {
   const write = (args: { typename: string; types: t.ITypeDef[]; written: string[] }) => {
     const { written } = args;
     if (written.includes(args.typename)) {
@@ -37,5 +37,7 @@ ${lines.join('\n')}
     return res;
   };
 
-  return `${write({ ...args, written: [] })}\n`;
+  let text = write({ ...args, written: [] });
+  text = args.header ? `${args.header}\n\n${text}` : text;
+  return `${text}\n`;
 }
