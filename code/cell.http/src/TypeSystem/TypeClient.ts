@@ -9,9 +9,9 @@ type ITypeNsArgs = {
 /**
  * The type-system for a namespace.
  */
-export class TypeSystemNs implements t.ITypeSystemNs {
-  public static create = (args: ITypeNsArgs) => new TypeSystemNs(args);
-  public static read = (args: ITypeNsArgs) => TypeSystemNs.create(args).read();
+export class TypeClient implements t.ITypeClient {
+  public static create = (args: ITypeNsArgs) => new TypeClient(args);
+  public static load = (args: ITypeNsArgs) => TypeClient.create(args).load();
 
   /**
    * [Lifecycle]
@@ -19,23 +19,22 @@ export class TypeSystemNs implements t.ITypeSystemNs {
   private constructor(args: ITypeNsArgs) {
     const uri = Schema.uri.parse<t.INsUri>(args.ns);
     if (uri.error) {
-      const message = `Invalid namespace URI for [TypeNS]. ${uri.error.message}`;
+      const message = `Invalid namespace URI. ${uri.error.message}`;
       this.error(message);
     }
     if (uri.parts.type !== 'NS') {
-      const message = `Invalid namespace URI for [TypeNS]. Must be "ns", given: [${args.ns}]`;
+      const message = `Invalid namespace URI. Must be "ns", given: [${args.ns}]`;
       this.error(message);
     }
 
-    this.client = typeof args.client === 'string' ? HttpClient.create(args.client) : args.client;
     this.uri = args.ns;
+    this.client = typeof args.client === 'string' ? HttpClient.create(args.client) : args.client;
   }
 
   /**
    * [Fields]
    */
   private readonly client: t.IHttpClient;
-
   public readonly uri: string;
   public typename: string;
   public errors: t.IError[] = [];
@@ -58,10 +57,7 @@ export class TypeSystemNs implements t.ITypeSystemNs {
    * [Methods]
    */
 
-  /**
-   * Reads in namespace data from the network.
-   */
-  public async read(): Promise<t.ITypeSystemNs> {
+  public async load(): Promise<t.ITypeClient> {
     if (!this.ok) {
       return this;
     }
@@ -73,7 +69,6 @@ export class TypeSystemNs implements t.ITypeSystemNs {
     if (res.error || !exists) {
       let message = `Failed while retrieving namespace info (${this.uri}).`;
       message = res.error ? `${message} ${res.error.message}` : message;
-
       const errorType = res.status === 404 || !exists ? ERROR.TYPE.NS_NOT_FOUND : ERROR.TYPE.NS;
       this.error(message, { errorType });
       return this;
@@ -91,6 +86,7 @@ export class TypeSystemNs implements t.ITypeSystemNs {
   /**
    * [Internal]
    */
+
   private error(message: string, options: { errorType?: string; children?: t.IError[] } = {}) {
     const type = options.errorType || ERROR.TYPE.NS;
     const children = options.children;
@@ -103,13 +99,13 @@ export class TypeSystemNs implements t.ITypeSystemNs {
     const wait = Object.keys(args.columns)
       .map(column => ({
         column,
-        prop: args.columns[column]?.props?.prop as t.CellPropType,
+        prop: args.columns[column]?.props?.prop as t.CellTypeProp,
       }))
       .filter(({ prop }) => Boolean(prop))
       .map(async ({ column, prop }) => {
-        const { name } = prop;
+        const { name, target } = prop;
         const type = (prop.type || '').trim();
-        const res: t.ITypeDef = { column, prop: name, type };
+        const res: t.ITypeDef = { column, prop: name, type, target };
         return type.startsWith('=') ? this.readRef(res) : res;
       });
     return R.sortBy(R.prop('column'), await Promise.all(wait));
@@ -130,7 +126,7 @@ export class TypeSystemNs implements t.ITypeSystemNs {
 
     // Retrieve the referenced namespace.
     const client = this.client;
-    const nsType = await TypeSystemNs.read({ client, ns });
+    const nsType = await TypeClient.load({ client, ns });
     if (!nsType.ok) {
       const msg = `The referenced type in column '${column.column}' (${ns}) could not be retrieved.`;
       const children = nsType.errors;

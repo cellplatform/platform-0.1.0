@@ -1,5 +1,5 @@
-import { TypeSystemNs } from './TypeSystemNs';
+import { TypeClient } from './TypeClient';
 
 export class TypeSystem {
-  public static Ns = TypeSystemNs;
+  public static Ns = TypeClient;
 }

@@ -4,4 +4,4 @@
  */
 
 export * from './TypeSystem';
-export * from './SheetClient';
+export * from './Sheet';

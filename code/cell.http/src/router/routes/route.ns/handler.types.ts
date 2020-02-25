@@ -22,16 +22,12 @@ export async function getTypes(args: {
       return util.toErrorPayload(err, { status: 404, type: ERROR.HTTP.TYPE });
     }
 
+    /**
+     * TODO 🐷
+     */
     // const title = props.title || 'Unnamed';
     // const typename = (props.type.typename || '').trim() || 'Unnamed';
-    const type = await TypeSystem.Ns.read({ client: host, ns: uri });
-
-    // console.log('\n-------------------------------------------');
-    // console.log('uri', type.uri);
-    // console.log('type.typename', type.typename);
-    // console.log('type.types', type.types);
-    // console.log('type.errors', type.errors);
-    // console.log('\ntype.typescript:\n\n', type.typescript);
+    const type = await TypeSystem.Ns.load({ client: host, ns: uri });
 
     const data: t.IResGetNsTypes = {
       uri,
@@ -41,7 +37,6 @@ export async function getTypes(args: {
 
     return { status: 200, data };
   } catch (err) {
-    console.log('err', err);
     return util.toErrorPayload(err);
   }
 }

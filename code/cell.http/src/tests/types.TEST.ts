@@ -1,52 +1,76 @@
+// import './types.foo';
+import * as g from './types.foo';
+
 import { t, expect, http, createMock, stripHashes, post, Schema, HttpClient } from '../test';
+import { Sheet } from '../TypeSystem/Sheet';
+
+/**
+ * TODO 🐷TESTS
+ * - ref: not NS URI
+ * - ref: not found (404)
+ * - n-level deep type refs.
+ * - circular ref safe on referenced type
+ * - different types
+ */
+
+/**
+ * TODO 🐷 Features
+ * - different scalar types
+ * - handle enums (?)
+ * - error check typename on NS upon writing (Captialised, no spaces)
+ * - return [total] from server for cells (on ns?).
+ * - ns (read): query on subset of rows (index/take)
+ * - ns (read): query string {ns:false} - omit ns data.
+ * - change handler (pending => save)
+ * - read/write: linked sheet
+ */
+
+const writeData = async (args: { client: t.IHttpClient }) => {
+  const { client } = args;
+
+  const A: t.IColumnData = { props: { prop: { name: 'title', type: 'string' } } };
+
+  await client.ns('foo').write({
+    ns: {
+      title: 'Hello',
+      type: { typename: 'MySheet' },
+    },
+    columns: {
+      A,
+      B: { props: { prop: { name: 'isEnabled', type: 'boolean', target: 'inline:isEnabled' } } },
+      C: {
+        props: { prop: { name: 'colors', type: '=ns:foo.colorSetting', target: 'inline:foo' } },
+      },
+      // TEMP 🐷 list / inline
+      // C: { props: { prop: { name: 'colors', type: '=ns:foo.colorSetting[]', inline: true } } }, // TODO 🐷 list([array]) / inline
+    },
+  });
+
+  /**
+   * inline:value
+   * inline:<prop>
+   */
+
+  await client.ns('foo.colorSetting').write({
+    ns: {
+      type: { typename: 'ColorSetting' },
+    },
+    columns: {
+      A: { props: { prop: { name: 'label', type: 'string' } } },
+      B: { props: { prop: { name: 'color', type: '"red" | "green" | "blue"' } } },
+    },
+  });
+
+  return { client };
+};
 
 describe.only('type system', () => {
   it('sample', async () => {
-    const mock = await createMock();
-
-    /**
-     * TODO 🐷TESTS
-     * - ref: not NS URI
-     * - ref: not found (404)
-     * - n-level deep type refs.
-     * - circular ref safe on referenced type
-     * - different types
-     */
-
-    /**
-     * TODO 🐷 Features
-     * - different scalar types
-     * - handle enums (?)
-     * - error check typename on NS upon writing (Captialised, no spaces)
-     */
-
     //
+    const mock = await createMock();
     const client = mock.client;
 
-    const A: t.IColumnData = { props: { prop: { name: 'title', type: 'string' } } };
-
-    await client.ns('foo').write({
-      ns: {
-        title: 'Hello',
-        type: { typename: 'MySheet' },
-      },
-      columns: {
-        A,
-        B: { props: { prop: { name: 'isEnabled', type: 'boolean' } } },
-        C: { props: { prop: { name: 'colors', type: '=ns:foo.colorName', inline: true } } }, // TEMP 🐷 list / inline
-        // C: { props: { prop: { name: 'colors', type: '=ns:foo.colorName[]', inline: true } } }, // TODO 🐷 list([array]) / inline
-      },
-    });
-
-    await client.ns('foo.colorName').write({
-      ns: {
-        type: { typename: 'ColorName' },
-      },
-      columns: {
-        A: { props: { prop: { name: 'label', type: 'string' } } },
-        B: { props: { prop: { name: 'color', type: '"red" | "green" | "blue"' } } },
-      },
-    });
+    await writeData({ client });
 
     // const res2 = await mock.client.ns('foo').read({ data: true });
 
@@ -67,6 +91,57 @@ describe.only('type system', () => {
     console.log('-------------------------------------------');
     console.log('');
     console.log(json.typescript);
+
+    await mock.dispose();
+  });
+
+  it.only('Sheet (typed)', async () => {
+    const mock = await createMock();
+    const client = mock.client;
+    await writeData({ client });
+
+    await client.ns('foo.mySheet').write({
+      ns: {
+        type: { implements: 'foo' },
+      },
+      cells: {
+        A1: { value: 'One' },
+        B1: { props: { isEnabled: true } },
+        C1: { props: { foo: { label: 'background', color: 'red' } } },
+        A2: { value: 'Two' },
+        B2: { props: { isEnabled: false } },
+        C2: { props: { foo: { label: 'background', color: 'green' } } },
+      },
+    });
+
+    const sheet = await Sheet.load<g.MySheet>({ client, ns: 'foo.mySheet' });
+
+    // const f: g.MySheet = {} as any;
+
+    const cursor = await sheet.cursor({ index: -5 });
+
+    // console.log('rows', rows);
+
+    // console.log('cursor.row(0).title', cursor.row(0)?.title);
+
+    const row = cursor.row(0);
+
+    if (row) {
+      console.log('-------------------------------------------');
+      console.log('title', row.title);
+      console.log('-------------------------------------------');
+      console.log('isEnabled', row.isEnabled);
+    }
+
+    // if (row) {
+    //   row.title = 'hello there';
+    // }
+
+    // cursor.row(0).title = 'hello there';
+
+    // rows[0].
+
+    // const f = cursor.rows[0].props.isEnabled;
 
     await mock.dispose();
   });
