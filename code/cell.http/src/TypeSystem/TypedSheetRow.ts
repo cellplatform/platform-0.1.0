@@ -1,5 +1,4 @@
-import * as t from './_types';
-import { Schema, value } from './common';
+import { t, value } from './common';
 
 type IRowTypeData = {
   type: t.ITypeDef;
@@ -15,8 +14,8 @@ type ISheetRowArgs = {
 /**
  * A strongly-typed row.
  */
-export class SheetRow<T> implements t.ISheetRow<T> {
-  public static create = <T>(args: ISheetRowArgs) => new SheetRow<T>(args) as t.ISheetRow<T>;
+export class TypedSheetRow<T> implements t.ISheetRow<T> {
+  public static create = <T>(args: ISheetRowArgs) => new TypedSheetRow<T>(args) as t.ISheetRow<T>;
 
   /**
    * [Lifecycle]

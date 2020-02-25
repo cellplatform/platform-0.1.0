@@ -1,37 +1,24 @@
-import { Schema, HttpClient, defaultValue } from './common';
+import { defaultValue, Schema, t } from './common';
+import { fetcher } from './fetch';
 import { TypeClient } from './TypeClient';
-import * as t from './_types';
-import { SheetCursor } from './SheetCursor';
+import { TypedSheetCursor } from './TypedSheetCursor';
 
 type ISheetArgs = {
   ns: string; // "ns:<uri>"
-  // client: string | t.IHttpClient;
   fetch: t.ISheetFetcher;
 };
 
 /**
  * Represents a namespace as a logical sheet of cells.
  */
-export class Sheet<T> implements t.ISheet<T> {
+export class TypedSheet<T> implements t.ISheet<T> {
   public static async load<T>(args: ISheetArgs) {
-    /**
-     * TODO 🐷
-     * - delete client ref.
-     * - change data-fetcher to use a sigle method:
-     *    `.readNs(args)` <== same args as client `client.ns(..).read({})`
-     */
-
     const res = await args.fetch.getType({ ns: args.ns });
     if (res.error) {
       throw new Error(res.error.message);
     }
 
     const type = res.type;
-    if (!type) {
-      const err = `The namespace [${args.ns}] does not contain a type reference.`;
-      throw new Error(err);
-    }
-
     const ns = (type.implements || '').trim();
     if (!ns) {
       const err = `The namespace [${args.ns}] does not contain an "implements" type reference.`;
@@ -39,7 +26,14 @@ export class Sheet<T> implements t.ISheet<T> {
     }
 
     const typeNs = Schema.uri.create.ns(ns);
-    return new Sheet<T>({ ...args, typeNs }).load();
+    return new TypedSheet<T>({ ...args, typeNs }).load();
+  }
+
+  public static fromClient(client: string | t.IHttpClient) {
+    const fetch = fetcher.fromClient({ client });
+    return {
+      load: <T>(ns: string) => TypedSheet.load<T>({ fetch, ns }),
+    };
   }
 
   /**
@@ -83,6 +77,6 @@ export class Sheet<T> implements t.ISheet<T> {
     const types = this.types;
     const index = Math.max(0, defaultValue(args.index, 0));
     const { take } = args;
-    return SheetCursor.load<T>({ ns, fetch, types, index, take });
+    return TypedSheetCursor.load<T>({ ns, fetch, types, index, take });
   }
 }

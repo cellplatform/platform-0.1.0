@@ -1,6 +1,5 @@
-import * as t from './_types';
-import { Schema } from './common';
-import { SheetRow } from './SheetRow';
+import { Schema, t } from './common';
+import { TypedSheetRow } from './TypedSheetRow';
 
 type ISheetCursorArgs = {
   ns: string; // "ns:<uri>"
@@ -13,9 +12,9 @@ type ISheetCursorArgs = {
 /**
  * A cursor for iterating over a set of sheet rows
  */
-export class SheetCursor<T> implements t.ISheetCursor<T> {
-  public static create = <T>(args: ISheetCursorArgs) => new SheetCursor<T>(args);
-  public static load = <T>(args: ISheetCursorArgs) => SheetCursor.create<T>(args).load();
+export class TypedSheetCursor<T> implements t.ISheetCursor<T> {
+  public static create = <T>(args: ISheetCursorArgs) => new TypedSheetCursor<T>(args);
+  public static load = <T>(args: ISheetCursorArgs) => TypedSheetCursor.create<T>(args).load();
 
   /**
    * [Lifecycle]
@@ -93,7 +92,7 @@ export class SheetCursor<T> implements t.ISheetCursor<T> {
       const index = data[0].index;
       const uri = Schema.uri.create.row(ns, (index + 1).toString());
       const columns = data.map(({ data, type }) => ({ data, type }));
-      return SheetRow.create<T>({ index, uri, columns });
+      return TypedSheetRow.create<T>({ index, uri, columns });
     });
 
     // Finish up.

@@ -35,19 +35,30 @@ export type ISheetRow<T> = {
 /**
  * Data fetching
  */
-
 export type ISheetFetcher = {
-  events$: t.Subject<SheetEvent>;
-  getType(args: {
-    ns: string;
-  }): Promise<{ exists: boolean; type: t.INsProps['type']; error?: t.IHttpError }>;
-  getCells(args: {
-    ns: string;
-    query: string;
-  }): Promise<{ exists: boolean; cells: t.ICellMap; error?: t.IHttpError }>;
-  getColumns(args: {
-    ns: string;
-  }): Promise<{ exists: boolean; columns: t.IColumnMap; error?: t.IHttpError }>;
+  getType: FetchSheetType;
+  getCells: FetchSheetCells;
+  getColumns: FetchSheetColumns;
+};
+
+export type FetchSheetType = (args: { ns: string }) => Promise<FetchSheetTypeResult>;
+export type FetchSheetTypeResult = {
+  exists: boolean;
+  type: t.INsType;
+  error?: t.IHttpError;
+};
+
+export type FetchSheetCells = (args: {
+  ns: string;
+  query: string;
+}) => Promise<FetchSheetCellsResult>;
+export type FetchSheetCellsResult = { exists: boolean; cells: t.ICellMap; error?: t.IHttpError };
+
+export type FetchSheetColumns = (args: { ns: string }) => Promise<FetchSheetColumnsResult>;
+export type FetchSheetColumnsResult = {
+  exists: boolean;
+  columns: t.IColumnMap;
+  error?: t.IHttpError;
 };
 
 /**

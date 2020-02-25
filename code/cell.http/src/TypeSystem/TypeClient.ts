@@ -1,8 +1,8 @@
-import { HttpClient, Schema, ERROR, R } from './common';
 import { toTypescriptDeclaration } from '../ts.def';
-import * as t from './_types';
+import { ERROR, R, Schema, t } from './common';
+import { fetcher } from './fetch';
 
-type ITypeNsArgs = {
+type ITypeClientArgs = {
   ns: string; // "ns:<uri>"
   fetch: t.ISheetFetcher;
 };
@@ -11,14 +11,23 @@ type ITypeNsArgs = {
  * The type-system for a namespace.
  */
 export class TypeClient implements t.ITypeClient {
-  public static create = (args: ITypeNsArgs) => new TypeClient(args);
-  public static load = (args: ITypeNsArgs) => TypeClient.create(args).load();
+  public static create = (args: ITypeClientArgs) => new TypeClient(args) as t.ITypeClient;
+  public static load = (args: ITypeClientArgs) => TypeClient.create(args).load();
+
+  public static fromClient(client: string | t.IHttpClient) {
+    const fetch = fetcher.fromClient({ client });
+    return {
+      create: (ns: string) => TypeClient.create({ fetch, ns }),
+      load: (ns: string) => TypeClient.load({ fetch, ns }),
+    };
+  }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: ITypeNsArgs) {
+  private constructor(args: ITypeClientArgs) {
     const uri = Schema.uri.parse<t.INsUri>(args.ns);
+
     if (uri.error) {
       const message = `Invalid namespace URI. ${uri.error.message}`;
       this.error(message);
@@ -28,7 +37,7 @@ export class TypeClient implements t.ITypeClient {
       this.error(message);
     }
 
-    this.uri = args.ns;
+    this.uri = uri.toString();
     this.fetch = args.fetch;
   }
 
@@ -66,22 +75,23 @@ export class TypeClient implements t.ITypeClient {
     this.errors = []; // NB: Reset any prior errors.
 
     // Retrieve namespace.
-    const resColumns = await this.fetch.getColumns({ ns: this.uri });
-    const { columns } = resColumns;
+    const ns = this.uri;
+    const columnsResponse = await this.fetch.getColumns({ ns });
+    const { columns } = columnsResponse;
 
-    if (resColumns.error) {
-      this.error(resColumns.error.message);
+    if (columnsResponse.error) {
+      this.error(columnsResponse.error.message);
       return self;
     }
 
-    const resType = await this.fetch.getType({ ns: this.uri });
-    if (resType.error) {
-      this.error(resType.error.message);
+    const typeResponse = await this.fetch.getType({ ns });
+    if (typeResponse.error) {
+      this.error(typeResponse.error.message);
       return self;
     }
 
     // Parse type details.
-    this.typename = (resType.type?.typename || '').trim();
+    this.typename = (typeResponse.type?.typename || '').trim();
     this.types = await this.readColumns({ columns });
 
     // Finish up.

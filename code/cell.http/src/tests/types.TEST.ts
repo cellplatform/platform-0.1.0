@@ -2,7 +2,7 @@
 import * as g from './types.foo';
 
 import { t, expect, http, createMock, stripHashes, post, Schema, HttpClient } from '../test';
-import { Sheet, fetcher } from '../TypeSystem';
+import { TypeSystem } from '../TypeSystem';
 
 /**
  * TODO 🐷TESTS
@@ -48,8 +48,10 @@ const writeData = async (args: { client: t.IHttpClient }) => {
   });
 
   /**
+   * TODO: target
    * inline:value
-   * inline:<prop>
+   * inline:<prop>.<prop>
+   * ref
    */
 
   await client.ns('foo.colorSetting').write({
@@ -115,8 +117,9 @@ describe.only('type system', () => {
       },
     });
 
-    const fetch = fetcher.fromClient({ client });
-    const sheet = await Sheet.load<g.MySheet>({ fetch, ns: 'foo.mySheet' });
+    // const fetch = fetcher.fromClient({ client });
+    // const sheet = await TypedSheet.load<g.MySheet>({ fetch, ns: 'foo.mySheet' });
+    const sheet = await TypeSystem.Sheet.fromClient(client).load<g.MySheet>('foo.mySheet');
     const cursor = await sheet.cursor({ index: -5 });
 
     // console.log('rows', rows);
