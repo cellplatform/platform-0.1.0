@@ -229,7 +229,7 @@ describe('ns:', function() {
 
       await client.write({ cells });
       const res1 = await client.read({ data: true });
-      const res2 = await client.read({ data: true, totals: false });
+      const res2 = await client.read({ data: true, total: false });
       await mock.dispose();
 
       expect(res1.body.data.total).to.eql(undefined);
@@ -244,7 +244,7 @@ describe('ns:', function() {
       };
 
       await client.write({ cells });
-      const res = await client.read({ totals: ['rows', 'columns', 'rows'] }); // NB: de-duped.
+      const res = await client.read({ total: ['rows', 'columns', 'rows'] }); // NB: de-duped.
       const total = res.body.data.total;
 
       expect(total?.cells).to.eql(1);
@@ -268,7 +268,7 @@ describe('ns:', function() {
         mock,
       });
 
-      const res = await client.read({ cells: true, totals: true });
+      const res = await client.read({ cells: true, total: true });
       const total = res.body.data.total;
 
       expect(total?.cells).to.eql(2); // NB: "A1" (file holder) and "Z9".

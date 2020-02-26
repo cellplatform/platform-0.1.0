@@ -242,7 +242,7 @@ describe('helpers: model.ns', () => {
         files: { abc: deleteUndefined(file1.toObject()) },
       });
 
-      const res4 = await getChildData({ model: ns, totals: 'files' });
+      const res4 = await getChildData({ model: ns, total: 'files' });
       expect(res4.data).to.eql({});
       expect(res4.totals).to.eql({ files: 1 });
 
@@ -251,7 +251,7 @@ describe('helpers: model.ns', () => {
       await file2.set({ props: { mimetype: 'image/png' } }).save();
       await ns.load({ force: true });
 
-      const res5 = await getChildData({ model: ns, files: true, totals: ['files'] });
+      const res5 = await getChildData({ model: ns, files: true, total: ['files'] });
       expect(res5.data).to.eql({
         files: {
           abc: deleteUndefined(file1.toObject()),
@@ -260,7 +260,7 @@ describe('helpers: model.ns', () => {
       });
       expect(res5.totals).to.eql({ files: 2 });
 
-      const res6 = await getChildData({ model: ns, totals: 'rows' });
+      const res6 = await getChildData({ model: ns, total: 'rows' });
       expect(res6.data).to.eql({});
       expect(res6.totals.cells).to.eql(1);
       expect(res6.totals.rows).to.eql(1);
@@ -271,7 +271,7 @@ describe('helpers: model.ns', () => {
       await Z9.set({ value: 123, links: { 'fs:foo:wasm': 'file:abc.123' } }).save();
       await ns.load({ force: true });
 
-      const res7 = await getChildData({ model: ns, totals: ['rows', 'columns'] });
+      const res7 = await getChildData({ model: ns, total: ['rows', 'columns'] });
       expect(res7.data).to.eql({});
       expect(res7.totals.cells).to.eql(2);
       expect(res7.totals.rows).to.eql(9); //      NB: 9 of "Z9"

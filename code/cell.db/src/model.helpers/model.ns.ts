@@ -104,7 +104,7 @@ export async function getChildData(args: {
   rows?: boolean | string;
   columns?: boolean | string;
   files?: boolean;
-  totals?: boolean | t.NsTotalKey | t.NsTotalKey[];
+  total?: boolean | t.NsTotalKey | t.NsTotalKey[];
 }): Promise<{ data: Partial<t.INsDataChildren>; totals: Partial<t.INsTotals> }> {
   const { model } = args;
 
@@ -124,7 +124,7 @@ export async function getChildData(args: {
     }
     return [];
   };
-  const totalsFlags = toTotalsFlags(args.totals);
+  const totalsFlags = toTotalsFlags(args.total);
 
   // Retrieve data.
   const wait = [

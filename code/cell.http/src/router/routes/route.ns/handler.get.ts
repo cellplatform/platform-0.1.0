@@ -59,10 +59,10 @@ export async function getNsData(args: {
     const columns = query.data ? true : util.formatQuery(query.columns);
     const rows = query.data ? true : util.formatQuery(query.rows);
     const files = query.data ? true : query.files; // NB: boolean flag, no range selection.
-    const totals = query.totals;
+    const total = query.total;
 
     // Query the database.
-    return models.ns.getChildData({ model, cells, columns, rows, files, totals });
+    return models.ns.getChildData({ model, cells, columns, rows, files, total });
   } catch (err) {
     return util.toErrorPayload(err);
   }

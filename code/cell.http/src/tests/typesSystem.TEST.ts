@@ -67,7 +67,7 @@ const writeData = async (args: { client: t.IHttpClient }) => {
   return { client };
 };
 
-describe.only('type system', () => {
+describe('type system', () => {
   it('sample', async () => {
     //
     const mock = await createMock();

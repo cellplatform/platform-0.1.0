@@ -31,7 +31,7 @@ export type IUrlQueryNsInfo = {
   columns?: boolean | string | Array<string | boolean>;
   rows?: boolean | string | Array<string | boolean>;
   files?: boolean;
-  totals?: boolean | t.NsTotalKey | t.NsTotalKey[];
+  total?: boolean | t.NsTotalKey | t.NsTotalKey[];
 };
 
 export type IUrlQueryNsWrite = IUrlQueryNsInfo & {

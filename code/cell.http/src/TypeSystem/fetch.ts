@@ -27,7 +27,7 @@ function fromClient(args: { client: string | t.IHttpClient }): t.ISheetFetcher {
 
   const getCells: t.FetchSheetCells = async args => {
     const { ns, query } = args;
-    const res = await client.ns(ns).read({ cells: query, totals: ['rows'] });
+    const res = await client.ns(ns).read({ cells: query, total: 'rows' });
     const error = formatError(
       res.error,
       msg => `Failed to retrieve cells "${query}" within namespace [${ns}]. ${msg}`,
