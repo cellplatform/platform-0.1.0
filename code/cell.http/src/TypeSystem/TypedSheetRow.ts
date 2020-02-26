@@ -79,11 +79,10 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       const field = target.substring('inline:'.length);
 
       // TODO 🐷 field dot (deep) support.
-      console.group('🌳 ');
-      console.log('field', field);
-      console.log('data.props', data.props);
-
-      console.groupEnd();
+      // console.group('🌳 ');
+      // console.log('field', field);
+      // console.log('data.props', data.props);
+      // console.groupEnd();
 
       return value.object.pluck(field, data.props || {});
 
@@ -100,7 +99,3 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     console.log(this.index, 'WRITE', column.type.column, column.type.prop, value);
   }
 }
-
-// function getFiel() {
-
-// }

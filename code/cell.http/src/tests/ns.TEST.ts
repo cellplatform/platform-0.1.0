@@ -117,11 +117,14 @@ describe('ns:', function() {
 
     it('selective data via query-string (boolean|ranges)', async () => {
       const mock = await createMock();
-      const cells = {
-        A1: { value: 'A1' },
-        B2: { value: 'B2' },
-        C1: { value: 'C1' },
-      };
+
+      const A1 = { value: 'A1' };
+      const B2 = { value: 'B2' };
+      const B9 = { value: 'B9' };
+      const C4 = { value: 'C4' };
+      const C5 = { value: 'C5' };
+      const cells = { A1, B2, B9, C4, C5 };
+
       const columns = {
         A: { props: { height: 80 } },
         C: { props: { height: 120 } },
@@ -151,7 +154,10 @@ describe('ns:', function() {
       await test('ns:foo?cells', { cells });
       await test('ns:foo?cells=true', { cells });
       await test('ns:foo?cells=A1', { cells: { A1: cells.A1 } });
-      await test('ns:foo?cells=A1,B1:B10&cells=C9', { cells: { A1: cells.A1, B2: cells.B2 } });
+      await test('ns:foo?cells=A1:B10', { cells: { A1, B2, B9 } });
+      await test('ns:foo?cells=A1:Z4', { cells: { A1, B2, C4 } });
+      await test('ns:foo?cells=A1:Z10', { cells: { A1, B2, B9, C4, C5 } });
+      await test('ns:foo?cells=A1,B1:B10&cells=C9', { cells: { A1, B2, B9 } }); // NB: C9 does not exist.
       await test('ns:foo?cells=A1:Z9', { cells });
 
       await test('ns:foo?rows', { rows });

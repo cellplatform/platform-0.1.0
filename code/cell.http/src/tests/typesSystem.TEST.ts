@@ -1,4 +1,3 @@
-// import './types.foo';
 import * as g from './.d.ts/MySheet';
 
 import { fs, t, expect, http, createMock, stripHashes, post, Schema, HttpClient } from '../test';
@@ -18,7 +17,6 @@ import { TypeSystem } from '../TypeSystem';
  * - different scalar types
  * - handle enums (?)
  * - error check typename on NS upon writing (Captialised, no spaces)
- * - return [total] from server for cells (on ns?).
  * - ns (read): query on subset of rows (index/take)
  * - ns (read): query string {ns:false} - omit ns data.
  * - change handler (pending => save)
@@ -29,7 +27,7 @@ import { TypeSystem } from '../TypeSystem';
 const writeData = async (args: { client: t.IHttpClient }) => {
   const { client } = args;
 
-  const A: t.IColumnData = { props: { prop: { name: 'title', type: 'string' } } };
+  // const A: t.IColumnData = { props: { prop: { name: 'title', type: 'string' } } };
 
   await client.ns('foo').write({
     ns: {
@@ -37,7 +35,7 @@ const writeData = async (args: { client: t.IHttpClient }) => {
       type: { typename: 'MySheet' },
     },
     columns: {
-      A,
+      A: { props: { prop: { name: 'title', type: 'string' } } },
       B: { props: { prop: { name: 'isEnabled', type: 'boolean', target: 'inline:isEnabled' } } },
       C: {
         props: { prop: { name: 'colors', type: '=ns:foo.colorSetting', target: 'inline:foo' } },
@@ -67,7 +65,7 @@ const writeData = async (args: { client: t.IHttpClient }) => {
   return { client };
 };
 
-describe('type system', () => {
+describe.skip('type system', () => {
   it('sample', async () => {
     //
     const mock = await createMock();
@@ -98,7 +96,7 @@ describe('type system', () => {
     await mock.dispose();
   });
 
-  it.only('Sheet (typed)', async () => {
+  it.skip('Sheet (typed)', async () => {
     const mock = await createMock();
     const client = mock.client;
 
@@ -106,7 +104,7 @@ describe('type system', () => {
 
     await client.ns('foo.mySheet').write({
       ns: {
-        type: { implements: 'foo' },
+        type: { implements: 'ns:foo' },
       },
       cells: {
         A1: { value: 'One' },
@@ -118,31 +116,34 @@ describe('type system', () => {
       },
     });
 
-    // const fetch = fetcher.fromClient({ client });
-    // const sheet = await TypedSheet.load<g.MySheet>({ fetch, ns: 'foo.mySheet' });
-    const sheet = await TypeSystem.Sheet.fromClient(client).load<g.MySheet>('foo.mySheet');
+    console.log('client', client.origin);
+
+    const sheet = await TypeSystem.Sheet.fromClient(client).load<g.MySheet>('ns:foo.mySheet');
     const cursor = await sheet.cursor({ index: -5 });
 
-    // console.log('rows', rows);
-
-    // console.log('cursor.row(0).title', cursor.row(0)?.title);
-
-    const row = cursor.row(0);
-
-    if (row) {
-      console.log('-------------------------------------------');
-      console.log('title', row.title);
-      console.log('total', cursor.total);
-      console.log('-------------------------------------------');
-      console.log('isEnabled', row.isEnabled);
-    }
-
-    await mock.dispose();
-
     console.log('-------------------------------------------');
-
     const dir = fs.join(__dirname, '.d.ts');
     const saved = await sheet.type.save({ dir, fs });
     console.log('saved to:', saved.path);
+
+    console.log('-------------------------------------------');
+    console.log('cursor');
+    console.log('index', cursor.index);
+    console.log('total', cursor.total);
+    console.log('-------------------------------------------');
+    // console.log('row.isEnabled:', row.isEnabled);
+
+    const row = cursor.row(0);
+    if (row) {
+      console.log('-------------------------------------------');
+      console.log('row');
+      console.log('title:', row.title);
+      console.log('isEnabled:', row.isEnabled);
+      console.log('colors:', row.colors);
+
+      row.title = 'Rowan is the bomb 🚀🐮';
+    }
+
+    await mock.dispose();
   });
 });

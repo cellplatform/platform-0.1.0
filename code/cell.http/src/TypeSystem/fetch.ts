@@ -27,6 +27,7 @@ function fromClient(args: { client: string | t.IHttpClient }): t.ISheetFetcher {
 
   const getCells: t.FetchSheetCells = async args => {
     const { ns, query } = args;
+    console.log('query', query);
     const res = await client.ns(ns).read({ cells: query, total: 'rows' });
     const error = formatError(
       res.error,
@@ -45,7 +46,7 @@ function fromClient(args: { client: string | t.IHttpClient }): t.ISheetFetcher {
     const res = await client.ns(args.ns).read({ columns: true });
     const error = formatError(
       res.error,
-      msg => `Failed to retrieving type information from namespace [${args.ns}]. ${msg}`,
+      msg => `Failed to retrieve type information from namespace [${args.ns}]. ${msg}`,
     );
     const exists = res.body.exists;
     const ns = res.body.data.ns;
