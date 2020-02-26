@@ -101,6 +101,7 @@ describe.only('type system', () => {
   it.only('Sheet (typed)', async () => {
     const mock = await createMock();
     const client = mock.client;
+
     await writeData({ client });
 
     await client.ns('foo.mySheet').write({
@@ -131,6 +132,7 @@ describe.only('type system', () => {
     if (row) {
       console.log('-------------------------------------------');
       console.log('title', row.title);
+      console.log('total', cursor.total);
       console.log('-------------------------------------------');
       console.log('isEnabled', row.isEnabled);
     }

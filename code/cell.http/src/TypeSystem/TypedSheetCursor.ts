@@ -39,7 +39,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
   public readonly uri: string;
   public readonly index: number = -1;
   public readonly take: number | undefined = undefined;
-  public readonly total: number = -1;
+  public total: number = -1;
   public rows: Array<t.ITypedSheetRow<T>> = [];
 
   /**
@@ -64,10 +64,13 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     // Query cell data from the network.
     const query = `${types[0].column}:${types[types.length - 1].column}`;
     const ns = this.uri;
-    const { cells, error } = await this.fetch.getCells({ ns, query });
+    const { cells, total, error } = await this.fetch.getCells({ ns, query });
     if (error) {
       throw new Error(error.message);
     }
+
+    // Set total.
+    this.total = total.rows;
 
     // Extract the raw-row-data from the retrieved cells.
     type RowData = {

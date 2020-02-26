@@ -27,14 +27,18 @@ function fromClient(args: { client: string | t.IHttpClient }): t.ISheetFetcher {
 
   const getCells: t.FetchSheetCells = async args => {
     const { ns, query } = args;
-    const res = await client.ns(ns).read({ cells: query });
+    const res = await client.ns(ns).read({ cells: query, totals: ['rows'] });
     const error = formatError(
       res.error,
       msg => `Failed to retrieve cells "${query}" within namespace [${ns}]. ${msg}`,
     );
     const exists = res.body.exists;
     const cells = res.body.data.cells || {};
-    return { exists, cells, error };
+
+    const total = res.body.data.total || {};
+    const rows = total.rows || 0;
+
+    return { exists, cells, error, total: { rows } };
   };
 
   const getColumns: t.FetchSheetColumns = async args => {

@@ -23,6 +23,8 @@ export * from './types.schema.uri';
 export * from './types.schema.url';
 export * from './types.schema.urls';
 export * from './types.value';
-export * from './types.type.client';
-export * from './types.type.sheet';
-export * from './types.type';
+
+export * from './types.TypeSystem';
+export * from './types.TypeSystem.client';
+export * from './types.TypeSystem.fetch';
+export * from './types.TypeSystem.sheet';
