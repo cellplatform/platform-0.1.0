@@ -43,3 +43,14 @@ export type INsDataChildren<
 > = INsDataCoord<V, C, R> & {
   files: t.IFileMap<F>;
 };
+
+/**
+ * Totals for NS data.
+ */
+export type INsTotals = {
+  cells: number;
+  rows: number;
+  columns: number;
+  files: number;
+};
+export type NsTotalKey = keyof INsTotals;

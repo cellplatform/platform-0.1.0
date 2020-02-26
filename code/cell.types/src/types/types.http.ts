@@ -68,7 +68,10 @@ export type IUrlMap = { [key: string]: string };
  * Namespace: GET
  */
 export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsUrls>;
-export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataChildren>;
+export type IResGetNsData = Partial<t.INsDataChildren> & {
+  ns: t.INs;
+  total?: Partial<t.INsTotals>;
+};
 export type IResGetNsUrls = { data: string };
 export type IResGetNsTypes = {
   uri: string;
