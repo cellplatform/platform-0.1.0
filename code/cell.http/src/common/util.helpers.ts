@@ -5,20 +5,6 @@ import { defaultValue, time } from './libs';
 import * as t from './types';
 
 /**
- * Convert an error into an HTTP response payload.
- */
-export function toErrorPayload(
-  err: Error | string,
-  options: { status?: number; type?: string } = {},
-): t.IErrorPayload {
-  const status = defaultValue(options.status, 500);
-  const { type = ERROR.HTTP.SERVER } = options;
-  const message = typeof err === 'string' ? err : err.message;
-  const data: t.IHttpError = { status, type, message };
-  return { status, data };
-}
-
-/**
  * Determine if the status code represents an OK status (200).
  */
 export function isOK(status: number | string = 200) {

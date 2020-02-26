@@ -1,4 +1,4 @@
-import { expect } from '../test';
+import { expect, t } from '../test';
 import { util } from '.';
 
 describe('util', () => {
@@ -34,5 +34,43 @@ describe('util', () => {
     test('1m', 60);
     test('1 m', 60);
     test('1h', 3600);
+  });
+
+  it('isHttpError', () => {
+    const test = (input: any, expected: boolean) => {
+      const res = util.isHttpError(input);
+      expect(res).to.eql(expected);
+    };
+    test(undefined, false);
+    test(null, false);
+    test(123, false);
+    test('hello', false);
+    test({}, false);
+    test({ foo: 123 }, false);
+    test({ message: 'fail' }, false);
+
+    const error: t.IHttpError = { status: 500, message: '', type: 'HTTP/server' };
+    test(error, true);
+  });
+
+  it('isErrorPayload', () => {
+    const test = (input: any, expected: boolean) => {
+      const res = util.isErrorPayload(input);
+      expect(res).to.eql(expected);
+    };
+
+    const error: t.IHttpError = { status: 500, message: '', type: 'HTTP/server' };
+
+    test(undefined, false);
+    test(null, false);
+    test(123, false);
+    test('hello', false);
+    test({}, false);
+    test({ foo: 123 }, false);
+    test({ message: 'fail' }, false);
+    test(error, false);
+    test({ error }, false);
+
+    test({ status: 500, data: error }, true);
   });
 });
