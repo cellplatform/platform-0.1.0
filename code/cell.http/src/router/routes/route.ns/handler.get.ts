@@ -6,7 +6,7 @@ export async function getNs(args: {
   db: t.IDb;
   id: string;
   query: t.IUrlQueryNsInfo;
-}) {
+}): Promise<t.IPayload<t.IResGetNs> | t.IErrorPayload> {
   const { db, id, query, host } = args;
   const uri = Schema.uri.create.ns(id);
   const model = await models.Ns.create({ db, uri }).ready;
@@ -14,10 +14,21 @@ export async function getNs(args: {
   const exists = Boolean(model.exists);
   const { createdAt, modifiedAt } = model;
 
+  type T = { data: Partial<t.INsDataChildren>; totals: Partial<t.INsTotals> };
+  const nsDataResponse = await getNsData({ model, query });
+  if (util.isErrorPayload(nsDataResponse)) {
+    return nsDataResponse as t.IErrorPayload;
+  }
+  const total = (nsDataResponse as T).totals;
+
   const data: t.IResGetNsData = {
     ns: await models.ns.toObject(model),
-    ...(await getNsData({ model, query })),
+    ...(nsDataResponse as T).data,
   };
+
+  if (Object.keys(total).length > 0) {
+    data.total = total;
+  }
 
   const urls: t.IResGetNsUrls = util.urls(host).ns(uri).urls;
   const res: t.IResGetNs = {
@@ -36,19 +47,22 @@ export async function getNs(args: {
 export async function getNsData(args: {
   model: t.IDbModelNs;
   query: t.IUrlQueryNsInfo;
-}): Promise<Partial<t.INsDataChildren> | t.IErrorPayload> {
+}): Promise<{ data: Partial<t.INsDataChildren>; totals: Partial<t.INsTotals> } | t.IErrorPayload> {
   try {
     const { model, query } = args;
     if (Object.keys(query).length === 0) {
-      return {};
+      return { data: {}, totals: {} };
     }
 
+    // Convert query-string flags into parameters.
     const cells = query.data ? true : util.formatQuery(query.cells);
     const columns = query.data ? true : util.formatQuery(query.columns);
     const rows = query.data ? true : util.formatQuery(query.rows);
     const files = query.data ? true : query.files; // NB: boolean flag, no range selection.
+    const totals = query.totals;
 
-    return await models.ns.getChildData({ model, cells, columns, rows, files });
+    // Query the database.
+    return models.ns.getChildData({ model, cells, columns, rows, files, totals });
   } catch (err) {
     return util.toErrorPayload(err);
   }

@@ -1,6 +1,9 @@
 export * from '../../../common/util';
+import { R } from '../common';
 
 export const formatQueryArray = (input: Array<string | boolean>) => {
+  input = R.uniq(input);
+
   if (input.some(item => item === false)) {
     // NB: Any explicit FALSE refs win.
     // The operation is not wanted irrespective of other requests.

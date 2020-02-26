@@ -219,6 +219,67 @@ describe('ns:', function() {
     });
   });
 
+  describe('GET totals', () => {
+    it('no total object', async () => {
+      const mock = await createMock();
+      const client = mock.client.ns('foo');
+      const cells: t.ICellMap<t.ICellData> = {
+        A1: { value: 123 },
+      };
+
+      await client.write({ cells });
+      const res1 = await client.read({ data: true });
+      const res2 = await client.read({ data: true, totals: false });
+      await mock.dispose();
+
+      expect(res1.body.data.total).to.eql(undefined);
+      expect(res2.body.data.total).to.eql(undefined);
+    });
+
+    it('total: rows/columns', async () => {
+      const mock = await createMock();
+      const client = mock.client.ns('foo');
+      const cells: t.ICellMap<t.ICellData> = {
+        Z9: { value: 123 },
+      };
+
+      await client.write({ cells });
+      const res = await client.read({ totals: ['rows', 'columns', 'rows'] }); // NB: de-duped.
+      const total = res.body.data.total;
+
+      expect(total?.cells).to.eql(1);
+      expect(total?.columns).to.eql(26);
+      expect(total?.rows).to.eql(9);
+      expect(total?.files).to.eql(undefined);
+
+      await mock.dispose();
+    });
+
+    it('total: true (all)', async () => {
+      const mock = await createMock();
+      const client = mock.client.ns('foo');
+      const cells: t.ICellMap<t.ICellData> = {
+        Z9: { value: 123 },
+      };
+      await client.write({ cells });
+      await testPostFile({
+        source: 'src/test/assets/bird.png',
+        dispose: false,
+        mock,
+      });
+
+      const res = await client.read({ cells: true, totals: true });
+      const total = res.body.data.total;
+
+      expect(total?.cells).to.eql(2); // NB: "A1" (file holder) and "Z9".
+      expect(total?.columns).to.eql(26);
+      expect(total?.rows).to.eql(9);
+      expect(total?.files).to.eql(1);
+
+      await mock.dispose();
+    });
+  });
+
   describe('POST', () => {
     it('data (?changes=false)', async () => {
       const { res, json, data } = await post.ns('ns:foo?cells&changes=false', {

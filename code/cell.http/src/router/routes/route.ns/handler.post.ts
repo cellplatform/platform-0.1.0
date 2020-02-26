@@ -57,8 +57,13 @@ export async function postNs(args: {
       }
     }
 
+    // Retrieve NS data.
+    const res = (await getNs({ db, id, query, host })) as t.IPayload<t.IResGetNs>;
+    if (util.isErrorPayload(res)) {
+      return res;
+    }
+
     // Finish up.
-    const res = await getNs({ db, id, query, host });
     const data: t.IResPostNs = {
       ...res.data,
       changes: defaultValue(query.changes, true) ? changes : undefined, // NB: don't send if suppressed in query-string (?changes=false)
