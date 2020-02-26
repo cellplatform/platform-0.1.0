@@ -117,20 +117,34 @@ describe('Urls', () => {
     });
 
     it('info (with query)', () => {
-      const res1 = url.ns('foo').info.query({ cells: true });
+      const ns = url.ns('foo');
+
+      const res1 = ns.info.query({ cells: true });
       expect(res1.toString()).to.eql('http://localhost/ns:foo?cells=true');
 
-      const res2 = url.ns('foo').info.query({ cells: ['A1', 'B2:Z9'] });
-      expect(res2.toString()).to.eql('http://localhost/ns:foo?cells=A1,B2:Z9');
+      const res2 = ns.info.query({ cells: ['A1', 'B2:Z9'] });
+      expect(res2.toString()).to.eql('http://localhost/ns:foo?cells=A1&cells=B2:Z9');
 
-      const res3 = url.ns('foo').info.query({ rows: '1:9' });
+      const res3 = ns.info.query({ rows: '1:9' });
       expect(res3.toString()).to.eql('http://localhost/ns:foo?rows=1:9');
 
-      const res4 = url.ns('foo').info.query({ columns: 'A:Z' });
+      const res4 = ns.info.query({ columns: 'A:Z' });
       expect(res4.toString()).to.eql('http://localhost/ns:foo?columns=A:Z');
 
-      const res5 = url.ns('foo').info.query({ files: true });
+      const res5 = ns.info.query({ files: true });
       expect(res5.toString()).to.eql('http://localhost/ns:foo?files=true');
+
+      const res6 = ns.info.query({ total: true });
+      expect(res6.toString()).to.eql('http://localhost/ns:foo?total=true');
+
+      const res7 = ns.info.query({ total: 'rows' });
+      expect(res7.toString()).to.eql('http://localhost/ns:foo?total=rows');
+
+      const res8 = ns.info.query({ total: ['rows', 'columns', 'rows'] }); // NB: de-duped.
+      expect(res8.toString()).to.eql('http://localhost/ns:foo?total=rows&total=columns');
+
+      const res9 = ns.info.query({ total: ['rows', 'files'] });
+      expect(res9.toString()).to.eql('http://localhost/ns:foo?total=rows&total=files');
     });
   });
 

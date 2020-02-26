@@ -1,4 +1,4 @@
-import { t, defaultValue } from '../common';
+import { t, defaultValue, R } from '../common';
 
 /**
  * Represents a URL path that can be converted to a proper URL via `toString()`.
@@ -39,7 +39,6 @@ export class Url<Q extends object = {}> implements t.IUrl<Q> {
 
     const append = (key: string, value?: string) => {
       res = res ? `${res}&` : res;
-      value = value === undefined ? undefined : format(value);
       res = value === undefined ? `${res}${key}` : `${res}${key}=${value}`;
     };
 
@@ -47,9 +46,10 @@ export class Url<Q extends object = {}> implements t.IUrl<Q> {
       const value = query[key];
       if (typeof value !== 'function' && value !== undefined && value !== '') {
         if (Array.isArray(value)) {
-          value.forEach(value => append(key, value));
+          const values = value.map(value => format(value));
+          R.uniq(values).forEach(value => append(key, value));
         } else {
-          append(key, value);
+          append(key, format(value));
         }
       }
     });
