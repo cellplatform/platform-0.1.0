@@ -134,17 +134,17 @@ describe('Urls', () => {
       const res5 = ns.info.query({ files: true });
       expect(res5.toString()).to.eql('http://localhost/ns:foo?files=true');
 
-      const res6 = ns.info.query({ total: true });
-      expect(res6.toString()).to.eql('http://localhost/ns:foo?total=true');
+      const res6 = ns.info.query({ totals: true });
+      expect(res6.toString()).to.eql('http://localhost/ns:foo?totals=true');
 
-      const res7 = ns.info.query({ total: 'rows' });
-      expect(res7.toString()).to.eql('http://localhost/ns:foo?total=rows');
+      const res7 = ns.info.query({ totals: 'rows' });
+      expect(res7.toString()).to.eql('http://localhost/ns:foo?totals=rows');
 
-      const res8 = ns.info.query({ total: ['rows', 'columns', 'rows'] }); // NB: de-duped.
-      expect(res8.toString()).to.eql('http://localhost/ns:foo?total=rows&total=columns');
+      const res8 = ns.info.query({ totals: ['rows', 'columns', 'rows'] }); // NB: de-duped.
+      expect(res8.toString()).to.eql('http://localhost/ns:foo?totals=rows&totals=columns');
 
-      const res9 = ns.info.query({ total: ['rows', 'files'] });
-      expect(res9.toString()).to.eql('http://localhost/ns:foo?total=rows&total=files');
+      const res9 = ns.info.query({ totals: ['rows', 'files'] });
+      expect(res9.toString()).to.eql('http://localhost/ns:foo?totals=rows&totals=files');
     });
   });
 
