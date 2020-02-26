@@ -242,7 +242,7 @@ describe('helpers: model.ns', () => {
         files: { abc: deleteUndefined(file1.toObject()) },
       });
 
-      const res4 = await getChildData({ model: ns, totals: ['files'] });
+      const res4 = await getChildData({ model: ns, totals: 'files' });
       expect(res4.data).to.eql({});
       expect(res4.totals).to.eql({ files: 1 });
 
@@ -260,11 +260,11 @@ describe('helpers: model.ns', () => {
       });
       expect(res5.totals).to.eql({ files: 2 });
 
-      const res6 = await getChildData({ model: ns, totals: ['rows', 'columns'] });
+      const res6 = await getChildData({ model: ns, totals: 'rows' });
       expect(res6.data).to.eql({});
       expect(res6.totals.cells).to.eql(1);
       expect(res6.totals.rows).to.eql(1);
-      expect(res6.totals.columns).to.eql(1);
+      expect(res6.totals.columns).to.eql(undefined);
 
       // Add another cell (Z9), thereby expanding the number of rows.
       const Z9 = models.Cell.create({ uri: 'cell:foo!Z9', db });

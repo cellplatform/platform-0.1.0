@@ -104,13 +104,16 @@ export async function getChildData(args: {
   rows?: boolean | string;
   columns?: boolean | string;
   files?: boolean;
-  totals?: boolean | t.NsTotalKey[];
-}) {
+  totals?: boolean | t.NsTotalKey | t.NsTotalKey[];
+}): Promise<{ data: Partial<t.INsDataChildren>; totals: Partial<t.INsTotals> }> {
   const { model } = args;
 
-  const toTotalsFlags = (totals?: boolean | t.NsTotalKey[]): t.NsTotalKey[] => {
+  const toTotalsFlags = (totals?: boolean | t.NsTotalKey | t.NsTotalKey[]): t.NsTotalKey[] => {
     if (totals === true) {
       return ['cells', 'rows', 'columns', 'files'];
+    }
+    if (typeof totals === 'string') {
+      totals = [totals];
     }
     if (Array.isArray(totals)) {
       if (totals.includes('rows') || totals.includes('columns')) {
@@ -144,7 +147,7 @@ export async function getChildData(args: {
   const data = (await Promise.all(wait)).reduce((acc, next) => {
     acc[next.field] = next.value;
     return acc;
-  }, {}) as t.INsDataChildren;
+  }, {}) as Partial<t.INsDataChildren>;
 
   // Calculate totals.
   const totals: Partial<t.INsTotals> = {};
