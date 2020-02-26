@@ -368,7 +368,7 @@ export function sort<T extends CellInput>(list: T[], options: { by?: t.CoordAxis
 }
 
 /**
- * Min cell.
+ * Min cell (index).
  */
 export const min = {
   by: (axis: t.CoordAxis, list: CellInput[]) => {
@@ -384,7 +384,7 @@ export const min = {
 };
 
 /**
- * Max cell.
+ * Max cell (index).
  */
 export const max = {
   by: (axis: t.CoordAxis, list: CellInput[]) => {
