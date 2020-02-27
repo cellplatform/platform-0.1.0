@@ -1,10 +1,10 @@
 import { Observable, Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { defaultValue, Schema, t } from './common';
-import { fetcher } from './util';
+import { defaultValue, ERROR, Schema, t, util, value } from './common';
 import { TypeClient } from './TypeClient';
 import { TypedSheetCursor } from './TypedSheetCursor';
+import { fetcher } from './util';
 
 type ISheetArgs = {
   ns: string; // "ns:<uri>"
@@ -26,13 +26,13 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   public static client = fromClient;
 
   public static async load<T>(args: ISheetArgs) {
-    const res = await args.fetch.getType({ ns: formatNs(args.ns) });
+    const res = await args.fetch.getType({ ns: util.formatNs(args.ns) });
     if (res.error) {
       throw new Error(res.error.message);
     }
 
     const type = res.type;
-    const ns = formatNs(type.implements);
+    const ns = util.formatNs(type.implements);
     if (!ns) {
       const err = `The namespace [${args.ns}] does not contain an "implements" type reference.`;
       throw new Error(err);
@@ -64,6 +64,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   private readonly fetch: t.ISheetFetcher;
   public readonly type: t.ITypeClient;
   public readonly uri: string;
+  private readonly _errors: t.IError[] = [];
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.asObservable();
@@ -79,12 +80,14 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   }
 
   public get ok() {
-    this.throwIfDisposed('ok');
-    return this.type.ok;
+    return this.errors.length === 0;
+  }
+
+  public get errors() {
+    return [...this.type.errors, ...this._errors];
   }
 
   public get types() {
-    this.throwIfDisposed('types');
     return this.type.types;
   }
 
@@ -109,20 +112,18 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   }
 
   /**
-   * [Helpers]
+   * [Internal]
    */
   private throwIfDisposed(action: string) {
     if (this.isDisposed) {
       throw new Error(`Cannot ${action} because [TypedSheet] is disposed.`);
     }
   }
+
+  private error(message: string, options: { errorType?: string; children?: t.IError[] } = {}) {
+    const type = options.errorType || ERROR.TYPE.SHEET;
+    const error: t.IError = { message, type, children: options.children };
+    this.errors.push(error);
+    return value.deleteUndefined(error);
+  }
 }
-
-/**
- * [Helpers]
- */
-
-const formatNs = (input: string = '') => {
-  input = input.trim();
-  return !input ? '' : input.includes(':') ? input : `ns:${input}`;
-};

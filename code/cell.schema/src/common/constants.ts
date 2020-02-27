@@ -10,8 +10,11 @@ export const ERROR = {
     TYPE: 'HTTP/type',
   },
   TYPE: {
-    NS: 'TYPE/ns',
-    NS_NOT_FOUND: 'TYPE/ns/notFound',
+    DEF: 'TYPE/def',
+    DEF_NOT_FOUND: 'TYPE/def/notFound',
     TARGET: 'TYPE/target',
+    REF: 'TYPE/ref',
+    CIRCULAR_REF: 'TYPE/circularRef',
+    SHEET: 'TYPE/sheet',
   },
 };

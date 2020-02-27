@@ -8,6 +8,7 @@ export type ITypedSheet<T> = {
   readonly events$: t.Observable<TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;
+  readonly errors: t.IError[];
   dispose(): void;
   cursor(args?: ITypedSheetRowsArgs): Promise<ITypedSheetCursor<T>>;
 };

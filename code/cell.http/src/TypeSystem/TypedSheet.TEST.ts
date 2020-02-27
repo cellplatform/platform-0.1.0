@@ -1,7 +1,7 @@
 import { TypeSystem } from '../TypeSystem';
 import { testInstanceFetch } from '../TypeSystem/test';
 import * as g from './.d.ts/MyRow';
-import { expect, TYPE_DEFS } from './test';
+import { expect, TYPE_DEFS, ERROR } from './test';
 
 /**
  * TODO 🐷TESTS
@@ -27,16 +27,37 @@ describe('TypedSheet', () => {
   it.skip('read/write primitive types', () => {}); // tslint:disable-line
   it.skip('read/write ref (singular) - linked sheet', () => {}); // tslint:disable-line
   it.skip('read/write ref (array/list) - linked sheet', () => {}); // tslint:disable-line
+
   it.skip('query (paging: index/skip)', () => {}); // tslint:disable-line
+
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
+  it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
+
   it.skip('write to non-existent row (new row auto-generated)', () => {}); // tslint:disable-line
   it.skip('', () => {}); // tslint:disable-line
+
+  describe('errors', () => {
+    it('error: 404 instance namespace "type.implements" reference not found', async () => {
+      const ns = 'ns:foo.mySheet';
+      const fetch = await testInstanceFetch({
+        instance: ns,
+        implements: 'ns:foo.notExist',
+        defs: TYPE_DEFS,
+        rows: [],
+      });
+      const sheet = await TypeSystem.Sheet.load<g.MyRow>({ fetch, ns });
+
+      expect(sheet.ok).to.eql(false);
+      expect(sheet.errors[0].message).to.include(`The namespace "ns:foo.notExist" does not exist`);
+      expect(sheet.errors[0].type).to.eql(ERROR.TYPE.DEF_NOT_FOUND);
+    });
+  });
 
   describe('cursor', () => {
     it('inline: read (strongly typed prop)', async () => {
       const ns = 'ns:foo.mySheet';
       const fetch = await testInstanceFetch({
-        ns,
+        instance: ns,
         implements: 'ns:foo',
         defs: TYPE_DEFS,
         rows: [
@@ -72,7 +93,7 @@ describe('TypedSheet', () => {
     it('inline: write (strongly typed prop)', async () => {
       const ns = 'ns:foo.mySheet';
       const fetch = await testInstanceFetch({
-        ns,
+        instance: ns,
         implements: 'ns:foo',
         defs: TYPE_DEFS,
         rows: [],
@@ -80,6 +101,8 @@ describe('TypedSheet', () => {
 
       const sheet = await TypeSystem.Sheet.load<g.MyRow>({ fetch, ns });
       const cursor = await sheet.cursor();
+
+      console.log('TODO');
     });
   });
 });
