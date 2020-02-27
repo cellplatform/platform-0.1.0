@@ -1,6 +1,7 @@
 import * as g from './.d.ts/MyRow';
 
 import { fs, t, expect, http, createMock, stripHashes, post, Schema, HttpClient } from '../test';
+import { testFetch, testInstanceFetch } from '../TypeSystem/test';
 import { TypeSystem } from '../TypeSystem';
 
 /**
@@ -52,50 +53,50 @@ const TYPE_DEFS: SampleTypeDefs = {
   },
 };
 
-const testFetch = (data: { defs: { [ns: string]: t.ITypeDefPayload }; cells?: t.ICellMap }) => {
-  const getType: t.FetchSheetType = async args => {
-    const ns = data.defs[args.ns]?.ns;
-    const type = ns?.type as t.INsType;
-    const exists = Boolean(type);
-    return { exists, type };
-  };
+// const testFetch = (data: { defs: { [ns: string]: t.ITypeDefPayload }; cells?: t.ICellMap }) => {
+//   const getType: t.FetchSheetType = async args => {
+//     const ns = data.defs[args.ns]?.ns;
+//     const type = ns?.type as t.INsType;
+//     const exists = Boolean(type);
+//     return { exists, type };
+//   };
 
-  const getColumns: t.FetchSheetColumns = async args => {
-    const def = data.defs[args.ns];
-    const columns = def?.columns || {};
-    return { columns };
-  };
+//   const getColumns: t.FetchSheetColumns = async args => {
+//     const def = data.defs[args.ns];
+//     const columns = def?.columns || {};
+//     return { columns };
+//   };
 
-  const getCells: t.FetchSheetCells = async args => {
-    const cells = data.cells || {};
-    const rows = Schema.coord.cell.max.row(Object.keys(cells));
-    const total = { rows };
-    return { cells, total };
-  };
+//   const getCells: t.FetchSheetCells = async args => {
+//     const cells = data.cells || {};
+//     const rows = Schema.coord.cell.max.row(Object.keys(cells));
+//     const total = { rows };
+//     return { cells, total };
+//   };
 
-  return TypeSystem.fetcher.fromFuncs({ getType, getColumns, getCells });
-};
+//   return TypeSystem.fetcher.fromFuncs({ getType, getColumns, getCells });
+// };
 
-const testInstanceFetch = async <T>(args: {
-  ns: string;
-  implements: string;
-  defs: { [ns: string]: t.ITypeDefPayload };
-  rows: T[];
-}) => {
-  const typeClient = await TypeSystem.Type.load({
-    ns: args.implements,
-    fetch: testFetch({ defs: args.defs }),
-  });
-  const cells = TypeSystem.objectToCells<T>(typeClient).rows(0, args.rows);
-  const def: t.ITypeDefPayload = {
-    ns: { type: { implements: args.implements } },
-    columns: {},
-  };
-  return testFetch({
-    cells,
-    defs: { ...args.defs, [args.ns]: def },
-  });
-};
+// const testInstanceFetch = async <T>(args: {
+//   ns: string;
+//   implements: string;
+//   defs: { [ns: string]: t.ITypeDefPayload };
+//   rows: T[];
+// }) => {
+//   const typeClient = await TypeSystem.Type.load({
+//     ns: args.implements,
+//     fetch: testFetch({ defs: args.defs }),
+//   });
+//   const cells = TypeSystem.objectToCells<T>(typeClient).rows(0, args.rows);
+//   const def: t.ITypeDefPayload = {
+//     ns: { type: { implements: args.implements } },
+//     columns: {},
+//   };
+//   return testFetch({
+//     cells,
+//     defs: { ...args.defs, [args.ns]: def },
+//   });
+// };
 
 const writeTypes = async (args: { client: t.IHttpClient }) => {
   const { client } = args;
