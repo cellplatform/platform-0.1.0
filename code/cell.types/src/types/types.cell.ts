@@ -21,7 +21,7 @@ export type ICellDiff<P extends ICellProps = ICellProps> = {
   readonly left: ICellData<P>;
   readonly right: ICellData<P>;
   readonly isDifferent: boolean;
-  readonly list: Array<Diff<ICellData<P>>>;
+  readonly list: Diff<ICellData<P>>[];
 };
 
 /**

@@ -19,7 +19,7 @@ export type ITypedSheetCursor<T> = {
   readonly index: number;
   readonly take?: number;
   readonly total: number;
-  readonly rows: Array<ITypedSheetRow<T>>;
+  readonly rows: ITypedSheetRow<T>[];
   row(index: number): ITypedSheetRowProps<T> | undefined;
 };
 

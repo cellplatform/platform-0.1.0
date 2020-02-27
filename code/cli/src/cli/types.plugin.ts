@@ -21,7 +21,7 @@ export type ICmdPluginArgs<T extends object = {}> = {
   handler: CmdPluginHandler<T>;
 };
 export type ICmdPlugin = ICmdPluginArgs & {
-  options: Array<ICmdPluginOption<any>>;
+  options: ICmdPluginOption<any>[];
 };
 
 export type CmdPluginHandler<A extends object = {}> = (

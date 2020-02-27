@@ -87,7 +87,7 @@ export class Model<
   private _children: t.IModelChildren<C>;
   private _linkCache = {};
   private _childrenCache = {};
-  private _changes: Array<t.IModelChange<P, D>> = [];
+  private _changes: t.IModelChange<P, D>[] = [];
   private _typename: string;
 
   private readonly _dispose$ = new Subject<{}>();

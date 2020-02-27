@@ -9,7 +9,7 @@ export type IRouterArgs = {
 };
 
 export type IRouter<C extends object = {}> = {
-  readonly routes: Array<IRoute<C>>;
+  readonly routes: IRoute<C>[];
   readonly handler: RouteHandler<C>;
   readonly wildcard: IRoute<C> | undefined;
   add(method: t.HttpMethod, path: IRoutePath, handler: RouteHandler): IRouter<C>;
@@ -48,7 +48,7 @@ export type HttpRequest = IncomingMessage & {
 
 export type RequestParams = { [key: string]: string | number | boolean };
 export type RequestQuery = {
-  [key: string]: string | number | boolean | Array<string | number | boolean>;
+  [key: string]: string | number | boolean | (string | number | boolean)[];
 };
 
 /**

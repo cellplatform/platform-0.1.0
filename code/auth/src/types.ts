@@ -37,7 +37,7 @@ export type IAuthPolicy<V extends {} = any, R extends AuthRole = any> = {
 
 export type IAuthPolicies<V extends {} = any, R extends AuthRole = any> =
   | IAuthPolicy<V, R>
-  | Array<IAuthPolicy<V, R>>;
+  | IAuthPolicy<V, R>[];
 
 /**
  * An executable authorization policy.

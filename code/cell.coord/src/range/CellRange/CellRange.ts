@@ -30,7 +30,7 @@ export class CellRange {
   /**
    * Create a region that is the square around all given keys.
    */
-  public static square(keys: Array<string | { key: string }>) {
+  public static square(keys: (string | { key: string })[]) {
     if (keys.length === 0) {
       throw new Error(`To create a region-square at least one key must be passed.`);
     }

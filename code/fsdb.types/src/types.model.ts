@@ -128,7 +128,7 @@ export type IModelLinkDef = {
  */
 export type IModelChanges<P extends object, D extends P> = {
   length: number;
-  list: Array<IModelChange<P, D>>;
+  list: IModelChange<P, D>[];
   map: { [K in keyof D]: D[K] };
 };
 export type IModelChange<P extends object, D extends P> = {

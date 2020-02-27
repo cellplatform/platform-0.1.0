@@ -1,7 +1,7 @@
 export * from '../../../common/util';
 import { R } from '../common';
 
-export const formatQueryArray = (input: Array<string | boolean>) => {
+export const formatQueryArray = (input: (string | boolean)[]) => {
   input = R.uniq(input);
 
   if (input.some(item => item === false)) {
@@ -22,7 +22,7 @@ export const formatQueryArray = (input: Array<string | boolean>) => {
 };
 
 export const formatQuery = (
-  input?: boolean | string | Array<string | boolean>,
+  input?: boolean | string | (string | boolean)[],
 ): string | boolean | undefined => {
   return Array.isArray(input) ? formatQueryArray(input) : input;
 };

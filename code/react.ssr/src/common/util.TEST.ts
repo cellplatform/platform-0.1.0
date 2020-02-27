@@ -4,7 +4,7 @@ import * as util from './util';
 
 describe('util', () => {
   it('firstSemver', () => {
-    const test = (input: Array<string | undefined>, expected?: string) => {
+    const test = (input: (string | undefined)[], expected?: string) => {
       const res = util.firstSemver(...input);
       expect(res).to.eql(expected);
     };

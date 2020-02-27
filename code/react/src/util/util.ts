@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-// import { log } from '../common';
 
 /**
  * Determines whether any element within the child DOM hierarchy

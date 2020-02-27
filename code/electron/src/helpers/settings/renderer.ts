@@ -85,7 +85,7 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
   };
 
   const getKeys: t.GetSettingsKeys<T> = async () => {
-    const res = await ipc.send<t.ISettingsGetKeysEvent, Array<keyof T>>(
+    const res = await ipc.send<t.ISettingsGetKeysEvent, (keyof T)[]>(
       '@platform/SETTINGS/keys',
       {},
       { target: 0 },

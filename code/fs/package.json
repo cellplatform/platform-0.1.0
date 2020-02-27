@@ -1,7 +1,7 @@
 {
   "name": "@platform/fs",
-  "version": "0.5.5",
-  "description": "File-system tools.",
+  "version": "0.5.10",
+  "description": "POSIX style file-system tools.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -12,7 +12,7 @@
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
-    "@platform/types": "0.4.4",
+    "@platform/fs.types": "0.0.5",
     "@types/fs-extra": "8.1.0",
     "@types/js-yaml": "3.12.2",
     "archiver": "3.1.1",
@@ -25,8 +25,8 @@
     "minimatch": "3.0.4"
   },
   "devDependencies": {
-    "@platform/test": "0.1.2",
-    "@platform/ts.libs": "3.7.3",
+    "@platform/test": "0.1.5",
+    "@platform/ts.libs": "3.8.2",
     "@types/archiver": "3.1.0",
     "@types/dotenv": "8.2.0",
     "@types/extract-zip": "1.6.2",

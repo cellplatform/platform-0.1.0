@@ -69,7 +69,7 @@ export async function getCellFiles(args: { ns: t.IDbModelNs; cellLinks: t.IUriMa
     }
   });
 
-  let list: Array<t.IUriData<t.IFileData>> | undefined; // NB: Lazy load.
+  let list: t.IUriData<t.IFileData>[] | undefined; // NB: Lazy load.
   return {
     map,
     get list() {
@@ -88,5 +88,5 @@ export function toFileList(args: { ns: string | t.IDbModelNs; map: t.IMap<t.IFil
       acc.push({ uri, data });
     }
     return acc;
-  }, [] as Array<t.IUriData<t.IFileData>>);
+  }, [] as t.IUriData<t.IFileData>[]);
 }

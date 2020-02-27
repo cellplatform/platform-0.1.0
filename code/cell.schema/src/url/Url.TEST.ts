@@ -6,7 +6,7 @@ const origin = 'https://domain.com/';
 type Q = {
   force?: boolean;
   color: 'red' | 'blue';
-  thing?: string | Array<boolean | string | number>;
+  thing?: string | (boolean | string | number)[];
   text?: string;
 };
 

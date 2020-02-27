@@ -23,7 +23,7 @@ describe('util.toposort', () => {
   });
 
   it('sorts (string|number)', () => {
-    const graph: Array<Array<string | number>> = [
+    const graph: (string | number)[][] = [
       [1, 'one'],
       [1, 'two'],
       [999, 1],

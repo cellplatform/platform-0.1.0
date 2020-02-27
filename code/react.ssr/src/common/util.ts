@@ -49,7 +49,7 @@ export function formatPath(path: string) {
 /**
  * Finds the first semver from the list of strings (version/path value).
  */
-export function firstSemver(...versionOrPath: Array<string | undefined>) {
+export function firstSemver(...versionOrPath: (string | undefined)[]) {
   const values = versionOrPath
     .filter(value => typeof value === ('string' as string))
     .map(value => (value as string).trim() as string)

@@ -18,7 +18,7 @@ export type PromptText = (args: { message: string; default?: string }) => Promis
  */
 export type PromptList = <V = string>(args: {
   message: string;
-  items: Array<string | IPromptListOption>;
+  items: (string | IPromptListOption)[];
   pageSize?: number;
   type?: 'list' | 'checkbox';
 }) => Promise<V>;

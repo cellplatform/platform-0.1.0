@@ -88,7 +88,7 @@ export type IReqPostNsBody = {
   cells?: t.ICellMap<any>;
   columns?: t.IColumnMap<any>;
   rows?: t.IRowMap<any>;
-  calc?: boolean | string | Array<string | boolean>; // Perform calcuations (default: false), if string key/range of cells to calculate, eg "A1", "A1:C10"
+  calc?: boolean | string | (string | boolean)[]; // Perform calcuations (default: false), if string key/range of cells to calculate, eg "A1", "A1:C10"
 };
 export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
 
@@ -181,7 +181,7 @@ export type IResPostCellFilesUploadStart = IUriResponse<
 >;
 export type IResPostCellFilesUploadStartData = {
   cell: t.ICellData;
-  files: Array<t.IUriData<t.IFileData>>;
+  files: t.IUriData<t.IFileData>[];
   errors: t.IFileUploadError[];
   changes?: t.IDbModelChange[];
 };
@@ -196,7 +196,7 @@ export type IReqPostCellFilesUploadCompleteBody = {};
 export type IResPostCellFilesUploadComplete = IUriResponse<IResPostCellFilesUploadCompleteData>;
 export type IResPostCellFilesUploadCompleteData = {
   cell: t.ICellData;
-  files: Array<t.IUriData<t.IFileData>>;
+  files: t.IUriData<t.IFileData>[];
   changes?: t.IDbModelChange[];
 };
 
@@ -212,7 +212,7 @@ export type IResDeleteCellFilesData = {
   uri: string;
   deleted: string[];
   unlinked: string[];
-  errors: Array<{ error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED'; filename: string }>;
+  errors: { error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED'; filename: string }[];
 };
 
 /**

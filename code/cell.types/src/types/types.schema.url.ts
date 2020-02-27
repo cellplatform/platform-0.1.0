@@ -27,9 +27,9 @@ export type IUrlParamsNs = { ns: string };
  */
 export type IUrlQueryNsInfo = {
   data?: boolean; // true: all (cells|rows|columns) - overrides other fields.
-  cells?: boolean | string | Array<string | boolean>; // true: all | string: key or range, eg "A1", "A1:C10"
-  columns?: boolean | string | Array<string | boolean>;
-  rows?: boolean | string | Array<string | boolean>;
+  cells?: boolean | string | (string | boolean)[]; // true: all | string: key or range, eg "A1", "A1:C10"
+  columns?: boolean | string | (string | boolean)[];
+  rows?: boolean | string | (string | boolean)[];
   files?: boolean;
   total?: boolean | t.NsTotalKey | t.NsTotalKey[];
 };

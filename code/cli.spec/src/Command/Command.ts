@@ -161,7 +161,7 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
   /**
    * Cast children to given types.
    */
-  public childrenAs<P1 extends object, A1 extends t.CommandArgsOptions>(): Array<Command<P1, A1>> {
+  public childrenAs<P1 extends object, A1 extends t.CommandArgsOptions>(): Command<P1, A1>[] {
     return this.children;
   }
 

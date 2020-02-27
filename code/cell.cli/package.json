@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.cli",
-  "version": "0.2.58",
+  "version": "0.2.65",
   "description": "Command-line-interface for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,16 +18,16 @@
     "clean": "rm -rf tmp"
   },
   "dependencies": {
-    "@platform/cell.fs.sync": "0.3.57",
-    "@platform/cell.schema": "0.4.42",
-    "@platform/cell.tmpl": "0.0.12",
-    "@platform/cell.types": "0.4.36",
-    "@platform/cli": "0.5.18",
-    "@platform/cli.prompt": "0.3.4"
+    "@platform/cell.fs.sync": "0.3.64",
+    "@platform/cell.schema": "0.4.49",
+    "@platform/cell.tmpl": "0.0.19",
+    "@platform/cell.types": "0.4.43",
+    "@platform/cli": "0.5.25",
+    "@platform/cli.prompt": "0.3.9"
   },
   "devDependencies": {
-    "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.12"
+    "@platform/test": "0.1.5",
+    "@platform/ts": "3.7.17"
   },
   "files": [
     "lib",

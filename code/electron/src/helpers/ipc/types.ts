@@ -84,7 +84,7 @@ export type IpcSending<M extends IpcMessage, D = any> = {
   promise: Promise<IpcSending<M, D>>;
   timeout$: Observable<{}>;
   cancel$: Observable<{}>;
-  results: Array<IpcHandlerResult<D>>;
+  results: IpcHandlerResult<D>[];
   resultFrom: (sender: number | ProcessType) => IpcHandlerResult<D> | undefined;
   dataFrom: (sender: number | ProcessType) => D | undefined;
   cancel: () => IpcSending<M, D>;

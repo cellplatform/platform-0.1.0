@@ -34,7 +34,7 @@ export class Zipper {
   /**
    * [Fields]
    */
-  private items: Array<{ source: string; dest?: string }> = [];
+  private items: { source: string; dest?: string }[] = [];
 
   /**
    * [Methods]

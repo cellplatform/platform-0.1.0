@@ -44,7 +44,7 @@ export class DevTools {
     /**
      * Setup keyboard bindings.
      */
-    let bindings: Array<KeyBinding<DevToolKeyCommands>> = [];
+    let bindings: KeyBinding<DevToolKeyCommands>[] = [];
     if (keyboard) {
       if (keyboard.toggle) {
         const key = keyboard.toggle === true ? 'CMD+SHIFT+I' : keyboard.toggle;

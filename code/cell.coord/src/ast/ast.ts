@@ -46,7 +46,7 @@ export type TreeNode = Node | CellNode | EmptyNode | ParseErrorNode;
  *  text                 "hello"
  *  unary-expression     -TRUE
  */
-const VALUE_TYPES: Array<Node['type']> = ['number', 'text', 'logical', 'unary-expression'];
+const VALUE_TYPES: Node['type'][] = ['number', 'text', 'logical', 'unary-expression'];
 
 /**
  * Determine if the given node represents a concrete value.

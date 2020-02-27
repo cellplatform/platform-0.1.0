@@ -104,7 +104,7 @@ export function value<T extends string | number | boolean = string>(
 /**
  * Loads and reads strongly configuration values.
  */
-export function values<T extends IEnvVariables>(keys: Array<keyof T>, options: IEnvLoadArgs = {}) {
+export function values<T extends IEnvVariables>(keys: (keyof T)[], options: IEnvLoadArgs = {}) {
   load(options);
   return keys.reduce((acc, next) => {
     const key = next as string;

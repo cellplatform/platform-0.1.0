@@ -20,7 +20,7 @@ export type ITaskError = {
  * Runs a set of tasks.
  */
 export async function run<T>(
-  tasks: ITask<T> | Array<ITask<T>>,
+  tasks: ITask<T> | ITask<T>[],
   options: IRunTasksOptions = {},
 ): Promise<IRunTaskListResult> {
   const { silent, concurrent, exitOnError = false } = options;

@@ -1,1 +1,1 @@
-export * from '@platform/types/lib/types';
+export * from '@platform/fs.types/lib/types';

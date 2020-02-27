@@ -115,7 +115,7 @@ export async function uploadCellFilesStart(args: {
   };
 
   // Prepare response files.
-  const files: Array<t.IUriData<t.IFileData>> = uploadStartResponses.map(res => {
+  const files: t.IUriData<t.IFileData>[] = uploadStartResponses.map(res => {
     return {
       uri: res.uri,
       data: { ...res.json.data },

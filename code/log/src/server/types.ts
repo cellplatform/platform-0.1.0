@@ -12,13 +12,13 @@ export type IServerLog = ILog & {
  * Table
  */
 export type ILogTableOptions = {
-  head?: Array<string | number | undefined>;
+  head?: (string | number | undefined)[];
   colWidths?: number[];
   border?: boolean;
 };
 
 export type ILogTable = {
-  add: (columns: Array<string | number | undefined>) => ILogTable;
+  add: (columns: (string | number | undefined)[]) => ILogTable;
   log: () => ILogTable;
   toString: () => string;
 };

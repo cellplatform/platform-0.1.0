@@ -1,6 +1,6 @@
 {
   "name": "@platform/test",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "description": "Configuration module containing test related modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,14 +12,14 @@
     "prepare": "yarn build && yarn lint && yarn test"
   },
   "dependencies": {
-    "@types/chai": "4.2.7",
-    "@types/mocha": "5.2.7",
+    "@types/chai": "4.2.9",
+    "@types/mocha": "7.0.1",
     "chai": "4.2.0",
     "findup-sync": "4.0.0",
-    "mocha": "7.0.0"
+    "mocha": "7.1.0"
   },
   "devDependencies": {
-    "@platform/ts.libs": "3.7.3"
+    "@platform/ts.libs": "3.8.2"
   },
   "files": [
     "lib",

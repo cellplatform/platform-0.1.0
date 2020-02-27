@@ -40,7 +40,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
   public readonly index: number = -1;
   public readonly take: number | undefined = undefined;
   public total: number = -1;
-  public rows: Array<t.ITypedSheetRow<T>> = [];
+  public rows: t.ITypedSheetRow<T>[] = [];
 
   /**
    * [Methods]

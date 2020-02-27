@@ -59,7 +59,7 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
    * Retrieves an object with values for the given keys.
    * Pass no keys to retrieve all values.
    */
-  public async read(...keys: Array<keyof T>) {
+  public async read(...keys: (keyof T)[]) {
     keys = formatKeys<T>({ keys, namespace: this._args.namespace });
     return (await this._args.getValues(keys)) as Partial<T>;
   }
@@ -67,7 +67,7 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
   /**
    * Writes values to disk.
    */
-  public async write(...values: Array<t.ISettingsKeyValue<T>>) {
+  public async write(...values: t.ISettingsKeyValue<T>[]) {
     values = formatValues({ values, namespace: this._args.namespace });
     const res = await this._args.setValues(values, 'UPDATE');
     return res as t.ISettingsSetValuesResponse<T>;
@@ -76,7 +76,7 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
   /**
    * Retrieves all available keys.
    */
-  public async keys(): Promise<Array<keyof T>> {
+  public async keys(): Promise<(keyof T)[]> {
     return this._args.getKeys();
   }
 
@@ -101,7 +101,7 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
   /**
    * Deletes the given key(s).
    */
-  public async delete<K extends keyof T>(...keys: Array<keyof T>) {
+  public async delete<K extends keyof T>(...keys: (keyof T)[]) {
     keys = formatKeys<T>({ keys, namespace: this._args.namespace });
     const values = keys.map(key => ({ key, value: undefined }));
     await this._args.setValues(values, 'DELETE');
@@ -159,16 +159,13 @@ function formatKey<T extends t.SettingsJson = {}>(args: { key: keyof T; namespac
   return key as keyof T;
 }
 
-function formatKeys<T extends t.SettingsJson = {}>(args: {
-  keys: Array<keyof T>;
-  namespace: string;
-}) {
+function formatKeys<T extends t.SettingsJson = {}>(args: { keys: (keyof T)[]; namespace: string }) {
   const namespace = args.namespace;
   return args.keys.map(key => formatKey<T>({ key, namespace }));
 }
 
 function formatValues<T extends t.SettingsJson = {}>(args: {
-  values: Array<t.ISettingsKeyValue<T>>;
+  values: t.ISettingsKeyValue<T>[];
   namespace: string;
 }) {
   const namespace = args.namespace;

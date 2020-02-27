@@ -36,7 +36,7 @@ export async function merge(
 
   type Item = {
     sourceDir: string;
-    paths: Array<{ from: string; to: string }>;
+    paths: { from: string; to: string }[];
   };
 
   const items: Item[] = await Promise.all(
@@ -57,7 +57,7 @@ export async function merge(
 
   // Build filtered list of source paths to copy.
   let skipped: string[] = [];
-  let copy: Array<{ from: string; to: string }> = [];
+  let copy: { from: string; to: string }[] = [];
   items.forEach(item => {
     item.paths.forEach(({ from, to }) => {
       const exists = targets.some(p => p === to);

@@ -131,7 +131,7 @@ export function position(options: { el: HTMLElement }) {
  * [Internal]
  * Source: https://plainjs.com/javascript/styles/get-the-position-of-an-element-relative-to-the-document-24/
  */
-function offsetPosition(el: HTMLElement) {
+export function offsetPosition(el: HTMLElement) {
   const rect = el.getBoundingClientRect();
   const doc = document.documentElement ? document.documentElement : undefined;
   const scrollLeft = window.pageXOffset || (doc ? doc.scrollLeft : 0);

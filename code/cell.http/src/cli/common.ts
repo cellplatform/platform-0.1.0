@@ -30,7 +30,7 @@ export const util = {
     const dir = args.dir || PATH.CONFIG_DIR;
     const names = (await fs.readdir(dir)).filter(name => name.endsWith('.yaml'));
 
-    const renamed: Array<{ from: string; to: string }> = [];
+    const renamed: { from: string; to: string }[] = [];
     for (const name of names) {
       const from = fs.join(dir, name);
       const to = fs.join(dir, `${name.replace(/\.yaml$/, '')}.yml`);

@@ -32,7 +32,7 @@ type Ref<D> = SendResponseInit<any> & {
   cancel$: Subject<any>;
   complete$: Subject<any>;
   timeout$: Subject<any>;
-  results: Array<IpcHandlerResult<D>>;
+  results: IpcHandlerResult<D>[];
   timer: ITimer;
   isTimedOut: boolean;
   elapsed?: number;
