@@ -37,7 +37,7 @@ const writeTypes = async (args: { client: t.IHttpClient }) => {
   return { client };
 };
 
-describe.only('TypeSystem (on http server)', () => {
+describe('TypeSystem (on http server)', () => {
   it.skip('persist changes back to server', () => {}); // tslint:disable-line
 
   describe('TypeClient', () => {

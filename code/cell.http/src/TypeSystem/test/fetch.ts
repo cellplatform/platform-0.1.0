@@ -1,8 +1,5 @@
-export { expect } from '@platform/test';
-export * from '../common';
-
-import { t, Schema } from '../common';
-import { TypeSystem } from '.';
+import { TypeSystem } from '..';
+import { Schema, t } from '../common';
 
 /**
  * Generate a stub data [fetch] object using the provided

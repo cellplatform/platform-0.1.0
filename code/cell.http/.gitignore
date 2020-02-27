@@ -2,4 +2,3 @@
 node_modules
 /tmp
 /config
-src/TypeSystem/.d.ts/

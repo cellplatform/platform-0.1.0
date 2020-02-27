@@ -28,6 +28,7 @@ export class TypeClient implements t.ITypeClient {
    */
   private constructor(args: ITypeClientArgs) {
     const ns = args.ns.includes(':') ? args.ns : `ns:${args.ns}`;
+    // const ns = args.ns;
     const uri = Schema.uri.parse<t.INsUri>(ns);
 
     if (uri.error) {
