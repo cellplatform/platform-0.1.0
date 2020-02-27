@@ -3,21 +3,47 @@ import { testFetch } from '../TypeSystem/test';
 import { expect, fs, TYPE_DEFS } from './test';
 
 describe.only('TypeClient', () => {
-  it.skip('load "ns:foo"', () => {}); // tslint:disable-line
-  it.skip('load "foo" (no "ns:" prefix)', () => {}); // tslint:disable-line
-  it.skip('load (type does not exist)', () => {}); // tslint:disable-line
+  const fetch = testFetch({ defs: TYPE_DEFS });
 
-  it.skip('throw: malformed URI', () => {}); // tslint:disable-line
-  it.skip('throw: not a "ns" uri', () => {}); // tslint:disable-line
-  it.skip('throw: ref not found (404)', () => {}); // tslint:disable-line
+  describe('load', () => {
+    it('"ns:foo"', async () => {
+      const type = await TypeSystem.Type.load({ ns: 'ns:foo', fetch });
+      expect(type.uri).to.eql('ns:foo');
+      expect(type.ok).to.eql(true);
+    });
+
+    it('"foo" (without "ns:" prefix)', async () => {
+      const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
+      expect(type.uri).to.eql('ns:foo');
+      expect(type.ok).to.eql(true);
+    });
+  });
+
+  describe.only('errors', () => {
+    it('throw: malformed URI', async () => {
+      const type = await TypeSystem.Type.load({ ns: 'ns:not-valid', fetch });
+      expect(type.ok).to.eql(false);
+      expect(type.errors[0].message).to.include(`invalid "ns" identifier`);
+    });
+
+    it('throw: not a "ns" uri', async () => {
+      const type = await TypeSystem.Type.load({ ns: 'cell:foo!A1', fetch });
+      expect(type.ok).to.eql(false);
+      expect(type.errors[0].message).to.include(`Must be "ns"`);
+    });
+
+    it.skip('throw: ref not found (404)', async () => {
+      //
+    });
+  });
+
+  it.skip('load (type does not exist)', () => {}); // tslint:disable-line
 
   it.skip('n-level deep type refs', () => {}); // tslint:disable-line
   it.skip('circular-reference safe (on recursive type lookup)', () => {}); // tslint:disable-line
   it.skip('primitive types (string, bool, number, null, object)', () => {}); // tslint:disable-line
 
   describe('typescript', () => {
-    const fetch = testFetch({ defs: TYPE_DEFS });
-
     it('all types with header (default)', async () => {
       const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
       const res = type.typescript();

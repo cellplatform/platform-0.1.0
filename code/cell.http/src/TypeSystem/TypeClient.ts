@@ -28,11 +28,10 @@ export class TypeClient implements t.ITypeClient {
    */
   private constructor(args: ITypeClientArgs) {
     const ns = args.ns.includes(':') ? args.ns : `ns:${args.ns}`;
-    // const ns = args.ns;
     const uri = Schema.uri.parse<t.INsUri>(ns);
 
     if (uri.error) {
-      const message = `Invalid namespace URI (${args.ns}). ${uri.error.message}`;
+      const message = `Invalid namespace URI ("${args.ns}"). ${uri.error.message}`;
       this.error(message);
     }
     if (uri.parts.type !== 'NS') {
