@@ -106,8 +106,8 @@ const writeTypes = async (args: { client: t.IHttpClient }) => {
   return { client };
 };
 
-describe.skip('TypeSystem', () => {
-  it.skip('sample (http)', async () => {
+describe('TypeSystem', () => {
+  it('sample (http)', async () => {
     //
     const mock = await createMock();
     const client = mock.client;
@@ -204,7 +204,7 @@ describe.skip('TypeSystem', () => {
   });
 });
 
-describe.only('TypedSheet', () => {
+describe('TypedSheet', () => {
   it('read from http (server)', async () => {
     const mock = await createMock();
     const client = mock.client;

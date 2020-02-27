@@ -19,10 +19,6 @@ const fromClient = (client: string | t.IHttpClient) => {
   };
 };
 
-const prependNs = (input: string) => {
-  return input.includes(':') ? input : `ns:${input}`;
-};
-
 /**
  * Represents a namespace as a logical sheet of cells.
  */
@@ -30,13 +26,13 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   public static client = fromClient;
 
   public static async load<T>(args: ISheetArgs) {
-    const res = await args.fetch.getType({ ns: prependNs(args.ns) });
+    const res = await args.fetch.getType({ ns: formatNs(args.ns) });
     if (res.error) {
       throw new Error(res.error.message);
     }
 
     const type = res.type;
-    const ns = (type.implements || '').trim();
+    const ns = formatNs(type.implements);
     if (!ns) {
       const err = `The namespace [${args.ns}] does not contain an "implements" type reference.`;
       throw new Error(err);
@@ -121,3 +117,12 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     }
   }
 }
+
+/**
+ * [Helpers]
+ */
+
+const formatNs = (input: string = '') => {
+  input = input.trim();
+  return !input ? '' : input.includes(':') ? input : `ns:${input}`;
+};
