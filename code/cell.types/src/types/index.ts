@@ -26,5 +26,6 @@ export * from './types.value';
 
 export * from './types.TypeSystem';
 export * from './types.TypeSystem.client';
+export * from './types.TypeSystem.def';
 export * from './types.TypeSystem.fetch';
 export * from './types.TypeSystem.sheet';

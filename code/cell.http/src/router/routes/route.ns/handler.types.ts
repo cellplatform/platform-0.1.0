@@ -30,12 +30,12 @@ export async function getTypes(args: {
     // const fetch = fetcher.fromClient({ client: host });
 
     // const type = await TypeSystem.Type.load({ fetch, ns: uri });
-    const type = await TypeSystem.Type.fromClient(host).load(uri);
+    const type = await TypeSystem.Type.client(host).load(uri);
 
     const data: t.IResGetNsTypes = {
       uri,
       types: type.types,
-      typescript: type.typescript,
+      typescript: type.typescript(),
     };
 
     return { status: 200, data };

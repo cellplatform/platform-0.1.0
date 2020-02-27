@@ -25,39 +25,35 @@ function fromClient(args: { client: string | t.IHttpClient }): t.ISheetFetcher {
     return { exists, type, error };
   };
 
-  const getCells: t.FetchSheetCells = async args => {
-    const { ns, query } = args;
-    console.log('query', query);
-    const res = await client.ns(ns).read({ cells: query, total: 'rows' });
-    const error = formatError(
-      res.error,
-      msg => `Failed to retrieve cells "${query}" within namespace [${ns}]. ${msg}`,
-    );
-    const exists = res.body.exists;
-    const cells = res.body.data.cells || {};
-
-    const total = res.body.data.total || {};
-    const rows = total.rows || 0;
-
-    return { exists, cells, error, total: { rows } };
-  };
-
   const getColumns: t.FetchSheetColumns = async args => {
     const res = await client.ns(args.ns).read({ columns: true });
     const error = formatError(
       res.error,
       msg => `Failed to retrieve type information from namespace [${args.ns}]. ${msg}`,
     );
-    const exists = res.body.exists;
-    const ns = res.body.data.ns;
     const columns = res.body.data.columns || {};
-    return { exists, ns, columns, error };
+    return { columns, error };
+  };
+
+  const getCells: t.FetchSheetCells = async args => {
+    const { ns, query } = args;
+    const res = await client.ns(ns).read({ cells: query, total: 'rows' });
+    const error = formatError(
+      res.error,
+      msg => `Failed to retrieve cells "${query}" within namespace [${ns}]. ${msg}`,
+    );
+
+    const cells = res.body.data.cells || {};
+    const total = res.body.data.total || {};
+    const rows = total.rows || 0;
+
+    return { cells, error, total: { rows } };
   };
 
   return fromFuncs({
     getType,
-    getCells,
     getColumns,
+    getCells,
   });
 }
 
@@ -66,8 +62,8 @@ function fromClient(args: { client: string | t.IHttpClient }): t.ISheetFetcher {
  */
 function fromFuncs(args: {
   getType: t.FetchSheetType;
-  getCells: t.FetchSheetCells;
   getColumns: t.FetchSheetColumns;
+  getCells: t.FetchSheetCells;
 }): t.ISheetFetcher {
   const { getType, getCells, getColumns } = args;
   return { getType, getCells, getColumns };

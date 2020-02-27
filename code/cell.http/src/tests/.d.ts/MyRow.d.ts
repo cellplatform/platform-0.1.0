@@ -10,15 +10,16 @@
  *    - Import the [.d.ts] file within your consuming module
  *      that uses [TypedSheet]'s to operate on the namespace
  *      programatically with strong-typing.
+ * 
  */
 
-export declare type MySheet = {
+export declare type MyRow = {
   title: string;
   isEnabled: boolean;
-  colors: ColorSetting;
+  color: MyColor;
 };
 
-export declare type ColorSetting = {
+export declare type MyColor = {
   label: string;
   color: "red" | "green" | "blue";
 };

@@ -1,7 +1,7 @@
 import { t } from '../common';
 
 /**
- * Data fetching.
+ * Data fetcher.
  */
 export type ISheetFetcher = {
   getType: FetchSheetType;
@@ -9,6 +9,9 @@ export type ISheetFetcher = {
   getColumns: FetchSheetColumns;
 };
 
+/**
+ * Fetch type.
+ */
 export type FetchSheetType = (args: { ns: string }) => Promise<FetchSheetTypeResult>;
 export type FetchSheetTypeResult = {
   exists: boolean;
@@ -16,20 +19,24 @@ export type FetchSheetTypeResult = {
   error?: t.IHttpError;
 };
 
+/**
+ * Fetch cells.
+ */
 export type FetchSheetCells = (args: {
   ns: string;
   query: string;
 }) => Promise<FetchSheetCellsResult>;
 export type FetchSheetCellsResult = {
-  exists: boolean;
   cells: t.ICellMap;
   total: { rows: number };
   error?: t.IHttpError;
 };
 
+/**
+ * Fetch columns.
+ */
 export type FetchSheetColumns = (args: { ns: string }) => Promise<FetchSheetColumnsResult>;
 export type FetchSheetColumnsResult = {
-  exists: boolean;
   columns: t.IColumnMap;
   error?: t.IHttpError;
 };

@@ -20,15 +20,17 @@ export type ITypedSheetCursor<T> = {
   readonly take?: number;
   readonly total: number;
   readonly rows: Array<ITypedSheetRow<T>>;
-  row(index: number): T | undefined;
+  row(index: number): ITypedSheetRowProps<T> | undefined;
 };
 
 export type ITypedSheetRow<T> = {
   readonly index: number;
   readonly uri: string;
   readonly types: t.ITypeDef[];
-  readonly props: T;
+  readonly props: ITypedSheetRowProps<T>;
+  toObject(): T;
 };
+export type ITypedSheetRowProps<T> = T & { toObject: () => T };
 
 /**
  * [Events]

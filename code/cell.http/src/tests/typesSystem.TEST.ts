@@ -1,4 +1,4 @@
-import * as g from './.d.ts/MySheet';
+import * as g from './.d.ts/MyRow';
 
 import { fs, t, expect, http, createMock, stripHashes, post, Schema, HttpClient } from '../test';
 import { TypeSystem } from '../TypeSystem';
@@ -21,57 +21,98 @@ import { TypeSystem } from '../TypeSystem';
  * - ns (read): query string {ns:false} - omit ns data.
  * - change handler (pending => save)
  * - read/write: linked sheet
- * - save types (abstract FS)
  */
 
-const writeData = async (args: { client: t.IHttpClient }) => {
-  const { client } = args;
+type SampleTypeDefs = { 'ns:foo': t.ITypeDefPayload; 'ns:foo.color': t.ITypeDefPayload };
 
-  // const A: t.IColumnData = { props: { prop: { name: 'title', type: 'string' } } };
-
-  await client.ns('foo').write({
+const TYPE_DEFS: SampleTypeDefs = {
+  'ns:foo': {
     ns: {
-      title: 'Hello',
-      type: { typename: 'MySheet' },
+      type: { typename: 'MyRow' },
     },
     columns: {
       A: { props: { prop: { name: 'title', type: 'string' } } },
       B: { props: { prop: { name: 'isEnabled', type: 'boolean', target: 'inline:isEnabled' } } },
       C: {
-        props: { prop: { name: 'colors', type: '=ns:foo.colorSetting', target: 'inline:foo' } },
+        props: { prop: { name: 'color', type: '=ns:foo.color', target: 'inline:color' } },
       },
       // TEMP 🐷 list / inline
-      // C: { props: { prop: { name: 'colors', type: '=ns:foo.colorSetting[]', inline: true } } }, // TODO 🐷 list([array]) / inline
+      // C: { props: { prop: { name: 'colors', type: '=ns:foo.color[]', inline: true } } }, // TODO 🐷 list([array]) / inline
     },
-  });
+  },
 
-  /**
-   * TODO: target
-   * inline:value
-   * inline:<prop>.<prop>
-   * ref
-   */
-
-  await client.ns('foo.colorSetting').write({
+  'ns:foo.color': {
     ns: {
-      type: { typename: 'ColorSetting' },
+      type: { typename: 'MyColor' },
     },
     columns: {
       A: { props: { prop: { name: 'label', type: 'string' } } },
       B: { props: { prop: { name: 'color', type: '"red" | "green" | "blue"' } } },
     },
+  },
+};
+
+const testFetch = (data: { defs: { [ns: string]: t.ITypeDefPayload }; cells?: t.ICellMap }) => {
+  const getType: t.FetchSheetType = async args => {
+    const ns = data.defs[args.ns]?.ns;
+    const type = ns?.type as t.INsType;
+    const exists = Boolean(type);
+    return { exists, type };
+  };
+
+  const getColumns: t.FetchSheetColumns = async args => {
+    const def = data.defs[args.ns];
+    const columns = def?.columns || {};
+    return { columns };
+  };
+
+  const getCells: t.FetchSheetCells = async args => {
+    const cells = data.cells || {};
+    const rows = Schema.coord.cell.max.row(Object.keys(cells));
+    const total = { rows };
+    return { cells, total };
+  };
+
+  return TypeSystem.fetcher.fromFuncs({ getType, getColumns, getCells });
+};
+
+const testInstanceFetch = async <T>(args: {
+  ns: string;
+  implements: string;
+  defs: { [ns: string]: t.ITypeDefPayload };
+  rows: T[];
+}) => {
+  const typeClient = await TypeSystem.Type.load({
+    ns: args.implements,
+    fetch: testFetch({ defs: args.defs }),
   });
+  const cells = TypeSystem.objectToCells<T>(typeClient).rows(0, args.rows);
+  const def: t.ITypeDefPayload = {
+    ns: { type: { implements: args.implements } },
+    columns: {},
+  };
+  return testFetch({
+    cells,
+    defs: { ...args.defs, [args.ns]: def },
+  });
+};
+
+const writeTypes = async (args: { client: t.IHttpClient }) => {
+  const { client } = args;
+
+  await client.ns('foo').write(TYPE_DEFS['ns:foo']);
+  await client.ns('foo.color').write(TYPE_DEFS['ns:foo.color']);
 
   return { client };
 };
 
-describe.skip('type system', () => {
-  it('sample', async () => {
+describe.skip('TypeSystem', () => {
+  it.skip('sample (http)', async () => {
     //
     const mock = await createMock();
     const client = mock.client;
 
-    await writeData({ client });
+    await writeTypes({ client });
 
     // const res2 = await mock.client.ns('foo').read({ data: true });
 
@@ -96,54 +137,163 @@ describe.skip('type system', () => {
     await mock.dispose();
   });
 
-  it.skip('Sheet (typed)', async () => {
-    const mock = await createMock();
-    const client = mock.client;
+  it.skip('load "ns:foo"', () => {}); // tslint:disable-line
+  it.skip('load "foo" (no "ns:" prefix)', () => {}); // tslint:disable-line
+  it.skip('load (malformed URI)', () => {}); // tslint:disable-line
+  it.skip('load (type does not exist)', () => {}); // tslint:disable-line
 
-    await writeData({ client });
+  describe('typescript', () => {
+    const fetch = testFetch({ defs: TYPE_DEFS });
 
-    await client.ns('foo.mySheet').write({
-      ns: {
-        type: { implements: 'ns:foo' },
-      },
-      cells: {
-        A1: { value: 'One' },
-        B1: { props: { isEnabled: true } },
-        C1: { props: { foo: { label: 'background', color: 'red' } } },
-        A2: { value: 'Two' },
-        B2: { props: { isEnabled: false } },
-        C2: { props: { foo: { label: 'background', color: 'green' } } },
-      },
+    it('all types with header (default)', async () => {
+      const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
+      const res = type.typescript();
+
+      expect(res).to.include('Generated by');
+      expect(res).to.include('export declare type MyRow');
+      expect(res).to.include('export declare type MyColor');
     });
 
-    console.log('client', client.origin);
+    it('no header', async () => {
+      const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
+      const res = type.typescript({ header: false });
 
-    const sheet = await TypeSystem.Sheet.fromClient(client).load<g.MySheet>('ns:foo.mySheet');
-    const cursor = await sheet.cursor({ index: -5 });
+      expect(res).to.not.include('Generated by');
+      expect(res).to.include('export declare type MyRow');
+      expect(res).to.include('export declare type MyColor');
+    });
+  });
 
-    console.log('-------------------------------------------');
-    const dir = fs.join(__dirname, '.d.ts');
-    const saved = await sheet.type.save({ dir, fs });
-    console.log('saved to:', saved.path);
+  describe('save: typescript defs as file (.d.ts)', () => {
+    const fetch = testFetch({ defs: TYPE_DEFS });
 
-    console.log('-------------------------------------------');
-    console.log('cursor');
-    console.log('index', cursor.index);
-    console.log('total', cursor.total);
-    console.log('-------------------------------------------');
-    // console.log('row.isEnabled:', row.isEnabled);
+    it('save for tests', async () => {
+      const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
+      await type.save(fs).typescript(fs.join(__dirname, '.d.ts'));
+    });
 
-    const row = cursor.row(0);
-    if (row) {
-      console.log('-------------------------------------------');
-      console.log('row');
-      console.log('title:', row.title);
-      console.log('isEnabled:', row.isEnabled);
-      console.log('colors:', row.colors);
+    it('dir (filename inferred from type)', async () => {
+      const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
+      const typescript = type.typescript();
+      const dir = fs.resolve('tmp/d');
+      const res = await type.save(fs).typescript(dir);
 
-      row.title = 'Rowan is the bomb 🚀🐮';
+      expect(res.path.endsWith('/d/MyRow.d.ts')).to.eql(true);
+      expect(res.data).to.eql(typescript);
+
+      const file = await fs.readFile(fs.join(dir, 'MyRow.d.ts'));
+      expect(file.toString()).to.eql(typescript);
+    });
+
+    it('filename (explicit)', async () => {
+      const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
+      const typescript = type.typescript();
+      const dir = fs.resolve('tmp/d');
+      const res1 = await type.save(fs).typescript(dir, { filename: 'Foo.txt' }); // NB: ".d.ts" automatically added.
+      const res2 = await type.save(fs).typescript(dir, { filename: 'Foo.d.ts' });
+
+      expect(res1.path.endsWith('/d/Foo.txt.d.ts')).to.eql(true);
+      expect(res2.path.endsWith('/d/Foo.d.ts')).to.eql(true);
+
+      const file1 = await fs.readFile(fs.join(dir, 'Foo.txt.d.ts'));
+      const file2 = await fs.readFile(fs.join(dir, 'Foo.d.ts'));
+
+      expect(file1.toString()).to.eql(typescript);
+      expect(file2.toString()).to.eql(typescript);
+    });
+  });
+});
+
+describe.only('TypedSheet', () => {
+  it('read from http (server)', async () => {
+    const mock = await createMock();
+    const client = mock.client;
+    await writeTypes({ client });
+
+    const types = await TypeSystem.Type.client(client).load('ns:foo');
+    const cells = TypeSystem.objectToCells<g.MyRow>(types).rows(0, [
+      { title: 'One', isEnabled: true, color: { label: 'background', color: 'red' } },
+      { title: 'Two', isEnabled: false, color: { label: 'foreground', color: 'blue' } },
+    ]);
+
+    await client.ns('foo.mySheet').write({
+      ns: { type: { implements: 'ns:foo' } },
+      cells,
+    });
+
+    const sheet = await TypeSystem.Sheet.client(client).load<g.MyRow>('ns:foo.mySheet');
+    const cursor = await sheet.cursor({ index: -5 }); // NB: min-index is 0.
+    await mock.dispose();
+
+    expect(cursor.index).to.eql(0);
+
+    const row1 = cursor.row(0);
+    const row2 = cursor.row(1);
+
+    expect(row1).to.not.eql(undefined);
+    expect(row2).to.not.eql(undefined);
+
+    if (row1) {
+      expect(row1.title).to.eql('One');
+      expect(row1.isEnabled).to.eql(true);
+      expect(row1.color).to.eql({ label: 'background', color: 'red' });
     }
 
-    await mock.dispose();
+    if (row2) {
+      expect(row2.title).to.eql('Two');
+      expect(row2.isEnabled).to.eql(false);
+      expect(row2.color).to.eql({ label: 'foreground', color: 'blue' });
+    }
+  });
+
+  describe('cursor', () => {
+    it('inline: read', async () => {
+      const ns = 'ns:foo.mySheet';
+      const fetch = await testInstanceFetch({
+        ns,
+        implements: 'ns:foo',
+        defs: TYPE_DEFS,
+        rows: [
+          { title: 'One', isEnabled: true, color: { label: 'background', color: 'red' } },
+          { title: 'Two', isEnabled: false, color: { label: 'foreground', color: 'blue' } },
+        ],
+      });
+
+      const sheet = await TypeSystem.Sheet.load<g.MyRow>({ fetch, ns });
+      const cursor = await sheet.cursor();
+
+      const row1 = cursor.row(0);
+      const row2 = cursor.row(1);
+      const row3 = cursor.row(2);
+
+      expect(row1).to.not.eql(undefined);
+      expect(row2).to.not.eql(undefined);
+      expect(row3).to.eql(undefined);
+
+      if (row1) {
+        expect(row1.title).to.eql('One');
+        expect(row1.isEnabled).to.eql(true);
+        expect(row1.color).to.eql({ label: 'background', color: 'red' });
+      }
+
+      if (row2) {
+        expect(row2.title).to.eql('Two');
+        expect(row2.isEnabled).to.eql(false);
+        expect(row2.color).to.eql({ label: 'foreground', color: 'blue' });
+      }
+    });
+
+    it('inline: write', async () => {
+      const ns = 'ns:foo.mySheet';
+      const fetch = await testInstanceFetch({
+        ns,
+        implements: 'ns:foo',
+        defs: TYPE_DEFS,
+        rows: [],
+      });
+
+      const sheet = await TypeSystem.Sheet.load<g.MyRow>({ fetch, ns });
+      const cursor = await sheet.cursor();
+    });
   });
 });

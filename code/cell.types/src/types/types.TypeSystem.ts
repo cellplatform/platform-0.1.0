@@ -1,3 +1,5 @@
+import { t } from '../common';
+
 /**
  * Reference to the type of a [column] or individual [cell].
  * Either:
@@ -17,6 +19,17 @@
 export type CellType = string;
 export type CellTypeProp = { name: string; type: CellType; target?: CellTypeTarget };
 export type CellTypeTarget = string;
+
+export type CellTypeTargetInfo = {
+  target: string;
+  isValid: boolean;
+  isInline: boolean;
+  isRef: boolean;
+  errors: t.IError[];
+  kind: 'inline' | 'ref' | 'UNKNOWN';
+  path: string;
+  toString(): string;
+};
 
 /**
  * Reference to a namespace that contains the type definitions for the sheet.

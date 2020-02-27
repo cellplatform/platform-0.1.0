@@ -2,7 +2,7 @@ import { Observable, Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
 import { defaultValue, Schema, t } from './common';
-import { fetcher } from './fetch';
+import { fetcher } from './util';
 import { TypeClient } from './TypeClient';
 import { TypedSheetCursor } from './TypedSheetCursor';
 
@@ -12,12 +12,25 @@ type ISheetArgs = {
   events$?: t.Subject<t.TypedSheetEvent>;
 };
 
+const fromClient = (client: string | t.IHttpClient) => {
+  const fetch = fetcher.fromClient({ client });
+  return {
+    load: <T>(ns: string) => TypedSheet.load<T>({ fetch, ns }),
+  };
+};
+
+const prependNs = (input: string) => {
+  return input.includes(':') ? input : `ns:${input}`;
+};
+
 /**
  * Represents a namespace as a logical sheet of cells.
  */
 export class TypedSheet<T> implements t.ITypedSheet<T> {
+  public static client = fromClient;
+
   public static async load<T>(args: ISheetArgs) {
-    const res = await args.fetch.getType({ ns: args.ns });
+    const res = await args.fetch.getType({ ns: prependNs(args.ns) });
     if (res.error) {
       throw new Error(res.error.message);
     }
@@ -31,13 +44,6 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
 
     const typeNs = Schema.uri.create.ns(ns);
     return new TypedSheet<T>({ ...args, typeNs }).load();
-  }
-
-  public static fromClient(client: string | t.IHttpClient) {
-    const fetch = fetcher.fromClient({ client });
-    return {
-      load: <T>(ns: string) => TypedSheet.load<T>({ fetch, ns }),
-    };
   }
 
   /**

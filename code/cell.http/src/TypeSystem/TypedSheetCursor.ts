@@ -46,7 +46,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
    * [Methods]
    */
 
-  public row(index: number): T | undefined {
+  public row(index: number): t.ITypedSheetRowProps<T> | undefined {
     return this.rows[index]?.props;
   }
 

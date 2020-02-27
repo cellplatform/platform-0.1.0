@@ -12,5 +12,6 @@ export const ERROR = {
   TYPE: {
     NS: 'TYPE/ns',
     NS_NOT_FOUND: 'TYPE/ns/notFound',
+    TARGET: 'TYPE/target',
   },
 };

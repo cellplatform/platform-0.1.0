@@ -1,29 +1,24 @@
 import { t } from '../common';
 
+/**
+ * Type Client
+ */
+
 export type ITypeClient = {
   readonly ok: boolean;
   readonly uri: string;
   readonly typename: string;
   readonly errors: t.IError[];
-  readonly types: ITypeDef[];
-  readonly typescript: string;
+  readonly types: t.ITypeDef[];
+  typescript(args?: ITypeClientTypescriptArgs): string;
   load(): Promise<ITypeClient>;
-  save(args: ITypeClientSaveArgs): Promise<ITypeClientSaveResponse>;
+  save(fs: t.IFs): ITypeClientSaver;
+};
+
+export type ITypeClientSaver = {
+  typescript(dir: string, options?: { filename?: string }): Promise<ITypeClientTypescriptSaved>;
 };
 
 export type ITypeClientSaveArgs = { fs: t.IFs; dir: string; filename?: string };
-export type ITypeClientSaveResponse = { path: string; data: string };
-
-export type ITypeDef = {
-  column: string;
-  prop: string;
-  type: string | ITypeRef;
-  target?: t.CellTypeTarget;
-  error?: t.IError;
-};
-
-export type ITypeRef = {
-  uri: string;
-  typename: string;
-  types: ITypeDef[];
-};
+export type ITypeClientTypescriptSaved = { path: string; data: string };
+export type ITypeClientTypescriptArgs = { header?: boolean };
