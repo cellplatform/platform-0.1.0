@@ -2,7 +2,7 @@ import { TypeSystem } from '../TypeSystem';
 import { testFetch } from '../TypeSystem/test';
 import { ERROR, expect, fs, TYPE_DEFS, R, t } from './test';
 
-describe.only('TypeClient', () => {
+describe.skip('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
 
   describe('load', () => {
@@ -87,7 +87,7 @@ describe.only('TypeClient', () => {
       const columns = defs['ns:foo'].columns || {};
       const ns = 'ns:foo';
       if (columns.C?.props?.prop) {
-        columns.C.props.prop.type = `=${ns}`;
+        columns.C.props.prop.type = `${ns}`;
       }
       const type = await TypeSystem.Type.load({ ns, fetch: testFetch({ defs }) });
 
@@ -102,13 +102,13 @@ describe.only('TypeClient', () => {
         'ns:foo.one': {
           ns: { type: { typename: 'One' } },
           columns: {
-            A: { props: { prop: { name: 'two', type: '=ns:foo.two' } } },
+            A: { props: { prop: { name: 'two', type: 'ns:foo.two' } } },
           },
         },
         'ns:foo.two': {
           ns: { type: { typename: 'Two' } },
           columns: {
-            A: { props: { prop: { name: 'two', type: '=ns:foo.one' } } },
+            A: { props: { prop: { name: 'two', type: 'ns:foo.one' } } },
           },
         },
       };
@@ -120,7 +120,7 @@ describe.only('TypeClient', () => {
     });
   });
 
-  describe.only('types', () => {
+  describe('types', () => {
     it('empty: (no types / no columns)', async () => {
       const test = async (defs: { [key: string]: t.ITypeDefPayload }, length: number) => {
         const fetch = testFetch({ defs });
@@ -139,27 +139,33 @@ describe.only('TypeClient', () => {
       await test(defs2, 0);
     });
 
-    it('n-level deep type refs', async () => {
-      const fetch = testFetch({ defs: TYPE_DEFS });
-      const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
-      const types = type.types;
+    describe('types: REF', () => {
+      it('REF object-type, n-level deep ("ns:xxx")', async () => {
+        const fetch = testFetch({ defs: TYPE_DEFS });
+        const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
+        const types = type.types;
 
-      const A = types[0];
-      const B = types[1];
-      const C = types[2];
+        const A = types[0];
+        const B = types[1];
+        const C = types[2];
 
-      expect(typeof A.type).to.eql('string');
-      expect(typeof B.type).to.eql('string');
-      expect(typeof C.type).to.eql('object'); // Deep type ref.
+        expect(typeof A.type).to.eql('string');
+        expect(typeof B.type).to.eql('string');
+        expect(typeof C.type).to.eql('object'); // Deep type ref.
 
-      if (typeof C.type === 'object') {
-        expect(C.type.kind).to.eql('REF');
-        expect(C.type.uri).to.eql('ns:foo.color');
-        expect(C.type.typename).to.eql('MyColor');
-        expect(C.type.types.length).to.greaterThan(1);
-      }
+        if (typeof C.type === 'object' && C.type.kind === 'REF') {
+          expect(C.type.kind).to.eql('REF');
+          expect(C.type.uri).to.eql('ns:foo.color');
+          expect(C.type.typename).to.eql('MyColor');
+          expect(C.type.types.length).to.greaterThan(1);
+        }
 
-      console.log('C', C.type);
+        // console.log('C', C.type);
+      });
+
+      it.skip('REF array (2..n references)', () => {}); // tslint:disable-line
+
+      it.skip('REF => VALUE/ENUM (column URI)', () => {}); // tslint:disable-line
     });
 
     // it.skip('primitive types (string, bool, number, null, object)', () => {}); // tslint:disable-line

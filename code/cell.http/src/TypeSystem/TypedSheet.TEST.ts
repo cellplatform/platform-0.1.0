@@ -23,7 +23,7 @@ import { expect, TYPE_DEFS, ERROR } from './test';
  * - read/write: linked sheet
  */
 
-describe('TypedSheet', () => {
+describe.skip('TypedSheet', () => {
   it.skip('read/write primitive types', () => {}); // tslint:disable-line
   it.skip('read/write ref (singular) - linked sheet', () => {}); // tslint:disable-line
   it.skip('read/write ref (array/list) - linked sheet', () => {}); // tslint:disable-line
@@ -90,7 +90,7 @@ describe('TypedSheet', () => {
       }
     });
 
-    it('inline: write (strongly typed prop)', async () => {
+    it.skip('inline: write (strongly typed prop)', async () => {
       const ns = 'ns:foo.mySheet';
       const fetch = await testInstanceFetch({
         instance: ns,
