@@ -25,7 +25,7 @@ ${lines.join('\n')}
 
     args.types
       .map(({ type }) => type as t.ITypeRef)
-      .filter(type => typeof type === 'object')
+      .filter(type => type.kind === 'REF')
       .forEach(type => {
         const { typename, types } = type;
         const declaration = write({ typename, types, written }); // <== RECURSION 🌳

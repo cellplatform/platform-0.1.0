@@ -21,7 +21,7 @@ export type IColumnTypeDef = ITypeDef & {
 
 export type ITypeDef = {
   prop: string;
-  type: string | IType; // use [IType] TEMP 🐷- remove [string]
+  type: IType;
 };
 
 export type IType = ITypeUnion | ITypeRef | ITypeValue | ITypeEnum | ITypeUnknown;
@@ -36,7 +36,7 @@ export type ITypeRef = {
   kind: 'REF';
   uri: string;
   typename: string;
-  types: IColumnTypeDef[];
+  types: ITypeDef[];
 };
 
 export type ITypeValue = {

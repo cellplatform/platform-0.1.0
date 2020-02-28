@@ -10,12 +10,14 @@ describe.only('TypeClient', () => {
       const type = await TypeSystem.Type.load({ ns: 'ns:foo', fetch });
       expect(type.uri).to.eql('ns:foo');
       expect(type.ok).to.eql(true);
+      expect(type.errors).to.eql([]);
     });
 
     it('"foo" (without "ns:" prefix)', async () => {
       const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
       expect(type.uri).to.eql('ns:foo');
       expect(type.ok).to.eql(true);
+      expect(type.errors).to.eql([]);
     });
   });
 
@@ -149,18 +151,19 @@ describe.only('TypeClient', () => {
         const B = types[1];
         const C = types[2];
 
-        expect(typeof A.type).to.eql('string');
-        expect(typeof B.type).to.eql('string');
-        expect(typeof C.type).to.eql('object'); // Deep type ref.
+        expect(A.type.kind).to.eql('VALUE');
+        expect(A.type.typename).to.eql('string');
 
-        if (typeof C.type === 'object' && C.type.kind === 'REF') {
+        expect(B.type.kind).to.eql('VALUE');
+        expect(B.type.typename).to.eql('boolean');
+
+        expect(C.type.kind).to.eql('REF');
+        expect(C.type.typename).to.eql('MyColor');
+
+        if (C.type.kind === 'REF') {
           expect(C.type.kind).to.eql('REF');
           expect(C.type.uri).to.eql('ns:foo.color');
-          expect(C.type.typename).to.eql('MyColor');
-          expect(C.type.types.length).to.greaterThan(1);
         }
-
-        // console.log('C', C.type);
       });
 
       it.skip('REF array (2..n references)', () => {}); // tslint:disable-line

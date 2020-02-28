@@ -21,5 +21,5 @@ export declare type MyRow = {
 
 export declare type MyColor = {
   label: string;
-  color: "red" | "green" | "blue";
+  color: 'red' | 'green' | 'blue';
 };

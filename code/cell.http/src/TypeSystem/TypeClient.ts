@@ -164,34 +164,108 @@ export class TypeClient implements t.ITypeClient {
     const wait = Object.keys(args.columns)
       .map(column => ({
         column,
-        prop: args.columns[column]?.props?.prop as t.CellTypeProp,
+        props: args.columns[column]?.props?.prop as t.CellTypeProp,
       }))
-      .filter(({ prop }) => Boolean(prop))
+      .filter(({ props: prop }) => Boolean(prop))
       .map(async item => {
         const column = item.column;
-        const target = item.prop.target;
-        const prop = item.prop.name;
+        const target = item.props.target;
+        const prop = item.props.name;
 
-        const def = (item.prop.type || '').trim();
+        const typeValue = (item.props.type || '').trim();
 
-        if (TypeValue.isRef(def)) {
-          const { type, error } = await this.readRef(column, def); // <== RECURSION 🌳
-          const res: t.IColumnTypeDef = { column, prop, type, target, error };
-          return res;
-        } else {
-          // TODO 🐷
-          const res: t.IColumnTypeDef = { column, prop, type: def, target };
-          return res;
-        }
+        const f = await this.readColumn({ column, props: item.props });
+        // console.log('f', f);
+        return f;
 
+        // OLD-2
+        // if (TypeValue.isRef(typeValue)) {
+        //   const { type, error } = await this.readRef__OLD(column, typeValue); // <== RECURSION 🌳
+        //   const res: t.IColumnTypeDef = { column, prop, type, target, error };
+        //   return res;
+        // } else {
+        //   // TODO 🐷
+        //   const res: t.IColumnTypeDef = { column, prop, type: typeValue, target };
+        //   return res;
+        // }
+
+        // OLD-1
         // const res: t.IColumnTypeDef = { column, prop, type, target };
-
         // return TypeValue.isRef(type) ? this.readRef(res) : res;
       });
     return R.sortBy(R.prop('column'), await Promise.all(wait));
   }
 
-  private async readRef(
+  private async readColumn(args: {
+    column: string;
+    props: t.CellTypeProp;
+  }): Promise<t.IColumnTypeDef> {
+    const column = args.column;
+    const prop = args.props.name;
+    const target = args.props.target;
+    let type = TypeValue.parse(args.props.type);
+    let error: t.IError | undefined;
+
+    if (type.kind === 'REF') {
+      const res = await this.readRef({ column, ref: type });
+      type = res.type;
+      error = res.error ? res.error : error;
+    }
+
+    const def: t.IColumnTypeDef = { column, prop, type, target, error };
+
+    // console.log('def.type', def.type);
+
+    return value.deleteUndefined(def);
+  }
+
+  private async readRef(args: {
+    column: string;
+    ref: t.ITypeRef;
+  }): Promise<{ type: t.ITypeRef | t.ITypeUnknown; error?: t.IError }> {
+    const { column, ref } = args;
+    const ns = ref.uri;
+    const unknown: t.ITypeUnknown = { kind: 'UNKNOWN', typename: ns };
+
+    if (!Schema.uri.is.ns(ns)) {
+      this.error(`The referenced type in column '${column}' is not a namespace.`);
+      return { type: unknown };
+    }
+
+    // Retrieve the referenced namespace.
+    const fetch = this.fetch;
+    const visited = this.visited;
+    const nsType = new TypeClient({ ns, fetch, visited });
+    await nsType.load(); // <== RECURSION 🌳
+
+    const CIRCULAR_REF = ERROR.TYPE.CIRCULAR_REF;
+    const isCircular = nsType.errors.some(err => err.type === CIRCULAR_REF);
+
+    if (isCircular) {
+      const msg = `The referenced type in column '${column}' ("${ns}") contains a circular reference.`;
+      const children = nsType.errors;
+      const error = this.error(msg, { children, errorType: CIRCULAR_REF });
+      return { type: unknown, error };
+    }
+
+    if (!nsType.ok) {
+      const msg = `The referenced type in column '${column}' ("${ns}") could not be read.`;
+      const children = nsType.errors;
+      const error = this.error(msg, { children, errorType: ERROR.TYPE.REF });
+      return { type: unknown, error };
+    }
+
+    // Build the reference.
+    // const { uri, typename, types } = nsType;
+    const { typename, types } = nsType;
+    const type: t.ITypeRef = { ...ref, typename, types };
+    return { type };
+
+    // const type: t.ITypeRef = { kind: 'REF', uri, typename, types };
+    // return { ...ref, typename, types };
+  }
+
+  private async readRef__OLD(
     column: string,
     input: string,
   ): Promise<{ type: t.ITypeRef | t.ITypeUnknown; error?: t.IError }> {
