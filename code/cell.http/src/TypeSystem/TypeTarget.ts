@@ -1,6 +1,6 @@
 import { t, ERROR } from './common';
 
-type Input = t.CellTypeTarget | t.ITypeDef;
+type Input = t.CellTypeTarget | t.IColumnTypeDef;
 const asTarget = (input?: Input) => {
   return ((typeof input === 'object' ? input.target : input) || '').trim() || 'inline';
 };
@@ -87,7 +87,7 @@ export class TypeTarget {
   /**
    * Reads the target property from the given cell.
    */
-  public static readInline<T extends any>(args: { type: t.ITypeDef; data: t.ICellData }) {
+  public static readInline<T extends any>(args: { type: t.IColumnTypeDef; data: t.ICellData }) {
     const { data } = args;
     const target = TypeTarget.cell(args.type);
 

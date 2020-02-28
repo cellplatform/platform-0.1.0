@@ -4,7 +4,7 @@ export type ITypedSheet<T> = {
   readonly ok: boolean;
   readonly uri: string;
   readonly type: t.ITypeClient;
-  readonly types: t.ITypeDef[];
+  readonly types: t.IColumnTypeDef[];
   readonly events$: t.Observable<TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;
@@ -27,7 +27,7 @@ export type ITypedSheetCursor<T> = {
 export type ITypedSheetRow<T> = {
   readonly index: number;
   readonly uri: string;
-  readonly types: t.ITypeDef[];
+  readonly types: t.IColumnTypeDef[];
   readonly props: ITypedSheetRowProps<T>;
   toObject(): T;
 };

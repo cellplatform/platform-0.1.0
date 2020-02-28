@@ -71,7 +71,7 @@ describe('TypeTarget', () => {
   });
 
   describe('readInline', () => {
-    const base: t.ITypeDef = { column: 'A', prop: 'foo', type: 'string' };
+    const base: t.IColumnTypeDef = { column: 'A', prop: 'foo', type: 'string' };
     it('throws if not inline', () => {
       const type = { ...base, target: 'ref' };
       const fn = () => TypeTarget.readInline({ type, data: {} });

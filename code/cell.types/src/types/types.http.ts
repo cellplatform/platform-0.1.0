@@ -75,7 +75,7 @@ export type IResGetNsData = Partial<t.INsDataChildren> & {
 export type IResGetNsUrls = { data: string };
 export type IResGetNsTypes = {
   uri: string;
-  types: t.ITypeDef[];
+  types: t.IColumnTypeDef[];
   typescript: string;
 };
 

@@ -9,15 +9,19 @@ export type ITypeDefPayload = {
   columns: t.IColumnMap;
 };
 
+export type IColumnTypeDef = ITypeDef & {
+  column: string;
+  target?: t.CellTypeTarget;
+  error?: t.IError;
+};
+
 /**
  * Type Definitions.
  */
+
 export type ITypeDef = {
-  column: string;
   prop: string;
   type: string | IType; // use [IType] TEMP 🐷- remove [string]
-  target?: t.CellTypeTarget;
-  error?: t.IError;
 };
 
 export type IType = ITypeUnion | ITypeRef | ITypeValue | ITypeEnum | ITypeUnknown;
@@ -32,7 +36,7 @@ export type ITypeRef = {
   kind: 'REF';
   uri: string;
   typename: string;
-  types: ITypeDef[];
+  types: IColumnTypeDef[];
 };
 
 export type ITypeValue = {

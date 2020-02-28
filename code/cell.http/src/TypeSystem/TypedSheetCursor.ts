@@ -4,7 +4,7 @@ import { TypedSheetRow } from './TypedSheetRow';
 type ITypedSheetCursorArgs = {
   ns: string; // "ns:<uri>"
   fetch: t.ISheetFetcher;
-  types: t.ITypeDef[];
+  types: t.IColumnTypeDef[];
   events$: t.Subject<t.TypedSheetEvent>;
   index: number;
   take?: number;
@@ -34,7 +34,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
    */
   private readonly _events$: t.Subject<t.TypedSheetEvent>;
   private readonly fetch: t.ISheetFetcher;
-  private readonly types: t.ITypeDef[];
+  private readonly types: t.IColumnTypeDef[];
 
   public readonly uri: string;
   public readonly index: number = -1;
@@ -76,7 +76,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     type RowData = {
       key: string;
       index: number;
-      type: t.ITypeDef;
+      type: t.IColumnTypeDef;
       data: t.ICellData;
     };
     const rows: RowData[][] = [];

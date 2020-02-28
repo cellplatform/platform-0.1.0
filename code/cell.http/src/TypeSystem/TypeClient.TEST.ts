@@ -2,7 +2,7 @@ import { TypeSystem } from '../TypeSystem';
 import { testFetch } from '../TypeSystem/test';
 import { ERROR, expect, fs, TYPE_DEFS, R, t } from './test';
 
-describe.skip('TypeClient', () => {
+describe.only('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
 
   describe('load', () => {

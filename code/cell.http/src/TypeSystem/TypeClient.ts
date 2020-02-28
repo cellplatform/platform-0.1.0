@@ -53,7 +53,7 @@ export class TypeClient implements t.ITypeClient {
 
   public readonly uri: string;
   public typename: string;
-  public types: t.ITypeDef[] = [];
+  public types: t.IColumnTypeDef[] = [];
   public errors: t.IError[] = [];
 
   /**
@@ -160,7 +160,7 @@ export class TypeClient implements t.ITypeClient {
     return value.deleteUndefined(error);
   }
 
-  private async readColumns(args: { columns: t.IColumnMap }): Promise<t.ITypeDef[]> {
+  private async readColumns(args: { columns: t.IColumnMap }): Promise<t.IColumnTypeDef[]> {
     const wait = Object.keys(args.columns)
       .map(column => ({
         column,
@@ -176,15 +176,15 @@ export class TypeClient implements t.ITypeClient {
 
         if (TypeValue.isRef(def)) {
           const { type, error } = await this.readRef(column, def); // <== RECURSION 🌳
-          const res: t.ITypeDef = { column, prop, type, target, error };
+          const res: t.IColumnTypeDef = { column, prop, type, target, error };
           return res;
         } else {
           // TODO 🐷
-          const res: t.ITypeDef = { column, prop, type: def, target };
+          const res: t.IColumnTypeDef = { column, prop, type: def, target };
           return res;
         }
 
-        // const res: t.ITypeDef = { column, prop, type, target };
+        // const res: t.IColumnTypeDef = { column, prop, type, target };
 
         // return TypeValue.isRef(type) ? this.readRef(res) : res;
       });
@@ -233,7 +233,7 @@ export class TypeClient implements t.ITypeClient {
     return { type };
   }
 
-  // private async readRef(def: t.ITypeDef): Promise<t.ITypeDef> {
+  // private async readRef(def: t.IColumnTypeDef): Promise<t.IColumnTypeDef> {
   //   if (typeof def.type === 'object' || !TypeValue.isRef(def.type)) {
   //     return def;
   //   }

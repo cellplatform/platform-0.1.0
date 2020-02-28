@@ -15,7 +15,7 @@ export function objectToCells<T>(input: t.ITypeClient | t.ITypeDef[]) {
       Object.keys(data)
         .map(key => {
           const value = data[key];
-          const type = types.find(type => type.prop === key) as t.ITypeDef;
+          const type = types.find(type => type.prop === key) as t.IColumnTypeDef;
           return { key, value, type };
         })
         .filter(({ type }) => Boolean(type))

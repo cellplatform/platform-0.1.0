@@ -1,15 +1,15 @@
-import { t, value } from './common';
+import { t } from './common';
 import { TypeTarget } from './TypeTarget';
 
-type ITypedData = {
-  type: t.ITypeDef;
+type ITypedColumnData = {
+  type: t.IColumnTypeDef;
   data: t.ICellData;
 };
 
 type ITypedSheetRowArgs = {
   index: number;
   uri: string;
-  columns: ITypedData[];
+  columns: ITypedColumnData[];
   events$: t.Subject<t.TypedSheetEvent>;
 };
 
@@ -34,7 +34,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * [Fields]
    */
   private readonly _events$: t.Subject<t.TypedSheetEvent>;
-  private readonly _columns: ITypedData[] = [];
+  private readonly _columns: ITypedColumnData[] = [];
   private _props: t.ITypedSheetRowProps<T>;
 
   public readonly index: number;
@@ -79,7 +79,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * [Internal]
    */
 
-  private readProp(column: ITypedData) {
+  private readProp(column: ITypedColumnData) {
     // console.log(this.index, 'READ', column.type.column, column.type.prop);
     const { type, data } = column;
     const { prop } = type;
@@ -119,7 +119,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     // data.
   }
 
-  private writeProp(column: ITypedData, value: any) {
+  private writeProp(column: ITypedColumnData, value: any) {
     console.log(this.index, 'WRITE', column.type.column, column.type.prop, value);
   }
 }
