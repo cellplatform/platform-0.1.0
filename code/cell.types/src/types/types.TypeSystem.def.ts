@@ -20,8 +20,16 @@ export type ITypeDef = {
   error?: t.IError;
 };
 
+export type IType = ITypeRef;
+
 export type ITypeRef = {
+  kind: 'REF';
   uri: string;
   typename: string;
   types: ITypeDef[];
+};
+
+export type ITypeValue = {
+  kind: 'VALUE';
+  typename: 'string' | 'number' | 'boolean' | 'null' | 'undefined';
 };

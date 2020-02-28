@@ -120,10 +120,7 @@ describe.only('TypeClient', () => {
     });
   });
 
-  it.skip('primitive types (string, bool, number, null, object)', () => {}); // tslint:disable-line
-  it.skip('array types', () => {}); // tslint:disable-line
-
-  describe('types', () => {
+  describe.only('types', () => {
     it('empty: (no types / no columns)', async () => {
       const test = async (defs: { [key: string]: t.ITypeDefPayload }, length: number) => {
         const fetch = testFetch({ defs });
@@ -156,8 +153,20 @@ describe.only('TypeClient', () => {
       expect(typeof C.type).to.eql('object'); // Deep type ref.
 
       if (typeof C.type === 'object') {
+        expect(C.type.kind).to.eql('REF');
+        expect(C.type.uri).to.eql('ns:foo.color');
+        expect(C.type.typename).to.eql('MyColor');
         expect(C.type.types.length).to.greaterThan(1);
       }
+
+      console.log('C', C.type);
+    });
+
+    // it.skip('primitive types (string, bool, number, null, object)', () => {}); // tslint:disable-line
+    it.skip('array types', () => {}); // tslint:disable-line
+
+    it.skip('primitives (string | number | boolean | null | undefined)', async () => {
+      // export type Json = string | number | boolean | null | undefined ;
     });
   });
 

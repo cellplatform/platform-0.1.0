@@ -1,6 +1,7 @@
 import { ts } from '../ts.def';
 import { constants, defaultValue, ERROR, R, Schema, t, util, value } from './common';
 import { fetcher } from './util';
+import { TypeValue } from './TypeValue';
 
 type ITypeClientArgs = {
   ns: string; // "ns:<uri>"
@@ -166,22 +167,23 @@ export class TypeClient implements t.ITypeClient {
         prop: args.columns[column]?.props?.prop as t.CellTypeProp,
       }))
       .filter(({ prop }) => Boolean(prop))
-      .map(async ({ column, prop }) => {
-        const { name, target } = prop;
-        const type = (prop.type || '').trim();
-        const res: t.ITypeDef = { column, prop: name, type, target };
-        return type.startsWith('=') ? this.readRef(res) : res;
+      .map(async item => {
+        const column = item.column;
+        const target = item.prop.target;
+        const prop = item.prop.name;
+        const type = (item.prop.type || '').trim();
+        const res: t.ITypeDef = { column, prop, type, target };
+        return TypeValue.isRef(type) ? this.readRef(res) : res;
       });
     return R.sortBy(R.prop('column'), await Promise.all(wait));
   }
 
   private async readRef(def: t.ITypeDef): Promise<t.ITypeDef> {
-    const { type } = def;
-    if (typeof type === 'object' || !type.startsWith('=')) {
+    if (typeof def.type === 'object' || !TypeValue.isRef(def.type)) {
       return def;
     }
 
-    const ns = type.substring(1);
+    const ns = def.type.substring(1); // NB: Remove "=" prefix.
     if (!Schema.uri.is.ns(ns)) {
       this.error(`The referenced type in column '${def.column}' is not a namespace.`);
       return def;
@@ -210,8 +212,9 @@ export class TypeClient implements t.ITypeClient {
     }
 
     // Build the reference.
-    const { uri, typename, types: columns } = nsType;
-    return { ...def, type: { uri, typename, types: columns } };
+    const { uri, typename, types } = nsType;
+    const type: t.ITypeRef = { kind: 'REF', uri, typename, types };
+    return { ...def, type };
   }
 }
 
