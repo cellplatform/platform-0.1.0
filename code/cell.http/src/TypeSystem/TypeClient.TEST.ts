@@ -97,12 +97,31 @@ describe.only('TypeClient', () => {
       expect(type.errors[0].type).to.eql(ERROR.TYPE.CIRCULAR_REF);
     });
 
-    it.skip('error: circular-reference (column, within ref)', async () => {
-      const defs = R.clone(TYPE_DEFS);
+    it('error: circular-reference (column, within ref)', async () => {
+      const defs = {
+        'ns:foo.one': {
+          ns: { type: { typename: 'One' } },
+          columns: {
+            A: { props: { prop: { name: 'two', type: '=ns:foo.two' } } },
+          },
+        },
+        'ns:foo.two': {
+          ns: { type: { typename: 'Two' } },
+          columns: {
+            A: { props: { prop: { name: 'two', type: '=ns:foo.one' } } },
+          },
+        },
+      };
+      const ns = 'ns:foo.one';
+      const type = await TypeSystem.Type.load({ ns, fetch: testFetch({ defs }) });
+
+      expect(type.ok).to.eql(false);
+      expect(type.errors[0].type).to.eql(ERROR.TYPE.CIRCULAR_REF);
     });
   });
 
   it.skip('primitive types (string, bool, number, null, object)', () => {}); // tslint:disable-line
+  it.skip('array types', () => {}); // tslint:disable-line
 
   describe('types', () => {
     it('empty: (no types / no columns)', async () => {
