@@ -1,5 +1,5 @@
-import { t } from './common';
-import { TypeTarget } from './TypeTarget';
+import { t } from '../common';
+import { TypeTarget } from '../TypeTarget';
 
 type ITypedColumnData = {
   type: t.IColumnTypeDef;

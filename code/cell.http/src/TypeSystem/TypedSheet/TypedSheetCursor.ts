@@ -1,4 +1,4 @@
-import { Schema, t } from './common';
+import { Schema, t } from '../common';
 import { TypedSheetRow } from './TypedSheetRow';
 
 type ITypedSheetCursorArgs = {

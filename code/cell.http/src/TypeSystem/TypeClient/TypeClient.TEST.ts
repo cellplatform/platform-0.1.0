@@ -1,6 +1,5 @@
-import { TypeSystem } from '../TypeSystem';
-import { testFetch } from '../TypeSystem/test';
-import { ERROR, expect, fs, R, TYPE_DEFS, t } from './test';
+import { ERROR, expect, fs, R, testFetch, TYPE_DEFS, t } from '../test';
+import { TypeSystem } from '..';
 
 describe.only('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
@@ -204,7 +203,7 @@ describe.only('TypeClient', () => {
 
     it('save for local tests', async () => {
       const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
-      await type.save(fs).typescript(fs.join(__dirname, '.d.ts'));
+      await type.save(fs).typescript(fs.join(__dirname, '../test/.d.ts'));
     });
 
     it('dir (filename inferred from type)', async () => {

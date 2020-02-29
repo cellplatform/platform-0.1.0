@@ -1,4 +1,4 @@
-import { t, Schema } from './common';
+import { t, Schema } from '../common';
 
 /**
  * Parser for interpreting a type value.

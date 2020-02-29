@@ -1,4 +1,4 @@
-import { t, ERROR } from './common';
+import { t, ERROR } from '../common';
 
 type Input = t.CellTypeTarget | t.IColumnTypeDef;
 const asTarget = (input?: Input) => {

@@ -1,5 +1,5 @@
-import { expect } from './test';
-import { TypeValue } from './TypeValue';
+import { expect } from '../test';
+import { TypeValue } from '.';
 
 describe.skip('TypeValue', () => {
   it('isRef', () => {

@@ -1,5 +1,5 @@
 import { expect, t } from '../test';
-import { TypeTarget } from './TypeTarget';
+import { TypeTarget } from '.';
 
 describe('TypeTarget', () => {
   it('invalid', () => {

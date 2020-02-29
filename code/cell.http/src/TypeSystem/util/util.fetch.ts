@@ -1,4 +1,4 @@
-import { ERROR, HttpClient, t } from './common';
+import { ERROR, HttpClient, t } from '../common';
 
 /**
  * Constructs a sheet-data-fetcher from an HTTP host/client.

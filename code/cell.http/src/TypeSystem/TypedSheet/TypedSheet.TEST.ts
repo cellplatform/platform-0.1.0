@@ -1,7 +1,6 @@
-import { TypeSystem } from '../TypeSystem';
-import { testInstanceFetch } from '../TypeSystem/test';
-import * as g from './.d.ts/MyRow';
-import { expect, TYPE_DEFS, ERROR } from './test';
+import * as g from '../test/.d.ts/MyRow';
+import { ERROR, expect, testInstanceFetch, TYPE_DEFS } from '../test';
+import { TypeSystem } from '..';
 
 /**
  * TODO 🐷TESTS

@@ -1,7 +1,6 @@
-import { ts } from '../ts.def';
-import { constants, defaultValue, ERROR, R, Schema, t, util, value } from './common';
-import { fetcher } from './util';
-import { TypeValue } from './TypeValue';
+import { TypeValue } from '../TypeValue';
+import { fetcher } from '../util';
+import { constants, defaultValue, ERROR, R, Schema, t, ts, util, value } from '../common';
 
 type ITypeClientArgs = {
   ns: string; // "ns:<uri>"

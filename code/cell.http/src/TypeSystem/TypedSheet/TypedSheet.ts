@@ -1,10 +1,10 @@
 import { Observable, Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { defaultValue, ERROR, Schema, t, util, value } from './common';
-import { TypeClient } from './TypeClient';
+import { defaultValue, ERROR, Schema, t, util, value } from '../common';
+import { TypeClient } from '../TypeClient';
 import { TypedSheetCursor } from './TypedSheetCursor';
-import { fetcher } from './util';
+import { fetcher } from '../util';
 
 type ISheetArgs = {
   ns: string; // "ns:<uri>"
