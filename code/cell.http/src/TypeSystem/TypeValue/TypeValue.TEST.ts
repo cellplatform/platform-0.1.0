@@ -1,7 +1,7 @@
 import { expect } from '../test';
 import { TypeValue } from '.';
 
-describe.skip('TypeValue', () => {
+describe.only('TypeValue', () => {
   it('isRef', () => {
     const test = (input: any, expected: boolean) => {
       expect(TypeValue.isRef(input)).to.eql(expected);
