@@ -1,7 +1,7 @@
 import { expect, t } from '../test';
 import { TypeTarget } from '.';
 
-describe.only('TypeTarget', () => {
+describe('TypeTarget', () => {
   it('invalid', () => {
     const test = (input: any) => {
       const info = TypeTarget.cell(input);
@@ -70,7 +70,7 @@ describe.only('TypeTarget', () => {
     test('ref', 'ref:type');
   });
 
-  describe('readInline', () => {
+  describe('read (inline)', () => {
     const base: t.IColumnTypeDef = {
       column: 'A',
       prop: 'foo',
@@ -83,7 +83,7 @@ describe.only('TypeTarget', () => {
       expect(fn).to.throw();
     });
 
-    it('cell.value', () => {
+    it('read: cell.value', () => {
       const test = (cell: t.ICellData, expected: any) => {
         const type = { ...base };
         const res = TypeTarget.readInline({ type, data: cell });
@@ -97,7 +97,7 @@ describe.only('TypeTarget', () => {
       test({ value: { foo: 123 } }, { foo: 123 });
     });
 
-    it('cell.props.[xxx]', () => {
+    it('read: cell.props.[xxx]', () => {
       const test = (target: t.CellTypeTarget, cell: t.ICellData<any>, expected: any) => {
         const type = { ...base, target };
         const res = TypeTarget.readInline({ type, data: cell });
@@ -107,5 +107,11 @@ describe.only('TypeTarget', () => {
       test('inline:foo.bar', { props: { 'foo.bar': 'hello' } }, 'hello');
       test('inline:foo:bar', { props: { 'foo:bar': { color: 'red' } } }, { color: 'red' });
     });
+  });
+
+  describe.skip('write (inline)', () => {
+    //
+    it('write: cell.value', () => {}); // tslint:disable-line
+    it('write: cell.props.[xxx]', () => {}); // tslint:disable-line
   });
 });

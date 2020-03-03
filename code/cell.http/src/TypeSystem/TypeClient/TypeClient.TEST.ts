@@ -1,36 +1,41 @@
 import { ERROR, expect, fs, R, testFetch, TYPE_DEFS, t } from '../test';
 import { TypeSystem } from '..';
+import { TypeClient2 } from './TypeClient2';
 
 describe.only('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
 
   describe('load', () => {
     it('"ns:foo"', async () => {
-      const type = await TypeSystem.Type.load({ ns: 'ns:foo', fetch });
-      expect(type.uri).to.eql('ns:foo');
-      expect(type.ok).to.eql(true);
-      expect(type.errors).to.eql([]);
+      const res = await TypeClient2.load({ ns: 'ns:foo', fetch });
+      expect(res.uri).to.eql('ns:foo');
+      expect(res.typename).to.eql('MyRow');
+      expect(res.errors).to.eql([]);
+      expect(res.columns.map(c => c.column)).to.eql(['A', 'B', 'C']);
     });
 
     it('"foo" (without "ns:" prefix)', async () => {
-      const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
-      expect(type.uri).to.eql('ns:foo');
-      expect(type.ok).to.eql(true);
-      expect(type.errors).to.eql([]);
+      const res = await TypeClient2.load({ ns: 'foo', fetch });
+      expect(res.uri).to.eql('ns:foo');
+      expect(res.typename).to.eql('MyRow');
+      expect(res.errors).to.eql([]);
+      expect(res.columns.map(c => c.column)).to.eql(['A', 'B', 'C']);
     });
   });
 
   describe('errors', () => {
     it('error: malformed URI', async () => {
-      const type = await TypeSystem.Type.load({ ns: 'ns:not-valid', fetch });
+      const type = await TypeClient2.load({ ns: 'ns:not-valid', fetch });
       expect(type.ok).to.eql(false);
+      expect(type.errors.length).to.eql(1);
       expect(type.errors[0].message).to.include(`invalid "ns" identifier`);
       expect(type.errors[0].type).to.eql(ERROR.TYPE.DEF);
     });
 
     it('error: not a "ns" uri', async () => {
-      const type = await TypeSystem.Type.load({ ns: 'cell:foo!A1', fetch });
+      const type = await TypeClient2.load({ ns: 'cell:foo!A1', fetch });
       expect(type.ok).to.eql(false);
+      expect(type.errors.length).to.eql(1);
       expect(type.errors[0].message).to.include(`Must be "ns"`);
       expect(type.errors[0].type).to.eql(ERROR.TYPE.DEF);
     });
@@ -42,16 +47,18 @@ describe.only('TypeClient', () => {
           throw new Error('Derp!');
         },
       });
-      const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
+      const type = await TypeClient2.load({ ns: 'foo', fetch });
       expect(type.ok).to.eql(false);
+      expect(type.errors.length).to.eql(1);
       expect(type.errors[0].message).to.include(`Failed while loading type for`);
       expect(type.errors[0].message).to.include(`Derp!`);
       expect(type.errors[0].type).to.eql(ERROR.TYPE.DEF);
     });
 
     it('error: 404 type definition not found', async () => {
-      const type = await TypeSystem.Type.load({ ns: 'foo.no.exist', fetch });
+      const type = await TypeClient2.load({ ns: 'foo.no.exist', fetch });
       expect(type.ok).to.eql(false);
+      expect(type.errors.length).to.eql(1);
       expect(type.errors[0].message).to.include(`does not exist`);
       expect(type.errors[0].type).to.eql(ERROR.TYPE.DEF_NOT_FOUND);
     });
@@ -61,9 +68,11 @@ describe.only('TypeClient', () => {
       delete defs['ns:foo.color']; // NB: Referenced type ommited.
 
       const fetch = testFetch({ defs });
-      const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
+      const type = await TypeClient2.load({ ns: 'foo', fetch });
 
       expect(type.ok).to.eql(false);
+      expect(type.errors.length).to.eql(1);
+
       expect(type.errors[0].message).to.include(`The referenced type in column 'C'`);
       expect(type.errors[0].message).to.include(`could not be read`);
       expect(type.errors[0].type).to.eql(ERROR.TYPE.REF);
@@ -76,9 +85,10 @@ describe.only('TypeClient', () => {
       if (t) {
         t.implements = ns; // NB: Implement self.
       }
-      const type = await TypeSystem.Type.load({ ns, fetch: testFetch({ defs }) });
+      const type = await TypeClient2.load({ ns, fetch: testFetch({ defs }) });
 
       expect(type.ok).to.eql(false);
+      expect(type.errors.length).to.eql(1);
       expect(type.errors[0].message).to.include(`cannot implement itself (circular-ref)`);
       expect(type.errors[0].type).to.eql(ERROR.TYPE.CIRCULAR_REF);
     });
@@ -90,9 +100,10 @@ describe.only('TypeClient', () => {
       if (columns.C?.props?.prop) {
         columns.C.props.prop.type = `${ns}`;
       }
-      const type = await TypeSystem.Type.load({ ns, fetch: testFetch({ defs }) });
+      const type = await TypeClient2.load({ ns, fetch: testFetch({ defs }) });
 
       expect(type.ok).to.eql(false);
+      expect(type.errors.length).to.eql(1);
       expect(type.errors[0].message).to.include(`The referenced type in column 'C'`);
       expect(type.errors[0].message).to.include(`contains a circular reference`);
       expect(type.errors[0].type).to.eql(ERROR.TYPE.CIRCULAR_REF);
@@ -114,19 +125,20 @@ describe.only('TypeClient', () => {
         },
       };
       const ns = 'ns:foo.one';
-      const type = await TypeSystem.Type.load({ ns, fetch: testFetch({ defs }) });
+      const type = await TypeClient2.load({ ns, fetch: testFetch({ defs }) });
 
       expect(type.ok).to.eql(false);
+      expect(type.errors.length).to.eql(1);
       expect(type.errors[0].type).to.eql(ERROR.TYPE.CIRCULAR_REF);
     });
   });
 
-  describe('types', () => {
+  describe.only('types', () => {
     it('empty: (no types / no columns)', async () => {
       const test = async (defs: { [key: string]: t.ITypeDefPayload }, length: number) => {
         const fetch = testFetch({ defs });
-        const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
-        expect(type.types.length).to.eql(length);
+        const res = await TypeClient2.load({ ns: 'foo', fetch });
+        expect(res.columns.length).to.eql(length);
       };
 
       const defs1 = R.clone(TYPE_DEFS);
@@ -143,12 +155,11 @@ describe.only('TypeClient', () => {
     describe('types: REF', () => {
       it('REF object-type, n-level deep ("ns:xxx")', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const type = await TypeSystem.Type.load({ ns: 'foo', fetch });
-        const types = type.types;
+        const res = await TypeClient2.load({ ns: 'foo', fetch });
 
-        const A = types[0];
-        const B = types[1];
-        const C = types[2];
+        const A = res.columns[0];
+        const B = res.columns[1];
+        const C = res.columns[2];
 
         expect(A.type.kind).to.eql('VALUE');
         expect(A.type.typename).to.eql('string');

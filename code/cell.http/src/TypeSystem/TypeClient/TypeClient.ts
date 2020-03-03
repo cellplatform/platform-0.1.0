@@ -79,7 +79,6 @@ export class TypeClient implements t.ITypeClient {
       this.error(message, { errorType: ERROR.TYPE.CIRCULAR_REF });
       return self;
     }
-
     this.visited.push(ns);
     this.errors = []; // NB: Reset any prior errors.
 
@@ -166,33 +165,9 @@ export class TypeClient implements t.ITypeClient {
         props: args.columns[column]?.props?.prop as t.CellTypeProp,
       }))
       .filter(({ props: prop }) => Boolean(prop))
-      .map(async item => {
-        const column = item.column;
-        const target = item.props.target;
-        const prop = item.props.name;
-
-        const typeValue = (item.props.type || '').trim();
-
-        const f = await this.readColumn({ column, props: item.props });
-        // console.log('f', f);
-        return f;
-
-        // OLD-2
-        // if (TypeValue.isRef(typeValue)) {
-        //   const { type, error } = await this.readRef__OLD(column, typeValue); // <== RECURSION 🌳
-        //   const res: t.IColumnTypeDef = { column, prop, type, target, error };
-        //   return res;
-        // } else {
-        //   // TODO 🐷
-        //   const res: t.IColumnTypeDef = { column, prop, type: typeValue, target };
-        //   return res;
-        // }
-
-        // OLD-1
-        // const res: t.IColumnTypeDef = { column, prop, type, target };
-        // return TypeValue.isRef(type) ? this.readRef(res) : res;
-      });
-    return R.sortBy(R.prop('column'), await Promise.all(wait));
+      .map(({ column, props }) => this.readColumn({ column, props }));
+    const columns = await Promise.all(wait);
+    return R.sortBy(R.prop('column'), columns);
   }
 
   private async readColumn(args: {
@@ -212,9 +187,6 @@ export class TypeClient implements t.ITypeClient {
     }
 
     const def: t.IColumnTypeDef = { column, prop, type, target, error };
-
-    // console.log('def.type', def.type);
-
     return value.deleteUndefined(def);
   }
 
@@ -255,96 +227,10 @@ export class TypeClient implements t.ITypeClient {
     }
 
     // Build the reference.
-    // const { uri, typename, types } = nsType;
     const { typename, types } = nsType;
     const type: t.ITypeRef = { ...ref, typename, types };
     return { type };
-
-    // const type: t.ITypeRef = { kind: 'REF', uri, typename, types };
-    // return { ...ref, typename, types };
   }
-
-  private async readRef__OLD(
-    column: string,
-    input: string,
-  ): Promise<{ type: t.ITypeRef | t.ITypeUnknown; error?: t.IError }> {
-    const unknown: t.ITypeUnknown = { kind: 'UNKNOWN', typename: input };
-
-    //  Remove "=" prefix.
-    const ns = (input || '').trim().replace(/^=/, '');
-    if (!Schema.uri.is.ns(ns)) {
-      this.error(`The referenced type in column '${column}' is not a namespace.`);
-      return { type: unknown };
-    }
-
-    // Retrieve the referenced namespace.
-    const fetch = this.fetch;
-    const visited = this.visited;
-    const nsType = new TypeClient({ ns, fetch, visited });
-    await nsType.load(); // <== RECURSION 🌳
-
-    const CIRCULAR_REF = ERROR.TYPE.CIRCULAR_REF;
-    const isCircular = nsType.errors.some(err => err.type === CIRCULAR_REF);
-
-    if (isCircular) {
-      const msg = `The referenced type in column '${column}' ("${ns}") contains a circular reference.`;
-      const children = nsType.errors;
-      const error = this.error(msg, { children, errorType: CIRCULAR_REF });
-      return { type: unknown, error };
-    }
-
-    if (!nsType.ok) {
-      const msg = `The referenced type in column '${column}' ("${ns}") could not be read.`;
-      const children = nsType.errors;
-      const error = this.error(msg, { children, errorType: ERROR.TYPE.REF });
-      return { type: unknown, error };
-    }
-
-    // Build the reference.
-    const { uri, typename, types } = nsType;
-    const type: t.ITypeRef = { kind: 'REF', uri, typename, types };
-    return { type };
-  }
-
-  // private async readRef(def: t.IColumnTypeDef): Promise<t.IColumnTypeDef> {
-  //   if (typeof def.type === 'object' || !TypeValue.isRef(def.type)) {
-  //     return def;
-  //   }
-
-  //   const ns = def.type.substring(1); // NB: Remove "=" prefix.
-  //   if (!Schema.uri.is.ns(ns)) {
-  //     this.error(`The referenced type in column '${def.column}' is not a namespace.`);
-  //     return def;
-  //   }
-
-  //   // Retrieve the referenced namespace.
-  //   const fetch = this.fetch;
-  //   const visited = this.visited;
-  //   const nsType = new TypeClient({ ns, fetch, visited });
-  //   await nsType.load(); // <== RECURSION 🌳
-
-  //   const CIRCULAR_REF = ERROR.TYPE.CIRCULAR_REF;
-  //   const isCircular = nsType.errors.some(err => err.type === CIRCULAR_REF);
-
-  //   if (isCircular) {
-  //     const msg = `The referenced type in column '${def.column}' ("${ns}") contains a circular reference.`;
-  //     const children = nsType.errors;
-  //     const error = this.error(msg, { children, errorType: CIRCULAR_REF });
-  //     return { ...def, error };
-  //   }
-
-  //   if (!nsType.ok) {
-  //     const msg = `The referenced type in column '${def.column}' ("${ns}") could not be read.`;
-  //     const children = nsType.errors;
-  //     const error = this.error(msg, { children, errorType: ERROR.TYPE.REF });
-  //     return { ...def, error };
-  //   }
-
-  //   // Build the reference.
-  //   const { uri, typename, types } = nsType;
-  //   const type: t.ITypeRef = { kind: 'REF', uri, typename, types };
-  //   return { ...def, type };
-  // }
 }
 
 /**

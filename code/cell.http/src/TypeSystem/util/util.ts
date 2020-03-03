@@ -1,5 +1,6 @@
 export * from './util.objectToCells';
 export * from './util.fetch';
+export * from './ErrorList';
 
 export const formatNs = (input: string = '') => {
   input = input.trim();

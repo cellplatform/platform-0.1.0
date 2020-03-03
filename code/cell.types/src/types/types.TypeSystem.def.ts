@@ -16,6 +16,16 @@ export type IColumnTypeDef = ITypeDef & {
 };
 
 /**
+ * Tokenizer
+ */
+export type ITypeToken = {
+  input: string;
+  kind: 'VALUE' | 'GROUP' | 'GROUP[]';
+  text: string;
+  next: string;
+};
+
+/**
  * Type Definitions.
  */
 
@@ -24,7 +34,7 @@ export type ITypeDef = {
   type: IType;
 };
 
-export type IType = ITypeUnion | ITypeRef | ITypeValue | ITypeEnum | ITypeUnknown;
+export type IType = ITypeValue | ITypeEnum | ITypeUnion | ITypeRef | ITypeUnknown;
 
 export type ITypeUnion = {
   kind: 'UNION';
@@ -34,6 +44,7 @@ export type ITypeUnion = {
 
 export type ITypeRef = {
   kind: 'REF';
+  scope: 'NS' | 'COLUMN' | 'UNKNOWN';
   uri: string;
   typename: string;
   types: ITypeDef[];
