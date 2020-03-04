@@ -1,4 +1,4 @@
-import { t, value } from '../common';
+import { t, value, R } from '../common';
 
 type IErrorListArgs = {
   defaultType: string;
@@ -12,24 +12,28 @@ export class ErrorList {
   public static create = (args: IErrorListArgs) => new ErrorList(args);
   private constructor(args: IErrorListArgs) {
     this.defaultType = args.defaultType;
-    this.list = args.errors || [];
+    this._list = args.errors ? [...args.errors] : [];
   }
 
   /**
    * [Fields]
    */
-  public readonly list: t.IError[];
+  public readonly _list: t.IError[];
   public readonly defaultType: string;
 
   /**
    * Properties
    */
   public get length() {
-    return this.list.length;
+    return this._list.length;
   }
 
   public get ok() {
     return this.length === 0;
+  }
+
+  public get list() {
+    return R.uniq(this._list);
   }
 
   /**
@@ -39,7 +43,7 @@ export class ErrorList {
     const type = options.errorType || this.defaultType;
     const children = options.children;
     const error: t.IError = value.deleteUndefined({ message, type, children });
-    this.list.push(error);
+    this._list.push(error);
     return error;
   }
 }

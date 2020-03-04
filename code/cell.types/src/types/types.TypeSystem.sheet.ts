@@ -3,7 +3,6 @@ import { t } from '../common';
 export type ITypedSheet<T> = {
   readonly ok: boolean;
   readonly uri: string;
-  readonly type: t.ITypeClient;
   readonly types: t.IColumnTypeDef[];
   readonly events$: t.Observable<TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;

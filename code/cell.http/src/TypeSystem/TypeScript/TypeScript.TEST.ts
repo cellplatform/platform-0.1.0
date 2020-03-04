@@ -1,7 +1,7 @@
 import { expect, t } from '../test';
 import { TypeScript } from '.';
 
-describe.only('TypeScript', () => {
+describe('TypeScript', () => {
   describe('TypeScript.primitives', () => {
     it('is immutable', () => {
       const test = (key: keyof t.ITypePrimitives) => {

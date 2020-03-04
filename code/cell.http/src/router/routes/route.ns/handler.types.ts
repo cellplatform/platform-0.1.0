@@ -34,8 +34,7 @@ export async function getTypes(args: {
 
     const data: t.IResGetNsTypes = {
       uri,
-      types: type.types,
-      typescript: type.typescript(),
+      types: type.columns,
     };
 
     return { status: 200, data };

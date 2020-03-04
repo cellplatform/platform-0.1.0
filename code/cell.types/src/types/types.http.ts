@@ -76,7 +76,6 @@ export type IResGetNsUrls = { data: string };
 export type IResGetNsTypes = {
   uri: string;
   types: t.IColumnTypeDef[];
-  typescript: string;
 };
 
 /**

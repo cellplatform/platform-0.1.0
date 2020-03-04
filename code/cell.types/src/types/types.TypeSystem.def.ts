@@ -22,12 +22,6 @@ export type ITypeToken = {
 /**
  * Type Definitions.
  */
-export type ITypeDef = {
-  prop: string;
-  type: IType;
-  optional?: boolean;
-};
-
 export type INsTypeDef = {
   ok: boolean;
   uri: string;
@@ -40,6 +34,12 @@ export type IColumnTypeDef = ITypeDef & {
   column: string;
   target?: t.CellTypeTarget;
   error?: t.IError;
+};
+
+export type ITypeDef = {
+  prop: string;
+  type: IType;
+  optional?: boolean;
 };
 
 /**

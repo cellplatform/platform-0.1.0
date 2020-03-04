@@ -55,8 +55,8 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
    */
 
   public async load() {
-    const types = this.types;
     const self = this as t.ITypedSheetCursor<T>;
+    const types = this.types;
     if (types.length === 0) {
       return self;
     }

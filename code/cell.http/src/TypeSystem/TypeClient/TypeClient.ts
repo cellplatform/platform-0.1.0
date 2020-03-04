@@ -1,235 +1,75 @@
+import { constants, ERROR, ErrorList, R, Schema, t, util, value } from '../common';
 import { TypeValue } from '../TypeValue';
-import { fetcher } from '../util';
-import { constants, defaultValue, ERROR, R, Schema, t, ts, util, value } from '../common';
-
-type ITypeClientArgs = {
-  ns: string; // "ns:<uri>"
-  fetch: t.ISheetFetcher;
-};
-
-const fromClient = (client: string | t.IHttpClient) => {
-  const fetch = fetcher.fromClient({ client });
-  return {
-    create: (ns: string) => TypeClient.create({ fetch, ns }),
-    load: (ns: string) => TypeClient.load({ fetch, ns }),
-  };
-};
+import { TypeScript } from '../TypeScript';
 
 /**
- * The type-system for a namespace.
+ * Client that retrieves the type definition of a namespace
+ * from the network.
  */
-export class TypeClient implements t.ITypeClient {
-  public static create = (args: ITypeClientArgs) => new TypeClient(args) as t.ITypeClient;
-  public static load = (args: ITypeClientArgs) => TypeClient.create(args).load();
-  public static client = fromClient;
-
+export class TypeClient {
   /**
-   * [Lifecycle]
+   * Load types from the network using the given HTTP client.
    */
-  private constructor(args: ITypeClientArgs & { visited?: string[] }) {
-    const ns = util.formatNs(args.ns);
-    const uri = Schema.uri.parse<t.INsUri>(ns);
-
-    if (uri.error) {
-      const message = `Invalid namespace URI ("${args.ns}"). ${uri.error.message}`;
-      this.error(message);
-    }
-    if (uri.parts.type !== 'NS') {
-      const message = `Invalid namespace URI. Must be "ns", given: [${args.ns}]`;
-      this.error(message);
-    }
-
-    this.uri = uri.toString();
-    this.fetch = args.fetch;
-    this.visited = args.visited || [];
+  public static client(client: string | t.IHttpClient) {
+    const fetch = util.fetcher.fromClient({ client });
+    return {
+      load: (ns: string) => TypeClient.load({ ns, fetch }),
+    };
   }
 
   /**
-   * [Fields]
+   * Retrieve and assemble types from the network.
    */
-  private readonly fetch: t.ISheetFetcher;
-  private readonly visited: string[]; // NB: Used for short circuiting circular-refs.
-
-  public readonly uri: string;
-  public typename: string;
-  public types: t.IColumnTypeDef[] = [];
-  public errors: t.IError[] = [];
-
-  /**
-   * [Properties]
-   */
-  public get ok() {
-    return this.errors.length === 0;
+  public static async load(args: { ns: string; fetch: t.ISheetFetcher }) {
+    const { ns, fetch } = args;
+    return load({ ns, fetch });
   }
 
   /**
-   * [Methods]
+   * Converts type definitions to valid typescript declarations.
    */
+  public static typescript(def: t.INsTypeDef, options: { header?: boolean } = {}) {
+    const api = {
+      /**
+       * Comments to insert at the head of the typescript.
+       */
+      get header() {
+        const uri = def.uri;
+        const pkg = constants.PKG.name || 'Unnamed';
+        return toTypescriptHeader({ uri, pkg });
+      },
 
-  public async load(): Promise<t.ITypeClient> {
-    const ns = this.uri;
-    const self = this as t.ITypeClient;
+      /**
+       * Generated typescript decalration(s).
+       */
+      get declaration() {
+        const header = value.defaultValue(options.header, true) ? api.header : undefined;
+        const typename = def.typename;
+        const types = def.columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
+        return TypeScript.toDeclaration({ typename, types, header });
+      },
 
-    if (!this.ok) {
-      return self;
-    }
+      /**
+       * Save the typescript declarations as a binary file.
+       */
+      async save(fs: t.IFs, dir: string, options: { filename?: string } = {}) {
+        // Prepare paths.
+        await fs.ensureDir(dir);
+        let path = fs.join(dir, options.filename || def.typename);
+        path = path.endsWith('.d.ts') ? path : `${path}.d.ts`;
 
-    if (this.visited.includes(ns)) {
-      const message = `The namespace "${ns}" leads back to itself (circular reference).`;
-      this.error(message, { errorType: ERROR.TYPE.CIRCULAR_REF });
-      return self;
-    }
-    this.visited.push(ns);
-    this.errors = []; // NB: Reset any prior errors.
+        // Save file.
+        const data = api.declaration;
+        await fs.writeFile(path, data);
+        return { path, data };
+      },
 
-    try {
-      // Retrieve namespace.
-      const typeResponse = await this.fetch.getType({ ns });
-      if (!typeResponse.exists) {
-        const message = `The namespace "${ns}" does not exist.`;
-        this.error(message, { errorType: ERROR.TYPE.DEF_NOT_FOUND });
-        return self;
-      }
-      if (typeResponse.error) {
-        this.error(typeResponse.error.message);
-        return self;
-      }
-      if (typeResponse.type.implements === ns) {
-        const message = `The namespace ("${ns}") cannot implement itself (circular-ref).`;
-        this.error(message, { errorType: ERROR.TYPE.CIRCULAR_REF });
-        return self;
-      }
-
-      // Retrieve columns.
-      const columnsResponse = await this.fetch.getColumns({ ns });
-      const { columns } = columnsResponse;
-      if (columnsResponse.error) {
-        this.error(columnsResponse.error.message);
-        return self;
-      }
-
-      // Parse type details.
-      this.typename = (typeResponse.type?.typename || '').trim();
-      this.types = await this.readColumns({ columns });
-    } catch (error) {
-      this.error(`Failed while loading type for "${ns}". ${error.message}`);
-    }
-
-    // Finish up.
-    return self;
-  }
-
-  public typescript(args: t.ITypeClientTypescriptArgs = {}) {
-    const uri = this.uri;
-    const pkg = constants.PKG.name || 'Unnamed';
-    const header = defaultValue(args.header, true) ? toTypescriptHeader({ uri, pkg }) : undefined;
-
-    const typename = this.typename;
-    const types = this.types;
-
-    return ts.toDeclaration({ typename, types, header });
-  }
-
-  public save(fs: t.IFs) {
-    const typescript = async (dir: string, options: { filename?: string } = {}) => {
-      const data = this.typescript();
-
-      // Prepare paths.
-      await fs.ensureDir(dir);
-      let path = fs.join(dir, options.filename || this.typename);
-      path = path.endsWith('.d.ts') ? path : `${path}.d.ts`;
-
-      // Save file.
-      await fs.writeFile(path, data);
-      return { path, data };
+      toString() {
+        return api.declaration;
+      },
     };
 
-    return { typescript };
-  }
-
-  /**
-   * [Internal]
-   */
-
-  private error(message: string, options: { errorType?: string; children?: t.IError[] } = {}) {
-    const type = options.errorType || ERROR.TYPE.DEF;
-    const error: t.IError = { message, type, children: options.children };
-    this.errors.push(error);
-    return value.deleteUndefined(error);
-  }
-
-  private async readColumns(args: { columns: t.IColumnMap }): Promise<t.IColumnTypeDef[]> {
-    const wait = Object.keys(args.columns)
-      .map(column => ({
-        column,
-        props: args.columns[column]?.props?.prop as t.CellTypeProp,
-      }))
-      .filter(({ props: prop }) => Boolean(prop))
-      .map(({ column, props }) => this.readColumn({ column, props }));
-    const columns = await Promise.all(wait);
-    return R.sortBy(R.prop('column'), columns);
-  }
-
-  private async readColumn(args: {
-    column: string;
-    props: t.CellTypeProp;
-  }): Promise<t.IColumnTypeDef> {
-    const column = args.column;
-    const prop = args.props.name;
-    const target = args.props.target;
-    let type = TypeValue.parse(args.props.type);
-    let error: t.IError | undefined;
-
-    if (type.kind === 'REF') {
-      const res = await this.readRef({ column, ref: type });
-      type = res.type;
-      error = res.error ? res.error : error;
-    }
-
-    const def: t.IColumnTypeDef = { column, prop, type, target, error };
-    return value.deleteUndefined(def);
-  }
-
-  private async readRef(args: {
-    column: string;
-    ref: t.ITypeRef;
-  }): Promise<{ type: t.ITypeRef | t.ITypeUnknown; error?: t.IError }> {
-    const { column, ref } = args;
-    const ns = ref.uri;
-    const unknown: t.ITypeUnknown = { kind: 'UNKNOWN', typename: ns };
-
-    if (!Schema.uri.is.ns(ns)) {
-      this.error(`The referenced type in column '${column}' is not a namespace.`);
-      return { type: unknown };
-    }
-
-    // Retrieve the referenced namespace.
-    const fetch = this.fetch;
-    const visited = this.visited;
-    const nsType = new TypeClient({ ns, fetch, visited });
-    await nsType.load(); // <== RECURSION 🌳
-
-    const CIRCULAR_REF = ERROR.TYPE.CIRCULAR_REF;
-    const isCircular = nsType.errors.some(err => err.type === CIRCULAR_REF);
-
-    if (isCircular) {
-      const msg = `The referenced type in column '${column}' ("${ns}") contains a circular reference.`;
-      const children = nsType.errors;
-      const error = this.error(msg, { children, errorType: CIRCULAR_REF });
-      return { type: unknown, error };
-    }
-
-    if (!nsType.ok) {
-      const msg = `The referenced type in column '${column}' ("${ns}") could not be read.`;
-      const children = nsType.errors;
-      const error = this.error(msg, { children, errorType: ERROR.TYPE.REF });
-      return { type: unknown, error };
-    }
-
-    // Build the reference.
-    const { typename, types } = nsType;
-    const type: t.ITypeRef = { ...ref, typename, types };
-    return { type };
+    return api;
   }
 }
 
@@ -237,12 +77,194 @@ export class TypeClient implements t.ITypeClient {
  * [Helpers]
  */
 
+export async function load(args: {
+  ns: string;
+  fetch: t.ISheetFetcher;
+  errors?: ErrorList;
+  visited?: string[];
+}): Promise<t.INsTypeDef> {
+  const { fetch, visited = [] } = args;
+  const errors = args.errors || ErrorList.create({ defaultType: ERROR.TYPE.DEF });
+  const ns = util.formatNs(args.ns);
+
+  // Prepare return object.
+  const done = (args: { typename?: string; columns?: t.IColumnTypeDef[] } = {}) => {
+    const { typename = '', columns = [] } = args;
+    const uri = ns;
+    const errorList = [
+      ...errors.list,
+      ...columns.reduce((acc, { error }) => (error ? [...acc, error] : acc), [] as t.IError[]),
+    ];
+    const ok = errorList.length === 0;
+    const res: t.INsTypeDef = {
+      ok,
+      uri,
+      typename,
+      columns,
+      errors: R.uniq(errorList),
+    };
+    return res;
+  };
+
+  // Validate the URI.
+  const uri = Schema.uri.parse<t.INsUri>(ns);
+  if (uri.error) {
+    const message = `Invalid namespace URI ("${args.ns}"). ${uri.error.message}`;
+    errors.add(message);
+  }
+  if (uri.parts.type !== 'NS') {
+    const message = `Invalid namespace URI. Must be "ns", given: [${args.ns}]`;
+    errors.add(message);
+  }
+
+  // Short-circuit any cirular references.
+  if (visited.includes(ns)) {
+    const message = `The namespace "${ns}" leads back to itself (circular reference).`;
+    errors.add(message, { errorType: ERROR.TYPE.CIRCULAR_REF });
+    return done();
+  }
+  visited.push(ns);
+
+  if (!errors.ok) {
+    return done();
+  }
+
+  try {
+    // Retrieve namespace.
+    const fetchedType = await fetch.getType({ ns });
+    if (!fetchedType.exists) {
+      const message = `The namespace "${ns}" does not exist.`;
+      errors.add(message, { errorType: ERROR.TYPE.DEF_NOT_FOUND });
+      return done();
+    }
+    if (fetchedType.error) {
+      errors.add(fetchedType.error.message);
+      return done();
+    }
+    if (fetchedType.type.implements === ns) {
+      const message = `The namespace ("${ns}") cannot implement itself (circular-ref).`;
+      errors.add(message, { errorType: ERROR.TYPE.CIRCULAR_REF });
+      return done();
+    }
+
+    // Retrieve columns.
+    const fetchedColumns = await fetch.getColumns({ ns });
+    const { columns } = fetchedColumns;
+    if (fetchedColumns.error) {
+      errors.add(fetchedColumns.error.message);
+      return done();
+    }
+
+    // Parse type details.
+    const typename = (fetchedType.type?.typename || '').trim();
+    const columnTypeDefs = await readColumns({ fetch, columns, errors, visited });
+    return done({ typename, columns: columnTypeDefs });
+  } catch (error) {
+    // Failure.
+    errors.add(`Failed while loading type for "${ns}". ${error.message}`);
+    return done();
+  }
+}
+
+export async function readColumns(args: {
+  fetch: t.ISheetFetcher;
+  columns: t.IColumnMap;
+  visited?: string[];
+  errors?: ErrorList;
+}): Promise<t.IColumnTypeDef[]> {
+  const { fetch, visited, errors } = args;
+  const wait = Object.keys(args.columns)
+    .map(column => {
+      const props = args.columns[column]?.props?.prop as t.CellTypeProp;
+      return { column, props };
+    })
+    .filter(({ props }) => Boolean(props))
+    .map(({ column, props }) => readColumn({ fetch, column, props, visited, errors }));
+  const columns = await Promise.all(wait);
+  return R.sortBy(R.prop('column'), columns);
+}
+
+export async function readColumn(args: {
+  fetch: t.ISheetFetcher;
+  column: string;
+  props: t.CellTypeProp;
+  visited?: string[];
+  errors?: ErrorList;
+}): Promise<t.IColumnTypeDef> {
+  const { fetch, column, visited, errors } = args;
+  const target = args.props.target;
+  let type = TypeValue.parse(args.props.type);
+  let error: t.IError | undefined;
+
+  let prop = (args.props.name || '').trim();
+  const optional = prop.endsWith('?');
+  prop = optional ? prop.replace(/\?$/, '') : prop;
+
+  if (type.kind === 'REF') {
+    const ref = type;
+    const res = await readRef({ fetch, column, visited, errors, ref });
+    type = res.type;
+    error = res.error ? res.error : error;
+  }
+
+  const def: t.IColumnTypeDef = { column, prop, optional, type, target, error };
+  return value.deleteUndefined(def);
+}
+
+export async function readRef(args: {
+  fetch: t.ISheetFetcher;
+  column: string;
+  ref: t.ITypeRef;
+  visited?: string[];
+  errors?: ErrorList;
+}): Promise<{ type: t.ITypeRef | t.ITypeUnknown; error?: t.IError }> {
+  const { column, ref, fetch, visited = [] } = args;
+  const errors = args.errors || ErrorList.create({ defaultType: ERROR.TYPE.DEF });
+  const ns = ref.uri;
+  const unknown: t.ITypeUnknown = { kind: 'UNKNOWN', typename: ns };
+
+  if (!Schema.uri.is.ns(ns)) {
+    errors.add(`The referenced type in column '${column}' is not a namespace.`);
+    return { type: unknown };
+  }
+
+  // Retrieve the referenced namespace.
+  const loadResponse = await load({ ns, fetch, visited }); // <== RECURSION 🌳
+
+  // Check for errors.
+  const CIRCULAR_REF = ERROR.TYPE.CIRCULAR_REF;
+  const isCircular = loadResponse.errors.some(err => err.type === CIRCULAR_REF);
+  if (isCircular) {
+    const msg = `The referenced type in column '${column}' ("${ns}") contains a circular reference.`;
+    const children = loadResponse.errors;
+    return {
+      type: unknown,
+      error: errors.add(msg, { children, errorType: CIRCULAR_REF }),
+    };
+  }
+
+  if (loadResponse.errors.length > 0) {
+    const msg = `The referenced type in column '${column}' ("${ns}") could not be read.`;
+    const children = loadResponse.errors;
+    return {
+      type: unknown,
+      error: errors.add(msg, { children, errorType: ERROR.TYPE.REF }),
+    };
+  }
+
+  // Build the reference.
+  const { typename } = loadResponse;
+  const types: t.ITypeDef[] = loadResponse.columns.map(({ prop, type }) => ({ prop, type }));
+  const type: t.ITypeRef = { ...ref, typename, types };
+  return { type };
+}
+
 function toTypescriptHeader(args: { uri: string; pkg: string }) {
   return `
   /**
-   * Generated by [${args.pkg}] for CellOS namespace:
+   * Generated by [${args.pkg}] for namespace:
    * 
-   *      ${args.uri}
+   *      "${args.uri}"
    * 
    * Notes: 
    * 

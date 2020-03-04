@@ -78,8 +78,8 @@ describe('TypeSystem (on http server)', () => {
       const client = mock.client;
       await writeTypes({ client });
 
-      const types = await TypeSystem.Type.client(client).load('ns:foo');
-      const cells = TypeSystem.objectToCells<g.MyRow>(types).rows(0, [
+      const def = await TypeSystem.Type.client(client).load('ns:foo');
+      const cells = TypeSystem.objectToCells<g.MyRow>(def).rows(0, [
         { title: 'One', isEnabled: true, color: { label: 'background', color: 'red' } },
         { title: 'Two', isEnabled: false, color: { label: 'foreground', color: 'blue' } },
       ]);

@@ -1,16 +1,10 @@
 import { Observable, Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { defaultValue, ERROR, Schema, t, util, value } from '../common';
+import { defaultValue, ERROR, Schema, t, util, value, R, ErrorList } from '../common';
 import { TypeClient } from '../TypeClient';
 import { TypedSheetCursor } from './TypedSheetCursor';
 import { fetcher } from '../util';
-
-type ISheetArgs = {
-  ns: string; // "ns:<uri>"
-  fetch: t.ISheetFetcher;
-  events$?: t.Subject<t.TypedSheetEvent>;
-};
 
 const fromClient = (client: string | t.IHttpClient) => {
   const fetch = fetcher.fromClient({ client });
@@ -25,32 +19,51 @@ const fromClient = (client: string | t.IHttpClient) => {
 export class TypedSheet<T> implements t.ITypedSheet<T> {
   public static client = fromClient;
 
-  public static async load<T>(args: ISheetArgs) {
-    const res = await args.fetch.getType({ ns: util.formatNs(args.ns) });
+  public static async load<T>(args: {
+    ns: string;
+    fetch: t.ISheetFetcher;
+    events$?: t.Subject<t.TypedSheetEvent>;
+  }) {
+    const { fetch, events$ } = args;
+    const sheetNs = util.formatNs(args.ns);
+
+    // Retrieve type definition for sheet.
+    const res = await args.fetch.getType({ ns: sheetNs });
     if (res.error) {
       throw new Error(res.error.message);
     }
-
-    const type = res.type;
-    const ns = util.formatNs(type.implements);
-    if (!ns) {
-      const err = `The namespace [${args.ns}] does not contain an "implements" type reference.`;
+    const implementsNs = util.formatNs(res.type.implements);
+    if (!implementsNs) {
+      const err = `The namespace [${sheetNs}] does not contain an "implements" type reference.`;
       throw new Error(err);
     }
 
-    const typeNs = Schema.uri.create.ns(ns);
-    return new TypedSheet<T>({ ...args, typeNs }).load();
+    // Load and parse the type definition.
+    const typeNs = Schema.uri.create.ns(implementsNs);
+    const typeDef = await TypeClient.load({ ns: typeNs, fetch });
+
+    // Finish up.
+    return new TypedSheet<T>({ sheetNs, typeDef, fetch, events$ });
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: ISheetArgs & { typeNs: string }) {
+  private constructor(args: {
+    sheetNs: string;
+    typeDef: t.INsTypeDef;
+    fetch: t.ISheetFetcher;
+    events$?: t.Subject<t.TypedSheetEvent>;
+  }) {
     this.fetch = args.fetch;
-    this.uri = args.ns;
-    this.type = TypeClient.create({ fetch: args.fetch, ns: args.typeNs });
+    this.uri = args.sheetNs;
+    this.typeDef = args.typeDef;
     this._events$ = args.events$ || new Subject<t.TypedSheetEvent>();
     this.events$ = this._events$.asObservable().pipe(takeUntil(this._dispose$), share());
+    this.errorList = ErrorList.create({
+      defaultType: ERROR.TYPE.SHEET,
+      errors: this.typeDef.errors,
+    });
   }
 
   public dispose() {
@@ -62,9 +75,10 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    * [Fields]
    */
   private readonly fetch: t.ISheetFetcher;
-  public readonly type: t.ITypeClient;
+  private readonly typeDef: t.INsTypeDef;
+  private readonly errorList: ErrorList;
+
   public readonly uri: string;
-  private readonly _errors: t.IError[] = [];
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.asObservable();
@@ -84,21 +98,16 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   }
 
   public get errors() {
-    return [...this.type.errors, ...this._errors];
+    return this.errorList.list;
   }
 
   public get types() {
-    return this.type.types;
+    return this.typeDef.columns;
   }
 
   /**
    * [Methods]
    */
-  public async load() {
-    this.throwIfDisposed('load');
-    await this.type.load();
-    return this as t.ITypedSheet<T>;
-  }
 
   public async cursor(args: { index?: number; take?: number } = {}) {
     this.throwIfDisposed('cursor');
@@ -118,12 +127,5 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     if (this.isDisposed) {
       throw new Error(`Cannot ${action} because [TypedSheet] is disposed.`);
     }
-  }
-
-  private error(message: string, options: { errorType?: string; children?: t.IError[] } = {}) {
-    const type = options.errorType || ERROR.TYPE.SHEET;
-    const error: t.IError = { message, type, children: options.children };
-    this.errors.push(error);
-    return value.deleteUndefined(error);
   }
 }
