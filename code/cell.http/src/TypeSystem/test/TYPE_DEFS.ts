@@ -11,7 +11,7 @@ export const TYPE_DEFS: SampleTypeDefs = {
       A: { props: { prop: { name: 'title', type: 'string' } } },
       B: { props: { prop: { name: 'isEnabled', type: 'boolean', target: 'inline:isEnabled' } } },
       C: {
-        props: { prop: { name: 'color', type: 'ns:foo.color', target: 'inline:color' } },
+        props: { prop: { name: 'color?', type: 'ns:foo.color', target: 'inline:color' } },
       },
     },
   },

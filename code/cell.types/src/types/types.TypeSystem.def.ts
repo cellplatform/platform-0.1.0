@@ -9,12 +9,6 @@ export type ITypeDefPayload = {
   columns: t.IColumnMap;
 };
 
-export type IColumnTypeDef = ITypeDef & {
-  column: string;
-  target?: t.CellTypeTarget;
-  error?: t.IError;
-};
-
 /**
  * Tokenizer
  */
@@ -28,10 +22,35 @@ export type ITypeToken = {
 /**
  * Type Definitions.
  */
-
 export type ITypeDef = {
   prop: string;
   type: IType;
+  optional?: boolean;
+};
+
+export type INsTypeDef = {
+  ok: boolean;
+  uri: string;
+  typename: string;
+  columns: t.IColumnTypeDef[];
+  errors: t.IError[];
+};
+
+export type IColumnTypeDef = ITypeDef & {
+  column: string;
+  target?: t.CellTypeTarget;
+  error?: t.IError;
+};
+
+/**
+ * Types
+ */
+export type ITypePrimitives = {
+  string: t.ITypeValue;
+  number: t.ITypeValue;
+  boolean: t.ITypeValue;
+  null: t.ITypeValue;
+  undefined: t.ITypeValue;
 };
 
 export type IType = ITypeValue | ITypeEnum | ITypeUnion | ITypeRef | ITypeUnknown;
@@ -52,7 +71,7 @@ export type ITypeRef = {
 
 export type ITypeValue = {
   kind: 'VALUE';
-  typename: 'string' | 'number' | 'boolean' | 'null' | 'undefined';
+  typename: keyof ITypePrimitives;
 };
 
 export type ITypeEnum = {
