@@ -83,6 +83,7 @@ describe('TypeScript', () => {
         scope: 'NS',
         uri: 'ns:foo.color',
         typename: 'MyColor',
+        isArray: false,
         types: [
           { prop: 'name', type: string },
           { prop: 'hex', type: string },

@@ -2,7 +2,7 @@ import { ERROR, expect, fs, R, testFetch, TYPE_DEFS, t } from '../test';
 import { TypeSystem } from '..';
 import { TypeClient } from '.';
 
-describe('TypeClient', () => {
+describe.only('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
 
   it('TypeSystem.Type === TypeClient', () => {
@@ -197,12 +197,20 @@ describe('TypeClient', () => {
         expect(C.optional).to.eql(true);
       });
 
-      it.skip('REF array (2..n references)', () => {}); // tslint:disable-line
+      it.skip('REF array (2..n references)', async () => {
+        const fetch = testFetch({ defs: TYPE_DEFS });
+        const res = await TypeClient.load({ ns: 'foo.messages', fetch });
 
-      it.skip('REF => VALUE/ENUM (column URI)', () => {}); // tslint:disable-line
+        console.log('-------------------------------------------');
+        console.log('res', res);
+
+        //
+      });
+
+      it.skip('REF => VALUE/ENUM (column URI)', async () => {}); // tslint:disable-line
     });
 
-    it.skip('array types', () => {
+    it.skip('array types', async () => {
       //
     });
 

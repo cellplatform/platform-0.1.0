@@ -38,8 +38,8 @@ export type IColumnTypeDef = ITypeDef & {
 
 export type ITypeDef = {
   prop: string;
-  type: IType;
   optional?: boolean;
+  type: IType;
 };
 
 /**
@@ -58,6 +58,7 @@ export type IType = ITypeValue | ITypeEnum | ITypeUnion | ITypeRef | ITypeUnknow
 export type ITypeUnion = {
   kind: 'UNION';
   typename: string;
+  isArray?: boolean;
   types: IType[];
 };
 
@@ -66,21 +67,25 @@ export type ITypeRef = {
   scope: 'NS' | 'COLUMN' | 'UNKNOWN';
   uri: string;
   typename: string;
+  isArray?: boolean;
   types: ITypeDef[];
 };
 
 export type ITypeValue = {
   kind: 'VALUE';
   typename: keyof ITypePrimitives;
+  isArray?: boolean;
 };
 
 export type ITypeEnum = {
   kind: 'ENUM';
   typename: string;
-  values: string[];
+  isArray?: boolean;
+  // values: string[];
 };
 
 export type ITypeUnknown = {
   kind: 'UNKNOWN';
   typename: string;
+  isArray?: boolean;
 };

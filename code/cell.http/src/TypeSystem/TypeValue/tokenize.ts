@@ -6,7 +6,7 @@ export const tokenize = {
    * from the given input string.
    */
   next(input: string) {
-    const trimmedInput = trimPipe(input);
+    const trimmed = trimPipe(input);
 
     const done = (args: { isGroup: boolean; text: string }): t.ITypeToken => {
       const { isGroup } = args;
@@ -16,22 +16,32 @@ export const tokenize = {
         input,
         kind,
         text: trimParams(args.text),
-        next: trimPipe(trimmedInput.substring(args.text.length)),
+        next: trimPipe(trimmed.substring(args.text.length)),
       };
     };
 
-    // Group.
-    const groupMatch = trimmedInput.match(/^\(.*\)(\[\])?/);
-    if (Array.isArray(groupMatch)) {
-      return done({ isGroup: true, text: groupMatch[0] });
+    // Empty.
+    if (!trimmed) {
+      return done({ isGroup: false, text: '' });
     }
 
-    // Non-group.
-    const index = trimmedInput.indexOf('|');
-    return done({
-      isGroup: false,
-      text: index < 0 ? trimmedInput : trimmedInput.substring(0, index),
-    });
+    // Look for a non-group first.
+    const firstPipe = trimmed.indexOf('|');
+    if (firstPipe > -1) {
+      const text = trimmed.substring(0, firstPipe);
+      if (!text.includes('(')) {
+        return done({ isGroup: false, text });
+      }
+    }
+
+    // Look for a group.
+    const group = nextGroup(trimmed);
+    if (group) {
+      return done({ isGroup: true, text: group.text });
+    }
+
+    // Simple value (no "|" and no groups).
+    return done({ isGroup: false, text: trimmed });
   },
 };
 
@@ -45,12 +55,43 @@ const trimPipe = (text: string) =>
     .replace(/^(\s*\|\s*)/, '')
     .replace(/(\s*\|\s*)$/, '');
 
-const trimParams = (text: string) => {
-  text = text
+const trimParams = (text: string) =>
+  text
     .trim()
     .replace(/^\(/, '')
     .replace(/\)\[\]$/, '')
     .replace(/\)$/, '');
 
-  return text;
+const nextGroup = (input: string) => {
+  let position = 0;
+  let start = -1;
+  let end = -1;
+  let group = 0;
+
+  do {
+    const char = input[position];
+    if (char === '(') {
+      if (group === 0) {
+        start = position;
+      }
+      group++;
+    }
+    if (char === ')') {
+      if (group === 1) {
+        end = position + 1;
+        break;
+      }
+      group--;
+    }
+    position++;
+  } while (position < input.length);
+
+  const exists = start > -1 && end > -1;
+  if (!exists) {
+    return undefined;
+  }
+
+  const isArray = input.substring(end, end + 2) === '[]';
+  const text = input.substring(start, end + (isArray ? 2 : 0));
+  return { start, end, text };
 };

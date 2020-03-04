@@ -1,5 +1,8 @@
-import { t, Schema } from '../common';
+import { t, Schema, deleteUndefined } from '../common';
 import { tokenize } from './tokenize';
+
+type Parsed = { type: t.IType; input: string };
+type U = t.ITypeUnion;
 
 /**
  * Parser for interpreting a type value.
@@ -35,7 +38,7 @@ export class TypeValue {
         const isMatch = Boolean(value.match(/^\((.+)\)\[\]$/));
         return isMatch && value.replace(/\s/g, '') !== '()[]';
       } else {
-        return Boolean(value.match(/[\w\d]\[\]$/));
+        return Boolean(value.match(/[\w\d"']\[\]$/));
       }
     }
   }
@@ -57,27 +60,57 @@ export class TypeValue {
   }
 
   /**
+   * Removes the "[]" suffix from a string.
+   */
+  public static trimArray(input?: string) {
+    return typeof input !== 'string' ? '' : (input || '').trim().replace(/\[\]$/, '');
+  }
+
+  /**
+   * Removes single-quotes (') and double-quotes ("") from the given string.
+   */
+  public static trimQuotes(input?: string) {
+    return typeof input !== 'string'
+      ? ''
+      : (input || '')
+          .trim()
+          .replace(/^["']/, '')
+          .replace(/["']$/, '')
+          .trim();
+  }
+
+  /**
    * Parses an input 'type' declared on a column into a [Type] object.
    */
-  public static parse(input?: string): t.IType {
+  public static parse(input?: string): Parsed {
     // Setup initial conditions.
     const value = (typeof input === 'string' ? input : '').trim();
+    const isArray = TypeValue.isArray(value) ? true : undefined;
+    const unknown: t.ITypeUnknown = { kind: 'UNKNOWN', typename: value, isArray };
 
-    const unknown: t.ITypeUnknown = { kind: 'UNKNOWN', typename: value };
+    const done = (input?: Parsed): Parsed => {
+      return input || { type: unknown, input: value };
+    };
+
     if (typeof input !== 'string' || !value) {
-      return unknown;
+      return done();
     }
 
-    type U = t.ITypeUnion;
-    let result: t.IType | undefined;
+    let result: Parsed | undefined;
     let next = value;
 
     const tokenToType = (token: t.ITypeToken) => {
       if (token.kind === 'VALUE') {
         return TypeValue.toType(token.text);
       }
+
       if (token.kind === 'GROUP' || token.kind === 'GROUP[]') {
-        return TypeValue.parse(token.text); // <== RECURSION 🌳
+        const type = TypeValue.parse(token.text).type; // <== RECURSION 🌳
+        if (token.kind === 'GROUP[]') {
+          type.isArray = true;
+          type.typename = type.kind === 'UNION' ? `(${type.typename})[]` : `${type.typename}[]`;
+        }
+        return type;
       }
 
       const unknown: t.ITypeUnknown = { kind: 'UNKNOWN', typename: token.input };
@@ -92,68 +125,58 @@ export class TypeValue {
         // UNION of several types.
         if (!result) {
           const union: U = { kind: 'UNION', typename: token.input, types: [] };
-          result = union;
+          result = { type: union, input: value };
         }
-        (result as U).types.push(tokenToType(token));
+        (result.type as U).types.push(tokenToType(token));
       } else {
         // LAST type (or ONLY type).
-        if (result?.kind === 'UNION') {
-          (result as U).types.push(tokenToType(token));
+        if (result?.type.kind === 'UNION') {
+          (result.type as U).types.push(tokenToType(token));
         } else {
-          result = tokenToType(token);
+          result = { type: tokenToType(token), input: value };
         }
       }
     } while (next);
 
-    // Collapse all enumerations into a single enumeration collection.
-    if (result.kind === 'UNION' && result.types.some(type => type.kind === 'ENUM')) {
-      const values = result.types.reduce((acc, next) => {
-        if (next.kind === 'ENUM') {
-          next.values.forEach(value => acc.push(value));
-        }
-        return acc;
-      }, [] as string[]);
-
-      const enums: t.ITypeEnum = {
-        kind: 'ENUM',
-        typename: values.map(value => `'${value}'`).join(' | '),
-        values,
-      };
-
-      result = {
-        ...result,
-        types: [...result.types.filter(type => type.kind !== 'ENUM'), enums],
-      };
-    }
-
     // If UNION only has one type within it, elevate that type to be the root type.
-    if (result.kind === 'UNION' && result.types.length === 1) {
-      result = result.types[0];
+    if (result.type.kind === 'UNION' && result.type.types.length === 1) {
+      result.type = result.type.types[0];
     }
 
     // Clean up UNION typename.
-    if (result.kind === 'UNION') {
-      result = {
-        ...result,
-        typename: result.types
-          .map(type => (type.kind === 'UNION' ? `(${type.typename})` : type.typename))
-          .join(' | '),
-      };
+    if (result.type.kind === 'UNION') {
+      const type = result.type;
+      let typename = type.types
+        .map(type => {
+          let typename = type.typename;
+          if (type.kind === 'UNION') {
+            typename = `(${typename})`;
+          }
+          if (type.kind === 'REF') {
+            typename = type.uri;
+          }
+          return typename;
+        })
+        .join(' | ');
+      typename = type.isArray ? `(${typename})[]` : typename;
+      result.type = { ...type, typename };
     }
 
     // Finish up.
-    return result || unknown;
+    return done(result);
   }
 
   /**
    * Parses a single input 'type' value into an [IType] object.
+   * NOTE:
+   *    This method does not understand groups (eg "(...)").
    */
   public static toType(input?: string): t.IType {
     // Setup initial conditions.
     const value = (typeof input === 'string' ? input : '').trim();
-    const isArray = TypeValue.isArray(value);
+    const isArray = TypeValue.isArray(value) ? true : undefined;
 
-    const unknown: t.ITypeUnknown = { kind: 'UNKNOWN', typename: value };
+    const unknown: t.ITypeUnknown = deleteUndefined({ kind: 'UNKNOWN', typename: value, isArray });
     if (typeof input !== 'string' || !value) {
       return unknown;
     }
@@ -164,8 +187,8 @@ export class TypeValue {
       const match = isArray ? value.replace(/\[\]$/, '') : value;
       if (type === match) {
         const typename = value as t.ITypeValue['typename'];
-        const type: t.ITypeValue = { kind: 'VALUE', typename };
-        return type;
+        const type: t.ITypeValue = { kind: 'VALUE', typename, isArray };
+        return deleteUndefined(type);
       }
     }
 
@@ -177,22 +200,33 @@ export class TypeValue {
       const uri = value;
       const is = Schema.uri.is;
       const scope: t.ITypeRef['scope'] = is.ns(uri) ? 'NS' : is.column(uri) ? 'COLUMN' : 'UNKNOWN';
-      const type: t.ITypeRef = { kind: 'REF', uri, scope, typename: '', types: [] };
-      return type;
+      const type: t.ITypeRef = { kind: 'REF', uri, scope, typename: '', isArray, types: [] };
+      return deleteUndefined(type);
     }
 
     // Parse out ENUM types.
     if (value.includes(`'`) || value.includes(`"`)) {
-      const values = value.split('|').map(part =>
-        part
-          .trim()
-          .replace(/^["']/, '')
-          .replace(/["']$/, '')
-          .trim(),
-      );
-      const typename = values.map(part => `'${part}'`).join(' | ');
-      const type: t.ITypeEnum = { kind: 'ENUM', typename, values };
-      return type;
+      const formatEnum = (typename: string, isArray?: boolean) => {
+        typename = TypeValue.trimQuotes(TypeValue.trimArray(typename));
+        return `'${typename}'${isArray ? '[]' : ''}`;
+      };
+
+      const enums = value.split('|').map(item => {
+        const isArray = TypeValue.isArray(item) ? true : undefined;
+        const typename = formatEnum(item, isArray);
+        const type: t.ITypeEnum = { kind: 'ENUM', typename, isArray };
+        return deleteUndefined(type);
+      });
+
+      if (enums.length === 1) {
+        return enums[0];
+      } else {
+        const typename = enums
+          .map(({ typename, isArray }) => formatEnum(typename, isArray))
+          .join(' | ');
+        const union: U = { kind: 'UNION', typename, types: enums };
+        return deleteUndefined(union);
+      }
     }
 
     // No match.
