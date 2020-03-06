@@ -153,7 +153,7 @@ export class TypeValue {
             typename = `(${typename})`;
           }
           if (type.kind === 'REF') {
-            typename = type.uri;
+            typename = type.isArray ? `${type.uri}[]` : type.uri;
           }
           return typename;
         })
@@ -197,7 +197,7 @@ export class TypeValue {
       // NOTE:  The type-ref is a stub, and will require doing a lookup
       //        with an HTTP client to resolve the final typename/types
       //        defined in the remote "ns".
-      const uri = value;
+      const uri = TypeValue.trimArray(value);
       const is = Schema.uri.is;
       const scope: t.ITypeRef['scope'] = is.ns(uri) ? 'NS' : is.column(uri) ? 'COLUMN' : 'UNKNOWN';
       const type: t.ITypeRef = { kind: 'REF', uri, scope, typename: '', isArray, types: [] };

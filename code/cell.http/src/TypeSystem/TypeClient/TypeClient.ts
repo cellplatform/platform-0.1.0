@@ -1,6 +1,6 @@
 import { t, util } from '../common';
-import { load } from './TypeClient.load';
-import { typescript } from './TypeClient.typescript';
+import { load } from './load';
+import { typescript } from './typescript';
 
 /**
  * Client that retrieves the type definition of a

@@ -16,5 +16,8 @@ export const ERROR = {
     REF: 'TYPE/ref',
     CIRCULAR_REF: 'TYPE/circularRef',
     SHEET: 'TYPE/sheet',
+    PROP: {
+      DUPLICATE_NAME: 'TYPE/prop/duplicateName',
+    },
   },
 };

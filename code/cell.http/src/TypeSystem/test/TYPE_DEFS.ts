@@ -4,8 +4,10 @@ type D = t.ITypeDefPayload;
 export type SampleTypeDefs = {
   'ns:foo': D;
   'ns:foo.color': D;
-  'ns:foo.message': D;
+  'ns:foo.primitives': D;
+  'ns:foo.enum': D;
   'ns:foo.messages': D;
+  'ns:foo.message': D;
   'ns:foo.nested': D;
 };
 
@@ -29,12 +31,22 @@ export const TYPE_DEFS: SampleTypeDefs = {
     },
   },
 
-  'ns:foo.message': {
-    ns: { type: { typename: 'MyMessage' } },
+  'ns:foo.primitives': {
+    ns: { type: { typename: 'Primitives' } },
     columns: {
-      A: { props: { prop: { name: 'date', type: 'number' } } },
-      B: { props: { prop: { name: 'user', type: 'string' } } },
-      C: { props: { prop: { name: 'message', type: 'string' } } },
+      A: { props: { prop: { name: 'myString', type: 'string' } } },
+      B: { props: { prop: { name: 'myNumber', type: 'number' } } },
+      C: { props: { prop: { name: 'myBoolean', type: 'boolean' } } },
+      D: { props: { prop: { name: 'myNull', type: 'null' } } },
+      E: { props: { prop: { name: 'myUndefined', type: 'undefined' } } },
+    },
+  },
+
+  'ns:foo.enum': {
+    ns: { type: { typename: 'Enum' } },
+    columns: {
+      A: { props: { prop: { name: 'single', type: '"hello"' } } },
+      B: { props: { prop: { name: 'colors', type: '"red" | "green" | "blue"[]' } } },
     },
   },
 
@@ -42,7 +54,17 @@ export const TYPE_DEFS: SampleTypeDefs = {
     ns: { type: { typename: 'MyMessages' } },
     columns: {
       A: { props: { prop: { name: 'channel', type: 'string' } } },
-      B: { props: { prop: { name: 'messages', type: 'ns:foo.message[]' } } },
+      B: { props: { prop: { name: 'color', type: 'ns:foo.color' } } },
+      C: { props: { prop: { name: 'messages', type: 'ns:foo.message[]' } } },
+    },
+  },
+
+  'ns:foo.message': {
+    ns: { type: { typename: 'MyMessage' } },
+    columns: {
+      A: { props: { prop: { name: 'date', type: 'number' } } },
+      B: { props: { prop: { name: 'user', type: 'string' } } },
+      C: { props: { prop: { name: 'message', type: 'string' } } },
     },
   },
 

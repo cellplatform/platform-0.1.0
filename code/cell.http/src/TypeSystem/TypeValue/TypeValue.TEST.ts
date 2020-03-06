@@ -1,7 +1,7 @@
 import { expect, t } from '../test';
 import { TypeValue } from '.';
 
-describe.only('TypeValue', () => {
+describe('TypeValue', () => {
   describe('is (flags)', () => {
     it('isRef', () => {
       const test = (input: any, expected: boolean) => {
@@ -123,35 +123,42 @@ describe.only('TypeValue', () => {
         test('null');
         test('null[]', true);
       });
+
+      it('undefined', () => {
+        test('undefined');
+        test('undefined[]', true);
+      });
     });
 
-    it('ENUM (single)', () => {
-      const test = (input: any, typename: string, isArray?: boolean) => {
-        const res = TypeValue.toType(input);
-        expect(res.kind).to.eql('ENUM');
-        expect(res.typename).to.eql(typename);
-        expect(res.isArray).to.eql(isArray);
-      };
-      test(`"red"`, `'red'`);
-      test(`'blue'`, `'blue'`);
-      test(`'  blue  '`, `'blue'`);
-      test(`"red"[]`, `'red'[]`, true);
-    });
+    describe('ENUM', () => {
+      it('ENUM (single)', () => {
+        const test = (input: any, typename: string, isArray?: boolean) => {
+          const res = TypeValue.toType(input);
+          expect(res.kind).to.eql('ENUM');
+          expect(res.typename).to.eql(typename);
+          expect(res.isArray).to.eql(isArray);
+        };
+        test(`"red"`, `'red'`);
+        test(`'blue'`, `'blue'`);
+        test(`'  blue  '`, `'blue'`);
+        test(`"red"[]`, `'red'[]`, true);
+      });
 
-    it('ENUM (union)', () => {
-      const res = TypeValue.toType(`'red' | "blue" | 'green'[]`);
+      it('ENUM (union)', () => {
+        const res = TypeValue.toType(`'red' | "blue" | 'green'[]`);
 
-      expect(res.kind).to.eql('UNION');
-      expect(res.typename).to.eql(`'red' | 'blue' | 'green'[]`);
+        expect(res.kind).to.eql('UNION');
+        expect(res.typename).to.eql(`'red' | 'blue' | 'green'[]`);
 
-      if (res.kind === 'UNION') {
-        expect(res.types.every(t => t.kind === 'ENUM')).to.eql(true);
-        expect(res.types.length).to.eql(3);
-        expect(res.types[0].typename).to.eql(`'red'`);
-        expect(res.types[1].typename).to.eql(`'blue'`);
-        expect(res.types[2].typename).to.eql(`'green'[]`);
-        expect(res.types[2].isArray).to.eql(true);
-      }
+        if (res.kind === 'UNION') {
+          expect(res.types.every(t => t.kind === 'ENUM')).to.eql(true);
+          expect(res.types.length).to.eql(3);
+          expect(res.types[0].typename).to.eql(`'red'`);
+          expect(res.types[1].typename).to.eql(`'blue'`);
+          expect(res.types[2].typename).to.eql(`'green'[]`);
+          expect(res.types[2].isArray).to.eql(true);
+        }
+      });
     });
 
     describe('REF', () => {
@@ -268,7 +275,7 @@ describe.only('TypeValue', () => {
         expect(res.type.kind).to.eql('REF');
         expect(res.type.isArray).to.eql(isArray);
         if (res.type.kind === 'REF') {
-          const uri = input.trim();
+          const uri = TypeValue.trimArray(input);
           expect(res.type.uri).to.eql(uri);
           expect(res.type.typename).to.eql(''); // NB: Stub REF object, requires lookup against network.
           expect(res.type.types).to.eql([]);
@@ -291,6 +298,21 @@ describe.only('TypeValue', () => {
             { kind: 'VALUE', typename: 'number[]', isArray: true },
             { kind: 'ENUM', typename: `'red'` },
             { kind: 'ENUM', typename: `'blue'[]`, isArray: true },
+          ],
+        });
+      });
+
+      it('UNION (namespace array)', () => {
+        const res = TypeValue.parse(`string | ns:foo[]`).type;
+
+        // NB: The URI is stored on the child REF without the array ("[]") notation
+        //     whilst the UNION's typename correctly retains the "ns:foo[]" array suffix.
+        expect(res).to.eql({
+          kind: 'UNION',
+          typename: 'string | ns:foo[]',
+          types: [
+            { kind: 'VALUE', typename: 'string' },
+            { kind: 'REF', uri: 'ns:foo', scope: 'NS', typename: '', isArray: true, types: [] },
           ],
         });
       });

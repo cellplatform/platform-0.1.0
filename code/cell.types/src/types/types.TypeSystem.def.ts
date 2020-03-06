@@ -81,7 +81,6 @@ export type ITypeEnum = {
   kind: 'ENUM';
   typename: string;
   isArray?: boolean;
-  // values: string[];
 };
 
 export type ITypeUnknown = {
