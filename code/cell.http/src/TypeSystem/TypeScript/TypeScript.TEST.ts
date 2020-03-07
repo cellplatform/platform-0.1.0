@@ -49,7 +49,7 @@ describe.only('TypeScript', () => {
     });
   });
 
-  describe('TypeScript.toDeclaration', () => {
+  describe('TypeScript.toDeclaration()', () => {
     const { string, boolean } = TypeScript.primitives;
 
     it('single type (no header)', () => {

@@ -2,7 +2,7 @@ import { TypeClient } from '.';
 import { TypeSystem } from '..';
 import { Cache, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../test';
 
-describe.only('TypeClient', () => {
+describe('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
 
   it('TypeSystem.Type === TypeClient', () => {
@@ -707,7 +707,7 @@ describe.only('TypeClient', () => {
       });
     });
 
-    describe('save file (.d.ts)', () => {
+    describe.only('save file (.d.ts)', () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
 
       it('save for local tests', async () => {
@@ -730,7 +730,7 @@ describe.only('TypeClient', () => {
         expect(file.toString()).to.eql(ts.toString()); // NB: same as `ts.declaration`
       });
 
-      it('filename (explicit)', async () => {
+      it('dir and filename (explicitly passed)', async () => {
         const def = await TypeClient.load({ ns: 'foo', fetch });
         const ts = TypeClient.typescript(def);
 

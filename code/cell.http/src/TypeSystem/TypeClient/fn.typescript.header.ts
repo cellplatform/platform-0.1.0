@@ -1,13 +1,21 @@
+type Package = { name: string; version: string };
+
+/**
+ * The header inserted into generated Typsecript files.
+ */
+
+export function toTypescriptHeader(args: { uri: string; pkg: Package; schema: Package }) {
+  return `
   /**
    * Generated types defined in namespace:
    * 
    *    |                
-   *    |➔  ns:foo
+   *    |➔  ${args.uri}
    *    |
    * 
    * By:
-   *    module:  @platform/cell.http@0.6.65
-   *    schema:  @platform/cell.schema@^0.4.50
+   *    module:  ${args.pkg.name}@${args.pkg.version}
+   *    schema:  ${args.schema.name}@${args.schema.version}
    * 
    * Notes: 
    * 
@@ -18,15 +26,5 @@
    *        that uses a [TypedSheet] to programatically manipulate 
    *        the namespace in a strongly-typed manner.
    * 
-   */
-
-export declare type MyRow = {
-  title: string;
-  isEnabled: boolean;
-  color?: MyColor;
-};
-
-export declare type MyColor = {
-  label: string;
-  color: 'red' | 'green' | 'blue';
-};
+   */`.substring(1);
+}

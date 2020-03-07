@@ -22,7 +22,7 @@ import { TypeSystem } from '..';
  * - read/write: linked sheet
  */
 
-describe.only('TypedSheet', () => {
+describe('TypedSheet', () => {
   it.skip('read/write primitive types', () => {}); // tslint:disable-line
   it.skip('read/write ref (singular) - linked sheet', () => {}); // tslint:disable-line
   it.skip('read/write ref (array/list) - linked sheet', () => {}); // tslint:disable-line
