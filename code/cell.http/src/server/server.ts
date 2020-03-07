@@ -25,7 +25,7 @@ export function create(args: {
   const deployedAt =
     typeof args.deployedAt === 'string' ? value.toNumber(args.deployedAt) : args.deployedAt;
 
-  // Log uncaught exceptions.
+  // Log any uncaught exceptions.
   process.on('uncaughtException', err => {
     logger.error('UNCAUGHT EXCEPTION');
     logger.error(err.message);
@@ -49,8 +49,7 @@ export function create(args: {
     },
   });
 
-  // Make common checks/adjustments to responses
-  // before they are sent over the wire.
+  // Make common checks/adjustments to responses before they are sent over the wire.
   app.response$.subscribe(prepareResponse);
 
   // Finish up.

@@ -1,9 +1,9 @@
 import { NeDb } from '@platform/fsdb.nedb';
 import { local } from '@platform/cell.fs/lib/fs.local';
-import { IMicro, IMicroService } from '@platform/micro';
+import { IMicro, IMicroService, micro } from '@platform/micro';
 
-import { server } from '../server';
 import { util, t, Schema, HttpClient } from '../common';
+import { CellRouter } from '..';
 
 export type IMock = {
   db: t.IDb;
@@ -48,10 +48,11 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
   const port = args.port || randomPort();
 
   const db = NeDb.create({ filename });
-  const cellFs = local.init({ root: PATH.FS });
+  const fs = local.init({ root: PATH.FS });
 
-  const app = server.create({ title: 'Test', db, fs: cellFs });
-  const router = app.router;
+  const body = micro.body;
+  const router = CellRouter.create({ title: 'Test', db, fs, body });
+  const app = micro.create({ router });
   const service = await app.start({ port, silent: true });
 
   const urls = Schema.urls(`localhost:${port}`);
@@ -60,7 +61,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
 
   const mock: IMock = {
     db,
-    fs: cellFs,
+    fs: fs,
     port,
     app,
     router,
@@ -90,7 +91,7 @@ const tryIgnore = async (fn: () => any) => {
 };
 
 /**
- * Helpers.
+ * [Helpers]
  */
 
 const randomPort = () => {

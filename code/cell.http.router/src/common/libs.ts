@@ -12,7 +12,9 @@ export { value, id, defaultValue, time } from '@platform/util.value';
 export { HttpClient } from '@platform/cell.client';
 export { MemoryCache } from '@platform/cache';
 
+export * from './libs.cell';
 import * as cell from './libs.cell';
+
 export { cell };
 
 export const models = cell.models;
