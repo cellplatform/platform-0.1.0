@@ -1,7 +1,7 @@
 import { expect, t } from '../test';
 import { TypeValue } from '.';
 
-describe('TypeValue', () => {
+describe.only('TypeValue', () => {
   describe('is (flags)', () => {
     it('isRef', () => {
       const test = (input: any, expected: boolean) => {

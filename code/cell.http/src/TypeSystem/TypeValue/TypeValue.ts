@@ -89,7 +89,7 @@ export class TypeValue {
     const unknown: t.ITypeUnknown = { kind: 'UNKNOWN', typename: value, isArray };
 
     const done = (input?: Parsed): Parsed => {
-      return input || { type: unknown, input: value };
+      return deleteUndefined(input || { type: unknown, input: value });
     };
 
     if (typeof input !== 'string' || !value) {

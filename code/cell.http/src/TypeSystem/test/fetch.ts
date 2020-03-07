@@ -28,6 +28,7 @@ export const testFetch = (data: {
     const ns = data.defs[args.ns]?.ns;
     const type = ns?.type as t.INsType;
     const exists = Boolean(type);
+    res.getTypeCount++;
     return { exists, type };
   };
 
@@ -35,6 +36,7 @@ export const testFetch = (data: {
     before('getColumns', args);
     const def = data.defs[args.ns];
     const columns = def?.columns || {};
+    res.getColumnsCount++;
     return { columns };
   };
 
@@ -43,10 +45,24 @@ export const testFetch = (data: {
     const cells = data.cells || {};
     const rows = Schema.coord.cell.max.row(Object.keys(cells));
     const total = { rows };
+    res.getCellsCount++;
     return { cells, total };
   };
 
-  return TypeSystem.fetcher.fromFuncs({ getType, getColumns, getCells });
+  type T = t.ISheetFetcher & {
+    getTypeCount: number;
+    getColumnsCount: number;
+    getCellsCount: number;
+  };
+
+  const res: T = {
+    ...TypeSystem.fetcher.fromFuncs({ getType, getColumns, getCells }),
+    getTypeCount: 0,
+    getColumnsCount: 0,
+    getCellsCount: 0,
+  };
+
+  return res;
 };
 
 /**

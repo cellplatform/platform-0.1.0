@@ -9,7 +9,6 @@ export type IError<T extends string = string> = {
   children?: IError[];
 };
 export type IErrorParent<T extends string = string> = { error?: IError<T> };
-export type IHttpError<T extends string = string> = IError<T> & { status: number };
 
 /**
  * Ref errors
@@ -49,7 +48,7 @@ type UriErrorProps = { uri: string };
 export type IUriError = t.IError<'URI'> & UriErrorProps;
 
 /**
- * File-system errors
+ * FileSystem errors
  */
 export type FsError =
   | 'FS/read'
@@ -62,8 +61,62 @@ export type FsError =
 export type IFsError<E extends FsError = FsError> = IError<E> & { path: string };
 
 /**
- * File errors.
+ * File errors
  */
 export type FileError = 'FILE/upload';
 export type IFileError<E extends FileError = FileError> = IError<E> & { filename: string };
 export type IFileUploadError = IFileError<'FILE/upload'>;
+
+/**
+ * TypeSystem errors
+ */
+export type TypeError = ITypeError['type'];
+export type ITypeError =
+  | ITypeErrorDef
+  | ITypeErrorDefInvalid
+  | ITypeErrorNotFound
+  | ITypeErrorTarget
+  | ITypeErrorRef
+  | ITypeErrorCircularRef
+  | ITypeErrorDuplicateProp
+  | ITypeErrorDuplicateTypename
+  | ITypeErrorSheet;
+
+type TypeErrorProps = { ns: string; column?: string };
+export type ITypeErrorDef = t.IError<'TYPE/def'> & TypeErrorProps;
+export type ITypeErrorDefInvalid = t.IError<'TYPE/def/invalid'> & TypeErrorProps;
+export type ITypeErrorNotFound = t.IError<'TYPE/notFound'> & TypeErrorProps;
+export type ITypeErrorTarget = t.IError<'TYPE/target'> & TypeErrorProps;
+export type ITypeErrorRef = t.IError<'TYPE/ref'> & TypeErrorProps;
+export type ITypeErrorCircularRef = t.IError<'TYPE/ref/circular'> & TypeErrorProps;
+export type ITypeErrorDuplicateProp = t.IError<'TYPE/duplicate/prop'> & TypeErrorProps;
+export type ITypeErrorDuplicateTypename = t.IError<'TYPE/duplicate/typename'> & TypeErrorProps;
+export type ITypeErrorSheet = t.IError<'TYPE/sheet'> & TypeErrorProps;
+
+/**
+ * Http errors
+ */
+export type HttpError = IHttpError['type'];
+export type IHttpError =
+  | IHttpErrorServer
+  | IHttpErrorConfig
+  | IHttpErrorNotFound
+  | IHttpErrorNotLinked
+  | IHttpErrorFile
+  | IHttpErrorMalformedUri
+  | IHttpErrorHashMismatch
+  | IHttpErrorType;
+// | IHttpErrorFs;
+
+type HttpErrorProps = { status: number };
+export type IHttpErrorServer = t.IError<'HTTP/server'> & HttpErrorProps;
+export type IHttpErrorConfig = t.IError<'HTTP/config'> & HttpErrorProps;
+export type IHttpErrorNotFound = t.IError<'HTTP/notFound'> & HttpErrorProps;
+export type IHttpErrorNotLinked = t.IError<'HTTP/notLinked'> & HttpErrorProps;
+export type IHttpErrorFile = t.IError<'HTTP/file'> & HttpErrorProps;
+export type IHttpErrorMalformedUri = t.IError<'HTTP/uri/malformed'> & HttpErrorProps;
+export type IHttpErrorHashMismatch = t.IError<'HTTP/hash/mismatch'> & HttpErrorProps;
+export type IHttpErrorType = t.IError<'HTTP/type'> & HttpErrorProps;
+
+export type FsHttpError = IHttpError['type'];
+export type IFsHttpError = IFsError & HttpErrorProps;

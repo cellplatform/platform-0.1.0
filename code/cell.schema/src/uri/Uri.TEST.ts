@@ -2,7 +2,7 @@ import { expect, t, cuid } from '../test';
 import { Uri } from '.';
 import { DEFAULT } from './Uri';
 
-describe('Uri', () => {
+describe.only('Uri', () => {
   describe('ids', () => {
     it('Uri.cuid', () => {
       const res = Uri.cuid();
@@ -12,6 +12,38 @@ describe('Uri', () => {
     it('Uri.slug', () => {
       const res = Uri.slug();
       expect(res.length).to.within(5, 10);
+    });
+  });
+
+  describe.only('uri.kind', () => {
+    it('NS', () => {
+      const uri = Uri.parse<t.INsUri>('ns:foo');
+      expect(uri.type).to.eql('NS');
+      expect(uri.parts.type).to.eql(uri.type);
+    });
+
+    it('CELL', () => {
+      const uri = Uri.parse<t.ICellUri>('cell:foo!A1');
+      expect(uri.type).to.eql('CELL');
+      expect(uri.parts.type).to.eql(uri.type);
+    });
+
+    it('ROW', () => {
+      const uri = Uri.parse<t.IRowUri>('cell:foo!1');
+      expect(uri.type).to.eql('ROW');
+      expect(uri.parts.type).to.eql(uri.type);
+    });
+
+    it('COLUMN', () => {
+      const uri = Uri.parse<t.IColumnUri>('cell:foo!A');
+      expect(uri.type).to.eql('COLUMN');
+      expect(uri.parts.type).to.eql(uri.type);
+    });
+
+    it('FILE', () => {
+      const uri = Uri.parse<t.IFileUri>('file:foo:bar');
+      expect(uri.type).to.eql('FILE');
+      expect(uri.parts.type).to.eql(uri.type);
     });
   });
 

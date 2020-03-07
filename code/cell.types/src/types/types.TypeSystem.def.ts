@@ -27,19 +27,34 @@ export type INsTypeDef = {
   uri: string;
   typename: string;
   columns: t.IColumnTypeDef[];
-  errors: t.IError[];
+  errors: t.ITypeError[];
 };
 
 export type IColumnTypeDef = ITypeDef & {
   column: string;
   target?: t.CellTypeTarget;
-  error?: t.IError;
+  error?: t.ITypeError;
 };
 
 export type ITypeDef = {
   prop: string;
   optional?: boolean;
   type: IType;
+};
+
+/**
+ * Walk
+ */
+
+export type TypeVisit = (args: TypeVisitArgs) => void;
+export type TypeVisitArgs = {
+  level: number;
+  path: string;
+  root: t.IType;
+  type: t.IType;
+  prop?: string;
+  optional?: boolean;
+  // def: t.ITypeDef;
 };
 
 /**

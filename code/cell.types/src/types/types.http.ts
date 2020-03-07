@@ -48,7 +48,11 @@ export type IHttpConfigNowFile = {
  * Payloads
  */
 export type IPayload<D> = { status: number; data: D };
-export type IErrorPayload = IPayload<t.IHttpError>;
+
+export type IErrorPayload = IHttpErrorPayload | IFsHttpErrorPayload;
+export type IHttpErrorPayload = IPayload<t.IHttpError>;
+export type IFsHttpErrorPayload = IPayload<t.IFsHttpError>;
+
 export type IUriResponse<D, L extends IUrlMap = {}> = {
   uri: string;
   exists: boolean;

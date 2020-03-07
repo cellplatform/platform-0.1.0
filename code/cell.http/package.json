@@ -27,7 +27,7 @@
     "@platform/cell.db": "0.3.11",
     "@platform/cell.fs": "0.3.86",
     "@platform/cell.func": "0.1.101",
-    "@platform/cell.schema": "0.4.49",
+    "@platform/cell.schema": "^0.4.49",
     "@platform/cell.types": "0.4.43",
     "@platform/cell.value": "0.2.11",
     "@platform/cli": "0.5.25",
@@ -39,7 +39,7 @@
     "@platform/http": "0.11.8",
     "@platform/libs": "0.2.0",
     "@platform/micro": "0.14.12",
-    "@platform/types": "0.4.11",
+    "@platform/types": "^0.4.11",
     "@platform/util.value": "0.7.10",
     "cheerio": "1.0.0-rc.3",
     "mime-types": "2.1.26"

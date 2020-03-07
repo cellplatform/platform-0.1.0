@@ -1,5 +1,4 @@
 import * as t from './types';
-import { ERROR } from './constants';
 
 /**
  * Determine if the status code represents an OK status (200).
@@ -64,11 +63,11 @@ export function toClientResponse<T>(
  */
 export function toError<T>(
   status: number,
-  type: string,
+  type: t.HttpError | t.FsHttpError,
   message: string,
   body?: T,
 ): t.IHttpClientResponse<T> {
-  const error: t.IHttpError = { status, type, message };
+  const error = { status, type, message };
   status = isOK(status) ? 500 : status; // NB: Ensure no OK status is handed back with the error.
   body = body || (({} as unknown) as T); // HACK typescript sanity - because this is an error the calling code should beware.
   const res = { ok: false, status, body, bodyType: 'JSON', error };

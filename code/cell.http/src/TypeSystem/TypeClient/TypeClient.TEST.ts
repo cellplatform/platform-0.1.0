@@ -1,4 +1,4 @@
-import { ERROR, expect, fs, R, testFetch, TYPE_DEFS, t } from '../test';
+import { ERROR, expect, fs, R, testFetch, TYPE_DEFS, t, Cache } from '../test';
 import { TypeSystem } from '..';
 import { TypeClient } from '.';
 
@@ -12,17 +12,19 @@ describe.only('TypeClient', () => {
   describe('load', () => {
     it('"ns:foo"', async () => {
       const def = await TypeClient.load({ ns: 'ns:foo', fetch });
+      expect(def.ok).to.eql(true);
+      expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
-      expect(def.errors).to.eql([]);
       expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C']);
     });
 
     it('"foo" (without "ns:" prefix)', async () => {
       const def = await TypeClient.load({ ns: 'foo', fetch });
+      expect(def.ok).to.eql(true);
+      expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
-      expect(def.errors).to.eql([]);
       expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C']);
     });
   });
@@ -62,78 +64,31 @@ describe.only('TypeClient', () => {
     it('error: 404 type definition not found', async () => {
       const def = await TypeClient.load({ ns: 'foo.no.exist', fetch });
       expect(def.ok).to.eql(false);
-      expect(def.errors.length).to.eql(1);
       expect(def.errors[0].message).to.include(`does not exist`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.DEF_NOT_FOUND);
+      expect(def.errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
+      expect(def.errors.length).to.eql(1);
     });
 
     it('error: 404 type definition in column reference not found', async () => {
-      const defs = R.clone(TYPE_DEFS);
-      delete defs['ns:foo.color']; // NB: Referenced type ommited.
-
-      const fetch = testFetch({ defs });
-      const def = await TypeClient.load({ ns: 'foo', fetch });
-
-      expect(def.ok).to.eql(false);
-      expect(def.errors.length).to.eql(1);
-
-      expect(def.errors[0].message).to.include(`The referenced type in column 'C'`);
-      expect(def.errors[0].message).to.include(`could not be read`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.REF);
-    });
-
-    it('error: circular-reference (ns.implements self)', async () => {
-      const defs = R.clone(TYPE_DEFS);
-      const ns = 'ns:foo';
-      const t = defs[ns].ns.type;
-      if (t) {
-        t.implements = ns; // NB: Implement self.
-      }
-      const def = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
-
-      expect(def.ok).to.eql(false);
-      expect(def.errors.length).to.eql(1);
-      expect(def.errors[0].message).to.include(`cannot implement itself (circular-ref)`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.CIRCULAR_REF);
-    });
-
-    it('error: circular-reference (column, self)', async () => {
-      const defs = R.clone(TYPE_DEFS);
-      const columns = defs['ns:foo'].columns || {};
-      const ns = 'ns:foo';
-      if (columns.C?.props?.prop) {
-        columns.C.props.prop.type = `${ns}`;
-      }
-      const def = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
-
-      expect(def.ok).to.eql(false);
-      expect(def.errors.length).to.eql(1);
-      expect(def.errors[0].message).to.include(`The referenced type in column 'C'`);
-      expect(def.errors[0].message).to.include(`contains a circular reference`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.CIRCULAR_REF);
-    });
-
-    it('error: circular-reference (column, within ref)', async () => {
       const defs = {
-        'ns:foo.one': {
-          ns: { type: { typename: 'One' } },
+        'ns:foo': {
+          ns: { type: { typename: 'Foo' } },
           columns: {
-            A: { props: { prop: { name: 'two', type: 'ns:foo.two' } } },
-          },
-        },
-        'ns:foo.two': {
-          ns: { type: { typename: 'Two' } },
-          columns: {
-            A: { props: { prop: { name: 'two', type: 'ns:foo.one' } } },
+            C: { props: { prop: { name: 'color', type: 'ns:foo.color' } } },
           },
         },
       };
-      const ns = 'ns:foo.one';
-      const def = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+
+      const fetch = testFetch({ defs });
+      const def = await TypeClient.load({ ns: 'foo', fetch });
+      expect(def.errors.length).to.eql(2);
 
       expect(def.ok).to.eql(false);
-      expect(def.errors.length).to.eql(1);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.CIRCULAR_REF);
+      expect(def.errors[0].message).to.include(`The namespace "ns:foo.color" does not exist.`);
+      expect(def.errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
+
+      expect(def.errors[1].message).to.include(`Failed to load the referenced type in column 'C'`);
+      expect(def.errors[1].type).to.eql(ERROR.TYPE.REF);
     });
 
     it('error: duplicate property names', async () => {
@@ -152,39 +107,284 @@ describe.only('TypeClient', () => {
       const error = def.errors[0];
 
       expect(def.errors.length).to.eql(1);
-      expect(error.type).to.eql(ERROR.TYPE.PROP.DUPLICATE_NAME);
+      expect(error.type).to.eql(ERROR.TYPE.DUPLICATE_PROP);
       expect(error.message).to.include(`The property name 'foo' is duplicated in columns [A,C]`);
     });
 
-    it.skip('error: namespace typename invalid (eg "foo", ".foo", "foo-1")', async () => {
-      /*
-      foo
-      Foo.1
-      Foo-2
-      .Foo
-      1Foo
+    it('error: duplicate object typename (on namespace)', async () => {
+      const defs = {
+        'ns:foo.1': {
+          ns: { type: { typename: 'Foo' } }, // NB: same name.
+          columns: {
+            A: { props: { prop: { name: 'thing', type: 'ns:foo.2' } } },
+          },
+        },
+        'ns:foo.2': {
+          ns: { type: { typename: 'Bar' } }, // NB: same name.
+          columns: {
+            A: { props: { prop: { name: 'A', type: 'ns:foo.3' } } },
+            B: { props: { prop: { name: 'B', type: 'ns:foo.3' } } },
+            C: { props: { prop: { name: 'C', type: 'string' } } },
+          },
+        },
+        'ns:foo.3': {
+          ns: { type: { typename: 'Bar' } }, // NB: same name.
+          columns: {
+            A: { props: { prop: { name: 'count', type: 'number' } } },
+            B: { props: { prop: { name: 'myRef', type: 'ns:foo.4' } } },
+          },
+        },
+        'ns:foo.4': {
+          ns: { type: { typename: 'Foo' } }, // NB: same name.
+          columns: {
+            A: { props: { prop: { name: 'name', type: 'string' } } },
+          },
+        },
+      };
 
-      */
+      const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const error = def.errors[0];
+
+      expect(error.type).to.eql(ERROR.TYPE.DUPLICATE_TYPENAME);
+      expect(error.message).to.include(`Reference to a duplicate typename 'Foo'`);
+    });
+
+    it('error: namespace typename invalid (eg "foo", ".foo", "foo-1")', async () => {
+      const test = async (typename: string) => {
+        const defs = {
+          'ns:foo': {
+            ns: { type: { typename } },
+            columns: {},
+          },
+        };
+        const ns = 'ns:foo';
+        const def = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+        const errors = def.errors;
+
+        expect(def.ok).to.eql(false);
+        expect(errors[0].type).to.eql(ERROR.TYPE.DEF_INVALID);
+        expect(errors[0].ns).to.eql(ns);
+        expect(errors[0].message).to.include(`Must be alpha-numeric`);
+      };
+
+      await test('foo');
+      await test('1foo');
+      await test('Foo.1');
+      await test('.Foo');
+      await test('Foo-Bar');
+    });
+
+    it('error: circular-reference (ns.implements self)', async () => {
+      const defs = {
+        'ns:foo': {
+          ns: { type: { typename: 'Foo', implements: 'ns:foo' } },
+          columns: {
+            A: { props: { prop: { name: 'A', type: 'string' } } },
+          },
+        },
+      };
+
+      const ns = 'ns:foo';
+      const def = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+
+      expect(def.ok).to.eql(false);
+      expect(def.errors.length).to.eql(1);
+      expect(def.errors[0].message).to.include(`cannot implement itself (circular-ref)`);
+      expect(def.errors[0].type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+    });
+
+    it('error: circular-reference (column, self)', async () => {
+      const defs = {
+        'ns:foo': {
+          ns: { type: { typename: 'One' } },
+          columns: {
+            A: { props: { prop: { name: 'A', type: 'ns:foo' } } }, //     Not OK (self, ns)
+            B: { props: { prop: { name: 'B', type: 'cell:foo!A' } } }, // Not OK (a different column)
+            C: { props: { prop: { name: 'C', type: 'cell:foo!C' } } }, // Not OK (self, column)
+          },
+        },
+      };
+
+      const ns = 'ns:foo';
+      const def = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+
+      expect(def.ok).to.eql(false);
+      expect(def.errors.length).to.eql(1);
+      expect(def.errors[0].message).to.include(`namespace (ns:foo) directly references itself`);
+      expect(def.errors[0].message).to.include(`in column [A,B,C] (circular-ref)`);
+      expect(def.errors[0].type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+    });
+
+    it('error: circular-reference - REF(ns) => REF(ns)', async () => {
+      const defs = {
+        'ns:foo.1': {
+          ns: { type: { typename: 'One' } },
+          columns: {
+            A: { props: { prop: { name: 'two', type: 'ns:foo.2' } } },
+          },
+        },
+        'ns:foo.2': {
+          ns: { type: { typename: 'Two' } },
+          columns: {
+            Z: { props: { prop: { name: 'two', type: 'ns:foo.1' } } },
+          },
+        },
+      };
+      const ns = 'ns:foo.1';
+      const def = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+      const errors = def.errors;
+
+      expect(def.ok).to.eql(false);
+      expect(errors.length).to.eql(3);
+      const err1 = errors[0];
+      const err2 = errors[1];
+      const err3 = errors[2];
+
+      expect(err1.ns).to.eql('ns:foo.1');
+      expect(err1.type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(err1.message).to.include(
+        `The namespace "ns:foo.1" leads back to itself (circular reference).`,
+      );
+      expect(err1.message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
+
+      expect(err2.ns).to.eql('ns:foo.2');
+      expect(err2.column).to.eql('Z');
+      expect(err2.type).to.eql('TYPE/ref');
+
+      expect(err3.ns).to.eql('ns:foo.1');
+      expect(err3.column).to.eql('A');
+      expect(err3.type).to.eql('TYPE/ref');
+    });
+
+    it('error: circular-reference - REF(column) => REF(ns)', async () => {
+      const defs = {
+        'ns:foo.1': {
+          ns: { type: { typename: 'Foo1' } },
+          columns: {
+            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2!Z' } } },
+          },
+        },
+        'ns:foo.2': {
+          ns: { type: { typename: 'Foo2' } },
+          columns: {
+            Z: { props: { prop: { name: 'foo1', type: 'ns:foo.1' } } },
+          },
+        },
+      };
+
+      const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const errors = def.errors;
+
+      expect(def.ok).to.eql(false);
+      expect(errors.length).to.eql(3);
+      const err1 = errors[0];
+      const err2 = errors[1];
+      const err3 = errors[2];
+
+      expect(err1.ns).to.eql('ns:foo.1');
+      expect(err1.type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(err1.message).to.include(
+        `The namespace "ns:foo.1" leads back to itself (circular reference).`,
+      );
+      expect(err1.message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
+
+      expect(err2.ns).to.eql('ns:foo.2');
+      expect(err2.column).to.eql('Z');
+      expect(err2.type).to.eql('TYPE/ref');
+
+      expect(err3.ns).to.eql('ns:foo.1');
+      expect(err3.column).to.eql('A');
+      expect(err3.type).to.eql('TYPE/ref');
+    });
+
+    it('error: circular-reference - REF(column) => REF(column)', async () => {
+      const defs = {
+        'ns:foo.1': {
+          ns: { type: { typename: 'Foo1' } },
+          columns: {
+            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2!Z' } } },
+          },
+        },
+        'ns:foo.2': {
+          ns: { type: { typename: 'Foo2' } },
+          columns: {
+            Z: { props: { prop: { name: 'foo1', type: 'cell:foo.1!A' } } },
+          },
+        },
+      };
+
+      const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const errors = def.errors;
+
+      expect(def.ok).to.eql(false);
+      expect(errors.length).to.eql(3);
+      const err1 = errors[0];
+      const err2 = errors[1];
+      const err3 = errors[2];
+
+      expect(err1.ns).to.eql('ns:foo.1');
+      expect(err1.type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(err1.message).to.include(
+        `The namespace "ns:foo.1" leads back to itself (circular reference).`,
+      );
+      expect(err1.message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
+
+      expect(err2.ns).to.eql('ns:foo.2');
+      expect(err2.column).to.eql('Z');
+      expect(err2.type).to.eql('TYPE/ref');
+
+      expect(err3.ns).to.eql('ns:foo.1');
+      expect(err3.column).to.eql('A');
+      expect(err3.type).to.eql('TYPE/ref');
     });
   });
 
   describe('types', () => {
-    it('empty: (no types / no columns)', async () => {
-      const test = async (defs: { [key: string]: t.ITypeDefPayload }, length: number) => {
+    describe('empty', () => {
+      it('empty: no types / no columns', async () => {
+        const defs = {
+          'ns:foo.1': {
+            ns: { type: { typename: 'Foo1' } },
+            columns: {}, // NB: "columns" field deleted below.
+          },
+          'ns:foo.2': {
+            ns: { type: { typename: 'Foo2' } },
+            columns: {},
+          },
+        };
+
+        delete defs['ns:foo.1'].columns;
+
         const fetch = testFetch({ defs });
-        const res = await TypeClient.load({ ns: 'foo', fetch });
-        expect(res.columns.length).to.eql(length);
-      };
+        const def1 = await TypeClient.load({ ns: 'foo.1', fetch });
+        const def2 = await TypeClient.load({ ns: 'foo.2', fetch });
 
-      const defs1 = R.clone(TYPE_DEFS);
-      const defs2 = R.clone(TYPE_DEFS);
+        expect(def1.columns.length).to.eql(0);
+        expect(def2.columns.length).to.eql(0);
+      });
 
-      delete defs1['ns:foo'].columns;
-      defs2['ns:foo'].columns = {};
+      it('column with no "type" prop', async () => {
+        const defs = {
+          'ns:foo': {
+            ns: { type: { typename: 'Foo' } },
+            columns: {
+              A: { props: { prop: { name: 'title', type: 'string' } } }, // NB: "type" field deleted below.
+            },
+          },
+        };
 
-      await test(TYPE_DEFS, 3);
-      await test(defs1, 0);
-      await test(defs2, 0);
+        const A = defs['ns:foo'].columns.A;
+
+        delete A.props.prop.type;
+        expect(defs['ns:foo'].columns.A.props.prop.type).to.eql(undefined);
+
+        const fetch = testFetch({ defs });
+        const def = await TypeClient.load({ ns: 'foo', fetch });
+
+        expect(def.columns.length).to.eql(1);
+        expect(def.columns[0].type.kind).to.eql('UNKNOWN');
+        expect(def.columns[0].type.typename).to.eql('');
+      });
     });
 
     describe('VALUE (primitives)', () => {
@@ -285,7 +485,7 @@ describe.only('TypeClient', () => {
       });
     });
 
-    describe.only('REF(column) => <uri>', () => {
+    describe('REF(column) => <uri>', () => {
       const defs = {
         'ns:foo.1': {
           ns: { type: { typename: 'Foo1' } },
@@ -315,6 +515,7 @@ describe.only('TypeClient', () => {
 
       it('REF(column) => VALUE (primitive)', async () => {
         const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+        expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
         const A = def.columns[0];
@@ -326,6 +527,7 @@ describe.only('TypeClient', () => {
 
       it('REF(column) => ENUM', async () => {
         const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+        expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
         const B = def.columns[1];
@@ -337,6 +539,7 @@ describe.only('TypeClient', () => {
 
       it('REF(column) => REF => object (ns)', async () => {
         const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+        expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
         const C = def.columns[2];
@@ -353,6 +556,7 @@ describe.only('TypeClient', () => {
 
       it('REF(column) => REF(column) => VALUE (primitive)', async () => {
         const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+        expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
         const D = def.columns[3];
@@ -364,10 +568,6 @@ describe.only('TypeClient', () => {
           expect(D.type.types[0].typename).to.eql('number[]');
           expect(D.type.types[1].typename).to.eql('boolean');
         }
-      });
-
-      it.skip('REF(column) => REF (circular reference error)', async () => {
-        //
       });
     });
 
@@ -404,7 +604,85 @@ describe.only('TypeClient', () => {
   });
 
   describe('cache', () => {
-    it.skip('caches calls to the fetch methods', async () => {}); // tslint:disable-line
+    describe('load method', () => {
+      it('caches [load] method (passed in cache)', async () => {
+        const fetch = testFetch({ defs: TYPE_DEFS });
+        const cache = Cache.toCache();
+        const ns = 'foo';
+        const def1 = await TypeClient.load({ ns, fetch, cache });
+        const def2 = await TypeClient.load({ ns, fetch, cache });
+        const def3 = await TypeClient.load({ ns, fetch }); // Not using custom cache (default)
+
+        expect(def1).to.equal(def2);
+        expect(def3).to.not.equal(def1);
+      });
+
+      it('caches [load] method (parallel execution)', async () => {
+        const fetch = testFetch({ defs: TYPE_DEFS });
+        const cache = Cache.toCache();
+
+        const ns = 'foo';
+        const wait = [TypeClient.load({ ns, fetch, cache }), TypeClient.load({ ns, fetch, cache })];
+        const [def1, def2] = await Promise.all(wait);
+
+        const def3 = await TypeClient.load({ ns: 'foo', fetch }); // Not using custom cache (default)
+
+        expect(def1).to.equal(def2);
+        expect(def3).to.not.equal(def1);
+      });
+    });
+
+    describe('fetch', () => {
+      const defs = {
+        'ns:foo.1': {
+          ns: { type: { typename: 'Foo' } },
+          columns: {
+            A: { props: { prop: { name: 'A', type: 'string' } } },
+            B: { props: { prop: { name: 'B', type: 'ns:foo.2' } } },
+            C: { props: { prop: { name: 'C', type: 'ns:foo.2' } } },
+            D: { props: { prop: { name: 'D', type: 'ns:foo.2!A' } } },
+            E: { props: { prop: { name: 'E', type: 'ns:foo.2!A' } } },
+          },
+        },
+        'ns:foo.2': {
+          ns: { type: { typename: 'Bar' } },
+          columns: {
+            A: { props: { prop: { name: 'name', type: 'string' } } },
+            B: { props: { prop: { name: 'count', type: 'number' } } },
+          },
+        },
+      };
+
+      it('default cache (within call)', async () => {
+        const ns = 'ns:foo.1';
+        const fetch = testFetch({ defs });
+
+        await TypeClient.load({ ns, fetch }); // NB: Internal cache used. New on each call.
+        expect(fetch.getTypeCount).to.eql(3); // NB: Less that the total number of type lookups passed to fetch.
+
+        // NB: Call count increases as a shared cache was not given.
+        await TypeClient.load({ ns, fetch });
+        expect(fetch.getTypeCount).to.eql(6);
+
+        await TypeClient.load({ ns, fetch });
+        expect(fetch.getTypeCount).to.eql(9);
+      });
+
+      it('shared cache (between calls)', async () => {
+        const ns = 'ns:foo.1';
+        const fetch = testFetch({ defs });
+        const cache = Cache.toCache();
+
+        await TypeClient.load({ ns, fetch, cache }); //
+        expect(fetch.getTypeCount).to.eql(3);
+
+        await TypeClient.load({ ns, fetch, cache });
+        await TypeClient.load({ ns, fetch, cache });
+        await TypeClient.load({ ns, fetch, cache });
+
+        expect(fetch.getTypeCount).to.eql(3); // NB: Does not increase. Values retrieved from shared cache.
+      });
+    });
   });
 
   describe('typescript', () => {

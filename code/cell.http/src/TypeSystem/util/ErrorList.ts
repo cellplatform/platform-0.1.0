@@ -1,8 +1,8 @@
 import { t, value, R } from '../common';
 
 type IErrorListArgs = {
-  defaultType: string;
-  errors?: t.IError[];
+  defaultType: t.TypeError;
+  errors?: t.ITypeError[];
 };
 
 export class ErrorList {
@@ -18,8 +18,8 @@ export class ErrorList {
   /**
    * [Fields]
    */
-  public readonly _list: t.IError[];
-  public readonly defaultType: string;
+  public readonly _list: t.ITypeError[];
+  public readonly defaultType: t.TypeError;
 
   /**
    * Properties
@@ -39,10 +39,18 @@ export class ErrorList {
   /**
    * [Methods]
    */
-  public add(message: string, options: { errorType?: string; children?: t.IError[] } = {}) {
+  public add(
+    ns: string,
+    message: string,
+    options: {
+      column?: string;
+      errorType?: t.TypeError;
+      children?: t.IError[];
+    } = {},
+  ) {
     const type = options.errorType || this.defaultType;
-    const children = options.children;
-    const error: t.IError = value.deleteUndefined({ message, type, children });
+    const { column, children } = options;
+    const error: any = value.deleteUndefined({ ns, column, type, message, children });
     this._list.push(error);
     return error;
   }

@@ -7,13 +7,16 @@ import * as t from './types';
  */
 export function toErrorPayload(
   err: Error | string,
-  options: { status?: number; type?: string } = {},
+  options: { status?: number; type?: t.HttpError | t.FsError } = {},
 ): t.IErrorPayload {
   const status = defaultValue(options.status, 500);
-  const { type = ERROR.HTTP.SERVER } = options;
+  const type = options.type || ERROR.HTTP.SERVER;
   const message = typeof err === 'string' ? err : err.message;
-  const data: t.IHttpError = { status, type, message };
-  return { status, data };
+  const data: any = { status, type, message };
+  return {
+    status,
+    data,
+  };
 }
 
 /**

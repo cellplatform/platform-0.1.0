@@ -1,6 +1,6 @@
 import { t, util } from '../common';
-import { load } from './load';
-import { typescript } from './typescript';
+import { load } from './fn.load';
+import { typescript } from './fn.typescript';
 
 /**
  * Client that retrieves the type definition of a
@@ -20,10 +20,7 @@ export class TypeClient {
   /**
    * Retrieve and assemble types from the network.
    */
-  public static async load(args: { ns: string; fetch: t.ISheetFetcher }) {
-    const { ns, fetch } = args;
-    return load({ ns, fetch });
-  }
+  public static load = load;
 
   /**
    * Converts type definitions to valid typescript declarations.

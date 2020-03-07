@@ -22,7 +22,7 @@ import { TypeSystem } from '..';
  * - read/write: linked sheet
  */
 
-describe('TypedSheet', () => {
+describe.only('TypedSheet', () => {
   it.skip('read/write primitive types', () => {}); // tslint:disable-line
   it.skip('read/write ref (singular) - linked sheet', () => {}); // tslint:disable-line
   it.skip('read/write ref (array/list) - linked sheet', () => {}); // tslint:disable-line
@@ -46,7 +46,7 @@ describe('TypedSheet', () => {
 
       expect(sheet.ok).to.eql(false);
       expect(sheet.errors[0].message).to.include(`The namespace "ns:foo.notExist" does not exist`);
-      expect(sheet.errors[0].type).to.eql(ERROR.TYPE.DEF_NOT_FOUND);
+      expect(sheet.errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
     });
   });
 
