@@ -7,12 +7,12 @@ export * from '../types';
  */
 export async function list<V = string>(args: {
   message: string;
-  items: Array<string | t.IPromptListOption>;
+  items: (string | t.IPromptListOption)[];
   pageSize?: number;
   type?: 'list' | 'checkbox';
 }) {
   const { message, pageSize, type = 'list' } = args;
-  const choices: Array<inquirer.DistinctChoice<any>> = args.items.map(item => {
+  const choices: inquirer.DistinctChoice<any>[] = args.items.map(item => {
     return typeof item === 'string'
       ? item.startsWith('---')
         ? new inquirer.Separator()
@@ -36,7 +36,7 @@ export async function list<V = string>(args: {
  */
 export async function radio<V = string>(args: {
   message: string;
-  items: Array<string | t.IPromptListOption>;
+  items: (string | t.IPromptListOption)[];
   pageSize?: number;
 }) {
   return list<V>({ ...args, type: 'list' });
@@ -47,7 +47,7 @@ export async function radio<V = string>(args: {
  */
 export async function checkbox<V = string>(args: {
   message: string;
-  items: Array<string | t.IPromptListOption>;
+  items: (string | t.IPromptListOption)[];
   pageSize?: number;
 }) {
   return list<V[]>({ ...args, type: 'checkbox' });

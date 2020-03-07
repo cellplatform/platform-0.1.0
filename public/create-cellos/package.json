@@ -1,6 +1,6 @@
 {
   "name": "create-cellos",
-  "version": "0.0.3",
+  "version": "0.0.8",
   "description": "The CellOS (Spreadsheet Based Operating System)",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,8 +17,8 @@
     "@platform/libs": "0.2.0"
   },
   "devDependencies": {
-    "@platform/test": "0.1.2",
-    "@platform/ts": "3.7.12"
+    "@platform/test": "0.1.5",
+    "@platform/ts": "3.7.17"
   },
   "files": [
     "lib",

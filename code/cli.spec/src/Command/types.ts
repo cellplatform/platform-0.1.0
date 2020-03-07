@@ -32,7 +32,7 @@ export type ITreeMethods<T extends ICommand = ICommand> = {
   find: (fn: CommandTreeFilter<T>) => T | undefined;
   parent: (root: T) => T | undefined;
   toPath: (target: number | string | T) => T[];
-  fromPath: (path: Array<string | number | boolean>) => T | undefined;
+  fromPath: (path: (string | number | boolean)[]) => T | undefined;
 };
 export type ICommandTreeVisitorArgs<T extends ICommand> = {
   command: T;
@@ -70,7 +70,7 @@ export type ICommandHandlerArgs<
   set<K extends keyof P>(key: K, value: P[K]): P[K];
   param<T extends t.CommandArgValue>(index: number, defaultValue?: T): T;
   option<T extends t.CommandArgValue>(
-    key: keyof t.CommandArgsOptions | Array<keyof t.CommandArgsOptions>,
+    key: keyof t.CommandArgsOptions | (keyof t.CommandArgsOptions)[],
     defaultValue?: T,
   ): T;
 };

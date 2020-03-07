@@ -1,1 +1,1 @@
-export type TEMP_Compile_Reat = string; // TEMP 🐷
+export type TEMP_Compile_Web = string; // TEMP 🐷

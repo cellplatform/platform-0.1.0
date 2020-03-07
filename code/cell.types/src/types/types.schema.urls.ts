@@ -21,7 +21,7 @@ export type IUrlsSys = {
 
 export type IUrlsNs = {
   uri: string;
-  info: t.IUrl;
+  info: t.IUrl<t.IUrlQueryNsInfo>;
 };
 
 export type IUrlsCell = {

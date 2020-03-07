@@ -1,4 +1,4 @@
-import { cuid, slug, t, hash } from '../common';
+import { cuid, slug, t, hash, coord } from '../common';
 import { FileSchema } from '../file';
 import { Uri } from '../uri';
 import { Urls } from '../url';
@@ -12,6 +12,7 @@ export class Schema {
   public static cuid = cuid;
   public static slug = slug;
   public static hash = hash;
+  public static coord = coord;
 
   public static urls = (host: string | number) => Urls.create(host);
   public static ns = (id: string) => new NsSchema({ id });

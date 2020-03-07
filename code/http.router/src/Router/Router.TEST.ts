@@ -5,14 +5,14 @@ const handler: t.RouteHandler = async req => undefined;
 
 describe('Router', () => {
   it('adds', () => {
-    const router = Router.create({ bodyParser });
+    const router = Router.create({ body: bodyParser });
     expect(router.routes.length).to.eql(0);
     router.add('GET', '/foo', handler);
     expect(router.routes.length).to.eql(1);
   });
 
   it('throws if route already added.', () => {
-    const router = Router.create({ bodyParser });
+    const router = Router.create({ body: bodyParser });
     router.get('/foo', handler);
     const fn = () => router.get('/foo', handler);
     expect(fn).to.throw();
@@ -20,14 +20,14 @@ describe('Router', () => {
 
   describe('find', () => {
     it('no match', () => {
-      const router = Router.create({ bodyParser });
+      const router = Router.create({ body: bodyParser });
       router.get('/foo', handler);
       const res = router.find({ method: 'GET', url: '/bar' });
       expect(res).to.eql(undefined);
     });
 
     it('GET /foo', () => {
-      const router = Router.create({ bodyParser });
+      const router = Router.create({ body: bodyParser });
 
       expect(router.find({})).to.eql(undefined);
       expect(router.find({ method: 'GET', url: '/foo' })).to.eql(undefined);
@@ -40,7 +40,7 @@ describe('Router', () => {
     });
 
     it('GET /foo?q=123 (query-string)', () => {
-      const router = Router.create({ bodyParser });
+      const router = Router.create({ body: bodyParser });
 
       router.get('/foo', handler);
       const res = router.find({ method: 'GET', url: '/foo?q=123' });
@@ -50,7 +50,7 @@ describe('Router', () => {
     });
 
     it('GET /foo/:id/bar', () => {
-      const router = Router.create({ bodyParser });
+      const router = Router.create({ body: bodyParser });
 
       router.get('/foo/:id/bar', handler);
 
@@ -66,7 +66,7 @@ describe('Router', () => {
     });
 
     it('GET array of route-paths', () => {
-      const router = Router.create({ bodyParser });
+      const router = Router.create({ body: bodyParser });
 
       router.get(['/foo', '/bar'], handler);
 

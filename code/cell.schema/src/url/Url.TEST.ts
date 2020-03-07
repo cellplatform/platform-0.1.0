@@ -6,7 +6,7 @@ const origin = 'https://domain.com/';
 type Q = {
   force?: boolean;
   color: 'red' | 'blue';
-  thing?: string | Array<boolean | string | number>;
+  thing?: string | (boolean | string | number)[];
   text?: string;
 };
 
@@ -33,9 +33,9 @@ describe('Url', () => {
   });
 
   it('querystring (from constructor string)', () => {
-    const test = (input: string | undefined, querystring: string) => {
+    const test = (input: string | undefined, expected: string) => {
       const res = new Url({ origin, querystring: input });
-      expect(res.querystring).to.eql(querystring);
+      expect(res.querystring).to.eql(expected);
     };
 
     test(undefined, '');
@@ -63,6 +63,11 @@ describe('Url', () => {
     // NB: Empty strings not inserted into query-string.
     test({ text: '' }, '');
     test({ text: '', force: true }, '?force=true');
+
+    // Array (multiple keys)
+    test({ thing: [] }, '');
+    test({ thing: ['one', true, false] }, '?thing=one&thing=true&thing=false');
+    test({ thing: ['same', '  same  ', 'diff', 'same'] }, '?thing=same&thing=diff'); // NB: de-duped.
   });
 
   it('add [query] returns a new instance', () => {
@@ -73,9 +78,9 @@ describe('Url', () => {
     expect(url2.querystring).to.eql('?force=true');
   });
 
-  it('add [query] array converts to comma-seperated items', () => {
+  it('add [query] array (multiple keys)', () => {
     const url = new Url<Q>({ origin }).query({ thing: [true, ' foo ', 123] });
-    expect(url.querystring).to.eql('?thing=true,foo,123');
+    expect(url.querystring).to.eql('?thing=true&thing=foo&thing=123');
   });
 
   it('does not add [query] if value is undefined', () => {

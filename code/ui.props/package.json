@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.props",
-  "version": "0.2.56",
+  "version": "0.2.63",
   "description": "Object property editor.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,18 +15,18 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.4.8",
-    "@platform/ui.button": "0.3.41",
-    "@platform/ui.icon": "0.0.125",
-    "@platform/ui.text": "0.3.35",
-    "@platform/ui.tree": "0.4.35",
-    "react-icons": "3.8.0"
+    "@platform/react": "0.4.15",
+    "@platform/ui.button": "0.3.48",
+    "@platform/ui.icon": "0.0.132",
+    "@platform/ui.text": "0.3.42",
+    "@platform/ui.tree": "0.4.42",
+    "react-icons": "3.9.0"
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
-    "@uiharness/dev": "0.10.4",
-    "@uiharness/ui": "0.7.4",
-    "electron": "7.1.10"
+    "@uiharness/dev": "0.10.5",
+    "@uiharness/ui": "0.7.5",
+    "electron": "8.0.2"
   },
   "files": [
     "lib",

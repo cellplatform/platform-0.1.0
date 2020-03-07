@@ -87,7 +87,7 @@ export class Model<
   private _children: t.IModelChildren<C>;
   private _linkCache = {};
   private _childrenCache = {};
-  private _changes: Array<t.IModelChange<P, D>> = [];
+  private _changes: t.IModelChange<P, D>[] = [];
   private _typename: string;
 
   private readonly _dispose$ = new Subject<{}>();
@@ -138,6 +138,7 @@ export class Model<
   }
 
   public get ready() {
+    this.throwIfDisposed('ready');
     return new Promise<t.IModel<P, D, L>>(resolve => {
       if (this.isLoaded) {
         resolve(this);
@@ -150,10 +151,12 @@ export class Model<
   }
 
   public get createdAt() {
+    this.throwIfDisposed('createdAt');
     return this._item ? this._item.props.createdAt : -1;
   }
 
   public get modifiedAt() {
+    this.throwIfDisposed('modifiedAt');
     return this._item ? this._item.props.modifiedAt : -1;
   }
 
@@ -177,6 +180,7 @@ export class Model<
   }
 
   public get doc(): D {
+    this.throwIfDisposed('doc');
     const item = this._item;
     const res = item ? ((item.value as unknown) as P) : undefined;
     return (res || {}) as D;
@@ -302,6 +306,7 @@ export class Model<
    * NB: Same as calling `model.props.xxx = xyz` individually on each property.
    */
   public set(props: Partial<P>) {
+    this.throwIfDisposed('set');
     if (typeof props === 'object') {
       Object.keys(props).forEach(key => (this.props[key] = props[key]));
     }
@@ -437,6 +442,8 @@ export class Model<
    * Deletes the model and all dependent children.
    */
   public async delete(): Promise<t.IModelDeleteResponse> {
+    this.throwIfDisposed('delete');
+
     // Run BEFORE operation.
     const res = await this.beforeDelete();
     if (res.payload.isCancelled) {
@@ -488,7 +495,7 @@ export class Model<
    */
   private throwIfDisposed(action: string) {
     if (this.isDisposed) {
-      throw new Error(`Cannot ${action} because Model is disposed.`);
+      throw new Error(`Cannot ${action} because [Model] is disposed.`);
     }
   }
 

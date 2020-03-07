@@ -51,7 +51,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
   public readonly settings: t.ISettingsClient<S>;
   public readonly ipc: t.IpcClient<M>;
   public readonly windows: t.IWindows;
-  public instances: Array<t.IScreen<M, S>> = [];
+  public instances: t.IScreen<M, S>[] = [];
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());

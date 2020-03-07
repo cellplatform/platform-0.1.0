@@ -25,7 +25,7 @@ export type IScreenFactory<
   readonly change$: Observable<IScreenChange>;
   readonly created$: Observable<IScreenChange>;
   readonly closed$: Observable<IScreenChange>;
-  readonly instances: Array<t.IScreen<M, S>>;
+  readonly instances: t.IScreen<M, S>[];
   instance(uid: string): IScreen<M, S> | undefined;
   exists(uid: string): boolean;
   create(args: {
@@ -56,7 +56,7 @@ export type IScreenTypeFactory<
   readonly change$: Observable<IScreenChange>;
   readonly created$: Observable<IScreenChange>;
   readonly closed$: Observable<IScreenChange>;
-  readonly instances: Array<t.IScreen<M, S>>;
+  readonly instances: t.IScreen<M, S>[];
   instance(uid: string): IScreen<M, S> | undefined;
   exists(uid: string): boolean;
   create(args?: {

@@ -9,13 +9,13 @@ import { JsonMap } from '@platform/types';
 export type ISettingsClient<T extends SettingsJson = any> = {
   change$: Observable<ISettingsChange<T>>;
 
-  read: (...keys: Array<keyof T>) => Promise<Partial<T>>;
-  write: (...values: Array<ISettingsKeyValue<T>>) => Promise<ISettingsSetValuesResponse>;
+  read: (...keys: (keyof T)[]) => Promise<Partial<T>>;
+  write: (...values: ISettingsKeyValue<T>[]) => Promise<ISettingsSetValuesResponse>;
 
-  keys: () => Promise<Array<keyof T>>;
+  keys: () => Promise<(keyof T)[]>;
   get: <K extends keyof T>(key: K, defaultValue?: T[K]) => Promise<T[K]>;
   put: <K extends keyof T>(key: K, value: T[K]) => Promise<T[K]>;
-  delete: <K extends keyof T>(...keys: Array<keyof T>) => Promise<{}>;
+  delete: <K extends keyof T>(...keys: (keyof T)[]) => Promise<{}>;
   clear: () => Promise<{}>;
   openInEditor: () => ISettingsClient<T>;
   openFolder: () => ISettingsClient<T>;
@@ -47,15 +47,15 @@ export type IMainSettingsClient<T extends SettingsJson = any> = ISettingsClient<
 export type SettingsSetAction = 'UPDATE' | 'DELETE';
 
 export type GetSettingsValues<T extends SettingsJson> = (
-  keys: Array<keyof T>,
+  keys: (keyof T)[],
 ) => Promise<SettingsJson>;
 
 export type SetSettingsValues<T extends SettingsJson> = (
-  keys: Array<ISettingsKeyValue<T>>,
+  keys: ISettingsKeyValue<T>[],
   action: SettingsSetAction,
 ) => Promise<ISettingsSetValuesResponse>;
 
-export type GetSettingsKeys<T extends SettingsJson> = () => Promise<Array<keyof T>>;
+export type GetSettingsKeys<T extends SettingsJson> = () => Promise<(keyof T)[]>;
 
 export type OpenSettings = () => void;
 
@@ -74,7 +74,7 @@ export type ISettingsChangeEvent<T extends SettingsJson = any> = {
   payload: ISettingsChange<T>;
 };
 export type ISettingsChange<T extends SettingsJson = any> = {
-  keys: Array<keyof T>;
+  keys: (keyof T)[];
   values: T;
   action: SettingsSetAction;
 };

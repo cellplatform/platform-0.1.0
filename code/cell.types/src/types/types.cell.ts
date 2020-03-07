@@ -21,7 +21,7 @@ export type ICellDiff<P extends ICellProps = ICellProps> = {
   readonly left: ICellData<P>;
   readonly right: ICellData<P>;
   readonly isDifferent: boolean;
-  readonly list: Array<Diff<ICellData<P>>>;
+  readonly list: Diff<ICellData<P>>[];
 };
 
 /**
@@ -41,8 +41,7 @@ export type IRowData<P extends IRowProps = IRowProps> = {
  */
 export type IColumnProps = {
   title?: string; // Display name (if different from "name").
-  typename?: string; // Type name.
-  type?: t.ColumnType;
+  prop?: t.CellTypeProp;
 };
 export type IColumnData<P extends IColumnProps = IColumnProps> = {
   props?: P;

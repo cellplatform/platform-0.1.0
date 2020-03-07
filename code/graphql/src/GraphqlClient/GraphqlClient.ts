@@ -207,7 +207,7 @@ export class GraphqlClient implements t.IGqlClient {
       },
       add(header, value) {
         if (value) {
-          to = { ...to, [header]: value };
+          to = { ...to, [header]: value.toString() };
         }
         return payload;
       },

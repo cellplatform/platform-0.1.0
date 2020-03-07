@@ -100,12 +100,12 @@ export function toPath<T extends t.ICommand = t.ICommand>(
  */
 export function fromPath<T extends t.ICommand = t.ICommand>(
   root: T,
-  path: Array<string | number | boolean>,
+  path: (string | number | boolean)[],
   options: { strict?: boolean } = {},
 ): T | undefined {
   const { strict = false } = options;
 
-  const level = (cmd: T, parts: Array<string | number | boolean>): T | undefined => {
+  const level = (cmd: T, parts: (string | number | boolean)[]): T | undefined => {
     const name = parts[0];
     if (!name || name !== cmd.name) {
       return;

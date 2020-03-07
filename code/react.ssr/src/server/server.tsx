@@ -9,7 +9,7 @@ export * from '../types';
  */
 export function create(args: { manifestUrl: string; baseUrl: string }) {
   const { manifestUrl, baseUrl } = args;
-  const app = micro.init({
+  const app = micro.create({
     log: {
       manifest: manifestUrl,
       base: baseUrl,

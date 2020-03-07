@@ -101,7 +101,7 @@ export function invoker<P extends t.ICommandProps, A extends t.CommandArgsOption
         return value === undefined ? defaultValue : value;
       },
       option<T extends t.CommandArgValue>(
-        key: keyof t.CommandArgsOptions | Array<keyof t.CommandArgsOptions>,
+        key: keyof t.CommandArgsOptions | (keyof t.CommandArgsOptions)[],
         defaultValue?: T,
       ): T {
         const options = response.args.options;

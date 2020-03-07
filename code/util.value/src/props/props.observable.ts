@@ -7,9 +7,7 @@ import * as t from './types';
  * Generates a object containing read/write properties
  * with a corresponding observable events.
  */
-export function observable<P extends t.IProps>(
-  initial?: P | Array<keyof P>,
-): t.IObservableProps<P> {
+export function observable<P extends t.IProps>(initial?: P | (keyof P)[]): t.IObservableProps<P> {
   const getInitial = () => {
     if (Array.isArray(initial)) {
       return initial.reduce((acc, next) => {

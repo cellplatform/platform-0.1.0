@@ -35,7 +35,7 @@ export function init<T extends t.SettingsJson>(args: {
   /**
    * Read values from storage.
    */
-  const getValuesHandler = async (keys: Array<keyof T>) => {
+  const getValuesHandler = async (keys: (keyof T)[]) => {
     const res: t.ISettingsGetValuesResponse = {
       ok: true,
       exists: true,

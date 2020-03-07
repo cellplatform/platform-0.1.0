@@ -39,7 +39,7 @@ export async function importFiles(args: { db: t.IDb; dir: string }) {
   };
 
   let count = 0;
-  const errors: Array<{ path: string; error: Error }> = [];
+  const errors: { path: string; error: Error }[] = [];
   for (const path of paths) {
     const file = await fs.readJson(path);
     if (typeof file === 'object') {

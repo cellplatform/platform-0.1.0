@@ -6,7 +6,7 @@ import { micro } from '..';
  */
 export async function mockServer(args: { port?: number; silent?: boolean } = {}) {
   const port = args.port || randomPort();
-  const app = micro.init();
+  const app = micro.create();
   const silent = value.defaultValue(args.silent, true);
   const instance = await app.start({ port, silent });
   const router = app.router;

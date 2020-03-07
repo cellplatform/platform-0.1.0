@@ -49,7 +49,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
   const db = NeDb.create({ filename });
   const cellFs = local.init({ root: PATH.FS });
 
-  const app = server.init({ title: 'Test', db, fs: cellFs });
+  const app = server.create({ title: 'Test', db, fs: cellFs });
   const router = app.router;
   const service = await app.start({ port, silent: true });
 

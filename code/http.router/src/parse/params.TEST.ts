@@ -5,7 +5,7 @@ const handler: t.RouteHandler = async req => undefined;
 
 describe('params', () => {
   it('empty (no params)', () => {
-    const router = Router.create({ bodyParser });
+    const router = Router.create({ body: bodyParser });
     router.get('/foo', handler);
 
     const route = router.routes[0];
@@ -17,7 +17,7 @@ describe('params', () => {
   });
 
   it('types: string | number | boolean', () => {
-    const router = Router.create({ bodyParser });
+    const router = Router.create({ body: bodyParser });
     router.get('/:id', handler);
 
     type T = { id: string | number | boolean | null };
@@ -42,7 +42,7 @@ describe('params', () => {
 
   it('patterns', () => {
     const test = (pattern: string, path: string, expected: any) => {
-      const router = Router.create({ bodyParser }).get(pattern, handler);
+      const router = Router.create({ body: bodyParser }).get(pattern, handler);
       const route = router.routes[0];
       const res = Router.params({ route, path });
       expect(res).to.eql(expected);

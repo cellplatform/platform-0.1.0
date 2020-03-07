@@ -2,6 +2,20 @@ import { micro } from '..';
 import { expect, FormData, fs, http, mockServer, randomPort, t, time } from '../test';
 
 describe('micro (server)', () => {
+  describe('init', () => {
+    it('initializes with default router', () => {
+      const app = micro.create();
+      expect(app.router.routes).to.eql([]);
+    });
+
+    it('initializes with given router', () => {
+      const body = micro.body;
+      const router = micro.Router.create({ body });
+      const app = micro.create({ router });
+      expect(app.router).to.eql(router);
+    });
+  });
+
   it('200', async () => {
     const mock = await mockServer();
 
@@ -43,7 +57,7 @@ describe('micro (server)', () => {
   });
 
   it('stores service instance', async () => {
-    const app = micro.init();
+    const app = micro.create();
     expect(app.service).to.eql(undefined);
 
     const port = randomPort();
@@ -296,7 +310,7 @@ describe('micro (server)', () => {
   describe('events$', () => {
     it('HTTP/started | MICRO/stopped', async () => {
       const port = randomPort();
-      const app = micro.init({ port });
+      const app = micro.create({ port });
 
       // Add sample routes (simulate startup time)
       // NB: Would typically never be this high!!

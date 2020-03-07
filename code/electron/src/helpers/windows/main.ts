@@ -73,7 +73,7 @@ export class WindowsMain implements IWindows {
     /**
      * Broadcast events through the IPC channel.
      */
-    const broadcast: Array<WindowsEvent['type']> = [
+    const broadcast: WindowsEvent['type'][] = [
       '@platform/WINDOWS/refresh',
       '@platform/WINDOW/change',
     ];

@@ -1,5 +1,5 @@
-import { pipe } from 'ramda';
-export const R = { pipe };
+import { pipe, uniq } from 'ramda';
+export const R = { pipe, uniq };
 
 export { coord } from './libs.cell';
 

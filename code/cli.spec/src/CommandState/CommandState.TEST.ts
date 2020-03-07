@@ -114,7 +114,7 @@ describe('CommandState', () => {
 
     it('autoCompletes', () => {
       const events: t.CommandStateEvent[] = [];
-      const changes: Array<t.ICommandStateChangedEvent['payload']> = [];
+      const changes: t.ICommandStateChangedEvent['payload'][] = [];
       const state = CommandState.create({ root, beforeInvoke });
 
       state.events$.subscribe(e => events.push(e));
@@ -154,7 +154,7 @@ describe('CommandState', () => {
 
     it('fires [invoke$] event (observable)', () => {
       const events: t.CommandStateEvent[] = [];
-      const invokes: Array<t.ICommandStateChangedEvent['payload']> = [];
+      const invokes: t.ICommandStateChangedEvent['payload'][] = [];
       const state = CommandState.create({ root, beforeInvoke });
 
       state.events$.subscribe(e => events.push(e));

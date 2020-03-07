@@ -8,7 +8,7 @@ type D = t.TemplateAfterMiddleware;
  */
 export function saveFile(
   args: {
-    rename?: Array<{ from: string; to: string }>;
+    rename?: { from: string; to: string }[];
     done?: D;
   } = {},
 ): M {

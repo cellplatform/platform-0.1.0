@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts",
-  "version": "3.7.12",
+  "version": "3.7.17",
   "description": "TypesScript build, prepare and publish toolchain.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -24,13 +24,13 @@
     "clean": "sh sh/clean.sh"
   },
   "dependencies": {
-    "@platform/exec": "0.2.45",
-    "@platform/fs": "0.5.5",
+    "@platform/exec": "0.2.50",
+    "@platform/fs": "0.5.10",
     "@platform/libs": "0.2.0",
-    "@platform/ts.libs": "3.7.3"
+    "@platform/ts.libs": "3.8.2"
   },
   "devDependencies": {
-    "@platform/test": "0.1.2"
+    "@platform/test": "0.1.5"
   },
   "files": [
     "lib",

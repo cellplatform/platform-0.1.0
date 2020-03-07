@@ -1,5 +1,4 @@
 import * as t from './types';
-import { ERROR } from './constants';
 
 /**
  * Determine if the status code represents an OK status (200).
@@ -42,8 +41,10 @@ export function toClientResponse<T>(
 ): t.IHttpClientResponse<T> {
   const { bodyType = 'JSON', error } = options;
   const ok = isOK(status);
+  const res = { ok, status, body, bodyType, error };
+
   if (ok) {
-    return { ok, status, body, bodyType, error };
+    return res;
   } else {
     if (isError(body)) {
       // NB:  The body that has been returned is an [IHttpError] rather than
@@ -52,7 +53,7 @@ export function toClientResponse<T>(
       const error = (body as unknown) as t.IHttpError;
       return toError<any>(error.status, error.type, error.message, {});
     } else {
-      return toError<T>(500, ERROR.HTTP.SERVER, `Failed`, body);
+      return res;
     }
   }
 }
@@ -62,11 +63,11 @@ export function toClientResponse<T>(
  */
 export function toError<T>(
   status: number,
-  type: string,
+  type: t.HttpError | t.FsHttpError,
   message: string,
   body?: T,
 ): t.IHttpClientResponse<T> {
-  const error: t.IHttpError = { status, type, message };
+  const error = { status, type, message };
   status = isOK(status) ? 500 : status; // NB: Ensure no OK status is handed back with the error.
   body = body || (({} as unknown) as T); // HACK typescript sanity - because this is an error the calling code should beware.
   const res = { ok: false, status, body, bodyType: 'JSON', error };

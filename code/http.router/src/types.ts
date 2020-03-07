@@ -5,11 +5,11 @@ import { IncomingMessage } from './types.lib';
  * Router
  */
 export type IRouterArgs = {
-  bodyParser: t.BodyParser;
+  body: t.BodyParser;
 };
 
 export type IRouter<C extends object = {}> = {
-  readonly routes: Array<IRoute<C>>;
+  readonly routes: IRoute<C>[];
   readonly handler: RouteHandler<C>;
   readonly wildcard: IRoute<C> | undefined;
   add(method: t.HttpMethod, path: IRoutePath, handler: RouteHandler): IRouter<C>;
@@ -48,7 +48,7 @@ export type HttpRequest = IncomingMessage & {
 
 export type RequestParams = { [key: string]: string | number | boolean };
 export type RequestQuery = {
-  [key: string]: string | number | boolean | Array<string | number | boolean>;
+  [key: string]: string | number | boolean | (string | number | boolean)[];
 };
 
 /**
@@ -57,7 +57,7 @@ export type RequestQuery = {
 
 export type RequestBody = {
   json<T>(options?: ParseBodyJsonOptions<T>): Promise<T>;
-  buffer(options?: ParseBodyBufferOptions): Promise<string | Uint8Array>;
+  buffer(options?: ParseBodyBufferOptions): Promise<string | Uint8Array>; // NB: in node [Uint8Array] is a [Buffer].
   form(options?: ParseBodyFormOptions): Promise<IForm>;
 };
 

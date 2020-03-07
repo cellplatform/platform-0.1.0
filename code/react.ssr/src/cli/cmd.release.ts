@@ -77,7 +77,7 @@ async function promptForSites(args: { cli: t.ICmdApp; manifest: Manifest }) {
 
 async function promptForVersion(args: {
   cli: t.ICmdApp;
-  current: Array<{ version: string; name: string }>;
+  current: { version: string; name: string }[];
   versions: string[];
 }) {
   const { cli } = args;

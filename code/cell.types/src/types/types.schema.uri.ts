@@ -9,6 +9,7 @@ export type IUriData<D> = { uri: string; data: D };
 export type IUriParts<P extends t.IUri = t.IUri> = {
   ok: boolean;
   uri: string;
+  type: P['type'];
   parts: P;
   error?: t.IUriError;
   toString(): string;

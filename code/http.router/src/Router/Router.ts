@@ -51,8 +51,7 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
       let query: t.RequestQuery | undefined;
       const path = incoming.url || '';
       const host = (incoming.headers as any).host || '';
-
-      const body = createBody(incoming, this.args.bodyParser);
+      const body = createBody(incoming, this.args.body);
 
       const helpers = {
         host,

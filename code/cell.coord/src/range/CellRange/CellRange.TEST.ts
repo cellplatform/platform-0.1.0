@@ -41,7 +41,7 @@ describe('CellRange', () => {
     });
 
     it('square', () => {
-      const test = (keys: Array<string | { key: string }>, output: string) => {
+      const test = (keys: (string | { key: string })[], output: string) => {
         const res = CellRange.square(keys);
         expect(res.key).to.eql(output);
       };

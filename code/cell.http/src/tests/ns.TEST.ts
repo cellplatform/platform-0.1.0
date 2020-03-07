@@ -1,11 +1,5 @@
-import { t, expect, http, createMock, stripHashes, post } from '../test';
+import { t, expect, http, createMock, stripHashes, post, constants } from '../test';
 import { testPostFile } from './file.TEST';
-
-/**
- * TODO 🐷
- * - query: hash (optional)
- * - refactor hash (lazy eval)
- */
 
 /**
  * TODO 🐷
@@ -34,17 +28,18 @@ describe('ns:', function() {
   });
 
   describe('redirects', () => {
-    it('redirects from "ns:foo!A1" to "cell:" end-point', async () => {
+    it('redirects from "ns:" to "cell:" end-point', async () => {
       const test = async (path: string) => {
         const mock = await createMock();
+        await mock.client.ns('foo').write({ cells: { A1: { value: 'hello' } } }); // NB: Force A1 into existence in DB.
         const res = await http.get(mock.url(path));
         await mock.dispose();
 
         const json = res.json as t.IResGetCell;
         expect(res.status).to.eql(200);
+        expect(json.exists).to.eql(true);
         expect(json.uri).to.eql('cell:foo!A1'); // NB: The "cell:" URI, not "ns:".
-        expect(json.exists).to.eql(false);
-        expect(json.data).to.eql({});
+        expect(json.data.value).to.eql('hello');
       };
 
       await test('/ns:foo!A1');
@@ -54,13 +49,14 @@ describe('ns:', function() {
   });
 
   describe('GET', () => {
-    it('ns does not exist', async () => {
+    it('does not exist (404)', async () => {
       const mock = await createMock();
       const url = mock.url('ns:foo');
       const res = await http.get(url);
       await mock.dispose();
 
-      expect(res.status).to.eql(200);
+      expect(res.ok).to.eql(false);
+      expect(res.status).to.eql(404);
 
       const body = res.json as t.IResGetNs;
       const ns = body.data.ns;
@@ -79,7 +75,7 @@ describe('ns:', function() {
       expect(body.data.columns).to.eql(undefined);
     });
 
-    it.only('supported ns ID characters', async () => {
+    it('supported namespace ID characters', async () => {
       const mock = await createMock();
 
       const test = async (ns: string) => {
@@ -121,11 +117,14 @@ describe('ns:', function() {
 
     it('selective data via query-string (boolean|ranges)', async () => {
       const mock = await createMock();
-      const cells = {
-        A1: { value: 'A1' },
-        B2: { value: 'B2' },
-        C1: { value: 'C1' },
-      };
+
+      const A1 = { value: 'A1' };
+      const B2 = { value: 'B2' };
+      const B9 = { value: 'B9' };
+      const C4 = { value: 'C4' };
+      const C5 = { value: 'C5' };
+      const cells = { A1, B2, B9, C4, C5 };
+
       const columns = {
         A: { props: { height: 80 } },
         C: { props: { height: 120 } },
@@ -155,7 +154,10 @@ describe('ns:', function() {
       await test('ns:foo?cells', { cells });
       await test('ns:foo?cells=true', { cells });
       await test('ns:foo?cells=A1', { cells: { A1: cells.A1 } });
-      await test('ns:foo?cells=A1,B1:B10&cells=C9', { cells: { A1: cells.A1, B2: cells.B2 } });
+      await test('ns:foo?cells=A1:B10', { cells: { A1, B2, B9 } });
+      await test('ns:foo?cells=A1:Z4', { cells: { A1, B2, C4 } });
+      await test('ns:foo?cells=A1:Z10', { cells: { A1, B2, B9, C4, C5 } });
+      await test('ns:foo?cells=A1,B1:B10&cells=C9', { cells: { A1, B2, B9 } }); // NB: C9 does not exist.
       await test('ns:foo?cells=A1:Z9', { cells });
 
       await test('ns:foo?rows', { rows });
@@ -204,6 +206,83 @@ describe('ns:', function() {
       const filename = post.fileUri.split(':')[2];
       const file = (json2.files && json2.files[filename]) as t.IFileData;
       expect(file.props).to.eql(post.file?.props);
+    });
+
+    it('versions', async () => {
+      const mock = await createMock();
+      const client = mock.client.ns('foo');
+
+      const cells: t.ICellMap<t.ICellData> = {
+        A1: { value: 123 },
+      };
+      const res = await client.write({ cells }, { cells: true });
+      const ns = res.body.data.ns;
+      await mock.dispose();
+
+      const versions = constants.getVersions();
+      const schemaVersion = versions.toVersion(versions.schema);
+      expect(ns.props?.schema).to.eql(schemaVersion);
+    });
+  });
+
+  describe('GET totals', () => {
+    it('no total object', async () => {
+      const mock = await createMock();
+      const client = mock.client.ns('foo');
+      const cells: t.ICellMap<t.ICellData> = {
+        A1: { value: 123 },
+      };
+
+      await client.write({ cells });
+      const res1 = await client.read({ data: true });
+      const res2 = await client.read({ data: true, total: false });
+      await mock.dispose();
+
+      expect(res1.body.data.total).to.eql(undefined);
+      expect(res2.body.data.total).to.eql(undefined);
+    });
+
+    it('total: rows/columns', async () => {
+      const mock = await createMock();
+      const client = mock.client.ns('foo');
+      const cells: t.ICellMap<t.ICellData> = {
+        Z9: { value: 123 },
+      };
+
+      await client.write({ cells });
+      const res = await client.read({ total: ['rows', 'columns', 'rows'] }); // NB: de-duped.
+      const total = res.body.data.total;
+
+      expect(total?.cells).to.eql(1);
+      expect(total?.columns).to.eql(26);
+      expect(total?.rows).to.eql(9);
+      expect(total?.files).to.eql(undefined);
+
+      await mock.dispose();
+    });
+
+    it('total: true (all)', async () => {
+      const mock = await createMock();
+      const client = mock.client.ns('foo');
+      const cells: t.ICellMap<t.ICellData> = {
+        Z9: { value: 123 },
+      };
+      await client.write({ cells });
+      await testPostFile({
+        source: 'src/test/assets/bird.png',
+        dispose: false,
+        mock,
+      });
+
+      const res = await client.read({ cells: true, total: true });
+      const total = res.body.data.total;
+
+      expect(total?.cells).to.eql(2); // NB: "A1" (file holder) and "Z9".
+      expect(total?.columns).to.eql(26);
+      expect(total?.rows).to.eql(9);
+      expect(total?.files).to.eql(1);
+
+      await mock.dispose();
     });
   });
 

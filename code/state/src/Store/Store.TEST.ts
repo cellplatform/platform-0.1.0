@@ -168,7 +168,7 @@ describe('Store', () => {
 
     it('fires [changed] event', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
-      const events: Array<t.IStateChange<any, any>> = [];
+      const events: t.IStateChange<any, any>[] = [];
       store.changed$.subscribe(e => events.push(e));
 
       store.on<IIncrementEvent>('TEST/increment').subscribe(e => {

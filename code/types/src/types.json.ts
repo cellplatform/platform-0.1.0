@@ -6,17 +6,3 @@
 
 export type Json = string | number | boolean | null | undefined | JsonMap | Json[];
 export type JsonMap = { [property: string]: Json };
-
-/**
- * TODO 🐷
- * - DELETE old types below
- */
-
-// export type IJsonMap = {
-//   [member: string]: string | number | boolean | null | undefined | IJsonArray | IJsonMap;
-// };
-
-// export interface IJsonArray
-//   extends Array<string | number | boolean | null | undefined | IJsonArray | IJsonMap> {}
-
-// export type Json = IJsonMap | IJsonArray | string | number | boolean | null;

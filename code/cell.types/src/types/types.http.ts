@@ -48,7 +48,11 @@ export type IHttpConfigNowFile = {
  * Payloads
  */
 export type IPayload<D> = { status: number; data: D };
-export type IErrorPayload = IPayload<t.IHttpError>;
+
+export type IErrorPayload = IHttpErrorPayload | IFsHttpErrorPayload;
+export type IHttpErrorPayload = IPayload<t.IHttpError>;
+export type IFsHttpErrorPayload = IPayload<t.IFsHttpError>;
+
 export type IUriResponse<D, L extends IUrlMap = {}> = {
   uri: string;
   exists: boolean;
@@ -68,11 +72,14 @@ export type IUrlMap = { [key: string]: string };
  * Namespace: GET
  */
 export type IResGetNs = IUriResponse<IResGetNsData, IResGetNsUrls>;
-export type IResGetNsData = { ns: t.INs } & Partial<t.INsDataChildren>;
+export type IResGetNsData = Partial<t.INsDataChildren> & {
+  ns: t.INs;
+  total?: Partial<t.INsTotals>;
+};
 export type IResGetNsUrls = { data: string };
 export type IResGetNsTypes = {
   uri: string;
-  'types.d.ts': string;
+  types: t.IColumnTypeDef[];
 };
 
 /**
@@ -84,7 +91,7 @@ export type IReqPostNsBody = {
   cells?: t.ICellMap<any>;
   columns?: t.IColumnMap<any>;
   rows?: t.IRowMap<any>;
-  calc?: boolean | string | Array<string | boolean>; // Perform calcuations (default: false), if string key/range of cells to calculate, eg "A1", "A1:C10"
+  calc?: boolean | string | (string | boolean)[]; // Perform calcuations (default: false), if string key/range of cells to calculate, eg "A1", "A1:C10"
 };
 export type IResPostNs = IResGetNs & { changes?: t.IDbModelChange[] };
 
@@ -177,7 +184,7 @@ export type IResPostCellFilesUploadStart = IUriResponse<
 >;
 export type IResPostCellFilesUploadStartData = {
   cell: t.ICellData;
-  files: Array<t.IUriData<t.IFileData>>;
+  files: t.IUriData<t.IFileData>[];
   errors: t.IFileUploadError[];
   changes?: t.IDbModelChange[];
 };
@@ -192,7 +199,7 @@ export type IReqPostCellFilesUploadCompleteBody = {};
 export type IResPostCellFilesUploadComplete = IUriResponse<IResPostCellFilesUploadCompleteData>;
 export type IResPostCellFilesUploadCompleteData = {
   cell: t.ICellData;
-  files: Array<t.IUriData<t.IFileData>>;
+  files: t.IUriData<t.IFileData>[];
   changes?: t.IDbModelChange[];
 };
 
@@ -208,7 +215,7 @@ export type IResDeleteCellFilesData = {
   uri: string;
   deleted: string[];
   unlinked: string[];
-  errors: Array<{ error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED'; filename: string }>;
+  errors: { error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED'; filename: string }[];
 };
 
 /**

@@ -33,7 +33,7 @@ export function paths(
   const toItems = async (input: string | string[]) => {
     const paths = await toPaths(input);
 
-    let options: Array<t.IPromptListOption | string> = toPathList(paths);
+    let options: (t.IPromptListOption | string)[] = toPathList(paths);
     if (all) {
       options = [{ name: 'all', value: ALL }, '---', ...options];
     }

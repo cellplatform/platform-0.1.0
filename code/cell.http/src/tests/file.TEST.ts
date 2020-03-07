@@ -1,4 +1,4 @@
-import { createMock, expect, fs, http, IMock, t } from '../test';
+import { createMock, expect, fs, http, IMock, t, id, Schema } from '../test';
 
 export const testPostFile = async (args: {
   source?: string | string[];
@@ -58,6 +58,20 @@ describe('file:', () => {
   });
 
   describe('GET', () => {
+    it('does not exist (404)', async () => {
+      const mock = await createMock();
+
+      const uri = Schema.uri.create.file(Schema.cuid(), Schema.slug());
+      const res = await mock.client.file(uri).info();
+      await mock.dispose();
+
+      expect(res.ok).to.eql(false);
+      expect(res.status).to.eql(404);
+      expect(res.body.exists).to.eql(false);
+      expect(res.body.uri).to.eql(uri);
+      expect(res.error).to.eql(undefined);
+    });
+
     it('binay image file (.png)', async () => {
       const source = 'src/test/assets/bird.png';
       const { mock, fileUri } = await testPostFile({

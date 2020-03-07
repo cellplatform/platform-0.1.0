@@ -1,4 +1,4 @@
-import { coord, Schema, t, Uri, util } from '../common';
+import { coord, Schema, t, Uri, util, R } from '../common';
 import { Cell, Column, Row } from '../model.db';
 import { toChanges } from './util';
 
@@ -104,28 +104,86 @@ export async function getChildData(args: {
   rows?: boolean | string;
   columns?: boolean | string;
   files?: boolean;
-}) {
+  total?: boolean | t.NsTotalKey | t.NsTotalKey[];
+}): Promise<{ data: Partial<t.INsDataChildren>; totals: Partial<t.INsTotals> }> {
   const { model } = args;
+
+  const toTotalsFlags = (totals?: boolean | t.NsTotalKey | t.NsTotalKey[]): t.NsTotalKey[] => {
+    if (totals === true) {
+      return ['cells', 'rows', 'columns', 'files'];
+    }
+    if (typeof totals === 'string') {
+      totals = [totals];
+    }
+    if (Array.isArray(totals)) {
+      if (totals.includes('rows') || totals.includes('columns')) {
+        return R.uniq([...totals, 'cells']);
+      } else {
+        return totals;
+      }
+    }
+    return [];
+  };
+  const totalsFlags = toTotalsFlags(args.total);
+
+  // Retrieve data.
   const wait = [
     { field: 'cells', fn: getChildCells },
     { field: 'rows', fn: getChildRows },
     { field: 'columns', fn: getChildColumns },
     { field: 'files', fn: getChildFiles },
   ]
-    .filter(item => Boolean(args[item.field]))
+    .filter(item => {
+      const field = item.field as t.NsTotalKey;
+      return Boolean(args[field]) || totalsFlags.includes(field);
+    })
     .map(async ({ field, fn }) => {
       const type = typeof args[field];
       const range = type === 'string' || type === 'number' ? args[field].toString() : undefined;
-      return {
-        field,
-        value: await fn({ model, range }),
-      };
+      const value = await fn({ model, range });
+      return { field, value };
     });
 
-  return (await Promise.all(wait)).reduce((acc, next) => {
+  const data = (await Promise.all(wait)).reduce((acc, next) => {
     acc[next.field] = next.value;
     return acc;
-  }, {}) as t.INsDataChildren;
+  }, {}) as Partial<t.INsDataChildren>;
+
+  // Calculate totals.
+  const totals: Partial<t.INsTotals> = {};
+  const appendTotal = (field: t.NsTotalKey) => {
+    if (!totalsFlags.includes(field)) {
+      return;
+    }
+    if (data.files && field === 'files') {
+      totals.files = Object.keys(data.files).length;
+    }
+    if (data.cells) {
+      const keys = Object.keys(data.cells);
+      if (field === 'cells') {
+        totals.cells = keys.length;
+      }
+      if (field === 'rows') {
+        totals.rows = coord.cell.max.row(keys) + 1;
+      }
+      if (field === 'columns') {
+        totals.columns = coord.cell.max.column(keys) + 1;
+      }
+    }
+  };
+  appendTotal('cells');
+  appendTotal('rows');
+  appendTotal('columns');
+  appendTotal('files');
+
+  // Prune off any data-fields that were not asked for.
+  // NB: These may have been added if the total of the type was requested.
+  Object.keys(data)
+    .filter(field => !Boolean(args[field]))
+    .forEach(field => delete data[field]);
+
+  // Finish up.
+  return { data, totals };
 }
 
 /**
