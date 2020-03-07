@@ -1,6 +1,6 @@
 export { Observable, Subject } from 'rxjs';
 import { IModel } from '@platform/fsdb.types';
-import * as t from '../types';
+import { IUrlMap } from '@platform/cell.types';
 
 export * from '@platform/types';
 export * from '@platform/fs.types';
@@ -15,4 +15,4 @@ export * from '@platform/cache/lib/types';
 export * from '../types';
 
 export type GetModel = () => Promise<IModel>;
-export type GetUrls = () => t.IUrlMap;
+export type GetUrls = () => IUrlMap;
