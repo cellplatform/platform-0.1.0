@@ -14,6 +14,7 @@ export * from './types.fs.sync';
 export * from './types.func.sys';
 export * from './types.func';
 export * from './types.http';
+export * from './types.http.router';
 export * from './types.map';
 export * from './types.ns';
 export * from './types.range';
