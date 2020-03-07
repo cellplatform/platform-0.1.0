@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { t, log } from '../common';
+import { t, log } from '../../common';
 
 /**
  * Start listening to the given micro-service and log activity.

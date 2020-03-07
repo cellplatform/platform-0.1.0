@@ -1,5 +1,5 @@
 import * as semver from 'semver';
-
+import { IMicroRequest } from '@platform/micro';
 import { createMock, expect, t } from '../test';
 
 describe('client (http)', () => {
@@ -7,7 +7,7 @@ describe('client (http)', () => {
     const mock = await createMock();
     const client = mock.client;
 
-    const requests: t.IMicroRequest[] = [];
+    const requests: IMicroRequest[] = [];
     mock.service.request$.subscribe(e => requests.push(e));
     await client.cell('cell:foo!A1').info();
     await mock.dispose();

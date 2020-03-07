@@ -21,6 +21,7 @@
     "@platform/cell.func": "0.1.103",
     "@platform/cell.schema": "0.4.51",
     "@platform/cell.types": "0.4.45",
+    "@platform/cell.value": "0.2.13",
     "@platform/fs": "0.5.10",
     "@platform/fsdb.nedb": "1.3.94",
     "@platform/fsdb.types": "0.6.15",

@@ -131,7 +131,7 @@
     "@platform/types" "0.4.11"
     "@platform/util.diff" "0.0.21"
 
-"@platform/cell.value@0.2.13":
+"@platform/cell.value@0.2.13", "@platform/cell.value@^0.2.13":
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.2.13.tgz#9954419dc5e68aeca45b2453df3f5f4055813456"
   integrity sha512-8MMEwe9jFRjVuF1Ss9gnUEWcHM57DAN7fx3ZteRYPcBQjA3aOpTpQji5M6stNj/bX5KpEUp8+HqM3QtdZpxuRA==

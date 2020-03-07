@@ -1,5 +1,5 @@
 import { expect, expectError } from '@platform/test';
-import { fs, Schema, t } from '../server/common';
+import { fs, Schema, t } from '../common';
 
 export { expect, expectError };
 

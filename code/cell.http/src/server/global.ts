@@ -1,4 +1,4 @@
-import { constants, micro, t } from './common';
+import { constants, micro, t } from '../common';
 
 /**
  * Make common checks/adjustments to responses

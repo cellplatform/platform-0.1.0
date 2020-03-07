@@ -2,10 +2,10 @@ import * as FormData from 'form-data';
 export { FormData };
 
 import { mock, createMock, IMock } from './mock';
-import { Schema } from '../server/common';
+import { Schema } from '../common';
 
 export { mock, createMock, IMock };
-export * from '../server/common';
+export * from '../common';
 export * from './util';
 export * from './expect';
 
