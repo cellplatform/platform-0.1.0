@@ -5,7 +5,7 @@ type UriPrefix = 'ns' | 'cell' | 'file';
 type AllowPattern = string | ((input: string) => boolean);
 type Allow = { NS: AllowPattern[] };
 
-const ALLOW: Allow = { NS: ['foo'] };
+const ALLOW: Allow = { NS: [] };
 export const DEFAULT = { ALLOW };
 
 export class Uri {
@@ -151,11 +151,11 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
   }
 
   if (!id) {
-    throw new Error(`The "${prefix}" URI was not supplied with a namespace identifier.`);
+    throw new Error(`The "${prefix}" URI was not supplied with a namespace identifier. ("${id}")`);
   }
 
   if (!isValidId(id)) {
-    const err = `URI contains an invalid "${prefix}" identifier, must be an alpha-numeric cuid.`;
+    const err = `URI contains an invalid "${prefix}" identifier, must be an alpha-numeric cuid. ("${id}")`;
     throw new Error(err);
   }
 
@@ -172,7 +172,8 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
       suffix = `:${suffix}`;
     } else {
       if (suffix === 'undefined') {
-        throw new Error('BOO');
+        const err = `The suffix "undefined" (string) was given - this it likely an upstream error where an [undefined] value has been converted into a string.`;
+        throw new Error(err);
       }
 
       suffix = suffix || '';
@@ -196,8 +197,18 @@ function isCuid(input: string) {
 function isValidId(input: string) {
   input = (input || '').replace(/^ns\:/, '');
 
+  if (!input) {
+    return false;
+  }
+
   if (isCuid(input)) {
     return true;
+  }
+
+  // Check for any illegal characters.
+  const matchLegal = input.match(/^[A-Za-z0-9\.]*$/);
+  if (!matchLegal || (matchLegal && matchLegal[0] !== input)) {
+    return false;
   }
 
   // NOTE:  Certain NS ids are allowed for testing or for

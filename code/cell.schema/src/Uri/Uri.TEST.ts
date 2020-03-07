@@ -1,6 +1,5 @@
-import { expect, t, cuid } from '../test';
+import { expect, t, cuid, TEST_ALLOW } from '../test';
 import { Uri } from '.';
-import { DEFAULT } from './Uri';
 
 describe('Uri', () => {
   describe('ids', () => {
@@ -49,26 +48,21 @@ describe('Uri', () => {
 
   describe('ns: allowed identifiers', () => {
     afterEach(() => {
-      Uri.ALLOW = { ...DEFAULT.ALLOW };
+      Uri.ALLOW = { ...TEST_ALLOW };
     });
 
-    it('allows "foo" by default', () => {
-      expect(Uri.ALLOW.NS).to.eql(['foo']);
+    it('allows "foo*" (test)', () => {
+      expect(Uri.ALLOW.NS).to.eql(['foo*']);
       expect(Uri.parse('ns:foo').ok).to.eql(true);
     });
 
     it('allowed identifiers (ns)', () => {
-      Uri.ALLOW.NS.forEach(id => {
-        if (typeof id === 'string') {
-          const uri1 = Uri.create.ns(id);
-          const uri2 = Uri.parse<t.INsUri>(`ns:${id}`);
-          expect(uri1).to.eql(`ns:${id}`);
-          expect(uri2.ok).to.eql(true);
-        }
-      });
+      expect(Uri.parse('ns:foo').ok).to.eql(true);
+      expect(Uri.parse('ns:foo.bar').ok).to.eql(true);
     });
 
     it('fails when non-cuid identifier not on the ALLOW list', () => {
+      Uri.ALLOW.NS = ['foo*'];
       const uri1 = Uri.parse<t.INsUri>('ns:foo');
       const uri2 = Uri.parse<t.INsUri>('ns:bonkers');
       expect(uri1.ok).to.eql(true);
@@ -418,7 +412,7 @@ describe('Uri', () => {
     });
 
     const ILLEGAL = {
-      NS: '~`!@#$%^&*()_-+=,./?;|[]{}',
+      NS: '~`!@#$%^&*()_-+=,/?;|[]{}',
     };
 
     it('throws: ns', () => {

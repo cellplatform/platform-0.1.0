@@ -12,8 +12,10 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
+    "@platform/cache": "0.2.20",
     "@platform/cell.coord": "0.8.62",
     "@platform/cell.types": "0.4.44",
+    "@platform/fs.types": "0.0.5",
     "@platform/fsdb.types": "0.6.15",
     "@platform/libs": "0.2.0",
     "@platform/util.hash": "0.0.20",

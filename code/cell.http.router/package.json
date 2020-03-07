@@ -47,5 +47,6 @@
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }
