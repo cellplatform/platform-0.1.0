@@ -2,7 +2,7 @@ import { expect, t, cuid } from '../test';
 import { Uri } from '.';
 import { DEFAULT } from './Uri';
 
-describe.only('Uri', () => {
+describe('Uri', () => {
   describe('ids', () => {
     it('Uri.cuid', () => {
       const res = Uri.cuid();
@@ -15,7 +15,7 @@ describe.only('Uri', () => {
     });
   });
 
-  describe.only('uri.kind', () => {
+  describe('uri.kind', () => {
     it('NS', () => {
       const uri = Uri.parse<t.INsUri>('ns:foo');
       expect(uri.type).to.eql('NS');
