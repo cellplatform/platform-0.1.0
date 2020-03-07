@@ -98,8 +98,6 @@ describe('TypedSheet', () => {
 
       const sheet = await TypeSystem.Sheet.load<g.MyRow>({ fetch, ns });
       const cursor = await sheet.cursor();
-
-      console.log('TODO');
     });
 
     it.skip('query (paging: index/skip)', () => {}); // tslint:disable-line

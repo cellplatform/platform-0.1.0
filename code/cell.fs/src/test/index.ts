@@ -3,8 +3,9 @@ export { log } from '@platform/log/lib/server';
 export * from '../common';
 import { s3, local } from '..';
 
-import { fs } from '../common';
+import { fs, Schema } from '../common';
 fs.env.load();
+Schema.uri.ALLOW.NS = ['foo*'];
 
 const TMP = fs.resolve('tmp');
 export const PATH = {
