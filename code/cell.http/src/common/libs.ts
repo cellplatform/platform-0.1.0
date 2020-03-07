@@ -15,6 +15,7 @@ export { MemoryCache } from '@platform/cache';
 
 import * as cell from './libs.cell';
 export { cell };
+export * from './libs.cell';
 
 export const models = cell.models;
 export const Schema = cell.Schema;

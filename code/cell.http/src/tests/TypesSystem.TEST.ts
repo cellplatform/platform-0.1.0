@@ -1,5 +1,4 @@
-import { createMock, expect, http, t } from '../test';
-import { TypeSystem } from '../TypeSystem';
+import { createMock, expect, http, t, TypeSystem } from '../test';
 import * as g from './.d.ts/MyRow';
 
 type SampleTypeDefs = { 'ns:foo': t.ITypeDefPayload; 'ns:foo.color': t.ITypeDefPayload };

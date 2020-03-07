@@ -1,6 +1,5 @@
-import { models, Schema, t, ERROR } from '../common';
+import { TypeSystem, models, Schema, t, ERROR, HttpClient } from '../common';
 import * as util from './util';
-import { TypeSystem } from '../../../TypeSystem';
 
 export async function getTypes(args: {
   host: string;
@@ -30,7 +29,8 @@ export async function getTypes(args: {
     // const fetch = fetcher.fromClient({ client: host });
 
     // const type = await TypeSystem.Type.load({ fetch, ns: uri });
-    const type = await TypeSystem.Type.client(host).load(uri);
+    const client = HttpClient.create(host);
+    const type = await TypeSystem.Type.client(client).load(uri);
 
     const data: t.IResGetNsTypes = {
       uri,
