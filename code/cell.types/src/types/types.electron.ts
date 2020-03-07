@@ -11,6 +11,7 @@ export type IElectronLog = IServerLog & {
 export type IResGetElectronSysInfo = IResGetSysInfo & {
   app: IResGetSysInfoElectronApp;
 };
+
 export type IResGetSysInfoElectronApp = {
   env?: 'development' | 'production';
   packaged: boolean;
