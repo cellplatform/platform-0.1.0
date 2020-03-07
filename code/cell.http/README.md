@@ -3,8 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/cell.http.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/cell.http)
 ![banner](https://user-images.githubusercontent.com/185555/70659889-d8d20900-1cc5-11ea-9ba8-f8c3bdabe4ea.png)
 
-HTTP cloud/server and client tools for CellOS.  
-Sample: https://cell.platform.uiharness.com
+HTTP server for CellOS.
 
 <p>&nbsp;</p>
 

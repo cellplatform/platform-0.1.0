@@ -1,6 +1,7 @@
 export * from './types';
-export * from './schema';
-export * from './uri';
-export * from './url';
+export * from './Schema';
+export * from './Uri';
+export * from './Url';
+export * from './TypeSystem';
 
 export { ERROR } from './common';

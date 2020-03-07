@@ -1,6 +1,6 @@
 import { ERROR, t, isHttp } from '../common';
 import { FileLinks } from './FileLinks';
-import { Uri } from '../uri';
+import { Uri } from '../Uri';
 
 /**
  * Schema for a file.

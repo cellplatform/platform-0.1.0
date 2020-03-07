@@ -1,5 +1,5 @@
 import { t } from '../common';
-import { Uri } from '../uri';
+import { Uri } from '../Uri';
 
 /**
  * Helpers for operating on links.

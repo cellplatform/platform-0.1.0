@@ -1,5 +1,5 @@
 import { IServerLog } from '@platform/log/lib/server/types';
-import { IResGetSysInfo } from './types.http';
+import { IResGetSysInfo } from './types.http.router';
 
 export type IElectronLog = IServerLog & {
   file: { path: string };
@@ -11,6 +11,7 @@ export type IElectronLog = IServerLog & {
 export type IResGetElectronSysInfo = IResGetSysInfo & {
   app: IResGetSysInfoElectronApp;
 };
+
 export type IResGetSysInfoElectronApp = {
   env?: 'development' | 'production';
   packaged: boolean;

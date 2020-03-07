@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.sys",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "Base system UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,8 +12,8 @@
     "serve": "cd dist && serve"
   },
   "dependencies": {
-    "@platform/cell.client": "0.2.17",
-    "@platform/cell.types": "0.4.44",
+    "@platform/cell.client": "0.2.18",
+    "@platform/cell.types": "0.4.45",
     "@platform/libs": "0.2.0",
     "@platform/polyfill": "^0.0.1",
     "@platform/react": "0.4.15",
