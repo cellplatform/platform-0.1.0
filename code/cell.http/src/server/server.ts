@@ -1,5 +1,4 @@
-import { constants, log, micro, t, util, value } from './common';
-import { CellRouter } from '../router';
+import { constants, log, micro, t, util, value, CellRouter } from './common';
 import { prepareResponse } from './global';
 
 export { Config } from './config';

@@ -4,7 +4,7 @@
   "scripts": {
     "now": "now dev --listen 8080",
     "start": "ts-node -T src/server",
-    "watch": "nodemon --watch ../src --watch ../../cell.db/src -e ts,tsx --delay 2"
+    "watch": "nodemon --watch ../src --watch ../../cell.db/src --watch ../../cell.http.router/src -e ts,tsx --delay 2"
   },
   "dependencies": {
     "@platform/cell.http": "^0.6.66",

@@ -20,7 +20,7 @@ export function getSystem() {
   const versions = getVersions();
   const server = toVersion(versions.server);
   const schema = toVersion(versions.schema);
-  const system = `CellOS; cell.http@${server}; cell.schema@${schema}`;
+  const system = `CellOS; server@${server}; schema@${schema}`;
   return {
     system,
     ...versions,
@@ -33,10 +33,11 @@ export function getVersions() {
     version = version.replace(/^\^/, '').replace(/^\~/, '');
     return `${key}@${version}`;
   };
+
   const version = {
     schema: depVersion('@platform/cell.schema'),
     types: depVersion('@platform/cell.types'),
-    server: depVersion('@platform/cell.http', PKG.version),
+    server: depVersion('@platform/cell.http.router', PKG.version),
     toVersion,
   };
 
