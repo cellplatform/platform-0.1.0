@@ -1,6 +1,6 @@
 import { expect } from '../test';
 import { Urls } from '.';
-import { Uri } from '../uri';
+import { Uri } from '../Uri';
 
 describe('Urls', () => {
   describe('static', () => {

@@ -1,5 +1,5 @@
 import { R, t, value } from '../common';
-import { Uri } from '../uri';
+import { Uri } from '../Uri';
 import { Url } from './Url';
 import * as util from './util';
 import { ROUTES } from './ROUTES';

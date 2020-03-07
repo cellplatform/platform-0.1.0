@@ -1,7 +1,7 @@
 import { cuid, slug, t, hash, coord } from '../common';
-import { FileSchema } from '../file';
-import { Uri } from '../uri';
-import { Urls } from '../url';
+import { FileSchema } from '../File';
+import { Uri } from '../Uri';
+import { Urls } from '../Url';
 
 /**
  * Schema of DB paths.
