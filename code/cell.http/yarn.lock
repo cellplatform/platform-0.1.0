@@ -101,10 +101,10 @@
     "@platform/libs" "0.2.0"
     "@platform/util.value" "0.7.10"
 
-"@platform/cell.http.router@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/cell.http.router/-/cell.http.router-0.0.1.tgz#d61065af53146acbc26790f9b0cb7751027f9576"
-  integrity sha512-/bg4BnE1dDKMN/nHQxsirUankZobzlcwhC7W7ZWdDMRSx6bssYbDkVVGVvNyVqZIbHUo1jEb5Qo+xkFbgrsa6w==
+"@platform/cell.http.router@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/cell.http.router/-/cell.http.router-0.0.2.tgz#19d0d30db38e84f604529b7a94386caf6c3f6656"
+  integrity sha512-9KhvSKt0wnIZhHyHz1H2gjcv/TWMAnYfttU+L8F25eKoBvTUmctUjnw0ftICHCPjrO32ooqIWHDepcUlEPYzzg==
   dependencies:
     "@platform/cache" "0.2.20"
     "@platform/cell.client" "0.2.18"
@@ -113,6 +113,7 @@
     "@platform/cell.func" "0.1.103"
     "@platform/cell.schema" "0.4.51"
     "@platform/cell.types" "0.4.45"
+    "@platform/cell.value" "0.2.13"
     "@platform/fs" "0.5.10"
     "@platform/fsdb.nedb" "1.3.94"
     "@platform/fsdb.types" "0.6.15"
