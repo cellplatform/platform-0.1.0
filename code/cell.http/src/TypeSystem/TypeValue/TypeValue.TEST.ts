@@ -162,7 +162,7 @@ describe.only('TypeValue', () => {
     });
 
     describe('REF', () => {
-      it('kind: UNKNOWN (not an NS or COLUMN)', () => {
+      it('kind: UNKNOWN (not a NS or COLUMN)', () => {
         const res = TypeValue.toType('cell:foo!A1');
         expect(res.kind).to.eql('UNKNOWN');
         expect(res.typename).to.eql('cell:foo!A1');

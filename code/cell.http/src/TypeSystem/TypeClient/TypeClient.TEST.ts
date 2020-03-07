@@ -1,6 +1,6 @@
-import { ERROR, expect, fs, R, testFetch, TYPE_DEFS, t, Cache } from '../test';
-import { TypeSystem } from '..';
 import { TypeClient } from '.';
+import { TypeSystem } from '..';
+import { Cache, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../test';
 
 describe.only('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });

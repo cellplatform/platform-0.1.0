@@ -11,7 +11,7 @@ export function ns(args: { ns: string; typeDef: t.INsTypeDef; errors: ErrorList 
   (() => {
     // NB: Empty typenames are not validated here as other errors will
     //     be picked up in this scenario, and reporting an invalid typename
-    //     because it is empty adds confusing noise to the error log.
+    //     (only because it is empty) adds confusing noise to the error log.
     const typename = (typeDef.typename || '').trim();
     if (typename) {
       const res = TypeScript.validate.objectTypename(typename);
