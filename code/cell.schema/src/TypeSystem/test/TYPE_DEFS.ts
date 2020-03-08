@@ -28,6 +28,7 @@ export const TYPE_DEFS: SampleTypeDefs = {
     columns: {
       A: { props: { prop: { name: 'label', type: 'string' } } },
       B: { props: { prop: { name: 'color', type: '"red" | "green" | "blue"' } } },
+      C: { props: { prop: { name: 'description?', type: 'string' } } },
     },
   },
 

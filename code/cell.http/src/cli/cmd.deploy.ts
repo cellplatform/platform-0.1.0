@@ -115,7 +115,7 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
           if (info) {
             log.info.gray(`• system:     ${info.system}`);
             log.info.gray(`• region:     ${info.region}`);
-            log.info.gray(`• provider:   ${info.provider}`);
+            log.info.gray(`• deployment: ${info.deployment}`);
             log.info();
           }
           deployment.info.forEach(line => log.info(line));

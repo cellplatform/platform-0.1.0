@@ -1,6 +1,6 @@
 import { TypeClient } from '.';
 import { TypeSystem } from '..';
-import { Cache, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../test';
+import { Cache, ERROR, expect, fs, testFetch, TYPE_DEFS, Uri } from '../test';
 
 describe('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
@@ -454,11 +454,16 @@ describe('TypeClient', () => {
 
         expect(A.prop).to.eql('title');
         expect(B.prop).to.eql('isEnabled');
-        expect(C.prop).to.eql('color');
+        expect(C.prop).to.eql('color'); // NB: The "?" is trimmed from the name.
 
         expect(A.optional).to.eql(undefined);
         expect(B.optional).to.eql(undefined);
-        expect(C.optional).to.eql(true);
+        expect(C.optional).to.eql(true); //  NB: The "?" is retained as a boolean flag.
+
+        if (C.type.kind === 'REF') {
+          expect(C.type.types[2].prop).to.eql('description');
+          expect(C.type.types[2].optional).to.eql(true);
+        }
       });
 
       it('REF array', async () => {
@@ -715,6 +720,41 @@ describe('TypeClient', () => {
         const ts = TypeClient.typescript(def);
         const dir = fs.join(__dirname, '../test/.d.ts');
         await ts.save(fs, dir);
+      });
+
+      it('save DesignDoc (sample)', async () => {
+        const defs = {
+          'ns:foo.doc': {
+            ns: { type: { typename: 'DesignDoc' } },
+            columns: {
+              A: { props: { prop: { name: 'impact', type: 'ns:foo.doc.section' } } },
+              B: { props: { prop: { name: 'context', type: 'ns:foo.doc.section' } } },
+              C: { props: { prop: { name: 'outcomes', type: 'ns:foo.doc.section' } } },
+              D: { props: { prop: { name: 'principles', type: 'ns:foo.doc.section' } } },
+              E: { props: { prop: { name: 'design', type: 'ns:foo.doc.section' } } },
+            },
+          },
+          'ns:foo.doc.section': {
+            ns: { type: { typename: 'DesignDocSection' } },
+            columns: {
+              A: { props: { prop: { name: 'items', type: 'string[]' } } },
+              B: { props: { prop: { name: 'status?', type: 'cell:foo.doc.task!A' } } },
+            },
+          },
+          'ns:foo.doc.task': {
+            ns: { type: { typename: 'DesignDocTask' } },
+            columns: {
+              A: { props: { prop: { name: 'completed', type: '"DONE" | "ACTIVE" | "STALE"' } } },
+            },
+          },
+        };
+
+        const fetch = testFetch({ defs });
+        const def = await TypeClient.load({ ns: 'design.doc', fetch });
+
+        const ts = TypeClient.typescript(def);
+        const dir = fs.join(__dirname, '../test/.d.ts');
+        await ts.save(fs, dir, { filename: 'DesignDoc.d.ts' });
       });
 
       it('dir (filename inferred from type)', async () => {
