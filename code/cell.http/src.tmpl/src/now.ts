@@ -28,7 +28,7 @@ const db: t.IDb = MongoDb.create({
  */
 const title = IS_CLOUD ? '__TITLE__' : 'local';
 const deployedAt = IS_CLOUD ? '__DEPLOYED_AT__' : time.now.timestamp;
-const app = server.init({ title, db, fs, deployedAt });
+const app = server.create({ title, db, fs, deployedAt });
 export default app.server;
 
 server.logger.start({ app });
