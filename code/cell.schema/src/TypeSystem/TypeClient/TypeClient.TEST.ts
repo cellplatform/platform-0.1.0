@@ -722,7 +722,7 @@ describe('TypeClient', () => {
         await ts.save(fs, dir);
       });
 
-      it('save DesignDoc (sample)', async () => {
+      it.skip('save DesignDoc (sample)', async () => {
         const defs = {
           'ns:foo.doc': {
             ns: { type: { typename: 'DesignDoc' } },
