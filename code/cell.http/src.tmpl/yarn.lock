@@ -85,10 +85,10 @@
     "@platform/libs" "0.2.0"
     "@platform/util.value" "0.7.10"
 
-"@platform/cell.http.router@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/cell.http.router/-/cell.http.router-0.0.2.tgz#19d0d30db38e84f604529b7a94386caf6c3f6656"
-  integrity sha512-9KhvSKt0wnIZhHyHz1H2gjcv/TWMAnYfttU+L8F25eKoBvTUmctUjnw0ftICHCPjrO32ooqIWHDepcUlEPYzzg==
+"@platform/cell.http.router@0.7.1", "@platform/cell.http.router@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@platform/cell.http.router/-/cell.http.router-0.7.1.tgz#c96b69430289eefdc6949938313acfbced317d80"
+  integrity sha512-UmEIY2pUlVBuNTCxZDe5um5nw3qacZAQryBmV2OVsWogwrlnwE3Tz68slvN7sMQID2PJjfM3jt5cPDLM/6m4EQ==
   dependencies:
     "@platform/cache" "0.2.20"
     "@platform/cell.client" "0.2.18"
@@ -108,12 +108,12 @@
     cheerio "1.0.0-rc.3"
     mime-types "2.1.26"
 
-"@platform/cell.http@^0.6.67":
-  version "0.6.67"
-  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.6.67.tgz#1beb76eb16a1104fa9d810b78b8299b511de3aa5"
-  integrity sha512-HbBhH9IhUU2ygzPAbXRNqhTvtWQ0eWYU/jt8OXTlLostTcmkRuI0DDNEdbY7bnAWugU5r9WD8Zkp/Z2dzUk0Sw==
+"@platform/cell.http@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@platform/cell.http/-/cell.http-0.7.2.tgz#79113f01259237b74e2572f9e85d543fc4107c55"
+  integrity sha512-WhyVyQVOB0I1Ir5rX9gxwXjY+U27So7diAyL9aJhIa0omNNd7UxM2t4XyScrAFCoD4rD5oh57TQiYQ0wJEiDiQ==
   dependencies:
-    "@platform/cell.http.router" "0.0.2"
+    "@platform/cell.http.router" "0.7.1"
     "@platform/cell.schema" "0.4.51"
     "@platform/cli" "0.5.25"
     "@platform/exec" "0.2.50"
