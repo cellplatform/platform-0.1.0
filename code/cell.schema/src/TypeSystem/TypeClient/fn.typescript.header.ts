@@ -1,7 +1,7 @@
 type Package = { name: string; version: string };
 
 /**
- * The header inserted into generated Typsecript files.
+ * Creates a header comment to be inserted into generated Typsecript files.
  */
 
 export function toTypescriptHeader(args: { uri: string; pkg: Package }) {
@@ -23,7 +23,9 @@ export function toTypescriptHeader(args: { uri: string; pkg: Package }) {
  *    - Usage
  *        Import the [.d.ts] file within the consuming module
  *        that uses a [TypedSheet] to programatically manipulate 
- *        the namespace in a strongly-typed manner.
+ *        the namespace in a strongly-typed manner. eg:
+ * 
+ *            import * as t from './<filename>.d.ts';
  * 
  */`.substring(1);
 }

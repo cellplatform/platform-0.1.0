@@ -25,10 +25,10 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
 
     const data: t.IResGetSysInfo = {
       deployment,
-      deployedAt,
       host,
       system,
       region,
+      deployedAt,
     };
     data.hash = Schema.hash.sha256(data);
 

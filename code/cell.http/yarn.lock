@@ -101,10 +101,10 @@
     "@platform/libs" "0.2.0"
     "@platform/util.value" "0.7.10"
 
-"@platform/cell.http.router@0.7.3":
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/@platform/cell.http.router/-/cell.http.router-0.7.3.tgz#18ad0b4535e09e9efd223dfbe9e8a97275236191"
-  integrity sha512-6ZYrtxEA4DzzBBiWREfXiaLmH6dQVVVZm5GOIQL5Vdb3EDY6NkbWx9l4B1wptKbRTuCubRYbLCM9X++KFwookw==
+"@platform/cell.http.router@0.7.5":
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/@platform/cell.http.router/-/cell.http.router-0.7.5.tgz#dc136294c436a5489f6e2def600f703ee5803b32"
+  integrity sha512-Zs4WPXHgpztUGceAQhDqPmfdpZ4CARwx0Yg070qeDQSzQmbpvqG1OU4GXuHIq9ZpLIgziI1YIwOorhkEste4vg==
   dependencies:
     "@platform/cache" "0.2.20"
     "@platform/cell.client" "0.2.19"
