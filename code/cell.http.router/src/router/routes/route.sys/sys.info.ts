@@ -21,11 +21,11 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
     const deployment = args.title || 'Untitled';
     const deployedAt = !args.deployedAt ? undefined : formatDate(args.deployedAt);
     const system = constants.getSystem().system;
-    const host = req.headers.host || '-';
+    const domain = req.headers.host || '-';
 
     const data: t.IResGetSysInfo = {
       deployment,
-      host,
+      domain,
       system,
       region,
       deployedAt,

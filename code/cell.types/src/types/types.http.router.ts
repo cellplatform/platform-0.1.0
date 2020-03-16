@@ -183,7 +183,7 @@ export type IResDeleteCellFilesData = {
 export type IResGetSysInfo = {
   deployment: string;
   system: string;
-  host: string;
+  domain: string;
   region: string;
   deployedAt?: string;
   hash?: string;

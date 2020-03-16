@@ -11,6 +11,6 @@ describe('sys (root)', () => {
 
     expect(res.status).to.eql(200);
     expect(res.body.foo).to.eql(undefined); // NB: On custom type as test (but not actually returned by server).
-    expect(res.body.host).to.eql(`${mock.host}:${mock.port}`);
+    expect(res.body.domain).to.eql(`${mock.host}:${mock.port}`);
   });
 });
