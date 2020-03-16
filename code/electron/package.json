@@ -27,7 +27,7 @@
     "app-root-path": "3.0.0",
     "electron-log": "4.0.7",
     "electron-window-state": "5.0.3",
-    "minimist": "1.2.0"
+    "minimist": "1.2.2"
   },
   "devDependencies": {
     "@platform/test": "0.1.5",
