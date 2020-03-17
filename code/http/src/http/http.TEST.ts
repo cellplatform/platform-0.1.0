@@ -75,7 +75,7 @@ describe('http', () => {
       expect(events[0].url).to.eql('http://localhost/foo');
     });
 
-    it('AFTER event: sync response (json)', async () => {
+    it('AFTER event: respond sync (json)', async () => {
       const client = http.create();
       const events: t.IHttpAfter[] = [];
 
@@ -104,7 +104,7 @@ describe('http', () => {
       expect(res1.json).to.eql({ msg: 'hello' });
     });
 
-    it('AFTER event: async response (json)', async () => {
+    it('AFTER event: respond async function (json)', async () => {
       const client = http.create();
       const events: t.IHttpAfter[] = [];
 
@@ -135,7 +135,7 @@ describe('http', () => {
       expect(res1.json).to.eql({ msg: 'hello' });
     });
 
-    it('AFTER event: response (file/binary)', async () => {
+    it('AFTER event: respond sync function (file/binary)', async () => {
       const client = http.create();
       const events: t.IHttpAfter[] = [];
 
