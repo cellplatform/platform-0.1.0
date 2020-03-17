@@ -167,7 +167,7 @@ describe('http', () => {
       }
     });
 
-    it('sends event-id ("eid") that is shared between before/after events', async () => {
+    it('sends event identifier ("uid") that is shared between before/after events', async () => {
       const client = http.create();
       client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
 
@@ -177,7 +177,7 @@ describe('http', () => {
       await client.get('http://localhost/foo');
 
       expect(events.length).to.eql(2);
-      expect(events[0].payload.eid).to.eql(events[1].payload.eid);
+      expect(events[0].payload.uid).to.eql(events[1].payload.uid);
     });
 
     it('does not share events between instances', async () => {

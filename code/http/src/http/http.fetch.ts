@@ -10,7 +10,7 @@ export const fetcher = async (args: {
 }) => {
   // Prepare arguments.
   const timer = time.timer();
-  const eid = id.shortid();
+  const uid = `req:${id.shortid()}`;
   const { url, method, data, fire, mode, headers } = args;
 
   const modifications: {
@@ -55,7 +55,7 @@ export const fetcher = async (args: {
 
   // Fire BEFORE event.
   const before: t.IHttpBefore = {
-    eid,
+    uid,
     method,
     url,
     data,
@@ -91,7 +91,7 @@ export const fetcher = async (args: {
     const elapsed = timer.elapsed;
     fire({
       type: 'HTTP/after',
-      payload: { eid, method, url, response, elapsed },
+      payload: { uid, method, url, response, elapsed },
     });
     return response;
   } else {
@@ -108,7 +108,7 @@ export const fetcher = async (args: {
     const elapsed = timer.elapsed;
     fire({
       type: 'HTTP/after',
-      payload: { eid, method, url, response, elapsed },
+      payload: { uid, method, url, response, elapsed },
     });
 
     // Finish up.

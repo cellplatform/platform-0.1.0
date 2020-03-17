@@ -12,77 +12,14 @@ export type IRouter<C extends object = {}> = {
   readonly routes: IRoute<C>[];
   readonly handler: RouteHandler<C>;
   readonly wildcard: IRoute<C> | undefined;
-  add(method: t.HttpMethod, path: IRoutePath, handler: RouteHandler): IRouter<C>;
-  get(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
-  put(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
-  post(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
-  delete(path: IRoutePath, handler: RouteHandler<C>): IRouter<C>;
+  add(method: t.HttpMethod, path: RoutePath, handler: RouteHandler): IRouter<C>;
+  get(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
+  put(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
+  post(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
+  delete(path: RoutePath, handler: RouteHandler<C>): IRouter<C>;
   find(req: { method?: string; url?: string }): IRoute<C> | undefined;
 };
-
-/**
- * Handler
- */
-export type HttpResponse = Response;
-export type RequestHandler = (req: HttpRequest, res: HttpResponse) => void;
-
-export type RouteHandler<C extends object = {}> = (
-  req: HttpRequest,
-  context: C,
-) => Promise<RouteResponse | undefined>;
-
-/**
- * Request
- */
-export type HttpRequest = IncomingMessage & {
-  host: string;
-  params: RequestParams;
-  query: RequestQuery;
-  body: RequestBody;
-
-  // Methods
-  header(key: string): string;
-  toUrl(path: string): string;
-  redirect(path: string, options?: { headers?: t.IHttpHeaders; status?: 307 | 303 }): RouteResponse;
-};
-
-export type RequestParams = { [key: string]: string | number | boolean };
-export type RequestQuery = {
-  [key: string]: string | number | boolean | (string | number | boolean)[];
-};
-
-/**
- * Request body
- */
-
-export type RequestBody = {
-  json<T>(options?: ParseBodyJsonOptions<T>): Promise<T>;
-  buffer(options?: ParseBodyBufferOptions): Promise<string | Uint8Array>; // NB: in node [Uint8Array] is a [Buffer].
-  form(options?: ParseBodyFormOptions): Promise<IForm>;
-};
-
-export type ParseBodyJsonOptions<T> = { default?: T; limit?: string | number; encoding?: string };
-export type ParseBodyFormOptions = { limits?: IFormLimits };
-export type ParseBodyBufferOptions = {
-  default?: string | Buffer;
-  limit?: string | number;
-  encoding?: string;
-};
-
-export type BodyParser = {
-  json<T>(req: t.IncomingMessage, options?: t.ParseBodyJsonOptions<T>): Promise<T>;
-  form(req: t.IncomingMessage, options?: t.ParseBodyFormOptions): Promise<IForm>;
-  buffer(req: t.IncomingMessage, options?: t.ParseBodyBufferOptions): Promise<string | Uint8Array>;
-};
-
-/**
- * Response
- */
-export type RouteResponse = {
-  status?: number;
-  data?: any;
-  headers?: t.IHttpHeaders;
-};
+export type RoutePath = string | string[];
 
 /**
  * Route (definition)
@@ -96,7 +33,69 @@ export type IRoute<C extends object = {}> = {
   readonly keys: t.Key[];
 };
 
-export type IRoutePath = string | string[];
+/**
+ * Handler
+ */
+export type RouteHandler<C extends object = {}> = (
+  req: IRouteRequest,
+  context: C,
+) => Promise<IRouteResponse | undefined>;
+
+/**
+ * Request
+ */
+export type IRouteRequest = IncomingMessage & {
+  host: string;
+  params: IRouteRequestParams;
+  query: IRouteRequestQuery;
+  body: IRouteRequestBody;
+} & IRouteRequestMethods;
+
+export type IRouteRequestMethods = {
+  header(key: string): string;
+  toUrl(path: string): string;
+  redirect(
+    path: string,
+    options?: { headers?: t.IHttpHeaders; status?: 307 | 303 },
+  ): IRouteResponse;
+};
+
+export type IRouteRequestParams = { [key: string]: string | number | boolean };
+export type IRouteRequestQuery = {
+  [key: string]: string | number | boolean | (string | number | boolean)[];
+};
+
+/**
+ * Response
+ */
+export type IRouteResponse = {
+  status?: number;
+  data?: any;
+  headers?: t.IHttpHeaders;
+};
+
+/**
+ * Body
+ */
+export type IRouteRequestBody = {
+  json<T>(options?: IParseBodyJsonOptions<T>): Promise<T>;
+  buffer(options?: IParseBodyBufferOptions): Promise<string | Uint8Array>; // NB: in node [Uint8Array] is a [Buffer].
+  form(options?: IParseBodyFormOptions): Promise<IForm>;
+};
+
+export type IParseBodyJsonOptions<T> = { default?: T; limit?: string | number; encoding?: string };
+export type IParseBodyFormOptions = { limits?: IFormLimits };
+export type IParseBodyBufferOptions = {
+  default?: string | Buffer;
+  limit?: string | number;
+  encoding?: string;
+};
+
+export type BodyParser = {
+  json<T>(req: t.IncomingMessage, options?: t.IParseBodyJsonOptions<T>): Promise<T>;
+  form(req: t.IncomingMessage, options?: t.IParseBodyFormOptions): Promise<IForm>;
+  buffer(req: t.IncomingMessage, options?: t.IParseBodyBufferOptions): Promise<string | Uint8Array>;
+};
 
 /**
  * Form

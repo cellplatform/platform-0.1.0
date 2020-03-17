@@ -49,7 +49,7 @@ export type IHttpMethods = {
 };
 
 /**
- * Response Injection
+ * Respond (Injection)
  */
 export type HttpRespondMethod = (payload: HttpRespondMethodArg) => void;
 export type HttpRespondMethodArg =
@@ -79,7 +79,7 @@ export type HttpEvent = IHttpBeforeEvent | IHttpAfterEvent;
 
 export type IHttpBeforeEvent = { type: 'HTTP/before'; payload: IHttpBefore };
 export type IHttpBefore = {
-  eid: string;
+  uid: string;
   method: HttpMethod;
   url: string;
   data?: any;
@@ -91,7 +91,7 @@ export type IHttpBefore = {
 
 export type IHttpAfterEvent = { type: 'HTTP/after'; payload: IHttpAfter };
 export type IHttpAfter = {
-  eid: string;
+  uid: string;
   method: HttpMethod;
   url: string;
   response: IHttpResponse;
