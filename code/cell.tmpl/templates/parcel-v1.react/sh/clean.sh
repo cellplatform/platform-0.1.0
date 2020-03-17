@@ -1,5 +1,3 @@
-#!/bin/bash
-
 rm -f yarn-error.log
 
 rm -rf .cache

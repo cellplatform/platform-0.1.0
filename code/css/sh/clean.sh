@@ -1,5 +1,3 @@
-#!/bin/bash
-
 ui clean
 
 cd demo

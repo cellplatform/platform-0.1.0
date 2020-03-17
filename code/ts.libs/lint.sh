@@ -1,4 +1,3 @@
-#!/bin/bash
 
 # Format code.
 node node_modules/prettier/bin-prettier all --write 'src/**/*.ts{,x}'

@@ -1,4 +1,3 @@
-#!/bin/bash
 
 # Compile the GO program into a WASM file.
 cd src.go
