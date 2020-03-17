@@ -1,0 +1,16 @@
+body {
+  background-color: #ececec;
+  font-family: sans-serif;
+  display: 'flex';
+}
+
+.loading {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
