@@ -1,15 +1,11 @@
 import { Subject } from 'rxjs';
 import { filter, map, share } from 'rxjs/operators';
 
-import { fetch, t } from '../common';
-import { httpFetch } from './http.fetch';
-
-// Export native fetch in case it's ever needed.
-// Typically it won't be, use the [IHttp] client.
-export { fetch };
+import { t } from '../common';
+import { fetcher } from './http.fetch';
 
 export const create: t.HttpCreate = (options = {}) => {
-  const mergeOptions = (methodOptions: t.IFetchOptions) => {
+  const mergeOptions = (methodOptions: t.HttpOptions = {}) => {
     const args = {
       ...options,
       ...methodOptions,
@@ -17,6 +13,14 @@ export const create: t.HttpCreate = (options = {}) => {
     };
     const { mode = 'cors', headers } = args;
     return { mode, headers };
+  };
+  const fetch = (
+    method: t.HttpMethod,
+    args: { url: string; data?: any; options?: t.HttpOptions },
+  ) => {
+    const { mode, headers } = mergeOptions(args.options);
+    const { url, data } = args;
+    return fetcher({ method, url, mode, headers, data, fire });
   };
 
   const _events$ = new Subject<t.HttpEvent>();
@@ -47,49 +51,43 @@ export const create: t.HttpCreate = (options = {}) => {
     /**
      * HEAD
      */
-    async head(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const method: t.HttpMethod = 'HEAD';
-      return httpFetch({ url, method, options: mergeOptions(options), fire });
+    async head(url: string, options: t.HttpOptions = {}): Promise<t.IHttpResponse> {
+      return fetch('HEAD', { url, options });
     },
 
     /**
      * GET
      */
-    async get(url: string, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const method: t.HttpMethod = 'GET';
-      return httpFetch({ url, method, options: mergeOptions(options), fire });
+    async get(url: string, options: t.HttpOptions = {}): Promise<t.IHttpResponse> {
+      return fetch('GET', { url, options });
     },
 
     /**
      * PUT
      */
-    async put(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const method: t.HttpMethod = 'PUT';
-      return httpFetch({ url, method, data, options: mergeOptions(options), fire });
+    async put(url: string, data?: any, options: t.HttpOptions = {}): Promise<t.IHttpResponse> {
+      return fetch('PUT', { url, data, options });
     },
 
     /**
      * POST
      */
-    async post(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const method: t.HttpMethod = 'POST';
-      return httpFetch({ url, method, data, options: mergeOptions(options), fire });
+    async post(url: string, data?: any, options: t.HttpOptions = {}): Promise<t.IHttpResponse> {
+      return fetch('POST', { url, data, options });
     },
 
     /**
      * PATCH
      */
-    async patch(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const method: t.HttpMethod = 'PATCH';
-      return httpFetch({ url, method, data, options: mergeOptions(options), fire });
+    async patch(url: string, data?: any, options: t.HttpOptions = {}): Promise<t.IHttpResponse> {
+      return fetch('PATCH', { url, data, options });
     },
 
     /**
      * DELETE
      */
-    async delete(url: string, data?: any, options: t.IFetchOptions = {}): Promise<t.IHttpResponse> {
-      const method: t.HttpMethod = 'DELETE';
-      return httpFetch({ url, method, data, options: mergeOptions(options), fire });
+    async delete(url: string, data?: any, options: t.HttpOptions = {}): Promise<t.IHttpResponse> {
+      return fetch('DELETE', { url, data, options });
     },
   };
 

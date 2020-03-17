@@ -1,8 +1,6 @@
-import { filter, map } from 'rxjs/operators';
 import { Readable } from 'stream';
-
 import { http } from '..';
-import { fs, expect, t } from '../test';
+import { fs, expect, t, time, toRawHeaders } from '../test';
 
 describe('http', () => {
   describe('default instance (singleton)', () => {
@@ -22,13 +20,13 @@ describe('http', () => {
 
   describe('create', () => {
     it('creates (default headers)', () => {
-      const res = http.create();
-      expect(res.headers).to.eql({});
+      const client = http.create();
+      expect(client.headers).to.eql({});
     });
 
     it('creates with custom headers (passed through all calls)', () => {
-      const res = http.create({ headers: { MyHeader: 'abc' } });
-      expect(res.headers.MyHeader).to.eql('abc');
+      const client = http.create({ headers: { MyHeader: 'abc' } });
+      expect(client.headers.MyHeader).to.eql('abc');
     });
   });
 
@@ -44,7 +42,7 @@ describe('http', () => {
 
     it('merges headers (client => method)', async () => {
       const client = http.create({ headers: { foo: 'one' } });
-      client.before$.subscribe(e => e.respond(200)); // Fake.
+      client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
 
       const res = await client.get('http://localhost/foo', { headers: { bar: 'two' } });
       const headers = res.headers;
@@ -54,7 +52,7 @@ describe('http', () => {
 
     it('overrides headers (client => method)', async () => {
       const client = http.create({ headers: { foo: 'one' } });
-      client.before$.subscribe(e => e.respond(200)); // Fake.
+      client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
 
       const res = await client.get('http://localhost/foo', { headers: { foo: 'two' } });
       const headers = res.headers;
@@ -67,7 +65,7 @@ describe('http', () => {
       const client = http.create();
       const events: t.IHttpBefore[] = [];
 
-      client.before$.subscribe(e => e.respond(200)); // Fake.
+      client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
       client.before$.subscribe(e => events.push(e));
 
       await client.get('http://localhost/foo');
@@ -77,13 +75,14 @@ describe('http', () => {
       expect(events[0].url).to.eql('http://localhost/foo');
     });
 
-    it('AFTER event: response (json)', async () => {
+    it('AFTER event: sync response (json)', async () => {
       const client = http.create();
       const events: t.IHttpAfter[] = [];
 
       client.before$.subscribe(e => {
         // Fake response.
-        e.respond(202, {
+        e.respond({
+          status: 202,
           statusText: 'foobar',
           data: { msg: 'hello' },
         });
@@ -94,6 +93,37 @@ describe('http', () => {
 
       expect(events.length).to.eql(1);
 
+      expect(events[0].method).to.eql('GET');
+      expect(events[0].url).to.eql('http://localhost/foo');
+
+      const res2 = events[0].response;
+      expect(res2.status).to.eql(202);
+      expect(res2.statusText).to.eql('foobar');
+
+      expect(res1.text).to.eql(res2.text);
+      expect(res1.json).to.eql({ msg: 'hello' });
+    });
+
+    it('AFTER event: async response (json)', async () => {
+      const client = http.create();
+      const events: t.IHttpAfter[] = [];
+
+      client.before$.subscribe(e => {
+        // Fake response.
+        e.respond(async () => {
+          await time.wait(20);
+          return {
+            status: 202,
+            statusText: 'foobar',
+            data: { msg: 'hello' },
+          };
+        });
+      });
+      client.after$.subscribe(e => events.push(e));
+
+      const res1 = await client.get('http://localhost/foo');
+
+      expect(events.length).to.eql(1);
       expect(events[0].method).to.eql('GET');
       expect(events[0].url).to.eql('http://localhost/foo');
 
@@ -120,7 +150,7 @@ describe('http', () => {
         data.push(null);
 
         // Switch out the return data with a different file (stream).
-        e.respond(202, { statusText: 'foobar', data });
+        e.respond(() => ({ status: 202, statusText: 'foobar', data }));
       });
       client.after$.subscribe(e => events.push(e));
 
@@ -139,7 +169,7 @@ describe('http', () => {
 
     it('sends event-id ("eid") that is shared between before/after events', async () => {
       const client = http.create();
-      client.before$.subscribe(e => e.respond(200)); // Fake.
+      client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
 
       const events: t.HttpEvent[] = [];
       client.events$.subscribe(e => events.push(e));
@@ -154,8 +184,8 @@ describe('http', () => {
       const client1 = http.create();
       const client2 = client1.create();
 
-      client1.before$.subscribe(e => e.respond(200)); // Fake.
-      client2.before$.subscribe(e => e.respond(200)); // Fake.
+      client1.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
+      client2.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
 
       const events1: t.HttpEvent[] = [];
       const events2: t.HttpEvent[] = [];
@@ -169,6 +199,61 @@ describe('http', () => {
 
       expect(events1.length).to.eql(2);
       expect(events2.length).to.eql(4);
+    });
+  });
+
+  describe('verbs', () => {
+    let events: t.HttpEvent[] = [];
+    let client: t.IHttp;
+
+    beforeEach(() => {
+      events = [];
+      client = http.create();
+
+      client.events$.subscribe(e => events.push(e));
+      client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
+    });
+
+    it('head', async () => {
+      await client.head('http://localhost/foo');
+      expect(events.length).to.eql(2);
+      expect(events[0].payload.method).to.eql('HEAD');
+      expect(events[1].payload.method).to.eql('HEAD');
+    });
+
+    it('get', async () => {
+      await client.get('http://localhost/foo');
+      expect(events.length).to.eql(2);
+      expect(events[0].payload.method).to.eql('GET');
+      expect(events[1].payload.method).to.eql('GET');
+    });
+
+    it('put', async () => {
+      await client.put('http://localhost/foo', { foo: 123 });
+      expect(events.length).to.eql(2);
+      expect(events[0].payload.method).to.eql('PUT');
+      expect(events[1].payload.method).to.eql('PUT');
+    });
+
+    it('post', async () => {
+      await client.post('http://localhost/foo', { foo: 123 });
+      expect(events.length).to.eql(2);
+      expect(events[0].payload.method).to.eql('POST');
+      expect(events[1].payload.method).to.eql('POST');
+    });
+
+    it('patch', async () => {
+      await client.patch('http://localhost/foo', { foo: 123 });
+      expect(events.length).to.eql(2);
+      expect(events[0].payload.method).to.eql('PATCH');
+      expect(events[1].payload.method).to.eql('PATCH');
+    });
+
+    it('delete', async () => {
+      await client.delete('http://localhost/foo');
+      expect(events.length).to.eql(2);
+      expect(events[0].payload.method).to.eql('DELETE');
+      expect(events[1].payload.method).to.eql('DELETE');
     });
   });
 });

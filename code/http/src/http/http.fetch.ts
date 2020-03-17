@@ -1,44 +1,45 @@
 import { fetch, id, t, time, toRawHeaders, toBody, toResponse } from '../common';
 
-export const httpFetch = async (args: {
+export const fetcher = async (args: {
   url: string;
   method: t.HttpMethod;
-  data?: any;
-  options: t.IFetchOptions;
   fire: t.FireEvent;
+  mode: t.HttpMode;
+  headers: t.IHttpHeaders;
+  data?: any;
 }) => {
   // Prepare arguments.
   const timer = time.timer();
   const eid = id.shortid();
-  const options = args.options;
-  const { mode, headers = {} } = options;
-  const { url, method, data, fire } = args;
+  const { url, method, data, fire, mode, headers } = args;
 
   const modifications: {
     data?: any | Buffer;
     headers?: t.IHttpHeaders;
-    response?: t.IHttpResponseLike;
-    responseDelay?: number;
+    respond?: t.HttpRespondMethodArg;
   } = {
     data: undefined,
     headers: undefined,
-    response: undefined,
-    responseDelay: undefined,
+    respond: undefined,
   };
 
-  const respond: t.HttpRespond = (status, options = {}) => {
-    const ok = status.toString()[0] === '2';
-    const { statusText = '' } = options;
-    const data = options.data || modifications.data || args.data;
+  const toPayload = async (arg: t.HttpRespondMethodArg) => {
+    return typeof arg === 'function' ? arg() : arg;
+  };
 
-    let head = options.headers || headers || {};
+  const payloadToResponse = async (url: string, payload: t.HttpRespondPayload) => {
+    const ok = payload.status.toString()[0] === '2';
+    const { status, statusText = '' } = payload;
+    const data = payload.data || modifications.data || args.data;
+
+    let head = payload.headers || headers || {};
     const contentTypeKey = Object.keys(head).find(key => key.toLowerCase() === 'content-type');
     if (!contentTypeKey) {
-      const contentType = options.data ? 'application/json' : 'application/octet-stream';
+      const contentType = payload.data ? 'application/json' : 'application/octet-stream';
       head = { ...headers, 'content-type': contentType };
     }
 
-    modifications.response = {
+    const res: t.IHttpResponseLike = {
       ok,
       status,
       statusText,
@@ -49,9 +50,7 @@ export const httpFetch = async (args: {
       },
     };
 
-    if (typeof options.delay === 'number') {
-      modifications.responseDelay = options.delay;
-    }
+    return toResponse(url, res);
   };
 
   // Fire BEFORE event.
@@ -71,7 +70,9 @@ export const httpFetch = async (args: {
         modifications.headers = args.headers;
       }
     },
-    respond,
+    respond(input) {
+      modifications.respond = input;
+    },
   };
   fire({ type: 'HTTP/before', payload: before });
 
@@ -84,13 +85,9 @@ export const httpFetch = async (args: {
     return body ? toBody({ url, headers, data: body }) : undefined;
   };
 
-  if (modifications.response) {
-    // Exit with faked response if one was returned from the BEFORE event.
-    const delay = modifications.responseDelay;
-    if (typeof delay === 'number') {
-      await time.wait(delay);
-    }
-    const response = await toResponse(url, modifications.response);
+  if (modifications.respond) {
+    // Exit with faked/overridden response if one was returned from the BEFORE event.
+    const response = await payloadToResponse(url, await toPayload(modifications.respond));
     const elapsed = timer.elapsed;
     fire({
       type: 'HTTP/after',

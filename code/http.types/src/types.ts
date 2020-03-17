@@ -4,12 +4,6 @@ import { Json, IDuration } from '@platform/types';
 export type HttpMethod = 'HEAD' | 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH' | 'OPTIONS';
 export type IHttpHeaders = { [key: string]: string };
 
-export type HttpMode = 'cors' | 'no-cors' | 'same-origin';
-export type IFetchOptions = {
-  headers?: IHttpHeaders;
-  mode?: HttpMode;
-};
-
 export type IHttpResponse = {
   ok: boolean;
   status: number;
@@ -31,9 +25,11 @@ export type IHttpContentType = {
 };
 
 /**
- * Client
+ * Client (HTTP)
  */
-export type HttpCreate = (options?: IFetchOptions) => IHttp;
+export type HttpMode = 'cors' | 'no-cors' | 'same-origin';
+export type HttpOptions = { headers?: IHttpHeaders; mode?: HttpMode };
+export type HttpCreate = (options?: HttpOptions) => IHttp;
 
 export type IHttp = IHttpMethods & {
   create: HttpCreate;
@@ -44,23 +40,27 @@ export type IHttp = IHttpMethods & {
 };
 
 export type IHttpMethods = {
-  head(url: string, options?: IFetchOptions): Promise<IHttpResponse>;
-  get(url: string, options?: IFetchOptions): Promise<IHttpResponse>;
-  put(url: string, data?: any, options?: IFetchOptions): Promise<IHttpResponse>;
-  post(url: string, data?: any, options?: IFetchOptions): Promise<IHttpResponse>;
-  patch(url: string, data?: any, options?: IFetchOptions): Promise<IHttpResponse>;
-  delete(url: string, data?: any, options?: IFetchOptions): Promise<IHttpResponse>;
+  head(url: string, options?: HttpOptions): Promise<IHttpResponse>;
+  get(url: string, options?: HttpOptions): Promise<IHttpResponse>;
+  put(url: string, data?: any, options?: HttpOptions): Promise<IHttpResponse>;
+  post(url: string, data?: any, options?: HttpOptions): Promise<IHttpResponse>;
+  patch(url: string, data?: any, options?: HttpOptions): Promise<IHttpResponse>;
+  delete(url: string, data?: any, options?: HttpOptions): Promise<IHttpResponse>;
 };
 
 /**
- * Mocking
+ * Response Injection
  */
-export type HttpRespond = (status: number, options?: HttpRespondOptions) => void;
-export type HttpRespondOptions = {
+export type HttpRespondMethod = (payload: HttpRespondMethodArg) => void;
+export type HttpRespondMethodArg =
+  | HttpRespondPayload
+  | (() => HttpRespondPayload)
+  | (() => Promise<HttpRespondPayload>);
+export type HttpRespondPayload = {
+  status: number;
   statusText?: string;
   headers?: IHttpHeaders;
   data?: object;
-  delay?: number;
 };
 
 export type IHttpResponseLike = {
@@ -75,7 +75,6 @@ export type IHttpResponseLike = {
 /**
  * Events
  */
-
 export type HttpEvent = IHttpBeforeEvent | IHttpAfterEvent;
 
 export type IHttpBeforeEvent = { type: 'HTTP/before'; payload: IHttpBefore };
@@ -87,7 +86,7 @@ export type IHttpBefore = {
   headers: IHttpHeaders;
   isModified: boolean;
   modify(args: { data?: any | Buffer; headers?: IHttpHeaders }): void;
-  respond: HttpRespond; // NB: Used for mocking/testing.
+  respond: HttpRespondMethod; // NB: Used for mocking/testing or providing alternative `fetch` implementations.
 };
 
 export type IHttpAfterEvent = { type: 'HTTP/after'; payload: IHttpAfter };
