@@ -6,7 +6,7 @@
  *    |
  * 
  * By:
- *    @platform/cell.schema@0.4.52
+ *    @platform/cell.schema@0.4.53
  * 
  * Notes: 
  * 
@@ -15,7 +15,9 @@
  *    - Usage
  *        Import the [.d.ts] file within the consuming module
  *        that uses a [TypedSheet] to programatically manipulate 
- *        the namespace in a strongly-typed manner.
+ *        the namespace in a strongly-typed manner. eg:
+ * 
+ *            import * as t from './<filename>.d.ts';
  * 
  */
 

@@ -1944,13 +1944,13 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/graphql@0.2.93":
-  version "0.2.93"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.93.tgz#2774eefb7b4716b40f8b42f3d05dd40b77f909c5"
-  integrity sha512-oEdvGDc6KURsU4dR/UyY934PtnhiMp4N1FhlDZCF/53W0F5sO6A1FDUJnKOMJ9Wgoagm8CZtK8uJbd7BadIQyQ==
+"@platform/graphql@0.2.94":
+  version "0.2.94"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.94.tgz#97046bd7f17e48b963b9d1b0d8edf1556a42de8d"
+  integrity sha512-//YT3gmpaAgwnsrNm8FOYchz7fM3D+R0CYazBhfyyb6p+nNwJ0XtLASKHJP1U93cSGttNWUrq7x9XRyurHh2QQ==
   dependencies:
-    "@platform/http" "0.11.8"
-    "@platform/http.types" "0.1.8"
+    "@platform/http" "0.11.9"
+    "@platform/http.types" "0.1.9"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.11"
     apollo-cache-inmemory "1.6.5"
@@ -1962,21 +1962,21 @@
     graphql "14.6.0"
     graphql-tag "2.10.3"
 
-"@platform/http.types@0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.8.tgz#b80f90a4669977a40b26aaece7abb37383ce46f2"
-  integrity sha512-xqPzGeTBZNT810AqjFB2Fgh5Rrs9q53xH7APfQ/tphlr/hYijF3kvd6Zywe7xBMEZOt+bu3erz9sIxwfGaqomA==
+"@platform/http.types@0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.9.tgz#a8b7db911c6dbec508b69170b114f95c981a32f6"
+  integrity sha512-Pad8Fcs9jGT9n3GK0rZ/AE7ynAJLQbvB1a8o+dbjsZNyxmhra2wAkfnKa5dzke5r4w25Twahl1Mj1UIGf/CsLQ==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.11"
 
-"@platform/http@0.11.8":
-  version "0.11.8"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.8.tgz#7bba1b3514d56a392d15a56c4c56e6f68c532159"
-  integrity sha512-7hSVTGCJ5l4FfTZ5ShAOcS0I5Xb9HUOX+OjDWkRh7MapccG4apzd3MWxqrB5LNg8lYW9sp7LbZziiaG8kMUl2A==
+"@platform/http@0.11.9":
+  version "0.11.9"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.9.tgz#42e5ea8a27f6eb3d1beb2cf27ce1363b90bfb95e"
+  integrity sha512-5Dtg7CYT0UIC3/Dy8QZcM14jXfFucNDk+Rx1xYQeOQyxos9ypX8yqJHxqcJH8UDHLmZFB1OCCjSpGkmenjl+8A==
   dependencies:
     "@platform/fs" "0.5.10"
-    "@platform/http.types" "0.1.8"
+    "@platform/http.types" "0.1.9"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.11"
     "@platform/util.value" "0.7.10"

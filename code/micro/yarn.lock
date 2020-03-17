@@ -51,32 +51,32 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http.router@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@platform/http.router/-/http.router-0.0.10.tgz#fa504a86411116d82face31e58ecaf89d9ea944a"
-  integrity sha512-6ja2l09cnu3YE8N9IfWqILsicmMPniiUO210FaBkuD1aPPeAA59Pj/d9iWxlZPEaCj1GHa8j3V+/Bniwm6y17A==
+"@platform/http.router@0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@platform/http.router/-/http.router-0.0.11.tgz#69b981e996688c16ffe8791ee775fdbd17fcc524"
+  integrity sha512-GyE9xQwcfV7BYAN7xqcOQInp/TuS0fGiVxjqQWL6gF5MBzbJorRt58IjkA2yK3sYmYNaWRBEXQIYe4juv/UZ3g==
   dependencies:
-    "@platform/http.types" "0.1.8"
+    "@platform/http.types" "0.1.9"
     "@platform/libs" "0.2.0"
     "@platform/util.string" "0.4.8"
     "@platform/util.value" "0.7.10"
     path-to-regexp "6.1.0"
 
-"@platform/http.types@0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.8.tgz#b80f90a4669977a40b26aaece7abb37383ce46f2"
-  integrity sha512-xqPzGeTBZNT810AqjFB2Fgh5Rrs9q53xH7APfQ/tphlr/hYijF3kvd6Zywe7xBMEZOt+bu3erz9sIxwfGaqomA==
+"@platform/http.types@0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.9.tgz#a8b7db911c6dbec508b69170b114f95c981a32f6"
+  integrity sha512-Pad8Fcs9jGT9n3GK0rZ/AE7ynAJLQbvB1a8o+dbjsZNyxmhra2wAkfnKa5dzke5r4w25Twahl1Mj1UIGf/CsLQ==
   dependencies:
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.11"
 
-"@platform/http@0.11.8":
-  version "0.11.8"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.8.tgz#7bba1b3514d56a392d15a56c4c56e6f68c532159"
-  integrity sha512-7hSVTGCJ5l4FfTZ5ShAOcS0I5Xb9HUOX+OjDWkRh7MapccG4apzd3MWxqrB5LNg8lYW9sp7LbZziiaG8kMUl2A==
+"@platform/http@0.11.9":
+  version "0.11.9"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.9.tgz#42e5ea8a27f6eb3d1beb2cf27ce1363b90bfb95e"
+  integrity sha512-5Dtg7CYT0UIC3/Dy8QZcM14jXfFucNDk+Rx1xYQeOQyxos9ypX8yqJHxqcJH8UDHLmZFB1OCCjSpGkmenjl+8A==
   dependencies:
     "@platform/fs" "0.5.10"
-    "@platform/http.types" "0.1.8"
+    "@platform/http.types" "0.1.9"
     "@platform/libs" "0.2.0"
     "@platform/types" "0.4.11"
     "@platform/util.value" "0.7.10"

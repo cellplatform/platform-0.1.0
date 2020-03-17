@@ -1,6 +1,6 @@
 {
   "name": "@platform/http.router",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "HTTP route builder.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,7 +14,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/http.types": "0.1.8",
+    "@platform/http.types": "0.1.9",
     "@platform/libs": "0.2.0",
     "@platform/util.string": "0.4.8",
     "@platform/util.value": "0.7.10",

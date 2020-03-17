@@ -1,6 +1,4 @@
-import '../../test/dom';
-
-import { expect } from 'chai';
+import { expect } from '../../test';
 import { DefaultSettings } from 'handsontable';
 
 import { Grid, IGridArgs } from '.';

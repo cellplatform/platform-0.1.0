@@ -1,5 +1,4 @@
-import { expect } from 'chai';
-import { log } from '@platform/log/lib/server';
+import { expect, log } from '.';
 
 describe('package.json', () => {
   const pkg = require('../../package.json');
