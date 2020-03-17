@@ -179,7 +179,6 @@ export type IResDeleteCellFilesData = {
 /**
  * Info (System)
  */
-
 export type IResGetSysInfo = {
   deployment: string;
   system: string;

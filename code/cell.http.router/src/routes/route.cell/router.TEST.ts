@@ -1,4 +1,4 @@
-import { t, expect, http, createMock, post } from '../../../test';
+import { t, expect, http, createMock, post } from '../../test';
 
 describe('cell: coordinate routes (CELL | ROW | COL)', () => {
   describe('invalid URI', () => {

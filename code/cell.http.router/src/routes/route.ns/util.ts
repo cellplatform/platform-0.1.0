@@ -1,4 +1,4 @@
-export * from '../../../common/util';
+export * from '../../common/util';
 import { R } from '../common';
 
 export const formatQueryArray = (input: (string | boolean)[]) => {

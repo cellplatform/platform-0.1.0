@@ -5,9 +5,9 @@ import * as cellFiles from './route.cell.files';
 import * as file from './route.file';
 import * as ns from './route.ns';
 import { sys } from './route.sys';
-import { wildcard } from './wildcard';
+import { wildcard } from './route.wildcard';
 
-import { handleWasmTmp } from '../../__TMP.wasm'; // TEMP 🐷
+import { handleWasmTmp } from '../__TMP.wasm'; // TEMP 🐷
 
 /**
  * Register routes.

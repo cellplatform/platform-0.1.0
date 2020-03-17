@@ -1,4 +1,4 @@
-import { createMock, expect, http, t } from '../../../test';
+import { createMock, expect, http, t } from '../../test';
 
 describe('sys:', () => {
   describe('errors', () => {
@@ -11,7 +11,6 @@ describe('sys:', () => {
       expect(res.status).to.eql(404);
 
       const body = res.json as t.IHttpError;
-
       expect(body.status).to.eql(404);
       expect(body.message).to.contain('Resource not found');
       expect(body.type).to.eql('HTTP/notFound');
