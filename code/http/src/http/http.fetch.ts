@@ -4,7 +4,7 @@ export const fetcher = async (args: {
   url: string;
   method: t.HttpMethod;
   fire: t.FireEvent;
-  mode: t.HttpMode;
+  mode: t.HttpCors;
   headers: t.IHttpHeaders;
   data?: any;
 }) => {
