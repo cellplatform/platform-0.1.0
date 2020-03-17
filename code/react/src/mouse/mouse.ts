@@ -1,27 +1,28 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
-import {
+import { IMouseEvent } from '../events/types';
+import * as t from './types';
+
+export {
   MouseEvent,
   MouseEventHandler,
   MouseEventType,
   IMouseEventProps,
   IMouseHandlers,
 } from './types';
-export { MouseEvent, MouseEventHandler, MouseEventType, IMouseEventProps, IMouseHandlers };
-
-const EVENT_TYPES: MouseEventType[] = ['CLICK', 'DOUBLE_CLICK', 'UP', 'DOWN', 'ENTER', 'LEAVE'];
 
 export type MouseHandlerFactory = (args: {
-  type: MouseEvent['type'];
-  handlers?: MouseEventHandler[];
+  type: t.MouseEvent['type'];
+  handlers?: t.MouseEventHandler[];
   getEnabled?: () => boolean;
 }) => React.MouseEventHandler | undefined;
 
-type MouseEventInternal = MouseEvent & {
-  _react: React.MouseEvent; // NB: Used internally, should not be called externally as may cause pooling errors.
+type MouseEventInternal = t.MouseEvent & {
+  _react: IMouseEvent; // NB: Used internally, should not be called externally as may cause pooling errors.
 };
 
+const EVENT_TYPES: t.MouseEventType[] = ['CLICK', 'DOUBLE_CLICK', 'UP', 'DOWN', 'ENTER', 'LEAVE'];
 const dummy = () => null;
 
 /**
@@ -45,17 +46,17 @@ const dummy = () => null;
  *    }
  *
  */
-export function fromProps(
-  props: IMouseEventProps,
+export const fromProps = (
+  props: t.IMouseEventProps,
   args: {
-    force?: MouseEventType[] | boolean; // Ensures a handler for the event-type is created, even if one is not passed as a prop.
+    force?: t.MouseEventType[] | boolean; // Ensures a handler for the event-type is created, even if one is not passed as a prop.
     getEnabled?: () => boolean;
   } = {},
-) {
+) => {
   const { getEnabled } = args;
   const force = args.force === true ? EVENT_TYPES : Array.isArray(args.force) ? args.force : [];
 
-  const prep = (type: MouseEventType, handler?: React.MouseEventHandler) => {
+  const prep = (type: t.MouseEventType, handler?: React.MouseEventHandler) => {
     return handler ? handler : force.includes(type) ? dummy : undefined;
   };
 
@@ -68,7 +69,7 @@ export function fromProps(
     onMouseEnter: prep('ENTER', props.onMouseEnter),
     onMouseLeave: prep('LEAVE', props.onMouseLeave),
   });
-}
+};
 
 /**
  * Retrieves a set of mouse-handlers to apply to a component, eg:
@@ -77,8 +78,8 @@ export function fromProps(
  *    <div {...mouse.props} />
  *
  */
-export function handlers(
-  handler?: MouseEventHandler,
+export const handlers = (
+  handler?: t.MouseEventHandler,
   args: {
     getEnabled?: () => boolean;
     onClick?: React.MouseEventHandler;
@@ -88,13 +89,13 @@ export function handlers(
     onMouseEnter?: React.MouseEventHandler;
     onMouseLeave?: React.MouseEventHandler;
   } = {},
-): IMouseHandlers {
+): t.IMouseHandlers => {
   const { getEnabled } = args;
 
   const isActive =
     Boolean(handler) || Object.keys(args).some(key => typeof args[key] === 'function');
 
-  const getSingleHandler = (type: MouseEventType) => {
+  const getSingleHandler = (type: t.MouseEventType) => {
     switch (type) {
       case 'CLICK':
         return args.onClick;
@@ -113,12 +114,12 @@ export function handlers(
     }
   };
 
-  const next$ = new Subject<MouseEvent>();
+  const next$ = new Subject<t.MouseEvent>();
   const fireNext = (e: MouseEventInternal) => {
-    next$.next(e);
-    const singular = getSingleHandler(e.type);
+    next$.next(e as any);
+    const singular = getSingleHandler(e.type as any);
     if (singular) {
-      singular(e._react);
+      singular(e._react as any);
     }
   };
 
@@ -140,7 +141,7 @@ export function handlers(
       onMouseLeave: get({ type: 'LEAVE' }),
     },
   };
-}
+};
 
 /**
  * Factory for a mouse handler for a single event type.
@@ -161,14 +162,14 @@ export const handle: MouseHandlerFactory = args => {
     handlers.forEach(handler => {
       const args: MouseEventInternal = {
         type,
-        button: toButton(e),
+        button: toButton(e as any),
         cancel: () => {
           e.preventDefault();
           e.stopPropagation();
         },
-        _react: e, // NB: Used internally only.
+        _react: e as IMouseEvent, // NB: Used internally only.
       };
-      handler(args);
+      handler(args as any);
     });
   };
 };
@@ -176,7 +177,7 @@ export const handle: MouseHandlerFactory = args => {
 /**
  * [Helpers]
  */
-const toButton = (e: React.MouseEvent): MouseEvent['button'] => {
+const toButton = (e: React.MouseEvent): t.MouseEvent['button'] => {
   switch (e.button) {
     case 2:
       return 'RIGHT';

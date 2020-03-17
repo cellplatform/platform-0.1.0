@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.diff",
-  "version": "0.0.21",
+  "version": "0.0.24",
   "description": "Deep comparisons of objects ('diffing').",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,8 +16,8 @@
     "deep-diff": "1.0.2"
   },
   "devDependencies": {
-    "@platform/test": "0.1.5",
-    "@platform/ts": "3.7.17"
+    "@platform/test": "0.1.7",
+    "@platform/ts": "3.7.20"
   },
   "files": [
     "lib",

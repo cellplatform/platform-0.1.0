@@ -74,7 +74,7 @@ export class DragPositionEvent implements IDragPositionEvent {
 /**
  * Starts a drag operation (usually initiated from a mouse-down event.)
  */
-export function position(options: { el: HTMLElement }) {
+export const position = (options: { el: HTMLElement }) => {
   const dispose$ = new Subject();
   const events$ = new Subject<DragPositionEvent>();
   const mouseUp$ = events.mouseUp$.pipe(takeUntil(dispose$));
@@ -125,16 +125,16 @@ export function position(options: { el: HTMLElement }) {
   };
 
   return api;
-}
+};
 
 /**
  * [Internal]
  * Source: https://plainjs.com/javascript/styles/get-the-position-of-an-element-relative-to-the-document-24/
  */
-export function offsetPosition(el: HTMLElement) {
+export const offsetPosition = (el: HTMLElement) => {
   const rect = el.getBoundingClientRect();
   const doc = document.documentElement ? document.documentElement : undefined;
   const scrollLeft = window.pageXOffset || (doc ? doc.scrollLeft : 0);
   const scrollTop = window.pageYOffset || (doc ? doc.scrollTop : 0);
   return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
-}
+};

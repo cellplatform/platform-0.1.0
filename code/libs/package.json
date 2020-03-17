@@ -1,15 +1,15 @@
 {
   "name": "@platform/libs",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Common external toolbelt libs used accross modules.",
   "scripts": {
     "test": "echo no-op"
   },
   "dependencies": {
-    "@types/ramda": "0.26.42",
+    "@types/ramda": "0.26.44",
     "ramda": "0.27.0",
     "rxjs": "6.5.4",
-    "tslib": "1.11.0"
+    "tslib": "1.11.1"
   },
   "files": [],
   "repository": "uiharness/platform",

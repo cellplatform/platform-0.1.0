@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 export { IKeypressEvent };
 
 export type KeyCommand = string;
-export type KeyBindings<T extends KeyCommand> = Array<KeyBinding<T>>;
+export type KeyBindings<T extends KeyCommand> = KeyBinding<T>[];
 export type KeyBinding<T extends KeyCommand> = {
   command: T;
   key: string; // Key combination, eg: 'CMD+W' or 'META+W' or 'SHIFT+G'

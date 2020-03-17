@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts.libs",
-  "version": "3.8.2",
+  "version": "3.8.4",
   "description": "Common TypesScript and linter configuration.",
   "scripts": {
     "test": "echo no-op",
@@ -9,11 +9,11 @@
     "prepare": "yarn build && yarn lint"
   },
   "dependencies": {
-    "@types/node": "13.7.6",
+    "@types/node": "13.9.1",
     "prettier": "1.19.1",
     "ts-node": "8.6.2",
-    "tslib": "1.11.0",
-    "tslint": "6.0.0",
+    "tslib": "1.11.1",
+    "tslint": "6.1.0",
     "tslint-config-prettier": "1.18.0",
     "tslint-react": "4.2.0",
     "typescript": "3.7.5"

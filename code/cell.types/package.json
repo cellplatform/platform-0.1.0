@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.types",
-  "version": "0.4.47",
+  "version": "0.4.50",
   "description": "Shared types for all cell (eg. 'A1') related modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,19 +14,19 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cache": "0.2.20",
-    "@platform/fs.s3.types": "0.1.20",
-    "@platform/fs.types": "^0.0.5",
-    "@platform/fsdb.types": "0.6.15",
-    "@platform/http.types": "0.1.9",
-    "@platform/libs": "0.2.0",
-    "@platform/log": "0.1.14",
-    "@platform/types": "0.4.11",
-    "@platform/util.diff": "0.0.21"
+    "@platform/cache": "0.2.23",
+    "@platform/fs.s3.types": "0.1.23",
+    "@platform/fs.types": "^0.0.7",
+    "@platform/fsdb.types": "0.6.18",
+    "@platform/http.types": "0.1.12",
+    "@platform/libs": "0.2.1",
+    "@platform/log": "0.1.17",
+    "@platform/types": "0.4.14",
+    "@platform/util.diff": "0.0.24"
   },
   "devDependencies": {
-    "@platform/test": "0.1.5",
-    "@platform/ts": "3.7.17"
+    "@platform/test": "0.1.7",
+    "@platform/ts": "3.7.20"
   },
   "files": [
     "lib",

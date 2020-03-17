@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.is",
-  "version": "0.0.114",
+  "version": "0.0.117",
   "description": "Environment flags.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,8 +13,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/test": "0.1.5",
-    "@platform/ts": "3.7.17"
+    "@platform/test": "0.1.7",
+    "@platform/ts": "3.7.20"
   },
   "files": [
     "lib",
