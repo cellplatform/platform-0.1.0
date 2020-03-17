@@ -1,4 +1,4 @@
-import { constants, fs, routes, t, time, id, defaultValue } from '../common';
+import { constants, fs, routes, t, time, id, defaultValue, Schema } from '../common';
 
 /**
  * Root information.
@@ -8,7 +8,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
 
   const formatDate = (timestamp: number) => {
     const date = time.day(args.deployedAt).toString();
-    return `${date}|UTC:${timestamp}`;
+    return `${date}|utc:${timestamp}`;
   };
 
   /**
@@ -18,18 +18,19 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
     const NOW_REGION = fs.env.value('NOW_REGION');
     const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local:device';
 
-    const provider = args.title || 'Untitled';
+    const deployment = args.title || 'Untitled';
+    const deployedAt = !args.deployedAt ? undefined : formatDate(args.deployedAt);
     const system = constants.getSystem().system;
-    const host = req.headers.host || '-';
-    const deployed = !args.deployedAt ? undefined : formatDate(args.deployedAt);
+    const domain = req.headers.host || '-';
 
     const data: t.IResGetSysInfo = {
-      provider,
-      host,
+      deployment,
+      domain,
       system,
       region,
-      deployed,
+      deployedAt,
     };
+    data.hash = Schema.hash.sha256(data);
 
     return { status: 200, data };
   });

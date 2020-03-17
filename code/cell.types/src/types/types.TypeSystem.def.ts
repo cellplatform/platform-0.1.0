@@ -54,7 +54,6 @@ export type TypeVisitArgs = {
   type: t.IType;
   prop?: string;
   optional?: boolean;
-  // def: t.ITypeDef;
 };
 
 /**

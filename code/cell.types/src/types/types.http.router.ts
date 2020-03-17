@@ -179,13 +179,13 @@ export type IResDeleteCellFilesData = {
 /**
  * Info (System)
  */
-
 export type IResGetSysInfo = {
-  provider: string;
+  deployment: string;
   system: string;
-  host: string;
+  domain: string;
   region: string;
-  deployed?: string;
+  deployedAt?: string;
+  hash?: string;
 };
 
 export type IResGetSysUid = string[];

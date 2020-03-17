@@ -239,7 +239,6 @@ async function readRef(args: {
 }): Promise<{ type: t.IType; error?: t.ITypeError }> {
   const { ns, column, ref, level, ctx } = args;
 
-  // const uri = Schema.uri;
   const isColumn = Uri.is.column(ref.uri);
   const columnUri = isColumn ? Uri.parse<t.IColumnUri>(ref.uri) : undefined;
   const nsUri = columnUri ? Uri.create.ns(columnUri.parts.ns) : ref.uri;
@@ -284,7 +283,11 @@ async function readRef(args: {
   } else {
     // Namespace REF.
     const { typename } = loadResponse;
-    const types: t.ITypeDef[] = loadResponse.columns.map(({ prop, type }) => ({ prop, type }));
+    const types: t.ITypeDef[] = loadResponse.columns.map(({ prop, type, optional }) => ({
+      prop,
+      type,
+      optional,
+    }));
     const type: t.ITypeRef = { ...ref, typename, types };
     return { type };
   }
