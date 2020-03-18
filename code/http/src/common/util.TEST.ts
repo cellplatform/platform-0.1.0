@@ -2,9 +2,9 @@ import { expect, t } from '../test';
 import * as util from './util';
 
 describe('util', () => {
-  it('getHeader', () => {
+  it('headerValue', () => {
     const test = (key: string, headers: t.IHttpHeaders | undefined, expected: any) => {
-      const res = util.getHeader(key, headers);
+      const res = util.headerValue(key, headers);
       expect(res).to.eql(expected);
     };
 

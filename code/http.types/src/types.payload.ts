@@ -1,6 +1,17 @@
 import { t, Json } from './common';
 
 /**
+ * Request
+ */
+export type IHttpRequestPayload = {
+  url: string;
+  method: t.HttpMethod;
+  mode?: t.HttpCors;
+  headers?: t.IHttpHeaders;
+  data?: object | string;
+};
+
+/**
  * Response
  */
 export type IHttpResponse = {
@@ -16,14 +27,16 @@ export type IHttpResponse = {
 
 export type IHttpContentType = {
   value: string;
-  is: IHttpContentIs;
-};
-export type IHttpContentIs = {
-  json: boolean;
-  text: boolean;
-  binary: boolean;
+  is: {
+    json: boolean;
+    text: boolean;
+    binary: boolean;
+  };
 };
 
+/**
+ * Respond (method)
+ */
 export type IHttpRespondPayload = {
   status: number;
   statusText?: string;

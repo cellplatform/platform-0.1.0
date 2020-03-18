@@ -29,21 +29,23 @@ describe('Mime', () => {
       expect(Mime.isJson(input)).to.eql(isJson);
     };
 
-    test('text/plain; charset=utf-8', false, true, false);
-    test('text/css;', false, true, false);
-    test('text/html', false, true, false);
-    test('text/javascript', false, true, false);
-    test('application/javascript', false, true, false);
-
-    // NB: json AND text.
-    test('application/json', false, true, true);
-    test('application/json;', false, true, true);
-    test('application/json; charset=utf-8', false, true, true);
-
+    // Binary
     test('image/jpeg', true, false, false);
     test('image/png', true, false, false);
     test('image/png; charset=utf-8', true, false, false);
     test('application/octet-stream', true, false, false);
     test('application/pdf', true, false, false);
+    test('application/javascript', true, false, false);
+
+    // Text
+    test('text/plain; charset=utf-8', false, true, false);
+    test('text/css;', false, true, false);
+    test('text/html', false, true, false);
+    test('text/javascript', false, true, false);
+
+    // Json
+    test('application/json', false, false, true);
+    test('application/json;', false, false, true);
+    test('application/json; charset=utf-8', false, false, true);
   });
 });

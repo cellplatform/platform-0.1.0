@@ -5,4 +5,3 @@ export { t, util };
 export * from './libs';
 export * from './util';
 export * from './constants';
-export * from './fetch';

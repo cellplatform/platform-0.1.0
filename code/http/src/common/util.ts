@@ -76,7 +76,7 @@ const walkHeaderEntries = (input: Headers) => {
 /**
  * Retrieve the value for the given header.
  */
-export function getHeader(key: string, headers: t.IHttpHeaders = {}) {
+export function headerValue(key: string, headers: t.IHttpHeaders = {}) {
   key = key.trim().toLowerCase();
   const match =
     Object.keys(headers)
@@ -89,55 +89,122 @@ export function getHeader(key: string, headers: t.IHttpHeaders = {}) {
  * Determine if the given headers reperesents form data.
  */
 export function isFormData(headers: t.IHttpHeaders = {}) {
-  const contentType = getHeader('content-type', headers);
+  const contentType = headerValue('content-type', headers);
   return contentType.includes('multipart/form-data');
 }
 
 /**
- * Convert a "response like" object to a proper [HttpResponse] object.
+ * Determine if the given body value represents a stream.
  */
-export async function toResponse(url: string, res: t.IHttpResponseLike) {
-  const { ok, status, statusText } = res;
-
-  const body = res.body || undefined;
-  const headers = fromRawHeaders(res.headers);
-  const contentType = toContentType(headers);
-  const is = contentType.is;
-
-  const text = is.text || is.json ? await res.text() : '';
-  let json: any;
-
-  const result: t.IHttpResponse = {
-    ok,
-    status,
-    statusText,
-    headers,
-    contentType,
-    body,
-    text,
-    get json() {
-      return json || (json = parseJson({ url, text }));
-    },
-  };
-
-  return result;
+export function isStream(value?: ReadableStream<Uint8Array>) {
+  const stream = value as any;
+  return typeof stream?.pipe === 'function';
 }
 
-export function toContentType(headers: t.IHttpHeaders) {
-  const value = (headers['content-type'] || '').toString();
-  const res: t.IHttpContentType = {
-    value,
-    is: {
-      get json() {
-        return Mime.isJson(value);
+export const response = {
+  /**
+   * Convert a [IHttpRespondPayload] fetch result to a proper [IHttpResponse] object.
+   */
+  async fromPayload(
+    url: string,
+    payload: t.IHttpRespondPayload,
+    modifications: { data?: any; headers?: t.IHttpHeaders } = {},
+  ) {
+    const { status, statusText = '' } = payload;
+    const data = payload.data || modifications.data;
+
+    let head = payload.headers || modifications.headers || {};
+    if (data && !headerValue('content-type', head)) {
+      head = {
+        ...head,
+        'content-type': isStream(data) ? 'application/octet-stream' : 'application/json',
+      };
+    }
+
+    const contentType = headerValue('content-type', head);
+    const isBinary = Mime.isBinary(contentType);
+
+    const toText = (data: any) => {
+      if (!data) {
+        return '';
+      }
+      if (typeof data === 'string') {
+        return data;
+      }
+      return stringify(data, () => `Failed while serializing data to JSON within [text] method.`);
+    };
+
+    const toJson = (data: any) => {
+      return data && !isBinary ? data : '';
+    };
+
+    let text = '';
+    let json = '';
+
+    const res: t.IHttpFetchResponse = {
+      status,
+      statusText,
+      headers: toRawHeaders(head),
+      body: isBinary ? data : null,
+      async text() {
+        return text || (text = toText(data));
       },
-      get text() {
-        return Mime.isText(value);
+      async json() {
+        return json || (json = toJson(data));
       },
-      get binary() {
-        return Mime.isBinary(value);
+    };
+
+    return response.fromFetch(res);
+  },
+
+  /**
+   * Convert a "response like" fetch result to a proper [IHttpResponse] object.
+   */
+  async fromFetch(res: t.IHttpFetchResponse) {
+    const { status } = res;
+    const ok = status.toString()[0] === '2';
+    const body = res.body || undefined;
+    const statusText = res.statusText ? res.statusText : ok ? 'OK' : '';
+
+    const headers = fromRawHeaders(res.headers);
+    const contentType = response.toContentType(headers);
+
+    const text = contentType.is.text ? await res.text() : '';
+    const json = contentType.is.json ? await res.json() : '';
+
+    const result: t.IHttpResponse = {
+      ok,
+      status,
+      statusText,
+      headers,
+      contentType,
+      body,
+      text,
+      json,
+    };
+
+    return result;
+  },
+
+  /**
+   * Derives content-type details from the given headers.
+   */
+  toContentType(headers: t.IHttpHeaders): t.IHttpContentType {
+    const value = headerValue('content-type', headers);
+    const res: t.IHttpContentType = {
+      value,
+      is: {
+        get json() {
+          return Mime.isJson(value);
+        },
+        get text() {
+          return Mime.isText(value);
+        },
+        get binary() {
+          return Mime.isBinary(value);
+        },
       },
-    },
-  };
-  return res;
-}
+    };
+    return res;
+  },
+};

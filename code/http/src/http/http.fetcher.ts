@@ -1,4 +1,4 @@
-import { id, t, time, toRawHeaders, toResponse, util, Mime } from '../common';
+import { id, t, time, util } from '../common';
 
 export const fetcher = async (args: {
   url: string;
@@ -14,56 +14,11 @@ export const fetcher = async (args: {
   const uid = `req:${id.shortid()}`;
   const { url, method, data, fire, mode, headers } = args;
 
-  const modifications: {
-    data?: any;
-    headers?: t.IHttpHeaders;
-    respond?: t.HttpRespondInput;
-  } = {
+  type M = { data?: any; headers?: t.IHttpHeaders; respond?: t.HttpRespondInput };
+  const modifications: M = {
     data: undefined,
-    headers: undefined,
+    headers: args.headers,
     respond: undefined,
-  };
-
-  const payloadToResponse = async (url: string, payload: t.IHttpRespondPayload) => {
-    const ok = payload.status.toString()[0] === '2';
-    const { status, statusText = '' } = payload;
-    const data = payload.data || modifications.data;
-
-    let head = payload.headers || headers || {};
-    if (payload.data && !util.getHeader('content-type', head)) {
-      const isBinary = typeof data.pipe === 'function';
-      head = {
-        ...head,
-        'content-type': isBinary ? 'application/octet-stream' : 'application/json',
-      };
-    }
-
-    const toText = () => {
-      if (!data) {
-        return '';
-      }
-      if (typeof data === 'string') {
-        return data;
-      }
-      return util.stringify(
-        data,
-        () => `Failed while serializing data to JSON within [text] method.`,
-      );
-    };
-
-    const contentType = util.getHeader('content-type', head);
-    const res: t.IHttpResponseLike = {
-      ok,
-      status,
-      statusText,
-      headers: toRawHeaders(head),
-      body: Mime.isBinary(contentType) ? data : null,
-      async text() {
-        return toText();
-      },
-    };
-
-    return toResponse(url, res);
   };
 
   // Fire BEFORE event.
@@ -90,10 +45,10 @@ export const fetcher = async (args: {
   fire({ type: 'HTTP/before', payload: before });
 
   if (modifications.respond) {
-    // Exit with faked/overridden response if one was returned from the BEFORE event.
+    // Exit with faked/overridden response if one was returned via the BEFORE event.
     const respond = modifications.respond;
     const payload = typeof respond === 'function' ? await respond() : respond;
-    const response = await payloadToResponse(url, payload);
+    const response = await util.response.fromPayload(url, payload, modifications);
     const elapsed = timer.elapsed;
     fire({
       type: 'HTTP/after',
@@ -111,7 +66,7 @@ export const fetcher = async (args: {
     });
 
     // Prepare response.
-    const response = await payloadToResponse(url, fetched);
+    const response = await util.response.fromFetch(fetched);
     const elapsed = timer.elapsed;
     fire({
       type: 'HTTP/after',

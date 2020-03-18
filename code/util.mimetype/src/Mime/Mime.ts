@@ -17,7 +17,7 @@ export class Mime {
    * Determine if the given MIME type represents a text file.
    */
   public static isText(mimetype: string) {
-    return isIncluded(mimetype, ['text/', 'application/json', 'application/javascript']);
+    return isIncluded(mimetype, ['text/']);
   }
 
   /**
