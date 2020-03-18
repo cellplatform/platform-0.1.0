@@ -4,8 +4,10 @@ import { t, Observable } from './common';
  * Client (HTTP)
  */
 export type HttpCors = 'cors' | 'no-cors' | 'same-origin';
-export type HttpOptions = { headers?: t.IHttpHeaders; mode?: HttpCors };
-export type HttpCreate = (options?: HttpOptions) => IHttp;
+export type HttpCreate = (options?: IHttpCreateOptions) => IHttp;
+
+export type IHttpCreateOptions = IHttpOptions & { fetch?: t.HttpFetch };
+export type IHttpOptions = { headers?: t.IHttpHeaders; mode?: HttpCors };
 
 export type IHttp = IHttpMethods & {
   create: HttpCreate;
@@ -16,25 +18,10 @@ export type IHttp = IHttpMethods & {
 };
 
 export type IHttpMethods = {
-  head(url: string, options?: HttpOptions): Promise<t.IHttpResponse>;
-  get(url: string, options?: HttpOptions): Promise<t.IHttpResponse>;
-  put(url: string, data?: any, options?: HttpOptions): Promise<t.IHttpResponse>;
-  post(url: string, data?: any, options?: HttpOptions): Promise<t.IHttpResponse>;
-  patch(url: string, data?: any, options?: HttpOptions): Promise<t.IHttpResponse>;
-  delete(url: string, data?: any, options?: HttpOptions): Promise<t.IHttpResponse>;
-};
-
-/**
- * Respond (Injection)
- */
-export type HttpRespondMethod = (payload: HttpRespondMethodArg) => void;
-export type HttpRespondMethodArg =
-  | HttpRespondPayload
-  | (() => HttpRespondPayload)
-  | (() => Promise<HttpRespondPayload>);
-export type HttpRespondPayload = {
-  status: number;
-  statusText?: string;
-  headers?: t.IHttpHeaders;
-  data?: object;
+  head(url: string, options?: IHttpOptions): Promise<t.IHttpResponse>;
+  get(url: string, options?: IHttpOptions): Promise<t.IHttpResponse>;
+  put(url: string, data?: any, options?: IHttpOptions): Promise<t.IHttpResponse>;
+  post(url: string, data?: any, options?: IHttpOptions): Promise<t.IHttpResponse>;
+  patch(url: string, data?: any, options?: IHttpOptions): Promise<t.IHttpResponse>;
+  delete(url: string, data?: any, options?: IHttpOptions): Promise<t.IHttpResponse>;
 };

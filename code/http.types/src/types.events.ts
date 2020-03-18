@@ -1,5 +1,10 @@
 import { t, IDuration } from './common';
 
+export type HttpRespondInput =
+  | t.IHttpRespondPayload
+  | (() => t.IHttpRespondPayload)
+  | (() => Promise<t.IHttpRespondPayload>);
+
 /**
  * Events
  */
@@ -14,7 +19,7 @@ export type IHttpBefore = {
   headers: t.IHttpHeaders;
   isModified: boolean;
   modify(args: { data?: any | Buffer; headers?: t.IHttpHeaders }): void;
-  respond: t.HttpRespondMethod; // NB: Used for mocking/testing or providing alternative `fetch` implementations.
+  respond(payload: HttpRespondInput): void; // NB: Used for mocking/testing or providing alternative `fetch` implementations.
 };
 
 export type IHttpAfterEvent = { type: 'HTTP/after'; payload: IHttpAfter };
