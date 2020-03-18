@@ -24,6 +24,8 @@ export const fetch: t.HttpFetch = async req => {
   const contentType = fetched.headers.get('content-type') || '';
   const isBinary = Mime.isBinary(contentType);
 
+  // fetched.json()
+
   const { status, statusText } = fetched;
   const res: t.IHttpRespondPayload = {
     status,

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.7.11",
+  "version": "0.7.16",
   "description": "HTTP server for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -21,19 +21,19 @@
     "deploy": "yarn cell deploy $@"
   },
   "dependencies": {
-    "@platform/cell.http.router": "0.7.9",
-    "@platform/cell.schema": "0.4.56",
+    "@platform/cell.http.router": "0.7.14",
+    "@platform/cell.schema": "0.4.57",
     "@platform/cli": "0.5.28",
     "@platform/exec": "0.2.53",
     "@platform/fs": "0.5.12",
-    "@platform/http": "0.11.12",
+    "@platform/http": "0.12.2",
     "@platform/libs": "0.2.1",
-    "@platform/micro": "0.14.16",
+    "@platform/micro": "0.14.21",
     "@platform/types": "0.4.14",
     "@platform/util.value": "0.7.13"
   },
   "devDependencies": {
-    "@platform/fsdb.nedb": "1.3.98",
+    "@platform/fsdb.nedb": "1.3.103",
     "@platform/test": "0.1.7",
     "@platform/ts": "3.7.20"
   },

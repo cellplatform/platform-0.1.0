@@ -1,4 +1,4 @@
-import { id, t, time, toRawHeaders, toResponse, util } from '../common';
+import { id, t, time, toRawHeaders, toResponse, util, Mime } from '../common';
 
 export const fetcher = async (args: {
   url: string;
@@ -30,10 +30,11 @@ export const fetcher = async (args: {
     const data = payload.data || modifications.data;
 
     let head = payload.headers || headers || {};
-    if (!util.getHeader('content-type', head)) {
+    if (payload.data && !util.getHeader('content-type', head)) {
+      const isBinary = typeof data.pipe === 'function';
       head = {
         ...head,
-        'content-type': payload.data ? 'application/json' : 'application/octet-stream',
+        'content-type': isBinary ? 'application/octet-stream' : 'application/json',
       };
     }
 
@@ -50,12 +51,13 @@ export const fetcher = async (args: {
       );
     };
 
+    const contentType = util.getHeader('content-type', head);
     const res: t.IHttpResponseLike = {
       ok,
       status,
       statusText,
       headers: toRawHeaders(head),
-      body: typeof data?.pipe === 'function' ? data : null,
+      body: Mime.isBinary(contentType) ? data : null,
       async text() {
         return toText();
       },

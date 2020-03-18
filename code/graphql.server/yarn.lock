@@ -97,13 +97,12 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/graphql@0.2.97":
-  version "0.2.97"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.97.tgz#2cec8d0e44372aca2e154bf7b97090d338d890a1"
-  integrity sha512-ZdrDXySBlIfP94/ICP/uHrlsKYQP2gH4ud+AkH0xbXo1gsDxgS/ndZv2Dn2/QzvgxMVuWJR0tYtXsAgdeTQ7kQ==
+"@platform/graphql@0.2.102":
+  version "0.2.102"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.102.tgz#77c232294e2e0d29434bb3cc10af83f1515d6c0b"
+  integrity sha512-h52+jAEIYpOdpbs2G0He8JQVL/3V5ujrc7E7eJz2p0ePbY5K8F/h/AkCpN4Ja3RmffxCMyeRKhoRbuGEMIaKiQ==
   dependencies:
-    "@platform/http" "0.11.12"
-    "@platform/http.types" "0.1.12"
+    "@platform/http.types" "0.2.0"
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"
     apollo-cache-inmemory "1.6.5"
@@ -114,27 +113,15 @@
     apollo-link-http "1.5.16"
     graphql "14.6.0"
     graphql-tag "2.10.3"
-
-"@platform/http.types@0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.12.tgz#923fb931a5d3a986c0753fbbc5d125f0e4b422fd"
-  integrity sha512-wLKddHuCOFctO6mGQL/IpSCVry2VbgJ96AO8alxmmOfGGSmuHVVmzJ8rk9Z1/KeKzVTZjaZLqyOn/ZzuXTXf0g==
-  dependencies:
-    "@platform/libs" "0.2.1"
-    "@platform/types" "0.4.14"
-
-"@platform/http@0.11.12":
-  version "0.11.12"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.12.tgz#293ee56eb15b26a51526adde9e33dafc12a591a5"
-  integrity sha512-6oZzJFWwEdmK5IBLq/5LF7hx1uqg+FFGkpVyBUoH9B1J5D2x5GxqWpMCvzS6eiJ66kE3Se4Xt7yIJQEpCDsjjA==
-  dependencies:
-    "@platform/fs" "0.5.12"
-    "@platform/http.types" "0.1.12"
-    "@platform/libs" "0.2.1"
-    "@platform/types" "0.4.14"
-    "@platform/util.value" "0.7.13"
-    "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
+
+"@platform/http.types@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.0.tgz#f13ed828ecc6d2fa2c0f88eb2eef8a1649fc2507"
+  integrity sha512-keAcAe1ya8j+WpYBOUoDo0IpjEBEU6NlqFjQjnahROQjt+lv8EMe0hylHpWVn04Q9zQ4Y6X12ZMXAk26nIVv8Q==
+  dependencies:
+    "@platform/libs" "0.2.1"
+    "@platform/types" "0.4.14"
 
 "@platform/libs@0.2.1":
   version "0.2.1"
@@ -383,11 +370,6 @@
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@types/http-assert/-/http-assert-1.5.1.tgz#d775e93630c2469c2f980fc27e3143240335db3b"
   integrity sha512-PGAK759pxyfXE78NbKxyfRcWYA/KwW17X290cNev/qAsn9eQIxkH4shoNBafH37wewhDG/0p1cHPbK6+SzZjWQ==
-
-"@types/isomorphic-fetch@0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.35.tgz#c1c0d402daac324582b6186b91f8905340ea3361"
-  integrity sha512-DaZNUvLDCAnCTjgwxgiL1eQdxIKEpNLOlTNtAgnZc50bG2copGhRrFN9/PxPBuJe+tZVLCbQ7ls0xveXVRPkvw==
 
 "@types/js-yaml@3.12.2":
   version "3.12.2"

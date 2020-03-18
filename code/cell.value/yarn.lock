@@ -25,27 +25,27 @@
   dependencies:
     "@platform/libs" "0.2.1"
 
-"@platform/cell.coord@0.8.68":
-  version "0.8.68"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.68.tgz#9e8b3a144b2fb47596944637d2bd4a46c80b9f02"
-  integrity sha512-THotZHPWRjPqx83Efe2sre9xSHzxzTK6ZxJMlbEXE2Q2PUCSoRGnl/PMzPM/zTldcozFaAbiULBDbLk/Gl25yA==
+"@platform/cell.coord@0.8.69":
+  version "0.8.69"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.69.tgz#33e37cc4a2815a1d619327c34604ef01c53b839e"
+  integrity sha512-foCCu4835F/FCxi3PY6Wk5YAFi/iFEwvUo6F5j2cYXCfpSm0oEf0fitTsz/tCBsdgthhFX4bAGHT/YR/DFePpA==
   dependencies:
     "@platform/cache" "0.2.23"
-    "@platform/cell.types" "0.4.50"
+    "@platform/cell.types" "0.4.51"
     "@platform/types" "0.4.14"
     "@platform/util.value" "0.7.13"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.schema@0.4.56":
-  version "0.4.56"
-  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.56.tgz#8a82eef0e9c48ce3bc249207fa815a4daeb2a208"
-  integrity sha512-uVq3Ld60uQ7kUx4MIWPmV995XUdLcx/SsA60rjsdhkrV4tfPWsPv5Uwto7cY191d35eAoFx4DeCBHHT22P5JZw==
+"@platform/cell.schema@0.4.57":
+  version "0.4.57"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.57.tgz#f337038ca31aeaa510ac035f9a9edfa8d75ee199"
+  integrity sha512-gxNIHo1r77Jz4ky2zQB5y8umk5t+p76pzUpDnDpp+Hhat6hJ85q9NMOFBe9qswBPrvmT/Dx+jCHz/Ner7b7z2g==
   dependencies:
     "@platform/cache" "0.2.23"
-    "@platform/cell.coord" "0.8.68"
-    "@platform/cell.types" "0.4.50"
+    "@platform/cell.coord" "0.8.69"
+    "@platform/cell.types" "0.4.51"
     "@platform/fs.types" "0.0.7"
     "@platform/fsdb.types" "0.6.18"
     "@platform/libs" "0.2.1"
@@ -53,16 +53,16 @@
     "@platform/util.string" "0.4.11"
     "@platform/util.value" "0.7.13"
 
-"@platform/cell.types@0.4.50":
-  version "0.4.50"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.50.tgz#6ea9bb327b8c7a59db90e9a7724536582bb2b7fa"
-  integrity sha512-zp66LKcijJisTMsOy0Bmfaoa7+6bUVzH37BAU/MhvsBMrfWDC9NrTnf8w41JT+jTW2a9Nki03HZyoxDPyEjBzQ==
+"@platform/cell.types@0.4.51":
+  version "0.4.51"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.51.tgz#af6379ca7a95e1efe7e8205c449523ef613bf55a"
+  integrity sha512-xbzJsn7vr5UqJ7y4QuRxihIWOwIJPMkPF7Y2mkFy2paLQhKdbj8gdw9hsAPhfGwLdSIoR2epljuJuwFQ4HPsRg==
   dependencies:
     "@platform/cache" "0.2.23"
-    "@platform/fs.s3.types" "0.1.23"
+    "@platform/fs.s3.types" "0.1.24"
     "@platform/fs.types" "^0.0.7"
     "@platform/fsdb.types" "0.6.18"
-    "@platform/http.types" "0.1.12"
+    "@platform/http.types" "0.2.0"
     "@platform/libs" "0.2.1"
     "@platform/log" "0.1.17"
     "@platform/types" "0.4.14"
@@ -79,12 +79,12 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.1.23":
-  version "0.1.23"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.23.tgz#b94fda17d4fcf50364fa9377101d70185d1c9dd4"
-  integrity sha512-CtLhejcmphf5e/u38ddfEAF72jUmd62ngdi5YyxXnCPC5DoiVPehIxVn4svnUJ2dj53+QGsoYgCDi5hQDrJL5A==
+"@platform/fs.s3.types@0.1.24":
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.24.tgz#fcee88e850951d370be3d9f417b9b848ddbb7dfa"
+  integrity sha512-E/y8lKaHSM8mXLy6YTdNNzfBf/oM7MG1XhLDLQuinOaszMYdXx0BtTcEKLEoFezmfrhSIJml8u9oRePDUk0Z2Q==
   dependencies:
-    "@platform/http.types" "0.1.12"
+    "@platform/http.types" "0.2.0"
     "@platform/types" "0.4.14"
 
 "@platform/fs.types@0.0.7", "@platform/fs.types@^0.0.7":
@@ -117,10 +117,10 @@
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"
 
-"@platform/http.types@0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.12.tgz#923fb931a5d3a986c0753fbbc5d125f0e4b422fd"
-  integrity sha512-wLKddHuCOFctO6mGQL/IpSCVry2VbgJ96AO8alxmmOfGGSmuHVVmzJ8rk9Z1/KeKzVTZjaZLqyOn/ZzuXTXf0g==
+"@platform/http.types@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.0.tgz#f13ed828ecc6d2fa2c0f88eb2eef8a1649fc2507"
+  integrity sha512-keAcAe1ya8j+WpYBOUoDo0IpjEBEU6NlqFjQjnahROQjt+lv8EMe0hylHpWVn04Q9zQ4Y6X12ZMXAk26nIVv8Q==
   dependencies:
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"

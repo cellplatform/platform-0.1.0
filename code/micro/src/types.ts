@@ -14,7 +14,7 @@ export type ServerStart = (options?: {
 export type IMicro = {
   server: t.Server;
   router: t.IRouter;
-  handler: t.RequestHandler;
+  handler: t.RouteHandler;
   service?: IMicroService;
   events$: t.Observable<MicroEvent>;
   request$: t.Observable<IMicroRequest>;
@@ -77,9 +77,9 @@ export type IMicroResponse<C extends object = {}> = {
   method: t.HttpMethod;
   url: string;
   req: t.IncomingMessage;
-  res: t.RouteResponse;
+  res: t.IRouteResponse;
   error?: string;
   isModified: boolean;
   context: C;
-  modify(input: t.RouteResponse | (() => Promise<t.RouteResponse>)): void;
+  modify(input: t.IRouteResponse | (() => Promise<t.IRouteResponse>)): void;
 };

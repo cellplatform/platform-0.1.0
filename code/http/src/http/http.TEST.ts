@@ -62,7 +62,7 @@ describe('http', () => {
     });
   });
 
-  describe('events (observable)', () => {
+  describe.only('events (observable)', () => {
     it('BEFORE event', async () => {
       const client = http.create();
       const events: t.IHttpBefore[] = [];
@@ -161,8 +161,8 @@ describe('http', () => {
       expect(events.length).to.eql(1);
       expect(events[0].method).to.eql('POST');
       expect(events[0].url).to.eql('http://localhost/foo');
-
       expect(res.body).to.not.eql(undefined);
+
       if (res.body) {
         const path = fs.resolve('tmp/response-bird.png');
         await fs.stream.save(path, res.body);
