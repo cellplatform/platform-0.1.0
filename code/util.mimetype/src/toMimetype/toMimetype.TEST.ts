@@ -13,8 +13,8 @@ describe('toMimetype (content-type)', () => {
   });
 
   it('matches', () => {
-    const test = (key: string, expected: string) => {
-      const res = toMimetype(key);
+    const test = (input: string, expected: string) => {
+      const res = toMimetype(input);
       expect(res).to.eql(expected);
     };
 

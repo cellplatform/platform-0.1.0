@@ -1,5 +1,5 @@
 {
-  "name": "react",
+  "name": "test.browser",
   "version": "0.0.0",
   "description": "",
   "main": "lib/index",
@@ -26,5 +26,6 @@
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "private": true
 }
