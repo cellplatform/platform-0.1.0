@@ -1,6 +1,8 @@
 import { Readable } from 'stream';
+import { createServer } from 'http';
+
 import { http } from '..';
-import { fs, expect, t, time, toRawHeaders } from '../test';
+import { expect, fs, t, time, randomPort } from '../test';
 
 describe('http', () => {
   describe('default instance (singleton)', () => {
@@ -75,7 +77,7 @@ describe('http', () => {
       expect(events[0].url).to.eql('http://localhost/foo');
     });
 
-    it('AFTER event: respond sync (json)', async () => {
+    it('AFTER event: respond sync (object/json)', async () => {
       const client = http.create();
       const events: t.IHttpAfter[] = [];
 
@@ -104,7 +106,7 @@ describe('http', () => {
       expect(res1.json).to.eql({ msg: 'hello' });
     });
 
-    it('AFTER event: respond async function (json)', async () => {
+    it('AFTER event: respond async function (object/json)', async () => {
       const client = http.create();
       const events: t.IHttpAfter[] = [];
 
@@ -160,11 +162,68 @@ describe('http', () => {
       expect(events[0].method).to.eql('POST');
       expect(events[0].url).to.eql('http://localhost/foo');
 
+      expect(res.body).to.not.eql(undefined);
       if (res.body) {
-        const path = fs.join('tmp/response-bird.png');
+        const path = fs.resolve('tmp/response-bird.png');
         await fs.stream.save(path, res.body);
         expect((await fs.readFile(path)).toString()).to.eql(image2.toString());
       }
+    });
+
+    it('AFTER event: respond (string)', async () => {
+      const client = http.create();
+      const events: t.IHttpAfter[] = [];
+
+      client.before$.subscribe(e => {
+        // Fake response.
+        e.respond({
+          status: 200,
+          data: 'hello', // NB: string (not object).
+        });
+      });
+      client.after$.subscribe(e => events.push(e));
+
+      const res1 = await client.get('http://localhost/foo');
+
+      expect(events.length).to.eql(1);
+      expect(events[0].method).to.eql('GET');
+      expect(events[0].url).to.eql('http://localhost/foo');
+
+      const res2 = events[0].response;
+      expect(res2.status).to.eql(200);
+      expect(res2.statusText).to.eql('');
+
+      expect(res1.text).to.eql(res2.text);
+      expect(res1.text).to.eql('hello');
+      expect(res1.json).to.eql('hello');
+    });
+
+    it('AFTER event: respond (<empty>)', async () => {
+      const client = http.create();
+      const events: t.IHttpAfter[] = [];
+
+      client.before$.subscribe(e => {
+        // Fake response.
+        e.respond({
+          status: 200,
+          data: undefined,
+        });
+      });
+      client.after$.subscribe(e => events.push(e));
+
+      const res1 = await client.get('http://localhost/foo');
+
+      expect(events.length).to.eql(1);
+      expect(events[0].method).to.eql('GET');
+      expect(events[0].url).to.eql('http://localhost/foo');
+
+      const res2 = events[0].response;
+      expect(res2.status).to.eql(200);
+      expect(res2.statusText).to.eql('');
+
+      expect(res1.text).to.eql(res2.text);
+      expect(res1.text).to.eql('');
+      expect(res1.json).to.eql('');
     });
 
     it('sends event identifier ("uid") that is shared between before/after events', async () => {
@@ -254,6 +313,124 @@ describe('http', () => {
       expect(events.length).to.eql(2);
       expect(events[0].payload.method).to.eql('DELETE');
       expect(events[1].payload.method).to.eql('DELETE');
+    });
+  });
+
+  describe('fetch', () => {
+    it('from HTTP server (text)', async () => {
+      const data = `console.log('hello');`;
+      const port = randomPort();
+      const server = createServer((req, res) => {
+        res.writeHead(200, { 'Content-Type': 'text/javascript' });
+        res.write(data);
+        res.end();
+      }).listen(port);
+
+      const res = await http.create().get(`http://localhost:${port}`);
+      server.close();
+
+      expect(res.status).to.eql(200);
+      expect(res.statusText).to.eql('OK');
+
+      expect(res.headers['content-type']).to.eql('text/javascript');
+      expect(res.contentType.is.binary).to.eql(false);
+      expect(res.contentType.is.json).to.eql(false);
+      expect(res.contentType.is.text).to.eql(true);
+
+      expect(res.text).to.eql(data);
+      expect(res.json).to.eql(data);
+      expect(res.body).to.eql(undefined);
+    });
+
+    it('from HTTP server (json)', async () => {
+      const data = { msg: 'hello' };
+      const port = randomPort();
+      const server = createServer((req, res) => {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.write(JSON.stringify(data));
+        res.end();
+      }).listen(port);
+
+      const res = await http.create().get(`http://localhost:${port}`);
+      server.close();
+
+      expect(res.status).to.eql(200);
+      expect(res.statusText).to.eql('OK');
+
+      expect(res.headers['content-type']).to.eql('application/json');
+      expect(res.contentType.is.binary).to.eql(false);
+      expect(res.contentType.is.json).to.eql(true);
+      expect(res.contentType.is.text).to.eql(true);
+
+      expect(res.text).to.eql(JSON.stringify(data));
+      expect(res.json).to.eql(data);
+      expect(res.body).to.eql(undefined);
+    });
+
+    it('from HTTP server (file/binary)', async () => {
+      const path = fs.resolve('src/test/assets/kitten.jpg');
+      const image = await fs.readFile(path);
+
+      const port = randomPort();
+      const server = createServer((req, res) => {
+        res.writeHead(200, {
+          'Content-Type': 'image/jpeg',
+          'Content-Length': image.length,
+        });
+        fs.createReadStream(path).pipe(res);
+      }).listen(port);
+
+      const res = await http.create().get(`http://localhost:${port}`);
+      server.close();
+
+      expect(res.status).to.eql(200);
+      expect(res.statusText).to.eql('OK');
+
+      expect(res.headers['content-type']).to.eql('image/jpeg');
+      expect(res.contentType.is.binary).to.eql(true);
+      expect(res.contentType.is.json).to.eql(false);
+      expect(res.contentType.is.text).to.eql(false);
+
+      expect(res.text).to.eql('');
+      expect(res.json).to.eql('');
+
+      expect(res.body).to.not.eql(undefined);
+      if (res.body) {
+        const path = fs.resolve('tmp/kitten.jpg');
+        await fs.stream.save(path, res.body);
+        expect((await fs.readFile(path)).toString()).to.eql(image.toString());
+      }
+    });
+
+    it('from injected [fetch] method', async () => {
+      const requests: t.IHttpRequestPayload[] = [];
+      const data = { msg: 'hello' };
+      const fetch: t.HttpFetch = async req => {
+        requests.push(req);
+        await time.wait(10);
+        return {
+          status: 202,
+          statusText: 'OK',
+          headers: { foo: 'bar' },
+          data,
+        };
+      };
+
+      const client = http.create({ fetch });
+      const res = await client.get(`http://localhost`);
+
+      expect(res.status).to.eql(202);
+      expect(res.statusText).to.eql('OK');
+
+      expect(res.headers.foo).to.eql('bar');
+      expect(res.headers['content-type']).to.eql('application/json');
+      expect(res.contentType.is.binary).to.eql(false);
+      expect(res.contentType.is.json).to.eql(true);
+      expect(res.contentType.is.text).to.eql(true);
+
+      expect(res.json).to.eql(data);
+      expect(res.text).to.eql(JSON.stringify(data));
+      expect(res.body).to.eql(undefined);
     });
   });
 });

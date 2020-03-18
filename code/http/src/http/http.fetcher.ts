@@ -1,4 +1,4 @@
-import { fetch, id, t, time, toRawHeaders, toBody, toResponse } from '../common';
+import { id, t, time, toRawHeaders, toResponse, util } from '../common';
 
 export const fetcher = async (args: {
   url: string;
@@ -6,6 +6,7 @@ export const fetcher = async (args: {
   fire: t.FireEvent;
   mode: t.HttpCors;
   headers: t.IHttpHeaders;
+  fetch: t.HttpFetch;
   data?: any;
 }) => {
   // Prepare arguments.
@@ -14,30 +15,40 @@ export const fetcher = async (args: {
   const { url, method, data, fire, mode, headers } = args;
 
   const modifications: {
-    data?: any | Buffer;
+    data?: any;
     headers?: t.IHttpHeaders;
-    respond?: t.HttpRespondMethodArg;
+    respond?: t.HttpRespondInput;
   } = {
     data: undefined,
     headers: undefined,
     respond: undefined,
   };
 
-  const toPayload = async (arg: t.HttpRespondMethodArg) => {
-    return typeof arg === 'function' ? arg() : arg;
-  };
-
-  const payloadToResponse = async (url: string, payload: t.HttpRespondPayload) => {
+  const payloadToResponse = async (url: string, payload: t.IHttpRespondPayload) => {
     const ok = payload.status.toString()[0] === '2';
     const { status, statusText = '' } = payload;
-    const data = payload.data || modifications.data || args.data;
+    const data = payload.data || modifications.data;
 
     let head = payload.headers || headers || {};
-    const contentTypeKey = Object.keys(head).find(key => key.toLowerCase() === 'content-type');
-    if (!contentTypeKey) {
-      const contentType = payload.data ? 'application/json' : 'application/octet-stream';
-      head = { ...headers, 'content-type': contentType };
+    if (!util.getHeader('content-type', head)) {
+      head = {
+        ...head,
+        'content-type': payload.data ? 'application/json' : 'application/octet-stream',
+      };
     }
+
+    const toText = () => {
+      if (!data) {
+        return '';
+      }
+      if (typeof data === 'string') {
+        return data;
+      }
+      return util.stringify(
+        data,
+        () => `Failed while serializing data to JSON within [text] method.`,
+      );
+    };
 
     const res: t.IHttpResponseLike = {
       ok,
@@ -46,7 +57,7 @@ export const fetcher = async (args: {
       headers: toRawHeaders(head),
       body: typeof data?.pipe === 'function' ? data : null,
       async text() {
-        return data ? JSON.stringify(data) : '';
+        return toText();
       },
     };
 
@@ -76,18 +87,11 @@ export const fetcher = async (args: {
   };
   fire({ type: 'HTTP/before', payload: before });
 
-  const prepareHeaders = () => {
-    return toRawHeaders({ ...headers, ...modifications.headers });
-  };
-  const prepareData = () => {
-    const headers = prepareHeaders();
-    const body = modifications.data || data;
-    return body ? toBody({ url, headers, data: body }) : undefined;
-  };
-
   if (modifications.respond) {
     // Exit with faked/overridden response if one was returned from the BEFORE event.
-    const response = await payloadToResponse(url, await toPayload(modifications.respond));
+    const respond = modifications.respond;
+    const payload = typeof respond === 'function' ? await respond() : respond;
+    const response = await payloadToResponse(url, payload);
     const elapsed = timer.elapsed;
     fire({
       type: 'HTTP/after',
@@ -95,16 +99,17 @@ export const fetcher = async (args: {
     });
     return response;
   } else {
-    // Invoke the HTTP service.
-    const fetched = await fetch(url, {
-      method,
+    // Invoke the HTTP service end-point.
+    const fetched = await args.fetch({
+      url,
       mode,
-      body: prepareData(),
-      headers: prepareHeaders(),
+      method,
+      headers,
+      data: modifications.data || data,
     });
 
     // Prepare response.
-    const response = await toResponse(url, fetched);
+    const response = await payloadToResponse(url, fetched);
     const elapsed = timer.elapsed;
     fire({
       type: 'HTTP/after',

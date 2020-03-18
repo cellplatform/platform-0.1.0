@@ -1,13 +1,13 @@
-import { value as valueUtil } from './libs';
-import * as t from './types';
 import { IS_PROD } from './constants';
+import { Mime, value as valueUtil } from './libs';
+import * as t from './types';
 
 /**
  * Safely serializes data to a JSON string.
  */
 export function stringify(data: any, errorMessage: () => string) {
   try {
-    return data ? JSON.stringify(data) : undefined;
+    return data ? JSON.stringify(data) : '';
   } catch (err) {
     let message = errorMessage();
     message = !IS_PROD ? `${message} ${err.message}` : message;
@@ -19,10 +19,13 @@ export function stringify(data: any, errorMessage: () => string) {
  * Attempts to parse JSON.
  */
 export function parseJson(args: { url: string; text: string }) {
+  const text = args.text;
   try {
-    return JSON.parse(args.text) as t.Json;
+    return (typeof text === 'string' && valueUtil.isJson(args.text)
+      ? JSON.parse(text)
+      : text) as t.Json;
   } catch (error) {
-    const body = args.text ? args.text : '<empty>';
+    const body = text ? text : '<empty>';
     const msg = `Failed while parsing JSON for '${args.url}'.\nParse Error: ${error.message}\nBody: ${body}`;
     throw new Error(msg);
   }
@@ -71,24 +74,28 @@ const walkHeaderEntries = (input: Headers) => {
 };
 
 /**
+ * Retrieve the value for the given header.
+ */
+export function getHeader(key: string, headers: t.IHttpHeaders = {}) {
+  key = key.trim().toLowerCase();
+  const match =
+    Object.keys(headers)
+      .filter(k => k.trim().toLowerCase() === key)
+      .find(k => headers[k]) || '';
+  return match ? headers[match] : '';
+}
+
+/**
  * Determine if the given headers reperesents form data.
  */
-export function isFormData(input: Headers) {
-  const contentType = input.get('content-type') || '';
+export function isFormData(headers: t.IHttpHeaders = {}) {
+  const contentType = getHeader('content-type', headers);
   return contentType.includes('multipart/form-data');
 }
 
-export function toBody(args: { url: string; headers: Headers; data?: any }) {
-  const { url, headers, data } = args;
-  if (isFormData(headers)) {
-    return data;
-  }
-  return stringify(
-    data,
-    () => `Failed to POST to '${url}', the data could not be serialized to JSON.`,
-  );
-}
-
+/**
+ * Convert a "response like" object to a proper [HttpResponse] object.
+ */
 export async function toResponse(url: string, res: t.IHttpResponseLike) {
   const { ok, status, statusText } = res;
 
@@ -122,13 +129,13 @@ export function toContentType(headers: t.IHttpHeaders) {
     value,
     is: {
       get json() {
-        return value.includes('application/json');
+        return Mime.isJson(value);
       },
       get text() {
-        return value.includes('text/');
+        return Mime.isText(value);
       },
       get binary() {
-        return !res.is.json && !res.is.text;
+        return Mime.isBinary(value);
       },
     },
   };

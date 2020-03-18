@@ -34,6 +34,7 @@ describe('Mime', () => {
     test('text/html', false, true, false);
     test('text/javascript', false, true, false);
     test('application/javascript', false, true, false);
+
     test('application/json', false, true, true); // NB: json AND text.
 
     test('image/jpeg', true, false, false);
