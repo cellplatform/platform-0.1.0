@@ -1944,13 +1944,12 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/graphql@0.2.97":
-  version "0.2.97"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.97.tgz#2cec8d0e44372aca2e154bf7b97090d338d890a1"
-  integrity sha512-ZdrDXySBlIfP94/ICP/uHrlsKYQP2gH4ud+AkH0xbXo1gsDxgS/ndZv2Dn2/QzvgxMVuWJR0tYtXsAgdeTQ7kQ==
+"@platform/graphql@0.2.103":
+  version "0.2.103"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.103.tgz#c2dd49c7e2bfe4ecaa816cb90ab5bfeb5bb17c07"
+  integrity sha512-9Hsu5jDM5jRYq9ZQK6Doem8qX0K0hMzHUi3wIkL1pMg7XxTwXpEQ+zQ8H+DMCV1uyXztqI1kkWWNA4tLG8/lGg==
   dependencies:
-    "@platform/http" "0.11.12"
-    "@platform/http.types" "0.1.12"
+    "@platform/http.types" "0.2.1"
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"
     apollo-cache-inmemory "1.6.5"
@@ -1961,27 +1960,15 @@
     apollo-link-http "1.5.16"
     graphql "14.6.0"
     graphql-tag "2.10.3"
-
-"@platform/http.types@0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.12.tgz#923fb931a5d3a986c0753fbbc5d125f0e4b422fd"
-  integrity sha512-wLKddHuCOFctO6mGQL/IpSCVry2VbgJ96AO8alxmmOfGGSmuHVVmzJ8rk9Z1/KeKzVTZjaZLqyOn/ZzuXTXf0g==
-  dependencies:
-    "@platform/libs" "0.2.1"
-    "@platform/types" "0.4.14"
-
-"@platform/http@0.11.12":
-  version "0.11.12"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.12.tgz#293ee56eb15b26a51526adde9e33dafc12a591a5"
-  integrity sha512-6oZzJFWwEdmK5IBLq/5LF7hx1uqg+FFGkpVyBUoH9B1J5D2x5GxqWpMCvzS6eiJ66kE3Se4Xt7yIJQEpCDsjjA==
-  dependencies:
-    "@platform/fs" "0.5.12"
-    "@platform/http.types" "0.1.12"
-    "@platform/libs" "0.2.1"
-    "@platform/types" "0.4.14"
-    "@platform/util.value" "0.7.13"
-    "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
+
+"@platform/http.types@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.1.tgz#53b093a373fe6cd3bcdd6c5af8a0201739765876"
+  integrity sha512-bpyA3j5+QETUwrkBkvt/Juyhb18VfyA8tB2EoGIinTu8howjn7COnONtHpKBzRcoZTXmvhs9Fn/ZR2edOKr/5w==
+  dependencies:
+    "@platform/libs" "0.2.1"
+    "@platform/types" "0.4.14"
 
 "@platform/libs@0.2.0":
   version "0.2.0"
@@ -2398,11 +2385,6 @@
   dependencies:
     "@types/through" "*"
     rxjs "^6.4.0"
-
-"@types/isomorphic-fetch@0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.35.tgz#c1c0d402daac324582b6186b91f8905340ea3361"
-  integrity sha512-DaZNUvLDCAnCTjgwxgiL1eQdxIKEpNLOlTNtAgnZc50bG2copGhRrFN9/PxPBuJe+tZVLCbQ7ls0xveXVRPkvw==
 
 "@types/js-yaml@3.12.1":
   version "3.12.1"

@@ -76,26 +76,26 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.1.23":
-  version "0.1.23"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.23.tgz#b94fda17d4fcf50364fa9377101d70185d1c9dd4"
-  integrity sha512-CtLhejcmphf5e/u38ddfEAF72jUmd62ngdi5YyxXnCPC5DoiVPehIxVn4svnUJ2dj53+QGsoYgCDi5hQDrJL5A==
+"@platform/fs.s3.types@0.1.25":
+  version "0.1.25"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.25.tgz#88709a16ba6c98069de23111a63e092063e643d6"
+  integrity sha512-dcIQWoJM6il31XM4PMygSM7WE6blKmEYD6g4pYr2Tvv40+3ySHz4ac7CWw99d4N//S9gHsvNLH6cOz/0CE2b0g==
   dependencies:
-    "@platform/http.types" "0.1.12"
+    "@platform/http.types" "0.2.1"
     "@platform/types" "0.4.14"
 
-"@platform/fs.s3@0.6.40":
-  version "0.6.40"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.40.tgz#060101c4d132a8dfb839d4c1f65769fd50bcfc5e"
-  integrity sha512-5YKG3JNTnFOvHowj23boJWJa28AJTSSyiADIna+OHLAlAFBrQYdsOqpnz8jnTyuKNTHBLDvkUFr25aWLBszbJg==
+"@platform/fs.s3@0.6.47":
+  version "0.6.47"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.47.tgz#b2a2ca5f59a0b373f97c7aab3585dabe2e593d85"
+  integrity sha512-Waurb1prytzsmUA1h10+cLu5dT06wgZ3CeOUEQ25H+9ouOJvzCF8S/ObG1u37DdkIZX7k/Stb7dGrXj7056xlA==
   dependencies:
     "@platform/fs" "0.5.12"
-    "@platform/fs.s3.types" "0.1.23"
-    "@platform/http" "0.11.12"
+    "@platform/fs.s3.types" "0.1.25"
+    "@platform/http" "0.12.4"
     "@platform/libs" "0.2.1"
     "@platform/log" "0.1.17"
     "@platform/types" "0.4.14"
-    "@platform/util.mimetype" "0.0.14"
+    "@platform/util.mimetype" "0.1.3"
     "@platform/util.value" "0.7.13"
     aws-sdk "2.640.0"
     form-data "3.0.0"
@@ -122,36 +122,35 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http.router@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@platform/http.router/-/http.router-0.0.14.tgz#385832e65f2f93e4fc062cdd35039308cded4ba0"
-  integrity sha512-lY27FdP8D3uOcKeVR+eAMNTRDU/jJ5E/rELm+C3g0x/FylL/4wEPTtJFWwoxgssBZBngTxPWC5IgpiOzJg5k0g==
+"@platform/http.router@0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@platform/http.router/-/http.router-0.0.16.tgz#2b0b7a9a87fd1afd91f005b82509e94c4d4b196f"
+  integrity sha512-xXanj19hWwGfJm9vivSrThrLi8e0YpK0h1i5+usa+ps4gMKF1Zsd8XDCrHu82cRp4hLAnS+FWGpp7bJQbXEBuw==
   dependencies:
-    "@platform/http.types" "0.1.12"
+    "@platform/http.types" "0.2.1"
     "@platform/libs" "0.2.1"
     "@platform/util.string" "0.4.11"
     "@platform/util.value" "0.7.13"
     path-to-regexp "6.1.0"
 
-"@platform/http.types@0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.12.tgz#923fb931a5d3a986c0753fbbc5d125f0e4b422fd"
-  integrity sha512-wLKddHuCOFctO6mGQL/IpSCVry2VbgJ96AO8alxmmOfGGSmuHVVmzJ8rk9Z1/KeKzVTZjaZLqyOn/ZzuXTXf0g==
+"@platform/http.types@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.1.tgz#53b093a373fe6cd3bcdd6c5af8a0201739765876"
+  integrity sha512-bpyA3j5+QETUwrkBkvt/Juyhb18VfyA8tB2EoGIinTu8howjn7COnONtHpKBzRcoZTXmvhs9Fn/ZR2edOKr/5w==
   dependencies:
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"
 
-"@platform/http@0.11.12":
-  version "0.11.12"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.11.12.tgz#293ee56eb15b26a51526adde9e33dafc12a591a5"
-  integrity sha512-6oZzJFWwEdmK5IBLq/5LF7hx1uqg+FFGkpVyBUoH9B1J5D2x5GxqWpMCvzS6eiJ66kE3Se4Xt7yIJQEpCDsjjA==
+"@platform/http@0.12.4":
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.4.tgz#672aa832b97d62c86bce0d3e35dd6c37bfdc258c"
+  integrity sha512-cfYQvN96LZRjMeHuBoZLAQnpxA7+PRmqUVeKqGooL3iLwFUKnZQKbZpocObE+jOa8Lcd9pvzp4azvJ0gw594FQ==
   dependencies:
-    "@platform/fs" "0.5.12"
-    "@platform/http.types" "0.1.12"
+    "@platform/http.types" "0.2.1"
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"
+    "@platform/util.mimetype" "0.1.3"
     "@platform/util.value" "0.7.13"
-    "@types/isomorphic-fetch" "0.0.35"
     isomorphic-fetch "2.2.1"
 
 "@platform/libs@0.2.1":
@@ -173,13 +172,13 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.14.16":
-  version "0.14.16"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.14.16.tgz#77869fb6e37e08762d5558cf066a03ad823ed6ac"
-  integrity sha512-+LX96l91v5o/m7tmxhysD0VyWNMA0npTlfUojWdVds5HNCwW4TqLNGMzWoCBxD6uA/ZFiE/kITgw5vzi/4yaDA==
+"@platform/micro@0.14.23":
+  version "0.14.23"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.14.23.tgz#8c644a66b3e845605de950b8db85f2de67502fe7"
+  integrity sha512-pObwKDNwF3V+33TvOnV2jjAyG/B2rszSxTL/iWiiDYYxtCfR5qVmd13q4XOjU3LidTdNFKspF9ZhQYKThaEwMQ==
   dependencies:
-    "@platform/http.router" "0.0.14"
-    "@platform/http.types" "0.1.12"
+    "@platform/http.router" "0.0.16"
+    "@platform/http.types" "0.2.1"
     "@platform/libs" "0.2.1"
     "@platform/log" "0.1.17"
     "@platform/types" "0.4.14"
@@ -269,10 +268,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.117.tgz#ed1552db7cf2c6870807355f0f5a1a8b6b3d757d"
   integrity sha512-fRCjdGcn98ddjCZ1Xv+5ry/FIuFuvPsG1CMEYL6mzGn3zBvYwwuPYvfFK/f0ezAC/62vWmsvvMJqooWXSHTEog==
 
-"@platform/util.mimetype@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@platform/util.mimetype/-/util.mimetype-0.0.14.tgz#54ecbbf65e9a03fbbeca8df124c384240246d808"
-  integrity sha512-WiUMi6Ze+gkGhHpfgIsynBZzvqK5E0oimVxAsYs36o0cg1vwdXBcX95vfD7/jKwv8a+6vE6hcM3466zF6pTYDQ==
+"@platform/util.mimetype@0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@platform/util.mimetype/-/util.mimetype-0.1.3.tgz#7abac70cdaf564a556f1663b2b994f61007fe989"
+  integrity sha512-++Z1bWR/zLIXr056Nnwg6+1KS3UN49F0pvk/tgD0NHYq+9+0WPgmFV0b1RRQCGR4ZVnxL19gp1hBTIgcNvvS2g==
 
 "@platform/util.string@0.4.11":
   version "0.4.11"
@@ -342,11 +341,6 @@
   dependencies:
     "@types/through" "*"
     rxjs "^6.4.0"
-
-"@types/isomorphic-fetch@0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@types/isomorphic-fetch/-/isomorphic-fetch-0.0.35.tgz#c1c0d402daac324582b6186b91f8905340ea3361"
-  integrity sha512-DaZNUvLDCAnCTjgwxgiL1eQdxIKEpNLOlTNtAgnZc50bG2copGhRrFN9/PxPBuJe+tZVLCbQ7ls0xveXVRPkvw==
 
 "@types/js-yaml@3.12.2":
   version "3.12.2"

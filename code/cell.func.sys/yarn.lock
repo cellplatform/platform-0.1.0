@@ -25,16 +25,16 @@
   dependencies:
     "@platform/libs" "0.2.1"
 
-"@platform/cell.types@0.4.50":
-  version "0.4.50"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.50.tgz#6ea9bb327b8c7a59db90e9a7724536582bb2b7fa"
-  integrity sha512-zp66LKcijJisTMsOy0Bmfaoa7+6bUVzH37BAU/MhvsBMrfWDC9NrTnf8w41JT+jTW2a9Nki03HZyoxDPyEjBzQ==
+"@platform/cell.types@0.4.52":
+  version "0.4.52"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.52.tgz#e003a8f098ee8dbe71124be5b265c519ddf44d01"
+  integrity sha512-Ca9D8XWh1ti9i8IGsZTMvIE5sB7dC4Uw/C7DTImdZ1/oTeYSOj/bx7EerWMgbIBx2rOSaiwXgKdKRSRkda4uyA==
   dependencies:
     "@platform/cache" "0.2.23"
-    "@platform/fs.s3.types" "0.1.23"
+    "@platform/fs.s3.types" "0.1.25"
     "@platform/fs.types" "^0.0.7"
     "@platform/fsdb.types" "0.6.18"
-    "@platform/http.types" "0.1.12"
+    "@platform/http.types" "0.2.1"
     "@platform/libs" "0.2.1"
     "@platform/log" "0.1.17"
     "@platform/types" "0.4.14"
@@ -51,12 +51,12 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.1.23":
-  version "0.1.23"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.23.tgz#b94fda17d4fcf50364fa9377101d70185d1c9dd4"
-  integrity sha512-CtLhejcmphf5e/u38ddfEAF72jUmd62ngdi5YyxXnCPC5DoiVPehIxVn4svnUJ2dj53+QGsoYgCDi5hQDrJL5A==
+"@platform/fs.s3.types@0.1.25":
+  version "0.1.25"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.25.tgz#88709a16ba6c98069de23111a63e092063e643d6"
+  integrity sha512-dcIQWoJM6il31XM4PMygSM7WE6blKmEYD6g4pYr2Tvv40+3ySHz4ac7CWw99d4N//S9gHsvNLH6cOz/0CE2b0g==
   dependencies:
-    "@platform/http.types" "0.1.12"
+    "@platform/http.types" "0.2.1"
     "@platform/types" "0.4.14"
 
 "@platform/fs.types@0.0.7", "@platform/fs.types@^0.0.7":
@@ -89,10 +89,10 @@
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"
 
-"@platform/http.types@0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.1.12.tgz#923fb931a5d3a986c0753fbbc5d125f0e4b422fd"
-  integrity sha512-wLKddHuCOFctO6mGQL/IpSCVry2VbgJ96AO8alxmmOfGGSmuHVVmzJ8rk9Z1/KeKzVTZjaZLqyOn/ZzuXTXf0g==
+"@platform/http.types@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.1.tgz#53b093a373fe6cd3bcdd6c5af8a0201739765876"
+  integrity sha512-bpyA3j5+QETUwrkBkvt/Juyhb18VfyA8tB2EoGIinTu8howjn7COnONtHpKBzRcoZTXmvhs9Fn/ZR2edOKr/5w==
   dependencies:
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"
