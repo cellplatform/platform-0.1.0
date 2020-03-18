@@ -131,6 +131,8 @@ describe('http', () => {
       expect(events.length).to.eql(1);
       expect(events[0].method).to.eql('GET');
       expect(events[0].url).to.eql('http://localhost/foo');
+      expect(events[0].ok).to.eql(true);
+      expect(events[0].status).to.eql(202);
 
       const res2 = events[0].response;
       expect(res2.status).to.eql(202);

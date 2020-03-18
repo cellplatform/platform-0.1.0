@@ -65,9 +65,10 @@ export const fetcher = async (args: {
     const payload = typeof respond === 'function' ? await respond() : respond;
     const response = await util.response.fromPayload(payload, modifications);
     const elapsed = timer.elapsed;
+    const { ok, status } = response;
     fire({
       type: 'HTTP/after',
-      payload: { uid, method, url, response, elapsed },
+      payload: { uid, method, url, ok, status, response, elapsed },
     });
     return response;
   } else {
@@ -83,9 +84,10 @@ export const fetcher = async (args: {
     // Prepare response.
     const response = await util.response.fromFetch(fetched);
     const elapsed = timer.elapsed;
+    const { ok, status } = response;
     fire({
       type: 'HTTP/after',
-      payload: { uid, method, url, response, elapsed },
+      payload: { uid, method, url, ok, status, response, elapsed },
     });
 
     // Finish up.

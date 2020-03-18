@@ -35,6 +35,8 @@ export type IHttpAfter = {
   uid: string;
   method: t.HttpMethod;
   url: string;
+  ok: boolean;
+  status: number;
   response: t.IHttpResponse;
   elapsed: IDuration;
 };
