@@ -106,7 +106,6 @@ export const response = {
    * Convert a [IHttpRespondPayload] fetch result to a proper [IHttpResponse] object.
    */
   async fromPayload(
-    url: string,
     payload: t.IHttpRespondPayload,
     modifications: { data?: any; headers?: t.IHttpHeaders } = {},
   ) {

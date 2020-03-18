@@ -1,4 +1,4 @@
-import { id, t, time, util } from '../common';
+import { id, t, time, util, value } from '../common';
 
 export const fetcher = async (args: {
   url: string;
@@ -14,11 +14,34 @@ export const fetcher = async (args: {
   const uid = `req:${id.shortid()}`;
   const { url, method, data, fire, mode, headers } = args;
 
-  type M = { data?: any; headers?: t.IHttpHeaders; respond?: t.HttpRespondInput };
+  type M = { headers?: t.IHttpHeaders; data?: any; respond?: t.HttpRespondInput };
   const modifications: M = {
+    headers: args.headers || {},
     data: undefined,
-    headers: args.headers,
     respond: undefined,
+  };
+
+  const modify: t.IHttpModify = {
+    header(key: string, value: string) {
+      before.isModified = true;
+      const headers = modifications.headers || {};
+      if (value) {
+        headers[key] = value;
+      } else {
+        delete headers[key];
+      }
+      modifications.headers = headers;
+    },
+    headers: {
+      merge(input: t.IHttpHeaders) {
+        before.isModified = true;
+        modifications.headers = value.deleteEmpty({ ...modifications.headers, ...input });
+      },
+      replace(input: t.IHttpHeaders) {
+        before.isModified = true;
+        modifications.headers = value.deleteEmpty(input);
+      },
+    },
   };
 
   // Fire BEFORE event.
@@ -29,15 +52,7 @@ export const fetcher = async (args: {
     data,
     headers,
     isModified: false,
-    modify(args: { data?: any; headers?: t.IHttpHeaders }) {
-      before.isModified = true;
-      if (args.data !== undefined) {
-        modifications.data = args.data;
-      }
-      if (args.headers !== undefined) {
-        modifications.headers = args.headers;
-      }
-    },
+    modify,
     respond(input) {
       modifications.respond = input;
     },
@@ -48,7 +63,7 @@ export const fetcher = async (args: {
     // Exit with faked/overridden response if one was returned via the BEFORE event.
     const respond = modifications.respond;
     const payload = typeof respond === 'function' ? await respond() : respond;
-    const response = await util.response.fromPayload(url, payload, modifications);
+    const response = await util.response.fromPayload(payload, modifications);
     const elapsed = timer.elapsed;
     fire({
       type: 'HTTP/after',
@@ -61,8 +76,8 @@ export const fetcher = async (args: {
       url,
       mode,
       method,
-      headers,
-      data: modifications.data || data,
+      headers: modifications.headers || headers,
+      data,
     });
 
     // Prepare response.

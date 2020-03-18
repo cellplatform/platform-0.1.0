@@ -5,6 +5,14 @@ export type HttpRespondInput =
   | (() => t.IHttpRespondPayload)
   | (() => Promise<t.IHttpRespondPayload>);
 
+export type IHttpModify = {
+  header(key: string, value: string): void;
+  headers: {
+    merge(headers: t.IHttpHeaders): void;
+    replace(headers: t.IHttpHeaders): void;
+  };
+};
+
 /**
  * Events
  */
@@ -18,7 +26,7 @@ export type IHttpBefore = {
   data?: any;
   headers: t.IHttpHeaders;
   isModified: boolean;
-  modify(args: { data?: any | Buffer; headers?: t.IHttpHeaders }): void;
+  modify: t.IHttpModify;
   respond(payload: HttpRespondInput): void; // NB: Used for mocking/testing or providing alternative `fetch` implementations.
 };
 
