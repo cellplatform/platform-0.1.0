@@ -1,4 +1,4 @@
-import { fs, path, t, sha256, Urls, toMimetype } from '../common';
+import { fs, path, t, Schema } from '../common';
 
 export * from '../types';
 const toLocation = (path: string) => `file://${path}`;
@@ -28,9 +28,9 @@ export function init(args: { root: string }): t.IFsLocal {
         const args = options as t.S3SignedPostOptions;
         const key = path.resolve({ uri, root });
         return {
-          path: Urls.routes.LOCAL.FS,
+          path: Schema.Urls.routes.LOCAL.FS,
           props: {
-            'content-type': args.contentType || toMimetype(key, 'application/octet-stream'),
+            'content-type': args.contentType || Schema.mime.toType(key, 'application/octet-stream'),
             key,
           },
         };
@@ -92,7 +92,7 @@ export function init(args: { root: string }): t.IFsLocal {
           location,
           data,
           get hash() {
-            return sha256(data);
+            return Schema.hash.sha256(data);
           },
           get bytes() {
             return Uint8Array.from(file.data).length;
@@ -125,7 +125,7 @@ export function init(args: { root: string }): t.IFsLocal {
         location,
         data,
         get hash() {
-          return sha256(data);
+          return Schema.hash.sha256(data);
         },
         get bytes() {
           return Uint8Array.from(file.data).length;

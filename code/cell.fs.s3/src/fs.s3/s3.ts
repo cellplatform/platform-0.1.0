@@ -1,4 +1,4 @@
-import { t, fs, path, sha256, util, toMimetype } from '../common';
+import { t, fs, path, Schema, util } from '../common';
 
 export * from '../types';
 export type IS3Init = t.S3Config & { root: string };
@@ -126,7 +126,7 @@ export function init(args: IS3Init): t.IFsS3 {
             location,
             data: res.data,
             get hash() {
-              return sha256(res.data);
+              return Schema.hash.sha256(res.data);
             },
             get bytes() {
               return Uint8Array.from(file.data).length;
@@ -157,7 +157,7 @@ export function init(args: IS3Init): t.IFsS3 {
       }
 
       const { filename } = options;
-      const contentType = filename ? toMimetype(filename) : undefined;
+      const contentType = filename ? Schema.mime.toType(filename) : undefined;
       const contentDisposition = filename ? `inline; filename="${filename}"` : undefined;
 
       uri = (uri || '').trim();
@@ -169,7 +169,7 @@ export function init(args: IS3Init): t.IFsS3 {
         location: '',
         data,
         get hash() {
-          return hash || (hash = sha256(data));
+          return hash || (hash = Schema.hash.sha256(data));
         },
         get bytes() {
           return Uint8Array.from(file.data).length;

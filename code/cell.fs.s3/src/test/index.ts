@@ -1,7 +1,7 @@
 export { expect, expectError } from '@platform/test';
 export { log } from '@platform/log/lib/server';
 export * from '../common';
-import { s3, local } from '..';
+import { s3 } from '..';
 
 import { fs, Schema } from '../common';
 fs.env.load();
@@ -18,7 +18,7 @@ export const writeFile = async (path: string, data: Buffer) => {
   await fs.writeFile(path, data);
 };
 
-export const initS3 = (args: { path?: string } = {}) => {
+export const init = (args: { path?: string } = {}) => {
   return s3.init({
     root: args.path || 'platform/tmp/test',
     endpoint: 'sfo2.digitaloceanspaces.com',
@@ -27,11 +27,8 @@ export const initS3 = (args: { path?: string } = {}) => {
   });
 };
 
-export const initLocal = () => local.init({ root: PATH.LOCAL });
-
 export const util = {
-  initS3,
-  initLocal,
+  initS3: init,
   PATH,
   fs,
   writeFile,
