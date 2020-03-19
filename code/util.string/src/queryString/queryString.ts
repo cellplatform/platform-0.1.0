@@ -1,19 +1,12 @@
 import { toBool } from '../common';
+import * as t from './types';
 
-type QueryValue = string | boolean;
-type QueryObject = { [key: string]: QueryValue | QueryValue[] };
-
-/**
- * Represents a query-string.
- * NB: this record type is derived from NextJS's declaration
- * for the [ctx.query] type.
- */
-export type UrlQuery = Record<string, string | string[] | number | boolean | undefined>;
+export * from './types';
 
 /**
  * Takes a query-string value and parses it into an object.
  */
-export function toObject<T extends QueryObject>(href?: string): T {
+export function toObject<T extends t.UrlQueryObject>(href?: string): T {
   // Setup initial conditions.
   const EMPTY = {};
   if (!href) {
@@ -88,7 +81,7 @@ export function valueAsFlag<T>(value?: string | string[] | number | boolean): T 
  * Checks a set of keys within a query-string to see if any of them
  * are flags.
  */
-export function isFlag(keys: string | string[] | undefined, query?: UrlQuery) {
+export function isFlag(keys: string | string[] | undefined, query?: t.UrlQuery) {
   keys = keys ? (Array.isArray(keys) ? keys : [keys]) : [];
   return query ? keys.some(key => valueAsFlag(query[key])) : false;
 }
