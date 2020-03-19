@@ -24,7 +24,7 @@ export async function get(args: {
     get json(): t.Json {
       if (!json) {
         try {
-          const text = response.data ? response.data.toString('utf-8') : undefined;
+          const text = response.data ? response.data.toString() : undefined;
           json = text ? JSON.parse(text) : null;
         } catch (error) {
           throw new Error(`Failed to parse S3 object at key [${key}] from JSON. ${error.message}`);

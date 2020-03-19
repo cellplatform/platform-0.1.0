@@ -29,7 +29,7 @@ export function post(args: t.S3SignedPostArgs & { s3: AWS.S3 }): t.S3SignedPost 
     /**
      * Prepare and POST the multi-part form to S3.
      */
-    send(data: Buffer, options: { headers?: t.IHttpHeaders } = {}): Promise<t.S3PostResponse> {
+    send(data: Uint8Array, options: { headers?: t.IHttpHeaders } = {}): Promise<t.S3PostResponse> {
       return new Promise<t.S3PostResponse>(async (resolve, reject) => {
         // Build the form.
         const contentType = presignedPost.props['content-type'];
