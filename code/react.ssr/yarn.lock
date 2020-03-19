@@ -84,14 +84,14 @@
     "@platform/http.types" "0.2.1"
     "@platform/types" "0.4.14"
 
-"@platform/fs.s3@0.6.47":
-  version "0.6.47"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.47.tgz#b2a2ca5f59a0b373f97c7aab3585dabe2e593d85"
-  integrity sha512-Waurb1prytzsmUA1h10+cLu5dT06wgZ3CeOUEQ25H+9ouOJvzCF8S/ObG1u37DdkIZX7k/Stb7dGrXj7056xlA==
+"@platform/fs.s3@0.6.48":
+  version "0.6.48"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.48.tgz#a088fa2344625aa824e5f6c6e68f9bf21372e837"
+  integrity sha512-N+x0te5uviKq/L3KrDNfcRsSFSYtyP5KyAmZQkOlDJOXkY5EDMqLhjyEF5+a1HF1F5CgjulnhjDjZ/cvEi4+oA==
   dependencies:
     "@platform/fs" "0.5.12"
     "@platform/fs.s3.types" "0.1.25"
-    "@platform/http" "0.12.4"
+    "@platform/http" "0.12.5"
     "@platform/libs" "0.2.1"
     "@platform/log" "0.1.17"
     "@platform/types" "0.4.14"
@@ -141,10 +141,10 @@
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"
 
-"@platform/http@0.12.4":
-  version "0.12.4"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.4.tgz#672aa832b97d62c86bce0d3e35dd6c37bfdc258c"
-  integrity sha512-cfYQvN96LZRjMeHuBoZLAQnpxA7+PRmqUVeKqGooL3iLwFUKnZQKbZpocObE+jOa8Lcd9pvzp4azvJ0gw594FQ==
+"@platform/http@0.12.5":
+  version "0.12.5"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.5.tgz#8a36e6beac56ad73bfacfb60e598c93202863371"
+  integrity sha512-fUjvYoOrA0EmRAnjt9caXsfgU+Yd/EjEXlE0pJS23ADbMzE2Fsm7JxHDwMMpxbzvNQnvpb3Ri3nLynBQQT2wLw==
   dependencies:
     "@platform/http.types" "0.2.1"
     "@platform/libs" "0.2.1"
@@ -172,10 +172,10 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.14.23":
-  version "0.14.23"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.14.23.tgz#8c644a66b3e845605de950b8db85f2de67502fe7"
-  integrity sha512-pObwKDNwF3V+33TvOnV2jjAyG/B2rszSxTL/iWiiDYYxtCfR5qVmd13q4XOjU3LidTdNFKspF9ZhQYKThaEwMQ==
+"@platform/micro@0.14.24":
+  version "0.14.24"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.14.24.tgz#82d431878fcb690de6259a7a19225421c06f0286"
+  integrity sha512-GYCr0no0wpupb/EEdG1ciD9HW9fDYP+vUwGNhS6yjU4bH4UT39HI5H/0zpHouXlCnNTqT6R/OeAWj7vIwKLU4A==
   dependencies:
     "@platform/http.router" "0.0.16"
     "@platform/http.types" "0.2.1"

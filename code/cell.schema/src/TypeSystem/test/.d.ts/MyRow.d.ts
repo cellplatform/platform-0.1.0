@@ -6,7 +6,7 @@
  *    |
  * 
  * By:
- *    @platform/cell.schema@0.4.58
+ *    @platform/cell.schema@0.4.59
  * 
  * Notes: 
  * 

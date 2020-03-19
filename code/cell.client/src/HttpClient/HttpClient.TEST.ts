@@ -29,20 +29,14 @@ describe('client', () => {
     it('takes host from object', () => {
       const client = HttpClient.create({ host: 1234 });
       expect(client.origin).to.eql('http://localhost:1234');
-
-      // client.he
     });
 
     it('uses given [IHttp] client', () => {
       const http = Http.create({ headers: { foo: 'hello' } });
       const client = HttpClient.create({ http });
-
-      console.log('-------------------------------------------');
-
-      // client.h
       const clientHttp = (client as any).http as t.IHttp;
-
-      console.log('clientHttp.headers', clientHttp.headers);
+      expect(clientHttp).to.equal(http);
+      expect(clientHttp.headers.foo).to.eql('hello');
     });
   });
 

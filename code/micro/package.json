@@ -1,6 +1,6 @@
 {
   "name": "@platform/micro",
-  "version": "0.14.23",
+  "version": "0.14.24",
   "description": "Wrapper and helpers around micro.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -26,7 +26,7 @@
     "path-to-regexp": "6.1.0"
   },
   "devDependencies": {
-    "@platform/http": "0.12.4",
+    "@platform/http": "0.12.5",
     "@platform/test": "0.1.7",
     "@platform/ts": "3.7.20",
     "@types/busboy": "0.2.3",
