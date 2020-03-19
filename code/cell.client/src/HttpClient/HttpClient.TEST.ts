@@ -1,4 +1,4 @@
-import { expect } from '../test';
+import { expect, Http, t } from '../test';
 import { HttpClient } from '..';
 
 /**
@@ -8,21 +8,42 @@ import { HttpClient } from '..';
  */
 
 describe('client', () => {
-  it('parses host => origin', () => {
-    const test = (host: string | number, expected: string) => {
-      const res = HttpClient.create(host);
-      expect(res.origin).to.eql(expected);
-    };
+  describe('create', () => {
+    it('parses host => origin', () => {
+      const test = (host: string | number, expected: string) => {
+        const res = HttpClient.create(host);
+        expect(res.origin).to.eql(expected);
+      };
 
-    test(80, 'http://localhost');
-    test(1234, 'http://localhost:1234');
-    test('1234', 'http://localhost:1234');
-    test('localhost:8080', 'http://localhost:8080');
-    test('https://localhost:8080', 'http://localhost:8080');
+      test(80, 'http://localhost');
+      test(1234, 'http://localhost:1234');
+      test('1234', 'http://localhost:1234');
+      test('localhost:8080', 'http://localhost:8080');
+      test('https://localhost:8080', 'http://localhost:8080');
 
-    test('https://domain.com', 'https://domain.com');
-    test('https://domain.com:1234', 'https://domain.com:1234');
-    test('domain.com:1234', 'https://domain.com:1234');
+      test('https://domain.com', 'https://domain.com');
+      test('https://domain.com:1234', 'https://domain.com:1234');
+      test('domain.com:1234', 'https://domain.com:1234');
+    });
+
+    it('takes host from object', () => {
+      const client = HttpClient.create({ host: 1234 });
+      expect(client.origin).to.eql('http://localhost:1234');
+
+      // client.he
+    });
+
+    it('uses given [IHttp] client', () => {
+      const http = Http.create({ headers: { foo: 'hello' } });
+      const client = HttpClient.create({ http });
+
+      console.log('-------------------------------------------');
+
+      // client.h
+      const clientHttp = (client as any).http as t.IHttp;
+
+      console.log('clientHttp.headers', clientHttp.headers);
+    });
   });
 
   it('client.ns', () => {

@@ -11,3 +11,5 @@ export * from './expect';
 
 before(async () => mock.reset());
 Schema.uri.ALLOW.NS = ['foo*'];
+
+export { Http } from '@platform/http';

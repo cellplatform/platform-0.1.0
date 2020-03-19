@@ -19,7 +19,7 @@ describe('http (INTEGRATION)', function() {
     expect(res.status).to.eql(200);
     expect(res.text).to.include(`Hello 🐷`);
 
-    expect(res.contentType.value).to.eql('text/plain');
+    expect(res.contentType.mime).to.eql('text/plain');
     expect(res.contentType.is.text).to.eql(true);
     expect(res.contentType.is.json).to.eql(false);
     expect(res.contentType.is.binary).to.eql(false);
@@ -30,7 +30,7 @@ describe('http (INTEGRATION)', function() {
     expect(res.status).to.eql(200);
     expect((res.json as IFoo).name).to.eql('foo');
 
-    expect(res.contentType.value).to.eql('application/json');
+    expect(res.contentType.mime).to.eql('application/json');
     expect(res.contentType.is.text).to.eql(false);
     expect(res.contentType.is.json).to.eql(true);
     expect(res.contentType.is.binary).to.eql(false);
@@ -43,7 +43,7 @@ describe('http (INTEGRATION)', function() {
       await fs.stream.save(path, res.body);
     }
 
-    expect(res.contentType.value).to.eql('application/zip');
+    expect(res.contentType.mime).to.eql('application/zip');
     expect(res.contentType.is.text).to.eql(false);
     expect(res.contentType.is.json).to.eql(false);
     expect(res.contentType.is.binary).to.eql(true);

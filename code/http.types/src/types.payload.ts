@@ -26,12 +26,13 @@ export type IHttpResponse = {
 };
 
 export type IHttpContentType = {
-  value: string;
+  mime: string;
   is: {
     json: boolean;
     text: boolean;
     binary: boolean;
   };
+  toString(): string;
 };
 
 /**

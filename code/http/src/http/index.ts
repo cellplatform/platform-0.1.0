@@ -1,5 +1,4 @@
-import { create } from './http';
-export { create };
-export { fetch } from './fetch';
+import { Http } from './Http';
+export { Http };
 
-export const http = create();
+export const http = Http.create();

@@ -1,5 +1,5 @@
-import { http, fetch } from './http';
-export { http, fetch };
+import { http, Http } from './http';
 export default http;
 
-export { Mime, toRawHeaders, fromRawHeaders } from './common';
+export { http, Http };
+export { Mime } from './common';

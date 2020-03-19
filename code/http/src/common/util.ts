@@ -189,19 +189,22 @@ export const response = {
    * Derives content-type details from the given headers.
    */
   toContentType(headers: t.IHttpHeaders): t.IHttpContentType {
-    const value = headerValue('content-type', headers);
+    const mime = headerValue('content-type', headers);
     const res: t.IHttpContentType = {
-      value,
+      mime,
       is: {
         get json() {
-          return Mime.isJson(value);
+          return Mime.isJson(mime);
         },
         get text() {
-          return Mime.isText(value);
+          return Mime.isText(mime);
         },
         get binary() {
-          return Mime.isBinary(value);
+          return Mime.isBinary(mime);
         },
+      },
+      toString() {
+        return mime;
       },
     };
     return res;

@@ -15,6 +15,7 @@ export const create: t.HttpCreate = (options = {}) => {
     const { mode = 'cors', headers } = args;
     return { mode, headers };
   };
+
   const invoke = (
     method: t.HttpMethod,
     args: { url: string; data?: any; options?: t.IHttpOptions },
@@ -40,7 +41,11 @@ export const create: t.HttpCreate = (options = {}) => {
   );
 
   const http: t.IHttp = {
-    create,
+    create(options: t.IHttpCreateOptions = {}) {
+      const headers = { ...http.headers, ...options.headers };
+      return create({ ...options, headers });
+    },
+
     events$,
     before$,
     after$,

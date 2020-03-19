@@ -1,7 +1,7 @@
 import { Readable } from 'stream';
 import { createServer } from 'http';
 
-import { http } from '..';
+import { http, Http } from '..';
 import { expect, fs, t, time, randomPort, util } from '../test';
 
 describe('http', () => {
@@ -27,8 +27,18 @@ describe('http', () => {
     });
 
     it('creates with custom headers (passed through all calls)', () => {
-      const client = http.create({ headers: { MyHeader: 'abc' } });
+      const client = Http.create({ headers: { MyHeader: 'abc' } });
       expect(client.headers.MyHeader).to.eql('abc');
+    });
+
+    it('clones headers when creating child', () => {
+      const client1 = Http.create({ headers: { foo: 'foo' } });
+      const client2 = client1.create({ headers: { bar: 'bar' } });
+      const client3 = client2.create({ headers: { foo: 'zoo', baz: 'baz' } });
+
+      expect(client1.headers).to.eql({ foo: 'foo' });
+      expect(client2.headers).to.eql({ foo: 'foo', bar: 'bar' });
+      expect(client3.headers).to.eql({ foo: 'zoo', bar: 'bar', baz: 'baz' });
     });
   });
 
@@ -43,7 +53,7 @@ describe('http', () => {
     });
 
     it('merges headers (client => method)', async () => {
-      const client = http.create({ headers: { foo: 'one' } });
+      const client = Http.create({ headers: { foo: 'one' } });
       client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
 
       const res = await client.get('http://localhost/foo', { headers: { bar: 'two' } });
@@ -494,6 +504,7 @@ describe('http', () => {
         events.push(e);
         e.modify.header('foo', 'abc');
         e.modify.header('bar', 'hello');
+        e.modify.header('baz', 'hello');
       });
       client.before$.subscribe(e => {
         e.modify.header('foo', 'zoo');
@@ -508,6 +519,7 @@ describe('http', () => {
       const headers = server.headers;
       expect(headers.foo).to.eql('zoo');
       expect(headers.bar).to.eql(undefined);
+      expect(headers.baz).to.eql('hello');
     });
 
     it('headers.merge (multiple times, cumulative)', async () => {

@@ -1,15 +1,13 @@
 import '@platform/polyfill';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { App } from './components/App';
 
 import './styles/global';
-
-console.log('👋');
-console.log('👋   Hello World!');
-console.log('👋');
 
 /**
  * Render root React element.
  */
-const el = <div>Hello World!</div>;
-ReactDOM.render(el, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
+
+// const server = init();
