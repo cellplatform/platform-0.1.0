@@ -1,9 +1,11 @@
+import { fs } from '@platform/fs';
+
+import { local } from '..';
+import { Schema } from '../common';
+
 export { expect, expectError } from '@platform/test';
 export { log } from '@platform/log/lib/server';
 export * from '../common';
-
-import { local } from '..';
-import { Schema, fs } from '../common';
 
 Schema.uri.ALLOW.NS = ['foo*'];
 
@@ -18,7 +20,7 @@ export const writeFile = async (path: string, data: Buffer) => {
   await fs.writeFile(path, data);
 };
 
-export const init = () => local.init({ root: PATH.LOCAL });
+export const init = () => local.init({ root: PATH.LOCAL, fs });
 
 export const util = {
   initLocal: init,

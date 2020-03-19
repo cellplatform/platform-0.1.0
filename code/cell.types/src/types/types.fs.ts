@@ -35,7 +35,7 @@ type IFsMembers<
   resolve(uri: string, options?: IFsResolveArgs): IFsLocation;
   info(uri: string): Promise<I>;
   read(uri: string): Promise<R>;
-  write(uri: string, data: Buffer, options?: { filename?: string }): Promise<W>;
+  write(uri: string, data: Uint8Array, options?: { filename?: string }): Promise<W>;
   delete(uri: string | string[]): Promise<D>;
 };
 
@@ -74,7 +74,7 @@ export type IFsMetaS3 = IFsMetaCommon & { 's3:etag'?: string };
 /**
  * File (info + data)
  */
-export type IFsFileData<I extends IFsMeta = IFsMeta> = I & { data: Buffer };
+export type IFsFileData<I extends IFsMeta = IFsMeta> = I & { data: Uint8Array };
 
 /**
  * Method Responses

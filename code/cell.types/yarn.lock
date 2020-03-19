@@ -36,10 +36,10 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.1.25":
-  version "0.1.25"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.25.tgz#88709a16ba6c98069de23111a63e092063e643d6"
-  integrity sha512-dcIQWoJM6il31XM4PMygSM7WE6blKmEYD6g4pYr2Tvv40+3ySHz4ac7CWw99d4N//S9gHsvNLH6cOz/0CE2b0g==
+"@platform/fs.s3.types@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.2.0.tgz#71ebc1b2758887c0c54d027354bf43e7ad2cc67f"
+  integrity sha512-RZTlb8R9x2mhS9dD8lr1rKcQk1T/0FMk9XQHij0i+tULPdwtsjhV3m3Gz53abfaNpjvbwHeqDuW8PuKcuL24xg==
   dependencies:
     "@platform/http.types" "0.2.1"
     "@platform/types" "0.4.14"

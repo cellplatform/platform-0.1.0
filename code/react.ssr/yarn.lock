@@ -76,21 +76,21 @@
     chalk "3.0.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.1.25":
-  version "0.1.25"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.1.25.tgz#88709a16ba6c98069de23111a63e092063e643d6"
-  integrity sha512-dcIQWoJM6il31XM4PMygSM7WE6blKmEYD6g4pYr2Tvv40+3ySHz4ac7CWw99d4N//S9gHsvNLH6cOz/0CE2b0g==
+"@platform/fs.s3.types@0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.2.0.tgz#71ebc1b2758887c0c54d027354bf43e7ad2cc67f"
+  integrity sha512-RZTlb8R9x2mhS9dD8lr1rKcQk1T/0FMk9XQHij0i+tULPdwtsjhV3m3Gz53abfaNpjvbwHeqDuW8PuKcuL24xg==
   dependencies:
     "@platform/http.types" "0.2.1"
     "@platform/types" "0.4.14"
 
-"@platform/fs.s3@0.6.48":
-  version "0.6.48"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.6.48.tgz#a088fa2344625aa824e5f6c6e68f9bf21372e837"
-  integrity sha512-N+x0te5uviKq/L3KrDNfcRsSFSYtyP5KyAmZQkOlDJOXkY5EDMqLhjyEF5+a1HF1F5CgjulnhjDjZ/cvEi4+oA==
+"@platform/fs.s3@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.7.0.tgz#edd3e2e3fa1988492ed8de084ae2f99cfbc6191f"
+  integrity sha512-T4XtvDh3GSYNWDy1yzDcapwM46kUhxWHGT5cPuocU7uMrCI2g1ZHVXEivS6NA57tjqZ+QUln58+96QPIlYTMIg==
   dependencies:
     "@platform/fs" "0.5.12"
-    "@platform/fs.s3.types" "0.1.25"
+    "@platform/fs.s3.types" "0.2.0"
     "@platform/http" "0.12.5"
     "@platform/libs" "0.2.1"
     "@platform/log" "0.1.17"

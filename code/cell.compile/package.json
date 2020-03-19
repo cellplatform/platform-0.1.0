@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compile",
-  "version": "0.0.87",
+  "version": "0.0.89",
   "description": "Code compilation tools for CellOS.",
   "scripts": {
     "start": "node lib/cli/bin $@",
@@ -11,7 +11,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.4.53",
+    "@platform/cell.types": "0.4.55",
     "@platform/cli": "0.5.28",
     "@platform/libs": "0.2.1"
   },

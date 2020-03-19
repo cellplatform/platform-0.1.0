@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.s3.types",
-  "version": "0.1.25",
+  "version": "0.2.0",
   "description": "Types for the platform AWS/S3 library.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
