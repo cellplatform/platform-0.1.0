@@ -1,5 +1,5 @@
 import { NeDb } from '@platform/fsdb.nedb';
-import { local } from '@platform/cell.fs/lib/fs.local';
+import { local } from '@platform/cell.fs.local';
 import { IMicro, IMicroService, micro } from '@platform/micro';
 
 import { util, t, Schema, HttpClient } from '../common';
@@ -48,7 +48,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
   const port = args.port || randomPort();
 
   const db = NeDb.create({ filename });
-  const fs = local.init({ root: PATH.FS });
+  const fs = local.init({ root: PATH.FS, fs: util.fs });
 
   const body = micro.body;
   const router = CellRouter.create({ title: 'Test', db, fs, body });

@@ -10,7 +10,7 @@ import { json as parse } from 'micro';
  */
 export async function json<T>(
   req: t.IncomingMessage,
-  options: t.ParseBodyJsonOptions<T> = {},
+  options: t.IParseBodyJsonOptions<T> = {},
 ): Promise<T> {
   try {
     const body = await parse(req, options);

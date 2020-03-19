@@ -6,7 +6,7 @@ import { t, value as valueUtil } from '../common';
  * See:
  *    https://github.com/mscdex/busboy#busboy-methods
  */
-export function form(req: t.HttpRequest, options: t.ParseBodyFormOptions = {}) {
+export function form(req: t.IRouteRequest, options: t.IParseBodyFormOptions = {}) {
   return new Promise<t.IForm>(resolve => {
     const { headers } = req;
     const { limits } = options;

@@ -1,0 +1,37 @@
+{
+  "name": "@platform/cell.fs.s3",
+  "version": "0.4.5",
+  "description": "S3 (AWS) filesystem support for CellOS.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "test:integration": "ts test --suffix INTEGRATION",
+    "tddi": "ts test --suffix INTEGRATION --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/cell.fs": "0.4.5",
+    "@platform/cell.schema": "0.4.61",
+    "@platform/cell.types": "0.4.55",
+    "@platform/fs.s3": "0.7.0",
+    "@platform/libs": "0.2.1"
+  },
+  "devDependencies": {
+    "@platform/fs": "0.5.12",
+    "@platform/test": "0.1.7",
+    "@platform/ts": "3.7.20"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}",
+    "!*.INTEGRATION.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}

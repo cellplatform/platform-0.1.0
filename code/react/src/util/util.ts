@@ -5,7 +5,7 @@ import * as ReactDOM from 'react-dom';
  * Determines whether any element within the child DOM hierarchy
  * is focused.
  */
-export function containsFocus(instance: React.ReactInstance) {
+export const containsFocus = (instance: React.ReactInstance) => {
   try {
     const el = ReactDOM.findDOMNode(instance);
     const active = document.activeElement;
@@ -15,12 +15,12 @@ export function containsFocus(instance: React.ReactInstance) {
     //      As an unmounted component by definition it does not contain focus.
     return false;
   }
-}
+};
 
 /**
  * Copies the given text to the clipboard.
  */
-export function copyToClipboard(text: string) {
+export const copyToClipboard = (text: string) => {
   try {
     const el = document.createElement('textarea');
     el.value = text;
@@ -32,4 +32,4 @@ export function copyToClipboard(text: string) {
     const err = `Failed to copy text to clipboard.\n\n${text}`;
     console.error(err); // tslint:disable-line
   }
-}
+};

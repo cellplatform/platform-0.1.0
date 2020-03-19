@@ -1,4 +1,4 @@
-import { fs, path, t, sha256, Urls, toMimetype } from '../common';
+import { path, t, Schema } from '../common';
 
 export * from '../types';
 const toLocation = (path: string) => `file://${path}`;
@@ -6,8 +6,11 @@ const toLocation = (path: string) => `file://${path}`;
 /**
  * Initializes a "local" file-system API.
  */
-export function init(args: { root: string }): t.IFsLocal {
+export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
+  const fs = args.fs;
   const root = fs.resolve(args.root);
+
+  // const f = {} as t.IFs
 
   const res: t.IFsLocal = {
     type: 'LOCAL',
@@ -27,12 +30,10 @@ export function init(args: { root: string }): t.IFsLocal {
         // NB: A local simulated end-point of an AWS/S3 "presignedPost" URL.
         const args = options as t.S3SignedPostOptions;
         const key = path.resolve({ uri, root });
+        const mime = args.contentType || Schema.mime.toType(key, 'application/octet-stream');
         return {
-          path: Urls.routes.LOCAL.FS,
-          props: {
-            'content-type': args.contentType || toMimetype(key, 'application/octet-stream'),
-            key,
-          },
+          path: Schema.Urls.routes.LOCAL.FS,
+          props: { 'content-type': mime, key },
         };
       }
 
@@ -75,7 +76,7 @@ export function init(args: { root: string }): t.IFsLocal {
       const location = toLocation(path);
 
       // Ensure the file exists.
-      if (!(await fs.pathExists(path))) {
+      if (!(await fs.exists(path))) {
         const error: t.IFsError = {
           type: 'FS/read/404',
           message: `A file with the URI [${uri}] does not exist.`,
@@ -92,7 +93,7 @@ export function init(args: { root: string }): t.IFsLocal {
           location,
           data,
           get hash() {
-            return sha256(data);
+            return Schema.hash.sha256(data);
           },
           get bytes() {
             return Uint8Array.from(file.data).length;
@@ -125,7 +126,7 @@ export function init(args: { root: string }): t.IFsLocal {
         location,
         data,
         get hash() {
-          return sha256(data);
+          return Schema.hash.sha256(data);
         },
         get bytes() {
           return Uint8Array.from(file.data).length;

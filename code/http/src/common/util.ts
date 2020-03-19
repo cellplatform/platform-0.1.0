@@ -1,13 +1,13 @@
-import { value as valueUtil } from './libs';
-import * as t from './types';
 import { IS_PROD } from './constants';
+import { Mime, value as valueUtil } from './libs';
+import * as t from './types';
 
 /**
  * Safely serializes data to a JSON string.
  */
 export function stringify(data: any, errorMessage: () => string) {
   try {
-    return data ? JSON.stringify(data) : undefined;
+    return data ? JSON.stringify(data) : '';
   } catch (err) {
     let message = errorMessage();
     message = !IS_PROD ? `${message} ${err.message}` : message;
@@ -19,10 +19,13 @@ export function stringify(data: any, errorMessage: () => string) {
  * Attempts to parse JSON.
  */
 export function parseJson(args: { url: string; text: string }) {
+  const text = args.text;
   try {
-    return JSON.parse(args.text) as t.Json;
+    return (typeof text === 'string' && valueUtil.isJson(args.text)
+      ? JSON.parse(text)
+      : text) as t.Json;
   } catch (error) {
-    const body = args.text ? args.text : '<empty>';
+    const body = text ? text : '<empty>';
     const msg = `Failed while parsing JSON for '${args.url}'.\nParse Error: ${error.message}\nBody: ${body}`;
     throw new Error(msg);
   }
@@ -71,66 +74,139 @@ const walkHeaderEntries = (input: Headers) => {
 };
 
 /**
+ * Retrieve the value for the given header.
+ */
+export function headerValue(key: string, headers: t.IHttpHeaders = {}) {
+  key = key.trim().toLowerCase();
+  const match =
+    Object.keys(headers)
+      .filter(k => k.trim().toLowerCase() === key)
+      .find(k => headers[k]) || '';
+  return match ? headers[match] : '';
+}
+
+/**
  * Determine if the given headers reperesents form data.
  */
-export function isFormData(input: Headers) {
-  const contentType = input.get('content-type') || '';
+export function isFormData(headers: t.IHttpHeaders = {}) {
+  const contentType = headerValue('content-type', headers);
   return contentType.includes('multipart/form-data');
 }
 
-export function toBody(args: { url: string; headers: Headers; data?: any }) {
-  const { url, headers, data } = args;
-  if (isFormData(headers)) {
-    return data;
-  }
-  return stringify(
-    data,
-    () => `Failed to POST to '${url}', the data could not be serialized to JSON.`,
-  );
+/**
+ * Determine if the given body value represents a stream.
+ */
+export function isStream(value?: ReadableStream<Uint8Array>) {
+  const stream = value as any;
+  return typeof stream?.pipe === 'function';
 }
 
-export async function toResponse(url: string, res: t.IHttpResponseLike) {
-  const { ok, status, statusText } = res;
+export const response = {
+  /**
+   * Convert a [IHttpRespondPayload] fetch result to a proper [IHttpResponse] object.
+   */
+  async fromPayload(
+    payload: t.IHttpRespondPayload,
+    modifications: { data?: any; headers?: t.IHttpHeaders } = {},
+  ) {
+    const { status, statusText = '' } = payload;
+    const data = payload.data || modifications.data;
 
-  const body = res.body || undefined;
-  const headers = fromRawHeaders(res.headers);
-  const contentType = toContentType(headers);
-  const is = contentType.is;
+    let head = payload.headers || modifications.headers || {};
+    if (data && !headerValue('content-type', head)) {
+      head = {
+        ...head,
+        'content-type': isStream(data) ? 'application/octet-stream' : 'application/json',
+      };
+    }
 
-  const text = is.text || is.json ? await res.text() : '';
-  let json: any;
+    const contentType = headerValue('content-type', head);
+    const isBinary = Mime.isBinary(contentType);
 
-  const result: t.IHttpResponse = {
-    ok,
-    status,
-    statusText,
-    headers,
-    contentType,
-    body,
-    text,
-    get json() {
-      return json || (json = parseJson({ url, text }));
-    },
-  };
+    const toText = (data: any) => {
+      if (!data) {
+        return '';
+      }
+      if (typeof data === 'string') {
+        return data;
+      }
+      return stringify(data, () => `Failed while serializing data to JSON within [text] method.`);
+    };
 
-  return result;
-}
+    const toJson = (data: any) => {
+      return data && !isBinary ? data : '';
+    };
 
-export function toContentType(headers: t.IHttpHeaders) {
-  const value = (headers['content-type'] || '').toString();
-  const res: t.IHttpContentType = {
-    value,
-    is: {
-      get json() {
-        return value.includes('application/json');
+    let text = '';
+    let json = '';
+
+    const res: t.IHttpFetchResponse = {
+      status,
+      statusText,
+      headers: toRawHeaders(head),
+      body: isBinary ? data : null,
+      async text() {
+        return text || (text = toText(data));
       },
-      get text() {
-        return value.includes('text/');
+      async json() {
+        return json || (json = toJson(data));
       },
-      get binary() {
-        return !res.is.json && !res.is.text;
+    };
+
+    return response.fromFetch(res);
+  },
+
+  /**
+   * Convert a "response like" fetch result to a proper [IHttpResponse] object.
+   */
+  async fromFetch(res: t.IHttpFetchResponse) {
+    const { status } = res;
+    const ok = status.toString()[0] === '2';
+    const body = res.body || undefined;
+    const statusText = res.statusText ? res.statusText : ok ? 'OK' : '';
+
+    const headers = fromRawHeaders(res.headers);
+    const contentType = response.toContentType(headers);
+
+    const text = contentType.is.text ? await res.text() : '';
+    const json = contentType.is.json ? await res.json() : '';
+
+    const result: t.IHttpResponse = {
+      ok,
+      status,
+      statusText,
+      headers,
+      contentType,
+      body,
+      text,
+      json,
+    };
+
+    return result;
+  },
+
+  /**
+   * Derives content-type details from the given headers.
+   */
+  toContentType(headers: t.IHttpHeaders): t.IHttpContentType {
+    const mime = headerValue('content-type', headers);
+    const res: t.IHttpContentType = {
+      mime,
+      is: {
+        get json() {
+          return Mime.isJson(mime);
+        },
+        get text() {
+          return Mime.isText(mime);
+        },
+        get binary() {
+          return Mime.isBinary(mime);
+        },
       },
-    },
-  };
-  return res;
-}
+      toString() {
+        return mime;
+      },
+    };
+    return res;
+  },
+};

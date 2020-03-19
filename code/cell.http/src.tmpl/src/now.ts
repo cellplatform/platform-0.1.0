@@ -1,4 +1,4 @@
-import { s3 } from '@platform/cell.fs';
+import { s3 } from '@platform/cell.fs.s3';
 import { MongoDb } from '@platform/fsdb.mongo';
 
 import { server, t, time } from './common';

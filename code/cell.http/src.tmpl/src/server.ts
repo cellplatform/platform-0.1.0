@@ -1,4 +1,5 @@
-import { local, s3 } from '@platform/cell.fs';
+import { local } from '@platform/cell.fs.local';
+import { s3 } from '@platform/cell.fs.s3';
 import { NeDb } from '@platform/fsdb.nedb';
 
 import { server, util } from './common';

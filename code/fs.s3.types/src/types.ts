@@ -60,7 +60,7 @@ export type S3SignedUrlPutObjectArgs = S3SignedUrlPutObjectOptions & {
 };
 export type S3SignedUrlPutObjectOptions = {
   expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
-  body?: Buffer;
+  body?: Uint8Array;
   md5?: string;
 };
 
@@ -81,7 +81,7 @@ export type S3GetResponse = {
   error?: Error;
   contentType: string;
   bytes: number;
-  data?: Buffer;
+  data?: Uint8Array;
   json: Json;
 };
 
@@ -91,7 +91,7 @@ export type S3GetResponse = {
 export type S3PutArgs = S3BucketPutArgs & { bucket: string };
 export type S3BucketPutArgs = {
   key: string;
-  data: Buffer;
+  data: Uint8Array;
   acl?: S3Permissions;
   contentType?: string;
   contentDisposition?: string;
@@ -130,7 +130,7 @@ export type S3SignedPostUrl = {
 export type S3SignedPost = {
   url: { form: string; object: string };
   props: { [key: string]: string };
-  send: (data: Buffer, options?: { headers?: IHttpHeaders }) => Promise<S3PostResponse>;
+  send: (data: Uint8Array, options?: { headers?: IHttpHeaders }) => Promise<S3PostResponse>;
 };
 export type S3PostResponse = {
   ok: boolean;

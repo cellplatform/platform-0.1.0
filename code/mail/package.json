@@ -1,6 +1,6 @@
 {
   "name": "@platform/mail",
-  "version": "0.0.60",
+  "version": "0.0.63",
   "description": "Tools for working with email.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,14 +14,14 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/libs": "0.2.0",
-    "@platform/types": "0.4.11",
+    "@platform/libs": "0.2.1",
+    "@platform/types": "0.4.14",
     "@types/nodemailer": "6.4.0",
-    "nodemailer": "6.4.3"
+    "nodemailer": "6.4.5"
   },
   "devDependencies": {
-    "@platform/test": "0.1.5",
-    "@platform/ts": "3.7.17"
+    "@platform/test": "0.1.7",
+    "@platform/ts": "3.7.20"
   },
   "files": [
     "lib",

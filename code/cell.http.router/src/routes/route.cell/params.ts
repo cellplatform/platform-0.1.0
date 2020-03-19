@@ -2,7 +2,7 @@ import { ERROR, t } from '../common';
 
 type Prefix = 'cell' | 'col' | 'row';
 export const getParams = (args: {
-  req: t.HttpRequest;
+  req: t.IRouteRequest;
   prefix: Prefix;
   getUri: (id: string, key: string) => string;
 }) => {

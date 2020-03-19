@@ -4,4 +4,4 @@ export * from './Uri';
 export * from './Url';
 export * from './TypeSystem';
 
-export { ERROR } from './common';
+export { ERROR, Mime } from './common';

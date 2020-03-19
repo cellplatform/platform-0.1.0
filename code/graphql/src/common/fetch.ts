@@ -1,5 +1,5 @@
 import * as t from './types';
-import { fetch } from './libs';
+import * as fetch from 'isomorphic-fetch';
 
 type GetHeaders = (headers?: t.IHttpHeaders) => Promise<t.IHttpHeaders>;
 

@@ -1,4 +1,4 @@
-import { create } from './http';
-export { create };
+import { Http } from './Http';
+export { Http };
 
-export const http = create();
+export const http = Http.create();

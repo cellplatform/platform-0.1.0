@@ -1,6 +1,7 @@
 import { HttpEvent } from '../types';
-export { Json } from '@platform/types';
+import { Json } from '@platform/types';
 
+export { Json };
 export * from '../types';
 
 export type FireEvent = (e: HttpEvent) => void;

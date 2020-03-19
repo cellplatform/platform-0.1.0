@@ -47,8 +47,8 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
       }
 
       // Append helpers peoperties to the request.
-      let params: t.RequestParams | undefined;
-      let query: t.RequestQuery | undefined;
+      let params: t.IRouteRequestParams | undefined;
+      let query: t.IRouteRequestQuery | undefined;
       const path = incoming.url || '';
       const host = (incoming.headers as any).host || '';
       const body = createBody(incoming, this.args.body);
@@ -58,14 +58,14 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
         body,
         get params() {
           if (!params) {
-            params = Router.params<t.RequestParams>({ route, path });
+            params = Router.params<t.IRouteRequestParams>({ route, path });
           }
           return params;
         },
 
         get query() {
           if (!query) {
-            query = Router.query<t.RequestQuery>({ path });
+            query = Router.query<t.IRouteRequestQuery>({ path });
           }
           return query;
         },
@@ -90,7 +90,7 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
         redirect(
           path: string,
           options: { headers?: t.IHttpHeaders; status?: 307 | 303 } = {},
-        ): t.RouteResponse {
+        ): t.IRouteResponse {
           return {
             status: options.status || 307,
             data: helpers.toUrl(path),
@@ -99,7 +99,7 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
         },
       };
 
-      const request = Object.assign(incoming, helpers) as t.HttpRequest; // tslint:disable-line
+      const request = Object.assign(incoming, helpers) as t.IRouteRequest; // tslint:disable-line
 
       return route.handler(request, ctx);
     } catch (err) {
@@ -109,7 +109,7 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
     }
   };
 
-  public add(method: t.HttpMethod, path: t.IRoutePath, handler: t.RouteHandler<C>) {
+  public add(method: t.HttpMethod, path: t.RoutePath, handler: t.RouteHandler<C>) {
     const paths = Array.isArray(path) ? path : [path];
     paths.forEach(path => this._add(method, path, handler));
     return this;
@@ -153,10 +153,10 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
     return this;
   }
 
-  public get = (path: t.IRoutePath, handler: t.RouteHandler<C>) => this.add('GET', path, handler);
-  public put = (path: t.IRoutePath, handler: t.RouteHandler<C>) => this.add('PUT', path, handler);
-  public post = (path: t.IRoutePath, handler: t.RouteHandler<C>) => this.add('POST', path, handler);
-  public delete = (path: t.IRoutePath, handler: t.RouteHandler<C>) =>
+  public get = (path: t.RoutePath, handler: t.RouteHandler<C>) => this.add('GET', path, handler);
+  public put = (path: t.RoutePath, handler: t.RouteHandler<C>) => this.add('PUT', path, handler);
+  public post = (path: t.RoutePath, handler: t.RouteHandler<C>) => this.add('POST', path, handler);
+  public delete = (path: t.RoutePath, handler: t.RouteHandler<C>) =>
     this.add('DELETE', path, handler);
 
   /**

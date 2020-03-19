@@ -11,19 +11,20 @@ const _focus$ = new Subject<IFocusEvent>();
 export const focus$ = _focus$.pipe(share());
 
 (() => {
+  // tslint:disable-next-line:no-unused-expression
   if (!is.browser) {
     return;
   }
 
   let last = document.activeElement;
-  function hasChanged() {
+  const hasChanged = () => {
     const current = document.activeElement;
     const result = last !== current;
     last = current;
     return result;
-  }
+  };
 
-  function onEvent(type: IFocusEvent['type']) {
+  const onEvent = (type: IFocusEvent['type']) => {
     return () => {
       const e: IFocusEvent = {
         type,
@@ -34,7 +35,7 @@ export const focus$ = _focus$.pipe(share());
         _focus$.next(e);
       }
     };
-  }
+  };
 
   window.addEventListener('focus', onEvent('FOCUS'), true);
   window.addEventListener('blur', onEvent('BLUR'), true);

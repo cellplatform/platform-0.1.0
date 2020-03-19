@@ -1,9 +1,6 @@
-import '../../test/dom';
-
-import { expect } from 'chai';
+import { expect, t } from '../../test';
 
 import { Cell } from '.';
-import { t } from '../../common';
 import { createGrid } from '../Grid/Grid.TEST';
 
 describe('Cell', () => {

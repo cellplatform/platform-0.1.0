@@ -30,17 +30,18 @@ async function testUpload() {
   const filePath = fs.join(tmp, fileName);
 
   await fs.writeJson(filePath, { foo: 123 });
+  const file = await fs.readFile(filePath);
 
   console.log('\n\nuploading');
 
   const res = await bucket.put({
-    source: filePath,
+    data: file,
     key: 'tmp/foo.json',
     acl: 'public-read',
   });
 
   await bucket.put({
-    source: filePath,
+    data: file,
     key: 'tmp/bar.json',
     acl: 'public-read',
   });
@@ -49,7 +50,7 @@ async function testUpload() {
   console.log('PUT', res);
 
   const res1 = await bucket.get({ key: `tmp/${fileName}` });
-  await res1.save(fs.join(tmp, 'saved.json'));
+  await fs.writeFile(fs.join(tmp, 'saved.json'), res1.data);
 
   console.log('GET', res1);
   console.log('GET json', res1.json);
@@ -66,7 +67,7 @@ async function testUpload() {
 
   const res2 = await bucket.get({ key: `tmp/${fileName}` });
   console.log('GET', res2);
-  await res2.save(fs.join(tmp, 'saved.zip'));
+  await fs.writeFile(fs.join(tmp, 'saved.zip'), res2.data);
 }
 
 async function testDelete() {
@@ -85,6 +86,6 @@ async function testDelete() {
 }
 
 (async () => {
-  // await testUpload();
+  await testUpload();
   await testDelete();
 })();

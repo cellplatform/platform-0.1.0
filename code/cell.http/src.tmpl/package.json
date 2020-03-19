@@ -7,6 +7,8 @@
     "watch": "nodemon --watch ../src --watch ../../cell.db/src --watch ../../cell.http.router/src -e ts,tsx --delay 2"
   },
   "dependencies": {
+    "@platform/cell.fs.local": "^0.4.0",
+    "@platform/cell.fs.s3": "^0.4.0",
     "@platform/cell.http": "^0.7.7",
     "@platform/cell.http.router": "^0.7.5",
     "@platform/cell.schema": "^0.4.52",
