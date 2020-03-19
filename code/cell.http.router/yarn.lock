@@ -73,10 +73,21 @@
     "@platform/types" "0.4.14"
     "@platform/util.value" "0.7.13"
 
-"@platform/cell.fs@0.3.100":
-  version "0.3.100"
-  resolved "https://registry.yarnpkg.com/@platform/cell.fs/-/cell.fs-0.3.100.tgz#e2a823115370898a103f49523e0f6dbf02f9dda8"
-  integrity sha512-EaEN259dSy7tjaiYt+LVGDq9z4GwUtOD8aLcp8BdPfVFSBgG7VR1wGE+AwZqrnj//GhPM35f4ckdeucUg+NjjQ==
+"@platform/cell.fs.local@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.fs.local/-/cell.fs.local-0.4.0.tgz#0b66e53fa3907684ce81f83d55bc3cd58e368a1d"
+  integrity sha512-95lt3fzc982U6jofbAfZ+g0Y+eoucIKAHmgMhnIboYH8xp9mkhZ5ycVg4ruPxBWp9D0rWWiILHruSjgYFFdDYw==
+  dependencies:
+    "@platform/cell.fs" "0.4.0"
+    "@platform/cell.schema" "0.4.58"
+    "@platform/fs" "0.5.12"
+    "@platform/fs.s3.types" "0.1.25"
+    "@platform/fs.types" "0.0.7"
+
+"@platform/cell.fs@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.fs/-/cell.fs-0.4.0.tgz#90f82b9036e606229f36afe846c04ffd19b27016"
+  integrity sha512-pkummfpQIRcSeSOFsu+f3wKQsi37pIhpGhUjafPY0RNZerQZ6CpZpyQzT31nLrrr0VuJCaSNadADcJYMJrAX9w==
   dependencies:
     "@platform/cell.schema" "0.4.58"
     "@platform/cell.types" "0.4.52"
@@ -86,7 +97,6 @@
     "@platform/fs.s3.types" "0.1.25"
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"
-    "@platform/util.mimetype" "0.1.3"
     "@platform/util.value" "0.7.13"
 
 "@platform/cell.func@0.1.110":
@@ -2059,12 +2069,24 @@ minimist@0.0.8:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
   integrity sha1-hX/Kv8M5fSYluCKCYuhqp6ARsF0=
 
-mkdirp@0.5.1, mkdirp@^0.5.1, mkdirp@~0.5.1:
+minimist@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
+  integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
+
+mkdirp@0.5.1, mkdirp@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   integrity sha1-MAV0OOrGz3+MR2fzhkjWaX11yQM=
   dependencies:
     minimist "0.0.8"
+
+mkdirp@~0.5.1:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.3.tgz#5a514b7179259287952881e94410ec5465659f8c"
+  integrity sha512-P+2gwrFqx8lhew375MQHHeTlY8AuOJSrGf0R5ddkEndUkmwpgUob/vQuBD1V22/Cw1/lJr4x+EjllSezBThzBg==
+  dependencies:
+    minimist "^1.2.5"
 
 mocha@7.1.0:
   version "7.1.0"
@@ -2376,9 +2398,9 @@ readdirp@~3.2.0:
     picomatch "^2.0.4"
 
 regenerator-runtime@^0.13.4:
-  version "0.13.4"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.4.tgz#e96bf612a3362d12bb69f7e8f74ffeab25c7ac91"
-  integrity sha512-plpwicqEzfEyTQohIKktWigcLzmNStMGwbOUbykx51/29Z3JOGYldaaNGK7ngNXV+UcoqvIMmloZ48Sr74sd+g==
+  version "0.13.5"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.5.tgz#d878a1d094b4306d10b9096484b33ebd55e26697"
+  integrity sha512-ZS5w8CpKFinUzOwW3c83oPeVXoNsrLsaCoLtJvAClH135j/R77RuymhiSErhm2lKcwSCIpmvIWSbDkIfAqKQlA==
 
 require-directory@^2.1.1:
   version "2.1.1"

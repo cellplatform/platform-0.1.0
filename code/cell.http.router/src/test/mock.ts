@@ -1,5 +1,5 @@
 import { NeDb } from '@platform/fsdb.nedb';
-import { local } from '@platform/cell.fs/lib/fs.local';
+import { local } from '@platform/cell.fs.local';
 import { IMicro, IMicroService, micro } from '@platform/micro';
 
 import { util, t, Schema, HttpClient } from '../common';
