@@ -85,3 +85,28 @@ export function isFlag(keys: string | string[] | undefined, query?: t.UrlQuery) 
   keys = keys ? (Array.isArray(keys) ? keys : [keys]) : [];
   return query ? keys.some(key => valueAsFlag(query[key])) : false;
 }
+
+/**
+ * Creates a builder for progressively adding values to a query string.
+ */
+export function build() {
+  type V = string | number | boolean | null;
+  type Q = { key: string; value?: V; entry: string };
+
+  const builder = {
+    parts: [] as Q[],
+
+    add(key: string, value?: V) {
+      const isNil = value === undefined || value === null;
+      const entry = isNil ? key : `${key}=${encodeURIComponent(value || '')}`;
+      builder.parts = [...builder.parts, { key, value, entry }];
+      return builder;
+    },
+
+    toString() {
+      return builder.parts.length === 0 ? '' : `?${builder.parts.map(p => p.entry).join('&')}`;
+    },
+  };
+
+  return builder;
+}

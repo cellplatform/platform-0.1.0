@@ -1,5 +1,5 @@
 export type UrlQueryValue = string | boolean;
-export type UrlQueryObject = { [key: string]: UrlQueryValue | UrlQueryValue[] };
+export type UrlQueryObject = { [key: string]: UrlQueryValue | UrlQueryValue[] | undefined };
 
 /**
  * Represents a query-string.
