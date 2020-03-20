@@ -140,7 +140,7 @@ describe('queryString', () => {
   });
 
   describe.only('build', () => {
-    it('empty', () => {
+    it('nothing', () => {
       expect(queryString.build().toString()).to.eql('');
     });
 
@@ -162,12 +162,22 @@ describe('queryString', () => {
       expect(obj).to.eql({ foo: ['123', '123', '456'], bar: 'hello ' });
     });
 
-    it('add (null | undefined)', () => {
-      const builder = queryString
-        .build()
-        .add('myNull', null)
-        .add('myUndefined');
-      expect(builder.toString()).to.eql('?myNull&myUndefined');
+    describe('null | undefined | "" (<empty>)', () => {
+      it('allowNil: true (default)', () => {
+        const builder = queryString
+          .build()
+          .add('myNull', null)
+          .add('myUndefined');
+        expect(builder.toString()).to.eql('?myNull&myUndefined');
+      });
+
+      it('allowNil: false', () => {
+        const builder = queryString
+          .build({ allowNil: false })
+          .add('myNull', null)
+          .add('myUndefined');
+        expect(builder.toString()).to.eql('');
+      });
     });
   });
 });

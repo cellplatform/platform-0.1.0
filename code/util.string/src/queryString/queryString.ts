@@ -89,15 +89,20 @@ export function isFlag(keys: string | string[] | undefined, query?: t.UrlQuery) 
 /**
  * Creates a builder for progressively adding values to a query string.
  */
-export function build() {
+export function build(options: { allowNil?: boolean } = {}) {
   type V = string | number | boolean | null;
   type Q = { key: string; value?: V; entry: string };
+
+  const allowNil = options.allowNil === undefined ? true : options.allowNil;
 
   const builder = {
     parts: [] as Q[],
 
     add(key: string, value?: V) {
       const isNil = value === undefined || value === null;
+      if (!allowNil && isNil) {
+        return builder;
+      }
       const entry = isNil ? key : `${key}=${encodeURIComponent(value || '')}`;
       builder.parts = [...builder.parts, { key, value, entry }];
       return builder;
