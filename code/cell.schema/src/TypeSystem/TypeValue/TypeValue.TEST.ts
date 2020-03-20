@@ -164,9 +164,9 @@ describe('TypeValue', () => {
 
     describe('REF', () => {
       it('kind: UNKNOWN (not a NS or COLUMN)', () => {
-        const res = TypeValue.toType('cell:foo!A1');
+        const res = TypeValue.toType('cell:foo:A1');
         expect(res.kind).to.eql('UNKNOWN');
-        expect(res.typename).to.eql('cell:foo!A1');
+        expect(res.typename).to.eql('cell:foo:A1');
       });
 
       const test = (input: string, scope: t.ITypeRef['scope'], isArray?: boolean) => {
@@ -190,11 +190,11 @@ describe('TypeValue', () => {
       });
 
       it('scope: COLUMN', () => {
-        test('cell:foo!A', 'COLUMN');
+        test('cell:foo:A', 'COLUMN');
       });
 
       it('scope: COLUMN (array)', () => {
-        test('cell:foo!A[]', 'COLUMN', true);
+        test('cell:foo:A[]', 'COLUMN', true);
       });
     });
   });
