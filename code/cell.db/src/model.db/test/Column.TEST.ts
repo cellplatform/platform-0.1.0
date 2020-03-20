@@ -8,12 +8,12 @@ type C = t.IRowProps & { grid: { width?: number } };
 describe('model.Column', () => {
   it('create', async () => {
     const db = await getTestDb({ file: true });
-    const uri = 'cell:foo!A';
+    const uri = 'cell:foo:A';
     const res1 = await Column.create<C>({ db, uri }).ready;
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-0a11777152ffe2da35cf4548f605834e2e5c11e49c1392c4c1686573cb952853',
+      after: 'sha256-a6b94686eff0b6bf26cc0ade7c964cb0df7580af670451b8d7ec05b4cf37e0cc',
     };
 
     await res1.set({ props: { grid: { width: 300 } }, hash: HASH.before }).save();
@@ -27,7 +27,7 @@ describe('model.Column', () => {
 
   it('updates hash on save (auto)', async () => {
     const db = await getTestDb({});
-    const uri = 'cell:foo!A';
+    const uri = 'cell:foo:A';
 
     const model1 = await Column.create<C>({ db, uri }).ready;
     expect(model1.props.hash).to.eql(undefined);

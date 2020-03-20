@@ -159,7 +159,7 @@ describe('helpers: model.ns', () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
 
-      const cell = models.Cell.create({ uri: 'cell:foo!A1', db });
+      const cell = models.Cell.create({ uri: 'cell:foo:A1', db });
       await cell.set({ value: 123, links: { 'fs:foo:wasm': 'file:abc.123' } }).save();
 
       const cells = await getChildCells({ model: ns });
@@ -173,7 +173,7 @@ describe('helpers: model.ns', () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
 
-      const row = models.Row.create<R>({ uri: 'cell:foo!1', db });
+      const row = models.Row.create<R>({ uri: 'cell:foo:1', db });
       await row.set({ props: { grid: { height: 250 } } }).save();
 
       const rows = await getChildRows({ model: ns });
@@ -184,7 +184,7 @@ describe('helpers: model.ns', () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
 
-      const column = models.Column.create<C>({ uri: 'cell:foo!A', db });
+      const column = models.Column.create<C>({ uri: 'cell:foo:A', db });
       await column.set({ props: { grid: { width: 250 } } }).save();
 
       const columns = await getChildColumns({ model: ns });
@@ -206,13 +206,13 @@ describe('helpers: model.ns', () => {
       const db = await getTestDb({});
       const ns = models.Ns.create({ uri: 'ns:foo', db });
 
-      const A1 = models.Cell.create({ uri: 'cell:foo!A1', db });
+      const A1 = models.Cell.create({ uri: 'cell:foo:A1', db });
       await A1.set({ value: 123, links: { 'fs:foo:wasm': 'file:abc.123' } }).save();
 
-      const row = models.Row.create<R>({ uri: 'cell:foo!1', db });
+      const row = models.Row.create<R>({ uri: 'cell:foo:1', db });
       await row.set({ props: { grid: { height: 250 } } }).save();
 
-      const column = models.Column.create<C>({ uri: 'cell:foo!A', db });
+      const column = models.Column.create<C>({ uri: 'cell:foo:A', db });
       await column.set({ props: { grid: { width: 250 } } }).save();
 
       const file1 = models.File.create({ uri: 'file:foo:abc', db });
@@ -267,7 +267,7 @@ describe('helpers: model.ns', () => {
       expect(res6.totals.columns).to.eql(undefined);
 
       // Add another cell (Z9), thereby expanding the number of rows.
-      const Z9 = models.Cell.create({ uri: 'cell:foo!Z9', db });
+      const Z9 = models.Cell.create({ uri: 'cell:foo:Z9', db });
       await Z9.set({ value: 123, links: { 'fs:foo:wasm': 'file:abc.123' } }).save();
       await ns.load({ force: true });
 

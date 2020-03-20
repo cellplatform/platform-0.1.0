@@ -69,11 +69,11 @@ describe('model.db.Ns (Namespace)', () => {
       // Save child data.
       // NB: hashes on child data auto-generated on save.
       const children = {
-        A1: (await Cell.create<P>({ db, uri: 'cell:foo!A1' }).ready).set({ value: 123 }),
-        A: (await Column.create<C>({ db, uri: 'cell:foo!A' }).ready).set({
+        A1: (await Cell.create<P>({ db, uri: 'cell:foo:A1' }).ready).set({ value: 123 }),
+        A: (await Column.create<C>({ db, uri: 'cell:foo:A' }).ready).set({
           props: { grid: { width: 500 } },
         }),
-        1: (await Row.create<R>({ db, uri: 'cell:foo!1' }).ready).set({
+        1: (await Row.create<R>({ db, uri: 'cell:foo:1' }).ready).set({
           props: { grid: { height: 30 } },
         }),
       };

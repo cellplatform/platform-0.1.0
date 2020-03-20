@@ -88,7 +88,8 @@ export class ConfigDir implements t.IFsConfigDir {
   public async save(data?: t.IFsConfigDirData): Promise<t.IFsConfigDir> {
     this.data = { ...(data || this.data) };
     if (!this.validate().isValid) {
-      throw new Error(`Cannot save invalid configuration.`);
+      const uri = this.target.uri;
+      throw new Error(`Cannot save invalid configuration. [${uri.toString()}]`);
     }
     await fs.file.stringifyAndSave(this.file, this.data);
     this.exists = true;
