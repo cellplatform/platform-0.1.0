@@ -138,4 +138,46 @@ describe('queryString', () => {
       test(['force', 'f'], {}, false);
     });
   });
+
+  describe('build', () => {
+    it('nothing', () => {
+      expect(queryString.build().toString()).to.eql('');
+    });
+
+    it('add', () => {
+      const builder = queryString.build();
+      expect(builder.toString()).to.eql('');
+
+      builder.add('foo', 123);
+      expect(builder.toString()).to.eql('?foo=123');
+
+      builder.add('bar', 'hello '); // NB: encodes space
+      expect(builder.toString()).to.eql('?foo=123&bar=hello%20');
+
+      // Fluent (stack up same key).
+      builder.add('foo', 123).add('foo', 456);
+      expect(builder.toString()).to.eql('?foo=123&bar=hello%20&foo=123&foo=456');
+
+      const obj = queryString.toObject(builder.toString());
+      expect(obj).to.eql({ foo: ['123', '123', '456'], bar: 'hello ' });
+    });
+
+    describe('null | undefined | "" (<empty>)', () => {
+      it('allowNil: true (default)', () => {
+        const builder = queryString
+          .build()
+          .add('myNull', null)
+          .add('myUndefined');
+        expect(builder.toString()).to.eql('?myNull&myUndefined');
+      });
+
+      it('allowNil: false', () => {
+        const builder = queryString
+          .build({ allowNil: false })
+          .add('myNull', null)
+          .add('myUndefined');
+        expect(builder.toString()).to.eql('');
+      });
+    });
+  });
 });

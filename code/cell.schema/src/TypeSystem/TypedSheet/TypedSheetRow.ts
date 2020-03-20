@@ -81,16 +81,16 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
   private readProp(column: ITypedColumnData) {
     // console.log(this.index, 'READ', column.type.column, column.type.prop);
-    const { type, data } = column;
+    const { type } = column;
     const { prop } = type;
-    const target = TypeTarget.cell(type.target);
+    const target = TypeTarget.parse(type.target);
 
     if (!target.isValid) {
       return;
     }
 
     if (target.isInline) {
-      return TypeTarget.readInline({ type, data });
+      return TypeTarget.read(type).inline(column.data);
     }
 
     if (target.isRef) {
@@ -120,6 +120,6 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   }
 
   private writeProp(column: ITypedColumnData, value: any) {
-    // console.log(this.index, 'WRITE', column.type.column, column.type.prop, value);
+    console.log(this.index, 'WRITE', column.type.column, column.type.prop, value);
   }
 }

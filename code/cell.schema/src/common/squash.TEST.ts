@@ -1,6 +1,6 @@
 import { expect } from '../test';
 import { t } from '../common';
-import { value } from '.';
+import { squash } from './squash';
 
 type P = t.ICellProps & {
   style: { bold?: boolean; italic?: boolean; underline?: boolean };
@@ -14,7 +14,7 @@ type C = t.IColumnProps & { grid?: { width?: number } };
 describe('squash', () => {
   it('squash.props (cell)', () => {
     const test = (props?: Partial<P>, expected?: any) => {
-      const res = value.squash.props(props);
+      const res = squash.props(props);
       expect(res).to.eql(expected);
     };
     test();
@@ -27,7 +27,7 @@ describe('squash', () => {
 
   it('squash.props (row)', () => {
     const test = (props?: Partial<R>, expected?: any) => {
-      const res = value.squash.props(props);
+      const res = squash.props(props);
       expect(res).to.eql(expected);
     };
     test();
@@ -40,7 +40,7 @@ describe('squash', () => {
 
   it('squash.props (column)', () => {
     const test = (props?: Partial<C>, expected?: any) => {
-      const res = value.squash.props(props);
+      const res = squash.props(props);
       expect(res).to.eql(expected);
     };
     test();
@@ -53,7 +53,7 @@ describe('squash', () => {
 
   it('squash.cell', () => {
     const test = (cell?: t.ICellData, expected?: any, empty?: any) => {
-      const res = value.squash.cell(cell, { empty });
+      const res = squash.cell(cell, { empty });
       expect(res).to.eql(expected);
     };
     test();
@@ -75,7 +75,7 @@ describe('squash', () => {
 
   it('squash.object', () => {
     const test = (obj?: object, expected?: any, options?: { empty?: undefined | {} }) => {
-      const res = value.squash.object(obj, options);
+      const res = squash.object(obj, options);
       expect(res).to.eql(expected);
     };
     test();

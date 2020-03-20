@@ -1,3 +1,5 @@
+export * from './types';
+
 export * from './wildcard';
 export * from './convert';
 export * from './fuzzy';

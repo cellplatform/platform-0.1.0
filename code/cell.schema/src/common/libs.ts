@@ -11,5 +11,6 @@ export { IFs } from '@platform/fs.types';
 export { Mime } from '@platform/util.mimetype';
 export { MemoryCache } from '@platform/cache/lib/MemoryCache';
 export { wildcard } from '@platform/util.string/lib/wildcard';
+export { queryString } from '@platform/util.string/lib/queryString';
 
 export { coord } from './libs.cell';

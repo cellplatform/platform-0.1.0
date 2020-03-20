@@ -31,6 +31,7 @@ export class Uri {
     let text = (input || '').trim().split('?')[0]; // NB: trim query-string.
     let data: t.IUri = { type: 'UNKNOWN' };
     let error: t.IUriError | undefined;
+    const toString = () => text;
 
     const setError = (isError: boolean, message: string) => {
       if (!error && isError) {
@@ -54,7 +55,7 @@ export class Uri {
         const id = right;
         setError(!id, 'Namespace URI identifier not found');
         setError(!isValidId(id), 'URI contains an invalid "ns" identifier');
-        const uri: t.INsUri = { type: 'NS', id };
+        const uri: t.INsUri = { type: 'NS', id, toString };
         data = uri;
       } else if (left === 'file') {
         /**
@@ -66,7 +67,7 @@ export class Uri {
         const ns = (parts[0] || '').trim();
         const file = (parts[1] || '').trim();
         setError(!file, `File identifier within namespace "${ns}" not found`);
-        const uri: t.IFileUri = { type: 'FILE', id, ns, file };
+        const uri: t.IFileUri = { type: 'FILE', id, ns, file, toString };
         data = uri;
       } else if (left === 'cell') {
         /**
@@ -91,7 +92,7 @@ export class Uri {
             text = toUri('cell', type, ns, key); // Ensure any loose input parts are now correct.
           }
         }
-        data = { type, id, ns, key } as any;
+        data = { type, id, ns, key, toString } as any;
       }
     }
 
@@ -102,7 +103,7 @@ export class Uri {
       uri: text,
       type: data.type,
       parts: data as D,
-      toString: () => text,
+      toString,
     };
     return error ? { ...res, error } : res;
   }
