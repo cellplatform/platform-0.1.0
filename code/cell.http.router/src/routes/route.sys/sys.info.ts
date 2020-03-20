@@ -8,7 +8,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
 
   const formatDate = (timestamp: number) => {
     const date = time.day(args.deployedAt).toString();
-    return `${date}|utc:${timestamp}`;
+    return `${date}|UTC:${timestamp}`;
   };
 
   /**
