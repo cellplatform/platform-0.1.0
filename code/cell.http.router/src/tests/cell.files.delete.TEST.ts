@@ -3,7 +3,7 @@ import { createMock, expect, expectFileInFs, readFile } from '../test';
 describe('cell/files: delete, unlink', () => {
   it('delete and/or unlink files from cell', async () => {
     const mock = await createMock();
-    const A1 = 'cell:foo!A1';
+    const A1 = 'cell:foo:A1';
     const clientA1 = mock.client.cell(A1);
 
     const file1 = await readFile('src/test/assets/func.wasm');
@@ -36,7 +36,7 @@ describe('cell/files: delete, unlink', () => {
     const res3 = await clientA1.files.delete('cat&bird.png');
     expect(res3.ok).to.eql(true);
     expect(res3.status).to.eql(200);
-    expect(res3.body.uri).to.eql('cell:foo!A1');
+    expect(res3.body.uri).to.eql('cell:foo:A1');
     expect(res3.body.deleted).to.eql(['cat&bird.png']);
     expect(res3.body.unlinked).to.eql(['cat&bird.png']);
     expect(res3.body.errors).to.eql([]);
@@ -80,7 +80,7 @@ describe('cell/files: delete, unlink', () => {
 
   it('unlink files from cell', async () => {
     const mock = await createMock();
-    const A1 = 'cell:foo!A1';
+    const A1 = 'cell:foo:A1';
     const clientA1 = mock.client.cell(A1);
 
     const file1 = await readFile('src/test/assets/func.wasm');
@@ -119,7 +119,7 @@ describe('cell/files: delete, unlink', () => {
 
   it('fails when unlinking a file that is not referenced by the cell', async () => {
     const mock = await createMock();
-    const A1 = 'cell:foo!A1';
+    const A1 = 'cell:foo:A1';
     const clientA1 = mock.client.cell(A1);
 
     const data = await readFile('src/test/assets/func.wasm');

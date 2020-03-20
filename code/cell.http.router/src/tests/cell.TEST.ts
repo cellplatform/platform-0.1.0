@@ -5,7 +5,7 @@ describe('cell', () => {
     const mock = await createMock();
     const client = mock.client;
 
-    const uri = 'cell:foo!A1';
+    const uri = 'cell:foo:A1';
     const res = await client.cell(uri).info();
     await mock.dispose();
 
@@ -21,7 +21,7 @@ describe('cell', () => {
 
     await client.ns('foo').write({ cells: { A1: { value: 'hello' } } }); // Force A1 into existence in DB.
 
-    const uri = 'cell:foo!A1';
+    const uri = 'cell:foo:A1';
     const res = await client.cell(uri).info();
     await mock.dispose();
 
