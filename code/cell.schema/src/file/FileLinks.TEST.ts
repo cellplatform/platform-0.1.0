@@ -1,7 +1,7 @@
 import { t, fs, expect } from '../test';
 import { FileLinks } from '.';
 
-describe('FileLinks', () => {
+describe.only('FileLinks', () => {
   it('total', () => {
     const test = (links: t.IUriMap | undefined, expected: number) => {
       const res = FileLinks.total(links);
@@ -73,34 +73,6 @@ describe('FileLinks', () => {
   });
 
   describe('encoding', () => {
-    it('encodeKey => decodeKey', () => {
-      const test = (input: string, encoded: string) => {
-        const res = {
-          encoded: FileLinks.encodeKey(input),
-          decoded: FileLinks.decodeKey(FileLinks.encodeKey(input)),
-        };
-        expect(res.encoded).to.eql(encoded);
-        expect(res.decoded).to.eql(input);
-      };
-
-      test('foo', 'foo');
-      test('foo|bar', 'foo|bar');
-      test('[foo]', '[foo]');
-      test('.foo', ':foo');
-      test('[.foo]', '[:foo]');
-      test('foo.png', 'foo:png');
-      test('foo.bar.baz', 'foo:bar:baz');
-      test('foo/bar', 'foo::bar');
-      test('foo/bar/baz', 'foo::bar::baz');
-
-      test('.foo.', ':foo:');
-      test('..foo...', '[::]foo[:::]');
-      test('...foo.', '[:::]foo:');
-      test('...foo.png', '[:::]foo:png');
-      test('...foo/bar..png', '[:::]foo::bar[::]png');
-      test('[..]foo[...]', '[[::]]foo[[:::]]');
-    });
-
     it('toKey (encoded)', () => {
       const test = (input: string, output: string) => {
         const res = FileLinks.toKey(input);
@@ -125,7 +97,7 @@ describe('FileLinks', () => {
     it('(uri)', () => {
       const test = (input: string, expected: string) => {
         const res = FileLinks.parseLink(input);
-        expect(res.uri).to.eql(expected);
+        expect(res.uri.toString()).to.eql(expected);
       };
       test('file:foo:123', 'file:foo:123');
       test('file:foo:123?hash=abc', 'file:foo:123');
@@ -136,7 +108,7 @@ describe('FileLinks', () => {
     it('(ns)', () => {
       const test = (input: string, expected: string) => {
         const res = FileLinks.parseLink(input);
-        expect(res.ns).to.eql(expected);
+        expect(res.uri.ns).to.eql(expected);
       };
       test('file:foo:123', 'foo');
       test('file:foo:123?hash=abc', 'foo');
@@ -147,7 +119,7 @@ describe('FileLinks', () => {
     it('(fileid)', () => {
       const test = (input: string, expected: string) => {
         const res = FileLinks.parseLink(input);
-        expect(res.fileid).to.eql(expected);
+        expect(res.uri.file).to.eql(expected);
       };
       test('file:foo:123', '123');
       test('file:foo:123?hash=abc', '123');
@@ -221,12 +193,12 @@ describe('FileLinks', () => {
   });
 
   describe('parseKey', () => {
-    it('filename', () => {
+    it('name', () => {
       const key = FileLinks.toKey('image.png');
       const res = FileLinks.parseKey(` ${key} `);
       expect(res.key).to.eql(key);
       expect(res.path).to.eql('image.png');
-      expect(res.filename).to.eql('image.png');
+      expect(res.name).to.eql('image.png');
       expect(res.dir).to.eql('');
       expect(res.ext).to.eql('png');
     });
@@ -236,7 +208,7 @@ describe('FileLinks', () => {
       const res = FileLinks.parseKey(` ${key} `);
       expect(res.key).to.eql(key);
       expect(res.path).to.eql('foo/bar/image.png');
-      expect(res.filename).to.eql('image.png');
+      expect(res.name).to.eql('image.png');
       expect(res.dir).to.eql('foo/bar');
       expect(res.ext).to.eql('png');
     });
@@ -246,7 +218,7 @@ describe('FileLinks', () => {
         const res = FileLinks.parseKey(input);
         expect(res.key).to.eql(input.trim());
         expect(res.path).to.eql(path);
-        expect(res.filename).to.eql(fs.basename(res.path));
+        expect(res.name).to.eql(fs.basename(res.path));
         expect(res.dir).to.eql(fs.dirname(res.path).replace(/^\./, ''));
         expect(res.ext).to.eql(fs.extname(res.path).replace(/^\./, ''));
       };
@@ -276,8 +248,8 @@ describe('FileLinks', () => {
         'fs:main:js': 'file:foo:abc123?status=uploading',
         'fs:images/foo/kitten:png': 'file:foo:def456?hash=sha256-abc',
       };
-      const list = FileLinks.toList(keys);
 
+      const list = FileLinks.toList(keys);
       expect(list.length).to.eql(2);
 
       expect(list[0].uri).to.eql('file:foo:abc123');
@@ -351,11 +323,6 @@ describe('FileLinks', () => {
   describe('error', () => {
     it('toKey: throw if contains ":"', () => {
       const fn = () => FileLinks.toKey('foo:bar.png');
-      expect(fn).to.throw(/cannot contain ":" character/);
-    });
-
-    it('encode: throw if contains ":"', () => {
-      const fn = () => FileLinks.encodeKey('foo:bar.png');
       expect(fn).to.throw(/cannot contain ":" character/);
     });
   });
