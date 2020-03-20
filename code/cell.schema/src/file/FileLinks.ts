@@ -1,13 +1,16 @@
 import { t, queryString } from '../common';
 import { Uri } from '../Uri';
-import { Links } from '../Link';
+import { Links } from '../Links';
 
-const fs = Links.create('fs');
+const prefix = 'fs';
+const fs = Links.create(prefix);
 
 /**
  * Helpers for operating on [file] links.
  */
 export class FileLinks {
+  public static prefix = prefix;
+
   public static is = {
     fileKey(input?: string) {
       return fs.isKey(input);

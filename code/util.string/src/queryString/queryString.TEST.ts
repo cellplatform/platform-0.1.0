@@ -139,7 +139,7 @@ describe('queryString', () => {
     });
   });
 
-  describe.only('build', () => {
+  describe('build', () => {
     it('nothing', () => {
       expect(queryString.build().toString()).to.eql('');
     });

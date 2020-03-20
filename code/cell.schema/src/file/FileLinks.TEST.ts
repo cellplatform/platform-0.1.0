@@ -2,6 +2,10 @@ import { t, fs, expect } from '../test';
 import { FileLinks } from '.';
 
 describe.only('FileLinks', () => {
+  it('prefix', () => {
+    expect(FileLinks.prefix).to.eql('fs');
+  });
+
   it('total', () => {
     const test = (links: t.IUriMap | undefined, expected: number) => {
       const res = FileLinks.total(links);
@@ -25,22 +29,24 @@ describe.only('FileLinks', () => {
 
   describe('is', () => {
     it('fileKey', () => {
-      const test = (key: string | undefined, expected: boolean) => {
-        const res = FileLinks.is.fileKey(key);
+      const test = (input: string | undefined, expected: boolean) => {
+        const res = FileLinks.is.fileKey(input);
         expect(res).to.eql(expected);
       };
 
       test(undefined, false);
       test('', false);
       test('  ', false);
+      test('ref:ns:foo', false);
+      test('ref:cell:foo!A1', false);
 
       test('fs:func:wasm', true);
       test('  fs:func:wasm  ', true);
     });
 
     it('fileValue', () => {
-      const test = (key: string | undefined, expected: boolean) => {
-        const res = FileLinks.is.fileValue(key);
+      const test = (input: string | undefined, expected: boolean) => {
+        const res = FileLinks.is.fileValue(input);
         expect(res).to.eql(expected);
       };
 
