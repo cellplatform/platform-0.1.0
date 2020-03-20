@@ -16,7 +16,8 @@ describe.only('Uri', () => {
 
   describe('uri.kind', () => {
     it('NS', () => {
-      const uri = Uri.parse<t.INsUri>('ns:foo');
+      const uri = Uri.parse<t.INsUri>('  ns:foo  ');
+      expect(uri.ok).to.eql(true);
       expect(uri.type).to.eql('NS');
       expect(uri.parts.type).to.eql(uri.type);
       expect(uri.toString()).to.eql('ns:foo');
@@ -24,31 +25,35 @@ describe.only('Uri', () => {
     });
 
     it('CELL', () => {
-      const uri = Uri.parse<t.ICellUri>('cell:foo!A1');
+      const uri = Uri.parse<t.ICellUri>('  cell:foo:A1  ');
+      expect(uri.ok).to.eql(true);
       expect(uri.type).to.eql('CELL');
       expect(uri.parts.type).to.eql(uri.type);
-      expect(uri.toString()).to.eql('cell:foo!A1');
+      expect(uri.toString()).to.eql('cell:foo:A1');
       expect(uri.parts.toString()).to.eql(uri.toString());
     });
 
     it('ROW', () => {
-      const uri = Uri.parse<t.IRowUri>('cell:foo!1');
+      const uri = Uri.parse<t.IRowUri>('  cell:foo:1  ');
+      expect(uri.ok).to.eql(true);
       expect(uri.type).to.eql('ROW');
       expect(uri.parts.type).to.eql(uri.type);
-      expect(uri.toString()).to.eql('cell:foo!1');
+      expect(uri.toString()).to.eql('cell:foo:1');
       expect(uri.parts.toString()).to.eql(uri.toString());
     });
 
     it('COLUMN', () => {
-      const uri = Uri.parse<t.IColumnUri>('cell:foo!A');
+      const uri = Uri.parse<t.IColumnUri>('  cell:foo:A  ');
+      expect(uri.ok).to.eql(true);
       expect(uri.type).to.eql('COLUMN');
       expect(uri.parts.type).to.eql(uri.type);
-      expect(uri.toString()).to.eql('cell:foo!A');
+      expect(uri.toString()).to.eql('cell:foo:A');
       expect(uri.parts.toString()).to.eql(uri.toString());
     });
 
     it('FILE', () => {
-      const uri = Uri.parse<t.IFileUri>('file:foo:bar');
+      const uri = Uri.parse<t.IFileUri>('  file:foo:bar  ');
+      expect(uri.ok).to.eql(true);
       expect(uri.type).to.eql('FILE');
       expect(uri.parts.type).to.eql(uri.type);
       expect(uri.toString()).to.eql('file:foo:bar');
@@ -111,9 +116,9 @@ describe.only('Uri', () => {
 
       // Valid.
       test('ns:foo', true);
-      test('cell:foo!A1', true);
-      test('cell:foo!1', true);
-      test('cell:foo!A', true);
+      test('cell:foo:A1', true);
+      test('cell:foo:1', true);
+      test('cell:foo:A', true);
       test('file:foo:123', true);
 
       // Empty.
@@ -143,11 +148,11 @@ describe.only('Uri', () => {
       };
 
       test('NS', 'ns:foo', true);
-      test('CELL', 'cell:foo!A1', true);
-      test('COLUMN', 'cell:foo!A', true);
-      test('ROW', 'cell:foo!1', true);
+      test('CELL', 'cell:foo:A1', true);
+      test('COLUMN', 'cell:foo:A', true);
+      test('ROW', 'cell:foo:1', true);
       test('FILE', 'file:foo:123', true);
-      test('UNKNOWN', 'foo:bar!1', true);
+      test('UNKNOWN', 'foo:bar:1', true);
 
       test('NS', undefined, false);
       test('CELL', undefined, false);
@@ -170,9 +175,9 @@ describe.only('Uri', () => {
 
       test('', false);
       test(undefined, false);
-      test('cell:foo!A1', false);
-      test('cell:foo!1', false);
-      test('cell:foo!A', false);
+      test('cell:foo:A1', false);
+      test('cell:foo:1', false);
+      test('cell:foo:A', false);
     });
 
     it('is.file', () => {
@@ -191,36 +196,36 @@ describe.only('Uri', () => {
       const test = (input?: string, expected?: boolean) => {
         expect(Uri.is.cell(input)).to.eql(expected);
       };
-      test('cell:foo!A1', true);
+      test('cell:foo:A1', true);
 
       test('', false);
       test(undefined, false);
       test('ns:foo', false);
-      test('col:foo!A', false);
+      test('col:foo:A', false);
     });
 
     it('is.row', () => {
       const test = (input?: string, expected?: boolean) => {
         expect(Uri.is.row(input)).to.eql(expected);
       };
-      test('cell:foo!1', true);
+      test('cell:foo:1', true);
 
       test('', false);
       test(undefined, false);
       test('ns:foo', false);
-      test('cell:foo!A', false);
+      test('cell:foo:A', false);
     });
 
     it('is.column', () => {
       const test = (input?: string, expected?: boolean) => {
         expect(Uri.is.column(input)).to.eql(expected);
       };
-      test('cell:foo!A', true);
+      test('cell:foo:A', true);
 
       test('', false);
       test(undefined, false);
       test('ns:foo', false);
-      test('row:foo!1', false);
+      test('row:foo:1', false);
     });
   });
 
@@ -236,14 +241,14 @@ describe.only('Uri', () => {
     });
 
     it('cell', () => {
-      const res = Uri.parse<t.ICellUri>('cell:foo!A1');
+      const res = Uri.parse<t.ICellUri>('cell:foo:A1');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
       expect(res.parts.type).to.eql('CELL');
-      expect(res.parts.id).to.eql('foo!A1');
+      expect(res.parts.id).to.eql('foo:A1');
       expect(res.parts.ns).to.eql('foo');
       expect(res.parts.key).to.eql('A1');
-      expect(res.uri).to.eql('cell:foo!A1');
+      expect(res.uri).to.eql('cell:foo:A1');
       expect(res.toString()).to.eql(res.uri);
     });
 
@@ -254,31 +259,31 @@ describe.only('Uri', () => {
         expect(res.error).to.eql(undefined);
         expect(res.uri).to.eql(uri);
       };
-      test('cell:foo!a1', 'cell:foo!A1');
-      test('cell:foo!a', 'cell:foo!A');
+      test('cell:foo:a1', 'cell:foo:A1');
+      test('cell:foo:a', 'cell:foo:A');
     });
 
     it('cell (row)', () => {
-      const res = Uri.parse<t.IRowUri>('cell:foo!1');
+      const res = Uri.parse<t.IRowUri>('cell:foo:1');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
       expect(res.parts.type).to.eql('ROW');
-      expect(res.parts.id).to.eql('foo!1');
+      expect(res.parts.id).to.eql('foo:1');
       expect(res.parts.ns).to.eql('foo');
       expect(res.parts.key).to.eql('1');
-      expect(res.uri).to.eql('cell:foo!1');
+      expect(res.uri).to.eql('cell:foo:1');
       expect(res.toString()).to.eql(res.uri);
     });
 
     it('cell (column)', () => {
-      const res = Uri.parse<t.IColumnUri>('cell:foo!A');
+      const res = Uri.parse<t.IColumnUri>('cell:foo:A');
       expect(res.ok).to.eql(true);
       expect(res.error).to.eql(undefined);
       expect(res.parts.type).to.eql('COLUMN');
-      expect(res.parts.id).to.eql('foo!A');
+      expect(res.parts.id).to.eql('foo:A');
       expect(res.parts.ns).to.eql('foo');
       expect(res.parts.key).to.eql('A');
-      expect(res.uri).to.eql('cell:foo!A');
+      expect(res.uri).to.eql('cell:foo:A');
       expect(res.toString()).to.eql(res.uri);
     });
 
@@ -302,9 +307,9 @@ describe.only('Uri', () => {
       };
       test('file:foo:123?hash=abc');
       test('ns:foo?hash=abc');
-      test('cell:foo!A1?hash=abc');
-      test('cell:foo!A?hash=abc');
-      test('cell:foo!1?hash=abc');
+      test('cell:foo:A1?hash=abc');
+      test('cell:foo:A?hash=abc');
+      test('cell:foo:1?hash=abc');
     });
 
     describe('error', () => {
@@ -352,7 +357,7 @@ describe.only('Uri', () => {
       it('cell: no key', () => {
         const res = Uri.parse<t.ICellUri>('cell:foo');
         expect(res.ok).to.eql(false);
-        expect(res.error && res.error.message).to.contain(`URI does not contain a "!" character`);
+        expect(res.error && res.error.message).to.contain(`does not have a coordinate address`);
         expect(res.parts.key).to.eql('');
         expect(res.parts.ns).to.eql('');
       });
@@ -396,9 +401,9 @@ describe.only('Uri', () => {
         const res = Uri.create.cell(ns, key);
         expect(res).to.eql(expected);
       };
-      test('foo', 'A1', 'cell:foo!A1');
-      test('foo', '!A1', 'cell:foo!A1');
-      test('foo', '!!A1', 'cell:foo!A1');
+      test('foo', 'A1', 'cell:foo:A1');
+      test('foo', ':A1', 'cell:foo:A1');
+      test('foo', '::A1', 'cell:foo:A1');
     });
 
     it('row', () => {
@@ -406,9 +411,9 @@ describe.only('Uri', () => {
         const res = Uri.create.row(ns, key);
         expect(res).to.eql(expected);
       };
-      test('foo', '1', 'cell:foo!1');
-      test('foo', '!1', 'cell:foo!1');
-      test('foo', '!!1', 'cell:foo!1');
+      test('foo', '1', 'cell:foo:1');
+      test('foo', ':1', 'cell:foo:1');
+      test('foo', '::1', 'cell:foo:1');
     });
 
     it('column', () => {
@@ -416,9 +421,9 @@ describe.only('Uri', () => {
         const res = Uri.create.column(ns, key);
         expect(res).to.eql(expected);
       };
-      test('foo', 'A', 'cell:foo!A');
-      test('foo', '!A', 'cell:foo!A');
-      test('foo', '!!A', 'cell:foo!A');
+      test('foo', 'A', 'cell:foo:A');
+      test('foo', ':A', 'cell:foo:A');
+      test('foo', '::A', 'cell:foo:A');
     });
 
     const ILLEGAL = {

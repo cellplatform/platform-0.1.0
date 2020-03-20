@@ -79,11 +79,16 @@ export class Uri {
         let type = 'CELL' as UriType;
         let key = '';
         let ns = '';
-        if (!id.includes('!')) {
-          setError(true, `The 'cell' URI does not contain a "!" character.`);
+
+        if (!id.includes(':')) {
+          setError(
+            true,
+            `The 'cell' URI does not have a coordinate address, eg. ":A1" in "cell:foo:A1"`,
+          );
         } else {
-          type = coord.cell.toType(id) as UriType;
-          const parts = coord.cell.toCell(id);
+          const bang = id.replace(/\:/g, '!');
+          const parts = coord.cell.toCell(bang);
+          type = coord.cell.toType(bang) as UriType;
           key = parts.key;
           ns = parts.ns;
           setError(!key, `Coordinate key of '${type || '<empty>'}' not found`);
@@ -161,7 +166,7 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
   }
 
   if (typeof suffix === 'string') {
-    suffix = (suffix || '').trim().replace(/^\!*/, '');
+    suffix = (suffix || '').trim().replace(/^\:*/, '');
     if (!suffix) {
       throw new Error(`The "${prefix}" URI was not supplied with a suffix key.`);
     }
@@ -184,7 +189,7 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
         const err = `The "${prefix}:" URI was not supplied with a valid ${type} key (given key "${key}").`;
         throw new Error(err);
       }
-      suffix = `!${suffix}`;
+      suffix = `:${suffix}`;
     }
   }
 
