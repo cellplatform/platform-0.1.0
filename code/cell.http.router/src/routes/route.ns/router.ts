@@ -25,7 +25,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   };
 
   /**
-   * GET: /ns:<id>!A1
+   * GET: /ns:<id>:A1
    *      Redirect to the cell.
    */
   router.get(routes.NS.CELL, async req => {

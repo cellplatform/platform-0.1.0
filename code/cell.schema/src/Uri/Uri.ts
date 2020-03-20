@@ -54,7 +54,7 @@ export class Uri {
          */
         const id = right;
         setError(!id, 'Namespace URI identifier not found');
-        setError(!isValidId(id), 'URI contains an invalid "ns" identifier');
+        setError(!Uri.is.valid.ns(id), 'URI contains an invalid "ns" identifier');
         const uri: t.INsUri = { type: 'NS', id, toString };
         data = uri;
       } else if (left === 'file') {
@@ -135,6 +135,37 @@ export class Uri {
     cell: (input?: string) => Uri.is.type('CELL', input),
     row: (input?: string) => Uri.is.type('ROW', input),
     column: (input?: string) => Uri.is.type('COLUMN', input),
+
+    valid: {
+      ns(input?: string) {
+        const value = (input || '').replace(/^ns\:/, '');
+
+        if (!value) {
+          return false;
+        }
+
+        if (isCuid(value)) {
+          return true;
+        }
+
+        // Check for any illegal characters.
+        const matchLegal = value.match(/^[A-Za-z0-9\.]*$/);
+        if (!matchLegal || (matchLegal && matchLegal[0] !== value)) {
+          return false;
+        }
+
+        // NOTE:  Certain NS ids are allowed for testing or for
+        //        special environments like locally running apps
+        //        (equivalent of "local" IP addresses).
+        return Uri.ALLOW.NS.some(pattern => {
+          return typeof pattern === 'string'
+            ? pattern.includes('*')
+              ? wildcard.isMatch(value, pattern)
+              : pattern === value
+            : pattern(value);
+        });
+      },
+    },
   };
 }
 
@@ -160,7 +191,7 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
     throw new Error(`The "${prefix}" URI was not supplied with a namespace identifier. ("${id}")`);
   }
 
-  if (!isValidId(id)) {
+  if (!Uri.is.valid.ns(id)) {
     const err = `URI contains an invalid "${prefix}" identifier, must be an alpha-numeric cuid. ("${id}")`;
     throw new Error(err);
   }
@@ -198,33 +229,4 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
 
 function isCuid(input: string) {
   return input.length === 25 && input[0] === 'c' && alphaNumeric.test(input);
-}
-
-function isValidId(input: string) {
-  input = (input || '').replace(/^ns\:/, '');
-
-  if (!input) {
-    return false;
-  }
-
-  if (isCuid(input)) {
-    return true;
-  }
-
-  // Check for any illegal characters.
-  const matchLegal = input.match(/^[A-Za-z0-9\.]*$/);
-  if (!matchLegal || (matchLegal && matchLegal[0] !== input)) {
-    return false;
-  }
-
-  // NOTE:  Certain NS ids are allowed for testing or for
-  //        special environments like locally running apps
-  //        (equivalent of "local" IP addresses).
-  return Uri.ALLOW.NS.some(pattern => {
-    return typeof pattern === 'string'
-      ? pattern.includes('*')
-        ? wildcard.isMatch(input, pattern)
-        : pattern === input
-      : pattern(input);
-  });
 }

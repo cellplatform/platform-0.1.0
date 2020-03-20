@@ -1,6 +1,7 @@
 import { ERROR, t } from '../common';
 
 type Prefix = 'cell' | 'col' | 'row';
+
 export const getParams = (args: {
   req: t.IRouteRequest;
   prefix: Prefix;
@@ -20,7 +21,8 @@ export const getParams = (args: {
     message: '',
   };
 
-  const toMessage = (msg: string) => `Malformed "${prefix}:" URI, ${msg} ("${req.url}").`;
+  const url = req.url || '<empty>';
+  const toMessage = (msg: string) => `Malformed "${prefix}:" URI, ${msg} ("${url}").`;
 
   if (!data.ns) {
     error.message = toMessage('does not contain a namespace-identifier');

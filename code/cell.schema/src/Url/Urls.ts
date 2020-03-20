@@ -2,7 +2,7 @@ import { R, t, value } from '../common';
 import { Uri } from '../Uri';
 import { Url } from './Url';
 import * as util from './util';
-import { ROUTES } from './ROUTES';
+import { ROUTES } from '../Url.routes';
 
 /**
  * Standardised construction of URLs for the HTTP service.
@@ -82,7 +82,7 @@ export class Urls implements t.IUrls {
    */
   public ns(input: string | t.IUrlParamsNs) {
     const toPath = this.toUrl;
-    let id = typeof input === 'string' ? input : input.ns;
+    let id = (typeof input === 'string' ? input : input.ns) || '';
 
     if (!id.includes(':')) {
       id = `ns:${id}`; // NB: Only the ID (cuid) was passed. Prepend with namespace token.

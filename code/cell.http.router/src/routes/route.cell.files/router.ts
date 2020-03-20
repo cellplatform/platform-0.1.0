@@ -12,7 +12,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   const { db, fs, router } = args;
 
   /**
-   * GET: !A1/files
+   * GET: cell:foo:A1/files
    */
   router.get(routes.CELL.FILES.BASE, async req => {
     try {
