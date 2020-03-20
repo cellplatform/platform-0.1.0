@@ -45,8 +45,10 @@ export function urls(host: string) {
               .filter(({ value }) => Schema.uri.is.file(value))
               .reduce((acc, next) => {
                 const { key, value } = next;
-                const { hash, uri } = Schema.file.links.parseLink(value);
                 const { path, ext } = Schema.file.links.parseKey(key);
+                const link = Schema.file.links.parseLink(value);
+                const uri = link.uri.toString();
+                const hash = link.hash;
 
                 let expires = options.expires || '1h';
                 const seconds = toSeconds(expires);

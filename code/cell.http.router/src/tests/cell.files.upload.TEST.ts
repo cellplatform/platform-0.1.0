@@ -112,7 +112,7 @@ describe('cell/files: upload', function() {
     expect(urls[0].path).to.eql('foo/bar/kitten.jpg');
 
     expect(urls[0].url).to.match(/^http:/);
-    expect(urls[0].url).to.include(`cell:foo!A1/file:${link.fileid}.jpg`);
+    expect(urls[0].url).to.include(`cell:foo!A1/file:${link.uri.file}.jpg`);
     expect(urls[0].url).to.match(/hash=sha256-/);
 
     // Data returned on list.

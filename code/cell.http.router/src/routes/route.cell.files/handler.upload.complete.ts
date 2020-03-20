@@ -31,7 +31,7 @@ export async function uploadCellFilesComplete(args: {
     .filter(({ value }) => Schema.file.links.is.fileUploading(value))
     .map(item => {
       const link = Schema.file.links.parseLink(item.value);
-      const found = filesBefore.find(item => item.uri === link.uri);
+      const found = filesBefore.find(item => item.uri === link.uri.toString());
       const file = found?.data;
       return { ...item, link, file };
     })
@@ -51,6 +51,7 @@ export async function uploadCellFilesComplete(args: {
     query: { cells: cellKey, files: true, changes: sendChanges },
     host,
   });
+
   const nsResponseData = nsResponse.data as t.IResPostNs;
   if (!util.isOK(nsResponse.status)) {
     const status = nsResponse.status;

@@ -109,9 +109,9 @@ export type IHttpClientCellLinkFile = {
   type: 'FILE';
   key: string;
   uri: string;
-  filename: string;
-  dir: string;
   path: string;
+  dir: string;
+  name: string;
   hash: string;
   file: IHttpClientFile;
 };
