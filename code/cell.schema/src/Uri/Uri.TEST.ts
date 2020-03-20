@@ -19,30 +19,40 @@ describe('Uri', () => {
       const uri = Uri.parse<t.INsUri>('ns:foo');
       expect(uri.type).to.eql('NS');
       expect(uri.parts.type).to.eql(uri.type);
+      expect(uri.toString()).to.eql('ns:foo');
+      expect(uri.parts.toString()).to.eql(uri.toString());
     });
 
     it('CELL', () => {
       const uri = Uri.parse<t.ICellUri>('cell:foo!A1');
       expect(uri.type).to.eql('CELL');
       expect(uri.parts.type).to.eql(uri.type);
+      expect(uri.toString()).to.eql('cell:foo!A1');
+      expect(uri.parts.toString()).to.eql(uri.toString());
     });
 
     it('ROW', () => {
       const uri = Uri.parse<t.IRowUri>('cell:foo!1');
       expect(uri.type).to.eql('ROW');
       expect(uri.parts.type).to.eql(uri.type);
+      expect(uri.toString()).to.eql('cell:foo!1');
+      expect(uri.parts.toString()).to.eql(uri.toString());
     });
 
     it('COLUMN', () => {
       const uri = Uri.parse<t.IColumnUri>('cell:foo!A');
       expect(uri.type).to.eql('COLUMN');
       expect(uri.parts.type).to.eql(uri.type);
+      expect(uri.toString()).to.eql('cell:foo!A');
+      expect(uri.parts.toString()).to.eql(uri.toString());
     });
 
     it('FILE', () => {
       const uri = Uri.parse<t.IFileUri>('file:foo:bar');
       expect(uri.type).to.eql('FILE');
       expect(uri.parts.type).to.eql(uri.type);
+      expect(uri.toString()).to.eql('file:foo:bar');
+      expect(uri.parts.toString()).to.eql(uri.toString());
     });
   });
 
