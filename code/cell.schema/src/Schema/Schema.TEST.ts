@@ -1,7 +1,7 @@
 import { Schema } from '.';
 import { expect, t } from '../test';
 
-describe.only('Schema', () => {
+describe('Schema', () => {
   describe('static', () => {
     it('hash', () => {
       const res = Schema.hash.sha256({ msg: 'abc' });

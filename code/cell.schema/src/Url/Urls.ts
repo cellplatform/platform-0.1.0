@@ -136,11 +136,11 @@ export class Urls implements t.IUrls {
       uri,
 
       /**
-       * Example: /cell:foo!A1
+       * Example: /cell:foo:A1
        */
       get info() {
         type Q = t.IUrlQueryCellInfo;
-        return toPath<Q>(`/cell:${ns}!${key}`);
+        return toPath<Q>(`/cell:${ns}:${key}`);
       },
 
       /**
@@ -148,35 +148,35 @@ export class Urls implements t.IUrls {
        */
       files: {
         /**
-         * Example: /cell:foo!A1/files
+         * Example: /cell:foo:A1/files
          */
         get list() {
           type Q = t.IUrlQueryCellFilesList;
-          return toPath<Q>(`/cell:${ns}!${key}/files`);
+          return toPath<Q>(`/cell:${ns}:${key}/files`);
         },
 
         /**
-         * Example: /cell:foo!A1/files
+         * Example: /cell:foo:A1/files
          */
         get delete() {
           type Q = t.IUrlQueryCellFilesDelete;
-          return toPath<Q>(`/cell:${ns}!${key}/files`);
+          return toPath<Q>(`/cell:${ns}:${key}/files`);
         },
 
         /**
-         * Example: /cell:foo!A1/files/upload
+         * Example: /cell:foo:A1/files/upload
          */
         get upload() {
           type Q = t.IUrlQueryCellFilesUpload;
-          return toPath<Q>(`/cell:${ns}!${key}/files/upload`);
+          return toPath<Q>(`/cell:${ns}:${key}/files/upload`);
         },
 
         /**
-         * Example: /cell:foo!A1/files/uploaded
+         * Example: /cell:foo:A1/files/uploaded
          */
         get uploaded() {
           type Q = t.IUrlQueryCellFilesUploaded;
-          return toPath<Q>(`/cell:${ns}!${key}/files/uploaded`);
+          return toPath<Q>(`/cell:${ns}:${key}/files/uploaded`);
         },
       },
 
@@ -185,7 +185,7 @@ export class Urls implements t.IUrls {
        */
       file: {
         /**
-         * Example: /cell:foo!A1/file/kitten.png
+         * Example: /cell:foo:A1/file/kitten.png
          */
         byName(filename: string) {
           type Q = t.IUrlQueryCellFileDownloadByName;
@@ -193,11 +193,11 @@ export class Urls implements t.IUrls {
           if (!filename) {
             throw new Error(`Filename not provided.`);
           }
-          return toPath<Q>(`/cell:${ns}!${key}/file/${filename}`);
+          return toPath<Q>(`/cell:${ns}:${key}/file/${filename}`);
         },
 
         /**
-         * Example: /cell:foo!A1/file:abc123.png
+         * Example: /cell:foo:A1/file:abc123.png
          */
         byFileUri(fileUri: string, fileExtension?: string) {
           type Q = t.IUrlQueryCellFileDownloadByFileUri;
@@ -212,7 +212,7 @@ export class Urls implements t.IUrls {
             throw new Error(`File uri/name could not be derived..`);
           }
           const file = `file:${filename}`;
-          return toPath<Q>(`/cell:${ns}!${key}/${file}`);
+          return toPath<Q>(`/cell:${ns}:${key}/${file}`);
         },
       },
     };
@@ -240,11 +240,11 @@ export class Urls implements t.IUrls {
       uri,
 
       /**
-       * Example: /cell:foo!1
+       * Example: /cell:foo:1
        */
       get info() {
         type Q = t.IUrlQueryRowInfo;
-        return toPath<Q>(`/cell:${ns}!${key}`);
+        return toPath<Q>(`/cell:${ns}:${key}`);
       },
     };
   }
@@ -269,11 +269,11 @@ export class Urls implements t.IUrls {
       uri,
 
       /**
-       * Example: /cell:foo!A
+       * Example: /cell:foo:A
        */
       get info() {
         type Q = t.IUrlQueryColumnInfo;
-        return toPath<Q>(`/cell:${ns}!${key}`);
+        return toPath<Q>(`/cell:${ns}:${key}`);
       },
     };
   }
