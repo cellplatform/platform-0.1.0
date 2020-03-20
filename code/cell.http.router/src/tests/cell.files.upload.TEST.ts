@@ -6,7 +6,7 @@ describe('cell/files: upload', function() {
 
   it('upload/download: 1 file', async () => {
     const mock = await createMock();
-    const cellUri = 'cell:foo!A1';
+    const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
     // Upload => download.
@@ -28,7 +28,7 @@ describe('cell/files: upload', function() {
 
   it('upload/download 2: files', async () => {
     const mock = await createMock();
-    const cellUri = 'cell:foo!A1';
+    const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
     const file1 = await readFile('src/test/assets/func.wasm');
@@ -86,7 +86,7 @@ describe('cell/files: upload', function() {
 
   it('upload: file within folder-path', async () => {
     const mock = await createMock();
-    const cellUri = 'cell:foo!A1';
+    const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
     const kitten = await readFile('src/test/assets/kitten.jpg');
@@ -112,7 +112,7 @@ describe('cell/files: upload', function() {
     expect(urls[0].path).to.eql('foo/bar/kitten.jpg');
 
     expect(urls[0].url).to.match(/^http:/);
-    expect(urls[0].url).to.include(`cell:foo!A1/file:${link.uri.file}.jpg`);
+    expect(urls[0].url).to.include(`cell:foo:A1/file:${link.uri.file}.jpg`);
     expect(urls[0].url).to.match(/hash=sha256-/);
 
     // Data returned on list.
@@ -131,7 +131,7 @@ describe('cell/files: upload', function() {
 
   it('upload with explicit mimetype', async () => {
     const mock = await createMock();
-    const cellUri = 'cell:foo!A1';
+    const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
 
     const data = await readFile('src/test/assets/kitten.jpg');
@@ -150,8 +150,8 @@ describe('cell/files: upload', function() {
 
   it('upload: then list (A1/files)', async () => {
     const mock = await createMock();
-    const A1 = 'cell:foo!A1';
-    const A2 = 'cell:foo!A2';
+    const A1 = 'cell:foo:A1';
+    const A2 = 'cell:foo:A2';
     const clientA1 = mock.client.cell(A1);
     const clientA2 = mock.client.cell(A2);
 
@@ -194,7 +194,7 @@ describe('cell/files: upload', function() {
 
   it('upload: does not send changes (by default)', async () => {
     const mock = await createMock();
-    const cellUri = 'cell:foo!A1';
+    const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const data = await readFile('src/test/assets/kitten.jpg');
     const res = await client.files.upload([{ filename: 'kitten.jpg', data }]); // NB: {changes} option not specified.
@@ -207,7 +207,7 @@ describe('cell/files: upload', function() {
 
   it('upload: sends changes (via option)', async () => {
     const mock = await createMock();
-    const cellUri = 'cell:foo!A1';
+    const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const file1 = await readFile('src/test/assets/kitten.jpg');
     const file2 = await readFile('src/test/assets/bird.png');
@@ -225,13 +225,13 @@ describe('cell/files: upload', function() {
     const uris = (changes || []).map(c => c.uri);
 
     expect(uris).to.include('ns:foo');
-    expect(uris).to.include('cell:foo!A1');
+    expect(uris).to.include('cell:foo:A1');
     expect(uris.some(uri => uri.startsWith('file:foo:'))).to.eql(true);
   });
 
   it('upload: stores "integrity" data after upload, eg filehash (sha256) etc', async () => {
     const mock = await createMock();
-    const client = mock.client.cell('cell:foo!A1');
+    const client = mock.client.cell('cell:foo:A1');
 
     const file = await readFile('src/test/assets/func.wasm');
     const filehash = Schema.hash.sha256(file);
@@ -256,7 +256,7 @@ describe('cell/files: upload', function() {
 
   it('upload: stores hash of uploaded file on cell "fs:" link', async () => {
     const mock = await createMock();
-    const cellUri = 'cell:foo!A1';
+    const cellUri = 'cell:foo:A1';
     const client = mock.client.cell(cellUri);
     const data = await readFile('src/test/assets/func.wasm');
 
@@ -287,7 +287,7 @@ describe('cell/files: upload', function() {
 
   it.skip('downloads a file by name (failing if the underlying file-hash changes)', async () => {
     const mock = await createMock();
-    const cellUri = 'cell:foo!A1';
+    const cellUri = 'cell:foo:A1';
     const cellClient = mock.client.cell(cellUri);
 
     const file1 = await readFile('src/test/assets/func.wasm');

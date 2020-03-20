@@ -53,7 +53,7 @@ describe('Schema', () => {
       const res = ns.cell('A1');
       expect(res.id).to.eql('A1');
       expect(res.path).to.eql('NS/foo/CELL/A1');
-      expect(res.uri).to.eql('cell:foo!A1');
+      expect(res.uri).to.eql('cell:foo:A1');
     });
   });
 
@@ -63,7 +63,7 @@ describe('Schema', () => {
       const res = ns.column('A');
       expect(res.id).to.eql('A');
       expect(res.path).to.eql('NS/foo/COL/A');
-      expect(res.uri).to.eql('cell:foo!A');
+      expect(res.uri).to.eql('cell:foo:A');
     });
   });
 
@@ -73,7 +73,7 @@ describe('Schema', () => {
       const res = ns.row('1');
       expect(res.id).to.eql('1');
       expect(res.path).to.eql('NS/foo/ROW/1');
-      expect(res.uri).to.eql('cell:foo!1');
+      expect(res.uri).to.eql('cell:foo:1');
     });
   });
 
@@ -106,14 +106,14 @@ describe('Schema', () => {
 
     it('cell', () => {
       const ns = 'ns:foo';
-      const uri = 'cell:foo!A1';
+      const uri = 'cell:foo:A1';
       const path = Schema.ns(ns).cell('A1').path;
 
       const test = (input: string | t.IDbModelCell) => {
         const res = Schema.from.cell(input);
         expect(res.uri).to.eql(uri);
         expect(res.toString()).to.eql(uri);
-        expect(res.parts.id).to.eql('foo!A1');
+        expect(res.parts.id).to.eql('foo:A1');
         expect(res.path).to.eql(path);
       };
       test(uri);
@@ -123,14 +123,14 @@ describe('Schema', () => {
 
     it('cell (row)', () => {
       const ns = 'ns:foo';
-      const uri = 'cell:foo!1';
+      const uri = 'cell:foo:1';
       const path = Schema.ns(ns).row('1').path;
 
       const test = (input: string | t.IDbModelRow) => {
         const res = Schema.from.row(input);
         expect(res.uri).to.eql(uri);
         expect(res.toString()).to.eql(uri);
-        expect(res.parts.id).to.eql('foo!1');
+        expect(res.parts.id).to.eql('foo:1');
         expect(res.path).to.eql(path);
       };
       test(uri);
@@ -140,14 +140,14 @@ describe('Schema', () => {
 
     it('cell (column)', () => {
       const ns = 'ns:foo';
-      const uri = 'cell:foo!A';
+      const uri = 'cell:foo:A';
       const path = Schema.ns(ns).column('A').path;
 
       const test = (input: string | t.IDbModelColumn) => {
         const res = Schema.from.column(input);
         expect(res.uri).to.eql(uri);
         expect(res.toString()).to.eql(uri);
-        expect(res.parts.id).to.eql('foo!A');
+        expect(res.parts.id).to.eql('foo:A');
         expect(res.path).to.eql(path);
       };
       test(uri);

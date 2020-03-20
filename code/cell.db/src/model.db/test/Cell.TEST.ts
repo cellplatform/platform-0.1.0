@@ -6,7 +6,7 @@ type P = { style?: { bold?: boolean } };
 describe('model.Cell', () => {
   it('saves', async () => {
     const db = await getTestDb({});
-    const uri = 'cell:foo!A1';
+    const uri = 'cell:foo:A1';
 
     const res1 = await Cell.create<P>({ db, uri }).ready;
     expect(res1.props.value).to.eql(undefined);
@@ -17,7 +17,7 @@ describe('model.Cell', () => {
 
     const HASH = {
       before: 'PREVIOUS-HASH',
-      after: 'sha256-048a5fd98795443ebf9bc1940ad5c90440860ffca6a8a8ab791af2e9d338ad40',
+      after: 'sha256-a5a6ca5d0284779060a46f1610270cf2091761a1472a8c2d9c867511b0842a44',
     };
 
     const value = '=A2';
@@ -37,7 +37,7 @@ describe('model.Cell', () => {
 
   it('updates DB namespace doc-links before saving', async () => {
     const db = await getTestDb({});
-    const uri = 'cell:foo!A1';
+    const uri = 'cell:foo:A1';
 
     const model1 = await Cell.create({ db, uri }).ready;
     await model1.set({ value: '=A2' }).save(); // NB: `beforeSave` links routine not triggered.
@@ -92,7 +92,7 @@ describe('model.Cell', () => {
 
   it('updates hash on save (auto)', async () => {
     const db = await getTestDb({});
-    const uri = 'cell:foo!A1';
+    const uri = 'cell:foo:A1';
 
     const model1 = await Cell.create({ db, uri }).ready;
     expect(model1.props.hash).to.eql(undefined);
@@ -119,7 +119,7 @@ describe('model.Cell', () => {
 
   it('sets then clears props', async () => {
     const db = await getTestDb({});
-    const uri = 'cell:foo!A1';
+    const uri = 'cell:foo:A1';
 
     const model = await Cell.create({ db, uri }).ready;
     expect(model.props.props).to.eql(undefined);
@@ -133,7 +133,7 @@ describe('model.Cell', () => {
 
   it('sets then clears error', async () => {
     const db = await getTestDb({});
-    const uri = 'cell:foo!A1';
+    const uri = 'cell:foo:A1';
 
     const model = await Cell.create({ db, uri }).ready;
     expect(model.props.error).to.eql(undefined);

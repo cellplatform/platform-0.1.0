@@ -9,7 +9,7 @@ describe('client (http)', () => {
 
     const requests: IMicroRequest[] = [];
     mock.service.request$.subscribe(e => requests.push(e));
-    await client.cell('cell:foo!A1').info();
+    await client.cell('cell:foo:A1').info();
     await mock.dispose();
 
     expect(requests.length).to.eql(1);

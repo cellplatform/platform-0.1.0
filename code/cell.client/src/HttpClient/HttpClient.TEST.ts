@@ -54,7 +54,7 @@ describe('client', () => {
   });
 
   it('client.cell', () => {
-    const uri = 'cell:foo!A1';
+    const uri = 'cell:foo:A1';
     const client = HttpClient.create();
     const cell = client.cell(uri);
     expect(cell.toString()).to.eql(uri);

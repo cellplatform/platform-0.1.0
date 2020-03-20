@@ -19,7 +19,7 @@ describe('cell/files: download', function() {
   describe('http (raw URLs)', () => {
     it('download byFileUri', async () => {
       const mock = await createMock();
-      const cellUri = 'cell:foo!A1';
+      const cellUri = 'cell:foo:A1';
       const client = mock.client.cell(cellUri);
 
       // Upload HTML file.
@@ -49,7 +49,7 @@ describe('cell/files: download', function() {
 
     it('download byName', async () => {
       const mock = await createMock();
-      const cellUri = 'cell:foo!A1';
+      const cellUri = 'cell:foo:A1';
       const client = mock.client.cell(cellUri);
       const urls = mock.urls.cell(cellUri);
 
@@ -101,7 +101,7 @@ describe('cell/files: download', function() {
   describe('http (using [http.client] wrapper)', () => {
     it('no file extension (content-type: "application/octet-stream")', async () => {
       const mock = await createMock();
-      const cellUri = 'cell:foo!A1';
+      const cellUri = 'cell:foo:A1';
       const client = mock.client.cell(cellUri);
 
       // Upload HTML file.
@@ -126,7 +126,7 @@ describe('cell/files: download', function() {
 
     it('file path', async () => {
       const mock = await createMock();
-      const cellUri = 'cell:foo!A1';
+      const cellUri = 'cell:foo:A1';
       const client = mock.client.cell(cellUri);
 
       // Upload HTML file.
@@ -149,7 +149,7 @@ describe('cell/files: download', function() {
 
     it('[.html] file extension (content-type: "text/html")', async () => {
       const mock = await createMock();
-      const cellUri = 'cell:foo!A1';
+      const cellUri = 'cell:foo:A1';
       const client = mock.client.cell(cellUri);
 
       // Upload HTML file.
@@ -194,7 +194,7 @@ describe('cell/files: download', function() {
 
       it('from root: /index.html', async () => {
         const mock = await createMock();
-        const cellUri = 'cell:foo!A1';
+        const cellUri = 'cell:foo:A1';
         const client = mock.client.cell(cellUri);
 
         // Upload HTML file.
@@ -218,7 +218,7 @@ describe('cell/files: download', function() {
 
       it('from sub-folder: /foo/bar/index.html', async () => {
         const mock = await createMock();
-        const cellUri = 'cell:foo!A1';
+        const cellUri = 'cell:foo:A1';
         const client = mock.client.cell(cellUri);
 
         // Upload HTML file.

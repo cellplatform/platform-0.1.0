@@ -9,6 +9,7 @@ const ID = {
 
 const KEY = {
   NS: `\\::ns${ID.NS}`,
+
   CELL: `\:key${ID.CELL}`,
   ROW: `\:key${ID.ROW}`,
   COLUMN: `\:key${ID.COLUMN}`,
@@ -32,27 +33,27 @@ export const ROUTES = {
     UPLOADED: `/file${KEY.NS}\\:${KEY.FILE}/uploaded(/?)`,
   },
   NS: {
-    CELL: `/ns${KEY.NS}\!${KEY.CELL}(/?)`, // NB: Redirect to cell.
+    CELL: `/ns${KEY.NS}\\:${KEY.CELL}(/?)`, // NB: Redirect to cell.
     INFO: `/ns${KEY.NS}(/?)`,
     TYPES: `/ns${KEY.NS}/types`,
   },
   CELL: {
     NS: `/cell${KEY.NS}(/?)`, // NB: Redirect to namespace.
-    INFO: `/cell${KEY.NS}\!${KEY.CELL}(/?)`,
+    INFO: `/cell${KEY.NS}\\:${KEY.CELL}(/?)`,
     FILE: {
-      BY_NAME: `/cell${KEY.NS}\!${KEY.CELL}/file/${KEY.FILENAME}`,
-      BY_FILE_URI: `/cell${KEY.NS}\!${KEY.CELL}/file\\:${KEY.FILENAME}`,
+      BY_NAME: `/cell${KEY.NS}\\:${KEY.CELL}/file/${KEY.FILENAME}`,
+      BY_FILE_URI: `/cell${KEY.NS}\\:${KEY.CELL}/file\\:${KEY.FILENAME}`,
     },
     FILES: {
-      BASE: `/cell${KEY.NS}\!${KEY.CELL}/files(/?)`,
-      UPLOAD: `/cell${KEY.NS}\!${KEY.CELL}/files/upload`,
-      UPLOADED: `/cell${KEY.NS}\!${KEY.CELL}/files/uploaded`,
+      BASE: `/cell${KEY.NS}\\:${KEY.CELL}/files(/?)`,
+      UPLOAD: `/cell${KEY.NS}\\:${KEY.CELL}/files/upload`,
+      UPLOADED: `/cell${KEY.NS}\\:${KEY.CELL}/files/uploaded`,
     },
   },
   ROW: {
-    INFO: `/cell${KEY.NS}\!${KEY.ROW}(/?)`,
+    INFO: `/cell${KEY.NS}\\:${KEY.ROW}(/?)`,
   },
   COLUMN: {
-    INFO: `/cell${KEY.NS}\!${KEY.COLUMN}(/?)`,
+    INFO: `/cell${KEY.NS}\\:${KEY.COLUMN}(/?)`,
   },
 };

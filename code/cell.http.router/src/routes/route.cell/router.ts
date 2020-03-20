@@ -3,13 +3,13 @@ import { getCoord } from './handler.getCoord';
 import { getParams } from './params';
 
 /**
- * Routes for operating on a single cell (CELL|ROW|COLUMN).
+ * Routes for operating on a single cell (CELL | ROW | COLUMN).
  */
 export function init(args: { db: t.IDb; router: t.IRouter }) {
   const { db, router } = args;
 
   /**
-   * GET: /cell:<id>  (NB: no cell-key on the URL)
+   * GET: /cell:<ns>  (NB: no cell-key on the URL)
    *      REDIRECT to the namespace.
    */
   router.get(routes.CELL.NS, async req => {
@@ -24,7 +24,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   });
 
   /**
-   * GET /cell:<id>!A1
+   * GET /cell:<ns>:A1
    */
   router.get(routes.CELL.INFO, async req => {
     try {
@@ -46,7 +46,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   });
 
   /**
-   * GET /row:<id>!1
+   * GET /cell:<ns>:1
    */
   router.get(routes.ROW.INFO, async req => {
     try {
@@ -68,7 +68,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   });
 
   /**
-   * GET /col:<id>!A
+   * GET /cell:<ns>:A
    */
   router.get(routes.COLUMN.INFO, async req => {
     try {

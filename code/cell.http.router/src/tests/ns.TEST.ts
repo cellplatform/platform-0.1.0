@@ -16,11 +16,11 @@ describe('ns:', function() {
       const mock = await createMock();
       const url = mock.url('/ns:');
       const res = await http.get(url);
+      const body = res.json as any;
+
       await mock.dispose();
 
       expect(res.status).to.eql(400);
-
-      const body = res.json as any;
       expect(body.error.type).to.eql('HTTP/uri/malformed');
       expect(body.error.message).to.contain('Malformed');
       expect(body.error.message).to.contain('does not contain an ID');
@@ -33,18 +33,19 @@ describe('ns:', function() {
         const mock = await createMock();
         await mock.client.ns('foo').write({ cells: { A1: { value: 'hello' } } }); // NB: Force A1 into existence in DB.
         const res = await http.get(mock.url(path));
+        const json = res.json as t.IResGetCell;
+
         await mock.dispose();
 
-        const json = res.json as t.IResGetCell;
         expect(res.status).to.eql(200);
         expect(json.exists).to.eql(true);
-        expect(json.uri).to.eql('cell:foo!A1'); // NB: The "cell:" URI, not "ns:".
+        expect(json.uri).to.eql('cell:foo:A1'); // NB: The "cell:" URI, not "ns:".
         expect(json.data.value).to.eql('hello');
       };
 
-      await test('/ns:foo!A1');
-      await test('/ns:foo!A1/');
-      await test('/ns:foo!A1?cells');
+      await test('/ns:foo:A1');
+      await test('/ns:foo:A1/');
+      await test('/ns:foo:A1?cells');
     });
   });
 
@@ -317,7 +318,7 @@ describe('ns:', function() {
       expect(changes.map(c => c.field)).to.eql(['value', 'hash', 'id', 'props', 'hash']);
 
       const change = changes[0];
-      expect(change.uri).to.eql('cell:foo!A1');
+      expect(change.uri).to.eql('cell:foo:A1');
       expect(change.field).to.eql('value');
       expect(change.from).to.eql(undefined);
       expect(change.to).to.eql('hello');

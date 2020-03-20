@@ -2,25 +2,43 @@ import { t, expect, http, createMock, post } from '../../test';
 
 describe('cell: coordinate routes (CELL | ROW | COL)', () => {
   describe('invalid URI', () => {
-    const test = async (path: string, expected: string) => {
-      const mock = await createMock();
-      const url = mock.url(path);
-      const res = await http.get(url);
-      await mock.dispose();
+    it('malformed: cell coordinate (A1) as namespace', async () => {
+      const test = async (path: string, msg: string) => {
+        const mock = await createMock();
+        const res = await http.get(mock.url(path));
+        const body = res.json as any;
 
-      const body = res.json as any;
+        await mock.dispose();
 
-      expect(res.status).to.eql(400);
-      expect(body.error.type).to.eql('HTTP/uri/malformed');
-      expect(body.error.message).to.contain('Malformed');
-      expect(body.error.message).to.contain(expected);
-    };
+        expect(res.status).to.eql(500);
+        expect(body.type).to.eql('HTTP/server');
+        expect(body.message).to.contain(msg, path);
+      };
 
-    it('malformed: no id', async () => {
-      const msg = 'does not contain a namespace-identifier';
-      await test('/cell:!A1', msg);
-      await test('/cell:!1', msg);
-      await test('/cell:!A', msg);
+      await test('/cell:bumble', `URI contains an invalid "ns" identifier`);
+
+      await test('/cell:A1', 'URI contains an invalid "ns" identifier');
+      await test('/cell:A', 'URI contains an invalid "ns" identifier');
+      await test('/cell:1', 'Namespace URI identifier not found');
+    });
+
+    it('malformed: no namespace id', async () => {
+      const test = async (path: string) => {
+        const mock = await createMock();
+        const res = await http.get(mock.url(path));
+        const body = res.json as any;
+
+        await mock.dispose();
+
+        expect(res.status).to.eql(400);
+        expect(body.error.type).to.eql('HTTP/uri/malformed');
+        expect(body.error.message).to.contain('Malformed');
+        expect(body.error.message).to.contain('does not contain a namespace-identifier');
+      };
+
+      await test('/cell::A1');
+      await test('/cell::1');
+      await test('/cell::A');
     });
   });
 
@@ -39,16 +57,16 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
       expect(body.data).to.eql({});
     };
 
-    it('cell:foo!A1 (cell)', async () => {
-      await test('cell:foo!A1');
+    it('cell:foo:A1 (cell)', async () => {
+      await test('cell:foo:A1');
     });
 
-    it('cell:foo!1 (row)', async () => {
-      await test('cell:foo!1');
+    it('cell:foo:1 (row)', async () => {
+      await test('cell:foo:1');
     });
 
-    it('cell:foo!A (column)', async () => {
-      await test('cell:foo!A');
+    it('cell:foo:A (column)', async () => {
+      await test('cell:foo:A');
     });
   });
 
@@ -78,7 +96,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
       const mock = await createMock();
       await post.ns('ns:foo', { cells: { A1: { value: 123 } } }, { mock });
 
-      const uri = 'cell:foo!A1';
+      const uri = 'cell:foo:A1';
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
@@ -98,7 +116,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
       const mock = await createMock();
       await post.ns('ns:foo', { columns: { A: { props: { width: 123 } } } }, { mock });
 
-      const uri = 'cell:foo!A';
+      const uri = 'cell:foo:A';
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 
@@ -118,7 +136,7 @@ describe('cell: coordinate routes (CELL | ROW | COL)', () => {
       const mock = await createMock();
       await post.ns('ns:foo', { rows: { 1: { props: { height: 80 } } } }, { mock });
 
-      const uri = 'cell:foo!1';
+      const uri = 'cell:foo:1';
       const res = await http.get(mock.url(uri));
       await mock.dispose();
 

@@ -100,13 +100,13 @@ describe('Urls', () => {
 
     it('throw if non-namespace URI passed', () => {
       expect(() => url.ns('foo:bar')).to.throw();
-      expect(() => url.ns('cell:foo')).to.throw(); // NB: No "!A1" key on the ns.
+      expect(() => url.ns('cell:foo')).to.throw(); // NB: No ":A1" coordinate key on the ns.
     });
 
     it('info', () => {
       const res1 = url.ns('foo').info;
       const res2 = url.ns('ns:foo').info;
-      const res3 = url.ns('cell:foo!A1').info; // NB: Flips from "cell:" to "ns:"
+      const res3 = url.ns('cell:foo:A1').info; // NB: Flips from "cell:" to "ns:"
       const res4 = url.ns({ ns: 'foo' }).info;
 
       const URL = 'http://localhost/ns:foo';
@@ -149,7 +149,7 @@ describe('Urls', () => {
   });
 
   describe('cell', () => {
-    const URI = 'cell:foo!A1';
+    const URI = 'cell:foo:A1';
     const url = Urls.create();
 
     it('uri', () => {
@@ -162,16 +162,16 @@ describe('Urls', () => {
       expect(() => url.cell('ns:foo')).to.throw();
 
       // Invalid cell key.
-      expect(() => url.cell('cell:foo')).to.throw(); //   NB: no "!A1" key (invalid).
-      expect(() => url.cell('cell:foo!A')).to.throw(); // NB: column.
-      expect(() => url.cell('cell:foo!1')).to.throw(); // NB: row.
+      expect(() => url.cell('cell:foo')).to.throw(); //   NB: no ":A1" key (invalid).
+      expect(() => url.cell('cell:foo:A')).to.throw(); // NB: column.
+      expect(() => url.cell('cell:foo:1')).to.throw(); // NB: row.
     });
 
     it('info', () => {
       const res1 = url.cell(URI).info;
       const res2 = url.cell({ ns: 'foo', key: 'A1' }).info;
 
-      const URL = 'http://localhost/cell:foo!A1';
+      const URL = 'http://localhost/cell:foo:A1';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });
@@ -180,7 +180,7 @@ describe('Urls', () => {
       const res1 = url.cell(URI).files.list;
       const res2 = url.cell({ ns: 'foo', key: 'A1' }).files.list;
 
-      const URL = 'http://localhost/cell:foo!A1/files';
+      const URL = 'http://localhost/cell:foo:A1/files';
       expect(res1.query({}).toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });
@@ -189,7 +189,7 @@ describe('Urls', () => {
       const res1 = url.cell(URI).files.delete;
       const res2 = url.cell({ ns: 'foo', key: 'A1' }).files.delete;
 
-      const URL = 'http://localhost/cell:foo!A1/files';
+      const URL = 'http://localhost/cell:foo:A1/files';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });
@@ -199,7 +199,7 @@ describe('Urls', () => {
       const res2 = res1.query({ changes: true });
       const res3 = url.cell({ ns: 'foo', key: 'A1' }).files.upload;
 
-      const URL = 'http://localhost/cell:foo!A1/files/upload';
+      const URL = 'http://localhost/cell:foo:A1/files/upload';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(`${URL}?changes=true`);
       expect(res3.toString()).to.eql(URL);
@@ -210,7 +210,7 @@ describe('Urls', () => {
       const res2 = res1.query({ changes: true });
       const res3 = url.cell({ ns: 'foo', key: 'A1' }).files.uploaded;
 
-      const URL = 'http://localhost/cell:foo!A1/files/uploaded';
+      const URL = 'http://localhost/cell:foo:A1/files/uploaded';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(`${URL}?changes=true`);
       expect(res3.toString()).to.eql(URL);
@@ -220,7 +220,7 @@ describe('Urls', () => {
       const res1 = url.cell(URI).file.byName('  kitten.png   ');
       const res2 = url.cell({ ns: 'foo', key: 'A1' }).file.byName('kitten.png');
 
-      const URL = 'http://localhost/cell:foo!A1/file/kitten.png';
+      const URL = 'http://localhost/cell:foo:A1/file/kitten.png';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });
@@ -235,17 +235,17 @@ describe('Urls', () => {
         const res = url.cell(URI).file.byFileUri(fileUri, fileExtension);
         expect(res.toString()).to.eql(expected);
       };
-      test('file:foo:123', 'png', 'http://localhost/cell:foo!A1/file:123.png');
-      test('file:foo:123', '.png', 'http://localhost/cell:foo!A1/file:123.png');
-      test('file:foo:123', ' ...png ', 'http://localhost/cell:foo!A1/file:123.png');
-      test('  file:foo:123  ', '  png  ', 'http://localhost/cell:foo!A1/file:123.png');
-      test('file:foo:123', '', 'http://localhost/cell:foo!A1/file:123');
-      test('file:foo:123', '  ', 'http://localhost/cell:foo!A1/file:123');
-      test('file:foo:123', undefined, 'http://localhost/cell:foo!A1/file:123');
+      test('file:foo:123', 'png', 'http://localhost/cell:foo:A1/file:123.png');
+      test('file:foo:123', '.png', 'http://localhost/cell:foo:A1/file:123.png');
+      test('file:foo:123', ' ...png ', 'http://localhost/cell:foo:A1/file:123.png');
+      test('  file:foo:123  ', '  png  ', 'http://localhost/cell:foo:A1/file:123.png');
+      test('file:foo:123', '', 'http://localhost/cell:foo:A1/file:123');
+      test('file:foo:123', '  ', 'http://localhost/cell:foo:A1/file:123');
+      test('file:foo:123', undefined, 'http://localhost/cell:foo:A1/file:123');
     });
 
     it('file.byFileUri (throws)', () => {
-      expect(() => url.cell(URI).file.byFileUri('cell:foo!A1')).to.throw(); // Not a [file:] URI.
+      expect(() => url.cell(URI).file.byFileUri('cell:foo:A1')).to.throw(); // Not a [file:] URI.
       expect(() => url.cell(URI).file.byFileUri('foo:123')).to.throw();
       expect(() => url.cell(URI).file.byFileUri('')).to.throw();
       expect(() => url.cell(URI).file.byFileUri('  ')).to.throw();
@@ -253,7 +253,7 @@ describe('Urls', () => {
   });
 
   describe('row', () => {
-    const URI = 'cell:foo!1';
+    const URI = 'cell:foo:1';
     const url = Urls.create();
 
     it('uri', () => {
@@ -266,23 +266,23 @@ describe('Urls', () => {
       expect(() => url.row('ns:foo')).to.throw();
 
       // Invalid cell key.
-      expect(() => url.row('cell:foo')).to.throw(); //    NB: no "!A1" key (invalid).
-      expect(() => url.row('cell:foo!A1')).to.throw(); // NB: cell.
-      expect(() => url.row('cell:foo!A')).to.throw(); //  NB: column.
+      expect(() => url.row('cell:foo')).to.throw(); //    NB: no ":A1" key (invalid).
+      expect(() => url.row('cell:foo:A1')).to.throw(); // NB: cell.
+      expect(() => url.row('cell:foo:A')).to.throw(); //  NB: column.
     });
 
     it('info', () => {
       const res1 = url.row(URI).info;
       const res2 = url.row({ ns: 'foo', key: '1' }).info;
 
-      const URL = 'http://localhost/cell:foo!1';
+      const URL = 'http://localhost/cell:foo:1';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });
   });
 
   describe('column', () => {
-    const URI = 'cell:foo!A';
+    const URI = 'cell:foo:A';
     const url = Urls.create();
 
     it('uri', () => {
@@ -295,16 +295,16 @@ describe('Urls', () => {
       expect(() => url.column('ns:foo')).to.throw();
 
       // Invalid cell key.
-      expect(() => url.column('cell:foo')).to.throw(); //    NB: no "!A1" key (invalid).
-      expect(() => url.column('cell:foo!A1')).to.throw(); // NB: cell.
-      expect(() => url.column('cell:foo!1')).to.throw(); //  NB: row.
+      expect(() => url.column('cell:foo')).to.throw(); //    NB: no ":A1" key (invalid).
+      expect(() => url.column('cell:foo:A1')).to.throw(); // NB: cell.
+      expect(() => url.column('cell:foo:1')).to.throw(); //  NB: row.
     });
 
     it('info', () => {
       const res1 = url.column(URI).info;
       const res2 = url.column({ ns: 'foo', key: 'A' }).info;
 
-      const URL = 'http://localhost/cell:foo!A';
+      const URL = 'http://localhost/cell:foo:A';
       expect(res1.toString()).to.eql(URL);
       expect(res2.toString()).to.eql(URL);
     });
@@ -322,7 +322,7 @@ describe('Urls', () => {
     it('throw if non-cell URI passed', () => {
       expect(() => url.file('foo:bar')).to.throw();
       expect(() => url.file('ns:foo')).to.throw();
-      expect(() => url.file('cell:foo!A1')).to.throw();
+      expect(() => url.file('cell:foo:A1')).to.throw();
       expect(() => url.file('file:boo')).to.throw(); // NB: Invalid file URI.
     });
 

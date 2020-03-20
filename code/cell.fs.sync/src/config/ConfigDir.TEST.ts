@@ -2,7 +2,7 @@ import { fs, expect, t, expectError } from '../test';
 import { ConfigDir } from '.';
 import { CONFIG } from './ConfigDir';
 
-const VALID: t.IFsConfigDirData = { host: 'domain.com', target: 'cell:foo!A1' };
+const VALID: t.IFsConfigDirData = { host: 'domain.com', target: 'cell:foo:A1' };
 const PATH = {
   ASSETS: 'sample/assets',
   TMP: fs.resolve('tmp'),
@@ -28,13 +28,13 @@ describe('ConfigDir', () => {
     const config = await ConfigDir.create({ dir: PATH.TMP }).save(VALID);
     const uri = config.target.uri;
     expect(uri.ok).to.eql(true);
-    expect(uri.toString()).to.eql('cell:foo!A1');
+    expect(uri.toString()).to.eql('cell:foo:A1');
   });
 
   it('target.url', async () => {
     const config = await ConfigDir.create({ dir: PATH.TMP }).save(VALID);
     const url = config.target.url;
-    expect(url).to.eql('https://domain.com/cell:foo!A1/files');
+    expect(url).to.eql('https://domain.com/cell:foo:A1/files');
   });
 
   describe('load', () => {
@@ -53,14 +53,14 @@ describe('ConfigDir', () => {
       expect(config1.exists).to.eql(false);
 
       config1.data.host = 'domain.com:8080';
-      config1.data.target = 'cell:foo!A1';
+      config1.data.target = 'cell:foo:A1';
 
       await config1.save();
       expect(config1.exists).to.eql(true);
 
       const config2 = await ConfigDir.load({ dir: PATH.TMP });
       expect(config2.data.host).to.eql('domain.com:8080');
-      expect(config2.data.target).to.eql('cell:foo!A1');
+      expect(config2.data.target).to.eql('cell:foo:A1');
     });
   });
 
@@ -94,8 +94,8 @@ describe('ConfigDir', () => {
 
       await test(d => (d.target = ''), CONFIG.ERROR.TARGET.INVALID_URI);
       await test(d => (d.target = 'ns:foo'), CONFIG.ERROR.TARGET.INVALID_URI);
-      await test(d => (d.target = 'cell:foo!A'), CONFIG.ERROR.TARGET.INVALID_URI);
-      await test(d => (d.target = 'cell:foo!1'), CONFIG.ERROR.TARGET.INVALID_URI);
+      await test(d => (d.target = 'cell:foo:A'), CONFIG.ERROR.TARGET.INVALID_URI);
+      await test(d => (d.target = 'cell:foo:1'), CONFIG.ERROR.TARGET.INVALID_URI);
 
       await test(d => (d.host = ''), CONFIG.ERROR.HOST.EMPTY);
       await test(d => (d.host = '  '), CONFIG.ERROR.HOST.EMPTY);

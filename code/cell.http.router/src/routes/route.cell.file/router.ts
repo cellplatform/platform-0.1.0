@@ -12,7 +12,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET: File by name (download).
    *
-   *      Example: /cell:foo!A1/file/kitten.jpg
+   *      Example: /cell:foo:A1/file/kitten.jpg
    *      NB: This is the same as calling the `/file:...` GET route point directly.
    *
    */
@@ -36,8 +36,8 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET: File by FileUri (download).
    *
-   *      Example: /cell:foo!A1/file:abc123
-   *               /cell:foo!A1/file:abc123.pdf
+   *      Example: /cell:foo:A1/file:abc123
+   *               /cell:foo:A1/file:abc123.pdf
    *
    */
   router.get(routes.CELL.FILE.BY_FILE_URI, async req => {

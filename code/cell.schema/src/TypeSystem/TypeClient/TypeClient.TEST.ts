@@ -39,7 +39,7 @@ describe('TypeClient', () => {
     });
 
     it('error: not a "ns" uri', async () => {
-      const def = await TypeClient.load({ ns: 'cell:foo!A1', fetch });
+      const def = await TypeClient.load({ ns: 'cell:foo:A1', fetch });
       expect(def.ok).to.eql(false);
       expect(def.errors.length).to.eql(1);
       expect(def.errors[0].message).to.include(`Must be "ns"`);
@@ -199,8 +199,8 @@ describe('TypeClient', () => {
           ns: { type: { typename: 'One' } },
           columns: {
             A: { props: { prop: { name: 'A', type: 'ns:foo' } } }, //     Not OK (self, ns)
-            B: { props: { prop: { name: 'B', type: 'cell:foo!A' } } }, // Not OK (a different column)
-            C: { props: { prop: { name: 'C', type: 'cell:foo!C' } } }, // Not OK (self, column)
+            B: { props: { prop: { name: 'B', type: 'cell:foo:A' } } }, // Not OK (a different column)
+            C: { props: { prop: { name: 'C', type: 'cell:foo:C' } } }, // Not OK (self, column)
           },
         },
       };
@@ -261,7 +261,7 @@ describe('TypeClient', () => {
         'ns:foo.1': {
           ns: { type: { typename: 'Foo1' } },
           columns: {
-            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2!Z' } } },
+            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2:Z' } } },
           },
         },
         'ns:foo.2': {
@@ -302,13 +302,13 @@ describe('TypeClient', () => {
         'ns:foo.1': {
           ns: { type: { typename: 'Foo1' } },
           columns: {
-            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2!Z' } } },
+            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2:Z' } } },
           },
         },
         'ns:foo.2': {
           ns: { type: { typename: 'Foo2' } },
           columns: {
-            Z: { props: { prop: { name: 'foo1', type: 'cell:foo.1!A' } } },
+            Z: { props: { prop: { name: 'foo1', type: 'cell:foo.1:A' } } },
           },
         },
       };
@@ -495,10 +495,10 @@ describe('TypeClient', () => {
         'ns:foo.1': {
           ns: { type: { typename: 'Foo1' } },
           columns: {
-            A: { props: { prop: { name: 'myFoo', type: 'cell:foo.2!A' } } },
-            B: { props: { prop: { name: 'myBar', type: 'cell:foo.2!B' } } },
-            C: { props: { prop: { name: 'myObjectRef', type: 'cell:foo.2!C' } } },
-            D: { props: { prop: { name: 'myColumnRef', type: 'cell:foo.2!D' } } },
+            A: { props: { prop: { name: 'myFoo', type: 'cell:foo.2:A' } } },
+            B: { props: { prop: { name: 'myBar', type: 'cell:foo.2:B' } } },
+            C: { props: { prop: { name: 'myObjectRef', type: 'cell:foo.2:C' } } },
+            D: { props: { prop: { name: 'myColumnRef', type: 'cell:foo.2:D' } } },
           },
         },
         'ns:foo.2': {
@@ -507,7 +507,7 @@ describe('TypeClient', () => {
             A: { props: { prop: { name: 'foo', type: 'string' } } },
             B: { props: { prop: { name: 'bar', type: '"one" | "two" | "three"' } } },
             C: { props: { prop: { name: 'baz', type: 'ns:foo.3' } } },
-            D: { props: { prop: { name: 'zoo', type: 'cell:foo.3!A' } } },
+            D: { props: { prop: { name: 'zoo', type: 'cell:foo.3:A' } } },
           },
         },
         'ns:foo.3': {
@@ -645,8 +645,8 @@ describe('TypeClient', () => {
             A: { props: { prop: { name: 'A', type: 'string' } } },
             B: { props: { prop: { name: 'B', type: 'ns:foo.2' } } },
             C: { props: { prop: { name: 'C', type: 'ns:foo.2' } } },
-            D: { props: { prop: { name: 'D', type: 'ns:foo.2!A' } } },
-            E: { props: { prop: { name: 'E', type: 'ns:foo.2!A' } } },
+            D: { props: { prop: { name: 'D', type: 'ns:foo.2:A' } } },
+            E: { props: { prop: { name: 'E', type: 'ns:foo.2:A' } } },
           },
         },
         'ns:foo.2': {
@@ -738,7 +738,7 @@ describe('TypeClient', () => {
             ns: { type: { typename: 'DesignDocSection' } },
             columns: {
               A: { props: { prop: { name: 'items', type: 'string[]' } } },
-              B: { props: { prop: { name: 'status?', type: 'cell:foo.doc.task!A' } } },
+              B: { props: { prop: { name: 'status?', type: 'cell:foo.doc.task:A' } } },
             },
           },
           'ns:foo.doc.task': {

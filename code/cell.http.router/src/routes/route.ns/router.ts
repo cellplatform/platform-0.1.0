@@ -1,4 +1,4 @@
-import { ERROR, routes, t } from '../common';
+import { ERROR, routes, t, util } from '../common';
 import { getNs } from './handler.get';
 import { postNs } from './handler.post';
 import { getTypes } from './handler.types';
@@ -25,13 +25,17 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   };
 
   /**
-   * GET: /ns:<id>!A1
+   * GET: /ns:<id>:A1
    *      Redirect to the cell.
    */
   router.get(routes.NS.CELL, async req => {
-    const params = req.params as t.IUrlParamsCell;
-    const path = `/cell:${params.ns}!${params.key}${req.query.toString()}`;
-    return req.redirect(path);
+    try {
+      const params = req.params as t.IUrlParamsCell;
+      const path = `/cell:${params.ns}:${params.key}${req.query.toString()}`;
+      return req.redirect(path);
+    } catch (err) {
+      return util.toErrorPayload(err);
+    }
   });
 
   /**
