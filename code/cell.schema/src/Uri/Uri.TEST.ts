@@ -1,7 +1,7 @@
 import { expect, t, cuid, TEST_ALLOW } from '../test';
 import { Uri } from '.';
 
-describe('Uri', () => {
+describe.only('Uri', () => {
   describe('ids', () => {
     it('Uri.cuid', () => {
       const res = Uri.cuid();

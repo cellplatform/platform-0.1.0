@@ -1,7 +1,7 @@
 import { t, fs, expect } from '../test';
 import { FileLinks } from '.';
 
-describe.only('FileLinks', () => {
+describe('FileLinks', () => {
   it('prefix', () => {
     expect(FileLinks.prefix).to.eql('fs');
   });

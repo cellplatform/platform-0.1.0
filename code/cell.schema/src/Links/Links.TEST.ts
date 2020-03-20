@@ -1,7 +1,7 @@
 import { expect, fs, t } from '../test';
 import { Links } from '.';
 
-describe.only('Links', () => {
+describe('Links', () => {
   describe('encoding', () => {
     it('encodeKey => decodeKey', () => {
       const test = (input: string, encoded: string) => {

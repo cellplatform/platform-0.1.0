@@ -1,7 +1,7 @@
 import { t, fs, expect } from '../test';
 import { RefLinks } from '.';
 
-describe.only('RefLinks', () => {
+describe('RefLinks', () => {
   it('prefix', () => {
     expect(RefLinks.prefix).to.eql('ref');
   });

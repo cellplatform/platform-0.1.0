@@ -1,7 +1,7 @@
 import { expect, t } from '../test';
 import { TypeTarget } from '.';
 
-describe.only('TypeTarget', () => {
+describe('TypeTarget', () => {
   it('invalid', () => {
     const test = (input: any) => {
       const info = TypeTarget.parse(input);
