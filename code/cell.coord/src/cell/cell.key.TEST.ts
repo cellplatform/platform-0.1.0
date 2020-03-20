@@ -159,7 +159,7 @@ describe('cell', () => {
       expect(cell.isRangeKey('$A1')).to.eql(false);
     });
 
-    describe('toType (COLUMM, ROW)', () => {
+    describe('toType (CELL | COLUMM | ROW)', () => {
       it('converts to type cell type', () => {
         expect(cell.toType('A')).to.eql('COLUMN');
         expect(cell.toType('AA')).to.eql('COLUMN');
@@ -168,6 +168,10 @@ describe('cell', () => {
         expect(cell.toType('99')).to.eql('ROW');
         expect(cell.toType('A1')).to.eql('CELL');
         expect(cell.toType('Z9')).to.eql('CELL');
+
+        expect(cell.toType('foo!Z9')).to.eql('CELL');
+        expect(cell.toType('foo!Z')).to.eql('COLUMN');
+        expect(cell.toType('foo!9')).to.eql('ROW');
 
         expect(cell.toType({ row: 0, column: -1 })).to.eql('ROW');
         expect(cell.toType({ row: 0 })).to.eql('ROW');
