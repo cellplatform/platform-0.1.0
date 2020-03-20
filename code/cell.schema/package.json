@@ -9,7 +9,7 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts prepare && rm -rf tmp"
   },
   "dependencies": {
     "@platform/cache": "0.2.23",
