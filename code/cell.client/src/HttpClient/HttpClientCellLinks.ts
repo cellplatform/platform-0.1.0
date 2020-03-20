@@ -54,15 +54,17 @@ export class HttpClientCellLinks implements t.IHttpClientCellLinks {
 
     if (type === 'FILE') {
       let file: t.IHttpClientFile | undefined;
-      const { uri, hash = '' } = Schema.file.links.parseLink(value);
-      const { filename, dir, path } = Schema.file.links.parseKey(key);
+      const link = Schema.file.links.parseLink(value);
+      const uri = link.uri.toString();
+      const hash = link.hash || '';
+      const { name, dir, path } = Schema.file.links.parseKey(key);
       const res: t.IHttpClientCellLinkFile = {
         type: 'FILE',
         uri,
         key,
         path,
-        filename,
         dir,
+        name,
         hash,
         get file() {
           return file || (file = HttpClientFile.create({ uri, urls, http }));
