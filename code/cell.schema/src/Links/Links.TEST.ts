@@ -144,8 +144,8 @@ describe('Links', () => {
 
   describe('parseValue', () => {
     it('uri', () => {
-      const res = Links.parseValue<t.ICellUri>('  cell:foo!A1   ?  ');
-      expect(res.value).to.eql('cell:foo!A1'); // NB: trimmed input.
+      const res = Links.parseValue<t.ICellUri>('  cell:foo:A1   ?  ');
+      expect(res.value).to.eql('cell:foo:A1'); // NB: trimmed input.
       expect(res.uri.type).to.eql('CELL');
       expect(res.uri.ns).to.eql('foo');
       expect(res.uri.key).to.eql('A1');
@@ -153,15 +153,15 @@ describe('Links', () => {
     });
 
     it('query', () => {
-      const res1 = Links.parseValue('cell:foo!A1');
+      const res1 = Links.parseValue('cell:foo:A1');
       expect(res1.query).to.eql({});
 
-      const res2 = Links.parseValue('  cell:foo!A1  ?  ');
+      const res2 = Links.parseValue('  cell:foo:A1  ?  ');
       expect(res2.query).to.eql({});
 
       type Q = { color: string; isEnabled: boolean };
-      const res3 = Links.parseValue<any, Q>('cell:foo!A1?color=red&isEnabled=true');
-      const res4 = Links.parseValue<any, Q>('  cell:foo!A1 ?  color=red&isEnabled=true ');
+      const res3 = Links.parseValue<any, Q>('cell:foo:A1?color=red&isEnabled=true');
+      const res4 = Links.parseValue<any, Q>('  cell:foo:A1 ?  color=red&isEnabled=true ');
       expect(res3.query).to.eql({ color: 'red', isEnabled: true });
       expect(res4.query).to.eql(res3.query);
     });
