@@ -1,4 +1,4 @@
-import { t, ERROR } from '../common';
+import { t, ERROR, value as valueUtil, squash } from '../common';
 
 type Input = t.CellTypeTarget | t.IColumnTypeDef;
 const asTarget = (input?: Input) => {
@@ -6,12 +6,14 @@ const asTarget = (input?: Input) => {
 };
 
 /**
- * Parser for interpreting a target reference for a ITypeDef.
+ * Parser for interpreting a [target] reference within an [ITypeDef].
  *
  * Formats:
  *      - "inline"                  => { value }
  *      - "inline:<prop>"           => { props: { 'prop': {...} } }
- *      - "inline:<propA>.<propB>"  => { props: { 'propA.propB1: {...} } }
+ *      - "inline:<propA>.<propB>"  => { props: { 'propA.propB1': {...} } }
+ *      - "inline:<propA>:<propB>"  => { props: { 'propA:propB1': {...} } }
+ *
  *      - ref => external (save to prop: ref:props, or link(?))
  *
  */
@@ -19,7 +21,7 @@ export class TypeTarget {
   /**
    * Parses a cell target into its constituent parts.
    */
-  public static cell(input?: Input): t.CellTypeTargetInfo {
+  public static parse(input?: Input): t.CellTypeTargetInfo {
     const target = asTarget(input);
 
     let isValid = true;
@@ -87,34 +89,79 @@ export class TypeTarget {
   /**
    * Reads the target property from the given cell.
    */
-  public static readInline<T extends any>(args: { type: t.IColumnTypeDef; data: t.ICellData }) {
-    const { data } = args;
-    const target = TypeTarget.cell(args.type);
+  public static read(type: t.IColumnTypeDef) {
+    const target = TypeTarget.parse(type);
+    return {
+      /**
+       * Reads inline values.
+       */
+      inline<V extends any>(cell: t.ICellData<any>) {
+        if (!target.isValid) {
+          throw new Error(`READ: The target '${target}' is not valid.`);
+        }
+        if (!target.isInline) {
+          throw new Error(`READ: The target '${target}' is not 'inline'.`);
+        }
 
-    if (!target.isValid) {
-      throw new Error(`The target '${target}' is not valid.`);
-    }
-    if (!target.isInline) {
-      throw new Error(`The target '${target}' is not 'inline'.`);
-    }
+        const path = target.path;
+        if (path === 'value') {
+          return cell.value as V;
+        }
 
-    const path = target.path;
-    if (path === 'value') {
-      return data.value as T;
-    }
-    if (path.startsWith('props:')) {
-      const field = path.substring('props:'.length);
-      return (data.props || {})[field] as T;
-    }
-    return;
+        const PROPS = 'props:';
+        if (path.startsWith(PROPS)) {
+          const field = path.substring(PROPS.length);
+          return (cell.props || {})[field] as V;
+        }
 
-    // TODO 🐷
+        return;
+      },
+    };
   }
 
   /**
    * Writes the target property to the given cell.
    */
-  public static writeInline(args: {}) {
-    // TODO 🐷
+  public static write(type: t.IColumnTypeDef) {
+    const target = TypeTarget.parse(type);
+    return {
+      /**
+       * Write inline balues
+       */
+      inline<V extends any>(args: { data: V | undefined; cell?: t.ICellData<any> | undefined }) {
+        const cell = { ...(args.cell || {}) };
+
+        if (!target.isValid) {
+          throw new Error(`WRITE: The target '${target}' is not valid.`);
+        }
+        if (!target.isInline) {
+          throw new Error(`WRITE: The target '${target}' is not 'inline'.`);
+        }
+
+        const path = target.path;
+        if (path === 'value') {
+          if (args.data === undefined) {
+            delete cell.value;
+          } else {
+            cell.value = args.data;
+          }
+        }
+
+        const PROPS = 'props:';
+        if (path.startsWith(PROPS)) {
+          const field = path.substring(PROPS.length);
+          cell.props = cell.props || {};
+          if (args.data === undefined) {
+            delete cell.props[field];
+          } else {
+            cell.props[field] = args.data;
+          }
+        }
+
+        // Finish up.
+        cell.props = squash.props(cell.props);
+        return squash.cell(cell) || {};
+      },
+    };
   }
 }

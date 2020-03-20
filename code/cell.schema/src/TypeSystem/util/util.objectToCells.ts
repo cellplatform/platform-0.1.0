@@ -20,7 +20,7 @@ export function objectToCells<T>(input: t.ITypeDef[] | t.INsTypeDef) {
         })
         .filter(({ type }) => Boolean(type))
         .forEach(({ value, type }) => {
-          const target = TypeTarget.cell(type.target);
+          const target = TypeTarget.parse(type.target);
           const cell: t.ICellData = {};
           if (target.path === 'value') {
             cell.value = value;
