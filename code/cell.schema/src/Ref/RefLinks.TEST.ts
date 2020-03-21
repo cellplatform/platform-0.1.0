@@ -2,7 +2,7 @@ import { RefLinks } from '.';
 import { expect, t } from '../test';
 import { Uri } from '../Uri';
 
-describe.only('RefLinks', () => {
+describe('RefLinks', () => {
   it('prefix', () => {
     expect(RefLinks.prefix).to.eql('ref');
   });

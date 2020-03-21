@@ -1,7 +1,7 @@
 import { expect, t } from '../test';
 import { TypeTarget } from '.';
 
-describe.only('TypeTarget', () => {
+describe('TypeTarget', () => {
   describe('parse', () => {
     it('toString', () => {
       const test = (input: any) => {
@@ -175,7 +175,7 @@ describe.only('TypeTarget', () => {
     });
   });
 
-  describe.only('ref: write', () => {
+  describe('ref: write', () => {
     const refType: t.ITypeRef = {
       kind: 'REF',
       typename: 'color',
@@ -243,14 +243,52 @@ describe.only('TypeTarget', () => {
       test('foo:FAIL');
     });
 
-    it.skip('write: object (row)', () => {
-      //
+    it('read', () => {
+      const res1 = TypeTarget.ref(defComplex).read({});
+      const res2 = TypeTarget.ref(defComplex).read({
+        cell: { links: { 'ref:type': 'cell:foo:10', 'fs:foo': 'file:foo:abc' } },
+      });
+      const res3 = TypeTarget.ref(defComplex).read({
+        cell: { links: { 'ref:type': 'cell:foo:5?hash=abc' } },
+      });
 
+      expect(res1).to.eql(undefined);
+
+      expect(res2?.uri.toString()).to.eql('cell:foo:10');
+      expect(res2?.hash).to.eql(undefined);
+
+      expect(res3?.uri.toString()).to.eql('cell:foo:5');
+      expect(res3?.hash).to.eql('abc');
+    });
+
+    it('write: link', () => {
       const uri = 'cell:foo:1';
-      const res = TypeTarget.ref(defComplex).write({ uri });
+      const res1 = TypeTarget.ref(defComplex).write({ uri });
+      const res2 = TypeTarget.ref(defComplex).write({
+        uri,
+        cell: { links: { 'ref:type': 'cell:foo:9', 'fs:foo': 'file:foo:abc' } },
+      });
+      const res3 = TypeTarget.ref(defComplex).write({ uri, hash: 'abc' });
 
-      console.log('-------------------------------------------');
-      console.log('res', res);
+      expect((res1.links || {})['ref:type']).to.eql('cell:foo:1');
+
+      expect((res2.links || {})['ref:type']).to.eql('cell:foo:1');
+      expect((res2.links || {})['fs:foo']).to.eql('file:foo:abc');
+
+      expect((res3.links || {})['ref:type']).to.eql('cell:foo:1?hash=abc');
+    });
+
+    it('clear: link', () => {
+      const res1 = TypeTarget.ref(defComplex).remove();
+      const res2 = TypeTarget.ref(defComplex).remove({
+        cell: {
+          value: 123,
+          links: { 'ref:type': 'cell:foo:9', 'fs:foo': 'file:foo:abc' },
+        },
+      });
+
+      expect(res1).to.eql({});
+      expect(res2).to.eql({ value: 123, links: { 'fs:foo': 'file:foo:abc' } });
     });
   });
 });

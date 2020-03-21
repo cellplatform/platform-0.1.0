@@ -207,7 +207,7 @@ describe('Links', () => {
     });
   });
 
-  describe.only('find: byName', () => {
+  describe('find: byName', () => {
     const LINKS = {
       'fs:main:js': 'file:foo:abc',
       'ref:foo::bar::zoo:png': 'cell:foo:A1',

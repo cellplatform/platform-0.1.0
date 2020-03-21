@@ -114,7 +114,10 @@ export class TypeTarget {
       /**
        * Write local value.
        */
-      write<V extends t.Json>(args: { data: V | undefined; cell?: t.ICellData<any> | undefined }) {
+      write<V extends t.Json>(args: {
+        data: V | undefined;
+        cell?: t.ICellData<any> | undefined;
+      }): t.ICellData<any> {
         const cell = { ...(args.cell || {}) };
 
         if (!target.isValid) {
@@ -172,38 +175,65 @@ export class TypeTarget {
 
     const target = TypeTarget.parse(typeDef);
 
+    const validateUri = (uri: string | t.IRowUri) => {
+      const res = typeof uri === 'object' ? uri : Uri.parse<t.IRowUri>(uri).parts;
+      if (res.type !== 'ROW') {
+        const err = `The reference/link URI is not a ROW (given "${uri.toString()}")`;
+        throw new Error(err);
+      }
+      return res;
+    };
+
     return {
       /**
        * Read reference link.
        */
-      read() {
-        //
-        // TODO 🐷
+      read(args: {
+        cell?: t.ICellData<any> | undefined;
+      }): { uri: t.IRowUri; hash?: string } | undefined {
+        const cell = args.cell || {};
+        const res = RefLinks.find(cell.links).byName('type');
+        if (res) {
+          const { hash } = res;
+          const uri = res.uri as t.IRowUri;
+          return { uri, hash };
+        } else {
+          return; // Does not exist.
+        }
       },
 
       /**
        * Write reference link.
        */
-      write(args: { uri: string | t.IRowUri; cell?: t.ICellData<any> | undefined }) {
-        const uri = typeof args.uri === 'object' ? args.uri : Uri.parse<t.IRowUri>(args.uri);
-        if (uri.type !== 'ROW') {
-          const err = `The reference/link URI is not a ROW (given "${uri.toString()}")`;
-          throw new Error(err);
+      write(args: {
+        uri: string | t.IRowUri;
+        cell?: t.ICellData<any> | undefined;
+        hash?: string;
+      }): t.ICellData<any> {
+        const { hash } = args;
+        const uri = validateUri(args.uri);
+        const cell = { ...(args.cell || {}) };
+        const key = RefLinks.toKey('type');
+        const value = RefLinks.toValue(uri, { hash });
+        const links = { ...(cell.links || {}), [key]: value };
+        cell.links = squash.object(links);
+        return squash.cell(cell) || {};
+      },
+
+      /**
+       * Clears reference link.
+       */
+      remove(args: { cell?: t.ICellData<any> | undefined } = {}) {
+        const cell = { ...(args.cell || {}) };
+        if (!cell.links) {
+          return cell;
         }
 
-        const cell = { ...(args.cell || {}) };
+        const key = RefLinks.toKey('type');
+        const links = cell.links || {};
+        delete links[key];
 
-        console.log('uri', uri);
-        console.log('target', target);
-
-        const linkKey = RefLinks.toKey('type');
-        console.log('linkKey', linkKey);
-
-        //
-
-        // Finish up.
-        cell.links = squash.object(cell);
-        // cell.props = squash.props(cell.props);
+        cell.links = squash.object(links);
         return squash.cell(cell) || {};
       },
     };
