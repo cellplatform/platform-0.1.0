@@ -173,8 +173,6 @@ export class TypeTarget {
       throw new Error(err);
     }
 
-    const target = TypeTarget.parse(typeDef);
-
     const validateUri = (uri: string | t.IRowUri) => {
       const res = typeof uri === 'object' ? uri : Uri.parse<t.IRowUri>(uri).parts;
       if (res.type !== 'ROW') {
