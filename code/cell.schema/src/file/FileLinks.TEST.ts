@@ -243,7 +243,7 @@ describe('FileLinks', () => {
       expect(list[0].file.id).to.eql('abc123');
       expect(list[0].file.path).to.eql('main.js');
       expect(list[0].file.dir).to.eql('');
-      expect(list[0].file.filename).to.eql('main.js');
+      expect(list[0].file.name).to.eql('main.js');
       expect(list[0].file.ext).to.eql('js');
 
       expect(list[1].uri).to.eql('file:foo:def456');
@@ -253,7 +253,7 @@ describe('FileLinks', () => {
       expect(list[1].file.id).to.eql('def456');
       expect(list[1].file.path).to.eql('images/foo/kitten.png');
       expect(list[1].file.dir).to.eql('images/foo');
-      expect(list[1].file.filename).to.eql('kitten.png');
+      expect(list[1].file.name).to.eql('kitten.png');
       expect(list[1].file.ext).to.eql('png');
     });
   });

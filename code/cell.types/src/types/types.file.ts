@@ -56,7 +56,7 @@ export type IFileLink = {
     id: string;
     path: string;
     dir: string;
-    filename: string;
+    name: string;
     ext: string;
   };
 };

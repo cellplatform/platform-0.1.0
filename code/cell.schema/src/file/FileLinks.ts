@@ -94,10 +94,10 @@ export class FileLinks {
  */
 
 function toFileLink(key: string, value: string): t.IFileLink {
-  const { dir, path, name: filename, ext } = FileLinks.parseKey(key);
+  const { dir, path, name, ext } = FileLinks.parseKey(key);
   const { uri, hash, status } = FileLinks.parseLink(value);
   const { ns, file: id } = uri;
   // uri.
-  const file = { ns, id, path, dir, filename, ext };
+  const file = { ns, id, path, dir, name, ext };
   return { uri: uri.toString(), key, value, hash, status, file };
 }
