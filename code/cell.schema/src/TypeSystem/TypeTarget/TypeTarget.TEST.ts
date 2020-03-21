@@ -2,75 +2,72 @@ import { expect, t } from '../test';
 import { TypeTarget } from '.';
 
 describe('TypeTarget', () => {
-  it('invalid', () => {
-    const test = (input: any) => {
-      const info = TypeTarget.parse(input);
-      expect(info.isValid).to.eql(false);
-      expect(info.isRef).to.eql(false);
-      expect(info.isValid).to.eql(false);
-      expect(info.kind).to.eql('UNKNOWN');
-      expect(info.errors.length).to.eql(1);
-      expect(info.path).to.eql('');
-    };
-    test('foo');
-    test('foobar');
-  });
+  describe('parse', () => {
+    it('toString', () => {
+      const test = (input: any) => {
+        const info = TypeTarget.parse(input);
+        expect(info.toString()).to.eql(info.target);
+      };
+      test(undefined);
+      test('');
+      test('inline');
+      test('ref');
+    });
 
-  it('kind: inline (value)', () => {
-    const test = (input?: string) => {
-      const info = TypeTarget.parse(input);
-      expect(info.target).to.eql('inline');
-      expect(info.kind).to.eql('inline');
+    it('invalid', () => {
+      const test = (input: any) => {
+        const info = TypeTarget.parse(input);
+        expect(info.isValid).to.eql(false);
+        expect(info.isRef).to.eql(false);
+        expect(info.isValid).to.eql(false);
+        expect(info.kind).to.eql('UNKNOWN');
+        expect(info.errors.length).to.eql(1);
+        expect(info.path).to.eql('');
+      };
+      test('foo');
+      test('foobar');
+    });
+
+    it('kind: inline (value)', () => {
+      const test = (input?: string) => {
+        const info = TypeTarget.parse(input);
+        expect(info.target).to.eql('inline');
+        expect(info.kind).to.eql('inline');
+        expect(info.isValid).to.eql(true);
+        expect(info.errors).to.eql([]);
+        expect(info.isRef).to.eql(false);
+        expect(info.isValid).to.eql(true);
+        expect(info.path).to.eql('value');
+      };
+      test(undefined); // NB: Default "inline" target.
+      test(''); //        NB: Default "inline" target.
+      test('inline');
+      test('  inline  ');
+    });
+
+    it('kind: inline (props path)', () => {
+      const test = (input: string, path: string) => {
+        const info = TypeTarget.parse(input);
+        expect(info.path).to.eql(path);
+      };
+      test('inline:foo', 'props:foo');
+      test('inline:foo.bar', 'props:foo.bar');
+      test('inline:foo:bar.baz', 'props:foo:bar.baz');
+    });
+
+    it('kind: ref', () => {
+      const info = TypeTarget.parse('ref');
+      expect(info.target).to.eql('ref');
+      expect(info.kind).to.eql('ref');
       expect(info.isValid).to.eql(true);
+      expect(info.isRef).to.eql(true);
+      expect(info.isInline).to.eql(false);
       expect(info.errors).to.eql([]);
-      expect(info.isRef).to.eql(false);
-      expect(info.isValid).to.eql(true);
-    };
-    test(undefined);
-    test('');
-    test('inline');
-    test('  inline  ');
+      expect(info.path).to.eql('');
+    });
   });
 
-  it('kind: ref', () => {
-    const info = TypeTarget.parse('ref');
-    expect(info.target).to.eql('ref');
-    expect(info.kind).to.eql('ref');
-    expect(info.isValid).to.eql(true);
-    expect(info.isRef).to.eql(true);
-    expect(info.isInline).to.eql(false);
-    expect(info.errors).to.eql([]);
-  });
-
-  it('path: inline (value)', () => {
-    const test = (input: string) => {
-      const info = TypeTarget.parse(input);
-      expect(info.path).to.eql('value');
-    };
-    test('inline');
-    test('  inline  ');
-    test('');
-    test('   ');
-  });
-
-  it('path: inline (props)', () => {
-    const test = (input: string, path: string) => {
-      const info = TypeTarget.parse(input);
-      expect(info.path).to.eql(path);
-    };
-    test('inline:foo', 'props:foo');
-    test('inline:foo.bar', 'props:foo.bar');
-  });
-
-  it('path: ref', () => {
-    const test = (input: string, path: string) => {
-      const info = TypeTarget.parse(input);
-      expect(info.path).to.eql(path);
-    };
-    test('ref', 'ref:type');
-  });
-
-  describe('read (inline)', () => {
+  describe('inline: read', () => {
     const base: t.IColumnTypeDef = {
       column: 'A',
       prop: 'foo',
@@ -79,14 +76,14 @@ describe('TypeTarget', () => {
 
     it('throws if not inline', () => {
       const type = { ...base, target: 'ref' };
-      const fn = () => TypeTarget.read(type).inline({});
+      const fn = () => TypeTarget.inline(type).read({});
       expect(fn).to.throw();
     });
 
     it('read: cell.value', () => {
       const test = (cell: t.ICellData, expected: any) => {
         const type = { ...base, target: undefined };
-        const res = TypeTarget.read(type).inline(cell);
+        const res = TypeTarget.inline(type).read(cell);
         expect(res).to.eql(expected);
       };
       test({}, undefined);
@@ -100,7 +97,7 @@ describe('TypeTarget', () => {
     it('read: cell.props.[xxx]', () => {
       const test = (target: t.CellTypeTarget, cell: t.ICellData<any>, expected: any) => {
         const type = { ...base, target };
-        const res = TypeTarget.read(type).inline(cell);
+        const res = TypeTarget.inline(type).read(cell);
         expect(res).to.eql(expected);
       };
       test('inline:foo', { props: { foo: 123 } }, 123);
@@ -110,7 +107,7 @@ describe('TypeTarget', () => {
     });
   });
 
-  describe('write (inline)', () => {
+  describe('inline: write', () => {
     const base: t.IColumnTypeDef = {
       column: 'A',
       prop: 'foo',
@@ -119,7 +116,7 @@ describe('TypeTarget', () => {
 
     it('throws if not inline', () => {
       const type = { ...base, target: 'ref' };
-      const fn = () => TypeTarget.write(type).inline({ data: 123 });
+      const fn = () => TypeTarget.inline(type).write({ data: 123 });
       expect(fn).to.throw();
     });
 
@@ -127,26 +124,26 @@ describe('TypeTarget', () => {
       const type = { ...base, target: 'inline' };
 
       const cell: t.ICellData<any> = { value: 'foo', props: { style: { bold: true } } };
-      const res1 = TypeTarget.write(type).inline({ cell, data: 123 });
+      const res1 = TypeTarget.inline(type).write({ cell, data: 123 });
       expect(res1).to.eql({ value: 123, props: { style: { bold: true } } });
       expect(res1).to.not.equal(cell); // NB: different instance.
 
-      const res2 = TypeTarget.write(type).inline({ data: 'hello' });
+      const res2 = TypeTarget.inline(type).write({ data: 'hello' });
       expect(res2).to.eql({ value: 'hello' }); // NB: generated cell object.
 
-      const res3 = TypeTarget.write(type).inline({
+      const res3 = TypeTarget.inline(type).write({
         data: 'hello',
         cell: { value: 'foo', props: { style: {} } },
       });
       expect(res3).to.eql({ value: 'hello' }); // NB: props squashed.
 
-      const res4 = TypeTarget.write(type).inline({ data: '', cell: { value: 'foo' } });
+      const res4 = TypeTarget.inline(type).write({ data: '', cell: { value: 'foo' } });
       expect(res4).to.eql({ value: '' });
 
-      const res5 = TypeTarget.write(type).inline({ data: undefined, cell: { value: 'foo' } });
+      const res5 = TypeTarget.inline(type).write({ data: undefined, cell: { value: 'foo' } });
       expect(res5).to.eql({}); // NB: value field deleted.
 
-      const res6 = TypeTarget.write(type).inline({ data: null, cell: { value: 'foo' } });
+      const res6 = TypeTarget.inline(type).write({ data: null, cell: { value: 'foo' } });
       expect(res6).to.eql({}); // NB: value field deleted.
     });
 
@@ -158,7 +155,7 @@ describe('TypeTarget', () => {
         expected: any,
       ) => {
         const type = { ...base, target };
-        const res = TypeTarget.write(type).inline({ cell, data });
+        const res = TypeTarget.inline(type).write({ cell, data });
         expect(res).to.eql(expected);
       };
 
@@ -175,6 +172,123 @@ describe('TypeTarget', () => {
       test('inline:x', { props: { x: 1, y: 2 } }, 99, { props: { x: 99, y: 2 } });
       test('inline:x', { props: { x: 1, y: 2 } }, undefined, { props: { y: 2 } }); // NB: deleted.
       test('inline:x', { props: { x: 1 } }, undefined, {}); // NB: deleted, collapses props.
+    });
+  });
+
+  describe('ref: write', () => {
+    const refType: t.ITypeRef = {
+      kind: 'REF',
+      typename: 'color',
+      scope: 'NS',
+      uri: 'ns:foo',
+      types: [
+        { prop: 'name', type: { kind: 'VALUE', typename: 'string' } },
+        { prop: 'color', type: { kind: 'VALUE', typename: 'string' } },
+      ],
+    };
+
+    const defComplex: t.IColumnTypeDef<t.ITypeRef> = {
+      column: 'A',
+      prop: 'foo',
+      type: refType,
+      target: 'ref',
+    };
+
+    it('throw: type not "REF"', () => {
+      const defSimple: t.IColumnTypeDef = {
+        column: 'A',
+        prop: 'foo',
+        type: { kind: 'VALUE', typename: 'string' },
+        target: 'ref',
+      };
+      const fn = () => TypeTarget.ref(defSimple as any);
+      expect(fn).to.throw(/The given type is not of kind REF \(given "VALUE"\)/);
+    });
+
+    it('throw: type-def target not "ref"', () => {
+      const test = (target: string | undefined) => {
+        const def: t.IColumnTypeDef<t.ITypeRef> = {
+          ...defComplex,
+          target,
+        };
+        const fn = () => TypeTarget.ref(def);
+        expect(fn).to.throw(/The given target is not "ref"/);
+      };
+      test(undefined);
+      test('');
+      test('inline');
+      test('inline:foo.bar');
+      test('RANDOM');
+    });
+
+    it('throw: type-def scope is not NS (ie complex-object)', () => {
+      const def: t.IColumnTypeDef<t.ITypeRef> = {
+        ...defComplex,
+        type: { ...refType, scope: 'COLUMN' },
+      };
+      const fn = () => TypeTarget.ref(def);
+      expect(fn).to.throw(/does not reference a NS \(given scope "COLUMN"\)/);
+    });
+
+    it('throw: target URI link is not a ROW', () => {
+      const test = (uri: string) => {
+        const fn = () => TypeTarget.ref(defComplex).write({ uri });
+        expect(fn).to.throw(/reference\/link URI is not a ROW/);
+      };
+      test('cell:foo:A1');
+      test('cell:foo:A');
+      test('cell:foo');
+      test('ns:foo');
+      test('file:foo:123');
+      test('foo:FAIL');
+    });
+
+    it('read', () => {
+      const res1 = TypeTarget.ref(defComplex).read({});
+      const res2 = TypeTarget.ref(defComplex).read({
+        cell: { links: { 'ref:type': 'cell:foo:10', 'fs:foo': 'file:foo:abc' } },
+      });
+      const res3 = TypeTarget.ref(defComplex).read({
+        cell: { links: { 'ref:type': 'cell:foo:5?hash=abc' } },
+      });
+
+      expect(res1).to.eql(undefined);
+
+      expect(res2?.uri.toString()).to.eql('cell:foo:10');
+      expect(res2?.hash).to.eql(undefined);
+
+      expect(res3?.uri.toString()).to.eql('cell:foo:5');
+      expect(res3?.hash).to.eql('abc');
+    });
+
+    it('write: link', () => {
+      const uri = 'cell:foo:1';
+      const res1 = TypeTarget.ref(defComplex).write({ uri });
+      const res2 = TypeTarget.ref(defComplex).write({
+        uri,
+        cell: { links: { 'ref:type': 'cell:foo:9', 'fs:foo': 'file:foo:abc' } },
+      });
+      const res3 = TypeTarget.ref(defComplex).write({ uri, hash: 'abc' });
+
+      expect((res1.links || {})['ref:type']).to.eql('cell:foo:1');
+
+      expect((res2.links || {})['ref:type']).to.eql('cell:foo:1');
+      expect((res2.links || {})['fs:foo']).to.eql('file:foo:abc');
+
+      expect((res3.links || {})['ref:type']).to.eql('cell:foo:1?hash=abc');
+    });
+
+    it('clear: link', () => {
+      const res1 = TypeTarget.ref(defComplex).remove();
+      const res2 = TypeTarget.ref(defComplex).remove({
+        cell: {
+          value: 123,
+          links: { 'ref:type': 'cell:foo:9', 'fs:foo': 'file:foo:abc' },
+        },
+      });
+
+      expect(res1).to.eql({});
+      expect(res2).to.eql({ value: 123, links: { 'fs:foo': 'file:foo:abc' } });
     });
   });
 });

@@ -58,6 +58,16 @@ describe('Links', () => {
       test('fs', 'foo/bar/', 'fs:foo::bar');
       test('fs', 'foo/bar.png/', 'fs:foo::bar:png');
     });
+
+    it('toKey: throw if empty', () => {
+      const test = (input?: string) => {
+        const fn = () => Links.toKey('prefix', input as any);
+        expect(fn).to.throw(/Link key must have a value/);
+      };
+      test();
+      test('');
+      test('  ');
+    });
   });
 
   it('isKey', () => {
@@ -194,6 +204,54 @@ describe('Links', () => {
 
       expect(list[1].key).to.eql('fs:images/foo/kitten:png');
       expect(list[1].value).to.eql('file:foo:def456?hash=sha256-abc');
+    });
+  });
+
+  describe('find: byName', () => {
+    const LINKS = {
+      'fs:main:js': 'file:foo:abc',
+      'ref:foo::bar::zoo:png': 'cell:foo:A1',
+      'ref:foo::bar::baz:jpg': 'cell:foo:A2',
+    };
+
+    it('not found', () => {
+      const test = (prefix: string, path: string | undefined) => {
+        const res1 = Links.find(prefix, LINKS).byName(path);
+        const res2 = Links.create(prefix)
+          .find(LINKS)
+          .byName(path);
+        expect(res1).to.eql(undefined);
+        expect(res2).to.eql(undefined);
+      };
+      test('', '');
+      test('', undefined);
+      test('fs', '');
+      test('fs', undefined);
+      test('fs', 'main.js/');
+      test('ref', 'foo::bar::zoo:png'); // NB: un-encoded path expected.
+    });
+
+    it('found', () => {
+      const test = (prefix: string, path: string | undefined, expected?: string) => {
+        const res1 = Links.find(prefix, LINKS).byName(path);
+        const res2 = Links.create(prefix)
+          .find(LINKS)
+          .byName(path);
+
+        expect(res1?.value).to.eql(expected, path);
+        expect(res2?.value).to.eql(expected, path);
+      };
+
+      test('fs', 'main.js', 'file:foo:abc');
+      test('fs', '/main.js', 'file:foo:abc'); // NB: trimmed "/" prefix.
+
+      test('ref', 'foo/bar/zoo.png', 'cell:foo:A1');
+      test('ref', '///foo/bar/zoo.png', 'cell:foo:A1'); // NB: trimmed "/" prefix.
+
+      // Wildcard (NB: finds first).
+      test('fs', '*.js', 'file:foo:abc');
+      test('ref', 'foo/bar*', 'cell:foo:A1');
+      test('ref', 'foo/bar*.jpg', 'cell:foo:A2');
     });
   });
 

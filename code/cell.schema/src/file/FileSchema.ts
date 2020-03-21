@@ -2,6 +2,8 @@ import { ERROR, t, isHttp } from '../common';
 import { FileLinks } from './FileLinks';
 import { Uri } from '../Uri';
 
+type IFileSchemaArgs = { nsPath: string; fileid: string; uri: string };
+
 /**
  * Schema for a file.
  */
@@ -14,7 +16,11 @@ export class FileSchema {
   public readonly path: string;
   public readonly uri: string;
 
-  constructor(args: { nsPath: string; fileid: string; uri: string }) {
+  /**
+   * [Lifecycle]
+   */
+  public static create = (args: IFileSchemaArgs) => new FileSchema(args);
+  private constructor(args: IFileSchemaArgs) {
     this.fileid = args.fileid;
     this.path = `${args.nsPath}/${this.type}/${this.fileid}`;
     this.uri = args.uri;

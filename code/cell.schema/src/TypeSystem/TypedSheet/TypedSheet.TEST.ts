@@ -22,7 +22,7 @@ import { TypeSystem } from '..';
  * - read/write: linked sheet
  */
 
-describe('TypedSheet', () => {
+describe.only('TypedSheet', () => {
   it.skip('read/write primitive types', () => {}); // tslint:disable-line
   it.skip('read/write ref (singular) - linked sheet', () => {}); // tslint:disable-line
   it.skip('read/write ref (array/list) - linked sheet', () => {}); // tslint:disable-line
@@ -50,7 +50,7 @@ describe('TypedSheet', () => {
     });
   });
 
-  describe('cursor', () => {
+  describe.only('cursor', () => {
     it('inline: read (strongly typed prop)', async () => {
       const ns = 'ns:foo.mySheet';
       const fetch = await testInstanceFetch({
@@ -87,17 +87,30 @@ describe('TypedSheet', () => {
       }
     });
 
-    it.skip('inline: write (strongly typed prop)', async () => {
+    it('inline: write (strongly typed prop)', async () => {
       const ns = 'ns:foo.mySheet';
       const fetch = await testInstanceFetch({
         instance: ns,
         implements: 'ns:foo',
         defs: TYPE_DEFS,
-        rows: [],
+        rows: [
+          { title: 'One', isEnabled: true, color: { label: 'background', color: 'red' } },
+          // { title: 'Two', isEnabled: false, color: { label: 'foreground', color: 'blue' } },
+        ],
       });
 
       const sheet = await TypeSystem.Sheet.load<g.MyRow>({ fetch, ns });
       const cursor = await sheet.cursor();
+
+      const row1 = cursor.row(0);
+      const row2 = cursor.row(1);
+
+      if (row1) {
+        row1.title = 'hello';
+      }
+      if (row2) {
+        row2.title = 'foo';
+      }
     });
 
     it.skip('query (paging: index/skip)', () => {}); // tslint:disable-line

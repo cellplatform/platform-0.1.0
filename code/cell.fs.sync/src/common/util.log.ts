@@ -13,7 +13,7 @@ export function cellUri(input: string | t.IUriParts<t.ICellUri>, color?: Color) 
   const uri = typeof input === 'string' ? Schema.uri.parse<t.ICellUri>(input) : input;
   const { ns, key } = uri.parts;
   const cellKey = color === 'gray' ? chalk.gray(key) : toColor(color)(key);
-  return `cell:${ns}!${cellKey}`;
+  return `cell:${ns}:${cellKey}`;
 }
 
 /**

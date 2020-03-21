@@ -38,7 +38,7 @@ export async function promptConfig(args: { force?: boolean; dir?: string; save?:
   if (targetOption === 'NEW') {
     const ns = Schema.cuid();
     const key = await cli.prompt.text({ message: 'cell key (eg A1):' });
-    const uri = Schema.uri.parse<t.ICellUri>(`cell:${ns}!${key || 'A1'}`);
+    const uri = Schema.uri.parse<t.ICellUri>(`cell:${ns}:${key || 'A1'}`);
     config.data.target = uri.ok ? uri.toString() : `cell:${ns}!`;
   }
 

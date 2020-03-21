@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.7.27",
+  "version": "0.7.28",
   "description": "HTTP server for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,13 +16,13 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare",
+    "prepare": "ts prepare && rm -rf tmp",
     "reset": "ts-node -T scripts/reset",
     "deploy": "yarn cell deploy $@"
   },
   "dependencies": {
-    "@platform/cell.http.router": "0.7.25",
-    "@platform/cell.schema": "0.4.64",
+    "@platform/cell.http.router": "0.7.26",
+    "@platform/cell.schema": "0.4.65",
     "@platform/cli": "0.5.28",
     "@platform/exec": "0.2.53",
     "@platform/fs": "0.5.12",

@@ -1,4 +1,5 @@
-import { t, ERROR, value as valueUtil, squash } from '../common';
+import { Uri, t, ERROR, squash } from '../common';
+import { RefLinks } from '../../Ref';
 
 type Input = t.CellTypeTarget | t.IColumnTypeDef;
 const asTarget = (input?: Input) => {
@@ -8,15 +9,10 @@ const asTarget = (input?: Input) => {
 /**
  * Parser for interpreting a [target] reference within an [ITypeDef].
  *
- * Formats:
- *      - "inline"                  => { value }
- *      - "inline:<prop>"           => { props: { 'prop': {...} } }
- *      - "inline:<propA>.<propB>"  => { props: { 'propA.propB1': {...} } }
- *      - "inline:<propA>:<propB>"  => { props: { 'propA:propB1': {...} } }
- *
- *      - ref => external (save to prop: ref:props, or link(?))
- *
+ * See: [CellTypeTarget]
+ *      for master documentation on formats and usage.
  */
+
 export class TypeTarget {
   /**
    * Parses a cell target into its constituent parts.
@@ -56,7 +52,7 @@ export class TypeTarget {
       path = path ? `props:${path}` : 'value';
     }
     if (isValid && kind === 'ref') {
-      path = 'ref:type';
+      path = ''; // NB: The data is stored remotely, so a local path is not relevant.
     }
 
     // Finish up.
@@ -68,9 +64,7 @@ export class TypeTarget {
       errors,
       kind,
       path,
-      toString() {
-        return target;
-      },
+      toString: () => target,
     };
   }
 
@@ -87,15 +81,15 @@ export class TypeTarget {
   }
 
   /**
-   * Reads the target property from the given cell.
+   * Read/write data locally within a cell.
    */
-  public static read(type: t.IColumnTypeDef) {
-    const target = TypeTarget.parse(type);
+  public static inline(typeDef: t.IColumnTypeDef) {
+    const target = TypeTarget.parse(typeDef);
     return {
       /**
-       * Reads inline values.
+       * Read local value.
        */
-      inline<V extends any>(cell: t.ICellData<any>) {
+      read<V extends t.Json>(cell: t.ICellData<any>) {
         if (!target.isValid) {
           throw new Error(`READ: The target '${target}' is not valid.`);
         }
@@ -116,19 +110,14 @@ export class TypeTarget {
 
         return;
       },
-    };
-  }
 
-  /**
-   * Writes the target property to the given cell.
-   */
-  public static write(type: t.IColumnTypeDef) {
-    const target = TypeTarget.parse(type);
-    return {
       /**
-       * Write inline balues
+       * Write local value.
        */
-      inline<V extends any>(args: { data: V | undefined; cell?: t.ICellData<any> | undefined }) {
+      write<V extends t.Json>(args: {
+        data: V | undefined;
+        cell?: t.ICellData<any> | undefined;
+      }): t.ICellData<any> {
         const cell = { ...(args.cell || {}) };
 
         if (!target.isValid) {
@@ -160,6 +149,89 @@ export class TypeTarget {
 
         // Finish up.
         cell.props = squash.props(cell.props);
+        return squash.cell(cell) || {};
+      },
+    };
+  }
+
+  /**
+   * Read/write reference links.
+   */
+  public static ref(typeDef: t.IColumnTypeDef<t.ITypeRef>) {
+    if (typeDef.target !== 'ref') {
+      const given = typeDef.target === undefined ? '<undefined>' : typeDef.target || '<empty>';
+      const err = `The given target is not "ref" (given "${given}")`;
+      throw new Error(err);
+    }
+    if ((typeDef.type.kind as t.IType['kind']) !== 'REF') {
+      const err = `The given type is not of kind REF (given "${typeDef.type.kind}")`;
+      throw new Error(err);
+    }
+    if (typeDef.type.scope !== 'NS') {
+      const scope = typeDef.type.scope;
+      const err = `The given REF type does not reference a NS (given scope "${scope}")`;
+      throw new Error(err);
+    }
+
+    const validateUri = (uri: string | t.IRowUri) => {
+      const res = typeof uri === 'object' ? uri : Uri.parse<t.IRowUri>(uri).parts;
+      if (res.type !== 'ROW') {
+        const err = `The reference/link URI is not a ROW (given "${uri.toString()}")`;
+        throw new Error(err);
+      }
+      return res;
+    };
+
+    return {
+      /**
+       * Read reference link.
+       */
+      read(args: {
+        cell?: t.ICellData<any> | undefined;
+      }): { uri: t.IRowUri; hash?: string } | undefined {
+        const cell = args.cell || {};
+        const res = RefLinks.find(cell.links).byName('type');
+        if (res) {
+          const { hash } = res;
+          const uri = res.uri as t.IRowUri;
+          return { uri, hash };
+        } else {
+          return; // Does not exist.
+        }
+      },
+
+      /**
+       * Write reference link.
+       */
+      write(args: {
+        uri: string | t.IRowUri;
+        cell?: t.ICellData<any> | undefined;
+        hash?: string;
+      }): t.ICellData<any> {
+        const { hash } = args;
+        const uri = validateUri(args.uri);
+        const cell = { ...(args.cell || {}) };
+        const key = RefLinks.toKey('type');
+        const value = RefLinks.toValue(uri, { hash });
+        const links = { ...(cell.links || {}), [key]: value };
+        cell.links = squash.object(links);
+        return squash.cell(cell) || {};
+      },
+
+      /**
+       * Clears reference link.
+       */
+      remove(args: { cell?: t.ICellData<any> | undefined } = {}) {
+        const cell = { ...(args.cell || {}) };
+        if (!cell.links) {
+          return cell;
+        }
+
+        const key = RefLinks.toKey('type');
+        const links = cell.links || {};
+        delete links[key];
+
+        cell.links = squash.object(links);
         return squash.cell(cell) || {};
       },
     };

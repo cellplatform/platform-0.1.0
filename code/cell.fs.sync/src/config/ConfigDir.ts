@@ -12,7 +12,7 @@ export const DEFAULT: t.IFsConfigDirData = {
 export const CONFIG = {
   ERROR: {
     TARGET: {
-      INVALID_URI: `Target cell URI is invalid (valid example 'cell:ck499h7u30000fwet3k7085t1!A1')`,
+      INVALID_URI: `Target cell URI is invalid (valid example 'cell:<uid>:A1')`,
     },
     HOST: {
       EMPTY: `Domain host not specified`,

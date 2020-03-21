@@ -23,7 +23,8 @@ export async function downloadFileByName(args: {
   }
 
   // Construct the underlying FS filename.
-  const { id, ext } = link.file;
+  const id = link.uri.file;
+  const ext = link.ext;
   const filename = ext ? `${id}.${ext}` : id;
   const matchHash = args.matchHash || link.hash;
 

@@ -1,7 +1,13 @@
-import { expect } from 'chai';
-import { FileSchema } from '.';
+import { expect } from '../test';
+import { FileSchema, FileLinks } from '.';
+import { Schema } from '../Schema';
 
-describe('util', () => {
+describe('FileSchema', () => {
+  it('exposed from Schema (static)', () => {
+    expect(Schema.file).to.equal(FileSchema);
+    expect(Schema.file.links).to.equal(FileLinks);
+  });
+
   it('uri', () => {
     const path = 'NS/foo/FILE/filename';
     expect(FileSchema.uri({ path })).to.eql('file:foo:filename');
