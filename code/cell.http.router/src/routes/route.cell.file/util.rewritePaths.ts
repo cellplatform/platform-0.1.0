@@ -32,12 +32,12 @@ export async function rewriteHtmlPaths(args: {
 
   // Lookup the link-reference to the HTML file.
   const fileid = args.filename.split('.')[0] || '';
-  const htmlLink = fileLinks.find(link => link.file.id === fileid);
+  const htmlLink = fileLinks.find(link => link.uri.file === fileid);
   if (!htmlLink) {
     const err = `Cannot find cell-link to file '${args.filename}' in [${cellUri}]`;
     throw new Error(err);
   }
-  const dir = trimRelativePathPrefix(htmlLink.file.dir);
+  const dir = trimRelativePathPrefix(htmlLink.dir);
 
   const updateLink = (args: { attr: string; value: string; el: Cheerio }) => {
     if (util.isHttp(args.value)) {
@@ -49,15 +49,15 @@ export async function rewriteHtmlPaths(args: {
 
     // Lookup the file-link that the DOM element "src/href" path refers to.
     const link = fileLinks.find(link => {
-      const isChildPath = dir ? link.file.path.startsWith(`${dir}/`) : true;
-      return isChildPath && trimPrefix(dir, link.file.path) === path;
+      const isChildPath = dir ? link.path.startsWith(`${dir}/`) : true;
+      return isChildPath && trimPrefix(dir, link.path) === path;
     });
 
     // Rewrite the URL.
     if (link) {
       const hash = link.hash;
       const url = cellUrls.file
-        .byName(link.file.path)
+        .byName(link.path)
         .query({ hash, expires })
         .toString();
       el.attr(attr, url);

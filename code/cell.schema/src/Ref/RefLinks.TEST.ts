@@ -156,4 +156,61 @@ describe.only('RefLinks', () => {
       test({ hash: null }, 'cell:foo:A1');
     });
   });
+
+  describe('find: byName', () => {
+    const LINKS = {
+      'fs:main:js': 'file:foo:abc123',
+      'ref:foo::bar::zoo:png': 'cell:foo:A1',
+      'ref:type': 'ns:foo',
+    };
+
+    it('not found', () => {
+      const test = (path: string | undefined) => {
+        const res = RefLinks.find(LINKS).byName(path);
+        expect(res).to.eql(undefined);
+      };
+      test('');
+      test(undefined);
+      test('');
+      test(undefined);
+      test('main.js'); // NB: Not a "ref" prefix.
+      test('foo::bar::zoo'); // NB: un-encoded path expected.
+    });
+
+    it('found', () => {
+      const test = (path: string | undefined, expected?: string) => {
+        const res = RefLinks.find(LINKS).byName(path);
+        expect(res?.value).to.eql(expected, path);
+      };
+
+      test('type', 'ns:foo');
+      test('foo/bar/zoo.png', 'cell:foo:A1');
+      test('///foo/bar/zoo.png', 'cell:foo:A1'); // NB: trimmed "/" prefix.
+      test('foo/bar*', 'cell:foo:A1'); // Wildcard (NB: finds first).
+    });
+  });
+
+  describe('list', () => {
+    it('empty', () => {
+      const LINKS = {
+        'fs:main:js': 'file:foo:abc123',
+        'foo:bar': 'cell:foo:A1',
+      };
+
+      expect(RefLinks.toList({})).to.eql([]);
+      expect(RefLinks.toList(LINKS)).to.eql([]);
+    });
+
+    it('items', () => {
+      const LINKS = {
+        'fs:main:js': 'file:foo:abc123',
+        'ref:foo::bar::zoo:png': 'cell:foo:A1',
+        'ref:type': 'ns:foo',
+      };
+      const res = RefLinks.toList(LINKS);
+      expect(res.length).to.eql(2);
+      expect(res[0].path).to.eql('foo/bar/zoo.png');
+      expect(res[1].path).to.eql('type');
+    });
+  });
 });

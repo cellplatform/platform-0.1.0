@@ -78,11 +78,7 @@ export class FileLinks {
   public static find(links: t.IUriMap = {}) {
     return {
       byName(path?: string) {
-        path = (path || '').trim().replace(/^\/*/, '');
-        const match = Object.keys(links)
-          .map(key => ({ key, value: links[key] }))
-          .filter(({ key }) => fs.isKey(key))
-          .find(({ key }) => FileLinks.parseKey(key).path === path);
+        const match = fs.find(links).byName(path);
         return match ? toFileLink(match.key, match.value) : undefined;
       },
     };
@@ -96,8 +92,6 @@ export class FileLinks {
 function toFileLink(key: string, value: string): t.IFileLink {
   const { dir, path, name, ext } = FileLinks.parseKey(key);
   const { uri, hash, status } = FileLinks.parseLink(value);
-  const { ns, file: id } = uri;
-  // uri.
-  const file = { ns, id, path, dir, name, ext };
-  return { uri: uri.toString(), key, value, hash, status, file };
+  const res: t.IFileLink = { uri, key, value, hash, status, path, dir, name, ext };
+  return res;
 }

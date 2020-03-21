@@ -1,4 +1,4 @@
-import { t, queryString } from '../common';
+import { t, queryString, wildcard } from '../common';
 import { Uri } from '../Uri';
 
 type ILinksArgs = { prefix: string };
@@ -112,6 +112,29 @@ export class Links {
     const query = queryString.toObject<Q>(parts[1]);
     const value = parts.join('?').replace(/\?$/, '');
     return { value, uri, query };
+  }
+
+  /**
+   * Lookup an item on the given links.
+   */
+  public find(links: t.IUriMap = {}) {
+    return Links.find(this.prefix, links);
+  }
+  public static find(prefix: string, links: t.IUriMap = {}) {
+    return {
+      byName(path?: string) {
+        path = (path || '').trim().replace(/^\/*/, '');
+        return Object.keys(links)
+          .map(key => ({ key, value: links[key] }))
+          .filter(({ key }) => Links.isKey(prefix, key))
+          .find(({ key }) => {
+            const parsed = Links.parseKey(prefix, key);
+            return (path || '').includes('*')
+              ? wildcard.isMatch(parsed.path, path)
+              : parsed.path === path;
+          });
+      },
+    };
   }
 }
 
