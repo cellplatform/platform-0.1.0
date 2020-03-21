@@ -58,6 +58,10 @@ export class Links {
     return Links.toKey(this.prefix, input);
   }
   public static toKey(prefix: string, input: string) {
+    input = (input || '').trim();
+    if (!input) {
+      throw new Error(`Link key must have a value.`);
+    }
     prefix = (prefix || '').trim().replace(/:*$/, '');
     return `${prefix}:${encode(input)}`;
   }

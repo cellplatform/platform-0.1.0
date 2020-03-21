@@ -90,7 +90,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     }
 
     if (target.isInline) {
-      return TypeTarget.read(type).inline(column.data);
+      return TypeTarget.inline(type).read(column.data);
     }
 
     if (target.isRef) {
@@ -117,6 +117,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     // }
 
     // data.
+    return;
   }
 
   private writeProp(column: ITypedColumnData, value: any) {

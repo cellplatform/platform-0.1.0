@@ -1,5 +1,6 @@
 import { cuid, slug, t, hash, coord, Mime } from '../common';
 import { FileSchema } from '../File';
+import { RefSchema } from '../Ref';
 import { Uri } from '../Uri';
 import { Urls } from '../Url';
 
@@ -10,6 +11,7 @@ export class Schema {
   public static mime = Mime;
   public static uri = Uri;
   public static file = FileSchema;
+  public static ref = RefSchema;
   public static cuid = cuid;
   public static slug = slug;
   public static hash = hash;
@@ -124,7 +126,7 @@ export class NsSchema {
 
   public file(fileid: string) {
     const uri = Uri.create.file(this.id, fileid);
-    return new FileSchema({ nsPath: this.path, fileid, uri });
+    return FileSchema.create({ nsPath: this.path, fileid, uri });
   }
 
   public static uri(args: { path: string }) {

@@ -1,26 +1,7 @@
 import { t } from '../common';
 
 /**
- * Type Payload
- * (NB: can write directly to HTTP client )
- */
-export type ITypeDefPayload = {
-  ns: t.INsProps;
-  columns: t.IColumnMap;
-};
-
-/**
- * Tokenizer
- */
-export type ITypeToken = {
-  input: string;
-  kind: 'VALUE' | 'GROUP' | 'GROUP[]';
-  text: string;
-  next: string;
-};
-
-/**
- * Type Definitions.
+ * Type Definitions
  */
 export type INsTypeDef = {
   ok: boolean;
@@ -30,30 +11,16 @@ export type INsTypeDef = {
   errors: t.ITypeError[];
 };
 
-export type IColumnTypeDef = ITypeDef & {
+export type IColumnTypeDef<T extends IType = IType> = ITypeDef<T> & {
   column: string;
   target?: t.CellTypeTarget;
   error?: t.ITypeError;
 };
 
-export type ITypeDef = {
+export type ITypeDef<T extends IType = IType> = {
   prop: string;
   optional?: boolean;
-  type: IType;
-};
-
-/**
- * Walk
- */
-
-export type TypeVisit = (args: TypeVisitArgs) => void;
-export type TypeVisitArgs = {
-  level: number;
-  path: string;
-  root: t.IType;
-  type: t.IType;
-  prop?: string;
-  optional?: boolean;
+  type: T;
 };
 
 /**
@@ -63,8 +30,8 @@ export type ITypePrimitives = {
   string: t.ITypeValue;
   number: t.ITypeValue;
   boolean: t.ITypeValue;
-  null: t.ITypeValue;
   undefined: t.ITypeValue;
+  null: t.ITypeValue;
 };
 
 export type IType = ITypeValue | ITypeEnum | ITypeUnion | ITypeRef | ITypeUnknown;

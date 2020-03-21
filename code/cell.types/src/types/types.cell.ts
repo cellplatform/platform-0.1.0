@@ -28,7 +28,7 @@ export type ICellDiff<P extends ICellProps = ICellProps> = {
  * Row
  */
 export type IRowProps = {
-  title?: string;
+  title?: string; // Display name.
 };
 export type IRowData<P extends IRowProps = IRowProps> = {
   props?: P;
@@ -40,7 +40,7 @@ export type IRowData<P extends IRowProps = IRowProps> = {
  * Column
  */
 export type IColumnProps = {
-  title?: string; // Display name (if different from "name").
+  title?: string; // Display name.
   prop?: t.CellTypeProp;
 };
 export type IColumnData<P extends IColumnProps = IColumnProps> = {

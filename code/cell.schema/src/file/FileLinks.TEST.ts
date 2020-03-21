@@ -100,7 +100,12 @@ describe('FileLinks', () => {
   });
 
   describe('parseLink', () => {
-    it('(uri)', () => {
+    it('throw: file URI not provided', () => {
+      const fn = () => FileLinks.parseLink('cell:foo!A1');
+      expect(fn).to.throw();
+    });
+
+    it('uri', () => {
       const test = (input: string, expected: string) => {
         const res = FileLinks.parseLink(input);
         expect(res.uri.toString()).to.eql(expected);
@@ -111,29 +116,7 @@ describe('FileLinks', () => {
       test('file:foo:123?bam=boo&hash=abc ', 'file:foo:123');
     });
 
-    it('(ns)', () => {
-      const test = (input: string, expected: string) => {
-        const res = FileLinks.parseLink(input);
-        expect(res.uri.ns).to.eql(expected);
-      };
-      test('file:foo:123', 'foo');
-      test('file:foo:123?hash=abc', 'foo');
-      test('  file:foo:123?hash=abc  ', 'foo');
-      test('file:foo:123?bam=boo&hash=abc ', 'foo');
-    });
-
-    it('(fileid)', () => {
-      const test = (input: string, expected: string) => {
-        const res = FileLinks.parseLink(input);
-        expect(res.uri.file).to.eql(expected);
-      };
-      test('file:foo:123', '123');
-      test('file:foo:123?hash=abc', '123');
-      test('  file:foo:123?hash=abc  ', '123');
-      test('file:foo:123?bam=boo&hash=abc ', '123');
-    });
-
-    it('(hash)', () => {
+    it('hash', () => {
       const test = (input: string, expected?: string) => {
         const res = FileLinks.parseLink(input);
         expect(res.hash).to.eql(expected);
@@ -145,7 +128,7 @@ describe('FileLinks', () => {
       test('file:foo:123?bam=boo&hash=abc ', 'abc');
     });
 
-    it('(status)', () => {
+    it('status', () => {
       const test = (input: string, expected?: string) => {
         const res = FileLinks.parseLink(input);
         expect(res.status).to.eql(expected);
@@ -190,11 +173,6 @@ describe('FileLinks', () => {
       test({ status: null }, 'file:foo:123?hash=abc'); // NB: No change.
       test({ hash: null }, 'file:foo:123?status=uploading');
       test({ hash: null, status: null }, 'file:foo:123');
-    });
-
-    it('throw: file URI not provided', () => {
-      const fn = () => FileLinks.parseLink('cell:foo!A1');
-      expect(fn).to.throw();
     });
   });
 

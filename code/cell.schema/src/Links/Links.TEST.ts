@@ -58,6 +58,16 @@ describe('Links', () => {
       test('fs', 'foo/bar/', 'fs:foo::bar');
       test('fs', 'foo/bar.png/', 'fs:foo::bar:png');
     });
+
+    it('toKey: throw if empty', () => {
+      const test = (input?: string) => {
+        const fn = () => Links.toKey('prefix', input as any);
+        expect(fn).to.throw(/Link key must have a value/);
+      };
+      test();
+      test('');
+      test('  ');
+    });
   });
 
   it('isKey', () => {

@@ -45,7 +45,6 @@ export class FileLinks {
     if (!FileLinks.is.fileValue(linkValue)) {
       throw new Error(`Cannot parse '${linkValue}' as it is not a file URI.`);
     }
-
     type Q = { hash?: string; status?: 'uploading' };
     const res = fs.parseValue<t.IFileUri, Q>(linkValue);
     const { uri, query, value } = res;
