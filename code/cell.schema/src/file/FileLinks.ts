@@ -41,35 +41,35 @@ export class FileLinks {
     return fs.parseKey(linkKey);
   }
 
-  public static parseLink(linkValue: string) {
+  public static parseValue(linkValue: string) {
     if (!FileLinks.is.fileValue(linkValue)) {
       throw new Error(`Cannot parse '${linkValue}' as it is not a file URI.`);
     }
-    type Q = { hash?: string; status?: 'uploading' };
-    const res = fs.parseValue<t.IFileUri, Q>(linkValue);
-    const { uri, query, value } = res;
-    const { hash, status } = query;
-    return {
-      value,
-      uri,
-      hash,
-      status,
-      toString(args: { hash?: string | null; status?: string | null } = {}) {
-        const query = queryString
-          .build({ allowNil: false })
-          .add('status', args.status === null ? null : args.status || status)
-          .add('hash', args.hash === null ? null : args.hash || hash)
-          .toString();
-        return `${uri.toString()}${query}`;
-      },
+    const res = fs.parseValue<t.IFileUri, t.IFileLinkQuery>(linkValue);
+    const toString: t.FileLinkToString = (options = {}) => {
+      const { status, hash } = res.query;
+      const query = queryString
+        .build({ allowNil: false })
+        .add('status', options.status === null ? null : options.status || status)
+        .add('hash', options.hash === null ? null : options.hash || hash)
+        .toString();
+      return `${res.uri.toString()}${query}`;
     };
+    return { ...res, toString };
+  }
+
+  public static parseLink(linkKey: string, linkValue: string): t.IFileLink {
+    const key = FileLinks.parseKey(linkKey);
+    const value = FileLinks.parseValue(linkValue);
+    const toString = value.toString;
+    return { ...key, ...value, toString };
   }
 
   /**
    * Converts a links URI map into a list of parsed file refs.
    */
   public static toList(links: t.IUriMap = {}) {
-    return fs.toList(links).map(({ key, value }) => toFileLink(key, value));
+    return fs.toList(links).map(({ key, value }) => FileLinks.parseLink(key, value));
   }
 
   /**
@@ -79,20 +79,8 @@ export class FileLinks {
     return {
       byName(path?: string) {
         const match = fs.find(links).byName(path);
-        return match ? toFileLink(match.key, match.value) : undefined;
+        return match ? FileLinks.parseLink(match.key, match.value) : undefined;
       },
     };
   }
-}
-
-/**
- * [Helpers]
- */
-
-function toFileLink(key: string, value: string): t.IFileLink {
-  const { dir, path, name, ext } = FileLinks.parseKey(key);
-  const { uri, hash, status } = FileLinks.parseLink(value);
-  const query = { hash, status };
-  const res: t.IFileLink = { uri, key, value, path, dir, name, ext, query };
-  return res;
 }

@@ -30,7 +30,7 @@ export async function uploadCellFilesComplete(args: {
   cellLinkFiles
     .filter(({ value }) => Schema.file.links.is.fileUploading(value))
     .map(item => {
-      const link = Schema.file.links.parseLink(item.value);
+      const link = Schema.file.links.parseLink(item.key, item.value);
       const found = filesBefore.find(item => item.uri === link.uri.toString());
       const file = found?.data;
       return { ...item, link, file };

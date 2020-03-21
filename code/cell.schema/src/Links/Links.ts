@@ -2,7 +2,6 @@ import { t, queryString, wildcard } from '../common';
 import { Uri } from '../Uri';
 
 type ILinksArgs = { prefix: string };
-type Query = { [key: string]: string | boolean | undefined };
 
 /**
  * Helpers for operating on links
@@ -82,10 +81,10 @@ export class Links {
   /**
    * Parse a key of a cell's [links] object-map into it's constituent parts.
    */
-  public parseKey(linkKey: string) {
+  public parseKey(linkKey: string): t.ILinkKey {
     return Links.parseKey(this.prefix, linkKey);
   }
-  public static parseKey(prefix: string, linkKey: string) {
+  public static parseKey(prefix: string, linkKey: string): t.ILinkKey {
     const key = (linkKey || '').trim();
     let path = key.replace(new RegExp(`^${prefix}\:`), '');
     path = shouldDecode(path) ? Links.decodeKey(path) : path;
@@ -94,16 +93,21 @@ export class Links {
     const name = lastSlash < 0 ? path : path.substring(lastSlash + 1);
     const dir = lastSlash < 0 ? '' : path.substring(0, lastSlash);
     const ext = lastPeriod < 0 ? '' : path.substring(lastPeriod + 1);
-    return { key, path, name, dir, ext };
+    const res: t.ILinkKey = { prefix, key, path, name, dir, ext };
+    return res;
   }
 
   /**
    * Parse a value of a cell's [links] object-map into it's constituent parts.
    */
-  public parseValue<U extends t.IUri = t.IUri, Q extends Query = Query>(linkValue: string) {
+  public parseValue<U extends t.IUri = t.IUri, Q extends t.ILinkQuery = t.ILinkQuery>(
+    linkValue: string,
+  ): t.ILinkValue<U, Q> {
     return Links.parseValue<U, Q>(linkValue);
   }
-  public static parseValue<U extends t.IUri = t.IUri, Q extends Query = Query>(linkValue: string) {
+  public static parseValue<U extends t.IUri = t.IUri, Q extends t.ILinkQuery = t.ILinkQuery>(
+    linkValue: string,
+  ): t.ILinkValue<U, Q> {
     const parts = (linkValue || '')
       .trim()
       .split('?')
@@ -111,7 +115,27 @@ export class Links {
     const uri = Uri.parse<U>(parts[0] || '').parts;
     const query = queryString.toObject<Q>(parts[1]);
     const value = parts.join('?').replace(/\?$/, '');
-    return { value, uri, query };
+    const res: t.ILinkValue<U, Q> = { value, uri, query };
+    return res;
+  }
+
+  /**
+   * Parse the key/value of a link into an object.
+   */
+  public parseLink<U extends t.IUri = t.IUri, Q extends t.ILinkQuery = t.ILinkQuery>(
+    linkKey: string,
+    linkValue: string,
+  ): t.ILink<U, Q> {
+    return Links.parseLink<U, Q>(this.prefix, linkKey, linkValue);
+  }
+  public static parseLink<U extends t.IUri = t.IUri, Q extends t.ILinkQuery = t.ILinkQuery>(
+    prefix: string,
+    linkKey: string,
+    linkValue: string,
+  ): t.ILink<U, Q> {
+    const key = Links.parseKey(prefix, linkKey);
+    const value = Links.parseValue<U, Q>(linkValue);
+    return { ...key, ...value };
   }
 
   /**

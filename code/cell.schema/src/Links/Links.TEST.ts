@@ -115,6 +115,7 @@ describe('Links', () => {
       const prefix = 'foo';
       const key = Links.toKey(prefix, 'image.png');
       const res = Links.parseKey(prefix, ` ${key} `);
+      expect(res.prefix).to.eql(prefix);
       expect(res.key).to.eql(key);
       expect(res.path).to.eql('image.png');
       expect(res.name).to.eql('image.png');
@@ -174,6 +175,24 @@ describe('Links', () => {
       const res4 = Links.parseValue<any, Q>('  cell:foo:A1 ?  color=red&isEnabled=true ');
       expect(res3.query).to.eql({ color: 'red', isEnabled: true });
       expect(res4.query).to.eql(res3.query);
+    });
+  });
+
+  describe('parseLink', () => {
+    it('combines parsed key/value', () => {
+      const prefix = 'p';
+      const linkKey = 'p:bar/baz.t';
+      const linkValue = 'cell:foo:A1?hash=abc';
+
+      const key = Links.parseKey(prefix, linkKey);
+      const value = Links.parseValue(linkValue);
+
+      const res1 = Links.parseLink(prefix, linkKey, linkValue);
+      const res2 = Links.create(prefix).parseLink(linkKey, linkValue);
+
+      // NB: Stringify used because custom `toString` functions cause [.eql] to compare incorrectly.
+      expect(JSON.stringify(res1)).to.eql(JSON.stringify(res2));
+      expect(JSON.stringify(res1)).to.eql(JSON.stringify({ ...key, ...value }));
     });
   });
 

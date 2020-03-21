@@ -101,13 +101,13 @@ describe('FileLinks', () => {
 
   describe('parseLink', () => {
     it('throw: file URI not provided', () => {
-      const fn = () => FileLinks.parseLink('cell:foo!A1');
+      const fn = () => FileLinks.parseValue('cell:foo!A1');
       expect(fn).to.throw();
     });
 
     it('uri', () => {
       const test = (input: string, expected: string) => {
-        const res = FileLinks.parseLink(input);
+        const res = FileLinks.parseValue(input);
         expect(res.uri.toString()).to.eql(expected);
       };
       test('file:foo:123', 'file:foo:123');
@@ -118,8 +118,8 @@ describe('FileLinks', () => {
 
     it('hash', () => {
       const test = (input: string, expected?: string) => {
-        const res = FileLinks.parseLink(input);
-        expect(res.hash).to.eql(expected);
+        const res = FileLinks.parseValue(input);
+        expect(res.query.hash).to.eql(expected);
       };
       test('file:foo:123', undefined);
       test('file:foo:123?hash=abc', 'abc');
@@ -130,8 +130,8 @@ describe('FileLinks', () => {
 
     it('status', () => {
       const test = (input: string, expected?: string) => {
-        const res = FileLinks.parseLink(input);
-        expect(res.status).to.eql(expected);
+        const res = FileLinks.parseValue(input);
+        expect(res.query.status).to.eql(expected);
       };
       test('file:foo:123', undefined);
       test('file:foo:123?hash=abc', undefined);
@@ -141,7 +141,7 @@ describe('FileLinks', () => {
 
     it('toString', () => {
       const test = (input: string, expected: string) => {
-        const res = FileLinks.parseLink(input);
+        const res = FileLinks.parseValue(input);
         expect(res.toString()).to.eql(expected);
       };
 
@@ -155,8 +155,8 @@ describe('FileLinks', () => {
 
     it('toString: modify query-string values', () => {
       const test = (args: { hash?: string | null; status?: string | null }, expected: string) => {
-        expect(FileLinks.parseLink('file:foo:123').toString(args)).to.eql(expected);
-        expect(FileLinks.parseLink('  file:foo:123  ').toString(args)).to.eql(expected);
+        expect(FileLinks.parseValue('file:foo:123').toString(args)).to.eql(expected);
+        expect(FileLinks.parseValue('  file:foo:123  ').toString(args)).to.eql(expected);
       };
       test({}, 'file:foo:123');
       test({ hash: 'abc' }, 'file:foo:123?hash=abc');
@@ -166,7 +166,7 @@ describe('FileLinks', () => {
 
     it('toString: remove query-string values', () => {
       const test = (args: { hash?: string | null; status?: string | null }, expected: string) => {
-        const res = FileLinks.parseLink('file:foo:123?status=uploading&hash=abc').toString(args);
+        const res = FileLinks.parseValue('file:foo:123?status=uploading&hash=abc').toString(args);
         expect(res).to.eql(expected);
       };
       test({}, 'file:foo:123?status=uploading&hash=abc'); // NB: No change.
@@ -180,6 +180,7 @@ describe('FileLinks', () => {
     it('name', () => {
       const key = FileLinks.toKey('image.png');
       const res = FileLinks.parseKey(` ${key} `);
+      expect(res.prefix).to.eql('fs');
       expect(res.key).to.eql(key);
       expect(res.path).to.eql('image.png');
       expect(res.name).to.eql('image.png');
