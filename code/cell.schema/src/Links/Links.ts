@@ -122,7 +122,7 @@ export class Links {
   /**
    * Parse the key/value of a link into an object.
    */
-  public parseLink<U extends t.IUri = t.IUri, Q extends t.ILinkQuery = t.ILinkQuery>(
+  public parse<U extends t.IUri = t.IUri, Q extends t.ILinkQuery = t.ILinkQuery>(
     linkKey: string,
     linkValue: string,
   ): t.ILink<U, Q> {

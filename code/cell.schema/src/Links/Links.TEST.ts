@@ -178,8 +178,8 @@ describe('Links', () => {
     });
   });
 
-  describe('parseLink', () => {
-    it('combines parsed key/value', () => {
+  describe('parse (key:value)', () => {
+    it('combines [parseKey] and [parseValue]', () => {
       const prefix = 'p';
       const linkKey = 'p:bar/baz.t';
       const linkValue = 'cell:foo:A1?hash=abc';
@@ -188,7 +188,7 @@ describe('Links', () => {
       const value = Links.parseValue(linkValue);
 
       const res1 = Links.parseLink(prefix, linkKey, linkValue);
-      const res2 = Links.create(prefix).parseLink(linkKey, linkValue);
+      const res2 = Links.create(prefix).parse(linkKey, linkValue);
 
       // NB: Stringify used because custom `toString` functions cause [.eql] to compare incorrectly.
       expect(JSON.stringify(res1)).to.eql(JSON.stringify(res2));

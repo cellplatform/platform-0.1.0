@@ -58,7 +58,7 @@ export class FileLinks {
     return { ...res, toString };
   }
 
-  public static parseLink(linkKey: string, linkValue: string): t.IFileLink {
+  public static parse(linkKey: string, linkValue: string): t.IFileLink {
     const key = FileLinks.parseKey(linkKey);
     const value = FileLinks.parseValue(linkValue);
     const toString = value.toString;
@@ -69,7 +69,7 @@ export class FileLinks {
    * Converts a links URI map into a list of parsed file refs.
    */
   public static toList(links: t.IUriMap = {}) {
-    return fs.toList(links).map(({ key, value }) => FileLinks.parseLink(key, value));
+    return fs.toList(links).map(({ key, value }) => FileLinks.parse(key, value));
   }
 
   /**
@@ -79,7 +79,7 @@ export class FileLinks {
     return {
       byName(path?: string) {
         const match = fs.find(links).byName(path);
-        return match ? FileLinks.parseLink(match.key, match.value) : undefined;
+        return match ? FileLinks.parse(match.key, match.value) : undefined;
       },
     };
   }

@@ -99,15 +99,15 @@ describe('RefLinks', () => {
     expect(res2).to.eql('cell:foo:A1?hash=abc');
   });
 
-  describe('parseLink', () => {
+  describe('parse (key:value)', () => {
     it('throw: file URI not provided', () => {
-      const fn = () => RefLinks.parseLink('ref:foo', 'file:foo:123');
+      const fn = () => RefLinks.parse('ref:foo', 'file:foo:123');
       expect(fn).to.throw();
     });
 
     it('uri', () => {
       const test = (input: string, expected: string) => {
-        const res = RefLinks.parseLink('ref:foo', input);
+        const res = RefLinks.parse('ref:foo', input);
         expect(res.uri.toString()).to.eql(expected);
       };
       test('cell:foo:A1', 'cell:foo:A1');
@@ -118,7 +118,7 @@ describe('RefLinks', () => {
 
     it('hash', () => {
       const test = (input: string, expected?: string) => {
-        const res = RefLinks.parseLink('ref:foo', input);
+        const res = RefLinks.parse('ref:foo', input);
         expect(res.query.hash).to.eql(expected);
       };
       test('cell:foo:A1', undefined);
@@ -130,7 +130,7 @@ describe('RefLinks', () => {
 
     it('toString', () => {
       const test = (input: string, expected: string) => {
-        const res = RefLinks.parseLink('ref:foo', input);
+        const res = RefLinks.parse('ref:foo', input);
         expect(res.toString()).to.eql(expected);
       };
       test('cell:foo:A1', 'cell:foo:A1');
@@ -142,8 +142,8 @@ describe('RefLinks', () => {
     it('toString: modify query-string values', () => {
       const test = (args: { hash?: string | null }, expected: string) => {
         const key = 'ref:foo';
-        expect(RefLinks.parseLink(key, 'cell:foo:A1').toString(args)).to.eql(expected);
-        expect(RefLinks.parseLink(key, '  cell:foo:A1  ').toString(args)).to.eql(expected);
+        expect(RefLinks.parse(key, 'cell:foo:A1').toString(args)).to.eql(expected);
+        expect(RefLinks.parse(key, '  cell:foo:A1  ').toString(args)).to.eql(expected);
       };
       test({}, 'cell:foo:A1');
       test({ hash: 'abc' }, 'cell:foo:A1?hash=abc');
@@ -151,7 +151,7 @@ describe('RefLinks', () => {
 
     it('toString: remove query-string values', () => {
       const test = (args: { hash?: string | null }, expected: string) => {
-        const res = RefLinks.parseLink('ref:foo', 'cell:foo:A1?hash=abc').toString(args);
+        const res = RefLinks.parse('ref:foo', 'cell:foo:A1?hash=abc').toString(args);
         expect(res).to.eql(expected);
       };
       test({}, 'cell:foo:A1?hash=abc'); // NB: No change.

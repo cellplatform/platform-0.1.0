@@ -99,7 +99,7 @@ describe('FileLinks', () => {
     });
   });
 
-  describe('parseLink', () => {
+  describe('parse (key:value)', () => {
     it('throw: file URI not provided', () => {
       const fn = () => FileLinks.parseValue('cell:foo!A1');
       expect(fn).to.throw();

@@ -51,7 +51,7 @@ export class RefLinks {
     return { ...res, toString };
   }
 
-  public static parseLink(linkKey: string, linkValue: string): t.IRefLink {
+  public static parse(linkKey: string, linkValue: string): t.IRefLink {
     const key = RefLinks.parseKey(linkKey);
     const value = RefLinks.parseValue(linkValue);
     const toString = value.toString;
@@ -70,7 +70,7 @@ export class RefLinks {
    * Converts a links URI map into a list of parsed link-refs.
    */
   public static toList(links: t.IUriMap = {}) {
-    return ref.toList(links).map(({ key, value }) => RefLinks.parseLink(key, value));
+    return ref.toList(links).map(({ key, value }) => RefLinks.parse(key, value));
   }
 
   /**
@@ -80,7 +80,7 @@ export class RefLinks {
     return {
       byName(path?: string) {
         const match = ref.find(links).byName(path);
-        return match ? RefLinks.parseLink(match.key, match.value) : undefined;
+        return match ? RefLinks.parse(match.key, match.value) : undefined;
       },
     };
   }

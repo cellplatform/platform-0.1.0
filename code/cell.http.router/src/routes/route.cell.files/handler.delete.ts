@@ -49,7 +49,7 @@ export async function deleteCellFiles(args: {
   const items = filenames.map(filename => {
     const key = Schema.file.links.toKey(filename);
     const value = links[key];
-    const parts = value ? Schema.file.links.parseLink(key, value) : undefined;
+    const parts = value ? Schema.file.links.parse(key, value) : undefined;
     const uri = parts ? parts.uri.toString() : '';
     const hash = parts ? parts.query.hash : '';
     return { filename, key, uri, hash, exists: Boolean(value) };
