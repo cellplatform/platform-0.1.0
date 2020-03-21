@@ -237,16 +237,16 @@ describe('FileLinks', () => {
       expect(list.length).to.eql(2);
 
       expect(list[0].uri.toString()).to.eql('file:foo:abc123');
-      expect(list[0].hash).to.eql(undefined);
-      expect(list[0].status).to.eql('uploading');
+      expect(list[0].query.hash).to.eql(undefined);
+      expect(list[0].query.status).to.eql('uploading');
       expect(list[0].path).to.eql('main.js');
       expect(list[0].dir).to.eql('');
       expect(list[0].name).to.eql('main.js');
       expect(list[0].ext).to.eql('js');
 
       expect(list[1].uri.toString()).to.eql('file:foo:def456');
-      expect(list[1].hash).to.eql('sha256-abc');
-      expect(list[1].status).to.eql(undefined);
+      expect(list[1].query.hash).to.eql('sha256-abc');
+      expect(list[1].query.status).to.eql(undefined);
       expect(list[1].path).to.eql('images/foo/kitten.png');
       expect(list[1].dir).to.eql('images/foo');
       expect(list[1].name).to.eql('kitten.png');

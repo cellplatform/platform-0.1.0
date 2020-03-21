@@ -94,6 +94,7 @@ export class RefLinks {
 function toRefLink(key: string, value: string): t.IRefLink {
   const { dir, path, name, ext } = RefLinks.parseKey(key);
   const { uri, hash } = RefLinks.parseLink(value);
-  const res: t.IRefLink = { uri, key, value, hash, path, dir, name, ext };
+  const query = { hash };
+  const res: t.IRefLink = { uri, key, value, path, dir, name, ext, query };
   return res;
 }

@@ -92,6 +92,7 @@ export class FileLinks {
 function toFileLink(key: string, value: string): t.IFileLink {
   const { dir, path, name, ext } = FileLinks.parseKey(key);
   const { uri, hash, status } = FileLinks.parseLink(value);
-  const res: t.IFileLink = { uri, key, value, hash, status, path, dir, name, ext };
+  const query = { hash, status };
+  const res: t.IFileLink = { uri, key, value, path, dir, name, ext, query };
   return res;
 }

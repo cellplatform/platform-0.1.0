@@ -1,7 +1,7 @@
 import { t } from '../common';
 
 /**
- * The declaration of a cell as a strongly typed property.
+ * The declaration that defines a cell as a strongly typed property.
  */
 export type CellTypeProp = { name: string; type: CellType; target?: CellTypeTarget };
 
@@ -21,8 +21,13 @@ export type CellTypeProp = { name: string; type: CellType; target?: CellTypeTarg
  *      - "red" | "green" | "blue"
  *
  *    Reference:
- *      - ns:<id>             eg: { target: "ns:foo"}      - object
- *      - cell:<ns>:<column>  eg: { target: "cell:foo:A"}  - object or primitive.
+ *      - ns:<id>             eg: { target: "ns:foo"}      <- object
+ *      - cell:<ns>:<column>  eg: { target: "cell:foo:A"}  <- object or primitive.
+ *
+ * Union operators ("|") can OR together several differnt types, eg:
+ *
+ *    type: '"red" | "blue" | boolean | cell:foo:A1 | ns:bar'
+ *    type: '(string | number) | ns:foo'
  *
  */
 export type CellType = string;
