@@ -20,6 +20,7 @@ export const TYPE_DEFS: SampleTypeDefs = {
       C: {
         props: { prop: { name: 'color?', type: 'ns:foo.color', target: 'inline:color' } },
       },
+      D: { props: { prop: { name: 'msg', type: 'ns:foo.message | null', target: 'inline:bg' } } },
     },
   },
 

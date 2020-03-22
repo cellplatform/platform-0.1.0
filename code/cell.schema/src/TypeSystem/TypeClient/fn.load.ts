@@ -159,6 +159,19 @@ async function loadNs(args: { level: number; ns: string; ctx: Context }): Promis
   }
 }
 
+function isCircularRef(args: { level: number; ns: string; ctx: Context }) {
+  const { level, ns, ctx } = args;
+  const { visited, errors } = ctx;
+
+  const isCircular = visited.some(visit => visit.ns === ns && visit.level < level);
+  if (isCircular) {
+    const path = visited.map(visit => `${visit.ns}`).join(' ➔ ');
+    const message = `The namespace "${ns}" leads back to itself (circular reference). Sequence: ${path}`;
+    errors.add(ns, message, { errorType: ERROR.TYPE.REF_CIRCULAR });
+  }
+  return isCircular;
+}
+
 /**
  * Read and parse type definitions for the given columns.
  */
@@ -177,11 +190,7 @@ async function readColumns(args: {
   };
 
   // Short-circuit any circular references.
-  const isCircular = visited.some(visit => visit.ns === ns && visit.level < level);
-  if (isCircular) {
-    const path = visited.map(visit => `${visit.ns}`).join(' ➔ ');
-    const message = `The namespace "${ns}" leads back to itself (circular reference). Sequence: ${path}`;
-    errors.add(ns, message, { errorType: ERROR.TYPE.REF_CIRCULAR });
+  if (isCircularRef({ level, ns, ctx })) {
     return [];
   }
 
@@ -217,14 +226,44 @@ async function readColumn(args: {
   prop = optional ? prop.replace(/\?$/, '') : prop;
 
   if (type.kind === 'REF') {
-    const ref = type;
-    const res = await readRef({ level, ns, column, ref, ctx });
+    const res = await readRef({ level, ns, column, ref: type, ctx });
     type = res.type;
     error = res.error ? res.error : error;
   }
 
+  if (type.kind === 'UNION') {
+    await readUnionRefs({ level, ns, column, union: type, ctx });
+  }
+
   const def: t.IColumnTypeDef = { column, prop, optional, type, target, error };
   return value.deleteUndefined(def);
+}
+
+/**
+ * Recursively walk a union, loading any REFs.
+ */
+async function readUnionRefs(args: {
+  level: number;
+  ns: string;
+  column: string;
+  union: t.ITypeUnion;
+  ctx: Context;
+}) {
+  const { level, ns, column, union, ctx } = args;
+
+  let index = 0;
+  for (const type of union.types) {
+    if (type.kind === 'REF') {
+      const res = await readRef({ level, ns, column, ref: type, ctx });
+      Object.keys(res.type).forEach(key => (type[key] = res.type[key])); // NB: Copy all values onto the union child.
+    }
+
+    if (type.kind === 'UNION') {
+      await readUnionRefs({ level: level + 1, ns, column, union: type, ctx }); // <== 🌳RECURSION
+    }
+
+    index++;
+  }
 }
 
 /**

@@ -25,10 +25,17 @@ export declare type MyRow = {
   title: string;
   isEnabled: boolean;
   color?: MyColor;
+  msg: MyMessage | null;
 };
 
 export declare type MyColor = {
   label: string;
   color: 'red' | 'green' | 'blue';
   description?: string;
+};
+
+export declare type MyMessage = {
+  date: number;
+  user: string;
+  message: string;
 };

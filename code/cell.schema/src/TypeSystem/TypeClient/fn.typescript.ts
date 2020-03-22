@@ -28,7 +28,7 @@ export function typescript(def: t.INsTypeDef, options: { header?: boolean } = {}
     },
 
     /**
-     * Generated typescript decalration(s).
+     * Generated typescript declarations(s).
      */
     get declaration() {
       const header = value.defaultValue(options.header, true) ? api.header : undefined;
