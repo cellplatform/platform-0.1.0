@@ -121,6 +121,6 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   }
 
   private writeProp(column: ITypedColumnData, value: any) {
-    console.log(this.index, 'WRITE | ', column.type.column, column.type.prop, value);
+    // console.log(this.index, 'WRITE | ', column.type.column, column.type.prop, value);
   }
 }
