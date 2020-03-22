@@ -83,10 +83,11 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     // console.log(this.index, 'READ', column.type.column, column.type.prop);
     const { type } = column;
     const { prop } = type;
-    const target = TypeTarget.parse(type.target);
 
+    const target = TypeTarget.parse(type.target);
     if (!target.isValid) {
-      return;
+      const err = `Cannot read property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
+      throw new Error(err);
     }
 
     if (target.isInline) {
@@ -121,6 +122,21 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   }
 
   private writeProp(column: ITypedColumnData, value: any) {
-    // console.log(this.index, 'WRITE | ', column.type.column, column.type.prop, value);
+    const { type } = column;
+    const { prop } = type;
+
+    const target = TypeTarget.parse(type.target);
+    if (!target.isValid) {
+      const err = `Cannot write property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
+      throw new Error(err);
+    }
+
+    if (target.isInline) {
+      column.data = TypeTarget.inline(type).write({ cell: column.data, data: value });
+    }
+
+    if (target.isRef) {
+      // TODO 🐷
+    }
   }
 }
