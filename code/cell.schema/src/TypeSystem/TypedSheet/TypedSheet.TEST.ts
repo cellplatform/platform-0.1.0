@@ -22,7 +22,7 @@ import { TypeSystem } from '..';
  * - read/write: linked sheet
  */
 
-describe.only('TypedSheet', () => {
+describe('TypedSheet', () => {
   it.skip('read/write primitive types', () => {}); // tslint:disable-line
   it.skip('read/write ref (singular) - linked sheet', () => {}); // tslint:disable-line
   it.skip('read/write ref (array/list) - linked sheet', () => {}); // tslint:disable-line
@@ -55,8 +55,20 @@ describe.only('TypedSheet', () => {
         implements: 'ns:foo',
         defs: TYPE_DEFS,
         rows: [
-          { title: 'One', isEnabled: true, color: { label: 'background', color: 'red' } },
-          { title: 'Two', isEnabled: false, color: { label: 'foreground', color: 'blue' } },
+          {
+            title: 'One',
+            isEnabled: true,
+            color: { label: 'background', color: 'red' },
+            message: null,
+            messages: [],
+          },
+          {
+            title: 'Two',
+            isEnabled: false,
+            color: { label: 'foreground', color: 'blue' },
+            message: null,
+            messages: [],
+          },
         ],
       });
     };
@@ -92,7 +104,13 @@ describe.only('TypedSheet', () => {
       expect(cursor.row(99)).to.not.eql(undefined);
     });
 
-    it.skip('read prop: default value', () => {}); // tslint:disable-line
+    it.skip('read prop: default value', async () => {
+      const { sheet } = await testSheet();
+      const cursor = await sheet.cursor();
+
+      const row = cursor.row(99);
+      expect(row.props.title).to.not.eql(undefined); // Should get default value.
+    });
 
     it('read prop: inline', async () => {
       const { sheet } = await testSheet();
@@ -100,11 +118,9 @@ describe.only('TypedSheet', () => {
 
       const row1 = cursor.row(0);
       const row2 = cursor.row(1);
-      const row3 = cursor.row(2);
 
       expect(row1).to.not.eql(undefined);
       expect(row2).to.not.eql(undefined);
-      expect(row3).to.not.eql(undefined);
 
       expect(row1.props.title).to.eql('One');
       expect(row1.props.isEnabled).to.eql(true);
@@ -115,14 +131,27 @@ describe.only('TypedSheet', () => {
       expect(row2.props.color).to.eql({ label: 'foreground', color: 'blue' });
     });
 
-    it('write prop: inline', async () => {
+    it.skip('read prop: ref', async () => {
+      const { sheet } = await testSheet();
+      const cursor = await sheet.cursor();
+
+      const row = cursor.row(0);
+
+      console.log('row.props.title', row.props.title);
+      console.log('row.props.message', row.props.message);
+      console.log('-------------------------------------------');
+      // console.log('row', row);
+    });
+
+    it('write prop: inline (scalar | object)', async () => {
       const { sheet } = await testSheet();
       const cursor = await sheet.cursor();
       const row = cursor.row(0);
 
       expect(row.props.title).to.eql('One');
       expect(row.props.color).to.eql({ label: 'background', color: 'red' });
-      expect(row.props.msg).to.eql(undefined);
+      expect(row.props.message).to.eql(undefined);
+      expect(row.props.isEnabled).to.eql(true);
 
       row.props.title = 'hello';
       row.props.color = { label: 'background', color: 'green', description: 'Yo' };
@@ -131,14 +160,28 @@ describe.only('TypedSheet', () => {
 
       row.props.title = '';
       row.props.color = undefined;
-      row.props.msg = null;
 
       expect(row.props.title).to.eql('');
       expect(row.props.color).to.eql(undefined);
-      expect(row.props.msg).to.eql(null);
     });
 
-    it.skip('dot into child complex objects (synthetic read/write props)', () => {}); // tslint:disable-line
+    it.skip('write prop: inline (null)', async () => {
+      const { sheet } = await testSheet();
+      const cursor = await sheet.cursor();
+      const row = cursor.row(0);
+
+      expect(row.props.isEnabled).to.eql(true);
+
+      row.props.isEnabled = false;
+      expect(row.props.isEnabled).to.eql(false);
+
+      row.props.isEnabled = null;
+      expect(row.props.isEnabled).to.eql(null);
+
+      // expect(row.props.message).to.eql(null);
+    });
+
+    it.skip('dot into child object (synthetic read/write props)', () => {}); // tslint:disable-line
 
     it.skip('query (paging: index/skip)', () => {}); // tslint:disable-line
   });

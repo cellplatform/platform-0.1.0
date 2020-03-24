@@ -16,11 +16,14 @@ export const TYPE_DEFS: SampleTypeDefs = {
     ns: { type: { typename: 'MyRow' } },
     columns: {
       A: { props: { prop: { name: 'title', type: 'string' } } },
-      B: { props: { prop: { name: 'isEnabled', type: 'boolean', target: 'inline:isEnabled' } } },
+      B: {
+        props: { prop: { name: 'isEnabled', type: 'boolean | null', target: 'inline:isEnabled' } },
+      },
       C: {
         props: { prop: { name: 'color?', type: 'ns:foo.color', target: 'inline:color' } },
       },
-      D: { props: { prop: { name: 'msg', type: 'ns:foo.message | null', target: 'inline:bg' } } },
+      D: { props: { prop: { name: 'message', type: 'ns:foo.message | null', target: 'ref' } } },
+      E: { props: { prop: { name: 'messages', type: 'ns:foo.message[]', target: 'ref' } } },
     },
   },
 
@@ -56,8 +59,8 @@ export const TYPE_DEFS: SampleTypeDefs = {
     ns: { type: { typename: 'MyMessages' } },
     columns: {
       A: { props: { prop: { name: 'channel', type: 'string' } } },
-      B: { props: { prop: { name: 'color', type: 'ns:foo.color' } } },
-      C: { props: { prop: { name: 'messages', type: 'ns:foo.message[]' } } },
+      B: { props: { prop: { name: 'color', type: 'ns:foo.color', target: 'ref' } } },
+      C: { props: { prop: { name: 'messages', type: 'ns:foo.message[]', target: 'ref' } } },
     },
   },
 

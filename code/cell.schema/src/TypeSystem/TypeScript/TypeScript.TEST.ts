@@ -135,7 +135,7 @@ describe('TypeScript', () => {
 
       expect(res).to.include(`export declare type MyRow = {`);
       expect(res).to.include(`  color?: MyColor;`);
-      expect(res).to.include(`  msg: MyMessage | null;`);
+      expect(res).to.include(`  message: MyMessage | null;`);
 
       expect(res).to.include(`export declare type MyColor = {`);
       expect(res).to.include(`  label: string;`);

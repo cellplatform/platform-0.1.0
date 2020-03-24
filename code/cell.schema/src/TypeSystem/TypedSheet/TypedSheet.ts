@@ -6,6 +6,12 @@ import { TypeClient } from '../TypeClient';
 import { fetcher } from '../util';
 import { TypedSheetCursor } from './TypedSheetCursor';
 
+export type ITypedSheetCtx = {
+  fetch: t.ISheetFetcher;
+  events$: t.Subject<t.TypedSheetEvent>;
+  cache: t.IMemoryCache;
+};
+
 const fromClient = (client: t.IHttpClient) => {
   const fetch = fetcher.fromClient(client);
   return {
@@ -25,8 +31,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     events$?: t.Subject<t.TypedSheetEvent>;
     cache?: t.IMemoryCache;
   }) {
-    const { fetch, events$ } = args;
-    const cache = args.cache || MemoryCache.create();
+    const { fetch, events$, cache } = args;
     const sheetNs = util.formatNs(args.ns);
 
     // Retrieve type definition for sheet.
@@ -56,14 +61,18 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     typeDef: t.INsTypeDef;
     fetch: t.ISheetFetcher;
     events$?: t.Subject<t.TypedSheetEvent>;
-    cache: t.IMemoryCache;
+    cache?: t.IMemoryCache;
   }) {
-    this.fetch = args.fetch;
+    this.ctx = {
+      fetch: args.fetch,
+      cache: args.cache || MemoryCache.create(),
+      events$: args.events$ || new Subject<t.TypedSheetEvent>(),
+    };
+
+    // this.fetch = args.fetch;
     this.uri = args.sheetNs;
     this.typeDef = args.typeDef;
-    this.cache = args.cache;
-    this._events$ = args.events$ || new Subject<t.TypedSheetEvent>();
-    this.events$ = this._events$.asObservable().pipe(takeUntil(this._dispose$), share());
+    this.events$ = this.ctx.events$.asObservable().pipe(takeUntil(this._dispose$), share());
     this.errorList = ErrorList.create({
       defaultType: ERROR.TYPE.SHEET,
       errors: this.typeDef.errors,
@@ -78,8 +87,9 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   /**
    * [Fields]
    */
-  private readonly cache: t.IMemoryCache;
-  private readonly fetch: t.ISheetFetcher;
+  private readonly ctx: ITypedSheetCtx;
+  // private readonly cache: t.IMemoryCache;
+  // private readonly fetch: t.ISheetFetcher;
   private readonly typeDef: t.INsTypeDef;
   private readonly errorList: ErrorList;
 
@@ -88,7 +98,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.asObservable();
 
-  private readonly _events$: Subject<t.TypedSheetEvent>;
+  // private readonly _events$: Subject<t.TypedSheetEvent>;
   public readonly events$: Observable<t.TypedSheetEvent>;
 
   /**
@@ -117,13 +127,11 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   public async cursor(args: { index?: number; take?: number } = {}) {
     this.throwIfDisposed('cursor');
     const ns = this.uri;
-    const fetch = this.fetch;
+    const ctx = this.ctx;
     const types = this.types;
-    const cache = this.cache;
     const index = Math.max(0, defaultValue(args.index, 0));
-    const events$ = this._events$;
     const { take } = args;
-    return TypedSheetCursor.load<T>({ ns, fetch, types, cache, index, take, events$ });
+    return TypedSheetCursor.load<T>({ ns, types, index, take, ctx });
   }
 
   /**

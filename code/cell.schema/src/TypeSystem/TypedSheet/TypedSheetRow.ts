@@ -1,13 +1,18 @@
 import { t } from '../common';
 import { TypeTarget } from '../TypeTarget';
+import { TypedSheet } from '../TypedSheet';
+
+type TypedSheetRowCtx = {
+  fetch: t.ISheetFetcher;
+  events$: t.Subject<t.TypedSheetEvent>;
+  cache: t.IMemoryCache;
+};
 
 type ITypedSheetRowArgs = {
-  events$: t.Subject<t.TypedSheetEvent>;
   index: number;
   uri: string;
   columns: ITypedColumnData[];
-  exists: boolean;
-  cache: t.IMemoryCache;
+  ctx: TypedSheetRowCtx;
 };
 
 type ITypedColumnData = {
@@ -28,23 +33,19 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private constructor(args: ITypedSheetRowArgs) {
     this.index = args.index;
     this.uri = args.uri;
-    this.exists = args.exists;
-    this.cache = args.cache;
+    this.ctx = args.ctx;
     this._columns = args.columns;
-    this._events$ = args.events$;
   }
 
   /**
    * [Fields]
    */
-  private cache: t.IMemoryCache;
-  private readonly _events$: t.Subject<t.TypedSheetEvent>;
+  private readonly ctx: TypedSheetRowCtx;
   private readonly _columns: ITypedColumnData[] = [];
   private _props: t.ITypedSheetRowProps<T>;
 
   public readonly index: number;
   public readonly uri: string;
-  public exists: boolean;
 
   /**
    * [Properties]
@@ -91,6 +92,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     const { prop } = type;
 
     const target = TypeTarget.parse(type.target);
+
+    // console.log('target', target);
+
     if (!target.isValid) {
       const err = `Cannot read property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
       throw new Error(err);
@@ -102,6 +106,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
     if (target.isRef) {
       // TODO 🐷
+      console.log('read ref', column);
+      console.log('TypedSheet', TypedSheet);
     }
 
     // if (target.path === 'value') {

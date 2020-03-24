@@ -26,7 +26,7 @@ describe('TypeClient', () => {
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
-      expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C', 'D']);
+      expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
     });
 
     it('"foo" (without "ns:" prefix)', async () => {
@@ -35,7 +35,7 @@ describe('TypeClient', () => {
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
-      expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C', 'D']);
+      expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
     });
   });
 
@@ -505,8 +505,8 @@ describe('TypeClient', () => {
         expect(A.type.kind).to.eql('VALUE');
         expect(A.type.typename).to.eql('string');
 
-        expect(B.type.kind).to.eql('VALUE');
-        expect(B.type.typename).to.eql('boolean');
+        expect(B.type.kind).to.eql('UNION');
+        expect(B.type.typename).to.eql('boolean | null');
 
         expect(C.type.kind).to.eql('REF');
         expect(C.type.typename).to.eql('MyColor');
