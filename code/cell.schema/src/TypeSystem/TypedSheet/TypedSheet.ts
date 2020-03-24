@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { defaultValue, ERROR, ErrorList, t, Uri, util } from '../common';
+import { defaultValue, ERROR, ErrorList, t, Uri, util, MemoryCache } from '../common';
 import { TypeClient } from '../TypeClient';
 import { fetcher } from '../util';
 import { TypedSheetCursor } from './TypedSheetCursor';
@@ -23,8 +23,10 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     ns: string;
     fetch: t.ISheetFetcher;
     events$?: t.Subject<t.TypedSheetEvent>;
+    cache?: t.IMemoryCache;
   }) {
     const { fetch, events$ } = args;
+    const cache = args.cache || MemoryCache.create();
     const sheetNs = util.formatNs(args.ns);
 
     // Retrieve type definition for sheet.
@@ -43,7 +45,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     const typeDef = await TypeClient.load({ ns: typeNs, fetch });
 
     // Finish up.
-    return new TypedSheet<T>({ sheetNs, typeDef, fetch, events$ });
+    return new TypedSheet<T>({ sheetNs, typeDef, fetch, events$, cache });
   }
 
   /**
@@ -54,10 +56,12 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     typeDef: t.INsTypeDef;
     fetch: t.ISheetFetcher;
     events$?: t.Subject<t.TypedSheetEvent>;
+    cache: t.IMemoryCache;
   }) {
     this.fetch = args.fetch;
     this.uri = args.sheetNs;
     this.typeDef = args.typeDef;
+    this.cache = args.cache;
     this._events$ = args.events$ || new Subject<t.TypedSheetEvent>();
     this.events$ = this._events$.asObservable().pipe(takeUntil(this._dispose$), share());
     this.errorList = ErrorList.create({
@@ -74,6 +78,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   /**
    * [Fields]
    */
+  private readonly cache: t.IMemoryCache;
   private readonly fetch: t.ISheetFetcher;
   private readonly typeDef: t.INsTypeDef;
   private readonly errorList: ErrorList;
@@ -114,10 +119,11 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     const ns = this.uri;
     const fetch = this.fetch;
     const types = this.types;
+    const cache = this.cache;
     const index = Math.max(0, defaultValue(args.index, 0));
     const events$ = this._events$;
     const { take } = args;
-    return TypedSheetCursor.load<T>({ ns, fetch, types, index, take, events$ });
+    return TypedSheetCursor.load<T>({ ns, fetch, types, cache, index, take, events$ });
   }
 
   /**

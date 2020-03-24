@@ -1,16 +1,18 @@
 import { t } from '../common';
 import { TypeTarget } from '../TypeTarget';
 
-type ITypedColumnData = {
-  type: t.IColumnTypeDef;
-  data: t.ICellData;
-};
-
 type ITypedSheetRowArgs = {
+  events$: t.Subject<t.TypedSheetEvent>;
   index: number;
   uri: string;
   columns: ITypedColumnData[];
-  events$: t.Subject<t.TypedSheetEvent>;
+  exists: boolean;
+  cache: t.IMemoryCache;
+};
+
+type ITypedColumnData = {
+  type: t.IColumnTypeDef;
+  data: t.ICellData;
 };
 
 /**
@@ -26,6 +28,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private constructor(args: ITypedSheetRowArgs) {
     this.index = args.index;
     this.uri = args.uri;
+    this.exists = args.exists;
+    this.cache = args.cache;
     this._columns = args.columns;
     this._events$ = args.events$;
   }
@@ -33,12 +37,14 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * [Fields]
    */
+  private cache: t.IMemoryCache;
   private readonly _events$: t.Subject<t.TypedSheetEvent>;
   private readonly _columns: ITypedColumnData[] = [];
   private _props: t.ITypedSheetRowProps<T>;
 
   public readonly index: number;
   public readonly uri: string;
+  public exists: boolean;
 
   /**
    * [Properties]

@@ -30,5 +30,6 @@ export * from './types.TypeSystem';
 export * from './types.TypeSystem.ast';
 export * from './types.TypeSystem.cell';
 export * from './types.TypeSystem.def';
+export * from './types.TypeSystem.events';
 export * from './types.TypeSystem.fetch';
 export * from './types.TypeSystem.sheet';

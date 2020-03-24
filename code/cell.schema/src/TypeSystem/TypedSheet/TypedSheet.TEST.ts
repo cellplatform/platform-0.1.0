@@ -22,16 +22,13 @@ import { TypeSystem } from '..';
  * - read/write: linked sheet
  */
 
-describe('TypedSheet', () => {
+describe.only('TypedSheet', () => {
   it.skip('read/write primitive types', () => {}); // tslint:disable-line
   it.skip('read/write ref (singular) - linked sheet', () => {}); // tslint:disable-line
   it.skip('read/write ref (array/list) - linked sheet', () => {}); // tslint:disable-line
 
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
-
-  it.skip('write to non-existent row (new row auto-generated)', () => {}); // tslint:disable-line
-  it.skip('', () => {}); // tslint:disable-line
 
   describe('errors', () => {
     it('error: 404 instance namespace "type.implements" reference not found', async () => {
@@ -64,10 +61,41 @@ describe('TypedSheet', () => {
       });
     };
 
-    it('inline: read (prop)', async () => {
+    const testSheet = async () => {
       const ns = 'ns:foo.mySheet';
       const fetch = await testCursorFetch();
       const sheet = await TypeSystem.Sheet.load<g.MyRow>({ fetch, ns });
+      return { ns, fetch, sheet };
+    };
+
+    it('throw: row out-of-bounds (-1)', async () => {
+      const { sheet } = await testSheet();
+      const cursor = await sheet.cursor();
+      const err = /Row index must be >=0/;
+      expect(() => cursor.row(-1)).to.throw(err);
+      expect(() => cursor.props(-1)).to.throw(err);
+    });
+
+    it('exists', async () => {
+      const { sheet } = await testSheet();
+      const cursor = await sheet.cursor();
+
+      expect(cursor.exists(-1)).to.eql(false);
+      expect(cursor.exists(0)).to.eql(true);
+      expect(cursor.exists(99)).to.eql(false);
+    });
+
+    it('retrieves non-existent row', async () => {
+      const { sheet } = await testSheet();
+      const cursor = await sheet.cursor();
+      expect(cursor.exists(99)).to.eql(false);
+      expect(cursor.row(99)).to.not.eql(undefined);
+    });
+
+    it.skip('read prop: default value', () => {}); // tslint:disable-line
+
+    it('read prop: inline', async () => {
+      const { sheet } = await testSheet();
       const cursor = await sheet.cursor();
 
       const row1 = cursor.row(0);
@@ -76,58 +104,41 @@ describe('TypedSheet', () => {
 
       expect(row1).to.not.eql(undefined);
       expect(row2).to.not.eql(undefined);
-      expect(row3).to.eql(undefined);
+      expect(row3).to.not.eql(undefined);
 
-      if (row1) {
-        expect(row1.title).to.eql('One');
-        expect(row1.isEnabled).to.eql(true);
-        expect(row1.color).to.eql({ label: 'background', color: 'red' });
-      }
+      expect(row1.props.title).to.eql('One');
+      expect(row1.props.isEnabled).to.eql(true);
+      expect(row1.props.color).to.eql({ label: 'background', color: 'red' });
 
-      if (row2) {
-        expect(row2.title).to.eql('Two');
-        expect(row2.isEnabled).to.eql(false);
-        expect(row2.color).to.eql({ label: 'foreground', color: 'blue' });
-      }
+      expect(row2.props.title).to.eql('Two');
+      expect(row2.props.isEnabled).to.eql(false);
+      expect(row2.props.color).to.eql({ label: 'foreground', color: 'blue' });
     });
 
-    it.only('inline: write (prop)', async () => {
-      const ns = 'ns:foo.mySheet';
-      const fetch = await testCursorFetch();
-      const sheet = await TypeSystem.Sheet.load<g.MyRow>({ fetch, ns });
+    it('write prop: inline', async () => {
+      const { sheet } = await testSheet();
       const cursor = await sheet.cursor();
+      const row = cursor.row(0);
 
-      const row1 = cursor.row(0);
-      const row9 = cursor.row(8);
+      expect(row.props.title).to.eql('One');
+      expect(row.props.color).to.eql({ label: 'background', color: 'red' });
+      expect(row.props.msg).to.eql(undefined);
 
-      if (row1) {
-        expect(row1.title).to.eql('One');
-        expect(row1.color).to.eql({ label: 'background', color: 'red' });
-        expect(row1.msg).to.eql(undefined);
+      row.props.title = 'hello';
+      row.props.color = { label: 'background', color: 'green', description: 'Yo' };
+      expect(row.props.title).to.eql('hello');
+      expect(row.props.color).to.eql({ label: 'background', color: 'green', description: 'Yo' });
 
-        row1.title = 'hello';
-        row1.color = { label: 'background', color: 'green', description: 'Yo' };
-        expect(row1.title).to.eql('hello');
-        expect(row1.color).to.eql({ label: 'background', color: 'green', description: 'Yo' });
+      row.props.title = '';
+      row.props.color = undefined;
+      row.props.msg = null;
 
-        row1.title = '';
-        row1.color = undefined;
-        row1.msg = null;
-
-        expect(row1.title).to.eql('');
-        expect(row1.color).to.eql(undefined);
-        expect(row1.msg).to.eql(null);
-      }
-
-      if (row9) {
-        /**
-         * TODO 🐷
-         * - write to row that does not yet exist!
-         */
-
-        row9.title = 'foo';
-      }
+      expect(row.props.title).to.eql('');
+      expect(row.props.color).to.eql(undefined);
+      expect(row.props.msg).to.eql(null);
     });
+
+    it.skip('dot into child complex objects (synthetic read/write props)', () => {}); // tslint:disable-line
 
     it.skip('query (paging: index/skip)', () => {}); // tslint:disable-line
   });
