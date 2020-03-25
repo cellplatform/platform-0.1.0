@@ -1,4 +1,4 @@
-import { t, fs, constants, Schema, util } from '../common';
+import { log, constants, fs, Schema, t } from '../common';
 
 export type IConfigDirArgs = {
   dir?: string;
@@ -30,6 +30,28 @@ export class ConfigDir implements t.IFsConfigDir {
 
   public static async load(args: IConfigDirArgs) {
     return ConfigDir.create(args).load();
+  }
+
+  public static logInvalid(config: t.IFsConfigDir) {
+    const isValid = config.isValid;
+
+    if (!isValid) {
+      const cmd = (name: string, alias: string) => {
+        return `${log.cyan(name)} (${log.cyan(alias)})`;
+      };
+
+      log.warn(`The configuration file is invalid. file: ${config.file}`);
+      const errors = config.validate().errors;
+      errors.forEach(err => {
+        log.info();
+        log.info.gray(`${log.red('ERROR')} ${err.message}`);
+      });
+
+      log.info();
+      log.info.green('Help');
+      log.info.gray(`• Use ${cmd('dir --configure', '-c')} to reconfigure the folder`);
+    }
+    return !isValid;
   }
 
   /**
