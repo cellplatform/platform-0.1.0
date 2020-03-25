@@ -1,2 +1,2 @@
-export * from './ConfigDir';
+export * from '../ConfigFile';
 export * from './promptConfig';

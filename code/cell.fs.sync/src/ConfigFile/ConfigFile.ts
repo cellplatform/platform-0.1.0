@@ -1,10 +1,10 @@
 import { log, constants, fs, Schema, t } from '../common';
 
-export type IConfigDirArgs = {
+type IConfigFileArgs = {
   dir?: string;
 };
 
-export const DEFAULT: t.IFsConfigDirData = {
+export const DEFAULT: t.IConfigFileData = {
   host: '',
   target: '',
 };
@@ -23,16 +23,16 @@ export const CONFIG = {
 /**
  * Configuration instructions for a filesystem directory.
  */
-export class ConfigDir implements t.IFsConfigDir {
-  public static create(args: IConfigDirArgs = {}) {
-    return new ConfigDir(args);
+export class ConfigFile implements t.IConfigFile {
+  public static create(args: IConfigFileArgs = {}) {
+    return new ConfigFile(args);
   }
 
-  public static async load(args: IConfigDirArgs) {
-    return ConfigDir.create(args).load();
+  public static async load(args: IConfigFileArgs) {
+    return ConfigFile.create(args).load();
   }
 
-  public static logInvalid(config: t.IFsConfigDir) {
+  public static logInvalid(config: t.IConfigFile) {
     const isValid = config.isValid;
 
     if (!isValid) {
@@ -57,7 +57,7 @@ export class ConfigDir implements t.IFsConfigDir {
   /**
    * [Lifecycle]
    */
-  private constructor(args: IConfigDirArgs) {
+  private constructor(args: IConfigFileArgs) {
     this.dir = fs.resolve(args.dir || __dirname);
     this.file = fs.join(this.dir, '.cell/config.yml');
     this.data = { ...DEFAULT };
@@ -69,7 +69,7 @@ export class ConfigDir implements t.IFsConfigDir {
   public readonly dir: string;
   public readonly file: string;
   public exists: boolean | null = null;
-  public data: t.IFsConfigDirData;
+  public data: t.IConfigFileData;
 
   /**
    * [Properties]
@@ -98,7 +98,7 @@ export class ConfigDir implements t.IFsConfigDir {
   /**
    * [Methods]
    */
-  public async load(): Promise<t.IFsConfigDir> {
+  public async load(): Promise<t.IConfigFile> {
     await fs.ensureDir(fs.dirname(this.file));
     this.exists = await fs.pathExists(this.file);
     if (this.exists) {
@@ -107,7 +107,7 @@ export class ConfigDir implements t.IFsConfigDir {
     return this;
   }
 
-  public async save(data?: t.IFsConfigDirData): Promise<t.IFsConfigDir> {
+  public async save(data?: t.IConfigFileData): Promise<t.IConfigFile> {
     this.data = { ...(data || this.data) };
     if (!this.validate().isValid) {
       const uri = this.target.uri;

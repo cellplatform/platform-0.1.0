@@ -1,4 +1,4 @@
-import { ConfigDir, defaultValue, log, promptConfig, t, util } from '../common';
+import { ConfigFile, defaultValue, log, promptConfig, t, util } from '../common';
 import { formatLength } from '../util';
 import { runSync } from './dirSync.sync';
 import { watchDir } from './dirSync.watch';
@@ -20,7 +20,7 @@ export async function dirSync(args: {
 }) {
   // Retrieve (or build) configuration file the directory.
   const config = await promptConfig({ dir: args.dir });
-  if (ConfigDir.logInvalid(config)) {
+  if (ConfigFile.logInvalid(config)) {
     return;
   }
 

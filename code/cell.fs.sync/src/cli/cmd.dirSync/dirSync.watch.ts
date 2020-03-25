@@ -32,7 +32,7 @@ const logDivider = (show?: boolean) => {
  * Sarts a file-watcher on the directory.
  */
 export async function watchDir(args: {
-  config: t.IFsConfigDir;
+  config: t.IConfigFile;
   silent: boolean;
   sync: t.FsSyncRunCurry;
   debounce?: number;

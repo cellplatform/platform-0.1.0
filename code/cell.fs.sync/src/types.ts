@@ -5,27 +5,27 @@ export * from '@platform/cell.types/lib/types/types.fs.sync';
 /**
  * Config
  */
-export type IFsConfigDir = {
+export type IConfigFile = {
   exists: boolean | null;
   isValid: boolean;
   dir: string;
   file: string;
-  data: IFsConfigDirData;
+  data: IConfigFileData;
   target: {
     uri: t.IUriParts<t.ICellUri>;
     url: string;
   };
-  load(): Promise<IFsConfigDir>;
-  save(data?: IFsConfigDirData): Promise<IFsConfigDir>;
-  validate(): IFsConfigDirValidation;
+  load(): Promise<IConfigFile>;
+  save(data?: IConfigFileData): Promise<IConfigFile>;
+  validate(): IConfigFileValidation;
 };
 
-export type IFsConfigDirData = {
+export type IConfigFileData = {
   host: string;
   target: string; // URI: ns|cell
 };
 
-export type IFsConfigDirValidation = {
+export type IConfigFileValidation = {
   isValid: boolean;
   errors: t.IError[];
 };
@@ -38,7 +38,7 @@ export type FsSyncLogResults = (args: Partial<IFsSyncResults>) => void;
 
 export type FsSyncGetPayload = (args: IFsSyncGetPayloadArgs) => Promise<IFsSyncPayload>;
 export type IFsSyncGetPayloadArgs = {
-  config: IFsConfigDir;
+  config: IConfigFile;
   silent?: boolean;
   force?: boolean;
   delete?: boolean;
@@ -48,7 +48,7 @@ export type FsSyncRun = (args: IFsSyncRunArgs) => Promise<IFsRunSyncResponse>;
 export type FsSyncRunCurry = (override?: Partial<IFsSyncRunArgs>) => Promise<IFsRunSyncResponse>;
 
 export type IFsSyncRunArgs = {
-  config: t.IFsConfigDir;
+  config: t.IConfigFile;
   dir: string;
   prompt: boolean;
   maxBytes: number;
