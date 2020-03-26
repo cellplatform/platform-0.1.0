@@ -854,10 +854,13 @@ describe('TypeClient', () => {
         const res = await ts.save(fs, dir);
 
         expect(res.path.endsWith('/d/MyRow.d.ts')).to.eql(true);
-        expect(res.data).to.eql(ts.declaration); // NB: same as `ts.toString()`
 
-        const file = await fs.readFile(fs.join(dir, 'MyRow.d.ts'));
-        expect(file.toString()).to.eql(ts.toString()); // NB: same as `ts.declaration`
+        const file = (await fs.readFile(fs.join(dir, 'MyRow.d.ts'))).toString();
+
+        expect(file).to.include(`import * as t from './MyRow.d.ts';`);
+        expect(file).to.include(`export declare type MyRow = {`);
+        expect(file).to.include(`export declare type MyColor = {`);
+        expect(file).to.include(`export declare type MyMessage = {`);
       });
 
       it('dir and filename (explicitly passed)', async () => {
@@ -871,11 +874,18 @@ describe('TypeClient', () => {
         expect(res1.path.endsWith('/d/Foo.txt.d.ts')).to.eql(true);
         expect(res2.path.endsWith('/d/Foo.d.ts')).to.eql(true);
 
-        const file1 = await fs.readFile(fs.join(dir, 'Foo.txt.d.ts'));
-        const file2 = await fs.readFile(fs.join(dir, 'Foo.d.ts'));
+        const file1 = (await fs.readFile(fs.join(dir, 'Foo.txt.d.ts'))).toString();
+        const file2 = (await fs.readFile(fs.join(dir, 'Foo.d.ts'))).toString();
 
-        expect(file1.toString()).to.eql(ts.toString());
-        expect(file2.toString()).to.eql(ts.toString());
+        expect(file1).to.include(`import * as t from './Foo.txt.d.ts';`);
+        expect(file1).to.include(`export declare type MyRow = {`);
+        expect(file1).to.include(`export declare type MyColor = {`);
+        expect(file1).to.include(`export declare type MyMessage = {`);
+
+        expect(file2).to.include(`import * as t from './Foo.d.ts';`);
+        expect(file2).to.include(`export declare type MyRow = {`);
+        expect(file2).to.include(`export declare type MyColor = {`);
+        expect(file2).to.include(`export declare type MyMessage = {`);
       });
     });
   });

@@ -51,10 +51,13 @@ export function typescript(def: t.INsTypeDef, options: { header?: boolean } = {}
       let path = fs.join(dir, options.filename || def.typename);
       path = path.endsWith('.d.ts') ? path : `${path}.d.ts`;
 
+      // Generate the typescript.
+      const filename = path.substring(path.lastIndexOf('/') + 1);
+      const text = api.declaration.replace(/\<filename\>\.d\.ts/g, filename);
+
       // Save file.
-      const data = api.declaration;
-      await fs.writeFile(path, data);
-      return { path, data };
+      await fs.writeFile(path, text);
+      return { path, text };
     },
 
     toString() {
