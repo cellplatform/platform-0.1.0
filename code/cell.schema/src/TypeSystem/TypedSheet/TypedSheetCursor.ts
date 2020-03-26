@@ -73,10 +73,6 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     return this.rows[rowIndex];
   }
 
-  public props(rowIndex: number): t.ITypedSheetRowProps<T> {
-    return this.row(rowIndex)?.props;
-  }
-
   /**
    * [Internal]
    */

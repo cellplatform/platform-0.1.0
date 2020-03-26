@@ -144,7 +144,7 @@ describe('TypeTarget', () => {
       expect(res5).to.eql({}); // NB: value field deleted.
 
       const res6 = TypeTarget.inline(type).write({ data: null, cell: { value: 'foo' } });
-      expect(res6).to.eql({}); // NB: value field deleted.
+      expect(res6).to.eql({ value: null }); // NB: value field NOT deleted.
     });
 
     it('write: cell.props.[xxx]', () => {
@@ -172,6 +172,8 @@ describe('TypeTarget', () => {
       test('inline:x', { props: { x: 1, y: 2 } }, 99, { props: { x: 99, y: 2 } });
       test('inline:x', { props: { x: 1, y: 2 } }, undefined, { props: { y: 2 } }); // NB: deleted.
       test('inline:x', { props: { x: 1 } }, undefined, {}); // NB: deleted, collapses props.
+
+      test('inline:x', { props: { x: 123 } }, null, { props: { x: null } });
     });
   });
 

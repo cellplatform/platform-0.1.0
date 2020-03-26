@@ -106,8 +106,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
     if (target.isRef) {
       // TODO 🐷
-      console.log('read ref', column);
-      console.log('TypedSheet', TypedSheet);
+      // console.log('read ref', column);
+      // console.log('TypedSheet', TypedSheet);
     }
 
     // if (target.path === 'value') {

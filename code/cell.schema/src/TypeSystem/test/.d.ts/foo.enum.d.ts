@@ -2,7 +2,7 @@
  * Generated types defined in namespace:
  * 
  *    |                
- *    |➔  ns:foo
+ *    |➔  ns:foo.enum
  *    |
  * 
  * By:
@@ -21,22 +21,8 @@
  * 
  */
 
-export declare type MyRow = {
-  title: string;
-  isEnabled: boolean | null;
-  color?: MyColor;
-  message: MyMessage | null;
-  messages: MyMessage;
-};
-
-export declare type MyColor = {
-  label: string;
-  color: 'red' | 'green' | 'blue';
-  description?: string;
-};
-
-export declare type MyMessage = {
-  date: number;
-  user: string;
-  message: string;
+export declare type Enum = {
+  single?: 'hello';
+  union: 'red' | 'green' | 'blue'[];
+  array: ('red' | 'green' | 'blue')[];
 };

@@ -36,6 +36,7 @@ describe('squash', () => {
     test({ grid: {} });
     test({ grid: { height: 0 } }, { grid: { height: 0 } });
     test({ grid: { height: 123 } }, { grid: { height: 123 } });
+    test({ foo: null } as any, { foo: null }); // NB: [null] values retained (not the same as [undefined]).
   });
 
   it('squash.props (column)', () => {
@@ -49,6 +50,7 @@ describe('squash', () => {
     test({ grid: {} });
     test({ grid: { width: 0 } }, { grid: { width: 0 } });
     test({ grid: { width: 123 } }, { grid: { width: 123 } });
+    test({ foo: null } as any, { foo: null }); // NB: [null] values retained (not the same as [undefined]).
   });
 
   it('squash.cell', () => {
@@ -59,7 +61,6 @@ describe('squash', () => {
     test();
     test({});
     test({ value: undefined });
-    test({ value: null });
     test({ value: 123 }, { value: 123 });
     test({ value: 123, links: {} }, { value: 123 });
     test({ value: 0, links: {} }, { value: 0 });
@@ -71,6 +72,7 @@ describe('squash', () => {
     );
 
     test({ value: undefined }, {}, {}); // NB: Squash to {} not undefined.
+    test({ value: null }, { value: null }); // NB: [null] values retained (not the same as [undefined]).
   });
 
   it('squash.object', () => {
@@ -84,7 +86,9 @@ describe('squash', () => {
     test({ foo: undefined, hash: 'sha256...' });
     test({ foo: 123, hash: 'sha256...' }, { foo: 123, hash: 'sha256...' });
     test({ foo: undefined });
-    test({ foo: null });
-    test({ foo: { value: null } }, { foo: { value: null } }); // NB: null only squashed on root keys.
+
+    // NB: [null] values retained (not the same as [undefined]).
+    test({ foo: null }, { foo: null });
+    test({ foo: { value: null } }, { foo: { value: null } });
   });
 });

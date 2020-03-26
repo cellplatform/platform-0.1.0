@@ -1,4 +1,5 @@
 import { t } from '../common';
+import { TypeValue } from '../TypeValue';
 
 /**
  * Generate a typescript declaration file.
@@ -12,23 +13,16 @@ export function toDeclaration(args: { typename: string; types: t.ITypeDef[]; hea
 
     const childRefs: t.ITypeRef[] = [];
 
-    const toTypename = (type: t.IType): string => {
-      if (typeof type === 'string') {
-        return type;
-      }
+    const lines = args.types.map(item => {
+      const { prop, type } = item;
       if (type.kind === 'UNION') {
+        // Build up list of referenced types to ensure these are included in the output.
         type.types
           .filter(({ kind }) => kind !== 'UNION')
           .filter(({ kind }) => kind === 'REF')
           .forEach(ref => childRefs.push(ref as t.ITypeRef));
-        return type.types.map(type => toTypename(type)).join(' | '); // <== RECURSION 🌳
       }
-      return type.typename;
-    };
-
-    const lines = args.types.map(item => {
-      const prop = item.prop;
-      const typename = toTypename(item.type);
+      const typename = TypeValue.toTypename(type);
       const optional = item.optional ? '?' : '';
       return `  ${prop}${optional}: ${typename};`;
     });

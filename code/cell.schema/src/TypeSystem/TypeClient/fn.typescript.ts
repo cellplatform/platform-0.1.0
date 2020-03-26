@@ -41,6 +41,11 @@ export function typescript(def: t.INsTypeDef, options: { header?: boolean } = {}
      * Save the typescript declarations as a binary file.
      */
     async save(fs: t.IFs, dir: string, options: { filename?: string } = {}) {
+      if (def.errors.length > 0) {
+        const errors = def.errors.map(err => err.message).join('\n');
+        throw new Error(`Cannot save definition to typescript as it contains errors.\n${errors}`);
+      }
+
       // Prepare paths.
       await fs.ensureDir(dir);
       let path = fs.join(dir, options.filename || def.typename);

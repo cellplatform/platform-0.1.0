@@ -232,7 +232,13 @@ async function readColumn(args: {
   }
 
   if (type.kind === 'UNION') {
-    await readUnionRefs({ level, ns, column, union: type, ctx });
+    const union = type;
+    await readUnionRefs({ level, ns, column, union, ctx });
+  }
+
+  if (type.kind === 'UNION') {
+    const union = type;
+    union.typename = TypeValue.toTypename(union);
   }
 
   const def: t.IColumnTypeDef = { column, prop, optional, type, target, error };

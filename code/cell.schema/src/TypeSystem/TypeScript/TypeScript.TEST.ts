@@ -19,34 +19,36 @@ describe('TypeScript', () => {
       test('undefined');
     });
 
-    it('type: string', () => {
-      const res = TypeScript.primitives.string;
-      expect(res.kind).to.eql('VALUE');
-      expect(res.typename).to.eql('string');
-    });
+    describe('type', () => {
+      it('string', () => {
+        const res = TypeScript.primitives.string;
+        expect(res.kind).to.eql('VALUE');
+        expect(res.typename).to.eql('string');
+      });
 
-    it('type: number', () => {
-      const res = TypeScript.primitives.number;
-      expect(res.kind).to.eql('VALUE');
-      expect(res.typename).to.eql('number');
-    });
+      it('number', () => {
+        const res = TypeScript.primitives.number;
+        expect(res.kind).to.eql('VALUE');
+        expect(res.typename).to.eql('number');
+      });
 
-    it('type: boolean', () => {
-      const res = TypeScript.primitives.boolean;
-      expect(res.kind).to.eql('VALUE');
-      expect(res.typename).to.eql('boolean');
-    });
+      it('boolean', () => {
+        const res = TypeScript.primitives.boolean;
+        expect(res.kind).to.eql('VALUE');
+        expect(res.typename).to.eql('boolean');
+      });
 
-    it('type: null', () => {
-      const res = TypeScript.primitives.null;
-      expect(res.kind).to.eql('VALUE');
-      expect(res.typename).to.eql('null');
-    });
+      it('null', () => {
+        const res = TypeScript.primitives.null;
+        expect(res.kind).to.eql('VALUE');
+        expect(res.typename).to.eql('null');
+      });
 
-    it('type: undefined', () => {
-      const res = TypeScript.primitives.undefined;
-      expect(res.kind).to.eql('VALUE');
-      expect(res.typename).to.eql('undefined');
+      it('undefined', () => {
+        const res = TypeScript.primitives.undefined;
+        expect(res.kind).to.eql('VALUE');
+        expect(res.typename).to.eql('undefined');
+      });
     });
   });
 
@@ -79,13 +81,13 @@ describe('TypeScript', () => {
       expect(res).to.include(`name: string;`);
     });
 
-    it('enum', () => {
+    it('enum (union)', () => {
       const color: t.ITypeUnion = {
         kind: 'UNION',
-        typename: '"red" | "blue"',
+        typename: '"red" | "blue"[]',
         types: [
           { kind: 'ENUM', typename: `'red'` },
-          { kind: 'ENUM', typename: `'blue'` },
+          { kind: 'ENUM', typename: `'blue'`, isArray: true },
         ],
       };
       const types = [{ prop: 'color', type: color }];
@@ -93,7 +95,26 @@ describe('TypeScript', () => {
       const res = TypeScript.toDeclaration({ typename, types });
 
       expect(res).to.include(`export declare type MyFoo = {`);
-      expect(res).to.include(`color: 'red' | 'blue';`);
+      expect(res).to.include(`color: 'red' | 'blue'[];`);
+    });
+
+    it('enum (array)', () => {
+      const color: t.ITypeUnion = {
+        kind: 'UNION',
+        typename: `('red' | 'green' | 'blue')[]`,
+        types: [
+          { kind: 'ENUM', typename: `'red'` },
+          { kind: 'ENUM', typename: `'green'` },
+          { kind: 'ENUM', typename: `'blue'` },
+        ],
+        isArray: true,
+      };
+      const types = [{ prop: 'color', type: color }];
+      const typename = 'MyFoo';
+      const res = TypeScript.toDeclaration({ typename, types });
+
+      expect(res).to.include(`export declare type MyFoo = {`);
+      expect(res).to.include(`color: ('red' | 'green' | 'blue')[];`);
     });
 
     it('multiple types (REF)', () => {

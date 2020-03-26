@@ -83,6 +83,52 @@ describe('TypeValue', () => {
     });
   });
 
+  describe('trim', () => {
+    it('trimArray', () => {
+      const test = (input: any, expected: string) => {
+        const res = TypeValue.trimArray(input);
+        expect(res).to.eql(expected, input);
+      };
+      test(undefined, '');
+      test({}, '');
+      test('', '');
+      test('  ', '');
+      test(' string[] ', 'string');
+      test(' (string | boolean)[] ', '(string | boolean)');
+    });
+
+    it('trimQuotes', () => {
+      const test = (input: any, expected: string) => {
+        const res = TypeValue.trimQuotes(input);
+        expect(res).to.eql(expected, input);
+      };
+      test(undefined, '');
+      test({}, '');
+      test('', '');
+      test(' ', '');
+      test(`'red'`, `red`);
+      test(`"red"`, `red`);
+      test(`  "red"  `, `red`);
+    });
+
+    it('trimParentheses', () => {
+      const test = (input: any, expected: string) => {
+        const res = TypeValue.trimParentheses(input);
+        expect(res).to.eql(expected, input);
+      };
+      test(undefined, '');
+      test({}, '');
+      test('', '');
+      test(' ', '');
+      test('()', '');
+      test('(  )', '');
+      test('(foo)', 'foo');
+      test('(  foo  )', 'foo');
+      test('(string | boolean)', 'string | boolean');
+      test('  (  string | boolean  )  ', 'string | boolean');
+    });
+  });
+
   describe('toType', () => {
     it('empty (UNKNOWN)', () => {
       const test = (input?: any) => {
@@ -101,7 +147,7 @@ describe('TypeValue', () => {
       const test = (input: string, isArray?: boolean) => {
         const res = TypeValue.toType(`  ${input}  `);
         expect(res.kind).to.eql('VALUE');
-        expect(res.typename).to.eql((input || '').trim());
+        expect(res.typename).to.eql(TypeValue.trimArray(input));
         expect(res.isArray).to.eql(isArray);
       };
 
@@ -142,7 +188,7 @@ describe('TypeValue', () => {
         test(`"red"`, `'red'`);
         test(`'blue'`, `'blue'`);
         test(`'  blue  '`, `'blue'`);
-        test(`"red"[]`, `'red'[]`, true);
+        test(`"red"[]`, `'red'`, true);
       });
 
       it('ENUM (union)', () => {
@@ -155,8 +201,10 @@ describe('TypeValue', () => {
           expect(res.types.every(t => t.kind === 'ENUM')).to.eql(true);
           expect(res.types.length).to.eql(3);
           expect(res.types[0].typename).to.eql(`'red'`);
+
           expect(res.types[1].typename).to.eql(`'blue'`);
-          expect(res.types[2].typename).to.eql(`'green'[]`);
+
+          expect(res.types[2].typename).to.eql(`'green'`);
           expect(res.types[2].isArray).to.eql(true);
         }
       });
@@ -251,7 +299,7 @@ describe('TypeValue', () => {
       const test = (input: string, isArray?: boolean) => {
         const res = TypeValue.parse(input).type;
         expect(res.kind).to.eql('VALUE');
-        expect(res.typename).to.eql(input.trim());
+        expect(res.typename).to.eql(TypeValue.trimArray(input.trim()));
         expect(res.isArray).to.eql(isArray);
       };
 
@@ -306,9 +354,9 @@ describe('TypeValue', () => {
           typename: `string | number[] | 'red' | 'blue'[]`,
           types: [
             { kind: 'VALUE', typename: 'string' },
-            { kind: 'VALUE', typename: 'number[]', isArray: true },
+            { kind: 'VALUE', typename: 'number', isArray: true },
             { kind: 'ENUM', typename: `'red'` },
-            { kind: 'ENUM', typename: `'blue'[]`, isArray: true },
+            { kind: 'ENUM', typename: `'blue'`, isArray: true },
           ],
         });
       });
@@ -364,7 +412,7 @@ describe('TypeValue', () => {
           typename: `(string | number[] | 'red')[]`,
           types: [
             { kind: 'VALUE', typename: 'string' },
-            { kind: 'VALUE', typename: 'number[]', isArray: true },
+            { kind: 'VALUE', typename: 'number', isArray: true },
             { kind: 'ENUM', typename: `'red'` },
           ],
           isArray: true,
@@ -443,6 +491,61 @@ describe('TypeValue', () => {
       expect(res2.kind).to.eql('GROUP[]');
       expect(res2.text).to.eql('boolean | ns:foo');
       expect(res2.next).to.eql('');
+    });
+  });
+
+  describe('toTypename', () => {
+    const toTypename = TypeValue.toTypename;
+
+    it('string', () => {
+      expect(toTypename('string')).to.eql('string');
+      expect(toTypename(`"red"`)).to.eql(`'red'`);
+    });
+
+    it('isArray', () => {
+      const type: t.ITypeValue = { kind: 'VALUE', typename: 'string' };
+      expect(toTypename({ ...type })).to.eql('string');
+      expect(toTypename({ ...type, isArray: true })).to.eql('string[]');
+    });
+
+    it('union', () => {
+      const union: t.ITypeUnion = {
+        kind: 'UNION',
+        typename: '',
+        types: [
+          { kind: 'ENUM', typename: `"red"` },
+          { kind: 'ENUM', typename: `"green"`, isArray: true },
+          { kind: 'REF', typename: ``, uri: 'ns:foo', scope: 'NS', types: [] },
+          { kind: 'REF', typename: `MyFoo`, uri: 'ns:foo', scope: 'NS', types: [] },
+          { kind: 'VALUE', typename: `string` },
+        ],
+      };
+      const res1 = toTypename(union);
+      const res2 = toTypename({ ...union, isArray: true });
+      expect(res1).to.eql(`'red' | 'green'[] | ns:foo | MyFoo | string`);
+      expect(res2).to.eql(`('red' | 'green'[] | ns:foo | MyFoo | string)[]`);
+    });
+
+    it('grouping', () => {
+      const union: t.ITypeUnion = {
+        kind: 'UNION',
+        typename: '',
+        types: [
+          { kind: 'VALUE', typename: `boolean` },
+          {
+            kind: 'UNION',
+            typename: '',
+            types: [
+              { kind: 'REF', typename: '', uri: 'ns:foo', scope: 'NS', types: [] },
+              { kind: 'VALUE', typename: `string` },
+            ],
+          },
+        ],
+      };
+
+      const res = toTypename({ ...union, isArray: true });
+      expect(toTypename(union)).to.eql('boolean | (ns:foo | string)');
+      expect(toTypename({ ...union, isArray: true })).to.eql('(boolean | (ns:foo | string))[]');
     });
   });
 });

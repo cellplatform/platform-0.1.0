@@ -25,7 +25,6 @@ export type ITypedSheetCursor<T> = {
   readonly rows: ITypedSheetRow<T>[];
   exists(rowIndex: number): boolean;
   row(rowIndex: number): ITypedSheetRow<T>;
-  props(rowIndex: number): ITypedSheetRowProps<T>;
 };
 
 /**

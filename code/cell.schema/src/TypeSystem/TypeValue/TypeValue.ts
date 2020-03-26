@@ -80,6 +80,19 @@ export class TypeValue {
   }
 
   /**
+   * Removes containing parentheses "(...)"
+   */
+  public static trimParentheses(input?: string) {
+    return typeof input !== 'string'
+      ? ''
+      : (input || '')
+          .trim()
+          .replace(/^\(/, '')
+          .replace(/\)$/, '')
+          .trim();
+  }
+
+  /**
    * Parses an input 'type' declared on a column into a [Type] object.
    */
   public static parse(input?: string): Parsed {
@@ -145,21 +158,7 @@ export class TypeValue {
 
     // Clean up UNION typename.
     if (result.type.kind === 'UNION') {
-      const type = result.type;
-      let typename = type.types
-        .map(type => {
-          let typename = type.typename;
-          if (type.kind === 'UNION') {
-            typename = `(${typename})`;
-          }
-          if (type.kind === 'REF') {
-            typename = type.isArray ? `${type.uri}[]` : type.uri;
-          }
-          return typename;
-        })
-        .join(' | ');
-      typename = type.isArray ? `(${typename})[]` : typename;
-      result.type = { ...type, typename };
+      result.type.typename = TypeValue.toTypename(result.type);
     }
 
     // Finish up.
@@ -184,9 +183,10 @@ export class TypeValue {
     // Parse out VALUE types.
     const TYPES = ['string', 'number', 'boolean', 'null', 'undefined'];
     for (const type of TYPES) {
-      const match = isArray ? value.replace(/\[\]$/, '') : value;
+      const match = isArray ? TypeValue.trimArray(value) : value;
       if (type === match) {
-        const typename = value as t.ITypeValue['typename'];
+        const typename = match as t.ITypeValue['typename'];
+
         const type: t.ITypeValue = { kind: 'VALUE', typename, isArray };
         return deleteUndefined(type);
       }
@@ -213,7 +213,7 @@ export class TypeValue {
 
       const enums = value.split('|').map(item => {
         const isArray = TypeValue.isArray(item) ? true : undefined;
-        const typename = formatEnum(item, isArray);
+        const typename = formatEnum(item);
         const type: t.ITypeEnum = { kind: 'ENUM', typename, isArray };
         return deleteUndefined(type);
       });
@@ -231,5 +231,35 @@ export class TypeValue {
 
     // No match.
     return unknown;
+  }
+
+  /**
+   * Flattens the given type to a cononically formatted "typename".
+   */
+  public static toTypename(type: t.IType | string, options: { level?: number } = {}): string {
+    const { level = 0 } = options;
+
+    const done = (value: string) => {
+      value = value.replace(/"/g, `'`); // NB: Standard enum single-quotes (').
+      value = level === 0 && !TypeValue.isArray(value) ? TypeValue.trimParentheses(value) : value;
+      return value;
+    };
+    if (typeof type === 'string') {
+      return done(type);
+    }
+    if (type.kind === 'UNION') {
+      const union = type.types
+        .map(type => TypeValue.toTypename(type, { level: level + 1 }))
+        .join(' | '); // <== RECURSION 🌳
+      return done(type.isArray ? `(${union})[]` : `(${union})`);
+    }
+
+    let typename = type.typename;
+    if (!typename && type.kind === 'REF') {
+      typename = type.uri; // NB: The actual typename has not been resolved yet.
+    }
+
+    const array = type.isArray ? '[]' : '';
+    return done(`${typename}${array}`);
   }
 }
