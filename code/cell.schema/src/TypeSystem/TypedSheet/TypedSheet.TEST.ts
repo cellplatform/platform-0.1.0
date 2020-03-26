@@ -169,9 +169,9 @@ describe('TypedSheet', () => {
 
       const row = cursor.row(0);
 
-      console.log('row.props.title', row.props.title);
-      console.log('row.props.message', row.props.message);
-      console.log('-------------------------------------------');
+      // console.log('row.props.title', row.props.title);
+      // console.log('row.props.message', row.props.message);
+      // console.log('-------------------------------------------');
       // console.log('row', row);
     });
 
