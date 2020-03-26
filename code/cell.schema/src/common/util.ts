@@ -7,21 +7,24 @@ export function isHttp(input: string = '') {
 }
 
 /**
- * Determine if the given object is null/undefined of empty ({})
+ * Determine if the given object is [null/undefined] or empty ({})
  */
 export const isNilOrEmptyObject = (value: any, options: { ignoreHash?: boolean } = {}) => {
-  if (value === null) {
-    return true;
-  } else {
-    return value === undefined || isEmptyObject(value, options);
-  }
+  return value === null ? true : isUndefinedOrEmptyObject(value, options);
+};
+
+/**
+ * Determine if the given object is [undefined] or empty ({})
+ */
+export const isUndefinedOrEmptyObject = (value: any, options: { ignoreHash?: boolean } = {}) => {
+  return value === undefined ? true : isEmptyObject(value, options);
 };
 
 /**
  * Determine if the given object is empty ({})
  */
 export const isEmptyObject = (value: any, options: { ignoreHash?: boolean } = {}) => {
-  if (typeof value !== 'object') {
+  if (value === null || typeof value !== 'object') {
     return false;
   }
   const keys = options.ignoreHash

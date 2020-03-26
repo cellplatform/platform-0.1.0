@@ -94,13 +94,35 @@ describe('ns:', function() {
       await mock.dispose();
     });
 
-    it('squashes null values', async () => {
+    it('retains [null] values', async () => {
       const mock = await createMock();
 
       const payload: t.IReqPostNsBody = {
         cells: { A1: { value: 'hello', props: null } } as any, // NB: [any] because `null` is an illegal type.
         rows: { 1: { props: null } } as any,
         columns: { A: { props: null } } as any,
+      };
+      await http.post(mock.url('ns:foo'), payload);
+
+      const url = mock.url('ns:foo?data');
+      const res = await http.get(url);
+      await mock.dispose();
+
+      const json = res.json as any;
+      stripHashes(json.data); // NB: Ignore calculated hash values for the purposes of this test.
+
+      expect(json.data.cells).to.eql({ A1: { value: 'hello', props: null } });
+      expect(json.data.rows).to.eql({ 1: { props: null } });
+      expect(json.data.columns).to.eql({ A: { props: null } });
+    });
+
+    it('squashes [undefined] values', async () => {
+      const mock = await createMock();
+
+      const payload: t.IReqPostNsBody = {
+        cells: { A1: { value: 'hello', props: undefined } } as any,
+        rows: { 1: { props: undefined } } as any,
+        columns: { A: { props: undefined } } as any,
       };
       await http.post(mock.url('ns:foo'), payload);
 

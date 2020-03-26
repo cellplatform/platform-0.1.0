@@ -99,15 +99,15 @@ describe('FileLinks', () => {
     });
   });
 
-  describe('parseLink', () => {
+  describe('parse (key:value)', () => {
     it('throw: file URI not provided', () => {
-      const fn = () => FileLinks.parseLink('cell:foo!A1');
+      const fn = () => FileLinks.parseValue('cell:foo!A1');
       expect(fn).to.throw();
     });
 
     it('uri', () => {
       const test = (input: string, expected: string) => {
-        const res = FileLinks.parseLink(input);
+        const res = FileLinks.parseValue(input);
         expect(res.uri.toString()).to.eql(expected);
       };
       test('file:foo:123', 'file:foo:123');
@@ -118,8 +118,8 @@ describe('FileLinks', () => {
 
     it('hash', () => {
       const test = (input: string, expected?: string) => {
-        const res = FileLinks.parseLink(input);
-        expect(res.hash).to.eql(expected);
+        const res = FileLinks.parseValue(input);
+        expect(res.query.hash).to.eql(expected);
       };
       test('file:foo:123', undefined);
       test('file:foo:123?hash=abc', 'abc');
@@ -130,8 +130,8 @@ describe('FileLinks', () => {
 
     it('status', () => {
       const test = (input: string, expected?: string) => {
-        const res = FileLinks.parseLink(input);
-        expect(res.status).to.eql(expected);
+        const res = FileLinks.parseValue(input);
+        expect(res.query.status).to.eql(expected);
       };
       test('file:foo:123', undefined);
       test('file:foo:123?hash=abc', undefined);
@@ -141,7 +141,7 @@ describe('FileLinks', () => {
 
     it('toString', () => {
       const test = (input: string, expected: string) => {
-        const res = FileLinks.parseLink(input);
+        const res = FileLinks.parseValue(input);
         expect(res.toString()).to.eql(expected);
       };
 
@@ -155,8 +155,8 @@ describe('FileLinks', () => {
 
     it('toString: modify query-string values', () => {
       const test = (args: { hash?: string | null; status?: string | null }, expected: string) => {
-        expect(FileLinks.parseLink('file:foo:123').toString(args)).to.eql(expected);
-        expect(FileLinks.parseLink('  file:foo:123  ').toString(args)).to.eql(expected);
+        expect(FileLinks.parseValue('file:foo:123').toString(args)).to.eql(expected);
+        expect(FileLinks.parseValue('  file:foo:123  ').toString(args)).to.eql(expected);
       };
       test({}, 'file:foo:123');
       test({ hash: 'abc' }, 'file:foo:123?hash=abc');
@@ -166,7 +166,7 @@ describe('FileLinks', () => {
 
     it('toString: remove query-string values', () => {
       const test = (args: { hash?: string | null; status?: string | null }, expected: string) => {
-        const res = FileLinks.parseLink('file:foo:123?status=uploading&hash=abc').toString(args);
+        const res = FileLinks.parseValue('file:foo:123?status=uploading&hash=abc').toString(args);
         expect(res).to.eql(expected);
       };
       test({}, 'file:foo:123?status=uploading&hash=abc'); // NB: No change.
@@ -180,6 +180,7 @@ describe('FileLinks', () => {
     it('name', () => {
       const key = FileLinks.toKey('image.png');
       const res = FileLinks.parseKey(` ${key} `);
+      expect(res.prefix).to.eql('fs');
       expect(res.key).to.eql(key);
       expect(res.path).to.eql('image.png');
       expect(res.name).to.eql('image.png');
@@ -237,16 +238,16 @@ describe('FileLinks', () => {
       expect(list.length).to.eql(2);
 
       expect(list[0].uri.toString()).to.eql('file:foo:abc123');
-      expect(list[0].hash).to.eql(undefined);
-      expect(list[0].status).to.eql('uploading');
+      expect(list[0].query.hash).to.eql(undefined);
+      expect(list[0].query.status).to.eql('uploading');
       expect(list[0].path).to.eql('main.js');
       expect(list[0].dir).to.eql('');
       expect(list[0].name).to.eql('main.js');
       expect(list[0].ext).to.eql('js');
 
       expect(list[1].uri.toString()).to.eql('file:foo:def456');
-      expect(list[1].hash).to.eql('sha256-abc');
-      expect(list[1].status).to.eql(undefined);
+      expect(list[1].query.hash).to.eql('sha256-abc');
+      expect(list[1].query.status).to.eql(undefined);
       expect(list[1].path).to.eql('images/foo/kitten.png');
       expect(list[1].dir).to.eql('images/foo');
       expect(list[1].name).to.eql('kitten.png');

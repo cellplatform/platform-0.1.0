@@ -69,7 +69,7 @@ export class HttpClientCellFile implements t.IHttpClientCellFile {
 
         // Prepare the URL.
         const { link } = linkRes;
-        const hash = link.hash || undefined;
+        const hash = link.query.hash || undefined;
         const url = parent.url.file
           .byFileUri(link.uri.toString(), link.ext)
           .query({ hash, expires })

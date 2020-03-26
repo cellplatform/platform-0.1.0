@@ -1,4 +1,4 @@
-import { log, promptConfig, util } from '../common';
+import { ConfigFile, log, promptConfig, util } from '../common';
 import { formatLength } from '../util';
 
 const gray = log.info.gray;
@@ -20,7 +20,7 @@ export async function dir(args: {
 
   // Retrieve (or build) configuration file for the directory.
   const config = await promptConfig({ dir: args.dir, force: args.configure });
-  if (!config.isValid) {
+  if (ConfigFile.logInvalid(config)) {
     return;
   }
 

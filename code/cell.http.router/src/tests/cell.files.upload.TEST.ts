@@ -99,7 +99,7 @@ describe('cell/files: upload', function() {
     expect(typeof cellLinks[key]).to.eql('string');
     expect(Schema.file.links.toKey(filename)).to.eql(key);
 
-    const link = Schema.file.links.parseLink(cellLinks[key]);
+    const link = Schema.file.links.parse(key, cellLinks[key]);
 
     // Ensure the file (and all relevant path data)
     // is represented within the cells "files" list.

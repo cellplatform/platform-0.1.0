@@ -2,11 +2,11 @@
  * Generated types defined in namespace:
  * 
  *    |                
- *    |➔  ns:foo
+ *    |➔  ns:foo.enum
  *    |
  * 
  * By:
- *    @platform/cell.schema@0.4.65
+ *    @platform/cell.schema@0.4.67
  * 
  * Notes: 
  * 
@@ -17,18 +17,12 @@
  *        that uses a [TypedSheet] to programatically manipulate 
  *        the namespace in a strongly-typed manner. eg:
  * 
- *            import * as t from './<filename>.d.ts';
+ *            import * as t from './foo.enum.d.ts';
  * 
  */
 
-export declare type MyRow = {
-  title: string;
-  isEnabled: boolean;
-  color?: MyColor;
-};
-
-export declare type MyColor = {
-  label: string;
-  color: 'red' | 'green' | 'blue';
-  description?: string;
+export declare type Enum = {
+  single?: 'hello';
+  union: 'red' | 'green' | 'blue'[];
+  array: ('red' | 'green' | 'blue')[];
 };

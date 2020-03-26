@@ -1,4 +1,4 @@
-import { isNilOrEmptyObject, defaultValue, t } from '../common';
+import { isUndefinedOrEmptyObject, defaultValue, t } from '../common';
 
 /**
  * Collapses empty values on data objects.
@@ -15,7 +15,7 @@ export const squash = {
     } else {
       const res = { ...cell };
       Object.keys(res)
-        .filter(key => isNilOrEmptyObject(res[key]))
+        .filter(key => isUndefinedOrEmptyObject(res[key]))
         .forEach(key => delete res[key]);
       return squash.object(res, options);
     }
@@ -28,9 +28,9 @@ export const squash = {
     } else {
       const res = { ...obj };
       Object.keys(res)
-        .filter(key => isNilOrEmptyObject(res[key]))
+        .filter(key => isUndefinedOrEmptyObject(res[key]))
         .forEach(key => delete res[key]);
-      return isNilOrEmptyObject(res, { ignoreHash: true }) ? empty : res;
+      return isUndefinedOrEmptyObject(res, { ignoreHash: true }) ? empty : res;
     }
   },
 };

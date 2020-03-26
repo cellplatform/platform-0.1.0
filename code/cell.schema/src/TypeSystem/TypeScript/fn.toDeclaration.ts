@@ -1,4 +1,5 @@
 import { t } from '../common';
+import { TypeValue } from '../TypeValue';
 
 /**
  * Generate a typescript declaration file.
@@ -10,11 +11,20 @@ export function toDeclaration(args: { typename: string; types: t.ITypeDef[]; hea
       return '';
     }
 
+    const childRefs: t.ITypeRef[] = [];
+
     const lines = args.types.map(item => {
-      const prop = item.prop;
-      const type = typeof item.type === 'string' ? item.type : item.type.typename;
+      const { prop, type } = item;
+      if (type.kind === 'UNION') {
+        // Build up list of referenced types to ensure these are included in the output.
+        type.types
+          .filter(({ kind }) => kind !== 'UNION')
+          .filter(({ kind }) => kind === 'REF')
+          .forEach(ref => childRefs.push(ref as t.ITypeRef));
+      }
+      const typename = TypeValue.toTypename(type);
       const optional = item.optional ? '?' : '';
-      return `  ${prop}${optional}: ${type};`;
+      return `  ${prop}${optional}: ${typename};`;
     });
 
     let res = `
@@ -24,16 +34,20 @@ ${lines.join('\n')}
 
     written.push(args.typename);
 
+    const writeRef = (type: t.ITypeRef) => {
+      const { typename, types } = type;
+      const declaration = write({ typename, types, written }); // <== RECURSION 🌳
+      if (declaration) {
+        res = `${res}\n\n${declaration}`;
+      }
+    };
+
     args.types
       .map(({ type }) => type as t.ITypeRef)
       .filter(type => type.kind === 'REF')
-      .forEach(type => {
-        const { typename, types } = type;
-        const declaration = write({ typename, types, written }); // <== RECURSION 🌳
-        if (declaration) {
-          res = `${res}\n\n${declaration}`;
-        }
-      });
+      .forEach(ref => writeRef(ref));
+
+    childRefs.forEach(ref => writeRef(ref));
 
     return res;
   };

@@ -1,6 +1,6 @@
 import { TypeClient } from '.';
 import { TypeSystem } from '..';
-import { Cache, ERROR, expect, fs, testFetch, TYPE_DEFS, Uri } from '../test';
+import { t, Cache, ERROR, expect, fs, testFetch, TYPE_DEFS, Uri } from '../test';
 
 describe('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
@@ -16,7 +16,7 @@ describe('TypeClient', () => {
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
-      expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C']);
+      expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
     });
 
     it('"foo" (without "ns:" prefix)', async () => {
@@ -25,7 +25,7 @@ describe('TypeClient', () => {
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
-      expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C']);
+      expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
     });
   });
 
@@ -337,6 +337,68 @@ describe('TypeClient', () => {
       expect(err3.column).to.eql('A');
       expect(err3.type).to.eql('TYPE/ref');
     });
+
+    it('error: circular-reference - nested UNION (ns)', async () => {
+      const defs = {
+        'ns:foo.1': {
+          ns: { type: { typename: 'Foo1' } },
+          columns: {
+            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2:Z' } } },
+          },
+        },
+        'ns:foo.2': {
+          ns: { type: { typename: 'Foo2' } },
+          columns: {
+            Z: { props: { prop: { name: 'foo1', type: 'boolean | (ns:foo.1 | string)' } } },
+          },
+        },
+      };
+
+      const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const errors = def.errors;
+
+      expect(def.ok).to.eql(false);
+      expect(errors.length).to.eql(3);
+      const err1 = errors[0];
+
+      expect(err1.ns).to.eql('ns:foo.1');
+      expect(err1.type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(err1.message).to.include(
+        `The namespace "ns:foo.1" leads back to itself (circular reference).`,
+      );
+      expect(err1.message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
+    });
+
+    it('error: circular-reference - nested UNION (column)', async () => {
+      const defs = {
+        'ns:foo.1': {
+          ns: { type: { typename: 'Foo1' } },
+          columns: {
+            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2:Z' } } },
+          },
+        },
+        'ns:foo.2': {
+          ns: { type: { typename: 'Foo2' } },
+          columns: {
+            Z: { props: { prop: { name: 'foo1', type: 'boolean | (cell:foo.1:A | string)' } } },
+          },
+        },
+      };
+
+      const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const errors = def.errors;
+
+      expect(def.ok).to.eql(false);
+      expect(errors.length).to.eql(3);
+      const err1 = errors[0];
+
+      expect(err1.ns).to.eql('ns:foo.1');
+      expect(err1.type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(err1.message).to.include(
+        `The namespace "ns:foo.1" leads back to itself (circular reference).`,
+      );
+      expect(err1.message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
+    });
   });
 
   describe('types', () => {
@@ -410,14 +472,6 @@ describe('TypeClient', () => {
       it('boolean', async () => {
         await test('C', 'boolean');
       });
-
-      it('null', async () => {
-        await test('D', 'null');
-      });
-
-      it('undefined', async () => {
-        await test('E', 'undefined');
-      });
     });
 
     describe('REF (object)', () => {
@@ -428,12 +482,13 @@ describe('TypeClient', () => {
         const A = def.columns[0];
         const B = def.columns[1];
         const C = def.columns[2];
+        const D = def.columns[3];
 
         expect(A.type.kind).to.eql('VALUE');
         expect(A.type.typename).to.eql('string');
 
-        expect(B.type.kind).to.eql('VALUE');
-        expect(B.type.typename).to.eql('boolean');
+        expect(B.type.kind).to.eql('UNION');
+        expect(B.type.typename).to.eql('boolean | null');
 
         expect(C.type.kind).to.eql('REF');
         expect(C.type.typename).to.eql('MyColor');
@@ -441,6 +496,17 @@ describe('TypeClient', () => {
         if (C.type.kind === 'REF') {
           expect(C.type.kind).to.eql('REF');
           expect(C.type.uri).to.eql('ns:foo.color');
+          expect(C.type.types.length).to.eql(3);
+        }
+
+        expect(D.type.kind).to.eql('UNION');
+        expect(D.type.typename).to.eql('MyMessage | null');
+
+        if (D.type.kind === 'UNION') {
+          expect(D.type.kind).to.eql('UNION');
+          expect(D.type.typename).to.eql('MyMessage | null');
+          expect(D.type.types[0].typename).to.eql('MyMessage');
+          expect(D.type.types[1].typename).to.eql('null');
         }
       });
 
@@ -463,6 +529,42 @@ describe('TypeClient', () => {
         if (C.type.kind === 'REF') {
           expect(C.type.types[2].prop).to.eql('description');
           expect(C.type.types[2].optional).to.eql(true);
+          expect(C.type.typename).to.eql('MyColor');
+        }
+      });
+
+      it('REF union: "ns:<id> | null"', async () => {
+        const fetch = testFetch({ defs: TYPE_DEFS });
+        const def = await TypeClient.load({ ns: 'foo', fetch });
+        const D = def.columns[3];
+
+        expect(D.type.kind).to.eql('UNION');
+        expect(D.type.typename).to.eql('MyMessage | null');
+
+        if (D.type.kind === 'UNION') {
+          expect(D.type.types[0].kind).to.eql('REF');
+          expect(D.type.types[1].kind).to.eql('VALUE');
+          expect(D.type.types[1].typename).to.eql('null');
+
+          const MyMessage = D.type.types[0] as t.ITypeRef;
+          expect(MyMessage.typename).to.eql('MyMessage'); // NB: typename resolved.
+          expect(MyMessage.types.length).to.eql(3);
+        }
+      });
+
+      it('REF nested unions: "boolean | (ns:<id> | string)"', async () => {
+        const fetch = testFetch({ defs: TYPE_DEFS });
+        const def = await TypeClient.load({ ns: 'foo.nested', fetch });
+        const C = def.columns[2];
+
+        expect(C.type.kind).to.eql('UNION');
+        expect(C.type.typename).to.eql('boolean | (MyColor | string)');
+
+        if (C.type.kind === 'UNION') {
+          expect(C.type.types[1].kind).to.eql('UNION');
+          if (C.type.types[1].kind === 'UNION') {
+            expect(C.type.types[1].types[0].typename).to.eql('MyColor'); // NB: typename resolved.
+          }
         }
       });
 
@@ -570,14 +672,17 @@ describe('TypeClient', () => {
         expect(D.type.kind).to.eql('UNION');
         expect(D.type.typename).to.eql('number[] | boolean');
         if (D.type.kind === 'UNION') {
-          expect(D.type.types[0].typename).to.eql('number[]');
+          expect(D.type.types[0].typename).to.eql('number');
+          expect(D.type.types[0].isArray).to.eql(true);
+
           expect(D.type.types[1].typename).to.eql('boolean');
+          expect(D.type.types[1].isArray).to.eql(undefined);
         }
       });
     });
 
     describe('ENUM', () => {
-      it('ENUM (single)', async () => {
+      it('(single)', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
         const def = await TypeClient.load({ ns: 'foo.enum', fetch });
         const A = def.columns[0];
@@ -585,7 +690,7 @@ describe('TypeClient', () => {
         expect(A.type.typename).to.eql(`'hello'`);
       });
 
-      it('ENUM (union)', async () => {
+      it('(union)', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
         const def = await TypeClient.load({ ns: 'foo.enum', fetch });
         const B = def.columns[1];
@@ -593,6 +698,8 @@ describe('TypeClient', () => {
 
         expect(type.kind).to.eql('UNION');
         expect(type.typename).to.eql(`'red' | 'green' | 'blue'[]`);
+        expect(type.isArray).to.eql(undefined);
+
         if (type.kind === 'UNION') {
           expect(type.types[0].kind).to.eql('ENUM');
           expect(type.types[0].typename).to.eql(`'red'`);
@@ -601,8 +708,33 @@ describe('TypeClient', () => {
           expect(type.types[1].typename).to.eql(`'green'`);
 
           expect(type.types[2].kind).to.eql('ENUM');
-          expect(type.types[2].typename).to.eql(`'blue'[]`);
+          expect(type.types[2].typename).to.eql(`'blue'`);
           expect(type.types[2].isArray).to.eql(true);
+        }
+      });
+
+      it('(array)', async () => {
+        const fetch = testFetch({ defs: TYPE_DEFS });
+        const def = await TypeClient.load({ ns: 'foo.enum', fetch });
+        const C = def.columns[2];
+        const type = C.type;
+
+        expect(type.kind).to.eql('UNION');
+        expect(type.typename).to.eql(`('red' | 'green' | 'blue')[]`);
+        expect(type.isArray).to.eql(true);
+
+        if (type.kind === 'UNION') {
+          expect(type.types[0].kind).to.eql('ENUM');
+          expect(type.types[0].typename).to.eql(`'red'`);
+          expect(type.types[0].isArray).to.eql(undefined);
+
+          expect(type.types[1].kind).to.eql('ENUM');
+          expect(type.types[1].typename).to.eql(`'green'`);
+          expect(type.types[1].isArray).to.eql(undefined);
+
+          expect(type.types[2].kind).to.eql('ENUM');
+          expect(type.types[2].typename).to.eql(`'blue'`);
+          expect(type.types[2].isArray).to.eql(undefined);
         }
       });
     });
@@ -715,48 +847,6 @@ describe('TypeClient', () => {
     describe('save file (.d.ts)', () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
 
-      it('save for local tests', async () => {
-        const def = await TypeClient.load({ ns: 'foo', fetch });
-        const ts = TypeClient.typescript(def);
-        const dir = fs.join(__dirname, '../test/.d.ts');
-        await ts.save(fs, dir);
-      });
-
-      it.skip('save DesignDoc (sample)', async () => {
-        const defs = {
-          'ns:foo.doc': {
-            ns: { type: { typename: 'DesignDoc' } },
-            columns: {
-              A: { props: { prop: { name: 'impact', type: 'ns:foo.doc.section' } } },
-              B: { props: { prop: { name: 'context', type: 'ns:foo.doc.section' } } },
-              C: { props: { prop: { name: 'outcomes', type: 'ns:foo.doc.section' } } },
-              D: { props: { prop: { name: 'principles', type: 'ns:foo.doc.section' } } },
-              E: { props: { prop: { name: 'design', type: 'ns:foo.doc.section' } } },
-            },
-          },
-          'ns:foo.doc.section': {
-            ns: { type: { typename: 'DesignDocSection' } },
-            columns: {
-              A: { props: { prop: { name: 'items', type: 'string[]' } } },
-              B: { props: { prop: { name: 'status?', type: 'cell:foo.doc.task:A' } } },
-            },
-          },
-          'ns:foo.doc.task': {
-            ns: { type: { typename: 'DesignDocTask' } },
-            columns: {
-              A: { props: { prop: { name: 'completed', type: '"DONE" | "ACTIVE" | "STALE"' } } },
-            },
-          },
-        };
-
-        const fetch = testFetch({ defs });
-        const def = await TypeClient.load({ ns: 'design.doc', fetch });
-
-        const ts = TypeClient.typescript(def);
-        const dir = fs.join(__dirname, '../test/.d.ts');
-        await ts.save(fs, dir, { filename: 'DesignDoc.d.ts' });
-      });
-
       it('dir (filename inferred from type)', async () => {
         const def = await TypeClient.load({ ns: 'foo', fetch });
         const ts = TypeClient.typescript(def);
@@ -764,10 +854,13 @@ describe('TypeClient', () => {
         const res = await ts.save(fs, dir);
 
         expect(res.path.endsWith('/d/MyRow.d.ts')).to.eql(true);
-        expect(res.data).to.eql(ts.declaration); // NB: same as `ts.toString()`
 
-        const file = await fs.readFile(fs.join(dir, 'MyRow.d.ts'));
-        expect(file.toString()).to.eql(ts.toString()); // NB: same as `ts.declaration`
+        const file = (await fs.readFile(fs.join(dir, 'MyRow.d.ts'))).toString();
+
+        expect(file).to.include(`import * as t from './MyRow.d.ts';`);
+        expect(file).to.include(`export declare type MyRow = {`);
+        expect(file).to.include(`export declare type MyColor = {`);
+        expect(file).to.include(`export declare type MyMessage = {`);
       });
 
       it('dir and filename (explicitly passed)', async () => {
@@ -781,11 +874,18 @@ describe('TypeClient', () => {
         expect(res1.path.endsWith('/d/Foo.txt.d.ts')).to.eql(true);
         expect(res2.path.endsWith('/d/Foo.d.ts')).to.eql(true);
 
-        const file1 = await fs.readFile(fs.join(dir, 'Foo.txt.d.ts'));
-        const file2 = await fs.readFile(fs.join(dir, 'Foo.d.ts'));
+        const file1 = (await fs.readFile(fs.join(dir, 'Foo.txt.d.ts'))).toString();
+        const file2 = (await fs.readFile(fs.join(dir, 'Foo.d.ts'))).toString();
 
-        expect(file1.toString()).to.eql(ts.toString());
-        expect(file2.toString()).to.eql(ts.toString());
+        expect(file1).to.include(`import * as t from './Foo.txt.d.ts';`);
+        expect(file1).to.include(`export declare type MyRow = {`);
+        expect(file1).to.include(`export declare type MyColor = {`);
+        expect(file1).to.include(`export declare type MyMessage = {`);
+
+        expect(file2).to.include(`import * as t from './Foo.d.ts';`);
+        expect(file2).to.include(`export declare type MyRow = {`);
+        expect(file2).to.include(`export declare type MyColor = {`);
+        expect(file2).to.include(`export declare type MyMessage = {`);
       });
     });
   });

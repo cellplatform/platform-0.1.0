@@ -192,7 +192,7 @@ export class TypeTarget {
         const cell = args.cell || {};
         const res = RefLinks.find(cell.links).byName('type');
         if (res) {
-          const { hash } = res;
+          const { hash } = res.query;
           const uri = res.uri as t.IRowUri;
           return { uri, hash };
         } else {

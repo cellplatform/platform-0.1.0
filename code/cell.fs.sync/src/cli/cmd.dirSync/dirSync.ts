@@ -1,7 +1,7 @@
-import { defaultValue, log, promptConfig, t, util } from '../common';
+import { ConfigFile, defaultValue, log, promptConfig, t, util } from '../common';
+import { formatLength } from '../util';
 import { runSync } from './dirSync.sync';
 import { watchDir } from './dirSync.watch';
-import { formatLength } from '../util';
 
 const MAX_PAYLOAD_BYTES = 4 * 1000000; // 4MB
 const gray = log.info.gray;
@@ -20,7 +20,7 @@ export async function dirSync(args: {
 }) {
   // Retrieve (or build) configuration file the directory.
   const config = await promptConfig({ dir: args.dir });
-  if (!config.isValid) {
+  if (ConfigFile.logInvalid(config)) {
     return;
   }
 

@@ -42,7 +42,7 @@ export const url = {
 /**
  * Helpers for opening parts of the configuration.
  */
-export function open(config: t.IFsConfigDir) {
+export function open(config: t.IConfigFile) {
   return {
     local() {
       openTarget(config.dir);

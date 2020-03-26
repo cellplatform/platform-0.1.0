@@ -55,7 +55,7 @@ export async function rewriteHtmlPaths(args: {
 
     // Rewrite the URL.
     if (link) {
-      const hash = link.hash;
+      const hash = link.query.hash;
       const url = cellUrls.file
         .byName(link.path)
         .query({ hash, expires })

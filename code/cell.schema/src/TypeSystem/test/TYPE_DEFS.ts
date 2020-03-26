@@ -16,10 +16,14 @@ export const TYPE_DEFS: SampleTypeDefs = {
     ns: { type: { typename: 'MyRow' } },
     columns: {
       A: { props: { prop: { name: 'title', type: 'string' } } },
-      B: { props: { prop: { name: 'isEnabled', type: 'boolean', target: 'inline:isEnabled' } } },
+      B: {
+        props: { prop: { name: 'isEnabled', type: 'boolean | null', target: 'inline:isEnabled' } },
+      },
       C: {
         props: { prop: { name: 'color?', type: 'ns:foo.color', target: 'inline:color' } },
       },
+      D: { props: { prop: { name: 'message', type: 'ns:foo.message | null', target: 'ref' } } },
+      E: { props: { prop: { name: 'messages', type: 'ns:foo.message[]', target: 'ref' } } },
     },
   },
 
@@ -35,19 +39,32 @@ export const TYPE_DEFS: SampleTypeDefs = {
   'ns:foo.primitives': {
     ns: { type: { typename: 'Primitives' } },
     columns: {
-      A: { props: { prop: { name: 'myString', type: 'string' } } },
-      B: { props: { prop: { name: 'myNumber', type: 'number' } } },
-      C: { props: { prop: { name: 'myBoolean', type: 'boolean' } } },
-      D: { props: { prop: { name: 'myNull', type: 'null' } } },
-      E: { props: { prop: { name: 'myUndefined', type: 'undefined' } } },
+      A: { props: { prop: { name: 'stringValue', type: 'string' } } },
+      B: { props: { prop: { name: 'numberValue', type: 'number' } } },
+      C: { props: { prop: { name: 'booleanValue', type: 'boolean' } } },
+      D: { props: { prop: { name: 'nullValue', type: 'null | string | number' } } },
+      E: { props: { prop: { name: 'undefinedValue?', type: 'string' } } },
+
+      F: { props: { prop: { name: 'stringProp', type: 'string', target: 'inline:string' } } },
+      G: { props: { prop: { name: 'numberProp', type: 'number', target: 'inline:number' } } },
+      H: { props: { prop: { name: 'booleanProp', type: 'boolean', target: 'inline:boolean' } } },
+      I: {
+        props: {
+          prop: { name: 'nullProp', type: 'null | string | number', target: 'inline:null' },
+        },
+      },
+      K: {
+        props: { prop: { name: 'undefinedProp?', type: 'string', target: 'inline:undefined' } },
+      },
     },
   },
 
   'ns:foo.enum': {
     ns: { type: { typename: 'Enum' } },
     columns: {
-      A: { props: { prop: { name: 'single', type: '"hello"' } } },
-      B: { props: { prop: { name: 'colors', type: '"red" | "green" | "blue"[]' } } },
+      A: { props: { prop: { name: 'single?', type: '"hello"' } } },
+      B: { props: { prop: { name: 'union', type: '"red" | "green" | "blue"[]' } } },
+      C: { props: { prop: { name: 'array', type: '("red" | "green" | "blue")[]' } } },
     },
   },
 
@@ -55,8 +72,8 @@ export const TYPE_DEFS: SampleTypeDefs = {
     ns: { type: { typename: 'MyMessages' } },
     columns: {
       A: { props: { prop: { name: 'channel', type: 'string' } } },
-      B: { props: { prop: { name: 'color', type: 'ns:foo.color' } } },
-      C: { props: { prop: { name: 'messages', type: 'ns:foo.message[]' } } },
+      B: { props: { prop: { name: 'color', type: 'ns:foo.color', target: 'ref' } } },
+      C: { props: { prop: { name: 'messages', type: 'ns:foo.message[]', target: 'ref' } } },
     },
   },
 

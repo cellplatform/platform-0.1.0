@@ -46,9 +46,9 @@ export function urls(host: string) {
               .reduce((acc, next) => {
                 const { key, value } = next;
                 const { path, ext } = Schema.file.links.parseKey(key);
-                const link = Schema.file.links.parseLink(value);
+                const link = Schema.file.links.parse(key, value);
                 const uri = link.uri.toString();
-                const hash = link.hash;
+                const hash = link.query.hash;
 
                 let expires = options.expires || '1h';
                 const seconds = toSeconds(expires);

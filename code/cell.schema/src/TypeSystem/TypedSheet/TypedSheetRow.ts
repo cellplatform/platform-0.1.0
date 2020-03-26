@@ -1,16 +1,23 @@
 import { t } from '../common';
 import { TypeTarget } from '../TypeTarget';
+import { TypedSheet } from '../TypedSheet';
 
-type ITypedColumnData = {
-  type: t.IColumnTypeDef;
-  data: t.ICellData;
+type TypedSheetRowCtx = {
+  fetch: t.ISheetFetcher;
+  events$: t.Subject<t.TypedSheetEvent>;
+  cache: t.IMemoryCache;
 };
 
 type ITypedSheetRowArgs = {
   index: number;
   uri: string;
   columns: ITypedColumnData[];
-  events$: t.Subject<t.TypedSheetEvent>;
+  ctx: TypedSheetRowCtx;
+};
+
+type ITypedColumnData = {
+  type: t.IColumnTypeDef;
+  data: t.ICellData;
 };
 
 /**
@@ -26,14 +33,14 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private constructor(args: ITypedSheetRowArgs) {
     this.index = args.index;
     this.uri = args.uri;
+    this.ctx = args.ctx;
     this._columns = args.columns;
-    this._events$ = args.events$;
   }
 
   /**
    * [Fields]
    */
-  private readonly _events$: t.Subject<t.TypedSheetEvent>;
+  private readonly ctx: TypedSheetRowCtx;
   private readonly _columns: ITypedColumnData[] = [];
   private _props: t.ITypedSheetRowProps<T>;
 
@@ -83,10 +90,14 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     // console.log(this.index, 'READ', column.type.column, column.type.prop);
     const { type } = column;
     const { prop } = type;
+
     const target = TypeTarget.parse(type.target);
 
+    // console.log('target', target);
+
     if (!target.isValid) {
-      return;
+      const err = `Cannot read property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
+      throw new Error(err);
     }
 
     if (target.isInline) {
@@ -95,6 +106,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
     if (target.isRef) {
       // TODO 🐷
+      // console.log('read ref', column);
+      // console.log('TypedSheet', TypedSheet);
     }
 
     // if (target.path === 'value') {
@@ -121,6 +134,21 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   }
 
   private writeProp(column: ITypedColumnData, value: any) {
-    console.log(this.index, 'WRITE | ', column.type.column, column.type.prop, value);
+    const { type } = column;
+    const { prop } = type;
+
+    const target = TypeTarget.parse(type.target);
+    if (!target.isValid) {
+      const err = `Cannot write property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
+      throw new Error(err);
+    }
+
+    if (target.isInline) {
+      column.data = TypeTarget.inline(type).write({ cell: column.data, data: value });
+    }
+
+    if (target.isRef) {
+      // TODO 🐷
+    }
   }
 }

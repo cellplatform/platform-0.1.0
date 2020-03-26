@@ -26,7 +26,7 @@ export async function downloadFileByName(args: {
   const id = link.uri.file;
   const ext = link.ext;
   const filename = ext ? `${id}.${ext}` : id;
-  const matchHash = args.matchHash || link.hash;
+  const matchHash = args.matchHash || link.query.hash;
 
   // Finish up.
   return downloadFileByFileId({ host, db, fs, cellUri, filename, matchHash, expires });

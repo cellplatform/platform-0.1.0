@@ -13,7 +13,11 @@ export function readFile(path: string) {
  */
 export function stripHashes(input: object) {
   if (input) {
-    value.object.walk(input, obj => delete obj.hash);
+    value.object.walk(input, obj => {
+      if (typeof obj === 'object' && obj !== null) {
+        delete obj.hash;
+      }
+    });
   }
   return input;
 }

@@ -1,5 +1,5 @@
 import { log, cli, Schema, t, defaultValue } from '../common';
-import { ConfigDir } from './ConfigDir';
+import { ConfigFile } from '../ConfigFile';
 
 import { parse as parseUrl } from 'url';
 
@@ -7,7 +7,7 @@ import { parse as parseUrl } from 'url';
  * Prompt for configuration if it does not exist, otherwise load.
  */
 export async function promptConfig(args: { force?: boolean; dir?: string; save?: boolean } = {}) {
-  const config = await ConfigDir.create({ dir: args.dir }).load();
+  const config = await ConfigFile.create({ dir: args.dir }).load();
   if (config.exists && !args.force) {
     return config;
   }
