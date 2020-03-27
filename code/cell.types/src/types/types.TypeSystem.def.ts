@@ -19,13 +19,20 @@ export type IColumnTypeDef<T extends IType = IType> = ITypeDef<T> & {
 
 export type ITypeDef<T extends IType = IType> = {
   prop: string;
-  optional?: boolean;
   type: T;
+  optional?: boolean;
+  default?: PrimitiveValue | ITypeDefault;
 };
+
+export type ITypeDefault = ITypeDefaultValue | ITypeDefaultRef;
+export type ITypeDefaultValue = { value: PrimitiveValue | t.JsonMap };
+export type ITypeDefaultRef = { ref: string };
 
 /**
  * Types
  */
+export type PrimitiveValue = string | number | boolean | undefined | boolean;
+
 export type ITypePrimitives = {
   string: t.ITypeValue;
   number: t.ITypeValue;

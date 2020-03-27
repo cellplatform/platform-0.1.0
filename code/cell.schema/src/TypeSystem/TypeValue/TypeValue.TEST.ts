@@ -81,6 +81,22 @@ describe('TypeValue', () => {
       test('()[]', true);
       test('(  )[]', true);
     });
+
+    it('isPrimitive', () => {
+      const test = (input: any, expected: boolean) => {
+        const res = TypeValue.isPrimitive(input);
+        expect(res).to.eql(expected);
+      };
+      test(undefined, true);
+      test(null, true);
+      test('', true);
+      test('hello', true);
+      test(123, true);
+      test(true, true);
+      test(false, true);
+
+      test({}, false);
+    });
   });
 
   describe('trim', () => {

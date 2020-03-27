@@ -60,6 +60,18 @@ export class TypeValue {
   }
 
   /**
+   * Determines if the given input is of [PrimitiveValue] type.
+   */
+  public static isPrimitive(input?: any) {
+    if (input === undefined || input === null) {
+      return true;
+    } else {
+      const type = typeof input;
+      return type === 'string' || type === 'boolean' || type === 'number';
+    }
+  }
+
+  /**
    * Removes the "[]" suffix from a string.
    */
   public static trimArray(input?: string) {
@@ -194,9 +206,11 @@ export class TypeValue {
 
     // Parse out REF types.
     if (TypeValue.isRef(value)) {
-      // NOTE:  The type-ref is a stub, and will require doing a lookup
-      //        with an HTTP client to resolve the final typename/types
-      //        defined in the remote "ns".
+      //
+      // NOTE:  The type-ref is initially a "stub" pointing to an address
+      //        and will require doing a lookup with an HTTP client to resolve
+      //        the final typename/types defined in the remote "ns".
+      //
       const uri = TypeValue.trimArray(value);
       const is = Uri.is;
       const scope: t.ITypeRef['scope'] = is.ns(uri) ? 'NS' : is.column(uri) ? 'COLUMN' : 'UNKNOWN';
