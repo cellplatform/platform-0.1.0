@@ -31,7 +31,7 @@ export type ITypeDefaultRef = { ref: string };
 /**
  * Types
  */
-export type PrimitiveValue = string | number | boolean | undefined | boolean;
+export type PrimitiveValue = string | number | boolean | undefined | null;
 
 export type ITypePrimitives = {
   string: t.ITypeValue;
