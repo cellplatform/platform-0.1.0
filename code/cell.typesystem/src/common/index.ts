@@ -1,4 +1,7 @@
 import * as t from './types';
+import * as constants from './constants';
 
-export { t };
+export { t, constants };
 export * from './libs';
+
+export const ERROR = constants.ERROR;
