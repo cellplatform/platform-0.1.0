@@ -36,15 +36,22 @@ export class TypeDefault {
     }
 
     if (typeof def.prop === 'string' && typeof def.type === 'object') {
+      // Is: ITypeDef
       const value = (def as t.ITypeDef).default;
-      return value === undefined ? undefined : typeof value === 'object' ? value : { value };
+      if (value === undefined) {
+        return undefined;
+      } else {
+        return typeof value === 'object' && value !== null ? value : { value };
+      }
     }
 
     const kind = TypeDefault.kind(def);
     if (kind === 'VALUE' || kind === 'REF') {
+      // Is: ITypeDefault
       return def as t.ITypeDefault;
     }
 
+    // No match.
     throw new Error(`A default definition could not be derived.`);
   }
 
@@ -71,7 +78,6 @@ export class TypeDefault {
         throw new Error(err);
       }
     }
-    //
 
     return;
   }
