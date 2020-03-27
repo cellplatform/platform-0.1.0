@@ -1,4 +1,4 @@
-import { t, Uri, deleteUndefined } from '../common';
+import { t, Uri, deleteUndefined } from '../../common';
 import { tokenize } from './tokenize';
 
 type Parsed = { type: t.IType; input: string };

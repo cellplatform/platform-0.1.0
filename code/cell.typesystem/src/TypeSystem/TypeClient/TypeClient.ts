@@ -1,4 +1,5 @@
-import { t, util } from '../common';
+import { t } from '../../common';
+import { util } from '../../util';
 import { load } from './fn.load';
 import { typescript } from './fn.typescript';
 

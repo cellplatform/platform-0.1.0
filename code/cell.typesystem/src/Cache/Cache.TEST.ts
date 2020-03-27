@@ -1,4 +1,4 @@
-import { expect, testFetch, TYPE_DEFS } from '../../test';
+import { expect, testFetch, TYPE_DEFS } from '../test';
 import { Cache } from './Cache';
 
 describe('Cache', () => {

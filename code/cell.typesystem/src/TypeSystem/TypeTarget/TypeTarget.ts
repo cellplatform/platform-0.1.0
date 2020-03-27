@@ -1,4 +1,4 @@
-import { ERROR, RefLinks, squash, t, Uri } from '../common';
+import { ERROR, RefLinks, squash, t, Uri } from '../../common';
 
 type Input = t.CellTypeTarget | t.IColumnTypeDef;
 const asTarget = (input?: Input) => {

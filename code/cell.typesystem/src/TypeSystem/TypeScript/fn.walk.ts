@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t } from '../../common';
 
 /**
  * (Visitor Pattern) Walks a type tree calling the given

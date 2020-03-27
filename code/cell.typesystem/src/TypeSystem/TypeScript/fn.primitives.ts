@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t } from '../../common';
 
 export const primitives: t.ITypePrimitives = {
   get string(): t.ITypeValue {

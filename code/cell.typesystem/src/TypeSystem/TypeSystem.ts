@@ -3,7 +3,7 @@ import { TypedSheet } from './TypedSheet';
 import { TypeTarget } from './TypeTarget';
 import { TypeValue } from './TypeValue';
 import { TypeDefault } from './TypeDefault';
-import { objectToCells, fetcher } from './util';
+import { objectToCells, fetcher } from '../util';
 
 export class TypeSystem {
   public static Type = TypeClient;

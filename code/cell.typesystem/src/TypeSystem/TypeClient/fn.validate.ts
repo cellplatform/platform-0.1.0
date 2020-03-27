@@ -1,4 +1,4 @@
-import { ERROR, ErrorList, t } from '../common';
+import { ERROR, ErrorList, t } from '../../common';
 import { TypeScript } from '../TypeScript';
 
 /**

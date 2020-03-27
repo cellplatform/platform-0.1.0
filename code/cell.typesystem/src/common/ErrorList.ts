@@ -1,4 +1,5 @@
-import { t, value, R } from '../common';
+import { value, R } from './libs';
+import * as t from './types';
 
 type IErrorListArgs = {
   defaultType: t.TypeError;

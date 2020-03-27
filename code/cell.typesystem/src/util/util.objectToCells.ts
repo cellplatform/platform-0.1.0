@@ -1,5 +1,5 @@
 import { coord, t } from '../common';
-import { TypeTarget } from '../TypeTarget';
+import { TypeTarget } from '../TypeSystem/TypeTarget';
 
 /**
  * Converts typed data-objects to cells.

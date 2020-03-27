@@ -1,9 +1,9 @@
 import { Observable, Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { defaultValue, ERROR, ErrorList, t, Uri, util, MemoryCache } from '../common';
+import { defaultValue, ERROR, ErrorList, t, Uri, MemoryCache } from '../../common';
 import { TypeClient } from '../TypeClient';
-import { fetcher } from '../util';
+import { util } from '../../util';
 import { TypedSheetCursor } from './TypedSheetCursor';
 
 export type ITypedSheetCtx = {
@@ -13,7 +13,7 @@ export type ITypedSheetCtx = {
 };
 
 const fromClient = (client: t.IHttpClient) => {
-  const fetch = fetcher.fromClient(client);
+  const fetch = util.fetcher.fromClient(client);
   return {
     load: <T>(ns: string) => TypedSheet.load<T>({ fetch, ns }),
   };

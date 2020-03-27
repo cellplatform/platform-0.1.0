@@ -1,8 +1,6 @@
 import { TypeClient } from '.';
 import { TypeSystem } from '..';
-import { t, util, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../../test';
-
-const Cache = util.Cache;
+import { t, Cache, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../../test';
 
 describe('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });

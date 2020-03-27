@@ -5,3 +5,4 @@ export { t, constants };
 export * from './libs';
 
 export const ERROR = constants.ERROR;
+export { ErrorList } from './ErrorList';

@@ -6,4 +6,5 @@ export * from './fetch';
 export * from './TYPE_DEFS';
 
 export { TypeSystem } from '..';
-export { util } from '../TypeSystem/util';
+export { util } from '../util';
+export { Cache } from '../Cache';

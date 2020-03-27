@@ -1,4 +1,4 @@
-import { deleteUndefined, value } from '../common';
+import { deleteUndefined, value } from '../../common';
 
 export const ERROR_TYPENAME = `Must be alpha-numeric with no spaces and start with a capital-letter.`;
 

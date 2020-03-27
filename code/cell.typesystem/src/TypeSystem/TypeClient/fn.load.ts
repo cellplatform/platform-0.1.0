@@ -1,6 +1,9 @@
 import { Subject } from 'rxjs';
 
-import { Cache, deleteUndefined, ERROR, ErrorList, R, t, util, value, Uri } from '../common';
+import { deleteUndefined, ERROR, ErrorList, R, t, value, Uri } from '../../common';
+import { util } from '../../util';
+import { Cache } from '../../Cache';
+
 import { TypeValue } from '../TypeValue';
 import * as valdiate from './fn.validate';
 

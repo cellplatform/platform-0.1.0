@@ -1,4 +1,4 @@
-import { constants, t, value } from '../common';
+import { constants, t, value } from '../../common';
 import { TypeScript } from '../TypeScript';
 import { toTypescriptHeader } from './fn.typescript.header';
 
