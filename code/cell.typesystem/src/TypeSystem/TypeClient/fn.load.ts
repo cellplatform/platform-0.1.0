@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 
 import { deleteUndefined, ERROR, ErrorList, R, t, value, Uri } from '../../common';
 import { util } from '../../util';
-import { Cache } from '../../Cache';
+import { TypeCache } from '../TypeCache';
 
 import { TypeValue } from '../TypeValue';
 import * as valdiate from './fn.validate';
@@ -43,8 +43,8 @@ export async function load(args: {
     }
   }
 
-  const cache = Cache.toCache(args.cache);
-  const fetch = Cache.fetch(args.fetch, { cache });
+  const cache = TypeCache.toCache(args.cache);
+  const fetch = TypeCache.fetch(args.fetch, { cache });
   const errors = ErrorList.create({ defaultType: ERROR.TYPE.DEF });
   const ctx: Context = { fetch, cache, errors, visited: [] };
   return loadNs({ level: 0, ns, ctx });

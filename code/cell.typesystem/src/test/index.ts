@@ -1,3 +1,5 @@
+import { Uri } from '../common';
+
 export { fs } from '@platform/fs';
 export { expect, expectError } from '@platform/test';
 
@@ -7,4 +9,6 @@ export * from './TYPE_DEFS';
 
 export { TypeSystem } from '..';
 export { util } from '../util';
-export { Cache } from '../Cache';
+
+export const TEST_ALLOW = { NS: ['foo*'] };
+Uri.ALLOW = TEST_ALLOW;

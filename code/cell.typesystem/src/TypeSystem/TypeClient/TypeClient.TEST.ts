@@ -1,6 +1,5 @@
 import { TypeClient } from '.';
-import { TypeSystem } from '..';
-import { t, Cache, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../../test';
+import { t, TypeSystem, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../../test';
 
 describe('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
@@ -744,7 +743,7 @@ describe('TypeClient', () => {
     describe('load method', () => {
       it('caches [load] method (passed in cache)', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const cache = Cache.toCache();
+        const cache = TypeSystem.Cache.create();
         const ns = 'foo';
         const def1 = await TypeClient.load({ ns, fetch, cache });
         const def2 = await TypeClient.load({ ns, fetch, cache });
@@ -756,7 +755,7 @@ describe('TypeClient', () => {
 
       it('caches [load] method (parallel execution)', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const cache = Cache.toCache();
+        const cache = TypeSystem.Cache.toCache();
 
         const ns = 'foo';
         const wait = [TypeClient.load({ ns, fetch, cache }), TypeClient.load({ ns, fetch, cache })];
@@ -808,7 +807,7 @@ describe('TypeClient', () => {
       it('shared cache (between calls)', async () => {
         const ns = 'ns:foo.1';
         const fetch = testFetch({ defs });
-        const cache = Cache.toCache();
+        const cache = TypeSystem.Cache.toCache();
 
         await TypeClient.load({ ns, fetch, cache }); //
         expect(fetch.getTypeCount).to.eql(2);
