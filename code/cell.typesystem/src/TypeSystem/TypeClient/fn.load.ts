@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { deleteUndefined, ERROR, ErrorList, R, t, value, Uri } from '../../common';
-import { util } from '../../util';
+import { formatNs } from '../util';
 import { TypeCache } from '../TypeCache';
 
 import { TypeValue } from '../TypeValue';
@@ -27,7 +27,7 @@ export async function load(args: {
   fetch: t.ISheetFetcher;
   cache?: t.IMemoryCache;
 }): Promise<t.INsTypeDef> {
-  const ns = util.formatNs(args.ns);
+  const ns = formatNs(args.ns);
 
   // Check cache (if an external cache was provided).
   if (args.cache) {
@@ -60,7 +60,7 @@ export async function load(args: {
 async function loadNs(args: { level: number; ns: string; ctx: Context }): Promise<t.INsTypeDef> {
   const { level, ctx } = args;
   const { visited, cache, fetch, errors } = ctx;
-  const ns = util.formatNs(args.ns);
+  const ns = formatNs(args.ns);
 
   // Cache.
   const cacheKey = toCacheKey(ns);

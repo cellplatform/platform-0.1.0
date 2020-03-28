@@ -6,7 +6,7 @@
  *    |
  * 
  * By:
- *    @platform/cell.typesystem@0.0.1
+ *    @platform/cell.typesystem@0.0.2
  * 
  * Notes: 
  * 

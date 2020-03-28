@@ -1,5 +1,5 @@
 import { MemoryCache, t } from '../../common';
-import { fetcher } from '../../util/util.fetch';
+import { fetcher } from '../util';
 
 type FetchMethod = 'getType' | 'getColumns' | 'getCells';
 export type CacheFetchKey = (method: FetchMethod, ns: string, ...path: string[]) => string;

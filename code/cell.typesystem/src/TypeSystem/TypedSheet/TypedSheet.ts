@@ -3,7 +3,7 @@ import { share, takeUntil } from 'rxjs/operators';
 
 import { defaultValue, ERROR, ErrorList, t, Uri, MemoryCache } from '../../common';
 import { TypeClient } from '../TypeClient';
-import { util } from '../../util';
+import { util } from '../util';
 import { TypedSheetCursor } from './TypedSheetCursor';
 
 export type ITypedSheetCtx = {
