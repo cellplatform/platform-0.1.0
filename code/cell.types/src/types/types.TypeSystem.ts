@@ -1,7 +1,14 @@
 import { t } from '../common';
 
+export * from './types.TypeSystem.ast';
+export * from './types.TypeSystem.cell';
+export * from './types.TypeSystem.def';
+export * from './types.TypeSystem.events';
+export * from './types.TypeSystem.fetch';
+export * from './types.TypeSystem.sheet';
+
 /**
- * Reference to a namespace that contains the type definitions for the sheet.
+ * The type declaration for the namespace/sheet.
  */
 export type INsType = {
   typename?: string; //     Name of the complex type/object this namespace defines.
