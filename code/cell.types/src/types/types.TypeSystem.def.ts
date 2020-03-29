@@ -25,8 +25,8 @@ export type ITypeDef<T extends IType = IType> = {
 };
 
 export type ITypeDefault = ITypeDefaultValue | ITypeDefaultRef;
-export type ITypeDefaultValue = { value: PrimitiveValue | t.JsonMap };
-export type ITypeDefaultRef = { ref: string };
+export type ITypeDefaultValue = { value: PrimitiveValue | PrimitiveValue[] | t.JsonMap };
+export type ITypeDefaultRef = { ref: string; path?: string };
 
 /**
  * Types

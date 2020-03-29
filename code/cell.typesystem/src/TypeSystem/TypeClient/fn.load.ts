@@ -185,7 +185,7 @@ async function readColumns(args: {
   ctx: Context;
 }): Promise<t.IColumnTypeDef[]> {
   const { ns, level, ctx } = args;
-  const { visited, errors } = ctx;
+  const { errors } = ctx;
 
   const withProps = (column: string) => {
     const props = args.columns[column]?.props?.prop as t.CellTypeProp;

@@ -43,7 +43,8 @@ export const testFetch = (data: {
   const getCells: t.FetchSheetCells = async args => {
     before('getCells', args);
     const cells = data.cells || {};
-    const rows = coord.cell.max.row(Object.keys(cells));
+
+    const rows = coord.cell.max.row(Object.keys(cells)) + 1;
     const total = { rows };
     res.getCellsCount++;
     return { cells, total };
