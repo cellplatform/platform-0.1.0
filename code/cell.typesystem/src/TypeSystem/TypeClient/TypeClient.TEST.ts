@@ -449,7 +449,7 @@ describe('TypeClient', () => {
     });
 
     describe('VALUE (primitives)', () => {
-      const test = async (column: string, typename: string) => {
+      const test = async (column: string, typename: string, defaultValue?: any) => {
         const fetch = testFetch({ defs: TYPE_DEFS });
         const def = await TypeClient.load({ ns: 'foo.primitives', fetch });
         const res = def.columns.find(c => c.column === column);
@@ -457,19 +457,22 @@ describe('TypeClient', () => {
         if (res) {
           expect(res.type.kind).to.eql('VALUE');
           expect(res.type.typename).to.eql(typename);
+          if (defaultValue) {
+            expect(res.default).to.eql({ value: defaultValue });
+          }
         }
       };
 
       it('string', async () => {
-        await test('A', 'string');
+        await test('A', 'string', 'hello-default');
       });
 
       it('number', async () => {
-        await test('B', 'number');
+        await test('B', 'number', 999);
       });
 
       it('boolean', async () => {
-        await test('C', 'boolean');
+        await test('C', 'boolean', true);
       });
     });
 

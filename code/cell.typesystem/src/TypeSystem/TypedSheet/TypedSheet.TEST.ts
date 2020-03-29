@@ -1,8 +1,9 @@
 import * as f from '../../test/.d.ts/foo';
 import * as p from '../../test/.d.ts/foo.primitives';
 import * as e from '../../test/.d.ts/foo.enum';
+import * as d from '../../test/.d.ts/foo.defaults';
 
-import { ERROR, expect, testInstanceFetch, TYPE_DEFS, t } from '../../test';
+import { ERROR, expect, testInstanceFetch, TYPE_DEFS, testFetch } from '../../test';
 import { TypeSystem } from '..';
 
 /**
@@ -155,14 +156,6 @@ describe('TypedSheet', () => {
       expect(cursor.row(99)).to.not.eql(undefined);
     });
 
-    it.skip('read prop: default value', async () => {
-      const { sheet } = await testSheet();
-      const cursor = await sheet.cursor();
-
-      const row = cursor.row(99);
-      expect(row.props.title).to.not.eql(undefined); // Should get default value.
-    });
-
     it.skip('read prop: ref', async () => {
       const { sheet } = await testSheet();
       const cursor = await sheet.cursor();
@@ -301,6 +294,36 @@ describe('TypedSheet', () => {
           expect(row.undefinedValue).to.eql(undefined);
           expect(row.undefinedProp).to.eql(undefined);
         });
+      });
+    });
+
+    describe('read: default value', () => {
+      it('simple', async () => {
+        const { sheet } = await testSheetPrimitives();
+        const cursor = await sheet.cursor();
+
+        const row1 = cursor.row(0).props; //  NB: Exists
+        const row2 = cursor.row(99).props; // NB: Does not exist.
+
+        expect(row1.stringValue).to.eql('hello value');
+        expect(row2.stringValue).to.eql('hello-default');
+      });
+
+      it('ref (look up at cell address)', async () => {
+        const ns = 'ns:foo.sample';
+        const fetch = await testInstanceFetch({
+          instance: ns,
+          implements: 'ns:foo.defaults',
+          defs: TYPE_DEFS,
+          rows: [],
+          cells: {
+            A1: { value: 'my-foo-default' },
+          },
+        });
+
+        const sheet = await TypeSystem.Sheet.load<d.MyDefaults>({ fetch, ns });
+        const cursor = await sheet.cursor();
+        expect(cursor.exists(99)).to.eql(false);
       });
     });
 

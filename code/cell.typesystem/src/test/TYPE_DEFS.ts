@@ -9,6 +9,7 @@ export type SampleTypeDefs = {
   'ns:foo.messages': D;
   'ns:foo.message': D;
   'ns:foo.nested': D;
+  'ns:foo.defaults': D;
 };
 
 export const TYPE_DEFS: SampleTypeDefs = {
@@ -39,10 +40,14 @@ export const TYPE_DEFS: SampleTypeDefs = {
   'ns:foo.primitives': {
     ns: { type: { typename: 'Primitives' } },
     columns: {
-      A: { props: { prop: { name: 'stringValue', type: 'string' } } },
-      B: { props: { prop: { name: 'numberValue', type: 'number' } } },
-      C: { props: { prop: { name: 'booleanValue', type: 'boolean' } } },
-      D: { props: { prop: { name: 'nullValue', type: 'null | string | number' } } },
+      A: {
+        props: {
+          prop: { name: 'stringValue', type: 'string', default: { value: 'hello-default' } },
+        },
+      },
+      B: { props: { prop: { name: 'numberValue', type: 'number', default: 999 } } },
+      C: { props: { prop: { name: 'booleanValue', type: 'boolean', default: true } } },
+      D: { props: { prop: { name: 'nullValue', type: 'null | string | number', default: null } } },
       E: { props: { prop: { name: 'undefinedValue?', type: 'string' } } },
 
       F: { props: { prop: { name: 'stringProp', type: 'string', target: 'inline:string' } } },
@@ -94,6 +99,16 @@ export const TYPE_DEFS: SampleTypeDefs = {
         props: { prop: { name: 'two', type: 'string | ("red" | boolean | "blue")' } },
       },
       C: { props: { prop: { name: 'three', type: 'boolean | (ns:foo.color | string)' } } },
+    },
+  },
+
+  'ns:foo.defaults': {
+    ns: { type: { typename: 'MyDefaults' } },
+    columns: {
+      A: { props: { prop: { name: 'title', type: 'string', default: 'Untitled' } } },
+      B: {
+        props: { prop: { name: 'foo', type: 'string', default: { ref: 'cell:foo.sample:A1' } } },
+      },
     },
   },
 };

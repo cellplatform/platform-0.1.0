@@ -44,7 +44,7 @@ export class TypeDefault {
    * Determine if the given value is an [ITypeDef]
    */
   public static isTypeDef(input: any) {
-    const def = typeof input === 'object' ? input : {};
+    const def = typeof input === 'object' && input !== null ? input : {};
     return typeof def.prop === 'string' && typeof def.type === 'object';
   }
 
@@ -52,24 +52,37 @@ export class TypeDefault {
    * Determine if the given value is an [ITypeDefault]
    */
   public static isTypeDefault(input: any) {
-    const def = typeof input === 'object' ? input : {};
-    const kind = TypeDefault.kind(def);
-    return kind.type === 'VALUE' || kind.type === 'REF';
+    return TypeDefault.isTypeDefaultValue(input) || TypeDefault.isTypeDefaultRef(input);
+  }
+
+  /**
+   * Determine if the given value is an [ITypeDefaultValue]
+   */
+  public static isTypeDefaultValue(input: any) {
+    const def = typeof input === 'object' && input !== null ? input : {};
+    return TypeDefault.kind(def).type === 'VALUE';
+  }
+
+  /**
+   * Determine if the given value is an [ITypeDefaultRef]
+   */
+  public static isTypeDefaultRef(input: any) {
+    const def = typeof input === 'object' && input !== null ? input : {};
+    return TypeDefault.kind(def).type === 'REF';
   }
 
   /**
    * Wrangled input into a "default value" definition.
    */
-  public static toTypeDefault(input: t.ITypeDef | t.ITypeDefault): t.ITypeDefault | undefined {
+  public static toTypeDefault(
+    input: t.ITypeDef | t.ITypeDefault | t.TypeDefaultValue,
+  ): t.ITypeDefault {
     const def = input as any;
-    if (typeof def !== 'object' || def === null) {
-      throw new Error(`Input object required.`);
-    }
 
     if (TypeDefault.isTypeDef(def)) {
       const value = (def as t.ITypeDef).default;
       if (value === undefined) {
-        return undefined;
+        return { value: undefined };
       } else {
         return typeof value === 'object' && value !== null ? value : { value };
       }
@@ -79,8 +92,8 @@ export class TypeDefault {
       return def as t.ITypeDefault;
     }
 
-    // No match.
-    throw new Error(`A default definition could not be derived.`);
+    const res: t.ITypeDefaultValue = { value: input };
+    return res;
   }
 
   /**

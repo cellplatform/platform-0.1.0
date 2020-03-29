@@ -1,7 +1,7 @@
 import { expect, expectError, t, testFetch, TYPE_DEFS } from '../../test';
 import { TypeDefault } from '.';
 
-describe.only('TypeDefault', () => {
+describe('TypeDefault', () => {
   describe('kind', () => {
     it('UNKNOWN', () => {
       const test = (input: any) => {
@@ -35,7 +35,6 @@ describe.only('TypeDefault', () => {
 
     it('REF', () => {
       const REF = { type: 'REF' };
-
       expect(TypeDefault.kind({ ref: 'ns:foo' })).to.eql(REF);
     });
   });
@@ -48,7 +47,7 @@ describe.only('TypeDefault', () => {
       };
 
       const res1 = TypeDefault.toTypeDefault({ ...def });
-      expect(res1).to.eql(undefined);
+      expect(res1).to.eql({ value: undefined });
 
       const res2 = TypeDefault.toTypeDefault({ ...def, default: 'hello' });
       expect(res2).to.eql({ value: 'hello' });
@@ -64,10 +63,17 @@ describe.only('TypeDefault', () => {
       expect(TypeDefault.toTypeDefault(ref)).to.eql(ref);
     });
 
-    it('throws', () => {
-      expect(() => TypeDefault.toTypeDefault(undefined as any)).to.throw();
-      expect(() => TypeDefault.toTypeDefault(null as any)).to.throw();
-      expect(() => TypeDefault.toTypeDefault({} as any)).to.throw();
+    it('from primitive', () => {
+      const test = (value: t.TypeDefaultValue) => {
+        const res = TypeDefault.toTypeDefault(value) as t.ITypeDefaultValue;
+        expect(res.value).to.eql(value);
+      };
+      test(undefined);
+      test(null);
+      test('hello');
+      test(123);
+      test(true);
+      test([123, true, 'three']);
     });
   });
 

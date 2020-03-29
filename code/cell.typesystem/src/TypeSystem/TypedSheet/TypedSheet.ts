@@ -47,7 +47,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
 
     // Load and parse the type definition.
     const typeNs = Uri.create.ns(implementsNs);
-    const typeDef = await TypeClient.load({ ns: typeNs, fetch });
+    const typeDef = await TypeClient.load({ ns: typeNs, fetch, cache });
 
     // Finish up.
     return new TypedSheet<T>({ sheetNs, typeDef, fetch, events$, cache });
@@ -68,8 +68,6 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
       cache: args.cache || MemoryCache.create(),
       events$: args.events$ || new Subject<t.TypedSheetEvent>(),
     };
-
-    // this.fetch = args.fetch;
     this.uri = args.sheetNs;
     this.typeDef = args.typeDef;
     this.events$ = this.ctx.events$.asObservable().pipe(takeUntil(this._dispose$), share());

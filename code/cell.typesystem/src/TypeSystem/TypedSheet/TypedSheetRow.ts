@@ -1,6 +1,6 @@
 import { t } from '../../common';
 import { TypeTarget } from '../TypeTarget';
-import { TypedSheet } from '../TypedSheet';
+import { TypeDefault } from '../TypeDefault';
 
 type TypedSheetRowCtx = {
   fetch: t.ISheetFetcher;
@@ -93,7 +93,16 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
     const target = TypeTarget.parse(type.target);
 
-    // console.log('target', target);
+    const done = (result?: t.Json) => {
+      if (result === undefined && TypeDefault.isTypeDefaultValue(type.default)) {
+        // NB: Only look for a default value definition.
+        //     If the default value was declared with as a REF, that will have been looked up
+        //     and stored as a {value} by the TypeClient prior to this sync code being called.
+        return (type.default as t.ITypeDefaultValue).value;
+      } else {
+        return result;
+      }
+    };
 
     if (!target.isValid) {
       const err = `Cannot read property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
@@ -101,7 +110,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     }
 
     if (target.isInline) {
-      return TypeTarget.inline(type).read(column.data);
+      return done(TypeTarget.inline(type).read(column.data));
     }
 
     if (target.isRef) {
@@ -110,27 +119,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       // console.log('TypedSheet', TypedSheet);
     }
 
-    // if (target.path === 'value') {
-    //   return data.value;
-    // } else if (target.startsWith('inline:')) {
-    //   const field = target.substring('inline:'.length);
-
-    //   // TODO 🐷 field dot (deep) support.
-    //   // console.group('🌳 ');
-    //   // console.log('field', field);
-    //   // console.log('data.props', data.props);
-    //   // console.groupEnd();
-
-    //   return value.object.pluck(field, data.props || {});
-
-    //   // console.log('field', field);
-    //   // return (data.props || {})[field];
-    // } else {
-    //   return; // TEMP 🐷
-    // }
-
     // data.
-    return;
+    return done();
   }
 
   private writeProp(column: ITypedColumnData, value: any) {

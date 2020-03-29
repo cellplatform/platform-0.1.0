@@ -1,9 +1,9 @@
 import { Subject } from 'rxjs';
 
-import { deleteUndefined, ERROR, ErrorList, R, t, value, Uri } from '../../common';
+import { deleteUndefined, ERROR, ErrorList, R, t, value as valueUtil, Uri } from '../../common';
 import { formatNs } from '../util';
 import { TypeCache } from '../TypeCache';
-
+import { TypeDefault } from '../TypeDefault';
 import { TypeValue } from '../TypeValue';
 import * as valdiate from './fn.validate';
 
@@ -244,8 +244,34 @@ async function readColumn(args: {
     union.typename = TypeValue.toTypename(union);
   }
 
-  const def: t.IColumnTypeDef = { column, prop, optional, type, target, error };
-  return value.deleteUndefined(def);
+  const def: t.IColumnTypeDef = {
+    column,
+    prop,
+    optional,
+    type,
+    target,
+    default: await toDefaultDef({ default: args.props.default, ctx }),
+    error,
+  };
+  return valueUtil.deleteUndefined(def);
+}
+
+async function toDefaultDef(args: {
+  default: t.CellTypeProp['default'];
+  ctx: Context;
+}): Promise<t.ITypeDefault> {
+  const { ctx } = args;
+
+  if (TypeDefault.isTypeDefaultRef(args.default)) {
+    const { fetch } = ctx;
+    const def = args.default as t.ITypeDefaultRef;
+    const ref = await TypeDefault.toRefValue({ def, fetch });
+    const value = ref.value as t.TypeDefaultValue;
+    const res: t.ITypeDefaultValue = { value };
+    return res;
+  } else {
+    return TypeDefault.toTypeDefault(args.default);
+  }
 }
 
 /**
