@@ -22,7 +22,7 @@ export function table(args: {
   const getKeys: t.RefGetKeys = async () => Object.keys(await getCells());
   const getValue: t.RefGetValue = async key => {
     const cell = await getCell(key);
-    const value = cell ? cell.value : undefined;
+    const value = cell ? (cell.value as any) : undefined;
     return typeof value === 'function' ? value() : value;
   };
 
@@ -85,7 +85,8 @@ export function table(args: {
         //     This may be a function when:
         //       - running in a unit-test, and values are being dynamically swapped to rest purposes.
         //       - some future scenario where values are dynamically returned.
-        cell.value = typeof cell.value === 'function' ? await cell.value() : cell.value;
+        const v = cell.value as any;
+        cell.value = typeof v === 'function' ? await v() : v;
 
         // Assign to map object.
         map[key] = cell;

@@ -18,7 +18,7 @@ export const toContext = async (
 
   const getValue: t.RefGetValue = async (key: string) => {
     const cell = (await getCells())[key];
-    const value = cell ? cell.value : undefined;
+    const value = cell ? (cell.value as any) : undefined;
     return typeof value === 'function' ? value() : value;
   };
   const getKeys: t.RefGetKeys = async () => Object.keys(await getCells());
