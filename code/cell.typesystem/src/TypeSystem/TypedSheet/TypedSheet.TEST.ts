@@ -2,6 +2,7 @@ import * as f from '../../test/.d.ts/foo';
 import * as p from '../../test/.d.ts/foo.primitives';
 import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
+import * as m from '../../test/.d.ts/foo.messages';
 
 import { ERROR, expect, testInstanceFetch, TYPE_DEFS, testFetch } from '../../test';
 import { TypeSystem } from '..';
@@ -46,89 +47,6 @@ describe.only('TypedSheet', () => {
   });
 
   describe('cursor/row', () => {
-    const testFetchMySheet = (ns: string) => {
-      return testInstanceFetch({
-        instance: ns,
-        implements: 'ns:foo',
-        defs: TYPE_DEFS,
-        rows: [
-          {
-            title: 'One',
-            isEnabled: true,
-            color: { label: 'background', color: 'red' },
-            message: null,
-            messages: [],
-          },
-          {
-            title: 'Two',
-            isEnabled: false,
-            color: { label: 'foreground', color: 'blue' },
-            message: null,
-            messages: [],
-          },
-        ],
-      });
-    };
-
-    const testFetchPrimitives = (ns: string) => {
-      return testInstanceFetch({
-        instance: ns,
-        implements: 'ns:foo.primitives',
-        defs: TYPE_DEFS,
-        rows: [
-          {
-            stringValue: 'hello value',
-            numberValue: 123,
-            booleanValue: true,
-            nullValue: null,
-            undefinedValue: undefined,
-
-            stringProp: 'hello prop',
-            numberProp: 456,
-            booleanProp: true,
-            nullProp: null,
-            undefinedProp: undefined,
-          },
-        ],
-      });
-    };
-
-    const testFetchEnum = (ns: string) => {
-      return testInstanceFetch({
-        instance: ns,
-        implements: 'ns:foo.enum',
-        defs: TYPE_DEFS,
-        rows: [
-          {
-            single: 'hello',
-            union: ['blue'],
-            array: ['red', 'green', 'blue'],
-          },
-        ],
-      });
-    };
-
-    const testSheet = async () => {
-      const ns = 'ns:foo.mySheet';
-      const fetch = await testFetchMySheet(ns);
-      const sheet = await TypeSystem.Sheet.load<f.MyRow>({ fetch, ns });
-      return { ns, fetch, sheet };
-    };
-
-    const testSheetPrimitives = async () => {
-      const ns = 'ns:foo.myPrimitives';
-      const fetch = await testFetchPrimitives(ns);
-      const sheet = await TypeSystem.Sheet.load<p.Primitives>({ fetch, ns });
-      return { ns, fetch, sheet };
-    };
-
-    const testSheetEnum = async () => {
-      const ns = 'ns:foo.myEnum';
-      const fetch = await testFetchEnum(ns);
-      const sheet = await TypeSystem.Sheet.load<e.Enum>({ fetch, ns });
-      return { ns, fetch, sheet };
-    };
-
     it('throw: row out-of-bounds (index: -1)', async () => {
       const { sheet } = await testSheet();
       const cursor = await sheet.cursor();
@@ -190,16 +108,14 @@ describe.only('TypedSheet', () => {
         expect(row2.stringValue).to.eql('hello-default');
       });
 
-      it('ref (look up at cell address)', async () => {
+      it('ref (look up cell address)', async () => {
         const ns = 'ns:foo.sample';
         const fetch = await testInstanceFetch({
           instance: ns,
           implements: 'ns:foo.defaults',
           defs: TYPE_DEFS,
           rows: [],
-          cells: {
-            A1: { value: 'my-foo-default' },
-          },
+          cells: { A1: { value: 'my-foo-default' } },
         });
 
         const sheet = await TypeSystem.Sheet.load<d.MyDefaults>({ fetch, ns });
@@ -342,9 +258,13 @@ describe.only('TypedSheet', () => {
       // it.skip('read/write ref (array/list) - linked sheet', () => {}); // tslint:disable-line
 
       it('1:1', async () => {
-        const { sheet } = await testSheetPrimitives();
+        const { sheet } = await testSheetMessages();
         const cursor = await sheet.cursor();
         const row = cursor.row(0).props;
+
+        console.log('-------------------------------------------');
+        const o = row.toObject();
+        console.log('o', o);
       });
 
       it('1:*', async () => {
@@ -359,3 +279,107 @@ describe.only('TypedSheet', () => {
     it.skip('query (paging: index/skip)', () => {}); // tslint:disable-line
   });
 });
+
+/**
+ * Test Data
+ */
+
+const testFetchMySheet = (ns: string) => {
+  return testInstanceFetch({
+    instance: ns,
+    implements: 'ns:foo',
+    defs: TYPE_DEFS,
+    rows: [
+      {
+        title: 'One',
+        isEnabled: true,
+        color: { label: 'background', color: 'red' },
+        message: null,
+        messages: [],
+      },
+      {
+        title: 'Two',
+        isEnabled: false,
+        color: { label: 'foreground', color: 'blue' },
+        message: null,
+        messages: [],
+      },
+    ],
+  });
+};
+
+const testFetchPrimitives = (ns: string) => {
+  return testInstanceFetch({
+    instance: ns,
+    implements: 'ns:foo.primitives',
+    defs: TYPE_DEFS,
+    rows: [
+      {
+        stringValue: 'hello value',
+        numberValue: 123,
+        booleanValue: true,
+        nullValue: null,
+        undefinedValue: undefined,
+
+        stringProp: 'hello prop',
+        numberProp: 456,
+        booleanProp: true,
+        nullProp: null,
+        undefinedProp: undefined,
+      },
+    ],
+  });
+};
+
+const testFetchEnum = (ns: string) => {
+  return testInstanceFetch({
+    instance: ns,
+    implements: 'ns:foo.enum',
+    defs: TYPE_DEFS,
+    rows: [
+      {
+        single: 'hello',
+        union: ['blue'],
+        array: ['red', 'green', 'blue'],
+      },
+    ],
+  });
+};
+
+const testFetchMessages = (ns: string) => {
+  return testInstanceFetch({
+    instance: ns,
+    implements: 'ns:foo.messages',
+    defs: TYPE_DEFS,
+    rows: [],
+    cells: {},
+  });
+};
+
+const testSheet = async () => {
+  const ns = 'ns:foo.mySheet';
+  const fetch = await testFetchMySheet(ns);
+  const sheet = await TypeSystem.Sheet.load<f.MyRow>({ fetch, ns });
+  return { ns, fetch, sheet };
+};
+
+const testSheetPrimitives = async () => {
+  const ns = 'ns:foo.myPrimitives';
+  const fetch = await testFetchPrimitives(ns);
+  const sheet = await TypeSystem.Sheet.load<p.Primitives>({ fetch, ns });
+  return { ns, fetch, sheet };
+};
+
+const testSheetEnum = async () => {
+  const ns = 'ns:foo.myEnum';
+  const fetch = await testFetchEnum(ns);
+  const sheet = await TypeSystem.Sheet.load<e.Enum>({ fetch, ns });
+  return { ns, fetch, sheet };
+};
+
+const testSheetMessages = async () => {
+  const ns = 'ns:foo.myMessages';
+  const fetch = await testFetchMessages(ns);
+  const sheet = await TypeSystem.Sheet.load<m.MyMessages>({ fetch, ns });
+  return { ns, fetch, sheet };
+};
