@@ -33,8 +33,9 @@ export type ITypedSheetCursor<T> = {
 export type ITypedSheetRow<T> = {
   readonly index: number;
   readonly uri: string;
-  readonly types: t.IColumnTypeDef[];
   readonly props: ITypedSheetRowProps<T>;
+  readonly types: t.IColumnTypeDef[];
+  type(prop: keyof T): t.IColumnTypeDef;
   toObject(): T;
 };
 

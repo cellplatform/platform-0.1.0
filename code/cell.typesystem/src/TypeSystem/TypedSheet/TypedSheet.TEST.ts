@@ -156,16 +156,61 @@ describe('TypedSheet', () => {
       expect(cursor.row(99)).to.not.eql(undefined);
     });
 
-    it.skip('read prop: ref', async () => {
-      const { sheet } = await testSheet();
-      const cursor = await sheet.cursor();
+    describe('types (row)', () => {
+      it('row.types', async () => {
+        const { sheet } = await testSheet();
+        const cursor = await sheet.cursor();
+        const columns = cursor.row(0).types.map(def => def.column);
+        expect(columns).to.eql(['A', 'B', 'C', 'D', 'E']);
+      });
 
-      const row = cursor.row(0);
+      it('row.type(prop)', async () => {
+        const { sheet } = await testSheet();
+        const cursor = await sheet.cursor();
+        const row = cursor.row(0);
+        expect(row.type('title').column).to.eql('A');
+        expect(row.type('isEnabled').column).to.eql('B');
+        expect(row.type('color').column).to.eql('C');
+        expect(row.type('message').column).to.eql('D');
+        expect(row.type('messages').column).to.eql('E');
+      });
 
-      // console.log('row.props.title', row.props.title);
-      // console.log('row.props.message', row.props.message);
-      // console.log('-------------------------------------------');
-      // console.log('row', row);
+      it('throw: invalid prop name', async () => {
+        const { sheet } = await testSheet();
+        const cursor = await sheet.cursor();
+        const fn = () => cursor.row(0).type('FAIL' as any);
+        expect(fn).to.throw(/The property 'FAIL' is not defined by a column/);
+      });
+    });
+
+    describe('read: default value', () => {
+      it('simple', async () => {
+        const { sheet } = await testSheetPrimitives();
+        const cursor = await sheet.cursor();
+
+        const row1 = cursor.row(0).props; //  NB: Exists
+        const row2 = cursor.row(99).props; // NB: Does not exist.
+
+        expect(row1.stringValue).to.eql('hello value');
+        expect(row2.stringValue).to.eql('hello-default');
+      });
+
+      it('ref (look up at cell address)', async () => {
+        const ns = 'ns:foo.sample';
+        const fetch = await testInstanceFetch({
+          instance: ns,
+          implements: 'ns:foo.defaults',
+          defs: TYPE_DEFS,
+          rows: [],
+          cells: {
+            A1: { value: 'my-foo-default' },
+          },
+        });
+
+        const sheet = await TypeSystem.Sheet.load<d.MyDefaults>({ fetch, ns });
+        const cursor = await sheet.cursor();
+        expect(cursor.exists(99)).to.eql(false);
+      });
     });
 
     describe('read/write prop (inline)', () => {
@@ -297,33 +342,17 @@ describe('TypedSheet', () => {
       });
     });
 
-    describe('read: default value', () => {
-      it('simple', async () => {
-        const { sheet } = await testSheetPrimitives();
+    describe('read/write prop (ref)', () => {
+      it.skip('read prop: ref', async () => {
+        const { sheet } = await testSheet();
         const cursor = await sheet.cursor();
 
-        const row1 = cursor.row(0).props; //  NB: Exists
-        const row2 = cursor.row(99).props; // NB: Does not exist.
+        const row = cursor.row(0);
 
-        expect(row1.stringValue).to.eql('hello value');
-        expect(row2.stringValue).to.eql('hello-default');
-      });
-
-      it('ref (look up at cell address)', async () => {
-        const ns = 'ns:foo.sample';
-        const fetch = await testInstanceFetch({
-          instance: ns,
-          implements: 'ns:foo.defaults',
-          defs: TYPE_DEFS,
-          rows: [],
-          cells: {
-            A1: { value: 'my-foo-default' },
-          },
-        });
-
-        const sheet = await TypeSystem.Sheet.load<d.MyDefaults>({ fetch, ns });
-        const cursor = await sheet.cursor();
-        expect(cursor.exists(99)).to.eql(false);
+        // console.log('row.props.title', row.props.title);
+        // console.log('row.props.message', row.props.message);
+        // console.log('-------------------------------------------');
+        // console.log('row', row);
       });
     });
 

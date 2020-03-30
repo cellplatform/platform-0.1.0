@@ -50,7 +50,6 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * [Properties]
    */
-
   public get types() {
     return this._columns.map(({ type }) => type);
   }
@@ -73,6 +72,14 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * Methods
    */
+  public type(prop: keyof T) {
+    const column = this._columns.find(def => def.type.prop === prop);
+    if (!column) {
+      const err = `The property '${prop}' is not defined by a column on [${this.uri}]`;
+      throw new Error(err);
+    }
+    return column.type;
+  }
 
   public toObject = (): T => {
     return this._columns.reduce((acc, next) => {
