@@ -115,6 +115,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * [Internal]
    */
 
+  /**
+   * Read a property value.
+   */
   private readProp(column: ITypedColumnData) {
     // console.log(this.index, 'READ', column.type.column, column.type.prop);
     const { type } = column;
@@ -152,6 +155,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     return done();
   }
 
+  /**
+   * Write a property value
+   */
   private writeProp(column: ITypedColumnData, value: any) {
     const { type } = column;
     const { prop } = type;
@@ -167,6 +173,10 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     }
 
     if (target.isRef) {
+      console.log('target', target);
+
+      // TypeTarget.re
+
       // TODO 🐷
     }
   }

@@ -19,6 +19,7 @@ describe('RefLinks', () => {
       test('  ', false);
       test('fs:func:wasm', false);
 
+      // NB: The values arter the "ref:" is an arbitrary path.
       test('  ref:ns:foo  ', true);
       test('ref:ns:foo', true);
       test('ref:cell:foo:A1', true);

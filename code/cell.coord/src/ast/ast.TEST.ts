@@ -133,16 +133,9 @@ describe('ast', () => {
 
     describe('cell', () => {
       it('REF', () => {
-        const test = (
-          input: string,
-          // space: string | undefined,
-          refType: string,
-          key: string,
-          sheet?: string,
-        ) => {
+        const test = (input: string, refType: string, key: string, sheet?: string) => {
           const cell = ast.toTree(input) as ast.CellNode;
           expect(cell.type).to.eql('cell');
-          // expect(cell.space).to.eql(space);
           expect(cell.refType).to.eql(refType);
           expect(cell.key).to.eql(key);
           expect(cell.ns).to.eql(sheet);
