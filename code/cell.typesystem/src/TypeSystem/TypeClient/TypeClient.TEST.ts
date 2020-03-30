@@ -464,7 +464,7 @@ describe('TypeClient', () => {
       };
 
       it('string', async () => {
-        await test('A', 'string', 'hello-default');
+        await test('A', 'string', 'Hello (Default)');
       });
 
       it('number', async () => {

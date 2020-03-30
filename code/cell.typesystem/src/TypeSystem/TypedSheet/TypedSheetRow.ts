@@ -112,8 +112,89 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   };
 
   /**
-   * [Internal]
+   * Get a cell (property) value.
    */
+  public async get<K extends keyof T>(prop: K): Promise<T[K]> {
+    const column = this.findColumn(prop);
+    const { type } = column;
+    const target = TypeTarget.parse(type.target);
+    if (!target.isValid) {
+      const err = `Cannot read property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
+      throw new Error(err);
+    }
+
+    const done = (result?: t.Json): T[K] => {
+      if (result === undefined && TypeDefault.isTypeDefaultValue(type.default)) {
+        // NB: Only look for a default value definition.
+        //     If the default value was declared with as a REF, that will have been looked up
+        //     and stored as a {value} by the [TypeClient] prior to this sync code being called.
+        return (type.default as t.ITypeDefaultValue).value as any;
+      } else {
+        return result as any;
+      }
+    };
+
+    if (!target.isValid) {
+      const err = `Cannot read property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
+      throw new Error(err);
+    }
+
+    if (target.isInline) {
+      return done(TypeTarget.inline(type).read(column.data));
+    }
+
+    if (target.isRef) {
+      // TODO 🐷
+      // console.log('read ref', column);
+      // console.log('TypedSheet', TypedSheet);
+      return done();
+    }
+
+    throw new Error(`Failed to read property '${prop}'.`);
+  }
+
+  /**
+   * Set a cell (property) value.
+   */
+  public async set<K extends keyof T>(
+    prop: K,
+    value: T[K],
+  ): Promise<t.ITypedSheetRowSetResult<T, K>> {
+    const column = this.findColumn(prop);
+    const { type } = column;
+    const target = TypeTarget.parse(type.target);
+    if (!target.isValid) {
+      const err = `Cannot write property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
+      throw new Error(err);
+    }
+
+    if (target.isInline) {
+      const cell = column.data;
+      const data = value as any;
+      column.data = TypeTarget.inline(type).write({ cell, data });
+    }
+
+    if (target.isRef) {
+      // console.log('target', target);
+      // TypeTarget.re
+      // TODO 🐷
+    }
+
+    return { prop, value, target, type };
+  }
+
+  /**
+   * [INTERNAL]
+   */
+
+  private findColumn<K extends keyof T>(prop: K) {
+    const res = this._columns.find(column => column.type.prop === prop);
+    if (!res) {
+      const err = `Column-definition for the property '${prop}' not found.`;
+      throw new Error(err);
+    }
+    return res;
+  }
 
   /**
    * Read a property value.
@@ -121,8 +202,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private readProp(column: ITypedColumnData) {
     // console.log(this.index, 'READ', column.type.column, column.type.prop);
     const { type } = column;
-    const { prop } = type;
-
+    const { prop } = column.type;
     const target = TypeTarget.parse(type.target);
 
     const done = (result?: t.Json) => {
@@ -156,7 +236,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   }
 
   /**
-   * Write a property value
+   * Write a property value.
    */
   private writeProp(column: ITypedColumnData, value: any) {
     const { type } = column;

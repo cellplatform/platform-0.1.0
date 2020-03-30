@@ -101,11 +101,11 @@ describe.only('TypedSheet', () => {
         const { sheet } = await testSheetPrimitives();
         const cursor = await sheet.cursor();
 
-        const row1 = cursor.row(0).props; //  NB: Exists
+        const row1 = cursor.row(0).props; //  NB: Exists.
         const row2 = cursor.row(99).props; // NB: Does not exist.
 
         expect(row1.stringValue).to.eql('hello value');
-        expect(row2.stringValue).to.eql('hello-default');
+        expect(row2.stringValue).to.eql('Hello (Default)');
       });
 
       it('ref (look up cell address)', async () => {
@@ -183,17 +183,35 @@ describe.only('TypedSheet', () => {
         });
       });
 
+      it('get/set method', async () => {
+        const { sheet } = await testSheetPrimitives();
+        const cursor = await sheet.cursor();
+        const row = cursor.row(0);
+
+        expect(await row.get('stringValue')).to.eql('hello value');
+
+        const res1 = await row.set('stringValue', '');
+        expect(res1.prop).to.eql('stringValue');
+        expect(res1.value).to.eql('');
+        expect(res1.target.kind).to.eql('inline');
+
+        expect(await row.get('stringValue')).to.eql('');
+        await row.set('stringValue', ' ');
+        expect(await row.get('stringValue')).to.eql(' ');
+      });
+
       describe('primitive', () => {
         it('string', async () => {
           const { sheet } = await testSheetPrimitives();
           const cursor = await sheet.cursor();
-          const row = cursor.row(0).props;
-          expect(row.stringValue).to.eql('hello value');
-          expect(row.stringProp).to.eql('hello prop');
-          row.stringValue = '';
-          row.stringProp = '';
-          expect(row.stringValue).to.eql('');
-          expect(row.stringProp).to.eql('');
+          const row = cursor.row(0);
+
+          expect(row.props.stringValue).to.eql('hello value');
+          expect(row.props.stringProp).to.eql('hello prop');
+          row.props.stringValue = '';
+          row.props.stringProp = '';
+          expect(row.props.stringValue).to.eql('');
+          expect(row.props.stringProp).to.eql('');
         });
 
         it('number', async () => {
@@ -263,8 +281,8 @@ describe.only('TypedSheet', () => {
         const row = cursor.row(0).props;
 
         console.log('-------------------------------------------');
-        const o = row.toObject();
-        console.log('o', o);
+        // const o = row.toObject();
+        // console.log('o', o);
       });
 
       it('1:*', async () => {

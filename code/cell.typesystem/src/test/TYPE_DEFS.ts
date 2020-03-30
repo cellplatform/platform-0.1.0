@@ -42,7 +42,7 @@ export const TYPE_DEFS: SampleTypeDefs = {
     columns: {
       A: {
         props: {
-          prop: { name: 'stringValue', type: 'string', default: { value: 'hello-default' } },
+          prop: { name: 'stringValue', type: 'string', default: { value: 'Hello (Default)' } },
         },
       },
       B: { props: { prop: { name: 'numberValue', type: 'number', default: 999 } } },
