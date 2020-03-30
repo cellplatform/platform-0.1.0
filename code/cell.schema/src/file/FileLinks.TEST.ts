@@ -38,7 +38,7 @@ describe('FileLinks', () => {
       test('', false);
       test('  ', false);
       test('ref:ns:foo', false);
-      test('ref:cell:foo!A1', false);
+      test('ref:cell:foo:A1', false);
 
       test('fs:func:wasm', true);
       test('  fs:func:wasm  ', true);
@@ -101,8 +101,9 @@ describe('FileLinks', () => {
 
   describe('parse (key:value)', () => {
     it('throw: file URI not provided', () => {
-      const fn = () => FileLinks.parseValue('cell:foo!A1');
-      expect(fn).to.throw();
+      expect(() => FileLinks.parseValue('cell:foo:A1')).to.throw();
+      expect(() => FileLinks.parseValue('ns:foo')).to.throw();
+      expect(() => FileLinks.parseValue('DERP')).to.throw();
     });
 
     it('uri', () => {

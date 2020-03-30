@@ -3,19 +3,19 @@ import { log } from '@platform/log/lib/server';
 
 /**
  * Invite (UI):
- *    Cloud:          https://dev.db.team/cell:ck6bmume4000008mqhkkdaebj!A1/file/dist/index.html?def=ns:ck6fjv938000008mm76p201v2
+ *    Cloud:          https://dev.db.team/cell:ck6bmume4000008mqhkkdaebj:A1/file/dist/index.html?def=ns:ck6fjv938000008mm76p201v2
  *    Local (Dev):    http://localhost:1234/?def=localhost:8080:ns:ck6fjv938000008mm76p201v2
  *    Local (Cloud):  http://localhost:1234/?def=dev.db.team:ns:ck6fjv938000008mm76p201v2
  *
  *
  * Definition/State:
- *    Datagrid (UI):      https://alpha.hypersheet.io/cell:ck68sk05x0000ktetfz8w5zyr!A1/file/dist/parcel/index.html?def=ns:ck6fjv938000008mm76p201v2
- *    Activity Log:       https://alpha.hypersheet.io/cell:ck68sk05x0000ktetfz8w5zyr!A1/file/dist/parcel/index.html?def=ns:ck68ivf06000008l44wpo1dxl
+ *    Datagrid (UI):      https://alpha.hypersheet.io/cell:ck68sk05x0000ktetfz8w5zyr:A1/file/dist/parcel/index.html?def=ns:ck6fjv938000008mm76p201v2
+ *    Activity Log:       https://alpha.hypersheet.io/cell:ck68sk05x0000ktetfz8w5zyr:A1/file/dist/parcel/index.html?def=ns:ck68ivf06000008l44wpo1dxl
  *    Namespace (JSON):   https://alpha.hypersheet.io/ns:ck6fjv938000008mm76p201v2
  *
  *
  * Code Editor:
- *  - https://alpha.hypersheet.io/cell:ck68v714w0000afetfheb662w!A1/file/dist/parcel/index.html
+ *  - https://alpha.hypersheet.io/cell:ck68v714w0000afetfheb662w:A1/file/dist/parcel/index.html
  */
 
 const writeConfig = async (args: { id: string; host: string; def: string; inviteUrl: string }) => {
@@ -34,13 +34,13 @@ const writeConfig = async (args: { id: string; host: string; def: string; invite
   cells.B2 = { value: 'Rowan' };
   cells.C2 = {
     value:
-      'https://dev.db.team/cell:ck6bmume4000008mqhkkdaebj!A1/file/static/images/avatar/rowan-128.jpg',
+      'https://dev.db.team/cell:ck6bmume4000008mqhkkdaebj:A1/file/static/images/avatar/rowan-128.jpg',
   };
 
   cells.B3 = { value: 'Deb' };
   cells.C3 = {
     value:
-      'https://dev.db.team/cell:ck6bmume4000008mqhkkdaebj!A1/file/static/images/avatar/deb-128.jpg',
+      'https://dev.db.team/cell:ck6bmume4000008mqhkkdaebj:A1/file/static/images/avatar/deb-128.jpg',
   };
 
   // glenkyne@mediaworks.co.nz
@@ -91,7 +91,7 @@ const logUrls = async (args: { id: string; host: string; def: string; inviteUrl:
   // const urlsLocal = Schema.urls(localhost);
 
   const datagrid =
-    'https://dev.db.team/cell:ck68sk05x0000ktetfz8w5zyr!A1/file/dist/parcel/index.html';
+    'https://dev.db.team/cell:ck68sk05x0000ktetfz8w5zyr:A1/file/dist/parcel/index.html';
 
   const url = {
     def: urls
@@ -138,7 +138,7 @@ const logUrls = async (args: { id: string; host: string; def: string; inviteUrl:
       id: 'glen',
       host: 'dev.db.team',
       def: 'ns:ck6fjv938000008mm76p201v2',
-      inviteUrl: 'https://dev.db.team/cell:ck6bmume4000008mqhkkdaebj!A1/file/dist/index.html',
+      inviteUrl: 'https://dev.db.team/cell:ck6bmume4000008mqhkkdaebj:A1/file/dist/index.html',
     },
     {
       id: 'deb',

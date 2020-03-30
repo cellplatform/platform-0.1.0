@@ -12,7 +12,7 @@ describe('path', () => {
     test('');
     test('  ');
     test('ns:foo');
-    test('cell:foo!A1');
+    test('cell:foo!A1'); // NB: "!" not correct format within a URI.
     test('file:boom');
   });
 

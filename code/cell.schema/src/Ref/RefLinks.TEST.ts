@@ -20,7 +20,10 @@ describe('RefLinks', () => {
       test('fs:func:wasm', false);
 
       test('  ref:ns:foo  ', true);
-      test('ref:cell:foo!A1', true);
+      test('ref:ns:foo', true);
+      test('ref:cell:foo:A1', true);
+      test('ref:cell:foo:A', true);
+      test('ref:cell:foo:1', true);
     });
 
     it('refValue', () => {
@@ -37,13 +40,13 @@ describe('RefLinks', () => {
 
       test('ns:foo', true);
       test('  ns:foo  ', true);
-      test('cell:foo!A1', true);
-      test('cell:foo!A', true);
-      test('cell:foo!1', true);
+      test('cell:foo:A1', true);
+      test('cell:foo:A', true);
+      test('cell:foo:1', true);
 
-      test('cell:foo!A1?hash=abc', true);
-      test('cell:foo!A?hash=abc', true);
-      test('cell:foo!1?hash=abc', true);
+      test('cell:foo:A1?hash=abc', true);
+      test('cell:foo:A?hash=abc', true);
+      test('cell:foo:1?hash=abc', true);
     });
   });
 
