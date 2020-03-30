@@ -32,10 +32,10 @@
   dependencies:
     "@platform/libs" "0.2.1"
 
-"@platform/cell.types@0.4.62":
-  version "0.4.62"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.62.tgz#8c1db6ef29171becf7fb5db0cc53973e8d148f6a"
-  integrity sha512-m6roozzssLv5JQIGpSir50EEt70AtiqEm5pWb4xRk2+BoJgefEgsGGpjl75AvHgrqz75Brs5RigbQqwgHPrYBA==
+"@platform/cell.types@0.4.63":
+  version "0.4.63"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.63.tgz#0f295b9230615f6fefa857a432046e3c2545522a"
+  integrity sha512-gOV3TUbmbx7TYDwXJu6USzPjwCt5uluDPnHXn0oxCY8RF635e3htkiJbqmi/UnmB4HB4GEgt7v6hu+uY9GT1eA==
   dependencies:
     "@platform/cache" "0.2.23"
     "@platform/fs.s3.types" "0.2.0"
