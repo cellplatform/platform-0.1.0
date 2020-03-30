@@ -156,30 +156,29 @@ describe('TypedSheet', () => {
       expect(cursor.row(99)).to.not.eql(undefined);
     });
 
-    describe('types (row)', () => {
-      it('row.types', async () => {
+    describe('row.types', () => {
+      it('row.types.list', async () => {
         const { sheet } = await testSheet();
         const cursor = await sheet.cursor();
-        const columns = cursor.row(0).types.map(def => def.column);
-        expect(columns).to.eql(['A', 'B', 'C', 'D', 'E']);
+        const types = cursor.row(0).types;
+
+        const list1 = types.list;
+        const list2 = types.list;
+
+        expect(list1).to.equal(list2); // Lazily evalutated, common instance returned.
+        expect(list1.map(def => def.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
       });
 
-      it('row.type(prop)', async () => {
+      it('row.types.map', async () => {
         const { sheet } = await testSheet();
         const cursor = await sheet.cursor();
-        const row = cursor.row(0);
-        expect(row.type('title').column).to.eql('A');
-        expect(row.type('isEnabled').column).to.eql('B');
-        expect(row.type('color').column).to.eql('C');
-        expect(row.type('message').column).to.eql('D');
-        expect(row.type('messages').column).to.eql('E');
-      });
+        const types = cursor.row(0).types;
 
-      it('throw: invalid prop name', async () => {
-        const { sheet } = await testSheet();
-        const cursor = await sheet.cursor();
-        const fn = () => cursor.row(0).type('FAIL' as any);
-        expect(fn).to.throw(/The property 'FAIL' is not defined by a column/);
+        expect(types.map.title.column).to.eql('A');
+        expect(types.map.isEnabled.column).to.eql('B');
+        expect(types.map.color.column).to.eql('C');
+        expect(types.map.message.column).to.eql('D');
+        expect(types.map.messages.column).to.eql('E');
       });
     });
 

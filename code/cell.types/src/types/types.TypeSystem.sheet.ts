@@ -34,12 +34,19 @@ export type ITypedSheetRow<T> = {
   readonly index: number;
   readonly uri: string;
   readonly props: ITypedSheetRowProps<T>;
-  readonly types: t.IColumnTypeDef[];
-  type(prop: keyof T): t.IColumnTypeDef;
+  readonly types: ITypedSheetRowTypes<T>;
   toObject(): T;
 };
 
 /**
- * The pure "strongly typed" data-properties of the cells defined in the row.
+ * The pure "strongly typed" READ/WRITE data-properties of the cells for a row.
  */
 export type ITypedSheetRowProps<T> = T & { toObject: () => T };
+
+/**
+ * The type definitions for the cells/columns in a row.
+ */
+export type ITypedSheetRowTypes<T> = {
+  list: t.IColumnTypeDef[];
+  map: { [P in keyof Required<T>]: t.IColumnTypeDef };
+};

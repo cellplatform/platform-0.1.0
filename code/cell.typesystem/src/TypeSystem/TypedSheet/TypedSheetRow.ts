@@ -43,6 +43,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private readonly ctx: TypedSheetRowCtx;
   private readonly _columns: ITypedColumnData[] = [];
   private _props: t.ITypedSheetRowProps<T>;
+  private _types: t.ITypedSheetRowTypes<T>;
 
   public readonly index: number;
   public readonly uri: string;
@@ -51,7 +52,28 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * [Properties]
    */
   public get types() {
-    return this._columns.map(({ type }) => type);
+    if (!this._types) {
+      type M = t.ITypedSheetRowTypes<T>['map'];
+      const columns = this._columns;
+      let list: t.IColumnTypeDef[] | undefined;
+      let map: M | undefined;
+
+      this._types = {
+        get list() {
+          return list || (list = columns.map(({ type }) => type));
+        },
+        get map() {
+          if (!map) {
+            map = columns.reduce((acc, column) => {
+              acc[column.type.prop] = column.type;
+              return acc;
+            }, {}) as M;
+          }
+          return map;
+        },
+      };
+    }
+    return this._types;
   }
 
   public get props(): t.ITypedSheetRowProps<T> {
