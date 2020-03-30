@@ -30,6 +30,6 @@ export declare type Primitives = {
   stringProp: string;
   numberProp: number;
   booleanProp: boolean;
-  nullProp: null | string | number;
+  nullProp: null | number;
   undefinedProp?: string;
 };

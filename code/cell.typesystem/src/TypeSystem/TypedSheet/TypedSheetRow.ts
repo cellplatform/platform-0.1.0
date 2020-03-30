@@ -126,7 +126,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       if (result === undefined && TypeDefault.isTypeDefaultValue(type.default)) {
         // NB: Only look for a default value definition.
         //     If the default value was declared with as a REF, that will have been looked up
-        //     and stored as a {value} by the TypeClient prior to this sync code being called.
+        //     and stored as a {value} by the [TypeClient] prior to this sync code being called.
         return (type.default as t.ITypeDefaultValue).value;
       } else {
         return result;

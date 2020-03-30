@@ -24,11 +24,7 @@ import { TypeSystem } from '..';
  * - read/write: linked sheet
  */
 
-describe('TypedSheet', () => {
-  it.skip('read/write primitive types', () => {}); // tslint:disable-line
-  it.skip('read/write ref (singular) - linked sheet', () => {}); // tslint:disable-line
-  it.skip('read/write ref (array/list) - linked sheet', () => {}); // tslint:disable-line
-
+describe.only('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
 
@@ -183,7 +179,7 @@ describe('TypedSheet', () => {
     });
 
     describe('read: default value', () => {
-      it('simple', async () => {
+      it('simple: primitive | {object}', async () => {
         const { sheet } = await testSheetPrimitives();
         const cursor = await sheet.cursor();
 
@@ -342,16 +338,19 @@ describe('TypedSheet', () => {
     });
 
     describe('read/write prop (ref)', () => {
-      it.skip('read prop: ref', async () => {
-        const { sheet } = await testSheet();
+      // it.skip('read/write ref (singular) - linked sheet', () => {}); // tslint:disable-line
+      // it.skip('read/write ref (array/list) - linked sheet', () => {}); // tslint:disable-line
+
+      it('1:1', async () => {
+        const { sheet } = await testSheetPrimitives();
         const cursor = await sheet.cursor();
+        const row = cursor.row(0).props;
+      });
 
-        const row = cursor.row(0);
-
-        // console.log('row.props.title', row.props.title);
-        // console.log('row.props.message', row.props.message);
-        // console.log('-------------------------------------------');
-        // console.log('row', row);
+      it('1:*', async () => {
+        const { sheet } = await testSheetPrimitives();
+        const cursor = await sheet.cursor();
+        const row = cursor.row(0).props;
       });
     });
 

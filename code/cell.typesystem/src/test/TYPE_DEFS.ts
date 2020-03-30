@@ -53,11 +53,7 @@ export const TYPE_DEFS: SampleTypeDefs = {
       F: { props: { prop: { name: 'stringProp', type: 'string', target: 'inline:string' } } },
       G: { props: { prop: { name: 'numberProp', type: 'number', target: 'inline:number' } } },
       H: { props: { prop: { name: 'booleanProp', type: 'boolean', target: 'inline:boolean' } } },
-      I: {
-        props: {
-          prop: { name: 'nullProp', type: 'null | string | number', target: 'inline:null' },
-        },
-      },
+      I: { props: { prop: { name: 'nullProp', type: 'null | number', target: 'inline:null' } } },
       K: {
         props: { prop: { name: 'undefinedProp?', type: 'string', target: 'inline:undefined' } },
       },
