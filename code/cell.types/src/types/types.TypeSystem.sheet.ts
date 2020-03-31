@@ -36,25 +36,23 @@ export type ITypedSheetRow<T> = {
   readonly props: ITypedSheetRowProps<T>;
   readonly types: ITypedSheetRowTypes<T>;
   toObject(): T;
-  get<K extends keyof T>(prop: K): Promise<T[K]>;
-  set<K extends keyof T>(prop: K, value: T[K]): Promise<ITypedSheetRowSetResult<T, K>>;
+  prop<K extends keyof T>(key: K): ITypedSheetRowProp<T, K>;
 };
 
 /**
- * Response from the [row.set] method.
+ * Read/write methods for the properties of a single row.
  */
-export type ITypedSheetRowSetResult<T, K extends keyof T> = {
-  prop: K;
-  value: T[K];
-  target: t.CellTypeTargetInfo;
-  type: t.IColumnTypeDef;
+export type ITypedSheetRowProp<T, K extends keyof T> = {
+  get(): Promise<T[K]>;
+  set(value: T[K]): Promise<{}>;
+  clear(): Promise<{}>;
 };
 
 /**
  * The pure "strongly typed" READ/WRITE data-properties of the cells for a row.
  */
 export type ITypedSheetRowProps<T> = {
-  [K in keyof T]: T[K];
+  readonly [K in keyof T]: T[K];
 };
 
 /**

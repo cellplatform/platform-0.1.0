@@ -112,75 +112,81 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   };
 
   /**
-   * Get a cell (property) value.
+   * Read/write handle for a single cell (property).
    */
-  public async get<K extends keyof T>(prop: K): Promise<T[K]> {
-    const column = this.findColumn(prop);
-    const { type } = column;
+  public prop<K extends keyof T>(key: K): t.ITypedSheetRowProp<T, K> {
+    const self = this; // tslint:disable-line
+    const column = self.findColumn(key);
+    const type = column.type;
+
     const target = TypeTarget.parse(type.target);
     if (!target.isValid) {
-      const err = `Cannot read property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
+      const err = `Property '${key}' (column ${type.column}) has an invalid target '${type.target}'.`;
       throw new Error(err);
     }
 
-    const done = (result?: t.Json): T[K] => {
-      if (result === undefined && TypeDefault.isTypeDefaultValue(type.default)) {
-        // NB: Only look for a default value definition.
-        //     If the default value was declared with as a REF, that will have been looked up
-        //     and stored as a {value} by the [TypeClient] prior to this sync code being called.
-        return (type.default as t.ITypeDefaultValue).value as any;
-      } else {
-        return result as any;
-      }
+    const api = {
+      /**
+       * Get a cell (property) value.
+       */
+      async get(): Promise<T[K]> {
+        const done = (result?: t.Json): T[K] => {
+          if (result === undefined && TypeDefault.isTypeDefaultValue(type.default)) {
+            // NB: Only look for a default value definition.
+            //     If the default value was declared with as a REF, that will have been looked up
+            //     and stored as a {value} by the [TypeClient] prior to this sync code being called.
+            return (type.default as t.ITypeDefaultValue).value as any;
+          } else {
+            return result as any;
+          }
+        };
+
+        if (!target.isValid) {
+          const err = `Cannot read property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
+          throw new Error(err);
+        }
+
+        if (target.isInline) {
+          return done(TypeTarget.inline(type).read(column.data));
+        }
+
+        if (target.isRef) {
+          // TODO 🐷
+          // console.log('read ref', column);
+          // console.log('TypedSheet', TypedSheet);
+          return done();
+        }
+
+        throw new Error(`Failed to read property '${key}'.`);
+      },
+
+      /**
+       * Set a cell (property) value.
+       */
+      async set(value: T[K]): Promise<{}> {
+        if (target.isInline) {
+          const cell = column.data;
+          const data = value as any;
+          column.data = TypeTarget.inline(type).write({ cell, data });
+        }
+
+        if (target.isRef) {
+          // console.log('target', target);
+          // TypeTarget.re
+          // TODO 🐷
+        }
+
+        return {};
+      },
+
+      /**
+       * Remove a property value.
+       */
+      async clear(): Promise<{}> {
+        return api.set(undefined as any);
+      },
     };
-
-    if (!target.isValid) {
-      const err = `Cannot read property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
-      throw new Error(err);
-    }
-
-    if (target.isInline) {
-      return done(TypeTarget.inline(type).read(column.data));
-    }
-
-    if (target.isRef) {
-      // TODO 🐷
-      // console.log('read ref', column);
-      // console.log('TypedSheet', TypedSheet);
-      return done();
-    }
-
-    throw new Error(`Failed to read property '${prop}'.`);
-  }
-
-  /**
-   * Set a cell (property) value.
-   */
-  public async set<K extends keyof T>(
-    prop: K,
-    value: T[K],
-  ): Promise<t.ITypedSheetRowSetResult<T, K>> {
-    const column = this.findColumn(prop);
-    const { type } = column;
-    const target = TypeTarget.parse(type.target);
-    if (!target.isValid) {
-      const err = `Cannot write property '${type.prop}' (column ${type.column}) because the target '${type.target}' is invalid.`;
-      throw new Error(err);
-    }
-
-    if (target.isInline) {
-      const cell = column.data;
-      const data = value as any;
-      column.data = TypeTarget.inline(type).write({ cell, data });
-    }
-
-    if (target.isRef) {
-      // console.log('target', target);
-      // TypeTarget.re
-      // TODO 🐷
-    }
-
-    return { prop, value, target, type };
+    return api;
   }
 
   /**
