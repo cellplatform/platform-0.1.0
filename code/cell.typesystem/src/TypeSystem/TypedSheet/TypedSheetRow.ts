@@ -74,17 +74,18 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
         },
       };
     }
+
     return this._types;
   }
 
   public get props(): t.ITypedSheetRowProps<T> {
     if (!this._props) {
-      const toObject = this.toObject;
-      const props = { toObject };
+      const props = {};
       this._columns.forEach(column => {
-        Object.defineProperty(props, column.type.prop, {
-          get: () => this.readProp(column),
-          set: value => this.writeProp(column, value),
+        const name = column.type.prop as keyof T;
+        Object.defineProperty(props, name, {
+          get: () => this.prop(name).get(),
+          set: value => this.prop(name).set(value),
         });
       });
       this._props = props as any;
@@ -96,13 +97,19 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * Methods
    */
 
-  public toObject = (): T => {
-    return this._columns.reduce((acc, next) => {
-      const key = next.type.prop;
-      acc[key] = this.props[key];
-      return acc;
-    }, {}) as T;
-  };
+  public async toObject(): Promise<T> {
+    const obj = {};
+
+    await Promise.all(
+      this._columns.map(async column => {
+        const prop = column.type.prop;
+        const value = await this.prop(prop as keyof T).get();
+        obj[prop] = value;
+      }),
+    );
+
+    return (obj as unknown) as T;
+  }
 
   public type(prop: keyof T) {
     const column = this._columns.find(def => def.type.prop === prop);

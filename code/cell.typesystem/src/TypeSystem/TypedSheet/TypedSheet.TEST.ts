@@ -70,6 +70,17 @@ describe.only('TypedSheet', () => {
       expect(cursor.row(99)).to.not.eql(undefined);
     });
 
+    it('toObject', async () => {
+      const { sheet } = await testSheetEnum();
+      const row = (await sheet.cursor()).row(0);
+      const res = await row.toObject();
+      expect(res).to.eql({
+        single: 'hello',
+        union: ['blue'],
+        array: ['red', 'green', 'blue'],
+      });
+    });
+
     describe('row.types', () => {
       it('row.types.list', async () => {
         const { sheet } = await testSheet();
@@ -104,8 +115,8 @@ describe.only('TypedSheet', () => {
         const row1 = cursor.row(0).props; //  NB: Exists.
         const row2 = cursor.row(99).props; // NB: Does not exist (use default).
 
-        expect(row1.stringValue).to.eql('hello value');
-        expect(row2.stringValue).to.eql('Hello (Default)');
+        expect(await row1.stringValue).to.eql('hello value');
+        expect(await row2.stringValue).to.eql('Hello (Default)');
       });
 
       it('ref (look up cell address)', async () => {
@@ -180,22 +191,26 @@ describe.only('TypedSheet', () => {
         const cursor = await sheet.cursor();
         const row = cursor.row(0);
 
-        expect(row.props.title).to.eql('One');
-        expect(row.props.color).to.eql({ label: 'background', color: 'red' });
-        expect(row.props.message).to.eql(undefined);
-        expect(row.props.isEnabled).to.eql(true);
+        expect(await row.props.title).to.eql('One');
+        expect(await row.props.color).to.eql({ label: 'background', color: 'red' });
+        expect(await row.props.message).to.eql(undefined);
+        expect(await row.props.isEnabled).to.eql(true);
 
         await row.prop('title').set('hello');
         await row.prop('color').set({ label: 'background', color: 'green', description: 'Yo' });
 
-        expect(row.props.title).to.eql('hello');
-        expect(row.props.color).to.eql({ label: 'background', color: 'green', description: 'Yo' });
+        expect(await row.props.title).to.eql('hello');
+        expect(await row.props.color).to.eql({
+          label: 'background',
+          color: 'green',
+          description: 'Yo',
+        });
 
         await row.prop('title').set('');
         await row.prop('color').set(undefined);
 
-        expect(row.props.title).to.eql('');
-        expect(row.props.color).to.eql(undefined);
+        expect(await row.props.title).to.eql('');
+        expect(await row.props.color).to.eql(undefined);
       });
 
       describe('enum', () => {
@@ -203,35 +218,35 @@ describe.only('TypedSheet', () => {
           const { sheet } = await testSheetEnum();
           const cursor = await sheet.cursor();
           const row = cursor.row(0);
-          expect(row.props.single).to.eql('hello');
+          expect(await row.props.single).to.eql('hello');
 
           await row.prop('single').set(undefined);
-          expect(row.props.single).to.eql(undefined);
+          expect(await row.props.single).to.eql(undefined);
         });
 
         it('union', async () => {
           const { sheet } = await testSheetEnum();
           const cursor = await sheet.cursor();
           const row = cursor.row(0);
-          expect(row.props.union).to.eql(['blue']);
+          expect(await row.props.union).to.eql(['blue']);
 
           await row.prop('union').set('red');
-          expect(row.props.union).to.eql('red');
+          expect(await row.props.union).to.eql('red');
 
           await row.prop('union').set(['blue', 'blue']); // NB: stupid valid, testing array structure.
-          expect(row.props.union).to.eql(['blue', 'blue']);
+          expect(await row.props.union).to.eql(['blue', 'blue']);
 
           await row.prop('union').clear();
-          expect(row.props.union).to.eql(undefined);
+          expect(await row.props.union).to.eql(undefined);
         });
 
         it('array', async () => {
           const { sheet } = await testSheetEnum();
           const cursor = await sheet.cursor();
           const row = cursor.row(0);
-          expect(row.props.array).to.eql(['red', 'green', 'blue']);
+          expect(await row.props.array).to.eql(['red', 'green', 'blue']);
           await row.prop('array').clear();
-          expect(row.props.array).to.eql(undefined);
+          expect(await row.props.array).to.eql(undefined);
         });
       });
 
@@ -241,73 +256,73 @@ describe.only('TypedSheet', () => {
           const cursor = await sheet.cursor();
           const row = cursor.row(0);
 
-          expect(row.props.stringValue).to.eql('hello value');
-          expect(row.props.stringProp).to.eql('hello prop');
+          expect(await row.props.stringValue).to.eql('hello value');
+          expect(await row.props.stringProp).to.eql('hello prop');
           await row.prop('stringValue').set('');
           await row.prop('stringProp').set('');
 
-          expect(row.props.stringValue).to.eql('');
-          expect(row.props.stringProp).to.eql('');
+          expect(await row.props.stringValue).to.eql('');
+          expect(await row.props.stringProp).to.eql('');
         });
 
         it('number', async () => {
           const { sheet } = await testSheetPrimitives();
           const cursor = await sheet.cursor();
           const row = cursor.row(0);
-          expect(row.props.numberValue).to.eql(123);
-          expect(row.props.numberProp).to.eql(456);
+          expect(await row.props.numberValue).to.eql(123);
+          expect(await row.props.numberProp).to.eql(456);
           await row.prop('numberValue').set(-1);
           await row.prop('numberProp').set(-1);
-          expect(row.props.numberValue).to.eql(-1);
-          expect(row.props.numberProp).to.eql(-1);
+          expect(await row.props.numberValue).to.eql(-1);
+          expect(await row.props.numberProp).to.eql(-1);
         });
 
         it('boolean', async () => {
           const { sheet } = await testSheetPrimitives();
           const cursor = await sheet.cursor();
           const row = cursor.row(0);
-          expect(row.props.booleanValue).to.eql(true);
-          expect(row.props.booleanProp).to.eql(true);
+          expect(await row.props.booleanValue).to.eql(true);
+          expect(await row.props.booleanProp).to.eql(true);
           await row.prop('booleanValue').set(false);
           await row.prop('booleanProp').set(false);
-          expect(row.props.booleanValue).to.eql(false);
-          expect(row.props.booleanProp).to.eql(false);
+          expect(await row.props.booleanValue).to.eql(false);
+          expect(await row.props.booleanProp).to.eql(false);
         });
 
         it('null', async () => {
           const { sheet } = await testSheetPrimitives();
           const cursor = await sheet.cursor();
           const row = cursor.row(0);
-          expect(row.props.nullValue).to.eql(null);
+          expect(await row.props.nullValue).to.eql(null);
 
           await row.prop('nullValue').set(123);
           await row.prop('nullProp').set(123);
-          expect(row.props.nullValue).to.eql(123);
-          expect(row.props.nullProp).to.eql(123);
+          expect(await row.props.nullValue).to.eql(123);
+          expect(await row.props.nullProp).to.eql(123);
 
           await row.prop('nullValue').set(null);
           await row.prop('nullProp').set(null);
-          expect(row.props.nullValue).to.eql(null);
-          expect(row.props.nullProp).to.eql(null);
+          expect(await row.props.nullValue).to.eql(null);
+          expect(await row.props.nullProp).to.eql(null);
         });
 
         it('undefined', async () => {
           const { sheet } = await testSheetPrimitives();
           const cursor = await sheet.cursor();
           const row = cursor.row(0);
-          expect(row.props.undefinedValue).to.eql(undefined);
-          expect(row.props.undefinedProp).to.eql(undefined);
+          expect(await row.props.undefinedValue).to.eql(undefined);
+          expect(await row.props.undefinedProp).to.eql(undefined);
 
           await row.prop('undefinedValue').set('hello');
           await row.prop('undefinedProp').set('hello');
-          expect(row.props.undefinedValue).to.eql('hello');
-          expect(row.props.undefinedProp).to.eql('hello');
+          expect(await row.props.undefinedValue).to.eql('hello');
+          expect(await row.props.undefinedProp).to.eql('hello');
 
           await row.prop('undefinedValue').set(undefined);
           await row.prop('undefinedProp').set(undefined);
 
-          expect(row.props.undefinedValue).to.eql(undefined);
-          expect(row.props.undefinedProp).to.eql(undefined);
+          expect(await row.props.undefinedValue).to.eql(undefined);
+          expect(await row.props.undefinedProp).to.eql(undefined);
         });
       });
     });
