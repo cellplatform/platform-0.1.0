@@ -124,7 +124,19 @@ describe.only('TypedSheet', () => {
       });
     });
 
-    describe('row.props (methods)', () => {
+    describe('row.prop (methods)', () => {
+      it('reuse api instance', async () => {
+        const { sheet } = await testSheetPrimitives();
+        const row = (await sheet.cursor()).row(0);
+
+        const prop1 = row.prop('numberProp');
+        const prop2 = row.prop('numberProp');
+        const prop3 = row.prop('stringValue');
+
+        expect(prop1).to.equal(prop2);
+        expect(prop1).to.not.equal(prop3);
+      });
+
       it('get', async () => {
         const { sheet } = await testSheetPrimitives();
         const cursor = await sheet.cursor();

@@ -52,7 +52,7 @@ export type ITypedSheetRowProp<T, K extends keyof T> = {
  * The pure "strongly typed" READ/WRITE data-properties of the cells for a row.
  */
 export type ITypedSheetRowProps<T> = {
-  readonly [K in keyof T]: T[K];
+  readonly [K in keyof T]: Promise<T[K]>;
 };
 
 /**

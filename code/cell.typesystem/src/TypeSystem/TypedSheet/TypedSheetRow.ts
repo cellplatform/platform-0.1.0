@@ -43,6 +43,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private readonly ctx: TypedSheetRowCtx;
   private readonly _columns: ITypedColumnData[] = [];
   private _props: t.ITypedSheetRowProps<T>;
+  private _prop: { [key: string]: t.ITypedSheetRowProp<T, any> } = {};
   private _types: t.ITypedSheetRowTypes<T>;
 
   public readonly index: number;
@@ -94,14 +95,6 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * Methods
    */
-  public type(prop: keyof T) {
-    const column = this._columns.find(def => def.type.prop === prop);
-    if (!column) {
-      const err = `The property '${prop}' is not defined by a column on [${this.uri}]`;
-      throw new Error(err);
-    }
-    return column.type;
-  }
 
   public toObject = (): T => {
     return this._columns.reduce((acc, next) => {
@@ -111,12 +104,24 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     }, {}) as T;
   };
 
+  public type(prop: keyof T) {
+    const column = this._columns.find(def => def.type.prop === prop);
+    if (!column) {
+      const err = `The property '${prop}' is not defined by a column on [${this.uri}]`;
+      throw new Error(err);
+    }
+    return column.type;
+  }
+
   /**
    * Read/write handle for a single cell (property).
    */
   public prop<K extends keyof T>(key: K): t.ITypedSheetRowProp<T, K> {
-    const self = this; // tslint:disable-line
-    const column = self.findColumn(key);
+    if (this._prop[key as string]) {
+      return this._prop[key as string]; // Already created and cached.
+    }
+
+    const column = this.findColumn(key);
     const type = column.type;
 
     const target = TypeTarget.parse(type.target);
@@ -186,6 +191,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
         return api.set(undefined as any);
       },
     };
+
+    this._prop[key as string] = api;
     return api;
   }
 
