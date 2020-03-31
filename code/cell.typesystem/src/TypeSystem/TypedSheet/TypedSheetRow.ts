@@ -273,10 +273,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     }
 
     if (target.isRef) {
-      console.log('target', target);
-
+      // console.log('target', target);
       // TypeTarget.re
-
       // TODO 🐷
     }
   }

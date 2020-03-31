@@ -333,7 +333,7 @@ describe.only('TypedSheet', () => {
         const cursor = await sheet.cursor();
         const row = cursor.row(0);
 
-        console.log('-------------------------------------------');
+        // console.log('-------------------------------------------');
         // const o = row.toObject();
         // console.log('o', o);
       });
