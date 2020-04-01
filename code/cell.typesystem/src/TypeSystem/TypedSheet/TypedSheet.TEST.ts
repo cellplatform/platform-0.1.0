@@ -6,6 +6,8 @@ import * as m from '../../test/.d.ts/foo.messages';
 
 import { ERROR, expect, testInstanceFetch, TYPE_DEFS, t } from '../../test';
 import { TypeSystem } from '..';
+import { TypedSheetRef } from './TypedSheetRef';
+import { TypedSheetRefs } from './TypedSheetRefs';
 
 /**
  * TODO 🐷 Features
@@ -331,31 +333,22 @@ describe.only('TypedSheet', () => {
         const cursor = await sheet.cursor();
         const row = cursor.row(0);
 
-        // const o = await row.toObject();
-        // console.log('-------------------------------------------');
-        // console.log('o', o);
-
         const color = await row.props.color;
         // const messages = await row.props.messages;
 
-        console.log('-------------------------------------------');
-        console.log('color', color);
-
-        // const s = (color as unknown) as t.ITypedSheet<m.MyColor>;
-        // const c = await s.cursor();
-        // const r = c.row(0);
-        // const o = await r.toObject();
         // console.log('-------------------------------------------');
-        // console.log('o', o);
+        // console.log('color', color);
 
-        // const t = row.types.map.messages;
-        // console.log('t messages', t);
+        expect(color).to.be.an.instanceof(TypedSheetRef);
       });
 
       it('1:* (cursor)', async () => {
-        const { sheet } = await testSheetPrimitives();
+        const { sheet } = await testSheetMessages();
         const cursor = await sheet.cursor();
         const row = cursor.row(0);
+
+        const messages = await row.props.messages;
+        expect(messages).to.be.an.instanceof(TypedSheetRefs);
       });
     });
 

@@ -13,8 +13,8 @@ type TypedSheetCursorArgs = {
 type ColumnData = {
   key: string;
   row: number;
-  type: t.IColumnTypeDef;
-  data: t.ICellData;
+  typeDef: t.IColumnTypeDef;
+  cell: t.ICellData;
 };
 type RowData = ColumnData[];
 
@@ -111,7 +111,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const row: RowData = [];
     this.types.forEach(type => {
       const key = `${type.column}${rowIndex + 1}`;
-      const column: ColumnData = { key, row: rowIndex, type, data: {} };
+      const column: ColumnData = { key, row: rowIndex, typeDef: type, cell: {} };
       row.push(column);
     });
 
@@ -125,7 +125,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const ctx = this.ctx;
     const index = row[0].row;
     const uri = Uri.create.row(ns, (index + 1).toString());
-    const columns = row.map(({ data, type }) => ({ data, type }));
+    const columns = row.map(({ cell, typeDef }) => ({ cell, typeDef }));
     return TypedSheetRow.create<T>({ index, uri, columns, ctx });
   }
 
@@ -133,13 +133,13 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const types = this.types;
     const rows: RowData[] = [];
     Object.keys(cells).forEach(key => {
-      const data = cells[key];
-      const cell = coord.cell.toCell(key);
-      const columnKey = coord.cell.toColumnKey(cell.column);
-      const type = types.find(type => type.column === columnKey);
-      if (data && type) {
-        const row = cell.row;
-        const column: ColumnData = { key, row, type, data };
+      const cell = cells[key];
+      const pos = coord.cell.toCell(key);
+      const columnKey = coord.cell.toColumnKey(pos.column);
+      const typeDef = types.find(type => type.column === columnKey);
+      if (cell && typeDef) {
+        const row = pos.row;
+        const column: ColumnData = { key, row, typeDef, cell };
         rows[row] = rows[row] || [];
         rows[row].push(column);
       }

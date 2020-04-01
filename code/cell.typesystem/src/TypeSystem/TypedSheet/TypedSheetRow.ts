@@ -1,5 +1,7 @@
 import { TypeDefault } from '../TypeDefault';
 import { TypeTarget } from '../TypeTarget';
+import { TypedSheetRef } from './TypedSheetRef';
+import { TypedSheetRefs } from './TypedSheetRefs';
 import * as t from './types';
 
 type TypedSheetRowArgs = {
@@ -10,8 +12,8 @@ type TypedSheetRowArgs = {
 };
 
 type TypedColumnData = {
-  type: t.IColumnTypeDef;
-  data: t.ICellData;
+  typeDef: t.IColumnTypeDef;
+  cell: t.ICellData;
 };
 
 /**
@@ -56,12 +58,12 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
       this._types = {
         get list() {
-          return list || (list = columns.map(({ type }) => type));
+          return list || (list = columns.map(({ typeDef: type }) => type));
         },
         get map() {
           if (!map) {
             map = columns.reduce((acc, column) => {
-              acc[column.type.prop] = column.type;
+              acc[column.typeDef.prop] = column.typeDef;
               return acc;
             }, {}) as M;
           }
@@ -77,7 +79,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     if (!this._props) {
       const props = {};
       this._columns.forEach(column => {
-        const name = column.type.prop as keyof T;
+        const name = column.typeDef.prop as keyof T;
         Object.defineProperty(props, name, {
           get: () => this.prop(name).get(),
           set: value => this.prop(name).set(value),
@@ -97,7 +99,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
     await Promise.all(
       this._columns.map(async column => {
-        const prop = column.type.prop;
+        const prop = column.typeDef.prop;
         const value = await this.prop(prop as keyof T).get();
         obj[prop] = value;
       }),
@@ -107,12 +109,12 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   }
 
   public type(prop: keyof T) {
-    const column = this._columns.find(def => def.type.prop === prop);
+    const column = this._columns.find(def => def.typeDef.prop === prop);
     if (!column) {
       const err = `The property '${prop}' is not defined by a column on [${this.uri}]`;
       throw new Error(err);
     }
-    return column.type;
+    return column.typeDef;
   }
 
   /**
@@ -124,7 +126,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     }
 
     const column = this.findColumn(key);
-    const typeDef = column.type;
+    const typeDef = column.typeDef;
     const ctx = this.ctx;
 
     const target = TypeTarget.parse(typeDef.target);
@@ -138,19 +140,19 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
        * Get a cell (property) value.
        */
       async get(): Promise<T[K]> {
-        const done = (result?: t.Json): T[K] => {
+        const done = (result?: any): T[K] => {
           if (result === undefined && TypeDefault.isTypeDefaultValue(typeDef.default)) {
             // NB: Only look for a default value definition.
             //     If the default value was declared with as a REF, that will have been looked up
             //     and stored as a {value} by the [TypeClient] prior to this sync code being called.
-            result = (typeDef.default as t.ITypeDefaultValue).value as any;
+            result = (typeDef.default as t.ITypeDefaultValue).value;
           }
 
           if (result === undefined && typeDef.type.isArray) {
             result = []; // For array types, an empty array is expected rather than [undefined].
           }
 
-          return result as any;
+          return result;
         };
 
         if (!target.isValid) {
@@ -159,7 +161,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
         }
 
         if (target.isInline) {
-          return done(TypeTarget.inline(typeDef).read(column.data));
+          return done(TypeTarget.inline(typeDef).read(column.cell));
         }
 
         if (target.isRef) {
@@ -174,7 +176,17 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
            */
           console.log('column', column);
           // column.data
-          const type = column.type.type as t.ITypeRef;
+
+          const type = column.typeDef.type as t.ITypeRef;
+          const typeDef = column.typeDef as t.IColumnTypeDef<t.ITypeRef>;
+
+          if (!type.isArray) {
+            const ref = TypedSheetRef.create({ ctx, typeDef });
+            return done(ref);
+          } else {
+            const refs = TypedSheetRefs.create({ ctx, typeDef });
+            return done(refs);
+          }
 
           // console.log('-------------------------------------------');
           // const f = await ctx.sheet.create({ implements: type.uri });
@@ -193,9 +205,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
        */
       async set(value: T[K]): Promise<{}> {
         if (target.isInline) {
-          const cell = column.data;
+          const cell = column.cell;
           const data = value as any;
-          column.data = TypeTarget.inline(typeDef).write({ cell, data });
+          column.cell = TypeTarget.inline(typeDef).write({ cell, data });
         }
 
         if (target.isRef) {
@@ -224,7 +236,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    */
 
   private findColumn<K extends keyof T>(prop: K) {
-    const res = this._columns.find(column => column.type.prop === prop);
+    const res = this._columns.find(column => column.typeDef.prop === prop);
     if (!res) {
       const err = `Column-definition for the property '${prop}' not found.`;
       throw new Error(err);
@@ -237,8 +249,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    */
   private readProp(column: TypedColumnData) {
     // console.log(this.index, 'READ', column.type.column, column.type.prop);
-    const { type } = column;
-    const { prop } = column.type;
+    const { typeDef: type } = column;
+    const { prop } = column.typeDef;
     const target = TypeTarget.parse(type.target);
 
     const done = (result?: t.Json) => {
@@ -258,7 +270,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     }
 
     if (target.isInline) {
-      return done(TypeTarget.inline(type).read(column.data));
+      return done(TypeTarget.inline(type).read(column.cell));
     }
 
     if (target.isRef) {
@@ -275,7 +287,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * Write a property value.
    */
   private writeProp(column: TypedColumnData, value: any) {
-    const { type } = column;
+    const { typeDef: type } = column;
     const { prop } = type;
 
     const target = TypeTarget.parse(type.target);
@@ -285,7 +297,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     }
 
     if (target.isInline) {
-      column.data = TypeTarget.inline(type).write({ cell: column.data, data: value });
+      column.cell = TypeTarget.inline(type).write({ cell: column.cell, data: value });
     }
 
     if (target.isRef) {

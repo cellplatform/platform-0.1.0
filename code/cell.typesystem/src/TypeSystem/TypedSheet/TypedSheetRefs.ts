@@ -2,6 +2,7 @@ import * as t from './types';
 
 export type ITypedSheetRefArg = {
   ctx: t.SheetCtx;
+  typeDef: t.IColumnTypeDef<t.ITypeRef>;
 };
 
 /**

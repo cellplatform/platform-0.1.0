@@ -2,6 +2,7 @@ import * as t from './types';
 
 export type ITypedSheetRefArgs = {
   ctx: t.SheetCtx;
+  typeDef: t.IColumnTypeDef<t.ITypeRef>;
 };
 
 /**
@@ -16,7 +17,7 @@ export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
    * [Lifecycle]
    */
   private constructor(args: ITypedSheetRefArgs) {
-    //
+    this.ctx = args.ctx;
   }
 
   /**
