@@ -98,11 +98,14 @@ describe('TypeDefault', () => {
       expect(res3.value).to.eql(123);
     });
 
-    describe('toValue (simple: primitive | object)', () => {
+    describe('toValue (simple: primitive | {object})', () => {
       const test = async (value: any) => {
         const res = await TypeDefault.toValue({ def: { value } });
         expect(res.kind).to.eql('VALUE');
         expect(res.value).to.eql(value);
+        if (Array.isArray(res.value) || (typeof res.value === 'object' && res.value !== null)) {
+          expect(res.value).to.not.equal(value); // NB: Object/Array is different instance.
+        }
       };
 
       it('string', async () => {
@@ -131,9 +134,26 @@ describe('TypeDefault', () => {
         await test([undefined]);
       });
 
-      it('{}', async () => {
+      it('{object}', async () => {
+        await test({});
         await test({ foo: 123 });
+        await test({ foo: [1, 2, 3] });
         await test([{ foo: 123 }, { foo: 456 }]);
+      });
+    });
+
+    describe('toValue (array)', () => {
+      it('primitive: undefined => array (default specified)', async () => {
+        const hello = ['hello'];
+        const def: t.ITypeDef = {
+          prop: 'name',
+          type: { kind: 'VALUE', typename: 'string', isArray: true },
+          default: { value: hello },
+        };
+
+        const res = await TypeDefault.toValue({ def });
+        expect(res.value).to.eql(hello);
+        expect(res.value).to.not.equal(hello); // NB: different instances.
       });
     });
 
@@ -142,6 +162,7 @@ describe('TypeDefault', () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
         const def = { ref: 'cell:foo.sample:A50' };
         const res = await TypeDefault.toValue({ def, fetch });
+        expect(res.value).to.eql(undefined);
       });
 
       it('toValue (cell => primitive | {})', async () => {

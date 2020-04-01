@@ -63,7 +63,7 @@ export function toDeclaration(args: {
           typename,
           adjust(change: string) {
             change = (change || '').trim().replace(/;*$/, '');
-            line = change ? `  ${change};` : undefined;
+            line = change ? `  ${change};` : '';
           },
         });
       }

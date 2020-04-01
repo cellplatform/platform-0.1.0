@@ -4,17 +4,8 @@ import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
 import * as m from '../../test/.d.ts/foo.messages';
 
-import { ERROR, expect, testInstanceFetch, TYPE_DEFS, testFetch } from '../../test';
+import { ERROR, expect, testInstanceFetch, TYPE_DEFS, t } from '../../test';
 import { TypeSystem } from '..';
-
-/**
- * TODO 🐷TESTS
- * - ref: not NS URI
- * - ref: not found (404)
- * - n-level deep type refs.
- * - circular ref safe on referenced type
- * - different types
- */
 
 /**
  * TODO 🐷 Features
@@ -25,7 +16,7 @@ import { TypeSystem } from '..';
  * - read/write: linked sheet
  */
 
-describe.only('TypedSheet', () => {
+describe.skip('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
 
@@ -133,9 +124,16 @@ describe.only('TypedSheet', () => {
         const cursor = await sheet.cursor();
         expect(cursor.exists(99)).to.eql(false);
       });
+
+      it('array (empty array when no default)', async () => {
+        const { sheet } = await testSheetMessages();
+        const cursor = await sheet.cursor();
+        const row = cursor.row(99);
+        expect(await row.props.messages).to.eql([]); // Empty array.
+      });
     });
 
-    describe('row.prop (methods)', () => {
+    describe('row.prop (read/write methods)', () => {
       it('reuse api instance', async () => {
         const { sheet } = await testSheetPrimitives();
         const row = (await sheet.cursor()).row(0);
@@ -185,7 +183,7 @@ describe.only('TypedSheet', () => {
       });
     });
 
-    describe('read/write prop (inline)', () => {
+    describe('read/write (inline)', () => {
       it('{ object }', async () => {
         const { sheet } = await testSheet();
         const cursor = await sheet.cursor();
@@ -327,18 +325,34 @@ describe.only('TypedSheet', () => {
       });
     });
 
-    describe.skip('read/write prop (ref)', () => {
-      it('1:1', async () => {
+    describe.only('read/write (ref)', () => {
+      it.only('1:1 (row)', async () => {
         const { sheet } = await testSheetMessages();
         const cursor = await sheet.cursor();
         const row = cursor.row(0);
 
+        // const o = await row.toObject();
         // console.log('-------------------------------------------');
-        // const o = row.toObject();
         // console.log('o', o);
+
+        const color = await row.props.color;
+        // const messages = await row.props.messages;
+
+        console.log('-------------------------------------------');
+        console.log('color', color);
+
+        // const s = (color as unknown) as t.ITypedSheet<m.MyColor>;
+        // const c = await s.cursor();
+        // const r = c.row(0);
+        // const o = await r.toObject();
+        // console.log('-------------------------------------------');
+        // console.log('o', o);
+
+        // const t = row.types.map.messages;
+        // console.log('t messages', t);
       });
 
-      it('1:*', async () => {
+      it('1:* (cursor)', async () => {
         const { sheet } = await testSheetPrimitives();
         const cursor = await sheet.cursor();
         const row = cursor.row(0);

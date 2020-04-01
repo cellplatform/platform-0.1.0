@@ -9,13 +9,13 @@ export type ITypedSheet<T> = {
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   dispose(): void;
-  cursor(args?: ITypedSheetRowsArgs): Promise<ITypedSheetCursor<T>>;
+  cursor(args?: ITypedSheetCursorArgs): Promise<ITypedSheetCursor<T>>;
 };
 
-export type ITypedSheetRowsArgs = { index?: number; take?: number };
+export type ITypedSheetCursorArgs = { index?: number; take?: number };
 
 /**
- * A cursor into a sub-set of the sheet data.
+ * A cursor into a subset of sheet data.
  */
 export type ITypedSheetCursor<T> = {
   readonly uri: string;

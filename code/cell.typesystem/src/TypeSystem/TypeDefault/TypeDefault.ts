@@ -110,7 +110,15 @@ export class TypeDefault {
 
     const kind = TypeDefault.kind(def);
     if (kind.type === 'VALUE') {
-      const value = (def as t.ITypeDefaultValue).value;
+      let value = (def as t.ITypeDefaultValue).value;
+
+      // Clone array/object so they cannot be manipulated by calling code.
+      if (Array.isArray(value)) {
+        value = [...value];
+      } else if (typeof value === 'object' && value !== null) {
+        value = { ...value };
+      }
+
       return { kind: 'VALUE', value };
     }
 

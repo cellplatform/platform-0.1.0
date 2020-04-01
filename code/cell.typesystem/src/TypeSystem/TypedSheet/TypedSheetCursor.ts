@@ -1,18 +1,13 @@
-import { coord, t, Uri } from '../../common';
+import { coord, Uri } from '../../common';
 import { TypedSheetRow } from './TypedSheetRow';
+import * as t from './types';
 
-type ITypedSheetCursorCtx = {
-  fetch: t.ISheetFetcher;
-  events$: t.Subject<t.TypedSheetEvent>;
-  cache: t.IMemoryCache;
-};
-
-type ITypedSheetCursorArgs = {
+type TypedSheetCursorArgs = {
   ns: string; // "ns:<uri>"
   types: t.IColumnTypeDef[];
   index: number;
   take?: number;
-  ctx: ITypedSheetCursorCtx;
+  ctx: t.SheetCtx;
 };
 
 type ColumnData = {
@@ -27,13 +22,15 @@ type RowData = ColumnData[];
  * A cursor for iterating over a set of sheet rows
  */
 export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
-  public static create = <T>(args: ITypedSheetCursorArgs) => new TypedSheetCursor<T>(args);
-  public static load = <T>(args: ITypedSheetCursorArgs) => TypedSheetCursor.create<T>(args).load();
+  public static create = <T>(args: TypedSheetCursorArgs) => new TypedSheetCursor<T>(args);
+  public static load = <T>(args: TypedSheetCursorArgs) => {
+    return TypedSheetCursor.create<T>(args).load();
+  };
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: ITypedSheetCursorArgs) {
+  private constructor(args: TypedSheetCursorArgs) {
     this.uri = args.ns;
     this.types = args.types;
     this.index = args.index;
@@ -44,7 +41,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
   /**
    * [Fields]
    */
-  private readonly ctx: ITypedSheetCursorCtx;
+  private readonly ctx: t.SheetCtx;
   private readonly types: t.IColumnTypeDef[];
   // private readonly _events$: t.Subject<t.TypedSheetEvent>;
 

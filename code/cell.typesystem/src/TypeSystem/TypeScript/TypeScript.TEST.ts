@@ -209,14 +209,11 @@ describe('TypeScript', () => {
               e.adjust(`${e.prop}(total?: number): MyThing<${e.typename}>;;;`); // Flip to method.
             }
           }
-
           if (e.parentType === 'MyColor' && e.prop === 'description') {
             e.adjust(''); // Remove field.
           }
         },
       });
-
-      console.log('res', res);
 
       expect(res).to.include(`color?: Promise<MyColor>;\n`);
       expect(res).to.include(`messages(total?: number): MyThing<MyMessage[]>;\n`);

@@ -73,7 +73,7 @@ export const TYPE_DEFS: SampleTypeDefs = {
     ns: { type: { typename: 'MyMessages' } },
     columns: {
       A: { props: { prop: { name: 'channel', type: 'string' } } },
-      B: { props: { prop: { name: 'color', type: 'ns:foo.color', target: 'ref' } } },
+      B: { props: { prop: { name: 'color?', type: 'ns:foo.color', target: 'ref' } } },
       C: { props: { prop: { name: 'messages', type: 'ns:foo.message[]', target: 'ref' } } },
     },
   },
