@@ -168,6 +168,60 @@ describe('TypeScript', () => {
       expect(res).to.include(`  user: string;`);
       expect(res).to.include(`  message: string;`);
     });
+
+    it.only('with imports', async () => {
+      const fetch = testFetch({ defs: TYPE_DEFS });
+      const def = await TypeClient.load({ ns: 'foo', fetch });
+      const typename = def.typename;
+      const types = def.columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
+
+      const imports = `
+        import * as f from "@platform/foo"
+        import { MyThing } from 'foobar';;
+      `;
+
+      const res = TypeScript.toDeclaration({
+        typename,
+        types,
+        imports,
+      });
+
+      const lines = res.split('\n');
+      expect(lines[0]).to.eql(`import * as f from '@platform/foo';`);
+      expect(lines[1]).to.eql(`import { MyThing } from 'foobar';`);
+    });
+
+    it.only('[adjustLine] handler', async () => {
+      const fetch = testFetch({ defs: TYPE_DEFS });
+      const def = await TypeClient.load({ ns: 'foo', fetch });
+      const typename = def.typename;
+      const types = def.columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
+
+      const res = TypeScript.toDeclaration({
+        typename,
+        types,
+        imports: `import * as t from '@platform/types'`,
+        adjustLine(e) {
+          if (e.type.kind === 'REF') {
+            if (!e.type.isArray) {
+              e.adjust(`${e.prop}${e.optional}: Promise<${e.typename}>`); // NB: Flip to Promise.
+            } else {
+              e.adjust(`${e.prop}(total?: number): MyThing<${e.typename}>;;;`); // Flip to method.
+            }
+          }
+
+          if (e.parentType === 'MyColor' && e.prop === 'description') {
+            e.adjust(''); // Remove field.
+          }
+        },
+      });
+
+      console.log('res', res);
+
+      expect(res).to.include(`color?: Promise<MyColor>;\n`);
+      expect(res).to.include(`messages(total?: number): MyThing<MyMessage[]>;\n`);
+      expect(res).to.not.include(`description?: string;`);
+    });
   });
 
   describe('validate', () => {
