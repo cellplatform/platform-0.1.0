@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.fs.sync",
-  "version": "0.3.93",
+  "version": "0.3.94",
   "description": "Tools for local file-system syncing with cloud.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,10 +15,10 @@
     "sample": "cd sample/seq && cell $@"
   },
   "dependencies": {
-    "@platform/cell.client": "0.2.45",
-    "@platform/cell.schema": "0.4.72",
-    "@platform/cell.types": "0.4.64",
-    "@platform/cell.value": "0.2.34",
+    "@platform/cell.client": "0.2.46",
+    "@platform/cell.schema": "0.4.73",
+    "@platform/cell.types": "0.4.65",
+    "@platform/cell.value": "0.2.35",
     "@platform/cli": "0.5.28",
     "@platform/fs": "0.5.12",
     "@platform/fs.watch": "0.2.35",

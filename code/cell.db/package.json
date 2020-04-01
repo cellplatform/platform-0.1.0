@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.db",
-  "version": "0.3.38",
+  "version": "0.3.39",
   "description": "Persistent state management for cells.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,10 +12,10 @@
     "prepare": "ts prepare && rm -rf tmp"
   },
   "dependencies": {
-    "@platform/cell.coord": "0.8.82",
-    "@platform/cell.schema": "0.4.72",
-    "@platform/cell.types": "0.4.64",
-    "@platform/cell.value": "0.2.34",
+    "@platform/cell.coord": "0.8.83",
+    "@platform/cell.schema": "0.4.73",
+    "@platform/cell.types": "0.4.65",
+    "@platform/cell.value": "0.2.35",
     "@platform/fsdb.model": "0.6.49",
     "@platform/fsdb.types": "0.6.18",
     "@platform/libs": "0.2.1",
