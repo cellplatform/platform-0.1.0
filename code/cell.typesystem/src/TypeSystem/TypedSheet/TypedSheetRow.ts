@@ -161,10 +161,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
         if (target.isRef) {
           const typeDef = column.typeDef as t.IColumnTypeDef<t.ITypeRef>;
-          const args = { ctx, typeDef };
           const ref = typeDef.type.isArray
-            ? TypedSheetRefs.create(args)
-            : TypedSheetRef.create(args);
+            ? TypedSheetRefs.create({ ctx, typeDef })
+            : TypedSheetRef.create({ ctx, typeDef });
           return done(ref);
         }
 
