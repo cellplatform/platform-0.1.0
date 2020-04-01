@@ -173,7 +173,7 @@ describe.only('TypedSheet', () => {
         const prop = cursor.row(0).prop('stringValue');
         expect(prop.get()).to.eql('hello value');
 
-        await prop.clear();
+        prop.clear();
         expect(prop.get()).to.eql('Hello (Default)');
       });
     });
@@ -228,7 +228,7 @@ describe.only('TypedSheet', () => {
           await row.prop('union').set(['blue', 'blue']); // NB: stupid valid, testing array structure.
           expect(row.props.union).to.eql(['blue', 'blue']);
 
-          await row.prop('union').clear();
+          row.prop('union').clear();
           expect(row.props.union).to.eql(undefined);
         });
 
@@ -237,7 +237,7 @@ describe.only('TypedSheet', () => {
           const cursor = await sheet.cursor();
           const row = cursor.row(0);
           expect(row.props.array).to.eql(['red', 'green', 'blue']);
-          await row.prop('array').clear();
+          row.prop('array').clear();
           expect(row.props.array).to.eql([]);
         });
       });

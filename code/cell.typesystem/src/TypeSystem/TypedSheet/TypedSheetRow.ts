@@ -125,6 +125,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       return this._prop[name as string]; // Already created and cached.
     }
 
+    const self = this; // tslint:disable-line
     const column = this.findColumn(name);
     const typeDef = column.typeDef;
     const ctx = this.ctx;
@@ -222,8 +223,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       /**
        * Remove a property value.
        */
-      async clear(): Promise<{}> {
-        return api.set(undefined as any);
+      clear() {
+        api.set(undefined as any);
+        return self;
       },
     };
 
