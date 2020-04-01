@@ -845,16 +845,13 @@ describe('TypeClient', () => {
         expect(res).to.include('export declare type MyColor');
       });
 
-      it('ref: as row (wrapper)', async () => {
+      it.only('ref: row/cursor wrapper', async () => {
         const def = await TypeClient.load({ ns: 'foo', fetch });
         const res = TypeClient.typescript(def, { header: false }).toString();
-        expect(res).to.include(`message: t.ITypedSheetRef<MyMessage> | null;\n`);
-      });
 
-      it('ref array: as cursor (wrapper)', async () => {
-        const def = await TypeClient.load({ ns: 'foo', fetch });
-        const res = TypeClient.typescript(def, { header: false }).toString();
+        expect(res).to.include(`message: t.ITypedSheetRef<MyMessage> | null;\n`);
         expect(res).to.include(`messages: t.ITypedSheetRefs<MyMessage>;\n`);
+        expect(res).to.include(`color?: MyColor;\n`); // NB: This is an external type reference but it not {target:'ref'} rather it is INLINE.
       });
     });
 

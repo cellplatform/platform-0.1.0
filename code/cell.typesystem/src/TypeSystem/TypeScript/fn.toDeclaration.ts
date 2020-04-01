@@ -23,7 +23,7 @@ export function toDeclaration(args: {
   imports?: string;
   adjustLine?: AdjustType;
 }) {
-  const { adjustLine: adjustType } = args;
+  const { adjustLine } = args;
 
   const write = (args: { typename: string; types: t.ITypeDef[]; written: string[] }) => {
     const { written } = args;
@@ -52,8 +52,8 @@ export function toDeclaration(args: {
       //      - convert a field's type to a "Promise<Type>"
       //      - swap the response type out entirely for some synthetic wrapper object.
       //
-      if (adjustType) {
-        adjustType({
+      if (adjustLine) {
+        adjustLine({
           parentType,
           line,
           typeDef,

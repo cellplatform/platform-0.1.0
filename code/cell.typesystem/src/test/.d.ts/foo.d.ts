@@ -26,7 +26,7 @@ import * as t from '@platform/cell.types';
 export declare type MyRow = {
   title: string;
   isEnabled: boolean | null;
-  color?: t.ITypedSheetRef<MyColor>;
+  color?: MyColor;
   message: t.ITypedSheetRef<MyMessage> | null;
   messages: t.ITypedSheetRefs<MyMessage>;
 };

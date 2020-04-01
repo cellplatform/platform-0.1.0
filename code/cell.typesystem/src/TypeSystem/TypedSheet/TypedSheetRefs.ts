@@ -18,10 +18,12 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRef<T> {
    */
   private constructor(args: ITypedSheetRefArg) {
     this.ctx = args.ctx;
+    this.typeDef = args.typeDef;
   }
 
   /**
    * [Fields]
    */
   private readonly ctx: t.SheetCtx;
+  public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
 }

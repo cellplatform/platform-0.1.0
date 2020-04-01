@@ -13,7 +13,6 @@ export type INsTypeDef = {
 
 export type IColumnTypeDef<T extends IType = IType> = ITypeDef<T> & {
   column: string;
-  target?: t.CellTypeTarget;
   error?: t.ITypeError;
 };
 
@@ -22,6 +21,7 @@ export type ITypeDef<T extends IType = IType> = {
   type: T;
   optional?: boolean;
   default?: PrimitiveValue | ITypeDefault;
+  target?: t.CellTypeTarget;
 };
 
 /**

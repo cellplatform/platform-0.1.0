@@ -334,7 +334,7 @@ describe('TypeValue', () => {
       test('undefined[]', true);
     });
 
-    it('VALUE (single value grouped)', () => {
+    it('VALUE (single grouped value)', () => {
       const test = (input: string, typename: string, isArray?: boolean) => {
         const res = TypeValue.parse(input);
         expect(res.type.kind).to.eql('VALUE');

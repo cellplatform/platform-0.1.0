@@ -334,7 +334,7 @@ describe('TypedSheet', () => {
         expect(color).to.be.an.instanceof(TypedSheetRef);
       });
 
-      it('1:* (cursor)', async () => {
+      it.only('1:* (cursor)', async () => {
         const { sheet } = await testSheetMessages();
         const cursor = await sheet.cursor();
         const row = cursor.row(0);
@@ -344,9 +344,13 @@ describe('TypedSheet', () => {
       });
     });
 
-    it.skip('dot into child object (synthetic read/write props)', () => {}); // tslint:disable-line
-
-    it.skip('query (paging: index/skip)', () => {}); // tslint:disable-line
+    it.skip('query (paging: index/skip)', () => {
+      /**
+       * TODO 🐷
+       * - re-jig DB column to have row number before column
+       *   to allow for more effecent querying.
+       */
+    });
   });
 });
 
