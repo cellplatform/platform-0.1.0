@@ -3,7 +3,12 @@ import { t } from '../common';
 /**
  * The declaration that defines a cell as a strongly typed property.
  */
-export type CellTypeProp = { name: string; type: CellType; target?: CellTypeTarget };
+export type CellTypeProp = {
+  name: string;
+  type: CellType;
+  target?: CellTypeTarget;
+  default?: t.ITypeDefault | t.TypeDefaultValue;
+};
 
 /**
  * The type of a cell's data.

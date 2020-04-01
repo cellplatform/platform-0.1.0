@@ -1,1 +1,2 @@
-export type CellValue = string | boolean | number | object | null | undefined;
+import { t } from '../common';
+export type CellValue = t.Json;

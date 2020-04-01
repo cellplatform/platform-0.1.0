@@ -1,6 +1,7 @@
 import { constants, t, value } from '../../common';
 import { TypeScript } from '../TypeScript';
 import { toTypescriptHeader } from './fn.typescript.header';
+import { TypeValue } from '../TypeValue';
 
 /**
  * Converts type definitions to valid typescript declarations.
@@ -34,7 +35,26 @@ export function typescript(def: t.INsTypeDef, options: { header?: boolean } = {}
       const header = value.defaultValue(options.header, true) ? api.header : undefined;
       const typename = def.typename;
       const types = def.columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
-      return TypeScript.toDeclaration({ typename, types, header });
+      return TypeScript.toDeclaration({
+        typename,
+        types,
+        header,
+        imports: `import * as t from '@platform/cell.types';`,
+        adjustLine(e) {
+          const typename = TypeValue.toTypename(e.type, {
+            adjust(e) {
+              if (e.type.kind === 'REF') {
+                const T = e.type.typename;
+                const name = e.type.isArray ? `t.ITypedSheetRefs<${T}>` : `t.ITypedSheetRef<${T}>`;
+                e.adjust(name);
+              }
+            },
+          });
+          if (typename !== e.typename) {
+            e.adjust(`${e.prop}${e.optional}: ${typename}`);
+          }
+        },
+      });
     },
 
     /**

@@ -61,7 +61,7 @@ ${table}
 
   await app.whenReady();
 
-  const def = 'cell:sys!A1'; // TODO 🐷
+  const def = 'cell:sys:A1'; // TODO 🐷
   createWindow({ host, def });
 
   // TEMP 🐷
@@ -72,7 +72,7 @@ ${table}
     // console.log('f', f);
     // f.
     // const client = Client.create('localhost:8080');
-    // const res = await client.cell('cell:foo!A1').info();
+    // const res = await client.cell('cell:foo:A1').info();
     // log.info(res);
   } catch (error) {
     // console.log('error', error);
@@ -105,7 +105,7 @@ ${table}
 //     // console.log('f', f);
 //     // f.
 //     // const client = Client.create('localhost:8080');
-//     // const res = await client.cell('cell:foo!A1').info();
+//     // const res = await client.cell('cell:foo:A1').info();
 //     // log.info(res);
 //   } catch (error) {
 //     // console.log('error', error);

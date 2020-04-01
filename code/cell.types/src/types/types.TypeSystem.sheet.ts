@@ -9,13 +9,13 @@ export type ITypedSheet<T> = {
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   dispose(): void;
-  cursor(args?: ITypedSheetRowsArgs): Promise<ITypedSheetCursor<T>>;
+  cursor(args?: ITypedSheetCursorArgs): Promise<ITypedSheetCursor<T>>;
 };
 
-export type ITypedSheetRowsArgs = { index?: number; take?: number };
+export type ITypedSheetCursorArgs = { index?: number; take?: number };
 
 /**
- * A cursor into a sub-set of the sheet data.
+ * A cursor into a subset of sheet data.
  */
 export type ITypedSheetCursor<T> = {
   readonly uri: string;
@@ -33,12 +33,42 @@ export type ITypedSheetCursor<T> = {
 export type ITypedSheetRow<T> = {
   readonly index: number;
   readonly uri: string;
-  readonly types: t.IColumnTypeDef[];
   readonly props: ITypedSheetRowProps<T>;
+  readonly types: ITypedSheetRowTypes<T>;
   toObject(): T;
+  prop<K extends keyof T>(name: K): ITypedSheetRowProp<T, K>;
 };
 
 /**
- * The pure "strongly typed" data-properties of the cells defined in the row.
+ * A connector for a reference-pointer to a single row in another sheet.
  */
-export type ITypedSheetRowProps<T> = T & { toObject: () => T };
+export type ITypedSheetRef<T> = {};
+
+/**
+ * A connector for a reference-pointer to a set of rows in another sheet.
+ */
+export type ITypedSheetRefs<T> = {};
+
+/**
+ * Read/write methods for the properties of a single row.
+ */
+export type ITypedSheetRowProp<T, K extends keyof T> = {
+  get(): T[K];
+  set(value: T[K]): ITypedSheetRow<T>;
+  clear(): ITypedSheetRow<T>;
+};
+
+/**
+ * The pure "strongly typed" READ/WRITE data-properties of the cells for a row.
+ */
+export type ITypedSheetRowProps<T> = {
+  readonly [K in keyof T]: T[K];
+};
+
+/**
+ * The type definitions for the cells/columns in a row.
+ */
+export type ITypedSheetRowTypes<T> = {
+  list: t.IColumnTypeDef[];
+  map: { [P in keyof Required<T>]: t.IColumnTypeDef };
+};

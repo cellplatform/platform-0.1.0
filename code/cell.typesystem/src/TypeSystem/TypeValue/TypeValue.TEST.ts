@@ -531,7 +531,7 @@ describe('TypeValue', () => {
         types: [
           { kind: 'ENUM', typename: `"red"` },
           { kind: 'ENUM', typename: `"green"`, isArray: true },
-          { kind: 'REF', typename: ``, uri: 'ns:foo', scope: 'NS', types: [] },
+          { kind: 'REF', typename: ``, uri: 'ns:foo', scope: 'NS', types: [] }, // NB: Typename not resolved yet.
           { kind: 'REF', typename: `MyFoo`, uri: 'ns:foo', scope: 'NS', types: [] },
           { kind: 'VALUE', typename: `string` },
         ],
@@ -558,10 +558,35 @@ describe('TypeValue', () => {
           },
         ],
       };
-
-      const res = toTypename({ ...union, isArray: true });
       expect(toTypename(union)).to.eql('boolean | (ns:foo | string)');
       expect(toTypename({ ...union, isArray: true })).to.eql('(boolean | (ns:foo | string))[]');
+    });
+
+    it('adjust (handler)', () => {
+      const union: t.ITypeUnion = {
+        kind: 'UNION',
+        typename: '',
+        types: [
+          { kind: 'VALUE', typename: `boolean` },
+          {
+            kind: 'UNION',
+            typename: '',
+            types: [
+              { kind: 'REF', typename: 'MyThing', uri: 'ns:foo', scope: 'NS', types: [] },
+              { kind: 'VALUE', typename: `string` },
+            ],
+          },
+        ],
+      };
+
+      const res = toTypename(union, {
+        adjust(e) {
+          if (e.type.kind === 'REF') {
+            e.adjust(`Promise<${e.type.typename}>`);
+          }
+        },
+      });
+      expect(res).to.eql(`boolean | (Promise<MyThing> | string)`);
     });
   });
 });

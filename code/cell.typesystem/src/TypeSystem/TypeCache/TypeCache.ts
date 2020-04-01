@@ -2,8 +2,24 @@ import { MemoryCache, t } from '../../common';
 import { fetcher } from '../util';
 
 type FetchMethod = 'getType' | 'getColumns' | 'getCells';
-export type CacheFetchKey = (method: FetchMethod, ns: string, ...path: string[]) => string;
 export type CachedFetcher = t.ISheetFetcher & { cache: t.IMemoryCache; cacheKey: CacheFetchKey };
+
+export type CacheFetchKey = (method: FetchMethod, ns: string, ...path: string[]) => string;
+export type CacheDefaultValue = (uri: string) => string;
+
+/**
+ * Cache key generators.
+ */
+export class TypeCacheKey {
+  public static fetch: CacheFetchKey = (method, ns, ...path) => {
+    const suffix = path.length === 0 ? '' : `/${path.join('/')}`;
+    return `TypeSystem/fetch/${ns}/${method}${suffix}}`;
+  };
+
+  public static default: CacheDefaultValue = uri => {
+    return `TypeSystem/default/${uri}`;
+  };
+}
 
 /**
  * TypeSystem Cache.
@@ -17,15 +33,14 @@ export class TypeCache {
     return cache || TypeCache.create();
   };
 
+  public static key = TypeCacheKey;
+
   /**
    * Cache enable a data-fetcher.
    */
   public static fetch(fetch: t.ISheetFetcher, options: { cache?: t.IMemoryCache } = {}) {
     const cache = TypeCache.toCache(options.cache);
-    const cacheKey: CacheFetchKey = (method, ns, ...path) => {
-      const suffix = path.length === 0 ? '' : `/${path.join('/')}`;
-      return `TypeSystem/fetch/${ns}/${method}${suffix}}`;
-    };
+    const cacheKey = TypeCache.key.fetch;
 
     const getType: t.FetchSheetType = async args => {
       const key = cacheKey('getType', args.ns);

@@ -18,4 +18,5 @@ describe('TypeSystem: generate sample typescript declaration files', () => {
   it('save: test/foo.primitives.d.ts', async () => save('foo.primitives'));
   it('save: test/foo.messages.d.ts', async () => save('foo.messages'));
   it('save: test/foo.enum.d.ts', async () => save('foo.enum'));
+  it('save: test/foo.defaults.d.ts', async () => save('foo.defaults'));
 });

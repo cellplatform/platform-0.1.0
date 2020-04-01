@@ -8,5 +8,5 @@ Schema.uri.ALLOW.NS = [...Schema.uri.ALLOW.NS, 'sys*'];
 
 export const HOST = 'http://localhost:8080';
 export const URI = {
-  UI_FILES: 'cell:sys!A1',
+  UI_FILES: 'cell:sys:A1',
 };

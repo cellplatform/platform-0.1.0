@@ -1,25 +1,20 @@
-import { coord, t, Uri } from '../../common';
+import { coord, Uri } from '../../common';
 import { TypedSheetRow } from './TypedSheetRow';
+import * as t from './types';
 
-type ITypedSheetCursorCtx = {
-  fetch: t.ISheetFetcher;
-  events$: t.Subject<t.TypedSheetEvent>;
-  cache: t.IMemoryCache;
-};
-
-type ITypedSheetCursorArgs = {
+type TypedSheetCursorArgs = {
   ns: string; // "ns:<uri>"
   types: t.IColumnTypeDef[];
   index: number;
   take?: number;
-  ctx: ITypedSheetCursorCtx;
+  ctx: t.SheetCtx;
 };
 
 type ColumnData = {
   key: string;
   row: number;
-  type: t.IColumnTypeDef;
-  data: t.ICellData;
+  typeDef: t.IColumnTypeDef;
+  cell: t.ICellData;
 };
 type RowData = ColumnData[];
 
@@ -27,13 +22,15 @@ type RowData = ColumnData[];
  * A cursor for iterating over a set of sheet rows
  */
 export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
-  public static create = <T>(args: ITypedSheetCursorArgs) => new TypedSheetCursor<T>(args);
-  public static load = <T>(args: ITypedSheetCursorArgs) => TypedSheetCursor.create<T>(args).load();
+  public static create = <T>(args: TypedSheetCursorArgs) => new TypedSheetCursor<T>(args);
+  public static load = <T>(args: TypedSheetCursorArgs) => {
+    return TypedSheetCursor.create<T>(args).load();
+  };
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: ITypedSheetCursorArgs) {
+  private constructor(args: TypedSheetCursorArgs) {
     this.uri = args.ns;
     this.types = args.types;
     this.index = args.index;
@@ -44,9 +41,8 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
   /**
    * [Fields]
    */
-  private readonly ctx: ITypedSheetCursorCtx;
+  private readonly ctx: t.SheetCtx;
   private readonly types: t.IColumnTypeDef[];
-  // private readonly _events$: t.Subject<t.TypedSheetEvent>;
 
   public readonly uri: string;
   public readonly index: number = -1;
@@ -115,7 +111,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const row: RowData = [];
     this.types.forEach(type => {
       const key = `${type.column}${rowIndex + 1}`;
-      const column: ColumnData = { key, row: rowIndex, type, data: {} };
+      const column: ColumnData = { key, row: rowIndex, typeDef: type, cell: {} };
       row.push(column);
     });
 
@@ -129,7 +125,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const ctx = this.ctx;
     const index = row[0].row;
     const uri = Uri.create.row(ns, (index + 1).toString());
-    const columns = row.map(({ data, type }) => ({ data, type }));
+    const columns = row.map(({ cell, typeDef }) => ({ cell, typeDef }));
     return TypedSheetRow.create<T>({ index, uri, columns, ctx });
   }
 
@@ -137,13 +133,13 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const types = this.types;
     const rows: RowData[] = [];
     Object.keys(cells).forEach(key => {
-      const data = cells[key];
-      const cell = coord.cell.toCell(key);
-      const columnKey = coord.cell.toColumnKey(cell.column);
-      const type = types.find(type => type.column === columnKey);
-      if (data && type) {
-        const row = cell.row;
-        const column: ColumnData = { key, row, type, data };
+      const cell = cells[key];
+      const pos = coord.cell.toCell(key);
+      const columnKey = coord.cell.toColumnKey(pos.column);
+      const typeDef = types.find(type => type.column === columnKey);
+      if (cell && typeDef) {
+        const row = pos.row;
+        const column: ColumnData = { key, row, typeDef, cell };
         rows[row] = rows[row] || [];
         rows[row].push(column);
       }

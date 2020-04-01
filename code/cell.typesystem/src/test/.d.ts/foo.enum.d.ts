@@ -6,7 +6,7 @@
  *    |
  * 
  * By:
- *    @platform/cell.typesystem@0.0.2
+ *    @platform/cell.typesystem@0.0.6
  * 
  * Notes: 
  * 
@@ -20,6 +20,8 @@
  *            import * as t from './foo.enum.d.ts';
  * 
  */
+
+import * as t from '@platform/cell.types';
 
 export declare type Enum = {
   single?: 'hello';

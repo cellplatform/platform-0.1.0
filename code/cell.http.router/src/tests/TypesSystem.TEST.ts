@@ -105,15 +105,15 @@ describe('TypeSystem (on http server)', () => {
       expect(row2).to.not.eql(undefined);
 
       if (row1) {
-        expect(row1.props.title).to.eql('One');
-        expect(row1.props.isEnabled).to.eql(true);
-        expect(row1.props.color).to.eql({ label: 'background', color: 'red' });
+        expect(await row1.props.title).to.eql('One');
+        expect(await row1.props.isEnabled).to.eql(true);
+        expect(await row1.props.color).to.eql({ label: 'background', color: 'red' });
       }
 
       if (row2) {
-        expect(row2.props.title).to.eql('Two');
-        expect(row2.props.isEnabled).to.eql(false);
-        expect(row2.props.color).to.eql({ label: 'foreground', color: 'blue' });
+        expect(await row2.props.title).to.eql('Two');
+        expect(await row2.props.isEnabled).to.eql(false);
+        expect(await row2.props.color).to.eql({ label: 'foreground', color: 'blue' });
       }
     });
   });

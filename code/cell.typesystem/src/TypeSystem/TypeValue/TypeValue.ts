@@ -250,12 +250,26 @@ export class TypeValue {
   /**
    * Flattens the given type to a cononically formatted "typename".
    */
-  public static toTypename(type: t.IType | string, options: { level?: number } = {}): string {
-    const { level = 0 } = options;
+  public static toTypename(
+    type: t.IType | string,
+    options: { level?: number; adjust?: AdjustTypename } = {},
+  ): string {
+    const { level = 0, adjust } = options;
 
     const done = (value: string) => {
       value = value.replace(/"/g, `'`); // NB: Standard enum single-quotes (').
       value = level === 0 && !TypeValue.isArray(value) ? TypeValue.trimParentheses(value) : value;
+
+      if (typeof type === 'object' && adjust) {
+        adjust({
+          type,
+          typename: value,
+          adjust(typename: string) {
+            value = typename;
+          },
+        });
+      }
+
       return value;
     };
     if (typeof type === 'string') {
@@ -263,7 +277,7 @@ export class TypeValue {
     }
     if (type.kind === 'UNION') {
       const union = type.types
-        .map(type => TypeValue.toTypename(type, { level: level + 1 }))
+        .map(type => TypeValue.toTypename(type, { adjust, level: level + 1 }))
         .join(' | '); // <== RECURSION 🌳
       return done(type.isArray ? `(${union})[]` : `(${union})`);
     }
@@ -277,3 +291,10 @@ export class TypeValue {
     return done(`${typename}${array}`);
   }
 }
+
+type AdjustTypename = (args: AdjustTypenameArgs) => void;
+type AdjustTypenameArgs = {
+  type: t.IType;
+  typename: string;
+  adjust(typename: string): void;
+};

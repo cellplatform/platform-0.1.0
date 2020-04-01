@@ -43,7 +43,8 @@ export const testFetch = (data: {
   const getCells: t.FetchSheetCells = async args => {
     before('getCells', args);
     const cells = data.cells || {};
-    const rows = coord.cell.max.row(Object.keys(cells));
+
+    const rows = coord.cell.max.row(Object.keys(cells)) + 1;
     const total = { rows };
     res.getCellsCount++;
     return { cells, total };
@@ -75,12 +76,15 @@ export const testInstanceFetch = async <T>(args: {
   implements: string;
   defs: { [ns: string]: t.ITypeDefPayload };
   rows: T[];
+  cells?: t.ICellMap;
+  cache?: t.IMemoryCache;
 }) => {
   const typeClient = await TypeSystem.Type.load({
     ns: args.implements,
     fetch: testFetch({ defs: args.defs }),
+    cache: args.cache,
   });
-  const cells = TypeSystem.objectToCells<T>(typeClient).rows(0, args.rows);
+  const cells = args.cells || TypeSystem.objectToCells<T>(typeClient).rows(0, args.rows);
   const def: t.ITypeDefPayload = {
     ns: { type: { implements: args.implements } },
     columns: {},

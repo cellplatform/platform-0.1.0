@@ -449,7 +449,7 @@ describe('TypeClient', () => {
     });
 
     describe('VALUE (primitives)', () => {
-      const test = async (column: string, typename: string) => {
+      const test = async (column: string, typename: string, defaultValue?: any) => {
         const fetch = testFetch({ defs: TYPE_DEFS });
         const def = await TypeClient.load({ ns: 'foo.primitives', fetch });
         const res = def.columns.find(c => c.column === column);
@@ -457,19 +457,22 @@ describe('TypeClient', () => {
         if (res) {
           expect(res.type.kind).to.eql('VALUE');
           expect(res.type.typename).to.eql(typename);
+          if (defaultValue) {
+            expect(res.default).to.eql({ value: defaultValue });
+          }
         }
       };
 
       it('string', async () => {
-        await test('A', 'string');
+        await test('A', 'string', 'Hello (Default)');
       });
 
       it('number', async () => {
-        await test('B', 'number');
+        await test('B', 'number', 999);
       });
 
       it('boolean', async () => {
-        await test('C', 'boolean');
+        await test('C', 'boolean', true);
       });
     });
 
@@ -840,6 +843,18 @@ describe('TypeClient', () => {
         expect(res).to.not.include('Generated types');
         expect(res).to.include('export declare type MyRow');
         expect(res).to.include('export declare type MyColor');
+      });
+
+      it('ref: as row (wrapper)', async () => {
+        const def = await TypeClient.load({ ns: 'foo', fetch });
+        const res = TypeClient.typescript(def, { header: false }).toString();
+        expect(res).to.include(`message: t.ITypedSheetRef<MyMessage> | null;\n`);
+      });
+
+      it('ref array: as cursor (wrapper)', async () => {
+        const def = await TypeClient.load({ ns: 'foo', fetch });
+        const res = TypeClient.typescript(def, { header: false }).toString();
+        expect(res).to.include(`messages: t.ITypedSheetRefs<MyMessage>;\n`);
       });
     });
 
