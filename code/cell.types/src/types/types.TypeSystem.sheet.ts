@@ -40,6 +40,16 @@ export type ITypedSheetRow<T> = {
 };
 
 /**
+ * A connector for a reference-pointer to a single row in another sheet.
+ */
+export type ITypedSheetRef<T> = {};
+
+/**
+ * A connector for a reference-pointer to a set of rows in another sheet.
+ */
+export type ITypedSheetRefs<T> = {};
+
+/**
  * Read/write methods for the properties of a single row.
  */
 export type ITypedSheetRowProp<T, K extends keyof T> = {

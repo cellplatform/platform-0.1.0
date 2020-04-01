@@ -169,7 +169,7 @@ describe('TypeScript', () => {
       expect(res).to.include(`  message: string;`);
     });
 
-    it.only('with imports', async () => {
+    it('with imports', async () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
       const def = await TypeClient.load({ ns: 'foo', fetch });
       const typename = def.typename;
@@ -191,7 +191,7 @@ describe('TypeScript', () => {
       expect(lines[1]).to.eql(`import { MyThing } from 'foobar';`);
     });
 
-    it.only('[adjustLine] handler', async () => {
+    it('[adjustLine] handler', async () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
       const def = await TypeClient.load({ ns: 'foo', fetch });
       const typename = def.typename;

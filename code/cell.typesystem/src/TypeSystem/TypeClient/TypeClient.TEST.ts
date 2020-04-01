@@ -844,6 +844,18 @@ describe('TypeClient', () => {
         expect(res).to.include('export declare type MyRow');
         expect(res).to.include('export declare type MyColor');
       });
+
+      it.only('ref: as row (wrapper)', async () => {
+        const def = await TypeClient.load({ ns: 'foo', fetch });
+        const res = TypeClient.typescript(def, { header: false }).toString();
+        expect(res).to.include(`message: t.ITypedSheetRef<MyMessage> | null;\n`);
+      });
+
+      it('ref array: as cursor (wrapper)', async () => {
+        const def = await TypeClient.load({ ns: 'foo', fetch });
+        const res = TypeClient.typescript(def, { header: false }).toString();
+        expect(res).to.include(`message: t.ITypedSheetRefs<MyMessage>;\n`);
+      });
     });
 
     describe('save file (.d.ts)', () => {

@@ -21,6 +21,8 @@
  * 
  */
 
+import * as t from '@platform/cell.types';
+
 export declare type Enum = {
   single?: 'hello';
   union: 'red' | 'green' | 'blue'[];

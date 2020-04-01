@@ -21,10 +21,12 @@
  * 
  */
 
+import * as t from '@platform/cell.types';
+
 export declare type MyMessages = {
   channel: string;
-  color?: MyColor;
-  messages: MyMessage[];
+  color?: t.ITypedSheetRef<MyColor>;
+  messages: t.ITypedSheetRefs<MyMessage>;
 };
 
 export declare type MyColor = {

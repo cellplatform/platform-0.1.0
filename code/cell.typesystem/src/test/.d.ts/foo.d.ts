@@ -21,12 +21,14 @@
  * 
  */
 
+import * as t from '@platform/cell.types';
+
 export declare type MyRow = {
   title: string;
   isEnabled: boolean | null;
-  color?: MyColor;
-  message: MyMessage | null;
-  messages: MyMessage[];
+  color?: t.ITypedSheetRef<MyColor>;
+  message: t.ITypedSheetRef<MyMessage> | null;
+  messages: t.ITypedSheetRefs<MyMessage>;
 };
 
 export declare type MyColor = {
