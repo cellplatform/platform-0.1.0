@@ -135,11 +135,11 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       throw new Error(err);
     }
 
-    const api = {
+    const api: t.ITypedSheetRowProp<T, K> = {
       /**
        * Get a cell (property) value.
        */
-      async get(): Promise<T[K]> {
+      get(): T[K] {
         const done = (result?: any): T[K] => {
           if (result === undefined && TypeDefault.isTypeDefaultValue(typeDef.default)) {
             // NB: Only look for a default value definition.

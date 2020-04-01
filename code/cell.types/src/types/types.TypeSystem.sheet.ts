@@ -53,7 +53,7 @@ export type ITypedSheetRefs<T> = {};
  * Read/write methods for the properties of a single row.
  */
 export type ITypedSheetRowProp<T, K extends keyof T> = {
-  get(): Promise<T[K]>;
+  get(): T[K];
   set(value: T[K]): Promise<{}>;
   clear(): Promise<{}>;
 };
@@ -62,7 +62,7 @@ export type ITypedSheetRowProp<T, K extends keyof T> = {
  * The pure "strongly typed" READ/WRITE data-properties of the cells for a row.
  */
 export type ITypedSheetRowProps<T> = {
-  readonly [K in keyof T]: Promise<T[K]>;
+  readonly [K in keyof T]: T[K];
 };
 
 /**
