@@ -16,7 +16,7 @@ import { TypeSystem } from '..';
  * - read/write: linked sheet
  */
 
-describe('TypedSheet', () => {
+describe.only('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
 
@@ -325,7 +325,7 @@ describe('TypedSheet', () => {
       });
     });
 
-    describe.skip('read/write (ref)', () => {
+    describe.only('read/write (ref)', () => {
       it('1:1 (row)', async () => {
         const { sheet } = await testSheetMessages();
         const cursor = await sheet.cursor();

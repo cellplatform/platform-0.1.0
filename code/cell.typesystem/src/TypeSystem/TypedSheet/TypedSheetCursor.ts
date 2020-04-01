@@ -43,7 +43,6 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
    */
   private readonly ctx: t.SheetCtx;
   private readonly types: t.IColumnTypeDef[];
-  // private readonly _events$: t.Subject<t.TypedSheetEvent>;
 
   public readonly uri: string;
   public readonly index: number = -1;

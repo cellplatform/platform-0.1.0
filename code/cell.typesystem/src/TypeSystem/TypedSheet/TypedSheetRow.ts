@@ -37,8 +37,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    */
   private readonly ctx: t.SheetCtx;
   private readonly _columns: TypedColumnData[] = [];
+  private readonly _prop: { [key: string]: t.ITypedSheetRowProp<T, any> } = {};
   private _props: t.ITypedSheetRowProps<T>;
-  private _prop: { [key: string]: t.ITypedSheetRowProp<T, any> } = {};
   private _types: t.ITypedSheetRowTypes<T>;
 
   public readonly index: number;
@@ -172,7 +172,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
            * - single
            * - array
            */
-          // console.log('column', column);
+          console.log('column', column);
+          // column.data
           const type = column.type.type as t.ITypeRef;
 
           // console.log('-------------------------------------------');
