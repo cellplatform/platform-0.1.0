@@ -160,39 +160,15 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
         }
 
         if (target.isRef) {
-          // TODO 🐷
-          // console.log('-------------------------------------------');
-          // console.log('read ref', column.type.column, column.type.prop);
-          // console.log('TypedSheet', TypedSheet);
-
-          /**
-           * - single
-           * - array
-           */
-          console.log('column', column);
-          // column.data
-
-          const type = column.typeDef.type as t.ITypeRef;
           const typeDef = column.typeDef as t.IColumnTypeDef<t.ITypeRef>;
-
-          if (!type.isArray) {
-            const ref = TypedSheetRef.create({ ctx, typeDef });
-            return done(ref);
-          } else {
-            const refs = TypedSheetRefs.create({ ctx, typeDef });
-            return done(refs);
-          }
-
-          // console.log('-------------------------------------------');
-          // const f = await ctx.sheet.create({ implements: type.uri });
-
-          // console.log('-------------------------------------------');
-          // console.log('f', f);
-
-          return done(); // TODO 🐷
+          const args = { ctx, typeDef };
+          const ref = typeDef.type.isArray
+            ? TypedSheetRefs.create(args)
+            : TypedSheetRef.create(args);
+          return done(ref);
         }
 
-        throw new Error(`Failed to read property '${name}'.`);
+        throw new Error(`Failed to read property '${name}' (column ${typeDef.column}).`);
       },
 
       /**
