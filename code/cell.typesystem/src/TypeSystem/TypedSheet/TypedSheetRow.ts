@@ -164,7 +164,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
         if (target.isRef) {
           // TODO 🐷
-          console.log('-------------------------------------------');
+          // console.log('-------------------------------------------');
           // console.log('read ref', column.type.column, column.type.prop);
           // console.log('TypedSheet', TypedSheet);
 
@@ -172,14 +172,14 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
            * - single
            * - array
            */
-          console.log('column', column);
+          // console.log('column', column);
           const type = column.type.type as t.ITypeRef;
 
-          console.log('-------------------------------------------');
-          const f = await ctx.sheet.create({ implements: type.uri });
+          // console.log('-------------------------------------------');
+          // const f = await ctx.sheet.create({ implements: type.uri });
 
-          console.log('-------------------------------------------');
-          console.log('f', f);
+          // console.log('-------------------------------------------');
+          // console.log('f', f);
 
           return done(); // TODO 🐷
         }

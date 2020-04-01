@@ -845,7 +845,7 @@ describe('TypeClient', () => {
         expect(res).to.include('export declare type MyColor');
       });
 
-      it.only('ref: as row (wrapper)', async () => {
+      it('ref: as row (wrapper)', async () => {
         const def = await TypeClient.load({ ns: 'foo', fetch });
         const res = TypeClient.typescript(def, { header: false }).toString();
         expect(res).to.include(`message: t.ITypedSheetRef<MyMessage> | null;\n`);
@@ -854,7 +854,7 @@ describe('TypeClient', () => {
       it('ref array: as cursor (wrapper)', async () => {
         const def = await TypeClient.load({ ns: 'foo', fetch });
         const res = TypeClient.typescript(def, { header: false }).toString();
-        expect(res).to.include(`message: t.ITypedSheetRefs<MyMessage>;\n`);
+        expect(res).to.include(`messages: t.ITypedSheetRefs<MyMessage>;\n`);
       });
     });
 

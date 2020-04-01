@@ -1,7 +1,7 @@
 import { fs, testFetch, TYPE_DEFS } from '.';
 import { TypeClient } from '../TypeSystem/TypeClient';
 
-describe.only('TypeSystem: generate sample typescript declaration files', () => {
+describe('TypeSystem: generate sample typescript declaration files', () => {
   const dir = fs.join(__dirname, '../test/.d.ts');
 
   const save = async (ns: string) => {

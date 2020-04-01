@@ -16,7 +16,7 @@ import { TypeSystem } from '..';
  * - read/write: linked sheet
  */
 
-describe.skip('TypedSheet', () => {
+describe('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
 
@@ -244,7 +244,7 @@ describe.skip('TypedSheet', () => {
           const row = cursor.row(0);
           expect(await row.props.array).to.eql(['red', 'green', 'blue']);
           await row.prop('array').clear();
-          expect(await row.props.array).to.eql(undefined);
+          expect(await row.props.array).to.eql([]);
         });
       });
 
@@ -325,8 +325,8 @@ describe.skip('TypedSheet', () => {
       });
     });
 
-    describe.only('read/write (ref)', () => {
-      it.only('1:1 (row)', async () => {
+    describe.skip('read/write (ref)', () => {
+      it('1:1 (row)', async () => {
         const { sheet } = await testSheetMessages();
         const cursor = await sheet.cursor();
         const row = cursor.row(0);
