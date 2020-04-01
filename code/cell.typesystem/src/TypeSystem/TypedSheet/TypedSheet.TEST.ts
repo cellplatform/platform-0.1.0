@@ -18,7 +18,7 @@ import { TypedSheetRefs } from './TypedSheetRefs';
  * - read/write: linked sheet
  */
 
-describe.only('TypedSheet', () => {
+describe('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
 
@@ -126,13 +126,6 @@ describe.only('TypedSheet', () => {
         const cursor = await sheet.cursor();
         expect(cursor.exists(99)).to.eql(false);
       });
-
-      it('array (empty array when no default)', async () => {
-        const { sheet } = await testSheetMessages();
-        const cursor = await sheet.cursor();
-        const row = cursor.row(99);
-        expect(await row.props.messages).to.eql([]); // Empty array.
-      });
     });
 
     describe('row.prop (read/write methods)', () => {
@@ -193,7 +186,6 @@ describe.only('TypedSheet', () => {
 
         expect(await row.props.title).to.eql('One');
         expect(await row.props.color).to.eql({ label: 'background', color: 'red' });
-        expect(await row.props.message).to.eql(undefined);
         expect(await row.props.isEnabled).to.eql(true);
 
         await row.prop('title').set('hello');
@@ -327,7 +319,7 @@ describe.only('TypedSheet', () => {
       });
     });
 
-    describe.only('read/write (ref)', () => {
+    describe('read/write (ref)', () => {
       it('1:1 (row)', async () => {
         const { sheet } = await testSheetMessages();
         const cursor = await sheet.cursor();

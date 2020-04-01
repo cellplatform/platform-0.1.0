@@ -120,18 +120,18 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * Read/write handle for a single cell (property).
    */
-  public prop<K extends keyof T>(key: K): t.ITypedSheetRowProp<T, K> {
-    if (this._prop[key as string]) {
-      return this._prop[key as string]; // Already created and cached.
+  public prop<K extends keyof T>(name: K): t.ITypedSheetRowProp<T, K> {
+    if (this._prop[name as string]) {
+      return this._prop[name as string]; // Already created and cached.
     }
 
-    const column = this.findColumn(key);
+    const column = this.findColumn(name);
     const typeDef = column.typeDef;
     const ctx = this.ctx;
 
     const target = TypeTarget.parse(typeDef.target);
     if (!target.isValid) {
-      const err = `Property '${key}' (column ${typeDef.column}) has an invalid target '${typeDef.target}'.`;
+      const err = `Property '${name}' (column ${typeDef.column}) has an invalid target '${typeDef.target}'.`;
       throw new Error(err);
     }
 
@@ -197,7 +197,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
           return done(); // TODO 🐷
         }
 
-        throw new Error(`Failed to read property '${key}'.`);
+        throw new Error(`Failed to read property '${name}'.`);
       },
 
       /**
@@ -227,7 +227,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       },
     };
 
-    this._prop[key as string] = api;
+    this._prop[name as string] = api;
     return api;
   }
 
