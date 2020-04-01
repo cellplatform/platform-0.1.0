@@ -204,7 +204,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       /**
        * Set a cell (property) value.
        */
-      async set(value: T[K]): Promise<{}> {
+      set(value: T[K]) {
         if (target.isInline) {
           const cell = column.cell;
           const data = value as any;
@@ -217,15 +217,14 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
           // TODO 🐷
         }
 
-        return {};
+        return self;
       },
 
       /**
        * Remove a property value.
        */
       clear() {
-        api.set(undefined as any);
-        return self;
+        return api.set(undefined as any);
       },
     };
 

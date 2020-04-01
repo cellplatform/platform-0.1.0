@@ -54,7 +54,7 @@ export type ITypedSheetRefs<T> = {};
  */
 export type ITypedSheetRowProp<T, K extends keyof T> = {
   get(): T[K];
-  set(value: T[K]): Promise<{}>;
+  set(value: T[K]): ITypedSheetRow<T>;
   clear(): ITypedSheetRow<T>;
 };
 

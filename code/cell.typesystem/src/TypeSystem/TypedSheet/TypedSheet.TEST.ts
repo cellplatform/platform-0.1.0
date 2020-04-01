@@ -18,7 +18,7 @@ import { TypedSheetRefs } from './TypedSheetRefs';
  * - read/write: linked sheet
  */
 
-describe.only('TypedSheet', () => {
+describe('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
 
@@ -156,13 +156,13 @@ describe.only('TypedSheet', () => {
         const cursor = await sheet.cursor();
         const prop = cursor.row(0).prop('stringValue');
 
-        await prop.set('');
-        expect(await prop.get()).to.eql('');
+        prop.set('');
+        expect(prop.get()).to.eql('');
 
-        await prop.set(' ');
+        prop.set(' ');
         expect(prop.get()).to.eql(' ');
 
-        await prop.set('foo');
+        prop.set('foo');
         expect(prop.get()).to.eql('foo');
       });
 
@@ -188,8 +188,8 @@ describe.only('TypedSheet', () => {
         expect(row.props.color).to.eql({ label: 'background', color: 'red' });
         expect(row.props.isEnabled).to.eql(true);
 
-        await row.prop('title').set('hello');
-        await row.prop('color').set({ label: 'background', color: 'green', description: 'Yo' });
+        row.prop('title').set('hello');
+        row.prop('color').set({ label: 'background', color: 'green', description: 'Yo' });
 
         expect(row.props.title).to.eql('hello');
         expect(row.props.color).to.eql({
@@ -198,8 +198,8 @@ describe.only('TypedSheet', () => {
           description: 'Yo',
         });
 
-        await row.prop('title').set('');
-        await row.prop('color').set(undefined);
+        row.prop('title').set('');
+        row.prop('color').set(undefined);
 
         expect(row.props.title).to.eql('');
         expect(row.props.color).to.eql(undefined);
@@ -212,7 +212,7 @@ describe.only('TypedSheet', () => {
           const row = cursor.row(0);
           expect(row.props.single).to.eql('hello');
 
-          await row.prop('single').set(undefined);
+          row.prop('single').set(undefined);
           expect(row.props.single).to.eql(undefined);
         });
 
@@ -222,10 +222,10 @@ describe.only('TypedSheet', () => {
           const row = cursor.row(0);
           expect(row.props.union).to.eql(['blue']);
 
-          await row.prop('union').set('red');
+          row.prop('union').set('red');
           expect(row.props.union).to.eql('red');
 
-          await row.prop('union').set(['blue', 'blue']); // NB: stupid valid, testing array structure.
+          row.prop('union').set(['blue', 'blue']); // NB: stupid valid, testing array structure.
           expect(row.props.union).to.eql(['blue', 'blue']);
 
           row.prop('union').clear();
@@ -250,8 +250,8 @@ describe.only('TypedSheet', () => {
 
           expect(row.props.stringValue).to.eql('hello value');
           expect(row.props.stringProp).to.eql('hello prop');
-          await row.prop('stringValue').set('');
-          await row.prop('stringProp').set('');
+          row.prop('stringValue').set('');
+          row.prop('stringProp').set('');
 
           expect(row.props.stringValue).to.eql('');
           expect(row.props.stringProp).to.eql('');
@@ -263,8 +263,8 @@ describe.only('TypedSheet', () => {
           const row = cursor.row(0);
           expect(row.props.numberValue).to.eql(123);
           expect(row.props.numberProp).to.eql(456);
-          await row.prop('numberValue').set(-1);
-          await row.prop('numberProp').set(-1);
+          row.prop('numberValue').set(-1);
+          row.prop('numberProp').set(-1);
           expect(row.props.numberValue).to.eql(-1);
           expect(row.props.numberProp).to.eql(-1);
         });
@@ -287,15 +287,15 @@ describe.only('TypedSheet', () => {
           const row = cursor.row(0);
           expect(row.props.nullValue).to.eql(null);
 
-          await row.prop('nullValue').set(123);
-          await row.prop('nullProp').set(123);
+          row.prop('nullValue').set(123);
+          row.prop('nullProp').set(123);
           expect(row.props.nullValue).to.eql(123);
           expect(row.props.nullProp).to.eql(123);
 
-          await row.prop('nullValue').set(null);
-          await row.prop('nullProp').set(null);
-          expect(await row.props.nullValue).to.eql(null);
-          expect(await row.props.nullProp).to.eql(null);
+          row.prop('nullValue').set(null);
+          row.prop('nullProp').set(null);
+          expect(row.props.nullValue).to.eql(null);
+          expect(row.props.nullProp).to.eql(null);
         });
 
         it('undefined', async () => {
@@ -305,13 +305,13 @@ describe.only('TypedSheet', () => {
           expect(row.props.undefinedValue).to.eql(undefined);
           expect(row.props.undefinedProp).to.eql(undefined);
 
-          await row.prop('undefinedValue').set('hello');
-          await row.prop('undefinedProp').set('hello');
+          row.prop('undefinedValue').set('hello');
+          row.prop('undefinedProp').set('hello');
           expect(row.props.undefinedValue).to.eql('hello');
           expect(row.props.undefinedProp).to.eql('hello');
 
-          await row.prop('undefinedValue').set(undefined);
-          await row.prop('undefinedProp').set(undefined);
+          row.prop('undefinedValue').set(undefined);
+          row.prop('undefinedProp').set(undefined);
 
           expect(row.props.undefinedValue).to.eql(undefined);
           expect(row.props.undefinedProp).to.eql(undefined);
