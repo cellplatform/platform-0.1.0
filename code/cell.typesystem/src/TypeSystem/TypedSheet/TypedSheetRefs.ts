@@ -24,11 +24,11 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRef<T> {
     this.cell = args.data;
     this.ctx = args.ctx;
 
-    console.log('-------------------------------------------');
-    console.log('args.typeDef', args.typeDef);
-    console.log('this.ns', this.ns);
-    console.log('this.cell', this.cell);
-    console.log('-------------------------------------------');
+    // console.log('-------------------------------------------');
+    // console.log('args.typeDef', args.typeDef);
+    // console.log('this.ns', this.ns);
+    // console.log('this.cell', this.cell);
+    // console.log('-------------------------------------------');
   }
 
   /**
