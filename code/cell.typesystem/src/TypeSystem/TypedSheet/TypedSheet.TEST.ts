@@ -357,7 +357,81 @@ describe.only('TypedSheet', () => {
   describe.only('state', () => {
     it('exposed from sheet', async () => {
       const { sheet } = await testSheet();
-      expect(sheet.state).to.be.an.instanceof(TypedSheetState);
+      const state = sheet.state;
+      expect(state).to.be.an.instanceof(TypedSheetState);
+      expect(state.uri).to.eql(sheet.uri);
+    });
+
+    describe('getCell', () => {
+      it('not found', async () => {
+        const { sheet } = await testSheet();
+        const state = sheet.state;
+        const res = await state.getCell('ZZ99');
+        expect(res).to.eql(undefined);
+      });
+
+      it('retrieve from fetch (then cache)', async () => {
+        const { sheet, fetch } = await testSheet();
+        const state = sheet.state;
+        expect(fetch.getCellsCount).to.eql(0);
+
+        const res = await state.getCell('A1');
+        expect(res).to.eql({ value: 'One' });
+        expect(fetch.getCellsCount).to.eql(1);
+
+        await state.getCell('A1');
+        expect(fetch.getCellsCount).to.eql(1); // NB: no change - cached.
+      });
+    });
+
+    describe('cache/revert', () => {
+      it.skip('clears cache (retains other items in cache)', async () => {});
+
+      it.skip('reverts changes', async () => {});
+    });
+
+    describe('ignores (no change)', () => {
+      it('ignores different namespace', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { uri: 'cell:foo.BAR:A1', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+        expect(state.changes).to.eql({});
+      });
+
+      it('ignores non cell URIs', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { uri: 'file:foo:abc', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+        expect(state.changes).to.eql({});
+      });
+
+      it('ignores invalid URIs', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { uri: 'cell:foo.mySheet:A-1', data: { value: 123 } }, // NB: invalid URI
+        });
+
+        await time.wait(1);
+        expect(state.changes).to.eql({});
+      });
     });
 
     describe('changes', () => {
@@ -365,6 +439,15 @@ describe.only('TypedSheet', () => {
         const { sheet } = await testSheet();
         const state = sheet.state;
         expect(state.changes).to.eql({});
+      });
+
+      it('changes new instance on each call', async () => {
+        const { sheet } = await testSheet();
+        const state = sheet.state;
+        const res1 = state.changes;
+        const res2 = state.changes;
+        expect(res1).to.eql(res2);
+        expect(res1).to.not.equal(res2); // NB: Different instance.
       });
 
       it('does not change when disposed', async () => {
@@ -375,7 +458,7 @@ describe.only('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo:A1', data: { value: 123 } },
+          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 123 } },
         });
 
         await time.wait(1);
@@ -392,12 +475,12 @@ describe.only('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo:A1', data: { value: 123 } },
+          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 123 } },
         });
         await time.wait(1);
 
-        const change1 = state.changes['cell:foo:A1'];
-        expect(change1.uri).to.eql('cell:foo:A1');
+        const change1 = state.changes.A1;
+        expect(change1.uri).to.eql('cell:foo.mySheet:A1');
         expect(change1.from).to.eql({ value: 'One' });
         expect(change1.to).to.eql({ value: 123 });
 
@@ -408,11 +491,11 @@ describe.only('TypedSheet', () => {
         // Retains original [from] value on second change (prior to purge).
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo:A1', data: { value: 456 } },
+          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 456 } },
         });
         await time.wait(1);
 
-        const change2 = state.changes['cell:foo:A1'];
+        const change2 = state.changes.A1;
         expect(change1.from).to.eql({ value: 'One' });
         expect(change2.to).to.eql({ value: 456 });
 
@@ -420,7 +503,7 @@ describe.only('TypedSheet', () => {
         expect(list.length).to.eql(2);
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo:A1', data: { value: 456 } },
+          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 456 } },
         });
         await time.wait(1);
         expect(list.length).to.eql(2);
@@ -433,12 +516,12 @@ describe.only('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo:A99', data: { value: 123 } },
+          payload: { uri: 'cell:foo.mySheet:A99', data: { value: 123 } },
         });
         await time.wait(1);
 
-        const change = state.changes['cell:foo:A99'];
-        expect(change.uri).to.eql('cell:foo:A99');
+        const change = state.changes.A99;
+        expect(change.uri).to.eql('cell:foo.mySheet:A99');
         expect(change.from).to.eql({});
         expect(change.to).to.eql({ value: 123 });
       });
@@ -450,7 +533,7 @@ describe.only('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo:A1', data: { value: 123 } },
+          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 123 } },
         });
 
         await time.wait(1);
@@ -463,7 +546,8 @@ describe.only('TypedSheet', () => {
         const fetch = state.fetch;
 
         const get = async (key: string) => {
-          const res = await fetch.getCells({ ns: 'foo', query: `${key}:${key}` });
+          const query = `${key}:${key}`;
+          const res = await fetch.getCells({ ns: 'foo', query });
           return res.cells[key];
         };
 
@@ -472,7 +556,7 @@ describe.only('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo:A1', data: { value: 123 } },
+          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 123 } },
         });
 
         await time.wait(1);

@@ -89,7 +89,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     events$?: t.Subject<t.TypedSheetEvent>;
     cache?: t.IMemoryCache;
   }) {
-    this.uri = util.formatNsUri(args.sheetNs);
+    const uri = (this.uri = util.formatNsUri(args.sheetNs));
     this.typeDef = args.typeDef;
 
     const cache = args.cache || MemoryCache.create();
@@ -97,6 +97,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
 
     this.events$ = events$.asObservable().pipe(takeUntil(this._dispose$), share());
     this.state = TypedSheetState.create({
+      uri,
       events$,
       fetch: args.fetch,
       cache,
