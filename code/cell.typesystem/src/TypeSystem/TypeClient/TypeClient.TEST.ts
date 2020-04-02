@@ -845,7 +845,7 @@ describe('TypeClient', () => {
         expect(res).to.include('export declare type MyColor');
       });
 
-      it.only('ref: row/cursor wrapper', async () => {
+      it('ref: row/cursor wrapper', async () => {
         const def = await TypeClient.load({ ns: 'foo', fetch });
         const res = TypeClient.typescript(def, { header: false }).toString();
 

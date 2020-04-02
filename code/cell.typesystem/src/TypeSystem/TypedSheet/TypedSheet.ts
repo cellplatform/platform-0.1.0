@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { defaultValue, ERROR, ErrorList, Uri, MemoryCache } from '../../common';
+import { defaultValue, ERROR, ErrorList, MemoryCache, Uri } from '../../common';
 import { TypeClient } from '../TypeClient';
 import { util } from '../util';
 import { TypedSheetCursor } from './TypedSheetCursor';
@@ -10,7 +10,7 @@ import * as t from './types';
 const fromClient = (client: t.IHttpClient) => {
   const fetch = util.fetcher.fromClient(client);
   return {
-    load: <T>(ns: string) => TypedSheet.load<T>({ fetch, ns }),
+    load: <T>(ns: string | t.INsUri) => TypedSheet.load<T>({ fetch, ns }),
   };
 };
 
@@ -24,20 +24,20 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    * Load a sheet from the network.
    */
   public static async load<T>(args: {
-    ns: string; // Namespace URI.
+    ns: string | t.INsUri; // Namespace URI.
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
     events$?: t.Subject<t.TypedSheetEvent>;
   }) {
     const { fetch, events$, cache } = args;
-    const sheetNs = util.formatNs(args.ns);
+    const sheetNs = util.formatNsUri(args.ns);
 
     // Retrieve type definition for sheet.
-    const res = await args.fetch.getType({ ns: sheetNs });
+    const res = await args.fetch.getType({ ns: sheetNs.toString() });
     if (res.error) {
       throw new Error(res.error.message);
     }
-    const implementsNs = util.formatNs(res.type.implements);
+    const implementsNs = util.formatNsUri(res.type.implements);
     if (!implementsNs) {
       const err = `The namespace [${sheetNs}] does not contain an "implements" type reference.`;
       throw new Error(err);
@@ -45,7 +45,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
 
     // Load and parse the type definition.
     const typeDef = await TypeClient.load({
-      ns: Uri.create.ns(implementsNs),
+      ns: implementsNs.toString(),
       fetch,
       cache,
     });
@@ -65,9 +65,9 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   }) {
     const { fetch, events$, cache } = args;
 
-    const implementsNs = util.formatNs(args.implements);
+    const implementsNs = util.formatNsUri(args.implements);
     const typeDef = await TypeClient.load({
-      ns: Uri.create.ns(implementsNs),
+      ns: implementsNs.toString(),
       fetch,
       cache,
     });
@@ -85,7 +85,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    * [Lifecycle]
    */
   private constructor(args: {
-    sheetNs: string;
+    sheetNs: string | t.INsUri;
     typeDef: t.INsTypeDef;
     fetch: t.ISheetFetcher;
     events$?: t.Subject<t.TypedSheetEvent>;
@@ -109,7 +109,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
       },
     };
 
-    this.uri = args.sheetNs;
+    this.uri = util.formatNsUri(args.sheetNs);
     this.typeDef = args.typeDef;
     this.events$ = this.ctx.events$.asObservable().pipe(takeUntil(this._dispose$), share());
     this.errorList = ErrorList.create({
@@ -130,12 +130,11 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   private readonly typeDef: t.INsTypeDef;
   private readonly errorList: ErrorList;
 
-  public readonly uri: string;
+  public readonly uri: t.INsUri;
 
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.asObservable();
 
-  // private readonly _events$: Subject<t.TypedSheetEvent>;
   public readonly events$: Observable<t.TypedSheetEvent>;
 
   /**

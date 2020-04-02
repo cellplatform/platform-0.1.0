@@ -1,12 +1,12 @@
 import { TypeDefault } from '../TypeDefault';
 import { TypeTarget } from '../TypeTarget';
+import { Schema, t, util } from './common';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
-import * as t from './types';
 
 type TypedSheetRowArgs = {
   index: number;
-  uri: string;
+  uri: string | t.IRowUri;
   columns: TypedColumnData[];
   ctx: t.SheetCtx;
 };
@@ -29,7 +29,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    */
   private constructor(args: TypedSheetRowArgs) {
     this.index = args.index;
-    this.uri = args.uri;
+    this.uri = util.formatRowUri(args.uri);
     this.ctx = args.ctx;
     this._columns = args.columns;
   }
@@ -44,7 +44,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private _types: t.ITypedSheetRowTypes<T>;
 
   public readonly index: number;
-  public readonly uri: string;
+  public readonly uri: t.IRowUri;
 
   /**
    * [Properties]
@@ -161,9 +161,32 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
         if (target.isRef) {
           const typeDef = column.typeDef as t.IColumnTypeDef<t.ITypeRef>;
+
+          // Schema.ref.links.
+          const cell = column.cell;
+          const links = cell.links || {};
+          const link = Schema.ref.links.find(links).byName('type');
+
+          let ns = link ? link.uri.toString() : '';
+          if (!ns) {
+            ns = Schema.uri.create.ns(Schema.cuid());
+            const key = Schema.ref.links.toKey('type');
+
+            links[key] = ns;
+          }
+
+          // if (link) {
+          //   // link.
+          //   self.
+          // }
+
+          // console.log('-------------------------------------------');
+          // console.log('link', link);
+          // ns;
+
           const ref = typeDef.type.isArray
-            ? TypedSheetRefs.create({ ctx, typeDef })
-            : TypedSheetRef.create({ ctx, typeDef });
+            ? TypedSheetRefs.create({ ns, typeDef, data: cell, ctx })
+            : TypedSheetRef.create({ typeDef, ctx });
           return done(ref);
         }
 

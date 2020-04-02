@@ -334,7 +334,7 @@ describe('TypedSheet', () => {
         expect(color).to.be.an.instanceof(TypedSheetRef);
       });
 
-      it.only('1:* (cursor)', async () => {
+      it('1:* (cursor)', async () => {
         const { sheet } = await testSheetMessages();
         const cursor = await sheet.cursor();
         const row = cursor.row(0);

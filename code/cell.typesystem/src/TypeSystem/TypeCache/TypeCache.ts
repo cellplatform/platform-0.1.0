@@ -43,17 +43,17 @@ export class TypeCache {
     const cacheKey = TypeCache.key.fetch;
 
     const getType: t.FetchSheetType = async args => {
-      const key = cacheKey('getType', args.ns);
+      const key = cacheKey('getType', args.ns.toString());
       return cache.exists(key) ? cache.get(key) : cache.put(key, fetch.getType(args)).get(key);
     };
 
     const getColumns: t.FetchSheetColumns = async args => {
-      const key = cacheKey('getColumns', args.ns);
+      const key = cacheKey('getColumns', args.ns.toString());
       return cache.exists(key) ? cache.get(key) : cache.put(key, fetch.getColumns(args)).get(key);
     };
 
     const getCells: t.FetchSheetCells = async args => {
-      const key = cacheKey('getCells', args.ns, args.query);
+      const key = cacheKey('getCells', args.ns.toString(), args.query);
       return cache.exists(key) ? cache.get(key) : cache.put(key, fetch.getCells(args)).get(key);
     };
 

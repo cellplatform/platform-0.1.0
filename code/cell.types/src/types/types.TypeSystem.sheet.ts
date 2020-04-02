@@ -2,7 +2,7 @@ import { t } from '../common';
 
 export type ITypedSheet<T> = {
   readonly ok: boolean;
-  readonly uri: string;
+  readonly uri: t.INsUri;
   readonly types: t.IColumnTypeDef[];
   readonly events$: t.Observable<t.TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
@@ -12,13 +12,17 @@ export type ITypedSheet<T> = {
   cursor(args?: ITypedSheetCursorArgs): Promise<ITypedSheetCursor<T>>;
 };
 
-export type ITypedSheetCursorArgs = { index?: number; take?: number };
+/**
+ * State machine for a sheet.
+ */
+export type ITypedSheetState<T> = {};
 
 /**
  * A cursor into a subset of sheet data.
  */
+export type ITypedSheetCursorArgs = { index?: number; take?: number };
 export type ITypedSheetCursor<T> = {
-  readonly uri: string;
+  readonly uri: t.INsUri;
   readonly index: number;
   readonly take?: number;
   readonly total: number;
@@ -31,8 +35,8 @@ export type ITypedSheetCursor<T> = {
  * A single row within a sheet.
  */
 export type ITypedSheetRow<T> = {
+  readonly uri: t.IRowUri;
   readonly index: number;
-  readonly uri: string;
   readonly props: ITypedSheetRowProps<T>;
   readonly types: ITypedSheetRowTypes<T>;
   toObject(): T;
@@ -50,6 +54,7 @@ export type ITypedSheetRef<T> = {
  * A connector for a reference-pointer to a set of rows in another sheet.
  */
 export type ITypedSheetRefs<T> = {
+  ns: t.INsUri;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
 };
 

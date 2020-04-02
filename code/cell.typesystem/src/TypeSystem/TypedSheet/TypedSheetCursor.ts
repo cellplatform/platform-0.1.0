@@ -1,9 +1,8 @@
-import { coord, Uri } from '../../common';
+import { coord, t, Uri, util } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
-import * as t from './types';
 
 type TypedSheetCursorArgs = {
-  ns: string; // "ns:<uri>"
+  ns: string | t.INsUri; // "ns:<uri>"
   types: t.IColumnTypeDef[];
   index: number;
   take?: number;
@@ -31,7 +30,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
    * [Lifecycle]
    */
   private constructor(args: TypedSheetCursorArgs) {
-    this.uri = args.ns;
+    this.uri = util.formatNsUri(args.ns);
     this.types = args.types;
     this.index = args.index;
     this.take = args.take;
@@ -44,7 +43,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
   private readonly ctx: t.SheetCtx;
   private readonly types: t.IColumnTypeDef[];
 
-  public readonly uri: string;
+  public readonly uri: t.INsUri;
   public readonly index: number = -1;
   public readonly take: number | undefined = undefined;
   public total: number = -1;
@@ -74,7 +73,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
    */
 
   public async load() {
-    const ns = this.uri;
+    const ns = this.uri.toString();
     const self = this as t.ITypedSheetCursor<T>;
     const types = this.types;
     if (types.length === 0) {
@@ -124,7 +123,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const ns = this.uri;
     const ctx = this.ctx;
     const index = row[0].row;
-    const uri = Uri.create.row(ns, (index + 1).toString());
+    const uri = Uri.create.row(ns.toString(), (index + 1).toString());
     const columns = row.map(({ cell, typeDef }) => ({ cell, typeDef }));
     return TypedSheetRow.create<T>({ index, uri, columns, ctx });
   }

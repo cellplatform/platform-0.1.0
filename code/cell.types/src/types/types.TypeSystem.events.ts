@@ -1,10 +1,13 @@
 /**
  * [Events]
  */
-export type TypedSheetEvent = ITypedSheetFetchEvent;
+export type TypedSheetEvent = ITypedSheetChangeCellEvent;
 
-export type ITypedSheetFetch = {};
-export type ITypedSheetFetchEvent = {
-  type: 'SHEET/fetch';
-  payload: ITypedSheetFetch;
+/**
+ * Dispatches a change to a cell's data.
+ */
+export type ITypedSheetChangeCellEvent = {
+  type: 'SHEET/change/cell';
+  payload: ITypedSheetChangeCell;
 };
+export type ITypedSheetChangeCell = {};
