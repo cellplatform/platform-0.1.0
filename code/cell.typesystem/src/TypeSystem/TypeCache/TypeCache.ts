@@ -7,7 +7,7 @@ import { fetcher } from '../util';
 export class TypeCacheKey {
   public static fetch: t.CacheFetchKey = (method, ns, ...path) => {
     const suffix = path.length === 0 ? '' : `/${path.join('/')}`;
-    return `TypeSystem/fetch/${ns}/${method}${suffix}}`;
+    return `TypeSystem/fetch/${ns}/${method}${suffix}`;
   };
 
   public static default: t.CacheDefaultValue = uri => {

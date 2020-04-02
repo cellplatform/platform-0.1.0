@@ -128,6 +128,13 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
     });
   }
 
+  public clearCache() {
+    const fetch = this.fetch;
+    const cache = fetch.cache;
+    const prefix = fetch.cacheKey('getCells', this.uri.id);
+    cache.keys.filter(key => key.startsWith(prefix)).forEach(key => cache.delete(key));
+  }
+
   /**
    * [Internal]
    */

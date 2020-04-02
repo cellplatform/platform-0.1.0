@@ -13,6 +13,7 @@ import * as f from '../../test/.d.ts/foo';
 import * as d from '../../test/.d.ts/foo.defaults';
 import * as m from '../../test/.d.ts/foo.messages';
 import * as p from '../../test/.d.ts/foo.primitives';
+import * as e from '../../test/.d.ts/foo.enum';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 import { TypedSheetState } from './TypedSheetState';
@@ -611,7 +612,7 @@ describe.only('TypedSheet', () => {
         expect(state.hasChanges).to.eql(false);
         expect(state.changes).to.eql({});
         expect(fired.length).to.eql(1);
-        expect(await state.getCell('A1')).to.eql({ value: 'One' });
+        expect(await state.getCell('A1')).to.eql({ value: 'One' }); // NB: retrieving original value after revert.
 
         const e = fired[0].payload as t.ITypedSheetReverted;
         expect(e.ns).to.eql('ns:foo.mySheet');
@@ -619,8 +620,28 @@ describe.only('TypedSheet', () => {
         expect(e.to).to.eql({});
       });
 
-      it.skip('clears cache (retains other items in cache)', async () => {
-        //
+      it('clears cache (retains other items in cache)', async () => {
+        const { sheet, fetch } = await testSheet();
+        const state = sheet.state;
+        const cache = state.fetch.cache;
+
+        expect(fetch.getCellsCount).to.eql(0);
+        expect(await state.getCell('A1')).to.eql({ value: 'One' }); // Original value.
+        expect(fetch.getCellsCount).to.eql(1);
+
+        await state.getCell('A1');
+        await state.getCell('A2');
+        expect(fetch.getCellsCount).to.eql(2);
+
+        cache.put('foo', 123);
+
+        state.clearCache();
+        expect(cache.keys).to.eql(['foo']); // NB: Retained non-cell key.
+
+        await state.getCell('A1');
+        expect(fetch.getCellsCount).to.eql(3); // NB: re-fetched
+        await state.getCell('A1');
+        expect(fetch.getCellsCount).to.eql(3); // NB: and back in the cache!
       });
     });
   });
