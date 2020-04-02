@@ -2,6 +2,9 @@ import { Uri } from '../common';
 
 export { fs } from '@platform/fs';
 export { expect, expectError } from '@platform/test';
+export { time } from '@platform/util.value';
+
+export { Subject, Observable } from 'rxjs';
 
 export * from '../common';
 export * from './fetch';

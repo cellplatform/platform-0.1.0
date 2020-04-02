@@ -4,7 +4,7 @@ import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
 import * as m from '../../test/.d.ts/foo.messages';
 
-import { ERROR, expect, testInstanceFetch, TYPE_DEFS, t } from '../../test';
+import { ERROR, expect, testInstanceFetch, TYPE_DEFS, t, Subject, time } from '../../test';
 import { TypeSystem } from '..';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
@@ -19,14 +19,9 @@ import { TypedSheetState } from './TypedSheetState';
  * - read/write: linked sheet
  */
 
-describe('TypedSheet', () => {
+describe.only('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
-
-  it('create', async () => {
-    const { sheet } = await testSheet();
-    expect(sheet.state).to.be.an.instanceof(TypedSheetState);
-  });
 
   describe('errors', () => {
     it('error: 404 instance namespace "type.implements" reference not found', async () => {
@@ -358,6 +353,96 @@ describe('TypedSheet', () => {
        */
     });
   });
+
+  describe.only('state', () => {
+    it('hangs of sheet', async () => {
+      const { sheet } = await testSheet();
+      expect(sheet.state).to.be.an.instanceof(TypedSheetState);
+    });
+
+    describe('changes', () => {
+      it('has no changes (initial state)', async () => {
+        const { sheet } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+      });
+
+      it('does not change when disposed', async () => {
+        const { sheet, events$ } = await testSheet();
+        expect(sheet.state.changes).to.eql({});
+
+        sheet.dispose();
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { uri: 'cell:foo:A1', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+        expect(sheet.state.changes).to.eql({});
+      });
+
+      it('change: cell', async () => {
+        const { sheet, events$ } = await testSheet();
+        expect(sheet.state.changes).to.eql({});
+
+        const list: t.ITypedSheetStateChange[] = [];
+        sheet.state.changed$.subscribe(e => list.push(e));
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { uri: 'cell:foo:A1', data: { value: 123 } },
+        });
+        await time.wait(1);
+
+        const change1 = sheet.state.changes['cell:foo:A1'];
+        expect(change1.uri).to.eql('cell:foo:A1');
+        expect(change1.from).to.eql({});
+        expect(change1.to).to.eql({ value: 123 });
+
+        expect(list.length).to.eql(1);
+        expect(list[0]).to.eql(change1);
+
+        // Retains original [from] value on second change (prior to purge).
+        events$.next({
+          type: 'SHEET/change',
+          payload: { uri: 'cell:foo:A1', data: { value: 456 } },
+        });
+        await time.wait(1);
+
+        const change2 = sheet.state.changes['cell:foo:A1'];
+        expect(change2.from).to.eql({});
+        expect(change2.to).to.eql({ value: 456 });
+
+        // Does not fire changed event if no change.
+        expect(list.length).to.eql(2);
+        events$.next({
+          type: 'SHEET/change',
+          payload: { uri: 'cell:foo:A1', data: { value: 456 } },
+        });
+        await time.wait(1);
+        expect(list.length).to.eql(2);
+      });
+
+      it.skip('change: row', async () => {
+        const { sheet, events$ } = await testSheet();
+        expect(sheet.state.changes).to.eql({});
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { uri: 'cell:foo:1', data: { props: { height: 99 } } },
+        });
+        await time.wait(1);
+
+        const change = sheet.state.changes['cell:foo:1'];
+
+        console.log('-------------------------------------------');
+        console.log('change', change);
+      });
+
+      it.skip('change: column', async () => {});
+    });
+  });
 });
 
 /**
@@ -438,9 +523,10 @@ const testFetchMessages = (ns: string) => {
 
 const testSheet = async () => {
   const ns = 'ns:foo.mySheet';
+  const events$ = new Subject<t.TypedSheetEvent>();
   const fetch = await testFetchMySheet(ns);
-  const sheet = await TypeSystem.Sheet.load<f.MyRow>({ fetch, ns });
-  return { ns, fetch, sheet };
+  const sheet = await TypeSystem.Sheet.load<f.MyRow>({ fetch, ns, events$ });
+  return { ns, fetch, sheet, events$ };
 };
 
 const testSheetPrimitives = async () => {

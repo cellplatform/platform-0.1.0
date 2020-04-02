@@ -1,4 +1,4 @@
-import { t, Uri } from './common';
+import { t, Uri, util } from './common';
 
 export type IRefsArgs = {
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
@@ -19,14 +19,10 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRef<T> {
    * [Lifecycle]
    */
   private constructor(args: IRefsArgs) {
-    this.ns = typeof args.ns === 'string' ? Uri.parse<t.INsUri>(args.ns).parts : args.ns;
+    this.ns = util.formatNsUri(args.ns);
     this.typeDef = args.typeDef;
     this.cell = args.data;
     this.ctx = args.ctx;
-
-    if (this.ns.type !== 'NS') {
-      throw new Error(`Not a namespace URI (${this.ns.toString()})`);
-    }
 
     console.log('-------------------------------------------');
     console.log('args.typeDef', args.typeDef);

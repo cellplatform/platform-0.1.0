@@ -1,7 +1,7 @@
 import { share, takeUntil } from 'rxjs/operators';
 
-import { defaultValue, ERROR, ErrorList, MemoryCache, Uri, t, util } from './common';
 import { TypeClient } from '../TypeClient';
+import { defaultValue, ERROR, ErrorList, MemoryCache, t, Uri, util } from './common';
 import { TypedSheetCursor } from './TypedSheetCursor';
 import { TypedSheetState } from './TypedSheetState';
 
@@ -22,7 +22,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    * Load a sheet from the network.
    */
   public static async load<T>(args: {
-    ns: string | t.INsUri; // Namespace URI.
+    ns: string | t.INsUri;
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
     events$?: t.Subject<t.TypedSheetEvent>;
@@ -56,7 +56,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    * Creates a sheet.
    */
   public static async create<T>(args: {
-    implements: string; // Namespace URI.
+    implements: string | t.INsUri; // Namespace URI.
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
     events$?: t.Subject<t.TypedSheetEvent>;
@@ -89,13 +89,23 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     events$?: t.Subject<t.TypedSheetEvent>;
     cache?: t.IMemoryCache;
   }) {
-    const fetch = args.fetch;
+    this.uri = util.formatNsUri(args.sheetNs);
+    this.typeDef = args.typeDef;
+
     const cache = args.cache || MemoryCache.create();
     const events$ = args.events$ || new t.Subject<t.TypedSheetEvent>();
 
+    this.events$ = events$.asObservable().pipe(takeUntil(this._dispose$), share());
+    this.state = TypedSheetState.create({
+      events$,
+      fetch: args.fetch,
+      cache,
+    });
+
+    const fetch = this.state.fetch; // Use the state-machines wrapped fetcher.
+
     this.ctx = {
       fetch,
-      cache,
       events$,
       sheet: {
         load<T>(args: { ns: string }) {
@@ -107,10 +117,6 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
       },
     };
 
-    this.uri = util.formatNsUri(args.sheetNs);
-    this.typeDef = args.typeDef;
-    this.events$ = this.ctx.events$.asObservable().pipe(takeUntil(this._dispose$), share());
-    this.state = TypedSheetState.create({ events$: this.events$ });
     this.errorList = ErrorList.create({
       defaultType: ERROR.TYPE.SHEET,
       errors: this.typeDef.errors,
@@ -120,6 +126,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   public dispose() {
     this._dispose$.next();
     this._dispose$.complete();
+    this.state.dispose();
   }
 
   /**
@@ -131,7 +138,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   private readonly _dispose$ = new t.Subject<{}>();
 
   public readonly uri: t.INsUri;
-  public readonly state: t.ITypedSheetState<T>;
+  public readonly state: TypedSheetState<T>;
   public readonly dispose$ = this._dispose$.asObservable();
   public readonly events$: t.Observable<t.TypedSheetEvent>;
 
