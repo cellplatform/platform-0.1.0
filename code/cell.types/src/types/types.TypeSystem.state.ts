@@ -4,10 +4,11 @@ import { t } from '../common';
  * State machine for a sheet.
  */
 export type ITypedSheetState<T> = {
+  readonly fetch: t.ISheetFetcher;
   readonly change$: t.Observable<t.ITypedSheetChange>;
   readonly changed$: t.Observable<t.ITypedSheetStateChange>;
   readonly changes: ITypedSheetStateChanges;
-  readonly fetch: t.ISheetFetcher;
+  readonly hasChanges: boolean;
 };
 
 /**

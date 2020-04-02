@@ -76,6 +76,10 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
     return { ...this._changes };
   }
 
+  public get hasChanges() {
+    return Object.keys(this._changes).length > 0;
+  }
+
   /**
    * [Internal]
    */

@@ -423,6 +423,19 @@ describe.only('TypedSheet', () => {
         await time.wait(1);
         expect(list.length).to.eql(2);
       });
+
+      it('hasChanges', async () => {
+        const { sheet, events$ } = await testSheet();
+        expect(sheet.state.hasChanges).to.eql(false);
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { uri: 'cell:foo:A1', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+        expect(sheet.state.hasChanges).to.eql(true);
+      });
     });
   });
 });
