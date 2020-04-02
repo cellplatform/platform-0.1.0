@@ -14,7 +14,7 @@ export type ITypedSheetChangeEvent = {
 };
 export type ITypedSheetChange = {
   uri: string;
-  data: t.ICellData<any> | t.IRowData<any> | t.IColumnData<any>;
+  data: t.ICellData<any>;
 };
 
 export type ITypedSheetChangedEvent = {

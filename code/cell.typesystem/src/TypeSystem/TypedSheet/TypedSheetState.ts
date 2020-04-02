@@ -24,6 +24,11 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
   private constructor(args: IStateArgs) {
     this.fetch = TypeCache.fetch(args.fetch, { cache: args.cache });
 
+    /**
+     * TODO 🐷
+     * - wrap fetch in such a way that it checkes for "changes.to" before calling the network
+     */
+
     this._events$ = args.events$;
     this.events$ = this._events$.asObservable().pipe(takeUntil(this._dispose$), share());
 
@@ -94,27 +99,18 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
   }
 
   private async onChange(e: t.ITypedSheetChange) {
-    const uri = Uri.parse(e.uri);
+    const uri = Uri.parse<t.ICellUri>(e.uri);
     const { type, ok } = uri;
     if (!ok) {
       throw new Error(`Cannot process change for '${e.uri}'. Invalid URI.`);
     }
     if (type === 'CELL') {
-      const { key, ns } = uri.parts as t.ICellUri;
+      const { key, ns } = uri.parts;
       await this.fireChanged({
         uri: e.uri,
-        to: e.data as t.ICellData,
+        to: e.data,
         fetch: async () => (await this.fetch.getCells({ ns, query: `${key}:${key}` }))[key],
       });
-    }
-    if (type === 'ROW') {
-      // const { key, ns } = uri.parts as t.IRowUri;
-      // console.log('key', key);
-      // await this.fireChanged({
-      //   uri: e.uri,
-      //   to: e.data as t.IRowData,
-      //   fetch: async () => (await this.fetch.getRows({ ns, query: `${key}:${key}` }))[key],
-      // });
     }
   }
 }

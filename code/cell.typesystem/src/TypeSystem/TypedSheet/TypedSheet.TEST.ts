@@ -355,7 +355,7 @@ describe.only('TypedSheet', () => {
   });
 
   describe.only('state', () => {
-    it('hangs of sheet', async () => {
+    it('exposed from sheet', async () => {
       const { sheet } = await testSheet();
       expect(sheet.state).to.be.an.instanceof(TypedSheetState);
     });
@@ -423,24 +423,6 @@ describe.only('TypedSheet', () => {
         await time.wait(1);
         expect(list.length).to.eql(2);
       });
-
-      it.skip('change: row', async () => {
-        const { sheet, events$ } = await testSheet();
-        expect(sheet.state.changes).to.eql({});
-
-        events$.next({
-          type: 'SHEET/change',
-          payload: { uri: 'cell:foo:1', data: { props: { height: 99 } } },
-        });
-        await time.wait(1);
-
-        const change = sheet.state.changes['cell:foo:1'];
-
-        console.log('-------------------------------------------');
-        console.log('change', change);
-      });
-
-      it.skip('change: column', async () => {});
     });
   });
 });

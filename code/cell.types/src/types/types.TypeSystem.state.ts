@@ -13,8 +13,7 @@ export type ITypedSheetState<T> = {
 /**
  * Represents a single change within a sheet.
  */
-type Data = t.ICellData | t.IRowData | t.IColumnData;
-export type ITypedSheetStateChange<D extends Data = Data> = {
+export type ITypedSheetStateChange<D extends t.ICellData = t.ICellData> = {
   uri: string;
   from: D;
   to: D;
