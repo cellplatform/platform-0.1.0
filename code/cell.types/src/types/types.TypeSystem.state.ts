@@ -6,7 +6,7 @@ import { t } from '../common';
 export type ITypedSheetState<T> = {
   readonly fetch: t.ISheetFetcher;
   readonly change$: t.Observable<t.ITypedSheetChange>;
-  readonly changed$: t.Observable<t.ITypedSheetStateChange>;
+  readonly changed$: t.Observable<t.ITypedSheetChanged>;
   readonly changes: ITypedSheetStateChanges;
   readonly hasChanges: boolean;
 };

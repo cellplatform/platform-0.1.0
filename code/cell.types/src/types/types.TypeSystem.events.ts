@@ -19,5 +19,9 @@ export type ITypedSheetChange = {
 
 export type ITypedSheetChangedEvent = {
   type: 'SHEET/changed';
-  payload: t.ITypedSheetStateChange;
+  payload: t.ITypedSheetChanged;
+};
+export type ITypedSheetChanged = {
+  change: t.ITypedSheetStateChange;
+  changes: t.ITypedSheetStateChanges;
 };

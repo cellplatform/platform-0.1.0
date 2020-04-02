@@ -22,13 +22,28 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
    * [Lifecycle]
    */
   private constructor(args: IStateArgs) {
-    this.fetch = TypeCache.fetch(args.fetch, { cache: args.cache });
+    const fetch = TypeCache.fetch(args.fetch, { cache: args.cache });
 
-    /**
-     * TODO 🐷
-     * - wrap fetch in such a way that it checkes for "changes.to" before calling the network
-     */
+    // INTERCEPT: Return an pending changes to cells from the fetch method.
+    const getCells: t.FetchSheetCells = async args => {
+      const res = await fetch.getCells(args);
+      const changes = this._changes;
+      const uris = Object.keys(changes);
+      if (uris.length > 0) {
+        res.cells = { ...res.cells };
+        uris.forEach(item => {
+          const uri = Uri.parse<t.ICellUri>(item);
+          const { key } = uri.parts;
+          if (uri.type === 'CELL' && res.cells[key]) {
+            const change = changes[item];
+            res.cells[key] = { ...change.to };
+          }
+        });
+      }
+      return res;
+    };
 
+    this.fetch = { ...fetch, getCells };
     this._events$ = args.events$;
     this.events$ = this._events$.asObservable().pipe(takeUntil(this._dispose$), share());
 
@@ -39,7 +54,7 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
 
     this.changed$ = this.events$.pipe(
       filter(e => e.type === 'SHEET/changed'),
-      map(e => e.payload as t.ITypedSheetStateChange),
+      map(e => e.payload as t.ITypedSheetChanged),
     );
 
     this.change$.subscribe(e => this.onChange(e));
@@ -63,7 +78,7 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
   private readonly events$: t.Observable<t.TypedSheetEvent>;
 
   public readonly change$: t.Observable<t.ITypedSheetChange>;
-  public readonly changed$: t.Observable<t.ITypedSheetStateChange>;
+  public readonly changed$: t.Observable<t.ITypedSheetChanged>;
 
   /**
    * [Properties]
@@ -97,8 +112,10 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
 
     const from = (existing ? existing.from : await args.fetch()) || {};
 
-    const payload: t.ITypedSheetStateChange = { uri, from, to };
-    this._changes = { ...this._changes, [uri]: payload };
+    const change: t.ITypedSheetStateChange = { uri, from, to };
+    this._changes = { ...this._changes, [uri]: change };
+
+    const payload: t.ITypedSheetChanged = { change, changes: this.changes };
     this.fire({ type: 'SHEET/changed', payload });
   }
 
@@ -113,7 +130,11 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
       await this.fireChanged({
         uri: e.uri,
         to: e.data,
-        fetch: async () => (await this.fetch.getCells({ ns, query: `${key}:${key}` }))[key],
+        fetch: async () => {
+          const query = `${key}:${key}`;
+          const res = await this.fetch.getCells({ ns, query });
+          return res.cells[key];
+        },
       });
     }
   }

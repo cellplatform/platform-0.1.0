@@ -382,12 +382,13 @@ describe.only('TypedSheet', () => {
         expect(sheet.state.changes).to.eql({});
       });
 
-      it('change: cell', async () => {
+      it('change: cell (existing value)', async () => {
         const { sheet, events$ } = await testSheet();
-        expect(sheet.state.changes).to.eql({});
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
 
-        const list: t.ITypedSheetStateChange[] = [];
-        sheet.state.changed$.subscribe(e => list.push(e));
+        const list: t.ITypedSheetChanged[] = [];
+        state.changed$.subscribe(e => list.push(e));
 
         events$.next({
           type: 'SHEET/change',
@@ -395,13 +396,14 @@ describe.only('TypedSheet', () => {
         });
         await time.wait(1);
 
-        const change1 = sheet.state.changes['cell:foo:A1'];
+        const change1 = state.changes['cell:foo:A1'];
         expect(change1.uri).to.eql('cell:foo:A1');
-        expect(change1.from).to.eql({});
+        expect(change1.from).to.eql({ value: 'One' });
         expect(change1.to).to.eql({ value: 123 });
 
         expect(list.length).to.eql(1);
-        expect(list[0]).to.eql(change1);
+        expect(list[0].change).to.eql(change1);
+        expect(list[0].changes).to.eql(state.changes);
 
         // Retains original [from] value on second change (prior to purge).
         events$.next({
@@ -410,8 +412,8 @@ describe.only('TypedSheet', () => {
         });
         await time.wait(1);
 
-        const change2 = sheet.state.changes['cell:foo:A1'];
-        expect(change2.from).to.eql({});
+        const change2 = state.changes['cell:foo:A1'];
+        expect(change1.from).to.eql({ value: 'One' });
         expect(change2.to).to.eql({ value: 456 });
 
         // Does not fire changed event if no change.
@@ -424,9 +426,27 @@ describe.only('TypedSheet', () => {
         expect(list.length).to.eql(2);
       });
 
+      it('change: cell (no prior value)', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { uri: 'cell:foo:A99', data: { value: 123 } },
+        });
+        await time.wait(1);
+
+        const change = state.changes['cell:foo:A99'];
+        expect(change.uri).to.eql('cell:foo:A99');
+        expect(change.from).to.eql({});
+        expect(change.to).to.eql({ value: 123 });
+      });
+
       it('hasChanges', async () => {
         const { sheet, events$ } = await testSheet();
-        expect(sheet.state.hasChanges).to.eql(false);
+        const state = sheet.state;
+        expect(state.hasChanges).to.eql(false);
 
         events$.next({
           type: 'SHEET/change',
@@ -434,7 +454,31 @@ describe.only('TypedSheet', () => {
         });
 
         await time.wait(1);
-        expect(sheet.state.hasChanges).to.eql(true);
+        expect(state.hasChanges).to.eql(true);
+      });
+
+      it('retrieves pending change from [fetch]', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        const fetch = state.fetch;
+
+        const get = async (key: string) => {
+          const res = await fetch.getCells({ ns: 'foo', query: `${key}:${key}` });
+          return res.cells[key];
+        };
+
+        const res1 = await get('A1');
+        expect(res1).to.eql({ value: 'One' });
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { uri: 'cell:foo:A1', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+
+        const res2 = await get('A1');
+        expect(res2).to.eql({ value: 123 }); // NB: Overridden response (the pending change).
       });
     });
   });
