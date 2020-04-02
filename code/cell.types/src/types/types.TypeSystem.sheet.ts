@@ -4,6 +4,7 @@ export type ITypedSheet<T> = {
   readonly ok: boolean;
   readonly uri: t.INsUri;
   readonly types: t.IColumnTypeDef[];
+  readonly state: ITypedSheetState<T>;
   readonly events$: t.Observable<t.TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;
@@ -15,7 +16,9 @@ export type ITypedSheet<T> = {
 /**
  * State machine for a sheet.
  */
-export type ITypedSheetState<T> = {};
+export type ITypedSheetState<T> = {
+  readonly events$: t.Observable<t.TypedSheetEvent>;
+};
 
 /**
  * A cursor into a subset of sheet data.

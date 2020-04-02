@@ -1,11 +1,9 @@
-import { Observable, Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { defaultValue, ERROR, ErrorList, MemoryCache, Uri } from '../../common';
+import { defaultValue, ERROR, ErrorList, MemoryCache, Uri, t, util } from './common';
 import { TypeClient } from '../TypeClient';
-import { util } from '../util';
 import { TypedSheetCursor } from './TypedSheetCursor';
-import * as t from './types';
+import { TypedSheetState } from './TypedSheetState';
 
 const fromClient = (client: t.IHttpClient) => {
   const fetch = util.fetcher.fromClient(client);
@@ -93,7 +91,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   }) {
     const fetch = args.fetch;
     const cache = args.cache || MemoryCache.create();
-    const events$ = args.events$ || new Subject<t.TypedSheetEvent>();
+    const events$ = args.events$ || new t.Subject<t.TypedSheetEvent>();
 
     this.ctx = {
       fetch,
@@ -112,6 +110,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     this.uri = util.formatNsUri(args.sheetNs);
     this.typeDef = args.typeDef;
     this.events$ = this.ctx.events$.asObservable().pipe(takeUntil(this._dispose$), share());
+    this.state = TypedSheetState.create({ events$: this.events$ });
     this.errorList = ErrorList.create({
       defaultType: ERROR.TYPE.SHEET,
       errors: this.typeDef.errors,
@@ -129,13 +128,12 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   private readonly ctx: t.SheetCtx;
   private readonly typeDef: t.INsTypeDef;
   private readonly errorList: ErrorList;
+  private readonly _dispose$ = new t.Subject<{}>();
 
   public readonly uri: t.INsUri;
-
-  private readonly _dispose$ = new Subject<{}>();
+  public readonly state: t.ITypedSheetState<T>;
   public readonly dispose$ = this._dispose$.asObservable();
-
-  public readonly events$: Observable<t.TypedSheetEvent>;
+  public readonly events$: t.Observable<t.TypedSheetEvent>;
 
   /**
    * [Properties]

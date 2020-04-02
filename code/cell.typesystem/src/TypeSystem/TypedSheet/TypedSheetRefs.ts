@@ -1,5 +1,4 @@
-import * as t from './types';
-import { Uri } from '../../common';
+import { t, Uri } from './common';
 
 export type IRefsArgs = {
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
@@ -28,8 +27,6 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRef<T> {
     if (this.ns.type !== 'NS') {
       throw new Error(`Not a namespace URI (${this.ns.toString()})`);
     }
-
-
 
     console.log('-------------------------------------------');
     console.log('args.typeDef', args.typeDef);

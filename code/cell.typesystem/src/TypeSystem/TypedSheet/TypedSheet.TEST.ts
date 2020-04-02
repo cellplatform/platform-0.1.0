@@ -8,6 +8,7 @@ import { ERROR, expect, testInstanceFetch, TYPE_DEFS, t } from '../../test';
 import { TypeSystem } from '..';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
+import { TypedSheetState } from './TypedSheetState';
 
 /**
  * TODO 🐷 Features
@@ -21,6 +22,11 @@ import { TypedSheetRefs } from './TypedSheetRefs';
 describe('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
+
+  it('create', async () => {
+    const { sheet } = await testSheet();
+    expect(sheet.state).to.be.an.instanceof(TypedSheetState);
+  });
 
   describe('errors', () => {
     it('error: 404 instance namespace "type.implements" reference not found', async () => {

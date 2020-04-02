@@ -1,4 +1,4 @@
-export { Subject } from 'rxjs';
+export { Subject, Observable } from 'rxjs';
 export { IMemoryCache } from '@platform/cache/lib/types';
 export { IFs } from '@platform/fs.types';
 export { Json } from '@platform/types';
