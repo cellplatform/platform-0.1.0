@@ -12,13 +12,14 @@ export type ITypedSheetState<T> = {
   readonly changes: ITypedSheetStateChanges;
   readonly hasChanges: boolean;
   getCell(key: string): Promise<t.ICellData | undefined>;
+  revert(): void;
 };
 
 /**
  * Represents a single change within a sheet.
  */
 export type ITypedSheetStateChange<D extends t.ICellData = t.ICellData> = {
-  uri: string;
+  cell: string; // URI
   from: D;
   to: D;
 };

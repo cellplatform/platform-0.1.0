@@ -1,7 +1,7 @@
 import { expect, testFetch, TYPE_DEFS, MemoryCache } from '../../test';
 import { TypeCache } from '.';
 
-describe('Cache', () => {
+describe('TypeCache', () => {
   describe('fetch', () => {
     it('new instance (no cache provided)', () => {
       const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));

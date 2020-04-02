@@ -1,11 +1,18 @@
+import { TypeSystem } from '..';
+import {
+  ERROR,
+  expect,
+  expectError,
+  Subject,
+  t,
+  testInstanceFetch,
+  time,
+  TYPE_DEFS,
+} from '../../test';
 import * as f from '../../test/.d.ts/foo';
-import * as p from '../../test/.d.ts/foo.primitives';
-import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
 import * as m from '../../test/.d.ts/foo.messages';
-
-import { ERROR, expect, testInstanceFetch, TYPE_DEFS, t, Subject, time } from '../../test';
-import { TypeSystem } from '..';
+import * as p from '../../test/.d.ts/foo.primitives';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 import { TypedSheetState } from './TypedSheetState';
@@ -22,6 +29,19 @@ import { TypedSheetState } from './TypedSheetState';
 describe.only('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
+
+  describe('lifecycle', () => {
+    it('dispose', async () => {
+      const { sheet } = await testSheet();
+      expect(sheet.isDisposed).to.eql(false);
+      expect(sheet.state.isDisposed).to.eql(false);
+
+      sheet.dispose();
+
+      expect(sheet.isDisposed).to.eql(true);
+      expect(sheet.state.isDisposed).to.eql(true);
+    });
+  });
 
   describe('errors', () => {
     it('error: 404 instance namespace "type.implements" reference not found', async () => {
@@ -358,8 +378,8 @@ describe.only('TypedSheet', () => {
     it('exposed from sheet', async () => {
       const { sheet } = await testSheet();
       const state = sheet.state;
-      expect(state).to.be.an.instanceof(TypedSheetState);
       expect(state.uri).to.eql(sheet.uri);
+      expect(state).to.be.an.instanceof(TypedSheetState);
     });
 
     describe('getCell', () => {
@@ -382,12 +402,12 @@ describe.only('TypedSheet', () => {
         await state.getCell('A1');
         expect(fetch.getCellsCount).to.eql(1); // NB: no change - cached.
       });
-    });
 
-    describe('cache/revert', () => {
-      it.skip('clears cache (retains other items in cache)', async () => {});
-
-      it.skip('reverts changes', async () => {});
+      it('throw: invalid key', async () => {
+        const { sheet } = await testSheet();
+        const state = sheet.state;
+        expectError(async () => state.getCell('A'), 'Expected a cell key (eg "A1")');
+      });
     });
 
     describe('ignores (no change)', () => {
@@ -398,7 +418,7 @@ describe.only('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo.BAR:A1', data: { value: 123 } },
+          payload: { cell: 'cell:foo.BAR:A1', data: { value: 123 } },
         });
 
         await time.wait(1);
@@ -412,7 +432,7 @@ describe.only('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'file:foo:abc', data: { value: 123 } },
+          payload: { cell: 'file:foo:abc', data: { value: 123 } },
         });
 
         await time.wait(1);
@@ -426,11 +446,26 @@ describe.only('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo.mySheet:A-1', data: { value: 123 } }, // NB: invalid URI
+          payload: { cell: 'cell:foo.mySheet:A-1', data: { value: 123 } }, // NB: invalid URI
         });
 
         await time.wait(1);
         expect(state.changes).to.eql({});
+      });
+
+      it('disposed: no change', async () => {
+        const { sheet, events$ } = await testSheet();
+        expect(sheet.state.changes).to.eql({});
+
+        sheet.dispose();
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+        expect(sheet.state.changes).to.eql({});
       });
     });
 
@@ -450,48 +485,34 @@ describe.only('TypedSheet', () => {
         expect(res1).to.not.equal(res2); // NB: Different instance.
       });
 
-      it('does not change when disposed', async () => {
-        const { sheet, events$ } = await testSheet();
-        expect(sheet.state.changes).to.eql({});
-
-        sheet.dispose();
-
-        events$.next({
-          type: 'SHEET/change',
-          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 123 } },
-        });
-
-        await time.wait(1);
-        expect(sheet.state.changes).to.eql({});
-      });
-
       it('change: cell (existing value)', async () => {
         const { sheet, events$ } = await testSheet();
         const state = sheet.state;
         expect(state.changes).to.eql({});
 
-        const list: t.ITypedSheetChanged[] = [];
-        state.changed$.subscribe(e => list.push(e));
+        const fired: t.ITypedSheetChanged[] = [];
+        state.changed$.subscribe(e => fired.push(e));
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 123 } },
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
         });
         await time.wait(1);
 
         const change1 = state.changes.A1;
-        expect(change1.uri).to.eql('cell:foo.mySheet:A1');
+        expect(change1.cell).to.eql('cell:foo.mySheet:A1');
         expect(change1.from).to.eql({ value: 'One' });
         expect(change1.to).to.eql({ value: 123 });
 
-        expect(list.length).to.eql(1);
-        expect(list[0].change).to.eql(change1);
-        expect(list[0].changes).to.eql(state.changes);
+        expect(fired.length).to.eql(1);
+        expect(fired[0].change).to.eql(change1);
+        expect(fired[0].changes).to.eql(state.changes);
+        expect(fired[0].ns).to.eql('ns:foo.mySheet');
 
         // Retains original [from] value on second change (prior to purge).
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 456 } },
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 456 } },
         });
         await time.wait(1);
 
@@ -500,13 +521,13 @@ describe.only('TypedSheet', () => {
         expect(change2.to).to.eql({ value: 456 });
 
         // Does not fire changed event if no change.
-        expect(list.length).to.eql(2);
+        expect(fired.length).to.eql(2);
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 456 } },
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 456 } },
         });
         await time.wait(1);
-        expect(list.length).to.eql(2);
+        expect(fired.length).to.eql(2);
       });
 
       it('change: cell (no prior value)', async () => {
@@ -516,12 +537,12 @@ describe.only('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo.mySheet:A99', data: { value: 123 } },
+          payload: { cell: 'cell:foo.mySheet:A99', data: { value: 123 } },
         });
         await time.wait(1);
 
         const change = state.changes.A99;
-        expect(change.uri).to.eql('cell:foo.mySheet:A99');
+        expect(change.cell).to.eql('cell:foo.mySheet:A99');
         expect(change.from).to.eql({});
         expect(change.to).to.eql({ value: 123 });
       });
@@ -533,7 +554,7 @@ describe.only('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 123 } },
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
         });
 
         await time.wait(1);
@@ -556,13 +577,50 @@ describe.only('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { uri: 'cell:foo.mySheet:A1', data: { value: 123 } },
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
         });
 
         await time.wait(1);
 
         const res2 = await get('A1');
         expect(res2).to.eql({ value: 123 }); // NB: Overridden response (the pending change).
+      });
+    });
+
+    describe('cache/revert', () => {
+      it('reverts changes', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(await state.getCell('A1')).to.eql({ value: 'One' }); // Original value.
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
+        });
+        await time.wait(1);
+
+        expect(state.hasChanges).to.eql(true);
+        const changes = state.changes;
+
+        expect(await state.getCell('A1')).to.eql({ value: 123 });
+
+        const fired: t.TypedSheetEvent[] = [];
+        sheet.events$.subscribe(e => fired.push(e));
+
+        state.revert();
+        expect(state.hasChanges).to.eql(false);
+        expect(state.changes).to.eql({});
+        expect(fired.length).to.eql(1);
+        expect(await state.getCell('A1')).to.eql({ value: 'One' });
+
+        const e = fired[0].payload as t.ITypedSheetReverted;
+        expect(e.ns).to.eql('ns:foo.mySheet');
+        expect(e.from).to.eql(changes);
+        expect(e.to).to.eql({});
+      });
+
+      it.skip('clears cache (retains other items in cache)', async () => {
+        //
       });
     });
   });
