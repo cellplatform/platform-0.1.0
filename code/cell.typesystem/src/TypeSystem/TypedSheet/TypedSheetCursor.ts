@@ -99,7 +99,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const maxRow = coord.cell.max.row(Object.keys(cells));
 
     // TEMP 🐷HACK - derive total rows to load from the index/take
-    console.log('maxRow', maxRow);
+    console.log('Cursor.Load :: maxRow', maxRow);
 
     const wait = Array.from({ length: 10 }).map((v, i) => {
       // console.log('i', i);
