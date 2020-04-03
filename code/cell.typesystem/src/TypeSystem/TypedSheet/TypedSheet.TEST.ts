@@ -31,7 +31,7 @@ import { util } from './common';
  * - read/write: linked sheet
  */
 
-describe('TypedSheet', () => {
+describe.only('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
 
@@ -127,7 +127,7 @@ describe('TypedSheet', () => {
     });
 
     describe('default value', () => {
-      it('simple: primitive | {object}', async () => {
+      it.only('simple: primitive | {object}', async () => {
         const { sheet } = await testSheetPrimitives();
         const cursor = await sheet.cursor();
 
@@ -479,13 +479,27 @@ describe('TypedSheet', () => {
     });
 
     describe('changes', () => {
-      it('has no changes (initial state)', async () => {
+      it('row.hasChanges', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.hasChanges).to.eql(false);
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+        expect(state.hasChanges).to.eql(true);
+      });
+
+      it('row.changes - initial state {empty}', async () => {
         const { sheet } = await testSheet();
         const state = sheet.state;
         expect(state.changes).to.eql({});
       });
 
-      it('changes new instance on each call', async () => {
+      it('row.changes: new instance on each call', async () => {
         const { sheet } = await testSheet();
         const state = sheet.state;
         const res1 = state.changes;
@@ -494,6 +508,33 @@ describe('TypedSheet', () => {
         expect(res1).to.not.equal(res2); // NB: Different instance.
       });
 
+      it('row.changes: pending change returned via [fetch]', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        const fetch = state.fetch;
+
+        const get = async (key: string) => {
+          const query = `${key}:${key}`;
+          const res = await fetch.getCells({ ns: 'foo', query });
+          return res.cells[key];
+        };
+
+        const res1 = await get('A1');
+        expect(res1).to.eql({ value: 'One' });
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+
+        const res2 = await get('A1');
+        expect(res2).to.eql({ value: 123 }); // NB: Overridden response (the pending change).
+      });
+    });
+
+    describe('change (via event)', () => {
       it('change: cell (existing value)', async () => {
         const { sheet, events$ } = await testSheet();
         const state = sheet.state;
@@ -555,45 +596,6 @@ describe('TypedSheet', () => {
         expect(change.from).to.eql({});
         expect(change.to).to.eql({ value: 123 });
       });
-
-      it('hasChanges', async () => {
-        const { sheet, events$ } = await testSheet();
-        const state = sheet.state;
-        expect(state.hasChanges).to.eql(false);
-
-        events$.next({
-          type: 'SHEET/change',
-          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
-        });
-
-        await time.wait(1);
-        expect(state.hasChanges).to.eql(true);
-      });
-
-      it('retrieves pending change from [fetch]', async () => {
-        const { sheet, events$ } = await testSheet();
-        const state = sheet.state;
-        const fetch = state.fetch;
-
-        const get = async (key: string) => {
-          const query = `${key}:${key}`;
-          const res = await fetch.getCells({ ns: 'foo', query });
-          return res.cells[key];
-        };
-
-        const res1 = await get('A1');
-        expect(res1).to.eql({ value: 'One' });
-
-        events$.next({
-          type: 'SHEET/change',
-          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
-        });
-
-        await time.wait(1);
-
-        const res2 = await get('A1');
-        expect(res2).to.eql({ value: 123 }); // NB: Overridden response (the pending change).
-      });
     });
 
     describe('cache/revert', () => {
@@ -628,7 +630,7 @@ describe('TypedSheet', () => {
         expect(e.to).to.eql({});
       });
 
-      it('clear cache (retains other items in cache)', async () => {
+      it('clear cache (retain other items in cache)', async () => {
         const { sheet, fetch } = await testSheet();
         const state = sheet.state;
         const cache = state.fetch.cache;

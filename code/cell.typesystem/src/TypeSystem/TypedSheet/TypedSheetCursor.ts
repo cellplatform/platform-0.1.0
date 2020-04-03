@@ -91,10 +91,10 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     // Set total.
     this.total = total.rows;
 
-    // console.log('this.total', this.total);
-    // console.log('query', query);
-    // console.log('this.index', this.index);
-    // console.log('this.take', this.take);
+    console.log('this.total', this.total);
+    console.log('query', query);
+    console.log('this.index', this.index);
+    console.log('this.take', this.take);
 
     const maxRow = coord.cell.max.row(Object.keys(cells));
 
