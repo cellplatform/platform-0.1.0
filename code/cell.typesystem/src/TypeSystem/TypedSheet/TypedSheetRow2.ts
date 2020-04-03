@@ -1,6 +1,6 @@
 import { TypeDefault } from '../TypeDefault';
 import { TypeTarget } from '../TypeTarget';
-import { Schema, t, util } from './common';
+import { Schema, t, util, Uri } from './common';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 
@@ -41,6 +41,7 @@ export class TypedSheetRow2<T> implements t.ITypedSheetRow<T> {
   private _props: t.ITypedSheetRowProps<T>;
   private _types: t.ITypedSheetRowTypes<T>;
   private _data: { [column: string]: t.ICellData } = {};
+  private _status: t.ITypedSheetRow<T>['status'] = 'INIT';
 
   public readonly index: number;
   public readonly uri: t.IRowUri;
@@ -48,6 +49,14 @@ export class TypedSheetRow2<T> implements t.ITypedSheetRow<T> {
   /**
    * [Properties]
    */
+  public get status() {
+    return this._status;
+  }
+
+  public get isLoaded() {
+    return this._status === 'LOADED';
+  }
+
   public get types() {
     if (!this._types) {
       type M = t.ITypedSheetRowTypes<T>['map'];
@@ -89,16 +98,28 @@ export class TypedSheetRow2<T> implements t.ITypedSheetRow<T> {
    * Methods
    */
 
-  public async load() {
+  public async load(options: { props?: (keyof T)[]; force?: boolean } = {}) {
+    this._status = 'LOADING';
+    const { props, force } = options;
+
+    if (this.isLoaded && !force) {
+      return this;
+    }
+
     const ns = this.uri.ns;
     const query = `${this.uri.key}:${this.uri.key}`;
+
     await Promise.all(
-      this._columns.map(async typeDef => {
-        const res = await this.ctx.fetch.getCells({ ns, query });
-        const key = `${typeDef.column}${this.index + 1}`;
-        this._data[typeDef.column] = res.cells[key] || {};
-      }),
+      this._columns
+        .filter(columnDef => (!props ? true : props.includes(columnDef.prop as keyof T)))
+        .map(async columnDef => {
+          const res = await this.ctx.fetch.getCells({ ns, query });
+          const key = `${columnDef.column}${this.index + 1}`;
+          this.setData(columnDef, res.cells[key] || {});
+        }),
     );
+
+    this._status = 'LOADED';
     return this;
   }
 
@@ -197,20 +218,23 @@ export class TypedSheetRow2<T> implements t.ITypedSheetRow<T> {
        */
       set(value: T[K]) {
         if (target.isInline) {
-          // TODO 🐷 uncomment
-          /**
-           * TODO 🐷
-           * - fire change event (to state)
-           * - re-load given key
-           */
-          // const key = columnDef.column
-          // const cell = self._data[key] || {};
-          // const data = value as any;
-          // column.cell = TypeTarget.inline(column).write({ cell, data });
+          const cell = self._data[columnDef.column] || {};
+          const data = TypeTarget.inline(columnDef).write({ cell, data: value as any });
+
+          // [LATENCY COMPENSATION]
+          //    Update local state immediately.
+          //    NB: This means reads to the property are immedately available with the new
+          //        value, as the global state will be updated after an async tick.
+          self.setData(columnDef, data);
+
+          // Fire global state update.
+          self.fireChange(columnDef, data);
         }
 
         if (target.isRef) {
           // TODO 🐷
+          // I think we can just throw an error here, because you should not be able to
+          // set a REF.  It's all handed within the [TypedSheetRef] wrapper objects.
         }
 
         return self;
@@ -239,5 +263,18 @@ export class TypedSheetRow2<T> implements t.ITypedSheetRow<T> {
       throw new Error(err);
     }
     return res;
+  }
+
+  private fireChange(columnDef: t.IColumnTypeDef, data: t.ICellData) {
+    const key = `${columnDef.column}${this.index + 1}`;
+    const uri = Uri.create.cell(this.uri.ns, key);
+    this.ctx.events$.next({
+      type: 'SHEET/change',
+      payload: { cell: uri, data },
+    });
+  }
+
+  private setData(columnDef: t.IColumnTypeDef, data: t.ICellData) {
+    this._data[columnDef.column] = data;
   }
 }

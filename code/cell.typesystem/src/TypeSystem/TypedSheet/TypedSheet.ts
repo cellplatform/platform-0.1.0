@@ -182,8 +182,9 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   }
 
   /**
-   * [Internal]
+   * [INTERNAL]
    */
+
   private throwIfDisposed(action: string) {
     if (this.isDisposed) {
       throw new Error(`Cannot ${action} because [TypedSheet] is disposed.`);

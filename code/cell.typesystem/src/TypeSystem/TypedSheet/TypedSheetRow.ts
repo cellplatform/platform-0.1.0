@@ -46,6 +46,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   public readonly index: number;
   public readonly uri: t.IRowUri;
 
+  public readonly status: 'INIT';
+  public readonly isLoaded: true;
+
   /**
    * [Properties]
    */

@@ -1,4 +1,4 @@
-import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { filter, map, share, takeUntil, tap } from 'rxjs/operators';
 
 import { TypeCache } from '../TypeCache';
 import { R, Schema, t, Uri } from './common';
@@ -59,7 +59,9 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
         filter(({ uri }) => uri.ok && uri.type === 'CELL' && uri.parts.ns === this.uri.id),
         map(e => ({ ...e, uri: e.uri.parts })),
       )
-      .subscribe(({ uri, to }) => this.fireChanged({ uri, to }));
+      .subscribe(({ uri, to }) => {
+        this.fireChanged({ uri, to });
+      });
   }
 
   public dispose() {
@@ -136,7 +138,7 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
   }
 
   /**
-   * [Internal]
+   * [INTERNAL]
    */
   private fire(e: t.TypedSheetEvent) {
     this._events$.next(e);

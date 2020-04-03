@@ -23,8 +23,8 @@ export type ITypedSheetCursor<T> = {
   readonly take?: number;
   readonly total: number;
   readonly rows: ITypedSheetRow<T>[];
-  exists(rowIndex: number): boolean;
-  row(rowIndex: number): ITypedSheetRow<T>;
+  exists(index: number): boolean;
+  row(index: number): ITypedSheetRow<T>;
 };
 
 /**
@@ -35,7 +35,9 @@ export type ITypedSheetRow<T> = {
   readonly index: number;
   readonly props: ITypedSheetRowProps<T>;
   readonly types: ITypedSheetRowTypes<T>;
-  load(): Promise<ITypedSheetRow<T>>;
+  readonly status: 'INIT' | 'LOADING' | 'LOADED';
+  readonly isLoaded: boolean;
+  load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
   prop<K extends keyof T>(name: K): ITypedSheetRowProp<T, K>;
   toObject(): T;
 };

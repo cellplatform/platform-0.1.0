@@ -31,7 +31,7 @@ import { util } from './common';
  * - read/write: linked sheet
  */
 
-describe.only('TypedSheet', () => {
+describe('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
 
@@ -183,7 +183,11 @@ describe.only('TypedSheet', () => {
         const prop = cursor.row(0).prop('stringValue');
 
         prop.set('');
-        expect(prop.get()).to.eql('');
+        expect(prop.get()).to.eql(''); // NB: Immediate
+
+        expect(await sheet.state.getCell('A1')).to.eql({ value: 'hello value' }); // NB: Fetch-cache still has the old value.
+        await time.wait(1);
+        expect(await sheet.state.getCell('A1')).to.eql({ value: '' }); // NB: and not the fetch-cache is updated.
 
         prop.set(' ');
         expect(prop.get()).to.eql(' ');
@@ -669,6 +673,10 @@ describe.only('TypedSheet', () => {
       const { row, ns } = await testRow('cell:foo:1');
       expect(row.uri.toString()).to.eql('cell:foo:1');
       expect(row.index).to.eql(0);
+
+      expect(row.isLoaded).to.eql(false);
+      expect(row.status).to.eql('INIT');
+
       expect(row.types.list).to.eql(ns.columns);
       expect(row.types.map.title.column).to.eql('A');
 
@@ -681,8 +689,18 @@ describe.only('TypedSheet', () => {
 
       expect(row.props.title).to.eql('Untitled'); // Default value.
       expect(row.props.isEnabled).to.eql(undefined);
+      expect(row.isLoaded).to.eql(false);
+      expect(row.status).to.eql('INIT');
 
-      await row.load();
+      const res = row.load();
+
+      expect(row.isLoaded).to.eql(false);
+      expect(row.status).to.eql('LOADING');
+
+      await res;
+
+      expect(row.isLoaded).to.eql(true);
+      expect(row.status).to.eql('LOADED');
 
       expect(row.props.title).to.eql('One');
       expect(row.props.isEnabled).to.eql(true);
@@ -696,6 +714,17 @@ describe.only('TypedSheet', () => {
 
       expect(row.props.title).to.eql('One');
       expect(row.props.isEnabled).to.eql(true);
+    });
+
+    it('load (subset of props)', async () => {
+      const { row } = await testRow('cell:foo:1');
+      expect(row.props.title).to.eql('Untitled'); // Default value.
+      expect(row.props.isEnabled).to.eql(undefined);
+
+      await row.load({ props: ['title'] });
+
+      expect(row.props.title).to.eql('One');
+      expect(row.props.isEnabled).to.eql(undefined);
     });
   });
 });

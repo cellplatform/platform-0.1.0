@@ -60,7 +60,7 @@ export async function load(args: {
 async function loadNs(args: { level: number; ns: string; ctx: Context }): Promise<t.INsTypeDef> {
   const { level, ctx } = args;
   const { visited, cache, fetch, errors } = ctx;
-  const ns = formatNsUri(args.ns).toString();
+  const ns = formatNsUri(args.ns, { throw: false }).toString();
 
   // Cache.
   const cacheKey = toCacheKey(ns);

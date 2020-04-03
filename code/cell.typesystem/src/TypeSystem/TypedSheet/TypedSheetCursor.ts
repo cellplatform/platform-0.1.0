@@ -1,5 +1,6 @@
 import { coord, t, Uri, util } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
+import { TypedSheetRow2 } from './TypedSheetRow2';
 
 type TypedSheetCursorArgs = {
   ns: string | t.INsUri; // "ns:<uri>"
@@ -52,20 +53,20 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
   /**
    * [Methods]
    */
-  public exists(rowIndex: number) {
-    return Boolean(this.rows[rowIndex]);
+  public exists(index: number) {
+    return Boolean(this.rows[index]);
   }
 
-  public row(rowIndex: number): t.ITypedSheetRow<T> {
-    if (rowIndex < 0) {
+  public row(index: number): t.ITypedSheetRow<T> {
+    if (index < 0) {
       throw new Error(`Row index must be >=0`);
     }
 
-    if (!this.exists(rowIndex)) {
-      this.rows[rowIndex] = this.createRow({ rowIndex });
+    if (!this.exists(index)) {
+      this.rows[index] = this.createRow(index);
     }
 
-    return this.rows[rowIndex];
+    return this.rows[index];
   }
 
   public async load() {
@@ -73,8 +74,13 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const self = this as t.ITypedSheetCursor<T>;
     const types = this.types;
     if (types.length === 0) {
-      return self;
+      return this;
     }
+
+    /**
+     * TODO 🐷
+     * - take subset
+     */
 
     // Query cell data from the network.
     const query = `${types[0].column}:${types[types.length - 1].column}`;
@@ -86,60 +92,35 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     // Set total.
     this.total = total.rows;
 
-    // Extract the raw row-data from the retrieved cells and build this list of row items.
-    this.rows = this.toDataRows(cells).map(row => this.toRow({ row }));
+    // console.log('this.total', this.total);
+    // console.log('query', query);
+    // console.log('this.index', this.index);
+    // console.log('this.take', this.take);
+
+    const maxRow = coord.cell.max.row(Object.keys(cells));
+
+    // TEMP 🐷HACK - derive total rows to load from the index/take
+    console.log('maxRow', maxRow);
+
+    const wait = Array.from({ length: 10 }).map((v, i) => {
+      // console.log('i', i);
+      return this.row(i).load();
+    });
+
+    await Promise.all(wait);
 
     // Finish up.
     return self;
   }
 
   /**
-   * [Internal]
+   * [INTERNAL]
    */
 
-  private createRow(args: { rowIndex: number }) {
-    const { rowIndex } = args;
-    if (this.exists(rowIndex)) {
-      throw new Error(`A row at index ${rowIndex} already exists.`);
-    }
-
-    // Construct empty row data.
-    const row: RowData = [];
-    this.types.forEach(type => {
-      const key = `${type.column}${rowIndex + 1}`;
-      const column: ColumnData = { key, row: rowIndex, typeDef: type, cell: {} };
-      row.push(column);
-    });
-
-    // Create the new synthetic row model.
-    return this.toRow({ row });
-  }
-
-  private toRow(args: { row: RowData }): t.ITypedSheetRow<T> {
-    const { row } = args;
-    const ns = this.uri;
+  private createRow(index: number) {
+    const uri = Uri.create.row(this.uri.toString(), (index + 1).toString());
+    const columns = this.types;
     const ctx = this.ctx;
-    const index = row[0].row;
-    const uri = Uri.create.row(ns.toString(), (index + 1).toString());
-    const columns = row.map(({ cell, typeDef }) => ({ cell, typeDef }));
-    return TypedSheetRow.create<T>({ index, uri, columns, ctx });
-  }
-
-  private toDataRows(cells: t.ICellMap): RowData[] {
-    const types = this.types;
-    const rows: RowData[] = [];
-    Object.keys(cells).forEach(key => {
-      const cell = cells[key];
-      const pos = coord.cell.toCell(key);
-      const columnKey = coord.cell.toColumnKey(pos.column);
-      const typeDef = types.find(type => type.column === columnKey);
-      if (cell && typeDef) {
-        const row = pos.row;
-        const column: ColumnData = { key, row, typeDef, cell };
-        rows[row] = rows[row] || [];
-        rows[row].push(column);
-      }
-    });
-    return rows;
+    return TypedSheetRow2.create<T>({ uri, columns, ctx });
   }
 }
