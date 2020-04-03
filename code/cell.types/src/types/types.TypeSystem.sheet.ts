@@ -2,8 +2,9 @@ import { t } from '../common';
 
 export type ITypedSheet<T> = {
   readonly ok: boolean;
-  readonly uri: string;
+  readonly uri: t.INsUri;
   readonly types: t.IColumnTypeDef[];
+  readonly state: t.ITypedSheetState<T>;
   readonly events$: t.Observable<t.TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;
@@ -12,42 +13,49 @@ export type ITypedSheet<T> = {
   cursor(args?: ITypedSheetCursorArgs): Promise<ITypedSheetCursor<T>>;
 };
 
-export type ITypedSheetCursorArgs = { index?: number; take?: number };
-
 /**
  * A cursor into a subset of sheet data.
  */
+export type ITypedSheetCursorArgs = { index?: number; take?: number };
 export type ITypedSheetCursor<T> = {
-  readonly uri: string;
+  readonly uri: t.INsUri;
   readonly index: number;
   readonly take?: number;
   readonly total: number;
   readonly rows: ITypedSheetRow<T>[];
-  exists(rowIndex: number): boolean;
-  row(rowIndex: number): ITypedSheetRow<T>;
+  exists(index: number): boolean;
+  row(index: number): ITypedSheetRow<T>;
 };
 
 /**
  * A single row within a sheet.
  */
 export type ITypedSheetRow<T> = {
+  readonly uri: t.IRowUri;
   readonly index: number;
-  readonly uri: string;
   readonly props: ITypedSheetRowProps<T>;
   readonly types: ITypedSheetRowTypes<T>;
-  toObject(): T;
+  readonly status: 'INIT' | 'LOADING' | 'LOADED';
+  readonly isLoaded: boolean;
+  load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
   prop<K extends keyof T>(name: K): ITypedSheetRowProp<T, K>;
+  toObject(): T;
 };
 
 /**
  * A connector for a reference-pointer to a single row in another sheet.
  */
-export type ITypedSheetRef<T> = {};
+export type ITypedSheetRef<T> = {
+  typeDef: t.IColumnTypeDef<t.ITypeRef>;
+};
 
 /**
  * A connector for a reference-pointer to a set of rows in another sheet.
  */
-export type ITypedSheetRefs<T> = {};
+export type ITypedSheetRefs<T> = {
+  ns: t.INsUri;
+  typeDef: t.IColumnTypeDef<t.ITypeRef>;
+};
 
 /**
  * Read/write methods for the properties of a single row.

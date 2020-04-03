@@ -38,7 +38,7 @@ export type CellTypeProp = {
 export type CellType = string;
 
 /**
- * The target that the typed cell's data is written to.
+ * The target that a typed cell's data is written to.
  *
  * Formats:
  *      - "inline"                  => { value }

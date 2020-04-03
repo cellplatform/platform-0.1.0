@@ -23,6 +23,15 @@ export const testFetch = (data: {
     }
   };
 
+  const trimQuery = <T extends t.IMap>(data: T | undefined, query: string) => {
+    const range = coord.range.fromKey(query);
+    const result = { ...(data || {}) };
+    Object.keys(result)
+      .filter(key => !range.contains(key))
+      .forEach(key => delete result[key]);
+    return result;
+  };
+
   const getType: t.FetchSheetType = async args => {
     before('getType', args);
     const ns = data.defs[args.ns]?.ns;
@@ -42,8 +51,7 @@ export const testFetch = (data: {
 
   const getCells: t.FetchSheetCells = async args => {
     before('getCells', args);
-    const cells = data.cells || {};
-
+    const cells = trimQuery(data.cells, args.query);
     const rows = coord.cell.max.row(Object.keys(cells)) + 1;
     const total = { rows };
     res.getCellsCount++;

@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { deleteUndefined, ERROR, ErrorList, R, t, value as valueUtil, Uri } from '../../common';
-import { formatNs } from '../util';
+import { formatNsUri } from '../util';
 import { TypeCache } from '../TypeCache';
 import { TypeDefault } from '../TypeDefault';
 import { TypeValue } from '../TypeValue';
@@ -16,7 +16,7 @@ type Context = {
 };
 
 const toCacheKey = (uri: string, ...path: string[]) => {
-  return `TypeClient/${uri}${path.length === 0 ? '' : `/${path.join('/')}`}`;
+  return `TypeClient/${uri.toString()}${path.length === 0 ? '' : `/${path.join('/')}`}`;
 };
 
 /**
@@ -27,11 +27,11 @@ export async function load(args: {
   fetch: t.ISheetFetcher;
   cache?: t.IMemoryCache;
 }): Promise<t.INsTypeDef> {
-  const ns = formatNs(args.ns);
+  const ns = formatNsUri(args.ns, { throw: false }).toString();
 
   // Check cache (if an external cache was provided).
   if (args.cache) {
-    const key = toCacheKey(ns);
+    const key = toCacheKey(ns.toString());
     const value = args.cache.get(key);
     if (value instanceof Subject) {
       // NB: The load operation for the namespace currently in progress.
@@ -60,7 +60,7 @@ export async function load(args: {
 async function loadNs(args: { level: number; ns: string; ctx: Context }): Promise<t.INsTypeDef> {
   const { level, ctx } = args;
   const { visited, cache, fetch, errors } = ctx;
-  const ns = formatNs(args.ns);
+  const ns = formatNsUri(args.ns, { throw: false }).toString();
 
   // Cache.
   const cacheKey = toCacheKey(ns);

@@ -1,8 +1,25 @@
-import { expect, testFetch, TYPE_DEFS } from '../../test';
+import { expect, testFetch, TYPE_DEFS, MemoryCache } from '../../test';
 import { TypeCache } from '.';
 
-describe('Cache', () => {
+describe('TypeCache', () => {
   describe('fetch', () => {
+    it('new instance (no cache provided)', () => {
+      const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
+      expect(fetch.cache).to.be.an.instanceof(MemoryCache);
+    });
+
+    it('uses given cache', () => {
+      const cache = TypeCache.create();
+      const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }), { cache });
+      expect(fetch.cache).to.equal(cache);
+    });
+
+    it('does not double-wrap an existing cached fetcher', () => {
+      const fetch1 = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
+      const fetch2 = TypeCache.fetch(fetch1);
+      expect(fetch1).to.equal(fetch2); // NB: instance re-used.
+    });
+
     it('exists', async () => {
       const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
       const ns1 = 'ns:foo';

@@ -73,7 +73,7 @@ export const fetcher = {
 };
 
 /**
- * [Internal]
+ * [INTERNAL]
  */
 
 function formatError(error: t.IHttpError | undefined, getMessage: (message: string) => string) {

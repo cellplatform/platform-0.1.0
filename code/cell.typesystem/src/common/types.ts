@@ -1,5 +1,8 @@
-export { Subject } from 'rxjs';
-export { IMemoryCache } from '@platform/cache/lib/types';
+import * as t from '@platform/cell.types';
+import { IMemoryCache } from '@platform/cache/lib/types';
+
+export { IMemoryCache };
+export { Subject, Observable } from 'rxjs';
 export { IFs } from '@platform/fs.types';
 export { Json } from '@platform/types';
 
@@ -11,3 +14,11 @@ export type IPackage = {
   version: string;
   dependencies?: { [key: string]: string };
 };
+
+/**
+ * Cache
+ */
+type FetchMethod = 'getType' | 'getColumns' | 'getCells';
+export type CachedFetcher = t.ISheetFetcher & { cache: IMemoryCache; cacheKey: CacheFetchKey };
+export type CacheFetchKey = (method: FetchMethod, ns: string, ...path: string[]) => string;
+export type CacheDefaultValue = (uri: string) => string;

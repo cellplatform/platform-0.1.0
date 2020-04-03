@@ -93,7 +93,7 @@ describe('TypeSystem (on http server)', () => {
 
       const cursor = await sheet.cursor({ index: -5 }); // NB: min-index is 0.
 
-      expect(cursor.uri).to.eql(ns);
+      expect(cursor.uri.toString()).to.eql(ns);
       expect(cursor.index).to.eql(0);
 
       await mock.dispose();

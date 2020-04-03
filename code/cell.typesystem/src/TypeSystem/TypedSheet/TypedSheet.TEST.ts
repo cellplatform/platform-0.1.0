@@ -1,13 +1,25 @@
+import { TypeSystem } from '..';
+import {
+  ERROR,
+  expect,
+  expectError,
+  Subject,
+  t,
+  testInstanceFetch,
+  time,
+  TYPE_DEFS,
+} from '../../test';
 import * as f from '../../test/.d.ts/foo';
-import * as p from '../../test/.d.ts/foo.primitives';
-import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
 import * as m from '../../test/.d.ts/foo.messages';
-
-import { ERROR, expect, testInstanceFetch, TYPE_DEFS, t } from '../../test';
-import { TypeSystem } from '..';
+import * as p from '../../test/.d.ts/foo.primitives';
+import * as e from '../../test/.d.ts/foo.enum';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
+import { TypedSheetState } from './TypedSheetState';
+import { TypedSheetRow } from './TypedSheetRow';
+import { TypedSheet } from '.';
+import { TypeClient } from '../TypeClient';
 
 /**
  * TODO 🐷 Features
@@ -18,9 +30,30 @@ import { TypedSheetRefs } from './TypedSheetRefs';
  * - read/write: linked sheet
  */
 
-describe('TypedSheet', () => {
+describe.only('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
+
+  describe.only('lifecycle', () => {
+    it('dispose', async () => {
+      const { sheet } = await testSheet();
+
+      let fired = 0;
+      sheet.dispose$.subscribe(e => fired++);
+
+      expect(sheet.isDisposed).to.eql(false);
+      expect(sheet.state.isDisposed).to.eql(false);
+
+      sheet.dispose();
+      sheet.dispose();
+      sheet.dispose();
+
+      expect(sheet.isDisposed).to.eql(true);
+      expect(sheet.state.isDisposed).to.eql(true);
+
+      expect(fired).to.eql(1);
+    });
+  });
 
   describe('errors', () => {
     it('error: 404 instance namespace "type.implements" reference not found', async () => {
@@ -66,8 +99,7 @@ describe('TypedSheet', () => {
     it('toObject', async () => {
       const { sheet } = await testSheetEnum();
       const row = (await sheet.cursor()).row(0);
-      const res = await row.toObject();
-      expect(res).to.eql({
+      expect(row.toObject()).to.eql({
         single: 'hello',
         union: ['blue'],
         array: ['red', 'green', 'blue'],
@@ -101,7 +133,7 @@ describe('TypedSheet', () => {
     });
 
     describe('default value', () => {
-      it('simple: primitive | {object}', async () => {
+      it.only('simple: primitive | {object}', async () => {
         const { sheet } = await testSheetPrimitives();
         const cursor = await sheet.cursor();
 
@@ -157,7 +189,11 @@ describe('TypedSheet', () => {
         const prop = cursor.row(0).prop('stringValue');
 
         prop.set('');
-        expect(prop.get()).to.eql('');
+        expect(prop.get()).to.eql(''); // NB: Immediate
+
+        expect(await sheet.state.getCell('A1')).to.eql({ value: 'hello value' }); // NB: Fetch-cache still has the old value.
+        await time.wait(1);
+        expect(await sheet.state.getCell('A1')).to.eql({ value: '' }); // NB: and not the fetch-cache is updated.
 
         prop.set(' ');
         expect(prop.get()).to.eql(' ');
@@ -344,9 +380,360 @@ describe('TypedSheet', () => {
       });
     });
 
-    it.skip('dot into child object (synthetic read/write props)', () => {}); // tslint:disable-line
+    it.skip('query (paging: index/skip)', () => {
+      /**
+       * TODO 🐷
+       * - re-jig DB column to have row number before column
+       *   to allow for more effecent querying.
+       */
+    });
+  });
 
-    it.skip('query (paging: index/skip)', () => {}); // tslint:disable-line
+  describe('state', () => {
+    it('exposed from sheet', async () => {
+      const { sheet } = await testSheet();
+      const state = sheet.state;
+      expect(state.uri).to.eql(sheet.uri);
+      expect(state).to.be.an.instanceof(TypedSheetState);
+    });
+
+    describe('getCell', () => {
+      it('not found', async () => {
+        const { sheet } = await testSheet();
+        const state = sheet.state;
+        const res = await state.getCell('ZZ99');
+        expect(res).to.eql(undefined);
+      });
+
+      it('retrieve from fetch (then cache)', async () => {
+        const { sheet, fetch } = await testSheet();
+        const state = sheet.state;
+        expect(fetch.getCellsCount).to.eql(0);
+
+        const res = await state.getCell('A1');
+        expect(res).to.eql({ value: 'One' });
+        expect(fetch.getCellsCount).to.eql(1);
+
+        await state.getCell('A1');
+        expect(fetch.getCellsCount).to.eql(1); // NB: no change - cached.
+      });
+
+      it('throw: invalid key', async () => {
+        const { sheet } = await testSheet();
+        const state = sheet.state;
+        expectError(async () => state.getCell('A'), 'Expected a cell key (eg "A1")');
+      });
+    });
+
+    describe('ignores (no change)', () => {
+      it('ignores different namespace', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.BAR:A1', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+        expect(state.changes).to.eql({});
+      });
+
+      it('ignores non cell URIs', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'file:foo:abc', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+        expect(state.changes).to.eql({});
+      });
+
+      it('ignores invalid URIs', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A-1', data: { value: 123 } }, // NB: invalid URI
+        });
+
+        await time.wait(1);
+        expect(state.changes).to.eql({});
+      });
+
+      it('disposed: no change', async () => {
+        const { sheet, events$ } = await testSheet();
+        expect(sheet.state.changes).to.eql({});
+
+        sheet.dispose();
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+        expect(sheet.state.changes).to.eql({});
+      });
+    });
+
+    describe('changes', () => {
+      it('row.hasChanges', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.hasChanges).to.eql(false);
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+        expect(state.hasChanges).to.eql(true);
+      });
+
+      it('row.changes - initial state {empty}', async () => {
+        const { sheet } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+      });
+
+      it('row.changes: new instance on each call', async () => {
+        const { sheet } = await testSheet();
+        const state = sheet.state;
+        const res1 = state.changes;
+        const res2 = state.changes;
+        expect(res1).to.eql(res2);
+        expect(res1).to.not.equal(res2); // NB: Different instance.
+      });
+
+      it('row.changes: pending change returned via [fetch]', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        const fetch = state.fetch;
+
+        const get = async (key: string) => {
+          const query = `${key}:${key}`;
+          const res = await fetch.getCells({ ns: 'foo', query });
+          return res.cells[key];
+        };
+
+        const res1 = await get('A1');
+        expect(res1).to.eql({ value: 'One' });
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
+        });
+
+        await time.wait(1);
+
+        const res2 = await get('A1');
+        expect(res2).to.eql({ value: 123 }); // NB: Overridden response (the pending change).
+      });
+    });
+
+    describe('change (via event)', () => {
+      it('change: cell (existing value)', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+
+        const fired: t.ITypedSheetChanged[] = [];
+        state.changed$.subscribe(e => fired.push(e));
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
+        });
+        await time.wait(1);
+
+        const change1 = state.changes.A1;
+        expect(change1.cell).to.eql('cell:foo.mySheet:A1');
+        expect(change1.from).to.eql({ value: 'One' });
+        expect(change1.to).to.eql({ value: 123 });
+
+        expect(fired.length).to.eql(1);
+        expect(fired[0].change).to.eql(change1);
+        expect(fired[0].changes).to.eql(state.changes);
+        expect(fired[0].ns).to.eql('ns:foo.mySheet');
+
+        // Retains original [from] value on second change (prior to purge).
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 456 } },
+        });
+        await time.wait(1);
+
+        const change2 = state.changes.A1;
+        expect(change1.from).to.eql({ value: 'One' });
+        expect(change2.to).to.eql({ value: 456 });
+
+        // Does not fire changed event if no change.
+        expect(fired.length).to.eql(2);
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 456 } },
+        });
+        await time.wait(1);
+        expect(fired.length).to.eql(2);
+      });
+
+      it('change: cell (no prior value)', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A99', data: { value: 123 } },
+        });
+        await time.wait(1);
+
+        const change = state.changes.A99;
+        expect(change.cell).to.eql('cell:foo.mySheet:A99');
+        expect(change.from).to.eql({});
+        expect(change.to).to.eql({ value: 123 });
+      });
+    });
+
+    describe('cache/revert', () => {
+      it('revert changes', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(await state.getCell('A1')).to.eql({ value: 'One' }); // Original value.
+
+        events$.next({
+          type: 'SHEET/change',
+          payload: { cell: 'cell:foo.mySheet:A1', data: { value: 123 } },
+        });
+        await time.wait(1);
+
+        expect(state.hasChanges).to.eql(true);
+        const changes = state.changes;
+
+        expect(await state.getCell('A1')).to.eql({ value: 123 });
+
+        const fired: t.TypedSheetEvent[] = [];
+        sheet.events$.subscribe(e => fired.push(e));
+
+        state.revert();
+        expect(state.hasChanges).to.eql(false);
+        expect(state.changes).to.eql({});
+        expect(fired.length).to.eql(1);
+        expect(await state.getCell('A1')).to.eql({ value: 'One' }); // NB: retrieving original value after revert.
+
+        const e = fired[0].payload as t.ITypedSheetReverted;
+        expect(e.ns).to.eql('ns:foo.mySheet');
+        expect(e.from).to.eql(changes);
+        expect(e.to).to.eql({});
+      });
+
+      it('clear cache (retain other items in cache)', async () => {
+        const { sheet, fetch } = await testSheet();
+        const state = sheet.state;
+        const cache = state.fetch.cache;
+
+        expect(fetch.getCellsCount).to.eql(0);
+        expect(await state.getCell('A1')).to.eql({ value: 'One' }); // Original value.
+        expect(fetch.getCellsCount).to.eql(1);
+
+        await state.getCell('A1');
+        await state.getCell('A2');
+        expect(fetch.getCellsCount).to.eql(2);
+
+        cache.put('foo', 123);
+
+        state.clearCache();
+        expect(cache.keys).to.eql(['foo']); // NB: Retained non-cell key.
+
+        await state.getCell('A1');
+        expect(fetch.getCellsCount).to.eql(3); // NB: re-fetched.
+        await state.getCell('A1');
+        expect(fetch.getCellsCount).to.eql(3); // NB: and back in the cache!
+      });
+    });
+  });
+
+  describe('TypedSheetRow', () => {
+    const testRow = async (uri: string) => {
+      const ctx = TypedSheet.ctx({ fetch: await testFetchMySheet('ns:foo.mySheet') });
+      const ns = await TypeClient.load({ ns: 'ns:foo', fetch: ctx.fetch, cache: ctx.cache });
+      const columns = ns.columns;
+      const row = TypedSheetRow.create<f.MyRow>({ uri, columns, ctx });
+      return { row, ctx, ns };
+    };
+
+    it('throw: URI not a row', async () => {
+      expectError(async () => testRow('cell:foo:A1'));
+      expectError(async () => testRow('ns:foo'));
+      expectError(async () => testRow('file:foo:abc'));
+    });
+
+    it('create (not loaded)', async () => {
+      const { row, ns } = await testRow('cell:foo:1');
+      expect(row.uri.toString()).to.eql('cell:foo:1');
+      expect(row.index).to.eql(0);
+
+      expect(row.isLoaded).to.eql(false);
+      expect(row.status).to.eql('INIT');
+
+      expect(row.types.list).to.eql(ns.columns);
+      expect(row.types.map.title.column).to.eql('A');
+
+      expect(row.props.title).to.eql('Untitled'); // Default value.
+      expect(row.props.isEnabled).to.eql(undefined);
+    });
+
+    it('load', async () => {
+      const { row } = await testRow('cell:foo:1');
+
+      expect(row.props.title).to.eql('Untitled'); // Default value.
+      expect(row.props.isEnabled).to.eql(undefined);
+      expect(row.isLoaded).to.eql(false);
+      expect(row.status).to.eql('INIT');
+
+      const res = row.load();
+
+      expect(row.isLoaded).to.eql(false);
+      expect(row.status).to.eql('LOADING');
+
+      await res;
+
+      expect(row.isLoaded).to.eql(true);
+      expect(row.status).to.eql('LOADED');
+
+      expect(row.props.title).to.eql('One');
+      expect(row.props.isEnabled).to.eql(true);
+    });
+
+    it('load (static)', async () => {
+      const { ns, ctx } = await testRow('cell:foo:1');
+      const uri = 'cell:foo:1';
+      const columns = ns.columns;
+      const row = await TypedSheetRow.load<f.MyRow>({ uri, columns, ctx });
+
+      expect(row.props.title).to.eql('One');
+      expect(row.props.isEnabled).to.eql(true);
+    });
+
+    it('load (subset of props)', async () => {
+      const { row } = await testRow('cell:foo:1');
+      expect(row.props.title).to.eql('Untitled'); // Default value.
+      expect(row.props.isEnabled).to.eql(undefined);
+
+      await row.load({ props: ['title'] });
+
+      expect(row.props.title).to.eql('One');
+      expect(row.props.isEnabled).to.eql(undefined);
+    });
   });
 });
 
@@ -428,9 +815,10 @@ const testFetchMessages = (ns: string) => {
 
 const testSheet = async () => {
   const ns = 'ns:foo.mySheet';
+  const events$ = new Subject<t.TypedSheetEvent>();
   const fetch = await testFetchMySheet(ns);
-  const sheet = await TypeSystem.Sheet.load<f.MyRow>({ fetch, ns });
-  return { ns, fetch, sheet };
+  const sheet = await TypeSystem.Sheet.load<f.MyRow>({ fetch, ns, events$ });
+  return { ns, fetch, sheet, events$ };
 };
 
 const testSheetPrimitives = async () => {

@@ -1,5 +1,5 @@
-import { uniq, prop, sortBy } from 'ramda';
-export const R = { prop, uniq, sortBy };
+import { uniq, prop, sortBy, equals } from 'ramda';
+export const R = { prop, uniq, sortBy, equals };
 
 export { MemoryCache } from '@platform/cache';
 

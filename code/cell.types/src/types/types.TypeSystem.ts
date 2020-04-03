@@ -6,6 +6,7 @@ export * from './types.TypeSystem.def';
 export * from './types.TypeSystem.events';
 export * from './types.TypeSystem.fetch';
 export * from './types.TypeSystem.sheet';
+export * from './types.TypeSystem.state';
 
 /**
  * The type declaration for the namespace/sheet.
