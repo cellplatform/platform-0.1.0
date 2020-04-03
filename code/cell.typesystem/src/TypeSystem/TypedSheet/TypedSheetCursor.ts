@@ -1,6 +1,5 @@
 import { coord, t, Uri, util } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
-import { TypedSheetRow2 } from './TypedSheetRow2';
 
 type TypedSheetCursorArgs = {
   ns: string | t.INsUri; // "ns:<uri>"
@@ -121,6 +120,6 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const uri = Uri.create.row(this.uri.toString(), (index + 1).toString());
     const columns = this.types;
     const ctx = this.ctx;
-    return TypedSheetRow2.create<T>({ uri, columns, ctx });
+    return TypedSheetRow.create<T>({ uri, columns, ctx });
   }
 }

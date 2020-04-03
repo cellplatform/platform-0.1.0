@@ -17,7 +17,7 @@ import * as e from '../../test/.d.ts/foo.enum';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 import { TypedSheetState } from './TypedSheetState';
-import { TypedSheetRow2 } from './TypedSheetRow2';
+import { TypedSheetRow } from './TypedSheetRow';
 import { TypedSheet } from '.';
 import { TypeClient } from '../TypeClient';
 import { util } from './common';
@@ -659,7 +659,7 @@ describe('TypedSheet', () => {
       const ctx = TypedSheet.ctx({ fetch: await testFetchMySheet('ns:foo.mySheet') });
       const ns = await TypeClient.load({ ns: 'ns:foo', fetch: ctx.fetch, cache: ctx.cache });
       const columns = ns.columns;
-      const row = TypedSheetRow2.create<f.MyRow>({ uri, columns, ctx });
+      const row = TypedSheetRow.create<f.MyRow>({ uri, columns, ctx });
       return { row, ctx, ns };
     };
 
@@ -710,7 +710,7 @@ describe('TypedSheet', () => {
       const { ns, ctx } = await testRow('cell:foo:1');
       const uri = 'cell:foo:1';
       const columns = ns.columns;
-      const row = await TypedSheetRow2.load<f.MyRow>({ uri, columns, ctx });
+      const row = await TypedSheetRow.load<f.MyRow>({ uri, columns, ctx });
 
       expect(row.props.title).to.eql('One');
       expect(row.props.isEnabled).to.eql(true);
