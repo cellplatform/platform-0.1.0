@@ -20,7 +20,6 @@ import { TypedSheetState } from './TypedSheetState';
 import { TypedSheetRow } from './TypedSheetRow';
 import { TypedSheet } from '.';
 import { TypeClient } from '../TypeClient';
-import { util } from './common';
 
 /**
  * TODO 🐷 Features
@@ -35,16 +34,24 @@ describe.only('TypedSheet', () => {
   it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
   it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
 
-  describe('lifecycle', () => {
+  describe.only('lifecycle', () => {
     it('dispose', async () => {
       const { sheet } = await testSheet();
+
+      let fired = 0;
+      sheet.dispose$.subscribe(e => fired++);
+
       expect(sheet.isDisposed).to.eql(false);
       expect(sheet.state.isDisposed).to.eql(false);
 
       sheet.dispose();
+      sheet.dispose();
+      sheet.dispose();
 
       expect(sheet.isDisposed).to.eql(true);
       expect(sheet.state.isDisposed).to.eql(true);
+
+      expect(fired).to.eql(1);
     });
   });
 
@@ -92,8 +99,7 @@ describe.only('TypedSheet', () => {
     it('toObject', async () => {
       const { sheet } = await testSheetEnum();
       const row = (await sheet.cursor()).row(0);
-      const res = await row.toObject();
-      expect(res).to.eql({
+      expect(row.toObject()).to.eql({
         single: 'hello',
         union: ['blue'],
         array: ['red', 'green', 'blue'],
