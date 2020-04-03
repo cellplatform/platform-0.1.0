@@ -91,15 +91,15 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     // Set total.
     this.total = total.rows;
 
-    console.log('this.total', this.total);
-    console.log('query', query);
-    console.log('this.index', this.index);
-    console.log('this.take', this.take);
+    // console.log('this.total', this.total);
+    // console.log('query', query);
+    // console.log('this.index', this.index);
+    // console.log('this.take', this.take);
 
     const maxRow = coord.cell.max.row(Object.keys(cells));
 
     // TEMP 🐷HACK - derive total rows to load from the index/take
-    console.log('Cursor.Load :: maxRow', maxRow);
+    // console.log('Cursor.Load :: maxRow', maxRow);
 
     const wait = Array.from({ length: 10 }).map((v, i) => {
       // console.log('i', i);
