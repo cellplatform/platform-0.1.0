@@ -1,4 +1,4 @@
-import { t, Uri } from '../../common';
+import { t, Uri, defaultValue } from '../../common';
 
 type FormatOptions = { throw?: boolean };
 
@@ -29,7 +29,7 @@ const format = <U extends t.IUri>(args: {
   }
 
   const uri = typeof input === 'object' ? input : Uri.parse<U>(input).parts;
-  if (uri.type !== args.type && args.throw) {
+  if (uri.type !== args.type && defaultValue(args.throw, true)) {
     throw new Error(`URI is not of type ${args.type} (given "${uri.toString()}")`);
   }
 

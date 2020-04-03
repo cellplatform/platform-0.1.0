@@ -17,6 +17,10 @@ import * as e from '../../test/.d.ts/foo.enum';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 import { TypedSheetState } from './TypedSheetState';
+import { TypedSheetRow2 } from './TypedSheetRow2';
+import { TypedSheet } from '.';
+import { TypeClient } from '../TypeClient';
+import { util } from './common';
 
 /**
  * TODO 🐷 Features
@@ -375,7 +379,7 @@ describe.only('TypedSheet', () => {
     });
   });
 
-  describe.only('state', () => {
+  describe('state', () => {
     it('exposed from sheet', async () => {
       const { sheet } = await testSheet();
       const state = sheet.state;
@@ -589,7 +593,7 @@ describe.only('TypedSheet', () => {
     });
 
     describe('cache/revert', () => {
-      it('reverts changes', async () => {
+      it('revert changes', async () => {
         const { sheet, events$ } = await testSheet();
         const state = sheet.state;
         expect(await state.getCell('A1')).to.eql({ value: 'One' }); // Original value.
@@ -620,7 +624,7 @@ describe.only('TypedSheet', () => {
         expect(e.to).to.eql({});
       });
 
-      it('clears cache (retains other items in cache)', async () => {
+      it('clear cache (retains other items in cache)', async () => {
         const { sheet, fetch } = await testSheet();
         const state = sheet.state;
         const cache = state.fetch.cache;
@@ -639,10 +643,59 @@ describe.only('TypedSheet', () => {
         expect(cache.keys).to.eql(['foo']); // NB: Retained non-cell key.
 
         await state.getCell('A1');
-        expect(fetch.getCellsCount).to.eql(3); // NB: re-fetched
+        expect(fetch.getCellsCount).to.eql(3); // NB: re-fetched.
         await state.getCell('A1');
         expect(fetch.getCellsCount).to.eql(3); // NB: and back in the cache!
       });
+    });
+  });
+
+  describe('TypedSheetRow', () => {
+    const testRow = async (uri: string) => {
+      const ctx = TypedSheet.ctx({ fetch: await testFetchMySheet('ns:foo.mySheet') });
+      const ns = await TypeClient.load({ ns: 'ns:foo', fetch: ctx.fetch, cache: ctx.cache });
+      const columns = ns.columns;
+      const row = TypedSheetRow2.create<f.MyRow>({ uri, columns, ctx });
+      return { row, ctx, ns };
+    };
+
+    it('throw: URI not a row', async () => {
+      expectError(async () => testRow('cell:foo:A1'));
+      expectError(async () => testRow('ns:foo'));
+      expectError(async () => testRow('file:foo:abc'));
+    });
+
+    it('create (not loaded)', async () => {
+      const { row, ns } = await testRow('cell:foo:1');
+      expect(row.uri.toString()).to.eql('cell:foo:1');
+      expect(row.index).to.eql(0);
+      expect(row.types.list).to.eql(ns.columns);
+      expect(row.types.map.title.column).to.eql('A');
+
+      expect(row.props.title).to.eql('Untitled'); // Default value.
+      expect(row.props.isEnabled).to.eql(undefined);
+    });
+
+    it('load', async () => {
+      const { row } = await testRow('cell:foo:1');
+
+      expect(row.props.title).to.eql('Untitled'); // Default value.
+      expect(row.props.isEnabled).to.eql(undefined);
+
+      await row.load();
+
+      expect(row.props.title).to.eql('One');
+      expect(row.props.isEnabled).to.eql(true);
+    });
+
+    it('load (static)', async () => {
+      const { ns, ctx } = await testRow('cell:foo:1');
+      const uri = 'cell:foo:1';
+      const columns = ns.columns;
+      const row = await TypedSheetRow2.load<f.MyRow>({ uri, columns, ctx });
+
+      expect(row.props.title).to.eql('One');
+      expect(row.props.isEnabled).to.eql(true);
     });
   });
 });

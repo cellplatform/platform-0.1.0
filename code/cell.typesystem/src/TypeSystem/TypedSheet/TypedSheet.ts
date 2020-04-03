@@ -79,35 +79,19 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     });
   }
 
-  /**
-   * [Lifecycle]
-   */
-  private constructor(args: {
-    sheetNs: string | t.INsUri;
-    typeDef: t.INsTypeDef;
+  public static ctx(args: {
     fetch: t.ISheetFetcher;
     events$?: t.Subject<t.TypedSheetEvent>;
     cache?: t.IMemoryCache;
-  }) {
-    const uri = (this.uri = util.formatNsUri(args.sheetNs));
-    this.typeDef = args.typeDef;
-
+  }): t.SheetCtx {
+    const fetch = args.fetch;
     const cache = args.cache || MemoryCache.create();
     const events$ = args.events$ || new t.Subject<t.TypedSheetEvent>();
 
-    this.events$ = events$.asObservable().pipe(takeUntil(this._dispose$), share());
-    this.state = TypedSheetState.create({
-      uri,
+    return {
       events$,
-      fetch: args.fetch,
-      cache,
-    });
-
-    const fetch = this.state.fetch; // Use the state-machines wrapped fetcher.
-
-    this.ctx = {
       fetch,
-      events$,
+      cache,
       sheet: {
         load<T>(args: { ns: string }) {
           return TypedSheet.load<T>({ ...args, fetch, cache, events$ });
@@ -117,7 +101,26 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
         },
       },
     };
+  }
 
+  /**
+   * [Lifecycle]
+   */
+
+  private constructor(args: {
+    sheetNs: string | t.INsUri;
+    typeDef: t.INsTypeDef;
+    fetch: t.ISheetFetcher;
+    events$?: t.Subject<t.TypedSheetEvent>;
+    cache?: t.IMemoryCache;
+  }) {
+    const uri = (this.uri = util.formatNsUri(args.sheetNs));
+    const cache = args.cache || MemoryCache.create();
+    const events$ = args.events$ || new t.Subject<t.TypedSheetEvent>();
+    this.typeDef = args.typeDef;
+    this.events$ = events$.asObservable().pipe(takeUntil(this._dispose$), share());
+    this.state = TypedSheetState.create({ uri, events$, fetch: args.fetch, cache });
+    this.ctx = TypedSheet.ctx({ fetch: this.state.fetch, events$, cache }); // NB: Use the state-machine's wrapped fetcher.
     this.errorList = ErrorList.create({
       defaultType: ERROR.TYPE.SHEET,
       errors: this.typeDef.errors,
@@ -133,6 +136,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   /**
    * [Fields]
    */
+
   private readonly ctx: t.SheetCtx;
   private readonly typeDef: t.INsTypeDef;
   private readonly errorList: ErrorList;
@@ -146,6 +150,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   /**
    * [Properties]
    */
+
   public get isDisposed() {
     return this._dispose$.isStopped;
   }

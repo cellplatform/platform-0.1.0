@@ -35,8 +35,9 @@ export type ITypedSheetRow<T> = {
   readonly index: number;
   readonly props: ITypedSheetRowProps<T>;
   readonly types: ITypedSheetRowTypes<T>;
-  toObject(): T;
+  load(): Promise<ITypedSheetRow<T>>;
   prop<K extends keyof T>(name: K): ITypedSheetRowProp<T, K>;
+  toObject(): T;
 };
 
 /**

@@ -68,10 +68,6 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     return this.rows[rowIndex];
   }
 
-  /**
-   * [Internal]
-   */
-
   public async load() {
     const ns = this.uri.toString();
     const self = this as t.ITypedSheetCursor<T>;
@@ -100,6 +96,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
   /**
    * [Internal]
    */
+
   private createRow(args: { rowIndex: number }) {
     const { rowIndex } = args;
     if (this.exists(rowIndex)) {
