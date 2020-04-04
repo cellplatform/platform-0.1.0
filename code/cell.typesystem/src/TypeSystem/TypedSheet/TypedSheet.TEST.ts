@@ -337,7 +337,7 @@ describe('TypedSheet', () => {
     describe('row.prop (read/write methods)', () => {
       it('reuse api instance', async () => {
         const { sheet } = await testSheetPrimitives();
-        const row = (await sheet.cursor()).row(0);
+        const row = (await sheet.cursor().load()).row(0);
 
         const prop1 = row.prop('numberProp');
         const prop2 = row.prop('numberProp');
@@ -374,6 +374,14 @@ describe('TypedSheet', () => {
 
         prop.set('foo');
         expect(prop.get()).to.eql('foo');
+      });
+
+      it.only('set: throw if attempt to set ref', async () => {
+        const { sheet } = await testSheet();
+        const cursor = await sheet.cursor().load();
+        const row = cursor.row(0);
+        expect(() => row.prop('messages').set({} as any)).to.throw(/Cannot write to property/);
+        expect(() => row.prop('message').set({} as any)).to.throw(/Cannot write to property/);
       });
 
       it('clear', async () => {
@@ -529,7 +537,7 @@ describe('TypedSheet', () => {
       });
     });
 
-    describe.skip('read/write (ref)', () => {
+    describe.only('read/write (ref)', () => {
       it('1:1 (row)', async () => {
         const { sheet } = await testSheetMessages();
         const cursor = await sheet.cursor().load();

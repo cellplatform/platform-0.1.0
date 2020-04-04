@@ -248,11 +248,11 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
         }
 
         if (target.isRef) {
-          /**
-           * TODO 🐷
-           *    I think we can just throw an error here, because you should not be able to
-           *    set a REF.  It's all handed within the [TypedSheetRef] wrapper objects.
-           */
+          // REF targets cannot be written to directly, rather they are
+          // stored as links on the row's cell.  The link/unlink is handled
+          // within the corresponding [TypedSheetRef(s)] linker objects.
+          const err = `Cannot write to property '${name}' (column ${columnDef.column}) because it is a REF target.`;
+          throw new Error(err);
         }
 
         return self;
