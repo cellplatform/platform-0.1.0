@@ -91,10 +91,9 @@ describe('TypeSystem (on http server)', () => {
       const ns = 'ns:foo.mySheet';
       const sheet = await TypeSystem.Sheet.client(client).load<g.MyRow>(ns);
 
-      const cursor = await sheet.cursor({ index: -5 }); // NB: min-index is 0.
+      const cursor = await sheet.cursor().load();
 
       expect(cursor.uri.toString()).to.eql(ns);
-      expect(cursor.index).to.eql(0);
 
       await mock.dispose();
 
@@ -105,15 +104,15 @@ describe('TypeSystem (on http server)', () => {
       expect(row2).to.not.eql(undefined);
 
       if (row1) {
-        expect(await row1.props.title).to.eql('One');
-        expect(await row1.props.isEnabled).to.eql(true);
-        expect(await row1.props.color).to.eql({ label: 'background', color: 'red' });
+        expect(row1.props.title).to.eql('One');
+        expect(row1.props.isEnabled).to.eql(true);
+        expect(row1.props.color).to.eql({ label: 'background', color: 'red' });
       }
 
       if (row2) {
-        expect(await row2.props.title).to.eql('Two');
-        expect(await row2.props.isEnabled).to.eql(false);
-        expect(await row2.props.color).to.eql({ label: 'foreground', color: 'blue' });
+        expect(row2.props.title).to.eql('Two');
+        expect(row2.props.isEnabled).to.eql(false);
+        expect(row2.props.color).to.eql({ label: 'foreground', color: 'blue' });
       }
     });
   });

@@ -79,7 +79,7 @@ export class Cell {
 
   public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
     const { db } = args;
-    const uri = Uri.parse<t.ICellUri>(args.uri);
+    const uri = Uri.parse<t.ICellUri>(args.uri.toString());
     if (uri.parts.type !== 'CELL') {
       throw new Error(`The given URI does not represent a CELL ("${args.uri}").`);
     }
