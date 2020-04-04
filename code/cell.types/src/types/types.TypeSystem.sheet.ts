@@ -10,22 +10,25 @@ export type ITypedSheet<T> = {
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   dispose(): void;
-  cursor(args?: ITypedSheetCursorArgs): Promise<ITypedSheetCursor<T>>;
+  cursor(range?: string): ITypedSheetCursor<T>;
 };
 
 /**
  * A cursor into a subset of sheet data.
  */
-export type ITypedSheetCursorArgs = { index?: number; take?: number };
 export type ITypedSheetCursor<T> = {
   readonly uri: t.INsUri;
-  readonly index: number;
-  readonly take?: number;
-  readonly total: number;
   readonly rows: ITypedSheetRow<T>[];
+  readonly range: string;
+  readonly total: number; // Total number of rows.
+  readonly status: 'INIT' | 'LOADING' | 'LOADED';
+  readonly isLoaded: boolean;
   exists(index: number): boolean;
   row(index: number): ITypedSheetRow<T>;
+  load(args?: string | ITypedSheetCursorLoad): Promise<ITypedSheetCursor<T>>;
 };
+
+export type ITypedSheetCursorLoad = { range?: string };
 
 /**
  * A single row within a sheet.

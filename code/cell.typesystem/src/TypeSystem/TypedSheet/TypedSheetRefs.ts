@@ -1,6 +1,6 @@
 import { t, Uri, util } from './common';
 
-export type IRefsArgs = {
+export type IArgs = {
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   ns: string | t.INsUri;
   data: t.ICellData;
@@ -11,14 +11,14 @@ export type IRefsArgs = {
  * A connector for a reference-pointer to a set of rows in another sheet.
  */
 export class TypedSheetRefs<T> implements t.ITypedSheetRef<T> {
-  public static create<T>(args: IRefsArgs) {
+  public static create<T>(args: IArgs) {
     return new TypedSheetRefs<T>(args);
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: IRefsArgs) {
+  private constructor(args: IArgs) {
     this.ns = util.formatNsUri(args.ns);
     this.typeDef = args.typeDef;
     this.cell = args.data;

@@ -1,7 +1,7 @@
 import { share, takeUntil } from 'rxjs/operators';
 
 import { TypeClient } from '../TypeClient';
-import { defaultValue, ERROR, ErrorList, MemoryCache, t, Uri, util } from './common';
+import { ERROR, ErrorList, MemoryCache, t, Uri, util } from './common';
 import { TypedSheetCursor } from './TypedSheetCursor';
 import { TypedSheetState } from './TypedSheetState';
 
@@ -171,14 +171,13 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    * [Methods]
    */
 
-  public async cursor(args: { index?: number; take?: number } = {}) {
+  public cursor(range?: string) {
     this.throwIfDisposed('cursor');
     const ns = this.uri;
     const ctx = this.ctx;
     const types = this.types;
-    const index = Math.max(0, defaultValue(args.index, 0));
-    const { take } = args;
-    return TypedSheetCursor.load<T>({ ns, types, index, take, ctx });
+    const dispose$ = this.dispose$;
+    return TypedSheetCursor.create<T>({ ns, types, ctx, dispose$, range });
   }
 
   /**

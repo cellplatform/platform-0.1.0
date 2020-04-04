@@ -6,6 +6,11 @@ import { Urls } from '../Url';
 
 /**
  * Schema of DB paths.
+ *
+ * Terminology:
+ *    uri:    the address of the data within logical space.
+ *    path:   the key of the data within the database.
+ *
  */
 export class Schema {
   public static mime = Mime;
@@ -110,18 +115,35 @@ export class NsSchema {
    * [Methods]
    */
   public cell(key: string) {
+    /**
+     * TODO 🐷 Key design to include page-size prefix
+     * eg:
+     *    NS/foo/CELL/0/A1
+     *    NS/foo/CELL/0/A99
+     *    NS/foo/CELL/1/A100
+     *
+     * Theory:
+     *    This should allow for more efficient DB scans using a
+     *    cursor/paging strategy for sheets that grow very long.
+     *
+     * Ref:
+     *    AWS DynamoDB Query Docs:
+     *    https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.html
+     *
+     */
+
     const uri = Uri.create.cell(this.id, key);
-    return new CoordSchema({ type: 'CELL', nsPath: this.path, id: key, uri });
+    return new CoordSchema<t.ICellUri>({ type: 'CELL', nsPath: this.path, id: key, uri });
   }
 
   public column(key: string) {
     const uri = Uri.create.column(this.id, key);
-    return new CoordSchema({ type: 'COL', nsPath: this.path, id: key, uri });
+    return new CoordSchema<t.IColumnUri>({ type: 'COL', nsPath: this.path, id: key, uri });
   }
 
   public row(key: string) {
     const uri = Uri.create.row(this.id, key);
-    return new CoordSchema({ type: 'ROW', nsPath: this.path, id: key, uri });
+    return new CoordSchema<t.IRowUri>({ type: 'ROW', nsPath: this.path, id: key, uri });
   }
 
   public file(fileid: string) {
@@ -145,19 +167,7 @@ export class NsSchema {
 /**
  * Schema for a NS coordinate such as a `cell`, `column` or `row`.
  */
-export class CoordSchema {
-  public readonly type: t.SchemaCoordType;
-  public readonly id: string;
-  public readonly path: string;
-  public readonly uri: string;
-
-  constructor(args: { type: t.SchemaCoordType; nsPath: string; id: string; uri: string }) {
-    this.id = args.id;
-    this.type = args.type;
-    this.path = `${args.nsPath}/${args.type}/${this.id}`;
-    this.uri = args.uri;
-  }
-
+export class CoordSchema<T extends t.ICellUri | t.IRowUri | t.IColumnUri> {
   public static uri(args: { path: string }) {
     const parts = args.path.split('/');
     const ns = parts[1];
@@ -175,6 +185,31 @@ export class CoordSchema {
     }
 
     throw new Error(`Model path could not be converted to URI ("${args.path}")`);
+  }
+
+  /**
+   * [Lifecycle]
+   */
+  constructor(args: { type: t.SchemaCoordType; nsPath: string; id: string; uri: string }) {
+    this.id = args.id;
+    this.type = args.type;
+    this.path = `${args.nsPath}/${args.type}/${this.id}`;
+    this._uri = args.uri;
+  }
+
+  /**
+   * [Fields]
+   */
+  public readonly type: t.SchemaCoordType;
+  public readonly id: string;
+  public readonly path: string;
+  private readonly _uri: string;
+
+  /**
+   * [Properties]
+   */
+  public get uri(): T {
+    return Uri.parse<T>(this._uri).parts;
   }
 }
 

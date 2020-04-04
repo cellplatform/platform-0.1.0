@@ -1,6 +1,6 @@
 import * as t from './types';
 
-export type IRefArgs = {
+export type IArgs = {
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   ctx: t.SheetCtx;
 };
@@ -9,14 +9,14 @@ export type IRefArgs = {
  * A connector for a reference-pointer to a single row in another sheet.
  */
 export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
-  public static create<T>(args: IRefArgs) {
+  public static create<T>(args: IArgs) {
     return new TypedSheetRef<T>(args);
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: IRefArgs) {
+  private constructor(args: IArgs) {
     this.ctx = args.ctx;
     this.typeDef = args.typeDef;
   }

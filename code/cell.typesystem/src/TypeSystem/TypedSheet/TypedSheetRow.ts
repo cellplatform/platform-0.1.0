@@ -1,40 +1,55 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import { TypeDefault } from '../TypeDefault';
 import { TypeTarget } from '../TypeTarget';
 import { Schema, t, util, Uri } from './common';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 
-type TypedSheetRowArgs = {
+type IArgs = {
   uri: string | t.IRowUri;
   columns: t.IColumnTypeDef[];
   ctx: t.SheetCtx;
+  dispose$?: t.Observable<{}>;
 };
 
 /**
  * A strongly-typed row.
  */
 export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
-  public static create = <T>(args: TypedSheetRowArgs): t.ITypedSheetRow<T> => {
+  public static create = <T>(args: IArgs): t.ITypedSheetRow<T> => {
     return new TypedSheetRow<T>(args) as t.ITypedSheetRow<T>;
   };
 
-  public static load = <T>(args: TypedSheetRowArgs): Promise<t.ITypedSheetRow<T>> => {
+  public static load = <T>(args: IArgs): Promise<t.ITypedSheetRow<T>> => {
     return TypedSheetRow.create<T>(args).load();
   };
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: TypedSheetRowArgs) {
+  private constructor(args: IArgs) {
     this.ctx = args.ctx;
     this.uri = util.formatRowUri(args.uri);
     this._columns = args.columns;
     this.index = Number.parseInt(this.uri.key, 10) - 1;
+    this.dispose$ = args.dispose$ || new Subject<{}>();
   }
 
   /**
    * [Fields]
    */
+  private readonly dispose$: t.Observable<{}>;
   private readonly ctx: t.SheetCtx;
   private readonly _columns: t.IColumnTypeDef[] = [];
   private readonly _prop: { [key: string]: t.ITypedSheetRowProp<T, any> } = {};
@@ -42,6 +57,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private _types: t.ITypedSheetRowTypes<T>;
   private _data: { [column: string]: t.ICellData } = {};
   private _status: t.ITypedSheetRow<T>['status'] = 'INIT';
+  private _isLoaded = false;
 
   public readonly index: number;
   public readonly uri: t.IRowUri;
@@ -54,7 +70,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   }
 
   public get isLoaded() {
-    return this._status === 'LOADED';
+    return this._isLoaded;
   }
 
   public get types() {
@@ -120,6 +136,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     );
 
     this._status = 'LOADED';
+    this._isLoaded = true; // NB: Always true after initial load.
     return this;
   }
 

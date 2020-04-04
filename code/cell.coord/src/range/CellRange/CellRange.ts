@@ -1,7 +1,7 @@
+import { alpha } from '../../alpha';
+import { cell } from '../../cell';
 import { R, t, value as valueUtil } from '../../common';
 import { parser } from '../../parser';
-import { cell } from '../../cell';
-import { alpha } from '../../alpha';
 
 /**
  * Represents a range of cells.
@@ -141,8 +141,10 @@ export class CellRange {
         return 'PARTIAL_ROW';
       }
       if (
-        (leftType === 'CELL' && (right.key === '*' || right.key === '**')) ||
-        (rightType === 'CELL' && (left.key === '*' || left.key === '**'))
+        (['COLUMN', 'ROW', 'CELL'].includes(leftType || '') &&
+          (right.key === '*' || right.key === '**')) ||
+        (['COLUMN', 'ROW', 'CELL'].includes(rightType || '') &&
+          (left.key === '*' || left.key === '**'))
       ) {
         return 'PARTIAL_ALL';
       }
