@@ -41,7 +41,6 @@ export type ITypedSheetRow<T> = {
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
   readonly isLoaded: boolean;
   load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
-  prop<K extends keyof T>(name: K): ITypedSheetRowProp<T, K>;
   toObject(): T;
 };
 
@@ -58,15 +57,6 @@ export type ITypedSheetRef<T> = {
 export type ITypedSheetRefs<T> = {
   ns: t.INsUri;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
-};
-
-/**
- * Read/write methods for the properties of a single row.
- */
-export type ITypedSheetRowProp<T, K extends keyof T> = {
-  get(): T[K];
-  set(value: T[K]): ITypedSheetRow<T>;
-  clear(): ITypedSheetRow<T>;
 };
 
 /**

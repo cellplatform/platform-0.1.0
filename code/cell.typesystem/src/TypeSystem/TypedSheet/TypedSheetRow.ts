@@ -24,6 +24,15 @@ type IArgs = {
 };
 
 /**
+ * Read/write methods for the properties of a single row.
+ */
+type ITypedSheetRowProp<T, K extends keyof T> = {
+  get(): T[K];
+  set(value: T[K]): t.ITypedSheetRow<T>;
+  clear(): t.ITypedSheetRow<T>;
+};
+
+/**
  * A strongly-typed row.
  */
 export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
@@ -77,7 +86,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private readonly dispose$: t.Observable<{}>;
   private readonly ctx: t.SheetCtx;
   private readonly _columns: t.IColumnTypeDef[] = [];
-  private readonly _prop: { [key: string]: t.ITypedSheetRowProp<T, any> } = {};
+  private readonly _prop: { [key: string]: ITypedSheetRowProp<T, any> } = {};
   private _refs: { [key: string]: t.ITypedSheetRef<T> | t.ITypedSheetRefs<T> } = {};
   private _props: t.ITypedSheetRowProps<T>;
   private _types: t.ITypedSheetRowTypes<T>;
@@ -186,7 +195,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * Read/write handle for a single cell (property).
    */
-  public prop<K extends keyof T>(name: K): t.ITypedSheetRowProp<T, K> {
+  public prop<K extends keyof T>(name: K): ITypedSheetRowProp<T, K> {
     if (this._prop[name as string]) {
       return this._prop[name as string]; // Already created and cached.
     }
@@ -201,7 +210,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       throw new Error(err);
     }
 
-    const api: t.ITypedSheetRowProp<T, K> = {
+    const api: ITypedSheetRowProp<T, K> = {
       /**
        * Get a cell (property) value.
        */
