@@ -85,10 +85,10 @@
     "@platform/libs" "0.2.1"
     "@platform/util.value" "0.7.13"
 
-"@platform/cell.http.router@0.7.38":
-  version "0.7.38"
-  resolved "https://registry.yarnpkg.com/@platform/cell.http.router/-/cell.http.router-0.7.38.tgz#99706ea4f8a4301458e1d011f244dc3a68abf6a9"
-  integrity sha512-vv0Os+tVW5L4//vL5Ogk38oGPdvzWecAjCjcSimHsgOTecA6HPu1SwfuQKp8OfzH6ibBPh5tx+o0014Pnh1hMg==
+"@platform/cell.http.router@0.7.39":
+  version "0.7.39"
+  resolved "https://registry.yarnpkg.com/@platform/cell.http.router/-/cell.http.router-0.7.39.tgz#3fdeaee75612560b55f22533cbe523403ac7ac4d"
+  integrity sha512-J8g0wyuLSRcBPrzJtphjO+3Yt5mkLZWxWke+4YS23Qrc4QWa6WxxJ/F9TjwfjY/Rbc+a1OcB89cPnxrFm/QGQA==
   dependencies:
     "@platform/cache" "0.2.23"
     "@platform/cell.client" "0.2.50"
@@ -96,7 +96,7 @@
     "@platform/cell.func" "0.1.129"
     "@platform/cell.schema" "0.4.77"
     "@platform/cell.types" "0.4.69"
-    "@platform/cell.typesystem" "0.0.10"
+    "@platform/cell.typesystem" "0.0.14"
     "@platform/cell.value" "0.2.39"
     "@platform/fsdb.types" "0.6.18"
     "@platform/http" "0.12.5"
@@ -137,10 +137,10 @@
     "@platform/types" "0.4.14"
     "@platform/util.diff" "0.0.24"
 
-"@platform/cell.typesystem@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.10.tgz#4107cae8629281774ce208b2eab52e6305026409"
-  integrity sha512-aEKmlVr9EOBSE+yT8zB3PzPtcO803b1zCcSJ4Xu3I3JBymGKBjS0by46Td1MGYL7V3TpA5be5/NUbhU9ZmfK1g==
+"@platform/cell.typesystem@0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.14.tgz#ad0f5a8888b71415a78bc744e85ce7b44ffcc6ec"
+  integrity sha512-DJyjwCsDKYq4EGaVisMUerp2n0teHkeGm1qsDdyTdga8wV8PyZOSl6pqIF6JvkeBF/CAv2ziEQ/Wk5nhaVCJ2A==
   dependencies:
     "@platform/cache" "0.2.23"
     "@platform/cell.coord" "0.8.87"

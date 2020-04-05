@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http.router",
-  "version": "0.7.38",
+  "version": "0.7.39",
   "description": "Isolated router logic for the CellOS HTTP server.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -21,7 +21,7 @@
     "@platform/cell.func": "0.1.129",
     "@platform/cell.schema": "0.4.77",
     "@platform/cell.types": "0.4.69",
-    "@platform/cell.typesystem": "0.0.10",
+    "@platform/cell.typesystem": "0.0.14",
     "@platform/cell.value": "0.2.39",
     "@platform/fsdb.types": "0.6.18",
     "@platform/http": "0.12.5",

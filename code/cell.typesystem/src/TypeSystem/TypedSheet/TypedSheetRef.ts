@@ -2,12 +2,18 @@ import { t, Uri, util, Schema } from './common';
 
 export type IArgs = {
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
-  // ns: string | t.INsUri;
   ctx: t.SheetCtx;
 };
 
 /**
  * A connector for a reference-pointer to a single row in another sheet.
+ *
+ * 🐷 NOT IMPLEMENTED YET
+ *    -------------------
+ *    Initial implementation within [TypedSheetRefs] plural/list.
+ *    The way to handle this implementation will become apparent
+ *    after some initial uses of [TypedSheetRefs].
+ *
  */
 export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
   public static create<T>(args: IArgs) {

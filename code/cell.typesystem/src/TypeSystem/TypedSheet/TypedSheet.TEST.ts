@@ -555,7 +555,7 @@ describe('TypedSheet', () => {
       });
     });
 
-    describe.only('read/write (ref)', () => {
+    describe('read/write (ref)', () => {
       describe('1:1', () => {
         it('single row', async () => {
           const { sheet } = await testSheet();

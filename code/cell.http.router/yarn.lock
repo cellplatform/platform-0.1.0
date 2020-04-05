@@ -142,10 +142,10 @@
     "@platform/types" "0.4.14"
     "@platform/util.diff" "0.0.24"
 
-"@platform/cell.typesystem@0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.10.tgz#4107cae8629281774ce208b2eab52e6305026409"
-  integrity sha512-aEKmlVr9EOBSE+yT8zB3PzPtcO803b1zCcSJ4Xu3I3JBymGKBjS0by46Td1MGYL7V3TpA5be5/NUbhU9ZmfK1g==
+"@platform/cell.typesystem@0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.14.tgz#ad0f5a8888b71415a78bc744e85ce7b44ffcc6ec"
+  integrity sha512-DJyjwCsDKYq4EGaVisMUerp2n0teHkeGm1qsDdyTdga8wV8PyZOSl6pqIF6JvkeBF/CAv2ziEQ/Wk5nhaVCJ2A==
   dependencies:
     "@platform/cache" "0.2.23"
     "@platform/cell.coord" "0.8.87"
