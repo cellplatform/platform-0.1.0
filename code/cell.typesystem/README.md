@@ -5,6 +5,11 @@
 
 The "[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) sheets" system for CellOS.
 
+- Strongly typed object relational mapper (ORM) for two-way binding of `[sheets] : {objects}`.
+- Generation of [Typescript](https://en.wikipedia.org/wiki/TypeScript) type symbols from globally addressable cell `namespace` definitions.
+- Advanced type concepts ("fancy typesystem") including type unions, grouping, referencing.
+
+
 <p>&nbsp;</p>
 
 ## Setup
