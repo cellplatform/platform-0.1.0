@@ -12,7 +12,7 @@ import {
 } from 'rxjs/operators';
 import { TypeDefault } from '../TypeDefault';
 import { TypeTarget } from '../TypeTarget';
-import { Schema, t, util, Uri } from './common';
+import { Schema, t, Uri, util } from './common';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 
@@ -44,6 +44,31 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     this._columns = args.columns;
     this.index = Number.parseInt(this.uri.key, 10) - 1;
     this.dispose$ = args.dispose$ || new Subject<{}>();
+
+    const events$ = this.ctx.events$.pipe(takeUntil(this.dispose$));
+    const change$ = events$.pipe(
+      filter(e => e.type === 'SHEET/change'),
+      map(e => e.payload as t.ITypedSheetChange),
+      map(({ data, cell }) => ({ to: data, uri: Uri.parse<t.ICellUri>(cell) })),
+      filter(({ uri }) => uri.ok && uri.type === 'CELL' && uri.parts.ns === this.uri.ns),
+      map(e => ({ ...e, uri: e.uri.parts })),
+    );
+
+    // Ensure internal representation of value is updated if some other process signalled the a property to change.
+    change$
+      .pipe(
+        map(e => {
+          const columnKey = Schema.coord.cell.toColumnKey(e.uri.key);
+          const columnDef = this._columns.find(def => def.column === columnKey) as t.IColumnTypeDef;
+          return { ...e, columnDef };
+        }),
+        filter(e => Boolean(e.columnDef)),
+        map(e => ({ ...e, target: TypeTarget.parse(e.columnDef.target) })),
+        filter(e => e.target.isValid && e.target.isInline),
+      )
+      .subscribe(e => {
+        this.setData(e.columnDef, e.to);
+      });
   }
 
   /**
@@ -53,6 +78,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private readonly ctx: t.SheetCtx;
   private readonly _columns: t.IColumnTypeDef[] = [];
   private readonly _prop: { [key: string]: t.ITypedSheetRowProp<T, any> } = {};
+  private _refs: { [key: string]: t.ITypedSheetRef<T> | t.ITypedSheetRefs<T> } = {};
   private _props: t.ITypedSheetRowProps<T>;
   private _types: t.ITypedSheetRowTypes<T>;
   private _data: { [column: string]: t.ICellData } = {};
@@ -149,7 +175,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   }
 
   public type(prop: keyof T) {
-    const typeDef = this.findColumn(prop);
+    const typeDef = this.findColumnByProp(prop);
     if (!typeDef) {
       const err = `The property '${prop}' is not defined by a column on [${this.uri}]`;
       throw new Error(err);
@@ -166,7 +192,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     }
 
     const self = this; // tslint:disable-line
-    const columnDef = this.findColumn(name);
+    const columnDef = this.findColumnByProp(name);
     const ctx = this.ctx;
 
     const target = TypeTarget.parse(columnDef.target);
@@ -207,24 +233,18 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
         }
 
         if (target.isRef) {
-          const typeDef = columnDef as t.IColumnTypeDef<t.ITypeRef>;
-
-          // Schema.ref.links.
-          const links = cell.links || {};
-          const link = Schema.ref.links.find(links).byName('type');
-
-          let ns = link ? link.uri.toString() : '';
-          if (!ns) {
-            ns = Schema.uri.create.ns(Schema.cuid());
-            const key = Schema.ref.links.toKey('type');
-
-            links[key] = ns;
+          if (self._refs[name as string]) {
+            return done(self._refs[name as string]); // NB: Cached instance.
           }
 
-          const ref = columnDef.type.isArray
-            ? TypedSheetRefs.create({ ns, typeDef, data: cell, ctx })
-            : TypedSheetRef.create({ typeDef, ctx });
-          return done(ref);
+          const links = cell.links;
+          const typeDef = columnDef as t.IColumnTypeDef<t.ITypeRef>;
+          const res = self.getOrCreateRef({ typeDef, links });
+          if (!res.exists) {
+            self._refs[name as string] = res.ref; // NB: Cache instance.
+          }
+
+          return done(res.ref);
         }
 
         throw new Error(`Failed to read property '${name}' (column ${columnDef.column}).`);
@@ -239,18 +259,19 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
           const data = TypeTarget.inline(columnDef).write({ cell, data: value as any });
 
           // [LATENCY COMPENSATION]
-          //    Update local state immediately.
+          //
+          //    Local state updated immediately via observable change event-handler (in constructor).
+          //
           //    NB: This means reads to the property are immedately available with the new value,
-          //        the global fetch state will be updated after an [async] tick with listeners
+          //        or changes made elsewhere in the system are reflected in the current state of the row,
+          //        while the global fetch state will be updated after an [async] tick with listeners
           //        being alerted of the new value on the ["SHEET/changed"] event.
-          self.setData(columnDef, data);
           self.fireChange(columnDef, data);
         }
 
         if (target.isRef) {
           // REF targets cannot be written to directly, rather they are
-          // stored as links on the row's cell.  The link/unlink is handled
-          // within the corresponding [TypedSheetRef(s)] linker objects.
+          // stored as links on the row's cell.
           const err = `Cannot write to property '${name}' (column ${columnDef.column}) because it is a REF target.`;
           throw new Error(err);
         }
@@ -262,7 +283,10 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
        * Remove a property value.
        */
       clear() {
-        return api.set(undefined as any);
+        if (target.isInline) {
+          api.set(undefined as any);
+        }
+        return self;
       },
     };
 
@@ -274,7 +298,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * [Helpers]
    */
 
-  private findColumn<K extends keyof T>(prop: K) {
+  private findColumnByProp<K extends keyof T>(prop: K) {
     const res = this._columns.find(def => def.prop === prop);
     if (!res) {
       const err = `Column-definition for the property '${prop}' not found.`;
@@ -294,5 +318,32 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
   private setData(columnDef: t.IColumnTypeDef, data: t.ICellData) {
     this._data[columnDef.column] = data;
+  }
+
+  private getOrCreateRef(args: { typeDef: t.IColumnTypeDef<t.ITypeRef>; links?: t.IUriMap }) {
+    const { typeDef, links = {} } = args;
+    const ctx = this.ctx;
+    const isArray = typeDef.type.isArray;
+    const nameKey = 'type/default';
+    const link = Schema.ref.links.find(links).byName(nameKey);
+    const exists = Boolean(link);
+
+    let ns = link ? link.uri.toString() : '';
+    if (!ns) {
+      ns = Schema.uri.create.ns(Schema.cuid());
+      const key = Schema.ref.links.toKey(nameKey);
+      links[key] = ns;
+
+      /**
+       * TODO 🐷
+       * manage in ref object (read/write link)
+       */
+    }
+
+    const ref = isArray
+      ? TypedSheetRefs.create({ ns, typeDef, ctx })
+      : TypedSheetRef.create({ ns, typeDef, ctx });
+
+    return { ref, exists };
   }
 }

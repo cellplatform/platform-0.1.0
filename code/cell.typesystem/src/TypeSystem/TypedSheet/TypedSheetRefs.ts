@@ -3,7 +3,6 @@ import { t, Uri, util } from './common';
 export type IArgs = {
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   ns: string | t.INsUri;
-  data: t.ICellData;
   ctx: t.SheetCtx;
 };
 
@@ -19,15 +18,13 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRef<T> {
    * [Lifecycle]
    */
   private constructor(args: IArgs) {
-    this.ns = util.formatNsUri(args.ns);
     this.typeDef = args.typeDef;
-    this.cell = args.data;
+    this.ns = util.formatNsUri(args.ns);
     this.ctx = args.ctx;
 
     // console.log('-------------------------------------------');
     // console.log('args.typeDef', args.typeDef);
     // console.log('this.ns', this.ns);
-    // console.log('this.cell', this.cell);
     // console.log('-------------------------------------------');
   }
 
@@ -35,8 +32,6 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRef<T> {
    * [Fields]
    */
   private readonly ctx: t.SheetCtx;
-  private cell: t.ICellData;
-
   public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
   public readonly ns: t.INsUri;
 }

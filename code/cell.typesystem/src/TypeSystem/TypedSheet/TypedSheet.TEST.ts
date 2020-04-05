@@ -334,7 +334,7 @@ describe('TypedSheet', () => {
       });
     });
 
-    describe('row.prop (read/write methods)', () => {
+    describe('row.prop (get/set methods)', () => {
       it('reuse api instance', async () => {
         const { sheet } = await testSheetPrimitives();
         const row = (await sheet.cursor().load()).row(0);
@@ -382,6 +382,10 @@ describe('TypedSheet', () => {
         const row = cursor.row(0);
         expect(() => row.prop('messages').set({} as any)).to.throw(/Cannot write to property/);
         expect(() => row.prop('message').set({} as any)).to.throw(/Cannot write to property/);
+
+        // NB: does not throw when clearing.
+        row.prop('message').clear();
+        row.prop('messages').clear();
       });
 
       it('clear', async () => {
@@ -468,11 +472,16 @@ describe('TypedSheet', () => {
 
           expect(row.props.stringValue).to.eql('hello value');
           expect(row.props.stringProp).to.eql('hello prop');
+
           row.prop('stringValue').set('');
           row.prop('stringProp').set('');
-
           expect(row.props.stringValue).to.eql('');
           expect(row.props.stringProp).to.eql('');
+
+          row.props.stringValue = 'Foo';
+          row.props.stringProp = 'Bar';
+          expect(row.props.stringValue).to.eql('Foo');
+          expect(row.props.stringProp).to.eql('Bar');
         });
 
         it('number', async () => {
@@ -542,23 +551,19 @@ describe('TypedSheet', () => {
         const { sheet } = await testSheetMessages();
         const cursor = await sheet.cursor().load();
         const row = cursor.row(0);
-
         const color = row.props.color;
-
-        // const messages = await row.props.messages;
-        // console.log('-------------------------------------------');
-        // console.log('color', color);
-
         expect(color).to.be.an.instanceof(TypedSheetRef);
+        expect(row.props.color).to.equal(color); // NB: Cached instance.
       });
 
-      it('1:* (cursor)', async () => {
+      it.only('1:* (cursor)', async () => {
         const { sheet } = await testSheetMessages();
         const cursor = await sheet.cursor().load();
         const row = cursor.row(0);
 
         const messages = row.props.messages;
         expect(messages).to.be.an.instanceof(TypedSheetRefs);
+        expect(row.props.messages).to.equal(messages); // NB: Cached instance.
       });
     });
   });
@@ -907,6 +912,27 @@ describe('TypedSheet', () => {
 
       expect(row.props.title).to.eql('One');
       expect(row.props.isEnabled).to.eql(undefined);
+    });
+
+    it.only('updates when prop changed elsewhere (not within instance)', async () => {
+      const { row, ctx } = await testRow('cell:foo:1');
+      expect(row.props.title).to.eql('Untitled');
+
+      await row.load();
+      expect(row.props.title).to.eql('One');
+
+      // Make change to property externally to row.
+      ctx.events$.next({
+        type: 'SHEET/change',
+        payload: {
+          cell: 'cell:foo:A1',
+          data: { value: 'Hello!' },
+        },
+      });
+      expect(row.props.title).to.eql('Hello!'); // Row state reflects external event change.
+
+      row.props.title = 'Foobar';
+      expect(row.props.title).to.eql('Foobar'); // Update via prop
     });
   });
 });
