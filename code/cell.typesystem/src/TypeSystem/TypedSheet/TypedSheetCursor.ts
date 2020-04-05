@@ -1,40 +1,75 @@
+import { Subject } from 'rxjs';
+
 import { coord, t, Uri, util } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
 
-type TypedSheetCursorArgs = {
-  ns: string | t.INsUri; // "ns:<uri>"
+type IArgs = {
+  ns: string | t.INsUri;
   types: t.IColumnTypeDef[];
-  index: number;
-  take?: number;
   ctx: t.SheetCtx;
+  range?: string;
 };
 
-type ColumnData = {
-  key: string;
-  row: number;
-  typeDef: t.IColumnTypeDef;
-  cell: t.ICellData;
-};
-type RowData = ColumnData[];
+type ILoading<T> = { query: string; promise: Promise<t.ITypedSheetCursor<T>> };
 
 /**
  * A cursor for iterating over a set of sheet rows
  */
 export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
-  public static create = <T>(args: TypedSheetCursorArgs) => new TypedSheetCursor<T>(args);
-  public static load = <T>(args: TypedSheetCursorArgs) => {
-    return TypedSheetCursor.create<T>(args).load();
+  public static create = <T>(args: IArgs): t.ITypedSheetCursor<T> => {
+    return new TypedSheetCursor<T>(args);
   };
+
+  public static DEFAULT = {
+    RANGE: '1:500',
+    PAGE: 500,
+  };
+
+  public static formatRange(input?: string) {
+    const text = (input || '').trim();
+    const DEFAULT = TypedSheetCursor.DEFAULT;
+    if (!text) {
+      return DEFAULT.RANGE;
+    }
+
+    const range = coord.range.fromKey(text);
+    if (!range.isValid) {
+      return DEFAULT.RANGE;
+    }
+
+    const left = {
+      key: range.left.key,
+      index: range.left.row,
+      isInfinity: isInfinity(range.left.key),
+    };
+    const right = {
+      key: range.right.key,
+      index: range.right.row,
+      isInfinity: isInfinity(range.right.key),
+    };
+
+    if (left.isInfinity && right.isInfinity) {
+      return DEFAULT.RANGE;
+    }
+    if (left.isInfinity) {
+      left.index = DEFAULT.PAGE - 1;
+    }
+    if (right.isInfinity) {
+      right.index = DEFAULT.PAGE - 1;
+    }
+
+    const edges = [Math.max(0, left.index) + 1, Math.max(0, right.index) + 1].sort(diff);
+    return `${edges[0]}:${edges[1]}`;
+  }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: TypedSheetCursorArgs) {
+  private constructor(args: IArgs) {
     this.uri = util.formatNsUri(args.ns);
     this.types = args.types;
-    this.index = args.index;
-    this.take = args.take;
     this.ctx = args.ctx;
+    this._range = TypedSheetCursor.formatRange(args.range);
   }
 
   /**
@@ -42,18 +77,43 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
    */
   private readonly ctx: t.SheetCtx;
   private readonly types: t.IColumnTypeDef[];
+  private _rows: t.ITypedSheetRow<T>[] = [];
+  private _range: string;
+  private _status: t.ITypedSheetCursor<T>['status'] = 'INIT';
+  private _total = -1;
+  private _loading: ILoading<T>[] = [];
+  private _isReady = false;
 
   public readonly uri: t.INsUri;
-  public readonly index: number = -1;
-  public readonly take: number | undefined = undefined;
-  public total: number = -1;
-  public rows: t.ITypedSheetRow<T>[] = [];
+
+  /**
+   * [Properties]
+   */
+  public get rows() {
+    return this._rows;
+  }
+
+  public get range() {
+    return this._range;
+  }
+
+  public get status() {
+    return this._status;
+  }
+
+  public get isReady() {
+    return this._isReady;
+  }
+
+  public get total() {
+    return this._total;
+  }
 
   /**
    * [Methods]
    */
   public exists(index: number) {
-    return Boolean(this.rows[index]);
+    return Boolean(this._rows[index]);
   }
 
   public row(index: number): t.ITypedSheetRow<T> {
@@ -62,59 +122,94 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     }
 
     if (!this.exists(index)) {
-      this.rows[index] = this.createRow(index);
+      this._rows[index] = this.createRow(index);
     }
 
-    return this.rows[index];
+    return this._rows[index];
   }
 
-  public async load() {
+  public async load(args?: string | t.ITypedSheetCursorLoad): Promise<t.ITypedSheetCursor<T>> {
+    const isLoaded = this.isReady;
     const ns = this.uri.toString();
-    const self = this as t.ITypedSheetCursor<T>;
-    const types = this.types;
-    if (types.length === 0) {
-      return this;
+
+    // Wrangle the given argument range.
+    let argRange = typeof args === 'string' ? args : args?.range;
+    if (argRange) {
+      argRange = TypedSheetCursor.formatRange(argRange);
+      if (!isLoaded) {
+        // NB: Replace if this is the first load.
+        this._range = argRange;
+      }
+      if (isLoaded) {
+        // NB: Expand the range if this new range is additive (already loaded).
+        this._range = mergeRanges(argRange, this._range);
+      }
     }
 
-    /**
-     * TODO 🐷
-     * - take subset
-     */
-
-    // Query cell data from the network.
-    const query = `${types[0].column}:${types[types.length - 1].column}`;
-    const { cells, total, error } = await this.ctx.fetch.getCells({ ns, query });
-    if (error) {
-      throw new Error(error.message);
+    const query = argRange || this.range; // NB: Use the narrowest range passed to do the least amount of work (avoiding the complete expanded range).
+    const alreadyLoading = this._loading.find(item => item.query === query);
+    if (alreadyLoading) {
+      return alreadyLoading.promise; // NB: A load operation is already in progress.
     }
 
-    // Set total.
-    this.total = total.rows;
+    const promise = new Promise<t.ITypedSheetCursor<T>>(async (resolve, reject) => {
+      this._status = 'LOADING';
 
-    // console.log('this.total', this.total);
-    // console.log('query', query);
-    // console.log('this.index', this.index);
-    // console.log('this.take', this.take);
+      // Fire BEFORE event.
+      this.fire({
+        type: 'SHEET/loading',
+        payload: {
+          ns,
+          range: query,
+        },
+      });
 
-    const maxRow = coord.cell.max.row(Object.keys(cells));
+      // Query cell data from the network.
+      const { total, error } = await this.ctx.fetch.getCells({ ns, query });
+      if (error) {
+        reject(new Error(error.message));
+      }
 
-    // TEMP 🐷HACK - derive total rows to load from the index/take
-    // console.log('Cursor.Load :: maxRow', maxRow);
+      // Load the retrieved range of rows.
+      const range = coord.range.fromKey(query);
+      const min = Math.max(0, range.left.row);
+      const max = Math.min(total.rows - 1, range.right.row);
+      const wait = Array.from({ length: max - min + 1 }).map((v, i) => {
+        const index = i + min;
+        return this.row(index).load();
+      });
+      await Promise.all(wait);
 
-    const wait = Array.from({ length: 10 }).map((v, i) => {
-      // console.log('i', i);
-      return this.row(i).load();
+      // Update state.
+      this._total = total.rows;
+      this._status = 'LOADED';
+      this._isReady = true; // NB: Always true after initial load.
+      this._loading = this._loading.filter(item => item.query !== query);
+
+      // Fire BEFORE event.
+      this.fire({
+        type: 'SHEET/loaded',
+        payload: {
+          ns,
+          range: this.range,
+          total: this.total,
+        },
+      });
+
+      // Finish up.
+      return resolve(this);
     });
 
-    await Promise.all(wait);
-
-    // Finish up.
-    return self;
+    this._loading = [...this._loading, { query, promise }]; // NB: Stored so repeat calls while loading return the same promise.
+    return promise;
   }
 
   /**
    * [INTERNAL]
    */
+  private fire(e: t.TypedSheetEvent) {
+    this.ctx.events$.next(e);
+  }
 
   private createRow(index: number) {
     const uri = Uri.create.row(this.uri.toString(), (index + 1).toString());
@@ -123,3 +218,19 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     return TypedSheetRow.create<T>({ uri, columns, ctx });
   }
 }
+
+/**
+ * [Helpers]
+ */
+const diff = (a: number, b: number) => a - b;
+const isInfinity = (input: string) => input === '*' || input === '**';
+
+const mergeRanges = (input1: string, input2: string) => {
+  const range1 = coord.range.fromKey(input1).square;
+  const range2 = coord.range.fromKey(input2).square;
+
+  const min = Math.min(0, range1.left.row, range2.left.row) + 1;
+  const max = Math.max(range1.right.row, range2.right.row) + 1;
+
+  return `${min}:${max}`;
+};

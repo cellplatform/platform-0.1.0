@@ -53,7 +53,7 @@ describe('Schema', () => {
       const res = ns.cell('A1');
       expect(res.id).to.eql('A1');
       expect(res.path).to.eql('NS/foo/CELL/A1');
-      expect(res.uri).to.eql('cell:foo:A1');
+      expect(res.uri.toString()).to.eql('cell:foo:A1');
     });
   });
 
@@ -63,7 +63,7 @@ describe('Schema', () => {
       const res = ns.column('A');
       expect(res.id).to.eql('A');
       expect(res.path).to.eql('NS/foo/COL/A');
-      expect(res.uri).to.eql('cell:foo:A');
+      expect(res.uri.toString()).to.eql('cell:foo:A');
     });
   });
 
@@ -73,7 +73,7 @@ describe('Schema', () => {
       const res = ns.row('1');
       expect(res.id).to.eql('1');
       expect(res.path).to.eql('NS/foo/ROW/1');
-      expect(res.uri).to.eql('cell:foo:1');
+      expect(res.uri.toString()).to.eql('cell:foo:1');
     });
   });
 

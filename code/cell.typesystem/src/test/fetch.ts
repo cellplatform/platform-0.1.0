@@ -1,5 +1,5 @@
 import { TypeSystem } from '..';
-import { t, coord } from '../common';
+import { coord, t } from '../common';
 
 type M = 'getType' | 'getColumns' | 'getCells';
 
@@ -23,15 +23,6 @@ export const testFetch = (data: {
     }
   };
 
-  const trimQuery = <T extends t.IMap>(data: T | undefined, query: string) => {
-    const range = coord.range.fromKey(query);
-    const result = { ...(data || {}) };
-    Object.keys(result)
-      .filter(key => !range.contains(key))
-      .forEach(key => delete result[key]);
-    return result;
-  };
-
   const getType: t.FetchSheetType = async args => {
     before('getType', args);
     const ns = data.defs[args.ns]?.ns;
@@ -51,7 +42,8 @@ export const testFetch = (data: {
 
   const getCells: t.FetchSheetCells = async args => {
     before('getCells', args);
-    const cells = trimQuery(data.cells, args.query);
+    const cells = data.cells || {};
+
     const rows = coord.cell.max.row(Object.keys(cells)) + 1;
     const total = { rows };
     res.getCellsCount++;
@@ -92,7 +84,12 @@ export const testInstanceFetch = async <T>(args: {
     fetch: testFetch({ defs: args.defs }),
     cache: args.cache,
   });
-  const cells = args.cells || TypeSystem.objectToCells<T>(typeClient).rows(0, args.rows);
+
+  const cells = {
+    ...(args.cells || {}),
+    ...TypeSystem.objectToCells<T>(typeClient).rows(0, args.rows),
+  };
+
   const def: t.ITypeDefPayload = {
     ns: { type: { implements: args.implements } },
     columns: {},

@@ -73,7 +73,10 @@ export function toDeclaration(args: {
 
     let res = `
 export declare type ${args.typename} = {
-${lines.filter(line => typeof line === 'string').join('\n')}
+${lines
+  .filter(line => typeof line === 'string')
+  .map(line => line.trimEnd())
+  .join('\n')}
 };`.substring(1);
 
     written.push(args.typename);

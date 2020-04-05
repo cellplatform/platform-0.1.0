@@ -3,7 +3,7 @@ import { filter, map, share, takeUntil, tap } from 'rxjs/operators';
 import { TypeCache } from '../TypeCache';
 import { R, Schema, t, Uri } from './common';
 
-export type IStateArgs = {
+export type IArgs = {
   uri: t.INsUri;
   events$: t.Subject<t.TypedSheetEvent>;
   fetch: t.ISheetFetcher;
@@ -14,14 +14,14 @@ export type IStateArgs = {
  * State machine for a strongly-typed sheet.
  */
 export class TypedSheetState<T> implements t.ITypedSheetState<T> {
-  public static create<T>(args: IStateArgs) {
+  public static create<T>(args: IArgs) {
     return new TypedSheetState<T>(args);
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: IStateArgs) {
+  private constructor(args: IArgs) {
     const fetch = TypeCache.fetch(args.fetch, { cache: args.cache });
 
     // INTERCEPT: Return an pending changes to cells from the fetch method.
@@ -131,9 +131,10 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
   }
 
   public clearCache() {
+    const ns = this.uri.id;
     const fetch = this.fetch;
     const cache = fetch.cache;
-    const prefix = fetch.cacheKey('getCells', this.uri.id);
+    const prefix = fetch.cacheKey('getCells', ns);
     cache.keys.filter(key => key.startsWith(prefix)).forEach(key => cache.delete(key));
   }
 

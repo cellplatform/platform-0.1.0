@@ -11,11 +11,11 @@ describe('model.db.Ns (Namespace)', () => {
     const uri = 'ns:foo';
     const schema = Schema.ns(uri);
 
-    await Cell.create({ db, uri: schema.cell('A1').uri })
+    await Cell.create({ db, uri: schema.cell('A1').uri.toString() })
       .set({ value: '123' })
       .save();
 
-    await Cell.create({ db, uri: schema.cell('A2').uri })
+    await Cell.create({ db, uri: schema.cell('A2').uri.toString() })
       .set({ value: '456' })
       .save();
 

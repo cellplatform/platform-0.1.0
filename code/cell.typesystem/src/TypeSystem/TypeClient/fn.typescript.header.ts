@@ -16,7 +16,7 @@ export function toTypescriptHeader(args: { uri: string; pkg: Package; filename?:
  *    |                
  *    |➔  ${args.uri}
  *    |
- * 
+ *
  * By:
  *    ${args.pkg.name}@${args.pkg.version}
  * 

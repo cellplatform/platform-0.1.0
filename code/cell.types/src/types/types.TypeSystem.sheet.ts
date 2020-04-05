@@ -10,22 +10,25 @@ export type ITypedSheet<T> = {
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   dispose(): void;
-  cursor(args?: ITypedSheetCursorArgs): Promise<ITypedSheetCursor<T>>;
+  cursor(range?: string): ITypedSheetCursor<T>;
 };
 
 /**
  * A cursor into a subset of sheet data.
  */
-export type ITypedSheetCursorArgs = { index?: number; take?: number };
 export type ITypedSheetCursor<T> = {
   readonly uri: t.INsUri;
-  readonly index: number;
-  readonly take?: number;
-  readonly total: number;
   readonly rows: ITypedSheetRow<T>[];
+  readonly range: string;
+  readonly total: number; // Total number of rows.
+  readonly status: 'INIT' | 'LOADING' | 'LOADED';
+  readonly isReady: boolean;
   exists(index: number): boolean;
   row(index: number): ITypedSheetRow<T>;
+  load(args?: string | ITypedSheetCursorLoad): Promise<ITypedSheetCursor<T>>;
 };
+
+export type ITypedSheetCursorLoad = { range?: string };
 
 /**
  * A single row within a sheet.
@@ -36,9 +39,8 @@ export type ITypedSheetRow<T> = {
   readonly props: ITypedSheetRowProps<T>;
   readonly types: ITypedSheetRowTypes<T>;
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
-  readonly isLoaded: boolean;
+  readonly isReady: boolean;
   load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
-  prop<K extends keyof T>(name: K): ITypedSheetRowProp<T, K>;
   toObject(): T;
 };
 
@@ -55,22 +57,17 @@ export type ITypedSheetRef<T> = {
 export type ITypedSheetRefs<T> = {
   ns: t.INsUri;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
-};
-
-/**
- * Read/write methods for the properties of a single row.
- */
-export type ITypedSheetRowProp<T, K extends keyof T> = {
-  get(): T[K];
-  set(value: T[K]): ITypedSheetRow<T>;
-  clear(): ITypedSheetRow<T>;
+  sheet: t.ITypedSheet<T>;
+  isReady: boolean;
+  ready(): Promise<ITypedSheetRefs<T>>;
+  cursor(range?: string): Promise<ITypedSheetCursor<T>>;
 };
 
 /**
  * The pure "strongly typed" READ/WRITE data-properties of the cells for a row.
  */
 export type ITypedSheetRowProps<T> = {
-  readonly [K in keyof T]: T[K];
+  [K in keyof T]: T[K];
 };
 
 /**

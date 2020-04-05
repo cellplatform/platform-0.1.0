@@ -149,15 +149,25 @@ describe('CellRange', () => {
     });
 
     it('PARTIAL_ALL variants (*:D5, *:D5, D5:*, D5:**)', () => {
-      const isPartialAll = (key: string) => {
+      const test = (key: string) => {
         const range = fromKey(key);
-        expect(range.isValid).to.eql(true, `Should be valid "${key}".`);
-        expect(range.type).to.eql('PARTIAL_ALL', `Should be type PARTIAL_ALL "${key}".`);
+        expect(range.isValid).to.eql(true, `"${key}" should be valid`);
+        expect(range.type).to.eql('PARTIAL_ALL', `"${key}" should be type PARTIAL_ALL`);
       };
-      isPartialAll('*:D5');
-      isPartialAll('**:D5');
-      isPartialAll('D5:*');
-      isPartialAll('D5:**');
+      test('*:D5');
+      test('**:D5');
+      test('D5:*');
+      test('D5:**');
+
+      test('1:*');
+      test('1:**');
+      test('*:1');
+      test('**:1');
+
+      test('A:*');
+      test('A:**');
+      test('*:A');
+      test('**:A');
     });
   });
 
@@ -220,9 +230,16 @@ describe('CellRange', () => {
 
   describe('errors', () => {
     it('error: INVALID RANGE', () => {
-      const range = fromKey('..');
-      expect(range.isValid).to.eql(false);
-      expect(range.error).to.contain('INVALID RANGE "..:.."');
+      const test = (input: string) => {
+        const key = (input || '').trim();
+        const range = fromKey(input);
+        expect(range.isValid).to.eql(false);
+        expect(range.error).to.include(`INVALID RANGE "${key}:${key}"`);
+      };
+      test('..');
+      test('.');
+      test('');
+      test('  ');
     });
 
     it('error: range spans different sheets', () => {
@@ -233,67 +250,67 @@ describe('CellRange', () => {
   });
 
   it('valid', () => {
-    const valid = (key: string) => {
+    const test = (key: string) => {
       const range = fromKey(key);
       expect(range.isValid).to.eql(true, `key '${key}' should be valid.`);
     };
-    valid('A:A');
-    valid('A:B');
-    valid('1:1');
-    valid('1:999');
-    valid('A1:Z99');
-    valid('A$1:B2');
-    valid('$A$1:$B$2');
-    valid('$A:B');
-    valid('A:$B');
-    valid('$1:3');
-    valid('1:$3');
+    test('A:A');
+    test('A:B');
+    test('1:1');
+    test('1:999');
+    test('A1:Z99');
+    test('A$1:B2');
+    test('$A$1:$B$2');
+    test('$A:B');
+    test('A:$B');
+    test('$1:3');
+    test('1:$3');
 
-    valid('A');
-    valid('1');
-    valid(' A  ');
-    valid('  1 ');
+    test('A');
+    test('1');
+    test(' A  ');
+    test('  1 ');
 
-    valid('*:*');
-    valid('Sheet1!*:*');
-    valid('*:H3');
-    valid('**:H3');
-    valid('H3:*');
-    valid('H3:**');
+    test('*:*');
+    test('Sheet1!*:*');
+    test('*:H3');
+    test('**:H3');
+    test('H3:*');
+    test('H3:**');
 
-    valid('A1:B'); // Mixing CELL and COLUMN.
-    valid('1:A1');
-    valid('1:A');
-    valid('A1:A');
-    valid('A:A3');
-    valid('3:A3');
-    valid('Sheet1!A:B');
-    valid('Sheet1!A:Sheet1!B');
-    valid('A:Sheet1!B');
+    test('2:*');
+    test('*:2');
+
+    test('A1:B'); // Mixing CELL and COLUMN.
+    test('1:A1');
+    test('1:A');
+    test('A1:A');
+    test('A:A3');
+    test('3:A3');
+    test('Sheet1!A:B');
+    test('Sheet1!A:Sheet1!B');
+    test('A:Sheet1!B');
   });
 
   it('invalid', () => {
-    const invalid = (key: string) => {
+    const test = (key: string) => {
       const range = fromKey(key);
       expect(range.isValid).to.eql(false, `key '${key}' should be invalid.`);
     };
-    invalid('');
-    invalid(' ');
-    invalid('..');
-    invalid('A:B:C');
-    invalid(':');
-    invalid(' A1:');
-    invalid(':C34 ');
+    test('');
+    test(' ');
+    test('..');
+    test('A:B:C');
+    test(':');
+    test(' A1:');
+    test(':C34 ');
 
-    invalid('2:*'); // NB: May support later.
-    invalid('*:2'); // NB: May support later.
+    test('***:H3');
+    test('H3:***');
 
-    invalid('***:H3');
-    invalid('H3:***');
-
-    invalid('1:-1');
-    invalid('-1:1');
-    invalid('-1:-1');
+    test('1:-1');
+    test('-1:1');
+    test('-1:-1');
   });
 
   describe('square (correct out of order ranges, eg: "C4:A1" => "A1:C4")', () => {
@@ -721,7 +738,7 @@ describe('CellRange', () => {
     });
 
     it('error', () => {
-      expect(fromKey('2:*').toString()).to.contain('INVALID RANGE "2:*"');
+      expect(fromKey('2:***').toString()).to.contain('INVALID RANGE "2:***"');
     });
   });
 

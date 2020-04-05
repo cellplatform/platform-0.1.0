@@ -18,6 +18,7 @@ import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 import { TypedSheetState } from './TypedSheetState';
 import { TypedSheetRow } from './TypedSheetRow';
+import { TypedSheetCursor } from './TypedSheetCursor';
 import { TypedSheet } from '.';
 import { TypeClient } from '../TypeClient';
 
@@ -30,11 +31,8 @@ import { TypeClient } from '../TypeClient';
  * - read/write: linked sheet
  */
 
-describe.only('TypedSheet', () => {
-  it.skip('events$ - observable (change/pending-save alerts)', () => {}); // tslint:disable-line
-  it.skip('events$ - read/write deeply into child props (fires change events)', () => {}); // tslint:disable-line
-
-  describe.only('lifecycle', () => {
+describe('TypedSheet', () => {
+  describe('lifecycle', () => {
     it('dispose', async () => {
       const { sheet } = await testSheet();
 
@@ -72,17 +70,193 @@ describe.only('TypedSheet', () => {
     });
   });
 
+  describe('cursor', () => {
+    it('create: default (unloaded)', async () => {
+      const { sheet } = await testSheet();
+      const cursor = sheet.cursor();
+      expect(cursor.range).to.eql(TypedSheetCursor.DEFAULT.RANGE);
+      expect(cursor.status).to.eql('INIT');
+      expect(cursor.total).to.eql(-1);
+    });
+
+    it('create: custom range (auto correct)', async () => {
+      const { sheet } = await testSheet();
+      const DEFAULT = TypedSheetCursor.DEFAULT;
+
+      const test = (range: string, expected?: string) => {
+        const res = sheet.cursor(range);
+        expect(res.range).to.eql(expected || range);
+      };
+
+      test('3:15');
+      test('10:50');
+      test('1:80');
+      test('', DEFAULT.RANGE);
+      test('  ', DEFAULT.RANGE);
+
+      test('0:0', '1:1');
+      test('0:10', '1:10');
+      test('10:0', '1:10');
+      test('500:500');
+
+      test('.:.', DEFAULT.RANGE);
+      test('-1:10', DEFAULT.RANGE);
+      test('1:-10', DEFAULT.RANGE);
+
+      test('A:5', '1:5');
+      test('C:5', '1:5');
+      test('5:C', '1:5');
+
+      test('*:*', DEFAULT.RANGE);
+      test('**:**', DEFAULT.RANGE);
+      test('*:**', DEFAULT.RANGE);
+      test('**:*', DEFAULT.RANGE);
+
+      test('1:*', DEFAULT.RANGE);
+      test('1:**', DEFAULT.RANGE);
+      test('*:1', DEFAULT.RANGE);
+      test('**:1', DEFAULT.RANGE);
+
+      test('0:*', `1:${DEFAULT.PAGE}`);
+      test('10:*', `10:${DEFAULT.PAGE}`);
+      test('*:800', `${DEFAULT.PAGE}:800`);
+      test('800:*', `${DEFAULT.PAGE}:800`);
+    });
+
+    it('load (status: INIT ➔ LOADING ➔ LOADED)', async () => {
+      const { sheet } = await testSheet();
+      const cursor = sheet.cursor();
+
+      expect(cursor.isReady).to.eql(false);
+      expect(cursor.status).to.eql('INIT');
+      expect(cursor.total).to.eql(-1);
+
+      expect(cursor.row(0).isReady).to.eql(false);
+
+      const wait = cursor.load();
+
+      expect(cursor.status).to.eql('LOADING');
+      expect(cursor.total).to.eql(-1);
+
+      await wait;
+
+      expect(cursor.status).to.eql('LOADED');
+      expect(cursor.isReady).to.eql(true);
+      expect(cursor.total).to.eql(9);
+
+      expect(cursor.row(0).isReady).to.eql(true);
+      expect(cursor.row(8).isReady).to.eql(true);
+      expect(cursor.row(9).isReady).to.eql(false);
+    });
+
+    it('load (subset)', async () => {
+      const { sheet } = await testSheet();
+      const cursor = await sheet.cursor('2:5').load();
+      expect(cursor.row(0).isReady).to.eql(false);
+      expect(cursor.row(1).isReady).to.eql(true);
+      expect(cursor.row(4).isReady).to.eql(true);
+      expect(cursor.row(5).isReady).to.eql(false);
+    });
+
+    it('load (expand range from [loaded] state)', async () => {
+      const { sheet } = await testSheet();
+      const cursor = await sheet.cursor('1:5').load();
+
+      expect(cursor.isReady).to.eql(true);
+      expect(cursor.range).to.eql('1:5');
+
+      expect(cursor.row(0).isReady).to.eql(true);
+      expect(cursor.row(8).isReady).to.eql(false);
+
+      await cursor.load('3:15');
+
+      expect(cursor.range).to.eql('1:15'); //           NB: includes the initial load (starting at 1 not 3).
+      expect(cursor.row(8).isReady).to.eql(true); //   NB: Now loaded.
+      expect(cursor.row(14).isReady).to.eql(false); // NB: does not exist yet.
+    });
+
+    it('load (reset range from [unloaded] state)', async () => {
+      const { sheet } = await testSheet();
+      const cursor = sheet.cursor();
+
+      expect(cursor.isReady).to.eql(false);
+      expect(cursor.range).to.eql(TypedSheetCursor.DEFAULT.RANGE);
+
+      await cursor.load('3:15');
+      expect(cursor.isReady).to.eql(true);
+      expect(cursor.range).to.eql('3:15'); // NB: starts at the initial loaded range.
+
+      expect(cursor.row(0).isReady).to.eql(false);
+      expect(cursor.row(1).isReady).to.eql(false);
+      expect(cursor.row(2).isReady).to.eql(true);
+      expect(cursor.row(8).isReady).to.eql(true);
+      expect(cursor.row(14).isReady).to.eql(false); // NB: does not exist yet.
+    });
+
+    it('events: loading | loaded', async () => {
+      const { sheet } = await testSheet();
+      const cursor = sheet.cursor();
+
+      const fired: t.TypedSheetEvent[] = [];
+      sheet.events$.subscribe(e => fired.push(e));
+
+      await cursor.load();
+
+      expect(fired.length).to.eql(2);
+
+      const e1 = fired[0] as t.ITypedSheetLoadingEvent;
+      const e2 = fired[1] as t.ITypedSheetLoadedEvent;
+
+      expect(e1.type).to.eql('SHEET/loading');
+      expect(e1.payload.ns).to.eql(cursor.uri.toString());
+      expect(e1.payload.range).to.eql(cursor.range);
+
+      expect(e2.type).to.eql('SHEET/loaded');
+      expect(e2.payload.ns).to.eql(cursor.uri.toString());
+      expect(e2.payload.range).to.eql(cursor.range);
+      expect(e2.payload.total).to.eql(9);
+    });
+
+    it('does not load twice if already LOADING', async () => {
+      const { sheet } = await testSheet();
+      const cursor = sheet.cursor();
+      const fired: t.TypedSheetEvent[] = [];
+      sheet.events$.subscribe(e => fired.push(e));
+
+      await Promise.all([cursor.load(), cursor.load(), cursor.load()]);
+      expect(fired.length).to.eql(2); // NB: Would be 6 if load de-duping wan't implemented.
+    });
+
+    it('does load twice if query differs', async () => {
+      const { sheet } = await testSheet();
+      const cursor = sheet.cursor();
+      const fired: t.TypedSheetEvent[] = [];
+      sheet.events$.subscribe(e => fired.push(e));
+
+      await Promise.all([
+        cursor.load(),
+        cursor.load(),
+        cursor.load('4:6'),
+        cursor.load(),
+        cursor.load('4:6'),
+        cursor.load(),
+      ]);
+
+      expect(fired.length).to.eql(4); // NB: Only two load operations out of 6 invoked.
+    });
+  });
+
   describe('cursor.row', () => {
     it('throw: row out-of-bounds (index: -1)', async () => {
       const { sheet } = await testSheet();
-      const cursor = await sheet.cursor();
+      const cursor = await sheet.cursor().load();
       const err = /Row index must be >=0/;
       expect(() => cursor.row(-1)).to.throw(err);
     });
 
     it('exists', async () => {
       const { sheet } = await testSheet();
-      const cursor = await sheet.cursor();
+      const cursor = await sheet.cursor().load();
 
       expect(cursor.exists(-1)).to.eql(false);
       expect(cursor.exists(0)).to.eql(true);
@@ -91,14 +265,14 @@ describe.only('TypedSheet', () => {
 
     it('retrieves non-existent row', async () => {
       const { sheet } = await testSheet();
-      const cursor = await sheet.cursor();
+      const cursor = await sheet.cursor().load();
       expect(cursor.exists(99)).to.eql(false);
       expect(cursor.row(99)).to.not.eql(undefined);
     });
 
     it('toObject', async () => {
       const { sheet } = await testSheetEnum();
-      const row = (await sheet.cursor()).row(0);
+      const row = (await sheet.cursor().load()).row(0);
       expect(row.toObject()).to.eql({
         single: 'hello',
         union: ['blue'],
@@ -109,7 +283,7 @@ describe.only('TypedSheet', () => {
     describe('row.types', () => {
       it('row.types.list', async () => {
         const { sheet } = await testSheet();
-        const cursor = await sheet.cursor();
+        const cursor = await sheet.cursor().load();
         const types = cursor.row(0).types;
 
         const list1 = types.list;
@@ -121,7 +295,7 @@ describe.only('TypedSheet', () => {
 
       it('row.types.map', async () => {
         const { sheet } = await testSheet();
-        const cursor = await sheet.cursor();
+        const cursor = await sheet.cursor().load();
         const types = cursor.row(0).types;
 
         expect(types.map.title.column).to.eql('A');
@@ -133,9 +307,9 @@ describe.only('TypedSheet', () => {
     });
 
     describe('default value', () => {
-      it.only('simple: primitive | {object}', async () => {
+      it('simple: primitive | {object}', async () => {
         const { sheet } = await testSheetPrimitives();
-        const cursor = await sheet.cursor();
+        const cursor = await sheet.cursor().load();
 
         const row1 = cursor.row(0).props; //  NB: Exists.
         const row2 = cursor.row(99).props; // NB: Does not exist (use default).
@@ -155,15 +329,18 @@ describe.only('TypedSheet', () => {
         });
 
         const sheet = await TypeSystem.Sheet.load<d.MyDefaults>({ fetch, ns });
-        const cursor = await sheet.cursor();
+        const cursor = await sheet.cursor().load();
         expect(cursor.exists(99)).to.eql(false);
       });
     });
 
-    describe('row.prop (read/write methods)', () => {
+    describe('row.prop (get/set methods)', () => {
+      type P = TypedSheetRow<p.Primitives>;
+      type R = TypedSheetRow<f.MyRow>;
+
       it('reuse api instance', async () => {
         const { sheet } = await testSheetPrimitives();
-        const row = (await sheet.cursor()).row(0);
+        const row = (await sheet.cursor().load()).row(0) as P;
 
         const prop1 = row.prop('numberProp');
         const prop2 = row.prop('numberProp');
@@ -175,9 +352,10 @@ describe.only('TypedSheet', () => {
 
       it('get', async () => {
         const { sheet } = await testSheetPrimitives();
-        const cursor = await sheet.cursor();
-        const prop1 = cursor.row(0).prop('stringValue');
-        const prop2 = cursor.row(99).prop('stringValue');
+        const cursor = await sheet.cursor().load();
+
+        const prop1 = (cursor.row(0) as P).prop('stringValue');
+        const prop2 = (cursor.row(99) as P).prop('stringValue');
 
         expect(prop1.get()).to.eql('hello value');
         expect(prop2.get()).to.eql('Hello (Default)');
@@ -185,8 +363,8 @@ describe.only('TypedSheet', () => {
 
       it('set', async () => {
         const { sheet } = await testSheetPrimitives();
-        const cursor = await sheet.cursor();
-        const prop = cursor.row(0).prop('stringValue');
+        const cursor = await sheet.cursor().load();
+        const prop = (cursor.row(0) as P).prop('stringValue');
 
         prop.set('');
         expect(prop.get()).to.eql(''); // NB: Immediate
@@ -202,11 +380,25 @@ describe.only('TypedSheet', () => {
         expect(prop.get()).to.eql('foo');
       });
 
+      it('set: throw if attempt to set ref', async () => {
+        const { sheet } = await testSheet();
+        const cursor = await sheet.cursor().load();
+        const row = cursor.row(0) as R;
+        expect(() => row.prop('messages').set({} as any)).to.throw(/Cannot write to property/);
+        expect(() => row.prop('message').set({} as any)).to.throw(/Cannot write to property/);
+
+        // NB: does not throw when clearing.
+        row.prop('message').clear();
+        row.prop('messages').clear();
+      });
+
       it('clear', async () => {
         const { sheet } = await testSheetPrimitives();
-        const cursor = await sheet.cursor();
 
-        const prop = cursor.row(0).prop('stringValue');
+        const cursor = await sheet.cursor().load();
+        const row = cursor.row(0) as P;
+
+        const prop = row.prop('stringValue');
         expect(prop.get()).to.eql('hello value');
 
         prop.clear();
@@ -217,175 +409,250 @@ describe.only('TypedSheet', () => {
     describe('read/write (inline)', () => {
       it('{ object }', async () => {
         const { sheet } = await testSheet();
-        const cursor = await sheet.cursor();
-        const row = cursor.row(0);
+        const cursor = await sheet.cursor().load();
+        const row = cursor.row(0).props;
 
-        expect(row.props.title).to.eql('One');
-        expect(row.props.color).to.eql({ label: 'background', color: 'red' });
-        expect(row.props.isEnabled).to.eql(true);
+        expect(row.title).to.eql('One');
+        expect(row.color).to.eql({ label: 'background', color: 'red' });
+        expect(row.isEnabled).to.eql(true);
 
-        row.prop('title').set('hello');
-        row.prop('color').set({ label: 'background', color: 'green', description: 'Yo' });
+        row.title = 'hello';
+        row.color = { label: 'background', color: 'green', description: 'Yo' };
 
-        expect(row.props.title).to.eql('hello');
-        expect(row.props.color).to.eql({
+        expect(row.title).to.eql('hello');
+        expect(row.color).to.eql({
           label: 'background',
           color: 'green',
           description: 'Yo',
         });
 
-        row.prop('title').set('');
-        row.prop('color').set(undefined);
+        row.title = '';
+        row.color = undefined;
 
-        expect(row.props.title).to.eql('');
-        expect(row.props.color).to.eql(undefined);
+        expect(row.title).to.eql('');
+        expect(row.color).to.eql(undefined);
       });
 
       describe('enum', () => {
         it('single', async () => {
           const { sheet } = await testSheetEnum();
-          const cursor = await sheet.cursor();
-          const row = cursor.row(0);
-          expect(row.props.single).to.eql('hello');
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0).props;
+          expect(row.single).to.eql('hello');
 
-          row.prop('single').set(undefined);
-          expect(row.props.single).to.eql(undefined);
+          row.single = undefined;
+          expect(row.single).to.eql(undefined);
         });
 
         it('union', async () => {
           const { sheet } = await testSheetEnum();
-          const cursor = await sheet.cursor();
-          const row = cursor.row(0);
-          expect(row.props.union).to.eql(['blue']);
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0).props;
+          expect(row.union).to.eql(['blue']);
 
-          row.prop('union').set('red');
-          expect(row.props.union).to.eql('red');
+          row.union = 'red';
+          expect(row.union).to.eql('red');
 
-          row.prop('union').set(['blue', 'blue']); // NB: stupid valid, testing array structure.
-          expect(row.props.union).to.eql(['blue', 'blue']);
+          row.union = ['blue', 'blue'];
+          expect(row.union).to.eql(['blue', 'blue']);
 
-          row.prop('union').clear();
-          expect(row.props.union).to.eql(undefined);
+          row.union = undefined as any; // 🐷HACK: until there is a proper way to clear.
+          expect(row.union).to.eql(undefined);
         });
 
         it('array', async () => {
           const { sheet } = await testSheetEnum();
-          const cursor = await sheet.cursor();
-          const row = cursor.row(0);
-          expect(row.props.array).to.eql(['red', 'green', 'blue']);
-          row.prop('array').clear();
-          expect(row.props.array).to.eql([]);
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0).props;
+          expect(row.array).to.eql(['red', 'green', 'blue']);
+
+          row.array = undefined as any; // 🐷HACK: until there is a proper way to clear.
+          expect(row.array).to.eql([]);
         });
       });
 
       describe('primitive', () => {
         it('string', async () => {
           const { sheet } = await testSheetPrimitives();
-          const cursor = await sheet.cursor();
-          const row = cursor.row(0);
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0).props;
 
-          expect(row.props.stringValue).to.eql('hello value');
-          expect(row.props.stringProp).to.eql('hello prop');
-          row.prop('stringValue').set('');
-          row.prop('stringProp').set('');
+          expect(row.stringValue).to.eql('hello value');
+          expect(row.stringProp).to.eql('hello prop');
 
-          expect(row.props.stringValue).to.eql('');
-          expect(row.props.stringProp).to.eql('');
+          row.stringValue = '';
+          row.stringProp = '';
+          expect(row.stringValue).to.eql('');
+          expect(row.stringProp).to.eql('');
+
+          row.stringValue = 'Foo';
+          row.stringProp = 'Bar';
+          expect(row.stringValue).to.eql('Foo');
+          expect(row.stringProp).to.eql('Bar');
         });
 
         it('number', async () => {
           const { sheet } = await testSheetPrimitives();
-          const cursor = await sheet.cursor();
-          const row = cursor.row(0);
-          expect(row.props.numberValue).to.eql(123);
-          expect(row.props.numberProp).to.eql(456);
-          row.prop('numberValue').set(-1);
-          row.prop('numberProp').set(-1);
-          expect(row.props.numberValue).to.eql(-1);
-          expect(row.props.numberProp).to.eql(-1);
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0).props;
+
+          expect(row.numberValue).to.eql(123);
+          expect(row.numberProp).to.eql(456);
+
+          row.numberValue = -1;
+          row.numberProp = -1;
+          expect(row.numberValue).to.eql(-1);
+          expect(row.numberProp).to.eql(-1);
         });
 
         it('boolean', async () => {
           const { sheet } = await testSheetPrimitives();
-          const cursor = await sheet.cursor();
-          const row = cursor.row(0);
-          expect(row.props.booleanValue).to.eql(true);
-          expect(row.props.booleanProp).to.eql(true);
-          await row.prop('booleanValue').set(false);
-          await row.prop('booleanProp').set(false);
-          expect(row.props.booleanValue).to.eql(false);
-          expect(row.props.booleanProp).to.eql(false);
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0).props;
+          expect(row.booleanValue).to.eql(true);
+          expect(row.booleanProp).to.eql(true);
+
+          row.booleanValue = false;
+          row.booleanProp = false;
+          expect(row.booleanValue).to.eql(false);
+          expect(row.booleanProp).to.eql(false);
         });
 
         it('null', async () => {
           const { sheet } = await testSheetPrimitives();
-          const cursor = await sheet.cursor();
-          const row = cursor.row(0);
-          expect(row.props.nullValue).to.eql(null);
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0).props;
+          expect(row.nullValue).to.eql(null);
 
-          row.prop('nullValue').set(123);
-          row.prop('nullProp').set(123);
-          expect(row.props.nullValue).to.eql(123);
-          expect(row.props.nullProp).to.eql(123);
+          row.nullValue = 123;
+          row.nullProp = 123;
+          expect(row.nullValue).to.eql(123);
+          expect(row.nullProp).to.eql(123);
 
-          row.prop('nullValue').set(null);
-          row.prop('nullProp').set(null);
-          expect(row.props.nullValue).to.eql(null);
-          expect(row.props.nullProp).to.eql(null);
+          row.nullValue = null;
+          row.nullProp = null;
+          expect(row.nullValue).to.eql(null);
+          expect(row.nullProp).to.eql(null);
         });
 
         it('undefined', async () => {
           const { sheet } = await testSheetPrimitives();
-          const cursor = await sheet.cursor();
-          const row = cursor.row(0);
-          expect(row.props.undefinedValue).to.eql(undefined);
-          expect(row.props.undefinedProp).to.eql(undefined);
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0).props;
+          expect(row.undefinedValue).to.eql(undefined);
+          expect(row.undefinedProp).to.eql(undefined);
 
-          row.prop('undefinedValue').set('hello');
-          row.prop('undefinedProp').set('hello');
-          expect(row.props.undefinedValue).to.eql('hello');
-          expect(row.props.undefinedProp).to.eql('hello');
+          row.undefinedValue = 'hello';
+          row.undefinedProp = 'hello';
+          expect(row.undefinedValue).to.eql('hello');
+          expect(row.undefinedProp).to.eql('hello');
 
-          row.prop('undefinedValue').set(undefined);
-          row.prop('undefinedProp').set(undefined);
-
-          expect(row.props.undefinedValue).to.eql(undefined);
-          expect(row.props.undefinedProp).to.eql(undefined);
+          row.undefinedValue = undefined;
+          row.undefinedProp = undefined;
+          expect(row.undefinedValue).to.eql(undefined);
+          expect(row.undefinedProp).to.eql(undefined);
         });
       });
     });
 
     describe('read/write (ref)', () => {
-      it('1:1 (row)', async () => {
-        const { sheet } = await testSheetMessages();
-        const cursor = await sheet.cursor();
-        const row = cursor.row(0);
-
-        const color = row.props.color;
-        // const messages = await row.props.messages;
-
-        // console.log('-------------------------------------------');
-        // console.log('color', color);
-
-        expect(color).to.be.an.instanceof(TypedSheetRef);
+      describe('1:1', () => {
+        it('single row', async () => {
+          const { sheet } = await testSheet();
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0);
+          const message = row.props.message;
+          expect(message).to.be.an.instanceof(TypedSheetRef);
+          expect(row.props.message).to.equal(message); // NB: Cached instance.
+        });
       });
 
-      it('1:* (cursor)', async () => {
-        const { sheet } = await testSheetMessages();
-        const cursor = await sheet.cursor();
-        const row = cursor.row(0);
+      describe('1:*', () => {
+        it('load ➔ ready', async () => {
+          const { sheet } = await testSheet();
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0);
 
-        const messages = row.props.messages;
-        expect(messages).to.be.an.instanceof(TypedSheetRefs);
+          const messages = row.props.messages;
+          expect(messages).to.be.an.instanceof(TypedSheetRefs);
+          expect(row.props.messages).to.equal(messages); // NB: Cached instance.
+
+          await messages.ready();
+          expect(messages.sheet).to.be.an.instanceof(TypedSheet);
+          expect(messages.ns.toString()).to.eql(messages.sheet.uri.toString());
+
+          const childCursor = messages.sheet.cursor('1:10');
+          const childRow = childCursor.row(0).props;
+
+          expect(childRow.message).to.eql(undefined);
+          childRow.message = 'hello';
+          childRow.user = 'bob';
+          expect(childRow.message).to.eql('hello');
+          expect(childRow.user).to.eql('bob');
+
+          // Ensure the sheet is linked.
+          const changes = sheet.state.changes;
+          const changedLinks = changes.E1.to.links || {};
+          expect(changedLinks['ref:type']).to.eql(messages.sheet.uri.toString());
+        });
+
+        it('throw: sheet called before ready', async () => {
+          const { sheet } = await testSheet();
+          const row = (await sheet.cursor().load()).row(0).props;
+          const fn = () => row.messages.sheet;
+          expect(fn).to.throw(/called before \[ready\] completes/);
+        });
+
+        it('ready called only once', async () => {
+          const { sheet } = await testSheet();
+          const row = (await sheet.cursor().load()).row(0).props;
+          const messages = row.messages;
+          await Promise.all([messages.ready(), messages.ready(), messages.ready()]);
+          expect(messages.isReady).to.eql(true);
+        });
+
+        it('has placeholder URI prior to being [ready]', async () => {
+          const { sheet } = await testSheet();
+          const cursor = await sheet.cursor().load();
+          const messages = cursor.row(0).props.messages;
+
+          expect(messages.isReady).to.eql(false);
+          expect(messages.ns.toString()).to.eql(TypedSheetRefs.PLACEHOLDER);
+          await messages.ready();
+          expect(messages.ns.toString()).to.not.eql(TypedSheetRefs.PLACEHOLDER);
+        });
+
+        it('uses existing link', async () => {
+          const { sheet } = await testSheet();
+          const cursorA = await sheet.cursor('1:3').load();
+          const cursorB = await sheet.cursor('1:10').load();
+
+          const rowA = cursorA.row(0).props;
+          await rowA.messages.ready();
+
+          const rowB = cursorB.row(0).props;
+          await rowB.messages.ready();
+
+          expect(rowA.messages.ns.toString()).to.not.eql(TypedSheetRefs.PLACEHOLDER);
+          expect(rowB.messages.ns.toString()).to.not.eql(TypedSheetRefs.PLACEHOLDER);
+
+          expect(rowA.messages.ns.toString()).to.eql(rowB.messages.ns.toString());
+        });
+
+        it('cursor (safe: awaits ready)', async () => {
+          const { sheet } = await testSheet();
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0).props;
+
+          const childCursor = await row.messages.cursor('1:10');
+          const childRow = childCursor.row(0).props;
+
+          childRow.message = 'hello';
+          childRow.user = 'bob';
+          expect(childRow.message).to.eql('hello');
+          expect(childRow.user).to.eql('bob');
+        });
       });
-    });
-
-    it.skip('query (paging: index/skip)', () => {
-      /**
-       * TODO 🐷
-       * - re-jig DB column to have row number before column
-       *   to allow for more effecent querying.
-       */
     });
   });
 
@@ -682,8 +949,8 @@ describe.only('TypedSheet', () => {
       expect(row.uri.toString()).to.eql('cell:foo:1');
       expect(row.index).to.eql(0);
 
-      expect(row.isLoaded).to.eql(false);
       expect(row.status).to.eql('INIT');
+      expect(row.isReady).to.eql(false);
 
       expect(row.types.list).to.eql(ns.columns);
       expect(row.types.map.title.column).to.eql('A');
@@ -697,17 +964,17 @@ describe.only('TypedSheet', () => {
 
       expect(row.props.title).to.eql('Untitled'); // Default value.
       expect(row.props.isEnabled).to.eql(undefined);
-      expect(row.isLoaded).to.eql(false);
+      expect(row.isReady).to.eql(false);
       expect(row.status).to.eql('INIT');
 
       const res = row.load();
 
-      expect(row.isLoaded).to.eql(false);
+      expect(row.isReady).to.eql(false);
       expect(row.status).to.eql('LOADING');
 
       await res;
 
-      expect(row.isLoaded).to.eql(true);
+      expect(row.isReady).to.eql(true);
       expect(row.status).to.eql('LOADED');
 
       expect(row.props.title).to.eql('One');
@@ -734,6 +1001,27 @@ describe.only('TypedSheet', () => {
       expect(row.props.title).to.eql('One');
       expect(row.props.isEnabled).to.eql(undefined);
     });
+
+    it('updates when prop changed elsewhere via event (ie. change not via row instance API)', async () => {
+      const { row, ctx } = await testRow('cell:foo:1');
+      expect(row.props.title).to.eql('Untitled');
+
+      await row.load();
+      expect(row.props.title).to.eql('One');
+
+      // Make change to property externally to row.
+      ctx.events$.next({
+        type: 'SHEET/change',
+        payload: {
+          cell: 'cell:foo:A1',
+          data: { value: 'Hello!' },
+        },
+      });
+      expect(row.props.title).to.eql('Hello!'); // NB: Row state reflects external event change.
+
+      row.props.title = 'Foobar';
+      expect(row.props.title).to.eql('Foobar'); // NB: Update via prop (normal behavior).
+    });
   });
 });
 
@@ -746,6 +1034,7 @@ const testFetchMySheet = (ns: string) => {
     instance: ns,
     implements: 'ns:foo',
     defs: TYPE_DEFS,
+    cells: { A9: { value: 'Nine' } },
     rows: [
       {
         title: 'One',
