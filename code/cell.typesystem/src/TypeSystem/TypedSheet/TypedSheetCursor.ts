@@ -82,7 +82,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
   private _status: t.ITypedSheetCursor<T>['status'] = 'INIT';
   private _total = -1;
   private _loading: ILoading<T>[] = [];
-  private _isLoaded = false;
+  private _isReady = false;
 
   public readonly uri: t.INsUri;
 
@@ -101,8 +101,8 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     return this._status;
   }
 
-  public get isLoaded() {
-    return this._isLoaded;
+  public get isReady() {
+    return this._isReady;
   }
 
   public get total() {
@@ -129,7 +129,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
   }
 
   public async load(args?: string | t.ITypedSheetCursorLoad): Promise<t.ITypedSheetCursor<T>> {
-    const isLoaded = this.isLoaded;
+    const isLoaded = this.isReady;
     const ns = this.uri.toString();
 
     // Wrangle the given argument range.
@@ -183,7 +183,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
       // Update state.
       this._total = total.rows;
       this._status = 'LOADED';
-      this._isLoaded = true; // NB: Always true after initial load.
+      this._isReady = true; // NB: Always true after initial load.
       this._loading = this._loading.filter(item => item.query !== query);
 
       // Fire BEFORE event.

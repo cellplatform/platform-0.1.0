@@ -22,7 +22,7 @@ export type ITypedSheetCursor<T> = {
   readonly range: string;
   readonly total: number; // Total number of rows.
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
-  readonly isLoaded: boolean;
+  readonly isReady: boolean;
   exists(index: number): boolean;
   row(index: number): ITypedSheetRow<T>;
   load(args?: string | ITypedSheetCursorLoad): Promise<ITypedSheetCursor<T>>;
@@ -39,7 +39,7 @@ export type ITypedSheetRow<T> = {
   readonly props: ITypedSheetRowProps<T>;
   readonly types: ITypedSheetRowTypes<T>;
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
-  readonly isLoaded: boolean;
+  readonly isReady: boolean;
   load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
   toObject(): T;
 };
@@ -57,6 +57,10 @@ export type ITypedSheetRef<T> = {
 export type ITypedSheetRefs<T> = {
   ns: t.INsUri;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
+  sheet: t.ITypedSheet<T>;
+  isReady: boolean;
+  ready(): Promise<ITypedSheetRefs<T>>;
+  cursor(range?: string): Promise<ITypedSheetCursor<T>>;
 };
 
 /**

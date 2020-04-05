@@ -1,8 +1,8 @@
-import { t, Uri, util } from './common';
+import { t, Uri, util, Schema } from './common';
 
 export type IArgs = {
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
-  ns: string | t.INsUri;
+  // ns: string | t.INsUri;
   ctx: t.SheetCtx;
 };
 
@@ -19,7 +19,7 @@ export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
    */
   private constructor(args: IArgs) {
     this.typeDef = args.typeDef;
-    this.ns = util.formatNsUri(args.ns);
+    // this.ns = util.formatNsUri(args.ns || Schema.cuid()); // TEMP
     this.ctx = args.ctx;
   }
 
@@ -28,5 +28,5 @@ export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
    */
   private readonly ctx: t.SheetCtx;
   public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
-  public readonly ns: t.INsUri;
+  // public readonly ns: t.INsUri;
 }

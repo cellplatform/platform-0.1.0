@@ -127,11 +127,11 @@ describe('TypedSheet', () => {
       const { sheet } = await testSheet();
       const cursor = sheet.cursor();
 
-      expect(cursor.isLoaded).to.eql(false);
+      expect(cursor.isReady).to.eql(false);
       expect(cursor.status).to.eql('INIT');
       expect(cursor.total).to.eql(-1);
 
-      expect(cursor.row(0).isLoaded).to.eql(false);
+      expect(cursor.row(0).isReady).to.eql(false);
 
       const wait = cursor.load();
 
@@ -141,56 +141,56 @@ describe('TypedSheet', () => {
       await wait;
 
       expect(cursor.status).to.eql('LOADED');
-      expect(cursor.isLoaded).to.eql(true);
+      expect(cursor.isReady).to.eql(true);
       expect(cursor.total).to.eql(9);
 
-      expect(cursor.row(0).isLoaded).to.eql(true);
-      expect(cursor.row(8).isLoaded).to.eql(true);
-      expect(cursor.row(9).isLoaded).to.eql(false);
+      expect(cursor.row(0).isReady).to.eql(true);
+      expect(cursor.row(8).isReady).to.eql(true);
+      expect(cursor.row(9).isReady).to.eql(false);
     });
 
     it('load (subset)', async () => {
       const { sheet } = await testSheet();
       const cursor = await sheet.cursor('2:5').load();
-      expect(cursor.row(0).isLoaded).to.eql(false);
-      expect(cursor.row(1).isLoaded).to.eql(true);
-      expect(cursor.row(4).isLoaded).to.eql(true);
-      expect(cursor.row(5).isLoaded).to.eql(false);
+      expect(cursor.row(0).isReady).to.eql(false);
+      expect(cursor.row(1).isReady).to.eql(true);
+      expect(cursor.row(4).isReady).to.eql(true);
+      expect(cursor.row(5).isReady).to.eql(false);
     });
 
     it('load (expand range from [loaded] state)', async () => {
       const { sheet } = await testSheet();
       const cursor = await sheet.cursor('1:5').load();
 
-      expect(cursor.isLoaded).to.eql(true);
+      expect(cursor.isReady).to.eql(true);
       expect(cursor.range).to.eql('1:5');
 
-      expect(cursor.row(0).isLoaded).to.eql(true);
-      expect(cursor.row(8).isLoaded).to.eql(false);
+      expect(cursor.row(0).isReady).to.eql(true);
+      expect(cursor.row(8).isReady).to.eql(false);
 
       await cursor.load('3:15');
 
       expect(cursor.range).to.eql('1:15'); //           NB: includes the initial load (starting at 1 not 3).
-      expect(cursor.row(8).isLoaded).to.eql(true); //   NB: Now loaded.
-      expect(cursor.row(14).isLoaded).to.eql(false); // NB: does not exist yet.
+      expect(cursor.row(8).isReady).to.eql(true); //   NB: Now loaded.
+      expect(cursor.row(14).isReady).to.eql(false); // NB: does not exist yet.
     });
 
     it('load (reset range from [unloaded] state)', async () => {
       const { sheet } = await testSheet();
       const cursor = sheet.cursor();
 
-      expect(cursor.isLoaded).to.eql(false);
+      expect(cursor.isReady).to.eql(false);
       expect(cursor.range).to.eql(TypedSheetCursor.DEFAULT.RANGE);
 
       await cursor.load('3:15');
-      expect(cursor.isLoaded).to.eql(true);
+      expect(cursor.isReady).to.eql(true);
       expect(cursor.range).to.eql('3:15'); // NB: starts at the initial loaded range.
 
-      expect(cursor.row(0).isLoaded).to.eql(false);
-      expect(cursor.row(1).isLoaded).to.eql(false);
-      expect(cursor.row(2).isLoaded).to.eql(true);
-      expect(cursor.row(8).isLoaded).to.eql(true);
-      expect(cursor.row(14).isLoaded).to.eql(false); // NB: does not exist yet.
+      expect(cursor.row(0).isReady).to.eql(false);
+      expect(cursor.row(1).isReady).to.eql(false);
+      expect(cursor.row(2).isReady).to.eql(true);
+      expect(cursor.row(8).isReady).to.eql(true);
+      expect(cursor.row(14).isReady).to.eql(false); // NB: does not exist yet.
     });
 
     it('events: loading | loaded', async () => {
@@ -555,24 +555,103 @@ describe('TypedSheet', () => {
       });
     });
 
-    describe('read/write (ref)', () => {
-      it('1:1 (row)', async () => {
-        const { sheet } = await testSheetMessages();
-        const cursor = await sheet.cursor().load();
-        const row = cursor.row(0);
-        const color = row.props.color;
-        expect(color).to.be.an.instanceof(TypedSheetRef);
-        expect(row.props.color).to.equal(color); // NB: Cached instance.
+    describe.only('read/write (ref)', () => {
+      describe('1:1', () => {
+        it('single row', async () => {
+          const { sheet } = await testSheet();
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0);
+          const message = row.props.message;
+          expect(message).to.be.an.instanceof(TypedSheetRef);
+          expect(row.props.message).to.equal(message); // NB: Cached instance.
+        });
       });
 
-      it('1:* (cursor)', async () => {
-        const { sheet } = await testSheetMessages();
-        const cursor = await sheet.cursor().load();
-        const row = cursor.row(0);
+      describe('1:*', () => {
+        it('load ➔ ready', async () => {
+          const { sheet } = await testSheet();
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0);
 
-        const messages = row.props.messages;
-        expect(messages).to.be.an.instanceof(TypedSheetRefs);
-        expect(row.props.messages).to.equal(messages); // NB: Cached instance.
+          const messages = row.props.messages;
+          expect(messages).to.be.an.instanceof(TypedSheetRefs);
+          expect(row.props.messages).to.equal(messages); // NB: Cached instance.
+
+          await messages.ready();
+          expect(messages.sheet).to.be.an.instanceof(TypedSheet);
+          expect(messages.ns.toString()).to.eql(messages.sheet.uri.toString());
+
+          const childCursor = messages.sheet.cursor('1:10');
+          const childRow = childCursor.row(0).props;
+
+          expect(childRow.message).to.eql(undefined);
+          childRow.message = 'hello';
+          childRow.user = 'bob';
+          expect(childRow.message).to.eql('hello');
+          expect(childRow.user).to.eql('bob');
+
+          // Ensure the sheet is linked.
+          const changes = sheet.state.changes;
+          const changedLinks = changes.E1.to.links || {};
+          expect(changedLinks['ref:type']).to.eql(messages.sheet.uri.toString());
+        });
+
+        it('throw: sheet called before ready', async () => {
+          const { sheet } = await testSheet();
+          const row = (await sheet.cursor().load()).row(0).props;
+          const fn = () => row.messages.sheet;
+          expect(fn).to.throw(/called before \[ready\] completes/);
+        });
+
+        it('ready called only once', async () => {
+          const { sheet } = await testSheet();
+          const row = (await sheet.cursor().load()).row(0).props;
+          const messages = row.messages;
+          await Promise.all([messages.ready(), messages.ready(), messages.ready()]);
+          expect(messages.isReady).to.eql(true);
+        });
+
+        it('has placeholder URI prior to being [ready]', async () => {
+          const { sheet } = await testSheet();
+          const cursor = await sheet.cursor().load();
+          const messages = cursor.row(0).props.messages;
+
+          expect(messages.isReady).to.eql(false);
+          expect(messages.ns.toString()).to.eql(TypedSheetRefs.PLACEHOLDER);
+          await messages.ready();
+          expect(messages.ns.toString()).to.not.eql(TypedSheetRefs.PLACEHOLDER);
+        });
+
+        it('uses existing link', async () => {
+          const { sheet } = await testSheet();
+          const cursorA = await sheet.cursor('1:3').load();
+          const cursorB = await sheet.cursor('1:10').load();
+
+          const rowA = cursorA.row(0).props;
+          await rowA.messages.ready();
+
+          const rowB = cursorB.row(0).props;
+          await rowB.messages.ready();
+
+          expect(rowA.messages.ns.toString()).to.not.eql(TypedSheetRefs.PLACEHOLDER);
+          expect(rowB.messages.ns.toString()).to.not.eql(TypedSheetRefs.PLACEHOLDER);
+
+          expect(rowA.messages.ns.toString()).to.eql(rowB.messages.ns.toString());
+        });
+
+        it('cursor (safe: awaits ready)', async () => {
+          const { sheet } = await testSheet();
+          const cursor = await sheet.cursor().load();
+          const row = cursor.row(0).props;
+
+          const childCursor = await row.messages.cursor('1:10');
+          const childRow = childCursor.row(0).props;
+
+          childRow.message = 'hello';
+          childRow.user = 'bob';
+          expect(childRow.message).to.eql('hello');
+          expect(childRow.user).to.eql('bob');
+        });
       });
     });
   });
@@ -871,7 +950,7 @@ describe('TypedSheet', () => {
       expect(row.index).to.eql(0);
 
       expect(row.status).to.eql('INIT');
-      expect(row.isLoaded).to.eql(false);
+      expect(row.isReady).to.eql(false);
 
       expect(row.types.list).to.eql(ns.columns);
       expect(row.types.map.title.column).to.eql('A');
@@ -885,17 +964,17 @@ describe('TypedSheet', () => {
 
       expect(row.props.title).to.eql('Untitled'); // Default value.
       expect(row.props.isEnabled).to.eql(undefined);
-      expect(row.isLoaded).to.eql(false);
+      expect(row.isReady).to.eql(false);
       expect(row.status).to.eql('INIT');
 
       const res = row.load();
 
-      expect(row.isLoaded).to.eql(false);
+      expect(row.isReady).to.eql(false);
       expect(row.status).to.eql('LOADING');
 
       await res;
 
-      expect(row.isLoaded).to.eql(true);
+      expect(row.isReady).to.eql(true);
       expect(row.status).to.eql('LOADED');
 
       expect(row.props.title).to.eql('One');
@@ -923,7 +1002,7 @@ describe('TypedSheet', () => {
       expect(row.props.isEnabled).to.eql(undefined);
     });
 
-    it('updates when prop changed elsewhere (not within instance)', async () => {
+    it('updates when prop changed elsewhere via event (ie. change not via row instance API)', async () => {
       const { row, ctx } = await testRow('cell:foo:1');
       expect(row.props.title).to.eql('Untitled');
 
@@ -938,10 +1017,10 @@ describe('TypedSheet', () => {
           data: { value: 'Hello!' },
         },
       });
-      expect(row.props.title).to.eql('Hello!'); // Row state reflects external event change.
+      expect(row.props.title).to.eql('Hello!'); // NB: Row state reflects external event change.
 
       row.props.title = 'Foobar';
-      expect(row.props.title).to.eql('Foobar'); // Update via prop
+      expect(row.props.title).to.eql('Foobar'); // NB: Update via prop (normal behavior).
     });
   });
 });

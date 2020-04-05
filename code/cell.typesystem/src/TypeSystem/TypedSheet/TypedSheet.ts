@@ -57,7 +57,8 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    * Creates a sheet.
    */
   public static async create<T>(args: {
-    implements: string | t.INsUri; // Namespace URI.
+    implements: string | t.INsUri;
+    ns?: string | t.INsUri;
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
     events$?: Subject<t.TypedSheetEvent>;
@@ -65,6 +66,8 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     const { fetch, events$, cache } = args;
 
     const implementsNs = util.formatNsUri(args.implements);
+    const sheetNs = args.ns ? util.formatNsUri(args.ns) : Uri.create.ns(Uri.cuid());
+
     const typeDef = await TypeClient.load({
       ns: implementsNs.toString(),
       fetch,
@@ -72,7 +75,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     });
 
     return new TypedSheet<T>({
-      sheetNs: Uri.create.ns(Uri.cuid()),
+      sheetNs,
       typeDef,
       fetch,
       events$,

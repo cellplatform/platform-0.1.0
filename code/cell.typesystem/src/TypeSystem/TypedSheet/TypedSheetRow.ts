@@ -79,7 +79,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private _types: t.ITypedSheetRowTypes<T>;
   private _data: { [column: string]: t.ICellData } = {};
   private _status: t.ITypedSheetRow<T>['status'] = 'INIT';
-  private _isLoaded = false;
+  private _isReady = false;
 
   public readonly index: number;
   public readonly uri: t.IRowUri;
@@ -91,8 +91,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     return this._status;
   }
 
-  public get isLoaded() {
-    return this._isLoaded;
+  public get isReady() {
+    return this._isReady;
   }
 
   public get types() {
@@ -140,7 +140,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     this._status = 'LOADING';
     const { props, force } = options;
 
-    if (this.isLoaded && !force) {
+    if (this.isReady && !force) {
       return this;
     }
 
@@ -158,7 +158,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     );
 
     this._status = 'LOADED';
-    this._isLoaded = true; // NB: Always true after initial load.
+    this._isReady = true; // NB: Always true after initial load.
     return this;
   }
 
@@ -189,9 +189,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
     const self = this; // tslint:disable-line
     const columnDef = this.findColumnByProp(name);
-    const ctx = this.ctx;
-
     const target = TypeTarget.parse(columnDef.target);
+
     if (!target.isValid) {
       const err = `Property '${name}' (column ${columnDef.column}) has an invalid target '${columnDef.target}'.`;
       throw new Error(err);
@@ -320,25 +319,12 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     const { typeDef, links = {} } = args;
     const ctx = this.ctx;
     const isArray = typeDef.type.isArray;
-    const nameKey = 'type/default';
-    const link = Schema.ref.links.find(links).byName(nameKey);
+    const { link } = TypedSheetRefs.refLink({ typeDef, links });
     const exists = Boolean(link);
-
-    let ns = link ? link.uri.toString() : '';
-    if (!ns) {
-      ns = Schema.uri.create.ns(Schema.cuid());
-      const key = Schema.ref.links.toKey(nameKey);
-      links[key] = ns;
-
-      /**
-       * TODO 🐷
-       * manage in ref object (read/write link)
-       */
-    }
-
+    const parent = Uri.create.cell(this.uri.ns, `${typeDef.column}${this.index + 1}`);
     const ref = isArray
-      ? TypedSheetRefs.create({ ns, typeDef, ctx })
-      : TypedSheetRef.create({ ns, typeDef, ctx });
+      ? TypedSheetRefs.create({ parent, typeDef, ctx })
+      : TypedSheetRef.create({ typeDef, ctx });
 
     return { ref, exists };
   }
