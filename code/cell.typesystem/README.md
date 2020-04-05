@@ -6,8 +6,12 @@
 The "[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) sheets" system for CellOS.
 
 - Strongly typed object relational mapper (ORM) for two-way binding of `[sheets] : {objects}`.
-- Generation of [Typescript](https://en.wikipedia.org/wiki/TypeScript) type symbols from globally addressable cell `namespace` definitions.
-- Advanced type concepts ("fancy typesystem") including type unions, grouping, referencing.
+
+- Generation of standards based type declarations from globally addressable `cell:namespace` definitions for consumption by industry standard tooling:
+    - [Typescript](https://en.wikipedia.org/wiki/TypeScript) type symbols from globally addressable cell `namespace` definitions.
+    - [Graphql](https://en.wikipedia.org/wiki/GraphQL) schema definition language ([SDL](https://graphql.org/learn/schema/)) symbols - **[Coming Soon 🐷]**
+
+- Advanced type concepts including type unions, grouping, referencing (aka "fancy" typesystem).
 
 
 <p>&nbsp;</p>
@@ -15,6 +19,17 @@ The "[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) shee
 ## Setup
 
     yarn add @platform/cell.typesystem
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
+![image](https://user-images.githubusercontent.com/185555/78512860-00f8f100-77fc-11ea-8474-2bc042c268f6.png)
+
+<p>&nbsp;</p>
+
+## Concepts
+
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
