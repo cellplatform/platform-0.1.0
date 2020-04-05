@@ -3,6 +3,7 @@ export * from '../../common/types';
 
 export type SheetCtx = {
   events$: t.Subject<t.TypedSheetEvent>;
+  dispose$: t.Observable<{}>;
   fetch: t.ISheetFetcher;
   cache: t.IMemoryCache;
   sheet: {

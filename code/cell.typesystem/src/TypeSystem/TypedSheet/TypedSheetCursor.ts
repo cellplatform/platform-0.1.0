@@ -1,12 +1,12 @@
 import { Subject } from 'rxjs';
-import { R, coord, t, Uri, util } from './common';
+
+import { coord, t, Uri, util } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
 
 type IArgs = {
   ns: string | t.INsUri;
   types: t.IColumnTypeDef[];
   ctx: t.SheetCtx;
-  dispose$?: t.Observable<{}>;
   range?: string;
 };
 
@@ -69,14 +69,12 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     this.uri = util.formatNsUri(args.ns);
     this.types = args.types;
     this.ctx = args.ctx;
-    this.dispose$ = args.dispose$ || new Subject<{}>();
     this._range = TypedSheetCursor.formatRange(args.range);
   }
 
   /**
    * [Fields]
    */
-  private readonly dispose$: t.Observable<{}>;
   private readonly ctx: t.SheetCtx;
   private readonly types: t.IColumnTypeDef[];
   private _rows: t.ITypedSheetRow<T>[] = [];
@@ -217,8 +215,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const uri = Uri.create.row(this.uri.toString(), (index + 1).toString());
     const columns = this.types;
     const ctx = this.ctx;
-    const dispose$ = this.dispose$;
-    return TypedSheetRow.create<T>({ uri, columns, ctx, dispose$ });
+    return TypedSheetRow.create<T>({ uri, columns, ctx });
   }
 }
 

@@ -1,15 +1,6 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
+
 import { TypeDefault } from '../TypeDefault';
 import { TypeTarget } from '../TypeTarget';
 import { Schema, t, Uri, util } from './common';
@@ -20,7 +11,6 @@ type IArgs = {
   uri: string | t.IRowUri;
   columns: t.IColumnTypeDef[];
   ctx: t.SheetCtx;
-  dispose$?: t.Observable<{}>;
 };
 
 /**
@@ -52,10 +42,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     this.uri = util.formatRowUri(args.uri);
     this._columns = args.columns;
     this.index = Number.parseInt(this.uri.key, 10) - 1;
-    this.dispose$ = args.dispose$ || new Subject<{}>();
 
-    const events$ = this.ctx.events$.pipe(takeUntil(this.dispose$));
-    const change$ = events$.pipe(
+    const change$ = this.ctx.events$.pipe(
       filter(e => e.type === 'SHEET/change'),
       map(e => e.payload as t.ITypedSheetChange),
       map(({ data, cell }) => ({ to: data, uri: Uri.parse<t.ICellUri>(cell) })),
@@ -83,7 +71,6 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * [Fields]
    */
-  private readonly dispose$: t.Observable<{}>;
   private readonly ctx: t.SheetCtx;
   private readonly _columns: t.IColumnTypeDef[] = [];
   private readonly _prop: { [key: string]: ITypedSheetRowProp<T, any> } = {};
