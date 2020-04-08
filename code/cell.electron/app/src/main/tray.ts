@@ -5,7 +5,7 @@ import { createWindow } from './screen';
 export function init(args: { host: string; def: string }) {
   const { host, def } = args;
 
-  const icon = fs.join(__dirname, '../../assets/icons/tray.png');
+  const icon = fs.join(__dirname, '../../assets/icons/tray/tray.png');
   const tray = new Tray(icon);
 
   const contextMenu = Menu.buildFromTemplate([

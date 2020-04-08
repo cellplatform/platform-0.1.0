@@ -5,13 +5,15 @@
 
 The "[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) sheets" system for CellOS.
 
+- Typing discipline: "[structural](https://en.wikipedia.org/wiki/Structural_type_system)"
+
 - Strongly typed object relational mapper (ORM) for two-way binding of `[sheets] : {objects}`.
 
 - Generation of standards based type declarations from globally addressable `cell:namespace` definitions for consumption by industry standard tooling:
     - [Typescript](https://en.wikipedia.org/wiki/TypeScript) type symbols from globally addressable cell `namespace` definitions.
     - [Graphql](https://en.wikipedia.org/wiki/GraphQL) schema definition language ([SDL](https://graphql.org/learn/schema/)) symbols - **[Coming Soon 🐷]**
 
-- Advanced type concepts including type unions, grouping, referencing (aka "fancy" typesystem).
+- Advanced type concepts including type OR'ing ("|"), grouping, referencing (aka "fancy" typesystem).
 
 
 <p>&nbsp;</p>
@@ -29,6 +31,27 @@ The "[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) shee
 <p>&nbsp;</p>
 
 ## Concepts
+
+- Network access:
+  - `TypeClient`
+  - fetch
+
+- Type definitions:
+  - TypeDefault
+  - TypeTarget
+  - TypeValue
+
+- `TypedSheet`
+  - Cursor
+  - Row
+  - Ref/Refs
+  - State
+  - Events (Observable)
+
+- Helpers:
+  - `TypeCache`
+  - `TypeScript`
+
 
 
 <p>&nbsp;</p>

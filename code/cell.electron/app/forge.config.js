@@ -2,7 +2,9 @@
  * https://www.electronforge.io/configuration
  */
 module.exports = {
-  packagerConfig: {},
+  packagerConfig: {
+    icon: './assets/icons/app/app.icns',
+  },
   makers: [
     {
       name: '@electron-forge/maker-squirrel',

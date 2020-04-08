@@ -1,7 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import { fs, log } from './common';
 
-import { Client } from '@platform/cell.client';
 import * as server from './server';
 import * as tray from './tray';
 

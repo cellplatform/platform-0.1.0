@@ -12,11 +12,43 @@ export type SampleTypeDefs = {
   'ns:foo.defaults': D;
 };
 
+const foo = {
+  ns: { type: { typename: 'MyThing' } },
+  columns: {
+    A: {
+      props: {
+        prop: {
+          name: 'title',
+          type: 'string',
+          default: 'Untitled',
+          target: 'value'
+        },
+      },
+    },
+    B: {
+      props: { prop: { name: 'isEnabled', type: 'boolean | null', target: 'inline:isEnabled' } },
+    },
+    C: {
+      props: { prop: { name: 'color?', type: 'ns:foo.color', target: 'inline:color' } },
+    },
+    D: { props: { prop: { name: 'message', type: 'ns:foo.message | null', target: 'ref' } } },
+    E: { props: { prop: { name: 'messages', type: 'ns:foo.message[]', target: 'ref' } } },
+  },
+};
+
 export const TYPE_DEFS: SampleTypeDefs = {
   'ns:foo': {
     ns: { type: { typename: 'MyRow' } },
     columns: {
-      A: { props: { prop: { name: 'title', type: 'string', default: 'Untitled' } } },
+      A: {
+        props: {
+          prop: {
+            name: 'title',
+            type: 'string',
+            default: 'Untitled',
+          },
+        },
+      },
       B: {
         props: { prop: { name: 'isEnabled', type: 'boolean | null', target: 'inline:isEnabled' } },
       },

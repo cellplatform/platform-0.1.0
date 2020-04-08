@@ -1,7 +1,7 @@
 import { app } from 'electron';
-import { Client, constants, fs, log, t, time } from '../common';
+import { HttpClient, constants, fs, log, t, time } from '../common';
 
-type File = t.IClientCellFileUpload;
+type File = t.IHttpClientCellFileUpload;
 
 /**
  * Retrieve the set of files to upload.
@@ -39,7 +39,7 @@ export async function upload(args: {
   };
 
   const host = constants.HOST;
-  const client = Client.create(host);
+  const client = HttpClient.create(host);
   try {
     const res = await client.cell(targetCell).files.upload(files);
 

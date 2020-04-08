@@ -1,4 +1,4 @@
-import { local } from '@platform/cell.fs';
+import { local } from '@platform/cell.fs.local';
 import { server } from '@platform/cell.http/lib/server';
 import { NeDb } from '@platform/fsdb.nedb';
 import { app as electron } from 'electron';
@@ -19,10 +19,10 @@ export function init(args: IInitArgs = {}) {
   const { log: logger, prod = false } = args;
   const paths = constants.paths.data({ prod });
 
-  const app = server.init({
+  const app = server.create({
     title: 'local',
     db: NeDb.create({ filename: paths.db }),
-    fs: local.init({ root: paths.fs }),
+    fs: local.init({ root: paths.fs, fs }),
     logger,
   });
 

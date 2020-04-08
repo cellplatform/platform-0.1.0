@@ -135,7 +135,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     }
 
     Schema.uri.ALLOW.NS.push('sys*'); // HACK
-    const urls = Schema.urls(info.host).cell('cell:sys!A1');
+    const urls = Schema.urls(info.domain).cell('cell:sys:A1');
     const src = urls.file.byName('sys.html').toString();
 
     const el = (
