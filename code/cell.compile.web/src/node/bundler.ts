@@ -17,10 +17,10 @@ export const bundle = async (args: {
 
   if (!silent) {
     log.info();
-    log.info(`${fs.basename(copy.sourceDir)}`);
-    log.info.gray(`  source:               ${copy.sourceDir}`);
-    log.info.gray(`  local snapshot (${log.cyan('cwd')}): ${copy.targetDir}`);
-    log.info.gray(`  bundle output:        ${targetDir}`);
+    log.info.gray(`  module:            ${log.white(fs.basename(copy.sourceDir))}`);
+    log.info.gray(`  source:            ${copy.sourceDir}`);
+    log.info.gray(`  build copy: (${log.cyan('cwd')}): ${copy.targetDir}`);
+    log.info.gray(`  target dir: (${log.magenta('out')}): ${targetDir}`);
     log.info();
   }
 
@@ -67,11 +67,11 @@ async function runTasks(args: {
   await exec.tasks.run(
     [
       {
-        title: log.gray(`${dirname}/${log.white('yarn install')}`),
+        title: log.gray(`${log.cyan('cwd')}: ${dirname}/${log.white('yarn install')}`),
         task: () => run('yarn install'),
       },
       {
-        title: log.gray(`${dirname}/${log.white('yarn bundle')}`),
+        title: log.gray(`${log.cyan('cwd')}: ${dirname}/${log.white('yarn bundle')}`),
         task: async () => {
           const res = await run('yarn bundle');
           res.info.forEach(line => output.push(line));
@@ -79,7 +79,7 @@ async function runTasks(args: {
         },
       },
       {
-        title: `copy bundle files`,
+        title: log.gray(`${log.magenta('out')}: copy bundle`),
         task: async () => {
           const from = fs.join(cwd, args.sourceDist);
           const to = targetDir;
