@@ -69,6 +69,19 @@
     "@platform/types" "0.4.14"
     "@platform/util.diff" "0.0.24"
 
+"@platform/cell.typesystem@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.14.tgz#ad0f5a8888b71415a78bc744e85ce7b44ffcc6ec"
+  integrity sha512-DJyjwCsDKYq4EGaVisMUerp2n0teHkeGm1qsDdyTdga8wV8PyZOSl6pqIF6JvkeBF/CAv2ziEQ/Wk5nhaVCJ2A==
+  dependencies:
+    "@platform/cache" "0.2.23"
+    "@platform/cell.coord" "0.8.87"
+    "@platform/cell.schema" "0.4.77"
+    "@platform/cell.types" "0.4.69"
+    "@platform/libs" "0.2.1"
+    "@platform/types" "0.4.14"
+    "@platform/util.value" "0.7.13"
+
 "@platform/exec@0.2.53":
   version "0.2.53"
   resolved "https://registry.yarnpkg.com/@platform/exec/-/exec-0.2.53.tgz#eba4c2a17bb7322f0ac0236bd768181ca45e46c5"

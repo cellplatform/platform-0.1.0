@@ -27,6 +27,7 @@
     "@platform/cell.http": "0.7.41",
     "@platform/cell.schema": "0.4.77",
     "@platform/cell.types": "0.4.69",
+    "@platform/cell.typesystem": "0.0.14",
     "@platform/cell.ui.sys": "0.0.61",
     "@platform/fs": "0.5.12",
     "@platform/fsdb.nedb": "1.3.104",
