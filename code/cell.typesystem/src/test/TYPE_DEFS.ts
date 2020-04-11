@@ -21,7 +21,7 @@ const foo = {
           name: 'title',
           type: 'string',
           default: 'Untitled',
-          target: 'value'
+          target: 'value',
         },
       },
     },
