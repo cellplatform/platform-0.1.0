@@ -1,10 +1,10 @@
-import { app, BrowserWindow } from 'electron';
-import { fs, log } from './common';
+import { app } from 'electron';
 
-import * as server from './server';
-import * as tray from './tray';
-
+import { constants, log } from './common';
 import { createWindow } from './screen';
+import * as server from './server';
+import { upload } from './server/upload';
+import * as tray from './tray';
 
 const refs: any = {};
 
@@ -36,7 +36,10 @@ if (prod) {
 export async function start() {
   const { paths, host } = await server.start({ log, prod });
 
-  // Log state.
+  // Upload the bundled system.
+  await upload({ sourceDir: constants.paths.bundle.ui });
+
+  // Log: MAIN
   (() => {
     const table = log.table({ border: false });
     const add = (key: string, value: any) => {
@@ -54,8 +57,6 @@ export async function start() {
 ${log.white('main')}
 ${table}
 `);
-
-    // log.info.gray(`\n\n${table}\n`);
   })();
 
   await app.whenReady();
@@ -79,36 +80,3 @@ ${table}
     // logger.info('foo')
   }
 }
-
-// (async () => {
-//   const { paths } = await server.start({ log, prod });
-
-//   // Log state.
-//   const table = log.table({ border: false });
-//   // table.add([log.gray(`${process.env.NODE_ENV} `), app.isPackaged ? '(packaged)' : '']);
-//   table.add([log.green('• env:'), log.gray(process.env.NODE_ENV || '<empty>')]);
-//   table.add([log.green('• packaged:'), log.gray(app.isPackaged)]);
-//   table.add([log.green('• log:'), log.gray(log.file.path)]);
-//   table.add([log.green('• db:'), log.gray(paths.db)]);
-//   table.add([log.green('• fs:'), log.gray(paths.fs)]);
-//   log.info(`\n\n${table}\n`);
-
-//   await app.whenReady();
-//   createWindow();
-
-//   // TEMP 🐷
-//   refs.tray = tray.init().tray;
-
-//   try {
-//     // const f = await exec.process.spawn('node -v');
-//     // console.log('f', f);
-//     // f.
-//     // const client = Client.create('localhost:8080');
-//     // const res = await client.cell('cell:foo:A1').info();
-//     // log.info(res);
-//   } catch (error) {
-//     // console.log('error', error);
-//     log.error(error);
-//     // logger.info('foo')
-//   }
-// })();

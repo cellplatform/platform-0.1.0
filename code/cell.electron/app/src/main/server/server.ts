@@ -5,7 +5,6 @@ import { app as electron } from 'electron';
 import { filter } from 'rxjs/operators';
 
 import { constants, fs, log, t } from '../common';
-import { upload } from './upload';
 
 type IInitArgs = {
   prod?: boolean;
@@ -78,9 +77,6 @@ export async function start(args: IInitArgs = {}) {
       };
       e.modify({ ...e.res, data });
     });
-
-  // Upload the bundled system.
-  await upload({ sourceDir: constants.paths.bundle.ui });
 
   // Finish up.
   return { app, instance, paths, host };

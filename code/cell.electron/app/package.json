@@ -1,5 +1,5 @@
 {
-  "name": "cell",
+  "name": "cell.app",
   "version": "1.0.19",
   "description": "Electron shell for CellOS.",
   "main": "lib/main/index",
@@ -15,8 +15,7 @@
     "clean": "sh sh/clean.sh",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "bundle": "ts-node -T scripts/bundle.sys.ui",
-    "open": "cd out/cell.electron-darwin-x64 && open cell.electron.app"
+    "bundle": "ts-node -T scripts/bundle.sys.ui"
   },
   "config": {
     "forge": "forge.config.js"

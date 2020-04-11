@@ -1,5 +1,4 @@
 import { BrowserWindow } from 'electron';
-
 import { constants, log, Schema, t } from '../common';
 
 export function createWindow(args: { host: string; def: string }) {
@@ -46,7 +45,6 @@ export function createWindow(args: { host: string; def: string }) {
 ${log.white('window')}
 ${table}
     `;
-
     log.info.gray(output);
   })();
 }
