@@ -2,6 +2,9 @@ import { init } from './loader.env';
 
 export const loader = {
   init,
-  Root: () => import('../components/Root'),
-  Bar: () => import('../components/Bar'),
+
+  root: () => import('../components/Root'),
+
+  // TEMP 🐷
+  bar: () => import('../components/Bar'),
 };
