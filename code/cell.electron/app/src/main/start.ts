@@ -3,7 +3,7 @@ import { app } from 'electron';
 import { constants, log } from './common';
 import { createWindow } from './screen';
 import * as server from './server';
-import { upload } from './server/upload';
+import { upload } from './server/fs.upload';
 import * as tray from './tray';
 
 const refs: any = {};
@@ -37,6 +37,12 @@ export async function start() {
   const { paths, host } = await server.start({ log, prod });
 
   // Upload the bundled system.
+
+  /**
+   * TODO 🐷
+   * - change this to "Setup A1: App TypeDefs"
+   */
+
   await upload({ sourceDir: constants.paths.bundle.ui });
 
   // Log: MAIN

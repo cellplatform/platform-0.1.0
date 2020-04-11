@@ -10,14 +10,16 @@ export async function getFiles(args: { sourceDir: string }) {
   const { sourceDir: dir } = args;
   const paths = await fs.glob.find(fs.resolve(`${dir}/**`));
 
-  const wait = paths.map(async path => {
-    const filename = path.substring(dir.length + 1);
-    const data = await fs.readFile(path);
-    const file: File = { filename, data };
-    return file;
-  });
+  const files = await Promise.all(
+    paths.map(async path => {
+      const filename = path.substring(dir.length + 1);
+      const data = await fs.readFile(path);
+      const file: File = { filename, data };
+      return file;
+    }),
+  );
 
-  return Promise.all(wait);
+  return files.filter(file => file.data.byteLength > 0);
 }
 
 /**
@@ -33,6 +35,8 @@ export async function upload(args: {
   const { sourceDir } = args;
   const targetCell = args.targetCell || constants.URI.UI_FILES;
   const files = args.files ? args.files : await getFiles({ sourceDir });
+
+  // files = files.filter(file => file.data.byteLength > 0);
 
   const done = (ok: boolean) => {
     return { ok, files };
