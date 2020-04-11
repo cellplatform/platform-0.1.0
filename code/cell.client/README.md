@@ -13,12 +13,12 @@ A strongly typed client-library for operating the [`cell.http`](../cell.http) se
 
 <p>&nbsp;</p>
 
-## Tests
+## Test
 
-See unit-tests within [`cell.http`](../cell.http) that exercise this client-library.
+Unit-tests that exercise this client-library can be found in within [`cell.http.router`](../cell.http.router).
 
 ```bash
-cd cell.http
+cd ../cell.http.router
 yarn test
 ```
 
