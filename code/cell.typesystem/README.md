@@ -3,7 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/@platform/cell.typesystem.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/cell.typesystem)
 ![banner](https://user-images.githubusercontent.com/185555/77802292-6c95dc80-70df-11ea-96e2-ebe30c69003c.png)
 
-The "[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) sheets" system for CellOS.
+The "[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) sheets" system of the CellOS.
 
 - Typing discipline: "[structural](https://en.wikipedia.org/wiki/Structural_type_system)"
 
@@ -11,7 +11,7 @@ The "[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) shee
 
 - Generation of standards based type declarations from globally addressable `cell:namespace` definitions for consumption by industry standard tooling:
     - [Typescript](https://en.wikipedia.org/wiki/TypeScript) type symbols from globally addressable cell `namespace` definitions.
-    - [Graphql](https://en.wikipedia.org/wiki/GraphQL) schema definition language ([SDL](https://graphql.org/learn/schema/)) symbols - **[Coming Soon 🐷]**
+    - [GraphQL](https://en.wikipedia.org/wiki/GraphQL) schema definition language ([SDL](https://graphql.org/learn/schema/)) symbols - **[Coming Soon 🐷]**
 
 - Advanced type concepts including type OR'ing ("|"), grouping, referencing (aka "fancy" typesystem).
 
@@ -22,35 +22,24 @@ The "[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) shee
 
     yarn add @platform/cell.typesystem
 
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-
-
-![image](https://user-images.githubusercontent.com/185555/78512860-00f8f100-77fc-11ea-8474-2bc042c268f6.png)
+NOTE: Typically the TypeSystem is be accessed as part of the [`cell.client`](../cell.client) API.
 
 <p>&nbsp;</p>
+<p>&nbsp;</p>
 
-## Concepts
+---
 
-- Network access:
-  - `TypeClient`
-  - fetch
+<p>&nbsp;</p>
 
-- Type definitions:
-  - TypeDefault
-  - TypeTarget
-  - TypeValue
+![image](https://user-images.githubusercontent.com/185555/79054376-5f105300-7c98-11ea-8cad-1da126b5c6b3.png)
 
-- `TypedSheet`
-  - Cursor
-  - Row
-  - Ref/Refs
-  - State
-  - Events (Observable)
+<p>&nbsp;</p>
 
-- Helpers:
-  - `TypeCache`
-  - `TypeScript`
+![Concepts](https://user-images.githubusercontent.com/185555/79054273-b530c680-7c97-11ea-820a-ef80dc78753f.png)
+
+<p>&nbsp;</p>
+
+![Concepts](https://user-images.githubusercontent.com/185555/79054275-b7932080-7c97-11ea-8f68-23943925ae1e.png)
 
 
 
