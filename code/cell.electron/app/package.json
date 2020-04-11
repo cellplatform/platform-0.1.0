@@ -1,9 +1,12 @@
 {
-  "name": "cell.app",
+  "name": "Cell",
   "version": "1.0.20",
   "description": "Electron shell for CellOS.",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",
+  "config": {
+    "forge": "forge.config.js"
+  },
   "scripts": {
     "start": "electron-forge start",
     "dev": "export NODE_ENV=development && yarn start",
@@ -14,11 +17,8 @@
     "prepare": "ts prepare",
     "clean": "sh sh/clean.sh",
     "package": "electron-forge package",
-    "make": "electron-forge make",
+    "make": "yarn build && electron-forge make",
     "bundle": "ts-node -T scripts/bundle.sys.ui"
-  },
-  "config": {
-    "forge": "forge.config.js"
   },
   "dependencies": {
     "@platform/cell.client": "0.2.51",

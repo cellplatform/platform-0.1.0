@@ -1,10 +1,9 @@
 import { app } from 'electron';
 
 import { constants, log } from './common';
-import { createWindow } from './screen';
-import * as server from './server';
-import { upload } from './server/fs.upload';
-import * as tray from './tray';
+import * as screen from './main.screen';
+import * as server from './main.server';
+import * as tray from './main.tray';
 
 const refs: any = {};
 
@@ -43,7 +42,7 @@ export async function start() {
    * - change this to "Setup A1: App TypeDefs"
    */
 
-  await upload({ sourceDir: constants.paths.bundle.ui });
+  await server.upload({ sourceDir: constants.paths.bundle.ui });
 
   // Log: MAIN
   (() => {
@@ -68,7 +67,7 @@ ${table}
   await app.whenReady();
 
   const def = 'cell:sys:A1'; // TODO 🐷
-  createWindow({ host, def });
+  screen.createWindow({ host, def });
 
   // TEMP 🐷
   refs.tray = tray.init({ host, def }).tray;
