@@ -15,6 +15,15 @@ export const bundle = async (args: {
   const { moduleName, targetDir, distDir = 'dist', silent } = args;
   const copy = await copyLocal({ moduleName });
 
+  if (!silent) {
+    log.info();
+    log.info.gray(`  module:            ${log.white(fs.basename(copy.sourceDir))}`);
+    log.info.gray(`  source:            ${copy.sourceDir}`);
+    log.info.gray(`  build from: (${log.cyan('cwd')})  ${copy.targetDir}`);
+    log.info.gray(`  output to:  (${log.magenta('out')})  ${targetDir}`);
+    log.info();
+  }
+
   const tasks = await runTasks({
     sourceDir: copy.targetDir,
     sourceDist: distDir,
@@ -46,12 +55,6 @@ async function runTasks(args: {
     return { ok };
   };
 
-  if (!silent) {
-    log.info.gray(`source (${log.cyan('cwd')}): ${sourceDir}`);
-    log.info.gray(`target:       ${targetDir}`);
-    log.info();
-  }
-
   if (!(await fs.pathExists(sourceDir))) {
     log.error(`FAIL: source directory does not exist.`);
     log.info.gray(sourceDir);
@@ -64,11 +67,11 @@ async function runTasks(args: {
   await exec.tasks.run(
     [
       {
-        title: log.gray(`${dirname}/${log.white('yarn install')}`),
+        title: log.gray(`${log.cyan('cwd')}: ${dirname}/${log.white('yarn install')}`),
         task: () => run('yarn install'),
       },
       {
-        title: log.gray(`${dirname}/${log.white('yarn bundle')}`),
+        title: log.gray(`${log.cyan('cwd')}: ${dirname}/${log.white('yarn bundle')}`),
         task: async () => {
           const res = await run('yarn bundle');
           res.info.forEach(line => output.push(line));
@@ -76,7 +79,7 @@ async function runTasks(args: {
         },
       },
       {
-        title: `copy`,
+        title: log.gray(`${log.magenta('out')}: copy bundle`),
         task: async () => {
           const from = fs.join(cwd, args.sourceDist);
           const to = targetDir;

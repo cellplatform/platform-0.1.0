@@ -66,8 +66,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     this.state$.next({ info: res.body });
 
     // TEMP 🐷NOTE: this reference seems to be required to trigger the load state. Investigate!
-    const f = await loader.Bar(); // TODO: Make this load the IFrame as a child compoent.
-    console.log('f', f);
+    const f = await loader.bar(); // TODO: Make this load the IFrame as a child compoent.
+    console.log('Bar', f.Bar);
   }
 
   /**
@@ -134,9 +134,13 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       return null;
     }
 
-    Schema.uri.ALLOW.NS.push('sys*'); // HACK
-    const urls = Schema.urls(info.host).cell('cell:sys!A1');
-    const src = urls.file.byName('sys.html').toString();
+    const urls = Schema.urls(info.domain).cell('cell:sys:A1');
+
+    // console.log("urls.file.", urls.files.list.)
+
+    // const src = urls.file.byName('sys.html').toString();
+    // const src = 'http://localhost:1234/';
+    const src = 'http://localhost:5000/';
 
     const el = (
       <div {...styles.base}>

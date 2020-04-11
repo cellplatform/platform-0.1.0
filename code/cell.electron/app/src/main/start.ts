@@ -1,11 +1,10 @@
-import { app, BrowserWindow } from 'electron';
-import { fs, log } from './common';
+import { app } from 'electron';
 
-import { Client } from '@platform/cell.client';
-import * as server from './server';
-import * as tray from './tray';
-
-import { createWindow } from './screen';
+import { constants, log } from './common';
+import * as screen from './main.screen';
+import * as server from './main.server';
+import * as tray from './main.tray';
+import * as client from './main.client';
 
 const refs: any = {};
 
@@ -37,7 +36,16 @@ if (prod) {
 export async function start() {
   const { paths, host } = await server.start({ log, prod });
 
-  // Log state.
+  // Upload the bundled system.
+
+  /**
+   * TODO 🐷
+   * - change this to "Setup A1: App TypeDefs"
+   */
+
+  await client.upload({ sourceDir: constants.paths.bundle.ui });
+
+  // Log: MAIN
   (() => {
     const table = log.table({ border: false });
     const add = (key: string, value: any) => {
@@ -55,14 +63,12 @@ export async function start() {
 ${log.white('main')}
 ${table}
 `);
-
-    // log.info.gray(`\n\n${table}\n`);
   })();
 
   await app.whenReady();
 
   const def = 'cell:sys:A1'; // TODO 🐷
-  createWindow({ host, def });
+  screen.createWindow({ host, def });
 
   // TEMP 🐷
   refs.tray = tray.init({ host, def }).tray;
@@ -80,36 +86,3 @@ ${table}
     // logger.info('foo')
   }
 }
-
-// (async () => {
-//   const { paths } = await server.start({ log, prod });
-
-//   // Log state.
-//   const table = log.table({ border: false });
-//   // table.add([log.gray(`${process.env.NODE_ENV} `), app.isPackaged ? '(packaged)' : '']);
-//   table.add([log.green('• env:'), log.gray(process.env.NODE_ENV || '<empty>')]);
-//   table.add([log.green('• packaged:'), log.gray(app.isPackaged)]);
-//   table.add([log.green('• log:'), log.gray(log.file.path)]);
-//   table.add([log.green('• db:'), log.gray(paths.db)]);
-//   table.add([log.green('• fs:'), log.gray(paths.fs)]);
-//   log.info(`\n\n${table}\n`);
-
-//   await app.whenReady();
-//   createWindow();
-
-//   // TEMP 🐷
-//   refs.tray = tray.init().tray;
-
-//   try {
-//     // const f = await exec.process.spawn('node -v');
-//     // console.log('f', f);
-//     // f.
-//     // const client = Client.create('localhost:8080');
-//     // const res = await client.cell('cell:foo:A1').info();
-//     // log.info(res);
-//   } catch (error) {
-//     // console.log('error', error);
-//     log.error(error);
-//     // logger.info('foo')
-//   }
-// })();

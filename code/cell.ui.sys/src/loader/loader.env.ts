@@ -1,12 +1,32 @@
 import { t, util } from '../common';
 
-const getEnv: t.GetEnv = (callback: t.GetEnvCallback) => {
+let isInitialized = false;
+
+/**
+ * Initialize the environment.
+ */
+export function init() {
+  if (isInitialized) {
+    return;
+  }
+  isInitialized = true;
+
+  if (typeof window === 'object' && window === window.top) {
+    const win = (window as unknown) as t.ITopWindow;
+    win.getEnv = getEnv;
+  }
+}
+
+/**
+ * Called by loaded modules to retrieve a reference to the programmable environment.
+ */
+export const getEnv: t.GetEnv = (callback: t.GetEnvCallback) => {
   if (typeof callback !== 'function') {
     return;
   }
 
   // const host = window.location.origin;
-  const query = util.toQueryObject<t.IEnvLoaderQuery>();
+  const query = util.toQueryObject<t.IEnvLoaderQuery>(); // The window's query-string.
   const { host } = query;
 
   const env: t.IEnv = {
@@ -21,13 +41,3 @@ const getEnv: t.GetEnv = (callback: t.GetEnvCallback) => {
 
   callback(env);
 };
-
-/**
- * Initialize the environment.
- */
-export function init() {
-  if (typeof window === 'object' && window === window.top) {
-    const win = (window as unknown) as t.ITopWindow;
-    win.getEnv = getEnv;
-  }
-}

@@ -1,11 +1,10 @@
-import { local } from '@platform/cell.fs';
+import { local } from '@platform/cell.fs.local';
 import { server } from '@platform/cell.http/lib/server';
 import { NeDb } from '@platform/fsdb.nedb';
 import { app as electron } from 'electron';
 import { filter } from 'rxjs/operators';
 
 import { constants, fs, log, t } from '../common';
-import { upload } from './upload';
 
 type IInitArgs = {
   prod?: boolean;
@@ -19,10 +18,10 @@ export function init(args: IInitArgs = {}) {
   const { log: logger, prod = false } = args;
   const paths = constants.paths.data({ prod });
 
-  const app = server.init({
+  const app = server.create({
     title: 'local',
     db: NeDb.create({ filename: paths.db }),
-    fs: local.init({ root: paths.fs }),
+    fs: local.init({ root: paths.fs, fs }),
     logger,
   });
 
@@ -78,9 +77,6 @@ export async function start(args: IInitArgs = {}) {
       };
       e.modify({ ...e.res, data });
     });
-
-  // Upload the bundled system.
-  await upload({ sourceDir: constants.paths.bundle.ui });
 
   // Finish up.
   return { app, instance, paths, host };

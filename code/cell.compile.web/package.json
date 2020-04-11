@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compile.web",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "description": "CellOS code compilation toolchain for web (JS/CSS).",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,7 +12,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.4.69",
+    "@platform/cell.types": "0.4.70",
     "@platform/cli": "0.5.28",
     "@platform/cli.prompt": "0.3.12",
     "@platform/exec": "0.2.53",
@@ -28,6 +28,5 @@
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

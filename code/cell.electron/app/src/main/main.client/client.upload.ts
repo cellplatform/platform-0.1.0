@@ -1,7 +1,7 @@
 import { app } from 'electron';
-import { Client, constants, fs, log, t, time } from '../common';
+import { HttpClient, constants, fs, log, t, time } from '../common';
 
-type File = t.IClientCellFileUpload;
+type File = t.IHttpClientCellFileUpload;
 
 /**
  * Retrieve the set of files to upload.
@@ -10,14 +10,16 @@ export async function getFiles(args: { sourceDir: string }) {
   const { sourceDir: dir } = args;
   const paths = await fs.glob.find(fs.resolve(`${dir}/**`));
 
-  const wait = paths.map(async path => {
-    const filename = path.substring(dir.length + 1);
-    const data = await fs.readFile(path);
-    const file: File = { filename, data };
-    return file;
-  });
+  const files = await Promise.all(
+    paths.map(async path => {
+      const filename = path.substring(dir.length + 1);
+      const data = await fs.readFile(path);
+      const file: File = { filename, data };
+      return file;
+    }),
+  );
 
-  return Promise.all(wait);
+  return files.filter(file => file.data.byteLength > 0);
 }
 
 /**
@@ -34,12 +36,14 @@ export async function upload(args: {
   const targetCell = args.targetCell || constants.URI.UI_FILES;
   const files = args.files ? args.files : await getFiles({ sourceDir });
 
+  // files = files.filter(file => file.data.byteLength > 0);
+
   const done = (ok: boolean) => {
     return { ok, files };
   };
 
   const host = constants.HOST;
-  const client = Client.create(host);
+  const client = HttpClient.create(host);
   try {
     const res = await client.cell(targetCell).files.upload(files);
 
