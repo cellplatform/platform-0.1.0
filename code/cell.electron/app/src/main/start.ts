@@ -4,6 +4,7 @@ import { constants, log } from './common';
 import * as screen from './main.screen';
 import * as server from './main.server';
 import * as tray from './main.tray';
+import * as client from './main.client';
 
 const refs: any = {};
 
@@ -42,7 +43,7 @@ export async function start() {
    * - change this to "Setup A1: App TypeDefs"
    */
 
-  await server.upload({ sourceDir: constants.paths.bundle.ui });
+  await client.upload({ sourceDir: constants.paths.bundle.ui });
 
   // Log: MAIN
   (() => {
