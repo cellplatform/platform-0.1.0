@@ -15,6 +15,15 @@ export const bundle = async (args: {
   const { moduleName, targetDir, distDir = 'dist', silent } = args;
   const copy = await copyLocal({ moduleName });
 
+  if (!silent) {
+    log.info();
+    log.info(`${fs.basename(copy.sourceDir)}`);
+    log.info.gray(`  source:               ${copy.sourceDir}`);
+    log.info.gray(`  local snapshot (${log.cyan('cwd')}): ${copy.targetDir}`);
+    log.info.gray(`  bundle output:        ${targetDir}`);
+    log.info();
+  }
+
   const tasks = await runTasks({
     sourceDir: copy.targetDir,
     sourceDist: distDir,
@@ -46,12 +55,6 @@ async function runTasks(args: {
     return { ok };
   };
 
-  if (!silent) {
-    log.info.gray(`source (${log.cyan('cwd')}): ${sourceDir}`);
-    log.info.gray(`target:       ${targetDir}`);
-    log.info();
-  }
-
   if (!(await fs.pathExists(sourceDir))) {
     log.error(`FAIL: source directory does not exist.`);
     log.info.gray(sourceDir);
@@ -76,7 +79,7 @@ async function runTasks(args: {
         },
       },
       {
-        title: `copy`,
+        title: `copy bundle files`,
         task: async () => {
           const from = fs.join(cwd, args.sourceDist);
           const to = targetDir;
