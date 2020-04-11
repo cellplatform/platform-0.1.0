@@ -19,8 +19,8 @@ export const bundle = async (args: {
     log.info();
     log.info.gray(`  module:            ${log.white(fs.basename(copy.sourceDir))}`);
     log.info.gray(`  source:            ${copy.sourceDir}`);
-    log.info.gray(`  build copy: (${log.cyan('cwd')}): ${copy.targetDir}`);
-    log.info.gray(`  target dir: (${log.magenta('out')}): ${targetDir}`);
+    log.info.gray(`  build from: (${log.cyan('cwd')})  ${copy.targetDir}`);
+    log.info.gray(`  output to:  (${log.magenta('out')})  ${targetDir}`);
     log.info();
   }
 
