@@ -349,8 +349,6 @@ describe('TypedSheet', () => {
 
         await row.load({ force: false });
         expect(fired.length).to.eql(6);
-
-        console.log(fired.length);
       });
 
       it('await row.ready()', async () => {
@@ -373,6 +371,24 @@ describe('TypedSheet', () => {
         ]);
 
         expect(fired.length).to.eql(2);
+      });
+
+      it('fires on row property set (only when changed)', async () => {
+        const { sheet } = await testSheet();
+        const cursor = sheet.cursor();
+        const row = cursor.row(0);
+
+        await row.ready();
+
+        const fired: t.TypedSheetEvent[] = [];
+        sheet.events$.subscribe(e => fired.push(e));
+
+        row.props.title = 'Foo';
+        expect(fired.length).to.eql(1);
+        expect(fired[0].type).to.eql('SHEET/change');
+
+        row.props.title = 'Foo';
+        expect(fired.length).to.eql(1); // NB: No change.
       });
     });
 
@@ -848,7 +864,7 @@ describe('TypedSheet', () => {
     });
 
     describe('changes', () => {
-      it('row.hasChanges', async () => {
+      it('state.hasChanges', async () => {
         const { sheet, events$ } = await testSheet();
         const state = sheet.state;
         expect(state.hasChanges).to.eql(false);
@@ -862,13 +878,13 @@ describe('TypedSheet', () => {
         expect(state.hasChanges).to.eql(true);
       });
 
-      it('row.changes - initial state {empty}', async () => {
+      it('state.changes: initial state {empty}', async () => {
         const { sheet } = await testSheet();
         const state = sheet.state;
         expect(state.changes).to.eql({});
       });
 
-      it('row.changes: new instance on each call', async () => {
+      it('state.changes: new instance on each call', async () => {
         const { sheet } = await testSheet();
         const state = sheet.state;
         const res1 = state.changes;
@@ -877,7 +893,7 @@ describe('TypedSheet', () => {
         expect(res1).to.not.equal(res2); // NB: Different instance.
       });
 
-      it('row.changes: pending change returned via [fetch]', async () => {
+      it('state.changes: pending change returned via [fetch]', async () => {
         const { sheet, events$ } = await testSheet();
         const state = sheet.state;
         const fetch = state.fetch;

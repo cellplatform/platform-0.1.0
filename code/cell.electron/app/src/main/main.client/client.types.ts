@@ -85,9 +85,7 @@ export async function writeSys(host: string) {
    * - move this to [TypeSystem] as write syncer.
    */
 
-  sheet.state.changed$.pipe(debounceTime(300)).subscribe(async e => {
-    // console.log('CHANGE: ', sheet.state.changes);
-
+  const saveChanges = async () => {
     const changes = sheet.state.changes;
     const cells: t.ICellMap = {};
     Object.keys(changes)
@@ -100,6 +98,10 @@ export async function writeSys(host: string) {
     console.log('-------------------------------------------');
     console.log('res', res);
     // TODO 🐷 - reset changes on state.
+  };
+
+  sheet.state.changed$.pipe(debounceTime(300)).subscribe(async e => {
+    saveChanges();
   });
 
   await app.ready();
@@ -107,15 +109,12 @@ export async function writeSys(host: string) {
   console.log('-------------------------------------------');
   console.log('sheet.uri', sheet.uri.toString());
 
-  // console.log('row.toObject()', row.toObject());
-  // const items: t.CellApp = { title: 'Foo', windows: [] };
-
   const windows = await app.props.windows.ready();
 
   console.log('app.status', app.status);
   console.log('title', app.props.title);
 
-  // app.props.title = 'hello';
+  // app.props.title = 'hello1';
   // app.props.title = 'CellOS';
 
   console.log('-------------------------------------------');

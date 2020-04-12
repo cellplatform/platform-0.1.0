@@ -2,7 +2,7 @@ import { filter, map } from 'rxjs/operators';
 
 import { TypeDefault } from '../TypeDefault';
 import { TypeTarget } from '../TypeTarget';
-import { Schema, t, Uri, util } from './common';
+import { Schema, t, Uri, util, R } from './common';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 
@@ -276,18 +276,22 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
        */
       set(value: T[K]) {
         if (target.isInline) {
-          const cell = self._data[columnDef.column] || {};
-          const data = TypeTarget.inline(columnDef).write({ cell, data: value as any });
+          const isChanged = !R.equals(api.get(), value);
 
-          // [LATENCY COMPENSATION]
-          //
-          //    Local state updated immediately via observable change event-handler (in constructor).
-          //
-          //    NB: This means reads to the property are immedately available with the new value,
-          //        or changes made elsewhere in the system are reflected in the current state of the row,
-          //        while the global fetch state will be updated after an [async] tick with listeners
-          //        being alerted of the new value on the ["SHEET/changed"] event.
-          self.fireChange(columnDef, data);
+          if (isChanged) {
+            const cell = self._data[columnDef.column] || {};
+            const data = TypeTarget.inline(columnDef).write({ cell, data: value as any });
+
+            // [LATENCY COMPENSATION]
+            //
+            //    Local state updated immediately via observable change event-handler (in constructor).
+            //
+            //    NB: This means reads to the property are immedately available with the new value,
+            //        or changes made elsewhere in the system are reflected in the current state of the row,
+            //        while the global fetch state will be updated after an [async] tick with listeners
+            //        being alerted of the new value on the ["SHEET/changed"] event.
+            self.fireChange(columnDef, data);
+          }
         }
 
         if (target.isRef) {
