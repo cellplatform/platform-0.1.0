@@ -4,8 +4,9 @@ import { t, TypeSystem, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../../te
 describe('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
 
-  it('TypeSystem.Type === TypeClient', () => {
-    expect(TypeSystem.Type).to.equal(TypeClient);
+  it('TypeSystem.Client === TypeClient', () => {
+    expect(TypeSystem.Client).to.equal(TypeClient);
+    expect(TypeSystem.client).to.equal(TypeClient.client);
   });
 
   describe('load', () => {

@@ -27,6 +27,8 @@ export type IHttpClient = {
   file(input: string | t.IUrlParamsFile): IHttpClientFile;
 };
 
+export type IHttpClientOptions = { host?: string | number; http?: t.IHttp };
+
 /**
  * NAMESPSACE
  */
