@@ -8,13 +8,13 @@ export const URI = {
  * Environment.
  */
 export const ENV = {
-  get NODE() {
+  get node() {
     return process.env.NODE_ENV;
   },
-  get DEV() {
-    return ENV.NODE === 'development';
+  get isDev() {
+    return ENV.node === 'development';
   },
-  get PROD() {
-    return ENV.NODE === 'production';
+  get isProd() {
+    return ENV.node === 'production';
   },
 };

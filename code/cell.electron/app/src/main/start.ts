@@ -35,7 +35,7 @@ if (app.isPackaged) {
 
 export async function start() {
   const ENV = constants.ENV;
-  const prod = ENV.PROD;
+  const prod = ENV.isProd;
   const { paths, host } = await server.start({ log, prod });
 
   /**
@@ -47,7 +47,8 @@ export async function start() {
   await client.upload({ host, sourceDir: constants.paths.bundle.ui });
 
   // TEMP 🐷
-  await client.writeTypes(host, { save: ENV.DEV });
+  await client.writeTypeDefs(host, { save: ENV.isDev });
+  await client.writeSys(host);
 
   logMain({ host, log: log.file.path, db: paths.db, fs: paths.fs });
   await app.whenReady();

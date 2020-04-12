@@ -25,9 +25,9 @@ import * as t from '@platform/cell.types';
 
 export declare type CellApp = {
   title: string;
-  windows: t.ITypedSheetRefs<CellWindow>;
+  windows: t.ITypedSheetRefs<CellAppWindow>;
 };
 
-export declare type CellWindow = {
+export declare type CellAppWindow = {
   title: string;
 };

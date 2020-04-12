@@ -17,7 +17,7 @@ export function createWindow(args: { host: string; def: string }) {
     .file.byName('env.html')
     .toString();
 
-  const devUrl = constants.ENV.DEV ? 'http://localhost:1234' : '';
+  const devUrl = constants.ENV.isDev ? 'http://localhost:1234' : '';
   const url = devUrl || entryUrl;
 
   const query: t.IEnvLoaderQuery = { host, def };

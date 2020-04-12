@@ -6,12 +6,11 @@ export const port = {
    * Generates an random unused port.
    */
   async unused(preferred?: number): Promise<number> {
-    console.log('preferred', preferred);
-
     const number = preferred === undefined ? port.random() : preferred;
 
+    // If the port is already in use, call this method again.
     if (await port.isUsed(number)) {
-      return port.unused();
+      return port.unused(); // <== RECURSION 🌳
     }
 
     return number;
@@ -34,7 +33,7 @@ export const port = {
   async isUsed(port: number) {
     return new Promise<boolean>(async (resolve, reject) => {
       const server = net.createServer(socket => {
-        socket.write('Echo\r\n');
+        socket.write('echo\r\n');
         socket.pipe(socket);
       });
       server.listen(port);
