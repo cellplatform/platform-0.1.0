@@ -1,9 +1,8 @@
-import { Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 
 import { TypeDefault } from '../TypeDefault';
 import { TypeTarget } from '../TypeTarget';
-import { Schema, t, Uri, util } from './common';
+import { Schema, t, Uri, util, R } from './common';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 
@@ -78,8 +77,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private _props: t.ITypedSheetRowProps<T>;
   private _types: t.ITypedSheetRowTypes<T>;
   private _data: { [column: string]: t.ICellData } = {};
-  private _status: t.ITypedSheetRow<T>['status'] = 'INIT';
   private _isReady = false;
+  private _status: t.ITypedSheetRow<T>['status'] = 'INIT';
+  private _loading: { [key: string]: Promise<t.ITypedSheetRow<T>> } = {};
 
   public readonly index: number;
   public readonly uri: t.IRowUri;
@@ -136,30 +136,56 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * Methods
    */
 
-  public async load(options: { props?: (keyof T)[]; force?: boolean } = {}) {
-    this._status = 'LOADING';
-    const { props, force } = options;
+  public async ready() {
+    await this.load();
+    return this;
+  }
 
-    if (this.isReady && !force) {
+  public async load(
+    options: { props?: (keyof T)[]; force?: boolean } = {},
+  ): Promise<t.ITypedSheetRow<T>> {
+    if (this.isReady && !options.force) {
       return this;
     }
 
-    const ns = this.uri.ns;
-    const query = `${this.uri.key}:${this.uri.key}`;
+    const { props } = options;
+    const cacheKey = props ? `load:${props.join(',')}` : 'load';
+    if (!options.force && this._loading[cacheKey]) {
+      return this._loading[cacheKey];
+    }
 
-    await Promise.all(
-      this._columns
-        .filter(columnDef => (!props ? true : props.includes(columnDef.prop as keyof T)))
-        .map(async columnDef => {
-          const res = await this.ctx.fetch.getCells({ ns, query });
-          const key = `${columnDef.column}${this.index + 1}`;
-          this.setData(columnDef, res.cells[key] || {});
-        }),
-    );
+    const promise = new Promise<t.ITypedSheetRow<T>>(async (resolve, reject) => {
+      this._status = 'LOADING';
 
-    this._status = 'LOADED';
-    this._isReady = true; // NB: Always true after initial load.
-    return this;
+      const index = this.index;
+      const row = this.uri.toString();
+      this.fire({ type: 'SHEET/row/loading', payload: { row, index } });
+
+      const ns = this.uri.ns;
+      const query = `${this.uri.key}:${this.uri.key}`;
+
+      await Promise.all(
+        this._columns
+          .filter(columnDef => (!props ? true : props.includes(columnDef.prop as keyof T)))
+          .map(async columnDef => {
+            const res = await this.ctx.fetch.getCells({ ns, query });
+            const key = `${columnDef.column}${this.index + 1}`;
+            this.setData(columnDef, res.cells[key] || {});
+          }),
+      );
+
+      // Update state.
+      this._status = 'LOADED';
+      this._isReady = true; // NB: Always true after initial load.
+
+      // Finish up.
+      this.fire({ type: 'SHEET/row/loaded', payload: { row, index } });
+      delete this._loading[cacheKey];
+      resolve(this);
+    });
+
+    this._loading[cacheKey] = promise; // Cached for repeat calls.
+    return promise;
   }
 
   public toObject(): T {
@@ -250,18 +276,22 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
        */
       set(value: T[K]) {
         if (target.isInline) {
-          const cell = self._data[columnDef.column] || {};
-          const data = TypeTarget.inline(columnDef).write({ cell, data: value as any });
+          const isChanged = !R.equals(api.get(), value);
 
-          // [LATENCY COMPENSATION]
-          //
-          //    Local state updated immediately via observable change event-handler (in constructor).
-          //
-          //    NB: This means reads to the property are immedately available with the new value,
-          //        or changes made elsewhere in the system are reflected in the current state of the row,
-          //        while the global fetch state will be updated after an [async] tick with listeners
-          //        being alerted of the new value on the ["SHEET/changed"] event.
-          self.fireChange(columnDef, data);
+          if (isChanged) {
+            const cell = self._data[columnDef.column] || {};
+            const data = TypeTarget.inline(columnDef).write({ cell, data: value as any });
+
+            // [LATENCY COMPENSATION]
+            //
+            //    Local state updated immediately via observable change event-handler (in constructor).
+            //
+            //    NB: This means reads to the property are immedately available with the new value,
+            //        or changes made elsewhere in the system are reflected in the current state of the row,
+            //        while the global fetch state will be updated after an [async] tick with listeners
+            //        being alerted of the new value on the ["SHEET/changed"] event.
+            self.fireChange(columnDef, data);
+          }
         }
 
         if (target.isRef) {
@@ -292,6 +322,10 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * [Helpers]
    */
+
+  private fire(e: t.TypedSheetEvent) {
+    this.ctx.events$.next(e);
+  }
 
   private findColumnByProp<K extends keyof T>(prop: K) {
     const res = this._columns.find(def => def.prop === prop);

@@ -4,7 +4,7 @@ import { NeDb } from '@platform/fsdb.nedb';
 import { app as electron } from 'electron';
 import { filter } from 'rxjs/operators';
 
-import { constants, fs, log, t } from '../common';
+import { constants, fs, log, t, util } from '../common';
 
 type IInitArgs = {
   prod?: boolean;
@@ -29,13 +29,12 @@ export function init(args: IInitArgs = {}) {
 }
 
 /**
- * Start a CellOS http server.
+ * Start a CellOS HTTP server.
  */
-export async function start(args: IInitArgs = {}) {
+export async function start(args: IInitArgs & { port?: number; isDev?: boolean } = {}) {
   const { app, paths } = init(args);
 
-  // Start the server.
-  const port = 8080;
+  const port = await util.port.unused();
   const instance = await app.start({ port });
   const host = `localhost:${port}`;
 
@@ -79,5 +78,5 @@ export async function start(args: IInitArgs = {}) {
     });
 
   // Finish up.
-  return { app, instance, paths, host };
+  return { app, instance, paths, host, port };
 }

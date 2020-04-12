@@ -32,8 +32,9 @@ const TYPE_DEFS: SampleTypeDefs = {
 };
 
 const writeTypes = async (client: t.IHttpClient) => {
-  await client.ns('foo').write(TYPE_DEFS['ns:foo']);
-  await client.ns('foo.color').write(TYPE_DEFS['ns:foo.color']);
+  const write = async (ns: keyof SampleTypeDefs) => client.ns(ns).write(TYPE_DEFS[ns]);
+  await write('ns:foo');
+  await write('ns:foo.color');
   return { client };
 };
 
@@ -42,11 +43,11 @@ describe('TypeSystem ➔ HTTP', () => {
     const mock = await createMock();
     await writeTypes(mock.client);
 
-    const client = TypeSystem.client(mock.client);
-    const def = await client.load('ns:foo');
+    const type = Client.type({ client: mock.client });
+    const ts = await type.typescript('ns:foo');
+
     await mock.dispose();
 
-    const ts = TypeSystem.Client.typescript(def);
     const dir = fs.join(__dirname, '.d.ts');
     await ts.save(fs, dir);
   });

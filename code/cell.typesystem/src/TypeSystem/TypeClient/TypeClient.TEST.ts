@@ -865,11 +865,11 @@ describe('TypeClient', () => {
         const dir = fs.resolve('./tmp/d');
         const res = await ts.save(fs, dir);
 
-        expect(res.path.endsWith('/d/MyRow.d.ts')).to.eql(true);
+        expect(res.path.endsWith('/d/MyRow.ts')).to.eql(true);
 
-        const file = (await fs.readFile(fs.join(dir, 'MyRow.d.ts'))).toString();
+        const file = (await fs.readFile(fs.join(dir, 'MyRow.ts'))).toString();
 
-        expect(file).to.include(`import * as t from './MyRow.d.ts';`);
+        expect(file).to.include(`import * as t from './MyRow.ts';`);
         expect(file).to.include(`export declare type MyRow = {`);
         expect(file).to.include(`export declare type MyColor = {`);
         expect(file).to.include(`export declare type MyMessage = {`);
@@ -880,16 +880,16 @@ describe('TypeClient', () => {
         const ts = TypeClient.typescript(def);
 
         const dir = fs.resolve('tmp/d');
-        const res1 = await ts.save(fs, dir, { filename: 'Foo.txt' }); // NB: ".d.ts" automatically added.
+        const res1 = await ts.save(fs, dir, { filename: 'Foo.txt' }); // NB: ".ts" automatically added.
         const res2 = await ts.save(fs, dir, { filename: 'Foo.d.ts' });
 
-        expect(res1.path.endsWith('/d/Foo.txt.d.ts')).to.eql(true);
+        expect(res1.path.endsWith('/d/Foo.txt.ts')).to.eql(true);
         expect(res2.path.endsWith('/d/Foo.d.ts')).to.eql(true);
 
-        const file1 = (await fs.readFile(fs.join(dir, 'Foo.txt.d.ts'))).toString();
+        const file1 = (await fs.readFile(fs.join(dir, 'Foo.txt.ts'))).toString();
         const file2 = (await fs.readFile(fs.join(dir, 'Foo.d.ts'))).toString();
 
-        expect(file1).to.include(`import * as t from './Foo.txt.d.ts';`);
+        expect(file1).to.include(`import * as t from './Foo.txt.ts';`);
         expect(file1).to.include(`export declare type MyRow = {`);
         expect(file1).to.include(`export declare type MyColor = {`);
         expect(file1).to.include(`export declare type MyMessage = {`);

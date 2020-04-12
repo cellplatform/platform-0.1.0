@@ -23,7 +23,7 @@ const toCacheKey = (uri: string, ...path: string[]) => {
  * Load a type-definition from the network.
  */
 export async function load(args: {
-  ns: string;
+  ns: string | t.INsUri;
   fetch: t.ISheetFetcher;
   cache?: t.IMemoryCache;
 }): Promise<t.INsTypeDef> {

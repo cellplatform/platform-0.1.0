@@ -55,6 +55,11 @@ export class HttpClientCell implements t.IHttpClientCell {
     return this.uri.toString();
   }
 
+  public async exists() {
+    const res = await this.args.http.get(this.url.info.toString());
+    return res.status.toString().startsWith('2');
+  }
+
   public async info(options: t.IUrlQueryCellInfo = {}) {
     const http = this.args.http;
     const url = this.url.info.query(options).toString();

@@ -2,7 +2,7 @@ import * as semver from 'semver';
 import { IMicroRequest } from '@platform/micro';
 import { createMock, expect, Http, HttpClient, t } from '../test';
 
-describe('client (http)', () => {
+describe('HttpClient', () => {
   it('sends headers (client/schema version)', async () => {
     const mock = await createMock();
     const client = mock.client;
@@ -47,5 +47,34 @@ describe('client (http)', () => {
     // NB: Headers from passed in client, along with default headers, are passed to server.
     expect(headers[0].foo).to.eql('hello');
     expect(headers[0].client).to.includes('CellOS;');
+  });
+
+  describe('ns', () => {
+    it('exists()', async () => {
+      const mock = await createMock();
+      const ns = mock.client.ns('ns:foo');
+
+      expect(await ns.exists()).to.eql(false);
+
+      await ns.write({ ns: { type: { implements: 'ns:foobar' } } });
+      expect(await ns.exists()).to.eql(true);
+
+      await mock.dispose();
+    });
+  });
+
+  describe('cell', () => {
+    it('exists', async () => {
+      const mock = await createMock();
+      const ns = mock.client.ns('ns:foo');
+      const cell = mock.client.cell('cell:foo:A1');
+
+      expect(await cell.exists()).to.eql(false);
+
+      await ns.write({ cells: { A1: { value: 123 } } });
+      expect(await cell.exists()).to.eql(true);
+
+      await mock.dispose();
+    });
   });
 });
