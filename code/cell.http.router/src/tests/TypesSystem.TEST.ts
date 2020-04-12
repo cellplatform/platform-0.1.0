@@ -37,7 +37,7 @@ const writeTypes = async (client: t.IHttpClient) => {
   return { client };
 };
 
-describe.only('TypeSystem ➔ HTTP', () => {
+describe('TypeSystem ➔ HTTP', () => {
   it('generate [.d.ts] file', async () => {
     const mock = await createMock();
     await writeTypes(mock.client);
