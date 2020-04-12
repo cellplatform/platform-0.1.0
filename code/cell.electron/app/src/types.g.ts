@@ -30,4 +30,6 @@ export declare type CellApp = {
 
 export declare type CellAppWindow = {
   title: string;
+  width: number;
+  height: number;
 };
