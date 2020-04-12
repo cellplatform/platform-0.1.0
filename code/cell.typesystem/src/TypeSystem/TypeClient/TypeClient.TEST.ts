@@ -477,7 +477,7 @@ describe('TypeClient', () => {
       });
     });
 
-    describe('REF (object)', () => {
+    describe('REF(ns) - object', () => {
       it('REF object-type, n-level deep ("ns:xxx")', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
         const def = await TypeClient.load({ ns: 'foo', fetch });
@@ -534,6 +534,17 @@ describe('TypeClient', () => {
           expect(C.type.types[2].optional).to.eql(true);
           expect(C.type.typename).to.eql('MyColor');
         }
+      });
+
+      it('REF default value', async () => {
+        const fetch = testFetch({ defs: TYPE_DEFS });
+        const def = await TypeClient.load({ ns: 'foo', fetch });
+
+        const A = def.columns[0];
+        const B = def.columns[1];
+
+        expect((A.default as t.ITypeDefaultValue).value).to.eql('Untitled');
+        expect((B.default as t.ITypeDefaultValue).value).to.eql(undefined);
       });
 
       it('REF union: "ns:<id> | null"', async () => {
@@ -609,8 +620,8 @@ describe('TypeClient', () => {
         'ns:foo.2': {
           ns: { type: { typename: 'Foo2' } },
           columns: {
-            A: { props: { prop: { name: 'foo', type: 'string' } } },
-            B: { props: { prop: { name: 'bar', type: '"one" | "two" | "three"' } } },
+            A: { props: { prop: { name: 'foo', type: 'string', default: 'Untitled' } } },
+            B: { props: { prop: { name: 'bar?', type: '"one" | "two" | "three"' } } },
             C: { props: { prop: { name: 'baz', type: 'ns:foo.3' } } },
             D: { props: { prop: { name: 'zoo', type: 'cell:foo.3:A' } } },
           },
@@ -624,27 +635,81 @@ describe('TypeClient', () => {
       };
 
       it('REF(column) => VALUE (primitive)', async () => {
-        const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
-        expect(def.ok).to.eql(true);
-        expect(def.errors).to.eql([]);
+        const def1 = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+        const def2 = await TypeClient.load({ ns: 'foo.2', fetch: testFetch({ defs }) });
 
-        const A = def.columns[0];
+        expect(def1.ok).to.eql(true);
+        expect(def1.errors).to.eql([]);
+
+        expect(def2.ok).to.eql(true);
+        expect(def2.errors).to.eql([]);
+
+        const targetA = def2.columns[0];
+        expect(targetA.default).to.eql({ value: 'Untitled' });
+
+        const A = def1.columns[0];
+
         expect(A.column).to.eql('A');
         expect(A.prop).to.eql('myFoo');
         expect(A.type.kind).to.eql('VALUE');
         expect(A.type.typename).to.eql('string');
+        expect(A.default).to.eql({ value: 'Untitled' });
       });
 
       it('REF(column) => ENUM', async () => {
         const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
-        expect(def.ok).to.eql(true);
-        expect(def.errors).to.eql([]);
-
         const B = def.columns[1];
         expect(B.column).to.eql('B');
         expect(B.prop).to.eql('myBar');
         expect(B.type.kind).to.eql('UNION');
         expect(B.type.typename).to.eql(`'one' | 'two' | 'three'`);
+        expect(B.optional).to.eql(undefined); // NB: The optional quality of the referenced prop is not imported. This is a function of the "prop?" question-mark.
+      });
+
+      it('REF(column) - override default', async () => {
+        const defs = {
+          'ns:foo.1': {
+            ns: { type: { typename: 'Foo1' } },
+            columns: {
+              A: { props: { prop: { name: 'myFoo', type: 'cell:foo.2:A', default: 'Hello' } } },
+            },
+          },
+          'ns:foo.2': {
+            ns: { type: { typename: 'Foo2' } },
+            columns: {
+              A: { props: { prop: { name: 'foo', type: 'string', default: 'Untitled' } } },
+            },
+          },
+        };
+        const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+        const A = def.columns[0];
+
+        expect(A.default).to.eql({ value: 'Hello' }); // NB: The closest default to the declaration wins.
+      });
+
+      it('REF(ns) - default/optional retrieved', async () => {
+        const defs = {
+          'ns:foo.1': {
+            ns: { type: { typename: 'Foo1' } },
+            columns: {
+              A: { props: { prop: { name: 'myFoo', type: 'ns:foo.2' } } },
+            },
+          },
+          'ns:foo.2': {
+            ns: { type: { typename: 'Foo2' } },
+            columns: {
+              A: { props: { prop: { name: 'foo?', type: 'string', default: 'Untitled' } } },
+            },
+          },
+        };
+        const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+        const A = def.columns[0];
+
+        expect(A.type.kind).to.eql('REF');
+        if (A.type.kind === 'REF') {
+          expect(A.type.types[0].optional).to.eql(true);
+          expect(A.type.types[0].default).to.eql({ value: 'Untitled' });
+        }
       });
 
       it('REF(column) => REF => object (ns)', async () => {

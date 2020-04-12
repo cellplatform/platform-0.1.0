@@ -228,10 +228,13 @@ async function readColumn(args: {
   const optional = prop.endsWith('?') ? true : undefined;
   prop = optional ? prop.replace(/\?$/, '') : prop;
 
+  let defaultValue = args.props.default;
+
   if (type.kind === 'REF') {
     const res = await readRef({ level, ns, column, ref: type, ctx });
     type = res.type;
     error = res.error ? res.error : error;
+    defaultValue = defaultValue === undefined ? res.default : defaultValue; // NB: Use the closest default value to the declaration. Import from REF is not declared locally.
   }
 
   if (type.kind === 'UNION') {
@@ -244,18 +247,13 @@ async function readColumn(args: {
     union.typename = TypeValue.toTypename(union);
   }
 
-  const defaultValue = await toDefaultDef({
-    default: args.props.default,
-    ctx,
-  });
-
   const def: t.IColumnTypeDef = {
     column,
     prop,
     optional,
     type,
     target,
-    default: defaultValue,
+    default: await toDefaultDef({ default: defaultValue, ctx }),
     error,
   };
   return valueUtil.deleteUndefined(def);
@@ -317,7 +315,7 @@ async function readRef(args: {
   column: string;
   ref: t.ITypeRef;
   ctx: Context;
-}): Promise<{ type: t.IType; error?: t.ITypeError }> {
+}): Promise<{ type: t.IType; default?: t.ITypeDef['default']; error?: t.ITypeError }> {
   const { ns, column, ref, level, ctx } = args;
 
   const isColumn = Uri.is.column(ref.uri);
@@ -359,16 +357,25 @@ async function readRef(args: {
         error: ctx.errors.add(ns, msg, { errorType: ERROR.TYPE.REF }),
       };
     }
-    const type = columnDef.type;
-    return { type };
+
+    return {
+      type: columnDef.type,
+      default: columnDef.default,
+    };
   } else {
     // Namespace REF.
     const { typename } = loadResponse;
-    const types: t.ITypeDef[] = loadResponse.columns.map(({ prop, type, optional }) => ({
-      prop,
-      type,
-      optional,
-    }));
+
+    const types: t.ITypeDef[] = loadResponse.columns.map(item => {
+      const { prop, type, optional } = item;
+      return {
+        prop,
+        type,
+        optional,
+        default: item.default,
+      };
+    });
+
     const type: t.ITypeRef = { ...ref, typename, types };
     return { type };
   }
