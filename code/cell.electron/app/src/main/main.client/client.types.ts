@@ -1,17 +1,6 @@
 import '../config';
-import { t, Client, fs, Schema, Uri, coord } from '../common';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
+import { Client, coord, fs, t } from '../common';
 
 type TypeDefs = { [key: string]: t.ITypeDefPayload };
 
