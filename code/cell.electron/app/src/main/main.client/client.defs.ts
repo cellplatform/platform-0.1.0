@@ -32,7 +32,7 @@ export const writeTypes = async (host: string, options: { save?: boolean } = {})
 
   const write = async (ns: string) => {
     if (!DEFS[ns]) {
-      throw new Error(`namespace "${ns}" not defined.`);
+      throw new Error(`namespace "${ns}" is not defined.`);
     }
     await client.ns(ns).write(DEFS[ns]);
   };

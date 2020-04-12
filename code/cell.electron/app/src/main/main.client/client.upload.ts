@@ -69,7 +69,7 @@ export async function upload(args: {
     return done(true);
   } catch (err) {
     if (err.message.includes('ECONNREFUSED')) {
-      log.info.yellow(`Ensure the local CellOS server is online. ${log.gray(client.origin)}`);
+      log.info.yellow(`Ensure the local CellOS server is online. ${log.gray(host)}`);
       log.info();
     }
     return done(false);
