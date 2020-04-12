@@ -3,11 +3,31 @@ import { HttpClient } from '..';
 
 /**
  * NOTE:
- *    Tests aginst the actual service using this client
- *    can be found in the [cell.http] module.
+ *    Main integration tests using the [HttpClient]
+ *    can be found in module:
+ *
+ *        @platform/cell.http.router
+ *
  */
 
-describe('client', () => {
+describe('HttpClient', () => {
+  describe('static', () => {
+    it('isClient', () => {
+      const test = (input: any, expected: boolean) => {
+        const res = HttpClient.isClient(input);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, false);
+      test(null, false);
+      test('', false);
+      test({}, false);
+      test({ request$: 123, response$: 'hello' }, false);
+
+      test(HttpClient.create(), true);
+    });
+  });
+
   describe('create', () => {
     it('parses host => origin', () => {
       const test = (host: string | number, expected: string) => {
@@ -31,7 +51,7 @@ describe('client', () => {
       expect(client.origin).to.eql('http://localhost:1234');
     });
 
-    it('uses given [IHttp] client', () => {
+    it('uses given [IHttpClient]', () => {
       const http = Http.create({ headers: { foo: 'hello' } });
       const client = HttpClient.create({ http });
       const clientHttp = (client as any).http as t.IHttp;

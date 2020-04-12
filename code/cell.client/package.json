@@ -1,7 +1,7 @@
 {
   "name": "@platform/cell.client",
   "version": "0.2.51",
-  "description": "A strongly typed HTTP client for operating the REST service API.",
+  "description": "A strongly typed HTTP client for operating with a CellOS service end-point.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {

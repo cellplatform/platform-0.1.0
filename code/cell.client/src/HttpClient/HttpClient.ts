@@ -10,21 +10,39 @@ function clientHeader() {
   return `CellOS; ${client}; ${schema}`;
 }
 
-type IHttpClientOptions = { host?: string | number; http?: t.IHttp };
-
 /**
  * An HTTP client for the CellOS.
  */
 export class HttpClient implements t.IHttpClient {
-  public static create(input?: string | number | IHttpClientOptions): t.IHttpClient {
+  public static create(input?: string | number | t.IHttpClientOptions): t.IHttpClient {
     const args = typeof input === 'object' ? input : { host: input };
     return new HttpClient(args);
   }
 
   /**
+   * Determine if the given input is an [IHttpClient].
+   */
+  public static isClient(input?: any) {
+    if (typeof input !== 'object' || input === null) {
+      return false;
+    }
+
+    const value = input as t.IHttpClient;
+    return (
+      util.isObservable(value.request$) &&
+      util.isObservable(value.response$) &&
+      typeof value.origin === 'string' &&
+      typeof value.info === 'function' &&
+      typeof value.ns === 'function' &&
+      typeof value.cell === 'function' &&
+      typeof value.file === 'function'
+    );
+  }
+
+  /**
    * [Lifecycle]
    */
-  private constructor(args: IHttpClientOptions) {
+  private constructor(args: t.IHttpClientOptions) {
     this.urls = Schema.urls(args.host ?? 8080);
     this.origin = this.urls.origin;
 
