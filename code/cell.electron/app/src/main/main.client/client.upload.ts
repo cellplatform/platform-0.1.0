@@ -26,25 +26,23 @@ export async function getFiles(args: { sourceDir: string }) {
  * Upload files to the given target
  */
 export async function upload(args: {
+  host: string;
   sourceDir: string;
   targetCell?: string;
   files?: File[];
   silent?: boolean;
 }) {
   const timer = time.timer();
-  const { sourceDir } = args;
+  const { host, sourceDir } = args;
   const targetCell = args.targetCell || constants.URI.UI_FILES;
   const files = args.files ? args.files : await getFiles({ sourceDir });
-
-  // files = files.filter(file => file.data.byteLength > 0);
 
   const done = (ok: boolean) => {
     return { ok, files };
   };
 
-  const host = constants.HOST;
-  const client = HttpClient.create(host);
   try {
+    const client = HttpClient.create(host);
     const res = await client.cell(targetCell).files.upload(files);
 
     if (!res.ok) {

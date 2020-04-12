@@ -42,11 +42,11 @@ describe('TypeSystem ➔ HTTP', () => {
     const mock = await createMock();
     await writeTypes(mock.client);
 
-    const client = TypeSystem.client(mock.client);
-    const def = await client.load('ns:foo');
+    const type = Client.type({ client: mock.client });
+    const ts = await type.typescript('ns:foo');
+
     await mock.dispose();
 
-    const ts = TypeSystem.Client.typescript(def);
     const dir = fs.join(__dirname, '.d.ts');
     await ts.save(fs, dir);
   });

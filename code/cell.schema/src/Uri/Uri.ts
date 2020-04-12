@@ -54,7 +54,7 @@ export class Uri {
          */
         const id = right;
         setError(!id, 'Namespace URI identifier not found');
-        setError(!Uri.is.valid.ns(id), 'URI contains an invalid "ns" identifier');
+        setError(!Uri.is.valid.ns(id), `URI contains an invalid "ns" identifier ("${id}")`);
         const uri: t.INsUri = { type: 'NS', id, toString };
         data = uri;
       } else if (left === 'file') {

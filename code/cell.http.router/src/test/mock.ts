@@ -94,7 +94,13 @@ const tryIgnore = async (fn: () => any) => {
  * [Helpers]
  */
 
+/**
+ * Generates a randon port number.
+ * See:
+ *    https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers#Dynamic,_private_or_ephemeral_ports
+ */
 const randomPort = () => {
-  const random = (min = 0, max = 9) => util.value.random(min, max);
-  return util.value.toNumber(`${random(6, 9)}${random()}${random()}${random()}`);
+  const MIN = 49152;
+  const MAX = 65535;
+  return util.value.random(MIN, MAX);
 };
