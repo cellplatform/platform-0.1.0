@@ -1,26 +1,20 @@
+import { Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
+import { TypedSheet } from '.';
 import { TypeSystem } from '..';
-import {
-  ERROR,
-  expect,
-  expectError,
-  Subject,
-  t,
-  testInstanceFetch,
-  time,
-  TYPE_DEFS,
-} from '../../test';
+import { ERROR, expect, expectError, t, testInstanceFetch, time, TYPE_DEFS } from '../../test';
 import * as f from '../../test/.d.ts/foo';
+import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
 import * as m from '../../test/.d.ts/foo.messages';
 import * as p from '../../test/.d.ts/foo.primitives';
-import * as e from '../../test/.d.ts/foo.enum';
+import { TypeClient } from '../TypeClient';
+import { TypedSheetCursor } from './TypedSheetCursor';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
-import { TypedSheetState } from './TypedSheetState';
 import { TypedSheetRow } from './TypedSheetRow';
-import { TypedSheetCursor } from './TypedSheetCursor';
-import { TypedSheet } from '.';
-import { TypeClient } from '../TypeClient';
+import { TypedSheetState } from './TypedSheetState';
 
 /**
  * TODO 🐷 Features
@@ -198,7 +192,9 @@ describe('TypedSheet', () => {
       const cursor = sheet.cursor();
 
       const fired: t.TypedSheetEvent[] = [];
-      sheet.events$.subscribe(e => fired.push(e));
+      sheet.events$
+        .pipe(filter(e => e.type === 'SHEET/loading' || e.type === 'SHEET/loaded'))
+        .subscribe(e => fired.push(e));
 
       await cursor.load();
 
@@ -221,7 +217,9 @@ describe('TypedSheet', () => {
       const { sheet } = await testSheet();
       const cursor = sheet.cursor();
       const fired: t.TypedSheetEvent[] = [];
-      sheet.events$.subscribe(e => fired.push(e));
+      sheet.events$
+        .pipe(filter(e => e.type === 'SHEET/loading' || e.type === 'SHEET/loaded'))
+        .subscribe(e => fired.push(e));
 
       await Promise.all([cursor.load(), cursor.load(), cursor.load()]);
       expect(fired.length).to.eql(2); // NB: Would be 6 if load de-duping wan't implemented.
@@ -231,7 +229,9 @@ describe('TypedSheet', () => {
       const { sheet } = await testSheet();
       const cursor = sheet.cursor();
       const fired: t.TypedSheetEvent[] = [];
-      sheet.events$.subscribe(e => fired.push(e));
+      sheet.events$
+        .pipe(filter(e => e.type === 'SHEET/loading' || e.type === 'SHEET/loaded'))
+        .subscribe(e => fired.push(e));
 
       await Promise.all([
         cursor.load(),
@@ -277,6 +277,102 @@ describe('TypedSheet', () => {
         single: 'hello',
         union: ['blue'],
         array: ['red', 'green', 'blue'],
+      });
+    });
+
+    describe('row events$', () => {
+      it('fires load events', async () => {
+        const { sheet } = await testSheet();
+        const cursor = sheet.cursor();
+
+        const fired: t.TypedSheetEvent[] = [];
+        sheet.events$
+          .pipe(filter(e => e.type === 'SHEET/row/loading' || e.type === 'SHEET/row/loaded'))
+          .subscribe(e => fired.push(e));
+
+        await cursor.load();
+
+        const loading = fired.filter(e => e.type === 'SHEET/row/loading');
+        const loaded = fired.filter(e => e.type === 'SHEET/row/loaded');
+
+        expect(loading.length).to.eql(9);
+        expect(loaded.length).to.eql(9);
+      });
+
+      it('repeat loads', async () => {
+        const { sheet } = await testSheet();
+        const cursor = sheet.cursor();
+
+        const fired: t.TypedSheetEvent[] = [];
+        sheet.events$
+          .pipe(filter(e => e.type === 'SHEET/row/loading' || e.type === 'SHEET/row/loaded'))
+          .subscribe(e => fired.push(e));
+
+        await cursor.load();
+        expect(fired.length).to.eql(18);
+
+        await cursor.load();
+        expect(fired.length).to.eql(18); // NB: already loaded.
+
+        const row = cursor.row(0);
+        await row.load();
+        expect(fired.length).to.eql(18); // NB: already loaded.
+
+        await row.load({ force: true });
+        expect(fired.length).to.eql(18 + 2);
+      });
+
+      it('shared load promise', async () => {
+        const { sheet } = await testSheet();
+        const cursor = sheet.cursor();
+        const row = cursor.row(0);
+
+        const fired: t.TypedSheetEvent[] = [];
+        sheet.events$
+          .pipe(filter(e => e.type === 'SHEET/row/loading' || e.type === 'SHEET/row/loaded'))
+          .subscribe(e => fired.push(e));
+
+        await Promise.all([
+          row.load(),
+          row.load({ props: ['title'] }),
+          row.load(),
+          row.load(),
+          row.load(),
+          row.load(),
+          row.load({ props: ['title'] }),
+        ]);
+
+        expect(fired.length).to.eql(4);
+
+        await row.load({ force: true });
+        expect(fired.length).to.eql(6);
+
+        await row.load({ force: false });
+        expect(fired.length).to.eql(6);
+
+        console.log(fired.length);
+      });
+
+      it('await row.ready()', async () => {
+        const { sheet } = await testSheet();
+        const cursor = sheet.cursor();
+        const row = cursor.row(0);
+
+        const fired: t.TypedSheetEvent[] = [];
+        sheet.events$
+          .pipe(filter(e => e.type === 'SHEET/row/loading' || e.type === 'SHEET/row/loaded'))
+          .subscribe(e => fired.push(e));
+
+        await Promise.all([
+          row.ready(),
+          row.ready(),
+          row.ready(),
+          row.ready(),
+          row.ready(),
+          row.ready(),
+        ]);
+
+        expect(fired.length).to.eql(2);
       });
     });
 

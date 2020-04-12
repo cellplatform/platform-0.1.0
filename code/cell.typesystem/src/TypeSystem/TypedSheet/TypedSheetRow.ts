@@ -1,5 +1,4 @@
-import { Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 
 import { TypeDefault } from '../TypeDefault';
 import { TypeTarget } from '../TypeTarget';
@@ -78,8 +77,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private _props: t.ITypedSheetRowProps<T>;
   private _types: t.ITypedSheetRowTypes<T>;
   private _data: { [column: string]: t.ICellData } = {};
-  private _status: t.ITypedSheetRow<T>['status'] = 'INIT';
   private _isReady = false;
+  private _status: t.ITypedSheetRow<T>['status'] = 'INIT';
+  private _loading: { [key: string]: Promise<t.ITypedSheetRow<T>> } = {};
 
   public readonly index: number;
   public readonly uri: t.IRowUri;
@@ -136,30 +136,56 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * Methods
    */
 
-  public async load(options: { props?: (keyof T)[]; force?: boolean } = {}) {
-    this._status = 'LOADING';
-    const { props, force } = options;
+  public async ready() {
+    await this.load();
+    return this;
+  }
 
-    if (this.isReady && !force) {
+  public async load(
+    options: { props?: (keyof T)[]; force?: boolean } = {},
+  ): Promise<t.ITypedSheetRow<T>> {
+    if (this.isReady && !options.force) {
       return this;
     }
 
-    const ns = this.uri.ns;
-    const query = `${this.uri.key}:${this.uri.key}`;
+    const { props } = options;
+    const cacheKey = props ? `load:${props.join(',')}` : 'load';
+    if (!options.force && this._loading[cacheKey]) {
+      return this._loading[cacheKey];
+    }
 
-    await Promise.all(
-      this._columns
-        .filter(columnDef => (!props ? true : props.includes(columnDef.prop as keyof T)))
-        .map(async columnDef => {
-          const res = await this.ctx.fetch.getCells({ ns, query });
-          const key = `${columnDef.column}${this.index + 1}`;
-          this.setData(columnDef, res.cells[key] || {});
-        }),
-    );
+    const promise = new Promise<t.ITypedSheetRow<T>>(async (resolve, reject) => {
+      this._status = 'LOADING';
 
-    this._status = 'LOADED';
-    this._isReady = true; // NB: Always true after initial load.
-    return this;
+      const index = this.index;
+      const row = this.uri.toString();
+      this.fire({ type: 'SHEET/row/loading', payload: { row, index } });
+
+      const ns = this.uri.ns;
+      const query = `${this.uri.key}:${this.uri.key}`;
+
+      await Promise.all(
+        this._columns
+          .filter(columnDef => (!props ? true : props.includes(columnDef.prop as keyof T)))
+          .map(async columnDef => {
+            const res = await this.ctx.fetch.getCells({ ns, query });
+            const key = `${columnDef.column}${this.index + 1}`;
+            this.setData(columnDef, res.cells[key] || {});
+          }),
+      );
+
+      // Update state.
+      this._status = 'LOADED';
+      this._isReady = true; // NB: Always true after initial load.
+
+      // Finish up.
+      this.fire({ type: 'SHEET/row/loaded', payload: { row, index } });
+      delete this._loading[cacheKey];
+      resolve(this);
+    });
+
+    this._loading[cacheKey] = promise; // Cached for repeat calls.
+    return promise;
   }
 
   public toObject(): T {
@@ -292,6 +318,10 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * [Helpers]
    */
+
+  private fire(e: t.TypedSheetEvent) {
+    this.ctx.events$.next(e);
+  }
 
   private findColumnByProp<K extends keyof T>(prop: K) {
     const res = this._columns.find(def => def.prop === prop);
