@@ -6,7 +6,7 @@
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.17
+ *    @platform/cell.typesystem@0.0.18
  * 
  * Notes: 
  * 
@@ -17,7 +17,7 @@
  *        that uses a [TypedSheet] to programatically manipulate 
  *        the namespace in a strongly-typed manner. eg:
  * 
- *            import * as t from './<filename>.d.ts';
+ *            import * as t from './types.g.ts';
  * 
  */
 
