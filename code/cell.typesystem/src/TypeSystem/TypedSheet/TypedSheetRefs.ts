@@ -4,7 +4,6 @@ import { TypedSheet } from './TypedSheet';
 export type IArgs = {
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   parent: string | t.ICellUri;
-  // ns?: string | t.INsUri;
   ctx: t.SheetCtx;
 };
 
@@ -84,9 +83,11 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
       await this.ensureLink();
 
       const { fetch, cache, events$ } = this.ctx;
-      const typename = this.typeDef.type.typename;
+      const def = this.typeDef;
+      const typename = def.type.typename;
+
       this._sheet = await TypedSheet.create<T>({
-        implements: typename,
+        implements: def.type.uri,
         ns: this.ns.toString(),
         fetch,
         cache,

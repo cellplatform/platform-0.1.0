@@ -64,7 +64,6 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     events$?: Subject<t.TypedSheetEvent>;
   }): Promise<t.ITypedSheet<T>> {
     const { fetch, events$, cache } = args;
-
     const implementsNs = util.formatNsUri(args.implements);
     const sheetNs = args.ns ? util.formatNsUri(args.ns) : Uri.create.ns(Uri.cuid());
 
@@ -73,6 +72,12 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
       fetch,
       cache,
     });
+
+    if (!typeDef.ok) {
+      const list = typeDef.errors.map(err => err.message).join('\n');
+      const err = `Failed to create [TypedSheet] (${sheetNs.toString()}) because the type-definition (${implementsNs.toString()}) contains errors.\n${list}`;
+      throw new Error(err);
+    }
 
     return new TypedSheet<T>({
       sheetNs,

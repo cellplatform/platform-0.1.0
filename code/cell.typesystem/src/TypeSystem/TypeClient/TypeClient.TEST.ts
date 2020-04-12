@@ -543,8 +543,8 @@ describe('TypeClient', () => {
         const A = def.columns[0];
         const B = def.columns[1];
 
-        expect((A.default as t.ITypeDefaultValue).value).to.eql('Untitled');
-        expect((B.default as t.ITypeDefaultValue).value).to.eql(undefined);
+        expect(A.default).to.eql({ value: 'Untitled' });
+        expect(B.default).to.eql(undefined);
       });
 
       it('REF union: "ns:<id> | null"', async () => {
@@ -602,6 +602,59 @@ describe('TypeClient', () => {
         if (C.type.kind === 'REF') {
           expect(C.type.uri).to.eql('ns:foo.message'); // NB: Array suffix ("[]") removed from URI.
           expect(C.type.isArray).to.eql(true);
+        }
+      });
+
+      it('REF(ns) - default/optional retrieved', async () => {
+        const defs = {
+          'ns:foo.1': {
+            ns: { type: { typename: 'Foo1' } },
+            columns: {
+              A: { props: { prop: { name: 'myFoo', type: 'ns:foo.2' } } },
+            },
+          },
+          'ns:foo.2': {
+            ns: { type: { typename: 'Foo2' } },
+            columns: {
+              A: { props: { prop: { name: 'foo?', type: 'string', default: 'Untitled' } } },
+            },
+          },
+        };
+        const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+        const A = def.columns[0];
+
+        expect(A.type.kind).to.eql('REF');
+        if (A.type.kind === 'REF') {
+          expect(A.type.types[0].optional).to.eql(true);
+          expect(A.type.types[0].default).to.eql({ value: 'Untitled' });
+        }
+      });
+
+      it('REF(ns): ref[] - defaults retrieved', async () => {
+        const defs = {
+          'ns:foo.1': {
+            ns: { type: { typename: 'Foo1' } },
+            columns: {
+              A: { props: { prop: { name: 'myFoo', type: 'ns:foo.2[]', target: 'ref' } } },
+            },
+          },
+          'ns:foo.2': {
+            ns: { type: { typename: 'Foo2' } },
+            columns: {
+              A: { props: { prop: { name: 'count', type: 'number', default: -1 } } },
+            },
+          },
+        };
+
+        const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+        const A = def.columns[0];
+
+        expect(A.default).to.eql(undefined);
+        expect(A.type.isArray).to.eql(true);
+
+        expect(A.type.kind).to.eql('REF');
+        if (A.type.kind === 'REF') {
+          expect(A.type.types[0].default).to.eql({ value: -1 });
         }
       });
     });
@@ -685,31 +738,6 @@ describe('TypeClient', () => {
         const A = def.columns[0];
 
         expect(A.default).to.eql({ value: 'Hello' }); // NB: The closest default to the declaration wins.
-      });
-
-      it('REF(ns) - default/optional retrieved', async () => {
-        const defs = {
-          'ns:foo.1': {
-            ns: { type: { typename: 'Foo1' } },
-            columns: {
-              A: { props: { prop: { name: 'myFoo', type: 'ns:foo.2' } } },
-            },
-          },
-          'ns:foo.2': {
-            ns: { type: { typename: 'Foo2' } },
-            columns: {
-              A: { props: { prop: { name: 'foo?', type: 'string', default: 'Untitled' } } },
-            },
-          },
-        };
-        const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
-        const A = def.columns[0];
-
-        expect(A.type.kind).to.eql('REF');
-        if (A.type.kind === 'REF') {
-          expect(A.type.types[0].optional).to.eql(true);
-          expect(A.type.types[0].default).to.eql({ value: 'Untitled' });
-        }
       });
 
       it('REF(column) => REF => object (ns)', async () => {
