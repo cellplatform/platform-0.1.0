@@ -968,7 +968,7 @@ describe('TypedSheet', () => {
     });
 
     describe('cache/revert', () => {
-      it('revert changes', async () => {
+      it('revertChanges', async () => {
         const { sheet, events$ } = await testSheet();
         const state = sheet.state;
         expect(await state.getCell('A1')).to.eql({ value: 'One' }); // Original value.
@@ -987,19 +987,21 @@ describe('TypedSheet', () => {
         const fired: t.TypedSheetEvent[] = [];
         sheet.events$.subscribe(e => fired.push(e));
 
-        state.revert();
+        state.revertChanges();
+
         expect(state.hasChanges).to.eql(false);
         expect(state.changes).to.eql({});
         expect(fired.length).to.eql(1);
+        expect(fired[0].type).to.eql('SHEET/changes/reverted');
         expect(await state.getCell('A1')).to.eql({ value: 'One' }); // NB: retrieving original value after revert.
 
-        const e = fired[0].payload as t.ITypedSheetReverted;
+        const e = fired[0].payload as t.ITypedSheetChangesReverted;
         expect(e.ns).to.eql('ns:foo.mySheet');
         expect(e.from).to.eql(changes);
         expect(e.to).to.eql({});
       });
 
-      it('clear cache (retain other items in cache)', async () => {
+      it('clearCache (retain other items in cache)', async () => {
         const { sheet, fetch } = await testSheet();
         const state = sheet.state;
         const cache = state.fetch.cache;

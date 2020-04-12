@@ -10,7 +10,7 @@ export type TypedSheetEvent =
   | ITypedSheetRowLoadedEvent
   | ITypedSheetChangeEvent
   | ITypedSheetChangedEvent
-  | ITypedSheetRevertedEvent;
+  | ITypedSheetChangesRevertedEvent;
 
 /**
  * Fires when a sheet cursor commences loading.
@@ -87,11 +87,11 @@ export type ITypedSheetChanged = {
 /**
  * Fires when a set of changes are reverted.
  */
-export type ITypedSheetRevertedEvent = {
-  type: 'SHEET/reverted';
-  payload: t.ITypedSheetReverted;
+export type ITypedSheetChangesRevertedEvent = {
+  type: 'SHEET/changes/reverted';
+  payload: t.ITypedSheetChangesReverted;
 };
-export type ITypedSheetReverted = {
+export type ITypedSheetChangesReverted = {
   ns: string; // URI
   from: t.ITypedSheetStateChanges;
   to: t.ITypedSheetStateChanges;

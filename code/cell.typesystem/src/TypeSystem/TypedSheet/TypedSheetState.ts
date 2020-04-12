@@ -117,11 +117,11 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
     return res.cells[key];
   }
 
-  public revert() {
+  public revertChanges() {
     const from = this.changes;
     this._changes = {};
     this.fire({
-      type: 'SHEET/reverted',
+      type: 'SHEET/changes/reverted',
       payload: {
         ns: this.uri.toString(),
         from,
