@@ -29,7 +29,7 @@ export function toTypescriptHeader(args: { uri: string; pkg: Package; filename?:
  *        that uses a [TypedSheet] to programatically manipulate 
  *        the namespace in a strongly-typed manner. eg:
  * 
- *            import * as t from './${filename}.d.ts';
+ *            import * as t from './${filename}.ts';
  * 
  */`.substring(1);
 }

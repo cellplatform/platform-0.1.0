@@ -32,14 +32,14 @@
   dependencies:
     "@platform/libs" "0.2.1"
 
-"@platform/cell.client@0.2.53":
-  version "0.2.53"
-  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.53.tgz#54ba28167362223401843713848fad84ef22005d"
-  integrity sha512-0dJmwx1PWRL2csiWD84M9JUBHhj/4j55SAn0vlD4o4cD1F+QFU4NyyJHqNccv3YJpPEWaTHW0otSe5R7/973og==
+"@platform/cell.client@0.2.54":
+  version "0.2.54"
+  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.54.tgz#d98bc8186e953e90febfdca4e9c73bcefb29d04a"
+  integrity sha512-0axJBx8QR1AuC9ESqlq5lI94jYBvBwO/QPwnOGQscHJEemVH6YAv8w5diVr9LlKZHp3N7p7qczwriDLIa8VFAg==
   dependencies:
     "@platform/cell.schema" "0.4.80"
     "@platform/cell.types" "0.4.72"
-    "@platform/cell.typesystem" "0.0.17"
+    "@platform/cell.typesystem" "0.0.18"
     "@platform/http" "0.12.5"
     "@platform/http.types" "0.2.1"
     "@platform/libs" "0.2.1"
@@ -143,10 +143,10 @@
     "@platform/types" "0.4.14"
     "@platform/util.diff" "0.0.24"
 
-"@platform/cell.typesystem@0.0.17":
-  version "0.0.17"
-  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.17.tgz#e1f962bcb019c61d648532a23604a84cb2820a5a"
-  integrity sha512-VNwKIRoRVo5w4rvSI2IrKpv09zqGFUhjtFtilDCwWEDOxrzeNDY4uhLCMLQQaBiVx2B7KokUTVPeDjHK5CL/9g==
+"@platform/cell.typesystem@0.0.18":
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.18.tgz#61e29c1c09e0b4d1eebd98e70ea506fcc023420e"
+  integrity sha512-n/DP4Jgn+Lknh1Pdqggew/fp7PQh2Supj5LLuY9ZSoFbRtlOvYmY/S1LsuSLkSIDeUv9Gk7RcZES+3XcI707gA==
   dependencies:
     "@platform/cache" "0.2.23"
     "@platform/cell.coord" "0.8.90"
