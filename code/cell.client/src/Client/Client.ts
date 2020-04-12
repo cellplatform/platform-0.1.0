@@ -27,7 +27,8 @@ export class Client {
   /**
    * Creates all the parts necessary to work with the [TypeSystem].
    */
-  public static type(args: Options = {}) {
+  public static type(input?: string | number | Options) {
+    const args = typeof input === 'object' ? input : { client: input };
     const { cache, events$ } = args;
 
     const http = HttpClient.isClient(args.client)

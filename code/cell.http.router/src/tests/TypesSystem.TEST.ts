@@ -32,8 +32,9 @@ const TYPE_DEFS: SampleTypeDefs = {
 };
 
 const writeTypes = async (client: t.IHttpClient) => {
-  await client.ns('foo').write(TYPE_DEFS['ns:foo']);
-  await client.ns('foo.color').write(TYPE_DEFS['ns:foo.color']);
+  const write = async (ns: keyof SampleTypeDefs) => client.ns(ns).write(TYPE_DEFS[ns]);
+  await write('ns:foo');
+  await write('ns:foo.color');
   return { client };
 };
 

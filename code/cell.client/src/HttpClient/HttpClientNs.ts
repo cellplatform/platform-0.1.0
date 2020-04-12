@@ -34,6 +34,13 @@ export class HttpClientNs implements t.IClientNs {
     return this.uri.toString();
   }
 
+  public async exists() {
+    const http = this.args.http;
+    const url = this.url.info.toString();
+    const res = await http.get(url);
+    return res.status.toString().startsWith('2');
+  }
+
   public async read(options: t.IUrlQueryNsInfo = {}) {
     const http = this.args.http;
     const url = this.url.info.query(options).toString();
