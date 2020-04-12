@@ -41,6 +41,7 @@ export type ITypedSheetRow<T> = {
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
   readonly isReady: boolean;
   load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
+  ready(): Promise<ITypedSheetRow<T>>;
   toObject(): T;
 };
 

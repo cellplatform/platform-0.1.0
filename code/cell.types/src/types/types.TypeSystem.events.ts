@@ -6,6 +6,8 @@ import { t } from '../common';
 export type TypedSheetEvent =
   | ITypedSheetLoadingEvent
   | ITypedSheetLoadedEvent
+  | ITypedSheetRowLoadingEvent
+  | ITypedSheetRowLoadedEvent
   | ITypedSheetChangeEvent
   | ITypedSheetChangedEvent
   | ITypedSheetRevertedEvent;
@@ -18,7 +20,7 @@ export type ITypedSheetLoadingEvent = {
   payload: ITypedSheetLoading;
 };
 export type ITypedSheetLoading = {
-  ns: string; // URI.
+  ns: string; // URI
   range: string; // row range, eg: "1:500"
 };
 
@@ -31,6 +33,30 @@ export type ITypedSheetLoadedEvent = {
 };
 export type ITypedSheetLoaded = ITypedSheetLoading & {
   total: number; // Total number of rows within the database.
+};
+
+/**
+ * Fires when a sheet row commences loading.
+ */
+export type ITypedSheetRowLoadingEvent = {
+  type: 'SHEET/row/loading';
+  payload: ITypedSheetRowLoading;
+};
+export type ITypedSheetRowLoading = {
+  index: number;
+  row: string; // URI
+};
+
+/**
+ * Fires when a sheet row completes loading.
+ */
+export type ITypedSheetRowLoadedEvent = {
+  type: 'SHEET/row/loaded';
+  payload: ITypedSheetRowLoaded;
+};
+export type ITypedSheetRowLoaded = {
+  index: number;
+  row: string; // URI
 };
 
 /**
@@ -53,7 +79,7 @@ export type ITypedSheetChangedEvent = {
   payload: t.ITypedSheetChanged;
 };
 export type ITypedSheetChanged = {
-  ns: string; // URI.
+  ns: string; // URI
   change: t.ITypedSheetStateChange;
   changes: t.ITypedSheetStateChanges;
 };
@@ -66,7 +92,7 @@ export type ITypedSheetRevertedEvent = {
   payload: t.ITypedSheetReverted;
 };
 export type ITypedSheetReverted = {
-  ns: string; // URI.
+  ns: string; // URI
   from: t.ITypedSheetStateChanges;
   to: t.ITypedSheetStateChanges;
 };
