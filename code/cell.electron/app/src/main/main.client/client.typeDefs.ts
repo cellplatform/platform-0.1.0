@@ -28,7 +28,7 @@ const DEFS: TypeDefs = {
  * Write the application types.
  */
 export const writeTypes = async (host: string, options: { save?: boolean } = {}) => {
-  const client = Client.Http.create(host);
+  const client = Client.http(host);
 
   const write = async (ns: string) => {
     if (!DEFS[ns]) {
@@ -46,5 +46,5 @@ export const writeTypes = async (host: string, options: { save?: boolean } = {})
     await ts.save(fs, fs.resolve('src/types.d.ts'));
   }
 
-  return { client };
+  return { client: client };
 };
