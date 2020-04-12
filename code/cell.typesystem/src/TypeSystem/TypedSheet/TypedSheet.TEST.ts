@@ -987,18 +987,19 @@ describe('TypedSheet', () => {
         const fired: t.TypedSheetEvent[] = [];
         sheet.events$.subscribe(e => fired.push(e));
 
-        state.revertChanges();
+        state.clearChanges('REVERT');
 
         expect(state.hasChanges).to.eql(false);
         expect(state.changes).to.eql({});
         expect(fired.length).to.eql(1);
-        expect(fired[0].type).to.eql('SHEET/changes/reverted');
+        expect(fired[0].type).to.eql('SHEET/changes/cleared');
         expect(await state.getCell('A1')).to.eql({ value: 'One' }); // NB: retrieving original value after revert.
 
-        const e = fired[0].payload as t.ITypedSheetChangesReverted;
+        const e = fired[0].payload as t.ITypedSheetChangesCleared;
         expect(e.ns).to.eql('ns:foo.mySheet');
         expect(e.from).to.eql(changes);
         expect(e.to).to.eql({});
+        expect(e.action).to.eql('REVERT');
       });
 
       it('clearCache (retain other items in cache)', async () => {

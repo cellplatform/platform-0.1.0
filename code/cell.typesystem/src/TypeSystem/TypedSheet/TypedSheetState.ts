@@ -117,15 +117,16 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
     return res.cells[key];
   }
 
-  public revertChanges() {
-    const from = this.changes;
+  public clearChanges(action: t.ITypedSheetChangesCleared['action']) {
+    const from = { ...this._changes };
     this._changes = {};
     this.fire({
-      type: 'SHEET/changes/reverted',
+      type: 'SHEET/changes/cleared',
       payload: {
         ns: this.uri.toString(),
         from,
-        to: this.changes,
+        to: {},
+        action,
       },
     });
   }

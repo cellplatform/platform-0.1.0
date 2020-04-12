@@ -12,7 +12,7 @@ export type ITypedSheetState<T> = {
   readonly changes: ITypedSheetStateChanges;
   readonly hasChanges: boolean;
   getCell(key: string): Promise<t.ICellData | undefined>;
-  revertChanges(): void;
+  clearChanges(action: t.ITypedSheetChangesCleared['action']): void;
   clearCache(): void;
 };
 
