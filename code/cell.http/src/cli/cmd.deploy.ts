@@ -104,20 +104,10 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
           url = subdomain ? `${subdomain}.${domain}` : url;
           url = `https://${url}`;
 
-          let info: t.IResGetSysInfo | undefined;
-          try {
-            info = (await http.get(url)).json as t.IResGetSysInfo;
-          } catch (err) {
-            log.error(`Failed to read info from ${url}`);
-          }
-
           log.info.green(`${dirname}`);
-          if (info) {
-            log.info.gray(`• system:     ${info.system}`);
-            log.info.gray(`• region:     ${info.region}`);
-            log.info.gray(`• deployment: ${info.deployment}`);
-            log.info();
-          }
+          log.info.white(url);
+          log.info();
+
           deployment.info.forEach(line => log.info(line));
           deployment.errors.forEach(line => log.error(line));
           log.info();

@@ -1,26 +1,29 @@
-import { createMock, expect, http, t, TypeSystem } from '../test';
+import { fs, createMock, expect, http, t, TypeSystem, Client } from '../test';
 import * as g from './.d.ts/MyRow';
 
+/**
+ * NOTE:
+ *    For a more comprehensive set of type decalration
+ *    examples see module:
+ *
+ *          @platform/cell.typesystem
+ *
+ */
 type SampleTypeDefs = { 'ns:foo': t.ITypeDefPayload; 'ns:foo.color': t.ITypeDefPayload };
-
 const TYPE_DEFS: SampleTypeDefs = {
   'ns:foo': {
-    ns: {
-      type: { typename: 'MyRow' },
-    },
+    ns: { type: { typename: 'MyRow' } },
     columns: {
-      A: { props: { prop: { name: 'title', type: 'string' } } },
+      A: { props: { prop: { name: 'title', type: 'string', default: 'Untitled' } } },
       B: { props: { prop: { name: 'isEnabled', type: 'boolean', target: 'inline:isEnabled' } } },
       C: {
-        props: { prop: { name: 'color', type: '=ns:foo.color', target: 'inline:color' } },
+        props: { prop: { name: 'color', type: 'ns:foo.color', target: 'inline:color' } },
       },
     },
   },
 
   'ns:foo.color': {
-    ns: {
-      type: { typename: 'MyColor' },
-    },
+    ns: { type: { typename: 'MyColor' } },
     columns: {
       A: { props: { prop: { name: 'label', type: 'string' } } },
       B: { props: { prop: { name: 'color', type: '"red" | "green" | "blue"' } } },
@@ -28,75 +31,93 @@ const TYPE_DEFS: SampleTypeDefs = {
   },
 };
 
-const writeTypes = async (args: { client: t.IHttpClient }) => {
-  const { client } = args;
+const writeTypes = async (client: t.IHttpClient) => {
   await client.ns('foo').write(TYPE_DEFS['ns:foo']);
   await client.ns('foo.color').write(TYPE_DEFS['ns:foo.color']);
-
   return { client };
 };
 
-describe('TypeSystem (on http server)', () => {
-  it.skip('persist changes back to server', () => {}); // tslint:disable-line
+describe('TypeSystem ➔ HTTP', () => {
+  it('generate [.d.ts] file', async () => {
+    const mock = await createMock();
+    await writeTypes(mock.client);
+
+    const client = TypeSystem.client(mock.client);
+    const def = await client.load('ns:foo');
+    await mock.dispose();
+
+    const ts = TypeSystem.Client.typescript(def);
+    const dir = fs.join(__dirname, '.d.ts');
+    await ts.save(fs, dir);
+  });
 
   describe('TypeClient', () => {
-    it('read from [http server]', async () => {
+    it('url: /ns:foo/types', async () => {
       const mock = await createMock();
-      const client = mock.client;
+      await writeTypes(mock.client);
 
-      await writeTypes({ client });
-
-      // const res2 = await mock.client.ns('foo').read({ data: true });
-
-      // console.log('-------------------------------------------');
       const url = mock.url('ns:foo/types');
-      const res3 = await http.get(url);
-      const json = res3.json as t.IResGetNsTypes;
-
-      // console.log('json.types', json.types);
-      // console.log('-------------------------------------------');
-      // console.log('json.types[2]', json.types[2].type);
-
-      // console.log('-------------------------------------------');
-      // console.log('status', res3.status);
-      // console.log(res3.json?.types);
-      // console.log('Schema.uri.allow', Schema.uri.ALLOW);
-
-      // console.log('-------------------------------------------');
-      // console.log('');
-      // console.log(json.typescript);
-      // console.log('-------------------------------------------');
-
+      const res = await http.get(url);
       await mock.dispose();
+
+      const json = res.json as t.IResGetNsTypes;
+      const types = json.types;
+
+      expect(res.ok).to.eql(true);
+      expect(res.status).to.eql(200);
+
+      expect(json.uri).to.eql('ns:foo');
+      expect(types.map(def => def.column)).to.eql(['A', 'B', 'C']);
+
+      expect(types[0].column).to.eql('A');
+      expect(types[0].prop).to.eql('title');
+      expect((types[0].default as t.ITypeDefaultValue).value).to.eql('Untitled');
+
+      const type = types[0].type as t.ITypeValue;
+      expect(type.kind).to.eql('VALUE');
+      expect(type.typename).to.eql('string');
     });
   });
 
   describe('TypedSheet', () => {
-    it('read from [http server]', async () => {
-      const mock = await createMock();
-      const client = mock.client;
-      await writeTypes({ client });
+    const writeMySheetRows = async <T>(client: t.IHttpClient, rows?: T[]) => {
+      const def = await TypeSystem.client(client).load('ns:foo');
 
-      const def = await TypeSystem.Type.client(client).load('ns:foo');
-      const cells = TypeSystem.objectToCells<g.MyRow>(def).rows(0, [
+      const items: any[] = rows || [
         { title: 'One', isEnabled: true, color: { label: 'background', color: 'red' } },
         { title: 'Two', isEnabled: false, color: { label: 'foreground', color: 'blue' } },
-      ]);
+      ];
 
+      const cells = TypeSystem.objectToCells<T>(def).rows(0, items);
+
+      const ns = 'ns:foo.mySheet';
       await client.ns('foo.mySheet').write({
         ns: { type: { implements: 'ns:foo' } },
         cells,
       });
 
+      return { ns, cells };
+    };
+
+    it('fetch from [http] server', async () => {
+      const mock = await createMock();
+      await writeTypes(mock.client);
+      await writeMySheetRows(mock.client);
+
+      const requests: string[] = [];
+      mock.service.request$.subscribe(e => requests.push(e.url));
+
       const ns = 'ns:foo.mySheet';
-      const sheet = await TypeSystem.Sheet.client(client).load<g.MyRow>(ns);
+      const sheet = await TypeSystem.Sheet.client(mock.client).load<g.MyRow>(ns);
 
       const cursor = await sheet.cursor().load();
-
-      expect(cursor.uri.toString()).to.eql(ns);
-
       await mock.dispose();
 
+      expect(requests.some(url => url === '/ns:foo')).to.eql(true);
+      expect(requests.some(url => url === '/ns:foo.color')).to.eql(true);
+      expect(requests.some(url => url === '/ns:foo.mySheet')).to.eql(true);
+
+      expect(cursor.uri.toString()).to.eql(ns);
       const row1 = cursor.row(0);
       const row2 = cursor.row(1);
 
@@ -114,6 +135,32 @@ describe('TypeSystem (on http server)', () => {
         expect(row2.props.isEnabled).to.eql(false);
         expect(row2.props.color).to.eql({ label: 'foreground', color: 'blue' });
       }
+    });
+
+    it('from [Client]', async () => {
+      const mock = await createMock();
+      await writeTypes(mock.client);
+      await writeMySheetRows(mock.client);
+
+      const requests: string[] = [];
+      mock.service.request$.subscribe(e => requests.push(e.url));
+
+      const ns = 'ns:foo.mySheet';
+      const typesystem = Client.type({ client: mock.client });
+      expect(typesystem.http).to.eql(mock.client);
+
+      const sheet = await typesystem.sheet<g.MyRow>(ns);
+      const cursor = await sheet.cursor().load();
+      const row = cursor.row(0).props;
+
+      await mock.dispose();
+
+      expect(sheet.types.map(def => def.column)).to.eql(['A', 'B', 'C']);
+      expect(row.title).to.eql('One');
+    });
+
+    it.skip('sync to [http] server', async () => {
+      //
     });
   });
 });

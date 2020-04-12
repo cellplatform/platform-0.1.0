@@ -9,7 +9,7 @@ export { log } from '@platform/log/lib/server';
 export { fs } from '@platform/fs';
 export { http } from '@platform/http';
 export { value, id, defaultValue, time } from '@platform/util.value';
-export { HttpClient } from '@platform/cell.client';
+export { Client, HttpClient } from '@platform/cell.client';
 export { MemoryCache } from '@platform/cache';
 
 export * from './libs.cell';

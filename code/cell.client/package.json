@@ -1,7 +1,7 @@
 {
   "name": "@platform/cell.client",
-  "version": "0.2.51",
-  "description": "A strongly typed HTTP client for operating the REST service API.",
+  "version": "0.2.52",
+  "description": "A strongly typed HTTP client for operating with a CellOS service end-point.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -14,9 +14,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.schema": "0.4.78",
-    "@platform/cell.types": "0.4.70",
-    "@platform/cell.typesystem": "0.0.15",
+    "@platform/cell.schema": "0.4.79",
+    "@platform/cell.types": "0.4.71",
+    "@platform/cell.typesystem": "0.0.16",
     "@platform/http": "0.12.5",
     "@platform/http.types": "0.2.1",
     "@platform/libs": "0.2.1",

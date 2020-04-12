@@ -79,7 +79,7 @@ export const testInstanceFetch = async <T>(args: {
   cells?: t.ICellMap;
   cache?: t.IMemoryCache;
 }) => {
-  const typeClient = await TypeSystem.Type.load({
+  const typeClient = await TypeSystem.Client.load({
     ns: args.implements,
     fetch: testFetch({ defs: args.defs }),
     cache: args.cache,

@@ -8,6 +8,13 @@ export function isOK(status: number | string = 200) {
 }
 
 /**
+ * Determine if the given input is an Observable.
+ */
+export function isObservable(input?: any) {
+  return typeof input?.subscribe === 'function';
+}
+
+/**
  * Helpers for converting HTTP responses.
  */
 export function fromHttpResponse(res: t.IHttpResponse) {
