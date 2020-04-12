@@ -49,7 +49,7 @@ export async function writeTypeDefs(host: string, options: { save?: boolean } = 
     if (!DEFS[ns]) {
       throw new Error(`namespace "${ns}" is not defined.`);
     }
-    const res = await client.ns(ns).write(DEFS[ns]);
+    await client.ns(ns).write(DEFS[ns]);
   };
 
   await write(NS.TYPE.APP);
@@ -58,7 +58,8 @@ export async function writeTypeDefs(host: string, options: { save?: boolean } = 
   if (options.save) {
     const type = Client.type({ client });
     const ts = await type.typescript(NS.TYPE.APP);
-    await ts.save(fs, fs.resolve('src/types.d.ts'));
+    const dir = fs.resolve('src');
+    await ts.save(fs, dir, { filename: 'types.g' });
   }
 }
 
