@@ -1,2 +1,2 @@
 export * from './client.upload';
-export * from './client.types';
+export * from './client.typeDefs';

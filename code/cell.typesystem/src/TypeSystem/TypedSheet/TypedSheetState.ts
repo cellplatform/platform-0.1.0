@@ -119,15 +119,12 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
 
   public clearChanges(action: t.ITypedSheetChangesCleared['action']) {
     const from = { ...this._changes };
-    this._changes = {};
+    const to = {};
+    const ns = this.uri.toString();
+    this._changes = {}; // NB: resetting state happens after the `from` variable is copied.
     this.fire({
       type: 'SHEET/changes/cleared',
-      payload: {
-        ns: this.uri.toString(),
-        from,
-        to: {},
-        action,
-      },
+      payload: { ns, from, to, action },
     });
   }
 
