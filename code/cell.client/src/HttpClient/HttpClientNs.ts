@@ -35,9 +35,7 @@ export class HttpClientNs implements t.IClientNs {
   }
 
   public async exists() {
-    const http = this.args.http;
-    const url = this.url.info.toString();
-    const res = await http.get(url);
+    const res = await this.args.http.get(this.url.info.toString());
     return res.status.toString().startsWith('2');
   }
 
