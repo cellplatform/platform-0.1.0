@@ -1021,7 +1021,7 @@ describe('TypedSheet', () => {
       it('clearCache (retain other items in cache)', async () => {
         const { sheet, fetch } = await testSheet();
         const state = sheet.state;
-        const cache = state.fetch.cache;
+        const cache = (state.fetch as t.CachedFetcher).cache;
 
         expect(fetch.getCellsCount).to.eql(0);
         expect(await state.getCell('A1')).to.eql({ value: 'One' }); // Original value.

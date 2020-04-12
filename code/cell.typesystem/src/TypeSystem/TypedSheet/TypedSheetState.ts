@@ -1,4 +1,4 @@
-import { filter, map, share, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { TypeCache } from '../TypeCache';
 import { R, Schema, t, Uri } from './common';
@@ -44,11 +44,13 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
     this.events$ = this._events$.asObservable().pipe(takeUntil(this._dispose$), share());
 
     this.change$ = this.events$.pipe(
+      takeUntil(this.dispose$),
       filter(e => e.type === 'SHEET/change'),
       map(e => e.payload as t.ITypedSheetChange),
     );
 
     this.changed$ = this.events$.pipe(
+      takeUntil(this.dispose$),
       filter(e => e.type === 'SHEET/changed'),
       map(e => e.payload as t.ITypedSheetChanged),
     );

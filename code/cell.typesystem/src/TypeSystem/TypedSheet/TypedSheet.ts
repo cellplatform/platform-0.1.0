@@ -27,7 +27,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
     events$?: Subject<t.TypedSheetEvent>;
-  }) {
+  }): Promise<t.ITypedSheet<T>> {
     const { fetch, events$, cache } = args;
     const sheetNs = util.formatNsUri(args.ns);
 
@@ -58,11 +58,11 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    */
   public static async create<T>(args: {
     implements: string | t.INsUri;
-    ns?: string | t.INsUri;
+    ns?: string | t.INsUri; // NB: If not specified a new URI is generated.
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
     events$?: Subject<t.TypedSheetEvent>;
-  }) {
+  }): Promise<t.ITypedSheet<T>> {
     const { fetch, events$, cache } = args;
 
     const implementsNs = util.formatNsUri(args.implements);
