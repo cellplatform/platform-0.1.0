@@ -50,10 +50,6 @@ export async function writeSys(host: string) {
   const window = cursor.row(0);
 
   console.log('window.types', window.types.list);
-
-  // ll
   console.log('window.title', window.props.title);
   console.log('window.height', window.props.height);
-
-  // window.
 }
