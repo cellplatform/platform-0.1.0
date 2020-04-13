@@ -1,19 +1,19 @@
 import { Tray, Menu } from 'electron';
-import { fs } from '../common';
+import { fs, t } from '../common';
 import { createWindow } from '../main.screen';
 
-export function init(args: { host: string; def: string }) {
-  const { host, def } = args;
+export function init(args: { host: string; def: string; ctx: t.IAppCtx }) {
+  const { host, def, ctx } = args;
 
   const icon = fs.join(__dirname, '../../../assets/icons/tray/tray.png');
   const tray = new Tray(icon);
 
   const contextMenu = Menu.buildFromTemplate([
-    {
-      label: 'Create Window',
-      type: 'radio',
-      click: () => createWindow({ host, def }), // TEMP 🐷
-    },
+    // {
+    //   label: 'Create Window',
+    //   type: 'radio',
+    //   // click: () => createWindow({ host, def, ctx }), // TEMP 🐷
+    // },
     { label: 'Item2', type: 'radio' },
     { label: 'Item3', type: 'radio', checked: true },
     { label: 'Item4', type: 'radio' },

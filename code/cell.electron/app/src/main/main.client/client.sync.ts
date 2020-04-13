@@ -1,5 +1,7 @@
-import { debounceTime } from 'rxjs/operators';
-import { coord, defaultValue, t, log } from '../common';
+import { Observable } from 'rxjs';
+import { debounceTime, takeUntil, filter } from 'rxjs/operators';
+
+import { coord, defaultValue, log, t, Uri } from '../common';
 
 /**
  * Monitors for changes in a sheet and saves results back to the server.
@@ -9,6 +11,7 @@ export function saveMonitor(args: {
   state: t.ITypedSheetState<any>;
   debounce?: number;
   silent?: boolean;
+  flush$: Observable<{}>;
 }) {
   const { http, state } = args;
   const uri = state.uri.toString();
@@ -28,10 +31,19 @@ export function saveMonitor(args: {
   };
 
   const saveChanges = async () => {
-    const cells = toChangedCells(state.changes);
+    const changes = state.changes;
+    const cells = toChangedCells(changes);
     const res = await ns.write({ cells });
+    state.clearChanges('SAVED');
+
     if (!args.silent) {
-      log.info(log.blue(`[${res.status}:SAVED]`), uri, '| changed:', Object.keys(cells));
+      const { status } = res;
+      Object.keys(changes).forEach(key => {
+        const uri = Uri.parse<t.ICellUri>(changes[key].cell).parts;
+        const cell = `${log.green('cell')}:${uri.ns}:${log.green(uri.key)}`;
+        log.info(log.blue(`[${status}:SAVED]`), log.gray(cell));
+      });
+
       if (!res.ok) {
         log.error('cells', cells);
         log.error('res', res);
@@ -39,6 +51,11 @@ export function saveMonitor(args: {
     }
   };
 
-  const debounce = debounceTime(defaultValue(args.debounce, 300));
-  state.changed$.pipe(debounce).subscribe(e => saveChanges());
+  state.changed$.pipe(debounceTime(defaultValue(args.debounce, 300))).subscribe(e => saveChanges());
+  args.flush$
+    .pipe(
+      takeUntil(state.dispose$),
+      filter(e => state.hasChanges),
+    )
+    .subscribe(e => saveChanges());
 }

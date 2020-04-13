@@ -1,11 +1,13 @@
 import { app } from 'electron';
 
 import './config';
-import { constants, log } from './common';
+import { constants, log, time } from './common';
 import * as screen from './main.screen';
 import * as server from './main.server';
 import * as tray from './main.tray';
-import * as client from './main.client';
+import { client } from './main.client';
+
+const SYS = constants.SYS;
 
 const refs: any = {};
 
@@ -44,20 +46,31 @@ export async function start() {
    */
 
   // Upload the bundled system files.
-  await client.upload({ host, sourceDir: constants.paths.bundle.ui });
+  // await client.upload({ host, sourceDir: constants.paths.bundle.ui });
 
-  // TEMP 🐷
   await client.writeTypeDefs(host, { save: ENV.isDev });
-  await client.writeSys(host);
+  const ctx = await client.getOrCreateSys(host);
+
+  // console.log('sys', ctx);
+
+  await client.writeIdeDef({ ctx, kind: SYS.KIND.IDE, uploadDir: constants.paths.bundle.ui });
+
+  /**
+   * - Define definition
+   *    - upload file
+   * - Load window instance from definition.
+   */
 
   logMain({ host, log: log.file.path, db: paths.db, fs: paths.fs });
   await app.whenReady();
 
-  const def = 'cell:sys:A1'; // TODO 🐷
-  screen.createWindow({ host, def });
+  await screen.createWindows({ ctx, defName: SYS.KIND.IDE });
+
+  // const def = 'cell:sys:A1'; // TODO 🐷
+  // screen.createWindow({ host, def, ctx });
 
   // TEMP 🐷
-  refs.tray = tray.init({ host, def }).tray;
+  // refs.tray = tray.init({ host, def, ctx }).tray;
 }
 
 /**

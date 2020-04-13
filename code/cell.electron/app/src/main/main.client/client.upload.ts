@@ -1,5 +1,5 @@
 import { app } from 'electron';
-import { HttpClient, constants, fs, log, t, time } from '../common';
+import { fs, HttpClient, log, t, time } from '../common';
 
 type File = t.IHttpClientCellFileUpload;
 
@@ -7,12 +7,12 @@ type File = t.IHttpClientCellFileUpload;
  * Retrieve the set of files to upload.
  */
 export async function getFiles(args: { sourceDir: string }) {
-  const { sourceDir: dir } = args;
-  const paths = await fs.glob.find(fs.resolve(`${dir}/**`));
+  const { sourceDir } = args;
+  const paths = await fs.glob.find(fs.resolve(`${sourceDir}/**`));
 
   const files = await Promise.all(
     paths.map(async path => {
-      const filename = path.substring(dir.length + 1);
+      const filename = path.substring(sourceDir.length + 1);
       const data = await fs.readFile(path);
       const file: File = { filename, data };
       return file;
@@ -28,13 +28,12 @@ export async function getFiles(args: { sourceDir: string }) {
 export async function upload(args: {
   host: string;
   sourceDir: string;
-  targetCell?: string;
+  targetCell: string;
   files?: File[];
   silent?: boolean;
 }) {
   const timer = time.timer();
-  const { host, sourceDir } = args;
-  const targetCell = args.targetCell || constants.URI.UI_FILES;
+  const { host, sourceDir, targetCell } = args;
   const files = args.files ? args.files : await getFiles({ sourceDir });
 
   const done = (ok: boolean) => {
@@ -63,7 +62,7 @@ export async function upload(args: {
 
     if (!args.silent) {
       const elapsed = timer.elapsed.toString();
-      logUpload({ sourceDir, host, files, elapsed });
+      logUpload({ sourceDir, targetCell, host, files, elapsed });
     }
 
     return done(true);
@@ -80,14 +79,20 @@ export async function upload(args: {
  * Helpers
  */
 
-function logUpload(args: { sourceDir: string; host: string; files: File[]; elapsed: string }) {
-  const { host, files, sourceDir, elapsed } = args;
+function logUpload(args: {
+  sourceDir: string;
+  targetCell: string;
+  host: string;
+  files: File[];
+  elapsed: string;
+}) {
+  const { host, files, sourceDir, targetCell, elapsed } = args;
   const bytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
   const size = fs.size.toString(bytes);
 
   const table = log.table({ border: false });
   table.add(['  • host', host]);
-  table.add(['  • cell', constants.URI.UI_FILES]);
+  table.add(['  • cell', targetCell]);
   table.add(['  • files: ']);
 
   const addFile = (file: File) => {

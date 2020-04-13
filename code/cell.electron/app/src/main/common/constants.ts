@@ -1,9 +1,5 @@
 export * from './constants.paths';
 
-export const URI = {
-  UI_FILES: 'cell:sys:A1',
-};
-
 /**
  * Environment.
  */
@@ -16,5 +12,22 @@ export const ENV = {
   },
   get isProd() {
     return ENV.node === 'production';
+  },
+};
+
+/**
+ * Window Management.
+ */
+export const SYS = {
+  KIND: {
+    IDE: 'code.ide',
+  },
+  NS: {
+    APP: 'ns:sys.app',
+    TYPE: {
+      APP: 'ns:sys.app.type',
+      WINDOW: 'ns:sys.window.type',
+      WINDOW_DEF: 'ns:sys.windowDef.type',
+    },
   },
 };
