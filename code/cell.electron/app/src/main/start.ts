@@ -52,6 +52,7 @@ export async function start() {
     ctx,
     kind: SYS.KIND.IDE,
     uploadDir: [bundlePaths.sys, bundlePaths.ide],
+    force: true,
   });
 
   logMain({

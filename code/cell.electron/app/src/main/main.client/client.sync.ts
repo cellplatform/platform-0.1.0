@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { debounceTime, takeUntil, filter } from 'rxjs/operators';
 
 import { coord, defaultValue, log, t, Uri } from '../common';
@@ -16,6 +16,8 @@ export function saveMonitor(args: {
   const { http, state } = args;
   const uri = state.uri.toString();
   const ns = http.ns(uri);
+
+  const divider$ = new Subject();
 
   /**
    * TODO 🐷
@@ -48,6 +50,8 @@ export function saveMonitor(args: {
         log.error('cells', cells);
         log.error('res', res);
       }
+
+      divider$.next();
     }
   };
 
@@ -58,4 +62,8 @@ export function saveMonitor(args: {
       filter(e => state.hasChanges),
     )
     .subscribe(e => saveChanges());
+
+  divider$.pipe(debounceTime(1000)).subscribe(() => {
+    log.info.gray('━'.repeat(60));
+  });
 }
