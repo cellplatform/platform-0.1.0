@@ -62,7 +62,7 @@ export type ITypedSheetRefs<T> = {
   sheet: t.ITypedSheet<T>;
   isReady: boolean;
   ready(): Promise<ITypedSheetRefs<T>>;
-  cursor(range?: string): Promise<ITypedSheetCursor<T>>;
+  cursor(options?: string | { range?: string }): Promise<ITypedSheetCursor<T>>;
 };
 
 /**

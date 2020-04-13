@@ -767,13 +767,36 @@ describe('TypedSheet', () => {
           expect(rowA.messages.ns.toString()).to.eql(rowB.messages.ns.toString());
         });
 
-        it('cursor (safe: awaits ready)', async () => {
+        it('ref.cursor(...): auto loads (await ready)', async () => {
           const { sheet } = await testSheet();
-          const cursor = await sheet.cursor().load();
-          const row = cursor.row(0).props;
+          const row = sheet.cursor().row(0).props;
 
-          const childCursor = await row.messages.cursor('1:10');
-          const childRow = childCursor.row(0).props;
+          const cursor1 = await row.messages.cursor();
+          const cursor2 = await row.messages.cursor('1:10');
+          const cursor3 = await row.messages.cursor({});
+          const cursor4 = await row.messages.cursor({ range: '1:5' });
+
+          expect(cursor1.isReady).to.eql(true);
+          expect(cursor2.isReady).to.eql(true);
+          expect(cursor3.isReady).to.eql(true);
+          expect(cursor4.isReady).to.eql(true);
+
+          expect(cursor1.status).to.eql('LOADED');
+          expect(cursor2.status).to.eql('LOADED');
+          expect(cursor3.status).to.eql('LOADED');
+          expect(cursor4.status).to.eql('LOADED');
+
+          expect(cursor1.range).to.eql(TypedSheetCursor.DEFAULT.RANGE);
+          expect(cursor2.range).to.eql('1:10');
+          expect(cursor3.range).to.eql(TypedSheetCursor.DEFAULT.RANGE);
+          expect(cursor4.range).to.eql('1:5');
+        });
+
+        it('ref.cursor(...): loaded props', async () => {
+          const { sheet } = await testSheet();
+          const row = sheet.cursor().row(0).props;
+          const cursor = await row.messages.cursor();
+          const childRow = cursor.row(0).props;
 
           childRow.message = 'hello';
           childRow.user = 'bob';

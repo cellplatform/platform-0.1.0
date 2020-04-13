@@ -947,6 +947,27 @@ describe('TypeClient', () => {
         expect(res).to.include(`messages: t.ITypedSheetRefs<MyMessage>;\n`);
         expect(res).to.include(`color?: MyColor;\n`); // NB: This is an external type reference but it not {target:'ref'} rather it is INLINE.
       });
+
+      it('REF(column) write to typescript', async () => {
+        const defs = {
+          'ns:foo.1': {
+            ns: { type: { typename: 'Foo1' } },
+            columns: {
+              A: { props: { prop: { name: 'myFoo?', type: 'cell:foo.2:A', target: 'ref' } } },
+            },
+          },
+          'ns:foo.2': {
+            ns: { type: { typename: 'Foo2' } },
+            columns: {
+              A: { props: { prop: { name: 'count', type: 'number' } } },
+            },
+          },
+        };
+        const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+        const res = TypeClient.typescript(def, { header: false }).toString();
+        expect(res).to.include(`export declare type Foo1 = {\n`);
+        expect(res).to.include(`myFoo?: number;\n`);
+      });
     });
 
     describe('save file (.d.ts)', () => {
