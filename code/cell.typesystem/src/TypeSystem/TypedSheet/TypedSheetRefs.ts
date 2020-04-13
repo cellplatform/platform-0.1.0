@@ -74,7 +74,11 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   /**
    * [Methods]
    */
-  public async ready() {
+  public async ready(): Promise<t.ITypedSheetRefs<T>> {
+    if (this.isReady) {
+      return this;
+    }
+
     if (this._ready) {
       return this._ready; // Single loader.
     }
@@ -84,7 +88,6 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
 
       const { fetch, cache, events$ } = this.ctx;
       const def = this.typeDef;
-      const typename = def.type.typename;
 
       this._sheet = await TypedSheet.create<T>({
         implements: def.type.uri,
@@ -94,7 +97,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
         events$,
       });
 
-      delete this._ready;
+      delete this._ready; // Remove temporary load cache.
       resolve(this);
     });
 
@@ -102,11 +105,15 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     return promise;
   }
 
-  public async cursor(range?: string) {
+  public async cursor(options?: string | { range?: string }) {
     if (!this.isReady) {
       await this.ready();
     }
-    return this.sheet.cursor(range);
+    type O = { range?: string };
+    const args: O = typeof options === 'string' ? { range: options } : options || {};
+    const cursor = this.sheet.cursor(args.range);
+    await cursor.load();
+    return cursor;
   }
 
   /**

@@ -47,18 +47,20 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
       takeUntil(this.dispose$),
       filter(e => e.type === 'SHEET/change'),
       map(e => e.payload as t.ITypedSheetChange),
+      filter(e => this.isWithinNamespace(e.cell)),
     );
 
     this.changed$ = this.events$.pipe(
       takeUntil(this.dispose$),
       filter(e => e.type === 'SHEET/changed'),
       map(e => e.payload as t.ITypedSheetChanged),
+      filter(e => this.isWithinNamespace(e.ns)),
     );
 
     this.change$
       .pipe(
         map(({ data, cell }) => ({ to: data, uri: Uri.parse<t.ICellUri>(cell) })),
-        filter(({ uri }) => uri.ok && uri.type === 'CELL' && uri.parts.ns === this.uri.id),
+        filter(e => e.uri.ok && e.uri.type === 'CELL'),
         map(e => ({ ...e, uri: e.uri.parts })),
       )
       .subscribe(({ uri, to }) => {
@@ -168,5 +170,17 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
       changes: this.changes,
     };
     this.fire({ type: 'SHEET/changed', payload });
+  }
+
+  private isWithinNamespace(input: string) {
+    input = (input || '').trim();
+    const ns = this.uri;
+    if (input.startsWith('ns:')) {
+      return input === ns.toString();
+    }
+    if (input.startsWith('cell:')) {
+      return input.startsWith(`cell:${ns.id}:`);
+    }
+    return false;
   }
 }
