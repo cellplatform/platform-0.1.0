@@ -10,6 +10,7 @@
     "make": "cd app && yarn make",
     "build": "cd app && yarn build",
     "clean": "sh sh/clean.sh",
+    "reset": "sh sh/reset.sh",
     "bundle": "ts-node -T scripts/bundle.ui",
     "open": "cd app/out/cell-darwin-x64 && open cell.app"
   },
