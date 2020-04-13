@@ -40,34 +40,30 @@ export async function start() {
   const prod = ENV.isProd;
   const { paths, host } = await server.start({ log, prod });
 
-  /**
-   * TODO 🐷
-   * - change this to "Setup A1: App TypeDefs"
-   */
-
-  // Upload the bundled system files.
-  // await client.upload({ host, sourceDir: constants.paths.bundle.ui });
-
+  // Ensure typescript [.d.ts] declarations exist.
   await client.writeTypeDefs(host, { save: ENV.isDev });
+
+  // Retrieve the typed sheet.
   const ctx = await client.getOrCreateSys(host);
 
-  // console.log('sys', ctx);
+  // Upload the bundled system files.
+  const bundlePaths = constants.paths.bundle;
+  await client.writeIdeDef({
+    ctx,
+    kind: SYS.KIND.IDE,
+    uploadDir: [bundlePaths.sys, bundlePaths.ide],
+  });
 
-  await client.writeIdeDef({ ctx, kind: SYS.KIND.IDE, uploadDir: constants.paths.bundle.ui });
-
-  /**
-   * - Define definition
-   *    - upload file
-   * - Load window instance from definition.
-   */
-
-  logMain({ host, log: log.file.path, db: paths.db, fs: paths.fs });
+  logMain({
+    host,
+    log: log.file.path,
+    db: paths.db,
+    fs: paths.fs,
+  });
   await app.whenReady();
 
+  // Initialize UI windows.
   await screen.createWindows({ ctx, defName: SYS.KIND.IDE });
-
-  // const def = 'cell:sys:A1'; // TODO 🐷
-  // screen.createWindow({ host, def, ctx });
 
   // TEMP 🐷
   // refs.tray = tray.init({ host, def, ctx }).tray;

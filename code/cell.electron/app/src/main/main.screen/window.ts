@@ -28,7 +28,7 @@ export async function createWindows(args: { defName: string; ctx: t.IAppCtx }) {
   };
 
   if (def) {
-    if (instances.total === 0) {
+    if (instances.total < 2) {
       await create(def.props);
     }
 
@@ -74,6 +74,7 @@ export async function createWindow(args: {
     y: props.y < 0 ? undefined : props.y,
     show: false,
     webPreferences: { nodeIntegration: true },
+    titleBarStyle: 'hiddenInset',
   });
 
   const urls = Schema.urls(host);
@@ -92,7 +93,7 @@ export async function createWindow(args: {
 
   // Construct window.
   browser.loadURL(`${url}?${querystring}`);
-  browser.webContents.openDevTools(); // TEMP 🐷
+  // browser.webContents.openDevTools(); // TEMP 🐷
 
   const updateBounds = () => {
     const { width, height, x, y } = browser.getBounds();

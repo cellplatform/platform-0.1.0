@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 
-import { Client, t, time, constants, Uri } from '../common';
+import { Client, t, time, constants, Uri, fs } from '../common';
 import * as sync from './client.sync';
 import { upload } from './client.upload';
 
@@ -53,11 +53,16 @@ export async function getOrCreateSys(host: string) {
 /**
  * Creates the IDE window definition.
  */
-export async function writeIdeDef(args: { kind: string; ctx: t.IAppCtx; uploadDir?: string }) {
+export async function writeIdeDef(args: {
+  kind: string;
+  ctx: t.IAppCtx;
+  uploadDir?: string | string[];
+  force?: boolean;
+}) {
   const { ctx, kind, uploadDir } = args;
   const defs = await ctx.windowDefs.cursor();
   const exists = defs.rows.some(def => def.props.kind === kind);
-  if (exists) {
+  if (exists && !args.force) {
     return;
   }
 
@@ -67,8 +72,12 @@ export async function writeIdeDef(args: { kind: string; ctx: t.IAppCtx; uploadDi
   if (uploadDir) {
     const host = ctx.host;
     const targetCell = Uri.create.cell(def.uri.ns, 'A1');
-    const sourceDir = uploadDir;
-    await upload({ host, targetCell, sourceDir, targetDir: 'ui.sys' });
+    const dirs = Array.isArray(uploadDir) ? uploadDir : [uploadDir];
+
+    for (const sourceDir of dirs) {
+      const targetDir = fs.basename(sourceDir);
+      await upload({ host, targetCell, sourceDir, targetDir });
+    }
   }
 
   // Finish up.
