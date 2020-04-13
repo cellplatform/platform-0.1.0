@@ -5,7 +5,7 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "parcel src/html/env.html",
+    "start": "parcel src/html/entry.html",
     "watch": "yarn start",
     "bundle": "sh sh/bundle.sh",
     "clean": "sh sh/clean.sh",
