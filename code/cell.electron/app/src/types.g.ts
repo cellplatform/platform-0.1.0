@@ -6,7 +6,7 @@
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.18
+ *    @platform/cell.typesystem@0.0.19
  * 
  * Notes: 
  * 
@@ -25,7 +25,14 @@ import * as t from '@platform/cell.types';
 
 export declare type CellApp = {
   title: string;
+  windowDefs: t.ITypedSheetRefs<CellAppWindowDef>;
   windows: t.ITypedSheetRefs<CellAppWindow>;
+};
+
+export declare type CellAppWindowDef = {
+  title: string;
+  width: number;
+  height: number;
 };
 
 export declare type CellAppWindow = {

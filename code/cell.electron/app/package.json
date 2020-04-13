@@ -23,8 +23,9 @@
   "dependencies": {
     "@platform/cell.client": "0.2.55",
     "@platform/cell.fs": "0.4.25",
-    "@platform/cell.fs.local": "^0.4.25",
+    "@platform/cell.fs.local": "0.4.25",
     "@platform/cell.http": "0.7.46",
+    "@platform/cell.http.router": "0.7.44",
     "@platform/cell.schema": "0.4.81",
     "@platform/cell.types": "0.4.73",
     "@platform/cell.typesystem": "0.0.19",

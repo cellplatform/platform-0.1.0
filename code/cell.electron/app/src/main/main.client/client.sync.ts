@@ -1,5 +1,4 @@
 import { debounceTime } from 'rxjs/operators';
-
 import { coord, defaultValue, t, log } from '../common';
 
 /**
@@ -31,10 +30,12 @@ export function saveMonitor(args: {
   const saveChanges = async () => {
     const cells = toChangedCells(state.changes);
     const res = await ns.write({ cells });
-
     if (!args.silent) {
-      log.info('Saved:', uri);
-      log.info(res);
+      log.info(log.blue(`[${res.status}:SAVED]`), uri, '| changed:', Object.keys(cells));
+      if (!res.ok) {
+        log.error('cells', cells);
+        log.error('res', res);
+      }
     }
   };
 
