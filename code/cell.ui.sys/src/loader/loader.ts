@@ -6,5 +6,6 @@ export const loader = {
   root: () => import('../components/Root'),
 
   // TEMP 🐷
-  bar: () => import('../components/Bar'),
+  // bar: () => import('../components/Bar'),
+  // editor: () => import('../components/monaco/Editor'),
 };

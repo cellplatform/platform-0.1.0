@@ -79,7 +79,7 @@ export async function createWindow(args: {
   const urls = Schema.urls(host);
   const entryUrl = urls
     .cell(Uri.create.cell(def.ns, 'A1'))
-    .file.byName('entry.html')
+    .file.byName('ui.sys/entry.html')
     .toString();
 
   const devUrl = constants.ENV.isDev ? 'http://localhost:1234' : '';

@@ -66,8 +66,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     this.state$.next({ info: res.body });
 
     // TEMP 🐷NOTE: this reference seems to be required to trigger the load state. Investigate!
-    const f = await loader.bar(); // TODO: Make this load the IFrame as a child compoent.
-    console.log('Bar', f.Bar);
+    // const f = await loader.bar(); // TODO: Make this load the IFrame as a child compoent.
+    // console.log('Bar', f.Bar);
   }
 
   /**
@@ -115,6 +115,11 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       </div>
     );
   }
+
+  // private loadIframe = async () => {
+  //   const f = await loader.editor();
+  //   console.log('f', f);
+  // };
 
   private loadIframe = () => {
     const styles = {

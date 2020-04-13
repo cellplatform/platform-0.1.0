@@ -21,6 +21,6 @@ export const paths = {
     icons: resolve('assets/icons'),
   },
   bundle: {
-    ui: resolve('.bundle/ui'),
+    ui: resolve('.bundle/ui.sys'),
   },
 };

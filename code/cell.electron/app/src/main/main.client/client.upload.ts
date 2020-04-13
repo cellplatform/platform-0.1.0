@@ -6,13 +6,13 @@ type File = t.IHttpClientCellFileUpload;
 /**
  * Retrieve the set of files to upload.
  */
-export async function getFiles(args: { sourceDir: string }) {
-  const { sourceDir } = args;
+export async function getFiles(args: { sourceDir: string; targetDir?: string }) {
+  const { sourceDir, targetDir = '' } = args;
   const paths = await fs.glob.find(fs.resolve(`${sourceDir}/**`));
 
   const files = await Promise.all(
     paths.map(async path => {
-      const filename = path.substring(sourceDir.length + 1);
+      const filename = fs.join(targetDir, path.substring(sourceDir.length + 1));
       const data = await fs.readFile(path);
       const file: File = { filename, data };
       return file;
@@ -27,14 +27,15 @@ export async function getFiles(args: { sourceDir: string }) {
  */
 export async function upload(args: {
   host: string;
-  sourceDir: string;
   targetCell: string;
+  sourceDir: string;
+  targetDir?: string;
   files?: File[];
   silent?: boolean;
 }) {
   const timer = time.timer();
-  const { host, sourceDir, targetCell } = args;
-  const files = args.files ? args.files : await getFiles({ sourceDir });
+  const { host, sourceDir, targetDir, targetCell } = args;
+  const files = args.files ? args.files : await getFiles({ sourceDir, targetDir });
 
   const done = (ok: boolean) => {
     return { ok, files };

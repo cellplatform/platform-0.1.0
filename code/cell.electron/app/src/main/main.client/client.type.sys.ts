@@ -58,7 +58,7 @@ export async function writeIdeDef(args: { kind: string; ctx: t.IAppCtx; uploadDi
   const defs = await ctx.windowDefs.cursor();
   const exists = defs.rows.some(def => def.props.kind === kind);
   if (exists) {
-    // return;
+    return;
   }
 
   const def = defs.row(0);
@@ -67,7 +67,8 @@ export async function writeIdeDef(args: { kind: string; ctx: t.IAppCtx; uploadDi
   if (uploadDir) {
     const host = ctx.host;
     const targetCell = Uri.create.cell(def.uri.ns, 'A1');
-    await upload({ host, targetCell, sourceDir: uploadDir });
+    const sourceDir = uploadDir;
+    await upload({ host, targetCell, sourceDir, targetDir: 'ui.sys' });
   }
 
   // Finish up.
