@@ -22,7 +22,7 @@ import { TypedSheetState } from './TypedSheetState';
  * - ns (read): query on subset of rows (index/take)
  * - ns (read): query string {ns:false} - omit ns data.
  * - change handler (pending => save)
- * - read/write: linked sheet
+ * - multi-types per column
  */
 
 describe('TypedSheet', () => {

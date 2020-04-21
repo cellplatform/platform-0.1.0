@@ -174,6 +174,31 @@ describe('TypeClient', () => {
       await test('Foo-Bar');
     });
 
+    it('error: contains UNKNOWN types', async () => {
+      const defs = {
+        'ns:foo.1': {
+          ns: { type: { typename: 'Foo' } }, // NB: same name.
+          columns: {
+            A: { props: { prop: { name: 'one', type: 'FAIL-1' } } },
+            B: { props: { prop: { name: 'two', type: 'string' } } },
+            C: { props: { prop: { name: 'three', type: 'FAIL-2' } } },
+          },
+        },
+      };
+
+      const def = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      expect(def.errors.length).to.eql(2);
+
+      const error1 = def.errors[0];
+      const error2 = def.errors[1];
+
+      expect(error1.type).to.eql('TYPE/unknown');
+      expect(error2.type).to.eql('TYPE/unknown');
+
+      expect(error1.message).to.contain('unknown type ("FAIL-1")');
+      expect(error2.message).to.contain('unknown type ("FAIL-2")');
+    });
+
     it('error: circular-reference (ns.implements self)', async () => {
       const defs = {
         'ns:foo': {

@@ -29,8 +29,6 @@ export declare type MyRow = {
   color?: MyColor;
   message: t.ITypedSheetRef<MyMessage> | null;
   messages: t.ITypedSheetRefs<MyMessage>;
-  willy: string[];
-  gautam?: number;
 };
 
 export declare type MyColor = {

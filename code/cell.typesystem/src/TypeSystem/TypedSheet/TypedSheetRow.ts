@@ -352,11 +352,11 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private getOrCreateRef(args: { typeDef: t.IColumnTypeDef<t.ITypeRef>; links?: t.IUriMap }) {
     const { typeDef, links = {} } = args;
     const ctx = this.ctx;
-    const isArray = typeDef.type.isArray;
     const { link } = TypedSheetRefs.refLink({ typeDef, links });
     const exists = Boolean(link);
     const parent = Uri.create.cell(this.uri.ns, `${typeDef.column}${this.index + 1}`);
-    const ref = isArray
+
+    const ref = typeDef.type.isArray
       ? TypedSheetRefs.create({ parent, typeDef, ctx })
       : TypedSheetRef.create({ typeDef, ctx });
 

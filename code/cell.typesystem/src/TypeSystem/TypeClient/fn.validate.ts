@@ -83,6 +83,16 @@ export function columns(args: { ns: string; columns: t.IColumnTypeDef[]; errors:
     });
   })();
 
+  // Ensure there is no UNKNOWN types.
+  (() => {
+    columns
+      .filter(column => column.type.kind === 'UNKNOWN')
+      .forEach(column => {
+        const message = `The property named '${column.prop}' (column ${column.column}) has an unknown type ("${column.type.typename}").`;
+        errors.add(ns, message, { errorType: ERROR.TYPE.UNKNOWN });
+      });
+  })();
+
   // Finish up.
   return columns;
 }

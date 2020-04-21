@@ -75,6 +75,7 @@ export type ITypeError =
   | ITypeErrorDef
   | ITypeErrorDefInvalid
   | ITypeErrorNotFound
+  | ITypeErrorUnknown
   | ITypeErrorTarget
   | ITypeErrorRef
   | ITypeErrorCircularRef
@@ -86,6 +87,7 @@ type TypeErrorProps = { ns: string; column?: string };
 export type ITypeErrorDef = t.IError<'TYPE/def'> & TypeErrorProps;
 export type ITypeErrorDefInvalid = t.IError<'TYPE/def/invalid'> & TypeErrorProps;
 export type ITypeErrorNotFound = t.IError<'TYPE/notFound'> & TypeErrorProps;
+export type ITypeErrorUnknown = t.IError<'TYPE/unknown'> & TypeErrorProps;
 export type ITypeErrorTarget = t.IError<'TYPE/target'> & TypeErrorProps;
 export type ITypeErrorRef = t.IError<'TYPE/ref'> & TypeErrorProps;
 export type ITypeErrorCircularRef = t.IError<'TYPE/ref/circular'> & TypeErrorProps;
@@ -106,7 +108,6 @@ export type IHttpError =
   | IHttpErrorMalformedUri
   | IHttpErrorHashMismatch
   | IHttpErrorType;
-// | IHttpErrorFs;
 
 type HttpErrorProps = { status: number };
 export type IHttpErrorServer = t.IError<'HTTP/server'> & HttpErrorProps;

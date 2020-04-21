@@ -29,6 +29,7 @@ const HTTP = {
 const TYPE_DEF: t.ITypeErrorDef['type'] = 'TYPE/def';
 const TYPE_DEF_INVALID: t.ITypeErrorDefInvalid['type'] = 'TYPE/def/invalid';
 const TYPE_NOT_FOUND: t.ITypeErrorNotFound['type'] = 'TYPE/notFound';
+const TYPE_UNKNOWN: t.ITypeErrorUnknown['type'] = 'TYPE/unknown';
 const TYPE_TARGET: t.ITypeErrorTarget['type'] = 'TYPE/target';
 const TYPE_REF: t.ITypeErrorRef['type'] = 'TYPE/ref';
 const TYPE_REF_CIRCULAR: t.ITypeErrorCircularRef['type'] = 'TYPE/ref/circular';
@@ -40,6 +41,7 @@ const TYPE = {
   DEF: TYPE_DEF,
   DEF_INVALID: TYPE_DEF_INVALID,
   NOT_FOUND: TYPE_NOT_FOUND,
+  UNKNOWN: TYPE_UNKNOWN,
   TARGET: TYPE_TARGET,
   REF: TYPE_REF,
   REF_CIRCULAR: TYPE_REF_CIRCULAR,
