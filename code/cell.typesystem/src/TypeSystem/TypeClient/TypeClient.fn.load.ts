@@ -5,7 +5,7 @@ import { TypeCache } from '../TypeCache';
 import { TypeDefault } from '../TypeDefault';
 import { TypeValue } from '../TypeValue';
 import { formatNsUri } from '../util';
-import * as valdiate from './fn.validate';
+import * as valdiate from './TypeClient.fn.validate';
 
 type Visit = { ns: string; level: number };
 type Context = {

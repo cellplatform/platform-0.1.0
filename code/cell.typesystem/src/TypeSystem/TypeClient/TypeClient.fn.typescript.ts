@@ -1,6 +1,6 @@
 import { constants, t, value } from '../../common';
 import { TypeScript } from '../TypeScript';
-import { toTypescriptHeader } from './fn.typescript.header';
+import { toTypescriptHeader } from './TypeClient.fn.typescript.header';
 import { TypeValue } from '../TypeValue';
 import { TypeTarget } from '../TypeTarget';
 
