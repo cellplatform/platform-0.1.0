@@ -4,7 +4,7 @@ export type ITypedSheet<T> = {
   readonly ok: boolean;
   readonly uri: t.INsUri;
   readonly types: t.IColumnTypeDef[];
-  readonly state: t.ITypedSheetState<T>;
+  readonly state: t.ITypedSheetState;
   readonly events$: t.Observable<t.TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;
@@ -20,7 +20,7 @@ export type ITypedSheetData<T> = {
   readonly uri: t.INsUri;
   readonly rows: ITypedSheetRow<T>[];
   readonly range: string;
-  readonly total: number; // Total number of rows.
+  readonly total: number; // Total rows.
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
   readonly isReady: boolean;
   exists(index: number): boolean;

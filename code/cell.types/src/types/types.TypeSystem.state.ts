@@ -3,7 +3,7 @@ import { t } from '../common';
 /**
  * State machine for a sheet.
  */
-export type ITypedSheetState<T> = {
+export type ITypedSheetState = {
   readonly uri: t.INsUri;
   readonly fetch: t.ISheetFetcher;
 

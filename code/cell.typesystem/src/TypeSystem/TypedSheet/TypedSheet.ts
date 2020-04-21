@@ -160,7 +160,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   private readonly _dispose$ = new Subject<{}>();
 
   public readonly uri: t.INsUri;
-  public readonly state: TypedSheetState<T>;
+  public readonly state: TypedSheetState;
   public readonly dispose$ = this._dispose$.asObservable();
   public readonly events$: Observable<t.TypedSheetEvent>;
 

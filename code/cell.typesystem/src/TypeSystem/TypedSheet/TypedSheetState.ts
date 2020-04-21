@@ -13,9 +13,9 @@ export type IArgs = {
 /**
  * State machine for a strongly-typed sheet.
  */
-export class TypedSheetState<T> implements t.ITypedSheetState<T> {
+export class TypedSheetState implements t.ITypedSheetState {
   public static create<T>(args: IArgs) {
-    return new TypedSheetState<T>(args);
+    return new TypedSheetState(args);
   }
 
   /**
