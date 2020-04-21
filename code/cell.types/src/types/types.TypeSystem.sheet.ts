@@ -1,6 +1,6 @@
 import { t } from '../common';
 
-export type ITypedSheet<T> = {
+export type ITypedSheet<T = {}> = {
   readonly ok: boolean;
   readonly uri: t.INsUri;
   readonly types: t.IColumnTypeDef[];
@@ -10,7 +10,7 @@ export type ITypedSheet<T> = {
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   dispose(): void;
-  data(range?: string): ITypedSheetData<T>;
+  data<D = T>(range?: string): ITypedSheetData<D>;
 };
 
 /**

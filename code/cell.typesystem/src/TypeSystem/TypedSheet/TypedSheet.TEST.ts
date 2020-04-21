@@ -56,7 +56,7 @@ describe('TypedSheet', () => {
         defs: TYPE_DEFS,
         rows: [],
       });
-      const sheet = await TypeSystem.Sheet.load<f.MyRow>({ fetch, ns });
+      const sheet = await TypeSystem.Sheet.load({ fetch, ns });
 
       expect(sheet.ok).to.eql(false);
       expect(sheet.errors[0].message).to.include(`The namespace "ns:foo.notExist" does not exist`);
@@ -516,7 +516,7 @@ describe('TypedSheet', () => {
     describe('default value', () => {
       it('simple: primitive | {object}', async () => {
         const { sheet } = await testSheetPrimitives();
-        const cursor = await sheet.data().load();
+        const cursor = await sheet.data().load(); // NB:
 
         const row1 = cursor.row(0).props; //  NB: Exists.
         const row2 = cursor.row(99).props; // NB: Does not exist (use default).
@@ -535,8 +535,8 @@ describe('TypedSheet', () => {
           cells: { A1: { value: 'my-foo-default' } },
         });
 
-        const sheet = await TypeSystem.Sheet.load<d.MyDefaults>({ fetch, ns });
-        const cursor = await sheet.data().load();
+        const sheet = await TypeSystem.Sheet.load({ fetch, ns });
+        const cursor = await sheet.data<d.MyDefaults>().load();
         expect(cursor.exists(99)).to.eql(false);
       });
     });
@@ -1246,16 +1246,6 @@ const testFetchEnum = (ns: string) => {
   });
 };
 
-const testFetchMessages = (ns: string) => {
-  return testInstanceFetch({
-    instance: ns,
-    implements: 'ns:foo.messages',
-    defs: TYPE_DEFS,
-    rows: [],
-    cells: {},
-  });
-};
-
 const testSheet = async () => {
   const ns = 'ns:foo.mySheet';
   const events$ = new Subject<t.TypedSheetEvent>();
@@ -1275,12 +1265,5 @@ const testSheetEnum = async () => {
   const ns = 'ns:foo.myEnum';
   const fetch = await testFetchEnum(ns);
   const sheet = await TypeSystem.Sheet.load<e.Enum>({ fetch, ns });
-  return { ns, fetch, sheet };
-};
-
-const testSheetMessages = async () => {
-  const ns = 'ns:foo.myMessages';
-  const fetch = await testFetchMessages(ns);
-  const sheet = await TypeSystem.Sheet.load<m.MyMessages>({ fetch, ns });
   return { ns, fetch, sheet };
 };

@@ -9,26 +9,26 @@ import { TypedSheetState } from './TypedSheetState';
 const fromClient = (client: t.IHttpClient) => {
   const fetch = util.fetcher.fromClient(client);
   return {
-    load: <T>(ns: string | t.INsUri) => TypedSheet.load<T>({ fetch, ns }),
+    load: <T = {}>(ns: string | t.INsUri) => TypedSheet.load<T>({ fetch, ns }),
   };
 };
 
 /**
  * Represents a namespace as a logical sheet of cells.
  */
-export class TypedSheet<T> implements t.ITypedSheet<T> {
+export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   public static client = fromClient;
 
   /**
    * Load a sheet from the network.
    */
-  public static async load<T>(args: {
+  public static async load<T = {}>(args: {
     ns: string | t.INsUri;
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
     events$?: Subject<t.TypedSheetEvent>;
   }): Promise<t.ITypedSheet<T>> {
-    const { fetch, events$, cache } = args;
+    const { fetch, cache, events$ } = args;
     const sheetNs = util.formatNsUri(args.ns);
 
     // Retrieve type definition for sheet.
@@ -58,7 +58,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
   /**
    * Creates a sheet.
    */
-  public static async create<T>(args: {
+  public static async create<T = {}>(args: {
     implements: string | t.INsUri;
     ns?: string | t.INsUri; // NB: If not specified a new URI is generated.
     fetch: t.ISheetFetcher;
@@ -188,12 +188,12 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    * [Methods]
    */
 
-  public data(range?: string) {
+  public data<D = T>(range?: string) {
     this.throwIfDisposed('cursor');
     const ns = this.uri;
     const ctx = this.ctx;
     const types = this.types;
-    return TypedSheetData.create<T>({ ns, types, ctx, range });
+    return TypedSheetData.create<D>({ ns, types, ctx, range });
   }
 
   /**
