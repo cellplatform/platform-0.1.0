@@ -8,7 +8,7 @@ import { coord, defaultValue, log, t, Uri } from '../common';
  */
 export function saveMonitor(args: {
   http: t.IHttpClient;
-  state: t.ITypedSheetState<any>;
+  state: t.ITypedSheetState;
   debounce?: number;
   silent?: boolean;
   flush$: Observable<{}>;
