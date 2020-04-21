@@ -188,7 +188,7 @@ async function readColumns(args: {
   const { errors } = ctx;
 
   const withProps = (column: string) => {
-    const props = args.columns[column]?.props?.def as t.CellTypeProp;
+    const props = args.columns[column]?.props?.def as t.CellTypeDef;
     return { column, props };
   };
 
@@ -216,7 +216,7 @@ async function readColumn(args: {
   level: number;
   ns: string;
   column: string;
-  props: t.CellTypeProp;
+  props: t.CellTypeDef;
   ctx: Context;
 }): Promise<t.IColumnTypeDef> {
   const { ns, column, level, ctx } = args;
@@ -260,7 +260,7 @@ async function readColumn(args: {
 }
 
 async function toDefaultDef(args: {
-  default: t.CellTypeProp['default'];
+  default: t.CellTypeDef['default'];
   ctx: Context;
 }): Promise<t.ITypeDefault | undefined> {
   const { ctx } = args;

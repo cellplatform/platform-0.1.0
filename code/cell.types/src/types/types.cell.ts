@@ -41,7 +41,7 @@ export type IRowData<P extends IRowProps = IRowProps> = {
  */
 export type IColumnProps = {
   title?: string; // Display name.
-  def?: t.CellTypeProp;
+  def?: t.CellTypeDef;
 };
 export type IColumnData<P extends IColumnProps = IColumnProps> = {
   props?: P;

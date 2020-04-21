@@ -9,31 +9,31 @@ export const DEFS: TypeDefs = {
   [NS.TYPE.APP]: {
     ns: { type: { typename: 'CellApp' } },
     columns: {
-      A: { props: { prop: { name: 'title', type: 'string', default: 'CellOS' } } },
+      A: { props: { def: { name: 'title', type: 'string', default: 'CellOS' } } },
       B: {
-        props: { prop: { name: 'windowDefs', type: `${NS.TYPE.WINDOW_DEF}[]`, target: 'ref' } },
+        props: { def: { name: 'windowDefs', type: `${NS.TYPE.WINDOW_DEF}[]`, target: 'ref' } },
       },
-      C: { props: { prop: { name: 'windows', type: `${NS.TYPE.WINDOW}[]`, target: 'ref' } } },
+      C: { props: { def: { name: 'windows', type: `${NS.TYPE.WINDOW}[]`, target: 'ref' } } },
     },
   },
   [NS.TYPE.WINDOW_DEF]: {
     ns: { type: { typename: 'CellAppWindowDef' } },
     columns: {
-      A: { props: { prop: { name: 'kind', type: 'string', default: '' } } },
-      B: { props: { prop: { name: 'width', type: 'number', default: 1200 } } },
-      C: { props: { prop: { name: 'height', type: 'number', default: 800 } } },
+      A: { props: { def: { name: 'kind', type: 'string', default: '' } } },
+      B: { props: { def: { name: 'width', type: 'number', default: 1200 } } },
+      C: { props: { def: { name: 'height', type: 'number', default: 800 } } },
     },
   },
   [NS.TYPE.WINDOW]: {
     ns: { type: { typename: 'CellAppWindow' } },
     columns: {
-      A: { props: { prop: { name: 'id', type: 'string', default: '' } } },
-      B: { props: { prop: { name: 'kind', type: 'string', default: '' } } },
-      C: { props: { prop: { name: 'title', type: 'string', default: 'Untitled' } } },
-      D: { props: { prop: { name: 'width', type: 'number', default: -1 } } },
-      E: { props: { prop: { name: 'height', type: 'number', default: -1 } } },
-      F: { props: { prop: { name: 'x', type: 'number' } } },
-      G: { props: { prop: { name: 'y', type: 'number' } } },
+      A: { props: { def: { name: 'id', type: 'string', default: '' } } },
+      B: { props: { def: { name: 'kind', type: 'string', default: '' } } },
+      C: { props: { def: { name: 'title', type: 'string', default: 'Untitled' } } },
+      D: { props: { def: { name: 'width', type: 'number', default: -1 } } },
+      E: { props: { def: { name: 'height', type: 'number', default: -1 } } },
+      F: { props: { def: { name: 'x', type: 'number' } } },
+      G: { props: { def: { name: 'y', type: 'number' } } },
     },
   },
 };

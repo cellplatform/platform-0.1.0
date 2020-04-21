@@ -3,7 +3,7 @@ import { t } from '../common';
 /**
  * The declaration that defines a cell as a strongly typed property.
  */
-export type CellTypeProp = {
+export type CellTypeDef = {
   name: string;
   type: CellType;
   target?: CellTypeTarget;
