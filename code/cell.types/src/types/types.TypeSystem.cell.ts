@@ -4,7 +4,7 @@ import { t } from '../common';
  * The declaration that defines a cell as a strongly typed property.
  */
 export type CellTypeDef = {
-  name: string;
+  prop: string;
   type: CellType;
   target?: CellTypeTarget;
   default?: t.ITypeDefault | t.TypeDefaultValue;

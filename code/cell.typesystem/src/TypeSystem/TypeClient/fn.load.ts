@@ -224,7 +224,7 @@ async function readColumn(args: {
   let type = deleteUndefined(TypeValue.parse(args.props.type).type);
   let error: t.ITypeError | undefined;
 
-  let prop = (args.props.name || '').trim();
+  let prop = (args.props.prop || '').trim();
   const optional = prop.endsWith('?') ? true : undefined;
   prop = optional ? prop.replace(/\?$/, '') : prop;
 
