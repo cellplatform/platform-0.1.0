@@ -7,7 +7,6 @@ import { ERROR, expect, expectError, t, testInstanceFetch, time, TYPE_DEFS } fro
 import * as f from '../../test/.d.ts/foo';
 import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
-import * as m from '../../test/.d.ts/foo.messages';
 import * as p from '../../test/.d.ts/foo.primitives';
 import { TypeClient } from '../TypeClient';
 import { TypedSheetData } from './TypedSheetData';
@@ -23,6 +22,7 @@ import { TypedSheetState } from './TypedSheetState';
  * - ns (read): query string {ns:false} - omit ns data.
  * - change handler (pending => save)
  * - read/write: linked sheet
+ * - remove `ready()` (single concept `load()` ??)
  */
 
 describe('TypedSheet', () => {
@@ -823,7 +823,7 @@ describe('TypedSheet', () => {
           const { sheet } = await testSheet();
           const row = (await sheet.data().load()).row(0).props;
           const fn = () => row.messages.sheet;
-          expect(fn).to.throw(/called before \[ready\] completes/);
+          expect(fn).to.throw(/called before isReady/);
         });
 
         it('ready called only once', async () => {

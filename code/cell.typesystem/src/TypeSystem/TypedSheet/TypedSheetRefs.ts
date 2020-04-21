@@ -66,7 +66,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
 
   public get sheet() {
     if (!this.isReady) {
-      throw new Error(`Sheet '${this.ns.toString()}' called before [ready] completes.`);
+      throw new Error(`Sheet '${this.ns.toString()}' property called before isReady.`);
     }
     return this._sheet;
   }
