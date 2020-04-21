@@ -7,6 +7,9 @@ import { HttpClient, color, COLORS, css, t, Schema } from '../../common';
 import { loader } from '../../loader';
 import { Button } from './../primitives';
 
+const DARK = '#202124';
+const PINK = '#FE0168';
+
 export type IRootProps = {};
 export type IRootState = {
   env?: t.IEnv;
@@ -65,53 +68,74 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     this.state$.next({ info: res.body });
 
-    // TEMP 🐷NOTE: this reference seems to be required to trigger the load state. Investigate!
-    const f = await loader.bar(); // TODO: Make this load the IFrame as a child compoent.
-    console.log('Bar', f.Bar);
+    this.loadIframe();
   }
 
   /**
    * [Render]
    */
   public render() {
-    const { env, info } = this.state;
+    // const { env, info } = this.state;
     const styles = {
       base: css({
         Absolute: 0,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-        padding: 20,
+        backgroundColor: DARK,
+        color: COLORS.WHITE,
+        // padding: 20,
         overflow: 'hidden',
+        Flex: 'vertical-stretch-stretch',
       }),
-      title: css({
-        Absolute: [6, 6, null, null],
-        fontSize: 12,
-        fontFamily: 'monospace',
-        color: COLORS.CLI.MAGENTA,
+      header: css({
+        position: 'relative',
+        height: 40,
+        borderBottom: `solid 1px ${color.format(0.2)}`,
       }),
-      code: css({
-        fontFamily: 'monospace',
-        fontSize: 11,
-        marginRight: 50,
-      }),
-      objects: css({
-        Flex: 'horizontal-stretch-stetch',
-        marginTop: 15,
+      body: css({
+        flex: 1,
+        position: 'relative',
       }),
     };
 
-    const elLoadButton = this.isTop && <Button onClick={this.loadIframe}>load</Button>;
-
     return (
       <div {...styles.base}>
-        <div {...styles.title}>{`<Root>`}</div>
-        {elLoadButton}
-
-        <div {...styles.objects}>
-          <pre {...styles.code}>{JSON.stringify(env, null, 2)}</pre>
-          {info && <pre {...styles.code}>{JSON.stringify(info.app, null, 2)}</pre>}
+        <div {...styles.header}>{this.renderHeader()}</div>
+        <div {...styles.body} ref={this.iframeContainerRef}>
+          body
         </div>
+      </div>
+    );
+  }
 
-        <div ref={this.iframeContainerRef} />
+  private renderHeader() {
+    const styles = {
+      base: css({
+        Flex: 'horizontal-stretch-stretch',
+        boxSizing: 'border-box',
+        Absolute: 0,
+        userSelect: 'none',
+        WebkitAppRegion: 'drag',
+      }),
+      left: css({
+        flex: 1,
+      }),
+      right: css({
+        width: 135,
+        boxSizing: 'border-box',
+        backgroundColor: PINK,
+        Flex: 'center-end',
+        padding: 10,
+        fontWeight: 'bold',
+        fontSize: 26,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.left}>
+          <div />
+        </div>
+        <div {...styles.right}>
+          <div>A1</div>
+        </div>
       </div>
     );
   }
@@ -119,7 +143,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   private loadIframe = () => {
     const styles = {
       base: css({
-        Absolute: [300, 20, 20, 20],
+        // Absolute: [0, 5, 5, 5],
+        Absolute: 0,
         border: `solid 1px ${color.format(-0.1)}`,
       }),
       iframe: css({
@@ -129,18 +154,21 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
     };
 
-    const { info } = this.state;
-    if (!info) {
+    const { info, env } = this.state;
+    if (!info || !env) {
       return null;
     }
 
-    const urls = Schema.urls(info.domain).cell('cell:sys:A1');
+    const rowUri = Schema.uri.parse<t.IRowUri>(env.def.uri).parts;
+    const cellUri = Schema.uri.create.cell(rowUri.ns, 'A1');
 
-    // console.log("urls.file.", urls.files.list.)
+    const urls = Schema.urls(info.domain).cell(cellUri);
+    const src = urls.file.byName('ui.ide/entry.html').toString();
 
-    // const src = urls.file.byName('sys.html').toString();
+    // console.log('src1', src1);
+
     // const src = 'http://localhost:1234/';
-    const src = 'http://localhost:5000/';
+    // const src = 'http://localhost:5000/';
 
     const el = (
       <div {...styles.base}>

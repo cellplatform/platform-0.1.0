@@ -5,7 +5,7 @@ import { HttpClient } from '../HttpClient';
 
 type ClientInput = string | number | t.IHttpClientOptions;
 type Options = {
-  client?: ClientInput | t.IHttpClient;
+  http?: ClientInput | t.IHttpClient;
   cache?: t.IMemoryCache;
   events$?: Subject<t.TypedSheetEvent>;
 };
@@ -27,13 +27,13 @@ export class Client {
   /**
    * Creates all the parts necessary to work with the [TypeSystem].
    */
-  public static type(input?: string | number | Options) {
-    const args = typeof input === 'object' ? input : { client: input };
+  public static type(input?: Options | string | number) {
+    const args = typeof input === 'object' ? input : { http: input };
     const { cache, events$ } = args;
 
-    const http = HttpClient.isClient(args.client)
-      ? (args.client as t.IHttpClient)
-      : HttpClient.create(args.client as string);
+    const http = HttpClient.isClient(args.http)
+      ? (args.http as t.IHttpClient)
+      : HttpClient.create(args.http as string);
 
     const fetch = TypeSystem.fetcher.fromClient(http);
 
@@ -57,7 +57,7 @@ export class Client {
   /**
    * Creates and loads a new "strongly typed" sheet.
    */
-  public static sheet<T>(ns: string | t.INsUri, options: Options) {
+  public static sheet<T>(ns: string | t.INsUri, options?: Options) {
     return Client.type(options).sheet<T>(ns);
   }
 }

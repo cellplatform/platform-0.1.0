@@ -7,10 +7,14 @@ export type ITypedSheetState<T> = {
   readonly uri: t.INsUri;
   readonly fetch: t.ISheetFetcher;
 
+  readonly dispose$: t.Observable<{}>;
   readonly change$: t.Observable<t.ITypedSheetChange>;
   readonly changed$: t.Observable<t.ITypedSheetChanged>;
   readonly changes: ITypedSheetStateChanges;
+
   readonly hasChanges: boolean;
+  readonly isDisposed: boolean;
+
   getCell(key: string): Promise<t.ICellData | undefined>;
   clearChanges(action: t.ITypedSheetChangesCleared['action']): void;
   clearCache(): void;

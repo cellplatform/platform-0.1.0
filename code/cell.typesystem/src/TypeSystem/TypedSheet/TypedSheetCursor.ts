@@ -128,6 +128,11 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     return this._rows[index];
   }
 
+  public async ready() {
+    await this.load();
+    return this;
+  }
+
   public async load(args?: string | t.ITypedSheetCursorLoad): Promise<t.ITypedSheetCursor<T>> {
     const isLoaded = this.isReady;
     const ns = this.uri.toString();

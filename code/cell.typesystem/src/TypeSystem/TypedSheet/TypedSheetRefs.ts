@@ -4,7 +4,6 @@ import { TypedSheet } from './TypedSheet';
 export type IArgs = {
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   parent: string | t.ICellUri;
-  // ns?: string | t.INsUri;
   ctx: t.SheetCtx;
 };
 
@@ -75,7 +74,11 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   /**
    * [Methods]
    */
-  public async ready() {
+  public async ready(): Promise<t.ITypedSheetRefs<T>> {
+    if (this.isReady) {
+      return this;
+    }
+
     if (this._ready) {
       return this._ready; // Single loader.
     }
@@ -84,16 +87,17 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
       await this.ensureLink();
 
       const { fetch, cache, events$ } = this.ctx;
-      const typename = this.typeDef.type.typename;
+      const def = this.typeDef;
+
       this._sheet = await TypedSheet.create<T>({
-        implements: typename,
+        implements: def.type.uri,
         ns: this.ns.toString(),
         fetch,
         cache,
         events$,
       });
 
-      delete this._ready;
+      delete this._ready; // Remove temporary load cache.
       resolve(this);
     });
 
@@ -101,11 +105,15 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     return promise;
   }
 
-  public async cursor(range?: string) {
+  public async cursor(options?: string | { range?: string }) {
     if (!this.isReady) {
       await this.ready();
     }
-    return this.sheet.cursor(range);
+    type O = { range?: string };
+    const args: O = typeof options === 'string' ? { range: options } : options || {};
+    const cursor = this.sheet.cursor(args.range);
+    await cursor.load();
+    return cursor;
   }
 
   /**

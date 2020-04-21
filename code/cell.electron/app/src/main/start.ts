@@ -1,11 +1,13 @@
 import { app } from 'electron';
 
 import './config';
-import { constants, log } from './common';
+import { constants, log, time } from './common';
 import * as screen from './main.screen';
 import * as server from './main.server';
 import * as tray from './main.tray';
-import * as client from './main.client';
+import { client } from './main.client';
+
+const SYS = constants.SYS;
 
 const refs: any = {};
 
@@ -38,26 +40,33 @@ export async function start() {
   const prod = ENV.isProd;
   const { paths, host } = await server.start({ log, prod });
 
-  /**
-   * TODO 🐷
-   * - change this to "Setup A1: App TypeDefs"
-   */
+  // Ensure typescript [.d.ts] declarations exist.
+  await client.writeTypeDefs(host, { save: ENV.isDev });
+
+  // Retrieve the typed sheet.
+  const ctx = await client.getOrCreateSys(host);
 
   // Upload the bundled system files.
-  await client.upload({ host, sourceDir: constants.paths.bundle.ui });
+  const bundlePaths = constants.paths.bundle;
+  await client.writeIdeDef({
+    ctx,
+    kind: SYS.KIND.IDE,
+    uploadDir: [bundlePaths.sys, bundlePaths.ide],
+  });
 
-  // TEMP 🐷
-  await client.writeTypeDefs(host, { save: ENV.isDev });
-  await client.writeSys(host);
-
-  logMain({ host, log: log.file.path, db: paths.db, fs: paths.fs });
+  logMain({
+    host,
+    log: log.file.path,
+    db: paths.db,
+    fs: paths.fs,
+  });
   await app.whenReady();
 
-  const def = 'cell:sys:A1'; // TODO 🐷
-  screen.createWindow({ host, def });
+  // Initialize UI windows.
+  await screen.createWindows({ ctx, defName: SYS.KIND.IDE });
 
   // TEMP 🐷
-  refs.tray = tray.init({ host, def }).tray;
+  // refs.tray = tray.init({ host, def, ctx }).tray;
 }
 
 /**

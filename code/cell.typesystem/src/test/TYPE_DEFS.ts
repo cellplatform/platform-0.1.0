@@ -89,8 +89,8 @@ export const TYPE_DEFS: SampleTypeDefs = {
   'ns:foo.message': {
     ns: { type: { typename: 'MyMessage' } },
     columns: {
-      A: { props: { prop: { name: 'date', type: 'number' } } },
-      B: { props: { prop: { name: 'user', type: 'string' } } },
+      A: { props: { prop: { name: 'date', type: 'number', default: -1 } } },
+      B: { props: { prop: { name: 'user', type: 'string', default: 'anon' } } },
       C: { props: { prop: { name: 'message', type: 'string' } } },
     },
   },
@@ -99,9 +99,7 @@ export const TYPE_DEFS: SampleTypeDefs = {
     ns: { type: { typename: 'MyNested' } },
     columns: {
       A: { props: { prop: { name: 'one', type: '(string)' } } },
-      B: {
-        props: { prop: { name: 'two', type: 'string | ("red" | boolean | "blue")' } },
-      },
+      B: { props: { prop: { name: 'two', type: 'string | ("red" | boolean | "blue")' } } },
       C: { props: { prop: { name: 'three', type: 'boolean | (ns:foo.color | string)' } } },
     },
   },

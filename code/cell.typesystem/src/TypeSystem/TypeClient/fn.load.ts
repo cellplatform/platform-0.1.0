@@ -1,10 +1,10 @@
 import { Subject } from 'rxjs';
 
-import { deleteUndefined, ERROR, ErrorList, R, t, value as valueUtil, Uri } from '../../common';
-import { formatNsUri } from '../util';
+import { deleteUndefined, ERROR, ErrorList, R, t, Uri, value as valueUtil } from '../../common';
 import { TypeCache } from '../TypeCache';
 import { TypeDefault } from '../TypeDefault';
 import { TypeValue } from '../TypeValue';
+import { formatNsUri } from '../util';
 import * as valdiate from './fn.validate';
 
 type Visit = { ns: string; level: number };
@@ -228,10 +228,13 @@ async function readColumn(args: {
   const optional = prop.endsWith('?') ? true : undefined;
   prop = optional ? prop.replace(/\?$/, '') : prop;
 
+  let defaultValue = args.props.default;
+
   if (type.kind === 'REF') {
     const res = await readRef({ level, ns, column, ref: type, ctx });
     type = res.type;
     error = res.error ? res.error : error;
+    defaultValue = defaultValue === undefined ? res.default : defaultValue; // NB: Use the closest default value to the declaration. Import from REF is not declared locally.
   }
 
   if (type.kind === 'UNION') {
@@ -244,18 +247,13 @@ async function readColumn(args: {
     union.typename = TypeValue.toTypename(union);
   }
 
-  const defaultValue = await toDefaultDef({
-    default: args.props.default,
-    ctx,
-  });
-
   const def: t.IColumnTypeDef = {
     column,
     prop,
     optional,
     type,
     target,
-    default: defaultValue,
+    default: await toDefaultDef({ default: defaultValue, ctx }),
     error,
   };
   return valueUtil.deleteUndefined(def);
@@ -264,20 +262,22 @@ async function readColumn(args: {
 async function toDefaultDef(args: {
   default: t.CellTypeProp['default'];
   ctx: Context;
-}): Promise<t.ITypeDefault> {
+}): Promise<t.ITypeDefault | undefined> {
   const { ctx } = args;
+
+  const done = (result: t.ITypeDefault) => {
+    return R.equals(result, { value: undefined }) ? undefined : result;
+  };
 
   if (TypeDefault.isTypeDefaultRef(args.default)) {
     const { fetch } = ctx;
-
     const def = args.default as t.ITypeDefaultRef;
     const ref = await TypeDefault.toRefValue({ def, fetch });
     const value = ref.value as t.TypeDefaultValue;
-
     const res: t.ITypeDefaultValue = { value };
-    return res;
+    return done(res);
   } else {
-    return TypeDefault.toTypeDefault(args.default);
+    return done(TypeDefault.toTypeDefault(args.default));
   }
 }
 
@@ -317,7 +317,7 @@ async function readRef(args: {
   column: string;
   ref: t.ITypeRef;
   ctx: Context;
-}): Promise<{ type: t.IType; error?: t.ITypeError }> {
+}): Promise<{ type: t.IType; default?: t.ITypeDef['default']; error?: t.ITypeError }> {
   const { ns, column, ref, level, ctx } = args;
 
   const isColumn = Uri.is.column(ref.uri);
@@ -359,16 +359,25 @@ async function readRef(args: {
         error: ctx.errors.add(ns, msg, { errorType: ERROR.TYPE.REF }),
       };
     }
-    const type = columnDef.type;
-    return { type };
+
+    return {
+      type: columnDef.type,
+      default: columnDef.default,
+    };
   } else {
     // Namespace REF.
     const { typename } = loadResponse;
-    const types: t.ITypeDef[] = loadResponse.columns.map(({ prop, type, optional }) => ({
-      prop,
-      type,
-      optional,
-    }));
+
+    const types: t.ITypeDef[] = loadResponse.columns.map(item => {
+      const { prop, type, optional } = item;
+      return {
+        prop,
+        type,
+        optional,
+        default: item.default,
+      };
+    });
+
     const type: t.ITypeRef = { ...ref, typename, types };
     return { type };
   }

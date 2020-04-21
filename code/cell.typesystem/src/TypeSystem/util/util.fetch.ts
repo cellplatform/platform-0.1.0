@@ -3,9 +3,9 @@ import { ERROR, t } from '../../common';
 /**
  * Constructs a sheet-data-fetcher from an HTTP host/client.
  */
-function fromClient(client: t.IHttpClient): t.ISheetFetcher {
+function fromClient(http: t.IHttpClient): t.ISheetFetcher {
   const getType: t.FetchSheetType = async args => {
-    const res = await client.ns(args.ns).read();
+    const res = await http.ns(args.ns).read();
     const exists = res.body.exists;
     let error: t.IHttpError | undefined;
 
@@ -24,7 +24,7 @@ function fromClient(client: t.IHttpClient): t.ISheetFetcher {
   };
 
   const getColumns: t.FetchSheetColumns = async args => {
-    const res = await client.ns(args.ns).read({ columns: true });
+    const res = await http.ns(args.ns).read({ columns: true });
     const error = formatError(
       res.error,
       msg => `Failed to retrieve type information from namespace [${args.ns}]. ${msg}`,
@@ -35,7 +35,7 @@ function fromClient(client: t.IHttpClient): t.ISheetFetcher {
 
   const getCells: t.FetchSheetCells = async args => {
     const { ns, query } = args;
-    const res = await client.ns(ns).read({ cells: query, total: 'rows' });
+    const res = await http.ns(ns).read({ cells: query, total: 'rows' });
     const error = formatError(
       res.error,
       msg => `Failed to retrieve cells "${query}" within namespace [${ns}]. ${msg}`,

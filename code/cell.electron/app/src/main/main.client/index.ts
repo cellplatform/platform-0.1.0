@@ -1,2 +1,2 @@
-export * from './client.upload';
-export * from './client.types';
+import * as client from './client';
+export { client };

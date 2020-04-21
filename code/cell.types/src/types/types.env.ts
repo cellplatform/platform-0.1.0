@@ -1,4 +1,4 @@
-export type IEnvLoaderQuery = { host: string; def: string };
+export type IEnvLoaderQuery = { host: string; def: string; instance: string };
 
 export type IEnv = { host: string; def: IDef };
 export type IDef = { uri: string };

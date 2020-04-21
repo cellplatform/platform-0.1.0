@@ -688,19 +688,35 @@ describe('TypedSheet', () => {
           const messages = row.props.messages;
           expect(messages).to.be.an.instanceof(TypedSheetRefs);
           expect(row.props.messages).to.equal(messages); // NB: Cached instance.
+          expect(messages.isReady).to.eql(false);
+
+          const type = messages.typeDef.type;
+          expect(type.kind).to.eql('REF');
+          if (type.kind === 'REF') {
+            expect(type.types[0].default).to.eql({ value: -1 });
+            expect(type.types[1].default).to.eql({ value: 'anon' });
+            expect(type.types[2].default).to.eql(undefined);
+          }
 
           await messages.ready();
+          expect(messages.isReady).to.eql(true);
           expect(messages.sheet).to.be.an.instanceof(TypedSheet);
           expect(messages.ns.toString()).to.eql(messages.sheet.uri.toString());
+          expect(messages.sheet.types.map(def => def.prop)).to.eql(['date', 'user', 'message']);
 
           const childCursor = messages.sheet.cursor('1:10');
-          const childRow = childCursor.row(0).props;
+          await childCursor.ready();
 
-          expect(childRow.message).to.eql(undefined);
-          childRow.message = 'hello';
-          childRow.user = 'bob';
-          expect(childRow.message).to.eql('hello');
-          expect(childRow.user).to.eql('bob');
+          const childRow = childCursor.row(0);
+          const childRowProps = childRow.props;
+
+          expect(childRow.types.list).to.eql(messages.sheet.types);
+
+          expect(childRowProps.message).to.eql(undefined);
+          childRowProps.message = 'hello';
+          childRowProps.user = 'bob';
+          expect(childRowProps.message).to.eql('hello');
+          expect(childRowProps.user).to.eql('bob');
 
           // Ensure the sheet is linked.
           const changes = sheet.state.changes;
@@ -751,13 +767,36 @@ describe('TypedSheet', () => {
           expect(rowA.messages.ns.toString()).to.eql(rowB.messages.ns.toString());
         });
 
-        it('cursor (safe: awaits ready)', async () => {
+        it('ref.cursor(...): auto loads (await ready)', async () => {
           const { sheet } = await testSheet();
-          const cursor = await sheet.cursor().load();
-          const row = cursor.row(0).props;
+          const row = sheet.cursor().row(0).props;
 
-          const childCursor = await row.messages.cursor('1:10');
-          const childRow = childCursor.row(0).props;
+          const cursor1 = await row.messages.cursor();
+          const cursor2 = await row.messages.cursor('1:10');
+          const cursor3 = await row.messages.cursor({});
+          const cursor4 = await row.messages.cursor({ range: '1:5' });
+
+          expect(cursor1.isReady).to.eql(true);
+          expect(cursor2.isReady).to.eql(true);
+          expect(cursor3.isReady).to.eql(true);
+          expect(cursor4.isReady).to.eql(true);
+
+          expect(cursor1.status).to.eql('LOADED');
+          expect(cursor2.status).to.eql('LOADED');
+          expect(cursor3.status).to.eql('LOADED');
+          expect(cursor4.status).to.eql('LOADED');
+
+          expect(cursor1.range).to.eql(TypedSheetCursor.DEFAULT.RANGE);
+          expect(cursor2.range).to.eql('1:10');
+          expect(cursor3.range).to.eql(TypedSheetCursor.DEFAULT.RANGE);
+          expect(cursor4.range).to.eql('1:5');
+        });
+
+        it('ref.cursor(...): loaded props', async () => {
+          const { sheet } = await testSheet();
+          const row = sheet.cursor().row(0).props;
+          const cursor = await row.messages.cursor();
+          const childRow = cursor.row(0).props;
 
           childRow.message = 'hello';
           childRow.user = 'bob';
@@ -1021,7 +1060,7 @@ describe('TypedSheet', () => {
       it('clearCache (retain other items in cache)', async () => {
         const { sheet, fetch } = await testSheet();
         const state = sheet.state;
-        const cache = state.fetch.cache;
+        const cache = (state.fetch as t.CachedFetcher).cache;
 
         expect(fetch.getCellsCount).to.eql(0);
         expect(await state.getCell('A1')).to.eql({ value: 'One' }); // Original value.

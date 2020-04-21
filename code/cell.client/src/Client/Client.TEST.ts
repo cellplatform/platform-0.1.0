@@ -22,7 +22,7 @@ describe('Client', () => {
   describe('Client.type', () => {
     it('creates client', () => {
       const test = (input: string | number | t.IHttpClientOptions | undefined, origin: string) => {
-        const res = Client.type({ client: input });
+        const res = Client.type({ http: input });
         expect(res.http.origin).to.eql(origin);
         expect(HttpClient.isClient(res.http)).to.eql(true);
       };
@@ -36,7 +36,7 @@ describe('Client', () => {
 
     it('uses given [IHttpClient]', () => {
       const client = HttpClient.create();
-      const res = Client.type({ client });
+      const res = Client.type({ http: client });
 
       expect(res.http).to.equal(client);
 
