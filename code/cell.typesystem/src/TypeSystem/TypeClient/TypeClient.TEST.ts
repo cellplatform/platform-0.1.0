@@ -74,7 +74,7 @@ describe('TypeClient', () => {
         'ns:foo': {
           ns: { type: { typename: 'Foo' } },
           columns: {
-            C: { props: { prop: { name: 'color', type: 'ns:foo.color' } } },
+            C: { props: { def: { name: 'color', type: 'ns:foo.color' } } },
           },
         },
       };
@@ -96,10 +96,10 @@ describe('TypeClient', () => {
         'ns:foo.error': {
           ns: { type: { typename: 'Foo' } },
           columns: {
-            A: { props: { prop: { name: 'foo', type: 'string' } } },
-            B: { props: { prop: { name: 'isEnabled', type: 'string' } } },
-            C: { props: { prop: { name: 'foo', type: `'red'` } } },
-            D: { props: { prop: { name: 'Foo', type: 'boolean' } } },
+            A: { props: { def: { name: 'foo', type: 'string' } } },
+            B: { props: { def: { name: 'isEnabled', type: 'string' } } },
+            C: { props: { def: { name: 'foo', type: `'red'` } } },
+            D: { props: { def: { name: 'Foo', type: 'boolean' } } },
           },
         },
       };
@@ -116,28 +116,28 @@ describe('TypeClient', () => {
         'ns:foo.1': {
           ns: { type: { typename: 'Foo' } }, // NB: same name.
           columns: {
-            A: { props: { prop: { name: 'thing', type: 'ns:foo.2' } } },
+            A: { props: { def: { name: 'thing', type: 'ns:foo.2' } } },
           },
         },
         'ns:foo.2': {
           ns: { type: { typename: 'Bar' } }, // NB: same name.
           columns: {
-            A: { props: { prop: { name: 'A', type: 'ns:foo.3' } } },
-            B: { props: { prop: { name: 'B', type: 'ns:foo.3' } } },
-            C: { props: { prop: { name: 'C', type: 'string' } } },
+            A: { props: { def: { name: 'A', type: 'ns:foo.3' } } },
+            B: { props: { def: { name: 'B', type: 'ns:foo.3' } } },
+            C: { props: { def: { name: 'C', type: 'string' } } },
           },
         },
         'ns:foo.3': {
           ns: { type: { typename: 'Bar' } }, // NB: same name.
           columns: {
-            A: { props: { prop: { name: 'count', type: 'number' } } },
-            B: { props: { prop: { name: 'myRef', type: 'ns:foo.4' } } },
+            A: { props: { def: { name: 'count', type: 'number' } } },
+            B: { props: { def: { name: 'myRef', type: 'ns:foo.4' } } },
           },
         },
         'ns:foo.4': {
           ns: { type: { typename: 'Foo' } }, // NB: same name.
           columns: {
-            A: { props: { prop: { name: 'name', type: 'string' } } },
+            A: { props: { def: { name: 'name', type: 'string' } } },
           },
         },
       };
@@ -179,7 +179,7 @@ describe('TypeClient', () => {
         'ns:foo': {
           ns: { type: { typename: 'Foo', implements: 'ns:foo' } },
           columns: {
-            A: { props: { prop: { name: 'A', type: 'string' } } },
+            A: { props: { def: { name: 'A', type: 'string' } } },
           },
         },
       };
@@ -198,9 +198,9 @@ describe('TypeClient', () => {
         'ns:foo': {
           ns: { type: { typename: 'One' } },
           columns: {
-            A: { props: { prop: { name: 'A', type: 'ns:foo' } } }, //     Not OK (self, ns)
-            B: { props: { prop: { name: 'B', type: 'cell:foo:A' } } }, // Not OK (a different column)
-            C: { props: { prop: { name: 'C', type: 'cell:foo:C' } } }, // Not OK (self, column)
+            A: { props: { def: { name: 'A', type: 'ns:foo' } } }, //     Not OK (self, ns)
+            B: { props: { def: { name: 'B', type: 'cell:foo:A' } } }, // Not OK (a different column)
+            C: { props: { def: { name: 'C', type: 'cell:foo:C' } } }, // Not OK (self, column)
           },
         },
       };
@@ -220,13 +220,13 @@ describe('TypeClient', () => {
         'ns:foo.1': {
           ns: { type: { typename: 'One' } },
           columns: {
-            A: { props: { prop: { name: 'two', type: 'ns:foo.2' } } },
+            A: { props: { def: { name: 'two', type: 'ns:foo.2' } } },
           },
         },
         'ns:foo.2': {
           ns: { type: { typename: 'Two' } },
           columns: {
-            Z: { props: { prop: { name: 'two', type: 'ns:foo.1' } } },
+            Z: { props: { def: { name: 'two', type: 'ns:foo.1' } } },
           },
         },
       };
@@ -261,13 +261,13 @@ describe('TypeClient', () => {
         'ns:foo.1': {
           ns: { type: { typename: 'Foo1' } },
           columns: {
-            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2:Z' } } },
+            A: { props: { def: { name: 'foo2', type: 'cell:foo.2:Z' } } },
           },
         },
         'ns:foo.2': {
           ns: { type: { typename: 'Foo2' } },
           columns: {
-            Z: { props: { prop: { name: 'foo1', type: 'ns:foo.1' } } },
+            Z: { props: { def: { name: 'foo1', type: 'ns:foo.1' } } },
           },
         },
       };
@@ -302,13 +302,13 @@ describe('TypeClient', () => {
         'ns:foo.1': {
           ns: { type: { typename: 'Foo1' } },
           columns: {
-            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2:Z' } } },
+            A: { props: { def: { name: 'foo2', type: 'cell:foo.2:Z' } } },
           },
         },
         'ns:foo.2': {
           ns: { type: { typename: 'Foo2' } },
           columns: {
-            Z: { props: { prop: { name: 'foo1', type: 'cell:foo.1:A' } } },
+            Z: { props: { def: { name: 'foo1', type: 'cell:foo.1:A' } } },
           },
         },
       };
@@ -343,13 +343,13 @@ describe('TypeClient', () => {
         'ns:foo.1': {
           ns: { type: { typename: 'Foo1' } },
           columns: {
-            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2:Z' } } },
+            A: { props: { def: { name: 'foo2', type: 'cell:foo.2:Z' } } },
           },
         },
         'ns:foo.2': {
           ns: { type: { typename: 'Foo2' } },
           columns: {
-            Z: { props: { prop: { name: 'foo1', type: 'boolean | (ns:foo.1 | string)' } } },
+            Z: { props: { def: { name: 'foo1', type: 'boolean | (ns:foo.1 | string)' } } },
           },
         },
       };
@@ -374,13 +374,13 @@ describe('TypeClient', () => {
         'ns:foo.1': {
           ns: { type: { typename: 'Foo1' } },
           columns: {
-            A: { props: { prop: { name: 'foo2', type: 'cell:foo.2:Z' } } },
+            A: { props: { def: { name: 'foo2', type: 'cell:foo.2:Z' } } },
           },
         },
         'ns:foo.2': {
           ns: { type: { typename: 'Foo2' } },
           columns: {
-            Z: { props: { prop: { name: 'foo1', type: 'boolean | (cell:foo.1:A | string)' } } },
+            Z: { props: { def: { name: 'foo1', type: 'boolean | (cell:foo.1:A | string)' } } },
           },
         },
       };
@@ -430,15 +430,15 @@ describe('TypeClient', () => {
           'ns:foo': {
             ns: { type: { typename: 'Foo' } },
             columns: {
-              A: { props: { prop: { name: 'title', type: 'string' } } }, // NB: "type" field deleted below.
+              A: { props: { def: { name: 'title', type: 'string' } } }, // NB: "type" field deleted below.
             },
           },
         };
 
         const A = defs['ns:foo'].columns.A;
 
-        delete A.props.prop.type;
-        expect(defs['ns:foo'].columns.A.props.prop.type).to.eql(undefined);
+        delete A.props.def.type;
+        expect(defs['ns:foo'].columns.A.props.def.type).to.eql(undefined);
 
         const fetch = testFetch({ defs });
         const def = await TypeClient.load({ ns: 'foo', fetch });
@@ -610,13 +610,13 @@ describe('TypeClient', () => {
           'ns:foo.1': {
             ns: { type: { typename: 'Foo1' } },
             columns: {
-              A: { props: { prop: { name: 'myFoo', type: 'ns:foo.2' } } },
+              A: { props: { def: { name: 'myFoo', type: 'ns:foo.2' } } },
             },
           },
           'ns:foo.2': {
             ns: { type: { typename: 'Foo2' } },
             columns: {
-              A: { props: { prop: { name: 'foo?', type: 'string', default: 'Untitled' } } },
+              A: { props: { def: { name: 'foo?', type: 'string', default: 'Untitled' } } },
             },
           },
         };
@@ -635,13 +635,13 @@ describe('TypeClient', () => {
           'ns:foo.1': {
             ns: { type: { typename: 'Foo1' } },
             columns: {
-              A: { props: { prop: { name: 'myFoo', type: 'ns:foo.2[]', target: 'ref' } } },
+              A: { props: { def: { name: 'myFoo', type: 'ns:foo.2[]', target: 'ref' } } },
             },
           },
           'ns:foo.2': {
             ns: { type: { typename: 'Foo2' } },
             columns: {
-              A: { props: { prop: { name: 'count', type: 'number', default: -1 } } },
+              A: { props: { def: { name: 'count', type: 'number', default: -1 } } },
             },
           },
         };
@@ -664,25 +664,25 @@ describe('TypeClient', () => {
         'ns:foo.1': {
           ns: { type: { typename: 'Foo1' } },
           columns: {
-            A: { props: { prop: { name: 'myFoo', type: 'cell:foo.2:A' } } },
-            B: { props: { prop: { name: 'myBar', type: 'cell:foo.2:B' } } },
-            C: { props: { prop: { name: 'myObjectRef', type: 'cell:foo.2:C' } } },
-            D: { props: { prop: { name: 'myColumnRef', type: 'cell:foo.2:D' } } },
+            A: { props: { def: { name: 'myFoo', type: 'cell:foo.2:A' } } },
+            B: { props: { def: { name: 'myBar', type: 'cell:foo.2:B' } } },
+            C: { props: { def: { name: 'myObjectRef', type: 'cell:foo.2:C' } } },
+            D: { props: { def: { name: 'myColumnRef', type: 'cell:foo.2:D' } } },
           },
         },
         'ns:foo.2': {
           ns: { type: { typename: 'Foo2' } },
           columns: {
-            A: { props: { prop: { name: 'foo', type: 'string', default: 'Untitled' } } },
-            B: { props: { prop: { name: 'bar?', type: '"one" | "two" | "three"' } } },
-            C: { props: { prop: { name: 'baz', type: 'ns:foo.3' } } },
-            D: { props: { prop: { name: 'zoo', type: 'cell:foo.3:A' } } },
+            A: { props: { def: { name: 'foo', type: 'string', default: 'Untitled' } } },
+            B: { props: { def: { name: 'bar?', type: '"one" | "two" | "three"' } } },
+            C: { props: { def: { name: 'baz', type: 'ns:foo.3' } } },
+            D: { props: { def: { name: 'zoo', type: 'cell:foo.3:A' } } },
           },
         },
         'ns:foo.3': {
           ns: { type: { typename: 'Foo3' } },
           columns: {
-            A: { props: { prop: { name: 'hello', type: 'number[] | boolean' } } },
+            A: { props: { def: { name: 'hello', type: 'number[] | boolean' } } },
           },
         },
       };
@@ -724,13 +724,13 @@ describe('TypeClient', () => {
           'ns:foo.1': {
             ns: { type: { typename: 'Foo1' } },
             columns: {
-              A: { props: { prop: { name: 'myFoo', type: 'cell:foo.2:A', default: 'Hello' } } },
+              A: { props: { def: { name: 'myFoo', type: 'cell:foo.2:A', default: 'Hello' } } },
             },
           },
           'ns:foo.2': {
             ns: { type: { typename: 'Foo2' } },
             columns: {
-              A: { props: { prop: { name: 'foo', type: 'string', default: 'Untitled' } } },
+              A: { props: { def: { name: 'foo', type: 'string', default: 'Untitled' } } },
             },
           },
         };
@@ -870,18 +870,18 @@ describe('TypeClient', () => {
         'ns:foo.1': {
           ns: { type: { typename: 'Foo' } },
           columns: {
-            A: { props: { prop: { name: 'A', type: 'string' } } },
-            B: { props: { prop: { name: 'B', type: 'ns:foo.2' } } },
-            C: { props: { prop: { name: 'C', type: 'ns:foo.2' } } },
-            D: { props: { prop: { name: 'D', type: 'ns:foo.2:A' } } },
-            E: { props: { prop: { name: 'E', type: 'ns:foo.2:A' } } },
+            A: { props: { def: { name: 'A', type: 'string' } } },
+            B: { props: { def: { name: 'B', type: 'ns:foo.2' } } },
+            C: { props: { def: { name: 'C', type: 'ns:foo.2' } } },
+            D: { props: { def: { name: 'D', type: 'ns:foo.2:A' } } },
+            E: { props: { def: { name: 'E', type: 'ns:foo.2:A' } } },
           },
         },
         'ns:foo.2': {
           ns: { type: { typename: 'Bar' } },
           columns: {
-            A: { props: { prop: { name: 'name', type: 'string' } } },
-            B: { props: { prop: { name: 'count', type: 'number' } } },
+            A: { props: { def: { name: 'name', type: 'string' } } },
+            B: { props: { def: { name: 'count', type: 'number' } } },
           },
         },
       };
@@ -953,13 +953,13 @@ describe('TypeClient', () => {
           'ns:foo.1': {
             ns: { type: { typename: 'Foo1' } },
             columns: {
-              A: { props: { prop: { name: 'myFoo?', type: 'cell:foo.2:A', target: 'ref' } } },
+              A: { props: { def: { name: 'myFoo?', type: 'cell:foo.2:A', target: 'ref' } } },
             },
           },
           'ns:foo.2': {
             ns: { type: { typename: 'Foo2' } },
             columns: {
-              A: { props: { prop: { name: 'count', type: 'number' } } },
+              A: { props: { def: { name: 'count', type: 'number' } } },
             },
           },
         };

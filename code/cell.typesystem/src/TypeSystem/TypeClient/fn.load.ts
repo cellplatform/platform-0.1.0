@@ -188,7 +188,7 @@ async function readColumns(args: {
   const { errors } = ctx;
 
   const withProps = (column: string) => {
-    const props = args.columns[column]?.props?.prop as t.CellTypeProp;
+    const props = args.columns[column]?.props?.def as t.CellTypeProp;
     return { column, props };
   };
 
@@ -387,9 +387,9 @@ async function readRef(args: {
  * Examine a set of columns looking for any columns that REF themselves.
  *
  *    columns: {
- *      A: { props: { prop: { name: 'A', type: 'ns:foo' } } },     <== Not OK (self, ns)
- *      B: { props: { prop: { name: 'B', type: 'cell:foo!A' } } }, <== Not OK (self, different column)
- *      C: { props: { prop: { name: 'C', type: 'cell:foo!C' } } }, <== Not OK (self, column)
+ *      A: { props: { def: { name: 'A', type: 'ns:foo' } } },     <== Not OK (self, ns)
+ *      B: { props: { def: { name: 'B', type: 'cell:foo!A' } } }, <== Not OK (self, different column)
+ *      C: { props: { def: { name: 'C', type: 'cell:foo!C' } } }, <== Not OK (self, column)
  *    },
  *
  */
@@ -398,7 +398,7 @@ const getSelfRefs = (args: { ns: string; columns: t.IColumnMap }) => {
   const ns = Uri.parse<t.INsUri>(args.ns);
   return Object.keys(columns)
     .map(key => ({ key, column: columns[key] }))
-    .map(e => ({ ...e, type: e.column?.props?.prop?.type as string }))
+    .map(e => ({ ...e, type: e.column?.props?.def?.type as string }))
     .filter(e => Boolean(e.type))
     .filter(e => Uri.is.uri(e.type))
     .map(e => ({ ...e, uri: Uri.parse(e.type) }))
