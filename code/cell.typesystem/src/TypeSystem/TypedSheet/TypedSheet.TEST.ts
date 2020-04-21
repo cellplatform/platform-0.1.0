@@ -64,7 +64,7 @@ describe('TypedSheet', () => {
     });
   });
 
-  describe('cursor', () => {
+  describe('TypedSheetData (cursor)', () => {
     it('create: default (unloaded)', async () => {
       const { sheet } = await testSheet();
       const cursor = sheet.cursor();
@@ -246,7 +246,7 @@ describe('TypedSheet', () => {
     });
   });
 
-  describe('cursor.row', () => {
+  describe('TypedSheetData', () => {
     it('throw: row out-of-bounds (index: -1)', async () => {
       const { sheet } = await testSheet();
       const cursor = await sheet.cursor().load();
@@ -278,6 +278,101 @@ describe('TypedSheet', () => {
         union: ['blue'],
         array: ['red', 'green', 'blue'],
       });
+    });
+  });
+
+  describe('TypedSheetRow', () => {
+    const testRow = async (uri: string) => {
+      const ctx = TypedSheet.ctx({ fetch: await testFetchMySheet('ns:foo.mySheet') });
+      const ns = await TypeClient.load({ ns: 'ns:foo', fetch: ctx.fetch, cache: ctx.cache });
+      const columns = ns[0].columns;
+      const row = TypedSheetRow.create<f.MyRow>({ uri, columns, ctx });
+      return { row, ctx, ns };
+    };
+
+    it('throw: URI not a row', async () => {
+      expectError(async () => testRow('cell:foo:A1'));
+      expectError(async () => testRow('ns:foo'));
+      expectError(async () => testRow('file:foo:abc'));
+    });
+
+    it('create (not loaded)', async () => {
+      const { row, ns } = await testRow('cell:foo:1');
+      expect(row.uri.toString()).to.eql('cell:foo:1');
+      expect(row.index).to.eql(0);
+
+      expect(row.status).to.eql('INIT');
+      expect(row.isReady).to.eql(false);
+
+      expect(row.types.list).to.eql(ns[0].columns);
+      expect(row.types.map.title.column).to.eql('A');
+
+      expect(row.props.title).to.eql('Untitled'); // Default value.
+      expect(row.props.isEnabled).to.eql(undefined);
+    });
+
+    it('load', async () => {
+      const { row } = await testRow('cell:foo:1');
+
+      expect(row.props.title).to.eql('Untitled'); // Default value.
+      expect(row.props.isEnabled).to.eql(undefined);
+      expect(row.isReady).to.eql(false);
+      expect(row.status).to.eql('INIT');
+
+      const res = row.load();
+
+      expect(row.isReady).to.eql(false);
+      expect(row.status).to.eql('LOADING');
+
+      await res;
+
+      expect(row.isReady).to.eql(true);
+      expect(row.status).to.eql('LOADED');
+
+      expect(row.props.title).to.eql('One');
+      expect(row.props.isEnabled).to.eql(true);
+    });
+
+    it('load (static)', async () => {
+      const { ns, ctx } = await testRow('cell:foo:1');
+      const uri = 'cell:foo:1';
+      const columns = ns[0].columns;
+      const row = await TypedSheetRow.load<f.MyRow>({ uri, columns, ctx });
+
+      expect(row.props.title).to.eql('One');
+      expect(row.props.isEnabled).to.eql(true);
+    });
+
+    it('load (subset of props)', async () => {
+      const { row } = await testRow('cell:foo:1');
+      expect(row.props.title).to.eql('Untitled'); // Default value.
+      expect(row.props.isEnabled).to.eql(undefined);
+
+      await row.load({ props: ['title'] });
+
+      expect(row.props.title).to.eql('One');
+      expect(row.props.isEnabled).to.eql(undefined);
+    });
+
+    it('updates when prop changed elsewhere via event (ie. change not via row instance API)', async () => {
+      const { row, ctx } = await testRow('cell:foo:1');
+      expect(row.props.title).to.eql('Untitled');
+
+      await row.load();
+      expect(row.props.title).to.eql('One');
+
+      // Make change to property externally to row.
+      ctx.events$.next({
+        type: 'SHEET/change',
+        payload: {
+          cell: 'cell:foo:A1',
+          data: { value: 'Hello!' },
+        },
+      });
+      expect(row.props.title).to.eql('Hello!'); // NB: Row state reflects external event change.
+
+      row.props.title = 'Foobar';
+      expect(row.props.title).to.eql('Foobar'); // NB: Update via prop (normal behavior).
     });
 
     describe('row events$', () => {
@@ -392,7 +487,7 @@ describe('TypedSheet', () => {
       });
     });
 
-    describe('row.types', () => {
+    describe('row types', () => {
       it('row.types.list', async () => {
         const { sheet } = await testSheet();
         const cursor = await sheet.cursor().load();
@@ -807,7 +902,7 @@ describe('TypedSheet', () => {
     });
   });
 
-  describe('state', () => {
+  describe('TypedSheetState', () => {
     it('exposed from sheet', async () => {
       const { sheet } = await testSheet();
       const state = sheet.state;
@@ -1080,101 +1175,6 @@ describe('TypedSheet', () => {
         await state.getCell('A1');
         expect(fetch.getCellsCount).to.eql(3); // NB: and back in the cache!
       });
-    });
-  });
-
-  describe('TypedSheetRow', () => {
-    const testRow = async (uri: string) => {
-      const ctx = TypedSheet.ctx({ fetch: await testFetchMySheet('ns:foo.mySheet') });
-      const ns = await TypeClient.load({ ns: 'ns:foo', fetch: ctx.fetch, cache: ctx.cache });
-      const columns = ns[0].columns;
-      const row = TypedSheetRow.create<f.MyRow>({ uri, columns, ctx });
-      return { row, ctx, ns };
-    };
-
-    it('throw: URI not a row', async () => {
-      expectError(async () => testRow('cell:foo:A1'));
-      expectError(async () => testRow('ns:foo'));
-      expectError(async () => testRow('file:foo:abc'));
-    });
-
-    it('create (not loaded)', async () => {
-      const { row, ns } = await testRow('cell:foo:1');
-      expect(row.uri.toString()).to.eql('cell:foo:1');
-      expect(row.index).to.eql(0);
-
-      expect(row.status).to.eql('INIT');
-      expect(row.isReady).to.eql(false);
-
-      expect(row.types.list).to.eql(ns[0].columns);
-      expect(row.types.map.title.column).to.eql('A');
-
-      expect(row.props.title).to.eql('Untitled'); // Default value.
-      expect(row.props.isEnabled).to.eql(undefined);
-    });
-
-    it('load', async () => {
-      const { row } = await testRow('cell:foo:1');
-
-      expect(row.props.title).to.eql('Untitled'); // Default value.
-      expect(row.props.isEnabled).to.eql(undefined);
-      expect(row.isReady).to.eql(false);
-      expect(row.status).to.eql('INIT');
-
-      const res = row.load();
-
-      expect(row.isReady).to.eql(false);
-      expect(row.status).to.eql('LOADING');
-
-      await res;
-
-      expect(row.isReady).to.eql(true);
-      expect(row.status).to.eql('LOADED');
-
-      expect(row.props.title).to.eql('One');
-      expect(row.props.isEnabled).to.eql(true);
-    });
-
-    it('load (static)', async () => {
-      const { ns, ctx } = await testRow('cell:foo:1');
-      const uri = 'cell:foo:1';
-      const columns = ns[0].columns;
-      const row = await TypedSheetRow.load<f.MyRow>({ uri, columns, ctx });
-
-      expect(row.props.title).to.eql('One');
-      expect(row.props.isEnabled).to.eql(true);
-    });
-
-    it('load (subset of props)', async () => {
-      const { row } = await testRow('cell:foo:1');
-      expect(row.props.title).to.eql('Untitled'); // Default value.
-      expect(row.props.isEnabled).to.eql(undefined);
-
-      await row.load({ props: ['title'] });
-
-      expect(row.props.title).to.eql('One');
-      expect(row.props.isEnabled).to.eql(undefined);
-    });
-
-    it('updates when prop changed elsewhere via event (ie. change not via row instance API)', async () => {
-      const { row, ctx } = await testRow('cell:foo:1');
-      expect(row.props.title).to.eql('Untitled');
-
-      await row.load();
-      expect(row.props.title).to.eql('One');
-
-      // Make change to property externally to row.
-      ctx.events$.next({
-        type: 'SHEET/change',
-        payload: {
-          cell: 'cell:foo:A1',
-          data: { value: 'Hello!' },
-        },
-      });
-      expect(row.props.title).to.eql('Hello!'); // NB: Row state reflects external event change.
-
-      row.props.title = 'Foobar';
-      expect(row.props.title).to.eql('Foobar'); // NB: Update via prop (normal behavior).
     });
   });
 });
