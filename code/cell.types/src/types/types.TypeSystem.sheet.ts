@@ -22,7 +22,7 @@ export type ITypedSheetData<T> = {
   readonly range: string;
   readonly total: number; // Total rows.
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
-  readonly isReady: boolean;
+  readonly isLoaded: boolean;
   exists(index: number): boolean;
   row(index: number): ITypedSheetRow<T>;
   ready(): Promise<ITypedSheetData<T>>;
@@ -40,7 +40,7 @@ export type ITypedSheetRow<T> = {
   readonly props: ITypedSheetRowProps<T>;
   readonly types: ITypedSheetRowTypes<T>;
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
-  readonly isReady: boolean;
+  readonly isLoaded: boolean;
   ready(): Promise<ITypedSheetRow<T>>;
   load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
   toObject(): T;
@@ -60,9 +60,10 @@ export type ITypedSheetRefs<T> = {
   ns: t.INsUri;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   sheet: t.ITypedSheet<T>;
-  isReady: boolean;
+  isLoaded: boolean;
   ready(): Promise<ITypedSheetRefs<T>>;
-  cursor(options?: string | { range?: string }): Promise<ITypedSheetData<T>>;
+  data(options?: string | { range?: string }): Promise<ITypedSheetData<T>>;
+  // TODO 🐷 cursor => "load"
 };
 
 /**

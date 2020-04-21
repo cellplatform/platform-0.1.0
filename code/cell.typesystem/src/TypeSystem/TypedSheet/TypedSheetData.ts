@@ -81,7 +81,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   private _status: t.ITypedSheetData<T>['status'] = 'INIT';
   private _total = -1;
   private _loading: ILoading<T>[] = [];
-  private _isReady = false;
+  private _isLoaded = false;
 
   public readonly uri: t.INsUri;
 
@@ -100,8 +100,8 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return this._status;
   }
 
-  public get isReady() {
-    return this._isReady;
+  public get isLoaded() {
+    return this._isLoaded;
   }
 
   public get total() {
@@ -133,7 +133,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   public async load(args?: string | t.ITypedSheetDataLoad): Promise<t.ITypedSheetData<T>> {
-    const isLoaded = this.isReady;
+    const isLoaded = this.isLoaded;
     const ns = this.uri.toString();
 
     // Wrangle the given argument range.
@@ -187,7 +187,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
       // Update state.
       this._total = total.rows;
       this._status = 'LOADED';
-      this._isReady = true; // NB: Always true after initial load.
+      this._isLoaded = true; // NB: Always true after initial load.
       this._loading = this._loading.filter(item => item.query !== query);
 
       // Fire BEFORE event.

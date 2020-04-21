@@ -77,7 +77,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private _props: t.ITypedSheetRowProps<T>;
   private _types: t.ITypedSheetRowTypes<T>;
   private _data: { [column: string]: t.ICellData } = {};
-  private _isReady = false;
+  private _isLoaded = false;
   private _status: t.ITypedSheetRow<T>['status'] = 'INIT';
   private _loading: { [key: string]: Promise<t.ITypedSheetRow<T>> } = {};
 
@@ -91,8 +91,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     return this._status;
   }
 
-  public get isReady() {
-    return this._isReady;
+  public get isLoaded() {
+    return this._isLoaded;
   }
 
   public get types() {
@@ -144,7 +144,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   public async load(
     options: { props?: (keyof T)[]; force?: boolean } = {},
   ): Promise<t.ITypedSheetRow<T>> {
-    if (this.isReady && !options.force) {
+    if (this.isLoaded && !options.force) {
       return this;
     }
 
@@ -176,7 +176,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
       // Update state.
       this._status = 'LOADED';
-      this._isReady = true; // NB: Always true after initial load.
+      this._isLoaded = true; // NB: Always true after initial load.
 
       // Finish up.
       this.fire({ type: 'SHEET/row/loaded', payload: { row, index } });

@@ -60,13 +60,13 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   /**
    * [Properties]
    */
-  public get isReady() {
+  public get isLoaded() {
     return Boolean(this._sheet);
   }
 
   public get sheet() {
-    if (!this.isReady) {
-      throw new Error(`Sheet '${this.ns.toString()}' property called before isReady.`);
+    if (!this.isLoaded) {
+      throw new Error(`Sheet '${this.ns.toString()}' property called before [isLoaded].`);
     }
     return this._sheet;
   }
@@ -75,7 +75,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
    * [Methods]
    */
   public async ready(): Promise<t.ITypedSheetRefs<T>> {
-    if (this.isReady) {
+    if (this.isLoaded) {
       return this;
     }
 
@@ -105,8 +105,8 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     return promise;
   }
 
-  public async cursor(options?: string | { range?: string }) {
-    if (!this.isReady) {
+  public async data(options?: string | { range?: string }) {
+    if (!this.isLoaded) {
       await this.ready();
     }
     type O = { range?: string };

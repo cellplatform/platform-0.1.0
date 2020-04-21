@@ -60,7 +60,7 @@ export async function writeIdeDef(args: {
   force?: boolean;
 }) {
   const { ctx, kind, uploadDir } = args;
-  const defs = await ctx.windowDefs.cursor();
+  const defs = await ctx.windowDefs.data();
   const exists = defs.rows.some(def => def.props.kind === kind);
   if (exists && !args.force) {
     return;
