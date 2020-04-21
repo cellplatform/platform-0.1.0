@@ -26,7 +26,7 @@ export async function load(args: {
   ns: string | t.INsUri;
   fetch: t.ISheetFetcher;
   cache?: t.IMemoryCache;
-}): Promise<t.INsTypeDef> {
+}): Promise<t.INsTypeDef[]> {
   const ns = formatNsUri(args.ns, { throw: false }).toString();
 
   // Check cache (if an external cache was provided).
@@ -36,10 +36,11 @@ export async function load(args: {
     if (value instanceof Subject) {
       // NB: The load operation for the namespace currently in progress.
       //     Wait for the first request to complete.
-      return value.toPromise();
+      const res = await value.toPromise();
+      return [res]; // TEMP 🐷
     } else if (typeof value === 'object') {
       // Namespace already loaded within the cache.
-      return value as t.INsTypeDef;
+      return [value] as t.INsTypeDef[]; // TEMP 🐷
     }
   }
 
@@ -47,7 +48,9 @@ export async function load(args: {
   const fetch = TypeCache.fetch(args.fetch, { cache });
   const errors = ErrorList.create({ defaultType: ERROR.TYPE.DEF });
   const ctx: Context = { fetch, cache, errors, visited: [] };
-  return loadNs({ level: 0, ns, ctx });
+
+  const res = await loadNs({ level: 0, ns, ctx });
+  return [res]; // TEMP 🐷
 }
 
 /**

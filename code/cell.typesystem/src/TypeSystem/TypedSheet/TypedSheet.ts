@@ -43,11 +43,13 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     }
 
     // Load and parse the type definition.
-    const typeDef = await TypeClient.load({
+    const typeDefs = await TypeClient.load({
       ns: implementsNs.toString(),
       fetch,
       cache,
     });
+
+    const typeDef = typeDefs[0]; // TEMP 🐷
 
     // Finish up.
     return new TypedSheet<T>({ sheetNs, typeDef, fetch, events$, cache });
@@ -67,11 +69,13 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     const implementsNs = util.formatNsUri(args.implements);
     const sheetNs = args.ns ? util.formatNsUri(args.ns) : Uri.create.ns(Uri.cuid());
 
-    const typeDef = await TypeClient.load({
+    const typeDefs = await TypeClient.load({
       ns: implementsNs.toString(),
       fetch,
       cache,
     });
+
+    const typeDef = typeDefs[0]; // TEMP 🐷
 
     if (!typeDef.ok) {
       const list = typeDef.errors.map(err => err.message).join('\n');

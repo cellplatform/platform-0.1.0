@@ -149,8 +149,8 @@ describe('TypeScript', () => {
     it('union reference - type: "ns:foo.message | null"', async () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
       const def = await TypeClient.load({ ns: 'foo', fetch });
-      const typename = def.typename;
-      const types = def.columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
+      const typename = def[0].typename;
+      const types = def[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
 
       const res = TypeScript.toDeclaration({ typename, types });
 
@@ -172,8 +172,8 @@ describe('TypeScript', () => {
     it('with imports', async () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
       const def = await TypeClient.load({ ns: 'foo', fetch });
-      const typename = def.typename;
-      const types = def.columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
+      const typename = def[0].typename;
+      const types = def[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
 
       const imports = `
         import * as f from "@platform/foo"
@@ -194,8 +194,8 @@ describe('TypeScript', () => {
     it('[adjustLine] handler', async () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
       const def = await TypeClient.load({ ns: 'foo', fetch });
-      const typename = def.typename;
-      const types = def.columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
+      const typename = def[0].typename;
+      const types = def[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
 
       const res = TypeScript.toDeclaration({
         typename,

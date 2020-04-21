@@ -12,7 +12,7 @@ describe('test', () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
       const def = await TypeClient.load({ ns, fetch });
 
-      const ts = TypeClient.typescript(def);
+      const ts = TypeClient.typescript(def[0]);
       await ts.save(fs, dir, { filename: ns });
     };
 

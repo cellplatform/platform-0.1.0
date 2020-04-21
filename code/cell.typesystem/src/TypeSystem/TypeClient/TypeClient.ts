@@ -13,9 +13,10 @@ export class TypeClient {
    */
   public static client(client: t.IHttpClient) {
     const fetch = util.fetcher.fromClient(client);
-    return {
+    const api = {
       load: (ns: string | t.INsUri) => TypeClient.load({ ns, fetch }),
     };
+    return api;
   }
 
   /**

@@ -25,7 +25,6 @@ export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
    */
   private constructor(args: IArgs) {
     this.typeDef = args.typeDef;
-    // this.ns = util.formatNsUri(args.ns || Schema.cuid()); // TEMP
     this.ctx = args.ctx;
   }
 
@@ -34,5 +33,4 @@ export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
    */
   private readonly ctx: t.SheetCtx;
   public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
-  // public readonly ns: t.INsUri;
 }

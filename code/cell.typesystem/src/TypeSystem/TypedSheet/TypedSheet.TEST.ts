@@ -1087,7 +1087,7 @@ describe('TypedSheet', () => {
     const testRow = async (uri: string) => {
       const ctx = TypedSheet.ctx({ fetch: await testFetchMySheet('ns:foo.mySheet') });
       const ns = await TypeClient.load({ ns: 'ns:foo', fetch: ctx.fetch, cache: ctx.cache });
-      const columns = ns.columns;
+      const columns = ns[0].columns;
       const row = TypedSheetRow.create<f.MyRow>({ uri, columns, ctx });
       return { row, ctx, ns };
     };
@@ -1106,7 +1106,7 @@ describe('TypedSheet', () => {
       expect(row.status).to.eql('INIT');
       expect(row.isReady).to.eql(false);
 
-      expect(row.types.list).to.eql(ns.columns);
+      expect(row.types.list).to.eql(ns[0].columns);
       expect(row.types.map.title.column).to.eql('A');
 
       expect(row.props.title).to.eql('Untitled'); // Default value.
@@ -1138,7 +1138,7 @@ describe('TypedSheet', () => {
     it('load (static)', async () => {
       const { ns, ctx } = await testRow('cell:foo:1');
       const uri = 'cell:foo:1';
-      const columns = ns.columns;
+      const columns = ns[0].columns;
       const row = await TypedSheetRow.load<f.MyRow>({ uri, columns, ctx });
 
       expect(row.props.title).to.eql('One');
