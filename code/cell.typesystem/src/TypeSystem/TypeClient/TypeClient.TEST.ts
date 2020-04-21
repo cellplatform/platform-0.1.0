@@ -81,14 +81,18 @@ describe('TypeClient', () => {
 
       const fetch = testFetch({ defs });
       const def = await TypeClient.load({ ns: 'foo', fetch });
-      expect(def.errors.length).to.eql(2);
+      const errors = def.errors;
+
+      expect(errors.length).to.eql(3);
 
       expect(def.ok).to.eql(false);
-      expect(def.errors[0].message).to.include(`The namespace "ns:foo.color" does not exist.`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
+      expect(errors[0].message).to.include(`The namespace "ns:foo.color" does not exist.`);
+      expect(errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
 
-      expect(def.errors[1].message).to.include(`Failed to load the referenced type in column 'C'`);
-      expect(def.errors[1].type).to.eql(ERROR.TYPE.REF);
+      expect(errors[1].message).to.include(`Failed to load the referenced type in column 'C'`);
+      expect(errors[1].type).to.eql(ERROR.TYPE.REF);
+
+      expect(errors[2].type).to.eql(ERROR.TYPE.UNKNOWN);
     });
 
     it('error: duplicate property names', async () => {
@@ -192,8 +196,8 @@ describe('TypeClient', () => {
       const error1 = def.errors[0];
       const error2 = def.errors[1];
 
-      expect(error1.type).to.eql('TYPE/unknown');
-      expect(error2.type).to.eql('TYPE/unknown');
+      expect(error1.type).to.eql(ERROR.TYPE.UNKNOWN);
+      expect(error2.type).to.eql(ERROR.TYPE.UNKNOWN);
 
       expect(error1.message).to.contain('unknown type ("FAIL-1")');
       expect(error2.message).to.contain('unknown type ("FAIL-2")');
@@ -260,25 +264,24 @@ describe('TypeClient', () => {
       const errors = def.errors;
 
       expect(def.ok).to.eql(false);
-      expect(errors.length).to.eql(3);
-      const err1 = errors[0];
-      const err2 = errors[1];
-      const err3 = errors[2];
+      expect(errors.length).to.eql(5);
 
-      expect(err1.ns).to.eql('ns:foo.1');
-      expect(err1.type).to.eql(ERROR.TYPE.REF_CIRCULAR);
-      expect(err1.message).to.include(
-        `The namespace "ns:foo.1" leads back to itself (circular reference).`,
-      );
-      expect(err1.message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
+      expect(errors[0].ns).to.eql('ns:foo.1');
+      expect(errors[0].type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(errors[0].message).to.include(`The namespace "ns:foo.1" leads back to itself`);
+      expect(errors[0].message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
 
-      expect(err2.ns).to.eql('ns:foo.2');
-      expect(err2.column).to.eql('Z');
-      expect(err2.type).to.eql('TYPE/ref');
+      expect(errors[1].ns).to.eql('ns:foo.2');
+      expect(errors[1].column).to.eql('Z');
+      expect(errors[1].type).to.eql(ERROR.TYPE.REF);
 
-      expect(err3.ns).to.eql('ns:foo.1');
-      expect(err3.column).to.eql('A');
-      expect(err3.type).to.eql('TYPE/ref');
+      expect(errors[2].type).to.eql(ERROR.TYPE.UNKNOWN);
+
+      expect(errors[3].ns).to.eql('ns:foo.1');
+      expect(errors[3].column).to.eql('A');
+      expect(errors[3].type).to.eql(ERROR.TYPE.REF);
+
+      expect(errors[4].type).to.eql(ERROR.TYPE.UNKNOWN);
     });
 
     it('error: circular-reference - REF(column) => REF(ns)', async () => {
@@ -301,25 +304,24 @@ describe('TypeClient', () => {
       const errors = def.errors;
 
       expect(def.ok).to.eql(false);
-      expect(errors.length).to.eql(3);
-      const err1 = errors[0];
-      const err2 = errors[1];
-      const err3 = errors[2];
+      expect(errors.length).to.eql(5);
 
-      expect(err1.ns).to.eql('ns:foo.1');
-      expect(err1.type).to.eql(ERROR.TYPE.REF_CIRCULAR);
-      expect(err1.message).to.include(
-        `The namespace "ns:foo.1" leads back to itself (circular reference).`,
-      );
-      expect(err1.message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
+      expect(errors[0].ns).to.eql('ns:foo.1');
+      expect(errors[0].type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(errors[0].message).to.include(`The namespace "ns:foo.1" leads back to itself`);
+      expect(errors[0].message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
 
-      expect(err2.ns).to.eql('ns:foo.2');
-      expect(err2.column).to.eql('Z');
-      expect(err2.type).to.eql('TYPE/ref');
+      expect(errors[1].ns).to.eql('ns:foo.2');
+      expect(errors[1].column).to.eql('Z');
+      expect(errors[1].type).to.eql(ERROR.TYPE.REF);
 
-      expect(err3.ns).to.eql('ns:foo.1');
-      expect(err3.column).to.eql('A');
-      expect(err3.type).to.eql('TYPE/ref');
+      expect(errors[2].type).to.eql(ERROR.TYPE.UNKNOWN);
+
+      expect(errors[3].ns).to.eql('ns:foo.1');
+      expect(errors[3].column).to.eql('A');
+      expect(errors[3].type).to.eql(ERROR.TYPE.REF);
+
+      expect(errors[4].type).to.eql(ERROR.TYPE.UNKNOWN);
     });
 
     it('error: circular-reference - REF(column) => REF(column)', async () => {
@@ -342,10 +344,12 @@ describe('TypeClient', () => {
       const errors = def.errors;
 
       expect(def.ok).to.eql(false);
-      expect(errors.length).to.eql(3);
+      expect(errors.length).to.eql(5);
       const err1 = errors[0];
       const err2 = errors[1];
       const err3 = errors[2];
+      const err4 = errors[3];
+      const err5 = errors[4];
 
       expect(err1.ns).to.eql('ns:foo.1');
       expect(err1.type).to.eql(ERROR.TYPE.REF_CIRCULAR);
@@ -356,11 +360,15 @@ describe('TypeClient', () => {
 
       expect(err2.ns).to.eql('ns:foo.2');
       expect(err2.column).to.eql('Z');
-      expect(err2.type).to.eql('TYPE/ref');
+      expect(err2.type).to.eql(ERROR.TYPE.REF);
 
-      expect(err3.ns).to.eql('ns:foo.1');
-      expect(err3.column).to.eql('A');
-      expect(err3.type).to.eql('TYPE/ref');
+      expect(err3.type).to.eql(ERROR.TYPE.UNKNOWN);
+
+      expect(err4.ns).to.eql('ns:foo.1');
+      expect(err4.column).to.eql('A');
+      expect(err4.type).to.eql(ERROR.TYPE.REF);
+
+      expect(err5.type).to.eql(ERROR.TYPE.UNKNOWN);
     });
 
     it('error: circular-reference - nested UNION (ns)', async () => {
@@ -383,15 +391,17 @@ describe('TypeClient', () => {
       const errors = def.errors;
 
       expect(def.ok).to.eql(false);
-      expect(errors.length).to.eql(3);
-      const err1 = errors[0];
+      expect(errors.length).to.eql(4);
 
-      expect(err1.ns).to.eql('ns:foo.1');
-      expect(err1.type).to.eql(ERROR.TYPE.REF_CIRCULAR);
-      expect(err1.message).to.include(
-        `The namespace "ns:foo.1" leads back to itself (circular reference).`,
-      );
-      expect(err1.message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
+      expect(errors[0].ns).to.eql('ns:foo.1');
+      expect(errors[0].type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(errors[0].message).to.include(`The namespace "ns:foo.1" leads back to itself`);
+      expect(errors[0].message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
+
+      expect(errors[0].type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(errors[1].type).to.eql(ERROR.TYPE.REF);
+      expect(errors[2].type).to.eql(ERROR.TYPE.REF);
+      expect(errors[3].type).to.eql(ERROR.TYPE.UNKNOWN);
     });
 
     it('error: circular-reference - nested UNION (column)', async () => {
@@ -414,15 +424,17 @@ describe('TypeClient', () => {
       const errors = def.errors;
 
       expect(def.ok).to.eql(false);
-      expect(errors.length).to.eql(3);
+      expect(errors.length).to.eql(4);
       const err1 = errors[0];
 
       expect(err1.ns).to.eql('ns:foo.1');
-      expect(err1.type).to.eql(ERROR.TYPE.REF_CIRCULAR);
-      expect(err1.message).to.include(
-        `The namespace "ns:foo.1" leads back to itself (circular reference).`,
-      );
+      expect(err1.message).to.include(`The namespace "ns:foo.1" leads back to itself`);
       expect(err1.message).to.include(`Sequence: ns:foo.1 ➔ ns:foo.2 ➔ ns:foo.1`);
+
+      expect(errors[0].type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(errors[1].type).to.eql(ERROR.TYPE.REF);
+      expect(errors[2].type).to.eql(ERROR.TYPE.REF);
+      expect(errors[3].type).to.eql(ERROR.TYPE.UNKNOWN);
     });
   });
 
