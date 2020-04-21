@@ -10,7 +10,7 @@ import * as d from '../../test/.d.ts/foo.defaults';
 import * as m from '../../test/.d.ts/foo.messages';
 import * as p from '../../test/.d.ts/foo.primitives';
 import { TypeClient } from '../TypeClient';
-import { TypedSheetCursor } from './TypedSheetCursor';
+import { TypedSheetData } from './TypedSheetData';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 import { TypedSheetRow } from './TypedSheetRow';
@@ -68,14 +68,14 @@ describe('TypedSheet', () => {
     it('create: default (unloaded)', async () => {
       const { sheet } = await testSheet();
       const cursor = sheet.cursor();
-      expect(cursor.range).to.eql(TypedSheetCursor.DEFAULT.RANGE);
+      expect(cursor.range).to.eql(TypedSheetData.DEFAULT.RANGE);
       expect(cursor.status).to.eql('INIT');
       expect(cursor.total).to.eql(-1);
     });
 
     it('create: custom range (auto correct)', async () => {
       const { sheet } = await testSheet();
-      const DEFAULT = TypedSheetCursor.DEFAULT;
+      const DEFAULT = TypedSheetData.DEFAULT;
 
       const test = (range: string, expected?: string) => {
         const res = sheet.cursor(range);
@@ -174,7 +174,7 @@ describe('TypedSheet', () => {
       const cursor = sheet.cursor();
 
       expect(cursor.isReady).to.eql(false);
-      expect(cursor.range).to.eql(TypedSheetCursor.DEFAULT.RANGE);
+      expect(cursor.range).to.eql(TypedSheetData.DEFAULT.RANGE);
 
       await cursor.load('3:15');
       expect(cursor.isReady).to.eql(true);
@@ -786,9 +786,9 @@ describe('TypedSheet', () => {
           expect(cursor3.status).to.eql('LOADED');
           expect(cursor4.status).to.eql('LOADED');
 
-          expect(cursor1.range).to.eql(TypedSheetCursor.DEFAULT.RANGE);
+          expect(cursor1.range).to.eql(TypedSheetData.DEFAULT.RANGE);
           expect(cursor2.range).to.eql('1:10');
-          expect(cursor3.range).to.eql(TypedSheetCursor.DEFAULT.RANGE);
+          expect(cursor3.range).to.eql(TypedSheetData.DEFAULT.RANGE);
           expect(cursor4.range).to.eql('1:5');
         });
 

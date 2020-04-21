@@ -3,7 +3,7 @@ import { share, takeUntil } from 'rxjs/operators';
 
 import { TypeClient } from '../TypeClient';
 import { ERROR, ErrorList, MemoryCache, t, Uri, util } from './common';
-import { TypedSheetCursor } from './TypedSheetCursor';
+import { TypedSheetData } from './TypedSheetData';
 import { TypedSheetState } from './TypedSheetState';
 
 const fromClient = (client: t.IHttpClient) => {
@@ -193,7 +193,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     const ns = this.uri;
     const ctx = this.ctx;
     const types = this.types;
-    return TypedSheetCursor.create<T>({ ns, types, ctx, range });
+    return TypedSheetData.create<T>({ ns, types, ctx, range });
   }
 
   /**

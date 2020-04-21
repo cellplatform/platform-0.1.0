@@ -1,5 +1,3 @@
-import { Subject } from 'rxjs';
-
 import { coord, t, Uri, util } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
 
@@ -13,11 +11,12 @@ type IArgs = {
 type ILoading<T> = { query: string; promise: Promise<t.ITypedSheetCursor<T>> };
 
 /**
- * A cursor for iterating over a set of sheet rows
+ * An exanding data-cursor for iterating over a set of rows
+ * within a sheet for a particular type.
  */
-export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
+export class TypedSheetData<T> implements t.ITypedSheetCursor<T> {
   public static create = <T>(args: IArgs): t.ITypedSheetCursor<T> => {
-    return new TypedSheetCursor<T>(args);
+    return new TypedSheetData<T>(args);
   };
 
   public static DEFAULT = {
@@ -27,7 +26,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
 
   public static formatRange(input?: string) {
     const text = (input || '').trim();
-    const DEFAULT = TypedSheetCursor.DEFAULT;
+    const DEFAULT = TypedSheetData.DEFAULT;
     if (!text) {
       return DEFAULT.RANGE;
     }
@@ -69,7 +68,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     this.uri = util.formatNsUri(args.ns);
     this.types = args.types;
     this.ctx = args.ctx;
-    this._range = TypedSheetCursor.formatRange(args.range);
+    this._range = TypedSheetData.formatRange(args.range);
   }
 
   /**
@@ -140,7 +139,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     // Wrangle the given argument range.
     let argRange = typeof args === 'string' ? args : args?.range;
     if (argRange) {
-      argRange = TypedSheetCursor.formatRange(argRange);
+      argRange = TypedSheetData.formatRange(argRange);
       if (!isLoaded) {
         // NB: Replace if this is the first load.
         this._range = argRange;
