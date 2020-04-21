@@ -16,15 +16,7 @@ export const TYPE_DEFS: SampleTypeDefs = {
   'ns:foo': {
     ns: { type: { typename: 'MyRow' } },
     columns: {
-      A: {
-        props: {
-          prop: {
-            name: 'title',
-            type: 'string',
-            default: 'Untitled',
-          },
-        },
-      },
+      A: { props: { prop: { name: 'title', type: 'string', default: 'Untitled' } } },
       B: {
         props: { prop: { name: 'isEnabled', type: 'boolean | null', target: 'inline:isEnabled' } },
       },
