@@ -127,11 +127,6 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return this._rows[index];
   }
 
-  public async ready() {
-    await this.load();
-    return this;
-  }
-
   public async load(args?: string | t.ITypedSheetDataLoad): Promise<t.ITypedSheetData<T>> {
     const isLoaded = this.isLoaded;
     const ns = this.uri.toString();

@@ -777,8 +777,7 @@ describe('TypedSheet', () => {
           expect(messages.ns.toString()).to.eql(messages.sheet.uri.toString());
           expect(messages.sheet.types.map(def => def.prop)).to.eql(['date', 'user', 'message']);
 
-          const childCursor = messages.sheet.data('1:10');
-          await childCursor.ready();
+          const childCursor = await messages.sheet.data('1:10').load();
 
           const childRow = childCursor.row(0);
           const childRowProps = childRow.props;

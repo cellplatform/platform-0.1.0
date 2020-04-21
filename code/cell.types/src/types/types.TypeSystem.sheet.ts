@@ -25,7 +25,6 @@ export type ITypedSheetData<T> = {
   readonly isLoaded: boolean;
   exists(index: number): boolean;
   row(index: number): ITypedSheetRow<T>;
-  ready(): Promise<ITypedSheetData<T>>;
   load(options?: string | ITypedSheetDataLoad): Promise<ITypedSheetData<T>>;
 };
 
