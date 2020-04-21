@@ -10,7 +10,7 @@ export type ITypedSheet<T> = {
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   dispose(): void;
-  cursor(range?: string): ITypedSheetData<T>;
+  data(range?: string): ITypedSheetData<T>;
 };
 
 /**

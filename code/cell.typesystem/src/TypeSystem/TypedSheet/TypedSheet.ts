@@ -188,7 +188,7 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    * [Methods]
    */
 
-  public cursor(range?: string) {
+  public data(range?: string) {
     this.throwIfDisposed('cursor');
     const ns = this.uri;
     const ctx = this.ctx;

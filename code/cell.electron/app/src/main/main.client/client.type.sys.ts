@@ -26,7 +26,7 @@ export async function getOrCreateSys(host: string) {
   const sheet = await type.sheet<t.CellApp>(NS.APP);
   sync.saveMonitor({ http, state: sheet.state, flush$ });
 
-  const app = sheet.cursor().row(0);
+  const app = sheet.data().row(0);
   await app.ready();
 
   // Retrieve windows.

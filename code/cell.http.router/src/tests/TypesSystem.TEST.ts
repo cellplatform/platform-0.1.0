@@ -111,7 +111,7 @@ describe('TypeSystem ➔ HTTP', () => {
       const ns = 'ns:foo.mySheet';
       const sheet = await TypeSystem.Sheet.client(mock.client).load<g.MyRow>(ns);
 
-      const cursor = await sheet.cursor().load();
+      const cursor = await sheet.data().load();
       await mock.dispose();
 
       expect(requests.some(url => url === '/ns:foo')).to.eql(true);
@@ -151,7 +151,7 @@ describe('TypeSystem ➔ HTTP', () => {
       expect(typesystem.http).to.eql(mock.client);
 
       const sheet = await typesystem.sheet<g.MyRow>(ns);
-      const cursor = await sheet.cursor().load();
+      const cursor = await sheet.data().load();
       const row = cursor.row(0).props;
 
       await mock.dispose();

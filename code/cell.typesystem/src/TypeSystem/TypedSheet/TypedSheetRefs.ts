@@ -111,7 +111,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     }
     type O = { range?: string };
     const args: O = typeof options === 'string' ? { range: options } : options || {};
-    const cursor = this.sheet.cursor(args.range);
+    const cursor = this.sheet.data(args.range);
     await cursor.load();
     return cursor;
   }
