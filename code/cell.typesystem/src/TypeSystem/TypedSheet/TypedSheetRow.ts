@@ -136,11 +136,6 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * Methods
    */
 
-  public async ready() {
-    await this.load();
-    return this;
-  }
-
   public async load(
     options: { props?: (keyof T)[]; force?: boolean } = {},
   ): Promise<t.ITypedSheetRow<T>> {

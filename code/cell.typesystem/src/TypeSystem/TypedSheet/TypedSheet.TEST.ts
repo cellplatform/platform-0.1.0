@@ -446,34 +446,12 @@ describe('TypedSheet', () => {
         expect(fired.length).to.eql(6);
       });
 
-      it('await row.ready()', async () => {
-        const { sheet } = await testSheet();
-        const cursor = sheet.data();
-        const row = cursor.row(0);
-
-        const fired: t.TypedSheetEvent[] = [];
-        sheet.events$
-          .pipe(filter(e => e.type === 'SHEET/row/loading' || e.type === 'SHEET/row/loaded'))
-          .subscribe(e => fired.push(e));
-
-        await Promise.all([
-          row.ready(),
-          row.ready(),
-          row.ready(),
-          row.ready(),
-          row.ready(),
-          row.ready(),
-        ]);
-
-        expect(fired.length).to.eql(2);
-      });
-
       it('fires on row property set (only when changed)', async () => {
         const { sheet } = await testSheet();
         const cursor = sheet.data();
         const row = cursor.row(0);
 
-        await row.ready();
+        await row.load();
 
         const fired: t.TypedSheetEvent[] = [];
         sheet.events$.subscribe(e => fired.push(e));
@@ -783,7 +761,7 @@ describe('TypedSheet', () => {
           const messages = row.props.messages;
           expect(messages).to.be.an.instanceof(TypedSheetRefs);
           expect(row.props.messages).to.equal(messages); // NB: Cached instance.
-          expect(messages.isLoaded).to.eql(false);
+          expect(messages.isReady).to.eql(false);
 
           const type = messages.typeDef.type;
           expect(type.kind).to.eql('REF');
@@ -794,7 +772,7 @@ describe('TypedSheet', () => {
           }
 
           await messages.ready();
-          expect(messages.isLoaded).to.eql(true);
+          expect(messages.isReady).to.eql(true);
           expect(messages.sheet).to.be.an.instanceof(TypedSheet);
           expect(messages.ns.toString()).to.eql(messages.sheet.uri.toString());
           expect(messages.sheet.types.map(def => def.prop)).to.eql(['date', 'user', 'message']);
@@ -823,7 +801,7 @@ describe('TypedSheet', () => {
           const { sheet } = await testSheet();
           const row = (await sheet.data().load()).row(0).props;
           const fn = () => row.messages.sheet;
-          expect(fn).to.throw(/called before \[isLoaded\]/);
+          expect(fn).to.throw(/called before \[isReady\]/);
         });
 
         it('ready called only once', async () => {
@@ -831,7 +809,7 @@ describe('TypedSheet', () => {
           const row = (await sheet.data().load()).row(0).props;
           const messages = row.messages;
           await Promise.all([messages.ready(), messages.ready(), messages.ready()]);
-          expect(messages.isLoaded).to.eql(true);
+          expect(messages.isReady).to.eql(true);
         });
 
         it('has placeholder URI prior to being [ready]', async () => {
@@ -839,7 +817,7 @@ describe('TypedSheet', () => {
           const cursor = await sheet.data().load();
           const messages = cursor.row(0).props.messages;
 
-          expect(messages.isLoaded).to.eql(false);
+          expect(messages.isReady).to.eql(false);
           expect(messages.ns.toString()).to.eql(TypedSheetRefs.PLACEHOLDER);
           await messages.ready();
           expect(messages.ns.toString()).to.not.eql(TypedSheetRefs.PLACEHOLDER);

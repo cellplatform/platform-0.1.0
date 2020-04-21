@@ -41,7 +41,6 @@ export type ITypedSheetRow<T> = {
   readonly types: ITypedSheetRowTypes<T>;
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
   readonly isLoaded: boolean;
-  ready(): Promise<ITypedSheetRow<T>>;
   load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
   toObject(): T;
 };
@@ -60,10 +59,9 @@ export type ITypedSheetRefs<T> = {
   ns: t.INsUri;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   sheet: t.ITypedSheet<T>;
-  isLoaded: boolean;
+  isReady: boolean;
   ready(): Promise<ITypedSheetRefs<T>>;
   data(options?: string | { range?: string }): Promise<ITypedSheetData<T>>;
-  // TODO 🐷 cursor => "load"
 };
 
 /**
