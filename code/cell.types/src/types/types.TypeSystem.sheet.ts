@@ -10,13 +10,13 @@ export type ITypedSheet<T> = {
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   dispose(): void;
-  cursor(range?: string): ITypedSheetCursor<T>;
+  cursor(range?: string): ITypedSheetData<T>;
 };
 
 /**
  * A cursor into a subset of sheet data.
  */
-export type ITypedSheetCursor<T> = {
+export type ITypedSheetData<T> = {
   readonly uri: t.INsUri;
   readonly rows: ITypedSheetRow<T>[];
   readonly range: string;
@@ -25,11 +25,11 @@ export type ITypedSheetCursor<T> = {
   readonly isReady: boolean;
   exists(index: number): boolean;
   row(index: number): ITypedSheetRow<T>;
-  ready(): Promise<ITypedSheetCursor<T>>;
-  load(args?: string | ITypedSheetCursorLoad): Promise<ITypedSheetCursor<T>>;
+  ready(): Promise<ITypedSheetData<T>>;
+  load(options?: string | ITypedSheetDataLoad): Promise<ITypedSheetData<T>>;
 };
 
-export type ITypedSheetCursorLoad = { range?: string };
+export type ITypedSheetDataLoad = { range?: string };
 
 /**
  * A single row within a sheet.
@@ -62,7 +62,7 @@ export type ITypedSheetRefs<T> = {
   sheet: t.ITypedSheet<T>;
   isReady: boolean;
   ready(): Promise<ITypedSheetRefs<T>>;
-  cursor(options?: string | { range?: string }): Promise<ITypedSheetCursor<T>>;
+  cursor(options?: string | { range?: string }): Promise<ITypedSheetData<T>>;
 };
 
 /**

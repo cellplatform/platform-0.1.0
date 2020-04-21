@@ -8,14 +8,14 @@ type IArgs = {
   range?: string;
 };
 
-type ILoading<T> = { query: string; promise: Promise<t.ITypedSheetCursor<T>> };
+type ILoading<T> = { query: string; promise: Promise<t.ITypedSheetData<T>> };
 
 /**
  * An exanding data-cursor for iterating over a set of rows
  * within a sheet for a particular type.
  */
-export class TypedSheetData<T> implements t.ITypedSheetCursor<T> {
-  public static create = <T>(args: IArgs): t.ITypedSheetCursor<T> => {
+export class TypedSheetData<T> implements t.ITypedSheetData<T> {
+  public static create = <T>(args: IArgs): t.ITypedSheetData<T> => {
     return new TypedSheetData<T>(args);
   };
 
@@ -78,7 +78,7 @@ export class TypedSheetData<T> implements t.ITypedSheetCursor<T> {
   private readonly types: t.IColumnTypeDef[];
   private _rows: t.ITypedSheetRow<T>[] = [];
   private _range: string;
-  private _status: t.ITypedSheetCursor<T>['status'] = 'INIT';
+  private _status: t.ITypedSheetData<T>['status'] = 'INIT';
   private _total = -1;
   private _loading: ILoading<T>[] = [];
   private _isReady = false;
@@ -132,7 +132,7 @@ export class TypedSheetData<T> implements t.ITypedSheetCursor<T> {
     return this;
   }
 
-  public async load(args?: string | t.ITypedSheetCursorLoad): Promise<t.ITypedSheetCursor<T>> {
+  public async load(args?: string | t.ITypedSheetDataLoad): Promise<t.ITypedSheetData<T>> {
     const isLoaded = this.isReady;
     const ns = this.uri.toString();
 
@@ -156,7 +156,7 @@ export class TypedSheetData<T> implements t.ITypedSheetCursor<T> {
       return alreadyLoading.promise; // NB: A load operation is already in progress.
     }
 
-    const promise = new Promise<t.ITypedSheetCursor<T>>(async (resolve, reject) => {
+    const promise = new Promise<t.ITypedSheetData<T>>(async (resolve, reject) => {
       this._status = 'LOADING';
 
       // Fire BEFORE event.
