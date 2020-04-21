@@ -6,7 +6,7 @@
  */
 module.exports = {
   packagerConfig: {
-    name: 'Cell',
+    name: 'Workbench',
     icon: './assets/icons/app/app.icns',
     ignore: path => ignore(path),
     prune: true,

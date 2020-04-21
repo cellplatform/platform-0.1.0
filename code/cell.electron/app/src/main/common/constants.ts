@@ -26,8 +26,10 @@ export const SYS = {
     APP: 'ns:sys.app',
     TYPE: {
       APP: 'ns:sys.app.type',
-      WINDOW: 'ns:sys.window.type',
-      WINDOW_DEF: 'ns:sys.windowDef.type',
+      WINDOW: {
+        DEF: 'ns:sys.windowDef.type',
+        INSTANCE: 'ns:sys.window.type',
+      },
     },
   },
 };

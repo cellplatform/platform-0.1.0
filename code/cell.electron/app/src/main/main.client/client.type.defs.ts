@@ -11,12 +11,14 @@ export const DEFS: TypeDefs = {
     columns: {
       A: { props: { prop: { name: 'title', type: 'string', default: 'CellOS' } } },
       B: {
-        props: { prop: { name: 'windowDefs', type: `${NS.TYPE.WINDOW_DEF}[]`, target: 'ref' } },
+        props: { prop: { name: 'windowDefs', type: `${NS.TYPE.WINDOW.DEF}[]`, target: 'ref' } },
       },
-      C: { props: { prop: { name: 'windows', type: `${NS.TYPE.WINDOW}[]`, target: 'ref' } } },
+      C: {
+        props: { prop: { name: 'windows', type: `${NS.TYPE.WINDOW.INSTANCE}[]`, target: 'ref' } },
+      },
     },
   },
-  [NS.TYPE.WINDOW_DEF]: {
+  [NS.TYPE.WINDOW.DEF]: {
     ns: { type: { typename: 'CellAppWindowDef' } },
     columns: {
       A: { props: { prop: { name: 'kind', type: 'string', default: '' } } },
@@ -24,7 +26,7 @@ export const DEFS: TypeDefs = {
       C: { props: { prop: { name: 'height', type: 'number', default: 800 } } },
     },
   },
-  [NS.TYPE.WINDOW]: {
+  [NS.TYPE.WINDOW.INSTANCE]: {
     ns: { type: { typename: 'CellAppWindow' } },
     columns: {
       A: { props: { prop: { name: 'id', type: 'string', default: '' } } },
@@ -40,6 +42,9 @@ export const DEFS: TypeDefs = {
 
 /**
  * Write the application types.
+ * See:
+ *      /src/types.g.ts
+ *
  */
 export async function writeTypeDefs(host: string, options: { save?: boolean } = {}) {
   const http = Client.http(host);
@@ -52,8 +57,8 @@ export async function writeTypeDefs(host: string, options: { save?: boolean } = 
   };
 
   await write(NS.TYPE.APP);
-  await write(NS.TYPE.WINDOW_DEF);
-  await write(NS.TYPE.WINDOW);
+  await write(NS.TYPE.WINDOW.DEF);
+  await write(NS.TYPE.WINDOW.INSTANCE);
 
   if (options.save) {
     const type = Client.type({ http });

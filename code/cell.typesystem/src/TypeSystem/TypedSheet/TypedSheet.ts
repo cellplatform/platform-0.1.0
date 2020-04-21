@@ -192,6 +192,10 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     return TypedSheetCursor.create<T>({ ns, types, ctx, range });
   }
 
+  public toString() {
+    return `[Sheet ${this.uri.toString()}]`;
+  }
+
   /**
    * [INTERNAL]
    */

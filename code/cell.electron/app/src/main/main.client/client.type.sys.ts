@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 
-import { Client, t, time, constants, Uri, fs } from '../common';
+import { Client, t, time, constants, Uri, fs, log } from '../common';
 import * as sync from './client.sync';
 import { upload } from './client.upload';
 
@@ -24,8 +24,15 @@ export async function getOrCreateSys(host: string) {
   // Load the app model.
   const type = Client.type({ http });
   const sheet = await type.sheet<t.CellApp>(NS.APP);
+  if (sheet.errors.length > 0) {
+    sheet.errors.forEach(err => log.error(`ERROR ${err.type}: ${err.message}`));
+    throw new Error(`Failed to load app. ${sheet.toString()} contains errors.`);
+  }
+
+  // Save monitor.
   sync.saveMonitor({ http, state: sheet.state, flush$ });
 
+  // Await for main application data to load.
   const app = sheet.cursor().row(0);
   await app.ready();
 
