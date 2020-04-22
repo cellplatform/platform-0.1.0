@@ -188,12 +188,16 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
    * [Methods]
    */
 
-  public data<D = T>(range?: string) {
-    this.throwIfDisposed('cursor');
+  public data<D = T>(input: string | t.ITypedSheetDataArgs) {
+    this.throwIfDisposed('data');
+
+    const args = typeof input === 'string' ? { typename: input } : input;
+    const { typename, range } = args;
     const ns = this.uri;
     const ctx = this.ctx;
     const types = this.types;
-    return TypedSheetData.create<D>({ ns, types, ctx, range });
+
+    return TypedSheetData.create<D>({ ns, typename, types, ctx, range });
   }
 
   /**

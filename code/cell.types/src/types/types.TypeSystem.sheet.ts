@@ -10,13 +10,17 @@ export type ITypedSheet<T = {}> = {
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   dispose(): void;
-  data<D = T>(range?: string): ITypedSheetData<D>;
+  data<D = T>(args: string | ITypedSheetDataArgs): ITypedSheetData<D>;
 };
+
+export type ITypedSheetDataOptions = { range?: string };
+export type ITypedSheetDataArgs = { typename: string } & ITypedSheetDataOptions;
 
 /**
  * A cursor into a subset of sheet data.
  */
 export type ITypedSheetData<T> = {
+  readonly typename: string;
   readonly uri: t.INsUri;
   readonly rows: ITypedSheetRow<T>[];
   readonly range: string;
@@ -25,15 +29,14 @@ export type ITypedSheetData<T> = {
   readonly isLoaded: boolean;
   exists(index: number): boolean;
   row(index: number): ITypedSheetRow<T>;
-  load(options?: string | ITypedSheetDataLoad): Promise<ITypedSheetData<T>>;
+  load(options?: string | ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
 };
-
-export type ITypedSheetDataLoad = { range?: string };
 
 /**
  * A single row within a sheet.
  */
 export type ITypedSheetRow<T> = {
+  readonly typename: string;
   readonly uri: t.IRowUri;
   readonly index: number;
   readonly props: ITypedSheetRowProps<T>;
@@ -48,6 +51,7 @@ export type ITypedSheetRow<T> = {
  * A connector for a reference-pointer to a single row in another sheet.
  */
 export type ITypedSheetRef<T> = {
+  typename: string;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
 };
 
@@ -55,20 +59,19 @@ export type ITypedSheetRef<T> = {
  * A connector for a reference-pointer to a set of rows in another sheet.
  */
 export type ITypedSheetRefs<T> = {
+  typename: string;
   ns: t.INsUri;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   sheet: t.ITypedSheet<T>;
   isReady: boolean;
   ready(): Promise<ITypedSheetRefs<T>>;
-  data(options?: string | { range?: string }): Promise<ITypedSheetData<T>>;
+  data(options?: ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
 };
 
 /**
  * The pure "strongly typed" READ/WRITE data-properties of the cells for a row.
  */
-export type ITypedSheetRowProps<T> = {
-  [K in keyof T]: T[K];
-};
+export type ITypedSheetRowProps<T> = { [K in keyof T]: T[K] };
 
 /**
  * The type definitions for the cells/columns in a row.

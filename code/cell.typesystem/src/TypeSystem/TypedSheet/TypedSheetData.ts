@@ -3,6 +3,7 @@ import { TypedSheetRow } from './TypedSheetRow';
 
 type IArgs = {
   ns: string | t.INsUri;
+  typename: string;
   types: t.IColumnTypeDef[];
   ctx: t.SheetCtx;
   range?: string;
@@ -66,6 +67,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
    */
   private constructor(args: IArgs) {
     this.uri = util.formatNsUri(args.ns);
+    this.typename = args.typename;
     this.types = args.types;
     this.ctx = args.ctx;
     this._range = TypedSheetData.formatRange(args.range);
@@ -84,6 +86,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   private _isLoaded = false;
 
   public readonly uri: t.INsUri;
+  public readonly typename: string;
 
   /**
    * [Properties]
@@ -127,7 +130,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return this._rows[index];
   }
 
-  public async load(args?: string | t.ITypedSheetDataLoad): Promise<t.ITypedSheetData<T>> {
+  public async load(args: string | t.ITypedSheetDataOptions): Promise<t.ITypedSheetData<T>> {
     const isLoaded = this.isLoaded;
     const ns = this.uri.toString();
 
@@ -214,7 +217,8 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     const uri = Uri.create.row(this.uri.toString(), (index + 1).toString());
     const columns = this.types;
     const ctx = this.ctx;
-    return TypedSheetRow.create<T>({ uri, columns, ctx });
+    const typename = this.typename;
+    return TypedSheetRow.create<T>({ typename, uri, columns, ctx });
   }
 }
 

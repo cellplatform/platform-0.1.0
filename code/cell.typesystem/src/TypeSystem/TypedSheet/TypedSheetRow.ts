@@ -7,6 +7,7 @@ import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 
 type IArgs = {
+  typename: string;
   uri: string | t.IRowUri;
   columns: t.IColumnTypeDef[];
   ctx: t.SheetCtx;
@@ -38,6 +39,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    */
   private constructor(args: IArgs) {
     this.ctx = args.ctx;
+    this.typename = args.typename;
     this.uri = util.formatRowUri(args.uri);
     this._columns = args.columns;
     this.index = Number.parseInt(this.uri.key, 10) - 1;
@@ -82,6 +84,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private _loading: { [key: string]: Promise<t.ITypedSheetRow<T>> } = {};
 
   public readonly index: number;
+  public readonly typename: string;
   public readonly uri: t.IRowUri;
 
   /**
@@ -351,9 +354,10 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     const { link } = TypedSheetRefs.refLink({ typeDef, links });
     const exists = Boolean(link);
     const parent = Uri.create.cell(this.uri.ns, `${typeDef.column}${this.index + 1}`);
+    const typename = this.typename;
     const ref = isArray
-      ? TypedSheetRefs.create({ parent, typeDef, ctx })
-      : TypedSheetRef.create({ typeDef, ctx });
+      ? TypedSheetRefs.create({ typename, typeDef, ctx, parent })
+      : TypedSheetRef.create({ typename, typeDef, ctx });
 
     return { ref, exists };
   }
