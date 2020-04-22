@@ -2,7 +2,7 @@ import { fs, testFetch, TYPE_DEFS } from '.';
 import { TypeClient } from '../TypeSystem/TypeClient';
 import { expect } from 'chai';
 
-describe('test', () => {
+describe.only('test', () => {
   describe('TypeSystem: generate sample typescript declaration files', () => {
     const dir = fs.join(__dirname, '../test/.d.ts');
 
@@ -10,9 +10,9 @@ describe('test', () => {
       ns = ns.trim().replace(/^ns\:/, '');
 
       const fetch = testFetch({ defs: TYPE_DEFS });
-      const def = await TypeClient.load({ ns, fetch });
+      const defs = (await TypeClient.load({ ns, fetch })).defs;
 
-      const ts = TypeClient.typescript(def[0]);
+      const ts = TypeClient.typescript(defs[0]);
       await ts.save(fs, dir, { filename: ns });
     };
 
