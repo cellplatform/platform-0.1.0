@@ -86,13 +86,12 @@ export function columns(args: { ns: string; columns: t.IColumnTypeDef[]; errors:
 
   // Ensure the prop names are valid.
   (() => {
-    columns.forEach(column => {
-      const error = TypeProp.parse(column.prop).error;
+    columns.forEach(({ prop, column }) => {
+      const error = TypeProp.parse(prop).error;
       if (error) {
-        const message = error.message;
-        errors.add(ns, message, {
-          column: column.column,
-          errorType: ERROR.TYPE.PROP,
+        errors.add(ns, error.message, {
+          column,
+          errorType: ERROR.TYPE.DEF_INVALID,
         });
       }
     });

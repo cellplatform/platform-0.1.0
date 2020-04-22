@@ -60,6 +60,8 @@ describe('TypedSheet', () => {
       expect(sheet.errors[0].message).to.include(`The namespace "ns:foo.notExist" does not exist`);
       expect(sheet.errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
     });
+
+    it.skip('error: `sheet.data(typename)` requested where typename not part of ns', async () => {});
   });
 
   describe('TypedSheetData (cursor)', () => {

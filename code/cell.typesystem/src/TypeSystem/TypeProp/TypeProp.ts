@@ -1,4 +1,5 @@
 import { t, ERROR } from '../../common';
+import { TypeScript } from '../TypeScript';
 
 type ParsedTypeProp = { type: string; prop: string; error?: t.IError };
 
@@ -18,39 +19,33 @@ export class TypeProp {
     // Format error.
     let message: string | undefined;
     const shouldBeFormat = 'Should be <Typename.propname>';
-    const shouldBeSyntax = 'Should be alpha-numeric and not start with a number.';
 
     if (!text) {
       message = `Value of 'prop' not provided for type.`;
     } else if (!prop) {
-      message = `Value of 'prop' does not contain a name. Given "${text}". ${shouldBeFormat}`;
+      message = `Value of 'prop' does not contain a name. ${shouldBeFormat} (given "${text}")`;
     } else if (!type) {
-      message = `Value of 'prop' does not contain a typename. Given "${text}". ${shouldBeFormat}`;
-    }
-    if (prop && prop.indexOf('.') > -1) {
-      message = `Value of 'prop' is too deep (ie. too many periods). Given "${text}". ${shouldBeFormat}`;
+      message = `Value of 'prop' does not contain a typename. ${shouldBeFormat} (given "${text}")`;
     }
 
     if (!message) {
-      if (prop && !isValid(prop)) {
-        message = `Value of 'prop' contains an invalid name. Given "${text}". ${shouldBeSyntax}`;
-      }
+      const res = TypeScript.validate.propname(prop);
+      message = res.error ? res.error : message;
+    }
 
-      if (type && !isValid(type)) {
-        message = `Value of 'prop' contains an invalid typename. Given "${text}". ${shouldBeSyntax}`;
-      }
+    if (!message) {
+      const res = TypeScript.validate.objectTypename(type);
+      message = res.error ? res.error : message;
+    }
+
+    if (!message && prop && prop.indexOf('.') > -1) {
+      message = `Value of 'prop' is too deep (ie. too many periods). ${shouldBeFormat} (given "${text}")`;
     }
 
     // Finish up.
-    const error: t.IError | undefined = message ? { message, type: ERROR.TYPE.PROP } : undefined;
+    const error: t.IError | undefined = message
+      ? { message, type: ERROR.TYPE.DEF_INVALID }
+      : undefined;
     return { type, prop, error };
   }
-}
-
-/**
- * [Helpers]
- */
-function isValid(text: string) {
-  const match = text.match(/^\D[\w\d]*/);
-  return match ? match[0].length === text.length : false;
 }

@@ -1,7 +1,7 @@
 import { expect, t, TYPE_DEFS, testFetch } from '../../test';
 import { TypeScript } from '.';
 import { TypeClient } from '../TypeClient';
-import { ERROR_TYPENAME } from './fn.validate';
+import { ERROR_TYPENAME, ERROR_PROPNAME } from './fn.validate';
 
 describe('TypeScript', () => {
   describe('TypeScript.primitives', () => {
@@ -254,6 +254,34 @@ describe('TypeScript', () => {
       test('Fo#o', 'Typename contains invalid characters');
       test('Fo!o', 'Typename contains invalid characters');
       test(' 1Foo', 'Typename starts with a number');
+    });
+
+    it('validate.propname', async () => {
+      const test = (propname: string | undefined, err?: string) => {
+        const res = TypeScript.validate.propname(propname);
+        const isValid = !err;
+        expect(res.isValid).to.eql(isValid);
+        expect(res.input).to.eql((propname || '').trim());
+        if (err) {
+          expect(res.error).to.include(err);
+          expect(res.error).to.include(ERROR_PROPNAME);
+        } else {
+          expect(res.error).to.eql(undefined);
+        }
+      };
+
+      // Valid.
+      test('foo');
+      test('Foo');
+      test(' foo ');
+
+      // Invalid.
+      test(undefined, 'Property-name is empty');
+      test('  ', 'Property-name is empty');
+      test('fo.o', 'Property-name contains invalid characters');
+      test('fo o', 'Property-name contains invalid characters');
+      test('fo#o', 'Property-name contains invalid characters');
+      test('Fo!o', 'Property-name contains invalid characters');
     });
   });
 

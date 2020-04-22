@@ -17,8 +17,8 @@ export class TypeValue {
     if (typeof input !== 'string') {
       return false;
     } else {
-      input = TypeValue.trimArray(input);
-      return Uri.is.ns(input) || Uri.is.column(input);
+      const text = (TypeValue.trimArray(input) || '').trim().split('/')[0];
+      return Uri.is.ns(text) || Uri.is.column(text);
     }
   }
 
@@ -211,10 +211,12 @@ export class TypeValue {
       //        and will require doing a lookup with an HTTP client to resolve
       //        the final typename/types defined in the remote "ns".
       //
-      const uri = TypeValue.trimArray(value);
       const is = Uri.is;
+      const parts = TypeValue.trimArray(value).split('/');
+      const uri = (parts[0] || '').trim();
+      const typename = (parts[1] || '').trim();
       const scope: t.ITypeRef['scope'] = is.ns(uri) ? 'NS' : is.column(uri) ? 'COLUMN' : 'UNKNOWN';
-      const type: t.ITypeRef = { kind: 'REF', uri, scope, typename: '', isArray, types: [] };
+      const type: t.ITypeRef = { kind: 'REF', uri, scope, typename, isArray, types: [] };
       return deleteUndefined(type);
     }
 

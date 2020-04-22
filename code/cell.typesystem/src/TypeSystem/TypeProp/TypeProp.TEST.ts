@@ -1,4 +1,4 @@
-import { expect, t } from '../../test';
+import { expect, t, ERROR } from '../../test';
 import { TypeProp } from '.';
 
 describe('TypeProp', () => {
@@ -20,7 +20,11 @@ describe('TypeProp', () => {
   describe('errors', () => {
     const test = (input: string, includes: string) => {
       const res = TypeProp.parse(input);
-      expect(res.error?.message).to.include(includes);
+      expect(res.error).to.not.eql(undefined);
+      if (res.error) {
+        expect(res.error.message).to.include(includes);
+        expect(res.error.type).to.eql(ERROR.TYPE.DEF_INVALID);
+      }
     };
 
     it('throw: no value', () => {
@@ -53,7 +57,7 @@ describe('TypeProp', () => {
     });
 
     it('throw: invalid typename', async () => {
-      const error = 'contains an invalid typename';
+      const error = 'Must be alpha-numeric and start with a capital-letter';
       test('F oo.bar', error);
       test('1Foo.bar', error);
       test(' 1Foo.bar', error);
@@ -61,8 +65,8 @@ describe('TypeProp', () => {
       test('F*oo.bar', error);
     });
 
-    it('throw: invalid prop-name', async () => {
-      const error = 'contains an invalid name';
+    it('throw: invalid property-name', async () => {
+      const error = 'Must be alpha-numeric and not start with a number';
       test('Foo.1bar', error);
       test('Foo.ba r', error);
       test('Foo.1', error);

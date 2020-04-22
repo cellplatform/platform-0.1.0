@@ -38,24 +38,24 @@ export const TYPE_DEFS: SampleTypeDefs = {
       },
       C: {
         props: {
-          def: { prop: 'MyRow.color?', type: 'ns:foo.color', target: 'inline:color' },
+          def: { prop: 'MyRow.color?', type: 'ns:foo.color/MyColor', target: 'inline:color' },
         },
       },
       D: {
         props: {
-          def: { prop: 'MyRow.message', type: 'ns:foo.message | null', target: 'ref' },
+          def: { prop: 'MyRow.message', type: 'ns:foo.message/MyMessage | null', target: 'ref' },
         },
       },
       E: {
         props: {
-          def: { prop: 'MyRow.messages', type: 'ns:foo.message[]', target: 'ref' },
+          def: { prop: 'MyRow.messages', type: 'ns:foo.message/MyMessage[]', target: 'ref' },
         },
       },
     },
   },
 
   'ns:foo.color': {
-    ns: { type: { typename: 'TMP 🐷' } },
+    ns: { type: { typename: 'TMP 🐷' } }, // TEMP 🐷
     columns: {
       A: { props: { def: { prop: 'MyColor.label', type: 'string' } } },
       B: { props: { def: { prop: 'MyColor.color', type: '"red" | "green" | "blue"' } } },
@@ -64,7 +64,7 @@ export const TYPE_DEFS: SampleTypeDefs = {
   },
 
   'ns:foo.primitives': {
-    ns: { type: { typename: 'TMP 🐷' } },
+    ns: { type: { typename: 'TMP 🐷' } }, // TEMP 🐷
     columns: {
       A: {
         props: {
@@ -108,7 +108,7 @@ export const TYPE_DEFS: SampleTypeDefs = {
   },
 
   'ns:foo.enum': {
-    ns: { type: { typename: 'TMP 🐷' } },
+    ns: { type: { typename: 'TMP 🐷' } }, // TEMP 🐷
     columns: {
       A: { props: { def: { prop: 'Enum.single?', type: '"hello"' } } },
       B: { props: { def: { prop: 'Enum.union', type: '"red" | "green" | "blue"[]' } } },
@@ -120,15 +120,19 @@ export const TYPE_DEFS: SampleTypeDefs = {
     ns: { type: { typename: 'TMP 🐷' } },
     columns: {
       A: { props: { def: { prop: 'MyMessages.channel', type: 'string' } } },
-      B: { props: { def: { prop: 'MyMessages.color?', type: 'ns:foo.color', target: 'ref' } } },
+      B: {
+        props: { def: { prop: 'MyMessages.color?', type: 'ns:foo.color/MyColor', target: 'ref' } },
+      },
       C: {
-        props: { def: { prop: 'MyMessages.messages', type: 'ns:foo.message[]', target: 'ref' } },
+        props: {
+          def: { prop: 'MyMessages.messages', type: 'ns:foo.message/MyMessage[]', target: 'ref' },
+        },
       },
     },
   },
 
   'ns:foo.message': {
-    ns: { type: { typename: 'TMP 🐷' } },
+    ns: { type: { typename: 'TMP 🐷' } }, // TEMP 🐷
     columns: {
       A: { props: { def: { prop: 'MyMessage.date', type: 'number', default: -1 } } },
       B: { props: { def: { prop: 'MyMessage.user', type: 'string', default: 'anon' } } },
@@ -137,21 +141,25 @@ export const TYPE_DEFS: SampleTypeDefs = {
   },
 
   'ns:foo.nested': {
-    ns: { type: { typename: 'TMP 🐷' } },
+    ns: { type: { typename: 'TMP 🐷' } }, // TEMP 🐷
     columns: {
       A: { props: { def: { prop: 'MyNested.one', type: '(string)' } } },
       B: { props: { def: { prop: 'MyNested.two', type: 'string | ("red" | boolean | "blue")' } } },
-      C: { props: { def: { prop: 'MyNested.three', type: 'boolean | (ns:foo.color | string)' } } },
+      C: {
+        props: {
+          def: { prop: 'MyNested.three', type: 'boolean | (ns:foo.color/MyColor | string)' },
+        },
+      },
     },
   },
 
   'ns:foo.defaults': {
-    ns: { type: { typename: 'MyDefaults' } },
+    ns: { type: { typename: '' } }, // TEMP 🐷
     columns: {
-      A: { props: { def: { prop: 'MyDefault.title', type: 'string', default: 'Untitled' } } },
+      A: { props: { def: { prop: 'MyDefaults.title', type: 'string', default: 'Untitled' } } },
       B: {
         props: {
-          def: { prop: 'MyDefault.foo', type: 'string', default: { ref: 'cell:foo.sample:A1' } },
+          def: { prop: 'MyDefaults.foo', type: 'string', default: { ref: 'cell:foo.sample:A1' } },
         },
       },
     },

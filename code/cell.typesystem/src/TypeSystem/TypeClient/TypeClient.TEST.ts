@@ -1,6 +1,14 @@
 import { TypeClient } from '.';
 import { t, TypeSystem, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../../test';
 
+/**
+ * TODO 🐷
+ * - multi-type support on single col ([def] array)
+ * - ref pointer: ns:foo/typename
+ * - remove typename from {ns:{type:{}}}
+ * - clear away: // TEMP 🐷
+ */
+
 describe.only('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
 
@@ -11,10 +19,12 @@ describe.only('TypeClient', () => {
 
   describe('load', () => {
     it('"ns:foo"', async () => {
-      const defs = await TypeClient.load({ ns: 'ns:foo', fetch });
-      expect(defs.length).to.eql(1);
+      const res = await TypeClient.load({ ns: 'ns:foo', fetch });
+      expect(res.ok).to.eql(true);
+      expect(res.errors).to.eql([]);
+      expect(res.defs.length).to.eql(1);
 
-      const def = defs[0];
+      const def = res.defs[0];
       expect(def.ok).to.eql(true);
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
@@ -23,7 +33,12 @@ describe.only('TypeClient', () => {
     });
 
     it('"foo" (without "ns:" prefix)', async () => {
-      const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
+      const res = await TypeClient.load({ ns: 'foo', fetch });
+      expect(res.ok).to.eql(true);
+      expect(res.errors).to.eql([]);
+      expect(res.defs.length).to.eql(1);
+
+      const def = res.defs[0];
       expect(def.ok).to.eql(true);
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
@@ -32,9 +47,12 @@ describe.only('TypeClient', () => {
     });
 
     it('"ns:foo.multi" (several return types)', async () => {
-      const defs = await TypeClient.load({ ns: 'ns:foo.multi', fetch });
-      expect(defs.length).to.eql(2);
+      const res = await TypeClient.load({ ns: 'ns:foo.multi', fetch });
+      expect(res.ok).to.eql(true);
+      expect(res.errors).to.eql([]);
+      expect(res.defs.length).to.eql(2);
 
+      const defs = res.defs;
       expect(defs[0].ok).to.eql(true);
       expect(defs[0].errors).to.eql([]);
       expect(defs[0].uri).to.eql('ns:foo.multi');
@@ -51,19 +69,21 @@ describe.only('TypeClient', () => {
 
   describe('errors', () => {
     it('error: malformed URI', async () => {
-      const def = (await TypeClient.load({ ns: 'ns:not-valid', fetch }))[0];
-      expect(def.ok).to.eql(false);
-      expect(def.errors.length).to.eql(1);
-      expect(def.errors[0].message).to.include(`invalid "ns" identifier`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.DEF);
+      const res = await TypeClient.load({ ns: 'ns:NOT-VALID', fetch });
+      expect(res.ok).to.eql(false);
+      expect(res.defs.length).to.eql(0);
+      expect(res.errors.length).to.eql(1);
+      expect(res.errors[0].message).to.include(`invalid "ns" identifier`);
+      expect(res.errors[0].type).to.eql(ERROR.TYPE.DEF);
     });
 
     it('error: not a "ns" uri', async () => {
-      const def = (await TypeClient.load({ ns: 'cell:foo:A1', fetch }))[0];
-      expect(def.ok).to.eql(false);
-      expect(def.errors.length).to.eql(1);
-      expect(def.errors[0].message).to.include(`Must be "ns"`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.DEF);
+      const res = await TypeClient.load({ ns: 'cell:foo:A1', fetch });
+      expect(res.ok).to.eql(false);
+      expect(res.defs.length).to.eql(0);
+      expect(res.errors.length).to.eql(1);
+      expect(res.errors[0].message).to.include(`Must be "ns"`);
+      expect(res.errors[0].type).to.eql(ERROR.TYPE.DEF);
     });
 
     it('error: failure while loading', async () => {
@@ -73,97 +93,153 @@ describe.only('TypeClient', () => {
           throw new Error('Derp!');
         },
       });
-      const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
-      expect(def.ok).to.eql(false);
-      expect(def.errors.length).to.eql(1);
-      expect(def.errors[0].message).to.include(`Failed while loading type for`);
-      expect(def.errors[0].message).to.include(`Derp!`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.DEF);
+      const res = await TypeClient.load({ ns: 'foo', fetch });
+      expect(res.ok).to.eql(false);
+      expect(res.defs.length).to.eql(0);
+      expect(res.errors.length).to.eql(1);
+      expect(res.errors[0].message).to.include(`Failed while loading type for`);
+      expect(res.errors[0].message).to.include(`Derp!`);
+      expect(res.errors[0].type).to.eql(ERROR.TYPE.DEF);
     });
 
     it('error: 404 type definition not found', async () => {
-      const def = (await TypeClient.load({ ns: 'foo.no.exist', fetch }))[0];
-      expect(def.ok).to.eql(false);
-      expect(def.errors[0].message).to.include(`does not exist`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
-      expect(def.errors.length).to.eql(1);
+      const res = await TypeClient.load({ ns: 'foo.no.exist', fetch });
+      expect(res.ok).to.eql(false);
+      expect(res.defs.length).to.eql(0);
+      expect(res.errors[0].message).to.include(`does not exist`);
+      expect(res.errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
+      expect(res.errors.length).to.eql(1);
     });
 
     it('error: 404 type definition in column reference not found', async () => {
       const defs = {
         'ns:foo': {
-          ns: { type: { typename: 'Foo' } },
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            C: { props: { def: { prop: 'color', type: 'ns:foo.color' } } },
+            C: { props: { def: { prop: 'Foo.color', type: 'ns:foo.color/Baz' } } },
           },
         },
       };
+      const res = await TypeClient.load({ ns: 'foo', fetch: testFetch({ defs }) });
 
-      const fetch = testFetch({ defs });
-      const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
-      expect(def.errors.length).to.eql(2);
+      expect(res.ok).to.eql(false);
+      expect(res.errors.length).to.eql(2);
+      expect(res.defs.length).to.eql(1);
 
-      expect(def.ok).to.eql(false);
-      expect(def.errors[0].message).to.include(`The namespace "ns:foo.color" does not exist.`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
+      expect(res.errors[0].message).to.include(`The namespace (ns:foo.color) does not exist`);
+      expect(res.errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
 
-      expect(def.errors[1].message).to.include(`Failed to load the referenced type in column 'C'`);
-      expect(def.errors[1].type).to.eql(ERROR.TYPE.REF);
+      expect(res.errors[1].message).to.include(`Failed to load referenced type in column 'C'`);
+      expect(res.errors[1].type).to.eql(ERROR.TYPE.REF);
+    });
+
+    it('error: ref has invalid property-name', async () => {
+      const defs = {
+        'ns:foo.1': {
+          ns: { type: {} }, // TEMP 🐷
+          columns: {
+            A: { props: { def: { prop: 'Foo1.a', type: 'ns:foo.2/Foo2' } } },
+          },
+        },
+        'ns:foo.2': {
+          ns: { type: {} }, // TEMP 🐷
+          columns: {
+            A: { props: { def: { prop: 'Foo2.1title', type: 'string' } } },
+          },
+        },
+      };
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const errors = res.errors;
+
+      expect(errors[0].message).to.include('Property-name starts with a number');
+      expect(errors[0].type).to.include(ERROR.TYPE.DEF_INVALID);
+
+      expect(errors[1].type).to.include(ERROR.TYPE.REF);
+      expect(errors[1].children && errors[1].children[0]).to.eql(errors[0]);
     });
 
     it('error: duplicate property names', async () => {
       const defs = {
         'ns:foo.error': {
-          ns: { type: { typename: 'Foo' } },
+          ns: { type: { typename: '' } }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'foo', type: 'string' } } },
-            B: { props: { def: { prop: 'isEnabled', type: 'string' } } },
-            C: { props: { def: { prop: 'foo', type: `'red'` } } },
-            D: { props: { def: { prop: 'Foo', type: 'boolean' } } },
+            A: { props: { def: { prop: 'Type.foo', type: 'string' } } },
+            B: { props: { def: { prop: 'Type.isEnabled', type: 'string' } } },
+            C: { props: { def: { prop: 'Type.foo', type: `'red'` } } },
+            D: { props: { def: { prop: 'Type.Foo', type: 'boolean' } } }, // NB: Not duplicate (case-sensitive).
+            E: { props: { def: { prop: 'Other.foo', type: `boolean` } } },
           },
         },
       };
-      const def = (await TypeClient.load({ ns: 'foo.error', fetch: testFetch({ defs }) }))[0];
-      const error = def.errors[0];
 
-      expect(def.errors.length).to.eql(1);
+      const res = await TypeClient.load({ ns: 'foo.error', fetch: testFetch({ defs }) });
+      const error = res.errors[0];
+
+      expect(res.defs.length).to.eql(2);
+      expect(res.errors.length).to.eql(1);
       expect(error.type).to.eql(ERROR.TYPE.DUPLICATE_PROP);
-      expect(error.message).to.include(`The property name 'foo' is duplicated in columns [A,C]`);
+      expect(error.message).to.include(
+        `The property name 'Type.foo' is duplicated in columns [A,C]`,
+      );
     });
 
-    it('error: duplicate object typename (on namespace)', async () => {
+    it('error: namespace reference does not include typename', async () => {
+      const defs = {
+        'ns:foo': {
+          ns: { type: {} }, // TEMP 🐷
+          columns: {
+            A: { props: { def: { prop: 'Foo1.title', type: 'cell:foo.2:A' } } },
+            B: { props: { def: { prop: 'Foo1.color', type: 'ns:foo.2' } } },
+          },
+        },
+      };
+      const res = await TypeClient.load({ ns: 'foo', fetch: testFetch({ defs }) });
+      const errors = res.errors;
+
+      expect(errors.length).to.eql(2);
+
+      expect(errors[0].type).to.eql(ERROR.TYPE.REF_TYPENAME);
+      expect(errors[0].column).to.eql('A');
+      expect(errors[0].message).to.include(`Should be <uri/typename>`);
+
+      expect(errors[1].type).to.eql(ERROR.TYPE.REF_TYPENAME);
+      expect(errors[1].column).to.eql('B');
+      expect(errors[1].message).to.include(`Should be <uri/typename>`);
+    });
+
+    it('error: duplicate typename (on namespace)', async () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: { typename: 'Foo' } }, // NB: same name.
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'thing', type: 'ns:foo.2' } } },
+            A: { props: { def: { prop: 'Foo.thing', type: 'ns:foo.2/Bar' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: { typename: 'Bar' } }, // NB: same name.
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'A', type: 'ns:foo.3' } } },
-            B: { props: { def: { prop: 'B', type: 'ns:foo.3' } } },
-            C: { props: { def: { prop: 'C', type: 'string' } } },
+            A: { props: { def: { prop: 'Bar.A', type: 'ns:foo.3/Bar' } } },
+            B: { props: { def: { prop: 'Bar.B', type: 'ns:foo.3/Bar' } } },
+            C: { props: { def: { prop: 'Bar.C', type: 'string' } } },
           },
         },
         'ns:foo.3': {
-          ns: { type: { typename: 'Bar' } }, // NB: same name.
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'count', type: 'number' } } },
-            B: { props: { def: { prop: 'myRef', type: 'ns:foo.4' } } },
+            A: { props: { def: { prop: 'Bar.count', type: 'number' } } },
+            B: { props: { def: { prop: 'Bar.myRef', type: 'ns:foo.4/Foo' } } },
           },
         },
         'ns:foo.4': {
-          ns: { type: { typename: 'Foo' } }, // NB: same name.
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'name', type: 'string' } } },
+            A: { props: { def: { prop: 'Foo.name', type: 'string' } } },
           },
         },
       };
 
-      const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
-      const error = def.errors[0];
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const error = res.errors[0];
 
       expect(error.type).to.eql(ERROR.TYPE.DUPLICATE_TYPENAME);
       expect(error.message).to.include(`Reference to a duplicate typename 'Foo'`);
@@ -173,15 +249,17 @@ describe.only('TypeClient', () => {
       const test = async (typename: string) => {
         const defs = {
           'ns:foo': {
-            ns: { type: { typename } },
-            columns: {},
+            ns: { type: { typename: 'TMP' } },
+            columns: {
+              A: { props: { def: { prop: `${typename}.title`, type: 'string' } } },
+            },
           },
         };
         const ns = 'ns:foo';
-        const def = (await TypeClient.load({ ns, fetch: testFetch({ defs }) }))[0];
-        const errors = def.errors;
+        const res = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+        const errors = res.errors;
 
-        expect(def.ok).to.eql(false);
+        expect(res.ok).to.eql(false);
         expect(errors[0].type).to.eql(ERROR.TYPE.DEF_INVALID);
         expect(errors[0].ns).to.eql(ns);
         expect(errors[0].message).to.include(`Must be alpha-numeric`);
@@ -189,72 +267,97 @@ describe.only('TypeClient', () => {
 
       await test('foo');
       await test('1foo');
-      await test('Foo.1');
-      await test('.Foo');
+      await test('Foo bar');
       await test('Foo-Bar');
+    });
+
+    it('error: propname invalid (eg "foo-1", "foo bar", "foo.bar")', async () => {
+      const test = async (propname: string) => {
+        const defs = {
+          'ns:foo': {
+            ns: { type: { typename: 'TMP' } },
+            columns: {
+              A: { props: { def: { prop: `Foo.${propname}`, type: 'string' } } },
+            },
+          },
+        };
+        const ns = 'ns:foo';
+        const res = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+        const errors = res.errors;
+
+        expect(res.ok).to.eql(false);
+        expect(errors[0].type).to.eql(ERROR.TYPE.DEF_INVALID);
+        expect(errors[0].ns).to.eql(ns);
+        expect(errors[0].message).to.include(`Must be alpha-numeric`);
+      };
+
+      await test('1foo');
+      await test('foo bar');
+      await test('foo-Bar');
+      await test('foo*Bar');
     });
 
     it('error: circular-reference (ns.implements self)', async () => {
       const defs = {
         'ns:foo': {
-          ns: { type: { typename: 'Foo', implements: 'ns:foo' } },
+          ns: { type: { implements: 'ns:foo' } },
           columns: {
-            A: { props: { def: { prop: 'A', type: 'string' } } },
+            A: { props: { def: { prop: 'Foo.A', type: 'string' } } },
           },
         },
       };
 
       const ns = 'ns:foo';
-      const def = (await TypeClient.load({ ns, fetch: testFetch({ defs }) }))[0];
+      const res = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
 
-      expect(def.ok).to.eql(false);
-      expect(def.errors.length).to.eql(1);
-      expect(def.errors[0].message).to.include(`cannot implement itself (circular-ref)`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(res.ok).to.eql(false);
+      expect(res.errors.length).to.eql(1);
+      expect(res.errors[0].message).to.include(`cannot implement itself (circular-ref)`);
+      expect(res.errors[0].type).to.eql(ERROR.TYPE.REF_CIRCULAR);
     });
 
     it('error: circular-reference (column, self)', async () => {
       const defs = {
         'ns:foo': {
-          ns: { type: { typename: 'One' } },
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'A', type: 'ns:foo' } } }, //     Not OK (self, ns)
-            B: { props: { def: { prop: 'B', type: 'cell:foo:A' } } }, // Not OK (a different column)
-            C: { props: { def: { prop: 'C', type: 'cell:foo:C' } } }, // Not OK (self, column)
+            A: { props: { def: { prop: 'Foo.A', type: 'ns:foo' } } }, //     Not OK (self, ns)
+            B: { props: { def: { prop: 'Foo.B', type: 'cell:foo:A' } } }, // Not OK (a different column)
+            C: { props: { def: { prop: 'Foo.C', type: 'cell:foo:C' } } }, // Not OK (self, column)
           },
         },
       };
 
       const ns = 'ns:foo';
-      const def = (await TypeClient.load({ ns, fetch: testFetch({ defs }) }))[0];
+      const res = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
 
-      expect(def.ok).to.eql(false);
-      expect(def.errors.length).to.eql(1);
-      expect(def.errors[0].message).to.include(`namespace (ns:foo) directly references itself`);
-      expect(def.errors[0].message).to.include(`in column [A,B,C] (circular-ref)`);
-      expect(def.errors[0].type).to.eql(ERROR.TYPE.REF_CIRCULAR);
+      expect(res.ok).to.eql(false);
+      expect(res.errors.length).to.eql(1);
+      expect(res.errors[0].message).to.include(`namespace (ns:foo) directly references itself`);
+      expect(res.errors[0].message).to.include(`in column [A,B,C] (circular-ref)`);
+      expect(res.errors[0].type).to.eql(ERROR.TYPE.REF_CIRCULAR);
     });
 
     it('error: circular-reference - REF(ns) => REF(ns)', async () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: { typename: 'One' } },
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'two', type: 'ns:foo.2' } } },
+            A: { props: { def: { prop: 'Foo1.prop', type: 'ns:foo.2/Foo2' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: { typename: 'Two' } },
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            Z: { props: { def: { prop: 'two', type: 'ns:foo.1' } } },
+            Z: { props: { def: { prop: 'Foo2.prop', type: 'ns:foo.1/Foo1' } } },
           },
         },
       };
       const ns = 'ns:foo.1';
-      const def = (await TypeClient.load({ ns, fetch: testFetch({ defs }) }))[0];
-      const errors = def.errors;
+      const res = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+      const errors = res.errors;
 
-      expect(def.ok).to.eql(false);
+      expect(res.ok).to.eql(false);
       expect(errors.length).to.eql(3);
       const err1 = errors[0];
       const err2 = errors[1];
@@ -279,23 +382,23 @@ describe.only('TypeClient', () => {
     it('error: circular-reference - REF(column) => REF(ns)', async () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: { typename: 'Foo1' } },
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'foo2', type: 'cell:foo.2:Z' } } },
+            A: { props: { def: { prop: 'Foo1.foo2', type: 'cell:foo.2:Z/Foo2' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: { typename: 'Foo2' } },
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            Z: { props: { def: { prop: 'foo1', type: 'ns:foo.1' } } },
+            Z: { props: { def: { prop: 'Foo2.foo1', type: 'ns:foo.1/Foo1' } } },
           },
         },
       };
 
-      const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
-      const errors = def.errors;
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const errors = res.errors;
 
-      expect(def.ok).to.eql(false);
+      expect(res.ok).to.eql(false);
       expect(errors.length).to.eql(3);
       const err1 = errors[0];
       const err2 = errors[1];
@@ -320,23 +423,23 @@ describe.only('TypeClient', () => {
     it('error: circular-reference - REF(column) => REF(column)', async () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: { typename: 'Foo1' } },
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'foo2', type: 'cell:foo.2:Z' } } },
+            A: { props: { def: { prop: 'Foo1.foo2', type: 'cell:foo.2:Z/Foo2' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: { typename: 'Foo2' } },
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            Z: { props: { def: { prop: 'foo1', type: 'cell:foo.1:A' } } },
+            Z: { props: { def: { prop: 'Foo2.foo1', type: 'cell:foo.1:A/Foo1' } } },
           },
         },
       };
 
-      const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
-      const errors = def.errors;
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const errors = res.errors;
 
-      expect(def.ok).to.eql(false);
+      expect(res.ok).to.eql(false);
       expect(errors.length).to.eql(3);
       const err1 = errors[0];
       const err2 = errors[1];
@@ -361,23 +464,25 @@ describe.only('TypeClient', () => {
     it('error: circular-reference - nested UNION (ns)', async () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: { typename: 'Foo1' } },
+          ns: { type: {} },
           columns: {
-            A: { props: { def: { prop: 'foo2', type: 'cell:foo.2:Z' } } },
+            A: { props: { def: { prop: 'Foo1.foo2', type: 'cell:foo.2:Z/Foo2' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: { typename: 'Foo2' } },
+          ns: { type: {} },
           columns: {
-            Z: { props: { def: { prop: 'foo1', type: 'boolean | (ns:foo.1 | string)' } } },
+            Z: {
+              props: { def: { prop: 'Foo2.foo1', type: 'boolean | (ns:foo.1/Foo1 | string)' } },
+            },
           },
         },
       };
 
-      const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
-      const errors = def.errors;
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const errors = res.errors;
 
-      expect(def.ok).to.eql(false);
+      expect(res.ok).to.eql(false);
       expect(errors.length).to.eql(3);
       const err1 = errors[0];
 
@@ -392,23 +497,25 @@ describe.only('TypeClient', () => {
     it('error: circular-reference - nested UNION (column)', async () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: { typename: 'Foo1' } },
+          ns: { type: {} },
           columns: {
-            A: { props: { def: { prop: 'foo2', type: 'cell:foo.2:Z' } } },
+            A: { props: { def: { prop: 'Foo1.foo2', type: 'cell:foo.2:Z/Foo2' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: { typename: 'Foo2' } },
+          ns: { type: {} },
           columns: {
-            Z: { props: { def: { prop: 'foo1', type: 'boolean | (cell:foo.1:A | string)' } } },
+            Z: {
+              props: { def: { prop: 'Foo2.foo1', type: 'boolean | (cell:foo.1:A/Foo1 | string)' } },
+            },
           },
         },
       };
 
-      const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
-      const errors = def.errors;
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const errors = res.errors;
 
-      expect(def.ok).to.eql(false);
+      expect(res.ok).to.eql(false);
       expect(errors.length).to.eql(3);
       const err1 = errors[0];
 
@@ -438,19 +545,22 @@ describe.only('TypeClient', () => {
         delete defs['ns:foo.1'].columns;
 
         const fetch = testFetch({ defs });
-        const def1 = (await TypeClient.load({ ns: 'foo.1', fetch }))[0];
-        const def2 = (await TypeClient.load({ ns: 'foo.2', fetch }))[0];
+        const res1 = await TypeClient.load({ ns: 'foo.1', fetch });
+        const res2 = await TypeClient.load({ ns: 'foo.2', fetch });
 
-        expect(def1.columns.length).to.eql(0);
-        expect(def2.columns.length).to.eql(0);
+        expect(res1.defs).to.eql([]);
+        expect(res2.defs).to.eql([]);
+
+        expect(res1.errors).to.eql([]);
+        expect(res2.errors).to.eql([]);
       });
 
       it('column with no "type" prop', async () => {
         const defs = {
           'ns:foo': {
-            ns: { type: { typename: 'Foo' } },
+            ns: { type: {} },
             columns: {
-              A: { props: { def: { prop: 'title', type: 'string' } } }, // NB: "type" field deleted below.
+              A: { props: { def: { prop: 'Foo.title', type: 'string' } } }, // NB: "type" field deleted below.
             },
           },
         };
@@ -461,7 +571,8 @@ describe.only('TypeClient', () => {
         expect(defs['ns:foo'].columns.A.props.def.type).to.eql(undefined);
 
         const fetch = testFetch({ defs });
-        const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
+        const res = await TypeClient.load({ ns: 'foo', fetch });
+        const def = res.defs[0];
 
         expect(def.columns.length).to.eql(1);
         expect(def.columns[0].type.kind).to.eql('UNKNOWN');
@@ -472,14 +583,14 @@ describe.only('TypeClient', () => {
     describe('VALUE (primitives)', () => {
       const test = async (column: string, typename: string, defaultValue?: any) => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const def = (await TypeClient.load({ ns: 'foo.primitives', fetch }))[0];
-        const res = def.columns.find(c => c.column === column);
-        expect(res).to.not.eql(undefined);
-        if (res) {
-          expect(res.type.kind).to.eql('VALUE');
-          expect(res.type.typename).to.eql(typename);
+        const res = await TypeClient.load({ ns: 'foo.primitives', fetch });
+        const match = res.defs[0].columns.find(c => c.column === column);
+        expect(match).to.not.eql(undefined);
+        if (match) {
+          expect(match.type.kind).to.eql('VALUE');
+          expect(match.type.typename).to.eql(typename);
           if (defaultValue) {
-            expect(res.default).to.eql({ value: defaultValue });
+            expect(match.default).to.eql({ value: defaultValue });
           }
         }
       };
@@ -500,7 +611,7 @@ describe.only('TypeClient', () => {
     describe('REF(ns) - object', () => {
       it('REF object-type, n-level deep ("ns:xxx")', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
 
         const A = def.columns[0];
         const B = def.columns[1];
@@ -535,7 +646,7 @@ describe.only('TypeClient', () => {
 
       it('REF optional property', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
 
         const A = def.columns[0];
         const B = def.columns[1];
@@ -558,7 +669,7 @@ describe.only('TypeClient', () => {
 
       it('REF default value', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
 
         const A = def.columns[0];
         const B = def.columns[1];
@@ -569,7 +680,7 @@ describe.only('TypeClient', () => {
 
       it('REF union: "ns:<id> | null"', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
         const D = def.columns[3];
 
         expect(D.type.kind).to.eql('UNION');
@@ -588,7 +699,7 @@ describe.only('TypeClient', () => {
 
       it('REF nested unions: "boolean | (ns:<id> | string)"', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const def = (await TypeClient.load({ ns: 'foo.nested', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo.nested', fetch })).defs[0];
         const C = def.columns[2];
 
         expect(C.type.kind).to.eql('UNION');
@@ -604,7 +715,7 @@ describe.only('TypeClient', () => {
 
       it('REF array', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const def = (await TypeClient.load({ ns: 'foo.messages', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo.messages', fetch })).defs[0];
 
         expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
@@ -628,19 +739,20 @@ describe.only('TypeClient', () => {
       it('REF(ns) - default/optional retrieved', async () => {
         const defs = {
           'ns:foo.1': {
-            ns: { type: { typename: 'Foo1' } },
+            ns: { type: {} }, // TEMP 🐷
             columns: {
-              A: { props: { def: { prop: 'myFoo', type: 'ns:foo.2' } } },
+              A: { props: { def: { prop: 'Foo1.myFoo', type: 'ns:foo.2/Foo2' } } },
             },
           },
           'ns:foo.2': {
-            ns: { type: { typename: 'Foo2' } },
+            ns: { type: {} }, // TEMP 🐷
             columns: {
-              A: { props: { def: { prop: 'foo?', type: 'string', default: 'Untitled' } } },
+              A: { props: { def: { prop: 'Foo2.foo?', type: 'string', default: 'Untitled' } } },
             },
           },
         };
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
+
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
         const A = def.columns[0];
 
         expect(A.type.kind).to.eql('REF');
@@ -653,20 +765,20 @@ describe.only('TypeClient', () => {
       it('REF(ns): ref[] - defaults retrieved', async () => {
         const defs = {
           'ns:foo.1': {
-            ns: { type: { typename: 'Foo1' } },
+            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
-              A: { props: { def: { prop: 'myFoo', type: 'ns:foo.2[]', target: 'ref' } } },
+              A: { props: { def: { prop: 'Foo1.myFoo', type: 'ns:foo.2/Foo2[]', target: 'ref' } } },
             },
           },
           'ns:foo.2': {
-            ns: { type: { typename: 'Foo2' } },
+            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
-              A: { props: { def: { prop: 'count', type: 'number', default: -1 } } },
+              A: { props: { def: { prop: 'Foo2.count', type: 'number', default: -1 } } },
             },
           },
         };
 
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
         const A = def.columns[0];
 
         expect(A.default).to.eql(undefined);
@@ -682,34 +794,37 @@ describe.only('TypeClient', () => {
     describe('REF(column) => <uri>', () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: { typename: 'Foo1' } },
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'myFoo', type: 'cell:foo.2:A' } } },
-            B: { props: { def: { prop: 'myBar', type: 'cell:foo.2:B' } } },
-            C: { props: { def: { prop: 'myObjectRef', type: 'cell:foo.2:C' } } },
-            D: { props: { def: { prop: 'myColumnRef', type: 'cell:foo.2:D' } } },
+            A: { props: { def: { prop: 'Foo1.myFoo', type: 'cell:foo.2:A/Foo2' } } },
+            B: { props: { def: { prop: 'Foo1.myBar', type: 'cell:foo.2:B/Foo2' } } },
+            C: { props: { def: { prop: 'Foo1.myObjectRef', type: 'cell:foo.2:C/Foo2' } } },
+            D: { props: { def: { prop: 'Foo1.myColumnRef', type: 'cell:foo.2:D/Foo2' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: { typename: 'Foo2' } },
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'foo', type: 'string', default: 'Untitled' } } },
-            B: { props: { def: { prop: 'bar?', type: '"one" | "two" | "three"' } } },
-            C: { props: { def: { prop: 'baz', type: 'ns:foo.3' } } },
-            D: { props: { def: { prop: 'zoo', type: 'cell:foo.3:A' } } },
+            A: { props: { def: { prop: 'Foo2.foo', type: 'string', default: 'Untitled' } } },
+            B: { props: { def: { prop: 'Foo2.bar?', type: '"one" | "two" | "three"' } } },
+            C: { props: { def: { prop: 'Foo2.baz', type: 'ns:foo.3/Foo3' } } },
+            D: { props: { def: { prop: 'Foo2.zoo', type: 'cell:foo.3:A/Foo3' } } },
           },
         },
         'ns:foo.3': {
-          ns: { type: { typename: 'Foo3' } },
+          ns: { type: {} }, // TEMP 🐷
           columns: {
-            A: { props: { def: { prop: 'hello', type: 'number[] | boolean' } } },
+            A: { props: { def: { prop: 'Foo3.hello', type: 'number[] | boolean' } } },
           },
         },
       };
 
-      it('REF(column) => VALUE (primitive)', async () => {
-        const def1 = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
-        const def2 = (await TypeClient.load({ ns: 'foo.2', fetch: testFetch({ defs }) }))[0];
+      it('REF(column) => VALUE (primitive): multi-hop', async () => {
+        const res1 = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+        const res2 = await TypeClient.load({ ns: 'foo.2', fetch: testFetch({ defs }) });
+
+        const def1 = res1.defs[0];
+        const def2 = res2.defs[0];
 
         expect(def1.ok).to.eql(true);
         expect(def1.errors).to.eql([]);
@@ -730,7 +845,7 @@ describe.only('TypeClient', () => {
       });
 
       it('REF(column) => ENUM', async () => {
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
         const B = def.columns[1];
         expect(B.column).to.eql('B');
         expect(B.prop).to.eql('myBar');
@@ -742,26 +857,26 @@ describe.only('TypeClient', () => {
       it('REF(column) - override default', async () => {
         const defs = {
           'ns:foo.1': {
-            ns: { type: { typename: 'Foo1' } },
+            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
-              A: { props: { def: { prop: 'myFoo', type: 'cell:foo.2:A', default: 'Hello' } } },
+              A: { props: { def: { prop: 'Foo1.myFoo', type: 'cell:foo.2:A', default: 'Hello' } } },
             },
           },
           'ns:foo.2': {
-            ns: { type: { typename: 'Foo2' } },
+            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
-              A: { props: { def: { prop: 'foo', type: 'string', default: 'Untitled' } } },
+              A: { props: { def: { prop: 'Foo2.foo', type: 'string', default: 'Untitled' } } },
             },
           },
         };
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
         const A = def.columns[0];
 
         expect(A.default).to.eql({ value: 'Hello' }); // NB: The closest default to the declaration wins.
       });
 
       it('REF(column) => REF => object (ns)', async () => {
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
         expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
@@ -778,7 +893,7 @@ describe.only('TypeClient', () => {
       });
 
       it('REF(column) => REF(column) => VALUE (primitive)', async () => {
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
         expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
@@ -800,7 +915,7 @@ describe.only('TypeClient', () => {
     describe('ENUM', () => {
       it('(single)', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const def = (await TypeClient.load({ ns: 'foo.enum', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo.enum', fetch })).defs[0];
         const A = def.columns[0];
         expect(A.type.kind).to.eql('ENUM');
         expect(A.type.typename).to.eql(`'hello'`);
@@ -808,7 +923,7 @@ describe.only('TypeClient', () => {
 
       it('(union)', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const def = (await TypeClient.load({ ns: 'foo.enum', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo.enum', fetch })).defs[0];
         const B = def.columns[1];
         const type = B.type;
 
@@ -831,7 +946,7 @@ describe.only('TypeClient', () => {
 
       it('(array)', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const def = (await TypeClient.load({ ns: 'foo.enum', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo.enum', fetch })).defs[0];
         const C = def.columns[2];
         const type = C.type;
 
@@ -862,15 +977,15 @@ describe.only('TypeClient', () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
         const cache = TypeSystem.Cache.create();
         const ns = 'foo';
-        const def1 = (await TypeClient.load({ ns, fetch, cache }))[0];
-        const def2 = (await TypeClient.load({ ns, fetch, cache }))[0];
-        const def3 = (await TypeClient.load({ ns, fetch }))[0]; // Not using custom cache (default)
+        const def1 = (await TypeClient.load({ ns, fetch, cache })).defs[0];
+        const def2 = (await TypeClient.load({ ns, fetch, cache })).defs[0];
+        const def3 = (await TypeClient.load({ ns, fetch })).defs[0]; // Not using custom cache (default)
 
         expect(def1).to.equal(def2);
         expect(def3).to.not.equal(def1);
       });
 
-      it.skip('caches [load] method (parallel execution)', async () => {
+      it('caches [load] method (parallel execution)', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
         const cache = TypeSystem.Cache.toCache();
 
@@ -878,7 +993,7 @@ describe.only('TypeClient', () => {
         const wait = [TypeClient.load({ ns, fetch, cache }), TypeClient.load({ ns, fetch, cache })];
         const [def1, def2] = await Promise.all(wait);
 
-        const def3 = (await TypeClient.load({ ns: 'foo', fetch }))[0]; // Not using custom cache (default)
+        const def3 = (await TypeClient.load({ ns: 'foo', fetch })).defs[0]; // Not using custom cache (default)
 
         expect(def1).to.equal(def2);
         expect(def3).to.not.equal(def1);
@@ -888,20 +1003,20 @@ describe.only('TypeClient', () => {
     describe('fetch', () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: { typename: 'Foo' } },
+          ns: { type: { typename: '' } },
           columns: {
-            A: { props: { def: { prop: 'A', type: 'string' } } },
-            B: { props: { def: { prop: 'B', type: 'ns:foo.2' } } },
-            C: { props: { def: { prop: 'C', type: 'ns:foo.2' } } },
-            D: { props: { def: { prop: 'D', type: 'ns:foo.2:A' } } },
-            E: { props: { def: { prop: 'E', type: 'ns:foo.2:A' } } },
+            A: { props: { def: { prop: 'Foo.A', type: 'string' } } },
+            B: { props: { def: { prop: 'Foo.B', type: 'ns:foo.2/Bar' } } },
+            C: { props: { def: { prop: 'Foo.C', type: 'ns:foo.2/Bar' } } },
+            D: { props: { def: { prop: 'Foo.D', type: 'ns:foo.2:A/Bar' } } },
+            E: { props: { def: { prop: 'Foo.E', type: 'ns:foo.2:A/Bar' } } },
           },
         },
         'ns:foo.2': {
           ns: { type: { typename: 'Bar' } },
           columns: {
-            A: { props: { def: { prop: 'name', type: 'string' } } },
-            B: { props: { def: { prop: 'count', type: 'number' } } },
+            A: { props: { def: { prop: 'Bar.name', type: 'string' } } },
+            B: { props: { def: { prop: 'Bar.count', type: 'number' } } },
           },
         },
       };
@@ -941,7 +1056,7 @@ describe.only('TypeClient', () => {
   describe('typescript', () => {
     describe('declaration', () => {
       it('toString: with header (default)', async () => {
-        const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
         const res = TypeClient.typescript(def).toString();
 
         expect(res).to.include('Generated types defined in namespace');
@@ -951,7 +1066,7 @@ describe.only('TypeClient', () => {
       });
 
       it('toString: no header', async () => {
-        const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
         const res = TypeClient.typescript(def, { header: false }).toString();
 
         expect(res).to.not.include('Generated types');
@@ -960,7 +1075,7 @@ describe.only('TypeClient', () => {
       });
 
       it('ref: row/cursor wrapper', async () => {
-        const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
         const res = TypeClient.typescript(def, { header: false }).toString();
 
         expect(res).to.include(`message: t.ITypedSheetRef<MyMessage> | null;\n`);
@@ -971,19 +1086,21 @@ describe.only('TypeClient', () => {
       it('REF(column) write to typescript', async () => {
         const defs = {
           'ns:foo.1': {
-            ns: { type: { typename: 'Foo1' } },
+            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
-              A: { props: { def: { prop: 'myFoo?', type: 'cell:foo.2:A', target: 'ref' } } },
+              A: {
+                props: { def: { prop: 'Foo1.myFoo?', type: 'cell:foo.2:A/Foo2', target: 'ref' } },
+              },
             },
           },
           'ns:foo.2': {
-            ns: { type: { typename: 'Foo2' } },
+            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
-              A: { props: { def: { prop: 'count', type: 'number' } } },
+              A: { props: { def: { prop: 'Foo2.count', type: 'number' } } },
             },
           },
         };
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) }))[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
         const res = TypeClient.typescript(def, { header: false }).toString();
         expect(res).to.include(`export declare type Foo1 = {\n`);
         expect(res).to.include(`myFoo?: number;\n`);
@@ -994,7 +1111,7 @@ describe.only('TypeClient', () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
 
       it('dir (filename inferred from type)', async () => {
-        const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
         const ts = TypeClient.typescript(def);
         const dir = fs.resolve('./tmp/d');
         const res = await ts.save(fs, dir);
@@ -1010,7 +1127,7 @@ describe.only('TypeClient', () => {
       });
 
       it('dir and filename (explicitly passed)', async () => {
-        const def = (await TypeClient.load({ ns: 'foo', fetch }))[0];
+        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
         const ts = TypeClient.typescript(def);
 
         const dir = fs.resolve('tmp/d');
