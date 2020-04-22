@@ -49,7 +49,7 @@ export async function load(args: {
   const errors = ErrorList.create({ defaultType: ERROR.TYPE.DEF });
   const ctx: Context = { fetch, cache, errors, visited: [] };
 
-  const res = await loadNamespace({ ns, ctx, level: 0 });
+  const res = await loadNs({ level: 0, ns, ctx });
   return [res]; // TEMP 🐷
 }
 
@@ -60,7 +60,7 @@ export async function load(args: {
 /**
  * Loads the given namespace.
  */
-async function loadNamespace(args: { level: number; ns: string; ctx: Context }): Promise<t.INsTypeDef> {
+async function loadNs(args: { level: number; ns: string; ctx: Context }): Promise<t.INsTypeDef> {
   const { level, ctx } = args;
   const { visited, cache, fetch, errors } = ctx;
   const ns = formatNsUri(args.ns, { throw: false }).toString();
@@ -334,7 +334,7 @@ async function readRef(args: {
   }
 
   // Retrieve the referenced namespace.
-  const loadResponse = await loadNamespace({
+  const loadResponse = await loadNs({
     level: level + 1,
     ns: nsUri,
     ctx,

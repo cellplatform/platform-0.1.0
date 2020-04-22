@@ -2,6 +2,7 @@ import { t } from '../common';
 
 type D = t.ITypeDefPayload;
 export type SampleTypeDefs = {
+  'ns:foo.multi': D;
   'ns:foo': D;
   'ns:foo.color': D;
   'ns:foo.primitives': D;
@@ -13,25 +14,31 @@ export type SampleTypeDefs = {
 };
 
 export const TYPE_DEFS: SampleTypeDefs = {
+  'ns:foo.multi': {
+    ns: { type: { typename: 'TMP' } }, // TEMP 🐷
+    columns: {
+      A: { props: { def: { prop: 'MyOne.title', type: 'string' } } },
+      B: { props: { def: { prop: 'MyOne.isenabed', type: 'boolean' } } },
+    },
+  },
+
   'ns:foo': {
     ns: { type: { typename: 'MyRow' } },
     columns: {
       A: {
-        props: {
-          def: {
-            prop: 'title',
-            type: 'string',
-            default: 'Untitled',
-          },
-        },
+        props: { def: { prop: 'title', type: 'string', default: 'Untitled' } },
       },
       B: {
-        props: { def: { prop: 'isEnabled', type: 'boolean | null', target: 'inline:isEnabled' } },
+        props: {
+          def: { prop: 'isEnabled', type: 'boolean | null', target: 'inline:isEnabled' },
+        },
       },
       C: {
         props: { def: { prop: 'color?', type: 'ns:foo.color', target: 'inline:color' } },
       },
-      D: { props: { def: { prop: 'message', type: 'ns:foo.message | null', target: 'ref' } } },
+      D: {
+        props: { def: { prop: 'message', type: 'ns:foo.message | null', target: 'ref' } },
+      },
       E: { props: { def: { prop: 'messages', type: 'ns:foo.message[]', target: 'ref' } } },
     },
   },

@@ -11,7 +11,10 @@ describe('TypeClient', () => {
 
   describe('load', () => {
     it('"ns:foo"', async () => {
-      const def = (await TypeClient.load({ ns: 'ns:foo', fetch }))[0];
+      const defs = await TypeClient.load({ ns: 'ns:foo', fetch });
+      expect(defs.length).to.eql(1);
+
+      const def = defs[0];
       expect(def.ok).to.eql(true);
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
@@ -26,6 +29,19 @@ describe('TypeClient', () => {
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
       expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
+    });
+
+    it('"ns:foo.multi" (several return types)', async () => {
+      const defs = await TypeClient.load({ ns: 'ns:foo.multi', fetch });
+      expect(defs.length).to.eql(1);
+
+      const def = defs[0];
+      console.log('defs', defs);
+      // expect(def.ok).to.eql(true);
+      // expect(def.errors).to.eql([]);
+      // expect(def.uri).to.eql('ns:foo');
+      // expect(def.typename).to.eql('MyRow');
+      // expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
     });
   });
 
