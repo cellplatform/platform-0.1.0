@@ -156,10 +156,10 @@ export const TYPE_DEFS: SampleTypeDefs = {
   'ns:foo.defaults': {
     ns: { type: { typename: '' } }, // TEMP 🐷
     columns: {
-      A: { props: { def: { prop: 'MyDefaults.title', type: 'string', default: 'Untitled' } } },
+      A: { props: { def: { prop: 'MyDefault.title', type: 'string', default: 'Untitled' } } },
       B: {
         props: {
-          def: { prop: 'MyDefaults.foo', type: 'string', default: { ref: 'cell:foo.sample:A1' } },
+          def: { prop: 'MyDefault.foo', type: 'string', default: { ref: 'cell:foo.sample:A1' } },
         },
       },
     },

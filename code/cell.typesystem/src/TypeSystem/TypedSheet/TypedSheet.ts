@@ -87,8 +87,8 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
       sheetNs,
       typeDef,
       fetch,
-      events$,
       cache,
+      events$,
     });
   }
 

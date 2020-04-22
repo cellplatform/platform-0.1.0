@@ -518,7 +518,7 @@ describe('TypedSheet', () => {
         });
 
         const sheet = await TypeSystem.Sheet.load({ fetch, ns });
-        const cursor = await sheet.data<d.MyDefaults>('MyDefaults').load();
+        const cursor = await sheet.data<d.MyDefault>('MyDefaults').load();
         expect(cursor.exists(99)).to.eql(false);
       });
     });
