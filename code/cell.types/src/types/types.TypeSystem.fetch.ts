@@ -35,7 +35,7 @@ export type FetchSheetCells = (args: {
   query: string;
 }) => Promise<FetchSheetCellsResult>;
 export type FetchSheetCellsResult = {
-  cells: t.ICellMap;
   total: { rows: number };
+  cells?: t.ICellMap;
   error?: t.IHttpError;
 };

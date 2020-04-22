@@ -128,7 +128,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     const key = this.parent.key;
     const query = `${key}:${key}`;
     const res = await this.ctx.fetch.getCells({ ns, query });
-    return res.cells[key];
+    return (res.cells || {})[key];
   }
 
   private async ensureLink() {

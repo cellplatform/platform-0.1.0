@@ -1018,7 +1018,7 @@ describe('TypedSheet', () => {
         const get = async (key: string) => {
           const query = `${key}:${key}`;
           const res = await fetch.getCells({ ns: 'foo', query });
-          return res.cells[key];
+          return (res.cells || {})[key];
         };
 
         const res1 = await get('A1');

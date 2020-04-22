@@ -30,10 +30,10 @@ export class TypedSheetState implements t.ITypedSheetState {
       const changes = this._changes;
       const keys = Object.keys(changes);
       if (keys.length > 0) {
-        res.cells = { ...res.cells };
+        const cells = (res.cells = { ...(res.cells || {}) });
         keys
-          .filter(key => Schema.coord.cell.isCell(key) && res.cells[key])
-          .forEach(key => (res.cells[key] = { ...changes[key].to }));
+          .filter(key => Schema.coord.cell.isCell(key) && cells[key])
+          .forEach(key => (cells[key] = { ...changes[key].to }));
       }
       return res;
     };
@@ -118,7 +118,7 @@ export class TypedSheetState implements t.ITypedSheetState {
     const ns = this.uri.id;
     const query = `${key}:${key}`;
     const res = await this.fetch.getCells({ ns, query });
-    return res.cells[key];
+    return (res.cells || {})[key];
   }
 
   public clearChanges(action: t.ITypedSheetChangesCleared['action']) {

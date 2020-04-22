@@ -168,7 +168,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
           .map(async columnDef => {
             const res = await this.ctx.fetch.getCells({ ns, query });
             const key = `${columnDef.column}${this.index + 1}`;
-            this.setData(columnDef, res.cells[key] || {});
+            this.setData(columnDef, (res.cells || {})[key] || {});
           }),
       );
 
