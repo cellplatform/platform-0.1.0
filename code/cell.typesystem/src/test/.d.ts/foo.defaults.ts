@@ -23,7 +23,7 @@
 
 import * as t from '@platform/cell.types';
 
-export declare type MyDefaults = {
+export declare type MyDefault = {
   title: string;
   foo: string;
 };

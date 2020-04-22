@@ -6,6 +6,7 @@ import { TypeDefault } from '../TypeDefault';
 import { TypeValue } from '../TypeValue';
 import { formatNsUri } from '../util';
 import * as valdiate from './TypeClient.fn.validate';
+import { TypeProp } from '../TypeProp';
 
 type Visit = { ns: string; level: number };
 type Context = {
@@ -16,7 +17,8 @@ type Context = {
 };
 
 const toCacheKey = (uri: string, ...path: string[]) => {
-  return `TypeClient/${uri.toString()}${path.length === 0 ? '' : `/${path.join('/')}`}`;
+  const suffix = path.length === 0 ? '' : `/${path.join('/')}`;
+  return `TypeClient/${uri.toString()}${suffix}`;
 };
 
 /**
@@ -37,10 +39,10 @@ export async function load(args: {
       // NB: The load operation for the namespace currently in progress.
       //     Wait for the first request to complete.
       const res = await value.toPromise();
-      return [res]; // TEMP 🐷
+      // return [res]; // TEMP 🐷
     } else if (typeof value === 'object') {
       // Namespace already loaded within the cache.
-      return [value] as t.INsTypeDef[]; // TEMP 🐷
+      // return [value] as t.INsTypeDef[]; // TEMP 🐷
     }
   }
 
@@ -50,7 +52,7 @@ export async function load(args: {
   const ctx: Context = { fetch, cache, errors, visited: [] };
 
   const res = await loadNamespace({ ns, ctx, level: 0 });
-  return [res]; // TEMP 🐷
+  return res; // TEMP 🐷
 }
 
 /**
@@ -60,7 +62,11 @@ export async function load(args: {
 /**
  * Loads the given namespace.
  */
-async function loadNamespace(args: { level: number; ns: string; ctx: Context }): Promise<t.INsTypeDef> {
+async function loadNamespace(args: {
+  level: number;
+  ns: string;
+  ctx: Context;
+}): Promise<t.INsTypeDef[]> {
   const { level, ctx } = args;
   const { visited, cache, fetch, errors } = ctx;
   const ns = formatNsUri(args.ns, { throw: false }).toString();
@@ -71,9 +77,23 @@ async function loadNamespace(args: { level: number; ns: string; ctx: Context }):
   cache.put(cacheKey, loading$);
   loading$.subscribe(def => cache.put(cacheKey, def));
 
-  // Prepare return object.
-  const done = (args: { typename?: string; columns?: t.IColumnTypeDef[] } = {}) => {
-    const { typename = '', columns = [] } = args;
+  const groupByTypename = (columns: t.IColumnTypeDef[]) => {
+    const ERROR = '___ERROR___';
+    const groups = R.groupBy(def => {
+      const res = TypeProp.parse(def);
+      return res.error ? ERROR : res.type;
+    }, columns);
+    delete groups[ERROR];
+    Object.keys(groups).forEach(typename => {
+      groups[typename].forEach(item => {
+        item.prop = item.prop.substring(typename.length + 1);
+      });
+    });
+    return groups;
+  };
+
+  const toTypeDef = (args: { typename: string; columns: t.IColumnTypeDef[] }) => {
+    const { typename, columns } = args;
     const uri = ns;
 
     const columnErrors = columns.reduce(
@@ -101,6 +121,13 @@ async function loadNamespace(args: { level: number; ns: string; ctx: Context }):
     return typeDef;
   };
 
+  // Prepare return object.
+  const done = (args: { columns?: t.IColumnTypeDef[] } = {}) => {
+    const { columns = [] } = args;
+    const groups = groupByTypename(columns);
+    return Object.keys(groups).map(typename => toTypeDef({ typename, columns: groups[typename] }));
+  };
+
   // Validate the URI.
   const uri = Uri.parse<t.INsUri>(ns);
   if (uri.error) {
@@ -118,7 +145,8 @@ async function loadNamespace(args: { level: number; ns: string; ctx: Context }):
 
   try {
     // Retrieve namespace.
-    const fetchedType = await fetch.getType({ ns });
+    const fetchedType = await fetch.getType({ ns }); // TEMP 🐷
+
     if (!fetchedType.exists) {
       const message = `The namespace "${ns}" does not exist.`;
       errors.add(ns, message, { errorType: ERROR.TYPE.NOT_FOUND });
@@ -155,7 +183,6 @@ async function loadNamespace(args: { level: number; ns: string; ctx: Context }):
 
     // Read in type details for each column.
     return done({
-      typename: (fetchedType.type?.typename || '').trim(),
       columns: await readColumns({ level, ns, columns, ctx }),
     });
   } catch (error) {
@@ -334,11 +361,14 @@ async function readRef(args: {
   }
 
   // Retrieve the referenced namespace.
-  const loadResponse = await loadNamespace({
-    level: level + 1,
-    ns: nsUri,
-    ctx,
-  }); // <== RECURSION 🌳
+  const loadResponse = (
+    await loadNamespace({
+      level: level + 1,
+      ns: nsUri,
+      ctx,
+    })
+  )[0]; // TEMP 🐷 - index[0]
+  // <== RECURSION 🌳
 
   // Check for errors.
   if (loadResponse.errors.length > 0) {

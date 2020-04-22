@@ -32,6 +32,7 @@ const TYPE_NOT_FOUND: t.ITypeErrorNotFound['type'] = 'TYPE/notFound';
 const TYPE_TARGET: t.ITypeErrorTarget['type'] = 'TYPE/target';
 const TYPE_REF: t.ITypeErrorRef['type'] = 'TYPE/ref';
 const TYPE_REF_CIRCULAR: t.ITypeErrorCircularRef['type'] = 'TYPE/ref/circular';
+const TYPE_PROP: t.ITypeErrorProp['type'] = 'TYPE/prop';
 const TYPE_DUPLICATE_PROP: t.ITypeErrorDuplicateProp['type'] = 'TYPE/duplicate/prop';
 const TYPE_DUPLICATE_TYPENAME: t.ITypeErrorDuplicateTypename['type'] = 'TYPE/duplicate/typename';
 const TYPE_SHEET: t.ITypeErrorSheet['type'] = 'TYPE/sheet';
@@ -41,6 +42,7 @@ const TYPE = {
   DEF_INVALID: TYPE_DEF_INVALID,
   NOT_FOUND: TYPE_NOT_FOUND,
   TARGET: TYPE_TARGET,
+  PROP: TYPE_PROP,
   REF: TYPE_REF,
   REF_CIRCULAR: TYPE_REF_CIRCULAR,
   DUPLICATE_PROP: TYPE_DUPLICATE_PROP,
