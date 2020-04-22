@@ -40,7 +40,7 @@ describe.only('test', () => {
       const res = await fetch.getCells({ ns: 'foo', query: 'A1:ZZ99' });
       const cells = res.cells || {};
       expect(res.total.rows).to.eql(9);
-      expect(Object.keys(cells)).to.eql(['A1', 'A2', 'B1', 'B5', 'C1', 'Z9']);
+      expect(Object.keys(cells).sort()).to.eql(['A1', 'A2', 'B1', 'B5', 'C1', 'Z9']);
     });
 
     it('getCells: query', async () => {
