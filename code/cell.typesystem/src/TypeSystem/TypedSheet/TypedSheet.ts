@@ -36,11 +36,11 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     if (res.error) {
       throw new Error(res.error.message);
     }
-    const implementsNs = util.formatNsUri(res.type.implements);
-    if (!implementsNs) {
+    if (!res.type?.implements) {
       const err = `The namespace [${sheetNs}] does not contain an "implements" type reference.`;
       throw new Error(err);
     }
+    const implementsNs = util.formatNsUri(res.type?.implements);
 
     // Load and parse the type definition.
     const typeDefs = await TypeClient.load({

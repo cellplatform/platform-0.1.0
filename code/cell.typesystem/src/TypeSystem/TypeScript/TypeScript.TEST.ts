@@ -148,9 +148,9 @@ describe('TypeScript', () => {
 
     it('union reference - type: "ns:foo.message | null"', async () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
-      const def = await TypeClient.load({ ns: 'foo', fetch });
-      const typename = def[0].typename;
-      const types = def[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
+      const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
+      const typename = defs[0].typename;
+      const types = defs[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
 
       const res = TypeScript.toDeclaration({ typename, types });
 

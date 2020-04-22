@@ -176,7 +176,7 @@ async function loadNamespace(args: {
   try {
     // Retrieve namespace.
     const fetchedType = await fetch.getType({ ns });
-    if (!fetchedType.exists) {
+    if (!fetchedType.type) {
       const message = `The namespace (${ns}) does not exist`;
       errors.add(ns, message, { errorType: ERROR.TYPE.NOT_FOUND });
       return done();

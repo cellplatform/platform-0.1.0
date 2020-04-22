@@ -12,7 +12,6 @@ export * from './types.TypeSystem.state';
  * The type declaration for the namespace/sheet.
  */
 export type INsType = {
-  typename?: string; //     Name of the complex type/object this namespace defines.
   implements?: string; //   URI of another namespace containing the type definition to conform to.
 };
 
@@ -21,6 +20,6 @@ export type INsType = {
  * (NB: can write directly to HTTP client )
  */
 export type ITypeDefPayload = {
-  ns: t.INsProps;
+  ns?: t.INsProps;
   columns: t.IColumnMap;
 };

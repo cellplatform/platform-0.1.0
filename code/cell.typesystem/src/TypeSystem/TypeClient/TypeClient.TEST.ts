@@ -4,9 +4,6 @@ import { t, TypeSystem, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../../te
 /**
  * TODO 🐷
  * - multi-type support on single col ([def] array)
- * - ref pointer: ns:foo/typename
- * - remove typename from {ns:{type:{}}}
- * - clear away: // TEMP 🐷
  */
 
 describe.only('TypeClient', () => {
@@ -48,6 +45,7 @@ describe.only('TypeClient', () => {
 
     it('"ns:foo.multi" (several return types)', async () => {
       const res = await TypeClient.load({ ns: 'ns:foo.multi', fetch });
+
       expect(res.ok).to.eql(true);
       expect(res.errors).to.eql([]);
       expect(res.defs.length).to.eql(2);
@@ -114,7 +112,6 @@ describe.only('TypeClient', () => {
     it('error: 404 type definition in column reference not found', async () => {
       const defs = {
         'ns:foo': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             C: { props: { def: { prop: 'Foo.color', type: 'ns:foo.color/Baz' } } },
           },
@@ -136,13 +133,11 @@ describe.only('TypeClient', () => {
     it('error: ref has invalid property-name', async () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo1.a', type: 'ns:foo.2/Foo2' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo2.1title', type: 'string' } } },
           },
@@ -161,7 +156,6 @@ describe.only('TypeClient', () => {
     it('error: duplicate property names', async () => {
       const defs = {
         'ns:foo.error': {
-          ns: { type: { typename: '' } }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Type.foo', type: 'string' } } },
             B: { props: { def: { prop: 'Type.isEnabled', type: 'string' } } },
@@ -186,7 +180,6 @@ describe.only('TypeClient', () => {
     it('error: namespace reference does not include typename', async () => {
       const defs = {
         'ns:foo': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo1.title', type: 'cell:foo.2:A' } } },
             B: { props: { def: { prop: 'Foo1.color', type: 'ns:foo.2' } } },
@@ -210,13 +203,11 @@ describe.only('TypeClient', () => {
     it('error: duplicate typename (on namespace)', async () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo.thing', type: 'ns:foo.2/Bar' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Bar.A', type: 'ns:foo.3/Bar' } } },
             B: { props: { def: { prop: 'Bar.B', type: 'ns:foo.3/Bar' } } },
@@ -224,14 +215,12 @@ describe.only('TypeClient', () => {
           },
         },
         'ns:foo.3': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Bar.count', type: 'number' } } },
             B: { props: { def: { prop: 'Bar.myRef', type: 'ns:foo.4/Foo' } } },
           },
         },
         'ns:foo.4': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo.name', type: 'string' } } },
           },
@@ -249,7 +238,7 @@ describe.only('TypeClient', () => {
       const test = async (typename: string) => {
         const defs = {
           'ns:foo': {
-            ns: { type: { typename: 'TMP' } },
+            ns: { type: {} },
             columns: {
               A: { props: { def: { prop: `${typename}.title`, type: 'string' } } },
             },
@@ -275,7 +264,7 @@ describe.only('TypeClient', () => {
       const test = async (propname: string) => {
         const defs = {
           'ns:foo': {
-            ns: { type: { typename: 'TMP' } },
+            ns: { type: {} },
             columns: {
               A: { props: { def: { prop: `Foo.${propname}`, type: 'string' } } },
             },
@@ -319,7 +308,6 @@ describe.only('TypeClient', () => {
     it('error: circular-reference (column, self)', async () => {
       const defs = {
         'ns:foo': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo.A', type: 'ns:foo' } } }, //     Not OK (self, ns)
             B: { props: { def: { prop: 'Foo.B', type: 'cell:foo:A' } } }, // Not OK (a different column)
@@ -341,13 +329,11 @@ describe.only('TypeClient', () => {
     it('error: circular-reference - REF(ns) => REF(ns)', async () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo1.prop', type: 'ns:foo.2/Foo2' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             Z: { props: { def: { prop: 'Foo2.prop', type: 'ns:foo.1/Foo1' } } },
           },
@@ -382,13 +368,11 @@ describe.only('TypeClient', () => {
     it('error: circular-reference - REF(column) => REF(ns)', async () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo1.foo2', type: 'cell:foo.2:Z/Foo2' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             Z: { props: { def: { prop: 'Foo2.foo1', type: 'ns:foo.1/Foo1' } } },
           },
@@ -423,13 +407,11 @@ describe.only('TypeClient', () => {
     it('error: circular-reference - REF(column) => REF(column)', async () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo1.foo2', type: 'cell:foo.2:Z/Foo2' } } },
           },
         },
         'ns:foo.2': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             Z: { props: { def: { prop: 'Foo2.foo1', type: 'cell:foo.1:A/Foo1' } } },
           },
@@ -533,11 +515,11 @@ describe.only('TypeClient', () => {
       it('empty: no types / no columns', async () => {
         const defs = {
           'ns:foo.1': {
-            ns: { type: { typename: 'Foo1' } },
+            ns: { type: {} },
             columns: {}, // NB: "columns" field deleted below.
           },
           'ns:foo.2': {
-            ns: { type: { typename: 'Foo2' } },
+            ns: { type: {} },
             columns: {},
           },
         };
@@ -739,13 +721,11 @@ describe.only('TypeClient', () => {
       it('REF(ns) - default/optional retrieved', async () => {
         const defs = {
           'ns:foo.1': {
-            ns: { type: {} }, // TEMP 🐷
             columns: {
               A: { props: { def: { prop: 'Foo1.myFoo', type: 'ns:foo.2/Foo2' } } },
             },
           },
           'ns:foo.2': {
-            ns: { type: {} }, // TEMP 🐷
             columns: {
               A: { props: { def: { prop: 'Foo2.foo?', type: 'string', default: 'Untitled' } } },
             },
@@ -765,13 +745,11 @@ describe.only('TypeClient', () => {
       it('REF(ns): ref[] - defaults retrieved', async () => {
         const defs = {
           'ns:foo.1': {
-            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
               A: { props: { def: { prop: 'Foo1.myFoo', type: 'ns:foo.2/Foo2[]', target: 'ref' } } },
             },
           },
           'ns:foo.2': {
-            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
               A: { props: { def: { prop: 'Foo2.count', type: 'number', default: -1 } } },
             },
@@ -794,7 +772,6 @@ describe.only('TypeClient', () => {
     describe('REF(column) => <uri>', () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo1.myFoo', type: 'cell:foo.2:A/Foo2' } } },
             B: { props: { def: { prop: 'Foo1.myBar', type: 'cell:foo.2:B/Foo2' } } },
@@ -803,7 +780,6 @@ describe.only('TypeClient', () => {
           },
         },
         'ns:foo.2': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo2.foo', type: 'string', default: 'Untitled' } } },
             B: { props: { def: { prop: 'Foo2.bar?', type: '"one" | "two" | "three"' } } },
@@ -812,7 +788,6 @@ describe.only('TypeClient', () => {
           },
         },
         'ns:foo.3': {
-          ns: { type: {} }, // TEMP 🐷
           columns: {
             A: { props: { def: { prop: 'Foo3.hello', type: 'number[] | boolean' } } },
           },
@@ -857,13 +832,11 @@ describe.only('TypeClient', () => {
       it('REF(column) - override default', async () => {
         const defs = {
           'ns:foo.1': {
-            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
               A: { props: { def: { prop: 'Foo1.myFoo', type: 'cell:foo.2:A', default: 'Hello' } } },
             },
           },
           'ns:foo.2': {
-            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
               A: { props: { def: { prop: 'Foo2.foo', type: 'string', default: 'Untitled' } } },
             },
@@ -1003,7 +976,7 @@ describe.only('TypeClient', () => {
     describe('fetch', () => {
       const defs = {
         'ns:foo.1': {
-          ns: { type: { typename: '' } },
+          ns: { type: {} },
           columns: {
             A: { props: { def: { prop: 'Foo.A', type: 'string' } } },
             B: { props: { def: { prop: 'Foo.B', type: 'ns:foo.2/Bar' } } },
@@ -1013,7 +986,7 @@ describe.only('TypeClient', () => {
           },
         },
         'ns:foo.2': {
-          ns: { type: { typename: 'Bar' } },
+          ns: { type: {} },
           columns: {
             A: { props: { def: { prop: 'Bar.name', type: 'string' } } },
             B: { props: { def: { prop: 'Bar.count', type: 'number' } } },
@@ -1086,7 +1059,6 @@ describe.only('TypeClient', () => {
       it('REF(column) write to typescript', async () => {
         const defs = {
           'ns:foo.1': {
-            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
               A: {
                 props: { def: { prop: 'Foo1.myFoo?', type: 'cell:foo.2:A/Foo2', target: 'ref' } },
@@ -1094,7 +1066,6 @@ describe.only('TypeClient', () => {
             },
           },
           'ns:foo.2': {
-            ns: { type: { typename: '' } }, // TEMP 🐷
             columns: {
               A: { props: { def: { prop: 'Foo2.count', type: 'number' } } },
             },

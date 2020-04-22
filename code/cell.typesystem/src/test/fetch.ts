@@ -25,11 +25,10 @@ export const testFetch = (data: {
 
   const getType: t.FetchSheetType = async args => {
     before('getType', args);
-    const ns = data.defs[args.ns]?.ns;
-    const type = ns?.type as t.INsType;
-    const exists = Boolean(type);
+    const def = data.defs[args.ns];
+    const type = !def ? undefined : ((def.ns?.type || {}) as t.INsType);
     res.getTypeCount++;
-    return { exists, type };
+    return { type };
   };
 
   const getColumns: t.FetchSheetColumns = async args => {

@@ -15,7 +15,6 @@ export type SampleTypeDefs = {
 
 export const TYPE_DEFS: SampleTypeDefs = {
   'ns:foo.multi': {
-    ns: { type: { typename: 'TMP 🐷' } }, // TEMP 🐷
     columns: {
       A: { props: { def: { prop: 'MyOne.title', type: 'string' } } },
       B: { props: { def: { prop: 'MyOne.isEnabed', type: 'boolean' } } },
@@ -24,7 +23,6 @@ export const TYPE_DEFS: SampleTypeDefs = {
   },
 
   'ns:foo': {
-    ns: { type: { typename: 'TMP 🐷' } },
     columns: {
       A: {
         props: {
@@ -55,7 +53,6 @@ export const TYPE_DEFS: SampleTypeDefs = {
   },
 
   'ns:foo.color': {
-    ns: { type: { typename: 'TMP 🐷' } }, // TEMP 🐷
     columns: {
       A: { props: { def: { prop: 'MyColor.label', type: 'string' } } },
       B: { props: { def: { prop: 'MyColor.color', type: '"red" | "green" | "blue"' } } },
@@ -64,7 +61,6 @@ export const TYPE_DEFS: SampleTypeDefs = {
   },
 
   'ns:foo.primitives': {
-    ns: { type: { typename: 'TMP 🐷' } }, // TEMP 🐷
     columns: {
       A: {
         props: {
@@ -108,7 +104,6 @@ export const TYPE_DEFS: SampleTypeDefs = {
   },
 
   'ns:foo.enum': {
-    ns: { type: { typename: 'TMP 🐷' } }, // TEMP 🐷
     columns: {
       A: { props: { def: { prop: 'Enum.single?', type: '"hello"' } } },
       B: { props: { def: { prop: 'Enum.union', type: '"red" | "green" | "blue"[]' } } },
@@ -117,7 +112,7 @@ export const TYPE_DEFS: SampleTypeDefs = {
   },
 
   'ns:foo.messages': {
-    ns: { type: { typename: 'TMP 🐷' } },
+    ns: { type: {} },
     columns: {
       A: { props: { def: { prop: 'MyMessages.channel', type: 'string' } } },
       B: {
@@ -132,7 +127,6 @@ export const TYPE_DEFS: SampleTypeDefs = {
   },
 
   'ns:foo.message': {
-    ns: { type: { typename: 'TMP 🐷' } }, // TEMP 🐷
     columns: {
       A: { props: { def: { prop: 'MyMessage.date', type: 'number', default: -1 } } },
       B: { props: { def: { prop: 'MyMessage.user', type: 'string', default: 'anon' } } },
@@ -141,7 +135,6 @@ export const TYPE_DEFS: SampleTypeDefs = {
   },
 
   'ns:foo.nested': {
-    ns: { type: { typename: 'TMP 🐷' } }, // TEMP 🐷
     columns: {
       A: { props: { def: { prop: 'MyNested.one', type: '(string)' } } },
       B: { props: { def: { prop: 'MyNested.two', type: 'string | ("red" | boolean | "blue")' } } },
@@ -154,7 +147,6 @@ export const TYPE_DEFS: SampleTypeDefs = {
   },
 
   'ns:foo.defaults': {
-    ns: { type: { typename: '' } }, // TEMP 🐷
     columns: {
       A: { props: { def: { prop: 'MyDefault.title', type: 'string', default: 'Untitled' } } },
       B: {

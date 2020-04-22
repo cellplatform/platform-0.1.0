@@ -14,8 +14,7 @@ export type ISheetFetcher = {
  */
 export type FetchSheetType = (args: { ns: string }) => Promise<FetchSheetTypeResult>;
 export type FetchSheetTypeResult = {
-  exists: boolean;
-  type: t.INsType;
+  type?: t.INsType;
   error?: t.IHttpError;
 };
 
