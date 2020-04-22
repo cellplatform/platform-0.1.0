@@ -197,9 +197,10 @@ async function loadNamespace(args: {
       errors.add(ns, fetchedColumns.error.message);
       return done();
     }
+    const columns = fetchedColumns.columns || {};
 
     // Check for any self-references.
-    const selfRefs = getSelfRefs({ ns, columns: fetchedColumns.columns });
+    const selfRefs = getSelfRefs({ ns, columns });
     if (selfRefs.length > 0) {
       const keys = selfRefs.map(item => item.key);
       const message = `The namespace (${ns}) directly references itself in column [${keys}] (circular-ref)`;
@@ -210,7 +211,7 @@ async function loadNamespace(args: {
     // Read in type details for each column.
     visited.push({ ns, level });
     return done({
-      columns: await readColumns({ level, ns, ctx, columns: fetchedColumns.columns }),
+      columns: await readColumns({ level, ns, ctx, columns }),
     });
   } catch (error) {
     // Fail.

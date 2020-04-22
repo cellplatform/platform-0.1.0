@@ -5,8 +5,8 @@ import { t } from '../common';
  */
 export type ISheetFetcher = {
   getType: FetchSheetType;
-  getCells: FetchSheetCells;
   getColumns: FetchSheetColumns;
+  getCells: FetchSheetCells;
 };
 
 /**
@@ -15,6 +15,15 @@ export type ISheetFetcher = {
 export type FetchSheetType = (args: { ns: string }) => Promise<FetchSheetTypeResult>;
 export type FetchSheetTypeResult = {
   type?: t.INsType;
+  error?: t.IHttpError;
+};
+
+/**
+ * Fetch columns.
+ */
+export type FetchSheetColumns = (args: { ns: string }) => Promise<FetchSheetColumnsResult>;
+export type FetchSheetColumnsResult = {
+  columns?: t.IColumnMap;
   error?: t.IHttpError;
 };
 
@@ -28,14 +37,5 @@ export type FetchSheetCells = (args: {
 export type FetchSheetCellsResult = {
   cells: t.ICellMap;
   total: { rows: number };
-  error?: t.IHttpError;
-};
-
-/**
- * Fetch columns.
- */
-export type FetchSheetColumns = (args: { ns: string }) => Promise<FetchSheetColumnsResult>;
-export type FetchSheetColumnsResult = {
-  columns: t.IColumnMap;
   error?: t.IHttpError;
 };

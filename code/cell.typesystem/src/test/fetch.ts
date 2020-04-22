@@ -34,7 +34,7 @@ export const testFetch = (data: {
   const getColumns: t.FetchSheetColumns = async args => {
     before('getColumns', args);
     const def = data.defs[args.ns];
-    const columns = def?.columns || {};
+    const columns = def?.columns;
     res.getColumnsCount++;
     return { columns };
   };
