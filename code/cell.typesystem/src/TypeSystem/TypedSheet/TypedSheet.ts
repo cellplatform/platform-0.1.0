@@ -3,32 +3,32 @@ import { share, takeUntil } from 'rxjs/operators';
 
 import { TypeClient } from '../TypeClient';
 import { ERROR, ErrorList, MemoryCache, t, Uri, util } from './common';
-import { TypedSheetCursor } from './TypedSheetCursor';
+import { TypedSheetData } from './TypedSheetData';
 import { TypedSheetState } from './TypedSheetState';
 
 const fromClient = (client: t.IHttpClient) => {
   const fetch = util.fetcher.fromClient(client);
   return {
-    load: <T>(ns: string | t.INsUri) => TypedSheet.load<T>({ fetch, ns }),
+    load: <T = {}>(ns: string | t.INsUri) => TypedSheet.load<T>({ fetch, ns }),
   };
 };
 
 /**
  * Represents a namespace as a logical sheet of cells.
  */
-export class TypedSheet<T> implements t.ITypedSheet<T> {
+export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   public static client = fromClient;
 
   /**
    * Load a sheet from the network.
    */
-  public static async load<T>(args: {
+  public static async load<T = {}>(args: {
     ns: string | t.INsUri;
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
     events$?: Subject<t.TypedSheetEvent>;
   }): Promise<t.ITypedSheet<T>> {
-    const { fetch, events$, cache } = args;
+    const { fetch, cache, events$ } = args;
     const sheetNs = util.formatNsUri(args.ns);
 
     // Retrieve type definition for sheet.
@@ -36,27 +36,29 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     if (res.error) {
       throw new Error(res.error.message);
     }
-    const implementsNs = util.formatNsUri(res.type.implements);
-    if (!implementsNs) {
+    if (!res.type?.implements) {
       const err = `The namespace [${sheetNs}] does not contain an "implements" type reference.`;
       throw new Error(err);
     }
+    const implementsNs = util.formatNsUri(res.type?.implements);
 
     // Load and parse the type definition.
-    const typeDef = await TypeClient.load({
+    const loaded = await TypeClient.load({
       ns: implementsNs.toString(),
       fetch,
       cache,
     });
 
     // Finish up.
-    return new TypedSheet<T>({ sheetNs, typeDef, fetch, events$, cache });
+    const types = loaded.defs;
+    const errors = loaded.errors;
+    return new TypedSheet<T>({ sheetNs, types, fetch, cache, events$, errors });
   }
 
   /**
    * Creates a sheet.
    */
-  public static async create<T>(args: {
+  public static async create<T = {}>(args: {
     implements: string | t.INsUri;
     ns?: string | t.INsUri; // NB: If not specified a new URI is generated.
     fetch: t.ISheetFetcher;
@@ -67,25 +69,15 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     const implementsNs = util.formatNsUri(args.implements);
     const sheetNs = args.ns ? util.formatNsUri(args.ns) : Uri.create.ns(Uri.cuid());
 
-    const typeDef = await TypeClient.load({
+    const loaded = await TypeClient.load({
       ns: implementsNs.toString(),
       fetch,
       cache,
     });
 
-    if (!typeDef.ok) {
-      const list = typeDef.errors.map(err => err.message).join('\n');
-      const err = `Failed to create [TypedSheet] (${sheetNs.toString()}) because the type-definition (${implementsNs.toString()}) contains errors.\n${list}`;
-      throw new Error(err);
-    }
-
-    return new TypedSheet<T>({
-      sheetNs,
-      typeDef,
-      fetch,
-      events$,
-      cache,
-    });
+    const types = loaded.defs;
+    const errors = loaded.errors;
+    return new TypedSheet<T>({ sheetNs, types, fetch, cache, events$, errors });
   }
 
   public static ctx(args: {
@@ -121,22 +113,25 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
 
   private constructor(args: {
     sheetNs: string | t.INsUri;
-    typeDef: t.INsTypeDef;
+    types: t.INsTypeDef[];
     fetch: t.ISheetFetcher;
     events$?: Subject<t.TypedSheetEvent>;
     cache?: t.IMemoryCache;
+    errors?: t.ITypeError[];
   }) {
     const uri = (this.uri = util.formatNsUri(args.sheetNs));
     const cache = args.cache || MemoryCache.create();
     const events$ = args.events$ || new Subject<t.TypedSheetEvent>();
     const dispose$ = this.dispose$;
-    this.typeDef = args.typeDef;
+
+    this.types = args.types;
     this.events$ = events$.asObservable().pipe(takeUntil(this._dispose$), share());
     this.state = TypedSheetState.create({ uri, events$, fetch: args.fetch, cache });
     this.ctx = TypedSheet.ctx({ fetch: this.state.fetch, events$, dispose$, cache }); // NB: Use the state-machine's wrapped fetcher.
+
     this.errorList = ErrorList.create({
       defaultType: ERROR.TYPE.SHEET,
-      errors: this.typeDef.errors,
+      errors: args.errors,
     });
   }
 
@@ -151,13 +146,13 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
    */
 
   private readonly ctx: t.SheetCtx;
-  private readonly typeDef: t.INsTypeDef;
   private readonly errorList: ErrorList;
   private readonly _dispose$ = new Subject<{}>();
 
   public readonly uri: t.INsUri;
-  public readonly state: TypedSheetState<T>;
-  public readonly dispose$ = this._dispose$.asObservable();
+  public readonly state: TypedSheetState;
+  public readonly types: t.INsTypeDef[];
+  public readonly dispose$ = this._dispose$.pipe(share());
   public readonly events$: Observable<t.TypedSheetEvent>;
 
   /**
@@ -176,20 +171,32 @@ export class TypedSheet<T> implements t.ITypedSheet<T> {
     return this.errorList.list;
   }
 
-  public get types() {
-    return this.typeDef.columns;
+  public get typenames() {
+    return this.types.map(def => def.typename);
   }
 
   /**
    * [Methods]
    */
 
-  public cursor(range?: string) {
-    this.throwIfDisposed('cursor');
+  public data<D = T>(input: string | t.ITypedSheetDataArgs) {
+    this.throwIfDisposed('data');
+
+    const args = typeof input === 'string' ? { typename: input } : input;
+    const { typename, range } = args;
     const ns = this.uri;
     const ctx = this.ctx;
-    const types = this.types;
-    return TypedSheetCursor.create<T>({ ns, types, ctx, range });
+
+    // Retrieve the specific type
+    const def = this.types.find(def => def.typename === typename);
+    if (!def) {
+      const names = this.types.map(def => `'${def.typename}'`).join(', ');
+      const err = `Definitions for typename '${typename}' not found. Available typenames: ${names}.`;
+      throw new Error(err);
+    }
+
+    const types = def.columns;
+    return TypedSheetData.create<D>({ ns, typename, types, ctx, range });
   }
 
   /**

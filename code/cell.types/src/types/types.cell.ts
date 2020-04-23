@@ -23,28 +23,3 @@ export type ICellDiff<P extends ICellProps = ICellProps> = {
   readonly isDifferent: boolean;
   readonly list: Diff<ICellData<P>>[];
 };
-
-/**
- * Row
- */
-export type IRowProps = {
-  title?: string; // Display name.
-};
-export type IRowData<P extends IRowProps = IRowProps> = {
-  props?: P;
-  hash?: string;
-  error?: t.IError;
-};
-
-/**
- * Column
- */
-export type IColumnProps = {
-  title?: string; // Display name.
-  prop?: t.CellTypeProp;
-};
-export type IColumnData<P extends IColumnProps = IColumnProps> = {
-  props?: P;
-  hash?: string;
-  error?: t.IError;
-};

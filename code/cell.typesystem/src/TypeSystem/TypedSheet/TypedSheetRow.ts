@@ -7,6 +7,7 @@ import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 
 type IArgs = {
+  typename: string;
   uri: string | t.IRowUri;
   columns: t.IColumnTypeDef[];
   ctx: t.SheetCtx;
@@ -38,6 +39,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    */
   private constructor(args: IArgs) {
     this.ctx = args.ctx;
+    this.typename = args.typename;
     this.uri = util.formatRowUri(args.uri);
     this._columns = args.columns;
     this.index = Number.parseInt(this.uri.key, 10) - 1;
@@ -77,11 +79,12 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private _props: t.ITypedSheetRowProps<T>;
   private _types: t.ITypedSheetRowTypes<T>;
   private _data: { [column: string]: t.ICellData } = {};
-  private _isReady = false;
+  private _isLoaded = false;
   private _status: t.ITypedSheetRow<T>['status'] = 'INIT';
   private _loading: { [key: string]: Promise<t.ITypedSheetRow<T>> } = {};
 
   public readonly index: number;
+  public readonly typename: string;
   public readonly uri: t.IRowUri;
 
   /**
@@ -91,8 +94,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     return this._status;
   }
 
-  public get isReady() {
-    return this._isReady;
+  public get isLoaded() {
+    return this._isLoaded;
   }
 
   public get types() {
@@ -136,15 +139,10 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * Methods
    */
 
-  public async ready() {
-    await this.load();
-    return this;
-  }
-
   public async load(
     options: { props?: (keyof T)[]; force?: boolean } = {},
   ): Promise<t.ITypedSheetRow<T>> {
-    if (this.isReady && !options.force) {
+    if (this.isLoaded && !options.force) {
       return this;
     }
 
@@ -170,13 +168,13 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
           .map(async columnDef => {
             const res = await this.ctx.fetch.getCells({ ns, query });
             const key = `${columnDef.column}${this.index + 1}`;
-            this.setData(columnDef, res.cells[key] || {});
+            this.setData(columnDef, (res.cells || {})[key] || {});
           }),
       );
 
       // Update state.
       this._status = 'LOADED';
-      this._isReady = true; // NB: Always true after initial load.
+      this._isLoaded = true; // NB: Always true after initial load.
 
       // Finish up.
       this.fire({ type: 'SHEET/row/loaded', payload: { row, index } });
@@ -216,6 +214,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     const self = this; // tslint:disable-line
     const columnDef = this.findColumnByProp(name);
     const target = TypeTarget.parse(columnDef.target);
+    const typename = columnDef.type.typename;
 
     if (!target.isValid) {
       const err = `Property '${name}' (column ${columnDef.column}) has an invalid target '${columnDef.target}'.`;
@@ -260,7 +259,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
           const links = cell.links;
           const typeDef = columnDef as t.IColumnTypeDef<t.ITypeRef>;
-          const res = self.getOrCreateRef({ typeDef, links });
+          const res = self.getOrCreateRef({ typename, typeDef, links });
           if (!res.exists) {
             self._refs[name as string] = res.ref; // NB: Cache instance.
           }
@@ -349,16 +348,20 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     this._data[columnDef.column] = data;
   }
 
-  private getOrCreateRef(args: { typeDef: t.IColumnTypeDef<t.ITypeRef>; links?: t.IUriMap }) {
-    const { typeDef, links = {} } = args;
+  private getOrCreateRef(args: {
+    typename: string;
+    typeDef: t.IColumnTypeDef<t.ITypeRef>;
+    links?: t.IUriMap;
+  }) {
+    const { typename, typeDef, links = {} } = args;
     const ctx = this.ctx;
     const isArray = typeDef.type.isArray;
     const { link } = TypedSheetRefs.refLink({ typeDef, links });
     const exists = Boolean(link);
     const parent = Uri.create.cell(this.uri.ns, `${typeDef.column}${this.index + 1}`);
     const ref = isArray
-      ? TypedSheetRefs.create({ parent, typeDef, ctx })
-      : TypedSheetRef.create({ typeDef, ctx });
+      ? TypedSheetRefs.create({ typename, typeDef, ctx, parent })
+      : TypedSheetRef.create({ typename, typeDef, ctx });
 
     return { ref, exists };
   }

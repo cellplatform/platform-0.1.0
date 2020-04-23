@@ -2,6 +2,7 @@ import { t } from '../common';
 
 type D = t.ITypeDefPayload;
 export type SampleTypeDefs = {
+  'ns:foo.multi': D;
   'ns:foo': D;
   'ns:foo.color': D;
   'ns:foo.primitives': D;
@@ -13,103 +14,152 @@ export type SampleTypeDefs = {
 };
 
 export const TYPE_DEFS: SampleTypeDefs = {
+  'ns:foo.multi': {
+    columns: {
+      A: { props: { def: { prop: 'MyOne.title', type: 'string' } } },
+      B: {
+        props: {
+          def: [
+            { prop: 'MyOne.foo', type: 'string', target: 'inline:foo', default: 'foo-default' },
+            { prop: 'MyTwo.bar', type: 'string', target: 'inline:bar', default: 'bar-default' }, // NB: two distinct types represented on the same cell.
+          ],
+        },
+      },
+      C: { props: { def: { prop: 'MyTwo.name', type: 'string' } } },
+    },
+  },
+
   'ns:foo': {
-    ns: { type: { typename: 'MyRow' } },
     columns: {
       A: {
         props: {
-          prop: {
-            name: 'title',
-            type: 'string',
-            default: 'Untitled',
-          },
+          def: { prop: 'MyRow.title', type: 'string', default: 'Untitled' },
         },
       },
       B: {
-        props: { prop: { name: 'isEnabled', type: 'boolean | null', target: 'inline:isEnabled' } },
+        props: {
+          def: { prop: 'MyRow.isEnabled', type: 'boolean | null', target: 'inline:isEnabled' },
+        },
       },
       C: {
-        props: { prop: { name: 'color?', type: 'ns:foo.color', target: 'inline:color' } },
+        props: {
+          def: { prop: 'MyRow.color?', type: 'ns:foo.color/MyColor', target: 'inline:color' },
+        },
       },
-      D: { props: { prop: { name: 'message', type: 'ns:foo.message | null', target: 'ref' } } },
-      E: { props: { prop: { name: 'messages', type: 'ns:foo.message[]', target: 'ref' } } },
+      D: {
+        props: {
+          def: { prop: 'MyRow.message', type: 'ns:foo.message/MyMessage | null', target: 'ref' },
+        },
+      },
+      E: {
+        props: {
+          def: { prop: 'MyRow.messages', type: 'ns:foo.message/MyMessage[]', target: 'ref' },
+        },
+      },
     },
   },
 
   'ns:foo.color': {
-    ns: { type: { typename: 'MyColor' } },
     columns: {
-      A: { props: { prop: { name: 'label', type: 'string' } } },
-      B: { props: { prop: { name: 'color', type: '"red" | "green" | "blue"' } } },
-      C: { props: { prop: { name: 'description?', type: 'string' } } },
+      A: { props: { def: { prop: 'MyColor.label', type: 'string' } } },
+      B: { props: { def: { prop: 'MyColor.color', type: '"red" | "green" | "blue"' } } },
+      C: { props: { def: { prop: 'MyColor.description?', type: 'string' } } },
     },
   },
 
   'ns:foo.primitives': {
-    ns: { type: { typename: 'Primitives' } },
     columns: {
       A: {
         props: {
-          prop: { name: 'stringValue', type: 'string', default: { value: 'Hello (Default)' } },
+          def: {
+            prop: 'Primitives.stringValue',
+            type: 'string',
+            default: { value: 'Hello (Default)' },
+          },
         },
       },
-      B: { props: { prop: { name: 'numberValue', type: 'number', default: 999 } } },
-      C: { props: { prop: { name: 'booleanValue', type: 'boolean', default: true } } },
-      D: { props: { prop: { name: 'nullValue', type: 'null | string | number', default: null } } },
-      E: { props: { prop: { name: 'undefinedValue?', type: 'string' } } },
-
-      F: { props: { prop: { name: 'stringProp', type: 'string', target: 'inline:string' } } },
-      G: { props: { prop: { name: 'numberProp', type: 'number', target: 'inline:number' } } },
-      H: { props: { prop: { name: 'booleanProp', type: 'boolean', target: 'inline:boolean' } } },
-      I: { props: { prop: { name: 'nullProp', type: 'null | number', target: 'inline:null' } } },
+      B: { props: { def: { prop: 'Primitives.numberValue', type: 'number', default: 999 } } },
+      C: { props: { def: { prop: 'Primitives.booleanValue', type: 'boolean', default: true } } },
+      D: {
+        props: {
+          def: { prop: 'Primitives.nullValue', type: 'null | string | number', default: null },
+        },
+      },
+      E: { props: { def: { prop: 'Primitives.undefinedValue?', type: 'string' } } },
+      F: {
+        props: { def: { prop: 'Primitives.stringProp', type: 'string', target: 'inline:string' } },
+      },
+      G: {
+        props: { def: { prop: 'Primitives.numberProp', type: 'number', target: 'inline:number' } },
+      },
+      H: {
+        props: {
+          def: { prop: 'Primitives.booleanProp', type: 'boolean', target: 'inline:boolean' },
+        },
+      },
+      I: {
+        props: {
+          def: { prop: 'Primitives.nullProp', type: 'null | number', target: 'inline:null' },
+        },
+      },
       K: {
-        props: { prop: { name: 'undefinedProp?', type: 'string', target: 'inline:undefined' } },
+        props: {
+          def: { prop: 'Primitives.undefinedProp?', type: 'string', target: 'inline:undefined' },
+        },
       },
     },
   },
 
   'ns:foo.enum': {
-    ns: { type: { typename: 'Enum' } },
     columns: {
-      A: { props: { prop: { name: 'single?', type: '"hello"' } } },
-      B: { props: { prop: { name: 'union', type: '"red" | "green" | "blue"[]' } } },
-      C: { props: { prop: { name: 'array', type: '("red" | "green" | "blue")[]' } } },
+      A: { props: { def: { prop: 'Enum.single?', type: '"hello"' } } },
+      B: { props: { def: { prop: 'Enum.union', type: '"red" | "green" | "blue"[]' } } },
+      C: { props: { def: { prop: 'Enum.array', type: '("red" | "green" | "blue")[]' } } },
     },
   },
 
   'ns:foo.messages': {
-    ns: { type: { typename: 'MyMessages' } },
+    ns: { type: {} },
     columns: {
-      A: { props: { prop: { name: 'channel', type: 'string' } } },
-      B: { props: { prop: { name: 'color?', type: 'ns:foo.color', target: 'ref' } } },
-      C: { props: { prop: { name: 'messages', type: 'ns:foo.message[]', target: 'ref' } } },
+      A: { props: { def: { prop: 'MyMessages.channel', type: 'string' } } },
+      B: {
+        props: { def: { prop: 'MyMessages.color?', type: 'ns:foo.color/MyColor', target: 'ref' } },
+      },
+      C: {
+        props: {
+          def: { prop: 'MyMessages.messages', type: 'ns:foo.message/MyMessage[]', target: 'ref' },
+        },
+      },
     },
   },
 
   'ns:foo.message': {
-    ns: { type: { typename: 'MyMessage' } },
     columns: {
-      A: { props: { prop: { name: 'date', type: 'number', default: -1 } } },
-      B: { props: { prop: { name: 'user', type: 'string', default: 'anon' } } },
-      C: { props: { prop: { name: 'message', type: 'string' } } },
+      A: { props: { def: { prop: 'MyMessage.date', type: 'number', default: -1 } } },
+      B: { props: { def: { prop: 'MyMessage.user', type: 'string', default: 'anon' } } },
+      C: { props: { def: { prop: 'MyMessage.message', type: 'string' } } },
     },
   },
 
   'ns:foo.nested': {
-    ns: { type: { typename: 'MyNested' } },
     columns: {
-      A: { props: { prop: { name: 'one', type: '(string)' } } },
-      B: { props: { prop: { name: 'two', type: 'string | ("red" | boolean | "blue")' } } },
-      C: { props: { prop: { name: 'three', type: 'boolean | (ns:foo.color | string)' } } },
+      A: { props: { def: { prop: 'MyNested.one', type: '(string)' } } },
+      B: { props: { def: { prop: 'MyNested.two', type: 'string | ("red" | boolean | "blue")' } } },
+      C: {
+        props: {
+          def: { prop: 'MyNested.three', type: 'boolean | (ns:foo.color/MyColor | string)' },
+        },
+      },
     },
   },
 
   'ns:foo.defaults': {
-    ns: { type: { typename: 'MyDefaults' } },
     columns: {
-      A: { props: { prop: { name: 'title', type: 'string', default: 'Untitled' } } },
+      A: { props: { def: { prop: 'MyDefault.title', type: 'string', default: 'Untitled' } } },
       B: {
-        props: { prop: { name: 'foo', type: 'string', default: { ref: 'cell:foo.sample:A1' } } },
+        props: {
+          def: { prop: 'MyDefault.foo', type: 'string', default: { ref: 'cell:foo.sample:A1' } },
+        },
       },
     },
   },

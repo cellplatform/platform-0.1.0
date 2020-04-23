@@ -2,6 +2,7 @@ import { R, t, util, Schema } from './common';
 import { TypedSheet } from './TypedSheet';
 
 export type IArgs = {
+  typename: string;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   parent: string | t.ICellUri;
   ctx: t.SheetCtx;
@@ -42,6 +43,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
    */
   private constructor(args: IArgs) {
     this.typeDef = args.typeDef;
+    this.typename = args.typename;
     this.parent = util.formatCellUri(args.parent);
     this.ctx = args.ctx;
   }
@@ -55,7 +57,8 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
 
   public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
   public ns: t.INsUri = util.formatNsUri(TypedSheetRefs.PLACEHOLDER);
-  public parent: t.ICellUri;
+  public readonly typename: string;
+  public readonly parent: t.ICellUri;
 
   /**
    * [Properties]
@@ -66,7 +69,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
 
   public get sheet() {
     if (!this.isReady) {
-      throw new Error(`Sheet '${this.ns.toString()}' called before [ready] completes.`);
+      throw new Error(`Sheet '${this.ns.toString()}' property called before [isReady].`);
     }
     return this._sheet;
   }
@@ -105,15 +108,12 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     return promise;
   }
 
-  public async cursor(options?: string | { range?: string }) {
+  public async data(options: t.ITypedSheetDataOptions = {}) {
     if (!this.isReady) {
       await this.ready();
     }
-    type O = { range?: string };
-    const args: O = typeof options === 'string' ? { range: options } : options || {};
-    const cursor = this.sheet.cursor(args.range);
-    await cursor.load();
-    return cursor;
+    const typename = this.typename;
+    return this.sheet.data({ ...options, typename }).load();
   }
 
   /**
@@ -128,7 +128,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     const key = this.parent.key;
     const query = `${key}:${key}`;
     const res = await this.ctx.fetch.getCells({ ns, query });
-    return res.cells[key];
+    return (res.cells || {})[key];
   }
 
   private async ensureLink() {

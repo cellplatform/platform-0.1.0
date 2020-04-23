@@ -7,33 +7,34 @@ type TypeDefs = { [key: string]: t.ITypeDefPayload };
 
 export const DEFS: TypeDefs = {
   [NS.TYPE.APP]: {
-    ns: { type: { typename: 'CellApp' } },
     columns: {
-      A: { props: { prop: { name: 'title', type: 'string', default: 'CellOS' } } },
+      A: { props: { def: { prop: 'CellApp.title', type: 'string', default: 'CellOS' } } },
       B: {
-        props: { prop: { name: 'windowDefs', type: `${NS.TYPE.WINDOW_DEF}[]`, target: 'ref' } },
+        props: {
+          def: { prop: 'CellApp.windowDefs', type: `${NS.TYPE.WINDOW_DEF}[]`, target: 'ref' },
+        },
       },
-      C: { props: { prop: { name: 'windows', type: `${NS.TYPE.WINDOW}[]`, target: 'ref' } } },
+      C: {
+        props: { def: { prop: 'CellApp.windows', type: `${NS.TYPE.WINDOW}[]`, target: 'ref' } },
+      },
     },
   },
   [NS.TYPE.WINDOW_DEF]: {
-    ns: { type: { typename: 'CellAppWindowDef' } },
     columns: {
-      A: { props: { prop: { name: 'kind', type: 'string', default: '' } } },
-      B: { props: { prop: { name: 'width', type: 'number', default: 1200 } } },
-      C: { props: { prop: { name: 'height', type: 'number', default: 800 } } },
+      A: { props: { def: { prop: 'CellAppWindowDef.kind', type: 'string', default: '' } } },
+      B: { props: { def: { prop: 'CellAppWindowDef.width', type: 'number', default: 1200 } } },
+      C: { props: { def: { prop: 'CellAppWindowDef.height', type: 'number', default: 800 } } },
     },
   },
   [NS.TYPE.WINDOW]: {
-    ns: { type: { typename: 'CellAppWindow' } },
     columns: {
-      A: { props: { prop: { name: 'id', type: 'string', default: '' } } },
-      B: { props: { prop: { name: 'kind', type: 'string', default: '' } } },
-      C: { props: { prop: { name: 'title', type: 'string', default: 'Untitled' } } },
-      D: { props: { prop: { name: 'width', type: 'number', default: -1 } } },
-      E: { props: { prop: { name: 'height', type: 'number', default: -1 } } },
-      F: { props: { prop: { name: 'x', type: 'number' } } },
-      G: { props: { prop: { name: 'y', type: 'number' } } },
+      A: { props: { def: { prop: 'CellAppWindow.id', type: 'string', default: '' } } },
+      B: { props: { def: { prop: 'CellAppWindow.kind', type: 'string', default: '' } } },
+      C: { props: { def: { prop: 'CellAppWindow.title', type: 'string', default: 'Untitled' } } },
+      D: { props: { def: { prop: 'CellAppWindow.width', type: 'number', default: -1 } } },
+      E: { props: { def: { prop: 'CellAppWindow.height', type: 'number', default: -1 } } },
+      F: { props: { def: { prop: 'CellAppWindow.x', type: 'number' } } },
+      G: { props: { def: { prop: 'CellAppWindow.y', type: 'number' } } },
     },
   },
 };
@@ -58,7 +59,6 @@ export async function writeTypeDefs(host: string, options: { save?: boolean } = 
   if (options.save) {
     const type = Client.type({ http });
     const ts = await type.typescript(NS.TYPE.APP);
-    const dir = fs.resolve('src');
-    await ts.save(fs, dir, { filename: 'types.g' });
+    await ts.save(fs, fs.resolve('src/types.g'));
   }
 }

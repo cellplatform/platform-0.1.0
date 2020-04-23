@@ -29,6 +29,7 @@ const format = <U extends t.IUri>(args: {
   throw?: boolean;
 }) => {
   const { prefix } = args;
+  const defaultThrow = defaultValue(args.throw, true);
   let input = args.input || '';
 
   if (typeof input === 'string') {
@@ -37,7 +38,7 @@ const format = <U extends t.IUri>(args: {
   }
 
   const uri = typeof input === 'object' ? input : Uri.parse<U>(input).parts;
-  if (uri.type !== args.type && defaultValue(args.throw, true)) {
+  if (uri.type !== args.type && defaultThrow) {
     throw new Error(`URI is not of type ${args.type} (given "${uri.toString()}")`);
   }
 

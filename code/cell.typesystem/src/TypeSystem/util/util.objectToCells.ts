@@ -5,7 +5,7 @@ import { TypeTarget } from '../TypeTarget';
  * Converts typed data-objects to cells.
  */
 export function objectToCells<T>(input: t.ITypeDef[] | t.INsTypeDef) {
-  const types = Array.isArray(input) ? input : input.columns;
+  const types = Array.isArray(input) ? input : input?.columns || [];
   const api = {
     /**
      * Construct a CellMap row from the given data-object.

@@ -1,7 +1,7 @@
 import { expect, t, TYPE_DEFS, testFetch } from '../../test';
 import { TypeScript } from '.';
 import { TypeClient } from '../TypeClient';
-import { ERROR_TYPENAME } from './fn.validate';
+import { ERROR_TYPENAME, ERROR_PROPNAME } from './fn.validate';
 
 describe('TypeScript', () => {
   describe('TypeScript.primitives', () => {
@@ -66,6 +66,33 @@ describe('TypeScript', () => {
       expect(res).to.include(`export declare type MyFoo = {`);
       expect(res).to.include(`name: string;`);
       expect(res).to.include(`isEnabled?: boolean;`);
+    });
+
+    it('filters type', () => {
+      const typename = 'MyFoo';
+      const types = [
+        { prop: 'name', type: string },
+        { prop: 'isEnabled', type: boolean, optional: true },
+      ];
+
+      const typenames: string[] = [];
+
+      const res1 = TypeScript.toDeclaration({
+        typename,
+        types,
+        filterType: args => typenames.push(args.typename),
+      });
+
+      expect(typenames).to.eql(['MyFoo']);
+
+      const res2 = TypeScript.toDeclaration({
+        typename,
+        types,
+        filterType: args => !typenames.includes(args.typename),
+      });
+
+      expect(res1).to.include(`export declare type MyFoo = {`);
+      expect(res2).to.eql('\n');
     });
 
     it('with header', () => {
@@ -148,9 +175,9 @@ describe('TypeScript', () => {
 
     it('union reference - type: "ns:foo.message | null"', async () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
-      const def = await TypeClient.load({ ns: 'foo', fetch });
-      const typename = def.typename;
-      const types = def.columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
+      const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
+      const typename = defs[0].typename;
+      const types = defs[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
 
       const res = TypeScript.toDeclaration({ typename, types });
 
@@ -171,9 +198,9 @@ describe('TypeScript', () => {
 
     it('with imports', async () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
-      const def = await TypeClient.load({ ns: 'foo', fetch });
-      const typename = def.typename;
-      const types = def.columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
+      const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
+      const typename = defs[0].typename;
+      const types = defs[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
 
       const imports = `
         import * as f from "@platform/foo"
@@ -193,9 +220,9 @@ describe('TypeScript', () => {
 
     it('[adjustLine] handler', async () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
-      const def = await TypeClient.load({ ns: 'foo', fetch });
-      const typename = def.typename;
-      const types = def.columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
+      const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
+      const typename = defs[0].typename;
+      const types = defs[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
 
       const res = TypeScript.toDeclaration({
         typename,
@@ -254,6 +281,34 @@ describe('TypeScript', () => {
       test('Fo#o', 'Typename contains invalid characters');
       test('Fo!o', 'Typename contains invalid characters');
       test(' 1Foo', 'Typename starts with a number');
+    });
+
+    it('validate.propname', async () => {
+      const test = (propname: string | undefined, err?: string) => {
+        const res = TypeScript.validate.propname(propname);
+        const isValid = !err;
+        expect(res.isValid).to.eql(isValid);
+        expect(res.input).to.eql((propname || '').trim());
+        if (err) {
+          expect(res.error).to.include(err);
+          expect(res.error).to.include(ERROR_PROPNAME);
+        } else {
+          expect(res.error).to.eql(undefined);
+        }
+      };
+
+      // Valid.
+      test('foo');
+      test('Foo');
+      test(' foo ');
+
+      // Invalid.
+      test(undefined, 'Property-name is empty');
+      test('  ', 'Property-name is empty');
+      test('fo.o', 'Property-name contains invalid characters');
+      test('fo o', 'Property-name contains invalid characters');
+      test('fo#o', 'Property-name contains invalid characters');
+      test('Fo!o', 'Property-name contains invalid characters');
     });
   });
 

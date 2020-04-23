@@ -1,7 +1,7 @@
 import { t } from '../../common';
 import { util } from '../util';
-import { load } from './fn.load';
-import { typescript } from './fn.typescript';
+import { load } from './TypeClient.fn.load';
+import { typescript } from './TypeClient.fn.typescript';
 
 /**
  * Client that retrieves the type definition of a
@@ -13,9 +13,10 @@ export class TypeClient {
    */
   public static client(client: t.IHttpClient) {
     const fetch = util.fetcher.fromClient(client);
-    return {
+    const api = {
       load: (ns: string | t.INsUri) => TypeClient.load({ ns, fetch }),
     };
+    return api;
   }
 
   /**

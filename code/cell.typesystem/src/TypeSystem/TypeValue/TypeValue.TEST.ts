@@ -16,8 +16,11 @@ describe('TypeValue', () => {
       test('  boolean  ', false);
 
       test('ns:foo', true);
+      test('ns:foo/MyThing', true);
       test('  ns:foo  ', true);
+      test('  ns:foo/MyThing  ', true);
       test('ns:foo[]', true);
+      test('ns:foo/MyThing[]', true);
     });
 
     it('isArray: eg. "string[]" or "(string | ns:foo)[]"', () => {
@@ -233,32 +236,46 @@ describe('TypeValue', () => {
         expect(res.typename).to.eql('cell:foo:A1');
       });
 
-      const test = (input: string, scope: t.ITypeRef['scope'], isArray?: boolean) => {
+      const test = (
+        input: string,
+        scope: t.ITypeRef['scope'],
+        uri: string,
+        typename: string,
+        isArray?: boolean,
+      ) => {
         const res = TypeValue.toType(input);
         expect(res.kind).to.eql('REF');
         if (res.kind === 'REF') {
-          expect(res.uri).to.eql(TypeValue.trimArray(input));
+          expect(res.uri).to.eql(uri);
           expect(res.scope).to.eql(scope);
-          expect(res.typename).to.eql(''); // NB: Populated elsewhere.
-          expect(res.types).to.eql([]); //    NB: Populated elsewhere.
+          expect(res.typename).to.eql(typename);
+          expect(res.types).to.eql([]); // NB: Populated elsewhere.
           expect(res.isArray).to.eql(isArray);
         }
       };
 
       it('scope: NS', () => {
-        test('ns:foo', 'NS');
+        test('ns:foo', 'NS', 'ns:foo', '');
+        test(' ns:foo ', 'NS', 'ns:foo', '');
+        test('ns:foo/MyThing ', 'NS', 'ns:foo', 'MyThing');
       });
 
       it('scope: NS (array)', () => {
-        test('ns:foo[]', 'NS', true);
+        test('ns:foo[]', 'NS', 'ns:foo', '', true);
+        test(' ns:foo[] ', 'NS', 'ns:foo', '', true);
+        test('ns:foo/MyThing[]', 'NS', 'ns:foo', 'MyThing', true);
       });
 
       it('scope: COLUMN', () => {
-        test('cell:foo:A', 'COLUMN');
+        test('cell:foo:A', 'COLUMN', 'cell:foo:A', '');
+        test(' cell:foo:A ', 'COLUMN', 'cell:foo:A', '');
+        test('cell:foo:A/MyThing ', 'COLUMN', 'cell:foo:A', 'MyThing');
       });
 
       it('scope: COLUMN (array)', () => {
-        test('cell:foo:A[]', 'COLUMN', true);
+        test('cell:foo:A[]', 'COLUMN', 'cell:foo:A', '', true);
+        test(' cell:foo:A[] ', 'COLUMN', 'cell:foo:A', '', true);
+        test('cell:foo:A/MyThing[] ', 'COLUMN', 'cell:foo:A', 'MyThing', true);
       });
     });
   });
@@ -346,20 +363,22 @@ describe('TypeValue', () => {
     });
 
     it('REF', () => {
-      const test = (input: string, isArray?: boolean) => {
+      const test = (input: string, uri: string, typename: string, isArray?: boolean) => {
         const res = TypeValue.parse(input);
         expect(res.type.kind).to.eql('REF');
         expect(res.type.isArray).to.eql(isArray);
         if (res.type.kind === 'REF') {
-          const uri = TypeValue.trimArray(input);
           expect(res.type.uri).to.eql(uri);
-          expect(res.type.typename).to.eql(''); // NB: Stub REF object, requires lookup against network.
+          expect(res.type.typename).to.eql(typename);
           expect(res.type.types).to.eql([]);
         }
       };
-      test('ns:foo');
-      test('  ns:foo  ');
-      test('ns:foo[]', true); // NB: Trims array suffix.
+      test('ns:foo', 'ns:foo', '');
+      test('  ns:foo  ', 'ns:foo', '');
+      test('ns:foo[]', 'ns:foo', '', true); // NB: Trims array suffix.
+
+      test('ns:foo/MyThing', 'ns:foo', 'MyThing');
+      test('ns:foo/MyThing[]', 'ns:foo', 'MyThing', true);
     });
 
     describe('UNION', () => {

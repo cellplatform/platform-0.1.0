@@ -26,8 +26,8 @@ export async function getOrCreateSys(host: string) {
   const sheet = await type.sheet<t.CellApp>(NS.APP);
   sync.saveMonitor({ http, state: sheet.state, flush$ });
 
-  const app = sheet.cursor().row(0);
-  await app.ready();
+  const app = sheet.data('MyRow').row(0);
+  await app.load();
 
   // Retrieve windows.
   const windows = await app.props.windows.ready();
@@ -60,7 +60,7 @@ export async function writeIdeDef(args: {
   force?: boolean;
 }) {
   const { ctx, kind, uploadDir } = args;
-  const defs = await ctx.windowDefs.cursor();
+  const defs = await ctx.windowDefs.data();
   const exists = defs.rows.some(def => def.props.kind === kind);
   if (exists && !args.force) {
     return;

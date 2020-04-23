@@ -1,23 +1,23 @@
-import { Subject } from 'rxjs';
-
 import { coord, t, Uri, util } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
 
 type IArgs = {
   ns: string | t.INsUri;
+  typename: string;
   types: t.IColumnTypeDef[];
   ctx: t.SheetCtx;
   range?: string;
 };
 
-type ILoading<T> = { query: string; promise: Promise<t.ITypedSheetCursor<T>> };
+type ILoading<T> = { query: string; promise: Promise<t.ITypedSheetData<T>> };
 
 /**
- * A cursor for iterating over a set of sheet rows
+ * An exanding data-cursor for iterating over a set of rows
+ * within a sheet for a particular type.
  */
-export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
-  public static create = <T>(args: IArgs): t.ITypedSheetCursor<T> => {
-    return new TypedSheetCursor<T>(args);
+export class TypedSheetData<T> implements t.ITypedSheetData<T> {
+  public static create = <T>(args: IArgs): t.ITypedSheetData<T> => {
+    return new TypedSheetData<T>(args);
   };
 
   public static DEFAULT = {
@@ -27,7 +27,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
 
   public static formatRange(input?: string) {
     const text = (input || '').trim();
-    const DEFAULT = TypedSheetCursor.DEFAULT;
+    const DEFAULT = TypedSheetData.DEFAULT;
     if (!text) {
       return DEFAULT.RANGE;
     }
@@ -67,9 +67,10 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
    */
   private constructor(args: IArgs) {
     this.uri = util.formatNsUri(args.ns);
+    this.typename = args.typename;
     this.types = args.types;
     this.ctx = args.ctx;
-    this._range = TypedSheetCursor.formatRange(args.range);
+    this._range = TypedSheetData.formatRange(args.range);
   }
 
   /**
@@ -79,12 +80,13 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
   private readonly types: t.IColumnTypeDef[];
   private _rows: t.ITypedSheetRow<T>[] = [];
   private _range: string;
-  private _status: t.ITypedSheetCursor<T>['status'] = 'INIT';
+  private _status: t.ITypedSheetData<T>['status'] = 'INIT';
   private _total = -1;
   private _loading: ILoading<T>[] = [];
-  private _isReady = false;
+  private _isLoaded = false;
 
   public readonly uri: t.INsUri;
+  public readonly typename: string;
 
   /**
    * [Properties]
@@ -101,8 +103,8 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     return this._status;
   }
 
-  public get isReady() {
-    return this._isReady;
+  public get isLoaded() {
+    return this._isLoaded;
   }
 
   public get total() {
@@ -128,19 +130,14 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     return this._rows[index];
   }
 
-  public async ready() {
-    await this.load();
-    return this;
-  }
-
-  public async load(args?: string | t.ITypedSheetCursorLoad): Promise<t.ITypedSheetCursor<T>> {
-    const isLoaded = this.isReady;
+  public async load(args: string | t.ITypedSheetDataOptions): Promise<t.ITypedSheetData<T>> {
+    const isLoaded = this.isLoaded;
     const ns = this.uri.toString();
 
     // Wrangle the given argument range.
     let argRange = typeof args === 'string' ? args : args?.range;
     if (argRange) {
-      argRange = TypedSheetCursor.formatRange(argRange);
+      argRange = TypedSheetData.formatRange(argRange);
       if (!isLoaded) {
         // NB: Replace if this is the first load.
         this._range = argRange;
@@ -157,7 +154,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
       return alreadyLoading.promise; // NB: A load operation is already in progress.
     }
 
-    const promise = new Promise<t.ITypedSheetCursor<T>>(async (resolve, reject) => {
+    const promise = new Promise<t.ITypedSheetData<T>>(async (resolve, reject) => {
       this._status = 'LOADING';
 
       // Fire BEFORE event.
@@ -188,7 +185,7 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
       // Update state.
       this._total = total.rows;
       this._status = 'LOADED';
-      this._isReady = true; // NB: Always true after initial load.
+      this._isLoaded = true; // NB: Always true after initial load.
       this._loading = this._loading.filter(item => item.query !== query);
 
       // Fire BEFORE event.
@@ -220,7 +217,8 @@ export class TypedSheetCursor<T> implements t.ITypedSheetCursor<T> {
     const uri = Uri.create.row(this.uri.toString(), (index + 1).toString());
     const columns = this.types;
     const ctx = this.ctx;
-    return TypedSheetRow.create<T>({ uri, columns, ctx });
+    const typename = this.typename;
+    return TypedSheetRow.create<T>({ typename, uri, columns, ctx });
   }
 }
 

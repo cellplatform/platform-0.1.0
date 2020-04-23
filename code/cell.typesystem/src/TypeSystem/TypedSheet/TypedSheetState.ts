@@ -13,9 +13,9 @@ export type IArgs = {
 /**
  * State machine for a strongly-typed sheet.
  */
-export class TypedSheetState<T> implements t.ITypedSheetState<T> {
+export class TypedSheetState implements t.ITypedSheetState {
   public static create<T>(args: IArgs) {
-    return new TypedSheetState<T>(args);
+    return new TypedSheetState(args);
   }
 
   /**
@@ -24,16 +24,16 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
   private constructor(args: IArgs) {
     const fetch = TypeCache.fetch(args.fetch, { cache: args.cache });
 
-    // INTERCEPT: Return an pending changes to cells from the fetch method.
+    // INTERCEPT: Return pending changes to cells from the fetch method.
     const getCells: t.FetchSheetCells = async args => {
       const res = await fetch.getCells(args);
       const changes = this._changes;
       const keys = Object.keys(changes);
       if (keys.length > 0) {
-        res.cells = { ...res.cells };
+        const cells = (res.cells = { ...(res.cells || {}) });
         keys
-          .filter(key => Schema.coord.cell.isCell(key) && res.cells[key])
-          .forEach(key => (res.cells[key] = { ...changes[key].to }));
+          .filter(key => Schema.coord.cell.isCell(key) && cells[key])
+          .forEach(key => (cells[key] = { ...changes[key].to }));
       }
       return res;
     };
@@ -118,7 +118,7 @@ export class TypedSheetState<T> implements t.ITypedSheetState<T> {
     const ns = this.uri.id;
     const query = `${key}:${key}`;
     const res = await this.fetch.getCells({ ns, query });
-    return res.cells[key];
+    return (res.cells || {})[key];
   }
 
   public clearChanges(action: t.ITypedSheetChangesCleared['action']) {

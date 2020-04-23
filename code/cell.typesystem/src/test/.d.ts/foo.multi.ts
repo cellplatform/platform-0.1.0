@@ -2,7 +2,7 @@
  * Generated types defined in namespace:
  * 
  *    |                
- *    |➔  ns:foo.defaults
+ *    |➔  ns:foo.multi
  *    |
  *
  * By:
@@ -17,11 +17,16 @@
  *        that uses a [TypedSheet] to programatically manipulate 
  *        the namespace in a strongly-typed manner, for example:
  * 
- *            import * as t from './foo.defaults.ts';
+ *            import * as t from './foo.multi.ts';
  * 
  */
 
-export declare type MyDefault = {
+export declare type MyOne = {
   title: string;
   foo: string;
+};
+
+export declare type MyTwo = {
+  bar: string;
+  name: string;
 };

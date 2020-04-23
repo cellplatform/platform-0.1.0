@@ -1,5 +1,6 @@
 import { ERROR, ErrorList, t } from '../../common';
 import { TypeScript } from '../TypeScript';
+import { TypeProp } from '../TypeProp';
 
 /**
  * Validate namespace types.
@@ -66,8 +67,8 @@ export function columns(args: { ns: string; columns: t.IColumnTypeDef[]; errors:
 
   // Ensure there are no duplicate property names.
   (() => {
-    const props = columns.map(c => c.prop);
     const duplicates: string[] = [];
+    const props = columns.map(column => column.prop);
     props.forEach(name => {
       if (!duplicates.includes(name)) {
         if (props.filter(prop => prop === name).length > 1) {
@@ -80,6 +81,19 @@ export function columns(args: { ns: string; columns: t.IColumnTypeDef[]; errors:
       const conficts = columns.filter(({ prop }) => prop === name).map(({ column }) => column);
       const message = `The property name '${name}' is duplicated in columns [${conficts}]. Must be unique.`;
       errors.add(ns, message, { errorType: ERROR.TYPE.DUPLICATE_PROP });
+    });
+  })();
+
+  // Ensure the prop names are valid.
+  (() => {
+    columns.forEach(({ prop, column }) => {
+      const error = TypeProp.parse(prop).error;
+      if (error) {
+        errors.add(ns, error.message, {
+          column,
+          errorType: ERROR.TYPE.DEF_INVALID,
+        });
+      }
     });
   })();
 

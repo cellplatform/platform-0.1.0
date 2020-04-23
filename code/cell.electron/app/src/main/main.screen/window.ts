@@ -9,8 +9,8 @@ const SYS = constants.SYS;
  */
 export async function createWindows(args: { defName: string; ctx: t.IAppCtx }) {
   const ctx = await client.getOrCreateSys(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
-  const defs = await ctx.windowDefs.cursor();
-  const instances = await ctx.windows.cursor();
+  const defs = await ctx.windowDefs.data();
+  const instances = await ctx.windows.data();
   const def = defs.rows.find(r => r.props.kind === args.defName);
 
   if (!def) {
@@ -59,7 +59,7 @@ export async function createWindow(args: {
   const ctx = await client.getOrCreateSys(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
   const host = ctx.host;
 
-  const windows = await ctx.windows.cursor();
+  const windows = await ctx.windows.data();
   const window = windows.rows.find(w => w.uri.toString() === instance.toString());
   if (!window) {
     throw new Error(`Could not find window model '${instance.toString()}'`);

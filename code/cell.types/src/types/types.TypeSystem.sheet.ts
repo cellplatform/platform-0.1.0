@@ -1,47 +1,49 @@
 import { t } from '../common';
 
-export type ITypedSheet<T> = {
+export type ITypedSheet<T = {}> = {
   readonly ok: boolean;
   readonly uri: t.INsUri;
-  readonly types: t.IColumnTypeDef[];
-  readonly state: t.ITypedSheetState<T>;
+  readonly typenames: string[];
+  readonly types: t.INsTypeDef[];
+  readonly state: t.ITypedSheetState;
   readonly events$: t.Observable<t.TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   dispose(): void;
-  cursor(range?: string): ITypedSheetCursor<T>;
+  data<D = T>(args: string | ITypedSheetDataArgs): ITypedSheetData<D>;
 };
+
+export type ITypedSheetDataOptions = { range?: string };
+export type ITypedSheetDataArgs = { typename: string } & ITypedSheetDataOptions;
 
 /**
  * A cursor into a subset of sheet data.
  */
-export type ITypedSheetCursor<T> = {
+export type ITypedSheetData<T> = {
+  readonly typename: string;
   readonly uri: t.INsUri;
   readonly rows: ITypedSheetRow<T>[];
   readonly range: string;
-  readonly total: number; // Total number of rows.
+  readonly total: number; // Total rows.
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
-  readonly isReady: boolean;
+  readonly isLoaded: boolean;
   exists(index: number): boolean;
   row(index: number): ITypedSheetRow<T>;
-  ready(): Promise<ITypedSheetCursor<T>>;
-  load(args?: string | ITypedSheetCursorLoad): Promise<ITypedSheetCursor<T>>;
+  load(options?: string | ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
 };
-
-export type ITypedSheetCursorLoad = { range?: string };
 
 /**
  * A single row within a sheet.
  */
 export type ITypedSheetRow<T> = {
+  readonly typename: string;
   readonly uri: t.IRowUri;
   readonly index: number;
   readonly props: ITypedSheetRowProps<T>;
   readonly types: ITypedSheetRowTypes<T>;
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
-  readonly isReady: boolean;
-  ready(): Promise<ITypedSheetRow<T>>;
+  readonly isLoaded: boolean;
   load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
   toObject(): T;
 };
@@ -50,6 +52,7 @@ export type ITypedSheetRow<T> = {
  * A connector for a reference-pointer to a single row in another sheet.
  */
 export type ITypedSheetRef<T> = {
+  typename: string;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
 };
 
@@ -57,20 +60,19 @@ export type ITypedSheetRef<T> = {
  * A connector for a reference-pointer to a set of rows in another sheet.
  */
 export type ITypedSheetRefs<T> = {
+  typename: string;
   ns: t.INsUri;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   sheet: t.ITypedSheet<T>;
   isReady: boolean;
   ready(): Promise<ITypedSheetRefs<T>>;
-  cursor(options?: string | { range?: string }): Promise<ITypedSheetCursor<T>>;
+  data(options?: ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
 };
 
 /**
  * The pure "strongly typed" READ/WRITE data-properties of the cells for a row.
  */
-export type ITypedSheetRowProps<T> = {
-  [K in keyof T]: T[K];
-};
+export type ITypedSheetRowProps<T> = { [K in keyof T]: T[K] };
 
 /**
  * The type definitions for the cells/columns in a row.

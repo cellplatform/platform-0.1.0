@@ -10,17 +10,18 @@ describe('test', () => {
       ns = ns.trim().replace(/^ns\:/, '');
 
       const fetch = testFetch({ defs: TYPE_DEFS });
-      const def = await TypeClient.load({ ns, fetch });
+      const defs = (await TypeClient.load({ ns, fetch })).defs;
 
-      const ts = TypeClient.typescript(def);
-      await ts.save(fs, dir, { filename: ns });
+      const ts = TypeClient.typescript(defs);
+      await ts.save(fs, fs.join(dir, ns));
     };
 
-    it('save: test/foo.d.ts', async () => save('foo'));
-    it('save: test/foo.primitives.d.ts', async () => save('foo.primitives'));
-    it('save: test/foo.messages.d.ts', async () => save('foo.messages'));
-    it('save: test/foo.enum.d.ts', async () => save('foo.enum'));
-    it('save: test/foo.defaults.d.ts', async () => save('foo.defaults'));
+    it('save: test/foo.ts', async () => save('foo'));
+    it('save: test/foo.primitives.ts', async () => save('foo.primitives'));
+    it('save: test/foo.messages.ts', async () => save('foo.messages'));
+    it('save: test/foo.enum.ts', async () => save('foo.enum'));
+    it('save: test/foo.defaults.ts', async () => save('foo.defaults'));
+    it('save: test/foo.multi.ts', async () => save('foo.multi'));
   });
 
   describe('fetch', () => {
@@ -38,14 +39,16 @@ describe('test', () => {
 
     it('getCells', async () => {
       const res = await fetch.getCells({ ns: 'foo', query: 'A1:ZZ99' });
+      const cells = res.cells || {};
       expect(res.total.rows).to.eql(9);
-      expect(Object.keys(res.cells)).to.eql(['A1', 'A2', 'B1', 'B5', 'C1', 'Z9']);
+      expect(Object.keys(cells).sort()).to.eql(['A1', 'A2', 'B1', 'B5', 'C1', 'Z9']);
     });
 
     it('getCells: query', async () => {
       const res = await fetch.getCells({ ns: 'foo', query: 'A1:B4' });
+      const cells = res.cells || {};
       expect(res.total.rows).to.eql(9);
-      expect(Object.keys(res.cells).sort()).to.eql(['A1', 'A2', 'B1', 'B5', 'C1', 'Z9']);
+      expect(Object.keys(cells).sort()).to.eql(['A1', 'A2', 'B1', 'B5', 'C1', 'Z9']);
     });
   });
 });

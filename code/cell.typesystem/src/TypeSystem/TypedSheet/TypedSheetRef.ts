@@ -1,6 +1,7 @@
 import { t, Uri, util, Schema } from './common';
 
 export type IArgs = {
+  typename: string;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   ctx: t.SheetCtx;
 };
@@ -24,9 +25,9 @@ export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
    * [Lifecycle]
    */
   private constructor(args: IArgs) {
-    this.typeDef = args.typeDef;
-    // this.ns = util.formatNsUri(args.ns || Schema.cuid()); // TEMP
     this.ctx = args.ctx;
+    this.typeDef = args.typeDef;
+    this.typename = args.typename;
   }
 
   /**
@@ -34,5 +35,5 @@ export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
    */
   private readonly ctx: t.SheetCtx;
   public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
-  // public readonly ns: t.INsUri;
+  public readonly typename: string;
 }

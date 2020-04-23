@@ -5,7 +5,8 @@ import { TypeCache } from '../TypeCache';
 import { TypeDefault } from '../TypeDefault';
 import { TypeValue } from '../TypeValue';
 import { formatNsUri } from '../util';
-import * as valdiate from './fn.validate';
+import * as valdiate from './TypeClient.fn.validate';
+import { TypeProp } from '../TypeProp';
 
 type Visit = { ns: string; level: number };
 type Context = {
@@ -15,8 +16,15 @@ type Context = {
   cache: t.IMemoryCache;
 };
 
+type LoadResponse = {
+  ok: boolean;
+  defs: t.INsTypeDef[];
+  errors: t.ITypeError[];
+};
+
 const toCacheKey = (uri: string, ...path: string[]) => {
-  return `TypeClient/${uri.toString()}${path.length === 0 ? '' : `/${path.join('/')}`}`;
+  const suffix = path.length === 0 ? '' : `/${path.join('/')}`;
+  return `TypeClient/${uri.toString()}${suffix}`;
 };
 
 /**
@@ -26,7 +34,7 @@ export async function load(args: {
   ns: string | t.INsUri;
   fetch: t.ISheetFetcher;
   cache?: t.IMemoryCache;
-}): Promise<t.INsTypeDef> {
+}): Promise<LoadResponse> {
   const ns = formatNsUri(args.ns, { throw: false }).toString();
 
   // Check cache (if an external cache was provided).
@@ -38,8 +46,8 @@ export async function load(args: {
       //     Wait for the first request to complete.
       return value.toPromise();
     } else if (typeof value === 'object') {
-      // Namespace already loaded within the cache.
-      return value as t.INsTypeDef;
+      // NB: Namespace already loaded within the cache.
+      return value as any;
     }
   }
 
@@ -47,55 +55,107 @@ export async function load(args: {
   const fetch = TypeCache.fetch(args.fetch, { cache });
   const errors = ErrorList.create({ defaultType: ERROR.TYPE.DEF });
   const ctx: Context = { fetch, cache, errors, visited: [] };
-  return loadNs({ level: 0, ns, ctx });
+
+  return loadNamespace({ ns, ctx, level: 0 });
 }
 
 /**
  * [INTERNAL]
  */
 
+function groupByTypename(columns: t.IColumnTypeDef[]) {
+  const ERROR_KEY = '___ERROR___';
+  const groups = R.groupBy(def => {
+    const res = TypeProp.parse(def);
+    return res.error ? ERROR_KEY : res.type;
+  }, columns);
+  delete groups[ERROR_KEY]; // NB: errors trimmed off.
+  Object.keys(groups).forEach(typename => {
+    groups[typename].forEach(item => {
+      item.prop = item.prop.substring(typename.length + 1);
+    });
+  });
+  return groups;
+}
+
+function toNsTypeDef(args: {
+  ns: string;
+  typename: string;
+  columns: t.IColumnTypeDef[];
+  errors: ErrorList;
+}) {
+  const { ns, typename, columns, errors } = args;
+
+  let typeDef: t.INsTypeDef = {
+    ok: errors.ok,
+    uri: ns,
+    typename,
+    columns,
+    errors: [],
+  };
+
+  // Validate.
+  valdiate.ns({ ns, typeDef, errors });
+
+  // Prepare final error list.
+  const columnErrors = columns.reduce(
+    (acc, { error }) => (error ? [...acc, error] : acc),
+    [] as t.ITypeError[],
+  );
+  const errs = R.uniq([...errors.list, ...columnErrors]);
+  const ok = errs.length === 0;
+  typeDef = { ...typeDef, ok, errors: errs };
+
+  // Finish up.
+  return typeDef;
+}
+
 /**
  * Loads the given namespace.
  */
-async function loadNs(args: { level: number; ns: string; ctx: Context }): Promise<t.INsTypeDef> {
+async function loadNamespace(args: {
+  level: number;
+  ns: string;
+  ctx: Context;
+}): Promise<LoadResponse> {
   const { level, ctx } = args;
   const { visited, cache, fetch, errors } = ctx;
   const ns = formatNsUri(args.ns, { throw: false }).toString();
 
   // Cache.
   const cacheKey = toCacheKey(ns);
-  const loading$ = new Subject<t.INsTypeDef>();
+  const loading$ = new Subject<LoadResponse>();
   cache.put(cacheKey, loading$);
-  loading$.subscribe(def => cache.put(cacheKey, def));
+  loading$.subscribe(response => cache.put(cacheKey, response));
 
   // Prepare return object.
-  const done = (args: { typename?: string; columns?: t.IColumnTypeDef[] } = {}) => {
-    const { typename = '', columns = [] } = args;
-    const uri = ns;
+  const done = (args: { columns?: t.IColumnTypeDef[] } = {}): LoadResponse => {
+    const { columns = [] } = args;
+    const groups = groupByTypename(columns);
+    const defs = Object.keys(groups)
+      .map(typename => ({ typename, columns: groups[typename] }))
+      .map(({ typename, columns }) => toNsTypeDef({ ns, typename, columns, errors }));
 
-    const columnErrors = columns.reduce(
-      (acc, { error }) => (error ? [...acc, error] : acc),
-      [] as t.ITypeError[],
-    );
+    const ok = errors.ok && defs.every(def => def.ok);
+    let errs: t.ITypeError[] | undefined;
 
-    let typeDef: t.INsTypeDef = {
-      ok: errors.ok,
-      uri,
-      typename,
-      columns,
-      errors: [],
+    const res: LoadResponse = {
+      ok,
+      defs,
+      get errors() {
+        if (!ok && !errs) {
+          errs = R.uniq([
+            ...errors.list,
+            ...defs.reduce((acc, def) => [...acc, ...def.errors], [] as t.ITypeError[]),
+          ]);
+        }
+        return ok ? [] : (errs as t.ITypeError[]);
+      },
     };
 
-    // Validate and prepare final error list.
-    valdiate.ns({ ns, typeDef, errors });
-    const errs = R.uniq([...errors.list, ...columnErrors]);
-    const ok = errs.length === 0;
-    typeDef = { ...typeDef, ok, errors: errs };
-
-    // Finish up.
-    loading$.next(typeDef);
+    loading$.next(res);
     loading$.complete();
-    return typeDef;
+    return res;
   };
 
   // Validate the URI.
@@ -116,8 +176,8 @@ async function loadNs(args: { level: number; ns: string; ctx: Context }): Promis
   try {
     // Retrieve namespace.
     const fetchedType = await fetch.getType({ ns });
-    if (!fetchedType.exists) {
-      const message = `The namespace "${ns}" does not exist.`;
+    if (!fetchedType.type) {
+      const message = `The namespace (${ns}) does not exist`;
       errors.add(ns, message, { errorType: ERROR.TYPE.NOT_FOUND });
       return done();
     }
@@ -126,37 +186,35 @@ async function loadNs(args: { level: number; ns: string; ctx: Context }): Promis
       return done();
     }
     if (fetchedType.type.implements === ns) {
-      const message = `The namespace (${ns}) cannot implement itself (circular-ref).`;
+      const message = `The namespace (${ns}) cannot implement itself (circular-ref)`;
       errors.add(ns, message, { errorType: ERROR.TYPE.REF_CIRCULAR });
       return done();
     }
 
     // Retrieve columns.
     const fetchedColumns = await fetch.getColumns({ ns });
-    const { columns } = fetchedColumns;
     if (fetchedColumns.error) {
       errors.add(ns, fetchedColumns.error.message);
       return done();
     }
+    const columns = fetchedColumns.columns || {};
 
     // Check for any self-references.
     const selfRefs = getSelfRefs({ ns, columns });
     if (selfRefs.length > 0) {
       const keys = selfRefs.map(item => item.key);
-      const message = `The namespace (${ns}) directly references itself in column [${keys}] (circular-ref).`;
+      const message = `The namespace (${ns}) directly references itself in column [${keys}] (circular-ref)`;
       errors.add(ns, message, { errorType: ERROR.TYPE.REF_CIRCULAR });
       return done();
     }
 
-    visited.push({ ns, level });
-
     // Read in type details for each column.
+    visited.push({ ns, level });
     return done({
-      typename: (fetchedType.type?.typename || '').trim(),
-      columns: await readColumns({ level, ns, columns, ctx }),
+      columns: await readColumns({ level, ns, ctx, columns }),
     });
   } catch (error) {
-    // Failure.
+    // Fail.
     errors.add(ns, `Failed while loading type for "${ns}". ${error.message}`);
     return done();
   }
@@ -187,24 +245,14 @@ async function readColumns(args: {
   const { ns, level, ctx } = args;
   const { errors } = ctx;
 
-  const withProps = (column: string) => {
-    const props = args.columns[column]?.props?.prop as t.CellTypeProp;
-    return { column, props };
-  };
-
   // Short-circuit any circular references.
   if (isCircularRef({ level, ns, ctx })) {
     return [];
   }
 
-  // Read columns in (either parsing simple types, or retrieve REFs from network).
-  const wait = Object.keys(args.columns)
-    .map(column => withProps(column))
-    .filter(({ props }) => Boolean(props))
-    .map(({ column, props }) => {
-      return readColumn({ level, ns, column, props, ctx });
-    });
-
+  // Read column data.
+  const list = flattenColumnTypeDefs(args.columns);
+  const wait = list.map(({ column, def }) => readColumn({ level, ns, column, def, ctx }));
   const columns = R.sortBy(R.prop('column'), await Promise.all(wait));
 
   // Finish up.
@@ -216,19 +264,19 @@ async function readColumn(args: {
   level: number;
   ns: string;
   column: string;
-  props: t.CellTypeProp;
+  def: t.CellTypeDef;
   ctx: Context;
 }): Promise<t.IColumnTypeDef> {
   const { ns, column, level, ctx } = args;
-  const target = args.props.target;
-  let type = deleteUndefined(TypeValue.parse(args.props.type).type);
+  const target = args.def.target;
+  let type = deleteUndefined(TypeValue.parse(args.def.type).type);
   let error: t.ITypeError | undefined;
 
-  let prop = (args.props.name || '').trim();
+  let prop = (args.def.prop || '').trim();
   const optional = prop.endsWith('?') ? true : undefined;
   prop = optional ? prop.replace(/\?$/, '') : prop;
 
-  let defaultValue = args.props.default;
+  let defaultValue = args.def.default;
 
   if (type.kind === 'REF') {
     const res = await readRef({ level, ns, column, ref: type, ctx });
@@ -260,7 +308,7 @@ async function readColumn(args: {
 }
 
 async function toDefaultDef(args: {
-  default: t.CellTypeProp['default'];
+  default: t.CellTypeDef['default'];
   ctx: Context;
 }): Promise<t.ITypeDefault | undefined> {
   const { ctx } = args;
@@ -326,37 +374,55 @@ async function readRef(args: {
   const unknown: t.ITypeUnknown = { kind: 'UNKNOWN', typename: nsUri };
 
   if (!Uri.is.ns(nsUri)) {
-    ctx.errors.add(ns, `The referenced type in column '${column}' is not a namespace.`, { column });
+    const msg = `The referenced type in column '${column}' is not a namespace`;
+    ctx.errors.add(ns, msg, { column, errorType: ERROR.TYPE.REF });
     return { type: unknown };
   }
 
+  if (!ref.typename) {
+    const msg = `The reference '${ref.uri}' in column '${column}' of (${ns}) does not contain a typename. Should be <uri/typename>`;
+    return {
+      type: unknown,
+      error: ctx.errors.add(ns, msg, { column, errorType: ERROR.TYPE.REF_TYPENAME }),
+    };
+  }
+
   // Retrieve the referenced namespace.
-  const loadResponse = await loadNs({
+  const loaded = await loadNamespace({
     level: level + 1,
     ns: nsUri,
     ctx,
   }); // <== RECURSION 🌳
 
   // Check for errors.
-  if (loadResponse.errors.length > 0) {
-    const msg = `Failed to load the referenced type in column '${column}' (${nsUri}).`;
-    const children = loadResponse.errors;
+  if (!loaded.ok) {
+    const msg = `Failed to load referenced type in column '${column}' (${nsUri})`;
+    const children = loaded.errors;
     return {
       type: unknown,
       error: ctx.errors.add(ns, msg, { column, children, errorType: ERROR.TYPE.REF }),
     };
   }
 
+  // Retrieve the definition.
+  const def = loaded.defs.find(def => def.typename === ref.typename);
+  if (!def) {
+    const msg = `The referenced typename '${ref.typename}' in column '${column}' was not found in the types retrieved from (${nsUri})`;
+    return {
+      type: unknown,
+      error: ctx.errors.add(ns, msg, { column, errorType: ERROR.TYPE.NOT_FOUND }),
+    };
+  }
+
   // Build the REF object.
   if (columnUri) {
     // Column REF.
-    const columnDef = loadResponse.columns.find(item => item.column === columnUri.parts.key);
+    const columnDef = def.columns.find(item => item.column === columnUri.parts.key);
     if (!columnDef) {
-      const uri = columnUri.toString();
-      const msg = `The referenced column-type in column '${column}' (${uri}) does not exist in the retrieved namespace.`;
+      const msg = `The referenced column '${column}' of type '${ref.typename}' does not exist in the retrieved namespace (${nsUri})`;
       return {
         type: unknown,
-        error: ctx.errors.add(ns, msg, { errorType: ERROR.TYPE.REF }),
+        error: ctx.errors.add(ns, msg, { errorType: ERROR.TYPE.NOT_FOUND }),
       };
     }
 
@@ -366,9 +432,8 @@ async function readRef(args: {
     };
   } else {
     // Namespace REF.
-    const { typename } = loadResponse;
-
-    const types: t.ITypeDef[] = loadResponse.columns.map(item => {
+    const { typename } = def;
+    const types: t.ITypeDef[] = def.columns.map(item => {
       const { prop, type, optional } = item;
       return {
         prop,
@@ -387,23 +452,25 @@ async function readRef(args: {
  * Examine a set of columns looking for any columns that REF themselves.
  *
  *    columns: {
- *      A: { props: { prop: { name: 'A', type: 'ns:foo' } } },     <== Not OK (self, ns)
- *      B: { props: { prop: { name: 'B', type: 'cell:foo!A' } } }, <== Not OK (self, different column)
- *      C: { props: { prop: { name: 'C', type: 'cell:foo!C' } } }, <== Not OK (self, column)
+ *      A: { props: { def: { name: 'A', type: 'ns:foo' } } },     <== Not OK (self, ns)
+ *      B: { props: { def: { name: 'B', type: 'cell:foo!A' } } }, <== Not OK (self, different column)
+ *      C: { props: { def: { name: 'C', type: 'cell:foo!C' } } }, <== Not OK (self, column)
  *    },
  *
  */
 const getSelfRefs = (args: { ns: string; columns: t.IColumnMap }) => {
   const { columns } = args;
   const ns = Uri.parse<t.INsUri>(args.ns);
-  return Object.keys(columns)
-    .map(key => ({ key, column: columns[key] }))
-    .map(e => ({ ...e, type: e.column?.props?.prop?.type as string }))
+  return flattenColumnTypeDefs(columns)
+    .map(e => ({
+      key: e.column,
+      type: e.def.type as string,
+    }))
     .filter(e => Boolean(e.type))
     .filter(e => Uri.is.uri(e.type))
     .map(e => ({ ...e, uri: Uri.parse(e.type) }))
     .map(e => ({ ...e, kind: e.uri.parts.type }))
-    .filter(({ key, type, uri }) => {
+    .filter(({ type, uri }) => {
       if (type === ns.uri) {
         return true; // Self referencing NAMESPACE.
       }
@@ -413,3 +480,19 @@ const getSelfRefs = (args: { ns: string; columns: t.IColumnMap }) => {
       return false;
     });
 };
+
+/**
+ * Produces a list of column type-defs flattening any 'def' fields defined
+ * as an array into distinct list items.
+ */
+function flattenColumnTypeDefs(columns: t.IColumnMap) {
+  type D = { column: string; def: t.CellTypeDef };
+  return Object.keys(columns).reduce((acc, column) => {
+    const def = columns[column]?.props?.def;
+    if (def) {
+      const defs = Array.isArray(def) ? def : [def];
+      defs.forEach(def => acc.push({ column, def }));
+    }
+    return acc;
+  }, [] as D[]);
+}

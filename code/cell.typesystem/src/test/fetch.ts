@@ -25,26 +25,24 @@ export const testFetch = (data: {
 
   const getType: t.FetchSheetType = async args => {
     before('getType', args);
-    const ns = data.defs[args.ns]?.ns;
-    const type = ns?.type as t.INsType;
-    const exists = Boolean(type);
+    const def = data.defs[args.ns];
+    const type = !def ? undefined : ((def.ns?.type || {}) as t.INsType);
     res.getTypeCount++;
-    return { exists, type };
+    return { type };
   };
 
   const getColumns: t.FetchSheetColumns = async args => {
     before('getColumns', args);
     const def = data.defs[args.ns];
-    const columns = def?.columns || {};
+    const columns = def?.columns;
     res.getColumnsCount++;
     return { columns };
   };
 
   const getCells: t.FetchSheetCells = async args => {
     before('getCells', args);
-    const cells = data.cells || {};
-
-    const rows = coord.cell.max.row(Object.keys(cells)) + 1;
+    const cells = data.cells;
+    const rows = coord.cell.max.row(Object.keys(cells || {})) + 1;
     const total = { rows };
     res.getCellsCount++;
     return { cells, total };
@@ -79,21 +77,24 @@ export const testInstanceFetch = async <T>(args: {
   cells?: t.ICellMap;
   cache?: t.IMemoryCache;
 }) => {
-  const typeClient = await TypeSystem.Client.load({
+  const loaded = await TypeSystem.Client.load({
     ns: args.implements,
     fetch: testFetch({ defs: args.defs }),
     cache: args.cache,
   });
 
+  const typeDef = loaded.defs[0]; // TEMP 🐷
+
   const cells = {
     ...(args.cells || {}),
-    ...TypeSystem.objectToCells<T>(typeClient).rows(0, args.rows),
+    ...TypeSystem.objectToCells<T>(typeDef).rows(0, args.rows),
   };
 
   const def: t.ITypeDefPayload = {
     ns: { type: { implements: args.implements } },
     columns: {},
   };
+
   return testFetch({
     cells,
     defs: { ...args.defs, [args.instance]: def },

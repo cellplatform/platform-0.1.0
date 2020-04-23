@@ -11,11 +11,11 @@ export async function getTypes(args: {
     const { id, query, host } = args;
     const uri = Schema.uri.create.ns(id);
     const client = HttpClient.create(host);
-    const type = await TypeSystem.client(client).load(uri);
+    const defs = (await TypeSystem.client(client).load(uri)).defs;
 
     const data: t.IResGetNsTypes = {
       uri,
-      types: type.columns,
+      types: defs.map(({ typename, columns }) => ({ typename, columns })),
     };
 
     return { status: 200, data };
