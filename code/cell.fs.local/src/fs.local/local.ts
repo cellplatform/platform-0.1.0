@@ -10,8 +10,6 @@ export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
   const fs = args.fs;
   const root = fs.resolve(args.root);
 
-  // const f = {} as t.IFs
-
   const res: t.IFsLocal = {
     type: 'LOCAL',
 
