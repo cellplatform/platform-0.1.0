@@ -68,6 +68,33 @@ describe('TypeScript', () => {
       expect(res).to.include(`isEnabled?: boolean;`);
     });
 
+    it('filters type', () => {
+      const typename = 'MyFoo';
+      const types = [
+        { prop: 'name', type: string },
+        { prop: 'isEnabled', type: boolean, optional: true },
+      ];
+
+      const typenames: string[] = [];
+
+      const res1 = TypeScript.toDeclaration({
+        typename,
+        types,
+        filterType: args => typenames.push(args.typename),
+      });
+
+      expect(typenames).to.eql(['MyFoo']);
+
+      const res2 = TypeScript.toDeclaration({
+        typename,
+        types,
+        filterType: args => !typenames.includes(args.typename),
+      });
+
+      expect(res1).to.include(`export declare type MyFoo = {`);
+      expect(res2).to.eql('\n');
+    });
+
     it('with header', () => {
       const header = `/**
  * My header

@@ -13,6 +13,9 @@ export type AdjustTypeArgs = {
   adjust(line: string): void;
 };
 
+export type FilterType = (args: FilterTypeArgs) => boolean | any;
+export type FilterTypeArgs = { typename: string };
+
 /**
  * Generate a typescript declaration file.
  */
@@ -22,13 +25,21 @@ export function toDeclaration(args: {
   header?: string;
   imports?: string;
   adjustLine?: AdjustType;
+  filterType?: FilterType;
 }) {
-  const { adjustLine } = args;
+  const { adjustLine, filterType: filter } = args;
 
   const write = (args: { typename: string; types: t.ITypeDef[]; written: string[] }) => {
     const { written } = args;
     if (written.includes(args.typename)) {
       return '';
+    }
+
+    if (filter) {
+      const res = filter({ typename: args.typename });
+      if (res === false) {
+        return '';
+      }
     }
 
     const parentType = args.typename;

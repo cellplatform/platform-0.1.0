@@ -20,8 +20,8 @@ export const TYPE_DEFS: SampleTypeDefs = {
       B: {
         props: {
           def: [
-            { prop: 'MyOne.foo', type: 'boolean', target: 'inline:foo' },
-            { prop: 'MyTwo.bar', type: 'boolean', target: 'inline:bar' }, // NB: two distinct types represented on the same cell.
+            { prop: 'MyOne.foo', type: 'string', target: 'inline:foo', default: 'foo-default' },
+            { prop: 'MyTwo.bar', type: 'string', target: 'inline:bar', default: 'bar-default' }, // NB: two distinct types represented on the same cell.
           ],
         },
       },

@@ -15,13 +15,11 @@
  *    - Usage
  *        Import the [.d.ts] file within the consuming module
  *        that uses a [TypedSheet] to programatically manipulate 
- *        the namespace in a strongly-typed manner. eg:
+ *        the namespace in a strongly-typed manner, for example:
  * 
  *            import * as t from './foo.enum.ts';
  * 
  */
-
-import * as t from '@platform/cell.types';
 
 export declare type Enum = {
   single?: 'hello';

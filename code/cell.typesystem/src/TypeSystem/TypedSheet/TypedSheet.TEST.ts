@@ -8,6 +8,7 @@ import * as f from '../../test/.d.ts/foo';
 import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
 import * as p from '../../test/.d.ts/foo.primitives';
+import * as m from '../../test/.d.ts/foo.multi';
 import { TypeClient } from '../TypeClient';
 import { TypedSheetData } from './TypedSheetData';
 import { TypedSheetRef } from './TypedSheetRef';
@@ -21,6 +22,7 @@ import { TypedSheetState } from './TypedSheetState';
  * - ns (read): query on subset of rows (index/take)
  * - ns (read): query string {ns:false} - omit ns data.
  * - read/write: linked sheet
+ * - data/cursor - put of [types] field: equivalent  row-types object on it.
  */
 
 describe('TypedSheet', () => {
@@ -57,6 +59,8 @@ describe('TypedSheet', () => {
       const sheet = await TypeSystem.Sheet.load({ fetch, ns });
 
       expect(sheet.ok).to.eql(false);
+      expect(sheet.errors.length).to.eql(1);
+
       expect(sheet.errors[0].message).to.include(`The namespace (ns:foo.notExist) does not exist`);
       expect(sheet.errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
     });
@@ -65,6 +69,18 @@ describe('TypedSheet', () => {
       const { sheet } = await testSheet();
       const fn = () => sheet.data('NOT_A_TYPENAME');
       expect(fn).to.throw(/Definitions for typename 'NOT_A_TYPENAME' not found/);
+    });
+  });
+
+  describe('typenames', () => {
+    it('single typename', async () => {
+      const { sheet } = await testSheet();
+      expect(sheet.typenames).to.eql(['MyRow']);
+    });
+
+    it('multiple typename', async () => {
+      const { sheet } = await testSheetMulti();
+      expect(sheet.typenames).to.eql(['MyOne', 'MyTwo']);
     });
   });
 
@@ -191,6 +207,14 @@ describe('TypedSheet', () => {
       expect(cursor.row(2).isLoaded).to.eql(true);
       expect(cursor.row(8).isLoaded).to.eql(true);
       expect(cursor.row(14).isLoaded).to.eql(false); // NB: does not exist yet.
+    });
+
+    it('load (multiple types)', async () => {
+      const { sheet } = await testSheetMulti();
+      const cursor1 = sheet.data<m.MyOne>('MyOne');
+      const cursor2 = sheet.data<m.MyTwo>('MyTwo');
+      expect(cursor1.row(0).props.foo).to.eql('foo-default');
+      expect(cursor2.row(9).props.bar).to.eql('bar-default');
     });
 
     it('events: loading | loaded', async () => {
@@ -1233,6 +1257,15 @@ const testFetchEnum = (ns: string) => {
   });
 };
 
+const testFetchMulti = (ns: string) => {
+  return testInstanceFetch({
+    instance: ns,
+    implements: 'ns:foo.multi',
+    defs: TYPE_DEFS,
+    rows: [],
+  });
+};
+
 const testSheet = async () => {
   const ns = 'ns:foo.mySheet';
   const events$ = new Subject<t.TypedSheetEvent>();
@@ -1251,6 +1284,13 @@ const testSheetPrimitives = async () => {
 const testSheetEnum = async () => {
   const ns = 'ns:foo.myEnum';
   const fetch = await testFetchEnum(ns);
+  const sheet = await TypeSystem.Sheet.load<e.Enum>({ fetch, ns });
+  return { ns, fetch, sheet };
+};
+
+const testSheetMulti = async () => {
+  const ns = 'ns:foo.myMulti';
+  const fetch = await testFetchMulti(ns);
   const sheet = await TypeSystem.Sheet.load<e.Enum>({ fetch, ns });
   return { ns, fetch, sheet };
 };

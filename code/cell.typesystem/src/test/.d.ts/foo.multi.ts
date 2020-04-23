@@ -2,7 +2,7 @@
  * Generated types defined in namespace:
  * 
  *    |                
- *    |➔  ns:foo.primitives
+ *    |➔  ns:foo.multi
  *    |
  *
  * By:
@@ -17,19 +17,16 @@
  *        that uses a [TypedSheet] to programatically manipulate 
  *        the namespace in a strongly-typed manner, for example:
  * 
- *            import * as t from './foo.primitives.ts';
+ *            import * as t from './foo.multi.ts';
  * 
  */
 
-export declare type Primitives = {
-  stringValue: string;
-  numberValue: number;
-  booleanValue: boolean;
-  nullValue: null | string | number;
-  undefinedValue?: string;
-  stringProp: string;
-  numberProp: number;
-  booleanProp: boolean;
-  nullProp: null | number;
-  undefinedProp?: string;
+export declare type MyOne = {
+  title: string;
+  foo: string;
+};
+
+export declare type MyTwo = {
+  bar: string;
+  name: string;
 };

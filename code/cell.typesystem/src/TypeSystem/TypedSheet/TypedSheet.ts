@@ -152,7 +152,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   public readonly uri: t.INsUri;
   public readonly state: TypedSheetState;
   public readonly types: t.INsTypeDef[];
-  public readonly dispose$ = this._dispose$.asObservable();
+  public readonly dispose$ = this._dispose$.pipe(share());
   public readonly events$: Observable<t.TypedSheetEvent>;
 
   /**
@@ -169,6 +169,10 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
 
   public get errors() {
     return this.errorList.list;
+  }
+
+  public get typenames() {
+    return this.types.map(def => def.typename);
   }
 
   /**

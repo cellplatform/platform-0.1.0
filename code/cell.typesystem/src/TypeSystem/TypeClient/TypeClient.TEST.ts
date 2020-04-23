@@ -1024,8 +1024,8 @@ describe('TypeClient', () => {
   describe('typescript', () => {
     describe('declaration', () => {
       it('toString: with header (default)', async () => {
-        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
-        const res = TypeClient.typescript(def).toString();
+        const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
+        const res = TypeClient.typescript(defs[0]).toString();
 
         expect(res).to.include('Generated types defined in namespace');
         expect(res).to.include('|➔  ns:foo');
@@ -1034,21 +1034,74 @@ describe('TypeClient', () => {
       });
 
       it('toString: no header', async () => {
-        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
-        const res = TypeClient.typescript(def, { header: false }).toString();
+        const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
+        const res = TypeClient.typescript(defs[0], { header: false }).toString();
 
         expect(res).to.not.include('Generated types');
+        expect(res).to.include(`import * as t from '@platform/cell.types';\n`);
         expect(res).to.include('export declare type MyRow');
         expect(res).to.include('export declare type MyColor');
       });
 
-      it('ref: row/cursor wrapper', async () => {
-        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
-        const res = TypeClient.typescript(def, { header: false }).toString();
+      it('toString: mutliple defs', async () => {
+        const defs = (await TypeClient.load({ ns: 'foo.multi', fetch })).defs;
+        const res = TypeClient.typescript(defs).toString();
 
+        expect(res).to.include(`*    |➔  ns:foo.multi\n`);
+        expect(res).to.not.include(`import * as t from '@platform/cell.types';\n`); // NB: no references to "t." to import not included.
+
+        const lines = res.split('\n');
+        const only = (total: number, line: string) => {
+          const matches = lines.filter(text => text.includes(line));
+          expect(matches.length).to.eql(
+            total,
+            `Should only be ${total} entry, found ${matches.length}. "${line}"`,
+          );
+        };
+
+        only(1, 'export declare type MyOne');
+        only(1, 'export declare type MyTwo');
+        only(1, 'title: string;');
+        only(1, 'name: string;');
+
+        only(1, 'foo: string;');
+        only(1, 'bar: string;');
+      });
+
+      it('ref: row/data-cursor wrapper', async () => {
+        const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
+        const res = TypeClient.typescript(defs).toString();
+
+        expect(res).to.include(`*    |➔  ns:foo\n`);
+        expect(res).to.include(`import * as t from '@platform/cell.types';`);
         expect(res).to.include(`message: t.ITypedSheetRef<MyMessage> | null;\n`);
         expect(res).to.include(`messages: t.ITypedSheetRefs<MyMessage>;\n`);
         expect(res).to.include(`color?: MyColor;\n`); // NB: This is an external type reference but it not {target:'ref'} rather it is INLINE.
+      });
+
+      it('toString: header with multiple URIs', async () => {
+        const defs1 = (await TypeClient.load({ ns: 'foo', fetch })).defs;
+        const defs2 = (await TypeClient.load({ ns: 'foo.multi', fetch })).defs;
+
+        const defs = [...defs1, ...defs2];
+        const res = TypeClient.typescript(defs).toString();
+
+        expect(res).to.include(`*    |➔  ns:foo\n`);
+        expect(res).to.include(`*    |➔  ns:foo.multi\n`);
+        expect(res).to.include(`import * as t from '@platform/cell.types';`);
+
+        const lines = res.split('\n');
+        const onlyOne = (line: string) => {
+          const matches = lines.filter(text => text.includes(line));
+          const total = matches.length;
+          expect(total).to.eql(1, `Should only be 1 entry, found ${total}. "${line}"`);
+        };
+
+        onlyOne('export declare type MyRow');
+        onlyOne('export declare type MyColor');
+        onlyOne('export declare type MyMessage');
+        onlyOne('export declare type MyOne');
+        onlyOne('export declare type MyTwo');
       });
 
       it('REF(column) write to typescript', async () => {
@@ -1076,29 +1129,13 @@ describe('TypeClient', () => {
     describe('save file (.d.ts)', () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
 
-      it('dir (filename inferred from type)', async () => {
-        const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
-        const ts = TypeClient.typescript(def);
-        const dir = fs.resolve('./tmp/d');
-        const res = await ts.save(fs, dir);
-
-        expect(res.path.endsWith('/d/MyRow.ts')).to.eql(true);
-
-        const file = (await fs.readFile(fs.join(dir, 'MyRow.ts'))).toString();
-
-        expect(file).to.include(`import * as t from './MyRow.ts';`);
-        expect(file).to.include(`export declare type MyRow = {`);
-        expect(file).to.include(`export declare type MyColor = {`);
-        expect(file).to.include(`export declare type MyMessage = {`);
-      });
-
       it('dir and filename (explicitly passed)', async () => {
         const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
         const ts = TypeClient.typescript(def);
 
         const dir = fs.resolve('tmp/d');
-        const res1 = await ts.save(fs, dir, { filename: 'Foo.txt' }); // NB: ".ts" automatically added.
-        const res2 = await ts.save(fs, dir, { filename: 'Foo.d.ts' });
+        const res1 = await ts.save(fs, fs.join(dir, 'Foo.txt')); // NB: ".ts" automatically added.
+        const res2 = await ts.save(fs, fs.join(dir, 'Foo.d.ts'));
 
         expect(res1.path.endsWith('/d/Foo.txt.ts')).to.eql(true);
         expect(res2.path.endsWith('/d/Foo.d.ts')).to.eql(true);

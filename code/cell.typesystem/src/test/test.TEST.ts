@@ -12,15 +12,16 @@ describe('test', () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
       const defs = (await TypeClient.load({ ns, fetch })).defs;
 
-      const ts = TypeClient.typescript(defs[0]);
-      await ts.save(fs, dir, { filename: ns });
+      const ts = TypeClient.typescript(defs);
+      await ts.save(fs, fs.join(dir, ns));
     };
 
-    it('save: test/foo.d.ts', async () => save('foo'));
-    it('save: test/foo.primitives.d.ts', async () => save('foo.primitives'));
-    it('save: test/foo.messages.d.ts', async () => save('foo.messages'));
-    it('save: test/foo.enum.d.ts', async () => save('foo.enum'));
-    it('save: test/foo.defaults.d.ts', async () => save('foo.defaults'));
+    it('save: test/foo.ts', async () => save('foo'));
+    it('save: test/foo.primitives.ts', async () => save('foo.primitives'));
+    it('save: test/foo.messages.ts', async () => save('foo.messages'));
+    it('save: test/foo.enum.ts', async () => save('foo.enum'));
+    it('save: test/foo.defaults.ts', async () => save('foo.defaults'));
+    it('save: test/foo.multi.ts', async () => save('foo.multi'));
   });
 
   describe('fetch', () => {
