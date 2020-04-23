@@ -50,12 +50,6 @@ describe('TypeProp', () => {
       test('  MyType . ', error);
     });
 
-    it('throw: too many periods', () => {
-      const error = 'is too deep (ie. too many periods)';
-      test('MyType.foo.bar', error);
-      test(' MyType.foo.bar ', error);
-    });
-
     it('throw: invalid typename', async () => {
       const error = 'Must be alpha-numeric and start with a capital-letter';
       test('F oo.bar', error);
@@ -71,6 +65,7 @@ describe('TypeProp', () => {
       test('Foo.ba r', error);
       test('Foo.1', error);
       test('Foo.bar&zoo', error);
+      test('Foo.bar.zoo', error);
     });
   });
 });

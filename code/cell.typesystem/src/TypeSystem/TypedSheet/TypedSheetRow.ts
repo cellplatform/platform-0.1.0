@@ -214,6 +214,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     const self = this; // tslint:disable-line
     const columnDef = this.findColumnByProp(name);
     const target = TypeTarget.parse(columnDef.target);
+    const typename = columnDef.type.typename;
 
     if (!target.isValid) {
       const err = `Property '${name}' (column ${columnDef.column}) has an invalid target '${columnDef.target}'.`;
@@ -258,7 +259,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
           const links = cell.links;
           const typeDef = columnDef as t.IColumnTypeDef<t.ITypeRef>;
-          const res = self.getOrCreateRef({ typeDef, links });
+          const res = self.getOrCreateRef({ typename, typeDef, links });
           if (!res.exists) {
             self._refs[name as string] = res.ref; // NB: Cache instance.
           }
@@ -347,14 +348,17 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     this._data[columnDef.column] = data;
   }
 
-  private getOrCreateRef(args: { typeDef: t.IColumnTypeDef<t.ITypeRef>; links?: t.IUriMap }) {
-    const { typeDef, links = {} } = args;
+  private getOrCreateRef(args: {
+    typename: string;
+    typeDef: t.IColumnTypeDef<t.ITypeRef>;
+    links?: t.IUriMap;
+  }) {
+    const { typename, typeDef, links = {} } = args;
     const ctx = this.ctx;
     const isArray = typeDef.type.isArray;
     const { link } = TypedSheetRefs.refLink({ typeDef, links });
     const exists = Boolean(link);
     const parent = Uri.create.cell(this.uri.ns, `${typeDef.column}${this.index + 1}`);
-    const typename = this.typename;
     const ref = isArray
       ? TypedSheetRefs.create({ typename, typeDef, ctx, parent })
       : TypedSheetRef.create({ typename, typeDef, ctx });

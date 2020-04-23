@@ -1,7 +1,7 @@
 import { TypeClient } from '.';
 import { t, TypeSystem, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../../test';
 
-describe.only('TypeClient', () => {
+describe('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
 
   it('TypeSystem.Client === TypeClient', () => {

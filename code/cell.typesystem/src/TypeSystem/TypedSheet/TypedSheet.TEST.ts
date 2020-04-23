@@ -57,11 +57,15 @@ describe('TypedSheet', () => {
       const sheet = await TypeSystem.Sheet.load({ fetch, ns });
 
       expect(sheet.ok).to.eql(false);
-      expect(sheet.errors[0].message).to.include(`The namespace "ns:foo.notExist" does not exist`);
+      expect(sheet.errors[0].message).to.include(`The namespace (ns:foo.notExist) does not exist`);
       expect(sheet.errors[0].type).to.eql(ERROR.TYPE.NOT_FOUND);
     });
 
-    it.skip('error: `sheet.data(typename)` requested where typename not part of ns', async () => {});
+    it('error: `sheet.data(typename)` requested where typename not part of ns', async () => {
+      const { sheet } = await testSheet();
+      const fn = () => sheet.data('NOT_A_TYPENAME');
+      expect(fn).to.throw(/Definitions for typename 'NOT_A_TYPENAME' not found/);
+    });
   });
 
   describe('TypedSheetData (cursor)', () => {
@@ -272,7 +276,7 @@ describe('TypedSheet', () => {
 
     it('toObject', async () => {
       const { sheet } = await testSheetEnum();
-      const row = (await sheet.data('MyRow').load()).row(0);
+      const row = (await sheet.data('Enum').load()).row(0);
       expect(row.toObject()).to.eql({
         single: 'hello',
         union: ['blue'],
@@ -283,12 +287,14 @@ describe('TypedSheet', () => {
 
   describe('TypedSheetRow', () => {
     const testRow = async (uri: string) => {
-      const ctx = TypedSheet.ctx({ fetch: await testFetchMySheet('ns:foo.mySheet') });
+      const fetch = await testFetchMySheet('ns:foo.mySheet');
+      const ctx = TypedSheet.ctx({ fetch });
       const ns = await TypeClient.load({ ns: 'ns:foo', fetch: ctx.fetch, cache: ctx.cache });
-      const columns = ns[0].columns;
+      const defs = ns.defs;
+      const columns = ns.defs[0].columns;
       const typename = 'MyRow';
       const row = TypedSheetRow.create<f.MyRow>({ typename, uri, columns, ctx });
-      return { row, ctx, ns };
+      return { row, ctx, defs };
     };
 
     it('throw: URI not a row', async () => {
@@ -298,7 +304,7 @@ describe('TypedSheet', () => {
     });
 
     it('create (not loaded)', async () => {
-      const { row, ns } = await testRow('cell:foo:1');
+      const { row, defs } = await testRow('cell:foo:1');
       expect(row.uri.toString()).to.eql('cell:foo:1');
       expect(row.typename).to.eql('MyRow');
       expect(row.index).to.eql(0);
@@ -306,7 +312,7 @@ describe('TypedSheet', () => {
       expect(row.status).to.eql('INIT');
       expect(row.isLoaded).to.eql(false);
 
-      expect(row.types.list).to.eql(ns[0].columns);
+      expect(row.types.list).to.eql(defs[0].columns);
       expect(row.types.map.title.column).to.eql('A');
 
       expect(row.props.title).to.eql('Untitled'); // Default value.
@@ -337,9 +343,9 @@ describe('TypedSheet', () => {
     });
 
     it('load (static)', async () => {
-      const { ns, ctx } = await testRow('cell:foo:1');
+      const { defs, ctx } = await testRow('cell:foo:1');
       const uri = 'cell:foo:1';
-      const columns = ns[0].columns;
+      const columns = defs[0].columns;
       const typename = 'MyRow';
       const row = await TypedSheetRow.load<f.MyRow>({ typename, uri, columns, ctx });
 
@@ -498,7 +504,7 @@ describe('TypedSheet', () => {
     describe('default value', () => {
       it('simple: primitive | {object}', async () => {
         const { sheet } = await testSheetPrimitives();
-        const cursor = await sheet.data('MyRow').load(); // NB:
+        const cursor = await sheet.data<p.Primitives>('Primitives').load();
 
         const row1 = cursor.row(0).props; //  NB: Exists.
         const row2 = cursor.row(99).props; // NB: Does not exist (use default).
@@ -518,7 +524,7 @@ describe('TypedSheet', () => {
         });
 
         const sheet = await TypeSystem.Sheet.load({ fetch, ns });
-        const cursor = await sheet.data<d.MyDefault>('MyDefaults').load();
+        const cursor = await sheet.data<d.MyDefault>('MyDefault').load();
         expect(cursor.exists(99)).to.eql(false);
       });
     });
@@ -748,11 +754,11 @@ describe('TypedSheet', () => {
       describe('1:1', () => {
         it('single row', async () => {
           const { sheet } = await testSheet();
-          const cursor = await sheet.data('Primitives').load();
+          const cursor = await sheet.data('MyRow').load();
           const row = cursor.row(0);
           const message = row.props.message;
           expect(message).to.be.an.instanceof(TypedSheetRef);
-          expect(message?.typename).to.eql('Primitives');
+          expect(message?.typename).to.eql('MyMessage | null');
           expect(message).to.equal(row.props.message); // NB: Cached instance.
         });
       });
@@ -760,14 +766,14 @@ describe('TypedSheet', () => {
       describe('1:*', () => {
         it('load ➔ ready', async () => {
           const { sheet } = await testSheet();
-          const cursor = await sheet.data('Primitives').load();
+          const cursor = await sheet.data('MyRow').load();
           const row = cursor.row(0);
 
           const messages = row.props.messages;
           expect(messages).to.be.an.instanceof(TypedSheetRefs);
           expect(row.props.messages).to.equal(messages); // NB: Cached instance.
           expect(messages.isReady).to.eql(false);
-          expect(messages.typename).to.eql('Primitives');
+          expect(messages.typename).to.eql('MyMessage');
 
           const type = messages.typeDef.type;
           expect(type.kind).to.eql('REF');
@@ -781,14 +787,12 @@ describe('TypedSheet', () => {
           expect(messages.isReady).to.eql(true);
           expect(messages.sheet).to.be.an.instanceof(TypedSheet);
           expect(messages.ns.toString()).to.eql(messages.sheet.uri.toString());
-          expect(messages.sheet.types.map(def => def.prop)).to.eql(['date', 'user', 'message']);
 
-          const childCursor = await messages.sheet.data('1:10').load();
-
+          const childCursor = await messages.data({ range: '1:10' });
           const childRow = childCursor.row(0);
           const childRowProps = childRow.props;
 
-          expect(childRow.types.list).to.eql(messages.sheet.types);
+          expect(childRow.types.list).to.eql(messages.sheet.types[0].columns);
 
           expect(childRowProps.message).to.eql(undefined);
           childRowProps.message = 'hello';
@@ -845,7 +849,7 @@ describe('TypedSheet', () => {
           expect(rowA.messages.ns.toString()).to.eql(rowB.messages.ns.toString());
         });
 
-        it('ref.cursor(...): auto loads (await load)', async () => {
+        it('ref.data(...): auto loads (await load)', async () => {
           const { sheet } = await testSheet();
           const row = sheet.data('MyRow').row(0).props;
 
@@ -853,9 +857,9 @@ describe('TypedSheet', () => {
           const cursor2 = await row.messages.data({});
           const cursor3 = await row.messages.data({ range: '1:5' });
 
-          expect(cursor1.typename).to.eql('MyRow');
-          expect(cursor2.typename).to.eql('MyRow');
-          expect(cursor3.typename).to.eql('MyRow');
+          expect(cursor1.typename).to.eql('MyMessage');
+          expect(cursor2.typename).to.eql('MyMessage');
+          expect(cursor3.typename).to.eql('MyMessage');
 
           expect(cursor1.isLoaded).to.eql(true);
           expect(cursor2.isLoaded).to.eql(true);
@@ -870,7 +874,7 @@ describe('TypedSheet', () => {
           expect(cursor3.range).to.eql('1:5');
         });
 
-        it('ref.cursor(...): loaded props', async () => {
+        it('ref.data(...): loaded props', async () => {
           const { sheet } = await testSheet();
           const row = sheet.data('MyRow').row(0).props;
           const cursor = await row.messages.data();

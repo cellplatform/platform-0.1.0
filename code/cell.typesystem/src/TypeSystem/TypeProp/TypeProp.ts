@@ -38,10 +38,6 @@ export class TypeProp {
       message = res.error ? res.error : message;
     }
 
-    if (!message && prop && prop.indexOf('.') > -1) {
-      message = `Value of 'prop' is too deep (ie. too many periods). ${shouldBeFormat} (given "${text}")`;
-    }
-
     // Finish up.
     const error: t.IError | undefined = message
       ? { message, type: ERROR.TYPE.DEF_INVALID }
