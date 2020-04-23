@@ -55,7 +55,7 @@ describe('TypeSystem ➔ HTTP', () => {
   });
 
   describe('TypeClient', () => {
-    it.only('url: /ns:foo/types', async () => {
+    it('url: /ns:foo/types', async () => {
       const mock = await createMock();
       await writeTypes(mock.client);
 
@@ -71,7 +71,7 @@ describe('TypeSystem ➔ HTTP', () => {
 
       console.log('json', json);
 
-      throw new Error('implement tests!');
+      throw new Error('implement test!');
 
       // expect(json.uri).to.eql('ns:foo');
       // expect(types.map(def => def.column)).to.eql(['A', 'B', 'C']);
