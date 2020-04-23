@@ -10,6 +10,7 @@
   "scripts": {
     "cell": "node lib/cli/bin $@",
     "start": "cd src.tmpl && yarn start $@",
+    "dev":"export NODE_ENV=development && yarn start",
     "watch": "cd src.tmpl && yarn watch $@",
     "now": "cd src.tmpl && yarn now $@",
     "test": "ts test",
