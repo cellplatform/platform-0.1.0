@@ -1,11 +1,6 @@
 import { TypeClient } from '.';
 import { t, TypeSystem, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../../test';
 
-/**
- * TODO 🐷
- * - multi-type support on single col ([def] array)
- */
-
 describe.only('TypeClient', () => {
   const fetch = testFetch({ defs: TYPE_DEFS });
 
@@ -61,7 +56,7 @@ describe.only('TypeClient', () => {
       expect(defs[1].errors).to.eql([]);
       expect(defs[1].uri).to.eql('ns:foo.multi');
       expect(defs[1].typename).to.eql('MyTwo');
-      expect(defs[1].columns.map(c => c.column)).to.eql(['C']);
+      expect(defs[1].columns.map(c => c.column)).to.eql(['B', 'C']);
     });
   });
 

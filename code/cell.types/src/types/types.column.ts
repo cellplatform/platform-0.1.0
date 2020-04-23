@@ -5,7 +5,7 @@ import { t } from '../common';
  */
 export type IColumnProps = {
   title?: string; // Column display name.
-  def?: t.CellTypeDef;
+  def?: t.CellTypeDef | t.CellTypeDef[];
 };
 
 export type IColumnData<P extends IColumnProps = IColumnProps> = {

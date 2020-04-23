@@ -17,7 +17,14 @@ export const TYPE_DEFS: SampleTypeDefs = {
   'ns:foo.multi': {
     columns: {
       A: { props: { def: { prop: 'MyOne.title', type: 'string' } } },
-      B: { props: { def: { prop: 'MyOne.isEnabed', type: 'boolean' } } },
+      B: {
+        props: {
+          def: [
+            { prop: 'MyOne.foo', type: 'boolean', target: 'inline:foo' },
+            { prop: 'MyTwo.bar', type: 'boolean', target: 'inline:bar' }, // NB: two distinct types represented on the same cell.
+          ],
+        },
+      },
       C: { props: { def: { prop: 'MyTwo.name', type: 'string' } } },
     },
   },

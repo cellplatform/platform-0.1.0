@@ -2,7 +2,7 @@ import { fs, testFetch, TYPE_DEFS } from '.';
 import { TypeClient } from '../TypeSystem/TypeClient';
 import { expect } from 'chai';
 
-describe.only('test', () => {
+describe('test', () => {
   describe('TypeSystem: generate sample typescript declaration files', () => {
     const dir = fs.join(__dirname, '../test/.d.ts');
 

@@ -245,24 +245,14 @@ async function readColumns(args: {
   const { ns, level, ctx } = args;
   const { errors } = ctx;
 
-  const withProps = (column: string) => {
-    const props = args.columns[column]?.props?.def as t.CellTypeDef;
-    return { column, props };
-  };
-
   // Short-circuit any circular references.
   if (isCircularRef({ level, ns, ctx })) {
     return [];
   }
 
-  // Read columns in (either parsing simple types, or retrieve REFs from network).
-  const wait = Object.keys(args.columns)
-    .map(column => withProps(column))
-    .filter(({ props }) => Boolean(props))
-    .map(({ column, props }) => {
-      return readColumn({ level, ns, column, props, ctx });
-    });
-
+  // Read column data.
+  const list = flattenColumnTypeDefs(args.columns);
+  const wait = list.map(({ column, def }) => readColumn({ level, ns, column, def, ctx }));
   const columns = R.sortBy(R.prop('column'), await Promise.all(wait));
 
   // Finish up.
@@ -274,19 +264,19 @@ async function readColumn(args: {
   level: number;
   ns: string;
   column: string;
-  props: t.CellTypeDef;
+  def: t.CellTypeDef;
   ctx: Context;
 }): Promise<t.IColumnTypeDef> {
   const { ns, column, level, ctx } = args;
-  const target = args.props.target;
-  let type = deleteUndefined(TypeValue.parse(args.props.type).type);
+  const target = args.def.target;
+  let type = deleteUndefined(TypeValue.parse(args.def.type).type);
   let error: t.ITypeError | undefined;
 
-  let prop = (args.props.prop || '').trim();
+  let prop = (args.def.prop || '').trim();
   const optional = prop.endsWith('?') ? true : undefined;
   prop = optional ? prop.replace(/\?$/, '') : prop;
 
-  let defaultValue = args.props.default;
+  let defaultValue = args.def.default;
 
   if (type.kind === 'REF') {
     const res = await readRef({ level, ns, column, ref: type, ctx });
@@ -471,14 +461,16 @@ async function readRef(args: {
 const getSelfRefs = (args: { ns: string; columns: t.IColumnMap }) => {
   const { columns } = args;
   const ns = Uri.parse<t.INsUri>(args.ns);
-  return Object.keys(columns)
-    .map(key => ({ key, column: columns[key] }))
-    .map(e => ({ ...e, type: e.column?.props?.def?.type as string }))
+  return flattenColumnTypeDefs(columns)
+    .map(e => ({
+      key: e.column,
+      type: e.def.type as string,
+    }))
     .filter(e => Boolean(e.type))
     .filter(e => Uri.is.uri(e.type))
     .map(e => ({ ...e, uri: Uri.parse(e.type) }))
     .map(e => ({ ...e, kind: e.uri.parts.type }))
-    .filter(({ key, type, uri }) => {
+    .filter(({ type, uri }) => {
       if (type === ns.uri) {
         return true; // Self referencing NAMESPACE.
       }
@@ -488,3 +480,19 @@ const getSelfRefs = (args: { ns: string; columns: t.IColumnMap }) => {
       return false;
     });
 };
+
+/**
+ * Produces a list of column type-defs flattening any 'def' fields defined
+ * as an array into distinct list items.
+ */
+function flattenColumnTypeDefs(columns: t.IColumnMap) {
+  type D = { column: string; def: t.CellTypeDef };
+  return Object.keys(columns).reduce((acc, column) => {
+    const def = columns[column]?.props?.def;
+    if (def) {
+      const defs = Array.isArray(def) ? def : [def];
+      defs.forEach(def => acc.push({ column, def }));
+    }
+    return acc;
+  }, [] as D[]);
+}
