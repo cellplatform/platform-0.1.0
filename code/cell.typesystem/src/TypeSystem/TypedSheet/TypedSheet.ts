@@ -51,6 +51,14 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
 
     const typeDef = typeDefs[0]; // TEMP 🐷
 
+    if (!typeDefs.ok) {
+      throw toTypeLoadError({
+        ns: sheetNs.toString(),
+        implements: implementsNs.toString(),
+        errors: typeDefs.errors,
+      });
+    }
+
     // Finish up.
     return new TypedSheet<T>({ sheetNs, typeDef, fetch, events$, cache });
   }
@@ -77,10 +85,12 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
 
     const typeDef = typeDefs[0]; // TEMP 🐷
 
-    if (!typeDef.ok) {
-      const list = typeDef.errors.map(err => err.message).join('\n');
-      const err = `Failed to create [TypedSheet] (${sheetNs.toString()}) because the type-definition (${implementsNs.toString()}) contains errors.\n${list}`;
-      throw new Error(err);
+    if (!typeDefs.ok) {
+      throw toTypeLoadError({
+        ns: sheetNs.toString(),
+        implements: implementsNs.toString(),
+        errors: typeDefs.errors,
+      });
     }
 
     return new TypedSheet<T>({
@@ -209,4 +219,14 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
       throw new Error(`Cannot ${action} because [TypedSheet] is disposed.`);
     }
   }
+}
+
+/**
+ * [HELPERS]
+ */
+
+function toTypeLoadError(args: { ns: string; implements: string; errors: t.ITypeError[] }) {
+  const list = args.errors.map(err => err.message).join('\n');
+  const err = `Failed to create [TypedSheet] (${args.ns}) because the type-definition (${args.implements}) contains errors.\n${list}`;
+  return new Error(err);
 }
