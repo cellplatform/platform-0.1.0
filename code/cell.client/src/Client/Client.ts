@@ -40,11 +40,12 @@ export class Client {
     const api = {
       http,
       fetch,
-      def(ns: string | t.INsUri) {
-        return TypeSystem.client(http).load(ns);
+      async defs(ns: string | t.INsUri) {
+        return (await TypeSystem.client(http).load(ns)).defs;
       },
       async typescript(ns: string | t.INsUri) {
-        return TypeSystem.Client.typescript(await api.def(ns));
+        const defs = await api.defs(ns);
+        return TypeSystem.Client.typescript(defs);
       },
       sheet<T>(ns: string | t.INsUri) {
         return TypeSystem.Sheet.load<T>({ ns, fetch, cache, events$ });

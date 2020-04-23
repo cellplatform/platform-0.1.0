@@ -12,21 +12,23 @@ import * as g from './.d.ts/MyRow';
 type SampleTypeDefs = { 'ns:foo': t.ITypeDefPayload; 'ns:foo.color': t.ITypeDefPayload };
 const TYPE_DEFS: SampleTypeDefs = {
   'ns:foo': {
-    ns: { type: { typename: 'MyRow' } },
     columns: {
-      A: { props: { def: { prop: 'title', type: 'string', default: 'Untitled' } } },
-      B: { props: { def: { prop: 'isEnabled', type: 'boolean', target: 'inline:isEnabled' } } },
+      A: { props: { def: { prop: 'MyRow.title', type: 'string', default: 'Untitled' } } },
+      B: {
+        props: { def: { prop: 'MyRow.isEnabled', type: 'boolean', target: 'inline:isEnabled' } },
+      },
       C: {
-        props: { def: { prop: 'color', type: 'ns:foo.color', target: 'inline:color' } },
+        props: {
+          def: { prop: 'MyRow.color', type: 'ns:foo.color/MyColor', target: 'inline:color' },
+        },
       },
     },
   },
 
   'ns:foo.color': {
-    ns: { type: { typename: 'MyColor' } },
     columns: {
-      A: { props: { def: { prop: 'label', type: 'string' } } },
-      B: { props: { def: { prop: 'color', type: '"red" | "green" | "blue"' } } },
+      A: { props: { def: { prop: 'MyColor.label', type: 'string' } } },
+      B: { props: { def: { prop: 'MyColor.color', type: '"red" | "green" | "blue"' } } },
     },
   },
 };
@@ -53,7 +55,7 @@ describe('TypeSystem ➔ HTTP', () => {
   });
 
   describe('TypeClient', () => {
-    it('url: /ns:foo/types', async () => {
+    it.only('url: /ns:foo/types', async () => {
       const mock = await createMock();
       await writeTypes(mock.client);
 
@@ -67,29 +69,33 @@ describe('TypeSystem ➔ HTTP', () => {
       expect(res.ok).to.eql(true);
       expect(res.status).to.eql(200);
 
-      expect(json.uri).to.eql('ns:foo');
-      expect(types.map(def => def.column)).to.eql(['A', 'B', 'C']);
+      console.log('json', json);
 
-      expect(types[0].column).to.eql('A');
-      expect(types[0].prop).to.eql('title');
-      expect((types[0].default as t.ITypeDefaultValue).value).to.eql('Untitled');
+      throw new Error('implement tests!');
 
-      const type = types[0].type as t.ITypeValue;
-      expect(type.kind).to.eql('VALUE');
-      expect(type.typename).to.eql('string');
+      // expect(json.uri).to.eql('ns:foo');
+      // expect(types.map(def => def.column)).to.eql(['A', 'B', 'C']);
+
+      // expect(types[0].column).to.eql('A');
+      // expect(types[0].prop).to.eql('title');
+      // expect((types[0].default as t.ITypeDefaultValue).value).to.eql('Untitled');
+
+      // const type = types[0].type as t.ITypeValue;
+      // expect(type.kind).to.eql('VALUE');
+      // expect(type.typename).to.eql('string');
     });
   });
 
   describe('TypedSheet', () => {
     const writeMySheetRows = async <T>(client: t.IHttpClient, rows?: T[]) => {
-      const def = await TypeSystem.client(client).load('ns:foo');
+      const defs = (await TypeSystem.client(client).load('ns:foo')).defs;
 
       const items: any[] = rows || [
         { title: 'One', isEnabled: true, color: { label: 'background', color: 'red' } },
         { title: 'Two', isEnabled: false, color: { label: 'foreground', color: 'blue' } },
       ];
 
-      const cells = TypeSystem.objectToCells<T>(def).rows(0, items);
+      const cells = TypeSystem.objectToCells<T>(defs[0]).rows(0, items);
 
       const ns = 'ns:foo.mySheet';
       await client.ns('foo.mySheet').write({
@@ -111,7 +117,7 @@ describe('TypeSystem ➔ HTTP', () => {
       const ns = 'ns:foo.mySheet';
       const sheet = await TypeSystem.Sheet.client(mock.client).load<g.MyRow>(ns);
 
-      const cursor = await sheet.data().load();
+      const cursor = await sheet.data('MyRow').load();
       await mock.dispose();
 
       expect(requests.some(url => url === '/ns:foo')).to.eql(true);
@@ -151,12 +157,13 @@ describe('TypeSystem ➔ HTTP', () => {
       expect(typesystem.http).to.eql(mock.client);
 
       const sheet = await typesystem.sheet<g.MyRow>(ns);
-      const cursor = await sheet.data().load();
+      const cursor = await sheet.data('MyRow').load();
       const row = cursor.row(0).props;
 
       await mock.dispose();
 
-      expect(sheet.types.map(def => def.column)).to.eql(['A', 'B', 'C']);
+      // expect(sheet.types.map(def => def.column)).to.eql(['A', 'B', 'C']);
+      expect(sheet.typenames).to.eql(['MyRow']);
       expect(row.title).to.eql('One');
     });
 
