@@ -102,6 +102,10 @@ describe('TypeSystem ➔ HTTP', () => {
 
       expect(types[1].typename).to.eql('MyOther');
       expect(types[1].columns.map(def => def.prop)).to.eql(['label']);
+
+      expect(json.typescript).to.include(`export declare type MyRow`);
+      expect(json.typescript).to.include(`export declare type MyColor`);
+      expect(json.typescript).to.include(`export declare type MyOther`);
     });
   });
 

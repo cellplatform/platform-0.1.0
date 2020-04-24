@@ -20,10 +20,17 @@ export async function getTypes(args: {
       return util.toErrorPayload(err, { status, children: res.errors });
     }
 
+    // Generate types and [.d.ts] typescript symbols.
+    type Types = t.IResGetNsTypes['types'];
+    const defs = res.defs;
+    const types: Types = defs.map(({ typename, columns }) => ({ typename, columns }));
+    const typescript = TypeSystem.Client.typescript(defs, { header: false }).toString();
+
     // Transform into response type.
     const data: t.IResGetNsTypes = {
       uri,
-      types: res.defs.map(({ typename, columns }) => ({ typename, columns })),
+      types,
+      typescript,
     };
 
     return { status: 200, data };
