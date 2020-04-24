@@ -124,7 +124,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     const events$ = args.events$ || new Subject<t.TypedSheetEvent>();
     const dispose$ = this.dispose$;
 
-    this.types = args.types;
+    this._typeDefs = args.types;
     this.events$ = events$.asObservable().pipe(takeUntil(this._dispose$), share());
     this.state = TypedSheetState.create({ uri, events$, fetch: args.fetch, cache });
     this.ctx = TypedSheet.ctx({ fetch: this.state.fetch, events$, dispose$, cache }); // NB: Use the state-machine's wrapped fetcher.
@@ -148,10 +148,11 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   private readonly ctx: t.SheetCtx;
   private readonly errorList: ErrorList;
   private readonly _dispose$ = new Subject<{}>();
+  private readonly _typeDefs: t.INsTypeDef[];
+  private _types: t.ITypedSheet['types'];
 
   public readonly uri: t.INsUri;
   public readonly state: TypedSheetState;
-  public readonly types: t.INsTypeDef[];
   public readonly dispose$ = this._dispose$.pipe(share());
   public readonly events$: Observable<t.TypedSheetEvent>;
 
@@ -171,8 +172,21 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     return this.errorList.list;
   }
 
-  public get typenames() {
-    return this.types.map(def => def.typename);
+  public get types() {
+    if (!this._types) {
+      const types: t.ITypedSheet['types'] = [];
+      this._typeDefs.forEach(def => {
+        const { typename, columns } = def;
+        const item = types.find(item => item.typename === typename);
+        if (item) {
+          item.columns = [...item.columns, ...columns];
+        } else {
+          types.push({ typename, columns });
+        }
+      });
+      this._types = types;
+    }
+    return this._types;
   }
 
   /**
@@ -187,10 +201,11 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     const ns = this.uri;
     const ctx = this.ctx;
 
-    // Retrieve the specific type
-    const def = this.types.find(def => def.typename === typename);
+    // Retrieve the specified type definition.
+    const defs = this._typeDefs;
+    const def = defs.find(def => def.typename === typename);
     if (!def) {
-      const names = this.types.map(def => `'${def.typename}'`).join(', ');
+      const names = defs.map(def => `'${def.typename}'`).join(', ');
       const err = `Definitions for typename '${typename}' not found. Available typenames: ${names}.`;
       throw new Error(err);
     }
