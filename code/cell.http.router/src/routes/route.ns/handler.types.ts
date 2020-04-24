@@ -10,12 +10,20 @@ export async function getTypes(args: {
   try {
     const { id, query, host } = args;
     const uri = Schema.uri.create.ns(id);
-    const client = HttpClient.create(host);
-    const defs = (await TypeSystem.client(client).load(uri)).defs;
+    const client = TypeSystem.client(HttpClient.create(host));
 
+    // Read in the type-definitions.
+    const res = await client.load(uri);
+    if (!res.ok) {
+      const err = `Failed to retrieve type definitions for (${uri.toString()})`;
+      const status = res.errors.some(err => err.type === 'TYPE/notFound') ? 404 : 500;
+      return util.toErrorPayload(err, { status, children: res.errors });
+    }
+
+    // Transform into response type.
     const data: t.IResGetNsTypes = {
       uri,
-      types: defs.map(({ typename, columns }) => ({ typename, columns })),
+      types: res.defs.map(({ typename, columns }) => ({ typename, columns })),
     };
 
     return { status: 200, data };

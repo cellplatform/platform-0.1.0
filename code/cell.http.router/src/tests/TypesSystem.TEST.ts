@@ -1,4 +1,4 @@
-import { fs, createMock, expect, http, t, TypeSystem, Client } from '../test';
+import { fs, createMock, expect, http, t, TypeSystem, Client, ERROR } from '../test';
 import * as g from './.d.ts/MyRow';
 
 /**
@@ -15,7 +15,12 @@ const TYPE_DEFS: SampleTypeDefs = {
     columns: {
       A: { props: { def: { prop: 'MyRow.title', type: 'string', default: 'Untitled' } } },
       B: {
-        props: { def: { prop: 'MyRow.isEnabled', type: 'boolean', target: 'inline:isEnabled' } },
+        props: {
+          def: [
+            { prop: 'MyRow.isEnabled', type: 'boolean', target: 'inline:isEnabled', default: true },
+            { prop: 'MyOther.label', type: 'string', target: 'inline:other', default: 'Untitled' },
+          ],
+        },
       },
       C: {
         props: {
@@ -55,34 +60,43 @@ describe('TypeSystem ➔ HTTP', () => {
   });
 
   describe('TypeClient', () => {
-    it('url: /ns:foo/types', async () => {
+    it('url: /ns:foo/types (404)', async () => {
+      const mock = await createMock();
+      // NB: No type data is written (allowing a 404 to be achieved).
+
+      const res = await http.get(mock.url('ns:foo/types'));
+      await mock.dispose();
+
+      expect(res.ok).to.eql(false);
+      expect(res.status).to.eql(404);
+
+      const json = res.json as t.IHttpError;
+      expect(json.status).to.eql(404);
+      expect(json.type).to.eql(ERROR.HTTP.NOT_FOUND);
+      expect(json.message).to.include(`Failed to retrieve type definitions for (ns:foo)`);
+    });
+
+    it.only('url: /ns:foo/types', async () => {
       const mock = await createMock();
       await writeTypes(mock.client);
 
-      const url = mock.url('ns:foo/types');
-      const res = await http.get(url);
+      const res = await http.get(mock.url('ns:foo/types'));
       await mock.dispose();
-
-      const json = res.json as t.IResGetNsTypes;
-      const types = json.types;
 
       expect(res.ok).to.eql(true);
       expect(res.status).to.eql(200);
 
-      console.log('json', json);
+      const json = res.json as t.IResGetNsTypes;
+      const types = json.types;
 
-      throw new Error('implement test!');
+      expect(json.uri).to.eql('ns:foo');
+      expect(types.length).to.eql(2);
 
-      // expect(json.uri).to.eql('ns:foo');
-      // expect(types.map(def => def.column)).to.eql(['A', 'B', 'C']);
+      expect(types[0].typename).to.eql('MyRow');
+      expect(types[0].columns.map(def => def.prop)).to.eql(['title', 'isEnabled', 'color']);
 
-      // expect(types[0].column).to.eql('A');
-      // expect(types[0].prop).to.eql('title');
-      // expect((types[0].default as t.ITypeDefaultValue).value).to.eql('Untitled');
-
-      // const type = types[0].type as t.ITypeValue;
-      // expect(type.kind).to.eql('VALUE');
-      // expect(type.typename).to.eql('string');
+      expect(types[1].typename).to.eql('MyOther');
+      expect(types[1].columns.map(def => def.prop)).to.eql(['label']);
     });
   });
 

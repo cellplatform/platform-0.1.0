@@ -181,8 +181,11 @@ async function loadNamespace(args: {
       errors.add(ns, message, { errorType: ERROR.TYPE.NOT_FOUND });
       return done();
     }
+
     if (fetchedType.error) {
-      errors.add(ns, fetchedType.error.message);
+      const error = fetchedType.error;
+      const errorType = error.status === 404 ? ERROR.TYPE.NOT_FOUND : ERROR.TYPE.DEF;
+      errors.add(ns, fetchedType.error.message, { errorType });
       return done();
     }
     if (fetchedType.type.implements === ns) {
