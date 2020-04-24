@@ -52,11 +52,16 @@ describe('TypeSystem ➔ HTTP', () => {
 
     const type = Client.type({ http: mock.client });
     const ts = await type.typescript('ns:foo');
-
     await mock.dispose();
 
-    const dir = fs.join(__dirname, '.d.ts');
-    await ts.save(fs, dir);
+    const path = fs.join(__dirname, '.d.ts', 'MyRow.ts');
+    await ts.save(fs, path);
+
+    const file = (await fs.readFile(path)).toString();
+
+    expect(file).to.include(`|➔  ns:foo`);
+    expect(file).to.include(`export declare type MyRow = {`);
+    expect(file).to.include(`export declare type MyOther = {`);
   });
 
   describe('TypeClient', () => {
@@ -76,7 +81,7 @@ describe('TypeSystem ➔ HTTP', () => {
       expect(json.message).to.include(`Failed to retrieve type definitions for (ns:foo)`);
     });
 
-    it.only('url: /ns:foo/types', async () => {
+    it('url: /ns:foo/types', async () => {
       const mock = await createMock();
       await writeTypes(mock.client);
 
@@ -177,7 +182,7 @@ describe('TypeSystem ➔ HTTP', () => {
       await mock.dispose();
 
       // expect(sheet.types.map(def => def.column)).to.eql(['A', 'B', 'C']);
-      expect(sheet.typenames).to.eql(['MyRow']);
+      expect(sheet.typenames).to.eql(['MyRow', 'MyOther']);
       expect(row.title).to.eql('One');
     });
 
