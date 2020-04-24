@@ -1,5 +1,5 @@
 import { ERROR } from './constants';
-import { defaultValue } from './libs';
+import { defaultValue, value } from './libs';
 import * as t from './types';
 
 /**
@@ -7,12 +7,13 @@ import * as t from './types';
  */
 export function toErrorPayload(
   err: Error | string,
-  options: { status?: number; type?: t.HttpError | t.FsError } = {},
+  options: { status?: number; type?: t.HttpError | t.FsError; children?: t.IError[] } = {},
 ): t.IErrorPayload {
+  const { children } = options;
   const status = defaultValue(options.status, 500);
-  const type = options.type || ERROR.HTTP.SERVER;
+  const type = options.type || status === 404 ? ERROR.HTTP.NOT_FOUND : ERROR.HTTP.SERVER;
   const message = typeof err === 'string' ? err : err.message;
-  const data: any = { status, type, message };
+  const data: any = value.deleteUndefined({ status, type, message, children });
   return {
     status,
     data,
