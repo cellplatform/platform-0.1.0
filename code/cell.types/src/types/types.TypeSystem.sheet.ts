@@ -3,8 +3,7 @@ import { t } from '../common';
 export type ITypedSheet<T = {}> = {
   readonly ok: boolean;
   readonly uri: t.INsUri;
-  readonly typenames: string[];
-  readonly types: t.INsTypeDef[];
+  readonly types: { typename: string; columns: t.IColumnTypeDef[] }[];
   readonly state: t.ITypedSheetState;
   readonly events$: t.Observable<t.TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
@@ -21,8 +20,9 @@ export type ITypedSheetDataArgs = { typename: string } & ITypedSheetDataOptions;
  * A cursor into a subset of sheet data.
  */
 export type ITypedSheetData<T> = {
-  readonly typename: string;
   readonly uri: t.INsUri;
+  readonly typename: string;
+  readonly types: t.IColumnTypeDef[];
   readonly rows: ITypedSheetRow<T>[];
   readonly range: string;
   readonly total: number; // Total rows.

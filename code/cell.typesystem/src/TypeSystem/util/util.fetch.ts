@@ -10,27 +10,25 @@ function fromClient(http: t.IHttpClient): t.ISheetFetcher {
     let error: t.IHttpError | undefined;
 
     if (!exists) {
-      const message = `The namespace [${args.ns}] does not exist.`;
+      const message = `The namespace (${args.ns}) does not exist`;
       error = { status: 404, message, type: ERROR.HTTP.NOT_FOUND };
     }
 
-    const type = res.body.data.ns.props?.type as t.INsType;
-    if (!type) {
-      const message = `The namespace [${args.ns}] does not contain a type reference.`;
-      error = { status: 422, message, type: ERROR.HTTP.NOT_FOUND };
-    }
-
-    return { exists, type, error };
+    const type = (res.body.data.ns.props?.type || {}) as t.INsType;
+    const payload: t.FetchSheetTypeResult = { type, error };
+    return payload;
   };
 
   const getColumns: t.FetchSheetColumns = async args => {
     const res = await http.ns(args.ns).read({ columns: true });
     const error = formatError(
       res.error,
-      msg => `Failed to retrieve type information from namespace [${args.ns}]. ${msg}`,
+      msg => `Failed to retrieve type information from namespace (${args.ns}). ${msg}`,
     );
-    const columns = res.body.data.columns || {};
-    return { columns, error };
+
+    const columns = res.body.data.columns;
+    const payload: t.FetchSheetColumnsResult = { columns, error };
+    return payload;
   };
 
   const getCells: t.FetchSheetCells = async args => {
@@ -38,14 +36,15 @@ function fromClient(http: t.IHttpClient): t.ISheetFetcher {
     const res = await http.ns(ns).read({ cells: query, total: 'rows' });
     const error = formatError(
       res.error,
-      msg => `Failed to retrieve cells "${query}" within namespace [${ns}]. ${msg}`,
+      msg => `Failed to retrieve cells "${query}" within namespace (${ns}). ${msg}`,
     );
 
-    const cells = res.body.data.cells || {};
+    const cells = res.body.data.cells;
     const total = res.body.data.total || {};
     const rows = total.rows || 0;
 
-    return { cells, error, total: { rows } };
+    const payload: t.FetchSheetCellsResult = { total: { rows }, cells, error };
+    return payload;
   };
 
   return fromFuncs({

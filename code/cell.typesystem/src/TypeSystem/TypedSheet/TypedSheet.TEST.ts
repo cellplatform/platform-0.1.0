@@ -72,15 +72,22 @@ describe('TypedSheet', () => {
     });
   });
 
-  describe('typenames', () => {
-    it('single typename', async () => {
+  describe('TypedSheet.types', () => {
+    it('single type', async () => {
       const { sheet } = await testSheet();
-      expect(sheet.typenames).to.eql(['MyRow']);
+      expect(sheet.types.map(type => type.typename)).to.eql(['MyRow']);
     });
 
-    it('multiple typename', async () => {
+    it('multiple types', async () => {
       const { sheet } = await testSheetMulti();
-      expect(sheet.typenames).to.eql(['MyOne', 'MyTwo']);
+      expect(sheet.types.map(type => type.typename)).to.eql(['MyOne', 'MyTwo']);
+    });
+
+    it('calculated once (lazy evaluation, shared instance)', async () => {
+      const { sheet } = await testSheetMulti();
+      const res1 = sheet.types;
+      const res2 = sheet.types;
+      expect(res1).to.equal(res2);
     });
   });
 
@@ -92,6 +99,20 @@ describe('TypedSheet', () => {
       expect(cursor.status).to.eql('INIT');
       expect(cursor.total).to.eql(-1);
       expect(cursor.typename).to.eql('MyRow');
+    });
+
+    it('typename/types', async () => {
+      const { sheet } = await testSheetMulti();
+      const cursor1 = sheet.data('MyOne');
+      const cursor2 = sheet.data('MyTwo');
+
+      expect(cursor1.typename).to.eql('MyOne');
+      expect(cursor1.types.map(def => def.prop)).to.eql(['title', 'foo']);
+      expect(cursor1.types.map(def => def.column)).to.eql(['A', 'B']);
+
+      expect(cursor2.typename).to.eql('MyTwo');
+      expect(cursor2.types.map(def => def.prop)).to.eql(['bar', 'name']);
+      expect(cursor2.types.map(def => def.column)).to.eql(['B', 'C']);
     });
 
     it('create: custom range (auto correct)', async () => {

@@ -16,7 +16,7 @@ const db = NeDb.create({ filename });
 /**
  * File system.
  */
-const getLocalFs = () => local.init({ root: `${TMP}/fs` });
+const getLocalFs = () => local.init({ root: `${TMP}/fs`, fs: util.fs });
 
 const getRemoteFs = () =>
   s3.init({

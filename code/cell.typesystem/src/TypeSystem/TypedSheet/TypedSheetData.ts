@@ -77,7 +77,6 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
    * [Fields]
    */
   private readonly ctx: t.SheetCtx;
-  private readonly types: t.IColumnTypeDef[];
   private _rows: t.ITypedSheetRow<T>[] = [];
   private _range: string;
   private _status: t.ITypedSheetData<T>['status'] = 'INIT';
@@ -87,6 +86,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
 
   public readonly uri: t.INsUri;
   public readonly typename: string;
+  public readonly types: t.IColumnTypeDef[];
 
   /**
    * [Properties]
