@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { debounceTime, takeUntil, filter } from 'rxjs/operators';
 
 import { coord, defaultValue, log, t, Uri } from '../common';
@@ -17,18 +17,14 @@ export function saveMonitor(args: {
   const uri = state.uri.toString();
   const ns = http.ns(uri);
 
+  const divider$ = new Subject();
+  const flush$ = args.flush$.pipe(takeUntil(state.dispose$));
+  const changed$ = state.changed$.pipe(debounceTime(defaultValue(args.debounce, 300)));
+
   /**
    * TODO 🐷
    * - move this to [TypeSystem] as write syncer.
    */
-
-  const toChangedCells = (changes: t.ITypedSheetStateChanges) => {
-    const cells: t.ICellMap = {};
-    Object.keys(changes)
-      .filter(key => coord.cell.isCell(key))
-      .forEach(key => (cells[key] = changes[key].to));
-    return cells;
-  };
 
   const saveChanges = async () => {
     const changes = state.changes;
@@ -41,21 +37,32 @@ export function saveMonitor(args: {
       Object.keys(changes).forEach(key => {
         const uri = Uri.parse<t.ICellUri>(changes[key].cell).parts;
         const cell = `${log.green('cell')}:${uri.ns}:${log.green(uri.key)}`;
-        log.info(log.blue(`[${status}:SAVED]`), log.gray(cell));
+        const prefix = log.gray(`[${log.blue(status)}:SAVED]`);
+        log.info(prefix, log.gray(cell));
       });
 
       if (!res.ok) {
         log.error('cells', cells);
         log.error('res', res);
       }
+
+      divider$.next();
     }
   };
 
-  state.changed$.pipe(debounceTime(defaultValue(args.debounce, 300))).subscribe(e => saveChanges());
-  args.flush$
-    .pipe(
-      takeUntil(state.dispose$),
-      filter(e => state.hasChanges),
-    )
-    .subscribe(e => saveChanges());
+  changed$.subscribe(e => saveChanges());
+  flush$.pipe(filter(e => state.hasChanges)).subscribe(e => saveChanges());
+  divider$.pipe(takeUntil(state.dispose$)).subscribe(() => log.info.gray('━'.repeat(60)));
 }
+
+/**
+ * [Helpers]
+ */
+
+const toChangedCells = (changes: t.ITypedSheetStateChanges) => {
+  const cells: t.ICellMap = {};
+  Object.keys(changes)
+    .filter(key => coord.cell.isCell(key))
+    .forEach(key => (cells[key] = changes[key].to));
+  return cells;
+};

@@ -30,11 +30,8 @@ export async function getOrCreateSys(host: string) {
   await app.load();
 
   // Retrieve windows.
-
-
-
-  const windows = await app.props.windows.ready();
-  const windowDefs = await app.props.windowDefs.ready();
+  const windows = await app.props.windows.load();
+  const windowDefs = await app.props.windowDefs.load();
   sync.saveMonitor({ http, state: windows.sheet.state, flush$ });
   sync.saveMonitor({ http, state: windowDefs.sheet.state, flush$ });
 
@@ -47,7 +44,7 @@ export async function getOrCreateSys(host: string) {
     windowDefs,
     async flush() {
       flush$.next();
-      await time.wait(300); // HACK: this ensure the changes are flushed to the DB. Do this in a more predictable way.
+      await time.wait(300); // HACK: this ensures the changes are flushed to the DB. Do this in a more predictable way.
     },
   };
   return ctx;

@@ -1,5 +1,5 @@
 {
-  "name": "Cell",
+  "name": "app",
   "version": "1.0.27",
   "description": "Electron shell for CellOS.",
   "main": "lib/main/index",
