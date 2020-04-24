@@ -65,47 +65,114 @@ describe('TypeSystem ➔ HTTP', () => {
   });
 
   describe('TypeClient', () => {
-    it('url: /ns:foo/types (404)', async () => {
-      const mock = await createMock();
-      // NB: No type data is written (allowing a 404 to be achieved).
+    describe('url: /ns:foo/types', () => {
+      it('404 not found', async () => {
+        const mock = await createMock();
+        // NB: No type data is written (allowing a 404 to be achieved).
 
-      const res = await http.get(mock.url('ns:foo/types'));
-      await mock.dispose();
+        const res = await http.get(mock.url('ns:foo/types'));
+        await mock.dispose();
 
-      expect(res.ok).to.eql(false);
-      expect(res.status).to.eql(404);
+        expect(res.ok).to.eql(false);
+        expect(res.status).to.eql(404);
 
-      const json = res.json as t.IHttpError;
-      expect(json.status).to.eql(404);
-      expect(json.type).to.eql(ERROR.HTTP.NOT_FOUND);
-      expect(json.message).to.include(`Failed to retrieve type definitions for (ns:foo)`);
+        const json = res.json as t.IHttpError;
+        expect(json.status).to.eql(404);
+        expect(json.type).to.eql(ERROR.HTTP.NOT_FOUND);
+        expect(json.message).to.include(`Failed to retrieve type definitions for (ns:foo)`);
+      });
+
+      it('types object (ast)', async () => {
+        const mock = await createMock();
+        await writeTypes(mock.client);
+
+        const res = await http.get(mock.url('ns:foo/types'));
+        await mock.dispose();
+
+        expect(res.ok).to.eql(true);
+        expect(res.status).to.eql(200);
+
+        const json = res.json as t.IResGetNsTypes;
+        const types = json.types;
+
+        expect(json.uri).to.eql('ns:foo');
+        expect(types.length).to.eql(2);
+
+        expect(types[0].typename).to.eql('MyRow');
+        expect(types[0].columns.map(def => def.prop)).to.eql(['title', 'isEnabled', 'color']);
+
+        expect(types[1].typename).to.eql('MyOther');
+        expect(types[1].columns.map(def => def.prop)).to.eql(['label']);
+
+        // Default all typescript declarations.
+        expect(json.typescript).to.include(`export declare type MyRow`);
+        expect(json.typescript).to.include(`export declare type MyOther`);
+        expect(json.typescript).to.include(`export declare type MyColor`);
+      });
     });
 
-    it('url: /ns:foo/types', async () => {
-      const mock = await createMock();
-      await writeTypes(mock.client);
+    describe('url: /ns:foo/types?typename (querystring)', () => {
+      const getResponse = async (url: string) => {
+        const mock = await createMock();
+        await writeTypes(mock.client);
 
-      const res = await http.get(mock.url('ns:foo/types'));
-      await mock.dispose();
+        const res = await http.get(mock.url(url));
+        await mock.dispose();
 
-      expect(res.ok).to.eql(true);
-      expect(res.status).to.eql(200);
+        const json = res.json as t.IResGetNsTypes;
+        const types = json.types;
+        return { res, json, types };
+      };
 
-      const json = res.json as t.IResGetNsTypes;
-      const types = json.types;
+      it('?typename=<undefined> (default true)', async () => {
+        const test = async (url: string) => {
+          const { json } = await getResponse(url);
+          expect(json.types.map(def => def.typename)).to.eql(['MyRow', 'MyOther']);
+          expect(json.typescript).to.include(`export declare type MyRow`);
+          expect(json.typescript).to.include(`export declare type MyOther`);
+          expect(json.typescript).to.include(`export declare type MyColor`);
+        };
 
-      expect(json.uri).to.eql('ns:foo');
-      expect(types.length).to.eql(2);
+        await test('ns:foo/types');
+        await test('ns:foo/types?');
+        await test('ns:foo/types?typename=');
+        await test('ns:foo/types?typename');
+        await test('ns:foo/types?typename=true');
+      });
 
-      expect(types[0].typename).to.eql('MyRow');
-      expect(types[0].columns.map(def => def.prop)).to.eql(['title', 'isEnabled', 'color']);
+      it('?typename=false', async () => {
+        const { json } = await getResponse('ns:foo/types?typename=false');
+        expect(json.types).to.eql([]);
+        expect(json.typescript).to.eql('');
+      });
 
-      expect(types[1].typename).to.eql('MyOther');
-      expect(types[1].columns.map(def => def.prop)).to.eql(['label']);
+      it('?typename=<name>', async () => {
+        const test = async (url: string, typenames: string[]) => {
+          const { json } = await getResponse(url);
+          expect(json.types.map(def => def.typename)).to.eql(typenames);
+          typenames.forEach(typename => {
+            expect(json.typescript).to.include(`export declare type ${typename}`);
+          });
+          if (typenames.length === 0) {
+            expect(json.typescript).to.eql('');
+          }
+        };
 
-      expect(json.typescript).to.include(`export declare type MyRow`);
-      expect(json.typescript).to.include(`export declare type MyColor`);
-      expect(json.typescript).to.include(`export declare type MyOther`);
+        // Direct match
+        await test('ns:foo/types?typename=MyRow', ['MyRow']);
+        await test('ns:foo/types?typename=MyRow&typename=MyOther', ['MyRow', 'MyOther']);
+
+        // Wildcard.
+        await test('ns:foo/types?typename=My*', ['MyRow', 'MyOther']);
+        await test('ns:foo/types?typename=*y*', ['MyRow', 'MyOther']);
+        await test('ns:foo/types?typename=*yR*', ['MyRow']);
+        await test('ns:foo/types?typename=*er', ['MyOther']);
+
+        // Not found.
+        await test('ns:foo/types?typename=MyColor', []); // NB: Not a root type.
+        await test('ns:foo/types?typename=FooBar', []);
+        await test('ns:foo/types?typename=myRow', []);
+      });
     });
   });
 

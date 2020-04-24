@@ -1,4 +1,4 @@
-import { models, Schema, t, ERROR, TypeSystem, HttpClient } from '../common';
+import { models, Schema, t, ERROR, TypeSystem, HttpClient, wildcard } from '../common';
 import * as util from './util';
 
 export async function getTypes(args: {
@@ -8,11 +8,11 @@ export async function getTypes(args: {
   query: t.IUrlQueryNsTypes;
 }) {
   try {
-    const { id, query, host } = args;
-    const uri = Schema.uri.create.ns(id);
-    const client = TypeSystem.client(HttpClient.create(host));
+    const { host } = args;
+    const uri = Schema.uri.create.ns(args.id);
 
     // Read in the type-definitions.
+    const client = TypeSystem.client(HttpClient.create(host));
     const res = await client.load(uri);
     if (!res.ok) {
       const err = `Failed to retrieve type definitions for (${uri.toString()})`;
@@ -20,9 +20,25 @@ export async function getTypes(args: {
       return util.toErrorPayload(err, { status, children: res.errors });
     }
 
+    // Filter on typenames.
+    const defs = res.defs.filter(def => {
+      const { typename } = args.query;
+      if (typename === undefined) {
+        return true;
+      } else if (typeof typename === 'boolean') {
+        return typename;
+      } else {
+        const typenames = Array.isArray(typename) ? typename : [typename];
+        return typenames.some(typename => {
+          return typename?.includes('*')
+            ? wildcard.isMatch(def.typename, typename)
+            : typename === def.typename;
+        });
+      }
+    });
+
     // Generate types and [.d.ts] typescript symbols.
     type Types = t.IResGetNsTypes['types'];
-    const defs = res.defs;
     const types: Types = defs.map(({ typename, columns }) => ({ typename, columns }));
     const typescript = TypeSystem.Client.typescript(defs, { header: false }).toString();
 

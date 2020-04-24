@@ -38,7 +38,9 @@ export type IUrlQueryNsWrite = IUrlQueryNsInfo & {
   changes?: boolean; // NB: return list of changes (default: true).
 };
 
-export type IUrlQueryNsTypes = {};
+export type IUrlQueryNsTypes = {
+  typename?: string | string[] | boolean;
+};
 
 /**
  * ------------------------------------------------------------------
