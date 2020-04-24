@@ -11,7 +11,7 @@ export function toErrorPayload(
 ): t.IErrorPayload {
   const { children } = options;
   const status = defaultValue(options.status, 500);
-  const type = options.type || status === 404 ? ERROR.HTTP.NOT_FOUND : ERROR.HTTP.SERVER;
+  const type = options.type || (status === 404 ? ERROR.HTTP.NOT_FOUND : ERROR.HTTP.SERVER);
   const message = typeof err === 'string' ? err : err.message;
   const data: any = value.deleteUndefined({ status, type, message, children });
   return {

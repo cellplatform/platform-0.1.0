@@ -181,8 +181,7 @@ describe('TypeSystem ➔ HTTP', () => {
 
       await mock.dispose();
 
-      // expect(sheet.types.map(def => def.column)).to.eql(['A', 'B', 'C']);
-      expect(sheet.typenames).to.eql(['MyRow', 'MyOther']);
+      expect(sheet.types.map(def => def.typename)).to.eql(['MyRow', 'MyOther']);
       expect(row.title).to.eql('One');
     });
 
