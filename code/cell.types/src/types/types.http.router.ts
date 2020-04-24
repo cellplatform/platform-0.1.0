@@ -38,6 +38,7 @@ export type IResGetNsUrls = { data: string };
 export type IResGetNsTypes = {
   uri: string;
   types: { typename: string; columns: t.IColumnTypeDef[] }[];
+  typescript: string;
 };
 
 /**

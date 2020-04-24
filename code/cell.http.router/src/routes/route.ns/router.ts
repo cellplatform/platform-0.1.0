@@ -1,7 +1,7 @@
 import { ERROR, routes, t, util } from '../common';
 import { getNs } from './handler.get';
 import { postNs } from './handler.post';
-import { getTypes } from './handler.types';
+import { getTypes } from './handler.typesystem';
 
 /**
  * Namespace routes.

@@ -26,10 +26,13 @@ export async function getOrCreateSys(host: string) {
   const sheet = await type.sheet<t.CellApp>(NS.APP);
   sync.saveMonitor({ http, state: sheet.state, flush$ });
 
-  const app = sheet.data('MyRow').row(0);
+  const app = sheet.data('CellApp').row(0);
   await app.load();
 
   // Retrieve windows.
+
+
+
   const windows = await app.props.windows.ready();
   const windowDefs = await app.props.windowDefs.ready();
   sync.saveMonitor({ http, state: windows.sheet.state, flush$ });

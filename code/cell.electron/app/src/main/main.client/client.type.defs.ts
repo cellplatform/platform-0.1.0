@@ -11,11 +11,21 @@ export const DEFS: TypeDefs = {
       A: { props: { def: { prop: 'CellApp.title', type: 'string', default: 'CellOS' } } },
       B: {
         props: {
-          def: { prop: 'CellApp.windowDefs', type: `${NS.TYPE.WINDOW_DEF}[]`, target: 'ref' },
+          def: {
+            prop: 'CellApp.windowDefs',
+            type: `${NS.TYPE.WINDOW_DEF}/CellAppWindowDef[]`,
+            target: 'ref',
+          },
         },
       },
       C: {
-        props: { def: { prop: 'CellApp.windows', type: `${NS.TYPE.WINDOW}[]`, target: 'ref' } },
+        props: {
+          def: {
+            prop: 'CellApp.windows',
+            type: `${NS.TYPE.WINDOW}/CellAppWindow[]`,
+            target: 'ref',
+          },
+        },
       },
     },
   },
