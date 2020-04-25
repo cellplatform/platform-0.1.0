@@ -44,35 +44,55 @@ describe('helpers: model.ns', () => {
     test(models.Ns.create({ uri: 'ns:foo', db }));
   });
 
-  it('setProps', async () => {
-    const db = await getTestDb({});
-    const ns = models.Ns.create({ uri: 'ns:foo', db });
-    expect(ns.props.hash).to.eql(undefined);
+  describe('setProps', () => {
+    it('setProps', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+      expect(ns.props.hash).to.eql(undefined);
 
-    const res1 = await models.ns.setProps({ ns }); // NB: no change.
-    expect(res1.changes).to.eql([]);
-    expect(ns.props.hash).to.eql(undefined);
+      const res1 = await models.ns.setProps({ ns }); // NB: no change.
+      expect(res1.changes).to.eql([]);
+      expect(ns.props.hash).to.eql(undefined);
 
-    const res2 = await models.ns.setProps({ ns, data: { title: 'MySheet' } });
-    const hash = ns.props.hash;
-    expect(res2.changes.map(c => c.field)).to.eql(['props', 'id', 'props', 'hash']);
-    expect(hash).to.not.eql(undefined);
-    expect(ns.props.props && ns.props.props.title).to.eql('MySheet');
+      const res2 = await models.ns.setProps({ ns, data: { title: 'MySheet' } });
+      const hash = ns.props.hash;
+      expect(res2.changes.map(c => c.field)).to.eql(['props', 'id', 'props', 'hash']);
+      expect(hash).to.not.eql(undefined);
+      expect(ns.props.props && ns.props.props.title).to.eql('MySheet');
 
-    const change = res2.changes[0];
-    expect(change.uri).to.eql('ns:foo');
-    expect(change.field).to.eql('props');
-    expect(change.from).to.eql(undefined);
-    expect(change.to).to.eql({ title: 'MySheet' });
+      const change = res2.changes[0];
+      expect(change.uri).to.eql('ns:foo');
+      expect(change.field).to.eql('props');
+      expect(change.from).to.eql(undefined);
+      expect(change.to).to.eql({ title: 'MySheet' });
 
-    const res3 = await models.ns.setProps({ ns, data: { title: 'Foo' } });
-    expect(res3.changes.map(c => c.field)).to.eql(['props', 'hash']);
-    expect(ns.props.hash).to.not.eql(hash);
-    expect(ns.props.props && ns.props.props.title).to.eql('Foo');
+      const res3 = await models.ns.setProps({ ns, data: { title: 'Foo' } });
+      expect(res3.changes.map(c => c.field)).to.eql(['props', 'hash']);
+      expect(ns.props.hash).to.not.eql(hash);
+      expect(ns.props.props && ns.props.props.title).to.eql('Foo');
 
-    const res4 = await models.ns.setProps({ ns, data: { title: undefined } });
-    expect(res4.changes.map(c => c.field)).to.eql(['props', 'hash']);
-    expect(ns.props.props && ns.props.props.title).to.eql(undefined);
+      const res4 = await models.ns.setProps({ ns, data: { title: undefined } });
+      expect(res4.changes.map(c => c.field)).to.eql(['props', 'hash']);
+      expect(ns.props.props && ns.props.props.title).to.eql(undefined);
+    });
+
+    it('setProps: merge-overwrites retaining existing values', async () => {
+      const db = await getTestDb({});
+      const ns = models.Ns.create({ uri: 'ns:foo', db });
+
+      const res0 = ns.toObject();
+      expect(res0.props).to.eql(undefined);
+
+      await models.ns.setProps({ ns, data: { foo: 123 } as any });
+      const res1 = ns.toObject().props as any;
+      expect(res1.foo).to.eql(123);
+      expect(res1.bar).to.eql(undefined);
+
+      await models.ns.setProps({ ns, data: { bar: 456, foo: 999 } as any });
+      const res2 = ns.toObject().props as any;
+      expect(res2.foo).to.eql(999);
+      expect(res2.bar).to.eql(456);
+    });
   });
 
   describe('setChildData', () => {
