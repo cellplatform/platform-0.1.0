@@ -12,14 +12,15 @@ export function saveMonitor(args: {
   debounce?: number;
   silent?: boolean;
   flush$: Observable<{}>;
+  saved$?: Subject<{}>;
 }) {
   const { http, state } = args;
   const uri = state.uri.toString();
   const ns = http.ns(uri);
 
-  const divider$ = new Subject();
   const flush$ = args.flush$.pipe(takeUntil(state.dispose$));
   const changed$ = state.changed$.pipe(debounceTime(defaultValue(args.debounce, 300)));
+  const saved$ = args.saved$ || new Subject();
 
   /**
    * TODO 🐷
@@ -38,7 +39,7 @@ export function saveMonitor(args: {
         const uri = Uri.parse<t.ICellUri>(changes[key].cell).parts;
         const cell = `${log.green('cell')}:${uri.ns}:${log.green(uri.key)}`;
         const prefix = log.gray(`[${log.blue(status)}:SAVED]`);
-        log.info(prefix, log.gray(cell));
+        log.info(`${prefix} ${cell}`);
       });
 
       if (!res.ok) {
@@ -46,13 +47,12 @@ export function saveMonitor(args: {
         log.error('res', res);
       }
 
-      divider$.next();
+      saved$.next();
     }
   };
 
   changed$.subscribe(e => saveChanges());
   flush$.pipe(filter(e => state.hasChanges)).subscribe(e => saveChanges());
-  divider$.pipe(takeUntil(state.dispose$)).subscribe(() => log.info.gray('━'.repeat(60)));
 }
 
 /**

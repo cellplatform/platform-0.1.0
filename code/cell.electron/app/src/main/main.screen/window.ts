@@ -7,17 +7,17 @@ const SYS = constants.SYS;
 /**
  *
  */
-export async function createWindows(args: { defName: string; ctx: t.IAppCtx }) {
-  const ctx = await client.getOrCreateSys(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
+export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
+  const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
   const defs = await ctx.windowDefs.data();
   const instances = await ctx.windows.data();
-  const def = defs.rows.find(r => r.props.kind === args.defName);
+  const def = defs.rows.find(row => row.props.kind === args.kind);
 
   if (!def) {
-    throw new Error(`A window definition named '${args.defName}' could not be found.`);
+    throw new Error(`A window-definition named '${args.kind}' could not be found.`);
   }
 
-  const create = async (def: t.ITypedSheetRowProps<t.CellAppWindowDef>) => {
+  const createInstance = async (def: t.ITypedSheetRowProps<t.CellAppWindowDef>) => {
     const index = instances.total;
     const instance = instances.row(index).props;
     instance.id = Schema.slug();
@@ -28,8 +28,9 @@ export async function createWindows(args: { defName: string; ctx: t.IAppCtx }) {
   };
 
   if (def) {
-    if (instances.total < 2) {
-      await create(def.props);
+    if (instances.total < 1) {
+      // TEMP 🐷
+      await createInstance(def.props);
     }
 
     instances.rows.forEach(instance => {
@@ -56,7 +57,7 @@ export async function createWindow(args: {
   const def = toRow(args.def);
   const instance = toRow(args.instance);
 
-  const ctx = await client.getOrCreateSys(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
+  const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
   const host = ctx.host;
 
   const windows = await ctx.windows.data();
@@ -86,14 +87,13 @@ export async function createWindow(args: {
   const devUrl = constants.ENV.isDev ? 'http://localhost:1234' : '';
   const url = devUrl || entryUrl;
 
-  const query: t.IEnvLoaderQuery = { host, def: def.toString(), instance: instance.toString() };
+  const query: t.IEnvLoaderQuery = { host, window: instance.toString() };
   const querystring = Object.keys(query)
     .reduce((acc, key) => `${acc}&${key}=${query[key]}`, '')
     .replace(/^\&/, '');
 
   // Construct window.
   browser.loadURL(`${url}?${querystring}`);
-  // browser.webContents.openDevTools(); // TEMP 🐷
 
   const updateBounds = () => {
     const { width, height, x, y } = browser.getBounds();
@@ -108,24 +108,42 @@ export async function createWindow(args: {
 
   browser.once('ready-to-show', () => {
     browser.setTitle(props.title);
+    browser.webContents.openDevTools(); // TEMP 🐷
+
     browser.show();
   });
 
   // Finish up.
-  logWindow({ query, entryUrl, devUrl });
+  logWindow({ query, entryUrl, devUrl, ctx });
 }
 
 /**
  * [Helpers]
  */
 
-function logWindow(args: { query: t.IEnvLoaderQuery; entryUrl: string; devUrl?: string }) {
+async function logWindow(args: {
+  query: t.IEnvLoaderQuery;
+  entryUrl: string;
+  devUrl?: string;
+  ctx: t.IAppCtx;
+}) {
+  const { query, ctx } = args;
   const table = log.table({ border: false });
   const add = (key: string, value: any) => table.add([` • ${log.green(key)} `, value]);
 
-  add('instance:', args.query.instance);
-  add('def:', args.query.def);
-  add('url:', args.entryUrl);
+  const host = query.host;
+  const entryUrl = args.entryUrl
+    .replace(/http:\/\//, '')
+    .replace(/https:\/\//, '')
+    .substring(host.length);
+
+  const windows = await ctx.windows.data();
+  const window = windows.rows.find(({ uri }) => uri.toString() === query.window);
+
+  add('kind:', log.magenta(window?.props.kind));
+  add('uri:', `${query.window} (${log.white('instance model')})`);
+  add('host:', args.query.host);
+  add('url:', entryUrl);
   if (args.devUrl) {
     add(log.gray(`url (dev):`), log.white(args.devUrl));
   }

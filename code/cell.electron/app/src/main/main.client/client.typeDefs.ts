@@ -52,7 +52,7 @@ export const DEFS: TypeDefs = {
 /**
  * Write the application types.
  */
-export async function writeTypeDefs(host: string, options: { save?: boolean } = {}) {
+export async function initTypeDefs(host: string, options: { save?: boolean } = {}) {
   const http = Client.http(host);
 
   const write = async (ns: string) => {
@@ -67,6 +67,7 @@ export async function writeTypeDefs(host: string, options: { save?: boolean } = 
   await write(NS.TYPE.WINDOW);
 
   if (options.save) {
+    // Client.sheet({http})
     const type = Client.type({ http });
     const ts = await type.typescript(NS.TYPE.APP);
     await ts.save(fs, fs.resolve('src/types.g'));
