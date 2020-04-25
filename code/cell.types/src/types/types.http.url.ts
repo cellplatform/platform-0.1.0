@@ -1,12 +1,5 @@
 import { t } from '../common';
 
-export type IUrl<Q extends object = {}> = {
-  readonly origin: string;
-  readonly path: string;
-  readonly querystring: string;
-  query(input: Partial<Q>): IUrl<Q>;
-  toString(options?: { origin?: boolean }): string;
-};
 
 /**
  * ------------------------------------------------------------------

@@ -16,6 +16,7 @@ export * from './types.func.sys';
 export * from './types.func';
 export * from './types.http.router';
 export * from './types.http';
+export * from './types.http.url';
 export * from './types.links';
 export * from './types.map';
 export * from './types.ns';
@@ -24,7 +25,6 @@ export * from './types.refs';
 export * from './types.row';
 export * from './types.schema';
 export * from './types.schema.uri';
-export * from './types.schema.url';
 export * from './types.schema.urls';
 export * from './types.value';
 
