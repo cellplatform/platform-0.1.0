@@ -50,7 +50,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.get(routes.NS.INFO, async req => {
     const host = req.host;
-    const query = req.query as t.IUrlQueryNsInfo;
+    const query = req.query as t.IReqQueryNsInfo;
     const { status, id, error } = getParams(req);
     return !id || error ? { status, data: { error } } : getNs({ host, db, id, query });
   });
@@ -60,7 +60,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.post(routes.NS.INFO, async req => {
     const host = req.host;
-    const query = req.query as t.IUrlQueryNsWrite;
+    const query = req.query as t.IReqQueryNsWrite;
     const { status, id, error } = getParams(req);
     const body = (await req.body.json<t.IReqPostNsBody>()) || {};
     return !id || error ? { status, data: { error } } : postNs({ host, db, id, body, query });
@@ -71,7 +71,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    */
   router.get(routes.NS.TYPES, async req => {
     const host = req.host;
-    const query = req.query as t.IUrlQueryNsTypes;
+    const query = req.query as t.IReqQueryNsTypes;
     const { status, id, error } = getParams(req);
     return !id || error ? { status, data: { error } } : getTypes({ host, db, id, query });
   });

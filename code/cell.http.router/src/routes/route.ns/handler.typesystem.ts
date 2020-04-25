@@ -5,7 +5,7 @@ export async function getTypes(args: {
   host: string;
   db: t.IDb;
   id: string;
-  query: t.IUrlQueryNsTypes;
+  query: t.IReqQueryNsTypes;
 }) {
   try {
     const { host } = args;

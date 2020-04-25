@@ -67,7 +67,7 @@ export class Urls implements t.IUrls {
     const toPath = this.toUrl;
     return {
       get fs() {
-        type Q = t.IUrlQueryLocalFs;
+        type Q = t.IReqQueryLocalFs;
         return toPath<Q>(`/local/fs`);
       },
     };
@@ -111,7 +111,7 @@ export class Urls implements t.IUrls {
        * Example: /ns:foo
        */
       get info() {
-        return toPath<t.IUrlQueryNsInfo>(`/ns:${id}`);
+        return toPath<t.IReqQueryNsInfo>(`/ns:${id}`);
       },
     };
   }
@@ -139,7 +139,7 @@ export class Urls implements t.IUrls {
        * Example: /cell:foo:A1
        */
       get info() {
-        type Q = t.IUrlQueryCellInfo;
+        type Q = t.IReqQueryCellInfo;
         return toPath<Q>(`/cell:${ns}:${key}`);
       },
 
@@ -151,7 +151,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo:A1/files
          */
         get list() {
-          type Q = t.IUrlQueryCellFilesList;
+          type Q = t.IReqQueryCellFilesList;
           return toPath<Q>(`/cell:${ns}:${key}/files`);
         },
 
@@ -159,7 +159,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo:A1/files
          */
         get delete() {
-          type Q = t.IUrlQueryCellFilesDelete;
+          type Q = t.IReqQueryCellFilesDelete;
           return toPath<Q>(`/cell:${ns}:${key}/files`);
         },
 
@@ -167,7 +167,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo:A1/files/upload
          */
         get upload() {
-          type Q = t.IUrlQueryCellFilesUpload;
+          type Q = t.IReqQueryCellFilesUpload;
           return toPath<Q>(`/cell:${ns}:${key}/files/upload`);
         },
 
@@ -175,7 +175,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo:A1/files/uploaded
          */
         get uploaded() {
-          type Q = t.IUrlQueryCellFilesUploaded;
+          type Q = t.IReqQueryCellFilesUploaded;
           return toPath<Q>(`/cell:${ns}:${key}/files/uploaded`);
         },
       },
@@ -188,7 +188,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo:A1/file/kitten.png
          */
         byName(filename: string) {
-          type Q = t.IUrlQueryCellFileDownloadByName;
+          type Q = t.IReqQueryCellFileDownloadByName;
           filename = (filename || '').trim();
           if (!filename) {
             throw new Error(`Filename not provided.`);
@@ -200,7 +200,7 @@ export class Urls implements t.IUrls {
          * Example: /cell:foo:A1/file:abc123.png
          */
         byFileUri(fileUri: string, fileExtension?: string) {
-          type Q = t.IUrlQueryCellFileDownloadByFileUri;
+          type Q = t.IReqQueryCellFileDownloadByFileUri;
           fileExtension = (fileExtension || '').trim();
           const uri = Uri.parse<t.IFileUri>(fileUri).parts;
           if (uri.type !== 'FILE') {
@@ -243,7 +243,7 @@ export class Urls implements t.IUrls {
        * Example: /cell:foo:1
        */
       get info() {
-        type Q = t.IUrlQueryRowInfo;
+        type Q = t.IReqQueryRowInfo;
         return toPath<Q>(`/cell:${ns}:${key}`);
       },
     };
@@ -272,7 +272,7 @@ export class Urls implements t.IUrls {
        * Example: /cell:foo:A
        */
       get info() {
-        type Q = t.IUrlQueryColumnInfo;
+        type Q = t.IReqQueryColumnInfo;
         return toPath<Q>(`/cell:${ns}:${key}`);
       },
     };
@@ -295,22 +295,22 @@ export class Urls implements t.IUrls {
       uri,
 
       get info() {
-        type Q = t.IUrlQueryFileInfo;
+        type Q = t.IReqQueryFileInfo;
         return toPath<Q>(`/file:${id}/info`);
       },
 
       get download() {
-        type Q = t.IUrlQueryFileDownload;
+        type Q = t.IReqQueryFileDownload;
         return toPath<Q>(`/file:${id}`);
       },
 
       get delete() {
-        type Q = t.IUrlQueryFileDelete;
+        type Q = t.IReqQueryFileDelete;
         return toPath<Q>(`/file:${id}`);
       },
 
       get uploaded() {
-        type Q = t.IUrlQueryFileUploadComplete;
+        type Q = t.IReqQueryFileUploadComplete;
         return toPath<Q>(`/file:${id}/uploaded`);
       },
     };

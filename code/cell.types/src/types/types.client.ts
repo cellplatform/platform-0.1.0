@@ -36,8 +36,8 @@ export type IClientNs = {
   readonly uri: t.IUriParts<t.INsUri>;
   readonly url: t.IUrlsNs;
   exists(): Promise<boolean>;
-  read(options?: t.IUrlQueryNsInfo): t.IHttpClientAsync<t.IResGetNs>;
-  write(data: t.IReqPostNsBody, options?: t.IUrlQueryNsWrite): t.IHttpClientAsync<t.IResPostNs>;
+  read(options?: t.IReqQueryNsInfo): t.IHttpClientAsync<t.IResGetNs>;
+  write(data: t.IReqPostNsBody, options?: t.IReqQueryNsWrite): t.IHttpClientAsync<t.IResPostNs>;
 };
 
 /**
@@ -49,7 +49,7 @@ export type IHttpClientCell = {
   readonly file: IHttpClientCellFile;
   readonly files: IHttpClientCellFiles;
   exists(): Promise<boolean>;
-  info(options?: t.IUrlQueryCellInfo): t.IHttpClientAsync<t.IResGetCell>;
+  info(options?: t.IReqQueryCellInfo): t.IHttpClientAsync<t.IResGetCell>;
   links(): t.IHttpClientAsync<IHttpClientCellLinks>;
 };
 

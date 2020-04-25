@@ -60,7 +60,7 @@ export class HttpClientCell implements t.IHttpClientCell {
     return res.status.toString().startsWith('2');
   }
 
-  public async info(options: t.IUrlQueryCellInfo = {}) {
+  public async info(options: t.IReqQueryCellInfo = {}) {
     const http = this.args.http;
     const url = this.url.info.query(options).toString();
     const res = await http.get(url);

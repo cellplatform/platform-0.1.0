@@ -6,7 +6,7 @@ export async function postNs(args: {
   db: t.IDb;
   id: string;
   body: t.IReqPostNsBody;
-  query: t.IUrlQueryNsWrite;
+  query: t.IReqQueryNsWrite;
   host: string;
 }) {
   try {

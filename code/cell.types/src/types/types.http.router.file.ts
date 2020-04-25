@@ -5,8 +5,8 @@ export type IUrlParamsFile = { ns: string; file: string };
 /**
  * GET: File
  */
-export type IUrlQueryFileInfo = {};
-export type IUrlQueryFileDownload = { hash?: string };
+export type IReqQueryFileInfo = {};
+export type IReqQueryFileDownload = { hash?: string };
 
 export type IResGetFile = t.IUriResponse<IResGetFileData, IResGetFileUrls>;
 export type IResGetFileData = t.IFileData & {};
@@ -23,7 +23,7 @@ export type IResPostFileUploadStart = IResGetFile & {
 /**
  * POST: File (upload "complete")
  */
-export type IUrlQueryFileUploadComplete = {
+export type IReqQueryFileUploadComplete = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
 
@@ -39,12 +39,12 @@ export type IResPostFileUploadComplete = IResGetFile & {
  *    When working against S3, this is the cloud end-point (using a presigned-url).
  */
 export type IResPostFileUploadLocal = { path: string };
-export type IUrlQueryLocalFs = {};
+export type IReqQueryLocalFs = {};
 
 /**
  * DELETE: File
  */
-export type IUrlQueryFileDelete = {
+export type IReqQueryFileDelete = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
 

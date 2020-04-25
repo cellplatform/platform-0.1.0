@@ -5,7 +5,7 @@ export async function getNs(args: {
   host: string;
   db: t.IDb;
   id: string;
-  query: t.IUrlQueryNsInfo;
+  query: t.IReqQueryNsInfo;
 }): Promise<t.IPayload<t.IResGetNs> | t.IErrorPayload> {
   const { db, id, query, host } = args;
   const uri = Schema.uri.create.ns(id);
@@ -46,7 +46,7 @@ export async function getNs(args: {
 
 export async function getNsData(args: {
   model: t.IDbModelNs;
-  query: t.IUrlQueryNsInfo;
+  query: t.IReqQueryNsInfo;
 }): Promise<{ data: Partial<t.INsDataChildren>; totals: Partial<t.INsTotals> } | t.IErrorPayload> {
   try {
     const { model, query } = args;

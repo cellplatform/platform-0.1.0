@@ -1,6 +1,5 @@
 import { t } from '../common';
 
-
 /**
  * Payloads
  */
@@ -24,7 +23,7 @@ export type IUrlMap = { [key: string]: string };
 /**
  * Info (System)
  */
-export type IUrlQuerySysUid = { total?: number };
+export type IReqQuerySysUid = { total?: number };
 
 export type IResGetSysInfo = {
   deployment: string;

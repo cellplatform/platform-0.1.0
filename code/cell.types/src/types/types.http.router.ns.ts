@@ -4,7 +4,7 @@ import { t } from '../common';
  * GET: Namespace
  */
 export type IUrlParamsNs = { ns: string };
-export type IUrlQueryNsInfo = {
+export type IReqQueryNsInfo = {
   data?: boolean; // true: all (cells|rows|columns) - overrides other fields.
   cells?: boolean | string | (string | boolean)[]; // true: all | string: key or range, eg "A1", "A1:C10"
   columns?: boolean | string | (string | boolean)[];
@@ -23,7 +23,7 @@ export type IResGetNsUrls = { data: string };
 /**
  * GET: Types (typesystem)
  */
-export type IUrlQueryNsTypes = {
+export type IReqQueryNsTypes = {
   typename?: string | string[] | boolean;
 };
 
@@ -36,7 +36,7 @@ export type IResGetNsTypes = {
 /**
  * POST: Namespace (write)
  */
-export type IUrlQueryNsWrite = t.IUrlQueryNsInfo & {
+export type IReqQueryNsWrite = t.IReqQueryNsInfo & {
   changes?: boolean; // NB: return list of changes (default: true).
 };
 

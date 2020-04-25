@@ -10,25 +10,25 @@ export type IUrlParamsCellFileByFileUri = t.IUrlParamsCell & { filename: string 
 /**
  * Query
  */
-export type IUrlQueryCellFilesList = {
+export type IReqQueryCellFilesList = {
   expires?: string; //  Links expire. Parsable duration, eg "1h", "5m" etc. Max: "1h".
   files?: boolean; //   Show files (default: true).
   urls?: boolean; //    Show URLs (default: true).
 };
-export type IUrlQueryCellFilesUpload = {
+export type IReqQueryCellFilesUpload = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
-export type IUrlQueryCellFilesUploaded = {
+export type IReqQueryCellFilesUploaded = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
-export type IUrlQueryCellFilesDelete = {};
+export type IReqQueryCellFilesDelete = {};
 
-export type IUrlQueryCellFileInfo = t.IUrlQueryFileInfo & {};
-export type IUrlQueryCellFileDownloadByName = t.IUrlQueryCellFileInfo & {
+export type IReqQueryCellFileInfo = t.IReqQueryFileInfo & {};
+export type IReqQueryCellFileDownloadByName = t.IReqQueryCellFileInfo & {
   hash?: string;
   expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
 };
-export type IUrlQueryCellFileDownloadByFileUri = IUrlQueryCellFileDownloadByName;
+export type IReqQueryCellFileDownloadByFileUri = IReqQueryCellFileDownloadByName;
 
 /**
  * GET: Cell Files

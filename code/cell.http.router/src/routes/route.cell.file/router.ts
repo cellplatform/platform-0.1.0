@@ -19,7 +19,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.get(routes.CELL.FILE.BY_NAME, async req => {
     try {
       const host = req.host;
-      const query = req.query as t.IUrlQueryCellFileDownloadByName;
+      const query = req.query as t.IReqQueryCellFileDownloadByName;
       const params = req.params as t.IUrlParamsCellFileByName;
       const paramData = getFilenameParams({ params });
       const { status, filename, error, cellUri } = paramData;
@@ -43,7 +43,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.get(routes.CELL.FILE.BY_FILE_URI, async req => {
     try {
       const host = req.host;
-      const query = req.query as t.IUrlQueryCellFileDownloadByFileUri;
+      const query = req.query as t.IReqQueryCellFileDownloadByFileUri;
       const params = req.params as t.IUrlParamsCellFileByName;
       const paramData = getFileUriParams({ params });
       const { status, filename, error, cellUri } = paramData;
