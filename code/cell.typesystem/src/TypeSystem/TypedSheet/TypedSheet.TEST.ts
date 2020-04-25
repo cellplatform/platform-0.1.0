@@ -808,8 +808,8 @@ describe('TypedSheet', () => {
         });
       });
 
-      describe('1:*', () => {
-        it('load ➔ ready (loaded)', async () => {
+      describe.only('1:*', () => {
+        it.only('load ➔ ready (loaded)', async () => {
           const { sheet } = await testSheet();
           const cursor = await sheet.data('MyRow').load();
           const row = cursor.row(0);
@@ -849,6 +849,16 @@ describe('TypedSheet', () => {
           const changes = sheet.state.changes;
           const changedLinks = changes.E1.to.links || {};
           expect(changedLinks['ref:type']).to.eql(messages.sheet.uri.toString());
+
+          /**
+           * TODO 🐷
+           * Sheet:
+           *    - "implements" assigned to newly created sheet (refs).
+           *    - write action: (MERGE | REPLACE)
+           */
+
+          console.log('-------------------------------------------');
+          console.log('changes', changes);
         });
 
         it('throw: sheet called before ready (loaded)', async () => {

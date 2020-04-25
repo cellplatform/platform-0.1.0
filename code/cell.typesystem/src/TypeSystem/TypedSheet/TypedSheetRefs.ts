@@ -139,10 +139,18 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     const { linkKey, link } = TypedSheetRefs.refLink({ typeDef, links });
 
     // Look for an existing link on the cell if the current link is a placeholder.
+
     if (this.ns.toString() === TypedSheetRefs.PLACEHOLDER) {
+      // const exists = Boolean(link)
       this.ns = link
         ? util.formatNsUri(link.uri.toString()) // Use existing link.
         : util.formatNsUri(Schema.cuid()); //      Generate new sheet link.
+
+      if (!link) {
+        // Ensure the newly created sheet has a "type.implements" value.
+        console.log('link', link);
+        console.log('this.ns', this.ns);
+      }
     }
 
     // Write the link-reference into the cell data.
