@@ -34,7 +34,7 @@ export type IResGetNsTypes = {
 };
 
 /**
- * POST: Namespace (write)
+ * POST: Namespace (Write)
  */
 export type IReqQueryNsWrite = t.IReqQueryNsInfo & {
   changes?: boolean; // NB: return list of changes (default: true).

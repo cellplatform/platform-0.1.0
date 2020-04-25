@@ -52,6 +52,7 @@ export const testFetch = (data: {
     getTypeCount: number;
     getColumnsCount: number;
     getCellsCount: number;
+    data: { cells?: t.ICellMap };
   };
 
   const res: T = {
@@ -59,6 +60,7 @@ export const testFetch = (data: {
     getTypeCount: 0,
     getColumnsCount: 0,
     getCellsCount: 0,
+    data: { cells: data.cells },
   };
 
   return res;

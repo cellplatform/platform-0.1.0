@@ -20,7 +20,7 @@ export type ITypedSheetLoadingEvent = {
   payload: ITypedSheetLoading;
 };
 export type ITypedSheetLoading = {
-  ns: string; // URI
+  ns: string; // uri.
   range: string; // row range, eg: "1:500"
 };
 
@@ -44,7 +44,7 @@ export type ITypedSheetRowLoadingEvent = {
 };
 export type ITypedSheetRowLoading = {
   index: number;
-  row: string; // URI
+  row: string; // uri.
 };
 
 /**
@@ -56,7 +56,7 @@ export type ITypedSheetRowLoadedEvent = {
 };
 export type ITypedSheetRowLoaded = {
   index: number;
-  row: string; // URI
+  row: string; // uri.
 };
 
 /**
@@ -67,8 +67,7 @@ export type ITypedSheetChangeEvent = {
   payload: ITypedSheetChange;
 };
 export type ITypedSheetChange = {
-  cell: string;
-  data: t.ICellData<any>;
+  cell?: { uri: string; to: t.ICellData<any> };
 };
 
 /**
@@ -79,8 +78,8 @@ export type ITypedSheetChangedEvent = {
   payload: t.ITypedSheetChanged;
 };
 export type ITypedSheetChanged = {
-  ns: string; // URI
-  change: t.ITypedSheetStateChange;
+  ns: string; // uri.
+  change: t.ITypedSheetStateChanged;
   changes: t.ITypedSheetStateChanges;
 };
 
@@ -92,7 +91,7 @@ export type ITypedSheetChangesClearedEvent = {
   payload: t.ITypedSheetChangesCleared;
 };
 export type ITypedSheetChangesCleared = {
-  ns: string; // URI
+  ns: string; // uri.
   from: t.ITypedSheetStateChanges;
   to: t.ITypedSheetStateChanges;
   action: 'REVERT' | 'SAVED';

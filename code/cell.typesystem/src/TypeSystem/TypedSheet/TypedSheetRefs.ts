@@ -157,11 +157,10 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     if (!links[linkKey]) {
       links = { ...links, [linkKey]: this.ns.toString() };
       const payload: t.ITypedSheetChange = {
-        cell: this.parent.toString(),
-        data: { ...data, links },
+        cell: { uri: this.parent.toString(), to: { ...data, links } },
       };
 
-      const isChanged = !R.equals(data, payload.data);
+      const isChanged = !R.equals(data, payload.cell?.to);
       if (isChanged) {
         this.fire({ type: 'SHEET/change', payload });
       }
