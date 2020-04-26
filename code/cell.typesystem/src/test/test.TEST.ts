@@ -1,5 +1,5 @@
 import { fs, testFetch, TYPE_DEFS } from '.';
-import { TypeClient } from '../TypeSystem/TypeClient';
+import { TypeClient } from '../TypeSystem.core/TypeClient';
 import { expect } from 'chai';
 
 describe('test', () => {

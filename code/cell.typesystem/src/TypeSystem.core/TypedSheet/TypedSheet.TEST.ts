@@ -2,7 +2,6 @@ import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { TypedSheet } from '.';
-import { TypeSystem } from '..';
 import { ERROR, expect, expectError, t, testInstanceFetch, time, TYPE_DEFS } from '../../test';
 import * as f from '../../test/.d.ts/foo';
 import * as e from '../../test/.d.ts/foo.enum';
@@ -56,7 +55,7 @@ describe('TypedSheet', () => {
         defs: TYPE_DEFS,
         rows: [],
       });
-      const sheet = await TypeSystem.Sheet.load({ fetch, ns });
+      const sheet = await TypedSheet.load({ fetch, ns });
 
       expect(sheet.ok).to.eql(false);
       expect(sheet.errors.length).to.eql(1);
@@ -569,7 +568,7 @@ describe('TypedSheet', () => {
           cells: { A1: { value: 'my-foo-default' } },
         });
 
-        const sheet = await TypeSystem.Sheet.load({ fetch, ns });
+        const sheet = await TypedSheet.load({ fetch, ns });
         const cursor = await sheet.data<d.MyDefault>('MyDefault').load();
         expect(cursor.exists(99)).to.eql(false);
       });
@@ -1356,27 +1355,27 @@ const testSheet = async () => {
   const ns = 'ns:foo.mySheet';
   const events$ = new Subject<t.TypedSheetEvent>();
   const fetch = await testFetchMySheet(ns);
-  const sheet = await TypeSystem.Sheet.load<f.MyRow>({ fetch, ns, events$ });
+  const sheet = await TypedSheet.load<f.MyRow>({ fetch, ns, events$ });
   return { ns, fetch, sheet, events$ };
 };
 
 const testSheetPrimitives = async () => {
   const ns = 'ns:foo.myPrimitives';
   const fetch = await testFetchPrimitives(ns);
-  const sheet = await TypeSystem.Sheet.load<p.Primitives>({ fetch, ns });
+  const sheet = await TypedSheet.load<p.Primitives>({ fetch, ns });
   return { ns, fetch, sheet };
 };
 
 const testSheetEnum = async () => {
   const ns = 'ns:foo.myEnum';
   const fetch = await testFetchEnum(ns);
-  const sheet = await TypeSystem.Sheet.load<e.Enum>({ fetch, ns });
+  const sheet = await TypedSheet.load<e.Enum>({ fetch, ns });
   return { ns, fetch, sheet };
 };
 
 const testSheetMulti = async () => {
   const ns = 'ns:foo.myMulti';
   const fetch = await testFetchMulti(ns);
-  const sheet = await TypeSystem.Sheet.load<e.Enum>({ fetch, ns });
+  const sheet = await TypedSheet.load<e.Enum>({ fetch, ns });
   return { ns, fetch, sheet };
 };
