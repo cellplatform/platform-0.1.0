@@ -34,7 +34,7 @@ export type ITypedSheetChangeDiff = ITypedSheetChangeNsDiff | ITypedSheetChangeC
 /**
  * A change to the namespace
  */
-type N = t.INsData;
+type N = t.INsProps;
 export type ITypedSheetChangeNs<D extends N = N> = {
   kind: 'NS';
   uri: string;

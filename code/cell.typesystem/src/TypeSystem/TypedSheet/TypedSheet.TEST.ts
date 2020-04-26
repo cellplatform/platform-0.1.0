@@ -1043,14 +1043,30 @@ describe('TypedSheet', () => {
     });
 
     describe('changes', () => {
-      it('state.hasChanges', async () => {
+      it('hasChanges: cell', async () => {
         const { sheet, events$ } = await testSheet();
         const state = sheet.state;
         expect(state.hasChanges).to.eql(false);
 
+        const uri = 'cell:foo.mySheet:A1';
         events$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 123 } },
+          payload: { kind: 'CELL', uri, to: { value: 123 } },
+        });
+
+        await time.wait(1);
+        expect(state.hasChanges).to.eql(true);
+      });
+
+      it.skip('hasChanges: ns', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.hasChanges).to.eql(false);
+
+        const uri = 'ns:foo.mySheet';
+        events$.next({
+          type: 'SHEET/change',
+          payload: { kind: 'NS', uri, to: { type: { implements: 'foobar' } } },
         });
 
         await time.wait(1);
@@ -1099,6 +1115,22 @@ describe('TypedSheet', () => {
     });
 
     describe('change (via event)', () => {
+      it.skip('change ns', async () => {
+        const { sheet, events$ } = await testSheet();
+        const state = sheet.state;
+        expect(state.changes).to.eql({});
+
+        const uri = 'ns:foo.mySheet';
+        events$.next({
+          type: 'SHEET/change',
+          payload: { kind: 'NS', uri, to: { type: { implements: 'foobar' } } },
+        });
+        await time.wait(1);
+
+        console.log('-------------------------------------------');
+        console.log('state.changes', state.changes);
+      });
+
       it('change cell (existing value)', async () => {
         const { sheet, events$ } = await testSheet();
         const state = sheet.state;
@@ -1107,14 +1139,16 @@ describe('TypedSheet', () => {
         const fired: t.ITypedSheetChanged[] = [];
         state.changed$.subscribe(e => fired.push(e));
 
+        const uri = 'cell:foo.mySheet:A1';
         events$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 123 } },
+          payload: { kind: 'CELL', uri, to: { value: 123 } },
         });
         await time.wait(1);
 
         const change1 = state.changes.cells?.A1;
-        expect(change1?.uri).to.eql('cell:foo.mySheet:A1');
+        expect(change1?.kind).to.eql('CELL');
+        expect(change1?.uri).to.eql(uri);
         expect(change1?.from).to.eql({ value: 'One' });
         expect(change1?.to).to.eql({ value: 123 });
 
