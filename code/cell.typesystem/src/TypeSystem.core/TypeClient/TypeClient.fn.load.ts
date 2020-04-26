@@ -4,7 +4,7 @@ import { deleteUndefined, ERROR, ErrorList, R, t, Uri, value as valueUtil } from
 import { TypeCache } from '../TypeCache';
 import { TypeDefault } from '../TypeDefault';
 import { TypeValue } from '../TypeValue';
-import { formatNsUri } from '../../util';
+import { formatNsUri } from '../../TypeSystem.util';
 import * as valdiate from './TypeClient.fn.validate';
 import { TypeProp } from '../TypeProp';
 
