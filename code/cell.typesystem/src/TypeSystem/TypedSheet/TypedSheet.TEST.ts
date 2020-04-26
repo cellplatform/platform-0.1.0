@@ -856,7 +856,7 @@ describe('TypedSheet', () => {
            * TODO 🐷
            * Sheet:
            *    - "implements" assigned to newly created sheet (refs).
-           *    - write action: (MERGE | REPLACE)
+           *    - do this via a syncer controller.
            */
 
           console.log('-------------------------------------------');
