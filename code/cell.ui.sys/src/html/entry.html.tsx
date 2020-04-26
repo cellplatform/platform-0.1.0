@@ -25,7 +25,7 @@ console.log('res', res);
 // console.log('loader', loader);
 
 console.log('-------------------------------------------');
-console.log('window.location', window.location);
+// console.log('window.location', window.location);
 
 // res.
 
