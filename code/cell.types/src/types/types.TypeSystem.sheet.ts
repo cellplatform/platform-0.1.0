@@ -5,7 +5,7 @@ export type ITypedSheet<T = {}> = {
   readonly uri: t.INsUri;
   readonly types: { typename: string; columns: t.IColumnTypeDef[] }[];
   readonly state: t.ITypedSheetState;
-  readonly events$: t.Observable<t.TypedSheetEvent>;
+  readonly event$: t.Observable<t.TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];

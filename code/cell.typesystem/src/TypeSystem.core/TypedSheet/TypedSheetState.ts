@@ -5,7 +5,7 @@ import { R, Schema, t, Uri, deleteUndefined } from './common';
 
 export type IArgs = {
   uri: t.INsUri;
-  events$: t.Subject<t.TypedSheetEvent>;
+  event$: t.Subject<t.TypedSheetEvent>;
   fetch: t.ISheetFetcher;
   cache?: t.IMemoryCache;
 };
@@ -51,17 +51,17 @@ export class TypedSheetState implements t.ITypedSheetState {
 
     this.fetch = { ...fetch, getCells, getNs };
     this.uri = args.uri;
-    this._events$ = args.events$;
-    this.events$ = this._events$.asObservable().pipe(takeUntil(this._dispose$), share());
+    this._event$ = args.event$;
+    this.event$ = this._event$.asObservable().pipe(takeUntil(this._dispose$), share());
 
-    this.change$ = this.events$.pipe(
+    this.change$ = this.event$.pipe(
       takeUntil(this.dispose$),
       filter(e => e.type === 'SHEET/change'),
       map(e => e.payload as t.ITypedSheetChange),
       filter(e => this.isWithinNamespace(e.uri)),
     );
 
-    this.changed$ = this.events$.pipe(
+    this.changed$ = this.event$.pipe(
       takeUntil(this.dispose$),
       filter(e => e.type === 'SHEET/changed'),
       map(e => e.payload as t.ITypedSheetChanged),
@@ -95,13 +95,13 @@ export class TypedSheetState implements t.ITypedSheetState {
    */
   private _changes: t.ITypedSheetStateChanges = {};
   private readonly _dispose$ = new t.Subject<{}>();
-  private readonly _events$: t.Subject<t.TypedSheetEvent>;
+  private readonly _event$: t.Subject<t.TypedSheetEvent>;
 
   public readonly uri: t.INsUri;
   public readonly fetch: t.CachedFetcher;
 
   public readonly dispose$ = this._dispose$.pipe(share());
-  private readonly events$: t.Observable<t.TypedSheetEvent>;
+  private readonly event$: t.Observable<t.TypedSheetEvent>;
   public readonly change$: t.Observable<t.ITypedSheetChange>;
   public readonly changed$: t.Observable<t.ITypedSheetChanged>;
 
@@ -184,7 +184,7 @@ export class TypedSheetState implements t.ITypedSheetState {
    * [INTERNAL]
    */
   private fire(e: t.TypedSheetEvent) {
-    this._events$.next(e);
+    this._event$.next(e);
   }
 
   private async fireNsChanged<D>(args: { to: D }) {

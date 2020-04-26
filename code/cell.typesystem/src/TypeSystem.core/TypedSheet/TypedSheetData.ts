@@ -210,7 +210,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
    * [INTERNAL]
    */
   private fire(e: t.TypedSheetEvent) {
-    this.ctx.events$.next(e);
+    this.ctx.event$.next(e);
   }
 
   private createRow(index: number) {

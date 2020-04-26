@@ -31,7 +31,7 @@ export type RefsTableUpdate = {
  * Table
  */
 export type IRefsTable = {
-  events$: Observable<RefsTableEvent>;
+  event$: Observable<RefsTableEvent>;
   cache: t.IMemoryCache;
   refs(args?: { range?: string | string[]; force?: boolean }): Promise<IRefs>;
   outgoing(args?: { range?: string | string[]; force?: boolean }): Promise<IRefsOut>;

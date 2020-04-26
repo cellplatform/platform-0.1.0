@@ -26,9 +26,9 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     ns: string | t.INsUri;
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
-    events$?: Subject<t.TypedSheetEvent>;
+    event$?: Subject<t.TypedSheetEvent>;
   }): Promise<t.ITypedSheet<T>> {
-    const { fetch, cache, events$ } = args;
+    const { fetch, cache, event$ } = args;
     const sheetNs = util.formatNsUri(args.ns);
 
     // Retrieve type definition for sheet.
@@ -52,7 +52,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     // Finish up.
     const types = loaded.defs;
     const errors = loaded.errors;
-    return new TypedSheet<T>({ sheetNs, types, fetch, cache, events$, errors });
+    return new TypedSheet<T>({ sheetNs, types, fetch, cache, event$, errors });
   }
 
   /**
@@ -63,9 +63,9 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     ns?: string | t.INsUri; // NB: If not specified a new URI is generated.
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
-    events$?: Subject<t.TypedSheetEvent>;
+    event$?: Subject<t.TypedSheetEvent>;
   }): Promise<t.ITypedSheet<T>> {
-    const { fetch, events$, cache } = args;
+    const { fetch, event$, cache } = args;
     const implementsNs = util.formatNsUri(args.implements);
     const sheetNs = args.ns ? util.formatNsUri(args.ns) : Uri.create.ns(Uri.cuid());
 
@@ -77,31 +77,31 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
 
     const types = loaded.defs;
     const errors = loaded.errors;
-    return new TypedSheet<T>({ sheetNs, types, fetch, cache, events$, errors });
+    return new TypedSheet<T>({ sheetNs, types, fetch, cache, event$, errors });
   }
 
   public static ctx(args: {
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
-    events$?: Subject<t.TypedSheetEvent>;
+    event$?: Subject<t.TypedSheetEvent>;
     dispose$?: Observable<{}>;
   }): t.SheetCtx {
     const fetch = args.fetch;
     const cache = args.cache || MemoryCache.create();
-    const events$ = args.events$ || new Subject<t.TypedSheetEvent>();
+    const event$ = args.event$ || new Subject<t.TypedSheetEvent>();
     const dispose$ = args.dispose$ || new Subject<{}>();
 
     return {
-      events$,
+      event$,
       dispose$,
       fetch,
       cache,
       sheet: {
         load<T>(args: { ns: string }) {
-          return TypedSheet.load<T>({ ...args, fetch, cache, events$ });
+          return TypedSheet.load<T>({ ...args, fetch, cache, event$ });
         },
         create<T>(args: { implements: string }) {
-          return TypedSheet.create<T>({ ...args, fetch, cache, events$ });
+          return TypedSheet.create<T>({ ...args, fetch, cache, event$ });
         },
       },
     };
@@ -115,19 +115,19 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     sheetNs: string | t.INsUri;
     types: t.INsTypeDef[];
     fetch: t.ISheetFetcher;
-    events$?: Subject<t.TypedSheetEvent>;
+    event$?: Subject<t.TypedSheetEvent>;
     cache?: t.IMemoryCache;
     errors?: t.ITypeError[];
   }) {
     const uri = (this.uri = util.formatNsUri(args.sheetNs));
     const cache = args.cache || MemoryCache.create();
-    const events$ = args.events$ || new Subject<t.TypedSheetEvent>();
+    const event$ = args.event$ || new Subject<t.TypedSheetEvent>();
     const dispose$ = this.dispose$;
 
     this._typeDefs = args.types;
-    this.events$ = events$.asObservable().pipe(takeUntil(this._dispose$), share());
-    this.state = TypedSheetState.create({ uri, events$, fetch: args.fetch, cache });
-    this.ctx = TypedSheet.ctx({ fetch: this.state.fetch, events$, dispose$, cache }); // NB: Use the state-machine's wrapped fetcher.
+    this.event$ = event$.asObservable().pipe(takeUntil(this._dispose$), share());
+    this.state = TypedSheetState.create({ uri, event$, fetch: args.fetch, cache });
+    this.ctx = TypedSheet.ctx({ fetch: this.state.fetch, event$, dispose$, cache }); // NB: Use the state-machine's wrapped fetcher.
 
     this.errorList = ErrorList.create({
       defaultType: ERROR.TYPE.SHEET,
@@ -154,7 +154,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   public readonly uri: t.INsUri;
   public readonly state: TypedSheetState;
   public readonly dispose$ = this._dispose$.pipe(share());
-  public readonly events$: Observable<t.TypedSheetEvent>;
+  public readonly event$: Observable<t.TypedSheetEvent>;
 
   /**
    * [Properties]

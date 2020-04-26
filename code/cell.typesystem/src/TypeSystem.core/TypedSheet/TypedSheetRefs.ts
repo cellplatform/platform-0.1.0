@@ -90,7 +90,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     const promise = new Promise<t.ITypedSheetRefs<T>>(async (resolve, reject) => {
       await this.ensureLink();
 
-      const { fetch, cache, events$ } = this.ctx;
+      const { fetch, cache, event$ } = this.ctx;
       const def = this.typeDef;
 
       this._sheet = await TypedSheet.create<T>({
@@ -98,7 +98,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
         ns: this.ns.toString(),
         fetch,
         cache,
-        events$,
+        event$,
       });
 
       delete this._load; // Remove temporary load cache.
@@ -121,7 +121,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
    * [Helpers]
    */
   private fire(e: t.TypedSheetEvent) {
-    this.ctx.events$.next(e);
+    this.ctx.event$.next(e);
   }
 
   private async getCell() {

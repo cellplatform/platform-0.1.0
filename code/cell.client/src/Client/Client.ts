@@ -7,7 +7,7 @@ type ClientInput = string | number | t.IHttpClientOptions;
 type Options = {
   http?: ClientInput | t.IHttpClient;
   cache?: t.IMemoryCache;
-  events$?: Subject<t.TypedSheetEvent>;
+  event$?: Subject<t.TypedSheetEvent>;
 };
 
 /**
@@ -29,7 +29,7 @@ export class Client {
    */
   public static type(input?: Options | string | number) {
     const args = typeof input === 'object' ? input : { http: input };
-    const { cache, events$ } = args;
+    const { cache, event$ } = args;
 
     const http = HttpClient.isClient(args.http)
       ? (args.http as t.IHttpClient)
@@ -48,7 +48,7 @@ export class Client {
         return TypeSystem.Client.typescript(defs);
       },
       sheet<T>(ns: string | t.INsUri) {
-        return TypeSystem.Sheet.load<T>({ ns, fetch, cache, events$ });
+        return TypeSystem.Sheet.load<T>({ ns, fetch, cache, event$ });
       },
     };
 

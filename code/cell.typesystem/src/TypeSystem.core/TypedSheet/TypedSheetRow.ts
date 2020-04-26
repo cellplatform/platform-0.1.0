@@ -44,7 +44,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     this._columns = args.columns;
     this.index = Number.parseInt(this.uri.key, 10) - 1;
 
-    const cellChange$ = this.ctx.events$.pipe(
+    const cellChange$ = this.ctx.event$.pipe(
       filter(e => e.type === 'SHEET/change'),
       map(e => e.payload as t.ITypedSheetChangeCell),
       filter(e => e.kind === 'CELL'),
@@ -324,7 +324,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    */
 
   private fire(e: t.TypedSheetEvent) {
-    this.ctx.events$.next(e);
+    this.ctx.event$.next(e);
   }
 
   private findColumnByProp<K extends keyof T>(prop: K) {
@@ -339,7 +339,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private fireChange(columnDef: t.IColumnTypeDef, to: t.ICellData) {
     const key = `${columnDef.column}${this.index + 1}`;
     const uri = Uri.create.cell(this.uri.ns, key);
-    this.ctx.events$.next({
+    this.ctx.event$.next({
       type: 'SHEET/change',
       payload: { kind: 'CELL', uri, to },
     });

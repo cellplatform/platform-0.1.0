@@ -70,8 +70,8 @@ class RefsTable implements t.IRefsTable {
   private readonly _dispose$ = new Subject<{}>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
-  private readonly _events$ = new Subject<t.RefsTableEvent>();
-  public readonly events$ = this._events$.pipe(takeUntil(this.dispose$), share());
+  private readonly _event$ = new Subject<t.RefsTableEvent>();
+  public readonly event$ = this._event$.pipe(takeUntil(this.dispose$), share());
 
   /**
    * [Properties]
@@ -216,7 +216,7 @@ class RefsTable implements t.IRefsTable {
   }
 
   private fire(e: t.RefsTableEvent) {
-    this._events$.next(e);
+    this._event$.next(e);
   }
 
   private getKeys: t.RefGetKeys = async () => {

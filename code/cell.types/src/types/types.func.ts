@@ -46,7 +46,7 @@ export type IFuncTable = {
   getFunc: t.GetFunc;
   calculate(args?: {
     cells?: string | string[];
-    events$?: Subject<FuncEvent>;
+    event$?: Subject<FuncEvent>;
   }): t.FuncPromise<t.IFuncTableResponse>;
 };
 export type IFuncTableResponse = {
