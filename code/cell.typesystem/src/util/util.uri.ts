@@ -1,4 +1,4 @@
-import { t, Uri, defaultValue } from '../../common';
+import { t, Uri, defaultValue } from '../common';
 
 type FormatOptions = { throw?: boolean };
 

@@ -5,4 +5,4 @@ export { TypeTarget } from './TypeTarget';
 export { TypeValue } from './TypeValue';
 export { TypeDefault } from './TypeDefault';
 
-export { objectToCells, fetcher } from './util';
+export { objectToCells, fetcher } from '../util';

@@ -1,5 +1,5 @@
 import { MemoryCache, t } from '../../common';
-import { fetcher } from '../util';
+import { fetcher } from '../../util';
 
 /**
  * Cache key generators.

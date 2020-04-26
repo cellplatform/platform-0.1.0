@@ -1,5 +1,5 @@
 import { t } from '../../common';
-import { util } from '../util';
+import { util } from '../../util';
 import { load } from './TypeClient.fn.load';
 import { typescript } from './TypeClient.fn.typescript';
 
