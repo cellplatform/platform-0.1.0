@@ -64,10 +64,7 @@ export type ITypedSheetRowLoaded = {
  */
 export type ITypedSheetChangeEvent = {
   type: 'SHEET/change';
-  payload: ITypedSheetChange;
-};
-export type ITypedSheetChange = {
-  cell?: { uri: string; to: t.ICellData<any> };
+  payload: t.ITypedSheetChange;
 };
 
 /**
@@ -79,7 +76,7 @@ export type ITypedSheetChangedEvent = {
 };
 export type ITypedSheetChanged = {
   ns: string; // uri.
-  change: t.ITypedSheetStateChanged;
+  change: t.ITypedSheetChangeDiff;
   changes: t.ITypedSheetStateChanges;
 };
 

@@ -46,9 +46,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
     const cellChange$ = this.ctx.events$.pipe(
       filter(e => e.type === 'SHEET/change'),
-      map(e => e.payload as t.ITypedSheetChange),
-      filter(e => Boolean(e.cell)),
-      map(({ cell }) => ({ to: cell?.to as t.ICellData, uri: Uri.parse<t.ICellUri>(cell?.uri) })),
+      map(e => e.payload as t.ITypedSheetChangeCell),
+      filter(e => e.kind === 'CELL'),
+      map(({ to, uri }) => ({ to, uri: Uri.parse<t.ICellUri>(uri) })),
       filter(({ uri }) => uri.ok && uri.type === 'CELL' && uri.parts.ns === this.uri.ns),
       map(e => ({ ...e, uri: e.uri.parts })),
     );
@@ -341,7 +341,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     const uri = Uri.create.cell(this.uri.ns, key);
     this.ctx.events$.next({
       type: 'SHEET/change',
-      payload: { cell: { uri, to } },
+      payload: { kind: 'CELL', uri, to },
     });
   }
 

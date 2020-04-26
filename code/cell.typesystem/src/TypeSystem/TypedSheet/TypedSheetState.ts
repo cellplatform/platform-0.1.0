@@ -47,7 +47,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       takeUntil(this.dispose$),
       filter(e => e.type === 'SHEET/change'),
       map(e => e.payload as t.ITypedSheetChange),
-      filter(e => Boolean(e.cell && this.isWithinNamespace(e.cell.uri))),
+      filter(e => this.isWithinNamespace(e.uri)),
     );
 
     this.changed$ = this.events$.pipe(
@@ -59,8 +59,8 @@ export class TypedSheetState implements t.ITypedSheetState {
 
     this.change$
       .pipe(
-        filter(e => Boolean(e.cell)),
-        map(({ cell }) => ({ to: cell?.to, uri: Uri.parse<t.ICellUri>(cell?.uri) })),
+        filter(e => e.kind === 'CELL'),
+        map(({ to, uri }) => ({ to, uri: Uri.parse<t.ICellUri>(uri) })),
         filter(e => e.uri.ok && e.uri.type === 'CELL'),
       )
       .subscribe(({ uri, to }) => this.fireCellChanged({ uri: uri.parts, to }));
@@ -163,7 +163,7 @@ export class TypedSheetState implements t.ITypedSheetState {
     }
 
     const from = (existing ? existing.from : await this.getCell(uri.key)) || {};
-    const change: t.ITypedSheetStateChangedCell = {
+    const change: t.ITypedSheetChangeCellDiff = {
       kind: 'CELL',
       uri: uri.toString(),
       from,

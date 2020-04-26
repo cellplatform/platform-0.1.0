@@ -24,32 +24,31 @@ export type ITypedSheetState = {
  * CHANGES
  */
 export type ITypedSheetStateChanges = {
-  ns?: ITypedSheetStateChangedNs;
-  cells?: { [key: string]: ITypedSheetStateChangedCell };
+  ns?: ITypedSheetChangeNsDiff;
+  cells?: { [key: string]: ITypedSheetChangeCellDiff };
 };
 
-export type ITypedSheetStateChange = ITypedSheetStateChangeNs | ITypedSheetStateChangeCell;
-export type ITypedSheetStateChanged = ITypedSheetStateChangedNs | ITypedSheetStateChangedCell;
+export type ITypedSheetChange = ITypedSheetChangeNs | ITypedSheetChangeCell;
+export type ITypedSheetChangeDiff = ITypedSheetChangeNsDiff | ITypedSheetChangeCellDiff;
 
 /**
  * A change to the namespace
  */
 type N = t.INsData;
-export type ITypedSheetStateChangeNs<D extends N = N> = {
+export type ITypedSheetChangeNs<D extends N = N> = {
   kind: 'NS';
   uri: string;
   to: D;
 };
-export type ITypedSheetStateChangedNs<D extends N = N> = ITypedSheetStateChangeNs<D> & { from: D };
+export type ITypedSheetChangeNsDiff<D extends N = N> = ITypedSheetChangeNs<D> & { from: D };
 
 /**
  * An individual cell change within a sheet.
  */
 type C = t.ICellData;
-export type ITypedSheetStateChangeCell<D extends C = C> = {
+export type ITypedSheetChangeCell<D extends C = C> = {
   kind: 'CELL';
   uri: string;
-  from: D;
   to: D;
 };
-export type ITypedSheetStateChangedCell<D extends C = C> = ITypedSheetStateChangeCell & { from: D };
+export type ITypedSheetChangeCellDiff<D extends C = C> = ITypedSheetChangeCell & { from: D };

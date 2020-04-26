@@ -420,7 +420,9 @@ describe('TypedSheet', () => {
       ctx.events$.next({
         type: 'SHEET/change',
         payload: {
-          cell: { uri: 'cell:foo:A1', to: { value: 'Hello!' } },
+          kind: 'CELL',
+          uri: 'cell:foo:A1',
+          to: { value: 'Hello!' },
         },
       });
       expect(row.props.title).to.eql('Hello!'); // NB: Row state reflects external event change.
@@ -989,7 +991,7 @@ describe('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { cell: { uri: 'cell:foo.BAR:A1', to: { value: 123 } } },
+          payload: { kind: 'CELL', uri: 'cell:foo.BAR:A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1003,7 +1005,7 @@ describe('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { cell: { uri: 'file:foo:abc', to: { value: 123 } } },
+          payload: { kind: 'CELL', uri: 'file:foo:abc', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1017,7 +1019,7 @@ describe('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { cell: { uri: 'cell:foo.mySheet:A-1', to: { value: 123 } } }, // NB: invalid URI
+          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A-1', to: { value: 123 } }, // NB: invalid URI
         });
 
         await time.wait(1);
@@ -1032,7 +1034,7 @@ describe('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { cell: { uri: 'cell:foo.mySheet:A1', to: { value: 123 } } },
+          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1048,7 +1050,7 @@ describe('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { cell: { uri: 'cell:foo.mySheet:A1', to: { value: 123 } } },
+          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1086,7 +1088,7 @@ describe('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { cell: { uri: 'cell:foo.mySheet:A1', to: { value: 123 } } },
+          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1107,7 +1109,7 @@ describe('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { cell: { uri: 'cell:foo.mySheet:A1', to: { value: 123 } } },
+          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 123 } },
         });
         await time.wait(1);
 
@@ -1124,7 +1126,7 @@ describe('TypedSheet', () => {
         // Retains original [from] value on second change (prior to purge).
         events$.next({
           type: 'SHEET/change',
-          payload: { cell: { uri: 'cell:foo.mySheet:A1', to: { value: 456 } } },
+          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 456 } },
         });
         await time.wait(1);
 
@@ -1136,7 +1138,7 @@ describe('TypedSheet', () => {
         expect(fired.length).to.eql(2);
         events$.next({
           type: 'SHEET/change',
-          payload: { cell: { uri: 'cell:foo.mySheet:A1', to: { value: 456 } } },
+          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 456 } },
         });
         await time.wait(1);
         expect(fired.length).to.eql(2);
@@ -1149,7 +1151,7 @@ describe('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { cell: { uri: 'cell:foo.mySheet:A99', to: { value: 123 } } },
+          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A99', to: { value: 123 } },
         });
         await time.wait(1);
 
@@ -1169,7 +1171,7 @@ describe('TypedSheet', () => {
 
         events$.next({
           type: 'SHEET/change',
-          payload: { cell: { uri: 'cell:foo.mySheet:A1', to: { value: 123 } } },
+          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 123 } },
         });
         await time.wait(1);
 
