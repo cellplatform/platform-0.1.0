@@ -21,31 +21,35 @@ export type ITypedSheetState = {
 };
 
 /**
- *
+ * CHANGES
  */
 export type ITypedSheetStateChanges = {
   ns?: ITypedSheetStateChangedNs;
   cells?: { [key: string]: ITypedSheetStateChangedCell };
 };
 
+export type ITypedSheetStateChange = ITypedSheetStateChangeNs | ITypedSheetStateChangeCell;
 export type ITypedSheetStateChanged = ITypedSheetStateChangedNs | ITypedSheetStateChangedCell;
 
 /**
  * A change to the namespace
  */
-export type ITypedSheetStateChangedNs<D extends t.INsData = t.INsData> = {
+type N = t.INsData;
+export type ITypedSheetStateChangeNs<D extends N = N> = {
   kind: 'NS';
   uri: string;
-  from: D;
   to: D;
 };
+export type ITypedSheetStateChangedNs<D extends N = N> = ITypedSheetStateChangeNs<D> & { from: D };
 
 /**
  * An individual cell change within a sheet.
  */
-export type ITypedSheetStateChangedCell<D extends t.ICellData = t.ICellData> = {
+type C = t.ICellData;
+export type ITypedSheetStateChangeCell<D extends C = C> = {
   kind: 'CELL';
   uri: string;
   from: D;
   to: D;
 };
+export type ITypedSheetStateChangedCell<D extends C = C> = ITypedSheetStateChangeCell & { from: D };
