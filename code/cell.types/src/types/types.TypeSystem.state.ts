@@ -15,7 +15,6 @@ export type ITypedSheetState = {
   readonly hasChanges: boolean;
   readonly isDisposed: boolean;
 
-  getCell(key: string): Promise<t.ICellData | undefined>;
   clearChanges(action: t.ITypedSheetChangesCleared['action']): void;
   clearCache(): void;
 };

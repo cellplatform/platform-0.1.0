@@ -1,7 +1,7 @@
 import { TypeSystem } from '..';
 import { coord, t } from '../common';
 
-type M = 'getType' | 'getColumns' | 'getCells';
+type M = 'getNs' | 'getColumns' | 'getCells';
 
 /**
  * Generate a stub data [fetch] object using the provided
@@ -23,12 +23,12 @@ export const testFetch = (data: {
     }
   };
 
-  const getType: t.FetchSheetType = async args => {
-    before('getType', args);
+  const getNs: t.FetchSheetNs = async args => {
+    before('getNs', args);
     const def = data.defs[args.ns];
-    const type = !def ? undefined : ((def.ns?.type || {}) as t.INsType);
-    res.getTypeCount++;
-    return { type };
+    const ns = !def ? undefined : ((def.ns || {}) as t.INsProps);
+    res.getNsCount++;
+    return { ns };
   };
 
   const getColumns: t.FetchSheetColumns = async args => {
@@ -49,15 +49,15 @@ export const testFetch = (data: {
   };
 
   type T = t.ISheetFetcher & {
-    getTypeCount: number;
+    getNsCount: number;
     getColumnsCount: number;
     getCellsCount: number;
     data: { cells?: t.ICellMap };
   };
 
   const res: T = {
-    ...TypeSystem.fetcher.fromFuncs({ getType, getColumns, getCells }),
-    getTypeCount: 0,
+    ...TypeSystem.fetcher.fromFuncs({ getNs, getColumns, getCells }),
+    getNsCount: 0,
     getColumnsCount: 0,
     getCellsCount: 0,
     data: { cells: data.cells },

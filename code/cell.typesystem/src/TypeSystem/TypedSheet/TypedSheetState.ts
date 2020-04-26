@@ -10,6 +10,11 @@ export type IArgs = {
   cache?: t.IMemoryCache;
 };
 
+export type TypedSheetStateInternal = t.ITypedSheetState & {
+  getNs(): Promise<t.INsProps | undefined>;
+  getCell(key: string): Promise<t.ICellData | undefined>;
+};
+
 /**
  * State machine for a strongly-typed sheet.
  */
@@ -38,7 +43,13 @@ export class TypedSheetState implements t.ITypedSheetState {
       return res;
     };
 
-    this.fetch = { ...fetch, getCells };
+    // INTERCEPT: Return pending changes to the namespace from the fetch method.
+    const getNs: t.FetchSheetNs = async args => {
+      const ns = this._changes.ns?.to;
+      return ns ? { ns } : fetch.getNs(args);
+    };
+
+    this.fetch = { ...fetch, getCells, getNs };
     this.uri = args.uri;
     this._events$ = args.events$;
     this.events$ = this._events$.asObservable().pipe(takeUntil(this._dispose$), share());
@@ -123,6 +134,12 @@ export class TypedSheetState implements t.ITypedSheetState {
   /**
    * [Methods]
    */
+
+  public async getNs() {
+    const ns = this.uri.id;
+    return (await this.fetch.getNs({ ns })).ns;
+  }
+
   public async getCell(key: string) {
     if (!Schema.coord.cell.isCell(key)) {
       throw new Error(`Expected a cell key (eg "A1").`);
@@ -137,13 +154,6 @@ export class TypedSheetState implements t.ITypedSheetState {
     const query = `${key}:${key}`;
     const res = await this.fetch.getCells({ ns, query });
     return (res.cells || {})[key];
-  }
-
-  public async getType() {
-    // TODO - change get [getNs] 🐷
-    const ns = this.uri.id;
-    const res = await this.fetch.getType({ ns });
-    return res.type;
   }
 
   public clearChanges(action: t.ITypedSheetChangesCleared['action']) {
@@ -161,8 +171,13 @@ export class TypedSheetState implements t.ITypedSheetState {
     const ns = this.uri.id;
     const fetch = this.fetch;
     const cache = fetch.cache;
-    const prefix = fetch.cacheKey('getCells', ns);
-    cache.keys.filter(key => key.startsWith(prefix)).forEach(key => cache.delete(key));
+    const prefix = {
+      ns: fetch.cacheKey('getNs', ns),
+      cells: fetch.cacheKey('getCells', ns),
+    };
+    cache.keys
+      .filter(key => key.startsWith(prefix.cells) || key.startsWith(prefix.ns))
+      .forEach(key => cache.delete(key));
   }
 
   /**
@@ -174,29 +189,22 @@ export class TypedSheetState implements t.ITypedSheetState {
 
   private async fireNsChanged<D>(args: { to: D }) {
     const { to } = args;
-    // const key = args.uri.key;
 
     const existing = this._changes.ns;
     if (existing && R.equals(existing.to, to)) {
       return; // No change.
     }
 
-    // TODO 🐷
+    const from = (existing ? existing.from : await this.getNs()) || {};
+    const change: t.ITypedSheetChangeNsDiff = {
+      kind: 'NS',
+      uri: this.uri.toString(),
+      from,
+      to,
+    };
 
-    // const from = (existing ? existing.from : await this.getCell(uri.key)) || {};
-
-    // const from = this.
-
-    // const change: t.ITypedSheetChangeCellDiff = {
-    //   kind: 'CELL',
-    //   uri: uri.toString(),
-    //   from,
-    //   to,
-    // };
-
-    // const cells = { ...(this._changes.cells || {}), [key]: change };
-    // this._changes = { ...this._changes, cells };
-    // this.fireChanged({ change });
+    this._changes = { ...this._changes, ns: change };
+    this.fireChanged({ change });
   }
 
   private async fireCellChanged<D>(args: { uri: t.ICellUri; to: D }) {

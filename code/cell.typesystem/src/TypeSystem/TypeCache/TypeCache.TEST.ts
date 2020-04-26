@@ -25,37 +25,37 @@ describe('TypeCache', () => {
       const ns1 = 'ns:foo';
       const ns2 = 'ns:foo.color';
 
-      const key1 = fetch.cacheKey('getType', ns1);
-      const key2 = fetch.cacheKey('getType', ns2);
+      const key1 = fetch.cacheKey('getNs', ns1);
+      const key2 = fetch.cacheKey('getNs', ns2);
       expect(key1).to.not.eql(key2);
 
       expect(fetch.cache.exists(key1)).to.eql(false);
       expect(fetch.cache.exists(key2)).to.eql(false);
 
-      await fetch.getType({ ns: ns1 });
+      await fetch.getNs({ ns: ns1 });
 
       expect(fetch.cache.exists(key1)).to.eql(true);
       expect(fetch.cache.exists(key2)).to.eql(false);
     });
 
-    it('getType', async () => {
+    it('getNs', async () => {
       const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
       const ns = 'ns:foo';
-      const res1 = await fetch.getType({ ns });
-      const res2 = await fetch.getType({ ns });
+      const res1 = await fetch.getNs({ ns });
+      const res2 = await fetch.getNs({ ns });
       expect(res1).to.not.eql(undefined);
       expect(res1).to.equal(res2);
-      expect(fetch.cache.exists(fetch.cacheKey('getType', ns))).to.eql(true);
+      expect(fetch.cache.exists(fetch.cacheKey('getNs', ns))).to.eql(true);
     });
 
-    it('getType (parallel)', async () => {
+    it('getNs (parallel)', async () => {
       const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
       const ns = 'ns:foo';
-      const method = fetch.getType;
+      const method = fetch.getNs;
       const [res1, res2] = await Promise.all([method({ ns }), method({ ns })]);
       expect(res1).to.not.eql(undefined);
       expect(res1).to.equal(res2);
-      expect(fetch.cache.exists(fetch.cacheKey('getType', ns))).to.eql(true);
+      expect(fetch.cache.exists(fetch.cacheKey('getNs', ns))).to.eql(true);
     });
 
     it('getColumns', async () => {

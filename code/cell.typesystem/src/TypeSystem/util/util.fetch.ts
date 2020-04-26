@@ -4,7 +4,7 @@ import { ERROR, t } from '../../common';
  * Constructs a sheet-data-fetcher from an HTTP host/client.
  */
 function fromClient(http: t.IHttpClient): t.ISheetFetcher {
-  const getType: t.FetchSheetType = async args => {
+  const getNs: t.FetchSheetNs = async args => {
     const res = await http.ns(args.ns).read();
     const exists = res.body.exists;
     let error: t.IHttpError | undefined;
@@ -14,8 +14,8 @@ function fromClient(http: t.IHttpClient): t.ISheetFetcher {
       error = { status: 404, message, type: ERROR.HTTP.NOT_FOUND };
     }
 
-    const type = (res.body.data.ns.props?.type || {}) as t.INsType;
-    const payload: t.FetchSheetTypeResult = { type, error };
+    const ns = (res.body.data.ns.props || {}) as t.INsProps;
+    const payload: t.FetchSheetNsResult = { ns, error };
     return payload;
   };
 
@@ -48,7 +48,7 @@ function fromClient(http: t.IHttpClient): t.ISheetFetcher {
   };
 
   return fromFuncs({
-    getType,
+    getNs,
     getColumns,
     getCells,
   });
@@ -58,12 +58,12 @@ function fromClient(http: t.IHttpClient): t.ISheetFetcher {
  * Constructs a sheet-data-fetcher from an HTTP host/client.
  */
 function fromFuncs(args: {
-  getType: t.FetchSheetType;
+  getNs: t.FetchSheetNs;
   getColumns: t.FetchSheetColumns;
   getCells: t.FetchSheetCells;
 }): t.ISheetFetcher {
-  const { getType, getCells, getColumns } = args;
-  return { getType, getCells, getColumns };
+  const { getNs, getCells, getColumns } = args;
+  return { getNs, getCells, getColumns };
 }
 
 export const fetcher = {

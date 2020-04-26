@@ -40,9 +40,9 @@ export class TypeCache {
     const cache = TypeCache.toCache(options.cache);
     const cacheKey = TypeCache.key.fetch;
 
-    const getType: t.FetchSheetType = async args => {
-      const key = cacheKey('getType', args.ns.toString());
-      return cache.exists(key) ? cache.get(key) : cache.put(key, fetch.getType(args)).get(key);
+    const getNs: t.FetchSheetNs = async args => {
+      const key = cacheKey('getNs', args.ns.toString());
+      return cache.exists(key) ? cache.get(key) : cache.put(key, fetch.getNs(args)).get(key);
     };
 
     const getColumns: t.FetchSheetColumns = async args => {
@@ -58,7 +58,7 @@ export class TypeCache {
     const res: t.CachedFetcher = {
       cache,
       cacheKey,
-      ...fetcher.fromFuncs({ getType, getColumns, getCells }),
+      ...fetcher.fromFuncs({ getNs, getColumns, getCells }),
     };
 
     return res;
