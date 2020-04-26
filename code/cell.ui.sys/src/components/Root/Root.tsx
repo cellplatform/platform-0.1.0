@@ -141,6 +141,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   private loadIframe = () => {
+    console.log('-------------------------------------------');
+
     const styles = {
       base: css({
         // Absolute: [0, 5, 5, 5],
@@ -164,6 +166,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     const urls = Schema.urls(info.domain).cell(cellUri);
     const src = urls.file.byName('ui.ide/entry.html').toString();
+
+    console.log('src', src);
 
     // console.log('src1', src1);
 

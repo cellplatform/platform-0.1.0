@@ -4,7 +4,7 @@ import { t } from '../common';
  * Data fetcher.
  */
 export type ISheetFetcher = {
-  getType: FetchSheetType;
+  getNs: FetchSheetNs;
   getColumns: FetchSheetColumns;
   getCells: FetchSheetCells;
 };
@@ -12,9 +12,9 @@ export type ISheetFetcher = {
 /**
  * Fetch type.
  */
-export type FetchSheetType = (args: { ns: string }) => Promise<FetchSheetTypeResult>;
-export type FetchSheetTypeResult = {
-  type?: t.INsType;
+export type FetchSheetNs = (args: { ns: string }) => Promise<FetchSheetNsResult>;
+export type FetchSheetNsResult = {
+  ns?: t.INsProps;
   error?: t.IHttpError;
 };
 

@@ -1,6 +1,7 @@
 import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
-import { Client, t, time, constants, Uri, fs } from '../common';
+import { Client, constants, fs, log, t, time, Uri } from '../common';
 import * as sync from './client.sync';
 import { upload } from './client.upload';
 
@@ -10,7 +11,7 @@ const NS = SYS.NS;
 /**
  * Writes (initializes) system data.
  */
-export async function getOrCreateSys(host: string) {
+export async function getOrCreateSystemContext(host: string) {
   const http = Client.http(host);
   const ns = http.ns(NS.APP);
 
@@ -20,23 +21,30 @@ export async function getOrCreateSys(host: string) {
   }
 
   const flush$ = new Subject<{}>();
+  const saved$ = new Subject<{}>();
+  saved$.pipe(debounceTime(800)).subscribe(() => log.info.gray('━'.repeat(60)));
 
   // Load the app model.
   const type = Client.type({ http });
   const sheet = await type.sheet<t.CellApp>(NS.APP);
-  sync.saveMonitor({ http, state: sheet.state, flush$ });
+  sync.saveMonitor({ http, state: sheet.state, flush$, saved$ });
 
   const app = sheet.data('CellApp').row(0);
   await app.load();
 
   // Retrieve windows.
+  const windows = await app.props.windows.load();
+  const windowDefs = await app.props.windowDefs.load();
 
+  /**
+   * TODO 🐷
+   * Move save monitor logic to [TypeSystem] module
+   */
+  sync.saveMonitor({ http, state: windows.sheet.state, flush$, saved$ });
+  sync.saveMonitor({ http, state: windowDefs.sheet.state, flush$, saved$ });
 
-
-  const windows = await app.props.windows.ready();
-  const windowDefs = await app.props.windowDefs.ready();
-  sync.saveMonitor({ http, state: windows.sheet.state, flush$ });
-  sync.saveMonitor({ http, state: windowDefs.sheet.state, flush$ });
+  await sync.saveImplementsField({ http, sheet: windows.sheet, implements: NS.TYPE.WINDOW });
+  await sync.saveImplementsField({ http, sheet: windowDefs.sheet, implements: NS.TYPE.WINDOW_DEF });
 
   // Finish up.
   const ctx: t.IAppCtx = {
@@ -47,7 +55,7 @@ export async function getOrCreateSys(host: string) {
     windowDefs,
     async flush() {
       flush$.next();
-      await time.wait(300); // HACK: this ensure the changes are flushed to the DB. Do this in a more predictable way.
+      await time.wait(300); // HACK: this ensures the changes are flushed to the DB. Do this in a more predictable way.
     },
   };
   return ctx;
@@ -56,7 +64,7 @@ export async function getOrCreateSys(host: string) {
 /**
  * Creates the IDE window definition.
  */
-export async function writeIdeDef(args: {
+export async function initWindowDef(args: {
   kind: string;
   ctx: t.IAppCtx;
   uploadDir?: string | string[];

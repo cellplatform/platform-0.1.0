@@ -44,16 +44,17 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     this._columns = args.columns;
     this.index = Number.parseInt(this.uri.key, 10) - 1;
 
-    const change$ = this.ctx.events$.pipe(
+    const cellChange$ = this.ctx.events$.pipe(
       filter(e => e.type === 'SHEET/change'),
-      map(e => e.payload as t.ITypedSheetChange),
-      map(({ data, cell }) => ({ to: data, uri: Uri.parse<t.ICellUri>(cell) })),
+      map(e => e.payload as t.ITypedSheetChangeCell),
+      filter(e => e.kind === 'CELL'),
+      map(({ to, uri }) => ({ to, uri: Uri.parse<t.ICellUri>(uri) })),
       filter(({ uri }) => uri.ok && uri.type === 'CELL' && uri.parts.ns === this.uri.ns),
       map(e => ({ ...e, uri: e.uri.parts })),
     );
 
     // Ensure internal representation of value is updated if some other process signalled the a property to change.
-    change$
+    cellChange$
       .pipe(
         map(e => {
           const columnKey = Schema.coord.cell.toColumnKey(e.uri.key);
@@ -335,12 +336,12 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     return res;
   }
 
-  private fireChange(columnDef: t.IColumnTypeDef, data: t.ICellData) {
+  private fireChange(columnDef: t.IColumnTypeDef, to: t.ICellData) {
     const key = `${columnDef.column}${this.index + 1}`;
     const uri = Uri.create.cell(this.uri.ns, key);
     this.ctx.events$.next({
       type: 'SHEET/change',
-      payload: { cell: uri, data },
+      payload: { kind: 'CELL', uri, to },
     });
   }
 

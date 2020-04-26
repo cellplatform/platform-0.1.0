@@ -17,7 +17,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.get(routes.CELL.FILES.BASE, async req => {
     try {
       const host = req.host;
-      const query = req.query as t.IUrlQueryCellFilesList;
+      const query = req.query as t.IReqQueryCellFilesList;
       const params = req.params as t.IUrlParamsCellFiles;
       const paramData = getParams({ params });
       const { status, error, cellUri } = paramData;
@@ -49,7 +49,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.post(routes.CELL.FILES.UPLOAD, async req => {
     try {
       const host = req.host;
-      const query = req.query as t.IUrlQueryCellFilesUpload;
+      const query = req.query as t.IReqQueryCellFilesUpload;
       const params = req.params as t.IUrlParamsCellFiles;
       const paramData = getParams({ params });
       const { status, error, cellUri } = paramData;
@@ -74,7 +74,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.post(routes.CELL.FILES.UPLOADED, async req => {
     try {
       const host = req.host;
-      const query = req.query as t.IUrlQueryCellFilesUploaded;
+      const query = req.query as t.IReqQueryCellFilesUploaded;
       const params = req.params as t.IUrlParamsCellFiles;
       const paramData = getParams({ params });
       const { status, error, cellUri } = paramData;
@@ -95,7 +95,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   router.delete(routes.CELL.FILES.BASE, async req => {
     try {
       const host = req.host;
-      const query = req.query as t.IUrlQueryCellFilesDelete;
+      const query = req.query as t.IReqQueryCellFilesDelete;
       const params = req.params as t.IUrlParamsCellFiles;
       const paramData = getParams({ params });
       const body = (await req.body.json()) as t.IReqDeleteCellFilesBody;

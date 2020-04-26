@@ -39,14 +39,14 @@ export class HttpClientNs implements t.IClientNs {
     return res.status.toString().startsWith('2');
   }
 
-  public async read(options: t.IUrlQueryNsInfo = {}) {
+  public async read(options: t.IReqQueryNsInfo = {}) {
     const http = this.args.http;
     const url = this.url.info.query(options).toString();
     const res = await http.get(url);
     return util.fromHttpResponse(res).toClientResponse<t.IResGetNs>();
   }
 
-  public async write(data: t.IReqPostNsBody, options: t.IUrlQueryNsWrite = {}) {
+  public async write(data: t.IReqPostNsBody, options: t.IReqQueryNsWrite = {}) {
     const http = this.args.http;
     const url = this.url.info.query(options).toString();
     const res = await http.post(url, data);

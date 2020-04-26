@@ -1,5 +1,13 @@
 import { t } from '../common';
 
+export type IUrl<Q extends object = {}> = {
+  readonly origin: string;
+  readonly path: string;
+  readonly querystring: string;
+  query(input: Partial<Q>): IUrl<Q>;
+  toString(options?: { origin?: boolean }): string;
+};
+
 export type IUrls = {
   readonly protocol: t.HttpProtocol;
   readonly host: string;
@@ -21,44 +29,44 @@ export type IUrlsSys = {
 
 export type IUrlsNs = {
   uri: string;
-  info: t.IUrl<t.IUrlQueryNsInfo>;
+  info: t.IUrl<t.IReqQueryNsInfo>;
 };
 
 export type IUrlsCell = {
   uri: string;
-  info: t.IUrl<t.IUrlQueryCellInfo>;
+  info: t.IUrl<t.IReqQueryCellInfo>;
   files: IUrlsCellFiles;
   file: IUrlsCellFile;
 };
 
 export type IUrlsCellFile = {
-  byFileUri(fileUri: string, fileExtension?: string): t.IUrl<t.IUrlQueryCellFileDownloadByName>;
-  byName(filename: string): t.IUrl<t.IUrlQueryCellFileDownloadByName>;
+  byFileUri(fileUri: string, fileExtension?: string): t.IUrl<t.IReqQueryCellFileDownloadByName>;
+  byName(filename: string): t.IUrl<t.IReqQueryCellFileDownloadByName>;
 };
 
 export type IUrlsCellFiles = {
-  list: t.IUrl<t.IUrlQueryCellFilesList>;
-  upload: t.IUrl<t.IUrlQueryCellFilesUpload>;
-  uploaded: t.IUrl<t.IUrlQueryCellFilesUploaded>;
-  delete: t.IUrl<t.IUrlQueryCellFilesDelete>;
+  list: t.IUrl<t.IReqQueryCellFilesList>;
+  upload: t.IUrl<t.IReqQueryCellFilesUpload>;
+  uploaded: t.IUrl<t.IReqQueryCellFilesUploaded>;
+  delete: t.IUrl<t.IReqQueryCellFilesDelete>;
 };
 
 export type IUrlsRow = {
   uri: string;
-  info: t.IUrl<t.IUrlQueryRowInfo>;
+  info: t.IUrl<t.IReqQueryRowInfo>;
 };
 
 export type IUrlsColumn = {
   uri: string;
-  info: t.IUrl<t.IUrlQueryColumnInfo>;
+  info: t.IUrl<t.IReqQueryColumnInfo>;
 };
 
 export type IUrlsFile = {
   uri: string;
-  info: t.IUrl<t.IUrlQueryFileInfo>;
-  download: t.IUrl<t.IUrlQueryFileDownload>;
-  delete: t.IUrl<t.IUrlQueryFileDelete>;
-  uploaded: t.IUrl<t.IUrlQueryFileUploadComplete>;
+  info: t.IUrl<t.IReqQueryFileInfo>;
+  download: t.IUrl<t.IReqQueryFileDownload>;
+  delete: t.IUrl<t.IReqQueryFileDelete>;
+  uploaded: t.IUrl<t.IReqQueryFileUploadComplete>;
 };
 
 /**
@@ -67,5 +75,5 @@ export type IUrlsFile = {
  *    These allow calls to external systems (eg "S3") to be simulated.
  */
 export type IUrlsLocal = {
-  fs: t.IUrl<t.IUrlQueryLocalFs>;
+  fs: t.IUrl<t.IReqQueryLocalFs>;
 };

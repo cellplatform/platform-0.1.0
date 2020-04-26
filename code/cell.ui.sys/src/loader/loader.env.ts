@@ -6,15 +6,16 @@ let isInitialized = false;
  * Initialize the environment.
  */
 export function init() {
-  if (isInitialized) {
-    return;
+  if (!isInitialized) {
+    isInitialized = true;
+    if (typeof window === 'object' && window === window.top) {
+      const win = (window as unknown) as t.ITopWindow;
+      win.getEnv = getEnv;
+    }
   }
-  isInitialized = true;
 
-  if (typeof window === 'object' && window === window.top) {
-    const win = (window as unknown) as t.ITopWindow;
-    win.getEnv = getEnv;
-  }
+  const query = util.toQueryObject<t.IEnvLoaderQuery>(); // The window's query-string.
+  return query;
 }
 
 /**

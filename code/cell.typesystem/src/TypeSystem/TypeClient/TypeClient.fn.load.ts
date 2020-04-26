@@ -175,20 +175,19 @@ async function loadNamespace(args: {
 
   try {
     // Retrieve namespace.
-    const fetchedType = await fetch.getType({ ns });
-    if (!fetchedType.type) {
+    const fetchedNs = await fetch.getNs({ ns });
+    if (fetchedNs.error) {
+      const error = fetchedNs.error;
+      const errorType = error.status === 404 ? ERROR.TYPE.NOT_FOUND : ERROR.TYPE.DEF;
+      errors.add(ns, fetchedNs.error.message, { errorType });
+      return done();
+    }
+    if (!fetchedNs.ns) {
       const message = `The namespace (${ns}) does not exist`;
       errors.add(ns, message, { errorType: ERROR.TYPE.NOT_FOUND });
       return done();
     }
-
-    if (fetchedType.error) {
-      const error = fetchedType.error;
-      const errorType = error.status === 404 ? ERROR.TYPE.NOT_FOUND : ERROR.TYPE.DEF;
-      errors.add(ns, fetchedType.error.message, { errorType });
-      return done();
-    }
-    if (fetchedType.type.implements === ns) {
+    if (fetchedNs.ns.type?.implements === ns) {
       const message = `The namespace (${ns}) cannot implement itself (circular-ref)`;
       errors.add(ns, message, { errorType: ERROR.TYPE.REF_CIRCULAR });
       return done();

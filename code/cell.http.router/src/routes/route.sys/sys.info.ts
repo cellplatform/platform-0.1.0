@@ -39,7 +39,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
    * GET: /uid
    */
   router.get(routes.SYS.UID, async req => {
-    const query = req.query as t.IUrlSysUidQuery;
+    const query = req.query as t.IReqQuerySysUid;
     const length = Math.min(100, defaultValue(query.total, 10));
     const ids = Array.from({ length }).map(() => id.cuid());
     const data: t.IResGetSysUid = ids;

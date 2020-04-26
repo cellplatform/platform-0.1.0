@@ -15,20 +15,39 @@ export type ITypedSheetState = {
   readonly hasChanges: boolean;
   readonly isDisposed: boolean;
 
-  getCell(key: string): Promise<t.ICellData | undefined>;
   clearChanges(action: t.ITypedSheetChangesCleared['action']): void;
   clearCache(): void;
 };
 
 /**
- * Represents a single change within a sheet.
+ * CHANGES
  */
-export type ITypedSheetStateChange<D extends t.ICellData = t.ICellData> = {
-  cell: string; // URI
-  from: D;
-  to: D;
+export type ITypedSheetStateChanges = {
+  ns?: ITypedSheetChangeNsDiff;
+  cells?: { [key: string]: ITypedSheetChangeCellDiff };
 };
 
-export type ITypedSheetStateChanges = {
-  [key: string]: ITypedSheetStateChange;
+export type ITypedSheetChange = ITypedSheetChangeNs | ITypedSheetChangeCell;
+export type ITypedSheetChangeDiff = ITypedSheetChangeNsDiff | ITypedSheetChangeCellDiff;
+
+/**
+ * A change to the namespace
+ */
+type N = t.INsProps;
+export type ITypedSheetChangeNs<D extends N = N> = {
+  kind: 'NS';
+  uri: string;
+  to: D;
 };
+export type ITypedSheetChangeNsDiff<D extends N = N> = ITypedSheetChangeNs<D> & { from: D };
+
+/**
+ * An individual cell change within a sheet.
+ */
+type C = t.ICellData;
+export type ITypedSheetChangeCell<D extends C = C> = {
+  kind: 'CELL';
+  uri: string;
+  to: D;
+};
+export type ITypedSheetChangeCellDiff<D extends C = C> = ITypedSheetChangeCell & { from: D };

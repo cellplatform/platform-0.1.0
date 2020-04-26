@@ -53,7 +53,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
    */
   private readonly ctx: t.SheetCtx;
   private _sheet: t.ITypedSheet<T>;
-  private _ready: Promise<t.ITypedSheetRefs<T>>;
+  private _load: Promise<t.ITypedSheetRefs<T>>;
 
   public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
   public ns: t.INsUri = util.formatNsUri(TypedSheetRefs.PLACEHOLDER);
@@ -63,13 +63,14 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   /**
    * [Properties]
    */
-  public get isReady() {
+  public get isLoaded() {
     return Boolean(this._sheet);
   }
 
   public get sheet() {
-    if (!this.isReady) {
-      throw new Error(`Sheet '${this.ns.toString()}' property called before [isReady].`);
+    if (!this.isLoaded) {
+      const err = `Sheet '${this.ns.toString()}' property called before ready [isLoaded].`;
+      throw new Error(err);
     }
     return this._sheet;
   }
@@ -77,13 +78,13 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   /**
    * [Methods]
    */
-  public async ready(): Promise<t.ITypedSheetRefs<T>> {
-    if (this.isReady) {
+  public async load(): Promise<t.ITypedSheetRefs<T>> {
+    if (this.isLoaded) {
       return this;
     }
 
-    if (this._ready) {
-      return this._ready; // Single loader.
+    if (this._load) {
+      return this._load; // Single loader.
     }
 
     const promise = new Promise<t.ITypedSheetRefs<T>>(async (resolve, reject) => {
@@ -100,17 +101,17 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
         events$,
       });
 
-      delete this._ready; // Remove temporary load cache.
+      delete this._load; // Remove temporary load cache.
       resolve(this);
     });
 
-    this._ready = promise; // Temporarily cache so that any other calls to READY do not repeat the setup.
+    this._load = promise; // Temporarily cache so that any other calls to READY do not repeat the setup.
     return promise;
   }
 
   public async data(options: t.ITypedSheetDataOptions = {}) {
-    if (!this.isReady) {
-      await this.ready();
+    if (!this.isLoaded) {
+      await this.load();
     }
     const typename = this.typename;
     return this.sheet.data({ ...options, typename }).load();
@@ -138,21 +139,30 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     const { linkKey, link } = TypedSheetRefs.refLink({ typeDef, links });
 
     // Look for an existing link on the cell if the current link is a placeholder.
+
     if (this.ns.toString() === TypedSheetRefs.PLACEHOLDER) {
+      // const exists = Boolean(link)
       this.ns = link
         ? util.formatNsUri(link.uri.toString()) // Use existing link.
         : util.formatNsUri(Schema.cuid()); //      Generate new sheet link.
+
+      if (!link) {
+        // Ensure the newly created sheet has a "type.implements" value.
+        console.log('link', link);
+        console.log('this.ns', this.ns);
+      }
     }
 
     // Write the link-reference into the cell data.
     if (!links[linkKey]) {
       links = { ...links, [linkKey]: this.ns.toString() };
       const payload: t.ITypedSheetChange = {
-        cell: this.parent.toString(),
-        data: { ...data, links },
+        kind: 'CELL',
+        uri: this.parent.toString(),
+        to: { ...data, links },
       };
 
-      const isChanged = !R.equals(data, payload.data);
+      const isChanged = !R.equals(data, payload.to);
       if (isChanged) {
         this.fire({ type: 'SHEET/change', payload });
       }

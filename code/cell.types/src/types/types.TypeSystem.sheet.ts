@@ -64,8 +64,8 @@ export type ITypedSheetRefs<T> = {
   ns: t.INsUri;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   sheet: t.ITypedSheet<T>;
-  isReady: boolean;
-  ready(): Promise<ITypedSheetRefs<T>>;
+  isLoaded: boolean;
+  load(): Promise<ITypedSheetRefs<T>>;
   data(options?: ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
 };
 

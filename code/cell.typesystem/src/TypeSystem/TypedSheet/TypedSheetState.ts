@@ -1,7 +1,7 @@
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { TypeCache } from '../TypeCache';
-import { R, Schema, t, Uri } from './common';
+import { R, Schema, t, Uri, deleteUndefined } from './common';
 
 export type IArgs = {
   uri: t.INsUri;
@@ -10,11 +10,16 @@ export type IArgs = {
   cache?: t.IMemoryCache;
 };
 
+export type TypedSheetStateInternal = t.ITypedSheetState & {
+  getNs(): Promise<t.INsProps | undefined>;
+  getCell(key: string): Promise<t.ICellData | undefined>;
+};
+
 /**
  * State machine for a strongly-typed sheet.
  */
 export class TypedSheetState implements t.ITypedSheetState {
-  public static create<T>(args: IArgs) {
+  public static create(args: IArgs) {
     return new TypedSheetState(args);
   }
 
@@ -27,18 +32,24 @@ export class TypedSheetState implements t.ITypedSheetState {
     // INTERCEPT: Return pending changes to cells from the fetch method.
     const getCells: t.FetchSheetCells = async args => {
       const res = await fetch.getCells(args);
-      const changes = this._changes;
-      const keys = Object.keys(changes);
+      const cellChanges = this._changes.cells || {};
+      const keys = Object.keys(cellChanges);
       if (keys.length > 0) {
         const cells = (res.cells = { ...(res.cells || {}) });
         keys
           .filter(key => Schema.coord.cell.isCell(key) && cells[key])
-          .forEach(key => (cells[key] = { ...changes[key].to }));
+          .forEach(key => (cells[key] = { ...cellChanges[key].to }));
       }
       return res;
     };
 
-    this.fetch = { ...fetch, getCells };
+    // INTERCEPT: Return pending changes to the namespace from the fetch method.
+    const getNs: t.FetchSheetNs = async args => {
+      const ns = this._changes.ns?.to;
+      return ns ? { ns } : fetch.getNs(args);
+    };
+
+    this.fetch = { ...fetch, getCells, getNs };
     this.uri = args.uri;
     this._events$ = args.events$;
     this.events$ = this._events$.asObservable().pipe(takeUntil(this._dispose$), share());
@@ -47,7 +58,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       takeUntil(this.dispose$),
       filter(e => e.type === 'SHEET/change'),
       map(e => e.payload as t.ITypedSheetChange),
-      filter(e => this.isWithinNamespace(e.cell)),
+      filter(e => this.isWithinNamespace(e.uri)),
     );
 
     this.changed$ = this.events$.pipe(
@@ -59,13 +70,19 @@ export class TypedSheetState implements t.ITypedSheetState {
 
     this.change$
       .pipe(
-        map(({ data, cell }) => ({ to: data, uri: Uri.parse<t.ICellUri>(cell) })),
+        filter(e => e.kind === 'CELL'),
+        map(({ to, uri }) => ({ to, uri: Uri.parse<t.ICellUri>(uri) })),
         filter(e => e.uri.ok && e.uri.type === 'CELL'),
-        map(e => ({ ...e, uri: e.uri.parts })),
       )
-      .subscribe(({ uri, to }) => {
-        this.fireChanged({ uri, to });
-      });
+      .subscribe(({ uri, to }) => this.fireCellChanged({ uri: uri.parts, to }));
+
+    this.change$
+      .pipe(
+        filter(e => e.kind === 'NS'),
+        map(({ to, uri }) => ({ to, uri: Uri.parse<t.INsUri>(uri) })),
+        filter(e => e.uri.ok && e.uri.type === 'NS'),
+      )
+      .subscribe(({ to }) => this.fireNsChanged({ to }));
   }
 
   public dispose() {
@@ -83,7 +100,7 @@ export class TypedSheetState implements t.ITypedSheetState {
   public readonly uri: t.INsUri;
   public readonly fetch: t.CachedFetcher;
 
-  public readonly dispose$ = this._dispose$.asObservable();
+  public readonly dispose$ = this._dispose$.pipe(share());
   private readonly events$: t.Observable<t.TypedSheetEvent>;
   public readonly change$: t.Observable<t.ITypedSheetChange>;
   public readonly changed$: t.Observable<t.ITypedSheetChanged>;
@@ -96,23 +113,41 @@ export class TypedSheetState implements t.ITypedSheetState {
   }
 
   public get changes(): t.ITypedSheetStateChanges {
-    return { ...this._changes };
+    const changes = this._changes;
+    return deleteUndefined({
+      ns: changes.ns ? { ...changes.ns } : undefined,
+      cells: changes.cells ? { ...changes.cells } : undefined,
+    });
   }
 
   public get hasChanges() {
-    return Object.keys(this._changes).length > 0;
+    const changes = this._changes;
+    if (changes.ns) {
+      return true;
+    }
+    if (changes.cells && Object.keys(changes.cells).length > 0) {
+      return true;
+    }
+    return false;
   }
 
   /**
    * [Methods]
    */
+
+  public async getNs() {
+    const ns = this.uri.id;
+    return (await this.fetch.getNs({ ns })).ns;
+  }
+
   public async getCell(key: string) {
     if (!Schema.coord.cell.isCell(key)) {
       throw new Error(`Expected a cell key (eg "A1").`);
     }
 
-    if (this._changes[key]) {
-      return this._changes[key].to;
+    const cellChanges = this._changes.cells || {};
+    if (cellChanges[key]) {
+      return cellChanges[key].to;
     }
 
     const ns = this.uri.id;
@@ -122,9 +157,9 @@ export class TypedSheetState implements t.ITypedSheetState {
   }
 
   public clearChanges(action: t.ITypedSheetChangesCleared['action']) {
+    const ns = this.uri.toString();
     const from = { ...this._changes };
     const to = {};
-    const ns = this.uri.toString();
     this._changes = {}; // NB: resetting state happens after the `from` variable is copied.
     this.fire({
       type: 'SHEET/changes/cleared',
@@ -136,8 +171,13 @@ export class TypedSheetState implements t.ITypedSheetState {
     const ns = this.uri.id;
     const fetch = this.fetch;
     const cache = fetch.cache;
-    const prefix = fetch.cacheKey('getCells', ns);
-    cache.keys.filter(key => key.startsWith(prefix)).forEach(key => cache.delete(key));
+    const prefix = {
+      ns: fetch.cacheKey('getNs', ns),
+      cells: fetch.cacheKey('getCells', ns),
+    };
+    cache.keys
+      .filter(key => key.startsWith(prefix.cells) || key.startsWith(prefix.ns))
+      .forEach(key => cache.delete(key));
   }
 
   /**
@@ -147,29 +187,58 @@ export class TypedSheetState implements t.ITypedSheetState {
     this._events$.next(e);
   }
 
-  private async fireChanged<D>(args: { uri: t.ICellUri; to: D }) {
+  private async fireNsChanged<D>(args: { to: D }) {
+    const { to } = args;
+
+    const existing = this._changes.ns;
+    if (existing && R.equals(existing.to, to)) {
+      return; // No change.
+    }
+
+    const from = (existing ? existing.from : await this.getNs()) || {};
+    const change: t.ITypedSheetChangeNsDiff = {
+      kind: 'NS',
+      uri: this.uri.toString(),
+      from,
+      to,
+    };
+
+    this._changes = { ...this._changes, ns: change };
+    this.fireChanged({ change });
+  }
+
+  private async fireCellChanged<D>(args: { uri: t.ICellUri; to: D }) {
     const { uri, to } = args;
     const key = args.uri.key;
 
-    const existing = this._changes[key];
+    const existing = (this._changes.cells || {})[key];
     if (existing && R.equals(existing.to, to)) {
       return; // No change.
     }
 
     const from = (existing ? existing.from : await this.getCell(uri.key)) || {};
-
-    const change: t.ITypedSheetStateChange = { cell: uri.toString(), from, to };
-    this._changes = {
-      ...this._changes,
-      [key]: change,
+    const change: t.ITypedSheetChangeCellDiff = {
+      kind: 'CELL',
+      uri: uri.toString(),
+      from,
+      to,
     };
 
-    const payload: t.ITypedSheetChanged = {
-      ns: this.uri.toString(),
-      change,
-      changes: this.changes,
-    };
-    this.fire({ type: 'SHEET/changed', payload });
+    const cells = { ...(this._changes.cells || {}), [key]: change };
+    this._changes = { ...this._changes, cells };
+    this.fireChanged({ change });
+  }
+
+  private fireChanged(args: { change: t.ITypedSheetChangeDiff }) {
+    const { change } = args;
+    this.fire({
+      type: 'SHEET/changed',
+      payload: {
+        ns: this.uri.toString(),
+        change,
+        changes: this.changes,
+      },
+    });
   }
 
   private isWithinNamespace(input: string) {
