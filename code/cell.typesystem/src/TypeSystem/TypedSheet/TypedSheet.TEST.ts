@@ -811,7 +811,7 @@ describe('TypedSheet', () => {
       });
 
       describe('1:*', () => {
-        it.skip('load ➔ ready (loaded)', async () => {
+        it('load ➔ ready (loaded)', async () => {
           const { sheet } = await testSheet();
           const cursor = await sheet.data('MyRow').load();
           const row = cursor.row(0);
@@ -851,18 +851,6 @@ describe('TypedSheet', () => {
           const changes = sheet.state.changes;
           const changedLinks = changes.cells?.E1.to.links || {};
           expect(changedLinks['ref:type']).to.eql(messages.sheet.uri.toString());
-
-          /**
-           * TODO 🐷
-           * Sheet:
-           *    - "implements" assigned to newly created sheet (refs).
-           *    - do this via a syncer controller.
-           */
-
-          console.log('-------------------------------------------');
-          console.log('changes', changes);
-          console.log('-------------------------------------------');
-          // console.log("messages.sheet", messages.sheet.state.to)
         });
 
         it('throw: sheet called before ready (loaded)', async () => {
