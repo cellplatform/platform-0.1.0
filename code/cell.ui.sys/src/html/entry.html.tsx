@@ -33,15 +33,22 @@ const uri = Schema.uri.parse<t.ICellUri>(res.window).parts;
 
 // const Client.
 
-// Client.sheet(uri.parts.ns, { http: res.host }).then(sheet => {
-//   console.log('sheet', sheet);
-// });
 
 (async () => {
+  console.log("uri", uri)
+
   const client = Client.http(res.host);
   const ns = client.ns(uri.ns);
 
   const f = await ns.read({ cells: true });
-  // console.log('f', f);
   console.log('f.body.data', f.body.data);
+
+  // const sheet = await Client.sheet(uri.ns, { http: client })
+  // console.log("sheet", sheet)
+  // .then(sheet => {
+  //   console.log('sheet', sheet);
+  // });
 })();
+
+
+

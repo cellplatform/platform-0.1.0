@@ -28,7 +28,7 @@ export function saveMonitor(args: {
    */
 
   const saveChanges = async () => {
-    const changes = state.changes;
+    const changes = state.changes.cells || {};
     const cells = toChangedCells(changes);
     const res = await ns.write({ cells });
     state.clearChanges('SAVED');
@@ -36,7 +36,7 @@ export function saveMonitor(args: {
     if (!args.silent) {
       const { status } = res;
       Object.keys(changes).forEach(key => {
-        const uri = Uri.parse<t.ICellUri>(changes[key].cell).parts;
+        const uri = Uri.parse<t.ICellUri>(changes[key].uri).parts;
         const cell = `${log.green('cell')}:${uri.ns}:${log.green(uri.key)}`;
         const prefix = log.gray(`[${log.blue(status)}:SAVED]`);
         log.info(`${prefix} ${cell}`);
