@@ -25,7 +25,7 @@ export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
    * [Lifecycle]
    */
   private constructor(args: IArgs) {
-    this.ctx = args.ctx;
+    this._ctx = args.ctx;
     this.typeDef = args.typeDef;
     this.typename = args.typename;
   }
@@ -33,7 +33,7 @@ export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
   /**
    * [Fields]
    */
-  private readonly ctx: t.SheetCtx;
+  private readonly _ctx: t.SheetCtx;
   public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
   public readonly typename: string;
 }

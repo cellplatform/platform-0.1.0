@@ -38,13 +38,13 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * [Lifecycle]
    */
   private constructor(args: IArgs) {
-    this.ctx = args.ctx;
+    this._ctx = args.ctx;
     this.typename = args.typename;
     this.uri = util.formatRowUri(args.uri);
     this._columns = args.columns;
     this.index = Number.parseInt(this.uri.key, 10) - 1;
 
-    const cellChange$ = this.ctx.event$.pipe(
+    const cellChange$ = this._ctx.event$.pipe(
       filter(e => e.type === 'SHEET/change'),
       map(e => e.payload as t.ITypedSheetChangeCell),
       filter(e => e.kind === 'CELL'),
@@ -73,7 +73,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * [Fields]
    */
-  private readonly ctx: t.SheetCtx;
+  private readonly _ctx: t.SheetCtx;
   private readonly _columns: t.IColumnTypeDef[] = [];
   private readonly _prop: { [key: string]: ITypedSheetRowProp<T, any> } = {};
   private _refs: { [key: string]: t.ITypedSheetRef<T> | t.ITypedSheetRefs<T> } = {};
@@ -167,7 +167,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
         this._columns
           .filter(columnDef => (!props ? true : props.includes(columnDef.prop as keyof T)))
           .map(async columnDef => {
-            const res = await this.ctx.fetch.getCells({ ns, query });
+            const res = await this._ctx.fetch.getCells({ ns, query });
             const key = `${columnDef.column}${this.index + 1}`;
             this.setData(columnDef, (res.cells || {})[key] || {});
           }),
@@ -324,7 +324,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    */
 
   private fire(e: t.TypedSheetEvent) {
-    this.ctx.event$.next(e);
+    this._ctx.event$.next(e);
   }
 
   private findColumnByProp<K extends keyof T>(prop: K) {
@@ -339,7 +339,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private fireChange(columnDef: t.IColumnTypeDef, to: t.ICellData) {
     const key = `${columnDef.column}${this.index + 1}`;
     const uri = Uri.create.cell(this.uri.ns, key);
-    this.ctx.event$.next({
+    this._ctx.event$.next({
       type: 'SHEET/change',
       payload: { kind: 'CELL', uri, to },
     });
@@ -355,7 +355,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     links?: t.IUriMap;
   }) {
     const { typename, typeDef, links = {} } = args;
-    const ctx = this.ctx;
+    const ctx = this._ctx;
     const isArray = typeDef.type.isArray;
     const { link } = TypedSheetRefs.refLink({ typeDef, links });
     const exists = Boolean(link);

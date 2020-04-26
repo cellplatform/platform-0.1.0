@@ -124,15 +124,12 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     const event$ = args.event$ || new Subject<t.TypedSheetEvent>();
     const dispose$ = this.dispose$;
 
-    this._typeDefs = args.types;
-    this.event$ = event$.asObservable().pipe(takeUntil(this._dispose$), share());
+    this.event$ = event$.asObservable().pipe(takeUntil(dispose$), share());
     this.state = TypedSheetState.create({ uri, event$, fetch: args.fetch, cache });
-    this.ctx = TypedSheet.ctx({ fetch: this.state.fetch, event$, dispose$, cache }); // NB: Use the state-machine's wrapped fetcher.
 
-    this.errorList = ErrorList.create({
-      defaultType: ERROR.TYPE.SHEET,
-      errors: args.errors,
-    });
+    this._ctx = TypedSheet.ctx({ fetch: this.state.fetch, event$, dispose$, cache }); // NB: Use the state-machine's wrapped fetcher.
+    this._typeDefs = args.types;
+    this._errorList = ErrorList.create({ defaultType: ERROR.TYPE.SHEET, errors: args.errors });
   }
 
   public dispose() {
@@ -145,8 +142,8 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
    * [Fields]
    */
 
-  private readonly ctx: t.SheetCtx;
-  private readonly errorList: ErrorList;
+  private readonly _ctx: t.SheetCtx;
+  private readonly _errorList: ErrorList;
   private readonly _dispose$ = new Subject<{}>();
   private readonly _typeDefs: t.INsTypeDef[];
   private _types: t.ITypedSheet['types'];
@@ -169,7 +166,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   }
 
   public get errors() {
-    return this.errorList.list;
+    return this._errorList.list;
   }
 
   public get types() {
@@ -199,7 +196,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     const args = typeof input === 'string' ? { typename: input } : input;
     const { typename, range } = args;
     const ns = this.uri;
-    const ctx = this.ctx;
+    const ctx = this._ctx;
 
     // Retrieve the specified type definition.
     const defs = this._typeDefs;

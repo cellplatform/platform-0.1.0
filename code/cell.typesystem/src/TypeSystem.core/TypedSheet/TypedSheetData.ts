@@ -69,14 +69,14 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     this.uri = util.formatNsUri(args.ns);
     this.typename = args.typename;
     this.types = args.types;
-    this.ctx = args.ctx;
+    this._ctx = args.ctx;
     this._range = TypedSheetData.formatRange(args.range);
   }
 
   /**
    * [Fields]
    */
-  private readonly ctx: t.SheetCtx;
+  private readonly _ctx: t.SheetCtx;
   private _rows: t.ITypedSheetRow<T>[] = [];
   private _range: string;
   private _status: t.ITypedSheetData<T>['status'] = 'INIT';
@@ -167,7 +167,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
       });
 
       // Query cell data from the network.
-      const { total, error } = await this.ctx.fetch.getCells({ ns, query });
+      const { total, error } = await this._ctx.fetch.getCells({ ns, query });
       if (error) {
         reject(new Error(error.message));
       }
@@ -210,13 +210,13 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
    * [INTERNAL]
    */
   private fire(e: t.TypedSheetEvent) {
-    this.ctx.event$.next(e);
+    this._ctx.event$.next(e);
   }
 
   private createRow(index: number) {
     const uri = Uri.create.row(this.uri.toString(), (index + 1).toString());
     const columns = this.types;
-    const ctx = this.ctx;
+    const ctx = this._ctx;
     const typename = this.typename;
     return TypedSheetRow.create<T>({ typename, uri, columns, ctx });
   }

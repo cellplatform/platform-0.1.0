@@ -45,13 +45,13 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     this.typeDef = args.typeDef;
     this.typename = args.typename;
     this.parent = util.formatCellUri(args.parent);
-    this.ctx = args.ctx;
+    this._ctx = args.ctx;
   }
 
   /**
    * [Fields]
    */
-  private readonly ctx: t.SheetCtx;
+  private readonly _ctx: t.SheetCtx;
   private _sheet: t.ITypedSheet<T>;
   private _load: Promise<t.ITypedSheetRefs<T>>;
 
@@ -90,7 +90,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     const promise = new Promise<t.ITypedSheetRefs<T>>(async (resolve, reject) => {
       await this.ensureLink();
 
-      const { fetch, cache, event$ } = this.ctx;
+      const { fetch, cache, event$ } = this._ctx;
       const def = this.typeDef;
 
       this._sheet = await TypedSheet.create<T>({
@@ -121,14 +121,14 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
    * [Helpers]
    */
   private fire(e: t.TypedSheetEvent) {
-    this.ctx.event$.next(e);
+    this._ctx.event$.next(e);
   }
 
   private async getCell() {
     const ns = this.parent.ns;
     const key = this.parent.key;
     const query = `${key}:${key}`;
-    const res = await this.ctx.fetch.getCells({ ns, query });
+    const res = await this._ctx.fetch.getCells({ ns, query });
     return (res.cells || {})[key];
   }
 
