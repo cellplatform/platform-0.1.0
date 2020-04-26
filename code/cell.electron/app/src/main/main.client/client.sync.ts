@@ -1,7 +1,25 @@
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, takeUntil, filter } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
 import { coord, defaultValue, log, t, Uri } from '../common';
+
+/**
+ * Ensure the "implements" field on the {ns.type} exists for a sheet.
+ */
+export async function saveImplementsField(args: {
+  http: t.IHttpClient;
+  sheet: t.ITypedSheet;
+  implements: string;
+}) {
+  const { http, sheet } = args;
+
+  const ns = http.ns(sheet.uri.id);
+  const type = (await ns.read({})).body.data.ns.props?.type || {};
+
+  if (!type.implements) {
+    await ns.write({ ns: { type: { implements: args.implements } } });
+  }
+}
 
 /**
  * Monitors for changes in a sheet and saves results back to the server.

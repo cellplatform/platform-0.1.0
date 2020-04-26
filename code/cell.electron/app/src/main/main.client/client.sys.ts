@@ -1,17 +1,7 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
-import { Client, t, time, constants, Uri, fs, log } from '../common';
+import { Client, constants, fs, log, t, time, Uri } from '../common';
 import * as sync from './client.sync';
 import { upload } from './client.upload';
 
@@ -46,9 +36,15 @@ export async function getOrCreateSystemContext(host: string) {
   const windows = await app.props.windows.load();
   const windowDefs = await app.props.windowDefs.load();
 
-  // TEMP: setup save monitor(s).
+  /**
+   * TODO 🐷
+   * Move save monitor logic to [TypeSystem] module
+   */
   sync.saveMonitor({ http, state: windows.sheet.state, flush$, saved$ });
   sync.saveMonitor({ http, state: windowDefs.sheet.state, flush$, saved$ });
+
+  await sync.saveImplementsField({ http, sheet: windows.sheet, implements: NS.TYPE.WINDOW });
+  await sync.saveImplementsField({ http, sheet: windowDefs.sheet, implements: NS.TYPE.WINDOW_DEF });
 
   // Finish up.
   const ctx: t.IAppCtx = {
