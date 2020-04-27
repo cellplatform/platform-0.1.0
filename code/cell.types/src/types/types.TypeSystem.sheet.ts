@@ -60,8 +60,8 @@ export type ITypedSheetRef<T> = {
  * A connector for a reference-pointer to a set of rows in another sheet.
  */
 export type ITypedSheetRefs<T> = {
-  typename: string;
   ns: t.INsUri;
+  typename: string;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
   sheet: t.ITypedSheet<T>;
   isLoaded: boolean;

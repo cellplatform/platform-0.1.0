@@ -55,8 +55,8 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   private _sheet: t.ITypedSheet<T>;
   private _load: Promise<t.ITypedSheetRefs<T>>;
 
-  public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
   public ns: t.INsUri = util.formatNsUri(TypedSheetRefs.PLACEHOLDER);
+  public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
   public readonly typename: string;
   public readonly parent: t.ICellUri;
 
@@ -87,6 +87,9 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
       return this._load; // Single loader.
     }
 
+    const parentNs = Uri.create.ns(this.parent.ns);
+    this.fire({ type: 'SHEET/refs/loading', payload: { ns: parentNs, refs: this } });
+
     const promise = new Promise<t.ITypedSheetRefs<T>>(async (resolve, reject) => {
       await this.ensureLink();
 
@@ -102,6 +105,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
       });
 
       delete this._load; // Remove temporary load cache.
+      this.fire({ type: 'SHEET/refs/loaded', payload: { ns: parentNs, refs: this } });
       resolve(this);
     });
 

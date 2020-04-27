@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, tap } from 'rxjs/operators';
 
 import { TypedSheet } from '.';
 import { ERROR, expect, expectError, t, testInstanceFetch, time, TYPE_DEFS } from '../../test';
@@ -875,6 +875,34 @@ describe('TypedSheet', () => {
           const changes = sheet.state.changes;
           const changedLinks = changes.cells?.E1.to.links || {};
           expect(changedLinks['ref:type']).to.eql(messages.sheet.uri.toString());
+        });
+
+        it.only('fires event: SHEET/refs/(loading | loaded)', async () => {
+          const { sheet } = await testMySheet();
+
+          const fired: t.TypedSheetEvent[] = [];
+          sheet.event$
+            .pipe(filter(e => e.type.startsWith('SHEET/refs/load')))
+            .subscribe(e => fired.push(e));
+
+          const row = (await sheet.data('MyRow').load()).row(0).props;
+          const messages = row.messages;
+
+          expect(fired.length).to.eql(0);
+          await messages.load();
+          expect(fired.length).to.eql(2);
+
+          expect(fired[0].type).to.eql('SHEET/refs/loading');
+          expect(fired[1].type).to.eql('SHEET/refs/loaded');
+
+          const loading = fired[0].payload as t.ITypedSheetRefsLoading;
+          const loaded = fired[1].payload as t.ITypedSheetRefsLoaded;
+
+          expect(loading.ns).to.eql(sheet.uri.toString());
+          expect(loaded.ns).to.eql(sheet.uri.toString());
+
+          expect(loading.refs).to.equal(messages);
+          expect(loaded.refs).to.equal(messages);
         });
 
         it('throw: sheet called before ready (loaded)', async () => {
