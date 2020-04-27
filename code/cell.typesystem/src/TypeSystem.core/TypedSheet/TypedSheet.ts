@@ -133,6 +133,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   }
 
   public dispose() {
+    this._data = {};
     this._dispose$.next();
     this._dispose$.complete();
     this.state.dispose();
@@ -147,6 +148,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   private readonly _dispose$ = new Subject<{}>();
   private readonly _typeDefs: t.INsTypeDef[];
   private _types: t.ITypedSheet['types'];
+  private _data: { [typename: string]: TypedSheetData<any> } = {};
 
   public readonly uri: t.INsUri;
   public readonly state: TypedSheetState;
@@ -201,6 +203,15 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     const ns = this.uri;
     const ctx = this._ctx;
 
+    // Check the pool in case the cursor has already been created.
+    if (this._data[typename]) {
+      const res = this._data[typename];
+      if (args.range && res.range !== args.range) {
+        res.expandRange(args.range);
+      }
+      return res as t.ITypedSheetData<D>;
+    }
+
     // Retrieve the specified type definition.
     const defs = this._typeDefs;
     const def = defs.find(def => def.typename === typename);
@@ -210,8 +221,11 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
       throw new Error(err);
     }
 
+    // Construct the cursor.
     const types = def.columns;
-    return TypedSheetData.create<D>({ ns, typename, types, ctx, range });
+    const res = TypedSheetData.create<D>({ ns, typename, types, ctx, range });
+    this._data[typename] = res as TypedSheetData<any>;
+    return res;
   }
 
   /**

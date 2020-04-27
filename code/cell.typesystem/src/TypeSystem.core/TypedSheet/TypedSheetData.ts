@@ -112,7 +112,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   /**
-   * [Methods]
+   * [Methods] - interface (public)
    */
   public exists(index: number) {
     return Boolean(this._rows[index]);
@@ -131,21 +131,10 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   public async load(args: string | t.ITypedSheetDataOptions): Promise<t.ITypedSheetData<T>> {
-    const isLoaded = this.isLoaded;
-    const ns = this.uri.toString();
-
     // Wrangle the given argument range.
     let argRange = typeof args === 'string' ? args : args?.range;
     if (argRange) {
-      argRange = TypedSheetData.formatRange(argRange);
-      if (!isLoaded) {
-        // NB: Replace if this is the first load.
-        this._range = argRange;
-      }
-      if (isLoaded) {
-        // NB: Expand the range if this new range is additive (already loaded).
-        this._range = mergeRanges(argRange, this._range);
-      }
+      argRange = this.expandRange(argRange);
     }
 
     const query = argRange || this.range; // NB: Use the narrowest range passed to do the least amount of work (avoiding the complete expanded range).
@@ -154,16 +143,14 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
       return alreadyLoading.promise; // NB: A load operation is already in progress.
     }
 
+    const ns = this.uri.toString();
     const promise = new Promise<t.ITypedSheetData<T>>(async (resolve, reject) => {
       this._status = 'LOADING';
 
       // Fire BEFORE event.
       this.fire({
         type: 'SHEET/loading',
-        payload: {
-          ns,
-          range: query,
-        },
+        payload: { ns, range: query },
       });
 
       // Query cell data from the network.
@@ -188,7 +175,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
       this._isLoaded = true; // NB: Always true after initial load.
       this._loading = this._loading.filter(item => item.query !== query);
 
-      // Fire BEFORE event.
+      // Fire AFTER event.
       this.fire({
         type: 'SHEET/loaded',
         payload: {
@@ -204,6 +191,18 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
 
     this._loading = [...this._loading, { query, promise }]; // NB: Stored so repeat calls while loading return the same promise.
     return promise;
+  }
+
+  /**
+   * [Methods] - internal to module.
+   */
+
+  public expandRange(range: string) {
+    range = TypedSheetData.formatRange(range);
+    this._range = this.isLoaded
+      ? mergeRanges(range, this._range) // NB: Expand the range if this new range is additive (already loaded).
+      : range; // NB: Replace if this is the first load.
+    return this._range;
   }
 
   /**

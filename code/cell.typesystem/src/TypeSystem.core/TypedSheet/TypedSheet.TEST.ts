@@ -17,11 +17,9 @@ import { TypedSheetState, TypedSheetStateInternal } from './TypedSheetState';
 
 /**
  * TODO 🐷 Features
- * - error check typename on NS upon writing (Captialised, no spaces)
  * - ns (read): query on subset of rows (index/take)
  * - ns (read): query string {ns:false} - omit ns data.
- * - read/write: linked sheet
- * - data/cursor - put of [types] field: equivalent  row-types object on it.
+ * - read/write: linked sheet (singular)
  */
 
 describe('TypedSheet', () => {
@@ -93,11 +91,37 @@ describe('TypedSheet', () => {
   describe('TypedSheetData (cursor)', () => {
     it('create: default (unloaded)', async () => {
       const { sheet } = await testMySheet();
-      const cursor = sheet.data('MyRow');
+      const cursor = sheet.data<f.MyRow>('MyRow');
       expect(cursor.range).to.eql(TypedSheetData.DEFAULT.RANGE);
       expect(cursor.status).to.eql('INIT');
       expect(cursor.total).to.eql(-1);
       expect(cursor.typename).to.eql('MyRow');
+    });
+
+    it('cursor pooling', async () => {
+      const { sheet } = await testMyMultiSheet();
+      const cursor1 = sheet.data<m.MyOne>('MyOne');
+      const cursor2 = sheet.data<m.MyOne>('MyOne');
+      const cursor3 = sheet.data<m.MyTwo>('MyTwo');
+
+      expect(cursor1).to.equal(cursor2); // NB: Same instance.
+      expect(cursor1).to.not.equal(cursor3); // NB: Same instance.
+    });
+
+    it('cursor pooling: expand range', async () => {
+      const { sheet } = await testMyMultiSheet();
+      const cursor1 = sheet.data<m.MyOne>({ typename: 'MyOne', range: '1:10' });
+      const cursor2 = sheet.data<m.MyOne>('MyOne');
+      const cursor3 = sheet.data<m.MyOne>({ typename: 'MyOne', range: '5:30' });
+
+      expect(cursor1).to.equal(cursor2); // NB: Same instance.
+      expect(cursor1).to.equal(cursor3); // NB: Same instance.
+      expect(cursor1.range).to.eql(cursor2.range);
+
+      // cursor1.foo
+      expect(cursor1.range).to.eql('5:30');
+      expect(cursor2.range).to.eql('5:30');
+      expect(cursor3.range).to.eql('5:30');
     });
 
     it('typename/types', async () => {
@@ -115,47 +139,47 @@ describe('TypedSheet', () => {
     });
 
     it('create: custom range (auto correct)', async () => {
-      const { sheet } = await testMySheet();
       const DEFAULT = TypedSheetData.DEFAULT;
 
-      const test = (range: string, expected?: string) => {
+      const test = async (range: string, expected?: string) => {
+        const { sheet } = await testMySheet();
         const res = sheet.data({ typename: 'MyRow', range });
         expect(res.range).to.eql(expected || range);
       };
 
-      test('3:15');
-      test('10:50');
-      test('1:80');
-      test('', DEFAULT.RANGE);
-      test('  ', DEFAULT.RANGE);
+      await test('3:15');
+      await test('10:50');
+      await test('1:80');
+      await test('', DEFAULT.RANGE);
+      await test('  ', DEFAULT.RANGE);
 
-      test('0:0', '1:1');
-      test('0:10', '1:10');
-      test('10:0', '1:10');
-      test('500:500');
+      await test('0:0', '1:1');
+      await test('0:10', '1:10');
+      await test('10:0', '1:10');
+      await test('500:500');
 
-      test('.:.', DEFAULT.RANGE);
-      test('-1:10', DEFAULT.RANGE);
-      test('1:-10', DEFAULT.RANGE);
+      await test('.:.', DEFAULT.RANGE);
+      await test('-1:10', DEFAULT.RANGE);
+      await test('1:-10', DEFAULT.RANGE);
 
-      test('A:5', '1:5');
-      test('C:5', '1:5');
-      test('5:C', '1:5');
+      await test('A:5', '1:5');
+      await test('C:5', '1:5');
+      await test('5:C', '1:5');
 
-      test('*:*', DEFAULT.RANGE);
-      test('**:**', DEFAULT.RANGE);
-      test('*:**', DEFAULT.RANGE);
-      test('**:*', DEFAULT.RANGE);
+      await test('*:*', DEFAULT.RANGE);
+      await test('**:**', DEFAULT.RANGE);
+      await test('*:**', DEFAULT.RANGE);
+      await test('**:*', DEFAULT.RANGE);
 
-      test('1:*', DEFAULT.RANGE);
-      test('1:**', DEFAULT.RANGE);
-      test('*:1', DEFAULT.RANGE);
-      test('**:1', DEFAULT.RANGE);
+      await test('1:*', DEFAULT.RANGE);
+      await test('1:**', DEFAULT.RANGE);
+      await test('*:1', DEFAULT.RANGE);
+      await test('**:1', DEFAULT.RANGE);
 
-      test('0:*', `1:${DEFAULT.PAGE}`);
-      test('10:*', `10:${DEFAULT.PAGE}`);
-      test('*:800', `${DEFAULT.PAGE}:800`);
-      test('800:*', `${DEFAULT.PAGE}:800`);
+      await test('0:*', `1:${DEFAULT.PAGE}`);
+      await test('10:*', `10:${DEFAULT.PAGE}`);
+      await test('*:800', `${DEFAULT.PAGE}:800`);
+      await test('800:*', `${DEFAULT.PAGE}:800`);
     });
 
     it('load (status: INIT ➔ LOADING ➔ LOADED)', async () => {
@@ -900,25 +924,17 @@ describe('TypedSheet', () => {
           const { sheet } = await testMySheet();
           const row = sheet.data('MyRow').row(0).props;
 
-          const cursor1 = await row.messages.data();
-          const cursor2 = await row.messages.data({});
-          const cursor3 = await row.messages.data({ range: '1:5' });
+          const cursor1 = await row.messages.data({ range: '1:5' });
+          const cursor2 = await row.messages.data();
+          const cursor3 = await row.messages.data({ range: '1:10' });
+
+          expect(cursor1).to.equal(cursor2); // NB: Same instance.
+          expect(cursor1).to.equal(cursor3); // NB: Same instance.
 
           expect(cursor1.typename).to.eql('MyMessage');
-          expect(cursor2.typename).to.eql('MyMessage');
-          expect(cursor3.typename).to.eql('MyMessage');
-
           expect(cursor1.isLoaded).to.eql(true);
-          expect(cursor2.isLoaded).to.eql(true);
-          expect(cursor3.isLoaded).to.eql(true);
-
           expect(cursor1.status).to.eql('LOADED');
-          expect(cursor2.status).to.eql('LOADED');
-          expect(cursor3.status).to.eql('LOADED');
-
-          expect(cursor1.range).to.eql(TypedSheetData.DEFAULT.RANGE);
-          expect(cursor2.range).to.eql(TypedSheetData.DEFAULT.RANGE);
-          expect(cursor3.range).to.eql('1:5');
+          expect(cursor1.range).to.eql('1:10');
         });
 
         it('ref.data(...): loaded props', async () => {
