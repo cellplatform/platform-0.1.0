@@ -53,11 +53,12 @@ export function saveMonitor(args: {
 
     if (!args.silent) {
       const { status } = res;
+      const prefix = log.gray(`[${log.blue(status)}:SAVED]`);
+      log.info(`${prefix} `);
       Object.keys(changes).forEach(key => {
-        const uri = Uri.parse<t.ICellUri>(changes[key].uri).parts;
-        const cell = `${log.green('cell')}:${uri.ns}:${log.green(uri.key)}`;
-        const prefix = log.gray(`[${log.blue(status)}:SAVED]`);
-        log.info(`${prefix} ${cell}`);
+        const change = changes[key];
+        const cell = `${log.green('cell')}:${change.ns}:${log.green(change.key)}`;
+        log.info(`     ${cell}`);
       });
 
       if (!res.ok) {
