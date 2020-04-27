@@ -22,7 +22,7 @@ import { TypedSheetState, TypedSheetStateInternal } from './TypedSheetState';
  * - read/write: linked sheet (singular)
  */
 
-describe.only('TypedSheet', () => {
+describe('TypedSheet', () => {
   describe('lifecycle', () => {
     it('dispose', async () => {
       const { sheet } = await testMySheet();
@@ -353,11 +353,9 @@ describe.only('TypedSheet', () => {
     });
   });
 
-  describe.only('TypedSheetRow', () => {
+  describe('TypedSheetRow', () => {
     const testRow = async (uri: string) => {
       const { sheet, fetch } = await testMySheet();
-
-      // const fetch = await testFetchMySheet('ns:foo.mySheet');
       const ctx = TypedSheet.ctx({ fetch });
       const ns = await TypeClient.load({ ns: 'ns:foo', fetch: ctx.fetch, cache: ctx.cache });
       const defs = ns.defs;

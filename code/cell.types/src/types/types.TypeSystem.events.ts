@@ -23,6 +23,7 @@ export type ITypedSheetLoadingEvent = {
 };
 export type ITypedSheetLoading = {
   ns: string; // uri.
+  sheet: t.ITypedSheet;
   range: string; // row range, eg: "1:500"
 };
 
@@ -98,6 +99,7 @@ export type ITypedSheetChangedEvent = {
 };
 export type ITypedSheetChanged = {
   ns: string; // uri.
+  sheet: t.ITypedSheet;
   change: t.ITypedSheetChangeDiff;
   changes: t.ITypedSheetStateChanges;
 };
@@ -111,6 +113,7 @@ export type ITypedSheetChangesClearedEvent = {
 };
 export type ITypedSheetChangesCleared = {
   ns: string; // uri.
+  sheet: t.ITypedSheet;
   from: t.ITypedSheetStateChanges;
   to: t.ITypedSheetStateChanges;
   action: 'REVERT' | 'SAVED';

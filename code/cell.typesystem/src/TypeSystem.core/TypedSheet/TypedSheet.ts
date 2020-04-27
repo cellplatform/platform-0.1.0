@@ -125,7 +125,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     const dispose$ = this.dispose$;
 
     this.event$ = event$.asObservable().pipe(takeUntil(dispose$), share());
-    this.state = TypedSheetState.create({ uri, event$, fetch: args.fetch, cache });
+    this.state = TypedSheetState.create({ sheet: this, event$, fetch: args.fetch, cache });
 
     this._ctx = TypedSheet.ctx({ fetch: this.state.fetch, event$, dispose$, cache }); // NB: Use the state-machine's wrapped fetcher.
     this._typeDefs = args.types;

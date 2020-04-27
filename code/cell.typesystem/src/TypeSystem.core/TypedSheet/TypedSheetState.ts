@@ -4,7 +4,7 @@ import { TypeCache } from '../TypeCache';
 import { deleteUndefined, R, Schema, t, Uri } from './common';
 
 export type IArgs = {
-  uri: t.INsUri;
+  sheet: t.ITypedSheet;
   event$: t.Subject<t.TypedSheetEvent>;
   fetch: t.ISheetFetcher;
   cache?: t.IMemoryCache;
@@ -27,6 +27,8 @@ export class TypedSheetState implements t.ITypedSheetState {
    * [Lifecycle]
    */
   private constructor(args: IArgs) {
+    this._sheet = args.sheet;
+    this._event$ = args.event$;
     const fetch = TypeCache.fetch(args.fetch, { cache: args.cache });
 
     // INTERCEPT: Return pending changes to cells from the fetch method.
@@ -50,8 +52,6 @@ export class TypedSheetState implements t.ITypedSheetState {
     };
 
     this.fetch = { ...fetch, getCells, getNs };
-    this.uri = args.uri;
-    this._event$ = args.event$;
     this.event$ = this._event$.pipe(takeUntil(this._dispose$), share());
 
     this.change$ = this.event$.pipe(
@@ -97,10 +97,9 @@ export class TypedSheetState implements t.ITypedSheetState {
   private _changes: t.ITypedSheetStateChanges = {};
   private readonly _dispose$ = new t.Subject<{}>();
   private readonly _event$: t.Subject<t.TypedSheetEvent>;
+  private readonly _sheet: t.ITypedSheet;
 
-  public readonly uri: t.INsUri;
   public readonly fetch: t.CachedFetcher;
-
   public readonly dispose$ = this._dispose$.pipe(share());
   public readonly event$: t.Observable<t.TypedSheetEvent>;
   public readonly change$: t.Observable<t.ITypedSheetChange>;
@@ -109,6 +108,10 @@ export class TypedSheetState implements t.ITypedSheetState {
   /**
    * [Properties]
    */
+  public get uri() {
+    return this._sheet.uri;
+  }
+
   public get isDisposed() {
     return this._dispose$.isStopped;
   }
@@ -158,13 +161,14 @@ export class TypedSheetState implements t.ITypedSheetState {
   }
 
   public clearChanges(action: t.ITypedSheetChangesCleared['action']) {
+    const sheet = this._sheet;
     const ns = this.uri.toString();
     const from = { ...this._changes };
     const to = {};
     this._changes = {}; // NB: resetting state happens after the `from` variable is copied.
     this.fire({
       type: 'SHEET/changes/cleared',
-      payload: { ns, from, to, action },
+      payload: { sheet, ns, from, to, action },
     });
   }
 
@@ -237,6 +241,7 @@ export class TypedSheetState implements t.ITypedSheetState {
     this.fire({
       type: 'SHEET/changed',
       payload: {
+        sheet: this._sheet,
         ns: this.uri.toString(),
         change,
         changes: this.changes,
