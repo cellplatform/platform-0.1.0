@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { TypeSystem } from '../..';
-import { expect, testInstanceFetch, TYPE_DEFS, t } from '../../test';
+import { time, expect, testInstanceFetch, TYPE_DEFS, t } from '../../test';
 import { TypedSheeChangeMonitor } from '.';
 import * as m from '../../test/.d.ts/all';
 
@@ -119,8 +119,10 @@ describe.only('ChangeMonitor', () => {
       expect(monitor.isWatching(sheet1)).to.eql(false);
       expect(monitor.isWatching(sheet2)).to.eql(true);
     });
+  });
 
-    it('bubbles events', async () => {
+  describe('bubbles events (observable)', () => {
+    it('event$', async () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
       const monitor = TypedSheeChangeMonitor.create()
@@ -153,6 +155,23 @@ describe.only('ChangeMonitor', () => {
       monitor.dispose();
       rowB.title = 'Bar';
       expect(fired.length).to.eql(3);
+    });
+
+    it('changed$', async () => {
+      const sheet = (await testMySheet()).sheet;
+      const monitor = TypedSheeChangeMonitor.create().watch(sheet);
+
+      const fired: t.ITypedSheetChanged[] = [];
+      monitor.changed$.subscribe(e => fired.push(e));
+
+      const row = sheet.data<m.MyRow>('MyRow').row(0).props;
+      row.title = 'Foo';
+
+      await time.wait(0);
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].sheet).to.equal(sheet);
+      expect(fired[0].change.to).to.eql({ value: 'Foo' });
     });
   });
 

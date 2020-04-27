@@ -89,7 +89,6 @@ export class TypedSheeChangeMonitor implements t.ITypedSheeChangeMonitor {
     const stop$ = new Subject<{}>();
     sheet.event$.pipe(takeUntil(this.dispose$), takeUntil(stop$)).subscribe(e => this.fire(e));
     sheet.dispose$.pipe(takeUntil(this.dispose$)).subscribe(() => this.unwatch(sheet));
-
     this._watching = [...this._watching, { sheet, stop$, refs: [] }];
   }
 
