@@ -1,4 +1,4 @@
-import { createMock, expect, fs, http, readFile, Schema, t, util } from '../test';
+import { createMock, expect, fs, http, readFile, Schema, t, util } from '../../test';
 
 const bodyToText = async (body?: ReadableStream | string) => {
   if (!body) {

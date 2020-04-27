@@ -1,6 +1,6 @@
 import * as semver from 'semver';
 import { IMicroRequest } from '@platform/micro';
-import { createMock, expect, Http, HttpClient, t } from '../test';
+import { createMock, expect, Http, HttpClient, t } from '../../test';
 
 describe('HttpClient', () => {
   it('sends headers (client/schema version)', async () => {
@@ -49,7 +49,7 @@ describe('HttpClient', () => {
     expect(headers[0].client).to.includes('CellOS;');
   });
 
-  describe('ns', () => {
+  describe('http.ns', () => {
     it('exists()', async () => {
       const mock = await createMock();
       const ns = mock.client.ns('ns:foo');

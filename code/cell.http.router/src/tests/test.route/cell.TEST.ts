@@ -1,4 +1,4 @@
-import { createMock, expect, t } from '../test';
+import { createMock, expect, t } from '../../test';
 
 describe('cell', () => {
   it('does not exist (404)', async () => {

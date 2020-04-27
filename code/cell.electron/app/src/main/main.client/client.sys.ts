@@ -25,8 +25,8 @@ export async function getOrCreateSystemContext(host: string) {
   saved$.pipe(debounceTime(800)).subscribe(() => log.info.gray('━'.repeat(60)));
 
   // Load the app model.
-  const type = Client.type({ http });
-  const sheet = await type.sheet<t.CellApp>(NS.APP);
+  const client = Client.typesystem({ http });
+  const sheet = await client.sheet<t.CellApp>(NS.APP);
   sync.saveMonitor({ http, state: sheet.state, flush$, saved$ });
 
   /**

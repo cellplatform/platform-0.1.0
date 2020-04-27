@@ -1,4 +1,4 @@
-import { t, expect, http, createMock, stripHashes, post, constants } from '../test';
+import { t, expect, http, createMock, stripHashes, post, constants } from '../../test';
 import { testPostFile } from './file.TEST';
 
 /**

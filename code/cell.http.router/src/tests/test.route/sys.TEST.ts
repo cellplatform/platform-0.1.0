@@ -1,4 +1,4 @@
-import { createMock, expect, t } from '../test';
+import { createMock, expect, t } from '../../test';
 
 describe('sys (root)', () => {
   it('info', async () => {

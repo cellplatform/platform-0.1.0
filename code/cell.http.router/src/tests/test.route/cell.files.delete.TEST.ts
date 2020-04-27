@@ -1,4 +1,4 @@
-import { createMock, expect, expectFileInFs, readFile } from '../test';
+import { createMock, expect, expectFileInFs, readFile } from '../../test';
 
 describe('cell/files: delete, unlink', () => {
   it('delete and/or unlink files from cell', async () => {

@@ -53,13 +53,13 @@ export const DEFS: TypeDefs = {
  * Write the application types.
  */
 export async function initTypeDefs(host: string, options: { save?: boolean } = {}) {
-  const http = Client.http(host);
+  const client = Client.typesystem(host);
 
   const write = async (ns: string) => {
     if (!DEFS[ns]) {
       throw new Error(`namespace "${ns}" is not defined.`);
     }
-    await http.ns(ns).write(DEFS[ns]);
+    await client.http.ns(ns).write(DEFS[ns]);
   };
 
   await write(NS.TYPE.APP);
@@ -67,9 +67,7 @@ export async function initTypeDefs(host: string, options: { save?: boolean } = {
   await write(NS.TYPE.WINDOW);
 
   if (options.save) {
-    // Client.sheet({http})
-    const type = Client.type({ http });
-    const ts = await type.typescript(NS.TYPE.APP);
+    const ts = await client.typescript(NS.TYPE.APP);
     await ts.save(fs, fs.resolve('src/types.g'));
   }
 }

@@ -3,9 +3,9 @@ import { Subject } from 'rxjs';
 import { t, TypeSystem } from '../common';
 import { HttpClient } from '../HttpClient';
 
-type HttpClientInput = string | number | t.IHttpClientOptions;
+type ClientHttpInput = string | number | t.IHttpClientOptions;
 type Options = {
-  http?: HttpClientInput | t.IHttpClient;
+  http?: ClientHttpInput | t.IHttpClient;
   cache?: t.IMemoryCache;
   event$?: Subject<t.TypedSheetEvent>;
 };
@@ -20,7 +20,7 @@ export class Client {
   /**
    * Create a new HTTP client.
    */
-  public static http(input?: HttpClientInput) {
+  public static http(input?: ClientHttpInput) {
     return Client.Http.create(input);
   }
 

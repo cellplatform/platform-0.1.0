@@ -1,5 +1,5 @@
 import { parse as parseUrl } from 'url';
-import { createMock, expect, fs, http, readFile, Schema, t } from '../test';
+import { createMock, expect, fs, http, readFile, Schema, t } from '../../test';
 
 describe('cell/files: upload', function() {
   this.timeout(50000);

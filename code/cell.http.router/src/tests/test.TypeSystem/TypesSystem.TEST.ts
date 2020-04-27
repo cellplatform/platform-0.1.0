@@ -1,5 +1,5 @@
-import { fs, createMock, expect, http, t, TypeSystem, Client, ERROR } from '../test';
-import * as g from './.d.ts/MyRow';
+import { fs, createMock, expect, http, t, TypeSystem, Client, ERROR } from '../../test';
+import * as g from '../.d.ts/MyRow';
 
 /**
  * NOTE:

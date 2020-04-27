@@ -112,7 +112,7 @@ export async function createWindow(args: {
 
   browser.once('ready-to-show', () => {
     browser.setTitle(props.title);
-    // browser.webContents.openDevTools(); // TEMP 🐷
+    browser.webContents.openDevTools(); // TEMP 🐷
 
     browser.show();
   });
