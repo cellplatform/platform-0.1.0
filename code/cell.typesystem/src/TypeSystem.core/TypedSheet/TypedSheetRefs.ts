@@ -4,7 +4,7 @@ import { TypedSheet } from './TypedSheet';
 export type IArgs = {
   typename: string;
   typeDef: t.IColumnTypeDef<t.ITypeRef>;
-  parent: string | t.ICellUri;
+  parent: t.ITypedSheetRefParent;
   ctx: t.SheetCtx;
 };
 
@@ -44,7 +44,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   private constructor(args: IArgs) {
     this.typeDef = args.typeDef;
     this.typename = args.typename;
-    this.parent = util.formatCellUri(args.parent);
+    this.parent = args.parent;
     this._ctx = args.ctx;
   }
 
@@ -58,7 +58,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   public ns: t.INsUri = util.formatNsUri(TypedSheetRefs.PLACEHOLDER);
   public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
   public readonly typename: string;
-  public readonly parent: t.ICellUri;
+  public readonly parent: t.ITypedSheetRefs<{}>['parent'];
 
   /**
    * [Properties]
@@ -87,8 +87,11 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
       return this._load; // Single loader.
     }
 
-    const parentNs = Uri.create.ns(this.parent.ns);
-    this.fire({ type: 'SHEET/refs/loading', payload: { ns: parentNs, refs: this } });
+    const parentNs = Uri.create.ns(this.parent.cell.ns);
+    this.fire({
+      type: 'SHEET/refs/loading',
+      payload: { ns: parentNs, sheet: this.parent.sheet, refs: this },
+    });
 
     const promise = new Promise<t.ITypedSheetRefs<T>>(async (resolve, reject) => {
       await this.ensureLink();
@@ -105,7 +108,10 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
       });
 
       delete this._load; // Remove temporary load cache.
-      this.fire({ type: 'SHEET/refs/loaded', payload: { ns: parentNs, refs: this } });
+      this.fire({
+        type: 'SHEET/refs/loaded',
+        payload: { ns: parentNs, sheet: this.parent.sheet, refs: this },
+      });
       resolve(this);
     });
 
@@ -129,8 +135,8 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   }
 
   private async getCell() {
-    const ns = this.parent.ns;
-    const key = this.parent.key;
+    const ns = this.parent.cell.ns;
+    const key = this.parent.cell.key;
     const query = `${key}:${key}`;
     const res = await this._ctx.fetch.getCells({ ns, query });
     return (res.cells || {})[key];
@@ -154,8 +160,8 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
       links = { ...links, [linkKey]: this.ns.toString() };
       const payload: t.ITypedSheetChange = {
         kind: 'CELL',
-        ns: Uri.create.ns(this.parent.ns),
-        key: this.parent.key,
+        ns: this.parent.sheet.uri.toString(),
+        key: this.parent.cell.key,
         to: { ...data, links },
       };
 

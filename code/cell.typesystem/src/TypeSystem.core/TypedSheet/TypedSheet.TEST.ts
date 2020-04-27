@@ -22,7 +22,7 @@ import { TypedSheetState, TypedSheetStateInternal } from './TypedSheetState';
  * - read/write: linked sheet (singular)
  */
 
-describe('TypedSheet', () => {
+describe.only('TypedSheet', () => {
   describe('lifecycle', () => {
     it('dispose', async () => {
       const { sheet } = await testMySheet();
@@ -353,16 +353,18 @@ describe('TypedSheet', () => {
     });
   });
 
-  describe('TypedSheetRow', () => {
+  describe.only('TypedSheetRow', () => {
     const testRow = async (uri: string) => {
-      const fetch = await testFetchMySheet('ns:foo.mySheet');
+      const { sheet, fetch } = await testMySheet();
+
+      // const fetch = await testFetchMySheet('ns:foo.mySheet');
       const ctx = TypedSheet.ctx({ fetch });
       const ns = await TypeClient.load({ ns: 'ns:foo', fetch: ctx.fetch, cache: ctx.cache });
       const defs = ns.defs;
       const columns = ns.defs[0].columns;
       const typename = 'MyRow';
-      const row = TypedSheetRow.create<f.MyRow>({ typename, uri, columns, ctx });
-      return { row, ctx, defs };
+      const row = TypedSheetRow.create<f.MyRow>({ typename, uri, columns, ctx, sheet });
+      return { row, ctx, defs, sheet };
     };
 
     it('throw: URI not a row', async () => {
@@ -411,11 +413,11 @@ describe('TypedSheet', () => {
     });
 
     it('load (static)', async () => {
-      const { defs, ctx } = await testRow('cell:foo:1');
+      const { defs, sheet, ctx } = await testRow('cell:foo:1');
       const uri = 'cell:foo:1';
       const columns = defs[0].columns;
       const typename = 'MyRow';
-      const row = await TypedSheetRow.load<f.MyRow>({ typename, uri, columns, ctx });
+      const row = await TypedSheetRow.load<f.MyRow>({ sheet, typename, uri, columns, ctx });
 
       expect(row.props.title).to.eql('One');
       expect(row.props.isEnabled).to.eql(true);
@@ -462,16 +464,23 @@ describe('TypedSheet', () => {
 
         const fired: t.TypedSheetEvent[] = [];
         sheet.event$
-          .pipe(filter(e => e.type === 'SHEET/row/loading' || e.type === 'SHEET/row/loaded'))
+          .pipe(filter(e => e.type.startsWith('SHEET/row/load')))
           .subscribe(e => fired.push(e));
 
         await cursor.load();
 
-        const loading = fired.filter(e => e.type === 'SHEET/row/loading');
-        const loaded = fired.filter(e => e.type === 'SHEET/row/loaded');
+        const loading = fired
+          .filter(e => e.type === 'SHEET/row/loading')
+          .map(e => e.payload as t.ITypedSheetRowLoading);
+        const loaded = fired
+          .filter(e => e.type === 'SHEET/row/loaded')
+          .map(e => e.payload as t.ITypedSheetRowLoaded);
 
         expect(loading.length).to.eql(9);
         expect(loaded.length).to.eql(9);
+
+        expect(loading.every(e => e.sheet === sheet)).to.eql(true);
+        expect(loaded.every(e => e.sheet === sheet)).to.eql(true);
       });
 
       it('repeat loads', async () => {
@@ -877,7 +886,7 @@ describe('TypedSheet', () => {
           expect(changedLinks['ref:type']).to.eql(messages.sheet.uri.toString());
         });
 
-        it.only('fires event: SHEET/refs/(loading | loaded)', async () => {
+        it('fires event: SHEET/refs/(loading | loaded)', async () => {
           const { sheet } = await testMySheet();
 
           const fired: t.TypedSheetEvent[] = [];
@@ -903,6 +912,14 @@ describe('TypedSheet', () => {
 
           expect(loading.refs).to.equal(messages);
           expect(loaded.refs).to.equal(messages);
+
+          expect(loading.sheet).to.equal(sheet);
+          expect(loaded.sheet).to.equal(sheet);
+
+          await messages.load();
+          await messages.load();
+          await messages.load();
+          expect(fired.length).to.eql(2); // NB: Does not repeat fire.
         });
 
         it('throw: sheet called before ready (loaded)', async () => {

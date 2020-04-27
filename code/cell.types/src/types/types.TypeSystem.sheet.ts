@@ -49,27 +49,6 @@ export type ITypedSheetRow<T> = {
 };
 
 /**
- * A connector for a reference-pointer to a single row in another sheet.
- */
-export type ITypedSheetRef<T> = {
-  typename: string;
-  typeDef: t.IColumnTypeDef<t.ITypeRef>;
-};
-
-/**
- * A connector for a reference-pointer to a set of rows in another sheet.
- */
-export type ITypedSheetRefs<T> = {
-  ns: t.INsUri;
-  typename: string;
-  typeDef: t.IColumnTypeDef<t.ITypeRef>;
-  sheet: t.ITypedSheet<T>;
-  isLoaded: boolean;
-  load(): Promise<ITypedSheetRefs<T>>;
-  data(options?: ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
-};
-
-/**
  * The pure "strongly typed" READ/WRITE data-properties of the cells for a row.
  */
 export type ITypedSheetRowProps<T> = { [K in keyof T]: T[K] };

@@ -223,7 +223,13 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
 
     // Construct the cursor.
     const types = def.columns;
-    const res = TypedSheetData.create<D>({ ns, typename, types, ctx, range });
+    const res: t.ITypedSheetData<D> = TypedSheetData.create<D>({
+      sheet: this,
+      typename,
+      types,
+      ctx,
+      range,
+    });
     this._data[typename] = res as TypedSheetData<any>;
     return res;
   }

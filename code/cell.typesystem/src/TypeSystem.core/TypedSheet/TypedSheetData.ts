@@ -2,7 +2,7 @@ import { coord, t, Uri, util } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
 
 type IArgs = {
-  ns: string | t.INsUri;
+  sheet: t.ITypedSheet;
   typename: string;
   types: t.IColumnTypeDef[];
   ctx: t.SheetCtx;
@@ -66,7 +66,8 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
    * [Lifecycle]
    */
   private constructor(args: IArgs) {
-    this.uri = util.formatNsUri(args.ns);
+    // this.uri = util.formatNsUri(args.ns);
+    this._sheet = args.sheet;
     this.typename = args.typename;
     this.types = args.types;
     this._ctx = args.ctx;
@@ -77,6 +78,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
    * [Fields]
    */
   private readonly _ctx: t.SheetCtx;
+  private readonly _sheet: t.ITypedSheet;
   private _rows: t.ITypedSheetRow<T>[] = [];
   private _range: string;
   private _status: t.ITypedSheetData<T>['status'] = 'INIT';
@@ -84,13 +86,16 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   private _loading: ILoading<T>[] = [];
   private _isLoaded = false;
 
-  public readonly uri: t.INsUri;
   public readonly typename: string;
   public readonly types: t.IColumnTypeDef[];
 
   /**
    * [Properties]
    */
+  public get uri() {
+    return this._sheet.uri;
+  }
+
   public get rows() {
     return this._rows;
   }
@@ -217,7 +222,8 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     const columns = this.types;
     const ctx = this._ctx;
     const typename = this.typename;
-    return TypedSheetRow.create<T>({ typename, uri, columns, ctx });
+    const sheet = this._sheet;
+    return TypedSheetRow.create<T>({ sheet, typename, uri, columns, ctx });
   }
 }
 

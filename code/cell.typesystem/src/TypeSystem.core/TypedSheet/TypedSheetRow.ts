@@ -8,6 +8,7 @@ import { TypedSheetRefs } from './TypedSheetRefs';
 
 type IArgs = {
   typename: string;
+  sheet: t.ITypedSheet;
   uri: string | t.IRowUri;
   columns: t.IColumnTypeDef[];
   ctx: t.SheetCtx;
@@ -38,11 +39,13 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * [Lifecycle]
    */
   private constructor(args: IArgs) {
-    this._ctx = args.ctx;
     this.typename = args.typename;
     this.uri = util.formatRowUri(args.uri);
-    this._columns = args.columns;
     this.index = Number.parseInt(this.uri.key, 10) - 1;
+
+    this._columns = args.columns;
+    this._ctx = args.ctx;
+    this._sheet = args.sheet;
 
     const cellChange$ = this._ctx.event$.pipe(
       filter(e => e.type === 'SHEET/change'),
@@ -83,6 +86,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   private _isLoaded = false;
   private _status: t.ITypedSheetRow<T>['status'] = 'INIT';
   private _loading: { [key: string]: Promise<t.ITypedSheetRow<T>> } = {};
+  private _sheet: t.ITypedSheet;
 
   public readonly index: number;
   public readonly typename: string;
@@ -158,8 +162,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
       const ns = this.uri.ns;
       const index = this.index;
-      const row = this.uri.toString();
-      this.fire({ type: 'SHEET/row/loading', payload: { ns, index } });
+      const sheet = this._sheet;
+
+      this.fire({ type: 'SHEET/row/loading', payload: { ns, sheet, index } });
 
       const query = `${this.uri.key}:${this.uri.key}`;
 
@@ -178,7 +183,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       this._isLoaded = true; // NB: Always true after initial load.
 
       // Finish up.
-      this.fire({ type: 'SHEET/row/loaded', payload: { ns, index } });
+      this.fire({ type: 'SHEET/row/loaded', payload: { ns, sheet, index } });
       delete this._loading[cacheKey];
       resolve(this);
     });
@@ -359,7 +364,13 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     const isArray = typeDef.type.isArray;
     const { link } = TypedSheetRefs.refLink({ typeDef, links });
     const exists = Boolean(link);
-    const parent = Uri.create.cell(this.uri.ns, `${typeDef.column}${this.index + 1}`);
+
+    const uri = Uri.create.cell(this.uri.ns, `${typeDef.column}${this.index + 1}`);
+    const parent: t.ITypedSheetRefParent = {
+      cell: Uri.parse<t.ICellUri>(uri).parts,
+      sheet: this._sheet,
+    };
+
     const ref = isArray
       ? TypedSheetRefs.create({ typename, typeDef, ctx, parent })
       : TypedSheetRef.create({ typename, typeDef, ctx });

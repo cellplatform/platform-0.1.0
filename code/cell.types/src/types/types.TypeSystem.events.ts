@@ -46,8 +46,18 @@ export type ITypedSheetRowLoadingEvent = {
 };
 export type ITypedSheetRowLoading = {
   ns: string; // uri.
+  sheet: t.ITypedSheet;
   index: number;
 };
+
+/**
+ * Fires when a sheet row completes loading.
+ */
+export type ITypedSheetRowLoadedEvent = {
+  type: 'SHEET/row/loaded';
+  payload: ITypedSheetRowLoaded;
+};
+export type ITypedSheetRowLoaded = ITypedSheetRowLoading;
 
 /**
  * Fires when a child Refs sheet starts loading
@@ -58,19 +68,8 @@ export type ITypedSheetRefsLoadingEvent = {
 };
 export type ITypedSheetRefsLoading<T = {}> = {
   ns: string; // uri.
+  sheet: t.ITypedSheet;
   refs: t.ITypedSheetRefs<T>;
-};
-
-/**
- * Fires when a sheet row completes loading.
- */
-export type ITypedSheetRowLoadedEvent = {
-  type: 'SHEET/row/loaded';
-  payload: ITypedSheetRowLoaded;
-};
-export type ITypedSheetRowLoaded = {
-  ns: string; // uri.
-  index: number;
 };
 
 /**
@@ -80,10 +79,7 @@ export type ITypedSheetRefsLoadedEvent = {
   type: 'SHEET/refs/loaded';
   payload: ITypedSheetRefsLoaded;
 };
-export type ITypedSheetRefsLoaded<T = {}> = {
-  ns: string; // uri.
-  refs: t.ITypedSheetRefs<T>;
-};
+export type ITypedSheetRefsLoaded<T = {}> = ITypedSheetRefsLoading<T>;
 
 /**
  * Dispatches a change to a cell's data.
