@@ -2,12 +2,7 @@
 
 import '../config';
 
-// import { css } from '@platform/css';
-
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-
-import { css, CssValue, Client, Schema, t } from '../common';
+import { Client, Schema, t } from '../common';
 
 // HACK: Importing here to allow scope-hoisting during `bundle`.
 // See error:
