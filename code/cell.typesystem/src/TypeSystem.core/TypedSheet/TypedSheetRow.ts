@@ -164,7 +164,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       const index = this.index;
       const sheet = this._sheet;
 
-      this.fire({ type: 'SHEET/row/loading', payload: { ns, sheet, index } });
+      this.fire({ type: 'SHEET/row/loading', payload: { sheet, index } });
 
       const query = `${this.uri.key}:${this.uri.key}`;
 
@@ -183,7 +183,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       this._isLoaded = true; // NB: Always true after initial load.
 
       // Finish up.
-      this.fire({ type: 'SHEET/row/loaded', payload: { ns, sheet, index } });
+      this.fire({ type: 'SHEET/row/loaded', payload: { sheet, index } });
       delete this._loading[cacheKey];
       resolve(this);
     });

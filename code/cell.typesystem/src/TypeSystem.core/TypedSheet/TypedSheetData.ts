@@ -156,7 +156,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
       const sheet = this._sheet;
       this.fire({
         type: 'SHEET/loading',
-        payload: { ns, sheet, range: query },
+        payload: { sheet, range: query },
       });
 
       // Query cell data from the network.
@@ -185,7 +185,6 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
       this.fire({
         type: 'SHEET/loaded',
         payload: {
-          ns,
           sheet,
           range: this.range,
           total: this.total,

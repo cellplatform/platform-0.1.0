@@ -65,7 +65,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       takeUntil(this.dispose$),
       filter(e => e.type === 'SHEET/changed'),
       map(e => e.payload as t.ITypedSheetChanged),
-      filter(e => this.isWithinNamespace(e.ns)),
+      filter(e => this.isWithinNamespace(e.sheet.uri.toString())),
     );
 
     this.change$
@@ -168,7 +168,7 @@ export class TypedSheetState implements t.ITypedSheetState {
     this._changes = {}; // NB: resetting state happens after the `from` variable is copied.
     this.fire({
       type: 'SHEET/changes/cleared',
-      payload: { sheet, ns, from, to, action },
+      payload: { sheet, from, to, action },
     });
   }
 
@@ -242,7 +242,6 @@ export class TypedSheetState implements t.ITypedSheetState {
       type: 'SHEET/changed',
       payload: {
         sheet: this._sheet,
-        ns: this.uri.toString(),
         change,
         changes: this.changes,
       },
@@ -250,13 +249,13 @@ export class TypedSheetState implements t.ITypedSheetState {
   }
 
   private isWithinNamespace(input: string) {
-    input = (input || '').trim();
+    const text = (input || '').trim();
     const ns = this.uri;
-    if (input.startsWith('ns:')) {
-      return input === ns.toString();
+    if (text.startsWith('ns:')) {
+      return text === ns.toString();
     }
-    if (input.startsWith('cell:')) {
-      return input.startsWith(`cell:${ns.id}:`);
+    if (text.startsWith('cell:')) {
+      return text.startsWith(`cell:${ns.id}:`);
     }
     return false;
   }

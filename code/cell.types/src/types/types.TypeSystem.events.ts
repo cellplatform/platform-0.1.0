@@ -22,7 +22,6 @@ export type ITypedSheetLoadingEvent = {
   payload: ITypedSheetLoading;
 };
 export type ITypedSheetLoading = {
-  ns: string; // uri.
   sheet: t.ITypedSheet;
   range: string; // row range, eg: "1:500"
 };
@@ -46,7 +45,6 @@ export type ITypedSheetRowLoadingEvent = {
   payload: ITypedSheetRowLoading;
 };
 export type ITypedSheetRowLoading = {
-  ns: string; // uri.
   sheet: t.ITypedSheet;
   index: number;
 };
@@ -68,7 +66,6 @@ export type ITypedSheetRefsLoadingEvent = {
   payload: ITypedSheetRefsLoading;
 };
 export type ITypedSheetRefsLoading<T = {}> = {
-  ns: string; // uri.
   sheet: t.ITypedSheet;
   refs: t.ITypedSheetRefs<T>;
 };
@@ -98,7 +95,6 @@ export type ITypedSheetChangedEvent = {
   payload: t.ITypedSheetChanged;
 };
 export type ITypedSheetChanged = {
-  ns: string; // uri.
   sheet: t.ITypedSheet;
   change: t.ITypedSheetChangeDiff;
   changes: t.ITypedSheetStateChanges;
@@ -112,7 +108,6 @@ export type ITypedSheetChangesClearedEvent = {
   payload: t.ITypedSheetChangesCleared;
 };
 export type ITypedSheetChangesCleared = {
-  ns: string; // uri.
   sheet: t.ITypedSheet;
   from: t.ITypedSheetStateChanges;
   to: t.ITypedSheetStateChanges;

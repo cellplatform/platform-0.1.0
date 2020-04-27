@@ -278,11 +278,11 @@ describe('TypedSheet', () => {
       const e2 = fired[1] as t.ITypedSheetLoadedEvent;
 
       expect(e1.type).to.eql('SHEET/loading');
-      expect(e1.payload.ns).to.eql(cursor.uri.toString());
+      expect(e1.payload.sheet).to.equal(sheet);
       expect(e1.payload.range).to.eql(cursor.range);
 
       expect(e2.type).to.eql('SHEET/loaded');
-      expect(e2.payload.ns).to.eql(cursor.uri.toString());
+      expect(e2.payload.sheet).to.equal(sheet);
       expect(e2.payload.range).to.eql(cursor.range);
       expect(e2.payload.total).to.eql(9);
     });
@@ -905,8 +905,8 @@ describe('TypedSheet', () => {
           const loading = fired[0].payload as t.ITypedSheetRefsLoading;
           const loaded = fired[1].payload as t.ITypedSheetRefsLoaded;
 
-          expect(loading.ns).to.eql(sheet.uri.toString());
-          expect(loaded.ns).to.eql(sheet.uri.toString());
+          expect(loading.sheet).to.equal(sheet);
+          expect(loaded.sheet).to.equal(sheet);
 
           expect(loading.refs).to.equal(messages);
           expect(loaded.refs).to.equal(messages);
@@ -1228,7 +1228,7 @@ describe('TypedSheet', () => {
         expect(fired.length).to.eql(1);
         expect(fired[0].change).to.eql(change1);
         expect(fired[0].changes).to.eql(state.changes);
-        expect(fired[0].ns).to.eql('ns:foo.mySheet');
+        expect(fired[0].sheet).to.equal(sheet);
 
         // Retains original [from] value on second change (prior to purge).
         event$.next({
@@ -1311,7 +1311,7 @@ describe('TypedSheet', () => {
         expect(await state.getNs()).to.eql(undefined);
 
         const e = fired[0].payload as t.ITypedSheetChangesCleared;
-        expect(e.ns).to.eql('ns:foo.mySheet');
+        expect(e.sheet).to.equal(sheet);
         expect(e.from).to.eql(changes);
         expect(e.to).to.eql({});
         expect(e.action).to.eql('REVERT');

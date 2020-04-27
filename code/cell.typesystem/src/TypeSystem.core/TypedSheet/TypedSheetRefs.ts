@@ -87,10 +87,9 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
       return this._load; // Single loader.
     }
 
-    const parentNs = Uri.create.ns(this.parent.cell.ns);
     this.fire({
       type: 'SHEET/refs/loading',
-      payload: { ns: parentNs, sheet: this.parent.sheet, refs: this },
+      payload: { sheet: this.parent.sheet, refs: this },
     });
 
     const promise = new Promise<t.ITypedSheetRefs<T>>(async (resolve, reject) => {
@@ -110,7 +109,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
       delete this._load; // Remove temporary load cache.
       this.fire({
         type: 'SHEET/refs/loaded',
-        payload: { ns: parentNs, sheet: this.parent.sheet, refs: this },
+        payload: { sheet: this.parent.sheet, refs: this },
       });
       resolve(this);
     });
