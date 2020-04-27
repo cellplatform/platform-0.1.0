@@ -26,6 +26,7 @@ export class TypedSheetState implements t.ITypedSheetState {
   /**
    * [Lifecycle]
    */
+
   private constructor(args: IArgs) {
     this._sheet = args.sheet;
     this._event$ = args.event$;

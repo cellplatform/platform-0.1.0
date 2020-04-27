@@ -29,7 +29,13 @@ export async function getOrCreateSystemContext(host: string) {
   const sheet = await type.sheet<t.CellApp>(NS.APP);
   sync.saveMonitor({ http, state: sheet.state, flush$, saved$ });
 
-  // TypeSystem.
+  /**
+   * TODO 🐷
+   */
+  const m = TypeSystem.ChangeMonitor.create().watch(sheet);
+  m.changed$.pipe(debounceTime(300)).subscribe(e => {
+    console.log('changed', e.sheet.toString());
+  });
 
   const app = sheet.data('CellApp').row(0);
   await app.load();
