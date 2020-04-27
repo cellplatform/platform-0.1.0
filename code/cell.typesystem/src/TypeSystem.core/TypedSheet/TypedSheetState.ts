@@ -1,7 +1,7 @@
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { TypeCache } from '../TypeCache';
-import { R, Schema, t, Uri, deleteUndefined } from './common';
+import { deleteUndefined, R, Schema, t, Uri } from './common';
 
 export type IArgs = {
   uri: t.INsUri;
@@ -52,13 +52,13 @@ export class TypedSheetState implements t.ITypedSheetState {
     this.fetch = { ...fetch, getCells, getNs };
     this.uri = args.uri;
     this._event$ = args.event$;
-    this.event$ = this._event$.asObservable().pipe(takeUntil(this._dispose$), share());
+    this.event$ = this._event$.pipe(takeUntil(this._dispose$), share());
 
     this.change$ = this.event$.pipe(
       takeUntil(this.dispose$),
       filter(e => e.type === 'SHEET/change'),
       map(e => e.payload as t.ITypedSheetChange),
-      filter(e => this.isWithinNamespace(e.uri)),
+      filter(e => this.isWithinNamespace(e.ns)),
     );
 
     this.changed$ = this.event$.pipe(
@@ -71,7 +71,8 @@ export class TypedSheetState implements t.ITypedSheetState {
     this.change$
       .pipe(
         filter(e => e.kind === 'CELL'),
-        map(({ to, uri }) => ({ to, uri: Uri.parse<t.ICellUri>(uri) })),
+        map(e => e as t.ITypedSheetChangeCell),
+        map(({ to, ns, key }) => ({ to, uri: Uri.parse<t.ICellUri>(Uri.create.cell(ns, key)) })),
         filter(e => e.uri.ok && e.uri.type === 'CELL'),
       )
       .subscribe(({ uri, to }) => this.fireCellChanged({ uri: uri.parts, to }));
@@ -79,7 +80,7 @@ export class TypedSheetState implements t.ITypedSheetState {
     this.change$
       .pipe(
         filter(e => e.kind === 'NS'),
-        map(({ to, uri }) => ({ to, uri: Uri.parse<t.INsUri>(uri) })),
+        map(({ to, ns }) => ({ to, uri: Uri.parse<t.INsUri>(ns) })),
         filter(e => e.uri.ok && e.uri.type === 'NS'),
       )
       .subscribe(({ to }) => this.fireNsChanged({ to }));
@@ -101,7 +102,7 @@ export class TypedSheetState implements t.ITypedSheetState {
   public readonly fetch: t.CachedFetcher;
 
   public readonly dispose$ = this._dispose$.pipe(share());
-  private readonly event$: t.Observable<t.TypedSheetEvent>;
+  public readonly event$: t.Observable<t.TypedSheetEvent>;
   public readonly change$: t.Observable<t.ITypedSheetChange>;
   public readonly changed$: t.Observable<t.ITypedSheetChanged>;
 
@@ -198,7 +199,7 @@ export class TypedSheetState implements t.ITypedSheetState {
     const from = (existing ? existing.from : await this.getNs()) || {};
     const change: t.ITypedSheetChangeNsDiff = {
       kind: 'NS',
-      uri: this.uri.toString(),
+      ns: this.uri.toString(),
       from,
       to,
     };
@@ -216,10 +217,12 @@ export class TypedSheetState implements t.ITypedSheetState {
       return; // No change.
     }
 
+    const ns = Uri.create.ns(uri.ns);
     const from = (existing ? existing.from : await this.getCell(uri.key)) || {};
     const change: t.ITypedSheetChangeCellDiff = {
       kind: 'CELL',
-      uri: uri.toString(),
+      ns,
+      key,
       from,
       to,
     };

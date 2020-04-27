@@ -8,6 +8,7 @@ export type ITypedSheetState = {
   readonly fetch: t.ISheetFetcher;
 
   readonly dispose$: t.Observable<{}>;
+  readonly event$: t.Observable<t.TypedSheetEvent>;
   readonly change$: t.Observable<t.ITypedSheetChange>;
   readonly changed$: t.Observable<t.ITypedSheetChanged>;
   readonly changes: ITypedSheetStateChanges;
@@ -36,7 +37,7 @@ export type ITypedSheetChangeDiff = ITypedSheetChangeNsDiff | ITypedSheetChangeC
 type N = t.INsProps;
 export type ITypedSheetChangeNs<D extends N = N> = {
   kind: 'NS';
-  uri: string;
+  ns: string;
   to: D;
 };
 export type ITypedSheetChangeNsDiff<D extends N = N> = ITypedSheetChangeNs<D> & { from: D };
@@ -47,7 +48,8 @@ export type ITypedSheetChangeNsDiff<D extends N = N> = ITypedSheetChangeNs<D> & 
 type C = t.ICellData;
 export type ITypedSheetChangeCell<D extends C = C> = {
   kind: 'CELL';
-  uri: string;
+  ns: string;
+  key: string; // Key (eg "A1").
   to: D;
 };
 export type ITypedSheetChangeCellDiff<D extends C = C> = ITypedSheetChangeCell & { from: D };

@@ -43,8 +43,8 @@ export type ITypedSheetRowLoadingEvent = {
   payload: ITypedSheetRowLoading;
 };
 export type ITypedSheetRowLoading = {
+  ns: string; // uri.
   index: number;
-  row: string; // uri.
 };
 
 /**
@@ -55,8 +55,8 @@ export type ITypedSheetRowLoadedEvent = {
   payload: ITypedSheetRowLoaded;
 };
 export type ITypedSheetRowLoaded = {
+  ns: string; // uri.
   index: number;
-  row: string; // uri.
 };
 
 /**

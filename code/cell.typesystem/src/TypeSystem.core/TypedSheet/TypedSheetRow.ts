@@ -48,7 +48,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       filter(e => e.type === 'SHEET/change'),
       map(e => e.payload as t.ITypedSheetChangeCell),
       filter(e => e.kind === 'CELL'),
-      map(({ to, uri }) => ({ to, uri: Uri.parse<t.ICellUri>(uri) })),
+      map(({ to, ns, key }) => ({ to, uri: Uri.parse<t.ICellUri>(Uri.create.cell(ns, key)) })),
       filter(({ uri }) => uri.ok && uri.type === 'CELL' && uri.parts.ns === this.uri.ns),
       map(e => ({ ...e, uri: e.uri.parts })),
     );
@@ -156,11 +156,11 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     const promise = new Promise<t.ITypedSheetRow<T>>(async (resolve, reject) => {
       this._status = 'LOADING';
 
+      const ns = this.uri.ns;
       const index = this.index;
       const row = this.uri.toString();
-      this.fire({ type: 'SHEET/row/loading', payload: { row, index } });
+      this.fire({ type: 'SHEET/row/loading', payload: { ns, index } });
 
-      const ns = this.uri.ns;
       const query = `${this.uri.key}:${this.uri.key}`;
 
       await Promise.all(
@@ -178,7 +178,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       this._isLoaded = true; // NB: Always true after initial load.
 
       // Finish up.
-      this.fire({ type: 'SHEET/row/loaded', payload: { row, index } });
+      this.fire({ type: 'SHEET/row/loaded', payload: { ns, index } });
       delete this._loading[cacheKey];
       resolve(this);
     });
@@ -338,10 +338,10 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
   private fireChange(columnDef: t.IColumnTypeDef, to: t.ICellData) {
     const key = `${columnDef.column}${this.index + 1}`;
-    const uri = Uri.create.cell(this.uri.ns, key);
+    const ns = Uri.create.ns(this.uri.ns);
     this._ctx.event$.next({
       type: 'SHEET/change',
-      payload: { kind: 'CELL', uri, to },
+      payload: { kind: 'CELL', ns, key, to },
     });
   }
 

@@ -27,7 +27,7 @@ import { TypedSheetState, TypedSheetStateInternal } from './TypedSheetState';
 describe('TypedSheet', () => {
   describe('lifecycle', () => {
     it('dispose', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
 
       let fired = 0;
       sheet.dispose$.subscribe(e => fired++);
@@ -65,7 +65,7 @@ describe('TypedSheet', () => {
     });
 
     it('error: `sheet.data(typename)` requested where typename not part of ns', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const fn = () => sheet.data('NOT_A_TYPENAME');
       expect(fn).to.throw(/Definitions for typename 'NOT_A_TYPENAME' not found/);
     });
@@ -73,17 +73,17 @@ describe('TypedSheet', () => {
 
   describe('TypedSheet.types', () => {
     it('single type', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       expect(sheet.types.map(type => type.typename)).to.eql(['MyRow']);
     });
 
     it('multiple types', async () => {
-      const { sheet } = await testSheetMulti();
+      const { sheet } = await testMyMultiSheet();
       expect(sheet.types.map(type => type.typename)).to.eql(['MyOne', 'MyTwo']);
     });
 
     it('calculated once (lazy evaluation, shared instance)', async () => {
-      const { sheet } = await testSheetMulti();
+      const { sheet } = await testMyMultiSheet();
       const res1 = sheet.types;
       const res2 = sheet.types;
       expect(res1).to.equal(res2);
@@ -92,7 +92,7 @@ describe('TypedSheet', () => {
 
   describe('TypedSheetData (cursor)', () => {
     it('create: default (unloaded)', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const cursor = sheet.data('MyRow');
       expect(cursor.range).to.eql(TypedSheetData.DEFAULT.RANGE);
       expect(cursor.status).to.eql('INIT');
@@ -101,7 +101,7 @@ describe('TypedSheet', () => {
     });
 
     it('typename/types', async () => {
-      const { sheet } = await testSheetMulti();
+      const { sheet } = await testMyMultiSheet();
       const cursor1 = sheet.data('MyOne');
       const cursor2 = sheet.data('MyTwo');
 
@@ -115,7 +115,7 @@ describe('TypedSheet', () => {
     });
 
     it('create: custom range (auto correct)', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const DEFAULT = TypedSheetData.DEFAULT;
 
       const test = (range: string, expected?: string) => {
@@ -159,7 +159,7 @@ describe('TypedSheet', () => {
     });
 
     it('load (status: INIT ➔ LOADING ➔ LOADED)', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const cursor = sheet.data('MyRow');
 
       expect(cursor.isLoaded).to.eql(false);
@@ -186,7 +186,7 @@ describe('TypedSheet', () => {
     });
 
     it('load (subset)', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const cursor = await sheet.data({ typename: 'MyRow', range: '2:5' }).load();
       expect(cursor.row(0).isLoaded).to.eql(false);
       expect(cursor.row(1).isLoaded).to.eql(true);
@@ -195,7 +195,7 @@ describe('TypedSheet', () => {
     });
 
     it('load (expand range from [loaded] state)', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const cursor = await sheet.data({ typename: 'MyRow', range: '1:5' }).load();
 
       expect(cursor.isLoaded).to.eql(true);
@@ -212,7 +212,7 @@ describe('TypedSheet', () => {
     });
 
     it('load (reset range from [unloaded] state)', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const cursor = sheet.data('MyRow');
 
       expect(cursor.isLoaded).to.eql(false);
@@ -230,7 +230,7 @@ describe('TypedSheet', () => {
     });
 
     it('load (multiple types)', async () => {
-      const { sheet } = await testSheetMulti();
+      const { sheet } = await testMyMultiSheet();
       const cursor1 = sheet.data<m.MyOne>('MyOne');
       const cursor2 = sheet.data<m.MyTwo>('MyTwo');
       expect(cursor1.row(0).props.foo).to.eql('foo-default');
@@ -238,7 +238,7 @@ describe('TypedSheet', () => {
     });
 
     it('events: loading | loaded', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const cursor = sheet.data('MyRow');
 
       const fired: t.TypedSheetEvent[] = [];
@@ -264,7 +264,7 @@ describe('TypedSheet', () => {
     });
 
     it('does not load twice if already LOADING', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const cursor = sheet.data('MyRow');
       const fired: t.TypedSheetEvent[] = [];
       sheet.event$
@@ -276,7 +276,7 @@ describe('TypedSheet', () => {
     });
 
     it('does load twice if query differs', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const cursor = sheet.data('MyRow');
       const fired: t.TypedSheetEvent[] = [];
       sheet.event$
@@ -296,14 +296,14 @@ describe('TypedSheet', () => {
     });
 
     it('throw: row out-of-bounds (index: -1)', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const cursor = await sheet.data('MyRow').load();
       const err = /Row index must be >=0/;
       expect(() => cursor.row(-1)).to.throw(err);
     });
 
     it('exists', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const cursor = await sheet.data('MyRow').load();
 
       expect(cursor.exists(-1)).to.eql(false);
@@ -312,14 +312,14 @@ describe('TypedSheet', () => {
     });
 
     it('retrieves non-existent row', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const cursor = await sheet.data('MyRow').load();
       expect(cursor.exists(99)).to.eql(false);
       expect(cursor.row(99)).to.not.eql(undefined);
     });
 
     it('toObject', async () => {
-      const { sheet } = await testSheetEnum();
+      const { sheet } = await testMyEnumSheet();
       const row = (await sheet.data('Enum').load()).row(0);
       expect(row.toObject()).to.eql({
         single: 'hello',
@@ -420,7 +420,8 @@ describe('TypedSheet', () => {
         type: 'SHEET/change',
         payload: {
           kind: 'CELL',
-          uri: 'cell:foo:A1',
+          ns: 'ns:foo',
+          key: 'A1',
           to: { value: 'Hello!' },
         },
       });
@@ -432,7 +433,7 @@ describe('TypedSheet', () => {
 
     describe('row event$', () => {
       it('fires load events', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const cursor = sheet.data('MyRow');
 
         const fired: t.TypedSheetEvent[] = [];
@@ -450,7 +451,7 @@ describe('TypedSheet', () => {
       });
 
       it('repeat loads', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const cursor = sheet.data('MyRow');
 
         const fired: t.TypedSheetEvent[] = [];
@@ -473,7 +474,7 @@ describe('TypedSheet', () => {
       });
 
       it('shared load promise', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const cursor = sheet.data('MyRow');
         const row = cursor.row(0);
 
@@ -502,7 +503,7 @@ describe('TypedSheet', () => {
       });
 
       it('fires on row property set (only when changed)', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const cursor = sheet.data('MyRow');
         const row = cursor.row(0);
 
@@ -522,7 +523,7 @@ describe('TypedSheet', () => {
 
     describe('row types', () => {
       it('row.types.list', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const cursor = await sheet.data('MyRow').load();
         const types = cursor.row(0).types;
 
@@ -534,7 +535,7 @@ describe('TypedSheet', () => {
       });
 
       it('row.types.map', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const cursor = await sheet.data('MyRow').load();
         const types = cursor.row(0).types;
 
@@ -548,7 +549,7 @@ describe('TypedSheet', () => {
 
     describe('default value', () => {
       it('simple: primitive | {object}', async () => {
-        const { sheet } = await testSheetPrimitives();
+        const { sheet } = await testMyPrimitivesSheet();
         const cursor = await sheet.data<p.Primitives>('Primitives').load();
 
         const row1 = cursor.row(0).props; //  NB: Exists.
@@ -579,7 +580,7 @@ describe('TypedSheet', () => {
       type R = TypedSheetRow<f.MyRow>;
 
       it('reuse api instance', async () => {
-        const { sheet } = await testSheetPrimitives();
+        const { sheet } = await testMyPrimitivesSheet();
         const row = (await sheet.data('Primitives').load()).row(0) as P;
 
         const prop1 = row.prop('numberProp');
@@ -591,7 +592,7 @@ describe('TypedSheet', () => {
       });
 
       it('get', async () => {
-        const { sheet } = await testSheetPrimitives();
+        const { sheet } = await testMyPrimitivesSheet();
         const cursor = await sheet.data('Primitives').load();
 
         const prop1 = (cursor.row(0) as P).prop('stringValue');
@@ -602,7 +603,7 @@ describe('TypedSheet', () => {
       });
 
       it('set', async () => {
-        const { sheet } = await testSheetPrimitives();
+        const { sheet } = await testMyPrimitivesSheet();
         const cursor = await sheet.data('Primitives').load();
         const prop = (cursor.row(0) as P).prop('stringValue');
         const state = sheet.state as TypedSheetStateInternal;
@@ -622,7 +623,7 @@ describe('TypedSheet', () => {
       });
 
       it('set: throw if attempt to set ref', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const cursor = await sheet.data('MyRow').load();
         const row = cursor.row(0) as R;
         expect(() => row.prop('messages').set({} as any)).to.throw(/Cannot write to property/);
@@ -634,7 +635,7 @@ describe('TypedSheet', () => {
       });
 
       it('clear', async () => {
-        const { sheet } = await testSheetPrimitives();
+        const { sheet } = await testMyPrimitivesSheet();
 
         const cursor = await sheet.data('Primitives').load();
         const row = cursor.row(0) as P;
@@ -649,7 +650,7 @@ describe('TypedSheet', () => {
 
     describe('read/write (inline)', () => {
       it('{ object }', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const cursor = await sheet.data('MyRow').load();
         const row = cursor.row(0).props;
 
@@ -676,7 +677,7 @@ describe('TypedSheet', () => {
 
       describe('enum', () => {
         it('single', async () => {
-          const { sheet } = await testSheetEnum();
+          const { sheet } = await testMyEnumSheet();
           const cursor = await sheet.data('Enum').load();
           const row = cursor.row(0).props;
           expect(row.single).to.eql('hello');
@@ -686,7 +687,7 @@ describe('TypedSheet', () => {
         });
 
         it('union', async () => {
-          const { sheet } = await testSheetEnum();
+          const { sheet } = await testMyEnumSheet();
           const cursor = await sheet.data('Enum').load();
           const row = cursor.row(0).props;
           expect(row.union).to.eql(['blue']);
@@ -702,7 +703,7 @@ describe('TypedSheet', () => {
         });
 
         it('array', async () => {
-          const { sheet } = await testSheetEnum();
+          const { sheet } = await testMyEnumSheet();
           const cursor = await sheet.data('Enum').load();
           const row = cursor.row(0).props;
           expect(row.array).to.eql(['red', 'green', 'blue']);
@@ -714,7 +715,7 @@ describe('TypedSheet', () => {
 
       describe('primitive', () => {
         it('string', async () => {
-          const { sheet } = await testSheetPrimitives();
+          const { sheet } = await testMyPrimitivesSheet();
           const cursor = await sheet.data('Primitives').load();
           const row = cursor.row(0).props;
 
@@ -733,7 +734,7 @@ describe('TypedSheet', () => {
         });
 
         it('number', async () => {
-          const { sheet } = await testSheetPrimitives();
+          const { sheet } = await testMyPrimitivesSheet();
           const cursor = await sheet.data('Primitives').load();
           const row = cursor.row(0).props;
 
@@ -747,7 +748,7 @@ describe('TypedSheet', () => {
         });
 
         it('boolean', async () => {
-          const { sheet } = await testSheetPrimitives();
+          const { sheet } = await testMyPrimitivesSheet();
           const cursor = await sheet.data('Primitives').load();
           const row = cursor.row(0).props;
           expect(row.booleanValue).to.eql(true);
@@ -760,7 +761,7 @@ describe('TypedSheet', () => {
         });
 
         it('null', async () => {
-          const { sheet } = await testSheetPrimitives();
+          const { sheet } = await testMyPrimitivesSheet();
           const cursor = await sheet.data('Primitives').load();
           const row = cursor.row(0).props;
           expect(row.nullValue).to.eql(null);
@@ -777,7 +778,7 @@ describe('TypedSheet', () => {
         });
 
         it('undefined', async () => {
-          const { sheet } = await testSheetPrimitives();
+          const { sheet } = await testMyPrimitivesSheet();
           const cursor = await sheet.data('Primitives').load();
           const row = cursor.row(0).props;
           expect(row.undefinedValue).to.eql(undefined);
@@ -799,7 +800,7 @@ describe('TypedSheet', () => {
     describe('read/write (ref)', () => {
       describe('1:1', () => {
         it('single row', async () => {
-          const { sheet } = await testSheet();
+          const { sheet } = await testMySheet();
           const cursor = await sheet.data('MyRow').load();
           const row = cursor.row(0);
           const message = row.props.message;
@@ -811,7 +812,7 @@ describe('TypedSheet', () => {
 
       describe('1:*', () => {
         it('load ➔ ready (loaded)', async () => {
-          const { sheet } = await testSheet();
+          const { sheet } = await testMySheet();
           const cursor = await sheet.data('MyRow').load();
           const row = cursor.row(0);
 
@@ -853,14 +854,14 @@ describe('TypedSheet', () => {
         });
 
         it('throw: sheet called before ready (loaded)', async () => {
-          const { sheet } = await testSheet();
+          const { sheet } = await testMySheet();
           const row = (await sheet.data('MyRow').load()).row(0).props;
           const fn = () => row.messages.sheet;
           expect(fn).to.throw(/called before ready \[isLoaded\]/);
         });
 
         it('load called only once', async () => {
-          const { sheet } = await testSheet();
+          const { sheet } = await testMySheet();
           const row = (await sheet.data('MyRow').load()).row(0).props;
           const messages = row.messages;
           await Promise.all([messages.load(), messages.load(), messages.load()]);
@@ -868,7 +869,7 @@ describe('TypedSheet', () => {
         });
 
         it('has placeholder URI prior to being ready (loaded)', async () => {
-          const { sheet } = await testSheet();
+          const { sheet } = await testMySheet();
           const cursor = await sheet.data('MyRow').load();
           const messages = cursor.row(0).props.messages;
 
@@ -879,7 +880,7 @@ describe('TypedSheet', () => {
         });
 
         it('uses existing link', async () => {
-          const { sheet } = await testSheet();
+          const { sheet } = await testMySheet();
           const cursorA = await sheet.data({ typename: 'MyRow', range: '1:3' }).load();
           const cursorB = await sheet.data({ typename: 'MyRow', range: '1:10' }).load();
 
@@ -896,7 +897,7 @@ describe('TypedSheet', () => {
         });
 
         it('ref.data(...): auto loads (await load)', async () => {
-          const { sheet } = await testSheet();
+          const { sheet } = await testMySheet();
           const row = sheet.data('MyRow').row(0).props;
 
           const cursor1 = await row.messages.data();
@@ -921,7 +922,7 @@ describe('TypedSheet', () => {
         });
 
         it('ref.data(...): loaded props', async () => {
-          const { sheet } = await testSheet();
+          const { sheet } = await testMySheet();
           const row = sheet.data('MyRow').row(0).props;
           const cursor = await row.messages.data();
           const childRow = cursor.row(0).props;
@@ -937,7 +938,7 @@ describe('TypedSheet', () => {
 
   describe('TypedSheetState', () => {
     it('exposed from sheet', async () => {
-      const { sheet } = await testSheet();
+      const { sheet } = await testMySheet();
       const state = sheet.state;
       expect(state.uri).to.eql(sheet.uri);
       expect(state).to.be.an.instanceof(TypedSheetState);
@@ -945,14 +946,14 @@ describe('TypedSheet', () => {
 
     describe('internal: getCell', () => {
       it('not found', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const state = sheet.state as TypedSheetStateInternal;
         const res = await state.getCell('ZZ99');
         expect(res).to.eql(undefined);
       });
 
       it('retrieve from fetch (then cache)', async () => {
-        const { sheet, fetch } = await testSheet();
+        const { sheet, fetch } = await testMySheet();
         const state = sheet.state as TypedSheetStateInternal;
         expect(fetch.getCellsCount).to.eql(0);
 
@@ -965,14 +966,14 @@ describe('TypedSheet', () => {
       });
 
       it('throw: invalid key', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const state = sheet.state as TypedSheetStateInternal;
         expectError(async () => state.getCell('A'), 'Expected a cell key (eg "A1")');
       });
 
       describe('internal: getNs', () => {
         it('retrieve from fetch (then cache)', async () => {
-          const { sheet, fetch } = await testSheet();
+          const { sheet, fetch } = await testMySheet();
           const state = sheet.state as TypedSheetStateInternal;
           fetch.getNsCount = 0;
           const res = await state.getNs();
@@ -986,13 +987,13 @@ describe('TypedSheet', () => {
 
     describe('ignores (no change)', () => {
       it('ignores different namespace', async () => {
-        const { sheet, event$ } = await testSheet();
+        const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
         expect(state.changes).to.eql({});
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri: 'cell:foo.BAR:A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'ns:foo.BAR', key: 'A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1000,13 +1001,13 @@ describe('TypedSheet', () => {
       });
 
       it('ignores non cell URIs', async () => {
-        const { sheet, event$ } = await testSheet();
+        const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
         expect(state.changes).to.eql({});
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri: 'file:foo:abc', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'file:foo:abc', key: 'A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1014,13 +1015,23 @@ describe('TypedSheet', () => {
       });
 
       it('ignores invalid URIs', async () => {
-        const { sheet, event$ } = await testSheet();
+        const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
         expect(state.changes).to.eql({});
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A-1', to: { value: 123 } }, // NB: invalid URI
+          payload: { kind: 'CELL', ns: 'ns:not-valid*', key: 'A1', to: { value: 123 } }, // NB: invalid URI
+        });
+
+        event$.next({
+          type: 'SHEET/change',
+          payload: { kind: 'CELL', ns: 'ns:foo', key: 'A-1', to: { value: 123 } }, // NB: invalid URI
+        });
+
+        event$.next({
+          type: 'SHEET/change',
+          payload: { kind: 'CELL', ns: 'ns:foo:A1', key: 'A1', to: { value: 123 } }, // NB: invalid URI
         });
 
         await time.wait(1);
@@ -1028,14 +1039,14 @@ describe('TypedSheet', () => {
       });
 
       it('disposed: no change', async () => {
-        const { sheet, event$ } = await testSheet();
+        const { sheet, event$ } = await testMySheet();
         expect(sheet.state.changes).to.eql({});
 
         sheet.dispose();
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1045,14 +1056,13 @@ describe('TypedSheet', () => {
 
     describe('changes', () => {
       it('hasChanges: cell', async () => {
-        const { sheet, event$ } = await testSheet();
+        const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
         expect(state.hasChanges).to.eql(false);
 
-        const uri = 'cell:foo.mySheet:A1';
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri, to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1060,14 +1070,13 @@ describe('TypedSheet', () => {
       });
 
       it('hasChanges: ns', async () => {
-        const { sheet, event$ } = await testSheet();
+        const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
         expect(state.hasChanges).to.eql(false);
 
-        const uri = 'ns:foo.mySheet';
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'NS', uri, to: { type: { implements: 'foobar' } } },
+          payload: { kind: 'NS', ns: 'ns:foo.mySheet', to: { type: { implements: 'foobar' } } },
         });
 
         await time.wait(1);
@@ -1075,13 +1084,13 @@ describe('TypedSheet', () => {
       });
 
       it('state.changes: initial state {empty}', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const state = sheet.state;
         expect(state.changes).to.eql({});
       });
 
       it('state.changes: new instance on each call', async () => {
-        const { sheet } = await testSheet();
+        const { sheet } = await testMySheet();
         const state = sheet.state;
         const res1 = state.changes;
         const res2 = state.changes;
@@ -1090,7 +1099,7 @@ describe('TypedSheet', () => {
       });
 
       it('state.changes: pending change returned via [fetch]', async () => {
-        const { sheet, event$ } = await testSheet();
+        const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
         const fetch = state.fetch;
 
@@ -1105,7 +1114,7 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1117,43 +1126,43 @@ describe('TypedSheet', () => {
 
     describe('change (via event)', () => {
       it('change ns', async () => {
-        const { sheet, event$ } = await testSheet();
+        const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
         expect(state.changes).to.eql({});
 
-        const uri = 'ns:foo.mySheet';
+        const ns = 'ns:foo.mySheet';
         const type = { implements: 'foobar' };
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'NS', uri, to: { type } },
+          payload: { kind: 'NS', ns, to: { type } },
         });
         await time.wait(1);
 
         const changes = state.changes;
         expect(changes.ns?.kind).to.eql('NS');
-        expect(changes.ns?.uri).to.eql(uri);
+        expect(changes.ns?.ns).to.eql(ns);
         expect(changes.ns?.from).to.eql({});
         expect(changes.ns?.to).to.eql({ type });
       });
 
       it('change cell (existing value)', async () => {
-        const { sheet, event$ } = await testSheet();
+        const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
         expect(state.changes).to.eql({});
 
         const fired: t.ITypedSheetChanged[] = [];
         state.changed$.subscribe(e => fired.push(e));
 
-        const uri = 'cell:foo.mySheet:A1';
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri, to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
         });
         await time.wait(1);
 
         const change1 = state.changes.cells?.A1;
         expect(change1?.kind).to.eql('CELL');
-        expect(change1?.uri).to.eql(uri);
+        expect(change1?.ns).to.eql('ns:foo.mySheet');
+        expect(change1?.key).to.eql('A1');
         expect(change1?.from).to.eql({ value: 'One' });
         expect(change1?.to).to.eql({ value: 123 });
 
@@ -1165,7 +1174,7 @@ describe('TypedSheet', () => {
         // Retains original [from] value on second change (prior to purge).
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 456 } },
+          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 456 } },
         });
         await time.wait(1);
 
@@ -1177,26 +1186,27 @@ describe('TypedSheet', () => {
         expect(fired.length).to.eql(2);
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 456 } },
+          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 456 } },
         });
         await time.wait(1);
         expect(fired.length).to.eql(2);
       });
 
       it('change cell (no prior value)', async () => {
-        const { sheet, event$ } = await testSheet();
+        const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
         expect(state.changes).to.eql({});
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A99', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A99', to: { value: 123 } },
         });
         await time.wait(1);
 
         const change = state.changes.cells?.A99;
         expect(change?.kind).to.eql('CELL');
-        expect(change?.uri).to.eql('cell:foo.mySheet:A99');
+        expect(change?.ns).to.eql('ns:foo.mySheet');
+        expect(change?.key).to.eql('A99');
         expect(change?.from).to.eql({});
         expect(change?.to).to.eql({ value: 123 });
       });
@@ -1204,7 +1214,7 @@ describe('TypedSheet', () => {
 
     describe('cache/revert', () => {
       it('revertChanges (cells and ns)', async () => {
-        const { sheet, event$, fetch } = await testSheet();
+        const { sheet, event$ } = await testMySheet();
         const state = sheet.state as TypedSheetStateInternal;
 
         // Original value.
@@ -1213,11 +1223,11 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', uri: 'cell:foo.mySheet:A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
         });
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'NS', uri: 'ns:foo.mySheet', to: { type: { implements: 'foobar' } } },
+          payload: { kind: 'NS', ns: 'ns:foo.mySheet', to: { type: { implements: 'foobar' } } },
         });
         await time.wait(1);
 
@@ -1249,7 +1259,7 @@ describe('TypedSheet', () => {
       });
 
       it('clearCache (retain other items in cache)', async () => {
-        const { sheet, fetch } = await testSheet();
+        const { sheet, fetch } = await testMySheet();
         const state = sheet.state as TypedSheetStateInternal;
         const cache = (state.fetch as t.CachedFetcher).cache;
 
@@ -1276,7 +1286,7 @@ describe('TypedSheet', () => {
 });
 
 /**
- * Test Data
+ * HELPERS: Test Data
  */
 
 const testFetchMySheet = (ns: string) => {
@@ -1351,7 +1361,7 @@ const testFetchMulti = (ns: string) => {
   });
 };
 
-const testSheet = async () => {
+const testMySheet = async () => {
   const ns = 'ns:foo.mySheet';
   const event$ = new Subject<t.TypedSheetEvent>();
   const fetch = await testFetchMySheet(ns);
@@ -1359,21 +1369,21 @@ const testSheet = async () => {
   return { ns, fetch, sheet, event$ };
 };
 
-const testSheetPrimitives = async () => {
+const testMyPrimitivesSheet = async () => {
   const ns = 'ns:foo.myPrimitives';
   const fetch = await testFetchPrimitives(ns);
   const sheet = await TypedSheet.load<p.Primitives>({ fetch, ns });
   return { ns, fetch, sheet };
 };
 
-const testSheetEnum = async () => {
+const testMyEnumSheet = async () => {
   const ns = 'ns:foo.myEnum';
   const fetch = await testFetchEnum(ns);
   const sheet = await TypedSheet.load<e.Enum>({ fetch, ns });
   return { ns, fetch, sheet };
 };
 
-const testSheetMulti = async () => {
+const testMyMultiSheet = async () => {
   const ns = 'ns:foo.myMulti';
   const fetch = await testFetchMulti(ns);
   const sheet = await TypedSheet.load<e.Enum>({ fetch, ns });
