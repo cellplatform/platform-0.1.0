@@ -30,21 +30,21 @@
   dependencies:
     "@platform/libs" "0.2.1"
 
-"@platform/cell.compile.web@0.0.49":
-  version "0.0.49"
-  resolved "https://registry.yarnpkg.com/@platform/cell.compile.web/-/cell.compile.web-0.0.49.tgz#b3037fb7aaa17ea2b1248d3cc568c6cb849446fc"
-  integrity sha512-g3KvC1baK0W+O+DV9QNpVO0Ko586FWJIAjbU14cNW92N7cSbKb/kc5dfpHeP0OOC7le8RwjZFiJDs/xl7i8myQ==
+"@platform/cell.compile.web@0.0.59":
+  version "0.0.59"
+  resolved "https://registry.yarnpkg.com/@platform/cell.compile.web/-/cell.compile.web-0.0.59.tgz#15396788c8449868f734fe5ec2261c791d2cd2ee"
+  integrity sha512-lug5Dz+NeIDieV73P6CchW6s86q+BahtBmATFKucxXDgPqsYcmjQNadGvnec5Mh6cRxgpazdDWdCZJb6nbbC5Q==
   dependencies:
-    "@platform/cell.types" "0.4.70"
+    "@platform/cell.types" "0.4.80"
     "@platform/cli" "0.5.28"
     "@platform/cli.prompt" "0.3.12"
     "@platform/exec" "0.2.53"
     "@platform/libs" "0.2.1"
 
-"@platform/cell.types@0.4.70":
-  version "0.4.70"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.70.tgz#724ef8eeb9b51ea6b4ae38e857d6a57f8c116a18"
-  integrity sha512-9Lj0v4PiU2MWrzNHxeTD4vNl9conaFcv4stOsIwkHmGHFJ2hveIqNrWZVlGLERvUxPk2RxJE8NjzioIvPtSx/Q==
+"@platform/cell.types@0.4.80":
+  version "0.4.80"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.80.tgz#44f8aeafde51247425ac2c551ceda0859237a05d"
+  integrity sha512-GFSKLKpB8TjKjXqp9r51x7zpLnkHKAeKXbX07+un86Bne/D4xJZSLtztHWY6MLMQNAm+o9EdvTfrnl8hblfJEQ==
   dependencies:
     "@platform/cache" "0.2.23"
     "@platform/fs.s3.types" "0.2.0"

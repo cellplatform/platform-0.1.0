@@ -3,9 +3,9 @@ import { Subject } from 'rxjs';
 import { t, TypeSystem } from '../common';
 import { HttpClient } from '../HttpClient';
 
-type ClientInput = string | number | t.IHttpClientOptions;
+type HttpClientInput = string | number | t.IHttpClientOptions;
 type Options = {
-  http?: ClientInput | t.IHttpClient;
+  http?: HttpClientInput | t.IHttpClient;
   cache?: t.IMemoryCache;
   event$?: Subject<t.TypedSheetEvent>;
 };
@@ -15,19 +15,19 @@ type Options = {
  */
 export class Client {
   public static Http = HttpClient;
-  public static Type = TypeSystem;
+  public static TypeSystem = TypeSystem;
 
   /**
    * Create a new HTTP client.
    */
-  public static http(input?: ClientInput) {
+  public static http(input?: HttpClientInput) {
     return Client.Http.create(input);
   }
 
   /**
-   * Creates all the parts necessary to work with the [TypeSystem].
+   * Creates all the parts necessary to work with the TypeSystem.
    */
-  public static type(input?: Options | string | number) {
+  public static typesystem(input?: Options | string | number) {
     const args = typeof input === 'object' ? input : { http: input };
     const { cache, event$ } = args;
 
@@ -53,12 +53,5 @@ export class Client {
     };
 
     return api;
-  }
-
-  /**
-   * Creates and loads a new "strongly typed" sheet.
-   */
-  public static sheet<T>(ns: string | t.INsUri, options?: Options) {
-    return Client.type(options).sheet<T>(ns);
   }
 }

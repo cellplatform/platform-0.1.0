@@ -16,13 +16,13 @@ describe('Client', () => {
     expect(Client.Http).to.equal(HttpClient);
   });
   it('Client.Type', () => {
-    expect(Client.Type).to.eql(TypeSystem);
+    expect(Client.TypeSystem).to.eql(TypeSystem);
   });
 
   describe('Client.type', () => {
     it('creates client', () => {
       const test = (input: string | number | t.IHttpClientOptions | undefined, origin: string) => {
-        const res = Client.type({ http: input });
+        const res = Client.typesystem({ http: input });
         expect(res.http.origin).to.eql(origin);
         expect(HttpClient.isClient(res.http)).to.eql(true);
       };
@@ -36,11 +36,8 @@ describe('Client', () => {
 
     it('uses given [IHttpClient]', () => {
       const client = HttpClient.create();
-      const res = Client.type({ http: client });
-
+      const res = Client.typesystem({ http: client });
       expect(res.http).to.equal(client);
-
-      // expect(HttpClient.isClient(res.http)).to.eql(true);
     });
   });
 });

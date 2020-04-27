@@ -50,8 +50,8 @@ describe('TypeSystem ➔ HTTP', () => {
     const mock = await createMock();
     await writeTypes(mock.client);
 
-    const type = Client.type({ http: mock.client });
-    const ts = await type.typescript('ns:foo');
+    const client = Client.typesystem({ http: mock.client });
+    const ts = await client.typescript('ns:foo');
     await mock.dispose();
 
     const path = fs.join(__dirname, '.d.ts', 'MyRow.ts');
@@ -243,10 +243,10 @@ describe('TypeSystem ➔ HTTP', () => {
       mock.service.request$.subscribe(e => requests.push(e.url));
 
       const ns = 'ns:foo.mySheet';
-      const typesystem = Client.type({ http: mock.client });
-      expect(typesystem.http).to.eql(mock.client);
+      const client = Client.typesystem({ http: mock.client });
+      expect(client.http).to.eql(mock.client);
 
-      const sheet = await typesystem.sheet<g.MyRow>(ns);
+      const sheet = await client.sheet<g.MyRow>(ns);
       const cursor = await sheet.data('MyRow').load();
       const row = cursor.row(0).props;
 
