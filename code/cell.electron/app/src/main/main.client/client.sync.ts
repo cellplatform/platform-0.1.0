@@ -53,12 +53,13 @@ export function saveMonitor(args: {
 
     if (!args.silent) {
       const { status } = res;
-      const prefix = log.gray(`[${log.blue(status)}:SAVED]`);
+      const prefix = log.white(`${log.blue(status)} SAVED`);
       log.info(`${prefix} `);
       Object.keys(changes).forEach(key => {
         const change = changes[key];
-        const cell = `${log.green('cell')}:${change.ns}:${log.green(change.key)}`;
-        log.info(`     ${cell}`);
+        const ns = change.ns.replace(/^ns\:/, '');
+        const cell = log.gray(`${log.green('cell')}:${ns}:${log.green(change.key)}`);
+        log.info(`    ${cell}`);
       });
 
       if (!res.ok) {

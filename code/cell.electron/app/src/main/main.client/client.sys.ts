@@ -46,7 +46,7 @@ export async function getOrCreateSystemContext(host: string) {
 
   /**
    * TODO 🐷
-   * Move save monitor logic to [TypeSystem] module
+   * Move save monitor logic to [Client] module
    */
   sync.saveMonitor({ http, state: windows.sheet.state, flush$, saved$ });
   sync.saveMonitor({ http, state: windowDefs.sheet.state, flush$, saved$ });
@@ -61,10 +61,6 @@ export async function getOrCreateSystemContext(host: string) {
     app,
     windows,
     windowDefs,
-    async flush() {
-      flush$.next();
-      await time.wait(300); // HACK: this ensures the changes are flushed to the DB. Do this in a more predictable way.
-    },
   };
   return ctx;
 }
@@ -98,7 +94,4 @@ export async function initWindowDef(args: {
       await upload({ host, targetCell, sourceDir, targetDir });
     }
   }
-
-  // Finish up.
-  await ctx.flush();
 }

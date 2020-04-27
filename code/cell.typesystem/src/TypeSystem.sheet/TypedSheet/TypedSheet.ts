@@ -192,7 +192,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
    * [Methods]
    */
   public toString() {
-    return `[Sheet/${this.uri.toString()}]`;
+    return `[sheet/${this.uri.toString()}]`;
   }
 
   public data<D = T>(input: string | t.ITypedSheetDataArgs) {

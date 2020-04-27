@@ -12,5 +12,4 @@ export type IAppCtx = {
   app: ITypedSheetRow<t.CellApp>;
   windows: ITypedSheetRefs<t.CellAppWindow>;
   windowDefs: ITypedSheetRefs<t.CellAppWindowDef>;
-  flush(): Promise<void>;
 };

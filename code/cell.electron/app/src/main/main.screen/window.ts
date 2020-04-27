@@ -8,7 +8,9 @@ const SYS = constants.SYS;
  *
  */
 export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
-  const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
+  // const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
+  const ctx = args.ctx;
+
   const defs = await ctx.windowDefs.data();
   const instances = await ctx.windows.data();
   const def = defs.rows.find(row => row.props.kind === args.kind);
@@ -24,7 +26,7 @@ export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
     instance.width = def.width;
     instance.height = def.height;
     instance.kind = def.kind;
-    await ctx.flush();
+    // await ctx.flush();
   };
 
   if (def) {
@@ -57,7 +59,9 @@ export async function createWindow(args: {
   const def = toRow(args.def);
   const instance = toRow(args.instance);
 
-  const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
+  // const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
+  const ctx = args.ctx;
+
   const host = ctx.host;
 
   const windows = await ctx.windows.data();
@@ -108,7 +112,7 @@ export async function createWindow(args: {
 
   browser.once('ready-to-show', () => {
     browser.setTitle(props.title);
-    browser.webContents.openDevTools(); // TEMP 🐷
+    // browser.webContents.openDevTools(); // TEMP 🐷
 
     browser.show();
   });
