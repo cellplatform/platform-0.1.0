@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { filter, share, takeUntil } from 'rxjs/operators';
+import { filter, share, takeUntil, map } from 'rxjs/operators';
 
 import { t } from '../../common';
 
@@ -9,19 +9,36 @@ type W = { sheet: t.ITypedSheet; stop$: Subject<{}>; refs: t.ITypedSheetRefs<{}>
 /**
  * Monitors changes in sheet(s).
  */
-export class ChangeMonitor {
+export class TypedSheeChangeMonitor implements t.ITypedSheeChangeMonitor {
   public static create() {
-    return new ChangeMonitor();
+    return new TypedSheeChangeMonitor();
   }
 
   /**
    * [Lifecycle]
    */
+
   private constructor() {
-    //
-    this.event$.pipe(filter(e => e.type === 'SHEET/refs/loaded')).subscribe(e => {
-      console.log('e', 'refs loaded');
-    });
+    // Auto-watch child REFs as they are created.
+    this.event$
+      .pipe(
+        filter(e => e.type === 'SHEET/refs/loaded'),
+        map(e => e.payload as t.ITypedSheetRefsLoaded),
+      )
+      .subscribe(e => {
+        const item = this.item(e.sheet);
+        if (item) {
+          item.refs.push(e.refs);
+          this.watch(e.refs.sheet);
+        }
+      });
+
+    this.changed$ = this.event$.pipe(
+      filter(e => e.type === 'SHEET/changed'),
+      map(e => e.payload as t.ITypedSheetChanged),
+      filter(e => Boolean(this.item(e.sheet))),
+      share(),
+    );
   }
 
   public dispose() {
@@ -40,6 +57,7 @@ export class ChangeMonitor {
 
   public readonly dispose$ = this._dispose$.pipe(share());
   public readonly event$ = this._event$.pipe(takeUntil(this.dispose$), share());
+  public readonly changed$: t.Observable<t.ITypedSheetChanged>;
 
   /**
    * [Properties]
@@ -87,8 +105,10 @@ export class ChangeMonitor {
     if (item) {
       item.stop$.next();
       item.stop$.complete();
+      item.refs.forEach(ref => this.unwatch(ref.sheet)); // <== RECURSION 🌳
       this._watching = this._watching.filter(({ sheet: state }) => state !== item.sheet);
     }
+
     return this;
   }
 
@@ -103,6 +123,7 @@ export class ChangeMonitor {
   /**
    * [INTERNAL]
    */
+
   private item(sheet: S) {
     return this._watching.find(item => item.sheet === sheet);
   }

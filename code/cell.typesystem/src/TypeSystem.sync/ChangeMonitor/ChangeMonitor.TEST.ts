@@ -2,13 +2,13 @@ import { Subject } from 'rxjs';
 
 import { TypeSystem } from '../..';
 import { expect, testInstanceFetch, TYPE_DEFS, t } from '../../test';
-import { ChangeMonitor } from '.';
+import { TypedSheeChangeMonitor } from '.';
 import * as m from '../../test/.d.ts/all';
 
-describe.skip('ChangeMonitor', () => {
+describe.only('ChangeMonitor', () => {
   describe('lifecycle', () => {
     it('dispose', () => {
-      const monitor = ChangeMonitor.create();
+      const monitor = TypedSheeChangeMonitor.create();
       expect(monitor.isDisposed).to.eql(false);
 
       let count = 0;
@@ -27,7 +27,7 @@ describe.skip('ChangeMonitor', () => {
     it('isWatching', async () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
-      const monitor = ChangeMonitor.create();
+      const monitor = TypedSheeChangeMonitor.create();
 
       expect(monitor.isWatching(sheet1)).to.eql(false);
       expect(monitor.isWatching(sheet2)).to.eql(false);
@@ -45,7 +45,7 @@ describe.skip('ChangeMonitor', () => {
 
     it('watch', async () => {
       const { sheet } = await testMySheet();
-      const monitor = ChangeMonitor.create();
+      const monitor = TypedSheeChangeMonitor.create();
 
       expect(monitor.isWatching(sheet)).to.eql(false);
       expect(monitor.watching).to.eql([]);
@@ -63,7 +63,7 @@ describe.skip('ChangeMonitor', () => {
     it('unwatch', async () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
-      const monitor = ChangeMonitor.create();
+      const monitor = TypedSheeChangeMonitor.create();
 
       monitor.watch(sheet1).watch(sheet2);
 
@@ -87,7 +87,7 @@ describe.skip('ChangeMonitor', () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
       const sheet3 = (await testMySheet()).sheet;
-      const monitor = ChangeMonitor.create();
+      const monitor = TypedSheeChangeMonitor.create();
 
       monitor.watch([sheet1, sheet2, sheet3]);
 
@@ -110,7 +110,7 @@ describe.skip('ChangeMonitor', () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
 
-      const monitor = ChangeMonitor.create().watch([sheet1, sheet2]);
+      const monitor = TypedSheeChangeMonitor.create().watch([sheet1, sheet2]);
       expect(monitor.isWatching(sheet1)).to.eql(true);
       expect(monitor.isWatching(sheet2)).to.eql(true);
 
@@ -123,7 +123,7 @@ describe.skip('ChangeMonitor', () => {
     it('bubbles events', async () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
-      const monitor = ChangeMonitor.create()
+      const monitor = TypedSheeChangeMonitor.create()
         .watch(sheet1)
         .watch(sheet2);
 
@@ -156,19 +156,42 @@ describe.skip('ChangeMonitor', () => {
     });
   });
 
-  describe('ref (auto monitor child sheets)', () => {
-    it('attaches to child ref sheet', async () => {
+  describe('REF (auto monitor child sheets)', () => {
+    const testRef = async () => {
       const sheet = (await testMySheet()).sheet;
-      const monitor = ChangeMonitor.create().watch(sheet);
-
+      const monitor = TypedSheeChangeMonitor.create().watch(sheet);
       const row = sheet.data<m.MyRow>('MyRow').row(0);
-      const messages = await row.props.messages.load();
+      const messages = row.props.messages;
+      return { sheet, monitor, row, messages };
+    };
 
-      console.log('messages.isLoaded', messages.isLoaded);
-      console.log('-------------------------------------------');
+    it('auto-watches child REF on load', async () => {
+      const { monitor, messages, sheet } = await testRef();
+      expect(monitor.watching).to.eql([sheet.uri.toString()]);
+      await messages.load();
+      expect(monitor.isWatching(messages.sheet)).to.eql(true);
+    });
 
-      const f = monitor.isWatching(messages.sheet);
-      console.log('f', f);
+    it('auto-unwatches child REF on unwatch of parent sheet', async () => {
+      const { monitor, messages, sheet } = await testRef();
+      await messages.load();
+      expect(monitor.isWatching(sheet)).to.eql(true);
+      expect(monitor.isWatching(messages.sheet)).to.eql(true);
+
+      monitor.unwatch(sheet);
+      expect(monitor.isWatching(sheet)).to.eql(false);
+      expect(monitor.isWatching(messages.sheet)).to.eql(false);
+    });
+
+    it('auto-unwatches child REF on dispose of parent sheet', async () => {
+      const { monitor, messages, sheet } = await testRef();
+      await messages.load();
+      expect(monitor.isWatching(sheet)).to.eql(true);
+      expect(monitor.isWatching(messages.sheet)).to.eql(true);
+
+      sheet.dispose();
+      expect(monitor.isWatching(sheet)).to.eql(false);
+      expect(monitor.isWatching(messages.sheet)).to.eql(false);
     });
   });
 });

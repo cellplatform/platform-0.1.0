@@ -59,6 +59,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       filter(e => e.type === 'SHEET/change'),
       map(e => e.payload as t.ITypedSheetChange),
       filter(e => this.isWithinNamespace(e.ns)),
+      share(),
     );
 
     this.changed$ = this.event$.pipe(
@@ -66,6 +67,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       filter(e => e.type === 'SHEET/changed'),
       map(e => e.payload as t.ITypedSheetChanged),
       filter(e => this.isWithinNamespace(e.sheet.uri.toString())),
+      share(),
     );
 
     this.change$
