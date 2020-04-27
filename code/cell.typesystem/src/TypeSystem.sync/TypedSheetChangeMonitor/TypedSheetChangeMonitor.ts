@@ -9,9 +9,9 @@ type W = { sheet: t.ITypedSheet; stop$: Subject<{}>; refs: t.ITypedSheetRefs<{}>
 /**
  * Monitors changes in sheet(s).
  */
-export class TypedSheeChangeMonitor implements t.ITypedSheeChangeMonitor {
+export class TypedSheetChangeMonitor implements t.ITypedSheetChangeMonitor {
   public static create() {
-    return new TypedSheeChangeMonitor();
+    return new TypedSheetChangeMonitor();
   }
 
   /**

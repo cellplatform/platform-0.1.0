@@ -2,13 +2,13 @@ import { Subject } from 'rxjs';
 
 import { TypeSystem } from '../..';
 import { time, expect, testInstanceFetch, TYPE_DEFS, t } from '../../test';
-import { TypedSheeChangeMonitor } from '.';
+import { TypedSheetChangeMonitor } from '.';
 import * as m from '../../test/.d.ts/all';
 
-describe.only('ChangeMonitor', () => {
+describe('ChangeMonitor', () => {
   describe('lifecycle', () => {
     it('dispose', () => {
-      const monitor = TypedSheeChangeMonitor.create();
+      const monitor = TypedSheetChangeMonitor.create();
       expect(monitor.isDisposed).to.eql(false);
 
       let count = 0;
@@ -27,7 +27,7 @@ describe.only('ChangeMonitor', () => {
     it('isWatching', async () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
-      const monitor = TypedSheeChangeMonitor.create();
+      const monitor = TypedSheetChangeMonitor.create();
 
       expect(monitor.isWatching(sheet1)).to.eql(false);
       expect(monitor.isWatching(sheet2)).to.eql(false);
@@ -45,7 +45,7 @@ describe.only('ChangeMonitor', () => {
 
     it('watch', async () => {
       const { sheet } = await testMySheet();
-      const monitor = TypedSheeChangeMonitor.create();
+      const monitor = TypedSheetChangeMonitor.create();
 
       expect(monitor.isWatching(sheet)).to.eql(false);
       expect(monitor.watching).to.eql([]);
@@ -63,7 +63,7 @@ describe.only('ChangeMonitor', () => {
     it('unwatch', async () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
-      const monitor = TypedSheeChangeMonitor.create();
+      const monitor = TypedSheetChangeMonitor.create();
 
       monitor.watch(sheet1).watch(sheet2);
 
@@ -87,7 +87,7 @@ describe.only('ChangeMonitor', () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
       const sheet3 = (await testMySheet()).sheet;
-      const monitor = TypedSheeChangeMonitor.create();
+      const monitor = TypedSheetChangeMonitor.create();
 
       monitor.watch([sheet1, sheet2, sheet3]);
 
@@ -110,7 +110,7 @@ describe.only('ChangeMonitor', () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
 
-      const monitor = TypedSheeChangeMonitor.create().watch([sheet1, sheet2]);
+      const monitor = TypedSheetChangeMonitor.create().watch([sheet1, sheet2]);
       expect(monitor.isWatching(sheet1)).to.eql(true);
       expect(monitor.isWatching(sheet2)).to.eql(true);
 
@@ -125,7 +125,7 @@ describe.only('ChangeMonitor', () => {
     it('event$', async () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
-      const monitor = TypedSheeChangeMonitor.create()
+      const monitor = TypedSheetChangeMonitor.create()
         .watch(sheet1)
         .watch(sheet2);
 
@@ -159,7 +159,7 @@ describe.only('ChangeMonitor', () => {
 
     it('changed$', async () => {
       const sheet = (await testMySheet()).sheet;
-      const monitor = TypedSheeChangeMonitor.create().watch(sheet);
+      const monitor = TypedSheetChangeMonitor.create().watch(sheet);
 
       const fired: t.ITypedSheetChanged[] = [];
       monitor.changed$.subscribe(e => fired.push(e));
@@ -178,7 +178,7 @@ describe.only('ChangeMonitor', () => {
   describe('REF (auto monitor child sheets)', () => {
     const testRef = async () => {
       const sheet = (await testMySheet()).sheet;
-      const monitor = TypedSheeChangeMonitor.create().watch(sheet);
+      const monitor = TypedSheetChangeMonitor.create().watch(sheet);
       const row = sheet.data<m.MyRow>('MyRow').row(0);
       const messages = row.props.messages;
       return { sheet, monitor, row, messages };

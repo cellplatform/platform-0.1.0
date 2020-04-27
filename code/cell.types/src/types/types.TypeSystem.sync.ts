@@ -4,7 +4,7 @@ import { t } from '../common';
  * Managed event monitoring for a number of sheets
  * and child (REF) sheets.
  */
-export type ITypedSheeChangeMonitor = {
+export type ITypedSheetChangeMonitor = {
   readonly isDisposed: boolean;
   readonly watching: string[];
 
@@ -13,7 +13,7 @@ export type ITypedSheeChangeMonitor = {
   readonly dispose$: t.Observable<{}>;
 
   dispose(): void;
-  watch(sheet: t.ITypedSheet | t.ITypedSheet[]): ITypedSheeChangeMonitor;
-  unwatch(sheet: t.ITypedSheet | t.ITypedSheet[]): ITypedSheeChangeMonitor;
+  watch(sheet: t.ITypedSheet | t.ITypedSheet[]): ITypedSheetChangeMonitor;
+  unwatch(sheet: t.ITypedSheet | t.ITypedSheet[]): ITypedSheetChangeMonitor;
   isWatching(sheet: t.ITypedSheet | t.ITypedSheet[]): boolean;
 };
