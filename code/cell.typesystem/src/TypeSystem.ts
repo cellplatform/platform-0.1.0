@@ -1,14 +1,6 @@
-import {
-  TypeClient,
-  TypeCache,
-  TypedSheet,
-  TypeTarget,
-  TypeValue,
-  TypeDefault,
-} from './TypeSystem.core';
-import { TypedSheetChangeMonitor } from './TypeSystem.sync';
-
-import { objectToCells, fetcher } from './TypeSystem.util';
+import { TypeCache, TypeClient, TypeDefault, TypeTarget, TypeValue } from './TypeSystem.core';
+import { ChangeMonitor, TypedSheet } from './TypeSystem.sheet';
+import { fetcher, objectToCells } from './TypeSystem.util';
 
 export class TypeSystem {
   public static Client = TypeClient;
@@ -16,8 +8,9 @@ export class TypeSystem {
   public static Target = TypeTarget;
   public static Value = TypeValue;
   public static Default = TypeDefault;
+
   public static Sheet = TypedSheet;
-  public static SheetChangeMonitor = TypedSheetChangeMonitor;
+  public static ChangeMonitor = ChangeMonitor;
 
   public static client = TypeClient.client;
   public static fetcher = fetcher;

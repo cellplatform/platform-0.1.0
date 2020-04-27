@@ -1,6 +1,6 @@
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { TypeCache } from '../TypeCache';
+import { TypeCache } from '../../TypeSystem.core';
 import { deleteUndefined, R, Schema, t, Uri } from './common';
 
 export type IArgs = {

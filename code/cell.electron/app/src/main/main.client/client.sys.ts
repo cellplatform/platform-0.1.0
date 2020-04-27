@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
-import { Client, constants, fs, log, t, time, Uri } from '../common';
+import { Client, constants, fs, log, t, time, Uri, TypeSystem } from '../common';
 import * as sync from './client.sync';
 import { upload } from './client.upload';
 
@@ -28,6 +28,8 @@ export async function getOrCreateSystemContext(host: string) {
   const type = Client.type({ http });
   const sheet = await type.sheet<t.CellApp>(NS.APP);
   sync.saveMonitor({ http, state: sheet.state, flush$, saved$ });
+
+  // TypeSystem.
 
   const app = sheet.data('CellApp').row(0);
   await app.load();

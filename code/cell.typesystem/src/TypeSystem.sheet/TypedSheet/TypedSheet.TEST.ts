@@ -8,7 +8,7 @@ import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
 import * as p from '../../test/.d.ts/foo.primitives';
 import * as m from '../../test/.d.ts/foo.multi';
-import { TypeClient } from '../TypeClient';
+import { TypeClient } from '../../TypeSystem.core';
 import { TypedSheetData } from './TypedSheetData';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';

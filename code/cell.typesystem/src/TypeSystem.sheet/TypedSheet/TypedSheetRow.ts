@@ -1,7 +1,6 @@
 import { filter, map } from 'rxjs/operators';
 
-import { TypeDefault } from '../TypeDefault';
-import { TypeTarget } from '../TypeTarget';
+import { TypeDefault, TypeTarget } from '../../TypeSystem.core';
 import { Schema, t, Uri, util, R } from './common';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';

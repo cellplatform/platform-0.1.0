@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
-import { TypeClient } from '../TypeClient';
+import { TypeClient } from '../../TypeSystem.core';
 import { ERROR, ErrorList, MemoryCache, t, Uri, util } from './common';
 import { TypedSheetData } from './TypedSheetData';
 import { TypedSheetState } from './TypedSheetState';
