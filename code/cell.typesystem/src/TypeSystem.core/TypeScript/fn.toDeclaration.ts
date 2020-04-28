@@ -45,7 +45,7 @@ export function toDeclaration(args: {
     const parentType = args.typename;
     const childRefs: t.ITypeRef[] = [];
 
-    const lines = args.types.map(typeDef => {
+    let lines = args.types.map(typeDef => {
       const { prop, type } = typeDef;
       if (type.kind === 'UNION') {
         // Build up list of referenced types to ensure these are included in the output.
@@ -82,12 +82,11 @@ export function toDeclaration(args: {
       return line;
     });
 
+    lines = lines.filter(line => typeof line === 'string').map(line => line.trimEnd());
+
     let res = `
 export declare type ${args.typename} = {
-${lines
-  .filter(line => typeof line === 'string')
-  .map(line => line.trimEnd())
-  .join('\n')}
+${lines.join('\n')}
 };`.substring(1);
 
     written.push(args.typename);
@@ -110,10 +109,11 @@ ${lines
     return res;
   };
 
-  // Prepare document body.
+  // Write lines of code.
   let text = write({ ...args, written: [] });
-  const prepend = (content?: string) => (text = content ? `${content}\n\n${text}` : text);
 
+  // Prepare document body.
+  const prepend = (content?: string) => (text = content ? `${content}\n\n${text}` : text);
   prepend(formatImports(args.imports));
   prepend(args.header);
 

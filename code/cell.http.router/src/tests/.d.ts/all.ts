@@ -3,6 +3,9 @@
  * 
  *    |                
  *    |➔  ns:foo
+ *    |➔  ns:foo.color
+ *    |➔  ns:foo.messages
+ *    |➔  ns:foo.message
  *    |
  *
  * By:
@@ -17,21 +20,34 @@
  *        that uses a [TypedSheet] to programatically manipulate 
  *        the namespace in a strongly-typed manner, for example:
  * 
- *            import * as t from './MyRow.ts';
+ *            import * as t from './all.ts';
  * 
  */
 
+import * as t from '@platform/cell.types';
+
 export declare type MyRow = {
   title: string;
-  isEnabled: boolean;
-  color: MyColor;
+  isEnabled: boolean | null;
+  color?: MyColor;
+  message: t.ITypedSheetRef<MyMessage> | null;
+  messages: t.ITypedSheetRefs<MyMessage>;
 };
 
 export declare type MyColor = {
   label: string;
   color: 'red' | 'green' | 'blue';
+  description?: string;
 };
 
-export declare type MyOther = {
-  label: string;
+export declare type MyMessage = {
+  date: number;
+  user: string;
+  message: string;
+};
+
+export declare type MyMessages = {
+  channel: string;
+  color?: t.ITypedSheetRef<MyColor>;
+  messages: t.ITypedSheetRefs<MyMessage>;
 };

@@ -46,22 +46,25 @@ const writeTypes = async (client: t.IHttpClient) => {
 };
 
 describe('TypeSystem ➔ HTTP', () => {
-  it('generate [.d.ts] file', async () => {
-    const mock = await createMock();
-    await writeTypes(mock.client);
+  describe('generate [.d.ts] file', () => {
+    it('MyRow', async () => {
+      const mock = await createMock();
+      await writeTypes(mock.client);
 
-    const client = Client.typesystem({ http: mock.client });
-    const ts = await client.typescript('ns:foo');
-    await mock.dispose();
+      const client = Client.typesystem({ http: mock.client });
+      const ts = await client.typescript('ns:foo');
+      await mock.dispose();
 
-    const path = fs.join(__dirname, '.d.ts', 'MyRow.ts');
-    await ts.save(fs, path);
+      const dir = fs.resolve('src/tests/.d.ts');
+      const path = fs.join(dir, 'MyRow.ts');
+      await ts.save(fs, path);
 
-    const file = (await fs.readFile(path)).toString();
+      const file = (await fs.readFile(path)).toString();
 
-    expect(file).to.include(`|➔  ns:foo`);
-    expect(file).to.include(`export declare type MyRow = {`);
-    expect(file).to.include(`export declare type MyOther = {`);
+      expect(file).to.include(`|➔  ns:foo`);
+      expect(file).to.include(`export declare type MyRow = {`);
+      expect(file).to.include(`export declare type MyOther = {`);
+    });
   });
 
   describe('TypeClient', () => {

@@ -81,6 +81,9 @@ export function typescript(def: t.INsTypeDef | t.INsTypeDef[], options: { header
       res = !isRefUsed ? res : `${res}\n${imports}\n`;
       res = `${res}\n${code}`;
       res = res[0] === '\n' ? res.substring(1) : res; // NB: Trim first new-line.
+      res = res.replace(/\n{3,}/g, '\n\n'); // NB: collapse any multi-line spaces.
+      res = res.replace(/\n*$/, '');
+      res = res.length > 0 ? `${res}\n` : res;
 
       return res;
     },
