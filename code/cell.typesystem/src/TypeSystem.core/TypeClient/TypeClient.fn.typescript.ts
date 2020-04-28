@@ -4,7 +4,6 @@ import { toTypescriptHeader } from './TypeClient.fn.typescript.header';
 import { TypeValue } from '../TypeValue';
 import { TypeTarget } from '../TypeTarget';
 
-
 /**
  * Converts type definitions to valid typescript declarations.
  */
@@ -99,23 +98,34 @@ export function typescript(def: t.INsTypeDef | t.INsTypeDef[], options: { header
         throw new Error(`Cannot save definition to typescript as it contains errors:\n${lines}`);
       }
 
-      // Prepare paths.
-      path = path.endsWith('.ts') ? path : `${path}.ts`;
+      path = preparePath(path);
       await fs.ensureDir(fs.dirname(path));
 
-      // Generate the typescript.
-      const filename = path.substring(path.lastIndexOf('/') + 1);
-      const text = api.declaration.replace(/\<filename\>\.ts/g, filename);
-
-      // Save file.
+      const text = api.toString({ path });
       await fs.writeFile(path, text);
+
       return { path, text };
     },
 
-    toString() {
-      return api.declaration;
+    toString(options: { path?: string } = {}) {
+      const { path } = options;
+      let text = api.declaration;
+      if (path) {
+        const filename = path.substring(path.lastIndexOf('/') + 1);
+        text = text.replace(/\<filename\>\.ts/g, filename);
+      }
+      return text;
     },
   };
 
   return api;
+}
+
+/**
+ * [Helpers]
+ */
+
+function preparePath(path: string) {
+  path = path.endsWith('.ts') ? path : `${path}.ts`;
+  return path;
 }

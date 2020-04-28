@@ -995,7 +995,7 @@ describe('TypedSheet', () => {
     });
   });
 
-  describe.only('TypedSheetState', () => {
+  describe('TypedSheetState', () => {
     it('exposed from sheet', async () => {
       const { sheet } = await testMySheet();
       const state = sheet.state;
