@@ -35,7 +35,7 @@ export function typesystem(input?: t.ClientOptions | string | number) {
       const uris = Array.isArray(ns) ? ns : [ns];
       const client = TypeSystem.client(http);
       const defs = (await Promise.all(uris.map(ns => client.load(ns)))).map(({ defs }) => defs);
-      return defs.reduce((acc, next) => acc.concat(next), []); // Flatten.
+      return defs.reduce((acc, next) => acc.concat(next), []); // Flatten [][] => [].
     },
 
     /**
@@ -56,4 +56,3 @@ export function typesystem(input?: t.ClientOptions | string | number) {
 
   return api;
 }
-
