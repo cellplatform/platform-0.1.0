@@ -1,7 +1,6 @@
-import { TypeSystem } from '../common';
+import { TypeSystem, t } from '../common';
 import { HttpClient } from '../Client.http';
-import { typesystem } from './Client.typesystem';
-import * as t from './types';
+import { typesystem } from '../Client.typesystem';
 
 /**
  * A strongly typed client-library for operating with a CellOS end-point.

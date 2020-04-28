@@ -4,12 +4,13 @@ import { toTypescriptHeader } from './TypeClient.fn.typescript.header';
 import { TypeValue } from '../TypeValue';
 import { TypeTarget } from '../TypeTarget';
 
+
 /**
  * Converts type definitions to valid typescript declarations.
  */
 export function typescript(def: t.INsTypeDef | t.INsTypeDef[], options: { header?: boolean } = {}) {
   const defs = Array.isArray(def) ? def : [def];
-  const api = {
+  const api: t.ITypeClientTypescript = {
     /**
      * Comments to insert at the head of the typescript.
      */

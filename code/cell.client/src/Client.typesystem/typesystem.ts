@@ -1,6 +1,5 @@
-import { TypeSystem } from '../common';
+import { TypeSystem, t } from '../common';
 import { HttpClient } from '../Client.http';
-import * as t from './types';
 
 type N = string | t.INsUri;
 
@@ -18,7 +17,7 @@ export function typesystem(input?: t.ClientOptions | string | number) {
 
   const fetch = TypeSystem.fetcher.fromClient(http);
 
-  const api = {
+  const api: t.IClientTypesystem = {
     http,
     fetch,
 
@@ -50,10 +49,11 @@ export function typesystem(input?: t.ClientOptions | string | number) {
     /**
      * Retrieve the strongly-typed sheet at the given namespace.
      */
-    sheet<T>(ns: string | t.INsUri) {
+    sheet<T>(ns: N) {
       return TypeSystem.Sheet.load<T>({ ns, fetch, cache, event$ });
     },
   };
 
   return api;
 }
+
