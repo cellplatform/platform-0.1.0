@@ -1,5 +1,5 @@
 import { TypeSystem } from '../common';
-import { HttpClient } from '../HttpClient';
+import { HttpClient } from '../Client.HttpClient';
 import * as t from './types';
 
 /**

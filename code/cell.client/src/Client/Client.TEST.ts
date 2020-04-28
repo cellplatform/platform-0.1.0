@@ -1,6 +1,6 @@
 import { expect, TypeSystem, t } from '../test';
 import { Client } from '.';
-import { HttpClient } from '../HttpClient';
+import { HttpClient } from '../Client.HttpClient';
 
 /**
  * NOTE:
