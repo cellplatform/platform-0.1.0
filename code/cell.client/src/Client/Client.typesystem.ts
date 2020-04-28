@@ -1,5 +1,5 @@
 import { TypeSystem } from '../common';
-import { HttpClient } from '../Client.HttpClient';
+import { HttpClient } from '../Client.http';
 import * as t from './types';
 
 type N = string | t.INsUri;

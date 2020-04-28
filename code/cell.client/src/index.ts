@@ -1,2 +1,2 @@
 export * from './Client';
-export * from './Client.HttpClient';
+export * from './Client.http';
