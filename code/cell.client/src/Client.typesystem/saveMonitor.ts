@@ -11,8 +11,8 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
   const http = client.http;
 
   // Setup observables.
-  const stop$ = new Subject();
-  const changed$ = client.changes.changed$.pipe(takeUntil(stop$));
+  const dispose$ = new Subject();
+  const changed$ = client.changes.changed$.pipe(takeUntil(dispose$));
 
   type C = { [ns: string]: t.ITypedSheetStateChanges };
   let pending: C = {};
@@ -37,13 +37,13 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
       return debounce;
     },
 
-    get isActive() {
-      return !stop$.isStopped;
+    get isDisposed() {
+      return !dispose$.isStopped;
     },
 
-    stop() {
-      stop$.next();
-      stop$.complete();
+    dispose() {
+      dispose$.next();
+      dispose$.complete();
     },
 
     async save() {

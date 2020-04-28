@@ -163,6 +163,13 @@ describe.only('Client.TypeSystem', () => {
         expect(ns2.props?.schema).to.eql(ns1.props?.schema);
       });
 
+      it('default debounce', async () => {
+        const { mock, client } = await testDefs();
+        const saver = Client.saveMonitor({ client });
+        expect(saver.debounce).to.eql(300);
+        await mock.dispose();
+      });
+
       it.skip('stores "implements"', async () => {});
       it.skip('bubbles error', async () => {});
       it.skip('bubbles saving/saved notifications', async () => {});
