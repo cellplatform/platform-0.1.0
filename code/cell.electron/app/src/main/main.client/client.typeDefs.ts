@@ -8,12 +8,12 @@ type TypeDefs = { [key: string]: t.ITypeDefPayload };
 export const DEFS: TypeDefs = {
   [NS.TYPE.APP]: {
     columns: {
-      A: { props: { def: { prop: 'CellApp.title', type: 'string', default: 'CellOS' } } },
+      A: { props: { def: { prop: 'SysApp.title', type: 'string', default: 'CellOS' } } },
       B: {
         props: {
           def: {
-            prop: 'CellApp.windowDefs',
-            type: `${NS.TYPE.WINDOW_DEF}/CellAppWindowDef[]`,
+            prop: 'SysApp.windowDefs',
+            type: `${NS.TYPE.WINDOW_DEF}/SysAppWindowDef[]`,
             target: 'ref',
           },
         },
@@ -21,8 +21,8 @@ export const DEFS: TypeDefs = {
       C: {
         props: {
           def: {
-            prop: 'CellApp.windows',
-            type: `${NS.TYPE.WINDOW}/CellAppWindow[]`,
+            prop: 'SysApp.windows',
+            type: `${NS.TYPE.WINDOW}/SysAppWindow[]`,
             target: 'ref',
           },
         },
@@ -31,20 +31,20 @@ export const DEFS: TypeDefs = {
   },
   [NS.TYPE.WINDOW_DEF]: {
     columns: {
-      A: { props: { def: { prop: 'CellAppWindowDef.kind', type: 'string', default: '' } } },
-      B: { props: { def: { prop: 'CellAppWindowDef.width', type: 'number', default: 1200 } } },
-      C: { props: { def: { prop: 'CellAppWindowDef.height', type: 'number', default: 800 } } },
+      A: { props: { def: { prop: 'SysAppWindowDef.kind', type: 'string', default: '' } } },
+      B: { props: { def: { prop: 'SysAppWindowDef.width', type: 'number', default: 1200 } } },
+      C: { props: { def: { prop: 'SysAppWindowDef.height', type: 'number', default: 800 } } },
     },
   },
   [NS.TYPE.WINDOW]: {
     columns: {
-      A: { props: { def: { prop: 'CellAppWindow.id', type: 'string', default: '' } } },
-      B: { props: { def: { prop: 'CellAppWindow.kind', type: 'string', default: '' } } },
-      C: { props: { def: { prop: 'CellAppWindow.title', type: 'string', default: 'Untitled' } } },
-      D: { props: { def: { prop: 'CellAppWindow.width', type: 'number', default: -1 } } },
-      E: { props: { def: { prop: 'CellAppWindow.height', type: 'number', default: -1 } } },
-      F: { props: { def: { prop: 'CellAppWindow.x', type: 'number' } } },
-      G: { props: { def: { prop: 'CellAppWindow.y', type: 'number' } } },
+      A: { props: { def: { prop: 'SysAppWindow.id', type: 'string', default: '' } } },
+      B: { props: { def: { prop: 'SysAppWindow.kind', type: 'string', default: '' } } },
+      C: { props: { def: { prop: 'SysAppWindow.title', type: 'string', default: 'Untitled' } } },
+      D: { props: { def: { prop: 'SysAppWindow.width', type: 'number', default: -1 } } },
+      E: { props: { def: { prop: 'SysAppWindow.height', type: 'number', default: -1 } } },
+      F: { props: { def: { prop: 'SysAppWindow.x', type: 'number' } } },
+      G: { props: { def: { prop: 'SysAppWindow.y', type: 'number' } } },
     },
   },
 };

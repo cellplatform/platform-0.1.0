@@ -26,7 +26,7 @@ export async function getOrCreateSystemContext(host: string) {
 
   // Load the app model.
   const client = Client.typesystem({ http });
-  const sheet = await client.sheet<t.CellApp>(NS.APP);
+  const sheet = await client.sheet<t.SysApp>(NS.APP);
   sync.saveMonitor({ http, state: sheet.state, flush$, saved$ });
   // Client.saveMonitor()
 
@@ -38,7 +38,7 @@ export async function getOrCreateSystemContext(host: string) {
     console.log('changed', e.sheet.toString());
   });
 
-  const app = sheet.data('CellApp').row(0);
+  const app = sheet.data('SysApp').row(0);
   await app.load();
 
   // Retrieve windows.

@@ -19,14 +19,13 @@ export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
     throw new Error(`A window-definition named '${args.kind}' could not be found.`);
   }
 
-  const createInstance = async (def: t.ITypedSheetRowProps<t.CellAppWindowDef>) => {
+  const createInstance = async (def: t.ITypedSheetRowProps<t.SysAppWindowDef>) => {
     const index = instances.total;
     const instance = instances.row(index).props;
     instance.id = Schema.slug();
     instance.width = def.width;
     instance.height = def.height;
     instance.kind = def.kind;
-    // await ctx.flush();
   };
 
   if (def) {
