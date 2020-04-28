@@ -10,6 +10,7 @@ type N = string | t.INsUri;
 export function typesystem(input?: t.ClientOptions | string | number) {
   const args = typeof input === 'object' ? input : { http: input };
   const { cache, event$ } = args;
+  let change: t.ITypedSheetChangeMonitor | undefined;
 
   const http = HttpClient.isClient(args.http)
     ? (args.http as t.IHttpClient)
@@ -20,6 +21,13 @@ export function typesystem(input?: t.ClientOptions | string | number) {
   const api = {
     http,
     fetch,
+
+    /**
+     * The singleton change-monitor for the client.
+     */
+    get changes() {
+      return change || (change = TypeSystem.ChangeMonitor.create());
+    },
 
     /**
      * Retrieves the type-definitions for the given namespace(s).
