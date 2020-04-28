@@ -22,7 +22,7 @@ export type IHttpClient = {
   response$: t.Observable<t.IHttpAfter>;
 
   info<T extends t.IResGetSysInfo>(): t.IHttpClientAsync<T>;
-  ns(input: string | t.IUrlParamsNs): IClientNs;
+  ns(input: string | t.IUrlParamsNs): IHttpClientNs;
   cell(input: string | t.IUrlParamsCell): IHttpClientCell;
   file(input: string | t.IUrlParamsFile): IHttpClientFile;
 };
@@ -32,7 +32,7 @@ export type IHttpClientOptions = { host?: string | number; http?: t.IHttp };
 /**
  * NAMESPSACE
  */
-export type IClientNs = {
+export type IHttpClientNs = {
   readonly uri: t.IUriParts<t.INsUri>;
   readonly url: t.IUrlsNs;
   exists(): Promise<boolean>;
