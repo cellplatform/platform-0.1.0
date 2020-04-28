@@ -995,7 +995,7 @@ describe('TypedSheet', () => {
     });
   });
 
-  describe('TypedSheetState', () => {
+  describe.only('TypedSheetState', () => {
     it('exposed from sheet', async () => {
       const { sheet } = await testMySheet();
       const state = sheet.state;
@@ -1119,12 +1119,9 @@ describe('TypedSheet', () => {
         const state = sheet.state;
         expect(state.hasChanges).to.eql(false);
 
-        event$.next({
-          type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
-        });
-
+        state.fireCellChanged({ key: 'A1', to: { value: 123 } });
         await time.wait(1);
+
         expect(state.hasChanges).to.eql(true);
       });
 
@@ -1133,12 +1130,9 @@ describe('TypedSheet', () => {
         const state = sheet.state;
         expect(state.hasChanges).to.eql(false);
 
-        event$.next({
-          type: 'SHEET/change',
-          payload: { kind: 'NS', ns: 'ns:foo.mySheet', to: { type: { implements: 'foobar' } } },
-        });
-
+        state.fireNsChanged({ to: { type: { implements: 'foobar' } } });
         await time.wait(1);
+
         expect(state.hasChanges).to.eql(true);
       });
 

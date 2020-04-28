@@ -110,6 +110,63 @@ describe.only('Client.TypeSystem', () => {
         expect(fired[2].change.to).to.eql({ value: '3' });
       });
     });
+
+    describe.only('save monitor', () => {
+      it('saves cell changes', async () => {
+        const { mock, client } = await testDefs();
+        const sheet = await client.sheet('ns:foo.mySheet');
+        expect(sheet.state.changes).to.eql({});
+
+        client.changes.watch(sheet);
+
+        const saver = Client.saveMonitor({ client, debounce: 1 });
+        expect(saver.debounce).to.eql(1);
+
+        const cursor = await sheet.data<g.MyRow>('MyRow').load();
+        const row = (await cursor.row(0).load()).props;
+        row.title = '1';
+        row.title = '2';
+        row.title = '3';
+        row.isEnabled = true;
+
+        await time.delay(50);
+
+        const res = await client.http.ns('ns:foo.mySheet').read({ cells: true });
+        await mock.dispose();
+
+        const cells = res.body.data.cells as t.ICellMap<any>;
+
+        expect(sheet.state.changes).to.eql({}); // NB: Pending state changes have been reset after save.
+        expect(cells?.A1?.value).to.eql('3');
+        expect(cells?.B1?.props?.isEnabled).to.eql(true);
+      });
+
+      it('saves namespace change', async () => {
+        const { mock, client } = await testDefs();
+        const sheet = await client.sheet('ns:foo.mySheet');
+        client.changes.watch(sheet);
+
+        const ns1 = (await client.http.ns('ns:foo.mySheet').read()).body.data.ns;
+        expect(ns1.props?.type?.implements).to.eql('ns:foo');
+
+        const saver = Client.saveMonitor({ client, debounce: 5 });
+        expect(saver.debounce).to.eql(5);
+
+        sheet.state.fireNsChanged({ to: { type: { implements: 'ns:boom' } } });
+        await time.delay(50);
+
+        const ns2 = (await client.http.ns('ns:foo.mySheet').read()).body.data.ns;
+        await mock.dispose();
+
+        expect(sheet.state.changes).to.eql({}); // NB: Pending state changes have been reset after save.
+        expect(ns2.props?.type?.implements).to.eql('ns:boom');
+        expect(ns2.props?.schema).to.eql(ns1.props?.schema);
+      });
+
+      it.skip('stores "implements"', async () => {});
+      it.skip('bubbles error', async () => {});
+      it.skip('bubbles saving/saved notifications', async () => {});
+    });
   });
 });
 

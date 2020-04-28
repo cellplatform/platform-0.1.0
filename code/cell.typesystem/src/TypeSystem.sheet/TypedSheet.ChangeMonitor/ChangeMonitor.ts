@@ -66,8 +66,8 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
     return this._dispose$.isStopped;
   }
 
-  public get watching(): string[] {
-    return this._watching.map(({ sheet }) => sheet.uri.toString());
+  public get watching(): t.ITypedSheet[] {
+    return this._watching.map(({ sheet }) => sheet);
   }
 
   /**

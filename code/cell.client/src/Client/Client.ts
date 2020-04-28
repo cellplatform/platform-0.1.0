@@ -1,6 +1,6 @@
 import { TypeSystem, t } from '../common';
 import { HttpClient } from '../Client.http';
-import { typesystem } from '../Client.typesystem';
+import { typesystem, saveMonitor } from '../Client.typesystem';
 
 /**
  * A strongly typed client-library for operating with a CellOS end-point.
@@ -20,4 +20,9 @@ export class Client {
    * Access point for working with the TypeSystem.
    */
   public static typesystem = typesystem;
+
+  /**
+   * Manage saving changes to a given HTTP gateway.
+   */
+  public static saveMonitor = saveMonitor;
 }

@@ -18,6 +18,9 @@ export type ITypedSheetState = {
 
   clearChanges(action: t.ITypedSheetChangesCleared['action']): void;
   clearCache(): void;
+
+  fireNsChanged<D>(args: { to: D }): Promise<void>;
+  fireCellChanged<D>(args: { key: string; to: D }): Promise<void>;
 };
 
 /**

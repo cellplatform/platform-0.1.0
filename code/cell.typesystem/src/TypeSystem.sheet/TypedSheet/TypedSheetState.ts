@@ -75,17 +75,11 @@ export class TypedSheetState implements t.ITypedSheetState {
       .pipe(
         filter(e => e.kind === 'CELL'),
         map(e => e as t.ITypedSheetChangeCell),
-        map(({ to, ns, key }) => ({ to, uri: Uri.parse<t.ICellUri>(Uri.create.cell(ns, key)) })),
-        filter(e => e.uri.ok && e.uri.type === 'CELL'),
       )
-      .subscribe(({ uri, to }) => this.fireCellChanged({ uri: uri.parts, to }));
+      .subscribe(({ key, to }) => this.fireCellChanged({ key, to }));
 
     this.change$
-      .pipe(
-        filter(e => e.kind === 'NS'),
-        map(({ to, ns }) => ({ to, uri: Uri.parse<t.INsUri>(ns) })),
-        filter(e => e.uri.ok && e.uri.type === 'NS'),
-      )
+      .pipe(filter(e => e.kind === 'NS'))
       .subscribe(({ to }) => this.fireNsChanged({ to }));
   }
 
@@ -188,14 +182,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       .forEach(key => cache.delete(key));
   }
 
-  /**
-   * [INTERNAL]
-   */
-  private fire(e: t.TypedSheetEvent) {
-    this._event$.next(e);
-  }
-
-  private async fireNsChanged<D>(args: { to: D }) {
+  public async fireNsChanged<D>(args: { to: D }) {
     const { to } = args;
 
     const existing = this._changes.ns;
@@ -215,17 +202,15 @@ export class TypedSheetState implements t.ITypedSheetState {
     this.fireChanged({ change });
   }
 
-  private async fireCellChanged<D>(args: { uri: t.ICellUri; to: D }) {
-    const { uri, to } = args;
-    const key = args.uri.key;
-
+  public async fireCellChanged<D>(args: { key: string; to: D }) {
+    const { to, key } = args;
     const existing = (this._changes.cells || {})[key];
     if (existing && R.equals(existing.to, to)) {
       return; // No change.
     }
 
-    const ns = Uri.create.ns(uri.ns);
-    const from = (existing ? existing.from : await this.getCell(uri.key)) || {};
+    const ns = Uri.create.ns(this.uri.id);
+    const from = (existing ? existing.from : await this.getCell(key)) || {};
     const change: t.ITypedSheetChangeCellDiff = {
       kind: 'CELL',
       ns,
@@ -237,6 +222,13 @@ export class TypedSheetState implements t.ITypedSheetState {
     const cells = { ...(this._changes.cells || {}), [key]: change };
     this._changes = { ...this._changes, cells };
     this.fireChanged({ change });
+  }
+
+  /**
+   * [INTERNAL]
+   */
+  private fire(e: t.TypedSheetEvent) {
+    this._event$.next(e);
   }
 
   private fireChanged(args: { change: t.ITypedSheetChangeDiff }) {

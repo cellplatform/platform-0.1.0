@@ -52,12 +52,12 @@ describe('TypedSheetChangeMonitor', () => {
 
       monitor.watch(sheet);
       expect(monitor.isWatching(sheet)).to.eql(true);
-      expect(monitor.watching).to.eql([sheet.uri.toString()]);
+      expect(monitor.watching.map(sheet => sheet.uri.toString())).to.eql([sheet.uri.toString()]);
 
       monitor.watch(sheet);
       monitor.watch(sheet);
       monitor.watch(sheet);
-      expect(monitor.watching).to.eql([sheet.uri.toString()]);
+      expect(monitor.watching.map(sheet => sheet.uri.toString())).to.eql([sheet.uri.toString()]);
     });
 
     it('unwatch', async () => {
@@ -186,7 +186,7 @@ describe('TypedSheetChangeMonitor', () => {
 
     it('auto-watches child REF on load', async () => {
       const { monitor, messages, sheet } = await testRef();
-      expect(monitor.watching).to.eql([sheet.uri.toString()]);
+      expect(monitor.watching.map(sheet => sheet.uri.toString())).to.eql([sheet.uri.toString()]);
       await messages.load();
       expect(monitor.isWatching(messages.sheet)).to.eql(true);
     });

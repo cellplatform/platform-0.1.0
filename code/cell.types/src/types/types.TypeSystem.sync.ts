@@ -6,7 +6,7 @@ import { t } from '../common';
  */
 export type ITypedSheetChangeMonitor = {
   readonly isDisposed: boolean;
-  readonly watching: string[];
+  readonly watching: t.ITypedSheet[];
 
   readonly event$: t.Observable<t.TypedSheetEvent>;
   readonly changed$: t.Observable<t.ITypedSheetChanged>;
