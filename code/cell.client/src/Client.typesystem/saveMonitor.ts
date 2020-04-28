@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime, share, takeUntil } from 'rxjs/operators';
+
 import { coord, defaultValue, t } from '../common';
 
 /**
@@ -13,11 +14,11 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
   // Setup observables.
   const dispose$ = new Subject();
   const changed$ = client.changes.changed$.pipe(takeUntil(dispose$));
-
-  type C = { [ns: string]: t.ITypedSheetStateChanges };
-  let pending: C = {};
+  const save$ = new Subject<t.ITypedSheetSaveEvent>();
+  const fire = (e: t.ITypedSheetSaveEvent) => save$.next(e);
 
   // Monitor changes.
+  let pending: t.ITypedSheetPendingChanges = {};
   changed$.pipe(debounceTime(debounce)).subscribe(e => api.save());
   changed$.subscribe(e => {
     const { sheet } = e;
@@ -33,6 +34,8 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
   });
 
   const api = {
+    save$: save$.pipe(takeUntil(dispose$), share()),
+
     get debounce() {
       return debounce;
     },
@@ -47,20 +50,42 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
     },
 
     async save() {
-      const changes = { ...pending };
+      const target = client.http.origin;
       const sheets = client.changes.watching;
+      const findSheet = (ns: string) =>
+        sheets.find(sheet => sheet.uri.toString() === ns) as t.ITypedSheet;
 
-      const wait = Object.keys(changes)
-        .map(ns => ({ ns, changes: changes[ns] }))
-        .map(({ ns, changes }) => saveSheet({ ns, http, changes }));
+      const changes = { ...pending };
+      const changeSet = Object.keys(changes)
+        .map(ns => ({
+          ns,
+          changes: changes[ns],
+          sheet: findSheet(ns),
+        }))
+        .filter(sheet => Boolean(sheet));
+
+      // Fire BEFORE event.
+      changeSet.forEach(({ sheet, changes }) => {
+        fire({ type: 'SHEET/saving', payload: { target, sheet, changes } });
+      });
+
+      // Invoke save requests (over network).
+      const wait = changeSet.map(({ ns, changes }) => saveSheet({ ns, http, changes }));
       const res = await Promise.all(wait);
 
+      // Reset saved state for all successful operations.
       res
         .filter(({ ok }) => ok)
-        .map(({ ns }) => sheets.find(sheet => sheet.uri.toString() === ns) as t.ITypedSheet)
+        .map(({ ns }) => findSheet(ns))
         .filter(sheet => Boolean(sheet))
         .forEach(sheet => sheet.state.clearChanges('SAVED'));
 
+      // Fire AFTER event.
+      changeSet.forEach(({ sheet, changes }) => {
+        fire({ type: 'SHEET/saved', payload: { target, sheet, changes } });
+      });
+
+      // Finish up.
       const ok = res.every(res => res.ok);
       if (ok) {
         pending = {};

@@ -111,7 +111,7 @@ describe.only('Client.TypeSystem', () => {
       });
     });
 
-    describe.only('save monitor', () => {
+    describe('save monitor', () => {
       it('saves cell changes', async () => {
         const { mock, client } = await testDefs();
         const sheet = await client.sheet('ns:foo.mySheet');
@@ -172,7 +172,51 @@ describe.only('Client.TypeSystem', () => {
 
       it.skip('stores "implements"', async () => {});
       it.skip('bubbles error', async () => {});
-      it.skip('bubbles saving/saved notifications', async () => {});
+
+      it.skip('makes more changes while save operation in progress', async () => {});
+
+      it('bubbles saving/saved notifications', async () => {
+        const { mock, client } = await testDefs();
+        const sheet = await client.sheet('ns:foo.mySheet');
+        client.changes.watch(sheet);
+
+        const saver = Client.saveMonitor({ client, debounce: 10 });
+
+        const fired: t.ITypedSheetSaveEvent[] = [];
+        saver.save$.subscribe(e => fired.push(e));
+
+        const cursor = await sheet.data<g.MyRow>('MyRow').load();
+        const row = (await cursor.row(0).load()).props;
+        row.title = 'hello';
+        row.isEnabled = true;
+
+        sheet.state.fireNsChanged({ to: { type: { implements: 'ns:foobar' } } });
+
+        await time.delay(50);
+        await mock.dispose();
+
+        expect(fired.length).to.eql(2);
+        expect(fired[0].type).to.eql('SHEET/saving');
+        expect(fired[1].type).to.eql('SHEET/saved');
+
+        const saving = fired[0].payload as t.ITypedSheetSaving;
+        const saved = fired[1].payload as t.ITypedSheetSaved;
+
+        expect(saving.target).to.eql(client.http.origin);
+        expect(saved.target).to.eql(client.http.origin);
+
+        expect(saving.changes).to.eql(saved.changes);
+        const changes = saved.changes;
+
+        expect(changes.ns?.from.type?.implements).to.eql('ns:foo');
+        expect(changes.ns?.to.type?.implements).to.eql('ns:foobar');
+
+        expect(changes.cells?.A1.from).to.eql({});
+        expect(changes.cells?.A1.to).to.eql({ value: 'hello' });
+
+        expect(changes.cells?.B1.from).to.eql({});
+        expect(changes.cells?.B1.to).to.eql({ props: { isEnabled: true } });
+      });
     });
   });
 });

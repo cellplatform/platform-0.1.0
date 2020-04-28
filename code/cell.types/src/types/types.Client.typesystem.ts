@@ -27,6 +27,7 @@ export type ITypedSheetSavingEvent = {
   payload: ITypedSheetSaving;
 };
 export type ITypedSheetSaving = {
+  target: string;
   sheet: t.ITypedSheet;
   changes: t.ITypedSheetStateChanges;
 };
@@ -36,6 +37,7 @@ export type ITypedSheetSavedEvent = {
   payload: ITypedSheetSaved;
 };
 export type ITypedSheetSaved = {
+  target: string;
   sheet: t.ITypedSheet;
   changes: t.ITypedSheetStateChanges;
 };
