@@ -11,6 +11,7 @@ export type ITypedSheet<T = {}> = {
   readonly errors: t.ITypeError[];
   dispose(): void;
   data<D = T>(args: string | ITypedSheetDataArgs): ITypedSheetData<D>;
+  toString(): string;
 };
 
 export type ITypedSheetDataOptions = { range?: string };

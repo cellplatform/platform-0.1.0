@@ -37,7 +37,9 @@ export type ITypedSheetSavedEvent = {
   payload: ITypedSheetSaved;
 };
 export type ITypedSheetSaved = {
+  ok: boolean;
   target: string;
   sheet: t.ITypedSheet;
   changes: t.ITypedSheetStateChanges;
+  errors: { ns: string; error: t.IHttpError }[];
 };
