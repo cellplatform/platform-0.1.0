@@ -82,9 +82,13 @@ describe('TypedSheet', () => {
 
     it('calculated once (lazy evaluation, shared instance)', async () => {
       const { sheet } = await testMyMultiSheet();
-      const res1 = sheet.types;
-      const res2 = sheet.types;
-      expect(res1).to.equal(res2);
+      expect(sheet.types).to.equal(sheet.types);
+    });
+
+    it('sheet.implements', async () => {
+      const { sheet } = await testMySheet();
+      expect(sheet.uri.toString()).to.eql('ns:foo.mySheet');
+      expect(sheet.implements.toString()).to.eql('ns:foo');
     });
   });
 
