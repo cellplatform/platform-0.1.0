@@ -1,4 +1,7 @@
-import { Client, createMock, expect, t, TYPE_DEFS, fs, time } from '../../test';
+import { Observable, Subject } from 'rxjs';
+import { delay, filter, take } from 'rxjs/operators';
+
+import { Client, createMock, ERROR, expect, fs, t, time, TYPE_DEFS } from '../../test';
 import * as g from '../.d.ts/all';
 
 describe.only('Client.TypeSystem', () => {
@@ -123,14 +126,13 @@ describe.only('Client.TypeSystem', () => {
         expect(saver.debounce).to.eql(1);
 
         const cursor = await sheet.data<g.MyRow>('MyRow').load();
-        const row = (await cursor.row(0).load()).props;
+        const row = cursor.row(0).props;
         row.title = '1';
         row.title = '2';
         row.title = '3';
         row.isEnabled = true;
 
         await time.delay(50);
-
         const res = await client.http.ns('ns:foo.mySheet').read({ cells: true });
         await mock.dispose();
 
@@ -171,22 +173,54 @@ describe.only('Client.TypeSystem', () => {
       });
 
       it.skip('stores "implements"', async () => {});
-      it.skip('bubbles error', async () => {});
 
-      it.skip('makes more changes while save operation in progress', async () => {});
-
-      it('bubbles saving/saved notifications', async () => {
+      it('secondary changes while save operation in progress', async () => {
         const { mock, client } = await testDefs();
         const sheet = await client.sheet('ns:foo.mySheet');
+        const saver = Client.saveMonitor({ client, debounce: 5 });
         client.changes.watch(sheet);
 
-        const saver = Client.saveMonitor({ client, debounce: 10 });
+        saver.saving$.pipe(take(1), delay(10)).subscribe(e => {
+          row.title = 'second'; // Trigger another save by changing the row again when the save starts.
+        });
+
+        const responses$ = new Subject();
+        const responses: t.IHttpClientResponse<any>[] = [];
+        saver.saved$.subscribe(async e => {
+          const res = await client.http.ns('ns:foo.mySheet').read({ cells: true });
+          responses.push(res);
+          responses$.next();
+        });
 
         const fired: t.ITypedSheetSaveEvent[] = [];
-        saver.save$.subscribe(e => fired.push(e));
+        saver.event$.subscribe(e => fired.push(e));
 
         const cursor = await sheet.data<g.MyRow>('MyRow').load();
-        const row = (await cursor.row(0).load()).props;
+        const row = cursor.row(0).props;
+        row.title = 'first';
+
+        await time.wait(responses$.pipe(filter(() => responses.length === 2)));
+        await mock.dispose();
+
+        const cells1 = responses[0]?.body.data.cells || {};
+        const cells2 = responses[1]?.body.data.cells || {};
+
+        expect(cells1.A1?.value).to.eql('first');
+        expect(cells2.A1?.value).to.eql('second');
+      });
+
+      it('bubbles events: saving/saved', async () => {
+        const { mock, client } = await testDefs();
+        const sheet = await client.sheet('ns:foo.mySheet');
+        const saver = Client.saveMonitor({ client, debounce: 10 });
+        client.changes.watch(sheet);
+
+        const fired: t.ITypedSheetSaveEvent[] = [];
+        saver.event$.subscribe(e => fired.push(e));
+
+        const cursor = await sheet.data<g.MyRow>('MyRow').load();
+        const row = cursor.row(0).props;
+
         row.title = 'hello';
         row.isEnabled = true;
 
@@ -202,8 +236,12 @@ describe.only('Client.TypeSystem', () => {
         const saving = fired[0].payload as t.ITypedSheetSaving;
         const saved = fired[1].payload as t.ITypedSheetSaved;
 
-        expect(saving.target).to.eql(client.http.origin);
-        expect(saved.target).to.eql(client.http.origin);
+        expect(saved.ok).to.eql(true);
+        expect(saved.errors).to.eql([]);
+
+        const target = client.http.origin;
+        expect(saving.target).to.eql(target);
+        expect(saved.target).to.eql(target);
 
         expect(saving.changes).to.eql(saved.changes);
         const changes = saved.changes;
@@ -216,6 +254,49 @@ describe.only('Client.TypeSystem', () => {
 
         expect(changes.cells?.B1.from).to.eql({});
         expect(changes.cells?.B1.to).to.eql({ props: { isEnabled: true } });
+      });
+
+      it('bubbles event: errors', async () => {
+        const { mock, client } = await testDefs();
+        const sheet = await client.sheet('ns:foo.mySheet');
+        const saver = Client.saveMonitor({ client, debounce: 10 });
+        client.changes.watch(sheet);
+
+        const errorType = ERROR.HTTP.HASH_MISMATCH;
+        mock.service.response$.pipe(filter(e => e.method === 'POST')).subscribe(e => {
+          const status = 422;
+          const error: t.IHttpError = { status, message: 'My fail', type: errorType };
+          e.modify({ status, data: error }); // NB: Simulate a server-side error.
+        });
+
+        const fired: t.ITypedSheetSaveEvent[] = [];
+        saver.event$.subscribe(e => fired.push(e));
+
+        const cursor = await sheet.data<g.MyRow>('MyRow').load();
+        const row = cursor.row(0).props;
+        row.title = 'hello';
+        row.isEnabled = true;
+
+        await time.delay(50);
+        await mock.dispose();
+
+        expect(fired[1].type).to.eql('SHEET/saved');
+
+        const e = fired[1].payload as t.ITypedSheetSaved;
+
+        expect(e.errors.length).to.eql(1);
+        expect(e.errors[0].ns).to.eql('ns:foo.mySheet');
+
+        const error = e.errors[0].error;
+        expect(error.status).to.eql(422);
+        expect(error.type).to.eql(ERROR.HTTP.SERVER);
+        expect(error.message).to.include(`Failed while saving data to`);
+        expect(error.message).to.include(client.http.origin);
+
+        const child = (error.children || [])[0] as t.IHttpError;
+        expect(child.status).to.eql(422);
+        expect(child.type).to.eql(errorType);
+        expect(child.message).to.include('My fail');
       });
     });
   });

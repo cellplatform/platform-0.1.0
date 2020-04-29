@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
-import { debounceTime, share, takeUntil } from 'rxjs/operators';
+import { filter, map, debounceTime, share, takeUntil } from 'rxjs/operators';
 
-import { coord, defaultValue, t } from '../common';
+import { coord, defaultValue, t, ERROR } from '../common';
 
 /**
  * Monitors changes pushing changes through the given HTTP gateway.
@@ -14,8 +14,9 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
   // Setup observables.
   const dispose$ = new Subject();
   const changed$ = client.changes.changed$.pipe(takeUntil(dispose$));
-  const save$ = new Subject<t.ITypedSheetSaveEvent>();
-  const fire = (e: t.ITypedSheetSaveEvent) => save$.next(e);
+  const subject$ = new Subject<t.ITypedSheetSaveEvent>();
+  const event$ = subject$.pipe(takeUntil(dispose$), share());
+  const fire = (e: t.ITypedSheetSaveEvent) => subject$.next(e);
 
   // Monitor changes.
   let pending: t.ITypedSheetPendingChanges = {};
@@ -34,7 +35,19 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
   });
 
   const api = {
-    save$: save$.pipe(takeUntil(dispose$), share()),
+    event$,
+
+    saving$: event$.pipe(
+      filter(e => e.type === 'SHEET/saving'),
+      map(e => e.payload as t.ITypedSheetSaving),
+      share(),
+    ),
+
+    saved$: event$.pipe(
+      filter(e => e.type === 'SHEET/saved'),
+      map(e => e.payload as t.ITypedSheetSaved),
+      share(),
+    ),
 
     get debounce() {
       return debounce;
@@ -80,13 +93,20 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
         .filter(sheet => Boolean(sheet))
         .forEach(sheet => sheet.state.clearChanges('SAVED'));
 
+      const ok = res.every(res => res.ok);
+
       // Fire AFTER event.
       changeSet.forEach(({ sheet, changes }) => {
-        fire({ type: 'SHEET/saved', payload: { target, sheet, changes } });
+        const ns = sheet.uri.toString();
+        const errors: t.ITypedSheetSaved['errors'] = res
+          .filter(res => res.ns === ns)
+          .filter(res => Boolean(res.error))
+          .map(res => ({ ns, error: res.error as t.IHttpError }));
+        const ok = errors.length === 0;
+        fire({ type: 'SHEET/saved', payload: { ok, target, sheet, changes, errors } });
       });
 
       // Finish up.
-      const ok = res.every(res => res.ok);
       if (ok) {
         pending = {};
       }
@@ -107,25 +127,27 @@ async function saveSheet(args: {
 }) {
   const { ns, http, changes } = args;
   const client = http.ns(ns);
-  const errors: t.IHttpError[] = [];
+  let error: t.IHttpError | undefined;
 
-  if (changes.cells) {
-    const cells = toChangedCells(changes);
-    const res = await client.write({ cells }, { data: false });
-    if (res.error) {
-      errors.push(res.error);
+  if (changes.cells || changes.ns) {
+    const payload = {
+      cells: changes.cells ? toChangedCells(changes) : undefined,
+      ns: changes.ns ? changes.ns.to : undefined,
+    };
+    const res = await client.write(payload, { data: false });
+
+    if (!res.ok) {
+      error = {
+        status: res.status,
+        type: ERROR.HTTP.SERVER,
+        message: `Failed while saving data to ${http.origin}`,
+        children: res.error ? [res.error] : undefined,
+      };
     }
   }
 
-  if (changes.ns) {
-    const res = await client.write({ ns: changes.ns.to }, { data: false });
-    if (res.error) {
-      errors.push(res.error);
-    }
-  }
-
-  const ok = errors.length === 0;
-  return { ok, ns, errors };
+  const ok = !Boolean(error);
+  return { ok, ns, error };
 }
 
 function toChangedCells(changes: t.ITypedSheetStateChanges) {

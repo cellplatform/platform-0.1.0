@@ -28,6 +28,7 @@
     "@platform/http.router": "0.0.17",
     "@platform/libs": "0.2.1",
     "@platform/log": "0.1.17",
+    "@platform/util.value": "^0.7.13",
     "cheerio": "1.0.0-rc.3",
     "mime-types": "2.1.26"
   },

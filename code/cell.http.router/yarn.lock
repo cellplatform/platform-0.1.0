@@ -403,7 +403,7 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value@0.7.13":
+"@platform/util.value@0.7.13", "@platform/util.value@^0.7.13":
   version "0.7.13"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.13.tgz#6fe46b762eda91d65a1e2f1c593ba29c73903a2b"
   integrity sha512-vuHx/1ExC5r0OLOscEPyHZ6TFRgqRuTRFswmvcK8EwR7FCi0T8jR5QT/I0daG7C4d2ZUAjEm427SmxRxCWDoyA==
