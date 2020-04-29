@@ -41,7 +41,6 @@ describe('hash', () => {
 
     it('excludes existing hash', () => {
       const HASH = 'b3ba839bac';
-      test(HASH, { id: 'foo', hash: '-' });
       test(HASH, { id: 'foo', hash: '' });
       test(HASH, { id: 'foo', hash: 'yo' });
       test(HASH, { id: 'foo' });

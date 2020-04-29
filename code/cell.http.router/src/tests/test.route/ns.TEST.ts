@@ -68,7 +68,7 @@ describe('ns:', function() {
       expect(body.modifiedAt).to.eql(-1);
 
       expect(ns.id).to.eql('foo');
-      expect(ns.hash).to.eql('-'); // NB: default when does not exist.
+      expect(ns.hash).to.eql(''); // NB: default when does not exist.
 
       // NB: No cell data by default (requires query-string).
       expect(body.data.cells).to.eql(undefined);
@@ -324,7 +324,7 @@ describe('ns:', function() {
       expect(json.changes).to.eql(undefined);
 
       expect(data.ns.id).to.eql('foo');
-      expect(data.ns.hash).to.not.eql('-'); // NB: hash calculation tested seperately.
+      expect(data.ns.hash).to.not.eql(''); // NB: hash calculation tested seperately.
       expect(cells.A1 && cells.A1.value).to.eql('hello');
       expect(data.rows).to.eql(undefined);
       expect(data.columns).to.eql(undefined);
@@ -348,7 +348,7 @@ describe('ns:', function() {
 
     it('namespace props ("name", etc)', async () => {
       const res1 = await post.ns('ns:foo?ns', {});
-      expect(res1.data.ns.hash).to.eql('-');
+      expect(res1.data.ns.hash).to.eql('');
       expect(res1.data.ns.id).to.eql('foo');
       expect(res1.data.ns.props).to.eql(undefined);
 

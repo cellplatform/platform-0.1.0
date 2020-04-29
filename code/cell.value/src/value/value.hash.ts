@@ -145,17 +145,3 @@ function hashAxis(args: {
 
   return sha256(obj);
 }
-
-const getHashes = (map: t.IMap<{ hash?: string }>) => {
-  return Object.keys(map).reduce((acc, key) => {
-    const item = map[key];
-    if (item && item.hash && item.hash !== '-') {
-      acc.push(item.hash);
-    }
-    return acc;
-  }, [] as string[]);
-};
-
-const isEmptyObject = (value?: any) => {
-  return (typeof value === 'object' && Object.keys(value).length === 0) || false;
-};
