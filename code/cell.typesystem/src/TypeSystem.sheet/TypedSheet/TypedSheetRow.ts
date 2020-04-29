@@ -366,7 +366,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
     const uri = Uri.create.cell(this.uri.ns, `${typeDef.column}${this.index + 1}`);
     const parent: t.ITypedSheetRefParent = {
-      cell: Uri.parse<t.ICellUri>(uri).parts,
+      cell: Uri.cell(uri),
       sheet: this._sheet,
     };
 

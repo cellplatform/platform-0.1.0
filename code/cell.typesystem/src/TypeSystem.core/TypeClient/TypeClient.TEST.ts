@@ -75,7 +75,7 @@ describe('TypeClient', () => {
       expect(res.ok).to.eql(false);
       expect(res.defs.length).to.eql(0);
       expect(res.errors.length).to.eql(1);
-      expect(res.errors[0].message).to.include(`Must be "ns"`);
+      expect(res.errors[0].message).to.include(`is not of type NS`);
       expect(res.errors[0].type).to.eql(ERROR.TYPE.DEF);
     });
 

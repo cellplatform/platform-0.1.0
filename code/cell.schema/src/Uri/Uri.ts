@@ -280,7 +280,7 @@ function parseOrThrow<T extends t.IUri>(
         parsed.ok = false;
         parsed.error = {
           uri: text,
-          message: `The uri '${text}' is not of type ${type}`,
+          message: `The uri (${text}) is not of type ${type}`,
           type: 'URI',
         };
       }

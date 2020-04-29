@@ -375,7 +375,7 @@ describe('Uri', () => {
     });
   });
 
-  describe.only('parseOrThrow (shorthand methods)', () => {
+  describe('parseOrThrow (shorthand methods)', () => {
     it('ns', () => {
       const uri = Uri.ns('ns:foo');
       expect(uri.id).to.eql('foo');

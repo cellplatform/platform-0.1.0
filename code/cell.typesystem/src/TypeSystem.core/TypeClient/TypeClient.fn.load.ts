@@ -159,15 +159,12 @@ async function loadNamespace(args: {
   };
 
   // Validate the URI.
-  const uri = Uri.parse<t.INsUri>(ns);
-  if (uri.error) {
-    const message = `Invalid namespace URI (${args.ns}). ${uri.error.message}`;
-    errors.add(ns, message);
-  }
-  if (uri.parts.type !== 'NS') {
-    const message = `Invalid namespace URI. Must be "ns", given: [${args.ns}]`;
-    errors.add(ns, message);
-  }
+  Uri.ns(ns, uri => {
+    if (uri.error) {
+      const message = `Invalid namespace (${args.ns}). ${uri.error.message}`;
+      errors.add(ns, message);
+    }
+  });
 
   if (!errors.ok) {
     return done();
@@ -462,7 +459,7 @@ async function readRef(args: {
  */
 const getSelfRefs = (args: { ns: string; columns: t.IColumnMap }) => {
   const { columns } = args;
-  const ns = Uri.parse<t.INsUri>(args.ns);
+  const ns = Uri.ns(args.ns);
   return flattenColumnTypeDefs(columns)
     .map(e => ({
       key: e.column,
@@ -473,10 +470,10 @@ const getSelfRefs = (args: { ns: string; columns: t.IColumnMap }) => {
     .map(e => ({ ...e, uri: Uri.parse(e.type) }))
     .map(e => ({ ...e, kind: e.uri.parts.type }))
     .filter(({ type, uri }) => {
-      if (type === ns.uri) {
+      if (type === ns.toString()) {
         return true; // Self referencing NAMESPACE.
       }
-      if (uri.parts.type === 'COLUMN' && uri.parts.ns === ns.parts.id) {
+      if (uri.parts.type === 'COLUMN' && uri.parts.ns === ns.id) {
         return true; // Self referencing COLUMN.
       }
       return false;
