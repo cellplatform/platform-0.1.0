@@ -1,3 +1,14 @@
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 import * as t from './types';
 
 /**
@@ -51,4 +62,12 @@ export function delay<T = any>(msecs: number, callback?: () => T): t.TimeDelayPr
 /**
  * Pause for the given number of milliseconds with a promise.
  */
-export const wait: t.TimeWait = msecs => delay(msecs, () => false);
+export const wait: t.TimeWait = msecs => {
+  if (typeof msecs === 'object') {
+    return new Promise(resolve => {
+      msecs.pipe(take(1)).subscribe(() => resolve());
+    });
+  } else {
+    return delay(msecs, () => false);
+  }
+};

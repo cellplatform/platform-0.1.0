@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { Dayjs, ConfigType } from 'dayjs';
 
 import { IDuration, TimeUnit } from '@platform/types';
@@ -11,7 +12,7 @@ export type TimeDelayPromise<T = any> = Promise<T> & {
   result: T | undefined;
 };
 
-export type TimeWait = (msecs: number) => Promise<{}>;
+export type TimeWait = (msecs: number | Observable<any>) => Promise<{}>;
 export type TimeElapsed = (
   from: DateInput,
   options?: { to?: DateInput; round?: number },
