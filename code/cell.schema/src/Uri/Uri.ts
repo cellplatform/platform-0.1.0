@@ -1,15 +1,10 @@
-import { t, cuid, slug, coord, wildcard } from '../common';
+import { t, cuid, slug, coord, wildcard, ERROR } from '../common';
 
 type UriType = 'NS' | 'CELL' | 'ROW' | 'COLUMN' | 'FILE';
 type UriPrefix = 'ns' | 'cell' | 'file';
 type AllowPattern = string | ((input: string) => boolean);
 type Allow = { NS: AllowPattern[] };
-
-type Ns = t.INsUri;
-type Cell = t.ICellUri;
-type Column = t.IColumnUri;
-type Row = t.IRowUri;
-type File = t.IFileUri;
+type P<T extends t.IUri> = (parsed: t.IUriParts<T>) => void;
 
 const ALLOW: Allow = { NS: [] };
 export const DEFAULT = { ALLOW };
@@ -28,16 +23,6 @@ export class Uri {
     row: (ns: string, key: string) => toUri('cell', 'ROW', ns, key),
     column: (ns: string, key: string) => toUri('cell', 'COLUMN', ns, key),
     file: (ns: string, fileid: string) => toUri('file', 'FILE', ns, fileid), // NB: use `slug` for file-id.
-  };
-
-  public static parseOrThrow = parseOrThrow;
-  public static cell = (input?: string | Cell) => parseOrThrow<Cell>(input, 'CELL');
-  public static row = (input?: string | Row) => parseOrThrow<Row>(input, 'ROW');
-  public static column = (input?: string | Column) => parseOrThrow<Column>(input, 'COLUMN');
-  public static file = (input?: string | File) => parseOrThrow<File>(input, 'FILE');
-  public static ns = (input?: string | Ns) => {
-    input = typeof input === 'string' && !input.includes(':') ? `ns:${input.trim()}` : input;
-    return parseOrThrow<Ns>(input, 'NS');
   };
 
   /**
@@ -127,6 +112,34 @@ export class Uri {
       toString,
     };
     return error ? { ...res, error } : res;
+  }
+
+  /**
+   * Parse (typed helpers)
+   */
+
+  public static ns(input?: string | t.INsUri | undefined, throwError?: boolean | P<t.INsUri>) {
+    input = typeof input === 'string' && !input.includes(':') ? `ns:${input.trim()}` : input;
+    return parseOrThrow<t.INsUri>(input, 'NS', throwError);
+  }
+
+  public static cell(input: string | t.ICellUri | undefined, throwError?: boolean | P<t.ICellUri>) {
+    return parseOrThrow<t.ICellUri>(input, 'CELL', throwError);
+  }
+
+  public static row(input: string | t.IRowUri | undefined, throwError?: boolean | P<t.IRowUri>) {
+    return parseOrThrow<t.IRowUri>(input, 'ROW', throwError);
+  }
+
+  public static column(
+    input: string | t.IColumnUri | undefined,
+    throwError?: boolean | P<t.IColumnUri>,
+  ) {
+    return parseOrThrow<t.IColumnUri>(input, 'COLUMN', throwError);
+  }
+
+  public static file(input: string | t.IFileUri | undefined, throwError?: boolean | P<t.IFileUri>) {
+    return parseOrThrow<t.IFileUri>(input, 'FILE', throwError);
   }
 
   /**
@@ -248,17 +261,41 @@ function isCuid(input: string) {
   return input.length === 25 && input[0] === 'c' && alphaNumeric.test(input);
 }
 
-function parseOrThrow<T extends t.IUri>(input?: string | T, type?: T['type']) {
+function parseOrThrow<T extends t.IUri>(
+  input: T | string | undefined,
+  type: T['type'],
+  throwError?: boolean | P<T>,
+) {
   if (typeof input === 'object') {
     return input;
   } else {
-    const uri = Uri.parse<T>(input);
-    if (uri.error) {
-      throw new Error(uri.error.message);
+    const parsed = Uri.parse<T>(input);
+    const isTypeMismatch = type && parsed.type !== type;
+    const hasError = Boolean(parsed.error) || isTypeMismatch;
+    throwError = throwError === undefined ? true : throwError;
+
+    if (hasError) {
+      const text = input?.toString() || '';
+      if (!parsed.error && isTypeMismatch) {
+        parsed.ok = false;
+        parsed.error = {
+          uri: text,
+          message: `The uri '${text}' is not of type ${type}`,
+          type: 'URI',
+        };
+      }
+
+      if (typeof throwError === 'function') {
+        throwError(parsed);
+      }
+      if (throwError === true) {
+        if (parsed.error) {
+          throw new Error(parsed.error.message);
+        }
+      }
     }
-    if (type && uri.type !== type) {
-      throw new Error(`The uri '${input?.toString()}' is not of type '${type}'`);
-    }
-    return uri.parts;
+
+    // Finish up.
+    return parsed.parts;
   }
 }
