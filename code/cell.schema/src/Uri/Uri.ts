@@ -41,7 +41,7 @@ export class Uri {
   };
 
   /**
-   * Parse a URI into it's constituent pieces.
+   * Parse a URI into it's constituent parts.
    */
   public static parse<D extends t.IUri>(input?: string): t.IUriParts<D> {
     let text = (input || '').trim().split('?')[0]; // NB: trim query-string.
