@@ -31,7 +31,7 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
    * [Fields]
    */
   private readonly args: IClientCellFilesArgs;
-  private readonly uri: t.IUriParts<t.ICellUri>;
+  private readonly uri: t.ICellUri;
 
   /**
    * [Methods]
@@ -83,7 +83,7 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
 
     const urls = base.body.urls?.files || [];
     const map = base.body.files || {};
-    const ns = this.uri.parts.ns;
+    const ns = this.uri.ns;
 
     const body = Object.keys(map).reduce((acc, fileid) => {
       const value = map[fileid];

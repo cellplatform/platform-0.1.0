@@ -3,7 +3,7 @@ import { HttpClientCellFile } from './HttpClientCellFile';
 import { HttpClientCellFiles } from './HttpClientCellFiles';
 import { HttpClientCellLinks } from './HttpClientCellLinks';
 
-type IHttpClientCellArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
+type IHttpClientCellArgs = { uri: t.ICellUri; urls: t.IUrls; http: t.IHttp };
 
 /**
  * An HTTP client for operating on [Cell]'s.
@@ -19,7 +19,7 @@ export class HttpClientCell implements t.IHttpClientCell {
   private constructor(args: IHttpClientCellArgs) {
     const { urls } = args;
     this.args = args;
-    this.uri = Uri.parse<t.ICellUri>(args.uri);
+    this.uri = args.uri;
     this.url = urls.cell(args.uri);
   }
 
@@ -30,7 +30,7 @@ export class HttpClientCell implements t.IHttpClientCell {
   private _file: t.IHttpClientCellFile;
   private _files: t.IHttpClientCellFiles;
 
-  public readonly uri: t.IUriParts<t.ICellUri>;
+  public readonly uri: t.ICellUri;
   public readonly url: t.IUrlsCell;
 
   /**

@@ -5,6 +5,12 @@ type UriPrefix = 'ns' | 'cell' | 'file';
 type AllowPattern = string | ((input: string) => boolean);
 type Allow = { NS: AllowPattern[] };
 
+type Ns = t.INsUri;
+type Cell = t.ICellUri;
+type Column = t.IColumnUri;
+type Row = t.IRowUri;
+type File = t.IFileUri;
+
 const ALLOW: Allow = { NS: [] };
 export const DEFAULT = { ALLOW };
 
@@ -22,6 +28,16 @@ export class Uri {
     row: (ns: string, key: string) => toUri('cell', 'ROW', ns, key),
     column: (ns: string, key: string) => toUri('cell', 'COLUMN', ns, key),
     file: (ns: string, fileid: string) => toUri('file', 'FILE', ns, fileid), // NB: use `slug` for file-id.
+  };
+
+  public static parseOrThrow = parseOrThrow;
+  public static cell = (input?: string | Cell) => parseOrThrow<Cell>(input, 'CELL');
+  public static row = (input?: string | Row) => parseOrThrow<Row>(input, 'ROW');
+  public static column = (input?: string | Column) => parseOrThrow<Column>(input, 'COLUMN');
+  public static file = (input?: string | File) => parseOrThrow<File>(input, 'FILE');
+  public static ns = (input?: string | Ns) => {
+    input = typeof input === 'string' && !input.includes(':') ? `ns:${input.trim()}` : input;
+    return parseOrThrow<Ns>(input, 'NS');
   };
 
   /**
@@ -172,6 +188,7 @@ export class Uri {
 /**
  * [Helpers]
  */
+
 const alphaNumeric = new RegExp(/^[a-z0-9]+$/i); // NB: alpha-numeric.
 
 function trimPrefix(prefix: string, input: string) {
@@ -229,4 +246,19 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
 
 function isCuid(input: string) {
   return input.length === 25 && input[0] === 'c' && alphaNumeric.test(input);
+}
+
+function parseOrThrow<T extends t.IUri>(input?: string | T, type?: T['type']) {
+  if (typeof input === 'object') {
+    return input;
+  } else {
+    const uri = Uri.parse<T>(input);
+    if (uri.error) {
+      throw new Error(uri.error.message);
+    }
+    if (type && uri.type !== type) {
+      throw new Error(`The uri '${input?.toString()}' is not of type '${type}'`);
+    }
+    return uri.parts;
+  }
 }

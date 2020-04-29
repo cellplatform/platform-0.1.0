@@ -1,6 +1,6 @@
 import { t, Uri, util } from '../common';
 
-export type IClientFileArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
+export type IClientFileArgs = { uri: t.IFileUri; urls: t.IUrls; http: t.IHttp };
 
 /**
  * HTTP client for operating on files.
@@ -16,7 +16,7 @@ export class HttpClientFile implements t.IHttpClientFile {
   private constructor(args: IClientFileArgs) {
     const { urls } = args;
     this.args = args;
-    this.uri = Uri.parse<t.IFileUri>(args.uri);
+    this.uri = args.uri;
     this.url = urls.file(args.uri);
   }
 
@@ -24,7 +24,7 @@ export class HttpClientFile implements t.IHttpClientFile {
    * [Fields]
    */
   private readonly args: IClientFileArgs;
-  public readonly uri: t.IUriParts<t.IFileUri>;
+  public readonly uri: t.IFileUri;
   public readonly url: t.IUrlsFile;
 
   /**

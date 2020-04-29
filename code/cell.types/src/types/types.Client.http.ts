@@ -22,9 +22,9 @@ export type IHttpClient = {
   response$: t.Observable<t.IHttpAfter>;
 
   info<T extends t.IResGetSysInfo>(): t.IHttpClientAsync<T>;
-  ns(input: string | t.IUrlParamsNs): IHttpClientNs;
-  cell(input: string | t.IUrlParamsCell): IHttpClientCell;
-  file(input: string | t.IUrlParamsFile): IHttpClientFile;
+  ns(input: string | t.INsUri): IHttpClientNs;
+  cell(input: string | t.ICellUri): IHttpClientCell;
+  file(input: string | t.IFileUri): IHttpClientFile;
 };
 
 export type IHttpClientOptions = { host?: string | number; http?: t.IHttp };
@@ -33,7 +33,7 @@ export type IHttpClientOptions = { host?: string | number; http?: t.IHttp };
  * NAMESPSACE
  */
 export type IHttpClientNs = {
-  readonly uri: t.IUriParts<t.INsUri>;
+  readonly uri: t.INsUri;
   readonly url: t.IUrlsNs;
   exists(): Promise<boolean>;
   read(options?: t.IReqQueryNsInfo): t.IHttpClientAsync<t.IResGetNs>;
@@ -44,7 +44,7 @@ export type IHttpClientNs = {
  * CELL
  */
 export type IHttpClientCell = {
-  readonly uri: t.IUriParts<t.ICellUri>;
+  readonly uri: t.ICellUri;
   readonly url: t.IUrlsCell;
   readonly file: IHttpClientCellFile;
   readonly files: IHttpClientCellFiles;
@@ -124,7 +124,7 @@ export type IHttpClientCellLinkFile = {
  * FILE
  */
 export type IHttpClientFile = {
-  readonly uri: t.IUriParts<t.IFileUri>;
+  readonly uri: t.IFileUri;
   readonly url: t.IUrlsFile;
   info(): t.IHttpClientAsync<t.IResGetFile>;
 };

@@ -1,4 +1,4 @@
-import { Schema, t, Http, constants, util } from '../common';
+import { Schema, t, Http, constants, util, Uri } from '../common';
 import { HttpClientCell } from './HttpClientCell';
 import { HttpClientFile } from './HttpClientFile';
 import { HttpClientNs } from './HttpClientNs';
@@ -74,29 +74,28 @@ export class HttpClient implements t.IHttpClient {
   public async info<T extends t.IResGetSysInfo>() {
     const http = this.http;
     const url = this.urls.sys.info.toString();
-
     const res = await http.get(url);
     return util.fromHttpResponse(res).toClientResponse<T>();
   }
 
-  public ns(input: string | t.IUrlParamsNs) {
-    const urls = this.urls;
-    const uri = urls.ns(input).uri;
+  public ns(input: string | t.INsUri) {
     const http = this.http;
+    const urls = this.urls;
+    const uri = Uri.ns(input);
     return HttpClientNs.create({ uri, urls, http });
   }
 
-  public cell(input: string | t.IUrlParamsCell) {
-    const urls = this.urls;
-    const uri = urls.cell(input).uri;
+  public cell(input: string | t.ICellUri) {
     const http = this.http;
+    const urls = this.urls;
+    const uri = Uri.cell(input);
     return HttpClientCell.create({ uri, urls, http });
   }
 
-  public file(input: string | t.IUrlParamsFile) {
-    const urls = this.urls;
-    const uri = urls.file(input).uri;
+  public file(input: string | t.IFileUri) {
     const http = this.http;
+    const urls = this.urls;
+    const uri = Uri.file(input);
     return HttpClientFile.create({ uri, urls, http });
   }
 }

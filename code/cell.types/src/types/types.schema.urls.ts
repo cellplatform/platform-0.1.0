@@ -15,11 +15,11 @@ export type IUrls = {
   readonly origin: string;
   readonly sys: IUrlsSys;
   readonly local: IUrlsLocal;
-  ns(input: string | t.IUrlParamsNs): IUrlsNs;
-  cell(input: string | t.IUrlParamsCell): IUrlsCell;
-  row(input: string | t.IUrlParamsRow): IUrlsRow;
-  column(input: string | t.IUrlParamsColumn): IUrlsColumn;
-  file(input: string | t.IUrlParamsFile): IUrlsFile;
+  ns(input: string | t.INsUri): IUrlsNs;
+  cell(input: string | t.ICellUri): IUrlsCell;
+  row(input: string | t.IRowUri): IUrlsRow;
+  column(input: string | t.IColumnUri): IUrlsColumn;
+  file(input: string | t.IFileUri): IUrlsFile;
 };
 
 export type IUrlsSys = {

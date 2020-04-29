@@ -80,9 +80,9 @@ export class Urls implements t.IUrls {
   /**
    * Builders for NAMESPACE urls.
    */
-  public ns(input: string | t.IUrlParamsNs) {
+  public ns(input: string | t.INsUri) {
     const toPath = this.toUrl;
-    let id = (typeof input === 'string' ? input : input.ns) || '';
+    let id = (typeof input === 'string' ? input : input.id) || '';
 
     if (!id.includes(':')) {
       id = `ns:${id}`; // NB: Only the ID (cuid) was passed. Prepend with namespace token.
@@ -119,21 +119,17 @@ export class Urls implements t.IUrls {
   /**
    * Builders for CELL urls.
    */
-  public cell(input: string | t.IUrlParamsCell) {
+  public cell(input: string | t.ICellUri) {
     const toPath = this.toUrl;
-    const uri = typeof input === 'string' ? input : Uri.create.cell(input.ns, input.key);
-    const cell = Uri.parse<t.ICellUri>(uri);
-    if (cell.error) {
-      throw new Error(cell.error.message);
-    }
-    const { ns, key, type } = cell.parts;
+    const uri = Uri.cell(input);
+    const { ns, key, type } = uri;
     if (type !== 'CELL') {
-      const err = `The given URI is a ${type} not a CELL ("${uri}")`;
+      const err = `The given URI is a ${type} not a CELL ("${input.toString()}")`;
       throw new Error(err);
     }
 
     const api = {
-      uri,
+      uri: uri.toString(),
 
       /**
        * Example: /cell:foo:A1
@@ -223,21 +219,17 @@ export class Urls implements t.IUrls {
   /**
    * Builders for ROW urls.
    */
-  public row(input: string | t.IUrlParamsRow) {
+  public row(input: string | t.IRowUri) {
     const toPath = this.toUrl;
-    const uri = typeof input === 'string' ? input : Uri.create.row(input.ns, input.key);
-    const row = Uri.parse<t.IRowUri>(uri);
-    if (row.error) {
-      throw new Error(row.error.message);
-    }
-    const { ns, key, type } = row.parts;
+    const uri = Uri.row(input);
+    const { ns, key, type } = uri;
     if (type !== 'ROW') {
-      const err = `The given URI is a ${type} not a ROW ("${uri}")`;
+      const err = `The given URI is a ${type} not a ROW ("${input.toString()}")`;
       throw new Error(err);
     }
 
     return {
-      uri,
+      uri: uri.toString(),
 
       /**
        * Example: /cell:foo:1
@@ -252,21 +244,18 @@ export class Urls implements t.IUrls {
   /**
    * Builders for COLUMN urls.
    */
-  public column(input: string | t.IUrlParamsColumn) {
+  public column(input: string | t.IColumnUri) {
     const toPath = this.toUrl;
-    const uri = typeof input === 'string' ? input : Uri.create.column(input.ns, input.key);
-    const column = Uri.parse<t.IColumnUri>(uri);
-    if (column.error) {
-      throw new Error(column.error.message);
-    }
-    const { ns, key, type } = column.parts;
+    const uri = Uri.column(input);
+
+    const { ns, key, type } = uri;
     if (type !== 'COLUMN') {
-      const err = `The given URI is a ${type} not a COLUMN ("${uri}")`;
+      const err = `The given URI is a ${type} not a COLUMN ("${input.toString()}")`;
       throw new Error(err);
     }
 
     return {
-      uri,
+      uri: uri.toString(),
 
       /**
        * Example: /cell:foo:A
@@ -278,21 +267,18 @@ export class Urls implements t.IUrls {
     };
   }
 
-  public file(input: string | t.IUrlParamsFile) {
+  public file(input: string | t.IFileUri) {
     const toPath = this.toUrl;
-    const uri = typeof input === 'string' ? input : Uri.create.file(input.ns, input.file);
-    const file = Uri.parse<t.IFileUri>(uri);
-    if (file.error) {
-      throw new Error(file.error.message);
-    }
-    if (file.parts.type !== 'FILE') {
-      const err = `The given URI is not of type "file:" ("${uri}")`;
+    const uri = Uri.file(input);
+
+    if (uri.type !== 'FILE') {
+      const err = `The given URI is not of type "file:" ("${input.toString()}")`;
       throw new Error(err);
     }
 
-    const { id } = file.parts;
+    const { id } = uri;
     return {
-      uri,
+      uri: uri.toString(),
 
       get info() {
         type Q = t.IReqQueryFileInfo;
@@ -317,8 +303,9 @@ export class Urls implements t.IUrls {
   }
 
   /**
-   * [Internal]
+   * [INTERNAL]
    */
+
   private toUrl = <Q extends object>(path: string, options: { query?: Q } = {}): t.IUrl<Q> => {
     const { query } = options;
     return new Url<Q>({ origin: this.origin, path, query });

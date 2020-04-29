@@ -1,6 +1,6 @@
 import { t, Uri, util } from '../common';
 
-export type IClientNsArgs = { uri: string; urls: t.IUrls; http: t.IHttp };
+export type IClientNsArgs = { uri: t.INsUri; urls: t.IUrls; http: t.IHttp };
 
 /**
  * HTTP client for operating on a [Namespace].
@@ -16,7 +16,7 @@ export class HttpClientNs implements t.IHttpClientNs {
   private constructor(args: IClientNsArgs) {
     const { urls } = args;
     this.args = args;
-    this.uri = Uri.parse<t.INsUri>(args.uri);
+    this.uri = args.uri;
     this.url = urls.ns(args.uri);
   }
 
@@ -24,7 +24,7 @@ export class HttpClientNs implements t.IHttpClientNs {
    * [Fields]
    */
   private readonly args: IClientNsArgs;
-  public readonly uri: t.IUriParts<t.INsUri>;
+  public readonly uri: t.INsUri;
   public readonly url: t.IUrlsNs;
 
   /**
