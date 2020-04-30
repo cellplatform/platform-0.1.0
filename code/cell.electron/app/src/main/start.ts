@@ -2,8 +2,8 @@ import './config';
 
 import { app } from 'electron';
 
-import { constants, log } from './common';
-import { client } from './main.client';
+import { constants, log, Client } from './common';
+import { sys } from './main.sys';
 import * as screen from './main.screen';
 import * as server from './main.server';
 
@@ -37,15 +37,16 @@ export async function start() {
   const ENV = constants.ENV;
   const prod = ENV.isProd;
   const { paths, host } = await server.start({ log, prod });
+  const client = Client.typesystem(host);
 
   // Ensure typescript declarations exist [types.g.ts]
   // and retrieve sys/app context.
-  await client.initTypeDefs(host, { save: ENV.isDev });
-  const ctx = await client.getOrCreateSystemContext(host);
+  await sys.initTypeDefs(client, { save: ENV.isDev });
+  const ctx = await sys.getOrCreateSystemContext(client);
 
   // Upload the bundled system files.
   const bundlePaths = constants.paths.bundle;
-  await client.initWindowDef({
+  await sys.initWindowDef({
     ctx,
     kind: SYS.KIND.IDE,
     uploadDir: [bundlePaths.sys, bundlePaths.ide],

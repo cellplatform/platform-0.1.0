@@ -7,7 +7,7 @@ const res = loader.init();
 console.log('res', res);
 
 console.log('-------------------------------------------');
-const uri = Schema.uri.cell(res.window);
+const uri = Schema.uri.row(res.window);
 
 // const Client.
 

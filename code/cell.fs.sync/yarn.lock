@@ -25,10 +25,10 @@
   dependencies:
     "@platform/libs" "0.2.1"
 
-"@platform/cell.client@0.2.67":
-  version "0.2.67"
-  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.67.tgz#e416ddfdcec3b04958a3fe8c6448c7688d9c18ea"
-  integrity sha512-HGT/v5oTQ8OEcZy4s0nfydkW/lrKMTOmFns9KED8DxfMWTcv1RPLXJdGzrFpZlO4cQgHD/CJAoqGYbnOg2Nwxg==
+"@platform/cell.client@0.2.68":
+  version "0.2.68"
+  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.68.tgz#d50f60a0e92160644b6a7b5371c8694c66234e28"
+  integrity sha512-pOk0HTH5r0aNoJ8r0qHGA23mIkLgj28Rn9mbqNq6kc7IBKkXM2bakIH60RYt76XiNViUE2ljvK/hFXpI/6ztBQ==
   dependencies:
     "@platform/cell.schema" "0.4.92"
     "@platform/cell.types" "0.4.83"
@@ -36,7 +36,7 @@
     "@platform/http" "0.12.7"
     "@platform/http.types" "0.2.2"
     "@platform/libs" "0.2.1"
-    "@platform/queue" "0.0.1"
+    "@platform/queue" "0.0.2"
     "@platform/types" "0.4.14"
     form-data "3.0.0"
 
@@ -231,12 +231,13 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/queue@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@platform/queue/-/queue-0.0.1.tgz#95ab70822fcccc80ec7cde68d8d8ae581cd22fde"
-  integrity sha512-UdHjfLoAV7PY5rfGVN/ab9bYy4k4tKrAKVmQLE9176JPxKxZaBuSBuUgxxIZXCkGPl6N/PR+4R/D6BqveLfegQ==
+"@platform/queue@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/queue/-/queue-0.0.2.tgz#f82e3ff29900c6de6303789956748228a1e9a3e1"
+  integrity sha512-0N6iOtrt30K4PKhbAMG8o/ByAI+lRLEI9niZr1euLHXbNvjHRkI79jI22c+FF7HmCVUrhvphFDN+oNqAKA0RKQ==
   dependencies:
     "@platform/libs" "0.2.1"
+    "@platform/util.value" "0.7.14"
 
 "@platform/test@0.1.7":
   version "0.1.7"

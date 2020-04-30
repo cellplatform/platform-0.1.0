@@ -1,15 +1,6 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
 import { Client, constants, fs, log, t, Uri } from '../common';
 import { upload } from './client.upload';
 
@@ -19,8 +10,8 @@ const NS = SYS.NS;
 /**
  * Writes (initializes) system data.
  */
-export async function getOrCreateSystemContext(host: string) {
-  const client = Client.typesystem(host);
+export async function getOrCreateSystemContext(client: t.IClientTypesystem) {
+  const host = client.http.origin;
   const ns = client.http.ns(NS.APP);
 
   // Ensure the root application model exists in the DB.
@@ -45,6 +36,7 @@ export async function getOrCreateSystemContext(host: string) {
   // Finish up.
   const ctx: t.IAppCtx = {
     host,
+    client,
     sheet,
     app,
     windows,

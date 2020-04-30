@@ -101,6 +101,29 @@
     "@platform/libs" "0.2.1"
     "@platform/ts.libs" "3.8.4"
 
+"@platform/types@0.4.14":
+  version "0.4.14"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.14.tgz#8437e0ae26bd99d5f0157a96c5c43b4240e8d072"
+  integrity sha512-h2cn8q0Z/SlE3EHRNlHydbeD5rdoZlr5GsEXQU83RKIV5gxkTlmu0gHGM0ZYGSx5XUJa3iwqwqtKqSn+SSXnmw==
+
+"@platform/util.is@0.0.117":
+  version "0.0.117"
+  resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.117.tgz#ed1552db7cf2c6870807355f0f5a1a8b6b3d757d"
+  integrity sha512-fRCjdGcn98ddjCZ1Xv+5ry/FIuFuvPsG1CMEYL6mzGn3zBvYwwuPYvfFK/f0ezAC/62vWmsvvMJqooWXSHTEog==
+
+"@platform/util.value@0.7.14":
+  version "0.7.14"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.14.tgz#56d72d87bdd011ca4f944d7bbf461782580fd923"
+  integrity sha512-eStHzDlphP0/3L1p1St2SrTMRnJYGxrQACwRfQ8FmGyfAUP/W3rTY2D1fbMrlJpa2J7l3oss4QS0lVSKhgSsqQ==
+  dependencies:
+    "@platform/libs" "0.2.1"
+    "@platform/types" "0.4.14"
+    "@platform/util.is" "0.0.117"
+    "@types/semver" "7.1.0"
+    cuid "2.1.8"
+    dayjs "1.8.25"
+    semver "7.3.2"
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"
@@ -159,6 +182,13 @@
   integrity sha512-s0cj9rylWw+Ax/AnttCQzMrLZGq/OxAIZgrkRLK1QHJIF6Qabd0//acMCFM6+Xb8Bi8p8PkT2fqpaQveRju/kA==
   dependencies:
     ts-toolbelt "^6.3.3"
+
+"@types/semver@7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.1.0.tgz#c8c630d4c18cd326beff77404887596f96408408"
+  integrity sha512-pOKLaubrAEMUItGNpgwl0HMFPrSAFic8oSVIvfu1UwcgGNmNyK9gyhBHKmBnUTwwVvpZfkzUC0GaMgnL6P86uA==
+  dependencies:
+    "@types/node" "*"
 
 ansi-colors@3.2.3:
   version "3.2.3"
@@ -511,10 +541,20 @@ crc@^3.4.4:
   dependencies:
     buffer "^5.1.0"
 
+cuid@2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/cuid/-/cuid-2.1.8.tgz#cbb88f954171e0d5747606c0139fb65c5101eac0"
+  integrity sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==
+
 date-fns@^1.27.2:
   version "1.30.1"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
+
+dayjs@1.8.25:
+  version "1.8.25"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.8.25.tgz#d09a8696cee7191bc1289e739f96626391b9c73c"
+  integrity sha512-Pk36juDfQQGDCgr0Lqd1kw15w3OS6xt21JaLPE3lCfsEf8KrERGwDNwvK1tRjrjqFC0uZBJncT4smZQ4F+uV5g==
 
 debug@2.6.9:
   version "2.6.9"
@@ -1413,6 +1453,11 @@ safe-buffer@~5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.2.0.tgz#b74daec49b1148f88c64b68d49b1e815c1f2f519"
   integrity sha512-fZEwUGbVl7kouZs1jCdMLdt95hdIv0ZeHg6L7qPeciMZhZ+/gdesW4wgTARkrFWEpspjEATAzUGPG8N2jJiwbg==
+
+semver@7.3.2:
+  version "7.3.2"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.3.2.tgz#604962b052b81ed0786aae84389ffba70ffd3938"
+  integrity sha512-OrOb32TeeambH6UrhtShmF7CRDqhL6/5XpPNp2DuRH6+9QLw/orhp72j87v8Qa1ScDkvrrBNpZcDejAirJmfXQ==
 
 semver@^5.3.0, semver@^5.7.0:
   version "5.7.1"
