@@ -1,1 +1,1 @@
-export * from './types';
+export { MemoryQueue } from './MemoryQueue';

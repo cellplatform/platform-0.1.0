@@ -170,6 +170,13 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
+"@platform/queue@0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/queue/-/queue-0.0.1.tgz#95ab70822fcccc80ec7cde68d8d8ae581cd22fde"
+  integrity sha512-UdHjfLoAV7PY5rfGVN/ab9bYy4k4tKrAKVmQLE9176JPxKxZaBuSBuUgxxIZXCkGPl6N/PR+4R/D6BqveLfegQ==
+  dependencies:
+    "@platform/libs" "0.2.1"
+
 "@platform/test@0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.1.7.tgz#2d1f14a5c62566caa2e72920248b1fe20a42c1a4"

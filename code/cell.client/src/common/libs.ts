@@ -7,3 +7,4 @@ export { FormData };
 export { value, defaultValue, time } from '@platform/util.value';
 export { coord } from '@platform/cell.coord';
 export { TypeSystem } from '@platform/cell.typesystem';
+export { MemoryQueue } from '@platform/queue';

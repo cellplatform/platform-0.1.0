@@ -1,8 +1,7 @@
 import { Subject } from 'rxjs';
-import { filter, map, debounceTime, share, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { coord, defaultValue, t, ERROR } from '../common';
-import { Queue } from '../Queue';
+import { coord, defaultValue, ERROR, MemoryQueue, t } from '../common';
 
 /**
  * Monitors changes pushing changes through the given HTTP gateway.
@@ -11,7 +10,7 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
   const { client } = args;
   const http = client.http;
   const debounce = defaultValue(args.debounce, 300);
-  const queue = Queue.create();
+  const queue = MemoryQueue.create();
 
   // Setup observables.
   const dispose$ = new Subject();
@@ -107,8 +106,8 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
     },
 
     async save() {
-      // Make a copy of the changes, reset the cache, 
-      // then pass copy of changing in to the queue for processing.
+      // Make a copy of the changes, reset the cache,
+      // then pass the copy of changes into the queue for processing.
       const changes = { ...pending };
       pending = {};
       return queue.push(() => save(changes));
