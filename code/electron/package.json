@@ -1,7 +1,7 @@
 {
   "name": "@platform/electron",
   "description": "Common utilities for working with electron.",
-  "version": "0.7.66",
+  "version": "0.7.67",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "bin": {
@@ -21,7 +21,7 @@
     "@platform/fs": "0.5.12",
     "@platform/libs": "0.2.1",
     "@platform/log": "0.1.17",
-    "@platform/react": "0.4.18",
+    "@platform/react": "0.4.19",
     "@platform/types": "0.4.14",
     "@types/app-root-path": "1.2.4",
     "app-root-path": "3.0.0",

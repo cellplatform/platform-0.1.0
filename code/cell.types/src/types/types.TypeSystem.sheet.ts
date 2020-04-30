@@ -3,15 +3,20 @@ import { t } from '../common';
 export type ITypedSheet<T = {}> = {
   readonly ok: boolean;
   readonly uri: t.INsUri;
+  readonly implements: t.INsUri;
   readonly types: { typename: string; columns: t.IColumnTypeDef[] }[];
   readonly state: t.ITypedSheetState;
-  readonly events$: t.Observable<t.TypedSheetEvent>;
+  readonly event$: t.Observable<t.TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   dispose(): void;
+  info<P extends t.INsProps = t.INsProps>(): Promise<ITypedSheetInfo<P>>;
   data<D = T>(args: string | ITypedSheetDataArgs): ITypedSheetData<D>;
+  toString(): string;
 };
+
+export type ITypedSheetInfo<P extends t.INsProps = t.INsProps> = { exists: boolean; ns: P };
 
 export type ITypedSheetDataOptions = { range?: string };
 export type ITypedSheetDataArgs = { typename: string } & ITypedSheetDataOptions;
@@ -46,27 +51,6 @@ export type ITypedSheetRow<T> = {
   readonly isLoaded: boolean;
   load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
   toObject(): T;
-};
-
-/**
- * A connector for a reference-pointer to a single row in another sheet.
- */
-export type ITypedSheetRef<T> = {
-  typename: string;
-  typeDef: t.IColumnTypeDef<t.ITypeRef>;
-};
-
-/**
- * A connector for a reference-pointer to a set of rows in another sheet.
- */
-export type ITypedSheetRefs<T> = {
-  typename: string;
-  ns: t.INsUri;
-  typeDef: t.IColumnTypeDef<t.ITypeRef>;
-  sheet: t.ITypedSheet<T>;
-  isLoaded: boolean;
-  load(): Promise<ITypedSheetRefs<T>>;
-  data(options?: ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
 };
 
 /**

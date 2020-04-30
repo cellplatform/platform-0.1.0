@@ -514,7 +514,7 @@ describe('refs.table', () => {
       });
       const table = refs.table({ ...ctx });
 
-      const getKeys$ = table.events$.pipe(
+      const getKeys$ = table.event$.pipe(
         filter(e => e.type === 'REFS/table/getKeys'),
         map(e => e.payload as t.IRefsTableGetKeys),
       );
@@ -550,7 +550,7 @@ describe('refs.table', () => {
       });
       const table = refs.table({ ...ctx });
 
-      const getValue$ = table.events$.pipe(
+      const getValue$ = table.event$.pipe(
         filter(e => e.type === 'REFS/table/getValue'),
         map(e => e.payload as t.IRefsTableGetValue),
       );
@@ -782,7 +782,7 @@ describe('refs.table', () => {
       });
       const table = refs.table({ ...ctx });
 
-      const update$ = table.events$.pipe(
+      const update$ = table.event$.pipe(
         filter(e => e.type === 'REFS/table/update'),
         map(e => e.payload as t.RefsTableUpdate),
       );

@@ -77,17 +77,11 @@ export class Cell {
     });
   };
 
-  public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
+  public static create<P extends object = {}>(args: { db: t.IDb; uri: string | t.ICellUri }) {
     const { db } = args;
-    const uri = Uri.parse<t.ICellUri>(args.uri.toString());
-    if (uri.parts.type !== 'CELL') {
-      throw new Error(`The given URI does not represent a CELL ("${args.uri}").`);
-    }
-    if (uri.error) {
-      throw new Error(uri.error.message);
-    }
-    const ns = Schema.ns(uri.parts.ns);
-    const path = ns.cell(uri.parts.key).path;
+    const uri = Uri.cell(args.uri);
+    const ns = Schema.ns(uri.ns);
+    const path = ns.cell(uri.key).path;
     return Cell.factory({ db, path }) as t.IDbModelCell<P>;
   }
 }
@@ -110,17 +104,11 @@ export class Row {
     }) as t.IDbModelRow;
   };
 
-  public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
+  public static create<P extends object = {}>(args: { db: t.IDb; uri: string | t.IRowUri }) {
     const { db } = args;
-    const uri = Uri.parse<t.IRowUri>(args.uri);
-    if (uri.parts.type !== 'ROW') {
-      throw new Error(`The given URI does not represent a ROW ("${args.uri}").`);
-    }
-    if (uri.error) {
-      throw new Error(uri.error.message);
-    }
-    const ns = Schema.ns(uri.parts.ns);
-    const path = ns.row(uri.parts.key).path;
+    const uri = Uri.row(args.uri);
+    const ns = Schema.ns(uri.ns);
+    const path = ns.row(uri.key).path;
     return Row.factory({ db, path }) as t.IDbModelRow<P>;
   }
 }
@@ -143,17 +131,11 @@ export class Column {
     });
   };
 
-  public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
+  public static create<P extends object = {}>(args: { db: t.IDb; uri: string | t.IColumnUri }) {
     const { db } = args;
-    const uri = Uri.parse<t.IColumnUri>(args.uri);
-    if (uri.parts.type !== 'COLUMN') {
-      throw new Error(`The given URI does not represent a COLUMN ("${args.uri}").`);
-    }
-    if (uri.error) {
-      throw new Error(uri.error.message);
-    }
-    const ns = Schema.ns(uri.parts.ns);
-    const path = ns.column(uri.parts.key).path;
+    const uri = Uri.column(args.uri);
+    const ns = Schema.ns(uri.ns);
+    const path = ns.column(uri.key).path;
     return Column.factory({ db, path }) as t.IDbModelColumn<P>;
   }
 }
@@ -176,17 +158,11 @@ export class File {
     });
   };
 
-  public static create(args: { db: t.IDb; uri: string }) {
+  public static create(args: { db: t.IDb; uri: string | t.IFileUri }) {
     const { db } = args;
-    const uri = Uri.parse<t.IFileUri>(args.uri);
-    if (uri.parts.type !== 'FILE') {
-      throw new Error(`The given URI does not represent a FILE ("${args.uri}").`);
-    }
-    if (uri.error) {
-      throw new Error(uri.error.message);
-    }
-    const ns = Schema.ns(uri.parts.ns);
-    const path = ns.file(uri.parts.file).path;
+    const uri = Uri.file(args.uri);
+    const ns = Schema.ns(uri.ns);
+    const path = ns.file(uri.file).path;
     return File.factory({ db, path }) as t.IDbModelFile;
   }
 }

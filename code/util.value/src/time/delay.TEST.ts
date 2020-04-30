@@ -1,5 +1,7 @@
 import { expect } from 'chai';
-import { wait, delay } from './delay';
+import { Subject } from 'rxjs';
+
+import { delay, wait } from './delay';
 
 const now = () => new Date().getTime();
 
@@ -56,10 +58,21 @@ describe('delay', () => {
 });
 
 describe('wait', () => {
-  it('pauses for given time', async () => {
+  it('wait: msecs', async () => {
     const startedAt = now();
     expect(now() - startedAt).to.be.lessThan(10);
     await wait(15);
+    expect(now() - startedAt).to.be.greaterThan(10);
+  });
+
+  it('wait: for observable', async () => {
+    const startedAt = now();
+    expect(now() - startedAt).to.be.lessThan(10);
+
+    const ob$ = new Subject();
+    delay(15, () => ob$.next());
+
+    await wait(ob$);
     expect(now() - startedAt).to.be.greaterThan(10);
   });
 });

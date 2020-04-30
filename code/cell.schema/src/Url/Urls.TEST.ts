@@ -1,4 +1,4 @@
-import { expect } from '../test';
+import { t, expect } from '../test';
 import { Urls } from '.';
 import { Uri } from '../Uri';
 
@@ -107,7 +107,7 @@ describe('Urls', () => {
       const res1 = url.ns('foo').info;
       const res2 = url.ns('ns:foo').info;
       const res3 = url.ns('cell:foo:A1').info; // NB: Flips from "cell:" to "ns:"
-      const res4 = url.ns({ ns: 'foo' }).info;
+      const res4 = url.ns({ id: 'foo', type: 'NS' }).info;
 
       const URL = 'http://localhost/ns:foo';
       expect(res1.toString()).to.eql(URL);
@@ -169,7 +169,7 @@ describe('Urls', () => {
 
     it('info', () => {
       const res1 = url.cell(URI).info;
-      const res2 = url.cell({ ns: 'foo', key: 'A1' }).info;
+      const res2 = url.cell(Uri.cell('cell:foo:A1')).info;
 
       const URL = 'http://localhost/cell:foo:A1';
       expect(res1.toString()).to.eql(URL);
@@ -178,7 +178,7 @@ describe('Urls', () => {
 
     it('files.list', () => {
       const res1 = url.cell(URI).files.list;
-      const res2 = url.cell({ ns: 'foo', key: 'A1' }).files.list;
+      const res2 = url.cell(Uri.cell('cell:foo:A1')).files.list;
 
       const URL = 'http://localhost/cell:foo:A1/files';
       expect(res1.query({}).toString()).to.eql(URL);
@@ -187,7 +187,7 @@ describe('Urls', () => {
 
     it('files.delete', () => {
       const res1 = url.cell(URI).files.delete;
-      const res2 = url.cell({ ns: 'foo', key: 'A1' }).files.delete;
+      const res2 = url.cell(Uri.cell('cell:foo:A1')).files.delete;
 
       const URL = 'http://localhost/cell:foo:A1/files';
       expect(res1.toString()).to.eql(URL);
@@ -197,7 +197,7 @@ describe('Urls', () => {
     it('files.upload (start)', () => {
       const res1 = url.cell(URI).files.upload;
       const res2 = res1.query({ changes: true });
-      const res3 = url.cell({ ns: 'foo', key: 'A1' }).files.upload;
+      const res3 = url.cell(Uri.cell('cell:foo:A1')).files.upload;
 
       const URL = 'http://localhost/cell:foo:A1/files/upload';
       expect(res1.toString()).to.eql(URL);
@@ -208,7 +208,7 @@ describe('Urls', () => {
     it('files.uploaded (complete)', () => {
       const res1 = url.cell(URI).files.uploaded;
       const res2 = res1.query({ changes: true });
-      const res3 = url.cell({ ns: 'foo', key: 'A1' }).files.uploaded;
+      const res3 = url.cell(Uri.cell('cell:foo:A1')).files.uploaded;
 
       const URL = 'http://localhost/cell:foo:A1/files/uploaded';
       expect(res1.toString()).to.eql(URL);
@@ -218,7 +218,7 @@ describe('Urls', () => {
 
     it('file.byName', () => {
       const res1 = url.cell(URI).file.byName('  kitten.png   ');
-      const res2 = url.cell({ ns: 'foo', key: 'A1' }).file.byName('kitten.png');
+      const res2 = url.cell(Uri.cell('cell:foo:A1')).file.byName('kitten.png');
 
       const URL = 'http://localhost/cell:foo:A1/file/kitten.png';
       expect(res1.toString()).to.eql(URL);
@@ -273,7 +273,7 @@ describe('Urls', () => {
 
     it('info', () => {
       const res1 = url.row(URI).info;
-      const res2 = url.row({ ns: 'foo', key: '1' }).info;
+      const res2 = url.row(Uri.row('cell:foo:1')).info;
 
       const URL = 'http://localhost/cell:foo:1';
       expect(res1.toString()).to.eql(URL);
@@ -302,7 +302,7 @@ describe('Urls', () => {
 
     it('info', () => {
       const res1 = url.column(URI).info;
-      const res2 = url.column({ ns: 'foo', key: 'A' }).info;
+      const res2 = url.column(Uri.column('cell:foo:A')).info;
 
       const URL = 'http://localhost/cell:foo:A';
       expect(res1.toString()).to.eql(URL);
@@ -328,7 +328,7 @@ describe('Urls', () => {
 
     it('info', () => {
       const res1 = url.file(URI).info;
-      const res2 = url.file({ ns: 'foo', file: '123' }).info;
+      const res2 = url.file(Uri.file('file:foo:123')).info;
 
       const URL = 'http://localhost/file:foo:123/info';
       expect(res1.toString()).to.eql(URL);
@@ -337,7 +337,7 @@ describe('Urls', () => {
 
     it('download', () => {
       const res1 = url.file(URI).download;
-      const res2 = url.file({ ns: 'foo', file: '123' }).download;
+      const res2 = url.file(Uri.file('file:foo:123')).download;
 
       const URL = 'http://localhost/file:foo:123';
       expect(res1.toString()).to.eql(URL);
@@ -346,7 +346,7 @@ describe('Urls', () => {
 
     it('delete', () => {
       const res1 = url.file(URI).delete;
-      const res2 = url.file({ ns: 'foo', file: '123' }).delete;
+      const res2 = url.file(Uri.file('file:foo:123')).delete;
 
       const URL = 'http://localhost/file:foo:123';
       expect(res1.toString()).to.eql(URL);
@@ -355,7 +355,7 @@ describe('Urls', () => {
 
     it('uploaded', () => {
       const res1 = url.file(URI).uploaded;
-      const res2 = url.file({ ns: 'foo', file: '123' }).uploaded;
+      const res2 = url.file(Uri.file('file:foo:123')).uploaded;
 
       const URL = 'http://localhost/file:foo:123/uploaded';
       expect(res1.toString()).to.eql(URL);

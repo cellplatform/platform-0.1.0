@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli",
-  "version": "0.5.28",
+  "version": "0.5.29",
   "description": "Tools for building CLI (command-line-interfaces).",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,7 +18,7 @@
     "@platform/fs": "0.5.12",
     "@platform/libs": "0.2.1",
     "@platform/log": "0.1.17",
-    "@platform/util.value": "0.7.13",
+    "@platform/util.value": "0.7.14",
     "@types/inquirer": "6.5.0",
     "@types/yargs": "15.0.4",
     "inquirer": "7.1.0",

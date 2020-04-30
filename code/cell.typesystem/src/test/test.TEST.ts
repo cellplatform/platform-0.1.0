@@ -1,17 +1,20 @@
 import { fs, testFetch, TYPE_DEFS } from '.';
-import { TypeClient } from '../TypeSystem/TypeClient';
+import { TypeClient } from '../TypeSystem.core/TypeClient';
 import { expect } from 'chai';
 
 describe('test', () => {
   describe('TypeSystem: generate sample typescript declaration files', () => {
     const dir = fs.join(__dirname, '../test/.d.ts');
 
-    const save = async (ns: string) => {
+    const loadDefs = async (ns: string) => {
       ns = ns.trim().replace(/^ns\:/, '');
-
       const fetch = testFetch({ defs: TYPE_DEFS });
       const defs = (await TypeClient.load({ ns, fetch })).defs;
+      return defs;
+    };
 
+    const save = async (ns: string) => {
+      const defs = await loadDefs(ns);
       const ts = TypeClient.typescript(defs);
       await ts.save(fs, fs.join(dir, ns));
     };
@@ -22,6 +25,20 @@ describe('test', () => {
     it('save: test/foo.enum.ts', async () => save('foo.enum'));
     it('save: test/foo.defaults.ts', async () => save('foo.defaults'));
     it('save: test/foo.multi.ts', async () => save('foo.multi'));
+
+    it('save: [all]', async () => {
+      const uris = [
+        'foo',
+        'foo.primitives',
+        'foo.messages',
+        'foo.enum',
+        'foo.defaults',
+        'foo.multi',
+      ];
+      const defs = (await Promise.all(uris.map(ns => loadDefs(ns)))).flat();
+      const ts = TypeClient.typescript(defs);
+      await ts.save(fs, fs.join(dir, 'all.ts'));
+    });
   });
 
   describe('fetch', () => {

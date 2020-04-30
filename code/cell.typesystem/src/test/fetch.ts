@@ -75,7 +75,7 @@ export const testInstanceFetch = async <T>(args: {
   instance: string;
   implements: string;
   defs: { [ns: string]: t.ITypeDefPayload };
-  rows: T[];
+  rows?: T[];
   cells?: t.ICellMap;
   cache?: t.IMemoryCache;
 }) => {
@@ -89,7 +89,7 @@ export const testInstanceFetch = async <T>(args: {
 
   const cells = {
     ...(args.cells || {}),
-    ...TypeSystem.objectToCells<T>(typeDef).rows(0, args.rows),
+    ...TypeSystem.objectToCells<T>(typeDef).rows(0, args.rows || []),
   };
 
   const def: t.ITypeDefPayload = {

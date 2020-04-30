@@ -35,4 +35,19 @@ describe('path', () => {
     test('file:foo:123', 'tmp', 'ns.foo/123');
     test('file:ck3jldh1z00043fetc11ockko:1z53tcj', '/tmp', 'ns.ck3jldh1z00043fetc11ockko/1z53tcj');
   });
+
+  it('join', () => {
+    const test = (parts: string[], expected: string) => {
+      const res = path.join(...parts);
+      expect(res).to.eql(expected);
+    };
+    test([], '');
+    test(['foo'], 'foo');
+    test(['/foo'], '/foo');
+    test(['foo/'], 'foo/');
+    test(['/foo/'], '/foo/');
+    test(['foo/', '/bar'], 'foo/bar');
+    test(['foo///', '///bar'], 'foo/bar');
+    test(['/foo///', '///bar/'], '/foo/bar/');
+  });
 });

@@ -8,7 +8,9 @@ const SYS = constants.SYS;
  *
  */
 export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
-  const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
+  // const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
+  const ctx = args.ctx;
+
   const defs = await ctx.windowDefs.data();
   const instances = await ctx.windows.data();
   const def = defs.rows.find(row => row.props.kind === args.kind);
@@ -17,14 +19,13 @@ export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
     throw new Error(`A window-definition named '${args.kind}' could not be found.`);
   }
 
-  const createInstance = async (def: t.ITypedSheetRowProps<t.CellAppWindowDef>) => {
+  const createInstance = async (def: t.ITypedSheetRowProps<t.SysAppWindowDef>) => {
     const index = instances.total;
     const instance = instances.row(index).props;
     instance.id = Schema.slug();
     instance.width = def.width;
     instance.height = def.height;
     instance.kind = def.kind;
-    await ctx.flush();
   };
 
   if (def) {
@@ -51,13 +52,12 @@ export async function createWindow(args: {
   instance: string | t.IRowUri;
   ctx: t.IAppCtx;
 }) {
-  const toRow = (input: string | t.IRowUri) =>
-    typeof input === 'string' ? Uri.parse<t.IRowUri>(input).parts : input;
+  const def = Uri.row(args.def);
+  const instance = Uri.row(args.instance);
 
-  const def = toRow(args.def);
-  const instance = toRow(args.instance);
+  // const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
+  const ctx = args.ctx;
 
-  const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
   const host = ctx.host;
 
   const windows = await ctx.windows.data();

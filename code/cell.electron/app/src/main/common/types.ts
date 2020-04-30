@@ -8,9 +8,8 @@ import { ITypedSheet, ITypedSheetRow, ITypedSheetRefs } from '@platform/cell.typ
 
 export type IAppCtx = {
   host: string;
-  sheet: ITypedSheet<t.CellApp>;
-  app: ITypedSheetRow<t.CellApp>;
-  windows: ITypedSheetRefs<t.CellAppWindow>;
-  windowDefs: ITypedSheetRefs<t.CellAppWindowDef>;
-  flush(): Promise<void>;
+  sheet: ITypedSheet<t.SysApp>;
+  app: ITypedSheetRow<t.SysApp>;
+  windows: ITypedSheetRefs<t.SysAppWindow>;
+  windowDefs: ITypedSheetRefs<t.SysAppWindowDef>;
 };

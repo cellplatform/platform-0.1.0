@@ -1,8 +1,16 @@
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-
-import { Client, constants, fs, log, t, time, Uri } from '../common';
-import * as sync from './client.sync';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
+import { Client, constants, fs, log, t, Uri } from '../common';
 import { upload } from './client.upload';
 
 const SYS = constants.SYS;
@@ -12,39 +20,27 @@ const NS = SYS.NS;
  * Writes (initializes) system data.
  */
 export async function getOrCreateSystemContext(host: string) {
-  const http = Client.http(host);
-  const ns = http.ns(NS.APP);
+  const client = Client.typesystem(host);
+  const ns = client.http.ns(NS.APP);
 
   // Ensure the root application model exists in the DB.
   if (!(await ns.exists())) {
     await ns.write({ ns: { type: { implements: NS.TYPE.APP } } });
   }
 
-  const flush$ = new Subject<{}>();
-  const saved$ = new Subject<{}>();
-  saved$.pipe(debounceTime(800)).subscribe(() => log.info.gray('━'.repeat(60)));
-
   // Load the app model.
-  const type = Client.type({ http });
-  const sheet = await type.sheet<t.CellApp>(NS.APP);
-  sync.saveMonitor({ http, state: sheet.state, flush$, saved$ });
+  const sheet = await client.sheet<t.SysApp>(NS.APP);
+  client.changes.watch(sheet);
 
-  const app = sheet.data('CellApp').row(0);
+  const saver = Client.saveMonitor({ client, debounce: 300 });
+  saveLogger(saver.saved$);
+
+  const app = sheet.data('SysApp').row(0);
   await app.load();
 
   // Retrieve windows.
   const windows = await app.props.windows.load();
   const windowDefs = await app.props.windowDefs.load();
-
-  /**
-   * TODO 🐷
-   * Move save monitor logic to [TypeSystem] module
-   */
-  sync.saveMonitor({ http, state: windows.sheet.state, flush$, saved$ });
-  sync.saveMonitor({ http, state: windowDefs.sheet.state, flush$, saved$ });
-
-  await sync.saveImplementsField({ http, sheet: windows.sheet, implements: NS.TYPE.WINDOW });
-  await sync.saveImplementsField({ http, sheet: windowDefs.sheet, implements: NS.TYPE.WINDOW_DEF });
 
   // Finish up.
   const ctx: t.IAppCtx = {
@@ -53,10 +49,6 @@ export async function getOrCreateSystemContext(host: string) {
     app,
     windows,
     windowDefs,
-    async flush() {
-      flush$.next();
-      await time.wait(300); // HACK: this ensures the changes are flushed to the DB. Do this in a more predictable way.
-    },
   };
   return ctx;
 }
@@ -90,7 +82,32 @@ export async function initWindowDef(args: {
       await upload({ host, targetCell, sourceDir, targetDir });
     }
   }
+}
 
-  // Finish up.
-  await ctx.flush();
+/**
+ * [Helpers]
+ */
+
+function saveLogger(saved$: Observable<t.ITypedSheetSaved>) {
+  // Models saved.
+  saved$.subscribe(e => {
+    const prefix = e.ok ? log.blue('SAVED') : log.red('SAVED (error)');
+    log.info(prefix);
+
+    if (e.changes.ns) {
+      const ns = e.sheet.uri.id;
+      log.info.gray(`${log.green('ns')}:${ns}`);
+    }
+
+    const cells = e.changes.cells || {};
+    Object.keys(cells).forEach(key => {
+      const change = cells[key];
+      const ns = change.ns.replace(/^ns\:/, '');
+      const cell = log.gray(`${log.green('cell')}:${ns}:${log.green(change.key)}`);
+      log.info(`  ${cell}`);
+    });
+  });
+
+  // Divider
+  saved$.pipe(debounceTime(800)).subscribe(() => log.info.gray('━'.repeat(60)));
 }

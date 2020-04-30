@@ -8,12 +8,13 @@ import { CellRouter } from '..';
 export type IMock = {
   db: t.IDb;
   fs: t.IFileSystem;
-  port: number;
   app: IMicro;
   router: t.IRouter;
   service: IMicroService;
   filename: string;
   host: string;
+  port: number;
+  origin: string;
   url: (path: string) => string;
   urls: t.IUrls;
   client: t.IHttpClient;
@@ -58,6 +59,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
   const urls = Schema.urls(`localhost:${port}`);
   const host = urls.host;
   const client = HttpClient.create(urls.origin);
+  const origin = client.origin;
 
   const mock: IMock = {
     db,
@@ -68,6 +70,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
     service,
     filename,
     host,
+    origin,
     url: (path: string) => `http://localhost:${port}/${path.replace(/^\/*/, '')}`,
     urls,
     client,

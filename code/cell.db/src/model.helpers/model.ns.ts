@@ -11,7 +11,7 @@ export async function toObject(model: t.IDbModelNs) {
   const id = toId(model);
   const res: t.INs = {
     id,
-    hash: '-', // Default (if does not exist, otherwise should be on the DB data object).
+    hash: '', // Default (if does not exist, otherwise should be on the DB data object).
     ...squash.object(model.toObject()),
   };
   return res;

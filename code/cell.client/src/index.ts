@@ -1,2 +1,2 @@
 export * from './Client';
-export * from './HttpClient';
+export * from './Client.http';

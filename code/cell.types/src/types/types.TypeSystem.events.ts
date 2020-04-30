@@ -8,6 +8,8 @@ export type TypedSheetEvent =
   | ITypedSheetLoadedEvent
   | ITypedSheetRowLoadingEvent
   | ITypedSheetRowLoadedEvent
+  | ITypedSheetRefsLoadingEvent
+  | ITypedSheetRefsLoadedEvent
   | ITypedSheetChangeEvent
   | ITypedSheetChangedEvent
   | ITypedSheetChangesClearedEvent;
@@ -20,7 +22,7 @@ export type ITypedSheetLoadingEvent = {
   payload: ITypedSheetLoading;
 };
 export type ITypedSheetLoading = {
-  ns: string; // uri.
+  sheet: t.ITypedSheet;
   range: string; // row range, eg: "1:500"
 };
 
@@ -43,8 +45,8 @@ export type ITypedSheetRowLoadingEvent = {
   payload: ITypedSheetRowLoading;
 };
 export type ITypedSheetRowLoading = {
+  sheet: t.ITypedSheet;
   index: number;
-  row: string; // uri.
 };
 
 /**
@@ -54,10 +56,28 @@ export type ITypedSheetRowLoadedEvent = {
   type: 'SHEET/row/loaded';
   payload: ITypedSheetRowLoaded;
 };
-export type ITypedSheetRowLoaded = {
-  index: number;
-  row: string; // uri.
+export type ITypedSheetRowLoaded = ITypedSheetRowLoading;
+
+/**
+ * Fires when a child Refs sheet starts loading
+ */
+export type ITypedSheetRefsLoadingEvent = {
+  type: 'SHEET/refs/loading';
+  payload: ITypedSheetRefsLoading;
 };
+export type ITypedSheetRefsLoading<T = {}> = {
+  sheet: t.ITypedSheet;
+  refs: t.ITypedSheetRefs<T>;
+};
+
+/**
+ * Fires when a child Refs sheet loads.
+ */
+export type ITypedSheetRefsLoadedEvent = {
+  type: 'SHEET/refs/loaded';
+  payload: ITypedSheetRefsLoaded;
+};
+export type ITypedSheetRefsLoaded<T = {}> = ITypedSheetRefsLoading<T>;
 
 /**
  * Dispatches a change to a cell's data.
@@ -75,7 +95,7 @@ export type ITypedSheetChangedEvent = {
   payload: t.ITypedSheetChanged;
 };
 export type ITypedSheetChanged = {
-  ns: string; // uri.
+  sheet: t.ITypedSheet;
   change: t.ITypedSheetChangeDiff;
   changes: t.ITypedSheetStateChanges;
 };
@@ -88,7 +108,7 @@ export type ITypedSheetChangesClearedEvent = {
   payload: t.ITypedSheetChangesCleared;
 };
 export type ITypedSheetChangesCleared = {
-  ns: string; // uri.
+  sheet: t.ITypedSheet;
   from: t.ITypedSheetStateChanges;
   to: t.ITypedSheetStateChanges;
   action: 'REVERT' | 'SAVED';

@@ -10,16 +10,16 @@ export async function uploadCellFilesStart(args: {
   host: string;
   changes?: boolean;
 }) {
-  const { db, fs, cellUri, body, host } = args;
+  const { db, fs, body, host } = args;
   const expires = body.expires;
-  const cellUriParts = Schema.uri.parse<t.ICellUri>(cellUri).parts;
-  const cellKey = cellUriParts.key;
-  const ns = cellUriParts.ns;
+  const cellUri = Schema.uri.cell(args.cellUri);
+  const cellKey = cellUri.key;
+  const ns = cellUri.ns;
   const sendChanges = defaultValue(args.changes, true);
 
   const fileDefs = body.files || [];
   if (fileDefs.length === 0) {
-    const err = new Error(`No file details posted in the body for [${cellUri}]`);
+    const err = new Error(`No file details posted in the body for [${args.cellUri}]`);
     return util.toErrorPayload(err, { status: 400 });
   }
 
@@ -54,7 +54,7 @@ export async function uploadCellFilesStart(args: {
   };
 
   // Prepare the file URI link.
-  const cell = await models.Cell.create({ db, uri: cellUri }).ready;
+  const cell = await models.Cell.create({ db, uri: cellUri.toString() }).ready;
   const cellLinks = cell.props.links || {};
 
   // POST each file to the file-system creating the model
@@ -110,7 +110,7 @@ export async function uploadCellFilesStart(args: {
 
   // Prepare response URLs.
   const urls = {
-    ...util.urls(host).cell(cellUri).urls,
+    ...util.urls(host).cell(cellUri.toString()).urls,
     uploads: uploadStartResponses.map(item => item.json.upload).filter(item => Boolean(item)),
   };
 
@@ -125,7 +125,7 @@ export async function uploadCellFilesStart(args: {
   // Prepare response.
   await cell.load({ force: true });
   const res: t.IResPostCellFilesUploadStart = {
-    uri: cellUri,
+    uri: cellUri.toString(),
     createdAt: cell.createdAt,
     modifiedAt: cell.modifiedAt,
     exists: Boolean(cell.exists),

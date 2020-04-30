@@ -15,8 +15,8 @@ export async function listCellFiles(args: {
     const includeUrls = defaultValue(args.includeUrls, true);
 
     // Prepare URIs.
-    const cellUri = Schema.uri.parse<t.ICellUri>(args.cellUri);
-    const nsUri = Schema.uri.parse<t.INsUri>(Schema.uri.create.ns(cellUri.parts.ns));
+    const cellUri = Schema.uri.cell(args.cellUri);
+    const nsUri = Schema.uri.ns(Schema.uri.create.ns(cellUri.ns));
 
     // Retrieve data models.
     const ns = await models.Ns.create({ db, uri: nsUri.toString() }).ready;

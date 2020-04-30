@@ -1,9 +1,10 @@
-import { t, cuid, slug, coord, wildcard } from '../common';
+import { t, cuid, slug, coord, wildcard, ERROR } from '../common';
 
 type UriType = 'NS' | 'CELL' | 'ROW' | 'COLUMN' | 'FILE';
 type UriPrefix = 'ns' | 'cell' | 'file';
 type AllowPattern = string | ((input: string) => boolean);
 type Allow = { NS: AllowPattern[] };
+type P<T extends t.IUri> = (parsed: t.IUriParts<T>) => void;
 
 const ALLOW: Allow = { NS: [] };
 export const DEFAULT = { ALLOW };
@@ -25,7 +26,7 @@ export class Uri {
   };
 
   /**
-   * Parse a URI into it's constituent pieces.
+   * Parse a URI into it's constituent parts.
    */
   public static parse<D extends t.IUri>(input?: string): t.IUriParts<D> {
     let text = (input || '').trim().split('?')[0]; // NB: trim query-string.
@@ -114,6 +115,34 @@ export class Uri {
   }
 
   /**
+   * Parse (typed helpers)
+   */
+
+  public static ns(input?: string | t.INsUri | undefined, throwError?: boolean | P<t.INsUri>) {
+    input = typeof input === 'string' && !input.includes(':') ? `ns:${input.trim()}` : input;
+    return parseOrThrow<t.INsUri>(input, 'NS', throwError);
+  }
+
+  public static cell(input: string | t.ICellUri | undefined, throwError?: boolean | P<t.ICellUri>) {
+    return parseOrThrow<t.ICellUri>(input, 'CELL', throwError);
+  }
+
+  public static row(input: string | t.IRowUri | undefined, throwError?: boolean | P<t.IRowUri>) {
+    return parseOrThrow<t.IRowUri>(input, 'ROW', throwError);
+  }
+
+  public static column(
+    input: string | t.IColumnUri | undefined,
+    throwError?: boolean | P<t.IColumnUri>,
+  ) {
+    return parseOrThrow<t.IColumnUri>(input, 'COLUMN', throwError);
+  }
+
+  public static file(input: string | t.IFileUri | undefined, throwError?: boolean | P<t.IFileUri>) {
+    return parseOrThrow<t.IFileUri>(input, 'FILE', throwError);
+  }
+
+  /**
    * Helpers for evalutating boolean conditions about a URI.
    */
   public static is = {
@@ -172,6 +201,7 @@ export class Uri {
 /**
  * [Helpers]
  */
+
 const alphaNumeric = new RegExp(/^[a-z0-9]+$/i); // NB: alpha-numeric.
 
 function trimPrefix(prefix: string, input: string) {
@@ -229,4 +259,43 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
 
 function isCuid(input: string) {
   return input.length === 25 && input[0] === 'c' && alphaNumeric.test(input);
+}
+
+function parseOrThrow<T extends t.IUri>(
+  input: T | string | undefined,
+  type: T['type'],
+  throwError?: boolean | P<T>,
+) {
+  if (typeof input === 'object') {
+    return input;
+  } else {
+    const parsed = Uri.parse<T>(input);
+    const isTypeMismatch = type && parsed.type !== type;
+    const hasError = Boolean(parsed.error) || isTypeMismatch;
+    throwError = throwError === undefined ? true : throwError;
+
+    if (hasError) {
+      const text = input?.toString() || '';
+      if (!parsed.error && isTypeMismatch) {
+        parsed.ok = false;
+        parsed.error = {
+          uri: text,
+          message: `The uri (${text}) is not of type ${type}`,
+          type: 'URI',
+        };
+      }
+
+      if (typeof throwError === 'function') {
+        throwError(parsed);
+      }
+      if (throwError === true) {
+        if (parsed.error) {
+          throw new Error(parsed.error.message);
+        }
+      }
+    }
+
+    // Finish up.
+    return parsed.parts;
+  }
 }

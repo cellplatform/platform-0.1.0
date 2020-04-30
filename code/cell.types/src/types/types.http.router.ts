@@ -9,7 +9,7 @@ export type IErrorPayload = IHttpErrorPayload | IFsHttpErrorPayload;
 export type IHttpErrorPayload = IPayload<t.IHttpError>;
 export type IFsHttpErrorPayload = IPayload<t.IFsHttpError>;
 
-export type IUriResponse<D, L extends IUrlMap = {}> = {
+export type IUriResponse<D, L = IUrlMap> = {
   uri: string;
   exists: boolean;
   createdAt: number;

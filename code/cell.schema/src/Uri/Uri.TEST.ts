@@ -375,6 +375,82 @@ describe('Uri', () => {
     });
   });
 
+  describe('parseOrThrow (shorthand methods)', () => {
+    it('ns', () => {
+      const uri = Uri.ns('ns:foo');
+      expect(uri.id).to.eql('foo');
+      expect(Uri.ns(uri)).to.eql(uri);
+      expect(() => Uri.ns('cell:foo:A1')).to.throw();
+      expect(() => Uri.ns('cell:foo:A1', false)).to.not.throw();
+
+      let res: undefined | t.IUriParts<t.INsUri>;
+      Uri.ns('cell:foo:A1', e => (res = e));
+      expect(res?.error?.message).to.include(`is not of type NS`);
+    });
+
+    it('ns (no prefix)', () => {
+      const uri = Uri.ns('foo');
+      expect(uri.toString()).to.eql('ns:foo');
+      expect(uri.id).to.eql('foo');
+      expect(Uri.ns(uri)).to.eql(uri);
+      expect(() => Uri.ns('cell:foo:A1')).to.throw();
+    });
+
+    it('ns (error variants)', () => {
+      expect(() => Uri.ns('cell:foo:A1')).to.throw();
+      expect(() => Uri.ns('ns:fail')).to.throw();
+      expect(() => Uri.ns('fail')).to.throw();
+    });
+
+    it('cell', () => {
+      const uri = Uri.cell('cell:foo:A1');
+      expect(uri.ns).to.eql('foo');
+      expect(uri.key).to.eql('A1');
+      expect(Uri.cell(uri)).to.eql(uri);
+      expect(() => Uri.cell('cell:foo:A')).to.throw();
+
+      let res: undefined | t.IUriParts<t.ICellUri>;
+      Uri.cell('cell:foo:A', e => (res = e));
+      expect(res?.error?.message).to.include(`is not of type CELL`);
+    });
+
+    it('row', () => {
+      const uri = Uri.row('cell:foo:1');
+      expect(uri.ns).to.eql('foo');
+      expect(uri.key).to.eql('1');
+      expect(Uri.row(uri)).to.eql(uri);
+      expect(() => Uri.row('cell:foo:A1')).to.throw();
+
+      let res: undefined | t.IUriParts<t.IRowUri>;
+      Uri.row('cell:foo:A1', e => (res = e));
+      expect(res?.error?.message).to.include(`is not of type ROW`);
+    });
+
+    it('column', () => {
+      const uri = Uri.column('cell:foo:A');
+      expect(uri.ns).to.eql('foo');
+      expect(uri.key).to.eql('A');
+      expect(Uri.column(uri)).to.eql(uri);
+      expect(() => Uri.column('cell:foo:A1')).to.throw();
+
+      let res: undefined | t.IUriParts<t.IColumnUri>;
+      Uri.column('cell:foo:A1', e => (res = e));
+      expect(res?.error?.message).to.include(`is not of type COLUMN`);
+    });
+
+    it('file', () => {
+      const uri = Uri.file('file:foo:123');
+      expect(uri.ns).to.eql('foo');
+      expect(uri.file).to.eql('123');
+      expect(Uri.file(uri)).to.eql(uri);
+      expect(() => Uri.file('cell:foo:A1')).to.throw();
+
+      let res: undefined | t.IUriParts<t.IFileUri>;
+      Uri.file('cell:foo:A1', e => (res = e));
+      expect(res?.error?.message).to.include(`is not of type FILE`);
+    });
+  });
+
   describe('create', () => {
     it('ns', () => {
       const test = (id: string, expected: string) => {

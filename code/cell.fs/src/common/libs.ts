@@ -1,4 +1,3 @@
-export { fs } from '@platform/fs.s3';
 export { Mime } from '@platform/util.mimetype';
 export { Schema, Uri, Urls } from '@platform/cell.schema';
 
