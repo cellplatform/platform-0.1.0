@@ -367,8 +367,8 @@ async function readRef(args: {
   const { ns, column, ref, level, ctx } = args;
 
   const isColumn = Uri.is.column(ref.uri);
-  const columnUri = isColumn ? Uri.parse<t.IColumnUri>(ref.uri) : undefined;
-  const nsUri = columnUri ? Uri.create.ns(columnUri.parts.ns) : ref.uri;
+  const columnUri = isColumn ? Uri.column(ref.uri) : undefined;
+  const nsUri = columnUri ? Uri.create.ns(columnUri.ns) : ref.uri;
   const unknown: t.ITypeUnknown = { kind: 'UNKNOWN', typename: nsUri };
 
   if (!Uri.is.ns(nsUri)) {
@@ -415,7 +415,7 @@ async function readRef(args: {
   // Build the REF object.
   if (columnUri) {
     // Column REF.
-    const columnDef = def.columns.find(item => item.column === columnUri.parts.key);
+    const columnDef = def.columns.find(item => item.column === columnUri.key);
     if (!columnDef) {
       const msg = `The referenced column '${column}' of type '${ref.typename}' does not exist in the retrieved namespace (${nsUri})`;
       return {

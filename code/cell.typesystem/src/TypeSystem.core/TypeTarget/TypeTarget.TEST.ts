@@ -235,7 +235,7 @@ describe('TypeTarget', () => {
     it('throw: target URI link is not a ROW', () => {
       const test = (uri: string) => {
         const fn = () => TypeTarget.ref(defComplex).write({ uri });
-        expect(fn).to.throw(/reference\/link URI is not a ROW/);
+        expect(fn).to.throw(/The reference\/link uri is invalid/, uri);
       };
       test('cell:foo:A1');
       test('cell:foo:A');

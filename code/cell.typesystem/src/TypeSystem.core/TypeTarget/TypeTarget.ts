@@ -172,15 +172,6 @@ export class TypeTarget {
       throw new Error(err);
     }
 
-    const validateUri = (uri: string | t.IRowUri) => {
-      const res = typeof uri === 'object' ? uri : Uri.parse<t.IRowUri>(uri).parts;
-      if (res.type !== 'ROW') {
-        const err = `The reference/link URI is not a ROW (given "${uri.toString()}")`;
-        throw new Error(err);
-      }
-      return res;
-    };
-
     return {
       /**
        * Read reference link.
@@ -208,7 +199,9 @@ export class TypeTarget {
         hash?: string;
       }): t.ICellData<any> {
         const { hash } = args;
-        const uri = validateUri(args.uri);
+        const uri = Uri.row(args.uri, uri => {
+          throw new Error(`The reference/link uri is invalid. ${uri.error?.message}`);
+        });
         const cell = { ...(args.cell || {}) };
         const key = RefLinks.toKey('type');
         const value = RefLinks.toValue(uri, { hash });
