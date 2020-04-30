@@ -104,10 +104,10 @@ describe('Grid', () => {
       cells = grid.data.cells;
 
       expect(cells.A1.hash).to.eql(
-        util.cell.value.hash.cell({ uri: 'cell:foo!A1', data: { value: 123 } }),
+        util.cell.value.hash.cell({ uri: 'cell:foo:A1', data: { value: 123 } }),
       );
       expect(cells.A2.hash).to.eql(
-        util.cell.value.hash.cell({ uri: 'cell:foo!A2', data: { value: 456 } }),
+        util.cell.value.hash.cell({ uri: 'cell:foo:A2', data: { value: 456 } }),
       );
     });
 
@@ -120,7 +120,7 @@ describe('Grid', () => {
       cells = grid.data.cells;
       expect(cells.A1.hash).to.eql('foo');
       expect(cells.A2.hash).to.eql(
-        util.cell.value.hash.cell({ uri: 'cell:foo!A2', data: { value: 456 } }),
+        util.cell.value.hash.cell({ uri: 'cell:foo:A2', data: { value: 456 } }),
       );
     });
   });
@@ -228,7 +228,7 @@ describe('Grid', () => {
       expect(cells.A1).to.eql({ value: 123 });
       expect(cells.A2.value).to.eql('hello');
       expect(cells.A2.hash).to.eql(
-        util.cell.value.hash.cell({ uri: 'cell:foo!A2', data: { value: 'hello' } }),
+        util.cell.value.hash.cell({ uri: 'cell:foo:A2', data: { value: 'hello' } }),
       );
     });
 

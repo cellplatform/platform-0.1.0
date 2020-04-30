@@ -1,6 +1,6 @@
 {
   "name": "@platform/css",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "Helpers for working with inline CSS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,7 +18,7 @@
   "dependencies": {
     "@platform/libs": "0.2.1",
     "@platform/util.is": "0.0.117",
-    "@platform/util.value": "0.7.13",
+    "@platform/util.value": "0.7.14",
     "@types/tinycolor2": "1.4.2",
     "glamor-jss": "1.4.1",
     "jss-plugin-global": "10.1.1",

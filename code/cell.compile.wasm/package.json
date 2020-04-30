@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compile.wasm",
-  "version": "0.0.60",
+  "version": "0.0.63",
   "description": "CellOS code compilation toolchain for WebAssembly.",
   "scripts": {
     "start": "node lib/cli/bin $@",
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@platform/cell.compile.react": "0.0.26",
-    "@platform/cell.types": "0.4.80",
-    "@platform/cli": "0.5.28",
+    "@platform/cell.types": "0.4.82",
+    "@platform/cli": "0.5.29",
     "@platform/libs": "0.2.1"
   },
   "devDependencies": {

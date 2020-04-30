@@ -51,10 +51,10 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http.types@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.1.tgz#53b093a373fe6cd3bcdd6c5af8a0201739765876"
-  integrity sha512-bpyA3j5+QETUwrkBkvt/Juyhb18VfyA8tB2EoGIinTu8howjn7COnONtHpKBzRcoZTXmvhs9Fn/ZR2edOKr/5w==
+"@platform/http.types@0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.2.tgz#86a8674491a07f9a5b9c9f48e957db7440c2bef5"
+  integrity sha512-ZHr2lNokqI7kG2R/6tLxzTn4/N5KrbqYGE+LAt2OAl04QoI7m/3rS3/wIYAa+1ckJ4Zhi3v492AdvRPrWf2RMw==
   dependencies:
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"
