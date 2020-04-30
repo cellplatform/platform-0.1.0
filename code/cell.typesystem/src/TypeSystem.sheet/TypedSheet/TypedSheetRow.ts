@@ -39,7 +39,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    */
   private constructor(args: IArgs) {
     this.typename = args.typename;
-    this.uri = util.formatRowUri(args.uri);
+    this.uri = Uri.row(args.uri);
     this.index = Number.parseInt(this.uri.key, 10) - 1;
 
     this._columns = args.columns;

@@ -55,7 +55,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   private _sheet: t.ITypedSheet<T>;
   private _load: Promise<t.ITypedSheetRefs<T>>;
 
-  public ns: t.INsUri = util.formatNsUri(TypedSheetRefs.PLACEHOLDER);
+  public ns: t.INsUri = Uri.ns(TypedSheetRefs.PLACEHOLDER, false);
   public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
   public readonly typename: string;
   public readonly parent: t.ITypedSheetRefs<{}>['parent'];
@@ -150,8 +150,8 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     // Look for an existing link on the cell if the current link is a placeholder.
     if (this.ns.toString() === TypedSheetRefs.PLACEHOLDER) {
       this.ns = link
-        ? util.formatNsUri(link.uri.toString()) // Use existing link.
-        : util.formatNsUri(Schema.cuid()); //      Generate new sheet link.
+        ? Uri.ns(link.uri.toString()) // Use existing link.
+        : Uri.ns(Schema.cuid()); //      Generate new sheet link.
     }
 
     // Write the link-reference into the cell data.

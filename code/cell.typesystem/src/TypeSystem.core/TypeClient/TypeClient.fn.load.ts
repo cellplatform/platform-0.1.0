@@ -4,7 +4,6 @@ import { deleteUndefined, ERROR, ErrorList, R, t, Uri, value as valueUtil } from
 import { TypeCache } from '../TypeCache';
 import { TypeDefault } from '../TypeDefault';
 import { TypeValue } from '../TypeValue';
-import { formatNsUri } from '../../TypeSystem.util';
 import * as valdiate from './TypeClient.fn.validate';
 import { TypeProp } from '../TypeProp';
 
@@ -35,11 +34,11 @@ export async function load(args: {
   fetch: t.ISheetFetcher;
   cache?: t.IMemoryCache;
 }): Promise<LoadResponse> {
-  const ns = formatNsUri(args.ns, { throw: false }).toString();
+  const ns = Uri.ns(args.ns, false).toString();
 
   // Check cache (if an external cache was provided).
   if (args.cache) {
-    const key = toCacheKey(ns.toString());
+    const key = toCacheKey(ns);
     const value = args.cache.get(key);
     if (value instanceof Subject) {
       // NB: The load operation for the namespace currently in progress.
@@ -120,7 +119,7 @@ async function loadNamespace(args: {
 }): Promise<LoadResponse> {
   const { level, ctx } = args;
   const { visited, cache, fetch, errors } = ctx;
-  const ns = formatNsUri(args.ns, { throw: false }).toString();
+  const ns = Uri.ns(args.ns, false).toString();
 
   // Cache.
   const cacheKey = toCacheKey(ns);

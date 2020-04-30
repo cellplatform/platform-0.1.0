@@ -60,7 +60,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     event$?: Subject<t.TypedSheetEvent>;
   }): Promise<t.ITypedSheet<T>> {
     const { fetch, cache, event$ } = args;
-    const sheetNs = util.formatNsUri(args.ns);
+    const sheetNs = Uri.ns(args.ns);
 
     // Retrieve type definition for sheet.
     const res = await args.fetch.getNs({ ns: sheetNs.toString() });
@@ -71,7 +71,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
       const err = `The namespace (${sheetNs}) does not contain an "implements" type reference.`;
       throw new Error(err);
     }
-    const implementsNs = util.formatNsUri(res.ns?.type?.implements);
+    const implementsNs = Uri.ns(res.ns?.type?.implements);
 
     // Load and parse the type definition.
     const typeDefs = await TypeClient.load({
@@ -105,8 +105,8 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     event$?: Subject<t.TypedSheetEvent>;
   }): Promise<t.ITypedSheet<T>> {
     const { fetch, event$, cache } = args;
-    const implementsNs = util.formatNsUri(args.implements);
-    const sheetNs = args.ns ? util.formatNsUri(args.ns) : Uri.create.ns(Uri.cuid());
+    const implementsNs = Uri.ns(args.implements);
+    const sheetNs = args.ns ? Uri.ns(args.ns) : Uri.create.ns(Uri.cuid());
 
     const typeDefs = await TypeClient.load({
       ns: implementsNs.toString(),
@@ -141,8 +141,8 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     cache?: t.IMemoryCache;
     errors?: t.ITypeError[];
   }) {
-    this.uri = util.formatNsUri(args.uri);
-    this.implements = util.formatNsUri(args.implements);
+    this.uri = Uri.ns(args.uri);
+    this.implements = Uri.ns(args.implements);
 
     const cache = args.cache || MemoryCache.create();
     const event$ = args.event$ || new Subject<t.TypedSheetEvent>();
