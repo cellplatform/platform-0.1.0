@@ -52,11 +52,8 @@ export async function createWindow(args: {
   instance: string | t.IRowUri;
   ctx: t.IAppCtx;
 }) {
-  const toRow = (input: string | t.IRowUri) =>
-    typeof input === 'string' ? Uri.parse<t.IRowUri>(input).parts : input;
-
-  const def = toRow(args.def);
-  const instance = toRow(args.instance);
+  const def = Uri.row(args.def);
+  const instance = Uri.row(args.instance);
 
   // const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
   const ctx = args.ctx;

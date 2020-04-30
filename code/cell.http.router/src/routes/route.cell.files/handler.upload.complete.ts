@@ -9,14 +9,14 @@ export async function uploadCellFilesComplete(args: {
   host: string;
   changes?: boolean;
 }) {
-  const { db, cellUri, host } = args;
-  const cellUriParts = Schema.uri.parse<t.ICellUri>(cellUri).parts;
-  const cellKey = cellUriParts.key;
+  const { db, host } = args;
+  const cellUri = Schema.uri.cell(args.cellUri);
+  const cellKey = cellUri.key;
   const sendChanges = defaultValue(args.changes, true);
 
   // Retrieve models
-  const ns = await models.Ns.create({ db, uri: cellUriParts.ns }).ready;
-  const cell = await models.Cell.create({ db, uri: cellUri }).ready;
+  const ns = await models.Ns.create({ db, uri: cellUri.ns }).ready;
+  const cell = await models.Cell.create({ db, uri: cellUri.toString() }).ready;
 
   // Update cell links:
   //  - removing "uploading" status
@@ -73,7 +73,7 @@ export async function uploadCellFilesComplete(args: {
   // Prepare response.
   await cell.load({ force: true });
   const res: t.IResPostCellFilesUploadComplete = {
-    uri: cellUri,
+    uri: cellUri.toString(),
     createdAt: cell.createdAt,
     modifiedAt: cell.modifiedAt,
     exists: Boolean(cell.exists),

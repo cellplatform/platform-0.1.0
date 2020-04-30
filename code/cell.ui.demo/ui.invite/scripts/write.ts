@@ -76,7 +76,7 @@ const writeConfig = async (args: { id: string; host: string; def: string; invite
 
 const logUrls = async (args: { id: string; host: string; def: string; inviteUrl: string }) => {
   const { id, host, def } = args;
-  const ns = Schema.uri.parse<t.INsUri>(def).parts.id;
+  const ns = Schema.uri.ns(def).id;
 
   const table = log.table({ border: false });
 
