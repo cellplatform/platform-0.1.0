@@ -1,8 +1,17 @@
 import { Subject } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 import { TypedSheet } from '.';
-import { ERROR, expect, expectError, t, testInstanceFetch, time, TYPE_DEFS } from '../../test';
+import {
+  ERROR,
+  expect,
+  expectError,
+  t,
+  testInstanceFetch,
+  time,
+  TYPE_DEFS,
+  testFetch,
+} from '../../test';
 import * as f from '../../test/.d.ts/foo';
 import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
@@ -66,6 +75,36 @@ describe('TypedSheet', () => {
       const { sheet } = await testMySheet();
       const fn = () => sheet.data('NOT_A_TYPENAME');
       expect(fn).to.throw(/Definitions for typename 'NOT_A_TYPENAME' not found/);
+    });
+  });
+
+  describe('TypedSheet.info', () => {
+    it('info (sheet exists)', async () => {
+      const { sheet } = await testMySheet();
+      const info = await sheet.info();
+      expect(info.exists).to.eql(true);
+      expect(info.ns).to.eql({ type: { implements: 'ns:foo' } });
+    });
+
+    it('info (sheet does not exist)', async () => {
+      const fetch = testFetch({ defs: TYPE_DEFS });
+      const ns = 'ns:foo.new';
+      const sheet = await TypedSheet.create<f.MyRow>({ ns, implements: 'ns:foo', fetch });
+      const info = await sheet.info();
+      expect(info.exists).to.eql(false);
+      expect(info.ns).to.eql({});
+    });
+
+    it('info (changed in cache)', async () => {
+      const { sheet } = await testMySheet();
+      const info1 = await sheet.info();
+      expect(info1.ns.type).to.eql({ implements: 'ns:foo' });
+
+      sheet.state.change.ns({ type: { implements: 'ns:foobar' } });
+      await time.wait(1);
+
+      const info2 = await sheet.info();
+      expect(info2.ns.type).to.eql({ implements: 'ns:foobar' });
     });
   });
 
@@ -1119,22 +1158,22 @@ describe('TypedSheet', () => {
 
     describe('changes', () => {
       it('hasChanges: cell', async () => {
-        const { sheet, event$ } = await testMySheet();
+        const { sheet } = await testMySheet();
         const state = sheet.state;
         expect(state.hasChanges).to.eql(false);
 
-        state.fireCellChanged({ key: 'A1', to: { value: 123 } });
+        state.change.cell('A1', { value: 123 });
         await time.wait(1);
 
         expect(state.hasChanges).to.eql(true);
       });
 
       it('hasChanges: ns', async () => {
-        const { sheet, event$ } = await testMySheet();
+        const { sheet } = await testMySheet();
         const state = sheet.state;
         expect(state.hasChanges).to.eql(false);
 
-        state.fireNsChanged({ to: { type: { implements: 'foobar' } } });
+        state.change.ns({ type: { implements: 'foobar' } });
         await time.wait(1);
 
         expect(state.hasChanges).to.eql(true);
@@ -1297,7 +1336,7 @@ describe('TypedSheet', () => {
         const fired: t.TypedSheetEvent[] = [];
         sheet.event$.subscribe(e => fired.push(e));
 
-        state.clearChanges('REVERT');
+        state.clear.changes('REVERT');
 
         expect(state.hasChanges).to.eql(false);
         expect(state.changes).to.eql({});
@@ -1330,7 +1369,7 @@ describe('TypedSheet', () => {
 
         cache.put('foo', 123);
 
-        state.clearCache();
+        state.clear.cache();
         expect(cache.keys).to.eql(['foo']); // NB: Retained non-cell key.
 
         await state.getCell('A1');
@@ -1418,8 +1457,7 @@ const testFetchMulti = (ns: string) => {
   });
 };
 
-const testMySheet = async () => {
-  const ns = 'ns:foo.mySheet';
+const testMySheet = async (ns: string = 'ns:foo.mySheet') => {
   const event$ = new Subject<t.TypedSheetEvent>();
   const fetch = await testFetchMySheet(ns);
   const sheet = await TypedSheet.load<f.MyRow>({ fetch, ns, event$ });

@@ -3,6 +3,9 @@ import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { TypeCache } from '../../TypeSystem.core';
 import { deleteUndefined, R, Schema, t, Uri } from './common';
 
+type N = t.INsProps;
+type C = t.ICellData;
+
 export type IArgs = {
   sheet: t.ITypedSheet;
   event$: t.Subject<t.TypedSheetEvent>;
@@ -32,7 +35,7 @@ export class TypedSheetState implements t.ITypedSheetState {
     this._event$ = args.event$;
     const fetch = TypeCache.fetch(args.fetch, { cache: args.cache });
 
-    // INTERCEPT: Return pending changes to cells from the fetch method.
+    // INTERCEPT: Return pending changes to [cells] from the fetch method.
     const getCells: t.FetchSheetCells = async args => {
       const res = await fetch.getCells(args);
       const cellChanges = this._changes.cells || {};
@@ -46,7 +49,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       return res;
     };
 
-    // INTERCEPT: Return pending changes to the namespace from the fetch method.
+    // INTERCEPT: Return pending changes to the [namespace] from the fetch method.
     const getNs: t.FetchSheetNs = async args => {
       const ns = this._changes.ns?.to;
       return ns ? { ns } : fetch.getNs(args);
@@ -157,32 +160,56 @@ export class TypedSheetState implements t.ITypedSheetState {
     return (res.cells || {})[key];
   }
 
-  public clearChanges(action: t.ITypedSheetChangesCleared['action']) {
-    const sheet = this._sheet;
-    const ns = this.uri.toString();
-    const from = { ...this._changes };
-    const to = {};
-    this._changes = {}; // NB: resetting state happens after the `from` variable is copied.
-    this.fire({
-      type: 'SHEET/changes/cleared',
-      payload: { sheet, from, to, action },
-    });
+  public clear = {
+    cache: () => {
+      const ns = this.uri.id;
+      const fetch = this.fetch;
+      const cache = fetch.cache;
+      const prefix = {
+        ns: fetch.cacheKey('getNs', ns),
+        cells: fetch.cacheKey('getCells', ns),
+      };
+      cache.keys
+        .filter(key => key.startsWith(prefix.cells) || key.startsWith(prefix.ns))
+        .forEach(key => cache.delete(key));
+    },
+    changes: (action: t.ITypedSheetChangesCleared['action']) => {
+      const sheet = this._sheet;
+      const from = { ...this._changes };
+      const to = {};
+      this._changes = {}; // NB: resetting state happens after the `from` variable is copied.
+      this.fire({
+        type: 'SHEET/changes/cleared',
+        payload: { sheet, from, to, action },
+      });
+    },
+  };
+
+  public change = {
+    ns: <D extends N = N>(to: D) => {
+      const ns = this.uri.toString();
+      this.fire({
+        type: 'SHEET/change',
+        payload: { kind: 'NS', ns, to },
+      });
+    },
+    cell: <D extends C = C>(key: string, to: D) => {
+      const ns = this.uri.toString();
+      this.fire({
+        type: 'SHEET/change',
+        payload: { kind: 'CELL', ns, key, to },
+      });
+    },
+  };
+
+  /**
+   * [INTERNAL]
+   */
+  private fire(e: t.TypedSheetEvent) {
+    this._event$.next(e);
   }
 
-  public clearCache() {
-    const ns = this.uri.id;
-    const fetch = this.fetch;
-    const cache = fetch.cache;
-    const prefix = {
-      ns: fetch.cacheKey('getNs', ns),
-      cells: fetch.cacheKey('getCells', ns),
-    };
-    cache.keys
-      .filter(key => key.startsWith(prefix.cells) || key.startsWith(prefix.ns))
-      .forEach(key => cache.delete(key));
-  }
-
-  public async fireNsChanged<D>(args: { to: D }) {
+  private async fireNsChanged<D>(args: { to: D }) {
     const { to } = args;
 
     const existing = this._changes.ns;
@@ -202,7 +229,7 @@ export class TypedSheetState implements t.ITypedSheetState {
     this.fireChanged({ change });
   }
 
-  public async fireCellChanged<D>(args: { key: string; to: D }) {
+  private async fireCellChanged<D>(args: { key: string; to: D }) {
     const { to, key } = args;
     const existing = (this._changes.cells || {})[key];
     if (existing && R.equals(existing.to, to)) {
@@ -222,13 +249,6 @@ export class TypedSheetState implements t.ITypedSheetState {
     const cells = { ...(this._changes.cells || {}), [key]: change };
     this._changes = { ...this._changes, cells };
     this.fireChanged({ change });
-  }
-
-  /**
-   * [INTERNAL]
-   */
-  private fire(e: t.TypedSheetEvent) {
-    this._event$.next(e);
   }
 
   private fireChanged(args: { change: t.ITypedSheetChangeDiff }) {

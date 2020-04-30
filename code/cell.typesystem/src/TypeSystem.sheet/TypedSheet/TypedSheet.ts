@@ -20,6 +20,37 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   public static client = fromClient;
 
   /**
+   * Generates a standard [context] object that is thread
+   * through the sheet hierarchy.
+   */
+  public static ctx(args: {
+    fetch: t.ISheetFetcher;
+    cache?: t.IMemoryCache;
+    event$?: Subject<t.TypedSheetEvent>;
+    dispose$?: Observable<{}>;
+  }): t.SheetCtx {
+    const fetch = args.fetch;
+    const cache = args.cache || MemoryCache.create();
+    const event$ = args.event$ || new Subject<t.TypedSheetEvent>();
+    const dispose$ = args.dispose$ || new Subject<{}>();
+
+    return {
+      event$,
+      dispose$,
+      fetch,
+      cache,
+      sheet: {
+        load<T>(args: { ns: string }) {
+          return TypedSheet.load<T>({ ...args, fetch, cache, event$ });
+        },
+        create<T>(args: { implements: string }) {
+          return TypedSheet.create<T>({ ...args, fetch, cache, event$ });
+        },
+      },
+    };
+  }
+
+  /**
    * Load a sheet from the network.
    */
   public static async load<T = {}>(args: {
@@ -37,7 +68,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
       throw new Error(res.error.message);
     }
     if (!res.ns?.type?.implements) {
-      const err = `The namespace [${sheetNs}] does not contain an "implements" type reference.`;
+      const err = `The namespace (${sheetNs}) does not contain an "implements" type reference.`;
       throw new Error(err);
     }
     const implementsNs = util.formatNsUri(res.ns?.type?.implements);
@@ -85,6 +116,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
 
     const types = typeDefs.defs;
     const errors = typeDefs.errors;
+
     return new TypedSheet<T>({
       uri: sheetNs,
       implements: implementsNs,
@@ -94,33 +126,6 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
       event$,
       errors,
     });
-  }
-
-  public static ctx(args: {
-    fetch: t.ISheetFetcher;
-    cache?: t.IMemoryCache;
-    event$?: Subject<t.TypedSheetEvent>;
-    dispose$?: Observable<{}>;
-  }): t.SheetCtx {
-    const fetch = args.fetch;
-    const cache = args.cache || MemoryCache.create();
-    const event$ = args.event$ || new Subject<t.TypedSheetEvent>();
-    const dispose$ = args.dispose$ || new Subject<{}>();
-
-    return {
-      event$,
-      dispose$,
-      fetch,
-      cache,
-      sheet: {
-        load<T>(args: { ns: string }) {
-          return TypedSheet.load<T>({ ...args, fetch, cache, event$ });
-        },
-        create<T>(args: { implements: string }) {
-          return TypedSheet.create<T>({ ...args, fetch, cache, event$ });
-        },
-      },
-    };
   }
 
   /**
@@ -212,7 +217,14 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
    * [Methods]
    */
   public toString() {
-    return `[sheet/${this.uri.toString()}]`;
+    return this.uri.toString();
+  }
+
+  public async info<P extends t.INsProps = t.INsProps>() {
+    const res = await this._ctx.fetch.getNs({ ns: this.uri.toString() });
+    const exists = Boolean(res.ns);
+    const ns = (res.ns || {}) as P;
+    return { exists, ns };
   }
 
   public data<D = T>(input: string | t.ITypedSheetDataArgs) {
@@ -255,7 +267,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   }
 
   /**
-   * [INTERNAL]
+   * [Internal]
    */
 
   private throwIfDisposed(action: string) {

@@ -4,7 +4,7 @@ import { delay, filter, take } from 'rxjs/operators';
 import { Client, createMock, ERROR, expect, fs, t, time, TYPE_DEFS } from '../../test';
 import * as g from '../.d.ts/all';
 
-describe.only('Client.TypeSystem', () => {
+describe('Client.TypeSystem', () => {
   it('from host (origin)', async () => {
     const client = Client.typesystem('localhost:1234');
     expect(client.http.origin).to.eql('http://localhost:1234');
@@ -95,7 +95,6 @@ describe.only('Client.TypeSystem', () => {
           .data<g.MyRow>('MyRow')
           .row(0)
           .load();
-
         row.props.title = '1';
         row.props.title = '2';
         row.props.title = '3';
@@ -118,11 +117,10 @@ describe.only('Client.TypeSystem', () => {
       it('saves cell changes', async () => {
         const { mock, client } = await testDefs();
         const sheet = await client.sheet('ns:foo.mySheet');
-        expect(sheet.state.changes).to.eql({});
-
+        const saver = Client.saveMonitor({ client, debounce: 1 });
         client.changes.watch(sheet);
 
-        const saver = Client.saveMonitor({ client, debounce: 1 });
+        expect(sheet.state.changes).to.eql({});
         expect(saver.debounce).to.eql(1);
 
         const cursor = await sheet.data<g.MyRow>('MyRow').load();
@@ -154,7 +152,7 @@ describe.only('Client.TypeSystem', () => {
         const saver = Client.saveMonitor({ client, debounce: 5 });
         expect(saver.debounce).to.eql(5);
 
-        sheet.state.fireNsChanged({ to: { type: { implements: 'ns:boom' } } });
+        sheet.state.change.ns({ type: { implements: 'ns:boom' } });
         await time.delay(50);
 
         const ns2 = (await client.http.ns('ns:foo.mySheet').read()).body.data.ns;
@@ -171,8 +169,6 @@ describe.only('Client.TypeSystem', () => {
         expect(saver.debounce).to.eql(300);
         await mock.dispose();
       });
-
-      it.skip('stores "implements"', async () => {});
 
       it('secondary changes while save operation in progress', async () => {
         const { mock, client } = await testDefs();
@@ -224,8 +220,7 @@ describe.only('Client.TypeSystem', () => {
         row.title = 'hello';
         row.isEnabled = true;
 
-        sheet.state.fireNsChanged({ to: { type: { implements: 'ns:foobar' } } });
-
+        sheet.state.change.ns({ type: { implements: 'ns:foobar' } });
         await time.delay(50);
         await mock.dispose();
 
@@ -297,6 +292,27 @@ describe.only('Client.TypeSystem', () => {
         expect(child.status).to.eql(422);
         expect(child.type).to.eql(errorType);
         expect(child.message).to.include('My fail');
+      });
+
+      it('stores "implements" (on REF model creation)', async () => {
+        const { mock, client } = await testDefs();
+        const sheet = await client.sheet('ns:foo.mySheet');
+        Client.saveMonitor({ client, debounce: 5 });
+        client.changes.watch(sheet);
+
+        const cursor = await sheet.data<g.MyRow>('MyRow').load();
+        const row = cursor.row(0);
+        const messages = await row.props.messages.load();
+
+        await time.delay(50);
+
+        const res = await client.http.ns(messages.ns).read();
+        const ns = res.body.data.ns;
+        await mock.dispose();
+
+        // NB: This value was written to the model via the [ChangeMonitor]
+        //     then persisted to the DB via the [SaveMonitor].
+        expect(ns.props?.type?.implements).to.eql('ns:foo.message');
       });
     });
   });

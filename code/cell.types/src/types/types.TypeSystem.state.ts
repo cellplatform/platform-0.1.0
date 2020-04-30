@@ -1,5 +1,8 @@
 import { t } from '../common';
 
+type N = t.INsProps;
+type C = t.ICellData;
+
 /**
  * State machine for a sheet.
  */
@@ -16,11 +19,15 @@ export type ITypedSheetState = {
   readonly hasChanges: boolean;
   readonly isDisposed: boolean;
 
-  clearChanges(action: t.ITypedSheetChangesCleared['action']): void;
-  clearCache(): void;
+  readonly change: {
+    ns<D extends N = N>(to: D): void;
+    cell<D extends C = C>(key: string, to: D): void;
+  };
 
-  fireNsChanged<D>(args: { to: D }): Promise<void>;
-  fireCellChanged<D>(args: { key: string; to: D }): Promise<void>;
+  readonly clear: {
+    cache(): void;
+    changes(action: t.ITypedSheetChangesCleared['action']): void;
+  };
 };
 
 /**
@@ -37,7 +44,6 @@ export type ITypedSheetChangeDiff = ITypedSheetChangeNsDiff | ITypedSheetChangeC
 /**
  * A change to the namespace
  */
-type N = t.INsProps;
 export type ITypedSheetChangeNs<D extends N = N> = {
   kind: 'NS';
   ns: string;
@@ -48,7 +54,6 @@ export type ITypedSheetChangeNsDiff<D extends N = N> = ITypedSheetChangeNs<D> & 
 /**
  * An individual cell change within a sheet.
  */
-type C = t.ICellData;
 export type ITypedSheetChangeCell<D extends C = C> = {
   kind: 'CELL';
   ns: string;

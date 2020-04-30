@@ -3,6 +3,7 @@ import { t } from '../common';
 export type ITypedSheet<T = {}> = {
   readonly ok: boolean;
   readonly uri: t.INsUri;
+  readonly implements: t.INsUri;
   readonly types: { typename: string; columns: t.IColumnTypeDef[] }[];
   readonly state: t.ITypedSheetState;
   readonly event$: t.Observable<t.TypedSheetEvent>;
@@ -10,9 +11,12 @@ export type ITypedSheet<T = {}> = {
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   dispose(): void;
+  info<P extends t.INsProps = t.INsProps>(): Promise<ITypedSheetInfo<P>>;
   data<D = T>(args: string | ITypedSheetDataArgs): ITypedSheetData<D>;
   toString(): string;
 };
+
+export type ITypedSheetInfo<P extends t.INsProps = t.INsProps> = { exists: boolean; ns: P };
 
 export type ITypedSheetDataOptions = { range?: string };
 export type ITypedSheetDataArgs = { typename: string } & ITypedSheetDataOptions;

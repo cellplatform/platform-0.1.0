@@ -25,11 +25,24 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
         filter(e => e.type === 'SHEET/refs/loaded'),
         map(e => e.payload as t.ITypedSheetRefsLoaded),
       )
-      .subscribe(e => {
+      .subscribe(async e => {
         const item = this.item(e.sheet);
         if (item) {
+          // Register the reference.
           item.refs.push(e.refs);
-          this.watch(e.refs.sheet);
+
+          // Monitor the sheet.
+          const sheet = e.refs.sheet;
+          this.watch(sheet);
+
+          // Ensure the typesystem details are up-to-date.
+          // NB: This "implements" update is made upon the creation of a new referenced sheet.
+          const info = await sheet.info();
+          const type = info.ns.type || {};
+          if (!type.implements) {
+            const uri = sheet.implements.toString();
+            sheet.state.change.ns({ type: { implements: uri } });
+          }
         }
       });
 

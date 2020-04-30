@@ -84,7 +84,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     }
 
     if (this._load) {
-      return this._load; // Single loader.
+      return this._load; // Aleady loading.
     }
 
     this.fire({
@@ -106,7 +106,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
         event$,
       });
 
-      delete this._load; // Remove temporary load cache.
+      delete this._load; // Remove temporary reference to loader promise.
       this.fire({
         type: 'SHEET/refs/loaded',
         payload: { sheet: this.parent.sheet, refs: this },
@@ -114,7 +114,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
       resolve(this);
     });
 
-    this._load = promise; // Temporarily cache so that any other calls to READY do not repeat the setup.
+    this._load = promise; // Temporarily hold onto a reference so that any other calls to READY do not repeat the setup.
     return promise;
   }
 
