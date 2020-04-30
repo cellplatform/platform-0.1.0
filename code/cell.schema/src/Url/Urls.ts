@@ -198,7 +198,7 @@ export class Urls implements t.IUrls {
         byFileUri(fileUri: string, fileExtension?: string) {
           type Q = t.IReqQueryCellFileDownloadByFileUri;
           fileExtension = (fileExtension || '').trim();
-          const uri = Uri.parse<t.IFileUri>(fileUri).parts;
+          const uri = Uri.file(fileUri);
           if (uri.type !== 'FILE') {
             throw new Error(`The given URI [${fileUri}] is not of type [file:]`);
           }

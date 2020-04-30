@@ -46,8 +46,8 @@ export class Schema {
         input,
         toUri: path => CoordSchema.uri({ path }),
         toPath: uri => {
-          const { parts } = Uri.parse<t.ICellUri>(uri);
-          return Schema.ns(parts.ns).cell(parts.key).path;
+          const { ns, key } = Uri.cell(uri);
+          return Schema.ns(ns).cell(key).path;
         },
       });
     },
@@ -56,8 +56,8 @@ export class Schema {
         input,
         toUri: path => CoordSchema.uri({ path }),
         toPath: uri => {
-          const { parts } = Uri.parse<t.IRowUri>(uri);
-          return Schema.ns(parts.ns).row(parts.key).path;
+          const { ns, key } = Uri.row(uri);
+          return Schema.ns(ns).row(key).path;
         },
       });
     },
@@ -66,8 +66,8 @@ export class Schema {
         input,
         toUri: path => CoordSchema.uri({ path }),
         toPath: uri => {
-          const { parts } = Uri.parse<t.IColumnUri>(uri);
-          return Schema.ns(parts.ns).column(parts.key).path;
+          const { ns, key } = Uri.column(uri);
+          return Schema.ns(ns).column(key).path;
         },
       });
     },
@@ -76,8 +76,8 @@ export class Schema {
         input,
         toUri: path => FileSchema.uri({ path }),
         toPath: uri => {
-          const { parts } = Uri.parse<t.IFileUri>(uri);
-          return Schema.ns(parts.ns).file(parts.file).path;
+          const { ns, file } = Uri.file(uri);
+          return Schema.ns(ns).file(file).path;
         },
       });
     },
