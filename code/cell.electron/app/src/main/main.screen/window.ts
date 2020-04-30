@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 import { constants, log, Schema, t, Uri } from '../common';
-import { client } from '../main.client';
+import { sys } from '../main.sys';
 
 const SYS = constants.SYS;
 
@@ -8,7 +8,6 @@ const SYS = constants.SYS;
  *
  */
 export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
-  // const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
   const ctx = args.ctx;
 
   const defs = await ctx.windowDefs.data();
@@ -54,10 +53,7 @@ export async function createWindow(args: {
 }) {
   const def = Uri.row(args.def);
   const instance = Uri.row(args.instance);
-
-  // const ctx = await client.getOrCreateSystemContext(args.ctx.host); // 🐷 HACK: this should have updated internally (data caching issue).
   const ctx = args.ctx;
-
   const host = ctx.host;
 
   const windows = await ctx.windows.data();

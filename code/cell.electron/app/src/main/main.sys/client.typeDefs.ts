@@ -52,9 +52,7 @@ export const DEFS: TypeDefs = {
 /**
  * Write the application types.
  */
-export async function initTypeDefs(host: string, options: { save?: boolean } = {}) {
-  const client = Client.typesystem(host);
-
+export async function initTypeDefs(client: t.IClientTypesystem, options: { save?: boolean } = {}) {
   const write = async (ns: string) => {
     if (!DEFS[ns]) {
       throw new Error(`namespace "${ns}" is not defined.`);
