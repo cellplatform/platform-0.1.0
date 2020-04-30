@@ -1,0 +1,29 @@
+{
+  "name": "@platform/queue",
+  "version": "0.0.0",
+  "description": "Queue abstraction.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/libs": "0.2.1"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.7",
+    "@platform/ts": "3.7.20"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}
