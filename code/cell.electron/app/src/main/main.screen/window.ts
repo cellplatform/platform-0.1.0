@@ -1,15 +1,11 @@
-import { BrowserWindow } from 'electron';
-import { constants, log, Schema, t, Uri } from '../common';
-import { sys } from '../main.sys';
-
-const SYS = constants.SYS;
+import { BrowserWindow, app } from 'electron';
+import { constants, log, Schema, t, Uri, fs } from '../common';
 
 /**
  *
  */
 export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
   const ctx = args.ctx;
-
   const defs = await ctx.windowDefs.data();
   const instances = await ctx.windows.data();
   const def = defs.rows.find(row => row.props.kind === args.kind);
@@ -28,7 +24,7 @@ export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
   };
 
   if (def) {
-    if (instances.total < 1) {
+    if (instances.total < 2) {
       // TEMP 🐷
       await createInstance(def.props);
     }
@@ -57,21 +53,27 @@ export async function createWindow(args: {
   const host = ctx.host;
 
   const windows = await ctx.windows.data();
-  const window = windows.rows.find(w => w.uri.toString() === instance.toString());
+  const window = windows.rows.find(item => item.uri.toString() === instance.toString());
   if (!window) {
-    throw new Error(`Could not find window model '${instance.toString()}'`);
+    throw new Error(`Could not find [window] data-model '${instance.toString()}'`);
   }
 
   // Create the browser window.
+  // Docs: https://www.electronjs.org/docs/api/browser-window
   const props = window.props;
   const browser = new BrowserWindow({
+    show: false,
     width: props.width,
     height: props.height,
     x: props.x < 0 ? undefined : props.x,
     y: props.y < 0 ? undefined : props.y,
-    show: false,
-    webPreferences: { nodeIntegration: true },
     titleBarStyle: 'hiddenInset',
+    webPreferences: {
+      nodeIntegration: false,
+      enableRemoteModule: false,
+      preload: fs.join(__dirname, '../../renderer/index.js'),
+      additionalArguments: [`window=${instance.toString()}`],
+    },
   });
 
   const urls = Schema.urls(host);
@@ -102,11 +104,24 @@ export async function createWindow(args: {
   browser.on('resize', () => updateBounds());
   browser.on('move', () => updateBounds());
 
+  const ref: t.IWindowRef = {
+    uri: instance.toString(),
+    send: <T>(channel: string, payload: T) => browser.webContents.send(channel, payload),
+  };
+
   browser.once('ready-to-show', () => {
     browser.setTitle(props.title);
+    ctx.windowRefs = [...ctx.windowRefs, ref];
+
     browser.webContents.openDevTools(); // TEMP 🐷
 
+    // browser.webContents.send()
+
     browser.show();
+  });
+
+  browser.once('closed', () => {
+    ctx.windowRefs = ctx.windowRefs.filter(item => item.uri !== instance.toString());
   });
 
   // Finish up.

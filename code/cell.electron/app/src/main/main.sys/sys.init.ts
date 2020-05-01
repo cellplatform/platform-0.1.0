@@ -2,6 +2,7 @@ import { constants, fs, t, Uri } from '../common';
 import { monitor } from './sys.monitor';
 import { DEFS } from './sys.typeDefs';
 import { upload } from './sys.upload';
+import { ipc } from './sys.ipc';
 
 const SYS = constants.SYS;
 const NS = SYS.NS;
@@ -37,8 +38,10 @@ export async function initContext(client: t.IClientTypesystem) {
     app,
     windows,
     windowDefs,
+    windowRefs: [],
   };
 
+  ipc({ ctx });
   return ctx;
 }
 
