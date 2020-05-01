@@ -1,2 +1,2 @@
-import * as sys from './client';
+import * as sys from './sys';
 export { sys };

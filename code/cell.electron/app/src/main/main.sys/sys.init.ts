@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
 import { Client, constants, fs, log, t, Uri } from '../common';
-import { upload } from './client.upload';
+import { upload } from './sys.upload';
 
 const SYS = constants.SYS;
 const NS = SYS.NS;
@@ -10,7 +10,7 @@ const NS = SYS.NS;
 /**
  * Writes (initializes) system data.
  */
-export async function getOrCreateSystemContext(client: t.IClientTypesystem) {
+export async function initContext(client: t.IClientTypesystem) {
   const host = client.http.origin;
   const ns = client.http.ns(NS.APP);
 
@@ -46,7 +46,7 @@ export async function getOrCreateSystemContext(client: t.IClientTypesystem) {
 }
 
 /**
- * Creates the IDE window definition.
+ * Creates the new window definition.
  */
 export async function initWindowDef(args: {
   kind: string;
