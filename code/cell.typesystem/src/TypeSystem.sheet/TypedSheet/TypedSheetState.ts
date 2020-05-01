@@ -238,6 +238,15 @@ export class TypedSheetState implements t.ITypedSheetState {
 
     const ns = Uri.create.ns(this.uri.id);
     const from = (existing ? existing.from : await this.getCell(key)) || {};
+
+    // Strip hashes from change values.
+    // NB: Hashes are calculated at save time, under their own optimized schedule.
+    //     Hashes in a "change" context, without actually re-calculating the hash
+    //     which should not be occuring here, does not make sense, so is stripped
+    //     from here to avoid confusion.
+    delete from.hash;
+    delete (to as any).hash;
+
     const change: t.ITypedSheetChangeCellDiff = {
       kind: 'CELL',
       ns,

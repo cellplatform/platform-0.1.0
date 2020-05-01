@@ -173,6 +173,36 @@ describe('TypedSheetChangeMonitor', () => {
       expect(fired[0].sheet).to.equal(sheet);
       expect(fired[0].change.to).to.eql({ value: 'Foo' });
     });
+
+    it('changed$ (from ➔ to: strips "hash")', async () => {
+      const { sheet, fetch } = await testMySheet({ A1: { value: 'MyTitle', hash: 'abc' } });
+      const monitor = ChangeMonitor.create().watch(sheet);
+
+      const fired: t.ITypedSheetChanged[] = [];
+      monitor.changed$.subscribe(e => fired.push(e));
+
+      const cursor = await sheet.data<m.MyRow>('MyRow').load();
+      const row = cursor.row(0).props;
+      const res = await fetch.getCells({ ns: 'ns:foo.mySheet', query: 'A1:A1' });
+
+      // NB: Injected test values.
+      expect(row.title).to.eql('MyTitle');
+      expect(res.cells?.A1?.hash).to.eql('abc'); // NB: Hash exists on underlying data.
+
+      row.title = 'Foobar';
+      await time.wait(0);
+
+      const changes = sheet.state.changes;
+      expect(changes).to.eql(fired[0].changes);
+
+      const A1 = sheet.state.changes.cells?.A1 as t.ITypedSheetChangeCellDiff;
+      expect(A1.from.value).to.eql('MyTitle');
+      expect(A1.to.value).to.eql('Foobar');
+
+      // NB: hashes stripped!
+      expect(A1.from.hash).to.eql(undefined);
+      expect(A1.to.hash).to.eql(undefined);
+    });
   });
 
   describe('REF (auto monitor child sheets)', () => {
@@ -219,18 +249,19 @@ describe('TypedSheetChangeMonitor', () => {
  * HELPERS: Test Data
  */
 
-const testFetchMySheet = (ns: string) => {
+const testFetchMySheet = (ns: string, cells?: t.ICellMap) => {
   return testInstanceFetch({
     instance: ns,
     implements: 'ns:foo',
     defs: TYPE_DEFS,
+    cells,
   });
 };
 
-const testMySheet = async () => {
+const testMySheet = async (cells?: t.ICellMap) => {
   const ns = 'ns:foo.mySheet';
   const event$ = new Subject<t.TypedSheetEvent>();
-  const fetch = await testFetchMySheet(ns);
+  const fetch = await testFetchMySheet(ns, cells);
   const sheet = await TypeSystem.Sheet.load<m.MyRow>({ fetch, ns, event$ });
   return { ns, fetch, sheet, event$ };
 };
