@@ -55,10 +55,6 @@ export class MemoryQueue implements t.IMemoryQueue {
     return this.items.length;
   }
 
-  public get isEmpty() {
-    return this.length === 0;
-  }
-
   public get isEnabled() {
     return this._isEnabled;
   }
@@ -159,9 +155,8 @@ export class MemoryQueue implements t.IMemoryQueue {
       type: 'QUEUE/status',
       payload: {
         id: this.id,
-        isEnabled: this.isEnabled,
-        isEmpty: this.isEmpty,
         length: this.length,
+        isEnabled: this.isEnabled,
       },
     });
   }
@@ -175,7 +170,7 @@ export class MemoryQueue implements t.IMemoryQueue {
       this.items = this.items.slice(1);
       this._current = item;
       await item.run();
-      if (!this.isEmpty) {
+      if (this.length > 0) {
         this.pop(); // <== 🌳RECURSION
       }
     }

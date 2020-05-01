@@ -5,7 +5,6 @@ export type QueueHandler<T> = () => Promise<T>;
 export type IMemoryQueue = {
   readonly id: string;
   readonly length: number;
-  readonly isEmpty: boolean;
   readonly isEnabled: boolean;
   readonly isDisposed: boolean;
   readonly dispose$: Observable<{}>;
@@ -43,7 +42,7 @@ export type IQueueStatusEvent = {
   type: 'QUEUE/status';
   payload: IQueueStatus;
 };
-export type IQueueStatus = { id: string; isEnabled: boolean; isEmpty: boolean; length: number };
+export type IQueueStatus = { id: string; isEnabled: boolean; length: number };
 
 /**
  * Event: item processing

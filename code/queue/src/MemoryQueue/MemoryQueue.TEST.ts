@@ -23,7 +23,6 @@ describe.only('Queue', () => {
       const queue = MemoryQueue.create();
       expect(queue.id.length).to.greaterThan(3);
       expect(queue.length).to.eql(0);
-      expect(queue.isEmpty).to.eql(true);
       expect(queue.isEnabled).to.eql(true);
     });
 
@@ -68,12 +67,10 @@ describe.only('Queue', () => {
 
       expect(e1.id).to.eql(queue.id);
       expect(e1.isEnabled).to.eql(false);
-      expect(e1.isEmpty).to.eql(true);
       expect(e1.length).to.eql(0);
 
       expect(e2.id).to.eql(queue.id);
       expect(e2.isEnabled).to.eql(true);
-      expect(e2.isEmpty).to.eql(true);
       expect(e2.length).to.eql(0);
     });
   });
@@ -161,7 +158,6 @@ describe.only('Queue', () => {
       await Promise.all([res1, res2]);
 
       expect(results).to.eql([1, 2]);
-      expect(queue.isEmpty).to.eql(true);
       expect(queue.length).to.eql(0);
     });
 
