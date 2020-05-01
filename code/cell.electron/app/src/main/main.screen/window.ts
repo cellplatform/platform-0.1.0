@@ -72,7 +72,7 @@ export async function createWindow(args: {
       nodeIntegration: false,
       enableRemoteModule: false,
       preload: fs.join(__dirname, '../../renderer/index.js'),
-      additionalArguments: [`window=${instance.toString()}`],
+      additionalArguments: [`${constants.PROCESS.WINDOW_URI}=${instance.toString()}`],
     },
   });
 
