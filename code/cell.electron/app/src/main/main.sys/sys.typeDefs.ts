@@ -1,4 +1,4 @@
-import { Client, fs, t, constants } from '../common';
+import { constants, t } from '../common';
 
 const SYS = constants.SYS;
 const NS = SYS.NS;
@@ -48,24 +48,3 @@ export const DEFS: TypeDefs = {
     },
   },
 };
-
-/**
- * Write the application types.
- */
-export async function initTypeDefs(client: t.IClientTypesystem, options: { save?: boolean } = {}) {
-  const write = async (ns: string) => {
-    if (!DEFS[ns]) {
-      throw new Error(`namespace "${ns}" is not defined.`);
-    }
-    await client.http.ns(ns).write(DEFS[ns]);
-  };
-
-  await write(NS.TYPE.APP);
-  await write(NS.TYPE.WINDOW_DEF);
-  await write(NS.TYPE.WINDOW);
-
-  if (options.save) {
-    const ts = await client.typescript(NS.TYPE.APP);
-    await ts.save(fs, fs.resolve('src/types.g'));
-  }
-}
