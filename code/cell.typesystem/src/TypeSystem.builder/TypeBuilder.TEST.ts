@@ -1,5 +1,6 @@
 import { expect, Uri } from '../test';
 import { TypeBuilder } from '.';
+import { TypeBuilderNs } from './TypeBuilderNs';
 
 describe.only('TypeBuilder', () => {
   it('create', () => {
@@ -10,15 +11,15 @@ describe.only('TypeBuilder', () => {
 
   describe('ns', () => {
     it('from string', () => {
-      const builder = TypeBuilder.create();
-      const ns = builder.ns('foo');
+      const ns = TypeBuilder.create().ns('foo');
+      expect(ns).to.be.an.instanceof(TypeBuilderNs);
       expect(ns.uri.toString()).to.eql('ns:foo');
     });
 
     it('from object', () => {
-      const builder = TypeBuilder.create();
       const uri = Uri.ns('foo');
-      const ns = builder.ns(uri);
+      const ns = TypeBuilder.create().ns(uri);
+      expect(ns).to.be.an.instanceof(TypeBuilderNs);
       expect(ns.uri.toString()).to.eql('ns:foo');
     });
   });

@@ -1,6 +1,5 @@
-import { Uri, t } from '../common';
-
-type TypeDefs = { [key: string]: t.ITypeDefPayload };
+import { t } from '../common';
+import { TypeBuilderNs } from './TypeBuilderNs';
 
 /**
  * A structured API for building a set of type-definitions in code.
@@ -21,8 +20,8 @@ export class TypeBuilder implements t.ITypeBuilder {
   /**
    * [Properties]
    */
-  public get defs(): TypeDefs {
-    return this._ns.reduce((acc: TypeDefs, next) => {
+  public get defs() {
+    return this._ns.reduce((acc: t.ITypeBuilderDefs, next) => {
       const ns = next.uri.toString();
       acc[ns] = next.toObject();
       return acc;
@@ -37,13 +36,8 @@ export class TypeBuilder implements t.ITypeBuilder {
   }
 
   public ns(uri: string | t.INsUri) {
-    const api: t.ITypeBuilderNs = {
-      uri: Uri.ns(uri),
-      toObject() {
-        return { columns: {} };
-      },
-    };
-    this._ns.push(api);
-    return api;
+    const ns = TypeBuilderNs.create({ uri });
+    this._ns.push(ns);
+    return ns;
   }
 }
