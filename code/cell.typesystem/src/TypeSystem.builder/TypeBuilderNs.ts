@@ -1,4 +1,5 @@
 import { t, Uri } from '../common';
+import { TypeBuilderType } from './TypeBuilderType';
 
 export type IArgs = {
   uri: string | t.INsUri;
@@ -27,5 +28,12 @@ export class TypeBuilderNs implements t.ITypeBuilderNs {
    */
   public toObject() {
     return { columns: {} };
+  }
+
+  public type(typename: string, options: { startColumn?: string | number } = {}) {
+    const { startColumn } = options;
+    const uri = this.uri;
+    const type = TypeBuilderType.create({ uri, typename, startColumn });
+    return type;
   }
 }

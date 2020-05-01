@@ -12,15 +12,19 @@ export type ITypeBuilder = {
 export type ITypeBuilderDefs = { [namespace: string]: t.ITypeDefPayload };
 
 /**
- * Builder for a single complex (namespace) type.
+ * Builder for a type(s) within a namespace.
  */
 export type ITypeBuilderNs = {
   readonly uri: t.INsUri;
   toObject(): t.ITypeDefPayload;
+  type(typename: string, options?: { startColumn?: string | number }): ITypeBuilderType;
 };
 
-
-
-export type IDefBuilderColumns = {
+/**
+ * Builder for a single named type within a namespace.
+ */
+export type ITypeBuilderType = {
+  readonly uri: t.INsUri;
   readonly typename: string;
+  readonly startColumn: number;
 };
