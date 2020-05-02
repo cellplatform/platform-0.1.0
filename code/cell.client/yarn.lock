@@ -25,27 +25,27 @@
   dependencies:
     "@platform/libs" "0.2.1"
 
-"@platform/cell.coord@0.8.102":
-  version "0.8.102"
-  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.102.tgz#36e20b12fe22f554960113ed23cd37d5c54af2e9"
-  integrity sha512-ED2cm8eiXDpwyt9iG5EYAaxwLOykXcbiVU9arE2EuLJkXJiv+gZdC1MPEepwbrcShI0xTmfg1Be/V9LG6q+ExQ==
+"@platform/cell.coord@0.8.103":
+  version "0.8.103"
+  resolved "https://registry.yarnpkg.com/@platform/cell.coord/-/cell.coord-0.8.103.tgz#db5991b9cbf6027efb8db138044b3c29557cfaff"
+  integrity sha512-zpBGy9aiY9BIeRGBEMrLs6BioyrdX1/xugwRBHsrLVLtY+FjYGVdQHvU24+7YI6NwzHvfWIIulUpwG0NARNNmQ==
   dependencies:
     "@platform/cache" "0.2.23"
-    "@platform/cell.types" "0.4.83"
+    "@platform/cell.types" "0.4.84"
     "@platform/types" "0.4.14"
     "@platform/util.value" "0.7.14"
     excel-formula-ast "1.1.1"
     excel-formula-tokenizer "2.3.0"
     toposort "2.0.2"
 
-"@platform/cell.schema@0.4.92":
-  version "0.4.92"
-  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.92.tgz#19e2d65404b8a9a46bd4837d037262c0d5e5917b"
-  integrity sha512-KnfgGtdopwgvP3KVFNT8W7gTtMo4UefH4iTacBEoI5r9Xk5jFeiidVj9TVNyUSp40qTpXesvHBChm9GAqCwRRg==
+"@platform/cell.schema@0.4.93":
+  version "0.4.93"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.93.tgz#3a4b4dd1a2963d93d54108b8d6228630e9eb2c36"
+  integrity sha512-gy/Pe/7DxM+roafGlDjRPiahRWKzWLYTfbuRAN0Uz2e8quxBbtgvJ8l8PqSkuocKOcuixujOjLWMl1WnBdhAdg==
   dependencies:
     "@platform/cache" "0.2.23"
-    "@platform/cell.coord" "0.8.102"
-    "@platform/cell.types" "0.4.83"
+    "@platform/cell.coord" "0.8.103"
+    "@platform/cell.types" "0.4.84"
     "@platform/fs.types" "0.0.7"
     "@platform/fsdb.types" "0.6.18"
     "@platform/libs" "0.2.1"
@@ -54,10 +54,10 @@
     "@platform/util.string" "0.5.0"
     "@platform/util.value" "0.7.14"
 
-"@platform/cell.types@0.4.83":
-  version "0.4.83"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.83.tgz#3b4ddd3d6cc83f7c196a0b169125d909e72e7831"
-  integrity sha512-Jrf8dgsBmPCszTNDajsia7ZTu6gcyCiW1cd0QYSe52Gr/tJuh0A/uG+zY0KfFQqHClOHlFFQw76DDf1O1PVaJg==
+"@platform/cell.types@0.4.84":
+  version "0.4.84"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.84.tgz#c7af731e0b99595af74a5109b8343b0273475309"
+  integrity sha512-kwnyWdPzBNXIZX+35Xt2cjT+YKd2pw3umNKVIg1zkeMYfu6BeJLXWH2s0PGgBlm8+/H8XzvlGdsa+mz5QCTLdA==
   dependencies:
     "@platform/cache" "0.2.23"
     "@platform/fs.s3.types" "0.2.1"
@@ -69,15 +69,15 @@
     "@platform/types" "0.4.14"
     "@platform/util.diff" "0.0.24"
 
-"@platform/cell.typesystem@0.0.30":
-  version "0.0.30"
-  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.30.tgz#f6fb1bc8aab05fe8f7cbf84d12a500348db9d67e"
-  integrity sha512-Eai0y83Z1jJAwZBYgs2enVpSr49cRMrK4dWmR7L0CbyAjTWOWmqHBG9yQ2Q8ADZQ60Zmw5ZZsM6nOAS4gZZacw==
+"@platform/cell.typesystem@0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.31.tgz#e2ab9d3e3de962fad7529c35bfebdf1a36c80875"
+  integrity sha512-E+H8N9yQMyNH7PPD9a3Cjkcepq8MR2k5r61qQ4Lgo6Z/zcibcxmOidgd17YkbyclqEhpclY/Vk5d3DiRpIL+9g==
   dependencies:
     "@platform/cache" "0.2.23"
-    "@platform/cell.coord" "0.8.102"
-    "@platform/cell.schema" "0.4.92"
-    "@platform/cell.types" "0.4.83"
+    "@platform/cell.coord" "0.8.103"
+    "@platform/cell.schema" "0.4.93"
+    "@platform/cell.types" "0.4.84"
     "@platform/libs" "0.2.1"
     "@platform/types" "0.4.14"
     "@platform/util.value" "0.7.14"
@@ -170,10 +170,10 @@
     chalk "3.0.0"
     cli-table "0.3.1"
 
-"@platform/queue@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@platform/queue/-/queue-0.0.2.tgz#f82e3ff29900c6de6303789956748228a1e9a3e1"
-  integrity sha512-0N6iOtrt30K4PKhbAMG8o/ByAI+lRLEI9niZr1euLHXbNvjHRkI79jI22c+FF7HmCVUrhvphFDN+oNqAKA0RKQ==
+"@platform/queue@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/queue/-/queue-0.0.3.tgz#2d690b99aa7bd76262f7c9ecfcd9c95c120bccd0"
+  integrity sha512-KS4Zq75qRRarCR2XoYFAcl17VdHs886BeU3LJkYN2NCi132+LWh0tos7YnbGvYYw+kb/fjqXBjabc3E+Dv7juQ==
   dependencies:
     "@platform/libs" "0.2.1"
     "@platform/util.value" "0.7.14"
