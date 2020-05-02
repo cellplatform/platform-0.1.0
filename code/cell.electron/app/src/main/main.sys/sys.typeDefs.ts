@@ -1,50 +1,35 @@
-import { constants, t } from '../common';
+import { constants, TypeSystem } from '../common';
 
-const SYS = constants.SYS;
-const NS = SYS.NS;
+const NS = constants.SYS.NS;
+const def = TypeSystem.def();
 
-type TypeDefs = { [key: string]: t.ITypeDefPayload };
+def
+  .ns(NS.TYPE.APP)
+  .type('SysApp')
+  .prop('title', { type: 'string', default: 'CellOS' })
+  .prop('windowDefs', p => p.type('/SysAppWindowDef[]').target('ref'))
+  .prop('windows', p => p.type('/SysAppWindow[]').target('ref'));
 
-export const DEFS: TypeDefs = {
-  [NS.TYPE.APP]: {
-    columns: {
-      A: { props: { def: { prop: 'SysApp.title', type: 'string', default: 'CellOS' } } },
-      B: {
-        props: {
-          def: {
-            prop: 'SysApp.windowDefs',
-            type: `${NS.TYPE.WINDOW_DEF}/SysAppWindowDef[]`,
-            target: 'ref',
-          },
-        },
-      },
-      C: {
-        props: {
-          def: {
-            prop: 'SysApp.windows',
-            type: `${NS.TYPE.WINDOW}/SysAppWindow[]`,
-            target: 'ref',
-          },
-        },
-      },
-    },
-  },
-  [NS.TYPE.WINDOW_DEF]: {
-    columns: {
-      A: { props: { def: { prop: 'SysAppWindowDef.kind', type: 'string', default: '' } } },
-      B: { props: { def: { prop: 'SysAppWindowDef.width', type: 'number', default: 1200 } } },
-      C: { props: { def: { prop: 'SysAppWindowDef.height', type: 'number', default: 800 } } },
-    },
-  },
-  [NS.TYPE.WINDOW]: {
-    columns: {
-      A: { props: { def: { prop: 'SysAppWindow.id', type: 'string', default: '' } } },
-      B: { props: { def: { prop: 'SysAppWindow.kind', type: 'string', default: '' } } },
-      C: { props: { def: { prop: 'SysAppWindow.title', type: 'string', default: 'Untitled' } } },
-      D: { props: { def: { prop: 'SysAppWindow.width', type: 'number', default: -1 } } },
-      E: { props: { def: { prop: 'SysAppWindow.height', type: 'number', default: -1 } } },
-      F: { props: { def: { prop: 'SysAppWindow.x', type: 'number' } } },
-      G: { props: { def: { prop: 'SysAppWindow.y', type: 'number' } } },
-    },
-  },
-};
+def
+  .ns(NS.TYPE.WINDOW_DEF)
+  .type('SysAppWindowDef')
+  .prop('kind', p => p.type('string').default(''))
+  .prop('width', p => p.type('number').default(1200))
+  .prop('height', p => p.type('number').default(800));
+
+def
+  .ns(NS.TYPE.WINDOW)
+  .type('SysAppWindow')
+  .prop('id', p => p.type('string').default(''))
+  .prop('kind', p => p.type('string').default(''))
+  .prop('title', p => p.type('string').default('Untitled'))
+  .prop('width', p => p.type('number').default(-1))
+  .prop('height', p => p.type('number').default(-1))
+  .prop('x', p => p.type('number'))
+  .prop('y', p => p.type('number'));
+
+export const DEFS = def.toObject();
+
+
+
+

@@ -2,6 +2,7 @@ import { ipcRenderer } from 'electron';
 import { Subject } from 'rxjs';
 
 import { constants, t } from './common';
+
 const { IPC, PROCESS } = constants;
 
 // Read out the window-definition passed through the [process] arguments.
@@ -23,7 +24,7 @@ console.groupEnd();
 const ipc$ = new Subject<t.IpcEvent>();
 ipcRenderer.on(IPC.CHANNEL, (ipc, event: t.IpcEvent) => ipc$.next(event));
 
-ipc$.pipe().subscribe(e => {
+ipc$.subscribe(e => {
   const isSelf = e.payload.window === uri;
   const out = isSelf ? { ...e, isSelf } : e;
 
