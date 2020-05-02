@@ -23,13 +23,12 @@ describe.only('Queue', () => {
       const queue = MemoryQueue.create();
       expect(queue.id.length).to.greaterThan(3);
       expect(queue.length).to.eql(0);
-      expect(queue.isEmpty).to.eql(true);
-      expect(queue.isEnabled).to.eql(true);
+      expect(queue.isRunning).to.eql(true);
     });
 
     it('create (stopped)', () => {
-      const queue = MemoryQueue.create({ isEnabled: false });
-      expect(queue.isEnabled).to.eql(false);
+      const queue = MemoryQueue.create({ isRunning: false });
+      expect(queue.isRunning).to.eql(false);
     });
 
     it('dispose', () => {
@@ -41,11 +40,11 @@ describe.only('Queue', () => {
   });
 
   describe('start/stop', () => {
-    it('isEnabled', () => {
+    it('isRunning', () => {
       const queue = MemoryQueue.create();
-      expect(queue.isEnabled).to.eql(true);
-      expect(queue.stop().isEnabled).to.eql(false);
-      expect(queue.start().isEnabled).to.eql(true);
+      expect(queue.isRunning).to.eql(true);
+      expect(queue.stop().isRunning).to.eql(false);
+      expect(queue.start().isRunning).to.eql(true);
     });
 
     it('event: QUEUE/status', () => {
@@ -67,13 +66,11 @@ describe.only('Queue', () => {
       const e2 = fired[1].payload as t.IQueueStatus;
 
       expect(e1.id).to.eql(queue.id);
-      expect(e1.isEnabled).to.eql(false);
-      expect(e1.isEmpty).to.eql(true);
+      expect(e1.isRunning).to.eql(false);
       expect(e1.length).to.eql(0);
 
       expect(e2.id).to.eql(queue.id);
-      expect(e2.isEnabled).to.eql(true);
-      expect(e2.isEmpty).to.eql(true);
+      expect(e2.isRunning).to.eql(true);
       expect(e2.length).to.eql(0);
     });
   });
@@ -92,7 +89,7 @@ describe.only('Queue', () => {
 
       const e1 = fired[0].payload as t.IQueuePushed;
       expect(e1.id).to.eql(`${queue.id}:1`);
-      expect(e1.isEnabled).to.eql(false);
+      expect(e1.isRunning).to.eql(false);
 
       queue.start();
       await time.wait(10);
@@ -101,7 +98,7 @@ describe.only('Queue', () => {
 
       const e2 = fired[fired.length - 1].payload as t.IQueuePushed;
       expect(e2.id).to.eql(`${queue.id}:2`);
-      expect(e2.isEnabled).to.eql(true);
+      expect(e2.isRunning).to.eql(true);
     });
 
     it('events: QUEUE/item/(start ➔ done)', async () => {
@@ -129,7 +126,7 @@ describe.only('Queue', () => {
 
       const done = fired[1].payload as t.IQueueItemDone;
       expect(done.result).to.eql(123);
-      expect(done.elapsed).to.greaterThan(9); // NB: The delay on the handler (set in test above)
+      expect(done.elapsed).to.greaterThan(8); // NB: The delay on the handler (set in test above)
     });
 
     it('single item: promise (isDone: false ➔ true)', async () => {
@@ -145,7 +142,7 @@ describe.only('Queue', () => {
       expect(res).to.eql(123);
 
       expect(item.isDone).to.eql(true);
-      expect(item.elapsed).to.greaterThan(9);
+      expect(item.elapsed).to.greaterThan(8);
       expect(item.result).to.eql(123);
       expect(item.error).to.eql(undefined);
     });
@@ -161,7 +158,6 @@ describe.only('Queue', () => {
       await Promise.all([res1, res2]);
 
       expect(results).to.eql([1, 2]);
-      expect(queue.isEmpty).to.eql(true);
       expect(queue.length).to.eql(0);
     });
 

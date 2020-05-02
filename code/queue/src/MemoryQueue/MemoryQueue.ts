@@ -7,7 +7,7 @@ type IItem<T = any> = { id: string; run: () => Promise<T>; handler: t.QueueHandl
 
 let counter = 0;
 
-type IArgs = { isEnabled?: boolean };
+type IArgs = { isRunning?: boolean };
 
 /**
  * An in memory promise queue.
@@ -22,7 +22,7 @@ export class MemoryQueue implements t.IMemoryQueue {
    * [Lifecycle]
    */
   private constructor(args: IArgs) {
-    this._isEnabled = defaultValue(args.isEnabled, true);
+    this._isRunning = defaultValue(args.isRunning, true);
   }
 
   public dispose() {
@@ -36,7 +36,7 @@ export class MemoryQueue implements t.IMemoryQueue {
 
   private items: IItem[] = [];
   private _current: IItem | undefined;
-  private _isEnabled = true;
+  private _isRunning = true;
   private _dispose$ = new Subject<{}>();
   private _event$ = new Subject<t.QueueEvent>();
 
@@ -55,12 +55,8 @@ export class MemoryQueue implements t.IMemoryQueue {
     return this.items.length;
   }
 
-  public get isEmpty() {
-    return this.length === 0;
-  }
-
-  public get isEnabled() {
-    return this._isEnabled;
+  public get isRunning() {
+    return this._isRunning;
   }
 
   /**
@@ -69,8 +65,8 @@ export class MemoryQueue implements t.IMemoryQueue {
 
   public start() {
     this.throwIfDisposed('start');
-    if (!this._isEnabled) {
-      this._isEnabled = true;
+    if (!this._isRunning) {
+      this._isRunning = true;
       this.fireStatus();
     }
     this.pop();
@@ -79,8 +75,8 @@ export class MemoryQueue implements t.IMemoryQueue {
 
   public stop() {
     this.throwIfDisposed('stop');
-    if (this._isEnabled) {
-      this._isEnabled = false;
+    if (this._isRunning) {
+      this._isRunning = false;
       this.fireStatus();
     }
     return this;
@@ -137,12 +133,12 @@ export class MemoryQueue implements t.IMemoryQueue {
     res.elapsed = -1;
 
     // Finish up.
-    const isEnabled = this.isEnabled;
-    if (isEnabled && !this._current) {
+    const isRunning = this.isRunning;
+    if (isRunning && !this._current) {
       this.pop();
     }
 
-    this.fire({ type: 'QUEUE/pushed', payload: { id, isEnabled } });
+    this.fire({ type: 'QUEUE/pushed', payload: { id, isRunning } });
     return res as t.QueueItem<T>;
   }
 
@@ -159,15 +155,14 @@ export class MemoryQueue implements t.IMemoryQueue {
       type: 'QUEUE/status',
       payload: {
         id: this.id,
-        isEnabled: this.isEnabled,
-        isEmpty: this.isEmpty,
         length: this.length,
+        isRunning: this.isRunning,
       },
     });
   }
 
   private async pop() {
-    if (this.isDisposed || !this.isEnabled) {
+    if (this.isDisposed || !this.isRunning) {
       return;
     }
     const item = this.items[0];
@@ -175,7 +170,7 @@ export class MemoryQueue implements t.IMemoryQueue {
       this.items = this.items.slice(1);
       this._current = item;
       await item.run();
-      if (!this.isEmpty) {
+      if (this.length > 0) {
         this.pop(); // <== 🌳RECURSION
       }
     }
@@ -183,7 +178,7 @@ export class MemoryQueue implements t.IMemoryQueue {
 
   private throwIfDisposed(action: string) {
     if (this.isDisposed) {
-      throw new Error(`Cannot ${action} because [TypedSheet] is disposed.`);
+      throw new Error(`Cannot ${action} because [Queue] is disposed.`);
     }
   }
 }

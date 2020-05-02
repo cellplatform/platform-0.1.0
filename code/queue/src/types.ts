@@ -2,16 +2,20 @@ import { Observable } from 'rxjs';
 
 export type QueueHandler<T> = () => Promise<T>;
 
-export type IMemoryQueue = {
+export type IQueue = {
   readonly id: string;
-  readonly length: number;
-  readonly isEmpty: boolean;
-  readonly isEnabled: boolean;
+  readonly isRunning: boolean;
   readonly isDisposed: boolean;
   readonly dispose$: Observable<{}>;
   readonly event$: Observable<QueueEvent>;
   dispose(): void;
   push<T>(handler: QueueHandler<T>): QueueItem<T>;
+  start(): IQueue;
+  stop(): IQueue;
+};
+
+export type IMemoryQueue = IQueue & {
+  readonly length: number;
   start(): IMemoryQueue;
   stop(): IMemoryQueue;
 };
@@ -37,13 +41,13 @@ export type IQueuePushedEvent = {
   type: 'QUEUE/pushed';
   payload: IQueuePushed;
 };
-export type IQueuePushed = { id: string; isEnabled: boolean };
+export type IQueuePushed = { id: string; isRunning: boolean };
 
 export type IQueueStatusEvent = {
   type: 'QUEUE/status';
   payload: IQueueStatus;
 };
-export type IQueueStatus = { id: string; isEnabled: boolean; isEmpty: boolean; length: number };
+export type IQueueStatus = { id: string; isRunning: boolean; length: number };
 
 /**
  * Event: item processing

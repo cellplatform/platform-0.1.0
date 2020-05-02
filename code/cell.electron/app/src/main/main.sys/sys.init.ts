@@ -1,8 +1,8 @@
-import { Observable } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-
-import { Client, constants, fs, log, t, Uri } from '../common';
-import { upload } from './client.upload';
+import { constants, fs, t, Uri } from '../common';
+import { monitor } from './sys.monitor';
+import { DEFS } from './sys.typeDefs';
+import { upload } from './sys.upload';
+import { ipc } from './sys.ipc';
 
 const SYS = constants.SYS;
 const NS = SYS.NS;
@@ -10,7 +10,7 @@ const NS = SYS.NS;
 /**
  * Writes (initializes) system data.
  */
-export async function getOrCreateSystemContext(client: t.IClientTypesystem) {
+export async function initContext(client: t.IClientTypesystem) {
   const host = client.http.origin;
   const ns = client.http.ns(NS.APP);
 
@@ -21,10 +21,7 @@ export async function getOrCreateSystemContext(client: t.IClientTypesystem) {
 
   // Load the app model.
   const sheet = await client.sheet<t.SysApp>(NS.APP);
-  client.changes.watch(sheet);
-
-  const saver = Client.saveMonitor({ client, debounce: 300 });
-  saveLogger(saver.saved$);
+  monitor({ client, sheet });
 
   const app = sheet.data('SysApp').row(0);
   await app.load();
@@ -41,12 +38,36 @@ export async function getOrCreateSystemContext(client: t.IClientTypesystem) {
     app,
     windows,
     windowDefs,
+    windowRefs: [],
   };
+
+  ipc({ ctx });
   return ctx;
 }
 
 /**
- * Creates the IDE window definition.
+ * Write the application types.
+ */
+export async function initTypeDefs(client: t.IClientTypesystem, options: { save?: boolean } = {}) {
+  const write = async (ns: string) => {
+    if (!DEFS[ns]) {
+      throw new Error(`namespace "${ns}" is not defined.`);
+    }
+    await client.http.ns(ns).write(DEFS[ns]);
+  };
+
+  await write(NS.TYPE.APP);
+  await write(NS.TYPE.WINDOW_DEF);
+  await write(NS.TYPE.WINDOW);
+
+  if (options.save) {
+    const ts = await client.typescript(NS.TYPE.APP);
+    await ts.save(fs, fs.resolve('src/types.g'));
+  }
+}
+
+/**
+ * Creates the new window definition.
  */
 export async function initWindowDef(args: {
   kind: string;
@@ -74,32 +95,4 @@ export async function initWindowDef(args: {
       await upload({ host, targetCell, sourceDir, targetDir });
     }
   }
-}
-
-/**
- * [Helpers]
- */
-
-function saveLogger(saved$: Observable<t.ITypedSheetSaved>) {
-  // Models saved.
-  saved$.subscribe(e => {
-    const prefix = e.ok ? log.blue('SAVED') : log.red('SAVED (error)');
-    log.info(prefix);
-
-    if (e.changes.ns) {
-      const ns = e.sheet.uri.id;
-      log.info.gray(`${log.green('ns')}:${ns}`);
-    }
-
-    const cells = e.changes.cells || {};
-    Object.keys(cells).forEach(key => {
-      const change = cells[key];
-      const ns = change.ns.replace(/^ns\:/, '');
-      const cell = log.gray(`${log.green('cell')}:${ns}:${log.green(change.key)}`);
-      log.info(`  ${cell}`);
-    });
-  });
-
-  // Divider
-  saved$.pipe(debounceTime(800)).subscribe(() => log.info.gray('━'.repeat(60)));
 }

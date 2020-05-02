@@ -1218,6 +1218,19 @@ describe('TypedSheet', () => {
         const res2 = await get('A1');
         expect(res2).to.eql({ value: 123 }); // NB: Overridden response (the pending change).
       });
+
+      it('state.changes: strips hash', async () => {
+        const { sheet } = await testMySheet();
+        const state = sheet.state;
+
+        state.change.cell('A100', { value: 'foobar', hash: 'abc' });
+        await time.wait(0);
+
+        const changes = state.changes;
+        const A100 = changes.cells?.A100 as t.ITypedSheetChangeCellDiff;
+        expect(A100.from.hash).to.eql(undefined);
+        expect(A100.to.hash).to.eql(undefined);
+      });
     });
 
     describe('change (via event)', () => {
@@ -1385,12 +1398,12 @@ describe('TypedSheet', () => {
  * HELPERS: Test Data
  */
 
-const testFetchMySheet = (ns: string) => {
+const testFetchMySheet = (ns: string, cells?: t.ICellMap) => {
   return testInstanceFetch({
     instance: ns,
     implements: 'ns:foo',
     defs: TYPE_DEFS,
-    cells: { A9: { value: 'Nine' } },
+    cells: cells || { A9: { value: 'Nine' } },
     rows: [
       {
         title: 'One',
@@ -1457,9 +1470,9 @@ const testFetchMulti = (ns: string) => {
   });
 };
 
-const testMySheet = async (ns: string = 'ns:foo.mySheet') => {
+const testMySheet = async (ns: string = 'ns:foo.mySheet', cells?: t.ICellMap) => {
   const event$ = new Subject<t.TypedSheetEvent>();
-  const fetch = await testFetchMySheet(ns);
+  const fetch = await testFetchMySheet(ns, cells);
   const sheet = await TypedSheet.load<f.MyRow>({ fetch, ns, event$ });
   return { ns, fetch, sheet, event$ };
 };

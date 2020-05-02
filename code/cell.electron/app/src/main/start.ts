@@ -42,7 +42,7 @@ export async function start() {
   // Ensure typescript declarations exist [types.g.ts]
   // and retrieve sys/app context.
   await sys.initTypeDefs(client, { save: ENV.isDev });
-  const ctx = await sys.getOrCreateSystemContext(client);
+  const ctx = await sys.initContext(client);
 
   // Upload the bundled system files.
   const bundlePaths = constants.paths.bundle;
