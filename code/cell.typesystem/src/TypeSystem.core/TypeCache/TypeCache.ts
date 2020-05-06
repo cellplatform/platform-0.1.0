@@ -13,6 +13,11 @@ export class TypeCacheKey {
   public static default: t.CacheDefaultValue = uri => {
     return `TypeSystem/default/${uri}`;
   };
+
+  public static client: t.CacheClientKey = (ns, ...path) => {
+    const suffix = path.length === 0 ? '' : `/${path.join('/')}`;
+    return `TypeSystem/client/${ns.toString()}${suffix}`;
+  };
 }
 
 /**

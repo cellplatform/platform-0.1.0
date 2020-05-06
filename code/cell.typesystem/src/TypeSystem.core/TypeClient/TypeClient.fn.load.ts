@@ -21,11 +21,6 @@ type LoadResponse = {
   errors: t.ITypeError[];
 };
 
-const toCacheKey = (uri: string, ...path: string[]) => {
-  const suffix = path.length === 0 ? '' : `/${path.join('/')}`;
-  return `TypeClient/${uri.toString()}${suffix}`;
-};
-
 /**
  * Load a type-definition from the network.
  */
@@ -38,7 +33,7 @@ export async function load(args: {
 
   // Check cache (if an external cache was provided).
   if (args.cache) {
-    const key = toCacheKey(ns);
+    const key = TypeCache.key.client(ns);
     const value = args.cache.get(key);
     if (value instanceof Subject) {
       // NB: The load operation for the namespace currently in progress.
@@ -122,7 +117,7 @@ async function loadNamespace(args: {
   const ns = Uri.ns(args.ns, false).toString();
 
   // Cache.
-  const cacheKey = toCacheKey(ns);
+  const cacheKey = TypeCache.key.client(ns);
   const loading$ = new Subject<LoadResponse>();
   cache.put(cacheKey, loading$);
   loading$.subscribe(response => cache.put(cacheKey, response));
