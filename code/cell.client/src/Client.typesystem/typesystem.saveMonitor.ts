@@ -63,7 +63,7 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
       .filter(({ ok }) => ok)
       .map(({ ns }) => findSheet(ns))
       .filter(sheet => Boolean(sheet))
-      .forEach(sheet => sheet.state.clear.changes('SAVED'));
+      .forEach(sheet => sheet.state.clear.changes('SAVE'));
 
     // Fire AFTER event.
     changeSet.forEach(({ sheet, changes }) => {
