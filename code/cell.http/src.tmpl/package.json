@@ -1,17 +1,17 @@
 {
   "name": "instance",
-  "version": "0.0.132",
+  "version": "0.0.133",
   "scripts": {
     "now": "now dev --listen 8080",
     "start": "ts-node -T src/server",
     "watch": "nodemon --watch ../src --watch ../../cell.db/src --watch ../../cell.http.router/src -e ts,tsx --delay 2"
   },
   "dependencies": {
-    "@platform/cell.fs.local": "^0.4.37",
-    "@platform/cell.fs.s3": "^0.4.37",
-    "@platform/cell.http": "^0.7.61",
-    "@platform/cell.http.router": "^0.7.59",
-    "@platform/cell.schema": "^0.4.93",
+    "@platform/cell.fs.local": "^0.4.38",
+    "@platform/cell.fs.s3": "^0.4.38",
+    "@platform/cell.http": "^0.7.62",
+    "@platform/cell.http.router": "^0.7.60",
+    "@platform/cell.schema": "^0.4.94",
     "@platform/fsdb.mongo": "0.0.111",
     "@platform/fsdb.nedb": "1.3.106"
   },

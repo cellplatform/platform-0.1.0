@@ -24,7 +24,7 @@ const env = win.env;
   const index = Schema.coord.cell.toAxisIndex('ROW', uri.key);
   console.log('index', index);
   const row = await sheet
-    .data<t.SysAppWindow>('SysAppWindow')
+    .data('SysAppWindow')
     .row(index)
     .load();
 
