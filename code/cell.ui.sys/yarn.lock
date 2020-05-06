@@ -917,7 +917,7 @@
     "@platform/types" "0.4.14"
     "@platform/util.diff" "0.0.24"
 
-"@platform/cell.typesystem@0.0.32":
+"@platform/cell.typesystem@0.0.32", "@platform/cell.typesystem@^0.0.32":
   version "0.0.32"
   resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.32.tgz#d8d2a6e73e63d5a4440df839482e842328e4616f"
   integrity sha512-FYWtTbZA0I9zNY+7MDE0/KkralmgSDdBxTMqoGDMBuNWCztmtuUPldQ8ZPGUSCk4oK3f07oq72hDqUlsoWiodg==

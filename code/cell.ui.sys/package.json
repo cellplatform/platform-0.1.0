@@ -18,6 +18,7 @@
   "dependencies": {
     "@platform/cell.client": "0.2.71",
     "@platform/cell.types": "^0.4.85",
+    "@platform/cell.typesystem": "^0.0.32",
     "@platform/polyfill": "0.0.1"
   },
   "devDependencies": {

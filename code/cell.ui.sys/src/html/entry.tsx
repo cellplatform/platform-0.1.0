@@ -22,21 +22,36 @@ const env = win.env;
   const sheet = await client.sheet(uri.ns);
 
   const index = Schema.coord.cell.toAxisIndex('ROW', uri.key);
-  console.log('index', index);
-  const row = await sheet
-    .data('SysAppWindow')
-    .row(index)
-    .load();
+  const cursor = await sheet.data('SysAppWindow').load();
+
+  const row = cursor.row(0);
 
   console.log('row', row.toObject());
 
   console.log('sheet', sheet);
   console.log('sheet.types', sheet.types);
+  console.log('-------------------------------------------');
+
   console.log('env.cache', env.cache);
+  console.log('env.cache.keys:');
+  env.cache.keys.forEach(e => {
+    console.log('  -- ', e);
+  });
+
+  env.cache.keys.forEach(async key => {
+    // console.log('  -- ', e);
+    console.log(' > ', key, await env.cache.get(key));
+  });
 
   console.groupEnd();
 
+  // async function writeRow() {
+  //   console.log('row', row.toObject());
+
+  // }
+
   env.event$.subscribe(e => {
     console.log('module  | 🌳 event', e);
+    // writeRow()
   });
 })();
