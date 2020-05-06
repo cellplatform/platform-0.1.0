@@ -7,4 +7,4 @@ export { t, util };
  * Libs
  */
 export { HttpClient, Client } from '@platform/cell.client';
-export { Schema } from '@platform/cell.schema';
+export { Schema, Uri } from '@platform/cell.schema';
