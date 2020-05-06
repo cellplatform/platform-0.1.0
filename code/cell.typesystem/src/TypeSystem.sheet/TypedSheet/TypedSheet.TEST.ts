@@ -1098,6 +1098,11 @@ describe('TypedSheet', () => {
           payload: { kind: 'CELL', ns: 'ns:foo.BAR', key: 'A1', to: { value: 123 } },
         });
 
+        event$.next({
+          type: 'SHEET/change',
+          payload: { kind: 'CELL', ns: 'foo.BAR', key: 'A1', to: { value: 123 } },
+        });
+
         await time.wait(1);
         expect(state.changes).to.eql({});
       });
@@ -1128,12 +1133,27 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
+          payload: { kind: 'CELL', ns: 'not-valid*', key: 'A1', to: { value: 123 } }, // NB: invalid URI
+        });
+
+        event$.next({
+          type: 'SHEET/change',
           payload: { kind: 'CELL', ns: 'ns:foo', key: 'A-1', to: { value: 123 } }, // NB: invalid URI
         });
 
         event$.next({
           type: 'SHEET/change',
+          payload: { kind: 'CELL', ns: 'foo', key: 'A-1', to: { value: 123 } }, // NB: invalid URI
+        });
+
+        event$.next({
+          type: 'SHEET/change',
           payload: { kind: 'CELL', ns: 'ns:foo:A1', key: 'A1', to: { value: 123 } }, // NB: invalid URI
+        });
+
+        event$.next({
+          type: 'SHEET/change',
+          payload: { kind: 'CELL', ns: 'foo:A1', key: 'A1', to: { value: 123 } }, // NB: invalid URI
         });
 
         await time.wait(1);
@@ -1148,7 +1168,7 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1210,7 +1230,7 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1249,7 +1269,7 @@ describe('TypedSheet', () => {
 
         const changes = state.changes;
         expect(changes.ns?.kind).to.eql('NS');
-        expect(changes.ns?.ns).to.eql(ns);
+        expect(changes.ns?.ns).to.eql('foo.mySheet');
         expect(changes.ns?.from).to.eql({});
         expect(changes.ns?.to).to.eql({ type });
       });
@@ -1264,7 +1284,7 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 123 } },
         });
         await time.wait(1);
 
@@ -1283,7 +1303,7 @@ describe('TypedSheet', () => {
         // Retains original [from] value on second change (prior to purge).
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 456 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 456 } },
         });
         await time.wait(1);
 
@@ -1295,7 +1315,7 @@ describe('TypedSheet', () => {
         expect(fired.length).to.eql(2);
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 456 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 456 } },
         });
         await time.wait(1);
         expect(fired.length).to.eql(2);
@@ -1308,7 +1328,7 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A99', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A99', to: { value: 123 } },
         });
         await time.wait(1);
 
@@ -1332,11 +1352,11 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 123 } },
         });
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'NS', ns: 'ns:foo.mySheet', to: { type: { implements: 'foobar' } } },
+          payload: { kind: 'NS', ns: 'foo.mySheet', to: { type: { implements: 'foobar' } } },
         });
         await time.wait(1);
 

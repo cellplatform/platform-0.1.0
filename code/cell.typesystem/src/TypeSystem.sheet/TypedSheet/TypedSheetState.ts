@@ -194,7 +194,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       });
     },
     cell: <D extends C = C>(key: string, to: D) => {
-      const ns = this.uri.toString();
+      const ns = this.uri.id;
       this.fire({
         type: 'SHEET/change',
         payload: { kind: 'CELL', ns, key, to },
@@ -220,7 +220,7 @@ export class TypedSheetState implements t.ITypedSheetState {
     const from = (existing ? existing.from : await this.getNs()) || {};
     const change: t.ITypedSheetChangeNsDiff = {
       kind: 'NS',
-      ns: this.uri.toString(),
+      ns: this.uri.id,
       from,
       to,
     };
@@ -275,7 +275,10 @@ export class TypedSheetState implements t.ITypedSheetState {
   private isWithinNamespace(input: string) {
     const text = (input || '').trim();
     const ns = this.uri;
-    if (text.startsWith('ns:')) {
+    if (!text.includes(':')) {
+      return Uri.strip.ns(text) === ns.id;
+    }
+    if (text.startsWith('ns:') || !text.includes(':')) {
       return text === ns.toString();
     }
     if (text.startsWith('cell:')) {
