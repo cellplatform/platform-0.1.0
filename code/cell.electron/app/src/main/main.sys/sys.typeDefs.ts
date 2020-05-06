@@ -15,7 +15,9 @@ def
   .type('SysAppWindowDef')
   .prop('kind', p => p.type('string').default(''))
   .prop('width', p => p.type('number').default(1200))
-  .prop('height', p => p.type('number').default(800));
+  .prop('height', p => p.type('number').default(800))
+  .prop('sandbox', p => p.type('boolean').default(true))
+  .prop('backgroundColor', p => p.type('string').default('#fff'));
 
 def
   .ns(NS.TYPE.WINDOW)

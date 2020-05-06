@@ -46,7 +46,7 @@ export function init() {
     console.log('host', host);
     console.log('def (window-uri):', windowUri); // TEMP 🐷
     console.log('env', env);
-    console.log('process.argv:', process.argv);
+    console.log('process.argv:', process.argv.length);
     console.groupEnd();
     console.log('-------------------------------------------');
   }

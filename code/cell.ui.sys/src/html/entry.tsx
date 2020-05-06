@@ -6,7 +6,7 @@ const env = win.env;
 
 (async () => {
   console.group('🌳 module: cell.ui.sys');
-  console.log('process.argv:', process.argv);
+  console.log('process.argv:', process.argv.length);
   console.log('env', env);
 
   // console.log('uri', uri.toString());
@@ -38,10 +38,9 @@ const env = win.env;
     console.log('  -- ', e);
   });
 
-  env.cache.keys.forEach(async key => {
-    // console.log('  -- ', e);
-    console.log(' > ', key, await env.cache.get(key));
-  });
+  // env.cache.keys.forEach(async key => {
+  //   console.log(' > ', key, await env.cache.get(key));
+  // });
 
   console.groupEnd();
 

@@ -33,6 +33,8 @@ export declare type SysAppWindowDef = {
   kind: string;
   width: number;
   height: number;
+  sandbox: boolean;
+  backgroundColor: string;
 };
 
 export declare type SysAppWindow = {
