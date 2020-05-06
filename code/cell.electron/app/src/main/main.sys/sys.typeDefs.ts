@@ -25,11 +25,7 @@ def
   .prop('title', p => p.type('string').default('Untitled'))
   .prop('width', p => p.type('number').default(-1))
   .prop('height', p => p.type('number').default(-1))
-  .prop('x', p => p.type('number'))
-  .prop('y', p => p.type('number'));
+  .prop('x', 'number')
+  .prop('y', 'number');
 
 export const DEFS = def.toObject();
-
-
-
-

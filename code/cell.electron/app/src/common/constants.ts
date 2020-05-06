@@ -3,5 +3,7 @@ export const IPC = {
 };
 
 export const PROCESS = {
-  WINDOW_URI: 'window-uri',
+  WINDOW_URI: 'env:window-uri',
+  HOST: 'env:host',
+  DEV: 'env:dev',
 };

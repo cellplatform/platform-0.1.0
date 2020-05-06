@@ -1,6 +1,8 @@
 import { BrowserWindow, app } from 'electron';
 import { constants, log, Schema, t, Uri, fs } from '../common';
 
+const PROCESS = constants.PROCESS;
+
 /**
  *
  */
@@ -21,10 +23,12 @@ export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
     instance.width = def.width;
     instance.height = def.height;
     instance.kind = def.kind;
+
+    
   };
 
   if (def) {
-    if (instances.total < 2) {
+    if (instances.total < 1) {
       // TEMP 🐷
       await createInstance(def.props);
     }
@@ -40,7 +44,7 @@ export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
 }
 
 /**
- *
+ * Create an electron window for the given definition.
  */
 export async function createWindow(args: {
   def: string | t.IRowUri;
@@ -61,6 +65,7 @@ export async function createWindow(args: {
   // Create the browser window.
   // Docs: https://www.electronjs.org/docs/api/browser-window
   const props = window.props;
+
   const browser = new BrowserWindow({
     show: false,
     width: props.width,
@@ -71,8 +76,13 @@ export async function createWindow(args: {
     webPreferences: {
       nodeIntegration: false,
       enableRemoteModule: false,
-      preload: fs.join(__dirname, '../../renderer/index.js'),
-      additionalArguments: [`${constants.PROCESS.WINDOW_URI}=${instance.toString()}`],
+      preload: constants.paths.bundle.preload,
+      additionalArguments: [
+        constants.ENV.isDev ? PROCESS.DEV : '',
+        `${PROCESS.HOST}=${ctx.host}`,
+        `${PROCESS.WINDOW_URI}=${instance.toString()}`,
+      ],
+      sandbox: true,
     },
   });
 
@@ -82,16 +92,10 @@ export async function createWindow(args: {
     .file.byName('ui.sys/entry.html')
     .toString();
 
+  // Load window with content from URL.
   const devUrl = constants.ENV.isDev ? 'http://localhost:1234' : '';
   const url = devUrl || entryUrl;
-
-  const query: t.IEnvLoaderQuery = { host, window: instance.toString() };
-  const querystring = Object.keys(query)
-    .reduce((acc, key) => `${acc}&${key}=${query[key]}`, '')
-    .replace(/^\&/, '');
-
-  // Construct window.
-  browser.loadURL(`${url}?${querystring}`);
+  browser.loadURL(url);
 
   const updateBounds = () => {
     const { width, height, x, y } = browser.getBounds();
@@ -125,7 +129,7 @@ export async function createWindow(args: {
   });
 
   // Finish up.
-  logWindow({ query, entryUrl, devUrl, ctx });
+  logWindow({ host, instance, entryUrl, devUrl, ctx });
 }
 
 /**
@@ -133,27 +137,29 @@ export async function createWindow(args: {
  */
 
 async function logWindow(args: {
-  query: t.IEnvLoaderQuery;
+  host: string;
+  instance: string | t.IRowUri;
   entryUrl: string;
   devUrl?: string;
   ctx: t.IAppCtx;
 }) {
-  const { query, ctx } = args;
+  const { ctx } = args;
   const table = log.table({ border: false });
   const add = (key: string, value: any) => table.add([` • ${log.green(key)} `, value]);
 
-  const host = query.host;
+  const host = args.host;
   const entryUrl = args.entryUrl
     .replace(/http:\/\//, '')
     .replace(/https:\/\//, '')
     .substring(host.length);
 
+  const uri = args.instance.toString();
   const windows = await ctx.windows.data();
-  const window = windows.rows.find(({ uri }) => uri.toString() === query.window);
+  const window = windows.rows.find(window => window.uri.toString() === uri);
 
   add('kind:', log.magenta(window?.props.kind));
-  add('uri:', `${query.window} (${log.white('instance model')})`);
-  add('host:', args.query.host);
+  add('uri:', `${uri} (${log.white('instance model')})`);
+  add('host:', args.host);
   add('url:', entryUrl);
   if (args.devUrl) {
     add(log.gray(`url (dev):`), log.white(args.devUrl));

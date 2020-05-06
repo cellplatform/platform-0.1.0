@@ -9,14 +9,16 @@
     "package": "cd app && yarn package",
     "make": "cd app && yarn make",
     "build": "cd app && yarn build",
-    "clean": "sh sh/clean.sh",
-    "reset": "sh sh/reset.sh",
-    "bundle": "ts-node -T scripts/bundle.ui",
+    "clean": "sh script/clean.sh",
+    "reset": "sh script/reset.sh",
+    "bundle": "ts-node -T script/bundle.ui",
+    "bundle.preload": "cd app && yarn bundle.preload",
     "open": "cd app/out/cell-darwin-x64 && open cell.app"
   },
   "devDependencies": {
     "@platform/cell.compile.web": "0.0.64",
-    "@platform/ts": "3.7.20"
+    "@platform/ts": "3.7.20",
+    "browserify": "16.5.1"
   },
   "files": [
     "lib",

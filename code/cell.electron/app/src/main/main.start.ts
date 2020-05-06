@@ -2,9 +2,9 @@ import './config';
 
 import { app } from 'electron';
 
-import { constants, log, Client } from './common';
+import { constants, log, Client, fs } from './common';
 import { sys } from './main.sys';
-import * as screen from './main.screen';
+import * as window from './main.window';
 import * as server from './main.server';
 
 const SYS = constants.SYS;
@@ -45,18 +45,18 @@ export async function start() {
   const ctx = await sys.initContext(client);
 
   // Upload the bundled system files.
-  const bundlePaths = constants.paths.bundle;
+  const bundle = constants.paths.bundle;
   await sys.initWindowDef({
     ctx,
     kind: SYS.KIND.IDE,
-    uploadDir: [bundlePaths.sys, bundlePaths.ide],
+    uploadDir: [bundle.sys, bundle.ide],
   });
 
-  logMain({ host, log: log.file.path, db: paths.db, fs: paths.fs });
+  await logMain({ host, log: log.file.path, db: paths.db, fs: paths.fs, preload: bundle.preload });
   await app.whenReady();
 
   // Initialize UI windows.
-  await screen.createWindows({ ctx, kind: SYS.KIND.IDE });
+  await window.createWindows({ ctx, kind: SYS.KIND.IDE });
 
   // TEMP 🐷
   // refs.tray = tray.init({ host, def, ctx }).tray;
@@ -66,19 +66,42 @@ export async function start() {
  * [Helpers]
  */
 
-function logMain(args: { host: string; log: string; db: string; fs: string }) {
+async function logMain(args: {
+  host: string;
+  log: string;
+  db: string;
+  fs: string;
+  preload: string;
+}) {
   const table = log.table({ border: false });
   const add = (key: string, value: any) => {
     key = ` • ${log.green(key)} `;
     table.add([key, value]);
   };
 
-  add('env:', process.env.NODE_ENV || '<empty>');
+  const ENV = constants.ENV;
+  const isDev = ENV.isDev;
+
+  const path = async (input: string) => {
+    let output = input;
+    if (isDev) {
+      const prefix = fs.resolve('..');
+      output = output.startsWith(prefix) ? output.substring(prefix.length + 1) : output;
+    }
+    if (isDev) {
+      const size = await fs.size.file(input);
+      output = `${output} ${log.blue(size.toString({ round: 0, spacer: '' }))}`;
+    }
+    return output;
+  };
+
   add('packaged:', app.isPackaged);
+  add('env:', ENV.node || '<empty>');
   add('host:', args.host);
-  add('log:', args.log);
-  add('db:', args.db);
-  add('fs:', args.fs);
+  add('log:', await path(args.log));
+  add('db:', await path(args.db));
+  add('fs:', await path(args.fs));
+  add('preload:', await path(args.preload));
 
   log.info.gray(`
 ${log.white('main')}

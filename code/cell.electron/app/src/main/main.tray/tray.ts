@@ -1,6 +1,6 @@
 import { Tray, Menu } from 'electron';
 import { fs, t } from '../common';
-import { createWindow } from '../main.screen';
+import { createWindow } from '../main.window';
 
 export function init(args: { host: string; def: string; ctx: t.IAppCtx }) {
   const { host, def, ctx } = args;

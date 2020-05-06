@@ -21,6 +21,7 @@ export const paths = {
     icons: resolve('assets/icons'),
   },
   bundle: {
+    preload: resolve('lib/preload.js'),
     sys: resolve('.bundle/ui.sys'),
     ide: resolve('.bundle/ui.ide'),
   },

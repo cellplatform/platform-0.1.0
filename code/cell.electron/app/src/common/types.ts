@@ -9,7 +9,7 @@ import {
   ITypedSheetRow,
   ITypedSheetRefs,
   IClientTypesystem,
-  ITypedSheetChangeCellDiff,
+  ITypedSheetStateChanges,
 } from '@platform/cell.types';
 
 export type IAppCtx = {
@@ -31,14 +31,14 @@ export type IWindowRef = {
  * Events (IPC)
  */
 
-export type IpcEvent = IpcWindowChangedEvent;
+export type IpcEvent = IpcSheetChangedEvent;
 
-export type IpcWindowChangedEvent = {
-  type: 'WINDOW/changed';
-  payload: IpcWindowChanged;
+export type IpcSheetChangedEvent = {
+  type: 'IPC/sheet/changed';
+  payload: IpcSheetChanged;
 };
 
-export type IpcWindowChanged = {
-  window: string; // uri.
-  changes: { [key: string]: ITypedSheetChangeCellDiff };
+export type IpcSheetChanged = {
+  ns: string;
+  changes: ITypedSheetStateChanges;
 };
