@@ -1,5 +1,5 @@
 import { BrowserWindow, app } from 'electron';
-import { constants, log, Schema, t, Uri, fs } from '../common';
+import { constants, log, Schema, t, Uri } from '../common';
 
 const PROCESS = constants.PROCESS;
 
@@ -10,10 +10,10 @@ export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
   const ctx = args.ctx;
   const defs = await ctx.windowDefs.data();
   const instances = await ctx.windows.data();
-  const def = defs.rows.find(row => row.props.kind === args.kind);
 
+  const def = defs.rows.find(row => row.props.kind === args.kind);
   if (!def) {
-    throw new Error(`A window-definition named '${args.kind}' could not be found.`);
+    throw new Error(`A window-definition of kind '${args.kind}' could not be found.`);
   }
 
   const createInstance = async (def: t.ITypedSheetRowProps<t.SysAppWindowDef>) => {
@@ -23,8 +23,6 @@ export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
     instance.width = def.width;
     instance.height = def.height;
     instance.kind = def.kind;
-
-    
   };
 
   if (def) {
@@ -51,21 +49,28 @@ export async function createWindow(args: {
   instance: string | t.IRowUri;
   ctx: t.IAppCtx;
 }) {
-  const def = Uri.row(args.def);
-  const instance = Uri.row(args.instance);
   const ctx = args.ctx;
+  const defUri = Uri.row(args.def);
+  const instanceUri = Uri.row(args.instance);
   const host = ctx.host;
 
   const windows = await ctx.windows.data();
-  const window = windows.rows.find(item => item.uri.toString() === instance.toString());
+  const window = windows.rows.find(item => item.uri.toString() === instanceUri.toString());
   if (!window) {
-    throw new Error(`Could not find [window] data-model '${instance.toString()}'`);
+    throw new Error(`Could not find [window] data-model '${instanceUri.toString()}'`);
   }
+
+  const defs = await ctx.windowDefs.data();
+  const def = defs.rows.find(row => row.props.kind === window.props.kind);
+  if (!def) {
+    throw new Error(`A window-definition of kind '${window.props.kind}' could not be found.`);
+  }
+
+  const isSandboxed = def.props.sandbox;
 
   // Create the browser window.
   // Docs: https://www.electronjs.org/docs/api/browser-window
   const props = window.props;
-
   const browser = new BrowserWindow({
     show: false,
     width: props.width,
@@ -73,43 +78,25 @@ export async function createWindow(args: {
     x: props.x < 0 ? undefined : props.x,
     y: props.y < 0 ? undefined : props.y,
     titleBarStyle: 'hiddenInset',
+    backgroundColor: def.props.backgroundColor,
     webPreferences: {
-      nodeIntegration: false,
+      sandbox: isSandboxed,
+      nodeIntegration: !isSandboxed,
       enableRemoteModule: false,
       preload: constants.paths.bundle.preload,
       additionalArguments: [
         constants.ENV.isDev ? PROCESS.DEV : '',
         `${PROCESS.HOST}=${ctx.host}`,
-        `${PROCESS.WINDOW_URI}=${instance.toString()}`,
+        `${PROCESS.WINDOW_URI}=${instanceUri.toString()}`,
       ],
-      sandbox: true,
     },
   });
-
-  const urls = Schema.urls(host);
-  const entryUrl = urls
-    .cell(Uri.create.cell(def.ns, 'A1'))
-    .file.byName('ui.sys/entry.html')
-    .toString();
-
-  // Load window with content from URL.
-  const devUrl = constants.ENV.isDev ? 'http://localhost:1234' : '';
-  const url = devUrl || entryUrl;
-  browser.loadURL(url);
-
-  const updateBounds = () => {
-    const { width, height, x, y } = browser.getBounds();
-    props.width = width;
-    props.height = height;
-    props.x = x;
-    props.y = y;
-  };
 
   browser.on('resize', () => updateBounds());
   browser.on('move', () => updateBounds());
 
   const ref: t.IWindowRef = {
-    uri: instance.toString(),
+    uri: instanceUri.toString(),
     send: <T>(channel: string, payload: T) => browser.webContents.send(channel, payload),
   };
 
@@ -125,20 +112,48 @@ export async function createWindow(args: {
   });
 
   browser.once('closed', () => {
-    ctx.windowRefs = ctx.windowRefs.filter(item => item.uri !== instance.toString());
+    ctx.windowRefs = ctx.windowRefs.filter(item => item.uri !== instanceUri.toString());
   });
 
+  const updateBounds = () => {
+    const { width, height, x, y } = browser.getBounds();
+    props.width = width;
+    props.height = height;
+    props.x = x;
+    props.y = y;
+  };
+
+  // Load window with content from URL.
+  const urls = Schema.urls(host);
+  const entryUrl = urls
+    .cell(Uri.create.cell(defUri.ns, 'A1'))
+    .file.byName('ui.sys/entry.html')
+    .toString();
+  const devUrl = constants.ENV.isDev ? 'http://localhost:1234' : '';
+  const url = devUrl || entryUrl;
+  browser.loadURL(url);
+
   // Finish up.
-  logWindow({ host, instance, entryUrl, devUrl, ctx });
+  logRenderer({
+    host,
+    instanceUri,
+    instanceTypename: window.typename,
+    entryUrl,
+    devUrl,
+    isSandboxed,
+    ctx,
+  });
 }
 
 /**
  * [Helpers]
  */
 
-async function logWindow(args: {
+async function logRenderer(args: {
   host: string;
-  instance: string | t.IRowUri;
+  instanceUri: string | t.IRowUri;
+  instanceTypename: string;
+  isSandboxed: boolean;
   entryUrl: string;
   devUrl?: string;
   ctx: t.IAppCtx;
@@ -153,20 +168,21 @@ async function logWindow(args: {
     .replace(/https:\/\//, '')
     .substring(host.length);
 
-  const uri = args.instance.toString();
+  const uri = args.instanceUri.toString();
   const windows = await ctx.windows.data();
   const window = windows.rows.find(window => window.uri.toString() === uri);
 
   add('kind:', log.magenta(window?.props.kind));
-  add('uri:', `${uri} (${log.white('instance model')})`);
-  add('host:', args.host);
+  add('sandbox:', `${args.isSandboxed} ${args.isSandboxed ? `(${log.white('secure')})` : ''}`);
+  add('uri:', `${uri} (${log.white(args.instanceTypename)})`);
+  add('host:', host);
   add('url:', entryUrl);
   if (args.devUrl) {
     add(log.gray(`url (dev):`), log.white(args.devUrl));
   }
 
   const output = `
-${log.white('window')}
+${log.white('renderer')}
 ${table}
   `;
   log.info.gray(output);

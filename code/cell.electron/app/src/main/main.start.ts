@@ -97,7 +97,8 @@ async function logMain(args: {
 
   add('packaged:', app.isPackaged);
   add('env:', ENV.node || '<empty>');
-  add('host:', args.host);
+  add('host:', `http://${args.host.split(':')[0]}:${log.magenta(args.host.split(':')[1])}`);
+
   add('log:', await path(args.log));
   add('db:', await path(args.db));
   add('fs:', await path(args.fs));
