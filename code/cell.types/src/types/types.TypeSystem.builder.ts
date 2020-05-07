@@ -4,8 +4,9 @@ import { t } from '../common';
  * A structured API for building a set of type-definitions in code.
  */
 export type ITypeBuilder = {
-  toObject(): ITypeBuilderDefs;
   ns(uri: string | t.INsUri): ITypeBuilderNs;
+  type(typename: string, options?: ITypeBuilderNsTypeOptions): ITypeBuilderType;
+  toObject(): ITypeBuilderDefs;
   formatType(value: string): string;
 };
 
@@ -17,8 +18,9 @@ export type ITypeBuilderDefs = { [namespace: string]: t.ITypeDefPayload };
 export type ITypeBuilderNs = {
   readonly uri: t.INsUri;
   readonly types: ITypeBuilderType[];
-  type(typename: string, options?: { startColumn?: string | number }): ITypeBuilderType;
+  type(typename: string, options?: ITypeBuilderNsTypeOptions): ITypeBuilderType;
 };
+export type ITypeBuilderNsTypeOptions = { startColumn?: string | number };
 
 /**
  * Builder for a single named type within a namespace.
