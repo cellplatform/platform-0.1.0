@@ -199,6 +199,22 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return promise;
   }
 
+  public filter(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean) {
+    return this.rows.filter((row, i) => fn(row.props, i));
+  }
+
+  public find(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean) {
+    return this.rows.find((row, i) => fn(row.props, i));
+  }
+
+  public map<U>(fn: (row: t.ITypedSheetRowProps<T>, index: number) => U) {
+    return this.rows.map((row, i) => fn(row.props, i));
+  }
+
+  public forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void) {
+    this.rows.forEach((row, i) => fn(row.props, i));
+  }
+
   /**
    * [Methods] - internal to module.
    */

@@ -394,6 +394,85 @@ describe('TypedSheet', () => {
         array: ['red', 'green', 'blue'],
       });
     });
+
+    describe('functional methods', () => {
+      it('forEach', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = await sheet.data('MyRow').load();
+
+        const indexes: number[] = [];
+        const rows: t.ITypedSheetRowProps<f.MyRow>[] = [];
+
+        cursor.forEach((row, i) => {
+          indexes.push(i);
+          rows.push(row);
+        });
+
+        expect(indexes).to.eql([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+        expect(rows.length).to.eql(9);
+        expect(rows[0].title).to.eql('One');
+        expect(rows[8].title).to.eql('Nine');
+      });
+
+      it('map', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = sheet.data('MyRow');
+
+        const res1 = cursor.map(row => row.title);
+        expect(res1).to.eql([]);
+
+        await cursor.load();
+
+        const res2 = cursor.map(row => row.title);
+        expect(res2).to.eql([
+          'One',
+          'Two',
+          'Untitled',
+          'Untitled',
+          'Untitled',
+          'Untitled',
+          'Untitled',
+          'Untitled',
+          'Nine',
+        ]);
+
+        const indexes: number[] = [];
+        cursor.map((row, i) => indexes.push(i));
+        expect(indexes).to.eql([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+      });
+
+      it('filter', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = await sheet.data('MyRow').load();
+        const res = cursor.filter(r => r.title.endsWith('e')).map(r => r.props.title);
+        expect(res).to.eql(['One', 'Nine']);
+
+        const indexes: number[] = [];
+        cursor.filter((row, i) => {
+          indexes.push(i);
+          return true;
+        });
+        expect(indexes).to.eql([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+      });
+
+      it('find', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = await sheet.data('MyRow').load();
+
+        const res1 = cursor.find(row => row.title === 'Nine');
+        const res2 = cursor.find(row => row.title === '404');
+
+        expect(res1?.props.title).to.eql('Nine');
+        expect(res2).to.eql(undefined);
+
+        const indexes: number[] = [];
+        cursor.map((row, i) => {
+          indexes.push(i);
+          return false;
+        });
+        expect(indexes).to.eql([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+      });
+    });
   });
 
   describe('TypedSheetRow', () => {
@@ -423,7 +502,7 @@ describe('TypedSheet', () => {
       expect(row.status).to.eql('INIT');
       expect(row.isLoaded).to.eql(false);
 
-      expect(row.types.list).to.eql(defs[0].columns);
+      expect(row.types.list[0].column).to.eql(defs[0].columns[0].column);
       expect(row.types.map.title.column).to.eql('A');
 
       expect(row.props.title).to.eql('Untitled'); // Default value.
@@ -599,7 +678,8 @@ describe('TypedSheet', () => {
       it('row.types.list', async () => {
         const { sheet } = await testMySheet();
         const cursor = await sheet.data('MyRow').load();
-        const types = cursor.row(0).types;
+        const row = cursor.row(0);
+        const types = row.types;
 
         const list1 = types.list;
         const list2 = types.list;
@@ -611,13 +691,29 @@ describe('TypedSheet', () => {
       it('row.types.map', async () => {
         const { sheet } = await testMySheet();
         const cursor = await sheet.data('MyRow').load();
+        const row = cursor.row(0);
+        const types = row.types.map;
+
+        expect(types.title.column).to.eql('A');
+        expect(types.isEnabled.column).to.eql('B');
+        expect(types.color.column).to.eql('C');
+        expect(types.message.column).to.eql('D');
+        expect(types.messages.column).to.eql('E');
+      });
+
+      it('row.types (uri)', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = await sheet.data('MyRow').load();
         const types = cursor.row(0).types;
 
-        expect(types.map.title.column).to.eql('A');
-        expect(types.map.isEnabled.column).to.eql('B');
-        expect(types.map.color.column).to.eql('C');
-        expect(types.map.message.column).to.eql('D');
-        expect(types.map.messages.column).to.eql('E');
+        expect(types.map.title.uri.toString()).to.eql('cell:foo.mySheet:A1');
+        expect(types.map.messages.uri.toString()).to.eql('cell:foo.mySheet:E1');
+
+        // NB: Same instance.
+        types.list.forEach(item => {
+          const uri = types.map[item.prop].uri;
+          expect(uri).to.equal(item.uri);
+        });
       });
     });
 
@@ -913,7 +1009,9 @@ describe('TypedSheet', () => {
           const childRow = childCursor.row(0);
           const childRowProps = childRow.props;
 
-          expect(childRow.types.list).to.eql(messages.sheet.types[0].columns);
+          expect(childRow.types.list.map(item => item.type)).to.eql(
+            messages.sheet.types[0].columns.map(item => item.type),
+          );
 
           expect(childRowProps.message).to.eql(undefined);
           childRowProps.message = 'hello';

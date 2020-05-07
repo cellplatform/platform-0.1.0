@@ -25,7 +25,7 @@ export class TypeCache {
     }
 
     const cache = TypeCache.toCache(options.cache);
-    const cacheKey = TypeCache.key.fetch;
+    const cacheKey = TypeCacheKey.fetch;
 
     const getNs: t.FetchSheetNs = async args => {
       const key = cacheKey('getNs', args.ns.toString());

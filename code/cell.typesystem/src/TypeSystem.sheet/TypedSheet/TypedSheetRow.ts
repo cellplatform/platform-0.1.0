@@ -106,19 +106,36 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     if (!this._types) {
       type M = t.ITypedSheetRowTypes<T>['map'];
       let map: M | undefined;
-      const list = this._columns;
-      this._types = {
-        list,
+      let list: t.ITypedSheetRowType[] | undefined;
+      const columns = this._columns;
+      const row = this.uri;
+      const types = (this._types = {
+        get list() {
+          if (!list) {
+            list = columns.map(type => {
+              let uri: t.ICellUri | undefined;
+              return {
+                ...type,
+                get uri() {
+                  return (
+                    uri || (uri = Uri.cell(Uri.create.cell(row.ns, `${type.column}${row.key}`)))
+                  );
+                },
+              };
+            });
+          }
+          return list as t.ITypedSheetRowType[];
+        },
         get map() {
           if (!map) {
-            map = list.reduce((acc, typeDef) => {
-              acc[typeDef.prop] = typeDef;
+            map = types.list.reduce((acc, type) => {
+              acc[type.prop] = type;
               return acc;
             }, {}) as M;
           }
           return map;
         },
-      };
+      });
     }
 
     return this._types;
