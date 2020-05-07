@@ -1290,7 +1290,7 @@ describe('TypedSheet', () => {
 
         const change1 = state.changes.cells?.A1;
         expect(change1?.kind).to.eql('CELL');
-        expect(change1?.ns).to.eql('ns:foo.mySheet');
+        expect(change1?.ns).to.eql('foo.mySheet');
         expect(change1?.key).to.eql('A1');
         expect(change1?.from).to.eql({ value: 'One' });
         expect(change1?.to).to.eql({ value: 123 });
@@ -1334,7 +1334,7 @@ describe('TypedSheet', () => {
 
         const change = state.changes.cells?.A99;
         expect(change?.kind).to.eql('CELL');
-        expect(change?.ns).to.eql('ns:foo.mySheet');
+        expect(change?.ns).to.eql('foo.mySheet');
         expect(change?.key).to.eql('A99');
         expect(change?.from).to.eql({});
         expect(change?.to).to.eql({ value: 123 });

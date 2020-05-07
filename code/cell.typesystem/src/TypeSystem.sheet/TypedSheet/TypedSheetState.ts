@@ -236,7 +236,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       return; // No change.
     }
 
-    const ns = Uri.create.ns(this.uri.id);
+    const ns = this.uri.id;
     const from = (existing ? existing.from : await this.getCell(key)) || {};
 
     // Strip hashes from change-set.
