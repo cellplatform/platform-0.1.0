@@ -6,7 +6,7 @@
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.32
+ *    @platform/cell.typesystem@0.0.33
  * 
  * Notes: 
  * 
@@ -23,23 +23,15 @@
 
 import * as t from '@platform/cell.types';
 
-export declare type SysApp = {
-  title: string;
-  windowDefs: t.ITypedSheetRefs<SysAppWindowDef>;
-  windows: t.ITypedSheetRefs<SysAppWindow>;
-};
-
-export declare type SysAppWindowDef = {
-  kind: string;
-  width: number;
-  height: number;
-  sandbox: boolean;
+export declare type App = {
+  name: string;
   backgroundColor: string;
+  bundle: string;
+  windows: t.ITypedSheetRefs<AppWindow>;
 };
 
-export declare type SysAppWindow = {
-  id: string;
-  kind: string;
+export declare type AppWindow = {
+  app: string;
   title: string;
   width: number;
   height: number;
