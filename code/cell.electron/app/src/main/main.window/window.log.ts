@@ -11,7 +11,7 @@ export async function logWindow(args: {
   const add = (key: string, value: any) => table.add([` • ${log.green(key)} `, value]);
 
   const isSandboxed = true;
-  const uri = log.gray(`${log.green('cell')}:${window.uri.ns}:${log.green(window.uri.key)}`);
+  const uri = log.format.uri(window.uri);
 
   const host = ctx.host;
   const url = getUrl({ host, app });

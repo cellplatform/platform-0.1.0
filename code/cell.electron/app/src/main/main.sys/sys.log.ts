@@ -1,7 +1,5 @@
-
 import { debounceTime } from 'rxjs/operators';
-import { Client, log, Observable, t, Uri, coord } from '../common';
-
+import { coord, log, Observable, t, Uri } from '../common';
 
 /**
  * Logs save operations
@@ -42,8 +40,8 @@ export function saveLogger(args: { ctx: t.IContext; saved$: Observable<t.ITypedS
       const ns = change.ns;
       const type = findType(ns, change.key);
       const prop = type ? type.prop : '';
-      const cell = log.gray(`${log.green('cell')}:${ns}:${log.green(change.key)}`);
-      log.info(`  ${cell} ${prop}`);
+      const cell = Uri.create.cell(ns, change.key);
+      log.info(`  ${log.format.uri(cell)} ${prop}`);
     });
   });
 
