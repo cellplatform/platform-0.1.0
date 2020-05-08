@@ -1,10 +1,11 @@
 import '../../config';
-import { constants, t, log } from '../common';
-import * as types from './sys.define.types';
-import * as app from './sys.define.app';
-import { monitor } from './sys.monitor';
+
+import { constants, t } from '../common';
 import { toContext } from './sys.ctx';
+import * as app from './sys.def.app';
+import * as types from './sys.def.types';
 import { ipc } from './sys.ipc';
+import { monitor } from './sys.monitor';
 
 const { paths } = constants;
 
