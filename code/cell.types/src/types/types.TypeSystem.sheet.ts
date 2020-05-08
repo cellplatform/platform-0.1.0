@@ -38,6 +38,7 @@ export type ITypedSheetData<T> = {
   exists(index: number): boolean;
   row(index: number): ITypedSheetRow<T>;
   load(options?: string | ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
+  toString(): string;
 
   // Functional methods.
   forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void): void;
@@ -59,6 +60,7 @@ export type ITypedSheetRow<T> = {
   readonly isLoaded: boolean;
   load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
   toObject(): T;
+  toString(): string;
 };
 
 /**
