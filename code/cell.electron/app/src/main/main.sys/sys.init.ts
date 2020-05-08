@@ -2,8 +2,7 @@ import '../../config';
 
 import { constants, t } from '../common';
 import { toContext } from './sys.ctx';
-import * as app from './sys.def.app';
-import * as types from './sys.def.types';
+import { typeDefs } from '../main.typeDefs';
 import { ipc } from './sys.ipc';
 import { monitor } from './sys.monitor';
 
@@ -14,14 +13,14 @@ const { paths } = constants;
  */
 export async function init(client: t.IClientTypesystem) {
   // Ensure the root "app" type-definitions exist in the database.
-  await types.ensureExists({ client });
+  await typeDefs.ensureExists({ client });
 
   // Build the shared context and setup event listeners.
   const ctx = await toContext(client);
   monitor({ ctx });
 
   // Define base modules.
-  const res = await app.define({
+  const res = await typeDefs.app.define({
     ctx,
     name: '@platform/cell.ui.sys',
     entryPath: 'entry.html',

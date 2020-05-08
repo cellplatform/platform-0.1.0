@@ -1,5 +1,4 @@
-import { t } from '../common';
-import { upload } from './sys.upload';
+import { t, util } from '../common';
 
 /**
  * Define an application module.
@@ -22,7 +21,7 @@ export async function define(args: {
     app.props.bundle = args.entryPath;
 
     // Upload the bundle as files to the cell (filesystem).
-    await upload({
+    await util.upload({
       host: client.http.origin,
       targetCell: app.types.map.bundle.uri,
       sourceDir: args.bundleDir,

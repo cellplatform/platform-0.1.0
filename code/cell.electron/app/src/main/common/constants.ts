@@ -22,6 +22,6 @@ export const ENV = {
 export const SYS = {
   NS: {
     TYPE: 'ns:sys.app.type',
-    DATA: 'ns:sys.app.data',
+    DATA: 'ns:sys.app',
   },
 };

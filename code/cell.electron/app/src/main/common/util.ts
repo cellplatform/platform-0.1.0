@@ -1,6 +1,8 @@
 import * as net from 'net';
 import { value } from './libs';
 
+export * from './util.upload';
+
 export const port = {
   /**
    * Generates an random unused port.
