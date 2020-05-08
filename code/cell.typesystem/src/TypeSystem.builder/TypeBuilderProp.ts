@@ -55,6 +55,9 @@ export class TypeBuilderProp implements t.ITypeBuilderProp {
   /**
    * [Methods]
    */
+  public toString() {
+    return `column(${this.columnKey}):${this._name}`;
+  }
 
   public toObject() {
     return value.deleteUndefined({
