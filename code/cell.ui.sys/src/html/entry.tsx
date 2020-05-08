@@ -1,5 +1,8 @@
 import '../config';
 import { Client, Uri, Schema, t } from '../common';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { Debug } from '../components/Debug';
 
 const win = (window as unknown) as t.ITopWindow;
 const env = win.env;
@@ -22,7 +25,7 @@ const env = win.env;
   const sheet = await client.sheet(uri.ns);
 
   const index = Schema.coord.cell.toAxisIndex('ROW', uri.key);
-  const cursor = await sheet.data('SysAppWindow').load();
+  const cursor = await sheet.data('AppWindow').load();
 
   const row = cursor.row(0);
 
@@ -53,4 +56,7 @@ const env = win.env;
     console.log('module  | 🌳 event', e);
     // writeRow()
   });
+
+  const el = <Debug />;
+  ReactDOM.render(el, document.getElementById('root'));
 })();

@@ -8,3 +8,4 @@ export { t, util };
  */
 export { HttpClient, Client } from '@platform/cell.client';
 export { Schema, Uri } from '@platform/cell.schema';
+export { css, color, CssValue } from '@platform/react';
