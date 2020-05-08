@@ -119,6 +119,10 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   /**
    * [Methods] - interface (public)
    */
+  public toString() {
+    return this.uri.toString();
+  }
+
   public exists(index: number) {
     return Boolean(this._rows[index]);
   }
@@ -197,6 +201,22 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
 
     this._loading = [...this._loading, { query, promise }]; // NB: Stored so repeat calls while loading return the same promise.
     return promise;
+  }
+
+  public filter(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean) {
+    return this.rows.filter((row, i) => fn(row.props, i));
+  }
+
+  public find(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean) {
+    return this.rows.find((row, i) => fn(row.props, i));
+  }
+
+  public map<U>(fn: (row: t.ITypedSheetRowProps<T>, index: number) => U) {
+    return this.rows.map((row, i) => fn(row.props, i));
+  }
+
+  public forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void) {
+    this.rows.forEach((row, i) => fn(row.props, i));
   }
 
   /**

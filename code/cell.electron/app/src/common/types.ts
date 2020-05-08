@@ -6,19 +6,16 @@ export * from '../types';
 import * as t from '../types';
 import {
   ITypedSheet,
-  ITypedSheetRow,
-  ITypedSheetRefs,
   IClientTypesystem,
-  ITypedSheetChangeCellDiff,
+  ITypedSheetStateChanges,
+  ITypedSheetData,
 } from '@platform/cell.types';
 
-export type IAppCtx = {
+export type IContext = {
   host: string;
   client: IClientTypesystem;
-  sheet: ITypedSheet<t.SysApp>;
-  app: ITypedSheetRow<t.SysApp>;
-  windows: ITypedSheetRefs<t.SysAppWindow>;
-  windowDefs: ITypedSheetRefs<t.SysAppWindowDef>;
+  sheet: ITypedSheet<t.App>;
+  apps: ITypedSheetData<t.App>;
   windowRefs: IWindowRef[];
 };
 
@@ -31,14 +28,14 @@ export type IWindowRef = {
  * Events (IPC)
  */
 
-export type IpcEvent = IpcWindowChangedEvent;
+export type IpcEvent = IpcSheetChangedEvent;
 
-export type IpcWindowChangedEvent = {
-  type: 'WINDOW/changed';
-  payload: IpcWindowChanged;
+export type IpcSheetChangedEvent = {
+  type: 'IPC/sheet/changed';
+  payload: IpcSheetChanged;
 };
 
-export type IpcWindowChanged = {
-  window: string; // uri.
-  changes: { [key: string]: ITypedSheetChangeCellDiff };
+export type IpcSheetChanged = {
+  ns: string;
+  changes: ITypedSheetStateChanges;
 };

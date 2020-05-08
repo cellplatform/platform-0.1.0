@@ -196,6 +196,15 @@ export class Uri {
       },
     },
   };
+
+  /**
+   * Helpers for stripped prefixes.
+   */
+  public static strip = {
+    ns: (input?: string) => strip(input, 'ns'),
+    cell: (input?: string) => strip(input, 'cell'),
+    file: (input?: string) => strip(input, 'file'),
+  };
 }
 
 /**
@@ -298,4 +307,11 @@ function parseOrThrow<T extends t.IUri>(
     // Finish up.
     return parsed.parts;
   }
+}
+
+function strip(input: string | undefined, prefix: UriPrefix) {
+  const left = `${prefix}:`;
+  input = (input || '').trim();
+  input = input.startsWith(left) ? input.substring(left.length) : input;
+  return input;
 }

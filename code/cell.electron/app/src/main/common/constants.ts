@@ -23,6 +23,10 @@ export const SYS = {
   KIND: {
     IDE: 'code.ide',
   },
+  ROOT: {
+    TYPE: 'ns:sys.app.type',
+    DATA: 'ns:sys.app',
+  },
   NS: {
     APP: 'ns:sys.app',
     TYPE: {

@@ -20,5 +20,6 @@ export type IPackage = {
  */
 type FetchMethod = 'getNs' | 'getColumns' | 'getCells';
 export type CachedFetcher = t.ISheetFetcher & { cache: IMemoryCache; cacheKey: CacheFetchKey };
-export type CacheFetchKey = (method: FetchMethod, ns: string, ...path: string[]) => string;
 export type CacheDefaultValue = (uri: string) => string;
+export type CacheFetchKey = (method: FetchMethod, ns: string, ...path: string[]) => string;
+export type CacheClientKey = (ns: string, ...path: string[]) => string;

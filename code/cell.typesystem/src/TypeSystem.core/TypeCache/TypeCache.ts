@@ -1,19 +1,6 @@
 import { MemoryCache, t } from '../../common';
 import { fetcher } from '../../TypeSystem.util';
-
-/**
- * Cache key generators.
- */
-export class TypeCacheKey {
-  public static fetch: t.CacheFetchKey = (method, ns, ...path) => {
-    const suffix = path.length === 0 ? '' : `/${path.join('/')}`;
-    return `TypeSystem/fetch/${ns}/${method}${suffix}`;
-  };
-
-  public static default: t.CacheDefaultValue = uri => {
-    return `TypeSystem/default/${uri}`;
-  };
-}
+import { TypeCacheKey } from './TypeCacheKey';
 
 /**
  * TypeSystem Cache.
@@ -38,7 +25,7 @@ export class TypeCache {
     }
 
     const cache = TypeCache.toCache(options.cache);
-    const cacheKey = TypeCache.key.fetch;
+    const cacheKey = TypeCacheKey.fetch;
 
     const getNs: t.FetchSheetNs = async args => {
       const key = cacheKey('getNs', args.ns.toString());

@@ -72,37 +72,60 @@ describe('TypeBuilder', () => {
       expect(A[1].default).to.eql(123);
     });
 
-    it('lookup namespace reference for typename (starts with "/")', () => {
-      const builder = TypeBuilder.create();
-      const foo1 = builder.ns('foo.1').type('Type1');
-      const foo2 = builder.ns('foo.2').type('Type2');
+    describe('lookup namespace reference for typename (starts with "/")', () => {
+      it('from explicit namespaces', () => {
+        const builder = TypeBuilder.create();
+        const type1 = builder.ns('foo.1').type('Type1');
+        const type2 = builder.ns('foo.2').type('Type2');
 
-      foo1.prop('one', '/Type2[]');
-      foo2.prop('two', prop => prop.type('/Type1').target('ref'));
+        type1.prop('one', '/Type2[]');
+        type2.prop('two', prop => prop.type('/Type1').target('ref'));
 
-      const obj = builder.toObject();
+        const obj = builder.toObject();
 
-      const columns1 = obj['ns:foo.1'].columns;
-      const columns2 = obj['ns:foo.2'].columns;
+        const columns1 = obj['ns:foo.1'].columns;
+        const columns2 = obj['ns:foo.2'].columns;
 
-      const def1 = columns1.A?.props?.def as t.CellTypeDef;
-      const def2 = columns2.A?.props?.def as t.CellTypeDef;
+        const def1 = columns1.A?.props?.def as t.CellTypeDef;
+        const def2 = columns2.A?.props?.def as t.CellTypeDef;
 
-      expect(def1.type).to.eql('ns:foo.2/Type2[]');
-      expect(def2.type).to.eql('ns:foo.1/Type1');
-    });
+        expect(def1.type).to.eql('ns:foo.2/Type2[]');
+        expect(def2.type).to.eql('ns:foo.1/Type1');
+      });
 
-    it('throw: failed lookup for referenced typename (starts with "/")', () => {
-      const builder = TypeBuilder.create();
-      const foo1 = builder.ns('foo.1').type('Type1');
-      foo1.prop('one', '/Type2');
+      it('from generated namespaces (eg. builder.type(typename)) ', () => {
+        const builder = TypeBuilder.create();
 
-      const fn = () => builder.toObject();
-      expect(fn).to.throw(/Failed to prefix type '\/Type2' with namespace/);
+        const type1 = builder.type('Type1');
+        const type2 = builder.type('Type2');
+
+        type1.prop('one', '/Type2[]');
+        type2.prop('two', prop => prop.type('/Type1').target('ref'));
+
+        const obj = builder.toObject();
+
+        const columns1 = obj[type1.uri.toString()].columns;
+        const columns2 = obj[type2.uri.toString()].columns;
+
+        const def1 = columns1.A?.props?.def as t.CellTypeDef;
+        const def2 = columns2.A?.props?.def as t.CellTypeDef;
+
+        expect(def1.type).to.eql(`${type2.uri.toString()}/Type2[]`);
+        expect(def2.type).to.eql(`${type1.uri.toString()}/Type1`);
+      });
+
+      it('throw: failed lookup (not found)', () => {
+        const builder = TypeBuilder.create();
+        const foo1 = builder.ns('foo.1').type('Type1');
+        foo1.prop('one', '/Type2');
+
+        const fn = () => builder.toObject();
+        expect(fn).to.throw(/Failed to prefix type '\/Type2' with namespace/);
+      });
     });
   });
 
-  describe('ns', () => {
+  describe('builder.ns', () => {
     it('from uri: string', () => {
       const ns = TypeBuilder.create().ns('foo');
       expect(ns).to.be.an.instanceof(TypeBuilderNs);
@@ -126,7 +149,25 @@ describe('TypeBuilder', () => {
     });
   });
 
-  describe('ns.type', () => {
+  describe('builder.type (generate namespace)', () => {
+    it('typename', () => {
+      const builder = TypeBuilder.create();
+      const res = builder.type('MyType');
+      expect(res).to.be.an.instanceof(TypeBuilderType);
+      expect(res.typename).to.eql('MyType');
+      expect(res.uri.type).to.eql('NS');
+      expect(res.uri.id.length).to.greaterThan(10);
+    });
+
+    it('typename (options)', () => {
+      const builder = TypeBuilder.create();
+      const res = builder.type('MyType', { startColumn: 3 }) as TypeBuilderType;
+      expect(res.typename).to.eql('MyType');
+      expect(res.startColumn).to.eql(3);
+    });
+  });
+
+  describe('builder.ns.type', () => {
     it('typename', () => {
       const ns = TypeBuilder.create().ns('foo');
       const type = ns.type('  MyType  ');
@@ -185,7 +226,7 @@ describe('TypeBuilder', () => {
     });
   });
 
-  describe('ns.type.prop', () => {
+  describe('builder.ns.type.prop', () => {
     it('prop (no param) - default "string"', () => {
       const ns = TypeBuilder.create().ns('foo');
       const type = ns.type('MyType');

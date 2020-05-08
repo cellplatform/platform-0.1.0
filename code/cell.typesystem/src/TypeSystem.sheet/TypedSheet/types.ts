@@ -6,6 +6,7 @@ export type SheetCtx = {
   dispose$: t.Observable<{}>;
   fetch: t.ISheetFetcher;
   cache: t.IMemoryCache;
+  pool: t.ISheetPool;
   sheet: {
     load<T>(args: { ns: string }): Promise<t.ITypedSheet<T>>;
     create<T>(args: { implements: string }): Promise<t.ITypedSheet<T>>;

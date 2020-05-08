@@ -6,7 +6,7 @@
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.30
+ *    @platform/cell.typesystem@0.0.32
  * 
  * Notes: 
  * 
@@ -33,6 +33,8 @@ export declare type SysAppWindowDef = {
   kind: string;
   width: number;
   height: number;
+  sandbox: boolean;
+  backgroundColor: string;
 };
 
 export declare type SysAppWindow = {

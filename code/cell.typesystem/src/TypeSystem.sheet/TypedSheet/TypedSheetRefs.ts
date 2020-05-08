@@ -8,6 +8,8 @@ export type IArgs = {
   ctx: t.SheetCtx;
 };
 
+type LinkInfo = { data: t.ICellData; links: t.IUriMap; linkKey: string; link?: t.IRefLink };
+
 /**
  * A connector for a reference-pointer to a set of rows in another sheet.
  */
@@ -93,18 +95,28 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     });
 
     const promise = new Promise<t.ITypedSheetRefs<T>>(async (resolve, reject) => {
-      await this.ensureLink();
+      const { fetch, cache, event$, pool } = this._ctx;
 
-      const { fetch, cache, event$ } = this._ctx;
-      const def = this.typeDef;
+      // Check if the linked sheet has already been pooled.
+      const linkInfo = await this.getLink();
+      const link = linkInfo.link;
+      const pooledSheet = link && link.uri.type === 'NS' ? pool.sheet(link.uri) : undefined;
+      if (pooledSheet) {
+        this._sheet = pooledSheet;
+      } else {
+        // Create the new sheet instance.
+        await this.ensureLink(linkInfo);
+        const def = this.typeDef;
 
-      this._sheet = await TypedSheet.create<T>({
-        implements: def.type.uri,
-        ns: this.ns.toString(),
-        fetch,
-        cache,
-        event$,
-      });
+        this._sheet = await TypedSheet.create<T>({
+          implements: def.type.uri,
+          ns: this.ns.toString(),
+          fetch,
+          cache,
+          event$,
+          pool,
+        });
+      }
 
       delete this._load; // Remove temporary reference to loader promise.
       this.fire({
@@ -141,11 +153,16 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     return (res.cells || {})[key];
   }
 
-  private async ensureLink() {
+  private async getLink(): Promise<LinkInfo> {
     const typeDef = this.typeDef;
     const data = (await this.getCell()) || {};
-    let links = data.links || {};
+    const links = data.links || {};
     const { linkKey, link } = TypedSheetRefs.refLink({ typeDef, links });
+    return { data, links, linkKey, link };
+  }
+
+  private async ensureLink(input?: LinkInfo) {
+    const { data, links, linkKey, link } = input || (await this.getLink());
 
     // Look for an existing link on the cell if the current link is a placeholder.
     if (this.ns.toString() === TypedSheetRefs.PLACEHOLDER) {
@@ -156,12 +173,11 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
 
     // Write the link-reference into the cell data.
     if (!links[linkKey]) {
-      links = { ...links, [linkKey]: this.ns.toString() };
       const payload: t.ITypedSheetChange = {
         kind: 'CELL',
         ns: this.parent.sheet.uri.toString(),
         key: this.parent.cell.key,
-        to: { ...data, links },
+        to: { ...data, links: { ...links, [linkKey]: this.ns.toString() } },
       };
 
       const isChanged = !R.equals(data, payload.to);

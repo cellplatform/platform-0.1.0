@@ -1,5 +1,7 @@
 import { t } from '../common';
 
+type R<T> = ITypedSheetRow<T>;
+
 export type ITypedSheet<T = {}> = {
   readonly ok: boolean;
   readonly uri: t.INsUri;
@@ -10,6 +12,7 @@ export type ITypedSheet<T = {}> = {
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
+  readonly pool: t.ISheetPool;
   dispose(): void;
   info<P extends t.INsProps = t.INsProps>(): Promise<ITypedSheetInfo<P>>;
   data<D = T>(args: string | ITypedSheetDataArgs): ITypedSheetData<D>;
@@ -36,6 +39,13 @@ export type ITypedSheetData<T> = {
   exists(index: number): boolean;
   row(index: number): ITypedSheetRow<T>;
   load(options?: string | ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
+  toString(): string;
+
+  // Functional methods.
+  forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void): void;
+  map<U>(fn: (row: t.ITypedSheetRowProps<T>, index: number) => U): U[];
+  filter(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean): R<T>[];
+  find(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean): R<T> | undefined;
 };
 
 /**
@@ -51,6 +61,7 @@ export type ITypedSheetRow<T> = {
   readonly isLoaded: boolean;
   load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
   toObject(): T;
+  toString(): string;
 };
 
 /**
@@ -62,6 +73,8 @@ export type ITypedSheetRowProps<T> = { [K in keyof T]: T[K] };
  * The type definitions for the cells/columns in a row.
  */
 export type ITypedSheetRowTypes<T> = {
-  list: t.IColumnTypeDef[];
-  map: { [P in keyof Required<T>]: t.IColumnTypeDef };
+  list: ITypedSheetRowType[];
+  map: { [P in keyof Required<T>]: ITypedSheetRowType };
 };
+
+export type ITypedSheetRowType = t.IColumnTypeDef & { uri: t.ICellUri };

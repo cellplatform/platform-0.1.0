@@ -572,4 +572,63 @@ describe('Uri', () => {
       expect(() => Uri.create.row('foo', 'A')).to.throw();
     });
   });
+
+  describe('strip', () => {
+    it('strip.ns', () => {
+      const test = (input: string | undefined, expected: string) => {
+        const res = Uri.strip.ns(input);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, '');
+      test('', '');
+      test('foo', 'foo');
+      test('  foo  ', 'foo');
+      test('ns:foo', 'foo');
+      test('ns', 'ns');
+      test('  ns:foo  ', 'foo');
+      test('foo:123', 'foo:123');
+
+      test('cell:foo:A1', 'cell:foo:A1');
+      test('file:foo:123', 'file:foo:123');
+    });
+
+    it('strip.cell', () => {
+      const test = (input: string | undefined, expected: string) => {
+        const res = Uri.strip.cell(input);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, '');
+      test('', '');
+      test('  ', '');
+      test('foo', 'foo');
+      test('cell', 'cell');
+      test('cell:foo:A1', 'foo:A1');
+      test(' cell:foo:A ', 'foo:A');
+      test(' cell:foo:1 ', 'foo:1');
+
+      test('ns:foo', 'ns:foo');
+      test('file:foo:123', 'file:foo:123');
+    });
+
+    it('strip.file', () => {
+      const test = (input: string | undefined, expected: string) => {
+        const res = Uri.strip.file(input);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, '');
+      test('', '');
+      test('  ', '');
+      test('foo', 'foo');
+      test('file', 'file');
+
+      test('file:abc:123', 'abc:123');
+      test('  file:abc:123  ', 'abc:123');
+
+      test('cell:foo:A1', 'cell:foo:A1');
+      test('ns:foo', 'ns:foo');
+    });
+  });
 });

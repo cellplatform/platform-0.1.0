@@ -1,98 +1,33 @@
-import { constants, fs, t, Uri } from '../common';
+import '../../config';
+import { constants, t, log } from '../common';
+import * as types from './sys.define.types';
+import * as app from './sys.define.app';
 import { monitor } from './sys.monitor';
-import { DEFS } from './sys.typeDefs';
-import { upload } from './sys.upload';
+import { toContext } from './sys.ctx';
 import { ipc } from './sys.ipc';
 
-const SYS = constants.SYS;
-const NS = SYS.NS;
+const { paths } = constants;
 
 /**
- * Writes (initializes) system data.
+ * Initialize the system.
  */
-export async function initContext(client: t.IClientTypesystem) {
-  const host = client.http.origin;
-  const ns = client.http.ns(NS.APP);
+export async function init(client: t.IClientTypesystem) {
+  // Ensure the root "app" type-definitions exist in the database.
+  await types.ensureExists({ client });
 
-  // Ensure the root application model exists in the DB.
-  if (!(await ns.exists())) {
-    await ns.write({ ns: { type: { implements: NS.TYPE.APP } } });
-  }
+  // Build the shared context and setup event listeners.
+  const ctx = await toContext(client);
+  monitor({ ctx });
 
-  // Load the app model.
-  const sheet = await client.sheet<t.SysApp>(NS.APP);
-  monitor({ client, sheet });
-
-  const app = sheet.data('SysApp').row(0);
-  await app.load();
-
-  // Retrieve windows.
-  const windows = await app.props.windows.load();
-  const windowDefs = await app.props.windowDefs.load();
+  // Define base modules.
+  const res = await app.define({
+    ctx,
+    name: '@platform/cell.ui.sys',
+    entryPath: 'entry.html',
+    bundleDir: paths.bundle.sys,
+  });
 
   // Finish up.
-  const ctx: t.IAppCtx = {
-    host,
-    client,
-    sheet,
-    app,
-    windows,
-    windowDefs,
-    windowRefs: [],
-  };
-
   ipc({ ctx });
   return ctx;
-}
-
-/**
- * Write the application types.
- */
-export async function initTypeDefs(client: t.IClientTypesystem, options: { save?: boolean } = {}) {
-  const write = async (ns: string) => {
-    if (!DEFS[ns]) {
-      throw new Error(`namespace "${ns}" is not defined.`);
-    }
-    await client.http.ns(ns).write(DEFS[ns]);
-  };
-
-  await write(NS.TYPE.APP);
-  await write(NS.TYPE.WINDOW_DEF);
-  await write(NS.TYPE.WINDOW);
-
-  if (options.save) {
-    const ts = await client.typescript(NS.TYPE.APP);
-    await ts.save(fs, fs.resolve('src/types.g'));
-  }
-}
-
-/**
- * Creates the new window definition.
- */
-export async function initWindowDef(args: {
-  kind: string;
-  ctx: t.IAppCtx;
-  uploadDir?: string | string[];
-  force?: boolean;
-}) {
-  const { ctx, kind, uploadDir } = args;
-  const defs = await ctx.windowDefs.data();
-  const exists = defs.rows.some(def => def.props.kind === kind);
-  if (exists && !args.force) {
-    return;
-  }
-
-  const def = defs.row(0);
-  def.props.kind = kind;
-
-  if (uploadDir) {
-    const host = ctx.host;
-    const targetCell = Uri.create.cell(def.uri.ns, 'A1');
-    const dirs = Array.isArray(uploadDir) ? uploadDir : [uploadDir];
-
-    for (const sourceDir of dirs) {
-      const targetDir = fs.basename(sourceDir);
-      await upload({ host, targetCell, sourceDir, targetDir });
-    }
-  }
 }

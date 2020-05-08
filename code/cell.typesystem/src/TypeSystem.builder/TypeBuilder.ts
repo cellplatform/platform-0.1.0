@@ -41,6 +41,11 @@ export class TypeBuilder implements t.ITypeBuilder {
     return ns;
   }
 
+  public type(typename: string, options?: t.ITypeBuilderNsTypeOptions) {
+    const ns = Uri.create.ns(Uri.cuid());
+    return this.ns(ns).type(typename, options);
+  }
+
   public formatType(value: string) {
     value = (value || '').trim();
 

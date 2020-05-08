@@ -5,6 +5,7 @@ import { TypeClient } from '../../TypeSystem.core';
 import { ERROR, ErrorList, MemoryCache, t, Uri, util } from './common';
 import { TypedSheetData } from './TypedSheetData';
 import { TypedSheetState } from './TypedSheetState';
+import { SheetPool } from '../TypedSheet.SheetPool';
 
 const fromClient = (client: t.IHttpClient) => {
   const fetch = util.fetcher.fromClient(client);
@@ -28,17 +29,20 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     cache?: t.IMemoryCache;
     event$?: Subject<t.TypedSheetEvent>;
     dispose$?: Observable<{}>;
+    pool?: t.ISheetPool;
   }): t.SheetCtx {
     const fetch = args.fetch;
     const cache = args.cache || MemoryCache.create();
     const event$ = args.event$ || new Subject<t.TypedSheetEvent>();
     const dispose$ = args.dispose$ || new Subject<{}>();
+    const pool = args.pool || SheetPool.create();
 
     return {
       event$,
       dispose$,
       fetch,
       cache,
+      pool,
       sheet: {
         load<T>(args: { ns: string }) {
           return TypedSheet.load<T>({ ...args, fetch, cache, event$ });
@@ -54,13 +58,19 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
    * Load a sheet from the network.
    */
   public static async load<T = {}>(args: {
-    ns: string | t.INsUri;
     fetch: t.ISheetFetcher;
+    ns: string | t.INsUri;
     cache?: t.IMemoryCache;
     event$?: Subject<t.TypedSheetEvent>;
+    pool?: t.ISheetPool;
   }): Promise<t.ITypedSheet<T>> {
     const { fetch, cache, event$ } = args;
     const sheetNs = Uri.ns(args.ns);
+
+    const pool = args.pool || SheetPool.create();
+    if (pool.exists(args.ns)) {
+      return pool.sheet(args.ns) as t.ITypedSheet<T>;
+    }
 
     // Retrieve type definition for sheet.
     const res = await args.fetch.getNs({ ns: sheetNs.toString() });
@@ -83,6 +93,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     // Finish up.
     const types = typeDefs.defs;
     const errors = typeDefs.errors;
+
     return new TypedSheet<T>({
       uri: sheetNs,
       implements: implementsNs,
@@ -91,6 +102,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
       cache,
       event$,
       errors,
+      pool,
     });
   }
 
@@ -98,15 +110,21 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
    * Creates a sheet.
    */
   public static async create<T = {}>(args: {
+    fetch: t.ISheetFetcher;
     implements: string | t.INsUri;
     ns?: string | t.INsUri; // NB: If not specified a new URI is generated.
-    fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
     event$?: Subject<t.TypedSheetEvent>;
+    pool?: t.ISheetPool;
   }): Promise<t.ITypedSheet<T>> {
     const { fetch, event$, cache } = args;
     const implementsNs = Uri.ns(args.implements);
     const sheetNs = args.ns ? Uri.ns(args.ns) : Uri.create.ns(Uri.cuid());
+
+    const pool = args.pool || SheetPool.create();
+    if (args.ns && pool.exists(args.ns)) {
+      return pool.sheet(args.ns) as t.ITypedSheet<T>;
+    }
 
     const typeDefs = await TypeClient.load({
       ns: implementsNs.toString(),
@@ -125,6 +143,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
       cache,
       event$,
       errors,
+      pool,
     });
   }
 
@@ -140,10 +159,13 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     event$?: Subject<t.TypedSheetEvent>;
     cache?: t.IMemoryCache;
     errors?: t.ITypeError[];
+    pool: t.ISheetPool;
   }) {
     this.uri = Uri.ns(args.uri);
     this.implements = Uri.ns(args.implements);
+    this.pool = args.pool;
 
+    const pool = this.pool;
     const cache = args.cache || MemoryCache.create();
     const event$ = args.event$ || new Subject<t.TypedSheetEvent>();
     const dispose$ = this.dispose$;
@@ -151,9 +173,11 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     this.event$ = event$.asObservable().pipe(takeUntil(dispose$), share());
     this.state = TypedSheetState.create({ sheet: this, event$, fetch: args.fetch, cache });
 
-    this._ctx = TypedSheet.ctx({ fetch: this.state.fetch, event$, dispose$, cache }); // NB: Use the state-machine's wrapped fetcher.
+    this._ctx = TypedSheet.ctx({ fetch: this.state.fetch, event$, dispose$, cache, pool }); // NB: Use the state-machine's wrapped fetcher.
     this._typeDefs = args.types;
     this._errorList = ErrorList.create({ defaultType: ERROR.TYPE.SHEET, errors: args.errors });
+
+    pool.add(this);
   }
 
   public dispose() {
@@ -177,6 +201,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   public readonly uri: t.INsUri;
   public readonly implements: t.INsUri;
   public readonly state: TypedSheetState;
+  public readonly pool: t.ISheetPool;
   public readonly dispose$ = this._dispose$.pipe(share());
   public readonly event$: Observable<t.TypedSheetEvent>;
 
@@ -232,7 +257,6 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
 
     const args = typeof input === 'string' ? { typename: input } : input;
     const { typename, range } = args;
-    const ns = this.uri;
     const ctx = this._ctx;
 
     // Check the pool in case the cursor has already been created.

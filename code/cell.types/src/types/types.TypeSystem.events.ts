@@ -111,5 +111,5 @@ export type ITypedSheetChangesCleared = {
   sheet: t.ITypedSheet;
   from: t.ITypedSheetStateChanges;
   to: t.ITypedSheetStateChanges;
-  action: 'REVERT' | 'SAVED';
+  action: 'REVERT' | 'SAVE';
 };

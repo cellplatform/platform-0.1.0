@@ -394,6 +394,85 @@ describe('TypedSheet', () => {
         array: ['red', 'green', 'blue'],
       });
     });
+
+    describe('functional methods', () => {
+      it('forEach', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = await sheet.data('MyRow').load();
+
+        const indexes: number[] = [];
+        const rows: t.ITypedSheetRowProps<f.MyRow>[] = [];
+
+        cursor.forEach((row, i) => {
+          indexes.push(i);
+          rows.push(row);
+        });
+
+        expect(indexes).to.eql([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+        expect(rows.length).to.eql(9);
+        expect(rows[0].title).to.eql('One');
+        expect(rows[8].title).to.eql('Nine');
+      });
+
+      it('map', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = sheet.data('MyRow');
+
+        const res1 = cursor.map(row => row.title);
+        expect(res1).to.eql([]);
+
+        await cursor.load();
+
+        const res2 = cursor.map(row => row.title);
+        expect(res2).to.eql([
+          'One',
+          'Two',
+          'Untitled',
+          'Untitled',
+          'Untitled',
+          'Untitled',
+          'Untitled',
+          'Untitled',
+          'Nine',
+        ]);
+
+        const indexes: number[] = [];
+        cursor.map((row, i) => indexes.push(i));
+        expect(indexes).to.eql([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+      });
+
+      it('filter', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = await sheet.data('MyRow').load();
+        const res = cursor.filter(r => r.title.endsWith('e')).map(r => r.props.title);
+        expect(res).to.eql(['One', 'Nine']);
+
+        const indexes: number[] = [];
+        cursor.filter((row, i) => {
+          indexes.push(i);
+          return true;
+        });
+        expect(indexes).to.eql([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+      });
+
+      it('find', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = await sheet.data('MyRow').load();
+
+        const res1 = cursor.find(row => row.title === 'Nine');
+        const res2 = cursor.find(row => row.title === '404');
+
+        expect(res1?.props.title).to.eql('Nine');
+        expect(res2).to.eql(undefined);
+
+        const indexes: number[] = [];
+        cursor.map((row, i) => {
+          indexes.push(i);
+          return false;
+        });
+        expect(indexes).to.eql([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+      });
+    });
   });
 
   describe('TypedSheetRow', () => {
@@ -423,7 +502,7 @@ describe('TypedSheet', () => {
       expect(row.status).to.eql('INIT');
       expect(row.isLoaded).to.eql(false);
 
-      expect(row.types.list).to.eql(defs[0].columns);
+      expect(row.types.list[0].column).to.eql(defs[0].columns[0].column);
       expect(row.types.map.title.column).to.eql('A');
 
       expect(row.props.title).to.eql('Untitled'); // Default value.
@@ -599,7 +678,8 @@ describe('TypedSheet', () => {
       it('row.types.list', async () => {
         const { sheet } = await testMySheet();
         const cursor = await sheet.data('MyRow').load();
-        const types = cursor.row(0).types;
+        const row = cursor.row(0);
+        const types = row.types;
 
         const list1 = types.list;
         const list2 = types.list;
@@ -611,13 +691,29 @@ describe('TypedSheet', () => {
       it('row.types.map', async () => {
         const { sheet } = await testMySheet();
         const cursor = await sheet.data('MyRow').load();
+        const row = cursor.row(0);
+        const types = row.types.map;
+
+        expect(types.title.column).to.eql('A');
+        expect(types.isEnabled.column).to.eql('B');
+        expect(types.color.column).to.eql('C');
+        expect(types.message.column).to.eql('D');
+        expect(types.messages.column).to.eql('E');
+      });
+
+      it('row.types (uri)', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = await sheet.data('MyRow').load();
         const types = cursor.row(0).types;
 
-        expect(types.map.title.column).to.eql('A');
-        expect(types.map.isEnabled.column).to.eql('B');
-        expect(types.map.color.column).to.eql('C');
-        expect(types.map.message.column).to.eql('D');
-        expect(types.map.messages.column).to.eql('E');
+        expect(types.map.title.uri.toString()).to.eql('cell:foo.mySheet:A1');
+        expect(types.map.messages.uri.toString()).to.eql('cell:foo.mySheet:E1');
+
+        // NB: Same instance.
+        types.list.forEach(item => {
+          const uri = types.map[item.prop].uri;
+          expect(uri).to.equal(item.uri);
+        });
       });
     });
 
@@ -872,7 +968,7 @@ describe('TypedSheet', () => {
     });
 
     describe('read/write (ref)', () => {
-      describe('1:1', () => {
+      describe('1:1 (TypedSheetRefs)', () => {
         it('single row', async () => {
           const { sheet } = await testMySheet();
           const cursor = await sheet.data('MyRow').load();
@@ -884,15 +980,26 @@ describe('TypedSheet', () => {
         });
       });
 
-      describe('1:*', () => {
+      describe('1:* (TypedSheetRefs)', () => {
+        it('caches property instance of [TypedSheetRefs]', async () => {
+          const { sheet } = await testMySheet();
+          const cursor = await sheet.data('MyRow').load();
+          const row = cursor.row(0);
+          const props = row.props;
+
+          expect(props.messages).to.be.an.instanceof(TypedSheetRefs);
+          expect(props.messages).to.equal(props.messages);
+          expect(props.messages === props.messages).to.eql(true);
+          expect((await props.messages.data()) === (await props.messages.data())).to.eql(true);
+          expect((await props.messages.load()) === (await props.messages.load())).to.eql(true);
+        });
+
         it('load ➔ ready (loaded)', async () => {
           const { sheet } = await testMySheet();
           const cursor = await sheet.data('MyRow').load();
           const row = cursor.row(0);
 
           const messages = row.props.messages;
-          expect(messages).to.be.an.instanceof(TypedSheetRefs);
-          expect(row.props.messages).to.equal(messages); // NB: Cached instance.
           expect(messages.isLoaded).to.eql(false);
           expect(messages.typename).to.eql('MyMessage');
 
@@ -913,7 +1020,9 @@ describe('TypedSheet', () => {
           const childRow = childCursor.row(0);
           const childRowProps = childRow.props;
 
-          expect(childRow.types.list).to.eql(messages.sheet.types[0].columns);
+          expect(childRow.types.list.map(item => item.type)).to.eql(
+            messages.sheet.types[0].columns.map(item => item.type),
+          );
 
           expect(childRowProps.message).to.eql(undefined);
           childRowProps.message = 'hello';
@@ -1098,6 +1207,11 @@ describe('TypedSheet', () => {
           payload: { kind: 'CELL', ns: 'ns:foo.BAR', key: 'A1', to: { value: 123 } },
         });
 
+        event$.next({
+          type: 'SHEET/change',
+          payload: { kind: 'CELL', ns: 'foo.BAR', key: 'A1', to: { value: 123 } },
+        });
+
         await time.wait(1);
         expect(state.changes).to.eql({});
       });
@@ -1128,12 +1242,27 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
+          payload: { kind: 'CELL', ns: 'not-valid*', key: 'A1', to: { value: 123 } }, // NB: invalid URI
+        });
+
+        event$.next({
+          type: 'SHEET/change',
           payload: { kind: 'CELL', ns: 'ns:foo', key: 'A-1', to: { value: 123 } }, // NB: invalid URI
         });
 
         event$.next({
           type: 'SHEET/change',
+          payload: { kind: 'CELL', ns: 'foo', key: 'A-1', to: { value: 123 } }, // NB: invalid URI
+        });
+
+        event$.next({
+          type: 'SHEET/change',
           payload: { kind: 'CELL', ns: 'ns:foo:A1', key: 'A1', to: { value: 123 } }, // NB: invalid URI
+        });
+
+        event$.next({
+          type: 'SHEET/change',
+          payload: { kind: 'CELL', ns: 'foo:A1', key: 'A1', to: { value: 123 } }, // NB: invalid URI
         });
 
         await time.wait(1);
@@ -1148,7 +1277,7 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1210,7 +1339,7 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 123 } },
         });
 
         await time.wait(1);
@@ -1249,7 +1378,7 @@ describe('TypedSheet', () => {
 
         const changes = state.changes;
         expect(changes.ns?.kind).to.eql('NS');
-        expect(changes.ns?.ns).to.eql(ns);
+        expect(changes.ns?.ns).to.eql('foo.mySheet');
         expect(changes.ns?.from).to.eql({});
         expect(changes.ns?.to).to.eql({ type });
       });
@@ -1264,13 +1393,13 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 123 } },
         });
         await time.wait(1);
 
         const change1 = state.changes.cells?.A1;
         expect(change1?.kind).to.eql('CELL');
-        expect(change1?.ns).to.eql('ns:foo.mySheet');
+        expect(change1?.ns).to.eql('foo.mySheet');
         expect(change1?.key).to.eql('A1');
         expect(change1?.from).to.eql({ value: 'One' });
         expect(change1?.to).to.eql({ value: 123 });
@@ -1283,7 +1412,7 @@ describe('TypedSheet', () => {
         // Retains original [from] value on second change (prior to purge).
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 456 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 456 } },
         });
         await time.wait(1);
 
@@ -1295,7 +1424,7 @@ describe('TypedSheet', () => {
         expect(fired.length).to.eql(2);
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 456 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 456 } },
         });
         await time.wait(1);
         expect(fired.length).to.eql(2);
@@ -1308,13 +1437,13 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A99', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A99', to: { value: 123 } },
         });
         await time.wait(1);
 
         const change = state.changes.cells?.A99;
         expect(change?.kind).to.eql('CELL');
-        expect(change?.ns).to.eql('ns:foo.mySheet');
+        expect(change?.ns).to.eql('foo.mySheet');
         expect(change?.key).to.eql('A99');
         expect(change?.from).to.eql({});
         expect(change?.to).to.eql({ value: 123 });
@@ -1332,11 +1461,11 @@ describe('TypedSheet', () => {
 
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'CELL', ns: 'ns:foo.mySheet', key: 'A1', to: { value: 123 } },
+          payload: { kind: 'CELL', ns: 'foo.mySheet', key: 'A1', to: { value: 123 } },
         });
         event$.next({
           type: 'SHEET/change',
-          payload: { kind: 'NS', ns: 'ns:foo.mySheet', to: { type: { implements: 'foobar' } } },
+          payload: { kind: 'NS', ns: 'foo.mySheet', to: { type: { implements: 'foobar' } } },
         });
         await time.wait(1);
 
