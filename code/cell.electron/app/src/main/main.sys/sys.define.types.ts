@@ -10,7 +10,7 @@ export function define() {
   const def = TypeSystem.def();
 
   def
-    .ns(SYS.ROOT.TYPE)
+    .ns(SYS.APP.TYPE)
     .type('App')
     .prop('name', p => p.type('string'))
     .prop('backgroundColor', p => p.type('string').default('#fff'))
@@ -36,18 +36,18 @@ export async function ensureExists(args: { client: t.IClientTypesystem }) {
   const { client } = args;
 
   // Write type-defs.
-  if (!(await client.http.ns(SYS.ROOT.TYPE).exists())) {
+  if (!(await client.http.ns(SYS.APP.TYPE).exists())) {
     const defs = define();
     await Promise.all(Object.keys(defs).map(ns => client.http.ns(ns).write(defs[ns])));
     if (ENV.isDev) {
-      const ts = await client.typescript(SYS.ROOT.TYPE);
+      const ts = await client.typescript(SYS.APP.TYPE);
       await ts.save(fs, fs.resolve('src/types.g2'));
     }
   }
 
   // Write root "apps" data sheet.
-  const data = client.http.ns(SYS.ROOT.DATA);
+  const data = client.http.ns(SYS.APP.DATA);
   if (!(await data.exists())) {
-    await data.write({ ns: { type: { implements: SYS.ROOT.TYPE } } });
+    await data.write({ ns: { type: { implements: SYS.APP.TYPE } } });
   }
 }
