@@ -77,8 +77,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    */
   private readonly _ctx: t.SheetCtx;
   private readonly _columns: t.IColumnTypeDef[] = [];
-  private readonly _prop: { [key: string]: ITypedSheetRowProp<T, any> } = {};
-  private _refs: { [key: string]: t.ITypedSheetRef<T> | t.ITypedSheetRefs<T> } = {};
+  private readonly _prop: { [propname: string]: ITypedSheetRowProp<T, any> } = {};
+  private _refs: { [propname: string]: t.ITypedSheetRef<T> | t.ITypedSheetRefs<T> } = {};
   private _props: t.ITypedSheetRowProps<T>;
   private _types: t.ITypedSheetRowTypes<T>;
   private _data: { [column: string]: t.ICellData } = {};
@@ -159,6 +159,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * Methods
    */
+  public toString() {
+    return this.uri.toString();
+  }
 
   public async load(
     options: { props?: (keyof T)[]; force?: boolean } = {},
@@ -229,8 +232,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    * Read/write handle for a single cell (property).
    */
   public prop<K extends keyof T>(name: K): ITypedSheetRowProp<T, K> {
-    if (this._prop[name as string]) {
-      return this._prop[name as string]; // Already created and cached.
+    const propname = name as string;
+    if (this._prop[propname]) {
+      return this._prop[propname]; // Already created and cached.
     }
 
     const self = this; // tslint:disable-line
@@ -275,16 +279,14 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
         }
 
         if (target.isRef) {
-          if (self._refs[name as string]) {
-            return done(self._refs[name as string]); // NB: Cached instance.
+          if (self._refs[propname]) {
+            return done(self._refs[propname]); // NB: Cached instance.
           }
 
           const links = cell.links;
           const typeDef = columnDef as t.IColumnTypeDef<t.ITypeRef>;
           const res = self.getOrCreateRef({ typename, typeDef, links });
-          if (!res.exists) {
-            self._refs[name as string] = res.ref; // NB: Cache instance.
-          }
+          self._refs[propname] = res.ref; // NB: Cache instance.
 
           return done(res.ref);
         }

@@ -3,7 +3,7 @@ import { TypeSystem } from '../..';
 import { expect, Subject, t, testInstanceFetch, TYPE_DEFS } from '../../test';
 import * as a from '../../test/.d.ts/all';
 
-describe.only('SheetPool', () => {
+describe('SheetPool', () => {
   describe('lifecycle', () => {
     it('create', () => {
       const pool = SheetPool.create();

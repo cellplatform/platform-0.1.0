@@ -119,6 +119,10 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   /**
    * [Methods] - interface (public)
    */
+  public toString() {
+    return this.uri.toString();
+  }
+
   public exists(index: number) {
     return Boolean(this._rows[index]);
   }
