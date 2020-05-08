@@ -22,3 +22,15 @@ export async function createOne(args: { ctx: t.IContext; name: string }) {
   // Finish up.
   return createBrowserWindow({ ctx, app, window });
 }
+
+
+/**
+ * Create all windows.
+ */
+export async function createAll(args: { ctx: t.IContext; name: string }) {
+  const { ctx } = args;
+  const { apps } = ctx;
+
+  
+  
+}

@@ -1,6 +1,5 @@
 import { bundle } from '@platform/cell.compile.web';
 import { fs } from '@platform/fs';
-
 import { constants } from '../app/src/main/common';
 
 (async () => {
