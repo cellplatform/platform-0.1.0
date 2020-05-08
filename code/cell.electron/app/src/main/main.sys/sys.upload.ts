@@ -27,7 +27,7 @@ export async function getFiles(args: { sourceDir: string; targetDir?: string }) 
  */
 export async function upload(args: {
   host: string;
-  targetCell: string;
+  targetCell: string | t.ICellUri;
   sourceDir: string;
   targetDir?: string;
   files?: File[];
@@ -82,7 +82,7 @@ export async function upload(args: {
 
 function logUpload(args: {
   sourceDir: string;
-  targetCell: string;
+  targetCell: string | t.ICellUri;
   host: string;
   files: File[];
   elapsed: string;
@@ -93,7 +93,7 @@ function logUpload(args: {
 
   const table = log.table({ border: false });
   table.add(['  • host', host]);
-  table.add(['  • cell', targetCell]);
+  table.add(['  • cell', targetCell.toString()]);
   table.add(['  • files: ']);
 
   const addFile = (file: File) => {

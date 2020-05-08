@@ -1,46 +1,33 @@
-import { constants, fs, t, Uri, time, value } from '../common';
+import '../../config';
+import { constants, t, log } from '../common';
+import * as types from './sys.define.types';
+import * as app from './sys.define.app';
 import { monitor } from './sys.monitor';
-import { DEFS } from './sys.typeDefs';
-import { upload } from './sys.upload';
+import { toContext } from './sys.ctx';
 import { ipc } from './sys.ipc';
 
-const SYS = constants.SYS;
-const NS = SYS.NS;
+const { paths } = constants;
 
 /**
- * Writes (initializes) system data.
+ * Initialize the system.
  */
-export async function initContext(client: t.IClientTypesystem) {
-  const host = client.http.origin;
-  const ns = client.http.ns(NS.APP);
+export async function init(client: t.IClientTypesystem) {
+  // Ensure the root "app" type-definitions exist in the database.
+  await types.ensureExists({ client });
 
-  // Ensure the root application sheet exists in the DB.
-  if (!(await ns.exists())) {
-    await ns.write({ ns: { type: { implements: NS.TYPE.APP } } });
-  }
+  // Build the shared context and setup event listeners.
+  const ctx = await toContext(client);
+  monitor({ ctx });
 
-  // Load the app model.
-  const sheet = await client.sheet<t.SysApp>(NS.APP);
-  monitor({ client, sheet });
-
-  const app = sheet.data('SysApp').row(0);
-  await app.load();
-
-  // Retrieve windows.
-  const windows = await app.props.windows.load();
-  const windowDefs = await app.props.windowDefs.load();
+  // Define base modules.
+  const res = await app.define({
+    ctx,
+    name: '@platform/cell.ui.sys',
+    entryPath: 'entry.html',
+    bundleDir: paths.bundle.sys,
+  });
 
   // Finish up.
-  const ctx: t.IAppCtx__OLD = {
-    host,
-    client,
-    sheet,
-    app,
-    windows,
-    windowDefs,
-    windowRefs: [],
-  };
-
   ipc({ ctx });
   return ctx;
 }

@@ -4,19 +4,23 @@ import { Client, log, Observable, t } from '../common';
 /**
  * Monitor the [sys] cells.
  */
-export function monitor(args: { client: t.IClientTypesystem; sheet: t.ITypedSheet<t.SysApp> }) {
-  const { client, sheet } = args;
+export function monitor(args: { ctx: t.IContext }) {
+  const { ctx } = args;
+  const { client, sheet } = ctx;
   client.changes.watch(sheet);
 
   const saver = Client.saveMonitor({ client, debounce: 300 });
-  saveLogger(saver.saved$);
+  const { saved$ } = saver;
+  saveLogger({ ctx, saved$ });
 }
 
 /**
  * [Helpers]
  */
 
-function saveLogger(saved$: Observable<t.ITypedSheetSaved>) {
+function saveLogger(args: { ctx: t.IContext; saved$: Observable<t.ITypedSheetSaved> }) {
+  const { saved$ } = args;
+
   // Models saved.
   saved$.subscribe(e => {
     const prefix = e.ok ? log.blue('SAVED') : log.red('SAVED (error)');

@@ -36,6 +36,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         Absolute: 0,
         backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         Flex: 'center-center',
+        WebkitAppRegion: 'drag',
       }),
     };
     return (

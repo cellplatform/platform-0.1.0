@@ -6,23 +6,10 @@ export * from '../types';
 import * as t from '../types';
 import {
   ITypedSheet,
-  ITypedSheetRow,
-  ITypedSheetRefs,
   IClientTypesystem,
   ITypedSheetStateChanges,
   ITypedSheetData,
 } from '@platform/cell.types';
-
-// TEMP 🐷- OLD
-export type IAppCtx__OLD = {
-  host: string;
-  client: IClientTypesystem;
-  sheet: ITypedSheet<t.SysApp>;
-  app: ITypedSheetRow<t.SysApp>;
-  windows: ITypedSheetRefs<t.SysAppWindow>;
-  windowDefs: ITypedSheetRefs<t.SysAppWindowDef>;
-  windowRefs: IWindowRef[];
-};
 
 export type IContext = {
   host: string;

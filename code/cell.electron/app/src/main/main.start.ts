@@ -4,11 +4,8 @@ import { app } from 'electron';
 
 import { constants, log, Client, fs, ENV } from './common';
 import { sys } from './main.sys';
-import { sys as sys2 } from './main.sys2';
-import { window } from './main.window2';
+import { window } from './main.window';
 import * as server from './main.server';
-
-const SYS = constants.SYS;
 
 /**
  *  NOTE:
@@ -36,33 +33,27 @@ if (app.isPackaged) {
 
 export async function start() {
   const prod = ENV.isProd;
+
+  // Start the HTTP server.
   const { paths, host } = await server.start({ log, prod });
   const client = Client.typesystem(host);
 
-  // Ensure typescript declarations exist [types.g.ts]
-  // and retrieve sys/app context.
-  // await sys.initTypeDefs(client, { save: ENV.isDev });
-  // const ctx = await sys.initContext(client);
-
-  // Upload the bundled system files.
-  // await sys.initWindowDef({
-  //   ctx,
-  //   kind: SYS.KIND.IDE,
-  //   uploadDir: [bundle.sys, bundle.ide],
-  // });
-
+  // Log main process.
   const bundle = constants.paths.bundle;
   await logMain({ host, log: log.file.path, db: paths.db, fs: paths.fs, preload: bundle.preload });
   await app.whenReady();
 
-  // Initialize UI windows.
-  // await window.createWindows({ ctx, kind: SYS.KIND.IDE });
-
   // TEMP 🐷
   // refs.tray = tray.init({ host, def, ctx }).tray;
 
-  const ctx = await sys2.init(client);
-  await window.createOne({ ctx, name: '@platform/cell.ui.sys' });
+  // Initialize the system models.
+  const ctx = await sys.init(client);
+  await window.createAll({ ctx });
+
+  if (ctx.windowRefs.length < 2) {
+    // TEMP 🐷
+    await window.createOne({ ctx, name: '@platform/cell.ui.sys' });
+  }
 }
 
 /**

@@ -23,14 +23,16 @@ export async function createOne(args: { ctx: t.IContext; name: string }) {
   return createBrowserWindow({ ctx, app, window });
 }
 
-
 /**
  * Create all windows.
  */
-export async function createAll(args: { ctx: t.IContext; name: string }) {
+export async function createAll(args: { ctx: t.IContext }) {
   const { ctx } = args;
   const { apps } = ctx;
-
-  
-  
+  for (const app of apps.rows) {
+    const windows = await app.props.windows.data();
+    for (const window of windows.rows) {
+      await createBrowserWindow({ ctx, app, window });
+    }
+  }
 }
