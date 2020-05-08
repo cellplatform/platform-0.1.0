@@ -20,7 +20,7 @@ export function define() {
 
   def
     .type('AppWindow')
-    .prop('app', p => p.type('string')) // app.name
+    .prop('app', p => p.type('string')) // {app.name}
     .prop('title', p => p.type('string').default('Untitled'))
     .prop('width', p => p.type('number').default(1000))
     .prop('height', p => p.type('number').default(800))
