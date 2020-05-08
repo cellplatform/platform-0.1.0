@@ -11,9 +11,7 @@ type S = t.ITypedSheet | t.INsUri | string;
  * In-memory cache pooling of [TypedSheet] instances.
  */
 export class SheetPool implements t.ISheetPool {
-  public static create() {
-    return new SheetPool() as t.ISheetPool;
-  }
+  public static create = () => new SheetPool() as t.ISheetPool;
 
   /**
    * [Lifecycle]
@@ -61,8 +59,14 @@ export class SheetPool implements t.ISheetPool {
    */
   public exists(sheet: S) {
     this.throwIfDisposed('exists');
+    return Boolean(this.sheet(sheet));
+  }
+
+  public sheet<T>(sheet: S) {
+    this.throwIfDisposed('sheet');
     const ns = sheet.toString();
-    return Boolean(this._items[ns]);
+    const item = this._items[ns];
+    return item ? (item.sheet as t.ITypedSheet<T>) : undefined;
   }
 
   public add(sheet: t.ITypedSheet, options: { parent?: S } = {}) {

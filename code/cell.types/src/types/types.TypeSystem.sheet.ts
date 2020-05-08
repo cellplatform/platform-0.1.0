@@ -12,6 +12,7 @@ export type ITypedSheet<T = {}> = {
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
+  readonly pool: t.ISheetPool;
   dispose(): void;
   info<P extends t.INsProps = t.INsProps>(): Promise<ITypedSheetInfo<P>>;
   data<D = T>(args: string | ITypedSheetDataArgs): ITypedSheetData<D>;
