@@ -1,23 +1,13 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
-import { constants, t, coord, R, Uri } from '../common';
+import { constants, t } from '../common';
+
 const { IPC } = constants;
 
 /**
  * Initializes the IPC (inter-process communications) event streams.
  */
-export function ipc(args: { ctx: t.IAppCtx }) {
+export function ipc(args: { ctx: t.IAppCtx__OLD }) {
   const { ctx } = args;
   const { client } = ctx;
 

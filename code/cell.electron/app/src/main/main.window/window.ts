@@ -6,7 +6,7 @@ const PROCESS = constants.PROCESS;
 /**
  *
  */
-export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
+export async function createWindows(args: { kind: string; ctx: t.IAppCtx__OLD }) {
   const ctx = args.ctx;
   const defs = await ctx.windowDefs.data();
   const instances = await ctx.windows.data();
@@ -47,7 +47,7 @@ export async function createWindows(args: { kind: string; ctx: t.IAppCtx }) {
 export async function createWindow(args: {
   def: string | t.IRowUri;
   instance: string | t.IRowUri;
-  ctx: t.IAppCtx;
+  ctx: t.IAppCtx__OLD;
 }) {
   const ctx = args.ctx;
   const defUri = Uri.row(args.def);
@@ -156,7 +156,7 @@ async function logRenderer(args: {
   isSandboxed: boolean;
   entryUrl: string;
   devUrl?: string;
-  ctx: t.IAppCtx;
+  ctx: t.IAppCtx__OLD;
 }) {
   const { ctx } = args;
   const table = log.table({ border: false });

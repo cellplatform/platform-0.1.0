@@ -1,4 +1,4 @@
-import '../config';
+import '../../config';
 
 export * from './sys.init';
 export * from './sys.upload';

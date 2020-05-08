@@ -10,15 +10,25 @@ import {
   ITypedSheetRefs,
   IClientTypesystem,
   ITypedSheetStateChanges,
+  ITypedSheetData,
 } from '@platform/cell.types';
 
-export type IAppCtx = {
+// TEMP 🐷- OLD
+export type IAppCtx__OLD = {
   host: string;
   client: IClientTypesystem;
   sheet: ITypedSheet<t.SysApp>;
   app: ITypedSheetRow<t.SysApp>;
   windows: ITypedSheetRefs<t.SysAppWindow>;
   windowDefs: ITypedSheetRefs<t.SysAppWindowDef>;
+  windowRefs: IWindowRef[];
+};
+
+export type IContext = {
+  host: string;
+  client: IClientTypesystem;
+  sheet: ITypedSheet<t.App>;
+  apps: ITypedSheetData<t.App>;
   windowRefs: IWindowRef[];
 };
 

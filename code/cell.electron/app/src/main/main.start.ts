@@ -1,10 +1,11 @@
-import './config';
+import '../config';
 
 import { app } from 'electron';
 
-import { constants, log, Client, fs } from './common';
+import { constants, log, Client, fs, ENV } from './common';
 import { sys } from './main.sys';
-import * as window from './main.window';
+import { sys as sys2 } from './main.sys2';
+import { window } from './main.window2';
 import * as server from './main.server';
 
 const SYS = constants.SYS;
@@ -34,32 +35,34 @@ if (app.isPackaged) {
  */
 
 export async function start() {
-  const ENV = constants.ENV;
   const prod = ENV.isProd;
   const { paths, host } = await server.start({ log, prod });
   const client = Client.typesystem(host);
 
   // Ensure typescript declarations exist [types.g.ts]
   // and retrieve sys/app context.
-  await sys.initTypeDefs(client, { save: ENV.isDev });
-  const ctx = await sys.initContext(client);
+  // await sys.initTypeDefs(client, { save: ENV.isDev });
+  // const ctx = await sys.initContext(client);
 
   // Upload the bundled system files.
-  const bundle = constants.paths.bundle;
-  await sys.initWindowDef({
-    ctx,
-    kind: SYS.KIND.IDE,
-    uploadDir: [bundle.sys, bundle.ide],
-  });
+  // await sys.initWindowDef({
+  //   ctx,
+  //   kind: SYS.KIND.IDE,
+  //   uploadDir: [bundle.sys, bundle.ide],
+  // });
 
+  const bundle = constants.paths.bundle;
   await logMain({ host, log: log.file.path, db: paths.db, fs: paths.fs, preload: bundle.preload });
   await app.whenReady();
 
   // Initialize UI windows.
-  await window.createWindows({ ctx, kind: SYS.KIND.IDE });
+  // await window.createWindows({ ctx, kind: SYS.KIND.IDE });
 
   // TEMP 🐷
   // refs.tray = tray.init({ host, def, ctx }).tray;
+
+  const ctx = await sys2.init(client);
+  await window.createOne({ ctx, name: '@platform/cell.ui.sys' });
 }
 
 /**
@@ -82,6 +85,11 @@ async function logMain(args: {
   const ENV = constants.ENV;
   const isDev = ENV.isDev;
 
+  const toSize = async (path: string) => {
+    const exists = await fs.exists(path);
+    return exists ? (await fs.size.file(path)).toString({ round: 0, spacer: '' }) : '0B';
+  };
+
   const path = async (input: string) => {
     let output = input;
     if (isDev) {
@@ -89,8 +97,8 @@ async function logMain(args: {
       output = output.startsWith(prefix) ? output.substring(prefix.length + 1) : output;
     }
     if (isDev) {
-      const size = await fs.size.file(input);
-      output = `${output} ${log.blue(size.toString({ round: 0, spacer: '' }))}`;
+      const size = await toSize(input);
+      output = `${output} ${log.blue(size)}`;
     }
     return output;
   };

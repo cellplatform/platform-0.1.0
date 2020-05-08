@@ -2,7 +2,7 @@ import { Tray, Menu } from 'electron';
 import { fs, t } from '../common';
 import { createWindow } from '../main.window';
 
-export function init(args: { host: string; def: string; ctx: t.IAppCtx }) {
+export function init(args: { host: string; def: string; ctx: t.IAppCtx__OLD }) {
   const { host, def, ctx } = args;
 
   const icon = fs.join(__dirname, '../../../assets/icons/tray/tray.png');

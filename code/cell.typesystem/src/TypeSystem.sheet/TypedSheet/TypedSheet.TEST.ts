@@ -131,7 +131,7 @@ describe('TypedSheet', () => {
     });
   });
 
-  describe('TypedSheetData (cursor)', () => {
+  describe.only('TypedSheetData (cursor)', () => {
     it('create: default (unloaded)', async () => {
       const { sheet } = await testMySheet();
       const cursor = sheet.data<f.MyRow>('MyRow');

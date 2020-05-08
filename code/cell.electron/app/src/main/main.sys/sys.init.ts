@@ -14,7 +14,7 @@ export async function initContext(client: t.IClientTypesystem) {
   const host = client.http.origin;
   const ns = client.http.ns(NS.APP);
 
-  // Ensure the root application model exists in the DB.
+  // Ensure the root application sheet exists in the DB.
   if (!(await ns.exists())) {
     await ns.write({ ns: { type: { implements: NS.TYPE.APP } } });
   }
@@ -31,7 +31,7 @@ export async function initContext(client: t.IClientTypesystem) {
   const windowDefs = await app.props.windowDefs.load();
 
   // Finish up.
-  const ctx: t.IAppCtx = {
+  const ctx: t.IAppCtx__OLD = {
     host,
     client,
     sheet,

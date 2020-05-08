@@ -30,8 +30,8 @@ export async function initTypeDefs(client: t.IClientTypesystem, options: { save?
  * Creates the new window definition.
  */
 export async function initWindowDef(args: {
+  ctx: t.IAppCtx__OLD;
   kind: string;
-  ctx: t.IAppCtx;
   uploadDir?: string | string[];
   force?: boolean;
 }) {
