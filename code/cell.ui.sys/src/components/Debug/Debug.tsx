@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue } from '../../common';
+import { css, color, CssValue, t } from '../../common';
 
-export type IDebugProps = { style?: CssValue };
+export type IDebugProps = {
+  uri: t.IRowUri;
+  style?: CssValue;
+};
 export type IDebugState = {};
 
 export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
@@ -11,7 +14,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   private state$ = new Subject<Partial<IDebugState>>();
   private unmounted$ = new Subject<{}>();
 
-  /**
+  /**s
    * [Lifecycle]
    */
   constructor(props: IDebugProps) {
@@ -39,9 +42,12 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
         WebkitAppRegion: 'drag',
       }),
     };
+
+    const uri = this.props.uri.toString();
+
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>Debug</div>
+        <div>Debug: {uri}</div>
       </div>
     );
   }

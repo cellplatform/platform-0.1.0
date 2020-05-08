@@ -57,6 +57,6 @@ const env = win.env;
     // writeRow()
   });
 
-  const el = <Debug />;
+  const el = <Debug uri={Uri.row(env.def)} />;
   ReactDOM.render(el, document.getElementById('root'));
 })();
