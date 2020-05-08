@@ -1,5 +1,5 @@
 import { debounceTime } from 'rxjs/operators';
-import { Client, log, Observable, t } from '../common';
+import { Client, log, Observable, t, Uri, coord } from '../common';
 
 /**
  * Monitor the [sys] cells.
@@ -19,7 +19,23 @@ export function monitor(args: { ctx: t.IContext }) {
  */
 
 function saveLogger(args: { ctx: t.IContext; saved$: Observable<t.ITypedSheetSaved> }) {
-  const { saved$ } = args;
+  const { ctx, saved$ } = args;
+  const pool = ctx.sheet.pool;
+
+  const findType = (ns: string, key: string) => {
+    const sheet = pool.sheet(ns);
+    const column = coord.cell.toColumnKey(key);
+    if (sheet) {
+      for (const item of sheet.types) {
+        for (const type of item.columns) {
+          if (type.column === column) {
+            return type;
+          }
+        }
+      }
+    }
+    return undefined;
+  };
 
   // Models saved.
   saved$.subscribe(e => {
@@ -32,11 +48,14 @@ function saveLogger(args: { ctx: t.IContext; saved$: Observable<t.ITypedSheetSav
     }
 
     const cells = e.changes.cells || {};
+
     Object.keys(cells).forEach(key => {
       const change = cells[key];
-      const ns = change.ns.replace(/^ns\:/, '');
+      const ns = change.ns;
+      const type = findType(ns, change.key);
+      const prop = type ? type.prop : '';
       const cell = log.gray(`${log.green('cell')}:${ns}:${log.green(change.key)}`);
-      log.info(`  ${cell}`);
+      log.info(`  ${cell} ${prop}`);
     });
   });
 

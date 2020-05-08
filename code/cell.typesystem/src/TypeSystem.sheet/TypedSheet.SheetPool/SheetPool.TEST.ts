@@ -1,6 +1,6 @@
 import { SheetPool } from '.';
 import { TypeSystem } from '../..';
-import { expect, Subject, t, testInstanceFetch, TYPE_DEFS } from '../../test';
+import { expect, Subject, t, testInstanceFetch, TYPE_DEFS, Uri } from '../../test';
 import * as a from '../../test/.d.ts/all';
 
 describe('SheetPool', () => {
@@ -96,6 +96,26 @@ describe('SheetPool', () => {
       const children = pool.children(sheet);
       expect(children.length).to.eql(1);
       expect(children[0]).to.equal(child);
+    });
+
+    it('string params (without the "ns:" prefix)', async () => {
+      const { sheet } = await testMySheet();
+      const pool = SheetPool.create();
+      const cursor = await sheet.data<a.MyRow>('MyRow').load();
+      const child = (await cursor.row(0).props.messages.load()).sheet;
+
+      pool.add(sheet).add(child, { parent: sheet });
+
+      const strip = (sheet: t.ITypedSheet) => Uri.strip.ns(sheet.uri.toString());
+
+      expect(pool.exists(strip(sheet))).to.eql(true);
+      expect(pool.exists(strip(child))).to.eql(true);
+
+      expect(pool.sheet(strip(sheet))).to.equal(sheet);
+
+      pool.remove(strip(sheet));
+      expect(pool.sheet(strip(sheet))).to.equal(undefined);
+      expect(pool.sheet(strip(child))).to.equal(undefined);
     });
   });
 

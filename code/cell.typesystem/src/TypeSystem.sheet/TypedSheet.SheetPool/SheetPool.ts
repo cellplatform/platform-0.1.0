@@ -64,7 +64,7 @@ export class SheetPool implements t.ISheetPool {
 
   public sheet<T>(sheet: S) {
     this.throwIfDisposed('sheet');
-    const ns = sheet.toString();
+    const ns = this.ns(sheet);
     const item = this._items[ns];
     return item ? (item.sheet as t.ITypedSheet<T>) : undefined;
   }
@@ -75,13 +75,13 @@ export class SheetPool implements t.ISheetPool {
       return this;
     }
 
-    const ns = sheet.toString();
+    const ns = this.ns(sheet);
     this._items[ns] = { sheet, children: [] };
     sheet.dispose$.pipe(take(1)).subscribe(() => this.remove(sheet));
 
     // Add a "children" reference if the added sheet has a parent.
     if (options.parent) {
-      const parent = this._items[options.parent.toString()];
+      const parent = this._items[this.ns(options.parent)];
       if (parent && !parent.children.includes(ns)) {
         parent.children.push(ns);
       }
@@ -92,7 +92,7 @@ export class SheetPool implements t.ISheetPool {
 
   public remove(sheet: S) {
     this.throwIfDisposed('remove');
-    const ns = sheet.toString();
+    const ns = this.ns(sheet);
     const item = this._items[ns];
     delete this._items[ns];
     if (item) {
@@ -104,7 +104,7 @@ export class SheetPool implements t.ISheetPool {
   public children(sheet: S) {
     this.throwIfDisposed('children');
     const build = (sheet: S, sheets: t.ITypedSheet[] = []) => {
-      const ns = sheet.toString();
+      const ns = this.ns(sheet);
       if (!sheets.some(sheet => sheet.toString() === ns)) {
         const item = this._items[ns];
         if (item) {
@@ -130,5 +130,11 @@ export class SheetPool implements t.ISheetPool {
     if (this.isDisposed) {
       throw new Error(`Cannot '${action}' because [SheetPool] is disposed.`);
     }
+  }
+
+  private ns(sheet: S) {
+    let ns = sheet.toString();
+    ns = ns.includes(':') ? ns : `ns:${ns}`;
+    return ns;
   }
 }
