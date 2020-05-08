@@ -20,7 +20,7 @@ export const ENV = {
  * Window Management.
  */
 export const SYS = {
-  APP: {
+  NS: {
     TYPE: 'ns:sys.app.type',
     DATA: 'ns:sys.app.data',
   },

@@ -14,7 +14,7 @@
     "reset": "sh script/reset.sh",
     "bundle": "ts-node -T script/bundle.ui",
     "bundle.preload": "cd app && yarn bundle.preload",
-    "open": "cd app/out/cell-darwin-x64 && open cell.app"
+    "open": "cd app/out/A1-darwin-x64 && open A1.app"
   },
   "devDependencies": {
     "@platform/cell.compile.web": "0.0.66",
