@@ -968,7 +968,7 @@ describe('TypedSheet', () => {
     });
 
     describe('read/write (ref)', () => {
-      describe('1:1', () => {
+      describe('1:1 (TypedSheetRefs)', () => {
         it('single row', async () => {
           const { sheet } = await testMySheet();
           const cursor = await sheet.data('MyRow').load();
@@ -980,15 +980,26 @@ describe('TypedSheet', () => {
         });
       });
 
-      describe('1:*', () => {
+      describe('1:* (TypedSheetRefs)', () => {
+        it('caches property instance of [TypedSheetRefs]', async () => {
+          const { sheet } = await testMySheet();
+          const cursor = await sheet.data('MyRow').load();
+          const row = cursor.row(0);
+          const props = row.props;
+
+          expect(props.messages).to.be.an.instanceof(TypedSheetRefs);
+          expect(props.messages).to.equal(props.messages);
+          expect(props.messages === props.messages).to.eql(true);
+          expect((await props.messages.data()) === (await props.messages.data())).to.eql(true);
+          expect((await props.messages.load()) === (await props.messages.load())).to.eql(true);
+        });
+
         it('load ➔ ready (loaded)', async () => {
           const { sheet } = await testMySheet();
           const cursor = await sheet.data('MyRow').load();
           const row = cursor.row(0);
 
           const messages = row.props.messages;
-          expect(messages).to.be.an.instanceof(TypedSheetRefs);
-          expect(row.props.messages).to.equal(messages); // NB: Cached instance.
           expect(messages.isLoaded).to.eql(false);
           expect(messages.typename).to.eql('MyMessage');
 

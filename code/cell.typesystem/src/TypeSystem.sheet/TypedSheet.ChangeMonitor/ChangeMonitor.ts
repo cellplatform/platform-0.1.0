@@ -11,7 +11,7 @@ type W = { sheet: t.ITypedSheet; stop$: Subject<{}>; refs: t.ITypedSheetRefs<{}>
  */
 export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
   public static create() {
-    return new ChangeMonitor();
+    return new ChangeMonitor() as t.ITypedSheetChangeMonitor;
   }
 
   /**
