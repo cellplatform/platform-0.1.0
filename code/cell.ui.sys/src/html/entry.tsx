@@ -36,10 +36,10 @@ const env = win.env;
   console.log('-------------------------------------------');
 
   console.log('env.cache', env.cache);
-  console.log('env.cache.keys:');
-  env.cache.keys.forEach(e => {
-    console.log('  -- ', e);
-  });
+  // console.log('env.cache.keys:', env.cache.keys);
+  // env.cache.keys.forEach(e => {
+  //   console.log('  -- ', e);
+  // });
 
   // env.cache.keys.forEach(async key => {
   //   console.log(' > ', key, await env.cache.get(key));
@@ -57,6 +57,6 @@ const env = win.env;
     // writeRow()
   });
 
-  const el = <Debug uri={Uri.row(env.def)} />;
+  const el = <Debug env={env} uri={Uri.row(env.def)} />;
   ReactDOM.render(el, document.getElementById('root'));
 })();
