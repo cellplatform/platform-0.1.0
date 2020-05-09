@@ -1,19 +1,20 @@
 import { exec } from '@platform/exec';
 import { fs } from '@platform/fs';
 import { log } from '@platform/log/lib/server';
+import { copyLocal } from './bundle.copyLocal';
 
 /**
  * Copies the source files module from [node_modules] for the given module
  * and bundles it (using "parceljs"), copying the given target.
  */
 export const bundle = async (args: {
-  moduleName: string;
+  sourceDir: string;
   targetDir: string;
   distDir?: string;
   silent?: boolean;
 }) => {
-  const { moduleName, targetDir, distDir = 'dist', silent } = args;
-  const copy = await copyLocal({ moduleName });
+  const { sourceDir, targetDir, distDir = 'dist', silent } = args;
+  const copy = await copyLocal({ sourceDir });
 
   if (!silent) {
     log.info();
@@ -113,21 +114,3 @@ async function runTasks(args: {
 
   return done(true);
 }
-
-const copyLocal = async (args: { moduleName: string }) => {
-  const { moduleName } = args;
-  const sourceDir = fs.resolve(fs.join('app/node_modules', moduleName));
-  const targetDir = fs.resolve(`tmp/${moduleName}`);
-  await fs.ensureDir(targetDir);
-
-  const copy = async (path: string) => {
-    const from = fs.join(sourceDir, path);
-    const to = fs.join(targetDir, path);
-    await fs.copy(from, to);
-  };
-
-  const files = ['package.json', 'yarn.lock', 'src', 'sh'];
-  await Promise.all(files.map(copy));
-
-  return { files, sourceDir, targetDir };
-};
