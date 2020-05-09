@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.ide",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "IDE (Integrated Development Environment) UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,7 +16,7 @@
     "serve": "cd dist && serve"
   },
   "dependencies": {
-    "@platform/cell.client": "0.2.72",
+    "@platform/cell.client": "0.2.73",
     "@platform/react": "0.4.19",
     "@platform/libs": "0.2.1",
     "@platform/polyfill": "0.0.1"
