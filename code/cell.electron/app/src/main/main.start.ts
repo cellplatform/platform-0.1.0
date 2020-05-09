@@ -48,9 +48,14 @@ export async function start() {
 
   // Initialize the system models.
   const ctx = await sys.init(client);
+  log.info(`app modules: ${log.yellow(ctx.apps.total)}`);
+  ctx.apps.forEach(app => {
+    log.info.gray(`• ${log.magenta(app.name)}`);
+  });
+
   await window.createAll({ ctx });
 
-  if (ctx.windowRefs.length < 2) {
+  if (ctx.windowRefs.length < 1) {
     // TEMP 🐷
     await window.createOne({ ctx, name: '@platform/cell.ui.sys' });
   }

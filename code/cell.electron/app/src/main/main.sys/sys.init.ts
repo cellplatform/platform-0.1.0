@@ -1,6 +1,6 @@
 import '../../config';
 
-import { constants, t } from '../common';
+import { constants, t, time } from '../common';
 import { toContext } from './sys.ctx';
 import { typeDefs } from '../main.typeDefs';
 import { ipc } from './sys.ipc';
@@ -13,7 +13,7 @@ const { paths } = constants;
  */
 export async function init(client: t.IClientTypesystem) {
   // Ensure the root "app" type-definitions exist in the database.
-  await typeDefs.ensureExists({ client });
+  const { created } = await typeDefs.ensureExists({ client });
 
   // Build the shared context and setup event listeners.
   const ctx = await toContext(client);

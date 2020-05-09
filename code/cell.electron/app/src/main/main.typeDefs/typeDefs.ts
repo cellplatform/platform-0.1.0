@@ -13,6 +13,7 @@ const SYS = constants.SYS;
  */
 export async function ensureExists(args: { client: t.IClientTypesystem }) {
   const { client } = args;
+  let created = false;
 
   // Write type-defs.
   if (!(await client.http.ns(SYS.NS.TYPE).exists())) {
@@ -22,11 +23,16 @@ export async function ensureExists(args: { client: t.IClientTypesystem }) {
       const ts = await client.typescript(SYS.NS.TYPE);
       await ts.save(fs, fs.resolve('src/types.g'));
     }
+    created = true;
   }
 
   // Write root "apps" data sheet.
   const data = client.http.ns(SYS.NS.DATA);
   if (!(await data.exists())) {
     await data.write({ ns: { type: { implements: SYS.NS.TYPE } } });
+    created = true;
   }
+
+  // Finish up.
+  return { created };
 }

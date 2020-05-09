@@ -16,6 +16,7 @@ export async function createBrowserWindow(args: {
   const app = args.app.props;
   const uri = args.window.uri.toString();
   const host = ctx.host;
+  const sandbox = true; // https://www.electronjs.org/docs/api/sandbox-option
 
   // Create the browser window.
   // Docs: https://www.electronjs.org/docs/api/browser-window
@@ -29,7 +30,7 @@ export async function createBrowserWindow(args: {
     titleBarStyle: 'hiddenInset',
     backgroundColor: app.backgroundColor,
     webPreferences: {
-      sandbox: true,
+      sandbox,
       nodeIntegration: false,
       enableRemoteModule: false,
       preload: constants.paths.bundle.preload,
@@ -63,7 +64,7 @@ export async function createBrowserWindow(args: {
   browser.loadURL(url.toString());
 
   // Finish up.
-  logWindow(args);
+  logWindow({ ...args, sandbox });
   return { ref, browser, url, app: args.app, window: args.window };
 }
 

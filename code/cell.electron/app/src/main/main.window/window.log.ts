@@ -5,12 +5,12 @@ export async function logWindow(args: {
   ctx: t.IContext;
   app: t.ITypedSheetRow<t.App>;
   window: t.ITypedSheetRow<t.AppWindow>;
+  sandbox: boolean;
 }) {
   const { ctx, app, window } = args;
   const table = log.table({ border: false });
   const add = (key: string, value: any) => table.add([` • ${log.green(key)} `, value]);
 
-  const isSandboxed = true;
   const uri = log.format.uri(window.uri);
 
   const host = ctx.host;
@@ -18,7 +18,7 @@ export async function logWindow(args: {
 
   add('kind:', log.magenta(window.props.app));
   add('uri:', `${uri} (${log.white(window.typename)})`);
-  add('sandbox:', isSandboxed);
+  add('sandbox:', args.sandbox);
   add('url:', url.entry);
   if (ENV.isDev) {
     add(log.gray(`url (dev):`), log.white(url.dev));
