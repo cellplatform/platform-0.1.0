@@ -1,5 +1,5 @@
 import { fs } from '@platform/fs';
-import { t } from '../common';
+import { t } from '../../common';
 
 /**
  * Copies a module locally.
