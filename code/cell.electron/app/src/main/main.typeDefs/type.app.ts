@@ -1,4 +1,4 @@
-import { t, util } from '../common';
+import { t, util, fs } from '../common';
 
 /**
  * Define an application module.
@@ -6,7 +6,7 @@ import { t, util } from '../common';
 export async function define(args: {
   ctx: t.IContext;
   name: string;
-  bundleDir: string;
+  sourceDir: string;
   entryPath: string;
   force?: boolean;
 }) {
@@ -16,15 +16,21 @@ export async function define(args: {
 
   // Create the app model in the sheet.
   if (!exists || args.force) {
+    const entry = args.entryPath;
+    const targetDir = fs.dirname(entry);
+
+    console.log('targetDir', targetDir);
+
     const app = apps.row(apps.total);
     app.props.name = args.name;
-    app.props.bundle = args.entryPath;
+    app.props.entry = args.entryPath;
 
     // Upload the bundle as files to the cell (filesystem).
     await util.upload({
       host: client.http.origin,
-      targetCell: app.types.map.bundle.uri,
-      sourceDir: args.bundleDir,
+      targetCell: app.types.map.fs.uri,
+      sourceDir: args.sourceDir,
+      targetDir,
     });
   }
 

@@ -26,7 +26,8 @@ import * as t from '@platform/cell.types';
 export declare type App = {
   name: string;
   backgroundColor: string;
-  bundle: string;
+  fs: string;
+  entry: string;
   windows: t.ITypedSheetRefs<AppWindow>;
 };
 

@@ -23,8 +23,8 @@ export async function init(client: t.IClientTypesystem) {
   const res = await typeDefs.app.define({
     ctx,
     name: '@platform/cell.ui.sys',
-    entryPath: 'entry.html',
-    bundleDir: paths.bundle.sys,
+    entryPath: 'bundle/entry.html',
+    sourceDir: paths.bundle.sys,
   });
 
   // Finish up.

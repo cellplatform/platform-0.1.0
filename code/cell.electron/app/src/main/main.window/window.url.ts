@@ -5,10 +5,10 @@ import { ENV, Schema, t } from '../common';
  */
 export function getUrl(args: { host: string; app: t.ITypedSheetRow<t.App> }) {
   const urls = Schema.urls(args.host);
-  const bundleUri = args.app.types.map.bundle.uri;
+  const bundleUri = args.app.types.map.fs.uri;
   const entry = urls
     .cell(bundleUri)
-    .file.byName(args.app.props.bundle)
+    .file.byName(args.app.props.entry)
     .toString();
   const dev = ENV.isDev ? 'http://localhost:1234' : '';
   const url = dev || entry;

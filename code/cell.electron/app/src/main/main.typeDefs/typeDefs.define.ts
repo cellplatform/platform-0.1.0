@@ -14,7 +14,8 @@ export function define() {
     .type('App')
     .prop('name', p => p.type('string'))
     .prop('backgroundColor', p => p.type('string').default('#fff'))
-    .prop('bundle', p => p.type('string'))
+    .prop('fs', p => p.type('string').default('fs'))
+    .prop('entry', p => p.type('string'))
     .prop('windows', p => p.type('/AppWindow[]').target('ref'));
 
   def
