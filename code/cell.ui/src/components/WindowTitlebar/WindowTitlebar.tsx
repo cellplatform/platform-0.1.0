@@ -7,7 +7,9 @@ export type IWindowTitlebarProps = {
   text?: string;
   style?: CssValue;
 };
-export type IWindowTitlebarState = {};
+export type IWindowTitlebarState = {
+  isFocused?: boolean;
+};
 
 export class WindowTitlebar extends React.PureComponent<
   IWindowTitlebarProps,
@@ -28,17 +30,34 @@ export class WindowTitlebar extends React.PureComponent<
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.updateState();
+
+    window.addEventListener('focus', this.updateState);
+    window.addEventListener('blur', this.updateState);
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+
+    window.removeEventListener('focus', this.updateState);
+    window.removeEventListener('blur', this.updateState);
   }
+
+  /**
+   * [Methods]
+   */
+
+  private updateState = () => {
+    const isFocused = document.hasFocus();
+    this.state$.next({ isFocused });
+  };
 
   /**
    * [Render]
    */
   public render() {
+    const { isFocused } = this.state;
     const styles = {
       base: css({
         Flex: 'center-center',
@@ -46,8 +65,10 @@ export class WindowTitlebar extends React.PureComponent<
         position: 'relative',
         height: WindowTitlebar.HEIGHT,
         boxSizing: 'border-box',
-        borderBottom: `solid 1px ${color.format(-0.15)}`,
-        background: `linear-gradient(180deg, #E5E5E5 0%, #CDCDCD 100%)`,
+        borderBottom: `solid 1px ${color.format(isFocused ? -0.2 : -0.08)}`,
+        background: isFocused
+          ? `linear-gradient(180deg, #E5E5E5 0%, #CDCDCD 100%)`
+          : color.format(-0.03),
         userSelect: 'none',
         color: COLORS.DARK,
       }),
@@ -56,6 +77,7 @@ export class WindowTitlebar extends React.PureComponent<
   }
 
   private renderAddressPanel() {
+    const { isFocused } = this.state;
     const styles = {
       base: css({
         backgroundColor: color.format(1),
@@ -68,6 +90,7 @@ export class WindowTitlebar extends React.PureComponent<
         minWidth: 300,
         Flex: 'center-center',
         boxSizing: 'border-box',
+        opacity: isFocused ? 1 : 0.35,
       }),
       label: css({
         opacity: 0.75,
