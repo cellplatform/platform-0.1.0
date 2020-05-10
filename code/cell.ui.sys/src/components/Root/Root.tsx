@@ -34,6 +34,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
   public render() {
     const { uri, env } = this.props;
+
     const styles = {
       base: css({
         Absolute: 0,

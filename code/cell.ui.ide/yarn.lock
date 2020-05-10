@@ -797,6 +797,11 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
+"@monaco-editor/react@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.3.0.tgz#dbd585a71bf9ef8147d877b4b26ff3de4017bd4a"
+  integrity sha512-qvmUhgawBk2kwNOmXxIkiMGHsLm9vvVoQNY4So/sdrLVIo0DlFBzeal4wkMe1RV0uK47ziVG0LAXm2gV8ioGdA==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -930,7 +935,7 @@
     "@platform/types" "0.4.14"
     "@platform/util.value" "0.7.14"
 
-"@platform/cell.ui@^0.1.0":
+"@platform/cell.ui@0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.0.tgz#68dc246b6caf7e6dc241e1af819e15b220946198"
   integrity sha512-TBqF9nXejt/1u5PR4itKYkR48D3WChq2o0hAx1RINJ64srnDQFKEhAPBeDFJ76v1hQn09sBe1+TbjNzMfxfL5A==
@@ -4550,6 +4555,11 @@ mocha@7.1.0:
     yargs "13.3.0"
     yargs-parser "13.1.1"
     yargs-unparser "1.6.0"
+
+monaco-editor@^0.20.0:
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.20.0.tgz#5d5009343a550124426cb4d965a4d27a348b4dea"
+  integrity sha512-hkvf4EtPJRMQlPC3UbMoRs0vTAFAYdzFQ+gpMb8A+9znae1c43q8Mab9iVsgTcg/4PNiLGGn3SlDIa8uvK1FIQ==
 
 ms@2.0.0:
   version "2.0.0"
