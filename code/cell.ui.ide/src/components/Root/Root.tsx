@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, CssValue, t } from '../../common';
 import { WindowTitlebar } from '../primitives';
-import { Editor } from '../Editor';
+import { Monaco } from '../Monaco';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
 export type IRootState = {};
@@ -46,12 +46,13 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         display: 'flex',
         Flex: 'center-center',
       }),
+      editor: css({ Absolute: 0 }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
         <WindowTitlebar style={styles.titlebar} text={uri} />
         <div {...styles.body}>
-          <Editor />
+          <Monaco />
         </div>
       </div>
     );

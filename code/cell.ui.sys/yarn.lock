@@ -902,7 +902,7 @@
     "@platform/util.string" "0.5.0"
     "@platform/util.value" "0.7.14"
 
-"@platform/cell.types@0.4.87", "@platform/cell.types@^0.4.87":
+"@platform/cell.types@0.4.87":
   version "0.4.87"
   resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.87.tgz#08626519d417a053ab650736f1db68b598883e3b"
   integrity sha512-2iDlnSNtaEecXDXCWjYtQvRY4guiCaHDepekjuQHnvbHu94hq6kLoyxZKcvDOtplQVkkPdN6i6DSZekLFEe55Q==
@@ -917,7 +917,7 @@
     "@platform/types" "0.4.14"
     "@platform/util.diff" "0.0.24"
 
-"@platform/cell.typesystem@0.0.34", "@platform/cell.typesystem@^0.0.34":
+"@platform/cell.typesystem@0.0.34":
   version "0.0.34"
   resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.34.tgz#78dfd6be5901dd96378594a5f875bcb30504e3e6"
   integrity sha512-Rgz8O1Il1o56i+kRyZfuutIC0Cpbtdl+8+p+6+U4Nnn0uiWTl5YdomzLM9BvGdFcw5emUtohQ8V3f9/iSuCG7A==
@@ -930,10 +930,10 @@
     "@platform/types" "0.4.14"
     "@platform/util.value" "0.7.14"
 
-"@platform/cell.ui@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.0.tgz#68dc246b6caf7e6dc241e1af819e15b220946198"
-  integrity sha512-TBqF9nXejt/1u5PR4itKYkR48D3WChq2o0hAx1RINJ64srnDQFKEhAPBeDFJ76v1hQn09sBe1+TbjNzMfxfL5A==
+"@platform/cell.ui@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.1.tgz#2cf04e47bffa2408a8ea0ef1474366dc40fdd9e9"
+  integrity sha512-zAtEk+SKFzwrzCDnkKyGa+JfIyucjvjE8zXrGjN+t53xnC4nW/YZXTlU15MI6KP5PREZrC6DCN3DMwpYJhi0uQ==
   dependencies:
     "@platform/cell.types" "0.4.87"
     "@platform/libs" "0.2.1"
@@ -1056,7 +1056,7 @@
     "@platform/libs" "0.2.1"
     "@platform/util.value" "0.7.14"
 
-"@platform/react@0.4.19", "@platform/react@^0.4.19":
+"@platform/react@0.4.19":
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.19.tgz#dba0b1b3e11111f25fff5f43d67e39292b9dd3a4"
   integrity sha512-3F/PnbXye2Ihx/Ja/8c/sAnOEC9Aj0H0WiqLFtQkNuEkYM6MUsGqi6kgiJvWJdeHFOSjLudN0EL38jrG5kIa7w==
