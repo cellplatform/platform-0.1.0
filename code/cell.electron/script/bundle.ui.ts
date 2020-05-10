@@ -2,10 +2,16 @@ import { bundle } from '@platform/cell.compile.web';
 import { fs } from '@platform/fs';
 import { constants } from '../app/src/main/common';
 
-(async () => {
-  const paths = constants.paths;
+async function run(sourceDir: string, targetDir: string) {
   const base = fs.resolve('.');
-  const targetDir = fs.join(base, 'app', paths.bundle.sys.substring(base.length + 1));
+  targetDir = fs.join(base, 'app', targetDir.substring(base.length + 1));
+  sourceDir = fs.resolve(sourceDir);
+  await bundle({ sourceDir, targetDir });
+}
 
-  await bundle({ moduleName: '@platform/cell.ui.sys', targetDir });
+(async () => {
+  const target = constants.paths.bundle;
+  await run('../cell.ui.sys', target.sys);
+  await run('../cell.ui.finder', target.finder);
+  await run('../cell.ui.ide', target.ide);
 })();

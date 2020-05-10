@@ -142,15 +142,29 @@ describe('TypeBuilder', () => {
     describe('errors', () => {
       it('throw: namespace already added', () => {
         const builder = TypeBuilder.create();
-        builder.ns('foo');
-        const fn = () => builder.ns('foo');
+        const fn = () => {
+          builder.ns('foo');
+          builder.ns('foo');
+        };
         expect(fn).to.throw(/namespace 'ns:foo' already exists/);
       });
     });
   });
 
-  describe('builder.type (generate namespace)', () => {
-    it('typename', () => {
+  describe('auto generate namespace', () => {
+    it('.ns("") - no typename param', () => {
+      const builder = TypeBuilder.create();
+      const test = (uri?: string) => {
+        const res = builder.ns(uri);
+        expect(res.uri.type).to.eql('NS');
+        expect(res.uri.id.length).to.greaterThan(10);
+      };
+      test();
+      test('');
+      test('  ');
+    });
+
+    it('.type("typename")', () => {
       const builder = TypeBuilder.create();
       const res = builder.type('MyType');
       expect(res).to.be.an.instanceof(TypeBuilderType);
@@ -159,11 +173,44 @@ describe('TypeBuilder', () => {
       expect(res.uri.id.length).to.greaterThan(10);
     });
 
-    it('typename (options)', () => {
+    it('.type("typename", {options})', () => {
       const builder = TypeBuilder.create();
       const res = builder.type('MyType', { startColumn: 3 }) as TypeBuilderType;
       expect(res.typename).to.eql('MyType');
       expect(res.startColumn).to.eql(3);
+    });
+
+    it('multi-type refs', () => {
+      const builder = TypeBuilder.create();
+      builder
+        .ns()
+        .type('Root')
+        .prop('ones', p => p.type('/Type1[]').target('ref'))
+        .prop('two', p => p.type('/Type2').target('ref'));
+
+      const ref = builder.ns();
+      ref.type('Type1').prop('name');
+      ref.type('Type2').prop('name');
+
+      const obj = builder.toObject();
+
+      const namespaces = Object.keys(obj);
+      const root = obj[namespaces[0]];
+      const child = obj[namespaces[1]];
+
+      const asDef = (column?: t.IColumnData) => column?.props?.def as t.CellTypeDef;
+      const asDefs = (column?: t.IColumnData) => column?.props?.def as t.CellTypeDef[];
+
+      // The refs from the root type correctly point into the child namespace.
+      expect(Object.keys(root.columns)).to.eql(['A', 'B']);
+      expect(asDef(root.columns.A).type).to.match(new RegExp(`^${namespaces[1]}\/`));
+      expect(asDef(root.columns.B).type).to.match(new RegExp(`^${namespaces[1]}\/`));
+
+      // The child namespace has multiple types.
+      const def = asDefs(child.columns.A);
+      expect(Array.isArray(def)).to.eql(true);
+      expect(def[0].prop).to.eql('Type1.name');
+      expect(def[1].prop).to.eql('Type2.name');
     });
   });
 

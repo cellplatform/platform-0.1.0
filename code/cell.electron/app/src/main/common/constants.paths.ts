@@ -11,7 +11,7 @@ export const paths = {
   resolve,
 
   data(args: { prod?: boolean; dirname?: string }) {
-    const { prod = false, dirname = 'CellOS' } = args;
+    const { prod = false, dirname = 'A1' } = args;
     const dir = prod ? fs.join(app.getPath('documents'), dirname) : fs.resolve('../.data');
     return {
       dir,
@@ -28,5 +28,6 @@ export const paths = {
     preload: resolve('lib/preload.js'),
     sys: resolve('.bundle/cell.ui.sys'),
     ide: resolve('.bundle/cell.ui.ide'),
+    finder: resolve('.bundle/cell.ui.finder'),
   },
 };

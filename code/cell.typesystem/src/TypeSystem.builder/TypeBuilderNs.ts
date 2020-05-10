@@ -27,6 +27,10 @@ export class TypeBuilderNs implements t.ITypeBuilderNs {
   /**
    * [Methods]
    */
+  public toString() {
+    return this.uri.toString();
+  }
+
   public type(typename: string, options: { startColumn?: string | number } = {}) {
     const { startColumn } = options;
     const uri = this.uri;

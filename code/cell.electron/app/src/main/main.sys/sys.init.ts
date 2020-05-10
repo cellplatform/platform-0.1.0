@@ -1,10 +1,10 @@
 import '../../config';
-import { constants, t, log } from '../common';
-import * as types from './sys.define.types';
-import * as app from './sys.define.app';
-import { monitor } from './sys.monitor';
+
+import { constants, t, time } from '../common';
 import { toContext } from './sys.ctx';
+import { typeDefs } from '../main.typeDefs';
 import { ipc } from './sys.ipc';
+import { monitor } from './sys.monitor';
 
 const { paths } = constants;
 
@@ -13,18 +13,38 @@ const { paths } = constants;
  */
 export async function init(client: t.IClientTypesystem) {
   // Ensure the root "app" type-definitions exist in the database.
-  await types.ensureExists({ client });
+  const { created } = await typeDefs.ensureExists({ client });
 
   // Build the shared context and setup event listeners.
   const ctx = await toContext(client);
   monitor({ ctx });
 
   // Define base modules.
-  const res = await app.define({
+  await typeDefs.app.define({
     ctx,
+    row: 0,
     name: '@platform/cell.ui.sys',
-    entryPath: 'entry.html',
-    bundleDir: paths.bundle.sys,
+    entryPath: 'bundle/entry.html',
+    sourceDir: paths.bundle.sys,
+    devPort: 1234,
+  });
+
+  await typeDefs.app.define({
+    ctx,
+    row: 1,
+    name: '@platform/cell.ui.finder',
+    entryPath: 'bundle/entry.html',
+    sourceDir: paths.bundle.finder,
+    devPort: 1235,
+  });
+
+  await typeDefs.app.define({
+    ctx,
+    row: 2,
+    name: '@platform/cell.ui.ide',
+    entryPath: 'bundle/entry.html',
+    sourceDir: paths.bundle.ide,
+    devPort: 1236,
   });
 
   // Finish up.

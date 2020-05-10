@@ -60,6 +60,10 @@ export class TypeBuilderType implements t.ITypeBuilderType {
   /**
    * [Methods]
    */
+  public toString() {
+    return this.uri.toString();
+  }
+
   public toObject() {
     return { columns: {} };
   }

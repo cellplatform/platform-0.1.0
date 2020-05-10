@@ -20,19 +20,8 @@ export const ENV = {
  * Window Management.
  */
 export const SYS = {
-  KIND: {
-    IDE: 'code.ide',
-  },
-  ROOT: {
+  NS: {
     TYPE: 'ns:sys.app.type',
     DATA: 'ns:sys.app',
-  },
-  NS: {
-    APP: 'ns:sys.app',
-    TYPE: {
-      APP: 'ns:sys.app.type',
-      WINDOW: 'ns:sys.window.type',
-      WINDOW_DEF: 'ns:sys.windowDef.type',
-    },
   },
 };

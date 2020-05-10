@@ -29,21 +29,23 @@ export class TypeBuilder implements t.ITypeBuilder {
     }, {});
   }
 
-  public ns(uri: string | t.INsUri) {
-    uri = Uri.ns(uri);
-    const exists = this.builders.some(ns => ns.uri.toString() === uri.toString());
+  public ns(uri?: string | t.INsUri) {
+    uri = typeof uri === 'string' ? uri.trim() : uri;
+    const ns = uri ? Uri.ns(uri) : Uri.create.ns(Uri.cuid());
+
+    const exists = this.builders.some(builder => builder.toString() === ns.toString());
     if (exists) {
-      const err = `The namespace '${uri.toString()}' already exists`;
+      const err = `The namespace '${ns.toString()}' already exists`;
       throw new Error(err);
     }
-    const ns = TypeBuilderNs.create({ uri });
-    this.builders.push(ns);
-    return ns;
+
+    const res = TypeBuilderNs.create({ uri: ns });
+    this.builders.push(res);
+    return res;
   }
 
   public type(typename: string, options?: t.ITypeBuilderNsTypeOptions) {
-    const ns = Uri.create.ns(Uri.cuid());
-    return this.ns(ns).type(typename, options);
+    return this.ns().type(typename, options);
   }
 
   public formatType(value: string) {

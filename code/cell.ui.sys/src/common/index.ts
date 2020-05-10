@@ -1,11 +1,13 @@
 import * as t from './types';
 import * as util from './util';
+import * as constants from './constants';
 
-export { t, util };
+export { t, util, constants };
+
+export const COLORS = constants.COLORS;
 
 /**
  * Libs
  */
-export { HttpClient, Client } from '@platform/cell.client';
-export { Schema, Uri } from '@platform/cell.schema';
+export { Client, TypeSystem, Schema, Uri } from '@platform/cell.client';
 export { css, color, CssValue } from '@platform/react';

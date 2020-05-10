@@ -4,7 +4,7 @@ import { t } from '../common';
  * A structured API for building a set of type-definitions in code.
  */
 export type ITypeBuilder = {
-  ns(uri: string | t.INsUri): ITypeBuilderNs;
+  ns(uri?: string | t.INsUri): ITypeBuilderNs;
   type(typename: string, options?: ITypeBuilderNsTypeOptions): ITypeBuilderType;
   toObject(): ITypeBuilderDefs;
   formatType(value: string): string;
@@ -19,6 +19,7 @@ export type ITypeBuilderNs = {
   readonly uri: t.INsUri;
   readonly types: ITypeBuilderType[];
   type(typename: string, options?: ITypeBuilderNsTypeOptions): ITypeBuilderType;
+  toString(): string;
 };
 export type ITypeBuilderNsTypeOptions = { startColumn?: string | number };
 
@@ -33,6 +34,7 @@ export type ITypeBuilderType = {
     name: string,
     arg?: t.CellType | ITypeBuilderPropOptions | ((builder: ITypeBuilderProp) => void),
   ): ITypeBuilderType;
+  toString(): string;
 };
 
 export type ITypeBuilderPropOptions = {

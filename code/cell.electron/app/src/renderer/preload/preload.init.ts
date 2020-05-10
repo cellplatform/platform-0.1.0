@@ -43,10 +43,10 @@ export function init() {
   if (isDev) {
     console.group('🌳 preload');
     console.log('isDev', isDev);
-    console.log('host', host);
-    console.log('def (window-uri):', windowUri); // TEMP 🐷
+    process.argv
+      .filter(value => value.startsWith('env:'))
+      .forEach(value => console.log(`process.argv/${value}`));
     console.log('env', env);
-    console.log('process.argv:', process.argv.length);
     console.groupEnd();
     console.log('-------------------------------------------');
   }
