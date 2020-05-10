@@ -19,9 +19,9 @@ export async function language(monaco: any) {
 
   // TEMP 🐷
   const SAMPLE = `
-    declare class Facts {
-      static next(): string;
-    }
-`;
+      declare class Facts {
+        static next(): string;
+      }
+  `;
   defaults.addExtraLib(SAMPLE, 'ts:filename/facts.d.ts');
 }
