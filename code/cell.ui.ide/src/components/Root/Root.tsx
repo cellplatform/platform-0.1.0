@@ -37,6 +37,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const styles = {
       base: css({
         Absolute: 0,
+        overflow: 'hidden',
       }),
       titlebar: css({
         Absolute: [0, 0, null, 0],
@@ -46,7 +47,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         display: 'flex',
         Flex: 'center-center',
       }),
-      editor: css({ Absolute: 0 }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>

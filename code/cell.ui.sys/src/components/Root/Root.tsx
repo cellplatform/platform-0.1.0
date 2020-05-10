@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, t } from '../../common';
-import { WindowTitlebar } from '../primitives';
+import { WindowTitlebar, Card, ICardProps } from '../primitives';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
 export type IRootState = {};
@@ -36,25 +36,58 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const { uri, env } = this.props;
 
     const styles = {
-      base: css({
-        Absolute: 0,
-      }),
-      titlebar: css({
-        Absolute: [0, 0, null, 0],
-      }),
+      base: css({ Absolute: 0 }),
+      titlebar: css({ Absolute: [0, 0, null, 0] }),
       body: css({
         Absolute: [WindowTitlebar.HEIGHT, 0, 0, 0],
         display: 'flex',
-        Flex: 'center-center',
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
         <WindowTitlebar style={styles.titlebar} text={uri} />
         <div {...styles.body}>
-          <div>👋 ui.sys</div>
+          {this.renderBody()}
+          <div />
+        </div>
+      </div>
+    );
+  }
+
+  private renderBody() {
+    const styles = {
+      base: css({
+        flex: 1,
+        padding: 30,
+        Flex: 'horizontal-stretch-stretch',
+      }),
+      left: css({}),
+      right: css({ flex: 1 }),
+      windows: css({
+        Flex: 'vertical',
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.left}>
+          <div {...styles.windows}>
+            <InfoCard>Window: 1</InfoCard>
+            <InfoCard>Window: 2</InfoCard>
+            <InfoCard>Window: 3</InfoCard>
+          </div>
+        </div>
+        <div {...styles.right}>
+          <div />
         </div>
       </div>
     );
   }
 }
+
+/**
+ * [Helpers]
+ */
+
+const InfoCard = (props?: ICardProps) => (
+  <Card minWidth={180} minHeight={50} userSelect={false} padding={10} margin={6} {...props} />
+);
