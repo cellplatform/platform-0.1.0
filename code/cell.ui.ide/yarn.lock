@@ -797,6 +797,11 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
+"@monaco-editor/react@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@monaco-editor/react/-/react-3.3.0.tgz#dbd585a71bf9ef8147d877b4b26ff3de4017bd4a"
+  integrity sha512-qvmUhgawBk2kwNOmXxIkiMGHsLm9vvVoQNY4So/sdrLVIo0DlFBzeal4wkMe1RV0uK47ziVG0LAXm2gV8ioGdA==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -930,10 +935,10 @@
     "@platform/types" "0.4.14"
     "@platform/util.value" "0.7.14"
 
-"@platform/cell.ui@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.0.tgz#68dc246b6caf7e6dc241e1af819e15b220946198"
-  integrity sha512-TBqF9nXejt/1u5PR4itKYkR48D3WChq2o0hAx1RINJ64srnDQFKEhAPBeDFJ76v1hQn09sBe1+TbjNzMfxfL5A==
+"@platform/cell.ui@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.1.tgz#2cf04e47bffa2408a8ea0ef1474366dc40fdd9e9"
+  integrity sha512-zAtEk+SKFzwrzCDnkKyGa+JfIyucjvjE8zXrGjN+t53xnC4nW/YZXTlU15MI6KP5PREZrC6DCN3DMwpYJhi0uQ==
   dependencies:
     "@platform/cell.types" "0.4.87"
     "@platform/libs" "0.2.1"
@@ -3044,6 +3049,11 @@ fast-levenshtein@~2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
+fast-plist@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/fast-plist/-/fast-plist-0.1.2.tgz#a45aff345196006d406ca6cdcd05f69051ef35b8"
+  integrity sha1-pFr/NFGWAG1AbKbNzQX2kFHvNbg=
+
 fastparse@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/fastparse/-/fastparse-1.1.2.tgz#91728c5a5942eced8531283c79441ee4122c35a9"
@@ -4550,6 +4560,13 @@ mocha@7.1.0:
     yargs "13.3.0"
     yargs-parser "13.1.1"
     yargs-unparser "1.6.0"
+
+monaco-themes@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/monaco-themes/-/monaco-themes-0.3.3.tgz#86d9b7cde4d90acb128ec07b3d5d10f757a32224"
+  integrity sha512-0yygYHg3hZhMhlYkP2eMAMurLSyVDqA7ZOjHJSz0LNxra2hxuAGjKFdoBGXnG+VykT6u8bc5uZWF8G35NMC3Gw==
+  dependencies:
+    fast-plist "^0.1.2"
 
 ms@2.0.0:
   version "2.0.0"

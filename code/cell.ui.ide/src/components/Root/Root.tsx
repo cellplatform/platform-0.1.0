@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue } from '../../common';
+import { css, color, CssValue, t } from '../../common';
 import { WindowTitlebar } from '../primitives';
+import { Monaco } from '../Monaco';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
 export type IRootState = {};
@@ -36,6 +37,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const styles = {
       base: css({
         Absolute: 0,
+        overflow: 'hidden',
       }),
       titlebar: css({
         Absolute: [0, 0, null, 0],
@@ -50,7 +52,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       <div {...css(styles.base, this.props.style)}>
         <WindowTitlebar style={styles.titlebar} text={uri} />
         <div {...styles.body}>
-          <div>👋 IDE</div>
+          <Monaco />
         </div>
       </div>
     );

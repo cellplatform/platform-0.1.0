@@ -25,6 +25,11 @@ export async function runTasks(args: {
     return done(false);
   }
 
+  const cacheDir = fs.join(cwd, '.cache');
+  if (await fs.exists(cacheDir)) {
+    await fs.remove(cacheDir);
+  }
+
   const output: string[] = [];
 
   await exec.tasks.run(

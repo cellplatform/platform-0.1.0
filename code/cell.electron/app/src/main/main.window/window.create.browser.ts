@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, screen } from 'electron';
 
 import { constants, ENV, t } from '../common';
 import { logWindow } from './window.log';

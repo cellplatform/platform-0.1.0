@@ -10,9 +10,9 @@
     "package": "cd app && yarn package",
     "make": "cd app && yarn make",
     "build": "cd app && yarn build",
-    "clean": "sh script/clean.sh",
-    "reset": "sh script/reset.sh",
-    "bundle": "ts-node -T script/bundle.ui",
+    "clean": "sh script.sh/clean.sh",
+    "reset": "sh script.sh/reset.sh",
+    "bundle": "ts-node -T script.ts/bundle.ui",
     "bundle.preload": "cd app && yarn bundle.preload",
     "open": "cd app/out/A1-darwin-x64 && open A1.app"
   },
