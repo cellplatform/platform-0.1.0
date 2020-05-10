@@ -45,6 +45,6 @@ export function saveLogger(args: { ctx: t.IContext; saved$: Observable<t.ITypedS
     });
   });
 
-  // Divider
+  // Divider.
   saved$.pipe(debounceTime(800)).subscribe(() => log.info.gray('━'.repeat(60)));
 }
