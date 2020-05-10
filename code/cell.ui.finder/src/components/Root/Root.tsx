@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue } from '../../common';
+import { css, color, CssValue, t } from '../../common';
+import { WindowTitlebar } from '../primitives';
+import { Viewer } from '../Viewer';
 
-export type IRootProps = { style?: CssValue };
+export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
 export type IRootState = {};
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
@@ -31,23 +33,25 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    * [Render]
    */
   public render() {
+    const { uri, env } = this.props;
     const styles = {
       base: css({
         Absolute: 0,
-        Flex: 'center-center',
       }),
       titlebar: css({
-        WebkitAppRegion: 'drag',
         Absolute: [0, 0, null, 0],
-        height: 38,
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
-        boxSizing: 'border-box',
+      }),
+      body: css({
+        Absolute: [38, 0, 0, 0],
+        display: 'flex',
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>👋 Finder</div>
-        <div {...styles.titlebar} />
+        <WindowTitlebar style={styles.titlebar} text={uri} />
+        <div {...styles.body}>
+          <Viewer uri={uri} env={env} />
+        </div>
       </div>
     );
   }
