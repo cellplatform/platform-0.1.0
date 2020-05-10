@@ -1,5 +1,5 @@
 import { t, util } from '../common';
-import { createBrowserWindow } from './window.browser';
+import { createBrowserWindow } from './window.create.browser';
 
 /**
  * Create an electron window for the given app.
