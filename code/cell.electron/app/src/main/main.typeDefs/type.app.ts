@@ -5,9 +5,11 @@ import { t, util, fs } from '../common';
  */
 export async function define(args: {
   ctx: t.IContext;
+  row: number;
   name: string;
   sourceDir: string;
   entryPath: string;
+  devPort: number;
   force?: boolean;
 }) {
   const { ctx } = args;
@@ -19,11 +21,11 @@ export async function define(args: {
     const entry = args.entryPath;
     const targetDir = fs.dirname(entry);
 
-    console.log('targetDir', targetDir);
-
-    const app = apps.row(apps.total);
-    app.props.name = args.name;
-    app.props.entry = args.entryPath;
+    const app = apps.row(args.row);
+    const props = app.props;
+    props.name = args.name;
+    props.entry = args.entryPath;
+    props.devPort = args.devPort;
 
     // Upload the bundle as files to the cell (filesystem).
     await util.upload({

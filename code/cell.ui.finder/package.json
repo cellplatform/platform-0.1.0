@@ -5,7 +5,7 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "parcel src/html/entry.html --port 8080",
+    "start": "parcel src/html/entry.html --port 1235",
     "watch": "yarn start",
     "test": "ts test",
     "lint": "ts lint",

@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t, util } from '../common';
 import { createBrowserWindow } from './window.browser';
 
 /**

@@ -20,11 +20,22 @@ export async function init(client: t.IClientTypesystem) {
   monitor({ ctx });
 
   // Define base modules.
-  const res = await typeDefs.app.define({
+  await typeDefs.app.define({
     ctx,
+    row: 0,
     name: '@platform/cell.ui.sys',
     entryPath: 'bundle/entry.html',
     sourceDir: paths.bundle.sys,
+    devPort: 1234,
+  });
+
+  await typeDefs.app.define({
+    ctx,
+    row: 1,
+    name: '@platform/cell.ui.finder',
+    entryPath: 'bundle/entry.html',
+    sourceDir: paths.bundle.finder,
+    devPort: 1235,
   });
 
   // Finish up.

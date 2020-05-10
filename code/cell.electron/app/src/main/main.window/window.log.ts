@@ -14,14 +14,17 @@ export async function logWindow(args: {
   const uri = log.format.uri(window.uri);
 
   const host = ctx.host;
-  const url = getUrl({ host, app });
+  const url = await getUrl({ host, app });
 
   add('kind:', log.magenta(window.props.app));
   add('uri:', `${uri} (${log.white(window.typename)})`);
   add('sandbox:', args.sandbox);
   add('url:', url.entry);
   if (ENV.isDev) {
-    add(log.gray(`url (dev):`), log.white(url.dev));
+    const isRunning = url.dev.isRunning;
+    const devUrl = isRunning ? log.white(url.dev) : url.dev;
+    const running = isRunning ? '' : `(${log.white('not running')})`;
+    add(log.gray(`url (dev):`), `${devUrl} ${running}`);
   }
 
   const output = `

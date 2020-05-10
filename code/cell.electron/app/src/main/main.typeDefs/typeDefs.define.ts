@@ -16,6 +16,7 @@ export function define() {
     .prop('backgroundColor', p => p.type('string').default('#fff'))
     .prop('fs', p => p.type('string').default('fs'))
     .prop('entry', p => p.type('string'))
+    .prop('devPort', p => p.type('number').default(1234))
     .prop('windows', p => p.type('/AppWindow[]').target('ref'));
 
   def

@@ -50,14 +50,18 @@ export async function start() {
   const ctx = await sys.init(client);
   log.info(`app modules: ${log.yellow(ctx.apps.total)}`);
   ctx.apps.forEach(app => {
-    log.info.gray(`• ${log.magenta(app.name)}`);
+    log.info.gray(` • ${log.magenta(app.name)}`);
   });
+  log.info();
 
   await window.createAll({ ctx });
 
-  if (ctx.windowRefs.length < 1) {
+  if (ctx.windowRefs.length < ctx.apps.total) {
     // TEMP 🐷
-    await window.createOne({ ctx, name: '@platform/cell.ui.sys' });
+    ctx.apps.forEach(app => {
+      const name = app.name;
+      window.createOne({ ctx, name });
+    });
   }
 }
 

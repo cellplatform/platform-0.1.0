@@ -6,7 +6,7 @@
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.33
+ *    @platform/cell.typesystem@0.0.34
  * 
  * Notes: 
  * 
@@ -28,6 +28,7 @@ export declare type App = {
   backgroundColor: string;
   fs: string;
   entry: string;
+  devPort: number;
   windows: t.ITypedSheetRefs<AppWindow>;
 };
 

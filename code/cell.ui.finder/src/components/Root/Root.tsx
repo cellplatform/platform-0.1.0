@@ -33,14 +33,21 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   public render() {
     const styles = {
       base: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         Absolute: 0,
         Flex: 'center-center',
+      }),
+      titlebar: css({
+        WebkitAppRegion: 'drag',
+        Absolute: [0, 0, null, 0],
+        height: 38,
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
+        boxSizing: 'border-box',
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
         <div>👋 Finder</div>
+        <div {...styles.titlebar} />
       </div>
     );
   }
