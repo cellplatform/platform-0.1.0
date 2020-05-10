@@ -14,10 +14,12 @@ export async function copyLocal(args: { sourceDir: string }) {
   const copy = async (path: string) => {
     const from = fs.join(sourceDir, path);
     const to = fs.join(targetDir, path);
-    await fs.copy(from, to);
+    if (await fs.exists(from)) {
+      await fs.copy(from, to);
+    }
   };
 
-  const files = ['package.json', 'yarn.lock', 'src', 'sh'];
+  const files = ['package.json', 'yarn.lock', 'src', 'sh', 'script.sh', 'script.ts'];
   await Promise.all(files.map(copy));
 
   return { files, sourceDir, targetDir };
