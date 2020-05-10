@@ -38,6 +38,15 @@ export async function init(client: t.IClientTypesystem) {
     devPort: 1235,
   });
 
+  await typeDefs.app.define({
+    ctx,
+    row: 2,
+    name: '@platform/cell.ui.ide',
+    entryPath: 'bundle/entry.html',
+    sourceDir: paths.bundle.ide,
+    devPort: 1236,
+  });
+
   // Finish up.
   ipc({ ctx });
   return ctx;

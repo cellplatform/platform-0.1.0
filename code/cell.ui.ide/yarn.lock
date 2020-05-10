@@ -930,6 +930,15 @@
     "@platform/types" "0.4.14"
     "@platform/util.value" "0.7.14"
 
+"@platform/cell.ui@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.0.tgz#68dc246b6caf7e6dc241e1af819e15b220946198"
+  integrity sha512-TBqF9nXejt/1u5PR4itKYkR48D3WChq2o0hAx1RINJ64srnDQFKEhAPBeDFJ76v1hQn09sBe1+TbjNzMfxfL5A==
+  dependencies:
+    "@platform/cell.types" "0.4.87"
+    "@platform/libs" "0.2.1"
+    "@platform/react" "0.4.19"
+
 "@platform/css@0.3.12":
   version "0.3.12"
   resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.3.12.tgz#acb314ba50995ea4ba96a5195427099a00b89ea4"

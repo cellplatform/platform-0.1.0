@@ -17,6 +17,8 @@ export class WindowTitlebar extends React.PureComponent<
   private state$ = new Subject<Partial<IWindowTitlebarState>>();
   private unmounted$ = new Subject<{}>();
 
+  public static HEIGHT = 38;
+
   /**
    * [Lifecycle]
    */
@@ -42,7 +44,7 @@ export class WindowTitlebar extends React.PureComponent<
         Flex: 'center-center',
         WebkitAppRegion: 'drag',
         position: 'relative',
-        height: 38,
+        height: WindowTitlebar.HEIGHT,
         boxSizing: 'border-box',
         borderBottom: `solid 1px ${color.format(-0.15)}`,
         background: `linear-gradient(180deg, #E5E5E5 0%, #CDCDCD 100%)`,

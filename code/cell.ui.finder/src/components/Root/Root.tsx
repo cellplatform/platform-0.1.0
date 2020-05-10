@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, t } from '../../common';
+
+import { css, CssValue, t } from '../../common';
 import { WindowTitlebar } from '../primitives';
 import { Viewer } from '../Viewer';
 
@@ -42,7 +43,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         Absolute: [0, 0, null, 0],
       }),
       body: css({
-        Absolute: [38, 0, 0, 0],
+        Absolute: [WindowTitlebar.HEIGHT, 0, 0, 0],
         display: 'flex',
       }),
     };

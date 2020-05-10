@@ -2,7 +2,7 @@ import '../config';
 import { Client, Uri, Schema, t } from '../common';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Debug } from '../components/Debug';
+import { Root } from '../components/Root';
 
 const win = (window as unknown) as t.ITopWindow;
 const env = win.env;
@@ -57,6 +57,6 @@ const env = win.env;
     // writeRow()
   });
 
-  const el = <Debug env={env} uri={Uri.row(env.def)} />;
+  const el = <Root env={env} uri={env.def} />;
   ReactDOM.render(el, document.getElementById('root'));
 })();

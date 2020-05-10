@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue } from '../../common';
+
+import { css, CssValue, t } from '../../common';
 import { WindowTitlebar } from '../primitives';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
@@ -50,7 +51,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       <div {...css(styles.base, this.props.style)}>
         <WindowTitlebar style={styles.titlebar} text={uri} />
         <div {...styles.body}>
-          <div>👋 IDE</div>
+          <div>👋 ui.sys</div>
         </div>
       </div>
     );
