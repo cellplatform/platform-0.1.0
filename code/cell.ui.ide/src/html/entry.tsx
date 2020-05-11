@@ -12,12 +12,7 @@ const env = win.env;
 const uri = 'cell:sys.foo:A1'; // TEMP 🐷
 
 /**
- * Perform initial setup of the code-editior.
+ * Render root element.
  */
-configure.init().then(() => {
-  /**
-   * Render root element.
-   */
-  const el = <Root env={env} uri={uri} />;
-  ReactDOM.render(el, document.getElementById('root'));
-});
+const el = <Root env={env} uri={uri} />;
+ReactDOM.render(el, document.getElementById('root'));

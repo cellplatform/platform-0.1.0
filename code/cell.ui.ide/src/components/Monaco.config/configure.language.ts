@@ -15,11 +15,16 @@ export async function language(monaco: t.IMonaco) {
   defaults.setCompilerOptions({
     noLib: true,
     allowNonTsExtensions: true,
-    target: typescript.ScriptTarget.ES2015,
+    target: typescript.ScriptTarget.ES2015, // NB: ES6.
   });
 
-  const addLib = (filename: string, text: string) => {
-    defaults.addExtraLib(text, `ts:filename/${filename}`);
+  /**
+   * NOTES:
+   *    Details for handling different libs for different editor windows.
+   *    https://blog.expo.io/building-a-code-editor-with-monaco-f84b3a06deaf
+   */
+  const addLib = (filename: string, content: string) => {
+    defaults.addExtraLib(content, `ts:filename/${filename}`);
   };
 
   /**
@@ -29,15 +34,4 @@ export async function language(monaco: t.IMonaco) {
   const es = await import('./libs.d.yml');
   const libs: { [filename: string]: string } = es.libs;
   Object.keys(libs).forEach(filename => addLib(filename, libs[filename]));
-
-  /**
-   * TODO 🐷
-   * - TEMP
-   */
-  const SAMPLE = `
-      declare class Facts {
-        static next(): string;
-      }
-  `;
-  addLib('fact.d.ts', SAMPLE);
 }

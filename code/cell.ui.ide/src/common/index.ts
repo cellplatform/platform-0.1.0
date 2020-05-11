@@ -11,4 +11,4 @@ export const COLORS = constants.COLORS;
  */
 export { Client, Schema, Uri, TypeSystem } from '@platform/cell.client';
 export { css, color, CssValue, events } from '@platform/react';
-export { value, is } from '@platform/util.value';
+export { value, is, time } from '@platform/util.value';

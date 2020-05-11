@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, t } from '../../common';
+import { time, css, color, CssValue, t, Client } from '../../common';
 import { WindowTitleBar, WindowFooterBar } from '../primitives';
 import { Monaco } from '../Monaco';
 
@@ -12,6 +12,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
   private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject<{}>();
+
+  private monaco!: Monaco;
+  private monacoRef = (ref: Monaco) => (this.monaco = ref);
 
   /**
    * [Lifecycle]
@@ -57,7 +60,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         <WindowTitleBar style={styles.titlebar} address={uri} />
         <div {...styles.body}>
           <div {...styles.editor}>
-            <Monaco />
+            <Monaco ref={this.monacoRef} />
           </div>
           <WindowFooterBar>{this.renderFooter()}</WindowFooterBar>
         </div>
@@ -68,15 +71,52 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   private renderFooter() {
     const styles = {
       base: css({
-        // padding: 5,
         PaddingX: 10,
         Flex: 'center-start',
       }),
     };
     return (
       <div {...styles.base}>
-        <div>Footer</div>
+        <div onClick={this.onClick}>Click</div>
       </div>
     );
   }
+
+  /**
+   * Handlers
+   */
+  private onClick = () => {
+    console.log('hello');
+    const monaco = this.monaco;
+
+    // const typescript = monaco.languages.typescript;
+    // const defaults = typescript.typescriptDefaults;
+
+    // const addLib = (filename: string, text: string) => {
+    //   return defaults.addExtraLib(text, `ts:filename/${filename}`);
+    // };
+
+    const SAMPLE = `
+        declare class Facts {
+          static next(): string;
+        }
+    `;
+    const res = this.monaco.addLib('fact.d.ts', SAMPLE);
+
+    time.delay(1200, () => {
+      // res.dispose();
+    });
+
+    const { env } = this.props;
+
+    const http = Client.http(env.host);
+
+    console.log('env', env);
+
+    const ns = http.ns(env.def);
+
+    console.log('ns', ns);
+
+    // console.log('m', m);
+  };
 }
