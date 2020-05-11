@@ -73,11 +73,23 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       base: css({
         PaddingX: 10,
         Flex: 'center-start',
+        fontSize: 11,
+        color: color.format(-0.62),
+      }),
+      div: css({
+        marginLeft: 10,
+        marginRight: 10,
+        width: 0,
+        height: '100%',
+        borderLeft: `solid 1px ${color.format(-0.15)}`,
+        borderRight: `solid 1px ${color.format(0.7)}`,
       }),
     };
     return (
       <div {...styles.base}>
-        <div onClick={this.onClick}>Click</div>
+        <div onClick={this.handlePullTypes}>Pull Types</div>
+        <div {...styles.div} />
+        <div onClick={this.handleClearTypes}>Clear Types</div>
       </div>
     );
   }
@@ -85,63 +97,41 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   /**
    * Handlers
    */
-  private onClick = async () => {
-    console.log('hello');
-    const monaco = this.monaco;
 
-    // const typescript = monaco.languages.typescript;
-    // const defaults = typescript.typescriptDefaults;
+  private loadedTypeLibs: t.IDisposable[] = [];
 
-    // const addLib = (filename: string, text: string) => {
-    //   return defaults.addExtraLib(text, `ts:filename/${filename}`);
-    // };
+  private handlePullTypes = async () => {
+    const addLib = (filename: string, content: string) => {
+      const ref = this.monaco.addLib(filename, content);
+      this.loadedTypeLibs.push(ref);
+    };
 
-    const SAMPLE = `
-        declare class Facts {
-          static next(): string;
-        }
-    `;
-    const res = this.monaco.addLib('fact.d.ts', SAMPLE);
+    addLib(
+      'facts.d.ts',
+      `
+declare class Facts {
+  static next(): string;
+}
 
-    time.delay(1200, () => {
-      // res.dispose();
-    });
+    `,
+    );
 
     const { env } = this.props;
-
     const http = Client.http(env.host);
 
-    console.log('env', env);
-
     const ns = http.ns(env.def);
-
-    console.log('ns', ns);
     const info = await ns.read();
-    console.log('info', info);
     const typeNs = info.body.data.ns.props?.type?.implements || '';
 
-    console.log('typeNs', typeNs);
-
-    // const res = await http.ns(typeNs).read({ columns: true });
-
-    // console.log('-------------------------------------------');
-    // console.log('res', res);
-
     const client = Client.typesystem(env.host);
+    const ts = await client.typescript(typeNs, { exports: false });
 
-    const r = await client.defs(typeNs);
+    console.log(`declaration (${typeNs})\n\n`, ts.toString());
 
-    console.log('r', r);
+    addLib('tmp.d.ts', ts.toString());
+  };
 
-    const ts = await client.typescript(typeNs);
-
-    console.log('ts.declaration', ts.declaration);
-
-    const d = ts.declaration.replace(/export /g, '');
-
-    // ts.toString()
-    // console.log('m', m);
-    console.log('d', d);
-    this.monaco.addLib('tmp.d.ts', d);
+  private handleClearTypes = () => {
+    this.loadedTypeLibs.forEach(ref => ref.dispose());
   };
 }

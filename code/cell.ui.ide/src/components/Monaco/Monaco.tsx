@@ -67,6 +67,16 @@ class Chuck {
 const foo: number[] = [1,2,3]
 foo.map(num => num + 1);
 
+const app: AppWindow = {
+  app: 'ns:foo',
+  title: 'MyAppWindow',
+  width: 200,
+  height: 150,
+  x: 0,
+  y: 120,
+}
+
+
 `;
 
     return (
