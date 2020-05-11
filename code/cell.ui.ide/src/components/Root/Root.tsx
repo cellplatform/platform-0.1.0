@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, CssValue, t } from '../../common';
-import { WindowTitlebar } from '../primitives';
+import { WindowTitleBar, WindowFooterBar } from '../primitives';
 import { Monaco } from '../Monaco';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
@@ -43,17 +43,39 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         Absolute: [0, 0, null, 0],
       }),
       body: css({
-        Absolute: [WindowTitlebar.HEIGHT, 0, 0, 0],
+        Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         display: 'flex',
-        Flex: 'center-center',
+        Flex: 'vertical-strecth-stretch',
+      }),
+      editor: css({
+        position: 'relative',
+        flex: 1,
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <WindowTitlebar style={styles.titlebar} text={uri} />
+        <WindowTitleBar style={styles.titlebar} address={uri} />
         <div {...styles.body}>
-          <Monaco />
+          <div {...styles.editor}>
+            <Monaco />
+          </div>
+          <WindowFooterBar>{this.renderFooter()}</WindowFooterBar>
         </div>
+      </div>
+    );
+  }
+
+  private renderFooter() {
+    const styles = {
+      base: css({
+        // padding: 5,
+        PaddingX: 10,
+        Flex: 'center-start',
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div>Footer</div>
       </div>
     );
   }

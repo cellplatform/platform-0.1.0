@@ -1,30 +1,32 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, COLORS } from '../../common';
+import { css, color, CssValue, COLORS, defaultValue } from '../../common';
 
-export type IWindowTitlebarProps = {
-  text?: string;
+export type IWindowTitleBarProps = {
+  address?: React.ReactNode;
+  height?: number;
   style?: CssValue;
 };
-export type IWindowTitlebarState = {
+export type IWindowTitleBarState = {
   isFocused?: boolean;
 };
 
-export class WindowTitlebar extends React.PureComponent<
-  IWindowTitlebarProps,
-  IWindowTitlebarState
+export class WindowTitleBar extends React.PureComponent<
+  IWindowTitleBarProps,
+  IWindowTitleBarState
 > {
-  public state: IWindowTitlebarState = {};
-  private state$ = new Subject<Partial<IWindowTitlebarState>>();
+  public state: IWindowTitleBarState = {};
+  private state$ = new Subject<Partial<IWindowTitleBarState>>();
   private unmounted$ = new Subject<{}>();
 
   public static HEIGHT = 38;
+  public static GRADIENT = `linear-gradient(180deg, #E5E5E5 0%, #CDCDCD 100%)`;
 
   /**
    * [Lifecycle]
    */
-  constructor(props: IWindowTitlebarProps) {
+  constructor(props: IWindowTitleBarProps) {
     super(props);
   }
 
@@ -45,12 +47,22 @@ export class WindowTitlebar extends React.PureComponent<
   }
 
   /**
+   * [Properties]
+   */
+  public get height() {
+    return defaultValue(this.props.height, WindowTitleBar.HEIGHT);
+  }
+
+  public get isFocused() {
+    return document.hasFocus();
+  }
+
+  /**
    * [Methods]
    */
 
   private updateState = () => {
-    const isFocused = document.hasFocus();
-    this.state$.next({ isFocused });
+    this.state$.next({ isFocused: this.isFocused });
   };
 
   /**
@@ -63,12 +75,10 @@ export class WindowTitlebar extends React.PureComponent<
         Flex: 'center-center',
         WebkitAppRegion: 'drag',
         position: 'relative',
-        height: WindowTitlebar.HEIGHT,
+        height: WindowTitleBar.HEIGHT,
         boxSizing: 'border-box',
         borderBottom: `solid 1px ${color.format(isFocused ? -0.2 : -0.08)}`,
-        background: isFocused
-          ? `linear-gradient(180deg, #E5E5E5 0%, #CDCDCD 100%)`
-          : color.format(-0.03),
+        background: isFocused ? WindowTitleBar.GRADIENT : color.format(-0.03),
         userSelect: 'none',
         color: COLORS.DARK,
       }),
@@ -80,6 +90,8 @@ export class WindowTitlebar extends React.PureComponent<
     const { isFocused } = this.state;
     const styles = {
       base: css({
+        Flex: 'center-center',
+        position: 'relative',
         backgroundColor: color.format(1),
         border: `solid 1px ${color.format(-0.2)}`,
         borderBottomColor: color.format(-0.26),
@@ -88,18 +100,12 @@ export class WindowTitlebar extends React.PureComponent<
         PaddingX: 100,
         height: 26,
         minWidth: 300,
-        Flex: 'center-center',
         boxSizing: 'border-box',
         opacity: isFocused ? 1 : 0.35,
-      }),
-      label: css({
-        opacity: 0.75,
+        color: color.format(-0.7),
       }),
     };
-    return (
-      <div {...styles.base}>
-        <div {...styles.label}>{this.props.text || 'Untitled'}</div>
-      </div>
-    );
+
+    return <div {...styles.base}>{this.props.address || 'Untitled'}</div>;
   }
 }

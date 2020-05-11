@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, t } from '../../common';
-import { WindowTitlebar, Card, ICardProps } from '../primitives';
+import { WindowTitleBar, Card, ICardProps } from '../primitives';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
 export type IRootState = {};
@@ -39,13 +39,13 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       base: css({ Absolute: 0 }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
       body: css({
-        Absolute: [WindowTitlebar.HEIGHT, 0, 0, 0],
+        Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         display: 'flex',
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <WindowTitlebar style={styles.titlebar} text={uri} />
+        <WindowTitleBar style={styles.titlebar} address={uri} />
         <div {...styles.body}>
           {this.renderBody()}
           <div />

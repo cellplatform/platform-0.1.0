@@ -44,16 +44,14 @@ export class Card extends React.PureComponent<ICardProps, ICardState> {
     let value = this.props.userSelect;
     value = value === true ? 'auto' : value;
     value = value === false ? 'none' : value;
-    return value;
+    return value as React.CSSProperties['userSelect'];
   }
 
   /**
    * [Render]
    */
   public render() {
-    // const radius = defaultValue(this.props.radius, 4);
     const background = defaultValue(this.props.background, 1);
-
     const styles = {
       base: css({
         position: 'relative',

@@ -1,2 +1,2 @@
-import { WindowTitlebar } from '@platform/cell.ui/lib/components/WindowTitlebar';
-export { WindowTitlebar };
+import { WindowTitleBar } from '@platform/cell.ui/lib/components/WindowTitleBar';
+export { WindowTitleBar };
