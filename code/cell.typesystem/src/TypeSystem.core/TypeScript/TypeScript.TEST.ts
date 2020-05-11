@@ -225,7 +225,7 @@ describe('TypeScript', () => {
       const types = defs[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
 
       const res1 = TypeScript.toDeclaration({ typename, types });
-      const res2 = TypeScript.toDeclaration({ typename, types, export: false });
+      const res2 = TypeScript.toDeclaration({ typename, types, exports: false });
 
       expect(res1.includes('export declare')).to.eql(true);
       expect(res2.includes('export declare')).to.eql(false);

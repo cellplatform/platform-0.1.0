@@ -7,7 +7,10 @@ import { TypeTarget } from '../TypeTarget';
 /**
  * Converts type definitions to valid typescript declarations.
  */
-export function typescript(def: t.INsTypeDef | t.INsTypeDef[], options: { header?: boolean } = {}) {
+export function typescript(
+  def: t.INsTypeDef | t.INsTypeDef[],
+  options: { header?: boolean; exports?: boolean } = {},
+) {
   const defs = Array.isArray(def) ? def : [def];
   const api: t.ITypeClientTypescript = {
     /**
@@ -45,6 +48,7 @@ export function typescript(def: t.INsTypeDef | t.INsTypeDef[], options: { header
         }
         return TypeScript.toDeclaration({
           typename,
+          exports: options.exports,
           types: def.columns,
           filterType: e => {
             const exists = addedTypenames.includes(e.typename);

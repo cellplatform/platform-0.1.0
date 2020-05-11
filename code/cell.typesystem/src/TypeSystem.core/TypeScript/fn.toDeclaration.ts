@@ -26,10 +26,10 @@ export function toDeclaration(args: {
   imports?: string;
   adjustLine?: AdjustType;
   filterType?: FilterType;
-  export?: boolean;
+  exports?: boolean;
 }) {
   const { adjustLine, filterType: filter } = args;
-  const declare = args.export === false ? 'declare' : 'export declare';
+  const declare = args.exports === false ? 'declare' : 'export declare';
 
   const write = (args: { typename: string; types: t.ITypeDef[]; written: string[] }) => {
     const { written } = args;
