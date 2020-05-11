@@ -26,8 +26,10 @@ export function toDeclaration(args: {
   imports?: string;
   adjustLine?: AdjustType;
   filterType?: FilterType;
+  export?: boolean;
 }) {
   const { adjustLine, filterType: filter } = args;
+  const declare = args.export === false ? 'declare' : 'export declare';
 
   const write = (args: { typename: string; types: t.ITypeDef[]; written: string[] }) => {
     const { written } = args;
@@ -85,7 +87,7 @@ export function toDeclaration(args: {
     lines = lines.filter(line => typeof line === 'string').map(line => line.trimEnd());
 
     let res = `
-export declare type ${args.typename} = {
+${declare} type ${args.typename} = {
 ${lines.join('\n')}
 };`.substring(1);
 

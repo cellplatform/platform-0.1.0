@@ -218,6 +218,19 @@ describe('TypeScript', () => {
       expect(lines[1]).to.eql(`import { MyThing } from 'foobar';`);
     });
 
+    it('without "export" statements', async () => {
+      const fetch = testFetch({ defs: TYPE_DEFS });
+      const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
+      const typename = defs[0].typename;
+      const types = defs[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
+
+      const res1 = TypeScript.toDeclaration({ typename, types });
+      const res2 = TypeScript.toDeclaration({ typename, types, export: false });
+
+      expect(res1.includes('export declare')).to.eql(true);
+      expect(res2.includes('export declare')).to.eql(false);
+    });
+
     it('[adjustLine] handler', async () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
       const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
