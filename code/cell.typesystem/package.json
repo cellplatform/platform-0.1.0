@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.typesystem",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "description": "The 'strongly typed sheets' system of the CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

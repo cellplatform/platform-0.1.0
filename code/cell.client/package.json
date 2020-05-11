@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.client",
-  "version": "0.2.74",
+  "version": "0.2.75",
   "description": "A strongly typed HTTP client for operating with a CellOS service end-point.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,7 +16,7 @@
   "dependencies": {
     "@platform/cell.schema": "0.4.97",
     "@platform/cell.types": "0.4.88",
-    "@platform/cell.typesystem": "0.0.35",
+    "@platform/cell.typesystem": "0.0.36",
     "@platform/http": "0.12.7",
     "@platform/http.types": "0.2.2",
     "@platform/libs": "0.2.1",

@@ -69,10 +69,10 @@
     "@platform/types" "0.4.14"
     "@platform/util.diff" "0.0.24"
 
-"@platform/cell.typesystem@0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.35.tgz#acd36ce2ac139f32b77d318647ff75799016b371"
-  integrity sha512-LigrQpYhxQ3jDtBjXcVwWXIX7xw5JF8R/POXgv2xRLDF5TPboKuvfOfNKV33vp8kD3lleoqgd537XEmEeovExQ==
+"@platform/cell.typesystem@0.0.36":
+  version "0.0.36"
+  resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.36.tgz#af015ab00da9619dabad13a86445b367bf1edacc"
+  integrity sha512-7YX70vpyBhsmGLXNjX5C9Hnp21+2cI3J19Mwz6pKYL8NjcylQpGUlqRg0PAwgNBeho2NY2kqPy1Ltbuu2TuW8w==
   dependencies:
     "@platform/cache" "0.2.23"
     "@platform/cell.coord" "0.8.107"
