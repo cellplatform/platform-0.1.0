@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue } from '../../common';
+import { css, color, CssValue, constants } from '../../common';
 
 import Editor from '@monaco-editor/react';
 
@@ -52,7 +52,7 @@ const foo: number[] = [1,2,3]
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <Editor language={'typescript'} theme={'Ink'} value={code} />
+        <Editor language={'typescript'} theme={constants.THEME.NAME} value={code} />
       </div>
     );
   }
