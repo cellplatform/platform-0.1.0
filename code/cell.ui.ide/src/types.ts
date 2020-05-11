@@ -35,7 +35,6 @@ export type IMonacoLanguageTypescript = {
 export type IMonacoLanguageServiceDefaults = {
   setCompilerOptions(options: IMonacoCompilerOptions): void;
   addExtraLib(content: string, filePath?: string): t.IDisposable;
-  
 };
 
 /**
