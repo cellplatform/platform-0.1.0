@@ -77,7 +77,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
           </div>
         </div>
         <div {...styles.right}>
-          <div />
+          <InfoCard>
+            <div>HTTP Server</div>
+            <div>{this.props.env.host}</div>
+          </InfoCard>
         </div>
       </div>
     );

@@ -1,6 +1,16 @@
 import { t } from '../../common';
 
 /**
+ * 🏷REFS (how to):
+ *
+ *    Details for handling different libs for different editor windows:
+ *    https://blog.expo.io/building-a-code-editor-with-monaco-f84b3a06deaf
+ *
+ *    Adding snippets:
+ *    https://stackoverflow.com/questions/48212023/how-to-insert-snippet-in-monaco-editor
+ */
+
+/**
  * Configure language (typescript) settings of the IDE.
  */
 export async function language(monaco: t.IMonaco) {
@@ -18,11 +28,6 @@ export async function language(monaco: t.IMonaco) {
     target: typescript.ScriptTarget.ES2015, // NB: ES6.
   });
 
-  /**
-   * NOTES:
-   *    Details for handling different libs for different editor windows.
-   *    https://blog.expo.io/building-a-code-editor-with-monaco-f84b3a06deaf
-   */
   const addLib = (filename: string, content: string) => {
     defaults.addExtraLib(content, `ts:filename/${filename}`);
   };
