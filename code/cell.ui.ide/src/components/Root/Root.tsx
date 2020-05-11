@@ -85,7 +85,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   /**
    * Handlers
    */
-  private onClick = () => {
+  private onClick = async () => {
     console.log('hello');
     const monaco = this.monaco;
 
@@ -116,7 +116,32 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const ns = http.ns(env.def);
 
     console.log('ns', ns);
+    const info = await ns.read();
+    console.log('info', info);
+    const typeNs = info.body.data.ns.props?.type?.implements || '';
 
+    console.log('typeNs', typeNs);
+
+    // const res = await http.ns(typeNs).read({ columns: true });
+
+    // console.log('-------------------------------------------');
+    // console.log('res', res);
+
+    const client = Client.typesystem(env.host);
+
+    const r = await client.defs(typeNs);
+
+    console.log('r', r);
+
+    const ts = await client.typescript(typeNs);
+
+    console.log('ts.declaration', ts.declaration);
+
+    const d = ts.declaration.replace(/export /g, '');
+
+    // ts.toString()
     // console.log('m', m);
+    console.log('d', d);
+    this.monaco.addLib('tmp.d.ts', d);
   };
 }
