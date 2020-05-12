@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { Client, css, CssValue, t } from '../../common';
 import { Apps } from '../Apps';
-import { WindowTitleBar } from '../primitives';
+import { ObjectView, WindowTitleBar } from '../primitives';
 import { Server } from './Server';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
@@ -65,8 +65,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         padding: 30,
         Flex: 'horizontal-stretch-stretch',
       }),
-      left: css({ width: 300 }),
-      center: css({ flex: 1 }),
+      left: css({ width: 260 }),
+      center: css({ flex: 1, display: 'flex', PaddingX: 30 }),
       right: css({}),
     };
 
@@ -75,12 +75,24 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         <div {...styles.left}>
           <Apps env={env} client={this.client} />
         </div>
-        <div {...styles.center}>
-          <div />
-        </div>
+        <div {...styles.center}>{this.renderCenter()}</div>
         <div {...styles.right}>
           <Server env={env} client={this.client} />
         </div>
+      </div>
+    );
+  }
+
+  private renderCenter() {
+    const styles = {
+      base: css({ flex: 1 }),
+    };
+
+    const data = { foo: 123 };
+
+    return (
+      <div {...styles.base}>
+        <ObjectView data={data} />
       </div>
     );
   }

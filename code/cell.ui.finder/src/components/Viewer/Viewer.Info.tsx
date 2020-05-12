@@ -63,15 +63,15 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
 
     const { mimetype, bytes, integrity } = file.props;
     const filehash = integrity?.filehash || '';
-    const hash = `${filehash.substring(7, 14)}[..]${filehash?.substring(filehash.length - 6)}`;
+    const hash = `${filehash.substring(7, 14)}...${filehash?.substring(filehash.length - 6)}`;
 
     const createdAt = time.day(file.createdAt);
     const modifiedAt = time.day(file.modifiedAt);
     const format = 'MMM D, YYYY h:mmA';
 
     const items: IPropListProps['items'] = [
-      { label: 'Size', value: filesize(bytes || 0) },
-      { label: 'Kind', value: mimetype },
+      { label: 'Filesize', value: filesize(bytes || 0) },
+      // { label: 'Kind', value: mimetype },
       { label: 'Created', value: createdAt.format(format) },
       { label: 'Modified', value: modifiedAt.format(format) },
       filehash ? { label: 'Hash (SHA-256)', value: hash, tooltip: filehash } : undefined,
@@ -139,12 +139,59 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
       </div>
     );
 
-    const items = !isLoading ? this.items : [];
+    // const items = !isLoading ? this.items : [];
 
     return (
       <div {...styles.base}>
-        <PropList title={item.filename} items={items} />
+        {this.renderPropList()}
         {elSpinner}
+      </div>
+    );
+  }
+
+  private renderPropList() {
+    const { item } = this.props;
+    const { file } = this.state;
+    if (!item || !file) {
+      return null;
+    }
+
+    const { isLoading } = this.state;
+    const items = !isLoading ? this.items : [];
+
+    const styles = {
+      base: css({
+        boxSizing: 'border-box',
+      }),
+      iconOuter: css({
+        // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        Flex: 'vertical-center-center',
+        marginBottom: 20,
+      }),
+      icon: css({
+        width: 60,
+        height: 60,
+        backgroundColor: color.format(-0.15),
+        borderRadius: 8,
+        border: `solid 4px ${color.format(-0.03)}`,
+      }),
+      mime: css({
+        textAlign: 'center',
+        fontSize: 12,
+        marginTop: 4,
+        opacity: 0.4,
+      }),
+    };
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.iconOuter}>
+          <div>
+            <div {...styles.icon} />
+          </div>
+          <div {...styles.mime}>{file.props.mimetype}</div>
+        </div>
+        <PropList title={item.filename} items={items} />
       </div>
     );
   }

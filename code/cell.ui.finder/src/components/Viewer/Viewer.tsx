@@ -94,7 +94,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   }
 
   private ensureSelection() {
-    const { items = [] } = this.state;
+    const items = this.items;
     if (!this.state.current && items.length > 0) {
       this.setCurrent(items[0]);
     }
