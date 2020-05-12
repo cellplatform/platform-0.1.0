@@ -52,6 +52,19 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
     return this.props.uri;
   }
 
+  private get items() {
+    const { items = [] } = this.state;
+    return items;
+  }
+
+  private get selectedIndex() {
+    const { current } = this.state;
+    if (current) {
+      return this.items.indexOf(current);
+    }
+    return -1;
+  }
+
   /**
    * [Methods]
    */
@@ -62,11 +75,23 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
     const cell = http.cell(this.props.uri);
     const res = await cell.files.list();
     if (res.ok) {
-      const files = res.body.map(file => {
+      const items = res.body.map(file => {
         const url = urls.file(file.uri).download.toString();
         return { filename: file.filename, url };
       });
-      this.state$.next({ items: files });
+      this.state$.next({ items });
+      this.ensureSelection();
+    }
+  }
+
+  private setCurrent(current: IViewerListItem) {
+    this.state$.next({ current });
+  }
+
+  private ensureSelection() {
+    const { items = [] } = this.state;
+    if (!this.state.current && items.length > 0) {
+      this.setCurrent(items[0]);
     }
   }
 
@@ -76,6 +101,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   public render() {
     const { env } = this.props;
     const { isDragOver } = this.state;
+    const items = this.items;
     const styles = {
       base: css({
         flex: 1,
@@ -112,7 +138,12 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
       >
         <div {...styles.content}>
           <div {...styles.left}>
-            <ViewerList env={env} items={this.state.items || []} onClick={this.onItemClick} />
+            <ViewerList
+              env={env}
+              items={items}
+              selectedIndex={this.selectedIndex}
+              onClick={this.onItemClick}
+            />
           </div>
           <div {...styles.center}>{this.renderImage()}</div>
           <div {...styles.right}>
@@ -189,7 +220,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
    */
 
   private onItemClick = (e: ViewerItemClickEvent) => {
-    this.state$.next({ current: e.item });
+    this.setCurrent(e.item);
   };
 
   private dragHandler = (isDragOver: boolean) => {
@@ -226,7 +257,6 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
 
 async function toFiles(e: React.DragEvent) {
   const files: File[] = [];
-  // const res: { filename: string; data: ArrayBuffer }[] = [];
 
   if (e.dataTransfer.items) {
     // tslint:disable-next-line
@@ -235,9 +265,6 @@ async function toFiles(e: React.DragEvent) {
         const file = e.dataTransfer.items[i].getAsFile();
         if (file) {
           files.push(file);
-          // const filename = file.name;
-          // const data = await (file as any).arrayBuffer();
-          // res.push({ filename, data });
         }
       }
     }

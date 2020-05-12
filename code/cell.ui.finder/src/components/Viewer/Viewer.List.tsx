@@ -6,11 +6,12 @@ import { COLORS, css, color, CssValue, t } from '../../common';
 export type IViewerListProps = {
   env: t.IEnv;
   items: IViewerListItem[];
+  selectedIndex?: number;
   style?: CssValue;
   onClick?: ViewerItemClickEventHandler;
 };
 export type IViewerListItem = { filename: string; url: string };
-export type IViewerListState = { current?: IViewerListItem };
+export type IViewerListState = {};
 
 export type ViewerItemClickEvent = { item: IViewerListItem };
 export type ViewerItemClickEventHandler = (e: ViewerItemClickEvent) => void;
@@ -75,7 +76,7 @@ export class ViewerList extends React.PureComponent<IViewerListProps, IViewerLis
     };
 
     const elItems = items.map((item, i) => {
-      const isCurrent = item === this.state.current;
+      const isCurrent = this.props.selectedIndex === i;
       return (
         <div
           key={i}
@@ -103,7 +104,6 @@ export class ViewerList extends React.PureComponent<IViewerListProps, IViewerLis
       const { onClick } = this.props;
       if (onClick) {
         onClick({ item });
-        this.state$.next({ current: item });
       }
     };
   };
