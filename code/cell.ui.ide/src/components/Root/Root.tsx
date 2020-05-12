@@ -125,9 +125,11 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const client = Client.typesystem(env.host);
     const ts = await client.typescript(typeNs, { exports: false, imports: false });
 
-    console.log(`declaration (${typeNs})\n\n`, ts.toString());
+    let text = ts.toString();
+    text = text.replace(/t\./g, '');
 
-    monaco.lib.add('tmp.d.ts', ts.toString());
+    console.log(`declaration (${typeNs})\n\n`, text);
+    monaco.lib.add('tmp.d.ts', text);
   };
 
   private handleClearTypes = async () => {

@@ -59,6 +59,7 @@ const app: AppWindow = {
   height: 150,
   x: 0,
   y: 120,
+  boats: null as any
 }
 
 

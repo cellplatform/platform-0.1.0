@@ -31,14 +31,22 @@ export async function language(monaco: t.IMonaco) {
 
   const addLib = (filename: string, content: string) => {
     filename = util.formatFilename(filename);
+    content = util.formatDeclarationContent(content);
     typescriptDefaults.addExtraLib(content, filename);
+  };
+
+  const addFromYaml = async (libs: { [filename: string]: string }) => {
+    Object.keys(libs).forEach((filename) => addLib(filename, libs[filename]));
   };
 
   /**
    * Load standard ECMAScript language types.
    */
   // @ts-ignore
-  const es = await import('./libs.d.yml');
-  const libs: { [filename: string]: string } = es.libs;
-  Object.keys(libs).forEach((filename) => addLib(filename, libs[filename]));
+  const es = await import('./libs-es.d.yml');
+  await addFromYaml(es.libs);
+
+  // @ts-ignore
+  const cell = await import('./libs-cell.d.yml');
+  await addFromYaml(cell.libs);
 }

@@ -1,6 +1,6 @@
 import { t } from '../../common';
 
-import { configure } from '../Monaco.configure';
+import { configure } from '../Monaco.config';
 import { monaco } from '@monaco-editor/react';
 
 export type IArgs = { monaco: t.IMonaco };

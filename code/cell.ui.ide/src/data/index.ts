@@ -1,7 +1,1 @@
-
-
-
-
-export function define() {
-  
-}
+export function define() {}
