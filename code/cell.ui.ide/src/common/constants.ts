@@ -1,5 +1,6 @@
-export const THEME = {
-  NAME: 'ink',
+export const MONACO = {
+  THEME: 'ink',
+  LANGUAGE: 'typescript',
 };
 
 export const COLORS = {

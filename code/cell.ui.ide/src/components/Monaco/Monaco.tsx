@@ -6,6 +6,8 @@ import { t, css, color, CssValue, constants } from '../../common';
 import MonacoEditor from '@monaco-editor/react';
 import { MonacoApi } from '../Monaco.api';
 
+const { MONACO } = constants;
+
 export type IMonacoProps = { style?: CssValue };
 export type IMonacoState = { api?: MonacoApi };
 
@@ -25,7 +27,7 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {
@@ -45,15 +47,10 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
       base: css({ Absolute: 0 }),
     };
 
-    const code = `
-class Chuck {
-  greet() {
-      return Facts.next();
-  }
-}    
+    const TMP = `
 
 const foo: number[] = [1,2,3]
-foo.map(num => num + 1);
+foo.map(num => num + 1)
 
 const app: AppWindow = {
   app: 'ns:foo',
@@ -69,7 +66,7 @@ const app: AppWindow = {
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <MonacoEditor language={'typescript'} theme={constants.THEME.NAME} value={code} />
+        <MonacoEditor language={MONACO.LANGUAGE} theme={MONACO.THEME} value={TMP} />
       </div>
     );
   }

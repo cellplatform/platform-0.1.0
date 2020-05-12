@@ -1,5 +1,7 @@
 import { t, constants } from '../../common';
 
+const { MONACO } = constants;
+
 export const DARK = {
   BG: '#202634',
   BG_SELECTION: '#394050',
@@ -31,5 +33,5 @@ export function theme(monaco: t.IMonaco) {
     // 'scrollbarSlider.hoverBackground': '#2B313E',
   };
 
-  monaco.editor.defineTheme(constants.THEME.NAME, themeData);
+  monaco.editor.defineTheme(MONACO.THEME, themeData);
 }

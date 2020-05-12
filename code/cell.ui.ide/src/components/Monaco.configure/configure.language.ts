@@ -1,4 +1,5 @@
 import { t } from '../../common';
+import * as util from './util';
 
 /**
  * 🏷REFS (how to):
@@ -15,21 +16,22 @@ import { t } from '../../common';
  */
 export async function language(monaco: t.IMonaco) {
   const typescript = monaco.languages.typescript;
-  const defaults = typescript.typescriptDefaults;
+  const typescriptDefaults = typescript.typescriptDefaults;
 
   /**
    * Compiler options:
    *    - https://www.typescriptlang.org/docs/handbook/compiler-options.html
    *    - https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.typescript.languageservicedefaults.html#setcompileroptions
    */
-  defaults.setCompilerOptions({
+  typescriptDefaults.setCompilerOptions({
     noLib: true,
     allowNonTsExtensions: true,
     target: typescript.ScriptTarget.ES2015, // NB: ES6.
   });
 
   const addLib = (filename: string, content: string) => {
-    defaults.addExtraLib(content, `ts:filename/${filename}`);
+    filename = util.formatFilename(filename);
+    typescriptDefaults.addExtraLib(content, filename);
   };
 
   /**
@@ -38,5 +40,5 @@ export async function language(monaco: t.IMonaco) {
   // @ts-ignore
   const es = await import('./libs.d.yml');
   const libs: { [filename: string]: string } = es.libs;
-  Object.keys(libs).forEach(filename => addLib(filename, libs[filename]));
+  Object.keys(libs).forEach((filename) => addLib(filename, libs[filename]));
 }

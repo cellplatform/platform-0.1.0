@@ -1,4 +1,7 @@
 import { t } from './common';
+export * from './types.monaco.editor';
+export * from './types.monaco.languages';
+export * from './types.monaco.formatting';
 
 /**
  * Working type wrapper around the "Monaco" code-editor.
@@ -6,59 +9,24 @@ import { t } from './common';
  *    https://microsoft.github.io/monaco-editor/api/index.html
  */
 export type IMonaco = {
-  editor: IMonacoEditor;
-  languages: IMonacoLanguages;
-};
-
-export type IMonacoEditor = {
-  defineTheme(themeName: string, themeData: IMonacoStandaloneThemeData): void;
-};
-
-export type IMonacoStandaloneThemeData = {
-  base: 'vs' | 'vs-dark' | 'hc-black';
-  inherit: boolean;
-  colors: { [colorId: string]: string };
-  encodedTokensColors?: string[];
-  rules: {}[];
-};
-
-export type IMonacoLanguages = {
-  typescript: IMonacoLanguageTypescript;
-};
-
-export type IMonacoLanguageTypescript = {
-  typescriptDefaults: IMonacoLanguageServiceDefaults;
-  javascriptDefaults: IMonacoLanguageServiceDefaults;
-  ScriptTarget: IMonacoScriptTarget;
-};
-
-export type IMonacoLanguageServiceDefaults = {
-  setCompilerOptions(options: IMonacoCompilerOptions): void;
-  addExtraLib(content: string, filePath?: string): t.IDisposable;
+  editor: t.IMonacoEditor;
+  languages: t.IMonacoLanguages;
 };
 
 /**
- * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.typescript.compileroptions.html
+ * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.cancellationtoken.html
  */
-export type IMonacoCompilerOptions = {
-  noLib: boolean;
-  allowNonTsExtensions: boolean;
-  target: IMonacoScriptTarget[keyof IMonacoScriptTarget];
+export type IMonacoCancellationToken = {
+  isCancellationRequested: boolean;
+  onCancellationRequested: IMonacoEvent<any>;
 };
 
 /**
- * https://microsoft.github.io/monaco-editor/api/enums/monaco.languages.typescript.scripttarget.html
+ * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.ievent.html
  */
-export type IMonacoScriptTarget = {
-  ES2015: 2;
-  ES2016: 3;
-  ES2017: 4;
-  ES2018: 5;
-  ES2019: 6;
-  ES2020: 1;
-  ES3: 0;
-  ES5: 1;
-  ESNext: 99;
-  JSON: 100;
-  Latest: 'ESNext';
-};
+export type IMonacoEvent<T> = {};
+
+/**
+ * https://microsoft.github.io/monaco-editor/api/classes/monaco.range.html
+ */
+export type IMonacoRange = {};

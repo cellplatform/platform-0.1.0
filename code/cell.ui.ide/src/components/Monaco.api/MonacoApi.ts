@@ -1,6 +1,6 @@
 import { t } from '../../common';
 
-import { configure } from '../Monaco.config';
+import { configure } from '../Monaco.configure';
 import { monaco } from '@monaco-editor/react';
 
 export type IArgs = { monaco: t.IMonaco };
@@ -22,9 +22,10 @@ export class MonacoApi {
           .then((monaco: t.IMonaco) => {
             configure.theme(monaco);
             configure.language(monaco);
+            configure.registerPrettier(monaco);
             resolve(MonacoApi.create({ monaco }));
           })
-          .catch(err => reject(err));
+          .catch((err) => reject(err));
       }))
     );
   }
@@ -52,8 +53,9 @@ export class MonacoApi {
   public get lib() {
     return {
       add: (filename: string, content: string) => {
-        const defaults = this.monaco.languages.typescript.typescriptDefaults;
-        const ref = defaults.addExtraLib(content, filename);
+        filename = configure.formatFilename(filename);
+        const typescriptDefaults = this.monaco.languages.typescript.typescriptDefaults;
+        const ref = typescriptDefaults.addExtraLib(content, filename);
         this.libs = [...this.libs, { filename, ref }];
         return ref;
       },
