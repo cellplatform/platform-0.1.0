@@ -1,4 +1,4 @@
-import { TypeSystem, t } from '../common';
+import { TypeSystem, t, MemoryCache } from '../common';
 import { HttpClient } from '../Client.http';
 
 type N = string | t.INsUri;
@@ -8,7 +8,9 @@ type N = string | t.INsUri;
  */
 export function typesystem(input?: t.ClientOptions | string | number) {
   const args = typeof input === 'object' ? input : { http: input };
-  const { cache, event$ } = args;
+  const { event$ } = args;
+  const cache = args.cache || MemoryCache.create();
+
   let change: t.ITypedSheetChangeMonitor | undefined;
 
   const http = HttpClient.isClient(args.http)
@@ -20,6 +22,7 @@ export function typesystem(input?: t.ClientOptions | string | number) {
   const api: t.IClientTypesystem = {
     http,
     fetch,
+    cache,
 
     /**
      * The singleton change-monitor for the client.

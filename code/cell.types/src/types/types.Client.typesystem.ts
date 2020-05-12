@@ -5,6 +5,7 @@ type N = string | t.INsUri;
 export type IClientTypesystem = {
   readonly http: t.IHttpClient;
   readonly fetch: t.ISheetFetcher;
+  readonly cache: t.IMemoryCache;
   readonly changes: t.ITypedSheetChangeMonitor;
   sheet<T>(ns: N): Promise<t.ITypedSheet<T>>;
   defs(ns: N | N[]): Promise<t.INsTypeDef[]>;
