@@ -7,11 +7,22 @@ import { Card, IPropListItem, PropList } from '../primitives';
 
 export type IAppProps = {
   env: t.IEnv;
-  name: string;
-  uri: string;
-  windows: t.ITypedSheetData<t.AppWindow>;
+  app: IAppData;
   style?: CssValue;
+  onClick?: AppClickEventHandler;
 };
+
+export type IAppData = {
+  uri: string;
+  typename: string;
+  props: t.App;
+  types: t.ITypedSheetRowType[];
+  windows: t.ITypedSheetData<t.AppWindow>;
+};
+
+export type AppClickEvent = { app: IAppData };
+export type AppClickEventHandler = (e: AppClickEvent) => void;
+
 export type IAppState = {};
 
 export class App extends React.PureComponent<IAppProps, IAppState> {
@@ -36,8 +47,17 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   }
 
   /**
-   * [Methods]
+   * [Properties]
    */
+  public get app() {
+    return this.props.app;
+  }
+
+  public get name() {
+    let name = this.app.props.name;
+    name = name.includes('/') ? name.split('/')[1] : name;
+    return name;
+  }
 
   /**
    * [Render]
@@ -68,15 +88,13 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       }),
     };
 
-    const name = this.props.name.replace(/^@platform\//, '');
-
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div {...css(styles.base, this.props.style)} onClick={this.onClick}>
         <Card style={styles.card}>
           <div>
             <div {...styles.title}>
               <div>module</div>
-              <div>{name}</div>
+              <div>{this.name}</div>
             </div>
             <div {...styles.body}>{this.renderWindows()}</div>
           </div>
@@ -86,7 +104,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   }
 
   private renderWindows() {
-    const { windows } = this.props;
+    const { windows } = this.app;
     if (!windows) {
       return null;
     }
@@ -97,13 +115,25 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     const elList = windows.rows.map((row, i) => {
       const { x, y, width, height } = row.props;
       const items: IPropListItem[] = [
+        { label: 'typename', value: row.typename },
         { label: 'uri', value: row.uri.toString() },
         { label: 'position', value: `${x} x ${y}` },
         { label: 'size', value: `${width} x ${height}` },
       ];
-      return <PropList key={i} title={`Window (${i + 1})`} items={items} />;
+      return <PropList key={i} items={items} />;
     });
 
     return <div {...styles.base}>{elList}</div>;
   }
+
+  /**
+   * [Handlers]
+   */
+  private onClick = () => {
+    const { onClick } = this.props;
+    if (onClick) {
+      const app = this.app;
+      onClick({ app });
+    }
+  };
 }

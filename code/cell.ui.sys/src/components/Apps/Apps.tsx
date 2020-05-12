@@ -3,12 +3,16 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, t } from '../../common';
-import { App } from './App';
+import { App, IAppData, AppClickEventHandler, AppClickEvent } from './App';
 
-export type IAppsProps = { env: t.IEnv; client: t.IClientTypesystem; style?: CssValue };
-export type IAppsState = { apps?: IAppItem[] };
-
-type IAppItem = { name: string; uri: string; windows: t.ITypedSheetData<t.AppWindow> };
+export { IAppData, AppClickEventHandler, AppClickEvent };
+export type IAppsProps = {
+  env: t.IEnv;
+  client: t.IClientTypesystem;
+  style?: CssValue;
+  onAppClick?: AppClickEventHandler;
+};
+export type IAppsState = { apps?: IAppData[] };
 
 export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
   public state: IAppsState = {};
@@ -55,10 +59,17 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     const sheet = await this.client.sheet('ns:sys.app');
     const apps = await sheet.data<t.App>('App').load();
 
-    const wait = apps.rows.map(async app => {
-      const uri = app.toString();
-      const windows = await app.props.windows.data();
-      const item: IAppItem = { name: app.props.name, uri, windows };
+    const wait = apps.rows.map(async row => {
+      const uri = row.toString();
+      const windows = await row.props.windows.data();
+      const item: IAppData = {
+        typename: row.typename,
+        types: row.types.list,
+        props: row.toObject(),
+        uri,
+        windows,
+      };
+      console.log('item', item);
       return item;
     });
 
@@ -85,8 +96,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     };
 
     const elList = apps.map((app, i) => {
-      const { uri, name, windows } = app;
-      return <App key={i} uri={uri} name={name} windows={windows} env={env} />;
+      return <App key={i} app={app} env={env} onClick={this.props.onAppClick} />;
     });
 
     return <div {...styles.base}>{elList}</div>;

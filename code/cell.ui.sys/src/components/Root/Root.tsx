@@ -2,13 +2,15 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Client, css, CssValue, t } from '../../common';
-import { Apps } from '../Apps';
+import { color, Client, css, CssValue, t } from '../../common';
+import { Apps, AppClickEvent, IAppData } from '../Apps';
 import { ObjectView, WindowTitleBar } from '../primitives';
 import { Server } from './Server';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
-export type IRootState = {};
+export type IRootState = {
+  json?: IAppData;
+};
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
@@ -39,7 +41,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const { uri } = this.props;
 
     const styles = {
-      base: css({ Absolute: 0 }),
+      base: css({
+        Absolute: 0,
+      }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
       body: css({
         Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
@@ -62,18 +66,24 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const styles = {
       base: css({
         flex: 1,
-        padding: 30,
         Flex: 'horizontal-stretch-stretch',
       }),
-      left: css({ width: 260 }),
-      center: css({ flex: 1, display: 'flex', PaddingX: 30 }),
-      right: css({}),
+      left: css({
+        width: 260,
+        paddingTop: 30,
+        paddingLeft: 30,
+      }),
+      center: css({ flex: 1, display: 'flex' }),
+      right: css({
+        paddingTop: 30,
+        paddingRight: 30,
+      }),
     };
 
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <Apps env={env} client={this.client} />
+          <Apps env={env} client={this.client} onAppClick={this.onAppClick} />
         </div>
         <div {...styles.center}>{this.renderCenter()}</div>
         <div {...styles.right}>
@@ -84,16 +94,51 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   private renderCenter() {
+    const { json } = this.state;
+    const MARGIN_LEFT = 48;
+
     const styles = {
-      base: css({ flex: 1 }),
+      base: css({
+        flex: 1,
+        position: 'relative',
+      }),
+      margin: css({
+        Absolute: [0, null, 0, 0],
+        borderLeft: `solid 1px #EF3469`,
+        opacity: 0.4,
+      }),
+      margin1: css({ left: MARGIN_LEFT }),
+      margin2: css({ left: MARGIN_LEFT + 2 }),
+      body: css({
+        Absolute: [0, 0, 0, MARGIN_LEFT + 30],
+        overflow: 'auto',
+        paddingTop: 30,
+      }),
     };
 
-    const data = { foo: 123 };
+    const data = json && {
+      typename: json?.typename,
+      props: json?.props,
+      types: json?.types,
+      raw: json,
+    };
 
     return (
       <div {...styles.base}>
-        <ObjectView data={data} />
+        <div {...css(styles.margin, styles.margin1)} />
+        <div {...css(styles.margin, styles.margin2)} />
+        <div {...styles.body}>
+          {data && <ObjectView data={data} expandPaths={['$', '$.props']} />}
+        </div>
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+
+  private onAppClick = (e: AppClickEvent) => {
+    this.state$.next({ json: e.app });
+  };
 }
