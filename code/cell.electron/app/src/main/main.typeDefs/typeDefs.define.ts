@@ -28,5 +28,12 @@ export function define() {
     .prop('x', p => p.type('number'))
     .prop('y', p => p.type('number'));
 
+  // def
+  //   .type('Boat')
+  //   .prop('uri', p => p.type('string')) // {app.name}
+  //   .prop('canonical', p => p.type('string'))
+  //   .prop('similar', p => p.type('string[]'))
+  //   .prop('image', p => p.type('string'));
+
   return def.toObject();
 }

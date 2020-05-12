@@ -2,18 +2,19 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, Client } from '../../common';
-import { WindowTitleBar, Card, ICardProps } from '../primitives';
+import { Client, css, CssValue, t } from '../../common';
+import { Apps } from '../Apps';
+import { WindowTitleBar } from '../primitives';
+import { Server } from './Server';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
-export type IRootState = {
-  serverInfo?: any;
-};
+export type IRootState = {};
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
   private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject<{}>();
+  private client = Client.typesystem(this.props.env.host);
 
   /**
    * [Lifecycle]
@@ -24,7 +25,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    this.load();
   }
 
   public componentWillUnmount() {
@@ -33,20 +33,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   /**
-   * Methods
-   */
-  public async load() {
-    const http = Client.http(this.props.env.host);
-    const res = await http.info();
-    console.log('res', res);
-    this.state$.next({ serverInfo: res.body });
-  }
-
-  /**
    * [Render]
    */
   public render() {
-    const { uri, env } = this.props;
+    const { uri } = this.props;
 
     const styles = {
       base: css({ Absolute: 0 }),
@@ -68,49 +58,30 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   private renderBody() {
+    const { env } = this.props;
     const styles = {
       base: css({
         flex: 1,
         padding: 30,
         Flex: 'horizontal-stretch-stretch',
       }),
-      left: css({}),
-      right: css({ flex: 1 }),
-      windows: css({
-        Flex: 'vertical',
-      }),
-      server: css({
-        fontSize: 11,
-      }),
+      left: css({ width: 300 }),
+      center: css({ flex: 1 }),
+      right: css({}),
     };
 
-    console.log('this.state.serverInfo', this.state.serverInfo);
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <div {...styles.windows}>
-            <InfoCard>Window: 1</InfoCard>
-            <InfoCard>Window: 2</InfoCard>
-            <InfoCard>Window: 3</InfoCard>
-            <InfoCard>Rowan 👋</InfoCard>
-          </div>
+          <Apps env={env} client={this.client} />
+        </div>
+        <div {...styles.center}>
+          <div />
         </div>
         <div {...styles.right}>
-          <InfoCard style={styles.server}>
-            <div>HTTP Server</div>
-            <div>{this.props.env.host}</div>
-            <div>{this.state.serverInfo && JSON.stringify(this.state.serverInfo)}</div>
-          </InfoCard>
+          <Server env={env} client={this.client} />
         </div>
       </div>
     );
   }
 }
-
-/**
- * [Helpers]
- */
-
-const InfoCard = (props?: ICardProps) => (
-  <Card minWidth={180} minHeight={50} userSelect={false} padding={10} margin={6} {...props} />
-);

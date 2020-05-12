@@ -66,6 +66,7 @@ export class Card extends React.PureComponent<ICardProps, ICardState> {
         minWidth: defaultValue(this.props.minWidth, 10),
         minHeight: defaultValue(this.props.minHeight, 10),
         boxShadow: `0 2px 6px 0 ${color.format(-0.08)}`,
+        overflow: 'hidden',
       }),
     };
     return <div {...css(styles.base, this.props.style)}>{this.props.children}</div>;
