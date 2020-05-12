@@ -2,11 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t } from '../../common';
+import { css, CssValue, t, Client } from '../../common';
 import { WindowTitleBar, Card, ICardProps } from '../primitives';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
-export type IRootState = {};
+export type IRootState = {
+  serverInfo?: any;
+};
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
@@ -22,11 +24,22 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.load();
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * Methods
+   */
+  public async load() {
+    const http = Client.http(this.props.env.host);
+    const res = await http.info();
+    console.log('res', res);
+    this.state$.next({ serverInfo: res.body });
   }
 
   /**
@@ -66,7 +79,12 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       windows: css({
         Flex: 'vertical',
       }),
+      server: css({
+        fontSize: 11,
+      }),
     };
+
+    console.log('this.state.serverInfo', this.state.serverInfo);
     return (
       <div {...styles.base}>
         <div {...styles.left}>
@@ -74,12 +92,14 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
             <InfoCard>Window: 1</InfoCard>
             <InfoCard>Window: 2</InfoCard>
             <InfoCard>Window: 3</InfoCard>
+            <InfoCard>Rowan 👋</InfoCard>
           </div>
         </div>
         <div {...styles.right}>
-          <InfoCard>
+          <InfoCard style={styles.server}>
             <div>HTTP Server</div>
             <div>{this.props.env.host}</div>
+            <div>{this.state.serverInfo && JSON.stringify(this.state.serverInfo)}</div>
           </InfoCard>
         </div>
       </div>

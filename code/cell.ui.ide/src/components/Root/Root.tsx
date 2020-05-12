@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { time, css, color, CssValue, t, Client } from '../../common';
+import { css, color, CssValue, t, Client } from '../../common';
 import { WindowTitleBar, WindowFooterBar } from '../primitives';
 import { Monaco } from '../Monaco';
 
@@ -12,9 +12,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
   private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject<{}>();
-
-  private monaco!: Monaco;
-  private monacoRef = (ref: Monaco) => (this.monaco = ref);
 
   /**
    * [Lifecycle]
@@ -60,7 +57,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         <WindowTitleBar style={styles.titlebar} address={uri} />
         <div {...styles.body}>
           <div {...styles.editor}>
-            <Monaco ref={this.monacoRef} />
+            <Monaco />
           </div>
           <WindowFooterBar>{this.renderFooter()}</WindowFooterBar>
         </div>
@@ -101,20 +98,22 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   private loadedTypeLibs: t.IDisposable[] = [];
 
   private handlePullTypes = async () => {
-    const addLib = (filename: string, content: string) => {
-      const ref = this.monaco.addLib(filename, content);
-      this.loadedTypeLibs.push(ref);
-    };
+    const monaco = await Monaco.api();
 
-    addLib(
-      'facts.d.ts',
-      `
-declare class Facts {
-  static next(): string;
-}
+    // const addLib = async (filename: string, content: string) => {
+    //   const ref = monaco.addLib(filename, content);
+    //   this.loadedTypeLibs.push(ref);
+    // };
 
-    `,
-    );
+    //     await addLib(
+    //       'facts.d.ts',
+    //       `
+    // declare class Facts {
+    //   static next(): string;
+    // }
+
+    //     `,
+    //     );
 
     const { env } = this.props;
     const http = Client.http(env.host);
@@ -128,10 +127,12 @@ declare class Facts {
 
     console.log(`declaration (${typeNs})\n\n`, ts.toString());
 
-    addLib('tmp.d.ts', ts.toString());
+    monaco.lib.add('tmp.d.ts', ts.toString());
   };
 
-  private handleClearTypes = () => {
-    this.loadedTypeLibs.forEach(ref => ref.dispose());
+  private handleClearTypes = async () => {
+    const monaco = await Monaco.api();
+    // this.loadedTypeLibs.forEach(ref => ref.dispose());
+    monaco.lib.clear();
   };
 }
