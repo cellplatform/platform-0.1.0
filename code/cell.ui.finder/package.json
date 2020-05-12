@@ -20,7 +20,9 @@
     "@platform/cell.ui": "0.1.4",
     "@platform/libs": "0.2.1",
     "@platform/polyfill": "0.0.1",
-    "@platform/react": "0.4.19"
+    "@platform/react": "0.4.19",
+    "@platform/ui.spinner": "0.0.135",
+    "pretty-bytes": "5.3.0"
   },
   "devDependencies": {
     "@platform/test": "0.1.7",

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t } from '../../common';
+import { css, CssValue, t, Client } from '../../common';
 import { WindowTitleBar } from '../primitives';
 import { Viewer } from '../Viewer';
 
@@ -13,6 +13,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
   private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject<{}>();
+  private client = Client.typesystem(this.props.env.host);
 
   /**
    * [Lifecycle]
@@ -51,7 +52,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       <div {...css(styles.base, this.props.style)}>
         <WindowTitleBar style={styles.titlebar} address={uri} />
         <div {...styles.body}>
-          <Viewer uri={uri} env={env} />
+          <Viewer uri={uri} env={env} client={this.client} />
         </div>
       </div>
     );

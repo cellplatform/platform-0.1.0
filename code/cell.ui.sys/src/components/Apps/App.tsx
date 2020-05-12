@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, t } from '../../common';
-import { Card, PropList, IPropListItem } from '../primitives';
+
+import { color, css, CssValue, t } from '../../common';
+import { Card, IPropListItem, PropList } from '../primitives';
 
 export type IAppProps = {
   env: t.IEnv;
@@ -27,7 +28,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-    // this.load();
   }
 
   public componentWillUnmount() {
@@ -39,17 +39,10 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
    * [Methods]
    */
 
-  // public async load() {
-  //   const { app } = this.props;
-  //   const windows = await app.windows.data();
-  //   this.state$.next({ windows });
-  // }
-
   /**
    * [Render]
    */
   public render() {
-    const { uri, windows } = this.props;
     const styles = {
       base: css({
         fontSize: 14,
@@ -59,17 +52,19 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
         marginBottom: 30,
       }),
       body: css({
-        PaddingX: 15,
         PaddingY: 10,
+        paddingLeft: 15,
+        paddingRight: 15,
       }),
       title: css({
         borderBottom: `solid 1px ${color.format(-0.2)}`,
-        PaddingX: 15,
-        PaddingY: 10,
+        PaddingX: 10,
+        PaddingY: 8,
         backgroundColor: color.format(-0.03),
         Flex: 'horizontal-stretch-spaceBetween',
         fontSize: 11,
         opacity: 0.5,
+        userSelect: 'none',
       }),
     };
 

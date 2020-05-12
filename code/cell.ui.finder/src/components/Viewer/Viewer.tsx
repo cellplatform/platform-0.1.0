@@ -3,16 +3,20 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, CssValue, t, Client, Schema } from '../../common';
 
-export type IViewerProps = { uri: string; env: t.IEnv; style?: CssValue };
+import { ViewerList, IViewerListItem, ViewerItemClickEvent } from './Viewer.List';
+import { ViewerInfo } from './Viewer.Info';
+
+export type IViewerProps = {
+  uri: string;
+  client: t.IClientTypesystem;
+  env: t.IEnv;
+  style?: CssValue;
+};
 export type IViewerState = {
   isDragOver?: boolean;
-  files?: FileItem[];
-  image?: FileItem;
+  items?: IViewerListItem[];
+  current?: IViewerListItem;
 };
-
-type FileItem = { filename: string; url: string };
-
-// const uri = 'cell:sys.tmp:A1';
 
 export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   public state: IViewerState = {};
@@ -39,13 +43,9 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   /**
    * [Properties]
    */
-  private get host() {
-    return this.props.env.host;
-  }
 
   private get client() {
-    const client = Client.http(this.host);
-    return client;
+    return this.props.client;
   }
 
   private get uri() {
@@ -56,17 +56,17 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
    * [Methods]
    */
   public async loadFiles() {
-    const client = this.client;
-    const urls = Schema.urls(this.host);
+    const http = this.client.http;
+    const urls = Schema.urls(http.origin);
 
-    const cell = client.cell(this.props.uri);
+    const cell = http.cell(this.props.uri);
     const res = await cell.files.list();
     if (res.ok) {
       const files = res.body.map(file => {
         const url = urls.file(file.uri).download.toString();
         return { filename: file.filename, url };
       });
-      this.state$.next({ files });
+      this.state$.next({ items: files });
     }
   }
 
@@ -74,6 +74,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
    * [Render]
    */
   public render() {
+    const { env } = this.props;
     const { isDragOver } = this.state;
     const styles = {
       base: css({
@@ -88,8 +89,18 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
         Flex: 'horizontal-stretch-stretch',
         opacity: isDragOver ? 0.1 : 1,
       }),
-      left: css({ width: 230, display: 'flex', position: 'relative' }),
-      right: css({ flex: 1, position: 'relative' }),
+      left: css({
+        position: 'relative',
+        width: 200,
+        Flex: 'horizontal-stretch-stretch',
+        borderRight: `solid 1px ${color.format(-0.1)}`,
+        boxSizing: 'border-box',
+      }),
+      center: css({ flex: 1, position: 'relative' }),
+      right: css({
+        width: 250,
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+      }),
     };
     return (
       <div
@@ -100,50 +111,22 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
         onDrop={this.onDrop}
       >
         <div {...styles.content}>
-          <div {...styles.left}>{this.renderFiles()}</div>
-          <div {...styles.right}>{this.renderImage()}</div>
+          <div {...styles.left}>
+            <ViewerList env={env} items={this.state.items || []} onClick={this.onItemClick} />
+          </div>
+          <div {...styles.center}>{this.renderImage()}</div>
+          <div {...styles.right}>
+            <ViewerInfo env={env} client={this.client} item={this.state.current} />
+          </div>
         </div>
         {isDragOver && this.renderDragOver()}
       </div>
     );
   }
 
-  private renderFiles() {
-    const { files = [] } = this.state;
-    if (files.length === 0) {
-      return null;
-    }
-    const styles = {
-      base: css({
-        flex: 1,
-        borderRight: `solid 1px ${color.format(-0.1)}`,
-        boxSizing: 'border-box',
-        // padding: 8,
-      }),
-      file: css({
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
-        PaddingY: 8,
-        PaddingX: 8,
-        cursor: 'pointer',
-      }),
-    };
-
-    const elFiles = files.map((file, i) => (
-      <div key={i} {...styles.file} onClick={this.fileClickHandler(file)}>
-        {file.filename}
-      </div>
-    ));
-
-    return (
-      <div {...styles.base}>
-        <div>{elFiles}</div>
-      </div>
-    );
-  }
-
   private renderImage() {
-    const { image } = this.state;
-    if (!image) {
+    const { current } = this.state;
+    if (!current || !this.isImage(current)) {
       return null;
     }
 
@@ -152,7 +135,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
         Absolute: 40,
       }),
       image: css({
-        backgroundImage: `url(${image.url})`,
+        backgroundImage: `url(${current.url})`,
         Absolute: 0,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
@@ -176,9 +159,11 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
       }),
       content: css({
         PaddingY: 10,
-        PaddingX: 35,
+        PaddingX: 60,
         border: `dashed 2px ${color.format(-0.1)}`,
         borderRadius: 6,
+        backgroundColor: color.format(1),
+        boxShadow: `0 0px 16px 0 ${color.format(-0.1)}`,
       }),
     };
     return (
@@ -191,19 +176,20 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   }
 
   /**
-   * Handlers
+   * [Helpers]
    */
 
-  private fileClickHandler = (file: FileItem) => {
-    return () => {
-      const extensions = ['.png', '.jpg'];
-      const isImage = extensions.some(ext => file.filename.endsWith(ext));
+  private isImage(item: IViewerListItem) {
+    const extensions = ['.png', '.jpg'];
+    return extensions.some(ext => item.filename.endsWith(ext));
+  }
 
-      this.state$.next({ image: isImage ? file : undefined });
+  /**
+   * [Handlers]
+   */
 
-      //
-      // console.log('filename', filename);
-    };
+  private onItemClick = (e: ViewerItemClickEvent) => {
+    this.state$.next({ current: e.item });
   };
 
   private dragHandler = (isDragOver: boolean) => {
@@ -217,8 +203,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
     e.preventDefault();
     this.state$.next({ isDragOver: false });
 
-    const cell = this.client.cell(this.uri);
-
+    const cell = this.client.http.cell(this.uri);
     const files = await toFiles(e);
 
     const payload = await Promise.all(

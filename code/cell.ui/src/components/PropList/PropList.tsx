@@ -5,7 +5,7 @@ import { css, color, CssValue, COLORS, defaultValue } from '../../common';
 
 export type IPropListProps = {
   title?: string;
-  items?: IPropListItem[];
+  items?: (IPropListItem | undefined)[];
   style?: CssValue;
 };
 export type IPropListState = {};
@@ -13,6 +13,7 @@ export type IPropListState = {};
 export type IPropListItem = {
   label: React.ReactNode;
   value?: React.ReactNode;
+  tooltip?: string;
 };
 
 export class PropList extends React.PureComponent<IPropListProps, IPropListState> {
@@ -85,6 +86,7 @@ export class PropList extends React.PureComponent<IPropListProps, IPropListState
       label: css({
         marginRight: 15,
         opacity: 0.4,
+        userSelect: 'none',
       }),
       value: css({
         flex: 1,
@@ -96,14 +98,16 @@ export class PropList extends React.PureComponent<IPropListProps, IPropListState
       }),
     };
 
-    const elItems = items.map((item, i) => {
-      return (
-        <div key={i} {...styles.item}>
-          <div {...styles.label}>{item.label}</div>
-          <div {...styles.value}>{item.value}</div>
-        </div>
-      );
-    });
+    const elItems = items
+      .filter(item => Boolean(item))
+      .map((item, i) => {
+        return (
+          <div key={i} {...styles.item} title={item?.tooltip}>
+            <div {...styles.label}>{item?.label}</div>
+            <div {...styles.value}>{item?.value}</div>
+          </div>
+        );
+      });
 
     return <div {...styles.base}>{elItems}</div>;
   }
