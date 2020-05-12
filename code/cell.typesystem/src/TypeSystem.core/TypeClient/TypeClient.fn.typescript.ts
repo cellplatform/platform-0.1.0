@@ -9,7 +9,7 @@ import { TypeTarget } from '../TypeTarget';
  */
 export function typescript(
   def: t.INsTypeDef | t.INsTypeDef[],
-  options: { header?: boolean; exports?: boolean } = {},
+  options: { header?: boolean; exports?: boolean; imports?: boolean } = {},
 ) {
   const defs = Array.isArray(def) ? def : [def];
   const api: t.ITypeClientTypescript = {
@@ -78,11 +78,11 @@ export function typescript(
 
       const typenames = R.uniq(defs.map(def => def.typename));
       const code = typenames.map(typename => toDeclaration(typename)).join('\n');
-      const imports = `import * as t from '@platform/cell.types';`;
+      const imports = options.imports !== false ? `import * as t from '@platform/cell.types';` : '';
 
       let res = '';
       res = !header ? res : `${res}\n${header}\n`;
-      res = !isRefUsed ? res : `${res}\n${imports}\n`;
+      res = !isRefUsed || !imports ? res : `${res}\n${imports}\n`;
       res = `${res}\n${code}`;
       res = res[0] === '\n' ? res.substring(1) : res; // NB: Trim first new-line.
       res = res.replace(/\n{3,}/g, '\n\n'); // NB: collapse any multi-line spaces.

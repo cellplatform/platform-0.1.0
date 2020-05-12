@@ -26,14 +26,15 @@ export function define() {
     .prop('width', p => p.type('number').default(1000))
     .prop('height', p => p.type('number').default(800))
     .prop('x', p => p.type('number'))
-    .prop('y', p => p.type('number'));
+    .prop('y', p => p.type('number'))
+    .prop('boats', p => p.type('/Boat[]').target('ref'));
 
-  // def
-  //   .type('Boat')
-  //   .prop('uri', p => p.type('string')) // {app.name}
-  //   .prop('canonical', p => p.type('string'))
-  //   .prop('similar', p => p.type('string[]'))
-  //   .prop('image', p => p.type('string'));
+  def
+    .type('Boat')
+    .prop('uri', p => p.type('string')) // {app.name}
+    .prop('canonical', p => p.type('string'))
+    .prop('similar', p => p.type('string[]'))
+    .prop('image', p => p.type('string'));
 
   return def.toObject();
 }

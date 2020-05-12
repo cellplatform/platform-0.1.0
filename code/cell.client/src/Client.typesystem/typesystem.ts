@@ -44,7 +44,10 @@ export function typesystem(input?: t.ClientOptions | string | number) {
     /**
      * Typescript generator for the given namespace(s).
      */
-    async typescript(ns: N | N[], options: { header?: boolean; exports?: boolean } = {}) {
+    async typescript(
+      ns: N | N[],
+      options: { header?: boolean; exports?: boolean; imports?: boolean } = {},
+    ) {
       const defs = await api.defs(ns);
       return TypeSystem.Client.typescript(defs, options);
     },

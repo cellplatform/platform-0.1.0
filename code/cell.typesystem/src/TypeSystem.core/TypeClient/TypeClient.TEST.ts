@@ -1051,6 +1051,14 @@ describe('TypeClient', () => {
         expect(res).to.include('declare type MyColor');
       });
 
+      it('toString: no "import" statements', async () => {
+        const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
+        const res1 = TypeClient.typescript(defs, {}).toString(); // NB: Default true.
+        const res2 = TypeClient.typescript(defs, { imports: false }).toString();
+        expect(res1).to.include(`import * as t from '@platform/cell.types';`);
+        expect(res2).to.not.include(`import * as t from '@platform/cell.types';`);
+      });
+
       it('toString: mutliple defs', async () => {
         const defs = (await TypeClient.load({ ns: 'foo.multi', fetch })).defs;
         const res = TypeClient.typescript(defs).toString();

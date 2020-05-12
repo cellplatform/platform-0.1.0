@@ -123,7 +123,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const typeNs = info.body.data.ns.props?.type?.implements || '';
 
     const client = Client.typesystem(env.host);
-    const ts = await client.typescript(typeNs, { exports: false });
+    const ts = await client.typescript(typeNs, { exports: false, imports: false });
 
     console.log(`declaration (${typeNs})\n\n`, ts.toString());
 
