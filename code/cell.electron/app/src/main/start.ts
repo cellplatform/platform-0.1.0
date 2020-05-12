@@ -52,7 +52,7 @@ export async function start() {
 
   if (ctx.apps.total === 0) {
     log.info('🐷HACK: waiting for new models to be saved');
-    await time.wait(1000);
+    await time.wait(1500);
     client.cache.clear();
     await ctx.apps.load();
   }

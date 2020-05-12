@@ -13,7 +13,7 @@ async function run(sourceDir: string, targetDir: string) {
 
 (async () => {
   const target = constants.paths.bundle;
-  await run('../cell.ui.sys', target.sys);
   await run('../cell.ui.finder', target.finder);
+  await run('../cell.ui.sys', target.sys);
   await run('../cell.ui.ide', target.ide);
 })();

@@ -6,6 +6,9 @@ import { css, color, CssValue, t, Client, Schema } from '../../common';
 import { ViewerList, IViewerListItem, ViewerItemClickEvent } from './Viewer.List';
 import { ViewerInfo } from './Viewer.Info';
 
+// @ts-ignore
+const pathSort = require('path-sort');
+
 export type IViewerProps = {
   uri: string;
   client: t.IClientTypesystem;
@@ -54,7 +57,9 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
 
   private get items() {
     const { items = [] } = this.state;
-    return items;
+    const names: string[] = pathSort(items.map(item => item.filename));
+    const res = names.map(name => items.find(item => item.filename === name));
+    return res as IViewerListItem[];
   }
 
   private get selectedIndex() {
@@ -237,6 +242,8 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
     const cell = this.client.http.cell(this.uri);
     const files = await toFiles(e);
 
+    // let first: string|undefined
+
     const payload = await Promise.all(
       files.map(async file => {
         const filename = file.name;
@@ -247,7 +254,12 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
 
     await cell.files.upload(payload);
 
-    this.loadFiles();
+    await this.loadFiles();
+
+    const first = this.items.find(item => item.filename === payload[0].filename);
+    if (first) {
+      this.setCurrent(first);
+    }
   };
 }
 

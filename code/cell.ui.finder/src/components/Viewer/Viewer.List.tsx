@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { COLORS, css, color, CssValue, t } from '../../common';
 
+
 export type IViewerListProps = {
   env: t.IEnv;
   items: IViewerListItem[];
@@ -38,10 +39,18 @@ export class ViewerList extends React.PureComponent<IViewerListProps, IViewerLis
   }
 
   /**
+   * [Properties]
+   */
+  public get items() {
+    const { items = [] } = this.props;
+    return items;
+  }
+
+  /**
    * [Render]
    */
   public render() {
-    const { items } = this.props;
+    const items = this.items;
     if (items.length === 0) {
       return null;
     }

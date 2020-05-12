@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, t, time, filesize } from '../../common';
+import { css, color, CssValue, t, time } from '../../common';
 
 import { IViewerListItem } from './Viewer.List';
 import { PropList, IPropListProps, Spinner } from '../primitives';
+const filesize = require('pretty-bytes');
 
 export type IViewerInfoProps = {
   env: t.IEnv;
@@ -66,7 +67,7 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
 
     const createdAt = time.day(file.createdAt);
     const modifiedAt = time.day(file.modifiedAt);
-    const format = 'ddd, MMM D, YYYY h:mm A';
+    const format = 'MMM D, YYYY h:mmA';
 
     const items: IPropListProps['items'] = [
       { label: 'Size', value: filesize(bytes || 0) },
