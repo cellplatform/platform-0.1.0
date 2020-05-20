@@ -4,7 +4,6 @@
   "scripts": {
     "test": "sh sh/test.sh"
   },
-  "repository": "uiharness/platform",
   "license": "MIT",
   "files": [],
   "private": true

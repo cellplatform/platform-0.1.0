@@ -41,6 +41,5 @@
     "!lib/test",
     "!*.TEST.{js, mjs, d.ts}"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

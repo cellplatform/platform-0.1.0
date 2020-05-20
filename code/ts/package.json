@@ -38,6 +38,5 @@
     "tsconfig.json",
     "tslint.json"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

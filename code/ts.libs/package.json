@@ -22,6 +22,5 @@
     "*.sh",
     "*.json"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

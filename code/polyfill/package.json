@@ -13,6 +13,5 @@
   "files": [
     "polyfill.js"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

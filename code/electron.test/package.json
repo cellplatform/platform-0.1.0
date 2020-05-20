@@ -24,7 +24,6 @@
     "@uiharness/electron": "0.7.4",
     "electron": "8.1.1"
   },
-  "repository": "uiharness/platform",
   "license": "MIT",
   "private": true
 }

@@ -50,6 +50,5 @@
     "!src.tmpl/node_modules",
     "!src.tmpl/tmp"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

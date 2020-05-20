@@ -25,6 +25,5 @@
     "lib",
     "*.sh"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }
