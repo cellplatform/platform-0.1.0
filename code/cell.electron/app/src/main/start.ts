@@ -2,7 +2,7 @@ import '../config';
 
 import { app } from 'electron';
 
-import { constants, log, Client, fs, ENV } from './common';
+import { constants, log, Client, fs, ENV, time } from './common';
 import { sys } from './main.sys';
 import { window } from './main.window';
 import * as server from './main.server';
@@ -30,7 +30,6 @@ if (app.isPackaged) {
 /**
  * Startup the application.
  */
-
 export async function start() {
   const prod = ENV.isProd;
 
@@ -43,9 +42,6 @@ export async function start() {
   await logMain({ host, log: log.file.path, db: paths.db, fs: paths.fs, preload: bundle.preload });
   await app.whenReady();
 
-  // TEMP 🐷
-  // refs.tray = tray.init({ host, def, ctx }).tray;
-
   // Initialize the system models.
   const ctx = await sys.init(client);
   log.info(`app modules: ${log.yellow(ctx.apps.total)}`);
@@ -53,6 +49,13 @@ export async function start() {
     log.info.gray(` • ${log.magenta(app.name)}`);
   });
   log.info();
+
+  if (ctx.apps.total === 0) {
+    log.info('🐷HACK: waiting for new models to be saved');
+    await time.wait(1500);
+    client.cache.clear();
+    await ctx.apps.load();
+  }
 
   await window.createAll({ ctx });
 
@@ -63,6 +66,10 @@ export async function start() {
       window.createOne({ ctx, name });
     });
   }
+
+  // TEMP 🐷
+  // refs.tray = tray.init({ host, def, ctx }).tray;
+  // console.log('client.cache', client.cache);
 }
 
 /**

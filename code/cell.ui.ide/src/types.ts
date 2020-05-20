@@ -1,1 +1,1 @@
-export type ISize = { width: number; height: number };
+export * from './types.monaco';

@@ -1,4 +1,6 @@
-const themeData = require('monaco-themes/themes/Monokai.json');
+import { t, constants } from '../../common';
+
+const { MONACO } = constants;
 
 export const DARK = {
   BG: '#202634',
@@ -6,7 +8,11 @@ export const DARK = {
   BG_GUTTER: '#262C3A',
 };
 
-export function theme(monaco: any) {
+/**
+ * Configure the editor theme.
+ */
+export function theme(monaco: t.IMonaco) {
+  const themeData = require('monaco-themes/themes/Monokai.json') as t.IMonacoStandaloneThemeData;
   themeData.colors = {
     ...themeData.colors,
 
@@ -27,6 +33,5 @@ export function theme(monaco: any) {
     // 'scrollbarSlider.hoverBackground': '#2B313E',
   };
 
-  const name = 'Ink';
-  monaco.editor.defineTheme(name, themeData);
+  monaco.editor.defineTheme(MONACO.THEME, themeData);
 }

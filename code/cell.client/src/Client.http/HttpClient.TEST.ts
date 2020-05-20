@@ -1,4 +1,4 @@
-import { expect, Http, t } from '../test';
+import { expect, Http, t, Uri } from '../test';
 import { HttpClient } from '..';
 
 /**
@@ -71,6 +71,27 @@ describe('HttpClient', () => {
     const client = HttpClient.create();
     const ns = client.ns('foo');
     expect(ns.toString()).to.eql('ns:foo'); // NB: prepended with "ns:"
+  });
+
+  it('client.ns (from CELL | ROW | COLUMN | FILE)', async () => {
+    const client = HttpClient.create();
+    const test = (input: string | t.INsUri | t.ICoordUri | t.IFileUri) => {
+      const ns = client.ns(input);
+      expect(ns.uri.toString()).to.eql('ns:foo');
+    };
+
+    test('foo');
+    test(' ns:foo ');
+    test('cell:foo:A1');
+    test('cell:foo:A');
+    test('cell:foo:1');
+    test('file:foo:abc');
+
+    test(Uri.ns('foo'));
+    test(Uri.cell('cell:foo:A1'));
+    test(Uri.row('cell:foo:1'));
+    test(Uri.column('cell:foo:A'));
+    test(Uri.file('file:foo:abc'));
   });
 
   it('client.cell', () => {

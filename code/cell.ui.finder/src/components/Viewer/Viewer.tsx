@@ -1,18 +1,25 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, t, Client, Schema } from '../../common';
 
-export type IViewerProps = { uri: string; env: t.IEnv; style?: CssValue };
+import { color, COLORS, css, CssValue, Schema, t } from '../../common';
+import { ViewerInfo } from './Viewer.Info';
+import { IViewerListItem, ViewerItemClickEvent, ViewerList } from './Viewer.List';
+
+// @ts-ignore
+const pathSort = require('path-sort');
+
+export type IViewerProps = {
+  uri: string;
+  client: t.IClientTypesystem;
+  env: t.IEnv;
+  style?: CssValue;
+};
 export type IViewerState = {
   isDragOver?: boolean;
-  files?: FileItem[];
-  image?: FileItem;
+  items?: IViewerListItem[];
+  current?: IViewerListItem;
 };
-
-type FileItem = { filename: string; url: string };
-
-// const uri = 'cell:sys.tmp:A1';
 
 export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   public state: IViewerState = {};
@@ -39,34 +46,57 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   /**
    * [Properties]
    */
-  private get host() {
-    return this.props.env.host;
-  }
 
   private get client() {
-    const client = Client.http(this.host);
-    return client;
+    return this.props.client;
   }
 
   private get uri() {
     return this.props.uri;
   }
 
+  private get items() {
+    const { items = [] } = this.state;
+    const names: string[] = pathSort(items.map(item => item.filename));
+    const res = names.map(name => items.find(item => item.filename === name));
+    return res as IViewerListItem[];
+  }
+
+  private get selectedIndex() {
+    const { current } = this.state;
+    if (current) {
+      return this.items.indexOf(current);
+    }
+    return -1;
+  }
+
   /**
    * [Methods]
    */
   public async loadFiles() {
-    const client = this.client;
-    const urls = Schema.urls(this.host);
+    const http = this.client.http;
+    const urls = Schema.urls(http.origin);
 
-    const cell = client.cell(this.props.uri);
+    const cell = http.cell(this.props.uri);
     const res = await cell.files.list();
     if (res.ok) {
-      const files = res.body.map(file => {
+      const items = res.body.map(file => {
         const url = urls.file(file.uri).download.toString();
         return { filename: file.filename, url };
       });
-      this.state$.next({ files });
+      this.state$.next({ items });
+      this.ensureSelection();
+    }
+  }
+
+  private setCurrent(current: IViewerListItem) {
+    this.state$.next({ current });
+  }
+
+  private ensureSelection() {
+    const items = this.items;
+    if (!this.state.current && items.length > 0) {
+      this.setCurrent(items[0]);
     }
   }
 
@@ -74,7 +104,9 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
    * [Render]
    */
   public render() {
+    const { env } = this.props;
     const { isDragOver } = this.state;
+    const items = this.items;
     const styles = {
       base: css({
         flex: 1,
@@ -88,8 +120,18 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
         Flex: 'horizontal-stretch-stretch',
         opacity: isDragOver ? 0.1 : 1,
       }),
-      left: css({ width: 230, display: 'flex', position: 'relative' }),
-      right: css({ flex: 1, position: 'relative' }),
+      left: css({
+        position: 'relative',
+        width: 200,
+        Flex: 'horizontal-stretch-stretch',
+        borderRight: `solid 1px ${color.format(-0.1)}`,
+        boxSizing: 'border-box',
+      }),
+      center: css({ flex: 1, position: 'relative' }),
+      right: css({
+        width: 250,
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+      }),
     };
     return (
       <div
@@ -100,50 +142,27 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
         onDrop={this.onDrop}
       >
         <div {...styles.content}>
-          <div {...styles.left}>{this.renderFiles()}</div>
-          <div {...styles.right}>{this.renderImage()}</div>
+          <div {...styles.left}>
+            <ViewerList
+              env={env}
+              items={items}
+              selectedIndex={this.selectedIndex}
+              onClick={this.onItemClick}
+            />
+          </div>
+          <div {...styles.center}>{this.renderImage()}</div>
+          <div {...styles.right}>
+            <ViewerInfo env={env} client={this.client} item={this.state.current} />
+          </div>
         </div>
         {isDragOver && this.renderDragOver()}
       </div>
     );
   }
 
-  private renderFiles() {
-    const { files = [] } = this.state;
-    if (files.length === 0) {
-      return null;
-    }
-    const styles = {
-      base: css({
-        flex: 1,
-        borderRight: `solid 1px ${color.format(-0.1)}`,
-        boxSizing: 'border-box',
-        // padding: 8,
-      }),
-      file: css({
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
-        PaddingY: 8,
-        PaddingX: 8,
-        cursor: 'pointer',
-      }),
-    };
-
-    const elFiles = files.map((file, i) => (
-      <div key={i} {...styles.file} onClick={this.fileClickHandler(file)}>
-        {file.filename}
-      </div>
-    ));
-
-    return (
-      <div {...styles.base}>
-        <div>{elFiles}</div>
-      </div>
-    );
-  }
-
   private renderImage() {
-    const { image } = this.state;
-    if (!image) {
+    const { current } = this.state;
+    if (!current || !this.isImage(current)) {
       return null;
     }
 
@@ -152,7 +171,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
         Absolute: 40,
       }),
       image: css({
-        backgroundImage: `url(${image.url})`,
+        backgroundImage: `url(${current.url})`,
         Absolute: 0,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
@@ -173,37 +192,46 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
         Absolute: 0,
         Flex: 'center-center',
         pointerEvents: 'none',
+        color: COLORS.DARK,
       }),
       content: css({
-        PaddingY: 10,
-        PaddingX: 35,
-        border: `dashed 2px ${color.format(-0.1)}`,
+        padding: 6,
+        borderRadius: 10,
+        backgroundColor: color.format(1),
+        boxShadow: `0 0px 16px 0 ${color.format(-0.1)}`,
+        fontSize: 26,
+      }),
+      border: css({
+        border: `dashed 2px ${color.format(-0.2)}`,
+        PaddingY: 30,
+        PaddingX: 100,
         borderRadius: 6,
       }),
     };
     return (
       <div {...styles.base}>
         <div {...styles.content}>
-          <div>Drop Files</div>
+          <div {...styles.border}>Drop Files</div>
         </div>
       </div>
     );
   }
 
   /**
-   * Handlers
+   * [Helpers]
    */
 
-  private fileClickHandler = (file: FileItem) => {
-    return () => {
-      const extensions = ['.png', '.jpg'];
-      const isImage = extensions.some(ext => file.filename.endsWith(ext));
+  private isImage(item: IViewerListItem) {
+    const extensions = ['.png', '.jpg'];
+    return extensions.some(ext => item.filename.endsWith(ext));
+  }
 
-      this.state$.next({ image: isImage ? file : undefined });
+  /**
+   * [Handlers]
+   */
 
-      //
-      // console.log('filename', filename);
-    };
+  private onItemClick = (e: ViewerItemClickEvent) => {
+    this.setCurrent(e.item);
   };
 
   private dragHandler = (isDragOver: boolean) => {
@@ -217,9 +245,10 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
     e.preventDefault();
     this.state$.next({ isDragOver: false });
 
-    const cell = this.client.cell(this.uri);
-
+    const cell = this.client.http.cell(this.uri);
     const files = await toFiles(e);
+
+    // let first: string|undefined
 
     const payload = await Promise.all(
       files.map(async file => {
@@ -231,7 +260,12 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
 
     await cell.files.upload(payload);
 
-    this.loadFiles();
+    await this.loadFiles();
+
+    const first = this.items.find(item => item.filename === payload[0].filename);
+    if (first) {
+      this.setCurrent(first);
+    }
   };
 }
 
@@ -241,7 +275,6 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
 
 async function toFiles(e: React.DragEvent) {
   const files: File[] = [];
-  // const res: { filename: string; data: ArrayBuffer }[] = [];
 
   if (e.dataTransfer.items) {
     // tslint:disable-next-line
@@ -250,9 +283,6 @@ async function toFiles(e: React.DragEvent) {
         const file = e.dataTransfer.items[i].getAsFile();
         if (file) {
           files.push(file);
-          // const filename = file.name;
-          // const data = await (file as any).arrayBuffer();
-          // res.push({ filename, data });
         }
       }
     }

@@ -205,6 +205,26 @@ export class Uri {
     cell: (input?: string) => strip(input, 'cell'),
     file: (input?: string) => strip(input, 'file'),
   };
+
+  /**
+   * Helpers for converting one URI type to another.
+   */
+  public static toNs(input: string | t.IUri) {
+    if (typeof input === 'string' && !input.includes(':')) {
+      return Uri.ns(input);
+    }
+    const obj = typeof input === 'string' ? Uri.parse(input).parts : input;
+    if (obj.type === 'NS') {
+      return obj;
+    }
+    if (obj.type === 'CELL' || obj.type === 'COLUMN' || obj.type === 'ROW') {
+      return Uri.ns((obj as t.ICoordUri).ns);
+    }
+    if (obj.type === 'FILE') {
+      return Uri.ns((obj as t.IFileUri).ns);
+    }
+    throw new Error(`A namespace cannot be derived from the uri (${input.toString()})`);
+  }
 }
 
 /**

@@ -7,7 +7,10 @@ import { TypeTarget } from '../TypeTarget';
 /**
  * Converts type definitions to valid typescript declarations.
  */
-export function typescript(def: t.INsTypeDef | t.INsTypeDef[], options: { header?: boolean } = {}) {
+export function typescript(
+  def: t.INsTypeDef | t.INsTypeDef[],
+  options: { header?: boolean; exports?: boolean; imports?: boolean } = {},
+) {
   const defs = Array.isArray(def) ? def : [def];
   const api: t.ITypeClientTypescript = {
     /**
@@ -45,6 +48,7 @@ export function typescript(def: t.INsTypeDef | t.INsTypeDef[], options: { header
         }
         return TypeScript.toDeclaration({
           typename,
+          exports: options.exports,
           types: def.columns,
           filterType: e => {
             const exists = addedTypenames.includes(e.typename);
@@ -74,11 +78,11 @@ export function typescript(def: t.INsTypeDef | t.INsTypeDef[], options: { header
 
       const typenames = R.uniq(defs.map(def => def.typename));
       const code = typenames.map(typename => toDeclaration(typename)).join('\n');
-      const imports = `import * as t from '@platform/cell.types';`;
+      const imports = options.imports !== false ? `import * as t from '@platform/cell.types';` : '';
 
       let res = '';
       res = !header ? res : `${res}\n${header}\n`;
-      res = !isRefUsed ? res : `${res}\n${imports}\n`;
+      res = !isRefUsed || !imports ? res : `${res}\n${imports}\n`;
       res = `${res}\n${code}`;
       res = res[0] === '\n' ? res.substring(1) : res; // NB: Trim first new-line.
       res = res.replace(/\n{3,}/g, '\n\n'); // NB: collapse any multi-line spaces.

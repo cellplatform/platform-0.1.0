@@ -16,6 +16,10 @@ export const bundle = async (args: {
   const { sourceDir, targetDir, distDir = 'dist', silent } = args;
   const copy = await copyLocal({ sourceDir });
 
+  if (!copy.ok) {
+    return { ok: false };
+  }
+
   if (!silent) {
     log.info();
     log.info.gray(`  module:            ${log.white(fs.basename(copy.sourceDir))}`);

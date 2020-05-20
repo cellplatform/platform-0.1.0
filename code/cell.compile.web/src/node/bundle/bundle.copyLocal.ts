@@ -1,13 +1,21 @@
 import { fs } from '@platform/fs';
-import { t } from '../../common';
+import { t, log } from '../../common';
 
 /**
  * Copies a module locally.
  */
 export async function copyLocal(args: { sourceDir: string }) {
   const { sourceDir } = args;
-  const pkg = await fs.file.loadAndParse<t.INpmPackageJson>(fs.join(sourceDir, 'package.json'));
+  const pkgPath = fs.join(sourceDir, 'package.json');
 
+  if (!(await fs.exists(pkgPath))) {
+    log.error('Package.json file not found');
+    log.info.gray(pkgPath);
+    log.info();
+    return { ok: false, files: [], sourceDir, targetDir: '' };
+  }
+
+  const pkg = await fs.file.loadAndParse<t.INpmPackageJson>(pkgPath);
   const targetDir = fs.resolve(`tmp/${pkg.name}`);
   await fs.ensureDir(targetDir);
 
@@ -22,5 +30,5 @@ export async function copyLocal(args: { sourceDir: string }) {
   const files = ['package.json', 'yarn.lock', 'src', 'sh', 'script.sh', 'script.ts'];
   await Promise.all(files.map(copy));
 
-  return { files, sourceDir, targetDir };
+  return { ok: true, files, sourceDir, targetDir };
 }

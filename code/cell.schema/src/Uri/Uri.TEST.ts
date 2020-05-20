@@ -631,4 +631,32 @@ describe('Uri', () => {
       test('ns:foo', 'ns:foo');
     });
   });
+
+  describe('toNs', () => {
+    it('converts to namespace', () => {
+      const test = (input: string | t.IUri) => {
+        const res = Uri.toNs(input);
+        expect(res.type).to.eql('NS');
+        expect(res.toString()).to.eql('ns:foo');
+      };
+
+      test('foo');
+      test(' ns:foo ');
+      test('cell:foo:A1');
+      test('cell:foo:A');
+      test('cell:foo:1');
+      test('file:foo:abc');
+
+      test(Uri.ns('foo'));
+      test(Uri.cell('cell:foo:A1'));
+      test(Uri.row('cell:foo:1'));
+      test(Uri.column('cell:foo:A'));
+      test(Uri.file('file:foo:abc'));
+    });
+
+    it('throws: non-supported URI', () => {
+      const fn = () => Uri.toNs('foo:bar:baz');
+      expect(fn).to.throw(/namespace cannot be derived/);
+    });
+  });
 });

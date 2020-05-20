@@ -22,7 +22,7 @@ export type IHttpClient = {
   response$: t.Observable<t.IHttpAfter>;
 
   info<T extends t.IResGetSysInfo>(): t.IHttpClientAsync<T>;
-  ns(input: string | t.INsUri): IHttpClientNs;
+  ns(input: string | t.INsUri | t.ICoordUri | t.IFileUri): IHttpClientNs;
   cell(input: string | t.ICellUri): IHttpClientCell;
   file(input: string | t.IFileUri): IHttpClientFile;
 };

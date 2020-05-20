@@ -2,16 +2,21 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t } from '../../common';
-import { WindowTitlebar, Card, ICardProps } from '../primitives';
+import { color, Client, css, CssValue, t } from '../../common';
+import { Apps, AppClickEvent, IAppData } from '../Apps';
+import { ObjectView, WindowTitleBar } from '../primitives';
+import { Server } from './Server';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
-export type IRootState = {};
+export type IRootState = {
+  json?: IAppData;
+};
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
   private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject<{}>();
+  private client = Client.typesystem(this.props.env.host);
 
   /**
    * [Lifecycle]
@@ -33,19 +38,21 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    * [Render]
    */
   public render() {
-    const { uri, env } = this.props;
+    const { uri } = this.props;
 
     const styles = {
-      base: css({ Absolute: 0 }),
+      base: css({
+        Absolute: 0,
+      }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
       body: css({
-        Absolute: [WindowTitlebar.HEIGHT, 0, 0, 0],
+        Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         display: 'flex',
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <WindowTitlebar style={styles.titlebar} text={uri} />
+        <WindowTitleBar style={styles.titlebar} address={uri} />
         <div {...styles.body}>
           {this.renderBody()}
           <div />
@@ -55,39 +62,83 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   private renderBody() {
+    const { env } = this.props;
     const styles = {
       base: css({
         flex: 1,
-        padding: 30,
         Flex: 'horizontal-stretch-stretch',
       }),
-      left: css({}),
-      right: css({ flex: 1 }),
-      windows: css({
-        Flex: 'vertical',
+      left: css({
+        width: 260,
+        paddingTop: 30,
+        paddingLeft: 30,
+      }),
+      center: css({ flex: 1, display: 'flex' }),
+      right: css({
+        paddingTop: 30,
+        paddingRight: 30,
       }),
     };
+
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <div {...styles.windows}>
-            <InfoCard>Window: 1</InfoCard>
-            <InfoCard>Window: 2</InfoCard>
-            <InfoCard>Window: 3</InfoCard>
-          </div>
+          <Apps env={env} client={this.client} onAppClick={this.onAppClick} />
         </div>
+        <div {...styles.center}>{this.renderCenter()}</div>
         <div {...styles.right}>
-          <div />
+          <Server env={env} client={this.client} />
         </div>
       </div>
     );
   }
+
+  private renderCenter() {
+    const { json } = this.state;
+    const MARGIN_LEFT = 48;
+
+    const styles = {
+      base: css({
+        flex: 1,
+        position: 'relative',
+      }),
+      margin: css({
+        Absolute: [0, null, 0, 0],
+        borderLeft: `solid 1px #EF3469`,
+        opacity: 0.4,
+      }),
+      margin1: css({ left: MARGIN_LEFT }),
+      margin2: css({ left: MARGIN_LEFT + 2 }),
+      body: css({
+        Absolute: [0, 0, 0, MARGIN_LEFT + 30],
+        overflow: 'auto',
+        paddingTop: 30,
+      }),
+    };
+
+    const data = json && {
+      typename: json?.typename,
+      props: json?.props,
+      types: json?.types,
+      raw: json,
+    };
+
+    return (
+      <div {...styles.base}>
+        <div {...css(styles.margin, styles.margin1)} />
+        <div {...css(styles.margin, styles.margin2)} />
+        <div {...styles.body}>
+          {data && <ObjectView data={data} expandPaths={['$', '$.props']} />}
+        </div>
+      </div>
+    );
+  }
+
+  /**
+   * [Handlers]
+   */
+
+  private onAppClick = (e: AppClickEvent) => {
+    this.state$.next({ json: e.app });
+  };
 }
-
-/**
- * [Helpers]
- */
-
-const InfoCard = (props?: ICardProps) => (
-  <Card minWidth={180} minHeight={50} userSelect={false} padding={10} margin={6} {...props} />
-);

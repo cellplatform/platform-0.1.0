@@ -78,10 +78,10 @@ export class HttpClient implements t.IHttpClient {
     return util.fromHttpResponse(res).toClientResponse<T>();
   }
 
-  public ns(input: string | t.INsUri) {
+  public ns(input: string | t.INsUri | t.ICoordUri | t.IFileUri) {
     const http = this.http;
     const urls = this.urls;
-    const uri = Uri.ns(input);
+    const uri = Uri.toNs(input);
     return HttpClientNs.create({ uri, urls, http });
   }
 

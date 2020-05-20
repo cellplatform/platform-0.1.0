@@ -21,7 +21,7 @@ export function init(args: { windowUri: string; cache: t.IEnv['cache'] }) {
     // const out = isSelf ? { ...e, isSelf } : e;
     console.log('preload | 🌼ipc event:', e);
 
-    // event$.next(e);
+    event$.next(e as any); // TEMP 🐷HACK
   });
 
   // Finish up.

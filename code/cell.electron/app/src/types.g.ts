@@ -6,7 +6,7 @@
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.34
+ *    @platform/cell.typesystem@0.0.39
  * 
  * Notes: 
  * 
@@ -39,4 +39,12 @@ export declare type AppWindow = {
   height: number;
   x: number;
   y: number;
+  boats: Boat[];
+};
+
+export declare type Boat = {
+  uri: string;
+  canonical: string;
+  similar: string[];
+  image: string;
 };

@@ -1,6 +1,6 @@
 import { Client } from '..';
 import { HttpClient } from '../Client.http';
-import { expect, t } from '../test';
+import { expect, t, MemoryCache } from '../test';
 
 /**
  * NOTE:
@@ -27,8 +27,23 @@ describe('Client.typesystem', () => {
   });
 
   it('uses given [IHttpClient]', () => {
-    const client = HttpClient.create();
-    const res = Client.typesystem({ http: client });
-    expect(res.http).to.equal(client);
+    const http = HttpClient.create();
+    const res = Client.typesystem({ http });
+    expect(res.http).to.equal(http);
+  });
+
+  describe('cache', () => {
+    it('create cache', () => {
+      const http = HttpClient.create();
+      const res = Client.typesystem({ http });
+      expect(res.cache).to.be.an.instanceof(MemoryCache);
+    });
+
+    it('use given cache', () => {
+      const http = HttpClient.create();
+      const cache = MemoryCache.create();
+      const res = Client.typesystem({ http, cache });
+      expect(res.cache).to.equal(cache);
+    });
   });
 });
