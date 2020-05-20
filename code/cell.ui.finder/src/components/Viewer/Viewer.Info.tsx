@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, t, time } from '../../common';
+import { COLORS, css, color, CssValue, t, time } from '../../common';
 
 import { IViewerListItem } from './Viewer.List';
 import { PropList, IPropListProps, Spinner } from '../primitives';
+
 const filesize = require('pretty-bytes');
 
 export type IViewerInfoProps = {
@@ -159,42 +160,64 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
     const items = !isLoading ? this.items : [];
 
     const styles = {
-      base: css({
-        boxSizing: 'border-box',
-      }),
-      iconOuter: css({
+      base: css({ boxSizing: 'border-box' }),
+      thumbnail: css({
         Flex: 'vertical-center-center',
         marginBottom: 26,
-      }),
-      icon: css({
-        width: 90,
-        height: 90,
-        backgroundColor: color.format(1),
-        borderRadius: 8,
-        border: `solid 1px ${color.format(-0.15)}`,
-        backgroundImage: `url(${this.url})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'contain',
-        backgroundPosition: 'center center',
-        boxShadow: `0 2px 8px 0 ${color.format(-0.06)}`,
-      }),
-      mime: css({
-        textAlign: 'center',
-        fontSize: 11,
-        marginTop: 6,
-        opacity: 0.35,
       }),
     };
 
     return (
       <div {...styles.base}>
-        <div {...styles.iconOuter}>
-          <div>
-            <div {...styles.icon} />
-          </div>
-          <div {...styles.mime}>{file.props.mimetype}</div>
-        </div>
+        <div {...styles.thumbnail}>{this.renderThumbnail()}</div>
         <PropList title={item.filename} items={items} />
+      </div>
+    );
+  }
+
+  private renderThumbnail() {
+    const { file } = this.state;
+    if (!file) {
+      return null;
+    }
+
+    const styles = {
+      base: css({
+        width: 120,
+        backgroundColor: color.format(-0.03),
+        borderRadius: 4,
+        border: `solid 1px ${color.format(-0.08)}`,
+        // boxShadow: `0 2px 8px 0 ${color.format(-0.06)}`,
+        Flex: 'vertical-center-start',
+        boxSizing: 'border-box',
+      }),
+      icon: css({
+        marginTop: 12,
+        width: 90,
+        height: 90,
+        backgroundColor: color.format(1),
+        borderRadius: 3,
+        border: `solid 1px ${color.format(-0.15)}`,
+        backgroundImage: `url(${this.url})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center center',
+        boxShadow: `inset 0px 1px 4px ${color.format(-0.1)}`,
+      }),
+      label: css({
+        textAlign: 'center',
+        fontSize: 11,
+        opacity: 0.35,
+        MarginY: 8,
+        textShadow: `1px 1px 1px ${color.format(1)}`,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div>
+          <div {...styles.icon} />
+        </div>
+        <div {...styles.label}>{file.props.mimetype}</div>
       </div>
     );
   }
