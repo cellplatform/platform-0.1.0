@@ -59,11 +59,12 @@ export class TestText extends React.PureComponent<ITestTextProps, ITestTextState
         marginBottom: 15,
       }),
       text: css({ MarginX: 30 }),
+      color: css({ color: 'red' }),
     };
     return (
       <div {...styles.base}>
         <div {...styles.title}>{title}</div>
-        <Text {...props} style={styles.text}>
+        <Text {...props} style={css(styles.text, styles.color)}>
           {LOREM}
         </Text>
       </div>

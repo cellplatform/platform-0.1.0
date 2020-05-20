@@ -2,17 +2,17 @@ import * as React from 'react';
 
 import {
   color,
-  style,
+  constants,
   css,
   CssValue,
+  defaultValue,
   ITreeNode,
   mouse,
+  style,
   t,
   tree,
   TreeNodeMouseEvent,
   TreeNodeMouseEventHandler,
-  defaultValue,
-  constants,
 } from '../../common';
 import * as themes from '../../themes';
 import { Icons, IIcon } from '../Icons';

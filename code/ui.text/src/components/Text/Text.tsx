@@ -59,6 +59,7 @@ export class Text extends React.PureComponent<ITextProps> {
         ...toTextCss(this.props),
       }),
     };
+
     return (
       <div
         className={this.props.className}
