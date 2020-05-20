@@ -50,8 +50,12 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
   /**
    * [Properties]
    */
+  public get url() {
+    return this.props.item?.url || '';
+  }
+
   public get uri() {
-    const url = this.props.item?.url;
+    const url = this.url;
     return url ? url.substring(url.lastIndexOf('/') + 1) : '';
   }
 
@@ -70,8 +74,7 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
     const format = 'MMM D, YYYY h:mmA';
 
     const items: IPropListProps['items'] = [
-      { label: 'Filesize', value: filesize(bytes || 0) },
-      // { label: 'Kind', value: mimetype },
+      { label: 'File Size', value: filesize(bytes || 0) },
       { label: 'Created', value: createdAt.format(format) },
       { label: 'Modified', value: modifiedAt.format(format) },
       filehash ? { label: 'Hash (SHA-256)', value: hash, tooltip: filehash } : undefined,
@@ -104,13 +107,11 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
    * [Render]
    */
   public render() {
-    const { item } = this.props;
     const styles = {
       base: css({
         position: 'relative',
         boxSizing: 'border-box',
-        padding: 15,
-        paddingTop: 20,
+        padding: 20,
       }),
     };
 
@@ -139,8 +140,6 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
       </div>
     );
 
-    // const items = !isLoading ? this.items : [];
-
     return (
       <div {...styles.base}>
         {this.renderPropList()}
@@ -164,22 +163,26 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
         boxSizing: 'border-box',
       }),
       iconOuter: css({
-        // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         Flex: 'vertical-center-center',
-        marginBottom: 20,
+        marginBottom: 26,
       }),
       icon: css({
-        width: 60,
-        height: 60,
-        backgroundColor: color.format(-0.15),
+        width: 90,
+        height: 90,
+        backgroundColor: color.format(1),
         borderRadius: 8,
-        border: `solid 4px ${color.format(-0.03)}`,
+        border: `solid 1px ${color.format(-0.15)}`,
+        backgroundImage: `url(${this.url})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center center',
+        boxShadow: `0 2px 8px 0 ${color.format(-0.06)}`,
       }),
       mime: css({
         textAlign: 'center',
-        fontSize: 12,
-        marginTop: 4,
-        opacity: 0.4,
+        fontSize: 11,
+        marginTop: 6,
+        opacity: 0.35,
       }),
     };
 

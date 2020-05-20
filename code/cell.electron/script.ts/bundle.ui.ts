@@ -11,9 +11,32 @@ async function run(sourceDir: string, targetDir: string) {
   log.info.gray('━'.repeat(60));
 }
 
+async function bundleModules(modules: { sourceDir: string; targetDir: string }[]) {
+  const logList = () => {
+    modules.forEach(item => {
+      const name = fs.basename(item.sourceDir);
+      log.info.gray(`module: ${log.green(name)}`);
+    });
+    log.info();
+  };
+
+  logList();
+
+  for (const item of modules) {
+    const { sourceDir, targetDir } = item;
+    await run(sourceDir, targetDir);
+  }
+
+  log.info(`✨Bundled`);
+  logList();
+}
+
 (async () => {
   const target = constants.paths.bundle;
-  await run('../cell.ui.finder', target.finder);
-  await run('../cell.ui.sys', target.sys);
-  await run('../cell.ui.ide', target.ide);
+
+  await bundleModules([
+    { sourceDir: '../cell.ui.finder', targetDir: target.finder },
+    { sourceDir: '../cell.ui.sys', targetDir: target.sys },
+    { sourceDir: '../cell.ui.ide', targetDir: target.ide },
+  ]);
 })();

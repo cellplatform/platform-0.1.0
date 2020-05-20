@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, t, Client, Schema } from '../../common';
 
-import { ViewerList, IViewerListItem, ViewerItemClickEvent } from './Viewer.List';
+import { color, COLORS, css, CssValue, Schema, t } from '../../common';
 import { ViewerInfo } from './Viewer.Info';
+import { IViewerListItem, ViewerItemClickEvent, ViewerList } from './Viewer.List';
 
 // @ts-ignore
 const pathSort = require('path-sort');
@@ -192,20 +192,26 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
         Absolute: 0,
         Flex: 'center-center',
         pointerEvents: 'none',
+        color: COLORS.DARK,
       }),
       content: css({
-        PaddingY: 10,
-        PaddingX: 60,
-        border: `dashed 2px ${color.format(-0.1)}`,
-        borderRadius: 6,
+        padding: 6,
+        borderRadius: 10,
         backgroundColor: color.format(1),
         boxShadow: `0 0px 16px 0 ${color.format(-0.1)}`,
+        fontSize: 26,
+      }),
+      border: css({
+        border: `dashed 2px ${color.format(-0.2)}`,
+        PaddingY: 30,
+        PaddingX: 100,
+        borderRadius: 6,
       }),
     };
     return (
       <div {...styles.base}>
         <div {...styles.content}>
-          <div>Drop Files</div>
+          <div {...styles.border}>Drop Files</div>
         </div>
       </div>
     );

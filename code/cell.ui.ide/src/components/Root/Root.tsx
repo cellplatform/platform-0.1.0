@@ -86,7 +86,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       <div {...styles.base}>
         <div onClick={this.handlePullTypes}>Pull Types</div>
         <div {...styles.div} />
-        <div onClick={this.handleClearTypes}>Clear Types</div>
+        <div onClick={this.handleUnloadTypes}>Unload Types</div>
       </div>
     );
   }
@@ -132,7 +132,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     monaco.lib.add('tmp.d.ts', text);
   };
 
-  private handleClearTypes = async () => {
+  private handleUnloadTypes = async () => {
     const monaco = await Monaco.api();
     // this.loadedTypeLibs.forEach(ref => ref.dispose());
     monaco.lib.clear();

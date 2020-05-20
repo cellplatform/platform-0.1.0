@@ -22,7 +22,7 @@
     "@platform/polyfill": "0.0.1",
     "@platform/react": "0.4.19",
     "@platform/ui.spinner": "0.0.135",
-    "path-sort": "^0.1.0",
+    "path-sort": "0.1.0",
     "pretty-bytes": "5.3.0"
   },
   "devDependencies": {
@@ -35,6 +35,9 @@
     "!lib/test",
     "!*.TEST.{js, mjs, d.ts}"
   ],
+  "resolutions": {
+
+  },
   "license": "MIT",
   "private": true
 }
