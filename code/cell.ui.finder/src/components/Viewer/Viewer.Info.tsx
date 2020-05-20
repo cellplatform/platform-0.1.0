@@ -160,10 +160,12 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
     const items = !isLoading ? this.items : [];
 
     const styles = {
-      base: css({ boxSizing: 'border-box' }),
+      base: css({
+        boxSizing: 'border-box',
+      }),
       thumbnail: css({
         Flex: 'vertical-center-center',
-        marginBottom: 26,
+        marginBottom: 36,
       }),
     };
 
@@ -183,11 +185,11 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
 
     const styles = {
       base: css({
+        position: 'relative',
         width: 120,
         backgroundColor: color.format(-0.03),
         borderRadius: 4,
-        border: `solid 1px ${color.format(-0.08)}`,
-        // boxShadow: `0 2px 8px 0 ${color.format(-0.06)}`,
+        border: `solid 1px ${color.format(-0.12)}`,
         Flex: 'vertical-center-start',
         boxSizing: 'border-box',
       }),
@@ -202,7 +204,7 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'contain',
         backgroundPosition: 'center center',
-        boxShadow: `inset 0px 1px 4px ${color.format(-0.1)}`,
+        boxShadow: `inset 0px 1px 3px ${color.format(-0.08)}`,
       }),
       label: css({
         textAlign: 'center',
@@ -211,9 +213,17 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
         MarginY: 8,
         textShadow: `1px 1px 1px ${color.format(1)}`,
       }),
+      shadow: css({
+        Absolute: [null, 0, -18, 0],
+        filter: `blur(4px)`,
+        backgroundColor: color.format(-0.1),
+        height: 5,
+        borderRadius: '100%',
+      }),
     };
     return (
       <div {...styles.base}>
+        <div {...styles.shadow} />
         <div>
           <div {...styles.icon} />
         </div>
