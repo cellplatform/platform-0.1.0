@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { css, color } from '../common';
+import { css, style, color } from '../common';
 
 export type ITestProps = {};
 
-css.global({
+style.global({
   body: {
     color: 'white',
     background: '#ED3C6E',
@@ -22,11 +22,17 @@ export class Test extends React.PureComponent<ITestProps> {
         PaddingX: 30,
         PaddingY: 40,
         fontFamily: undefined,
+        border: `solid 1px ${color.format(0.9)}`,
+      }),
+      inner: css({
+        backgroundColor: 'rgba(255, 0, 0, 0.4)',
+        MarginX: 30,
+        MarginY: 50,
       }),
       sample: css({
         Absolute: [30, 50, null, null],
         border: `dashed 1px ${color.format(-0.3)}`,
-        backgroundColor: 'rgba(255, 0, 0, 0.4)' /* RED */,
+        backgroundColor: 'rgba(255, 0, 0, 0.4)',
         width: 250,
         height: 120,
         padding: 15,
@@ -34,8 +40,9 @@ export class Test extends React.PureComponent<ITestProps> {
         boxShadow: `0 2px 14px 0 ${color.format(-0.1)}`,
       }),
     };
+    // NB: Nested `css(...)` calls are correctly unfurled and applied.
     return (
-      <div {...styles.base}>
+      <div {...css(styles.base, css(styles.inner))}>
         <div {...styles.sample}>Sample</div>
       </div>
     );

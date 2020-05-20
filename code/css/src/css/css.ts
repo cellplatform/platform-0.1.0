@@ -351,9 +351,26 @@ export const transform = (
  * Helpers for constructing a CSS object.
  * NB: This doesn't *actually* return React.CSSProperties
  */
-const formatCss = (...styles: Array<t.CssProps | t.CssValue | t.Falsy>): t.CssValue => {
-  return jss.css(...styles.map(transform));
+const isJss = (input: any) =>
+  typeof input === 'object' && typeof input.hash === 'number' && Array.isArray(input.values);
+
+const flattenJss = (input: S[]) => {
+  const output: any[] = [];
+  input.forEach(item => {
+    if (isJss(item)) {
+      flattenJss((item as any).values).forEach(child => output.push(child)); // <== RECURSION 🌳
+    } else {
+      output.push(transform(item));
+    }
+  });
+  return output;
 };
 
+type S = t.CssProps | t.CssValue | t.Falsy;
+const formatCss = (...styles: S[]): t.CssValue => jss.css(...flattenJss(styles));
+
+/**
+ * Export.
+ */
 (formatCss as any).image = image;
 export const format = formatCss as t.CssFormat;
