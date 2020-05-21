@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts",
-  "version": "3.7.20",
+  "version": "3.7.28",
   "description": "TypesScript build, prepare and publish toolchain.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -24,17 +24,18 @@
     "clean": "sh sh/clean.sh"
   },
   "dependencies": {
-    "@platform/exec": "0.2.53",
-    "@platform/fs": "0.5.12",
+    "@platform/exec": "0.2.54",
+    "@platform/fs": "0.5.13",
     "@platform/libs": "0.2.1",
-    "@platform/ts.libs": "3.8.4"
+    "@platform/ts.libs": "3.9.2"
   },
   "devDependencies": {
-    "@platform/test": "0.1.7"
+    "@platform/test": "0.1.8"
   },
   "files": [
     "lib",
     "bin.js",
+    "lint.js",
     "tsconfig.json",
     "tslint.json"
   ],

@@ -16,4 +16,4 @@ export class Thing {
 }
 
 const instance = new Foo();
-console.log(instance); // tslint:disable-line
+console.log(instance); // eslint-disable-line

@@ -4,10 +4,7 @@ import { ITypescriptConfig } from '../types';
 /**
  * Finds the cloest directory that contains the given child folder/file.
  */
-export async function closestParentOf(
-  child: string,
-  cwd: string = '.',
-): Promise<string | undefined> {
+export async function closestParentOf(child: string, cwd = '.'): Promise<string | undefined> {
   cwd = fs.resolve(cwd);
 
   if ((await fs.readdir(cwd)).includes(child)) {
