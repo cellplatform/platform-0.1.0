@@ -37,7 +37,7 @@ describe('TypedSheet', () => {
       const { sheet } = await testMySheet();
 
       let fired = 0;
-      sheet.dispose$.subscribe(e => fired++);
+      sheet.dispose$.subscribe((e) => fired++);
 
       expect(sheet.isDisposed).to.eql(false);
       expect(sheet.state.isDisposed).to.eql(false);
@@ -111,12 +111,12 @@ describe('TypedSheet', () => {
   describe('TypedSheet.types', () => {
     it('single type', async () => {
       const { sheet } = await testMySheet();
-      expect(sheet.types.map(type => type.typename)).to.eql(['MyRow']);
+      expect(sheet.types.map((type) => type.typename)).to.eql(['MyRow']);
     });
 
     it('multiple types', async () => {
       const { sheet } = await testMyMultiSheet();
-      expect(sheet.types.map(type => type.typename)).to.eql(['MyOne', 'MyTwo']);
+      expect(sheet.types.map((type) => type.typename)).to.eql(['MyOne', 'MyTwo']);
     });
 
     it('calculated once (lazy evaluation, shared instance)', async () => {
@@ -173,12 +173,12 @@ describe('TypedSheet', () => {
       const cursor2 = sheet.data('MyTwo');
 
       expect(cursor1.typename).to.eql('MyOne');
-      expect(cursor1.types.map(def => def.prop)).to.eql(['title', 'foo']);
-      expect(cursor1.types.map(def => def.column)).to.eql(['A', 'B']);
+      expect(cursor1.types.map((def) => def.prop)).to.eql(['title', 'foo']);
+      expect(cursor1.types.map((def) => def.column)).to.eql(['A', 'B']);
 
       expect(cursor2.typename).to.eql('MyTwo');
-      expect(cursor2.types.map(def => def.prop)).to.eql(['bar', 'name']);
-      expect(cursor2.types.map(def => def.column)).to.eql(['B', 'C']);
+      expect(cursor2.types.map((def) => def.prop)).to.eql(['bar', 'name']);
+      expect(cursor2.types.map((def) => def.column)).to.eql(['B', 'C']);
     });
 
     it('create: custom range (auto correct)', async () => {
@@ -310,8 +310,8 @@ describe('TypedSheet', () => {
 
       const fired: t.TypedSheetEvent[] = [];
       sheet.event$
-        .pipe(filter(e => e.type === 'SHEET/loading' || e.type === 'SHEET/loaded'))
-        .subscribe(e => fired.push(e));
+        .pipe(filter((e) => e.type === 'SHEET/loading' || e.type === 'SHEET/loaded'))
+        .subscribe((e) => fired.push(e));
 
       await cursor.load();
 
@@ -335,8 +335,8 @@ describe('TypedSheet', () => {
       const cursor = sheet.data('MyRow');
       const fired: t.TypedSheetEvent[] = [];
       sheet.event$
-        .pipe(filter(e => e.type === 'SHEET/loading' || e.type === 'SHEET/loaded'))
-        .subscribe(e => fired.push(e));
+        .pipe(filter((e) => e.type === 'SHEET/loading' || e.type === 'SHEET/loaded'))
+        .subscribe((e) => fired.push(e));
 
       await Promise.all([cursor.load(), cursor.load(), cursor.load()]);
       expect(fired.length).to.eql(2); // NB: Would be 6 if load de-duping wan't implemented.
@@ -347,8 +347,8 @@ describe('TypedSheet', () => {
       const cursor = sheet.data('MyRow');
       const fired: t.TypedSheetEvent[] = [];
       sheet.event$
-        .pipe(filter(e => e.type === 'SHEET/loading' || e.type === 'SHEET/loaded'))
-        .subscribe(e => fired.push(e));
+        .pipe(filter((e) => e.type === 'SHEET/loading' || e.type === 'SHEET/loaded'))
+        .subscribe((e) => fired.push(e));
 
       await Promise.all([
         cursor.load(),
@@ -418,12 +418,12 @@ describe('TypedSheet', () => {
         const { sheet } = await testMySheet();
         const cursor = sheet.data('MyRow');
 
-        const res1 = cursor.map(row => row.title);
+        const res1 = cursor.map((row) => row.title);
         expect(res1).to.eql([]);
 
         await cursor.load();
 
-        const res2 = cursor.map(row => row.title);
+        const res2 = cursor.map((row) => row.title);
         expect(res2).to.eql([
           'One',
           'Two',
@@ -444,7 +444,7 @@ describe('TypedSheet', () => {
       it('filter', async () => {
         const { sheet } = await testMySheet();
         const cursor = await sheet.data('MyRow').load();
-        const res = cursor.filter(r => r.title.endsWith('e')).map(r => r.props.title);
+        const res = cursor.filter((r) => r.title.endsWith('e')).map((r) => r.props.title);
         expect(res).to.eql(['One', 'Nine']);
 
         const indexes: number[] = [];
@@ -459,8 +459,8 @@ describe('TypedSheet', () => {
         const { sheet } = await testMySheet();
         const cursor = await sheet.data('MyRow').load();
 
-        const res1 = cursor.find(row => row.title === 'Nine');
-        const res2 = cursor.find(row => row.title === '404');
+        const res1 = cursor.find((row) => row.title === 'Nine');
+        const res2 = cursor.find((row) => row.title === '404');
 
         expect(res1?.props.title).to.eql('Nine');
         expect(res2).to.eql(undefined);
@@ -584,23 +584,23 @@ describe('TypedSheet', () => {
 
         const fired: t.TypedSheetEvent[] = [];
         sheet.event$
-          .pipe(filter(e => e.type.startsWith('SHEET/row/load')))
-          .subscribe(e => fired.push(e));
+          .pipe(filter((e) => e.type.startsWith('SHEET/row/load')))
+          .subscribe((e) => fired.push(e));
 
         await cursor.load();
 
         const loading = fired
-          .filter(e => e.type === 'SHEET/row/loading')
-          .map(e => e.payload as t.ITypedSheetRowLoading);
+          .filter((e) => e.type === 'SHEET/row/loading')
+          .map((e) => e.payload as t.ITypedSheetRowLoading);
         const loaded = fired
-          .filter(e => e.type === 'SHEET/row/loaded')
-          .map(e => e.payload as t.ITypedSheetRowLoaded);
+          .filter((e) => e.type === 'SHEET/row/loaded')
+          .map((e) => e.payload as t.ITypedSheetRowLoaded);
 
         expect(loading.length).to.eql(9);
         expect(loaded.length).to.eql(9);
 
-        expect(loading.every(e => e.sheet === sheet)).to.eql(true);
-        expect(loaded.every(e => e.sheet === sheet)).to.eql(true);
+        expect(loading.every((e) => e.sheet === sheet)).to.eql(true);
+        expect(loaded.every((e) => e.sheet === sheet)).to.eql(true);
       });
 
       it('repeat loads', async () => {
@@ -609,8 +609,8 @@ describe('TypedSheet', () => {
 
         const fired: t.TypedSheetEvent[] = [];
         sheet.event$
-          .pipe(filter(e => e.type === 'SHEET/row/loading' || e.type === 'SHEET/row/loaded'))
-          .subscribe(e => fired.push(e));
+          .pipe(filter((e) => e.type === 'SHEET/row/loading' || e.type === 'SHEET/row/loaded'))
+          .subscribe((e) => fired.push(e));
 
         await cursor.load();
         expect(fired.length).to.eql(18);
@@ -633,8 +633,8 @@ describe('TypedSheet', () => {
 
         const fired: t.TypedSheetEvent[] = [];
         sheet.event$
-          .pipe(filter(e => e.type === 'SHEET/row/loading' || e.type === 'SHEET/row/loaded'))
-          .subscribe(e => fired.push(e));
+          .pipe(filter((e) => e.type === 'SHEET/row/loading' || e.type === 'SHEET/row/loaded'))
+          .subscribe((e) => fired.push(e));
 
         await Promise.all([
           row.load(),
@@ -663,7 +663,7 @@ describe('TypedSheet', () => {
         await row.load();
 
         const fired: t.TypedSheetEvent[] = [];
-        sheet.event$.subscribe(e => fired.push(e));
+        sheet.event$.subscribe((e) => fired.push(e));
 
         row.props.title = 'Foo';
         expect(fired.length).to.eql(1);
@@ -685,7 +685,7 @@ describe('TypedSheet', () => {
         const list2 = types.list;
 
         expect(list1).to.equal(list2); // Lazily evalutated, common instance returned.
-        expect(list1.map(def => def.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
+        expect(list1.map((def) => def.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
       });
 
       it('row.types.map', async () => {
@@ -710,7 +710,7 @@ describe('TypedSheet', () => {
         expect(types.map.messages.uri.toString()).to.eql('cell:foo.mySheet:E1');
 
         // NB: Same instance.
-        types.list.forEach(item => {
+        types.list.forEach((item) => {
           const uri = types.map[item.prop].uri;
           expect(uri).to.equal(item.uri);
         });
@@ -1020,8 +1020,8 @@ describe('TypedSheet', () => {
           const childRow = childCursor.row(0);
           const childRowProps = childRow.props;
 
-          expect(childRow.types.list.map(item => item.type)).to.eql(
-            messages.sheet.types[0].columns.map(item => item.type),
+          expect(childRow.types.list.map((item) => item.type)).to.eql(
+            messages.sheet.types[0].columns.map((item) => item.type),
           );
 
           expect(childRowProps.message).to.eql(undefined);
@@ -1041,8 +1041,8 @@ describe('TypedSheet', () => {
 
           const fired: t.TypedSheetEvent[] = [];
           sheet.event$
-            .pipe(filter(e => e.type.startsWith('SHEET/refs/load')))
-            .subscribe(e => fired.push(e));
+            .pipe(filter((e) => e.type.startsWith('SHEET/refs/load')))
+            .subscribe((e) => fired.push(e));
 
           const row = (await sheet.data('MyRow').load()).row(0).props;
           const messages = row.messages;
@@ -1389,7 +1389,7 @@ describe('TypedSheet', () => {
         expect(state.changes).to.eql({});
 
         const fired: t.ITypedSheetChanged[] = [];
-        state.changed$.subscribe(e => fired.push(e));
+        state.changed$.subscribe((e) => fired.push(e));
 
         event$.next({
           type: 'SHEET/change',
@@ -1476,7 +1476,7 @@ describe('TypedSheet', () => {
         expect(await state.getNs()).to.eql({ type: { implements: 'foobar' } });
 
         const fired: t.TypedSheetEvent[] = [];
-        sheet.event$.subscribe(e => fired.push(e));
+        sheet.event$.subscribe((e) => fired.push(e));
 
         state.clear.changes('REVERT');
 
@@ -1599,7 +1599,7 @@ const testFetchMulti = (ns: string) => {
   });
 };
 
-const testMySheet = async (ns: string = 'ns:foo.mySheet', cells?: t.ICellMap) => {
+const testMySheet = async (ns = 'ns:foo.mySheet', cells?: t.ICellMap) => {
   const event$ = new Subject<t.TypedSheetEvent>();
   const fetch = await testFetchMySheet(ns, cells);
   const sheet = await TypedSheet.load<f.MyRow>({ fetch, ns, event$ });

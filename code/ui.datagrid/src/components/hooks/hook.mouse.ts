@@ -11,7 +11,7 @@ import { t, coord } from '../common';
  *
  */
 export function mouseCell(grid: Grid, type: t.IGridMouse['type']) {
-  return function(e: MouseEvent, coords: { row: number; col: number }, td: Element) {
+  return function (e: MouseEvent, coords: { row: number; col: number }, td: Element) {
     const { row, col: column } = coords;
 
     // Fire mouse event.

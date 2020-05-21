@@ -10,7 +10,7 @@ export const testContext = async (
   return { refs, getValue, getFunc };
 };
 
-describe('func.calc.cells (many)', function() {
+describe('func.calc.cells (many)', function () {
   this.timeout(5000);
 
   it('response (promise)', async () => {

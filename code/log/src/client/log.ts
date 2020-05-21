@@ -59,24 +59,24 @@ events$
   .pipe(map(e => e.payload as ILogEvent))
   .subscribe(e => {
     const { level, output } = e;
-    console[level].apply(console, output);
+    console[level].apply(console, output); // eslint-disable-line
   });
 
 events$
   // Clear console.
   .pipe(filter(e => e.type === 'CLEAR'))
-  .subscribe(e => console.clear());
+  .subscribe((e) => console.clear()); // eslint-disable-line
 
 events$
   // Group.
   .pipe(filter(e => e.type === 'GROUP'))
   .pipe(map(e => e.payload as ILogEvent))
-  .subscribe(e => console.group.apply(console, e.output));
+  .subscribe((e) => console.group.apply(console, e.output)); // eslint-disable-line
 
 events$
   // End group.
   .pipe(filter(e => e.type === 'UNGROUP'))
-  .subscribe(e => console.groupEnd());
+  .subscribe((e) => console.groupEnd()); // eslint-disable-line
 
 /**
  * INTERNAL

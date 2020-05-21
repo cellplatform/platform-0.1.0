@@ -24,8 +24,8 @@ describe('refs.incoming', () => {
     const res3 = await refs.incoming({ key: 'D5', ...ctx });
 
     expect(res1).to.eql([]);
-    expect(res2.map(ref => ref.cell)).to.eql(['A1']);
-    expect(res3.map(ref => ref.cell)).to.eql(['A2', 'A1']);
+    expect(res2.map((ref) => ref.cell)).to.eql(['A1']);
+    expect(res3.map((ref) => ref.cell)).to.eql(['A2', 'A1']);
   });
 
   it('incoming REF to undefined cell', async () => {
@@ -33,7 +33,7 @@ describe('refs.incoming', () => {
       A1: { value: '=A4' },
     });
     const res = await refs.incoming({ key: 'A4', ...ctx });
-    expect(res.map(ref => ref.cell)).to.eql(['A1']);
+    expect(res.map((ref) => ref.cell)).to.eql(['A1']);
   });
 
   it('incoming REF from RANGE', async () => {
@@ -47,8 +47,8 @@ describe('refs.incoming', () => {
     const res2 = await refs.incoming({ key: 'B5', ...ctx });
     const res3 = await refs.incoming({ key: 'C1', ...ctx });
 
-    expect(res1.map(ref => ref.cell)).to.eql(['A1']);
-    expect(res2.map(ref => ref.cell)).to.eql(['A1']);
+    expect(res1.map((ref) => ref.cell)).to.eql(['A1']);
+    expect(res2.map((ref) => ref.cell)).to.eql(['A1']);
     expect(res3).to.eql([]);
   });
 
@@ -62,8 +62,8 @@ describe('refs.incoming', () => {
     const res2 = await refs.incoming({ key: 'B5', ...ctx });
     const res3 = await refs.incoming({ key: 'C1', ...ctx });
 
-    expect(res1.map(ref => ref.cell)).to.eql(['A1']);
-    expect(res2.map(ref => ref.cell)).to.eql(['A1']);
+    expect(res1.map((ref) => ref.cell)).to.eql(['A1']);
+    expect(res2.map((ref) => ref.cell)).to.eql(['A1']);
     expect(res3).to.eql([]);
   });
 

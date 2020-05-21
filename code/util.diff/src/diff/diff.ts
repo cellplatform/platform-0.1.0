@@ -1,4 +1,4 @@
-const lib = require('deep-diff');
+const lib = require('deep-diff'); // eslint-disable-line
 import * as t from 'deep-diff';
 
 export {

@@ -1,4 +1,0 @@
-{
-  "extends": "@platform/ts.libs/tslint.json",
-  "rules": {}
-}

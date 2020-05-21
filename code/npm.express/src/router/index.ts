@@ -14,9 +14,5 @@ export * from './types';
  * a node-module service.
  */
 export function create(args: { getContext: t.GetNpmRouteContext }) {
-  return express
-    .Router()
-    .use(update.create(args))
-    .use(run.create(args))
-    .use(status.create(args));
+  return express.Router().use(update.create(args)).use(run.create(args)).use(status.create(args));
 }

@@ -1,6 +1,6 @@
 {
   "name": "@platform/state",
-  "version": "0.4.55",
+  "version": "0.4.62",
   "description": "A small, simple, strongly typed, [rx/observable] state-machine.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -12,16 +12,15 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/util.value": "0.7.14"
+    "@platform/util.value": "0.7.21"
   },
   "devDependencies": {
-    "@platform/test": "0.1.7",
-    "@platform/ts": "3.7.20"
+    "@platform/test": "0.1.11",
+    "@platform/ts": "3.9.2"
   },
   "files": [
     "lib",
     "!*.TEST.{js, mjs, d.ts}"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

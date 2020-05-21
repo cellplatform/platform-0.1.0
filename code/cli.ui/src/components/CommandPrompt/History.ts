@@ -20,10 +20,7 @@ export class History {
 
   public static toObject(item: string) {
     const parts = (item || '').split(':');
-    const namespace = parts[0]
-      .replace(/\:$/, '')
-      .replace(/^\[/, '')
-      .replace(/\]$/, '');
+    const namespace = parts[0].replace(/\:$/, '').replace(/^\[/, '').replace(/\]$/, '');
     const command = parts[1];
     return { namespace, command };
   }

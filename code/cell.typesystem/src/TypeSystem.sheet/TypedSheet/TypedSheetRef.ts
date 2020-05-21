@@ -1,4 +1,4 @@
-import { t, Uri, util, Schema } from './common';
+import { t } from './common';
 
 export type IArgs = {
   typename: string;

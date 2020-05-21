@@ -8,13 +8,9 @@ describe('Command.tree', () => {
    */
   const grandchild1 = Command.create('grandchild-1');
   const grandchild2 = Command.create('grandchild-2');
-  const child1 = Command.create('child-1')
-    .add(grandchild1)
-    .add(grandchild2);
+  const child1 = Command.create('child-1').add(grandchild1).add(grandchild2);
   const child2 = Command.create('child-2'); // No children.
-  const root = Command.create('root')
-    .add(child1)
-    .add(child2);
+  const root = Command.create('root').add(child1).add(child2);
 
   describe('walk', () => {
     it('walks (single level - starting command)', () => {

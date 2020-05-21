@@ -1,4 +1,4 @@
-import { semver } from '@platform/util.value';
+import * as semver from 'semver';
 
 /**
  * Equality comparison.

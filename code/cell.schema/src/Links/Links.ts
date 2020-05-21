@@ -73,7 +73,7 @@ export class Links {
   }
   public static toList(prefix: string, links: t.IUriMap = {}) {
     return Object.keys(links)
-      .map(key => ({ key, value: links[key] }))
+      .map((key) => ({ key, value: links[key] }))
       .filter(({ key }) => Links.isKey(prefix, key))
       .map(({ key, value }) => ({ key, value }));
   }
@@ -111,7 +111,7 @@ export class Links {
     const parts = (linkValue || '')
       .trim()
       .split('?')
-      .map(part => part.trim());
+      .map((part) => part.trim());
     const uri = Uri.parse<U>(parts[0] || '').parts;
     const query = queryString.toObject<Q>(parts[1]);
     const value = parts.join('?').replace(/\?$/, '');
@@ -149,7 +149,7 @@ export class Links {
       byName(path?: string) {
         path = (path || '').trim().replace(/^\/*/, '');
         return Object.keys(links)
-          .map(key => ({ key, value: links[key] }))
+          .map((key) => ({ key, value: links[key] }))
           .filter(({ key }) => Links.isKey(prefix, key))
           .find(({ key }) => {
             const parsed = Links.parseKey(prefix, key);
@@ -171,7 +171,7 @@ export class Links {
  */
 function encode(input: string): string {
   const ILLEGAL = [':'];
-  ILLEGAL.forEach(char => {
+  ILLEGAL.forEach((char) => {
     if (input.includes(char)) {
       throw new Error(`Link key cannot contain "${char}" character.`);
     }

@@ -33,16 +33,9 @@ const CACHE = {
     return `${CACHE.prefix(type)}${suffix}`;
   },
   isPrefix(types: CacheKeyType[], key: string) {
-    return types.map(type => CACHE.prefix(type)).some(prefix => key.startsWith(prefix));
+    return types.map((type) => CACHE.prefix(type)).some((prefix) => key.startsWith(prefix));
   },
 };
-
-/**
- * Calculate cached references for a table.
- */
-export function table(args: IRefsTableArgs): t.IRefsTable {
-  return new RefsTable(args);
-}
 
 class RefsTable implements t.IRefsTable {
   /**
@@ -110,8 +103,8 @@ class RefsTable implements t.IRefsTable {
     return this.calculateRefs<t.IRefIn>({
       ...args,
       keys,
-      cache: key => CACHE.key('IN', key),
-      find: key => incoming({ key, getValue, getKeys: async () => keys }),
+      cache: (key) => CACHE.key('IN', key),
+      find: (key) => incoming({ key, getValue, getKeys: async () => keys }),
     });
   }
 
@@ -129,8 +122,8 @@ class RefsTable implements t.IRefsTable {
     return this.calculateRefs<t.IRefOut>({
       ...args,
       keys,
-      cache: key => CACHE.key('OUT', key),
-      find: key => outgoing({ key, getValue }),
+      cache: (key) => CACHE.key('OUT', key),
+      find: (key) => outgoing({ key, getValue }),
     });
   }
 
@@ -140,7 +133,7 @@ class RefsTable implements t.IRefsTable {
   public reset(args: { cache?: t.RefDirection[] } = {}) {
     this.throwIfDisposed('reset');
     const types = args.cache || ['IN', 'OUT'];
-    this.cache.clear({ filter: key => CACHE.isPrefix(types, key) });
+    this.cache.clear({ filter: (key) => CACHE.isPrefix(types, key) });
     return this;
   }
 
@@ -152,7 +145,7 @@ class RefsTable implements t.IRefsTable {
     changes = changes
       .filter(({ from, to }) => !R.equals(from, to))
       .filter(({ from, to }) => util.isFormula(from) || util.isFormula(to));
-    const keys = R.uniq(changes.map(change => change.key));
+    const keys = R.uniq(changes.map((change) => change.key));
 
     // Get the current set of refs (prior to any updates).
     const beforeRefs = await this.refs(); // NB: Not forced, pick up from cache.
@@ -174,8 +167,8 @@ class RefsTable implements t.IRefsTable {
       const inKeys = util.incoming
         .refsToKeyList(refs.in)
         .map(({ key, refs }) => ({ key, refs: util.incoming.listToKeys(refs) }))
-        .filter(e => e.refs.some(key => keys.includes(key)))
-        .map(e => e.key);
+        .filter((e) => e.refs.some((key) => keys.includes(key)))
+        .map((e) => e.key);
       const outKeys = util.outgoing.refsToAllKeys(refs.out);
       return R.uniq([...inKeys, ...outKeys]);
     };
@@ -187,7 +180,7 @@ class RefsTable implements t.IRefsTable {
       const outRefs = await this.outgoing({ range: key, force: true });
       refreshKeys = [...refreshKeys, ...util.outgoing.refsToAllKeys(outRefs)];
     };
-    await Promise.all(keys.map(key => updateOutRefs(key)));
+    await Promise.all(keys.map((key) => updateOutRefs(key)));
     refreshKeys = R.uniq(refreshKeys);
 
     // 🌳 Perform a refresh of all referenced cells implicated in the change.
@@ -265,7 +258,7 @@ class RefsTable implements t.IRefsTable {
       return res;
     }
 
-    const wait = keys.map(async key => {
+    const wait = keys.map(async (key) => {
       const getValue = () => args.find(key);
       const refs = await this.cache.getAsync(args.cache(key), { getValue, force });
       if (refs.length > 0) {
@@ -295,19 +288,19 @@ class RefsTable implements t.IRefsTable {
 
     // Narrow on range (if given).
     if (args.range) {
-      const rangeKeys = (Array.isArray(args.range) ? args.range : [args.range]).map(key => {
+      const rangeKeys = (Array.isArray(args.range) ? args.range : [args.range]).map((key) => {
         return cell.isCell(key) || cell.isColumn(key) || cell.isRow(key) ? `${key}:${key}` : key;
       });
       const union = toRangeUnion(rangeKeys, args.cache);
-      keys = keys.filter(key => union.contains(key));
+      keys = keys.filter((key) => union.contains(key));
     }
 
     // Merge in keys from outgoing-refs (if given).
     if (outRefs) {
       Object.keys(outRefs)
-        .map(key => outRefs[key])
-        .forEach(items => {
-          items.forEach(item => {
+        .map((key) => outRefs[key])
+        .forEach((items) => {
+          items.forEach((item) => {
             keys = [...keys, ...util.path(item.path).keys];
           });
         });
@@ -317,6 +310,13 @@ class RefsTable implements t.IRefsTable {
     // Finish up.
     return keys;
   }
+}
+
+/**
+ * Calculate cached references for a table.
+ */
+export function table(args: IRefsTableArgs): t.IRefsTable {
+  return new RefsTable(args);
 }
 
 /**

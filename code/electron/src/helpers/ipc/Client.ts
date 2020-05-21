@@ -67,7 +67,9 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
     }
 
     // Listen for events and run corresponding response-handlers.
-    this.events$.pipe(filter(e => e.type !== EVENT.HANDLER)).subscribe(e => this.runHandlers(e));
+    this.events$
+      .pipe(filter(e => e.type !== EVENT.HANDLER))
+      .subscribe(e => this.runHandlers(e));
   }
 
   /**

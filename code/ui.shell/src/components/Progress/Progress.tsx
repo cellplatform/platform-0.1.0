@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Subject, VirtualTimeScheduler } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { time, Context, css, CssValue, t } from '../common';
+import { Context, css, CssValue, t, time } from '../common';
 
 export type IProgressProps = {
   height?: number;

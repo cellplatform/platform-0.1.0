@@ -59,13 +59,7 @@ describe('cell', () => {
 
   describe('toCell', () => {
     it('toCell', () => {
-      const test = (
-        input: cell.CellInput,
-        key: string,
-        column: number,
-        row: number,
-        ns: string = '',
-      ) => {
+      const test = (input: cell.CellInput, key: string, column: number, row: number, ns = '') => {
         const res = cell.toCell(input);
         expect(res.key).to.eql(key);
         expect(res.ns).to.eql(ns);
@@ -274,13 +268,13 @@ describe('cell', () => {
     });
 
     it('sorts by {key}', () => {
-      const keys = list.map(key => ({ key, value: `value-${key}` }));
+      const keys = list.map((key) => ({ key, value: `value-${key}` }));
 
       const byColumn = cell.sort(keys); // Default: by COLUMN
       const byRow = cell.sort(keys, { by: 'ROW' });
 
-      const columns = byColumn.map(m => m.key);
-      const rows = byRow.map(m => m.key);
+      const columns = byColumn.map((m) => m.key);
+      const rows = byRow.map((m) => m.key);
 
       expect(columns).to.eql(sorted.byColumn);
       expect(rows).to.eql(sorted.byRow);

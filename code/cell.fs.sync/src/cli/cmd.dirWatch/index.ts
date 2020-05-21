@@ -5,7 +5,7 @@ export type ISyncWatchArgs = {};
 
 export const init: t.CmdPluginsInit = cli => {
   const handler: t.CmdPluginHandler<ISyncWatchArgs> = async e => {
-    const { argv, keyboard } = e;
+    const { keyboard } = e;
     await dirWatch({
       dir: process.cwd(),
       keyboard,

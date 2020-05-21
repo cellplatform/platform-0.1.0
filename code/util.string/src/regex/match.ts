@@ -31,7 +31,7 @@ function _matchAll(regex: RegExp, input: string): IRegexMatch[] {
     regex = new RegExp(regex.source, flags);
   }
 
-  const find = (text: string, start: number = 0) => {
+  const find = (text: string, start = 0) => {
     const res = regex.exec(text);
     const match = res ? res[0] : undefined;
     if (res && match) {

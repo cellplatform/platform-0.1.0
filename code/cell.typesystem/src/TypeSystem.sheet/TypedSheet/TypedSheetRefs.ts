@@ -1,4 +1,4 @@
-import { Uri, R, t, util, Schema } from './common';
+import { R, Schema, t, Uri } from './common';
 import { TypedSheet } from './TypedSheet';
 
 export type IArgs = {
@@ -21,7 +21,6 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   }
 
   public static refLinkName(args: { typeDef: t.IColumnTypeDef<t.ITypeRef> }) {
-    const { typeDef } = args;
     const nameKey = 'type'; // TODO: this will change when multi-types per cell is supported - this will be deribed from typeDef (probably)
     return nameKey;
   }

@@ -1,4 +1,4 @@
-import { coord, t, Uri, util } from './common';
+import { coord, t, Uri } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
 
 type IArgs = {

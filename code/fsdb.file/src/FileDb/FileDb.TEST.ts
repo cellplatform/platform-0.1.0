@@ -204,7 +204,7 @@ describe('FileDb', () => {
   it('observable events', async () => {
     const db = testDb();
     const events: t.DocDbActionEvent[] = [];
-    db.events$.subscribe(e => events.push(e as t.DocDbActionEvent));
+    db.events$.subscribe((e) => events.push(e as t.DocDbActionEvent));
 
     const key = 'foo/bar';
     await db.get(key);
@@ -414,7 +414,7 @@ describe('FileDb', () => {
     it('observable events (while caching)', async () => {
       const db = testDb({ cache: true });
       const events: t.DbEvent[] = [];
-      db.events$.subscribe(e => events.push(e));
+      db.events$.subscribe((e) => events.push(e));
 
       const key = 'foo/bar';
       await db.put(key, 123);

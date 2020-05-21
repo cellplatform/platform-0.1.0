@@ -40,7 +40,7 @@ async function find(args: IOutgoingArgs & { path?: string }): Promise<t.IRefOut[
     return refs;
   };
 
-  const getValue: t.RefGetValue = async key => {
+  const getValue: t.RefGetValue = async (key) => {
     let res: any = await args.getValue(cell.toRelative(key));
     res = typeof res === 'number' ? res.toString() : res;
     res = typeof res === 'string' ? res : undefined;
@@ -133,7 +133,7 @@ async function outgoingCellRef(args: {
       path = res[0].path;
       target = res[0].target;
     }
-    const first = res.find(item => item.error);
+    const first = res.find((item) => item.error);
     if (first) {
       error = first.error;
     }
@@ -185,7 +185,7 @@ async function isRangeCircular(args: { path: string; range: CellRange; getValue:
   const { path, getValue } = args;
 
   const isKeyContained = (range: CellRange, keys: string[]) => {
-    return keys.some(key => range.contains(key));
+    return keys.some((key) => range.contains(key));
   };
 
   // Check for immediate self-reference within range.
@@ -194,7 +194,7 @@ async function isRangeCircular(args: { path: string; range: CellRange; getValue:
   }
 
   const getValues = async (range: CellRange) => {
-    const wait = range.keys.map(async key => {
+    const wait = range.keys.map(async (key) => {
       const value = (await args.getValue(key)) as string;
       return { key, value };
     });
@@ -271,7 +271,7 @@ async function outgoingFunc(args: {
     if (paramNode.type === 'binary-expression') {
       const path = args.path;
       const res = await outgoingBinaryExpression({ node: paramNode, getValue, path });
-      return res.map(ref => ({
+      return res.map((ref) => ({
         ...ref,
         param: `${param}/${ref.param || 0}`,
       }));
@@ -281,7 +281,7 @@ async function outgoingFunc(args: {
     if (paramNode.type === 'function') {
       const path = args.path;
       const res = await outgoingFunc({ node: paramNode, getValue, path });
-      return res.map(ref => ({
+      return res.map((ref) => ({
         ...ref,
         param: `${param}/${ref.param || 0}`,
       }));
@@ -305,9 +305,9 @@ async function outgoingFunc(args: {
     if (!isCircular && !error && targetNode.type === 'function') {
       const res = await outgoingFunc({ node: targetNode, getValue, path });
       const err = res
-        .filter(ref => ref.error && ref.error.type === 'REF/circular')
-        .map(ref => ref.error as t.IRefError)
-        .find(err => util.path(err.path).includes(targetKey));
+        .filter((ref) => ref.error && ref.error.type === 'REF/circular')
+        .map((ref) => ref.error as t.IRefError)
+        .find((err) => util.path(err.path).includes(targetKey));
       if (err) {
         isCircular = true;
         setCircularError(i, err.path);
@@ -341,7 +341,7 @@ async function outgoingFunc(args: {
 
   // Finish up.
   const refs = (await Promise.all(wait)) as t.IRefOut[];
-  return R.flatten(refs).filter(e => e !== undefined);
+  return R.flatten(refs).filter((e) => e !== undefined);
 }
 
 /**
@@ -395,7 +395,7 @@ async function outgoingBinaryExpression(args: {
         if (node.type === 'function') {
           let res = await outgoingFunc({ getValue, node: node as ast.FunctionNode, path }); // <== RECURSION 🌳
           if (res.length > 0) {
-            res = res.map(ref => ({ ...ref, param: `${param}/${ref.param || 0}` }));
+            res = res.map((ref) => ({ ...ref, param: `${param}/${ref.param || 0}` }));
             parts = [...parts, ...res];
           }
         }

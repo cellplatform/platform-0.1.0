@@ -23,7 +23,7 @@ export function init() {
       }),
     )
     .subscribe(e => {
-      console.clear(); // tslint:disable-line
+      console.clear(); // eslint-disable-line
     });
 
   // Finish up.

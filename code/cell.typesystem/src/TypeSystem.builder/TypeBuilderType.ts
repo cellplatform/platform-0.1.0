@@ -1,5 +1,5 @@
 import { coord, defaultValue, t, Uri } from '../common';
-import { TypeScript, TypeValue } from '../TypeSystem.core';
+import { TypeScript } from '../TypeSystem.core';
 import { OnPropChangeEventHandler, TypeBuilderProp } from './TypeBuilderProp';
 
 export type IArgs = {
@@ -78,7 +78,7 @@ export class TypeBuilderType implements t.ITypeBuilderType {
       throw new Error(validName.error);
     }
 
-    const exists = this.props.some(prop => prop.toObject().name === name);
+    const exists = this.props.some((prop) => prop.toObject().name === name);
     if (exists) {
       const err = `A property named '${name}' has already been added`;
       throw new Error(err);
@@ -127,7 +127,7 @@ export class TypeBuilderType implements t.ITypeBuilderType {
     return column;
   }
 
-  private onPropChange: OnPropChangeEventHandler = e => {
+  private onPropChange: OnPropChangeEventHandler = (e) => {
     if (e.prop === 'column') {
       this.onColumnChange(e.value);
     }

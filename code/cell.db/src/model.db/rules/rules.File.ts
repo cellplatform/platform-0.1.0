@@ -5,7 +5,6 @@ import { Schema, t, util, value } from '../../common';
  */
 export const beforeFileSave: t.BeforeModelSave<t.IDbModelFileProps> = async args => {
   const model = args.model as t.IDbModelFile;
-  const props = model.props.props || {};
 
   // Update hash.
   if (args.force || args.isChanged) {

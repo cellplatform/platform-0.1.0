@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { routes, t, util } from '../common';
 import { deleteCellFiles } from './handler.delete';
 import { listCellFiles } from './handler.list';

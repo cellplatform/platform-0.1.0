@@ -87,10 +87,7 @@ describe('MemoryCache', () => {
   it('retrieves cached value', () => {
     const cache = MemoryCache.create<MyKey>();
 
-    cache
-      .put('FOO', 1)
-      .put('FOO', 2)
-      .put('BAR', 3);
+    cache.put('FOO', 1).put('FOO', 2).put('BAR', 3);
 
     expect(cache.get('FOO')).to.eql(2);
     expect(cache.get('BAR')).to.eql(3);
@@ -119,10 +116,7 @@ describe('MemoryCache', () => {
     expect(cache.get('FOO')).to.eql(1);
     expect(cache.get('BAR')).to.eql(2);
 
-    cache
-      .delete('FOO')
-      .delete('FOO')
-      .delete('BAR');
+    cache.delete('FOO').delete('FOO').delete('BAR');
 
     expect(cache.get('FOO')).to.eql(undefined);
     expect(cache.get('BAR')).to.eql(undefined);
@@ -141,10 +135,7 @@ describe('MemoryCache', () => {
 
   it('clears subset (filter)', () => {
     const cache = MemoryCache.create();
-    cache
-      .put('FOO/1', 1)
-      .put('FOO/2', 2)
-      .put('BAR/1', 1);
+    cache.put('FOO/1', 1).put('FOO/2', 2).put('BAR/1', 1);
     expect(cache.keys).to.eql(['FOO/1', 'FOO/2', 'BAR/1']);
     cache.clear({ filter: key => key.startsWith('FOO/') });
     expect(cache.keys).to.eql(['BAR/1']);

@@ -44,7 +44,7 @@ export async function init<M extends IpcMessage = any, S extends t.SettingsJson 
     const main: t.IMain<M, S> = { id, ipc, log, settings, windows };
     return main;
   } catch (error) {
-    console.log('MAIN/INIT:', error); // tslint:disable-line
+    console.log('MAIN/INIT:', error); // eslint-disable-line
     throw error;
   }
 }

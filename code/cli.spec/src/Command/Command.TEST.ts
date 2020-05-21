@@ -160,18 +160,13 @@ describe('Command', () => {
 
     it('throws if the child (name) already exists', () => {
       const fn = () => {
-        Command.create('parent')
-          .add('child')
-          .add('child');
+        Command.create('parent').add('child').add('child');
       };
       expect(fn).to.throw(/exists/);
     });
 
     it('adds a child to a child', () => {
-      const cmd = Command.create('root')
-        .add('a')
-        .add('b')
-        .add('c');
+      const cmd = Command.create('root').add('a').add('b').add('c');
 
       expect(cmd.length).to.eql(3);
       expect(cmd.children[0].length).to.eql(0);

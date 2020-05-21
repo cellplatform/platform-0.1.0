@@ -1,4 +1,4 @@
-import { t, cuid, slug, coord, wildcard, ERROR } from '../common';
+import { coord, cuid, slug, t, wildcard } from '../common';
 
 type UriType = 'NS' | 'CELL' | 'ROW' | 'COLUMN' | 'FILE';
 type UriPrefix = 'ns' | 'cell' | 'file';
@@ -186,7 +186,7 @@ export class Uri {
         // NOTE:  Certain NS ids are allowed for testing or for
         //        special environments like locally running apps
         //        (equivalent of "local" IP addresses).
-        return Uri.ALLOW.NS.some(pattern => {
+        return Uri.ALLOW.NS.some((pattern) => {
           return typeof pattern === 'string'
             ? pattern.includes('*')
               ? wildcard.isMatch(value, pattern)
@@ -243,7 +243,7 @@ function toUri(prefix: UriPrefix, type: UriType, id: string, suffix?: string) {
   id = id === ':' ? '' : id;
 
   if (id) {
-    ['ns', 'cell', 'file'].forEach(prefix => (id = trimPrefix(prefix, id)));
+    ['ns', 'cell', 'file'].forEach((prefix) => (id = trimPrefix(prefix, id)));
   }
 
   if (!id) {

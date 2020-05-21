@@ -25,7 +25,7 @@ export class Duration implements t.IDuration {
     date: (input: t.DateInput) => day(input).toDate(),
   };
 
-  public static format(msec: number, unit: t.TimeUnit, round: number = 0) {
+  public static format(msec: number, unit: t.TimeUnit, round = 0) {
     const to = Duration.to;
     switch (unit) {
       case 'ms':
@@ -69,10 +69,7 @@ export class Duration implements t.IDuration {
     }
 
     // Extract and multiply by unit (sec, min, hour, day).
-    input = input
-      .substring(digits.toString().length)
-      .trim()
-      .toLowerCase();
+    input = input.substring(digits.toString().length).trim().toLowerCase();
 
     switch (input) {
       case '':

@@ -151,7 +151,7 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
 
   public get siblings() {
     const table = this._.table;
-    const cell = this; // tslint:disable-line
+    const cell = this; // eslint-disable-line
     const { ns, row, column } = cell;
     return {
       get left() {

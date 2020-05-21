@@ -10,13 +10,6 @@ export type IStoreArgs<M extends {}> = {
 };
 
 /**
- * Creates a new state machine.
- */
-export function create<M extends {}, E extends t.IStoreEvent>(args: IStoreArgs<M>) {
-  return Store.create<M, E>(args);
-}
-
-/**
  * An observable state machine.
  */
 export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M, E> {
@@ -123,7 +116,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
    */
   // public lens<S extends {}>(filter: t.LensStateFilter<M, S>): t.IStoreLens<M, S, E> {
   //   const dispose$ = new Subject<{}>();
-  //   const self = this; // tslint:disable-line
+  //   const self = this; // eslint-disable-line
   //   const changed$ = this.changed$.pipe(takeUntil(dispose$)) as any; // HACK: type wierdness.
   //   const lens: t.IStoreLens<M, S, E> = {
   //     dispose$: dispose$.pipe(share()),
@@ -191,4 +184,11 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
     };
     return result;
   }
+}
+
+/**
+ * Creates a new state machine.
+ */
+export function create<M extends {}, E extends t.IStoreEvent>(args: IStoreArgs<M>) {
+  return Store.create<M, E>(args);
 }

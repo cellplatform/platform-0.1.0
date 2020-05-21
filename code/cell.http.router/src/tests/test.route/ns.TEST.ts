@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { t, expect, http, createMock, stripHashes, post, constants } from '../../test';
 import { testPostFile } from './file.TEST';
 
@@ -8,7 +10,7 @@ import { testPostFile } from './file.TEST';
  * - Remove Cell from NS
  */
 
-describe('ns:', function() {
+describe('ns:', function () {
   this.timeout(20000);
 
   describe('invalid URI', () => {

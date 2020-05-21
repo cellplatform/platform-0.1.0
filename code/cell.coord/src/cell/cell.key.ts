@@ -139,7 +139,7 @@ export function isRangeKey(key: string) {
   if (parts.length < 2) {
     return false;
   }
-  if (parts.some(part => !part.trim() || part.trim().length < part.length)) {
+  if (parts.some((part) => !part.trim() || part.trim().length < part.length)) {
     return false;
   }
   return true;
@@ -165,7 +165,7 @@ export function axisRangeType(key: string): t.CoordAxis | undefined {
   const parts = (key || '')
     .trim()
     .split(':')
-    .map(part => part.trim());
+    .map((part) => part.trim());
   if (parts.length === 2) {
     const left = toType(parts[0]);
     const right = toType(parts[1]);
@@ -373,7 +373,7 @@ export function sort<T extends CellInput>(list: T[], options: { by?: t.CoordAxis
 export const min = {
   by: (axis: t.CoordAxis, list: CellInput[]) => {
     let res: t.ICoord | undefined;
-    list.forEach(item => {
+    list.forEach((item) => {
       const cell = toCell(item);
       res = !res ? cell : comparer(cell, res, { axis }) < 0 ? cell : res;
     });
@@ -389,7 +389,7 @@ export const min = {
 export const max = {
   by: (axis: t.CoordAxis, list: CellInput[]) => {
     let res: t.ICoord | undefined;
-    list.forEach(item => {
+    list.forEach((item) => {
       const cell = toCell(item);
       res = !res ? cell : comparer(cell, res, { axis }) > 0 ? cell : res;
     });

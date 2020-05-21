@@ -6,7 +6,7 @@ import { t, coord } from '../common';
  *  - https://handsontable.com/docs/6.2.2/Hooks.html
  */
 export function undo(grid: Grid, stage: 'BEFORE' | 'AFTER', kind: t.IGridUndo['kind']) {
-  return function(action: any) {
+  return function (action: any) {
     const { actionType } = action;
     if (stage === 'BEFORE' && actionType === 'change') {
       const changes = action.changes.map((item: any[]) => {

@@ -9,10 +9,7 @@ export const LIGHT: ITreeTheme = {
   borderColor: color(-0.1),
   spinner: COLORS.BLACK,
   header: {
-    bg: colorUtil
-      .create(COLORS.WHITE)
-      .darken(2)
-      .toHexString(),
+    bg: colorUtil.create(COLORS.WHITE).darken(2).toHexString(),
     titleColor: color(-0.5),
     borderBottomColor: color(-0.08),
     textShadow: 1,
@@ -41,10 +38,7 @@ export const DARK: ITreeTheme = {
   borderColor: color(0.2),
   spinner: COLORS.WHITE,
   header: {
-    bg: colorUtil
-      .create(COLORS.DARK)
-      .darken(4)
-      .toHexString(),
+    bg: colorUtil.create(COLORS.DARK).darken(4).toHexString(),
     titleColor: color(0.8),
     borderBottomColor: color(0.3),
     textShadow: -1,

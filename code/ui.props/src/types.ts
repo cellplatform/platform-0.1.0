@@ -6,7 +6,7 @@ import { IPropsTheme } from './theme/types';
 export type PropsData = object | PropArray;
 export type PropScalar = string | boolean | number | null | undefined;
 export type PropArray = Array<PropScalar | object>;
-export type PropValue = PropScalar | PropArray | object | Function; // tslint:disable-line
+export type PropValue = PropScalar | PropArray | object | Function; // eslint-disable-line
 
 export type PropDataObjectType = 'object' | 'array';
 export type PropObjectType = PropDataObjectType | 'function';

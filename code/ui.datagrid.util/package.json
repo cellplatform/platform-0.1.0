@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.util",
-  "version": "0.2.104",
+  "version": "0.2.111",
   "description": "Shared utilities between `ui.datagrid.*` modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,18 +12,18 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.coord": "0.8.101",
-    "@platform/cell.func": "0.1.142",
-    "@platform/cell.schema": "^0.4.91",
-    "@platform/cell.types": "0.4.82",
-    "@platform/cell.value": "0.2.52",
-    "@platform/libs": "0.2.1",
-    "@platform/ui.datagrid.types": "0.7.118",
-    "@platform/util.value": "0.7.14"
+    "@platform/cell.coord": "0.8.117",
+    "@platform/cell.func": "0.1.158",
+    "@platform/cell.schema": "^0.4.107",
+    "@platform/cell.types": "0.4.98",
+    "@platform/cell.value": "0.2.68",
+    "@platform/libs": "0.2.2",
+    "@platform/ui.datagrid.types": "0.7.125",
+    "@platform/util.value": "0.7.21"
   },
   "devDependencies": {
-    "@platform/test": "0.1.7",
-    "@platform/ts": "3.7.20"
+    "@platform/test": "0.1.11",
+    "@platform/ts": "3.9.2"
   },
   "files": [
     "lib",
@@ -31,6 +31,5 @@
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

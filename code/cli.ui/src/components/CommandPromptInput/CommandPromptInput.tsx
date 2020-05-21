@@ -53,7 +53,7 @@ export class CommandPromptInput extends React.PureComponent<
    * [Lifecycle]
    */
 
-  public componentWillMount() {
+  public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
   }
 

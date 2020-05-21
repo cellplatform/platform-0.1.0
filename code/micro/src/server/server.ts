@@ -8,7 +8,7 @@ import { requestHandler } from './server.requestHandler';
 
 export * from '../types';
 
-const cors = require('micro-cors')();
+const cors = require('micro-cors')(); // eslint-disable-line
 const IS_PROD = process.env.NODE_ENV === 'production';
 
 /**

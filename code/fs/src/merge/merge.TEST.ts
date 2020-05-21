@@ -1,7 +1,7 @@
 import { expect, expectError } from '@platform/test';
 import { fs } from '..';
 
-const writeFile = async (path: string, text: string = 'message: hello\n') => {
+const writeFile = async (path: string, text = 'message: hello\n') => {
   await fs.ensureDir(fs.dirname(path));
   await fs.writeFile(path, text);
 };

@@ -133,7 +133,7 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
 
   public get tree() {
     if (!this._.tree) {
-      const self = this; // tslint:disable-line
+      const self = this; // eslint-disable-line
       const methods: t.ITreeMethods<t.ICommand<P, A>> = {
         get count() {
           return tree.count(self);
@@ -300,5 +300,7 @@ function formatConstructorArgs(args: Partial<ICommandArgs>): ICommandArgs {
 }
 
 function cloneChildren(builder: Command): Command[] {
-  return builder.children.map(child => child as Command).map(child => child.clone({ deep: true }));
+  return builder.children
+    .map(child => child as Command)
+    .map(child => child.clone({ deep: true }));
 }

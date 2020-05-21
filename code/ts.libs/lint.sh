@@ -1,6 +1,6 @@
 
 # Format code.
-node node_modules/prettier/bin-prettier all --write 'src/**/*.ts{,x}'
+node node_modules/prettier/bin-prettier --write 'src/**/*.ts{,x}'
 
 # Lint.
-node node_modules/tslint/bin/tslint 'src/**/*.ts{,x}' --format verbose --fix $@
+node node_modules/eslint/bin/eslint 'src/**/*.ts{,x}' --fix $@

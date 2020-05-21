@@ -145,7 +145,7 @@ const getEntries = async (config: Config) => {
   // Import the entry react element(s).
   const err = `Failed to load bundle entries at path: ${source}.`;
   try {
-    const res = require(localPath);
+    const res = require(localPath); // eslint-disable-line
     if (Array.isArray(res.default)) {
       return done(res.default);
     }

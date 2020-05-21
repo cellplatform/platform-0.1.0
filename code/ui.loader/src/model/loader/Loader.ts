@@ -19,7 +19,7 @@ export class Loader implements t.ILoader {
    * [Lifecycle]
    */
   public static create = (args: ILoaderArgs = {}) => new Loader(args);
-  private constructor(args: ILoaderArgs) {}
+  private constructor(args: ILoaderArgs) {} // eslint-disable-line
 
   public dispose() {
     this._dispose$.next();

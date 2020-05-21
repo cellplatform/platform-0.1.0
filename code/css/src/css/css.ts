@@ -51,7 +51,7 @@ const mergeAndReplace = (key: string, value: any, target: object) => {
 
 const formatImage = (key: string, value: Array<string | number | undefined>, target: any) => {
   // Wrangle parameters.
-  let [image1x, image2x, width, height] = value; // tslint:disable-line
+  let [image1x, image2x, width, height] = value; // eslint-disable-line
 
   if (typeof image2x === 'number') {
     height = width;
@@ -244,7 +244,7 @@ function formatFlexPosition(key: string, value: string, target: t.CssProps) {
   tokens.map(token => {
     const tokenIsOneOf = (options: string[]) => options.includes(token);
     if (direction == null && tokenIsOneOf(['horizontal', 'vertical'])) {
-      direction = token === 'vertical' ? 'column' : 'row'; // tslint:disable-line
+      direction = token === 'vertical' ? 'column' : 'row'; // eslint-disable-line
       return;
     }
 
@@ -351,9 +351,26 @@ export const transform = (
  * Helpers for constructing a CSS object.
  * NB: This doesn't *actually* return React.CSSProperties
  */
-const formatCss = (...styles: Array<t.CssProps | t.CssValue | t.Falsy>): t.CssValue => {
-  return jss.css(...styles.map(transform));
+const isJss = (input: any) =>
+  typeof input === 'object' && typeof input.hash === 'number' && Array.isArray(input.values);
+
+const flattenJss = (input: S[]) => {
+  const output: any[] = [];
+  input.forEach(item => {
+    if (isJss(item)) {
+      flattenJss((item as any).values).forEach(child => output.push(child)); // <== RECURSION 🌳
+    } else {
+      output.push(transform(item));
+    }
+  });
+  return output;
 };
 
+type S = t.CssProps | t.CssValue | t.Falsy;
+const formatCss = (...styles: S[]): t.CssValue => jss.css(...flattenJss(styles));
+
+/**
+ * Export.
+ */
 (formatCss as any).image = image;
 export const format = formatCss as t.CssFormat;

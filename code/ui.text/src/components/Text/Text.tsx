@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import * as React from 'react';
 
 import {
@@ -59,6 +61,7 @@ export class Text extends React.PureComponent<ITextProps> {
         ...toTextCss(this.props),
       }),
     };
+
     return (
       <div
         className={this.props.className}

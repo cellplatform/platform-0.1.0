@@ -25,13 +25,14 @@ export async function publish(
   const modules = fs.join(dir, 'node_modules');
   // const outDir = fs.resolve('.publish');
 
-  // tslint:disable
+  /* eslint-disable */
   console.group('\n\n🐷  TODO publish\n');
   console.log('modules', modules);
   console.log('tsconfig', tsconfig);
   console.log('outDir', outDir);
   console.log('\n\n');
   console.groupEnd();
+  /* eslint-enable */
 
   try {
     const tmp = fs.resolve('.publish');
@@ -81,11 +82,6 @@ async function copyPackageJson(args: { rootDir: string; target: string }) {
   }
 }
 
-const toParent = (path: string) =>
-  path
-    .replace(/^\.\//, '')
-    .split('/')
-    .slice(1)
-    .join('/');
+const toParent = (path: string) => path.replace(/^\.\//, '').split('/').slice(1).join('/');
 
 const removeExtension = (path: string) => path.substr(0, path.length - fs.extname(path).length);

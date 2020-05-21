@@ -69,7 +69,7 @@ export function shift(args: {
   }
 
   // Convert table to list.
-  const items: TableItem[] = Object.keys(table).map(key => {
+  const items: TableItem[] = Object.keys(table).map((key) => {
     const { row, column } = cell.fromKey(key);
     const value = table[key];
     return { key, value, row, column };
@@ -77,12 +77,12 @@ export function shift(args: {
 
   // Extract the set of cells before the insertion-point, and after the insertion-point.
   const SET = {
-    before: items.filter(item => item[field] < args.index),
-    after: items.filter(item => item[field] >= args.index),
+    before: items.filter((item) => item[field] < args.index),
+    after: items.filter((item) => item[field] >= args.index),
   };
 
   // Write all shifted values to the table as "empty".
-  SET.after.forEach(item => {
+  SET.after.forEach((item) => {
     const index = item[field];
     const column = axis === 'COLUMN' ? index : item.column;
     const row = axis === 'ROW' ? index : item.row;
@@ -91,7 +91,7 @@ export function shift(args: {
   });
 
   // Overwrite all shifted values with the new key/value after the shift.
-  SET.after.forEach(item => {
+  SET.after.forEach((item) => {
     const index = item[field] + by;
     const column = axis === 'COLUMN' ? index : item.column;
     const row = axis === 'ROW' ? index : item.row;
@@ -124,19 +124,19 @@ function overwrite(args: {
   const { axis, table, from, to } = args;
   const field = axis.toLowerCase();
 
-  const items: TableItem[] = Object.keys(table).map(key => {
+  const items: TableItem[] = Object.keys(table).map((key) => {
     const { row, column } = cell.fromKey(key);
     const value = table[key];
     return { key, value, row, column };
   });
 
-  const range = items.filter(item => {
+  const range = items.filter((item) => {
     const index = item[field];
     return index >= from && index <= to;
   });
 
   const result: t.IMap = { ...table };
-  range.forEach(item => (result[item.key] = args.value));
+  range.forEach((item) => (result[item.key] = args.value));
 
   return result;
 }

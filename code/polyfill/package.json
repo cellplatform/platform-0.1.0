@@ -7,12 +7,11 @@
     "test": "echo no-op"
   },
   "dependencies": {
-    "core-js": "3.6.4",
+    "core-js": "3.6.5",
     "regenerator-runtime": "0.13.5"
   },
   "files": [
     "polyfill.js"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

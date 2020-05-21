@@ -1,4 +1,4 @@
-import { t, Uri, util } from '../common';
+import { t, util } from '../common';
 
 export type IClientFileArgs = { uri: t.IFileUri; urls: t.IUrls; http: t.IHttp };
 

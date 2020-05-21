@@ -62,55 +62,55 @@ export class Sync implements t.IDisposable {
     const bubble$ = args.events$;
     if (bubble$) {
       // NB: Not passed directly to [subscribe] to event it being stopped upon sync dispose.
-      this.events$.subscribe(e => bubble$.next(e));
+      this.events$.subscribe((e) => bubble$.next(e));
     }
 
     // Setup observables.
     const syncChange$ = events$.pipe(
-      filter(e => e.type === 'SYNC/change'),
-      map(e => e.payload as t.SyncChangeType),
+      filter((e) => e.type === 'SYNC/change'),
+      map((e) => e.payload as t.SyncChangeType),
     );
 
     const db$ = db.events$.pipe(takeUntil(this.dispose$));
     const dbChange$ = db$.pipe(
-      filter(e => e.type === 'DOC/change'),
-      map(e => e.payload as t.IDbActionChange),
+      filter((e) => e.type === 'DOC/change'),
+      map((e) => e.payload as t.IDbActionChange),
     );
 
     const grid$ = grid.events$.pipe(takeUntil(this.dispose$));
     const gridCellsChange$ = grid$.pipe(
-      filter(e => e.type === 'GRID/cells/change'),
-      map(e => e.payload as t.IGridCellsChange),
+      filter((e) => e.type === 'GRID/cells/change'),
+      map((e) => e.payload as t.IGridCellsChange),
     );
     const gridColumnsChange$ = grid$.pipe(
-      filter(e => e.type === 'GRID/columns/change'),
-      map(e => e.payload as t.IGridColumnsChange),
+      filter((e) => e.type === 'GRID/columns/change'),
+      map((e) => e.payload as t.IGridColumnsChange),
     );
     const gridRowsChange$ = grid$.pipe(
-      filter(e => e.type === 'GRID/rows/change'),
-      map(e => e.payload as t.IGridRowsChange),
+      filter((e) => e.type === 'GRID/rows/change'),
+      map((e) => e.payload as t.IGridRowsChange),
     );
 
     /**
      * Buffer writes to the DB.
      */
     const save$ = new Subject<{ kind: t.GridCellType; key: string; value?: any }>();
-    rx.debounceBuffer(save$.pipe(takeUntil(this.dispose$)), 0).subscribe(async e => {
+    rx.debounceBuffer(save$.pipe(takeUntil(this.dispose$)), 0).subscribe(async (e) => {
       // Get the latest value for each of the buffered changes.
       const grouped = R.groupBy(R.prop('key'), e);
       const latest = Object.keys(grouped)
-        .map(key => grouped[key][grouped[key].length - 1])
-        .map(item => ({ ...item, value: this.formatValue(item.value) }));
+        .map((key) => grouped[key][grouped[key].length - 1])
+        .map((item) => ({ ...item, value: this.formatValue(item.value) }));
 
       // Extract distinct lists for delete/update operations.
       const deletes = latest
-        .filter(item => util.cell.value.isEmptyCell(item.value))
-        .map(item => ({ key: item.key }));
-      const updates = latest.filter(item => !util.cell.value.isEmptyCell(item.value));
+        .filter((item) => util.cell.value.isEmptyCell(item.value))
+        .map((item) => ({ key: item.key }));
+      const updates = latest.filter((item) => !util.cell.value.isEmptyCell(item.value));
 
       // Write to DB.
       if (deletes.length > 0) {
-        await this.db.deleteMany(deletes.map(item => item.key));
+        await this.db.deleteMany(deletes.map((item) => item.key));
       }
       if (updates.length > 0) {
         await this.db.putMany(updates);
@@ -124,7 +124,7 @@ export class Sync implements t.IDisposable {
      * Buffer updates to the Grid UI.
      */
     const changeGrid$ = new Subject<{ type: t.GridCellType; key: string; value?: any }>();
-    rx.debounceBuffer(changeGrid$.pipe(takeUntil(this.dispose$)), 0).subscribe(async e => {
+    rx.debounceBuffer(changeGrid$.pipe(takeUntil(this.dispose$)), 0).subscribe(async (e) => {
       const cells = e.filter(({ type }) => type === 'CELL');
       const columns = e.filter(({ type }) => type === 'COLUMN');
       const rows = e.filter(({ type }) => type === 'ROW');
@@ -173,9 +173,9 @@ export class Sync implements t.IDisposable {
     (() => {
       gridCellsChange$
         // Cells changed in Grid UI.
-        .pipe(filter(e => !this.is.loading.currently('CELLS')))
-        .subscribe(async e => {
-          e.changes.forEach(change => {
+        .pipe(filter((e) => !this.is.loading.currently('CELLS')))
+        .subscribe(async (e) => {
+          e.changes.forEach((change) => {
             const key = this.schema.grid.toCellKey(change.cell.key);
             const value = change.value.to || { value: undefined };
             this.fireSync({
@@ -190,10 +190,10 @@ export class Sync implements t.IDisposable {
       dbChange$
         // Cell changed in DB.
         .pipe(
-          filter(e => this.schema.db.is.cell(e.key)),
-          filter(e => !this.is.loading.currently('CELLS')),
+          filter((e) => this.schema.db.is.cell(e.key)),
+          filter((e) => !this.is.loading.currently('CELLS')),
         )
-        .subscribe(e => {
+        .subscribe((e) => {
           const key = this.schema.grid.toCellKey(e.key);
           const value = (typeof e.value === 'object'
             ? e.value
@@ -209,10 +209,10 @@ export class Sync implements t.IDisposable {
       syncChange$
         // Update DB when Grid UI changes a cell.
         .pipe(
-          filter(e => e.source === 'GRID'),
-          filter(e => e.kind === 'CELL'),
+          filter((e) => e.source === 'GRID'),
+          filter((e) => e.kind === 'CELL'),
         )
-        .subscribe(async e => {
+        .subscribe(async (e) => {
           const key = this.schema.db.toCellKey(e.key);
           save$.next({ kind: 'CELL', key, value: e.value });
         });
@@ -220,10 +220,10 @@ export class Sync implements t.IDisposable {
       syncChange$
         // Update Grid UI when the DB changes a cell.
         .pipe(
-          filter(e => e.source === 'DB'),
-          filter(e => e.kind === 'CELL'),
+          filter((e) => e.source === 'DB'),
+          filter((e) => e.kind === 'CELL'),
         )
-        .subscribe(async e => {
+        .subscribe(async (e) => {
           const key = this.schema.grid.toCellKey(e.key);
           const cell = grid.cell(key);
           const data = cell.data;
@@ -243,9 +243,9 @@ export class Sync implements t.IDisposable {
     (() => {
       gridColumnsChange$
         // Columns changed in Grid UI.
-        .pipe(filter(e => !this.is.loading.currently('COLUMNS')))
-        .subscribe(async e => {
-          e.changes.forEach(change => {
+        .pipe(filter((e) => !this.is.loading.currently('COLUMNS')))
+        .subscribe(async (e) => {
+          e.changes.forEach((change) => {
             const key = this.schema.grid.toColumnKey(change.column);
             this.fireSync({
               source: 'GRID',
@@ -259,10 +259,10 @@ export class Sync implements t.IDisposable {
       dbChange$
         // Column changed in DB.
         .pipe(
-          filter(e => this.schema.db.is.column(e.key)),
-          filter(e => !this.is.loading.currently('COLUMNS')),
+          filter((e) => this.schema.db.is.column(e.key)),
+          filter((e) => !this.is.loading.currently('COLUMNS')),
         )
-        .subscribe(e => {
+        .subscribe((e) => {
           const key = this.schema.grid.toColumnKey(e.key);
           this.fireSync({
             source: 'DB',
@@ -275,10 +275,10 @@ export class Sync implements t.IDisposable {
       syncChange$
         // Update DB when Grid UI changes a column.
         .pipe(
-          filter(e => e.source === 'GRID'),
-          filter(e => e.kind === 'COLUMN'),
+          filter((e) => e.source === 'GRID'),
+          filter((e) => e.kind === 'COLUMN'),
         )
-        .subscribe(async e => {
+        .subscribe(async (e) => {
           const key = this.schema.db.toColumnKey(e.key);
           const existing = (await db.getValue(key)) as t.IGridColumnData;
           const isChanged = util.cell.value.isColumnChanged(existing, e.value as t.IGridColumnData);
@@ -290,10 +290,10 @@ export class Sync implements t.IDisposable {
       syncChange$
         // Update Grid UI when the DB changes a column.
         .pipe(
-          filter(e => e.source === 'DB'),
-          filter(e => e.kind === 'COLUMN'),
+          filter((e) => e.source === 'DB'),
+          filter((e) => e.kind === 'COLUMN'),
         )
-        .subscribe(async e => {
+        .subscribe(async (e) => {
           const key = this.schema.grid.toColumnKey(e.key);
           const column = grid.data.columns[key];
           const isChanged = util.cell.value.isColumnChanged(column, e.value as t.IGridColumnData);
@@ -309,9 +309,9 @@ export class Sync implements t.IDisposable {
     (() => {
       gridRowsChange$
         // Rows changed in Grid UI.
-        .pipe(filter(e => !this.is.loading.currently('ROWS')))
-        .subscribe(async e => {
-          e.changes.forEach(change => {
+        .pipe(filter((e) => !this.is.loading.currently('ROWS')))
+        .subscribe(async (e) => {
+          e.changes.forEach((change) => {
             const key = this.schema.grid.toRowKey(change.row);
             this.fireSync({
               source: 'GRID',
@@ -325,10 +325,10 @@ export class Sync implements t.IDisposable {
       dbChange$
         // Row changed in DB.
         .pipe(
-          filter(e => this.schema.db.is.row(e.key)),
-          filter(e => !this.is.loading.currently('ROWS')),
+          filter((e) => this.schema.db.is.row(e.key)),
+          filter((e) => !this.is.loading.currently('ROWS')),
         )
-        .subscribe(e => {
+        .subscribe((e) => {
           const key = this.schema.grid.toRowKey(e.key);
           this.fireSync({
             source: 'DB',
@@ -341,10 +341,10 @@ export class Sync implements t.IDisposable {
       syncChange$
         // Update DB when Grid UI changes a row.
         .pipe(
-          filter(e => e.source === 'GRID'),
-          filter(e => e.kind === 'ROW'),
+          filter((e) => e.source === 'GRID'),
+          filter((e) => e.kind === 'ROW'),
         )
-        .subscribe(async e => {
+        .subscribe(async (e) => {
           const key = this.schema.db.toRowKey(e.key);
           const existing = (await db.getValue(key)) as t.IGridRowData;
           const isChanged = util.cell.value.isRowChanged(existing, e.value as t.IGridRowData);
@@ -356,10 +356,10 @@ export class Sync implements t.IDisposable {
       syncChange$
         // Update Grid UI when the DB changes a row.
         .pipe(
-          filter(e => e.source === 'DB'),
-          filter(e => e.kind === 'ROW'),
+          filter((e) => e.source === 'DB'),
+          filter((e) => e.kind === 'ROW'),
         )
-        .subscribe(async e => {
+        .subscribe(async (e) => {
           const key = this.schema.grid.toRowKey(e.key);
           const row = grid.data.rows[key];
           const isChanged = util.cell.value.isRowChanged(row, e.value as t.IGridRowData);
@@ -452,7 +452,7 @@ export class Sync implements t.IDisposable {
     const getEmptyKeys = async (kind: t.GridCellType, query: string) => {
       const res = await this.db.find(query);
       const empty = res.list.filter(({ value }) => this.isEmptyValue({ kind, value }));
-      return empty.map(item => item.props.key);
+      return empty.map((item) => item.props.key);
     };
 
     const all = this.schema.db.all;
@@ -527,7 +527,7 @@ const flags = <F>(): IActivityFlags<F> => {
     currently(...input: F[]) {
       return input.length === 0 && input.length > 0
         ? true
-        : input.some(flag => flags.includes(flag));
+        : input.some((flag) => flags.includes(flag));
     },
     add(flag: F) {
       flags = [...flags, flag];

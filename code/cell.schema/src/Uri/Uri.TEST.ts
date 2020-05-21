@@ -102,9 +102,9 @@ describe('Uri', () => {
         Uri.ALLOW.NS = [allow];
         expect(Uri.parse(uri).ok).to.eql(ok);
       };
-      test(input => input.startsWith('sys'), 'ns:sys', true);
-      test(input => input.startsWith('sys'), 'ns:sys.foo', true);
-      test(input => input.startsWith('sys'), 'ns:foo', false);
+      test((input) => input.startsWith('sys'), 'ns:sys', true);
+      test((input) => input.startsWith('sys'), 'ns:sys.foo', true);
+      test((input) => input.startsWith('sys'), 'ns:foo', false);
     });
   });
 
@@ -384,7 +384,7 @@ describe('Uri', () => {
       expect(() => Uri.ns('cell:foo:A1', false)).to.not.throw();
 
       let res: undefined | t.IUriParts<t.INsUri>;
-      Uri.ns('cell:foo:A1', e => (res = e));
+      Uri.ns('cell:foo:A1', (e) => (res = e));
       expect(res?.error?.message).to.include(`is not of type NS`);
     });
 
@@ -410,7 +410,7 @@ describe('Uri', () => {
       expect(() => Uri.cell('cell:foo:A')).to.throw();
 
       let res: undefined | t.IUriParts<t.ICellUri>;
-      Uri.cell('cell:foo:A', e => (res = e));
+      Uri.cell('cell:foo:A', (e) => (res = e));
       expect(res?.error?.message).to.include(`is not of type CELL`);
     });
 
@@ -422,7 +422,7 @@ describe('Uri', () => {
       expect(() => Uri.row('cell:foo:A1')).to.throw();
 
       let res: undefined | t.IUriParts<t.IRowUri>;
-      Uri.row('cell:foo:A1', e => (res = e));
+      Uri.row('cell:foo:A1', (e) => (res = e));
       expect(res?.error?.message).to.include(`is not of type ROW`);
     });
 
@@ -434,7 +434,7 @@ describe('Uri', () => {
       expect(() => Uri.column('cell:foo:A1')).to.throw();
 
       let res: undefined | t.IUriParts<t.IColumnUri>;
-      Uri.column('cell:foo:A1', e => (res = e));
+      Uri.column('cell:foo:A1', (e) => (res = e));
       expect(res?.error?.message).to.include(`is not of type COLUMN`);
     });
 
@@ -446,7 +446,7 @@ describe('Uri', () => {
       expect(() => Uri.file('cell:foo:A1')).to.throw();
 
       let res: undefined | t.IUriParts<t.IFileUri>;
-      Uri.file('cell:foo:A1', e => (res = e));
+      Uri.file('cell:foo:A1', (e) => (res = e));
       expect(res?.error?.message).to.include(`is not of type FILE`);
     });
   });
@@ -512,7 +512,7 @@ describe('Uri', () => {
       expect(() => Uri.create.ns('  ns:  ')).to.throw();
 
       // Illegal characters.
-      ILLEGAL.NS.split('').forEach(char => {
+      ILLEGAL.NS.split('').forEach((char) => {
         const uid = cuid();
         const id = `${uid.substring(0, 10)}${char}${uid.substring(11)}`;
         expect(() => Uri.create.ns(id)).to.throw();
@@ -536,13 +536,13 @@ describe('Uri', () => {
       expect(() => Uri.create.file('  ns:  ', 'fileid')).to.throw();
 
       // Illegal namespace characters.
-      ILLEGAL.NS.split('').forEach(char => {
+      ILLEGAL.NS.split('').forEach((char) => {
         const ns = `ns:foo${char}def`;
         expect(() => Uri.create.file(ns, 'fileid')).to.throw();
       });
 
       // Illegal file-id characters.
-      ILLEGAL.NS.split('').forEach(char => {
+      ILLEGAL.NS.split('').forEach((char) => {
         const file = `abc${char}def`;
         expect(() => Uri.create.file('foo', file)).to.throw();
       });

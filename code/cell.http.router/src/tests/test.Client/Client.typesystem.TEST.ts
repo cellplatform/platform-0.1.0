@@ -1,4 +1,4 @@
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { delay, filter, take } from 'rxjs/operators';
 
 import { Client, createMock, ERROR, expect, fs, t, time, TYPE_DEFS } from '../../test';
@@ -91,10 +91,7 @@ describe('Client.TypeSystem', () => {
         const fired: t.ITypedSheetChanged[] = [];
         client.changes.changed$.subscribe(e => fired.push(e));
 
-        const row = await sheet
-          .data<g.MyRow>('MyRow')
-          .row(0)
-          .load();
+        const row = await sheet.data<g.MyRow>('MyRow').row(0).load();
         row.props.title = '1';
         row.props.title = '2';
         row.props.title = '3';

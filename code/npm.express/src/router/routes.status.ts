@@ -1,6 +1,6 @@
 import { express, filesize, fs, getProcess, npm, t, value } from '../common';
 
-const pkg = require('../../package.json');
+const pkg = require('../../package.json'); // eslint-disable-line
 
 export function create(args: { getContext: t.GetNpmRouteContext }) {
   const router = express.Router();

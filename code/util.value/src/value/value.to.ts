@@ -33,10 +33,7 @@ export function toBool(value: any, defaultValue?: any) {
   if (typeof value === 'boolean') {
     return value;
   }
-  const asString = value
-    .toString()
-    .trim()
-    .toLowerCase();
+  const asString = value.toString().trim().toLowerCase();
   if (asString === 'true') {
     return true;
   }
@@ -57,10 +54,7 @@ export function toType<T>(value: any) {
   }
 
   // Boolean | null | undefined.
-  const asString = (value || '')
-    .toString()
-    .trim()
-    .toLowerCase();
+  const asString = (value || '').toString().trim().toLowerCase();
   if (asString === 'true' || asString === 'false') {
     return toBool(value);
   }

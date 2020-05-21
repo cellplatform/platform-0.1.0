@@ -196,7 +196,9 @@ export class Template {
     // Apply any filters.
     const filters = this.config.filters;
     files =
-      filters.length === 0 ? files : files.filter(file => filters.every(filter => filter(file)));
+      filters.length === 0
+        ? files
+        : files.filter(file => filters.every(filter => filter(file)));
 
     // Finish up.
     this.config.cache.files = files;

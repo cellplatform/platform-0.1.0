@@ -41,11 +41,11 @@ export async function incoming(args: IIncomingArgs): Promise<t.IRefIn[]> {
   // Walk list of keys finding incoming references.
   const isMatch = (input: string) => util.path(input).includes(args.key);
   const res: t.IRefIn[] = [];
-  const wait = keys.map(async cell => {
+  const wait = keys.map(async (cell) => {
     if (cell !== args.key) {
       (await outgoing({ key: cell, getValue, cache }))
-        .filter(ref => isMatch(ref.path))
-        .forEach(ref => res.push({ cell }));
+        .filter((ref) => isMatch(ref.path))
+        .forEach((ref) => res.push({ cell }));
     }
   });
 

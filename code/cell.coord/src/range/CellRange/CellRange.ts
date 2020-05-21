@@ -34,7 +34,7 @@ export class CellRange {
     if (keys.length === 0) {
       throw new Error(`To create a region-square at least one key must be passed.`);
     }
-    let list = keys.map(item => (typeof item === 'string' ? item : item.key));
+    let list = keys.map((item) => (typeof item === 'string' ? item : item.key));
     list = cell.sort(R.uniq(list));
     const max = cell.toKey(cell.max.column(list), cell.max.row(list));
     return CellRange.fromKey(`${list[0]}:${max}`);
@@ -217,10 +217,10 @@ export class CellRange {
       const totalRows = max.row - min.row + 1;
       const result = Array.from({ length: totalColumns })
         .map((v, i) => min.column + i)
-        .map(columnIndex =>
+        .map((columnIndex) =>
           Array.from({ length: totalRows })
             .map((v, i) => min.row + i)
-            .map(rowIndex => {
+            .map((rowIndex) => {
               return cell.toKey(columnIndex, rowIndex);
             }),
         );
@@ -600,7 +600,7 @@ export class CellRange {
    * Retrieves details about a single axis (COLUMN/ROW).
    */
   public axis(axis: t.CoordAxis) {
-    const self = this; // tslint:disable-line
+    const self = this; // eslint-disable-line
 
     const res = {
       get left() {
@@ -621,7 +621,7 @@ export class CellRange {
           ? []
           : Array.from({ length: end + 1 - start })
               .map((v, i) => i + start)
-              .map(i => cell.toAxisKey(axis, i) as string);
+              .map((i) => cell.toAxisKey(axis, i) as string);
       },
     };
 

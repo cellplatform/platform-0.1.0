@@ -80,7 +80,7 @@ describe('TypeScript', () => {
       const res1 = TypeScript.toDeclaration({
         typename,
         types,
-        filterType: args => typenames.push(args.typename),
+        filterType: (args) => typenames.push(args.typename),
       });
 
       expect(typenames).to.eql(['MyFoo']);
@@ -88,7 +88,7 @@ describe('TypeScript', () => {
       const res2 = TypeScript.toDeclaration({
         typename,
         types,
-        filterType: args => !typenames.includes(args.typename),
+        filterType: (args) => !typenames.includes(args.typename),
       });
 
       expect(res1).to.include(`export declare type MyFoo = {`);
@@ -337,7 +337,7 @@ describe('TypeScript', () => {
     it('non-deep types (primitives | ENUM | UNKNOWN)', () => {
       const test = (type: t.IType) => {
         const list: t.TypeVisitArgs[] = [];
-        TypeScript.walk(type, e => list.push(e));
+        TypeScript.walk(type, (e) => list.push(e));
         expect(list).to.eql([]);
       };
       test({ kind: 'UNKNOWN', typename: 'Foo' });
@@ -351,7 +351,7 @@ describe('TypeScript', () => {
 
     it('REF (empty)', () => {
       const list: t.TypeVisitArgs[] = [];
-      TypeScript.walk(refType, e => list.push(e));
+      TypeScript.walk(refType, (e) => list.push(e));
       expect(list).to.eql([]);
     });
 
@@ -377,7 +377,7 @@ describe('TypeScript', () => {
       const root = { ...refType, types };
       const list: t.TypeVisitArgs[] = [];
 
-      TypeScript.walk(root, e => list.push(e));
+      TypeScript.walk(root, (e) => list.push(e));
       expect(list.length).to.eql(4);
 
       expect(list[0].level).to.eql(1);
@@ -428,7 +428,7 @@ describe('TypeScript', () => {
         ],
       };
       const list: t.TypeVisitArgs[] = [];
-      TypeScript.walk(root, e => list.push(e));
+      TypeScript.walk(root, (e) => list.push(e));
 
       expect(list.length).to.eql(6);
 

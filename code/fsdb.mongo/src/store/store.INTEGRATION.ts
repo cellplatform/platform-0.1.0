@@ -6,7 +6,7 @@ const uri = process.env.MONGO_TEST as string;
 const db = 'test';
 const collection = 'fsdb.mongo/store';
 
-describe('Store (Mongo)', function() {
+describe('Store (Mongo)', function () {
   this.timeout(20000);
   let store: MongoStore;
 

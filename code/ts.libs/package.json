@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts.libs",
-  "version": "3.8.4",
+  "version": "3.9.6",
   "description": "Common TypesScript and linter configuration.",
   "scripts": {
     "test": "echo no-op",
@@ -9,19 +9,25 @@
     "prepare": "yarn build && yarn lint"
   },
   "dependencies": {
-    "@types/node": "13.9.1",
-    "prettier": "1.19.1",
-    "ts-node": "8.6.2",
-    "tslib": "1.11.1",
-    "tslint": "6.1.0",
-    "tslint-config-prettier": "1.18.0",
-    "tslint-react": "4.2.0",
-    "typescript": "3.7.5"
+    "@types/node": "14.0.4",
+    "@typescript-eslint/eslint-plugin": "2.34.0",
+    "@typescript-eslint/eslint-plugin-tslint": "2.34.0",
+    "@typescript-eslint/parser": "2.34.0",
+    "eslint": "7.0.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-import": "2.20.2",
+    "eslint-plugin-jsdoc": "25.4.2",
+    "eslint-plugin-prefer-arrow": "1.2.1",
+    "eslint-plugin-react": "7.20.0",
+    "prettier": "2.0.5",
+    "ts-node": "8.10.1",
+    "tslib": "2.0.0",
+    "typescript": "3.9.3"
   },
   "files": [
+    "lint.js",
     "*.sh",
     "*.json"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

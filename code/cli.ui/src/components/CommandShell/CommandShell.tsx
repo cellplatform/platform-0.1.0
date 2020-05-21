@@ -47,7 +47,7 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     // const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));

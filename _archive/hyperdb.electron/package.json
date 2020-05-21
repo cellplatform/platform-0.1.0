@@ -27,6 +27,5 @@
     "lib",
     "scripts"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

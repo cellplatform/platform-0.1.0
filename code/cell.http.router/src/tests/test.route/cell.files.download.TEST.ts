@@ -1,4 +1,6 @@
-import { createMock, expect, fs, http, readFile, Schema, t, util } from '../../test';
+/* eslint-disable */
+
+import { createMock, expect, fs, http, readFile, t, util } from '../../test';
 
 const bodyToText = async (body?: ReadableStream | string) => {
   if (!body) {
@@ -13,7 +15,7 @@ const bodyToText = async (body?: ReadableStream | string) => {
   }
 };
 
-describe('cell/files: download', function() {
+describe('cell/files: download', function () {
   this.timeout(50000);
 
   describe('http (raw URLs)', () => {
@@ -111,7 +113,7 @@ describe('cell/files: download', function() {
 
       // Download the file and check headers.
       let headers: undefined | t.IHttpHeaders;
-      mock.client.response$.subscribe(e => (headers = e.response.headers));
+      mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
       const res = await client.file.name(filename).download();
       const html = await bodyToText(res.body);
@@ -135,7 +137,7 @@ describe('cell/files: download', function() {
 
       // Download the file and check headers.
       let headers: undefined | t.IHttpHeaders;
-      mock.client.response$.subscribe(e => (headers = e.response.headers));
+      mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
       const res = await client.file.name('  ///foo/bar/m.root.html  ').download(); // NB: path prefix slahses "/" are trimmed.
       const html = await bodyToText(res.body);
@@ -159,7 +161,7 @@ describe('cell/files: download', function() {
 
       // Download the file and check headers.
       let headers: undefined | t.IHttpHeaders;
-      mock.client.response$.subscribe(e => (headers = e.response.headers));
+      mock.client.response$.subscribe((e) => (headers = e.response.headers));
 
       const res = await client.file.name(filename).download();
       const html = await bodyToText(res.body);
@@ -207,7 +209,7 @@ describe('cell/files: download', function() {
 
         // Download the file and check headers.
         let headers: undefined | t.IHttpHeaders;
-        mock.client.response$.subscribe(e => (headers = e.response.headers));
+        mock.client.response$.subscribe((e) => (headers = e.response.headers));
         const res = await client.file.name('/index.html').download();
         const html = await bodyToText(res.body);
         await mock.dispose();

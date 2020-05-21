@@ -30,6 +30,6 @@ export const copyToClipboard = (text: string) => {
     document.body.removeChild(el);
   } catch (error) {
     const err = `Failed to copy text to clipboard.\n\n${text}`;
-    console.error(err); // tslint:disable-line
+    console.error(err); // eslint-disable-line
   }
 };

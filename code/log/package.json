@@ -1,6 +1,6 @@
 {
   "name": "@platform/log",
-  "version": "0.1.17",
+  "version": "0.1.24",
   "description": "Client and server logging.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,13 +15,13 @@
     "tmp": "cd src/client && ts $@"
   },
   "dependencies": {
-    "@platform/libs": "0.2.1",
-    "chalk": "3.0.0",
+    "@platform/libs": "0.2.2",
+    "chalk": "4.0.0",
     "cli-table": "0.3.1"
   },
   "devDependencies": {
-    "@platform/test": "0.1.7",
-    "@platform/ts": "3.7.20"
+    "@platform/test": "0.1.11",
+    "@platform/ts": "3.9.2"
   },
   "files": [
     "lib",
@@ -29,6 +29,5 @@
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

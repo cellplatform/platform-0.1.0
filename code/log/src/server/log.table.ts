@@ -1,6 +1,6 @@
 import { t, compact } from './common';
 
-const Table = require('cli-table');
+const Table = require('cli-table'); // eslint-disable-line
 const DEFAULTS = {
   BORDERLESS: {
     top: '',

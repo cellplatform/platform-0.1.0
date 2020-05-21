@@ -3,7 +3,7 @@ import * as React from 'react';
 /**
  * [react-inspector]
  */
-const m = require('react-inspector');
+const m = require('react-inspector'); // eslint-disable-line
 
 export const ReactInspector = m.default as React.ComponentClass<any>;
 export const ObjectLabel = m.ObjectLabel as React.ComponentClass<any>;

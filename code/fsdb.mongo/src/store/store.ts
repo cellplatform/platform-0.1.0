@@ -105,7 +105,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
       if (defaultValue(options.escapeKeys, true)) {
         docs = keys.encodeObjectKeys<any>(docs);
       }
-      this.collection.insertMany(docs, (err, res) => {
+      this.collection.insertMany(docs as any, (err: Error | undefined, res: any) => {
         if (err) {
           reject(err);
         } else {

@@ -1,4 +1,4 @@
-import { t, Uri, util } from '../common';
+import { t, util } from '../common';
 import { HttpClientCellFile } from './HttpClientCellFile';
 import { HttpClientCellFiles } from './HttpClientCellFiles';
 import { HttpClientCellLinks } from './HttpClientCellLinks';

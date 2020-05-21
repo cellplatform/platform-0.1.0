@@ -2,7 +2,7 @@ import { t, expect, util, log } from '../test';
 
 const initS3 = () => util.initS3({ path: 'platform/tmp/test.cell.fs' });
 
-describe('S3 (INTEGRATION)', function() {
+describe('S3 (INTEGRATION)', function () {
   this.timeout(900000);
 
   it('write', async () => {

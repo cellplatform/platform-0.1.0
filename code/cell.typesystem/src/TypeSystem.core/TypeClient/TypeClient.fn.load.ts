@@ -3,9 +3,9 @@ import { Subject } from 'rxjs';
 import { deleteUndefined, ERROR, ErrorList, R, t, Uri, value as valueUtil } from '../../common';
 import { TypeCache } from '../TypeCache';
 import { TypeDefault } from '../TypeDefault';
+import { TypeProp } from '../TypeProp';
 import { TypeValue } from '../TypeValue';
 import * as valdiate from './TypeClient.fn.validate';
-import { TypeProp } from '../TypeProp';
 
 type Visit = { ns: string; level: number };
 type Context = {
@@ -334,7 +334,6 @@ async function readUnionRefs(args: {
 }) {
   const { level, ns, column, union, ctx } = args;
 
-  let index = 0;
   for (const type of union.types) {
     if (type.kind === 'REF') {
       const res = await readRef({ level, ns, column, ref: type, ctx });
@@ -344,8 +343,6 @@ async function readUnionRefs(args: {
     if (type.kind === 'UNION') {
       await readUnionRefs({ level: level + 1, ns, column, union: type, ctx }); // <== 🌳RECURSION
     }
-
-    index++;
   }
 }
 

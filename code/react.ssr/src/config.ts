@@ -117,7 +117,7 @@ export class Config {
     const manifestUrl = `https://${s3.endpoint}/${s3.bucket}/${s3.path.base}/${s3.path.manifest}`;
     const baseUrl = this.baseUrl;
 
-    const config = this; // tslint:disable-line
+    const config = this; // eslint-disable-line
     const api = {
       local: {
         path: filePath,

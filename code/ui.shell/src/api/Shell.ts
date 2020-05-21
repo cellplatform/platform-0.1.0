@@ -126,7 +126,7 @@ export class Shell implements t.IShell {
         res.ok = false;
         res.error = new Error(`The module '${moduleId}' does not have an [init] function`);
       } else {
-        const shell = this; // tslint:disable-line
+        const shell = this; // eslint-disable-line
         const args: t.ShellImportInitArgs = { shell };
         await res.result.init(args);
       }

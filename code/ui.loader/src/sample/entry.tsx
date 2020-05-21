@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { loader, t } from './common';
+import { loader } from './common';
 import { App } from './App';
 
 /**

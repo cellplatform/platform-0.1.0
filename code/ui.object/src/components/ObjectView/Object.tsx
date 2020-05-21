@@ -41,7 +41,7 @@ export class ObjectView extends React.PureComponent<IObjectViewProps, IObjectVie
   public state: IObjectViewState = {};
   private isUnmounted = false;
 
-  public componentWillMount() {
+  public componentDidMount() {
     this.loadData();
   }
 

@@ -33,8 +33,8 @@ describe('refs.table', () => {
       expect(Object.keys(res1.out)).to.eql(['C3', 'A1']);
       expect(Object.keys(res2.out)).to.eql(['A1']);
 
-      expect(res1.in.A2.map(ref => ref.cell)).to.eql(['C3', 'A1']);
-      expect(res1.in.C3.map(ref => ref.cell)).to.eql(['A1']);
+      expect(res1.in.A2.map((ref) => ref.cell)).to.eql(['C3', 'A1']);
+      expect(res1.in.C3.map((ref) => ref.cell)).to.eql(['A1']);
       expect(res1.in).to.eql(res2.in);
     });
 
@@ -49,11 +49,11 @@ describe('refs.table', () => {
       expect(Object.keys(res.out)).to.eql(['A1', 'A2']);
 
       expect(Object.keys(res.in)).to.eql(['B1', 'B2', 'B3', 'C2', 'D2']);
-      expect(res.in.B1.map(e => e.cell)).to.eql(['A1']);
-      expect(res.in.B2.map(e => e.cell)).to.eql(['A1', 'A2']);
-      expect(res.in.B3.map(e => e.cell)).to.eql(['A1']);
-      expect(res.in.C2.map(e => e.cell)).to.eql(['A2']);
-      expect(res.in.D2.map(e => e.cell)).to.eql(['A2']);
+      expect(res.in.B1.map((e) => e.cell)).to.eql(['A1']);
+      expect(res.in.B2.map((e) => e.cell)).to.eql(['A1', 'A2']);
+      expect(res.in.B3.map((e) => e.cell)).to.eql(['A1']);
+      expect(res.in.C2.map((e) => e.cell)).to.eql(['A2']);
+      expect(res.in.D2.map((e) => e.cell)).to.eql(['A2']);
     });
   });
 
@@ -335,19 +335,19 @@ describe('refs.table', () => {
       // Everything.
       const res1 = await table.incoming();
       expect(Object.keys(res1)).to.eql(['A2', 'C3']);
-      expect(res1.A2.map(m => m.cell)).to.eql(['C3', 'A1']);
-      expect(res1.C3.map(m => m.cell)).to.eql(['A1']);
+      expect(res1.A2.map((m) => m.cell)).to.eql(['C3', 'A1']);
+      expect(res1.C3.map((m) => m.cell)).to.eql(['A1']);
 
       // Subset range ("A" column only).
       const res2 = await table.incoming({ range: 'A:A', force: true });
       expect(Object.keys(res2)).to.eql(['A2']);
-      expect(res2.A2.map(m => m.cell)).to.eql(['A1']); // NB: Does not contain other "C3" incoming ref.
+      expect(res2.A2.map((m) => m.cell)).to.eql(['A1']); // NB: Does not contain other "C3" incoming ref.
 
       // Same range, but declared with single value.
       // NB: Converted to a range internally.
       const res3 = await table.incoming({ range: 'A', force: true });
       expect(Object.keys(res3)).to.eql(['A2']); // NB: Same as above.
-      expect(res3.A2.map(m => m.cell)).to.eql(['A1']);
+      expect(res3.A2.map((m) => m.cell)).to.eql(['A1']);
     });
 
     it('calculate subset (range by key: ["A1", "A2"])', async () => {
@@ -362,8 +362,8 @@ describe('refs.table', () => {
       // Everything.
       const res1 = await table.incoming();
       expect(Object.keys(res1)).to.eql(['A2', 'C3']);
-      expect(res1.A2.map(m => m.cell)).to.eql(['C3', 'A1']);
-      expect(res1.C3.map(m => m.cell)).to.eql(['A1']);
+      expect(res1.A2.map((m) => m.cell)).to.eql(['C3', 'A1']);
+      expect(res1.C3.map((m) => m.cell)).to.eql(['A1']);
 
       // Subset ranges by single keys.
       const res2 = await table.incoming({ range: 'A1', force: true });
@@ -371,13 +371,13 @@ describe('refs.table', () => {
 
       expect(res2).to.eql({});
       expect(Object.keys(res3)).to.eql(['A2']);
-      expect(res3.A2.map(m => m.cell)).to.eql(['A1']); // NB: Does not contain other "C3" incoming ref.
+      expect(res3.A2.map((m) => m.cell)).to.eql(['A1']); // NB: Does not contain other "C3" incoming ref.
 
       // Everything (by keys).
       const res4 = await table.incoming({ range: ['A1', 'A2', 'C3'], force: true });
       expect(Object.keys(res4)).to.eql(['A2', 'C3']);
-      expect(res4.A2.map(m => m.cell)).to.eql(['C3', 'A1']);
-      expect(res4.C3.map(m => m.cell)).to.eql(['A1']);
+      expect(res4.A2.map((m) => m.cell)).to.eql(['C3', 'A1']);
+      expect(res4.C3.map((m) => m.cell)).to.eql(['A1']);
     });
 
     it('include ref to [undefined] cell (data from passed `outRefs` param)', async () => {
@@ -515,20 +515,20 @@ describe('refs.table', () => {
       const table = refs.table({ ...ctx });
 
       const getKeys$ = table.event$.pipe(
-        filter(e => e.type === 'REFS/table/getKeys'),
-        map(e => e.payload as t.IRefsTableGetKeys),
+        filter((e) => e.type === 'REFS/table/getKeys'),
+        map((e) => e.payload as t.IRefsTableGetKeys),
       );
 
       let count = 0;
       let modify = false;
-      getKeys$.subscribe(e => count++);
+      getKeys$.subscribe((e) => count++);
 
       const res1 = await table.refs();
       expect(Object.keys(res1.in)).to.eql(['A2', 'C3']);
       expect(Object.keys(res1.out)).to.eql(['C3', 'A1']);
       expect(count).to.eql(2); // NB: IN/OUT.
 
-      getKeys$.pipe(filter(e => modify)).subscribe(e => {
+      getKeys$.pipe(filter((e) => modify)).subscribe((e) => {
         expect(e.isModified).to.eql(false);
         e.modify([]);
         expect(e.isModified).to.eql(true);
@@ -551,15 +551,15 @@ describe('refs.table', () => {
       const table = refs.table({ ...ctx });
 
       const getValue$ = table.event$.pipe(
-        filter(e => e.type === 'REFS/table/getValue'),
-        map(e => e.payload as t.IRefsTableGetValue),
+        filter((e) => e.type === 'REFS/table/getValue'),
+        map((e) => e.payload as t.IRefsTableGetValue),
       );
 
       let count = 0;
       let modify = false;
-      getValue$.subscribe(e => count++);
+      getValue$.subscribe((e) => count++);
 
-      getValue$.pipe(filter(e => modify)).subscribe(e => {
+      getValue$.pipe(filter((e) => modify)).subscribe((e) => {
         if (e.key === 'A1' || e.key === 'C3') {
           e.modify('hello');
           expect(e.isModified).to.eql(true);
@@ -764,7 +764,7 @@ describe('refs.table', () => {
       expect(res3.ok).to.eql(false);
       expect(res3.errors.length).to.eql(4);
 
-      expect(res3.errors.map(err => err.path).sort()).to.eql([
+      expect(res3.errors.map((err) => err.path).sort()).to.eql([
         'A1/A2/A1',
         'A1/C3/A2/A1',
         'A2/A1/A2',
@@ -783,12 +783,12 @@ describe('refs.table', () => {
       const table = refs.table({ ...ctx });
 
       const update$ = table.event$.pipe(
-        filter(e => e.type === 'REFS/table/update'),
-        map(e => e.payload as t.RefsTableUpdate),
+        filter((e) => e.type === 'REFS/table/update'),
+        map((e) => e.payload as t.RefsTableUpdate),
       );
 
       const events: t.RefsTableUpdate[] = [];
-      update$.subscribe(e => events.push(e));
+      update$.subscribe((e) => events.push(e));
 
       // No change (no event).
       A2 = '456';

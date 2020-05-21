@@ -26,7 +26,9 @@ export function toSelectionValues(args: {
     end: number,
     coords: coord.ICoord[],
   ) => {
-    return coords.filter(cell => cell[field] >= start && cell[field] <= end).map(cell => cell.key);
+    return coords
+      .filter(cell => cell[field] >= start && cell[field] <= end)
+      .map(cell => cell.key);
   };
 
   let keys: string[] = [];

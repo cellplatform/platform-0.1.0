@@ -5,7 +5,7 @@ import { ROBOTO } from './constants';
 /**
  * Converts <Text> style props to a CSS object.
  */
-export function toTextCss(props: ITextStyle) {
+export const toTextCss = (props: ITextStyle) => {
   const {
     fontSize,
     color,
@@ -33,9 +33,9 @@ export function toTextCss(props: ITextStyle) {
     textShadow: toShadow(textShadow),
     textTransform: uppercase ? ('uppercase' as React.CSSProperties['textTransform']) : undefined,
   };
-}
+};
 
-export function pluckTextStyles(props: any) {
+export const pluckTextStyles = (props: any) => {
   const {
     fontSize,
     color = -0.7,
@@ -63,13 +63,13 @@ export function pluckTextStyles(props: any) {
     textShadow,
     uppercase,
   };
-}
+};
 
 /**
  * Produces a `textShadow` CSS value from an array.
  * [0:offset-y, 1:color.format()]
  */
-export function toShadow(value?: string | Array<number | string>) {
+export const toShadow = (value?: string | Array<number | string>) => {
   if (value === undefined) {
     return;
   }
@@ -77,4 +77,4 @@ export function toShadow(value?: string | Array<number | string>) {
     return value as string;
   }
   return `0px ${value[0]}px ${colorUtil.format(value[1])}`;
-}
+};

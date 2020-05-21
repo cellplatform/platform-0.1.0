@@ -21,7 +21,7 @@ describe('TypeClient', () => {
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
-      expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
+      expect(def.columns.map((c) => c.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
     });
 
     it('"foo" (without "ns:" prefix)', async () => {
@@ -35,7 +35,7 @@ describe('TypeClient', () => {
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
-      expect(def.columns.map(c => c.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
+      expect(def.columns.map((c) => c.column)).to.eql(['A', 'B', 'C', 'D', 'E']);
     });
 
     it('"ns:foo.multi" (several return types)', async () => {
@@ -50,13 +50,13 @@ describe('TypeClient', () => {
       expect(defs[0].errors).to.eql([]);
       expect(defs[0].uri).to.eql('ns:foo.multi');
       expect(defs[0].typename).to.eql('MyOne');
-      expect(defs[0].columns.map(c => c.column)).to.eql(['A', 'B']);
+      expect(defs[0].columns.map((c) => c.column)).to.eql(['A', 'B']);
 
       expect(defs[1].ok).to.eql(true);
       expect(defs[1].errors).to.eql([]);
       expect(defs[1].uri).to.eql('ns:foo.multi');
       expect(defs[1].typename).to.eql('MyTwo');
-      expect(defs[1].columns.map(c => c.column)).to.eql(['B', 'C']);
+      expect(defs[1].columns.map((c) => c.column)).to.eql(['B', 'C']);
     });
   });
 
@@ -82,7 +82,7 @@ describe('TypeClient', () => {
     it('error: failure while loading', async () => {
       const fetch = testFetch({
         defs: TYPE_DEFS,
-        before: e => {
+        before: (e) => {
           throw new Error('Derp!');
         },
       });
@@ -561,7 +561,7 @@ describe('TypeClient', () => {
       const test = async (column: string, typename: string, defaultValue?: any) => {
         const fetch = testFetch({ defs: TYPE_DEFS });
         const res = await TypeClient.load({ ns: 'foo.primitives', fetch });
-        const match = res.defs[0].columns.find(c => c.column === column);
+        const match = res.defs[0].columns.find((c) => c.column === column);
         expect(match).to.not.eql(undefined);
         if (match) {
           expect(match.type.kind).to.eql('VALUE');
@@ -1068,7 +1068,7 @@ describe('TypeClient', () => {
 
         const lines = res.split('\n');
         const only = (total: number, line: string) => {
-          const matches = lines.filter(text => text.includes(line));
+          const matches = lines.filter((text) => text.includes(line));
           expect(matches.length).to.eql(
             total,
             `Should only be ${total} entry, found ${matches.length}. "${line}"`,
@@ -1108,7 +1108,7 @@ describe('TypeClient', () => {
 
         const lines = res.split('\n');
         const onlyOne = (line: string) => {
-          const matches = lines.filter(text => text.includes(line));
+          const matches = lines.filter((text) => text.includes(line));
           const total = matches.length;
           expect(total).to.eql(1, `Should only be 1 entry, found ${total}. "${line}"`);
         };

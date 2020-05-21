@@ -56,9 +56,7 @@ describe('Template', () => {
     });
 
     it('chaining', () => {
-      const tmpl = Template.create()
-        .add({ dir: './tmpl-1' })
-        .add({ dir: './tmpl-2' });
+      const tmpl = Template.create().add({ dir: './tmpl-1' }).add({ dir: './tmpl-2' });
       expect(tmpl.sources).to.eql([{ dir: './tmpl-1' }, { dir: './tmpl-2' }]);
     });
 

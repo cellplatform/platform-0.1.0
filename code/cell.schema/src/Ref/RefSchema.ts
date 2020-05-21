@@ -12,5 +12,5 @@ export class RefSchema {
    * [Lifecycle]
    */
   public static create = (args: IRefSchemaArgs) => new RefSchema(args);
-  private constructor(args: IRefSchemaArgs) {}
+  private constructor(args: IRefSchemaArgs) {} // eslint-disable-line
 }

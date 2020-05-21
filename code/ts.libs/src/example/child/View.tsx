@@ -1,1 +1,1 @@
-export const MyComponent = (props: {}) => null;
+export const MyComponent = () => null;

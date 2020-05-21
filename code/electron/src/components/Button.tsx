@@ -50,8 +50,12 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
 
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe(e => this.setState(e));
-    mouse$.pipe(filter(e => e.type === 'DOWN')).subscribe(e => this.state$.next({ isDown: true }));
-    mouse$.pipe(filter(e => e.type === 'UP')).subscribe(e => this.state$.next({ isDown: false }));
+    mouse$
+      .pipe(filter(e => e.type === 'DOWN'))
+      .subscribe(e => this.state$.next({ isDown: true }));
+    mouse$
+      .pipe(filter(e => e.type === 'UP'))
+      .subscribe(e => this.state$.next({ isDown: false }));
   }
 
   public componentWillUnmount() {

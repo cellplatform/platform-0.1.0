@@ -66,15 +66,15 @@ events$
 events$
   // Clear console.
   .pipe(filter(e => e.type === 'CLEAR'))
-  .subscribe(e => console.clear()); // tslint:disable-line
+  .subscribe(e => console.clear()); // eslint-disable-line
 
 events$
   // Group.
   .pipe(filter(e => e.type === 'GROUP'))
   .pipe(map(e => e.payload as t.ILogEvent))
-  .subscribe(e => console.group(e.output)); // tslint:disable-line
+  .subscribe(e => console.group(e.output)); // eslint-disable-line
 
 events$
   // End group.
   .pipe(filter(e => e.type === 'UNGROUP'))
-  .subscribe(e => console.groupEnd()); // tslint:disable-line
+  .subscribe(e => console.groupEnd()); // eslint-disable-line

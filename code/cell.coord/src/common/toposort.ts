@@ -1,4 +1,4 @@
-const sort = require('toposort');
+const sort = require('toposort'); // eslint-disable-line
 
 /**
  * Topologically sort directed acyclic graph.

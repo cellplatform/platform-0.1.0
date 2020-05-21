@@ -13,5 +13,5 @@ export class MongoDb {
     return db;
   }
 
-  private constructor() {}
+  private constructor() {} // eslint-disable-line
 }

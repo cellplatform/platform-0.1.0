@@ -1,7 +1,7 @@
 import { filter, map } from 'rxjs/operators';
 
 import { TypeDefault, TypeTarget } from '../../TypeSystem.core';
-import { Schema, t, Uri, util, R } from './common';
+import { R, Schema, t, Uri } from './common';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 
@@ -60,7 +60,9 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       .pipe(
         map(e => {
           const columnKey = Schema.coord.cell.toColumnKey(e.uri.key);
-          const columnDef = this._columns.find(def => def.column === columnKey) as t.IColumnTypeDef;
+          const columnDef = this._columns.find(
+            def => def.column === columnKey,
+          ) as t.IColumnTypeDef;
           return { ...e, columnDef };
         }),
         filter(e => Boolean(e.columnDef)),
@@ -237,7 +239,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       return this._prop[propname]; // Already created and cached.
     }
 
-    const self = this; // tslint:disable-line
+    const self = this; // eslint-disable-line
     const columnDef = this.findColumnByProp(name);
     const target = TypeTarget.parse(columnDef.target);
     const typename = columnDef.type.typename;

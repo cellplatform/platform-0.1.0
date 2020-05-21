@@ -141,8 +141,8 @@ export function init<T extends t.SettingsJson>(args: {
     return file.exists ? Object.keys(file.data.body) : [];
   };
 
-  const openInEditor: t.OpenSettings = () => shell.openItem(path);
-  const openFolder: t.OpenSettings = () => shell.openItem(dir);
+  const openInEditor: t.OpenSettings = () => shell.openPath(path);
+  const openFolder: t.OpenSettings = () => shell.openPath(dir);
 
   // Create the client.
   const client = (new SettingsClient<T>({
@@ -206,6 +206,6 @@ export function init<T extends t.SettingsJson>(args: {
   });
 
   // Finish up.
-  refs.client = client;
+  (refs as any).client = client;
   return client;
 }

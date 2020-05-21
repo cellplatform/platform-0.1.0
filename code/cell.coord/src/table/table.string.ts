@@ -29,8 +29,8 @@ export function toString(args: {
 
   // Get a complete square of keys as the given list by have holes in it.
   const square = range.square(items);
-  const list: ItemPosition[] = square.keys.map(key => {
-    let item = items.find(item => item.key === key);
+  const list: ItemPosition[] = square.keys.map((key) => {
+    let item = items.find((item) => item.key === key);
     item = item ? item : { key, value: undefined };
     item = args.transform ? { ...item, value: args.transform(item) } : item;
     const { column, row } = cell.fromKey(key);
@@ -50,7 +50,7 @@ export function toString(args: {
 
   // Collapse into string.
   const text = rows.reduce((acc, item, i) => {
-    const line = item.map(m => m.value).join(delimiter);
+    const line = item.map((m) => m.value).join(delimiter);
     const newline = i === 0 ? '' : '\n';
     return `${acc}${newline}${line}`;
   }, '');

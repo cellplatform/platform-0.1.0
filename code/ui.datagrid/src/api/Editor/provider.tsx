@@ -1,3 +1,5 @@
+/* eslint-disable react/display-name */
+
 import * as React from 'react';
 import { t } from '../../common';
 

@@ -11,7 +11,7 @@ export function isOK(status: number | string = 200) {
 /**
  * Determines if the given string is an HTTP link.
  */
-export function isHttp(input: string = '') {
+export function isHttp(input = '') {
   input = input.trim();
   return input.startsWith('https://') || input.startsWith('http://');
 }
@@ -19,7 +19,7 @@ export function isHttp(input: string = '') {
 /**
  * Determines if the given string is a FILE link.
  */
-export function isFile(input: string = '') {
+export function isFile(input = '') {
   return input.trim().startsWith('file://');
 }
 
@@ -27,7 +27,7 @@ export function isFile(input: string = '') {
  * Get the mime-type for the given filename.
  * Derived from extension.
  */
-export function toMimetype(filename: string = '') {
+export function toMimetype(filename = '') {
   const type = mime.lookup((filename || '').trim());
   return typeof type === 'string' ? type : undefined;
 }

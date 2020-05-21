@@ -43,9 +43,9 @@ export function init(args: t.S3Config): t.S3 {
         signedPost(options: t.S3SignedPostArgs) {
           return util.toPresignedPost({
             s3,
-            bucket,
-            key: path,
             ...options,
+            bucket,
+            key: path || (options || {}).key,
           });
         },
       };

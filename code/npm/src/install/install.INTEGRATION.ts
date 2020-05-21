@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { npm } from '..';
 import { fs, log } from '../common';
 
-describe.skip('install (integration)', function() {
+describe.skip('install (integration)', function () {
   this.timeout(100000);
 
   it('npm.install', async () => {

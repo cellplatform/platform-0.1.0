@@ -1,3 +1,3 @@
 export class Foo {
-  public name: string = 'Hello';
+  public name = 'Hello';
 }

@@ -1,9 +1,9 @@
 function write(...value: any) {
-  console.log.apply(null, value); // tslint:disable-line
+  console.log.apply(null, value); // eslint-disable-line
 }
 
-function silentWrite(...value: any) {
-  return;
+function silentWrite(...value: any[]) {
+  return value;
 }
 
 /**

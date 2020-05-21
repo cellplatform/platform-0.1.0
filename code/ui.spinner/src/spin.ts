@@ -24,14 +24,14 @@
  *    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// tslint:disable
+/* eslint-disable */
 
 let __assign =
   (this && (this as any).__assign) ||
-  function() {
+  function () {
     __assign =
       Object.assign ||
-      function(t: any) {
+      function (t: any) {
         for (let s, i = 1, n = arguments.length; i < n; i++) {
           s = arguments[i];
           for (const p in s) {
@@ -65,7 +65,7 @@ const defaults = {
   shadow: '0 0 1px transparent',
   position: 'absolute',
 };
-const Spinner = /** @class */ (function() {
+const Spinner = /** @class */ (function () {
   function Spinner(opts: any) {
     if (opts === void 0) {
       opts = {};
@@ -78,7 +78,7 @@ const Spinner = /** @class */ (function() {
    * spinning, it is automatically removed from its previous target by calling
    * stop() internally.
    */
-  Spinner.prototype.spin = function(target: any) {
+  Spinner.prototype.spin = function (target: any) {
     this.stop();
     this.el = document.createElement('div');
     this.el.className = this.opts.className;
@@ -101,7 +101,7 @@ const Spinner = /** @class */ (function() {
    * Stops and removes the Spinner.
    * Stopped spinners may be reused by calling spin() again.
    */
-  Spinner.prototype.stop = function() {
+  Spinner.prototype.stop = function () {
     if (this.el) {
       if (typeof requestAnimationFrame !== 'undefined') {
         cancelAnimationFrame(this.animateId);

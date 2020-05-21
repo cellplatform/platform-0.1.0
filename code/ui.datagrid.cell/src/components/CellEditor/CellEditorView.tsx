@@ -309,7 +309,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   }
 
   private fireChanging(mode: t.CellEditorMode, from: string, to: string) {
-    const self = this; // tslint:disable-line
+    const self = this; // eslint-disable-line
     let isCancelled = false;
     const payload = {
       mode,

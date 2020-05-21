@@ -1,6 +1,6 @@
 {
   "name": "@platform/auth0",
-  "version": "0.2.120",
+  "version": "0.2.127",
   "description": "Interfaces for working with Auth0.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,23 +16,23 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/http": "0.12.7",
-    "@platform/util.is": "0.0.117",
-    "@platform/util.string": "0.5.0",
-    "@types/jsonwebtoken": "8.3.8",
-    "auth0-js": "9.12.2",
+    "@platform/http": "0.12.14",
+    "@platform/util.is": "0.0.124",
+    "@platform/util.string": "0.5.7",
+    "@types/jsonwebtoken": "8.5.0",
+    "auth0-js": "9.13.2",
     "jsonwebtoken": "8.5.1",
-    "jwks-rsa": "1.7.0"
+    "jwks-rsa": "1.8.0"
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
-    "@platform/react": "0.4.19",
-    "@types/auth0-js": "9.12.4",
+    "@platform/react": "0.4.26",
+    "@types/auth0-js": "9.13.1",
     "@uiharness/dev": "0.10.5",
-    "@uiharness/ui": "0.7.5",
-    "apollo-server": "2.11.0",
-    "electron": "8.1.1",
-    "graphql": "14.6.0"
+    "@uiharness/ui": "0.7.6",
+    "apollo-server": "2.13.1",
+    "electron": "9.0.0",
+    "graphql": "15.0.0"
   },
   "files": [
     "lib",
@@ -40,6 +40,5 @@
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

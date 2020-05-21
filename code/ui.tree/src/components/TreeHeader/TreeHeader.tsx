@@ -30,6 +30,7 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
   public render() {
     const theme = this.theme.header;
     const { height, title = 'Untitled', showParentButton } = this.props;
+
     const styles = {
       base: css({
         Absolute: [0, 0, null, 0],
@@ -74,14 +75,16 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
     );
 
     return (
-      <Text style={css(styles.base, this.props.style)}>
-        <div {...styles.background} />
-        <div {...styles.body}>
-          <div {...css(styles.edge, styles.left)}>{elParentButton}</div>
-          <div {...styles.title}>{title}</div>
-          <div {...css(styles.edge, styles.right)} />
-        </div>
-      </Text>
+      <div {...css(styles.base, this.props.style)}>
+        <Text>
+          <div {...styles.background} />
+          <div {...styles.body}>
+            <div {...css(styles.edge, styles.left)}>{elParentButton}</div>
+            <div {...styles.title}>{title}</div>
+            <div {...css(styles.edge, styles.right)} />
+          </div>
+        </Text>
+      </div>
     );
   }
 

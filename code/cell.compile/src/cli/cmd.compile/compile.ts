@@ -2,5 +2,5 @@
  * Compile command.
  */
 export async function compile(args: { dir: string; silent?: boolean }) {
-  console.log('compile:', args, '\n');
+  console.log('compile:', args, '\n'); // eslint-disable-line
 }

@@ -15,5 +15,5 @@ export class File<T> {
   /**
    * [Constructor]
    */
-  private constructor() {}
+  private constructor() {} // eslint-disable-line
 }

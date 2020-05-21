@@ -2,22 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import {
-  color,
-  COLORS,
-  coord,
-  css,
-  func,
-  CssValue,
-  Uri,
-  t,
-  util,
-  value,
-  cell,
-  cuid,
-} from '../common';
+import { COLORS, coord, css, CssValue, func, t, Uri, util } from '../common';
 import { ObjectView } from '../primitives';
-import { Badge, Label, Panel, PanelTitle, LinkButton, HrDashed } from '../widgets';
+import { Badge, Label, LinkButton, Panel, PanelTitle } from '../widgets';
 
 export type IDebugCellProps = {
   grid: t.IGrid;

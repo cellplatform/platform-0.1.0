@@ -61,7 +61,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     // Change state safely.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
@@ -96,9 +96,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
         map(e => e.key.toLowerCase()),
       )
       .subscribe(key => (this.modifierKeys[key] = false));
-  }
 
-  public componentDidMount() {
     this.setState({ isLoaded: true }, () => this.init());
 
     // Execute requested command.

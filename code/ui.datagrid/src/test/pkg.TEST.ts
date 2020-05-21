@@ -1,7 +1,7 @@
 import { expect, log } from '.';
 
 describe('package.json', () => {
-  const pkg = require('../../package.json');
+  const pkg = require('../../package.json'); // eslint-disable-line
 
   it('has locked version: handsontable@6.2.2', () => {
     const deps = pkg.dependencies;

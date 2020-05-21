@@ -1,6 +1,6 @@
 {
   "name": "@platform/exec",
-  "version": "0.2.53",
+  "version": "0.2.58",
   "description": "Tools for executing commands in child_process.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,16 +14,16 @@
     "tmp": "node lib/example/tmp"
   },
   "dependencies": {
-    "@platform/libs": "0.2.1",
+    "@platform/libs": "0.2.2",
     "@types/listr": "0.14.2",
     "ansi-regex": "5.0.0",
-    "chalk": "3.0.0",
+    "chalk": "4.0.0",
     "listr": "0.14.3"
   },
   "devDependencies": {
-    "@platform/fs": "0.5.12",
-    "@platform/test": "0.1.7",
-    "@platform/ts.libs": "3.8.4",
+    "@platform/fs": "0.5.16",
+    "@platform/test": "0.1.11",
+    "@platform/ts.libs": "3.9.6",
     "@types/ansi-regex": "5.0.0"
   },
   "files": [
@@ -31,6 +31,5 @@
     "!lib/test",
     "!*.TEST.{js, mjs, d.ts}"
   ],
-  "repository": "uiharness/platform",
   "license": "MIT"
 }

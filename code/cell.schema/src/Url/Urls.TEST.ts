@@ -1,4 +1,4 @@
-import { t, expect } from '../test';
+import { expect } from '../test';
 import { Urls } from '.';
 import { Uri } from '../Uri';
 

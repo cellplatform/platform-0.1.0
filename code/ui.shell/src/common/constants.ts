@@ -1,4 +1,3 @@
-import * as t from './types';
 import { color as colorUtil } from './libs';
 
 const asColor = (value: number) => colorUtil.format(value) as string;

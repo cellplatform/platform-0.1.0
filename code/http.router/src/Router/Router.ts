@@ -33,7 +33,7 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
    * [Properties]
    */
   public get wildcard() {
-    return this.routes.find(route => route.path === '*');
+    return this.routes.find((route) => route.path === '*');
   }
 
   /**
@@ -73,7 +73,9 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
         header(key: string) {
           key = key.toLowerCase();
           const headers = incoming.headers;
-          const matches = Object.keys(headers).filter(headerKey => headerKey.toLowerCase() === key);
+          const matches = Object.keys(headers).filter(
+            (headerKey) => headerKey.toLowerCase() === key,
+          );
           const value = matches[0] ? headers[matches[0]] : '';
           return value?.toString() || '';
         },
@@ -99,7 +101,7 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
         },
       };
 
-      const request = Object.assign(incoming, helpers) as t.IRouteRequest; // tslint:disable-line
+      const request = Object.assign(incoming, helpers) as t.IRouteRequest; // eslint-disable-line
 
       return route.handler(request, ctx);
     } catch (err) {
@@ -111,12 +113,12 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
 
   public add(method: t.HttpMethod, path: t.RoutePath, handler: t.RouteHandler<C>) {
     const paths = Array.isArray(path) ? path : [path];
-    paths.forEach(path => this._add(method, path, handler));
+    paths.forEach((path) => this._add(method, path, handler));
     return this;
   }
 
   private _add(method: t.HttpMethod, path: string, handler: t.RouteHandler<C>) {
-    const exists = this.routes.find(route => route.method === method && route.path === path);
+    const exists = this.routes.find((route) => route.method === method && route.path === path);
     if (exists) {
       throw new Error(`A ${method} route for path '${path}' already exists.`);
     }
@@ -163,7 +165,7 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
    * Find the route at the given url.
    */
   public find(req: { method?: string; url?: string }) {
-    const route = this.routes.find(route => {
+    const route = this.routes.find((route) => {
       return req.method === route.method && route.regex.test(toPath(req.url));
     });
     return route || this.wildcard;

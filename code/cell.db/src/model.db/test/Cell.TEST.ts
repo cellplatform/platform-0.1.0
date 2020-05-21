@@ -1,5 +1,5 @@
 import { Cell } from '..';
-import { expect, getTestDb, util, Schema } from '../../test';
+import { expect, getTestDb, util } from '../../test';
 
 type P = { style?: { bold?: boolean } };
 

@@ -36,7 +36,7 @@ export class CommandTreeView extends React.PureComponent<
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const mouse$ = this.mouse$.pipe(

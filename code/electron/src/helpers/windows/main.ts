@@ -200,7 +200,7 @@ export class WindowsMain implements IWindows {
   public byTag(tag: IWindowTag['tag'], value?: IWindowTag['value']): IWindowRef[];
   public byTag(...tags: IWindowTag[]): IWindowRef[];
   public byTag(): IWindowRef[] {
-    return util.filterByTagWrangle(this.refs, Array.from(arguments));
+    return util.filterByTagWrangle(this.refs, Array.from(arguments)); // eslint-disable-line
   }
 
   /**
