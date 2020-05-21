@@ -11,16 +11,23 @@ module.exports = {
  */
 export async function lint(args: { dir?: string; silent?: boolean } = {}): Promise<IResult> {
   const { silent } = args;
+  const cwd = fs.resolve('.');
 
-  const filename = '.eslintrc.js';
-  let dir = args.dir || (await paths.closestParentOf(filename));
+  // Rename obsolete configuration file.
+  const tslint = 'tslint.json';
+  if (await fs.exists(fs.join(cwd, tslint))) {
+    fs.rename(fs.join(cwd, tslint), fs.join(cwd, '.tslint.json.OLD'));
+  }
+
+  // Ensure there is an ESLint configuration file.
+  const eslintrc = '.eslintrc.js';
+  let dir = args.dir || (await paths.closestParentOf(eslintrc));
   if (!dir) {
-    dir = fs.resolve('.');
-    await fs.writeFile(fs.join(dir, filename), CONFIG);
+    dir = cwd;
+    await fs.writeFile(fs.join(dir, eslintrc), CONFIG);
   }
 
   const log = getLog(silent);
-
   const modules = fs.join(dir, 'node_modules');
   const path = {
     prettier: fs.join(modules, 'prettier/bin-prettier'),
