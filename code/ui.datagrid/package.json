@@ -47,7 +47,7 @@
     "@platform/ui.datagrid.debug": "0.0.117",
     "@platform/util.string": "0.5.7",
     "@uiharness/dev": "0.10.5",
-    "@uiharness/ui": "0.7.5",
+    "@uiharness/ui": "0.7.6",
     "electron": "9.0.0"
   },
   "resolutions": {

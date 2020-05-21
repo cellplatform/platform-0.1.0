@@ -23,7 +23,7 @@
     "@platform/polyfill": "0.0.1",
     "@types/react-select": "3.0.13",
     "@uiharness/dev": "0.10.5",
-    "@uiharness/ui": "0.7.5",
+    "@uiharness/ui": "0.7.6",
     "electron": "9.0.0"
   },
   "files": [

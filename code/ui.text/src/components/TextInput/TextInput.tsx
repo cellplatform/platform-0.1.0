@@ -87,7 +87,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
     const mouse$ = this.mouse.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
 
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     // Bubble events.
     if (this.props.events$) {
@@ -95,7 +95,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
     }
 
     // Bubble mouse events.
-    mouse$.subscribe(payload => this.fire({ type: 'TEXT_INPUT/mouse', payload }));
+    mouse$.subscribe((payload) => this.fire({ type: 'TEXT_INPUT/mouse', payload }));
   }
 
   public componentDidMount() {

@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@uiharness/dev": "0.10.5",
-    "@uiharness/ui": "0.7.5",
+    "@uiharness/ui": "0.7.6",
     "electron": "9.0.0"
   },
   "files": [

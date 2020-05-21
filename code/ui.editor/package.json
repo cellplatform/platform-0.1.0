@@ -47,7 +47,7 @@
     "@types/prosemirror-state": "1.2.3",
     "@types/prosemirror-view": "1.11.2",
     "@uiharness/dev": "0.10.5",
-    "@uiharness/ui": "0.7.5",
+    "@uiharness/ui": "0.7.6",
     "electron": "9.0.0"
   },
   "resolutions": {
