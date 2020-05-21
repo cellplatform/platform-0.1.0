@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
+
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { util, color, COLORS, constants, coord, css, func, CssValue, R, t, value } from '../common';
+import { color, COLORS, constants, coord, css, CssValue, R, t, util, value } from '../common';
 import { ObjectView } from '../primitives';
-import { Badge, Hr, HrDashed, Label, LinkButton, Panel } from '../widgets';
+import { Hr, HrDashed, Label, LinkButton, Panel } from '../widgets';
 import { DebugCell } from './Debug.Cell';
 
 export type DebugRefreshEvent = { force: boolean };
@@ -78,7 +80,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   }
 
   public get selectedCell() {
-    const self = this; // tslint:disable-line
+    const self = this;
     const grid = this.grid;
     return {
       get current() {

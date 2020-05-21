@@ -1,11 +1,11 @@
-// tslint:disable
+/* eslint-disable */
 
 import { exec } from '..';
 import * as chalk from 'chalk';
 
 export async function run() {
   const colorNames = ['cyan', 'magenta'];
-  const colors = colorNames.map(color => chalk[color](color));
+  const colors = colorNames.map((color) => chalk[color](color));
 
   const cmd1 = 'echo foo';
   const cmd2 = 'I will fail 😣';
@@ -15,6 +15,6 @@ export async function run() {
   console.log('-------------------------------------------');
 
   const toMessage = (error?: Error) => (error ? error.message : undefined);
-  const results = res.results.map(res => ({ ...res }));
+  const results = res.results.map((res) => ({ ...res }));
   console.log({ ...res, results, error: toMessage(res.error) });
 }

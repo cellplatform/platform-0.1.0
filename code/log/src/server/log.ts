@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { filter, map } from 'rxjs/operators';
 
 import { t } from './common';

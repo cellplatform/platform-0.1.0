@@ -23,13 +23,6 @@ export type IZipProgress = {
   };
 };
 
-/**
- * Creates a zip archiver.
- */
-export function zip(source: string, dest?: string) {
-  return new Zipper().add(source, dest);
-}
-
 export class Zipper {
   /**
    * [Fields]
@@ -53,7 +46,7 @@ export class Zipper {
       const output = fs.createWriteStream(fsPath.resolve(path));
 
       // Setup stream events.
-      output.on('close', function() {
+      output.on('close', function () {
         const bytes = archive.pointer();
         resolve({ bytes });
       });
@@ -103,4 +96,11 @@ export class Zipper {
       archive.finalize();
     });
   }
+}
+
+/**
+ * Creates a zip archiver.
+ */
+export function zip(source: string, dest?: string) {
+  return new Zipper().add(source, dest);
 }

@@ -63,7 +63,7 @@ export class Model<
     // Bubble events.
     const events$ = args.events$;
     if (events$) {
-      this.events$.subscribe(e => events$.next(e));
+      this.events$.subscribe((e) => events$.next(e));
     }
 
     // Load data from storage.
@@ -114,7 +114,7 @@ export class Model<
     } else {
       // Ensure registered changes differ from current values.
       const map = changes.map;
-      return Object.keys(map).some(key => !R.equals(this.doc[key], map[key]));
+      return Object.keys(map).some((key) => !R.equals(this.doc[key], map[key]));
     }
   }
 
@@ -139,13 +139,13 @@ export class Model<
 
   public get ready() {
     this.throwIfDisposed('ready');
-    return new Promise<t.IModel<P, D, L>>(resolve => {
+    return new Promise<t.IModel<P, D, L>>((resolve) => {
       if (this.isLoaded) {
         resolve(this);
       } else {
         this.events$
-          .pipe(filter(e => e.type === 'MODEL/loaded/data', take(1)))
-          .subscribe(e => resolve(this));
+          .pipe(filter((e) => e.type === 'MODEL/loaded/data', take(1)))
+          .subscribe((e) => resolve(this));
       }
     });
   }
@@ -190,10 +190,10 @@ export class Model<
     this.throwIfDisposed('props');
     if (!this._props) {
       const res = {} as any;
-      Object.keys(this._args.initial).forEach(field => {
+      Object.keys(this._args.initial).forEach((field) => {
         Object.defineProperty(res, field, {
           get: () => this.readField(field),
-          set: value => this.changeField('PROP', field, value),
+          set: (value) => this.changeField('PROP', field, value),
         });
       });
       this._props = res;
@@ -206,7 +206,7 @@ export class Model<
     if (!this._links) {
       this._links = {} as any;
       const defs = this._args.links || {};
-      Object.keys(defs).forEach(field =>
+      Object.keys(defs).forEach((field) =>
         Object.defineProperty(this._links, field, {
           get: () => this.resolveLink(field),
         }),
@@ -220,7 +220,7 @@ export class Model<
     if (!this._children) {
       this._children = {} as any;
       const defs = this._args.children || {};
-      Object.keys(defs).forEach(field =>
+      Object.keys(defs).forEach((field) =>
         Object.defineProperty(this._children, field, {
           get: () => this.resolveChildren(field),
         }),
@@ -262,7 +262,7 @@ export class Model<
       const cachedLinks = Object.keys(this._linkCache);
       const defs = this._args.links || {};
       fireEvent = cachedLinks.length < Object.keys(defs).length ? true : fireEvent;
-      const wait = Object.keys(defs).map(key => this.links[key]);
+      const wait = Object.keys(defs).map((key) => this.links[key]);
       await Promise.all(wait);
     }
 
@@ -272,7 +272,7 @@ export class Model<
       const cachedChildren = Object.keys(this._childrenCache);
       const defs = this._args.children || {};
       fireEvent = cachedChildren.length < Object.keys(defs).length ? true : fireEvent;
-      const wait = Object.keys(defs).map(key => this.children[key]);
+      const wait = Object.keys(defs).map((key) => this.children[key]);
       await Promise.all(wait);
     }
 
@@ -308,7 +308,7 @@ export class Model<
   public set(props: Partial<P>) {
     this.throwIfDisposed('set');
     if (typeof props === 'object') {
-      Object.keys(props).forEach(key => (this.props[key] = props[key]));
+      Object.keys(props).forEach((key) => (this.props[key] = props[key]));
     }
     return this;
   }
@@ -453,7 +453,7 @@ export class Model<
     // Delete children models.
     const children = (await this.children.all) || [];
     if (children.length > 0) {
-      const wait = children.map(child => child.delete());
+      const wait = children.map((child) => child.delete());
       await Promise.all(wait);
     }
 
@@ -518,7 +518,7 @@ export class Model<
     }
 
     // Link resolver.
-    const promise: any = new Promise<L[keyof L] | undefined>(async resolve => {
+    const promise: any = new Promise<L[keyof L] | undefined>(async (resolve) => {
       const cached = this._linkCache[key];
       if (cached) {
         return resolve(cached);
@@ -534,7 +534,7 @@ export class Model<
       }
       if (isMany) {
         const paths = this.currentValue<string[]>(key) || [];
-        model = await Promise.all(paths.map(path => def.factory({ db, path }).ready));
+        model = await Promise.all(paths.map((path) => def.factory({ db, path }).ready));
       }
       this._linkCache[key] = model;
 
@@ -561,8 +561,8 @@ export class Model<
         const isChanged =
           changeExists && Array.isArray(paths)
             ? op === 'LINK'
-              ? !paths.every(path => current.includes(path))
-              : paths.some(path => current.includes(path))
+              ? !paths.every((path) => current.includes(path))
+              : paths.some((path) => current.includes(path))
             : true;
         return {
           changes,
@@ -589,7 +589,7 @@ export class Model<
         if (Array.isArray(paths)) {
           if (changes.isChanged) {
             // Remove specific links.
-            paths = changes.paths.filter(path => !(paths || []).includes(path));
+            paths = changes.paths.filter((path) => !(paths || []).includes(path));
             paths = paths.length === 0 ? undefined : paths;
             this.changeField('LINK', key, paths);
           }
@@ -615,14 +615,11 @@ export class Model<
     }
 
     // Prepare the child descendents query.
-    let query = (def.query || '')
-      .trim()
-      .replace(/^\/*/, '')
-      .trim();
+    let query = (def.query || '').trim().replace(/^\/*/, '').trim();
     query = `${this.path}/${query}`;
 
     // Children resolver.
-    const promise: any = new Promise<C[keyof C] | undefined>(async resolve => {
+    const promise: any = new Promise<C[keyof C] | undefined>(async (resolve) => {
       const cached = this._childrenCache[field];
       if (cached) {
         return resolve(cached);
@@ -631,9 +628,9 @@ export class Model<
         await this.load();
       }
       const paths = (await db.find(query)).list
-        .filter(item => item.props.key !== this.path)
-        .map(item => item.props.key);
-      const children = await Promise.all(paths.map(path => def.factory({ db, path }).ready));
+        .filter((item) => item.props.key !== this.path)
+        .map((item) => item.props.key);
+      const children = await Promise.all(paths.map((path) => def.factory({ db, path }).ready));
       this._childrenCache[field] = children;
 
       this.fire({

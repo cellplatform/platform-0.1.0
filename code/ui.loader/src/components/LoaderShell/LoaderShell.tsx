@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { defaultValue, COLORS, log, t, time, constants } from '../../common';
+import { COLORS, constants, defaultValue, log, t, time } from '../../common';
 import { createProvider } from '../../context/Context';
 import { splash } from '../../model';
 import { Splash } from '../Splash';
@@ -164,8 +164,9 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
         isSpinning={this.splash.isSpinning}
         opacity={isVisible ? 1 : 0}
         factory={this.props.splash}
-        children={this.splash.el}
-      />
+      >
+        {this.splash.el}
+      </Splash>
     );
   }
 

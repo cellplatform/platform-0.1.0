@@ -6,7 +6,7 @@ import { debounceTime, filter, share, takeUntil, map } from 'rxjs/operators';
 import { defaultValue, t, TAG } from './common';
 import { Screen } from './Screen';
 
-const WindowState = require('electron-window-state');
+const WindowState = require('electron-window-state'); // eslint-disable-line
 
 export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJson = any>
   implements t.IScreenFactory<M, S> {
@@ -235,7 +235,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
     isStateful?: boolean;
     window?: Electron.BrowserWindowConstructorOptions;
   }): t.IScreenTypeFactory<M, S> {
-    const self = this; // tslint:disable-line
+    const self = this; // eslint-disable-line
     const { type, url, isStateful, window } = args;
     const events$ = this.events$.pipe(filter(e => includesType(type, e.payload.window.tags)));
     const change$ = this.change$.pipe(filter(e => includesType(type, e.window.tags)));

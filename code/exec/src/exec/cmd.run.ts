@@ -131,10 +131,7 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
  * INTERNAL
  */
 const formatOutput = (chunk: Buffer) => {
-  return chunk
-    .toString()
-    .replace(/\n$/, '')
-    .split('\n');
+  return chunk.toString().replace(/\n$/, '').split('\n');
 };
 
 const reduce = (observable: Observable<ICommandInfo>) => {

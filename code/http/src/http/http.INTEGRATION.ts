@@ -11,7 +11,7 @@ const URL = {
 
 type IFoo = { name: string; version: string; list: number[] };
 
-describe('http (INTEGRATION)', function() {
+describe('http (INTEGRATION)', function () {
   this.timeout(30000);
 
   it('GET (text/plain)', async () => {

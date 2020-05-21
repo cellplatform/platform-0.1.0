@@ -13,10 +13,7 @@ export function formatTimestamp(input?: string) {
 }
 
 export function formatBucket(input?: string) {
-  return (input || '')
-    .trim()
-    .replace(/^\.*/, '')
-    .replace(/\.*$/, '');
+  return (input || '').trim().replace(/^\.*/, '').replace(/\.*$/, '');
 }
 
 export function formatKeyPath(input?: string) {

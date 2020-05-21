@@ -1,7 +1,7 @@
 import { expect, t, bodyParser } from '../test';
 import { Router } from '.';
 
-const handler: t.RouteHandler = async req => undefined;
+const handler: t.RouteHandler = async (req) => undefined;
 
 describe('Router', () => {
   it('adds', () => {
@@ -70,7 +70,7 @@ describe('Router', () => {
 
       router.get(['/foo', '/bar'], handler);
 
-      expect(router.routes.map(m => m.path)).to.eql(['/foo', '/bar']);
+      expect(router.routes.map((m) => m.path)).to.eql(['/foo', '/bar']);
 
       const res1 = router.find({ method: 'GET', url: '/foo' });
       const res2 = router.find({ method: 'GET', url: '/bar' });

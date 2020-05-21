@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { css, CssValue, color as colorUtil } from '../../common';
+import { color as colorUtil, css, CssValue } from '../../common';
 import { RenderStyleOnce } from './Style';
 import { SpinnerConfig } from './types';
 
@@ -56,7 +56,6 @@ export class Spinner extends React.PureComponent<ISpinnerProps, ISpinnerState> {
     };
 
     // NOTE: ignored because [ReactDOM.createPortal] creating type problem.
-    // @ts-ignore
     const elStyle = this.isStarted && <RenderStyleOnce />;
 
     return (
@@ -131,7 +130,7 @@ export class Spinner extends React.PureComponent<ISpinnerProps, ISpinnerState> {
 
   private start = () => {
     this.stop();
-    const Base = require('../../spin');
+    const Base = require('../../spin'); // eslint-disable-line
     this.spinner = new Base.Spinner(this.config).spin(this.el);
     this.setState({ started: (this.state.started || 0) + 1 });
   };

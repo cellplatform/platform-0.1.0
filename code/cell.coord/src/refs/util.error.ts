@@ -6,9 +6,9 @@ import { R, t } from '../common';
 export function toErrors(refs: t.IRefs) {
   return R.flatten(
     Object.keys(refs.out)
-      .map(key => refs.out[key])
-      .map(refs => refs.map(ref => ref.error as t.IRefError)),
-  ).filter(err => err);
+      .map((key) => refs.out[key])
+      .map((refs) => refs.map((ref) => ref.error as t.IRefError)),
+  ).filter((err) => err);
 }
 
 /**
@@ -25,7 +25,9 @@ export function getCircularErrors(refs: t.IRefs, key?: string | string[]): t.IRe
   const fromKey = (key: string) => {
     const outRefs = refs.out[key];
     return outRefs
-      ? (outRefs.map(ref => ref.error).filter(err => isCircularError(err)) as t.IRefErrorCircular[])
+      ? (outRefs
+          .map((ref) => ref.error)
+          .filter((err) => isCircularError(err)) as t.IRefErrorCircular[])
       : [];
   };
 

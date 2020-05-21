@@ -128,8 +128,10 @@ function logErrors(
   return output;
 }
 
+/* eslint-disable */
 const logger: ILog = {
-  info: console.log, // tslint:disable-line
-  warn: console.warn, // tslint:disable-line
-  error: console.error, // tslint:disable-line
+  info: console.log,
+  warn: console.warn,
+  error: console.error,
 };
+/* eslint-enable */

@@ -1,5 +1,5 @@
 import { t, value } from '../common';
-const minimist = require('minimist');
+const minimist = require('minimist'); // eslint-disable-line
 
 /**
  * Process command line `argument vectors` ["argv"].

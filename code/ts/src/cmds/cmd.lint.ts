@@ -2,7 +2,7 @@ import { exec, fs, getLog, IResult, paths, result } from '../common';
 
 const CONFIG = `
 module.exports = {
-  extends: './node_modules/@platform/ts/lint',
+  extends: './node_modules/@platform/ts.libs/lint',
 };    
 `.substring(1);
 

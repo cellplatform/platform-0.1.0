@@ -4,7 +4,7 @@ import { table } from '.';
 describe('table', () => {
   describe('toString', () => {
     const keys = ['B3', 'A2', 'B1', 'A1', 'A3', 'B3']; // Duplicate B3, no B2.
-    const items = keys.map(key => ({ key, value: key }));
+    const items = keys.map((key) => ({ key, value: key }));
 
     it('default toString (no args)', () => {
       const res = table.toString(undefined as any);
@@ -28,7 +28,7 @@ A3	B3`.substring(1);
     it('transforms values via argument function', () => {
       const res = table.toString({
         items,
-        transform: item => (item.value ? `value-${item.value}` : 'FOO'),
+        transform: (item) => (item.value ? `value-${item.value}` : 'FOO'),
       });
       const text = `
 value-A1	value-B1
@@ -48,7 +48,7 @@ A3,B3`.substring(1);
 
     it('bottom-right cell empty', () => {
       const keys = ['A1', 'A2', 'A3', 'B1', 'B2']; // NB: B3 (bottom-right) not present.
-      const items = keys.map(key => ({ key, value: key }));
+      const items = keys.map((key) => ({ key, value: key }));
       const res = table.toString({ items });
       const text = `
 A1	B1

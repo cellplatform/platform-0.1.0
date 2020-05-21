@@ -28,10 +28,7 @@ export class Icon extends React.PureComponent<IIconPropsInternal> {
     const { color = -0.4, isGreyscale } = this.props;
     let result = colorUtil.format(color);
     if (isGreyscale) {
-      result = colorUtil
-        .create(result)
-        .greyscale()
-        .toHexString();
+      result = colorUtil.create(result).greyscale().toHexString();
     }
     return result;
   }
@@ -52,7 +49,7 @@ export class Icon extends React.PureComponent<IIconPropsInternal> {
       <div
         {...css(styles.base, this.props.style)}
         tabIndex={this.props.tabIndex}
-        {...this.mouse.events}
+        {...(this.mouse.events as any)}
       >
         <Icon size={size} color={this.color} />
       </div>

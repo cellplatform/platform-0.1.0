@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { routes, t } from '../common';
 import { downloadBinaryFile } from './handler.download.binary';
 import { fileInfo } from './handler.info';

@@ -34,9 +34,7 @@ export function init(args: {
   }
 
   const routes = router.create({ getContext });
-  const server = express()
-    .use(json())
-    .use(urlPrefix, routes);
+  const server = express().use(json()).use(urlPrefix, routes);
 
   return { server, downloadDir, urlPrefix, prerelease };
 }

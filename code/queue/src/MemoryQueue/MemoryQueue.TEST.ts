@@ -5,7 +5,7 @@ describe.only('Queue', () => {
   const testQueue = () => {
     const queue = MemoryQueue.create();
     const results: number[] = [];
-    const pushDelay = async (value: number, delay: number = 5) => {
+    const pushDelay = async (value: number, delay = 5) => {
       await time.wait(delay);
       results.push(value);
       return value;

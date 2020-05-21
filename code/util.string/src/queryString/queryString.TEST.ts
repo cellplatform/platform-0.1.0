@@ -164,10 +164,7 @@ describe('queryString', () => {
 
     describe('null | undefined | "" (<empty>)', () => {
       it('allowNil: true (default)', () => {
-        const builder = queryString
-          .build()
-          .add('myNull', null)
-          .add('myUndefined');
+        const builder = queryString.build().add('myNull', null).add('myUndefined');
         expect(builder.toString()).to.eql('?myNull&myUndefined');
       });
 

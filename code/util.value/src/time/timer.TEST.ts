@@ -12,10 +12,7 @@ describe('timer', () => {
   });
 
   it('starts with given date', () => {
-    const start = time
-      .day()
-      .add(1, 'd')
-      .toDate();
+    const start = time.day().add(1, 'd').toDate();
     const timer = time.timer(start);
     expect(format(timer.startedAt)).to.eql(format(start));
     expect(format(timer.startedAt)).to.not.eql(format(new Date()));
@@ -30,12 +27,7 @@ describe('timer', () => {
   });
 
   it('reports elapsed seconds', () => {
-    const start = time
-      .day()
-      .subtract(1, 'm')
-      .subtract(30, 's')
-      .subtract(259, 'ms')
-      .toDate();
+    const start = time.day().subtract(1, 'm').subtract(30, 's').subtract(259, 'ms').toDate();
 
     expect(time.timer(start).elapsed.sec).to.eql(90.3);
     expect(time.timer(start, { round: 0 }).elapsed.sec).to.eql(90);
@@ -46,12 +38,7 @@ describe('timer', () => {
   });
 
   it('reports elapsed minutes', () => {
-    const start = time
-      .day()
-      .subtract(5, 'm')
-      .subtract(24, 's')
-      .subtract(123, 'ms')
-      .toDate();
+    const start = time.day().subtract(5, 'm').subtract(24, 's').subtract(123, 'ms').toDate();
     expect(time.timer(start, { round: 0 }).elapsed.min).to.eql(5);
     expect(time.timer(start, { round: 3 }).elapsed.min).to.eql(5.402);
     expect(time.timer(start).elapsed.min).to.eql(5.4);
@@ -102,11 +89,7 @@ describe('timer', () => {
     const elapsed = () => time.timer(start.toDate()).elapsed;
 
     start = start.subtract(125, 'ms');
-    expect(
-      elapsed()
-        .toString()
-        .endsWith('ms'),
-    ).to.eql(true);
+    expect(elapsed().toString().endsWith('ms')).to.eql(true);
 
     start = start.subtract(10, 's');
     expect(elapsed().toString()).to.eql('10s');

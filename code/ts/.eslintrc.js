@@ -1,3 +1,3 @@
 module.exports = {
-  extends: ['./lint.js'],
+  extends: './lint.js',
 };

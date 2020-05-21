@@ -12,7 +12,7 @@ import { constants, css, CssValue, hjson, t, graphqlFetcher } from '../../common
 import { GraphqlEditorEvent } from './types';
 import { DEFAULT_MESSAGE } from './default';
 
-const GraphiQL = require('graphiql');
+const GraphiQL = require('graphiql'); // eslint-disable-line
 
 export type IGraphqlEditorProps = {
   query?: string;
@@ -38,7 +38,7 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
 
     // Bubble events to parent.
@@ -144,7 +144,7 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
     }
     switch (type) {
       case 'GRAPHQL':
-        const { parse, print } = require('graphql');
+        const { parse, print } = require('graphql'); // eslint-disable-line
         return print(parse(text));
       case 'JSON':
         const obj = hjson.parse(text);

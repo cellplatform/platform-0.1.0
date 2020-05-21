@@ -134,10 +134,7 @@ function formatImports(imports?: string) {
 }
 
 function formatImport(line: string) {
-  line = (line || '')
-    .trim()
-    .replace(/;*$/, '')
-    .replace(/\"/g, `'`);
+  line = (line || '').trim().replace(/;*$/, '').replace(/\"/g, `'`);
   return (line ? `${line};` : line).trim();
 }
 

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
+
 import { ERROR, Schema, t, util } from '../common';
 
 type IClientCellFileArgs = { parent: t.IHttpClientCell; urls: t.IUrls; http: t.IHttp };

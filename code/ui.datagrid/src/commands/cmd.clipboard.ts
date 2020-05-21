@@ -24,7 +24,9 @@ export function init(args: {
     map(e => e.command),
   );
   clipboard$.pipe(filter(e => e === 'CUT')).subscribe(e => read({ grid, fire, action: 'CUT' }));
-  clipboard$.pipe(filter(e => e === 'COPY')).subscribe(e => read({ grid, fire, action: 'COPY' }));
+  clipboard$
+    .pipe(filter(e => e === 'COPY'))
+    .subscribe(e => read({ grid, fire, action: 'COPY' }));
   clipboard$.pipe(filter(e => e === 'PASTE')).subscribe(e => write({ grid, fire }));
 }
 

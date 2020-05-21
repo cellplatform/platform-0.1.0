@@ -5,7 +5,7 @@ import { coord, lastPart, t, toList, toMap } from './common';
  */
 export class GridSchema {
   public static create = (args: {}) => new GridSchema(args);
-  private constructor(args: {}) {}
+  private constructor(args: {}) {} // eslint-disable-line
 
   /**
    * [Methods]

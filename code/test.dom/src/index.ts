@@ -1,5 +1,5 @@
 export * from 'jsdom';
-require('jsdom-global')();
+require('jsdom-global')(); // eslint-disable-line
 
 /**
  * Initializes the window/document into the `global` object on the server.

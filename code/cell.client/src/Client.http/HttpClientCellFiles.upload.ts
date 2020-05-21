@@ -109,10 +109,7 @@ export async function upload(args: {
   //
   const res3 = await Promise.all(
     fileUploadSuccesses.map(async item => {
-      const url = urls
-        .file(item.uri)
-        .uploaded.query({ changes: sendChanges })
-        .toString();
+      const url = urls.file(item.uri).uploaded.query({ changes: sendChanges }).toString();
       const { filename } = item;
       const body: t.IReqPostFileUploadCompleteBody = { filename };
       const res = await http.post(url, body);

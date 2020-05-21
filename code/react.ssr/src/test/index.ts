@@ -9,12 +9,12 @@ export const YAML_MANIFEST = fs.join(YAML_DIR, 'manifest.yml');
 
 const url = 'https://sfo2.digitaloceanspaces.com/platform/modules/react.ssr/manifest.yml';
 
-export async function testManifest(filename: string = 'manifest.yml') {
+export async function testManifest(filename = 'manifest.yml') {
   const path = fs.join(YAML_DIR, filename);
   return Manifest.fromFile({ path, baseUrl: url });
 }
 
-export async function testManifestDef(filename: string = 'manifest.yml') {
+export async function testManifestDef(filename = 'manifest.yml') {
   const path = fs.join(YAML_DIR, filename);
   const def = await fs.file.loadAndParse<t.IManifest>(path);
   return def;

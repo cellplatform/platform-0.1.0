@@ -25,7 +25,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const cliChanged$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));

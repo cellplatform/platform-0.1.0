@@ -9,7 +9,7 @@ export * from './util.error';
  * Removed `undefined` values of the given field from a list of items.
  */
 export function deleteUndefined<T>(field: keyof T, items: T[]) {
-  items.forEach(ref => {
+  items.forEach((ref) => {
     if (ref[field] === undefined) {
       delete ref[field];
     }
@@ -27,7 +27,7 @@ export function path(input?: string) {
   const res = {
     path,
     get parts() {
-      return parts || (parts = path.split('/').filter(part => part));
+      return parts || (parts = path.split('/').filter((part) => part));
     },
     get keys() {
       return keys || (keys = partsToKeys(res.parts));
@@ -40,8 +40,8 @@ export function path(input?: string) {
     },
     includes(key: string | string[]) {
       const keys = Array.isArray(key) ? key : [key];
-      return keys.some(key => {
-        return res.parts.some(part => {
+      return keys.some((key) => {
+        return res.parts.some((part) => {
           return CellRange.isRangeKey(part) ? CellRange.fromKey(part).contains(key) : key === part;
         });
       });
@@ -120,17 +120,17 @@ export function toRefTarget(
  * Incoming specific helpers.
  */
 export const incoming = {
-  listToKeys: (list: t.IRefIn[]) => list.map(ref => ref.cell),
-  refsToKeyList: (refs: t.IRefsIn) => Object.keys(refs).map(key => ({ key, refs: refs[key] })),
+  listToKeys: (list: t.IRefIn[]) => list.map((ref) => ref.cell),
+  refsToKeyList: (refs: t.IRefsIn) => Object.keys(refs).map((key) => ({ key, refs: refs[key] })),
 };
 
 /**
  * Outgoing specific helpers.
  */
 export const outgoing = {
-  listToKeys: (list: t.IRefOut[]) => R.flatten(list.map(ref => path(ref.path).keys)),
-  refsToKeyList: (refs: t.IRefsOut) => Object.keys(refs).map(key => ({ key, refs: refs[key] })),
-  refsToFlatList: (refs: t.IRefsOut) => R.flatten(Object.keys(refs).map(key => refs[key])),
+  listToKeys: (list: t.IRefOut[]) => R.flatten(list.map((ref) => path(ref.path).keys)),
+  refsToKeyList: (refs: t.IRefsOut) => Object.keys(refs).map((key) => ({ key, refs: refs[key] })),
+  refsToFlatList: (refs: t.IRefsOut) => R.flatten(Object.keys(refs).map((key) => refs[key])),
   refsToAllKeys: (refs: t.IRefsOut) => outgoing.listToKeys(outgoing.refsToFlatList(refs)),
 };
 
@@ -148,7 +148,7 @@ export function sort(args: { refs: t.IRefs; keys?: string[] }) {
   const add = (to: string, from: string) => {
     // Check for error.
     const circular = getCircularErrors(args.refs, to);
-    circular.forEach(err => errors.push(err));
+    circular.forEach((err) => errors.push(err));
     const hasError = circular.length > 0;
 
     // NB: Circular-ref will cause `toposort` to fail so don't include it.
@@ -158,11 +158,11 @@ export function sort(args: { refs: t.IRefs; keys?: string[] }) {
   // Build input list of [to:from] key pairs.
   incoming
     .refsToKeyList(args.refs.in)
-    .filter(e => (args.keys ? args.keys.includes(e.key) : true))
-    .forEach(({ key, refs }) => refs.forEach(ref => add(key, ref.cell)));
+    .filter((e) => (args.keys ? args.keys.includes(e.key) : true))
+    .forEach(({ key, refs }) => refs.forEach((ref) => add(key, ref.cell)));
 
   // Run the topological sort.
-  const keys = toposort(graph).filter(key => key); // NB: Filter out any "empty" circular-ref entries.
+  const keys = toposort(graph).filter((key) => key); // NB: Filter out any "empty" circular-ref entries.
 
   // Finish up.
   const ok = errors.length === 0;

@@ -1,4 +1,4 @@
-// tslint:disable
+/* eslint-disable */
 import { interval, Observable } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
@@ -26,7 +26,7 @@ export const tasks: exec.ITask[] = [
     task: () => {
       // Example returning an observable that updates a
       // status message under the task as it progresses.
-      return new Observable(observer => {
+      return new Observable((observer) => {
         let count = 0;
         interval(200)
           .pipe(takeWhile(() => count < 10))

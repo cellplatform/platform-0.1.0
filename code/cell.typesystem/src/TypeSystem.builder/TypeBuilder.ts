@@ -11,7 +11,7 @@ export class TypeBuilder implements t.ITypeBuilder {
   /**
    * [Lifecycle]
    */
-  private constructor() {}
+  private constructor() {} // eslint-disable-line
 
   /**
    * [Fields]
@@ -33,7 +33,7 @@ export class TypeBuilder implements t.ITypeBuilder {
     uri = typeof uri === 'string' ? uri.trim() : uri;
     const ns = uri ? Uri.ns(uri) : Uri.create.ns(Uri.cuid());
 
-    const exists = this.builders.some(builder => builder.toString() === ns.toString());
+    const exists = this.builders.some((builder) => builder.toString() === ns.toString());
     if (exists) {
       const err = `The namespace '${ns.toString()}' already exists`;
       throw new Error(err);
@@ -55,7 +55,7 @@ export class TypeBuilder implements t.ITypeBuilder {
       // For referenced types (shorthand "/<typename>")
       const typename = value.replace(/^\/*/, '');
       const singular = TypeValue.trimArray(typename);
-      const match = this.builders.find(ns => ns.types.find(type => type.typename === singular));
+      const match = this.builders.find((ns) => ns.types.find((type) => type.typename === singular));
       if (!match) {
         const err = `Failed to prefix type '${value}' with namespace. The typename '${typename}' was not found in any of the available namespaces.`;
         throw new Error(err);
@@ -89,11 +89,11 @@ export class TypeBuilder implements t.ITypeBuilder {
       }
     };
 
-    ns.types.forEach(type => {
+    ns.types.forEach((type) => {
       const typename = type.typename;
       type.props
-        .map(prop => prop.toObject())
-        .forEach(prop => {
+        .map((prop) => prop.toObject())
+        .forEach((prop) => {
           const def: t.CellTypeDef = value.deleteUndefined({
             prop: `${typename}.${prop.name}`,
             type: this.formatType(prop.type),

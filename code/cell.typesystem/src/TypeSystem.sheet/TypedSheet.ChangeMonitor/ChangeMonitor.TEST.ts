@@ -125,9 +125,7 @@ describe('TypedSheetChangeMonitor', () => {
     it('event$', async () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
-      const monitor = ChangeMonitor.create()
-        .watch(sheet1)
-        .watch(sheet2);
+      const monitor = ChangeMonitor.create().watch(sheet1).watch(sheet2);
 
       const fired: t.TypedSheetEvent[] = [];
       monitor.event$.subscribe(e => fired.push(e));

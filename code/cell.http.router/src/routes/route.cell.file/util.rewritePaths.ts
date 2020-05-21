@@ -56,10 +56,7 @@ export async function rewriteHtmlPaths(args: {
     // Rewrite the URL.
     if (link) {
       const hash = link.query.hash;
-      const url = cellUrls.file
-        .byName(link.path)
-        .query({ hash, expires })
-        .toString();
+      const url = cellUrls.file.byName(link.path).query({ hash, expires }).toString();
       el.attr(attr, url);
     }
   };
@@ -88,10 +85,7 @@ function findAttr($: CheerioStatic, attr: string) {
 }
 
 function trimRelativePathPrefix(path: string) {
-  return path
-    .trim()
-    .replace(/^\./, '')
-    .replace(/^\//, '');
+  return path.trim().replace(/^\./, '').replace(/^\//, '');
 }
 
 function trimPrefix(prefix: string, path: string) {

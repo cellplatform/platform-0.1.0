@@ -1,6 +1,6 @@
 {
   "name": "@platform/fsdb.model",
-  "version": "0.6.51",
+  "version": "0.6.58",
   "description": "Model system for working with IDb data.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,16 +13,16 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/fsdb.types": "0.6.18",
-    "@platform/libs": "0.2.1",
-    "@platform/types": "0.4.14",
-    "@platform/util.value": "0.7.14"
+    "@platform/fsdb.types": "0.6.25",
+    "@platform/libs": "0.2.2",
+    "@platform/types": "0.4.21",
+    "@platform/util.value": "0.7.21"
   },
   "devDependencies": {
-    "@platform/fsdb.nedb": "1.3.106",
-    "@platform/fs": "0.5.12",
-    "@platform/test": "0.1.7",
-    "@platform/ts": "3.7.20"
+    "@platform/fsdb.nedb": "1.3.113",
+    "@platform/fs": "0.5.16",
+    "@platform/test": "0.1.11",
+    "@platform/ts": "3.9.2"
   },
   "files": [
     "lib",

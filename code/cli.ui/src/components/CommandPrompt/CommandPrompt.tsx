@@ -43,7 +43,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
   /**
    * [Lifecycle]
    */
-  public async componentWillMount() {
+  public async componentDidMount() {
     const keyMap = this.keyMap;
 
     // Setup observables.
@@ -201,9 +201,8 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
           });
         }
       });
-  }
 
-  public componentDidMount() {
+    // Finish up.
     if (this.props.focusOnLoad) {
       this.focus();
     }

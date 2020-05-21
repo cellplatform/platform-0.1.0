@@ -108,7 +108,7 @@ export function listen(args: { ipc: t.IpcClient; log: t.ILog }) {
   ipc.on<t.IDbIpcOpenFolderEvent>('DB/open/folder').subscribe(async e => {
     let dir = fs.resolve(parseDbPath(e.payload.conn).path);
     dir = (await fs.is.dir(dir)) ? dir : fs.dirname(dir);
-    shell.openItem(dir);
+    shell.openPath(dir);
   });
 
   // Finish up.

@@ -12,7 +12,7 @@ renderer
     devTools: { keyboard: { toggle: true, clearConsole: true } },
   })
   .then(context => {
-    console.log('renderer loaded:', context); // tslint:disable-line
+    console.log('renderer loaded:', context); // eslint-disable-line
   })
   .catch(err => {
     /* Do something with the error */

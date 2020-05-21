@@ -37,7 +37,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
    * [Lifecycle]
    */
 
-  public componentWillMount() {
+  public componentDidMount() {
     let isReady = false;
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const events$ = this.events$;
@@ -112,10 +112,6 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     time.delay(100, () => (isReady = true));
 
     // Finish up.
-    this.updateSize();
-  }
-
-  public componentDidMount() {
     this.updateSize();
     this.cursorToEnd().focus();
   }

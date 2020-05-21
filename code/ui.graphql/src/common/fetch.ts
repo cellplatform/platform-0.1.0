@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { id } from './libs';
 import * as t from '../types';
 
-const fetch = require('isomorphic-fetch');
+const fetch = require('isomorphic-fetch'); // eslint-disable-line
 
 /**
  * See:

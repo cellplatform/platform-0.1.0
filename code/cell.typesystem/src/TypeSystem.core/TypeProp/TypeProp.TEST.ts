@@ -1,5 +1,5 @@
-import { expect, t, ERROR } from '../../test';
 import { TypeProp } from '.';
+import { ERROR, expect } from '../../test';
 
 describe('TypeProp', () => {
   it('extracts {type, prop}', async () => {

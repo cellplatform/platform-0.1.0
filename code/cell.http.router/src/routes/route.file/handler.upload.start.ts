@@ -38,11 +38,7 @@ export async function uploadFileStart(args: {
     const seconds = util.toSeconds(expires) || 3600;
     const contentType = mimetype;
     const presignedPost = fs.resolve(fileUri, { type: 'SIGNED/post', contentType, expires });
-    const expiresAt = time
-      .day()
-      .add(seconds, 's')
-      .toDate()
-      .getTime();
+    const expiresAt = time.day().add(seconds, 's').toDate().getTime();
 
     const upload: t.IFilePresignedUploadUrl = {
       expiresAt,

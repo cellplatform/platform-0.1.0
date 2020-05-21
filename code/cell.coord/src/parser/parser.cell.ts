@@ -40,7 +40,7 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
   // Prepare the input.
   input = input.replace(/^[\s\=\!]*/, '').trimRight();
   input = removeUriPrefix(input, options.uriPrefix);
-  ['ns', 'cell', 'row', 'col'].forEach(prefix => (input = removeUriPrefix(input, prefix)));
+  ['ns', 'cell', 'row', 'col'].forEach((prefix) => (input = removeUriPrefix(input, prefix)));
 
   // Extract key.
   let parts = input.split('!');
@@ -99,7 +99,7 @@ function parse(input: string, options: { uriPrefix?: string } = {}) {
   return done();
 }
 
-function parseCellKey(cellKey: string = '') {
+function parseCellKey(cellKey = '') {
   const DEFAULT_RELATIVE = true as boolean | undefined;
   const result = {
     type: 'CELL' as t.CoordType,

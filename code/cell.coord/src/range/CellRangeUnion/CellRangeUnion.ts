@@ -17,8 +17,8 @@ export class CellRangeUnion {
     let keys = Array.isArray(rangeKeys)
       ? rangeKeys
       : valueUtil.compact(rangeKeys.trim().split(','));
-    keys = keys.filter(key => !valueUtil.isBlank(key)).map(key => key.trim());
-    const ranges = R.uniq(keys).map(key => CellRange.fromKey(key).square);
+    keys = keys.filter((key) => !valueUtil.isBlank(key)).map((key) => key.trim());
+    const ranges = R.uniq(keys).map((key) => CellRange.fromKey(key).square);
     return new CellRangeUnion({ ranges });
   };
 
@@ -27,7 +27,7 @@ export class CellRangeUnion {
    */
   public static contains(ranges: CellRange[], cell: t.ICoordPosition | string) {
     const key = cellUtil.toCell(cell).key;
-    return ranges.some(range => range.contains(key));
+    return ranges.some((range) => range.contains(key));
   }
 
   /**
@@ -71,7 +71,7 @@ export class CellRangeUnion {
    * Retrieves the key of all ranges.
    */
   public get key() {
-    return this._.key ? this._.key : (this._.key = this.ranges.map(r => r.key).join(', '));
+    return this._.key ? this._.key : (this._.key = this.ranges.map((r) => r.key).join(', '));
   }
 
   /**
@@ -87,7 +87,7 @@ export class CellRangeUnion {
    */
   public get keys() {
     if (!this._.keys) {
-      const keySets = this.ranges.map(range => range.keys);
+      const keySets = this.ranges.map((range) => range.keys);
       let keys: string[] = R.uniq(valueUtil.flatten(keySets));
       keys = cell.sort<string>(keys);
       this._.keys = keys;
@@ -151,26 +151,26 @@ export class CellRangeUnion {
       [edge: string]: { within: CellRange[]; without: CellRange[] };
     };
     const map: EdgeMap = {};
-    this.ranges.forEach(range => {
+    this.ranges.forEach((range) => {
       const edges = range.edge(cellAddress);
 
       // Add default edges.
       edges
-        .filter(edge => !Boolean(map[edge]))
-        .forEach(edge => {
+        .filter((edge) => !Boolean(map[edge]))
+        .forEach((edge) => {
           map[edge] = { within: [], without: [] };
         });
 
       // Append range to the list of edges the cell is within.
-      edges.forEach(edge => {
+      edges.forEach((edge) => {
         const within = map[edge].within;
         map[edge].within = [...within, range];
       });
     });
-    Object.keys(map).forEach(key => {
+    Object.keys(map).forEach((key) => {
       const item = map[key];
-      item.without = this.ranges.filter(range => {
-        return !item.within.some(r => r.key === range.key);
+      item.without = this.ranges.filter((range) => {
+        return !item.within.some((r) => r.key === range.key);
       });
     });
 
@@ -179,8 +179,8 @@ export class CellRangeUnion {
       const item = map[key];
       const edge = key as t.CoordEdge;
       const { within, without } = item;
-      item.within = within.filter(range => {
-        return !without.some(otherRange => {
+      item.within = within.filter((range) => {
+        return !without.some((otherRange) => {
           if (siblingIncludesCellWithoutEdge(otherRange, edge)) {
             return true;
           }
@@ -196,7 +196,7 @@ export class CellRangeUnion {
       Object
         // Reduce map to final set of [CellEdge] items.
         .keys(map)
-        .filter(key => map[key].within.length > 0) as t.CoordEdge[]
+        .filter((key) => map[key].within.length > 0) as t.CoordEdge[]
     );
   }
 
@@ -204,7 +204,7 @@ export class CellRangeUnion {
    * Filters the set of ranges returning a new [CellRangeUnion].
    */
   public filter(fn: (range: CellRange, i: number) => boolean) {
-    const keys = this.ranges.filter((range, i) => fn(range, i)).map(range => range.key);
+    const keys = this.ranges.filter((range, i) => fn(range, i)).map((range) => range.key);
     return CellRangeUnion.fromKey(keys);
   }
 
@@ -212,7 +212,7 @@ export class CellRangeUnion {
    * Formats range keys based on table size, returning a new [Range] object.
    */
   public formated(args: { totalColumns: number; totalRows: number }) {
-    const keys = this.ranges.map(range => range.formated(args)).map(range => range.key);
+    const keys = this.ranges.map((range) => range.formated(args)).map((range) => range.key);
     return CellRangeUnion.fromKey(keys);
   }
 
@@ -220,14 +220,14 @@ export class CellRangeUnion {
    * Retrieves details about a single axis (COLUMN/ROW).
    */
   public axis(axis: t.CoordAxis) {
-    const self = this; // tslint:disable-line
+    const self = this; // eslint-disable-line
 
     const res = {
       /**
        * Retrieves the ROW or COLUMN keys represented by the ranges (de-duped).
        */
       get keys(): string[] {
-        const keys = R.flatten(self.ranges.map(range => range.axis(axis).keys));
+        const keys = R.flatten(self.ranges.map((range) => range.axis(axis).keys));
         return R.uniq(keys);
       },
     };

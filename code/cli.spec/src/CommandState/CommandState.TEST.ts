@@ -5,19 +5,11 @@ import { Command } from '../Command';
 import { time } from '../common';
 import * as t from '../types';
 
-const copy = Command.create('copy')
-  .add('fast')
-  .add('slow');
+const copy = Command.create('copy').add('fast').add('slow');
 
-const db = Command.create('db')
-  .add('ls')
-  .add('status')
-  .add(copy);
+const db = Command.create('db').add('ls').add('status').add(copy);
 
-const root = Command.create('root')
-  .add('ls')
-  .add('mkdir')
-  .add(db);
+const root = Command.create('root').add('ls').add('mkdir').add(db);
 
 let beforeInvokeList: t.ICommandStateProps[] = [];
 const beforeInvoke: t.BeforeInvokeCommand = async e => {
@@ -677,9 +669,7 @@ describe('CommandState', () => {
     });
 
     it('steps into a namespace upon invoking (directly)', async () => {
-      const ns = Command.create('ns')
-        .add('list')
-        .add('run');
+      const ns = Command.create('ns').add('list').add('run');
       const root = Command.create('root').add(ns);
       const state = CommandState.create({ root, beforeInvoke });
       expect(state.namespace.name).to.eql('root');
@@ -695,9 +685,7 @@ describe('CommandState', () => {
     });
 
     it('steps into a namespace upon invoking (indirectly)', async () => {
-      const ns = Command.create('ns')
-        .add('list')
-        .add('run');
+      const ns = Command.create('ns').add('list').add('run');
       const root = Command.create('root').add(ns);
       const state = CommandState.create({ root, beforeInvoke });
       expect(state.namespace.name).to.eql('root');
@@ -855,10 +843,7 @@ describe('CommandState', () => {
 
   describe('fuzzyMatches', () => {
     it('matches on current text', () => {
-      const ns = Command.create('ns')
-        .add('list')
-        .add('run')
-        .add('play');
+      const ns = Command.create('ns').add('list').add('run').add('play');
       const root = Command.create('root').add(ns);
       const state = CommandState.create({ root, beforeInvoke });
 
@@ -879,10 +864,7 @@ describe('CommandState', () => {
     });
 
     it('matches within namespace', () => {
-      const ns = Command.create('ns')
-        .add('list')
-        .add('run')
-        .add('play');
+      const ns = Command.create('ns').add('list').add('run').add('play');
       const root = Command.create('root').add(ns);
       const state = CommandState.create({ root, beforeInvoke });
 

@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { getConfigFiles, logNoConfigFiles } from './cmd.list';
-import { cli, defaultValue, fs, log, PKG, t, time, http } from './common';
+import { cli, defaultValue, fs, log, PKG, t, time } from './common';
 
 const FILES = [
   'package.json',

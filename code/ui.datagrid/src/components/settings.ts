@@ -79,12 +79,12 @@ export function getSettings(args: { grid: Grid }) {
     fillHandle: true,
 
     beforeAutofill(...args) {
-      console.log('beforeAutofill', args);
+      // console.log('beforeAutofill', args);
       return false;
     },
 
     beforeAutofillInsidePopulate(...args) {
-      console.log('beforeAutofillInsidePopulate', args);
+      // console.log('beforeAutofillInsidePopulate', args);
       return false;
     },
 

@@ -35,7 +35,6 @@ export async function buildPayload(args: {
   let ok = true;
   const cellUri = args.targetUri.toString();
   const cellKey = args.targetUri.parts.key;
-  const ns = args.targetUri.parts.ns;
   const cellUrls = args.urls.cell(cellUri);
 
   // Retrieve the list of remote files.

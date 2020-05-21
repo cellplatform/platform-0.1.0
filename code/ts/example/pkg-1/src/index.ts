@@ -1,3 +1,3 @@
 // Entry point.
 
-// kk; // tslint:disable-line
+// kk; // eslint-disable-line

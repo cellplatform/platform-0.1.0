@@ -1,5 +1,5 @@
+/* eslint-disable react/display-name */
 import * as React from 'react';
-import { Observable } from 'rxjs';
 
 import * as t from '../types';
 

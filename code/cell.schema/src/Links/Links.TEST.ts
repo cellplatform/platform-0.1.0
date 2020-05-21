@@ -236,9 +236,7 @@ describe('Links', () => {
     it('not found', () => {
       const test = (prefix: string, path: string | undefined) => {
         const res1 = Links.find(prefix, LINKS).byName(path);
-        const res2 = Links.create(prefix)
-          .find(LINKS)
-          .byName(path);
+        const res2 = Links.create(prefix).find(LINKS).byName(path);
         expect(res1).to.eql(undefined);
         expect(res2).to.eql(undefined);
       };
@@ -253,9 +251,7 @@ describe('Links', () => {
     it('found', () => {
       const test = (prefix: string, path: string | undefined, expected?: string) => {
         const res1 = Links.find(prefix, LINKS).byName(path);
-        const res2 = Links.create(prefix)
-          .find(LINKS)
-          .byName(path);
+        const res2 = Links.create(prefix).find(LINKS).byName(path);
 
         expect(res1?.value).to.eql(expected, path);
         expect(res2?.value).to.eql(expected, path);

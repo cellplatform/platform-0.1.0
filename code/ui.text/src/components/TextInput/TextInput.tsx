@@ -362,7 +362,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
 /**
  * [Helpers]
  */
-function toWidth(props: ITextInputProps) {
+export const toWidth = (props: ITextInputProps) => {
   if (!props.autoSize) {
     return props.width;
   }
@@ -376,9 +376,9 @@ function toWidth(props: ITextInputProps) {
 
   const charWidth = TextInput.measure({ ...props, value: 'W' }).width;
   return width + charWidth; // NB: Adding an additional char-width prevents overflow jumping on char-enter.
-}
+};
 
-function toMinWidth(props: ITextInputProps): number {
+export const toMinWidth = (props: ITextInputProps): number => {
   const { minWidth, placeholder, value } = props;
   if (minWidth !== undefined) {
     return minWidth as number;
@@ -395,16 +395,16 @@ function toMinWidth(props: ITextInputProps): number {
   }
 
   return -1;
-}
+};
 
-function toInitialWidth(props: ITextInputProps) {
+export const toInitialWidth = (props: ITextInputProps) => {
   const { width, minWidth, autoSize } = props;
   return autoSize ? minWidth : width;
-}
+};
 
-function placeholderStyle(props: ITextInputProps) {
+export const placeholderStyle = (props: ITextInputProps) => {
   const isEnabled = defaultValue(props.isEnabled, true);
   const { valueStyle = DEFAULT.VALUE_STYLE, placeholderStyle } = props;
   const styles = { ...R.clone(valueStyle), ...placeholderStyle };
   return util.toTextInputCss(isEnabled, styles);
-}
+};

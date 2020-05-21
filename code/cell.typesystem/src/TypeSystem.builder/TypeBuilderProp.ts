@@ -1,5 +1,5 @@
-import { t, defaultValue, coord, value } from '../common';
-import { TypeDefault, TypeValue, TypeTarget } from '../TypeSystem.core';
+import { coord, defaultValue, t, value } from '../common';
+import { TypeTarget, TypeValue } from '../TypeSystem.core';
 
 export type IArgs = {
   column: string | number;
@@ -38,7 +38,7 @@ export class TypeBuilderProp implements t.ITypeBuilderProp {
   /**
    * [Fields]
    */
-  private _column: number = 0;
+  private _column = 0;
   private _name: string;
   private _type: t.CellType;
   private _target?: t.CellTypeTarget;
@@ -100,7 +100,7 @@ export class TypeBuilderProp implements t.ITypeBuilderProp {
   public target(value: t.CellTypeTarget | undefined): t.ITypeBuilderProp {
     const errors = TypeTarget.parse(value).errors;
     if (errors.length > 0) {
-      const message = errors.map(err => err.message).join('\n');
+      const message = errors.map((err) => err.message).join('\n');
       throw new Error(message);
     }
     this._target = value;

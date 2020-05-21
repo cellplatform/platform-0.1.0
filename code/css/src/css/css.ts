@@ -51,7 +51,7 @@ const mergeAndReplace = (key: string, value: any, target: object) => {
 
 const formatImage = (key: string, value: Array<string | number | undefined>, target: any) => {
   // Wrangle parameters.
-  let [image1x, image2x, width, height] = value; // tslint:disable-line
+  let [image1x, image2x, width, height] = value; // eslint-disable-line
 
   if (typeof image2x === 'number') {
     height = width;
@@ -244,7 +244,7 @@ function formatFlexPosition(key: string, value: string, target: t.CssProps) {
   tokens.map(token => {
     const tokenIsOneOf = (options: string[]) => options.includes(token);
     if (direction == null && tokenIsOneOf(['horizontal', 'vertical'])) {
-      direction = token === 'vertical' ? 'column' : 'row'; // tslint:disable-line
+      direction = token === 'vertical' ? 'column' : 'row'; // eslint-disable-line
       return;
     }
 

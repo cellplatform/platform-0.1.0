@@ -36,10 +36,7 @@ export function isPlainObject(value: any): boolean {
  * Determines if the given value is a boolean.
  */
 export function isBoolString(value?: string) {
-  const asString = (value || '')
-    .toString()
-    .trim()
-    .toLowerCase();
+  const asString = (value || '').toString().trim().toLowerCase();
   return asString === 'true' || asString === 'false';
 }
 
@@ -47,10 +44,7 @@ export function isBoolString(value?: string) {
  * Determines if the given value is [null].
  */
 export function isNullString(value?: string) {
-  const asString = (value || '')
-    .toString()
-    .trim()
-    .toLowerCase();
+  const asString = (value || '').toString().trim().toLowerCase();
   return asString === 'null';
 }
 
@@ -58,10 +52,7 @@ export function isNullString(value?: string) {
  * Determines if the given value is [undefined].
  */
 export function isUndefinedString(value?: string) {
-  const asString = (value || '')
-    .toString()
-    .trim()
-    .toLowerCase();
+  const asString = (value || '').toString().trim().toLowerCase();
   return asString === 'undefined';
 }
 

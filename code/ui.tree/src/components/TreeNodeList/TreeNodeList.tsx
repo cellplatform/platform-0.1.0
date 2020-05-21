@@ -267,8 +267,9 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
         isFirst={isFirst}
         isLast={isLast}
         onMouse={this.props.onNodeMouse}
-        children={el}
-      />
+      >
+        {el}
+      </TreeNode>
     );
   }
 

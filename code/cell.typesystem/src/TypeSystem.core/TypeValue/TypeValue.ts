@@ -84,11 +84,7 @@ export class TypeValue {
   public static trimQuotes(input?: string) {
     return typeof input !== 'string'
       ? ''
-      : (input || '')
-          .trim()
-          .replace(/^["']/, '')
-          .replace(/["']$/, '')
-          .trim();
+      : (input || '').trim().replace(/^["']/, '').replace(/["']$/, '').trim();
   }
 
   /**
@@ -97,11 +93,7 @@ export class TypeValue {
   public static trimParentheses(input?: string) {
     return typeof input !== 'string'
       ? ''
-      : (input || '')
-          .trim()
-          .replace(/^\(/, '')
-          .replace(/\)$/, '')
-          .trim();
+      : (input || '').trim().replace(/^\(/, '').replace(/\)$/, '').trim();
   }
 
   /**

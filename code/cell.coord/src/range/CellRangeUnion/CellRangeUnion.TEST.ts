@@ -294,7 +294,7 @@ describe('CellRangeUnion', () => {
   describe('filter', () => {
     it('filters on columns', () => {
       const union = fromKey('  A1:A10, B3:B10, C:C ');
-      const res = union.filter(range => range.is.column(10));
+      const res = union.filter((range) => range.is.column(10));
 
       expect(res).to.not.equal(union); // NB: Different instance.
       expect(res.length).to.eql(2);
@@ -306,7 +306,7 @@ describe('CellRangeUnion', () => {
 
     it('no change', () => {
       const union = fromKey('  A1:A10, B3:B10, C:C ');
-      const res = union.filter(range => true);
+      const res = union.filter((range) => true);
       expect(res).to.not.equal(union); // NB: Different instance.
       expect(res.toString()).to.eql(res.toString());
     });
@@ -317,7 +317,7 @@ describe('CellRangeUnion', () => {
       const input = 'A2:A10, B4:J4';
       const union = fromKey(input);
       const res = union.formated({ totalColumns: 10, totalRows: 10 });
-      const keys = res.ranges.map(range => range.key).join(', ');
+      const keys = res.ranges.map((range) => range.key).join(', ');
       expect(keys).to.eql(input);
     });
 
@@ -325,7 +325,7 @@ describe('CellRangeUnion', () => {
       const test = (input: string, output: string) => {
         const union = fromKey(input);
         const res = union.formated({ totalColumns: 10, totalRows: 10 });
-        const keys = res.ranges.map(range => range.key).join(', ');
+        const keys = res.ranges.map((range) => range.key).join(', ');
         expect(keys).to.eql(output);
       };
 

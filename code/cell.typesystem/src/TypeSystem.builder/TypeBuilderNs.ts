@@ -36,7 +36,7 @@ export class TypeBuilderNs implements t.ITypeBuilderNs {
     const uri = this.uri;
 
     typename = (typename || '').trim();
-    const exists = this.types.some(item => item.typename === typename);
+    const exists = this.types.some((item) => item.typename === typename);
     if (exists) {
       const err = `The typename '${typename}' already exists`;
       throw new Error(err);

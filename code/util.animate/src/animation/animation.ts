@@ -1,7 +1,7 @@
 import { Subject, Observable } from 'rxjs';
 import { share } from 'rxjs/operators';
 
-const dynamics = require('dynamics.js');
+const dynamics = require('dynamics.js'); // eslint-disable-line
 
 export type MoveType =
   | 'spring'

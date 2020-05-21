@@ -112,7 +112,7 @@ export async function watchDir(args: {
 
   const logCommands = () => {
     const isSyncing = state.isSyncing();
-    const color = (text: string, isActive: boolean = true) => {
+    const color = (text: string, isActive = true) => {
       return isActive ? log.cyan(text) : log.gray(text);
     };
 
@@ -137,7 +137,7 @@ export async function watchDir(args: {
     const local = `${fs.dirname(dir)}/${isSyncing ? log.yellow(dirname) : dirname}/`;
 
     const table = log.table({ border: false });
-    const add = (key: string, value: string = '') => {
+    const add = (key: string, value = '') => {
       table.add([log.gray(key), '    ', log.gray(value)]);
     };
 

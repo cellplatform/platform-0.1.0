@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import { Model, Schema, t } from '../common';
 import * as rules from './rules';
 

@@ -46,7 +46,7 @@ export function init(args: { ipc: IpcClient; dir: string }) {
   // Turn off console logging - handled below.
   elog.transports.console.level = false;
 
-  const logToConsole = (...items: any) => console.log.apply(null, items); // tslint:disable-line
+  const logToConsole = (...items: any) => console.log.apply(null, items); // eslint-disable-line
   const logToConsoleGray = (msg: string) => logToConsole(log.gray(msg));
 
   // Alert user of log location.

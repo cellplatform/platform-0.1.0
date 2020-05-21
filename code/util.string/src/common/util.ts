@@ -11,10 +11,7 @@ export function toBool(value: any, defaultValue?: any) {
   if (typeof value === 'boolean') {
     return value;
   }
-  const asString = value
-    .toString()
-    .trim()
-    .toLowerCase();
+  const asString = value.toString().trim().toLowerCase();
   if (asString === 'true') {
     return true;
   }

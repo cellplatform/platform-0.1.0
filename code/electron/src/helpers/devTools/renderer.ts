@@ -154,5 +154,5 @@ export class DevTools {
  * [Helpers]
  */
 function clearConsole() {
-  console.clear(); // tslint:disable-line
+  console.clear(); // eslint-disable-line
 }

@@ -28,7 +28,7 @@ export function hashCode(text: string) {
   let i = 0;
   while (i < length) {
     const chr = text.charCodeAt(i++);
-    hash = ((hash << 5) - hash + chr) | 0; // tslint:disable-line
+    hash = ((hash << 5) - hash + chr) | 0; // eslint-disable-line
   }
   return hash;
 }

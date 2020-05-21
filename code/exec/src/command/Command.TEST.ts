@@ -32,9 +32,7 @@ describe('Command', () => {
   });
 
   it('adds two commands', () => {
-    const cmd = Command.create()
-      .add('  run  ')
-      .add('now');
+    const cmd = Command.create().add('  run  ').add('now');
     expect(cmd.parts.length).to.eql(2);
     expect(cmd.parts[0].value).to.eql('run');
     expect(cmd.parts[0].type).to.eql('COMMAND');
@@ -43,9 +41,7 @@ describe('Command', () => {
   });
 
   it('adds flag (--force)', () => {
-    const cmd = Command.create()
-      .add('run')
-      .add(' --force   ');
+    const cmd = Command.create().add('run').add(' --force   ');
     expect(cmd.parts.length).to.eql(2);
     expect(cmd.parts[0].value).to.eql('run');
     expect(cmd.parts[0].type).to.eql('COMMAND');
@@ -54,9 +50,7 @@ describe('Command', () => {
   });
 
   it('adds flag (-f)', () => {
-    const cmd = Command.create()
-      .add('run')
-      .add(' -f   ');
+    const cmd = Command.create().add('run').add(' -f   ');
     expect(cmd.parts.length).to.eql(2);
     expect(cmd.parts[0].value).to.eql('run');
     expect(cmd.parts[0].type).to.eql('COMMAND');
@@ -65,9 +59,7 @@ describe('Command', () => {
   });
 
   it('adds argument (--dir=foo)', () => {
-    const cmd = Command.create()
-      .add('run')
-      .add('  --dir=foo   ');
+    const cmd = Command.create().add('run').add('  --dir=foo   ');
     expect(cmd.parts.length).to.eql(2);
     expect(cmd.parts[0].value).to.eql('run');
     expect(cmd.parts[0].type).to.eql('COMMAND');
@@ -76,9 +68,7 @@ describe('Command', () => {
   });
 
   it('adds argument (--dir foo)', () => {
-    const cmd = Command.create()
-      .add('run')
-      .add('  --dir foo   ');
+    const cmd = Command.create().add('run').add('  --dir foo   ');
     expect(cmd.parts.length).to.eql(2);
     expect(cmd.parts[0].value).to.eql('run');
     expect(cmd.parts[0].type).to.eql('COMMAND');
@@ -87,10 +77,7 @@ describe('Command', () => {
   });
 
   it('conditional adding', () => {
-    const cmd = Command.create()
-      .add('run')
-      .add('--force', false)
-      .add('--dir 1234', true);
+    const cmd = Command.create().add('run').add('--force', false).add('--dir 1234', true);
     expect(cmd.parts.length).to.eql(2);
     expect(cmd.parts[0].value).to.eql('run');
     expect(cmd.parts[0].type).to.eql('COMMAND');
@@ -109,19 +96,13 @@ describe('Command', () => {
   });
 
   it('does not add a new-line if the command is empty', () => {
-    const cmd = Command.create()
-      .newLine()
-      .add('run');
+    const cmd = Command.create().newLine().add('run');
     expect(cmd.parts.length).to.eql(1);
     expect(cmd.parts[0].value).to.eql('run');
   });
 
   it('adds a new-line', () => {
-    const cmd = Command.create()
-      .newLine()
-      .add('run')
-      .newLine()
-      .add('delete');
+    const cmd = Command.create().newLine().add('run').newLine().add('delete');
     expect(cmd.parts[0].value).to.eql('run\n');
     expect(cmd.parts[1].value).to.eql('delete');
   });
@@ -133,10 +114,7 @@ describe('Command', () => {
   });
 
   it('adds a command in the [newLine] method (conditiona)', () => {
-    const cmd = Command.create('run')
-      .newLine('build fast')
-      .newLine('foo', false)
-      .newLine('yo');
+    const cmd = Command.create('run').newLine('build fast').newLine('foo', false).newLine('yo');
     expect(cmd.parts[0].value).to.eql('run\n');
     expect(cmd.parts[1].value).to.eql('build fast\n');
     expect(cmd.parts[2].value).to.eql('yo');
@@ -153,17 +131,12 @@ describe('Command', () => {
   });
 
   it('toString (command, arg, flag)', () => {
-    const cmd = Command.create()
-      .add('  build  ')
-      .add('--force')
-      .add('--dir=123');
+    const cmd = Command.create().add('  build  ').add('--force').add('--dir=123');
     expect(cmd.toString()).to.eql('build --force --dir=123');
   });
 
   it('runs a command', async () => {
-    const cmd = Command.create()
-      .add('mkdir')
-      .add('-p tmp/foo');
+    const cmd = Command.create().add('mkdir').add('-p tmp/foo');
 
     const response = cmd.run({ silent: true });
     const result = await response;

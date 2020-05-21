@@ -220,10 +220,10 @@ describe('model', () => {
       const events: t.IModelDataLoaded[] = [];
       model.events$
         .pipe(
-          filter(e => e.type === 'MODEL/loaded/data'),
-          map(e => e.payload as t.IModelDataLoaded),
+          filter((e) => e.type === 'MODEL/loaded/data'),
+          map((e) => e.payload as t.IModelDataLoaded),
         )
-        .subscribe(e => events.push(e));
+        .subscribe((e) => events.push(e));
 
       await model.load();
       await model.load();
@@ -417,7 +417,7 @@ describe('model', () => {
 
       expect(model.changes.length).to.eql(2);
 
-      const fields = model.changes.list.map(c => c.field);
+      const fields = model.changes.list.map((c) => c.field);
       expect(fields).to.include('name');
       expect(fields).to.include('region');
     });
@@ -506,7 +506,7 @@ describe('model', () => {
       await model.ready;
 
       const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
+      model.events$.subscribe((e) => events.push(e));
 
       model.props.name = 'foo';
       expect(model.isChanged).to.eql(true);
@@ -532,13 +532,13 @@ describe('model', () => {
       await model.ready;
 
       const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
+      model.events$.subscribe((e) => events.push(e));
       model.events$
         .pipe(
-          filter(e => e.type === 'MODEL/changing'),
-          map(e => e.payload as t.IModelChanging),
+          filter((e) => e.type === 'MODEL/changing'),
+          map((e) => e.payload as t.IModelChanging),
         )
-        .subscribe(e => e.cancel());
+        .subscribe((e) => e.cancel());
 
       model.props.name = 'foo';
 
@@ -556,21 +556,21 @@ describe('model', () => {
       await model.ready;
 
       const read$ = model.events$.pipe(
-        filter(e => e.type === 'MODEL/read/prop'),
-        map(e => e.payload as t.IModelReadProp),
+        filter((e) => e.type === 'MODEL/read/prop'),
+        map((e) => e.payload as t.IModelReadProp),
       );
 
       const events: t.ModelEvent[] = [];
       const reads: t.IModelReadProp[] = [];
 
-      model.events$.subscribe(e => events.push(e));
-      read$.subscribe(e => reads.push(e));
+      model.events$.subscribe((e) => events.push(e));
+      read$.subscribe((e) => reads.push(e));
 
       expect(model.props.name).to.eql('MyOrg');
       expect(events.length).to.eql(1);
       expect(events[0].type).to.eql('MODEL/read/prop');
 
-      read$.subscribe(e => e.modify('Boo'));
+      read$.subscribe((e) => e.modify('Boo'));
 
       const res = model.props.name;
       expect(events.length).to.eql(2);
@@ -602,7 +602,7 @@ describe('model', () => {
       const changes = model.changes;
 
       const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
+      model.events$.subscribe((e) => events.push(e));
 
       expect(model.isChanged).to.eql(true);
 
@@ -634,7 +634,7 @@ describe('model', () => {
       const modifiedAt = model.modifiedAt;
 
       const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
+      model.events$.subscribe((e) => events.push(e));
 
       const res1 = await model.save();
       expect(res1.saved).to.eql(false);
@@ -696,13 +696,13 @@ describe('model', () => {
   describe('beforeSave', () => {
     it('fires [beforeSave] event via [save] method', async () => {
       let count = 0;
-      const beforeSave: t.BeforeModelSave = async args => count++;
+      const beforeSave: t.BeforeModelSave = async (args) => count++;
 
       const model = await (await createOrg({ put: false, beforeSave })).ready;
       model.set({ region: 'US/west' });
 
       const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
+      model.events$.subscribe((e) => events.push(e));
 
       await model.save();
       expect(count).to.eql(1);
@@ -715,7 +715,7 @@ describe('model', () => {
     it('runs [beforeSave] even if no changes made', async () => {
       let count = 0;
       let makeChange = false;
-      const beforeSave: t.BeforeModelSave = async args => {
+      const beforeSave: t.BeforeModelSave = async (args) => {
         count++;
         if (makeChange) {
           const model = args.model as IMyOrgModel;
@@ -730,7 +730,7 @@ describe('model', () => {
       expect(count).to.eql(1);
 
       const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
+      model.events$.subscribe((e) => events.push(e));
 
       makeChange = true;
       await model.save();
@@ -739,8 +739,8 @@ describe('model', () => {
       expect(model.props.name).to.eql('Something else');
 
       const saveEvents = events
-        .filter(e => e.type === 'MODEL/saved')
-        .map(e => e.payload as t.IModelSave);
+        .filter((e) => e.type === 'MODEL/saved')
+        .map((e) => e.payload as t.IModelSave);
 
       const e = saveEvents[0];
       expect(e.force).to.eql(false);
@@ -751,7 +751,7 @@ describe('model', () => {
       const model1 = await (
         await createOrg({
           put: false,
-          beforeSave: async args => {
+          beforeSave: async (args) => {
             if (args.changes.map.region) {
               // NB:  The region has been changed.
               //      Make a modification to it.
@@ -769,7 +769,7 @@ describe('model', () => {
     });
 
     it('cancels save (via beforeSave handler)', async () => {
-      const beforeSave: t.BeforeModelSave = async args => {
+      const beforeSave: t.BeforeModelSave = async (args) => {
         args.cancel();
       };
 
@@ -788,10 +788,10 @@ describe('model', () => {
       const model = await (await createOrg({ put: false })).ready;
       model.events$
         .pipe(
-          filter(e => e.type === 'MODEL/beforeSave'),
-          map(e => e.payload as t.IModelSave),
+          filter((e) => e.type === 'MODEL/beforeSave'),
+          map((e) => e.payload as t.IModelSave),
         )
-        .subscribe(e => e.cancel());
+        .subscribe((e) => e.cancel());
 
       model.props.name = 'Mary';
       expect(model.isChanged).to.eql(true);
@@ -819,7 +819,7 @@ describe('model', () => {
       const things = await model.links.things;
 
       expect(thing.toObject()).to.eql({ count: 2 });
-      expect(things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 3 }]);
+      expect(things.map((m) => m.toObject())).to.eql([{ count: 1 }, { count: 3 }]);
     });
 
     it('links: get when model is not loaded (underlying linked doc exists)', async () => {
@@ -853,10 +853,10 @@ describe('model', () => {
       const events: t.IModelLinkLoaded[] = [];
       model.events$
         .pipe(
-          filter(e => e.type === 'MODEL/loaded/link'),
-          map(e => e.payload as t.IModelLinkLoaded),
+          filter((e) => e.type === 'MODEL/loaded/link'),
+          map((e) => e.payload as t.IModelLinkLoaded),
         )
-        .subscribe(e => events.push(e));
+        .subscribe((e) => events.push(e));
 
       await model.load();
       expect(events.length).to.eql(0);
@@ -884,7 +884,7 @@ describe('model', () => {
       const res2 = await readLinks();
 
       expect(res1.thing.toObject()).to.eql({ count: 2 });
-      expect(res1.things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 3 }]);
+      expect(res1.things.map((m) => m.toObject())).to.eql([{ count: 1 }, { count: 3 }]);
 
       expect(res1.thing).to.equal(res2.thing);
       expect(res1.things).to.equal(res2.things);
@@ -897,7 +897,7 @@ describe('model', () => {
       expect(res3.things).to.not.equal(res2.things);
 
       expect(res3.thing.toObject()).to.eql({ count: 2 });
-      expect(res3.things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 3 }]);
+      expect(res3.things.map((m) => m.toObject())).to.eql([{ count: 1 }, { count: 3 }]);
 
       await model.load({ force: true });
       const res4 = await readLinks();
@@ -911,7 +911,7 @@ describe('model', () => {
       const model = await createOrgWithLinks({ refs: ['THING/1', 'THING/3'], ref: 'THING/2' });
 
       const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
+      model.events$.subscribe((e) => events.push(e));
       expect(events.length).to.eql(0);
 
       await model.load({ withLinks: true });
@@ -1011,11 +1011,11 @@ describe('model', () => {
       expect(model.changes.map).to.eql({ refs: ['THING/2'] });
       expect(model.changes.list[0].kind).to.eql('LINK');
 
-      expect((await model.links.things).map(m => m.path)).to.eql(['THING/2']);
+      expect((await model.links.things).map((m) => m.path)).to.eql(['THING/2']);
 
       things.link(['THING/2', 'THING/1']); // Existing ref not duplicated. Change registered.
       expect(model.changes.length).to.eql(2);
-      expect((await model.links.things).map(m => m.path)).to.eql(['THING/1', 'THING/2']);
+      expect((await model.links.things).map((m) => m.path)).to.eql(['THING/1', 'THING/2']);
 
       things.link(['THING/2', 'THING/1']); // No change.
       things.link(['THING/1', 'THING/2']); // No change.
@@ -1036,7 +1036,11 @@ describe('model', () => {
       expect((await db.getValue<any>(org.path)).refs).to.eql(['THING/1', 'THING/2', 'THING/3']);
       expect(model.doc.refs).to.eql(['THING/1', 'THING/2', 'THING/3']);
       expect(model.isChanged).to.eql(false);
-      expect((await model.links.things).map(m => m.path)).to.eql(['THING/1', 'THING/2', 'THING/3']);
+      expect((await model.links.things).map((m) => m.path)).to.eql([
+        'THING/1',
+        'THING/2',
+        'THING/3',
+      ]);
 
       /**
        * Unlink: single
@@ -1044,7 +1048,7 @@ describe('model', () => {
       things.unlink(['THING/2']);
       expect(model.changes.length).to.eql(1);
       expect(model.changes.map).to.eql({ refs: ['THING/1', 'THING/3'] });
-      expect((await model.links.things).map(m => m.path)).to.eql(['THING/1', 'THING/3']);
+      expect((await model.links.things).map((m) => m.path)).to.eql(['THING/1', 'THING/3']);
 
       expect(model.doc.refs).to.eql(['THING/1', 'THING/2', 'THING/3']); // Change not commited yet.
 
@@ -1098,21 +1102,21 @@ describe('model', () => {
     it('children: direct-descendents', async () => {
       const model = await createOrgWithChildren();
       const res = await model.children.things;
-      const paths = res.map(model => model.path);
+      const paths = res.map((model) => model.path);
       expect(paths).to.eql(['ORG/123/1', 'ORG/123/2', 'ORG/123/3']);
     });
 
     it('children: sub-descendents', async () => {
       const model = await createOrgWithChildren();
       const res = await model.children.subthings;
-      const paths = res.map(model => model.path);
+      const paths = res.map((model) => model.path);
       expect(paths).to.eql(['ORG/123/info/a', 'ORG/123/info/b']);
     });
 
     it('children: all-descendents', async () => {
       const model = await createOrgWithChildren();
       const res = await model.children.all;
-      const paths = res.map(model => model.path);
+      const paths = res.map((model) => model.path);
       expect(paths).to.eql([
         // 'ORG/123', // NB: The model itself is not included in [all].
         'ORG/123/1',
@@ -1128,10 +1132,10 @@ describe('model', () => {
       const events: t.IModelChildrenLoaded[] = [];
       model.events$
         .pipe(
-          filter(e => e.type === 'MODEL/loaded/children'),
-          map(e => e.payload as t.IModelChildrenLoaded),
+          filter((e) => e.type === 'MODEL/loaded/children'),
+          map((e) => e.payload as t.IModelChildrenLoaded),
         )
-        .subscribe(e => events.push(e));
+        .subscribe((e) => events.push(e));
 
       await model.load();
       expect(events.length).to.eql(0);
@@ -1158,7 +1162,11 @@ describe('model', () => {
       const res1 = await readChildren();
       const res2 = await readChildren();
 
-      expect(res1.things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 2 }, { count: 3 }]);
+      expect(res1.things.map((m) => m.toObject())).to.eql([
+        { count: 1 },
+        { count: 2 },
+        { count: 3 },
+      ]);
 
       expect(res1.things).to.equal(res2.things);
       expect(res1.subthings).to.equal(res2.subthings);
@@ -1172,7 +1180,11 @@ describe('model', () => {
       expect(res2.subthings).to.not.equal(res3.subthings);
       expect(res2.all).to.not.equal(res3.all);
 
-      expect(res3.things.map(m => m.toObject())).to.eql([{ count: 1 }, { count: 2 }, { count: 3 }]);
+      expect(res3.things.map((m) => m.toObject())).to.eql([
+        { count: 1 },
+        { count: 2 },
+        { count: 3 },
+      ]);
 
       await model.load({ force: true });
       const res4 = await readChildren();
@@ -1187,7 +1199,7 @@ describe('model', () => {
       const model = await createOrgWithChildren();
 
       const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
+      model.events$.subscribe((e) => events.push(e));
       expect(events.length).to.eql(0);
 
       await model.load({ withChildren: true });
@@ -1219,7 +1231,7 @@ describe('model', () => {
       };
 
       const events: t.ModelEvent[] = [];
-      model.events$.subscribe(e => events.push(e));
+      model.events$.subscribe((e) => events.push(e));
 
       // Assert that everything exists.
       expect(model.isLoaded).to.eql(true);
@@ -1229,8 +1241,8 @@ describe('model', () => {
       expect(children1.things.length).to.eql(3);
       expect(children1.subthings.length).to.eql(2);
 
-      children1.things.forEach(child => expect(child.exists).to.eql(true));
-      children1.subthings.forEach(child => expect(child.exists).to.eql(true));
+      children1.things.forEach((child) => expect(child.exists).to.eql(true));
+      children1.subthings.forEach((child) => expect(child.exists).to.eql(true));
 
       expect((await db.find('**')).length).to.eql(7);
 
@@ -1263,7 +1275,7 @@ describe('model', () => {
     });
 
     it('cancels delete (via beforeDelete)', async () => {
-      const beforeDelete: t.BeforeModelDelete = async args => {
+      const beforeDelete: t.BeforeModelDelete = async (args) => {
         args.cancel();
       };
 
@@ -1282,10 +1294,10 @@ describe('model', () => {
 
       model.events$
         .pipe(
-          filter(e => e.type === 'MODEL/beforeDelete'),
-          map(e => e.payload as t.IModelDelete),
+          filter((e) => e.type === 'MODEL/beforeDelete'),
+          map((e) => e.payload as t.IModelDelete),
         )
-        .subscribe(e => e.cancel());
+        .subscribe((e) => e.cancel());
 
       const res = await model.delete();
       expect(res.deleted).to.eql(false);

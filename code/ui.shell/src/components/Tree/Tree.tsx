@@ -1,9 +1,9 @@
 import { themes, TreeView } from '@platform/ui.tree';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, Context, css, log, R, t } from '../common';
+import { color, COLORS, Context, css, R, t } from '../common';
 
 const DARK = R.clone(themes.DARK);
 DARK.header = {

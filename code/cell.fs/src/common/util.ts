@@ -3,9 +3,5 @@ export function isOK(status: number) {
 }
 
 export function trimSlashes(input: string) {
-  return (input || '')
-    .trim()
-    .replace(/^\/*/, '')
-    .replace(/\/*$/, '')
-    .trim();
+  return (input || '').trim().replace(/^\/*/, '').replace(/\/*$/, '').trim();
 }

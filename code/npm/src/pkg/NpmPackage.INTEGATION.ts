@@ -2,7 +2,7 @@ import { npm } from '..';
 import { log } from '../common';
 import { NpmPackage } from '.';
 
-describe('NpmPackage (integration)', function() {
+describe('NpmPackage (integration)', function () {
   this.timeout(20000);
 
   it.skip('latestFields (static)', async () => {

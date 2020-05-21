@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { models, routes, Schema, t, util } from '../common';
 import { getCoord } from './handler.getCoord';
 import { getParams } from './params';

@@ -21,7 +21,7 @@ after(async () => {
   await drop();
 });
 
-describe('MongoDb', function() {
+describe('MongoDb', function () {
   this.timeout(20000);
 
   it('put => get => dispose', async () => {

@@ -17,7 +17,7 @@ export class SheetPool implements t.ISheetPool {
    * [Lifecycle]
    */
 
-  private constructor() {}
+  private constructor() {} // eslint-disable-line
 
   public dispose() {
     if (!this.isDisposed) {

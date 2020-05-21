@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { log, Logger } from '.';
 import { expect } from 'chai';
 import { chalk, ILogEvent, constants, ILogAction } from '../server/common';

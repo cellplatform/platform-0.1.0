@@ -363,7 +363,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
  * [Helpers]
  */
 
-function getChangedCharacter(from: string, to: string) {
+export const getChangedCharacter = (from: string, to: string) => {
   if (to.length === from.length) {
     return '';
   }
@@ -379,13 +379,13 @@ function getChangedCharacter(from: string, to: string) {
     index += 1;
   }
   return ''; // No change.
-}
+};
 
-function formatValue(args: { value?: string; maxLength?: number }) {
+export const formatValue = (args: { value?: string; maxLength?: number }) => {
   const { maxLength } = args;
   let value = args.value || '';
   if (maxLength !== undefined && value.length > maxLength) {
     value = value.substr(0, maxLength);
   }
   return value;
-}
+};

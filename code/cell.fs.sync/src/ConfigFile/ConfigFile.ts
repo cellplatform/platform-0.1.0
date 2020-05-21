@@ -42,7 +42,7 @@ export class ConfigFile implements t.IConfigFile {
 
       log.warn(`The configuration file is invalid. file: ${config.file}`);
       const errors = config.validate().errors;
-      errors.forEach(err => {
+      errors.forEach((err) => {
         log.info();
         log.info.gray(`${log.red('ERROR')} ${err.message}`);
       });
@@ -80,9 +80,7 @@ export class ConfigFile implements t.IConfigFile {
 
     const toUrl = () => {
       try {
-        return Schema.urls(host)
-          .cell(uri.toString())
-          .files.list.toString();
+        return Schema.urls(host).cell(uri.toString()).files.list.toString();
       } catch (error) {
         return '';
       }

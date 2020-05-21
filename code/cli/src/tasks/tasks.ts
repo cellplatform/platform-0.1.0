@@ -3,19 +3,12 @@ import { Listr, value, time, log, t } from '../common';
 
 type ITaskItem = { title: string; task: t.Task };
 
-/**
- * Initializes a list of spinner tasks.
- */
-export function tasks(): t.ITasks {
-  return Tasks.create();
-}
-
 export class Tasks implements t.ITasks {
   /**
    * [Lifecycle]
    */
   public static create = () => new Tasks();
-  private constructor() {}
+  private constructor() {} // eslint-disable-line
 
   /**
    * [Fields]
@@ -119,4 +112,11 @@ export class Tasks implements t.ITasks {
     // Finish up.
     return $;
   };
+}
+
+/**
+ * Initializes a list of spinner tasks.
+ */
+export function tasks(): t.ITasks {
+  return Tasks.create();
 }

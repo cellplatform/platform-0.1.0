@@ -1,7 +1,9 @@
+/* eslint-disable */
+
 import { parse as parseUrl } from 'url';
 import { createMock, expect, fs, http, readFile, Schema, t } from '../../test';
 
-describe('cell/files: upload', function() {
+describe('cell/files: upload', function () {
   this.timeout(50000);
 
   it('upload/download: 1 file', async () => {
@@ -60,7 +62,7 @@ describe('cell/files: upload', function() {
     // Ensure the file location has been stored.
     const files = (await client.files.list()).body;
     expect(files.length).to.eql(2);
-    expect(files.every(f => f.props.location?.startsWith('file:///'))).to.eql(true);
+    expect(files.every((f) => f.props.location?.startsWith('file:///'))).to.eql(true);
 
     const urls = (await client.files.urls()).body;
 
@@ -222,11 +224,11 @@ describe('cell/files: upload', function() {
     await mock.dispose();
 
     const changes = res.body.changes;
-    const uris = (changes || []).map(c => c.uri);
+    const uris = (changes || []).map((c) => c.uri);
 
     expect(uris).to.include('ns:foo');
     expect(uris).to.include('cell:foo:A1');
-    expect(uris.some(uri => uri.startsWith('file:foo:'))).to.eql(true);
+    expect(uris.some((uri) => uri.startsWith('file:foo:'))).to.eql(true);
   });
 
   it('upload: stores "integrity" data after upload, eg filehash (sha256) etc', async () => {

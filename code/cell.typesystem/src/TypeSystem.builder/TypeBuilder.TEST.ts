@@ -55,7 +55,7 @@ describe('TypeBuilder', () => {
       const ns = builder.ns('foo');
 
       ns.type('Type1').prop('foo');
-      ns.type('Type2').prop('foo', prop => prop.type('number').default(123));
+      ns.type('Type2').prop('foo', (prop) => prop.type('number').default(123));
 
       const obj = builder.toObject();
       const columns = obj['ns:foo'].columns;
@@ -79,7 +79,7 @@ describe('TypeBuilder', () => {
         const type2 = builder.ns('foo.2').type('Type2');
 
         type1.prop('one', '/Type2[]');
-        type2.prop('two', prop => prop.type('/Type1').target('ref'));
+        type2.prop('two', (prop) => prop.type('/Type1').target('ref'));
 
         const obj = builder.toObject();
 
@@ -100,7 +100,7 @@ describe('TypeBuilder', () => {
         const type2 = builder.type('Type2');
 
         type1.prop('one', '/Type2[]');
-        type2.prop('two', prop => prop.type('/Type1').target('ref'));
+        type2.prop('two', (prop) => prop.type('/Type1').target('ref'));
 
         const obj = builder.toObject();
 
@@ -185,8 +185,8 @@ describe('TypeBuilder', () => {
       builder
         .ns()
         .type('Root')
-        .prop('ones', p => p.type('/Type1[]').target('ref'))
-        .prop('two', p => p.type('/Type2').target('ref'));
+        .prop('ones', (p) => p.type('/Type1[]').target('ref'))
+        .prop('two', (p) => p.type('/Type2').target('ref'));
 
       const ref = builder.ns();
       ref.type('Type1').prop('name');
@@ -226,7 +226,7 @@ describe('TypeBuilder', () => {
     it('store type-builder reference', () => {
       const ns = TypeBuilder.create().ns('foo');
       const type = ns.type('MyType');
-      expect(ns.types.some(item => item === type)).to.eql(true);
+      expect(ns.types.some((item) => item === type)).to.eql(true);
     });
 
     it('startColumn: "A" ➔ 0', () => {
@@ -290,10 +290,7 @@ describe('TypeBuilder', () => {
       const ns = TypeBuilder.create().ns('foo');
       const type = ns.type('MyType');
 
-      const res = type
-        .prop('foo', 'string')
-        .prop('bar', 'number')
-        .prop('baz', '"red" | "green"');
+      const res = type.prop('foo', 'string').prop('bar', 'number').prop('baz', '"red" | "green"');
 
       expect(res.props.length).to.eql(3);
 
@@ -321,23 +318,10 @@ describe('TypeBuilder', () => {
         .prop('baz', { type: '"red" | "green"', target: 'inline:baz.color', default: 'red' });
 
       const res2 = type2
-        .prop('foo', prop =>
-          prop
-            .type('string')
-            .default('Untitled')
-            .target('inline:title'),
-        )
-        .prop('bar', prop =>
-          prop
-            .type('number')
-            .default(123)
-            .target('ref'),
-        )
-        .prop('baz', prop =>
-          prop
-            .type('"red" | "green"')
-            .default('red')
-            .target('inline:baz.color'),
+        .prop('foo', (prop) => prop.type('string').default('Untitled').target('inline:title'))
+        .prop('bar', (prop) => prop.type('number').default(123).target('ref'))
+        .prop('baz', (prop) =>
+          prop.type('"red" | "green"').default('red').target('inline:baz.color'),
         );
 
       expect(res1.props.length).to.eql(3);
@@ -367,10 +351,7 @@ describe('TypeBuilder', () => {
 
     describe('column', () => {
       it('starts at column 0 ("A")', () => {
-        const type = TypeBuilder.create()
-          .ns('foo')
-          .type('MyType')
-          .prop('title');
+        const type = TypeBuilder.create().ns('foo').type('MyType').prop('title');
         const prop = type.props[0].toObject();
         expect(prop.column).to.eql('A');
       });
@@ -391,22 +372,16 @@ describe('TypeBuilder', () => {
 
       it('auto-increments column', () => {
         const ns = TypeBuilder.create().ns('foo');
-        const type = ns
-          .type('MyType')
-          .prop('foo')
-          .prop('bar');
-        const props = type.props.map(prop => prop.toObject());
+        const type = ns.type('MyType').prop('foo').prop('bar');
+        const props = type.props.map((prop) => prop.toObject());
         expect(props[0].column).to.eql('A');
         expect(props[1].column).to.eql('B');
       });
 
       it('auto-increments column (start offset)', () => {
         const ns = TypeBuilder.create().ns('foo');
-        const type = ns
-          .type('MyType', { startColumn: 'C' })
-          .prop('foo')
-          .prop('bar');
-        const props = type.props.map(prop => prop.toObject());
+        const type = ns.type('MyType', { startColumn: 'C' }).prop('foo').prop('bar');
+        const props = type.props.map((prop) => prop.toObject());
         expect(props[0].column).to.eql('C');
         expect(props[1].column).to.eql('D');
       });
@@ -418,7 +393,7 @@ describe('TypeBuilder', () => {
           .prop('foo1')
           .prop('foo2', { column: 'E' })
           .prop('foo3');
-        const columns = type.props.map(prop => prop.toObject().column);
+        const columns = type.props.map((prop) => prop.toObject().column);
         expect(columns).to.eql(['A', 'E', 'F']);
       });
 
@@ -427,11 +402,11 @@ describe('TypeBuilder', () => {
           .ns('foo')
           .type('MyType')
           .prop('foo1')
-          .prop('foo2', prop => prop.column('E'))
+          .prop('foo2', (prop) => prop.column('E'))
           .prop('foo3')
           .prop('foo4', { column: 1 }) // NB: Inserts prior to latest, but does not effect auto-incrementer.
           .prop('foo5');
-        const columns = type.props.map(prop => prop.toObject().column);
+        const columns = type.props.map((prop) => prop.toObject().column);
         expect(columns).to.eql(['A', 'E', 'F', 'B', 'G']);
       });
     });
@@ -439,9 +414,7 @@ describe('TypeBuilder', () => {
     describe('errors', () => {
       it('throw: invalid property name', () => {
         const test = (name: string) => {
-          const type = TypeBuilder.create()
-            .ns('foo')
-            .type('MyType');
+          const type = TypeBuilder.create().ns('foo').type('MyType');
           const fn = () => type.prop(name);
           expect(fn).to.throw();
         };
@@ -452,10 +425,7 @@ describe('TypeBuilder', () => {
       });
 
       it('throw: property name already used', () => {
-        const type = TypeBuilder.create()
-          .ns('foo')
-          .type('MyType')
-          .prop('foo');
+        const type = TypeBuilder.create().ns('foo').type('MyType').prop('foo');
 
         const fn = () => type.prop(' foo ');
         expect(fn).to.throw(/property named 'foo' has already been added/);
@@ -463,10 +433,8 @@ describe('TypeBuilder', () => {
 
       it('throw: target invalid', () => {
         const test = (target?: string) => {
-          const type = TypeBuilder.create()
-            .ns('foo')
-            .type('MyType');
-          const fn = () => type.prop('foo', prop => prop.target(target));
+          const type = TypeBuilder.create().ns('foo').type('MyType');
+          const fn = () => type.prop('foo', (prop) => prop.target(target));
           expect(fn).to.throw();
         };
         test('-');
@@ -475,10 +443,8 @@ describe('TypeBuilder', () => {
 
       it('throw: target type (UNKNOWN)', () => {
         const test = (value: string) => {
-          const type = TypeBuilder.create()
-            .ns('foo')
-            .type('MyType');
-          const fn = () => type.prop('foo', prop => prop.type(value));
+          const type = TypeBuilder.create().ns('foo').type('MyType');
+          const fn = () => type.prop('foo', (prop) => prop.type(value));
           expect(fn).to.throw();
         };
         test('-');
@@ -487,10 +453,8 @@ describe('TypeBuilder', () => {
 
       it('throw: column invalid', () => {
         const test = (value: string | number) => {
-          const type = TypeBuilder.create()
-            .ns('foo')
-            .type('MyType');
-          const fn = () => type.prop('foo', prop => prop.column(value));
+          const type = TypeBuilder.create().ns('foo').type('MyType');
+          const fn = () => type.prop('foo', (prop) => prop.column(value));
           expect(fn).to.throw();
         };
         test(-1);

@@ -48,7 +48,7 @@ export class FileSchema {
   /**
    * Creates a fully-qualified file path (URI).
    */
-  public static toFileLocation(input: string = '') {
+  public static toFileLocation(input = '') {
     input = input.trim();
     return isHttp(input) ? input : `file://${input}`;
   }

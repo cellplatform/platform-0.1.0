@@ -374,7 +374,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
 
   private dispatch = (transaction: t.Transaction<DocSchema>) => {
     const view = this.view;
-    const self = this; // tslint:disable-line
+    const self = this; // eslint-disable-line
 
     // NB: Some transaction just move the cursor around etc.
     //     Only fire change events for actual doc changes.

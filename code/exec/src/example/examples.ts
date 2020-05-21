@@ -1,4 +1,4 @@
-// tslint:disable
+/* eslint-disable */
 import * as runTasks from './runTasks';
 import * as runCommands from './runCommands';
 

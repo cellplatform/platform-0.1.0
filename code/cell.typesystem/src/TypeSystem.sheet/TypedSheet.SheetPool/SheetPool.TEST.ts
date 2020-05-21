@@ -88,10 +88,7 @@ describe('SheetPool', () => {
 
       expect(pool.children(sheet)).to.eql([]);
 
-      pool
-        .add(sheet)
-        .add(child, { parent: sheet })
-        .add(child, { parent: sheet }); // NB: repeated add, does not duplicate.
+      pool.add(sheet).add(child, { parent: sheet }).add(child, { parent: sheet }); // NB: repeated add, does not duplicate.
 
       const children = pool.children(sheet);
       expect(children.length).to.eql(1);

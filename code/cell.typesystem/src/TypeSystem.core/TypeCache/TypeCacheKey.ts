@@ -1,4 +1,4 @@
-import { t, Uri } from '../../common';
+import { t } from '../../common';
 
 /**
  * Cache key generators.
@@ -15,7 +15,7 @@ export class TypeCacheKey {
     return `TypeSystem/fetch/${ensurePrefix('ns:', ns)}/${method}${suffix}`;
   };
 
-  public static default: t.CacheDefaultValue = uri => {
+  public static default: t.CacheDefaultValue = (uri) => {
     return `TypeSystem/default/${uri}`;
   };
 }

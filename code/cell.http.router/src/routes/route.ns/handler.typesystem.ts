@@ -1,4 +1,4 @@
-import { models, Schema, t, ERROR, TypeSystem, HttpClient, wildcard } from '../common';
+import { HttpClient, Schema, t, TypeSystem, wildcard } from '../common';
 import * as util from './util';
 
 export async function getTypes(args: {

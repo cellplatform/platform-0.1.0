@@ -5,7 +5,6 @@ export type IPullArgs = {};
 
 export const init: t.CmdPluginsInit = cli => {
   const handler: t.CmdPluginHandler<IPullArgs> = async e => {
-    const { argv } = e;
     await dirPull({
       dir: process.cwd(),
     });

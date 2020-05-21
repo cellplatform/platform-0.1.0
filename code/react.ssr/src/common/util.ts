@@ -32,9 +32,7 @@ export function stripHttp(input?: string) {
  * Strips "/" characters.
  */
 export function stripSlashes(input?: string) {
-  return asString(input)
-    .replace(/^\/*/, '')
-    .replace(/\/*$/, '');
+  return asString(input).replace(/^\/*/, '').replace(/\/*$/, '');
 }
 
 /**

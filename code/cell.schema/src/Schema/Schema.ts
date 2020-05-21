@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import { cuid, slug, t, hash, coord, Mime } from '../common';
 import { FileSchema } from '../File';
 import { RefSchema } from '../Ref';
@@ -37,15 +39,15 @@ export class Schema {
     ns(input: string | t.IDbModelNs) {
       return from<t.INsUri>({
         input,
-        toUri: path => NsSchema.uri({ path }),
-        toPath: uri => Schema.ns(uri).path,
+        toUri: (path) => NsSchema.uri({ path }),
+        toPath: (uri) => Schema.ns(uri).path,
       });
     },
     cell(input: string | t.IDbModelCell) {
       return from<t.ICellUri>({
         input,
-        toUri: path => CoordSchema.uri({ path }),
-        toPath: uri => {
+        toUri: (path) => CoordSchema.uri({ path }),
+        toPath: (uri) => {
           const { ns, key } = Uri.cell(uri);
           return Schema.ns(ns).cell(key).path;
         },
@@ -54,8 +56,8 @@ export class Schema {
     row(input: string | t.IDbModelRow) {
       return from<t.IRowUri>({
         input,
-        toUri: path => CoordSchema.uri({ path }),
-        toPath: uri => {
+        toUri: (path) => CoordSchema.uri({ path }),
+        toPath: (uri) => {
           const { ns, key } = Uri.row(uri);
           return Schema.ns(ns).row(key).path;
         },
@@ -64,8 +66,8 @@ export class Schema {
     column(input: string | t.IDbModelColumn) {
       return from<t.IColumnUri>({
         input,
-        toUri: path => CoordSchema.uri({ path }),
-        toPath: uri => {
+        toUri: (path) => CoordSchema.uri({ path }),
+        toPath: (uri) => {
           const { ns, key } = Uri.column(uri);
           return Schema.ns(ns).column(key).path;
         },
@@ -74,8 +76,8 @@ export class Schema {
     file(input: string | t.IDbModelFile) {
       return from<t.IFileUri>({
         input,
-        toUri: path => FileSchema.uri({ path }),
-        toPath: uri => {
+        toUri: (path) => FileSchema.uri({ path }),
+        toPath: (uri) => {
           const { ns, file } = Uri.file(uri);
           return Schema.ns(ns).file(file).path;
         },

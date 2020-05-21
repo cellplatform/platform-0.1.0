@@ -86,19 +86,19 @@ describe('ConfigDir', () => {
         const config = await ConfigFile.create({ dir: PATH.TMP }).save(VALID);
         modify(config.data);
         const res = config.validate();
-        const hasError = res.errors.some(e => e.message.includes(error));
+        const hasError = res.errors.some((e) => e.message.includes(error));
         expect(res.isValid).to.eql(false, error);
         expect(hasError).to.eql(true, error);
         expect(config.isValid).to.eql(false, error);
       };
 
-      await test(d => (d.target = ''), CONFIG.ERROR.TARGET.INVALID_URI);
-      await test(d => (d.target = 'ns:foo'), CONFIG.ERROR.TARGET.INVALID_URI);
-      await test(d => (d.target = 'cell:foo:A'), CONFIG.ERROR.TARGET.INVALID_URI);
-      await test(d => (d.target = 'cell:foo:1'), CONFIG.ERROR.TARGET.INVALID_URI);
+      await test((d) => (d.target = ''), CONFIG.ERROR.TARGET.INVALID_URI);
+      await test((d) => (d.target = 'ns:foo'), CONFIG.ERROR.TARGET.INVALID_URI);
+      await test((d) => (d.target = 'cell:foo:A'), CONFIG.ERROR.TARGET.INVALID_URI);
+      await test((d) => (d.target = 'cell:foo:1'), CONFIG.ERROR.TARGET.INVALID_URI);
 
-      await test(d => (d.host = ''), CONFIG.ERROR.HOST.EMPTY);
-      await test(d => (d.host = '  '), CONFIG.ERROR.HOST.EMPTY);
+      await test((d) => (d.host = ''), CONFIG.ERROR.HOST.EMPTY);
+      await test((d) => (d.host = '  '), CONFIG.ERROR.HOST.EMPTY);
     });
   });
 });

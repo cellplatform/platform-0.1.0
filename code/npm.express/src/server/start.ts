@@ -9,12 +9,7 @@ const { toBool, toNumber } = value;
 const argv = minimist(process.argv.slice(2));
 
 const trimQuotes = (value: string) =>
-  (value || '')
-    .trim()
-    .replace(/^\"/, '')
-    .replace(/\"$/, '')
-    .replace(/^\'/, '')
-    .replace(/\'$/, '');
+  (value || '').trim().replace(/^\"/, '').replace(/\"$/, '').replace(/^\'/, '').replace(/\'$/, '');
 
 /**
  * Retrieve command-line args.
