@@ -96,9 +96,7 @@ export function toGrayHex(value: number): string {
  * Converts a color to an alpha RGB value.
  */
 export function alpha(color: string, alpha: number) {
-  return create(color)
-    .setAlpha(alpha)
-    .toRgbString();
+  return create(color).setAlpha(alpha).toRgbString();
 }
 
 /**
@@ -106,9 +104,7 @@ export function alpha(color: string, alpha: number) {
  * @param amount: 0..100
  */
 export function lighten(color: string, amount: number) {
-  return create(color)
-    .lighten(amount)
-    .toRgbString();
+  return create(color).lighten(amount).toRgbString();
 }
 
 /**
@@ -116,7 +112,5 @@ export function lighten(color: string, amount: number) {
  * @param amount: 0..100
  */
 export function darken(color: string, amount: number) {
-  return create(color)
-    .darken(amount)
-    .toRgbString();
+  return create(color).darken(amount).toRgbString();
 }

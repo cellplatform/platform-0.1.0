@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { style } from '..';
 
-describe('padding', function() {
+describe('padding', function () {
   it('PaddingX', () => {
     const res = style.transform({
       PaddingX: 14,
@@ -40,7 +40,7 @@ describe('padding', function() {
   });
 });
 
-describe('margin', function() {
+describe('margin', function () {
   it('MarginX', () => {
     const res = style.transform({
       MarginX: 14,

@@ -120,10 +120,7 @@ const formatAbsoluteCenter = (key: string, value: string | boolean | number, tar
     top: target.top,
     transform: '',
   };
-  const stringValue = value
-    .toString()
-    .trim()
-    .toLowerCase();
+  const stringValue = value.toString().trim().toLowerCase();
   if (stringValue.includes('x')) {
     styles.left = '50%';
   }

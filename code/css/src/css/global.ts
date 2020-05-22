@@ -52,8 +52,5 @@ export const global: t.CssGlobal = (styles: t.CssPropsMap, options: { prefix?: s
 function toCssSelector(args: { key: string; prefix?: string }) {
   const { key, prefix } = args;
   const selector = prefix ? `${prefix} ${key}` : key;
-  return selector
-    .replace(/^\n/, '')
-    .replace(/\n$/, '')
-    .trim();
+  return selector.replace(/^\n/, '').replace(/\n$/, '').trim();
 }

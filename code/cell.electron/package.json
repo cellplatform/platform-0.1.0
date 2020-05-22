@@ -28,8 +28,5 @@
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "license": "MIT",
-  "private": true,
-  "dependencies": {
-    "@platform/cell.ui": "^0.1.13"
-  }
+  "private": true
 }

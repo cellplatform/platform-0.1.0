@@ -62,7 +62,7 @@ describe('React: transformStyle - positioning', () => {
     });
   });
 
-  describe('AbsoluteCenter', function() {
+  describe('AbsoluteCenter', function () {
     it('converts `x`', () => {
       const res = style.transform({ AbsoluteCenter: 'x' }) as any;
       expect(res.position).to.equal('absolute');
