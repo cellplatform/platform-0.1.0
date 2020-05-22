@@ -3,6 +3,7 @@ import { exec, fs, getLog, IResult, paths, result } from '../common';
 const CONFIG = `
 module.exports = {
   extends: './node_modules/@platform/ts.libs/lint',
+  rules: {},
 };    
 `.substring(1);
 
