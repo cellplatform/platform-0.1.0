@@ -2,7 +2,10 @@ import '@platform/polyfill';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import './global';
+import './test.global';
 import { Test } from './Test';
+import { reset } from '../reset';
+
+reset();
 
 ReactDOM.render(<Test />, document.getElementById('root'));

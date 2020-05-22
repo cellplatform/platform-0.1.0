@@ -8,10 +8,6 @@ style.global({
   },
 
   '.sample, .foo': {
-    color: 'blue',
-  },
-
-  '[type="search"]::-webkit-search-decoration': {
-    WebkitAppearance: 'none',
+    color: '#00B2FF', // Cyan.
   },
 });

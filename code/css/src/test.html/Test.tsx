@@ -40,7 +40,7 @@ export class Test extends React.PureComponent<ITestProps> {
           Sample
         </div>
         <div className={'foo'}>Foo</div>
-        <input type={'search'} value={'search'} />
+        <input type={'search'} />
       </div>
     );
   }

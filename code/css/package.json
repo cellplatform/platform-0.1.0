@@ -10,7 +10,8 @@
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare",
-    "clean": "rm -rf .cache dist"
+    "clean": "rm -rf .cache dist",
+    "ts.normalize": "ts-node -T script.ts/normalize-to-object"
   },
   "dependencies": {
     "@platform/libs": "0.2.2",
