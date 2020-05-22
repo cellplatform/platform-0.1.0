@@ -28,27 +28,27 @@ export class Test extends React.PureComponent<{}, ITestState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const mouse$ = this.mouse$.pipe(takeUntil(this.unmounted$));
-    const click$ = mouse$.pipe(filter(e => e.button === 'LEFT'));
+    const click$ = mouse$.pipe(filter((e) => e.button === 'LEFT'));
 
     /**
      * NB: Alternative helper for pealing off events.
      */
     const tree = TreeView.events(events$);
 
-    tree.mouse().click.node$.subscribe(e => {
+    tree.mouse().click.node$.subscribe((e) => {
       log.info('🐷 CLICK from TreeEvents helper', e);
     });
 
     // Update state.
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     // Log events.
-    events$.subscribe(e => {
+    events$.subscribe((e) => {
       // log.info('🌳', e.type, e.payload);
     });
 
@@ -63,42 +63,42 @@ export class Test extends React.PureComponent<{}, ITestState> {
 
     click$
       .pipe(
-        filter(e => e.type === 'DOWN'),
-        filter(e => e.target === 'DRILL_IN'),
+        filter((e) => e.type === 'DOWN'),
+        filter((e) => e.target === 'DRILL_IN'),
       )
-      .subscribe(e => this.state$.next({ current: e.id }));
+      .subscribe((e) => this.state$.next({ current: e.id }));
 
     click$
       .pipe(
-        filter(e => e.type === 'DOWN'),
-        filter(e => e.target === 'TWISTY'),
+        filter((e) => e.type === 'DOWN'),
+        filter((e) => e.target === 'TWISTY'),
       )
-      .subscribe(e => toggle(e.node));
+      .subscribe((e) => toggle(e.node));
 
     click$
       .pipe(
-        filter(e => e.type === 'DOUBLE_CLICK'),
-        filter(e => e.target === 'NODE'),
-        filter(e => !Boolean(e.props.inline)),
-        filter(e => !Boolean(e.props.labelEditable)),
+        filter((e) => e.type === 'DOUBLE_CLICK'),
+        filter((e) => e.target === 'NODE'),
+        filter((e) => !Boolean(e.props.inline)),
+        filter((e) => !Boolean(e.props.labelEditable)),
       )
-      .subscribe(e => this.state$.next({ current: e.id }));
+      .subscribe((e) => this.state$.next({ current: e.id }));
 
     click$
       .pipe(
-        filter(e => e.type === 'DOUBLE_CLICK'),
-        filter(e => e.target === 'NODE'),
-        filter(e => Boolean(e.props.inline)),
-        filter(e => !Boolean(e.props.labelEditable)),
+        filter((e) => e.type === 'DOUBLE_CLICK'),
+        filter((e) => e.target === 'NODE'),
+        filter((e) => Boolean(e.props.inline)),
+        filter((e) => !Boolean(e.props.labelEditable)),
       )
-      .subscribe(e => toggle(e.node));
+      .subscribe((e) => toggle(e.node));
 
     click$
       .pipe(
-        filter(e => e.type === 'DOWN'),
-        filter(e => e.target === 'PARENT'),
+        filter((e) => e.type === 'DOWN'),
+        filter((e) => e.target === 'PARENT'),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const args = { inline: false };
         const parent = TreeView.util.parent(this.state.root, e.node, args);
         return this.state$.next({ current: parent ? parent.id : undefined });
@@ -196,9 +196,9 @@ export class Test extends React.PureComponent<{}, ITestState> {
   /**
    * [Handlers]
    */
-  private renderIcon: t.RenderTreeIcon = e => Icons[e.icon];
+  private renderIcon: t.RenderTreeIcon = (e) => Icons[e.icon];
 
-  private renderNodeBody: t.RenderTreeNodeBody = e => {
+  private renderNodeBody: t.RenderTreeNodeBody = (e) => {
     const styles = {
       base: css({
         backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
@@ -217,7 +217,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     return null;
   };
 
-  private renderPanel: t.RenderTreePanel<t.ITreeNode> = e => {
+  private renderPanel: t.RenderTreePanel<t.ITreeNode> = (e) => {
     /**
      * NOTE:  Use this flag to revent custom panel rendering if
      *        the node is opened "inline" within it's parent.
