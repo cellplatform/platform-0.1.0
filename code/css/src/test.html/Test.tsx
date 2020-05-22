@@ -1,15 +1,7 @@
 import * as React from 'react';
-import { css, style, color } from '../common';
+import { css, color } from '..';
 
 export type ITestProps = {};
-
-style.global({
-  body: {
-    color: 'white',
-    background: '#ED3C6E',
-    fontFamily: undefined,
-  },
-});
 
 export class Test extends React.PureComponent<ITestProps> {
   /**
@@ -38,12 +30,17 @@ export class Test extends React.PureComponent<ITestProps> {
         padding: 15,
         borderRadius: 5,
         boxShadow: `0 2px 14px 0 ${color.format(-0.1)}`,
+        fontSize: 32,
       }),
     };
     // NB: Nested `css(...)` calls are correctly unfurled and applied.
     return (
       <div {...css(styles.base, css(styles.inner))}>
-        <div {...styles.sample}>Sample</div>
+        <div {...styles.sample} className={'sample'}>
+          Sample
+        </div>
+        <div className={'foo'}>Foo</div>
+        <input type={'search'} value={'search'} />
       </div>
     );
   }

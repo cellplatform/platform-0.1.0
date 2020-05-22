@@ -5,15 +5,12 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "ui": "ui $@",
+    "start": "parcel src/test.html/index.html",
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "build-test": "ts build --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare",
-    "bundle": "sh sh/bundle.sh",
-    "clean": "sh sh/clean.sh"
+    "clean": "rm -rf .cache dist"
   },
   "dependencies": {
     "@platform/libs": "0.2.2",
@@ -28,16 +25,15 @@
     "@platform/polyfill": "0.0.1",
     "@platform/test": "0.1.11",
     "@platform/ts": "3.9.2",
-    "@types/react": "16.9.35",
-    "@uiharness/dev": "0.10.5",
-    "@uiharness/ui": "0.7.6",
-    "parcel-bundler": "1.12.4"
+    "parcel-bundler": "1.12.4",
+    "react": "16.13.1"
   },
   "files": [
     "lib",
     "css",
     "reset.css",
     "!lib/test",
+    "!lib/test.html",
     "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
