@@ -42,7 +42,7 @@ export async function exportFiles(args: {
   };
 
   const queries = Array.isArray(args.query) ? args.query : [args.query];
-  await Promise.all(queries.map(query => run(query)));
+  await Promise.all(queries.map((query) => run(query)));
 
   // Finish up.
   return { total };

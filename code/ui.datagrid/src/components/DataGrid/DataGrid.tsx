@@ -63,7 +63,7 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     this.unmounted$.subscribe(() => grid.dispose());
 
     // State.
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     // Create the DOM table.
     const settings = getSettings({ grid });
@@ -93,16 +93,16 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     // Bubble events.
     const bubble$ = this.props.events$;
     if (bubble$) {
-      events$.subscribe(e => bubble$.next(e));
+      events$.subscribe((e) => bubble$.next(e));
     }
 
     // Ferry editor events to the [Grid] API.
-    editor$.subscribe(e => this.grid.fire(e));
+    editor$.subscribe((e) => this.grid.fire(e));
 
     // Redraw grid.
     events$
       .pipe(
-        filter(e => e.type === 'GRID/redraw'),
+        filter((e) => e.type === 'GRID/redraw'),
         debounceTime(0),
       )
       .subscribe(() => this.redraw());
@@ -110,11 +110,11 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
     // Disallow select all (CMD+A) unless requested by prop.
     keyboard$
       .pipe(
-        filter(e => e.metaKey && e.key === 'a'),
-        filter(e => this.props.canSelectAll !== true),
-        filter(e => !grid.isEditing),
+        filter((e) => e.metaKey && e.key === 'a'),
+        filter((e) => this.props.canSelectAll !== true),
+        filter((e) => !grid.isEditing),
       )
-      .subscribe(e => e.cancel());
+      .subscribe((e) => e.cancel());
 
     // Manage size.
     this.updateSize();
@@ -131,10 +131,10 @@ export class DataGrid extends React.PureComponent<IDataGridProps, IDataGridState
       .pipe(
         takeUntil(this.unmounted$),
         debounceTime(0),
-        filter(e => e.to !== document.body),
-        filter(e => !containsFocus(this)),
+        filter((e) => e.to !== document.body),
+        filter((e) => !containsFocus(this)),
       )
-      .subscribe(e => this.grid.deselect());
+      .subscribe((e) => this.grid.deselect());
 
     // Setup initial state.
     // NB:  Running init after a tick prevents unnecessary work if the component

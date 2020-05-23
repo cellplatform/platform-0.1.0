@@ -219,10 +219,10 @@ export function init(args: IS3Init): t.IFsS3 {
      * Delete from S3.
      */
     async delete(uri: string | string[]): Promise<t.IFsDeleteS3> {
-      const uris = (Array.isArray(uri) ? uri : [uri]).map(uri => (uri || '').trim());
-      const paths = uris.map(uri => res.resolve(uri).path);
-      const keys = paths.map(path => path.replace(/^\//, ''));
-      const locations = paths.map(path => cloud.bucket.url(path).object);
+      const uris = (Array.isArray(uri) ? uri : [uri]).map((uri) => (uri || '').trim());
+      const paths = uris.map((uri) => res.resolve(uri).path);
+      const keys = paths.map((path) => path.replace(/^\//, ''));
+      const locations = paths.map((path) => cloud.bucket.url(path).object);
 
       try {
         const res = await cloud.bucket.deleteMany({ keys });

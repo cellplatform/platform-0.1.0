@@ -49,7 +49,7 @@ export function invoker<P extends t.ICommandProps, A extends t.CommandArgsOption
     result: undefined,
     error: undefined as any,
   };
-  const sync = () => Object.keys(response).forEach(key => (promise[key] = response[key]));
+  const sync = () => Object.keys(response).forEach((key) => (promise[key] = response[key]));
 
   /**
    * The asynchronous promise.
@@ -105,10 +105,10 @@ export function invoker<P extends t.ICommandProps, A extends t.CommandArgsOption
         defaultValue?: T,
       ): T {
         const options = response.args.options;
-        const optionsKeys = Object.keys(options).map(key => key.toString());
+        const optionsKeys = Object.keys(options).map((key) => key.toString());
         const keys = (Array.isArray(key) ? key : [key])
-          .map(key => key.toString())
-          .map(key => key.replace(/^\-+/, ''));
+          .map((key) => key.toString())
+          .map((key) => key.replace(/^\-+/, ''));
         for (const key of keys) {
           if (optionsKeys.includes(key) && options[key] !== undefined) {
             return options[key] as T;

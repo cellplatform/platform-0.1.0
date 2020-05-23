@@ -1,7 +1,7 @@
 import { expect, t, bodyParser } from '../test';
 import { Router } from '..';
 
-const handler: t.RouteHandler = async req => undefined;
+const handler: t.RouteHandler = async (req) => undefined;
 
 describe('params', () => {
   it('empty (no params)', () => {

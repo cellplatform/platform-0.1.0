@@ -39,7 +39,7 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     // Bubble events to parent.
     if (this.props.events$) {
@@ -50,10 +50,10 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
     events$
       // Store the latest JSON result.
       .pipe(
-        filter(e => e.type === 'GRAPHQL_EDITOR/fetched'),
-        map(e => e.payload as t.IGraphqlEditorFetched),
+        filter((e) => e.type === 'GRAPHQL_EDITOR/fetched'),
+        map((e) => e.payload as t.IGraphqlEditorFetched),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this._result = e.result;
         const data = e.result.data;
         const fetchId = e.fetchId;

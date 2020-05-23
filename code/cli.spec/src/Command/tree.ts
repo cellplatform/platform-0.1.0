@@ -40,7 +40,7 @@ export function walk<T extends t.ICommand = t.ICommand>(
  */
 export function find<T extends t.ICommand = t.ICommand>(command: T, fn: t.CommandTreeFilter<T>) {
   let result: T | undefined;
-  walk(command, e => {
+  walk(command, (e) => {
     if (fn(e.command)) {
       e.stop();
       result = e.command;
@@ -63,8 +63,8 @@ export function count(command: t.ICommand) {
  */
 export function parent<T extends t.ICommand = t.ICommand>(root: T, child: number | string | T) {
   let result: T | undefined;
-  walk(root, e => {
-    const contains = e.command.children.some(item => isMatch(item, child));
+  walk(root, (e) => {
+    const contains = e.command.children.some((item) => isMatch(item, child));
     if (contains) {
       e.stop();
       result = e.command;
@@ -80,7 +80,7 @@ export function toPath<T extends t.ICommand = t.ICommand>(
   root: T,
   target: number | string | t.ICommand,
 ): T[] {
-  const cmd = find(root, e => isMatch(e, target)); // Ensure the command exists within the root tree.
+  const cmd = find(root, (e) => isMatch(e, target)); // Ensure the command exists within the root tree.
   let result: T[] = [];
   if (cmd) {
     const add = (cmd: T) => {

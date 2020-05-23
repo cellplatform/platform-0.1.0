@@ -33,7 +33,7 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     const tree$ = this.events$;
 
     // Update state.
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     // Bubble events.
     if (this.props.events$) {
@@ -41,15 +41,15 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     }
 
     // Redraw on CLI changed.
-    merge(cliChanged$, cliInvoked$).subscribe(e => this.forceUpdate());
+    merge(cliChanged$, cliInvoked$).subscribe((e) => this.forceUpdate());
 
     tree$
       // Invoke command on click.
       .pipe(
-        filter(e => e.type === 'COMMAND_TREE/click'),
-        map(e => e.payload as t.ICommandTreeClick),
+        filter((e) => e.type === 'COMMAND_TREE/click'),
+        map((e) => e.payload as t.ICommandTreeClick),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.cli.change({ text: e.command.name });
         this.cli.invoke({ stepIntoNamespace: false });
       });
@@ -57,10 +57,10 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
     tree$
       // Invoke command when the command changes.
       .pipe(
-        filter(e => e.type === 'COMMAND_TREE/current'),
-        map(e => e.payload as t.ICommandTreeCurrent),
+        filter((e) => e.type === 'COMMAND_TREE/current'),
+        map((e) => e.payload as t.ICommandTreeCurrent),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const command = e.command;
         const text = command ? command.name : '';
         if (e.direction === 'CHILD') {

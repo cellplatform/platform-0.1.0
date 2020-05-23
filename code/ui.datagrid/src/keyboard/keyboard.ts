@@ -14,7 +14,7 @@ export function init(args: { grid: t.IGrid }) {
 
   // Monitor keyboard commands.
   const bindings = new BindingMonitor({ grid });
-  const monitor = (command: t.GridCommand) => bindings.monitor(command, e => fire(command, e));
+  const monitor = (command: t.GridCommand) => bindings.monitor(command, (e) => fire(command, e));
 
   // Clipboard.
   monitor('CUT');

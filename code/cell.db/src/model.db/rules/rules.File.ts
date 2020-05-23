@@ -3,7 +3,7 @@ import { Schema, t, util, value } from '../../common';
 /**
  * Invoked before a [File] is persisted to the DB.
  */
-export const beforeFileSave: t.BeforeModelSave<t.IDbModelFileProps> = async args => {
+export const beforeFileSave: t.BeforeModelSave<t.IDbModelFileProps> = async (args) => {
   const model = args.model as t.IDbModelFile;
 
   // Update hash.

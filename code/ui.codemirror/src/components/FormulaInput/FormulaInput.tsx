@@ -63,7 +63,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
    */
   public componentDidMount() {
     // Change state safely.
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     // Bubble events to parent.
     if (this.props.events$) {
@@ -73,29 +73,29 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
     // Suppress tab key if requested.
     this.events$
       .pipe(
-        filter(e => e.type === 'INPUT/formula/tab'),
-        filter(e => !valueUtil.defaultValue(this.props.allowTab, true)),
-        map(e => e.payload as t.IFormulaInputTab),
+        filter((e) => e.type === 'INPUT/formula/tab'),
+        filter((e) => !valueUtil.defaultValue(this.props.allowTab, true)),
+        map((e) => e.payload as t.IFormulaInputTab),
       )
-      .subscribe(e => e.cancel());
+      .subscribe((e) => e.cancel());
 
     // Monitor keyboard.
     const keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
-    const modifier$ = keypress$.pipe(filter(e => e.isModifier));
+    const modifier$ = keypress$.pipe(filter((e) => e.isModifier));
 
     // Keep references to currently pressed modifier keys
     modifier$
       .pipe(
-        filter(e => e.isPressed),
-        map(e => e.key.toLowerCase()),
+        filter((e) => e.isPressed),
+        map((e) => e.key.toLowerCase()),
       )
-      .subscribe(key => (this.modifierKeys[key] = true));
+      .subscribe((key) => (this.modifierKeys[key] = true));
     modifier$
       .pipe(
-        filter(e => !e.isPressed),
-        map(e => e.key.toLowerCase()),
+        filter((e) => !e.isPressed),
+        map((e) => e.key.toLowerCase()),
       )
-      .subscribe(key => (this.modifierKeys[key] = false));
+      .subscribe((key) => (this.modifierKeys[key] = false));
 
     this.setState({ isLoaded: true }, () => this.init());
 
@@ -107,7 +107,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
         takeUntil(this.unmounted$),
         filter(() => Boolean(this.editor)),
       )
-      .subscribe(command => {
+      .subscribe((command) => {
         switch (command) {
           case 'focus':
             this.editor.focus();

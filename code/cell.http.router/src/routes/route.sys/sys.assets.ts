@@ -10,7 +10,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
   /**
    * GET: /favicon.ico
    */
-  router.get(routes.SYS.FAVICON, async req => {
+  router.get(routes.SYS.FAVICON, async (req) => {
     if (!favicon) {
       const path = fs.resolve('static/favicon.ico');
       if (!(await fs.pathExists(path))) {

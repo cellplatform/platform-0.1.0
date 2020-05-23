@@ -9,10 +9,10 @@ export class BindingMonitor {
   constructor(args: { grid: t.IGrid }) {
     const { grid } = args;
     const keydown$ = grid.events$.pipe(
-      filter(e => e.type === 'GRID/keydown'),
-      filter(e => grid.isReady),
-      filter(e => !grid.isEditing),
-      map(e => e.payload as t.IGridKeydown),
+      filter((e) => e.type === 'GRID/keydown'),
+      filter((e) => grid.isReady),
+      filter((e) => !grid.isEditing),
+      map((e) => e.payload as t.IGridKeydown),
     );
     this.grid = grid;
     this.keydown$ = keydown$;
@@ -28,11 +28,11 @@ export class BindingMonitor {
    * [Methods]
    */
   public is(command: t.GridCommand, e: t.IGridKeydown) {
-    const binding = this.grid.keyBindings.find(binding => binding.command === command);
+    const binding = this.grid.keyBindings.find((binding) => binding.command === command);
     return binding ? Keyboard.matchEvent(binding.key, e) : false;
   }
 
   public monitor(command: t.GridCommand, handler: (e: t.IGridKeydown) => void) {
-    this.keydown$.pipe(filter(e => this.is(command, e))).subscribe(e => handler(e));
+    this.keydown$.pipe(filter((e) => this.is(command, e))).subscribe((e) => handler(e));
   }
 }

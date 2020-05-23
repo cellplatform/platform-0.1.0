@@ -78,20 +78,20 @@ describe('settings.config', () => {
         modify(config);
 
         const res = config.validate();
-        const hasError = res.errors.some(e => e.message.includes(error));
+        const hasError = res.errors.some((e) => e.message.includes(error));
 
         expect(res.isValid).to.eql(false, error);
         expect(hasError).to.eql(true, error);
       };
 
-      test(c => (c.exists = false), 'Configuration file does not exist');
-      test(c => (c.data.title = '  '), 'Missing [title] value');
-      test(c => (c.data.now.deployment = '  '), 'Missing [now.deployment] value');
-      test(c => (c.data.now.domain = '  '), 'Missing [now.domain] value');
-      test(c => (c.data.secret.mongo = '  '), 'Missing [secret.mongo] value');
-      test(c => (c.data.secret.s3 = { key: '', secret: '' }), 'Missing [secret.s3] value');
-      test(c => (c.data.fs.endpoint = ' '), 'Missing [fs.endpoint] value');
-      test(c => (c.data.fs.root = ' '), 'Missing [fs.root] value');
+      test((c) => (c.exists = false), 'Configuration file does not exist');
+      test((c) => (c.data.title = '  '), 'Missing [title] value');
+      test((c) => (c.data.now.deployment = '  '), 'Missing [now.deployment] value');
+      test((c) => (c.data.now.domain = '  '), 'Missing [now.domain] value');
+      test((c) => (c.data.secret.mongo = '  '), 'Missing [secret.mongo] value');
+      test((c) => (c.data.secret.s3 = { key: '', secret: '' }), 'Missing [secret.s3] value');
+      test((c) => (c.data.fs.endpoint = ' '), 'Missing [fs.endpoint] value');
+      test((c) => (c.data.fs.root = ' '), 'Missing [fs.root] value');
     });
   });
 });

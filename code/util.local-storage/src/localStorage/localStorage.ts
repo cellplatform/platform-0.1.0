@@ -22,7 +22,7 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
 
   // Prepare the default values.
   const fields: { [prop: string]: ILocalStorageField<P> } = {};
-  props.forEach(prop => {
+  props.forEach((prop) => {
     const field: ILocalStorageField<P> =
       typeof config[prop] === 'string' ? { key: config[prop] } : config[prop];
     let key = field.key || prop;
@@ -51,16 +51,16 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
     $: {
       events$,
       get$: events$.pipe(
-        filter(e => e.type === 'LOCAL_STORAGE/get'),
-        map(e => e.payload as t.ILocalStorageGet),
+        filter((e) => e.type === 'LOCAL_STORAGE/get'),
+        map((e) => e.payload as t.ILocalStorageGet),
       ),
       set$: events$.pipe(
-        filter(e => e.type === 'LOCAL_STORAGE/set'),
-        map(e => e.payload as t.ILocalStorageSet),
+        filter((e) => e.type === 'LOCAL_STORAGE/set'),
+        map((e) => e.payload as t.ILocalStorageSet),
       ),
       delete$: events$.pipe(
-        filter(e => e.type === 'LOCAL_STORAGE/delete'),
-        map(e => e.payload as t.ILocalStorageDelete),
+        filter((e) => e.type === 'LOCAL_STORAGE/delete'),
+        map((e) => e.payload as t.ILocalStorageDelete),
       ),
     },
     delete(prop: keyof P) {
@@ -73,7 +73,7 @@ export function localStorage<P extends t.ILocalStorageProps<P>>(
   };
 
   // Define property handlers.
-  props.forEach(prop => {
+  props.forEach((prop) => {
     Object.defineProperty(obj, prop, {
       /**
        * [GET] property value.

@@ -95,7 +95,7 @@ export class Config {
         });
 
         const dirs = (await list.dirs).items.map(({ key }) => ({ key, version: fs.basename(key) }));
-        const versions = semver.sort(dirs.map(item => item.version));
+        const versions = semver.sort(dirs.map((item) => item.version));
         return options.sort === 'DESC' ? versions.reverse() : versions;
       },
     };

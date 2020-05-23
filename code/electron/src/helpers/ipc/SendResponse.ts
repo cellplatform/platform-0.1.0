@@ -99,11 +99,11 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
       .pipe(
         takeUntil(cancel$),
         takeUntil(timeout$),
-        filter(e => e.type === EVENT.HANDLER),
-        map(e => (e as unknown) as IpcEvent<IpcHandlerResponseEvent>),
-        filter(e => e.payload.eid === this.eid),
+        filter((e) => e.type === EVENT.HANDLER),
+        map((e) => (e as unknown) as IpcEvent<IpcHandlerResponseEvent>),
+        filter((e) => e.payload.eid === this.eid),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         response$.next({
           eid: this.eid,
           data: e.payload.data,
@@ -122,7 +122,7 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
       this._.elapsed = timer.elapsed.msec;
       response$.complete();
     });
-    this.$.subscribe(e => {
+    this.$.subscribe((e) => {
       // Store result.
       const { sender, data, elapsed, eid } = e;
       const result: IpcHandlerResult<D> = { data, sender, elapsed, eid };
@@ -130,7 +130,7 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
 
       // Check for completeness.
       completed = [...completed, sender.id];
-      const clients = registeredClients.map(c => c.id);
+      const clients = registeredClients.map((c) => c.id);
       if (R.equals(completed, clients)) {
         complete$.next();
       }
@@ -183,7 +183,7 @@ export class SendResponse<M extends IpcMessage = any, D = any> implements IpcSen
   }
 
   public resultFrom(sender: number | ProcessType) {
-    return this.results.find(item =>
+    return this.results.find((item) =>
       typeof sender === 'number' ? item.sender.id === sender : item.sender.process === sender,
     );
   }

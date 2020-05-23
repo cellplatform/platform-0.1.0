@@ -29,7 +29,7 @@ export const runSync: t.FsSyncRun = async (args: t.IFsSyncRunArgs) => {
     deleted: [] as string[],
   };
 
-  const logResults: t.FsSyncLogResults = args => {
+  const logResults: t.FsSyncLogResults = (args) => {
     results.uploaded = [...results.uploaded, ...(args.uploaded || [])];
     results.deleted = [...results.deleted, ...(args.deleted || [])];
   };
@@ -59,12 +59,12 @@ export const runSync: t.FsSyncRun = async (args: t.IFsSyncRunArgs) => {
   }
 
   // Exit if no changes to push.
-  if (!silent && !force && payload.files.filter(item => item.isChanged).length === 0) {
+  if (!silent && !force && payload.files.filter((item) => item.isChanged).length === 0) {
     log.info();
     log.info.green(`Nothing to update\n`);
     gray(`• Use ${log.cyan('--force (-f)')} to push everything`);
 
-    const deletions = payload.files.filter(p => p.status === 'DELETED').length;
+    const deletions = payload.files.filter((p) => p.status === 'DELETED').length;
     if (deletions > 0) {
       gray(`• Use ${log.cyan('--delete')} to sync deletions`);
     }
@@ -75,10 +75,10 @@ export const runSync: t.FsSyncRun = async (args: t.IFsSyncRunArgs) => {
 
   // Filter on set of items to push.
   const pushes = payload.files
-    .filter(item => item.status !== 'DELETED')
-    .filter(item => (force ? true : item.status !== 'NO_CHANGE'))
-    .filter(item => Boolean(item.data));
-  const deletions = payload.files.filter(item => args.delete && item.status === 'DELETED');
+    .filter((item) => item.status !== 'DELETED')
+    .filter((item) => (force ? true : item.status !== 'NO_CHANGE'))
+    .filter((item) => Boolean(item.data));
+  const deletions = payload.files.filter((item) => args.delete && item.status === 'DELETED');
   const total = pushes.length + deletions.length;
 
   if (args.prompt && !silent) {
@@ -101,7 +101,7 @@ export const runSync: t.FsSyncRun = async (args: t.IFsSyncRunArgs) => {
     maxBytes,
   });
 
-  batches.forEach(items => {
+  batches.forEach((items) => {
     addTask({
       tasks,
       items,

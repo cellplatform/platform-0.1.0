@@ -16,7 +16,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET (file info/meta).
    */
-  router.get(routes.FILE.INFO, async req => {
+  router.get(routes.FILE.INFO, async (req) => {
     const host = req.host;
     const query = req.query as t.IReqQueryFileInfo;
     const params = req.params as t.IUrlParamsFile;
@@ -27,7 +27,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * GET (file download).
    */
-  router.get(routes.FILE.BASE, async req => {
+  router.get(routes.FILE.BASE, async (req) => {
     const host = req.host;
     const query = req.query as t.IReqQueryFileDownload;
     const params = req.params as t.IUrlParamsFile;
@@ -42,7 +42,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * POST (file upload complete)
    */
-  router.post(routes.FILE.UPLOADED, async req => {
+  router.post(routes.FILE.UPLOADED, async (req) => {
     const host = req.host;
     const query = req.query as t.IReqQueryFileUploadComplete;
     const body = await req.body.json<t.IReqPostFileUploadCompleteBody>();
@@ -57,7 +57,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
   /**
    * POST (local file upload)
    */
-  router.post(routes.LOCAL.FS, async req => {
+  router.post(routes.LOCAL.FS, async (req) => {
     const query = req.query as t.IReqQueryLocalFs;
     const path = (req.headers.path || '').toString().trim();
     const data = await req.body.buffer({ limit: '1gb' });

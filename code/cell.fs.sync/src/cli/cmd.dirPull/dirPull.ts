@@ -30,7 +30,7 @@ export async function dirPull(args: { dir: string; silent?: boolean }) {
   }
 
   // Filter on the list of files to pull.
-  const pullList = payload.files.filter(item => item.status === 'DELETED');
+  const pullList = payload.files.filter((item) => item.status === 'DELETED');
   if (pullList.length === 0) {
     if (!silent) {
       log.info.green(`No files need pulling.`);
@@ -46,7 +46,7 @@ export async function dirPull(args: { dir: string; silent?: boolean }) {
 
   if (!silent) {
     const table = log.table({ border: false });
-    pullList.forEach(file => {
+    pullList.forEach((file) => {
       const pull = gray(`pull`);
       const path = ` ${log.gray(file.path)}`;
       const size = log.white` ${toBytesString(file.remoteBytes)}`;
@@ -82,7 +82,7 @@ export async function dirPull(args: { dir: string; silent?: boolean }) {
   };
 
   // Execute pull.
-  pullList.forEach(file => addPullTask(file));
+  pullList.forEach((file) => addPullTask(file));
   const res = await tasks.run({ concurrent: false, silent });
   if (!silent) {
     log.info();

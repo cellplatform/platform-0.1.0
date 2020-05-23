@@ -1,43 +1,35 @@
 {
   "name": "@platform/react",
-  "version": "0.4.26",
+  "version": "0.4.28",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "ui": "ui $@",
+    "start": "parcel src/test.parcel/index.html",
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "build-test": "ts build --tsconfig=tsconfig.test $@",
     "prepare": "ts prepare",
-    "start": "ui start $@"
+    "clean": "rm -rf .cache dist"
   },
   "dependencies": {
-    "@platform/css": "0.3.19",
-    "@platform/util.is": "0.0.124",
-    "@types/react": "16.9.35",
-    "@types/react-dom": "16.9.8",
+    "@platform/css": "0.4.0",
+    "@platform/util.is": "0.0.125",
     "react": "16.13.1",
     "react-dom": "16.13.1"
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
-    "@platform/test": "0.1.11",
-    "@platform/ts": "3.9.2",
-    "@uiharness/dev": "0.10.5",
-    "@uiharness/ui": "0.7.6",
-    "electron": "9.0.0"
-  },
-  "resolutions": {
-    "tslint": "6.x"
+    "@platform/test": "0.1.12",
+    "@platform/ts": "3.9.3",
+    "parcel-bundler": "1.12.4",
+    "react-inspector": "^5.0.1"
   },
   "files": [
     "lib",
     "!lib/test",
-    "!*.TEST.{js, mjs, d.ts}",
-    "!*.INTEGRATION.{js, mjs, d.ts}"
+    "!lib/test.parcel",
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }

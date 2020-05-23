@@ -26,10 +26,10 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@platform/ts.libs@3.9.6":
-  version "3.9.6"
-  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.9.6.tgz#736e999a77aa00cfedeb60ecd5ce6653d5a5af10"
-  integrity sha512-4SvfVfUCyHCe+rV/TdARvISbBo2aH/WkhoMRBtr+LZ+AaL7lGcPi5fSBwqajDeKbVBFOIRu3V7PQI3Keiu9bOA==
+"@platform/ts.libs@3.9.7":
+  version "3.9.7"
+  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.9.7.tgz#21ac8fbdad6da103989c9c2866a47f980acee60f"
+  integrity sha512-MKSAoiF0d1yO3D6GEpoJtaCNblvusO8VA8gbuY5BVNqfX7DIRFwKXMgpioPtZ1IVi9wmmhuROJ2ub42sAHehzw==
   dependencies:
     "@types/node" "14.0.4"
     "@typescript-eslint/eslint-plugin" "2.34.0"

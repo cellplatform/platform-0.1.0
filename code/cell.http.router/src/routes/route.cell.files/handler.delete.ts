@@ -13,8 +13,8 @@ export async function deleteCellFiles(args: {
   // Extract values from request body.
   const action = body.action;
   const filenames = (body.filenames || [])
-    .map(text => (text || '').trim())
-    .filter(text => Boolean(text));
+    .map((text) => (text || '').trim())
+    .filter((text) => Boolean(text));
 
   const data: t.IResDeleteCellFilesData = {
     uri: cellUri,
@@ -46,7 +46,7 @@ export async function deleteCellFiles(args: {
 
   // Parse file-names into usable link details.
   const links = cell.props.links || {};
-  const items = filenames.map(filename => {
+  const items = filenames.map((filename) => {
     const key = Schema.file.links.toKey(filename);
     const value = links[key];
     const parts = value ? Schema.file.links.parse(key, value) : undefined;

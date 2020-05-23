@@ -10,8 +10,8 @@ export function init(args: { grid: t.IGrid; fire: t.GridFire }) {
   const { grid, fire } = args;
 
   const command$ = grid.events$.pipe(
-    filter(e => e.type === 'GRID/command'),
-    map(e => e.payload as t.IGridCommand),
+    filter((e) => e.type === 'GRID/command'),
+    map((e) => e.payload as t.IGridCommand),
   );
 
   // Initialize command handlers.

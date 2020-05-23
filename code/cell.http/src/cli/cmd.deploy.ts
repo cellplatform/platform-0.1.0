@@ -55,7 +55,7 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
       log.info();
       log.info.yellow(`😩  Invalid configuration file.`);
       log.info.gray(`   ${fs.dirname(config.path)}/${log.cyan(fs.basename(config.path))}`);
-      validation.errors.forEach(err => {
+      validation.errors.forEach((err) => {
         log.info.gray(`   ${log.red('Error:')} ${log.white(err.message)}`);
       });
       log.info();
@@ -68,7 +68,7 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
   // Prepare folders.
   const sourceDir = await getTmplDir();
   const deployments = await Promise.all(
-    configs.map(async config => {
+    configs.map(async (config) => {
       const dirname = fs.basename(config.path).replace(/\.yml$/, '');
       const targetDir = fs.resolve(`tmp/.deploy/${dirname}`);
 
@@ -81,8 +81,8 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
         confirm: '--confirm',
         toString() {
           return Object.keys(options)
-            .map(key => options[key])
-            .filter(value => typeof value !== 'function')
+            .map((key) => options[key])
+            .filter((value) => typeof value !== 'function')
             .reduce((acc, next) => `${acc} ${next}`.trim(), '')
             .trim();
         },
@@ -108,8 +108,8 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
           log.info.white(url);
           log.info();
 
-          deployment.info.forEach(line => log.info(line));
-          deployment.errors.forEach(line => log.error(line));
+          deployment.info.forEach((line) => log.info(line));
+          deployment.errors.forEach((line) => log.error(line));
           log.info();
         },
       };
@@ -118,13 +118,13 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
   );
 
   // Build list of tasks.
-  const tasks = deployments.map(deployment => {
+  const tasks = deployments.map((deployment) => {
     const { title, targetDir, cmd } = deployment;
     return deployTask({
       targetDir,
       cmd,
       title,
-      done: res => {
+      done: (res) => {
         const { info, errors } = res;
         deployment.info = info;
         deployment.errors = errors;
@@ -134,7 +134,7 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
 
   // Log list of deployment folders.
   log.info();
-  deployments.forEach(deployment => {
+  deployments.forEach((deployment) => {
     const { targetDir, cmd } = deployment;
     log.info.gray(`cd ${targetDir} && ${cmd}`);
   });
@@ -182,7 +182,7 @@ async function copyAndPrepare(args: {
   await (async () => {
     const { now, secret } = config;
 
-    const file = tmpl.files.find(path => path.to.endsWith('now.json'));
+    const file = tmpl.files.find((path) => path.to.endsWith('now.json'));
     if (file) {
       const json = await fs.file.loadAndParse<t.IHttpConfigNowFile>(file.to);
 
@@ -200,7 +200,7 @@ async function copyAndPrepare(args: {
 
   // Update: [package.json]
   await (async () => {
-    const file = tmpl.files.find(path => path.to.endsWith('package.json'));
+    const file = tmpl.files.find((path) => path.to.endsWith('package.json'));
     if (file) {
       const pkg = await fs.file.loadAndParse<t.INpmPackageJson>(file.to);
       if (pkg.dependencies) {
@@ -222,7 +222,7 @@ async function copyAndPrepare(args: {
   // Update: [now.ts]
   await (async () => {
     const now = config.now;
-    const file = tmpl.files.find(path => path.to.endsWith('now.ts'));
+    const file = tmpl.files.find((path) => path.to.endsWith('now.ts'));
     if (file) {
       let text = (await fs.readFile(file.to)).toString();
 
@@ -248,7 +248,7 @@ async function copy(args: { sourceDir: string; targetDir: string }) {
   await fs.ensureDir(targetDir);
 
   // Copy files.
-  const files = FILES.map(path => {
+  const files = FILES.map((path) => {
     const from = fs.join(sourceDir, path);
     const to = fs.join(targetDir, path);
     return { from, to };
@@ -294,7 +294,7 @@ function deployTask(args: {
   const task: cli.exec.ITask = {
     title,
     task: () => {
-      return new Observable(observer => {
+      return new Observable((observer) => {
         if (args.deploy === false) {
           return observer.complete();
         }
@@ -312,7 +312,7 @@ function deployTask(args: {
         // Track output.
         const info: string[] = [];
         const errors: string[] = [];
-        running.output$.subscribe(e => {
+        running.output$.subscribe((e) => {
           const isError = e.type === 'stderr';
           const text = e.text;
           if ((!isError && info.length > 0) || text.includes('Deployment complete')) {

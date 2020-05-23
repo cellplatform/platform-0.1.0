@@ -35,5 +35,5 @@ export class Mime {
 function isIncluded(mimetype: string, values: string[]) {
   mimetype = (mimetype || '').trim();
 
-  return values.some(item => mimetype.includes(item));
+  return values.some((item) => mimetype.includes(item));
 }

@@ -138,11 +138,11 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
         get count() {
           return tree.count(self);
         },
-        walk: fn => tree.walk(self, fn),
-        find: fn => tree.find(self, fn),
-        parent: root => tree.parent(root, self),
-        toPath: target => tree.toPath(self, target),
-        fromPath: path => tree.fromPath(self, path),
+        walk: (fn) => tree.walk(self, fn),
+        find: (fn) => tree.find(self, fn),
+        parent: (root) => tree.parent(root, self),
+        toPath: (target) => tree.toPath(self, target),
+        fromPath: (path) => tree.fromPath(self, path),
       };
       this._.tree = methods;
     }
@@ -181,7 +181,7 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
     const args = toConstuctorArgs(input);
 
     // Ensure the child does not already exist.
-    if (this.children.some(e => e.name === args.name)) {
+    if (this.children.some((e) => e.name === args.name)) {
       throw new Error(`A child command named '${args.name}' already exists within '${this.name}'.`);
     }
 
@@ -190,7 +190,7 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
     child._.id = Command.toId({ name: args.name, parent: this.id });
 
     // Finish up.
-    child.events$.pipe(takeUntil(this.dispose$)).subscribe(e => this._.events$.next(e));
+    child.events$.pipe(takeUntil(this.dispose$)).subscribe((e) => this._.events$.next(e));
     this._.children = [...this._.children, child] as Command[];
     return this;
   }
@@ -220,8 +220,8 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
    * Converts the builder to a simple object.
    */
   public toObject(): t.ICommand<P, A> {
-    const children = this.children.map(child => child.toObject());
-    const invoke: t.InvokeCommand<P, A> = options => this.invoke(options);
+    const children = this.children.map((child) => child.toObject());
+    const invoke: t.InvokeCommand<P, A> = (options) => this.invoke(options);
     return {
       id: this.id,
       name: this.name,
@@ -295,12 +295,12 @@ function formatConstructorArgs(args: Partial<ICommandArgs>): ICommandArgs {
     description: (args.description || '').trim(),
     handler: args.handler || (() => undefined),
     children: args.children || [],
-    params: params.map(p => (p instanceof CommandParam ? p : CommandParam.create(p))),
+    params: params.map((p) => (p instanceof CommandParam ? p : CommandParam.create(p))),
   };
 }
 
 function cloneChildren(builder: Command): Command[] {
   return builder.children
-    .map(child => child as Command)
-    .map(child => child.clone({ deep: true }));
+    .map((child) => child as Command)
+    .map((child) => child.clone({ deep: true }));
 }

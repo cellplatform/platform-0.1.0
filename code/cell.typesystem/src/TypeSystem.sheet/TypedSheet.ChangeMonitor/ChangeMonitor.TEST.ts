@@ -52,12 +52,12 @@ describe('TypedSheetChangeMonitor', () => {
 
       monitor.watch(sheet);
       expect(monitor.isWatching(sheet)).to.eql(true);
-      expect(monitor.watching.map(sheet => sheet.uri.toString())).to.eql([sheet.uri.toString()]);
+      expect(monitor.watching.map((sheet) => sheet.uri.toString())).to.eql([sheet.uri.toString()]);
 
       monitor.watch(sheet);
       monitor.watch(sheet);
       monitor.watch(sheet);
-      expect(monitor.watching.map(sheet => sheet.uri.toString())).to.eql([sheet.uri.toString()]);
+      expect(monitor.watching.map((sheet) => sheet.uri.toString())).to.eql([sheet.uri.toString()]);
     });
 
     it('unwatch', async () => {
@@ -128,7 +128,7 @@ describe('TypedSheetChangeMonitor', () => {
       const monitor = ChangeMonitor.create().watch(sheet1).watch(sheet2);
 
       const fired: t.TypedSheetEvent[] = [];
-      monitor.event$.subscribe(e => fired.push(e));
+      monitor.event$.subscribe((e) => fired.push(e));
 
       const rowA = sheet1.data<m.MyRow>('MyRow').row(0).props;
       const rowB = sheet2.data<m.MyRow>('MyRow').row(0).props;
@@ -160,7 +160,7 @@ describe('TypedSheetChangeMonitor', () => {
       const monitor = ChangeMonitor.create().watch(sheet);
 
       const fired: t.ITypedSheetChanged[] = [];
-      monitor.changed$.subscribe(e => fired.push(e));
+      monitor.changed$.subscribe((e) => fired.push(e));
 
       const row = sheet.data<m.MyRow>('MyRow').row(0).props;
       row.title = 'Foo';
@@ -177,7 +177,7 @@ describe('TypedSheetChangeMonitor', () => {
       const monitor = ChangeMonitor.create().watch(sheet);
 
       const fired: t.ITypedSheetChanged[] = [];
-      monitor.changed$.subscribe(e => fired.push(e));
+      monitor.changed$.subscribe((e) => fired.push(e));
 
       const cursor = await sheet.data<m.MyRow>('MyRow').load();
       const row = cursor.row(0).props;
@@ -214,7 +214,7 @@ describe('TypedSheetChangeMonitor', () => {
 
     it('auto-watches child REF on load', async () => {
       const { monitor, messages, sheet } = await testRef();
-      expect(monitor.watching.map(sheet => sheet.uri.toString())).to.eql([sheet.uri.toString()]);
+      expect(monitor.watching.map((sheet) => sheet.uri.toString())).to.eql([sheet.uri.toString()]);
       await messages.load();
       expect(monitor.isWatching(messages.sheet)).to.eql(true);
     });

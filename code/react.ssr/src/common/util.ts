@@ -49,12 +49,12 @@ export function formatPath(path: string) {
  */
 export function firstSemver(...versionOrPath: (string | undefined)[]) {
   const values = versionOrPath
-    .filter(value => typeof value === ('string' as string))
-    .map(value => (value as string).trim() as string)
-    .filter(value => Boolean(value))
-    .map(value => fs.basename(value));
+    .filter((value) => typeof value === ('string' as string))
+    .map((value) => (value as string).trim() as string)
+    .filter((value) => Boolean(value))
+    .map((value) => fs.basename(value));
 
-  return values.find(value => semver.valid(value));
+  return values.find((value) => semver.valid(value));
 }
 
 /**

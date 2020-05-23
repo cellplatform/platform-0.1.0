@@ -13,9 +13,9 @@ export function objectToCells<T>(input: t.ITypeDef[] | t.INsTypeDef) {
     row(index: number, data: T): t.ICellMap {
       const cells: t.ICellMap = {};
       Object.keys(data)
-        .map(key => {
+        .map((key) => {
           const value = data[key];
-          const type = types.find(type => type.prop === key) as t.IColumnTypeDef;
+          const type = types.find((type) => type.prop === key) as t.IColumnTypeDef;
           return { key, value, type };
         })
         .filter(({ type }) => Boolean(type))

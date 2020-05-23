@@ -8,7 +8,7 @@ import * as cmds from './cmds';
  * ignoring them. In the future, promise rejections that are not handled will
  * terminate the Node.js process with a non-zero exit code.
  */
-process.on('unhandledRejection', err => {
+process.on('unhandledRejection', (err) => {
   throw err;
 });
 
@@ -26,8 +26,8 @@ const CMD = {
   CHMOD: 'chmod',
 };
 const CMDS = Object.keys(CMD)
-  .map(key => CMD[key])
-  .map(cmd => cmd.split(' ')[0]);
+  .map((key) => CMD[key])
+  .map((cmd) => cmd.split(' ')[0]);
 
 const DESCRIPTION = {
   SILENT: 'Suppress console output',
@@ -47,7 +47,7 @@ const program = yargs
   .command(
     [CMD.BUILD, CMD.BUILD_B],
     'Transpile typescript',
-    e =>
+    (e) =>
       e
         .option('silent', {
           alias: 's',
@@ -75,7 +75,7 @@ const program = yargs
           describe: 'Do not include ESModule output (.jsm)',
           boolean: true,
         }),
-    async e => {
+    async (e) => {
       const { silent, watch, dir, outDir, esm, tsconfig } = e;
       if (watch) {
         // Watching (build as common-js)
@@ -105,7 +105,7 @@ const program = yargs
   .command(
     [CMD.LINT, CMD.LINT_L],
     'Run linter',
-    e =>
+    (e) =>
       e
         .option('silent', {
           alias: 's',
@@ -116,7 +116,7 @@ const program = yargs
           describe: 'The directory of the module',
           string: true,
         }),
-    async e => {
+    async (e) => {
       const { silent, dir } = e;
       const res = await cmds.lint({ silent, dir });
       if (res.error) {
@@ -131,7 +131,7 @@ const program = yargs
   .command(
     [CMD.TEST, CMD.TEST_T],
     `Run tests`,
-    e =>
+    (e) =>
       e
         .option('silent', {
           alias: 's',
@@ -152,7 +152,7 @@ const program = yargs
           default: 'test,TEST',
           string: true,
         }),
-    async e => {
+    async (e) => {
       const { silent, watch, dir, suffix } = e;
       const res = await cmds.test({ silent, watch, dir, suffix });
       if (res.error) {
@@ -167,7 +167,7 @@ const program = yargs
   .command(
     [CMD.PREPARE, CMD.PREPARE_P],
     `Prepare for publish`,
-    e =>
+    (e) =>
       e
         .option('silent', {
           alias: 's',
@@ -178,7 +178,7 @@ const program = yargs
           describe: 'The directory of the module',
           string: true,
         }),
-    async e => {
+    async (e) => {
       const { silent, dir } = e;
       const res = await cmds.prepare({ silent, dir });
       if (res.error) {
@@ -193,7 +193,7 @@ const program = yargs
   .command(
     [CMD.PUBLISH, CMD.PUBLISH_PUB],
     `Publish to NPM`,
-    e =>
+    (e) =>
       e
         .option('silent', {
           alias: 's',
@@ -209,7 +209,7 @@ const program = yargs
           string: true,
         }),
 
-    async e => {
+    async (e) => {
       const { silent, dir, outDir } = e;
       const res = await cmds.publish({ silent, dir, outDir });
       if (res.error) {
@@ -224,7 +224,7 @@ const program = yargs
   .command(
     [CMD.CHMOD],
     `Change permissions on [node_modules/.bin] files.`,
-    e =>
+    (e) =>
       e
         .positional('permissions', {
           type: 'string',
@@ -236,7 +236,7 @@ const program = yargs
           describe: DESCRIPTION.SILENT,
           boolean: true,
         }),
-    async e => {
+    async (e) => {
       const { silent, permissions = '777' } = e;
       const res = await cmds.chmod({ silent, permissions });
       if (res.error) {

@@ -50,7 +50,7 @@ export async function promptConfig(args: { force?: boolean; dir?: string; save?:
   if (!validation.isValid) {
     log.info();
     log.warn(`✋  Problems with configuration:`);
-    validation.errors.forEach(err => {
+    validation.errors.forEach((err) => {
       log.info.yellow(` - ${log.white(err.message)}`);
     });
     log.info();

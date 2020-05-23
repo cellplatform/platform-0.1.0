@@ -15,7 +15,7 @@ export function create() {
   const toChanged = (
     field: t.IShellStateChanged['field'],
     ob: Observable<t.IPropChanged>,
-  ): Observable<t.IShellStateChanged> => ob.pipe(map(e => ({ ...e, field })));
+  ): Observable<t.IShellStateChanged> => ob.pipe(map((e) => ({ ...e, field })));
 
   const changed$ = merge(
     toChanged('header', footer.changed$),

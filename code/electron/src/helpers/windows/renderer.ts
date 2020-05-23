@@ -33,8 +33,8 @@ export class WindowsRenderer implements IWindows {
   public readonly events$ = this._events$.pipe(takeUntil(this.dispose$), share());
 
   public readonly change$ = this.events$.pipe(
-    filter(e => e.type === '@platform/WINDOW/change'),
-    map(e => e.payload as IWindowChange),
+    filter((e) => e.type === '@platform/WINDOW/change'),
+    map((e) => e.payload as IWindowChange),
     distinctUntilChanged((prev, next) => equals(prev.state, next.state)),
     debounceTime(0),
     share(),
@@ -48,7 +48,7 @@ export class WindowsRenderer implements IWindows {
     ipc
       .on<IWindowChangeEvent>('@platform/WINDOW/change')
       .pipe(takeUntil(this.dispose$))
-      .subscribe(e => {
+      .subscribe((e) => {
         const { type, state, window } = e.payload;
         this.change(type, window.id, state);
       });
@@ -56,7 +56,7 @@ export class WindowsRenderer implements IWindows {
     ipc
       .on<IWindowsRefreshEvent>('@platform/WINDOWS/refresh')
       .pipe(takeUntil(this.dispose$))
-      .subscribe(e => {
+      .subscribe((e) => {
         this.fire(e);
         this.refresh();
       });
@@ -114,7 +114,7 @@ export class WindowsRenderer implements IWindows {
 
         // Check for new windows that do not exist locally.
         for (const window of remoteWindows) {
-          const existLocally = localWindows.find(m => m.id === window.id);
+          const existLocally = localWindows.find((m) => m.id === window.id);
           if (!existLocally) {
             this.change('CREATED', window.id, remoteState);
           }
@@ -122,7 +122,7 @@ export class WindowsRenderer implements IWindows {
 
         // Check for windows that exist locally that have been closed.
         for (const window of localWindows) {
-          const existsRemotely = remoteWindows.find(m => m.id === window.id);
+          const existsRemotely = remoteWindows.find((m) => m.id === window.id);
           if (!existsRemotely) {
             this.change('CLOSED', window.id, remoteState);
           }

@@ -20,7 +20,7 @@ export function toTypescriptHeader(args: {
  * Generated types defined in namespace:
  * 
  *    |                
-${uris.map(uri => ` *    |➔  ${uri}`).join('\n')}
+${uris.map((uri) => ` *    |➔  ${uri}`).join('\n')}
  *    |
  *
  * By:

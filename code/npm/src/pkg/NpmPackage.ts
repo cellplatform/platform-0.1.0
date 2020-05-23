@@ -188,7 +188,7 @@ export class NpmPackage {
       }
       let isChanged = false;
       const latest = await NpmPackage.getLatestVersions(fields, args.filter);
-      Object.keys(latest).forEach(name => {
+      Object.keys(latest).forEach((name) => {
         const from = fields[name];
         const to = latest[name];
         const changed = from !== to;
@@ -208,7 +208,7 @@ export class NpmPackage {
     };
 
     // Calculate the latest versions.
-    const wait = types.map(type => getLatest(type, this[type]));
+    const wait = types.map((type) => getLatest(type, this[type]));
     await Promise.all(wait);
 
     // Finish up.
@@ -242,7 +242,7 @@ export class NpmPackage {
   ) {
     const { force = false } = options;
     target = { ...target };
-    Object.keys(source).forEach(key => {
+    Object.keys(source).forEach((key) => {
       const value = (source[key] || '').trim();
       if (value && (force || !target[key])) {
         target[key] = value;
@@ -273,8 +273,8 @@ export class NpmPackage {
     const trim = (value?: string) => (value || '').trim();
 
     keys
-      .filter(key => !exclude.includes(key))
-      .forEach(key => {
+      .filter((key) => !exclude.includes(key))
+      .forEach((key) => {
         const sourceValue = source[key];
         const targetValue = target[key];
         if (force || trim(sourceValue) === trim(targetValue)) {
@@ -298,7 +298,7 @@ export class NpmPackage {
     // Filter down on specific fields if required.
     if (filter) {
       Object.keys(fields)
-        .filter(name => !filter(name, fields[name]))
+        .filter((name) => !filter(name, fields[name]))
         .forEach((name, version) => {
           delete fields[name];
         });

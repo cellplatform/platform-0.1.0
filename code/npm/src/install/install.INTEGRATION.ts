@@ -12,8 +12,8 @@ describe.skip('install (integration)', function () {
     const events$ = new Subject<npm.INpmInstallEvent>();
 
     events$.subscribe({
-      next: e => log.info(e, '\n'),
-      error: err => log.error(err),
+      next: (e) => log.info(e, '\n'),
+      error: (err) => log.error(err),
       complete: () => log.info.cyan('COMPLETE'),
     });
 

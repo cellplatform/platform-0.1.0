@@ -15,8 +15,8 @@ export const squash = {
     } else {
       const res = { ...cell };
       Object.keys(res)
-        .filter(key => isUndefinedOrEmptyObject(res[key]))
-        .forEach(key => delete res[key]);
+        .filter((key) => isUndefinedOrEmptyObject(res[key]))
+        .forEach((key) => delete res[key]);
       return squash.object(res, options);
     }
   },
@@ -28,8 +28,8 @@ export const squash = {
     } else {
       const res = { ...obj };
       Object.keys(res)
-        .filter(key => isUndefinedOrEmptyObject(res[key]))
-        .forEach(key => delete res[key]);
+        .filter((key) => isUndefinedOrEmptyObject(res[key]))
+        .forEach((key) => delete res[key]);
       return isUndefinedOrEmptyObject(res, { ignoreHash: true }) ? empty : res;
     }
   },

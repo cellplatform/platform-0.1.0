@@ -159,7 +159,7 @@ function parseFuncNegativeNumberArguments(func: FunctionNode) {
     const arg = node as UnaryExpressionNode;
     return arg.type === 'unary-expression' && arg.operator === '-' && arg.operand.type === 'number';
   };
-  func.arguments = func.arguments.map(node => {
+  func.arguments = func.arguments.map((node) => {
     const arg = node as UnaryExpressionNode;
     if (!isNegativeUnary(arg)) {
       return arg;
@@ -181,7 +181,7 @@ function parseFuncBooleanArguments(func: FunctionNode) {
     return isMatch ? valueUtil.toBool(arg.key) : null;
   };
 
-  func.arguments = func.arguments.map(node => {
+  func.arguments = func.arguments.map((node) => {
     const value = booleanRefType(node);
     return value === null ? node : ({ type: 'logical', value } as any);
   });

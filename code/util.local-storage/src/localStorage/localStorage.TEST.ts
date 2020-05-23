@@ -112,10 +112,10 @@ describe('localStorage', () => {
     const provider = testProvider(initial);
     const local = localStorage<IMyObject>(config, { provider });
 
-    local.$.events$.subscribe(e => events.all.push(e));
-    local.$.get$.subscribe(e => events.get.push(e));
-    local.$.set$.subscribe(e => events.set.push(e));
-    local.$.delete$.subscribe(e => events.delete.push(e));
+    local.$.events$.subscribe((e) => events.all.push(e));
+    local.$.get$.subscribe((e) => events.get.push(e));
+    local.$.set$.subscribe((e) => events.set.push(e));
+    local.$.delete$.subscribe((e) => events.delete.push(e));
 
     expect(local.count).to.eql(123);
     local.count = 456;

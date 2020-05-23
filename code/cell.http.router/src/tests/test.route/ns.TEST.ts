@@ -339,7 +339,7 @@ describe('ns:', function () {
 
       const changes = json.changes || [];
       expect(changes.length).to.eql(5);
-      expect(changes.map(c => c.field)).to.eql(['value', 'hash', 'id', 'props', 'hash']);
+      expect(changes.map((c) => c.field)).to.eql(['value', 'hash', 'id', 'props', 'hash']);
 
       const change = changes[0];
       expect(change.uri).to.eql('cell:foo:A1');

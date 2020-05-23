@@ -54,7 +54,7 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
     // const tree$ = this.tree$.pipe(takeUntil(this.unmounted$));
 
     // Update state.
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {

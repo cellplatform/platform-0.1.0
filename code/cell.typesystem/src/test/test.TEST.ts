@@ -35,7 +35,7 @@ describe('test', () => {
         'foo.defaults',
         'foo.multi',
       ];
-      const defs = (await Promise.all(uris.map(ns => loadDefs(ns)))).flat();
+      const defs = (await Promise.all(uris.map((ns) => loadDefs(ns)))).flat();
       const ts = TypeClient.typescript(defs);
       await ts.save(fs, fs.join(dir, 'all.ts'));
     });

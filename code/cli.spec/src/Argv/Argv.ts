@@ -14,7 +14,7 @@ export class Argv {
       .filter((e: any) => Boolean(e))
       .map((e: any) => value.toType(e));
     delete params._;
-    Object.keys(params).forEach(key => (params[key] = value.toType(params[key])));
+    Object.keys(params).forEach((key) => (params[key] = value.toType(params[key])));
     return { params: commands, options: params };
   }
 }

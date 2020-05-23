@@ -59,13 +59,13 @@ export async function load(args: {
 
 function groupByTypename(columns: t.IColumnTypeDef[]) {
   const ERROR_KEY = '___ERROR___';
-  const groups = R.groupBy(def => {
+  const groups = R.groupBy((def) => {
     const res = TypeProp.parse(def);
     return res.error ? ERROR_KEY : res.type;
   }, columns);
   delete groups[ERROR_KEY]; // NB: errors trimmed off.
-  Object.keys(groups).forEach(typename => {
-    groups[typename].forEach(item => {
+  Object.keys(groups).forEach((typename) => {
+    groups[typename].forEach((item) => {
       item.prop = item.prop.substring(typename.length + 1);
     });
   });
@@ -120,17 +120,17 @@ async function loadNamespace(args: {
   const cacheKey = TypeCache.key.client(ns);
   const loading$ = new Subject<LoadResponse>();
   cache.put(cacheKey, loading$);
-  loading$.subscribe(response => cache.put(cacheKey, response));
+  loading$.subscribe((response) => cache.put(cacheKey, response));
 
   // Prepare return object.
   const done = (args: { columns?: t.IColumnTypeDef[] } = {}): LoadResponse => {
     const { columns = [] } = args;
     const groups = groupByTypename(columns);
     const defs = Object.keys(groups)
-      .map(typename => ({ typename, columns: groups[typename] }))
+      .map((typename) => ({ typename, columns: groups[typename] }))
       .map(({ typename, columns }) => toNsTypeDef({ ns, typename, columns, errors }));
 
-    const ok = errors.ok && defs.every(def => def.ok);
+    const ok = errors.ok && defs.every((def) => def.ok);
     let errs: t.ITypeError[] | undefined;
 
     const res: LoadResponse = {
@@ -153,7 +153,7 @@ async function loadNamespace(args: {
   };
 
   // Validate the URI.
-  Uri.ns(ns, uri => {
+  Uri.ns(ns, (uri) => {
     if (uri.error) {
       const message = `Invalid namespace (${args.ns}). ${uri.error.message}`;
       errors.add(ns, message);
@@ -195,7 +195,7 @@ async function loadNamespace(args: {
     // Check for any self-references.
     const selfRefs = getSelfRefs({ ns, columns });
     if (selfRefs.length > 0) {
-      const keys = selfRefs.map(item => item.key);
+      const keys = selfRefs.map((item) => item.key);
       const message = `The namespace (${ns}) directly references itself in column [${keys}] (circular-ref)`;
       errors.add(ns, message, { errorType: ERROR.TYPE.REF_CIRCULAR });
       return done();
@@ -217,9 +217,9 @@ function isCircularRef(args: { level: number; ns: string; ctx: Context }) {
   const { level, ns, ctx } = args;
   const { visited, errors } = ctx;
 
-  const isCircular = visited.some(visit => visit.ns === ns && visit.level < level);
+  const isCircular = visited.some((visit) => visit.ns === ns && visit.level < level);
   if (isCircular) {
-    const path = visited.map(visit => `${visit.ns}`).join(' ➔ ');
+    const path = visited.map((visit) => `${visit.ns}`).join(' ➔ ');
     const message = `The namespace "${ns}" leads back to itself (circular reference). Sequence: ${path}`;
     errors.add(ns, message, { errorType: ERROR.TYPE.REF_CIRCULAR });
   }
@@ -337,7 +337,7 @@ async function readUnionRefs(args: {
   for (const type of union.types) {
     if (type.kind === 'REF') {
       const res = await readRef({ level, ns, column, ref: type, ctx });
-      Object.keys(res.type).forEach(key => (type[key] = res.type[key])); // NB: Copy all values onto the union child.
+      Object.keys(res.type).forEach((key) => (type[key] = res.type[key])); // NB: Copy all values onto the union child.
     }
 
     if (type.kind === 'UNION') {
@@ -395,7 +395,7 @@ async function readRef(args: {
   }
 
   // Retrieve the definition.
-  const def = loaded.defs.find(def => def.typename === ref.typename);
+  const def = loaded.defs.find((def) => def.typename === ref.typename);
   if (!def) {
     const msg = `The referenced typename '${ref.typename}' in column '${column}' was not found in the types retrieved from (${nsUri})`;
     return {
@@ -407,7 +407,7 @@ async function readRef(args: {
   // Build the REF object.
   if (columnUri) {
     // Column REF.
-    const columnDef = def.columns.find(item => item.column === columnUri.key);
+    const columnDef = def.columns.find((item) => item.column === columnUri.key);
     if (!columnDef) {
       const msg = `The referenced column '${column}' of type '${ref.typename}' does not exist in the retrieved namespace (${nsUri})`;
       return {
@@ -423,7 +423,7 @@ async function readRef(args: {
   } else {
     // Namespace REF.
     const { typename } = def;
-    const types: t.ITypeDef[] = def.columns.map(item => {
+    const types: t.ITypeDef[] = def.columns.map((item) => {
       const { prop, type, optional } = item;
       return {
         prop,
@@ -452,14 +452,14 @@ const getSelfRefs = (args: { ns: string; columns: t.IColumnMap }) => {
   const { columns } = args;
   const ns = Uri.ns(args.ns);
   return flattenColumnTypeDefs(columns)
-    .map(e => ({
+    .map((e) => ({
       key: e.column,
       type: e.def.type as string,
     }))
-    .filter(e => Boolean(e.type))
-    .filter(e => Uri.is.uri(e.type))
-    .map(e => ({ ...e, uri: Uri.parse(e.type) }))
-    .map(e => ({ ...e, kind: e.uri.parts.type }))
+    .filter((e) => Boolean(e.type))
+    .filter((e) => Uri.is.uri(e.type))
+    .map((e) => ({ ...e, uri: Uri.parse(e.type) }))
+    .map((e) => ({ ...e, kind: e.uri.parts.type }))
     .filter(({ type, uri }) => {
       if (type === ns.toString()) {
         return true; // Self referencing NAMESPACE.
@@ -481,7 +481,7 @@ function flattenColumnTypeDefs(columns: t.IColumnMap) {
     const def = columns[column]?.props?.def;
     if (def) {
       const defs = Array.isArray(def) ? def : [def];
-      defs.forEach(def => acc.push({ column, def }));
+      defs.forEach((def) => acc.push({ column, def }));
     }
     return acc;
   }, [] as D[]);

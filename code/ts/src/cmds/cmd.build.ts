@@ -37,7 +37,7 @@ export async function buildAs(formats: BuildFormat[], args: IBuildArgs = {}): Pr
   await fs.remove(outDir);
   await ensureMainHasNoExtension(cwd, { silent });
 
-  const tasks: ITask[] = formats.map(format => {
+  const tasks: ITask[] = formats.map((format) => {
     const title = format === 'ES_MODULE' ? '.mjs ESModule' : '.js  CommonJS';
     return {
       title: `build ${title}`,
@@ -154,7 +154,7 @@ export async function build(args: IArgs): Promise<IResult & { errorLog?: string 
  */
 async function deleteTempDirs() {
   await Promise.all(
-    BUILD_FORMATS.map(format => toTmpDir(format)).map(dir => fs.remove(fs.resolve(dir))),
+    BUILD_FORMATS.map((format) => toTmpDir(format)).map((dir) => fs.remove(fs.resolve(dir))),
   );
 }
 

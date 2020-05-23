@@ -30,11 +30,11 @@ export function many(args: {
     // Build complete list of cell implicated in the update.
     let keys: string[] = cells;
     const addIncoming = (cells: string[]) => {
-      cells.forEach(key => (refs.in[key] || []).forEach(ref => keys.push(ref.cell)));
+      cells.forEach((key) => (refs.in[key] || []).forEach((ref) => keys.push(ref.cell)));
     };
     const addOutgoing = (cells: string[]) => {
-      cells.forEach(key =>
-        (refs.out[key] || []).forEach(ref => keys.push(util.path(ref.path).last)),
+      cells.forEach((key) =>
+        (refs.out[key] || []).forEach((ref) => keys.push(util.path(ref.path).last)),
       );
     };
     addIncoming(cells);
@@ -65,7 +65,7 @@ export function many(args: {
     }
 
     // Prepare response.
-    const ok = !list.some(item => !item.ok);
+    const ok = !list.some((item) => !item.ok);
     const elapsed = timer.elapsed.msec;
     let map: t.IFuncResponseMap;
     const payload: t.IFuncManyResponse = {

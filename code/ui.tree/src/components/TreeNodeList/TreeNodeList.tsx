@@ -111,9 +111,9 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     );
 
     const nodeProps = this.nodes.map((v, i) => this.nodeRenderProps(i, nodes));
-    const hasSomeInlineChildren = nodeProps.some(p => p.twisty !== undefined);
-    const hasSomePanelChildren = nodeProps.some(p => p.iconRight !== undefined);
-    const hasSomeIcons = nodeProps.map(p => p.node.props || {}).some(p => p.icon !== undefined);
+    const hasSomeInlineChildren = nodeProps.some((p) => p.twisty !== undefined);
+    const hasSomePanelChildren = nodeProps.some((p) => p.iconRight !== undefined);
+    const hasSomeIcons = nodeProps.map((p) => p.node.props || {}).some((p) => p.icon !== undefined);
     const elItems = nodes.map((v, i) => {
       const props = nodeProps[i];
       return this.renderNode({
@@ -138,10 +138,10 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     const { defaultNodeProps } = this.props;
 
     if (defaultNodeProps === undefined) {
-      return args => ({});
+      return (args) => ({});
     }
 
-    return typeof defaultNodeProps === 'function' ? defaultNodeProps : args => defaultNodeProps;
+    return typeof defaultNodeProps === 'function' ? defaultNodeProps : (args) => defaultNodeProps;
   }
 
   /**

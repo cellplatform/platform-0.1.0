@@ -226,9 +226,9 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   public get types() {
     if (!this._types) {
       const types: t.ITypedSheet['types'] = [];
-      this._typeDefs.forEach(def => {
+      this._typeDefs.forEach((def) => {
         const { typename, columns } = def;
-        const item = types.find(item => item.typename === typename);
+        const item = types.find((item) => item.typename === typename);
         if (item) {
           item.columns = [...item.columns, ...columns];
         } else {
@@ -272,9 +272,9 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
 
     // Retrieve the specified type definition.
     const defs = this._typeDefs;
-    const def = defs.find(def => def.typename === typename);
+    const def = defs.find((def) => def.typename === typename);
     if (!def) {
-      const names = defs.map(def => `'${def.typename}'`).join(', ');
+      const names = defs.map((def) => `'${def.typename}'`).join(', ');
       const err = `Definitions for typename '${typename}' not found. Available typenames: ${names}.`;
       throw new Error(err);
     }

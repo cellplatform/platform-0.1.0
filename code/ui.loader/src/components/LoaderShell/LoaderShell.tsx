@@ -36,7 +36,7 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
   constructor(props: ILoaderShellProps) {
     super(props);
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
   }
 
   public componentDidMount() {
@@ -44,15 +44,15 @@ export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderS
     const splash$ = this.splash.changed$.pipe(takeUntil(this.unmounted$));
 
     // Redraw when splash API is changed.
-    splash$.pipe(debounceTime(0)).subscribe(e => {
+    splash$.pipe(debounceTime(0)).subscribe((e) => {
       this.forceUpdate();
     });
 
     loader$
       // Ensure the default module is loaded.
       .pipe(
-        filter(e => e.type === 'LOADER/added'),
-        filter(e => !this.state.isLoaded),
+        filter((e) => e.type === 'LOADER/added'),
+        filter((e) => !this.state.isLoaded),
       )
       .subscribe(() => this.load(this.defaultModule));
 

@@ -122,7 +122,7 @@ export class NodeProcess {
 
       // Monitor events on the child process.
       child.complete$.subscribe(() => delete this._.child);
-      child.output$.pipe(filter(e => !this.isSilent)).subscribe(e => {
+      child.output$.pipe(filter((e) => !this.isSilent)).subscribe((e) => {
         console.log(chalk.green(`${name} ›`), e.text); // eslint-disable-line
       });
 

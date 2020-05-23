@@ -49,7 +49,7 @@ export class HttpClient implements t.IHttpClient {
     // Create the HTTP client.
     const headers = { client: clientHeader() };
     const http = args.http ? args.http : Http.create({ headers, mode: 'cors' });
-    http.before$.subscribe(e => e.modify.headers.merge(headers));
+    http.before$.subscribe((e) => e.modify.headers.merge(headers));
 
     // Store fields.
     this.http = http;

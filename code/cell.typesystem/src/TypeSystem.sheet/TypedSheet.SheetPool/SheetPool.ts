@@ -96,7 +96,7 @@ export class SheetPool implements t.ISheetPool {
     const item = this._items[ns];
     delete this._items[ns];
     if (item) {
-      item.children.forEach(child => this.remove(child));
+      item.children.forEach((child) => this.remove(child));
     }
     return this;
   }
@@ -105,10 +105,10 @@ export class SheetPool implements t.ISheetPool {
     this.throwIfDisposed('children');
     const build = (sheet: S, sheets: t.ITypedSheet[] = []) => {
       const ns = this.ns(sheet);
-      if (!sheets.some(sheet => sheet.toString() === ns)) {
+      if (!sheets.some((sheet) => sheet.toString() === ns)) {
         const item = this._items[ns];
         if (item) {
-          item.children.forEach(ns => {
+          item.children.forEach((ns) => {
             const child = this._items[ns];
             if (child) {
               sheets.push(child.sheet);

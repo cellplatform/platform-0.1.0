@@ -59,7 +59,7 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
       let uris: t.IUriMap = { ...(cell || {}).links };
 
       if (links) {
-        Object.keys(links).forEach(key => {
+        Object.keys(links).forEach((key) => {
           const uri = links[key];
           if (uri) {
             const res = setLink(uris, key, uri);
@@ -68,7 +68,7 @@ export function cellData<P extends t.ICellProps = t.ICellProps>(cell?: t.ICellDa
             }
           }
         });
-        Object.keys(links).forEach(key => {
+        Object.keys(links).forEach((key) => {
           if (links[key] === undefined) {
             delete uris[key];
           }

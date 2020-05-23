@@ -40,7 +40,7 @@ export class PropList extends React.PureComponent<IPropListProps, IPropListState
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {
@@ -99,7 +99,7 @@ export class PropList extends React.PureComponent<IPropListProps, IPropListState
     };
 
     const elItems = items
-      .filter(item => Boolean(item))
+      .filter((item) => Boolean(item))
       .map((item, i) => {
         return (
           <div key={i} {...styles.item} title={item?.tooltip}>

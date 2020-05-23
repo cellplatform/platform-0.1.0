@@ -59,11 +59,11 @@ export async function getCellFiles(args: { ns: t.IDbModelNs; cellLinks: t.IUriMa
 
   const linkExists = (fileid: string, cellLinks: t.IUriMap) => {
     const fileUri = Schema.uri.create.file(ns.props.id, fileid);
-    return Object.values(cellLinks).some(value => value.startsWith(fileUri));
+    return Object.values(cellLinks).some((value) => value.startsWith(fileUri));
   };
 
   const map = { ...(await models.ns.getChildFiles({ model: ns })) };
-  Object.keys(map).forEach(fileid => {
+  Object.keys(map).forEach((fileid) => {
     if (!linkExists(fileid, cellLinks)) {
       delete map[fileid]; // NB: Trim off files that are not referenced by this cell.
     }

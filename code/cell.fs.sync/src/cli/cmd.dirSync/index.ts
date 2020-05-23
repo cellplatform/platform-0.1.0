@@ -12,8 +12,8 @@ export type ISyncDirArgs = {
   remote: boolean;
 };
 
-export const init: t.CmdPluginsInit = cli => {
-  const handler: t.CmdPluginHandler<ISyncDirArgs> = async e => {
+export const init: t.CmdPluginsInit = (cli) => {
+  const handler: t.CmdPluginHandler<ISyncDirArgs> = async (e) => {
     const { argv } = e;
 
     // NB:  Keyboard is only activated if needed to avoid an event-loop preventing

@@ -15,11 +15,11 @@ export function init(args: {
 }) {
   const { grid, command$ } = args;
   const style$ = command$.pipe(
-    filter(e => STYLE.includes(e.command as any)),
-    filter(e => !e.isCancelled),
+    filter((e) => STYLE.includes(e.command as any)),
+    filter((e) => !e.isCancelled),
   );
 
-  style$.subscribe(e => {
+  style$.subscribe((e) => {
     const command = e.command as t.GridStyleCommand;
     const field = toField(command);
     const values = toSelectionValues({ cells: grid.data.cells, selection: e.selection });

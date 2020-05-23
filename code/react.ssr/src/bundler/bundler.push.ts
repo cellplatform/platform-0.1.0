@@ -41,7 +41,7 @@ export async function bundle(args: {
 
   // Calculate the list of files to push.
   const files = await fs.glob.find(fs.join(bundleDir, '**'));
-  const items = files.map(source => {
+  const items = files.map((source) => {
     const key = fs.join(bucketKey, source.substring(bundleDir.length + 1));
     return { source, key };
   });
@@ -65,10 +65,10 @@ export async function bundle(args: {
   const dirSize = await fs.size.dir(bundleDir);
   const renderer = args.silent ? 'silent' : undefined;
   const tasks = new Listr(
-    items.map(item => {
+    items.map((item) => {
       const { source, key } = item;
       const file = fs.basename(key);
-      const fileSize = dirSize.files.find(item => item.path.endsWith(`/${file}`));
+      const fileSize = dirSize.files.find((item) => item.path.endsWith(`/${file}`));
       let size = fileSize ? fileSize.toString({ round: 0, spacer: '' }) : '';
       size = `${size}        `.substring(0, 8);
       return {
@@ -135,7 +135,7 @@ export async function manifest(args: {
 
   // Push to S3.
   const title = `push ${fs.basename(source)}`;
-  const tasks = cli.task(title, async e => {
+  const tasks = cli.task(title, async (e) => {
     const data = await fs.readFile(source);
     await bucket.put({ data, key: target, acl: 'public-read' });
   });

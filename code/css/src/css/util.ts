@@ -39,8 +39,10 @@ export const toEdges: t.CssToEdges<t.ICssEdges> = (input, options = {}) => {
   }
 
   const edges = input
-    .map(item => (typeof item === 'string' && item.endsWith('px') ? item.replace(/px$/, '') : item))
-    .map(item => valueUtil.toNumber(item));
+    .map((item) =>
+      typeof item === 'string' && item.endsWith('px') ? item.replace(/px$/, '') : item,
+    )
+    .map((item) => valueUtil.toNumber(item));
   let top: number | undefined;
   let right: number | undefined;
   let bottom: number | undefined;

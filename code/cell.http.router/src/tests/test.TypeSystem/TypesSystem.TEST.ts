@@ -102,10 +102,10 @@ describe('TypeSystem ➔ HTTP', () => {
         expect(types.length).to.eql(2);
 
         expect(types[0].typename).to.eql('MyRow');
-        expect(types[0].columns.map(def => def.prop)).to.eql(['title', 'isEnabled', 'color']);
+        expect(types[0].columns.map((def) => def.prop)).to.eql(['title', 'isEnabled', 'color']);
 
         expect(types[1].typename).to.eql('MyOther');
-        expect(types[1].columns.map(def => def.prop)).to.eql(['label']);
+        expect(types[1].columns.map((def) => def.prop)).to.eql(['label']);
 
         // Default all typescript declarations.
         expect(json.typescript).to.include(`export declare type MyRow`);
@@ -130,7 +130,7 @@ describe('TypeSystem ➔ HTTP', () => {
       it('?typename=<undefined> (default true)', async () => {
         const test = async (url: string) => {
           const { json } = await getResponse(url);
-          expect(json.types.map(def => def.typename)).to.eql(['MyRow', 'MyOther']);
+          expect(json.types.map((def) => def.typename)).to.eql(['MyRow', 'MyOther']);
           expect(json.typescript).to.include(`export declare type MyRow`);
           expect(json.typescript).to.include(`export declare type MyOther`);
           expect(json.typescript).to.include(`export declare type MyColor`);
@@ -152,8 +152,8 @@ describe('TypeSystem ➔ HTTP', () => {
       it('?typename=<name>', async () => {
         const test = async (url: string, typenames: string[]) => {
           const { json } = await getResponse(url);
-          expect(json.types.map(def => def.typename)).to.eql(typenames);
-          typenames.forEach(typename => {
+          expect(json.types.map((def) => def.typename)).to.eql(typenames);
+          typenames.forEach((typename) => {
             expect(json.typescript).to.include(`export declare type ${typename}`);
           });
           if (typenames.length === 0) {
@@ -205,7 +205,7 @@ describe('TypeSystem ➔ HTTP', () => {
       await writeMySheetRows(mock.client);
 
       const requests: string[] = [];
-      mock.service.request$.subscribe(e => requests.push(e.url));
+      mock.service.request$.subscribe((e) => requests.push(e.url));
 
       const ns = 'ns:foo.mySheet';
       const sheet = await TypeSystem.Sheet.client(mock.client).load<g.MyRow>(ns);
@@ -213,9 +213,9 @@ describe('TypeSystem ➔ HTTP', () => {
       const cursor = await sheet.data('MyRow').load();
       await mock.dispose();
 
-      expect(requests.some(url => url === '/ns:foo')).to.eql(true);
-      expect(requests.some(url => url === '/ns:foo.color')).to.eql(true);
-      expect(requests.some(url => url === '/ns:foo.mySheet')).to.eql(true);
+      expect(requests.some((url) => url === '/ns:foo')).to.eql(true);
+      expect(requests.some((url) => url === '/ns:foo.color')).to.eql(true);
+      expect(requests.some((url) => url === '/ns:foo.mySheet')).to.eql(true);
 
       expect(cursor.uri.toString()).to.eql(ns);
       const row1 = cursor.row(0);
@@ -243,7 +243,7 @@ describe('TypeSystem ➔ HTTP', () => {
       await writeMySheetRows(mock.client);
 
       const requests: string[] = [];
-      mock.service.request$.subscribe(e => requests.push(e.url));
+      mock.service.request$.subscribe((e) => requests.push(e.url));
 
       const ns = 'ns:foo.mySheet';
       const client = Client.typesystem({ http: mock.client });
@@ -255,7 +255,7 @@ describe('TypeSystem ➔ HTTP', () => {
 
       await mock.dispose();
 
-      expect(sheet.types.map(def => def.typename)).to.eql(['MyRow', 'MyOther']);
+      expect(sheet.types.map((def) => def.typename)).to.eql(['MyRow', 'MyOther']);
       expect(row.title).to.eql('One');
     });
 

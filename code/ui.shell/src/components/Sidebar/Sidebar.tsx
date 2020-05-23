@@ -21,7 +21,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
    */
   constructor(props: ISidebarProps) {
     super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentDidMount() {

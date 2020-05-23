@@ -4,7 +4,7 @@ import { loader, is, css, COLORS } from './common';
 /**
  * Factory for JSX Elements needed by the splash screen.
  */
-export const factory: loader.SplashFactory = args => {
+export const factory: loader.SplashFactory = (args) => {
   const { theme, type } = args;
   const filename = theme === 'LIGHT' ? 'acme-dark' : 'acme-light';
   const logo = [`/images/logo/${filename}.png`, `/images/logo/${filename}@2x.png`, 169, 32];

@@ -3,7 +3,7 @@ import { ERROR, t } from './common';
 /**
  * Handle any un-matched routes.
  */
-export const wildcard: t.RouteHandler = async req => {
+export const wildcard: t.RouteHandler = async (req) => {
   /**
    * OPTIONS: Cors Preflight.
    */

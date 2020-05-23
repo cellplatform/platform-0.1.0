@@ -87,7 +87,7 @@ describe('exec.cmd.run', () => {
     const response = exec.cmd.run(cmd, { silent: true });
 
     const list: string[] = [];
-    response.stdout$.subscribe(e => list.push(e));
+    response.stdout$.subscribe((e) => list.push(e));
 
     await response;
     expect(list.length).to.eql(1);
@@ -98,7 +98,7 @@ describe('exec.cmd.run', () => {
     const response = exec.cmd.run('FAIL_BIG_TIME', { silent: true });
 
     const list: string[] = [];
-    response.stderr$.subscribe(e => list.push(e));
+    response.stderr$.subscribe((e) => list.push(e));
 
     await response;
     expect(list.length).to.eql(1);

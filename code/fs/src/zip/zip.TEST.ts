@@ -61,7 +61,7 @@ describe('zip', () => {
   it('fires processed event', async () => {
     const zip = new Zipper().add('./test/file');
     const events: IZipProgress[] = [];
-    await zip.save('./tmp/foo.zip', { onProgress: e => events.push(e) });
+    await zip.save('./tmp/foo.zip', { onProgress: (e) => events.push(e) });
 
     expect(events.length).to.eql(8);
 

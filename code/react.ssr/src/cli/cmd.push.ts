@@ -53,7 +53,7 @@ export async function bundle(args: {
 
   const promptForVersion = async () => {
     const paths = await bundler.dir(bundlesDir).semver();
-    const versions = paths.map(path => fs.basename(path)).reverse();
+    const versions = paths.map((path) => fs.basename(path)).reverse();
     const items = [...versions, '---'];
     const res = await cli.prompt.list<string>({ message: 'bundle version', items });
     return res;

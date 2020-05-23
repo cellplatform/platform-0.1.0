@@ -15,7 +15,7 @@ export async function run() {
 
   // List files.
   log.info();
-  files.names.forEach(file => {
+  files.names.forEach((file) => {
     const name = trimYaml(file);
     const ext = fs.extname(file);
     log.info.gray(`${dir}/${log.cyan(name)}${ext}`);
@@ -28,8 +28,8 @@ export async function run() {
  */
 export async function getConfigFiles(args: { dir?: string } = {}) {
   const dir = await util.ensureConfigDir({ dir: args.dir });
-  const names = (await fs.readdir(dir)).filter(name => isYaml(name));
-  const paths = names.map(name => fs.join(dir, name));
+  const names = (await fs.readdir(dir)).filter((name) => isYaml(name));
+  const paths = names.map((name) => fs.join(dir, name));
   const length = paths.length;
   const isEmpty = length === 0;
 
@@ -38,7 +38,7 @@ export async function getConfigFiles(args: { dir?: string } = {}) {
 
   const prompt = async <T>(args: PP) => {
     const { message = 'deploy:', pageSize = 10, type } = args;
-    const items = paths.map(value => {
+    const items = paths.map((value) => {
       const name = trimYaml(fs.basename(value));
       return { name, value };
     });
@@ -57,7 +57,7 @@ export async function getConfigFiles(args: { dir?: string } = {}) {
     },
     async promptMany(args: P = ({} = {})) {
       const paths = await prompt<string[]>({ ...args, type: 'checkbox' });
-      return Promise.all(paths.map(path => Config.loadSync({ path })));
+      return Promise.all(paths.map((path) => Config.loadSync({ path })));
     },
   };
 }
@@ -77,5 +77,5 @@ export function logNoConfigFiles(args: { dir: string }) {
 /**
  * [Helpers]
  */
-const isYaml = (name: string) => ['.yml', '.yaml'].some(ext => name.endsWith(ext));
+const isYaml = (name: string) => ['.yml', '.yaml'].some((ext) => name.endsWith(ext));
 const trimYaml = (input: string) => input.replace(/\.yml$/, '').replace(/\.yaml$/, '');

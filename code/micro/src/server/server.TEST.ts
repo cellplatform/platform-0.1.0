@@ -19,7 +19,7 @@ describe('micro (server)', () => {
   it('200', async () => {
     const mock = await mockServer();
 
-    mock.router.get('/foo', async req => {
+    mock.router.get('/foo', async (req) => {
       return { data: { msg: 'hello' } };
     });
 
@@ -45,8 +45,8 @@ describe('micro (server)', () => {
   it('* (wildcard)', async () => {
     const mock = await mockServer();
 
-    mock.router.get('/foo', async req => ({ data: { url: req.url } }));
-    mock.router.get('*', async req => ({ data: { wildcard: true } }));
+    mock.router.get('/foo', async (req) => ({ data: { url: req.url } }));
+    mock.router.get('*', async (req) => ({ data: { wildcard: true } }));
 
     const res1 = await http.get(mock.url('/foo'));
     const res2 = await http.get(mock.url('/bar'));
@@ -92,7 +92,7 @@ describe('micro (server)', () => {
       const test = async (route: string, path: string, expected: any) => {
         const mock = await mockServer();
         let params: t.IRouteRequestParams | undefined;
-        mock.router.get(route, async req => {
+        mock.router.get(route, async (req) => {
           params = req.params;
           return { status: 200, data: {} };
         });
@@ -112,7 +112,7 @@ describe('micro (server)', () => {
       const test = async (path: string, expected: any) => {
         const mock = await mockServer();
         let query: t.IRouteRequestQuery | undefined;
-        mock.router.get('/foo', async req => {
+        mock.router.get('/foo', async (req) => {
           query = req.query;
           return { status: 200, data: {} };
         });
@@ -134,7 +134,7 @@ describe('micro (server)', () => {
     it('req.host', async () => {
       const mock = await mockServer();
       let req: t.IRouteRequest | undefined;
-      mock.router.get('/foo', async r => {
+      mock.router.get('/foo', async (r) => {
         req = r;
         return {};
       });
@@ -149,7 +149,7 @@ describe('micro (server)', () => {
     it('req.toUrl', async () => {
       const mock = await mockServer();
       let req: t.IRouteRequest | undefined;
-      mock.router.get('/foo', async r => {
+      mock.router.get('/foo', async (r) => {
         req = r;
         return {};
       });
@@ -170,7 +170,7 @@ describe('micro (server)', () => {
     it('req.redirect', async () => {
       const mock = await mockServer();
       let req: t.IRouteRequest | undefined;
-      mock.router.get('/foo', async r => {
+      mock.router.get('/foo', async (r) => {
         req = r;
         return {};
       });
@@ -197,7 +197,7 @@ describe('micro (server)', () => {
     it('req.header (case-insensitive)', async () => {
       const mock = await mockServer();
       let req: t.IRouteRequest | undefined;
-      mock.router.get('/foo', async r => {
+      mock.router.get('/foo', async (r) => {
         req = r;
         return {};
       });
@@ -221,7 +221,7 @@ describe('micro (server)', () => {
     const params: t.IRouteRequestParams[] = [];
     const queries: t.IRouteRequestQuery[] = [];
 
-    mock.router.get(`/ns\\::id([A-Za-z0-9]*)(/?)`, async req => {
+    mock.router.get(`/ns\\::id([A-Za-z0-9]*)(/?)`, async (req) => {
       params.push(req.params);
       queries.push(req.query);
       count++;
@@ -248,7 +248,7 @@ describe('micro (server)', () => {
 
     expect(queries.length).to.eql(4);
 
-    queries.forEach(q => delete q.toString); // NB: Hack, remove the [toString] method for simpler test comparison.
+    queries.forEach((q) => delete q.toString); // NB: Hack, remove the [toString] method for simpler test comparison.
 
     expect(queries[0]).to.eql({});
     expect(queries[1]).to.eql({});
@@ -261,7 +261,7 @@ describe('micro (server)', () => {
     const dir = fs.resolve(`tmp/test`);
 
     const files: string[] = [];
-    mock.router.post(`/binary`, async req => {
+    mock.router.post(`/binary`, async (req) => {
       const data = await req.body.form();
       await fs.ensureDir(dir);
       for (const file of data.files) {
@@ -292,7 +292,7 @@ describe('micro (server)', () => {
   it('GET binary file (download => save => compare)', async () => {
     const mock = await mockServer();
     const png = await fs.readFile(fs.resolve('src/test/images/bird.png'));
-    mock.router.get(`/image`, async req => ({ status: 200, data: png }));
+    mock.router.get(`/image`, async (req) => ({ status: 200, data: png }));
 
     // Download the image from the HTTP server.
     const res = await http.get(mock.url('/image'));
@@ -315,11 +315,11 @@ describe('micro (server)', () => {
       // Add sample routes (simulate startup time)
       // NB: Would typically never be this high!!
       Array.from({ length: 150 }).forEach((v, i) => {
-        app.router.get(`/foo/${i}`, async req => ({}));
+        app.router.get(`/foo/${i}`, async (req) => ({}));
       });
 
       const events: t.MicroEvent[] = [];
-      app.events$.subscribe(e => events.push(e));
+      app.events$.subscribe((e) => events.push(e));
 
       await app.start({ silent: true });
       expect(events.length).to.eql(1);
@@ -343,10 +343,10 @@ describe('micro (server)', () => {
     it('HTTP/request | HTTP/response', async () => {
       const mock = await mockServer();
       const events: t.MicroEvent[] = [];
-      mock.app.events$.subscribe(e => events.push(e));
+      mock.app.events$.subscribe((e) => events.push(e));
 
       const res = { status: 200, data: { msg: 123 }, headers: { 'x-foo': 'hello' } };
-      mock.router.get('/foo', async req => {
+      mock.router.get('/foo', async (req) => {
         await time.wait(20);
         return res;
       });
@@ -380,10 +380,10 @@ describe('micro (server)', () => {
       it('sync', async () => {
         const mock = await mockServer();
         const events: t.MicroEvent[] = [];
-        mock.app.events$.subscribe(e => events.push(e));
+        mock.app.events$.subscribe((e) => events.push(e));
 
         let event1: micro.IMicroRequest | undefined;
-        mock.app.request$.subscribe(e => {
+        mock.app.request$.subscribe((e) => {
           event1 = e;
           e.modify({ context: { user: 'Sarah' } });
         });
@@ -408,10 +408,10 @@ describe('micro (server)', () => {
       it('async', async () => {
         const mock = await mockServer();
         const events: t.MicroEvent[] = [];
-        mock.app.events$.subscribe(e => events.push(e));
+        mock.app.events$.subscribe((e) => events.push(e));
 
         let event1: micro.IMicroRequest | undefined;
-        mock.app.request$.subscribe(e => {
+        mock.app.request$.subscribe((e) => {
           event1 = e;
           e.modify(async () => {
             return { context: { user: 'Sarah' } };
@@ -441,7 +441,7 @@ describe('micro (server)', () => {
         const mock = await mockServer();
 
         let event: micro.IMicroResponse | undefined;
-        mock.app.response$.subscribe(e => {
+        mock.app.response$.subscribe((e) => {
           event = e;
           e.modify({
             ...e.res,
@@ -450,7 +450,7 @@ describe('micro (server)', () => {
           });
         });
 
-        mock.router.get('/foo', async req => ({ data: { foo: 123 } }));
+        mock.router.get('/foo', async (req) => ({ data: { foo: 123 } }));
         const res = await http.get(mock.url('/foo'));
 
         expect(event && event.isModified).to.eql(true);
@@ -466,7 +466,7 @@ describe('micro (server)', () => {
         const mock = await mockServer();
 
         let event: micro.IMicroResponse | undefined;
-        mock.app.response$.subscribe(e => {
+        mock.app.response$.subscribe((e) => {
           event = e;
           e.modify(async () => {
             await time.wait(20);
@@ -478,7 +478,7 @@ describe('micro (server)', () => {
           });
         });
 
-        mock.router.get('/foo', async req => ({ data: { foo: 123 } }));
+        mock.router.get('/foo', async (req) => ({ data: { foo: 123 } }));
         const res = await http.get(mock.url('/foo'));
 
         expect(event && event.elapsed.msec).to.greaterThan(19);

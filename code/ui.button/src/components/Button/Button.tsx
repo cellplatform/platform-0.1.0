@@ -51,10 +51,10 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
       filter(() => getEnabled()),
     );
 
-    mouse$.pipe(filter(e => e.type === 'DOWN')).subscribe(e => state$.next({ isDown: true }));
-    mouse$.pipe(filter(e => e.type === 'UP')).subscribe(e => state$.next({ isDown: false }));
-    mouse$.pipe(filter(e => e.type === 'ENTER')).subscribe(e => state$.next({ isOver: true }));
-    mouse$.pipe(filter(e => e.type === 'LEAVE')).subscribe(e => state$.next({ isOver: false }));
+    mouse$.pipe(filter((e) => e.type === 'DOWN')).subscribe((e) => state$.next({ isDown: true }));
+    mouse$.pipe(filter((e) => e.type === 'UP')).subscribe((e) => state$.next({ isDown: false }));
+    mouse$.pipe(filter((e) => e.type === 'ENTER')).subscribe((e) => state$.next({ isOver: true }));
+    mouse$.pipe(filter((e) => e.type === 'LEAVE')).subscribe((e) => state$.next({ isOver: false }));
 
     return res;
   }
@@ -84,12 +84,12 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
     }
 
     // Update state.
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     // Setup mouse.
     this.mouse = Button.mouseState(this.props, this.state$, this.unmounted$, () => this.isEnabled);
     const mouse$ = this.mouse.events$.pipe(takeUntil(this.unmounted$));
-    mouse$.subscribe(e => this.fire({ type: 'BUTTON/mouse', payload: { ...e, id: this.id } }));
+    mouse$.subscribe((e) => this.fire({ type: 'BUTTON/mouse', payload: { ...e, id: this.id } }));
   }
 
   public componentWillUnmount() {

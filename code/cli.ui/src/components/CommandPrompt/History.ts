@@ -80,7 +80,7 @@ export class History {
    */
   public namespace(namespace?: string | t.ICommandNamespace) {
     const prefix = History.toPrefix(namespace);
-    return this.items.filter(item => item.startsWith(prefix));
+    return this.items.filter((item) => item.startsWith(prefix));
   }
 
   /**

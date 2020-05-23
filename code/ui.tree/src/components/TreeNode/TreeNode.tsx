@@ -473,7 +473,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     target: TreeNodeMouseEvent['target'],
     onMouse?: TreeNodeMouseEventHandler,
   ) {
-    const handlers = mouse.handlers(e => {
+    const handlers = mouse.handlers((e) => {
       const node = getNode();
       const props = node.props || {};
       const children = tree.children(node);

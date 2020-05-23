@@ -4,7 +4,7 @@ import { ERROR, t } from '../common';
  * Constructs a sheet-data-fetcher from an HTTP host/client.
  */
 function fromClient(http: t.IHttpClient): t.ISheetFetcher {
-  const getNs: t.FetchSheetNs = async args => {
+  const getNs: t.FetchSheetNs = async (args) => {
     const res = await http.ns(args.ns).read();
     const exists = res.body.exists;
     let error: t.IHttpError | undefined;
@@ -19,11 +19,11 @@ function fromClient(http: t.IHttpClient): t.ISheetFetcher {
     return payload;
   };
 
-  const getColumns: t.FetchSheetColumns = async args => {
+  const getColumns: t.FetchSheetColumns = async (args) => {
     const res = await http.ns(args.ns).read({ columns: true });
     const error = formatError(
       res.error,
-      msg => `Failed to retrieve type information from namespace (${args.ns}). ${msg}`,
+      (msg) => `Failed to retrieve type information from namespace (${args.ns}). ${msg}`,
     );
 
     const columns = res.body.data.columns;
@@ -31,12 +31,12 @@ function fromClient(http: t.IHttpClient): t.ISheetFetcher {
     return payload;
   };
 
-  const getCells: t.FetchSheetCells = async args => {
+  const getCells: t.FetchSheetCells = async (args) => {
     const { ns, query } = args;
     const res = await http.ns(ns).read({ cells: query, total: 'rows' });
     const error = formatError(
       res.error,
-      msg => `Failed to retrieve cells "${query}" within namespace (${ns}). ${msg}`,
+      (msg) => `Failed to retrieve cells "${query}" within namespace (${ns}). ${msg}`,
     );
 
     const cells = res.body.data.cells;

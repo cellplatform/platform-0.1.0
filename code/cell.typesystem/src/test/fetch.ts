@@ -23,7 +23,7 @@ export const testFetch = (data: {
     }
   };
 
-  const getNs: t.FetchSheetNs = async args => {
+  const getNs: t.FetchSheetNs = async (args) => {
     before('getNs', args);
     const def = data.defs[args.ns];
     const ns = !def ? undefined : ((def.ns || {}) as t.INsProps);
@@ -31,7 +31,7 @@ export const testFetch = (data: {
     return { ns };
   };
 
-  const getColumns: t.FetchSheetColumns = async args => {
+  const getColumns: t.FetchSheetColumns = async (args) => {
     before('getColumns', args);
     const def = data.defs[args.ns];
     const columns = def?.columns;
@@ -39,7 +39,7 @@ export const testFetch = (data: {
     return { columns };
   };
 
-  const getCells: t.FetchSheetCells = async args => {
+  const getCells: t.FetchSheetCells = async (args) => {
     before('getCells', args);
     const cells = data.cells;
     const rows = coord.cell.max.row(Object.keys(cells || {})) + 1;

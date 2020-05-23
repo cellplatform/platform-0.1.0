@@ -12,7 +12,7 @@ export async function list<V = string>(args: {
   type?: 'list' | 'checkbox';
 }) {
   const { message, pageSize, type = 'list' } = args;
-  const choices: inquirer.DistinctChoice<any>[] = args.items.map(item => {
+  const choices: inquirer.DistinctChoice<any>[] = args.items.map((item) => {
     return typeof item === 'string'
       ? item.startsWith('---')
         ? new inquirer.Separator()

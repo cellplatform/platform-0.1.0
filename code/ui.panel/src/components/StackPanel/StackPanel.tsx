@@ -44,18 +44,18 @@ export class StackPanel extends React.PureComponent<IStackPanelProps> {
 
     const indexChanged$ = props$.pipe(
       filter(() => Boolean(this.props.onSlide)),
-      map(e => StackPanel.index(e)),
+      map((e) => StackPanel.index(e)),
       distinctUntilChanged((prev, next) => prev === next),
       pairwise(),
     );
 
     indexChanged$
       // Store previous index reference
-      .subscribe(indexes => (this.previous = indexes[0]));
+      .subscribe((indexes) => (this.previous = indexes[0]));
 
     indexChanged$
       // Fire START/COMPLETE events.
-      .subscribe(indexes => {
+      .subscribe((indexes) => {
         const fire = (stage: StackPanelSlideEvent['stage']) => {
           const { onSlide } = this.props;
           if (onSlide) {

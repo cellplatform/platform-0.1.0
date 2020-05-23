@@ -84,7 +84,7 @@ export class Command {
   }
 
   public toString() {
-    return this.parts.map(p => p.value).join(' ');
+    return this.parts.map((p) => p.value).join(' ');
   }
 }
 

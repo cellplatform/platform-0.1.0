@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compile.web",
-  "version": "0.0.78",
+  "version": "0.0.79",
   "description": "CellOS code compilation toolchain for web (JS/CSS).",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,15 +12,15 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.4.98",
-    "@platform/cli": "0.5.36",
-    "@platform/cli.prompt": "0.3.19",
-    "@platform/exec": "0.2.58",
+    "@platform/cell.types": "0.4.99",
+    "@platform/cli": "0.5.37",
+    "@platform/cli.prompt": "0.3.20",
+    "@platform/exec": "0.2.59",
     "@platform/libs": "0.2.2"
   },
   "devDependencies": {
-    "@platform/test": "0.1.11",
-    "@platform/ts": "3.9.2"
+    "@platform/test": "0.1.12",
+    "@platform/ts": "3.9.3"
   },
   "files": [
     "lib",

@@ -69,7 +69,7 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
     if (typeof this.ttl === 'number') {
       timer(this.ttl)
         .pipe(takeUntil(item.put$))
-        .subscribe(e => this.delete(key));
+        .subscribe((e) => this.delete(key));
     }
     return this;
   }
@@ -84,7 +84,7 @@ export class MemoryCache<K extends string = string> implements t.IMemoryCache<K>
     if (filter) {
       Object.keys(this.values)
         .filter(filter)
-        .forEach(key => delete this.values[key]);
+        .forEach((key) => delete this.values[key]);
     } else {
       this.values = {};
     }

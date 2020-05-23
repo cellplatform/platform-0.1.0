@@ -51,7 +51,7 @@ export function init<T extends t.SettingsJson>(args: {
       // Read data into response.
       res.version = typeof data.version === 'number' ? data.version : -1;
       if (keys.length > 0) {
-        keys.map(key => key.toString()).forEach(key => (res.body[key] = data.body[key]));
+        keys.map((key) => key.toString()).forEach((key) => (res.body[key] = data.body[key]));
       } else {
         // NB: When no keys specified the entire data-set is being requested.
         res.body = data.body;
@@ -68,7 +68,7 @@ export function init<T extends t.SettingsJson>(args: {
     }
   };
 
-  const getValues: t.GetSettingsValues<T> = async keys => {
+  const getValues: t.GetSettingsValues<T> = async (keys) => {
     const res = await getValuesHandler(keys);
     return res.body || {};
   };
@@ -174,26 +174,26 @@ export function init<T extends t.SettingsJson>(args: {
   /**
    * Handle GET keys requests.
    */
-  ipc.handle<t.ISettingsGetKeysEvent>('@platform/SETTINGS/keys', e => getKeys());
+  ipc.handle<t.ISettingsGetKeysEvent>('@platform/SETTINGS/keys', (e) => getKeys());
 
   /**
    * Handle GET value requests.
    */
-  ipc.handle<t.ISettingsGetValuesEvent>('@platform/SETTINGS/get', e =>
+  ipc.handle<t.ISettingsGetValuesEvent>('@platform/SETTINGS/get', (e) =>
     getValuesHandler(e.payload.keys),
   );
 
   /**
    * Handle SET value requests.
    */
-  ipc.handle<t.ISettingsSetValuesEvent>('@platform/SETTINGS/set', e =>
+  ipc.handle<t.ISettingsSetValuesEvent>('@platform/SETTINGS/set', (e) =>
     setValues(e.payload.values, e.payload.action),
   );
 
   /**
    * Handle `open in editor` requests.
    */
-  ipc.handle<t.ISettingsOpenEvent>('@platform/SETTINGS/open', async e => {
+  ipc.handle<t.ISettingsOpenEvent>('@platform/SETTINGS/open', async (e) => {
     const { target } = e.payload;
     switch (target) {
       case 'EDITOR':

@@ -36,7 +36,7 @@ export class Config {
       .trim();
 
     const ext =
-      ['yml', 'yaml'].find(ext => {
+      ['yml', 'yaml'].find((ext) => {
         return fs.pathExistsSync(fs.join(dir, `${filename}.${ext}`));
       }) || '';
     const file = fs.join(dir, `${filename}.${ext}`);
@@ -96,7 +96,7 @@ function validate(config: t.IHttpConfigFile) {
   }
 
   const fs = data.fs || {};
-  ['endpoint', 'root'].forEach(field => {
+  ['endpoint', 'root'].forEach((field) => {
     const value = trim(fs[field]);
     if (isEmpty(value)) {
       error(`Missing [fs.${field}] value.`);
@@ -104,7 +104,7 @@ function validate(config: t.IHttpConfigFile) {
   });
 
   const now = data.now || {};
-  ['deployment', 'domain'].forEach(field => {
+  ['deployment', 'domain'].forEach((field) => {
     const value = trim(now[field]);
     if (isEmpty(value)) {
       error(`Missing [now.${field}] value.`);
@@ -112,7 +112,7 @@ function validate(config: t.IHttpConfigFile) {
   });
 
   const secret = data.secret || {};
-  ['mongo', 's3'].forEach(field => {
+  ['mongo', 's3'].forEach((field) => {
     const value = trim(secret[field]);
     if (isEmpty(value)) {
       error(`Missing [secret.${field}] value.`);

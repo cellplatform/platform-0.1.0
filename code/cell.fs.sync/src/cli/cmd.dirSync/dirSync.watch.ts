@@ -58,7 +58,7 @@ export async function watchDir(args: {
     },
   };
 
-  keyboard.keypress$.subscribe(e => {
+  keyboard.keypress$.subscribe((e) => {
     if (e.key === 'l') {
       util.open(config).local();
     }
@@ -88,8 +88,8 @@ export async function watchDir(args: {
   };
 
   const dir$ = watch.start({ pattern }).events$.pipe(
-    filter(e => e.isFile),
-    filter(e => !e.name.startsWith('.')),
+    filter((e) => e.isFile),
+    filter((e) => !e.name.startsWith('.')),
   );
 
   const render = (status?: string) => {
@@ -181,13 +181,13 @@ export async function watchDir(args: {
     }
   };
 
-  dir$.subscribe(async e => {
+  dir$.subscribe(async (e) => {
     if (!silent) {
       render(state.isStarted ? log.yellow(`pending`) : `starting`);
     }
   });
 
-  dir$.pipe(debounceTime(debounce)).subscribe(async e => {
+  dir$.pipe(debounceTime(debounce)).subscribe(async (e) => {
     syncPush();
   });
 
@@ -197,10 +197,10 @@ export async function watchDir(args: {
 
     const res = await sync({
       silent: true,
-      onPayload: payload => {
+      onPayload: (payload) => {
         // Print the file upload size (KB) when it's been calculated.
         const bytes = payload.files
-          .filter(payload => payload.isChanged)
+          .filter((payload) => payload.isChanged)
           .reduce((acc, payload) => (payload.localBytes > 0 ? acc + payload.localBytes : acc), 0);
         if (state.isStarted && bytes > 0) {
           const message = `${log.yellow('syncing')} (${fs.size.toString(bytes)})`;
@@ -217,7 +217,7 @@ export async function watchDir(args: {
     if (!silent) {
       render();
       if (errors.length > 0) {
-        const errs = errors.map(item => item.error);
+        const errs = errors.map((item) => item.error);
         log.info.yellow(`${log.yellow('•')} ${errs}`);
       }
     }
@@ -249,7 +249,7 @@ export function toHistoryItem(args: { item: IHistoryItem; isFirst: boolean }) {
     if (results.uploaded.length === 1) {
       output = `${output}: ${results.uploaded[0]}`;
     } else {
-      const lines = results.uploaded.map(item => `  - ${item}`);
+      const lines = results.uploaded.map((item) => `  - ${item}`);
       output = `${output}:\n${lines.join('\n')}`;
     }
   }
@@ -259,7 +259,7 @@ export function toHistoryItem(args: { item: IHistoryItem; isFirst: boolean }) {
     if (results.deleted.length === 1) {
       output = `${output}: ${results.deleted[0]}`;
     } else {
-      const lines = results.deleted.map(item => `  - ${item}`);
+      const lines = results.deleted.map((item) => `  - ${item}`);
       output = `${output}:\n${lines.join('\n')}`;
     }
   }

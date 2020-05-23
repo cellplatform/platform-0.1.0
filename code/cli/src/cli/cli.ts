@@ -15,7 +15,7 @@ export * from '../types';
  * ignoring them. In the future, promise rejections that are not handled will
  * terminate the Node.js process with a non-zero exit code.
  */
-process.on('unhandledRejection', err => {
+process.on('unhandledRejection', (err) => {
   throw err;
 });
 
@@ -40,7 +40,7 @@ export function create(name: string) {
 
   const _events$ = new Subject<t.CmdAppEvent>();
   const events$ = _events$.pipe(share());
-  const fire: t.FireEvent = e => _events$.next(e);
+  const fire: t.FireEvent = (e) => _events$.next(e);
 
   const showHelp = (argv: t.ICmdArgv) => {
     const payload = { argv };
@@ -49,7 +49,7 @@ export function create(name: string) {
     fire({ type: 'CLI/showHelp/after', payload });
   };
 
-  const exit: t.CmdAppExit = code => {
+  const exit: t.CmdAppExit = (code) => {
     const ok = code === 0;
     fire({ type: 'CLI/exit', payload: { ok, code } });
     log.info();

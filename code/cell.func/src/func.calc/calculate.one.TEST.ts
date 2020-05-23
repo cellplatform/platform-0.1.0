@@ -101,7 +101,7 @@ describe('func.calc.cell (one)', function () {
 
       const events: t.FuncOneEvent[] = [];
       const events$ = new Subject<t.FuncEvent>();
-      events$.subscribe(e => events.push(e as t.FuncOneEvent));
+      events$.subscribe((e) => events.push(e as t.FuncOneEvent));
 
       const wait = one<number>({ cell: 'A1', events$, ...ctx });
       await time.wait(0);
@@ -352,8 +352,8 @@ describe('func.calc.cell (one)', function () {
       const ctx = await testContext(
         { A1: { value: '=SUM(1,2)' } },
         {
-          getFunc: async args => {
-            return async args => {
+          getFunc: async (args) => {
+            return async (args) => {
               throw new Error('Derp');
             };
           },
@@ -372,7 +372,7 @@ describe('func.calc.cell (one)', function () {
       const ctx = await testContext(
         { A1: { value: '=SUM(1,2)' } },
         {
-          getFunc: async args => {
+          getFunc: async (args) => {
             throw new Error('Not found');
           },
         },

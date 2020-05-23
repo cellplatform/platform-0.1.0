@@ -15,7 +15,7 @@ import {
   util,
   defaultValue,
 } from './common';
-import { DEFAULT_TEXT_STYLE, HtmlInput, IInputValue } from './components/HtmlInput';
+import { DEFAULT_TEXT_STYLE, HtmlInput, IInputValue } from './TextInput.Html';
 
 const DEFAULT = {
   VALUE_STYLE: DEFAULT_TEXT_STYLE,
@@ -83,7 +83,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     const mouse$ = this.mouse.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
 
@@ -96,9 +96,8 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
 
     // Bubble mouse events.
     mouse$.subscribe((payload) => this.fire({ type: 'TEXT_INPUT/mouse', payload }));
-  }
 
-  public componentDidMount() {
+    // Finish up.
     this.updateAutoSize();
   }
 
@@ -242,16 +241,18 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
       <div
         {...css(placeholderStyle(this.props), styles.placeholder)}
         onDoubleClick={this.labelDblClickHandler('PLACEHOLDER')}
-        children={placeholder}
-      />
+      >
+        {placeholder}
+      </div>
     );
 
     const elReadOnly = isReadOnly && !elPlaceholder && (
       <div
         {...css(valueStyle, styles.placeholder, styles.readonly)}
         onDoubleClick={this.labelDblClickHandler('READ_ONLY')}
-        children={value}
-      />
+      >
+        {value}
+      </div>
     );
 
     const elInput = (

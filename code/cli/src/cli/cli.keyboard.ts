@@ -14,8 +14,8 @@ export function initKeyboard(args: {
 }) {
   const { fire, exit } = args;
   const keypress$ = args.events$.pipe(
-    filter(e => e.type === 'CLI/keypress'),
-    map(e => e.payload as t.ICmdAppKeypress),
+    filter((e) => e.type === 'CLI/keypress'),
+    map((e) => e.payload as t.ICmdAppKeypress),
     share(),
   );
   const res: t.ICmdKeyboard = { keypress$ };

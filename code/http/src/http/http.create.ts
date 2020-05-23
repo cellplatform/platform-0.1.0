@@ -26,17 +26,17 @@ export const create: t.HttpCreate = (options = {}) => {
   };
 
   const _events$ = new Subject<t.HttpEvent>();
-  const fire: t.FireEvent = e => _events$.next(e);
+  const fire: t.FireEvent = (e) => _events$.next(e);
 
   const events$ = _events$.pipe(share());
   const before$ = _events$.pipe(
-    filter(e => e.type === 'HTTP/before'),
-    map(e => e.payload as t.IHttpBefore),
+    filter((e) => e.type === 'HTTP/before'),
+    map((e) => e.payload as t.IHttpBefore),
     share(),
   );
   const after$ = _events$.pipe(
-    filter(e => e.type === 'HTTP/after'),
-    map(e => e.payload as t.IHttpAfter),
+    filter((e) => e.type === 'HTTP/after'),
+    map((e) => e.payload as t.IHttpAfter),
     share(),
   );
 

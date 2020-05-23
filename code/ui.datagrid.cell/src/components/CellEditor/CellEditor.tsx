@@ -44,11 +44,11 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
 
     // Bubble events.
     if (this.props.events$) {
-      this.events$.subscribe(e => this.props.events$ && this.props.events$.next(e));
+      this.events$.subscribe((e) => this.props.events$ && this.props.events$.next(e));
     }
 
     // Update state.
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     // Set initial value.
     const value = (this.context.initial || '').toString();
@@ -58,19 +58,19 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     const keys$ = this.context.keys$.pipe(filter(() => isReady));
     const enter$ = merge(
       keys$.pipe(
-        filter(e => e.isEnter),
-        filter(e => !(e.metaKey || e.shiftKey)),
+        filter((e) => e.isEnter),
+        filter((e) => !(e.metaKey || e.shiftKey)),
       ),
       events$.pipe(
-        filter(e => e.type === 'CELL_EDITOR/enter'),
-        map(e => e.payload as t.ICellEditorEnter),
-        filter(e => !(e.isMeta || e.isShift)),
+        filter((e) => e.type === 'CELL_EDITOR/enter'),
+        map((e) => e.payload as t.ICellEditorEnter),
+        filter((e) => !(e.isMeta || e.isShift)),
       ),
     );
     enter$
       // Complete edit on ENTER.
       // .pipe(filter(e => this.mode === 'MARKDOWN'))
-      .subscribe(e => {
+      .subscribe((e) => {
         const value = this.value;
         const size = this.size;
         this.context.set({ value, size }).complete();
@@ -79,10 +79,10 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     // Keep the local `value` state in sync with the editor view.
     events$
       .pipe(
-        filter(e => e.type === 'CELL_EDITOR/changed'),
-        map(e => e.payload as t.ICellEditorChanged),
+        filter((e) => e.type === 'CELL_EDITOR/changed'),
+        map((e) => e.payload as t.ICellEditorChanged),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const value = e.value.to;
         this.state$.next({ value });
       });
@@ -90,10 +90,10 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
     // Keep the size in sync with the editor's reported size.
     events$
       .pipe(
-        filter(e => e.type === 'CELL_EDITOR/size'),
-        map(e => e.payload as t.ICellEditorSize),
+        filter((e) => e.type === 'CELL_EDITOR/size'),
+        map((e) => e.payload as t.ICellEditorSize),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.updateSize({
           width: this.cellSize.width,
           height: e.to.height,
@@ -101,7 +101,7 @@ export class CellEditor extends React.PureComponent<ICellEditorProps, ICellEdito
       });
 
     // Keep the editor context up-to-date with the latest value.
-    state$.subscribe(e => this.context.set({ value: this.value }));
+    state$.subscribe((e) => this.context.set({ value: this.value }));
 
     // Manage cancelling manually.
     // this.context.autoCancel = false;

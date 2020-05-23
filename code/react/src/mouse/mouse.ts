@@ -93,7 +93,7 @@ export const handlers = (
   const { getEnabled } = args;
 
   const isActive =
-    Boolean(handler) || Object.keys(args).some(key => typeof args[key] === 'function');
+    Boolean(handler) || Object.keys(args).some((key) => typeof args[key] === 'function');
 
   const getSingleHandler = (type: t.MouseEventType) => {
     switch (type) {
@@ -123,7 +123,7 @@ export const handlers = (
     }
   };
 
-  const get: MouseHandlerFactory = args => {
+  const get: MouseHandlerFactory = (args) => {
     const hasSingularEvent = Boolean(getSingleHandler(args.type));
     const handlers: any[] = handler || hasSingularEvent ? [fireNext, handler] : [];
     return handler || hasSingularEvent ? handle({ ...args, getEnabled, handlers }) : undefined;
@@ -146,9 +146,9 @@ export const handlers = (
 /**
  * Factory for a mouse handler for a single event type.
  */
-export const handle: MouseHandlerFactory = args => {
+export const handle: MouseHandlerFactory = (args) => {
   const { type, getEnabled } = args;
-  const handlers = (args.handlers || []).filter(e => Boolean(e));
+  const handlers = (args.handlers || []).filter((e) => Boolean(e));
 
   if (handlers.length === 0) {
     return undefined;
@@ -159,7 +159,7 @@ export const handle: MouseHandlerFactory = args => {
       return;
     }
 
-    handlers.forEach(handler => {
+    handlers.forEach((handler) => {
       const args: MouseEventInternal = {
         type,
         button: toButton(e as any),

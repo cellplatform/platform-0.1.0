@@ -1,0 +1,36 @@
+{
+  "name": "@platform/ui.dev",
+  "version": "0.0.2",
+  "description": "UI development helpers.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "parcel src/test.parcel/index.html",
+    "test": "ts test",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare",
+    "clean": "rm -rf .cache dist"
+  },
+  "dependencies": {
+    "@platform/css": "0.4.0",
+    "@platform/libs": "0.2.2",
+    "@platform/log": "0.1.25",
+    "@platform/polyfill": "0.0.1",
+    "@platform/react": "0.4.28",
+    "@platform/ui.object": "0.0.201",
+    "@platform/util.value": "0.7.22",
+    "parcel-bundler": "1.12.4"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.12",
+    "@platform/ts": "3.9.3"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!lib/test.parcel",
+    "!*.TEST.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}

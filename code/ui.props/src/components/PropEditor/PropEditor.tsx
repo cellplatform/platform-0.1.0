@@ -57,26 +57,26 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
    */
   public componentDidMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
     this.setValue(this.value);
 
     const value$ = this.value$.pipe(takeUntil(this.unmounted$));
 
     const keydown$ = value$.pipe(
-      filter(e => e.type === 'TEXT_INPUT/keypress'),
-      map(e => e.payload as t.ITextInputKeypress),
-      filter(e => e.isPressed),
+      filter((e) => e.type === 'TEXT_INPUT/keypress'),
+      map((e) => e.payload as t.ITextInputKeypress),
+      filter((e) => e.isPressed),
     );
 
-    const upDownKey$ = keydown$.pipe(filter(e => ['ArrowUp', 'ArrowDown'].includes(e.key)));
+    const upDownKey$ = keydown$.pipe(filter((e) => ['ArrowUp', 'ArrowDown'].includes(e.key)));
 
-    upDownKey$.pipe(filter(e => this.type === 'boolean')).subscribe(e => {
+    upDownKey$.pipe(filter((e) => this.type === 'boolean')).subscribe((e) => {
       e.event.preventDefault();
       const to = (!valueUtil.toBool(this.value)).toString();
       this.change({ to });
     });
 
-    upDownKey$.pipe(filter(e => this.type === 'number')).subscribe(e => {
+    upDownKey$.pipe(filter((e) => this.type === 'number')).subscribe((e) => {
       e.event.preventDefault();
       const value = valueUtil.toNumber(this.value);
       const to = (e.key === 'ArrowUp' ? value + 1 : value - 1).toString();
@@ -89,10 +89,10 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
      */
     value$
       .pipe(
-        filter(e => e.type === 'TEXT_INPUT/changing'),
-        map(e => e.payload as t.ITextInputChanging),
+        filter((e) => e.type === 'TEXT_INPUT/changing'),
+        map((e) => e.payload as t.ITextInputChanging),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const type = this.type;
         if (type === 'boolean') {
           e.cancel();
@@ -110,10 +110,10 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
      */
     value$
       .pipe(
-        filter(e => e.type === 'TEXT_INPUT/changed'),
-        map(e => e.payload as t.ITextInputChanged),
+        filter((e) => e.type === 'TEXT_INPUT/changed'),
+        map((e) => e.payload as t.ITextInputChanged),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.change({ to: e.to });
       });
 
@@ -124,9 +124,9 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
       .pipe(
         takeUntil(this.unmounted$),
         debounceTime(0),
-        filter(e => this.value !== this.state.value),
+        filter((e) => this.value !== this.state.value),
       )
-      .subscribe(e => this.setValue(this.value));
+      .subscribe((e) => this.setValue(this.value));
   }
 
   public componentDidUpdate(prev: IPropEditorProps) {
@@ -203,7 +203,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     const parts = path
       .split('.')
       .slice(1)
-      .map(key => {
+      .map((key) => {
         if (key.startsWith('[') && key.endsWith(']')) {
           const index = key.replace(/^\[/, '').replace(/\]$/, '');
           if (valueUtil.isNumeric(index)) {
@@ -234,7 +234,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     this.state$.next({ value });
   }
 
-  private change: t.PropValueFactoryArgs['change'] = args => {
+  private change: t.PropValueFactoryArgs['change'] = (args) => {
     const data = this.nodeData;
     const key = data.key;
     const { path, action = 'CHANGE' } = data;
@@ -259,7 +259,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     this.fire({ type: 'PROPS/changed', payload });
   };
 
-  private onFocus: t.PropValueFactoryArgs['onFocus'] = isFocused => {
+  private onFocus: t.PropValueFactoryArgs['onFocus'] = (isFocused) => {
     const path = this.path;
     this.fire({ type: 'PROPS/focus', payload: { path, isFocused } });
   };
@@ -356,7 +356,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     return this.valueFactory(args) as t.PropValueFactoryResponse;
   };
 
-  private valueFactory: t.PropValueFactory = e => {
+  private valueFactory: t.PropValueFactory = (e) => {
     const { type, key, value } = e;
 
     const done = (el: React.ReactNode) => {

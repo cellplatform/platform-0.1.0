@@ -59,7 +59,7 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     // Set initial panel position (prior to first render).
     const { index, previous } = this.props;

@@ -13,7 +13,7 @@ describe('Command.invoke', () => {
 
     const root = Command.create<P, A>('root')
       .add('foo')
-      .add('copy', async args => {
+      .add('copy', async (args) => {
         e = args;
         return { foo: 123 };
       });
@@ -39,7 +39,7 @@ describe('Command.invoke', () => {
   });
 
   it('invokes with response (sync)', async () => {
-    const root = Command.create<P, A>('root').add('copy', e => ({ foo: 123 }));
+    const root = Command.create<P, A>('root').add('copy', (e) => ({ foo: 123 }));
     const copy = root.childrenAs<P, A>()[0];
     const res = await copy.invoke<R>({ namespace: root, props: { text: 'Hello' } });
     expect(res.isComplete).to.eql(true);
@@ -55,7 +55,7 @@ describe('Command.invoke', () => {
   });
 
   it('updates props via [set] method of [invoke] args', async () => {
-    const root = Command.create<P, A>('root').add('copy', e => {
+    const root = Command.create<P, A>('root').add('copy', (e) => {
       e.set('text', `${e.get('text')} world!`);
       e.set('count', 123);
     });
@@ -67,12 +67,12 @@ describe('Command.invoke', () => {
 
   it('fires [before/set/after] event sequence', async () => {
     const events: t.CommandInvokeEvent[] = [];
-    const root = Command.create<P, A>('root').add('copy', e => {
+    const root = Command.create<P, A>('root').add('copy', (e) => {
       e.set('text', 'one'); // NB: not async, no return value.
     });
 
     const res = root.childrenAs<P, A>()[0].invoke({ namespace: root, props: { text: 'Hello' } });
-    res.events$.subscribe(e => events.push(e));
+    res.events$.subscribe((e) => events.push(e));
 
     expect(events.length).to.eql(1);
     expect(events[0].type).to.eql('COMMAND/invoke/before');
@@ -95,7 +95,7 @@ describe('Command.invoke', () => {
     const copyCommandEvents: t.CommandEvent[] = [];
     const invokeEvents: t.CommandInvokeEvent[] = [];
 
-    const root = Command.create<P, A>('root').add('copy', async e => {
+    const root = Command.create<P, A>('root').add('copy', async (e) => {
       return time.delay(0, () => {
         e.set('text', 'one');
         e.set('text', 'two');
@@ -105,18 +105,18 @@ describe('Command.invoke', () => {
 
     const copy = root.childrenAs<P, A>()[0];
 
-    root.events$.subscribe(e => rootCommandEvents.push(e));
-    copy.events$.subscribe(e => copyCommandEvents.push(e));
+    root.events$.subscribe((e) => rootCommandEvents.push(e));
+    copy.events$.subscribe((e) => copyCommandEvents.push(e));
 
     const res = copy.invoke({ namespace: root, props: { text: 'Hello' } });
     expect(res.props).to.eql({ text: 'Hello' });
-    res.events$.subscribe(e => invokeEvents.push(e));
+    res.events$.subscribe((e) => invokeEvents.push(e));
 
     await res;
 
     const setEvents = invokeEvents
-      .filter(e => e.type === 'COMMAND/invoke/set')
-      .map(e => (e as t.ICommandInvokeSetEvent<P>).payload);
+      .filter((e) => e.type === 'COMMAND/invoke/set')
+      .map((e) => (e as t.ICommandInvokeSetEvent<P>).payload);
 
     expect(invokeEvents.length).to.greaterThan(setEvents.length);
 
@@ -136,15 +136,15 @@ describe('Command.invoke', () => {
     const commandEvents: t.CommandEvent[] = [];
     const invokeEvents: t.CommandInvokeEvent[] = [];
 
-    const root = Command.create<P, A>('root').add('copy', async e => {
+    const root = Command.create<P, A>('root').add('copy', async (e) => {
       throw new Error('MyError');
     });
 
     const copy = root.childrenAs<P, A>()[0];
-    copy.events$.subscribe(e => commandEvents.push(e));
+    copy.events$.subscribe((e) => commandEvents.push(e));
 
     const res = copy.invoke<R>({ namespace: root, props: { text: 'Hello' } });
-    res.events$.subscribe(e => invokeEvents.push(e));
+    res.events$.subscribe((e) => invokeEvents.push(e));
     expect(res.error).to.eql(undefined);
 
     const count = {
@@ -153,7 +153,7 @@ describe('Command.invoke', () => {
     };
     res.events$.subscribe({
       complete: () => count.complete++,
-      error: err => count.error++,
+      error: (err) => count.error++,
     });
 
     let error: Error | undefined;
@@ -181,15 +181,15 @@ describe('Command.invoke', () => {
     const commandEvents: t.CommandEvent[] = [];
     const invokeEvents: t.CommandInvokeEvent[] = [];
 
-    const root = Command.create<P, A>('root').add('copy', async e => {
+    const root = Command.create<P, A>('root').add('copy', async (e) => {
       await time.delay(30);
     });
 
     const copy = root.childrenAs<P, A>()[0];
-    copy.events$.subscribe(e => commandEvents.push(e));
+    copy.events$.subscribe((e) => commandEvents.push(e));
 
     const res = copy.invoke<R>({ namespace: root, props: { text: 'Hello' }, timeout: 10 });
-    res.events$.subscribe(e => invokeEvents.push(e));
+    res.events$.subscribe((e) => invokeEvents.push(e));
     expect(res.timeout).to.eql(10);
     expect(res.isTimedOut).to.eql(false);
     expect(res.error).to.eql(undefined);

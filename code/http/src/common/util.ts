@@ -36,7 +36,7 @@ export function parseJson(args: { url: string; text: string }) {
  */
 export function toRawHeaders(input?: t.IHttpHeaders) {
   const obj = { ...(input || {}) } as any;
-  Object.keys(obj).forEach(key => {
+  Object.keys(obj).forEach((key) => {
     obj[key] = obj[key].toString();
   });
   return new Headers(obj);
@@ -80,8 +80,8 @@ export function headerValue(key: string, headers: t.IHttpHeaders = {}) {
   key = key.trim().toLowerCase();
   const match =
     Object.keys(headers)
-      .filter(k => k.trim().toLowerCase() === key)
-      .find(k => headers[k]) || '';
+      .filter((k) => k.trim().toLowerCase() === key)
+      .find((k) => headers[k]) || '';
   return match ? headers[match] : '';
 }
 

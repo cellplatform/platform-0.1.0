@@ -22,7 +22,7 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
   const ipc = args.ipc as IpcClient<t.SettingsEvent>;
   const change$ = new Subject<t.ISettingsChange>();
 
-  const getValues: t.GetSettingsValues<T> = async keys => {
+  const getValues: t.GetSettingsValues<T> = async (keys) => {
     try {
       // Fire the event requesting data.
       const payload = { keys: keys as string[] };
@@ -104,7 +104,7 @@ export function init<T extends t.SettingsJson>(args: { ipc: IpcClient }): t.ISet
 
   ipc
     .on<t.ISettingsChangeEvent>('@platform/SETTINGS/change')
-    .subscribe(e => change$.next(e.payload));
+    .subscribe((e) => change$.next(e.payload));
 
   /**
    * Create the client.

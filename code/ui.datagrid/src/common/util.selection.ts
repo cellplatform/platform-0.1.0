@@ -27,13 +27,13 @@ export function toSelectionValues(args: {
     coords: coord.ICoord[],
   ) => {
     return coords
-      .filter(cell => cell[field] >= start && cell[field] <= end)
-      .map(cell => cell.key);
+      .filter((cell) => cell[field] >= start && cell[field] <= end)
+      .map((cell) => cell.key);
   };
 
   let keys: string[] = [];
-  const all = Object.keys(cells).map(key => coord.cell.toCell(key));
-  coord.range.union(selection.ranges).ranges.forEach(range => {
+  const all = Object.keys(cells).map((key) => coord.cell.toCell(key));
+  coord.range.union(selection.ranges).ranges.forEach((range) => {
     if (coord.cell.isColumnRangeKey(range.key)) {
       keys = [...keys, ...filterAxisRange('column', range.left.column, range.right.column, all)];
     } else if (coord.cell.isRowRangeKey(range.key)) {

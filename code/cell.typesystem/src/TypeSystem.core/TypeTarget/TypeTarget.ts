@@ -199,7 +199,7 @@ export class TypeTarget {
         hash?: string;
       }): t.ICellData<any> {
         const { hash } = args;
-        const uri = Uri.row(args.uri, uri => {
+        const uri = Uri.row(args.uri, (uri) => {
           throw new Error(`The reference/link uri is invalid. ${uri.error?.message}`);
         });
         const cell = { ...(args.cell || {}) };

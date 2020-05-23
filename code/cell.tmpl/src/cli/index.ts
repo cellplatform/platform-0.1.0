@@ -6,8 +6,8 @@ export type ITmplArgs = {};
 /**
  * Initialize Template command-line-interface (CLI).
  */
-export const init: t.CmdPluginsInit = cli => {
-  const handler: t.CmdPluginHandler<ITmplArgs> = async e => {
+export const init: t.CmdPluginsInit = (cli) => {
+  const handler: t.CmdPluginHandler<ITmplArgs> = async (e) => {
     const dir = process.cwd();
     await tmpl({ dir });
   };

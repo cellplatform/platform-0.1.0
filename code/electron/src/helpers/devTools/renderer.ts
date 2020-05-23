@@ -39,7 +39,7 @@ export class DevTools {
     ipc
       .on<t.DevToolsClearConsoleEvent>('@platform/DEV_TOOLS/clearConsole')
       .pipe(delay(0))
-      .subscribe(e => clearConsole());
+      .subscribe((e) => clearConsole());
 
     /**
      * Setup keyboard bindings.
@@ -58,7 +58,7 @@ export class DevTools {
     Keyboard
       // Invoke key commands.
       .create<DevToolKeyCommands>({ bindings })
-      .bindingPress$.subscribe(e => {
+      .bindingPress$.subscribe((e) => {
         const stopDefault = () => {
           e.preventDefault();
           e.stopImmediatePropagation();

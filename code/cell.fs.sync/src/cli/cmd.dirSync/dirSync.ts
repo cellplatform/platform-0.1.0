@@ -78,7 +78,7 @@ export async function dirSync(args: {
           log.info.gray(success);
           log.info();
         } else {
-          res.errors.forEach(err => log.warn(err.error));
+          res.errors.forEach((err) => log.warn(err.error));
           log.info();
         }
       }

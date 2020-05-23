@@ -86,7 +86,7 @@ export class Tasks implements t.ITasks {
   private invoke = (index: number, title: string, task: t.Task) => {
     const $ = new Subject<string>();
     const args: t.TaskArgs = {
-      message: text => $.next(text),
+      message: (text) => $.next(text),
       done: () => $.complete(),
       error: (err: Error | string) => {
         const error = typeof err === 'string' ? err : err.message;

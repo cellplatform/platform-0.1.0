@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.electron",
-  "version": "0.0.78",
+  "version": "0.0.79",
   "description": "Electron shell for CellOS.",
   "scripts": {
     "ui": "cd app.ui && yarn start",
@@ -17,8 +17,8 @@
     "open": "cd app/out/A1-darwin-x64 && open A1.app"
   },
   "devDependencies": {
-    "@platform/cell.compile.web": "0.0.78",
-    "@platform/ts": "3.9.2",
+    "@platform/cell.compile.web": "0.0.79",
+    "@platform/ts": "3.9.3",
     "browserify": "16.5.1"
   },
   "files": [
@@ -28,8 +28,5 @@
     "!*.INTEGRATION.{js, mjs, d.ts}"
   ],
   "license": "MIT",
-  "private": true,
-  "dependencies": {
-    "@platform/cell.ui": "^0.1.13"
-  }
+  "private": true
 }

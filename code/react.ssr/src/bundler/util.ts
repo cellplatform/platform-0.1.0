@@ -21,8 +21,8 @@ export function dir(parentDir: string) {
       const { sort = 'ASC' } = options;
       parentDir = fs.resolve(parentDir);
       const paths = await fs.glob.find(fs.join(parentDir, '*/'), { includeDirs: true });
-      const names = paths.map(path => fs.basename(path)).filter(name => semver.valid(name));
-      const ascending = semver.sort(names).map(name => fs.join(parentDir, name));
+      const names = paths.map((path) => fs.basename(path)).filter((name) => semver.valid(name));
+      const ascending = semver.sort(names).map((name) => fs.join(parentDir, name));
       return sort === 'DESC' ? ascending.reverse() : ascending;
     },
   };

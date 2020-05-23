@@ -6,7 +6,7 @@ const { SCHEMA_VERSION } = constants;
 /**
  * Invoked before an [ns] is persisted to the DB.
  */
-export const beforeNsSave: t.BeforeModelSave<t.IDbModelNsProps> = async args => {
+export const beforeNsSave: t.BeforeModelSave<t.IDbModelNsProps> = async (args) => {
   const { isChanged } = args;
   const model = args.model as t.IDbModelNs;
   const schema = Schema.from.ns(model.path);

@@ -90,8 +90,8 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   private _events$ = new Subject<t.TreeViewEvent>();
   public readonly events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
   public readonly mouse$ = this.events$.pipe(
-    filter(e => e.type === 'TREEVIEW/mouse'),
-    map(e => e.payload as t.TreeNodeMouseEvent),
+    filter((e) => e.type === 'TREEVIEW/mouse'),
+    map((e) => e.payload as t.TreeNodeMouseEvent),
     share(),
   );
 
@@ -118,22 +118,22 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
      */
     focus$
       .pipe(
-        filter(e => this.isFocusable),
+        filter((e) => this.isFocusable),
         debounceTime(0),
         distinctUntilChanged((prev, next) => prev === next),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const isFocused = containsFocus(this);
         this.setState({ isFocused });
         this.fire({ type: 'TREEVIEW/focus', payload: { isFocused } });
       });
     this.mouse$
       .pipe(
-        filter(e => this.isFocusable),
-        filter(e => e.type === 'DOWN'),
+        filter((e) => this.isFocusable),
+        filter((e) => e.type === 'DOWN'),
         delay(0), // NB: Ensure the tabstrip is focused when any tab is clicked.
       )
-      .subscribe(e => this.focus());
+      .subscribe((e) => this.focus());
 
     // Finish up.
     this.updatePath();

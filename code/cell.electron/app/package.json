@@ -46,7 +46,7 @@
     "@platform/test": "0.1.11",
     "@platform/ts": "3.9.2",
     "browserify": "16.5.1",
-    "electron": "9.0.0"
+    "electron": "8.2.5"
   },
   "files": [
     "lib",

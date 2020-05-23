@@ -42,7 +42,7 @@ export function table(log: t.ILog, options: t.ILogTableOptions = {}) {
      * Adds a new row to the table.
      */
     add(columns: (string | number | undefined)[]) {
-      tbl.push(columns.map(row => (row === undefined ? '' : row.toString())));
+      tbl.push(columns.map((row) => (row === undefined ? '' : row.toString())));
       return api;
     },
 

@@ -7,14 +7,14 @@ describe('auth.authorize', () => {
     const list: string[] = [];
     const policy1: t.IAuthPolicy = {
       name: 'one',
-      eval: e => {
+      eval: (e) => {
         list.push(e.name);
         // NB: No grant/deny call - ambiguous result, no determination.
       },
     };
     const policy2: t.IAuthPolicy = {
       name: 'two',
-      eval: async e => {
+      eval: async (e) => {
         list.push(e.name);
         e.access('GRANT');
       },
@@ -34,7 +34,7 @@ describe('auth.authorize', () => {
   it('grant', async () => {
     const policy: t.IAuthPolicy = {
       name: 'AUTH/foo',
-      eval: e => e.grant(),
+      eval: (e) => e.grant(),
     };
     const res = await authorize({ policy });
     expect(res.isDenied).to.eql(false);
@@ -45,7 +45,7 @@ describe('auth.authorize', () => {
   it('deny', async () => {
     const policy: t.IAuthPolicy = {
       name: 'AUTH/foo',
-      eval: e => e.deny(),
+      eval: (e) => e.deny(),
     };
     const res = await authorize({ policy });
     expect(res.isDenied).to.eql(true);
@@ -54,8 +54,8 @@ describe('auth.authorize', () => {
   });
 
   it('completes execution on all policies (even after DENY)', async () => {
-    const deny: t.IAuthPolicy = { name: 'AUTH/deny', eval: e => e.deny() };
-    const grant: t.IAuthPolicy = { name: 'AUTH/grant', eval: e => e.grant() };
+    const deny: t.IAuthPolicy = { name: 'AUTH/deny', eval: (e) => e.deny() };
+    const grant: t.IAuthPolicy = { name: 'AUTH/grant', eval: (e) => e.grant() };
     const res = await authorize({ policy: [deny, grant] });
     expect(res.isDenied).to.eql(false);
     expect(res.results.length).to.eql(2);
@@ -64,8 +64,8 @@ describe('auth.authorize', () => {
   });
 
   it('stops execution of policies', async () => {
-    const deny: t.IAuthPolicy = { name: 'AUTH/deny', eval: e => e.deny().stop() };
-    const grant: t.IAuthPolicy = { name: 'AUTH/grant', eval: e => e.grant() };
+    const deny: t.IAuthPolicy = { name: 'AUTH/deny', eval: (e) => e.deny().stop() };
+    const grant: t.IAuthPolicy = { name: 'AUTH/grant', eval: (e) => e.grant() };
     const res = await authorize({ policy: [grant, deny, grant, grant] });
 
     expect(res.isDenied).to.eql(true);
@@ -77,7 +77,7 @@ describe('auth.authorize', () => {
   it('returns an error state when policy fails', async () => {
     const willFail: t.IAuthPolicy = {
       name: 'AUTH/fail',
-      eval: e => {
+      eval: (e) => {
         throw new Error('Sad');
       },
     };

@@ -68,7 +68,7 @@ export class PgDoc implements t.IDb {
   }
 
   public static join(...parts: string[]) {
-    return parts.map(part => part.replace(/^\/*/, '').replace(/\/*$/, '')).join('/');
+    return parts.map((part) => part.replace(/^\/*/, '').replace(/\/*$/, '')).join('/');
   }
 
   private static toTimestamps(row?: IRow) {
@@ -130,8 +130,8 @@ export class PgDoc implements t.IDb {
     await this.ensureTables(keys);
     const res = await Promise.all(
       keys
-        .map(key => PgDoc.parseKey(key))
-        .map(async key => {
+        .map((key) => PgDoc.parseKey(key))
+        .map(async (key) => {
           const variables = [key.path];
           const sql = `SELECT * FROM "${key.table}" WHERE path = $1`;
           const res = await this.db.query(sql, variables);
@@ -141,11 +141,11 @@ export class PgDoc implements t.IDb {
     );
 
     const rows: IRow[] = R.flatten(
-      res.map(query => query.rows.map(row => ({ ...row, path: query.path }))),
+      res.map((query) => query.rows.map((row) => ({ ...row, path: query.path }))),
     );
 
-    return keys.map(key => {
-      const row = rows.find(item => item.path === key);
+    return keys.map((key) => {
+      const row = rows.find((item) => item.path === key);
       const value = row && typeof row.data === 'object' ? (row.data as any).data : undefined;
       const exists = Boolean(value);
       const { createdAt, modifiedAt } = PgDoc.toTimestamps(row);
@@ -172,17 +172,17 @@ export class PgDoc implements t.IDb {
   }
   public async putMany(items: t.IDbPutItem[]): Promise<t.IDbValue[]> {
     this.throwIfDisposed('putMany');
-    await this.ensureTables(items.map(item => item.key));
+    await this.ensureTables(items.map((item) => item.key));
     const now = time.now.timestamp;
     await Promise.all(
       items
-        .map(item => ({
+        .map((item) => ({
           key: PgDoc.parseKey(item.key),
           value: item.value,
           createdAt: defaultValue(item.createdAt, now),
           modifiedAt: defaultValue(item.modifiedAt, now),
         }))
-        .map(item => {
+        .map((item) => {
           const data = { data: item.value };
           const { createdAt, modifiedAt } = item;
           const table = item.key.table;
@@ -201,7 +201,7 @@ export class PgDoc implements t.IDb {
         })
         .map(({ sql, variables }) => this.db.query(sql, variables)),
     );
-    return this.getMany(items.map(item => item.key));
+    return this.getMany(items.map((item) => item.key));
   }
 
   /**
@@ -219,8 +219,8 @@ export class PgDoc implements t.IDb {
 
     await Promise.all(
       keys
-        .map(key => PgDoc.parseKey(key))
-        .map(async key => {
+        .map((key) => PgDoc.parseKey(key))
+        .map(async (key) => {
           const sql = `DELETE FROM "${key.table}" WHERE path = '${key.path}'`;
           const res = await this.db.query(sql);
           const { rows } = res;
@@ -228,7 +228,7 @@ export class PgDoc implements t.IDb {
         }),
     );
 
-    return keys.map(key => {
+    return keys.map((key) => {
       const res: t.IDbValue = {
         value: undefined,
         props: { key, exists: false, createdAt: -1, modifiedAt: -1 },
@@ -266,13 +266,13 @@ export class PgDoc implements t.IDb {
       // Query the database.
       const res = await this.db.query(sql);
       list = res.rows
-        .filter(row => {
+        .filter((row) => {
           // NB: This may be able to be done in a more advanced regex in SQL above.
           return deep
             ? true // Deep: All child paths accepted.
             : !row.path.substring(key.path.length + 1).includes('/'); // Not deep: ensure this is not deeper than the given path.
         })
-        .map(row => {
+        .map((row) => {
           const value = row && typeof row.data === 'object' ? (row.data as any).data : undefined;
           const { createdAt, modifiedAt } = PgDoc.toTimestamps(row);
           const res: t.IDbValue = {
@@ -296,7 +296,7 @@ export class PgDoc implements t.IDb {
       list,
       get keys() {
         if (!keys) {
-          keys = list.map(item => item.props.key);
+          keys = list.map((item) => item.props.key);
         }
         return keys;
       },
@@ -318,8 +318,8 @@ export class PgDoc implements t.IDb {
    */
 
   private async ensureTables(keys: string[]) {
-    const tables = R.uniq(keys.map(key => PgDoc.parseKey(key)).map(item => item.table));
-    await Promise.all(tables.map(table => this.ensureTable(table)));
+    const tables = R.uniq(keys.map((key) => PgDoc.parseKey(key)).map((item) => item.table));
+    await Promise.all(tables.map((table) => this.ensureTable(table)));
   }
 
   private async ensureTable(table: string) {

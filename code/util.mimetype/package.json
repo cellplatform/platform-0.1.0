@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.mimetype",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Helpers for generating media-types.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,8 +13,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@platform/test": "0.1.11",
-    "@platform/ts": "3.9.2"
+    "@platform/test": "0.1.12",
+    "@platform/ts": "3.9.3"
   },
   "files": [
     "lib",

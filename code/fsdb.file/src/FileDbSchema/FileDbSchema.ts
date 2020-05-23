@@ -24,8 +24,8 @@ export class FileDbSchema {
     const { schema } = args;
     const key = FileDbSchema.formatKey(args.key);
     return Object.keys(schema.paths)
-      .map(key => ({ key, file: schema.paths[key].file }))
-      .find(item => key.startsWith(item.key));
+      .map((key) => ({ key, file: schema.paths[key].file }))
+      .find((item) => key.startsWith(item.key));
   }
 
   public static formatKey(key: string) {

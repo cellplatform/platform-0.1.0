@@ -27,8 +27,8 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
 
   const props = {
     ok: () => result.code === 0,
-    info: () => reduceAndStripColors(output$.pipe(filter(e => e.type === 'stdout'))),
-    errors: () => reduceAndStripColors(output$.pipe(filter(e => e.type === 'stderr'))),
+    info: () => reduceAndStripColors(output$.pipe(filter((e) => e.type === 'stdout'))),
+    errors: () => reduceAndStripColors(output$.pipe(filter((e) => e.type === 'stderr'))),
     error: () =>
       error ? error : result.code !== 0 ? new Error(`Failed with code ${result.code}.`) : undefined,
   };
@@ -59,7 +59,7 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
     // Monitor data coming from process.
     const next = (type: ICommandInfo['type'], chunk: Buffer) => {
       const lines = formatOutput(chunk);
-      lines.forEach(text => output$.next({ type, text }));
+      lines.forEach((text) => output$.next({ type, text }));
     };
     if (child.stdout) {
       child.stdout.on('data', (chunk: Buffer) => next('stdout', chunk));
@@ -69,7 +69,7 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
     }
 
     // Listen for end.
-    child.on('exit', e => {
+    child.on('exit', (e) => {
       result.code = e === null ? result.code : e;
       isComplete = true;
       output$.complete();
@@ -77,7 +77,7 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
       complete$.complete();
       resolve(result as IResultInfo);
     });
-    child.once('error', err => {
+    child.once('error', (err) => {
       error = err;
       reject(err);
     });
@@ -89,13 +89,13 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
   response.complete$ = complete$.pipe(share());
   response.output$ = output$.pipe(takeUntil(complete$), share());
   response.stdout$ = response.output$.pipe(
-    filter(e => e.type === 'stdout'),
-    map(e => e.text),
+    filter((e) => e.type === 'stdout'),
+    map((e) => e.text),
     share(),
   );
   response.stderr$ = response.output$.pipe(
-    filter(e => e.type === 'stderr'),
-    map(e => e.text),
+    filter((e) => e.type === 'stderr'),
+    map((e) => e.text),
     share(),
   );
 
@@ -117,8 +117,8 @@ export function run(command: string | string[], options: IRunOptions = {}): ICom
   prop('info', props.info);
   prop('errors', props.errors);
   prop('error', props.error);
-  prop('stdout', () => reduce(output$.pipe(filter(e => e.type === 'stdout'))));
-  prop('stderr', () => reduce(output$.pipe(filter(e => e.type === 'stderr'))));
+  prop('stdout', () => reduce(output$.pipe(filter((e) => e.type === 'stdout'))));
+  prop('stderr', () => reduce(output$.pipe(filter((e) => e.type === 'stderr'))));
 
   // Extended response properties.
   prop('isComplete', () => isComplete);
@@ -136,10 +136,10 @@ const formatOutput = (chunk: Buffer) => {
 
 const reduce = (observable: Observable<ICommandInfo>) => {
   let result: string[] = [];
-  observable.pipe(map(e => e.text)).subscribe(e => (result = [...result, e]));
+  observable.pipe(map((e) => e.text)).subscribe((e) => (result = [...result, e]));
   return result;
 };
 
 const reduceAndStripColors = (observable: Observable<ICommandInfo>) => {
-  return reduce(observable).map(text => stripAnsiColors(text));
+  return reduce(observable).map((text) => stripAnsiColors(text));
 };

@@ -28,7 +28,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    * GET: /ns:<id>:A1
    *      Redirect to the cell.
    */
-  router.get(routes.NS.CELL, async req => {
+  router.get(routes.NS.CELL, async (req) => {
     try {
       const params = req.params as t.IUrlParamsCell;
       const path = `/cell:${params.ns}:${params.key}${req.query.toString()}`;
@@ -48,7 +48,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    *        - /ns:foo?cells=A1:A5,C3
    *        - /ns:foo?cells&rows&columns   [NB: Same format for rows/columns query flags].
    */
-  router.get(routes.NS.INFO, async req => {
+  router.get(routes.NS.INFO, async (req) => {
     const host = req.host;
     const query = req.query as t.IReqQueryNsInfo;
     const { status, id, error } = getParams(req);
@@ -58,7 +58,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * POST namespace data (save to database).
    */
-  router.post(routes.NS.INFO, async req => {
+  router.post(routes.NS.INFO, async (req) => {
     const host = req.host;
     const query = req.query as t.IReqQueryNsWrite;
     const { status, id, error } = getParams(req);
@@ -69,7 +69,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * GET types
    */
-  router.get(routes.NS.TYPES, async req => {
+  router.get(routes.NS.TYPES, async (req) => {
     const host = req.host;
     const query = req.query as t.IReqQueryNsTypes;
     const { status, id, error } = getParams(req);

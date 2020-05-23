@@ -8,7 +8,7 @@ export function init(args: { router: t.IRouter; getManifest: t.GetManifest }) {
   /**
    * [GET] summary of all sites
    */
-  router.get('/.manifest/summary', async req => {
+  router.get('/.manifest/summary', async (req) => {
     const manifest = await getManifest();
     const sites = manifest.sites.reduce((acc, site) => {
       const info = toSiteInfo({ site });
@@ -24,7 +24,7 @@ export function init(args: { router: t.IRouter; getManifest: t.GetManifest }) {
   /**
    * [GET] summary of single sites
    */
-  router.get('/.manifest/summary/:site', async req => {
+  router.get('/.manifest/summary/:site', async (req) => {
     const manifest = await getManifest();
     const name = (req.params.site || '').toString();
     const site = manifest.site.byName(name);
@@ -47,7 +47,7 @@ export function init(args: { router: t.IRouter; getManifest: t.GetManifest }) {
   /**
    * [GET] raw manifest.
    */
-  router.get('/.manifest', async req => {
+  router.get('/.manifest', async (req) => {
     const manifest = await getManifest({ force: true });
     return {
       status: 200,
@@ -72,7 +72,7 @@ function toSiteInfo(args: { site: Site; name?: boolean; files?: boolean }) {
   }
 
   if (args.files) {
-    const files = site.files.map(file => {
+    const files = site.files.map((file) => {
       const { path, bytes } = file;
       const size = fs.size.toString(bytes);
       return { path, size };
@@ -86,13 +86,13 @@ function toSiteInfo(args: { site: Site; name?: boolean; files?: boolean }) {
     ];
     const findGroup = (path: string) => {
       const ext = fs.extname(path).replace(/^\./, '');
-      const item = groups.find(item => item.ext.includes(ext));
+      const item = groups.find((item) => item.ext.includes(ext));
       return item ? item.group : 'asset';
     };
 
     info = {
       ...info,
-      files: R.groupBy(file => findGroup(file.path), files),
+      files: R.groupBy((file) => findGroup(file.path), files),
     };
   }
 

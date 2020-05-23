@@ -33,7 +33,7 @@ export async function importFiles(args: { db: t.IDb; dir: string }) {
 
   const toItems = (file: object): t.IDbPutItem[] => {
     return Object.keys(file)
-      .map(key => ({ key, json: file[key] }))
+      .map((key) => ({ key, json: file[key] }))
       .filter(({ json }) => typeof json === 'object')
       .map(({ key, json }) => toItem(key, json));
   };

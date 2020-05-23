@@ -13,7 +13,7 @@ export async function run(args: { cli: t.ICmdApp }) {
   // Pull data from cloud.
   log.info();
   await cli
-    .task('pull manifest', async e => {
+    .task('pull manifest', async (e) => {
       manifest = await config.manifest.local.ensureLatest({ minimal: true });
     })
     .run({ concurrent: true });

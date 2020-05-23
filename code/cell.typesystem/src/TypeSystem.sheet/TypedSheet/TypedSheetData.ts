@@ -147,7 +147,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     }
 
     const query = argRange || this.range; // NB: Use the narrowest range passed to do the least amount of work (avoiding the complete expanded range).
-    const alreadyLoading = this._loading.find(item => item.query === query);
+    const alreadyLoading = this._loading.find((item) => item.query === query);
     if (alreadyLoading) {
       return alreadyLoading.promise; // NB: A load operation is already in progress.
     }
@@ -183,7 +183,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
       this._total = total.rows;
       this._status = 'LOADED';
       this._isLoaded = true; // NB: Always true after initial load.
-      this._loading = this._loading.filter(item => item.query !== query);
+      this._loading = this._loading.filter((item) => item.query !== query);
 
       // Fire AFTER event.
       this.fire({

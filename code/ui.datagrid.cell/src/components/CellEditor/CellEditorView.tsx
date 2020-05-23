@@ -69,15 +69,15 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     const markdown$ = this.markdown$.pipe(takeUntil(this.unmounted$));
     const text$ = this.text$.pipe(takeUntil(this.unmounted$));
 
-    text$.subscribe(e => {
+    text$.subscribe((e) => {
       // console.log('🐶 TEXT', e);
     });
 
-    formula$.subscribe(e => {
+    formula$.subscribe((e) => {
       // console.log('🌳 FORMULA', e);
     });
 
-    markdown$.subscribe(e => {
+    markdown$.subscribe((e) => {
       // console.log('🌼 MARKDOWN', e);
     });
 
@@ -86,11 +86,11 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
      */
     formula$
       .pipe(
-        filter(e => e.type === 'INPUT/formula/changing'),
-        filter(e => this.mode === 'FORMULA'),
-        map(e => e.payload as p.IFormulaInputChanging),
+        filter((e) => e.type === 'INPUT/formula/changing'),
+        filter((e) => this.mode === 'FORMULA'),
+        map((e) => e.payload as p.IFormulaInputChanging),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const { from, to } = e;
         const { isCancelled } = this.fireChanging('FORMULA', from, to);
         if (isCancelled) {
@@ -100,11 +100,11 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
 
     formula$
       .pipe(
-        filter(e => e.type === 'INPUT/formula/changed'),
-        filter(e => this.mode === 'FORMULA'),
-        map(e => e.payload as p.IFormulaInputChanged),
+        filter((e) => e.type === 'INPUT/formula/changed'),
+        filter((e) => this.mode === 'FORMULA'),
+        map((e) => e.payload as p.IFormulaInputChanged),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const { from, to } = e;
         const value = { from, to };
         this.fireChanged({ mode: 'FORMULA', value });
@@ -112,11 +112,11 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
 
     formula$
       .pipe(
-        filter(e => e.type === 'INPUT/formula/enter'),
-        filter(e => this.mode === 'FORMULA'),
-        map(e => e.payload as p.IFormulaInputEnter),
+        filter((e) => e.type === 'INPUT/formula/enter'),
+        filter((e) => this.mode === 'FORMULA'),
+        map((e) => e.payload as p.IFormulaInputEnter),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const { modifierKeys } = e;
         const isShift = modifierKeys.shift;
         const isMeta = modifierKeys.meta;
@@ -128,11 +128,11 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
      */
     text$
       .pipe(
-        filter(e => e.type === 'TEXT_INPUT/changing'),
-        filter(e => this.mode === 'TEXT'),
-        map(e => e.payload as p.ITextInputChanging),
+        filter((e) => e.type === 'TEXT_INPUT/changing'),
+        filter((e) => this.mode === 'TEXT'),
+        map((e) => e.payload as p.ITextInputChanging),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const { from, to } = e;
         const { isCancelled } = this.fireChanging('TEXT', from, to);
         if (isCancelled) {
@@ -142,24 +142,24 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
 
     text$
       .pipe(
-        filter(e => e.type === 'TEXT_INPUT/changed'),
-        filter(e => this.mode === 'TEXT'),
-        map(e => e.payload as p.ITextInputChanged),
+        filter((e) => e.type === 'TEXT_INPUT/changed'),
+        filter((e) => this.mode === 'TEXT'),
+        map((e) => e.payload as p.ITextInputChanged),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const { from, to } = e;
         const value = { from, to };
         this.fireChanged({ mode: 'TEXT', value });
       });
 
     const textKeydown$ = text$.pipe(
-      filter(e => e.type === 'TEXT_INPUT/keypress'),
-      filter(e => this.mode === 'TEXT'),
-      map(e => e.payload as p.ITextInputKeypress),
-      filter(e => e.isPressed),
+      filter((e) => e.type === 'TEXT_INPUT/keypress'),
+      filter((e) => this.mode === 'TEXT'),
+      map((e) => e.payload as p.ITextInputKeypress),
+      filter((e) => e.isPressed),
     );
 
-    textKeydown$.pipe(filter(e => e.key === 'Enter')).subscribe(e => {
+    textKeydown$.pipe(filter((e) => e.key === 'Enter')).subscribe((e) => {
       const isShift = e.event.shiftKey;
       const isMeta = e.event.metaKey;
       this.fire({ type: 'CELL_EDITOR/enter', payload: { isMeta, isShift } });
@@ -170,12 +170,12 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
      */
     markdown$
       .pipe(
-        filter(e => e.type === 'EDITOR/changing'),
-        filter(e => this.mode === 'MARKDOWN'),
-        map(e => e.payload as p.ITextEditorChanging),
-        filter(e => e.value.to !== e.value.from || !R.equals(e.size.from, e.size.to)),
+        filter((e) => e.type === 'EDITOR/changing'),
+        filter((e) => this.mode === 'MARKDOWN'),
+        map((e) => e.payload as p.ITextEditorChanging),
+        filter((e) => e.value.to !== e.value.from || !R.equals(e.size.from, e.size.to)),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const { from, to } = e.value;
         const { isCancelled } = this.fireChanging('MARKDOWN', from, to);
         if (isCancelled) {
@@ -185,12 +185,12 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
 
     markdown$
       .pipe(
-        filter(e => e.type === 'EDITOR/changed'),
-        filter(e => this.mode === 'MARKDOWN'),
-        map(e => e.payload as p.ITextEditorChanged),
-        filter(e => e.value.to !== e.value.from || !R.equals(e.size.from, e.size.to)),
+        filter((e) => e.type === 'EDITOR/changed'),
+        filter((e) => this.mode === 'MARKDOWN'),
+        map((e) => e.payload as p.ITextEditorChanged),
+        filter((e) => e.value.to !== e.value.from || !R.equals(e.size.from, e.size.to)),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const { from, to } = e.value;
         const value = { from, to };
         this.fireChanged({ mode: 'MARKDOWN', value });
@@ -199,12 +199,12 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
 
     markdown$
       .pipe(
-        filter(e => e.type === 'EDITOR/keydown/enter'),
-        filter(e => this.mode === 'MARKDOWN'),
-        map(e => e.payload as p.ITextEditorEnterKey),
-        filter(e => !e.isCancelled),
+        filter((e) => e.type === 'EDITOR/keydown/enter'),
+        filter((e) => this.mode === 'MARKDOWN'),
+        map((e) => e.payload as p.ITextEditorEnterKey),
+        filter((e) => !e.isCancelled),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const { isMeta, isShift } = e;
         this.fire({ type: 'CELL_EDITOR/enter', payload: { isMeta, isShift } });
       });

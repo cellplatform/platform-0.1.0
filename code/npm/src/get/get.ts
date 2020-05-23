@@ -42,7 +42,7 @@ export async function getVersionHistory(
   options: INpmVersionOptions & INpmInfoOptions = {},
 ) {
   const versions: string[] = (await getJson(moduleName, 'versions', options)) || [];
-  return versions.filter(version => filter.version(version, options)).reverse();
+  return versions.filter((version) => filter.version(version, options)).reverse();
 }
 
 /**
@@ -56,7 +56,7 @@ export async function getVersions(
   const deps = Array.isArray(modules)
     ? modules.reduce((acc, key) => ({ ...acc, [key]: 'latest' }), {})
     : { ...modules };
-  const wait = Object.keys(deps).map(async moduleName => {
+  const wait = Object.keys(deps).map(async (moduleName) => {
     const current = deps[moduleName].trim();
     let version = await getVersion(moduleName, options);
     version = current.startsWith('^') ? `^${version}` : version;

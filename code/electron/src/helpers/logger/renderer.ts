@@ -23,10 +23,10 @@ export function init(args: { ipc: IpcClient }) {
   log.events$
     .pipe(
       filter(() => !log.silent),
-      filter(e => e.type === 'LOG'),
-      map(e => e.payload as t.ILogEvent),
+      filter((e) => e.type === 'LOG'),
+      map((e) => e.payload as t.ILogEvent),
     )
-    .subscribe(e => ipc.send('@platform/LOG/write', e, { target: ipc.MAIN }));
+    .subscribe((e) => ipc.send('@platform/LOG/write', e, { target: ipc.MAIN }));
 
   // Finish up.
   ref.log = log;

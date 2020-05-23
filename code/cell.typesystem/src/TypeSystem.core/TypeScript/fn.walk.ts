@@ -9,7 +9,7 @@ export function walk(type: t.IType, onVisit: t.TypeVisit) {
 
   const walk = (level: number, type: t.IType, path: string) => {
     if (type.kind === 'REF') {
-      type.types.forEach(child => {
+      type.types.forEach((child) => {
         const args: t.TypeVisitArgs = {
           level: level + 1,
           path: path ? `${path}.${child.prop}` : child.prop,
@@ -24,7 +24,7 @@ export function walk(type: t.IType, onVisit: t.TypeVisit) {
     }
 
     if (type.kind === 'UNION') {
-      type.types.forEach(child => {
+      type.types.forEach((child) => {
         const args: t.TypeVisitArgs = {
           level: level + 1,
           path,

@@ -26,17 +26,17 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@platform/fs.types@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@platform/fs.types/-/fs.types-0.0.11.tgz#5b9ccc38eb49678153b140b14e2e9453438795b2"
-  integrity sha512-T38hzhRZNJwRWRMpIG2FSMUW/NUtJTFi3YbbS8Hp161TeYmXCvvk5rWGQ4Z4AjV6hsvJJVjYy2niZKJmCvhjiw==
+"@platform/fs.types@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@platform/fs.types/-/fs.types-0.0.12.tgz#96ef1d248eba11faca4f3a717db10b05dd9565f5"
+  integrity sha512-qfaj6XcLXxsQ2OvMFilv0bBQ1qQCEyq/1qDLBTRNWzevj3Wv+QSleAm78CoRmkUkeEY4PM/0UAxmOwy7b3lqRA==
 
-"@platform/fs@0.5.16":
-  version "0.5.16"
-  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.5.16.tgz#cb11bfebecc5edbd37ef171c63c7eac9cdc8f860"
-  integrity sha512-VgQhM40YyEni5lada/Q+OMmU83O3reLJl35UDC/PNXtK/6O6v4108Tj913z0nYfc4S4+Ou/U+CceSMnJ0NvArA==
+"@platform/fs@0.5.17":
+  version "0.5.17"
+  resolved "https://registry.yarnpkg.com/@platform/fs/-/fs-0.5.17.tgz#b55fbe37efda0cf89d4730881237d9daa036bec7"
+  integrity sha512-KCdCqvm5HqhH11nln84Cv6QlgmYLX4qzY9Nfv+J/al7dn/VhVqWr3Qe2NJY8jZQFcBpNYMfuhY9K+w/EbJ4oqw==
   dependencies:
-    "@platform/fs.types" "0.0.11"
+    "@platform/fs.types" "0.0.12"
     "@types/fs-extra" "9.0.1"
     "@types/js-yaml" "3.12.4"
     archiver "4.0.1"
@@ -58,10 +58,10 @@
     rxjs "6.5.5"
     tslib "2.0.0"
 
-"@platform/test@0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.1.11.tgz#ca45235f1b1fa6dee6b1cc2a7fba81c32d760011"
-  integrity sha512-VGQadVcpuyJmT5EVxN6tzgy+v3Vf4x4MmGuO/8y/Uc/zaBgbL9A+aIZAWi1oIb+nqNsmsHNxlvExYcoP6FE9AQ==
+"@platform/test@0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.1.12.tgz#3aa5e6dcd7e52b356f353e1227e4fb094fb3c0ca"
+  integrity sha512-BdpbTc4q+zwjwwm9svU598HnNVECG4pb1MasXAh3PA29lC4UqISyoocE4hWluPlVFHHkYFPqcn0nwrrxtCT0PA==
   dependencies:
     "@types/chai" "4.2.11"
     "@types/mocha" "7.0.2"
@@ -69,10 +69,10 @@
     findup-sync "4.0.0"
     mocha "7.1.2"
 
-"@platform/ts.libs@3.9.6":
-  version "3.9.6"
-  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.9.6.tgz#736e999a77aa00cfedeb60ecd5ce6653d5a5af10"
-  integrity sha512-4SvfVfUCyHCe+rV/TdARvISbBo2aH/WkhoMRBtr+LZ+AaL7lGcPi5fSBwqajDeKbVBFOIRu3V7PQI3Keiu9bOA==
+"@platform/ts.libs@3.9.7":
+  version "3.9.7"
+  resolved "https://registry.yarnpkg.com/@platform/ts.libs/-/ts.libs-3.9.7.tgz#21ac8fbdad6da103989c9c2866a47f980acee60f"
+  integrity sha512-MKSAoiF0d1yO3D6GEpoJtaCNblvusO8VA8gbuY5BVNqfX7DIRFwKXMgpioPtZ1IVi9wmmhuROJ2ub42sAHehzw==
   dependencies:
     "@types/node" "14.0.4"
     "@typescript-eslint/eslint-plugin" "2.34.0"

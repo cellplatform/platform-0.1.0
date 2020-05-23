@@ -60,7 +60,7 @@ export class Pg {
 
   public async dropTable(...tables: string[]) {
     const drop = (table: string) => this.pool.query(`DROP TABLE IF EXISTS "${table}"`);
-    await Promise.all(tables.map(table => drop(table)));
+    await Promise.all(tables.map((table) => drop(table)));
   }
 
   public toString() {

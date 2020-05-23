@@ -4,6 +4,7 @@ import { IMicro, IMicroService, micro } from '@platform/micro';
 
 import { util, t, Schema, HttpClient } from '../common';
 import { CellRouter } from '..';
+import { port as portUtil } from './util.port';
 
 export type IMock = {
   db: t.IDb;
@@ -46,7 +47,7 @@ export const mock = {
 export const createMock = async (args: { port?: number } = {}): Promise<IMock> => {
   count++;
   const filename = util.fs.join(TMP, `mock/test-${count}.db`);
-  const port = args.port || randomPort();
+  const port = args.port || (await portUtil.unused());
 
   const db = NeDb.create({ filename });
   const fs = local.init({ root: PATH.FS, fs: util.fs });
@@ -91,19 +92,4 @@ const tryIgnore = async (fn: () => any) => {
   } catch (error) {
     // Ignore.
   }
-};
-
-/**
- * [Helpers]
- */
-
-/**
- * Generates a randon port number.
- * See:
- *    https://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers#Dynamic,_private_or_ephemeral_ports
- */
-const randomPort = () => {
-  const MIN = 49152;
-  const MAX = 65535;
-  return util.value.random(MIN, MAX);
 };

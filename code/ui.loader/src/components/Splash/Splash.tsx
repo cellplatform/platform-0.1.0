@@ -16,7 +16,7 @@ export type ISplashState = {
   isLoaded?: boolean;
 };
 
-const NULL_FACTORY: t.SplashFactory = args => undefined;
+const NULL_FACTORY: t.SplashFactory = (args) => undefined;
 const { CSS } = constants;
 
 export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
@@ -30,7 +30,7 @@ export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   constructor(props: ISplashProps) {
     super(props);
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
   }
 
   public componentDidMount() {

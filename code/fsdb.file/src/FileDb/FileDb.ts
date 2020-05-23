@@ -142,7 +142,7 @@ export class FileDb implements t.IDb {
   }
 
   public async getMany(keys: string[]): Promise<t.IDbValue[]> {
-    return Promise.all(keys.map(key => this.get(key)));
+    return Promise.all(keys.map((key) => this.get(key)));
   }
 
   /**
@@ -257,7 +257,7 @@ export class FileDb implements t.IDb {
     };
   }
   public async deleteMany(keys: string[]): Promise<t.IDbValue[]> {
-    return Promise.all(keys.map(key => this.delete(key)));
+    return Promise.all(keys.map((key) => this.delete(key)));
   }
 
   /**
@@ -292,8 +292,8 @@ export class FileDb implements t.IDb {
       }
 
       // Retrieve matching files.
-      paths = paths.filter(path => path.endsWith('.json'));
-      const files = await Promise.all(paths.map(path => fs.readJson(path)));
+      paths = paths.filter((path) => path.endsWith('.json'));
+      const files = await Promise.all(paths.map((path) => fs.readJson(path)));
       keys = files.reduce((acc, next) => {
         const keys = Object.keys(next);
         return [...acc, ...keys];

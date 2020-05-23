@@ -8,8 +8,8 @@ export type IDirArgs = {
   configure: boolean;
 };
 
-export const init: t.CmdPluginsInit = cli => {
-  const handler: t.CmdPluginHandler<IDirArgs> = async e => {
+export const init: t.CmdPluginsInit = (cli) => {
+  const handler: t.CmdPluginHandler<IDirArgs> = async (e) => {
     const { argv } = e;
     await dir({
       dir: process.cwd(),

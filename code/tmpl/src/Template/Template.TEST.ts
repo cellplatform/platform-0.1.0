@@ -148,8 +148,8 @@ describe('Template', () => {
         expect(paths).to.include('/src/index.ts');
       };
       const files = await tmpl.files();
-      includes(files.map(f => f.source));
-      includes(files.map(f => f.target));
+      includes(files.map((f) => f.source));
+      includes(files.map((f) => f.target));
     });
 
     it('filter pattern (.ts file only)', async () => {
@@ -158,7 +158,7 @@ describe('Template', () => {
         pattern: '**/*.ts',
       });
       const files = await tmpl.files();
-      const paths = files.map(f => f.source);
+      const paths = files.map((f) => f.source);
       expect(paths).to.eql(['/index.ts', '/src/index.ts']);
     });
 
@@ -197,7 +197,7 @@ describe('Template', () => {
         .add({ dir: './example/sub-folder/tmpl-3' });
 
       const files = await tmpl.files();
-      const readmes = files.filter(f => f.source.endsWith('/README.md'));
+      const readmes = files.filter((f) => f.source.endsWith('/README.md'));
 
       // NB: One README, taken from `tmpl-3` which overrides `tmpl-2`
       //     because `tmpl-3` was added after `tmpl-2`.
@@ -212,8 +212,8 @@ describe('Template', () => {
       });
 
       const files = await tmpl.files();
-      const sources = files.map(f => f.source);
-      const targets = files.map(f => f.target);
+      const sources = files.map((f) => f.source);
+      const targets = files.map((f) => f.target);
 
       expect(sources).to.include('/README.md');
       expect(sources).to.include('/blueprint.png');
@@ -232,8 +232,8 @@ describe('Template', () => {
       });
 
       const files = await tmpl.files();
-      const sources = files.map(f => f.source);
-      const targets = files.map(f => f.target);
+      const sources = files.map((f) => f.source);
+      const targets = files.map((f) => f.target);
 
       expect(sources).to.include('/README.md');
       expect(targets).to.include('/foo/bar/README.md');
@@ -243,13 +243,13 @@ describe('Template', () => {
   describe('filter', () => {
     it('adds as a new instance', () => {
       const tmpl1 = Template.create({ dir: './tmpl-1' });
-      const tmpl2 = tmpl1.filter(file => true);
+      const tmpl2 = tmpl1.filter((file) => true);
       expect(tmpl1).to.not.equal(tmpl2);
     });
 
     it('applies filter', async () => {
       const tmpl1 = Template.create({ dir: './example/tmpl-2' });
-      const tmpl2 = tmpl1.filter(f => f.source.endsWith('.js'));
+      const tmpl2 = tmpl1.filter((f) => f.source.endsWith('.js'));
       const files1 = await tmpl1.files();
       const files2 = await tmpl2.files();
       expect(files1.length).to.eql(3);
@@ -339,14 +339,14 @@ describe('Template', () => {
           res.done('NEXT');
         });
 
-      tmpl.events$.subscribe(e => (events = [...events, e]));
+      tmpl.events$.subscribe((e) => (events = [...events, e]));
       await tmpl.execute();
 
       expect(events.length).to.be.greaterThan(0);
       const e = events
-        .filter(e => e.type === 'TMPL/alert')
-        .map(e => e.payload as MyAlert)
-        .find(e => e.path.endsWith('.babelrc'));
+        .filter((e) => e.type === 'TMPL/alert')
+        .map((e) => e.payload as MyAlert)
+        .find((e) => e.path.endsWith('.babelrc'));
 
       expect(e && e.message).to.eql('Foo');
       expect(e && e.path).to.eql('/.babelrc');
@@ -362,7 +362,7 @@ describe('Template', () => {
         res.next();
       });
 
-    tmpl.events$.subscribe(e => (events = [...events, e]));
+    tmpl.events$.subscribe((e) => (events = [...events, e]));
     const files = await tmpl.files();
     await tmpl.execute();
     expect(events.length).to.be.greaterThan(2);

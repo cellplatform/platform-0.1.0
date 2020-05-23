@@ -37,7 +37,7 @@ export function typesystem(input?: t.ClientOptions | string | number) {
     async defs(ns: N | N[]) {
       const uris = Array.isArray(ns) ? ns : [ns];
       const client = TypeSystem.client(http);
-      const defs = (await Promise.all(uris.map(ns => client.load(ns)))).map(({ defs }) => defs);
+      const defs = (await Promise.all(uris.map((ns) => client.load(ns)))).map(({ defs }) => defs);
       return defs.reduce((acc, next) => acc.concat(next), []); // Flatten [][] => [].
     },
 

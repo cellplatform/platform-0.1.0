@@ -48,7 +48,7 @@ export const size = {
   async dir(path: string) {
     const getFiles = async () => {
       const pattern = resolve(join(path), '**');
-      const wait = (await glob.find(pattern)).map(async path => size.file(path));
+      const wait = (await glob.find(pattern)).map(async (path) => size.file(path));
       return Promise.all(wait);
     };
     const exists = await fsExtra.pathExists(path);

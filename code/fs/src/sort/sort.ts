@@ -15,7 +15,7 @@ export function paths<T = string>(list: T[]) {
  *    https://support.apple.com/kb/TA22935?locale=en_US
  */
 export function objects<T>(list: T[], getKey: GetKey<T>) {
-  return sortBy<T>(list, x => split(getKey(x)));
+  return sortBy<T>(list, (x) => split(getKey(x)));
 }
 
 /**
@@ -26,7 +26,7 @@ function sortBy<T>(list: T[], split: (input: T) => string[]) {
   return list
     .map((value, i) => [split(value), value])
     .sort((a, b) => compare(a[0] as any, b[0] as any))
-    .map(item => item[1]) as T[];
+    .map((item) => item[1]) as T[];
 }
 
 function padWith(char: string) {

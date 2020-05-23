@@ -36,10 +36,10 @@ const arg = <T = string>(cmd: string, env: string, defaultValue: T, format?: (va
 
 const name = arg('npm-module', 'NPM_MODULE', '');
 const downloadDir = arg('dir', 'NPM_DIR', '');
-const port = arg<number>('port', 'NPM_PORT', 3000, v => toNumber(v));
+const port = arg<number>('port', 'NPM_PORT', 3000, (v) => toNumber(v));
 const urlPrefix = arg('url-prefix', 'NPM_URL_PREFIX', '');
 const updateOnStartup = arg('update', 'NPM_UPDATE', false);
-const prerelease = arg<t.NpmPrerelease>('prerelease', 'NPM_PRERELEASE', false, v => toBool(v));
+const prerelease = arg<t.NpmPrerelease>('prerelease', 'NPM_PRERELEASE', false, (v) => toBool(v));
 const NPM_TOKEN = arg<string | undefined>('npm-token', 'NPM_TOKEN', undefined);
 
 const fail = (message: string) => {

@@ -51,7 +51,7 @@ describe.only('Queue', () => {
       const queue = MemoryQueue.create();
       const fired: t.QueueEvent[] = [];
 
-      queue.event$.subscribe(e => fired.push(e));
+      queue.event$.subscribe((e) => fired.push(e));
       queue
         .stop()
         .stop() // NB: Does not repeat events when state does not differ.
@@ -80,7 +80,7 @@ describe.only('Queue', () => {
       const queue = MemoryQueue.create().stop();
 
       const fired: t.QueueEvent[] = [];
-      queue.event$.subscribe(e => fired.push(e));
+      queue.event$.subscribe((e) => fired.push(e));
 
       queue.push<number>(async () => 123);
 
@@ -108,7 +108,7 @@ describe.only('Queue', () => {
       const item = queue.push<number>(async () => pushDelay(123, 10));
 
       const fired: t.QueueItemEvent[] = [];
-      item.event$.subscribe(e => fired.push(e));
+      item.event$.subscribe((e) => fired.push(e));
 
       const id = `${queue.id}:1`;
       expect(item.id).to.eql(id);

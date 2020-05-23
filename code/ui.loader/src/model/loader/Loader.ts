@@ -86,7 +86,7 @@ export class Loader implements t.ILoader {
     const res =
       typeof moduleId === 'number'
         ? this.modules[moduleId]
-        : this.modules.find(m => m.id === moduleId);
+        : this.modules.find((m) => m.id === moduleId);
     return res ? (res as t.IDynamicModule<T>) : undefined;
   }
 
@@ -105,7 +105,7 @@ export class Loader implements t.ILoader {
     const item = this.get(moduleId);
     const id = item ? item.id : undefined;
     const ids = this.loading;
-    return moduleId === undefined ? ids.length > 0 : ids.some(item => item === id);
+    return moduleId === undefined ? ids.length > 0 : ids.some((item) => item === id);
   }
 
   public isLoaded(moduleId: string | number) {
@@ -199,7 +199,7 @@ export class Loader implements t.ILoader {
 
     // Finish up.
     item.isLoaded = true;
-    this._loading = this._loading.filter(id => id !== item.id);
+    this._loading = this._loading.filter((id) => id !== item.id);
     this.fire({
       type: 'LOADER/loaded',
       payload: { module: item.id, id, count, result, error, timedOut },
@@ -208,7 +208,7 @@ export class Loader implements t.ILoader {
   }
 
   private async invokeOrTimeout(item: t.IDynamicModule, load: t.DynamicImporter, props: {}) {
-    return new Promise<{ timedOut: boolean; error?: Error; result?: any }>(resolve => {
+    return new Promise<{ timedOut: boolean; error?: Error; result?: any }>((resolve) => {
       const done = (args: { result?: any; error?: Error; timedOut?: boolean }) => {
         clearTimeout(timeout);
         const { result, error, timedOut = false } = args;
@@ -221,8 +221,8 @@ export class Loader implements t.ILoader {
       }, item.timeout);
 
       load(props)
-        .then(result => done({ result }))
-        .catch(error => done({ error }));
+        .then((result) => done({ result }))
+        .catch((error) => done({ error }));
     });
   }
 }

@@ -103,7 +103,7 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
    */
   public async delete<K extends keyof T>(...keys: (keyof T)[]) {
     keys = formatKeys<T>({ keys, namespace: this._args.namespace });
-    const values = keys.map(key => ({ key, value: undefined }));
+    const values = keys.map((key) => ({ key, value: undefined }));
     await this._args.setValues(values, 'DELETE');
     return {};
   }
@@ -161,7 +161,7 @@ function formatKey<T extends t.SettingsJson = {}>(args: { key: keyof T; namespac
 
 function formatKeys<T extends t.SettingsJson = {}>(args: { keys: (keyof T)[]; namespace: string }) {
   const namespace = args.namespace;
-  return args.keys.map(key => formatKey<T>({ key, namespace }));
+  return args.keys.map((key) => formatKey<T>({ key, namespace }));
 }
 
 function formatValues<T extends t.SettingsJson = {}>(args: {
@@ -169,7 +169,7 @@ function formatValues<T extends t.SettingsJson = {}>(args: {
   namespace: string;
 }) {
   const namespace = args.namespace;
-  return args.values.map(item => ({
+  return args.values.map((item) => ({
     key: formatKey<T>({ key: item.key, namespace }),
     value: item.value,
   }));

@@ -40,7 +40,7 @@ describe('sort (filenames)', () => {
 
   it('sort by object field-name', async () => {
     const input = [{ name: 'kitty10.jpg' }, { name: 'kitty9.png' }, { name: 'kitty0.png' }];
-    const res = fs.sort.objects(input, item => item.name);
-    expect(res.map(o => o.name)).to.eql(['kitty0.png', 'kitty9.png', 'kitty10.jpg']);
+    const res = fs.sort.objects(input, (item) => item.name);
+    expect(res.map((o) => o.name)).to.eql(['kitty0.png', 'kitty9.png', 'kitty10.jpg']);
   });
 });

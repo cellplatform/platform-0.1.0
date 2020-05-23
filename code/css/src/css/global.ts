@@ -33,9 +33,9 @@ export const global: t.CssGlobal = (styles: t.CssPropsMap, options: { prefix?: s
   // Prepare styles for global insertion.
   const { prefix } = options;
   const global = {};
-  Object.keys(styles).forEach(key => {
+  Object.keys(styles).forEach((key) => {
     const style = styles[key];
-    key.split(',').forEach(key => {
+    key.split(',').forEach((key) => {
       const selector = toCssSelector({ key, prefix });
       global[selector] = style;
     });
@@ -52,8 +52,5 @@ export const global: t.CssGlobal = (styles: t.CssPropsMap, options: { prefix?: s
 function toCssSelector(args: { key: string; prefix?: string }) {
   const { key, prefix } = args;
   const selector = prefix ? `${prefix} ${key}` : key;
-  return selector
-    .replace(/^\n/, '')
-    .replace(/\n$/, '')
-    .trim();
+  return selector.replace(/^\n/, '').replace(/\n$/, '').trim();
 }

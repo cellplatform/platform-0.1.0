@@ -49,8 +49,8 @@ export async function upload(args: {
   //
   const uploadUrls = uploadStart.urls.uploads;
   const fileUploadWait = uploadUrls
-    .map(upload => {
-      const file = input.find(item => item.filename === upload.filename);
+    .map((upload) => {
+      const file = input.find((item) => item.filename === upload.filename);
       const data = file ? file.data : undefined;
       return { data, upload };
     })
@@ -64,7 +64,7 @@ export async function upload(args: {
         const contentType = props['content-type'];
         const form = new FormData();
         Object.keys(props)
-          .map(key => ({ key, value: props[key] }))
+          .map((key) => ({ key, value: props[key] }))
           .forEach(({ key, value }) => form.append(key, value));
         form.append('file', data, { contentType }); // NB: file-data must be added last for S3.
 
@@ -93,9 +93,9 @@ export async function upload(args: {
     });
 
   const res2 = await Promise.all(fileUploadWait);
-  const fileUploadSuccesses = res2.filter(item => item.ok);
-  const fileUploadFails = res2.filter(item => !item.ok);
-  const fileUploadErrors = fileUploadFails.map(item => {
+  const fileUploadSuccesses = res2.filter((item) => item.ok);
+  const fileUploadFails = res2.filter((item) => !item.ok);
+  const fileUploadErrors = fileUploadFails.map((item) => {
     const { filename } = item;
     const message = `Failed while uploading file '${filename}'`;
     const error: t.IFileUploadError = { type: 'FILE/upload', filename, message };
@@ -108,7 +108,7 @@ export async function upload(args: {
   //      meta-data retrieved from the file-system.
   //
   const res3 = await Promise.all(
-    fileUploadSuccesses.map(async item => {
+    fileUploadSuccesses.map(async (item) => {
       const url = urls.file(item.uri).uploaded.query({ changes: sendChanges }).toString();
       const { filename } = item;
       const body: t.IReqPostFileUploadCompleteBody = { filename };
@@ -119,10 +119,10 @@ export async function upload(args: {
       return { status, ok, json, file, filename };
     }),
   );
-  res3.forEach(res => addChanges(res.json.changes));
+  res3.forEach((res) => addChanges(res.json.changes));
 
-  const fileCompleteFails = res3.filter(res => !res.ok);
-  const fileCompleteFailErrors = fileCompleteFails.map(res => {
+  const fileCompleteFails = res3.filter((res) => !res.ok);
+  const fileCompleteFailErrors = fileCompleteFails.map((res) => {
     const filename = res.filename || 'UNKNOWN';
     const message = `Failed while completing upload of file '${filename}'`;
     const error: t.IFileUploadError = { type: 'FILE/upload', filename, message };

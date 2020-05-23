@@ -42,7 +42,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
               context = input.context;
             }
           } else {
-            modifying.request = new Promise(async resolve => {
+            modifying.request = new Promise(async (resolve) => {
               try {
                 const res = await input();
                 if (res.context) {
@@ -83,7 +83,7 @@ export function requestHandler(args: { router: t.IRouter; fire: t.FireEvent }): 
           if (typeof input !== 'function') {
             handled = input;
           } else {
-            modifying.response = new Promise(async resolve => {
+            modifying.response = new Promise(async (resolve) => {
               try {
                 handled = await input();
                 after.elapsed = timer.elapsed;
@@ -131,6 +131,6 @@ function redirect(res: t.ServerResponse, statusCode: number, location: string) {
 
 function setHeaders(res: t.ServerResponse, headers?: t.IHttpHeaders) {
   if (headers) {
-    Object.keys(headers).forEach(key => res.setHeader(key, headers[key]));
+    Object.keys(headers).forEach((key) => res.setHeader(key, headers[key]));
   }
 }

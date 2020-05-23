@@ -32,7 +32,7 @@ export async function rewriteHtmlPaths(args: {
 
   // Lookup the link-reference to the HTML file.
   const fileid = args.filename.split('.')[0] || '';
-  const htmlLink = fileLinks.find(link => link.uri.file === fileid);
+  const htmlLink = fileLinks.find((link) => link.uri.file === fileid);
   if (!htmlLink) {
     const err = `Cannot find cell-link to file '${args.filename}' in [${cellUri}]`;
     throw new Error(err);
@@ -48,7 +48,7 @@ export async function rewriteHtmlPaths(args: {
     const path = trimRelativePathPrefix(value);
 
     // Lookup the file-link that the DOM element "src/href" path refers to.
-    const link = fileLinks.find(link => {
+    const link = fileLinks.find((link) => {
       const isChildPath = dir ? link.path.startsWith(`${dir}/`) : true;
       return isChildPath && trimPrefix(dir, link.path) === path;
     });
@@ -61,8 +61,8 @@ export async function rewriteHtmlPaths(args: {
     }
   };
 
-  href.forEach(e => updateLink(e));
-  src.forEach(e => updateLink(e));
+  href.forEach((e) => updateLink(e));
+  src.forEach((e) => updateLink(e));
 
   return $.html();
 }
@@ -74,11 +74,11 @@ export async function rewriteHtmlPaths(args: {
 function find($: CheerioStatic, selector: string) {
   const res: Cheerio[] = [];
   $(selector).each((i, el) => res.push($(el)));
-  return res.filter(e => e.length > 0);
+  return res.filter((e) => e.length > 0);
 }
 
 function findAttr($: CheerioStatic, attr: string) {
-  return find($, `*[${attr}]`).map(el => {
+  return find($, `*[${attr}]`).map((el) => {
     const value = el.attr(attr) || '';
     return { el, attr, value };
   });

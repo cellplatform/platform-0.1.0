@@ -76,12 +76,12 @@ function createLogger() {
 function configureMethods(log: ILog, colorFormatter: ColorFormatter, next: LogNext) {
   const applyMethodColors = (level: LogLevel, obj: any) => {
     const method = (color: LogColor) => (...items: Loggable[]) => next(level, color, items);
-    COLORS.forEach(color => (obj[color] = method(color)));
+    COLORS.forEach((color) => (obj[color] = method(color)));
   };
 
   METHODS.forEach((level: LogLevel) => applyMethodColors(level, log[level]));
 
-  COLORS.forEach(color => {
+  COLORS.forEach((color) => {
     log[color] = (items: Loggable) => colorFormatter(color, items);
   });
 }

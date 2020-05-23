@@ -4,7 +4,7 @@ import * as util from './util';
 /**
  * Add a series of numbers.
  */
-export const sum: t.FuncInvoker = async args => {
+export const sum: t.FuncInvoker = async (args) => {
   const params = util.paramsToNumbers(args.params);
   return params.length === 0
     ? 0
@@ -14,7 +14,7 @@ export const sum: t.FuncInvoker = async args => {
 /**
  * Subtract a series of numbers.
  */
-export const subtract: t.FuncInvoker = async args => {
+export const subtract: t.FuncInvoker = async (args) => {
   const params = util.paramsToNumbers(args.params);
   return params.length === 0
     ? undefined
@@ -24,7 +24,7 @@ export const subtract: t.FuncInvoker = async args => {
 /**
  * Multiply a series of numbers.
  */
-export const multiply: t.FuncInvoker = async args => {
+export const multiply: t.FuncInvoker = async (args) => {
   const params = util.paramsToNumbers(args.params);
   return params.length === 0
     ? undefined
@@ -34,7 +34,7 @@ export const multiply: t.FuncInvoker = async args => {
 /**
  * Divide a series of numbers.
  */
-export const divide: t.FuncInvoker = async args => {
+export const divide: t.FuncInvoker = async (args) => {
   const params = util.paramsToNumbers(args.params);
   return params.length === 0
     ? undefined

@@ -1,5 +1,6 @@
 import { value, t, http, fs } from '../common';
 import { createMock, IMock } from './mock';
+export * from './util.port';
 
 /**
  * Reads a resolved file-path.
@@ -13,7 +14,7 @@ export function readFile(path: string) {
  */
 export function stripHashes(input: object) {
   if (input) {
-    value.object.walk(input, obj => {
+    value.object.walk(input, (obj) => {
       if (typeof obj === 'object' && obj !== null) {
         delete obj.hash;
       }

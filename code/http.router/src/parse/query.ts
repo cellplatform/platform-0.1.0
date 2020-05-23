@@ -15,9 +15,9 @@ export function query<T extends object>(args: { path: string }): T {
 
   const parseType = (input: any) => value.toType(input);
   const query: any = queryString.toObject(toString().replace(/^\?/, ''));
-  Object.keys(query).forEach(key => {
+  Object.keys(query).forEach((key) => {
     const value = query[key];
-    query[key] = Array.isArray(value) ? value.map(item => parseType(item)) : parseType(value);
+    query[key] = Array.isArray(value) ? value.map((item) => parseType(item)) : parseType(value);
   });
 
   const res = {

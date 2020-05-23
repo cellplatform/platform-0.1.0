@@ -47,14 +47,14 @@ export function toDeclaration(args: {
     const parentType = args.typename;
     const childRefs: t.ITypeRef[] = [];
 
-    let lines = args.types.map(typeDef => {
+    let lines = args.types.map((typeDef) => {
       const { prop, type } = typeDef;
       if (type.kind === 'UNION') {
         // Build up list of referenced types to ensure these are included in the output.
         type.types
           .filter(({ kind }) => kind !== 'UNION')
           .filter(({ kind }) => kind === 'REF')
-          .forEach(ref => childRefs.push(ref as t.ITypeRef));
+          .forEach((ref) => childRefs.push(ref as t.ITypeRef));
       }
       const typename = TypeValue.toTypename(type);
       const optional = typeDef.optional ? '?' : '';
@@ -84,7 +84,7 @@ export function toDeclaration(args: {
       return line;
     });
 
-    lines = lines.filter(line => typeof line === 'string').map(line => line.trimEnd());
+    lines = lines.filter((line) => typeof line === 'string').map((line) => line.trimEnd());
 
     let res = `
 ${declare} type ${args.typename} = {
@@ -103,10 +103,10 @@ ${lines.join('\n')}
 
     args.types
       .map(({ type }) => type as t.ITypeRef)
-      .filter(type => type.kind === 'REF')
-      .forEach(ref => writeRef(ref));
+      .filter((type) => type.kind === 'REF')
+      .forEach((ref) => writeRef(ref));
 
-    childRefs.forEach(ref => writeRef(ref));
+    childRefs.forEach((ref) => writeRef(ref));
 
     return res;
   };
@@ -128,7 +128,7 @@ ${lines.join('\n')}
  */
 
 function formatImports(imports?: string) {
-  let lines = (imports || '').split('\n').map(line => formatImport(line));
+  let lines = (imports || '').split('\n').map((line) => formatImport(line));
   lines = trimEmptyLines(lines);
   return lines.join('\n');
 }

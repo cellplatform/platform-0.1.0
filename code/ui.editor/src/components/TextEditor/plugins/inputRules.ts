@@ -32,7 +32,7 @@ export function orderedListRule(nodeType: NodeType) {
   return wrappingInputRule(
     /^(\d+)\.\s$/,
     nodeType,
-    match => ({ order: +match[1] }),
+    (match) => ({ order: +match[1] }),
     (match, node) => node.childCount + node.attrs.order === +match[1],
   );
 }
@@ -80,7 +80,7 @@ export const loremRule = new InputRule(/lorem\s/, (state, match, start, end) => 
  * the number of `#` signs.
  */
 export function headingRule(nodeType: NodeType, maxLevel: number) {
-  return textblockTypeInputRule(new RegExp('^(#{1,' + maxLevel + '})\\s$'), nodeType, match => ({
+  return textblockTypeInputRule(new RegExp('^(#{1,' + maxLevel + '})\\s$'), nodeType, (match) => ({
     level: match[1].length,
   }));
 }

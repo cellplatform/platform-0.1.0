@@ -81,7 +81,7 @@ export async function install(
     text = formatInfoLine(text);
     isError = isErrorText(text) ? true : isError;
     if (isError) {
-      text.split('\n').forEach(line => addError(line));
+      text.split('\n').forEach((line) => addError(line));
     } else {
       result.info = [...result.info, text];
     }
@@ -91,8 +91,8 @@ export async function install(
   // Run the command.
   const env = NPM_TOKEN ? { NPM_TOKEN } : undefined;
   const child = exec.cmd.run(`cd ${dir} \n ${cmd}`, { silent, env });
-  child.stdout$.subscribe(e => onData(e, false));
-  child.stderr$.subscribe(e => onData(e, false));
+  child.stdout$.subscribe((e) => onData(e, false));
+  child.stderr$.subscribe((e) => onData(e, false));
 
   // Finish up.
   await child;
@@ -141,7 +141,7 @@ async function installCommand(args: { use: Engine }) {
 
 function getExitCode(errors: string[]) {
   let code = 0;
-  let fail = errors.find(line => line.includes('failed with exit code'));
+  let fail = errors.find((line) => line.includes('failed with exit code'));
   if (fail) {
     fail = fail.replace(/\.$/, '');
     const parts = fail.split(' ');

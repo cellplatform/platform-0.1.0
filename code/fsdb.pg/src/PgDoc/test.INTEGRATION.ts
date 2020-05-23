@@ -134,7 +134,7 @@ describe('PgDoc (integration)', () => {
       { key: 'FOO/1', value: 123 },
       { key: 'FOO/2', value: 456 },
     ];
-    const keys = items.map(item => item.key);
+    const keys = items.map((item) => item.key);
 
     const res1 = await db.getMany(keys);
     expect(res1[0].value).to.eql(undefined);
@@ -172,7 +172,7 @@ describe('PgDoc (integration)', () => {
       { key: 'FOO/1', value: 123 },
       { key: 'FOO/2', value: 456 },
     ];
-    const keys = items.map(item => item.key);
+    const keys = items.map((item) => item.key);
 
     await db.putMany(items);
     const res1 = await db.getMany(keys);

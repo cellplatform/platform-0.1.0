@@ -12,7 +12,7 @@ describe('Loader', () => {
     expect(loader.length).to.eql(0);
 
     const events: t.IModuleAddedEvent[] = [];
-    loader.events$.subscribe(e => events.push(e as any));
+    loader.events$.subscribe((e) => events.push(e as any));
 
     loader
       .add('foo', async () => <Foo />)
@@ -88,7 +88,7 @@ describe('Loader', () => {
 
       const response: MyObject = { count: 123 };
       let props: any;
-      const loader = Loader.create().add('foo', async p => {
+      const loader = Loader.create().add('foo', async (p) => {
         props = p;
         return response;
       });
@@ -138,7 +138,7 @@ describe('Loader', () => {
       const item = loader.get('foo');
 
       const events: t.LoaderEvents[] = [];
-      loader.events$.subscribe(e => events.push(e as any));
+      loader.events$.subscribe((e) => events.push(e as any));
 
       await loader.load('foo'); // Invoked via loader's method.
       if (item) {
@@ -232,7 +232,7 @@ describe('Loader', () => {
     it('renders JSX element', async () => {
       const el = <Foo />;
       let props: any;
-      const loader = Loader.create().add('foo', async p => {
+      const loader = Loader.create().add('foo', async (p) => {
         props = p;
         return el;
       });

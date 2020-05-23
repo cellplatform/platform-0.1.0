@@ -58,27 +58,27 @@ export class CommandState implements t.ICommandState {
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(takeUntil(this.dispose$), share());
   public readonly changing$ = this.events$.pipe(
-    filter(e => e.type === 'COMMAND_STATE/changing'),
-    map(e => e.payload as t.ICommandStateChanging),
+    filter((e) => e.type === 'COMMAND_STATE/changing'),
+    map((e) => e.payload as t.ICommandStateChanging),
     share(),
   );
   public readonly changed$ = this.events$.pipe(
-    filter(e => e.type === 'COMMAND_STATE/changed'),
-    map(e => e.payload as t.ICommandStateChanged),
+    filter((e) => e.type === 'COMMAND_STATE/changed'),
+    map((e) => e.payload as t.ICommandStateChanged),
     share(),
   );
   public readonly invoke$ = this.changed$.pipe(
-    filter(e => e.invoke),
+    filter((e) => e.invoke),
     share(),
   );
   public readonly invoking$ = this.events$.pipe(
-    filter(e => e.type === 'COMMAND_STATE/invoking'),
-    map(e => e.payload as t.ICommandStateInvoking),
+    filter((e) => e.type === 'COMMAND_STATE/invoking'),
+    map((e) => e.payload as t.ICommandStateInvoking),
     share(),
   );
   public readonly invoked$ = this.events$.pipe(
-    filter(e => e.type === 'COMMAND_STATE/invoked'),
-    map(e => e.payload as t.ICommandStateInvokeResponse),
+    filter((e) => e.type === 'COMMAND_STATE/invoked'),
+    map((e) => e.payload as t.ICommandStateInvokeResponse),
     share(),
   );
 
@@ -144,17 +144,17 @@ export class CommandState implements t.ICommandState {
     const currentId = this.command ? this.command.id : undefined;
     const root = this.namespace ? this.namespace.command : this.root;
     const input = (this.autoCompleted
-      ? this.autoCompleted.matches.map(cmd => cmd.name)
+      ? this.autoCompleted.matches.map((cmd) => cmd.name)
       : [this.text]
-    ).filter(text => Boolean(text.trim()));
+    ).filter((text) => Boolean(text.trim()));
     const isEmpty = input.length === 0;
     const matches = root.children
-      .map(command => {
+      .map((command) => {
         const { name } = command;
-        const isMatch = isEmpty ? true : input.some(text => str.fuzzy.isMatch(text, name));
+        const isMatch = isEmpty ? true : input.some((text) => str.fuzzy.isMatch(text, name));
         return { command, isMatch };
       })
-      .map(item => {
+      .map((item) => {
         const isCurrent = item.command.id === currentId;
         return isCurrent ? { ...item, isMatch: true } : item;
       });
@@ -219,7 +219,7 @@ export class CommandState implements t.ICommandState {
         text = this.root.tree
           .toPath(parent)
           .slice(1)
-          .map(cmd => cmd.name)
+          .map((cmd) => cmd.name)
           .join(' ');
       }
     }
@@ -235,8 +235,8 @@ export class CommandState implements t.ICommandState {
       next: t.ICommandNamespace,
     ) => {
       const textParts = text.split(' ');
-      const nsPrev = prev ? prev.path.map(item => item.name) : [];
-      const nsNext = next.path.map(item => item.name).slice(nsPrev.length);
+      const nsPrev = prev ? prev.path.map((item) => item.name) : [];
+      const nsNext = next.path.map((item) => item.name).slice(nsPrev.length);
       let index = 0;
       for (const level of nsNext) {
         textParts[index] = textParts[index] === level ? '' : textParts[index];
@@ -464,7 +464,7 @@ export class CommandState implements t.ICommandState {
       },
       toString(options = {}) {
         const { delimiter = '.' } = options;
-        return ns.path.map(c => c.name).join(delimiter);
+        return ns.path.map((c) => c.name).join(delimiter);
       },
     };
 
