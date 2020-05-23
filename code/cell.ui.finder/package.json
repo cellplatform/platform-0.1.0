@@ -35,7 +35,6 @@
     "!lib/test",
     "!*.TEST.{js, mjs, d.ts}"
   ],
-  "resolutions": {},
   "license": "MIT",
   "private": true
 }

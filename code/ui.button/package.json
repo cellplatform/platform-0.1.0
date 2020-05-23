@@ -19,8 +19,6 @@
     "@platform/util.value": "0.7.21"
   },
   "devDependencies": {
-    "@platform/cli.spec": "0.1.110",
-    "@platform/cli.ui": "0.2.115",
     "@platform/test": "0.1.11",
     "@platform/ts": "3.9.2",
     "@platform/ui.dev": "0.0.0",

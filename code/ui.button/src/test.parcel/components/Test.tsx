@@ -2,25 +2,24 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import * as cli from '../cli';
 import {
-  color,
-  log,
   Button,
-  IButtonProps,
-  Switch,
-  ISwitchProps,
+  color,
+  COLORS,
   css,
-  CommandShell,
+  Hr,
+  IButtonProps,
+  ISwitchProps,
+  log,
+  Switch,
+  SwitchTheme,
   t,
   value,
-  Hr,
-  COLORS,
-  SwitchTheme,
 } from '../common';
 import { Icons } from './Icons';
 
 export type ITestProps = {};
+export type ITestState = { isEnabled?: boolean; isChecked?: boolean };
 
 const PINK = '#CD638D';
 const ORANGE = '#F6A623';
@@ -29,11 +28,10 @@ const orange = Button.theme.BORDER.SOLID;
 orange.backgroundColor.enabled = '#F6A623';
 orange.color.enabled = -0.7;
 
-export class Test extends React.PureComponent<ITestProps, t.ITestState> {
-  public state: t.ITestState = {};
+export class Test extends React.PureComponent<ITestProps, ITestState> {
+  public state: ITestState = {};
   private unmounted$ = new Subject<{}>();
-  private state$ = new Subject<Partial<t.ITestState>>();
-  private cli: t.ICommandState = cli.init({ state$: this.state$ });
+  private state$ = new Subject<ITestState>();
 
   private button$ = new Subject<t.ButtonEvent>();
   private switch$ = new Subject<t.SwitchEvent>();
@@ -64,7 +62,36 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   /**
    * [Render]
    */
+
   public render() {
+    const styles = {
+      base: css({
+        Flex: 'horizontal-stretch-stretch',
+        Absolute: 0,
+      }),
+      left: css({
+        Flex: 'vertical-stretch-start',
+        padding: 8,
+        width: 120,
+      }),
+    };
+
+    const margin = [null, 10, null, null];
+
+    return (
+      <div {...styles.base}>
+        <div {...styles.left}>
+          <Button margin={margin} label={'enabled'} onClick={this.enabledHandler(true)} />
+          <Button margin={margin} label={'disabled'} onClick={this.enabledHandler(false)} />
+          <Button margin={margin} label={'checked'} onClick={this.checkedHandler(true)} />
+          <Button margin={margin} label={'unchecked'} onClick={this.checkedHandler(false)} />
+        </div>
+        {this.renderButtons()}
+      </div>
+    );
+  }
+
+  public renderButtons() {
     const isEnabled = value.defaultValue(this.state.isEnabled, true);
     const styles = {
       base: css({
@@ -98,84 +125,80 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     };
 
     return (
-      <CommandShell cli={this.cli} tree={{}} localStorage={true}>
-        <div {...styles.base}>
-          <Button id={'simple-label'} {...common} label={'Click Me'} />
+      <div {...styles.base}>
+        <Button id={'simple-label'} {...common} label={'Click Me'} />
 
-          <PinkDashed />
+        <PinkDashed />
 
-          <div {...styles.centerY}>
-            <Button {...common} margin={[0, 20, 0, 0]}>
-              {this.iconButtonContent({ label: 'Foo' })}
-            </Button>
-            <Button {...common} margin={[0, 20, 0, 0]}>
-              {this.iconButtonContent({ label: 'Bar' })}
-            </Button>
-            <Button {...common}>{this.iconButtonContent({ color: COLORS.BLUE })}</Button>
-          </div>
-
-          <PinkDashed />
-
-          <div {...styles.centerY}>
-            <Button {...common} label={'Base Border'} theme={Button.theme.BORDER.BASE} />
-            <Button
-              {...common}
-              label={'Down Theme'}
-              theme={Button.theme.BORDER.BASE}
-              downTheme={orange}
-            />
-            <Button
-              {...common}
-              label={'Blue Over'}
-              theme={Button.theme.BORDER.BASE}
-              overTheme={Button.theme.BORDER.BLUE}
-            />
-            <Button {...common} label={'Blue'} theme={Button.theme.BORDER.BLUE} />
-            <Button {...common} theme={Button.theme.BORDER.BLUE}>
-              {this.iconButtonContent({ label: 'Blue Icon', color: 1 })}
-            </Button>
-          </div>
-          <PinkDashed />
-          <div {...styles.centerY}>
-            <Button {...common} label={'Green'} theme={Button.theme.BORDER.GREEN} />
-            <Button {...common} label={'Dark'} theme={Button.theme.BORDER.DARK} />
-          </div>
-
-          <PinkDashed />
-
-          <div {...styles.centerY}>
-            <Button
-              {...common}
-              label={'minWidth: 250'}
-              theme={Button.theme.BORDER.BASE}
-              minWidth={250}
-            />
-            <Button
-              {...common}
-              label={'minWidth: 250'}
-              theme={Button.theme.BORDER.BLUE}
-              minWidth={250}
-            />
-          </div>
-
-          <PinkDashed />
-
-          <div {...styles.pinkBg}>
-            <Button {...common} label={'Dark'} theme={Button.theme.BORDER.DARK} />
-            <Button {...common} label={'White'} theme={Button.theme.BORDER.WHITE} />
-          </div>
-
-          <PinkDashed />
-
-          <div {...styles.centerY}>{this.renderSwitches({})}</div>
-
-          <PinkDashed />
-
-          <div {...css(styles.centerY, styles.darkBg)}>
-            {this.renderSwitches({ theme: 'DARK' })}
-          </div>
+        <div {...styles.centerY}>
+          <Button {...common} margin={[0, 20, 0, 0]}>
+            {this.iconButtonContent({ label: 'Foo' })}
+          </Button>
+          <Button {...common} margin={[0, 20, 0, 0]}>
+            {this.iconButtonContent({ label: 'Bar' })}
+          </Button>
+          <Button {...common}>{this.iconButtonContent({ color: COLORS.BLUE })}</Button>
         </div>
-      </CommandShell>
+
+        <PinkDashed />
+
+        <div {...styles.centerY}>
+          <Button {...common} label={'Base Border'} theme={Button.theme.BORDER.BASE} />
+          <Button
+            {...common}
+            label={'Down Theme'}
+            theme={Button.theme.BORDER.BASE}
+            downTheme={orange}
+          />
+          <Button
+            {...common}
+            label={'Blue Over'}
+            theme={Button.theme.BORDER.BASE}
+            overTheme={Button.theme.BORDER.BLUE}
+          />
+          <Button {...common} label={'Blue'} theme={Button.theme.BORDER.BLUE} />
+          <Button {...common} theme={Button.theme.BORDER.BLUE}>
+            {this.iconButtonContent({ label: 'Blue Icon', color: 1 })}
+          </Button>
+        </div>
+        <PinkDashed />
+        <div {...styles.centerY}>
+          <Button {...common} label={'Green'} theme={Button.theme.BORDER.GREEN} />
+          <Button {...common} label={'Dark'} theme={Button.theme.BORDER.DARK} />
+        </div>
+
+        <PinkDashed />
+
+        <div {...styles.centerY}>
+          <Button
+            {...common}
+            label={'minWidth: 250'}
+            theme={Button.theme.BORDER.BASE}
+            minWidth={250}
+          />
+          <Button
+            {...common}
+            label={'minWidth: 250'}
+            theme={Button.theme.BORDER.BLUE}
+            minWidth={250}
+          />
+        </div>
+
+        <PinkDashed />
+
+        <div {...styles.pinkBg}>
+          <Button {...common} label={'Dark'} theme={Button.theme.BORDER.DARK} />
+          <Button {...common} label={'White'} theme={Button.theme.BORDER.WHITE} />
+        </div>
+
+        <PinkDashed />
+
+        <div {...styles.centerY}>{this.renderSwitches({})}</div>
+
+        <PinkDashed />
+
+        <div {...css(styles.centerY, styles.darkBg)}>{this.renderSwitches({ theme: 'DARK' })}</div>
+      </div>
     );
   }
 
@@ -251,6 +274,18 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   private onSwitchClick = () => {
     const isChecked = !this.state.isChecked;
     this.state$.next({ isChecked });
+  };
+
+  private enabledHandler = (isEnabled: boolean) => {
+    return () => {
+      this.state$.next({ isEnabled });
+    };
+  };
+
+  private checkedHandler = (isChecked: boolean) => {
+    return () => {
+      this.state$.next({ isChecked });
+    };
   };
 }
 
