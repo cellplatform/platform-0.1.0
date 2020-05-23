@@ -1,3 +1,6 @@
 module.exports = {
   extends: ['./node_modules/@platform/ts.libs/lint', 'plugin:react/recommended'],
+  rules: {
+    '@typescript-eslint/no-unused-vars': 0,
+  },
 };
