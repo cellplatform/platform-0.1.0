@@ -41,7 +41,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     const button$ = this.button$.pipe(takeUntil(this.unmounted$));
     const switch$ = this.switch$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));

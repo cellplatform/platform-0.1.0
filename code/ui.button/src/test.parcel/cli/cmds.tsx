@@ -1,4 +1,4 @@
-import { Command, t, constants } from '../common';
+import { Command, t } from '../common';
 
 type P = t.ICommandProps;
 
