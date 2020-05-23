@@ -32,6 +32,7 @@
   "files": [
     "lib",
     "!lib/test",
+    "!lib/test.parcel",
     "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"

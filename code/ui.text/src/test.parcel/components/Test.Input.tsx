@@ -1,20 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, map, takeUntil, throwIfEmpty } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import {
-  COLORS,
-  Button,
-  color,
-  css,
-  Hr,
-  ITextInputProps,
-  log,
-  t,
-  TextInput,
-  time,
-} from '../common';
-import { TestText } from './Test.Text';
+import { color, COLORS, css, ITextInputProps, log, t, TextInput } from '../common';
 
 export type ITestInputProps = { value?: string };
 export type ITestInputState = { value?: string; isClickableEditing?: boolean };

@@ -55,6 +55,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
         fontSize: 13,
         padding: 10,
         lineHeight: 1.8,
+        Flex: 'vertical-start-start',
       }),
       right: css({
         flex: 1,
@@ -70,21 +71,9 @@ export class Test extends React.PureComponent<{}, ITestState> {
           {this.button('value: long', () => this.state$.next({ value: LOREM }))}
           <Hr margin={5} />
           {this.button('focus', () => this.input(0).focus())}
-          {this.button('selectAll', () =>
-            this.input(0)
-              .selectAll()
-              .focus(),
-          )}
-          {this.button('cursorToStart', () =>
-            this.input(0)
-              .cursorToStart()
-              .focus(),
-          )}
-          {this.button('cursorToEnd', () =>
-            this.input(0)
-              .cursorToEnd()
-              .focus(),
-          )}
+          {this.button('selectAll', () => this.input(0).selectAll().focus())}
+          {this.button('cursorToStart', () => this.input(0).cursorToStart().focus())}
+          {this.button('cursorToEnd', () => this.input(0).cursorToEnd().focus())}
         </div>
         <div {...styles.right}>{this.renderMain()}</div>
       </div>

@@ -20,7 +20,7 @@ export class TestText extends React.PureComponent<ITestTextProps, ITestTextState
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
   }
 

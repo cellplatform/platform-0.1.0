@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { color as colorUtil, containsFocus, css, events, CssValue, R, t, util } from '../common';
+import { color as colorUtil, containsFocus, css, events, CssValue, R, t, util } from './common';
 
 export const DEFAULT_TEXT_STYLE: t.ITextInputStyle = {
   opacity: 1,
@@ -67,35 +67,32 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+
+  public componentDidMount() {
     // Change state safely.
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     // Monitor keyboard.
     const keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
-    const modifier$ = keypress$.pipe(filter(e => e.isModifier));
+    const modifier$ = keypress$.pipe(filter((e) => e.isModifier));
 
     // Keep references to currently pressed modifier keys
     modifier$
       .pipe(
-        filter(e => e.isPressed),
-        map(e => e.key.toLowerCase()),
+        filter((e) => e.isPressed),
+        map((e) => e.key.toLowerCase()),
       )
-      .subscribe(key => (this.modifierKeys[key] = true));
+      .subscribe((key) => (this.modifierKeys[key] = true));
     modifier$
       .pipe(
-        filter(e => !e.isPressed),
-        map(e => e.key.toLowerCase()),
+        filter((e) => !e.isPressed),
+        map((e) => e.key.toLowerCase()),
       )
-      .subscribe(key => (this.modifierKeys[key] = false));
+      .subscribe((key) => (this.modifierKeys[key] = false));
 
     // Initialize.
     this.updateValue();
-  }
-
-  public componentDidMount() {
-    const { focusOnLoad } = this.props;
-    if (focusOnLoad) {
+    if (this.props.focusOnLoad) {
       setTimeout(() => this.focus(), 0);
     }
   }
@@ -223,7 +220,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         ref={this.inputRef}
         type={isPassword ? 'password' : 'text'}
         disabled={!isEnabled}
-        value={this.state.value}
+        value={this.state.value || ''}
         onChange={this.handleChange}
         maxLength={maxLength}
         spellCheck={this.props.spellCheck}
