@@ -54,7 +54,7 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
       return res;
     };
 
-    const body = base.body.urls?.files.map(item => toUrl(item));
+    const body = base.body.urls?.files.map((item) => toUrl(item));
     return util.toClientResponse<T>(status, body || []);
   }
 
@@ -89,7 +89,7 @@ export class HttpClientCellFiles implements t.IHttpClientCellFiles {
       const value = map[fileid];
       if (value) {
         const uri = Schema.uri.create.file(ns, fileid);
-        const url = urls.find(item => item.uri === uri);
+        const url = urls.find((item) => item.uri === uri);
         if (url) {
           const { path, filename, dir } = HttpClientCellFiles.parsePath(url.path);
           acc.push({ uri, path, filename, dir, ...value });

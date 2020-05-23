@@ -26,15 +26,15 @@ export function setProp<P extends Props, K extends keyof P>(args: {
   // Strip default values from the property section.
   if (defaults && typeof defaults === 'object') {
     Object.keys((defaults as unknown) as object)
-      .filter(key => R.equals(section[key], defaults[key]))
-      .forEach(key => delete section[key]);
+      .filter((key) => R.equals(section[key], defaults[key]))
+      .forEach((key) => delete section[key]);
   }
 
   // Strip undefined values from property section.
   if (typeof section === 'object') {
     Object.keys((section as unknown) as object)
-      .filter(key => section[key] === undefined)
-      .forEach(key => delete section[key]);
+      .filter((key) => section[key] === undefined)
+      .forEach((key) => delete section[key]);
   }
 
   // Remove the section from the root props if empty.

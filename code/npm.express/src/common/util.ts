@@ -12,11 +12,11 @@ export function monitorProcessEvents(process: NodeProcess) {
 
   let actions: string[] = [];
   process$
-    .pipe(filter(e => e.type === 'PROCESS/stopped'))
-    .subscribe(e => (actions = [...actions, 'STOPPED']));
+    .pipe(filter((e) => e.type === 'PROCESS/stopped'))
+    .subscribe((e) => (actions = [...actions, 'STOPPED']));
   process$
-    .pipe(filter(e => e.type === 'PROCESS/started'))
-    .subscribe(e => (actions = [...actions, 'STARTED']));
+    .pipe(filter((e) => e.type === 'PROCESS/started'))
+    .subscribe((e) => (actions = [...actions, 'STARTED']));
 
   return {
     stop: () => done$.next(),

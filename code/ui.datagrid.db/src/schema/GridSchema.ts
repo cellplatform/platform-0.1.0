@@ -34,6 +34,6 @@ export class GridSchema {
   /**
    * [Helpers]
    */
-  public toList = (map: t.Map) => toList(map, key => this.toKey(key));
-  public toMap = (list: t.List) => toMap(list, key => this.toKey(key));
+  public toList = (map: t.Map) => toList(map, (key) => this.toKey(key));
+  public toMap = (list: t.List) => toMap(list, (key) => this.toKey(key));
 }

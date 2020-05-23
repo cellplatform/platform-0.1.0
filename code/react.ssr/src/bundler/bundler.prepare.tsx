@@ -41,8 +41,8 @@ const bundleManifest = {
     const dirSize = await fs.size.dir(dir);
 
     const paths = await fs.glob.find(fs.join(dir, '**'));
-    const files = paths.map(path => {
-      const size = dirSize.files.find(item => item.path === path);
+    const files = paths.map((path) => {
+      const size = dirSize.files.find((item) => item.path === path);
       const file: t.IBundleFile = {
         path: path.substring(dir.length + 1),
         bytes: size ? size.bytes : -1,
@@ -51,8 +51,8 @@ const bundleManifest = {
     });
 
     const entries = (args.entries || [])
-      .filter(entry => files.some(file => file.path === entry.file))
-      .map(entry => renderEntry(entry));
+      .filter((entry) => files.some((file) => file.path === entry.file))
+      .map((entry) => renderEntry(entry));
 
     const manifest: t.IBundleManifest = {
       version,

@@ -31,23 +31,23 @@ export class DataGridOverlay extends React.PureComponent<
     const { grid } = this.props;
 
     // Manage state.
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     // Setup observables.
     const events$ = grid.events$.pipe(takeUntil(this.unmounted$));
     const command$ = events$.pipe(
-      filter(e => e.type === 'GRID/command'),
-      map(e => e.payload as t.IGridCommand),
+      filter((e) => e.type === 'GRID/command'),
+      map((e) => e.payload as t.IGridCommand),
     );
 
     // Redraw when overlay changed.
     command$
       .pipe(
-        filter(e => e.command === 'OVERLAY/show'),
-        map(e => e as t.IGridOverlayShowCommand),
-        filter(e => !R.equals(e.props.screen, this.state.screen)),
+        filter((e) => e.command === 'OVERLAY/show'),
+        map((e) => e as t.IGridOverlayShowCommand),
+        filter((e) => !R.equals(e.props.screen, this.state.screen)),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const key = e.props.cell;
         const screen = e.props.screen;
         if (key && screen) {
@@ -57,10 +57,10 @@ export class DataGridOverlay extends React.PureComponent<
 
     command$
       .pipe(
-        filter(e => e.command === 'OVERLAY/hide'),
+        filter((e) => e.command === 'OVERLAY/hide'),
         filter(() => this.isShowing),
       )
-      .subscribe(e => this.hide());
+      .subscribe((e) => this.hide());
   }
 
   public componentWillUnmount() {

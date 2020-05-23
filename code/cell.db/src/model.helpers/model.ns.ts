@@ -133,7 +133,7 @@ export async function getChildData(args: {
     { field: 'columns', fn: getChildColumns },
     { field: 'files', fn: getChildFiles },
   ]
-    .filter(item => {
+    .filter((item) => {
       const field = item.field as t.NsTotalKey;
       return Boolean(args[field]) || totalsFlags.includes(field);
     })
@@ -179,8 +179,8 @@ export async function getChildData(args: {
   // Prune off any data-fields that were not asked for.
   // NB: These may have been added if the total of the type was requested.
   Object.keys(data)
-    .filter(field => !Boolean(args[field]))
-    .forEach(field => delete data[field]);
+    .filter((field) => !Boolean(args[field]))
+    .forEach((field) => delete data[field]);
 
   // Finish up.
   return { data, totals };
@@ -251,7 +251,7 @@ export async function setChildCells(args: { ns: t.IDbModelNs; data?: t.IMap<t.IC
   return setChildren({
     data,
     getUri,
-    getModel: key => Cell.create({ db, uri: getUri(key) }),
+    getModel: (key) => Cell.create({ db, uri: getUri(key) }),
   });
 }
 
@@ -266,7 +266,7 @@ export async function setChildRows(args: { ns: t.IDbModelNs; data?: t.IMap<t.IRo
   return setChildren({
     data,
     getUri,
-    getModel: key => Row.create({ db, uri: getUri(key) }),
+    getModel: (key) => Row.create({ db, uri: getUri(key) }),
   });
 }
 
@@ -281,7 +281,7 @@ export async function setChildColumns(args: { ns: t.IDbModelNs; data?: t.IMap<t.
   return setChildren({
     data,
     getUri,
-    getModel: key => Column.create({ db, uri: getUri(key) }),
+    getModel: (key) => Column.create({ db, uri: getUri(key) }),
   });
 }
 
@@ -292,7 +292,7 @@ function toRangeUnion(input?: string) {
   if (!input) {
     return undefined;
   }
-  const ranges = input.split(',').map(key => (key.includes(':') ? key : `${key}:${key}`));
+  const ranges = input.split(',').map((key) => (key.includes(':') ? key : `${key}:${key}`));
   return coord.range.union(ranges);
 }
 
@@ -313,7 +313,7 @@ async function setChildren(args: {
     return { total, changes, isChanged: changes.length > 0 };
   }
 
-  const wait = Object.keys(data).map(async key => {
+  const wait = Object.keys(data).map(async (key) => {
     const props = data[key];
     if (typeof props === 'object') {
       const model = (await args.getModel(key).ready).set(props);

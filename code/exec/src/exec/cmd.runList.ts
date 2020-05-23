@@ -24,7 +24,7 @@ export async function runList(
   const inputs = Array.isArray(commands) ? commands : [commands];
 
   // Prepare the commands.
-  const cmds: ICommand[] = inputs.map(input =>
+  const cmds: ICommand[] = inputs.map((input) =>
     typeof input === 'string' ? { title: input, cmd: input } : input,
   );
 
@@ -70,23 +70,23 @@ export async function runList(
  */
 
 function formatErrors(results: IListCommandResult[]) {
-  const all = results.filter(res => !res.ok);
+  const all = results.filter((res) => !res.ok);
   const errors: ICommandError[] = [];
 
   all.forEach(({ index, data, cmd, stdout, stderr }) => {
-    let targetIndex = errors.findIndex(item => item.index === index);
+    let targetIndex = errors.findIndex((item) => item.index === index);
     targetIndex = targetIndex === -1 ? errors.length : targetIndex;
 
     const target = errors[targetIndex] || { index, cmd, errors: [] };
     errors[targetIndex] = target;
 
-    data.errors.forEach(err => target.errors.push(err));
-    stdout.forEach(line => target.errors.push(line));
-    stderr.forEach(line => target.errors.push(line));
+    data.errors.forEach((err) => target.errors.push(err));
+    stdout.forEach((line) => target.errors.push(line));
+    stderr.forEach((line) => target.errors.push(line));
   });
 
   const command = errors as ICommandErrors;
-  command.log = options => logErrors(command, options);
+  command.log = (options) => logErrors(command, options);
 
   return { all, command };
 }
@@ -115,7 +115,7 @@ function logErrors(
       add(`    ${chalk.gray(cmd)}`);
       add();
     }
-    errors.forEach(line => {
+    errors.forEach((line) => {
       const isStackTrace = line.includes(' at ') && line.includes('.js');
       const text = isStackTrace ? chalk.gray(line) : line;
       add(text);

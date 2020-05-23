@@ -98,31 +98,30 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
    * [Constructor]
    */
 
-  public componentWillMount() {
+  public componentDidMount() {
     if (this.props.events$) {
       this.events$.subscribe(this.props.events$);
     }
 
     // Monitor keyboard.
     const keypress$ = this.keypress$;
-    const modifier$ = keypress$.pipe(filter(e => e.isModifier));
+    const modifier$ = keypress$.pipe(filter((e) => e.isModifier));
 
     // Keep references to currently pressed modifier keys
     modifier$
       .pipe(
-        filter(e => e.isPressed),
-        map(e => e.key.toLowerCase()),
+        filter((e) => e.isPressed),
+        map((e) => e.key.toLowerCase()),
       )
-      .subscribe(key => (this.modifierKeys[key] = true));
+      .subscribe((key) => (this.modifierKeys[key] = true));
     modifier$
       .pipe(
-        filter(e => !e.isPressed),
-        map(e => e.key.toLowerCase()),
+        filter((e) => !e.isPressed),
+        map((e) => e.key.toLowerCase()),
       )
-      .subscribe(key => (this.modifierKeys[key] = false));
-  }
+      .subscribe((key) => (this.modifierKeys[key] = false));
 
-  public componentDidMount() {
+    // Initialize.
     const {
       value = '',
       focusOnLoad,

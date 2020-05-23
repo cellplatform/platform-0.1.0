@@ -47,8 +47,8 @@ export class WindowsMain implements IWindows {
   public readonly events$ = this._events$.pipe(takeUntil(this.dispose$), share());
 
   public readonly change$ = this.events$.pipe(
-    filter(e => e.type === '@platform/WINDOW/change'),
-    map(e => e.payload as IWindowChange),
+    filter((e) => e.type === '@platform/WINDOW/change'),
+    map((e) => e.payload as IWindowChange),
     share(),
   );
 
@@ -77,21 +77,21 @@ export class WindowsMain implements IWindows {
       '@platform/WINDOWS/refresh',
       '@platform/WINDOW/change',
     ];
-    this.events$.pipe(filter(e => broadcast.includes(e.type))).subscribe(e => {
+    this.events$.pipe(filter((e) => broadcast.includes(e.type))).subscribe((e) => {
       ipc.send(e.type, e.payload);
     });
 
     /**
      * Handle requests from windows for window information.
      */
-    ipc.handle<IWindowsGetEvent>('@platform/WINDOWS/get', async e => {
+    ipc.handle<IWindowsGetEvent>('@platform/WINDOWS/get', async (e) => {
       return this.toObject() as IWindowsGetResponse;
     });
 
     /**
      * Handle tag requests from client windows.
      */
-    ipc.handle<IWindowsTagEvent>('@platform/WINDOWS/tag', async e => {
+    ipc.handle<IWindowsTagEvent>('@platform/WINDOWS/tag', async (e) => {
       const { windowId, tags } = e.payload;
       this.tag(windowId, ...tags);
     });
@@ -99,7 +99,7 @@ export class WindowsMain implements IWindows {
     /**
      * Handle visibility requests from client windows.
      */
-    ipc.handle<IWindowsVisibleEvent>('@platform/WINDOWS/visible', async e => {
+    ipc.handle<IWindowsVisibleEvent>('@platform/WINDOWS/visible', async (e) => {
       const { isVisible, windowId } = e.payload;
       this.visible(isVisible, ...windowId);
     });
@@ -127,11 +127,11 @@ export class WindowsMain implements IWindows {
   public get refs() {
     const all = BrowserWindow.getAllWindows();
     return this._refs
-      .map(ref => {
+      .map((ref) => {
         try {
-          const window = all.find(window => window.id === ref.id);
+          const window = all.find((window) => window.id === ref.id);
           const parent = window ? window.getParentWindow() : undefined;
-          const children = window ? window.getChildWindows().map(window => window.id) : [];
+          const children = window ? window.getChildWindows().map((window) => window.id) : [];
           ref = parent ? { ...ref, parent: parent.id } : ref;
           return { ...ref, children };
         } catch (error) {
@@ -140,17 +140,17 @@ export class WindowsMain implements IWindows {
           return undefined;
         }
       })
-      .filter(ref => Boolean(ref)) as IWindowRef[];
+      .filter((ref) => Boolean(ref)) as IWindowRef[];
   }
 
   public get ids() {
-    return this._refs.map(ref => ref.id);
+    return this._refs.map((ref) => ref.id);
   }
 
   public get focused() {
     try {
       const window = BrowserWindow.getFocusedWindow();
-      return window ? this.refs.find(ref => ref.id === window.id) : undefined;
+      return window ? this.refs.find((ref) => ref.id === window.id) : undefined;
     } catch (error) {
       // Ignore.
       // NB: This may throw if invoked while the application is shutting down.
@@ -178,11 +178,11 @@ export class WindowsMain implements IWindows {
    */
   public async tag(windowId: number, ...tags: IWindowTag[]) {
     const refs = [...this.refs];
-    const index = refs.findIndex(window => window.id === windowId);
+    const index = refs.findIndex((window) => window.id === windowId);
 
     // Apply the tag(s) to the window references.
     if (index > -1) {
-      tags.forEach(tag => {
+      tags.forEach((tag) => {
         const window = { ...refs[index] };
         const tags = uniq([...window.tags, tag]);
         refs[index] = { ...window, tags };
@@ -223,9 +223,9 @@ export class WindowsMain implements IWindows {
   public visible(isVisible: boolean, ...windowId: number[]) {
     const all = BrowserWindow.getAllWindows();
     const refs = windowId.length === 0 ? this.refs : this.byIds(...windowId);
-    refs.forEach(ref => {
+    refs.forEach((ref) => {
       try {
-        const window = all.find(window => window.id === ref.id);
+        const window = all.find((window) => window.id === ref.id);
         if (window) {
           if (isVisible) {
             window.show();
@@ -253,8 +253,8 @@ export class WindowsMain implements IWindows {
     window.on('show', () => this.changeVisibility(windowId, true));
     window.on('hide', () => this.changeVisibility(windowId, false));
     window.once('closed', () => {
-      const ref = this.refs.find(ref => ref.id === windowId);
-      this._refs = this.refs.filter(ref => ref.id !== windowId);
+      const ref = this.refs.find((ref) => ref.id === windowId);
+      this._refs = this.refs.filter((ref) => ref.id !== windowId);
       if (ref) {
         // NB: Do not fire the closed event if the app was quit.
         this.fireChange('CLOSED', ref);
@@ -263,7 +263,7 @@ export class WindowsMain implements IWindows {
   };
 
   private changeVisibility = (windowId: number, isVisible: boolean) => {
-    const index = this.refs.findIndex(ref => ref.id === windowId);
+    const index = this.refs.findIndex((ref) => ref.id === windowId);
     const ref = this.refs[index];
     if (ref) {
       this._refs = [...this._refs];

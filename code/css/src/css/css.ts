@@ -236,9 +236,9 @@ function formatFlexPosition(key: string, value: string, target: t.CssProps) {
   let crossAlignment: string | undefined;
 
   // Tokenize string
-  const tokens: string[] = value.split('-').map(token => token.trim());
+  const tokens: string[] = value.split('-').map((token) => token.trim());
 
-  tokens.map(token => {
+  tokens.map((token) => {
     const tokenIsOneOf = (options: string[]) => options.includes(token);
     if (direction == null && tokenIsOneOf(['horizontal', 'vertical'])) {
       direction = token === 'vertical' ? 'column' : 'row'; // eslint-disable-line
@@ -290,7 +290,7 @@ export const transform = (
   if (typeof style !== 'object') {
     return style;
   }
-  Object.keys(style).forEach(key => {
+  Object.keys(style).forEach((key) => {
     const value = style[key];
     if (value === false || value === null || value === undefined) {
       delete style[key];
@@ -353,9 +353,9 @@ const isJss = (input: any) =>
 
 const flattenJss = (input: S[]) => {
   const output: any[] = [];
-  input.forEach(item => {
+  input.forEach((item) => {
     if (isJss(item)) {
-      flattenJss((item as any).values).forEach(child => output.push(child)); // <== RECURSION 🌳
+      flattenJss((item as any).values).forEach((child) => output.push(child)); // <== RECURSION 🌳
     } else {
       output.push(transform(item));
     }

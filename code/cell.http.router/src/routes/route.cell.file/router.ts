@@ -16,7 +16,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *      NB: This is the same as calling the `/file:...` GET route point directly.
    *
    */
-  router.get(routes.CELL.FILE.BY_NAME, async req => {
+  router.get(routes.CELL.FILE.BY_NAME, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFileDownloadByName;
@@ -40,7 +40,7 @@ export function init(args: { db: t.IDb; fs: t.IFileSystem; router: t.IRouter }) 
    *               /cell:foo:A1/file:abc123.pdf
    *
    */
-  router.get(routes.CELL.FILE.BY_FILE_URI, async req => {
+  router.get(routes.CELL.FILE.BY_FILE_URI, async (req) => {
     try {
       const host = req.host;
       const query = req.query as t.IReqQueryCellFileDownloadByFileUri;

@@ -28,7 +28,7 @@ export const util = {
    */
   async renameToYml(args: { dir?: string } = {}) {
     const dir = args.dir || PATH.CONFIG_DIR;
-    const names = (await fs.readdir(dir)).filter(name => name.endsWith('.yaml'));
+    const names = (await fs.readdir(dir)).filter((name) => name.endsWith('.yaml'));
 
     const renamed: { from: string; to: string }[] = [];
     for (const name of names) {

@@ -26,7 +26,7 @@ export class Page extends React.PureComponent<IPageProps, IPageState> {
    */
   constructor(props: IPageProps) {
     super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {

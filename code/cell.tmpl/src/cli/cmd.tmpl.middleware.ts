@@ -18,8 +18,8 @@ export function saveFile(
     let target = fs.join(dir, req.path.target);
 
     rename
-      .filter(item => target.endsWith(item.from))
-      .forEach(item => {
+      .filter((item) => target.endsWith(item.from))
+      .forEach((item) => {
         target = target.substr(0, target.length - item.from.length);
         target += item.to;
       });

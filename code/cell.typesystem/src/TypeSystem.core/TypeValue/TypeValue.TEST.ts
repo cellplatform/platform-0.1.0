@@ -217,7 +217,7 @@ describe('TypeValue', () => {
         expect(res.typename).to.eql(`'red' | 'blue' | 'green'[]`);
 
         if (res.kind === 'UNION') {
-          expect(res.types.every(t => t.kind === 'ENUM')).to.eql(true);
+          expect(res.types.every((t) => t.kind === 'ENUM')).to.eql(true);
           expect(res.types.length).to.eql(3);
           expect(res.types[0].typename).to.eql(`'red'`);
 

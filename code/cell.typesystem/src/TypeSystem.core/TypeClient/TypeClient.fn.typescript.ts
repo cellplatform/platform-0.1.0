@@ -17,7 +17,7 @@ export function typescript(
      * Comments to insert at the head of the typescript.
      */
     get header() {
-      const uri = R.uniq(defs.map(def => def.uri));
+      const uri = R.uniq(defs.map((def) => def.uri));
 
       const toPkg = (name?: string, version?: string) => {
         const pkg = { name: name || 'Unnamed', version: version || '0.0.0' };
@@ -42,7 +42,7 @@ export function typescript(
       const addedTypenames: string[] = [];
 
       const toDeclaration = (typename: string) => {
-        const def = defs.find(def => def.typename === typename);
+        const def = defs.find((def) => def.typename === typename);
         if (!def) {
           return '';
         }
@@ -50,7 +50,7 @@ export function typescript(
           typename,
           exports: options.exports,
           types: def.columns,
-          filterType: e => {
+          filterType: (e) => {
             const exists = addedTypenames.includes(e.typename);
             addedTypenames.push(e.typename);
             return !exists;
@@ -76,8 +76,8 @@ export function typescript(
         });
       };
 
-      const typenames = R.uniq(defs.map(def => def.typename));
-      const code = typenames.map(typename => toDeclaration(typename)).join('\n');
+      const typenames = R.uniq(defs.map((def) => def.typename));
+      const code = typenames.map((typename) => toDeclaration(typename)).join('\n');
       const imports = options.imports !== false ? `import * as t from '@platform/cell.types';` : '';
 
       let res = '';

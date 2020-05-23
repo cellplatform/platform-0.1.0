@@ -47,8 +47,8 @@ export function toPayloadSize(
     target === 'LOCAL' ? item.localBytes : item.remoteBytes;
 
   const bytes = (items || [])
-    .filter(item => getBytes(item) > -1)
-    .map(item => getBytes(item))
+    .filter((item) => getBytes(item) > -1)
+    .map((item) => getBytes(item))
     .reduce((acc, next) => acc + next, 0);
   return {
     bytes,

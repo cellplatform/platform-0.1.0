@@ -41,12 +41,12 @@ export class CommandTreeView extends React.PureComponent<
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const mouse$ = this.mouse$.pipe(
       takeUntil(this.unmounted$),
-      filter(e => e.button === 'LEFT'),
+      filter((e) => e.button === 'LEFT'),
     );
-    const click$ = mouse$.pipe(filter(e => e.type === 'DOWN'));
+    const click$ = mouse$.pipe(filter((e) => e.type === 'DOWN'));
 
     // Update state.
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     // Bubble events.
     if (this.props.events$) {
@@ -57,28 +57,28 @@ export class CommandTreeView extends React.PureComponent<
       // Drill into child node.
       .pipe(
         filter(
-          e =>
+          (e) =>
             (e.type === 'DOUBLE_CLICK' && e.target === 'NODE') ||
             (e.type === 'DOWN' && e.target === 'DRILL_IN'),
         ),
-        filter(e => (e.node.children || []).length > 0),
+        filter((e) => (e.node.children || []).length > 0),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.fireCurrent(e.node, e.target === 'NODE' ? 'NONE' : 'CHILD');
       });
 
     click$
       // Step up to parent.
-      .pipe(filter(e => e.target === 'PARENT'))
-      .subscribe(e => {
+      .pipe(filter((e) => e.target === 'PARENT'))
+      .subscribe((e) => {
         const parent = TreeView.util.parent(this.state.treeRoot, e.node);
         this.fireCurrent(parent, 'PARENT');
       });
 
     click$
       //
-      .pipe(filter(e => e.target === 'NODE'))
-      .subscribe(e => {
+      .pipe(filter((e) => e.target === 'NODE'))
+      .subscribe((e) => {
         const command = util.asCommand(this.rootCommand, e.node);
         if (command) {
           this.fire({ type: 'COMMAND_TREE/click', payload: { command } });
@@ -136,7 +136,7 @@ export class CommandTreeView extends React.PureComponent<
     const currentCommandId = util.asTreeNodeId(currentCommand);
     const dimmed = currentCommand && !isAutocompleted ? [] : filterDimmed(fuzzyMatches);
 
-    TreeView.util.walk(treeRoot, node => {
+    TreeView.util.walk(treeRoot, (node) => {
       const command = node.data as t.ICommand;
 
       // Dim any nodes that are filtered out due to the current input text.
@@ -191,7 +191,7 @@ export class CommandTreeView extends React.PureComponent<
   /**
    * [Handlers]
    */
-  private renderIcon: t.RenderTreeIcon = e => Icons[e.icon];
+  private renderIcon: t.RenderTreeIcon = (e) => Icons[e.icon];
 }
 
 /**
@@ -200,7 +200,7 @@ export class CommandTreeView extends React.PureComponent<
 
 function filterDimmed(matches: t.ICommandFuzzyMatch[] = []) {
   return matches
-    .filter(m => m.isMatch === false)
-    .map(m => m.command)
-    .map(cmd => util.asTreeNodeId(cmd));
+    .filter((m) => m.isMatch === false)
+    .map((m) => m.command)
+    .map((cmd) => util.asTreeNodeId(cmd));
 }

@@ -80,7 +80,7 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
 
       // Remove reference from the "many" target.
       if (manyRefs.includes(oneId)) {
-        const refs = manyRefs.filter(item => item !== oneId) as any;
+        const refs = manyRefs.filter((item) => item !== oneId) as any;
         manyModel = { ...manyModel, [many.field]: refs };
         batch = [...batch, { key: manyKey, value: manyModel }];
       }
@@ -95,7 +95,7 @@ export function oneToMany<O extends { id: string }, M extends { id: string }>(ar
      */
     async refs(oneId: string, manyId: string) {
       const { manyRefs } = await prepare(oneId, manyId);
-      const keys = manyRefs.map(ref => one.dbKey(ref));
+      const keys = manyRefs.map((ref) => one.dbKey(ref));
       const values = keys.length > 0 ? await db.getMany(keys) : {};
       return Object.keys(values).reduce((acc: M[], key) => {
         const model = values[key].value;
@@ -160,8 +160,8 @@ export function manyToMany<A extends { id: string }, B extends { id: string }>(a
       const { refsA, refsB, keyA, keyB } = prep;
       let { modelA, modelB } = prep;
 
-      modelA = { ...modelA, [a.field]: refsA.filter(ref => ref !== modelB.id) };
-      modelB = { ...modelB, [b.field]: refsB.filter(ref => ref !== modelA.id) };
+      modelA = { ...modelA, [a.field]: refsA.filter((ref) => ref !== modelB.id) };
+      modelB = { ...modelB, [b.field]: refsB.filter((ref) => ref !== modelA.id) };
       await db.putMany([
         { key: keyA, value: modelA },
         { key: keyB, value: modelB },

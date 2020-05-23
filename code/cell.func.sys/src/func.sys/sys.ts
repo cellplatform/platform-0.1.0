@@ -11,7 +11,7 @@ export * from './types';
  * Binay expressions:
  *    '>' | '<' | '=' | '>=' | '<=' | '+' | '*' | '-' | '&'
  */
-export const getFunc: t.GetFunc = async args => {
+export const getFunc: t.GetFunc = async (args) => {
   const { namespace, name } = args;
   if (namespace === 'sys') {
     switch (name as FuncName) {

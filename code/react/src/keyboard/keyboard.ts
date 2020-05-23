@@ -14,8 +14,8 @@ const MODIFIERS = {
 
 const isModifierPressed = (e: t.IKeypressEvent) => {
   return Object.keys(MODIFIERS)
-    .map(key => MODIFIERS[key])
-    .some(prop => e[prop] === true);
+    .map((key) => MODIFIERS[key])
+    .some((prop) => e[prop] === true);
 };
 
 /**
@@ -33,7 +33,7 @@ export class Keyboard<T extends t.KeyCommand> implements t.IKeyboard<T> {
    * Determine whether the given key value is a modifier key (CMD, ALT, CTRL, SHIFT).
    */
   public static isModifier(key: string) {
-    return Object.keys(MODIFIERS).some(item => item === key);
+    return Object.keys(MODIFIERS).some((item) => item === key);
   }
 
   /**
@@ -55,11 +55,11 @@ export class Keyboard<T extends t.KeyCommand> implements t.IKeyboard<T> {
     }
     const parts = (pattern || '')
       .split('+')
-      .map(key => key.trim())
-      .filter(key => Boolean(key))
-      .map(key => Keyboard.formatKey(key));
+      .map((key) => key.trim())
+      .filter((key) => Boolean(key))
+      .map((key) => Keyboard.formatKey(key));
     const modifiers = Array.from(new Set(parts.filter(Keyboard.isModifier))) as t.ModifierKey[];
-    let keys = parts.filter(key => !modifiers.some(item => item === key));
+    let keys = parts.filter((key) => !modifiers.some((item) => item === key));
     keys = Array.from(new Set(keys));
     return { keys, modifiers };
   }
@@ -124,8 +124,8 @@ export class Keyboard<T extends t.KeyCommand> implements t.IKeyboard<T> {
     this.keyPress$ = keyPress$ = keyPress$.pipe(takeUntil(this._dispose$));
     this.bindings = options.bindings || [];
 
-    keyPress$.subscribe(e => (this.latest = e));
-    this.monitorBindings(e => bindingPress$.next(e));
+    keyPress$.subscribe((e) => (this.latest = e));
+    this.monitorBindings((e) => bindingPress$.next(e));
 
     if (options.dispose$) {
       options.dispose$.pipe(take(1)).subscribe(() => this.dispose());
@@ -200,7 +200,7 @@ export class Keyboard<T extends t.KeyCommand> implements t.IKeyboard<T> {
 
     keyPress$
       // Cache up the currently pressed set of keys with modifier.
-      .subscribe(e => {
+      .subscribe((e) => {
         const hasModifier = isModifierPressed(e);
         if (e.isModifier && !e.isPressed && !hasModifier) {
           pressedKeys = [];
@@ -217,8 +217,8 @@ export class Keyboard<T extends t.KeyCommand> implements t.IKeyboard<T> {
 
     keyPress$
       .pipe(
-        filter(e => e.isPressed),
-        map(e => ({ event: e, binding: this.matchBinding(e, pressedKeys) })),
+        filter((e) => e.isPressed),
+        map((e) => ({ event: e, binding: this.matchBinding(e, pressedKeys) })),
       )
       .subscribe(({ event, binding }) => {
         if (binding) {
@@ -244,7 +244,7 @@ export class Keyboard<T extends t.KeyCommand> implements t.IKeyboard<T> {
   private matchBinding(e: t.IKeypressEvent, pressedKeys: string[]): t.KeyBinding<T> | undefined {
     const hasAllModifiers = (modifiers: string[]) => {
       for (const key of Object.keys(MODIFIERS)) {
-        const exists = modifiers.some(item => item === key);
+        const exists = modifiers.some((item) => item === key);
         if (e[MODIFIERS[key]] !== exists) {
           return false;
         }

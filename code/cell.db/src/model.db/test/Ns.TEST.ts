@@ -23,13 +23,13 @@ describe('model.db.Ns (Namespace)', () => {
     expect((ns.props.props || {}).title).to.eql(undefined);
     expect(ns.props.hash).to.eql(undefined);
 
-    const cells = (await ns.children.cells).map(c => c.toObject());
+    const cells = (await ns.children.cells).map((c) => c.toObject());
     expect(cells.length).to.eql(2);
     expect(cells[0].value).to.eql('123');
     expect(cells[1].value).to.eql('456');
 
-    const rows = (await ns.children.rows).map(c => c.toObject());
-    const cols = (await ns.children.columns).map(c => c.toObject());
+    const rows = (await ns.children.rows).map((c) => c.toObject());
+    const cols = (await ns.children.columns).map((c) => c.toObject());
 
     expect(rows).to.eql([]);
     expect(cols).to.eql([]);

@@ -9,7 +9,7 @@ describe('bundler.util', () => {
 
   describe('dir', () => {
     const dirnames = ['0.1.0', 'bar.5', '0.1.1', '0.1.1-alpha.0', 'foo'];
-    const dirs = dirnames.map(name => fs.join(tmp, name));
+    const dirs = dirnames.map((name) => fs.join(tmp, name));
 
     const createDirs = async () => {
       await fs.remove(tmp);
@@ -31,14 +31,14 @@ describe('bundler.util', () => {
       it('sorted (ascending, default)', async () => {
         await createDirs();
         const res = await util.dir(tmp).semver();
-        const dirnames = res.map(path => fs.basename(path));
+        const dirnames = res.map((path) => fs.basename(path));
         expect(dirnames).to.eql(['0.1.0', '0.1.1-alpha.0', '0.1.1']);
       });
 
       it('sorted (descending)', async () => {
         await createDirs();
         const res = await util.dir(tmp).semver({ sort: 'DESC' });
-        const dirnames = res.map(path => fs.basename(path));
+        const dirnames = res.map((path) => fs.basename(path));
         expect(dirnames).to.eql(['0.1.1', '0.1.1-alpha.0', '0.1.0']);
       });
     });

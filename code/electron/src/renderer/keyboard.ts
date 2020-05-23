@@ -15,14 +15,14 @@ export function init() {
   command$
     // Clear console handler.
     .pipe(
-      filter(e => e.command === 'CONSOLE/clear'),
-      filter(e => {
+      filter((e) => e.command === 'CONSOLE/clear'),
+      filter((e) => {
         // NB: If an <input> is focused it may have it's own [CMD+K] handler.
         const el = document.activeElement;
         return el ? el.tagName !== 'INPUT' : true;
       }),
     )
-    .subscribe(e => {
+    .subscribe((e) => {
       console.clear(); // eslint-disable-line
     });
 

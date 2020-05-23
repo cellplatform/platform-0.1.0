@@ -21,7 +21,7 @@ export const COMPREHENSIVE = (() => {
   const root = createRoot([21, 5, 3, 2]);
 
   const children = root.children as t.ITreeNode[];
-  children.forEach(node => {
+  children.forEach((node) => {
     node.props = { ...p(node), inline: {} };
   });
 

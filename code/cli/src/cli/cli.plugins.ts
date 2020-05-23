@@ -21,13 +21,13 @@ export function init(args: {
      */
     command(args: t.ICmdPluginArgs) {
       const { name, description, alias, handler } = args;
-      const id = [name, alias].filter(value => Boolean(value)) as string[];
+      const id = [name, alias].filter((value) => Boolean(value)) as string[];
 
       cli.command(
         id,
         description,
-        yargs => {
-          cmd.options.forEach(args => {
+        (yargs) => {
+          cmd.options.forEach((args) => {
             return yargs.option(args.name, {
               alias: args.alias,
               describe: args.description,

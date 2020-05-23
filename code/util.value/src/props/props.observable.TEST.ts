@@ -65,10 +65,10 @@ describe('props.observable', () => {
 
       obj.$.events$
         .pipe(
-          filter(e => e.type === 'PROP/getting'),
-          map(e => e.payload as t.IPropGetting),
+          filter((e) => e.type === 'PROP/getting'),
+          map((e) => e.payload as t.IPropGetting),
         )
-        .subscribe(e => {
+        .subscribe((e) => {
           events.getting.push(e);
           switch (e.key) {
             case 'message':
@@ -80,10 +80,10 @@ describe('props.observable', () => {
 
       obj.$.events$
         .pipe(
-          filter(e => e.type === 'PROP/get'),
-          map(e => e.payload as t.IPropGet),
+          filter((e) => e.type === 'PROP/get'),
+          map((e) => e.payload as t.IPropGet),
         )
-        .subscribe(e => {
+        .subscribe((e) => {
           events.get.push(e);
         });
 
@@ -114,8 +114,8 @@ describe('props.observable', () => {
       };
       const obj = props.observable<IMyObject>(initial);
 
-      obj.changing$.subscribe(e => events.changing.push(e));
-      obj.changed$.subscribe(e => events.changed.push(e));
+      obj.changing$.subscribe((e) => events.changing.push(e));
+      obj.changed$.subscribe((e) => events.changed.push(e));
 
       expect(obj.message).to.eql('');
       expect(obj.count).to.eql(0);
@@ -157,11 +157,11 @@ describe('props.observable', () => {
       };
       const obj = props.observable<IMyObject>(initial);
 
-      obj.changing$.subscribe(e => {
+      obj.changing$.subscribe((e) => {
         events.setting.push(e);
         e.cancel();
       });
-      obj.changed$.subscribe(e => events.set.push(e));
+      obj.changed$.subscribe((e) => events.set.push(e));
 
       obj.message = 'foo';
 

@@ -128,7 +128,7 @@ describe('file.stringifyAndSave', () => {
   it('calls BEFORE handler (async)', async () => {
     const obj = { foo: 123 };
     const res = await util.stringifyAndSave('./tmp/file-1.json', obj, {
-      beforeSave: async e => {
+      beforeSave: async (e) => {
         const filename = fs.basename(e.path);
         return `// Inserted comment for file '${filename}' \n${e.text}`;
       },
@@ -141,7 +141,7 @@ describe('file.stringifyAndSave', () => {
   it('calls BEFORE handler (async)', () => {
     const obj = { foo: 123 };
     const res = util.stringifyAndSaveSync('./tmp/file-1.json', obj, {
-      beforeSave: e => {
+      beforeSave: (e) => {
         const filename = fs.basename(e.path);
         return `// Inserted comment for file '${filename}' \n${e.text}`;
       },

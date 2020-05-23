@@ -38,7 +38,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
     sendToWindows(0, args[0] as IpcEvent);
   };
 
-  const onHandlerRegistered: HandlerRegistered = args => {
+  const onHandlerRegistered: HandlerRegistered = (args) => {
     const { type, client } = args;
     addHandlerRef({ type, client });
   };
@@ -81,9 +81,9 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
     // - Do not send the message back to the originating window.
     // - If a target was set, only send to that window.
     BrowserWindow.getAllWindows()
-      .filter(window => window.id !== senderId)
-      .filter(window => (target.length === 0 ? true : target.includes(window.id)))
-      .forEach(window => {
+      .filter((window) => window.id !== senderId)
+      .filter((window) => (target.length === 0 ? true : target.includes(window.id)))
+      .forEach((window) => {
         window.webContents.send(client.channel, e);
       });
   };
@@ -92,7 +92,7 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
    * Listen for handler registrations on client-windows and ferry
    * then onto the global registration manager.
    */
-  client.on<IpcRegisterHandlerEvent>('@platform/IPC/register-handler').subscribe(e => {
+  client.on<IpcRegisterHandlerEvent>('@platform/IPC/register-handler').subscribe((e) => {
     const type = e.payload.type;
     const client = e.sender;
     onHandlerRegistered({ type, client });
@@ -112,8 +112,8 @@ export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
   const windows = WindowsMain.instance({ ipc: client });
   windows.change$
     // Listen for browser-windows closing and unregister their handlers.
-    .pipe(filter(e => e.type === 'CLOSED'))
-    .subscribe(e => (e.window.id ? removeHandlerRef(e.window.id) : undefined));
+    .pipe(filter((e) => e.type === 'CLOSED'))
+    .subscribe((e) => (e.window.id ? removeHandlerRef(e.window.id) : undefined));
 
   // Finish up.
   return client;
@@ -132,7 +132,7 @@ function addHandlerRef(args: { type: IpcMessage['type']; client: IpcIdentifier }
     type,
     clients: [],
   };
-  const exists = handlerRef.clients.find(c => c.id === client.id);
+  const exists = handlerRef.clients.find((c) => c.id === client.id);
   if (!exists) {
     handlerRef.clients = [...handlerRef.clients, client];
   }
@@ -146,9 +146,9 @@ function removeHandlerRef(id: number) {
   let changed = false;
   let handlers = { ...Global.handlerRefs };
 
-  Object.keys(handlers).forEach(type => {
+  Object.keys(handlers).forEach((type) => {
     const ref = { ...handlers[type] };
-    const clients = ref.clients.filter(item => item.id !== id);
+    const clients = ref.clients.filter((item) => item.id !== id);
     if (clients.length !== ref.clients.length) {
       changed = true;
       ref.clients = clients;

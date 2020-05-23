@@ -67,7 +67,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
    */
   public readonly events$ = this._.events$.pipe(
     takeUntil(this.dispose$),
-    map(e => this.toDispatchEvent(e)),
+    map((e) => this.toDispatchEvent(e)),
     share(),
   );
 
@@ -106,8 +106,8 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
    */
   public on<E2 extends E>(type: E2['type']) {
     return this.events$.pipe(
-      filter(e => e.type === type),
-      map(e => e as t.IDispatch<M, E2, E>),
+      filter((e) => e.type === type),
+      map((e) => e as t.IDispatch<M, E2, E>),
     );
   }
 
@@ -156,7 +156,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
       get state() {
         return { ...from };
       },
-      change: state => {
+      change: (state) => {
         const to = { ...state };
 
         // Fire PRE event (and check if anyone cancelled it).
@@ -177,7 +177,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
         this._.changed$.next(change);
         return result;
       },
-      dispatch: event => {
+      dispatch: (event) => {
         this.dispatch(event);
         return result;
       },

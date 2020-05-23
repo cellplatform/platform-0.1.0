@@ -1,7 +1,7 @@
 import * as isomorphicFetch from 'isomorphic-fetch';
 import { t, util } from '../common';
 
-export const fetch: t.HttpFetch = async req => {
+export const fetch: t.HttpFetch = async (req) => {
   const { url, method, mode, data } = req;
 
   const toBody = (): any => {

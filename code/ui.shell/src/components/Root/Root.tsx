@@ -31,12 +31,12 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     super(props);
 
     const tree$ = this.tree$.pipe(takeUntil(this.unmounted$));
-    tree$.subscribe(e => this.shell.fire(e));
+    tree$.subscribe((e) => this.shell.fire(e));
   }
 
   public componentDidMount() {
     document.body.style.overflow = 'hidden'; // Prevent browser rubber-band.
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.load(this.shell.defaultModule);
   }
 

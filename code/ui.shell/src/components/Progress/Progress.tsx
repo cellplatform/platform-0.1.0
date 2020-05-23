@@ -29,7 +29,7 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
    */
   constructor(props: IProgressProps) {
     super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentDidMount() {
@@ -38,9 +38,9 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
     progress.start$
       .pipe(
         takeUntil(this.unmounted$),
-        filter(e => !this.state.inProgress),
+        filter((e) => !this.state.inProgress),
       )
-      .subscribe(e => this.start(e));
+      .subscribe((e) => this.start(e));
     progress.complete$.pipe(takeUntil(this.unmounted$)).subscribe(() => this.stop());
   }
 
@@ -64,7 +64,7 @@ export class Progress extends React.PureComponent<IProgressProps, IProgressState
    * [Methods]
    */
   public start(options: { duration?: number; color?: string } = {}) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const { duration, color } = options;
       this.state$.next({ duration, color });
 

@@ -15,7 +15,7 @@ import { stream } from '../stream';
 import { sort } from '../sort';
 
 const { join, resolve, dirname, basename, extname } = path;
-const exists: t.IFs['exists'] = path => fsExtra.pathExists(path);
+const exists: t.IFs['exists'] = (path) => fsExtra.pathExists(path);
 const writeFile: t.IFs['writeFile'] = fsExtra.writeFile;
 
 /**

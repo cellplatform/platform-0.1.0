@@ -28,13 +28,13 @@ export function observable<P extends t.IProps>(initial?: P | (keyof P)[]): t.IOb
   const _events$ = new Subject<t.PropEvent>();
   const events$ = _events$.pipe(takeUntil(dispose$), share());
   const changing$ = events$.pipe(
-    filter(e => e.type === 'PROP/setting'),
-    map(e => e.payload as t.IPropChanging),
+    filter((e) => e.type === 'PROP/setting'),
+    map((e) => e.payload as t.IPropChanging),
     share(),
   );
   const changed$ = events$.pipe(
-    filter(e => e.type === 'PROP/set'),
-    map(e => e.payload as t.IPropChanged),
+    filter((e) => e.type === 'PROP/set'),
+    map((e) => e.payload as t.IPropChanged),
     share(),
   );
 
@@ -55,7 +55,7 @@ export function observable<P extends t.IProps>(initial?: P | (keyof P)[]): t.IOb
   };
 
   // Define property handlers.
-  keys.forEach(key => {
+  keys.forEach((key) => {
     Object.defineProperty(obj, key, {
       /**
        * [GET] property value.

@@ -39,7 +39,7 @@ export async function buildPayload(args: {
 
   // Retrieve the list of remote files.
   let remoteFiles: t.IHttpClientFileData[] = [];
-  const findRemote = (path: string) => remoteFiles.find(f => f.path === path);
+  const findRemote = (path: string) => remoteFiles.find((f) => f.path === path);
 
   const urls = Schema.urls(client.origin);
   const filesUrl = urls.cell(cellUri).files.list;
@@ -70,7 +70,7 @@ export async function buildPayload(args: {
   const ignorePath = fs.join(args.dir, '.cellignore');
   if (await fs.pathExists(ignorePath)) {
     const file = (await fs.readFile(ignorePath)).toString();
-    const lines = file.split('\n').filter(line => Boolean(line.trim()));
+    const lines = file.split('\n').filter((line) => Boolean(line.trim()));
     ignore = [...ignore, ...lines];
   }
 
@@ -81,7 +81,7 @@ export async function buildPayload(args: {
     ignore,
   });
 
-  const wait = paths.map(async localPath => {
+  const wait = paths.map(async (localPath) => {
     const data = await fs.readFile(localPath);
     const localBytes = Uint8Array.from(data).length;
     const localHash = Schema.hash.sha256(data);
@@ -126,11 +126,11 @@ export async function buildPayload(args: {
   const files = await Promise.all(wait);
 
   // Add list of deleted files (on remote, but not local).
-  const isDeleted = (path?: string) => !files.some(item => item.path === path);
+  const isDeleted = (path?: string) => !files.some((item) => item.path === path);
   remoteFiles
-    .filter(file => Boolean(file.path))
-    .filter(file => isDeleted(file.path))
-    .forEach(file => {
+    .filter((file) => Boolean(file.path))
+    .filter((file) => isDeleted(file.path))
+    .forEach((file) => {
       const { filename, dir, uri } = file;
       const path = fs.join(dir, filename);
       const url = cellUrls.file.byName(path).toString();
@@ -171,7 +171,7 @@ export function logPayload(args: {
 }) {
   const { files } = args;
   let count = 0;
-  const list = files.filter(item => (item.status === 'DELETED' ? args.delete : true));
+  const list = files.filter((item) => (item.status === 'DELETED' ? args.delete : true));
 
   const table = log.table({ border: false });
   const add = (item: t.IFsSyncPayloadFile) => {
@@ -202,13 +202,13 @@ export function logPayload(args: {
   };
 
   const sortAndAdd = (files: t.IFsSyncPayloadFile[]) => {
-    fs.sort.objects(files, file => file.filename).forEach(file => add(file));
+    fs.sort.objects(files, (file) => file.filename).forEach((file) => add(file));
   };
 
-  sortAndAdd(list.filter(item => !item.isChanged)); // Unchanged.
-  sortAndAdd(list.filter(item => item.status === 'ADDED'));
-  sortAndAdd(list.filter(item => item.status === 'CHANGED'));
-  sortAndAdd(list.filter(item => item.status === 'DELETED'));
+  sortAndAdd(list.filter((item) => !item.isChanged)); // Unchanged.
+  sortAndAdd(list.filter((item) => item.status === 'ADDED'));
+  sortAndAdd(list.filter((item) => item.status === 'CHANGED'));
+  sortAndAdd(list.filter((item) => item.status === 'DELETED'));
 
   return count > 0 ? table.toString() : '';
 }

@@ -72,7 +72,7 @@ describe('Store', () => {
     it('fires dispatch event', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       const events: t.IDispatch[] = [];
-      store.events$.subscribe(e => events.push(e));
+      store.events$.subscribe((e) => events.push(e));
 
       store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
       store.dispatch({ type: 'TEST/decrement', payload: { by: 2 } });
@@ -86,7 +86,7 @@ describe('Store', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
 
       const states: IMyModel[] = [];
-      store.on<IIncrementEvent>('TEST/increment').subscribe(e => {
+      store.on<IIncrementEvent>('TEST/increment').subscribe((e) => {
         states.push(e.state);
         states.push(e.state);
       });
@@ -107,13 +107,13 @@ describe('Store', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       expect(store.state.count).to.eql(0);
 
-      store.on<IIncrementEvent>('TEST/increment').subscribe(e => {
+      store.on<IIncrementEvent>('TEST/increment').subscribe((e) => {
         const count = e.state.count + e.payload.by;
         const next = { ...e.state, count };
         e.change(next);
       });
 
-      store.on<IDecrementEvent>('TEST/decrement').subscribe(e => {
+      store.on<IDecrementEvent>('TEST/decrement').subscribe((e) => {
         const count = e.state.count - e.payload.by;
         const next = { ...e.state, count };
         e.change(next);
@@ -129,9 +129,9 @@ describe('Store', () => {
     it('fires [changing] event', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       const events: t.IStateChanging[] = [];
-      store.changing$.subscribe(e => events.push(e));
+      store.changing$.subscribe((e) => events.push(e));
 
-      store.on<IIncrementEvent>('TEST/increment').subscribe(e => e.change(e.state));
+      store.on<IIncrementEvent>('TEST/increment').subscribe((e) => e.change(e.state));
       store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
 
       expect(events.length).to.eql(1);
@@ -143,13 +143,13 @@ describe('Store', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
 
       let cancel = false;
-      store.changing$.subscribe(e => {
+      store.changing$.subscribe((e) => {
         if (cancel) {
           e.cancel();
         }
       });
 
-      store.on<IIncrementEvent>('TEST/increment').subscribe(e => {
+      store.on<IIncrementEvent>('TEST/increment').subscribe((e) => {
         if (e.payload.by > 0) {
           const count = e.state.count + e.payload.by;
           const next = { ...e.state, count };
@@ -169,9 +169,9 @@ describe('Store', () => {
     it('fires [changed] event', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       const events: t.IStateChange<any, any>[] = [];
-      store.changed$.subscribe(e => events.push(e));
+      store.changed$.subscribe((e) => events.push(e));
 
-      store.on<IIncrementEvent>('TEST/increment').subscribe(e => {
+      store.on<IIncrementEvent>('TEST/increment').subscribe((e) => {
         if (e.payload.by > 0) {
           const count = e.state.count + e.payload.by;
           const next = { ...e.state, count };
@@ -208,9 +208,9 @@ describe('Store', () => {
     it('dispatches a follow-on event  (sync)', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       const events: t.IDispatch[] = [];
-      store.events$.subscribe(e => events.push(e));
+      store.events$.subscribe((e) => events.push(e));
 
-      store.on<IIncrementEvent>('TEST/increment').subscribe(e => {
+      store.on<IIncrementEvent>('TEST/increment').subscribe((e) => {
         e.dispatch({ type: 'TEST/decrement', payload: { by: 2 } });
       });
 
@@ -223,9 +223,9 @@ describe('Store', () => {
     it('dispatches a follow-on event  (async)', async () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       const events: t.IDispatch[] = [];
-      store.events$.subscribe(e => events.push(e));
+      store.events$.subscribe((e) => events.push(e));
 
-      store.on<IIncrementEvent>('TEST/increment').subscribe(async e => {
+      store.on<IIncrementEvent>('TEST/increment').subscribe(async (e) => {
         await time.wait(3);
         e.dispatch({ type: 'TEST/decrement', payload: { by: 2 } });
       });

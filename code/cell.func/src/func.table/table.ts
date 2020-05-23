@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { coord, t, time, util, MemoryCache, R } from '../common';
 import { calculate as init } from '../func.calc';
 
-const defaultGetFunc: t.GetFunc = async args => undefined; // NB: Empty stub.
+const defaultGetFunc: t.GetFunc = async (args) => undefined; // NB: Empty stub.
 
 /**
  * Prepares a table for calculating updates.
@@ -20,7 +20,7 @@ export function table(args: {
   const getCells = args.getCells;
   const getCell: t.GetCell = async (key: string) => (await getCells())[key];
   const getKeys: t.RefGetKeys = async () => Object.keys(await getCells());
-  const getValue: t.RefGetValue = async key => {
+  const getValue: t.RefGetValue = async (key) => {
     const cell = await getCell(key);
     const value = cell ? (cell.value as any) : undefined;
     return typeof value === 'function' ? value() : value;
@@ -34,9 +34,9 @@ export function table(args: {
   const appendIncoming = async (keys: string[]) => {
     const incoming: string[] = [];
     await Promise.all(
-      keys.map(async key => {
+      keys.map(async (key) => {
         const refs = await coord.refs.incoming({ key, getValue, getKeys, cache });
-        refs.forEach(ref => incoming.push(ref.cell));
+        refs.forEach((ref) => incoming.push(ref.cell));
       }),
     );
     return R.uniq([...keys, ...incoming]);
@@ -93,7 +93,7 @@ export function table(args: {
       };
 
       await Promise.all(
-        res.list.map(async item => {
+        res.list.map(async (item) => {
           const { error } = item;
           const key = item.cell;
           const value = item.data;

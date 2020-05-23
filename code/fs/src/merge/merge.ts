@@ -29,7 +29,7 @@ export async function merge(
   }
 
   // Prepare sources.
-  const patterns = dirs.map(sourceDir => ({
+  const patterns = dirs.map((sourceDir) => ({
     sourceDir,
     pattern: join(sourceDir, pattern),
   }));
@@ -42,7 +42,7 @@ export async function merge(
   const items: Item[] = await Promise.all(
     patterns.map(async ({ sourceDir, pattern }) => {
       const sources = await glob.find(pattern);
-      const paths = sources.map(from => {
+      const paths = sources.map((from) => {
         return {
           from,
           to: join(targetDir, from.substr(sourceDir.length + 1)),
@@ -58,9 +58,9 @@ export async function merge(
   // Build filtered list of source paths to copy.
   let skipped: string[] = [];
   let copy: { from: string; to: string }[] = [];
-  items.forEach(item => {
+  items.forEach((item) => {
     item.paths.forEach(({ from, to }) => {
-      const exists = targets.some(p => p === to);
+      const exists = targets.some((p) => p === to);
       if (exists && !overwrite) {
         skipped = [...skipped, from];
       }

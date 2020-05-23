@@ -26,7 +26,7 @@ export function match(pattern: string, input: string): IFuzzyMatch | undefined {
  */
 export function isMatch(pattern: string, input: string | string[]) {
   input = Array.isArray(input) ? input : [input];
-  return input.some(value => Boolean(match(pattern, value)));
+  return input.some((value) => Boolean(match(pattern, value)));
 }
 
 /**

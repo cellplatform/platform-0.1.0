@@ -21,7 +21,7 @@ describe('watch', () => {
     const watcher = watch.start({ pattern });
 
     const events: watch.FsWatchEvent[] = [];
-    watcher.events$.subscribe(e => events.push(e));
+    watcher.events$.subscribe((e) => events.push(e));
 
     await fs.writeFile(fs.join(dir, 'foo.txt'), 'Hello');
     await fs.writeFile(fs.join(dir, 'foo.txt'), 'Boo');
@@ -42,8 +42,8 @@ describe('watch', () => {
     expect(events[1].name).to.eql('foo.txt');
     expect(events[2].name).to.eql('bar.txt');
 
-    expect(events.every(e => e.isFile)).to.eql(true);
-    expect(events.every(e => e.isDir)).to.eql(false);
+    expect(events.every((e) => e.isFile)).to.eql(true);
+    expect(events.every((e) => e.isDir)).to.eql(false);
 
     watcher.dispose();
   });
@@ -53,7 +53,7 @@ describe('watch', () => {
     const watcher = watch.start({ pattern });
 
     const events: watch.FsWatchEvent[] = [];
-    watcher.events$.subscribe(e => events.push(e));
+    watcher.events$.subscribe((e) => events.push(e));
 
     const path = fs.join(dir, 'foo.txt');
     await fs.writeFile(path, 'Hello');
@@ -68,8 +68,8 @@ describe('watch', () => {
     await wait(500);
     expect(events[2].type).to.eql('remove');
 
-    expect(events.every(e => e.isFile)).to.eql(true);
-    expect(events.every(e => e.isDir)).to.eql(false);
+    expect(events.every((e) => e.isFile)).to.eql(true);
+    expect(events.every((e) => e.isDir)).to.eql(false);
 
     watcher.dispose();
   });
@@ -79,7 +79,7 @@ describe('watch', () => {
     const watcher = watch.start({ pattern });
 
     const events: watch.FsWatchEvent[] = [];
-    watcher.events$.subscribe(e => events.push(e));
+    watcher.events$.subscribe((e) => events.push(e));
 
     await fs.ensureDir(fs.join(dir, 'foo'));
 
@@ -91,8 +91,8 @@ describe('watch', () => {
 
     await wait(500);
     expect(events[1].type).to.eql('remove');
-    expect(events.every(e => e.isFile)).to.eql(false);
-    expect(events.every(e => e.isDir)).to.eql(true);
+    expect(events.every((e) => e.isFile)).to.eql(false);
+    expect(events.every((e) => e.isDir)).to.eql(true);
 
     watcher.dispose();
   });
@@ -102,7 +102,7 @@ describe('watch', () => {
     const watcher = watch.start({ pattern });
 
     let events: watch.FsWatchEvent[] = [];
-    watcher.events$.subscribe(e => events.push(e));
+    watcher.events$.subscribe((e) => events.push(e));
 
     await fs.writeFile(fs.join(dir, 'foo.txt'), 'Hello');
     await wait(500);

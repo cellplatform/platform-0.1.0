@@ -24,7 +24,7 @@ export function one<D = any>(args: {
     }
   };
 
-  const promise = new Promise<t.IFuncResponse<D>>(async resolve => {
+  const promise = new Promise<t.IFuncResponse<D>>(async (resolve) => {
     const formula = (await getValue(cell)) || '';
 
     // Fire PRE event.
@@ -49,9 +49,9 @@ export function one<D = any>(args: {
     // Ensure the node is not part of a circular-ref sequence.
     if (type === 'REF' || type === 'FUNC') {
       const errors = util.getCircularErrors(refs);
-      const isCircular = errors.some(err => err.path.split('/').includes(cell));
+      const isCircular = errors.some((err) => err.path.split('/').includes(cell));
       if (isCircular) {
-        const match = errors.find(err => err.path.startsWith(cell));
+        const match = errors.find((err) => err.path.startsWith(cell));
         const circularPath = match ? match.path : path;
         const error: t.IFuncErrorCircularRef = {
           type: 'REF/circular',
@@ -237,7 +237,7 @@ const evalFunc = async (args: {
   // Calculate parameter values.
   const getParam = (node: coord.ast.Node) =>
     evalNode({ cell, formula, node, refs, getValue, getFunc });
-  const params = await Promise.all(node.arguments.map(node => getParam(node)));
+  const params = await Promise.all(node.arguments.map((node) => getParam(node)));
 
   // Invoke the function.
   const res: t.FuncResponse = await func({ params });
@@ -290,7 +290,7 @@ const getRangeValues = async (args: {
   const { cell, node, refs, getValue, getFunc } = args;
   util.throwIfCircular({ cell, refs });
   const range = CellRange.fromCells(node.left.key, node.right);
-  const wait = range.keys.map(async cell => {
+  const wait = range.keys.map(async (cell) => {
     const value = await getValue(cell);
     return util.isFormula(value)
       ? (await one({ cell, refs, getValue, getFunc })).data // <== RECURSION 🌳

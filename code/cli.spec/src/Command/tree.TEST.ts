@@ -15,14 +15,14 @@ describe('Command.tree', () => {
   describe('walk', () => {
     it('walks (single level - starting command)', () => {
       const events: t.ICommand[] = [];
-      Command.tree.walk(child2, e => events.push(e.command));
+      Command.tree.walk(child2, (e) => events.push(e.command));
       expect(events.length).to.eql(1);
       expect(events[0].name).to.equal('child-2');
     });
 
     it('walks (one level)', () => {
       const events: t.ICommand[] = [];
-      Command.tree.walk(child1, e => events.push(e.command));
+      Command.tree.walk(child1, (e) => events.push(e.command));
       expect(events.length).to.eql(3);
       expect(events[0].name).to.eql('child-1');
       expect(events[1].name).to.eql('grandchild-1');
@@ -31,7 +31,7 @@ describe('Command.tree', () => {
 
     it('walks (two levels)', () => {
       const events: t.ICommand[] = [];
-      Command.tree.walk(root, e => events.push(e.command));
+      Command.tree.walk(root, (e) => events.push(e.command));
       expect(events.length).to.eql(5);
       expect(events[0].name).to.eql('root');
       expect(events[1].name).to.eql('child-1');
@@ -42,7 +42,7 @@ describe('Command.tree', () => {
 
     it('stops after first command', () => {
       const events: t.ICommand[] = [];
-      Command.tree.walk(root, e => {
+      Command.tree.walk(root, (e) => {
         events.push(e.command);
         e.stop();
       });
@@ -52,7 +52,7 @@ describe('Command.tree', () => {
 
     it('stops midway through', () => {
       const events: t.ICommand[] = [];
-      Command.tree.walk(root, e => {
+      Command.tree.walk(root, (e) => {
         events.push(e.command);
         if (e.command.name === 'grandchild-1') {
           e.stop();
@@ -66,7 +66,7 @@ describe('Command.tree', () => {
 
     it('instance methods', () => {
       const events: t.ICommand[] = [];
-      root.tree.walk(e => events.push(e.command));
+      root.tree.walk((e) => events.push(e.command));
       expect(events.length).to.eql(5);
     });
   });
@@ -92,12 +92,12 @@ describe('Command.tree', () => {
     });
 
     it('finds the given command', () => {
-      const res = Command.tree.find(root, cmd => cmd.name === 'child-2');
+      const res = Command.tree.find(root, (cmd) => cmd.name === 'child-2');
       expect(res && res.name).to.eql('child-2');
     });
 
     it('instance method', () => {
-      const res = root.tree.find(cmd => cmd.name === 'child-2');
+      const res = root.tree.find((cmd) => cmd.name === 'child-2');
       expect(res && res.name).to.eql('child-2');
     });
   });

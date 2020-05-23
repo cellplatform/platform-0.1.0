@@ -9,11 +9,11 @@ export function start(args: { app: t.IMicro; debounce?: number }) {
   const { app, debounce = 500 } = args;
 
   const hr$ = new Subject();
-  hr$.pipe(debounceTime(debounce)).subscribe(e => {
+  hr$.pipe(debounceTime(debounce)).subscribe((e) => {
     log.info.gray('━'.repeat(50));
   });
 
-  app.request$.subscribe(e => {
+  app.request$.subscribe((e) => {
     log.info(logRequest(e));
     hr$.next();
   });

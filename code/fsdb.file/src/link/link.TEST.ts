@@ -43,8 +43,8 @@ describe('oneToMany', () => {
 
       const oneToMany = link.oneToMany<IUser, IOrg>({
         db,
-        one: { dbKey: id => toUserDbKey(id), field: 'org' },
-        many: { dbKey: id => toOrgDbKey(id), field: 'users' },
+        one: { dbKey: (id) => toUserDbKey(id), field: 'org' },
+        many: { dbKey: (id) => toOrgDbKey(id), field: 'users' },
       });
       const res = await oneToMany.link(ids.user1, ids.org1);
 
@@ -71,8 +71,8 @@ describe('oneToMany', () => {
 
       const linker = link.oneToMany<IUser, IOrg>({
         db,
-        one: { dbKey: id => toUserDbKey(id), field: 'org' },
-        many: { dbKey: id => toOrgDbKey(id), field: 'users' },
+        one: { dbKey: (id) => toUserDbKey(id), field: 'org' },
+        many: { dbKey: (id) => toOrgDbKey(id), field: 'users' },
       });
 
       await linker.link(ids.user1, ids.org1);
@@ -96,8 +96,8 @@ describe('oneToMany', () => {
       await db.put(orgDbKey, { id: ids.org1, name: 'Acme', users: 'NOT_A_LIST' });
       const linker = link.oneToMany<IUser, IOrg>({
         db,
-        one: { dbKey: id => toUserDbKey(id), field: 'org' },
-        many: { dbKey: id => toOrgDbKey(id), field: 'users' },
+        one: { dbKey: (id) => toUserDbKey(id), field: 'org' },
+        many: { dbKey: (id) => toOrgDbKey(id), field: 'users' },
       });
 
       await expectError(async () => {
@@ -110,8 +110,8 @@ describe('oneToMany', () => {
         const db = await testDb({ dir });
         const linker = link.oneToMany<IUser, IOrg>({
           db,
-          one: { dbKey: id => toUserDbKey(id), field: 'org' },
-          many: { dbKey: id => toOrgDbKey(id), field: 'users' },
+          one: { dbKey: (id) => toUserDbKey(id), field: 'org' },
+          many: { dbKey: (id) => toOrgDbKey(id), field: 'users' },
         });
         await expectError(async () => linker.link(ids.user1, ids.org1));
       });
@@ -123,8 +123,8 @@ describe('oneToMany', () => {
 
         const linker = link.oneToMany<IUser, IOrg>({
           db,
-          one: { dbKey: id => toUserDbKey(id), field: 'org' },
-          many: { dbKey: id => toOrgDbKey(id), field: 'users' },
+          one: { dbKey: (id) => toUserDbKey(id), field: 'org' },
+          many: { dbKey: (id) => toOrgDbKey(id), field: 'users' },
         });
         await expectError(async () => linker.link(ids.user1, ids.org1));
       });
@@ -136,8 +136,8 @@ describe('oneToMany', () => {
 
         const linker = link.oneToMany<IUser, IOrg>({
           db,
-          one: { dbKey: id => toUserDbKey(id), field: 'org' },
-          many: { dbKey: id => toOrgDbKey(id), field: 'users' },
+          one: { dbKey: (id) => toUserDbKey(id), field: 'org' },
+          many: { dbKey: (id) => toOrgDbKey(id), field: 'users' },
         });
         await expectError(async () => linker.link(ids.user1, ids.org1));
       });
@@ -157,8 +157,8 @@ describe('oneToMany', () => {
 
       const linker = link.oneToMany<IUser, IOrg>({
         db,
-        one: { dbKey: id => toUserDbKey(id), field: 'org' },
-        many: { dbKey: id => toOrgDbKey(id), field: 'users' },
+        one: { dbKey: (id) => toUserDbKey(id), field: 'org' },
+        many: { dbKey: (id) => toOrgDbKey(id), field: 'users' },
       });
 
       await linker.link(ids.user1, ids.org1);
@@ -199,8 +199,8 @@ describe('oneToMany', () => {
 
       const linker = link.oneToMany<IUser, IOrg>({
         db,
-        one: { dbKey: id => toUserDbKey(id), field: 'org' },
-        many: { dbKey: id => toOrgDbKey(id), field: 'users' },
+        one: { dbKey: (id) => toUserDbKey(id), field: 'org' },
+        many: { dbKey: (id) => toOrgDbKey(id), field: 'users' },
       });
 
       const res1 = await linker.refs(ids.user1, ids.org1);
@@ -242,8 +242,8 @@ describe('manyToMany', () => {
 
       const linker = link.manyToMany<IUser, IUser>({
         db,
-        a: { dbKey: id => toUserDbKey(id), field: 'friends' },
-        b: { dbKey: id => toUserDbKey(id), field: 'friends' },
+        a: { dbKey: (id) => toUserDbKey(id), field: 'friends' },
+        b: { dbKey: (id) => toUserDbKey(id), field: 'friends' },
       });
 
       const res1 = await linker.link(ids.user1, ids.user2);
@@ -283,8 +283,8 @@ describe('manyToMany', () => {
 
       const linker = link.manyToMany<IUser, IUser>({
         db,
-        a: { dbKey: id => toUserDbKey(id), field: 'friends' },
-        b: { dbKey: id => toUserDbKey(id), field: 'friends' },
+        a: { dbKey: (id) => toUserDbKey(id), field: 'friends' },
+        b: { dbKey: (id) => toUserDbKey(id), field: 'friends' },
       });
 
       await linker.link(ids.user1, ids.user2);
@@ -325,8 +325,8 @@ describe('manyToMany', () => {
 
       const linker = link.oneToOne<IUser, IProfile>({
         db,
-        a: { dbKey: id => toUserDbKey(id), field: 'profile' },
-        b: { dbKey: id => toProfileDbKey(id), field: 'user' },
+        a: { dbKey: (id) => toUserDbKey(id), field: 'profile' },
+        b: { dbKey: (id) => toProfileDbKey(id), field: 'user' },
       });
 
       const res1 = await linker.link(ids.user1, ids.profile1);
@@ -365,8 +365,8 @@ describe('manyToMany', () => {
 
       const linker = link.oneToOne<IUser, IProfile>({
         db,
-        a: { dbKey: id => toUserDbKey(id), field: 'profile' },
-        b: { dbKey: id => toProfileDbKey(id), field: 'user' },
+        a: { dbKey: (id) => toUserDbKey(id), field: 'profile' },
+        b: { dbKey: (id) => toProfileDbKey(id), field: 'user' },
       });
 
       await linker.link(ids.user1, ids.profile1);

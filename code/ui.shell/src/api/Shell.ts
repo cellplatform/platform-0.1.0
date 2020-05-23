@@ -52,11 +52,11 @@ export class Shell implements t.IShell {
   public get progress() {
     const api = {
       start: (options: { duration?: number; color?: string } = {}) => {
-        return new Promise<{}>(resolve => {
+        return new Promise<{}>((resolve) => {
           const { duration, color } = options;
           timer(duration)
             .pipe(takeUntil(this.events.progress.complete$))
-            .subscribe(e => {
+            .subscribe((e) => {
               api.complete();
               resolve({});
             });
@@ -72,8 +72,8 @@ export class Shell implements t.IShell {
    * [Methods]
    */
   public initial = (state: t.IShellPartialState) => {
-    Object.keys(state).forEach(k1 => {
-      Object.keys(state[k1]).forEach(k2 => {
+    Object.keys(state).forEach((k1) => {
+      Object.keys(state[k1]).forEach((k2) => {
         this.state[k1][k2] = state[k1][k2];
       });
     });

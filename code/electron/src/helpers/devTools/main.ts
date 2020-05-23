@@ -28,12 +28,12 @@ export function listen(args: { ipc: t.IpcClient; windows: t.IWindows }) {
   ipc
     // Show/hide the dev-tools window.
     .on<t.DevToolsVisibilityEvent>('@platform/DEV_TOOLS/visibility')
-    .pipe(filter(e => e.sender.process === 'RENDERER'))
-    .subscribe(e => {
+    .pipe(filter((e) => e.sender.process === 'RENDERER'))
+    .subscribe((e) => {
       const id = e.sender.id;
       const { show, focus } = e.payload;
       const all = BrowserWindow.getAllWindows();
-      const parent = all.find(window => window.id === id);
+      const parent = all.find((window) => window.id === id);
       if (!parent) {
         return;
       }
@@ -162,7 +162,7 @@ export function create(args: {
       show(devTools);
       done(devTools.id);
     });
-    devTools.on('close', e => {
+    devTools.on('close', (e) => {
       e.preventDefault();
       saveState();
       devTools.hide();
@@ -217,10 +217,10 @@ export function isShowing(args: { parent: BrowserWindow; windows: IWindows }) {
  */
 
 const isDevTools = (windows: IWindows, id: number) => {
-  return windows.byTag(DEV_TOOLS.tag, DEV_TOOLS.value).some(ref => ref.id === id);
+  return windows.byTag(DEV_TOOLS.tag, DEV_TOOLS.value).some((ref) => ref.id === id);
 };
 
 const getChildDevTools = (windows: IWindows, parent: BrowserWindow) => {
   const children = parent ? parent.getChildWindows() : [];
-  return children.find(window => isDevTools(windows, window.id));
+  return children.find((window) => isDevTools(windows, window.id));
 };

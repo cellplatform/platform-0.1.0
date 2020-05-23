@@ -29,7 +29,7 @@ export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellSt
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {

@@ -7,7 +7,7 @@ import { t, value as valueUtil } from '../common';
  *    https://github.com/mscdex/busboy#busboy-methods
  */
 export function form(req: t.IRouteRequest, options: t.IParseBodyFormOptions = {}) {
-  return new Promise<t.IForm>(resolve => {
+  return new Promise<t.IForm>((resolve) => {
     const { headers } = req;
     const { limits } = options;
     const busboy = new Busboy({ headers, limits });
@@ -20,7 +20,7 @@ export function form(req: t.IRouteRequest, options: t.IParseBodyFormOptions = {}
      */
     busboy.on('file', (field, file, name, encoding, mimetype) => {
       const buffers: Buffer[] = [];
-      file.on('data', data => buffers.push(data));
+      file.on('data', (data) => buffers.push(data));
       file.on('end', () => {
         files.push({
           field,

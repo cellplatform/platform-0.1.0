@@ -25,7 +25,7 @@ export function create(args: {
     typeof args.deployedAt === 'string' ? value.toNumber(args.deployedAt) : args.deployedAt;
 
   // Log any uncaught exceptions.
-  process.on('uncaughtException', err => {
+  process.on('uncaughtException', (err) => {
     logger.error('UNCAUGHT EXCEPTION');
     logger.error(err.message);
     logger.info();

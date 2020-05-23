@@ -31,7 +31,7 @@ export function hasChild(
 ) {
   const nodes = children(parent);
   const id = toId(child);
-  return nodes.some(n => n.id === id);
+  return nodes.some((n) => n.id === id);
 }
 
 /**
@@ -66,7 +66,7 @@ export function findById<T extends ITreeNode>(
     return undefined;
   }
   const targetId = typeof id === 'string' ? id : id.id;
-  const result = id ? find<T>(root, node => node.id === targetId) : undefined;
+  const result = id ? find<T>(root, (node) => node.id === targetId) : undefined;
   if (!result && options.throw) {
     throw new Error(`Failed to find tree-view node with the id '${id}'.`);
   }
@@ -266,7 +266,7 @@ export function replaceChild<T extends ITreeNode>(
   }
   const { insert = 'LAST' } = options;
   let children = node.children ? [...node.children] : [];
-  const index = children.findIndex(n => n.id === child.id);
+  const index = children.findIndex((n) => n.id === child.id);
   if (index === -1) {
     if (insert === 'FIRST') {
       children = [{ ...child }, ...children];
@@ -410,7 +410,7 @@ export function openToNode<T extends ITreeNode>(
     return root;
   }
   const node = typeof id === 'string' ? findById(root, id) : id;
-  pathList(root, node).forEach(node => {
+  pathList(root, node).forEach((node) => {
     const p = props(node);
     if (p.inline !== undefined) {
       p.inline = typeof p.inline === 'boolean' ? {} : p.inline;

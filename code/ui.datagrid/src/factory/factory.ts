@@ -1,7 +1,7 @@
 import { t, coord, util } from '../common';
 import { Grid } from '../api';
 
-const defaultFactory: t.GridFactory = req => null;
+const defaultFactory: t.GridFactory = (req) => null;
 
 /**
  * Manager for grid component factories.

@@ -18,7 +18,7 @@ export function paths(
   };
 
   const toPathList = (paths: string[]) => {
-    return paths.map(path => {
+    return paths.map((path) => {
       const dir = fs.dirname(path);
       const parentName = fs.basename(dir);
       const dirname = fs.basename(path);

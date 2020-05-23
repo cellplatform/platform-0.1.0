@@ -105,14 +105,14 @@ export class MemoryQueue implements t.IMemoryQueue {
     const item: IItem = { id, run, handler };
     this.items.push(item);
 
-    const event$ = this.event$.pipe(filter(e => e.payload.id === id));
+    const event$ = this.event$.pipe(filter((e) => e.payload.id === id));
     const done$ = event$.pipe(
-      filter(e => e.type === 'QUEUE/item/done'),
-      map(e => e.payload as t.IQueueItemDone),
+      filter((e) => e.type === 'QUEUE/item/done'),
+      map((e) => e.payload as t.IQueueItemDone),
     );
 
     const promise = new Promise<T>((resolve, reject) => {
-      done$.pipe(take(1)).subscribe(e => {
+      done$.pipe(take(1)).subscribe((e) => {
         res.isDone = true;
         res.elapsed = e.elapsed;
         res.result = e.result;

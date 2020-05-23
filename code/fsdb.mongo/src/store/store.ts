@@ -74,7 +74,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
       if (this.isConnected) {
         return resolve();
       }
-      this.client.connect(err => {
+      this.client.connect((err) => {
         if (err) {
           reject(err);
         }
@@ -212,7 +212,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
   public async exists() {
     await this.ensureConnected();
     const name = this._args.collection;
-    return (await this.db.collections()).some(c => c.collectionName === name);
+    return (await this.db.collections()).some((c) => c.collectionName === name);
   }
 
   /**

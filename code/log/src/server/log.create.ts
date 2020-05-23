@@ -17,7 +17,7 @@ export function create(): t.IServerLog {
 
   // Run the log events through a formatter that converts
   // the log items into pretty colors.
-  const formatter = map<t.ILogAction, t.ILogAction>(e => {
+  const formatter = map<t.ILogAction, t.ILogAction>((e) => {
     switch (e.type) {
       case 'LOG':
       case 'GROUP':

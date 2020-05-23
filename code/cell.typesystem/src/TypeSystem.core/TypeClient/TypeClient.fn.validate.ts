@@ -28,8 +28,8 @@ export function ns(args: { ns: string; typeDef: t.INsTypeDef; errors: ErrorList 
     type R = { typename: string; uri: string };
     const refs: R[] = [{ typename: typeDef.typename, uri: typeDef.uri }];
 
-    typeDef.columns.forEach(columnDef => {
-      TypeScript.walk(columnDef.type, e => {
+    typeDef.columns.forEach((columnDef) => {
+      TypeScript.walk(columnDef.type, (e) => {
         if (e.type.kind === 'REF') {
           const uri = e.type.uri;
           refs.push({ typename: e.type.typename, uri });
@@ -37,18 +37,18 @@ export function ns(args: { ns: string; typeDef: t.INsTypeDef; errors: ErrorList 
       });
 
       refs
-        .map(ref => {
-          const total = refs.filter(m => m.typename === ref.typename).length;
+        .map((ref) => {
+          const total = refs.filter((m) => m.typename === ref.typename).length;
           return { ref, total };
         })
         .filter(({ total }) => total > 1)
         .reduce((acc, next) => {
-          if (!acc.some(ref => ref.typename === next.ref.typename)) {
+          if (!acc.some((ref) => ref.typename === next.ref.typename)) {
             acc.push(next.ref);
           }
           return acc;
         }, [] as R[])
-        .forEach(ref => {
+        .forEach((ref) => {
           const message = `Reference to a duplicate typename '${ref.typename}'.`;
           errors.add(ns, message, { errorType: ERROR.TYPE.DUPLICATE_TYPENAME });
         });
@@ -68,16 +68,16 @@ export function columns(args: { ns: string; columns: t.IColumnTypeDef[]; errors:
   // Ensure there are no duplicate property names.
   (() => {
     const duplicates: string[] = [];
-    const props = columns.map(column => column.prop);
-    props.forEach(name => {
+    const props = columns.map((column) => column.prop);
+    props.forEach((name) => {
       if (!duplicates.includes(name)) {
-        if (props.filter(prop => prop === name).length > 1) {
+        if (props.filter((prop) => prop === name).length > 1) {
           duplicates.push(name);
         }
       }
     });
 
-    duplicates.forEach(name => {
+    duplicates.forEach((name) => {
       const conficts = columns.filter(({ prop }) => prop === name).map(({ column }) => column);
       const message = `The property name '${name}' is duplicated in columns [${conficts}]. Must be unique.`;
       errors.add(ns, message, { errorType: ERROR.TYPE.DUPLICATE_PROP });

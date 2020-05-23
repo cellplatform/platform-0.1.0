@@ -41,7 +41,7 @@ export function filter(patterns: string | string[] | undefined | null, inputs: s
   }
 
   const firstNegated = patterns[0][0] === '!';
-  const regExPatterns = patterns.map(x => makeRegEx(x, false));
+  const regExPatterns = patterns.map((x) => makeRegEx(x, false));
   const result = [];
 
   for (const input of inputs) {

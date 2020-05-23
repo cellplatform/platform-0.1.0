@@ -12,7 +12,7 @@ import { t, fs } from './common';
 
 let count = 0;
 
-export const handleWasmTmp: t.RouteHandler = async req => {
+export const handleWasmTmp: t.RouteHandler = async (req) => {
   const source = await fs.readFile(fs.resolve('../src/test/assets/func.wasm'));
   const typedArray = new Uint8Array(source);
 

@@ -18,10 +18,10 @@ export async function chmod(
 
   // Prepare paths.
   const bin = fs.join(dir, 'node_modules/.bin');
-  const files = (await fs.readdir(bin)).map(name => fs.join(bin, name));
+  const files = (await fs.readdir(bin)).map((name) => fs.join(bin, name));
 
   // Change permissions.
-  const cmds: ICommand[] = files.map(path => {
+  const cmds: ICommand[] = files.map((path) => {
     return {
       title: `chmod ${permissions} .bin/${fs.basename(path)}`,
       cmd: `chmod ${permissions} ${path}`,

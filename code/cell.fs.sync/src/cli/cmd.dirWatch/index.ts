@@ -3,8 +3,8 @@ import { dirWatch } from './dirWatch';
 
 export type ISyncWatchArgs = {};
 
-export const init: t.CmdPluginsInit = cli => {
-  const handler: t.CmdPluginHandler<ISyncWatchArgs> = async e => {
+export const init: t.CmdPluginsInit = (cli) => {
+  const handler: t.CmdPluginHandler<ISyncWatchArgs> = async (e) => {
     const { keyboard } = e;
     await dirWatch({
       dir: process.cwd(),

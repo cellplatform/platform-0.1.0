@@ -63,13 +63,13 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
 
     // Ferry events through the client observable.
     if (args.events$) {
-      args.events$.pipe(takeUntil(this.disposed$)).subscribe(e => this._.events$.next(e));
+      args.events$.pipe(takeUntil(this.disposed$)).subscribe((e) => this._.events$.next(e));
     }
 
     // Listen for events and run corresponding response-handlers.
     this.events$
-      .pipe(filter(e => e.type !== EVENT.HANDLER))
-      .subscribe(e => this.runHandlers(e));
+      .pipe(filter((e) => e.type !== EVENT.HANDLER))
+      .subscribe((e) => this.runHandlers(e));
   }
 
   /**
@@ -118,9 +118,9 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   public filter<T extends M>(criteria: IpcFilter<M> | T['type']): IpcEventObservable<T> {
     const $ =
       typeof criteria === 'string'
-        ? this.events$.pipe(filter(e => e.type === criteria))
+        ? this.events$.pipe(filter((e) => e.type === criteria))
         : this.events$.pipe(filter(criteria));
-    return $.pipe(map(e => e as IpcEvent<T>));
+    return $.pipe(map((e) => e as IpcEvent<T>));
   }
 
   /**
@@ -128,8 +128,8 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
    */
   public on<T extends M>(type: T['type']) {
     return this.events$.pipe(
-      filter(e => e.type === type),
-      map(e => e as IpcEvent<T>),
+      filter((e) => e.type === type),
+      map((e) => e as IpcEvent<T>),
     );
   }
 
@@ -169,7 +169,7 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
     const registeredClients = this
       // Clients handling the event, not including this one.
       .handlers(type, { exclude: id })
-      .filter(c => c.id !== id);
+      .filter((c) => c.id !== id);
 
     // Prepare the send response.
     const res = new SendResponse<T, D>({
@@ -217,9 +217,9 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
   private runHandlers(event: IpcEvent<M>) {
     const { type, eid } = event;
     return this._.handlers
-      .filter(item => item.type === type)
-      .map(item => item.handler)
-      .map(async handler => {
+      .filter((item) => item.type === type)
+      .map((item) => item.handler)
+      .map(async (handler) => {
         // Invoke the handler.
         const args: IpcEventHandlerArgs<M> = { ...event };
         const data = await handler(args);
@@ -252,7 +252,7 @@ export class IPC<M extends IpcMessage = any> implements IpcClient<M> {
         : [options.exclude];
     const ref = this.handlerRefs[type];
     return (ref ? ref.clients : [])
-      .filter(c => !exclude.includes(c.id))
+      .filter((c) => !exclude.includes(c.id))
       .map(({ id, process }) => ({ id, process }));
   }
 

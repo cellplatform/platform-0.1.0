@@ -25,7 +25,7 @@ export class ComponentA extends React.PureComponent<IComponentAProps, IComponent
    */
   constructor(props: IComponentAProps) {
     super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public async componentDidMount() {

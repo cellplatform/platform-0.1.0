@@ -24,7 +24,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
    */
   public componentDidMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {

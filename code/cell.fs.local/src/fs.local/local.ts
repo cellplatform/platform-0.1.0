@@ -149,12 +149,12 @@ export function init(args: { root: string; fs: t.IFs }): t.IFsLocal {
      * Delete from the local file-system.
      */
     async delete(uri: string | string[]): Promise<t.IFsDeleteLocal> {
-      const uris = (Array.isArray(uri) ? uri : [uri]).map(uri => (uri || '').trim());
-      const paths = uris.map(uri => res.resolve(uri).path);
-      const locations = paths.map(path => toLocation(path));
+      const uris = (Array.isArray(uri) ? uri : [uri]).map((uri) => (uri || '').trim());
+      const paths = uris.map((uri) => res.resolve(uri).path);
+      const locations = paths.map((path) => toLocation(path));
 
       try {
-        await Promise.all(paths.map(path => fs.remove(path)));
+        await Promise.all(paths.map((path) => fs.remove(path)));
         return { ok: true, status: 200, uris, locations };
       } catch (err) {
         const error: t.IFsError = {

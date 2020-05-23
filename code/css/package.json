@@ -1,6 +1,6 @@
 {
   "name": "@platform/css",
-  "version": "0.3.19",
+  "version": "0.4.0",
   "description": "Helpers for working with inline CSS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "@platform/libs": "0.2.2",
-    "@platform/util.is": "0.0.124",
-    "@platform/util.value": "0.7.21",
+    "@platform/util.is": "0.0.125",
+    "@platform/util.value": "0.7.22",
     "@types/tinycolor2": "1.4.2",
     "glamor-jss": "1.4.1",
     "jss-plugin-global": "10.1.1",
@@ -24,8 +24,8 @@
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
-    "@platform/test": "0.1.11",
-    "@platform/ts": "3.9.2",
+    "@platform/test": "0.1.12",
+    "@platform/ts": "3.9.3",
     "parcel-bundler": "1.12.4",
     "react": "16.13.1"
   },

@@ -219,7 +219,7 @@ export class TypeValue {
         return `'${typename}'${isArray ? '[]' : ''}`;
       };
 
-      const enums = value.split('|').map(item => {
+      const enums = value.split('|').map((item) => {
         const isArray = TypeValue.isArray(item) ? true : undefined;
         const typename = formatEnum(item);
         const type: t.ITypeEnum = { kind: 'ENUM', typename, isArray };
@@ -271,7 +271,7 @@ export class TypeValue {
     }
     if (type.kind === 'UNION') {
       const union = type.types
-        .map(type => TypeValue.toTypename(type, { adjust, level: level + 1 }))
+        .map((type) => TypeValue.toTypename(type, { adjust, level: level + 1 }))
         .join(' | '); // <== RECURSION 🌳
       return done(type.isArray ? `(${union})[]` : `(${union})`);
     }

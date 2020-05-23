@@ -54,7 +54,7 @@ describe('http', () => {
 
     it('merges headers (client => method)', async () => {
       const client = Http.create({ headers: { foo: 'one' } });
-      client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
+      client.before$.subscribe((e) => e.respond({ status: 200 })); // Fake.
 
       const res = await client.get('http://localhost/foo', { headers: { bar: 'two' } });
       const headers = res.headers;
@@ -65,7 +65,7 @@ describe('http', () => {
 
     it('overrides headers (client => method)', async () => {
       const client = http.create({ headers: { foo: 'one', bar: 'abc' } });
-      client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
+      client.before$.subscribe((e) => e.respond({ status: 200 })); // Fake.
 
       const res = await client.get('http://localhost/foo', { headers: { foo: 'two', new: '🌳' } });
       const headers = res.headers;
@@ -80,8 +80,8 @@ describe('http', () => {
       const client = http.create();
       const events: t.IHttpBefore[] = [];
 
-      client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
-      client.before$.subscribe(e => events.push(e));
+      client.before$.subscribe((e) => e.respond({ status: 200 })); // Fake.
+      client.before$.subscribe((e) => events.push(e));
 
       await client.get('http://localhost/foo');
 
@@ -94,7 +94,7 @@ describe('http', () => {
       const client = http.create();
       const events: t.IHttpAfter[] = [];
 
-      client.before$.subscribe(e => {
+      client.before$.subscribe((e) => {
         // Fake response.
         e.respond({
           status: 202,
@@ -102,7 +102,7 @@ describe('http', () => {
           data: { msg: 'hello' },
         });
       });
-      client.after$.subscribe(e => events.push(e));
+      client.after$.subscribe((e) => events.push(e));
 
       const res1 = await client.get('http://localhost/foo');
 
@@ -123,7 +123,7 @@ describe('http', () => {
       const client = http.create();
       const events: t.IHttpAfter[] = [];
 
-      client.before$.subscribe(e => {
+      client.before$.subscribe((e) => {
         // Fake response.
         e.respond(async () => {
           await time.wait(20);
@@ -134,7 +134,7 @@ describe('http', () => {
           };
         });
       });
-      client.after$.subscribe(e => events.push(e));
+      client.after$.subscribe((e) => events.push(e));
 
       const res1 = await client.get('http://localhost/foo');
 
@@ -159,7 +159,7 @@ describe('http', () => {
       const image1 = await fs.readFile(fs.resolve('src/test/assets/kitten.jpg'));
       const image2 = await fs.readFile(fs.resolve('src/test/assets/bird.png'));
 
-      client.before$.subscribe(e => {
+      client.before$.subscribe((e) => {
         // Create a return stream.
         // Source: https://stackoverflow.com/a/44091532
         const data = new Readable();
@@ -169,7 +169,7 @@ describe('http', () => {
         // Switch out the return data with a different file (stream).
         e.respond(() => ({ status: 202, statusText: 'foobar', data }));
       });
-      client.after$.subscribe(e => events.push(e));
+      client.after$.subscribe((e) => events.push(e));
 
       const res = await client.post('http://localhost/foo', image1);
 
@@ -189,7 +189,7 @@ describe('http', () => {
       const client = http.create();
       const events: t.IHttpAfter[] = [];
 
-      client.before$.subscribe(e => {
+      client.before$.subscribe((e) => {
         // Fake response.
         e.respond({
           status: 200,
@@ -197,7 +197,7 @@ describe('http', () => {
           data: 'hello', // NB: string (not object).
         });
       });
-      client.after$.subscribe(e => events.push(e));
+      client.after$.subscribe((e) => events.push(e));
 
       const res1 = await client.get('http://localhost/foo');
 
@@ -218,14 +218,14 @@ describe('http', () => {
       const client = http.create();
       const events: t.IHttpAfter[] = [];
 
-      client.before$.subscribe(e => {
+      client.before$.subscribe((e) => {
         // Fake response.
         e.respond({
           status: 200,
           data: undefined,
         });
       });
-      client.after$.subscribe(e => events.push(e));
+      client.after$.subscribe((e) => events.push(e));
 
       const res1 = await client.get('http://localhost/foo');
 
@@ -244,10 +244,10 @@ describe('http', () => {
 
     it('sends event identifier ("uid") that is shared between before/after events', async () => {
       const client = http.create();
-      client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
+      client.before$.subscribe((e) => e.respond({ status: 200 })); // Fake.
 
       const events: t.HttpEvent[] = [];
-      client.events$.subscribe(e => events.push(e));
+      client.events$.subscribe((e) => events.push(e));
 
       await client.get('http://localhost/foo');
 
@@ -259,14 +259,14 @@ describe('http', () => {
       const client1 = http.create();
       const client2 = client1.create();
 
-      client1.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
-      client2.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
+      client1.before$.subscribe((e) => e.respond({ status: 200 })); // Fake.
+      client2.before$.subscribe((e) => e.respond({ status: 200 })); // Fake.
 
       const events1: t.HttpEvent[] = [];
       const events2: t.HttpEvent[] = [];
 
-      client1.events$.subscribe(e => events1.push(e));
-      client2.events$.subscribe(e => events2.push(e));
+      client1.events$.subscribe((e) => events1.push(e));
+      client2.events$.subscribe((e) => events2.push(e));
 
       await client1.get('http://localhost/foo');
       await client2.get('http://localhost/foo');
@@ -285,8 +285,8 @@ describe('http', () => {
       events = [];
       client = http.create();
 
-      client.events$.subscribe(e => events.push(e));
-      client.before$.subscribe(e => e.respond({ status: 200 })); // Fake.
+      client.events$.subscribe((e) => events.push(e));
+      client.before$.subscribe((e) => e.respond({ status: 200 })); // Fake.
     });
 
     it('head', async () => {
@@ -437,7 +437,7 @@ describe('http', () => {
     it('injected [fetch] function', async () => {
       const requests: t.IHttpRequestPayload[] = [];
       const data = { msg: 'hello' };
-      const fetch: t.HttpFetch = async req => {
+      const fetch: t.HttpFetch = async (req) => {
         requests.push(req);
         await time.wait(10);
         return {
@@ -500,13 +500,13 @@ describe('http', () => {
       const client = http.create({ headers: { foo: 'one' } });
 
       const events: t.IHttpBefore[] = [];
-      client.before$.subscribe(e => {
+      client.before$.subscribe((e) => {
         events.push(e);
         e.modify.header('foo', 'abc');
         e.modify.header('bar', 'hello');
         e.modify.header('baz', 'hello');
       });
-      client.before$.subscribe(e => {
+      client.before$.subscribe((e) => {
         e.modify.header('foo', 'zoo');
         e.modify.header('bar', ''); // NB: <empty> === delete
       });
@@ -527,7 +527,7 @@ describe('http', () => {
       const client = http.create({ headers: { foo: 'one', bar: 'abc', zoo: 'zoo' } });
       const events: t.IHttpBefore[] = [];
 
-      client.before$.subscribe(e => {
+      client.before$.subscribe((e) => {
         events.push(e);
         e.modify.headers.merge({ foo: 'two', baz: 'baz' });
         e.modify.headers.merge({ zoo: '' }); // NB: delete
@@ -551,11 +551,11 @@ describe('http', () => {
       const client = http.create({ headers: { foo: 'one' } });
 
       const events: t.IHttpBefore[] = [];
-      client.before$.subscribe(e => {
+      client.before$.subscribe((e) => {
         events.push(e);
         e.modify.headers.replace({ foo: 'two', baz: 'baz' });
       });
-      client.before$.subscribe(e => {
+      client.before$.subscribe((e) => {
         e.modify.headers.replace({ bar: 'bar', zoo: '' });
       });
 

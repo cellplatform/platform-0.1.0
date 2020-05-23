@@ -34,15 +34,15 @@ export async function tmpl(args: { dir: string }) {
   };
 
   const alerts$ = tmpl.events$.pipe(
-    filter(e => e.type === 'TMPL/alert'),
-    map(e => e.payload as t.ITemplateAlert),
+    filter((e) => e.type === 'TMPL/alert'),
+    map((e) => e.payload as t.ITemplateAlert),
   );
 
   const task: cli.exec.ITask = {
     title: log.gray(`Create template: ${log.white(fs.basename(dir))}`),
     task: () =>
-      new Observable(observer => {
-        alerts$.subscribe(e => observer.next(e.message));
+      new Observable((observer) => {
+        alerts$.subscribe((e) => observer.next(e.message));
         (async () => {
           await tmpl.execute<t.ICellTemplateVariables>({ variables });
           observer.complete();

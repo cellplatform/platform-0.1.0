@@ -77,8 +77,8 @@ describe('func.calc.cells (many)', function () {
     const res1 = await many({ cells: 'C1', ...ctx });
     const res2 = await many({ cells: ['C1', 'D1'], ...ctx });
 
-    const cells1 = res1.list.map(e => e.cell);
-    const cells2 = res2.list.map(e => e.cell);
+    const cells1 = res1.list.map((e) => e.cell);
+    const cells2 = res2.list.map((e) => e.cell);
 
     expect(cells1.length).to.eql(2);
     expect(cells1.includes('B1')).to.eql(true);
@@ -110,7 +110,7 @@ describe('func.calc.cells (many)', function () {
       Z9: { value: 'hello' }, // NB: Not involved.
     });
     const res = await many({ cells: ['A1', 'A2'], ...ctx });
-    expect(res.list.every(item => item.eid === res.eid)).to.eql(true);
+    expect(res.list.every((item) => item.eid === res.eid)).to.eql(true);
   });
 
   it('events: FUNC/begin | FUNC/end', async () => {
@@ -122,7 +122,7 @@ describe('func.calc.cells (many)', function () {
 
     const events: t.FuncEvent[] = [];
     const events$ = new Subject<t.FuncEvent>();
-    events$.subscribe(e => events.push(e));
+    events$.subscribe((e) => events.push(e));
 
     await many({ cells: ['A1'], events$, ...ctx });
 

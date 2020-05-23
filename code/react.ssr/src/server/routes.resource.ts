@@ -9,7 +9,7 @@ export function init(args: { router: t.IRouter; getManifest: t.GetManifest }) {
   /**
    * [GET] resource.
    */
-  router.get('*', async req => {
+  router.get('*', async (req) => {
     // Load the manifest.
     const manifest = await getManifest();
     if (!manifest.ok) {

@@ -14,7 +14,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
    * GET: /cell:<ns>  (NB: no cell-key on the URL)
    *      REDIRECT to the namespace.
    */
-  router.get(routes.CELL.NS, async req => {
+  router.get(routes.CELL.NS, async (req) => {
     try {
       const params = req.params as t.IUrlParamsNs;
       const ns = Schema.urls(req.host).ns(params.ns).info;
@@ -28,7 +28,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * GET /cell:<ns>:A1
    */
-  router.get(routes.CELL.INFO, async req => {
+  router.get(routes.CELL.INFO, async (req) => {
     try {
       const query = req.query as t.IUrlParamsCoord;
       const { status, uri, error } = getParams({
@@ -50,7 +50,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * GET /cell:<ns>:1
    */
-  router.get(routes.ROW.INFO, async req => {
+  router.get(routes.ROW.INFO, async (req) => {
     try {
       const query = req.query as t.IUrlParamsCoord;
       const { status, uri, error } = getParams({
@@ -72,7 +72,7 @@ export function init(args: { db: t.IDb; router: t.IRouter }) {
   /**
    * GET /cell:<ns>:A
    */
-  router.get(routes.COLUMN.INFO, async req => {
+  router.get(routes.COLUMN.INFO, async (req) => {
     try {
       const query = req.query as t.IUrlParamsCoord;
       const { status, uri, error } = getParams({

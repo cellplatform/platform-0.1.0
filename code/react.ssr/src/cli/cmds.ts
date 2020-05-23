@@ -16,10 +16,10 @@ cli
   .command(
     ['status', 's'],
     'Current status of the cloud manifest.',
-    yargs => {
+    (yargs) => {
       return yargs;
     },
-    async argv => status.run({ cli }),
+    async (argv) => status.run({ cli }),
   )
 
   /**
@@ -28,7 +28,7 @@ cli
   .command(
     ['bundle', 'b'],
     'Prepare, bundle and push javascript.',
-    yargs => {
+    (yargs) => {
       return yargs
         .option('v', {
           describe: 'The bundle version to push.',
@@ -45,7 +45,7 @@ cli
           type: 'boolean',
         });
     },
-    async argv => {
+    async (argv) => {
       const { v: version, push, manifest } = argv;
       return bundle.run({ cli, version, push, manifest });
     },
@@ -57,7 +57,7 @@ cli
   .command(
     ['push', 'p'],
     'Push bundle or manifest to S3.',
-    yargs => {
+    (yargs) => {
       return yargs
         .option('manifest', {
           alias: 'm',
@@ -70,7 +70,7 @@ cli
           type: 'boolean',
         });
     },
-    async argv => {
+    async (argv) => {
       const { bundle, manifest } = argv;
       if (bundle) {
         await push.run({ cli, type: 'BUNDLE' });
@@ -91,10 +91,10 @@ cli
   .command(
     ['release', 'r'],
     'Change release version of a site.',
-    yargs => {
+    (yargs) => {
       return yargs;
     },
-    async argv => release.run({ cli }),
+    async (argv) => release.run({ cli }),
   )
 
   /**
@@ -103,10 +103,10 @@ cli
   .command(
     ['pull'],
     'Pull the latet version of the manifest locally.',
-    yargs => {
+    (yargs) => {
       return yargs;
     },
-    async argv => pull.run({ cli }),
+    async (argv) => pull.run({ cli }),
   );
 
 /**

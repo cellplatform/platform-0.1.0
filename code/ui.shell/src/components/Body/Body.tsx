@@ -21,7 +21,7 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
    */
   constructor(props: IBodyProps) {
     super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentDidMount() {

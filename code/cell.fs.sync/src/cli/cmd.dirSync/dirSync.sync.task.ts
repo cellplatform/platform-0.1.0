@@ -9,8 +9,8 @@ export function toBatches(args: { items: t.IFsSyncPayloadFile[]; maxBytes: numbe
   let bytes = 0;
   let index = 0;
   fs.sort
-    .objects(args.items, item => item.filename)
-    .forEach(item => {
+    .objects(args.items, (item) => item.filename)
+    .forEach((item) => {
       bytes += item.localBytes;
       const increment = bytes >= args.maxBytes;
       if (increment) {
@@ -35,8 +35,8 @@ export function addTask(args: {
 }) {
   const { tasks, logResults } = args;
   const clientFiles = args.client.cell(args.targetUri.toString()).files;
-  const pushes = args.items.filter(item => item.status !== 'DELETED');
-  const deletions = args.items.filter(item => item.status === 'DELETED');
+  const pushes = args.items.filter((item) => item.status !== 'DELETED');
+  const deletions = args.items.filter((item) => item.status === 'DELETED');
   const title = taskTitle({ pushes, deletions });
 
   tasks.task(title, async () => {
@@ -49,7 +49,7 @@ export function addTask(args: {
     if (uploadFiles.length > 0) {
       const res = await clientFiles.upload(uploadFiles);
       if (res.ok) {
-        logResults({ uploaded: uploadFiles.map(item => item.filename) });
+        logResults({ uploaded: uploadFiles.map((item) => item.filename) });
       } else {
         const err = `${res.status} Failed while uploading.`;
         throw new Error(err);
@@ -57,7 +57,7 @@ export function addTask(args: {
     }
 
     // Deletions.
-    const deleteFiles = deletions.map(item => item.path);
+    const deleteFiles = deletions.map((item) => item.path);
     if (deleteFiles.length > 0) {
       const res = await clientFiles.delete(deleteFiles);
       if (res.ok) {

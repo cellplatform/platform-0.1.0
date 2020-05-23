@@ -34,7 +34,7 @@ export class Screen<M extends t.IpcMessage = any, S extends t.SettingsJson = any
     this.closed$
       // NB: Delay before disposing to allow other listeners on this observable to fire.
       .pipe(delay(0))
-      .subscribe(e => this.dispose());
+      .subscribe((e) => this.dispose());
   }
 
   public dispose() {
@@ -62,18 +62,18 @@ export class Screen<M extends t.IpcMessage = any, S extends t.SettingsJson = any
   private readonly _events$ = new Subject<t.ScreenEvent>();
   public readonly events$ = this._events$.pipe(
     takeUntil(this.dispose$),
-    filter(e => e.payload.window.id === this.id),
+    filter((e) => e.payload.window.id === this.id),
     share(),
   );
 
   public readonly change$ = this.events$.pipe(
-    filter(e => e.type === '@platform/SCREEN/window/change'),
-    map(e => e.payload as t.IScreenChange),
+    filter((e) => e.type === '@platform/SCREEN/window/change'),
+    map((e) => e.payload as t.IScreenChange),
     share(),
   );
 
   public readonly closed$ = this.change$.pipe(
-    filter(e => e.type === 'CLOSED'),
+    filter((e) => e.type === 'CLOSED'),
     share(),
   );
 

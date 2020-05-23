@@ -59,14 +59,14 @@ export async function uploadCellFilesStart(args: {
 
   // POST each file to the file-system creating the model
   //      and retrieving it's signed upload-link.
-  const wait = fileDefs.map(file => startUpload({ ns, file, links: cellLinks }));
+  const wait = fileDefs.map((file) => startUpload({ ns, file, links: cellLinks }));
   const uploadStartResponses = await Promise.all(wait);
 
   // Check for errors.
   const errors: t.IFileUploadError[] = [];
   uploadStartResponses
-    .filter(item => !util.isOK(item.status))
-    .forEach(item => {
+    .filter((item) => !util.isOK(item.status))
+    .forEach((item) => {
       const { status, filename } = item;
       const data: any = item.res.data || {};
       const message = data.message || `Failed while starting upload of '${filename}' (${status})`;
@@ -103,7 +103,7 @@ export async function uploadCellFilesStart(args: {
   let changes: t.IDbModelChange[] | undefined;
   if (sendChanges) {
     changes = [...(postNsData.changes || [])];
-    uploadStartResponses.forEach(item => {
+    uploadStartResponses.forEach((item) => {
       changes = [...(changes || []), ...(item.json.changes || [])];
     });
   }
@@ -111,11 +111,11 @@ export async function uploadCellFilesStart(args: {
   // Prepare response URLs.
   const urls = {
     ...util.urls(host).cell(cellUri.toString()).urls,
-    uploads: uploadStartResponses.map(item => item.json.upload).filter(item => Boolean(item)),
+    uploads: uploadStartResponses.map((item) => item.json.upload).filter((item) => Boolean(item)),
   };
 
   // Prepare response files.
-  const files: t.IUriData<t.IFileData>[] = uploadStartResponses.map(res => {
+  const files: t.IUriData<t.IFileData>[] = uploadStartResponses.map((res) => {
     return {
       uri: res.uri,
       data: { ...res.json.data },

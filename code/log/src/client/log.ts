@@ -26,7 +26,7 @@ export function create(): ILog {
 
   // Run the log events through a formatter that converts the
   // log items into pretty colors.
-  const formatter = map<ILogAction, ILogAction>(e => {
+  const formatter = map<ILogAction, ILogAction>((e) => {
     switch (e.type) {
       case 'LOG':
       case 'GROUP':
@@ -55,27 +55,27 @@ const events$ = log.events$
 
 events$
   // Logging.
-  .pipe(filter(e => e.type === 'LOG'))
-  .pipe(map(e => e.payload as ILogEvent))
-  .subscribe(e => {
+  .pipe(filter((e) => e.type === 'LOG'))
+  .pipe(map((e) => e.payload as ILogEvent))
+  .subscribe((e) => {
     const { level, output } = e;
     console[level].apply(console, output); // eslint-disable-line
   });
 
 events$
   // Clear console.
-  .pipe(filter(e => e.type === 'CLEAR'))
+  .pipe(filter((e) => e.type === 'CLEAR'))
   .subscribe((e) => console.clear()); // eslint-disable-line
 
 events$
   // Group.
-  .pipe(filter(e => e.type === 'GROUP'))
-  .pipe(map(e => e.payload as ILogEvent))
+  .pipe(filter((e) => e.type === 'GROUP'))
+  .pipe(map((e) => e.payload as ILogEvent))
   .subscribe((e) => console.group.apply(console, e.output)); // eslint-disable-line
 
 events$
   // End group.
-  .pipe(filter(e => e.type === 'UNGROUP'))
+  .pipe(filter((e) => e.type === 'UNGROUP'))
   .subscribe((e) => console.groupEnd()); // eslint-disable-line
 
 /**
@@ -87,7 +87,7 @@ const isSimpleValue = (value: any) =>
   typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number';
 
 function format(e: ILogEvent) {
-  const hasColor = e.items.some(item => isColorItem(item));
+  const hasColor = e.items.some((item) => isColorItem(item));
   return hasColor ? formatColors(e) : e.items;
 }
 
@@ -96,7 +96,7 @@ function formatColors(e: ILogEvent) {
   const colors: string[] = [];
   const rest: any[] = [];
   let colorsStopped = false;
-  e.items.forEach(item => {
+  e.items.forEach((item) => {
     const isColor = isColorItem(item);
     const value = isColor ? (item as ColorItem).value : item;
     if (!colorsStopped && isSimpleValue(value)) {

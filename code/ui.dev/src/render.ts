@@ -6,8 +6,8 @@ import { reset } from '@platform/css';
  * Renders an element into the DOM.
  */
 export function render(
-  element: React.SFCElement<any> | Array<React.SFCElement<any>>,
-  container?: Element | DocumentFragment | null | string,
+  element: React.ReactElement,
+  container?: Element | null | string,
   callback?: () => void,
 ) {
   reset(); // Normalise CSS.

@@ -14,7 +14,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
   /**
    * GET: /, /.sys
    */
-  router.get(routes.SYS.INFO, async req => {
+  router.get(routes.SYS.INFO, async (req) => {
     const NOW_REGION = fs.env.value('NOW_REGION');
     const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local:device';
 
@@ -38,7 +38,7 @@ export function init(args: { router: t.IRouter; title?: string; deployedAt?: num
   /**
    * GET: /uid
    */
-  router.get(routes.SYS.UID, async req => {
+  router.get(routes.SYS.UID, async (req) => {
     const query = req.query as t.IReqQuerySysUid;
     const length = Math.min(100, defaultValue(query.total, 10));
     const ids = Array.from({ length }).map(() => id.cuid());

@@ -29,7 +29,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
     /**
      * Pipe window events.
      */
-    windows.change$.pipe(takeUntil(this.dispose$)).subscribe(e => {
+    windows.change$.pipe(takeUntil(this.dispose$)).subscribe((e) => {
       const tag = e.window.tags.find(({ tag }) => tag === TAG.TYPE);
       if (tag && typeof tag.value === 'string') {
         const screen = tag.value as string;
@@ -60,18 +60,18 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
   public readonly events$ = this._events$.pipe(takeUntil(this.dispose$), share());
 
   public readonly change$ = this.events$.pipe(
-    filter(e => e.type === '@platform/SCREEN/window/change'),
-    map(e => e.payload as t.IScreenChange),
+    filter((e) => e.type === '@platform/SCREEN/window/change'),
+    map((e) => e.payload as t.IScreenChange),
     share(),
   );
 
   public readonly created$ = this.change$.pipe(
-    filter(e => e.type === 'CREATED'),
+    filter((e) => e.type === 'CREATED'),
     share(),
   );
 
   public readonly closed$ = this.change$.pipe(
-    filter(e => e.type === 'CLOSED'),
+    filter((e) => e.type === 'CLOSED'),
     share(),
   );
 
@@ -90,7 +90,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
   /**
    * [Methods]
    */
-  public instance = (uid: string) => this.instances.find(s => s.uid === uid);
+  public instance = (uid: string) => this.instances.find((s) => s.uid === uid);
   public exists = (uid: string) => Boolean(this.instance(uid));
 
   public create(args: {
@@ -109,7 +109,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
       throw new Error(`Cannot create window '${type}:${uid}' before app is ready.`);
     }
 
-    const existing = this.instances.find(s => s.uid === uid);
+    const existing = this.instances.find((s) => s.uid === uid);
     if (existing) {
       existing.window.focus();
       return existing;
@@ -213,13 +213,13 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
     // Screen the [Screen] instance.
     const id = window.id;
     const ctx = this.context;
-    const events$ = this.events$.pipe(filter(e => includesType(type, e.payload.window.tags)));
+    const events$ = this.events$.pipe(filter((e) => includesType(type, e.payload.window.tags)));
     const instance = new Screen({ ctx, uid, type, window, events$ });
 
     // Store reference to [Screen] instance.
     this.instances = [...this.instances, instance];
     window.once('close', () => {
-      this.instances = this.instances.filter(s => s.window.id !== id);
+      this.instances = this.instances.filter((s) => s.window.id !== id);
     });
 
     // Finish up.
@@ -237,10 +237,10 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
   }): t.IScreenTypeFactory<M, S> {
     const self = this; // eslint-disable-line
     const { type, url, isStateful, window } = args;
-    const events$ = this.events$.pipe(filter(e => includesType(type, e.payload.window.tags)));
-    const change$ = this.change$.pipe(filter(e => includesType(type, e.window.tags)));
-    const created$ = change$.pipe(filter(e => e.type === 'CREATED'));
-    const closed$ = change$.pipe(filter(e => e.type === 'CLOSED'));
+    const events$ = this.events$.pipe(filter((e) => includesType(type, e.payload.window.tags)));
+    const change$ = this.change$.pipe(filter((e) => includesType(type, e.window.tags)));
+    const created$ = change$.pipe(filter((e) => e.type === 'CREATED'));
+    const closed$ = change$.pipe(filter((e) => e.type === 'CLOSED'));
 
     return {
       type,
@@ -253,7 +253,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
       created$,
       closed$,
       get instances() {
-        return self.instances.filter(s => s.type === type);
+        return self.instances.filter((s) => s.type === type);
       },
       instance: this.instance,
       exists: this.exists,
@@ -279,4 +279,4 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
  * [Helpers]
  */
 const includesType = (type: string, tags: t.IWindowTag[]) =>
-  tags.some(item => item.tag === TAG.TYPE && item.value === type);
+  tags.some((item) => item.tag === TAG.TYPE && item.value === type);

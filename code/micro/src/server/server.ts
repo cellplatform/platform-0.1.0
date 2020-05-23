@@ -31,16 +31,16 @@ export function create(
   const _events$ = new Subject<t.MicroEvent>();
   const events$ = _events$.pipe(share());
   const request$ = _events$.pipe(
-    filter(e => e.type === 'HTTP/request'),
-    map(e => e.payload as t.IMicroRequest),
+    filter((e) => e.type === 'HTTP/request'),
+    map((e) => e.payload as t.IMicroRequest),
     share(),
   );
   const response$ = _events$.pipe(
-    filter(e => e.type === 'HTTP/response'),
-    map(e => e.payload as t.IMicroResponse),
+    filter((e) => e.type === 'HTTP/response'),
+    map((e) => e.payload as t.IMicroResponse),
     share(),
   );
-  const fire: t.FireEvent = e => _events$.next(e);
+  const fire: t.FireEvent = (e) => _events$.next(e);
 
   // Initialize the [micro] server.
   let handler = requestHandler({ router, fire });
@@ -59,7 +59,7 @@ export function create(
           if (!service.isRunning) {
             return resolve(); // Already stopped.
           } else {
-            listener.close(err => {
+            listener.close((err) => {
               service.isRunning = false;
               api.service = undefined;
               fire({
@@ -103,7 +103,7 @@ export function create(
           logger.info();
           logger.info.gray(`👋  Running on ${url}`);
           logger.info();
-          keys.forEach(key => {
+          keys.forEach((key) => {
             const prefix = `${key}:${' '.repeat(10)}`.substring(0, max);
             logger.info.gray(`   • ${prefix} ${props[key].toString()}`);
           });

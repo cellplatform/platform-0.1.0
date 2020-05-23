@@ -11,8 +11,8 @@ export function defaultValue<T>(value: T | undefined, defaultValue?: T) {
 export function deleteUndefined<T extends object>(obj: T) {
   obj = { ...(obj as any) };
   Object.keys(obj)
-    .filter(key => obj[key] === undefined)
-    .forEach(key => delete obj[key]);
+    .filter((key) => obj[key] === undefined)
+    .forEach((key) => delete obj[key]);
   return obj;
 }
 
@@ -22,8 +22,8 @@ export function deleteUndefined<T extends object>(obj: T) {
 export function deleteEmpty<T extends object>(obj: T) {
   obj = { ...(obj as any) };
   Object.keys(obj)
-    .filter(key => obj[key] === undefined || obj[key] === '')
-    .forEach(key => delete obj[key]);
+    .filter((key) => obj[key] === undefined || obj[key] === '')
+    .forEach((key) => delete obj[key]);
   return obj;
 }
 

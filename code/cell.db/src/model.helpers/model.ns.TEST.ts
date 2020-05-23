@@ -56,7 +56,7 @@ describe('helpers: model.ns', () => {
 
       const res2 = await models.ns.setProps({ ns, data: { title: 'MySheet' } });
       const hash = ns.props.hash;
-      expect(res2.changes.map(c => c.field)).to.eql(['props', 'id', 'props', 'hash']);
+      expect(res2.changes.map((c) => c.field)).to.eql(['props', 'id', 'props', 'hash']);
       expect(hash).to.not.eql(undefined);
       expect(ns.props.props && ns.props.props.title).to.eql('MySheet');
 
@@ -67,12 +67,12 @@ describe('helpers: model.ns', () => {
       expect(change.to).to.eql({ title: 'MySheet' });
 
       const res3 = await models.ns.setProps({ ns, data: { title: 'Foo' } });
-      expect(res3.changes.map(c => c.field)).to.eql(['props', 'hash']);
+      expect(res3.changes.map((c) => c.field)).to.eql(['props', 'hash']);
       expect(ns.props.hash).to.not.eql(hash);
       expect(ns.props.props && ns.props.props.title).to.eql('Foo');
 
       const res4 = await models.ns.setProps({ ns, data: { title: undefined } });
-      expect(res4.changes.map(c => c.field)).to.eql(['props', 'hash']);
+      expect(res4.changes.map((c) => c.field)).to.eql(['props', 'hash']);
       expect(ns.props.props && ns.props.props.title).to.eql(undefined);
     });
 
@@ -103,7 +103,7 @@ describe('helpers: model.ns', () => {
       const res1 = await setChildData({ ns, data: { cells: { A1: { value: '=A2' } } } });
 
       expect(res1.changes.length).to.eql(2);
-      expect(res1.changes.map(c => c.field)).to.eql(['value', 'hash']);
+      expect(res1.changes.map((c) => c.field)).to.eql(['value', 'hash']);
 
       // NB: Change A1 "props", but "value" remains unchanged.
       const res2 = await setChildData({
@@ -112,7 +112,7 @@ describe('helpers: model.ns', () => {
       });
 
       expect(res2.changes.length).to.eql(2); // NB: not 3, as the "value" field has not changed ("=A2").
-      expect(res2.changes.map(c => c.field)).to.eql(['props', 'hash']);
+      expect(res2.changes.map((c) => c.field)).to.eql(['props', 'hash']);
     });
 
     it('sets error, then clear error', async () => {

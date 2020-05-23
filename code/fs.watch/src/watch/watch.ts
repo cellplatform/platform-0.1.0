@@ -49,8 +49,8 @@ export function start(args: {
     watcher.on('change', (path, stats) => next('change', path, false));
   }
   if (actions.includes('remove')) {
-    watcher.on('unlink', path => next('remove', path, false));
-    watcher.on('unlinkDir', path => next('remove', path, true));
+    watcher.on('unlink', (path) => next('remove', path, false));
+    watcher.on('unlinkDir', (path) => next('remove', path, true));
   }
 
   // API.

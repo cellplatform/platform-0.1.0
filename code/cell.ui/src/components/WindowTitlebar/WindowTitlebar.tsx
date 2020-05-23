@@ -31,7 +31,7 @@ export class WindowTitleBar extends React.PureComponent<
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.updateState();
 
     window.addEventListener('focus', this.updateState);

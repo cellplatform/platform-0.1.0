@@ -29,7 +29,7 @@ export async function deleteMany(args: {
 }): Promise<t.S3DeleteManyResponse> {
   const { s3, bucket, keys = [] } = args;
   try {
-    const Objects = keys.map(Key => ({ Key }));
+    const Objects = keys.map((Key) => ({ Key }));
     const Delete = { Objects };
     await s3.deleteObjects({ Bucket: bucket, Delete }).promise();
     return { ok: true, status: 200, keys, bucket };

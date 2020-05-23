@@ -12,9 +12,9 @@ export function walk(obj: any | any[], fn: (obj: any | any[]) => void) {
     }
   };
   if (R.is(Array, obj)) {
-    (obj as any[]).forEach(item => process(item));
+    (obj as any[]).forEach((item) => process(item));
   } else {
-    Object.keys(obj).forEach(key => process(obj[key]));
+    Object.keys(obj).forEach((key) => process(obj[key]));
   }
 }
 
@@ -165,7 +165,7 @@ export function prune(keyPath: string, root: { [key: string]: any }) {
  * Converts an object into an array of {key,value} pairs.
  */
 export function toArray<T = any, K = keyof T>(obj: object): { key: K; value: T[keyof T] }[] {
-  return Object.keys(obj).map(key => ({ key: (key as unknown) as K, value: obj[key] }));
+  return Object.keys(obj).map((key) => ({ key: (key as unknown) as K, value: obj[key] }));
 }
 
 /**

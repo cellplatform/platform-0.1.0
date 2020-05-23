@@ -51,7 +51,7 @@ export class Zipper {
         resolve({ bytes });
       });
 
-      archive.on('warning', err => {
+      archive.on('warning', (err) => {
         if (err.code === 'ENOENT') {
           // log warning
         } else {
@@ -60,8 +60,8 @@ export class Zipper {
       });
 
       // Setup archiver events.
-      archive.on('error', err => reject(err));
-      archive.on('progress', data => {
+      archive.on('error', (err) => reject(err));
+      archive.on('progress', (data) => {
         if (onProgress) {
           const { entries, fs } = data;
           onProgress({

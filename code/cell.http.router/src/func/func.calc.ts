@@ -13,7 +13,7 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
    * TODO 🐷
    * - lookup functions from imports (TBD, external namespaces)
    */
-  const getFunc: t.GetFunc = async args => {
+  const getFunc: t.GetFunc = async (args) => {
     // TEMP 🐷
 
     console.log('getFunc', args);
@@ -25,7 +25,7 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
       type FuncProp = { name: string; link: string };
       type FuncLink = { key: string; link: string; uri: string };
       let func: FuncLink | undefined;
-      Object.keys(cells).forEach(key => {
+      Object.keys(cells).forEach((key) => {
         const cell = cells[key] || {};
         const cellLinks = cell.links || {};
         const props = (cell.props || {}) as { func?: FuncProp };
@@ -62,7 +62,7 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
         const lib = wasm.instance.exports as any;
 
         // TEMP
-        const invoker: t.FuncInvoker = args => {
+        const invoker: t.FuncInvoker = (args) => {
           const p1 = args.params[0] || 0;
           const p2 = args.params[1] || 0;
           return lib.add(p1, p2);
@@ -89,7 +89,7 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
    */
   const refsTable = cell.coord.refs.table({
     getKeys: async () => Object.keys(await getCells()),
-    getValue: async key => {
+    getValue: async (key) => {
       const cell = (await getCells())[key];
       return cell && typeof cell.value === 'string' ? cell.value : undefined;
     },
@@ -108,7 +108,7 @@ export function calc(args: { host: string; ns: t.IDbModelNs; cells?: t.IMap<t.IC
     keys = Object.keys(cells || {});
     if (typeof range === 'string') {
       const ranges = cell.coord.range.union(range.split(','));
-      keys = keys.filter(key => ranges.contains(key));
+      keys = keys.filter((key) => ranges.contains(key));
     }
 
     // Calculate the changes.

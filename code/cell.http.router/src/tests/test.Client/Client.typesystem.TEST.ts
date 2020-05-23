@@ -89,7 +89,7 @@ describe('Client.TypeSystem', () => {
         client.changes.watch(sheet);
 
         const fired: t.ITypedSheetChanged[] = [];
-        client.changes.changed$.subscribe(e => fired.push(e));
+        client.changes.changed$.subscribe((e) => fired.push(e));
 
         const row = await sheet.data<g.MyRow>('MyRow').row(0).load();
         row.props.title = '1';
@@ -173,20 +173,20 @@ describe('Client.TypeSystem', () => {
         const saver = Client.saveMonitor({ client, debounce: 5 });
         client.changes.watch(sheet);
 
-        saver.saving$.pipe(take(1), delay(10)).subscribe(e => {
+        saver.saving$.pipe(take(1), delay(10)).subscribe((e) => {
           row.title = 'second'; // Trigger another save by changing the row again when the save starts.
         });
 
         const responses$ = new Subject();
         const responses: t.IHttpClientResponse<any>[] = [];
-        saver.saved$.subscribe(async e => {
+        saver.saved$.subscribe(async (e) => {
           const res = await client.http.ns('ns:foo.mySheet').read({ cells: true });
           responses.push(res);
           responses$.next();
         });
 
         const fired: t.ITypedSheetSaveEvent[] = [];
-        saver.event$.subscribe(e => fired.push(e));
+        saver.event$.subscribe((e) => fired.push(e));
 
         const cursor = await sheet.data<g.MyRow>('MyRow').load();
         const row = cursor.row(0).props;
@@ -209,7 +209,7 @@ describe('Client.TypeSystem', () => {
         client.changes.watch(sheet);
 
         const fired: t.ITypedSheetSaveEvent[] = [];
-        saver.event$.subscribe(e => fired.push(e));
+        saver.event$.subscribe((e) => fired.push(e));
 
         const cursor = await sheet.data<g.MyRow>('MyRow').load();
         const row = cursor.row(0).props;
@@ -255,14 +255,14 @@ describe('Client.TypeSystem', () => {
         client.changes.watch(sheet);
 
         const errorType = ERROR.HTTP.HASH_MISMATCH;
-        mock.service.response$.pipe(filter(e => e.method === 'POST')).subscribe(e => {
+        mock.service.response$.pipe(filter((e) => e.method === 'POST')).subscribe((e) => {
           const status = 422;
           const error: t.IHttpError = { status, message: 'My fail', type: errorType };
           e.modify({ status, data: error }); // NB: Simulate a server-side error.
         });
 
         const fired: t.ITypedSheetSaveEvent[] = [];
-        saver.event$.subscribe(e => fired.push(e));
+        saver.event$.subscribe((e) => fired.push(e));
 
         const cursor = await sheet.data<g.MyRow>('MyRow').load();
         const row = cursor.row(0).props;

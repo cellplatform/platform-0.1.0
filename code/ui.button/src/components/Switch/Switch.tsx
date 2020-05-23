@@ -58,18 +58,18 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
     }
 
     // Update state.
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     // Setup mouse.
     this.mouse = Button.mouseState(this.props, this.state$, this.unmounted$, () => this.isEnabled);
     const mouse$ = this.mouse.events$.pipe(takeUntil(this.unmounted$));
-    mouse$.subscribe(e => this.fire({ type: 'SWITCH/mouse', payload: { ...e, id: this.id } }));
+    mouse$.subscribe((e) => this.fire({ type: 'SWITCH/mouse', payload: { ...e, id: this.id } }));
     mouse$
       .pipe(
-        filter(e => e.type === 'CLICK'),
-        filter(e => e.button === 'LEFT'),
+        filter((e) => e.type === 'CLICK'),
+        filter((e) => e.button === 'LEFT'),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.fire({
           type: 'SWITCH/change',
           payload: {

@@ -8,7 +8,7 @@ export function format(e: t.ILogEvent) {
   const { level, color } = e;
 
   // Convert objects to JSON.
-  const items = e.items.map(item => {
+  const items = e.items.map((item) => {
     if (item instanceof Error) {
       return item.stack;
     }

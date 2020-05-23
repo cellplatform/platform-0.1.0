@@ -24,12 +24,12 @@ export const toKeypress = (e: KeyboardEvent, isPressed: boolean) => {
 };
 
 export const keyDown$ = fromDocumentEvent<KeyboardEvent>('keydown').pipe(
-  map(e => toKeypress(e, true)),
+  map((e) => toKeypress(e, true)),
   share(),
 );
 
 export const keyUp$ = fromDocumentEvent<KeyboardEvent>('keyup').pipe(
-  map(e => toKeypress(e, false)),
+  map((e) => toKeypress(e, false)),
   share(),
 );
 

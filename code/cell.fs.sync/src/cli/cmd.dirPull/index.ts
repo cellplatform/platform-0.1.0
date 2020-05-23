@@ -3,8 +3,8 @@ import { dirPull } from './dirPull';
 
 export type IPullArgs = {};
 
-export const init: t.CmdPluginsInit = cli => {
-  const handler: t.CmdPluginHandler<IPullArgs> = async e => {
+export const init: t.CmdPluginsInit = (cli) => {
+  const handler: t.CmdPluginHandler<IPullArgs> = async (e) => {
     await dirPull({
       dir: process.cwd(),
     });

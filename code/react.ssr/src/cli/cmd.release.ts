@@ -16,10 +16,10 @@ export async function run(args: { cli: t.ICmdApp }) {
   // Pull data from cloud.
   log.info();
   await cli
-    .task('pull manifest', async e => {
+    .task('pull manifest', async (e) => {
       manifest = await config.manifest.local.ensureLatest({ minimal: true });
     })
-    .task('pull versions', async e => {
+    .task('pull versions', async (e) => {
       versions = await config.s3.versions({ sort: 'DESC' });
     })
     .run({ concurrent: true });
@@ -64,7 +64,7 @@ export async function run(args: { cli: t.ICmdApp }) {
  */
 async function promptForSites(args: { cli: t.ICmdApp; manifest: Manifest }) {
   const { cli, manifest } = args;
-  let sites = manifest.sites.map(site => site.name || 'Unnamed');
+  let sites = manifest.sites.map((site) => site.name || 'Unnamed');
   sites = ['all', ...sites];
   const name = await cli.prompt.list<string>({ message: 'site', items: sites });
   if (name === 'all') {
@@ -81,14 +81,14 @@ async function promptForVersion(args: {
   versions: string[];
 }) {
   const { cli } = args;
-  const versions = args.versions.map(value => {
-    const matches = args.current.filter(item => item.version === value);
+  const versions = args.versions.map((value) => {
+    const matches = args.current.filter((item) => item.version === value);
     const current =
       matches.length === 0
         ? ''
         : matches.length === 1
         ? matches[0].name
-        : matches.map(m => m.name).join(',');
+        : matches.map((m) => m.name).join(',');
     return {
       name: `${value} ${matches.length > 0 ? `🌼  ${current.toUpperCase()}` : ''}`,
       value,

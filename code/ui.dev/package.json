@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.dev",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "UI development helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,22 +13,23 @@
     "clean": "rm -rf .cache dist"
   },
   "dependencies": {
-    "@platform/css": "0.3.19",
+    "@platform/css": "0.4.0",
     "@platform/libs": "0.2.2",
-    "@platform/log": "0.1.24",
+    "@platform/log": "0.1.25",
     "@platform/polyfill": "0.0.1",
-    "@platform/react": "0.4.26",
-    "@platform/ui.object": "0.0.199",
-    "@platform/util.value": "0.7.21",
+    "@platform/react": "0.4.28",
+    "@platform/ui.object": "0.0.201",
+    "@platform/util.value": "0.7.22",
     "parcel-bundler": "1.12.4"
   },
   "devDependencies": {
-    "@platform/test": "0.1.11",
-    "@platform/ts": "3.9.2"
+    "@platform/test": "0.1.12",
+    "@platform/ts": "3.9.3"
   },
   "files": [
     "lib",
     "!lib/test",
+    "!lib/test.parcel",
     "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"

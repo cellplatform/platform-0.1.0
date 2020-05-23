@@ -43,7 +43,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
 
     // Update state.
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     // Bubble events.
     if (this.props.events$) {
@@ -55,11 +55,11 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
      */
     events$
       .pipe(
-        filter(e => Boolean(this.props.onChange)),
-        filter(e => e.type === 'PROPS/changed'),
-        map(e => e.payload as t.IPropsChange),
+        filter((e) => Boolean(this.props.onChange)),
+        filter((e) => e.type === 'PROPS/changed'),
+        map((e) => e.payload as t.IPropsChange),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         if (this.props.onChange) {
           this.props.onChange(e);
         }
@@ -69,24 +69,24 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
      * Mouse events on tree.
      */
     const treeMouse$ = tree$.pipe(
-      filter(e => e.type === 'TREEVIEW/mouse'),
-      map(e => e.payload as t.TreeNodeMouseEvent),
+      filter((e) => e.type === 'TREEVIEW/mouse'),
+      map((e) => e.payload as t.TreeNodeMouseEvent),
     );
     const treeClick$ = treeMouse$.pipe(
-      filter(e => e.type === 'CLICK'),
-      filter(e => e.button === 'LEFT'),
+      filter((e) => e.type === 'CLICK'),
+      filter((e) => e.button === 'LEFT'),
     );
     const treeDblClick$ = treeMouse$.pipe(
-      filter(e => e.type === 'DOUBLE_CLICK'),
-      filter(e => e.button === 'LEFT'),
+      filter((e) => e.type === 'DOUBLE_CLICK'),
+      filter((e) => e.button === 'LEFT'),
     );
 
-    treeClick$.pipe(filter(e => e.target === 'DRILL_IN')).subscribe(e => {
+    treeClick$.pipe(filter((e) => e.target === 'DRILL_IN')).subscribe((e) => {
       const current = e.node.id;
       this.state$.next({ current });
     });
 
-    treeClick$.pipe(filter(e => e.target === 'PARENT')).subscribe(e => {
+    treeClick$.pipe(filter((e) => e.target === 'PARENT')).subscribe((e) => {
       const id = e.node.id;
       const current = id.substring(0, id.lastIndexOf('.'));
       this.state$.next({ current });
@@ -94,13 +94,13 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
 
     treeDblClick$
       .pipe(
-        filter(e => e.target === 'NODE'),
-        filter(e => Boolean(e.node && e.node.children && e.node.children.length > 0)),
-        filter(e =>
+        filter((e) => e.target === 'NODE'),
+        filter((e) => Boolean(e.node && e.node.children && e.node.children.length > 0)),
+        filter((e) =>
           ['object', 'array'].includes(util.toType((e.node.data as t.IPropNodeData).value)),
         ),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const current = e.node.id;
         this.state$.next({ current });
       });
@@ -143,7 +143,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
       filter,
       insertable: this.insertableTypes,
       deletable: this.deletableTypes,
-      formatNode: node => ({ ...node, props: { ...node.props, body } }),
+      formatNode: (node) => ({ ...node, props: { ...node.props, body } }),
     });
   }
 
@@ -173,9 +173,9 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     );
   }
 
-  private iconFactory: t.RenderTreeIcon = e => Icons[e.icon];
+  private iconFactory: t.RenderTreeIcon = (e) => Icons[e.icon];
 
-  private nodeFactory: t.RenderTreeNodeBody = e => {
+  private nodeFactory: t.RenderTreeNodeBody = (e) => {
     if (e.body === BODY.PROD_EDITOR) {
       const node = e.node as t.IPropNode;
       const parentNode = TreeView.util.parent(this.root, node) as t.IPropNode;

@@ -3,8 +3,8 @@ import { compile } from './compile';
 
 export type IPullArgs = {};
 
-export const init: t.CmdPluginsInit = cli => {
-  const handler: t.CmdPluginHandler<IPullArgs> = async e => {
+export const init: t.CmdPluginsInit = (cli) => {
+  const handler: t.CmdPluginHandler<IPullArgs> = async (e) => {
     await compile({
       dir: process.cwd(),
     });

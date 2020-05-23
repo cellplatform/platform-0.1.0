@@ -26,7 +26,7 @@ export class TypeDefault {
     if (Object.keys(input).includes('value')) {
       const value = input.value;
       const isValue = (value: any) => TypeValue.isPrimitive(value) || typeof value === 'object';
-      if (Array.isArray(value) && value.every(item => isValue(item))) {
+      if (Array.isArray(value) && value.every((item) => isValue(item))) {
         return { type: 'VALUE', isArray: true };
       } else if (isValue(value)) {
         return { type: 'VALUE', isArray: false };

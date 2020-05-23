@@ -19,15 +19,15 @@ export function init(args: {
 }) {
   const { grid, command$, fire } = args;
   const clipboard$ = command$.pipe(
-    filter(e => CLIPBOARD_COMMANDS.includes(e.command as any)),
-    filter(e => !e.isCancelled),
-    map(e => e.command),
+    filter((e) => CLIPBOARD_COMMANDS.includes(e.command as any)),
+    filter((e) => !e.isCancelled),
+    map((e) => e.command),
   );
-  clipboard$.pipe(filter(e => e === 'CUT')).subscribe(e => read({ grid, fire, action: 'CUT' }));
+  clipboard$.pipe(filter((e) => e === 'CUT')).subscribe((e) => read({ grid, fire, action: 'CUT' }));
   clipboard$
-    .pipe(filter(e => e === 'COPY'))
-    .subscribe(e => read({ grid, fire, action: 'COPY' }));
-  clipboard$.pipe(filter(e => e === 'PASTE')).subscribe(e => write({ grid, fire }));
+    .pipe(filter((e) => e === 'COPY'))
+    .subscribe((e) => read({ grid, fire, action: 'COPY' }));
+  clipboard$.pipe(filter((e) => e === 'PASTE')).subscribe((e) => write({ grid, fire }));
 }
 
 /**
@@ -43,7 +43,7 @@ async function read(args: { grid: t.IGrid; action: t.GridClipboardReadCommand; f
     type: 'GRID/clipboard/before/read',
     payload: {
       action,
-      wait: promise => wait.push(promise),
+      wait: (promise) => wait.push(promise),
     },
   });
   if (wait.length > 0) {
@@ -82,7 +82,7 @@ async function write(args: { grid: t.IGrid; fire: t.GridFire }) {
     text,
     pending,
     isModified: false,
-    modify: change => {
+    modify: (change) => {
       before.isModified = true;
       pending = { ...(change || {}), pasted: 0 };
     },
@@ -158,7 +158,7 @@ async function write(args: { grid: t.IGrid; fire: t.GridFire }) {
   }
 
   // Update grid selection.
-  const square = coord.range.square(items.map(item => item.key));
+  const square = coord.range.square(items.map((item) => item.key));
   grid.select({ cell: square.left.key, ranges: [square.key] });
 
   // Increment the total pastes of this clipboard value in state.
@@ -201,7 +201,7 @@ function shiftCells(args: {
   };
 
   const data = { ...args.data };
-  return Object.keys(data).map(cell => {
+  return Object.keys(data).map((cell) => {
     const pos = coord.cell.fromKey(cell);
     const key = coord.cell.toKey(pos.column + diff.column, pos.row + diff.row);
     return { key, value: data[cell] };
@@ -232,6 +232,6 @@ function shiftAxisData<T extends t.IGridData['rows'] | t.IGridData['columns']>(a
 }
 
 function firstAxisRange(axis: coord.CoordAxis, selection: t.IGridSelection) {
-  const key = selection.ranges.find(key => coord.cell.isAxisRangeKey(key, axis));
+  const key = selection.ranges.find((key) => coord.cell.isAxisRangeKey(key, axis));
   return key ? coord.range.fromKey(key) : undefined;
 }

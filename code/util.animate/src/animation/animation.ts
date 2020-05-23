@@ -65,7 +65,7 @@ export function start(args: IMoveObservableOptions) {
       set: (value: any) => subject.next({ [key]: value }),
     });
   };
-  Object.keys(target).forEach(key => define(key));
+  Object.keys(target).forEach((key) => define(key));
 
   setTimeout(async () => {
     // NB: Allow for the Observable to be returned to

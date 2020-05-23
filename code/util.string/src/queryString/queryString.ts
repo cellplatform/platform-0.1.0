@@ -83,7 +83,7 @@ export function valueAsFlag<T>(value?: string | string[] | number | boolean): T 
  */
 export function isFlag(keys: string | string[] | undefined, query?: t.UrlQuery) {
   keys = keys ? (Array.isArray(keys) ? keys : [keys]) : [];
-  return query ? keys.some(key => valueAsFlag(query[key])) : false;
+  return query ? keys.some((key) => valueAsFlag(query[key])) : false;
 }
 
 /**
@@ -109,7 +109,7 @@ export function build(options: { allowNil?: boolean } = {}) {
     },
 
     toString() {
-      return builder.parts.length === 0 ? '' : `?${builder.parts.map(p => p.entry).join('&')}`;
+      return builder.parts.length === 0 ? '' : `?${builder.parts.map((p) => p.entry).join('&')}`;
     },
   };
 

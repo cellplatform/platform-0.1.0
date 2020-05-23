@@ -3,7 +3,7 @@ import { Schema, t, util, value } from '../../common';
 /**
  * Invoked before a [Cell] is persisted to the DB.
  */
-export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async args => {
+export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async (args) => {
   const { changes } = args;
   const model = args.model as t.IDbModelCell;
   const schema = Schema.from.cell(model.path);
@@ -14,16 +14,16 @@ export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async args
 
     // Link new namespaces.
     links
-      .filter(link => link.uri === undefined || Schema.uri.is.ns(link.uri))
-      .forEach(link => {
+      .filter((link) => link.uri === undefined || Schema.uri.is.ns(link.uri))
+      .forEach((link) => {
         const path = Schema.ns(link.uri).path;
         model.links.namespaces.link([path]);
       });
 
     // Unlink namespaces that are no longer referenced.
-    (model.doc.nsRefs || []).forEach(path => {
+    (model.doc.nsRefs || []).forEach((path) => {
       const uri = Schema.from.ns(path).uri;
-      const exists = links.some(link => link.uri === uri);
+      const exists = links.some((link) => link.uri === uri);
       if (!exists) {
         model.links.namespaces.unlink([path]);
       }
@@ -43,5 +43,5 @@ export const beforeCellSave: t.BeforeModelSave<t.IDbModelCellProps> = async args
  */
 function toUriList(input?: t.IUriMap) {
   const items = input || {};
-  return Object.keys(items).map(key => ({ key, uri: items[key] }));
+  return Object.keys(items).map((key) => ({ key, uri: items[key] }));
 }

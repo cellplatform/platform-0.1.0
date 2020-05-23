@@ -33,7 +33,7 @@ export async function init<M extends IpcMessage>(
   /**
    * Store references to event-handlers as they are registered.
    */
-  const onHandlerRegistered: HandlerRegistered = args => {
+  const onHandlerRegistered: HandlerRegistered = (args) => {
     client.send<IpcRegisterHandlerEvent>('@platform/IPC/register-handler', {
       type: args.type,
       stage: 'CREATE',

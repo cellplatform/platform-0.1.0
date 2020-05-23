@@ -8,7 +8,7 @@ describe('HttpClient', () => {
     const client = mock.client;
 
     const requests: IMicroRequest[] = [];
-    mock.service.request$.subscribe(e => requests.push(e));
+    mock.service.request$.subscribe((e) => requests.push(e));
     await client.cell('cell:foo:A1').info();
     await mock.dispose();
 
@@ -24,8 +24,8 @@ describe('HttpClient', () => {
 
     const parts = header.split(';');
     parts
-      .filter(item => item.includes('@'))
-      .forEach(item => {
+      .filter((item) => item.includes('@'))
+      .forEach((item) => {
         const version = item.split('@')[1];
         expect(isValidVersion(version)).to.eql(true);
       });
@@ -37,7 +37,7 @@ describe('HttpClient', () => {
     const client = HttpClient.create({ http, host: mock.port });
 
     const headers: t.IHttpHeaders[] = [];
-    mock.service.request$.subscribe(e => headers.push(e.req.headers as t.IHttpHeaders));
+    mock.service.request$.subscribe((e) => headers.push(e.req.headers as t.IHttpHeaders));
 
     const res = await client.info();
     await mock.dispose();

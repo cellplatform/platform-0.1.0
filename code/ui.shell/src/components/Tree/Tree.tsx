@@ -30,7 +30,7 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
    */
   constructor(props: ITreeProps) {
     super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentDidMount() {
@@ -79,17 +79,17 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
    * [Handlers]
    */
 
-  private renderIcon: t.RenderTreeIcon = e => {
+  private renderIcon: t.RenderTreeIcon = (e) => {
     const render = this.model.render;
     return render && render.icon ? render.icon(e) : undefined;
   };
 
-  private renderPanel: t.RenderTreePanel = e => {
+  private renderPanel: t.RenderTreePanel = (e) => {
     const render = this.model.render;
     return render && render.panel ? render.panel(e) : undefined;
   };
 
-  private renderNode: t.RenderTreeNodeBody = e => {
+  private renderNode: t.RenderTreeNodeBody = (e) => {
     const render = this.model.render;
     return render && render.node ? render.node(e) : undefined;
   };

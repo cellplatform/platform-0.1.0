@@ -57,7 +57,7 @@ export const wait = (msecs: number) => delay(msecs, () => false);
 export function kill(port: number) {
   return new Promise((resolve, reject) => {
     const cmd = `lsof -t -i tcp:${port} | xargs kill`;
-    exec(cmd, err => {
+    exec(cmd, (err) => {
       if (err) {
         reject(err);
       } else {

@@ -21,14 +21,14 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
 
   // Monitor changes.
   let pending: t.ITypedSheetPendingChanges = {};
-  changed$.pipe(debounceTime(debounce)).subscribe(e => api.save());
-  changed$.subscribe(e => {
+  changed$.pipe(debounceTime(debounce)).subscribe((e) => api.save());
+  changed$.subscribe((e) => {
     const { sheet } = e;
     const ns = sheet.uri.toString();
 
     // Merge changes onto the pending list.
     let changes = pending[ns] || {};
-    Object.keys(e.changes).forEach(key => {
+    Object.keys(e.changes).forEach((key) => {
       changes = { ...changes, [key]: { ...changes[key], ...e.changes[key] } };
     });
 
@@ -39,15 +39,15 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
     const target = client.http.origin;
     const sheets = client.changes.watching;
     const findSheet = (ns: string) =>
-      sheets.find(sheet => sheet.uri.toString() === ns) as t.ITypedSheet;
+      sheets.find((sheet) => sheet.uri.toString() === ns) as t.ITypedSheet;
 
     const changeSet = Object.keys(changes)
-      .map(ns => ({
+      .map((ns) => ({
         ns,
         changes: changes[ns],
         sheet: findSheet(ns),
       }))
-      .filter(sheet => Boolean(sheet));
+      .filter((sheet) => Boolean(sheet));
 
     // Fire BEFORE event.
     changeSet.forEach(({ sheet, changes }) => {
@@ -62,16 +62,16 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
     res
       .filter(({ ok }) => ok)
       .map(({ ns }) => findSheet(ns))
-      .filter(sheet => Boolean(sheet))
-      .forEach(sheet => sheet.state.clear.changes('SAVE'));
+      .filter((sheet) => Boolean(sheet))
+      .forEach((sheet) => sheet.state.clear.changes('SAVE'));
 
     // Fire AFTER event.
     changeSet.forEach(({ sheet, changes }) => {
       const ns = sheet.uri.toString();
       const errors: t.ITypedSheetSaved['errors'] = res
-        .filter(res => res.ns === ns)
-        .filter(res => Boolean(res.error))
-        .map(res => ({ ns, error: res.error as t.IHttpError }));
+        .filter((res) => res.ns === ns)
+        .filter((res) => Boolean(res.error))
+        .map((res) => ({ ns, error: res.error as t.IHttpError }));
       const ok = errors.length === 0;
       fire({ type: 'SHEET/saved', payload: { ok, target, sheet, changes, errors } });
     });
@@ -81,14 +81,14 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
     event$,
 
     saving$: event$.pipe(
-      filter(e => e.type === 'SHEET/saving'),
-      map(e => e.payload as t.ITypedSheetSaving),
+      filter((e) => e.type === 'SHEET/saving'),
+      map((e) => e.payload as t.ITypedSheetSaving),
       share(),
     ),
 
     saved$: event$.pipe(
-      filter(e => e.type === 'SHEET/saved'),
-      map(e => e.payload as t.ITypedSheetSaved),
+      filter((e) => e.type === 'SHEET/saved'),
+      map((e) => e.payload as t.ITypedSheetSaved),
       share(),
     ),
 
@@ -155,7 +155,7 @@ function toChangedCells(changes: t.ITypedSheetStateChanges) {
   const res: t.ICellMap = {};
   const cells = changes.cells || {};
   Object.keys(cells)
-    .filter(key => coord.cell.isCell(key))
-    .forEach(key => (res[key] = cells[key].to));
+    .filter((key) => coord.cell.isCell(key))
+    .forEach((key) => (res[key] = cells[key].to));
   return res;
 }

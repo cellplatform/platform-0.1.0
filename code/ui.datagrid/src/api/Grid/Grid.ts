@@ -115,7 +115,7 @@ export class Grid implements t.IGrid {
     this._.calc = calc({ grid: this, getFunc: args.getFunc });
 
     this.events$
-      .pipe(filter(e => e.type === 'GRID/ready'))
+      .pipe(filter((e) => e.type === 'GRID/ready'))
       .subscribe(() => (this._.isReady = true));
 
     /**
@@ -152,22 +152,22 @@ export class Grid implements t.IGrid {
      */
     this._.redraw$
       .pipe(takeUntil(this.dispose$), debounceTime(0))
-      .subscribe(e => this.fire({ type: 'GRID/redraw', payload: {} }));
+      .subscribe((e) => this.fire({ type: 'GRID/redraw', payload: {} }));
 
     /**
      * Manage editor events.
      */
     this.events$
-      .pipe(filter(e => e.type === 'GRID/EDITOR/begin'))
+      .pipe(filter((e) => e.type === 'GRID/EDITOR/begin'))
       .subscribe(() => (this._.isEditing = true));
 
     const editEnd$ = this.events$.pipe(
-      filter(e => e.type === 'GRID/EDITOR/end'),
-      map(e => e.payload as t.IEndEditingEvent['payload']),
+      filter((e) => e.type === 'GRID/EDITOR/end'),
+      map((e) => e.payload as t.IEndEditingEvent['payload']),
     );
 
     editEnd$.subscribe(() => (this._.isEditing = false));
-    editEnd$.pipe(filter(e => e.isChanged)).subscribe(e => {
+    editEnd$.pipe(filter((e) => e.isChanged)).subscribe((e) => {
       const key = e.cell.key;
       const value = e.value.to;
       const props = {
@@ -179,10 +179,10 @@ export class Grid implements t.IGrid {
     });
     editEnd$
       .pipe(
-        filter(e => !e.isCancelled),
-        filter(e => e.cell.key === this.selection.cell),
+        filter((e) => !e.isCancelled),
+        filter((e) => e.cell.key === this.selection.cell),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         // Select next cell (below) when use ends and edit, typcially with ENTER key.
         const below = e.cell.siblings.bottom;
         if (below) {
@@ -191,42 +191,42 @@ export class Grid implements t.IGrid {
       });
 
     const selection$ = this.events$.pipe(
-      filter(e => e.type === 'GRID/selection'),
-      map(e => e.payload as t.IGridSelectionChange),
+      filter((e) => e.type === 'GRID/selection'),
+      map((e) => e.payload as t.IGridSelectionChange),
     );
 
     selection$
       // Retain last selection state to ressurect the value upon re-focus of grid.
-      .pipe(filter(e => Boolean(e.to.cell)))
-      .subscribe(e => (this._.lastSelection = e.to));
+      .pipe(filter((e) => Boolean(e.to.cell)))
+      .subscribe((e) => (this._.lastSelection = e.to));
 
     selection$
       // Monitor focus.
       .pipe(
         debounceTime(0),
-        filter(e => !Boolean(e.from.cell) && Boolean(e.to.cell)),
+        filter((e) => !Boolean(e.from.cell) && Boolean(e.to.cell)),
       )
-      .subscribe(e => this.fire({ type: 'GRID/focus', payload: { grid: this } }));
+      .subscribe((e) => this.fire({ type: 'GRID/focus', payload: { grid: this } }));
 
     selection$
       // Monitor blur.
       .pipe(
         debounceTime(0),
-        filter(e => Boolean(e.from.cell) && !Boolean(e.to.cell)),
+        filter((e) => Boolean(e.from.cell) && !Boolean(e.to.cell)),
       )
-      .subscribe(e => this.fire({ type: 'GRID/blur', payload: { grid: this } }));
+      .subscribe((e) => this.fire({ type: 'GRID/blur', payload: { grid: this } }));
 
     /**
      * Recalculate grid when cells change.
      */
     this.events$
       .pipe(
-        filter(e => (this._.isReady = true)),
-        filter(e => e.type === 'GRID/cells/change'),
-        map(e => e.payload as t.IGridCellsChange),
+        filter((e) => (this._.isReady = true)),
+        filter((e) => e.type === 'GRID/cells/change'),
+        map((e) => e.payload as t.IGridCellsChange),
       )
-      .subscribe(async e => {
-        const cells = e.changes.map(change => change.cell.key);
+      .subscribe(async (e) => {
+        const cells = e.changes.map((change) => change.cell.key);
         await this.calc.update({ cells });
       });
 
@@ -264,8 +264,8 @@ export class Grid implements t.IGrid {
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(takeUntil(this.dispose$), share());
   public readonly keyboard$ = this._.events$.pipe(
-    filter(e => e.type === 'GRID/keydown'),
-    map(e => e.payload as t.IGridKeydown),
+    filter((e) => e.type === 'GRID/keydown'),
+    map((e) => e.payload as t.IGridKeydown),
     share(),
   );
 
@@ -275,7 +275,7 @@ export class Grid implements t.IGrid {
   };
   public readonly refsTable = coord.refs.table({
     getKeys: async () => Object.keys(this.data.cells),
-    getValue: async key => this.getValueSync(key),
+    getValue: async (key) => this.getValueSync(key),
   });
 
   /**
@@ -346,7 +346,7 @@ export class Grid implements t.IGrid {
 
     // Ranges.
     const selectedRanges = this._.table.getSelectedRange() || [];
-    let ranges = selectedRanges.map(item => `${toKey(item.from)}:${toKey(item.to)}`);
+    let ranges = selectedRanges.map((item) => `${toKey(item.from)}:${toKey(item.to)}`);
     ranges = ranges.length === 1 && ranges[0] === `${cell}:${cell}` ? [] : ranges;
 
     // Determine if the entire sheet is selected.
@@ -355,7 +355,7 @@ export class Grid implements t.IGrid {
       const min = { row: -1, col: -1 };
       const max = { row: -1, col: -1 };
 
-      selectedRanges.forEach(range => {
+      selectedRanges.forEach((range) => {
         const { from, to } = range;
         min.row = min.row === -1 || from.row < min.row ? from.row : min.row;
         min.col = min.col === -1 || from.col < min.col ? from.col : min.col;
@@ -380,11 +380,11 @@ export class Grid implements t.IGrid {
       const totalColumns = this.totalColumns;
       const totalRows = this.totalRows;
       const union = coord.range.union(ranges).formated({ totalColumns, totalRows });
-      ranges = union.ranges.map(range => range.key);
+      ranges = union.ranges.map((range) => range.key);
 
       // Ensure the selected single "cell" is not included within the set of ranges.
       if (cell) {
-        ranges = ranges.filter(range => range !== `${cell}:${cell}`);
+        ranges = ranges.filter((range) => range !== `${cell}:${cell}`);
       }
 
       // De-dupe.
@@ -514,7 +514,7 @@ export class Grid implements t.IGrid {
     }, {}) as MergeCells;
 
     // Update the object-map with "cell-merge" props from the given values.
-    Object.keys(cells).map(key => {
+    Object.keys(cells).map((key) => {
       const item = cells[key];
       if (item) {
         const props: t.IGridCellProps = item.props || {};
@@ -529,7 +529,7 @@ export class Grid implements t.IGrid {
     });
 
     // Convert the object-map back into an array.
-    const mergeCells = Object.keys(map).map(key => map[key]);
+    const mergeCells = Object.keys(map).map((key) => map[key]);
     this._.table.updateSettings({ mergeCells }, false);
 
     // Finish up.
@@ -571,8 +571,8 @@ export class Grid implements t.IGrid {
 
       // Ensure only cells (eg "A1") not rows/columns (eg "B" or "3").
       Object.keys(cells)
-        .filter(key => !coord.cell.isCell(key))
-        .forEach(key => delete cells[key]);
+        .filter((key) => !coord.cell.isCell(key))
+        .forEach((key) => delete cells[key]);
 
       // Format incoming values ensuring they are clean and structurally consistent.
       type Values = { [key: string]: { from?: t.IGridCellData; to?: t.IGridCellData } };
@@ -585,14 +585,14 @@ export class Grid implements t.IGrid {
       }, {});
 
       // Calculate the set of change events.
-      const changes = Object.keys(cells).map(key => {
+      const changes = Object.keys(cells).map((key) => {
         const cell = this.cell(key);
         const { from, to } = formatted[key];
         return Cell.changeEvent({ cell, from, to });
       });
 
       // Exit out if no values have changed.
-      const isChanged = changes.some(e => e.isChanged);
+      const isChanged = changes.some((e) => e.isChanged);
       if (!isChanged) {
         return done();
       }
@@ -603,23 +603,23 @@ export class Grid implements t.IGrid {
           source: defaultValue(options.source, 'EDIT'),
           changes,
           get isCancelled() {
-            return changes.some(change => change.isCancelled);
+            return changes.some((change) => change.isCancelled);
           },
           cancel() {
-            changes.forEach(change => change.cancel());
+            changes.forEach((change) => change.cancel());
           },
         };
         this.fire({ type: 'GRID/cells/change', payload });
 
         // Adjust any modified values.
         changes
-          .filter(change => change.isModified)
-          .forEach(change => (cells[change.cell.key] = change.value.to));
+          .filter((change) => change.isModified)
+          .forEach((change) => (cells[change.cell.key] = change.value.to));
 
         // Revert any cancelled events.
         changes
-          .filter(change => change.isCancelled)
-          .forEach(change => (cells[change.cell.key] = change.value.from));
+          .filter((change) => change.isCancelled)
+          .forEach((change) => (cells[change.cell.key] = change.value.from));
       }
 
       // Calculate the new updated value set.
@@ -631,7 +631,7 @@ export class Grid implements t.IGrid {
           return acc;
         }, {}),
       };
-      Object.keys(formatted).forEach(key => {
+      Object.keys(formatted).forEach((key) => {
         const { from, to } = formatted[key];
 
         // Strip empty values.
@@ -675,7 +675,7 @@ export class Grid implements t.IGrid {
     const to = { ...from };
     let changes: t.IGridColumnChange[] = [];
 
-    Object.keys(columns).forEach(key => {
+    Object.keys(columns).forEach((key) => {
       const prev = from[key] || { props: { grid: { width: -1 } } };
       const next = columns[key] || { props: { grid: { width: this.defaults.columnWidth } } };
 
@@ -707,7 +707,7 @@ export class Grid implements t.IGrid {
     const to = { ...from };
     let changes: t.IGridRowChange[] = [];
 
-    Object.keys(rows).forEach(key => {
+    Object.keys(rows).forEach((key) => {
       const prev = from[key] || { props: { grid: { height: -1 } } };
       const next = rows[key] || { props: { grid: { height: this.defaults.rowHeight } } };
 
@@ -783,7 +783,7 @@ export class Grid implements t.IGrid {
 
     // Select requested ranges.
     const ranges = (args.ranges || [])
-      .map(range => Cell.toRangePositions({ range, totalColumns, totalRows }))
+      .map((range) => Cell.toRangePositions({ range, totalColumns, totalRows }))
       .map(({ start, end }) => {
         return [start.row, start.column, end.row, end.column];
       });
@@ -848,7 +848,7 @@ export class Grid implements t.IGrid {
     const cells = { ...data.cells };
 
     let isChanged = false;
-    Object.keys(cells).forEach(key => {
+    Object.keys(cells).forEach((key) => {
       const cell = cells[key];
       if (cell) {
         let hash = cell.hash;
@@ -865,7 +865,7 @@ export class Grid implements t.IGrid {
     return this;
   }
 
-  public command: t.GridFireCommand = args => {
+  public command: t.GridFireCommand = (args) => {
     const payload: t.IGridCommand = {
       command: args.command,
       grid: this,
@@ -883,7 +883,7 @@ export class Grid implements t.IGrid {
     return this;
   };
 
-  public fire: t.GridFire = e => {
+  public fire: t.GridFire = (e) => {
     this._.events$.next(e);
     return this;
   };

@@ -38,21 +38,21 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
    */
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const events$ = this.grid.events$.pipe(takeUntil(this.unmounted$));
     const change$ = events$.pipe(
-      filter(e => e.type === 'GRID/cells/change'),
-      map(e => e.payload as t.IGridCellsChange),
+      filter((e) => e.type === 'GRID/cells/change'),
+      map((e) => e.payload as t.IGridCellsChange),
     );
 
-    change$.subscribe(e => this.updateState());
+    change$.subscribe((e) => this.updateState());
 
     events$
       .pipe(
-        filter(e => e.type === 'GRID/selection'),
-        map(e => e.payload as t.IGridSelectionChange),
+        filter((e) => e.type === 'GRID/selection'),
+        map((e) => e.payload as t.IGridSelectionChange),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.updateGrid();
         if (e.to.cell || !this.state.lastSelection) {
           this.state$.next({ lastSelection: e.to });
@@ -96,7 +96,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   /**
    * [Methods]
    */
-  public getValue: t.RefGetValue = async key => this.getValueSync(key);
+  public getValue: t.RefGetValue = async (key) => this.getValueSync(key);
   private getValueSync = (key: string) => util.getValueSync({ grid: this.grid, key });
 
   private async updateState(args: { force?: boolean } = {}) {
@@ -128,7 +128,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const { ns, rows, columns } = grid.data;
 
     const cells = R.clone(grid.data.cells);
-    Object.keys(cells).forEach(key => {
+    Object.keys(cells).forEach((key) => {
       const hash = cells[key] ? (cells[key] as any).hash : undefined;
       if (hash) {
         (cells[key] as any).hash = util.formatHash(hash);
@@ -147,7 +147,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const { force } = args;
     const refs = await refsTable.refs({ force });
 
-    const pathToKeys = (path?: string) => (path || '').split('/').filter(part => part);
+    const pathToKeys = (path?: string) => (path || '').split('/').filter((part) => part);
 
     const sortKeys = (obj: { [key: string]: any }) => {
       return coord.cell.sort(Object.keys(obj)).reduce((acc, key) => {
@@ -158,14 +158,14 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
 
     // Prepare display versions of data.
     const incoming = Object.keys(refs.in)
-      .map(key => ({ key, refs: refs.in[key] }))
+      .map((key) => ({ key, refs: refs.in[key] }))
       .reduce((acc, next) => {
         acc[next.key] = next.refs.map((ref: t.IRefIn) => ref.cell).join(',');
         return acc;
       }, {});
 
     const outgoing = Object.keys(refs.out)
-      .map(key => ({ key, refs: refs.out[key] }))
+      .map((key) => ({ key, refs: refs.out[key] }))
       .reduce((acc, next) => {
         let err = '';
         const list = next.refs.map((ref: t.IRefOut) => {
@@ -174,7 +174,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
           return keys;
         });
         const keys = R.uniq(R.flatten(list));
-        acc[next.key] = `${keys.filter(key => key !== next.key).join(',')}${err}`;
+        acc[next.key] = `${keys.filter((key) => key !== next.key).join(',')}${err}`;
         return acc;
       }, {});
 

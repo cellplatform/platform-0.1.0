@@ -28,7 +28,7 @@ export const isEmptyObject = (value: any, options: { ignoreHash?: boolean } = {}
     return false;
   }
   const keys = options.ignoreHash
-    ? Object.keys(value).filter(key => key !== 'hash')
+    ? Object.keys(value).filter((key) => key !== 'hash')
     : Object.keys(value);
   return keys.length === 0;
 };

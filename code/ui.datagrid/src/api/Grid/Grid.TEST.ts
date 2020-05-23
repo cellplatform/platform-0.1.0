@@ -135,7 +135,7 @@ describe('Grid', () => {
       const grid = createGrid({ keyBindings: [{ command: 'PASTE', key: 'Shift+W' }] });
       expect(grid.keyBindings).to.not.eql(constants.DEFAULT.KEY_BINDINGS);
 
-      const paste = grid.keyBindings.find(b => b.command === 'PASTE');
+      const paste = grid.keyBindings.find((b) => b.command === 'PASTE');
       expect(paste && paste.key).to.eql('Shift+W');
     });
   });

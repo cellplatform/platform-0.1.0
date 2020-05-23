@@ -81,7 +81,7 @@ describe('func.table', () => {
       const wait = table.calculate();
 
       const res = await wait;
-      expect(res.list.every(item => item.eid === res.eid)).to.eql(true);
+      expect(res.list.every((item) => item.eid === res.eid)).to.eql(true);
       expect(res.eid).to.eql(wait.eid);
     });
 
@@ -225,9 +225,9 @@ describe('func.table', () => {
             A3: { value: '=A2+1' },
           },
           {
-            getFunc: async args => {
+            getFunc: async (args) => {
               count++;
-              return async args => {
+              return async (args) => {
                 if (count > 2) {
                   throw new Error('Fail');
                 }

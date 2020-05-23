@@ -133,12 +133,12 @@ export class Editor extends editors.TextEditor {
     this.grid.events$
       .pipe(
         takeUntil(context.end$),
-        filter(e => e.type === 'GRID/cells/change'),
-        map(e => e.payload as t.IGridCellsChange),
-        filter(e => e.isCancelled),
-        filter(e => e.changes.some(({ cell }) => cell.row === row && cell.column === column)),
+        filter((e) => e.type === 'GRID/cells/change'),
+        map((e) => e.payload as t.IGridCellsChange),
+        filter((e) => e.isCancelled),
+        filter((e) => e.changes.some(({ cell }) => cell.row === row && cell.column === column)),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         isCancelled = true;
         this.onCancel();
       });
@@ -248,23 +248,23 @@ export class Editor extends editors.TextEditor {
     };
 
     const end$ = this.refs.editorEvents$.pipe(
-      filter(e => e.type === 'GRID/EDITOR/end'),
-      map(e => e as t.IEndEditingEvent),
+      filter((e) => e.type === 'GRID/EDITOR/end'),
+      map((e) => e as t.IEndEditingEvent),
       take(1),
       share(),
     );
 
     const keys$ = grid.events$.pipe(
       takeUntil(end$),
-      filter(e => e.type === 'GRID/keydown'),
-      map(e => e.payload as t.IGridKeydown),
+      filter((e) => e.type === 'GRID/keydown'),
+      map((e) => e.payload as t.IGridKeydown),
       share(),
     );
 
     keys$
       .pipe(
-        filter(e => context.autoCancel),
-        filter(e => e.isEscape),
+        filter((e) => context.autoCancel),
+        filter((e) => e.isEscape),
       )
       .subscribe(cancel);
 

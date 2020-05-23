@@ -189,11 +189,11 @@ export class Manifest {
     return {
       byName: (name?: string) => {
         name = (name || '').trim();
-        return this.sites.find(site => site.name.trim() === name);
+        return this.sites.find((site) => site.name.trim() === name);
       },
       byHost: (domain?: string) => {
         domain = util.stripHttp(domain || '');
-        return this.sites.find(site => site.isMatch(domain || ''));
+        return this.sites.find((site) => site.isMatch(domain || ''));
       },
     };
   }
@@ -252,7 +252,7 @@ export class Manifest {
     // Prepare content.
     const def = { ...this.def };
     if (defaultValue(options.minimal, true)) {
-      def.sites.forEach(site => {
+      def.sites.forEach((site) => {
         delete site.files;
         delete site.entries;
         delete site.baseUrl;

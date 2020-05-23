@@ -42,7 +42,7 @@ export async function runTasks(args: {
         title: log.gray(`${log.cyan('cwd')}: ${dirname}/${log.white('yarn bundle')}`),
         task: async () => {
           const res = await run('yarn bundle');
-          res.info.forEach(line => output.push(line));
+          res.info.forEach((line) => output.push(line));
           return res;
         },
       },
@@ -68,8 +68,8 @@ export async function runTasks(args: {
     const size = (await fs.size.dir(targetDir)).toString();
 
     output
-      .filter(line => line.startsWith('dist/'))
-      .forEach(line => {
+      .filter((line) => line.startsWith('dist/'))
+      .forEach((line) => {
         log.info.gray(`    • ${line}`);
       });
     log.info();

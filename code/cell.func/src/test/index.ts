@@ -39,7 +39,7 @@ export const toContext = async (
   };
 };
 
-export const getFunc: t.GetFunc = async args => {
+export const getFunc: t.GetFunc = async (args) => {
   const res = await sys.getFunc(args);
   // NB: Inject other functions here 🌳
   return res ? res : undefined;
@@ -49,7 +49,7 @@ export const getFunc: t.GetFunc = async args => {
  * Dummy system functions.
  */
 export const sys = (() => {
-  const sum: t.FuncInvoker = async args => {
+  const sum: t.FuncInvoker = async (args) => {
     const params = paramsToNumbers(args.params);
     return params.length === 0
       ? 0
@@ -62,12 +62,12 @@ export const sys = (() => {
         acc = Array.isArray(next) ? [...acc, ...next] : [...acc, next];
         return acc;
       }, [] as any[])
-      .map(p => (typeof p === 'string' ? valueUtil.toNumber(p) : p) as number)
-      .map(p => (typeof p === 'number' || typeof p === 'bigint' ? p : undefined))
-      .filter(p => p !== undefined) as number[];
+      .map((p) => (typeof p === 'string' ? valueUtil.toNumber(p) : p) as number)
+      .map((p) => (typeof p === 'number' || typeof p === 'bigint' ? p : undefined))
+      .filter((p) => p !== undefined) as number[];
   }
 
-  const getFunc: t.GetFunc = async args => {
+  const getFunc: t.GetFunc = async (args) => {
     const { namespace, name } = args;
     if (namespace === 'sys') {
       switch (name) {

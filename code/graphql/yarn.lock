@@ -1265,13 +1265,13 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/http.types@0.2.9":
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.9.tgz#eea005cf8e87ea90a91e1ecc17e9290d414d406a"
-  integrity sha512-HgFMr/vxECI2LmgkBHjLY57SXWsU6psTpsUyniHFE8IFfuLZMSiAddJX1zDMU87xGMELBz7datI9ddkMfHSpuQ==
+"@platform/http.types@0.2.10":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.10.tgz#602859973ecbc0166a806915aabae190b9a4c944"
+  integrity sha512-cM45tyKHIk6K6hF04hEUqvLKc8NQGJxCx8PKx0F+12PuAhTI6JnVhGhd8URUeCihNQ3oCWbZrrzhjIWrgXkTTw==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.4.21"
+    "@platform/types" "0.4.22"
 
 "@platform/libs@0.2.0":
   version "0.2.0"
@@ -1382,10 +1382,10 @@
     react "16.12.0"
     react-dom "16.12.0"
 
-"@platform/test@0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.1.11.tgz#ca45235f1b1fa6dee6b1cc2a7fba81c32d760011"
-  integrity sha512-VGQadVcpuyJmT5EVxN6tzgy+v3Vf4x4MmGuO/8y/Uc/zaBgbL9A+aIZAWi1oIb+nqNsmsHNxlvExYcoP6FE9AQ==
+"@platform/test@0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.1.12.tgz#3aa5e6dcd7e52b356f353e1227e4fb094fb3c0ca"
+  integrity sha512-BdpbTc4q+zwjwwm9svU598HnNVECG4pb1MasXAh3PA29lC4UqISyoocE4hWluPlVFHHkYFPqcn0nwrrxtCT0PA==
   dependencies:
     "@types/chai" "4.2.11"
     "@types/mocha" "7.0.2"
@@ -1438,6 +1438,11 @@
   version "0.4.21"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.21.tgz#d55e67e5fdf25de66fdd6aaee5b2714aab66f86c"
   integrity sha512-IFcybg/oI96IDTbuFUwlmUe9ubele63clYYvbNCkTMnpWSbGgrys5soaga6l3XAntcIshN92LSB1974CZ9kzdQ==
+
+"@platform/types@0.4.22":
+  version "0.4.22"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.22.tgz#a0a3f350be37bfbf99069085fc561b9edd1038e5"
+  integrity sha512-mGp7mPDwioauf/6u7uJrjfkEuuGoV5tta/2uGSkVoRcelsb3X1IqIxKQEuM8Fpi5E3GT12PjBw224pWbkeZCFg==
 
 "@platform/types@0.4.4":
   version "0.4.4"

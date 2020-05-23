@@ -1,3 +1,5 @@
+/* eslint-disable react/no-find-dom-node */
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { css, CssValue } from '../common';

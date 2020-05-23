@@ -7,9 +7,9 @@ export function filterByTag(refs: t.IWindowRef[], ...tags: t.IWindowTag[]) {
   const isMatch = (item: t.IWindowTag, tag: t.IWindowTag['tag'], value?: t.IWindowTag['value']) => {
     return value !== undefined && item.value !== value ? false : item.tag === tag;
   };
-  return refs.filter(ref =>
-    ref.tags.some(a => {
-      return tags.some(b => isMatch(a, b.tag, b.value));
+  return refs.filter((ref) =>
+    ref.tags.some((a) => {
+      return tags.some((b) => isMatch(a, b.tag, b.value));
     }),
   );
 }
@@ -32,5 +32,5 @@ export function filterByTagWrangle(refs: t.IWindowRef[], args: any[]) {
  * Filter by [window-id]
  */
 export function filterById(refs: t.IWindowRef[], id: number[]) {
-  return refs.filter(ref => id.includes(ref.id));
+  return refs.filter((ref) => id.includes(ref.id));
 }

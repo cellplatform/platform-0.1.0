@@ -33,7 +33,7 @@ export async function postNs(args: {
       if (cells || rows || columns) {
         const data = { cells, rows, columns };
         const res = await models.ns.setChildData({ ns, data });
-        res.changes.forEach(change => changes.push(change));
+        res.changes.forEach((change) => changes.push(change));
       }
     };
 
@@ -41,7 +41,7 @@ export async function postNs(args: {
       const res = await models.ns.setProps({ ns, data: body.ns });
       if (res.isChanged) {
         isNsChanged = true;
-        res.changes.forEach(change => changes.push(change));
+        res.changes.forEach((change) => changes.push(change));
       }
     };
 
@@ -53,7 +53,7 @@ export async function postNs(args: {
     if (!isNsChanged && changes.length > 0) {
       const res = await ns.save({ force: true });
       if (res.isChanged) {
-        models.toChanges(uri, res.changes).forEach(change => changes.push(change));
+        models.toChanges(uri, res.changes).forEach((change) => changes.push(change));
       }
     }
 

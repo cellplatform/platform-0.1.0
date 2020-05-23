@@ -6,7 +6,7 @@ type TransformKey = (key: string) => string;
  * Converts a map to a list.
  */
 export function toList(map: t.Map, transformKey?: TransformKey): t.List {
-  return Object.keys(map).map(key => {
+  return Object.keys(map).map((key) => {
     const value = map[key];
     key = transformKey ? transformKey(key) : key;
     return { key, value };

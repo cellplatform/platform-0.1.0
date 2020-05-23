@@ -10,7 +10,7 @@ export function toClipboard(args: { grid: t.IGrid; action: t.GridClipboardReadCo
   const selection = grid.selection;
 
   // Process the set of selected values.
-  const items = Object.keys(cells).map(key => {
+  const items = Object.keys(cells).map((key) => {
     let item = cells[key] as t.IGridCellData;
     item = typeof item !== 'object' ? { value: item } : item;
     if (typeof item.value === 'string') {
@@ -57,7 +57,7 @@ function getAxisData<T extends t.IGridData['rows'] | t.IGridData['columns']>(
   return selection.ranges.reduce((acc, next) => {
     if (coord.cell.isAxisRangeKey(next, axis)) {
       const range = coord.range.fromKey(next);
-      range.axis(axis).keys.forEach(key => {
+      range.axis(axis).keys.forEach((key) => {
         if (data[key]) {
           acc[key] = data[key];
         }

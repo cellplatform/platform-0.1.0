@@ -111,7 +111,7 @@ export class Template {
     let sources: ITemplateSource[] = [...this.sources];
 
     const list = Array.isArray(source) ? source : [source];
-    list.forEach(item => {
+    list.forEach((item) => {
       if (item instanceof Template) {
         return (sources = [...sources, ...item.sources]);
       }
@@ -160,7 +160,7 @@ export class Template {
     let pathFilter: TemplatePathFilter[] = [];
     if (arg1 instanceof RegExp || Array.isArray(arg1)) {
       const list: TemplatePathFilter[] = Array.isArray(arg1) ? arg1 : [arg1];
-      pathFilter = list.filter(filter => filter instanceof RegExp);
+      pathFilter = list.filter((filter) => filter instanceof RegExp);
     }
     fn.pathFilters = pathFilter;
 
@@ -180,14 +180,14 @@ export class Template {
     }
 
     // Lookup files.
-    const wait = this.sources.map(source => getFiles(source));
+    const wait = this.sources.map((source) => getFiles(source));
     let files = value.flatten(await Promise.all(wait)) as ITemplateFile[];
 
     // Remove duplicates with "overriden" files.
     // NB: The duplicate files from templates added AFTER earlier templates
     //     override the earlier template files.
     const exists = (file: ITemplateFile, list: ITemplateFile[]) =>
-      list.findIndex(f => f.source === file.source) > -1;
+      list.findIndex((f) => f.source === file.source) > -1;
     files = files
       .reverse()
       .reduce((acc, next) => (exists(next, acc) ? acc : [...acc, next]), [] as ITemplateFile[])
@@ -198,7 +198,7 @@ export class Template {
     files =
       filters.length === 0
         ? files
-        : files.filter(file => filters.every(filter => filter(file)));
+        : files.filter((file) => filters.every((filter) => filter(file)));
 
     // Finish up.
     this.config.cache.files = files;
@@ -227,7 +227,7 @@ export class Template {
     events$.next({ type: 'TMPL/execute/start', payload });
 
     // Run the processor pipe-line.
-    const wait = files.map(file => runProcessors({ processors, file, variables, events$ }));
+    const wait = files.map((file) => runProcessors({ processors, file, variables, events$ }));
 
     // Finish up.
     await Promise.all(wait);
@@ -287,7 +287,7 @@ async function getFiles(source: ITemplateSource) {
     dot: true,
     includeDirs: false,
   });
-  const wait = paths.map(path => toFile(path));
+  const wait = paths.map((path) => toFile(path));
 
   // Finish up.
   return Promise.all(wait);
@@ -317,7 +317,7 @@ function runProcessors(args: {
       const res: ITemplateResponse = {
         next: () => runNext(),
         complete: () => runComplete(),
-        done: next => (next === 'COMPLETE' ? runComplete() : runNext()),
+        done: (next) => (next === 'COMPLETE' ? runComplete() : runNext()),
 
         get text() {
           return text;
@@ -349,7 +349,7 @@ function runProcessors(args: {
         // If filters exist, ensure the path is a match.
         const filters = fn.pathFilters || [];
         if (filters.length > 0) {
-          const isMatch = filters.some(filter => filter.test(path.target));
+          const isMatch = filters.some((filter) => filter.test(path.target));
           if (!isMatch) {
             return runNext();
           }

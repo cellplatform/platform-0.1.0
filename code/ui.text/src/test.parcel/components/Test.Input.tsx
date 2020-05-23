@@ -25,49 +25,49 @@ export class TestInput extends React.PureComponent<ITestInputProps, ITestInputSt
 
   public componentDidMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     const input$ = this.input$.pipe(takeUntil(this.unmounted$));
     const keypress$ = input$.pipe(
-      filter(e => e.type === 'TEXT_INPUT/keypress'),
-      map(e => e.payload as t.ITextInputKeypress),
+      filter((e) => e.type === 'TEXT_INPUT/keypress'),
+      map((e) => e.payload as t.ITextInputKeypress),
     );
 
-    input$.subscribe(e => {
+    input$.subscribe((e) => {
       log.info('🌳', e);
     });
 
     input$
       .pipe(
-        filter(e => e.type === 'TEXT_INPUT/changing'),
-        map(e => e.payload as t.ITextInputChanging),
+        filter((e) => e.type === 'TEXT_INPUT/changing'),
+        map((e) => e.payload as t.ITextInputChanging),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         // e.cancel();
       });
 
     input$
       .pipe(
-        filter(e => e.type === 'TEXT_INPUT/changed'),
-        map(e => e.payload as t.ITextInputChanged),
+        filter((e) => e.type === 'TEXT_INPUT/changed'),
+        map((e) => e.payload as t.ITextInputChanged),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.state$.next({ value: e.to });
       });
 
     /**
      * Sample behavior for "dbl-click-to-edit"
      */
-    input$.pipe(filter(e => e.type === 'TEXT_INPUT/label/dblClick')).subscribe(e => {
+    input$.pipe(filter((e) => e.type === 'TEXT_INPUT/label/dblClick')).subscribe((e) => {
       this.state$.next({ isClickableEditing: true });
     });
 
     keypress$
       .pipe(
-        filter(e => e.isPressed === true && e.key === 'Enter'),
-        filter(e => Boolean(this.state.isClickableEditing)),
+        filter((e) => e.isPressed === true && e.key === 'Enter'),
+        filter((e) => Boolean(this.state.isClickableEditing)),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.state$.next({ isClickableEditing: false });
       });
 

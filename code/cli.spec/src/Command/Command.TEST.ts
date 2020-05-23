@@ -193,13 +193,13 @@ describe('Command', () => {
       const root1 = Command.create<P, A>('root');
 
       const root2 = root1
-        .as<P1, A1>(cmd =>
+        .as<P1, A1>((cmd) =>
           cmd
-            .add('foo', e => (tmp.suffix = e.args.options.suffix))
+            .add('foo', (e) => (tmp.suffix = e.args.options.suffix))
             .add('bar')
             .add('baz'),
         )
-        .add('yo', e => (tmp.force = e.args.options.force));
+        .add('yo', (e) => (tmp.force = e.args.options.force));
 
       /**
        * NB: This tests the typing change for when adding within `as` context.

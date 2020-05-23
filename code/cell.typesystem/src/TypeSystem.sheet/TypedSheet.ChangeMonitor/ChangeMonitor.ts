@@ -22,10 +22,10 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
     // Auto-watch child REFs as they are created.
     this.event$
       .pipe(
-        filter(e => e.type === 'SHEET/refs/loaded'),
-        map(e => e.payload as t.ITypedSheetRefsLoaded),
+        filter((e) => e.type === 'SHEET/refs/loaded'),
+        map((e) => e.payload as t.ITypedSheetRefsLoaded),
       )
-      .subscribe(async e => {
+      .subscribe(async (e) => {
         const item = this.item(e.sheet);
         if (item) {
           // Register the reference.
@@ -47,9 +47,9 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
       });
 
     this.changed$ = this.event$.pipe(
-      filter(e => e.type === 'SHEET/changed'),
-      map(e => e.payload as t.ITypedSheetChanged),
-      filter(e => Boolean(this.item(e.sheet))),
+      filter((e) => e.type === 'SHEET/changed'),
+      map((e) => e.payload as t.ITypedSheetChanged),
+      filter((e) => Boolean(this.item(e.sheet))),
       share(),
     );
   }
@@ -89,7 +89,7 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
   public watch(sheet: S | S[]) {
     this.throwIfDisposed('watch');
     if (Array.isArray(sheet)) {
-      sheet.forEach(sheet => this.watch(sheet));
+      sheet.forEach((sheet) => this.watch(sheet));
       return this;
     }
     if (!sheet || this.isWatching(sheet)) {
@@ -100,7 +100,7 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
   }
   private _watch(sheet: S) {
     const stop$ = new Subject<{}>();
-    sheet.event$.pipe(takeUntil(this.dispose$), takeUntil(stop$)).subscribe(e => this.fire(e));
+    sheet.event$.pipe(takeUntil(this.dispose$), takeUntil(stop$)).subscribe((e) => this.fire(e));
     sheet.dispose$.pipe(takeUntil(this.dispose$)).subscribe(() => this.unwatch(sheet));
     this._watching = [...this._watching, { sheet, stop$, refs: [] }];
   }
@@ -109,7 +109,7 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
     this.throwIfDisposed('unwatch');
 
     if (Array.isArray(sheet)) {
-      sheet.forEach(subject => this.unwatch(subject));
+      sheet.forEach((subject) => this.unwatch(subject));
       return this;
     }
 
@@ -117,7 +117,7 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
     if (item) {
       item.stop$.next();
       item.stop$.complete();
-      item.refs.forEach(ref => this.unwatch(ref.sheet)); // <== RECURSION 🌳
+      item.refs.forEach((ref) => this.unwatch(ref.sheet)); // <== RECURSION 🌳
       this._watching = this._watching.filter(({ sheet: state }) => state !== item.sheet);
     }
 
@@ -127,7 +127,7 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
   public isWatching(sheet: S | S[]): boolean {
     this.throwIfDisposed('isWatching');
     if (Array.isArray(sheet)) {
-      return sheet.length === 0 ? false : sheet.every(subject => this.isWatching(subject));
+      return sheet.length === 0 ? false : sheet.every((subject) => this.isWatching(subject));
     }
     return Boolean(this.item(sheet));
   }
@@ -137,7 +137,7 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
    */
 
   private item(sheet: S) {
-    return this._watching.find(item => item.sheet === sheet);
+    return this._watching.find((item) => item.sheet === sheet);
   }
 
   private fire(e: t.TypedSheetEvent) {

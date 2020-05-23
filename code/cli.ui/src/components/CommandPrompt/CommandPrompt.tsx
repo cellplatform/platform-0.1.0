@@ -50,14 +50,14 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
     const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
     const cliChanged$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
     const cliInvoked$ = cli$.pipe(
-      filter(e => e.type === 'COMMAND_STATE/invoked'),
-      map(e => e.payload as t.ICommandStateInvokeResponse),
+      filter((e) => e.type === 'COMMAND_STATE/invoked'),
+      map((e) => e.payload as t.ICommandStateInvokeResponse),
     );
 
-    const keydown$ = this.keyPress$.pipe(filter(e => e.isPressed === true));
+    const keydown$ = this.keyPress$.pipe(filter((e) => e.isPressed === true));
     const tab$ = keydown$.pipe(
-      filter(e => e.key === 'Tab'),
-      filter(e => this.isFocused),
+      filter((e) => e.key === 'Tab'),
+      filter((e) => this.isFocused),
     );
 
     // Bubble events.
@@ -72,7 +72,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
       const text = localStorage.text;
       this.cli.change({ text });
       this.cli.invoke({ stepIntoNamespace: true });
-      cli$.subscribe(e => {
+      cli$.subscribe((e) => {
         localStorage.text = this.cli.toString();
       });
     }
@@ -80,15 +80,15 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
     cliChanged$
       // Redraw on CLI changes.
       .pipe(debounceTime(0))
-      .subscribe(e => this.forceUpdate());
+      .subscribe((e) => this.forceUpdate());
 
     cliChanged$
       // Handle invoke requests.
       .pipe(
-        filter(e => e.invoke),
-        filter(e => this.isFocused),
+        filter((e) => e.invoke),
+        filter((e) => this.isFocused),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         historyIndex = -1;
         this.cli.invoke();
       });
@@ -98,10 +98,10 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
       // NB:  This is the standard behavior of a CLI.
       //      Using the UP key can retrieve the last command from this history.
       .pipe(
-        filter(e => !e.isNamespaceChanged),
-        filter(e => Boolean((this.cli.text || '').trim())),
+        filter((e) => !e.isNamespaceChanged),
+        filter((e) => Boolean((this.cli.text || '').trim())),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         if (this.props.localStorage) {
           this.history.add(this.cli.namespace, this.cli.text);
         }
@@ -110,8 +110,8 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
 
     keydown$
       // Focus or blur on key-command.
-      .pipe(filter(e => Keyboard.matchEvent(keyMap.focus, e)))
-      .subscribe(e => {
+      .pipe(filter((e) => Keyboard.matchEvent(keyMap.focus, e)))
+      .subscribe((e) => {
         e.preventDefault();
         this.focus(!this.isFocused);
       });
@@ -120,11 +120,11 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
     keydown$
       // History ("back") on key-command.
       .pipe(
-        filter(e => this.isFocused),
-        filter(e => Boolean(this.props.localStorage)),
-        filter(e => Keyboard.matchEvent(keyMap.historyUp, e)),
+        filter((e) => this.isFocused),
+        filter((e) => Boolean(this.props.localStorage)),
+        filter((e) => Keyboard.matchEvent(keyMap.historyUp, e)),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         e.preventDefault();
         historyIndex++;
         const prev = this.history.get(historyIndex, this.cli.namespace);
@@ -138,11 +138,11 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
     keydown$
       // History down ("next").
       .pipe(
-        filter(e => this.isFocused),
-        filter(e => Boolean(this.props.localStorage)),
-        filter(e => Keyboard.matchEvent(keyMap.historyDown, e)),
+        filter((e) => this.isFocused),
+        filter((e) => Boolean(this.props.localStorage)),
+        filter((e) => Keyboard.matchEvent(keyMap.historyDown, e)),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         e.preventDefault();
         historyIndex = Math.max(-1, historyIndex - 1);
 
@@ -159,18 +159,18 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
     keydown$
       // Invoke on [Enter]
       .pipe(
-        filter(e => e.key === 'Enter'),
-        filter(e => this.isFocused),
+        filter((e) => e.key === 'Enter'),
+        filter((e) => this.isFocused),
       )
-      .subscribe(e => this.invoke());
+      .subscribe((e) => this.invoke());
 
     keydown$
       // Clear on [CMD+K]
       .pipe(
-        filter(e => e.key === 'k' && e.metaKey),
-        filter(e => this.isFocused),
+        filter((e) => e.key === 'k' && e.metaKey),
+        filter((e) => this.isFocused),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const text = this.cli.text;
         if (text.trim()) {
           this.change({ text: '' });
@@ -181,12 +181,12 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
 
     tab$
       // When [Tab] key pressed, keep focus on command-prompt.
-      .subscribe(e => e.preventDefault());
+      .subscribe((e) => e.preventDefault());
 
     tab$
       // Autocomplete on [Tab]
-      .pipe(filter(e => Boolean(this.cli.text)))
-      .subscribe(e => {
+      .pipe(filter((e) => Boolean(this.cli.text)))
+      .subscribe((e) => {
         // Look for a previous autocomplete value to see if we need
         // to toggle through possible matches if that tab-key is
         // being repeatedly pressed.
@@ -261,7 +261,7 @@ export class CommandPrompt extends React.PureComponent<ICommandPromptProps> {
     const cli = this.cli;
     const root = cli.namespace ? cli.namespace.command : cli.root;
 
-    const matches = root.children.filter(child => str.fuzzy.isMatch(text, child.name));
+    const matches = root.children.filter((child) => str.fuzzy.isMatch(text, child.name));
     if (matches.length === 0) {
       return;
     }

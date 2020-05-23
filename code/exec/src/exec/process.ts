@@ -28,12 +28,12 @@ export function spawn(
 
   // Listen for end.
   const promise = new Promise<IResult>((resolve, reject) => {
-    child.on('exit', e => {
+    child.on('exit', (e) => {
       const code = e === null ? 0 : e;
       const ok = code === 0;
       resolve({ ok, code });
     });
-    child.once('error', error => {
+    child.once('error', (error) => {
       resolve({ ok: false, code: 1, error });
     });
   });

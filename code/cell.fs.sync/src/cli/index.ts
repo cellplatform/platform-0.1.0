@@ -7,7 +7,7 @@ import * as dirPull from './cmd.dirPull';
 /**
  * Initialize the command-line-interface (CLI).
  */
-export const init: t.CmdPluginsInit = cli => {
+export const init: t.CmdPluginsInit = (cli) => {
   dir.init(cli);
   dirSync.init(cli);
   dirWatch.init(cli);

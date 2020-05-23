@@ -82,10 +82,10 @@ export function init(args: { ipc: IpcClient; dir: string }) {
   log.events$
     .pipe(
       filter(() => !log.silent),
-      filter(e => e.type === 'LOG'),
-      map(e => e.payload as t.ILogEvent),
+      filter((e) => e.type === 'LOG'),
+      map((e) => e.payload as t.ILogEvent),
     )
-    .subscribe(e => {
+    .subscribe((e) => {
       write({ id: 0, process: 'MAIN' }, e.level, e.output);
     });
 
@@ -93,10 +93,10 @@ export function init(args: { ipc: IpcClient; dir: string }) {
   // and write them to the log.
   ipc.events$
     .pipe(
-      filter(e => e.type === '@platform/LOG/write'),
-      filter(e => e.sender.process === 'RENDERER'),
+      filter((e) => e.type === '@platform/LOG/write'),
+      filter((e) => e.sender.process === 'RENDERER'),
     )
-    .subscribe(e => {
+    .subscribe((e) => {
       // e.sender
       write(e.sender, e.payload.level, format(e.payload));
     });

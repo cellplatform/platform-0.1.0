@@ -66,7 +66,7 @@ export function build(options: {
 }) {
   const { schema, events$, mapKeys } = options;
   const find = {
-    parentListItem: utils.findParentNode(node => node.type === schema.nodes.list_item),
+    parentListItem: utils.findParentNode((node) => node.type === schema.nodes.list_item),
   };
 
   const keys = {};
@@ -222,7 +222,7 @@ export function build(options: {
     bind(key, (state, dispatch) => {
       const { isMeta, isShift } = args;
       const { isCancelled } = fireEnter({ isMeta, isShift });
-      if (isCancelled || isAllowed.some(flag => flag === false)) {
+      if (isCancelled || isAllowed.some((flag) => flag === false)) {
         return true; // Cancel further handlers.
       }
       return handleEnter(state, dispatch);

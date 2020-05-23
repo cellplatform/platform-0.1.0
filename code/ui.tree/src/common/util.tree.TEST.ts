@@ -10,7 +10,7 @@ describe('util.tree', () => {
       };
 
       let nodes: ITreeNode[] = [];
-      util.walk(tree, node => {
+      util.walk(tree, (node) => {
         nodes = [...nodes, node];
       });
 
@@ -44,8 +44,8 @@ describe('util.tree', () => {
     };
 
     it('finds the given node', () => {
-      const res1 = util.find(tree, n => n.id === 'child-3');
-      const res2 = util.find(tree, n => n.id === 'NO_EXIT');
+      const res1 = util.find(tree, (n) => n.id === 'child-3');
+      const res2 = util.find(tree, (n) => n.id === 'NO_EXIT');
       expect(res1).to.eql({ id: 'child-3' });
       expect(res2).to.eql(undefined);
     });
@@ -105,7 +105,7 @@ describe('util.tree', () => {
   describe('map', () => {
     const root = { id: 'A', children: [{ id: 'B' }, { id: 'C' }] };
     it('maps the entire tree', () => {
-      const res = util.map(root, n => n.id);
+      const res = util.map(root, (n) => n.id);
       expect(res).to.eql(['A', 'B', 'C']);
     });
 
@@ -349,13 +349,13 @@ describe('util.tree', () => {
 
   describe('openToNode', () => {
     it('no change when nodes are not inline', () => {
-      const root = util.buildPath({ id: 'ROOT' }, id => ({ id }), 'foo/bar/zoo').root;
+      const root = util.buildPath({ id: 'ROOT' }, (id) => ({ id }), 'foo/bar/zoo').root;
       const res = util.openToNode(root, 'foo/bar/zoo');
       expect(res).to.eql(root);
     });
 
     it('sets the inline state of nodes to the given path (boolean)', () => {
-      const factory: t.TreeNodePathFactory = id => ({ id, props: { inline: {} } });
+      const factory: t.TreeNodePathFactory = (id) => ({ id, props: { inline: {} } });
       const root = util.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root as ITreeNode;
 
       const res = util.openToNode(root, 'foo/bar') as ITreeNode;
@@ -367,7 +367,7 @@ describe('util.tree', () => {
     });
 
     it('sets the inline state of nodes to the given path (object)', () => {
-      const factory: t.TreeNodePathFactory = id => ({ id, props: { inline: {} } });
+      const factory: t.TreeNodePathFactory = (id) => ({ id, props: { inline: {} } });
       const root = util.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root;
 
       const res = util.openToNode(root, 'foo/bar') as ITreeNode;
@@ -406,20 +406,20 @@ describe('util.tree', () => {
   describe('buildPath', () => {
     it('build nothing (empty path)', () => {
       const root = { id: 'root' };
-      const res = util.buildPath(root, id => ({ id }), '');
+      const res = util.buildPath(root, (id) => ({ id }), '');
       expect(res.ids).to.eql([]);
       expect(res.root).to.eql(root);
     });
 
     it('builds path (1 level deep)', () => {
       const root = { id: 'root' };
-      const res = util.buildPath<ITreeNode>(root, id => ({ id }), 'one');
+      const res = util.buildPath<ITreeNode>(root, (id) => ({ id }), 'one');
       expect(res.root.children).to.eql([{ id: 'one' }]);
     });
 
     it('builds path (3 levels deep)', () => {
       const root = { id: 'root' };
-      const res = util.buildPath(root, id => ({ id }), 'one/two/three');
+      const res = util.buildPath(root, (id) => ({ id }), 'one/two/three');
 
       const child1 = util.findById(res.root, 'one');
       const child2 = util.findById(res.root, 'one/two');
@@ -456,7 +456,7 @@ describe('util.tree', () => {
 
     it('uses overridden delimiter (:)', () => {
       const root = { id: 'root' };
-      const res = util.buildPath(root, id => ({ id }), 'one:two', {
+      const res = util.buildPath(root, (id) => ({ id }), 'one:two', {
         delimiter: ':',
       });
       const child1 = util.findById(res.root, 'one');
@@ -470,7 +470,7 @@ describe('util.tree', () => {
       let root: T = { id: 'root' };
       root = util.buildPath<T>(
         root,
-        id => ({
+        (id) => ({
           id,
           data: { foo: 1 },
         }),
@@ -479,7 +479,7 @@ describe('util.tree', () => {
 
       root = util.buildPath<T>(
         root,
-        id => ({
+        (id) => ({
           id,
           data: { foo: 2 },
         }),
@@ -498,9 +498,9 @@ describe('util.tree', () => {
     it('does not force overrides existing tree', () => {
       type T = ITreeNode<string, { foo: number }>;
       let root: T = { id: 'ROOT' };
-      root = util.buildPath<T>(root, id => ({ id, data: { foo: 1 } }), 'one/two').root;
+      root = util.buildPath<T>(root, (id) => ({ id, data: { foo: 1 } }), 'one/two').root;
 
-      root = util.buildPath<T>(root, id => ({ id, data: { foo: 2 } }), 'one/two/three', {
+      root = util.buildPath<T>(root, (id) => ({ id, data: { foo: 2 } }), 'one/two/three', {
         force: true,
       }).root;
 
@@ -514,7 +514,7 @@ describe('util.tree', () => {
     });
 
     it('merges paths (using path builder)', () => {
-      const factory: TreeNodePathFactory<ITreeNode> = id => ({ id });
+      const factory: TreeNodePathFactory<ITreeNode> = (id) => ({ id });
       const builder = util.pathBuilder({ id: 'ROOT' }, factory);
 
       builder.add('project/cohort-1');
@@ -524,12 +524,12 @@ describe('util.tree', () => {
       builder.add('project/cohort-2');
 
       const root = builder.root;
-      const project = util.find(root, n => n.id.endsWith('project'));
-      const cohort1 = util.find(root, n => n.id.endsWith('/cohort-1'));
-      const cohort2 = util.find(root, n => n.id.endsWith('/cohort-2'));
-      const readme = util.find(root, n => n.id.endsWith('README.md'));
-      const images = util.find(root, n => n.id.endsWith('/images'));
-      const logo = util.find(root, n => n.id.endsWith('logo.png'));
+      const project = util.find(root, (n) => n.id.endsWith('project'));
+      const cohort1 = util.find(root, (n) => n.id.endsWith('/cohort-1'));
+      const cohort2 = util.find(root, (n) => n.id.endsWith('/cohort-2'));
+      const readme = util.find(root, (n) => n.id.endsWith('README.md'));
+      const images = util.find(root, (n) => n.id.endsWith('/images'));
+      const logo = util.find(root, (n) => n.id.endsWith('logo.png'));
 
       expect(util.children(root).length).to.eql(1);
       expect(util.children(project).length).to.eql(2);
@@ -546,7 +546,7 @@ describe('util.tree', () => {
 
     describe('factory returns undefined (node not added)', () => {
       it('nothing added', () => {
-        const builder = util.pathBuilder({ id: 'ROOT' }, id => undefined);
+        const builder = util.pathBuilder({ id: 'ROOT' }, (id) => undefined);
         builder.add('/foo');
         builder.add('/foo/bar');
         builder.add('/foo/bar/baz');
@@ -554,7 +554,7 @@ describe('util.tree', () => {
       });
 
       it('leaf node not added', () => {
-        const factory: TreeNodePathFactory<ITreeNode> = id =>
+        const factory: TreeNodePathFactory<ITreeNode> = (id) =>
           id.split('/').length > 2 ? undefined : { id };
         const builder = util.pathBuilder({ id: 'ROOT' }, factory);
 
@@ -573,7 +573,7 @@ describe('util.tree', () => {
       });
 
       it('folder node not added (descendents stopped)', () => {
-        const factory: TreeNodePathFactory<ITreeNode> = id =>
+        const factory: TreeNodePathFactory<ITreeNode> = (id) =>
           id.split('/').length > 2 ? undefined : { id };
         const builder = util.pathBuilder({ id: 'ROOT' }, factory);
 

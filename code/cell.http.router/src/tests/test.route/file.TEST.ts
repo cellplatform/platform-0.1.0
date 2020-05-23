@@ -13,9 +13,9 @@ export const testPostFile = async (args: {
   const client = mock.client.cell(cellUri);
   const paths = (Array.isArray(args.source)
     ? args.source
-    : [args.source].filter(m => Boolean(m))) as string[];
+    : [args.source].filter((m) => Boolean(m))) as string[];
 
-  const wait = paths.map(async path => {
+  const wait = paths.map(async (path) => {
     const filename = fs.basename(path);
     const data = await fs.readFile(fs.resolve(path));
     const res: t.IHttpClientCellFileUpload = { filename, data };

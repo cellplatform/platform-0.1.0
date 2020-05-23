@@ -21,7 +21,7 @@ export class HttpClientCellLinks implements t.IHttpClientCellLinks {
   private constructor(args: IHttpClientCellLinksArgs) {
     const { links = {} } = args;
     this.args = args;
-    this.list = Object.keys(links).map(key => this.toLink(key, links[key]));
+    this.list = Object.keys(links).map((key) => this.toLink(key, links[key]));
   }
 
   /**
@@ -34,7 +34,7 @@ export class HttpClientCellLinks implements t.IHttpClientCellLinks {
    * [Properties]
    */
   public get files() {
-    return this.list.filter(item => item.type === 'FILE') as t.IHttpClientCellLinkFile[];
+    return this.list.filter((item) => item.type === 'FILE') as t.IHttpClientCellLinkFile[];
   }
 
   /**

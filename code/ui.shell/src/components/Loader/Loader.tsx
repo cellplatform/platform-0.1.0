@@ -21,7 +21,7 @@ export class Loader extends React.PureComponent<ILoaderProps> {
     super(props);
     this.shell.loader
       // Configure the shell <Root> as the default component.
-      .add(DEFAULT.MODULE, async e => {
+      .add(DEFAULT.MODULE, async (e) => {
         const Root = (await import('../Root')).Root;
         return <Root shell={this.shell} />;
       });

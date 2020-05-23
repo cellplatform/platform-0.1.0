@@ -25,7 +25,7 @@ export class Route {
 
     const entry = util.asString(input.entry);
     const paths: any[] = Array.isArray(input.path) ? input.path : [input.path];
-    const path = paths.filter(path => Boolean(path) && typeof path === 'string');
+    const path = paths.filter((path) => Boolean(path) && typeof path === 'string');
 
     return { entry, path };
   }
@@ -108,9 +108,9 @@ export class Route {
    */
   public isMatch(path: string) {
     if (!this._regexps) {
-      this._regexps = this.paths.map(pattern => pathToRegexp(pattern));
+      this._regexps = this.paths.map((pattern) => pathToRegexp(pattern));
     }
-    return this._regexps.some(regex => Boolean(regex.exec(path)));
+    return this._regexps.some((regex) => Boolean(regex.exec(path)));
   }
 
   /**
@@ -131,7 +131,7 @@ export class Route {
 
     const site = this.site;
     const files = site.files;
-    const entry = site.entries.find(item => item.file === filename);
+    const entry = site.entries.find((item) => item.file === filename);
 
     // Load the page HTML.
     const $ = cheerio.load(html);
@@ -147,12 +147,12 @@ export class Route {
     // Assign informational file-size attributes to referenced assets.
     // NB: This is helpful for monitoring initial load size of an app.
     files
-      .filter(file => file.path.endsWith('.js'))
-      .forEach(file => sizeAttr(file.bytes, $(`script[src="${fs.basename(file.path)}"]`)));
+      .filter((file) => file.path.endsWith('.js'))
+      .forEach((file) => sizeAttr(file.bytes, $(`script[src="${fs.basename(file.path)}"]`)));
 
     files
-      .filter(file => file.path.endsWith('.css'))
-      .forEach(file => sizeAttr(file.bytes, $(`link[href="${fs.basename(file.path)}"]`)));
+      .filter((file) => file.path.endsWith('.css'))
+      .forEach((file) => sizeAttr(file.bytes, $(`link[href="${fs.basename(file.path)}"]`)));
 
     // Finish up.
     return $.html();

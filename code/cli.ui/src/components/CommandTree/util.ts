@@ -9,7 +9,7 @@ export function buildTree(command: t.ICommand, options: { parent?: t.ITreeNode }
     props: { label: 'Commands', header: { isVisible: false } },
   };
 
-  parent.children = command.children.map(cmd => {
+  parent.children = command.children.map((cmd) => {
     const totalChildren = cmd.children.length;
     const hasChildren = totalChildren > 0;
     const node: t.ITreeNode = {
@@ -51,5 +51,5 @@ export function asCommandId(node?: string | t.ITreeNode) {
  */
 export function asCommand(root: t.ICommand, node?: string | t.ITreeNode) {
   const id = asCommandId(node);
-  return root.tree.find(cmd => cmd.id === id);
+  return root.tree.find((cmd) => cmd.id === id);
 }

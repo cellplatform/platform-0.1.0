@@ -41,7 +41,7 @@ export function urls(host: string) {
           ): t.IResGetCellFiles['urls'] {
             const builder = urls.cell(cellUri);
             const files = Object.keys(links || {})
-              .map(key => ({ key, value: (links || {})[key] }))
+              .map((key) => ({ key, value: (links || {})[key] }))
               .filter(({ value }) => Schema.uri.is.file(value))
               .reduce((acc, next) => {
                 const { key, value } = next;

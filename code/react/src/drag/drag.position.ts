@@ -84,7 +84,7 @@ export const position = (options: { el: HTMLElement }) => {
 
   const move$: Observable<DragPositionEvent> = events.mouseMove$.pipe(
     takeUntil(dispose$),
-    map(e => {
+    map((e) => {
       if (!start) {
         start = { x: e.screenX, y: e.screenY };
       }
@@ -99,8 +99,8 @@ export const position = (options: { el: HTMLElement }) => {
     takeUntil(mouseUp$),
   );
 
-  move$.subscribe(e => events$.next(e));
-  mouseUp$.subscribe(e => {
+  move$.subscribe((e) => events$.next(e));
+  mouseUp$.subscribe((e) => {
     const arg = prev
       ? prev.clone('COMPLETE')
       : new DragPositionEvent({

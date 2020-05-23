@@ -170,8 +170,8 @@ export class Site {
   public get routes() {
     if (!this._routes) {
       const site = this.def;
-      const routes = Object.keys(this.def.routes).map(key => site.routes[key]);
-      this._routes = routes.map(route => Route.create({ site, route }));
+      const routes = Object.keys(this.def.routes).map((key) => site.routes[key]);
+      this._routes = routes.map((route) => Route.create({ site, route }));
     }
     return this._routes;
   }
@@ -186,14 +186,14 @@ export class Site {
     };
     const domains = Array.isArray(domain) ? domain : [domain];
     const regexes = this._regexes;
-    return domains.some(d => this.domain.includes(d) || regexes.some(r => isMatch(d, r)));
+    return domains.some((d) => this.domain.includes(d) || regexes.some((r) => isMatch(d, r)));
   }
 
   /**
    * Look up the route at the given path.
    */
   public route(pathname?: string) {
-    return pathname ? this.routes.find(route => route.isMatch(pathname)) : undefined;
+    return pathname ? this.routes.find((route) => route.isMatch(pathname)) : undefined;
   }
 
   /**
@@ -201,7 +201,7 @@ export class Site {
    */
   public redirectUrl(pathname?: string) {
     const path = util.stripSlashes(pathname);
-    const file = this.files.find(file => path.endsWith(file.path));
+    const file = this.files.find((file) => path.endsWith(file.path));
     return file ? `${this.bundleUrl}/${file.path}` : '';
   }
 
@@ -218,5 +218,5 @@ export class Site {
  */
 export function toDomainRegexes(domains: string[]) {
   const toRegex = (domain: string) => new RegExp(util.stripSlashes(domain));
-  return domains.filter(domain => util.isDomainRegex(domain)).map(domain => toRegex(domain));
+  return domains.filter((domain) => util.isDomainRegex(domain)).map((domain) => toRegex(domain));
 }

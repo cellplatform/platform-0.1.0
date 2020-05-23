@@ -47,29 +47,29 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     this._sheet = args.sheet;
 
     const cellChange$ = this._ctx.event$.pipe(
-      filter(e => e.type === 'SHEET/change'),
-      map(e => e.payload as t.ITypedSheetChangeCell),
-      filter(e => e.kind === 'CELL'),
+      filter((e) => e.type === 'SHEET/change'),
+      map((e) => e.payload as t.ITypedSheetChangeCell),
+      filter((e) => e.kind === 'CELL'),
       map(({ to, ns, key }) => ({ to, uri: Uri.parse<t.ICellUri>(Uri.create.cell(ns, key)) })),
       filter(({ uri }) => uri.ok && uri.type === 'CELL' && uri.parts.ns === this.uri.ns),
-      map(e => ({ ...e, uri: e.uri.parts })),
+      map((e) => ({ ...e, uri: e.uri.parts })),
     );
 
     // Ensure internal representation of value is updated if some other process signalled the a property to change.
     cellChange$
       .pipe(
-        map(e => {
+        map((e) => {
           const columnKey = Schema.coord.cell.toColumnKey(e.uri.key);
           const columnDef = this._columns.find(
-            def => def.column === columnKey,
+            (def) => def.column === columnKey,
           ) as t.IColumnTypeDef;
           return { ...e, columnDef };
         }),
-        filter(e => Boolean(e.columnDef)),
-        map(e => ({ ...e, target: TypeTarget.parse(e.columnDef.target) })),
-        filter(e => e.target.isValid && e.target.isInline),
+        filter((e) => Boolean(e.columnDef)),
+        map((e) => ({ ...e, target: TypeTarget.parse(e.columnDef.target) })),
+        filter((e) => e.target.isValid && e.target.isInline),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.setData(e.columnDef, e.to);
       });
   }
@@ -114,7 +114,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       const types = (this._types = {
         get list() {
           if (!list) {
-            list = columns.map(type => {
+            list = columns.map((type) => {
               let uri: t.ICellUri | undefined;
               return {
                 ...type,
@@ -146,11 +146,11 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   public get props(): t.ITypedSheetRowProps<T> {
     if (!this._props) {
       const props = {};
-      this._columns.forEach(typeDef => {
+      this._columns.forEach((typeDef) => {
         const name = typeDef.prop as keyof T;
         Object.defineProperty(props, name, {
           get: () => this.prop(name).get(),
-          set: value => this.prop(name).set(value),
+          set: (value) => this.prop(name).set(value),
         });
       });
       this._props = props as any;
@@ -191,8 +191,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
       await Promise.all(
         this._columns
-          .filter(columnDef => (!props ? true : props.includes(columnDef.prop as keyof T)))
-          .map(async columnDef => {
+          .filter((columnDef) => (!props ? true : props.includes(columnDef.prop as keyof T)))
+          .map(async (columnDef) => {
             const res = await this._ctx.fetch.getCells({ ns, query });
             const key = `${columnDef.column}${this.index + 1}`;
             this.setData(columnDef, (res.cells || {})[key] || {});
@@ -353,7 +353,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   }
 
   private findColumnByProp<K extends keyof T>(prop: K) {
-    const res = this._columns.find(def => def.prop === prop);
+    const res = this._columns.find((def) => def.prop === prop);
     if (!res) {
       const err = `Column-definition for the property '${prop}' not found.`;
       throw new Error(err);

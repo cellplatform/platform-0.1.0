@@ -42,7 +42,7 @@ function exists(tag: 'style', url: string) {
 function findByUrl(tag: 'style', url: string) {
   if (is.browser) {
     const items = Array.from(document.getElementsByTagName(tag));
-    return items.find(style => style.dataset.url === url);
+    return items.find((style) => style.dataset.url === url);
   } else {
     return undefined;
   }

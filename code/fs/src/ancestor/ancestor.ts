@@ -114,12 +114,12 @@ export function ancestor(dir: string) {
     const { max } = options;
     const matcher = match(name);
     const isMatch = (input: string) => matcher.base(input);
-    await api.walk(async e => {
+    await api.walk(async (e) => {
       if (typeof max === 'number' && e.levels > max) {
         res = '';
         return e.stop();
       }
-      const name = (await fs.readdir(e.dir)).find(name => isMatch(name));
+      const name = (await fs.readdir(e.dir)).find((name) => isMatch(name));
       if (name) {
         const path = join(e.dir, name);
         if (await is.type(path, options.type)) {
@@ -136,12 +136,12 @@ export function ancestor(dir: string) {
     const { max } = options;
     const matcher = match(name);
     const isMatch = (input: string) => matcher.base(input);
-    api.walkSync(e => {
+    api.walkSync((e) => {
       if (typeof max === 'number' && e.levels > max) {
         res = '';
         return e.stop();
       }
-      const name = fs.readdirSync(e.dir).find(name => isMatch(name));
+      const name = fs.readdirSync(e.dir).find((name) => isMatch(name));
       if (name) {
         const path = join(e.dir, name);
         if (is.typeSync(path, options.type)) {

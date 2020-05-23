@@ -12,7 +12,7 @@ describe('rx', () => {
       const buffered$ = rx.debounceBuffer(source$); // NB: default debounce time: 0
 
       let results: T[][] = [];
-      buffered$.subscribe(e => (results = [...results, e]));
+      buffered$.subscribe((e) => (results = [...results, e]));
 
       source$.next({ value: 1 });
       source$.next({ value: 2 });
@@ -29,7 +29,7 @@ describe('rx', () => {
       const buffered$ = rx.debounceBuffer(source$, 10); // NB: default debounce time: 0
 
       let results: number[][] = [];
-      buffered$.subscribe(e => (results = [...results, e]));
+      buffered$.subscribe((e) => (results = [...results, e]));
 
       source$.next(1);
       source$.next(2);

@@ -48,9 +48,9 @@ export class TreeEvents<N extends t.ITreeNode = any> implements t.ITreeEvents<N>
     const { type, target } = options;
     const buttons = toButtons(options.button);
     return this.events$.pipe(
-      filter(e => e.type === 'TREEVIEW/mouse'),
-      map(e => e.payload as t.TreeNodeMouseEvent<N>),
-      filter(e => {
+      filter((e) => e.type === 'TREEVIEW/mouse'),
+      map((e) => e.payload as t.TreeNodeMouseEvent<N>),
+      filter((e) => {
         if (buttons.includes('RIGHT') && type === 'CLICK' && e.type === 'UP') {
           // NB: The CLICK event for a right button does not fire from the DOM
           //     so catch this pattern and return it as a "right-click" as its
@@ -59,8 +59,8 @@ export class TreeEvents<N extends t.ITreeNode = any> implements t.ITreeEvents<N>
         }
         return type ? e.type === type : true;
       }),
-      filter(e => buttons.includes(e.button)),
-      filter(e => (target ? e.target === target : true)),
+      filter((e) => buttons.includes(e.button)),
+      filter((e) => (target ? e.target === target : true)),
     );
   };
 

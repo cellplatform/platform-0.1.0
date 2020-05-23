@@ -46,9 +46,9 @@ export async function run(args: {
   // Task list.
   log.info();
   const tasks = cli
-    .task('build', async e => execScript(pkg, e, 'build'), { skip: args.manifest })
-    .task('bundle', async e => execScript(pkg, e, 'bundle'), { skip: args.manifest })
-    .task('manifest', async e => {
+    .task('build', async (e) => execScript(pkg, e, 'build'), { skip: args.manifest })
+    .task('bundle', async (e) => execScript(pkg, e, 'bundle'), { skip: args.manifest })
+    .task('manifest', async (e) => {
       const { entries, error } = await getEntries(config);
       if (error) {
         throw error;
@@ -63,7 +63,7 @@ export async function run(args: {
   if (!res.ok) {
     // Task(s) failed.
     log.info();
-    res.errors.forEach(item => {
+    res.errors.forEach((item) => {
       log.error(`ERROR ${item.title}`);
       log.warn(item.error);
       log.info();
@@ -106,7 +106,7 @@ async function execScript(pkg: npm.NpmPackage, e: t.TaskArgs, scriptName: string
 
 const getRootDir = async (source: string) => {
   let path = '';
-  await fs.ancestor(source).walk(async e => {
+  await fs.ancestor(source).walk(async (e) => {
     if ((await fs.readdir(e.dir)).includes('package.json')) {
       return e.stop();
     } else {

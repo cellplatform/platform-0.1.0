@@ -35,7 +35,7 @@ export function post(args: t.S3SignedPostArgs & { s3: AWS.S3 }): t.S3SignedPost 
         const contentType = presignedPost.props['content-type'];
         const form = new FormData();
         Object.keys(props)
-          .map(key => ({ key, value: props[key] }))
+          .map((key) => ({ key, value: props[key] }))
           .forEach(({ key, value }) => form.append(key, value));
         form.append('file', data, { contentType }); // NB: file-data must be added last for S3.
 
