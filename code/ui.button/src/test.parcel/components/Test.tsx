@@ -45,13 +45,13 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     const button$ = this.button$.pipe(takeUntil(this.unmounted$));
     const switch$ = this.switch$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
-    button$.subscribe(e => {
+    button$.subscribe((e) => {
       log.info('🌳 button$', e.payload.id, e);
     });
 
-    switch$.subscribe(e => {
+    switch$.subscribe((e) => {
       log.info('🐷 switch$', e.payload.id, e);
     });
   }
