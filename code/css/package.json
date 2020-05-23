@@ -5,7 +5,7 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "parcel src/test.html/index.html",
+    "start": "parcel src/test.parcel/index.html",
     "test": "ts test",
     "lint": "ts lint",
     "build": "ts build",
@@ -34,7 +34,7 @@
     "css",
     "reset.css",
     "!lib/test",
-    "!lib/test.html",
+    "!lib/test.parcel",
     "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
