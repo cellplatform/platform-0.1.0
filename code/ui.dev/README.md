@@ -12,4 +12,20 @@ UI development helpers.
     yarn add @platform/ui.dev
 
 <p>&nbsp;</p>
+
+## Getting Started
+
+See the `/src/test.parcel` folder for sample entry point.
+Add scripts to you `package.json`:
+
+```json
+{
+  "scripts": {
+    "start": "parcel src/test.parcel/index.html",
+    "clean": "rm -rf .cache dist"
+  }
+}
+```
+
+<p>&nbsp;</p>
 <p>&nbsp;</p>
