@@ -82,7 +82,7 @@ export class PropListItem extends React.PureComponent<IPropListItemProps, IPropL
     };
 
     const value = data.value;
-    const el = typeof value === 'boolean' ? <Switch height={14} value={value} /> : value;
+    const el = typeof value === 'boolean' ? <Switch height={16} value={value} /> : value;
 
     return <div {...styles.base}>{el}</div>;
   }
