@@ -5,20 +5,22 @@ import { color, ui, css, CssValue, t } from '../../common';
 
 import { TreeView } from '@platform/ui.tree';
 import { Icons } from '../Icons';
-import * as tmp from './tmp';
 
-export type ITreeShellProps = { style?: CssValue };
-export type ITreeShellState = {
-  theme?: t.TreeTheme;
+export type ITree = {
   root?: t.ITreeNode;
   current?: string;
+  theme?: t.TreeTheme;
 };
 
+export type ITreeShellProps = {
+  tree?: ITree;
+  style?: CssValue;
+};
+
+export type ITreeShellState = {};
+
 export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellState> {
-  public state: ITreeShellState = {
-    root: tmp.SIMPLE,
-    theme: 'LIGHT',
-  };
+  public state: ITreeShellState = {};
   private state$ = new Subject<Partial<ITreeShellState>>();
   private unmounted$ = new Subject<{}>();
   private events$ = new Subject<t.TreeViewEvent>();
@@ -51,6 +53,15 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
   }
 
   /**
+   * [Properties]
+   */
+
+  public get tree(): ITree {
+    const { root, current, theme = 'LIGHT' } = this.props.tree || {};
+    return { root, current, theme };
+  }
+
+  /**
    * [Render]
    */
   public render() {
@@ -62,7 +73,7 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
       left: css({
         position: 'relative',
         display: 'flex',
-        width: 230,
+        width: 240,
         borderRight: `solid 1px ${color.format(-0.15)}`,
       }),
       right: css({
@@ -71,13 +82,15 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
       }),
     };
 
+    const tree = this.tree;
+
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
           <TreeView
-            node={this.state.root}
-            current={this.state.current}
-            theme={this.state.theme}
+            node={tree.root}
+            current={tree.current}
+            theme={tree.theme}
             background={'NONE'}
             renderIcon={this.renderIcon}
             renderPanel={this.renderPanel}

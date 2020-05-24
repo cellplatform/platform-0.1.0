@@ -6,6 +6,7 @@ import {
   MdClose,
   MdCheck,
   MdFace,
+  MdOndemandVideo,
 
   // Arrow.
   MdArrowBack,
@@ -33,6 +34,8 @@ export class Icons {
   public static Close = icon(MdClose);
   public static Tick = icon(MdCheck);
   public static Face = icon(MdFace);
+
+  public static Video = icon(MdOndemandVideo);
 
   // Arrow.
   public static ArrowLeft = icon(MdArrowBack);

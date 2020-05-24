@@ -7,6 +7,8 @@ import { WindowTitleBar } from '../primitives';
 import { TreeShell } from '../TreeShell';
 // import { Viewer } from '../Viewer';
 
+import * as tmp from '../../_tmp';
+
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
 export type IRootState = {};
 
@@ -48,11 +50,12 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       titlebar: css({ Absolute: [0, 0, null, 0] }),
       body: css({ Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0] }),
     };
+
     return (
       <this.Provider>
         <div {...css(styles.base, this.props.style)}>
           <WindowTitleBar style={styles.titlebar} address={uri} />
-          <TreeShell style={styles.body} />
+          <TreeShell style={styles.body} tree={{ root: tmp.SIMPLE }} />
           {/* <Viewer style={styles.body} uri={uri} /> */}
         </div>
       </this.Provider>
