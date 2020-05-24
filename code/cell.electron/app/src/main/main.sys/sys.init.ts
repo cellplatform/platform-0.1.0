@@ -1,8 +1,8 @@
 import '../../config';
 
-import { constants, t, time } from '../common';
-import { toContext } from './sys.ctx';
+import { constants, t } from '../common';
 import { typeDefs } from '../main.typeDefs';
+import { toContext } from './sys.ctx';
 import { ipc } from './sys.ipc';
 import { monitor } from './sys.monitor';
 

@@ -3,7 +3,7 @@ import { filter, map } from 'rxjs/operators';
 import { create } from '@platform/log/lib/server';
 import * as t from './types';
 
-const electron = require('electron-log');
+const electron = require('electron-log'); // eslint-disable-line
 const logger = create();
 
 const format: t.IElectronLogFormat = {
