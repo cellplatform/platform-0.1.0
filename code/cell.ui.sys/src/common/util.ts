@@ -5,7 +5,7 @@ export function toQueryObject<T>(input?: string) {
   return (input || window.location.search || '')
     .replace(/^\?/, '')
     .split('&')
-    .map(item => item.split('='))
+    .map((item) => item.split('='))
     .reduce((acc, next) => {
       const key = next[0];
       const value = decodeURIComponent(next[1]);

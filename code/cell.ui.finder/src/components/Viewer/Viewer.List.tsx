@@ -3,7 +3,6 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { COLORS, css, color, CssValue, t } from '../../common';
 
-
 export type IViewerListProps = {
   env: t.IEnv;
   items: IViewerListItem[];
@@ -30,7 +29,7 @@ export class ViewerList extends React.PureComponent<IViewerListProps, IViewerLis
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {

@@ -52,7 +52,7 @@ const env = win.env;
 
   // }
 
-  env.event$.subscribe(e => {
+  env.event$.subscribe((e) => {
     console.log('module  | 🌳 event', e);
     // writeRow()
   });

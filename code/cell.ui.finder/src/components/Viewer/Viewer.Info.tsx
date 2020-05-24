@@ -32,7 +32,7 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.loadFileInfo();
   }
 

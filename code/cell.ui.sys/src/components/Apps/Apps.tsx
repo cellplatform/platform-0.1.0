@@ -27,12 +27,12 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.load();
 
     const { env } = this.props;
 
-    env.event$.subscribe(async e => {
+    env.event$.subscribe(async (e) => {
       // TEMP 🐷HACK - to not brute force the reload like this!
       // Should use proper cache-patching handled in the event stream.
       this.client.cache.clear();
@@ -59,7 +59,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     const sheet = await this.client.sheet('ns:sys.app');
     const apps = await sheet.data<t.App>('App').load();
 
-    const wait = apps.rows.map(async row => {
+    const wait = apps.rows.map(async (row) => {
       const uri = row.toString();
       const windows = await row.props.windows.data();
       const item: IAppData = {

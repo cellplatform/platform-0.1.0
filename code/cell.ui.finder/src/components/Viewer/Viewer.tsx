@@ -34,7 +34,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.loadFiles();
   }
 
@@ -57,8 +57,8 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
 
   private get items() {
     const { items = [] } = this.state;
-    const names: string[] = pathSort(items.map(item => item.filename));
-    const res = names.map(name => items.find(item => item.filename === name));
+    const names: string[] = pathSort(items.map((item) => item.filename));
+    const res = names.map((name) => items.find((item) => item.filename === name));
     return res as IViewerListItem[];
   }
 
@@ -80,7 +80,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
     const cell = http.cell(this.props.uri);
     const res = await cell.files.list();
     if (res.ok) {
-      const items = res.body.map(file => {
+      const items = res.body.map((file) => {
         const url = urls.file(file.uri).download.toString();
         return { filename: file.filename, url };
       });
@@ -223,7 +223,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
 
   private isImage(item: IViewerListItem) {
     const extensions = ['.png', '.jpg'];
-    return extensions.some(ext => item.filename.endsWith(ext));
+    return extensions.some((ext) => item.filename.endsWith(ext));
   }
 
   /**
@@ -251,7 +251,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
     // let first: string|undefined
 
     const payload = await Promise.all(
-      files.map(async file => {
+      files.map(async (file) => {
         const filename = file.name;
         const data = await (file as any).arrayBuffer();
         return { filename, data };
@@ -262,7 +262,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
 
     await this.loadFiles();
 
-    const first = this.items.find(item => item.filename === payload[0].filename);
+    const first = this.items.find((item) => item.filename === payload[0].filename);
     if (first) {
       this.setCurrent(first);
     }

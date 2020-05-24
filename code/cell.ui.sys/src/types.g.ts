@@ -6,7 +6,7 @@
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.37
+ *    @platform/cell.typesystem@0.0.47
  *
  * Notes:
  *
@@ -39,4 +39,5 @@ export declare type AppWindow = {
   height: number;
   x: number;
   y: number;
+  isVisible: boolean;
 };
