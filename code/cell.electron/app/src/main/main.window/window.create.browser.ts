@@ -52,7 +52,10 @@ export async function createBrowserWindow(args: {
   // Monitor events.
   browser.on('resize', () => updateBounds({ browser, window }));
   browser.on('move', () => updateBounds({ browser, window }));
-  browser.once('closed', () => (ctx.windowRefs = ctx.windowRefs.filter(item => item.uri !== uri)));
+  browser.once(
+    'closed',
+    () => (ctx.windowRefs = ctx.windowRefs.filter((item) => item.uri !== uri)),
+  );
   browser.once('ready-to-show', () => {
     browser.setTitle(window.title);
     // browser.webContents.openDevTools(); // TEMP 🐷

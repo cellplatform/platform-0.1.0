@@ -3,7 +3,7 @@ import { filter, map } from 'rxjs/operators';
 import { create } from '@platform/log/lib/server';
 import * as t from './types';
 
-const electron = require('electron-log');
+const electron = require('electron-log'); // eslint-disable-line
 const logger = create();
 
 const format: t.IElectronLogFormat = {
@@ -59,22 +59,22 @@ export const log: t.IElectronLog = {
 const events$ = log.events$.pipe(filter(() => !log.silent));
 events$
   // Logging.
-  .pipe(filter(e => e.type === 'LOG'))
-  .pipe(map(e => e.payload as t.ILogEvent))
-  .subscribe(e => electron.info(e.output));
+  .pipe(filter((e) => e.type === 'LOG'))
+  .pipe(map((e) => e.payload as t.ILogEvent))
+  .subscribe((e) => electron.info(e.output));
 
 events$
   // Clear console.
-  .pipe(filter(e => e.type === 'CLEAR'))
-  .subscribe(e => console.clear()); // eslint-disable-line
+  .pipe(filter((e) => e.type === 'CLEAR'))
+  .subscribe((e) => console.clear()); // eslint-disable-line
 
 events$
   // Group.
-  .pipe(filter(e => e.type === 'GROUP'))
-  .pipe(map(e => e.payload as t.ILogEvent))
-  .subscribe(e => console.group(e.output)); // eslint-disable-line
+  .pipe(filter((e) => e.type === 'GROUP'))
+  .pipe(map((e) => e.payload as t.ILogEvent))
+  .subscribe((e) => console.group(e.output)); // eslint-disable-line
 
 events$
   // End group.
-  .pipe(filter(e => e.type === 'UNGROUP'))
-  .subscribe(e => console.groupEnd()); // eslint-disable-line
+  .pipe(filter((e) => e.type === 'UNGROUP'))
+  .subscribe((e) => console.groupEnd()); // eslint-disable-line

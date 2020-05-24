@@ -9,7 +9,7 @@ export async function createOne(args: { ctx: t.IContext; name: string }) {
   const { apps } = ctx;
 
   // Retrieve the app definition.
-  const app = apps.find(row => row.name === args.name);
+  const app = apps.find((row) => row.name === args.name);
   if (!app) {
     throw new Error(`An app definition named '${args.name}' not found.`);
   }

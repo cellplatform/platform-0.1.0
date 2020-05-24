@@ -18,7 +18,7 @@ export async function ensureExists(args: { client: t.IClientTypesystem }) {
   // Write type-defs.
   if (!(await client.http.ns(SYS.NS.TYPE).exists())) {
     const defs = define();
-    await Promise.all(Object.keys(defs).map(ns => client.http.ns(ns).write(defs[ns])));
+    await Promise.all(Object.keys(defs).map((ns) => client.http.ns(ns).write(defs[ns])));
     if (ENV.isDev) {
       const ts = await client.typescript(SYS.NS.TYPE);
       await ts.save(fs, fs.resolve('src/types.g'));

@@ -14,7 +14,7 @@ export async function define(args: {
 }) {
   const { ctx } = args;
   const { client, apps } = ctx;
-  const exists = Boolean(apps.find(row => row.name === args.name));
+  const exists = Boolean(apps.find((row) => row.name === args.name));
 
   // Create the app model in the sheet.
   if (!exists || args.force) {
@@ -36,6 +36,6 @@ export async function define(args: {
     });
   }
 
-  const app = apps.find(row => row.name === args.name);
+  const app = apps.find((row) => row.name === args.name);
   return { app, created: !exists };
 }
