@@ -910,7 +910,7 @@
     "@platform/util.string" "0.5.8"
     "@platform/util.value" "0.7.22"
 
-"@platform/cell.types@0.4.99":
+"@platform/cell.types@0.4.99", "@platform/cell.types@^0.4.99":
   version "0.4.99"
   resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.99.tgz#6b500b442d0b3c881fbc5eba59f073006792233b"
   integrity sha512-R6cgArRK5jcV+VF2uHRUC7hCaGU0FfdrtLfgNk3xh/eQtDkFDWMdAsf+7l50fXmtN2alE8uTT4U94rpakkiLVQ==
@@ -1163,7 +1163,7 @@
     "@platform/react" "0.4.28"
     "@platform/util.value" "0.7.22"
 
-"@platform/ui.tree@^0.4.55":
+"@platform/ui.tree@0.4.55":
   version "0.4.55"
   resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.4.55.tgz#1aa218bf3874b131139bfe6e37935086beee5c8e"
   integrity sha512-zvbSs5hsDe3Jr6WduXW5G6rjrq3l8f3hly0QahwLltzJotPViVIqH4Tj7diK5oKUvJQDMJagnUJL93BO0/d8+w==

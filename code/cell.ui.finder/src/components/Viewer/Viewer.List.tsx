@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { COLORS, css, color, CssValue, t } from '../../common';
+
+import { color, COLORS, css, CssValue, ui } from '../../common';
 
 export type IViewerListProps = {
-  env: t.IEnv;
   items: IViewerListItem[];
   selectedIndex?: number;
   style?: CssValue;
@@ -20,6 +20,9 @@ export class ViewerList extends React.PureComponent<IViewerListProps, IViewerLis
   public state: IViewerListState = {};
   private state$ = new Subject<Partial<IViewerListState>>();
   private unmounted$ = new Subject<{}>();
+
+  public static contextType = ui.Context;
+  public context!: ui.IEnvContext;
 
   /**
    * [Lifecycle]

@@ -2,17 +2,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, CssValue, Schema, t } from '../../common';
+import { color, COLORS, css, CssValue, Schema, ui } from '../../common';
 import { ViewerInfo } from './Viewer.Info';
 import { IViewerListItem, ViewerItemClickEvent, ViewerList } from './Viewer.List';
 
-// @ts-ignore
-const pathSort = require('path-sort');
+const pathSort = require('path-sort'); // eslint-disable-line
 
 export type IViewerProps = {
   uri: string;
-  client: t.IClientTypesystem;
-  env: t.IEnv;
   style?: CssValue;
 };
 export type IViewerState = {
@@ -25,6 +22,9 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   public state: IViewerState = {};
   private state$ = new Subject<Partial<IViewerState>>();
   private unmounted$ = new Subject<{}>();
+
+  public static contextType = ui.Context;
+  public context!: ui.IEnvContext;
 
   /**
    * [Lifecycle]
@@ -46,9 +46,8 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   /**
    * [Properties]
    */
-
   private get client() {
-    return this.props.client;
+    return this.context.client;
   }
 
   private get uri() {
@@ -104,7 +103,6 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
    * [Render]
    */
   public render() {
-    const { env } = this.props;
     const { isDragOver } = this.state;
     const items = this.items;
     const styles = {
@@ -144,7 +142,6 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
         <div {...styles.content}>
           <div {...styles.left}>
             <ViewerList
-              env={env}
               items={items}
               selectedIndex={this.selectedIndex}
               onClick={this.onItemClick}
@@ -152,7 +149,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
           </div>
           <div {...styles.center}>{this.renderImage()}</div>
           <div {...styles.right}>
-            <ViewerInfo env={env} client={this.client} item={this.state.current} />
+            <ViewerInfo item={this.state.current} />
           </div>
         </div>
         {isDragOver && this.renderDragOver()}

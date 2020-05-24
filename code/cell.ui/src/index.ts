@@ -1,4 +1,4 @@
-import * as cell from './cell';
+import * as ui from './ui';
 
-export { cell };
+export { ui };
 export * from './context';

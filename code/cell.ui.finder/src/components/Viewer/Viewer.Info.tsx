@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { COLORS, css, color, CssValue, t, time } from '../../common';
 
+import { color, css, CssValue, t, time, ui } from '../../common';
+import { IPropListProps, PropList, Spinner } from '../primitives';
 import { IViewerListItem } from './Viewer.List';
-import { PropList, IPropListProps, Spinner } from '../primitives';
 
-const filesize = require('pretty-bytes');
+const filesize = require('pretty-bytes'); // eslint-disable-line
 
 export type IViewerInfoProps = {
-  env: t.IEnv;
-  client: t.IClientTypesystem;
   item?: IViewerListItem;
   style?: CssValue;
 };
@@ -23,6 +21,9 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
   public state: IViewerInfoState = {};
   private state$ = new Subject<Partial<IViewerInfoState>>();
   private unmounted$ = new Subject<{}>();
+
+  public static contextType = ui.Context;
+  public context!: ui.IEnvContext;
 
   /**
    * [Lifecycle]
@@ -66,7 +67,7 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
       return [];
     }
 
-    const { mimetype, bytes, integrity } = file.props;
+    const { bytes, integrity } = file.props;
     const filehash = integrity?.filehash || '';
     const hash = `${filehash.substring(7, 14)}...${filehash?.substring(filehash.length - 6)}`;
 
@@ -93,7 +94,7 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
       this.state$.next({ file: undefined });
     } else {
       this.state$.next({ isLoading: true });
-      const { client } = this.props;
+      const { client } = this.context;
       const res = await client.http.file(uri).info();
       const { createdAt, modifiedAt } = res.body;
       const file = res.body.data;

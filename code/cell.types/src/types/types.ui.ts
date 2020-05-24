@@ -6,17 +6,17 @@ import { t } from '../common';
  * To use add a static `contextType` to the consuming component,
  * eg:
  *
- *      import { cell } from '@platform/cell.ui'
+ *      import { ui } from '@platform/cell.ui'
  *
  *      export class MyView extends React.PureComponent {
- *        public static contextType = cell.Context;
- *        public context!: cell.ICellContext
+ *        public static contextType = ui.Context;
+ *        public context!: ui.IEnvContext
  *      }
  *
  * See:
  *    https://reactjs.org/docs/context.html
  */
-export type ICellContext = {
-  uri: string;
-  cell: t.ICellData;
+export type IEnvContext = {
+  env: t.IEnv;
+  client: t.IClientTypesystem;
 };
