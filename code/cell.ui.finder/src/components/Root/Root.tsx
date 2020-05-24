@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Client, css, CssValue, t, ui } from '../../common';
 import { WindowTitleBar } from '../primitives';
 import { TreeShell } from '../TreeShell';
-import { Viewer } from '../Viewer';
+// import { Viewer } from '../Viewer';
 
 export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
 export type IRootState = {};
@@ -52,8 +52,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       <this.Provider>
         <div {...css(styles.base, this.props.style)}>
           <WindowTitleBar style={styles.titlebar} address={uri} />
-          {/* <TreeShell style={styles.body} /> */}
-          <Viewer style={styles.body} uri={uri} />
+          <TreeShell style={styles.body} />
+          {/* <Viewer style={styles.body} uri={uri} /> */}
         </div>
       </this.Provider>
     );
