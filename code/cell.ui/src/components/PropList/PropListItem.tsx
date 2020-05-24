@@ -80,6 +80,12 @@ export class PropListItem extends React.PureComponent<IPropListItemProps, IPropL
         textOverflow: 'ellipsis',
       }),
     };
-    return <div {...styles.base}>{data.value}</div>;
+
+    const value = data.value;
+
+    // const el = <Switch height={16} />;
+    const el = value;
+
+    return <div {...styles.base}>{el}</div>;
   }
 }
