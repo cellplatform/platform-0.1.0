@@ -14,7 +14,8 @@
   "dependencies": {
     "@platform/cell.types": "0.4.99",
     "@platform/libs": "0.2.2",
-    "@platform/react": "0.4.28"
+    "@platform/react": "0.4.28",
+    "@platform/ui.button": "0.3.61"
   },
   "devDependencies": {
     "@platform/test": "0.1.12",
