@@ -10,10 +10,7 @@ export async function getUrl(args: { host: string; app: t.ITypedSheetRow<t.App> 
 
   const urls = Schema.urls(args.host);
   const bundleUri = types.map.fs.uri;
-  const entry = urls
-    .cell(bundleUri)
-    .file.byName(props.entry)
-    .toString();
+  const entry = urls.cell(bundleUri).file.byName(props.entry).toString();
 
   const dev = await getDevUrl({ app });
 

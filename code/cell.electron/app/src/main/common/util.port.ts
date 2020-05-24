@@ -32,12 +32,12 @@ export const port = {
    */
   async isUsed(port: number) {
     return new Promise<boolean>(async (resolve, reject) => {
-      const server = net.createServer(socket => {
+      const server = net.createServer((socket) => {
         socket.write('echo\r\n');
         socket.pipe(socket);
       });
       server.listen(port);
-      server.on('error', e => resolve(true));
+      server.on('error', (e) => resolve(true));
       server.on('listening', () => {
         server.close();
         resolve(false);

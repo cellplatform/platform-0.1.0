@@ -45,7 +45,7 @@ export async function start() {
   // Initialize the system models.
   const ctx = await sys.init(client);
   log.info(`app modules: ${log.yellow(ctx.apps.total)}`);
-  ctx.apps.forEach(app => {
+  ctx.apps.forEach((app) => {
     log.info.gray(` • ${log.magenta(app.name)}`);
   });
   log.info();
@@ -61,7 +61,7 @@ export async function start() {
 
   if (ctx.windowRefs.length < ctx.apps.total) {
     // TEMP 🐷
-    ctx.apps.forEach(app => {
+    ctx.apps.forEach((app) => {
       const name = app.name;
       window.createOne({ ctx, name });
     });

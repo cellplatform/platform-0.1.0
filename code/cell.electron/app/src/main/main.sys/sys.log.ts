@@ -24,7 +24,7 @@ export function saveLogger(args: { ctx: t.IContext; saved$: Observable<t.ITypedS
   };
 
   // Models saved.
-  saved$.subscribe(e => {
+  saved$.subscribe((e) => {
     const prefix = e.ok ? log.blue('SAVED') : log.red('SAVED (error)');
     log.info(prefix);
 
@@ -35,7 +35,7 @@ export function saveLogger(args: { ctx: t.IContext; saved$: Observable<t.ITypedS
 
     const cells = e.changes.cells || {};
 
-    Object.keys(cells).forEach(key => {
+    Object.keys(cells).forEach((key) => {
       const change = cells[key];
       const ns = change.ns;
       const type = findType(ns, change.key);

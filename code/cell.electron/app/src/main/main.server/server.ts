@@ -67,8 +67,8 @@ export async function start(args: IInitArgs & { port?: number; isDev?: boolean }
     // TODO 🐷 do the filter using [isMatch] on the router using Routes
     //
     // .pipe(filter(e => Urls.routes.SYS.INFO.includes(e.url)))
-    .pipe(filter(e => ['/', '/.sys', '/.sys/'].includes(e.url)))
-    .subscribe(e => {
+    .pipe(filter((e) => ['/', '/.sys', '/.sys/'].includes(e.url)))
+    .subscribe((e) => {
       const data: t.IResGetElectronSysInfo = {
         ...e.res.data,
         region: 'local:app',

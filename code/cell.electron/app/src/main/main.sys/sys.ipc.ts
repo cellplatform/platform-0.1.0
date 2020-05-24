@@ -10,11 +10,11 @@ export function ipc(args: { ctx: t.IContext }) {
   const { IPC } = constants;
 
   // Broadcast changes to each window.
-  client.changes.changed$.pipe(debounceTime(50)).subscribe(e => {
+  client.changes.changed$.pipe(debounceTime(50)).subscribe((e) => {
     const payload: t.IpcSheetChangedEvent = {
       type: 'IPC/sheet/changed',
       payload: { ns: e.sheet.uri.id, changes: e.changes },
     };
-    ctx.windowRefs.forEach(ref => ref.send(IPC.CHANNEL, payload));
+    ctx.windowRefs.forEach((ref) => ref.send(IPC.CHANNEL, payload));
   });
 }

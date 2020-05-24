@@ -44,8 +44,8 @@ export function init() {
     console.group('🌳 preload');
     console.log('isDev', isDev);
     process.argv
-      .filter(value => value.startsWith('env:'))
-      .forEach(value => console.log(`process.argv/${value}`));
+      .filter((value) => value.startsWith('env:'))
+      .forEach((value) => console.log(`process.argv/${value}`));
     console.log('env', env);
     console.groupEnd();
     console.log('-------------------------------------------');
@@ -61,6 +61,6 @@ export function init() {
 // Read out the window-definition passed through the [process] arguments.
 const findArgv = (key: string) => {
   const prefix = `${key}=`;
-  const match = (process.argv || []).find(item => item === key || item.startsWith(prefix));
+  const match = (process.argv || []).find((item) => item === key || item.startsWith(prefix));
   return (match || '').replace(new RegExp(`^${prefix}`), '').trim();
 };

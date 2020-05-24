@@ -16,7 +16,7 @@ export function init(args: { windowUri: string; cache: t.IEnv['cache'] }) {
   // electron IPC channels.
   const ipc$ = new Subject<t.IpcEvent>();
   ipcRenderer.on(IPC.CHANNEL, (ipc, event: t.IpcEvent) => ipc$.next(event));
-  ipc$.subscribe(e => {
+  ipc$.subscribe((e) => {
     // const isSelf = e.payload.window === args.windowUri;
     // const out = isSelf ? { ...e, isSelf } : e;
     console.log('preload | 🌼ipc event:', e);

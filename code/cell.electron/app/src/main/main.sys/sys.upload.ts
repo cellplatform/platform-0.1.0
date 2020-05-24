@@ -11,7 +11,7 @@ export async function getFiles(args: { sourceDir: string; targetDir?: string }) 
   const paths = await fs.glob.find(fs.resolve(`${sourceDir}/**`));
 
   const files = await Promise.all(
-    paths.map(async path => {
+    paths.map(async (path) => {
       const filename = fs.join(targetDir, path.substring(sourceDir.length + 1));
       const data = await fs.readFile(path);
       const file: File = { filename, data };
@@ -19,7 +19,7 @@ export async function getFiles(args: { sourceDir: string; targetDir?: string }) 
     }),
   );
 
-  return files.filter(file => file.data.byteLength > 0);
+  return files.filter((file) => file.data.byteLength > 0);
 }
 
 /**
@@ -51,7 +51,7 @@ export async function upload(args: {
       log.info.gray(' • dir:     ', sourceDir);
       log.info.gray(' • host:    ', host);
       log.info.gray(' • errors:');
-      res.body.errors.forEach(err => {
+      res.body.errors.forEach((err) => {
         log.info();
         log.info.gray(`  • filename: ${log.yellow(err.filename)}`);
         log.info.gray(`    type:     ${err.type}`);
@@ -102,8 +102,8 @@ function logUpload(args: {
     const size = fs.size.toString(data.byteLength);
     table.add(['', name, size]);
   };
-  files.filter(file => file.filename.endsWith('.map')).forEach(file => addFile(file));
-  files.filter(file => !file.filename.endsWith('.map')).forEach(file => addFile(file));
+  files.filter((file) => file.filename.endsWith('.map')).forEach((file) => addFile(file));
+  files.filter((file) => !file.filename.endsWith('.map')).forEach((file) => addFile(file));
 
   log.info(`
 
