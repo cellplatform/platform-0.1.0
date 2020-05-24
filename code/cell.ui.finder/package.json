@@ -22,6 +22,7 @@
     "@platform/polyfill": "0.0.1",
     "@platform/react": "0.4.28",
     "@platform/ui.spinner": "0.0.144",
+    "@platform/ui.tree": "0.4.55",
     "path-sort": "0.1.0",
     "pretty-bytes": "5.3.0"
   },

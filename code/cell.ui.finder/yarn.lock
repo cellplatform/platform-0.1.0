@@ -1131,12 +1131,59 @@
     "@platform/react" "0.4.28"
     "@platform/util.value" "0.7.22"
 
+"@platform/ui.icon@0.0.145":
+  version "0.0.145"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.145.tgz#5e59ae5966a2978f0c0210126fb0a2832f2ad459"
+  integrity sha512-+jg7Su5oDfL/liEg0TXTjY1joY4FKdKe7syoJwxXhJC128n7MFk19sgWUdbZm7gwWNabWHdl9nPaPUwg29PyTQ==
+  dependencies:
+    "@platform/react" "0.4.28"
+
+"@platform/ui.panel@0.1.61":
+  version "0.1.61"
+  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.1.61.tgz#5ffff9e443b668bda2351f6544161d5b4753fa61"
+  integrity sha512-Zgp0GGRDdo7csoHwQ2g6Wl15Ca0cCEOSeCz8uqIjk2aDajFiBGvpDqPr22Ld6VIwwgcZmgJlyuW0HBIrzhwzUA==
+  dependencies:
+    "@platform/react" "0.4.28"
+    "@platform/util.animate" "0.0.86"
+
 "@platform/ui.spinner@0.0.144":
   version "0.0.144"
   resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.144.tgz#351229fe555f320522807a663d0259ffc27cda51"
   integrity sha512-HsdVjPBwdbsd1gJlL3zXCzQXhnxA4L/JFfbpCJ28wgHkLxbsxnzlEeRZTWSa8A66/ySSNNv6F2xCH1UJGxC+Hg==
   dependencies:
     "@platform/react" "0.4.28"
+
+"@platform/ui.text@0.3.55":
+  version "0.3.55"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.55.tgz#977690948f5d01f2cc46e68951f38c41ade80084"
+  integrity sha512-Ud/gBuYYikVDRJuWtxepR+pGgsS+GGcQo9D4CiVNWtzKsA3N8OJk7L0mAGhdU/W0/xggYGx5F706/bTN7y6TIw==
+  dependencies:
+    "@platform/css" "0.4.0"
+    "@platform/libs" "0.2.2"
+    "@platform/react" "0.4.28"
+    "@platform/util.value" "0.7.22"
+
+"@platform/ui.tree@^0.4.55":
+  version "0.4.55"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.4.55.tgz#1aa218bf3874b131139bfe6e37935086beee5c8e"
+  integrity sha512-zvbSs5hsDe3Jr6WduXW5G6rjrq3l8f3hly0QahwLltzJotPViVIqH4Tj7diK5oKUvJQDMJagnUJL93BO0/d8+w==
+  dependencies:
+    "@platform/css" "0.4.0"
+    "@platform/react" "0.4.28"
+    "@platform/ui.icon" "0.0.145"
+    "@platform/ui.panel" "0.1.61"
+    "@platform/ui.spinner" "0.0.144"
+    "@platform/ui.text" "0.3.55"
+    "@platform/util.animate" "0.0.86"
+    "@platform/util.value" "0.7.22"
+
+"@platform/util.animate@0.0.86":
+  version "0.0.86"
+  resolved "https://registry.yarnpkg.com/@platform/util.animate/-/util.animate-0.0.86.tgz#125c0ed808e1f9b9896bfd78e609653dcbe27113"
+  integrity sha512-YqpE5mP7PXJoKnCEKJyAeYsA9NBV+g1A95izJ36/rtl7G62kwbKdTZ7cQUCgjucxxvgbNJUX/UJIaDtERiopmQ==
+  dependencies:
+    "@platform/libs" "0.2.2"
+    dynamics.js "1.1.5"
 
 "@platform/util.diff@0.0.32":
   version "0.0.32"
@@ -2866,6 +2913,11 @@ duplexer2@~0.1.4:
   integrity sha1-ixLauHjA1p4+eJEFFmKjL8a93ME=
   dependencies:
     readable-stream "^2.0.2"
+
+dynamics.js@1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/dynamics.js/-/dynamics.js-1.1.5.tgz#b90bdc33605cefe652b8416e701f79bf6eefce32"
+  integrity sha1-uQvcM2Bc7+ZSuEFucB95v27vzjI=
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
