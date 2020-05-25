@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, CssValue, ui } from '../../common';
+import { color, COLORS, css, CssValue, t, ui } from '../../common';
 
 export type IViewerListProps = {
   items: IViewerListItem[];
@@ -22,7 +22,7 @@ export class ViewerList extends React.PureComponent<IViewerListProps, IViewerLis
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: ui.IEnvContext;
+  public context!: ui.IEnvContext<t.FinderEvent>;
 
   /**
    * [Lifecycle]

@@ -29,6 +29,7 @@ export * from './types.schema.uri';
 export * from './types.schema.urls';
 export * from './types.value';
 export * from './types.ui';
+export * from './types.ui.finder';
 
 export * from './types.Client';
 export * from './types.TypeSystem';

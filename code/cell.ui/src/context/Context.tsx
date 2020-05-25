@@ -42,7 +42,7 @@ export type ReactContext = React.ContextType<typeof Context>;
  * hierarchy to child components.
  */
 export function createProvider<P = {}>(args: {
-  ctx: t.IEnvContext;
+  ctx: t.IEnvContext<any>;
   props?: P;
 }): React.FunctionComponent {
   const context: t.IEnvContext = {

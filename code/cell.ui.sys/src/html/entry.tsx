@@ -3,7 +3,9 @@ import { Client, Uri, Schema, t } from '../common';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Root } from '../components/Root';
+import { reset } from '@platform/css';
 
+reset();
 const win = (window as unknown) as t.ITopWindow;
 const env = win.env;
 

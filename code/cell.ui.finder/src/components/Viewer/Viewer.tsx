@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, CssValue, Schema, ui } from '../../common';
+import { color, COLORS, css, CssValue, Schema, t, ui } from '../../common';
 import { ViewerInfo } from './Viewer.Info';
 import { IViewerListItem, ViewerItemClickEvent, ViewerList } from './Viewer.List';
 
@@ -24,7 +24,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: ui.IEnvContext;
+  public context!: ui.IEnvContext<t.FinderEvent>;
 
   /**
    * [Lifecycle]

@@ -1,9 +1,9 @@
+import { TreeView } from '@platform/ui.tree';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { color, ui, css, CssValue, t } from '../../common';
 
-import { TreeView } from '@platform/ui.tree';
+import { color, css, CssValue, t, ui } from '../../common';
 import { Icons } from '../Icons';
 
 export type ITree = {
@@ -14,19 +14,24 @@ export type ITree = {
 
 export type ITreeShellProps = {
   tree?: ITree;
+  tree$?: Subject<t.TreeViewEvent>;
+  body?: React.ReactNode;
   style?: CssValue;
 };
 
-export type ITreeShellState = {};
+export type ITreeShellState = {
+  view?: React.ReactNode;
+};
 
 export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellState> {
+  public static events = TreeView.events;
   public state: ITreeShellState = {};
   private state$ = new Subject<Partial<ITreeShellState>>();
   private unmounted$ = new Subject<{}>();
-  private events$ = new Subject<t.TreeViewEvent>();
+  private tree$ = this.props.tree$ || new Subject<t.TreeViewEvent>();
 
   public static contextType = ui.Context;
-  public context!: ui.IEnvContext;
+  public context!: ui.IEnvContext<t.FinderEvent>;
 
   /**
    * [Lifecycle]
@@ -38,13 +43,8 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
   public componentDidMount() {
     // Setup initial conditions.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    const tree = TreeView.events(this.events$.pipe(takeUntil(this.unmounted$)));
+    // const tree = TreeView.events(this.tree$.pipe(takeUntil(this.unmounted$)));
 
-    // Mouse.
-    const left = tree.mouse({ button: 'LEFT' });
-    left.click.all$.subscribe((e) => {
-      console.log('LEFT/CLICK', e);
-    });
   }
 
   public componentWillUnmount() {
@@ -61,6 +61,7 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
     return { root, current, theme };
   }
 
+
   /**
    * [Render]
    */
@@ -69,6 +70,7 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
       base: css({
         position: 'relative',
         Flex: 'horizontal-stretch-stretch',
+        boxSizing: 'border-box',
       }),
       left: css({
         position: 'relative',
@@ -77,8 +79,9 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
         borderRight: `solid 1px ${color.format(-0.15)}`,
       }),
       right: css({
+        position: 'relative',
         flex: 1,
-        padding: 30,
+        display: 'flex',
       }),
     };
 
@@ -95,11 +98,11 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
             renderIcon={this.renderIcon}
             renderPanel={this.renderPanel}
             renderNodeBody={this.renderNodeBody}
-            events$={this.events$}
+            events$={this.tree$}
             tabIndex={0}
           />
         </div>
-        <div {...styles.right}>TreeShell</div>
+        <div {...styles.right}>{this.props.body}</div>
       </div>
     );
   }

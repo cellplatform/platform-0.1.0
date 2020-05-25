@@ -16,7 +16,8 @@ import { t } from '../common';
  * See:
  *    https://reactjs.org/docs/context.html
  */
-export type IEnvContext = {
-  env: t.IEnv;
+export type IEnvContext<E = t.EnvEvent> = {
+  env: t.IEnv<E>;
   client: t.IClientTypesystem;
+  dispatch(e: E): void;
 };
