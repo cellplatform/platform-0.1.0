@@ -478,6 +478,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
       const props = node.props || {};
       const children = tree.children(node);
       if (onMouse) {
+        e.cancel(); // NB: Cancelling the mouse event prevent bubbling up, where a child node causes the parent node to also fire.
         onMouse({ ...e, id: node.id, target, node, props, children });
       }
     });

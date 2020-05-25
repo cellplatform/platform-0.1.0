@@ -15,8 +15,8 @@ import {
   constants,
   containsFocus,
   css,
-  defaultValue,
   CssValue,
+  defaultValue,
   ITreeNode,
   R,
   t,
@@ -27,9 +27,7 @@ import {
 import { TreeEvents } from '../../events';
 import * as themes from '../../themes';
 import { IStackPanel, StackPanel, StackPanelSlideEvent } from '../primitives';
-import { TextInput } from '../Text';
 import { TreeHeader } from '../TreeHeader';
-import { TreeNode } from '../TreeNode';
 import { TreeNodeList } from '../TreeNodeList';
 
 export { TreeNodeMouseEvent, TreeNodeMouseEventHandler };
@@ -256,38 +254,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
           onSlide={this.handleSlide}
           duration={this.props.slideDuration}
         />
-        {this.TEMP()}
       </div>
-    );
-  }
-
-  private TEMP() {
-    // const elementId = TreeNode.elementId('root.1', this.props.id);
-    const rect = TreeNode.bounds({
-      nodeId: 'root.1',
-      treeId: this.props.id,
-      relativeTo: this.el,
-      target: 'LABEL',
-    });
-
-    // console.log('rect', rect);
-
-    if (!rect) {
-      return;
-    }
-
-    const styles = {
-      base: css({
-        Absolute: [rect.top, null, null, rect.left],
-        width: rect.width,
-        height: rect.height,
-        zIndex: 999,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-      }),
-    };
-
-    return (
-      <TextInput key={`input-${'TEMP'}`} value={'foo'} focusAction={'SELECT'} style={styles.base} />
     );
   }
 
@@ -395,7 +362,6 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
           return;
       }
     }
-
     this.fire({ type: 'TREEVIEW/mouse', payload });
   };
 

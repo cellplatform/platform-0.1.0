@@ -209,12 +209,19 @@ export class Test extends React.PureComponent<{}, ITestState> {
         fontSize: 11,
       }),
     };
+
+    const onClick = (e: React.MouseEvent) => {
+      log.info('CUSTOM click handler (propogation stopped)');
+      e.stopPropagation();
+    };
+
     return (
       <div {...styles.base}>
-        <div>{e.body}</div>
+        <div>
+          <span>{e.body}</span> <Button onClick={onClick}>Click</Button>
+        </div>
       </div>
     );
-    return null;
   };
 
   private renderPanel: t.RenderTreePanel<t.ITreeNode> = (e) => {
