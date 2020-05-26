@@ -44,7 +44,6 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
     // Setup initial conditions.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     // const tree = TreeView.events(this.tree$.pipe(takeUntil(this.unmounted$)));
-
   }
 
   public componentWillUnmount() {
@@ -60,7 +59,6 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
     const { root, current, theme = 'LIGHT' } = this.props.tree || {};
     return { root, current, theme };
   }
-
 
   /**
    * [Render]

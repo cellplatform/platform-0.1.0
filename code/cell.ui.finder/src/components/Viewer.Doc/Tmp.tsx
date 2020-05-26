@@ -85,7 +85,7 @@ export class Tmp extends React.PureComponent<ITmpProps, ITmpState> {
         </div>
         <div {...styles.content}>
           <div {...styles.header}>
-            <Icons.Video color={color.format(1)} size={64} />
+            {/* <Icons.Video color={color.format(1)} size={64} /> */}
             {this.renderVideo()}
           </div>
           <div {...styles.body}>{this.renderBody()}</div>

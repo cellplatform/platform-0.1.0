@@ -894,7 +894,7 @@
     excel-formula-tokenizer "2.3.1"
     toposort "2.0.2"
 
-"@platform/cell.schema@0.4.108":
+"@platform/cell.schema@0.4.108", "@platform/cell.schema@^0.4.108":
   version "0.4.108"
   resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.108.tgz#c16cef904b8200265b7f72b1866972a3141c81a0"
   integrity sha512-cHk/cjxTMpldOpSPcMwLVtkDZecyX/7Fb1kL9X3Yxz4EmEGEIKMZ8Z2Jx0UtHz2enK4DwPP0jhKA2UuemxAYTg==
