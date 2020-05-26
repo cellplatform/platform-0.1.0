@@ -59,16 +59,16 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.file@^1.3.69":
-  version "1.3.69"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.file/-/fsdb.file-1.3.69.tgz#ad3cdaa00d69d214b36c3b19dbbc5763697e6990"
-  integrity sha512-d5+GeY3qTlGYzmt/SrfBP5aywIK6vxJauW46LxezRPIIXgMiQVnSiHw8920yApVgD/6avcKtTtyEqSgo+DRqMg==
+"@platform/fsdb.file@^1.3.70":
+  version "1.3.70"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.file/-/fsdb.file-1.3.70.tgz#ca6669987ed5343a1efc53fcb60ee75d3a9fb63a"
+  integrity sha512-CkweJwMifN3vU4bh7JSwQDiyXQGy0kb+htWFkgPHhbtULKu5gdWcdoL3wCNlJUMP3Sc+tKnHlUIkGjAT2wcnFA==
   dependencies:
     "@platform/fs" "0.5.17"
     "@platform/fsdb.types" "0.6.26"
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"
-    "@platform/util.value" "0.7.22"
+    "@platform/util.value" "0.7.23"
 
 "@platform/fsdb.types@0.6.26":
   version "0.6.26"
@@ -139,10 +139,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.125.tgz#6ca5a12bf65d6da912fefa0a84f2f88c361a9627"
   integrity sha512-deanoMegbs+RmERHllpwUw1SoDSVI0VSwMLhOElWbHubbf4IrymZu5PoAYL9w5LFE5CQY+Yyr0HaMGTvJQR4Zg==
 
-"@platform/util.value@0.7.22":
-  version "0.7.22"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.22.tgz#0d5d30be8f874785ca68e4127288fc55d4a4bd34"
-  integrity sha512-8/xXwWXxdcc2URrZLdnJ0yX7E/amZAIhlc4e5JbpNvkdiWCPlWUlDiFrLCjWvgwnbtXJyDWvtpEla8xoKVzPtA==
+"@platform/util.value@0.7.23":
+  version "0.7.23"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.23.tgz#8081706b77294862f97ee9ff79dcadb3069f310c"
+  integrity sha512-UPbHM43QQZNQCKkRXPy0f+g44/eb2OViJubns7R6DWWEcBPvB1OWI4IqhfJCo9STP4Rux7Z964Y8zS8aFOHGKw==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"

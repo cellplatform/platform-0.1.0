@@ -58,17 +58,17 @@
     "@platform/log" "0.1.25"
     inquirer "7.1.0"
 
-"@platform/cli@0.5.37":
-  version "0.5.37"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.37.tgz#726f5992044f35591cf9a211cdd2d784c9c2863b"
-  integrity sha512-u1NjpyCp5yY6v5A9FoKuuamutEfklQ+c4JACyZ34BC03s/8+lo9KhQlC9bV2Cz4seEGb+oepSzdhSI5pn9dzVQ==
+"@platform/cli@0.5.38":
+  version "0.5.38"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.38.tgz#74d32dda92a93eac9b42e151fc73f85a047d31be"
+  integrity sha512-6WKClrPxSkumTB4MCh1mbF2w+zDlXrYegPihOQbEczbszYQ1VKyJxR2UOzsjQfF2lp+PGsk836znShSSN0H+9g==
   dependencies:
     "@platform/cli.prompt" "0.3.20"
     "@platform/exec" "0.2.59"
     "@platform/fs" "0.5.17"
     "@platform/libs" "0.2.2"
     "@platform/log" "0.1.25"
-    "@platform/util.value" "0.7.22"
+    "@platform/util.value" "0.7.23"
     "@types/inquirer" "6.5.0"
     "@types/yargs" "15.0.5"
     inquirer "7.1.0"
@@ -151,17 +151,17 @@
     chalk "4.0.0"
     cli-table "0.3.1"
 
-"@platform/npm@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.3.0.tgz#ed2ece3fbfd4a7f5341dc33ef62631efe19c4189"
-  integrity sha512-XHSVLSMnTUpRDN6BMe0v8R0bVMBNh3bJ//S+202AQSjkt4kuwBvRLR1cX3JqP9Cm6E13oYhBX9WW2cwR6u6DFg==
+"@platform/npm@0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.3.1.tgz#dfd2493aa4a2a03c46f80fd4e61c6799f85883b2"
+  integrity sha512-3+d5JXIhtBUY9VLEQ/2TctT4GOBpb7hFDDu85wXYhS/AlKIDVoR+DAfcgIiDt/860TCZPlZmPbrgUdO/2njqXQ==
   dependencies:
     "@platform/cli.prompt" "0.3.20"
     "@platform/exec" "0.2.59"
     "@platform/fs" "0.5.17"
     "@platform/log" "0.1.25"
     "@platform/types" "0.4.22"
-    "@platform/util.value" "0.7.22"
+    "@platform/util.value" "0.7.23"
     "@types/semver" "7.2.0"
     inquirer "7.1.0"
     semver "7.3.2"
@@ -177,14 +177,14 @@
     findup-sync "4.0.0"
     mocha "7.1.2"
 
-"@platform/tmpl@0.1.27":
-  version "0.1.27"
-  resolved "https://registry.yarnpkg.com/@platform/tmpl/-/tmpl-0.1.27.tgz#00a32a49b79da7a2d5039974f510a32476a1b21e"
-  integrity sha512-Fdp14rkSCDbdzDzBpLn4+vj6SjpBcsAxLtRRjJIGbVliciG+yMFH6EjWt0UwJTnXl6O7nCgGvkgSnJod5xaa+w==
+"@platform/tmpl@0.1.28":
+  version "0.1.28"
+  resolved "https://registry.yarnpkg.com/@platform/tmpl/-/tmpl-0.1.28.tgz#5c7cc608f33ed99a241b6d4879b29233cd5d0b20"
+  integrity sha512-vZPmgC7b3Ppm53RMLR2/MYT8gE3oimgwrZvdNSjP5aT+4APdYSgoailu6giMSd1ThhVfw9EKBhNKpG/RpTj5ZQ==
   dependencies:
-    "@platform/cli" "0.5.37"
+    "@platform/cli" "0.5.38"
     "@platform/fs" "0.5.17"
-    "@platform/npm" "0.3.0"
+    "@platform/npm" "0.3.1"
     "@types/inquirer" "6.5.0"
     inquirer "7.1.0"
     isbinaryfile "4.0.6"
@@ -237,10 +237,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.125.tgz#6ca5a12bf65d6da912fefa0a84f2f88c361a9627"
   integrity sha512-deanoMegbs+RmERHllpwUw1SoDSVI0VSwMLhOElWbHubbf4IrymZu5PoAYL9w5LFE5CQY+Yyr0HaMGTvJQR4Zg==
 
-"@platform/util.value@0.7.22":
-  version "0.7.22"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.22.tgz#0d5d30be8f874785ca68e4127288fc55d4a4bd34"
-  integrity sha512-8/xXwWXxdcc2URrZLdnJ0yX7E/amZAIhlc4e5JbpNvkdiWCPlWUlDiFrLCjWvgwnbtXJyDWvtpEla8xoKVzPtA==
+"@platform/util.value@0.7.23":
+  version "0.7.23"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.23.tgz#8081706b77294862f97ee9ff79dcadb3069f310c"
+  integrity sha512-UPbHM43QQZNQCKkRXPy0f+g44/eb2OViJubns7R6DWWEcBPvB1OWI4IqhfJCo9STP4Rux7Z964Y8zS8aFOHGKw==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"

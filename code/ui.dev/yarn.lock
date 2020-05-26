@@ -859,14 +859,14 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/css@0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.0.tgz#1b9ee9e66133547919bfc8397c9b6dedd3b96a0c"
-  integrity sha512-rzj0XxU0Jjy/rDESE96gbcbBF6TGiraGbn4r7OpGzghkUBuvJIfs2npyiW4wlcPTB+TnuiWu84S5Wz/5tn3xxQ==
+"@platform/css@0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.1.tgz#ddbc7b268266ce38465171654fa54b925f30d60a"
+  integrity sha512-D5L9eMQ+QD0jQimqYTh6XpL9hvEWoNoq2IJMFSAAcE3mohy1aqjO5Gjgr89lJM8qTd4QHGTcMOkxwqtLSLJOZQ==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/util.is" "0.0.125"
-    "@platform/util.value" "0.7.22"
+    "@platform/util.value" "0.7.23"
     "@types/tinycolor2" "1.4.2"
     glamor-jss "1.4.1"
     jss-plugin-global "10.1.1"
@@ -883,7 +883,7 @@
     chalk "4.0.0"
     listr "0.14.3"
 
-"@platform/fs.types@0.0.12", "@platform/fs.types@^0.0.12":
+"@platform/fs.types@0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@platform/fs.types/-/fs.types-0.0.12.tgz#96ef1d248eba11faca4f3a717db10b05dd9565f5"
   integrity sha512-qfaj6XcLXxsQ2OvMFilv0bBQ1qQCEyq/1qDLBTRNWzevj3Wv+QSleAm78CoRmkUkeEY4PM/0UAxmOwy7b3lqRA==
@@ -932,12 +932,12 @@
     core-js "3.6.4"
     regenerator-runtime "0.13.3"
 
-"@platform/react@0.4.28":
-  version "0.4.28"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.28.tgz#dbb9ae90e3e96651b9c9cc8d2efdf549e34800d1"
-  integrity sha512-2v6oP0uz4t7NlIliM2207MZpeN9yoRKP9MKaQThGAGj8qgrH7mD68PV8UqXeQhoLxsd0QjPRQlw3AFNPYO+Lwg==
+"@platform/react@0.4.30":
+  version "0.4.30"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.30.tgz#d21c225ed8f074187db65193998f20fa5bd29ff5"
+  integrity sha512-Jg+++ITCh1OFtJISn69RwkGyM4M3VUAnyPsiQXsTT/sUquyn3b4Aj9TFri7fFXVdeN0T3WW6On5ivcUHQpdA+Q==
   dependencies:
-    "@platform/css" "0.4.0"
+    "@platform/css" "0.4.1"
     "@platform/util.is" "0.0.125"
     react "16.13.1"
     react-dom "16.13.1"
@@ -983,17 +983,17 @@
     "@platform/libs" "0.2.2"
     "@platform/ts.libs" "3.9.7"
 
-"@platform/types@0.4.22", "@platform/types@^0.4.22":
+"@platform/types@0.4.22":
   version "0.4.22"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.22.tgz#a0a3f350be37bfbf99069085fc561b9edd1038e5"
   integrity sha512-mGp7mPDwioauf/6u7uJrjfkEuuGoV5tta/2uGSkVoRcelsb3X1IqIxKQEuM8Fpi5E3GT12PjBw224pWbkeZCFg==
 
-"@platform/ui.object@0.0.201":
-  version "0.0.201"
-  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.201.tgz#a6c514676b336d8a0b9672acf26fe6aa6cf245b6"
-  integrity sha512-aeMTfHzXVLzE0UAXi8VloFyOPnefLshJHW4vGoLnKdbbHHI11d5L9n2UN7CRENhAV/yBS36flYwXse/9+1AOhg==
+"@platform/ui.object@0.0.203":
+  version "0.0.203"
+  resolved "https://registry.yarnpkg.com/@platform/ui.object/-/ui.object-0.0.203.tgz#7e30a4795c8ad507b2b8f99074a94af050ef344e"
+  integrity sha512-KL1hRupMpi7idBU8YD/j4BJQXJ6djKNjxu5cC1Qn9kmumlyBG9XJM51lIY3WeppyWT3AOy/F6LUH6j0JpbmNAQ==
   dependencies:
-    "@platform/react" "0.4.28"
+    "@platform/react" "0.4.30"
     react-inspector "5.0.1"
 
 "@platform/util.is@0.0.125":
@@ -1001,10 +1001,10 @@
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.125.tgz#6ca5a12bf65d6da912fefa0a84f2f88c361a9627"
   integrity sha512-deanoMegbs+RmERHllpwUw1SoDSVI0VSwMLhOElWbHubbf4IrymZu5PoAYL9w5LFE5CQY+Yyr0HaMGTvJQR4Zg==
 
-"@platform/util.value@0.7.22":
-  version "0.7.22"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.22.tgz#0d5d30be8f874785ca68e4127288fc55d4a4bd34"
-  integrity sha512-8/xXwWXxdcc2URrZLdnJ0yX7E/amZAIhlc4e5JbpNvkdiWCPlWUlDiFrLCjWvgwnbtXJyDWvtpEla8xoKVzPtA==
+"@platform/util.value@0.7.23":
+  version "0.7.23"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.23.tgz#8081706b77294862f97ee9ff79dcadb3069f310c"
+  integrity sha512-UPbHM43QQZNQCKkRXPy0f+g44/eb2OViJubns7R6DWWEcBPvB1OWI4IqhfJCo9STP4Rux7Z964Y8zS8aFOHGKw==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"

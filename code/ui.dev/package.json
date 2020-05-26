@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.dev",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "UI development helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,13 +13,13 @@
     "clean": "rm -rf .cache dist"
   },
   "dependencies": {
-    "@platform/css": "0.4.0",
+    "@platform/css": "0.4.1",
     "@platform/libs": "0.2.2",
     "@platform/log": "0.1.25",
     "@platform/polyfill": "0.0.1",
-    "@platform/react": "0.4.28",
-    "@platform/ui.object": "0.0.201",
-    "@platform/util.value": "0.7.22",
+    "@platform/react": "0.4.30",
+    "@platform/ui.object": "0.0.203",
+    "@platform/util.value": "0.7.23",
     "parcel-bundler": "1.12.4"
   },
   "devDependencies": {
