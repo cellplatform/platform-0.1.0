@@ -13,7 +13,7 @@
     "build": "ts build",
     "prepare": "ts prepare",
     "pv": "ts-node -T scripts.ts/prompt-version.ts",
-    "tmp": "ts-node -T scripts.ts/save-package.ts"
+    "tmp": "ts-node -T scripts.ts/save.ts"
   },
   "dependencies": {
     "@platform/cli.prompt": "0.3.20",
@@ -35,7 +35,6 @@
   },
   "files": [
     "lib",
-    "scripts.ts",
     "!lib/test",
     "!*.TEST.{js, mjs, d.ts}",
     "!*.INTEGRATION.{js, mjs, d.ts}"

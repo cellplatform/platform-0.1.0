@@ -7,14 +7,14 @@ import { INpmPackageJson } from '@platform/types';
  */
 export async function savePackage(args: {
   fs: IFs;
-  source: string;
+  source?: string;
   target: string;
   fields?: (keyof INpmPackageJson)[];
   const?: string;
 }) {
   const { fs, fields = ['name', 'version'] } = args;
 
-  const source = fs.resolve(args.source);
+  const source = fs.resolve(args.source || 'package.json');
   const target = fs.resolve(args.target);
 
   // Load the source JSON.

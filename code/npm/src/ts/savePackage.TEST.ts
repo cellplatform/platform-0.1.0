@@ -11,8 +11,19 @@ const loadTarget = async () => (await fs.readFile(fs.resolve(target))).toString(
 describe('ts/savePackage', () => {
   afterEach(async () => fs.remove(fs.resolve(target)));
 
-  it('saves name/version (all fields)', async () => {
+  it('saves name/version', async () => {
     await savePackage({ fs, source: 'package.json', target });
+    const res = await loadTarget();
+
+    expect(res).to.include(`name: '@platform/npm',`);
+    expect(res).to.include(`version: '${PKG.version}',`);
+
+    expect(res).to.not.include(`scripts:`);
+    expect(res).to.not.include(`dependencies:`); // etc.
+  });
+
+  it('saves (default source)', async () => {
+    await savePackage({ fs, target });
     const res = await loadTarget();
 
     expect(res).to.include(`name: '@platform/npm',`);
