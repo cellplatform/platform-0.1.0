@@ -883,7 +883,7 @@
     chalk "4.0.0"
     listr "0.14.3"
 
-"@platform/fs.types@0.0.12":
+"@platform/fs.types@0.0.12", "@platform/fs.types@^0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@platform/fs.types/-/fs.types-0.0.12.tgz#96ef1d248eba11faca4f3a717db10b05dd9565f5"
   integrity sha512-qfaj6XcLXxsQ2OvMFilv0bBQ1qQCEyq/1qDLBTRNWzevj3Wv+QSleAm78CoRmkUkeEY4PM/0UAxmOwy7b3lqRA==
@@ -983,7 +983,7 @@
     "@platform/libs" "0.2.2"
     "@platform/ts.libs" "3.9.7"
 
-"@platform/types@0.4.22":
+"@platform/types@0.4.22", "@platform/types@^0.4.22":
   version "0.4.22"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.22.tgz#a0a3f350be37bfbf99069085fc561b9edd1038e5"
   integrity sha512-mGp7mPDwioauf/6u7uJrjfkEuuGoV5tta/2uGSkVoRcelsb3X1IqIxKQEuM8Fpi5E3GT12PjBw224pWbkeZCFg==
