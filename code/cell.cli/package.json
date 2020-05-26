@@ -26,6 +26,7 @@
     "@platform/cli.prompt": "0.3.20"
   },
   "devDependencies": {
+    "@platform/npm": "0.2.72",
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3"
   },

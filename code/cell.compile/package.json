@@ -15,7 +15,8 @@
     "@platform/cli": "0.5.37",
     "@platform/libs": "0.2.2"
   },
-  "devDependencies": {
+  "devDependencies": {    
+    "@platform/npm": "0.2.72",
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3"
   },
