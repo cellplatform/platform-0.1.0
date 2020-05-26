@@ -30,7 +30,7 @@
   "devDependencies": {
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
-    "parcel-bundler": "1.12.4"
+    "@platform/ui.dev": "0.0.6"
   },
   "files": [
     "lib",

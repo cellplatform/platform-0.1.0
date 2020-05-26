@@ -7,7 +7,7 @@ import { view } from './behavior.view';
  * - Move into controller
  */
 
-export function behavior(ctx: t.IFinderContext) {
+export function init(ctx: t.IFinderContext) {
   tree(ctx);
   view(ctx);
 
