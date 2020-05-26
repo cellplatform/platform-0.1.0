@@ -15,6 +15,7 @@ import { t } from '../common';
  *
  * See:
  *    https://reactjs.org/docs/context.html
+ *
  */
 export type IEnvContext<E = t.EnvEvent> = {
   env: t.IEnv<E>;
