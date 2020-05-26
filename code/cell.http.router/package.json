@@ -11,8 +11,8 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare && rm -rf tmp",
-    "clean": "cd test.browser && yarn clean"
+    "clean": "cd test.browser && yarn clean",
+    "prepare": "ts-node -T scripts.ts/prepare && ts prepare && rm -rf tmp"
   },
   "dependencies": {
     "@platform/cache": "0.2.31",
@@ -37,6 +37,7 @@
     "@platform/fs": "0.5.17",
     "@platform/fsdb.nedb": "^1.3.115",
     "@platform/micro": "0.14.35",
+    "@platform/npm": "0.3.0",
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
     "@types/cheerio": "0.22.18",

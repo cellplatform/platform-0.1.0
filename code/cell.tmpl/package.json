@@ -10,8 +10,8 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare",
-    "clean": "sh sh/clean.sh"
+    "clean": "sh sh/clean.sh",
+    "prepare": "ts prepare"
   },
   "dependencies": {
     "@platform/cell.types": "0.4.100",
@@ -23,7 +23,6 @@
     "@platform/types": "0.4.22"
   },
   "devDependencies": {
-    "@platform/npm": "0.3.0",
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3"
   },

@@ -14,7 +14,7 @@ export class MyScreen extends React.PureComponent<IMyScreenProps, IMyScreenState
   private unmounted$ = new Subject<{}>();
 
   public static contextType = cell.Context;
-  public context!: t.ICellContext;
+  public context!: t.IEnvContext;
 
   /**
    * [Lifecycle]
@@ -24,7 +24,7 @@ export class MyScreen extends React.PureComponent<IMyScreenProps, IMyScreenState
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {
@@ -61,13 +61,13 @@ export class MyScreen extends React.PureComponent<IMyScreenProps, IMyScreenState
     };
 
     const context = this.context;
-    const cellKey = context.uri;
+    // const cellKey = context.uri;
 
     return (
       <div {...styles.base}>
         <div {...styles.title}>
-          <div {...styles.cell}>{cellKey}</div>
-          <div>type: "MyScreen"</div>
+          {/* <div {...styles.cell}>{cellKey}</div> */}
+          <div>type: MyScreen</div>
         </div>
         <ObjectView name={'context (env)'} data={context} />
       </div>

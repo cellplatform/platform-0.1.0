@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import * as compile from './cmd.compile';
-import { cli } from './common';
+import { cli, constants } from './common';
 const log = cli.log;
 
 /**
@@ -9,7 +9,7 @@ const log = cli.log;
  * ignoring them. In the future, promise rejections that are not handled will
  * terminate the Node.js process with a non-zero exit code.
  */
-process.on('unhandledRejection', err => {
+process.on('unhandledRejection', (err) => {
   throw err;
 });
 
@@ -20,8 +20,8 @@ const app = cli.create('cell');
 compile.init(app.plugins);
 
 // Log header (meta-data).
-const pkg = require('../../package.json') as { name: string; version: string };
-const header = `${pkg.name}@${pkg.version}`;
+const PKG = constants.PKG;
+const header = `${PKG.name}@${PKG.version}`;
 log.info.gray(`${header}\n${log.magenta('━'.repeat(header.length))}\n`);
 
 /**

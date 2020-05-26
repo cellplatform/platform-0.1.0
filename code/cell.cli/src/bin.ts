@@ -2,7 +2,7 @@
 
 import * as fsSync from '@platform/cell.fs.sync/lib/cli';
 import * as tmpl from '@platform/cell.tmpl/lib/cli';
-import { cli } from './common';
+import { cli, constants } from './common';
 
 const log = cli.log;
 
@@ -16,8 +16,8 @@ fsSync.init(app.plugins);
 tmpl.init(app.plugins);
 
 // Log header (meta-data).
-const pkg = require('../package.json') as { name: string; version: string };
-const header = `${pkg.name}@${pkg.version}`;
+const PKG = constants.PKG;
+const header = `${PKG.name}@${PKG.version}`;
 log.info.gray(`${header}\n${log.cyan('━'.repeat(header.length))}\n`);
 
 /**

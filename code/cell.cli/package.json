@@ -14,8 +14,8 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare",
-    "clean": "rm -rf tmp"
+    "clean": "rm -rf tmp",
+    "prepare": "ts-node -T scripts.ts/prepare && ts prepare"
   },
   "dependencies": {
     "@platform/cell.fs.sync": "0.3.136",

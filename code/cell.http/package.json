@@ -17,9 +17,9 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare && rm -rf tmp",
     "reset": "ts-node -T scripts/reset",
-    "deploy": "yarn cell deploy $@"
+    "deploy": "yarn cell deploy $@",
+    "prepare": "ts-node -T scripts.ts/prepare && ts prepare && rm -rf tmp"
   },
   "dependencies": {
     "@platform/cell.http.router": "0.7.78",
@@ -44,9 +44,7 @@
     "lib",
     "static",
     "!lib/test",
-    "!lib/tests",
     "!*.TEST.{js, mjs, d.ts}",
-    "!*.INTEGRATION.{js, mjs, d.ts}",
     "src.tmpl",
     "!src.tmpl/node_modules",
     "!src.tmpl/tmp"

@@ -1,4 +1,3 @@
-import * as t from './types';
 import { fs } from './libs';
 
 export { ERROR } from '@platform/cell.schema';
@@ -12,8 +11,9 @@ export const PATH = {
 /**
  * Versions (from PACKAGE.json)
  */
-export const PKG = require('../../package.json') as t.INpmPackageJson;
-const DEPS = PKG.dependencies || {};
+import { PKG } from './constants.pkg';
+export { PKG };
+const DEPS = PKG.dependencies;
 
 const toVersion = (input: string) => (input || '').split('@')[2];
 export function getSystem() {
@@ -30,7 +30,7 @@ export function getSystem() {
 export function getVersions() {
   const depVersion = (key: string, version?: string) => {
     version = version || DEPS[key] || '-';
-    version = version.replace(/^\^/, '').replace(/^\~/, '');
+    version = (version || '').replace(/^\^/, '').replace(/^\~/, '');
     return `${key}@${version}`;
   };
 

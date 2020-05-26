@@ -1,7 +1,6 @@
 import '@platform/polyfill';
 
 import { Client } from '@platform/cell.client';
-import { css, CssValue } from '@platform/react';
 import { queryString } from '@platform/util.string';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -11,6 +10,9 @@ import { takeUntil } from 'rxjs/operators';
 import { t } from '../common';
 import { ISampleData, TestGrid } from '../components/Test.Grid';
 
+import { Uri } from '@platform/cell.schema';
+Uri.ALLOW.NS = ['foo*'];
+
 const parseClient = (href: string) => {
   const query = queryString.toObject<{ def: string }>(href);
   const parts = (query.def || '').split('ns:');
@@ -19,12 +21,12 @@ const parseClient = (href: string) => {
   const ns = parts[1];
 
   const def = ns ? `ns:${ns}` : '';
-  const client = def ? Client.create(host) : undefined;
+  const client = def ? Client.http(host) : undefined;
 
   return { host, def, client, href, query };
 };
 
-const loadFromClient = async (client: t.IClient, ns: string): Promise<ISampleData> => {
+const loadFromClient = async (client: t.IHttpClient, ns: string): Promise<ISampleData> => {
   const res = await client.ns(ns).read({ data: true });
   const data = res.body.data as t.IGridData;
   const cells = data.cells || {};
@@ -32,7 +34,7 @@ const loadFromClient = async (client: t.IClient, ns: string): Promise<ISampleDat
   const rows = data.rows || {};
 
   // HACK: boolean not rendering in cell yet
-  Object.keys(cells).forEach(key => {
+  Object.keys(cells).forEach((key) => {
     const cell = cells[key];
     if (typeof cell?.value === 'boolean') {
       cell.value = cell.value.toString();
@@ -53,7 +55,7 @@ export class Page extends React.PureComponent<IPageProps, IPageState> {
   private unmounted$ = new Subject<{}>();
 
   private def: string;
-  private client: t.IClient | undefined;
+  private client: t.IHttpClient | undefined;
 
   private testGrid!: TestGrid;
   private testGridRef = (ref: TestGrid) => (this.testGrid = ref);
@@ -70,7 +72,7 @@ export class Page extends React.PureComponent<IPageProps, IPageState> {
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.load();
   }
 
