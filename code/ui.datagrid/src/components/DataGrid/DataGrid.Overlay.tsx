@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { css, CssValue, t, util, constants, createProvider, R } from '../common';
+
+import { constants, css, CssValue, R, t, util } from '../common';
 
 const CSS = constants.CSS;
 
@@ -109,15 +110,12 @@ export class DataGridOverlay extends React.PureComponent<
     return this.props.grid.data.cells[key] || {};
   }
 
-  public show(args: { key: string; screen: t.ICellScreenView }) {
-    const { key, screen } = args;
-    const cell = this.getData(key);
-
-    let Provider: React.FunctionComponent | undefined;
-    if (cell) {
-      const ctx: t.ICellContext = { uri: key, cell };
-      Provider = createProvider({ ctx });
-    }
+  public show(args: {
+    key: string;
+    screen: t.ICellScreenView;
+    Provider?: React.FunctionComponent;
+  }) {
+    const { key, screen, Provider } = args;
     this.state$.next({ key, screen, Provider });
   }
 

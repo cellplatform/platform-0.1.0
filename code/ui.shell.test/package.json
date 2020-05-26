@@ -1,6 +1,6 @@
 {
   "name": "ui.shell.test",
-  "version": "0.1.263",
+  "version": "0.1.265",
   "description": "Test module for ui.shell (and associated modules).",
   "scripts": {
     "ssr": "cd src.server && yarn ssr $@",
@@ -20,7 +20,7 @@
   "dependencies": {
     "@platform/react": "0.4.28",
     "@platform/ui.button": "0.3.61",
-    "@platform/ui.datagrid": "0.7.238",
+    "@platform/ui.datagrid": "0.7.240",
     "@platform/ui.icon": "0.0.145",
     "@platform/ui.loader": "0.2.61",
     "@platform/ui.shell": "0.2.63",

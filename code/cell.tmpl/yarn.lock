@@ -33,10 +33,10 @@
   dependencies:
     "@platform/libs" "0.2.2"
 
-"@platform/cell.types@0.4.99":
-  version "0.4.99"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.99.tgz#6b500b442d0b3c881fbc5eba59f073006792233b"
-  integrity sha512-R6cgArRK5jcV+VF2uHRUC7hCaGU0FfdrtLfgNk3xh/eQtDkFDWMdAsf+7l50fXmtN2alE8uTT4U94rpakkiLVQ==
+"@platform/cell.types@0.4.100":
+  version "0.4.100"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.100.tgz#34a632648f5b2476e94b3b06a3b0ec5d9f5a4589"
+  integrity sha512-eRkdWxSrW61ylVVB1kwidtjkDUcNmXB2arzWtxTVe6DUlZ+7qifWIUo70A/dXjmNMuIXETRoTguuHO1iPtb0Yw==
   dependencies:
     "@platform/cache" "0.2.31"
     "@platform/fs.s3.types" "0.2.9"
@@ -151,10 +151,10 @@
     chalk "4.0.0"
     cli-table "0.3.1"
 
-"@platform/npm@0.2.72":
-  version "0.2.72"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.72.tgz#a2e2f82a1c16e0baede368b01fb5e08b247a5db8"
-  integrity sha512-YAUcewOnsFNZ0FHbaArGxVEziNoy7xSWhdMLObaveDIVciHmxmzvwat3UyFdm5CZADlvFyu18xxt4w/KgNvBqA==
+"@platform/npm@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.3.0.tgz#ed2ece3fbfd4a7f5341dc33ef62631efe19c4189"
+  integrity sha512-XHSVLSMnTUpRDN6BMe0v8R0bVMBNh3bJ//S+202AQSjkt4kuwBvRLR1cX3JqP9Cm6E13oYhBX9WW2cwR6u6DFg==
   dependencies:
     "@platform/cli.prompt" "0.3.20"
     "@platform/exec" "0.2.59"
@@ -177,14 +177,14 @@
     findup-sync "4.0.0"
     mocha "7.1.2"
 
-"@platform/tmpl@0.1.26":
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/@platform/tmpl/-/tmpl-0.1.26.tgz#8295a8940851b165f85fd157efe7620d974c35c0"
-  integrity sha512-YT8hqHVS5TAZjwykLQccYNo4WxkIfhLHrDNVTKzc1eL8+XH6XR2KePxBqpWY80+Z+fPW41QSPzkChH5iYN6ncQ==
+"@platform/tmpl@0.1.27":
+  version "0.1.27"
+  resolved "https://registry.yarnpkg.com/@platform/tmpl/-/tmpl-0.1.27.tgz#00a32a49b79da7a2d5039974f510a32476a1b21e"
+  integrity sha512-Fdp14rkSCDbdzDzBpLn4+vj6SjpBcsAxLtRRjJIGbVliciG+yMFH6EjWt0UwJTnXl6O7nCgGvkgSnJod5xaa+w==
   dependencies:
     "@platform/cli" "0.5.37"
     "@platform/fs" "0.5.17"
-    "@platform/npm" "0.2.72"
+    "@platform/npm" "0.3.0"
     "@types/inquirer" "6.5.0"
     inquirer "7.1.0"
     isbinaryfile "4.0.6"

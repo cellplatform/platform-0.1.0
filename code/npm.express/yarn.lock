@@ -88,10 +88,10 @@
     chalk "4.0.0"
     cli-table "0.3.1"
 
-"@platform/npm@0.2.72":
-  version "0.2.72"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.72.tgz#a2e2f82a1c16e0baede368b01fb5e08b247a5db8"
-  integrity sha512-YAUcewOnsFNZ0FHbaArGxVEziNoy7xSWhdMLObaveDIVciHmxmzvwat3UyFdm5CZADlvFyu18xxt4w/KgNvBqA==
+"@platform/npm@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.3.0.tgz#ed2ece3fbfd4a7f5341dc33ef62631efe19c4189"
+  integrity sha512-XHSVLSMnTUpRDN6BMe0v8R0bVMBNh3bJ//S+202AQSjkt4kuwBvRLR1cX3JqP9Cm6E13oYhBX9WW2cwR6u6DFg==
   dependencies:
     "@platform/cli.prompt" "0.3.20"
     "@platform/exec" "0.2.59"

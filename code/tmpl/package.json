@@ -1,6 +1,6 @@
 {
   "name": "@platform/tmpl",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "description": "Succinct powerful template stamper.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
   "dependencies": {
     "@platform/cli": "0.5.37",
     "@platform/fs": "0.5.17",
-    "@platform/npm": "0.2.72",
+    "@platform/npm": "0.3.0",
     "@types/inquirer": "6.5.0",
     "inquirer": "7.1.0",
     "isbinaryfile": "4.0.6"

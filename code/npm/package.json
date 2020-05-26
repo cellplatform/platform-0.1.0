@@ -1,6 +1,6 @@
 {
   "name": "@platform/npm",
-  "version": "0.2.72",
+  "version": "0.3.0",
   "description": "Helpers for working with NPM.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
