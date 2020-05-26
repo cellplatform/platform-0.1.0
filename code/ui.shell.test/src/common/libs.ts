@@ -1,14 +1,14 @@
-// export { loader } from '@platform/ui.loader';
-export { shell } from '@platform/ui.shell';
+import { shell } from '@platform/ui.shell';
+export { shell };
 
-export { css, color, CssValue, is } from '@platform/react';
-export { time, defaultValue, id, props } from '@platform/util.value';
-export { log } from '@platform/log/lib/client';
+import { css, color, CssValue, is } from '@platform/react';
+export { css, color, CssValue, is };
 
-export { Button } from '@platform/ui.button/lib/components/Button';
+import { time, defaultValue, id, props } from '@platform/util.value';
+export { time, defaultValue, id, props };
 
-/**
- * Ramda
- */
-// import { clone } from 'ramda';
-// export const R = { clone };
+import { log } from '@platform/log/lib/client';
+export { log };
+
+import { Button } from '@platform/ui.button/lib/components/Button';
+export { Button };

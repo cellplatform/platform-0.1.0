@@ -1,4 +1,11 @@
-export { coord } from '@platform/cell.coord';
-export { func } from '@platform/cell.func';
-export { value } from '@platform/cell.value';
-export { Schema, Uri } from '@platform/cell.schema';
+import { coord } from '@platform/cell.coord';
+export { coord };
+
+import { func } from '@platform/cell.func';
+export { func };
+
+import { value } from '@platform/cell.value';
+export { value };
+
+import { Schema, Uri } from '@platform/cell.schema';
+export { Schema, Uri };

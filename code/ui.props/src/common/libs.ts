@@ -1,3 +1,11 @@
-export { R } from './libs.ramda';
-export { css, CssValue, color } from '@platform/react';
-export { value, defaultValue } from '@platform/util.value';
+import { css, CssValue, color } from '@platform/react';
+export { css, CssValue, color };
+
+import { value, defaultValue } from '@platform/util.value';
+export { value, defaultValue };
+
+/**
+ * Ramda
+ */
+import { set, lensPath, equals } from 'ramda';
+export const R = { set, lensPath, equals };

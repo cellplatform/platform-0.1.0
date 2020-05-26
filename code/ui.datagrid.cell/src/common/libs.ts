@@ -1,9 +1,14 @@
 /**
  * Util
  */
-export { css, color, CssValue, events, containsFocus } from '@platform/react';
-export { value, time } from '@platform/util.value';
-export { markdown } from '@platform/util.markdown';
+import { css, color, CssValue, events, containsFocus } from '@platform/react';
+export { css, color, CssValue, events, containsFocus };
+
+import { value, time } from '@platform/util.value';
+export { value, time };
+
+import { markdown } from '@platform/util.markdown';
+export { markdown };
 
 /**
  * Ramda

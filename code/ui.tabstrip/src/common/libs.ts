@@ -1,8 +1,14 @@
 import * as s from 'react-sortable-hoc';
-import { value, time } from '@platform/util.value';
+export { s };
 
-export { s, value, time };
-export { css, color, CssValue, containsFocus, Keyboard, events } from '@platform/react';
-export * from './libs.ramda';
+import { value, time, defaultValue } from '@platform/util.value';
+export { value, time, defaultValue };
 
-export const defaultValue = value.defaultValue;
+import { css, color, CssValue, containsFocus, Keyboard, events } from '@platform/react';
+export { css, color, CssValue, containsFocus, Keyboard, events };
+
+/**
+ * Ramda
+ */
+import { move } from 'ramda';
+export const R = { move };

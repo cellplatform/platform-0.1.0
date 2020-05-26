@@ -1,4 +1,4 @@
-export {
+import {
   CssValue,
   style,
   css,
@@ -8,10 +8,13 @@ export {
   IMouseEvent,
   containsFocus,
 } from '@platform/react';
-export { value, is, defaultValue, time } from '@platform/util.value';
+export { CssValue, style, css, color, MouseEvent, mouse, IMouseEvent, containsFocus };
+
+import { value, is, defaultValue, time } from '@platform/util.value';
+export { value, is, defaultValue, time };
 
 /**
- * [Ramda]
+ * Ramda
  */
 import { clone, equals } from 'ramda';
 export const R = { clone, equals };

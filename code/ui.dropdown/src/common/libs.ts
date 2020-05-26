@@ -1,1 +1,2 @@
-export { css, color, CssValue } from '@platform/react';
+import { css, color, CssValue } from '@platform/react';
+export { css, color, CssValue };

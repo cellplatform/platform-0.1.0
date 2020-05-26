@@ -1,3 +1,7 @@
 export * from '@platform/ui.tree/lib/types';
-export { Observable } from 'rxjs';
-export { IPropChanged } from '@platform/util.value';
+
+import { Observable } from 'rxjs';
+export { Observable };
+
+import { IPropChanged } from '@platform/util.value';
+export { IPropChanged };
