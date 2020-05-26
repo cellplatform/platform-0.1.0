@@ -9,6 +9,6 @@ export const COLORS = constants.COLORS;
  * Libs
  */
 export { Client, Schema, Uri, TypeSystem } from '@platform/cell.client';
-export { css, color, CssValue } from '@platform/react';
+export { css, color, CssValue } from '@platform/css';
 export { value, time, defaultValue } from '@platform/util.value';
 export { ui } from '@platform/cell.ui';

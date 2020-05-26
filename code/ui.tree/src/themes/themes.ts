@@ -1,5 +1,7 @@
-import { color as colorUtil, COLORS } from '../common';
+import { COLORS } from '../common';
 import { ITreeTheme } from './types';
+
+import { color as colorUtil } from '@platform/css';
 
 const color = (value: number) => colorUtil.format(value) as string;
 

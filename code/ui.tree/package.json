@@ -9,8 +9,10 @@
     "test": "ts test",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare",
-    "clean": "rm -rf .cache dist"
+    "bundle": "sh sh/bundle.sh",
+    "clean": "sh sh/clean.sh",
+    "serve": "cd dist && serve",
+    "prepare": "ts prepare"
   },
   "dependencies": {
     "@platform/css": "0.4.1",

@@ -1,4 +1,6 @@
-import { Schema, t, Http, constants, util, Uri } from '../common';
+import { Http } from '@platform/http/lib/http/Http';
+
+import { Schema, t, constants, util, Uri } from '../common';
 import { HttpClientCell } from './HttpClientCell';
 import { HttpClientFile } from './HttpClientFile';
 import { HttpClientNs } from './HttpClientNs';

@@ -1,2 +1,5 @@
-export { value, time, id } from '@platform/util.value';
-export { Mime } from '@platform/util.mimetype';
+import { value, time, id } from '@platform/util.value';
+export { value, time, id };
+
+import { Mime } from '@platform/util.mimetype';
+export { Mime };

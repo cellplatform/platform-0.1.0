@@ -12,7 +12,7 @@
     "clean": "rm -rf .cache dist"
   },
   "dependencies": {
-    "@platform/css": "0.4.1",
+    "@platform/css": "^0.4.1",
     "@platform/libs": "0.2.2",
     "@platform/react": "0.4.30",
     "@platform/util.value": "0.7.23"

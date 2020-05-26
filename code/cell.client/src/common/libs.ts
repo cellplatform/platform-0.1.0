@@ -1,6 +1,3 @@
-import { Http } from '@platform/http';
-export { Http };
-
 import { Schema, Urls, Uri } from '@platform/cell.schema';
 export { Schema, Urls, Uri };
 

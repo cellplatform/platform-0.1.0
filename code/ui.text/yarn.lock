@@ -868,7 +868,7 @@
     "@platform/util.value" "0.7.23"
     minimist "1.2.5"
 
-"@platform/css@0.4.1":
+"@platform/css@0.4.1", "@platform/css@^0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.1.tgz#ddbc7b268266ce38465171654fa54b925f30d60a"
   integrity sha512-D5L9eMQ+QD0jQimqYTh6XpL9hvEWoNoq2IJMFSAAcE3mohy1aqjO5Gjgr89lJM8qTd4QHGTcMOkxwqtLSLJOZQ==

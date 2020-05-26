@@ -1,9 +1,6 @@
 import {
-  css,
-  color,
   mouse,
   events,
-  CssValue,
   MouseEvent,
   MouseEventHandler,
   MeasureSize,
@@ -12,11 +9,8 @@ import {
   containsFocus,
 } from '@platform/react';
 export {
-  css,
-  color,
   mouse,
   events,
-  CssValue,
   MouseEvent,
   MouseEventHandler,
   MeasureSize,
@@ -25,11 +19,11 @@ export {
   containsFocus,
 };
 
+import { color, css, CssValue } from '@platform/css';
+export { color, css, CssValue };
+
 import { time, value, defaultValue } from '@platform/util.value';
 export { time, value, defaultValue };
 
-/**
- * Ramda
- */
 import { merge, clone } from 'ramda';
 export const R = { merge, clone };
