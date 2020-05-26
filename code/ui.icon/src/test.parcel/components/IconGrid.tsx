@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { css, constants, color, CssValue } from '../common';
-import { IIcon, IIconProps } from '..';
-
-export { IIconProps };
+import { constants } from './common';
+import { IIcon } from '../../types';
+import { css, color, CssValue } from '@platform/css';
 
 export type IIconGridProps = {
   icons?: Array<{ name: string; icon: IIcon }>;

@@ -1,5 +1,4 @@
-import { Icon, IIcon, IIconProps } from '../../src';
-export { IIcon, IIconProps };
+import { Icon } from '../..';
 
 import {
   MdAddCircleOutline,

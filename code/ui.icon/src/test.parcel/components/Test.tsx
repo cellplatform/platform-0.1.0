@@ -2,11 +2,15 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, Hr, IconGrid, ImageSprite } from './common';
+import { Hr, ImageSprite } from './common';
+import { css, CssValue } from '@platform/css';
+import { IconGrid } from './IconGrid';
 import { Icons } from './Icons';
 
+/* eslint-disable */
 const SAMPLE_1X = require('../images/ImageSprite.test/sample.png');
 const SAMPLE_2X = require('../images/ImageSprite.test/sample@2x.png');
+/* eslint-enable */
 
 const MAGENTA = '#F93B76';
 
@@ -22,7 +26,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {
@@ -43,7 +47,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       sprites: css({}),
     };
 
-    const icons = Object.keys(Icons).map(name => ({ name, icon: Icons[name] }));
+    const icons = Object.keys(Icons).map((name) => ({ name, icon: Icons[name] }));
 
     return (
       <div {...css(styles.base, this.props.style)}>
