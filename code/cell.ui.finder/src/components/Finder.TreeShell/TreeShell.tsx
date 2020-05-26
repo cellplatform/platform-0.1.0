@@ -14,7 +14,7 @@ export type ITree = {
 
 export type ITreeShellProps = {
   tree?: ITree;
-  tree$?: Subject<t.TreeViewEvent>;
+  // tree$?: Subject<t.TreeViewEvent>;
   body?: React.ReactNode;
   style?: CssValue;
 };
@@ -28,7 +28,7 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
   public state: ITreeShellState = {};
   private state$ = new Subject<Partial<ITreeShellState>>();
   private unmounted$ = new Subject<{}>();
-  private tree$ = this.props.tree$ || new Subject<t.TreeViewEvent>();
+  private tree$ = new Subject<t.TreeViewEvent>();
 
   public static contextType = ui.Context;
   public context!: ui.IEnvContext<t.FinderEvent>;
@@ -41,9 +41,8 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
   }
 
   public componentDidMount() {
-    // Setup initial conditions.
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    // const tree = TreeView.events(this.tree$.pipe(takeUntil(this.unmounted$)));
+    this.tree$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.context.dispatch(e));
   }
 
   public componentWillUnmount() {

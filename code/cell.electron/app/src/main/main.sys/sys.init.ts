@@ -24,7 +24,7 @@ export async function init(client: t.IClientTypesystem) {
     ctx,
     row: 0,
     name: '@platform/cell.ui.sys',
-    entryPath: 'bundle/entry.html',
+    entryPath: 'bundle/index.html',
     sourceDir: paths.bundle.sys,
     devPort: 1234,
   });
@@ -33,7 +33,7 @@ export async function init(client: t.IClientTypesystem) {
     ctx,
     row: 1,
     name: '@platform/cell.ui.finder',
-    entryPath: 'bundle/entry.html',
+    entryPath: 'bundle/index.html',
     sourceDir: paths.bundle.finder,
     devPort: 1235,
   });
@@ -42,7 +42,7 @@ export async function init(client: t.IClientTypesystem) {
     ctx,
     row: 2,
     name: '@platform/cell.ui.ide',
-    entryPath: 'bundle/entry.html',
+    entryPath: 'bundle/index.html',
     sourceDir: paths.bundle.ide,
     devPort: 1236,
   });

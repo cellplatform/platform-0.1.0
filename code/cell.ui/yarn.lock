@@ -213,6 +213,14 @@
     chalk "4.0.0"
     cli-table "0.3.1"
 
+"@platform/polyfill@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/polyfill/-/polyfill-0.0.1.tgz#10b50a6d975f3fc55870dbc478e5840fbf41b7f5"
+  integrity sha512-xCwG9F/tptWBtCsbN2yM8SJS5LdUa7lfA1BdLsjT/W+A7GqEaRtnsIun8XSDcXaY4XIyYpeTwSNqJooCh9GaSQ==
+  dependencies:
+    core-js "3.6.4"
+    regenerator-runtime "0.13.3"
+
 "@platform/queue@0.0.12":
   version "0.0.12"
   resolved "https://registry.yarnpkg.com/@platform/queue/-/queue-0.0.12.tgz#02395d3fb4636d5fbb11ca705eabd4dddd89a36d"
@@ -924,6 +932,11 @@ core-js-pure@^3.0.0:
   version "3.6.5"
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.6.5.tgz#c79e75f5e38dbc85a662d91eea52b8256d53b813"
   integrity sha512-lacdXOimsiD0QyNf9BC/mxivNJ/ybBGJXQFKzRekp1WTHoVUWsUHEn+2T8GJAzzIhyOuXA+gOxCVN3l+5PLPUA==
+
+core-js@3.6.4:
+  version "3.6.4"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.4.tgz#440a83536b458114b9cb2ac1580ba377dc470647"
+  integrity sha512-4paDGScNgZP2IXXilaffL9X7968RuvwlkK3xWtZRVqgd8SYNiVKRJvkFd1aqqEuPfN7E68ZHEp9hDj6lHj4Hyw==
 
 core-util-is@~1.0.0:
   version "1.0.2"
@@ -2784,7 +2797,7 @@ readdirp@~3.2.0:
   dependencies:
     picomatch "^2.0.4"
 
-regenerator-runtime@^0.13.2:
+regenerator-runtime@0.13.3, regenerator-runtime@^0.13.2:
   version "0.13.3"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.3.tgz#7cf6a77d8f5c6f60eb73c5fc1955b2ceb01e6bf5"
   integrity sha512-naKIZz2GQ8JWh///G7L3X6LaQUAMp2lvb1rvwwsURe/VXwD6VMfr+/1NuNw3ag8v2kY1aQ/go5SNn79O9JU7yw==

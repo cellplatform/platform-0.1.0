@@ -8,13 +8,13 @@
     "test": "ts test $@",
     "lint": "ts lint $@",
     "build": "ts build $@",
-    "bundle": "sh sh/bundle.sh",
-    "clean": "sh sh/clean.sh",
+    "bundle": "sh script.sh/bundle.sh",
+    "clean": "sh script.sh/clean.sh",
     "serve": "cd dist && serve",
     "prepare": "ts prepare $@"
   },
   "dependencies": {
-    "@platform/css": "^0.4.2",
+    "@platform/css": "0.4.2",
     "@platform/react": "0.4.32"
   },
   "devDependencies": {

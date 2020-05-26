@@ -2,7 +2,7 @@ import { fs } from '@platform/fs';
 import { log } from '@platform/log/lib/server';
 
 /**
- * Copies a set of files declarations.
+ * Copies a set of [.d.ts] files declarations.
  */
 async function copy(args: {
   filenames: string[];
@@ -43,6 +43,9 @@ async function copy(args: {
   log.info();
 }
 
+/**
+ * Copies the base ES6 (ECMAScript) langauge declarations.
+ */
 async function copyEcmaScript() {
   const filenames = [
     'lib.es5.d.ts',
@@ -62,6 +65,9 @@ async function copyEcmaScript() {
   await copy({ filenames, sourceDir, targetDir, targetYaml });
 }
 
+/**
+ * Copy the [cell.types] declarations.
+ */
 async function copyCellTypes() {
   const sourceDir = fs.resolve('node_modules/@platform/cell.types/lib/types');
   const targetDir = fs.resolve('lib.cell.d.ts');
@@ -91,8 +97,8 @@ async function copyCellTypes() {
 }
 
 /**
- * Save the core ECMAScript definition files to insertion
- * into the code editor.
+ * Save the core ECMAScript and CellOS definition files
+ * for insertion into the code editor.
  */
 (async () => {
   await copyEcmaScript();
