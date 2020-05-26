@@ -1,1 +1,2 @@
-export { cli } from '@platform/cli';
+import { cli } from '@platform/cli';
+export { cli };

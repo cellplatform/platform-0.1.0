@@ -1,5 +1,8 @@
-export { value, defaultValue, id } from '@platform/util.value';
-export { MemoryCache } from '@platform/cache';
+import { value, defaultValue, id } from '@platform/util.value';
+export { value, defaultValue, id };
+
+import { MemoryCache } from '@platform/cache';
+export { MemoryCache };
 
 /**
  * Ramda.
