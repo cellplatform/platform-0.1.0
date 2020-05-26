@@ -1,5 +1,6 @@
-import { expect, Http, t, Uri } from '../test';
+import { expect, t, Uri } from '../test';
 import { HttpClient } from '..';
+import { Http } from '@platform/http';
 
 /**
  * NOTE:
