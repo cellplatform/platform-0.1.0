@@ -1,8 +1,11 @@
 /**
  * Util
  */
-import { css, color, CssValue, events, containsFocus } from '@platform/react';
-export { css, color, CssValue, events, containsFocus };
+import { events, containsFocus } from '@platform/react';
+export { events, containsFocus };
+
+import { css, color, CssValue } from '@platform/css';
+export { css, color, CssValue };
 
 import { value, time } from '@platform/util.value';
 export { value, time };

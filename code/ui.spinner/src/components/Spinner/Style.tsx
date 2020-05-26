@@ -1,6 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { is } from '../../common';
+// import { is } from '../../common';
+
+import { is } from '@platform/util.is';
+
 const ID = 'platform.spinner';
 
 export const RenderStyleOnce = (): React.ReactPortal | null => {

@@ -1,8 +1,8 @@
 import { equals, clone, pipe, uniq, flatten } from 'ramda';
 export const R = { equals, clone, pipe, uniq, flatten };
 
-import { css, CssValue, color } from '@platform/react';
-export { css, CssValue, color };
+import { css, color, CssValue } from '@platform/css';
+export { css, color, CssValue };
 
 import { value, defaultValue, id } from '@platform/util.value';
 export { value, defaultValue, id };

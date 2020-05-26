@@ -1,32 +1,31 @@
 {
   "name": "@platform/ui.panel",
-  "version": "0.1.63",
+  "version": "0.2.0",
   "scripts": {
-    "ui": "ui $@",
-    "start": "ui start $@",
+    "start": "parcel src/test.parcel/index.html",
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build $@",
-    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "bundle": "sh sh/bundle.sh",
+    "clean": "sh sh/clean.sh",
+    "serve": "cd dist && serve",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.4.30",
-    "@platform/util.animate": "0.0.86"
+    "@platform/css": "^0.4.2",
+    "@platform/react": "0.4.32"
   },
   "devDependencies": {
-    "@platform/polyfill": "0.0.1",
+    "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
-    "@uiharness/dev": "0.10.5",
-    "@uiharness/ui": "0.7.6",
-    "electron": "9.0.0"
+    "@platform/ui.button": "^0.3.67",
+    "@platform/ui.dev": "^0.0.6"
   },
   "files": [
     "lib",
     "!lib/test",
-    "!*.TEST.{js, mjs, d.ts}",
-    "!*.INTEGRATION.{js, mjs, d.ts}"
+    "!lib/test.parcel",
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }

@@ -1,9 +1,12 @@
+import { color, css, CssValue } from '@platform/css';
+import { mouse } from '@platform/react';
+import { defaultValue } from '@platform/util.value';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { Button } from '../Button';
-import { color, css, defaultValue, CssValue, mouse, R, t } from '../common';
+import { R, t } from '../common';
 import { SwitchTheme } from './SwitchTheme';
 
 export type ISwitchProps = mouse.IMouseEventProps & {

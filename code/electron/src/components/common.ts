@@ -1,6 +1,13 @@
 export * from '../types';
-export { color, CssValue, css, mouse } from '@platform/react';
-export { value } from '@platform/util.value';
+
+import { color, CssValue, css } from '@platform/css';
+export { color, CssValue, css };
+
+import { mouse } from '@platform/react';
+export { mouse };
+
+import { value } from '@platform/util.value';
+export { value };
 
 export const COLORS = {
   WHITE: '#fff',

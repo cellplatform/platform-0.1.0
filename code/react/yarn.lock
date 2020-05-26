@@ -859,10 +859,10 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
-"@platform/css@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.1.tgz#ddbc7b268266ce38465171654fa54b925f30d60a"
-  integrity sha512-D5L9eMQ+QD0jQimqYTh6XpL9hvEWoNoq2IJMFSAAcE3mohy1aqjO5Gjgr89lJM8qTd4QHGTcMOkxwqtLSLJOZQ==
+"@platform/css@0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.2.tgz#00f490bdfe4a62a3043507c65d320855182c7a21"
+  integrity sha512-yh1uc6AC2UySNq9kzvoLpa68N9KzNIyjXSuSKZudy0dUCvQeH+2Z7jVGYAmChUHlyuKQZk3MfF2bw75ZuKmxPA==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/util.is" "0.0.125"

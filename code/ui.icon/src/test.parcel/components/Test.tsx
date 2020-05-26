@@ -7,10 +7,8 @@ import { css, CssValue } from '@platform/css';
 import { IconGrid } from './IconGrid';
 import { Icons } from './Icons';
 
-/* eslint-disable */
-const SAMPLE_1X = require('../images/ImageSprite.test/sample.png');
-const SAMPLE_2X = require('../images/ImageSprite.test/sample@2x.png');
-/* eslint-enable */
+const SAMPLE_1X = require('../images/ImageSprite.test/sample.png'); // eslint-disable-line
+const SAMPLE_2X = require('../images/ImageSprite.test/sample@2x.png'); // eslint-disable-line
 
 const MAGENTA = '#F93B76';
 
@@ -25,7 +23,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 

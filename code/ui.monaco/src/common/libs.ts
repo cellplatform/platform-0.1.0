@@ -1,11 +1,17 @@
 /**
  * Util
  */
-import { css, color, CssValue, events } from '@platform/react';
-export { css, color, CssValue, events };
+import { events } from '@platform/react';
+export { events };
 
-import { value, is } from '@platform/util.value';
-export { value, is };
+import { css, color, CssValue } from '@platform/css';
+export { css, color, CssValue };
+
+import { is } from '@platform/util.is';
+export { is };
+
+import { value } from '@platform/util.value';
+export { value };
 
 /**
  * Monaco Editor

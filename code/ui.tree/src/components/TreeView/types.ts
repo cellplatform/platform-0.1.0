@@ -1,4 +1,4 @@
-import { TreeNodeMouseEvent } from '../TreeNode';
+import { TreeNodeMouseEvent } from '../../types';
 
 /**
  * [Events]

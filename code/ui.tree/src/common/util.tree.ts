@@ -1,5 +1,8 @@
 import { ITreeNode, ITreeNodeProps, TreeNodePathFactory, ITreeNodePathContext } from '../types';
-import { R, value as valueUtil } from './libs';
+import { value as valueUtil } from '@platform/util.value';
+
+import { clone } from 'ramda';
+export const R = { clone };
 
 export type WalkArgs = {
   index: number;

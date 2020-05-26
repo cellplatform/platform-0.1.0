@@ -1,22 +1,16 @@
+import { color, css, CssValue } from '@platform/css';
+import { defaultValue } from '@platform/util.value';
 import * as React from 'react';
 
-import {
-  color,
-  css,
-  defaultValue,
-  CssValue,
-  ITreeNode,
-  t,
-  TreeNodeMouseEventHandler,
-} from '../../common';
+import { t } from '../../common';
 import * as themes from '../../themes';
 import { Icons } from '../Icons';
-import { Spinner } from '../primitives';
+import { Spinner } from '@platform/ui.spinner';
 import { ITreeNodeProps, TreeNode, TreeNodeTwisty } from '../TreeNode';
 
 export type ITreeNodeListProps = {
   rootId?: string;
-  node: ITreeNode<any>;
+  node: t.ITreeNode<any>;
   depth?: number;
   defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
   renderPanel?: t.RenderTreePanel;
@@ -31,12 +25,12 @@ export type ITreeNodeListProps = {
   theme?: themes.ITreeTheme;
   background?: 'THEME' | 'NONE';
   style?: CssValue;
-  onNodeMouse?: TreeNodeMouseEventHandler;
+  onNodeMouse?: t.TreeNodeMouseEventHandler;
 };
 
 type IRenderNodeProps = {
   index: number;
-  node: ITreeNode;
+  node: t.ITreeNode;
   twisty?: TreeNodeTwisty;
   iconRight?: ITreeNodeProps['iconRight'];
   isVisible: boolean;
@@ -58,7 +52,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
 
   private get nodes() {
     const { node } = this.props;
-    return (node.children || []) as ITreeNode[];
+    return (node.children || []) as t.ITreeNode[];
   }
 
   private get depth() {
@@ -147,7 +141,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
   /**
    * Calculate properties for rendering a single node.
    */
-  private nodeRenderProps(index: number, siblings: ITreeNode[]): IRenderNodeProps {
+  private nodeRenderProps(index: number, siblings: t.ITreeNode[]): IRenderNodeProps {
     const node = siblings[index];
     if (!node) {
       throw new Error(`Index ${index} out of range [0..${siblings.length - 1}].`);
@@ -195,7 +189,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     return result;
   }
 
-  private toRightIcon(props: t.ITreeNodeProps, children?: ITreeNode['children']) {
+  private toRightIcon(props: t.ITreeNodeProps, children?: t.ITreeNode['children']) {
     const chrevron = props.chevron || {};
     const isVisible = chrevron.isVisible;
     const inlineChildren = Boolean(props.inline);

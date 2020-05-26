@@ -1,4 +1,5 @@
-import { ITreeNode, value } from '../common';
+import { value } from '@platform/util.value';
+import { ITreeNode } from '../../types';
 
 export type TotalChildren = number | number[];
 

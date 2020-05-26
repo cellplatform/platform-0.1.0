@@ -40,15 +40,15 @@
   dependencies:
     "@platform/libs" "0.2.2"
 
-"@platform/cell.client@0.2.91":
-  version "0.2.91"
-  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.91.tgz#84af47d9723e7fc58e3ca29ff567c6e662eacd27"
-  integrity sha512-+Z8uMafHJGIXkBxQ7kL3rrOdhQLvF6j61CyjxEHuZ6bHclVhluyG7geX9YeAZKTOdgPGE2C0g0Dte6eCDWnMwg==
+"@platform/cell.client@0.2.92":
+  version "0.2.92"
+  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.92.tgz#54511e3347c7e8318a225b0ccce3695b616e4327"
+  integrity sha512-WeCned4KTyOn95yhXGssum3W8vDahUlRwyOYgXtCs68GPg14Szg9JTtdN2oXLfNN76ZL5EcR1PPCVUNFhlz4xw==
   dependencies:
     "@platform/cell.schema" "0.4.113"
     "@platform/cell.types" "0.4.102"
     "@platform/cell.typesystem" "0.0.52"
-    "@platform/http" "0.12.16"
+    "@platform/http" "0.12.17"
     "@platform/http.types" "0.2.10"
     "@platform/libs" "0.2.2"
     "@platform/queue" "0.0.12"
@@ -112,10 +112,10 @@
     "@platform/types" "0.4.22"
     "@platform/util.value" "0.7.23"
 
-"@platform/css@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.1.tgz#ddbc7b268266ce38465171654fa54b925f30d60a"
-  integrity sha512-D5L9eMQ+QD0jQimqYTh6XpL9hvEWoNoq2IJMFSAAcE3mohy1aqjO5Gjgr89lJM8qTd4QHGTcMOkxwqtLSLJOZQ==
+"@platform/css@0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.2.tgz#00f490bdfe4a62a3043507c65d320855182c7a21"
+  integrity sha512-yh1uc6AC2UySNq9kzvoLpa68N9KzNIyjXSuSKZudy0dUCvQeH+2Z7jVGYAmChUHlyuKQZk3MfF2bw75ZuKmxPA==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/util.is" "0.0.125"
@@ -182,10 +182,10 @@
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"
 
-"@platform/http@0.12.16":
-  version "0.12.16"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.16.tgz#061578d0156feb849ee7d3ce94bbb0a787a9738e"
-  integrity sha512-GU200ybIgoVt4x2HAGnwn7xsK2Bm/lj1xGDiMSut+1ILR2FVdGMlF/OHGGVCjaamu1WFNuePSomKU/uNmoBREw==
+"@platform/http@0.12.17":
+  version "0.12.17"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.17.tgz#c7f28cae66f087735e55a1a3be1581a34ae84157"
+  integrity sha512-0+GHqxRGkm/+z7aZXW7ZfWHlPph7OnWz5ABibjN4llXBAN39cl8chRiMEl1IW3MzX6j4q+MyvejI0GNdjBRX8w==
   dependencies:
     "@platform/http.types" "0.2.10"
     "@platform/libs" "0.2.2"
@@ -221,12 +221,12 @@
     "@platform/libs" "0.2.2"
     "@platform/util.value" "0.7.23"
 
-"@platform/react@0.4.30":
-  version "0.4.30"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.30.tgz#d21c225ed8f074187db65193998f20fa5bd29ff5"
-  integrity sha512-Jg+++ITCh1OFtJISn69RwkGyM4M3VUAnyPsiQXsTT/sUquyn3b4Aj9TFri7fFXVdeN0T3WW6On5ivcUHQpdA+Q==
+"@platform/react@0.4.32":
+  version "0.4.32"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.32.tgz#8b5f4582652ded3fbf4c00005dd06a39de5581f5"
+  integrity sha512-y0xeeq8ImDc87D+Mur8/78Kib3uqmx5izsS2y6xyWEXuWAR+aRswaaBntOiQjz48YIhX+dEn3sz9hhNvZMI7jQ==
   dependencies:
-    "@platform/css" "0.4.1"
+    "@platform/css" "0.4.2"
     "@platform/util.is" "0.0.125"
     react "16.13.1"
     react-dom "16.13.1"
@@ -277,14 +277,14 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.22.tgz#a0a3f350be37bfbf99069085fc561b9edd1038e5"
   integrity sha512-mGp7mPDwioauf/6u7uJrjfkEuuGoV5tta/2uGSkVoRcelsb3X1IqIxKQEuM8Fpi5E3GT12PjBw224pWbkeZCFg==
 
-"@platform/ui.button@0.3.63":
-  version "0.3.63"
-  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.3.63.tgz#d13204f60022e1a37252c6d8843fb0814e10eca4"
-  integrity sha512-5lwr7lEJvoCn6wO4NuGrJhXlDLZIbqsI/aqFs2k2hWTqq23eoynyCoVVdiSkS+XhUqPwzHyhLBctdOOELUkswQ==
+"@platform/ui.button@0.3.65":
+  version "0.3.65"
+  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.3.65.tgz#a1a1e50486c0521897b8349222c1990ce4cd1513"
+  integrity sha512-/nIlJ3LCIJP2oN+Tqwetm6eVDHm2xtoe3/IZyDLHBKNAEqafIiO/tCLsfVn7UB+eoKREnWnlmZlD2U7NzpY56w==
   dependencies:
-    "@platform/css" "0.4.1"
+    "@platform/css" "0.4.2"
     "@platform/libs" "0.2.2"
-    "@platform/react" "0.4.30"
+    "@platform/react" "0.4.32"
     "@platform/util.value" "0.7.23"
 
 "@platform/util.diff@0.0.32":

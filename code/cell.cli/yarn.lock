@@ -38,15 +38,15 @@
   dependencies:
     "@platform/libs" "0.2.2"
 
-"@platform/cell.client@0.2.91":
-  version "0.2.91"
-  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.91.tgz#84af47d9723e7fc58e3ca29ff567c6e662eacd27"
-  integrity sha512-+Z8uMafHJGIXkBxQ7kL3rrOdhQLvF6j61CyjxEHuZ6bHclVhluyG7geX9YeAZKTOdgPGE2C0g0Dte6eCDWnMwg==
+"@platform/cell.client@0.2.92":
+  version "0.2.92"
+  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.92.tgz#54511e3347c7e8318a225b0ccce3695b616e4327"
+  integrity sha512-WeCned4KTyOn95yhXGssum3W8vDahUlRwyOYgXtCs68GPg14Szg9JTtdN2oXLfNN76ZL5EcR1PPCVUNFhlz4xw==
   dependencies:
     "@platform/cell.schema" "0.4.113"
     "@platform/cell.types" "0.4.102"
     "@platform/cell.typesystem" "0.0.52"
-    "@platform/http" "0.12.16"
+    "@platform/http" "0.12.17"
     "@platform/http.types" "0.2.10"
     "@platform/libs" "0.2.2"
     "@platform/queue" "0.0.12"
@@ -66,19 +66,19 @@
     excel-formula-tokenizer "2.3.1"
     toposort "2.0.2"
 
-"@platform/cell.fs.sync@0.3.139":
-  version "0.3.139"
-  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.3.139.tgz#a4bdf36e235161791b399e5924616858bf3dd567"
-  integrity sha512-j78KTMi6p+UjpJcXoK01qJtg4chzrOTpBO45l5DSf/oVLECN5QO3kuydlIqlDZJ6CKfstGPWtofJk8WbEnhebQ==
+"@platform/cell.fs.sync@0.3.140":
+  version "0.3.140"
+  resolved "https://registry.yarnpkg.com/@platform/cell.fs.sync/-/cell.fs.sync-0.3.140.tgz#24277f7c12f34fcbb9de5dd1dcd55ab93c995d19"
+  integrity sha512-5n5tFTgowJvh6lcQcLorW0SoJsxkjjcAYmyQqHtdY6IFfT1houbyi3pqeDTstP3V/LhXFPM/zrtEBdo4oYVQGw==
   dependencies:
-    "@platform/cell.client" "0.2.91"
+    "@platform/cell.client" "0.2.92"
     "@platform/cell.schema" "0.4.113"
     "@platform/cell.types" "0.4.102"
     "@platform/cell.value" "0.2.74"
     "@platform/cli" "0.5.38"
     "@platform/fs" "0.5.17"
     "@platform/fs.watch" "0.2.43"
-    "@platform/http" "0.12.16"
+    "@platform/http" "0.12.17"
     "@platform/libs" "0.2.2"
     "@platform/log" "0.1.25"
     open "7.0.4"
@@ -243,10 +243,10 @@
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"
 
-"@platform/http@0.12.16":
-  version "0.12.16"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.16.tgz#061578d0156feb849ee7d3ce94bbb0a787a9738e"
-  integrity sha512-GU200ybIgoVt4x2HAGnwn7xsK2Bm/lj1xGDiMSut+1ILR2FVdGMlF/OHGGVCjaamu1WFNuePSomKU/uNmoBREw==
+"@platform/http@0.12.17":
+  version "0.12.17"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.17.tgz#c7f28cae66f087735e55a1a3be1581a34ae84157"
+  integrity sha512-0+GHqxRGkm/+z7aZXW7ZfWHlPph7OnWz5ABibjN4llXBAN39cl8chRiMEl1IW3MzX6j4q+MyvejI0GNdjBRX8w==
   dependencies:
     "@platform/http.types" "0.2.10"
     "@platform/libs" "0.2.2"

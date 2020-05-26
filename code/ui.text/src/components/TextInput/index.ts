@@ -1,3 +1,4 @@
-export { masks } from './common';
-export { TextInput, ITextInputProps } from './TextInput';
-export * from './types';
+import * as masks from './masks';
+export { masks };
+
+export * from './TextInput';

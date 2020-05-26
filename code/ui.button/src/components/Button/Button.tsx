@@ -1,8 +1,11 @@
+import { color, css, CssValue, style } from '@platform/css';
+import { mouse } from '@platform/react';
+import { defaultValue } from '@platform/util.value';
 import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, defaultValue, mouse, style, t } from '../common';
+import { t } from '../common';
 import { ButtonTheme } from './ButtonTheme';
 
 export type IButtonProps = mouse.IMouseEventProps & {

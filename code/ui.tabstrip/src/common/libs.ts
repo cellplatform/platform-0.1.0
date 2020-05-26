@@ -4,8 +4,11 @@ export { s };
 import { value, time, defaultValue } from '@platform/util.value';
 export { value, time, defaultValue };
 
-import { css, color, CssValue, containsFocus, Keyboard, events } from '@platform/react';
-export { css, color, CssValue, containsFocus, Keyboard, events };
+import { containsFocus, Keyboard, events } from '@platform/react';
+export { containsFocus, Keyboard, events };
+
+import { css, color, CssValue } from '@platform/css';
+export { css, color, CssValue };
 
 /**
  * Ramda

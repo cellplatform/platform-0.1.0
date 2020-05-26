@@ -1,10 +1,17 @@
+import { color, css } from '@platform/css';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
+import { COLORS } from '../constants';
 import * as sample from '../sample';
-import { Button, color, COLORS, css, ObjectView, t, TreeView, Foo, log } from '../common';
 import { Icons } from './Icons';
+
+import { TreeView } from '../..';
+import { t } from '../../common';
+
+import { Foo, ObjectView, log } from '@platform/ui.dev';
+import { Button } from '@platform/ui.button';
 
 export type ITestState = {
   theme?: t.TreeTheme;

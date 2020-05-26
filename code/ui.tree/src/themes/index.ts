@@ -1,6 +1,8 @@
-import { color as colorUtil, defaultValue } from '../common';
+import { color as colorUtil } from '@platform/css';
+import { defaultValue } from '@platform/util.value';
+
+import { DARK, LIGHT } from './themes';
 import { ITreeTheme, TreeTheme } from './types';
-import { LIGHT, DARK } from './themes';
 
 export * from './themes';
 export * from './types';

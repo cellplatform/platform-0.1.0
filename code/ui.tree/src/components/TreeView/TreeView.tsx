@@ -1,3 +1,12 @@
+import { color, css, CssValue } from '@platform/css';
+import { containsFocus } from '@platform/react';
+import {
+  IStackPanel,
+  StackPanel,
+  StackPanelSlideEvent,
+} from '@platform/ui.panel/lib/components/StackPanel';
+import { defaultValue } from '@platform/util.value';
+import { equals } from 'ramda';
 import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
 import {
@@ -10,32 +19,19 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 
-import {
-  color,
-  constants,
-  containsFocus,
-  css,
-  CssValue,
-  defaultValue,
-  ITreeNode,
-  R,
-  t,
-  tree as treeUtil,
-  TreeNodeMouseEvent,
-  TreeNodeMouseEventHandler,
-} from '../../common';
+import { constants, t, tree as treeUtil } from '../../common';
 import { TreeEvents } from '../../events';
 import * as themes from '../../themes';
-import { IStackPanel, StackPanel, StackPanelSlideEvent } from '../primitives';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
 
-export { TreeNodeMouseEvent, TreeNodeMouseEventHandler };
+const R = { equals };
+
 export type ITreeViewProps = {
   id?: string;
-  node?: ITreeNode;
+  node?: t.ITreeNode;
   defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
-  current?: ITreeNode['id'];
+  current?: t.ITreeNode['id'];
   renderPanel?: t.RenderTreePanel;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
@@ -49,8 +45,8 @@ export type ITreeViewProps = {
 };
 
 export type ITreeViewState = {
-  currentPath?: ITreeNode[];
-  renderedPath?: ITreeNode[];
+  currentPath?: t.ITreeNode[];
+  renderedPath?: t.ITreeNode[];
   index?: number;
   isSliding?: boolean;
   isFocused?: boolean;
@@ -350,7 +346,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    * [Handlers]
    */
 
-  private handleNodeMouse = (payload: TreeNodeMouseEvent) => {
+  private handleNodeMouse = (payload: t.TreeNodeMouseEvent) => {
     const props = treeUtil.props(payload);
     if (props.isEnabled === false) {
       switch (payload.type) {

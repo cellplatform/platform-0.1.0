@@ -1,23 +1,13 @@
+import { color, css, CssValue, style } from '@platform/css';
+import { mouse } from '@platform/react';
+import { defaultValue } from '@platform/util.value';
 import * as React from 'react';
 
-import {
-  color,
-  constants,
-  css,
-  CssValue,
-  defaultValue,
-  ITreeNode,
-  mouse,
-  style,
-  t,
-  tree,
-  TreeNodeMouseEvent,
-  TreeNodeMouseEventHandler,
-} from '../../common';
+import { constants, t, tree } from '../../common';
 import * as themes from '../../themes';
 import { Icons, IIcon } from '../Icons';
-import { Spinner } from '../primitives';
-import { Text } from '../Text';
+import { Spinner } from '@platform/ui.spinner';
+import { Text } from '@platform/ui.text/lib/components/Text';
 
 const DEFAULT = {
   PADDING: [5, 0, 5, 5],
@@ -36,14 +26,12 @@ const MARGIN = {
 
 const NODE = constants.CLASS.NODE;
 
-export { TreeNodeMouseEvent, TreeNodeMouseEventHandler, ITreeNode };
-
 export type TreeNodeTwisty = 'OPEN' | 'CLOSED' | null;
 
 export type ITreeNodeProps = {
   rootId?: string;
   children?: React.ReactNode;
-  node: ITreeNode;
+  node: t.ITreeNode;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
   iconRight?: IIcon | null;
@@ -55,7 +43,7 @@ export type ITreeNodeProps = {
   isFirst: boolean;
   isLast: boolean;
   style?: CssValue;
-  onMouse?: TreeNodeMouseEventHandler;
+  onMouse?: t.TreeNodeMouseEventHandler;
 };
 
 export class TreeNode extends React.PureComponent<ITreeNodeProps> {
@@ -464,14 +452,14 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     );
   }
 
-  private mouseHandlers = (target: TreeNodeMouseEvent['target']) => {
+  private mouseHandlers = (target: t.TreeNodeMouseEvent['target']) => {
     const { onMouse } = this.props;
     return TreeNode.mouseHandlers(() => this.props.node, target, onMouse);
   };
   public static mouseHandlers(
-    getNode: () => ITreeNode,
-    target: TreeNodeMouseEvent['target'],
-    onMouse?: TreeNodeMouseEventHandler,
+    getNode: () => t.ITreeNode,
+    target: t.TreeNodeMouseEvent['target'],
+    onMouse?: t.TreeNodeMouseEventHandler,
   ) {
     const handlers = mouse.handlers((e) => {
       const node = getNode();

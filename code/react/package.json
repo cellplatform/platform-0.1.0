@@ -1,6 +1,6 @@
 {
   "name": "@platform/react",
-  "version": "0.4.30",
+  "version": "0.4.32",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
     "clean": "rm -rf .cache dist"
   },
   "dependencies": {
-    "@platform/css": "0.4.1",
+    "@platform/css": "0.4.2",
     "@platform/util.is": "0.0.125",
     "react": "16.13.1",
     "react-dom": "16.13.1"

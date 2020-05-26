@@ -7,8 +7,11 @@ export * from './libs.cell';
 /**
  * Util.
  */
-import { css, color, style, CssValue, events, containsFocus, Keyboard } from '@platform/react';
-export { css, color, style, CssValue, events, containsFocus, Keyboard };
+import { events, containsFocus, Keyboard } from '@platform/react';
+export { events, containsFocus, Keyboard };
+
+import { css, style, color, CssValue } from '@platform/css';
+export { css, style, color, CssValue };
 
 import { value, time, defaultValue } from '@platform/util.value';
 export { value, time, defaultValue };

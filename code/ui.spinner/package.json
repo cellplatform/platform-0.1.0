@@ -1,31 +1,32 @@
 {
   "name": "@platform/ui.spinner",
   "description": "Wait spinner.",
-  "version": "0.0.146",
+  "version": "0.0.148",
   "main": "lib/index",
   "scripts": {
-    "ui": "ui $@",
-    "start": "ui start $@",
+    "start": "parcel src/test.parcel/index.html",
     "test": "ts test $@",
-    "tdd": "ts test --watch",
     "lint": "ts lint $@",
     "build": "ts build $@",
-    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "bundle": "sh sh/bundle.sh",
+    "clean": "sh sh/clean.sh",
+    "serve": "cd dist && serve",
     "prepare": "ts prepare $@"
   },
   "dependencies": {
-    "@platform/react": "0.4.30"
+    "@platform/css": "^0.4.2",
+    "@platform/react": "0.4.32"
   },
   "devDependencies": {
+    "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
-    "@uiharness/dev": "0.10.5",
-    "electron": "9.0.0"
+    "@platform/ui.dev": "0.0.6"
   },
   "files": [
     "lib",
     "!lib/test",
-    "!*.TEST.{js, mjs, d.ts}",
-    "!*.INTEGRATION.{js, mjs, d.ts}"
+    "!lib/test.parcel",
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }

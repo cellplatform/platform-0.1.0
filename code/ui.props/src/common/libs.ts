@@ -1,4 +1,4 @@
-import { css, CssValue, color } from '@platform/react';
+import { css, CssValue, color } from '@platform/css';
 export { css, CssValue, color };
 
 import { value, defaultValue } from '@platform/util.value';

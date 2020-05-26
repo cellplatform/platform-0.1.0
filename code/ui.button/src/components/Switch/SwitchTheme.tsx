@@ -1,4 +1,6 @@
-import { R, color, COLORS, t } from '../common';
+import { color } from '@platform/css';
+
+import { COLORS, R, t } from '../common';
 
 const { GREEN, WHITE, BLUE } = COLORS;
 

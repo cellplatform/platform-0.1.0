@@ -60,10 +60,10 @@
     listr "0.14.3"
     yargs "15.3.1"
 
-"@platform/css@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.1.tgz#ddbc7b268266ce38465171654fa54b925f30d60a"
-  integrity sha512-D5L9eMQ+QD0jQimqYTh6XpL9hvEWoNoq2IJMFSAAcE3mohy1aqjO5Gjgr89lJM8qTd4QHGTcMOkxwqtLSLJOZQ==
+"@platform/css@0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.2.tgz#00f490bdfe4a62a3043507c65d320855182c7a21"
+  integrity sha512-yh1uc6AC2UySNq9kzvoLpa68N9KzNIyjXSuSKZudy0dUCvQeH+2Z7jVGYAmChUHlyuKQZk3MfF2bw75ZuKmxPA==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/util.is" "0.0.125"
@@ -92,14 +92,14 @@
     "@platform/http.types" "0.2.10"
     "@platform/types" "0.4.22"
 
-"@platform/fs.s3@0.7.11":
-  version "0.7.11"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.7.11.tgz#c5f9b72c75aa17f3b71567569bea7d904485a766"
-  integrity sha512-3Z2+GIhPxxqORUtA2OopNERHKQLweNCHfGQz/oNQS96vCMqtVyR6Gzg3pu6B9ud6s7Y2p2PHltzVtqtm8KiU8w==
+"@platform/fs.s3@0.7.12":
+  version "0.7.12"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.7.12.tgz#5f9e7ef92b0fff41b66e93cbbd07dc7e539107dc"
+  integrity sha512-OycfdgQj0TW2z2Qwt3igB4OILKF/F9EtD7QC5+eMLm6TzPHVJ9WrNSeJJnlhO1h0TOqLqj9UCLJeGTm2OcMY8Q==
   dependencies:
     "@platform/fs" "0.5.17"
     "@platform/fs.s3.types" "0.2.9"
-    "@platform/http" "0.12.16"
+    "@platform/http" "0.12.17"
     "@platform/libs" "0.2.2"
     "@platform/log" "0.1.25"
     "@platform/types" "0.4.22"
@@ -149,10 +149,10 @@
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"
 
-"@platform/http@0.12.16":
-  version "0.12.16"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.16.tgz#061578d0156feb849ee7d3ce94bbb0a787a9738e"
-  integrity sha512-GU200ybIgoVt4x2HAGnwn7xsK2Bm/lj1xGDiMSut+1ILR2FVdGMlF/OHGGVCjaamu1WFNuePSomKU/uNmoBREw==
+"@platform/http@0.12.17":
+  version "0.12.17"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.17.tgz#c7f28cae66f087735e55a1a3be1581a34ae84157"
+  integrity sha512-0+GHqxRGkm/+z7aZXW7ZfWHlPph7OnWz5ABibjN4llXBAN39cl8chRiMEl1IW3MzX6j4q+MyvejI0GNdjBRX8w==
   dependencies:
     "@platform/http.types" "0.2.10"
     "@platform/libs" "0.2.2"
@@ -180,10 +180,10 @@
     chalk "4.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.14.36":
-  version "0.14.36"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.14.36.tgz#2f12071b3b09f5aa62cf97caec345af1e05e148d"
-  integrity sha512-hlk6z4CukFB8COYMdPELhq6BKtVO+KzeeLIXG9lmPkU5o/gAnez762RaFtro7Q6i0qVamp4YBwcqO6m6DAUvQg==
+"@platform/micro@0.14.37":
+  version "0.14.37"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.14.37.tgz#ae30a5e6d14792180c0d1a0f82d58e0522911435"
+  integrity sha512-hUiVpqtl8FiG546O+u8ZQOBO6T9GnRccK30lxOWlhdVT8qvMXsaxy1Q+Ri0Vq4H4TCgIGmXUkCteIQb3ntJ8YA==
   dependencies:
     "@platform/http.router" "0.0.28"
     "@platform/http.types" "0.2.10"
@@ -219,12 +219,12 @@
     core-js "3.6.4"
     regenerator-runtime "0.13.3"
 
-"@platform/react@0.4.30":
-  version "0.4.30"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.30.tgz#d21c225ed8f074187db65193998f20fa5bd29ff5"
-  integrity sha512-Jg+++ITCh1OFtJISn69RwkGyM4M3VUAnyPsiQXsTT/sUquyn3b4Aj9TFri7fFXVdeN0T3WW6On5ivcUHQpdA+Q==
+"@platform/react@0.4.32":
+  version "0.4.32"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.32.tgz#8b5f4582652ded3fbf4c00005dd06a39de5581f5"
+  integrity sha512-y0xeeq8ImDc87D+Mur8/78Kib3uqmx5izsS2y6xyWEXuWAR+aRswaaBntOiQjz48YIhX+dEn3sz9hhNvZMI7jQ==
   dependencies:
-    "@platform/css" "0.4.1"
+    "@platform/css" "0.4.2"
     "@platform/util.is" "0.0.125"
     react "16.13.1"
     react-dom "16.13.1"
