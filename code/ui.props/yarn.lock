@@ -1625,10 +1625,10 @@
     "@platform/ui.text" "0.3.53"
     "@platform/util.animate" "0.0.85"
 
-"@platform/ui.tree@0.4.64":
-  version "0.4.64"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.4.64.tgz#20ac4ef70b4391bfc8418c95f9cb32206b526588"
-  integrity sha512-9X2mPddDZYgVPsPkhdhHPo6cknWonipqOjYHGVyT2cWjNfvlMXYGw2mEQHJvUxvjaS+ENmxzdkbjmwMZ3+jS+A==
+"@platform/ui.tree@0.4.65":
+  version "0.4.65"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.4.65.tgz#3e49cfea5f53fbaafc30b173ae3bbc23c26f22b1"
+  integrity sha512-oE2Mcm4t5yqwYi87s0LWMu0G2EgR9sXc79MvvtChvA0OfCZKhdQ3Tzzay1Dkgtz5ep8D4K119VGe1GzxaZhPcw==
   dependencies:
     "@platform/css" "0.4.2"
     "@platform/react" "0.4.32"

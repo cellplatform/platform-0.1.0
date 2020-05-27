@@ -1,6 +1,8 @@
-import { create } from './http.create';
+import { Mime } from '@platform/util.mimetype';
+
+import { fromRawHeaders, toRawHeaders } from '../common';
 import { fetch } from './fetch';
-import { Mime, toRawHeaders, fromRawHeaders } from '../common';
+import { create } from './http.create';
 
 export class Http {
   public static create = create;
