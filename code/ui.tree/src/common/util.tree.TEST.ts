@@ -345,6 +345,17 @@ describe('util.tree', () => {
       const child = util.findById(res, 'E');
       expect(child && child.props).to.eql({ inline: { isOpen: true } });
     });
+
+    it('toggled via "id" (undefined => true)', () => {
+      let root = { ...A } as t.ITreeNode | undefined;
+      root = util.toggleIsOpen<t.ITreeNode>(root, E.id);
+      const child1 = util.findById(root, 'E');
+      expect(child1 && child1.props).to.eql({ inline: { isOpen: true } });
+
+      root = util.toggleIsOpen<t.ITreeNode>(root, E.id);
+      const child2 = util.findById(root, 'E');
+      expect(child2 && child2.props).to.eql({ inline: { isOpen: false } });
+    });
   });
 
   describe('openToNode', () => {

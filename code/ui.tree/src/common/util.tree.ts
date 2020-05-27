@@ -233,8 +233,8 @@ export function replace<T extends ITreeNode>(
     }
   }
 
-  // If the root was specified for replacement return it
-  // without incuring the "walk".
+  // If the root was specified for replacement
+  // return it without incuring the "walk".
   if (root.id === target.id) {
     return target;
   }
@@ -386,8 +386,10 @@ export function props<T extends ITreeNode>(node?: T) {
  */
 export function toggleIsOpen<T extends ITreeNode>(
   root: T | undefined,
-  node: ITreeNode | undefined,
+  node: ITreeNode | string | undefined,
 ): T | undefined {
+  node = typeof node === 'string' ? findById(root, node) : node;
+
   if (!node || !root) {
     return root;
   }
