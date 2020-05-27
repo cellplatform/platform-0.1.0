@@ -1,7 +1,7 @@
 import { SIMPLE } from '../_tmp';
 import { t } from '../common';
-import { tree } from './behavior.tree';
-import { view } from './behavior.view';
+import * as tree from './behavior.tree';
+import * as view from './behavior.view';
 
 /**
  * Initialize behavior controllers.
@@ -9,8 +9,8 @@ import { view } from './behavior.view';
 export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
   const { ctx } = args;
 
-  tree(args);
-  view(args);
+  tree.init(args);
+  view.init(args);
 
   /**
    * Initialize

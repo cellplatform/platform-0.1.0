@@ -3,19 +3,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue, t, ui } from '../../common';
-import { Tree } from './Tree';
+import { Tree } from './TreeShell.Tree';
+import { View } from './TreeShell.View';
 
 export type ITreeShellProps = {
   style?: CssValue;
 };
 
-export type ITreeShellState = {
-  view?: React.ReactNode;
-};
-
-export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellState> {
-  public state: ITreeShellState = {};
-  private state$ = new Subject<Partial<ITreeShellState>>();
+export class TreeShell extends React.PureComponent<ITreeShellProps> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
@@ -24,9 +19,6 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
   /**
    * [Lifecycle]
    */
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
 
   public componentWillUnmount() {
     this.unmounted$.next();
@@ -56,14 +48,14 @@ export class TreeShell extends React.PureComponent<ITreeShellProps, ITreeShellSt
       }),
     };
 
-    const elBody = null; // TEMP 🐷
-
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
           <Tree />
         </div>
-        <div {...styles.right}>{elBody}</div>
+        <div {...styles.right}>
+          <View />
+        </div>
       </div>
     );
   }

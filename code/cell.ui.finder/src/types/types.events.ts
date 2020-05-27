@@ -4,25 +4,16 @@ import { t } from './common';
  * Events
  */
 type GlobalEvents = t.EnvEvent | t.TreeViewEvent;
-export type FinderEvent = GlobalEvents | IFinderChanged | IFinderTreeEvent;
-//IFinderViewRenderEvent
+export type FinderEvent =
+  | GlobalEvents
+  | IFinderChanged
+  | IFinderTreeEvent
+  | IFinderViewRequestEvent;
 
 export type IFinderChanged = {
   type: 'FINDER/changed';
   payload: t.IStateChange<t.IFinderState, t.FinderEvent>;
 };
-
-/**
- * View
- */
-// export type IFinderViewRenderEvent = {
-//   type: 'FINDER/view/render';
-//   payload: IFinderViewRender;
-// };
-// export type IFinderViewRender = {
-//   node?: string; // Node ID.
-//   render(view: React.ReactNode): void;
-// };
 
 /**
  * Tree
@@ -34,5 +25,19 @@ export type IFinderTreeEvent = {
 export type IFinderTree = {
   root?: t.ITreeNode | null;
   current?: string | null;
+  selected?: string | null;
   theme?: t.TreeTheme | null;
+};
+
+/**
+ * View
+ */
+export type IFinderViewRequestEvent = {
+  type: 'FINDER/view/req';
+  payload: IFinderViewRequest;
+};
+export type IFinderViewRequest = {
+  state: t.IFinderState;
+  isHandled: boolean;
+  render(el: React.ReactNode | (() => Promise<React.ReactNode>)): void;
 };

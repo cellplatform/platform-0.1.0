@@ -5,6 +5,8 @@
 
 [React](https://reactjs.org) bindings for [@platform/state](../state).
 
+<p>&nbsp;<p>
+
 
 ## Install
 
@@ -73,3 +75,6 @@ export class MyRoot extends React.PureComponent {
   }
 }
 ```
+
+<p>&nbsp;<p>
+<p>&nbsp;<p>

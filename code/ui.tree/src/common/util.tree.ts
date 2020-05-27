@@ -1,5 +1,5 @@
 import { ITreeNode, ITreeNodeProps, TreeNodePathFactory, ITreeNodePathContext } from '../types';
-import { value as valueUtil } from '@platform/util.value';
+import { value as valueUtil, defaultValue } from '@platform/util.value';
 
 import { clone } from 'ramda';
 export const R = { clone };
@@ -435,14 +435,14 @@ export function isOpen(node?: ITreeNode) {
  * Determined if the given node is enabled.
  */
 export function isEnabled(node?: ITreeNode) {
-  return valueUtil.defaultValue(props(node).isEnabled, true);
+  return defaultValue(props(node).isEnabled, true);
 }
 
 /**
  * Determines if the given node is selected.
  */
 export function isSelected(node?: ITreeNode) {
-  return valueUtil.defaultValue(props(node).isSelected, false);
+  return defaultValue(props(node).isSelected, false);
 }
 
 /**

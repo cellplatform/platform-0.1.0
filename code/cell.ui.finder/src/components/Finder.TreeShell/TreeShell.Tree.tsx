@@ -20,8 +20,12 @@ export class Tree extends React.PureComponent<ITreeProps> {
    */
 
   public componentDidMount() {
-    this.tree$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.context.dispatch(e));
-    onStateChanged(this.context, 'FINDER/tree', () => this.forceUpdate());
+    const ctx = this.context;
+    const changes = onStateChanged(ctx, this.unmounted$);
+    this.tree$.pipe(takeUntil(this.unmounted$)).subscribe((e) => ctx.dispatch(e));
+
+    // Redraw when tree-state changes.
+    changes.on('FINDER/tree').subscribe(() => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -33,7 +37,7 @@ export class Tree extends React.PureComponent<ITreeProps> {
    * [Properties]
    */
   public get tree(): t.IFinderState['tree'] {
-    const { root, current, theme = 'LIGHT' } = this.context.toState().tree || {};
+    const { root, current, theme = 'LIGHT' } = this.context.getState().tree || {};
     return { root, current, theme };
   }
 

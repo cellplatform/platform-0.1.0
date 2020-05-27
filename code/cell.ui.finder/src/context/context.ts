@@ -14,7 +14,7 @@ export function create(args: { env: t.IEnv }) {
   const ctx: t.IFinderContext = {
     env,
     client,
-    toState: () => store.state,
+    getState: () => store.state,
     dispatch: (e) => event$.next(e),
   };
 

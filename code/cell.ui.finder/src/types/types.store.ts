@@ -6,6 +6,7 @@ export type IFinderState = {
   tree: {
     root?: t.ITreeNode;
     current?: string;
+    selected?: string;
     theme?: t.TreeTheme;
   };
 };
