@@ -14,8 +14,9 @@ export async function runTasks(args: {
 
   const run = async (cmd: string) => exec.cmd.run(cmd, { cwd, silent: true });
 
-  const done = (ok: boolean) => {
-    return { ok };
+  const done = (ok: boolean, options: { bytes?: number; files?: string[] } = {}) => {
+    const { bytes = 0, files = [] } = options;
+    return { ok, bytes, files };
   };
 
   if (!(await fs.pathExists(sourceDir))) {
@@ -63,10 +64,10 @@ export async function runTasks(args: {
     { silent },
   );
 
+  const size = await fs.size.dir(targetDir);
+  const bytes = size.bytes;
+  const files = await fs.readdir(targetDir);
   if (!silent) {
-    const files = await fs.readdir(targetDir);
-    const size = (await fs.size.dir(targetDir)).toString();
-
     output
       .filter((line) => line.startsWith('dist/'))
       .forEach((line) => {
@@ -74,10 +75,10 @@ export async function runTasks(args: {
       });
     log.info();
     log.info.green(`copied:`);
-    log.info.gray(` • ${files.length} files (${log.blue(size)})`);
+    log.info.gray(` • ${files.length} files (${log.blue(size.toString())})`);
     log.info.gray(` • ${targetDir}`);
     log.info();
   }
 
-  return done(true);
+  return done(true, { bytes, files });
 }

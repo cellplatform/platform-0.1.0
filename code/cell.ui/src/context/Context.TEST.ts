@@ -1,8 +1,6 @@
 import { expect, t, Subject, MemoryCache, Client } from '../test';
 import { ui } from '..';
 
-const dispatch = (e: t.EnvEvent) => null; // Dummy.
-
 describe('Context', () => {
   it('has display name', () => {
     expect(ui.Context.displayName).to.eql('@platform/cell.ui/Context');
@@ -14,7 +12,7 @@ describe('Context', () => {
     const host = 'localhost:1234';
     const client = Client.typesystem(host);
     const env: t.IEnv = { host, def: 'cell:foo:A1', cache, event$ };
-    const ctx: t.IEnvContext = { env, client, dispatch };
+    const ctx: t.IEnvContext = { env, client };
 
     const res1 = ui.createProvider({ ctx });
     const res2 = ui.createProvider({ ctx, props: { foo: 123 } });

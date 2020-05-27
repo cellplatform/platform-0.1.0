@@ -36,6 +36,6 @@ export const bundle = async (args: {
     silent,
   });
 
-  const { ok } = tasks;
-  return { ok };
+  const { ok, bytes, files } = tasks;
+  return { ok, bytes, files };
 };

@@ -1,42 +1,23 @@
-import { bundle } from '@platform/cell.compile.web';
-import { fs } from '@platform/fs';
-import { log } from '@platform/log/lib/server';
 import { constants } from '../app/src/main/common';
-
-async function run(sourceDir: string, targetDir: string) {
-  const base = fs.resolve('.');
-  targetDir = fs.join(base, 'app', targetDir.substring(base.length + 1));
-  sourceDir = fs.resolve(sourceDir);
-  await bundle({ sourceDir, targetDir });
-  log.info.gray('━'.repeat(60));
-}
-
-async function bundleModules(modules: { sourceDir: string; targetDir: string }[]) {
-  const logList = () => {
-    modules.forEach(item => {
-      const name = fs.basename(item.sourceDir);
-      log.info.gray(`module: ${log.green(name)}`);
-    });
-    log.info();
-  };
-
-  logList();
-
-  for (const item of modules) {
-    const { sourceDir, targetDir } = item;
-    await run(sourceDir, targetDir);
-  }
-
-  log.info(`✨Bundled`);
-  logList();
-}
+import { bundleModules } from './bundle.ui.lib';
+import { prompt } from '@platform/cli.prompt';
+import { log } from '@platform/log/lib/server';
 
 (async () => {
-  const target = constants.paths.bundle;
+  var argv = process.argv.slice(2);
+  const isSilent = argv.includes('--silent') || argv.includes('-s');
 
-  await bundleModules([
-    { sourceDir: '../cell.ui.sys', targetDir: target.sys },
-    // { sourceDir: '../cell.ui.finder', targetDir: target.finder },
-    // { sourceDir: '../cell.ui.ide', targetDir: target.ide },
-  ]);
+  let modules = ['cell.ui.sys', 'cell.ui.finder', 'cell.ui.ide'];
+
+  if (!isSilent) {
+    const res = await prompt.checkbox({ message: 'modules', items: modules });
+    if (res.length === 0) {
+      return log.info.gray(`\nNo modules selected.`);
+    }
+    modules = modules.filter((name) => res.includes(name));
+  }
+
+  const target = constants.paths.bundle;
+  const args = modules.map((name) => ({ sourceDir: `../${name}`, targetDir: target[name] }));
+  await bundleModules(args);
 })();
