@@ -24,7 +24,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: ui.IEnvContext<t.FinderEvent>;
+  public context!: t.IFinderContext;
 
   /**
    * [Lifecycle]

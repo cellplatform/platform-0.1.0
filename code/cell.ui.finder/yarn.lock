@@ -1122,6 +1122,13 @@
     react "16.13.1"
     react-dom "16.13.1"
 
+"@platform/state@^0.4.64":
+  version "0.4.64"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.4.64.tgz#d22c8d00c976063e98100fedc747c5a3ac786e86"
+  integrity sha512-I4/l/NY8rO/rMojERNgHeOFIhkPJLmfzxTCIWba/9SUadFjNIxuukZujZLH/aWkFQsa2GVBngIne4eYe5h+OTQ==
+  dependencies:
+    "@platform/util.value" "0.7.23"
+
 "@platform/test@0.1.12":
   version "0.1.12"
   resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.1.12.tgz#3aa5e6dcd7e52b356f353e1227e4fb094fb3c0ca"

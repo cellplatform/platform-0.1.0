@@ -21,6 +21,7 @@
     "@platform/cell.ui": "0.1.25",
     "@platform/libs": "0.2.2",
     "@platform/react": "0.4.32",
+    "@platform/state": "0.4.64",
     "@platform/ui.spinner": "0.0.148",
     "@platform/ui.tree": "0.4.64",
     "path-sort": "0.1.0",

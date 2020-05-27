@@ -23,7 +23,7 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: ui.IEnvContext<t.FinderEvent>;
+  public context!: t.IFinderContext;
 
   /**
    * [Lifecycle]

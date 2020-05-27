@@ -20,5 +20,4 @@ import { t } from '../common';
 export type IEnvContext<E = t.EnvEvent> = {
   env: t.IEnv<E>;
   client: t.IClientTypesystem;
-  dispatch(e: E): void;
 };
