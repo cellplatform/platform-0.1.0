@@ -119,14 +119,14 @@
     "@platform/http.types" "0.2.10"
     "@platform/types" "0.4.22"
 
-"@platform/fs.s3@0.7.12":
-  version "0.7.12"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.7.12.tgz#5f9e7ef92b0fff41b66e93cbbd07dc7e539107dc"
-  integrity sha512-OycfdgQj0TW2z2Qwt3igB4OILKF/F9EtD7QC5+eMLm6TzPHVJ9WrNSeJJnlhO1h0TOqLqj9UCLJeGTm2OcMY8Q==
+"@platform/fs.s3@0.7.13":
+  version "0.7.13"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3/-/fs.s3-0.7.13.tgz#96ce7dd7800e4c7f881c3d4b95270bbb1fc718b4"
+  integrity sha512-r2GLF/X9ABn40PSEMVHisjwokjE0Ymwrlg2bLP35JaCtMWRzpwmgngEjwDPLk4U+NUJscJijnNJUpH5b1Ryiuw==
   dependencies:
     "@platform/fs" "0.5.17"
     "@platform/fs.s3.types" "0.2.9"
-    "@platform/http" "0.12.17"
+    "@platform/http" "0.12.18"
     "@platform/libs" "0.2.2"
     "@platform/log" "0.1.25"
     "@platform/types" "0.4.22"
@@ -173,10 +173,10 @@
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"
 
-"@platform/http@0.12.17":
-  version "0.12.17"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.17.tgz#c7f28cae66f087735e55a1a3be1581a34ae84157"
-  integrity sha512-0+GHqxRGkm/+z7aZXW7ZfWHlPph7OnWz5ABibjN4llXBAN39cl8chRiMEl1IW3MzX6j4q+MyvejI0GNdjBRX8w==
+"@platform/http@0.12.18":
+  version "0.12.18"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.18.tgz#34aad63993d0a875c7ad922d05255c5df44aabce"
+  integrity sha512-1nkdSMGbbeelawpSqou/8ht3e9UHh/Uul8Y6Jp2I5vfAiT8CfMKeEgEyd2L5OpW98QNOL1ivkjqxKqUMLgNaKg==
   dependencies:
     "@platform/http.types" "0.2.10"
     "@platform/libs" "0.2.2"

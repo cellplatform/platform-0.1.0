@@ -35,8 +35,8 @@ async function bundleModules(modules: { sourceDir: string; targetDir: string }[]
   const target = constants.paths.bundle;
 
   await bundleModules([
-    { sourceDir: '../cell.ui.finder', targetDir: target.finder },
     { sourceDir: '../cell.ui.sys', targetDir: target.sys },
-    { sourceDir: '../cell.ui.ide', targetDir: target.ide },
+    // { sourceDir: '../cell.ui.finder', targetDir: target.finder },
+    // { sourceDir: '../cell.ui.ide', targetDir: target.ide },
   ]);
 })();

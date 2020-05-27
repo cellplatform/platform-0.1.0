@@ -45,15 +45,15 @@
   dependencies:
     "@platform/libs" "0.2.2"
 
-"@platform/cell.client@0.2.92":
-  version "0.2.92"
-  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.92.tgz#54511e3347c7e8318a225b0ccce3695b616e4327"
-  integrity sha512-WeCned4KTyOn95yhXGssum3W8vDahUlRwyOYgXtCs68GPg14Szg9JTtdN2oXLfNN76ZL5EcR1PPCVUNFhlz4xw==
+"@platform/cell.client@0.2.93":
+  version "0.2.93"
+  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.93.tgz#23215a9cf94bd9b3b0af6525a6467d19072e54b3"
+  integrity sha512-RwTTDkHgphdUUbMtiCST1KIUPgdcBCLkYzkv45uRGr5gIeFmRdye7f14ZjvH7cc3MPdB+knUnWhscOKMzcyImg==
   dependencies:
     "@platform/cell.schema" "0.4.113"
     "@platform/cell.types" "0.4.102"
     "@platform/cell.typesystem" "0.0.52"
-    "@platform/http" "0.12.17"
+    "@platform/http" "0.12.18"
     "@platform/http.types" "0.2.10"
     "@platform/libs" "0.2.2"
     "@platform/queue" "0.0.12"
@@ -291,10 +291,10 @@
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"
 
-"@platform/http@0.12.17":
-  version "0.12.17"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.17.tgz#c7f28cae66f087735e55a1a3be1581a34ae84157"
-  integrity sha512-0+GHqxRGkm/+z7aZXW7ZfWHlPph7OnWz5ABibjN4llXBAN39cl8chRiMEl1IW3MzX6j4q+MyvejI0GNdjBRX8w==
+"@platform/http@0.12.18":
+  version "0.12.18"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.18.tgz#34aad63993d0a875c7ad922d05255c5df44aabce"
+  integrity sha512-1nkdSMGbbeelawpSqou/8ht3e9UHh/Uul8Y6Jp2I5vfAiT8CfMKeEgEyd2L5OpW98QNOL1ivkjqxKqUMLgNaKg==
   dependencies:
     "@platform/http.types" "0.2.10"
     "@platform/libs" "0.2.2"
@@ -322,10 +322,10 @@
     chalk "4.0.0"
     cli-table "0.3.1"
 
-"@platform/micro@0.14.37":
-  version "0.14.37"
-  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.14.37.tgz#ae30a5e6d14792180c0d1a0f82d58e0522911435"
-  integrity sha512-hUiVpqtl8FiG546O+u8ZQOBO6T9GnRccK30lxOWlhdVT8qvMXsaxy1Q+Ri0Vq4H4TCgIGmXUkCteIQb3ntJ8YA==
+"@platform/micro@0.14.38":
+  version "0.14.38"
+  resolved "https://registry.yarnpkg.com/@platform/micro/-/micro-0.14.38.tgz#366feb7d939594daafb05ffd748107effdd90963"
+  integrity sha512-VmarwyHDh5MrtauuehA1jdcQxIJPE+bPH4gB8UITOuYz1+J9D+pS12N8LsxtG3GYEkYybBoT+UNR8Oc13RUekA==
   dependencies:
     "@platform/http.router" "0.0.28"
     "@platform/http.types" "0.2.10"

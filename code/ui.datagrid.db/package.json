@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.datagrid.db",
-  "version": "0.4.278",
+  "version": "0.4.279",
   "description": "Abstract synchronization mapper between [ui.datagrid] and a [fsdb].",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -29,7 +29,7 @@
     "@platform/fsdb.nedb": "1.3.119",
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
-    "@platform/ui.datagrid": "0.7.249",
+    "@platform/ui.datagrid": "0.7.250",
     "@platform/ui.datagrid.cell": "0.2.89",
     "@uiharness/dev": "0.10.5",
     "@uiharness/ui": "0.7.6",
