@@ -1,7 +1,7 @@
 ![Module](https://img.shields.io/badge/%40platform-state.react-%23EA4E7E.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![NPM](https://img.shields.io/npm/v/@platform/state.react.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/state.react)
-![banner](https://platform.sfo2.digitaloceanspaces.com/repo-banners/state.react.png)
+![banner](https://user-images.githubusercontent.com/185555/82968700-09162580-a022-11ea-8ba6-c2b706862321.png)
 
 [React](https://reactjs.org) bindings for [@platform/state](../state).
 
