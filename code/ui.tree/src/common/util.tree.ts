@@ -4,12 +4,14 @@ import { value as valueUtil, defaultValue } from '@platform/util.value';
 import { clone } from 'ramda';
 export const R = { clone };
 
-export type WalkArgs = {
+export type IDescend<T extends ITreeNode = ITreeNode> = {
   index: number;
-  parent?: ITreeNode;
+  parent?: T;
   depth: number;
   stop: () => void;
 };
+
+export type IAscend<T extends ITreeNode = ITreeNode> = { parent?: T; stop: () => void };
 
 /**
  * Retrieves the children of a node (or an empty array).
@@ -42,7 +44,7 @@ export function hasChild(
  */
 export function find<T extends ITreeNode>(
   root: T | undefined,
-  match: (node: T, args: WalkArgs) => boolean,
+  match: (node: T, args: IDescend<T>) => boolean,
 ): T | undefined {
   if (!root) {
     return;
@@ -81,7 +83,7 @@ export function findById<T extends ITreeNode>(
  */
 export function walk<T extends ITreeNode>(
   node: T | undefined,
-  fn: (node: T, args: WalkArgs) => any,
+  fn: (node: T, args: IDescend<T>) => any,
 ) {
   let stopped = false;
   const walk = (args: { node?: ITreeNode; parent?: ITreeNode; depth: number; index: number }) => {
@@ -89,7 +91,7 @@ export function walk<T extends ITreeNode>(
       return;
     }
     fn(args.node as T, {
-      parent: args.parent,
+      parent: args.parent as T,
       index: args.index,
       depth: args.depth,
       stop: () => (stopped = true),
@@ -105,10 +107,29 @@ export function walk<T extends ITreeNode>(
         parent: args.node,
         index,
         depth: args.depth + 1,
-      }); // <== RECURSION
+      }); // <== RECURSION 🌳
     }
   };
   return walk({ node, depth: 0, index: -1 });
+}
+
+/**
+ * Walks the tree from the given node up to the root.
+ */
+export function walkUp<T extends ITreeNode>(
+  root: T | undefined,
+  node: T | T['id'] | undefined,
+  fn: (node: T, args: IAscend<T>) => any,
+) {
+  const current = typeof node === 'string' ? findById(root, node) : node;
+  if (current) {
+    let stop = false;
+    const args: IAscend<T> = { parent: parent(root, current), stop: () => (stop = true) };
+    fn(current, args);
+    if (!stop && parent) {
+      walkUp(root, args.parent, fn); // <== RECURSION 🌳
+    }
+  }
 }
 
 /**
@@ -116,7 +137,7 @@ export function walk<T extends ITreeNode>(
  */
 export function map<T extends ITreeNode, R>(
   node: T | undefined,
-  fn: (node: T, args: WalkArgs) => R,
+  fn: (node: T, args: IDescend<T>) => R,
 ) {
   let result: R[] = [];
   walk<T>(node, (node, e) => (result = [...result, fn(node, e) as R]));
