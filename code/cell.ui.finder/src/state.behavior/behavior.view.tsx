@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { filter } from 'rxjs/operators';
 
-import { rx, t, time } from '../common';
-import { Viewer } from '../components/Viewer';
-import { Doc } from '../components/Viewer.Doc';
+import { rx, t } from '../common';
 
-const URI_TEMP = 'cell:cka0c7a0i00004369o5ttdbt3:A1'; // TEMP 🐷
+// const imports = {
+//   file: import('../components/Viewer.File'),
+//   doc: import('../components/Viewer.Doc'),
+// };
+// const URI_TEMP = 'cell:cka0c7a0i00004369o5ttdbt3:A1'; // TEMP 🐷
 
 /**
  * Behavior controller for the current [View].
@@ -20,16 +22,19 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
   rx.eventPayload<t.IFinderViewRequestEvent>(event$, 'FINDER/view/req')
     .pipe(filter((e) => !e.isHandled))
     .subscribe((e) => {
-      const id = e.state.tree.selected;
-
-      if (id === 'intro.files') {
-        e.render(async () => {
-          await time.wait(500); // Fake load delay.
-
-          return <Viewer uri={URI_TEMP} />;
-        });
-      } else {
-        e.render(<Doc />);
-      }
+      // console.log('behavior', e);
+      // const node = e.state.tree.selected;
+      // console.log('node', node);
+      // if (node === 'intro.files') {
+      //   e.render(async () => {
+      //     const Viewer = (await imports.file).Viewer;
+      //     return <Viewer uri={URI_TEMP} />;
+      //   });
+      // } else {
+      //   e.render(async () => {
+      //     const Doc = (await imports.doc).Doc;
+      //     return <Doc />;
+      //   });
+      // }
     });
 }

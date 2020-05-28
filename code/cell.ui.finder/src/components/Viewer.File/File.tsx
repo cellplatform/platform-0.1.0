@@ -3,8 +3,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, COLORS, css, CssValue, Schema, t, ui } from '../../common';
-import { ViewerInfo } from './Viewer.Info';
-import { IViewerListItem, ViewerItemClickEvent, ViewerList } from './Viewer.List';
+import { ViewerInfo } from './File.Info';
+import { IViewerListItem, ViewerItemClickEvent, ViewerList } from './File.List';
 
 const pathSort = require('path-sort'); // eslint-disable-line
 

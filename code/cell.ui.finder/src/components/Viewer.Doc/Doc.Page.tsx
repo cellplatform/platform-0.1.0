@@ -3,21 +3,21 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { defaultValue, css, color, CssValue } from '../../common';
 
-export type IPageProps = {
+export type IDocPageProps = {
   children?: React.ReactNode;
   style?: CssValue;
 };
-export type IPageState = {};
+export type IDocPageState = {};
 
-export class Page extends React.PureComponent<IPageProps, IPageState> {
-  public state: IPageState = {};
-  private state$ = new Subject<Partial<IPageState>>();
+export class DocPage extends React.PureComponent<IDocPageProps, IDocPageState> {
+  public state: IDocPageState = {};
+  private state$ = new Subject<Partial<IDocPageState>>();
   private unmounted$ = new Subject<{}>();
 
   /**
    * [Lifecycle]
    */
-  constructor(props: IPageProps) {
+  constructor(props: IDocPageProps) {
     super(props);
   }
 

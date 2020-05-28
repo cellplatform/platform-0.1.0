@@ -1,9 +1,7 @@
 import { TreeView } from '@platform/ui.tree';
+import { COLORS, t } from '../common';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
-
-import { t } from '../common';
-import { toggleSelection } from './behavior.tree.toggle';
 
 /**
  * Behavior controller for the <TreeView>.
@@ -63,4 +61,30 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
     };
     e.change(next);
   });
+}
+
+/**
+ * [Helpers]
+ */
+
+/**
+ * Toggles the selected node.
+ */
+function toggleSelection(root: t.ITreeNode | undefined, id: string) {
+  const { BLUE } = COLORS;
+
+  const current = TreeView.util.find(root, (node) => node.props?.isSelected || false);
+  if (current && current.id !== id) {
+    root = TreeView.util.setProps(root, current.id, {
+      isSelected: false,
+      colors: {},
+    });
+  }
+
+  root = TreeView.util.setProps(root, id, {
+    isSelected: true,
+    colors: { label: BLUE, icon: BLUE },
+  });
+
+  return root;
 }

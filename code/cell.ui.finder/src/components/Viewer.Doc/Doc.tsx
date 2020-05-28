@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue } from '../../common';
-import { Page } from './Doc.Page';
+import { DocPage } from './Doc.Page';
 import { Tmp } from './Tmp';
 
 export type IDocProps = { style?: CssValue };
@@ -82,9 +82,9 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
     return (
       <div {...styles.base}>
         <div {...styles.page}>
-          <Page>
+          <DocPage>
             <Tmp />
-          </Page>
+          </DocPage>
         </div>
       </div>
     );

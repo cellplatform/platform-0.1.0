@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue, t, time, ui } from '../../common';
 import { IPropListProps, PropList, Spinner } from '../primitives';
-import { IViewerListItem } from './Viewer.List';
+import { IViewerListItem } from './File.List';
 
 const filesize = require('pretty-bytes'); // eslint-disable-line
 

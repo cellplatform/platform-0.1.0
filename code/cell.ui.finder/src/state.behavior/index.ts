@@ -1,2 +1,2 @@
-import * as behavior from './behavior';
+import * as behavior from './behaviors';
 export { behavior };

@@ -7,6 +7,7 @@ import { t } from '../common';
 import { Root } from '../components/Finder.Root';
 import { context } from '../context';
 import { behavior } from '../state.behavior';
+import '../_SAMPLE/init';
 
 const win = (window as unknown) as t.ITopWindow;
 const env = win.env;
