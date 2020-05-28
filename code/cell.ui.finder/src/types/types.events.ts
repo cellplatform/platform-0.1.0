@@ -8,6 +8,7 @@ export type FinderEvent =
   | GlobalEvents
   | IFinderChanged
   | IFinderTreeEvent
+  | IFinderTreeSelectEvent
   | IFinderViewRequestEvent;
 
 export type IFinderChanged = {
@@ -28,6 +29,12 @@ export type IFinderTree = {
   selected?: string | null;
   theme?: t.TreeTheme | null;
 };
+
+export type IFinderTreeSelectEvent = {
+  type: 'FINDER/tree/select';
+  payload: IFinderTreeSelect;
+};
+export type IFinderTreeSelect = { node: string };
 
 /**
  * View
