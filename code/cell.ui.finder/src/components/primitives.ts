@@ -14,3 +14,6 @@ export { Text, ITextProps };
 
 import { Button, IButtonProps } from '@platform/ui.button';
 export { Button, IButtonProps };
+
+import { TreeView } from '@platform/ui.tree';
+export { TreeView };

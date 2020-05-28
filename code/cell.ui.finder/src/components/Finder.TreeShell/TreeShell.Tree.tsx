@@ -1,10 +1,10 @@
-import { TreeView } from '@platform/ui.tree';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { CssValue, onStateChanged, t, ui } from '../../common';
 import { Icons } from '../Icons';
+import { TreeView } from '../primitives';
 
 export type ITreeProps = { style?: CssValue };
 

@@ -6,7 +6,6 @@ import { defaultValue, css, color, CssValue, COLORS } from '../../common';
 export type IDocPageProps = {
   children?: React.ReactNode;
   pageDepth?: number;
-  radius?: number;
   style?: CssValue;
 };
 export type IDocPageState = {};
@@ -41,14 +40,12 @@ export class DocPage extends React.PureComponent<IDocPageProps, IDocPageState> {
    * [Render]
    */
   public render() {
-    const radius = defaultValue(this.props.radius, 5);
     const styles = {
       base: css({
         flex: 1,
         maxWidth: 850,
         position: 'relative',
         color: COLORS.DARK,
-        borderRadius: `${radius}px ${radius}px 0 0`,
         overflow: 'hidden',
       }),
     };

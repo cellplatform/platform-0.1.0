@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue, t, ui } from '../../common';
 import { Tree } from './TreeShell.Tree';
