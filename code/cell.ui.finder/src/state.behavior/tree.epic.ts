@@ -1,6 +1,8 @@
 import { TreeView } from '@platform/ui.tree';
 import { COLORS, t } from '../common';
 
+const util = TreeView.util;
+
 /**
  * Behavior controller for the <TreeView>.
  */
@@ -12,8 +14,22 @@ export function init(args: { store: t.IFinderStore }) {
    */
   store.on<t.IFinderTreeSelectEvent>('FINDER/tree/select').subscribe((e) => {
     const selected = e.payload.node;
-    const root = toggleSelection(store.state.tree.root, selected);
-    store.dispatch({ type: 'FINDER/tree', payload: { root, selected } });
+    const root = toggleSelection(e.state.tree.root, selected);
+    const parent = util.parent(root, selected);
+    const depth = util.depth(root, parent);
+    const current = depth < 2 ? root?.id : parent?.id;
+    store.dispatch({ type: 'FINDER/tree', payload: { root, selected, current } });
+  });
+
+  /**
+   * EPIC: Select the given nodes parent.
+   */
+  store.on<t.IFinderTreeSelectParentEvent>('FINDER/tree/select/parent').subscribe((e) => {
+    const root = e.state.tree.root;
+    const parent = util.parent(root, e.payload.node);
+    if (parent) {
+      store.dispatch({ type: 'FINDER/tree/select', payload: { node: parent.id } });
+    }
   });
 }
 
@@ -24,15 +40,15 @@ export function init(args: { store: t.IFinderStore }) {
 export function toggleSelection(root: t.ITreeNode | undefined, id: string) {
   const { BLUE } = COLORS;
 
-  const current = TreeView.util.find(root, (node) => node.props?.isSelected || false);
+  const current = util.find(root, (node) => node.props?.isSelected || false);
   if (current && current.id !== id) {
-    root = TreeView.util.setProps(root, current.id, {
+    root = util.setProps(root, current.id, {
       isSelected: false,
       colors: {},
     });
   }
 
-  root = TreeView.util.setProps(root, id, {
+  root = util.setProps(root, id, {
     isSelected: true,
     colors: { label: BLUE, icon: BLUE },
   });

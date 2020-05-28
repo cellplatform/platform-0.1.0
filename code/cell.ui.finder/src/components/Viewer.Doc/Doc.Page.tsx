@@ -5,7 +5,7 @@ import { defaultValue, css, color, CssValue, COLORS } from '../../common';
 
 export type IDocPageProps = {
   children?: React.ReactNode;
-  pageDepth?: number;
+  depth?: number;
   style?: CssValue;
 };
 export type IDocPageState = {};
@@ -31,9 +31,9 @@ export class DocPage extends React.PureComponent<IDocPageProps, IDocPageState> {
   /**
    * [Properties]
    */
-  public get pageDepth() {
-    const { pageDepth = 0 } = this.props;
-    return Math.max(0, Math.min(pageDepth, 3));
+  public get depth() {
+    const { depth = 0 } = this.props;
+    return Math.max(0, Math.min(depth, 3));
   }
 
   /**
@@ -54,7 +54,7 @@ export class DocPage extends React.PureComponent<IDocPageProps, IDocPageState> {
 
   private renderSheets() {
     const { children } = this.props;
-    const depth = this.pageDepth;
+    const depth = this.depth;
 
     if (depth < 2) {
       return this.renderSheet({ color: children ? 0 : 1, children });

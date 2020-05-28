@@ -19,7 +19,7 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
 
   /**
    * Change selection
-   * - Update tree state.
+   *  - Update tree state.
    */
   left.down.node$.pipe(filter((e) => e.id !== store.state.tree.selected)).subscribe((e) => {
     ctx.fire({ type: 'FINDER/tree/select', payload: { node: e.id } });
@@ -28,8 +28,26 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
   /**
    * Toggle open/closed state of twisty.
    */
-  left.click.twisty$.subscribe((e) => toggleTwisty(e.id));
+  left.down.twisty$.subscribe((e) => toggleTwisty(e.id));
   left.dblclick.node$
     .pipe(filter((e) => Boolean(e.props.inline)))
     .subscribe((e) => toggleTwisty(e.id));
+
+  /**
+   * Back button (header).
+   */
+  left.down.parent$.subscribe((e) => {
+    const node = e.id;
+    ctx.fire({ type: 'FINDER/tree/select', payload: { node } });
+  });
+
+  /**
+   * Drill-in
+   */
+  left.down.drillIn$.subscribe((e) => {
+    const node = e.children[0]?.id;
+    if (node) {
+      ctx.fire({ type: 'FINDER/tree/select', payload: { node } });
+    }
+  });
 }

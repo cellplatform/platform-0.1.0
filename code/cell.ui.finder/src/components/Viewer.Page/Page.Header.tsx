@@ -40,6 +40,14 @@ export class PageHeader extends React.PureComponent<IPageHeaderProps, IPageHeade
   }
 
   /**
+   * [Properties]
+   */
+  public get title() {
+    const { title } = this.props;
+    return title === undefined ? 'Untitled' : title;
+  }
+
+  /**
    * [Render]
    */
   public render() {
@@ -67,7 +75,7 @@ export class PageHeader extends React.PureComponent<IPageHeaderProps, IPageHeade
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div {...styles.title}>{this.props.title || 'Untitled'}</div>
+        <div {...styles.title}>{this.title}</div>
         <div {...styles.tools}>
           <Button onClick={this.toolClickHandler('CLOSE')}>
             <Icons.Close size={22} color={COLORS.DARK} />

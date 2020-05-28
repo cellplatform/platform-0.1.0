@@ -34,21 +34,36 @@ export class PageVideo extends React.PureComponent<IPageVideoProps, IPageVideoSt
   }
 
   /**
+   * [Properties]
+   */
+  public get videoId() {
+    return this.props.src.replace(/^https:\/\//, '').replace(/vimeo.com\//, '');
+  }
+
+  public get src() {
+    const id = this.videoId;
+    return id ? `https://player.vimeo.com/video/${id}` : '';
+  }
+
+  /**
    * [Render]
    */
   public render() {
-    const { width = 640, height = 360, src } = this.props;
+    const { width = 640, height = 360 } = this.props;
     const allowFullScreen = defaultValue(this.props.allowFullScreen, true);
     const allow = defaultValue(this.props.autoPlay, true) ? 'autoplay' : '';
-    const MarginY = defaultValue(this.props.marginY, 30);
+    const MarginY = defaultValue(this.props.marginY, 50);
+    const src = this.src;
 
     const styles = {
       base: css({
-        position: 'relative',
-        Flex: 'center-center',
         MarginY,
+        Flex: 'center-center',
+        position: 'relative',
+        visibility: src ? 'visible' : 'hidden',
       }),
     };
+
     return (
       <div {...css(styles.base, this.props.style)}>
         <iframe

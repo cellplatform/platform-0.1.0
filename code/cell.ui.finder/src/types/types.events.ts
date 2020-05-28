@@ -9,6 +9,7 @@ export type FinderEvent =
   | IFinderChanged
   | IFinderTreeEvent
   | IFinderTreeSelectEvent
+  | IFinderTreeSelectParentEvent
   | IFinderViewRequestEvent;
 
 export type IFinderChanged = {
@@ -35,6 +36,12 @@ export type IFinderTreeSelectEvent = {
   payload: IFinderTreeSelect;
 };
 export type IFinderTreeSelect = { node: string };
+
+export type IFinderTreeSelectParentEvent = {
+  type: 'FINDER/tree/select/parent';
+  payload: IFinderTreeSelectParent;
+};
+export type IFinderTreeSelectParent = { node: string };
 
 /**
  * View

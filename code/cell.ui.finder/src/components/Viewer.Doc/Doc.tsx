@@ -8,7 +8,7 @@ import { Text } from '../primitives';
 
 export type IDocProps = {
   children?: React.ReactNode;
-  pageDepth?: number;
+  depth?: number;
   background?: string | number | React.ReactNode;
   backgroundBlur?: number;
   style?: CssValue;
@@ -39,9 +39,9 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
   /**
    * [Properties]
    */
-  public get pageDepth() {
-    const { pageDepth = 0 } = this.props;
-    return Math.max(0, pageDepth);
+  public get depth() {
+    const { depth = 0 } = this.props;
+    return Math.max(0, depth);
   }
 
   public get blur() {
@@ -51,7 +51,7 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
       return backgroundBlur;
     }
 
-    const depth = this.pageDepth;
+    const depth = this.depth;
     if (depth > 0) {
       return 8;
     }
@@ -78,7 +78,7 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
     return (
       <Text style={css(styles.base, this.props.style)}>
         {this.renderBackground()}
-        {this.pageDepth < 1 && <Text {...styles.highlight} />}
+        {this.depth < 1 && <Text {...styles.highlight} />}
         {this.renderBody()}
       </Text>
     );
@@ -129,14 +129,14 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
     const styles = {
       base: css({ Absolute: 0, display: 'flex' }),
     };
-    const pageDepth = this.pageDepth;
-    const el = pageDepth === 0 ? children : this.renderPage();
+    const depth = this.depth;
+    const el = depth === 0 ? children : this.renderPage();
     return <div {...styles.base}>{el}</div>;
   }
 
   private renderPage() {
     const { children } = this.props;
-    const pageDepth = this.pageDepth;
+    const depth = this.depth;
     const styles = {
       base: css({
         Absolute: [20, 40, 0, 40],
@@ -146,7 +146,7 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
     };
     return (
       <div {...styles.base}>
-        <DocPage pageDepth={pageDepth}>{children}</DocPage>
+        <DocPage depth={depth}>{children}</DocPage>
       </div>
     );
   }
