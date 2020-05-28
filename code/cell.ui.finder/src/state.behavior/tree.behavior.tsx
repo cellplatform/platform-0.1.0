@@ -12,9 +12,15 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
   const tree = TreeView.events(ctx.event$ as Observable<t.TreeViewEvent>);
   const left = tree.mouse({ button: 'LEFT' });
 
-  const toggleTwisty = (id: string) => {
-    const root = TreeView.util.toggleIsOpen(store.state.tree.root, id);
+  const toggleTwisty = (node: string) => {
+    const root = TreeView.util.toggleIsOpen(store.state.tree.root, node);
     ctx.fire({ type: 'FINDER/tree', payload: { root } });
+  };
+
+  const select = (node?: string) => {
+    if (node) {
+      ctx.fire({ type: 'FINDER/tree/select', payload: { node } });
+    }
   };
 
   /**
@@ -22,7 +28,7 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
    *  - Update tree state.
    */
   left.down.node$.pipe(filter((e) => e.id !== store.state.tree.selected)).subscribe((e) => {
-    ctx.fire({ type: 'FINDER/tree/select', payload: { node: e.id } });
+    select(e.id);
   });
 
   /**
@@ -37,17 +43,22 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
    * Back button (header).
    */
   left.down.parent$.subscribe((e) => {
-    const node = e.id;
-    ctx.fire({ type: 'FINDER/tree/select', payload: { node } });
+    select(e.id);
   });
 
   /**
    * Drill-in
    */
-  left.down.drillIn$.subscribe((e) => {
-    const node = e.children[0]?.id;
-    if (node) {
-      ctx.fire({ type: 'FINDER/tree/select', payload: { node } });
-    }
-  });
+  const drillIn = (node?: t.ITreeNode) => {
+    const child = (node?.children || [])[0]?.id;
+    select(child);
+  };
+
+  left.down.drillIn$.subscribe((e) => drillIn(e));
+  left.dblclick.node$
+    .pipe(
+      filter((e) => !Boolean(e.props.inline)),
+      filter((e) => e.children.length > 0),
+    )
+    .subscribe((e) => drillIn(e));
 }
