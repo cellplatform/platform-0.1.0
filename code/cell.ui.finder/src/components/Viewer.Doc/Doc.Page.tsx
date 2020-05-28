@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { defaultValue, css, color, CssValue } from '../../common';
+import { defaultValue, css, color, CssValue, COLORS } from '../../common';
 
 export type IDocPageProps = {
   children?: React.ReactNode;
   pageDepth?: number;
+  radius?: number;
   style?: CssValue;
 };
 export type IDocPageState = {};
@@ -40,11 +41,15 @@ export class DocPage extends React.PureComponent<IDocPageProps, IDocPageState> {
    * [Render]
    */
   public render() {
+    const radius = defaultValue(this.props.radius, 5);
     const styles = {
       base: css({
         flex: 1,
         maxWidth: 850,
         position: 'relative',
+        color: COLORS.DARK,
+        borderRadius: `${radius}px ${radius}px 0 0`,
+        overflow: 'hidden',
       }),
     };
     return <div {...css(styles.base, this.props.style)}>{this.renderSheets()}</div>;
@@ -61,7 +66,6 @@ export class DocPage extends React.PureComponent<IDocPageProps, IDocPageState> {
     if (depth === 2) {
       return (
         <React.Fragment>
-          {/* {this.renderSheet({ color: 0.15, marginX: 15, height: 6, radius: 4 })} */}
           {this.renderSheet({ color: 0.3, top: 0, marginX: 8, height: 8, radius: 4 })}
           {this.renderSheet({ color: children ? 0 : 1, top: 8, children })}
         </React.Fragment>
@@ -78,15 +82,7 @@ export class DocPage extends React.PureComponent<IDocPageProps, IDocPageState> {
       );
     }
 
-    // const styles = {
-    //   base: css({}),
-    // };
     return null;
-    // <React.Fragment>
-    //   {this.renderSheet({ color: 0.15, marginX: 15, height: 6, radius: 4 })}
-    //   {this.renderSheet({ color: 0.3, top: 6, marginX: 8, height: 8, radius: 4 })}
-    //   {this.renderSheet({ color: children ? 0 : 1, top: 14, children })}
-    // </React.Fragment>
   }
 
   private renderSheet(

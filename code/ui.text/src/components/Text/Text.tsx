@@ -2,27 +2,7 @@
 
 import * as React from 'react';
 
-import {
-  // css,
-  ITextProps,
-  toTextCss,
-  toShadow,
-  constants,
-  // mouse,
-  // MeasureSize,
-} from '../../common';
-
-// import {
-// css,
-// ITextProps,
-// toTextCss,
-// toShadow,
-// constants,
-// MouseEvent,
-// MouseEventHandler,
-// mouse,
-// MeasureSize,
-// } from '../../common/libs';
+import { ITextProps, toTextCss, toShadow, constants } from '../../common';
 
 import { css } from '@platform/css';
 import { mouse, MeasureSize } from '@platform/react';

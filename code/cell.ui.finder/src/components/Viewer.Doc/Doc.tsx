@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue } from '../../common';
 import { DocPage } from './Doc.Page';
+import { Text } from '../primitives';
 
 export type IDocProps = {
   children?: React.ReactNode;
@@ -75,11 +76,11 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
     };
 
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <Text style={css(styles.base, this.props.style)}>
         {this.renderBackground()}
-        {this.pageDepth < 1 && <div {...styles.highlight} />}
+        {this.pageDepth < 1 && <Text {...styles.highlight} />}
         {this.renderBody()}
-      </div>
+      </Text>
     );
   }
 

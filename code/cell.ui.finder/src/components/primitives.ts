@@ -7,3 +7,10 @@ export { PropList, IPropListItem, IPropListProps };
 
 import { Spinner } from '@platform/ui.spinner';
 export { Spinner };
+
+import { ITextProps } from '@platform/ui.text/lib/types';
+import { Text } from '@platform/ui.text/lib/components/Text';
+export { Text, ITextProps };
+
+import { Button, IButtonProps } from '@platform/ui.button';
+export { Button, IButtonProps };
