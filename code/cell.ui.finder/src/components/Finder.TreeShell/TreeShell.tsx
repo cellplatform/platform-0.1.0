@@ -39,7 +39,11 @@ export class TreeShell extends React.PureComponent<ITreeShellProps> {
         position: 'relative',
         display: 'flex',
         width: 240,
-        borderRight: `solid 1px ${color.format(-0.15)}`,
+      }),
+      leftBorder: css({
+        Absolute: [0, null, 0, 0],
+        width: 1,
+        backgroundColor: color.format(-0.15),
       }),
       right: css({
         position: 'relative',
@@ -55,6 +59,7 @@ export class TreeShell extends React.PureComponent<ITreeShellProps> {
         </div>
         <div {...styles.right}>
           <View />
+          <div {...styles.leftBorder}></div>
         </div>
       </div>
     );

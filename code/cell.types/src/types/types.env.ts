@@ -1,12 +1,12 @@
-import { Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 import { t } from '../common';
 
 export type EnvEvent = t.TypedSheetEvent;
 
-export type IEnv<E = EnvEvent> = {
+export type IEnv = {
   host: string;
   def: string;
   cache: t.IMemoryCache;
-  event$: Observable<E>;
+  event$: Subject<t.Event>;
 };
 export type ITopWindow = { env: IEnv };

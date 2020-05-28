@@ -38,7 +38,7 @@ export class Root extends React.PureComponent<IRootProps> {
       shell: css({ Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0] }),
     };
 
-    const uri = this.props.ctx.env.def;
+    const uri = ''; // temp
 
     return (
       <this.Provider>

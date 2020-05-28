@@ -1,4 +1,6 @@
 import { Subject } from 'rxjs';
+import { share } from 'rxjs/operators';
+
 import { Client, t } from '../common';
 import { createStore } from '../state';
 
@@ -6,16 +8,20 @@ import { createStore } from '../state';
  * Creates an environment context.
  */
 export function create(args: { env: t.IEnv }) {
-  const event$ = new Subject<t.FinderEvent>();
-  const env = { ...args.env, event$ } as t.IEnv<t.FinderEvent>;
-  const client = Client.typesystem(env.host);
-  const store = createStore({ env, event$ });
+  const { env } = args;
+  const event$ = env.event$;
+  const client = Client.typesystem({
+    http: env.host,
+    event$: event$ as Subject<t.TypedSheetEvent>,
+    cache: env.cache,
+  });
+  const store = createStore({ event$ });
 
   const ctx: t.IFinderContext = {
-    env,
     client,
     getState: () => store.state,
-    dispatch: (e) => event$.next(e),
+    event$: (event$ as Subject<t.FinderEvent>).pipe(share()),
+    fire: (e) => event$.next(e),
   };
 
   return { ctx, store };

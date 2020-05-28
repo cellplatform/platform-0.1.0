@@ -7,6 +7,7 @@ export * from './types.db';
 export * from './types.electron';
 export * from './types.env';
 export * from './types.error';
+export * from './types.event';
 export * from './types.file';
 export * from './types.fs';
 export * from './types.fs.sync';

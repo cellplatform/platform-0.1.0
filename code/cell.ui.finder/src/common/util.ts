@@ -8,7 +8,7 @@ import * as t from './types';
  * Helper for monitoring when the Finder state has changed.
  */
 export function onStateChanged(ctx: t.IFinderContext, unmounted$?: Observable<{}>) {
-  let event$ = ctx.env.event$;
+  let event$ = ctx.event$;
   event$ = unmounted$ ? event$.pipe(takeUntil(unmounted$)) : event$;
   return {
     on(type: t.FinderEvent['type']) {

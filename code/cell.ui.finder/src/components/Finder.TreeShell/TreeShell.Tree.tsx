@@ -22,7 +22,7 @@ export class Tree extends React.PureComponent<ITreeProps> {
   public componentDidMount() {
     const ctx = this.context;
     const changes = onStateChanged(ctx, this.unmounted$);
-    this.tree$.pipe(takeUntil(this.unmounted$)).subscribe((e) => ctx.dispatch(e));
+    this.tree$.pipe(takeUntil(this.unmounted$)).subscribe((e) => ctx.fire(e));
 
     // Redraw when tree-state changes.
     changes.on('FINDER/tree').subscribe(() => this.forceUpdate());

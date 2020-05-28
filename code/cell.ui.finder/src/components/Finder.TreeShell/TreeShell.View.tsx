@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { Spinner } from '@platform/ui.spinner';
 
-import { color, css, COLORS, CssValue, onStateChanged, t, ui, value } from '../../common';
+import { color, css, COLORS, CssValue, onStateChanged, t, ui } from '../../common';
 
 export type IViewProps = { style?: CssValue };
 export type IViewState = { el?: React.ReactNode; isSpinning?: boolean };
@@ -55,7 +55,7 @@ export class View extends React.PureComponent<IViewProps, IViewState> {
         };
 
         const payload: P = { state: ctx.getState(), isHandled: false, render };
-        ctx.dispatch({
+        ctx.fire({
           type: 'FINDER/view/req',
           payload,
         });

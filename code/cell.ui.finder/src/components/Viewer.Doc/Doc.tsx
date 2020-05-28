@@ -4,9 +4,14 @@ import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue } from '../../common';
 import { DocPage } from './Doc.Page';
-import { Tmp } from './Tmp';
 
-export type IDocProps = { style?: CssValue };
+export type IDocProps = {
+  children?: React.ReactNode;
+  pageDepth?: number;
+  background?: string | number | React.ReactNode;
+  backgroundBlur?: number;
+  style?: CssValue;
+};
 export type IDocState = {};
 
 export class Doc extends React.PureComponent<IDocProps, IDocState> {
@@ -31,6 +36,29 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
   }
 
   /**
+   * [Properties]
+   */
+  public get pageDepth() {
+    const { pageDepth = 0 } = this.props;
+    return Math.max(0, pageDepth);
+  }
+
+  public get blur() {
+    const { backgroundBlur } = this.props;
+
+    if (typeof backgroundBlur === 'number') {
+      return backgroundBlur;
+    }
+
+    const depth = this.pageDepth;
+    if (depth > 0) {
+      return 8;
+    }
+
+    return 0;
+  }
+
+  /**
    * [Render]
    */
   public render() {
@@ -48,32 +76,68 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        {this.renderBackground({})}
-        {this.renderBackground({ blur: 5 })}
-        <div {...styles.highlight} />
+        {this.renderBackground()}
+        {this.pageDepth < 1 && <div {...styles.highlight} />}
         {this.renderBody()}
       </div>
     );
   }
 
-  private renderBackground(args: { blur?: number } = {}) {
-    const styles = {
-      base: css({
-        Absolute: -10,
-        backgroundImage: `url(https://images.unsplash.com/photo-1465056836041-7f43ac27dcb5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3151&q=80)`,
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-        filter: args.blur ? `blur(${args.blur}px)` : undefined,
-      }),
+  private renderBackground() {
+    const { background } = this.props;
+
+    if (typeof background === 'object') {
+      return background; // NB: A {React.ReactNode}.
+    }
+
+    if (typeof background === 'number' || typeof background === 'string') {
+      if (!background.toString().includes('https://')) {
+        const style = css({
+          Absolute: 0,
+          backgroundColor: color.format(background),
+        });
+        return <div {...style}></div>;
+      }
+    }
+
+    const render = (args: { blur?: number } = {}) => {
+      const styles = {
+        base: css({
+          Absolute: -10,
+          backgroundImage: `url(${background})`,
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+          filter: `blur(${args.blur || 0}px)`,
+        }),
+      };
+      return <div {...styles.base}></div>;
     };
-    return <div {...styles.base}></div>;
+
+    const blur = this.blur;
+    return (
+      <React.Fragment>
+        {render({})}
+        {blur > 0 && render({ blur })}
+      </React.Fragment>
+    );
   }
 
   private renderBody() {
+    const { children } = this.props;
     const styles = {
-      base: css({ Absolute: 0 }),
-      page: css({
+      base: css({ Absolute: 0, display: 'flex' }),
+    };
+    const pageDepth = this.pageDepth;
+    const el = pageDepth === 0 ? children : this.renderPage();
+    return <div {...styles.base}>{el}</div>;
+  }
+
+  private renderPage() {
+    const { children } = this.props;
+    const pageDepth = this.pageDepth;
+    const styles = {
+      base: css({
         Absolute: [20, 40, 0, 40],
         display: 'flex',
         justifyContent: 'center',
@@ -81,11 +145,7 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
     };
     return (
       <div {...styles.base}>
-        <div {...styles.page}>
-          <DocPage>
-            <Tmp />
-          </DocPage>
-        </div>
+        <DocPage pageDepth={pageDepth}>{children}</DocPage>
       </div>
     );
   }
