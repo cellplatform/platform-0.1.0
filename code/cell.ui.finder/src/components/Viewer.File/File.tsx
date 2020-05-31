@@ -245,8 +245,6 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
     const cell = this.client.http.cell(this.uri);
     const files = await toFiles(e);
 
-    // let first: string|undefined
-
     const payload = await Promise.all(
       files.map(async (file) => {
         const filename = file.name;
@@ -256,7 +254,6 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
     );
 
     await cell.files.upload(payload);
-
     await this.loadFiles();
 
     const first = this.items.find((item) => item.filename === payload[0].filename);

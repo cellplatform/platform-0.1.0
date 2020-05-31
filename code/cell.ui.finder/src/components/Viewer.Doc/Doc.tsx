@@ -91,21 +91,38 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
       return background; // NB: A {React.ReactNode}.
     }
 
-    if (typeof background === 'number' || typeof background === 'string') {
-      if (!background.toString().includes('https://')) {
-        const style = css({
-          Absolute: 0,
-          backgroundColor: color.format(background),
-        });
-        return <div {...style}></div>;
+    if (typeof background === 'number') {
+      return this.renderBackgroundColor(background);
+    }
+
+    if (typeof background === 'string') {
+      if (!(background.includes('http://') || background.includes('https://'))) {
+        return this.renderBackgroundColor(background);
       }
+      return this.renderBackgroundImage(background);
+    }
+
+    return null;
+  }
+
+  private renderBackgroundColor = (background: string | number) => {
+    const style = css({
+      Absolute: 0,
+      backgroundColor: color.format(background),
+    });
+    return <div {...style}></div>;
+  };
+
+  private renderBackgroundImage = (url: string) => {
+    if (url.startsWith('http://')) {
+      throw new Error(`Can only render images over [https]. ${url}`);
     }
 
     const render = (args: { blur?: number } = {}) => {
       const styles = {
         base: css({
           Absolute: -10,
-          backgroundImage: `url(${background})`,
+          backgroundImage: `url(${url})`,
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
@@ -122,7 +139,7 @@ export class Doc extends React.PureComponent<IDocProps, IDocState> {
         {blur > 0 && render({ blur })}
       </React.Fragment>
     );
-  }
+  };
 
   private renderBody() {
     const { children } = this.props;
