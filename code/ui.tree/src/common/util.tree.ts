@@ -116,7 +116,7 @@ export function walkDown<T extends t.ITreeNode>(
 export function walkUp<T extends t.ITreeNode>(
   root: T | undefined,
   node: T | T['id'] | undefined,
-  fn: (node: T, args: t.ITreeAscend<T>) => any,
+  fn: (args: t.ITreeAscend<T>) => any,
 ) {
   const current = typeof node === 'string' ? findById(root, node) : node;
   if (current) {
@@ -131,7 +131,7 @@ export function walkUp<T extends t.ITreeNode>(
       },
       stop: () => (stop = true),
     };
-    fn(current, args);
+    fn(args);
     if (!stop && parentNode) {
       walkUp(root, args.parent, fn); // <== RECURSION 🌳
     }

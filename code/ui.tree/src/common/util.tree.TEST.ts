@@ -60,30 +60,29 @@ describe('util.tree', () => {
 
     it('walks to root', () => {
       const start = util.findById(tree, 'grandchild-1');
-      const list: { node: t.ITreeNode; args: t.ITreeAscend }[] = [];
-      util.walkUp(tree, start, (node, args) => list.push({ node, args }));
 
-      expect(list.length).to.eql(3);
-      expect(list.map((e) => e.node.id)).to.eql(['grandchild-1', 'child-2', 'root']);
+      const items: t.ITreeAscend[] = [];
+      util.walkUp(tree, start, (e) => items.push(e));
 
-      expect(list[0].args.parent && list[0].args.parent.id).to.eql('child-2');
-      expect(list[1].args.parent && list[1].args.parent.id).to.eql('root');
-      expect(list[2].args.parent && list[2].args.parent.id).to.eql(undefined);
+      expect(items.length).to.eql(3);
+      expect(items.map((e) => e.node.id)).to.eql(['grandchild-1', 'child-2', 'root']);
 
-      const args = list.map((item) => item.args);
+      expect(items[0].parent && items[0].parent.id).to.eql('child-2');
+      expect(items[1].parent && items[1].parent.id).to.eql('root');
+      expect(items[2].parent && items[2].parent.id).to.eql(undefined);
 
-      expect(args[0].index).to.eql(0);
-      expect(args[1].index).to.eql(1);
-      expect(args[2].index).to.eql(-1);
+      expect(items[0].index).to.eql(0);
+      expect(items[1].index).to.eql(1);
+      expect(items[2].index).to.eql(-1);
     });
 
     it('stops mid-way', () => {
       const start = util.findById(tree, 'grandchild-1');
-      const list: { node: t.ITreeNode; args: t.ITreeAscend }[] = [];
-      util.walkUp(tree, start, (node, args) => {
-        list.push({ node, args });
-        if (node.id === 'child-2') {
-          args.stop();
+      const list: t.ITreeAscend[] = [];
+      util.walkUp(tree, start, (e) => {
+        list.push(e);
+        if (e.node.id === 'child-2') {
+          e.stop();
         }
       });
 

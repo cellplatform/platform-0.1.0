@@ -153,7 +153,7 @@ export type ITreeDescend<T extends ITreeNode = ITreeNode> = {
  * Arguments for walking a tree (bottom up).
  */
 export type ITreeAscend<T extends ITreeNode = ITreeNode> = {
-  index: number;
+  index: number; // Within siblings.
   node: T;
   parent?: T;
   stop: () => void;
