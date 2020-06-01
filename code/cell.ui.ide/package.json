@@ -1,35 +1,34 @@
 {
   "name": "@platform/cell.ui.ide",
-  "version": "0.0.17",
+  "version": "0.0.30",
   "description": "IDE (Integrated Development Environment) UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "parcel src/html/entry.html --port 1236",
+    "start": "parcel src/html/index.html --port 1236",
     "watch": "yarn start",
     "test": "ts test",
     "lint": "ts lint",
-    "build": "ts build --no-esm",
-    "prepare": "ts prepare",
+    "build": "ts build --no-esm $@",
     "bundle": "sh script.sh/bundle.sh",
     "clean": "sh script.sh/clean.sh",
     "serve": "cd dist && serve",
-    "copy.defs": "ts-node -T script.ts/copy.defs.ts"
+    "copy.defs": "ts-node -T script.ts/copy.defs.ts",
+    "prepare": "ts prepare"
   },
   "dependencies": {
     "@monaco-editor/react": "3.3.0",
-    "@platform/cell.client": "0.2.86",
-    "@platform/cell.ui": "0.1.15",
+    "@platform/cell.client": "0.2.95",
+    "@platform/cell.ui": "0.1.28",
     "@platform/libs": "0.2.2",
-    "@platform/polyfill": "0.0.1",
-    "@platform/react": "0.4.28",
+    "@platform/react": "0.4.32",
     "monaco-themes": "0.3.3",
     "prettier": "2.0.5"
   },
   "devDependencies": {
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
-    "parcel-bundler": "1.12.4"
+    "@platform/ui.dev": "0.0.6"
   },
   "files": [
     "lib",

@@ -26,8 +26,8 @@ export const paths = {
 
   bundle: {
     preload: resolve('lib/preload.js'),
-    sys: resolve('.bundle/cell.ui.sys'),
-    ide: resolve('.bundle/cell.ui.ide'),
-    finder: resolve('.bundle/cell.ui.finder'),
+    'cell.ui.sys': resolve('.bundle/cell.ui.sys'),
+    'cell.ui.ide': resolve('.bundle/cell.ui.ide'),
+    'cell.ui.finder': resolve('.bundle/cell.ui.finder'),
   },
 };

@@ -4,18 +4,22 @@ import { takeUntil } from 'rxjs/operators';
 
 import { Text } from '../Text';
 import {
-  css,
-  CssValue,
-  MeasureSize,
-  mouse,
+  // css,
+  // CssValue,
+  // MeasureSize,
+  // mouse,
   R,
   t,
-  time,
+  // time,
   toTextCss,
-  util,
-  defaultValue,
-} from './common';
+  // defaultValue,
+} from '../../common';
 import { DEFAULT_TEXT_STYLE, HtmlInput, IInputValue } from './TextInput.Html';
+import { toTextInputCss } from './util';
+
+import { time, defaultValue } from '@platform/util.value';
+import { MeasureSize, mouse } from '@platform/react';
+import { css, CssValue } from '@platform/css';
 
 const DEFAULT = {
   VALUE_STYLE: DEFAULT_TEXT_STYLE,
@@ -407,5 +411,5 @@ export const placeholderStyle = (props: ITextInputProps) => {
   const isEnabled = defaultValue(props.isEnabled, true);
   const { valueStyle = DEFAULT.VALUE_STYLE, placeholderStyle } = props;
   const styles = { ...R.clone(valueStyle), ...placeholderStyle };
-  return util.toTextInputCss(isEnabled, styles);
+  return toTextInputCss(isEnabled, styles);
 };

@@ -1,4 +1,11 @@
-export { cli, chalk } from '@platform/cli';
-export { exec } from '@platform/exec';
-export { fs } from '@platform/fs';
-export { log } from '@platform/log/lib/server';
+import { cli, chalk } from '@platform/cli';
+export { cli, chalk };
+
+import { exec } from '@platform/exec';
+export { exec };
+
+import { fs } from '@platform/fs';
+export { fs };
+
+import { log } from '@platform/log/lib/server';
+export { log };

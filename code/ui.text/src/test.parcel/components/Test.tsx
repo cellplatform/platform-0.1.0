@@ -1,8 +1,10 @@
+import { color, css } from '@platform/css';
+import { Button } from '@platform/ui.button';
+import { Hr } from '@platform/ui.dev';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Button, color, css, Hr } from '../common';
 import { TestInput } from './Test.Input';
 import { TestText } from './Test.Text';
 

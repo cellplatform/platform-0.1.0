@@ -1,4 +1,3 @@
-export * from './types.cell.context';
 export * from './types.cell.coord';
 export * from './types.cell.get';
 export * from './types.cell';
@@ -8,6 +7,7 @@ export * from './types.db';
 export * from './types.electron';
 export * from './types.env';
 export * from './types.error';
+export * from './types.event';
 export * from './types.file';
 export * from './types.fs';
 export * from './types.fs.sync';
@@ -29,6 +29,7 @@ export * from './types.schema';
 export * from './types.schema.uri';
 export * from './types.schema.urls';
 export * from './types.value';
+export * from './types.ui';
 
 export * from './types.Client';
 export * from './types.TypeSystem';

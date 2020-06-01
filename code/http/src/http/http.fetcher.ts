@@ -1,4 +1,5 @@
-import { id, t, time, util, value } from '../common';
+import { id, time, value } from '@platform/util.value';
+import { t, util } from '../common';
 
 export const fetcher = async (args: {
   url: string;

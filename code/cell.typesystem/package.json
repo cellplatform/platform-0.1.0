@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.typesystem",
-  "version": "0.0.47",
+  "version": "0.0.54",
   "description": "The 'strongly typed sheets' system of the CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -9,18 +9,19 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare && rm -rf tmp"
+    "prepare": "ts-node -T scripts.ts/prepare && ts prepare && rm -rf tmp"
   },
   "dependencies": {
     "@platform/cache": "0.2.31",
-    "@platform/cell.coord": "0.8.118",
-    "@platform/cell.schema": "0.4.108",
-    "@platform/cell.types": "0.4.99",
+    "@platform/cell.coord": "0.8.124",
+    "@platform/cell.schema": "0.4.115",
+    "@platform/cell.types": "0.4.104",
     "@platform/libs": "0.2.2",
     "@platform/types": "0.4.22",
-    "@platform/util.value": "0.7.22"
+    "@platform/util.value": "0.7.23"
   },
   "devDependencies": {
+    "@platform/npm": "0.3.1",
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3"
   },

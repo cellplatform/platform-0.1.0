@@ -1,7 +1,7 @@
 ![Module](https://img.shields.io/badge/%40platform-state-%23EA4E7E.svg)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![NPM](https://img.shields.io/npm/v/@platform/state.svg?colorB=blue&style=flat)](https://www.npmjs.com/package/@platform/state)
-![banner](https://platform.sfo2.digitaloceanspaces.com/repo-banners/state.png)
+![banner](https://user-images.githubusercontent.com/185555/82968704-09aebc00-a022-11ea-9222-a334ef10b426.png)
 
 A small, simple [rx/observable](https://github.com/ReactiveX/rxjs) based state-machine.  
 For applying to [UI](https://en.wikipedia.org/wiki/User_interface) see the [react](https://reactjs.org) bindings at [`@platform/state.react`](../state.react)

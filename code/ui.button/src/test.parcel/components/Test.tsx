@@ -1,21 +1,11 @@
+import { color, css } from '@platform/css';
+import { Hr, log } from '@platform/ui.dev';
+import { value } from '@platform/util.value';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import {
-  Button,
-  color,
-  COLORS,
-  css,
-  Hr,
-  IButtonProps,
-  ISwitchProps,
-  log,
-  Switch,
-  SwitchTheme,
-  t,
-  value,
-} from '../common';
+import { Button, COLORS, IButtonProps, ISwitchProps, Switch, SwitchTheme, t } from '../common';
 import { Icons } from './Icons';
 
 export type ITestProps = {};

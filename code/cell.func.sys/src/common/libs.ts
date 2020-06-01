@@ -1,4 +1,5 @@
 import { equals, uniq } from 'ramda';
 export const R = { equals, uniq };
 
-export { value } from '@platform/util.value';
+import { value } from '@platform/util.value';
+export { value };

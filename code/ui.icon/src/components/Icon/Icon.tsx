@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { css, color as colorUtil, mouse } from '../../common';
-import * as types from './types';
+import { mouse } from '@platform/react';
+import { css, color as colorUtil } from '@platform/css';
+import { t } from '../../common';
 
 type IReactIconBase = {
   size: number;
@@ -8,7 +9,7 @@ type IReactIconBase = {
 };
 
 export type IconBase = React.StatelessComponent<IReactIconBase>;
-type IIconPropsInternal = types.IIconProps & {
+type IIconPropsInternal = t.IIconProps & {
   type: IconBase;
   tabIndex?: number;
   isGreyscale?: boolean;
@@ -18,8 +19,8 @@ type IIconPropsInternal = types.IIconProps & {
  * An individual SVG icon.
  */
 export class Icon extends React.PureComponent<IIconPropsInternal> {
-  public static renderer = (type: IconBase): types.IIcon => {
-    return (props: types.IIconProps) => <Icon type={type} {...props} />;
+  public static renderer = (type: IconBase): t.IIcon => {
+    return (props: t.IIconProps) => <Icon type={type} {...props} />;
   };
 
   private mouse = mouse.fromProps(this.props);

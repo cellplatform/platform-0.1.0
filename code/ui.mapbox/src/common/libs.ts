@@ -1,4 +1,5 @@
-export { css, style, color, CssValue } from '@platform/react';
+import { css, style, color, CssValue } from '@platform/css';
+export { css, style, color, CssValue };
 
 /**
  * Ramda

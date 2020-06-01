@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.compile.wasm",
-  "version": "0.0.80",
+  "version": "0.0.87",
   "description": "CellOS code compilation toolchain for WebAssembly.",
   "scripts": {
     "start": "node lib/cli/bin $@",
@@ -8,23 +8,22 @@
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare"
+    "prepare": "ts-node -T scripts.ts/prepare && ts prepare"
   },
   "dependencies": {
-    "@platform/cell.compile.react": "0.0.26",
-    "@platform/cell.types": "0.4.99",
-    "@platform/cli": "0.5.37",
+    "@platform/cell.types": "0.4.104",
+    "@platform/cli": "0.5.38",
     "@platform/libs": "0.2.2"
   },
   "devDependencies": {
+    "@platform/npm": "0.3.1",
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3"
   },
   "files": [
     "lib",
     "!lib/test",
-    "!*.TEST.{js, mjs, d.ts}",
-    "!*.INTEGRATION.{js, mjs, d.ts}"
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }

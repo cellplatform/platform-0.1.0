@@ -21,7 +21,7 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.load();
   }
 
@@ -36,7 +36,7 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
   public get info() {
     const data = this.state.info || {};
     return Object.keys(data)
-      .map(key => ({ key, value: data[key] }))
+      .map((key) => ({ key, value: data[key] }))
       .filter(({ value }) => typeof value === 'string' || typeof value === 'number')
       .filter(({ key }) => !['hash', 'system'].includes(key))
       .map(({ key, value }) => ({ label: key, value: value }));
@@ -45,7 +45,7 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
   public get versions() {
     const data = this.state.info?.app.versions || {};
     return Object.keys(data)
-      .map(key => ({ key, value: data[key] }))
+      .map((key) => ({ key, value: data[key] }))
       .map(({ key, value }) => ({ label: key, value: value }));
   }
 

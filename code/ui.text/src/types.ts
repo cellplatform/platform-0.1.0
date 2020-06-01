@@ -1,4 +1,5 @@
-import { CssValue, IMouseEventProps } from '@platform/react';
+import { IMouseEventProps } from '@platform/react';
+import { CssValue } from '@platform/css';
 
 export * from './components/TextInput/types';
 

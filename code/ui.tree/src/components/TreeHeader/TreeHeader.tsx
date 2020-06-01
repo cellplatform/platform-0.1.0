@@ -1,17 +1,18 @@
+import { color, css, CssValue } from '@platform/css';
 import * as React from 'react';
 
-import { css, CssValue, ITreeNode, color } from '../../common';
 import * as themes from '../../themes';
 import { Icons } from '../Icons';
-import { Text } from '../Text';
-import { TreeNode, TreeNodeMouseEvent, TreeNodeMouseEventHandler } from '../TreeNode';
+import { Text } from '@platform/ui.text/lib/components/Text';
+import { TreeNode } from '../TreeNode';
+import { t } from '../../common';
 
 const SIZE = {
   BACK_BUTTON: 24,
 };
 
 export type ITreeHeaderProps = {
-  node: ITreeNode;
+  node: t.ITreeNode;
   height: number;
   title?: string;
   showParentButton?: boolean;
@@ -19,7 +20,7 @@ export type ITreeHeaderProps = {
   background?: 'THEME' | 'NONE';
   isFocused: boolean;
   style?: CssValue;
-  onMouseParent?: TreeNodeMouseEventHandler;
+  onMouseParent?: t.TreeNodeMouseEventHandler;
 };
 
 export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
@@ -88,7 +89,7 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
     );
   }
 
-  private mouseHandlers = (target: TreeNodeMouseEvent['target']) => {
+  private mouseHandlers = (target: t.TreeNodeMouseEvent['target']) => {
     const { node, onMouseParent } = this.props;
     return TreeNode.mouseHandlers(() => node, target, onMouseParent);
   };

@@ -26,7 +26,8 @@ export function define() {
     .prop('width', (p) => p.type('number').default(1000))
     .prop('height', (p) => p.type('number').default(800))
     .prop('x', (p) => p.type('number'))
-    .prop('y', (p) => p.type('number'));
+    .prop('y', (p) => p.type('number'))
+    .prop('isVisible', (p) => p.type('boolean').default(true));
 
   return def.toObject();
 }

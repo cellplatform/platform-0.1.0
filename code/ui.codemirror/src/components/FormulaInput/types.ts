@@ -2,7 +2,7 @@ import {
   TextInputChangeEvent,
   TextInputTabEvent,
   ITextModifierKeys,
-} from '@platform/ui.text/lib/components/TextInput';
+} from '@platform/ui.text/lib/types';
 
 export { ITextModifierKeys };
 export type IFormulaInputTab = TextInputTabEvent & { isCancelled: boolean };

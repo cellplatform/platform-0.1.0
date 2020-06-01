@@ -1,6 +1,6 @@
 {
   "name": "@platform/react",
-  "version": "0.4.28",
+  "version": "0.4.32",
   "description": "React refs and helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -9,11 +9,13 @@
     "test": "ts test",
     "lint": "ts lint",
     "build": "ts build",
-    "prepare": "ts prepare",
-    "clean": "rm -rf .cache dist"
+    "bundle": "sh script.sh/bundle.sh",
+    "clean": "sh script.sh/clean.sh",
+    "serve": "cd dist && serve",
+    "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/css": "0.4.0",
+    "@platform/css": "0.4.2",
     "@platform/util.is": "0.0.125",
     "react": "16.13.1",
     "react-dom": "16.13.1"
@@ -23,7 +25,7 @@
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
     "parcel-bundler": "1.12.4",
-    "react-inspector": "^5.0.1"
+    "react-inspector": "5.0.1"
   },
   "files": [
     "lib",

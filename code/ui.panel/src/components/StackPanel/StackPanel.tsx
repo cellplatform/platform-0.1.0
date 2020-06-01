@@ -1,10 +1,14 @@
+import { css, CssValue } from '@platform/css';
 import * as React from 'react';
-
 import { BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil, map, filter, distinctUntilChanged, pairwise } from 'rxjs/operators';
-import { R, css, CssValue, value, time } from '../../common';
-import { IStackPanel, StackPanelSlideEvent, StackPanelSlideEventHandler } from './types';
+import { distinctUntilChanged, filter, map, pairwise, takeUntil } from 'rxjs/operators';
+
+import { value, time } from '@platform/util.value';
 import { Panel } from './Panel';
+import { IStackPanel, StackPanelSlideEvent, StackPanelSlideEventHandler } from './types';
+
+import { clamp } from 'ramda';
+const R = { clamp };
 
 export type IStackPanelProps = {
   index?: number;

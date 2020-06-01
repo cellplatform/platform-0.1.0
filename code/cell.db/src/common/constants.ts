@@ -1,6 +1,5 @@
-import { INpmPackageJson } from './types';
+import { PKG } from './constants.pkg';
+export { PKG };
 
-export const PKG = require('../../package.json') as INpmPackageJson;
-
-const DEPS = PKG.dependencies || {};
+const DEPS = PKG.dependencies;
 export const SCHEMA_VERSION = DEPS['@platform/cell.schema'] || '';

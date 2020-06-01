@@ -1,4 +1,5 @@
-import { CssValue, IMouseEventProps } from '@platform/react';
+import { IMouseEventProps } from '@platform/react';
+import { CssValue } from '@platform/css';
 import { Subject } from 'rxjs';
 
 export type ImageResolution = 'x1' | 'x2';

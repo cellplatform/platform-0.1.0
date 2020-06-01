@@ -233,7 +233,7 @@ describe('ns:', function () {
       expect(file.props).to.eql(post.file?.props);
     });
 
-    it('versions', async () => {
+    it.only('versions', async () => {
       const mock = await createMock();
       const client = mock.client.ns('foo');
 

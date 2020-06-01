@@ -2,19 +2,10 @@
 
 import * as React from 'react';
 
-import {
-  css,
-  ITextProps,
-  toTextCss,
-  toShadow,
-  constants,
-  MouseEvent,
-  MouseEventHandler,
-  mouse,
-  MeasureSize,
-} from '../../common';
+import { ITextProps, toTextCss, toShadow, constants } from '../../common';
 
-export { ITextProps, MouseEvent, MouseEventHandler };
+import { css } from '@platform/css';
+import { mouse, MeasureSize } from '@platform/react';
 
 /**
  * <Text> component with a monospace font-face.

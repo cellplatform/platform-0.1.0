@@ -4,7 +4,7 @@ import { NeDb } from '@platform/fsdb.nedb';
 import { app as electron } from 'electron';
 import { filter } from 'rxjs/operators';
 
-import { constants, fs, log, t, util } from '../common';
+import { constants, fs, log, t, Urls, util } from '../common';
 
 type IInitArgs = {
   prod?: boolean;
@@ -61,13 +61,13 @@ export async function start(args: IInitArgs & { port?: number; isDev?: boolean }
   })();
 
   app.response$
-    // Add electron specific meta-data to sys info.
-
-    //
-    // TODO 🐷 do the filter using [isMatch] on the router using Routes
-    //
-    // .pipe(filter(e => Urls.routes.SYS.INFO.includes(e.url)))
-    .pipe(filter((e) => ['/', '/.sys', '/.sys/'].includes(e.url)))
+    // Add electron specific meta-data to sys-info.
+    .pipe(
+      filter((e) => {
+        const route = app.router.find({ method: 'GET', url: e.url });
+        return !route ? false : Urls.routes.SYS.INFO.some((path) => route.path === path);
+      }),
+    )
     .subscribe((e) => {
       const data: t.IResGetElectronSysInfo = {
         ...e.res.data,

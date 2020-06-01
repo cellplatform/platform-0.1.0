@@ -1,22 +1,32 @@
 import * as util from '@platform/ui.datagrid.util';
+export { util };
 
 export * from './libs.Handsontable';
+export * from './libs.cell';
 
 /**
  * Util.
  */
-export { util };
-export { css, color, style, CssValue, events, containsFocus, Keyboard } from '@platform/react';
-export { value, time, defaultValue } from '@platform/util.value';
-export { log } from '@platform/log/lib/client';
-export { MemoryCache } from '@platform/cache';
+import { events, containsFocus, Keyboard } from '@platform/react';
+export { events, containsFocus, Keyboard };
+
+import { css, style, color, CssValue } from '@platform/css';
+export { css, style, color, CssValue };
+
+import { value, time, defaultValue } from '@platform/util.value';
+export { value, time, defaultValue };
+
+import { log } from '@platform/log/lib/client';
+export { log };
+
+import { MemoryCache } from '@platform/cache';
+export { MemoryCache };
 
 /**
  * Cell coords (eg "A1", "A1:C9").
  */
 import * as cell from './libs.cell';
 export { cell };
-export * from './libs.cell';
 
 /**
  * Ramda.

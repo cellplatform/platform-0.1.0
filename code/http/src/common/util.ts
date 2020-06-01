@@ -1,5 +1,7 @@
+import { Mime } from '@platform/util.mimetype';
+import { value as valueUtil } from '@platform/util.value';
+
 import { IS_PROD } from './constants';
-import { Mime, value as valueUtil } from './libs';
 import * as t from './types';
 
 /**

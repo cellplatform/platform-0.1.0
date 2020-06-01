@@ -1,6 +1,6 @@
+import { color as colorUtil, css, CssValue } from '@platform/css';
 import * as React from 'react';
 
-import { color as colorUtil, css, CssValue } from '../../common';
 import { RenderStyleOnce } from './Style';
 import { SpinnerConfig } from './types';
 

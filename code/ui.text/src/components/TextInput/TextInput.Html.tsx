@@ -2,7 +2,11 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { color as colorUtil, containsFocus, css, events, CssValue, R, t, util } from './common';
+import { R, t } from '../../common';
+import { toTextInputCss } from './util';
+
+import { color as colorUtil, css, CssValue } from '@platform/css';
+import { events, containsFocus } from '@platform/react';
 
 export const DEFAULT_TEXT_STYLE: t.ITextInputStyle = {
   opacity: 1,
@@ -210,7 +214,7 @@ export class HtmlInput extends React.PureComponent<IHtmlInputProps, IHtmlInputSt
         },
       } as any;
     }
-    styles.base = R.merge(styles.base, util.toTextInputCss(isEnabled, valueStyle));
+    styles.base = R.merge(styles.base, toTextInputCss(isEnabled, valueStyle));
     styles.base.opacity = isEnabled ? 1 : disabledOpacity;
 
     return (

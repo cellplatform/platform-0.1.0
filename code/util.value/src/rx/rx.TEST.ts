@@ -50,4 +50,26 @@ describe('rx', () => {
       expect(results[2]).to.eql([5, 6]);
     });
   });
+
+  describe('eventPayload', () => {
+    type FooEvent = { type: 'TYPE/foo'; payload: Foo };
+    type Foo = { count: number };
+
+    type BarEvent = { type: 'TYPE/bar'; payload: Bar };
+    type Bar = { msg: string };
+
+    it('filters on event and returns payload', () => {
+      const source$ = new Subject<FooEvent | BarEvent>();
+
+      const fired: Foo[] = [];
+      rx.eventPayload<FooEvent>(source$, 'TYPE/foo').subscribe((e) => fired.push(e));
+
+      source$.next({ type: 'TYPE/bar', payload: { msg: 'hello' } });
+      source$.next({ type: 'TYPE/foo', payload: { count: 123 } });
+      source$.next({ type: 'TYPE/bar', payload: { msg: 'hello' } });
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0]).to.eql({ count: 123 });
+    });
+  });
 });

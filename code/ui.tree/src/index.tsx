@@ -1,9 +1,13 @@
-import * as util from './common/util.tree';
+import { TreeUtil } from './TreeUtil';
+export { TreeUtil };
 
-export { util };
-export * from './types';
+import { TreeEvents } from './TreeEvents';
+export { TreeEvents };
+
+import { Tree } from './Tree';
+export { Tree };
+
 export * from './components/TreeView';
-export * from './events';
 
 import { DARK, LIGHT } from './themes';
 export const themes = { DARK, LIGHT };

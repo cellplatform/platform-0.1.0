@@ -1,4 +1,5 @@
-import { value } from '../common';
+import { value, time } from '@platform/util.value';
+export { value, time };
 
 export { expect, expectError } from '@platform/test';
 export * from '../common';

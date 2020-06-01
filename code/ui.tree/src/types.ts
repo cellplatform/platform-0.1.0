@@ -3,7 +3,7 @@ import { IIcon } from '@platform/ui.icon';
 export * from './themes/types';
 export * from './components/TreeView/types';
 export * from './components/TreeNode/types';
-export * from './events/types';
+export * from './TreeEvents/types';
 
 /**
  * A single node within the "tree"
@@ -136,4 +136,25 @@ export type RenderTreeNodeBodyArgs<T extends ITreeNode = ITreeNode> = {
   body: string;
   node: T;
   isFocused: boolean;
+};
+
+/**
+ * Arguments for walking a tree (top-down).
+ */
+export type ITreeDescend<T extends ITreeNode = ITreeNode> = {
+  index: number; // Within siblings.
+  node: T;
+  parent?: T;
+  depth: number;
+  stop: () => void;
+};
+
+/**
+ * Arguments for walking a tree (bottom up).
+ */
+export type ITreeAscend<T extends ITreeNode = ITreeNode> = {
+  index: number; // Within siblings.
+  node: T;
+  parent?: T;
+  stop: () => void;
 };

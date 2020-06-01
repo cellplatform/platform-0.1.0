@@ -9,28 +9,28 @@ import * as t from '../common/types';
  * To use add a static `contextType` to the consuming component,
  * eg:
  *
- *      import { cell } from '@platform/cell.ui'
+ *      import { ui } from '@platform/cell.ui'
  *
  *      export class MyView extends React.PureComponent {
- *        public static contextType = cell.Context;
- *        public context!: cell.ICellContext
+ *        public static contextType = ui.Context;
+ *        public context!: ui.IEnvContext
  *      }
  *
  * See:
  *    https://reactjs.org/docs/context.html
  */
-export const Context = React.createContext<t.ICellContext>({} as any);
-Context.displayName = '@platform/cell/Context';
+export const Context = React.createContext<t.IEnvContext<any>>({} as any);
+Context.displayName = '@platform/cell.ui/Context';
 
 /**
  * Used to strongly type the [context] on a React component.
  * eg:
  *
- *      import { cell } from '@platform/cell.ui'
+ *      import { ui } from '@platform/cell.ui'
  *
  *      export class MyView extends React.PureComponent {
- *        public static contextType = cell.Context;
- *        public context!: cell.ICellContext
+ *        public static contextType = ui.Context;
+ *        public context!: ui.IEnvContext
  *      }
  *
  */
@@ -42,10 +42,10 @@ export type ReactContext = React.ContextType<typeof Context>;
  * hierarchy to child components.
  */
 export function createProvider<P = {}>(args: {
-  ctx: t.ICellContext;
+  ctx: t.IEnvContext<any>;
   props?: P;
 }): React.FunctionComponent {
-  const context: t.ICellContext = {
+  const context: t.IEnvContext<any> = {
     ...args.ctx,
     ...(args.props || {}), // Optional props to extend the context with.
   };

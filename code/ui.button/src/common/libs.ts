@@ -1,9 +1,11 @@
-import { value } from '@platform/util.value';
+// import { value, defaultValue } from '@platform/util.value';
+// export { value, defaultValue };
 
-export { value };
-export { color, css, style, CssValue, mouse } from '@platform/react';
+// import { mouse } from '@platform/react';
+// export { mouse };
 
-export const defaultValue = value.defaultValue;
+// import { color, css, style, CssValue } from '@platform/css';
+// export { color, css, style, CssValue };
 
 /**
  * [Ramda]

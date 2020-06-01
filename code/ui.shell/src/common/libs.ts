@@ -1,9 +1,17 @@
-import '@platform/polyfill';
+import { css, color, CssValue } from '@platform/css';
+export { css, color, CssValue };
 
-export { css, color, CssValue, is } from '@platform/react';
-export { time, defaultValue, id, props } from '@platform/util.value';
-export { log } from '@platform/log/lib/client';
-export { loader } from '@platform/ui.loader';
+import { is } from '@platform/util.is';
+export { is };
+
+import { time, defaultValue, id, props } from '@platform/util.value';
+export { time, defaultValue, id, props };
+
+import { log } from '@platform/log/lib/client';
+export { log };
+
+import { loader } from '@platform/ui.loader';
+export { loader };
 
 /**
  * Ramda

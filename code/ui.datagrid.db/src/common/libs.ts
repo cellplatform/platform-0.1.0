@@ -1,5 +1,8 @@
-export { coord } from '@platform/cell.coord';
-export { value, time, rx } from '@platform/util.value';
+import { coord } from '@platform/cell.coord';
+export { coord };
+
+import { value, time, rx } from '@platform/util.value';
+export { value, time, rx };
 
 import * as util from '@platform/ui.datagrid.util';
 export { util };

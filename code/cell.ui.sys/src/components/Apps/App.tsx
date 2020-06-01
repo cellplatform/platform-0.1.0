@@ -38,7 +38,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {
@@ -113,12 +113,15 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     };
 
     const elList = windows.rows.map((row, i) => {
-      const { x, y, width, height } = row.props;
+      const { x, y, width, height, isVisible } = row.props;
+      const position = x === undefined || y === undefined ? '-' : `${x} x ${y}`;
+      const size = width === undefined || height === undefined ? '-' : `${width} x ${height}`;
       const items: IPropListItem[] = [
         { label: 'typename', value: row.typename },
         { label: 'uri', value: row.uri.toString() },
-        { label: 'position', value: `${x} x ${y}` },
-        { label: 'size', value: `${width} x ${height}` },
+        { label: 'position', value: position },
+        { label: 'size', value: size },
+        { label: 'visible', value: isVisible },
       ];
       return <PropList key={i} items={items} />;
     });

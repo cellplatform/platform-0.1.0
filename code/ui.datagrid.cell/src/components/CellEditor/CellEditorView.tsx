@@ -42,7 +42,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
    */
   private unmounted$ = new Subject<{}>();
 
-  private formula$ = new Subject<p.FormulaInputEvent>();
+  private formula$ = new Subject<t.FormulaInputEvent>();
   private formula!: p.FormulaInput;
   private formulaRef = (ref: p.FormulaInput) => (this.formula = ref);
 
@@ -50,7 +50,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   private markdown!: p.TextEditor;
   private markdownRef = (ref: p.TextEditor) => (this.markdown = ref);
 
-  private text$ = new Subject<p.TextInputEvent>();
+  private text$ = new Subject<t.TextInputEvent>();
   private text!: p.TextInput;
   private textRef = (ref: p.TextInput) => (this.text = ref);
 
@@ -130,7 +130,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter((e) => e.type === 'TEXT_INPUT/changing'),
         filter((e) => this.mode === 'TEXT'),
-        map((e) => e.payload as p.ITextInputChanging),
+        map((e) => e.payload as t.ITextInputChanging),
       )
       .subscribe((e) => {
         const { from, to } = e;
@@ -144,7 +144,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter((e) => e.type === 'TEXT_INPUT/changed'),
         filter((e) => this.mode === 'TEXT'),
-        map((e) => e.payload as p.ITextInputChanged),
+        map((e) => e.payload as t.ITextInputChanged),
       )
       .subscribe((e) => {
         const { from, to } = e;
@@ -155,7 +155,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
     const textKeydown$ = text$.pipe(
       filter((e) => e.type === 'TEXT_INPUT/keypress'),
       filter((e) => this.mode === 'TEXT'),
-      map((e) => e.payload as p.ITextInputKeypress),
+      map((e) => e.payload as t.ITextInputKeypress),
       filter((e) => e.isPressed),
     );
 

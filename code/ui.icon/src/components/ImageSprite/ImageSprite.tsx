@@ -1,6 +1,6 @@
 import { clamp } from 'ramda';
 import * as React from 'react';
-import { css, CssValue } from '../../common';
+import { css, CssValue } from '@platform/css';
 
 const MEDIA_QUERY_RETINA = `@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)`;
 
@@ -41,13 +41,17 @@ export class ImageSprite extends React.PureComponent<IImageSpriteProps> {
   }
 
   public render() {
-    const { width, height, tooltip } = this.props;
+    const { tooltip } = this.props;
+    const image = this.image;
+    const width = this.props.width || image.width;
+    const height = this.props.height || image.height;
+
     const styles = {
       base: css({
         display: 'inline-block',
+        ...this.image,
         width,
         height,
-        ...this.image,
       }),
     };
     return <div {...css(styles.base, this.props.style)} title={tooltip} />;

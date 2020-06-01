@@ -10,10 +10,10 @@ const { IPC } = constants;
  * Hook into IPC events.
  */
 export function init(args: { windowUri: string; cache: t.IEnv['cache'] }) {
-  const event$ = new Subject<t.EnvEvent>();
+  const event$ = new Subject<t.Event>();
 
-  // Listen for global variables being broadcast through the
-  // electron IPC channels.
+  // Listen for global variables being broadcast
+  // through the electron IPC channels.
   const ipc$ = new Subject<t.IpcEvent>();
   ipcRenderer.on(IPC.CHANNEL, (ipc, event: t.IpcEvent) => ipc$.next(event));
   ipc$.subscribe((e) => {
@@ -25,8 +25,5 @@ export function init(args: { windowUri: string; cache: t.IEnv['cache'] }) {
   });
 
   // Finish up.
-  return {
-    ipc$,
-    event$: event$.pipe(share()),
-  };
+  return { ipc$, event$ };
 }

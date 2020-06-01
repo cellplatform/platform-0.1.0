@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { IFocusEvent } from './types';
-import { is } from './util';
+import { is } from '../common';
 
 /**
  * [Focus]
@@ -11,7 +11,6 @@ const _focus$ = new Subject<IFocusEvent>();
 export const focus$ = _focus$.pipe(share());
 
 (() => {
-  // tslint:disable-next-line:no-unused-expression
   if (!is.browser) {
     return;
   }

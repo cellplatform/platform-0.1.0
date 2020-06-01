@@ -1,7 +1,7 @@
 rm -f  yarn-error.log
 rm -rf lib/
 rm -rf out/
-
+rm -rf tmp/
 
 
 rm -f  app/yarn-error.log

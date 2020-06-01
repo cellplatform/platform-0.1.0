@@ -2,7 +2,11 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, css, ITextInputProps, log, t, TextInput } from '../common';
+// import { COLORS, ITextInputProps, log, t, TextInput } from '../common';
+import { color, css } from '@platform/css';
+import { log } from '@platform/ui.dev';
+import { COLORS, t } from '../../common';
+import { TextInput, ITextInputProps } from '../..';
 
 export type ITestInputProps = { value?: string };
 export type ITestInputState = { value?: string; isClickableEditing?: boolean };
