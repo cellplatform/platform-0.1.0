@@ -1,6 +1,4 @@
-import * as util from './common/util.tree';
-
-export { util };
+export { TreeUtil } from './TreeUtil';
 export * from './types';
 export * from './components/TreeView';
 export * from './events';

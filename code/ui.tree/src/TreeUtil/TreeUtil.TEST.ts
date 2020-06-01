@@ -1,7 +1,8 @@
-import { expect } from 'chai';
-import { t, tree as util } from '.';
+import { expect, t } from '../test';
 
-describe('util.tree', () => {
+import { TreeUtil } from '.';
+
+describe('TreeUtil', () => {
   describe('walkDown', () => {
     it('walks from root', () => {
       const tree: t.ITreeNode = {
@@ -10,7 +11,7 @@ describe('util.tree', () => {
       };
 
       const nodes: t.ITreeNode[] = [];
-      util.walkDown(tree, (e) => nodes.push(e.node));
+      TreeUtil.walkDown(tree, (e) => nodes.push(e.node));
 
       expect(nodes.length).to.eql(3);
       expect(nodes[0]).to.equal(tree);
@@ -24,7 +25,7 @@ describe('util.tree', () => {
       const root: t.ITreeNode = { id: 'root', children: [child] };
 
       const items: t.ITreeDescend[] = [];
-      util.walkDown(root, (e) => items.push(e));
+      TreeUtil.walkDown(root, (e) => items.push(e));
 
       expect(items.length).to.eql(3);
 
@@ -44,7 +45,7 @@ describe('util.tree', () => {
       };
 
       const items: t.ITreeDescend[] = [];
-      util.walkDown(tree, (e) => items.push(e));
+      TreeUtil.walkDown(tree, (e) => items.push(e));
 
       expect(items[0].index).to.eql(-1);
       expect(items[1].index).to.eql(0);
@@ -59,10 +60,10 @@ describe('util.tree', () => {
     };
 
     it('walks to root', () => {
-      const start = util.findById(tree, 'grandchild-1');
+      const start = TreeUtil.findById(tree, 'grandchild-1');
 
       const items: t.ITreeAscend[] = [];
-      util.walkUp(tree, start, (e) => items.push(e));
+      TreeUtil.walkUp(tree, start, (e) => items.push(e));
 
       expect(items.length).to.eql(3);
       expect(items.map((e) => e.node.id)).to.eql(['grandchild-1', 'child-2', 'root']);
@@ -77,9 +78,9 @@ describe('util.tree', () => {
     });
 
     it('stops mid-way', () => {
-      const start = util.findById(tree, 'grandchild-1');
+      const start = TreeUtil.findById(tree, 'grandchild-1');
       const list: t.ITreeAscend[] = [];
-      util.walkUp(tree, start, (e) => {
+      TreeUtil.walkUp(tree, start, (e) => {
         list.push(e);
         if (e.node.id === 'child-2') {
           e.stop();
@@ -98,17 +99,17 @@ describe('util.tree', () => {
     };
 
     it('finds the given node', () => {
-      const res1 = util.find(tree, (e) => e.node.id === 'child-3');
-      const res2 = util.find(tree, (e) => e.node.id === 'NO_EXIT');
+      const res1 = TreeUtil.find(tree, (e) => e.node.id === 'child-3');
+      const res2 = TreeUtil.find(tree, (e) => e.node.id === 'NO_EXIT');
       expect(res1).to.eql({ id: 'child-3' });
       expect(res2).to.eql(undefined);
     });
 
     it('finds the given node by ID', () => {
-      const res1 = util.findById(tree, 'child-3');
-      const res2 = util.findById(tree, 'NO_EXIST');
-      const res3 = util.findById(tree, undefined);
-      const res4 = util.findById(tree, { id: 'child-2' });
+      const res1 = TreeUtil.findById(tree, 'child-3');
+      const res2 = TreeUtil.findById(tree, 'NO_EXIST');
+      const res3 = TreeUtil.findById(tree, undefined);
+      const res4 = TreeUtil.findById(tree, { id: 'child-2' });
       expect(res1).to.eql({ id: 'child-3' });
       expect(res2).to.eql(undefined);
       expect(res3).to.eql(undefined);
@@ -119,53 +120,53 @@ describe('util.tree', () => {
   describe('children', () => {
     it('no childen => empty array', () => {
       const node = { id: 'root' };
-      expect(util.children(node)).to.eql([]);
+      expect(TreeUtil.children(node)).to.eql([]);
     });
 
     it('returns child array', () => {
       const node = { id: 'root', children: [{ id: 'child' }] };
-      expect(util.children(node)).to.eql([{ id: 'child' }]);
+      expect(TreeUtil.children(node)).to.eql([{ id: 'child' }]);
     });
   });
 
   describe('childAt', () => {
     const root = { id: 'A', children: [{ id: 'B' }, { id: 'C' }] };
     it('undefined', () => {
-      expect(util.childAt(0)).to.eql(undefined);
-      expect(util.childAt(2, root)).to.eql(undefined);
+      expect(TreeUtil.childAt(0)).to.eql(undefined);
+      expect(TreeUtil.childAt(2, root)).to.eql(undefined);
     });
 
     it('retrieves child', () => {
-      expect(util.childAt(0, root)).to.eql({ id: 'B' });
-      expect(util.childAt(1, root)).to.eql({ id: 'C' });
+      expect(TreeUtil.childAt(0, root)).to.eql({ id: 'B' });
+      expect(TreeUtil.childAt(1, root)).to.eql({ id: 'C' });
     });
   });
 
   describe('hasChild', () => {
     const root = { id: 'A', children: [{ id: 'B' }, { id: 'C' }] };
     it('does have child', () => {
-      expect(util.hasChild(root, 'B')).to.eql(true);
-      expect(util.hasChild(root, 'C')).to.eql(true);
-      expect(util.hasChild(root, { id: 'C' })).to.eql(true);
+      expect(TreeUtil.hasChild(root, 'B')).to.eql(true);
+      expect(TreeUtil.hasChild(root, 'C')).to.eql(true);
+      expect(TreeUtil.hasChild(root, { id: 'C' })).to.eql(true);
     });
 
     it('does not have child', () => {
-      expect(util.hasChild(root, 'A')).to.eql(false);
-      expect(util.hasChild(root, 'NO_MATCH')).to.eql(false);
-      expect(util.hasChild(root, undefined)).to.eql(false);
+      expect(TreeUtil.hasChild(root, 'A')).to.eql(false);
+      expect(TreeUtil.hasChild(root, 'NO_MATCH')).to.eql(false);
+      expect(TreeUtil.hasChild(root, undefined)).to.eql(false);
     });
   });
 
   describe('map', () => {
     const root = { id: 'A', children: [{ id: 'B' }, { id: 'C' }] };
     it('maps the entire tree', () => {
-      const res = util.map(root, (e) => e.node.id);
+      const res = TreeUtil.map(root, (e) => e.node.id);
       expect(res).to.eql(['A', 'B', 'C']);
     });
 
     it('stops mapping mid-way through', () => {
       let count = 0;
-      const res = util.map(root, (e) => {
+      const res = TreeUtil.map(root, (e) => {
         count++;
         if (count > 1) {
           e.stop();
@@ -183,26 +184,26 @@ describe('util.tree', () => {
     };
 
     it('retrieves depth', () => {
-      expect(util.depth(root, 'A')).to.eql(0);
-      expect(util.depth(root, { id: 'A' })).to.eql(0);
-      expect(util.depth(root, 'B')).to.eql(1);
-      expect(util.depth(root, 'C')).to.eql(1);
-      expect(util.depth(root, 'D')).to.eql(2);
-      expect(util.depth(root, { id: 'D' })).to.eql(2);
+      expect(TreeUtil.depth(root, 'A')).to.eql(0);
+      expect(TreeUtil.depth(root, { id: 'A' })).to.eql(0);
+      expect(TreeUtil.depth(root, 'B')).to.eql(1);
+      expect(TreeUtil.depth(root, 'C')).to.eql(1);
+      expect(TreeUtil.depth(root, 'D')).to.eql(2);
+      expect(TreeUtil.depth(root, { id: 'D' })).to.eql(2);
     });
 
     it('-1', () => {
-      expect(util.depth(undefined, 'C')).to.eql(-1);
-      expect(util.depth(root, undefined)).to.eql(-1);
-      expect(util.depth(root, 'NO_EXIST')).to.eql(-1);
-      expect(util.depth(root, { id: 'NO_EXIST' })).to.eql(-1);
+      expect(TreeUtil.depth(undefined, 'C')).to.eql(-1);
+      expect(TreeUtil.depth(root, undefined)).to.eql(-1);
+      expect(TreeUtil.depth(root, 'NO_EXIST')).to.eql(-1);
+      expect(TreeUtil.depth(root, { id: 'NO_EXIST' })).to.eql(-1);
     });
   });
 
   describe('replace', () => {
     it('replaces root', () => {
       const tree: t.ITreeNode = { id: 'root' };
-      const res = util.replace(tree, {
+      const res = TreeUtil.replace(tree, {
         id: 'root',
         props: { label: 'hello' },
       });
@@ -211,11 +212,11 @@ describe('util.tree', () => {
 
     it('replaces child', () => {
       const tree: t.ITreeNode = { id: 'root', children: [{ id: 'foo' }] };
-      const res = util.replace(tree, {
+      const res = TreeUtil.replace(tree, {
         id: 'foo',
         props: { label: 'hello' },
       });
-      const children = util.children(res);
+      const children = TreeUtil.children(res);
       expect(res && res.id).to.eql('root');
       expect(children[0]).to.eql({ id: 'foo', props: { label: 'hello' } });
     });
@@ -225,14 +226,14 @@ describe('util.tree', () => {
         id: 'root',
         children: [{ id: 'child', children: [{ id: 'grandchild' }] }],
       };
-      const res = util.replace(tree, {
+      const res = TreeUtil.replace(tree, {
         id: 'grandchild',
         props: { label: 'hello' },
       });
       expect(res && res.id).to.eql('root');
 
-      const child = util.childAt(0, res);
-      const grandchild = util.childAt(0, child);
+      const child = TreeUtil.childAt(0, res);
+      const grandchild = TreeUtil.childAt(0, child);
       expect(child.id).to.eql('child');
       expect(grandchild.id).to.eql('grandchild');
     });
@@ -243,7 +244,7 @@ describe('util.tree', () => {
       const root: t.ITreeNode = { id: 'root' };
       const child: t.ITreeNode = { id: 'child' };
 
-      const res = util.replaceChild(root, child);
+      const res = TreeUtil.replaceChild(root, child);
       const children = res ? res.children || [] : [];
 
       expect(res).to.not.equal(root);
@@ -255,7 +256,7 @@ describe('util.tree', () => {
     it('inserts non-existing child (LAST [default])', () => {
       const root: t.ITreeNode = { id: 'root', children: [{ id: 'existing' }] };
       const child: t.ITreeNode = { id: 'child' };
-      const res = util.replaceChild(root, child);
+      const res = TreeUtil.replaceChild(root, child);
       const children = res ? res.children || [] : [];
       expect(children[0]).to.eql({ id: 'existing' });
       expect(children[1]).to.eql({ id: 'child' });
@@ -264,7 +265,7 @@ describe('util.tree', () => {
     it('inserts non-existing child (FIRST)', () => {
       const root: t.ITreeNode = { id: 'root', children: [{ id: 'existing' }] };
       const child: t.ITreeNode = { id: 'child' };
-      const res = util.replaceChild(root, child, { insert: 'FIRST' });
+      const res = TreeUtil.replaceChild(root, child, { insert: 'FIRST' });
       const children = res ? res.children || [] : [];
       expect(children[0]).to.eql({ id: 'child' });
       expect(children[1]).to.eql({ id: 'existing' });
@@ -276,7 +277,7 @@ describe('util.tree', () => {
         children: [{ id: 'foo' }, { id: 'child', data: { foo: 123 } }, { id: 'bar' }],
       };
       const child: t.ITreeNode = { id: 'child', data: { foo: 456 } };
-      const res = util.replaceChild(root, child, { insert: 'FIRST' });
+      const res = TreeUtil.replaceChild(root, child, { insert: 'FIRST' });
       const children = res ? res.children || [] : [];
       expect(children[1].data).to.eql({ foo: 456 });
     });
@@ -287,23 +288,23 @@ describe('util.tree', () => {
       const grandchild: t.ITreeNode = { id: 'grandchild' };
       const child: t.ITreeNode = { id: 'child', children: [grandchild] };
       const root: t.ITreeNode = { id: 'root', children: [child] };
-      expect(util.parent(root, child)).to.equal(root);
-      expect(util.parent(root, grandchild)).to.equal(child);
+      expect(TreeUtil.parent(root, child)).to.equal(root);
+      expect(TreeUtil.parent(root, grandchild)).to.equal(child);
     });
 
     it('has no parent', () => {
       const grandchild: t.ITreeNode = { id: 'grandchild' };
       const child: t.ITreeNode = { id: 'child', children: [grandchild] };
       const root: t.ITreeNode = { id: 'root', children: [] };
-      expect(util.parent(root, child)).to.equal(undefined);
-      expect(util.parent(root, grandchild)).to.equal(undefined);
+      expect(TreeUtil.parent(root, child)).to.equal(undefined);
+      expect(TreeUtil.parent(root, grandchild)).to.equal(undefined);
     });
   });
 
   describe('setProps', () => {
     it('updates props on the root', () => {
       const tree: t.ITreeNode = { id: 'root', children: [{ id: 'foo' }] };
-      const res = util.setProps(tree, 'root', { label: 'Root!' });
+      const res = TreeUtil.setProps(tree, 'root', { label: 'Root!' });
       expect(res).to.not.equal(tree); // Clone.
       expect(res && res.props && res.props.label).to.eql('Root!');
     });
@@ -313,14 +314,14 @@ describe('util.tree', () => {
         id: 'root',
         children: [{ id: 'foo' }],
       };
-      tree = util.setProps(tree, 'foo', { label: '1' });
-      tree = util.setProps(tree, 'foo', { label: '2' });
-      tree = util.setProps(tree, 'foo', { title: 'My Title' });
-      tree = util.setProps(tree, 'foo', { label: 'hello' });
+      tree = TreeUtil.setProps(tree, 'foo', { label: '1' });
+      tree = TreeUtil.setProps(tree, 'foo', { label: '2' });
+      tree = TreeUtil.setProps(tree, 'foo', { title: 'My Title' });
+      tree = TreeUtil.setProps(tree, 'foo', { label: 'hello' });
 
       expect(tree && tree.id).to.eql('root');
 
-      const children = util.children(tree);
+      const children = TreeUtil.children(tree);
       expect(children[0]).to.eql({
         id: 'foo',
         props: { label: 'hello', title: 'My Title' },
@@ -336,7 +337,7 @@ describe('util.tree', () => {
 
     it('builds path (via node)', () => {
       const node = { id: 'D' };
-      const res = util.pathList(A, node);
+      const res = TreeUtil.pathList(A, node);
       expect(res.length).to.eql(3);
       expect(res[0]).to.eql(A);
       expect(res[1]).to.eql(C);
@@ -345,7 +346,7 @@ describe('util.tree', () => {
     });
 
     it('builds path (via ID)', () => {
-      const res = util.pathList(A, 'D');
+      const res = TreeUtil.pathList(A, 'D');
       expect(res.length).to.eql(3);
       expect(res[0]).to.eql(A);
       expect(res[1]).to.eql(C);
@@ -353,20 +354,20 @@ describe('util.tree', () => {
     });
 
     it('alternative path', () => {
-      const res = util.pathList(A, 'B');
+      const res = TreeUtil.pathList(A, 'B');
       expect(res.length).to.eql(2);
       expect(res[0]).to.eql(A);
       expect(res[1]).to.eql(B);
     });
 
     it('root', () => {
-      const res = util.pathList(A, 'A');
+      const res = TreeUtil.pathList(A, 'A');
       expect(res.length).to.eql(1);
       expect(res[0]).to.eql(A);
     });
 
     it('not found (empty [])', () => {
-      const res = util.pathList(A, 'NO_EXIST');
+      const res = TreeUtil.pathList(A, 'NO_EXIST');
       expect(res).to.eql([]);
     });
   });
@@ -379,116 +380,116 @@ describe('util.tree', () => {
     const A = { id: 'A', children: [B, C, E] };
 
     it('undefined ({inline} not set)', () => {
-      const res = util.toggleIsOpen(A, A);
-      const child = util.findById(res, 'B');
+      const res = TreeUtil.toggleIsOpen(A, A);
+      const child = TreeUtil.findById(res, 'B');
       expect(child).to.eql({ id: 'B' });
     });
 
     it('toggled (false => true => false)', () => {
-      const res1 = util.toggleIsOpen<t.ITreeNode>(A, D);
-      const child1 = util.findById(res1, 'D');
+      const res1 = TreeUtil.toggleIsOpen<t.ITreeNode>(A, D);
+      const child1 = TreeUtil.findById(res1, 'D');
       expect(child1 && child1.props).to.eql({ inline: { isOpen: true } });
 
-      const res2 = util.toggleIsOpen<t.ITreeNode>(res1, child1);
-      const child2 = util.findById(res2, 'D');
+      const res2 = TreeUtil.toggleIsOpen<t.ITreeNode>(res1, child1);
+      const child2 = TreeUtil.findById(res2, 'D');
       expect(child2 && child2.props).to.eql({ inline: { isOpen: false } });
     });
 
     it('toggled (undefined => true)', () => {
-      const res = util.toggleIsOpen<t.ITreeNode>(A, E);
-      const child = util.findById(res, 'E');
+      const res = TreeUtil.toggleIsOpen<t.ITreeNode>(A, E);
+      const child = TreeUtil.findById(res, 'E');
       expect(child && child.props).to.eql({ inline: { isOpen: true } });
     });
 
     it('toggled via "id" (undefined => true)', () => {
       let root = { ...A } as t.ITreeNode | undefined;
-      root = util.toggleIsOpen<t.ITreeNode>(root, E.id);
-      const child1 = util.findById(root, 'E');
+      root = TreeUtil.toggleIsOpen<t.ITreeNode>(root, E.id);
+      const child1 = TreeUtil.findById(root, 'E');
       expect(child1 && child1.props).to.eql({ inline: { isOpen: true } });
 
-      root = util.toggleIsOpen<t.ITreeNode>(root, E.id);
-      const child2 = util.findById(root, 'E');
+      root = TreeUtil.toggleIsOpen<t.ITreeNode>(root, E.id);
+      const child2 = TreeUtil.findById(root, 'E');
       expect(child2 && child2.props).to.eql({ inline: { isOpen: false } });
     });
   });
 
   describe('openToNode', () => {
     it('no change when nodes are not inline', () => {
-      const root = util.buildPath({ id: 'ROOT' }, (id) => ({ id }), 'foo/bar/zoo').root;
-      const res = util.openToNode(root, 'foo/bar/zoo');
+      const root = TreeUtil.buildPath({ id: 'ROOT' }, (id) => ({ id }), 'foo/bar/zoo').root;
+      const res = TreeUtil.openToNode(root, 'foo/bar/zoo');
       expect(res).to.eql(root);
     });
 
     it('sets the inline state of nodes to the given path (boolean)', () => {
       const factory: t.TreeNodePathFactory = (id) => ({ id, props: { inline: {} } });
-      const root = util.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root as t.ITreeNode;
+      const root = TreeUtil.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root as t.ITreeNode;
 
-      const res = util.openToNode(root, 'foo/bar') as t.ITreeNode;
-      const child1 = util.childAt(0, res);
-      const child2 = util.childAt(0, child1);
+      const res = TreeUtil.openToNode(root, 'foo/bar') as t.ITreeNode;
+      const child1 = TreeUtil.childAt(0, res);
+      const child2 = TreeUtil.childAt(0, child1);
 
-      expect(util.props(child1).inline).to.eql({ isOpen: true });
-      expect(util.props(child2).inline).to.eql({ isOpen: true });
+      expect(TreeUtil.props(child1).inline).to.eql({ isOpen: true });
+      expect(TreeUtil.props(child2).inline).to.eql({ isOpen: true });
     });
 
     it('sets the inline state of nodes to the given path (object)', () => {
       const factory: t.TreeNodePathFactory = (id) => ({ id, props: { inline: {} } });
-      const root = util.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root;
+      const root = TreeUtil.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root;
 
-      const res = util.openToNode(root, 'foo/bar') as t.ITreeNode;
-      const child1 = util.childAt(0, res);
-      const child2 = util.childAt(0, child1);
+      const res = TreeUtil.openToNode(root, 'foo/bar') as t.ITreeNode;
+      const child1 = TreeUtil.childAt(0, res);
+      const child2 = TreeUtil.childAt(0, child1);
 
-      expect(util.props(child1).inline).to.eql({ isOpen: true });
-      expect(util.props(child2).inline).to.eql({ isOpen: true });
+      expect(TreeUtil.props(child1).inline).to.eql({ isOpen: true });
+      expect(TreeUtil.props(child2).inline).to.eql({ isOpen: true });
     });
   });
 
   describe('flags', () => {
     it('isOpen', () => {
-      expect(util.isOpen()).to.eql(undefined);
-      expect(util.isOpen({ id: 'foo' })).to.eql(undefined);
-      expect(util.isOpen({ id: 'foo', props: { inline: {} } })).to.eql(undefined);
-      expect(util.isOpen({ id: 'foo', props: { inline: { isOpen: true } } })).to.eql(true);
-      expect(util.isOpen({ id: 'foo', props: { inline: { isOpen: false } } })).to.eql(false);
+      expect(TreeUtil.isOpen()).to.eql(undefined);
+      expect(TreeUtil.isOpen({ id: 'foo' })).to.eql(undefined);
+      expect(TreeUtil.isOpen({ id: 'foo', props: { inline: {} } })).to.eql(undefined);
+      expect(TreeUtil.isOpen({ id: 'foo', props: { inline: { isOpen: true } } })).to.eql(true);
+      expect(TreeUtil.isOpen({ id: 'foo', props: { inline: { isOpen: false } } })).to.eql(false);
     });
 
     it('isEnabled', () => {
-      expect(util.isEnabled()).to.eql(true);
-      expect(util.isEnabled({ id: 'foo' })).to.eql(true);
-      expect(util.isEnabled({ id: 'foo', props: { isEnabled: true } })).to.eql(true);
-      expect(util.isEnabled({ id: 'foo', props: { isEnabled: false } })).to.eql(false);
+      expect(TreeUtil.isEnabled()).to.eql(true);
+      expect(TreeUtil.isEnabled({ id: 'foo' })).to.eql(true);
+      expect(TreeUtil.isEnabled({ id: 'foo', props: { isEnabled: true } })).to.eql(true);
+      expect(TreeUtil.isEnabled({ id: 'foo', props: { isEnabled: false } })).to.eql(false);
     });
 
     it('isSelected', () => {
-      expect(util.isSelected()).to.eql(false);
-      expect(util.isSelected({ id: 'foo' })).to.eql(false);
-      expect(util.isSelected({ id: 'foo', props: { isSelected: false } })).to.eql(false);
-      expect(util.isSelected({ id: 'foo', props: { isSelected: true } })).to.eql(true);
+      expect(TreeUtil.isSelected()).to.eql(false);
+      expect(TreeUtil.isSelected({ id: 'foo' })).to.eql(false);
+      expect(TreeUtil.isSelected({ id: 'foo', props: { isSelected: false } })).to.eql(false);
+      expect(TreeUtil.isSelected({ id: 'foo', props: { isSelected: true } })).to.eql(true);
     });
   });
 
   describe('buildPath', () => {
     it('build nothing (empty path)', () => {
       const root = { id: 'root' };
-      const res = util.buildPath(root, (id) => ({ id }), '');
+      const res = TreeUtil.buildPath(root, (id) => ({ id }), '');
       expect(res.ids).to.eql([]);
       expect(res.root).to.eql(root);
     });
 
     it('builds path (1 level deep)', () => {
       const root = { id: 'root' };
-      const res = util.buildPath<t.ITreeNode>(root, (id) => ({ id }), 'one');
+      const res = TreeUtil.buildPath<t.ITreeNode>(root, (id) => ({ id }), 'one');
       expect(res.root.children).to.eql([{ id: 'one' }]);
     });
 
     it('builds path (3 levels deep)', () => {
       const root = { id: 'root' };
-      const res = util.buildPath(root, (id) => ({ id }), 'one/two/three');
+      const res = TreeUtil.buildPath(root, (id) => ({ id }), 'one/two/three');
 
-      const child1 = util.findById(res.root, 'one');
-      const child2 = util.findById(res.root, 'one/two');
-      const child3 = util.findById(res.root, 'one/two/three');
+      const child1 = TreeUtil.findById(res.root, 'one');
+      const child2 = TreeUtil.findById(res.root, 'one/two');
+      const child3 = TreeUtil.findById(res.root, 'one/two/three');
 
       expect(child1 && child1.id).to.eql('one');
       expect(child2 && child2.id).to.eql('one/two');
@@ -503,7 +504,7 @@ describe('util.tree', () => {
       };
 
       const root = { id: 'ROOT' };
-      util.buildPath(root, factory, 'one/two/three');
+      TreeUtil.buildPath(root, factory, 'one/two/three');
 
       expect(list.length).to.eql(3);
       expect(list[0].id).to.eql('one/two/three');
@@ -521,11 +522,11 @@ describe('util.tree', () => {
 
     it('uses overridden delimiter (:)', () => {
       const root = { id: 'root' };
-      const res = util.buildPath(root, (id) => ({ id }), 'one:two', {
+      const res = TreeUtil.buildPath(root, (id) => ({ id }), 'one:two', {
         delimiter: ':',
       });
-      const child1 = util.findById(res.root, 'one');
-      const child2 = util.findById(res.root, 'one:two');
+      const child1 = TreeUtil.findById(res.root, 'one');
+      const child2 = TreeUtil.findById(res.root, 'one:two');
       expect(child1 && child1.id).to.eql('one');
       expect(child2 && child2.id).to.eql('one:two');
     });
@@ -533,7 +534,7 @@ describe('util.tree', () => {
     it('does not override existing tree (default)', () => {
       type T = t.ITreeNode<string, { foo: number }>;
       let root: T = { id: 'root' };
-      root = util.buildPath<T>(
+      root = TreeUtil.buildPath<T>(
         root,
         (id) => ({
           id,
@@ -542,7 +543,7 @@ describe('util.tree', () => {
         'one/two',
       ).root;
 
-      root = util.buildPath<T>(
+      root = TreeUtil.buildPath<T>(
         root,
         (id) => ({
           id,
@@ -551,9 +552,9 @@ describe('util.tree', () => {
         'one/two/three',
       ).root;
 
-      const child1 = util.findById(root, 'one/two') as T;
-      const child2 = util.findById(root, 'one/two') as T;
-      const child3 = util.findById(root, 'one/two/three') as T;
+      const child1 = TreeUtil.findById(root, 'one/two') as T;
+      const child2 = TreeUtil.findById(root, 'one/two') as T;
+      const child3 = TreeUtil.findById(root, 'one/two/three') as T;
 
       expect(child1.data && child1.data.foo).to.eql(1); // NB: not overriden.
       expect(child2.data && child2.data.foo).to.eql(1); // NB: not overriden.
@@ -563,15 +564,15 @@ describe('util.tree', () => {
     it('does not force overrides existing tree', () => {
       type T = t.ITreeNode<string, { foo: number }>;
       let root: T = { id: 'ROOT' };
-      root = util.buildPath<T>(root, (id) => ({ id, data: { foo: 1 } }), 'one/two').root;
+      root = TreeUtil.buildPath<T>(root, (id) => ({ id, data: { foo: 1 } }), 'one/two').root;
 
-      root = util.buildPath<T>(root, (id) => ({ id, data: { foo: 2 } }), 'one/two/three', {
+      root = TreeUtil.buildPath<T>(root, (id) => ({ id, data: { foo: 2 } }), 'one/two/three', {
         force: true,
       }).root;
 
-      const child1 = util.findById(root, 'one/two') as T;
-      const child2 = util.findById(root, 'one/two') as T;
-      const child3 = util.findById(root, 'one/two/three') as T;
+      const child1 = TreeUtil.findById(root, 'one/two') as T;
+      const child2 = TreeUtil.findById(root, 'one/two') as T;
+      const child3 = TreeUtil.findById(root, 'one/two/three') as T;
 
       expect(child1.data && child1.data.foo).to.eql(2); // NB: not overriden.
       expect(child2.data && child2.data.foo).to.eql(2); // NB: not overriden.
@@ -580,7 +581,7 @@ describe('util.tree', () => {
 
     it('merges paths (using path builder)', () => {
       const factory: t.TreeNodePathFactory<t.ITreeNode> = (id) => ({ id });
-      const builder = util.pathBuilder({ id: 'ROOT' }, factory);
+      const builder = TreeUtil.pathBuilder({ id: 'ROOT' }, factory);
 
       builder.add('project/cohort-1');
       builder.add('project/cohort-1/images');
@@ -589,29 +590,29 @@ describe('util.tree', () => {
       builder.add('project/cohort-2');
 
       const root = builder.root;
-      const project = util.find(root, (e) => e.node.id.endsWith('project'));
-      const cohort1 = util.find(root, (e) => e.node.id.endsWith('/cohort-1'));
-      const cohort2 = util.find(root, (e) => e.node.id.endsWith('/cohort-2'));
-      const readme = util.find(root, (e) => e.node.id.endsWith('README.md'));
-      const images = util.find(root, (e) => e.node.id.endsWith('/images'));
-      const logo = util.find(root, (e) => e.node.id.endsWith('logo.png'));
+      const project = TreeUtil.find(root, (e) => e.node.id.endsWith('project'));
+      const cohort1 = TreeUtil.find(root, (e) => e.node.id.endsWith('/cohort-1'));
+      const cohort2 = TreeUtil.find(root, (e) => e.node.id.endsWith('/cohort-2'));
+      const readme = TreeUtil.find(root, (e) => e.node.id.endsWith('README.md'));
+      const images = TreeUtil.find(root, (e) => e.node.id.endsWith('/images'));
+      const logo = TreeUtil.find(root, (e) => e.node.id.endsWith('logo.png'));
 
-      expect(util.children(root).length).to.eql(1);
-      expect(util.children(project).length).to.eql(2);
-      expect(util.children(cohort1).length).to.eql(2);
-      expect(util.children(cohort2).length).to.eql(0);
+      expect(TreeUtil.children(root).length).to.eql(1);
+      expect(TreeUtil.children(project).length).to.eql(2);
+      expect(TreeUtil.children(cohort1).length).to.eql(2);
+      expect(TreeUtil.children(cohort2).length).to.eql(0);
 
-      expect(util.hasChild(root, project)).to.eql(true);
-      expect(util.hasChild(project, cohort1)).to.eql(true);
-      expect(util.hasChild(project, cohort2)).to.eql(true);
-      expect(util.hasChild(cohort1, readme)).to.eql(true);
-      expect(util.hasChild(cohort1, images)).to.eql(true);
-      expect(util.hasChild(images, logo)).to.eql(true);
+      expect(TreeUtil.hasChild(root, project)).to.eql(true);
+      expect(TreeUtil.hasChild(project, cohort1)).to.eql(true);
+      expect(TreeUtil.hasChild(project, cohort2)).to.eql(true);
+      expect(TreeUtil.hasChild(cohort1, readme)).to.eql(true);
+      expect(TreeUtil.hasChild(cohort1, images)).to.eql(true);
+      expect(TreeUtil.hasChild(images, logo)).to.eql(true);
     });
 
     describe('factory returns undefined (node not added)', () => {
       it('nothing added', () => {
-        const builder = util.pathBuilder({ id: 'ROOT' }, (id) => undefined);
+        const builder = TreeUtil.pathBuilder({ id: 'ROOT' }, (id) => undefined);
         builder.add('/foo');
         builder.add('/foo/bar');
         builder.add('/foo/bar/baz');
@@ -621,16 +622,16 @@ describe('util.tree', () => {
       it('leaf node not added', () => {
         const factory: t.TreeNodePathFactory<t.ITreeNode> = (id) =>
           id.split('/').length > 2 ? undefined : { id };
-        const builder = util.pathBuilder({ id: 'ROOT' }, factory);
+        const builder = TreeUtil.pathBuilder({ id: 'ROOT' }, factory);
 
         builder.add('/foo');
         builder.add('/foo/bar');
         builder.add('/foo/bar/baz');
 
         const root = builder.root;
-        const child1 = util.findById(root, 'foo') as t.ITreeNode;
-        const child2 = util.findById(root, 'foo/bar') as t.ITreeNode;
-        const child3 = util.findById(root, 'foo/bar/baz') as t.ITreeNode;
+        const child1 = TreeUtil.findById(root, 'foo') as t.ITreeNode;
+        const child2 = TreeUtil.findById(root, 'foo/bar') as t.ITreeNode;
+        const child3 = TreeUtil.findById(root, 'foo/bar/baz') as t.ITreeNode;
 
         expect(child1.id).to.eql('foo');
         expect(child2.id).to.eql('foo/bar');
@@ -640,7 +641,7 @@ describe('util.tree', () => {
       it('folder node not added (descendents stopped)', () => {
         const factory: t.TreeNodePathFactory<t.ITreeNode> = (id) =>
           id.split('/').length > 2 ? undefined : { id };
-        const builder = util.pathBuilder({ id: 'ROOT' }, factory);
+        const builder = TreeUtil.pathBuilder({ id: 'ROOT' }, factory);
 
         builder.add('/foo');
         builder.add('/foo/bar');
@@ -648,10 +649,10 @@ describe('util.tree', () => {
         builder.add('/foo/bar/baz/zoo');
 
         const root = builder.root;
-        const child1 = util.findById(root, 'foo') as t.ITreeNode;
-        const child2 = util.findById(root, 'foo/bar') as t.ITreeNode;
-        const child3 = util.findById(root, 'foo/bar/baz') as t.ITreeNode;
-        const child4 = util.findById(root, 'foo/bar/baz/zoo') as t.ITreeNode;
+        const child1 = TreeUtil.findById(root, 'foo') as t.ITreeNode;
+        const child2 = TreeUtil.findById(root, 'foo/bar') as t.ITreeNode;
+        const child3 = TreeUtil.findById(root, 'foo/bar/baz') as t.ITreeNode;
+        const child4 = TreeUtil.findById(root, 'foo/bar/baz/zoo') as t.ITreeNode;
 
         expect(child1.id).to.eql('foo');
         expect(child2.id).to.eql('foo/bar');

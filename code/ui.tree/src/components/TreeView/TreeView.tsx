@@ -19,11 +19,12 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 
-import { constants, t, tree as treeUtil } from '../../common';
+import { constants, t } from '../../common';
 import { TreeEvents } from '../../events';
 import * as themes from '../../themes';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
+import { TreeUtil } from '../../TreeUtil';
 
 const R = { equals };
 
@@ -58,7 +59,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   /**
    * [Static]
    */
-  public static util = treeUtil;
+  public static util = TreeUtil;
 
   public static events<N extends t.ITreeNode = t.ITreeNode>(
     events$: Observable<t.TreeViewEvent>,
@@ -70,7 +71,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   private static current(props: ITreeViewProps) {
     const { node } = props;
     const current = props.current || node;
-    const result = typeof current === 'object' ? current : treeUtil.findById(node, current);
+    const result = typeof current === 'object' ? current : TreeUtil.findById(node, current);
     return result || node;
   }
 
@@ -347,7 +348,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    */
 
   private handleNodeMouse = (payload: t.TreeNodeMouseEvent) => {
-    const props = treeUtil.props(payload);
+    const props = TreeUtil.props(payload);
     if (props.isEnabled === false) {
       switch (payload.type) {
         case 'CLICK':
@@ -364,7 +365,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   private updatePath() {
     const { node } = this.props;
     const current = TreeView.current(this.props);
-    const currentPath = treeUtil.pathList(node, current) || [];
+    const currentPath = TreeUtil.pathList(node, current) || [];
     const renderedPath = [...(this.state.renderedPath || [])];
     currentPath.forEach((node, i) => {
       renderedPath[i] = node;

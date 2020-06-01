@@ -3,11 +3,12 @@ import { mouse } from '@platform/react';
 import { defaultValue } from '@platform/util.value';
 import * as React from 'react';
 
-import { constants, t, tree } from '../../common';
+import { constants, t } from '../../common';
 import * as themes from '../../themes';
 import { Icons, IIcon } from '../Icons';
 import { Spinner } from '@platform/ui.spinner';
 import { Text } from '@platform/ui.text/lib/components/Text';
+import { TreeUtil } from '../../TreeUtil';
 
 const DEFAULT = {
   PADDING: [5, 0, 5, 5],
@@ -464,7 +465,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     const handlers = mouse.handlers((e) => {
       const node = getNode();
       const props = node.props || {};
-      const children = tree.children(node);
+      const children = TreeUtil.children(node);
       if (onMouse) {
         e.cancel(); // NB: Cancelling the mouse event prevent bubbling up, where a child node causes the parent node to also fire.
         onMouse({ ...e, id: node.id, target, node, props, children });
