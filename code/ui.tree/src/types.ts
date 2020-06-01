@@ -143,6 +143,7 @@ export type RenderTreeNodeBodyArgs<T extends ITreeNode = ITreeNode> = {
  */
 export type ITreeDescend<T extends ITreeNode = ITreeNode> = {
   index: number; // Within siblings.
+  node: T;
   parent?: T;
   depth: number;
   stop: () => void;
@@ -153,6 +154,7 @@ export type ITreeDescend<T extends ITreeNode = ITreeNode> = {
  */
 export type ITreeAscend<T extends ITreeNode = ITreeNode> = {
   index: number;
+  node: T;
   parent?: T;
   stop: () => void;
 };

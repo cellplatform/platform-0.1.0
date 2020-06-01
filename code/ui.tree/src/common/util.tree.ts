@@ -35,15 +35,15 @@ export function hasChild(
  */
 export function find<T extends t.ITreeNode>(
   root: T | undefined,
-  match: (node: T, args: t.ITreeDescend<T>) => boolean,
+  match: (args: t.ITreeDescend<T>) => boolean,
 ): T | undefined {
   if (!root) {
     return;
   }
   let result: T | undefined;
-  walkDown(root, (node, e) => {
-    if (match(node, e) === true) {
-      result = node;
+  walkDown(root, (e) => {
+    if (match(e) === true) {
+      result = e.node;
       e.stop();
     }
   });
@@ -62,7 +62,7 @@ export function findById<T extends t.ITreeNode>(
     return undefined;
   }
   const targetId = typeof id === 'string' ? id : id.id;
-  const result = id ? find<T>(root, (node) => node.id === targetId) : undefined;
+  const result = id ? find<T>(root, (e) => e.node.id === targetId) : undefined;
   if (!result && options.throw) {
     throw new Error(`Failed to find tree-view node with the id '${id}'.`);
   }
@@ -74,7 +74,7 @@ export function findById<T extends t.ITreeNode>(
  */
 export function walkDown<T extends t.ITreeNode>(
   node: T | undefined,
-  fn: (node: T, args: t.ITreeDescend<T>) => any,
+  fn: (args: t.ITreeDescend<T>) => any,
 ) {
   let stopped = false;
   const walk = (args: {
@@ -86,7 +86,8 @@ export function walkDown<T extends t.ITreeNode>(
     if (!args.node || stopped) {
       return;
     }
-    fn(args.node as T, {
+    fn({
+      node: args.node as T,
       parent: args.parent as T,
       index: args.index,
       depth: args.depth,
@@ -122,6 +123,7 @@ export function walkUp<T extends t.ITreeNode>(
     let stop = false;
     const parentNode = parent(root, current);
     const args: t.ITreeAscend<T> = {
+      node: current,
       parent: parentNode,
       get index() {
         const id = current ? current.id : '';
@@ -141,10 +143,10 @@ export function walkUp<T extends t.ITreeNode>(
  */
 export function map<T extends t.ITreeNode, R>(
   node: T | undefined,
-  fn: (node: T, args: t.ITreeDescend<T>) => R,
+  fn: (args: t.ITreeDescend<T>) => R,
 ) {
   let result: R[] = [];
-  walkDown<T>(node, (node, e) => (result = [...result, fn(node, e) as R]));
+  walkDown<T>(node, (e) => (result = [...result, fn(e) as R]));
   return result;
 }
 
@@ -160,8 +162,8 @@ export function depth(
     return depth;
   }
   const id = toId(node);
-  walkDown(root, (node, e) => {
-    if (node.id === id) {
+  walkDown(root, (e) => {
+    if (e.node.id === id) {
       depth = e.depth;
       e.stop();
     }
@@ -193,16 +195,16 @@ export function parent<T extends t.ITreeNode>(
   let result: T | undefined;
   const target: t.ITreeNode = node;
 
-  walkDown<T>(root, (parentNode, e) => {
-    if (hasChild(parentNode, target)) {
-      const props = parentNode.props || {};
+  walkDown<T>(root, (e) => {
+    if (hasChild(e.node, target)) {
+      const props = e.node.props || {};
       if (options.inline === false && props.inline) {
         // Not a match on the given "showChildren" filter.
-        // Keep going....
+        // Keep going...
         e.stop();
-        result = parent(root, parentNode); // <== RECURSION.
+        result = parent(root, e.node); // <== RECURSION.
       } else {
-        result = parentNode;
+        result = e.node;
         e.stop();
       }
     }
@@ -272,8 +274,8 @@ export function replace<T extends t.ITreeNode>(
 
   // Walk the tree looking for the item to place.
   root = R.clone(root);
-  walkDown<T>(root, (current, e) => {
-    if (target && current.id === target.id) {
+  walkDown<T>(root, (e) => {
+    if (target && e.node.id === target.id) {
       if (e.parent && e.index > -1) {
         const items = [...children(e.parent)];
         items[e.index] = { ...target };

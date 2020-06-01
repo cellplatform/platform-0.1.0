@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { t, tree as util } from '.';
 
 describe('util.tree', () => {
-  describe.only('walkDown', () => {
+  describe('walkDown', () => {
     it('walks from root', () => {
       const tree: t.ITreeNode = {
         id: 'root',
@@ -10,9 +10,7 @@ describe('util.tree', () => {
       };
 
       const nodes: t.ITreeNode[] = [];
-      util.walkDown(tree, (node) => {
-        nodes.push(node);
-      });
+      util.walkDown(tree, (e) => nodes.push(e.node));
 
       expect(nodes.length).to.eql(3);
       expect(nodes[0]).to.equal(tree);
@@ -25,20 +23,18 @@ describe('util.tree', () => {
       const child: t.ITreeNode = { id: 'child', children: [grandchild] };
       const root: t.ITreeNode = { id: 'root', children: [child] };
 
-      let items: Array<{ node: t.ITreeNode; args: t.ITreeDescend }> = [];
-      util.walkDown(root, (node, args) => {
-        items = [...items, { node, args }];
-      });
+      const items: t.ITreeDescend[] = [];
+      util.walkDown(root, (e) => items.push(e));
 
       expect(items.length).to.eql(3);
 
-      expect(items[0].args.depth).to.eql(0);
-      expect(items[1].args.depth).to.eql(1);
-      expect(items[2].args.depth).to.eql(2);
+      expect(items[0].depth).to.eql(0);
+      expect(items[1].depth).to.eql(1);
+      expect(items[2].depth).to.eql(2);
 
-      expect(items[0].args.parent).to.eql(undefined);
-      expect(items[1].args.parent).to.eql(root);
-      expect(items[2].args.parent).to.eql(child);
+      expect(items[0].parent).to.eql(undefined);
+      expect(items[1].parent).to.eql(root);
+      expect(items[2].parent).to.eql(child);
     });
 
     it('reports node index (sibling position)', () => {
@@ -47,16 +43,12 @@ describe('util.tree', () => {
         children: [{ id: 'child-1' }, { id: 'child-2' }],
       };
 
-      let items: Array<{ node: t.ITreeNode; args: t.ITreeDescend }> = [];
-      util.walkDown(tree, (node, args) => {
-        items = [...items, { node, args }];
-      });
+      const items: t.ITreeDescend[] = [];
+      util.walkDown(tree, (e) => items.push(e));
 
-      const args = items.map((item) => item.args);
-
-      expect(args[0].index).to.eql(-1);
-      expect(args[1].index).to.eql(0);
-      expect(args[2].index).to.eql(1);
+      expect(items[0].index).to.eql(-1);
+      expect(items[1].index).to.eql(0);
+      expect(items[2].index).to.eql(1);
     });
   });
 
@@ -66,7 +58,7 @@ describe('util.tree', () => {
       children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'grandchild-1' }] }],
     };
 
-    it.only('walks to root', () => {
+    it('walks to root', () => {
       const start = util.findById(tree, 'grandchild-1');
       const list: { node: t.ITreeNode; args: t.ITreeAscend }[] = [];
       util.walkUp(tree, start, (node, args) => list.push({ node, args }));
@@ -107,8 +99,8 @@ describe('util.tree', () => {
     };
 
     it('finds the given node', () => {
-      const res1 = util.find(tree, (n) => n.id === 'child-3');
-      const res2 = util.find(tree, (n) => n.id === 'NO_EXIT');
+      const res1 = util.find(tree, (e) => e.node.id === 'child-3');
+      const res2 = util.find(tree, (e) => e.node.id === 'NO_EXIT');
       expect(res1).to.eql({ id: 'child-3' });
       expect(res2).to.eql(undefined);
     });
@@ -168,18 +160,18 @@ describe('util.tree', () => {
   describe('map', () => {
     const root = { id: 'A', children: [{ id: 'B' }, { id: 'C' }] };
     it('maps the entire tree', () => {
-      const res = util.map(root, (n) => n.id);
+      const res = util.map(root, (e) => e.node.id);
       expect(res).to.eql(['A', 'B', 'C']);
     });
 
     it('stops mapping mid-way through', () => {
       let count = 0;
-      const res = util.map(root, (n, args) => {
+      const res = util.map(root, (e) => {
         count++;
         if (count > 1) {
-          args.stop();
+          e.stop();
         }
-        return n.id;
+        return e.node.id;
       });
       expect(res).to.eql(['A', 'B']);
     });
@@ -598,12 +590,12 @@ describe('util.tree', () => {
       builder.add('project/cohort-2');
 
       const root = builder.root;
-      const project = util.find(root, (n) => n.id.endsWith('project'));
-      const cohort1 = util.find(root, (n) => n.id.endsWith('/cohort-1'));
-      const cohort2 = util.find(root, (n) => n.id.endsWith('/cohort-2'));
-      const readme = util.find(root, (n) => n.id.endsWith('README.md'));
-      const images = util.find(root, (n) => n.id.endsWith('/images'));
-      const logo = util.find(root, (n) => n.id.endsWith('logo.png'));
+      const project = util.find(root, (e) => e.node.id.endsWith('project'));
+      const cohort1 = util.find(root, (e) => e.node.id.endsWith('/cohort-1'));
+      const cohort2 = util.find(root, (e) => e.node.id.endsWith('/cohort-2'));
+      const readme = util.find(root, (e) => e.node.id.endsWith('README.md'));
+      const images = util.find(root, (e) => e.node.id.endsWith('/images'));
+      const logo = util.find(root, (e) => e.node.id.endsWith('logo.png'));
 
       expect(util.children(root).length).to.eql(1);
       expect(util.children(project).length).to.eql(2);
