@@ -40,7 +40,7 @@ export function init(args: { store: t.IFinderStore }) {
 export function toggleSelection(root: t.ITreeNode | undefined, id: string) {
   const { BLUE } = COLORS;
 
-  const current = util.find(root, (node) => node.props?.isSelected || false);
+  const current = util.find(root, (e) => e.node.props?.isSelected || false);
   if (current && current.id !== id) {
     root = util.setProps(root, current.id, {
       isSelected: false,

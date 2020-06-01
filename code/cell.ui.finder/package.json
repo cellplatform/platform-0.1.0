@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.finder",
-  "version": "0.0.30",
+  "version": "0.0.32",
   "description": "Finder UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -23,7 +23,7 @@
     "@platform/react": "0.4.32",
     "@platform/state": "0.4.64",
     "@platform/ui.spinner": "0.0.148",
-    "@platform/ui.tree": "0.4.65",
+    "@platform/ui.tree": "0.5.0",
     "path-sort": "0.1.0",
     "pretty-bytes": "5.3.0",
     "react-icons": "3.10.0"

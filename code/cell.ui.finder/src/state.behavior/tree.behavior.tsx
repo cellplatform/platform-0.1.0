@@ -1,4 +1,4 @@
-import { TreeView } from '@platform/ui.tree';
+import { TreeView, TreeUtil } from '@platform/ui.tree';
 import { t } from '../common';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -13,7 +13,7 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
   const left = tree.mouse({ button: 'LEFT' });
 
   const toggleTwisty = (node: string) => {
-    const root = TreeView.util.toggleIsOpen(store.state.tree.root, node);
+    const root = TreeUtil.toggleIsOpen(store.state.tree.root, node);
     ctx.fire({ type: 'FINDER/tree', payload: { root } });
   };
 

@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.tree",
   "description": "Hierarchical tree view.",
-  "version": "0.4.65",
+  "version": "0.5.0",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {

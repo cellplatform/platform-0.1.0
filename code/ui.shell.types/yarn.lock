@@ -178,10 +178,10 @@
     "@platform/react" "0.4.32"
     "@platform/util.value" "0.7.23"
 
-"@platform/ui.tree@0.4.65":
-  version "0.4.65"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.4.65.tgz#3e49cfea5f53fbaafc30b173ae3bbc23c26f22b1"
-  integrity sha512-oE2Mcm4t5yqwYi87s0LWMu0G2EgR9sXc79MvvtChvA0OfCZKhdQ3Tzzay1Dkgtz5ep8D4K119VGe1GzxaZhPcw==
+"@platform/ui.tree@0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.5.0.tgz#1c11c46c949c02ea35e4ca760ca346d7e0b52362"
+  integrity sha512-b9i9MGCG6bcxjbpaUI0Ith4nlvkc9UtUp7tvZtgevRs1E8VIegyo3ZoJGKzxlcYU4Weh05RDpRk0rYErgaY8/w==
   dependencies:
     "@platform/css" "0.4.2"
     "@platform/react" "0.4.32"

@@ -136,7 +136,8 @@ export class CommandTreeView extends React.PureComponent<
     const currentCommandId = util.asTreeNodeId(currentCommand);
     const dimmed = currentCommand && !isAutocompleted ? [] : filterDimmed(fuzzyMatches);
 
-    TreeView.util.walk(treeRoot, (node) => {
+    TreeView.util.walkDown(treeRoot, (e) => {
+      const node = e.node;
       const command = node.data as t.ICommand;
 
       // Dim any nodes that are filtered out due to the current input text.
