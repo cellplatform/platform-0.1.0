@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@platform/cell.compile.web": "0.0.86",
-    "@platform/cli.prompt": "^0.3.20",
+    "@platform/cli.prompt": "0.3.20",
     "@platform/ts": "3.9.3",
     "browserify": "16.5.1"
   },
