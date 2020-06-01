@@ -19,7 +19,7 @@ import * as t from '../common/types';
  * See:
  *    https://reactjs.org/docs/context.html
  */
-export const Context = React.createContext<t.IEnvContext>({} as any);
+export const Context = React.createContext<t.IEnvContext<any>>({} as any);
 Context.displayName = '@platform/cell.ui/Context';
 
 /**
@@ -45,7 +45,7 @@ export function createProvider<P = {}>(args: {
   ctx: t.IEnvContext<any>;
   props?: P;
 }): React.FunctionComponent {
-  const context: t.IEnvContext = {
+  const context: t.IEnvContext<any> = {
     ...args.ctx,
     ...(args.props || {}), // Optional props to extend the context with.
   };

@@ -38,45 +38,6 @@ export class TreeUtil {
   }
 
   /**
-   * Walks the tree looking for the first match.
-   */
-  public static find<T extends t.ITreeNode>(
-    root: T | undefined,
-    match: (args: t.ITreeDescend<T>) => boolean,
-  ): T | undefined {
-    if (!root) {
-      return;
-    }
-    let result: T | undefined;
-    TreeUtil.walkDown(root, (e) => {
-      if (match(e) === true) {
-        result = e.node;
-        e.stop();
-      }
-    });
-    return result ? { ...result } : undefined;
-  }
-
-  /**
-   * Walks the tree looking for the given node.
-   */
-  public static findById<T extends t.ITreeNode>(
-    root: T | undefined,
-    id: t.ITreeNode | t.ITreeNode['id'] | undefined,
-    options: { throw?: boolean } = {},
-  ): T | undefined {
-    if (!id) {
-      return undefined;
-    }
-    const targetId = typeof id === 'string' ? id : id.id;
-    const result = id ? TreeUtil.find<T>(root, (e) => e.node.id === targetId) : undefined;
-    if (!result && options.throw) {
-      throw new Error(`Failed to find tree-view node with the id '${id}'.`);
-    }
-    return result;
-  }
-
-  /**
    * Walks a tree (top down).
    */
   public static walkDown<T extends t.ITreeNode>(
@@ -143,6 +104,66 @@ export class TreeUtil {
         TreeUtil.walkUp(root, args.parent, fn); // <== RECURSION 🌳
       }
     }
+  }
+
+  /**
+   * Walks down the tree looking for the first match (top-down).
+   */
+  public static find<T extends t.ITreeNode>(
+    root: T | undefined,
+    match: (args: t.ITreeDescend<T>) => boolean,
+  ): T | undefined {
+    if (!root) {
+      return;
+    }
+    let result: T | undefined;
+    TreeUtil.walkDown(root, (e) => {
+      if (match(e) === true) {
+        result = e.node;
+        e.stop();
+      }
+    });
+    return result ? { ...result } : undefined;
+  }
+
+  /**
+   * Walks the down the tree looking for the given node (top-down).
+   */
+  public static findById<T extends t.ITreeNode>(
+    root: T | undefined,
+    id: t.ITreeNode | t.ITreeNode['id'] | undefined,
+    options: { throw?: boolean } = {},
+  ): T | undefined {
+    if (!id) {
+      return undefined;
+    }
+    const targetId = typeof id === 'string' ? id : id.id;
+    const result = id ? TreeUtil.find<T>(root, (e) => e.node.id === targetId) : undefined;
+    if (!result && options.throw) {
+      throw new Error(`Failed to find tree-view node with the id '${id}'.`);
+    }
+    return result;
+  }
+
+  /**
+   * Walks the up tree looking for the first match (bottom-up).
+   */
+  public static ancestor<T extends t.ITreeNode>(
+    root: T | undefined,
+    node: T | string | undefined,
+    match: (args: t.ITreeAscend<T>) => boolean,
+  ): T | undefined {
+    if (!root) {
+      return;
+    }
+    let result: T | undefined;
+    TreeUtil.walkUp<T>(root, node, (e) => {
+      if (match(e)) {
+        result = e.node;
+        e.stop();
+      }
+    });
+    return result;
   }
 
   /**

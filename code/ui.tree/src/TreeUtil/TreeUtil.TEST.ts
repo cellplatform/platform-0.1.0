@@ -117,6 +117,33 @@ describe('TreeUtil', () => {
     });
   });
 
+  describe('ancestor', () => {
+    const tree: t.ITreeNode = {
+      id: 'root',
+      children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-3' }] }],
+    };
+
+    it('matches self (first)', () => {
+      const node = TreeUtil.findById(tree, 'child-3');
+      const res = TreeUtil.ancestor(tree, node, (e) => e.node.id === 'child-3');
+      expect(res && res.id).to.eql('child-3');
+    });
+
+    it('finds matching ancestor', () => {
+      const node = TreeUtil.findById(tree, 'child-3');
+      const res1 = TreeUtil.ancestor(tree, node, (e) => e.node.id === 'child-2');
+      const res2 = TreeUtil.ancestor(tree, node, (e) => e.node.id === 'root');
+      expect(res1 && res1.id).to.eql('child-2');
+      expect(res2 && res2.id).to.eql('root');
+    });
+
+    it('no match', () => {
+      const node = TreeUtil.findById(tree, 'root');
+      const res = TreeUtil.ancestor(tree, node, (e) => e.node.id === 'child-1');
+      expect(res).to.eql(undefined);
+    });
+  });
+
   describe('children', () => {
     it('no childen => empty array', () => {
       const node = { id: 'root' };
