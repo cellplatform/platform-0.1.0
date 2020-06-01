@@ -1,5 +1,6 @@
 import * as t from '../types';
 import { value as valueUtil, defaultValue } from '@platform/util.value';
+import { TreeEvents } from '../TreeEvents';
 
 import { clone } from 'ramda';
 const R = { clone };
@@ -8,6 +9,8 @@ const R = { clone };
  * Helpers for traversing and operating on the tree data-structure.
  */
 export class TreeUtil {
+  public static events = TreeEvents;
+
   /**
    * Retrieves the children of a node (or an empty array).
    */

@@ -20,7 +20,7 @@ import {
 } from 'rxjs/operators';
 
 import { constants, t } from '../../common';
-import { TreeEvents } from '../../events';
+import { TreeEvents } from '../../TreeEvents';
 import * as themes from '../../themes';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
