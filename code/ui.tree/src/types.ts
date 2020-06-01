@@ -137,3 +137,22 @@ export type RenderTreeNodeBodyArgs<T extends ITreeNode = ITreeNode> = {
   node: T;
   isFocused: boolean;
 };
+
+/**
+ * Arguments for walking a tree (top-down).
+ */
+export type ITreeDescend<T extends ITreeNode = ITreeNode> = {
+  index: number; // Within siblings.
+  parent?: T;
+  depth: number;
+  stop: () => void;
+};
+
+/**
+ * Arguments for walking a tree (bottom up).
+ */
+export type ITreeAscend<T extends ITreeNode = ITreeNode> = {
+  index: number;
+  parent?: T;
+  stop: () => void;
+};

@@ -1,9 +1,8 @@
 import { expect } from 'chai';
 import { t, tree as util } from '.';
-import { IAscend } from './util.tree';
 
 describe('util.tree', () => {
-  describe('walk', () => {
+  describe.only('walkDown', () => {
     it('walks from root', () => {
       const tree: t.ITreeNode = {
         id: 'root',
@@ -11,7 +10,7 @@ describe('util.tree', () => {
       };
 
       const nodes: t.ITreeNode[] = [];
-      util.walk(tree, (node) => {
+      util.walkDown(tree, (node) => {
         nodes.push(node);
       });
 
@@ -26,15 +25,38 @@ describe('util.tree', () => {
       const child: t.ITreeNode = { id: 'child', children: [grandchild] };
       const root: t.ITreeNode = { id: 'root', children: [child] };
 
-      let items: Array<{ node: t.ITreeNode; args: util.IDescend }> = [];
-      util.walk(root, (node, args) => {
+      let items: Array<{ node: t.ITreeNode; args: t.ITreeDescend }> = [];
+      util.walkDown(root, (node, args) => {
         items = [...items, { node, args }];
       });
 
       expect(items.length).to.eql(3);
+
+      expect(items[0].args.depth).to.eql(0);
+      expect(items[1].args.depth).to.eql(1);
+      expect(items[2].args.depth).to.eql(2);
+
       expect(items[0].args.parent).to.eql(undefined);
       expect(items[1].args.parent).to.eql(root);
       expect(items[2].args.parent).to.eql(child);
+    });
+
+    it('reports node index (sibling position)', () => {
+      const tree: t.ITreeNode = {
+        id: 'root',
+        children: [{ id: 'child-1' }, { id: 'child-2' }],
+      };
+
+      let items: Array<{ node: t.ITreeNode; args: t.ITreeDescend }> = [];
+      util.walkDown(tree, (node, args) => {
+        items = [...items, { node, args }];
+      });
+
+      const args = items.map((item) => item.args);
+
+      expect(args[0].index).to.eql(-1);
+      expect(args[1].index).to.eql(0);
+      expect(args[2].index).to.eql(1);
     });
   });
 
@@ -44,21 +66,28 @@ describe('util.tree', () => {
       children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'grandchild-1' }] }],
     };
 
-    it('walks to root', () => {
+    it.only('walks to root', () => {
       const start = util.findById(tree, 'grandchild-1');
-      const list: { node: t.ITreeNode; args: IAscend }[] = [];
+      const list: { node: t.ITreeNode; args: t.ITreeAscend }[] = [];
       util.walkUp(tree, start, (node, args) => list.push({ node, args }));
 
       expect(list.length).to.eql(3);
       expect(list.map((e) => e.node.id)).to.eql(['grandchild-1', 'child-2', 'root']);
+
       expect(list[0].args.parent && list[0].args.parent.id).to.eql('child-2');
       expect(list[1].args.parent && list[1].args.parent.id).to.eql('root');
       expect(list[2].args.parent && list[2].args.parent.id).to.eql(undefined);
+
+      const args = list.map((item) => item.args);
+
+      expect(args[0].index).to.eql(0);
+      expect(args[1].index).to.eql(1);
+      expect(args[2].index).to.eql(-1);
     });
 
     it('stops mid-way', () => {
       const start = util.findById(tree, 'grandchild-1');
-      const list: { node: t.ITreeNode; args: IAscend }[] = [];
+      const list: { node: t.ITreeNode; args: t.ITreeAscend }[] = [];
       util.walkUp(tree, start, (node, args) => {
         list.push({ node, args });
         if (node.id === 'child-2') {
