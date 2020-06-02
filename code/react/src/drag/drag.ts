@@ -1,2 +1,4 @@
 export * from './types';
-export * from './drag.position';
+
+import { DragPositionEvent, position, offsetPosition } from './drag.position';
+export { DragPositionEvent, position, offsetPosition };
