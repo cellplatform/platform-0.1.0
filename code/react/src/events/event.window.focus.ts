@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { IFocusEvent } from './types';
-import { is } from '../common';
+import { is } from '@platform/util.is';
 
 /**
  * [Focus]

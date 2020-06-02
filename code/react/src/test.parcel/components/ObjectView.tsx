@@ -1,8 +1,7 @@
+import { css, CssValue } from '@platform/css';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
-import { css, CssValue } from '../../common';
 
 const m = require('react-inspector'); // eslint-disable-line
 
