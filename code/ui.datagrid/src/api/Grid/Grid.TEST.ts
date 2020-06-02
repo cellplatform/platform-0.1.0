@@ -2,7 +2,8 @@ import { expect } from '../../test';
 import { DefaultSettings } from 'handsontable';
 
 import { Grid, IGridArgs } from '.';
-import { Handsontable, constants, t, util } from '../../common';
+import { constants, t, util } from '../../common';
+import { Handsontable } from '../../common/libs.Handsontable';
 
 export const createTable = () => {
   const el = document.createElement('div');

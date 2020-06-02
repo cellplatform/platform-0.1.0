@@ -56,7 +56,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const cell = this.grid.data.cells[key];
     return cell && typeof cell.value === 'string' ? cell.value : undefined;
   };
-  private getValue: t.RefGetValue = async key => this.getValueSync(key);
+  private getValue: t.RefGetValue = async (key) => this.getValueSync(key);
 
   private refTable = coord.refs.table({
     getKeys: async () => Object.keys(this.grid.data.cells),
@@ -69,7 +69,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   public componentDidMount() {
     // Update state.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     /**
      * Grid events.
@@ -78,10 +78,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
     events$
       .pipe(
-        filter(e => e.type === 'GRID/selection'),
-        map(e => e.payload as t.IGridSelectionChange),
+        filter((e) => e.type === 'GRID/selection'),
+        map((e) => e.payload as t.IGridSelectionChange),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         if (e.to.cell || !this.state.lastSelection) {
           this.state$.next({ lastSelection: e.to });
         }
@@ -90,15 +90,15 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     events$
       .pipe(
         filter(
-          e =>
+          (e) =>
             e.type === 'GRID/cells/change' ||
             e.type === 'GRID/rows/change' ||
             e.type === 'GRID/columns/change',
         ),
-        map(e => e.payload as t.IGridCellsChange),
+        map((e) => e.payload as t.IGridCellsChange),
         debounceTime(1500),
       )
-      .subscribe(async e => {
+      .subscribe(async (e) => {
         console.log('🌼 POST (save)', e);
         const res = await this.postData();
         console.log('SAVED', res);
@@ -106,17 +106,17 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
 
     events$
       .pipe(
-        filter(e => e.type === 'GRID/cells/change'),
-        map(e => e.payload as t.IGridCellsChange),
+        filter((e) => e.type === 'GRID/cells/change'),
+        map((e) => e.payload as t.IGridCellsChange),
         delay(0),
       )
-      .subscribe(async e => {
+      .subscribe(async (e) => {
         log.info('🐷 IGridCellsChanged', e);
 
         // Update refs for individual change.
         const wait = e.changes
-          .filter(e => e.isChanged)
-          .map(async change => {
+          .filter((e) => e.isChanged)
+          .map(async (change) => {
             const key = change.cell.key;
 
             const toValue = (data?: t.IGridCellData) =>
@@ -142,10 +142,10 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     events$
       .pipe(
         filter(() => true),
-        filter(e => e.type === 'GRID/EDITOR/end'),
-        map(e => e.payload as t.IEndEditing),
+        filter((e) => e.type === 'GRID/EDITOR/end'),
+        map((e) => e.payload as t.IEndEditing),
       )
-      .subscribe(async e => {
+      .subscribe(async (e) => {
         // console.log('cancel edit');
         // e.cancel();
         const key = e.cell.key;
@@ -163,34 +163,35 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       });
 
     const command$ = events$.pipe(
-      filter(e => e.type === 'GRID/command'),
-      map(e => e.payload as t.IGridCommand),
+      filter((e) => e.type === 'GRID/command'),
+      map((e) => e.payload as t.IGridCommand),
     );
 
-    command$.subscribe(e => {
+    command$.subscribe((e) => {
       log.info('🐷 COMMAND:', e.command, e);
     });
 
     events$
       .pipe(
-        filter(e => e.type === 'GRID/clipboard'),
-        map(e => e.payload as t.IGridClipboard),
+        filter((e) => e.type === 'GRID/clipboard'),
+        map((e) => e.payload as t.IGridClipboard),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         log.info('📋 CLIPBOARD', e);
       });
 
     events$
       .pipe(
-        filter(e => e.type === 'GRID/clipboard/before/paste'),
-        map(e => e.payload as t.IGridClipboardBeforePaste),
+        filter((e) => e.type === 'GRID/clipboard/before/paste'),
+        map((e) => e.payload as t.IGridClipboardBeforePaste),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         if (e.pending) {
           // Modify clipboard before paste.
           // Can be used to inject and transfer clipboard between instances.
           //
           const cells = { ...e.pending.cells, A1: { value: 'boo' } };
+          console.log('cells', cells);
           // e.modify({ ...e.pending, cells });
         }
       });
@@ -271,7 +272,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
     const styles = {
       base: css({
         Absolute: 0,
-        Flex: 'horizontal',
+        Flex: 'horizontal-stretch-stretch',
         backgroundColor: color.format(-0.08),
       }),
     };
@@ -288,6 +289,7 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   private renderLeft() {
     const styles = {
       base: css({
+        Flex: 'vertical-start-start',
         position: 'relative',
         width: 230,
         padding: 10,

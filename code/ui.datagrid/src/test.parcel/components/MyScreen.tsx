@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, COLORS, CssValue, ObjectView, t, cell } from '../common';
+import { css, color, COLORS, CssValue, ObjectView } from '../common';
 
 export type IMyScreenProps = {
   style?: CssValue;
@@ -13,8 +13,8 @@ export class MyScreen extends React.PureComponent<IMyScreenProps, IMyScreenState
   private state$ = new Subject<Partial<IMyScreenState>>();
   private unmounted$ = new Subject<{}>();
 
-  public static contextType = cell.Context;
-  public context!: t.IEnvContext;
+  // public static contextType = cell.Context;
+  // public context!: t.IEnvContext;
 
   /**
    * [Lifecycle]

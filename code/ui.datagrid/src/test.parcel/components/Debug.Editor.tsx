@@ -21,33 +21,31 @@ export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEd
   public static contextType = datagrid.EditorContext;
   public context!: datagrid.ReactEditorContext;
 
-  private el!: HTMLDivElement;
-  private elRef = (ref: HTMLDivElement) => (this.el = ref);
   private input!: HTMLInputElement;
   private inputRef = (ref: HTMLInputElement) => (this.input = ref);
 
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     let isMounted = false;
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     // Update <input> on keypress.
     const keys$ = this.context.keys$;
     keys$
       .pipe(
         filter(() => isMounted),
-        filter(e => e.isEnter),
-        filter(e => e.metaKey),
+        filter((e) => e.isEnter),
+        filter((e) => e.metaKey),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.context.complete();
       });
 
     // Keep the editor context up-to-date with the latest value.
-    state$.subscribe(e => {
+    state$.subscribe((e) => {
       this.context.set({ value: this.value });
     });
 
@@ -62,9 +60,8 @@ export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEd
     // Delay mounted flag to ensure the ENTER key that may have been used to
     // initiate the editor does not immediately close the editor.
     time.delay(100, () => (isMounted = true));
-  }
 
-  public componentDidMount() {
+    // Finish up.
     this.input.focus();
     this.input.select();
     this.updateSize();
@@ -122,7 +119,7 @@ export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEd
     };
 
     return (
-      <div ref={this.elRef} {...styles.base}>
+      <div {...styles.base}>
         <input
           {...css(STYLES.inputText, styles.input)}
           ref={this.inputRef}

@@ -26,51 +26,51 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const keyboard$ = this.props.grid.keyboard$;
 
-    events$.pipe(filter(e => !['GRID/keydown'].includes(e.type))).subscribe(e => {
+    events$.pipe(filter((e) => !['GRID/keydown'].includes(e.type))).subscribe((e) => {
       // console.log('🌳 EVENT', e.type, e.payload);
     });
 
     events$
       .pipe(
-        filter(e => e.type === 'GRID/EDITOR/end'),
-        map(e => e.payload as t.IEndEditing),
-        filter(e => !e.isCancelled),
+        filter((e) => e.type === 'GRID/EDITOR/end'),
+        map((e) => e.payload as t.IEndEditing),
+        filter((e) => !e.isCancelled),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         // e.payload.cancel();
       });
 
     const beginEdit$ = events$.pipe(
-      filter(e => e.type === 'GRID/EDITOR/begin'),
-      map(e => e.payload as t.IBeginEditing),
+      filter((e) => e.type === 'GRID/EDITOR/begin'),
+      map((e) => e.payload as t.IBeginEditing),
     );
 
-    beginEdit$.pipe(filter(e => e.cell.key === 'B1')).subscribe(e => {
+    beginEdit$.pipe(filter((e) => e.cell.key === 'B1')).subscribe((e) => {
       // Cancel B1 edit operations before they begin.
       e.cancel();
     });
 
     const change$ = events$.pipe(
-      filter(e => e.type === 'GRID/cells/change'),
-      map(e => e.payload as t.IGridCellsChange),
+      filter((e) => e.type === 'GRID/cells/change'),
+      map((e) => e.payload as t.IGridCellsChange),
     );
 
     const selection$ = events$.pipe(
-      filter(e => e.type === 'GRID/selection'),
-      map(e => e.payload as t.IGridSelectionChange),
+      filter((e) => e.type === 'GRID/selection'),
+      map((e) => e.payload as t.IGridSelectionChange),
     );
 
-    change$.subscribe(e => {
+    change$.subscribe((e) => {
       // e.cancel();
       // console.log('CHANGE', e);
     });
 
-    change$.pipe().subscribe(e => {
-      const B2 = e.changes.find(change => change.cell.key === 'B2');
+    change$.pipe().subscribe((e) => {
+      const B2 = e.changes.find((change) => change.cell.key === 'B2');
       if (B2) {
         B2.cancel();
       }

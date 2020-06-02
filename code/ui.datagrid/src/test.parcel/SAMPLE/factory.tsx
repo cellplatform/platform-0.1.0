@@ -7,7 +7,7 @@ import { TestGridView } from '../components/Test.Grid.view';
 /**
  * Factory for generating UI component rendered within the grid.
  */
-export const factory: t.GridFactory = req => {
+export const factory: t.GridFactory = (req) => {
   if (req.type === 'EDITOR') {
     return renderEditor(req);
   }
