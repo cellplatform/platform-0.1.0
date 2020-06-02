@@ -24,7 +24,7 @@
     "@platform/polyfill": "0.0.1",
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
-    "parcel": "next",
+    "parcel-bundler": "1.12.4",
     "react-inspector": "5.0.1"
   },
   "files": [
