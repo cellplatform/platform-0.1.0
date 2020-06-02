@@ -73,16 +73,16 @@
     excel-formula-tokenizer "2.3.1"
     toposort "2.0.2"
 
-"@platform/cell.db@0.3.85":
-  version "0.3.85"
-  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.3.85.tgz#af4f410f3167c1864516b5ba2b7df56ee8831f10"
-  integrity sha512-wnezaxgMu922RwYioolE5/vjKLTVkgm1PnmhSHR2QYjADUAiG2biqZL2LZVFlh6ORsC9B1qZ6Uubkp6Pt9+KPw==
+"@platform/cell.db@0.3.86":
+  version "0.3.86"
+  resolved "https://registry.yarnpkg.com/@platform/cell.db/-/cell.db-0.3.86.tgz#ea57df1783533661325a3ae146557d18bd33ba54"
+  integrity sha512-Af8CLg5+8p5xnGZXp5ca38CNPrakovQNjoCIbbjWxiW42J8I1ZQIX81DhgZm55qdRauWlLYaYRraf2vWFkZJpA==
   dependencies:
     "@platform/cell.coord" "0.8.124"
     "@platform/cell.schema" "0.4.115"
     "@platform/cell.types" "0.4.104"
     "@platform/cell.value" "0.2.76"
-    "@platform/fsdb.model" "0.6.65"
+    "@platform/fsdb.model" "0.6.66"
     "@platform/fsdb.types" "0.6.26"
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"
@@ -242,24 +242,24 @@
     js-yaml "3.13.1"
     minimatch "3.0.4"
 
-"@platform/fsdb.model@0.6.65":
-  version "0.6.65"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.6.65.tgz#1a9bb7db9acb72d462464c97f37547957b27ef47"
-  integrity sha512-asg2CNssHzrWy0HymezywQ4P2C4zMlwiJlkG8eGl8RPlLiGZAnwkFgVwLdEruDwKd5n2evnlzci3dt23YYsF0g==
+"@platform/fsdb.model@0.6.66":
+  version "0.6.66"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.model/-/fsdb.model-0.6.66.tgz#524500a3a3fa547d49d5c598bacec69ec1756b6b"
+  integrity sha512-fEndj58MTp8LZ/K2oCfkKpYt3iWjq9Q3MhOa0zVzWdDYWuGXElwreGqzqzO9Zt0ndA0v/CMOw211aq6JhHDzdw==
   dependencies:
     "@platform/fsdb.types" "0.6.26"
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"
     "@platform/util.value" "0.7.23"
 
-"@platform/fsdb.nedb@^1.3.120":
-  version "1.3.120"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.120.tgz#a73a49584cb7a05ac86cae5b5f13d614dbf478bb"
-  integrity sha512-i2alyxCG7mwaOygKlWq3Qm4CTcGWG2IJPBUZwpCeJe6+2VG6puphjdH1u6XOgt6V8+1UUp9F3MtUqYHMDwrwUw==
+"@platform/fsdb.nedb@^1.3.121":
+  version "1.3.121"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.121.tgz#de30b7ab52928307f4a5500b1dfdd0beffcbe8a6"
+  integrity sha512-LfXMA7nWj1sPCCqx4QrVe0CBj4nc4dl4O6qyhiJC8g5eCyJ0h/GyIZSjq4z4kR0oT6mHBMAyABx0Px7mDPDS8g==
   dependencies:
     "@platform/fsdb.types" "0.6.26"
     "@platform/libs" "0.2.2"
-    "@platform/react" "0.4.33"
+    "@platform/react" "0.4.34"
     "@platform/types" "0.4.22"
     "@platform/util.value" "0.7.23"
     nedb "1.8.0"
@@ -361,10 +361,10 @@
     "@platform/libs" "0.2.2"
     "@platform/util.value" "0.7.23"
 
-"@platform/react@0.4.33":
-  version "0.4.33"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.33.tgz#a6b5ca6e9ea3a9707166d34516a9c3318b39f852"
-  integrity sha512-AHmVmDF4FeVTFvfmdNwxQWN64tnprY8O5KfHYY1PQWWuWOfhluphqHI78fhbRhoEq2sZcIh/gv9C2afvaQnhJw==
+"@platform/react@0.4.34":
+  version "0.4.34"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.34.tgz#d87462328be8310032fecd84165239871a2519c9"
+  integrity sha512-TqaIWkIR3bGeZBpHtRMYUdlIjv76Gv1Dur7Sfz7xUUfUvFFAVuvqSo876tPrCrXskso8De04wdI8cWlLtSHWaQ==
   dependencies:
     "@platform/css" "0.4.2"
     "@platform/util.is" "0.0.125"
