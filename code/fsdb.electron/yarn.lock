@@ -1200,15 +1200,15 @@
     electron-window-state "5.0.3"
     minimist "1.2.5"
 
-"@platform/electron@0.7.80":
-  version "0.7.80"
-  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.7.80.tgz#c4c7edce80b1c7b9a1b4c87054a55e84ce9f1ae5"
-  integrity sha512-8P5fB2jmTMh0TkIhX0qFrFmh/y5MrzCB3Ve3G4RKXp4Tv3x43/f2AWRx1S77+Y2RnTy3ab/QFHuMnyB2Pbx2UQ==
+"@platform/electron@0.7.81":
+  version "0.7.81"
+  resolved "https://registry.yarnpkg.com/@platform/electron/-/electron-0.7.81.tgz#8fd2b50f535592970273c39079a311f05aa4d92a"
+  integrity sha512-CmgCsOFUbGbpR4s9vomX6tMNuycCEg0dUZw3XCja25cXVRNrcUmXy3fnQFaW0wbN6JVTALXO0elbdeOtQd9/+w==
   dependencies:
     "@platform/fs" "0.5.17"
     "@platform/libs" "0.2.2"
     "@platform/log" "0.1.25"
-    "@platform/react" "0.4.32"
+    "@platform/react" "0.4.33"
     "@platform/types" "0.4.22"
     "@types/app-root-path" "1.2.4"
     app-root-path "3.0.0"
@@ -1325,14 +1325,14 @@
     "@platform/types" "0.4.22"
     "@platform/util.value" "0.7.23"
 
-"@platform/fsdb.nedb@1.3.119":
-  version "1.3.119"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.119.tgz#5f7b1b96da73199c6d34b8fd92f31771b1e91d72"
-  integrity sha512-OYf7EHVqUa/IfHL7HkZObVjC/H9hfcoHukoVGZspME+20fcidOLg0W5COmBQjjI4LZPpycnvRqnNNkyeFWrNZQ==
+"@platform/fsdb.nedb@1.3.120":
+  version "1.3.120"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.nedb/-/fsdb.nedb-1.3.120.tgz#a73a49584cb7a05ac86cae5b5f13d614dbf478bb"
+  integrity sha512-i2alyxCG7mwaOygKlWq3Qm4CTcGWG2IJPBUZwpCeJe6+2VG6puphjdH1u6XOgt6V8+1UUp9F3MtUqYHMDwrwUw==
   dependencies:
     "@platform/fsdb.types" "0.6.26"
     "@platform/libs" "0.2.2"
-    "@platform/react" "0.4.32"
+    "@platform/react" "0.4.33"
     "@platform/types" "0.4.22"
     "@platform/util.value" "0.7.23"
     nedb "1.8.0"
@@ -1451,10 +1451,10 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/react@0.4.32":
-  version "0.4.32"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.32.tgz#8b5f4582652ded3fbf4c00005dd06a39de5581f5"
-  integrity sha512-y0xeeq8ImDc87D+Mur8/78Kib3uqmx5izsS2y6xyWEXuWAR+aRswaaBntOiQjz48YIhX+dEn3sz9hhNvZMI7jQ==
+"@platform/react@0.4.33":
+  version "0.4.33"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.33.tgz#a6b5ca6e9ea3a9707166d34516a9c3318b39f852"
+  integrity sha512-AHmVmDF4FeVTFvfmdNwxQWN64tnprY8O5KfHYY1PQWWuWOfhluphqHI78fhbRhoEq2sZcIh/gv9C2afvaQnhJw==
   dependencies:
     "@platform/css" "0.4.2"
     "@platform/util.is" "0.0.125"

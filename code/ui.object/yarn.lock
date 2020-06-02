@@ -1317,10 +1317,10 @@
     core-js "3.6.4"
     regenerator-runtime "0.13.3"
 
-"@platform/react@0.4.32":
-  version "0.4.32"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.32.tgz#8b5f4582652ded3fbf4c00005dd06a39de5581f5"
-  integrity sha512-y0xeeq8ImDc87D+Mur8/78Kib3uqmx5izsS2y6xyWEXuWAR+aRswaaBntOiQjz48YIhX+dEn3sz9hhNvZMI7jQ==
+"@platform/react@0.4.33":
+  version "0.4.33"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.33.tgz#a6b5ca6e9ea3a9707166d34516a9c3318b39f852"
+  integrity sha512-AHmVmDF4FeVTFvfmdNwxQWN64tnprY8O5KfHYY1PQWWuWOfhluphqHI78fhbRhoEq2sZcIh/gv9C2afvaQnhJw==
   dependencies:
     "@platform/css" "0.4.2"
     "@platform/util.is" "0.0.125"

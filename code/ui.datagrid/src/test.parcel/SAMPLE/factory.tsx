@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import * as React from 'react';
 
 import { CellEditor, color, css, datagrid, markdown, t } from '../common';

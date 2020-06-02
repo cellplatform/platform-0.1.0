@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { Debug } from '@platform/ui.datagrid.debug';
 import * as React from 'react';
 import { Subject } from 'rxjs';
@@ -148,8 +150,8 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
       .subscribe(async (e) => {
         // console.log('cancel edit');
         // e.cancel();
-        const key = e.cell.key;
-        const value = e.value.to;
+        // const key = e.cell.key;
+        // const value = e.value.to;
 
         // NB: Ensure change is reflected in grid before the editor is hidden.
         // this.grid.changeCells({ [key]: { value } });
@@ -249,17 +251,14 @@ export class TestGrid extends React.PureComponent<ITestGridProps, ITestGridState
   };
 
   private postData = async () => {
-    const data = { ...this.grid.data };
+    // const data = { ...this.grid.data };
     // const uri = http.uri.create.ns(data.ns.id);
-
     // /**
     //  * TODO 🐷
     //  */
     // delete data.rows; // TEMP 🐷
-
     // // const json = JSON.stringify(data);
     // // console.log(json);
-
     // console.log('POST', uri);
     // const res = await http.post(uri, data);
     // console.log('POST response: ', res.json());
