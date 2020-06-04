@@ -67,13 +67,20 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       base: css({
         flex: 1,
         Flex: 'horizontal-stretch-stretch',
+        boxSizing: 'border-box',
       }),
       left: css({
         width: 260,
         paddingTop: 30,
         paddingLeft: 30,
+        paddingRight: 50,
+        paddingBottom: 80,
+        Scroll: true,
       }),
-      center: css({ flex: 1, display: 'flex' }),
+      center: css({
+        flex: 1,
+        display: 'flex',
+      }),
       right: css({
         paddingTop: 30,
         paddingRight: 30,
@@ -95,7 +102,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
   private renderCenter() {
     const { json } = this.state;
-    const MARGIN_LEFT = 48;
+    const MARGIN_LEFT = 0;
 
     const styles = {
       base: css({
