@@ -17,23 +17,6 @@ export type IStore<M extends {}, E extends IStoreEvent> = {
   on<E2 extends E>(type: E2['type']): Observable<IDispatch<M, E2, E>>;
 };
 
-/**
- * Filters in on a particular part of the state-tree.
- */
-export type LensStateFilter<M extends {}, S extends {}> = (args: { root: M }) => S;
-
-/**
- * A representation of a store filtered into a sub-section of the state-tree.
- */
-export type IStoreLens<M extends {}, S extends {}, E extends IStoreEvent> = {
-  isDisposed: boolean;
-  dispose$: Observable<{}>;
-  root: M;
-  state: S;
-  changed$: Observable<IStateChange<M, E>>;
-  dispatch(event: E): IStoreLens<M, S, E>;
-  dispose(): void;
-};
 
 /**
  * A representation of store containing
