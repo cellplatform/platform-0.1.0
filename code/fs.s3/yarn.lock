@@ -80,10 +80,10 @@
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"
 
-"@platform/http@0.12.18":
-  version "0.12.18"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.18.tgz#34aad63993d0a875c7ad922d05255c5df44aabce"
-  integrity sha512-1nkdSMGbbeelawpSqou/8ht3e9UHh/Uul8Y6Jp2I5vfAiT8CfMKeEgEyd2L5OpW98QNOL1ivkjqxKqUMLgNaKg==
+"@platform/http@0.12.19":
+  version "0.12.19"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.19.tgz#e44d7cdb29eb3b29c1885290e189adbb3399e7c7"
+  integrity sha512-UVjHgj9snGQ5WYzClSRuUGPiDwuMgFn5spU6VQ/OBQtqpPh9xTTDhiSb/ABcOOaTpWZ3AV3Ge9YzNVb3cGDuSQ==
   dependencies:
     "@platform/http.types" "0.2.10"
     "@platform/libs" "0.2.2"

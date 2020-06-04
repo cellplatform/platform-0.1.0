@@ -9,5 +9,8 @@ export const COLORS = constants.COLORS;
 /**
  * Libs
  */
-export { Client, Schema, Uri, TypeSystem } from '@platform/cell.client';
-export { css, color, CssValue } from '@platform/react';
+import { Client, Schema, Uri, TypeSystem } from '@platform/cell.client';
+export { Client, Schema, Uri, TypeSystem };
+
+import { css, color, CssValue } from '@platform/css';
+export { css, color, CssValue };

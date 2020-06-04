@@ -29,5 +29,6 @@ export const paths = {
     'cell.ui.sys': resolve('.bundle/cell.ui.sys'),
     'cell.ui.ide': resolve('.bundle/cell.ui.ide'),
     'cell.ui.finder': resolve('.bundle/cell.ui.finder'),
+    'cell.ui.spreadsheet': resolve('.bundle/cell.ui.spreadsheet'),
   },
 };

@@ -1,46 +1,15 @@
-import { fs } from '@platform/fs';
-import { inspect } from 'util';
-
+type Inspect = (obj: object, options: { colors?: boolean; compact?: boolean }) => string;
 type Declaration = { selector: string; items: Style[] };
 type Style = { name: string; value: string };
 
 /**
- *
- * [Script]
- * Convert common CSS resets into JSS global style objects.
- *
- */
-(async () => {
-  await save('normalize', 'css/normalize.css', 'src/reset/css.normalize.ts');
-  await save('global', 'css/global.css', 'src/reset/css.global.ts');
-})();
-
-/**
- * Save.
- */
-export async function save(name: string, source: string, target: string) {
-  const obj = await toObject(source);
-
-  const text = `
-/**
- * Source: ${source}
- */    
-${obj.toString({ export: true, const: name })}
-`.substring(1);
-
-  target = fs.resolve(target);
-  await fs.ensureDir(fs.dirname(target));
-  await fs.writeFile(target, text);
-}
-
-/**
  * Convert the given CSS file into a JS object that can be
- * passed to the `style.global` helper.
+ * passed to the [style.global] helper.
  */
-export async function toObject(filepath: string) {
-  const text = (await fs.readFile(fs.resolve(filepath))).toString();
+export async function toObject(args: { text: string; inspect: Inspect; header?: string }) {
+  const root = args;
 
-  const object = toDeclarations(text).reduce((acc, next) => {
+  const object = toDeclarations(args.text).reduce((acc, next) => {
     acc[next.selector] = next.items.reduce((acc, next) => {
       acc[next.name] = next.value;
       return acc;
@@ -50,21 +19,26 @@ export async function toObject(filepath: string) {
 
   return {
     object,
-    toString(args: { const?: string; export?: boolean } = {}) {
-      let text = inspect(object, { colors: false, compact: false });
+    toString(args: { const?: string; export?: boolean; header?: string } = {}) {
+      let text = root.inspect(object, { colors: false, compact: false });
       text = args.const ? `const ${args.const} = ${text};` : text;
       text = args.export ? `export ${text}` : text;
+
+      const header = (args.header || root.header || '').trim();
+      text = header ? `${header}\n\n${text}` : text;
+      text = `${text}\n`;
+
       return text;
     },
   };
 }
 
 /**
- * [Heloers]
+ * [Helpers]
  */
 
-function toDeclarations(file: string) {
-  const lines = file.split('\n');
+function toDeclarations(text: string) {
+  const lines = stripComments(text.split('\n'));
   const result: Declaration[] = [];
 
   const isStart = (line: string) => {
@@ -106,6 +80,29 @@ function toDeclarations(file: string) {
       current = undefined;
       selector = [];
     }
+  }
+
+  return result;
+}
+
+function stripComments(lines: string[]) {
+  const result: string[] = [];
+
+  let withinComment = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('/*')) {
+      withinComment = true;
+    }
+    if (withinComment && line.endsWith('*/')) {
+      withinComment = false;
+    }
+
+    if (!withinComment) {
+      result.push(line);
+    }
+    //
   }
 
   return result;

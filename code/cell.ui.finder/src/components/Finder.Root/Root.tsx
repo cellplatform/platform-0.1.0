@@ -35,7 +35,7 @@ export class Root extends React.PureComponent<IRootProps> {
     const styles = {
       base: css({ Absolute: 0 }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
-      shell: css({ Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0] }),
+      body: css({ Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0] }),
     };
 
     const uri = ''; // temp
@@ -44,7 +44,7 @@ export class Root extends React.PureComponent<IRootProps> {
       <this.Provider>
         <div {...css(styles.base, this.props.style)}>
           <WindowTitleBar style={styles.titlebar} address={uri} />
-          <Shell style={styles.shell} />
+          <Shell style={styles.body} />
         </div>
       </this.Provider>
     );

@@ -22,21 +22,21 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
   public state: ITestGridViewState = {};
   private state$ = new Subject<Partial<ITestGridViewState>>();
   private unmounted$ = new Subject<{}>();
-  private events$ = this.props.events$ || new Subject<t.GridEvent>();
+  private grid$ = this.props.events$ || new Subject<t.GridEvent>();
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    const grid$ = this.grid$.pipe(takeUntil(this.unmounted$));
     const keyboard$ = this.props.grid.keyboard$;
 
-    events$.pipe(filter((e) => !['GRID/keydown'].includes(e.type))).subscribe((e) => {
+    grid$.pipe(filter((e) => !['GRID/keydown'].includes(e.type))).subscribe((e) => {
       // console.log('🌳 EVENT', e.type, e.payload);
     });
 
-    events$
+    grid$
       .pipe(
         filter((e) => e.type === 'GRID/EDITOR/end'),
         map((e) => e.payload as t.IEndEditing),
@@ -46,7 +46,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         // e.payload.cancel();
       });
 
-    const beginEdit$ = events$.pipe(
+    const beginEdit$ = grid$.pipe(
       filter((e) => e.type === 'GRID/EDITOR/begin'),
       map((e) => e.payload as t.IBeginEditing),
     );
@@ -56,12 +56,12 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
       e.cancel();
     });
 
-    const change$ = events$.pipe(
+    const change$ = grid$.pipe(
       filter((e) => e.type === 'GRID/cells/change'),
       map((e) => e.payload as t.IGridCellsChange),
     );
 
-    const selection$ = events$.pipe(
+    const selection$ = grid$.pipe(
       filter((e) => e.type === 'GRID/selection'),
       map((e) => e.payload as t.IGridSelectionChange),
     );
@@ -100,7 +100,7 @@ export class TestGridView extends React.PureComponent<ITestGridViewProps, ITestG
         grid={this.props.grid}
         factory={factory}
         Handsontable={this.Table}
-        events$={this.events$}
+        events$={this.grid$}
         initial={{ selection: 'A1' }}
         style={this.props.style}
         canSelectAll={false}

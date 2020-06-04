@@ -25,6 +25,7 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
    * Change selection
    *  - Update tree state.
    */
+
   left.down.node$.pipe(filter((e) => e.id !== store.state.tree.selected)).subscribe((e) => {
     select(e.id);
   });
