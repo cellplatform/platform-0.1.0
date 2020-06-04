@@ -4,7 +4,6 @@ import { Schema } from '@platform/cell.schema';
 Schema.uri.ALLOW.NS = ['foo*'];
 
 import { render } from '@platform/ui.dev';
-// import { Test } from './Test';
 import { Test } from './components/Test';
 
 render(<Test />);

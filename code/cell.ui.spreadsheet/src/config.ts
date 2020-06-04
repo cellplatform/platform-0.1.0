@@ -1,4 +1,6 @@
 import '@platform/polyfill';
+import '@platform/ui.datagrid/import.css';
+
 import { Schema } from '@platform/cell.schema';
 
-Schema.uri.ALLOW.NS = [...Schema.uri.ALLOW.NS, 'sys*'];
+Schema.uri.ALLOW.NS = [...Schema.uri.ALLOW.NS, 'sys*', 'foo*'];

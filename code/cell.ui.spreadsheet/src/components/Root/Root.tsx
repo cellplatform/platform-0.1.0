@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue } from '../../common';
+import { css, CssValue } from '../../common';
+import { WindowTitleBar } from '../primitives';
+import { Grid } from '../Grid';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -32,23 +34,17 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
   public render() {
     const styles = {
-      base: css({
-        Absolute: 0,
-        Flex: 'center-center',
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
-      }),
-      titlebar: css({
-        WebkitAppRegion: 'drag',
-        Absolute: [0, 0, null, 0],
-        height: 38,
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
-        boxSizing: 'border-box',
-      }),
+      base: css({ Absolute: 0 }),
+      titlebar: css({ Absolute: [0, 0, null, 0] }),
+      body: css({ Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0] }),
     };
+
+    const uri = ''; // TEMP 🐷
+
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>👋 Spreadsheet</div>
-        <div {...styles.titlebar} />
+        <WindowTitleBar style={styles.titlebar} address={uri} />
+        <Grid style={styles.body} />
       </div>
     );
   }
