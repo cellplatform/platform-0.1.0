@@ -1,4 +1,3 @@
-
 import datagrid from '../..';
 import * as t from './types';
 

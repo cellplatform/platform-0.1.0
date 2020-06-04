@@ -40,15 +40,15 @@
   dependencies:
     "@platform/libs" "0.2.2"
 
-"@platform/cell.client@0.2.95":
-  version "0.2.95"
-  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.95.tgz#7950008de095aa567c638d533e7b904139dee0b0"
-  integrity sha512-1j5a8LsBWUcYPJ/1z7xesIo793a1B2PpnHMyCkrfvglwAV/rHkJF8KfQDQsxBX5Hey/lQ9v85VIWatdCGBk8jA==
+"@platform/cell.client@0.2.96":
+  version "0.2.96"
+  resolved "https://registry.yarnpkg.com/@platform/cell.client/-/cell.client-0.2.96.tgz#c53b137c091333e1995222844959442ffa7fec16"
+  integrity sha512-q1Z77KVIKyZ+Y56fWgZhzh+/CTsFZc0SYoII+2103ASm8ji5D7ZKcajHXnJrMvZq1Ax/dXKtIFSK44X1Ap/mzg==
   dependencies:
     "@platform/cell.schema" "0.4.115"
     "@platform/cell.types" "0.4.104"
     "@platform/cell.typesystem" "0.0.54"
-    "@platform/http" "0.12.18"
+    "@platform/http" "0.12.19"
     "@platform/http.types" "0.2.10"
     "@platform/libs" "0.2.2"
     "@platform/queue" "0.0.12"
@@ -112,17 +112,17 @@
     "@platform/types" "0.4.22"
     "@platform/util.value" "0.7.23"
 
-"@platform/css@0.4.2", "@platform/css@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.2.tgz#00f490bdfe4a62a3043507c65d320855182c7a21"
-  integrity sha512-yh1uc6AC2UySNq9kzvoLpa68N9KzNIyjXSuSKZudy0dUCvQeH+2Z7jVGYAmChUHlyuKQZk3MfF2bw75ZuKmxPA==
+"@platform/css@0.4.3", "@platform/css@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.3.tgz#dfb1ff363a21ec1e21c489d1d0f118cdb961617e"
+  integrity sha512-V9m0yFPGBvZRlk7T3mOJvQM6rFDsvAhtimIe0x2chIIjvx70nPrEEH3VEiJvLfZdhWeVJPR0pXbS4fra9jwQKA==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/util.is" "0.0.125"
     "@platform/util.value" "0.7.23"
     "@types/tinycolor2" "1.4.2"
     glamor-jss "1.4.1"
-    jss-plugin-global "10.1.1"
+    jss-plugin-global "10.2.0"
     tinycolor2 "1.4.1"
 
 "@platform/exec@0.2.59":
@@ -182,10 +182,10 @@
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"
 
-"@platform/http@0.12.18":
-  version "0.12.18"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.18.tgz#34aad63993d0a875c7ad922d05255c5df44aabce"
-  integrity sha512-1nkdSMGbbeelawpSqou/8ht3e9UHh/Uul8Y6Jp2I5vfAiT8CfMKeEgEyd2L5OpW98QNOL1ivkjqxKqUMLgNaKg==
+"@platform/http@0.12.19":
+  version "0.12.19"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.19.tgz#e44d7cdb29eb3b29c1885290e189adbb3399e7c7"
+  integrity sha512-UVjHgj9snGQ5WYzClSRuUGPiDwuMgFn5spU6VQ/OBQtqpPh9xTTDhiSb/ABcOOaTpWZ3AV3Ge9YzNVb3cGDuSQ==
   dependencies:
     "@platform/http.types" "0.2.10"
     "@platform/libs" "0.2.2"
@@ -229,12 +229,12 @@
     "@platform/libs" "0.2.2"
     "@platform/util.value" "0.7.23"
 
-"@platform/react@0.4.34":
-  version "0.4.34"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.34.tgz#d87462328be8310032fecd84165239871a2519c9"
-  integrity sha512-TqaIWkIR3bGeZBpHtRMYUdlIjv76Gv1Dur7Sfz7xUUfUvFFAVuvqSo876tPrCrXskso8De04wdI8cWlLtSHWaQ==
+"@platform/react@0.4.36":
+  version "0.4.36"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.36.tgz#29b9ffd3737b28146208aec1b751c9fbc39691a3"
+  integrity sha512-Crqg1GXlFN+5fkq1MPUxYCAvZVTfx9cr99wlvS65KzKSiq5Q9/bCCClRakOAf5fQJc92VWafTXoFuMD+JzujWA==
   dependencies:
-    "@platform/css" "0.4.2"
+    "@platform/css" "0.4.3"
     "@platform/util.is" "0.0.125"
     react "16.13.1"
     react-dom "16.13.1"
@@ -285,24 +285,24 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.22.tgz#a0a3f350be37bfbf99069085fc561b9edd1038e5"
   integrity sha512-mGp7mPDwioauf/6u7uJrjfkEuuGoV5tta/2uGSkVoRcelsb3X1IqIxKQEuM8Fpi5E3GT12PjBw224pWbkeZCFg==
 
-"@platform/ui.button@0.3.69":
-  version "0.3.69"
-  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.3.69.tgz#84612b466a27d91983e9f5a57fb788a541514868"
-  integrity sha512-jlzHIB0YMkgHGPYXhtdzIyAJfZT0Nw6uwjlnGi17yPqomtKvhwRU+N2OdOmDGNK6hNHZqrNq22dAr8fwiciVFA==
+"@platform/ui.button@0.3.71":
+  version "0.3.71"
+  resolved "https://registry.yarnpkg.com/@platform/ui.button/-/ui.button-0.3.71.tgz#8307b512af627eaee4bf3914594b8d8dfa2edc1a"
+  integrity sha512-VZXc/8LC+HGRcFTuiPmwZDdhGHQDirTTMfjHGkujhfC+5ZDKhm8rgsNBjpVPmyZn+a1D5btBRxhQF2p5kcwvSg==
   dependencies:
-    "@platform/css" "0.4.2"
+    "@platform/css" "0.4.3"
     "@platform/libs" "0.2.2"
-    "@platform/react" "0.4.34"
+    "@platform/react" "0.4.36"
     "@platform/util.value" "0.7.23"
 
-"@platform/ui.text@0.3.65":
-  version "0.3.65"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.65.tgz#85aa72b93e01aa358e458a5100055093238eec1f"
-  integrity sha512-ZhClyAPKlDigmieNuVsy7JWsrH5gd8R6fYE7LoabgnlMYcDh7VMMNY3jXu5LjbE/jkiKGqi/BtyGFcM2H6skEA==
+"@platform/ui.text@0.3.67":
+  version "0.3.67"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.67.tgz#53799b91f91f79067ef2e39c328795cf114708ba"
+  integrity sha512-pUAomUuFj9fpTPDd7i3s2JiQPgce8PbPtjCpeesdqXVSWhsWwyO2k+q3jZvT+EP4zRq/hK2z5DH2ID+yaTPPyw==
   dependencies:
-    "@platform/css" "^0.4.2"
+    "@platform/css" "^0.4.3"
     "@platform/libs" "0.2.2"
-    "@platform/react" "0.4.34"
+    "@platform/react" "0.4.36"
     "@platform/util.value" "0.7.23"
 
 "@platform/util.diff@0.0.32":
@@ -2083,13 +2083,13 @@ jss-nested@^6.0.1:
   dependencies:
     warning "^3.0.0"
 
-jss-plugin-global@10.1.1:
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/jss-plugin-global/-/jss-plugin-global-10.1.1.tgz#36b0d6d9facb74dfd99590643708a89260747d14"
-  integrity sha512-VBG3wRyi3Z8S4kMhm8rZV6caYBegsk+QnQZSVmrWw6GVOT/Z4FA7eyMu5SdkorDlG/HVpHh91oFN56O4R9m2VA==
+jss-plugin-global@10.2.0:
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/jss-plugin-global/-/jss-plugin-global-10.2.0.tgz#fda990bf9880c394eeb06969b3809a88ad5d0aa0"
+  integrity sha512-l2Y1sRXnhMgw7Hq0iH8loWaokIdmXSCD6BE9uporzt48K/cEAkiy1Qx7oeuBE5wHahlOeIASZRGQlm09u5ckrA==
   dependencies:
     "@babel/runtime" "^7.3.1"
-    jss "10.1.1"
+    jss "10.2.0"
 
 jss-preset-default@4.3.0:
   version "4.3.0"
@@ -2126,10 +2126,10 @@ jss-vendor-prefixer@^7.0.0:
   dependencies:
     css-vendor "^0.3.8"
 
-jss@10.1.1:
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/jss/-/jss-10.1.1.tgz#450b27d53761af3e500b43130a54cdbe157ea332"
-  integrity sha512-Xz3qgRUFlxbWk1czCZibUJqhVPObrZHxY3FPsjCXhDld4NOj1BgM14Ir5hVm+Qr6OLqVljjGvoMcCdXNOAbdkQ==
+jss@10.2.0:
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/jss/-/jss-10.2.0.tgz#5f0b18dc506172ca0306f49d9222ee333800cf34"
+  integrity sha512-WyG2Jm8nEbYHIVx0UIitgS7R1SXwWpQ1p+SHeI2HNrNR/DSEBXR8l0XYqNdVOCvKnFDPwVWVW7EFlhPh0tYA2w==
   dependencies:
     "@babel/runtime" "^7.3.1"
     csstype "^2.6.5"
