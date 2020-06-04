@@ -12,7 +12,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/util.value": "0.7.23"
+    "@platform/util.value": "0.7.23",
+    "immer": "6.0.9"
   },
   "devDependencies": {
     "@platform/test": "0.1.12",

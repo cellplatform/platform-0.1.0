@@ -18,24 +18,6 @@ export type IStore<M extends {}, E extends IStoreEvent> = {
 };
 
 /**
- * Filters in on a particular part of the state-tree.
- */
-export type LensStateFilter<M extends {}, S extends {}> = (args: { root: M }) => S;
-
-/**
- * A representation of a store filtered into a sub-section of the state-tree.
- */
-export type IStoreLens<M extends {}, S extends {}, E extends IStoreEvent> = {
-  isDisposed: boolean;
-  dispose$: Observable<{}>;
-  root: M;
-  state: S;
-  changed$: Observable<IStateChange<M, E>>;
-  dispatch(event: E): IStoreLens<M, S, E>;
-  dispose(): void;
-};
-
-/**
  * A representation of store containing
  * the current state and ability to dispatch change requests.
  */
@@ -65,8 +47,8 @@ export type IDispatch<
   type: E['type'];
   payload: E['payload'];
   state: M;
-  change(next: M): IDispatch<M, E>;
   dispatch(event: D): IDispatch<M, E>;
+  change(next: M | ((draft: M) => any)): IDispatch<M, E>;
 };
 
 /**
