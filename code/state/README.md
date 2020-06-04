@@ -6,17 +6,13 @@
 A small, simple [rx/observable](https://github.com/ReactiveX/rxjs) based state-machine.  
 For applying to [UI](https://en.wikipedia.org/wiki/User_interface) see the [react](https://reactjs.org) bindings at [`@platform/state.react`](../state.react)
 
-
-
 ## Install
 
     yarn add @platform/state
 
 <p>&nbsp;<p>
 
-
 ## Getting Started
-
 
 Define your `model` and mutation `events`:
 
@@ -47,23 +43,36 @@ const store = Store.create<IMyModel, MyEvent>({ initial });
 Define a listener that mutates the state based on a specific event type (equivalent to a ["reducer"](https://redux.js.org/basics/reducers)):
 
 ```typescript
+store.on<ITestIncrementEvent>('TEST/increment').subscribe((e) => {
+  const count = e.state.count + e.payload.by;
+  const next = { ...e.state, count };
+  e.change(next); // UPDATE: New copy of state applied.
+});
+```
+
+alternatively you can use "mutation like" syntax by passing a change function:
+
+```typescript
 store
   .on<ITestIncrementEvent>('TEST/increment')
   .subscribe(e => {
     const count = e.state.count + e.payload.by
-    const next = { ...e.state, count };
-    e.change(next); // UPDATE: New copy of state applied.
+    e.change((draft) => {
+      draft.count += e.payload.by; // UPDATE: Immutable changes to state applied.
+    }));
   });
 ```
+
+This safely modifies an immutable clone of the state using "structural sharing" for efficiency (via [immer](https://immerjs.github.io/immer)).
 
 <p>&nbsp;<p>
 
 Dispatch events to change state:
 
 ```typescript
-store.state // => count === 0
+store.state; // => count === 0
 store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
-store.state // => count === 1
+store.state; // => count === 1
 ```
 
 <p>&nbsp;<p>
@@ -71,8 +80,8 @@ store.state // => count === 1
 Listen for changes to the state and react accordingly, for instance updating UI that may be rendering the state.:
 
 ```typescript
-store.changed$.subscribe(e => { 
-  // ... 
+store.changed$.subscribe((e) => {
+  // ...
 });
 ```
 
@@ -80,14 +89,12 @@ store.changed$.subscribe(e => {
 
 Add logic that reacts to events asynchronously and dispatches new update events (equivalent to an ["epic"](https://redux-observable.js.org)):
 
-
 ```typescript
 store
   .on<IIncrementEvent>('TEST/increment')
   .pipe(debounceTime(300))
-  .subscribe(async e => { 
+  .subscribe(async (e) => {
     const status = await getNetworkStatus();
-    e.dispatch({type: 'TEST/status', payload:{ status }});
+    e.dispatch({ type: 'TEST/status', payload: { status } });
   });
 ```
-
