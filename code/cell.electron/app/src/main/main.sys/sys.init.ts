@@ -1,12 +1,11 @@
 import '../../config';
 
-import { constants, t } from '../common';
+import { t } from '../common';
 import { typeDefs } from '../main.typeDefs';
 import { toContext } from './sys.ctx';
+import { defineAppTypes } from './sys.init.define';
 import { ipc } from './sys.ipc';
 import { monitor } from './sys.monitor';
-
-const { paths } = constants;
 
 /**
  * Initialize the system.
@@ -19,33 +18,8 @@ export async function init(client: t.IClientTypesystem) {
   const ctx = await toContext(client);
   monitor({ ctx });
 
-  // Define base modules.
-  await typeDefs.app.define({
-    ctx,
-    row: 0,
-    name: '@platform/cell.ui.sys',
-    entryPath: 'bundle/index.html',
-    sourceDir: paths.bundle['cell.ui.sys'],
-    devPort: 1234,
-  });
-
-  await typeDefs.app.define({
-    ctx,
-    row: 1,
-    name: '@platform/cell.ui.finder',
-    entryPath: 'bundle/index.html',
-    sourceDir: paths.bundle['cell.ui.finder'],
-    devPort: 1235,
-  });
-
-  await typeDefs.app.define({
-    ctx,
-    row: 2,
-    name: '@platform/cell.ui.ide',
-    entryPath: 'bundle/index.html',
-    sourceDir: paths.bundle['cell.ui.ide'],
-    devPort: 1236,
-  });
+  // Initialize application type-defs.
+  defineAppTypes(ctx);
 
   // Finish up.
   ipc({ ctx });
