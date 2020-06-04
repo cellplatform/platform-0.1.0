@@ -11,7 +11,7 @@
     "build": "ts build",
     "prepare": "ts prepare",
     "clean": "rm -rf .cache dist",
-    "ts.normalize": "ts-node -T script.ts/normalize-to-object"
+    "ts.toObject": "ts-node -T script.ts/css-to-object"
   },
   "dependencies": {
     "@platform/libs": "0.2.2",
