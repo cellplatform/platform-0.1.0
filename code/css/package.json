@@ -23,6 +23,7 @@
     "tinycolor2": "1.4.1"
   },
   "devDependencies": {
+    "@platform/log": "0.1.25",
     "@platform/polyfill": "0.0.1",
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
