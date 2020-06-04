@@ -38,7 +38,7 @@ export async function toObject(args: { text: string; inspect: Inspect; header?: 
  */
 
 function toDeclarations(text: string) {
-  const lines = text.split('\n');
+  const lines = stripComments(text.split('\n'));
   const result: Declaration[] = [];
 
   const isStart = (line: string) => {
@@ -80,6 +80,29 @@ function toDeclarations(text: string) {
       current = undefined;
       selector = [];
     }
+  }
+
+  return result;
+}
+
+function stripComments(lines: string[]) {
+  const result: string[] = [];
+
+  let withinComment = false;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('/*')) {
+      withinComment = true;
+    }
+    if (withinComment && line.endsWith('*/')) {
+      withinComment = false;
+    }
+
+    if (!withinComment) {
+      result.push(line);
+    }
+    //
   }
 
   return result;
