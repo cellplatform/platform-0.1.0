@@ -1,31 +1,17 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
 
 import { color, css, CssValue, t, ui } from '../../common';
-import { TreeShellTree } from './TreeShell.Tree';
-import { TreeShellView } from './TreeShell.View';
-import { ErrorView, ErrorBoundary } from '../Error';
+import { ErrorBoundary, ErrorView } from '../Error';
+import { ShellTree } from './Shell.Tree';
+import { ShellView } from './Shell.View';
 
-export type ITreeShellProps = {
+export type IShellProps = {
   style?: CssValue;
 };
 
-export class TreeShell extends React.Component<ITreeShellProps> {
-  private unmounted$ = new Subject<{}>();
-
+export class Shell extends React.Component<IShellProps> {
   public static contextType = ui.Context;
   public context!: t.IFinderContext;
-
-  /**
-   * [Lifecycle]
-   */
-
-  public componentDidMount() {}
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
 
   /**
    * [Properties]
@@ -67,13 +53,13 @@ export class TreeShell extends React.Component<ITreeShellProps> {
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
           <ErrorBoundary name={'tree'}>
-            <TreeShellTree />
+            <ShellTree />
           </ErrorBoundary>
           {this.renderError(error.tree)}
         </div>
         <div {...styles.right}>
           <ErrorBoundary name={'view'}>
-            <TreeShellView />
+            <ShellView />
           </ErrorBoundary>
           {this.renderError(error.view)}
           <div {...styles.leftBorder}></div>

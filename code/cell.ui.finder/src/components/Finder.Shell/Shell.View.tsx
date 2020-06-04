@@ -6,12 +6,12 @@ import { takeUntil } from 'rxjs/operators';
 import { color, COLORS, css, CssValue, onStateChanged, t, ui } from '../../common';
 import { ErrorView } from '../Error';
 
-export type ITreeShellViewProps = { style?: CssValue };
-export type ITreeShellViewState = {};
+export type IShellViewProps = { style?: CssValue };
+export type IShellViewState = {};
 
-export class TreeShellView extends React.PureComponent<ITreeShellViewProps, ITreeShellViewState> {
-  public state: ITreeShellViewState = {};
-  private state$ = new Subject<Partial<ITreeShellViewState>>();
+export class ShellView extends React.PureComponent<IShellViewProps, IShellViewState> {
+  public state: IShellViewState = {};
+  private state$ = new Subject<Partial<IShellViewState>>();
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
