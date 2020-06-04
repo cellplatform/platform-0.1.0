@@ -17,7 +17,6 @@ export type IStore<M extends {}, E extends IStoreEvent> = {
   on<E2 extends E>(type: E2['type']): Observable<IDispatch<M, E2, E>>;
 };
 
-
 /**
  * A representation of store containing
  * the current state and ability to dispatch change requests.
@@ -48,8 +47,8 @@ export type IDispatch<
   type: E['type'];
   payload: E['payload'];
   state: M;
-  change(next: M): IDispatch<M, E>;
   dispatch(event: D): IDispatch<M, E>;
+  change(next: M | ((draft: M) => any)): IDispatch<M, E>;
 };
 
 /**

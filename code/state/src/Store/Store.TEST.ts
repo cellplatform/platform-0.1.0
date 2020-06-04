@@ -4,8 +4,9 @@ import { expect } from 'chai';
 import { Store } from '.';
 import * as t from './types';
 
-export type IMyModel = { count: number; foo: IMyFoo };
+export type IMyModel = { count: number; foo: IMyFoo; bar?: IMyBar };
 export type IMyFoo = { list: number[]; msg?: string };
+export type IMyBar = { msg: string };
 const initial: IMyModel = { count: 0, foo: { list: [] } };
 
 export type MyEvent = IIncrementEvent | IDecrementEvent | IChangeFooEvent;
@@ -71,7 +72,7 @@ describe('Store', () => {
 
     it('fires dispatch event', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
-      const events: t.IDispatch[] = [];
+      const events: t.IDispatch<IMyModel>[] = [];
       store.events$.subscribe((e) => events.push(e));
 
       store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
@@ -103,7 +104,7 @@ describe('Store', () => {
       expect(states[0]).to.not.equal(states[1]); // NB: Different copies returned from repeat calls to 'state' property.
     });
 
-    it('changes the current state', () => {
+    it('changes the current state (via {...object})', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       expect(store.state.count).to.eql(0);
 
@@ -126,17 +127,72 @@ describe('Store', () => {
       expect(store.state.count).to.eql(-1);
     });
 
+    it('changes the current state (via immutable function)', () => {
+      const store = Store.create<IMyModel, MyEvent>({
+        initial: { ...initial, bar: { msg: 'hello' } },
+      });
+
+      const before = store.state;
+      expect(before.count).to.eql(0);
+
+      // NOTE: mutate the "draft" object, which safely
+      //       produces structurally copied changes to an
+      //       immutable copy of the state.
+      store.on<IIncrementEvent>('TEST/increment').subscribe((e) => {
+        e.change((draft) => {
+          draft.count += e.payload.by;
+        });
+      });
+
+      store.on<IChangeFooEvent>('TEST/changeFoo').subscribe((e) => {
+        e.change((draft) => {
+          draft.foo.list.push(123);
+          const foo = draft.foo;
+          foo.msg = 'hello';
+        });
+      });
+
+      store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
+      const after1 = store.state;
+      expect(before).to.not.equal(after1); // New instance.
+      expect(after1.count).to.eql(1);
+
+      // No change to {foo}.
+      expect(after1.foo).to.equal(before.foo);
+      expect(after1.bar).to.equal(before.bar);
+
+      store.dispatch({ type: 'TEST/changeFoo', payload: {} });
+      const after2 = store.state;
+
+      expect(after2.foo.list).to.eql([123]);
+      expect(after2.foo.msg).to.eql('hello');
+
+      expect(after2).to.not.equal(after1);
+      expect(after2.foo).to.not.equal(after1.foo);
+      expect(after2.foo.list).to.not.equal(after1.foo.list);
+    });
+
     it('fires [changing] event', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       const events: t.IStateChanging[] = [];
       store.changing$.subscribe((e) => events.push(e));
 
       store.on<IIncrementEvent>('TEST/increment').subscribe((e) => e.change(e.state));
+      store
+        .on<IChangeFooEvent>('TEST/changeFoo')
+        .subscribe((e) => e.change((draft) => (draft.foo.list = [1, 2, 3])));
+
       store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
 
       expect(events.length).to.eql(1);
       expect(events[0].isCancelled).to.eql(false);
       expect(events[0].change.type).to.eql('TEST/increment');
+
+      store.dispatch({ type: 'TEST/changeFoo', payload: {} });
+
+      expect(events.length).to.eql(2);
+      expect(events[1].isCancelled).to.eql(false);
+      expect(events[1].change.type).to.eql('TEST/changeFoo');
     });
 
     it('cancels change', () => {
@@ -156,6 +212,9 @@ describe('Store', () => {
           e.change(next);
         }
       });
+      store
+        .on<IChangeFooEvent>('TEST/changeFoo')
+        .subscribe((e) => e.change((draft) => (draft.foo.list = [1, 2, 3])));
 
       expect(store.state.count).to.eql(0);
       store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
@@ -164,6 +223,13 @@ describe('Store', () => {
       cancel = true;
       store.dispatch({ type: 'TEST/increment', payload: { by: 99 } });
       expect(store.state.count).to.eql(1); // No change.
+
+      store.dispatch({ type: 'TEST/changeFoo', payload: {} });
+      expect(store.state.foo.list).to.eql([]);
+
+      cancel = false;
+      store.dispatch({ type: 'TEST/changeFoo', payload: {} });
+      expect(store.state.foo.list).to.eql([1, 2, 3]);
     });
 
     it('fires [changed] event', () => {
@@ -207,7 +273,7 @@ describe('Store', () => {
   describe('epics', () => {
     it('dispatches a follow-on event  (sync)', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
-      const events: t.IDispatch[] = [];
+      const events: t.IDispatch<IMyModel>[] = [];
       store.events$.subscribe((e) => events.push(e));
 
       store.on<IIncrementEvent>('TEST/increment').subscribe((e) => {
@@ -222,7 +288,7 @@ describe('Store', () => {
 
     it('dispatches a follow-on event  (async)', async () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
-      const events: t.IDispatch[] = [];
+      const events: t.IDispatch<IMyModel>[] = [];
       store.events$.subscribe((e) => events.push(e));
 
       store.on<IIncrementEvent>('TEST/increment').subscribe(async (e) => {
@@ -238,90 +304,4 @@ describe('Store', () => {
       expect(events.length).to.eql(2);
     });
   });
-
-  // describe('lens', () => {
-  //   it('root lens', () => {
-  //     const store = Store.create<IMyModel, MyEvent>({ initial });
-  //     const lens = store.lens<IMyModel>(() => store.state);
-  //     expect(lens.state).to.eql(initial);
-  //     expect(lens.state).to.not.equal(initial);
-  //   });
-
-  //   it('child lens', () => {
-  //     const store = Store.create<IMyModel, MyEvent>({ initial });
-  //     const lens = store.lens<IMyFoo>(() => store.state.foo);
-  //     expect(lens.state).to.eql(initial.foo);
-  //     expect(lens.state).to.not.equal(initial.foo);
-  //   });
-
-  //   it('changes on dispatch', () => {
-  //     const store = Store.create<IMyModel, MyEvent>({ initial });
-  //     const lens = store.lens<IMyFoo>(() => store.state.foo);
-  //     store.on<IChangeFooEvent>('TEST/changeFoo').subscribe(e => {
-  //       const state = e.state;
-  //       const foo = { ...state.foo, msg: 'Hello' };
-  //       e.change({ ...state, foo });
-  //     });
-  //     expect(lens.state.msg).to.eql(undefined);
-  //     lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
-  //     expect(lens.state.msg).to.eql('Hello');
-  //   });
-
-  //   it('fires changed events', () => {
-  //     const events: t.IStateChange[] = [];
-  //     const store = Store.create<IMyModel, MyEvent>({ initial });
-  //     const lens = store.lens<IMyFoo>(() => store.state.foo);
-  //     lens.changed$.subscribe(e => events.push(e));
-
-  //     store.on<IChangeFooEvent>('TEST/changeFoo').subscribe(e => e.change(e.state));
-  //     lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
-  //     lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
-  //     expect(events.length).to.eql(2);
-  //   });
-
-  //   it('stops firing events when root store is disposed', () => {
-  //     const events: t.IStateChange[] = [];
-  //     const store = Store.create<IMyModel, MyEvent>({ initial });
-  //     const lens = store.lens<IMyFoo>(() => store.state.foo);
-  //     lens.changed$.subscribe(e => events.push(e));
-  //     store.on<IChangeFooEvent>('TEST/changeFoo').subscribe(e => e.change(e.state));
-
-  //     lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
-  //     expect(events.length).to.eql(1);
-
-  //     store.dispose();
-  //     lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
-  //     lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
-  //     expect(events.length).to.eql(1);
-  //   });
-
-  //   it('disposes of lens', () => {
-  //     const rootEvents: t.IStateChange[] = [];
-  //     const lensEvents: t.IStateChange[] = [];
-  //     const store = Store.create<IMyModel, MyEvent>({ initial });
-  //     const lens = store.lens<IMyFoo>(() => store.state.foo);
-
-  //     store.changed$.subscribe(e => rootEvents.push(e));
-  //     lens.changed$.subscribe(e => lensEvents.push(e));
-  //     store.on<IChangeFooEvent>('TEST/changeFoo').subscribe(e => e.change(e.state));
-
-  //     expect(store.isDisposed).to.eql(false);
-  //     expect(lens.isDisposed).to.eql(false);
-
-  //     lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
-
-  //     expect(rootEvents.length).to.eql(1);
-  //     expect(lensEvents.length).to.eql(1);
-
-  //     lens.dispose();
-
-  //     expect(store.isDisposed).to.eql(false);
-  //     expect(lens.isDisposed).to.eql(true);
-
-  //     lens.dispatch({ type: 'TEST/changeFoo', payload: {} });
-
-  //     expect(rootEvents.length).to.eql(2);
-  //     expect(lensEvents.length).to.eql(1);
-  //   });
-  // });
 });

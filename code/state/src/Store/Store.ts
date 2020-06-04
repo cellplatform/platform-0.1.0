@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
+import produce from 'immer';
 
 import * as t from './types';
 
@@ -111,7 +112,6 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
     );
   }
 
-
   /**
    * [Helpers]
    */
@@ -125,8 +125,14 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
       get state() {
         return { ...from };
       },
-      change: (state) => {
-        const to = { ...state };
+      change: (next) => {
+        const to =
+          typeof next !== 'function'
+            ? { ...next }
+            : produce<M>(from, (draft) => {
+                (next as any)(draft);
+                return undefined; // NB: Important not to return value so as to use the draft modifications.
+              });
 
         // Fire PRE event (and check if anyone cancelled it).
         let isCancelled = false;
@@ -151,6 +157,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
         return result;
       },
     };
+
     return result;
   }
 }
