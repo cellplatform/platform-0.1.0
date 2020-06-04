@@ -91,12 +91,13 @@ export class ErrorView extends React.Component<IErrorViewProps, IErrorViewState>
     };
 
     const elStack = error.stack.map((stack, i) => {
+      const { line, char } = stack;
+      const pos = (line > -1 || char > -1) && `${line}:${char}`;
+
       return (
         <div key={i} {...styles.stackLine}>
           <div>{stack.text}</div>
-          <div {...styles.stackPosition}>
-            {stack.line}:{stack.char}
-          </div>
+          <div {...styles.stackPosition}>{pos}</div>
         </div>
       );
     });
@@ -121,7 +122,6 @@ export class ErrorView extends React.Component<IErrorViewProps, IErrorViewState>
         paddingBottom: 10,
         marginBottom: 10,
         boxSizing: 'border-box',
-
         fontFamily: 'monospace',
         lineHeight: '1.3em',
         fontSize: 12,

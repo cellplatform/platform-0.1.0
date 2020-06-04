@@ -23,7 +23,7 @@ export { value, time, defaultValue, rx };
 import { ui } from '@platform/cell.ui';
 export { ui };
 
-import { log } from '@platform/log/lib/client';
+import { log } from '@platform/log/lib/client/log';
 export { log };
 
 import { equals } from 'ramda';
