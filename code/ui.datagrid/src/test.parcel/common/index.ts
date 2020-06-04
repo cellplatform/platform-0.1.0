@@ -3,8 +3,6 @@ import './styles';
 import datagrid from '../..';
 import * as t from './types';
 
-export * from './http';
-
 export { t, datagrid };
 
 /**
