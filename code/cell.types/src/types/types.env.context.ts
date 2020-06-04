@@ -18,7 +18,7 @@ import { t } from '../common';
  *    https://reactjs.org/docs/context.html
  *
  */
-export type IEnvContext<E extends t.Event> = {
+export type IEnvContext<E extends t.Event = t.EnvEvent> = {
   client: t.IClientTypesystem;
   event$: Observable<E>;
   fire(e: E): void;
