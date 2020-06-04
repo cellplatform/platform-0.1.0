@@ -144,12 +144,11 @@ export class ErrorView extends React.Component<IErrorViewProps, IErrorViewState>
       const isFirst = i === 0;
       const isLast = i === stack.length - 1;
       const isEdge = isFirst || isLast;
-      const labelStyle = !isEdge && styles.indent;
       const label = isEdge ? item.lineIn : item.lineIn || item.createdBy;
       const createdBy = !(isEdge && label === item.createdBy) && item.createdBy;
       return (
         <div key={i}>
-          <div {...css(styles.label, labelStyle)}>
+          <div {...css(styles.label, !isEdge && styles.indent)}>
             <div>{isEdge ? `<${label}>` : label}</div>
             {createdBy && <div {...styles.createdBy}>created by: {createdBy}</div>}
           </div>
