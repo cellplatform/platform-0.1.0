@@ -56,7 +56,7 @@ alternatively you can use "mutation like" syntax by passing a change function:
 store
   .on<ITestIncrementEvent>('TEST/increment')
   .subscribe(e => {
-    e.change((draft) => {
+    e.change(draft => {
       draft.count += e.payload.by; // UPDATE: New "structurally shared" immutable changes applied.
     }));
   });
