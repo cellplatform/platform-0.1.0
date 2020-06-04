@@ -5,83 +5,83 @@
 export const normalize = {
   html: {
     lineHeight: '1.15',
-    WebkitTextSizeAdjust: '100%'
+    WebkitTextSizeAdjust: '100%',
   },
   body: {
-    margin: '0'
+    margin: '0',
   },
   main: {
-    display: 'block'
+    display: 'block',
   },
   h1: {
     fontSize: '2em',
-    margin: '0.67em 0'
+    margin: '0.67em 0',
   },
   hr: {
     boxSizing: 'content-box',
     height: '0',
-    overflow: 'visible'
+    overflow: 'visible',
   },
   pre: {
     fontFamily: 'monospace, monospace',
-    fontSize: '1em'
+    fontSize: '1em',
   },
   a: {
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   'abbr[title]': {
     borderBottom: 'none',
-    textDecoration: 'underline dotted'
+    textDecoration: 'underline dotted',
   },
   strong: {
-    fontWeight: 'bolder'
+    fontWeight: 'bolder',
   },
   'code, kbd, samp': {
     fontFamily: 'monospace, monospace',
-    fontSize: '1em'
+    fontSize: '1em',
   },
   small: {
-    fontSize: '80%'
+    fontSize: '80%',
   },
   'sub, sup': {
     fontSize: '75%',
     lineHeight: '0',
     position: 'relative',
-    verticalAlign: 'baseline'
+    verticalAlign: 'baseline',
   },
   sub: {
-    bottom: '-0.25em'
+    bottom: '-0.25em',
   },
   sup: {
-    top: '-0.5em'
+    top: '-0.5em',
   },
   img: {
-    borderStyle: 'none'
+    borderStyle: 'none',
   },
   'button, input, optgroup, select, textarea': {
     fontFamily: 'inherit',
     fontSize: '100%',
     lineHeight: '1.15',
-    margin: '0'
+    margin: '0',
   },
   'button, input': {
-    overflow: 'visible'
+    overflow: 'visible',
   },
   'button, select': {
-    textTransform: 'none'
+    textTransform: 'none',
   },
   'button, [type="button"], [type="reset"], [type="submit"]': {
-    WebkitAppearance: 'button'
+    WebkitAppearance: 'button',
   },
   'button::-moz-focus-inner, [type="button"]::-moz-focus-inner, [type="reset"]::-moz-focus-inner, [type="submit"]::-moz-focus-inner': {
     borderStyle: 'none',
-    padding: '0'
+    padding: '0',
   },
   'button:-moz-focusring, [type="button"]:-moz-focusring, [type="reset"]:-moz-focusring, [type="submit"]:-moz-focusring': {
-    outline: '1px dotted ButtonText'
+    outline: '1px dotted ButtonText',
   },
   fieldset: {
-    padding: '0.35em 0.75em 0.625em'
+    padding: '0.35em 0.75em 0.625em',
   },
   legend: {
     boxSizing: 'border-box',
@@ -89,42 +89,42 @@ export const normalize = {
     display: 'table',
     maxWidth: '100%',
     padding: '0',
-    whiteSpace: 'normal'
+    whiteSpace: 'normal',
   },
   progress: {
-    verticalAlign: 'baseline'
+    verticalAlign: 'baseline',
   },
   textarea: {
-    overflow: 'auto'
+    overflow: 'auto',
   },
   '[type="checkbox"], [type="radio"]': {
     boxSizing: 'border-box',
-    padding: '0'
+    padding: '0',
   },
   '[type="number"]::-webkit-inner-spin-button, [type="number"]::-webkit-outer-spin-button': {
-    height: 'auto'
+    height: 'auto',
   },
   '[type="search"]': {
     WebkitAppearance: 'textfield',
-    outlineOffset: '-2px'
+    outlineOffset: '-2px',
   },
   '[type="search"]::-webkit-search-decoration': {
-    WebkitAppearance: 'none'
+    WebkitAppearance: 'none',
   },
   '::-webkit-file-upload-button': {
     WebkitAppearance: 'button',
-    font: 'inherit'
+    font: 'inherit',
   },
   details: {
-    display: 'block'
+    display: 'block',
   },
   summary: {
-    display: 'list-item'
+    display: 'list-item',
   },
   template: {
-    display: 'none'
+    display: 'none',
   },
   '[hidden]': {
-    display: 'none'
-  }
+    display: 'none',
+  },
 };
