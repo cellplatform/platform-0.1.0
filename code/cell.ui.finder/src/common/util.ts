@@ -7,14 +7,20 @@ import * as t from './types';
 /**
  * Helper for monitoring when the Finder state has changed.
  */
-export function onStateChanged(ctx: t.IFinderContext, unmounted$?: Observable<{}>) {
-  let event$ = ctx.event$;
-  event$ = unmounted$ ? event$.pipe(takeUntil(unmounted$)) : event$;
+export function onStateChanged(ob$: Observable<t.FinderEvent>, unmounted$?: Observable<{}>) {
+  const event$ = unmounted$ ? ob$.pipe(takeUntil(unmounted$)) : ob$;
+
+  type T = t.FinderEvent['type'];
+
+  const isTypeMatch = (type: T, match: T[]) => {
+    return match.includes(type);
+  };
+
   return {
-    on(type: t.FinderEvent['type']) {
+    on(...type: T[]) {
       return rx
         .eventPayload<t.IFinderChanged>(event$, 'FINDER/changed')
-        .pipe(filter((e) => e.type === type));
+        .pipe(filter((e) => isTypeMatch(e.type, type)));
     },
   };
 }

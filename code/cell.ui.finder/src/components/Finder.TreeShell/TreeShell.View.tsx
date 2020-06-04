@@ -1,16 +1,17 @@
+import { Spinner } from '@platform/ui.spinner';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { Spinner } from '@platform/ui.spinner';
+import { takeUntil } from 'rxjs/operators';
 
-import { color, css, COLORS, CssValue, onStateChanged, t, ui } from '../../common';
+import { color, COLORS, css, CssValue, onStateChanged, t, ui } from '../../common';
+import { ErrorView } from '../Error';
 
-export type IViewProps = { style?: CssValue };
-export type IViewState = { el?: React.ReactNode; isSpinning?: boolean };
+export type ITreeShellViewProps = { style?: CssValue };
+export type ITreeShellViewState = {};
 
-export class View extends React.PureComponent<IViewProps, IViewState> {
-  public state: IViewState = {};
-  private state$ = new Subject<Partial<IViewState>>();
+export class TreeShellView extends React.PureComponent<ITreeShellViewProps, ITreeShellViewState> {
+  public state: ITreeShellViewState = {};
+  private state$ = new Subject<Partial<ITreeShellViewState>>();
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
@@ -19,52 +20,41 @@ export class View extends React.PureComponent<IViewProps, IViewState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IViewProps) {
-    super(props);
-  }
 
   public componentDidMount() {
     const ctx = this.context;
-    const changes = onStateChanged(ctx, this.unmounted$);
+    const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     /**
-     * Redraw when seletion changed.
+     * Redraw.
      */
-    changes
-      .on('FINDER/tree')
-      .pipe(distinctUntilChanged((prev, next) => prev.to.tree.selected === next.to.tree.selected))
-      .subscribe((e) => {
-        type P = t.IFinderViewRequest;
-
-        const render: P['render'] = (el) => {
-          payload.isHandled = true;
-          if (typeof el === 'function') {
-            this.state$.next({ isSpinning: true });
-
-            const promise = el() as Promise<React.ReactNode>;
-            promise
-              .then((el) => this.state$.next({ el }))
-              .catch((err) => {
-                // TODO 🐷 show error
-              })
-              .finally(() => this.state$.next({ isSpinning: false }));
-          } else {
-            this.state$.next({ el });
-          }
-        };
-
-        const payload: P = { state: ctx.getState(), isHandled: false, render };
-        ctx.fire({
-          type: 'FINDER/view/req',
-          payload,
-        });
-      });
+    changes.on('FINDER/view').subscribe(() => this.forceUpdate());
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get view() {
+    return this.context.getState().view;
+  }
+
+  public get isSpinning() {
+    return this.view.isSpinning;
+  }
+
+  public get el() {
+    return this.view.el;
+  }
+
+  public get error() {
+    const error = this.context?.getState().error || {};
+    return error?.view;
   }
 
   /**
@@ -74,20 +64,22 @@ export class View extends React.PureComponent<IViewProps, IViewState> {
     const styles = {
       base: css({
         position: 'relative',
-        flex: 1,
         display: 'flex',
+        flex: 1,
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        {this.state.el}
+        {this.el}
         {this.renderSpinner()}
+        {this.renderError()}
       </div>
     );
   }
 
   private renderSpinner() {
-    if (!this.state.isSpinning) {
+    const isSpinning = this.isSpinning;
+    if (!isSpinning) {
       return null;
     }
     const styles = {
@@ -110,5 +102,10 @@ export class View extends React.PureComponent<IViewProps, IViewState> {
         </div>
       </div>
     );
+  }
+
+  private renderError() {
+    const err = this.error;
+    return err ? <ErrorView error={err.error} component={err.component} /> : null;
   }
 }

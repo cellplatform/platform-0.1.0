@@ -6,9 +6,9 @@ import { CssValue, onStateChanged, t, ui } from '../../common';
 import { Icons } from '../Icons';
 import { TreeView } from '../primitives';
 
-export type ITreeProps = { style?: CssValue };
+export type ITreeShellTreeProps = { style?: CssValue };
 
-export class Tree extends React.PureComponent<ITreeProps> {
+export class TreeShellTree extends React.PureComponent<ITreeShellTreeProps> {
   private unmounted$ = new Subject<{}>();
   private tree$ = new Subject<t.TreeViewEvent>();
 
@@ -21,7 +21,7 @@ export class Tree extends React.PureComponent<ITreeProps> {
 
   public componentDidMount() {
     const ctx = this.context;
-    const changes = onStateChanged(ctx, this.unmounted$);
+    const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.tree$.pipe(takeUntil(this.unmounted$)).subscribe((e) => ctx.fire(e));
 
     // Redraw when tree-state changes.

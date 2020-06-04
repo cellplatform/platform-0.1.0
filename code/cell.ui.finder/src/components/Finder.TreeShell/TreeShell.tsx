@@ -2,14 +2,15 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 
 import { color, css, CssValue, t, ui } from '../../common';
-import { Tree } from './TreeShell.Tree';
-import { View } from './TreeShell.View';
+import { TreeShellTree } from './TreeShell.Tree';
+import { TreeShellView } from './TreeShell.View';
+import { ErrorView, ErrorBoundary } from '../Error';
 
 export type ITreeShellProps = {
   style?: CssValue;
 };
 
-export class TreeShell extends React.PureComponent<ITreeShellProps> {
+export class TreeShell extends React.Component<ITreeShellProps> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
@@ -19,15 +20,26 @@ export class TreeShell extends React.PureComponent<ITreeShellProps> {
    * [Lifecycle]
    */
 
+  public componentDidMount() {}
+
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
   }
 
   /**
+   * [Properties]
+   */
+  public get error() {
+    const state = this.context?.getState();
+    return state?.error || {};
+  }
+
+  /**
    * [Render]
    */
   public render() {
+    const error = this.error;
     const styles = {
       base: css({
         position: 'relative',
@@ -41,26 +53,36 @@ export class TreeShell extends React.PureComponent<ITreeShellProps> {
       }),
       leftBorder: css({
         Absolute: [0, null, 0, 0],
-        width: 1,
         backgroundColor: color.format(-0.15),
+        width: 1,
       }),
       right: css({
         position: 'relative',
-        flex: 1,
         display: 'flex',
+        flex: 1,
       }),
     };
 
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
-          <Tree />
+          <ErrorBoundary name={'tree'}>
+            <TreeShellTree />
+          </ErrorBoundary>
+          {this.renderError(error.tree)}
         </div>
         <div {...styles.right}>
-          <View />
+          <ErrorBoundary name={'view'}>
+            <TreeShellView />
+          </ErrorBoundary>
+          {this.renderError(error.view)}
           <div {...styles.leftBorder}></div>
         </div>
       </div>
     );
+  }
+
+  private renderError(err?: t.IFinderError) {
+    return err ? <ErrorView error={err.error} component={err.component} /> : null;
   }
 }

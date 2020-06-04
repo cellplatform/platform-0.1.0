@@ -11,11 +11,13 @@ export function createStore(args: { event$: Subject<t.Event> }): t.IFinderStore 
   const event$ = args.event$ as Subject<t.FinderEvent>;
 
   // Create the store.
-  const initial: t.IFinderState = { tree: {} };
+  const initial: t.IFinderState = { tree: {}, view: {} };
   const store = Store.create<t.IFinderState, t.FinderEvent>({ initial });
 
   // Ferry events in and out of state-machine.
-  store.changed$.subscribe((payload) => args.event$.next({ type: 'FINDER/changed', payload }));
+  store.changed$.subscribe((payload) => {
+    event$.next({ type: 'FINDER/changed', payload });
+  });
   event$
     .pipe(
       filter((e) => e.type.startsWith('FINDER/')),

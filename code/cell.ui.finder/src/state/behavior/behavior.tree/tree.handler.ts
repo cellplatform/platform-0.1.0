@@ -1,11 +1,9 @@
-import { TreeView, TreeUtil } from '@platform/ui.tree';
-import { t } from '../common';
+import { TreeUtil, TreeView } from '@platform/ui.tree';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-/**
- * Behavior controller for the <TreeView>.
- */
+import { t } from '../../../common';
+
 export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
   const { ctx, store } = args;
 

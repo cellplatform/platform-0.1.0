@@ -17,5 +17,5 @@ if (!(window as any).env) {
 }
 
 if ((window as any).env) {
-  import('./index.init').then((e) => e.render());
+  import('./init').then((e) => e.render());
 }

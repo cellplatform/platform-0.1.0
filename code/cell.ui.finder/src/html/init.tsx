@@ -5,14 +5,11 @@ import * as ReactDOM from 'react-dom';
 import { t } from '../common';
 import { Root } from '../components/Finder.Root';
 import { context } from '../context';
-import { behavior } from '../state.behavior';
 
 export function render() {
   const win = (window as unknown) as t.ITopWindow;
   const env = win.env;
-
-  const { ctx, store } = context.create({ env });
-  behavior.init({ ctx, store });
+  const { ctx } = context.create({ env });
 
   /**
    * Render root React element.

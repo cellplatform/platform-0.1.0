@@ -1,8 +1,5 @@
-import { t } from '../common';
+import { t } from '../../../common';
 
-/**
- * Behavior controller for the <TreeView>.
- */
 export function init(args: { store: t.IFinderStore }) {
   const { store } = args;
 
@@ -13,12 +10,12 @@ export function init(args: { store: t.IFinderStore }) {
     const state = e.state;
     const tree = state.tree;
 
-    const changeOrRemove = <K extends keyof t.IFinderState['tree']>(
-      key: K,
-    ): t.IFinderState['tree'][K] => {
+    type T = t.IFinderState['tree'];
+
+    const changeOrRemove = <K extends keyof T>(key: K): t.IFinderState['tree'][K] => {
       const from = tree[key];
       const to = e.payload[key];
-      return (to === null ? undefined : to || from) as t.IFinderState['tree'][K];
+      return (to === null ? undefined : to || from) as T[K];
     };
 
     const next = {
@@ -30,7 +27,9 @@ export function init(args: { store: t.IFinderStore }) {
         selected: changeOrRemove('selected'),
         theme: changeOrRemove('theme'),
       },
+      error: { ...(state.error || {}), view: undefined }, // Clear any view error.
     };
+
     e.change(next);
   });
 }

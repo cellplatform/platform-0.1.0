@@ -9,4 +9,13 @@ export type IFinderState = {
     selected?: string;
     theme?: t.TreeTheme;
   };
+  error?: {
+    root?: t.IFinderError;
+    tree?: t.IFinderError;
+    view?: t.IFinderError;
+  };
+  view: {
+    el?: React.ReactNode;
+    isSpinning?: boolean;
+  };
 };

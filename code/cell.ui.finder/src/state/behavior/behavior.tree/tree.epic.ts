@@ -1,9 +1,6 @@
-import { TreeUtil } from '@platform/ui.tree';
-import { COLORS, t } from '../common';
+import { TreeUtil } from '@platform/ui.tree/lib/TreeUtil';
+import { COLORS, t } from '../../../common';
 
-/**
- * Behavior controller for the <TreeView>.
- */
 export function init(args: { store: t.IFinderStore }) {
   const { store } = args;
 
