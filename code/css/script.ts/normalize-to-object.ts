@@ -3,9 +3,6 @@ import { inspect } from 'util';
 import { log } from '@platform/log/lib/server';
 import { toObject } from '../src/node.tools';
 
-type Declaration = { selector: string; items: Style[] };
-type Style = { name: string; value: string };
-
 /**
  *
  * [Script]
@@ -25,12 +22,12 @@ export async function save(name: string, source: string, target: string) {
   const text = (await fs.readFile(fs.resolve(source))).toString();
   const obj = await toObject({ text, inspect });
 
-  const output = `
+  const header = `
 /**
  * Source: ${source}
  */    
-${obj.toString({ export: true, const: name })}
 `.substring(1);
+  const output = obj.toString({ export: true, const: name, header });
 
   target = fs.resolve(target);
   await fs.ensureDir(fs.dirname(target));

@@ -4,10 +4,10 @@ type Style = { name: string; value: string };
 
 /**
  * Convert the given CSS file into a JS object that can be
- * passed to the `style.global` helper.
+ * passed to the [style.global] helper.
  */
-export async function toObject(args: { text: string; inspect: Inspect }) {
-  const { inspect } = args;
+export async function toObject(args: { text: string; inspect: Inspect; header?: string }) {
+  const root = args;
 
   const object = toDeclarations(args.text).reduce((acc, next) => {
     acc[next.selector] = next.items.reduce((acc, next) => {
@@ -19,10 +19,15 @@ export async function toObject(args: { text: string; inspect: Inspect }) {
 
   return {
     object,
-    toString(args: { const?: string; export?: boolean } = {}) {
-      let text = inspect(object, { colors: false, compact: false });
+    toString(args: { const?: string; export?: boolean; header?: string } = {}) {
+      let text = root.inspect(object, { colors: false, compact: false });
       text = args.const ? `const ${args.const} = ${text};` : text;
       text = args.export ? `export ${text}` : text;
+
+      const header = (args.header || root.header || '').trim();
+      text = header ? `${header}\n\n${text}` : text;
+      text = `${text}\n`;
+
       return text;
     },
   };

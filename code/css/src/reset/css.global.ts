@@ -4,6 +4,6 @@
 
 export const global = {
   html: {
-    fontFamily: 'sans-serif',
-  },
+    fontFamily: 'sans-serif'
+  }
 };
