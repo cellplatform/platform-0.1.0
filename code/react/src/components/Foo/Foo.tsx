@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { css, color, CssValue } from '../../common';
+import { color, css, CssValue } from '@platform/css';
 
 export type IFooProps = {
   children?: any;

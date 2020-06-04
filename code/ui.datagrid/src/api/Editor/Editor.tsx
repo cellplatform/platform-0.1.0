@@ -3,7 +3,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
-import { constants, Handsontable, R, t, time, coord } from '../../common';
+import { constants, R, t, time, coord } from '../../common';
+import { Handsontable } from '../../common/libs.Handsontable';
 import { IGridRefsPrivate } from '../../components/DataGrid/types.private';
 import { createProvider } from './provider';
 

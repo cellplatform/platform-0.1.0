@@ -1,4 +1,4 @@
-export type Event<P extends object = {}> = {
+export type Event<P = unknown> = {
   type: string;
   payload: P;
 };

@@ -1,4 +1,5 @@
-export * from '../common';
+import { CssValue, css, color, style } from '@platform/css';
+export { css, color, CssValue, style };
 
 export const COLORS = {
   PINK: '#FF0067',

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { css, CssValue } from '../common';
+import { CssValue, css } from '@platform/css';
 
 export type IMeasureSizeStyle = {
   width?: number;

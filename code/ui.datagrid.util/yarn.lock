@@ -196,10 +196,10 @@
     chalk "4.0.0"
     cli-table "0.3.1"
 
-"@platform/react@0.4.32":
-  version "0.4.32"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.32.tgz#8b5f4582652ded3fbf4c00005dd06a39de5581f5"
-  integrity sha512-y0xeeq8ImDc87D+Mur8/78Kib3uqmx5izsS2y6xyWEXuWAR+aRswaaBntOiQjz48YIhX+dEn3sz9hhNvZMI7jQ==
+"@platform/react@0.4.34":
+  version "0.4.34"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.34.tgz#d87462328be8310032fecd84165239871a2519c9"
+  integrity sha512-TqaIWkIR3bGeZBpHtRMYUdlIjv76Gv1Dur7Sfz7xUUfUvFFAVuvqSo876tPrCrXskso8De04wdI8cWlLtSHWaQ==
   dependencies:
     "@platform/css" "0.4.2"
     "@platform/util.is" "0.0.125"
@@ -252,13 +252,13 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.22.tgz#a0a3f350be37bfbf99069085fc561b9edd1038e5"
   integrity sha512-mGp7mPDwioauf/6u7uJrjfkEuuGoV5tta/2uGSkVoRcelsb3X1IqIxKQEuM8Fpi5E3GT12PjBw224pWbkeZCFg==
 
-"@platform/ui.datagrid.types@0.7.134":
-  version "0.7.134"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.134.tgz#a604187e1e6003a539efaf40a131622b91dbf4d4"
-  integrity sha512-ubWboF5vTlyvW6juAfyhh3l59wsPonH1WhJdrhG3tyMxPw2OrENVVLTjg6nQ7zuXPcpSsRfaymzOCmUXkbWaLQ==
+"@platform/ui.datagrid.types@0.7.136":
+  version "0.7.136"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.136.tgz#61cbb8fca8a6a4dbcd52bb7ace3879f118e544f7"
+  integrity sha512-Rkhc9oopL0QP7Ygf1P5/Yb3WGgGcjcYcgxL1HHOz0tHk6pbSbjgwwIq+tYTYwIwcEzSgO0etSBNhJ3CDmvPWJQ==
   dependencies:
     "@platform/cell.types" "0.4.104"
-    "@platform/react" "0.4.32"
+    "@platform/react" "0.4.34"
 
 "@platform/util.diff@0.0.32":
   version "0.0.32"

@@ -7,16 +7,9 @@ import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 import { Grid } from '../../api';
 import { FactoryManager } from '../../factory';
 import * as render from '../../render';
-import {
-  constants,
-  containsFocus,
-  css,
-  defaultValue,
-  events,
-  CssValue,
-  Handsontable as TableLib,
-  t,
-} from '../common';
+import { containsFocus, events, constants, css, defaultValue, CssValue, t } from '../common';
+import { Handsontable as TableLib } from '../../common/libs.Handsontable';
+
 import { getSettings } from '../settings';
 import { DataGridOverlay } from './DataGrid.Overlay';
 import { IGridRefsPrivate } from './types.private';

@@ -15,5 +15,6 @@ export { Text, ITextProps };
 import { Button, IButtonProps } from '@platform/ui.button';
 export { Button, IButtonProps };
 
-import { TreeView, TreeUtil } from '@platform/ui.tree';
+import { TreeView } from '@platform/ui.tree/lib/components/TreeView';
+import { TreeUtil } from '@platform/ui.tree/lib/TreeUtil';
 export { TreeView, TreeUtil };

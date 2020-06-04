@@ -1,9 +1,11 @@
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
-import { R } from '../common';
 import { events } from '../events';
 import * as t from './types';
+
+import { equals, uniq } from 'ramda';
+const R = { equals, uniq };
 
 const MODIFIERS = {
   META: 'metaKey',

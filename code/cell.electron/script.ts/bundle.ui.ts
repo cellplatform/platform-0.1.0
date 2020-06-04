@@ -5,14 +5,15 @@ import { fs } from '@platform/fs';
 import { log } from '@platform/log/lib/server';
 
 (async () => {
+  // Setup initial conditions.
   var argv = process.argv.slice(2);
   const isSilent = argv.includes('--silent') || argv.includes('-s');
 
   type Reset = 'yes' | 'no';
-
-  let modules = ['cell.ui.sys', 'cell.ui.finder', 'cell.ui.ide'];
   let reset: Reset = 'no';
+  let modules = ['cell.ui.sys', 'cell.ui.finder', 'cell.ui.ide'];
 
+  // Prompt user.
   if (!isSilent) {
     const selectModules = await prompt.checkbox({ message: 'modules', items: ['all', ...modules] });
     if (selectModules.length === 0) {
@@ -22,13 +23,15 @@ import { log } from '@platform/log/lib/server';
       modules = modules.filter((name) => selectModules.includes(name));
     }
 
-    reset = await prompt.radio<Reset>({ message: 'reset data', items: ['yes', 'no'] });
+    reset = await prompt.radio<Reset>({ message: 'reset data', items: ['no', 'yes'] });
   }
 
+  // Run bundler.
   const target = constants.paths.bundle;
   const args = modules.map((name) => ({ sourceDir: `../${name}`, targetDir: target[name] }));
   await bundleModules(args);
 
+  // Reset database.
   if (reset) {
     const path = constants.paths.data({ prod: false });
     await fs.remove(path.dir);

@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.dev",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "UI development helpers.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,8 +19,8 @@
     "@platform/libs": "0.2.2",
     "@platform/log": "0.1.25",
     "@platform/polyfill": "0.0.1",
-    "@platform/react": "0.4.32",
-    "@platform/ui.object": "0.0.205",
+    "@platform/react": "0.4.34",
+    "@platform/ui.object": "0.0.207",
     "@platform/util.value": "0.7.23",
     "parcel-bundler": "1.12.4"
   },

@@ -4,13 +4,15 @@ import { share } from 'rxjs/operators';
 import { IMouseEvent } from '../events/types';
 import * as t from './types';
 
-export {
+import {
   MouseEvent,
   MouseEventHandler,
   MouseEventType,
   IMouseEventProps,
   IMouseHandlers,
 } from './types';
+
+export { MouseEvent, MouseEventHandler, MouseEventType, IMouseEventProps, IMouseHandlers };
 
 export type MouseHandlerFactory = (args: {
   type: t.MouseEvent['type'];

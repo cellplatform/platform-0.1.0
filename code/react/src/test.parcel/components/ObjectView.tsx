@@ -1,9 +1,10 @@
+import { css, CssValue } from '@platform/css';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue } from '../common';
 
 const m = require('react-inspector'); // eslint-disable-line
+
 const ReactInspector = m.default as React.ComponentClass<any>;
 
 export type IObjectViewProps = {
@@ -44,7 +45,7 @@ export class ObjectView extends React.PureComponent<IObjectViewProps, IObjectVie
       base: css({}),
     };
     const data = this.props.data || {};
-    const { expandLevel = 1, expandPaths } = this.props;
+    const { expandLevel = 1, expandPaths = [] } = this.props;
 
     return (
       <div {...css(styles.base, this.props.style)}>

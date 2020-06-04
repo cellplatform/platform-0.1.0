@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 
 import { css, CssValue, t, ui } from '../../common';
-import { TreeShell } from '../Finder.TreeShell';
+import { Shell } from '../Finder.Shell';
 import { WindowTitleBar } from '../primitives';
 
 export type IRootProps = {
@@ -44,7 +44,7 @@ export class Root extends React.PureComponent<IRootProps> {
       <this.Provider>
         <div {...css(styles.base, this.props.style)}>
           <WindowTitleBar style={styles.titlebar} address={uri} />
-          <TreeShell style={styles.shell} />
+          <Shell style={styles.shell} />
         </div>
       </this.Provider>
     );

@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { Keyboard, t } from '../common';
+import { t } from '../common';
+import { Keyboard } from '@platform/react';
 
 export class BindingMonitor {
   /**
