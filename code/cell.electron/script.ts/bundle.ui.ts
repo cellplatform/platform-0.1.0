@@ -33,7 +33,7 @@ import { log } from '@platform/log/lib/server';
 
   // Reset database.
   if (reset) {
-    const path = constants.paths.data({ prod: false });
-    await fs.remove(path.dir);
+    const path = fs.resolve('.data');
+    await fs.remove(path);
   }
 })();

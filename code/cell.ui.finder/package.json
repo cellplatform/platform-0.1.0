@@ -31,7 +31,8 @@
   "devDependencies": {
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
-    "@platform/ui.dev": "0.0.10"
+    "@platform/ui.dev": "0.0.10",
+    "recharts": "2.0.0-beta.6"
   },
   "files": [
     "lib",
