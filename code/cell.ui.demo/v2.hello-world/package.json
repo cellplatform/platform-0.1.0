@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "source": "src/index.html",
   "scripts": {
-    "start": "parcel src/index.html",
+    "start": "parcel src/index.html --port 5000",
     "watch": "yarn start",
     "bundle": "parcel build src/index.html",
     "clean": "rm -rf dist && rm -rf .parcel-cache",
@@ -13,7 +13,7 @@
   "web": "dist/web/index.html",
   "dependencies": {},
   "devDependencies": {
-    "parcel": "^2.0.0-alpha.3.2"
+    "parcel": "next"
   },
   "browserslist": [
     "> 1%",
@@ -22,8 +22,7 @@
   "targets": {
     "node": {
       "engines": {
-        "node": ">=11.x",
-        "electron": ">=7.x"
+        "node": ">=11.x"
       }
     },
     "web": {
