@@ -11,7 +11,7 @@ import { log } from '@platform/log/lib/server';
 
   type Reset = 'yes' | 'no';
   let reset: Reset = 'no';
-  let modules = ['cell.ui.sys', 'cell.ui.finder', 'cell.ui.ide'];
+  let modules = ['cell.ui.sys', 'cell.ui.finder', 'cell.ui.ide', 'cell.ui.spreadsheet'];
 
   // Prompt user.
   if (!isSilent) {
