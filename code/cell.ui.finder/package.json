@@ -24,6 +24,7 @@
     "@platform/state": "0.5.0",
     "@platform/ui.spinner": "0.0.152",
     "@platform/ui.tree": "0.5.5",
+    "@platform/util.value": "^0.7.23",
     "path-sort": "0.1.0",
     "pretty-bytes": "5.3.0",
     "react-icons": "3.10.0"

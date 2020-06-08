@@ -21,7 +21,8 @@
     "@platform/cell.typesystem": "0.0.54",
     "@platform/cell.ui": "0.1.33",
     "@platform/react": "0.4.36",
-    "@platform/ui.object": "0.0.209"
+    "@platform/ui.object": "0.0.209",
+    "@platform/util.value": "^0.7.23"
   },
   "devDependencies": {
     "@platform/test": "0.1.12",

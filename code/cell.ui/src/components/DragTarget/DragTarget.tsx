@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, t } from '../../common';
+import { css, CssValue, t, rx } from '../../common';
 import { DragTargetEvent } from './types';
+import { readDropEvent } from './util';
 
 export type IDragTargetProps = {
-  defaultView?: React.ReactNode;
-  dragOverView?: React.ReactNode;
-  droppedView?: React.ReactNode;
+  children?: React.ReactNode;
   event$?: Subject<t.DragTargetEvent>;
   style?: CssValue;
 };
@@ -17,6 +16,14 @@ export type IDragTargetState = {
 };
 
 export class DragTarget extends React.PureComponent<IDragTargetProps, IDragTargetState> {
+  public static dropEventToFiles = readDropEvent;
+  public static events(event$: Observable<t.DragTargetEvent>, unmounted$?: Observable<{}>) {
+    event$ = unmounted$ ? event$.pipe(takeUntil(unmounted$)) : event$;
+    const over$ = rx.payload<t.IDragTargetOverEvent>(event$, 'cell.ui/DragTarget/over');
+    const drop$ = rx.payload<t.IDragTargetDropEvent>(event$, 'cell.ui/DragTarget/drop');
+    return { over$, drop$ };
+  }
+
   public state: IDragTargetState = {};
   private state$ = new Subject<Partial<IDragTargetState>>();
   private unmounted$ = new Subject<{}>();
@@ -25,9 +32,6 @@ export class DragTarget extends React.PureComponent<IDragTargetProps, IDragTarge
   /**
    * [Lifecycle]
    */
-  constructor(props: IDragTargetProps) {
-    super(props);
-  }
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
@@ -52,24 +56,9 @@ export class DragTarget extends React.PureComponent<IDragTargetProps, IDragTarge
         onMouseLeave={this.dragHandler(false)}
         onDrop={this.onDrop}
       >
-        {this.renderBody()}
+        {this.props.children}
       </div>
     );
-  }
-
-  private renderBody() {
-    const { isDragOver, isDropped } = this.state;
-    const { dragOverView, droppedView, defaultView } = this.props;
-
-    if (isDragOver && dragOverView) {
-      return dragOverView;
-    }
-
-    if (isDropped && droppedView) {
-      return droppedView;
-    }
-
-    return defaultView;
   }
 
   /**
@@ -85,9 +74,9 @@ export class DragTarget extends React.PureComponent<IDragTargetProps, IDragTarge
       const { isDropped = false } = this.state;
       this.state$.next({ isDragOver });
       this.fire({
-        type: 'cell.ui/DragTarget/change',
+        type: 'cell.ui/DragTarget/over',
         payload: {
-          event: isDragOver ? 'OVER' : 'LEAVE',
+          isDragOver,
           isDropped,
         },
       });
@@ -97,12 +86,11 @@ export class DragTarget extends React.PureComponent<IDragTargetProps, IDragTarge
   private onDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     this.state$.next({ isDragOver: false, isDropped: true });
+
+    const { files, urls, strings } = await readDropEvent(e);
     this.fire({
-      type: 'cell.ui/DragTarget/change',
-      payload: {
-        event: 'DROP',
-        isDropped: true,
-      },
+      type: 'cell.ui/DragTarget/drop',
+      payload: { files, urls, strings },
     });
   };
 }

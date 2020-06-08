@@ -14,3 +14,6 @@ export { css, color, CssValue } from '@platform/css';
 
 import { equals } from 'ramda';
 export const R = { equals };
+
+import { rx } from '@platform/util.value';
+export { rx };

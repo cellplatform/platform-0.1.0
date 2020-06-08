@@ -1,15 +1,26 @@
+import * as t from '../../common/types';
+
 /**
  * [Events]
  */
 
-export type DragTargetEvent = IDragTargetChangeEvent;
+export type DragTargetEvent = IDragTargetOverEvent | IDragTargetDropEvent;
 
-export type IDragTargetChangeEvent = {
-  type: 'cell.ui/DragTarget/change';
-  payload: IDragTargetChange;
+export type IDragTargetOverEvent = {
+  type: 'cell.ui/DragTarget/over';
+  payload: IDragTargetOver;
+};
+export type IDragTargetOver = {
+  isDragOver: boolean;
+  isDropped: boolean;
 };
 
-export type IDragTargetChange = {
-  event: 'OVER' | 'LEAVE' | 'DROP';
-  isDropped: boolean;
+export type IDragTargetDropEvent = {
+  type: 'cell.ui/DragTarget/drop';
+  payload: IDragTargetDrop;
+};
+export type IDragTargetDrop = {
+  urls: string[];
+  strings: string[];
+  files: t.IHttpClientCellFileUpload[];
 };

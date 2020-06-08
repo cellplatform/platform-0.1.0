@@ -19,7 +19,7 @@ export function onStateChanged(ob$: Observable<t.FinderEvent>, unmounted$?: Obse
   return {
     on(...type: T[]) {
       return rx
-        .eventPayload<t.IFinderChanged>(event$, 'FINDER/changed')
+        .payload<t.IFinderChanged>(event$, 'FINDER/changed')
         .pipe(filter((e) => isTypeMatch(e.type, type)));
     },
   };
