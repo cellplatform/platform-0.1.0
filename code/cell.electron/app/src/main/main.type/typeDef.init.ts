@@ -6,7 +6,7 @@ const SYS = constants.SYS;
  * Initializes an object structure representing the
  * type-definitions for an [App].
  */
-export function define() {
+export function init() {
   const def = TypeSystem.def();
 
   /**

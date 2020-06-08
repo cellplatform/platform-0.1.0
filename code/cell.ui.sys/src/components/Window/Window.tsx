@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t } from '../../common';
+import { color, css, CssValue, t, COLORS } from '../../common';
 
 export type WindowEvent = DragTargetEvent;
 
@@ -41,7 +41,6 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
     dragTarget.drop$.subscribe((e) => {
       const files = e.files.filter((file) => !file.filename.endsWith('.DS_Store'));
       const urls = e.urls;
-      console.log('e', e);
       this.state$.next({ files, urls });
     });
   }
@@ -81,7 +80,8 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
         WebkitAppRegion: 'drag',
         userSelect: 'none',
         display: 'flex',
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        color: COLORS.DARK,
+        // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       }),
       target: css({
         Absolute: 0,
@@ -103,7 +103,7 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
         fontWeight: 'bolder',
         fontSize: 24,
         letterSpacing: -0.8,
-        color: color.format(0.8),
+        // color: color.format(0.8),
         cursor: 'default',
       }),
     };
@@ -126,8 +126,6 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
   private renderList() {
     const files = this.files;
     const url = this.url;
-
-    console.log('this.url', this.url);
 
     if (files.length === 0 && !url) {
       return null;

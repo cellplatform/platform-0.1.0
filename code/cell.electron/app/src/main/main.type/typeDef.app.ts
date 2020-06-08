@@ -3,7 +3,7 @@ import { t, util, fs } from '../common';
 /**
  * Define an application module.
  */
-export async function define(args: {
+export async function app(args: {
   ctx: t.IContext;
   row: number;
   name: string;
@@ -17,9 +17,10 @@ export async function define(args: {
   const { ctx } = args;
   const { client, apps } = ctx;
   const exists = Boolean(apps.find((row) => row.name === args.name));
+  const created = !exists || args.force;
 
   // Create the app model in the sheet.
-  if (!exists || args.force) {
+  if (created) {
     const entry = args.entryPath;
     const targetDir = fs.dirname(entry);
 
@@ -41,5 +42,5 @@ export async function define(args: {
   }
 
   const app = apps.find((row) => row.name === args.name);
-  return { app, created: !exists };
+  return { app, created };
 }

@@ -1,7 +1,7 @@
 import '../../config';
 
 import { t } from '../common';
-import { typeDefs } from '../main.typeDefs';
+import { typeDef } from '../main.type';
 import { toContext } from './sys.ctx';
 import * as types from './sys.init.types';
 import { ipc } from './sys.ipc';
@@ -12,7 +12,7 @@ import { monitor } from './sys.monitor';
  */
 export async function init(client: t.IClientTypesystem) {
   // Ensure the root "app" type-definitions exist in the database.
-  const { created } = await typeDefs.ensureExists({ client });
+  const { created } = await typeDef.ensureExists({ client });
 
   // Build the shared context and setup event listeners.
   const ctx = await toContext(client);

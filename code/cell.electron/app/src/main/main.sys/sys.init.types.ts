@@ -1,5 +1,5 @@
 import { constants, t } from '../common';
-import { typeDefs } from '../main.typeDefs';
+import { typeDef } from '../main.type';
 
 /**
  * Initialize application type-defs.
@@ -8,7 +8,7 @@ export async function define(ctx: t.IContext) {
   const { paths } = constants;
 
   // Define base modules.
-  await typeDefs.app.define({
+  await typeDef.app({
     ctx,
     row: 0,
     name: '@platform/cell.ui.sys',
