@@ -6,3 +6,6 @@ export { value, defaultValue };
 
 import { Client } from '@platform/cell.client';
 export { Client };
+
+import { equals } from 'ramda';
+export const R = { equals };

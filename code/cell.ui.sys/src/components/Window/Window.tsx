@@ -1,25 +1,37 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue } from '../../common';
+import { takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { css, color, CssValue, R } from '../../common';
+import { DragTarget, DragTargetEvent } from '@platform/cell.ui/lib/components/DragTarget';
 
-export type IWindowProps = { style?: CssValue };
+export type WindowEvent = DragTargetEvent;
+
+export type IWindowProps = {
+  event$?: Subject<WindowEvent>;
+  style?: CssValue;
+};
 export type IWindowState = {};
 
 export class Window extends React.PureComponent<IWindowProps, IWindowState> {
   public state: IWindowState = {};
   private state$ = new Subject<Partial<IWindowState>>();
   private unmounted$ = new Subject<{}>();
+  private event$ = this.props.event$ || new Subject<WindowEvent>();
 
   /**
    * [Lifecycle]
    */
-  constructor(props: IWindowProps) {
-    super(props);
-  }
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+    const event$ = this.event$.pipe(takeUntil(this.unmounted$));
+
+    /**
+     * TODO 🐷
+     */
+    event$.pipe(distinctUntilChanged((prev, next) => R.equals(prev, next))).subscribe((e) => {
+      console.log('e', e);
+    });
   }
 
   public componentWillUnmount() {
@@ -35,8 +47,12 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
       base: css({
         Absolute: 0,
         WebkitAppRegion: 'drag',
-        Flex: 'center-center',
         userSelect: 'none',
+        display: 'flex',
+      }),
+      dragTarget: css({
+        flex: 1,
+        Flex: 'center-center',
       }),
       label: css({
         fontWeight: 'bolder',
@@ -46,9 +62,20 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
         cursor: 'default',
       }),
     };
+
+    const elDefault = <div {...styles.label}>Drag to add Application</div>;
+    const elOver = <div>Over</div>;
+    const elDropped = <div>Dropped</div>;
+
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div {...styles.label}>Drag to add Application</div>
+        <DragTarget
+          style={styles.dragTarget}
+          defaultView={elDefault}
+          dragOverView={elOver}
+          droppedView={elDropped}
+          event$={this.event$}
+        />
       </div>
     );
   }

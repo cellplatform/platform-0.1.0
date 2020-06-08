@@ -1,1 +1,1 @@
-export * from './components/PropList/types';
+export * from './components/types';
