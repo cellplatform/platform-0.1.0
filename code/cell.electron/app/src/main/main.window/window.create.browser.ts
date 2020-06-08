@@ -1,6 +1,6 @@
 import { BrowserWindow, screen } from 'electron';
 
-import { constants, ENV, t } from '../common';
+import { constants, ENV, t, defaultValue } from '../common';
 import { logWindow } from './window.log';
 import { getUrl } from './window.url';
 
@@ -18,17 +18,24 @@ export async function createBrowserWindow(args: {
   const host = ctx.host;
   const sandbox = true; // https://www.electronjs.org/docs/api/sandbox-option
 
+  console.log('app', app);
+  console.log('window', window);
+
   // Create the browser window.
-  // Docs: https://www.electronjs.org/docs/api/browser-window
+  // Reference docs:
+  //        https://www.electronjs.org/docs/api/browser-window
+  //
   const browser = new BrowserWindow({
     show: false,
-    width: window.width,
-    height: window.height,
+    width: defaultValue(window.width, app.initialWidth),
+    height: defaultValue(window.height, app.initialHeight),
     x: window.x,
     y: window.y,
     title: window.title,
     titleBarStyle: 'hiddenInset',
-    backgroundColor: app.backgroundColor,
+    transparent: true,
+    vibrancy: 'selection',
+    acceptFirstMouse: true,
     webPreferences: {
       sandbox,
       nodeIntegration: false,

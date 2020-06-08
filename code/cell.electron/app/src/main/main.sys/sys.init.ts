@@ -3,7 +3,7 @@ import '../../config';
 import { t } from '../common';
 import { typeDefs } from '../main.typeDefs';
 import { toContext } from './sys.ctx';
-import { defineAppTypes } from './sys.init.define';
+import * as types from './sys.init.types';
 import { ipc } from './sys.ipc';
 import { monitor } from './sys.monitor';
 
@@ -19,7 +19,7 @@ export async function init(client: t.IClientTypesystem) {
   monitor({ ctx });
 
   // Initialize application type-defs.
-  defineAppTypes(ctx);
+  await types.define(ctx);
 
   // Finish up.
   ipc({ ctx });

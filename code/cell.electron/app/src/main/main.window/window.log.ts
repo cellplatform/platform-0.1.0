@@ -24,7 +24,7 @@ export async function logWindow(args: {
     const isRunning = url.dev.isRunning;
     const devUrl = isRunning ? log.white(url.dev) : url.dev;
     const running = isRunning ? '' : `(${log.yellow('not running')})`;
-    add(log.gray(`url (dev):`), `${devUrl} ${running}`);
+    add(log.gray(`url (${log.yellow('dev')}):`), `${devUrl} ${running}`);
   }
 
   const output = `

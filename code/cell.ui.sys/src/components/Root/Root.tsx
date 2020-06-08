@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, Client, css, CssValue, t } from '../../common';
+import { Client, css, CssValue, t } from '../../common';
 import { Apps, AppClickEvent, IAppData } from '../Apps';
 import { ObjectView, WindowTitleBar } from '../primitives';
 import { Server } from './Server';

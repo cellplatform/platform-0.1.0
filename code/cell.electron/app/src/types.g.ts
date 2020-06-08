@@ -30,6 +30,8 @@ export declare type App = {
   entry: string;
   devPort: number;
   windows: t.ITypedSheetRefs<AppWindow>;
+  initialWidth: number;
+  initialHeight: number;
 };
 
 export declare type AppWindow = {

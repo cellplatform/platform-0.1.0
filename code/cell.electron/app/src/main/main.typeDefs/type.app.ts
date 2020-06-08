@@ -10,6 +10,8 @@ export async function define(args: {
   sourceDir: string;
   entryPath: string;
   devPort: number;
+  initialWidth: number;
+  initialHeight: number;
   force?: boolean;
 }) {
   const { ctx } = args;
@@ -26,6 +28,8 @@ export async function define(args: {
     props.name = args.name;
     props.entry = args.entryPath;
     props.devPort = args.devPort;
+    props.initialWidth = args.initialWidth;
+    props.initialHeight = args.initialHeight;
 
     // Upload the bundle as files to the cell (filesystem).
     await util.upload({
