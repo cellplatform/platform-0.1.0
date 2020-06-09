@@ -43,9 +43,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const { uri } = this.props;
 
     const styles = {
-      base: css({
-        Absolute: 0,
-      }),
+      base: css({ Absolute: 0 }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
       body: css({
         Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
@@ -66,9 +64,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   private renderBody() {
-    const { ctx } = this.props;
-    const client = ctx.client;
-
     const styles = {
       base: css({
         flex: 1,

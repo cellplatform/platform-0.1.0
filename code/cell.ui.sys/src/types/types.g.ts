@@ -6,7 +6,7 @@
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.54
+ *    @platform/cell.typesystem@0.0.56
  * 
  * Notes: 
  * 
@@ -30,8 +30,8 @@ export declare type App = {
   entry: string;
   devPort: number;
   windows: t.ITypedSheetRefs<AppWindow>;
-  initialWidth: number;
-  initialHeight: number;
+  width: number;
+  height: number;
 };
 
 export declare type AppWindow = {

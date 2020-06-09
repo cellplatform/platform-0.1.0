@@ -1,10 +1,12 @@
 import { DragTarget, DragTargetEvent } from '@platform/cell.ui/lib/components/DragTarget';
+import { ErrorView } from '@platform/cell.ui/lib/components/Error';
+
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, COLORS, ui } from '../../common';
-import { write } from './_tmp';
+import { color, COLORS, css, CssValue, t, ui } from '../../common';
+import { uploadApp } from './_tmp';
 
 export type WindowEvent = DragTargetEvent;
 
@@ -16,6 +18,7 @@ export type IWindowState = {
   isDragOver?: boolean;
   files?: t.IHttpClientCellFileUpload[];
   urls?: string[];
+  error?: t.IErrorInfo;
 };
 
 export class Window extends React.PureComponent<IWindowProps, IWindowState> {
@@ -42,13 +45,18 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
       this.state$.next({ isDragOver });
     });
 
-    dragTarget.drop$.subscribe((e) => {
+    // TEMP 🐷
+    dragTarget.drop$.subscribe(async (e) => {
       const files = e.files.filter((file) => !file.filename.endsWith('.DS_Store'));
-      const urls = e.urls;
-      this.state$.next({ files, urls });
+      const { urls, dir } = e;
+      this.state$.next({ files, urls, error: undefined });
 
-      const ctx = this.context;
-      write({ ctx, files });
+      try {
+        const ctx = this.context;
+        await uploadApp({ ctx, dir, files });
+      } catch (error) {
+        this.state$.next({ error: ErrorView.parseError(error) });
+      }
     });
   }
 
@@ -78,8 +86,7 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
    * [Render]
    */
   public render() {
-    const { isDragOver } = this.state;
-    const isDropped = this.isDropped;
+    const { error } = this.state;
 
     const styles = {
       base: css({
@@ -90,19 +97,28 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
         color: COLORS.DARK,
         // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       }),
-      target: css({
-        Absolute: 0,
-      }),
-      body: css({
-        flex: 1,
-        display: 'flex',
-      }),
+    };
+
+    return (
+      <DragTarget style={css(styles.base, this.props.style)} event$={this.event$}>
+        {!error && this.renderBody()}
+        {error && this.renderError(error)}
+      </DragTarget>
+    );
+  }
+
+  private renderBody() {
+    const { isDragOver } = this.state;
+    const isDropped = this.isDropped;
+
+    const styles = {
+      base: css({ flex: 1, display: 'flex' }),
       border: css({
         Flex: 'center-center',
         flex: 1,
         boxSizing: 'border-box',
         margin: 50,
-        border: `dashed 3px ${color.format(isDragOver && !isDropped ? 0.4 : 0)}`,
+        border: `dashed 3px ${color.format(isDragOver && !isDropped ? -0.1 : 0)}`,
         borderRadius: 10,
         pointerEvents: 'none',
       }),
@@ -119,14 +135,12 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
     const elMessage = !isDropped && <div {...styles.label}>{message}</div>;
 
     return (
-      <DragTarget style={css(styles.base, this.props.style)} event$={this.event$}>
-        <div {...styles.body}>
-          <div {...styles.border}>
-            {elMessage}
-            {this.renderList()}
-          </div>
+      <div {...styles.base}>
+        <div {...styles.border}>
+          {elMessage}
+          {this.renderList()}
         </div>
-      </DragTarget>
+      </div>
     );
   }
 
@@ -159,6 +173,14 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
         {elList}
         {elUrl}
       </div>
+    );
+  }
+
+  private renderError(error: t.IErrorInfo) {
+    return (
+      <ErrorView error={error} showStack={false}>
+        <div>Please try again.</div>
+      </ErrorView>
     );
   }
 }
