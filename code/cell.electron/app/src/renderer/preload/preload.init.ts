@@ -23,14 +23,14 @@ export function init() {
   const { PROCESS } = constants;
   const isTopWindow = typeof window === 'object' && window === window.top;
 
-  const windowUri = findArgv(PROCESS.WINDOW_URI);
+  const def = findArgv(PROCESS.DEF);
   const host = findArgv(PROCESS.HOST);
   const isDev = Boolean(findArgv(PROCESS.DEV));
 
   // Initialize the environment
   const cache = MemoryCache.create();
-  const { event$ } = ipc.init({ windowUri, cache });
-  const env: t.IEnv = { host, def: windowUri, cache, event$ };
+  const { event$ } = ipc.init({ def, cache });
+  const env: t.IEnv = { host, def, cache, event$ };
   if (isTopWindow) {
     const win = (window as unknown) as t.ITopWindow;
     win.env = env;

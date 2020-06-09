@@ -8,14 +8,16 @@ export async function define(ctx: t.IContext) {
   const { paths } = constants;
 
   // Define base modules.
-  await typeDef.app({
+  await typeDef.app.add({
     ctx,
     row: 0,
     name: '@platform/cell.ui.sys',
     entryPath: 'bundle/index.html',
     sourceDir: paths.bundle['cell.ui.sys'],
-    initialWidth: 500,
-    initialHeight: 320,
+    width: 900, // TEMP 🐷
+    height: 800, // TEMP 🐷
+    // width: 500,
+    // height: 320,
     devPort: 1234,
   });
 

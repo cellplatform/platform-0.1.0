@@ -16,12 +16,3 @@ export const ENV = {
   },
 };
 
-/**
- * Window Management.
- */
-export const SYS = {
-  NS: {
-    TYPE: 'ns:sys.app.type',
-    DATA: 'ns:sys.app',
-  },
-};

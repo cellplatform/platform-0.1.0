@@ -6,7 +6,7 @@ const SYS = constants.SYS;
  * Initializes an object structure representing the
  * type-definitions for an [App].
  */
-export function init() {
+export function declare() {
   const def = TypeSystem.def();
 
   /**
@@ -21,8 +21,8 @@ export function init() {
     .prop('entry', (p) => p.type('string'))
     .prop('devPort', (p) => p.type('number').default(1234))
     .prop('windows', (p) => p.type('/AppWindow[]').target('ref'))
-    .prop('initialWidth', (p) => p.type('number').default(1000))
-    .prop('initialHeight', (p) => p.type('number').default(800));
+    .prop('width', (p) => p.type('number').default(1000))
+    .prop('height', (p) => p.type('number').default(800));
 
   /**
    * Defines a window instance of an {App}.

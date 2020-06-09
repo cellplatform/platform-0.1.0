@@ -3,28 +3,25 @@ import { t, util, fs } from '../common';
 /**
  * Define an application module.
  */
-export async function app(args: {
+export async function add(args: {
   ctx: t.IContext;
   row: number;
   name: string;
   sourceDir: string;
   entryPath: string;
   devPort: number;
-  initialWidth: number;
-  initialHeight: number;
+  width: number;
+  height: number;
   force?: boolean;
 }) {
   const { ctx } = args;
   const { client, apps } = ctx;
 
-  console.log('apps.uri', apps.uri);
-  console.log('args.name', args.name);
-
   const exists = Boolean(apps.find((row) => row.name === args.name));
-  const created = !exists || args.force;
+  const create = !exists || args.force;
 
   // Create the app model in the sheet.
-  if (created) {
+  if (create) {
     const entry = args.entryPath;
     const targetDir = fs.dirname(entry);
 
@@ -33,8 +30,8 @@ export async function app(args: {
     props.name = args.name;
     props.entry = args.entryPath;
     props.devPort = args.devPort;
-    props.initialWidth = args.initialWidth;
-    props.initialHeight = args.initialHeight;
+    props.width = args.width;
+    props.height = args.height;
 
     // Upload the bundle as files to the cell (filesystem).
     await util.upload({
@@ -46,5 +43,5 @@ export async function app(args: {
   }
 
   const app = apps.find((row) => row.name === args.name);
-  return { app, created };
+  return { app, created: create };
 }

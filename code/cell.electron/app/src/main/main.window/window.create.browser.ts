@@ -24,8 +24,8 @@ export async function createBrowserWindow(args: {
   //
   const browser = new BrowserWindow({
     show: false,
-    width: defaultValue(window.width, app.initialWidth),
-    height: defaultValue(window.height, app.initialHeight),
+    width: defaultValue(window.width, app.width),
+    height: defaultValue(window.height, app.height),
     x: window.x,
     y: window.y,
     title: window.title,
@@ -41,7 +41,7 @@ export async function createBrowserWindow(args: {
       additionalArguments: [
         ENV.isDev ? PROCESS.DEV : '',
         `${PROCESS.HOST}=${host}`,
-        `${PROCESS.WINDOW_URI}=${uri}`,
+        `${PROCESS.DEF}=${uri}`,
       ],
     },
   });

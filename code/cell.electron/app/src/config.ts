@@ -1,3 +1,3 @@
-import { Schema } from './common';
+import { Uri, constants } from './common';
 
-Schema.uri.ALLOW.NS = [...Schema.uri.ALLOW.NS, 'sys*'];
+Uri.ALLOW.NS = [...Uri.ALLOW.NS, constants.SYS.NS.ALLOW];

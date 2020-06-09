@@ -1,8 +1,8 @@
 import { constants, ENV, fs, t } from '../common';
-import { app } from './typeDef.app';
-import { init } from './typeDef.init';
+import { add } from './typeDef.app';
+import { declare } from './typeDef.declare';
 
-export { app };
+export { add as app };
 
 const SYS = constants.SYS;
 
@@ -15,7 +15,7 @@ export async function ensureExists(args: { client: t.IClientTypesystem; force?: 
 
   // Write type-defs.
   if (force || !(await client.http.ns(SYS.NS.TYPE).exists())) {
-    const defs = init();
+    const defs = declare();
     await Promise.all(Object.keys(defs).map((ns) => client.http.ns(ns).write(defs[ns])));
     if (ENV.isDev) {
       const ts = await client.typescript(SYS.NS.TYPE);
