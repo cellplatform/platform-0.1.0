@@ -21,6 +21,6 @@ export type IDragTargetDropEvent = {
 };
 export type IDragTargetDrop = {
   urls: string[];
-  strings: string[];
+  dir: string;
   files: t.IHttpClientCellFileUpload[];
 };

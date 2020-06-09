@@ -75,10 +75,7 @@ export class DragTarget extends React.PureComponent<IDragTargetProps, IDragTarge
       this.state$.next({ isDragOver });
       this.fire({
         type: 'cell.ui/DragTarget/over',
-        payload: {
-          isDragOver,
-          isDropped,
-        },
+        payload: { isDragOver, isDropped },
       });
     };
   };
@@ -87,10 +84,10 @@ export class DragTarget extends React.PureComponent<IDragTargetProps, IDragTarge
     e.preventDefault();
     this.state$.next({ isDragOver: false, isDropped: true });
 
-    const { files, urls, strings } = await readDropEvent(e);
+    const { dir, files, urls } = await readDropEvent(e);
     this.fire({
       type: 'cell.ui/DragTarget/drop',
-      payload: { files, urls, strings },
+      payload: { dir, files, urls },
     });
   };
 }

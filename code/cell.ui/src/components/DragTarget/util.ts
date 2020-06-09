@@ -43,7 +43,8 @@ export async function readDropEvent(e: React.DragEvent) {
 
   const files: F[] = [];
   const urls: string[] = [];
-  const strings: string[] = [];
+
+  let isDirectory = false;
 
   if (e.dataTransfer.items) {
     for (let i = 0; i < e.dataTransfer.items.length; i++) {
@@ -53,8 +54,6 @@ export async function readDropEvent(e: React.DragEvent) {
         const text = await readString(item);
         if (isUrl(text)) {
           urls.push(text);
-        } else {
-          strings.push(text);
         }
       } else if (typeof item.webkitGetAsEntry === 'function') {
         /**
@@ -69,6 +68,7 @@ export async function readDropEvent(e: React.DragEvent) {
         }
 
         if (entry.isDirectory) {
+          isDirectory = true;
           const dir = await readDir(entry);
           dir.forEach((file) => files.push(file));
         }
@@ -86,7 +86,18 @@ export async function readDropEvent(e: React.DragEvent) {
     }
   }
 
-  return { files, urls, strings };
+  // Remove root "/".
+  files.forEach((file) => (file.filename = file.filename.replace(/^\//, '')));
+
+  // Process directory name.
+  let dir = '';
+  if (isDirectory && files.length > 0) {
+    dir = files[0].filename.substring(0, files[0].filename.indexOf('/'));
+    files.forEach((file) => (file.filename = file.filename.substring(dir.length + 1)));
+  }
+
+  // Finish up.
+  return { dir, files, urls };
 }
 
 /**
