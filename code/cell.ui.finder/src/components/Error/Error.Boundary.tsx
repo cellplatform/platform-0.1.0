@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
-import { onStateChanged, R, t, toErrorPayload, ui } from '../../common';
-import { ErrorView } from '../Error';
+import { onStateChanged, R, t, ui, toErrorPayload } from '../../common';
+import { ErrorView } from './Error.View';
 
 export type IErrorBoundaryProps = {
   name: t.IFinderError['name'];
