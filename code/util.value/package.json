@@ -1,6 +1,6 @@
 {
   "name": "@platform/util.value",
-  "version": "0.7.23",
+  "version": "0.7.24",
   "description": "Helpers for working with, transforming, and formatting values.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

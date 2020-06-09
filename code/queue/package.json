@@ -1,6 +1,6 @@
 {
   "name": "@platform/queue",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Queue abstraction.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@platform/libs": "0.2.2",
-    "@platform/util.value": "0.7.23"
+    "@platform/util.value": "0.7.24"
   },
   "devDependencies": {
     "@platform/test": "0.1.12",

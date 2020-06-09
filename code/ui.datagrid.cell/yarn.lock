@@ -1059,10 +1059,10 @@
   dependencies:
     "@platform/libs" "0.2.2"
 
-"@platform/cell.types@0.4.104":
-  version "0.4.104"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.104.tgz#f9249551b9025e4479f2d08f350b769bb41bc075"
-  integrity sha512-Nw1L0snYgU/UMb0c+JhsesTDOyORyl035cmNNqlkw532hC0jTREfrX0R6heggW3zZUcq2hdnbGLSJA53XEhMFw==
+"@platform/cell.types@0.4.105":
+  version "0.4.105"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.105.tgz#e28d3e2429e580a2d71cce64ff36144b77e5bb97"
+  integrity sha512-0PMM3UoEvtlOZp4P3PINsQL8+16ZXqPijg4wloJdaGp9zhc8BppPfdwKBnnx+H2IslbBow8qX5N6TMnCga50KA==
   dependencies:
     "@platform/cache" "0.2.31"
     "@platform/fs.s3.types" "0.2.9"
@@ -1185,14 +1185,14 @@
     jss-plugin-global "10.1.1"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.4.3", "@platform/css@^0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.3.tgz#dfb1ff363a21ec1e21c489d1d0f118cdb961617e"
-  integrity sha512-V9m0yFPGBvZRlk7T3mOJvQM6rFDsvAhtimIe0x2chIIjvx70nPrEEH3VEiJvLfZdhWeVJPR0pXbS4fra9jwQKA==
+"@platform/css@0.4.4", "@platform/css@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.4.tgz#58d1c49fc90d5c9c7e8682f05e57ef9285e80f14"
+  integrity sha512-CwSns3r6qEagEZ26YOnNzKE1QO4wpM2R7R1xHSnpXqBBriZYZ7iNm8f7ZQtyv8VvHkXdRnzXYV2vB/WZzHrHhg==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/util.is" "0.0.125"
-    "@platform/util.value" "0.7.23"
+    "@platform/util.value" "0.7.24"
     "@types/tinycolor2" "1.4.2"
     glamor-jss "1.4.1"
     jss-plugin-global "10.2.0"
@@ -1469,12 +1469,12 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/react@0.4.36":
-  version "0.4.36"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.36.tgz#29b9ffd3737b28146208aec1b751c9fbc39691a3"
-  integrity sha512-Crqg1GXlFN+5fkq1MPUxYCAvZVTfx9cr99wlvS65KzKSiq5Q9/bCCClRakOAf5fQJc92VWafTXoFuMD+JzujWA==
+"@platform/react@0.4.37":
+  version "0.4.37"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.37.tgz#12cf0f48639aa7ded460f5e9d8ff83163796c858"
+  integrity sha512-1u6NOz5d8Cu33dJN6P/9ZH0KFlqp4vVO3Go9J6wI1xGiQ++tt1vHZM8QAUyAd71PrGBVPB6QQG1DnyeEVTFgSQ==
   dependencies:
-    "@platform/css" "0.4.3"
+    "@platform/css" "0.4.4"
     "@platform/util.is" "0.0.125"
     react "16.13.1"
     react-dom "16.13.1"
@@ -1588,33 +1588,33 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.4.tgz#2532baba63d8bef3bf8c690dd20b628ca911932a"
   integrity sha512-MT+z3cjOxQYBqvByRPuNRCLNaqgSP1g91T1a7Pc/QvYXI7goXE+o3NIPWiVH7915KlK7Sl41gMznFieTxg9N7Q==
 
-"@platform/ui.codemirror@0.1.67":
-  version "0.1.67"
-  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.1.67.tgz#317f13c8b52c0e1d46a13d98567bf8fb4624de7d"
-  integrity sha512-qzyVzwgajyI4gutnvtneDjCaM+/QWYonf4ToaY0AztRn/oV9hLNoktwyTbe/t+qlNVyDTdlvTgvJznUWvH/t2w==
+"@platform/ui.codemirror@0.1.68":
+  version "0.1.68"
+  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.1.68.tgz#cf4c09b9cbb2a3d910be4d4bcdec9f1b9dc515de"
+  integrity sha512-yJzkCTobGpaRF3LdUFv9SA+gOEFW1Ugc1Vb8ye8j6OihepHpVU+bRCJX5EKnG45Mofml0H82uAJv1WpUlYbOWA==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/react" "0.4.36"
-    "@platform/ui.text" "0.3.67"
+    "@platform/react" "0.4.37"
+    "@platform/ui.text" "0.3.68"
     "@types/codemirror" "0.0.95"
     codemirror "5.54.0"
     react-codemirror2 "7.1.0"
 
-"@platform/ui.datagrid.types@0.7.138":
-  version "0.7.138"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.138.tgz#290c930cbbc8d7d49798a3646484fe4a11dff7b6"
-  integrity sha512-YUi7KJ+aOrI8Tjfk7dcQl611olViVXKAC0yu3grvWbURMhE/uhAjvmOGnkiZJTLPVUzMTAD/ofRdMs8BMuLTpw==
+"@platform/ui.datagrid.types@0.7.140":
+  version "0.7.140"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.140.tgz#3b046e5f3ead814c5d1bb791964c46bcc993552f"
+  integrity sha512-RFT5NuyzeyVpu+S5sZ0w+xjcSUn6NU0ADVwgTwruvzUO1iarLLxlFI3UrhuLfcgFxDyvvm6tARtysrMHWGl0Ew==
   dependencies:
-    "@platform/cell.types" "0.4.104"
-    "@platform/react" "0.4.36"
+    "@platform/cell.types" "0.4.105"
+    "@platform/react" "0.4.37"
 
-"@platform/ui.editor@0.2.67":
-  version "0.2.67"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.2.67.tgz#b3439ce28d2c325ce7a9545572580c0a3f7fa377"
-  integrity sha512-4GmRzSd07rDRjEHmn0Cm5O/piSDaPnOWJe5W1bUnDL7sMH69YMtZ6Qnx3sKL2iHsY6Teu2rO64OXW+82tjWghw==
+"@platform/ui.editor@0.2.68":
+  version "0.2.68"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.2.68.tgz#78df18ec926fb748f43cf1d3726c2d4e1bcde5f4"
+  integrity sha512-plmyTIOpLsiBC3snmfDdTgZhlQKBWTT4RcAKyY4fGU8WFb/UZYqt2B2aPNpenl2T1UOLRWucilhEzhppn+l5cQ==
   dependencies:
-    "@platform/css" "^0.4.3"
-    "@platform/react" "0.4.36"
+    "@platform/css" "^0.4.4"
+    "@platform/react" "0.4.37"
     prosemirror-commands "1.1.3"
     prosemirror-dropcursor "1.3.2"
     prosemirror-gapcursor "1.1.3"
@@ -1677,15 +1677,15 @@
     "@platform/react" "0.4.26"
     "@platform/util.value" "0.7.21"
 
-"@platform/ui.text@0.3.67":
-  version "0.3.67"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.67.tgz#53799b91f91f79067ef2e39c328795cf114708ba"
-  integrity sha512-pUAomUuFj9fpTPDd7i3s2JiQPgce8PbPtjCpeesdqXVSWhsWwyO2k+q3jZvT+EP4zRq/hK2z5DH2ID+yaTPPyw==
+"@platform/ui.text@0.3.68":
+  version "0.3.68"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.68.tgz#3c33a995352f6e370d6b2c79914e7016327788bd"
+  integrity sha512-8igXgvJZuycddh1GKeDcv1w/9Ht2iLxlk1kfmv/E7JvD3+unK+tKVYLDzGKeJKChtjKRj6fNrIhDroJAdMsbLw==
   dependencies:
-    "@platform/css" "^0.4.3"
+    "@platform/css" "^0.4.4"
     "@platform/libs" "0.2.2"
-    "@platform/react" "0.4.36"
-    "@platform/util.value" "0.7.23"
+    "@platform/react" "0.4.37"
+    "@platform/util.value" "0.7.24"
 
 "@platform/ui.tree@0.4.53":
   version "0.4.53"
@@ -1798,10 +1798,10 @@
     cuid "2.1.8"
     dayjs "1.8.25"
 
-"@platform/util.value@0.7.23":
-  version "0.7.23"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.23.tgz#8081706b77294862f97ee9ff79dcadb3069f310c"
-  integrity sha512-UPbHM43QQZNQCKkRXPy0f+g44/eb2OViJubns7R6DWWEcBPvB1OWI4IqhfJCo9STP4Rux7Z964Y8zS8aFOHGKw==
+"@platform/util.value@0.7.24":
+  version "0.7.24"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.24.tgz#ab9e93e3536ea1ea3b7425073daa7fb7358b0dc7"
+  integrity sha512-lsAcIWyjkW0JfcKR6pNlxevldvNeoA782jMaEpAst3gBMBLwgu89CBdjYTtdjwzP2kyU7vQRVBP2jp6XcSFoqw==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/types" "0.4.22"
