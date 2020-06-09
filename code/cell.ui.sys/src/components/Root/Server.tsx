@@ -2,16 +2,19 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Client, css, CssValue, t } from '../../common';
+import { css, CssValue, t, ui } from '../../common';
 import { Card, PropList } from '../primitives';
 
-export type IServerProps = { env: t.IEnv; client: t.IClientTypesystem; style?: CssValue };
+export type IServerProps = { style?: CssValue };
 export type IServerState = { info?: t.IResGetElectronSysInfo };
 
 export class Server extends React.PureComponent<IServerProps, IServerState> {
   public state: IServerState = {};
   private state$ = new Subject<Partial<IServerState>>();
   private unmounted$ = new Subject<{}>();
+
+  public static contextType = ui.Context;
+  public context!: t.ISysContext;
 
   /**
    * [Lifecycle]
@@ -53,7 +56,7 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
    * Methods
    */
   public async load() {
-    const http = this.props.client.http;
+    const http = this.context.client.http;
     const res = await http.info<t.IResGetElectronSysInfo>();
     this.state$.next({ info: res.body });
   }

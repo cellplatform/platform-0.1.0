@@ -1,5 +1,7 @@
-import { TypeSystem, t, MemoryCache } from '../common';
+import { Subject } from 'rxjs';
+
 import { HttpClient } from '../Client.http';
+import { MemoryCache, t, TypeSystem } from '../common';
 
 type N = string | t.INsUri;
 
@@ -8,7 +10,8 @@ type N = string | t.INsUri;
  */
 export function typesystem(input?: t.ClientOptions | string | number) {
   const args = typeof input === 'object' ? input : { http: input };
-  const { event$ } = args;
+  // const { event$ } = args;
+  const event$ = args.event$ ? (args.event$ as Subject<t.TypedSheetEvent>) : undefined;
   const cache = args.cache || MemoryCache.create();
 
   let change: t.ITypedSheetChangeMonitor | undefined;

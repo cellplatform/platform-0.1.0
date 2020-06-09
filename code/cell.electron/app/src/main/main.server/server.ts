@@ -34,7 +34,7 @@ export function init(args: IInitArgs = {}) {
 export async function start(args: IInitArgs & { port?: number; isDev?: boolean } = {}) {
   const { app, paths } = init(args);
 
-  const port = await util.port.unused();
+  const port = await util.port.unused(args.port);
   const instance = await app.start({ port });
   const host = `localhost:${port}`;
 

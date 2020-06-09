@@ -18,9 +18,6 @@ export async function createBrowserWindow(args: {
   const host = ctx.host;
   const sandbox = true; // https://www.electronjs.org/docs/api/sandbox-option
 
-  console.log('app', app);
-  console.log('window', window);
-
   // Create the browser window.
   // Reference docs:
   //        https://www.electronjs.org/docs/api/browser-window

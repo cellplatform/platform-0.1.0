@@ -1,5 +1,3 @@
-import '../../config';
-
 import { constants, ENV, fs, t } from '../common';
 import { app } from './typeDef.app';
 import { init } from './typeDef.init';
@@ -9,7 +7,7 @@ export { app };
 const SYS = constants.SYS;
 
 /**
- * Creates the type-defs if they don't already exist.
+ * Creates the type-defs if they don't already exist in the DB.
  */
 export async function ensureExists(args: { client: t.IClientTypesystem; force?: boolean }) {
   const { client, force } = args;

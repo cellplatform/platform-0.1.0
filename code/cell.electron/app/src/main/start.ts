@@ -34,7 +34,8 @@ export async function start() {
   const prod = ENV.isProd;
 
   // Start the HTTP server.
-  const { paths, host } = await server.start({ log, prod });
+  const port = prod ? undefined : 5000;
+  const { paths, host } = await server.start({ log, prod, port });
   const client = Client.typesystem(host);
 
   // Log main process.

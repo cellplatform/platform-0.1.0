@@ -16,6 +16,10 @@ export async function app(args: {
 }) {
   const { ctx } = args;
   const { client, apps } = ctx;
+
+  console.log('apps.uri', apps.uri);
+  console.log('args.name', args.name);
+
   const exists = Boolean(apps.find((row) => row.name === args.name));
   const created = !exists || args.force;
 

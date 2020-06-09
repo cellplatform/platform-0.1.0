@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Client, css, CssValue, t } from '../../common';
+import { css, CssValue, t, ui } from '../../common';
 import { Apps, AppClickEvent, IAppData } from '../Apps';
 import { ObjectView, WindowTitleBar } from '../primitives';
 import { Server } from './Server';
 
-export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
+export type IRootProps = { ctx: t.ISysContext; uri: string; style?: CssValue };
 export type IRootState = {
   json?: IAppData;
 };
@@ -16,13 +16,15 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
   private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject<{}>();
-  private client = Client.typesystem(this.props.env.host);
+
+  private Provider!: React.FunctionComponent;
 
   /**
    * [Lifecycle]
    */
   constructor(props: IRootProps) {
     super(props);
+    this.Provider = ui.createProvider({ ctx: props.ctx });
   }
 
   public componentDidMount() {
@@ -51,18 +53,22 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
     };
     return (
-      <div {...css(styles.base, this.props.style)}>
-        <WindowTitleBar style={styles.titlebar} address={uri} />
-        <div {...styles.body}>
-          {this.renderBody()}
-          <div />
+      <this.Provider>
+        <div {...css(styles.base, this.props.style)}>
+          <WindowTitleBar style={styles.titlebar} address={uri} />
+          <div {...styles.body}>
+            {this.renderBody()}
+            <div />
+          </div>
         </div>
-      </div>
+      </this.Provider>
     );
   }
 
   private renderBody() {
-    const { env } = this.props;
+    const { ctx } = this.props;
+    const client = ctx.client;
+
     const styles = {
       base: css({
         flex: 1,
@@ -90,11 +96,11 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <Apps env={env} client={this.client} onAppClick={this.onAppClick} />
+          <Apps onAppClick={this.onAppClick} />
         </div>
         <div {...styles.center}>{this.renderCenter()}</div>
         <div {...styles.right}>
-          <Server env={env} client={this.client} />
+          <Server />
         </div>
       </div>
     );

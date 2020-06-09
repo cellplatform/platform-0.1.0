@@ -6,7 +6,6 @@ import { Shell } from '../Finder.Shell';
 import { WindowTitleBar } from '../primitives';
 
 export type IRootProps = {
-  env: t.IEnv;
   ctx: t.IFinderContext;
   style?: CssValue;
 };

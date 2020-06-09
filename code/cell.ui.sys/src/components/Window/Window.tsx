@@ -3,7 +3,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, COLORS } from '../../common';
+import { color, css, CssValue, t, COLORS, ui } from '../../common';
+import { write } from './_tmp';
 
 export type WindowEvent = DragTargetEvent;
 
@@ -22,6 +23,9 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
   private state$ = new Subject<Partial<IWindowState>>();
   private unmounted$ = new Subject<{}>();
   private event$ = this.props.event$ || new Subject<WindowEvent>();
+
+  public static contextType = ui.Context;
+  public context!: t.ISysContext;
 
   /**
    * [Lifecycle]
@@ -42,6 +46,9 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
       const files = e.files.filter((file) => !file.filename.endsWith('.DS_Store'));
       const urls = e.urls;
       this.state$.next({ files, urls });
+
+      const ctx = this.context;
+      write({ ctx, files });
     });
   }
 

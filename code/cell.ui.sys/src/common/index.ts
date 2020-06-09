@@ -17,3 +17,6 @@ export const R = { equals };
 
 import { rx } from '@platform/util.value';
 export { rx };
+
+import { ui } from '@platform/cell.ui';
+export { ui };

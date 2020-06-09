@@ -14,7 +14,7 @@ export function render() {
   /**
    * Render root React element.
    */
-  const el = <Root env={env} ctx={ctx} />;
+  const el = <Root ctx={ctx} />;
   ReactDOM.render(el, document.getElementById('root'));
 
   /**
