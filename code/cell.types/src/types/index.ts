@@ -5,6 +5,7 @@ export * from './types.column';
 export * from './types.compile';
 export * from './types.db';
 export * from './types.electron';
+export * from './types.electron.events';
 export * from './types.env';
 export * from './types.env.context';
 export * from './types.error';
