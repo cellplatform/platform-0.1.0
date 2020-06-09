@@ -81,7 +81,10 @@ export async function uploadApp(args: {
   const changes = sheet.state.changes;
 
   // const f = ctx.c
-  console.log('client.cache.keys', client.cache.keys);
+  // console.log('client.cache.keys', client.cache.keys);
+  client.cache.keys.forEach((key) => {
+    console.log('cache key:', key);
+  });
 
   // ctx.
 

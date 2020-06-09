@@ -4,6 +4,9 @@ import { t } from '../../common';
  * Cache key generators.
  */
 export class TypeCacheKey {
+  /**
+   * A network client instance stored in the cache.
+   */
   public static client: t.CacheClientKey = (ns, ...path) => {
     const suffix = path.length === 0 ? '' : `/${path.join('/')}`;
     return `TypeSystem/client/${ensurePrefix('ns:', ns)}${suffix}`;
@@ -13,10 +16,6 @@ export class TypeCacheKey {
     const suffix = path.length === 0 ? '' : `/${path.join('/')}`;
     ns = ensurePrefix('ns:', ns);
     return `TypeSystem/fetch/${ensurePrefix('ns:', ns)}/${method}${suffix}`;
-  };
-
-  public static default: t.CacheDefaultValue = (uri) => {
-    return `TypeSystem/default/${uri}`;
   };
 }
 
