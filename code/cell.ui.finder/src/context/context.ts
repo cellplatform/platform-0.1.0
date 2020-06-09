@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
-import { Client, t } from '../common';
+import { Client, t, ui } from '../common';
 import { createStore, behavior } from '../state';
 
 /**
@@ -9,17 +9,21 @@ import { createStore, behavior } from '../state';
  */
 export function create(args: { env: t.IEnv }) {
   const { env } = args;
-  const event$ = env.event$;
+  const def = env.def;
+  const event$ = env.event$ as Subject<t.FinderEvent>;
   const client = Client.env(env);
   const store = createStore({ event$ });
 
-  const ctx = {
+  const ctx: t.IFinderContext = {
+    def,
     client,
     getState: () => store.state,
-    event$: (event$ as Subject<t.TypedSheetEvent>).pipe(share()),
+    event$: event$.pipe(share()),
     fire: (e) => event$.next(e),
-  } as t.IFinderContext;
+  };
 
   behavior.init({ ctx, store });
-  return { ctx, store };
+  const Provider = ui.createProvider({ ctx });
+
+  return { ctx, store, Provider };
 }

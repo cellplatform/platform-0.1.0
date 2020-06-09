@@ -12,14 +12,15 @@ export type IRootProps = {
 
 export class Root extends React.PureComponent<IRootProps> {
   private unmounted$ = new Subject<{}>();
-  private Provider!: React.FunctionComponent;
+
+  public static contextType = ui.Context;
+  public context!: t.IFinderContext;
 
   /**
    * [Lifecycle]
    */
   constructor(props: IRootProps) {
     super(props);
-    this.Provider = ui.createProvider({ ctx: props.ctx });
   }
 
   public componentWillUnmount() {
@@ -40,12 +41,10 @@ export class Root extends React.PureComponent<IRootProps> {
     const uri = ''; // temp
 
     return (
-      <this.Provider>
-        <div {...css(styles.base, this.props.style)}>
-          <WindowTitleBar style={styles.titlebar} address={uri} />
-          <Shell style={styles.body} />
-        </div>
-      </this.Provider>
+      <div {...css(styles.base, this.props.style)}>
+        <WindowTitleBar style={styles.titlebar} address={uri} />
+        <Shell style={styles.body} />
+      </div>
     );
   }
 }

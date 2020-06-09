@@ -7,8 +7,8 @@ import { t } from '../common';
 /**
  * Create the Finder's state store.
  */
-export function createStore(args: { event$: Subject<t.Event> }): t.IFinderStore {
-  const event$ = args.event$ as Subject<t.FinderEvent>;
+export function createStore(args: { event$: Subject<t.FinderEvent> }): t.IFinderStore {
+  const event$ = args.event$;
 
   // Create the store.
   const initial: t.IFinderState = { tree: {}, view: {} };
