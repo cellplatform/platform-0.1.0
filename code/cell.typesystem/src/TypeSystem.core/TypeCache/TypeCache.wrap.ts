@@ -5,9 +5,9 @@ import { TypeCacheKey } from './TypeCacheKey';
 /**
  * Create a new cache if one was not provided.
  */
-export function toCache(cache?: t.IMemoryCache) {
-  return cache || MemoryCache.create();
-}
+// export function toCache(cache?: t.IMemoryCache) {
+//   return cache || MemoryCache.create();
+// }
 
 /**
  * Cache enable a data-fetcher.
@@ -17,7 +17,7 @@ export function wrap(fetch: t.ISheetFetcher, options: { cache?: t.IMemoryCache }
     return fetch as t.CachedFetcher;
   }
 
-  const cache = toCache(options.cache);
+  const cache = options.cache || MemoryCache.create();
   const cacheKey = TypeCacheKey.fetch;
 
   const getNs: t.FetchSheetNs = async (args) => {

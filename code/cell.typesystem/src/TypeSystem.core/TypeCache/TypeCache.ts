@@ -1,13 +1,12 @@
-import { MemoryCache } from '../../common';
-import { wrap, toCache } from './TypeCache.fetch';
+import { MemoryCache, t } from '../../common';
+import { wrap } from './TypeCache.wrap';
 import { TypeCacheKey } from './TypeCacheKey';
 
 /**
- * TypeSystem Cache.
+ * TypeSystem cache tools.
  */
 export class TypeCache {
-  public static create = () => MemoryCache.create();
-  public static toCache = toCache;
+  public static create = (cache?: t.IMemoryCache) => cache || MemoryCache.create();
   public static key = TypeCacheKey;
   public static wrap = wrap;
 }
