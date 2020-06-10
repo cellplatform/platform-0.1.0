@@ -1,7 +1,7 @@
-import { expect, testFetch, TYPE_DEFS, MemoryCache } from '../../test';
+import { coord, expect, testFetch, TYPE_DEFS, MemoryCache } from '../../test';
 import { TypeCache } from '.';
 
-describe('TypeCache', () => {
+describe.only('TypeCache', () => {
   describe('fetch', () => {
     it('new instance (no cache provided)', () => {
       const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
@@ -80,6 +80,17 @@ describe('TypeCache', () => {
 
       const res3 = await fetch.getCells({ ns, query: 'A1:A1' }); // NB: Different query.
       expect(res3).to.not.equal(res1);
+    });
+
+    it.skip('FOO', async () => {
+      const CellRange = coord.range.CellRange;
+
+      const a = CellRange.fromKey('1:500');
+      const b = CellRange.fromKey('A2:A2');
+
+      console.log('a.contains(b)', a.contains(b.left.key));
+      console.log('b.toString()', b.toString());
+      console.log('a.contains(b)', a.contains(b.toString()));
     });
   });
 });

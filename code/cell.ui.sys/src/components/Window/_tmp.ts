@@ -82,10 +82,14 @@ export async function uploadApp(args: {
 
   // const f = ctx.c
   // console.log('client.cache.keys', client.cache.keys);
+  console.group('🌳 cache');
   client.cache.keys.forEach((key) => {
+    const v = client.cache.get(key);
+
     console.log('cache key:', key);
   });
 
+  console.groupEnd();
   // ctx.
 
   console.log('ctx', ctx);
