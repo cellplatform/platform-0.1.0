@@ -53,7 +53,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
   const fs = local.init({ root: PATH.FS, fs: util.fs });
 
   const body = micro.body;
-  const router = CellRouter.create({ title: 'Test', db, fs, body });
+  const router = CellRouter.create({ name: 'Test', db, fs, body });
   const app = micro.create({ router });
   const service = await app.start({ port, silent: true });
 
@@ -64,7 +64,7 @@ export const createMock = async (args: { port?: number } = {}): Promise<IMock> =
 
   const mock: IMock = {
     db,
-    fs: fs,
+    fs,
     port,
     app,
     router,

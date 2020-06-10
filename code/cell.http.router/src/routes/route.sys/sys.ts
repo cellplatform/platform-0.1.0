@@ -5,7 +5,7 @@ import * as assets from './sys.assets';
 /**
  * System routes.
  */
-export function init(args: { title?: string; db: t.IDb; router: t.IRouter; deployedAt?: number }) {
+export function init(args: { name?: string; db: t.IDb; router: t.IRouter; deployedAt?: number }) {
   info.init(args);
   assets.init(args);
 }

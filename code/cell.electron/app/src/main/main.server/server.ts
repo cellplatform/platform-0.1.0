@@ -19,7 +19,7 @@ export function init(args: IInitArgs = {}) {
   const paths = constants.paths.data({ prod });
 
   const app = server.create({
-    title: 'local',
+    name: 'local',
     db: NeDb.create({ filename: paths.db }),
     fs: local.init({ root: paths.fs, fs }),
     logger,

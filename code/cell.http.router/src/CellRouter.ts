@@ -9,12 +9,12 @@ export class CellRouter {
     db: t.IDb;
     fs: t.IFileSystem;
     body: t.BodyParser;
-    title?: string;
+    name?: string;
     deployedAt?: number;
   }) {
-    const { db, fs, body, title, deployedAt } = args;
+    const { db, fs, body, name, deployedAt } = args;
     const router = Router.create({ body });
-    routes.init({ db, fs, title, deployedAt, router });
+    routes.init({ db, fs, name, deployedAt, router });
     return router;
   }
 }
