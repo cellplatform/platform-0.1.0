@@ -4,24 +4,24 @@ import { TypeCache } from '.';
 describe.only('TypeCache', () => {
   describe('fetch', () => {
     it('new instance (no cache provided)', () => {
-      const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
+      const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
       expect(fetch.cache).to.be.an.instanceof(MemoryCache);
     });
 
     it('uses given cache', () => {
       const cache = TypeCache.create();
-      const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }), { cache });
+      const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }), { cache });
       expect(fetch.cache).to.equal(cache);
     });
 
     it('does not double-wrap an existing cached fetcher', () => {
-      const fetch1 = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
-      const fetch2 = TypeCache.fetch(fetch1);
+      const fetch1 = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
+      const fetch2 = TypeCache.wrap(fetch1);
       expect(fetch1).to.equal(fetch2); // NB: instance re-used.
     });
 
     it('exists', async () => {
-      const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
+      const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
       const ns1 = 'ns:foo';
       const ns2 = 'ns:foo.color';
 
@@ -39,7 +39,7 @@ describe.only('TypeCache', () => {
     });
 
     it('getNs', async () => {
-      const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
+      const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
       const ns = 'ns:foo';
       const res1 = await fetch.getNs({ ns });
       const res2 = await fetch.getNs({ ns });
@@ -49,7 +49,7 @@ describe.only('TypeCache', () => {
     });
 
     it('getNs (parallel)', async () => {
-      const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
+      const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
       const ns = 'ns:foo';
       const method = fetch.getNs;
       const [res1, res2] = await Promise.all([method({ ns }), method({ ns })]);
@@ -59,7 +59,7 @@ describe.only('TypeCache', () => {
     });
 
     it('getColumns', async () => {
-      const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
+      const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
       const ns = 'ns:foo';
       const res1 = await fetch.getColumns({ ns });
       const res2 = await fetch.getColumns({ ns });
@@ -69,7 +69,7 @@ describe.only('TypeCache', () => {
     });
 
     it('getCells', async () => {
-      const fetch = TypeCache.fetch(testFetch({ defs: TYPE_DEFS }));
+      const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
       const ns = 'ns:foo';
       const query = 'A1:Z9';
       const res1 = await fetch.getCells({ ns, query });

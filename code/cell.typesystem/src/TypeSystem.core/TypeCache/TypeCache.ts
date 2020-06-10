@@ -1,5 +1,5 @@
 import { MemoryCache } from '../../common';
-import { fetch, toCache } from './TypeCache.fetch';
+import { wrap, toCache } from './TypeCache.fetch';
 import { TypeCacheKey } from './TypeCacheKey';
 
 /**
@@ -9,5 +9,5 @@ export class TypeCache {
   public static create = () => MemoryCache.create();
   public static toCache = toCache;
   public static key = TypeCacheKey;
-  public static fetch = fetch;
+  public static wrap = wrap;
 }

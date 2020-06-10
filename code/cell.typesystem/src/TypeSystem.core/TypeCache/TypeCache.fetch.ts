@@ -12,7 +12,7 @@ export function toCache(cache?: t.IMemoryCache) {
 /**
  * Cache enable a data-fetcher.
  */
-export function fetch(fetch: t.ISheetFetcher, options: { cache?: t.IMemoryCache } = {}) {
+export function wrap(fetch: t.ISheetFetcher, options: { cache?: t.IMemoryCache } = {}) {
   if ((fetch as t.CachedFetcher).cache instanceof MemoryCache) {
     return fetch as t.CachedFetcher;
   }
