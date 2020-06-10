@@ -82,7 +82,7 @@ describe.only('TypeCache', () => {
       expect(res3).to.not.equal(res1);
     });
 
-    it.skip('FOO', async () => {
+    it.only('FOO', async () => {
       const CellRange = coord.range.CellRange;
 
       const a = CellRange.fromKey('1:500');

@@ -1,4 +1,4 @@
 export const PKG = {
   name: '@platform/cell.cli',
-  version: '0.2.146',
+  version: '0.2.147',
 };
