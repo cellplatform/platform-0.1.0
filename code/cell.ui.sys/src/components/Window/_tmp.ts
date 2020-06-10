@@ -90,6 +90,17 @@ export async function uploadApp(args: {
   });
 
   console.groupEnd();
+
+  client.cache.keys.forEach((key) => {
+    if (key.includes('client/')) {
+      console.group('🌳 cache (client)');
+      const v = client.cache.get(key);
+      console.log('cache key:', key);
+      console.log('value', v);
+      console.groupEnd();
+    }
+  });
+
   // ctx.
 
   console.log('ctx', ctx);

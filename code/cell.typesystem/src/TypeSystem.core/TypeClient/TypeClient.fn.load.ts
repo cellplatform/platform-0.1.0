@@ -31,7 +31,7 @@ export async function load(args: {
 }): Promise<LoadResponse> {
   const ns = Uri.ns(args.ns, false).toString();
 
-  // Check cache (if an external cache was provided).
+  // Check cache for client, if an external cache was provided.
   if (args.cache) {
     const key = TypeCache.key.client(ns);
     const value = args.cache.get(key);

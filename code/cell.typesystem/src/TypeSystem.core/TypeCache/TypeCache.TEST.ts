@@ -2,7 +2,7 @@ import { coord, expect, testFetch, TYPE_DEFS, MemoryCache } from '../../test';
 import { TypeCache } from '.';
 
 describe.only('TypeCache', () => {
-  describe('fetch', () => {
+  describe('fetch (wrap)', () => {
     it('new instance (no cache provided)', () => {
       const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
       expect(fetch.cache).to.be.an.instanceof(MemoryCache);
@@ -38,59 +38,65 @@ describe.only('TypeCache', () => {
       expect(fetch.cache.exists(key2)).to.eql(false);
     });
 
-    it('getNs', async () => {
-      const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
-      const ns = 'ns:foo';
-      const res1 = await fetch.getNs({ ns });
-      const res2 = await fetch.getNs({ ns });
-      expect(res1).to.not.eql(undefined);
-      expect(res1).to.equal(res2);
-      expect(fetch.cache.exists(fetch.cacheKey('getNs', ns))).to.eql(true);
+    describe('namespace', () => {
+      it('getNs', async () => {
+        const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
+        const ns = 'ns:foo';
+        const res1 = await fetch.getNs({ ns });
+        const res2 = await fetch.getNs({ ns });
+        expect(res1).to.not.eql(undefined);
+        expect(res1).to.equal(res2);
+        expect(fetch.cache.exists(fetch.cacheKey('getNs', ns))).to.eql(true);
+      });
+
+      it('getNs (parallel)', async () => {
+        const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
+        const ns = 'ns:foo';
+        const method = fetch.getNs;
+        const [res1, res2] = await Promise.all([method({ ns }), method({ ns })]);
+        expect(res1).to.not.eql(undefined);
+        expect(res1).to.equal(res2);
+        expect(fetch.cache.exists(fetch.cacheKey('getNs', ns))).to.eql(true);
+      });
     });
 
-    it('getNs (parallel)', async () => {
-      const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
-      const ns = 'ns:foo';
-      const method = fetch.getNs;
-      const [res1, res2] = await Promise.all([method({ ns }), method({ ns })]);
-      expect(res1).to.not.eql(undefined);
-      expect(res1).to.equal(res2);
-      expect(fetch.cache.exists(fetch.cacheKey('getNs', ns))).to.eql(true);
+    describe('column', () => {
+      it('getColumns', async () => {
+        const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
+        const ns = 'ns:foo';
+        const res1 = await fetch.getColumns({ ns });
+        const res2 = await fetch.getColumns({ ns });
+        expect(res1).to.not.eql(undefined);
+        expect(res1).to.equal(res2);
+        expect(fetch.cache.exists(fetch.cacheKey('getColumns', ns))).to.eql(true);
+      });
     });
 
-    it('getColumns', async () => {
-      const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
-      const ns = 'ns:foo';
-      const res1 = await fetch.getColumns({ ns });
-      const res2 = await fetch.getColumns({ ns });
-      expect(res1).to.not.eql(undefined);
-      expect(res1).to.equal(res2);
-      expect(fetch.cache.exists(fetch.cacheKey('getColumns', ns))).to.eql(true);
-    });
+    describe('cell', () => {
+      it('getCells', async () => {
+        const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
+        const ns = 'ns:foo';
+        const query = 'A1:Z9';
+        const res1 = await fetch.getCells({ ns, query });
+        const res2 = await fetch.getCells({ ns, query });
+        expect(res1).to.not.eql(undefined);
+        expect(res1).to.equal(res2);
+        expect(fetch.cache.exists(fetch.cacheKey('getCells', ns, query))).to.eql(true);
 
-    it('getCells', async () => {
-      const fetch = TypeCache.wrap(testFetch({ defs: TYPE_DEFS }));
-      const ns = 'ns:foo';
-      const query = 'A1:Z9';
-      const res1 = await fetch.getCells({ ns, query });
-      const res2 = await fetch.getCells({ ns, query });
-      expect(res1).to.not.eql(undefined);
-      expect(res1).to.equal(res2);
-      expect(fetch.cache.exists(fetch.cacheKey('getCells', ns, query))).to.eql(true);
+        const res3 = await fetch.getCells({ ns, query: 'A1:A1' }); // NB: Different query.
+        expect(res3).to.not.equal(res1);
+      });
 
-      const res3 = await fetch.getCells({ ns, query: 'A1:A1' }); // NB: Different query.
-      expect(res3).to.not.equal(res1);
-    });
+      it('FOO', async () => {
+        const CellRange = coord.range.CellRange;
 
-    it.only('FOO', async () => {
-      const CellRange = coord.range.CellRange;
+        const a = CellRange.fromKey('1:500');
+        const b = CellRange.fromKey('A2:A2');
 
-      const a = CellRange.fromKey('1:500');
-      const b = CellRange.fromKey('A2:A2');
-
-      console.log('a.contains(b)', a.contains(b.left.key));
-      console.log('b.toString()', b.toString());
-      console.log('a.contains(b)', a.contains(b.toString()));
+        console.log('a.contains(b)', a.contains(b.left.key));
+        console.log('b.toString()', b.toString());
+        console.log('a.contains(b)', a.contains(b.toString()));
+      });
     });
   });
 });
