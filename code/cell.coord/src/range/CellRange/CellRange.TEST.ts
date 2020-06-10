@@ -425,222 +425,369 @@ describe('CellRange', () => {
   });
 
   describe('contains', () => {
+    const test = (range: string, param: string | string[], expected: boolean) => {
+      const params = Array.isArray(param) ? param : [param];
+      params.forEach((param) => {
+        const res = fromKey(range).contains(param);
+        expect(res).to.eql(expected, `${range} contains ${param}`);
+      });
+    };
+
     it('CELL range contains (A2:C3)', () => {
-      const range = fromKey('A2:C3'); // NB: Out of order (left/right), works both ways.
-      expect(range.contains('A1')).to.eql(false);
-      expect(range.contains('A2')).to.eql(true);
-      expect(range.contains('A3')).to.eql(true);
-      expect(range.contains('A4')).to.eql(false);
+      const RANGE = 'A2:C3'; // NB: Out of order (left/right), works both ways.
+      test(RANGE, 'A1', false);
+      test(RANGE, 'A2', true);
+      test(RANGE, 'A3', true);
+      test(RANGE, 'A4', false);
 
-      expect(range.contains('B1')).to.eql(false);
-      expect(range.contains('B2')).to.eql(true);
-      expect(range.contains('B3')).to.eql(true);
-      expect(range.contains('B4')).to.eql(false);
+      test(RANGE, 'B1', false);
+      test(RANGE, 'B2', true);
+      test(RANGE, 'B3', true);
+      test(RANGE, 'B4', false);
 
-      expect(range.contains('C1')).to.eql(false);
-      expect(range.contains('C2')).to.eql(true);
-      expect(range.contains('C3')).to.eql(true);
-      expect(range.contains('C4')).to.eql(false);
+      test(RANGE, 'C1', false);
+      test(RANGE, 'C2', true);
+      test(RANGE, 'C3', true);
+      test(RANGE, 'C4', false);
     });
 
     it('COLUMN range contains (single - B:B)', () => {
-      const range = fromKey('B:B');
-      expect(range.contains('A1')).to.eql(false);
-      expect(range.contains('B1')).to.eql(true);
-      expect(range.contains('B2')).to.eql(true);
-      expect(range.contains('B999999')).to.eql(true);
-      expect(range.contains('C1')).to.eql(false);
+      const RANGE = 'B:B';
+      test(RANGE, 'A1', false);
+      test(RANGE, 'B1', true);
+      test(RANGE, 'B2', true);
+      test(RANGE, 'B999999', true);
+      test(RANGE, 'C1', false);
     });
 
     it('COLUMN range contains (multi - B:C)', () => {
-      const range = fromKey('B:C');
-      expect(range.contains('A1')).to.eql(false);
-      expect(range.contains('B1')).to.eql(true);
-      expect(range.contains('C1')).to.eql(true);
-      expect(range.contains('D1')).to.eql(false);
+      const RANGE = 'B:C';
+      test(RANGE, 'A1', false);
+      test(RANGE, 'B1', true);
+      test(RANGE, 'C1', true);
+      test(RANGE, 'D1', false);
     });
 
     it('ROW range contains (single - 3:3)', () => {
-      const range = fromKey('3:3');
-      expect(range.contains('B2')).to.eql(false);
-      expect(range.contains('B3')).to.eql(true);
-      expect(range.contains('B4')).to.eql(false);
+      const RANGE = '3:3';
 
-      expect(range.contains('A3')).to.eql(true);
-      expect(range.contains('B3')).to.eql(true);
-      expect(range.contains('C3')).to.eql(true);
-      expect(range.contains('ZZZZZ3')).to.eql(true);
+      test(RANGE, 'B2', false);
+      test(RANGE, 'B3', true);
+      test(RANGE, 'B4', false);
+
+      test(RANGE, 'A3', true);
+      test(RANGE, 'B3', true);
+      test(RANGE, 'C3', true);
+      test(RANGE, 'ZZZZZ3', true);
     });
 
     it('ROW range contains (multi - 3:4)', () => {
-      const range = fromKey('3:4');
-      expect(range.contains('A2')).to.eql(false);
-      expect(range.contains('A3')).to.eql(true);
-      expect(range.contains('A4')).to.eql(true);
-      expect(range.contains('A5')).to.eql(false);
+      const RANGE = '3:4';
+      test(RANGE, 'A2', false);
+      test(RANGE, 'A3', true);
+      test(RANGE, 'A4', true);
+      test(RANGE, 'A5', false);
     });
 
     it('PARTIAL_COLUMN contains (single - A3:A)', () => {
-      const range = fromKey('A3:A');
-      expect(range.contains('A1')).to.eql(false);
-      expect(range.contains('A2')).to.eql(false);
-      expect(range.contains('A3')).to.eql(true);
-      expect(range.contains('A9999')).to.eql(true);
+      const RANGE = 'A3:A';
 
-      expect(range.contains('B1')).to.eql(false);
-      expect(range.contains('B3')).to.eql(false);
-      expect(range.contains('B99')).to.eql(false);
+      test(RANGE, 'A1', false);
+      test(RANGE, 'A2', false);
+      test(RANGE, 'A3', true);
+      test(RANGE, 'A9999', true);
+
+      test(RANGE, 'B1', false);
+      test(RANGE, 'B3', false);
+      test(RANGE, 'B99', false);
     });
 
     it('PARTIAL_COLUMN contains (multi - A3:B)', () => {
-      const range = fromKey('A3:B');
-      expect(range.contains('A2')).to.eql(false);
-      expect(range.contains('A3')).to.eql(true);
-      expect(range.contains('A9999')).to.eql(true);
+      const RANGE = 'A3:B';
 
-      expect(range.contains('B2')).to.eql(false);
-      expect(range.contains('B3')).to.eql(true);
-      expect(range.contains('B9999')).to.eql(true);
+      test(RANGE, 'A2', false);
+      test(RANGE, 'A3', true);
+      test(RANGE, 'A9999', true);
 
-      expect(range.contains('C2')).to.eql(false);
-      expect(range.contains('C3')).to.eql(false);
-      expect(range.contains('C9999')).to.eql(false);
+      test(RANGE, 'B2', false);
+      test(RANGE, 'B3', true);
+      test(RANGE, 'B9999', true);
 
-      expect(range.contains('B')).to.eql(false);
-      expect(range.contains('3')).to.eql(false);
+      test(RANGE, 'C2', false);
+      test(RANGE, 'C3', false);
+      test(RANGE, 'C9999', false);
+
+      test(RANGE, 'B', false);
+      test(RANGE, '3', false);
     });
 
     it('PARTIAL_ROW contains (single - A3:3)', () => {
-      const range = fromKey('A3:3');
-      expect(range.contains('A1')).to.eql(false);
-      expect(range.contains('A3')).to.eql(true);
-      expect(range.contains('ZZZ3')).to.eql(true);
+      const RANGE = 'A3:3';
 
-      expect(range.contains('A4')).to.eql(false);
+      test(RANGE, 'A1', false);
+      test(RANGE, 'A3', true);
+      test(RANGE, 'ZZZ3', true);
 
-      expect(range.contains('A')).to.eql(false);
-      expect(range.contains('5')).to.eql(false);
+      test(RANGE, 'A4', false);
+
+      test(RANGE, 'A', false);
+      test(RANGE, '5', false);
     });
 
     it('PARTIAL_ROW contains (multi)', () => {
-      const range = fromKey('A3:4');
-      expect(range.contains('A1')).to.eql(false);
-      expect(range.contains('A3')).to.eql(true);
-      expect(range.contains('ZZZ3')).to.eql(true);
+      const RANGE = 'A3:4';
+      test(RANGE, 'A1', false);
+      test(RANGE, 'A3', true);
+      test(RANGE, 'ZZZ3', true);
 
-      expect(range.contains('A4')).to.eql(true);
-      expect(range.contains('ZZZ4')).to.eql(true);
+      test(RANGE, 'A4', true);
+      test(RANGE, 'ZZZ4', true);
 
-      expect(range.contains('A5')).to.eql(false);
+      test(RANGE, 'A5', false);
     });
 
     it('ALL (*:*)', () => {
-      const range = fromKey('*:*');
-      expect(range.contains('A1')).to.eql(true);
-      expect(range.contains('1')).to.eql(true);
-      expect(range.contains('A')).to.eql(true);
-      expect(range.contains('*')).to.eql(true);
+      const RANGE = '*:*';
+
+      test(RANGE, 'A1', true);
+      test(RANGE, '1', true);
+      test(RANGE, 'A', true);
+      test(RANGE, '*', true);
     });
 
     it('PARTIAL_ALL (B3:*) - cell to top/right', () => {
-      const range = fromKey('B3:*');
-      expect(range.contains('A1')).to.eql(false);
-      expect(range.contains('A2')).to.eql(false);
-      expect(range.contains('A3')).to.eql(false);
-      expect(range.contains('A4')).to.eql(false);
+      const RANGE = 'B3:*';
 
-      expect(range.contains('B1')).to.eql(true);
-      expect(range.contains('B2')).to.eql(true);
-      expect(range.contains('B3')).to.eql(true);
-      expect(range.contains('B4')).to.eql(false);
+      test(RANGE, 'A1', false);
+      test(RANGE, 'A2', false);
+      test(RANGE, 'A3', false);
+      test(RANGE, 'A4', false);
 
-      expect(range.contains('ZZ1')).to.eql(true);
-      expect(range.contains('ZZ2')).to.eql(true);
-      expect(range.contains('ZZ3')).to.eql(true);
-      expect(range.contains('ZZ4')).to.eql(false);
+      test(RANGE, 'B1', true);
+      test(RANGE, 'B2', true);
+      test(RANGE, 'B3', true);
+      test(RANGE, 'B4', false);
+
+      test(RANGE, 'ZZ1', true);
+      test(RANGE, 'ZZ2', true);
+      test(RANGE, 'ZZ3', true);
+      test(RANGE, 'ZZ4', false);
+
+      test('B3:*', '1:1', false);
+      test('B3:*', 'A:A', false);
     });
 
     it('PARTIAL_ALL (B3:**) - cell to bottom/right', () => {
-      const range = fromKey('B3:**');
-      expect(range.contains('A1')).to.eql(false);
-      expect(range.contains('A2')).to.eql(false);
-      expect(range.contains('A3')).to.eql(false);
-      expect(range.contains('A4')).to.eql(false);
+      const RANGE = 'B3:**';
 
-      expect(range.contains('B1')).to.eql(false);
-      expect(range.contains('B2')).to.eql(false);
-      expect(range.contains('B3')).to.eql(true);
-      expect(range.contains('B4')).to.eql(true);
-      expect(range.contains('B999')).to.eql(true);
+      test(RANGE, 'A1', false);
+      test(RANGE, 'A2', false);
+      test(RANGE, 'A3', false);
+      test(RANGE, 'A4', false);
 
-      expect(range.contains('XX1')).to.eql(false);
-      expect(range.contains('XX2')).to.eql(false);
-      expect(range.contains('XX3')).to.eql(true);
-      expect(range.contains('XX4')).to.eql(true);
-      expect(range.contains('XX999')).to.eql(true);
+      test(RANGE, 'B1', false);
+      test(RANGE, 'B2', false);
+      test(RANGE, 'B3', true);
+      test(RANGE, 'B4', true);
+      test(RANGE, 'B999', true);
+
+      test(RANGE, 'XX1', false);
+      test(RANGE, 'XX2', false);
+      test(RANGE, 'XX3', true);
+      test(RANGE, 'XX4', true);
+      test(RANGE, 'XX999', true);
     });
 
     it('PARTIAL_ALL (*:B3) - top/left to cell', () => {
-      const range = fromKey('*:B3');
-      expect(range.contains('A1')).to.eql(true);
-      expect(range.contains('A2')).to.eql(true);
-      expect(range.contains('A3')).to.eql(true);
-      expect(range.contains('A4')).to.eql(false);
+      const RANGE = '*:B3';
 
-      expect(range.contains('B1')).to.eql(true);
-      expect(range.contains('B2')).to.eql(true);
-      expect(range.contains('B3')).to.eql(true);
-      expect(range.contains('B4')).to.eql(false);
+      test(RANGE, 'A1', true);
+      test(RANGE, 'A2', true);
+      test(RANGE, 'A3', true);
+      test(RANGE, 'A4', false);
 
-      expect(range.contains('C1')).to.eql(false);
-      expect(range.contains('C2')).to.eql(false);
-      expect(range.contains('C3')).to.eql(false);
-      expect(range.contains('C4')).to.eql(false);
+      test(RANGE, 'B1', true);
+      test(RANGE, 'B2', true);
+      test(RANGE, 'B3', true);
+      test(RANGE, 'B4', false);
+
+      test(RANGE, 'C1', false);
+      test(RANGE, 'C2', false);
+      test(RANGE, 'C3', false);
+      test(RANGE, 'C4', false);
     });
 
     it('PARTIAL_ALL (**:B3) - bottom/left to cell', () => {
-      const range = fromKey('**:B3');
-      expect(range.contains('A1')).to.eql(false);
-      expect(range.contains('A2')).to.eql(false);
-      expect(range.contains('A3')).to.eql(true);
-      expect(range.contains('A999')).to.eql(true);
+      const RANGE = '**:B3';
 
-      expect(range.contains('B1')).to.eql(false);
-      expect(range.contains('B2')).to.eql(false);
-      expect(range.contains('B3')).to.eql(true);
-      expect(range.contains('B999')).to.eql(true);
+      test(RANGE, 'A1', false);
+      test(RANGE, 'A2', false);
+      test(RANGE, 'A3', true);
+      test(RANGE, 'A999', true);
 
-      expect(range.contains('C1')).to.eql(false);
-      expect(range.contains('C2')).to.eql(false);
-      expect(range.contains('C3')).to.eql(false);
-      expect(range.contains('C999')).to.eql(false);
+      test(RANGE, 'B1', false);
+      test(RANGE, 'B2', false);
+      test(RANGE, 'B3', true);
+      test(RANGE, 'B999', true);
+
+      test(RANGE, 'C1', false);
+      test(RANGE, 'C2', false);
+      test(RANGE, 'C3', false);
+      test(RANGE, 'C999', false);
+    });
+
+    it('wildcards (both sides)', () => {
+      const test = (a: string, b: string, expected: boolean) => {
+        const res1 = fromKey(a).contains(b);
+        expect(res1).to.eql(expected, `${a} contains ${b}`);
+
+        const res2 = fromKey(b).contains(a);
+        expect(res2).to.eql(expected, `${b} contains ${a}`);
+      };
+
+      test('*:*', '*', true);
+      test('*:*', '*:*', true);
+      test('*', '*:*', true);
+      test('*', '*', true);
+
+      test('*:*', 'Z9', true);
+      test('*:*', 'A1:Z9', true);
+      test('*:*', '*:Z9', true);
+      test('*:*', '**:Z9', true);
+      test('*:*', 'A1:*', true);
+      test('*:*', 'A1:**', true);
+
+      test('*', 'Z9', true);
+      test('*', 'A1:Z9', true);
+      test('*', '*:Z9', true);
+      test('*', '**:Z9', true);
+      test('*', 'A1:*', true);
+      test('*', 'A1:**', true);
     });
 
     it('contains COLUMN', () => {
-      expect(fromKey('A1:B5').contains('A')).to.eql(false);
-      expect(fromKey('A:C').contains('1')).to.eql(false);
+      test('A1:B5', 'A', false);
+      test('A:C', '1', false);
 
-      expect(fromKey('B:C').contains('A')).to.eql(false);
-      expect(fromKey('B:C').contains('B')).to.eql(true);
-      expect(fromKey('B:C').contains('C')).to.eql(true);
-      expect(fromKey('B:C').contains('D')).to.eql(false);
+      test('B:C', 'A', false);
+      test('B:C', 'B', true);
+      test('B:C', 'C', true);
+      test('B:C', 'D', false);
+
+      test('B:C', '*', true);
+      test('B:C', '**', false); // NB: "*" invalid - only valid when part of a range (eg "A:**").
+      test('*', 'B:C', true);
+
+      test('B:*', 'A', false);
+      test('B:**', 'A', false);
+      test('B:*', 'A1', false);
+
+      // NB: Row exclued (eg. may contain "A").
+      test('B:*', ['1', '2', '99'], false);
+      test('B:**', ['1', '2', '99'], false);
+      test('*:B', ['1', '2', '99'], false);
+      test('**:B', ['1', '2', '99'], false);
+
+      // Top-right.
+      test('B:*', ['B', 'B2', 'Z', 'Z9'], true);
+      test('B:*', ['A', 'A1'], false);
+
+      // Bottom-right.
+      test('B:**', ['B', 'B2', 'Z', 'Z9'], true);
+      test('B:**', ['A', 'A1'], false);
+
+      // Top-left.
+      test('*:B', ['A', 'A1', 'B', 'B9'], true);
+      test('*:B', ['C', 'C9', 'D'], false);
+
+      // Bottom-left.
+      test('**:B', ['A', 'A9', 'B', 'B50'], true);
+      test('**:B', ['C', 'C9'], false);
     });
 
     it('contains ROW', () => {
-      expect(fromKey('A1:B5').contains('1')).to.eql(false);
-      expect(fromKey('2:2').contains('1')).to.eql(false);
+      test('A1:B5', '1', false);
+      test('2:2', '1', false);
 
-      expect(fromKey('2:5').contains('1')).to.eql(false);
-      expect(fromKey('2:5').contains('2')).to.eql(true);
-      expect(fromKey('2:5').contains('3')).to.eql(true);
-      expect(fromKey('2:5').contains('4')).to.eql(true);
-      expect(fromKey('2:5').contains('5')).to.eql(true);
-      expect(fromKey('2:5').contains('6')).to.eql(false);
+      test('2:5', ['1', '6'], false);
+      test('2:5', ['2', '3', '4', '5'], true);
+      test('2:5', '6', false);
+
+      test('2:5', '*', true);
+      test('2:5', '**', false); // NB: "*" invalid - only valid when part of a range (eg "A:**").
+
+      // NB: Column excluded (eg. may contain "1")
+      test('2:*', ['A', 'B', 'ZZ'], false);
+      test('2:**', ['A', 'B', 'ZZ'], false);
+      test('*:2', ['A', 'B', 'ZZ'], false);
+      test('**:2', ['A', 'B', 'ZZ'], false);
+
+      // Top-right.
+      test('2:*', ['1', '2', 'A1'], true);
+      test('2:*', ['3', 'A3', 'Z3', '9'], false);
+
+      // Bottom-right.
+      test('2:**', '1', false);
+      test('2:**', ['2', '3', 'A2'], true);
+
+      // Top-left.
+      test('*:2', ['1', 'A1', 'Z1', '2', 'A2'], true);
+      test('*:2', ['3', 'A3', 'Z99'], false);
+
+      // Bottom-left.
+      test('**:2', ['2', 'A2', 'Z9'], true);
+      test('**:2', ['A', 'A1', 'Z', 'Z1'], false);
     });
 
     it('contains (from row/column indexes overload)', () => {
       expect(fromKey('A1:B2').contains(0, 0)).to.eql(true);
       expect(fromKey('A1:B2').contains(5, 0)).to.eql(false);
+    });
+
+    it('contains another range', () => {
+      test('A1:B2', 'A1:B2', true);
+      test('1:10', 'A1:B2', true);
+      test('A:D', 'A1:B2', true);
+
+      test('A1:B2', 'A1:B3', false);
+      test('1:10', 'A1:B20', false);
+      test('A:D', 'A1:E2', false);
+
+      // Wildcard.
+      test('*:*', 'A1:Z9', true);
+      test('A1:Z9', '*:*', true);
+
+      // Top-right.
+      test('B5:*', ['B1:D1', 'B1:D5'], true);
+      test('B5:*', ['A1:D5', 'B1:D6', '1:1', 'A:A'], false);
+      test('B:*', ['B1:D1', 'B:B'], true);
+      test('B:*', ['A1:D1', '1:1', '9:9', 'A:A'], false);
+      test('2:*', ['A1:D1', 'A1:Z2', '1:1', '1:2'], true);
+      test('2:*', ['A1:D3', 'A:B', '3:3'], false);
+
+      // Bottom-right.
+      test('B2:**', ['B2:C2', 'C2:D2', 'B2:Z9'], true);
+      test('B2:**', ['A1:B2', 'B:B', '2:2'], false);
+      test('B:**', ['B:B', 'B:Z', 'B1:Z9'], true);
+      test('B:**', ['A:B', '1:1', 'A1:B1'], false);
+      test('2:**', ['2:2', '2:9', 'A2:Z9'], true);
+      test('2:**', ['A:B', '1:2', 'A1:A2'], false);
+
+      // Top-left.
+      test('*:B2', ['A1:A1', 'A1:B2'], true);
+      test('*:B2', ['B3:B3', 'A1:A3', 'A1:C2', '1:1', 'A:A'], false);
+      test('*:B', ['A:A', 'A:B', 'B:B', 'A1:B9'], true);
+      test('*:B', ['A:C', 'A1:C9', '1:1'], false);
+      test('*:2', ['1:1', '1:2', 'A1:Z2'], true);
+      test('*:2', ['1:3', 'A:A', 'A1:Z3'], false);
+
+      // Bottom-left.
+      test('**:B2', ['A2:B2', 'B2:B2', 'A2:B99'], true);
+      test('**:B2', ['A1:B2', '2:2', 'B:B', 'B2:C3'], false);
+      test('**:B', ['A1:B9', 'A:B'], true);
+      test('**:B', ['B:C', '1:1', 'B1:C9'], false);
+      test('**:2', ['A2:Z9', '2:2', '3:9'], true);
+      test('**:2', ['A:A', 'A1:B2', '1:9'], false);
     });
   });
 
@@ -724,17 +871,17 @@ describe('CellRange', () => {
 
   describe('toString', () => {
     it('string', () => {
-      expect(fromKey('A1:B5').toString()).to.eql('[RANGE/A1:B5]');
-      expect(fromKey('A:B').toString()).to.eql('[RANGE/A:B]');
-      expect(fromKey('2:2').toString()).to.eql('[RANGE/2:2]');
-      expect(fromKey('2:A2').toString()).to.eql('[RANGE/2:A2]');
-      expect(fromKey('A2:2').toString()).to.eql('[RANGE/A2:2]');
-      expect(fromKey('A:A2').toString()).to.eql('[RANGE/A:A2]');
-      expect(fromKey('A2:A').toString()).to.eql('[RANGE/A2:A]');
-      expect(fromKey('A3:*').toString()).to.eql('[RANGE/A3:*]');
-      expect(fromKey('A3:**').toString()).to.eql('[RANGE/A3:**]');
-      expect(fromKey('*:A3').toString()).to.eql('[RANGE/*:A3]');
-      expect(fromKey('**:A3').toString()).to.eql('[RANGE/**:A3]');
+      expect(fromKey('A1:B5').toString()).to.eql('A1:B5');
+      expect(fromKey('A:B').toString()).to.eql('A:B');
+      expect(fromKey('2:2').toString()).to.eql('2:2');
+      expect(fromKey('2:A2').toString()).to.eql('2:A2');
+      expect(fromKey('A2:2').toString()).to.eql('A2:2');
+      expect(fromKey('A:A2').toString()).to.eql('A:A2');
+      expect(fromKey('A2:A').toString()).to.eql('A2:A');
+      expect(fromKey('A3:*').toString()).to.eql('A3:*');
+      expect(fromKey('A3:**').toString()).to.eql('A3:**');
+      expect(fromKey('*:A3').toString()).to.eql('*:A3');
+      expect(fromKey('**:A3').toString()).to.eql('**:A3');
     });
 
     it('error', () => {

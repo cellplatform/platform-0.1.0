@@ -185,7 +185,7 @@ async function isRangeCircular(args: { path: string; range: CellRange; getValue:
   const { path, getValue } = args;
 
   const isKeyContained = (range: CellRange, keys: string[]) => {
-    return keys.some((key) => range.contains(key));
+    return keys.some((key) => (CellRange.isRangeKey(key) ? false : range.contains(key)));
   };
 
   // Check for immediate self-reference within range.

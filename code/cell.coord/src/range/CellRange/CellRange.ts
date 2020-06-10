@@ -395,7 +395,7 @@ export class CellRange {
   /**
    * Determines if the given cell-key exists within the range.
    */
-  public contains(cell: string): boolean;
+  public contains(cellOrRange: string): boolean;
 
   /**
    * Determines if the given cell (from column/row) exists within the range.
@@ -407,21 +407,32 @@ export class CellRange {
       args.length === 1
         ? args[0] // From string or [CellAddress].
         : cell.toKey(args[0], args[1]); // From indexes.
-    const start = this.left;
-    const end = this.right;
+
+    if (cellKey === '*') {
+      return true;
+    }
+
+    // Check if range is being compared.
+    if (CellRange.isRangeKey(cellKey)) {
+      const range = CellRange.fromKey(cellKey);
+      return this.contains(range.left.key) && this.contains(range.right.key);
+    }
+
+    const selfStart = this.left;
+    const selfEnd = this.right;
 
     const columnContains = (cell: t.ICoordPosition) => {
       const index = cell.column;
-      return start.column === undefined || end.column === undefined
+      return selfStart.column === undefined || selfEnd.column === undefined
         ? false
-        : index >= start.column && index <= end.column;
+        : index >= selfStart.column && index <= selfEnd.column;
     };
 
     const rowContains = (cell: t.ICoordPosition) => {
       const index = cell.row;
-      return start.row === undefined || end.row === undefined
+      return selfStart.row === undefined || selfEnd.row === undefined
         ? false
-        : index >= start.row && index <= end.row;
+        : index >= selfStart.row && index <= selfEnd.row;
     };
 
     const cellsContain = (cell: t.ICoordPosition) => {
@@ -439,7 +450,7 @@ export class CellRange {
         return false;
       }
       const index = cell.row;
-      return start.row === undefined ? false : index >= start.row;
+      return selfStart.row === undefined ? false : index >= selfStart.row;
     };
 
     const patialRowContains = (cell: t.ICoordPosition) => {
@@ -447,25 +458,49 @@ export class CellRange {
         return false;
       }
       const index = cell.column;
-      return start.column === undefined ? false : index >= start.column;
+      return selfStart.column === undefined ? false : index >= selfStart.column;
     };
 
+    const wildcard = (key: string) => key.includes('*');
+    const axis = (key: string, index: number) => (wildcard(key) ? false : index === -1);
+    const isSelfColumn = axis(selfStart.key, selfStart.row) || axis(selfEnd.key, selfEnd.row);
+    const isSelfRow = axis(selfStart.key, selfStart.column) || axis(selfEnd.key, selfEnd.column);
+
+    const comparer = (a: number, b: number, fn: (a: number, b: number) => boolean) => {
+      return a === -1 || b === -1 ? true : fn(a, b);
+    };
+    const lte = (a: number, b: number) => comparer(a, b, (a, b) => a <= b);
+    const gte = (a: number, b: number) => comparer(a, b, (a, b) => a >= b);
+
     const partialAllContains = (cell: t.ICoordPosition) => {
-      if (start.key === '*') {
-        // Top/left to cell.
-        return cell.column <= end.column && cell.row <= end.row;
+      const isCellColumn = cell.row === -1;
+      const isCellRow = cell.column === -1;
+      const isCellCoord = !isCellColumn && !isCellRow;
+
+      if (!isCellCoord) {
+        if ((isSelfColumn && !isCellColumn) || (isSelfRow && !isCellRow)) {
+          return false;
+        }
+        if ((isCellColumn && !isSelfColumn) || (isCellRow && !isSelfRow)) {
+          return false;
+        }
       }
-      if (end.key === '*') {
-        // Cell to top/right.
-        return cell.column >= start.column && cell.row <= start.row;
+
+      if (selfStart.key === '*') {
+        // [Top/left] => cell.
+        return lte(cell.column, selfEnd.column) && lte(cell.row, selfEnd.row);
       }
-      if (start.key === '**') {
-        // Bottom/left to cell.
-        return cell.column <= end.column && cell.row >= end.row;
+      if (selfEnd.key === '*') {
+        // Cell => [top/right].
+        return gte(cell.column, selfStart.column) && lte(cell.row, selfStart.row);
       }
-      if (end.key === '**') {
-        // Cell to bottom/right.
-        return cell.column >= start.column && cell.row >= start.row;
+      if (selfStart.key === '**') {
+        // [Bottom/left] => cell.
+        return lte(cell.column, selfEnd.column) && gte(cell.row, selfEnd.row);
+      }
+      if (selfEnd.key === '**') {
+        // Cell => [bottom/right].
+        return gte(cell.column, selfStart.column) && gte(cell.row, selfStart.row);
       }
       return false;
     };
@@ -488,7 +523,7 @@ export class CellRange {
         return partialAllContains(pos);
 
       default:
-        throw new Error(`Type '${this.type}' not supported.`);
+        throw new Error(`Range '${this.type || this.key}' not supported.`);
     }
   }
 
@@ -632,7 +667,7 @@ export class CellRange {
    * Converts the object into a representative string.
    */
   public toString() {
-    return !this.error ? `[RANGE/${this.key}]` : `[${this.error}]`;
+    return !this.error ? this.key : `[${this.error}]`;
   }
 
   /**
