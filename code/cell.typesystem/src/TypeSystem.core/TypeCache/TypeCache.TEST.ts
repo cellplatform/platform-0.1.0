@@ -102,7 +102,7 @@ describe('TypeCache', () => {
     });
   });
 
-  describe.only('TypeCacheCells', () => {
+  describe('TypeCacheCells', () => {
     const fetch = testFetch({
       defs: TYPE_DEFS,
       cells: CELLS,

@@ -15,4 +15,3 @@ export const ENV = {
     return ENV.node === 'production';
   },
 };
-

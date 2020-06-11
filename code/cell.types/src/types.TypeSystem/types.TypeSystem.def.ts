@@ -1,6 +1,12 @@
 import { t } from '../common';
 
 /**
+ * Type Payload
+ * (NB: can write directly to HTTP client )
+ */
+export type ITypeDefPayload = { ns?: t.INsProps; columns: t.IColumnMap };
+
+/**
  * Type Definitions
  */
 export type INsTypeDef = {
