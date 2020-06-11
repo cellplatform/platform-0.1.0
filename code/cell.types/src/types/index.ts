@@ -1,4 +1,5 @@
 export * from '../types.TypeSystem';
+export * from '../types.Http';
 
 export * from './types.cell.coord';
 export * from './types.cell.get';
@@ -17,12 +18,6 @@ export * from './types.fs';
 export * from './types.fs.sync';
 export * from './types.func.sys';
 export * from './types.func';
-export * from './types.http.router';
-export * from './types.http.router.ns';
-export * from './types.http.router.cell';
-export * from './types.http.router.cell.file';
-export * from './types.http.router.file';
-export * from './types.http';
 export * from './types.links';
 export * from './types.map';
 export * from './types.ns';
