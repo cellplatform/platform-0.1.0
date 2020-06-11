@@ -27,6 +27,7 @@ export class TypeCacheCells {
    */
   public query(query: string) {
     const self = this; // eslint-disable-line
+    query = (query || '').trim();
 
     const toFullRow = (range: CellRange) => `${range.left.row + 1}:${range.right.row + 1}`;
     const range = CellRange.fromKey(query).square;
