@@ -46,7 +46,7 @@ export async function load(args: {
   }
 
   const cache = TypeCache.create(args.cache);
-  const fetch = TypeCache.wrap(args.fetch, { cache });
+  const fetch = TypeCache.wrapFetch(args.fetch, { cache });
   const errors = ErrorList.create({ defaultType: ERROR.TYPE.DEF });
   const ctx: Context = { fetch, cache, errors, visited: [] };
 
