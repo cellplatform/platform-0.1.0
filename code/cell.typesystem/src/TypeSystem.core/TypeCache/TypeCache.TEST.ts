@@ -102,7 +102,7 @@ describe('TypeCache', () => {
     });
   });
 
-  describe('TypeCacheCells', () => {
+  describe.only('TypeCacheCells', () => {
     const fetch = testFetch({
       defs: TYPE_DEFS,
       cells: CELLS,
@@ -201,6 +201,21 @@ describe('TypeCache', () => {
         const res2 = await query.get(fetch);
         expect(fetch.getCellsCount).to.eql(1); // NB: Not incremented - pulled from memory cache.
         expect(res2).to.eql(res1);
+      });
+
+      it('query.get (1:500, force)', async () => {
+        const fetch = testFetch({ defs: TYPE_DEFS, cells: CELLS });
+        const entry = TypeCacheCells.create('ns:foo');
+
+        const query = entry.query('1:500');
+        expect(query.exists).to.eql(false);
+
+        await query.get(fetch);
+        await query.get(fetch);
+        expect(fetch.getCellsCount).to.eql(1);
+
+        await query.get(fetch, { force: true });
+        expect(fetch.getCellsCount).to.eql(2);
       });
     });
   });

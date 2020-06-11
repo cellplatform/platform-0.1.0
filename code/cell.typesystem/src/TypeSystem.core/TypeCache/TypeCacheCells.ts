@@ -21,15 +21,14 @@ export class TypeCacheCells {
   public total: t.FetchSheetCellsResult['total'] = { rows: 0 };
   public cells: t.ICellMap = {};
   public error?: t.IHttpError;
+  private rowQueries: string[] = [];
 
   /**
    * [Methods]
    */
   public query(query: string) {
-    const self = this; // eslint-disable-line
     query = (query || '').trim();
-
-    const toFullRow = (range: CellRange) => `${range.left.row + 1}:${range.right.row + 1}`;
+    const self = this; // eslint-disable-line
     const range = CellRange.fromKey(query).square;
 
     const api = {
@@ -43,31 +42,37 @@ export class TypeCacheCells {
        * the cached set of retrieved cells.
        */
       get exists() {
-        const keys = Object.keys(self.cells);
-        return keys.length === 0
-          ? false
-          : CellRange.fromKey(toFullRow(CellRange.square(keys))).contains(query);
+        return self.rowQueries.some((rows) => CellRange.fromKey(rows).contains(query));
       },
 
       /**
        * Perform query and retrieve result-set.
        */
-      get: async (fetch: t.ISheetFetcher): Promise<t.FetchSheetCellsResult> => {
+      get: async (
+        fetch: t.ISheetFetcher,
+        options: { force?: boolean } = {},
+      ): Promise<t.FetchSheetCellsResult> => {
         const ns = this.ns;
 
         // Check if the result-set has aleady been cached.
-        if (api.exists) {
+        if (!options.force && api.exists) {
           return this.toResult({ range });
         }
 
         // Query data.
         // NB: Adjust query to pull entire rows.
-        const res = await fetch.getCells({ ns, query: toFullRow(range) });
+        const rowQuery = this.toFullRow(range);
+        const res = await fetch.getCells({ ns, query: rowQuery });
 
         // Store state.
         this.cells = res.cells ? { ...this.cells, ...res.cells } : this.cells;
         this.total = { ...this.total, ...res.total };
         this.error = res.error ? res.error : this.error;
+
+        // Store reference to the row query.
+        this.rowQueries = this.rowQueries.includes(rowQuery)
+          ? this.rowQueries
+          : [...this.rowQueries, rowQuery];
 
         // Finish up.
         return this.toResult({ range });
@@ -80,10 +85,18 @@ export class TypeCacheCells {
   /**
    * [Helpers]
    */
+  private toRange(input: string | CellRange) {
+    return typeof input === 'object' ? input : CellRange.fromKey(input);
+  }
+
+  private toFullRow(input: string | CellRange) {
+    const range = this.toRange(input);
+    return `${range.left.row + 1}:${range.right.row + 1}`;
+  }
 
   private filterCells(args: { range: string | CellRange; cells: t.ICellMap }) {
     const cells = args.cells;
-    const range = typeof args.range === 'object' ? args.range : CellRange.fromKey(args.range);
+    const range = this.toRange(args.range);
     return Object.keys(cells).reduce((acc, next) => {
       if (range.contains(next)) {
         acc[next] = cells[next];

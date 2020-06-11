@@ -12,6 +12,9 @@ export class TypeCacheKey {
     return `TypeSystem/client/${ensurePrefix('ns:', ns)}${suffix}`;
   };
 
+  /**
+   * A fetch request (eg: "getCell", "getColumn" etc)
+   */
   public static fetch: t.CacheFetchKey = (method, ns) => {
     ns = ensurePrefix('ns:', ns);
     return `TypeSystem/fetch/${ensurePrefix('ns:', ns)}/${method}`;
