@@ -12,10 +12,9 @@ export class TypeCacheKey {
     return `TypeSystem/client/${ensurePrefix('ns:', ns)}${suffix}`;
   };
 
-  public static fetch: t.CacheFetchKey = (method, ns, ...path) => {
-    const suffix = path.length === 0 ? '' : `/${path.join('/')}`;
+  public static fetch: t.CacheFetchKey = (method, ns) => {
     ns = ensurePrefix('ns:', ns);
-    return `TypeSystem/fetch/${ensurePrefix('ns:', ns)}/${method}${suffix}`;
+    return `TypeSystem/fetch/${ensurePrefix('ns:', ns)}/${method}`;
   };
 }
 
