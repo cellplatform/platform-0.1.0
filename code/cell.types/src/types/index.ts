@@ -1,6 +1,8 @@
 export * from '../types.TypeSystem';
 export * from '../types.Http';
 
+export * from './types.Client';
+
 export * from './types.cell.coord';
 export * from './types.cell.get';
 export * from './types.cell';
@@ -28,5 +30,3 @@ export * from './types.schema';
 export * from './types.schema.uri';
 export * from './types.schema.urls';
 export * from './types.value';
-
-export * from './types.Client';

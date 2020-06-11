@@ -1,4 +1,5 @@
 export { Observable, Subject } from 'rxjs';
+
 import { IModel } from '@platform/fsdb.types';
 import * as t from '../types';
 
@@ -10,6 +11,7 @@ export * from '@platform/http.types';
 export * from '@platform/log/lib/types';
 export * from '@platform/http.router/lib/types';
 export * from '@platform/cache/lib/types';
+export * from '@platform/micro/lib/types';
 
 export * from '../types';
 
