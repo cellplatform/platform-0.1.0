@@ -1,15 +1,10 @@
-import { constants, fs, routes, t, time, id, defaultValue, Schema } from '../common';
+import { constants, fs, routes, t, id, defaultValue, Schema } from '../common';
 
 /**
  * Root information.
  */
 export function init(args: { router: t.IRouter; name?: string; deployedAt?: number }) {
   const { router } = args;
-
-  const formatDate = (timestamp: number) => {
-    const date = time.day(args.deployedAt).toString();
-    return `${date}|UTC:${timestamp}`;
-  };
 
   /**
    * GET: /, /.sys
@@ -19,7 +14,7 @@ export function init(args: { router: t.IRouter; name?: string; deployedAt?: numb
     const region = NOW_REGION ? `cloud:${NOW_REGION}` : 'local:device';
 
     const name = args.name || 'Untitled';
-    const deployedAt = !args.deployedAt ? undefined : formatDate(args.deployedAt);
+    const deployedAt = args.deployedAt;
     const system = constants.getSystem().system;
     const host = req.headers.host || '-';
 

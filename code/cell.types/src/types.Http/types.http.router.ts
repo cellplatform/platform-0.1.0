@@ -30,7 +30,7 @@ export type IResGetSysInfo = {
   host: string;
   system: string;
   region: string;
-  deployedAt?: string;
+  deployedAt?: number;
   hash?: string;
 };
 
