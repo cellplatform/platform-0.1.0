@@ -1,7 +1,7 @@
 import { filter, map } from 'rxjs/operators';
 
 import { TypeDefault, TypeTarget } from '../../TypeSystem.core';
-import { R, Schema, t, Uri } from './common';
+import { R, Schema, t, Uri, rx } from './common';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 
@@ -46,31 +46,42 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     this._ctx = args.ctx;
     this._sheet = args.sheet;
 
-    const cellChange$ = this._ctx.event$.pipe(
+    const event$ = this._ctx.event$;
+    const cellChange$ = event$.pipe(
       filter((e) => e.type === 'SHEET/change'),
       map((e) => e.payload as t.ITypedSheetChangeCell),
       filter((e) => e.kind === 'CELL'),
+      filter((e) => this.isThisSheet(e.ns)),
       map(({ to, ns, key }) => ({ to, uri: Uri.parse<t.ICellUri>(Uri.create.cell(ns, key)) })),
-      filter(({ uri }) => uri.ok && uri.type === 'CELL' && uri.parts.ns === this.uri.ns),
+      filter(({ uri }) => uri.ok && uri.type === 'CELL'),
       map((e) => ({ ...e, uri: e.uri.parts })),
     );
 
-    // Ensure internal representation of value is updated if some other process signalled the a property to change.
+    /**
+     * Ensure internal representation of value is updated if some other
+     * process signalled the a change to a property.
+     */
     cellChange$
       .pipe(
-        map((e) => {
-          const columnKey = Schema.coord.cell.toColumnKey(e.uri.key);
-          const columnDef = this._columns.find(
-            (def) => def.column === columnKey,
-          ) as t.IColumnTypeDef;
-          return { ...e, columnDef };
-        }),
+        map((e) => ({ ...e, columnDef: this.findColumnByKey(e.uri.key) })),
         filter((e) => Boolean(e.columnDef)),
         map((e) => ({ ...e, target: TypeTarget.parse(e.columnDef.target) })),
         filter((e) => e.target.isValid && e.target.isInline),
       )
+      .subscribe((e) => this.setData(e.columnDef, e.to));
+
+    // Change initiated via cache-sync.
+    rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync')
+      .pipe(
+        filter((e) => this.isThisSheet(e.ns)),
+        filter((e) => Boolean(e.changes.cells)),
+      )
       .subscribe((e) => {
-        this.setData(e.columnDef, e.to);
+        const data = e.changes.cells || {};
+        Object.keys(data)
+          .map((key) => ({ key, value: data[key], columnDef: this.findColumnByKey(key) }))
+          .filter(({ columnDef }) => Boolean(columnDef))
+          .forEach((e) => this.setData(e.columnDef, e.value.to));
       });
   }
 
@@ -350,6 +361,15 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
   private fire(e: t.TypedSheetEvent) {
     this._ctx.event$.next(e);
+  }
+
+  private isThisSheet(ns: string) {
+    return Uri.strip.ns(ns) === this.uri.ns;
+  }
+
+  private findColumnByKey(key: string) {
+    const columnKey = Schema.coord.cell.toColumnKey(key);
+    return this._columns.find((def) => def.column === columnKey) as t.IColumnTypeDef;
   }
 
   private findColumnByProp<K extends keyof T>(prop: K) {
