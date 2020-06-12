@@ -4,13 +4,14 @@ import { Observable, Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 
 import { TypeClient } from '../../TypeSystem.core';
-import { ERROR, ErrorList, MemoryCache, t, Uri, util } from './common';
+import { ERROR, ErrorList, MemoryCache, t, Uri } from './common';
 import { TypedSheetData } from './TypedSheetData';
 import { TypedSheetState } from './TypedSheetState';
 import { SheetPool } from '../TypedSheet.SheetPool';
+import { fetcher } from '../../TypeSystem.fetch';
 
 const fromClient = (client: t.IHttpClient) => {
-  const fetch = util.fetcher.fromClient(client);
+  const fetch = fetcher.fromClient(client);
   return {
     load: <T = {}>(ns: string | t.INsUri) => TypedSheet.load<T>({ fetch, ns }),
   };

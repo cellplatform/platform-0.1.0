@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { MemoryCache, rx, t } from '../common';
-import { fetcher } from '../TypeSystem.util';
+import { fetcher } from '../TypeSystem.fetch';
 import { TypeCacheCells } from './TypeCacheCells';
 import { TypeCacheKey } from './TypeCacheKey';
 
