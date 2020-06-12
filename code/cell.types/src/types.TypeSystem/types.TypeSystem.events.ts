@@ -117,7 +117,8 @@ export type ITypedSheetChangesCleared = {
 
 /**
  * Fires a set of changes that may have changed in a different process
- * allowing any sheets/chaches (etc) to synchronize themselves.
+ * allowing any sheets/caches (etc) to synchronize their internal
+ * data structures.
  */
 export type ITypedSheetSyncEvent = {
   type: 'SHEET/sync';

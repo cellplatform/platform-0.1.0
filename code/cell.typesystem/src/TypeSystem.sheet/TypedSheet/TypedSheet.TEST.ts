@@ -1147,6 +1147,31 @@ describe('TypedSheet', () => {
     });
   });
 
+  describe('SHEET/sync (update cache event)', () => {
+    it('has updated value', async () => {
+      const { sheet, event$ } = await testMySheet();
+      const cursor = await sheet.data('MyRow').load();
+
+      const row = cursor.row(0);
+      expect(row.props.title).to.eql('One');
+      expect(sheet.state.hasChanges).to.eql(false);
+
+      const ns = 'foo.mySheet';
+      event$.next({
+        type: 'SHEET/sync',
+        payload: {
+          ns,
+          changes: {
+            cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
+          },
+        },
+      });
+
+      expect(row.props.title).to.eql('yo');
+      expect(sheet.state.hasChanges).to.eql(false); // NB: The internal data is updated, but no "pending change" is logged.
+    });
+  });
+
   describe('TypedSheetState', () => {
     it('exposed from sheet', async () => {
       const { sheet } = await testMySheet();

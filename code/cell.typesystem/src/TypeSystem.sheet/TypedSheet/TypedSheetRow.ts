@@ -58,8 +58,8 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     );
 
     /**
-     * Ensure internal representation of value is updated if some other
-     * process signalled the a change to a property.
+     * Ensure internal representation of value is updated if
+     * some other process signalled the a change to a property.
      */
     cellChange$
       .pipe(

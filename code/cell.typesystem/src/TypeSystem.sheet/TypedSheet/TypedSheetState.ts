@@ -59,7 +59,6 @@ export class TypedSheetState implements t.ITypedSheetState {
     this.event$ = this._event$.pipe(takeUntil(this._dispose$), share());
 
     this.change$ = this.event$.pipe(
-      takeUntil(this.dispose$),
       filter((e) => e.type === 'SHEET/change'),
       map((e) => e.payload as t.ITypedSheetChange),
       filter((e) => this.isWithinNamespace(e.ns)),
@@ -67,7 +66,6 @@ export class TypedSheetState implements t.ITypedSheetState {
     );
 
     this.changed$ = this.event$.pipe(
-      takeUntil(this.dispose$),
       filter((e) => e.type === 'SHEET/changed'),
       map((e) => e.payload as t.ITypedSheetChanged),
       filter((e) => this.isWithinNamespace(e.sheet.uri.toString())),
