@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { deleteUndefined, ERROR, ErrorList, R, t, Uri, value as valueUtil } from '../../common';
-import { TypeCache } from '../TypeCache';
+import { TypeCache } from '../../TypeSystem.cache';
 import { TypeDefault } from '../TypeDefault';
 import { TypeProp } from '../TypeProp';
 import { TypeValue } from '../TypeValue';

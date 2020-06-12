@@ -12,7 +12,10 @@ export type TypedSheetEvent =
   | ITypedSheetRefsLoadedEvent
   | ITypedSheetChangeEvent
   | ITypedSheetChangedEvent
-  | ITypedSheetChangesClearedEvent;
+  | ITypedSheetChangesClearedEvent
+  | ITypedSheetSyncEvent
+  | ITypedSheetSyncedEvent
+  | ITypedSheetUpdatedEvent;
 
 /**
  * Fires when a sheet cursor commences loading.
@@ -97,7 +100,7 @@ export type ITypedSheetChangedEvent = {
 export type ITypedSheetChanged = {
   sheet: t.ITypedSheet;
   change: t.ITypedSheetChangeDiff;
-  changes: t.ITypedSheetStateChanges;
+  changes: t.ITypedSheetChanges;
 };
 
 /**
@@ -109,7 +112,53 @@ export type ITypedSheetChangesClearedEvent = {
 };
 export type ITypedSheetChangesCleared = {
   sheet: t.ITypedSheet;
-  from: t.ITypedSheetStateChanges;
-  to: t.ITypedSheetStateChanges;
+  from: t.ITypedSheetChanges;
+  to: t.ITypedSheetChanges;
   action: 'REVERT' | 'SAVE';
+};
+
+/**
+ * Fires a set of changes that may have changed in a different process
+ * allowing any sheets/caches (etc) to synchronize their internal
+ * data structures.
+ */
+export type ITypedSheetSyncEvent = {
+  type: 'SHEET/sync';
+  payload: ITypedSheetSync;
+};
+export type ITypedSheetSync = {
+  ns: string;
+  changes: t.ITypedSheetChanges;
+};
+
+/**
+ * Fires after a sheet has been synced (and all internal data
+ * structures have updated themselves).
+ */
+export type ITypedSheetSyncedEvent = {
+  type: 'SHEET/synced';
+  payload: ITypedSheetSynced;
+};
+export type ITypedSheetSynced = {
+  sheet: t.ITypedSheet;
+  changes: t.ITypedSheetChanges;
+};
+
+/**
+ * Fired when a sheet has been updated via either:
+ *
+ *  - SHEET/change (value edited, change state pending)
+ *  - SHEET/sync   (value changed by another process)
+ *
+ * This event can be used as a single indicator of when anything
+ * displaying the sheet should be aware of a change.
+ */
+export type ITypedSheetUpdatedEvent = {
+  type: 'SHEET/updated';
+  payload: ITypedSheetUpdated;
+};
+export type ITypedSheetUpdated = {
+  via: 'SYNC' | 'CHANGE';
+  sheet: t.ITypedSheet;
+  changes: t.ITypedSheetChanges;
 };

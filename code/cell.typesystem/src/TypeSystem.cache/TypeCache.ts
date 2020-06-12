@@ -1,4 +1,4 @@
-import { MemoryCache, t } from '../../common';
+import { MemoryCache, t } from '../common';
 import { wrapFetch } from './TypeCache.wrapFetch';
 import { TypeCacheKey } from './TypeCacheKey';
 

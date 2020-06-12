@@ -12,6 +12,6 @@ export type IpcSheetChangedEvent = {
 
 export type IpcSheetChanged = {
   ns: string;
-  changes: t.ITypedSheetStateChanges;
+  changes: t.ITypedSheetChanges;
   source: 'MAIN' | string;
 };

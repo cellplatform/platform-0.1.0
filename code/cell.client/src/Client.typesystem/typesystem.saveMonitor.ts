@@ -121,11 +121,7 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
  * [Helpers]
  */
 
-async function saveSheet(args: {
-  ns: string;
-  http: t.IHttpClient;
-  changes: t.ITypedSheetStateChanges;
-}) {
+async function saveSheet(args: { ns: string; http: t.IHttpClient; changes: t.ITypedSheetChanges }) {
   const { ns, http, changes } = args;
   const client = http.ns(ns);
   let error: t.IHttpError | undefined;
@@ -151,7 +147,7 @@ async function saveSheet(args: {
   return { ok, ns, error };
 }
 
-function toChangedCells(changes: t.ITypedSheetStateChanges) {
+function toChangedCells(changes: t.ITypedSheetChanges) {
   const res: t.ICellMap = {};
   const cells = changes.cells || {};
   Object.keys(cells)

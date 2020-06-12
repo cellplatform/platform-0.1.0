@@ -10,7 +10,7 @@ export { Schema, Uri, squash, RefLinks };
 import { coord, CellRange } from '@platform/cell.coord';
 export { coord, CellRange };
 
-import { value } from '@platform/util.value';
-export { value };
+import { value, rx } from '@platform/util.value';
+export { value, rx };
 export const deleteUndefined = value.deleteUndefined;
 export const defaultValue = value.defaultValue;

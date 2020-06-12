@@ -1,5 +1,7 @@
+import { Subject } from 'rxjs';
+
 import { TypeCache, TypeCacheCells } from '.';
-import { expect, MemoryCache, testFetch, TYPE_DEFS } from '../../test';
+import { expect, MemoryCache, t, testFetch, TYPE_DEFS } from '../test';
 
 describe('TypeCache', () => {
   const CELLS = {
@@ -98,6 +100,30 @@ describe('TypeCache', () => {
         const res3 = await fetch.getCells({ ns, query: '1:50' });
         expect(Object.keys(res3.cells || {})).to.eql(['A1', 'Z1', 'B2', 'C3', 'Z9']);
         expect(innerFetch.getCellsCount).to.eql(2); // NB: Went back to the fetch source as query expanded range.
+      });
+
+      it('syncs cells via event (cache patching)', async () => {
+        const event$ = new Subject<t.TypedSheetEvent>();
+        const innerFetch = testFetch({ defs: TYPE_DEFS, cells: CELLS });
+        const fetch = TypeCache.wrapFetch(innerFetch, { event$ });
+
+        const ns = 'ns:foo';
+
+        const res1 = await fetch.getCells({ ns, query: 'B1:B3' });
+        expect((res1.cells || {}).B2?.value).to.eql('B2');
+
+        event$.next({
+          type: 'SHEET/sync',
+          payload: {
+            ns: 'foo',
+            changes: {
+              cells: { B2: { kind: 'CELL', ns: 'foo', key: 'B2', from: {}, to: { value: 123 } } },
+            },
+          },
+        });
+
+        const res2 = await fetch.getCells({ ns, query: 'B1:B3' });
+        expect((res2.cells || {}).B2?.value).to.eql(123);
       });
     });
   });
@@ -216,6 +242,61 @@ describe('TypeCache', () => {
 
         await query.get(fetch, { force: true });
         expect(fetch.getCellsCount).to.eql(2);
+      });
+    });
+
+    describe('sync', () => {
+      it('empty', () => {
+        const entry = TypeCacheCells.create('ns:foo');
+        const res = entry.sync({});
+        expect(res).to.eql({});
+        expect(entry.cells).to.eql({});
+      });
+
+      it('add new cells', () => {
+        const entry = TypeCacheCells.create('ns:foo');
+        const res = entry.sync({
+          cells: {
+            A1: { kind: 'CELL', ns: 'foo', key: 'A1', from: {}, to: { value: 123 } },
+          },
+        });
+        expect(res).to.eql({ A1: { value: 123 } });
+        expect(entry.cells).to.eql({ A1: { value: 123 } });
+      });
+
+      it('no change for different namespace', async () => {
+        const entry = TypeCacheCells.create('ns:foo');
+        const res = entry.sync({
+          cells: {
+            A1: { kind: 'CELL', ns: 'bar', key: 'A1', from: {}, to: { value: 123 } },
+          },
+        });
+        expect(res).to.eql({});
+        expect(entry.cells).to.eql({});
+      });
+
+      it('update existing (cached) cell value', async () => {
+        const fetch = testFetch({ defs: TYPE_DEFS, cells: CELLS });
+        const entry = TypeCacheCells.create('ns:foo');
+
+        const query = entry.query('1:50');
+        await query.get(fetch);
+
+        const res = entry.sync({
+          cells: {
+            A1: { kind: 'CELL', ns: 'ns:foo', key: 'A1', from: {}, to: { value: 123 } }, // NB: has ns-prefix.
+            Z9: { kind: 'CELL', ns: 'foo', key: 'Z9', from: {}, to: { value: 456 } },
+          },
+        });
+
+        expect(res).to.eql({ A1: { value: 123 }, Z9: { value: 456 } });
+        expect(entry.cells).to.eql({
+          A1: { value: 123 },
+          Z1: { value: 'Z1' },
+          B2: { value: 'B2' },
+          C3: { value: 'C3' },
+          Z9: { value: 456 },
+        });
       });
     });
   });

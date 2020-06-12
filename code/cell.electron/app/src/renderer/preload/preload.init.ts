@@ -2,6 +2,7 @@ import { constants, t } from '../common';
 import * as ipc from './preload.ipc';
 import { lockdown } from './preload.lockdown';
 import { MemoryCache } from '@platform/cache';
+import { Subject } from 'rxjs';
 
 /**
  * The preload (sandbox) environment initialization.
@@ -29,8 +30,9 @@ export function init() {
 
   // Initialize the environment
   const cache = MemoryCache.create();
-  const { event$ } = ipc.init({ def, cache });
-  const env: t.IEnv = { host, def, cache, event$ };
+  const event$ = new Subject<t.AppEvent>();
+  ipc.init({ def, cache, event$ });
+  const env: t.IEnv = { host, def, cache, event$: event$ as Subject<t.Event> };
   if (isTopWindow) {
     const win = (window as unknown) as t.ITopWindow;
     win.env = env;

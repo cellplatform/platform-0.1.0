@@ -19,7 +19,7 @@ export type IClientTypesystem = {
  * Save monitor.
  */
 
-export type ITypedSheetPendingChanges = { [ns: string]: t.ITypedSheetStateChanges };
+export type ITypedSheetPendingChanges = { [ns: string]: t.ITypedSheetChanges };
 
 /**
  * Save monitor (events).
@@ -33,7 +33,7 @@ export type ITypedSheetSavingEvent = {
 export type ITypedSheetSaving = {
   target: string;
   sheet: t.ITypedSheet;
-  changes: t.ITypedSheetStateChanges;
+  changes: t.ITypedSheetChanges;
 };
 
 export type ITypedSheetSavedEvent = {
@@ -44,6 +44,6 @@ export type ITypedSheetSaved = {
   ok: boolean;
   target: string;
   sheet: t.ITypedSheet;
-  changes: t.ITypedSheetStateChanges;
+  changes: t.ITypedSheetChanges;
   errors: { ns: string; error: t.IHttpError }[];
 };

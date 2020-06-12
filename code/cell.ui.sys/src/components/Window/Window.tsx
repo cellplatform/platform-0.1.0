@@ -4,6 +4,7 @@ import { ErrorView } from '@platform/cell.ui/lib/components/Error';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Temp } from './Temp';
 
 import { color, COLORS, css, CssValue, t, ui } from '../../common';
 import { uploadApp } from './_tmp';
@@ -114,7 +115,7 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
     const styles = {
       base: css({ flex: 1, display: 'flex' }),
       border: css({
-        Flex: 'center-center',
+        Flex: 'vertical-center-center',
         flex: 1,
         boxSizing: 'border-box',
         margin: 50,
@@ -139,6 +140,7 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
         <div {...styles.border}>
           {elMessage}
           {this.renderList()}
+          <Temp />
         </div>
       </div>
     );

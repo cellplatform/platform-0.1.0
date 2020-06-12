@@ -1,7 +1,7 @@
-import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { filter, map, share, takeUntil, delay, concatMap } from 'rxjs/operators';
 
-import { TypeCache } from '../../TypeSystem.core';
-import { deleteUndefined, R, Schema, t, Uri } from './common';
+import { TypeCache } from '../../TypeSystem.cache';
+import { rx, deleteUndefined, R, Schema, t, Uri } from './common';
 
 type N = t.INsProps;
 type C = t.ICellData;
@@ -59,7 +59,6 @@ export class TypedSheetState implements t.ITypedSheetState {
     this.event$ = this._event$.pipe(takeUntil(this._dispose$), share());
 
     this.change$ = this.event$.pipe(
-      takeUntil(this.dispose$),
       filter((e) => e.type === 'SHEET/change'),
       map((e) => e.payload as t.ITypedSheetChange),
       filter((e) => this.isWithinNamespace(e.ns)),
@@ -67,13 +66,15 @@ export class TypedSheetState implements t.ITypedSheetState {
     );
 
     this.changed$ = this.event$.pipe(
-      takeUntil(this.dispose$),
       filter((e) => e.type === 'SHEET/changed'),
       map((e) => e.payload as t.ITypedSheetChanged),
       filter((e) => this.isWithinNamespace(e.sheet.uri.toString())),
       share(),
     );
 
+    /**
+     * Event handlers.
+     */
     this.change$
       .pipe(
         filter((e) => e.kind === 'CELL'),
@@ -84,6 +85,23 @@ export class TypedSheetState implements t.ITypedSheetState {
     this.change$
       .pipe(filter((e) => e.kind === 'NS'))
       .subscribe(({ to }) => this.fireNsChanged({ to }));
+
+    rx.payload<t.ITypedSheetSyncEvent>(this.event$, 'SHEET/sync')
+      .pipe(
+        filter((e) => this.isThisSheet(e.ns)),
+        delay(0), // NB: Cause handler to run after all child rows (etc) have had a chance to react to this event.
+      )
+      .subscribe((e) => {
+        this.fire({ type: 'SHEET/synced', payload: { sheet: this._sheet, changes: e.changes } });
+      });
+
+    rx.payload<t.ITypedSheetSyncedEvent>(this.event$, 'SHEET/synced')
+      .pipe(filter((e) => e.sheet === this._sheet))
+      .subscribe(() => this.fireUpdated('SYNC'));
+
+    rx.payload<t.ITypedSheetChangedEvent>(this.event$, 'SHEET/changed')
+      .pipe(filter((e) => e.sheet === this._sheet))
+      .subscribe(() => this.fireUpdated('CHANGE'));
   }
 
   public dispose() {
@@ -94,7 +112,7 @@ export class TypedSheetState implements t.ITypedSheetState {
   /**
    * [Fields]
    */
-  private _changes: t.ITypedSheetStateChanges = {};
+  private _changes: t.ITypedSheetChanges = {};
   private readonly _dispose$ = new t.Subject<{}>();
   private readonly _event$: t.Subject<t.TypedSheetEvent>;
   private readonly _sheet: t.ITypedSheet;
@@ -116,7 +134,7 @@ export class TypedSheetState implements t.ITypedSheetState {
     return this._dispose$.isStopped;
   }
 
-  public get changes(): t.ITypedSheetStateChanges {
+  public get changes(): t.ITypedSheetChanges {
     const changes = this._changes;
     return deleteUndefined({
       ns: changes.ns ? { ...changes.ns } : undefined,
@@ -272,6 +290,17 @@ export class TypedSheetState implements t.ITypedSheetState {
     });
   }
 
+  private fireUpdated(via: t.ITypedSheetUpdated['via']) {
+    this.fire({
+      type: 'SHEET/updated',
+      payload: {
+        via,
+        sheet: this._sheet,
+        changes: this.changes,
+      },
+    });
+  }
+
   private isWithinNamespace(input: string) {
     const text = (input || '').trim();
     const ns = this.uri;
@@ -285,5 +314,9 @@ export class TypedSheetState implements t.ITypedSheetState {
       return text.startsWith(`cell:${ns.id}:`);
     }
     return false;
+  }
+
+  private isThisSheet(ns: string) {
+    return Uri.strip.ns(ns) === this.uri.id;
   }
 }

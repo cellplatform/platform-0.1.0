@@ -3,23 +3,32 @@ import { share } from 'rxjs/operators';
 
 import { Client, t, ui } from '../common';
 
+type E = t.TypedSheetEvent;
+
 /**
  * Creates an environment context.
  */
 export function create(args: { env: t.IEnv }) {
   const { env } = args;
-  const { def, event$ } = env;
+  const { def } = env;
+  const event$ = env.event$ as Subject<E>;
 
-  const client = Client.env(env);
+  /**
+   * TODO 🐷 TEMP
+   */
+  event$.subscribe((e) => {
+    console.log('🐷TMP ui.sys', e);
+  });
 
-  const ctx: t.IEnvContext = {
+  // Create the context.
+  const ctx: t.ISysContext = {
     def,
-    client,
-    event$: (event$ as Subject<t.TypedSheetEvent>).pipe(share()),
+    client: Client.env(env),
+    event$: event$.pipe(share()),
     fire: (e) => event$.next(e),
   };
 
+  // Finish up.
   const Provider = ui.createProvider({ ctx });
-
   return { ctx, Provider };
 }

@@ -10,7 +10,6 @@ type N = string | t.INsUri;
  */
 export function typesystem(input?: t.ClientOptions | string | number) {
   const args = typeof input === 'object' ? input : { http: input };
-  // const { event$ } = args;
   const event$ = args.event$ ? (args.event$ as Subject<t.TypedSheetEvent>) : undefined;
   const cache = args.cache || MemoryCache.create();
 
@@ -20,7 +19,7 @@ export function typesystem(input?: t.ClientOptions | string | number) {
     ? (args.http as t.IHttpClient)
     : HttpClient.create(args.http as string);
 
-  const fetch = TypeSystem.fetcher.fromClient(http);
+  const fetch = TypeSystem.Cache.wrapFetch(TypeSystem.fetcher.fromClient(http), { event$ });
 
   const api: t.IClientTypesystem = {
     http,
