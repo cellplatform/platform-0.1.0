@@ -12,7 +12,8 @@ export type TypedSheetEvent =
   | ITypedSheetRefsLoadedEvent
   | ITypedSheetChangeEvent
   | ITypedSheetChangedEvent
-  | ITypedSheetChangesClearedEvent;
+  | ITypedSheetChangesClearedEvent
+  | ITypedSheetSyncEvent;
 
 /**
  * Fires when a sheet cursor commences loading.
@@ -112,4 +113,17 @@ export type ITypedSheetChangesCleared = {
   from: t.ITypedSheetChanges;
   to: t.ITypedSheetChanges;
   action: 'REVERT' | 'SAVE';
+};
+
+/**
+ * Fires a set of changes that may have changed in a different process
+ * allowing any sheets/chaches (etc) to synchronize themselves.
+ */
+export type ITypedSheetSyncEvent = {
+  type: 'SHEET/sync';
+  payload: ITypedSheetSync;
+};
+export type ITypedSheetSync = {
+  ns: string;
+  changes: t.ITypedSheetChanges;
 };

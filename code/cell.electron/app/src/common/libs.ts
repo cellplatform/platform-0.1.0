@@ -13,8 +13,8 @@ export { Client, HttpClient };
 import { TypeSystem } from '@platform/cell.typesystem';
 export { TypeSystem };
 
-import { defaultValue, time, value } from '@platform/util.value';
-export { defaultValue, time, value };
+import { defaultValue, time, value, rx } from '@platform/util.value';
+export { defaultValue, time, value, rx };
 
 import { coord } from '@platform/cell.coord';
 export { coord };
