@@ -1,7 +1,19 @@
-import { MemoryCache, t } from '../../common';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
+import { MemoryCache, t, rx } from '../../common';
 import { fetcher } from '../../TypeSystem.util';
-import { TypeCacheKey } from './TypeCacheKey';
 import { TypeCacheCells } from './TypeCacheCells';
+import { TypeCacheKey } from './TypeCacheKey';
 
 /**
  * Determine if the given [fetch] object is "cache wrapped"/
@@ -13,13 +25,29 @@ export function isWrapped(fetch: t.ISheetFetcher) {
 /**
  * Cache enable a data-fetcher.
  */
-export function wrapFetch(fetch: t.ISheetFetcher, options: { cache?: t.IMemoryCache } = {}) {
+export function wrapFetch(
+  fetch: t.ISheetFetcher,
+  options: { cache?: t.IMemoryCache; event$?: Subject<t.TypedSheetEvent> } = {},
+) {
   if (isWrapped(fetch)) {
     return fetch as t.CachedFetcher;
   }
 
-  const cache = options.cache || MemoryCache.create();
+  type C = TypeCacheCells;
+  const { cache = MemoryCache.create(), event$ } = options;
   const fetchKey = TypeCacheKey.fetch;
+
+  // Patch cache on sync events.
+  if (event$) {
+    event$.pipe(filter((e) => e.type === 'SHEET/sync'));
+    rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync').subscribe((e) => {
+      const key = fetchKey('getCells', e.ns);
+      const entry = cache.get<C>(key);
+      if (entry) {
+        entry.sync(e.changes);
+      }
+    });
+  }
 
   const getNs: t.FetchSheetNs = async (args) => {
     const key = fetchKey('getNs', args.ns.toString());
@@ -33,10 +61,9 @@ export function wrapFetch(fetch: t.ISheetFetcher, options: { cache?: t.IMemoryCa
 
   const getCells: t.FetchSheetCells = async (args) => {
     const key = fetchKey('getCells', args.ns.toString());
-    type T = TypeCacheCells;
     const cells = cache.exists(key)
-      ? cache.get<T>(key)
-      : cache.put(key, TypeCacheCells.create(args.ns)).get<T>(key);
+      ? cache.get<C>(key)
+      : cache.put(key, TypeCacheCells.create(args.ns)).get<C>(key);
     return cells.query(args.query).get(fetch);
   };
 

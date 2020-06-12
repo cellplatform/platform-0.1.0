@@ -1,4 +1,4 @@
-import { t, CellRange } from '../../common';
+import { t, CellRange, Uri } from '../../common';
 
 /**
  * A cache entry that represents cells for a single namespace
@@ -80,6 +80,29 @@ export class TypeCacheCells {
     };
 
     return api;
+  }
+
+  /**
+   * Syncs the cache with any changes contained within the given sync event.
+   */
+  public sync(changes: t.ITypedSheetChanges): t.ICellMap {
+    const cells = changes.cells || {};
+    const keys = Object.keys(cells);
+    if (keys.length === 0) {
+      return {};
+    }
+
+    const ns = Uri.strip.ns(this.ns);
+    const diffs = keys
+      .map((key) => cells[key])
+      .filter((diff) => diff.kind === 'CELL' && Uri.strip.ns(diff.ns) === ns)
+      .reduce((acc, diff) => {
+        acc[diff.key] = diff.to;
+        return acc;
+      }, {} as t.ICellMap);
+
+    this.cells = { ...this.cells, ...diffs };
+    return diffs;
   }
 
   /**
