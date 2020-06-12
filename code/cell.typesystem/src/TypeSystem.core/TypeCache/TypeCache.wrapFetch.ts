@@ -34,7 +34,6 @@ export function wrapFetch(
     rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync').subscribe((e) => {
       const key = fetchKey('getCells', e.ns);
       const entry = cache.get<C>(key);
-      console.log('CACHE PATCH', e.ns, entry);
       entry?.sync(e.changes);
     });
   }

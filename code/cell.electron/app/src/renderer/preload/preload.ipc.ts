@@ -56,9 +56,6 @@ function ferryEvents(args: {
     )
     .subscribe((e) => {
       const { ns, changes } = e;
-      console.group('🌳 fire SHEET/sync', e);
-
-      console.groupEnd();
       fire({ type: 'SHEET/sync', payload: { ns, changes } });
     });
 }
