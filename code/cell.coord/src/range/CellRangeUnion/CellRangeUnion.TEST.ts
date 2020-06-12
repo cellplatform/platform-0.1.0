@@ -104,7 +104,7 @@ describe('CellRangeUnion', () => {
       contains('B3', ['A1:A5', 'A1:C8']);
       contains('A1', ['*:*']);
       contains('A1', ['A:A']);
-      contains('A5', ['A4:**']);
+      contains('A5', ['A4:**']); // "**" => bottom-right
       contains('B5', ['A:A', '3:6']);
     });
     it('does not contain', () => {
@@ -112,7 +112,7 @@ describe('CellRangeUnion', () => {
       notContain('A1', []);
       notContain('A6', ['A1:A5']);
       notContain('G3', ['A1:A5', 'A1:C8']);
-      notContain('A5', ['A4:*']);
+      notContain('A5', ['A4:*']); // "*" => top-right
       notContain('G3', ['F:F', 'H:H', '1:2']);
     });
   });

@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { local } from '@platform/cell.fs.local';
 import { s3 } from '@platform/cell.fs.s3';
 import { NeDb } from '@platform/fsdb.nedb';
@@ -30,7 +32,7 @@ const getRemoteFs = () =>
  * Initialize and start the HTTP application server.
  */
 const app = server.create({
-  title: 'sample',
+  name: 'sample',
   db,
   // fs: getRemoteFs(), // TEMP 🐷 - revert to local FS.
   fs: getLocalFs(),

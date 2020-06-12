@@ -16,7 +16,7 @@ export function init(args: {
   db: t.IDb;
   fs: t.IFileSystem;
   router: t.IRouter;
-  title?: string;
+  name?: string;
   deployedAt?: number;
 }) {
   // Initialize routes.

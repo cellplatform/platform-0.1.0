@@ -7,8 +7,8 @@ export { MemoryCache };
 import { Schema, Uri, squash, RefLinks } from '@platform/cell.schema';
 export { Schema, Uri, squash, RefLinks };
 
-import { coord } from '@platform/cell.coord';
-export { coord };
+import { coord, CellRange } from '@platform/cell.coord';
+export { coord, CellRange };
 
 import { value } from '@platform/util.value';
 export { value };

@@ -19,7 +19,7 @@ export function init(args: IInitArgs = {}) {
   const paths = constants.paths.data({ prod });
 
   const app = server.create({
-    title: 'local',
+    name: 'local',
     db: NeDb.create({ filename: paths.db }),
     fs: local.init({ root: paths.fs, fs }),
     logger,
@@ -34,7 +34,7 @@ export function init(args: IInitArgs = {}) {
 export async function start(args: IInitArgs & { port?: number; isDev?: boolean } = {}) {
   const { app, paths } = init(args);
 
-  const port = await util.port.unused();
+  const port = await util.port.unused(args.port);
   const instance = await app.start({ port });
   const host = `localhost:${port}`;
 

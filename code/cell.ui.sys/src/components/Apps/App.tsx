@@ -2,11 +2,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t } from '../../common';
+import { color, css, CssValue, t, ui } from '../../common';
 import { Card, IPropListItem, PropList } from '../primitives';
 
 export type IAppProps = {
-  env: t.IEnv;
   app: IAppData;
   style?: CssValue;
   onClick?: AppClickEventHandler;
@@ -29,6 +28,9 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   public state: IAppState = {};
   private state$ = new Subject<Partial<IAppState>>();
   private unmounted$ = new Subject<{}>();
+
+  public static contextType = ui.Context;
+  public context!: t.ISysContext;
 
   /**
    * [Lifecycle]

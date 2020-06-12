@@ -12,12 +12,12 @@ const { PKG } = constants;
 export function create(args: {
   db: t.IDb;
   fs: t.IFileSystem;
-  title?: string;
+  name?: string;
   deployedAt?: number | string;
   logger?: t.ILog;
   prod?: boolean;
 }) {
-  const { db, title, fs } = args;
+  const { db, name, fs } = args;
   const logger = args.logger || log;
   const base = filesystem.resolve('.');
   const root = fs.root.startsWith(base) ? fs.root.substring(base.length) : fs.root;
@@ -33,7 +33,7 @@ export function create(args: {
 
   // Routes.
   const body = micro.body;
-  const router = CellRouter.create({ title, db, fs, body, deployedAt });
+  const router = CellRouter.create({ name, db, fs, body, deployedAt });
 
   // Setup the micro-service.
   const deps = PKG.dependencies || {};

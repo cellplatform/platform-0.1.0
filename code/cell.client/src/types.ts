@@ -1,1 +1,1 @@
-export * from '@platform/cell.types/lib/types/types.client';
+export * from '@platform/cell.types/lib/types.Client';

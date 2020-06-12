@@ -1,6 +1,5 @@
 import { t } from '../common';
 import { IServerLog } from '@platform/log/lib/server/types';
-import { IResGetSysInfo } from './types.http.router';
 
 export type IElectronLog = IServerLog & { file: { path: string }; format: IElectronLogFormat };
 
@@ -11,7 +10,7 @@ export type IElectronLogFormat = {
 /**
  * HTTP (Server)
  */
-export type IResGetElectronSysInfo = IResGetSysInfo & {
+export type IResGetElectronSysInfo = t.IResGetSysInfo & {
   app: IResGetSysInfoElectronApp;
 };
 

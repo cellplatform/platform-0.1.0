@@ -2,13 +2,11 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t } from '../../common';
+import { css, CssValue, t, ui } from '../../common';
 import { App, IAppData, AppClickEventHandler, AppClickEvent } from './App';
 
 export { IAppData, AppClickEventHandler, AppClickEvent };
 export type IAppsProps = {
-  env: t.IEnv;
-  client: t.IClientTypesystem;
   style?: CssValue;
   onAppClick?: AppClickEventHandler;
 };
@@ -18,6 +16,9 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
   public state: IAppsState = {};
   private state$ = new Subject<Partial<IAppsState>>();
   private unmounted$ = new Subject<{}>();
+
+  public static contextType = ui.Context;
+  public context!: t.ISysContext;
 
   /**
    * [Lifecycle]
@@ -30,9 +31,9 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.load();
 
-    const { env } = this.props;
+    const ctx = this.context;
 
-    env.event$.subscribe(async (e) => {
+    ctx.event$.subscribe(async (e) => {
       // TEMP 🐷HACK - to not brute force the reload like this!
       // Should use proper cache-patching handled in the event stream.
       this.client.cache.clear();
@@ -49,7 +50,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
    * [Properties]
    */
   public get client() {
-    return this.props.client;
+    return this.context.client;
   }
 
   /**
@@ -69,7 +70,6 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
         uri,
         windows,
       };
-      console.log('item', item);
       return item;
     });
 
@@ -85,7 +85,6 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
   }
 
   private renderApps() {
-    const { env } = this.props;
     const { apps = [] } = this.state;
     if (!apps) {
       return null;
@@ -96,7 +95,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     };
 
     const elList = apps.map((app, i) => {
-      return <App key={i} app={app} env={env} onClick={this.props.onAppClick} />;
+      return <App key={i} app={app} onClick={this.props.onAppClick} />;
     });
 
     return <div {...styles.base}>{elList}</div>;

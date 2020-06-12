@@ -4,7 +4,7 @@ import { filter, map } from 'rxjs/operators';
 /**
  * Filters on the given event.
  */
-export function eventPayload<E extends { type: string; payload: unknown }>(
+export function payload<E extends { type: string; payload: unknown }>(
   ob$: Observable<{}>,
   type: E['type'],
 ) {

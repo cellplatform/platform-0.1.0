@@ -1,1 +1,1 @@
-export * from '@platform/cell.types/lib/types/types.TypeSystem';
+export * from '@platform/cell.types/lib/types.TypeSystem';

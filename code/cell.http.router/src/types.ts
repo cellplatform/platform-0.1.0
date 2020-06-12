@@ -1,2 +1,1 @@
-export * from '@platform/cell.types/lib/types/types.http.router';
-export * from '@platform/micro/lib/types';
+export * from '@platform/cell.types/lib/types.Http/types.http.router';

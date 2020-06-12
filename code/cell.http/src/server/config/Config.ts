@@ -1,7 +1,7 @@
 import { t, fs, R, value as valueUtil, ERROR } from '../../common';
 
 export const DEFAULT: t.IHttpConfigDeployment = {
-  title: 'Untitled',
+  name: 'Untitled',
   collection: 'cell.data',
   fs: {
     endpoint: '',
@@ -91,8 +91,8 @@ function validate(config: t.IHttpConfigFile) {
     return error(`Configuration file does not exist.`);
   }
 
-  if (!(data.title || '').trim()) {
-    error('Missing [title] value.');
+  if (!(data.name || '').trim()) {
+    error('Missing [name] value.');
   }
 
   const fs = data.fs || {};

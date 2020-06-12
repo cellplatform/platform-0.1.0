@@ -1,7 +1,5 @@
 import { t } from '../common';
 
-export type HttpProtocol = 'http' | 'https';
-
 /**
  * Configuration
  */
@@ -19,7 +17,7 @@ export type IHttpConfigValidation = {
 };
 
 export type IHttpConfigDeployment = {
-  title: string;
+  name: string;
   collection: string;
   fs: {
     endpoint: string;

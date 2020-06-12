@@ -1,6 +1,6 @@
 {
   "name": "@platform/http",
-  "version": "0.12.19",
+  "version": "0.12.20",
   "description": "Tools for working with HTTP.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -20,7 +20,7 @@
     "@platform/libs": "0.2.2",
     "@platform/types": "0.4.22",
     "@platform/util.mimetype": "0.1.11",
-    "@platform/util.value": "0.7.23",
+    "@platform/util.value": "0.7.24",
     "isomorphic-fetch": "2.2.1"
   },
   "devDependencies": {

@@ -955,7 +955,7 @@ describe('TypeClient', () => {
 
       it('caches [load] method (parallel execution)', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
-        const cache = TypeSystem.Cache.toCache();
+        const cache = TypeSystem.Cache.create();
 
         const ns = 'foo';
         const wait = [TypeClient.load({ ns, fetch, cache }), TypeClient.load({ ns, fetch, cache })];
@@ -1007,7 +1007,7 @@ describe('TypeClient', () => {
       it('shared cache (between calls)', async () => {
         const ns = 'ns:foo.1';
         const fetch = testFetch({ defs });
-        const cache = TypeSystem.Cache.toCache();
+        const cache = TypeSystem.Cache.create();
 
         await TypeClient.load({ ns, fetch, cache });
         expect(fetch.getNsCount).to.eql(2);

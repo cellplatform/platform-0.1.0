@@ -85,7 +85,7 @@ describe('settings.config', () => {
       };
 
       test((c) => (c.exists = false), 'Configuration file does not exist');
-      test((c) => (c.data.title = '  '), 'Missing [title] value');
+      test((c) => (c.data.name = '  '), 'Missing [name] value');
       test((c) => (c.data.now.deployment = '  '), 'Missing [now.deployment] value');
       test((c) => (c.data.now.domain = '  '), 'Missing [now.domain] value');
       test((c) => (c.data.secret.mongo = '  '), 'Missing [secret.mongo] value');

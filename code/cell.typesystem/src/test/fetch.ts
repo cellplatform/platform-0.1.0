@@ -23,6 +23,16 @@ export const testFetch = (data: {
     }
   };
 
+  const filterCells = (query: string, cells: t.ICellMap) => {
+    const range = coord.range.fromKey(query);
+    return Object.keys(cells).reduce((acc, next) => {
+      if (range.contains(next)) {
+        acc[next] = cells[next];
+      }
+      return acc;
+    }, {});
+  };
+
   const getNs: t.FetchSheetNs = async (args) => {
     before('getNs', args);
     const def = data.defs[args.ns];
@@ -41,11 +51,13 @@ export const testFetch = (data: {
 
   const getCells: t.FetchSheetCells = async (args) => {
     before('getCells', args);
-    const cells = data.cells;
-    const rows = coord.cell.max.row(Object.keys(cells || {})) + 1;
+    const rows = coord.cell.max.row(Object.keys(data.cells || {})) + 1;
     const total = { rows };
     res.getCellsCount++;
-    return { cells, total };
+    return {
+      cells: data.cells ? filterCells(args.query, data.cells) : undefined,
+      total,
+    };
   };
 
   type T = t.ISheetFetcher & {

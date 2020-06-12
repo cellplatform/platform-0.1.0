@@ -9,7 +9,7 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
   /**
    * Listen for view requests and render view that maps to the currently selected tree-node.
    */
-  rx.eventPayload<t.IFinderViewRequestEvent>(event$, 'FINDER/view/req')
+  rx.payload<t.IFinderViewRequestEvent>(event$, 'FINDER/view/req')
     .pipe(filter((e) => !e.isHandled))
     .subscribe((e) => {
       // NB: Handled in plugins.

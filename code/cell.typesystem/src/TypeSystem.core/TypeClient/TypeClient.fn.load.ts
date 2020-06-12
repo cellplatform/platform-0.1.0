@@ -31,7 +31,7 @@ export async function load(args: {
 }): Promise<LoadResponse> {
   const ns = Uri.ns(args.ns, false).toString();
 
-  // Check cache (if an external cache was provided).
+  // Check cache for client, if an external cache was provided.
   if (args.cache) {
     const key = TypeCache.key.client(ns);
     const value = args.cache.get(key);
@@ -45,8 +45,8 @@ export async function load(args: {
     }
   }
 
-  const cache = TypeCache.toCache(args.cache);
-  const fetch = TypeCache.fetch(args.fetch, { cache });
+  const cache = TypeCache.create(args.cache);
+  const fetch = TypeCache.wrapFetch(args.fetch, { cache });
   const errors = ErrorList.create({ defaultType: ERROR.TYPE.DEF });
   const ctx: Context = { fetch, cache, errors, visited: [] };
 

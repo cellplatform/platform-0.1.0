@@ -35,13 +35,13 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
   }
 
   // Prompt the user for which deployment to run.
-  const deployTitle = (args: { active: boolean; force?: boolean }) => {
+  const deployName = (args: { active: boolean; force?: boolean }) => {
     const deploy = args.active ? 'Deploying' : 'Deploy';
-    const title = args.force ? `${deploy} (forced)` : deploy;
-    return title;
+    const name = args.force ? `${deploy} (forced)` : deploy;
+    return name;
   };
   log.info();
-  const configs = await files.promptMany({ message: deployTitle({ force, active: false }) });
+  const configs = await files.promptMany({ message: deployName({ force, active: false }) });
   if (configs.length === 0) {
     return;
   }
@@ -90,7 +90,7 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
       const cmd = `now ${options.toString()}`;
 
       const deployment = {
-        title: `${config.data.title}`,
+        name: `${config.data.name}`,
         targetDir,
         path: config.path,
         config: config.data,
@@ -119,7 +119,7 @@ export async function run(args: { target: DeployTarget; force?: boolean; dry?: b
 
   // Build list of tasks.
   const tasks = deployments.map((deployment) => {
-    const { title, targetDir, cmd } = deployment;
+    const { name: title, targetDir, cmd } = deployment;
     return deployTask({
       targetDir,
       cmd,
@@ -226,7 +226,7 @@ async function copyAndPrepare(args: {
     if (file) {
       let text = (await fs.readFile(file.to)).toString();
 
-      text = text.replace(/__TITLE__/, config.title);
+      text = text.replace(/__NAME__/, config.name);
       text = text.replace(/__DB__/, now.subdomain || 'prod');
       text = text.replace(/__COLLECTION__/, config.collection);
       text = text.replace(/__DEPLOYED_AT__/, time.now.timestamp.toString());

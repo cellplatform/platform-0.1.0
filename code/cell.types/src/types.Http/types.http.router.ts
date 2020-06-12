@@ -26,11 +26,11 @@ export type IUrlMap = { [key: string]: string };
 export type IReqQuerySysUid = { total?: number };
 
 export type IResGetSysInfo = {
-  deployment: string;
+  name: string;
+  host: string;
   system: string;
-  domain: string;
   region: string;
-  deployedAt?: string;
+  deployedAt?: number;
   hash?: string;
 };
 

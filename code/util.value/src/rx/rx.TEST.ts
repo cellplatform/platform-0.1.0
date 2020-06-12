@@ -62,7 +62,7 @@ describe('rx', () => {
       const source$ = new Subject<FooEvent | BarEvent>();
 
       const fired: Foo[] = [];
-      rx.eventPayload<FooEvent>(source$, 'TYPE/foo').subscribe((e) => fired.push(e));
+      rx.payload<FooEvent>(source$, 'TYPE/foo').subscribe((e) => fired.push(e));
 
       source$.next({ type: 'TYPE/bar', payload: { msg: 'hello' } });
       source$.next({ type: 'TYPE/foo', payload: { count: 123 } });
