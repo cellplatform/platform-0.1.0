@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.ide",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "description": "IDE (Integrated Development Environment) UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,8 +18,8 @@
   },
   "dependencies": {
     "@monaco-editor/react": "3.3.0",
-    "@platform/cell.client": "0.2.102",
-    "@platform/cell.ui": "0.1.39",
+    "@platform/cell.client": "0.2.103",
+    "@platform/cell.ui": "0.1.40",
     "@platform/libs": "0.2.2",
     "@platform/react": "0.4.37",
     "monaco-themes": "0.3.3",
