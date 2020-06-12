@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { TypeCache, TypeCacheCells } from '.';
-import { expect, MemoryCache, t, testFetch, TYPE_DEFS } from '../../test';
+import { expect, MemoryCache, t, testFetch, TYPE_DEFS } from '../test';
 
 describe('TypeCache', () => {
   const CELLS = {
@@ -102,7 +102,7 @@ describe('TypeCache', () => {
         expect(innerFetch.getCellsCount).to.eql(2); // NB: Went back to the fetch source as query expanded range.
       });
 
-      it.only('syncs cells via event (cache patching)', async () => {
+      it('syncs cells via event (cache patching)', async () => {
         const event$ = new Subject<t.TypedSheetEvent>();
         const innerFetch = testFetch({ defs: TYPE_DEFS, cells: CELLS });
         const fetch = TypeCache.wrapFetch(innerFetch, { event$ });
@@ -245,7 +245,7 @@ describe('TypeCache', () => {
       });
     });
 
-    describe.only('sync', () => {
+    describe('sync', () => {
       it('empty', () => {
         const entry = TypeCacheCells.create('ns:foo');
         const res = entry.sync({});
@@ -275,7 +275,7 @@ describe('TypeCache', () => {
         expect(entry.cells).to.eql({});
       });
 
-      it('update existing cell value', async () => {
+      it('update existing (cached) cell value', async () => {
         const fetch = testFetch({ defs: TYPE_DEFS, cells: CELLS });
         const entry = TypeCacheCells.create('ns:foo');
 

@@ -1,7 +1,8 @@
-import { TypeCache, TypeClient, TypeDefault, TypeTarget, TypeValue } from './TypeSystem.core';
+import { TypeBuilder } from './TypeSystem.builder';
+import { TypeCache } from './TypeSystem.cache';
+import { TypeClient, TypeDefault, TypeTarget, TypeValue } from './TypeSystem.core';
 import { ChangeMonitor, TypedSheet } from './TypeSystem.sheet';
 import { fetcher, objectToCells } from './TypeSystem.util';
-import { TypeBuilder } from './TypeSystem.builder';
 
 export class TypeSystem {
   public static Client = TypeClient;

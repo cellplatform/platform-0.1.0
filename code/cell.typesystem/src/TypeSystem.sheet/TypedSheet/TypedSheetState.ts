@@ -1,6 +1,6 @@
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { TypeCache } from '../../TypeSystem.core';
+import { TypeCache } from '../../TypeSystem.cache';
 import { deleteUndefined, R, Schema, t, Uri } from './common';
 
 type N = t.INsProps;

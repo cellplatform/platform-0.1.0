@@ -1,4 +1,4 @@
-import { t, CellRange, Uri } from '../../common';
+import { t, CellRange, Uri } from '../common';
 
 /**
  * A cache entry that represents cells for a single namespace
