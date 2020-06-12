@@ -1,16 +1,7 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
-import { MemoryCache, t, rx } from '../../common';
+import { Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
+import { MemoryCache, rx, t } from '../../common';
 import { fetcher } from '../../TypeSystem.util';
 import { TypeCacheCells } from './TypeCacheCells';
 import { TypeCacheKey } from './TypeCacheKey';
@@ -43,9 +34,8 @@ export function wrapFetch(
     rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync').subscribe((e) => {
       const key = fetchKey('getCells', e.ns);
       const entry = cache.get<C>(key);
-      if (entry) {
-        entry.sync(e.changes);
-      }
+      console.log('CACHE PATCH', e.ns, entry);
+      entry?.sync(e.changes);
     });
   }
 
