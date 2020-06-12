@@ -1,4 +1,4 @@
-import { filter, map, share, takeUntil, delay } from 'rxjs/operators';
+import { filter, map, share, takeUntil, delay, concatMap } from 'rxjs/operators';
 
 import { TypeCache } from '../../TypeSystem.cache';
 import { rx, deleteUndefined, R, Schema, t, Uri } from './common';
@@ -94,6 +94,14 @@ export class TypedSheetState implements t.ITypedSheetState {
       .subscribe((e) => {
         this.fire({ type: 'SHEET/synced', payload: { sheet: this._sheet, changes: e.changes } });
       });
+
+    rx.payload<t.ITypedSheetSyncedEvent>(this.event$, 'SHEET/synced')
+      .pipe(filter((e) => e.sheet === this._sheet))
+      .subscribe(() => this.fireUpdated('SYNC'));
+
+    rx.payload<t.ITypedSheetChangedEvent>(this.event$, 'SHEET/changed')
+      .pipe(filter((e) => e.sheet === this._sheet))
+      .subscribe(() => this.fireUpdated('CHANGE'));
   }
 
   public dispose() {
@@ -277,6 +285,17 @@ export class TypedSheetState implements t.ITypedSheetState {
       payload: {
         sheet: this._sheet,
         change,
+        changes: this.changes,
+      },
+    });
+  }
+
+  private fireUpdated(via: t.ITypedSheetUpdated['via']) {
+    this.fire({
+      type: 'SHEET/updated',
+      payload: {
+        via,
+        sheet: this._sheet,
         changes: this.changes,
       },
     });

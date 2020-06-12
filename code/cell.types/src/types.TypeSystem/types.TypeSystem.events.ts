@@ -14,7 +14,8 @@ export type TypedSheetEvent =
   | ITypedSheetChangedEvent
   | ITypedSheetChangesClearedEvent
   | ITypedSheetSyncEvent
-  | ITypedSheetSyncedEvent;
+  | ITypedSheetSyncedEvent
+  | ITypedSheetUpdatedEvent;
 
 /**
  * Fires when a sheet cursor commences loading.
@@ -130,11 +131,34 @@ export type ITypedSheetSync = {
   changes: t.ITypedSheetChanges;
 };
 
+/**
+ * Fires after a sheet has been synced (and all internal data
+ * structures have updated themselves).
+ */
 export type ITypedSheetSyncedEvent = {
   type: 'SHEET/synced';
   payload: ITypedSheetSynced;
 };
 export type ITypedSheetSynced = {
+  sheet: t.ITypedSheet;
+  changes: t.ITypedSheetChanges;
+};
+
+/**
+ * Fired when a sheet has been updated via either:
+ *
+ *  - SHEET/change (value edited, change state pending)
+ *  - SHEET/sync   (value changed by another process)
+ *
+ * This event can be used as a single indicator of when anything
+ * displaying the sheet should be aware of a change.
+ */
+export type ITypedSheetUpdatedEvent = {
+  type: 'SHEET/updated';
+  payload: ITypedSheetUpdated;
+};
+export type ITypedSheetUpdated = {
+  via: 'SYNC' | 'CHANGE';
   sheet: t.ITypedSheet;
   changes: t.ITypedSheetChanges;
 };

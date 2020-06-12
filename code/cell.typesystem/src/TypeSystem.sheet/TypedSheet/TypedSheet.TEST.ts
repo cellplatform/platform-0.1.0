@@ -1160,63 +1160,6 @@ describe('TypedSheet', () => {
     });
   });
 
-  describe('SHEET/sync (update cache event)', () => {
-    it('updates internal state', async () => {
-      const { sheet, event$ } = await testMySheet();
-      const cursor = await sheet.data('MyRow').load();
-
-      const row = cursor.row(0);
-      expect(row.props.title).to.eql('One');
-      expect(sheet.state.hasChanges).to.eql(false);
-
-      const ns = 'foo.mySheet';
-      event$.next({
-        type: 'SHEET/sync',
-        payload: {
-          ns,
-          changes: {
-            cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
-          },
-        },
-      });
-
-      expect(row.props.title).to.eql('yo');
-      expect(sheet.state.hasChanges).to.eql(false); // NB: The internal data is updated, but no "pending change" is logged.
-    });
-
-    it('event: SHEET/synced', async () => {
-      const { sheet, event$ } = await testMySheet();
-      const cursor = await sheet.data('MyRow').load();
-      const row = cursor.row(0);
-      let title = row.props.title;
-
-      expect(title).to.eql('One');
-
-      const fired: t.ITypedSheetSynced[] = [];
-      rx.payload<t.ITypedSheetSyncedEvent>(event$, 'SHEET/synced').subscribe((e) => {
-        fired.push(e);
-        title = row.props.title;
-      });
-
-      const ns = 'foo.mySheet';
-      event$.next({
-        type: 'SHEET/sync',
-        payload: {
-          ns,
-          changes: {
-            cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
-          },
-        },
-      });
-
-      await time.wait(5);
-
-      expect(fired.length).to.eql(1);
-      expect(fired[0].sheet).to.equal(sheet);
-      expect(title).to.eql('yo');
-    });
-  });
-
   describe('TypedSheetState', () => {
     it('exposed from sheet', async () => {
       const { sheet } = await testMySheet();
@@ -1589,6 +1532,111 @@ describe('TypedSheet', () => {
         await state.getCell('A1');
         expect(fetch.getCellsCount).to.eql(3); // NB: and back in the cache!
       });
+    });
+  });
+
+  describe('SHEET/sync (update cache event)', () => {
+    it('updates internal state', async () => {
+      const { sheet, event$ } = await testMySheet();
+      const cursor = await sheet.data('MyRow').load();
+
+      const row = cursor.row(0);
+      expect(row.props.title).to.eql('One');
+      expect(sheet.state.hasChanges).to.eql(false);
+
+      const ns = 'foo.mySheet';
+      event$.next({
+        type: 'SHEET/sync',
+        payload: {
+          ns,
+          changes: {
+            cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
+          },
+        },
+      });
+
+      expect(row.props.title).to.eql('yo');
+      expect(sheet.state.hasChanges).to.eql(false); // NB: The internal data is updated, but no "pending change" is logged.
+    });
+
+    it('event: SHEET/synced', async () => {
+      const { sheet, event$ } = await testMySheet();
+      const cursor = await sheet.data('MyRow').load();
+      const row = cursor.row(0);
+      let title = row.props.title;
+
+      expect(title).to.eql('One');
+
+      const fired: t.ITypedSheetSynced[] = [];
+      rx.payload<t.ITypedSheetSyncedEvent>(event$, 'SHEET/synced').subscribe((e) => {
+        fired.push(e);
+        title = row.props.title;
+      });
+
+      const ns = 'foo.mySheet';
+      event$.next({
+        type: 'SHEET/sync',
+        payload: {
+          ns,
+          changes: {
+            cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
+          },
+        },
+      });
+
+      await time.wait(5);
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].sheet).to.equal(sheet);
+      expect(title).to.eql('yo');
+    });
+  });
+
+  describe('SHEET/updated', () => {
+    it('fires on SHEET/changed', async () => {
+      const { sheet, event$ } = await testMySheet();
+
+      const fired: t.ITypedSheetUpdated[] = [];
+      rx.payload<t.ITypedSheetUpdatedEvent>(event$, 'SHEET/updated').subscribe((e) => {
+        fired.push(e);
+      });
+
+      const cursor = await sheet.data('MyRow').load();
+      const row = cursor.row(0);
+
+      row.props.title = 'Hello!!';
+      await time.wait(5);
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].via).to.equal('CHANGE');
+      expect(fired[0].sheet).to.equal(sheet);
+      expect(fired[0].changes).to.eql(sheet.state.changes);
+    });
+
+    it.skip('fires on SHEET/synced', async () => {
+      const { sheet, event$ } = await testMySheet();
+
+      const fired: t.ITypedSheetUpdated[] = [];
+      rx.payload<t.ITypedSheetUpdatedEvent>(event$, 'SHEET/updated').subscribe((e) => {
+        fired.push(e);
+      });
+
+      const ns = 'foo.mySheet';
+      event$.next({
+        type: 'SHEET/sync',
+        payload: {
+          ns,
+          changes: {
+            cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
+          },
+        },
+      });
+      await time.wait(5);
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].via).to.equal('SYNC');
+      expect(fired[0].sheet).to.equal(sheet);
+      expect(fired[0].changes).to.eql(sheet.state.changes);
     });
   });
 });
