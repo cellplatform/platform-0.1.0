@@ -8,5 +8,8 @@ import { IPropListItem } from '@platform/cell.ui/lib/types';
 import { PropList } from '@platform/cell.ui/lib/components/PropList';
 export { PropList, IPropListItem };
 
+import { Button } from '@platform/ui.button/lib/components/Button';
+export { Button };
+
 import { ObjectView } from '@platform/ui.object';
 export { ObjectView };
