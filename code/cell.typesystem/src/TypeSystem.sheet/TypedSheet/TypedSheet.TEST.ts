@@ -11,6 +11,7 @@ import {
   time,
   TYPE_DEFS,
   testFetch,
+  rx,
 } from '../../test';
 import * as f from '../../test/.d.ts/foo';
 import * as e from '../../test/.d.ts/foo.enum';
@@ -50,6 +51,18 @@ describe('TypedSheet', () => {
       expect(sheet.state.isDisposed).to.eql(true);
 
       expect(fired).to.eql(1);
+    });
+
+    it('adds to pool at creation', async () => {
+      const { sheet } = await testMySheet();
+      expect(sheet.pool.exists(sheet)).to.eql(true);
+    });
+
+    it('removes from pool on dispose', async () => {
+      const { sheet } = await testMySheet();
+      expect(sheet.pool.exists(sheet)).to.eql(true);
+      sheet.dispose();
+      expect(sheet.pool.exists(sheet)).to.eql(false);
     });
   });
 
@@ -1148,7 +1161,7 @@ describe('TypedSheet', () => {
   });
 
   describe('SHEET/sync (update cache event)', () => {
-    it('has updated value', async () => {
+    it('updates internal state', async () => {
       const { sheet, event$ } = await testMySheet();
       const cursor = await sheet.data('MyRow').load();
 
@@ -1169,6 +1182,38 @@ describe('TypedSheet', () => {
 
       expect(row.props.title).to.eql('yo');
       expect(sheet.state.hasChanges).to.eql(false); // NB: The internal data is updated, but no "pending change" is logged.
+    });
+
+    it('event: SHEET/synced', async () => {
+      const { sheet, event$ } = await testMySheet();
+      const cursor = await sheet.data('MyRow').load();
+      const row = cursor.row(0);
+      let title = row.props.title;
+
+      expect(title).to.eql('One');
+
+      const fired: t.ITypedSheetSynced[] = [];
+      rx.payload<t.ITypedSheetSyncedEvent>(event$, 'SHEET/synced').subscribe((e) => {
+        fired.push(e);
+        title = row.props.title;
+      });
+
+      const ns = 'foo.mySheet';
+      event$.next({
+        type: 'SHEET/sync',
+        payload: {
+          ns,
+          changes: {
+            cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
+          },
+        },
+      });
+
+      await time.wait(5);
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].sheet).to.equal(sheet);
+      expect(title).to.eql('yo');
     });
   });
 

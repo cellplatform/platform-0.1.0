@@ -13,7 +13,8 @@ export type TypedSheetEvent =
   | ITypedSheetChangeEvent
   | ITypedSheetChangedEvent
   | ITypedSheetChangesClearedEvent
-  | ITypedSheetSyncEvent;
+  | ITypedSheetSyncEvent
+  | ITypedSheetSyncedEvent;
 
 /**
  * Fires when a sheet cursor commences loading.
@@ -126,5 +127,14 @@ export type ITypedSheetSyncEvent = {
 };
 export type ITypedSheetSync = {
   ns: string;
+  changes: t.ITypedSheetChanges;
+};
+
+export type ITypedSheetSyncedEvent = {
+  type: 'SHEET/synced';
+  payload: ITypedSheetSynced;
+};
+export type ITypedSheetSynced = {
+  sheet: t.ITypedSheet;
   changes: t.ITypedSheetChanges;
 };

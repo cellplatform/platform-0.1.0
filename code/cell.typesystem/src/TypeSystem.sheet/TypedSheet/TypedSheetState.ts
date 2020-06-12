@@ -1,7 +1,7 @@
-import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { filter, map, share, takeUntil, delay } from 'rxjs/operators';
 
 import { TypeCache } from '../../TypeSystem.cache';
-import { deleteUndefined, R, Schema, t, Uri } from './common';
+import { rx, deleteUndefined, R, Schema, t, Uri } from './common';
 
 type N = t.INsProps;
 type C = t.ICellData;
@@ -72,6 +72,9 @@ export class TypedSheetState implements t.ITypedSheetState {
       share(),
     );
 
+    /**
+     * Event handlers.
+     */
     this.change$
       .pipe(
         filter((e) => e.kind === 'CELL'),
@@ -82,6 +85,15 @@ export class TypedSheetState implements t.ITypedSheetState {
     this.change$
       .pipe(filter((e) => e.kind === 'NS'))
       .subscribe(({ to }) => this.fireNsChanged({ to }));
+
+    rx.payload<t.ITypedSheetSyncEvent>(this.event$, 'SHEET/sync')
+      .pipe(
+        filter((e) => this.isThisSheet(e.ns)),
+        delay(0), // NB: Cause handler to run after all child rows (etc) have had a chance to react to this event.
+      )
+      .subscribe((e) => {
+        this.fire({ type: 'SHEET/synced', payload: { sheet: this._sheet, changes: e.changes } });
+      });
   }
 
   public dispose() {
@@ -283,5 +295,9 @@ export class TypedSheetState implements t.ITypedSheetState {
       return text.startsWith(`cell:${ns.id}:`);
     }
     return false;
+  }
+
+  private isThisSheet(ns: string) {
+    return Uri.strip.ns(ns) === this.uri.id;
   }
 }
