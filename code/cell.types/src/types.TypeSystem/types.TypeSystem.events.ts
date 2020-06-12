@@ -97,7 +97,7 @@ export type ITypedSheetChangedEvent = {
 export type ITypedSheetChanged = {
   sheet: t.ITypedSheet;
   change: t.ITypedSheetChangeDiff;
-  changes: t.ITypedSheetStateChanges;
+  changes: t.ITypedSheetChanges;
 };
 
 /**
@@ -109,7 +109,7 @@ export type ITypedSheetChangesClearedEvent = {
 };
 export type ITypedSheetChangesCleared = {
   sheet: t.ITypedSheet;
-  from: t.ITypedSheetStateChanges;
-  to: t.ITypedSheetStateChanges;
+  from: t.ITypedSheetChanges;
+  to: t.ITypedSheetChanges;
   action: 'REVERT' | 'SAVE';
 };

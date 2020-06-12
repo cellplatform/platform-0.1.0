@@ -94,7 +94,7 @@ export class TypedSheetState implements t.ITypedSheetState {
   /**
    * [Fields]
    */
-  private _changes: t.ITypedSheetStateChanges = {};
+  private _changes: t.ITypedSheetChanges = {};
   private readonly _dispose$ = new t.Subject<{}>();
   private readonly _event$: t.Subject<t.TypedSheetEvent>;
   private readonly _sheet: t.ITypedSheet;
@@ -116,7 +116,7 @@ export class TypedSheetState implements t.ITypedSheetState {
     return this._dispose$.isStopped;
   }
 
-  public get changes(): t.ITypedSheetStateChanges {
+  public get changes(): t.ITypedSheetChanges {
     const changes = this._changes;
     return deleteUndefined({
       ns: changes.ns ? { ...changes.ns } : undefined,

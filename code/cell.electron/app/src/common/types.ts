@@ -4,12 +4,8 @@ export * from '@platform/cell.types';
 export * from '../types';
 
 import * as t from '../types';
-import {
-  ITypedSheet,
-  IClientTypesystem,
-  ITypedSheetStateChanges,
-  ITypedSheetData,
-} from '@platform/cell.types';
+
+import { ITypedSheet, IClientTypesystem, ITypedSheetData } from '@platform/cell.types';
 
 export type IContext = {
   host: string;

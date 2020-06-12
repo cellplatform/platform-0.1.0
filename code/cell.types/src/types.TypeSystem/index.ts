@@ -1,6 +1,7 @@
 export * from './types.TypeSystem.ast';
 export * from './types.TypeSystem.builder';
 export * from './types.TypeSystem.cell';
+export * from './types.TypeSystem.change';
 export * from './types.TypeSystem.client';
 export * from './types.TypeSystem.def';
 export * from './types.TypeSystem.events';
