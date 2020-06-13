@@ -88,6 +88,7 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
    */
   public render() {
     const { error } = this.state;
+    const ctx = this.context;
 
     const styles = {
       base: css({
@@ -96,7 +97,12 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
         userSelect: 'none',
         display: 'flex',
         color: COLORS.DARK,
-        // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+      }),
+      def: css({
+        Absolute: [null, null, 10, 10],
+        fontSize: 10,
+        opacity: 0.6,
+        textShadow: `0 1px 0px ${color.format(0.3)}`,
       }),
     };
 
@@ -104,6 +110,7 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
       <DragTarget style={css(styles.base, this.props.style)} event$={this.event$}>
         {!error && this.renderBody()}
         {error && this.renderError(error)}
+        <div {...styles.def}>def → {ctx.def}</div>
       </DragTarget>
     );
   }
@@ -132,7 +139,7 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
       }),
     };
 
-    const message = isDragOver ? `Drop App` : `Drag to install App`;
+    const message = isDragOver ? `Drop App` : `Drag to Install App`;
     const elMessage = !isDropped && <div {...styles.label}>{message}</div>;
 
     return (
@@ -140,7 +147,7 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
         <div {...styles.border}>
           {elMessage}
           {this.renderList()}
-          <Temp />
+          {/* <Temp /> */}
         </div>
       </div>
     );

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 
-import { css, CssValue, t, ui } from '../../common';
+import { color, css, CssValue, t, ui } from '../../common';
 import { Shell } from '../Finder.Shell';
 import { WindowTitleBar } from '../primitives';
 
@@ -33,7 +33,10 @@ export class Root extends React.PureComponent<IRootProps> {
    */
   public render() {
     const styles = {
-      base: css({ Absolute: 0 }),
+      base: css({
+        Absolute: 0,
+        backgroundColor: color.format(1),
+      }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
       body: css({ Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0] }),
     };

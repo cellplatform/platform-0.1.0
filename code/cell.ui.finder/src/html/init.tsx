@@ -17,7 +17,7 @@ export function render() {
    */
   const el = (
     <Provider>
-      <Root ctx={ctx} />;
+      <Root ctx={ctx} />
     </Provider>
   );
   ReactDOM.render(el, document.getElementById('root'));
