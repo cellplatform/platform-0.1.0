@@ -20,4 +20,4 @@ export type ClientOptions = {
   event$?: Subject<t.TypedSheetEvent>;
 };
 
-export type ITypesystemClientOptions = ClientOptions & { pool?: t.ISheetPool };
+export type ClientTypesystemOptions = ClientOptions & { pool?: t.ISheetPool };

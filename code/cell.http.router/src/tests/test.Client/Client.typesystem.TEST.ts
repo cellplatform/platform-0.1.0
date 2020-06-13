@@ -185,7 +185,7 @@ describe('Client.TypeSystem', () => {
           responses$.next();
         });
 
-        const fired: t.ITypedSheetSaveEvent[] = [];
+        const fired: t.TypedSheetEvent[] = [];
         saver.event$.subscribe((e) => fired.push(e));
 
         const cursor = await sheet.data<g.MyRow>('MyRow').load();
@@ -208,7 +208,7 @@ describe('Client.TypeSystem', () => {
         const saver = Client.saveMonitor({ client, debounce: 10 });
         client.changes.watch(sheet);
 
-        const fired: t.ITypedSheetSaveEvent[] = [];
+        const fired: t.TypedSheetEvent[] = [];
         saver.event$.subscribe((e) => fired.push(e));
 
         const cursor = await sheet.data<g.MyRow>('MyRow').load();
@@ -261,7 +261,7 @@ describe('Client.TypeSystem', () => {
           e.modify({ status, data: error }); // NB: Simulate a server-side error.
         });
 
-        const fired: t.ITypedSheetSaveEvent[] = [];
+        const fired: t.TypedSheetEvent[] = [];
         saver.event$.subscribe((e) => fired.push(e));
 
         const cursor = await sheet.data<g.MyRow>('MyRow').load();

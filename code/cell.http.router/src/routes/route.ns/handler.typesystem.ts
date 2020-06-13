@@ -12,7 +12,8 @@ export async function getTypes(args: {
     const uri = Schema.uri.create.ns(args.id);
 
     // Read in the type-definitions.
-    const client = TypeSystem.client(HttpClient.create(host));
+    const fetch = TypeSystem.fetcher.fromClient(HttpClient.create(host));
+    const client = TypeSystem.client(fetch);
     const res = await client.load(uri);
     if (!res.ok) {
       const err = `Failed to retrieve type definitions for (${uri.toString()})`;

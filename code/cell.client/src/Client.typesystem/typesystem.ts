@@ -8,7 +8,7 @@ type N = string | t.INsUri;
 /**
  * Access point for working with the TypeSystem.
  */
-export function typesystem(input?: t.ITypesystemClientOptions | string | number) {
+export function typesystem(input?: t.ClientTypesystemOptions | string | number) {
   const args = typeof input === 'object' ? input : { http: input };
   const event$ = args.event$ ? (args.event$ as Subject<t.TypedSheetEvent>) : undefined;
   const cache = args.cache || MemoryCache.create();
@@ -40,7 +40,7 @@ export function typesystem(input?: t.ITypesystemClientOptions | string | number)
      */
     async defs(ns: N | N[]) {
       const uris = Array.isArray(ns) ? ns : [ns];
-      const client = TypeSystem.client(http);
+      const client = TypeSystem.client(fetch);
       const defs = (await Promise.all(uris.map((ns) => client.load(ns)))).map(({ defs }) => defs);
       return defs.reduce((acc, next) => acc.concat(next), []); // Flatten [][] => [].
     },

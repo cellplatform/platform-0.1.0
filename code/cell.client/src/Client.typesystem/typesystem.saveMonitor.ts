@@ -3,10 +3,16 @@ import { debounceTime, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { coord, defaultValue, ERROR, MemoryQueue, t } from '../common';
 
+type E = t.TypedSheetEvent;
+
 /**
  * Monitors changes pushing changes through the given HTTP gateway.
  */
-export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: number }) {
+export function saveMonitor(args: {
+  client: t.IClientTypesystem;
+  event$?: Subject<E>;
+  debounce?: number;
+}) {
   const { client } = args;
   const http = client.http;
   const debounce = defaultValue(args.debounce, 300);
@@ -15,9 +21,10 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
   // Setup observables.
   const dispose$ = new Subject();
   const changed$ = client.changes.changed$.pipe(takeUntil(dispose$));
-  const subject$ = new Subject<t.ITypedSheetSaveEvent>();
+  const subject$ = args.event$ || new Subject<E>();
   const event$ = subject$.pipe(takeUntil(dispose$), share());
-  const fire = (e: t.ITypedSheetSaveEvent) => subject$.next(e);
+
+  const fire = (e: E) => subject$.next(e);
 
   // Monitor changes.
   let pending: t.ITypedSheetPendingChanges = {};
@@ -74,6 +81,7 @@ export function saveMonitor(args: { client: t.IClientTypesystem; debounce?: numb
         .map((res) => ({ ns, error: res.error as t.IHttpError }));
       const ok = errors.length === 0;
       fire({ type: 'SHEET/saved', payload: { ok, target, sheet, changes, errors } });
+      fire({ type: 'SHEET/sync', payload: { ns, changes } });
     });
   };
 
