@@ -33,6 +33,7 @@ export class TypedSheetState implements t.ITypedSheetState {
   private constructor(args: IArgs) {
     this._sheet = args.sheet;
     this._event$ = args.event$;
+
     const fetch = TypeCache.wrapFetch(args.fetch, { cache: args.cache });
 
     // INTERCEPT: Return pending changes to [cells] from the fetch method.
