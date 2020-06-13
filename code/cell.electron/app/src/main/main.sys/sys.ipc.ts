@@ -5,7 +5,7 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { constants, t } from '../common';
 
 /**
- * Initializes the IPC (inter-process communications) event streams.
+ * Initializes the IPC ("inter-process-communication") event stream.
  */
 export function ipc(args: { ctx: t.IContext }) {
   const { ctx } = args;
@@ -36,11 +36,12 @@ export function ipc(args: { ctx: t.IContext }) {
   const ipc$ = event$.pipe(filter((e) => e.type.startsWith('IPC/')));
   const fromWindow$ = ipc$.pipe(filter((e) => e.payload.source !== 'MAIN'));
 
-  // TEMP 🐷
-  fromWindow$.subscribe((e) => {
-    console.log('IPC MAIN from', e.payload.source);
-    console.log('e.payload.changes', e.payload.changes);
-
-    // event$.next(e as any); // TEMP 🐷HACK
+  /**
+   * Monitor changes to sheets from window.
+   */
+  fromWindow$.subscribe(async (e) => {
+    const { ns, changes } = e.payload;
+    const sheet = await ctx.client.sheet(ns);
+    sheet.change(changes);
   });
 }

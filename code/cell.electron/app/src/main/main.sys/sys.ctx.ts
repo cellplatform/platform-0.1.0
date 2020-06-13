@@ -1,4 +1,4 @@
-import { t, constants } from '../common';
+import { constants, t } from '../common';
 
 /**
  * Generates the shared context.
