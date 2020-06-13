@@ -47,14 +47,10 @@ export class Temp extends React.PureComponent<ITempProps, ITempState> {
    */
   public async init() {
     const client = this.context.client;
-    const sheet = await client.sheet<t.AppWindow>('ckb7lubz800128yet5naign7m');
+    const sheet = await client.sheet<t.AppWindow>('ckbcxkwg4000wrpetgkfa79mn');
     const data = await sheet.data('AppWindow').load();
-
     this.sheet = sheet;
     this.data = data;
-
-    console.log('data.total', data.total);
-
     this.loadRow();
   }
 
