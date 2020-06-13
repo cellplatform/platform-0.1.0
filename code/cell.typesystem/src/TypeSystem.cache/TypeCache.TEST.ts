@@ -124,6 +124,7 @@ describe('TypeCache', () => {
 
         const res2 = await fetch.getCells({ ns, query: 'B1:B3' });
         expect((res2.cells || {}).B2?.value).to.eql(123);
+        expect(res2.total.rows).to.eql(9);
       });
     });
   });
@@ -139,6 +140,7 @@ describe('TypeCache', () => {
       expect(entry.ns).to.eql('ns:foo');
       expect(entry.cells).to.eql({});
       expect(entry.error).to.eql(undefined);
+      expect(entry.total.rows).to.eql(-1);
     });
 
     describe('query', () => {
@@ -171,7 +173,7 @@ describe('TypeCache', () => {
       it('query.get (pulls full rows, adds to cached {cells})', async () => {
         const entry = TypeCacheCells.create('ns:foo');
         expect(entry.cells).to.eql({});
-        expect(entry.total.rows).to.eql(0);
+        expect(entry.total.rows).to.eql(-1);
 
         const res = await entry.query('B2:B3').get(fetch);
 
@@ -248,30 +250,31 @@ describe('TypeCache', () => {
     describe('sync', () => {
       it('empty', () => {
         const entry = TypeCacheCells.create('ns:foo');
-        const res = entry.sync({});
-        expect(res).to.eql({});
+        entry.total.rows = 10;
+        entry.sync({});
         expect(entry.cells).to.eql({});
+        expect(entry.total.rows).to.eql(10); // NB: total not reset.
       });
 
       it('add new cells', () => {
         const entry = TypeCacheCells.create('ns:foo');
-        const res = entry.sync({
+        entry.total.rows = 10;
+        entry.sync({
           cells: {
             A1: { kind: 'CELL', ns: 'foo', key: 'A1', from: {}, to: { value: 123 } },
           },
         });
-        expect(res).to.eql({ A1: { value: 123 } });
         expect(entry.cells).to.eql({ A1: { value: 123 } });
+        expect(entry.total.rows).to.eql(-1); // NB: Total reset.
       });
 
       it('no change for different namespace', async () => {
         const entry = TypeCacheCells.create('ns:foo');
-        const res = entry.sync({
+        entry.sync({
           cells: {
             A1: { kind: 'CELL', ns: 'bar', key: 'A1', from: {}, to: { value: 123 } },
           },
         });
-        expect(res).to.eql({});
         expect(entry.cells).to.eql({});
       });
 
@@ -282,14 +285,13 @@ describe('TypeCache', () => {
         const query = entry.query('1:50');
         await query.get(fetch);
 
-        const res = entry.sync({
+        entry.sync({
           cells: {
             A1: { kind: 'CELL', ns: 'ns:foo', key: 'A1', from: {}, to: { value: 123 } }, // NB: has ns-prefix.
             Z9: { kind: 'CELL', ns: 'foo', key: 'Z9', from: {}, to: { value: 456 } },
           },
         });
 
-        expect(res).to.eql({ A1: { value: 123 }, Z9: { value: 456 } });
         expect(entry.cells).to.eql({
           A1: { value: 123 },
           Z1: { value: 'Z1' },

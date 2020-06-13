@@ -5,7 +5,7 @@ export type ITypedSheetPendingChanges = { [ns: string]: t.ITypedSheetChanges };
 /**
  * Save monitor (events).
  */
-export type ITypedSheetSaveEvent = ITypedSheetSavingEvent | ITypedSheetSavedEvent;
+export type TypedSheetSaveEvent = ITypedSheetSavingEvent | ITypedSheetSavedEvent;
 
 export type ITypedSheetSavingEvent = {
   type: 'SHEET/saving';
