@@ -19,3 +19,5 @@ export type ClientOptions = {
   cache?: IMemoryCache;
   event$?: Subject<t.TypedSheetEvent>;
 };
+
+export type ITypesystemClientOptions = ClientOptions & { pool?: t.ISheetPool };

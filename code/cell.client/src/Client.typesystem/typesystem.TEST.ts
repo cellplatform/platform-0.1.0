@@ -1,6 +1,6 @@
 import { Client } from '..';
 import { HttpClient } from '../Client.http';
-import { expect, t, MemoryCache } from '../test';
+import { expect, t, MemoryCache, TypeSystem } from '../test';
 
 /**
  * NOTE:
@@ -44,6 +44,21 @@ describe('Client.typesystem', () => {
       const cache = MemoryCache.create();
       const res = Client.typesystem({ http, cache });
       expect(res.cache).to.equal(cache);
+    });
+  });
+
+  describe('pool', () => {
+    const http = HttpClient.create();
+
+    it('default pool (generated)', () => {
+      const res = Client.typesystem({ http });
+      expect(res.pool).to.be.an.instanceof(TypeSystem.Pool);
+    });
+
+    it('no pool (instance passed)', () => {
+      const pool = TypeSystem.Pool.create();
+      const res = Client.typesystem({ http, pool });
+      expect(res.pool).to.equal(pool);
     });
   });
 });

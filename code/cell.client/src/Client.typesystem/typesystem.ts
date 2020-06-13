@@ -8,10 +8,11 @@ type N = string | t.INsUri;
 /**
  * Access point for working with the TypeSystem.
  */
-export function typesystem(input?: t.ClientOptions | string | number) {
+export function typesystem(input?: t.ITypesystemClientOptions | string | number) {
   const args = typeof input === 'object' ? input : { http: input };
   const event$ = args.event$ ? (args.event$ as Subject<t.TypedSheetEvent>) : undefined;
   const cache = args.cache || MemoryCache.create();
+  const pool = args.pool || TypeSystem.Pool.create();
 
   let change: t.ITypedSheetChangeMonitor | undefined;
 
@@ -25,6 +26,7 @@ export function typesystem(input?: t.ClientOptions | string | number) {
     http,
     fetch,
     cache,
+    pool,
 
     /**
      * The singleton change-monitor for the client.
@@ -58,7 +60,7 @@ export function typesystem(input?: t.ClientOptions | string | number) {
      * Retrieve the strongly-typed sheet at the given namespace.
      */
     sheet<T>(ns: N) {
-      return TypeSystem.Sheet.load<T>({ ns, fetch, cache, event$ });
+      return TypeSystem.Sheet.load<T>({ ns, fetch, cache, event$, pool });
     },
   };
 
