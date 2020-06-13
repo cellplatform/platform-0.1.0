@@ -1,7 +1,7 @@
-import { filter, map, share, takeUntil, delay, concatMap } from 'rxjs/operators';
+import { delay, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { TypeCache } from '../../TypeSystem.cache';
-import { rx, deleteUndefined, R, Schema, t, Uri } from './common';
+import { deleteUndefined, R, rx, Schema, t, Uri } from './common';
 
 type N = t.INsProps;
 type C = t.ICellData;
