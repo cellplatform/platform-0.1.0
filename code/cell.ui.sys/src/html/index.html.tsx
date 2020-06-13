@@ -22,6 +22,3 @@ const { Provider } = context.create({ env });
   // const el = <Root env={env} uri={env.def} />;
   ReactDOM.render(el, document.getElementById('root'));
 })();
-
-
-
