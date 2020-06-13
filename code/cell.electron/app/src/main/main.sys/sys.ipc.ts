@@ -1,14 +1,14 @@
 import { ipcMain } from 'electron';
 import { Subject } from 'rxjs';
-import { debounceTime, filter } from 'rxjs/operators';
+import { debounceTime, filter, map } from 'rxjs/operators';
 
 import { constants, t } from '../common';
 
 /**
  * Initializes the IPC ("inter-process-communication") event stream.
  */
-export function ipc(args: { ctx: t.IContext }) {
-  const { ctx } = args;
+export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
+  const { ctx, event$ } = args;
   const { client } = ctx;
   const { IPC } = constants;
 
@@ -30,10 +30,13 @@ export function ipc(args: { ctx: t.IContext }) {
   /**
    * Listen for events broadcast back from windows.
    */
-  const event$ = new Subject<t.IpcEvent>();
   ipcMain.on(IPC.CHANNEL, (ipc, event: t.IpcEvent) => event$.next(event));
 
-  const ipc$ = event$.pipe(filter((e) => e.type.startsWith('IPC/')));
+  const ipc$ = event$.pipe(
+    filter((e) => e.type.startsWith('IPC/')),
+    map((e) => e as t.IpcEvent),
+  );
+
   const fromWindow$ = ipc$.pipe(filter((e) => e.payload.source !== 'MAIN'));
 
   /**

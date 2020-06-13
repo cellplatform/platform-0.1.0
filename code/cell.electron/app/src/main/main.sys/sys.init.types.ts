@@ -14,11 +14,13 @@ export async function define(ctx: t.IContext) {
     name: '@platform/cell.ui.sys',
     entryPath: 'bundle/index.html',
     sourceDir: paths.bundle['cell.ui.sys'],
-    width: 900, // TEMP 🐷
-    height: 800, // TEMP 🐷
-    // width: 500,
-    // height: 320,
     devPort: 1234,
+    props: {
+      width: 500,
+      height: 320,
+      minHeight: 300,
+      minWidth: 150,
+    },
   });
 
   // await typeDefs.app.define({

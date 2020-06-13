@@ -24,10 +24,12 @@ export async function createBrowserWindow(args: {
   //
   const browser = new BrowserWindow({
     show: false,
-    width: defaultValue(window.width, app.width),
-    height: defaultValue(window.height, app.height),
     x: window.x,
     y: window.y,
+    width: defaultValue(window.width, app.width),
+    height: defaultValue(window.height, app.height),
+    minWidth: app.minWidth,
+    minHeight: app.minHeight,
     title: window.title,
     titleBarStyle: 'hiddenInset',
     transparent: true,

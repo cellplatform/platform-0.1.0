@@ -32,6 +32,8 @@ export declare type App = {
   windows: t.ITypedSheetRefs<AppWindow>;
   width: number;
   height: number;
+  minWidth?: number;
+  minHeight?: number;
 };
 
 export declare type AppWindow = {

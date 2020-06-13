@@ -4,7 +4,7 @@ import { ErrorView } from '@platform/cell.ui/lib/components/Error';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Temp } from './_Temp';
+// import { Temp } from './_Temp';
 
 import { color, COLORS, css, CssValue, t, ui } from '../../common';
 import { uploadApp } from './_tmp';

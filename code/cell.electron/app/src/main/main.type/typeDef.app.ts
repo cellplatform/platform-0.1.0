@@ -10,9 +10,13 @@ export async function add(args: {
   sourceDir: string;
   entryPath: string;
   devPort: number;
-  width: number;
-  height: number;
   force?: boolean;
+  props: {
+    width: number;
+    height: number;
+    minWidth?: number;
+    minHeight?: number;
+  };
 }) {
   const { ctx } = args;
   const { client, apps } = ctx;
@@ -30,8 +34,10 @@ export async function add(args: {
     props.name = args.name;
     props.entry = args.entryPath;
     props.devPort = args.devPort;
-    props.width = args.width;
-    props.height = args.height;
+    props.width = args.props.width;
+    props.height = args.props.height;
+    props.minWidth = args.props.minWidth;
+    props.minHeight = args.props.minHeight;
 
     // Upload the bundle as files to the cell (filesystem).
     await util.upload({

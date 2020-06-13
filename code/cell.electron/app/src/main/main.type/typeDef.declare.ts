@@ -22,7 +22,9 @@ export function declare() {
     .prop('devPort', (p) => p.type('number').default(1234))
     .prop('windows', (p) => p.type('/AppWindow[]').target('ref'))
     .prop('width', (p) => p.type('number').default(1000))
-    .prop('height', (p) => p.type('number').default(800));
+    .prop('height', (p) => p.type('number').default(800))
+    .prop('minWidth?', (p) => p.type('number'))
+    .prop('minHeight?', (p) => p.type('number'));
 
   /**
    * Defines a window instance of an {App}.
