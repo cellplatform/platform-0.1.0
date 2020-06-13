@@ -144,6 +144,95 @@ describe('TypedSheet', () => {
     });
   });
 
+  describe('TypedSheet.change', () => {
+    it('no change (empty changes)', async () => {
+      const sheet = (await testMySheet()).sheet;
+      expect(sheet.state.hasChanges).to.eql(false);
+      sheet.change({});
+      expect(sheet.state.hasChanges).to.eql(false);
+    });
+
+    it('change: ns', async () => {
+      const sheet1 = (await testMySheet()).sheet;
+      const sheet2 = (await testMySheet()).sheet;
+
+      sheet1.state.change.ns({ schema: '1.2.3' });
+      await time.wait(0);
+      expect(sheet1.state.hasChanges).to.eql(true);
+      expect(sheet2.state.hasChanges).to.eql(false);
+
+      const changes1 = sheet1.state.changes;
+      expect(changes1.ns?.to).to.eql({ schema: '1.2.3' });
+
+      sheet2.change(changes1);
+      await time.wait(0);
+
+      const changes2 = sheet2.state.changes.ns;
+
+      expect(sheet2.state.hasChanges).to.eql(true);
+      expect(changes2?.to.schema).to.eql('1.2.3');
+    });
+
+    it('change: cells', async () => {
+      const sheet1 = (await testMySheet()).sheet;
+      const sheet2 = (await testMySheet()).sheet;
+      const cursor1 = await sheet1.data<f.MyRow>('MyRow').load();
+
+      cursor1.row(0).props.title = 'Hello';
+      cursor1.row(0).props.isEnabled = false;
+      await time.wait(0);
+
+      const changes1 = sheet1.state.changes;
+      expect(Object.keys(changes1.cells || {})).to.eql(['A1', 'B1']);
+
+      expect(sheet1.state.hasChanges).to.eql(true);
+      expect(sheet2.state.hasChanges).to.eql(false);
+
+      sheet2.change(changes1);
+      await time.wait(0);
+
+      expect(sheet2.state.hasChanges).to.eql(true);
+
+      const changes2 = sheet2.state.changes.cells || {};
+      expect(changes2.A1.to).to.eql({ value: 'Hello' });
+      expect(changes2.B1.to.props).to.eql({ isEnabled: false });
+    });
+
+    it('throw (on change cells): contains invalid namespace', async () => {
+      const sheet1 = (await testMySheet()).sheet;
+      const sheet2 = (await testMySheet()).sheet;
+      const cursor1 = await sheet1.data<f.MyRow>('MyRow').load();
+      cursor1.row(0).props.title = 'Hello';
+      await time.wait(5);
+
+      const changes = sheet1.state.changes;
+      const A1 = changes.cells?.A1;
+
+      if (A1) {
+        A1.ns = 'foo.fail'; // NB: Modify the namespace to cause error.
+      }
+
+      const fn = () => sheet2.change(changes);
+      expect(fn).to.throw(/is not in sheet/);
+    });
+
+    it('throw (on change ns): contains invalid namespace', async () => {
+      const sheet1 = (await testMySheet()).sheet;
+      const sheet2 = (await testMySheet()).sheet;
+
+      sheet1.state.change.ns({ schema: '1.2.3' });
+      await time.wait(5);
+
+      const changes = sheet1.state.changes;
+      if (changes.ns) {
+        changes.ns.ns = 'foo.fail'; // NB: Modify the namespace to cause error.
+      }
+
+      const fn = () => sheet2.change(changes);
+      expect(fn).to.throw(/is not in sheet/);
+    });
+  });
+
   describe('TypedSheetData (cursor)', () => {
     it('create: default (unloaded)', async () => {
       const { sheet } = await testMySheet();
@@ -1613,7 +1702,7 @@ describe('TypedSheet', () => {
       expect(fired[0].changes).to.eql(sheet.state.changes);
     });
 
-    it.skip('fires on SHEET/synced', async () => {
+    it('fires on SHEET/synced', async () => {
       const { sheet, event$ } = await testMySheet();
 
       const fired: t.ITypedSheetUpdated[] = [];

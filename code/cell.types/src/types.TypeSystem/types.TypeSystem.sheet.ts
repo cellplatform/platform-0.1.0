@@ -16,6 +16,7 @@ export type ITypedSheet<T = {}> = {
   dispose(): void;
   info<P extends t.INsProps = t.INsProps>(): Promise<ITypedSheetInfo<P>>;
   data<D = T>(args: string | ITypedSheetDataArgs): ITypedSheetData<D>;
+  change(changes: t.ITypedSheetChanges): ITypedSheet<T>;
   toString(): string;
 };
 

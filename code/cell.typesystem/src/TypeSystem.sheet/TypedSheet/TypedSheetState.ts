@@ -195,7 +195,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       const sheet = this._sheet;
       const from = { ...this._changes };
       const to = {};
-      this._changes = {}; // NB: resetting state happens after the `from` variable is copied.
+      this._changes = {}; // NB: re-setting state happens after the `from` variable is copied.
       this.fire({
         type: 'SHEET/changes/cleared',
         payload: { sheet, from, to, action },
