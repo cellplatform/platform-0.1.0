@@ -39,19 +39,24 @@ export function objectTypename(input: string | undefined) {
  */
 export function propname(input: string | undefined) {
   const text = (input || '').trim();
+  const optional = text.endsWith('?');
 
   const done = (err?: string) => {
     const isValid = !err;
     const error = isValid ? undefined : `${err} ${ERROR_PROPNAME} (given "${text}")`;
-    return deleteUndefined({ isValid, input: text, error });
+    return deleteUndefined({ isValid, input: text, error, optional });
   };
 
   if (!text) {
     return done('Property-name is empty.');
   }
 
-  if (text.match(/[^a-zA-Z0-9]/)) {
+  if (text.match(/[^a-zA-Z0-9\?]/)) {
     return done('Property-name contains invalid characters.');
+  }
+
+  if (text.includes('?') && !optional) {
+    return done('The "?" character in a property-name must be at the end.');
   }
 
   if (value.isNumeric(text[0])) {
