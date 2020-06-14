@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron';
 import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
-import { constants, t, rx } from '../common';
+import { constants, t } from '../common';
 
 const { IPC } = constants;
 

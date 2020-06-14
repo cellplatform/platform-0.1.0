@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue } from '../../common';
+import { css, CssValue, color } from '../../common';
 import { WindowTitleBar } from '../primitives';
 import { Grid } from '../Grid';
 
@@ -34,7 +34,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
   public render() {
     const styles = {
-      base: css({ Absolute: 0 }),
+      base: css({ Absolute: 0, backgroundColor: color.format(1) }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
       body: css({ Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0] }),
     };
