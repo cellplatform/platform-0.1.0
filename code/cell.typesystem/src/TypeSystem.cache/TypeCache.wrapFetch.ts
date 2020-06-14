@@ -34,8 +34,10 @@ export function wrapFetch(
     rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync').subscribe((e) => {
       const key = fetchKey('getCells', e.ns);
       const entry = cache.get<C>(key);
-      entry.total.rows = -1;
-      entry?.sync(e.changes);
+      if (entry) {
+        entry.total.rows = -1;
+        entry.sync(e.changes);
+      }
     });
   }
 

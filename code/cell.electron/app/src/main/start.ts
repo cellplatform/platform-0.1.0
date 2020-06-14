@@ -75,12 +75,19 @@ export async function start() {
   console.log('ctx.apps.total', ctx.apps.total);
   console.log('ctx.windowRefs.length', ctx.windowRefs.length);
 
-  if (ctx.windowRefs.length < ctx.apps.total) {
+  // if (ctx.windowRefs.length < ctx.apps.total) {
+  if (ctx.windowRefs.length === 0) {
     // TEMP 🐷- Ensure at least one window for each app exists.
-    ctx.apps.forEach((app) => {
-      const name = app.name;
-      window.createOne({ ctx, name });
-    });
+
+    console.log('-------------------------------------------');
+
+    const sys = ctx.apps.row(0);
+    const name = sys.props.name;
+    window.createOne({ ctx, name });
+
+    // ctx.apps.forEach((app) => {
+    //   const name = app.name;
+    // });
   }
 
   // TEMP 🐷

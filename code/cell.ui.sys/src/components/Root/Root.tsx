@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, ui } from '../../common';
+import { css, CssValue, t, ui, color } from '../../common';
 import { Apps, AppClickEvent, IAppData } from '../Apps';
 import { ObjectView, WindowTitleBar } from '../primitives';
 import { Server } from './Server';
 
-export type IRootProps = { ctx: t.ISysContext; uri: string; style?: CssValue };
+export type IRootProps = { style?: CssValue };
 export type IRootState = {
   json?: IAppData;
 };
@@ -17,15 +17,12 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject<{}>();
 
-  private Provider!: React.FunctionComponent;
+  public static contextType = ui.Context;
+  public context!: t.ISysContext;
 
   /**
    * [Lifecycle]
    */
-  constructor(props: IRootProps) {
-    super(props);
-    this.Provider = ui.createProvider({ ctx: props.ctx });
-  }
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
@@ -40,26 +37,29 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    * [Render]
    */
   public render() {
-    const { uri } = this.props;
-
     const styles = {
-      base: css({ Absolute: 0 }),
+      base: css({
+        Absolute: 0,
+        backgroundColor: color.format(1),
+      }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
       body: css({
         Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         display: 'flex',
       }),
     };
+
+    const ctx = this.context;
+    const uri = ctx.def;
+
     return (
-      <this.Provider>
-        <div {...css(styles.base, this.props.style)}>
-          <WindowTitleBar style={styles.titlebar} address={uri} />
-          <div {...styles.body}>
-            {this.renderBody()}
-            <div />
-          </div>
+      <div {...css(styles.base, this.props.style)}>
+        <WindowTitleBar style={styles.titlebar} address={uri} />
+        <div {...styles.body}>
+          {this.renderBody()}
+          <div />
         </div>
-      </this.Provider>
+      </div>
     );
   }
 
@@ -91,7 +91,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <Apps onAppClick={this.onAppClick} />
+          <Apps onAppClick={this.onAppClick} />{' '}
         </div>
         <div {...styles.center}>{this.renderCenter()}</div>
         <div {...styles.right}>

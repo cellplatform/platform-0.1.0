@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, ui } from '../../common';
+import { css, CssValue, t, ui, rx } from '../../common';
 import { App, IAppData, AppClickEventHandler, AppClickEvent } from './App';
 
 export { IAppData, AppClickEventHandler, AppClickEvent };
@@ -33,11 +33,8 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
 
     const ctx = this.context;
 
-    ctx.event$.subscribe(async (e) => {
-      // TEMP 🐷HACK - to not brute force the reload like this!
-      // Should use proper cache-patching handled in the event stream.
-      this.client.cache.clear();
-      await this.load();
+    rx.payload<t.ITypedSheetUpdatedEvent>(ctx.event$, 'SHEET/updated').subscribe((e) => {
+      this.load();
     });
   }
 

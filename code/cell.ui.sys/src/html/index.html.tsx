@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { t } from '../common';
-// import { Root } from '../components/Root';
+import { Root } from '../components/Root';
 import { Window } from '../components/Window';
 import { context } from '../context';
 
@@ -15,7 +15,8 @@ const { Provider } = context.create({ env });
 (async () => {
   const el = (
     <Provider>
-      <Window />
+      {/* <Window /> */}
+      <Root />
     </Provider>
   );
 
