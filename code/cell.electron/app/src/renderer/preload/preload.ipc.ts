@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron';
 import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
-import { constants, t } from '../common';
+import { constants, t, rx } from '../common';
 
 const { IPC } = constants;
 
@@ -26,7 +26,9 @@ export function init(args: { def: string; cache: t.IEnv['cache']; event$: Subjec
       map((e) => e as t.IpcEvent),
       filter((e) => e.payload.source === args.def),
     )
-    .subscribe((e) => ipcRenderer.send(IPC.CHANNEL, e));
+    .subscribe((e) => {
+      ipcRenderer.send(IPC.CHANNEL, e);
+    });
 
   // Finish up.
   ferryIpcEventsToBus({ def, ipc$, fire });
@@ -54,4 +56,12 @@ function ferryIpcEventsToBus(args: {
       filter((e) => e.source !== args.def),
     )
     .subscribe((e) => fire({ type: 'SHEET/sync', payload: { ns: e.ns, changes: e.changes } }));
+
+  // ipc$
+  //   .pipe(
+  //     filter((e) => e.type === 'IPC/debug'),
+  //     map((e) => e.payload as t.IpcDebug),
+  //     filter((e) => e.source !== args.def),
+  //   )
+  //   .subscribe((e) => fire({ type: 'SHEET/sync', payload: { ns: e.ns, changes: e.changes } }));
 }

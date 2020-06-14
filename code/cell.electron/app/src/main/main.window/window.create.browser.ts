@@ -69,7 +69,12 @@ export async function createBrowserWindow(args: {
   });
 
   // Prepare URL.
+
+  console.log('args.app', args.app.props.name);
+
   const url = await getUrl({ host, app: args.app });
+  console.log('url', url);
+
   browser.loadURL(url.toString());
 
   // Finish up.

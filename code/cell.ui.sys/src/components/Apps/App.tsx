@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue, t, ui } from '../../common';
-import { Card, IPropListItem, PropList } from '../primitives';
+import { Card, IPropListItem, PropList, Button } from '../primitives';
 
 export type IAppProps = {
   app: IAppData;
@@ -95,12 +95,30 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
         <Card style={styles.card}>
           <div>
             <div {...styles.title}>
-              <div>module</div>
               <div>{this.name}</div>
+              <div>AppWindow</div>
             </div>
             <div {...styles.body}>{this.renderWindows()}</div>
+            {this.renderNewWindow()}
           </div>
         </Card>
+      </div>
+    );
+  }
+
+  private renderNewWindow() {
+    const styles = {
+      base: css({
+        Flex: 'center-center',
+        paddingBottom: 10,
+      }),
+      button: css({ fontSize: 12 }),
+    };
+    return (
+      <div {...styles.base}>
+        <Button style={styles.button} onClick={this.onNewWindowClick}>
+          New Window
+        </Button>
       </div>
     );
   }
@@ -116,16 +134,22 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
 
     const elList = windows.rows.map((row, i) => {
       const { x, y, width, height, isVisible } = row.props;
-      const position = x === undefined || y === undefined ? '-' : `${x} x ${y}`;
+      const position = x === undefined || y === undefined ? '-' : `x:${x} y:${y}`;
       const size = width === undefined || height === undefined ? '-' : `${width} x ${height}`;
+
       const items: IPropListItem[] = [
-        { label: 'typename', value: row.typename },
+        // { label: 'typename', value: row.typename },
         { label: 'uri', value: row.uri.toString() },
         { label: 'position', value: position },
         { label: 'size', value: size },
         { label: 'visible', value: isVisible },
       ];
-      return <PropList key={i} items={items} />;
+      return (
+        <React.Fragment key={i}>
+          <PropList items={items} />
+          <PropList.Hr />
+        </React.Fragment>
+      );
     });
 
     return <div {...styles.base}>{elList}</div>;
@@ -139,6 +163,25 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     if (onClick) {
       const app = this.app;
       onClick({ app });
+      console.log('app', app);
     }
+  };
+
+  private onNewWindowClick = () => {
+    const ctx = this.context;
+
+    const app = this.props.app;
+    const name = app.props.name;
+
+    console.log('name', name);
+
+    // TEMP 🐷
+    ctx.fire({
+      type: 'IPC/debug',
+      payload: {
+        source: ctx.def,
+        data: { action: 'OPEN', name },
+      },
+    });
   };
 }

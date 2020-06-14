@@ -90,6 +90,16 @@ export async function start() {
     // });
   }
 
+  rx.payload<t.IpcDebugEvent>(event$, 'IPC/debug')
+    .pipe(filter((e) => e.source !== 'MAIN'))
+    .subscribe((e) => {
+      const name = e.data.name;
+      if (name && e.data.action === 'OPEN') {
+        console.log('create', name);
+        window.createOne({ ctx, name });
+      }
+    });
+
   // TEMP 🐷
   // refs.tray = tray.init({ host, def, ctx }).tray;
   // console.log('client.cache', client.cache);

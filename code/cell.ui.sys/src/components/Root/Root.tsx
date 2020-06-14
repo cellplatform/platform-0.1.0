@@ -6,6 +6,7 @@ import { css, CssValue, t, ui, color } from '../../common';
 import { Apps, AppClickEvent, IAppData } from '../Apps';
 import { ObjectView, WindowTitleBar } from '../primitives';
 import { Server } from './Server';
+import { Window } from '../Window';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {
@@ -136,7 +137,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         <div {...css(styles.margin, styles.margin1)} />
         <div {...css(styles.margin, styles.margin2)} />
         <div {...styles.body}>
-          {data && <ObjectView data={data} expandPaths={['$', '$.props']} />}
+          {/* {data && <ObjectView data={data} expandPaths={['$', '$.props']} />} */}
+          <Window />
         </div>
       </div>
     );
@@ -147,6 +149,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
 
   private onAppClick = (e: AppClickEvent) => {
-    this.state$.next({ json: e.app });
+    // this.state$.next({ json: e.app });
   };
 }

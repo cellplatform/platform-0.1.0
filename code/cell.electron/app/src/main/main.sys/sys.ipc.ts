@@ -2,7 +2,7 @@ import { ipcMain } from 'electron';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map } from 'rxjs/operators';
 
-import { constants, t } from '../common';
+import { constants, t, rx } from '../common';
 
 /**
  * Initializes the IPC ("inter-process-communication") event stream.
@@ -37,13 +37,15 @@ export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
     map((e) => e as t.IpcEvent),
   );
 
-  const fromWindow$ = ipc$.pipe(filter((e) => e.payload.source !== 'MAIN'));
+  // rx.m style={ styles. }
+
+  const window$ = ipc$.pipe(filter((e) => e.payload.source !== 'MAIN'));
 
   /**
    * Monitor changes to sheets from window.
    */
-  fromWindow$.subscribe(async (e) => {
-    const { ns, changes } = e.payload;
+  rx.payload<t.IpcSheetChangedEvent>(window$, 'IPC/sheet/changed').subscribe(async (e) => {
+    const { ns, changes } = e;
     const sheet = await ctx.client.sheet(ns);
     sheet.change(changes);
   });

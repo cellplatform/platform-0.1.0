@@ -3,7 +3,7 @@ import { share } from 'rxjs/operators';
 
 import { Client, t, ui } from '../common';
 
-type E = t.TypedSheetEvent;
+type E = t.SysEvent;
 
 /**
  * Creates an environment context.
@@ -17,7 +17,7 @@ export function create(args: { env: t.IEnv }) {
    * TODO 🐷 TEMP
    */
   event$.subscribe((e) => {
-    console.log('🐷TMP ui.sys', e);
+    // console.log('🐷TMP ui.sys', e);
   });
 
   // Create the context.
