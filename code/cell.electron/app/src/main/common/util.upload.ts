@@ -23,7 +23,7 @@ export async function getFiles(args: { sourceDir: string; targetDir?: string }) 
 }
 
 /**
- * Upload files to the given target
+ * Upload files to the given target.
  */
 export async function upload(args: {
   host: string;

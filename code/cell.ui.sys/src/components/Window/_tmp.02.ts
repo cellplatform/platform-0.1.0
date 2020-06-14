@@ -7,8 +7,6 @@ export type IAppManifest = {
   window: {
     width?: number;
     height?: number;
-    minWidth?: number;
-    minHeight?: number;
   };
 };
 
@@ -54,16 +52,60 @@ export async function uploadApp(args: {
   console.log('apps', apps);
   console.log('apps.total', apps.total);
 
-  // console.log('files', files);
-
   const exists = Boolean(apps.find((row) => row.name === manifest.name));
   if (exists) {
     throw new Error(`The app bundle '${dir}' already exists.`);
   }
 
   // Create type model.
-  // Send change back to MAIN (to be saved).
-  const { app, changes } = await writeTypeDefModel({ sheet, apps, manifest });
+  const app = apps.row(apps.total);
+  const props = app.props;
+  props.name = manifest.name;
+  props.entry = manifest.entry;
+  props.devPort = manifest.devPort || props.devPort;
+  props.width = manifest.window.width || props.width;
+  props.height = manifest.window.height || props.height;
+
+  // apps.rows.forEach((app) => {
+  //   // const o = app.toObject();
+  //   // console.log('o', o);
+  // });
+
+  // files.forEach((file) => {
+  //   console.log('file', file);
+  // });
+
+  // const env = window.env
+
+  await time.wait(50);
+  console.log('sheet.state.changes', sheet.state.changes);
+  const changes = sheet.state.changes;
+
+  // const f = ctx.c
+  // console.log('client.cache.keys', client.cache.keys);
+  // console.group('🌳 cache');
+  // client.cache.keys.forEach((key) => {
+  //   const v = client.cache.get(key);
+
+  //   console.log('cache key:', key);
+  // });
+
+  // console.groupEnd();
+
+  // client.cache.keys.forEach((key) => {
+  //   if (key.includes('client/')) {
+  //     console.group('🌳 cache (client)');
+  //     const v = client.cache.get(key);
+  //     console.log('cache key:', key);
+  //     console.log('value', v);
+  //     console.groupEnd();
+  //   }
+  // });
+
+  // ctx.
+
+  // console.log('ctx', ctx);
+
   const e: t.IpcSheetChangedEvent = {
     type: 'IPC/sheet/changed',
     payload: {
@@ -72,13 +114,10 @@ export async function uploadApp(args: {
       changes,
     },
   };
+
   ctx.fire(e as any);
 
   // await app.load({ force: true });
-  // const app = apps.row(apps.total);
-
-  // Upload files.
-  await upload({ client, files, app });
 
   console.groupEnd();
 
@@ -88,46 +127,6 @@ export async function uploadApp(args: {
 /**
  * [Helpers]
  */
-
-async function writeTypeDefModel(args: {
-  sheet: t.ITypedSheet<t.App>;
-  apps: t.ITypedSheetData<t.App>;
-  manifest: IAppManifest;
-}) {
-  const { sheet, apps, manifest } = args;
-  const app = apps.row(apps.total);
-  const props = app.props;
-
-  props.name = manifest.name;
-  props.entry = manifest.entry;
-  props.devPort = manifest.devPort || props.devPort;
-  props.width = manifest.window.width || props.width;
-  props.height = manifest.window.height || props.height;
-  props.minWidth = manifest.window.minWidth || props.minWidth;
-  props.minHeight = manifest.window.minHeight || props.minHeight;
-
-  await time.wait(50);
-  const changes = sheet.state.changes;
-  return { app, changes };
-}
-
-async function upload(args: {
-  client: t.IClientTypesystem;
-  files: t.IHttpClientCellFileUpload[];
-  app: t.ITypedSheetRow<t.App>;
-}) {
-  const { client, app } = args;
-  const entry = app.props.entry;
-  const dir = entry.substring(0, entry.indexOf('/'));
-  const files = args.files.map((file) => ({ ...file, filename: `${dir}/${file.filename}` }));
-
-  const target = app.types.map.fs.uri;
-  const res = await client.http.cell(target).files.upload(files);
-
-  if (res.error) {
-    throw new Error(`Failed to upload files. ${res.error.message}`);
-  }
-}
 
 function toJson<T>(filename: string, data: ArrayBuffer) {
   try {
