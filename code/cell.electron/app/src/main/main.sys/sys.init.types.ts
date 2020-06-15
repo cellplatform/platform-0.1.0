@@ -16,7 +16,7 @@ export async function define(ctx: t.IContext) {
     sourceDir: paths.bundle['cell.ui.sys'],
     devPort: 1234,
     props: {
-      width: 1200,
+      width: 2000,
       height: 800,
       // width: 500,
       // height: 320,

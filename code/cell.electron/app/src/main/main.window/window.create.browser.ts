@@ -64,7 +64,7 @@ export async function createBrowserWindow(args: {
   );
   browser.once('ready-to-show', () => {
     browser.setTitle(window.title);
-    // browser.webContents.openDevTools(); // TEMP 🐷
+    browser.webContents.openDevTools(); // TEMP 🐷
     browser.show();
   });
 

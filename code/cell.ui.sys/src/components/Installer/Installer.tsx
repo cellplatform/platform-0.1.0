@@ -8,7 +8,7 @@ import { Button } from '../primitives';
 // @ts-ignore
 import filesize from 'filesize';
 
-import { color, COLORS, css, CssValue, t, ui } from '../../common';
+import { color, COLORS, css, CssValue, t, ui, time } from '../../common';
 import { Icons } from '../Icons';
 import { uploadApp, getManifest, getApps } from './_tmp';
 
@@ -24,6 +24,7 @@ export type IInstallerState = {
   files?: t.IHttpClientCellFileUpload[];
   urls?: string[];
   error?: t.IErrorInfo;
+  installed?: boolean;
 };
 
 export class Installer extends React.PureComponent<IInstallerProps, IInstallerState> {
@@ -78,8 +79,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
    * [Properties]
    */
   public get files() {
-    const { files = [] } = this.state;
-    return files;
+    return this.state.files || [];
   }
 
   public get dir() {
@@ -108,6 +108,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
       files: undefined,
       urls: undefined,
       dir: undefined,
+      installed: undefined,
     });
   };
 
@@ -123,6 +124,8 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
       const ctx = this.context;
       await uploadApp({ ctx, dir, files });
       this.resetState();
+      this.state$.next({ installed: true });
+      time.delay(1500, () => this.state$.next({ installed: undefined }));
     } catch (error) {
       this.setError(error);
     }
@@ -155,7 +158,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
 
   private renderBody() {
     const { error } = this.state;
-    const { isDragOver } = this.state;
+    const { isDragOver, installed } = this.state;
     const isDropped = this.isDropped;
 
     if (error) {
@@ -177,7 +180,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
       }),
     };
 
-    const message = isDragOver ? `Drop App` : `Drag to Install App`;
+    const message = installed ? 'Installed' : isDragOver ? `Drop App` : `Drag to Install App`;
 
     return (
       <div {...styles.base}>
@@ -214,7 +217,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         letterSpacing: -0.8,
         cursor: 'default',
         pointerEvents: 'none',
-        marginBottom: 5,
+        marginBottom: 3,
       }),
       left: css({
         minWidth: 250,
