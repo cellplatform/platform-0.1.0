@@ -295,6 +295,14 @@
     "@platform/react" "0.4.37"
     "@platform/util.value" "0.7.24"
 
+"@platform/ui.icon@^0.0.156":
+  version "0.0.156"
+  resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.156.tgz#eb697659b11f578457c69a15f7acede51d17e1ce"
+  integrity sha512-WuotCPkaaNrC+yfPpbEYJKxP5BqYUcNeZZogeugqtQK0Oj34/DcckdfVWvtJ7Odu6uy2OmMo0+GduEWHnw2pEw==
+  dependencies:
+    "@platform/css" "0.4.4"
+    "@platform/react" "0.4.37"
+
 "@platform/ui.text@0.3.68":
   version "0.3.68"
   resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.68.tgz#3c33a995352f6e370d6b2c79914e7016327788bd"
@@ -341,7 +349,7 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value@0.7.24", "@platform/util.value@^0.7.24":
+"@platform/util.value@0.7.24":
   version "0.7.24"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.24.tgz#ab9e93e3536ea1ea3b7425073daa7fb7358b0dc7"
   integrity sha512-lsAcIWyjkW0JfcKR6pNlxevldvNeoA782jMaEpAst3gBMBLwgu89CBdjYTtdjwzP2kyU7vQRVBP2jp6XcSFoqw==
@@ -2737,6 +2745,13 @@ react-dom@16.13.1:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.19.1"
+
+react-icons@3.10.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-3.10.0.tgz#6c217a2dde2e8fa8d293210023914b123f317297"
+  integrity sha512-WsQ5n1JToG9VixWilSo1bHv842Cj5aZqTGiS3Ud47myF6aK7S/IUY2+dHcBdmkQcCFRuHsJ9OMUI0kTDfjyZXQ==
+  dependencies:
+    camelcase "^5.0.0"
 
 react-is@^16.8.1:
   version "16.12.0"
