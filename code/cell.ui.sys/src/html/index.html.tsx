@@ -5,7 +5,7 @@ import * as ReactDOM from 'react-dom';
 
 import { t } from '../common';
 import { Root } from '../components/Root';
-import { Window } from '../components/Window';
+import { Installer } from '../components/Installer';
 import { context } from '../context';
 
 const win = (window as unknown) as t.ITopWindow;

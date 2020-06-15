@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, ui, color } from '../../common';
-import { Apps, AppClickEvent, IAppData } from '../Apps';
-import { ObjectView, WindowTitleBar } from '../primitives';
+import { color, css, CssValue, t, ui } from '../../common';
+import { AppClickEvent, Apps, IAppData } from '../Apps';
+import { Installer } from '../Installer';
+import { WindowTitleBar } from '../primitives';
 import { Server } from './Server';
-import { Window } from '../Window';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {
@@ -138,7 +138,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         <div {...css(styles.margin, styles.margin2)} />
         <div {...styles.body}>
           {/* {data && <ObjectView data={data} expandPaths={['$', '$.props']} />} */}
-          <Window />
+          <Installer />
         </div>
       </div>
     );

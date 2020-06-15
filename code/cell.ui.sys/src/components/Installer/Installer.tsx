@@ -11,20 +11,20 @@ import { uploadApp } from './_tmp';
 
 export type WindowEvent = DragTargetEvent;
 
-export type IWindowProps = {
+export type IInstallerProps = {
   event$?: Subject<WindowEvent>;
   style?: CssValue;
 };
-export type IWindowState = {
+export type IInstallerState = {
   isDragOver?: boolean;
   files?: t.IHttpClientCellFileUpload[];
   urls?: string[];
   error?: t.IErrorInfo;
 };
 
-export class Window extends React.PureComponent<IWindowProps, IWindowState> {
-  public state: IWindowState = {};
-  private state$ = new Subject<Partial<IWindowState>>();
+export class Installer extends React.PureComponent<IInstallerProps, IInstallerState> {
+  public state: IInstallerState = {};
+  private state$ = new Subject<Partial<IInstallerState>>();
   private unmounted$ = new Subject<{}>();
   private event$ = this.props.event$ || new Subject<WindowEvent>();
 
