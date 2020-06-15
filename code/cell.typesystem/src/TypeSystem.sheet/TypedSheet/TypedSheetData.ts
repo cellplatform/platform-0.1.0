@@ -74,24 +74,14 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     this._ctx = args.ctx;
     this._range = TypedSheetData.formatRange(args.range);
 
-    /**
-     * TODO 🐷 TMP
-     */
+    // Monitor for changes.
     rx.payload<t.ITypedSheetSyncEvent>(args.ctx.event$, 'SHEET/sync')
-      .pipe(filter((e) => Uri.strip.ns(e.ns) === this._sheet.uri.id))
+      .pipe(filter((e) => this.isThisSheet(e.ns)))
       .subscribe((e) => {
-        console.group('🌳 DATA: SHEET/sync');
-        console.log('e', e);
-        console.log('this.total', this.total);
+        // Increase the "total rows" count if required.
         const keys = Object.keys(e.changes.cells || {});
-        const max = coord.cell.max.row(keys);
-        console.log('max', max);
-        console.groupEnd();
-        // console.log('DATA sync', e);
-        // this.to
-        // this._rows = [];
-        // this._total = -1;
-        // this.load('1:100');
+        const max = coord.cell.max.row(keys) + 1;
+        this._total = max > this._total ? max : this._total;
       });
   }
 
@@ -117,7 +107,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return this._sheet.uri;
   }
 
-  public get rows() {
+  public get rows(): t.ITypedSheetRow<T>[] {
     return this._rows;
   }
 
@@ -134,8 +124,6 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   public get total() {
-    // TEMP 🐷
-    // return Math.max(this._total, this._rows.length);
     return this._total;
   }
 
@@ -255,7 +243,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   /**
-   * [INTERNAL]
+   * [Internal]
    */
   private fire(e: t.TypedSheetEvent) {
     this._ctx.event$.next(e);
@@ -268,6 +256,10 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     const typename = this.typename;
     const sheet = this._sheet;
     return TypedSheetRow.create<T>({ sheet, typename, uri, columns, ctx });
+  }
+
+  private isThisSheet(ns: string) {
+    return Uri.strip.ns(ns) === this._sheet.uri.id;
   }
 }
 

@@ -1662,7 +1662,27 @@ describe('TypedSheet', () => {
       expect(sheet.state.hasChanges).to.eql(false); // NB: The internal data is updated, but no "pending change" is logged.
     });
 
-    it('event: SHEET/synced', async () => {
+    it('increases internal [total] from sync changes', async () => {
+      const { sheet, event$ } = await testMySheet();
+
+      const cursor = await sheet.data('MyRow').load();
+      expect(cursor.total).to.eql(9);
+
+      const ns = 'foo.mySheet';
+      event$.next({
+        type: 'SHEET/sync',
+        payload: {
+          ns,
+          changes: {
+            cells: { A99: { kind: 'CELL', ns, key: 'A99', from: {}, to: { value: 'hello' } } },
+          },
+        },
+      });
+
+      expect(cursor.total).to.eql(99);
+    });
+
+    it('after event: SHEET/synced', async () => {
       const { sheet, event$ } = await testMySheet();
       const cursor = await sheet.data('MyRow').load();
       const row = cursor.row(0);
