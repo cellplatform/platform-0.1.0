@@ -71,19 +71,16 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
       return null;
     }
     const styles = {
-      base: css({}),
+      base: css({ display: 'flex' }),
       card: css({
         PaddingX: 15,
         PaddingY: 15,
       }),
-      icon: css({
-        Absolute: [8, 15, null, null],
-      }),
+      icon: css({ Absolute: [8, 15, null, null] }),
     };
-
     return (
       <div {...styles.base}>
-        <Card minWidth={300} padding={0}>
+        <Card padding={0} style={{ flex: 1 }}>
           <div {...styles.card}>
             <PropList title={'HTTP Endpoint'} items={this.info} />
             <PropList.Hr />

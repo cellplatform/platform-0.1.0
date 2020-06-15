@@ -63,6 +63,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   private renderBody() {
+    const TOP_MARGIN = 25;
+    const EDGE_MARGIN = 30;
     const styles = {
       base: css({
         flex: 1,
@@ -71,9 +73,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
       left: css({
         width: 250,
-        paddingTop: 30,
-        paddingLeft: 20,
-        paddingRight: 30,
+        paddingTop: TOP_MARGIN,
+        paddingLeft: EDGE_MARGIN,
+        paddingRight: EDGE_MARGIN,
         paddingBottom: 80,
         Scroll: true,
       }),
@@ -82,9 +84,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         display: 'flex',
       }),
       right: css({
-        paddingTop: 30,
-        paddingLeft: 20,
-        paddingRight: 20,
+        width: 250,
+        paddingTop: TOP_MARGIN,
+        paddingLeft: EDGE_MARGIN,
+        paddingRight: EDGE_MARGIN,
       }),
     };
 

@@ -62,8 +62,6 @@ export async function start() {
   // Initialize the system models.
   const ctx = await sys.init({ client, event$ });
 
-  
-
   log.info();
   log.info(`app modules: ${log.yellow(ctx.apps.total)}`);
   ctx.apps.forEach((app) => {
@@ -104,7 +102,6 @@ export async function start() {
 
   // TEMP 🐷
   // refs.tray = tray.init({ host, def, ctx }).tray;
-  // console.log('client.cache', client.cache);
 }
 
 /**
