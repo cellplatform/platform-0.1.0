@@ -3,5 +3,5 @@ import { t } from './common';
 /**
  * Events
  */
-type GlobalEvents = t.EnvEvent | t.IpcEvent;
-export type SysEvent = GlobalEvents;
+type GlobalEvent = t.EnvEvent | t.IpcEvent;
+export type AppEvent = GlobalEvent;

@@ -2,8 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, ui } from '../../common';
+import { css, CssValue, t, ui, COLORS } from '../../common';
 import { Card, PropList } from '../primitives';
+import { Icons } from '../Icons';
 
 export type IServerProps = { style?: CssValue };
 export type IServerState = { info?: t.IResGetElectronSysInfo };
@@ -14,7 +15,7 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: t.ISysContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]
@@ -75,6 +76,9 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
         PaddingX: 15,
         PaddingY: 15,
       }),
+      icon: css({
+        Absolute: [8, 15, null, null],
+      }),
     };
 
     return (
@@ -85,6 +89,7 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
             <PropList.Hr />
             <PropList title={'Versions'} items={this.versions} />
           </div>
+          <Icons.Wifi style={styles.icon} size={22} color={COLORS.DARK} />
         </Card>
       </div>
     );

@@ -16,7 +16,7 @@ export class Temp extends React.PureComponent<ITempProps, ITempState> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: t.ISysContext;
+  public context!: t.IAppContext;
 
   public sheet!: t.ITypedSheet<t.AppWindow>;
   public data!: t.ITypedSheetData<t.AppWindow>;

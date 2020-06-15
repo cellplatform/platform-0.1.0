@@ -3,7 +3,7 @@ import { share } from 'rxjs/operators';
 
 import { Client, t, ui } from '../common';
 
-type E = t.SysEvent;
+type E = t.AppEvent;
 
 /**
  * Creates an environment context.
@@ -21,7 +21,7 @@ export function create(args: { env: t.IEnv }) {
   });
 
   // Create the context.
-  const ctx: t.ISysContext = {
+  const ctx: t.IAppContext = {
     def,
     client: Client.env(env),
     event$: event$.pipe(share()),

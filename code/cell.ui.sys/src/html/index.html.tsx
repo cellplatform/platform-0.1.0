@@ -12,14 +12,12 @@ const win = (window as unknown) as t.ITopWindow;
 const env = win.env;
 const { Provider } = context.create({ env });
 
-(async () => {
-  const el = (
-    <Provider>
-      {/* <Window /> */}
-      <Root />
-    </Provider>
-  );
+const el = (
+  <Provider>
+    {/* <Window /> */}
+    <Root />
+  </Provider>
+);
 
-  // const el = <Root env={env} uri={env.def} />;
-  ReactDOM.render(el, document.getElementById('root'));
-})();
+// const el = <Root env={env} uri={env.def} />;
+ReactDOM.render(el, document.getElementById('root'));

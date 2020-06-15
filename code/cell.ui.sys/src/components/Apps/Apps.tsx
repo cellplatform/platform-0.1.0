@@ -18,7 +18,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: t.ISysContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]

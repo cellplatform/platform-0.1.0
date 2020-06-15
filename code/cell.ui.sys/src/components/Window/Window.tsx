@@ -29,7 +29,7 @@ export class Window extends React.PureComponent<IWindowProps, IWindowState> {
   private event$ = this.props.event$ || new Subject<WindowEvent>();
 
   public static contextType = ui.Context;
-  public context!: t.ISysContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]

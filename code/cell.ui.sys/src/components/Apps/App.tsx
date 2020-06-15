@@ -30,7 +30,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: t.ISysContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]
@@ -132,14 +132,18 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       base: css({}),
     };
 
+    const host = this.context.client.http.origin;
+
     const elList = windows.rows.map((row, i) => {
       const { x, y, width, height, isVisible } = row.props;
       const position = x === undefined || y === undefined ? '-' : `x:${x} y:${y}`;
       const size = width === undefined || height === undefined ? '-' : `${width} x ${height}`;
 
+      const uri = row.uri.toString();
+
       const items: IPropListItem[] = [
         // { label: 'typename', value: row.typename },
-        { label: 'uri', value: row.uri.toString() },
+        { label: 'uri', value: uri, clipboard: `${host}/${uri}` },
         { label: 'position', value: position },
         { label: 'size', value: size },
         { label: 'visible', value: isVisible },

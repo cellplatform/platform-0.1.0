@@ -13,7 +13,7 @@ export type IAppManifest = {
 };
 
 export async function uploadApp(args: {
-  ctx: t.ISysContext;
+  ctx: t.IAppContext;
   dir: string;
   files: t.IHttpClientCellFileUpload[];
 }) {
