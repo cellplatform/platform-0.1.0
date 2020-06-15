@@ -27,6 +27,7 @@ export declare type App = {
   name: string;
   backgroundColor: string;
   fs: string;
+  bytes: number;
   entry: string;
   devPort: number;
   windows: t.ITypedSheetRefs<AppWindow>;
