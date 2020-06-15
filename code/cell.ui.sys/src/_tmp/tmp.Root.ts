@@ -1,6 +1,6 @@
-import { t } from '../../common';
+import { t } from '../common';
 
-export async function tmp(ctx: t.IAppContext) {
+export async function tmpRoot(ctx: t.IAppContext) {
   console.group('🌳 TEMP');
 
   // const ctx = this.context;
@@ -16,6 +16,9 @@ export async function tmp(ctx: t.IAppContext) {
 
   // apps.TEMP_RESET();
   await apps.load();
+  apps.rows.forEach((app) => {
+    console.log(' > ', app.toObject());
+  });
 
   console.group('🌳 fetch.getCells');
   const f = await ctx.client.fetch.getCells({ ns: 'ns:sys.app', query: '1:500' });
@@ -24,9 +27,6 @@ export async function tmp(ctx: t.IAppContext) {
   console.groupEnd();
 
   // console.log("apps.", apps.)
-  apps.rows.forEach((app) => {
-    console.log(' > ', app.toObject());
-  });
 
   console.groupEnd();
 }

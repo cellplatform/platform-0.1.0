@@ -7,7 +7,7 @@ import { AppClickEvent, Apps } from '../Apps';
 import { Installer } from '../Installer';
 import { WindowTitleBar, Button } from '../primitives';
 import { Server } from './Server';
-import { tmp } from './_tmp';
+import { tmpRoot } from '../../_tmp/tmp.Root';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -33,7 +33,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     this.unmounted$.complete();
   }
 
-  private temp = async () => tmp(this.context);
+  private temp = async () => tmpRoot(this.context);
 
   /**
    * [Render]

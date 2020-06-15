@@ -1,4 +1,4 @@
-import { t, time } from '../../common';
+import { t, time } from '../common';
 
 export type IAppManifest = {
   name: string;

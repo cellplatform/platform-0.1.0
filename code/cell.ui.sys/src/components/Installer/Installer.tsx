@@ -7,7 +7,7 @@ import { Button } from '../primitives';
 
 import { color, COLORS, css, CssValue, t, ui, time, filesize } from '../../common';
 import { Icons } from '../Icons';
-import { uploadApp, getManifest, getApps } from './_tmp';
+import { uploadApp, getManifest, getApps } from '../../_tmp/tmp.Installer';
 
 export type WindowEvent = DragTargetEvent;
 
