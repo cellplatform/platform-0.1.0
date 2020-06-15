@@ -28,7 +28,7 @@ export async function init(args: { client: t.IClientTypesystem; event$: Subject<
   if (ctx.apps.total === 0) {
     await types.define(ctx);
 
-    // Save for save to complete.
+    // Wait for save to complete.
     await rx
       .payload<t.ITypedSheetSavedEvent>(event$, 'SHEET/saved')
       .pipe(
