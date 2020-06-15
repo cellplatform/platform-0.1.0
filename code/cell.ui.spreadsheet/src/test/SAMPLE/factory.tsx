@@ -33,6 +33,7 @@ export const factory: t.GridFactory = (req) => {
 
 function renderCell(req: t.IGridFactoryRequest) {
   const cell = req.cell;
+  
 
   const view = cell.props.view;
   if (view && (!view.cell || !view.cell.type)) {

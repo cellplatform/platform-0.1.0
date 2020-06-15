@@ -6,7 +6,9 @@ import { filter, takeUntil, debounceTime } from 'rxjs/operators';
 import { CssValue, rx, t, ui, Uri } from '../../common';
 import { factory, grid } from '../../test/SAMPLE';
 
-const NS = 'ckbehtfz40008456cnd4zm9u9';
+const NS = 'sys.app';
+
+// http://localhost:5000/ns:sys.app?cells=2:2
 
 export type IGridProps = { events$?: Subject<t.GridEvent>; style?: CssValue };
 export type IGridState = {};

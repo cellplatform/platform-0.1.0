@@ -1,3 +1,6 @@
+import { containsFocus } from '@platform/react';
+export { containsFocus };
+
 import { css, color, CssValue } from '@platform/css';
 export { css, color, CssValue };
 

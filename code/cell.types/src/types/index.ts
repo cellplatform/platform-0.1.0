@@ -2,6 +2,7 @@ export * from '../types.TypeSystem';
 export * from '../types.Http';
 export * from '../types.Client';
 export * from '../types.Electron';
+export * from '../types.Ui';
 
 export * from './types.cell.coord';
 export * from './types.cell.get';

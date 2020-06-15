@@ -1004,7 +1004,7 @@
     "@platform/types" "0.4.22"
     "@platform/util.value" "0.7.24"
 
-"@platform/cell.ui@0.1.43":
+"@platform/cell.ui@0.1.43", "@platform/cell.ui@^0.1.43":
   version "0.1.43"
   resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.43.tgz#9ae8caad71ee193902fd06018a1f45b72636ddc4"
   integrity sha512-D7yKSJ+VbHJti/ldZvhsvSE1MFQ6IGAVdErrFV8ySnOHiNDk8UKLK6qsYPOYak2mDYSx5hlskyWf0TOn/VAc2Q==
