@@ -38,6 +38,7 @@ export async function add(args: {
     props.height = args.props.height;
     props.minWidth = args.props.minWidth;
     props.minHeight = args.props.minHeight;
+    props.bytes = (await fs.size.dir(args.sourceDir)).bytes;
 
     // Upload the bundle as files to the cell (filesystem).
     await util.upload({
