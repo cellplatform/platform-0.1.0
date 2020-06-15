@@ -52,6 +52,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       map((e) => e.payload as t.ITypedSheetChangeCell),
       filter((e) => e.kind === 'CELL'),
       filter((e) => this.isThisSheet(e.ns)),
+      filter((e) => this.isThisRow(e.key)),
       map(({ to, ns, key }) => ({ key, to, uri: Uri.parse<t.ICellUri>(Uri.create.cell(ns, key)) })),
       filter(({ uri }) => uri.ok && uri.type === 'CELL'),
       map((e) => ({ ...e, uri: e.uri.parts, index: coord.cell.toRowIndex(e.key) })),
@@ -80,6 +81,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       .subscribe((e) => {
         const data = e.changes.cells || {};
         Object.keys(data)
+          .filter((key) => this.isThisRow(key))
           .map((key) => ({ key, value: data[key], columnDef: this.findColumnByKey(key) }))
           .filter(({ columnDef }) => Boolean(columnDef))
           .forEach((e) => this.setData(e.columnDef, e.value.to));
@@ -366,6 +368,10 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
   private isThisSheet(ns: string) {
     return Uri.strip.ns(ns) === this.uri.ns;
+  }
+
+  private isThisRow(key: string) {
+    return coord.cell.toRowIndex(key) === this.index;
   }
 
   private findColumnByKey(key: string) {

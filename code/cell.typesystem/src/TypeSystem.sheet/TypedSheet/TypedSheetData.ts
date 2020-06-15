@@ -86,7 +86,6 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
         const keys = Object.keys(e.changes.cells || {});
         const max = coord.cell.max.row(keys);
         console.log('max', max);
-        console.log('coord.cell.max.row(A1)', coord.cell.max.row(['A1']));
         console.groupEnd();
         // console.log('DATA sync', e);
         // this.to

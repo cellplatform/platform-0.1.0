@@ -1699,30 +1699,43 @@ describe('TypedSheet', () => {
     it('fires on SHEET/changed', async () => {
       const { sheet, event$ } = await testMySheet();
 
+      type U = t.ITypedSheetUpdatedEvent;
       const fired: t.ITypedSheetUpdated[] = [];
-      rx.payload<t.ITypedSheetUpdatedEvent>(event$, 'SHEET/updated').subscribe((e) => {
-        fired.push(e);
-      });
+      rx.payload<U>(event$, 'SHEET/updated').subscribe((e) => fired.push(e));
 
       const cursor = await sheet.data('MyRow').load();
-      const row = cursor.row(0);
+      const row1 = cursor.row(0);
+      const row2 = cursor.row(1);
 
-      row.props.title = 'Hello!!';
+      row1.props.title = 'Change-1';
+      row2.props.title = 'Change-2';
       await time.wait(5);
 
-      expect(fired.length).to.eql(1);
+      expect(fired.length).to.eql(2);
       expect(fired[0].via).to.equal('CHANGE');
       expect(fired[0].sheet).to.equal(sheet);
-      expect(fired[0].changes).to.eql(sheet.state.changes);
+      expect(fired[0].changes.cells?.A1?.to.value).to.eql('Change-1');
+      expect(sheet.state.changes.cells?.A1?.to.value).to.eql('Change-1');
+
+      expect(fired[1].via).to.equal('CHANGE');
+      expect(fired[1].sheet).to.equal(sheet);
+      expect(fired[1].changes.cells?.A2?.to.value).to.eql('Change-2');
+      expect(sheet.state.changes.cells?.A2?.to.value).to.eql('Change-2');
     });
 
     it('fires on SHEET/synced', async () => {
       const { sheet, event$ } = await testMySheet();
 
+      type U = t.ITypedSheetUpdatedEvent;
       const fired: t.ITypedSheetUpdated[] = [];
-      rx.payload<t.ITypedSheetUpdatedEvent>(event$, 'SHEET/updated').subscribe((e) => {
-        fired.push(e);
-      });
+      rx.payload<U>(event$, 'SHEET/updated').subscribe((e) => fired.push(e));
+
+      const cursor = await sheet.data('MyRow').load();
+      const row1 = cursor.row(0);
+      const row2 = cursor.row(1);
+
+      expect(row1.props.title).to.eql('One');
+      expect(row2.props.title).to.eql('Two');
 
       const ns = 'foo.mySheet';
       event$.next({
@@ -1730,7 +1743,10 @@ describe('TypedSheet', () => {
         payload: {
           ns,
           changes: {
-            cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
+            cells: {
+              A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'Change-1' } },
+              A2: { kind: 'CELL', ns, key: 'A2', from: {}, to: { value: 'Change-2' } },
+            },
           },
         },
       });
@@ -1739,7 +1755,10 @@ describe('TypedSheet', () => {
       expect(fired.length).to.eql(1);
       expect(fired[0].via).to.equal('SYNC');
       expect(fired[0].sheet).to.equal(sheet);
-      expect(fired[0].changes).to.eql(sheet.state.changes);
+      expect(fired[0].changes).to.eql({});
+
+      expect(row1.props.title).to.eql('Change-1');
+      expect(row2.props.title).to.eql('Change-2');
     });
   });
 });
