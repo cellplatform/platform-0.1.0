@@ -118,9 +118,14 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     const dir = this.dir || '';
 
     try {
+      // Upload the bundle.
       const ctx = this.context;
       await uploadApp({ ctx, dir, files });
+
+      // Reset state.
       this.resetState();
+
+      // Display "installed" notification.
       this.state$.next({ installed: true });
       time.delay(2500, () => this.state$.next({ installed: undefined }));
     } catch (error) {

@@ -75,7 +75,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
       return item;
     });
 
-    const apps = (await Promise.all(wait)).filter((app) => !app.props.name.endsWith('cell.ui.sys'));
+    const apps = (await Promise.all(wait)) //.filter((app) => !app.props.name.endsWith('cell.ui.sys'));
     this.state$.next({ apps });
   }
 

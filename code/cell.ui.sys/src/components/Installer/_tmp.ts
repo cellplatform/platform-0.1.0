@@ -106,6 +106,9 @@ async function writeTypeDefModel(args: {
   totalBytes: number;
 }) {
   const { sheet, apps, manifest } = args;
+
+  console.log('-------------------------------------------');
+
   const app = apps.row(apps.total);
   const props = app.props;
 
@@ -120,6 +123,18 @@ async function writeTypeDefModel(args: {
 
   await time.wait(50);
   const changes = sheet.state.changes;
+
+  console.group('🌳 WRITE MODEL');
+  console.log('changes', changes);
+  console.log('apps.total', apps.total);
+  apps.rows.forEach((row) => console.log('row.toObject()', row.props.name, row.toString()));
+
+  console.log('eq', apps.rows[0] === apps.rows[1]);
+
+  console.log('sheet.state', sheet.state);
+
+  console.groupEnd();
+
   return { app, changes };
 }
 

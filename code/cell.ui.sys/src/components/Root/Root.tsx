@@ -7,6 +7,7 @@ import { AppClickEvent, Apps } from '../Apps';
 import { Installer } from '../Installer';
 import { WindowTitleBar, Button } from '../primitives';
 import { Server } from './Server';
+import { tmp } from './_tmp';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -32,30 +33,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     this.unmounted$.complete();
   }
 
-  private temp = async () => {
-    console.group('🌳 TEMP');
-
-    const ctx = this.context;
-
-    let sheet = await ctx.client.sheet<t.App>('ns:sys.app');
-    console.log('exists', ctx.client.pool?.exists(sheet));
-    sheet.dispose();
-    ctx.client.cache.clear();
-    console.log('exists', ctx.client.pool?.exists(sheet));
-    sheet = await ctx.client.sheet<t.App>('ns:sys.app');
-    console.log('exists', ctx.client.pool?.exists(sheet));
-    const apps = await sheet.data('App').load();
-
-    const f = await ctx.client.fetch.getCells({ ns: 'ns:sys.app', query: '1:500' });
-    console.log('f', f);
-
-    // console.log("apps.", apps.)
-    apps.rows.forEach((app) => {
-      console.log(' > ', app.toObject());
-    });
-
-    console.groupEnd();
-  };
+  private temp = async () => tmp(this.context);
 
   /**
    * [Render]

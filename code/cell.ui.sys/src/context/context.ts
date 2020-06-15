@@ -17,7 +17,7 @@ export function create(args: { env: t.IEnv }) {
    * TODO 🐷 TEMP
    */
   event$.subscribe((e) => {
-    console.log('🐷TMP ui.sys', e);
+    console.log('🐷TMP', e);
   });
 
   // Create the context.
