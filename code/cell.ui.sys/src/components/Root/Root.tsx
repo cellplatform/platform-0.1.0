@@ -3,15 +3,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue, t, ui } from '../../common';
-import { AppClickEvent, Apps, IAppData } from '../Apps';
+import { AppClickEvent, Apps } from '../Apps';
 import { Installer } from '../Installer';
 import { WindowTitleBar } from '../primitives';
 import { Server } from './Server';
 
 export type IRootProps = { style?: CssValue };
-export type IRootState = {
-  json?: IAppData;
-};
+export type IRootState = {};
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
@@ -72,10 +70,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         boxSizing: 'border-box',
       }),
       left: css({
-        width: 260,
+        width: 250,
         paddingTop: 30,
-        paddingLeft: 30,
-        paddingRight: 50,
+        paddingLeft: 20,
+        paddingRight: 30,
         paddingBottom: 80,
         Scroll: true,
       }),
@@ -85,14 +83,15 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
       right: css({
         paddingTop: 30,
-        paddingRight: 30,
+        paddingLeft: 20,
+        paddingRight: 20,
       }),
     };
 
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <Apps onAppClick={this.onAppClick} />{' '}
+          <Apps onAppClick={this.onAppClick} />
         </div>
         <div {...styles.center}>{this.renderCenter()}</div>
         <div {...styles.right}>
@@ -103,13 +102,37 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   private renderCenter() {
-    const { json } = this.state;
-    const MARGIN_LEFT = 0;
-
     const styles = {
       base: css({
         flex: 1,
         position: 'relative',
+      }),
+      body: css({
+        Absolute: 0,
+        overflow: 'auto',
+        paddingTop: 30,
+      }),
+    };
+
+    return (
+      <div {...styles.base}>
+        {this.renderMargin({ edge: 'LEFT' })}
+        {this.renderMargin({ edge: 'RIGHT' })}
+        <div {...styles.body}>
+          <Installer />
+        </div>
+      </div>
+    );
+  }
+
+  private renderMargin(props: { edge?: 'LEFT' | 'RIGHT' } = {}) {
+    const MARGIN_LEFT = 0;
+    const { edge = 'LEFT' } = props;
+    const isLeft = edge === 'LEFT';
+    const isRight = edge === 'RIGHT';
+    const styles = {
+      base: css({
+        Absolute: [0, isRight ? 0 : null, 0, isLeft ? 0 : null],
       }),
       margin: css({
         Absolute: [0, null, 0, 0],
@@ -117,29 +140,12 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         opacity: 0.4,
       }),
       margin1: css({ left: MARGIN_LEFT }),
-      margin2: css({ left: MARGIN_LEFT + 2 }),
-      body: css({
-        Absolute: [0, 0, 0, MARGIN_LEFT + 30],
-        overflow: 'auto',
-        paddingTop: 30,
-      }),
+      margin2: css({ left: MARGIN_LEFT + (isLeft ? 2 : -2) }),
     };
-
-    const data = json && {
-      typename: json?.typename,
-      props: json?.props,
-      types: json?.types,
-      raw: json,
-    };
-
     return (
       <div {...styles.base}>
         <div {...css(styles.margin, styles.margin1)} />
         <div {...css(styles.margin, styles.margin2)} />
-        <div {...styles.body}>
-          {/* {data && <ObjectView data={data} expandPaths={['$', '$.props']} />} */}
-          <Installer />
-        </div>
       </div>
     );
   }

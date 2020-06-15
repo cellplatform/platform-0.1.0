@@ -5,6 +5,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 // import { Temp } from './_Temp';
+import { Icons } from '../Icons';
 
 import { color, COLORS, css, CssValue, t, ui } from '../../common';
 import { uploadApp } from './_tmp';
@@ -88,7 +89,6 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
    */
   public render() {
     const { error } = this.state;
-    const ctx = this.context;
 
     const styles = {
       base: css({
@@ -98,19 +98,12 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         display: 'flex',
         color: COLORS.DARK,
       }),
-      def: css({
-        Absolute: [null, null, 10, 10],
-        fontSize: 10,
-        opacity: 0.6,
-        textShadow: `0 1px 0px ${color.format(0.3)}`,
-      }),
     };
 
     return (
       <DragTarget style={css(styles.base, this.props.style)} event$={this.event$}>
         {!error && this.renderBody()}
         {error && this.renderError(error)}
-        <div {...styles.def}>def → {ctx.def}</div>
       </DragTarget>
     );
   }
@@ -147,7 +140,6 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         <div {...styles.border}>
           {elMessage}
           {this.renderList()}
-          {/* <Temp /> */}
         </div>
       </div>
     );
@@ -186,10 +178,35 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
   }
 
   private renderError(error: t.IErrorInfo) {
+    const styles = {
+      base: css({
+        flex: 1,
+        Flex: 'center-center',
+      }),
+      body: css({
+        Flex: 'vertical-center-center',
+        MarginX: 30,
+        marginBottom: '5%',
+      }),
+      icon: css({ marginBottom: 20 }),
+      message: css({
+        textAlign: 'center',
+      }),
+      tryAgain: css({
+        marginTop: 10,
+        opacity: 0.3,
+      }),
+    };
     return (
-      <ErrorView error={error} showStack={false}>
-        <div>Please try again.</div>
-      </ErrorView>
+      <div {...styles.base}>
+        <div {...styles.body}>
+          <Icons.AlertTriangle color={COLORS.CLI.YELLOW} size={64} style={styles.icon} />
+          <div {...styles.message}>
+            <div>{error.message}</div>
+            <div {...styles.tryAgain}>Please try again.</div>
+          </div>
+        </div>
+      </div>
     );
   }
 }

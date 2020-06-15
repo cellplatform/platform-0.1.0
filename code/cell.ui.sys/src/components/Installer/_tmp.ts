@@ -21,7 +21,7 @@ export async function uploadApp(args: {
   const { client } = ctx;
 
   if (!dir) {
-    throw new Error(`A directory bundle was not dropped.`);
+    throw new Error(`The dropped item was not a folder.`);
   }
 
   const manifestFile = files.find((file) => file.filename === 'app.json');
@@ -58,7 +58,7 @@ export async function uploadApp(args: {
 
   const exists = Boolean(apps.find((row) => row.name === manifest.name));
   if (exists) {
-    throw new Error(`The app bundle '${dir}' already exists.`);
+    throw new Error(`The app '${manifest.name}' has already been installed.`);
   }
 
   // Create type model.
