@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { color, css, CssValue, t, ui } from '../../common';
 import { AppClickEvent, Apps } from '../Apps';
 import { Installer } from '../Installer';
-import { WindowTitleBar } from '../primitives';
+import { WindowTitleBar, Button } from '../primitives';
 import { Server } from './Server';
 
 export type IRootProps = { style?: CssValue };
@@ -32,6 +32,31 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     this.unmounted$.complete();
   }
 
+  private temp = async () => {
+    console.group('🌳 TEMP');
+
+    const ctx = this.context;
+
+    let sheet = await ctx.client.sheet<t.App>('ns:sys.app');
+    console.log('exists', ctx.client.pool?.exists(sheet));
+    sheet.dispose();
+    ctx.client.cache.clear();
+    console.log('exists', ctx.client.pool?.exists(sheet));
+    sheet = await ctx.client.sheet<t.App>('ns:sys.app');
+    console.log('exists', ctx.client.pool?.exists(sheet));
+    const apps = await sheet.data('App').load();
+
+    const f = await ctx.client.fetch.getCells({ ns: 'ns:sys.app', query: '1:500' });
+    console.log('f', f);
+
+    // console.log("apps.", apps.)
+    apps.rows.forEach((app) => {
+      console.log(' > ', app.toObject());
+    });
+
+    console.groupEnd();
+  };
+
   /**
    * [Render]
    */
@@ -46,6 +71,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         display: 'flex',
       }),
+      temp: css({
+        Absolute: [5, 5, null, null],
+      }),
     };
 
     const ctx = this.context;
@@ -56,7 +84,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         <WindowTitleBar style={styles.titlebar} address={uri} />
         <div {...styles.body}>
           {this.renderBody()}
-          <div />
+          <div {...styles.temp}>
+            <Button onClick={this.temp}>Temp</Button>
+          </div>
         </div>
       </div>
     );

@@ -5,10 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Button } from '../primitives';
 
-// @ts-ignore
-import filesize from 'filesize';
-
-import { color, COLORS, css, CssValue, t, ui, time } from '../../common';
+import { color, COLORS, css, CssValue, t, ui, time, filesize } from '../../common';
 import { Icons } from '../Icons';
 import { uploadApp, getManifest, getApps } from './_tmp';
 
@@ -125,14 +122,14 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
       await uploadApp({ ctx, dir, files });
       this.resetState();
       this.state$.next({ installed: true });
-      time.delay(1500, () => this.state$.next({ installed: undefined }));
+      time.delay(2500, () => this.state$.next({ installed: undefined }));
     } catch (error) {
       this.setError(error);
     }
   };
 
   private setError = (error: string | Error) => {
-    this.state$.next({ error: ErrorView.parseError(error) });
+    this.state$.next({ isDragOver: false, error: ErrorView.parseError(error) });
   };
 
   /**
@@ -180,7 +177,8 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
       }),
     };
 
-    const message = installed ? 'Installed' : isDragOver ? `Drop App` : `Drag to Install App`;
+    const dropMessage = isDragOver ? `Drop App` : `Drag to Install App`;
+    const message = installed ? '🎉 Successfully Installed' : dropMessage;
 
     return (
       <div {...styles.base}>
@@ -331,7 +329,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         {isDragOver && this.renderDropBorder()}
         {this.renderCloseButton({ onClick: this.resetState })}
         <div {...styles.body}>
-          <Icons.AlertTriangle color={COLORS.CLI.YELLOW} size={64} style={styles.icon} />
+          <Icons.AlertTriangle color={COLORS.CLI.MAGENTA} size={64} style={styles.icon} />
           <div {...styles.message}>
             <div>{error.message}</div>
             <div {...styles.tryAgain}>Please try again.</div>

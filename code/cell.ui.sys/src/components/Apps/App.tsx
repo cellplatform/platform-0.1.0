@@ -2,21 +2,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, ui } from '../../common';
+import { COLORS, color, css, CssValue, t, ui, Uri, filesize } from '../../common';
 import { Card, IPropListItem, PropList, Button } from '../primitives';
+import { IAppData } from './types';
 
 export type IAppProps = {
   app: IAppData;
   style?: CssValue;
   onClick?: AppClickEventHandler;
-};
-
-export type IAppData = {
-  uri: string;
-  typename: string;
-  props: t.App;
-  types: t.ITypedSheetRowType[];
-  windows: t.ITypedSheetData<t.AppWindow>;
 };
 
 export type AppClickEvent = { app: IAppData };
@@ -61,6 +54,10 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     return name;
   }
 
+  public get host() {
+    return this.context.client.host;
+  }
+
   /**
    * [Render]
    */
@@ -69,6 +66,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       base: css({
         fontSize: 14,
         Flex: 'vertical-stretch-stretch',
+        color: COLORS.DARK,
       }),
       card: css({
         marginBottom: 30,
@@ -78,28 +76,62 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
         paddingLeft: 15,
         paddingRight: 15,
       }),
+      name: css({ fontWeight: 'bolder' }),
+      typename: css({ opacity: 0.5 }),
       title: css({
-        borderBottom: `solid 1px ${color.format(-0.2)}`,
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
         PaddingX: 10,
         PaddingY: 8,
-        backgroundColor: color.format(-0.03),
+        marginBottom: 5,
+        backgroundColor: color.format(-0.02),
         Flex: 'horizontal-stretch-spaceBetween',
         fontSize: 11,
-        opacity: 0.5,
+        userSelect: 'none',
+      }),
+      footer: css({
+        borderTop: `solid 1px ${color.format(-0.1)}`,
+        PaddingX: 10,
+        PaddingY: 10,
+        marginTop: 5,
+        backgroundColor: color.format(-0.02),
+        Flex: 'horizontal-stretch-spaceBetween',
+        fontSize: 11,
         userSelect: 'none',
       }),
     };
+
+    const app = this.app;
+    const row = Uri.parse<t.IRowUri>(app.uri).parts;
+    const link = `${this.host}/ns:${row.ns}?cells=${row.key}:${row.key}`;
+    const size = `${app.props.width} x ${app.props.height}`;
+
+    const items: IPropListItem[] = [
+      { label: 'uri', value: app.uri, clipboard: link },
+      { label: 'dev port', value: app.props.devPort.toString() },
+      { label: 'bundle', value: filesize(app.props.bytes) },
+      { label: 'size (default)', value: size },
+      { label: 'windows (total)', value: app.windows.total.toString() },
+      // { label: 'size', value: size },
+      // { label: 'visible', value: isVisible },
+    ];
 
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.onClick}>
         <Card style={styles.card}>
           <div>
             <div {...styles.title}>
-              <div>{this.name}</div>
-              <div>AppWindow</div>
+              <div {...styles.name}>{this.name}</div>
+              <div {...styles.typename}>{app.typename}</div>
             </div>
-            <div {...styles.body}>{this.renderWindows()}</div>
-            {this.renderNewWindow()}
+            <div {...styles.body}>
+              <PropList items={items} />
+              {/* {this.renderApps()} */}
+              {/* {this.renderWindows()} */}
+            </div>
+            <div {...styles.footer}>
+              <div />
+              {this.renderNewWindow()}
+            </div>
           </div>
         </Card>
       </div>
@@ -110,7 +142,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     const styles = {
       base: css({
         Flex: 'center-center',
-        paddingBottom: 10,
       }),
       button: css({ fontSize: 12 }),
     };

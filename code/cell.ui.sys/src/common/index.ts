@@ -20,3 +20,7 @@ export { rx, time };
 
 import { ui } from '@platform/cell.ui';
 export { ui };
+
+// @ts-ignore
+import filesize from 'filesize';
+export { filesize };

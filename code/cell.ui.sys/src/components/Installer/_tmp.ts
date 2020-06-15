@@ -72,7 +72,8 @@ export async function uploadApp(args: {
 
   // Create type model.
   // Send change back to MAIN (to be saved).
-  const { app, changes } = await writeTypeDefModel({ sheet, apps, manifest });
+  const totalBytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
+  const { app, changes } = await writeTypeDefModel({ sheet, apps, manifest, totalBytes });
   const e: t.IpcSheetChangedEvent = {
     type: 'IPC/sheet/changed',
     payload: {
@@ -102,6 +103,7 @@ async function writeTypeDefModel(args: {
   sheet: t.ITypedSheet<t.App>;
   apps: t.ITypedSheetData<t.App>;
   manifest: IAppManifest;
+  totalBytes: number;
 }) {
   const { sheet, apps, manifest } = args;
   const app = apps.row(apps.total);
@@ -114,6 +116,7 @@ async function writeTypeDefModel(args: {
   props.height = manifest.window.height || props.height;
   props.minWidth = manifest.window.minWidth || props.minWidth;
   props.minHeight = manifest.window.minHeight || props.minHeight;
+  props.bytes = args.totalBytes;
 
   await time.wait(50);
   const changes = sheet.state.changes;
