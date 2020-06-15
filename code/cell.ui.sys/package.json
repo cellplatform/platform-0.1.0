@@ -24,12 +24,14 @@
     "@platform/ui.icon": "0.0.156",
     "@platform/ui.object": "0.0.210",
     "@platform/util.value": "0.7.24",
+    "filesize": "^6.1.0",
     "react-icons": "3.10.0"
   },
   "devDependencies": {
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
-    "@platform/ui.dev": "0.0.11"
+    "@platform/ui.dev": "0.0.11",
+    "@types/filesize": "^5.0.0"
   },
   "files": [
     "src",

@@ -1,4 +1,4 @@
-import { t, time, Client, Schema } from '../../common';
+import { t, time } from '../../common';
 
 export type IAppManifest = {
   name: string;
@@ -12,6 +12,17 @@ export type IAppManifest = {
   };
 };
 
+export async function getApps(client: t.IClientTypesystem) {
+  const sheet = await client.sheet<t.App>('ns:sys.app');
+  const apps = await sheet.data('App').load();
+  return { sheet, apps };
+}
+
+export function getManifest(files: t.IHttpClientCellFileUpload[]) {
+  const file = files.find((file) => file.filename === 'app.json');
+  return file ? toManifest(file) : undefined;
+}
+
 export async function uploadApp(args: {
   ctx: t.IAppContext;
   dir: string;
@@ -24,17 +35,13 @@ export async function uploadApp(args: {
     throw new Error(`The dropped item was not a folder.`);
   }
 
-  const manifestFile = files.find((file) => file.filename === 'app.json');
-  if (!manifestFile) {
+  // const manifestFile = files.find((file) => file.filename === 'app.json');
+  const manifest = getManifest(files);
+  if (!manifest) {
     throw new Error(`The bundle does not contain an 'app.json' manifest.`);
   }
 
-  const manifest = toManifest(manifestFile);
-  console.log('manifest', manifest);
-
   console.group('🌳 ');
-  console.log('client', client);
-  console.log('client.host', client.http.origin);
 
   // const save = client.
   // const saver = Client.saveMonitor({ client, debounce: 10 });
@@ -47,8 +54,10 @@ export async function uploadApp(args: {
   //   console.log('e', e);
   // });
 
-  const sheet = await client.sheet<t.App>('ns:sys.app');
-  const apps = await sheet.data('App').load();
+  const { sheet, apps } = await getApps(client);
+
+  // const sheet = await client.sheet<t.App>('ns:sys.app');
+  // const apps = await sheet.data('App').load();
 
   // client.changes.watch(sheet);
   console.log('apps', apps);

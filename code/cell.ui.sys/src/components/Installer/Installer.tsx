@@ -1,14 +1,16 @@
 import { DragTarget, DragTargetEvent } from '@platform/cell.ui/lib/components/DragTarget';
 import { ErrorView } from '@platform/cell.ui/lib/components/Error';
-
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-// import { Temp } from './_Temp';
-import { Icons } from '../Icons';
+import { Button } from '../primitives';
+
+// @ts-ignore
+import filesize from 'filesize';
 
 import { color, COLORS, css, CssValue, t, ui } from '../../common';
-import { uploadApp } from './_tmp';
+import { Icons } from '../Icons';
+import { uploadApp, getManifest, getApps } from './_tmp';
 
 export type WindowEvent = DragTargetEvent;
 
@@ -18,6 +20,7 @@ export type IInstallerProps = {
 };
 export type IInstallerState = {
   isDragOver?: boolean;
+  dir?: string;
   files?: t.IHttpClientCellFileUpload[];
   urls?: string[];
   error?: t.IErrorInfo;
@@ -47,17 +50,21 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
       this.state$.next({ isDragOver });
     });
 
-    // TEMP 🐷
     dragTarget.drop$.subscribe(async (e) => {
-      const files = e.files.filter((file) => !file.filename.endsWith('.DS_Store'));
+      const ctx = this.context;
       const { urls, dir } = e;
-      this.state$.next({ files, urls, error: undefined });
+      const files = e.files
+        .filter((file) => !file.filename.endsWith('.DS_Store'))
+        .filter((file) => !file.filename.endsWith('.map'))
+        .filter((file) => file.data.byteLength > 0);
 
-      try {
-        const ctx = this.context;
-        await uploadApp({ ctx, dir, files });
-      } catch (error) {
-        this.state$.next({ error: ErrorView.parseError(error) });
+      const manifest = getManifest(files);
+      const { apps } = await getApps(ctx.client);
+      const exists = manifest ? Boolean(apps.find((row) => row.name === manifest.name)) : false;
+      if (exists) {
+        this.setError(`The app '${manifest?.name}' has already been installed.`);
+      } else {
+        this.state$.next({ files, urls, dir, error: undefined, isDragOver: undefined });
       }
     });
   }
@@ -75,6 +82,10 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     return files;
   }
 
+  public get dir() {
+    return this.state.dir || '';
+  }
+
   public get url() {
     const { urls = [] } = this.state;
     return urls[0] || '';
@@ -84,12 +95,47 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     return this.files.length > 0 || this.url;
   }
 
+  public get manifest() {
+    return getManifest(this.files);
+  }
+
+  /**
+   * [Methods]
+   */
+  public resetState = () => {
+    this.state$.next({
+      error: undefined,
+      files: undefined,
+      urls: undefined,
+      dir: undefined,
+    });
+  };
+
+  public install = async () => {
+    if (!this.isDropped) {
+      return;
+    }
+
+    const files = this.files;
+    const dir = this.dir || '';
+
+    try {
+      const ctx = this.context;
+      await uploadApp({ ctx, dir, files });
+      this.resetState();
+    } catch (error) {
+      this.setError(error);
+    }
+  };
+
+  private setError = (error: string | Error) => {
+    this.state$.next({ error: ErrorView.parseError(error) });
+  };
+
   /**
    * [Render]
    */
   public render() {
-    const { error } = this.state;
-
     const styles = {
       base: css({
         Absolute: 0,
@@ -102,45 +148,99 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
 
     return (
       <DragTarget style={css(styles.base, this.props.style)} event$={this.event$}>
-        {!error && this.renderBody()}
-        {error && this.renderError(error)}
+        {this.renderBody()}
       </DragTarget>
     );
   }
 
   private renderBody() {
+    const { error } = this.state;
     const { isDragOver } = this.state;
     const isDropped = this.isDropped;
 
+    if (error) {
+      return this.renderError(error);
+    }
+
     const styles = {
-      base: css({ flex: 1, display: 'flex' }),
-      border: css({
-        Flex: 'vertical-center-center',
+      base: css({
         flex: 1,
-        boxSizing: 'border-box',
-        margin: 50,
-        border: `dashed 3px ${color.format(isDragOver && !isDropped ? -0.1 : 0)}`,
-        borderRadius: 10,
-        pointerEvents: 'none',
+        display: 'flex',
+        Flex: 'vertical-center-center',
       }),
       label: css({
-        fontWeight: 'bolder',
         fontSize: 24,
+        fontWeight: 'bolder',
         letterSpacing: -0.8,
-        // color: color.format(0.8),
         cursor: 'default',
+        pointerEvents: 'none',
       }),
     };
 
     const message = isDragOver ? `Drop App` : `Drag to Install App`;
-    const elMessage = !isDropped && <div {...styles.label}>{message}</div>;
 
     return (
       <div {...styles.base}>
-        <div {...styles.border}>
-          {elMessage}
-          {this.renderList()}
+        {isDragOver && this.renderDropBorder()}
+        {!isDropped && <div {...styles.label}>{message}</div>}
+        {isDropped && this.renderInstallConfirm()}
+      </div>
+    );
+  }
+
+  private renderDropBorder() {
+    const styles = {
+      base: css({
+        Absolute: 50,
+        border: `dashed 3px ${color.format(-0.1)}`,
+        borderRadius: 10,
+        pointerEvents: 'none',
+      }),
+    };
+    return <div {...styles.base} />;
+  }
+
+  private renderInstallConfirm() {
+    const manifest = this.manifest;
+
+    const styles = {
+      base: css({
+        Flex: 'horizontal-stretch-stretch',
+        boxSizing: 'border-box',
+      }),
+      title: css({
+        fontSize: 24,
+        fontWeight: 'bolder',
+        letterSpacing: -0.8,
+        cursor: 'default',
+        pointerEvents: 'none',
+        marginBottom: 5,
+      }),
+      left: css({
+        minWidth: 250,
+        borderRight: `solid 1px ${color.format(-0.1)}`,
+      }),
+      right: css({
+        paddingLeft: 20,
+      }),
+      buttons: css({
+        marginTop: 10,
+        borderTop: `solid 1px ${color.format(-0.1)}`,
+        Flex: 'horizontal-spaceBetween-center',
+        paddingTop: 8,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        {this.renderCloseButton({ onClick: this.resetState })}
+        <div {...styles.left}>
+          <div {...styles.title}>App Bundle</div>
+          <div>{manifest?.name || 'Unnamed'}</div>
+          <div {...styles.buttons}>
+            <Button onClick={this.install}>Install Now</Button>
+          </div>
         </div>
+        <div {...styles.right}>{this.renderList()}</div>
       </div>
     );
   }
@@ -152,36 +252,62 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     if (files.length === 0 && !url) {
       return null;
     }
+
     const styles = {
-      base: css({}),
-      item: css({}),
+      base: css({
+        fontSize: 12,
+        lineHeight: '1.5em',
+      }),
+      item: css({
+        Flex: 'horizontal-stretch-spaceBetween',
+        borderBottom: `dashed 1px ${color.format(-0.1)}`,
+      }),
+      filename: css({
+        marginRight: 30,
+      }),
+      size: css({
+        textAlign: 'right',
+      }),
+      total: css({
+        textAlign: 'right',
+        paddingTop: 3,
+        fontWeight: 'bolder',
+      }),
     };
 
     const elList =
       !url &&
       files.map((file, i) => {
+        const bytes = file.data.byteLength;
+        const size = filesize(bytes);
         return (
           <div key={i} {...styles.item}>
-            {file.filename}
+            <div {...styles.filename}>{file.filename}</div>
+            <div {...styles.size}>{size}</div>
           </div>
         );
       });
 
-    const elUrl = url && <div {...styles.item}>{url}</div>;
+    // const elUrl = url && <div {...styles.item}>{url}</div>;
+
+    const totalBytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
 
     return (
       <div {...styles.base}>
         {elList}
-        {elUrl}
+        <div {...styles.total}>{filesize(totalBytes)}</div>
+        {/* {elUrl} */}
       </div>
     );
   }
 
   private renderError(error: t.IErrorInfo) {
+    const { isDragOver } = this.state;
     const styles = {
       base: css({
-        flex: 1,
+        position: 'relative',
         Flex: 'center-center',
+        flex: 1,
       }),
       body: css({
         Flex: 'vertical-center-center',
@@ -199,6 +325,8 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     };
     return (
       <div {...styles.base}>
+        {isDragOver && this.renderDropBorder()}
+        {this.renderCloseButton({ onClick: this.resetState })}
         <div {...styles.body}>
           <Icons.AlertTriangle color={COLORS.CLI.YELLOW} size={64} style={styles.icon} />
           <div {...styles.message}>
@@ -207,6 +335,20 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
           </div>
         </div>
       </div>
+    );
+  }
+
+  private renderCloseButton(props: { onClick?: () => void } = {}) {
+    const styles = {
+      base: css({
+        Absolute: [10, 10, null, null],
+        // cursor: 'pointer',
+      }),
+    };
+    return (
+      <Button style={styles.base}>
+        <Icons.Close onClick={props.onClick} />
+      </Button>
     );
   }
 }

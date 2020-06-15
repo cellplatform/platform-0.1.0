@@ -20,9 +20,11 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
     ? (args.http as t.IHttpClient)
     : HttpClient.create(args.http as string);
 
+  const host = http.origin;
   const fetch = TypeSystem.Cache.wrapFetch(TypeSystem.fetcher.fromClient(http), { event$ });
 
   const api: t.IClientTypesystem = {
+    host,
     http,
     fetch,
     cache,

@@ -3,6 +3,7 @@ import { t } from '../common';
 type N = string | t.INsUri;
 
 export type IClientTypesystem = {
+  readonly host: string;
   readonly http: t.IHttpClient;
   readonly fetch: t.ISheetFetcher;
   readonly cache: t.IMemoryCache;
