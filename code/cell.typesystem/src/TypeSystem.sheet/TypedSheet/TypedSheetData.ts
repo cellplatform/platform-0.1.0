@@ -1,4 +1,6 @@
-import { coord, t, Uri } from './common';
+import { filter } from 'rxjs/operators';
+
+import { coord, rx, t, Uri } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
 
 type IArgs = {
@@ -66,12 +68,32 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
    * [Lifecycle]
    */
   private constructor(args: IArgs) {
-    // this.uri = util.formatNsUri(args.ns);
     this._sheet = args.sheet;
     this.typename = args.typename;
     this.types = args.types;
     this._ctx = args.ctx;
     this._range = TypedSheetData.formatRange(args.range);
+
+    /**
+     * TODO 🐷 TMP
+     */
+    rx.payload<t.ITypedSheetSyncEvent>(args.ctx.event$, 'SHEET/sync')
+      .pipe(filter((e) => Uri.strip.ns(e.ns) === this._sheet.uri.id))
+      .subscribe((e) => {
+        console.group('🌳 DATA: SHEET/sync');
+        console.log('e', e);
+        console.log('this.total', this.total);
+        const keys = Object.keys(e.changes.cells || {});
+        const max = coord.cell.max.row(keys);
+        console.log('max', max);
+        console.log('coord.cell.max.row(A1)', coord.cell.max.row(['A1']));
+        console.groupEnd();
+        // console.log('DATA sync', e);
+        // this.to
+        // this._rows = [];
+        // this._total = -1;
+        // this.load('1:100');
+      });
   }
 
   /**
@@ -113,6 +135,8 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   public get total() {
+    // TEMP 🐷
+    // return Math.max(this._total, this._rows.length);
     return this._total;
   }
 
