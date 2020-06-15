@@ -1,7 +1,7 @@
 import { filter, map } from 'rxjs/operators';
 
 import { TypeDefault, TypeTarget } from '../../TypeSystem.core';
-import { R, Schema, t, Uri, rx } from './common';
+import { coord, R, Schema, t, Uri, rx } from './common';
 import { TypedSheetRef } from './TypedSheetRef';
 import { TypedSheetRefs } from './TypedSheetRefs';
 
@@ -52,9 +52,10 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       map((e) => e.payload as t.ITypedSheetChangeCell),
       filter((e) => e.kind === 'CELL'),
       filter((e) => this.isThisSheet(e.ns)),
-      map(({ to, ns, key }) => ({ to, uri: Uri.parse<t.ICellUri>(Uri.create.cell(ns, key)) })),
+      map(({ to, ns, key }) => ({ key, to, uri: Uri.parse<t.ICellUri>(Uri.create.cell(ns, key)) })),
       filter(({ uri }) => uri.ok && uri.type === 'CELL'),
-      map((e) => ({ ...e, uri: e.uri.parts })),
+      map((e) => ({ ...e, uri: e.uri.parts, index: coord.cell.toRowIndex(e.key) })),
+      filter((e) => e.index === this.index),
     );
 
     /**

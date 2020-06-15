@@ -198,6 +198,20 @@ describe('TypedSheet', () => {
       expect(changes2.B1.to.props).to.eql({ isEnabled: false });
     });
 
+    it('change: A1 and A2 (values not mixed up between rows)', async () => {
+      const { sheet } = await testMySheet();
+      const cursor = await sheet.data<f.MyRow>('MyRow').load();
+
+      const row1 = cursor.row(0);
+      const row2 = cursor.row(1);
+
+      row1.props.title = 'Change-1';
+      row2.props.title = 'Change-2';
+
+      expect(row1.props.title).to.eql('Change-1');
+      expect(row2.props.title).to.eql('Change-2');
+    });
+
     it('throw (on change cells): contains invalid namespace', async () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
