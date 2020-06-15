@@ -68,7 +68,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
         filter((e) => Boolean(e.columnDef)),
         map((e) => ({ ...e, target: TypeTarget.parse(e.columnDef.target) })),
         filter((e) => e.target.isValid && e.target.isInline),
-      ) 
+      )
       .subscribe((e) => this.setData(e.columnDef, e.to));
 
     // Change initiated via cache-sync.

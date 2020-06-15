@@ -2,13 +2,12 @@ import { Subject } from 'rxjs';
 
 import * as t from './types';
 
-const win = (window as unknown) as t.ITopWindow;
-
 /**
  * Get the environment.
  */
 export function getEnv() {
-  return win.env;
+  const win = (window as unknown) as t.ITopWindow;
+  return win?.env as t.IEnv;
 }
 
 /**
