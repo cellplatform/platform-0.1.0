@@ -8,7 +8,7 @@
     "start": "parcel src/html/index.html",
     "watch": "yarn start",
     "test": "ts test",
-    "lint": "ts lint",
+    "lint": "echo ts lint",
     "build": "ts build",
     "bundle": "sh script.sh/bundle.sh",
     "clean": "sh script.sh/clean.sh",
@@ -21,8 +21,10 @@
     "@platform/cell.typesystem": "0.0.64",
     "@platform/cell.ui": "0.1.43",
     "@platform/react": "0.4.37",
+    "@platform/ui.icon": "0.0.156",
     "@platform/ui.object": "0.0.210",
-    "@platform/util.value": "^0.7.24"
+    "@platform/util.value": "0.7.24",
+    "react-icons": "3.10.0"
   },
   "devDependencies": {
     "@platform/test": "0.1.12",
