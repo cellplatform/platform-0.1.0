@@ -342,6 +342,27 @@ describe('cell', () => {
       test('ROW', 2, 2);
     });
 
+    it('toColumnIndex', () => {
+      const test = (input: cell.CellInput, output: number) => {
+        const res = cell.toColumnIndex(input);
+        expect(res).to.eql(output);
+      };
+      test('A', 0);
+      test('A3', 0);
+      test('1', -1);
+      test(1, -1);
+    });
+
+    it('toRowIndex', () => {
+      const test = (input: cell.CellInput, output: number) => {
+        const res = cell.toRowIndex(input);
+        expect(res).to.eql(output);
+      };
+      test('A3', 2);
+      test('3', 2);
+      test(2, 2);
+    });
+
     it('toAxisKey', () => {
       const test = (axis: t.CoordAxis, input: cell.CellInput, output: string) => {
         const res = cell.toAxisKey(axis, input);

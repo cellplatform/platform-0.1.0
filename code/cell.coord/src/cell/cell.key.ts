@@ -195,6 +195,20 @@ export function toAxisIndex(axis: t.CoordAxis, input: CellInput) {
 }
 
 /**
+ * Converts a cell input into it's corresponding COLUMN index (eg "A3" => 0).
+ */
+export function toColumnIndex(input: CellInput) {
+  return toAxisIndex('COLUMN', input);
+}
+
+/**
+ * Converts a cell input into it's corresponding ROW index (eg "A3" => 2).
+ */
+export function toRowIndex(input: CellInput) {
+  return toAxisIndex('ROW', input);
+}
+
+/**
  * Converts a cell input into it's corresponding axis (COLUMN/ROW),
  * eg
  *    COLUMN: "A1" => "A"
