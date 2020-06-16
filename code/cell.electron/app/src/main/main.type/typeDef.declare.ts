@@ -21,6 +21,7 @@ export function declare() {
     .prop('bytes', (p) => p.type('number').default(-1))
     .prop('entry', (p) => p.type('string'))
     .prop('devPort', (p) => p.type('number').default(1234))
+    .prop('devTools', (p) => p.type('boolean').default(false))
     .prop('windows', (p) => p.type('/AppWindow[]').target('ref'))
     .prop('width', (p) => p.type('number').default(1000))
     .prop('height', (p) => p.type('number').default(800))

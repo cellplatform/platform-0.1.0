@@ -87,14 +87,7 @@ export class Windows extends React.PureComponent<IWindowsProps, IWindowsState> {
       }),
       body: css({
         Absolute: [45, 0, 0, 0],
-        boxSizing: 'border-box',
-        flex: 1,
         display: 'flex',
-        alignContent: 'flex-start',
-        flexWrap: 'wrap',
-        paddingLeft: 10,
-        paddingRight: 20,
-        Scroll: true,
       }),
       empty: css({
         flex: 1,
@@ -105,27 +98,48 @@ export class Windows extends React.PureComponent<IWindowsProps, IWindowsState> {
       }),
     };
 
-    const windows = this.windows;
-    const isEmpty = windows.length === 0;
-
-    const elWindows = windows.map((item, i) => {
-      const { data, uri } = item;
-      return <div key={i}>{this.renderWindow({ data, uri })}</div>;
-    });
+    const isEmpty = this.windows.length === 0;
+    const elEmpty = isEmpty && (
+      <div {...styles.empty}>
+        <div>No windows currently open.</div>
+      </div>
+    );
 
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.title}>{this.state.name}</div>
         <div {...styles.body}>
-          {elWindows}
-          {isEmpty && (
-            <div {...styles.empty}>
-              <div>No windows currently open.</div>
-            </div>
-          )}
+          {this.renderWindows()}
+          {elEmpty}
         </div>
       </div>
     );
+  }
+
+  private renderWindows() {
+    const windows = this.windows;
+    if (windows.length === 0) {
+      return null;
+    }
+
+    const styles = {
+      base: css({
+        display: 'flex',
+        boxSizing: 'border-box',
+        alignContent: 'flex-start',
+        flexWrap: 'wrap',
+        paddingLeft: 10,
+        paddingRight: 20,
+        Scroll: true,
+      }),
+    };
+
+    const elWindows = this.windows.map((item, i) => {
+      const { data, uri } = item;
+      return <div key={i}>{this.renderWindow({ data, uri })}</div>;
+    });
+
+    return <div {...styles.base}>{elWindows}</div>;
   }
 
   private renderWindow(args: { uri: t.IRowUri; data: t.AppWindow }) {

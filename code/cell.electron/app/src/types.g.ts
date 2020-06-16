@@ -30,6 +30,7 @@ export declare type App = {
   bytes: number;
   entry: string;
   devPort: number;
+  devTools: boolean;
   windows: t.ITypedSheetRefs<AppWindow>;
   width: number;
   height: number;

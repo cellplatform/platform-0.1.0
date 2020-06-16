@@ -6,34 +6,36 @@ import { t, util, fs } from '../common';
 export async function add(args: {
   ctx: t.IContext;
   row: number;
-  name: string;
   sourceDir: string;
-  entryPath: string;
-  devPort: number;
   force?: boolean;
   props: {
+    name: string;
+    entryPath: string;
+    devPort: number;
     width: number;
     height: number;
     minWidth?: number;
     minHeight?: number;
+    devTools?: boolean;
   };
 }) {
   const { ctx } = args;
   const { client, apps } = ctx;
 
-  const exists = Boolean(apps.find((row) => row.name === args.name));
+  const exists = Boolean(apps.find((row) => row.name === args.props.name));
   const create = !exists || args.force;
 
   // Create the app model in the sheet.
   if (create) {
-    const entry = args.entryPath;
+    const entry = args.props.entryPath;
     const targetDir = fs.dirname(entry);
 
     const app = apps.row(args.row);
     const props = app.props;
-    props.name = args.name;
-    props.entry = args.entryPath;
-    props.devPort = args.devPort;
+    props.name = args.props.name;
+    props.entry = args.props.entryPath;
+    props.devPort = args.props.devPort;
+    props.devTools = args.props.devTools || false;
     props.width = args.props.width;
     props.height = args.props.height;
     props.minWidth = args.props.minWidth;
@@ -49,6 +51,6 @@ export async function add(args: {
     });
   }
 
-  const app = apps.find((row) => row.name === args.name);
+  const app = apps.find((row) => row.name === args.props.name);
   return { app, created: create };
 }
