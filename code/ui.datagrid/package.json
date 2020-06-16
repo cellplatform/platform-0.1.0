@@ -21,7 +21,6 @@
     "@platform/cell.func": "0.1.176",
     "@platform/cell.schema": "0.4.125",
     "@platform/cell.types": "0.4.113",
-    "@platform/cell.ui": "0.1.43",
     "@platform/cell.value": "0.2.86",
     "@platform/css": "0.4.4",
     "@platform/libs": "0.2.2",

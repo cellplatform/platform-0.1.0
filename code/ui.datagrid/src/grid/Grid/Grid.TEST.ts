@@ -13,7 +13,7 @@ export const createTable = () => {
 
 export const createGrid = (args: Partial<IGridArgs> = {}) => {
   const table = createTable();
-  return Grid.create({ ns: 'foo', table, totalColumns: 3, totalRows: 5, ...args });
+  return Grid.create({ ns: 'foo', table, totalColumns: 3, totalRows: 5, ...args }) as Grid;
 };
 
 describe('Grid', () => {
