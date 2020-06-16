@@ -49,6 +49,17 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     return state.ns;
   }
 
+  private get uri() {
+    try {
+      const uri = this.ns ? Uri.toNs(this.ns).toString() : '';
+      return uri;
+    } catch (error) {
+      console.log('ROOT/URI Error: ', error.message);
+
+      return '';
+    }
+  }
+
   /**
    * [Render]
    */
@@ -57,12 +68,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       base: css({ Absolute: 0 }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
     };
-
-    const uri = this.ns ? Uri.toNs(this.ns).toString() : '';
-
     return (
       <div {...css(styles.base, this.props.style)}>
-        <WindowTitleBar style={styles.titlebar} address={uri} />
+        <WindowTitleBar style={styles.titlebar} address={this.uri} />
         {this.renderBody()}
       </div>
     );

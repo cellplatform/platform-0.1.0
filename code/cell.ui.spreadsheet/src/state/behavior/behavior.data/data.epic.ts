@@ -1,5 +1,4 @@
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-
 import { rx, t, Uri } from '../../../common';
 
 export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
@@ -26,7 +25,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
     .pipe(
       filter((e) => e.type === 'APP:SHEET/ns'),
       filter((e) => Boolean(e.to.ns)),
-      distinctUntilChanged((prev, next) => isNsChanged(prev.to, next.to)),
+      distinctUntilChanged((prev, next) => prev.to.ns === next.to.ns),
     )
     .subscribe(async (e) => {
       const namespace = e.to.ns || '';
@@ -38,6 +37,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
 
       const { ns, cells = {}, rows = {}, columns = {} } = res.body.data;
       const data = { ns, cells, rows, columns, types };
+
       store.dispatch({
         type: 'APP:SHEET/data',
         payload: { data },
@@ -79,10 +79,6 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
 /**
  * [Helpers]
  */
-
-function isNsChanged(prev: t.IAppState, next: t.IAppState) {
-  return !(prev.ns === next.ns && prev.host === next.host);
-}
 
 function parse(input: string) {
   input = (input || '').trim();

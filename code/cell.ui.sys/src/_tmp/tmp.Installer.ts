@@ -12,17 +12,26 @@ export type IAppManifest = {
   };
 };
 
+/**
+ * Get apps sheet.
+ */
 export async function getApps(client: t.IClientTypesystem) {
   const sheet = await client.sheet<t.App>('ns:sys.app');
   const apps = await sheet.data('App').load();
   return { sheet, apps };
 }
 
+/**
+ * Retrieve manifest file.
+ */
 export function getManifest(files: t.IHttpClientCellFileUpload[]) {
   const file = files.find((file) => file.filename === 'app.json');
   return file ? toManifest(file) : undefined;
 }
 
+/**
+ * Upload an app bundle
+ */
 export async function uploadApp(args: {
   ctx: t.IAppContext;
   dir: string;
@@ -41,30 +50,7 @@ export async function uploadApp(args: {
     throw new Error(`The bundle does not contain an 'app.json' manifest.`);
   }
 
-  console.group('🌳 ');
-
-  // const save = client.
-  // const saver = Client.saveMonitor({ client, debounce: 10 });
-  // saver.event$.subscribe((e) => {
-  //   console.log('e save ::', e);
-  // });
-
-  // client.changes.watch(sheet)
-  // client.changes.changed$.subscribe((e) => {
-  //   console.log('e', e);
-  // });
-
   const { sheet, apps } = await getApps(client);
-
-  // const sheet = await client.sheet<t.App>('ns:sys.app');
-  // const apps = await sheet.data('App').load();
-
-  // client.changes.watch(sheet);
-  console.log('apps', apps);
-  console.log('apps.total', apps.total);
-
-  // console.log('files', files);
-
   const exists = Boolean(apps.find((row) => row.name === manifest.name));
   if (exists) {
     throw new Error(`The app '${manifest.name}' has already been installed.`);
@@ -84,15 +70,8 @@ export async function uploadApp(args: {
   };
   ctx.fire(e as any);
 
-  // await app.load({ force: true });
-  // const app = apps.row(apps.total);
-
   // Upload files.
   await upload({ client, files, app });
-
-  console.groupEnd();
-
-  // sheet.
 }
 
 /**
@@ -106,8 +85,6 @@ async function writeTypeDefModel(args: {
   totalBytes: number;
 }) {
   const { sheet, apps, manifest } = args;
-
-  console.log('-------------------------------------------');
 
   const app = apps.row(apps.total);
   const props = app.props;
@@ -123,17 +100,6 @@ async function writeTypeDefModel(args: {
 
   await time.wait(50);
   const changes = sheet.state.changes;
-
-  console.group('🌳 WRITE MODEL');
-  console.log('changes', changes);
-  console.log('apps.total', apps.total);
-  apps.rows.forEach((row) => console.log('row.toObject()', row.props.name, row.toString()));
-
-  console.log('eq', apps.rows[0] === apps.rows[1]);
-
-  console.log('sheet.state', sheet.state);
-
-  console.groupEnd();
 
   return { app, changes };
 }
