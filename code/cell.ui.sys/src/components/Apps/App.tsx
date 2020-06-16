@@ -107,7 +107,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
 
     const items: IPropListItem[] = [
       { label: 'uri', value: app.uri, clipboard: link },
-      { label: 'dev port', value: app.props.devPort.toString() },
+      { label: 'dev:port', value: app.props.devPort.toString() },
       { label: 'bundle', value: filesize(app.props.bytes) },
       { label: 'size (default)', value: size },
       { label: 'windows (total)', value: app.windows.total.toString() },

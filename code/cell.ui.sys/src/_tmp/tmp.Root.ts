@@ -1,11 +1,12 @@
 import { t } from '../common';
 
 export async function tmpRoot(ctx: t.IAppContext) {
-  console.group('🌳 TEMP');
+  const sheet = await ctx.client.sheet<t.App>('ns:sys.app');
+
+  console.group('🌳 TEMP', sheet.toString());
 
   // const ctx = this.context;
 
-  const sheet = await ctx.client.sheet<t.App>('ns:sys.app');
   console.log('exists', ctx.client.pool?.exists(sheet));
   // sheet.dispose();
   // ctx.client.cache.clear();
@@ -13,6 +14,8 @@ export async function tmpRoot(ctx: t.IAppContext) {
   // sheet = await ctx.client.sheet<t.App>('ns:sys.app');
   // console.log('exists', ctx.client.pool?.exists(sheet));
   const apps = sheet.data('App');
+
+  console.log('apps.total', apps.total);
 
   // apps.TEMP_RESET();
   await apps.load();
