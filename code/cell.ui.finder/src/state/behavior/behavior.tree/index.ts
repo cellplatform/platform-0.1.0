@@ -6,7 +6,7 @@ import * as reduce from './tree.reduce';
 /**
  * Behavior controller for the <TreeView>.
  */
-export function init(args: { ctx: t.IFinderContext; store: t.IAppStore }) {
+export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { ctx, store } = args;
 
   reduce.init({ store });

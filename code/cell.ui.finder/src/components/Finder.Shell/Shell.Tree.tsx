@@ -13,7 +13,7 @@ export class ShellTree extends React.PureComponent<IShellTreeProps> {
   private tree$ = new Subject<t.TreeViewEvent>();
 
   public static contextType = ui.Context;
-  public context!: t.IFinderContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]

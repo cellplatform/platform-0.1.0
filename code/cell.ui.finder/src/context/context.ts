@@ -11,19 +11,19 @@ export function create(args: { env: t.IEnv }) {
   const { env } = args;
   const def = env.def;
   const event$ = env.event$ as Subject<t.AppEvent>;
-  const client = Client.env(env);
   const store = createStore({ event$ });
 
-  const ctx: t.IFinderContext = {
+  // Create the context.
+  const ctx: t.IAppContext = {
     def,
-    client,
-    getState: () => store.state,
+    client: Client.env(env),
     event$: event$.pipe(share()),
+    getState: () => store.state,
     fire: (e) => event$.next(e),
   };
 
+  // Finish up.
   behavior.init({ ctx, store });
   const Provider = ui.createProvider({ ctx });
-
   return { ctx, store, Provider };
 }

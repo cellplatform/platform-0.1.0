@@ -6,7 +6,7 @@ import { Shell } from '../Finder.Shell';
 import { WindowTitleBar } from '../primitives';
 
 export type IRootProps = {
-  ctx: t.IFinderContext;
+  ctx: t.IAppContext;
   style?: CssValue;
 };
 
@@ -14,7 +14,7 @@ export class Root extends React.PureComponent<IRootProps> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: t.IFinderContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]

@@ -1,7 +1,7 @@
 import { t, rx, onStateChanged, toErrorPayload } from '../../../common';
 import { filter, distinctUntilChanged } from 'rxjs/operators';
 
-export function init(args: { ctx: t.IFinderContext; store: t.IAppStore }) {
+export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { ctx, store } = args;
   const changes = onStateChanged(ctx.event$);
   const event$ = ctx.event$;

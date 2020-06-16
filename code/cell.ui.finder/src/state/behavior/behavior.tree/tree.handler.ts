@@ -4,7 +4,7 @@ import { filter } from 'rxjs/operators';
 
 import { t } from '../../../common';
 
-export function init(args: { ctx: t.IFinderContext; store: t.IAppStore }) {
+export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { ctx, store } = args;
 
   const tree = TreeView.events(ctx.event$ as Observable<t.TreeViewEvent>);
