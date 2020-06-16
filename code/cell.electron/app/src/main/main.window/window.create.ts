@@ -1,4 +1,4 @@
-import { t, util } from '../common';
+import { t, util, time } from '../common';
 import { createBrowserWindow } from './window.create.browser';
 
 /**
@@ -7,6 +7,18 @@ import { createBrowserWindow } from './window.create.browser';
 export async function createOne(args: { ctx: t.IContext; name: string }) {
   const { ctx } = args;
   const { apps } = ctx;
+
+  /**
+   * 🐷HACK TEMP:
+   *    This force loads all rows which may be needed when the data-set
+   *    has sync/resized.
+   * TODO:
+   *    Don't do this here, put this somewhere more sensible
+   *    of make some kind of "force load" method
+   *
+   */
+  const wait = Array.from({ length: apps.total }).map((v, i) => apps.row(i).load());
+  await Promise.all(wait);
 
   // Retrieve the app definition.
   const app = apps.find((row) => row.name === args.name);

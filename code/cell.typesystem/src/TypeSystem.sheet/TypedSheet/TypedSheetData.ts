@@ -108,7 +108,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   public get rows(): t.ITypedSheetRow<T>[] {
-    return this._rows;
+    return [...this._rows];
   }
 
   public get range() {
@@ -215,19 +215,19 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   public filter(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean) {
-    return this.rows.filter((row, i) => fn(row.props, i));
+    return this._rows.filter((row, i) => fn(row.props, i));
   }
 
   public find(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean) {
-    return this.rows.find((row, i) => fn(row.props, i));
+    return this._rows.find((row, i) => fn(row.props, i));
   }
 
   public map<U>(fn: (row: t.ITypedSheetRowProps<T>, index: number) => U) {
-    return this.rows.map((row, i) => fn(row.props, i));
+    return this._rows.map((row, i) => fn(row.props, i));
   }
 
   public forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void) {
-    this.rows.forEach((row, i) => fn(row.props, i));
+    this._rows.forEach((row, i) => fn(row.props, i));
   }
 
   /**
@@ -250,9 +250,9 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   private createRow(index: number) {
+    const ctx = this._ctx;
     const uri = Uri.create.row(this.uri.toString(), (index + 1).toString());
     const columns = this.types;
-    const ctx = this._ctx;
     const typename = this.typename;
     const sheet = this._sheet;
     return TypedSheetRow.create<T>({ sheet, typename, uri, columns, ctx });

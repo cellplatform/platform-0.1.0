@@ -41,7 +41,6 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     this.typename = args.typename;
     this.uri = Uri.row(args.uri);
     this.index = Number.parseInt(this.uri.key, 10) - 1;
-
     this._columns = args.columns;
     this._ctx = args.ctx;
     this._sheet = args.sheet;

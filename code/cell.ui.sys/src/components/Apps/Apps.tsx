@@ -24,10 +24,6 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IAppsProps) {
-    super(props);
-  }
-
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.load();
@@ -75,7 +71,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
       return item;
     });
 
-    const apps = (await Promise.all(wait)) //.filter((app) => !app.props.name.endsWith('cell.ui.sys'));
+    const apps = (await Promise.all(wait)).filter((app) => !app.props.name.endsWith('cell.ui.sys'));
     this.state$.next({ apps });
   }
 
