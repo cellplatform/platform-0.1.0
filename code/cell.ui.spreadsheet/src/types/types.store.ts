@@ -3,5 +3,8 @@ import { t } from './common';
 export type IAppStore = t.IStore<t.IAppState, t.AppEvent>;
 
 export type IAppState = {
-  error?: t.ISpreadsheetError
+  host?: string;
+  ns?: string;
+  data?: t.ISpreadsheetData;
+  error?: t.ISpreadsheetError;
 };

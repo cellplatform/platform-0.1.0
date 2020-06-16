@@ -6,6 +6,12 @@ export { t, constants };
 export const COLORS = constants.COLORS;
 
 /**
+ * Util
+ */
+import { onStateChanged } from './util';
+export { onStateChanged };
+
+/**
  * Libs
  */
 import { Client, Schema, Uri, TypeSystem } from '@platform/cell.client';
@@ -23,8 +29,8 @@ export const R = { flatten };
 import datagrid from '@platform/ui.datagrid';
 export { datagrid };
 
-import { rx } from '@platform/util.value';
-export { rx };
+import { rx, id, time } from '@platform/util.value';
+export { rx, id, time };
 
 import { ui } from '@platform/cell.ui';
 export { ui };
