@@ -9,13 +9,8 @@ import * as t from './types';
  */
 export function onStateChanged(ob$: Observable<t.AppEvent>, unmounted$?: Observable<{}>) {
   const event$ = unmounted$ ? ob$.pipe(takeUntil(unmounted$)) : ob$;
-
   type T = t.AppEvent['type'];
-
-  const isTypeMatch = (type: T, match: T[]) => {
-    return match.includes(type);
-  };
-
+  const isTypeMatch = (type: T, match: T[]) => match.includes(type);
   return {
     on(...type: T[]) {
       return rx

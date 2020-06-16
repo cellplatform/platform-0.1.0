@@ -24,7 +24,7 @@ export class ShellTree extends React.PureComponent<IShellTreeProps> {
     const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.tree$.pipe(takeUntil(this.unmounted$)).subscribe((e) => ctx.fire(e));
 
-    // Redraw when tree-state changes.
+    // Redraw.
     changes.on('APP:FINDER/tree').subscribe(() => this.forceUpdate());
   }
 

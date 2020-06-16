@@ -239,6 +239,14 @@
     react "16.13.1"
     react-dom "16.13.1"
 
+"@platform/state@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.5.1.tgz#3752fb4b266e8e87e9dfdac9ba7ee5cfaa700f5f"
+  integrity sha512-D1dZioejHekcUk9Gjd1TXqYYdSGktl7aDptmN6wEOCD8ie3CL8Y+RoeSSXDQDYK22E80WP4EIgqzmBbgBUB1Eg==
+  dependencies:
+    "@platform/util.value" "0.7.24"
+    immer "6.0.9"
+
 "@platform/test@0.1.12":
   version "0.1.12"
   resolved "https://registry.yarnpkg.com/@platform/test/-/test-0.1.12.tgz#3aa5e6dcd7e52b356f353e1227e4fb094fb3c0ca"
@@ -1811,6 +1819,11 @@ ignore@^4.0.6:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
+
+immer@6.0.9:
+  version "6.0.9"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-6.0.9.tgz#b9dd69b8e69b3a12391e87db1e3ff535d1b26485"
+  integrity sha512-SyCYnAuiRf67Lvk0VkwFvwtDoEiCMjeamnHvRfnVDyc7re1/rQrNxuL+jJ7lA3WvdC4uznrvbmm+clJ9+XXatg==
 
 import-fresh@^3.0.0:
   version "3.2.1"

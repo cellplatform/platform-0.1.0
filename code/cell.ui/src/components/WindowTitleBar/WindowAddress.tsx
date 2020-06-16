@@ -46,7 +46,15 @@ export class WindowAddress extends React.PureComponent<IWindowAddressProps, IWin
   private paste = (event: ClipboardEvent) => {
     if (this.isFocused) {
       const event$ = util.getEventBus<t.UiEvent>();
-      event$.next({ type: 'UI/WindowAddress/paste', payload: { event } });
+      event$.next({
+        type: 'UI:WindowAddress/paste',
+        payload: {
+          event,
+          get text() {
+            return event.clipboardData?.getData('text') || '';
+          },
+        },
+      });
     }
   };
 
@@ -91,7 +99,7 @@ export class WindowAddress extends React.PureComponent<IWindowAddressProps, IWin
         onFocus={this.focusHandler(true)}
         onBlur={this.focusHandler(false)}
       >
-        <div {...styles.body}>{this.props.address || 'Untitled'}</div>
+        <div {...styles.body}>{this.props.address}</div>
         {isFocused && <div {...styles.focusBorder} />}
       </div>
     );

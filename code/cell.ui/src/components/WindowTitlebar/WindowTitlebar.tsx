@@ -69,44 +69,47 @@ export class WindowTitleBar extends React.PureComponent<
     const { isWindowFocused } = this.state;
     const styles = {
       base: css({
-        Flex: 'center-center',
-        WebkitAppRegion: 'drag',
         position: 'relative',
+        WebkitAppRegion: 'drag',
         height: WindowTitleBar.HEIGHT,
         boxSizing: 'border-box',
-        borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.2 : -0.08)}`,
-        background: isWindowFocused ? WindowTitleBar.GRADIENT : color.format(-0.03),
         userSelect: 'none',
         color: COLORS.DARK,
+      }),
+      body: css({
+        Absolute: 0,
+        Flex: 'center-center',
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <WindowAddress address={this.props.address} isWindowFocused={isWindowFocused} />
+        {this.renderBackground()}
+        <div {...styles.body}>
+          <WindowAddress address={this.props.address} isWindowFocused={isWindowFocused} />
+          <div></div>
+        </div>
       </div>
     );
   }
 
-  // private renderAddressPanel() {
-  //   const { isWindowFocused: isFocused } = this.state;
-  //   const styles = {
-  //     base: css({
-  //       Flex: 'center-center',
-  //       position: 'relative',
-  //       backgroundColor: color.format(1),
-  //       border: `solid 1px ${color.format(-0.2)}`,
-  //       borderBottomColor: color.format(-0.26),
-  //       borderRadius: 4,
-  //       fontSize: 13,
-  //       PaddingX: 100,
-  //       height: 26,
-  //       minWidth: 300,
-  //       boxSizing: 'border-box',
-  //       opacity: isFocused ? 1 : 0.35,
-  //       color: color.format(-0.7),
-  //     }),
-  //   };
-
-  // return <div {...styles.base} tabIndex={1}>{this.props.address || 'Untitled'}</div>;
-  // }
+  private renderBackground() {
+    const { isWindowFocused } = this.state;
+    const styles = {
+      base: css({
+        Absolute: 0,
+        backgroundColor: COLORS.WHITE,
+        pointerEvents: 'none',
+      }),
+      shade: css({
+        Absolute: 0,
+        background: isWindowFocused ? WindowTitleBar.GRADIENT : color.format(-0.03),
+        borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.2 : -0.08)}`,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.shade} />
+      </div>
+    );
+  }
 }

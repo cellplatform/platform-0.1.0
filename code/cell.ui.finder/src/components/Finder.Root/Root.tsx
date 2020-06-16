@@ -19,9 +19,6 @@ export class Root extends React.PureComponent<IRootProps> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IRootProps) {
-    super(props);
-  }
 
   public componentWillUnmount() {
     this.unmounted$.next();

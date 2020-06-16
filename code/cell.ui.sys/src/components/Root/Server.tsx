@@ -76,7 +76,7 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
         PaddingX: 15,
         PaddingY: 15,
       }),
-      icon: css({ Absolute: [8, 15, null, null] }),
+      icon: css({ Absolute: [10, 15, null, null] }),
     };
     return (
       <div {...styles.base}>
@@ -86,7 +86,7 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
             <PropList.Hr />
             <PropList title={'Versions'} items={this.versions} />
           </div>
-          <Icons.Wifi style={styles.icon} size={22} color={COLORS.DARK} />
+          <Icons.Wifi style={styles.icon} size={18} color={COLORS.DARK} />
         </Card>
       </div>
     );
