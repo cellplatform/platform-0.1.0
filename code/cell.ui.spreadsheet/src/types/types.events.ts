@@ -34,10 +34,7 @@ export type ISpreadsheetDataEvent = {
   payload: ISpreadsheetData;
 };
 export type ISpreadsheetData = {
-  ns: t.INs;
-  cells: t.ICellMap;
-  rows: t.IRowMap;
-  columns: t.IColumnMap;
+  data: t.IAppStateData;
 };
 
 export type ISpreadsheetPatchEvent = {

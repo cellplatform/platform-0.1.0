@@ -32,15 +32,20 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
       const namespace = e.to.ns || '';
       const http = client.http;
       const res = await http.ns(namespace).read({ cells: true, rows: true, columns: true });
+
+      const sheet = await client.sheet(namespace);
+      const types = sheet.types;
+
       const { ns, cells = {}, rows = {}, columns = {} } = res.body.data;
+      const data = { ns, cells, rows, columns, types };
       store.dispatch({
         type: 'APP:SHEET/data',
-        payload: { ns, cells, rows, columns },
+        payload: { data },
       });
     });
 
   /**
-   * Patch data on update.
+   * Patch data when updated on different process.
    */
   rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync')
     .pipe(
@@ -122,7 +127,3 @@ function stripHttp(text: string) {
 function stripQuotes(text: string) {
   return text.replace(/^\"/, '').replace(/\"$/, '').replace(/^\'/, '').replace(/\'$/, '');
 }
-
-// function getProtocol(host: string) {
-//   return host.startsWith('localhost') ? 'http://' : 'https://';
-// }

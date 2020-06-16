@@ -18,7 +18,7 @@ export function init(args: { store: t.IAppStore }) {
    */
   store.on<t.ISpreadsheetDataEvent>('APP:SHEET/data').subscribe((e) => {
     e.change((state) => {
-      state.data = e.payload;
+      state.data = e.payload.data;
     });
   });
 

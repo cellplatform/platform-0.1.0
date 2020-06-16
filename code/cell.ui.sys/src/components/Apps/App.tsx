@@ -111,8 +111,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       { label: 'bundle', value: filesize(app.props.bytes) },
       { label: 'size (default)', value: size },
       { label: 'windows (total)', value: app.windows.total.toString() },
-      // { label: 'size', value: size },
-      // { label: 'visible', value: isVisible },
     ];
 
     return (
