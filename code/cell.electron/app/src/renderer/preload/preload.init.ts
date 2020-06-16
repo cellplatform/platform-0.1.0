@@ -43,7 +43,7 @@ export function init() {
 
   // Print environment details.
   if (isDev) {
-    console.group('🌳 preload');
+    console.group('🌳 preload (sandbox)');
     console.log('isDev', isDev);
     process.argv
       .filter((value) => value.startsWith('env:'))
