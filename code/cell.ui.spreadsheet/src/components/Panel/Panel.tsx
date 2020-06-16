@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, ui, t } from '../../common';
+import { css, CssValue, ui, t } from '../../common';
 
 export type IPanelProps = { style?: CssValue };
 export type IPanelState = {};
