@@ -20,7 +20,7 @@ export function getSystem() {
   const versions = getVersions();
   const server = toVersion(versions.server);
   const schema = toVersion(versions.schema);
-  const system = `CellOS; server@${server}; schema@${schema}`;
+  const system = `server@${server}; schema@${schema}`;
   return {
     system,
     ...versions,

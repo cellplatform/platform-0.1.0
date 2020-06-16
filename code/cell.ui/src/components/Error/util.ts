@@ -1,4 +1,4 @@
-import * as t from './types';
+import { t } from '../../common';
 
 /**
  * Parses an error into a usable object.

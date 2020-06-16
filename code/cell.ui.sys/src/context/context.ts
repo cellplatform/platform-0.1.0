@@ -2,8 +2,7 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { Client, t, ui } from '../common';
-
-type E = t.TypedSheetEvent;
+import { createStore, behavior } from '../state';
 
 /**
  * Creates an environment context.
@@ -11,24 +10,27 @@ type E = t.TypedSheetEvent;
 export function create(args: { env: t.IEnv }) {
   const { env } = args;
   const { def } = env;
-  const event$ = env.event$ as Subject<E>;
+  const event$ = env.event$ as Subject<t.AppEvent>;
+  const store = createStore({ event$ });
 
   /**
    * TODO 🐷 TEMP
    */
   event$.subscribe((e) => {
-    console.log('🐷TMP ui.sys', e);
+    // console.log('🐷TMP', e);
   });
 
   // Create the context.
-  const ctx: t.ISysContext = {
+  const ctx: t.IAppContext = {
     def,
     client: Client.env(env),
     event$: event$.pipe(share()),
+    getState: () => store.state,
     fire: (e) => event$.next(e),
   };
 
   // Finish up.
+  behavior.init({ ctx, store });
   const Provider = ui.createProvider({ ctx });
   return { ctx, Provider };
 }

@@ -18,7 +18,7 @@ export class TypeCacheCells {
    * [Fields]
    */
   public readonly ns: string;
-  public total: t.FetchSheetCellsResult['total'] = { rows: 0 };
+  public total: t.FetchSheetCellsResult['total'] = { rows: -1 };
   public cells: t.ICellMap = {};
   public error?: t.IHttpError;
   private rowQueries: string[] = [];
@@ -56,6 +56,8 @@ export class TypeCacheCells {
 
         // Check if the result-set has aleady been cached.
         if (!options.force && api.exists) {
+          // If the total has been reset, query it now.
+          await this.refreshTotal({ fetch, ns, skip: this.total.rows > -1 });
           return this.toResult({ range });
         }
 
@@ -85,24 +87,22 @@ export class TypeCacheCells {
   /**
    * Syncs the cache with any changes contained within the given sync event.
    */
-  public sync(changes: t.ITypedSheetChanges): t.ICellMap {
+  public sync(changes: t.ITypedSheetChanges) {
     const cells = changes.cells || {};
     const keys = Object.keys(cells);
-    if (keys.length === 0) {
-      return {};
+    if (keys.length > 0) {
+      const ns = Uri.strip.ns(this.ns);
+      const diffs = keys
+        .map((key) => cells[key])
+        .filter((diff) => diff.kind === 'CELL' && Uri.strip.ns(diff.ns) === ns)
+        .reduce((acc, diff) => {
+          acc[diff.key] = diff.to;
+          return acc;
+        }, {} as t.ICellMap);
+      this.cells = { ...this.cells, ...diffs };
+      this.total.rows = -1; // Reset the total.
     }
-
-    const ns = Uri.strip.ns(this.ns);
-    const diffs = keys
-      .map((key) => cells[key])
-      .filter((diff) => diff.kind === 'CELL' && Uri.strip.ns(diff.ns) === ns)
-      .reduce((acc, diff) => {
-        acc[diff.key] = diff.to;
-        return acc;
-      }, {} as t.ICellMap);
-
-    this.cells = { ...this.cells, ...diffs };
-    return diffs;
+    return this;
   }
 
   /**
@@ -135,5 +135,13 @@ export class TypeCacheCells {
       total: this.total,
       error: this.error,
     };
+  }
+
+  private async refreshTotal(args: { fetch: t.ISheetFetcher; ns: string; skip?: boolean }) {
+    const { fetch, ns, skip } = args;
+    if (!skip) {
+      const res = await fetch.getCells({ ns, query: 'A1:A1' });
+      this.total = { ...this.total, ...res.total };
+    }
   }
 }

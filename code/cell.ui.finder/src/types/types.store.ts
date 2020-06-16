@@ -1,8 +1,8 @@
 import { t } from './common';
 
-export type IFinderStore = t.IStore<t.IFinderState, t.FinderEvent>;
+export type IAppStore = t.IStore<t.IAppState, t.AppEvent>;
 
-export type IFinderState = {
+export type IAppState = {
   tree: {
     root?: t.ITreeNode;
     current?: string;

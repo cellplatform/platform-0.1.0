@@ -13,7 +13,7 @@ export class ShellTree extends React.PureComponent<IShellTreeProps> {
   private tree$ = new Subject<t.TreeViewEvent>();
 
   public static contextType = ui.Context;
-  public context!: t.IFinderContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]
@@ -24,8 +24,8 @@ export class ShellTree extends React.PureComponent<IShellTreeProps> {
     const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.tree$.pipe(takeUntil(this.unmounted$)).subscribe((e) => ctx.fire(e));
 
-    // Redraw when tree-state changes.
-    changes.on('FINDER/tree').subscribe(() => this.forceUpdate());
+    // Redraw.
+    changes.on('APP:FINDER/tree').subscribe(() => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -36,7 +36,7 @@ export class ShellTree extends React.PureComponent<IShellTreeProps> {
   /**
    * [Properties]
    */
-  public get tree(): t.IFinderState['tree'] {
+  public get tree(): t.IAppState['tree'] {
     const { root, current, theme = 'LIGHT' } = this.context.getState().tree || {};
     return { root, current, theme };
   }

@@ -33,11 +33,12 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    * [Render]
    */
   public render() {
-    const { uri, env } = this.props;
+    const { uri } = this.props;
     const styles = {
       base: css({
         Absolute: 0,
         overflow: 'hidden',
+        backgroundColor: color.format(1),
       }),
       titlebar: css({
         Absolute: [0, 0, null, 0],

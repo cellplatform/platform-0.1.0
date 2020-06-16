@@ -2,7 +2,7 @@ import { TypeBuilder } from './TypeSystem.builder';
 import { TypeCache } from './TypeSystem.cache';
 import { TypeClient, TypeDefault, TypeTarget, TypeValue } from './TypeSystem.core';
 import { fetcher } from './TypeSystem.fetch';
-import { ChangeMonitor, TypedSheet } from './TypeSystem.sheet';
+import { ChangeMonitor, TypedSheet, SheetPool } from './TypeSystem.sheet';
 import { objectToCells } from './util';
 
 export class TypeSystem {
@@ -13,6 +13,7 @@ export class TypeSystem {
   public static Default = TypeDefault;
 
   public static Sheet = TypedSheet;
+  public static Pool = SheetPool;
   public static ChangeMonitor = ChangeMonitor;
 
   public static client = TypeClient.client;

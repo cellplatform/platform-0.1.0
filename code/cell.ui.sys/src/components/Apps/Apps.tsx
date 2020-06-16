@@ -2,8 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, ui } from '../../common';
-import { App, IAppData, AppClickEventHandler, AppClickEvent } from './App';
+import { css, CssValue, rx, t, ui } from '../../common';
+import { App, AppClickEvent, AppClickEventHandler } from './App';
+import { IAppData } from './types';
 
 export { IAppData, AppClickEventHandler, AppClickEvent };
 export type IAppsProps = {
@@ -18,26 +19,18 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: t.ISysContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]
    */
-  constructor(props: IAppsProps) {
-    super(props);
-  }
-
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    this.load();
-
     const ctx = this.context;
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
-    ctx.event$.subscribe(async (e) => {
-      // TEMP 🐷HACK - to not brute force the reload like this!
-      // Should use proper cache-patching handled in the event stream.
-      this.client.cache.clear();
-      await this.load();
+    this.load();
+    rx.payload<t.ITypedSheetUpdatedEvent>(ctx.event$, 'SHEET/updated').subscribe((e) => {
+      this.load();
     });
   }
 
@@ -53,14 +46,18 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     return this.context.client;
   }
 
+  public get apps() {
+    return this.state.apps || [];
+  }
+
   /**
    * [Methods]
    */
   public async load() {
     const sheet = await this.client.sheet('ns:sys.app');
-    const apps = await sheet.data<t.App>('App').load();
+    const data = await sheet.data<t.App>('App').load();
 
-    const wait = apps.rows.map(async (row) => {
+    const wait = data.rows.map(async (row) => {
       const uri = row.toString();
       const windows = await row.props.windows.data();
       const item: IAppData = {
@@ -73,7 +70,12 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
       return item;
     });
 
-    this.state$.next({ apps: await Promise.all(wait) });
+    const apps = await Promise.all(wait);
+
+    //.filter((app) => !app.props.name.endsWith('cell.ui.sys'));
+    this.state$.next({
+      apps: apps.filter((app) => !app.props.name.endsWith('cell.ui.sys')),
+    });
   }
 
   /**
@@ -81,12 +83,17 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
    */
   public render() {
     const styles = { base: css({}) };
-    return <div {...css(styles.base, this.props.style)}>{this.renderApps()}</div>;
+    return (
+      <div {...css(styles.base, this.props.style)}>
+        {this.renderEmpty()}
+        {this.renderApps()}
+      </div>
+    );
   }
 
   private renderApps() {
-    const { apps = [] } = this.state;
-    if (!apps) {
+    const apps = this.apps;
+    if (apps.length === 0) {
       return null;
     }
 
@@ -99,5 +106,25 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     });
 
     return <div {...styles.base}>{elList}</div>;
+  }
+
+  private renderEmpty() {
+    const apps = this.apps;
+    if (apps.length > 0) {
+      return null;
+    }
+    const styles = {
+      base: css({
+        opacity: 0.5,
+        fontSize: 12,
+        fontStyle: 'italic',
+        textAlign: 'center',
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div>No applications installed.</div>
+      </div>
+    );
   }
 }

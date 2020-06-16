@@ -4,6 +4,7 @@ import { t } from '../common';
  * [Events]
  */
 export type TypedSheetEvent =
+  | t.TypedSheetSaveEvent
   | ITypedSheetLoadingEvent
   | ITypedSheetLoadedEvent
   | ITypedSheetRowLoadingEvent

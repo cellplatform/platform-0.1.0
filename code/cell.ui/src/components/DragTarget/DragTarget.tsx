@@ -47,7 +47,6 @@ export class DragTarget extends React.PureComponent<IDragTargetProps, IDragTarge
    */
   public render() {
     const styles = { base: css({}) };
-
     return (
       <div
         {...css(styles.base, this.props.style)}

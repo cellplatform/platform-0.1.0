@@ -27,7 +27,6 @@ describe('TypeBuilder', () => {
 
     it('simple', () => {
       const builder = TypeBuilder.create();
-
       builder
         .ns('foo')
         .type('MyType')
@@ -48,6 +47,18 @@ describe('TypeBuilder', () => {
       expect(B.type).to.eql('number');
       expect(B.target).to.eql(undefined);
       expect(B.default).to.eql(undefined);
+    });
+
+    it('optional property ("name?")', () => {
+      const builder = TypeBuilder.create();
+      builder.ns('foo').type('MyType').prop('count?', 'number');
+
+      const obj = builder.toObject();
+      const columns = obj['ns:foo'].columns;
+      const A = columns.A?.props?.def as t.CellTypeDef;
+
+      expect(A.prop).to.eql('MyType.count?');
+      expect(A.type).to.eql('number');
     });
 
     it('multi-type', () => {

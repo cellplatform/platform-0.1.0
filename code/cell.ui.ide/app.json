@@ -1,0 +1,9 @@
+{
+  "name": "ui.ide",
+  "entry": "bundle/index.html",
+  "devPort": 1236,
+  "window": {
+    "width": 1000,
+    "height": 650
+  }
+}

@@ -1,5 +1,6 @@
+import { COLORS as BASE } from '@platform/cell.ui/lib/common/constants';
+
 export const COLORS = {
-  WHITE: '#fff',
-  DARK: '#293042', // Inky blue/black.
-  BLUE: '#4B89FF',
+  ...BASE,
+  GREEN: '#31B84D',
 };

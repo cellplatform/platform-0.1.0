@@ -1,4 +1,6 @@
-import { coord, t, Uri } from './common';
+import { filter } from 'rxjs/operators';
+
+import { coord, rx, t, Uri } from './common';
 import { TypedSheetRow } from './TypedSheetRow';
 
 type IArgs = {
@@ -66,12 +68,21 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
    * [Lifecycle]
    */
   private constructor(args: IArgs) {
-    // this.uri = util.formatNsUri(args.ns);
     this._sheet = args.sheet;
     this.typename = args.typename;
     this.types = args.types;
     this._ctx = args.ctx;
     this._range = TypedSheetData.formatRange(args.range);
+
+    // Monitor for changes.
+    rx.payload<t.ITypedSheetSyncEvent>(args.ctx.event$, 'SHEET/sync')
+      .pipe(filter((e) => this.isThisSheet(e.ns)))
+      .subscribe((e) => {
+        // Increase the "total rows" count if required.
+        const keys = Object.keys(e.changes.cells || {});
+        const max = coord.cell.max.row(keys) + 1;
+        this._total = max > this._total ? max : this._total;
+      });
   }
 
   /**
@@ -96,8 +107,8 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return this._sheet.uri;
   }
 
-  public get rows() {
-    return this._rows;
+  public get rows(): t.ITypedSheetRow<T>[] {
+    return [...this._rows];
   }
 
   public get range() {
@@ -113,7 +124,11 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   public get total() {
-    return this._total;
+    // NB: If total is "-1" then this signals that it should be
+    //     recalculated.  Taking the maximum of total or the loaded
+    //     row length ensures that any expansions to the data-set via
+    //     the "SHEET/sync" event over time.
+    return this._total < 0 ? this._total : Math.max(this._total, this._rows.length);
   }
 
   /**
@@ -203,20 +218,26 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return promise;
   }
 
+  public forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void) {
+    this._rows.forEach((row, i) => fn(row.props, i));
+  }
+
   public filter(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean) {
-    return this.rows.filter((row, i) => fn(row.props, i));
+    return this._rows.filter((row, i) => fn(row.props, i));
   }
 
   public find(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean) {
-    return this.rows.find((row, i) => fn(row.props, i));
+    return this._rows.find((row, i) => fn(row.props, i));
   }
 
   public map<U>(fn: (row: t.ITypedSheetRowProps<T>, index: number) => U) {
-    return this.rows.map((row, i) => fn(row.props, i));
+    return this._rows.map((row, i) => fn(row.props, i));
   }
 
-  public forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void) {
-    this.rows.forEach((row, i) => fn(row.props, i));
+  public reduce<U>(fn: (prev: U, next: t.ITypedSheetRowProps<T>, index: number) => U, initial: U) {
+    return this._rows.reduce((acc, next, index) => {
+      return fn(acc, next.props, index);
+    }, initial);
   }
 
   /**
@@ -232,19 +253,23 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   /**
-   * [INTERNAL]
+   * [Internal]
    */
   private fire(e: t.TypedSheetEvent) {
     this._ctx.event$.next(e);
   }
 
   private createRow(index: number) {
+    const ctx = this._ctx;
     const uri = Uri.create.row(this.uri.toString(), (index + 1).toString());
     const columns = this.types;
-    const ctx = this._ctx;
     const typename = this.typename;
     const sheet = this._sheet;
     return TypedSheetRow.create<T>({ sheet, typename, uri, columns, ctx });
+  }
+
+  private isThisSheet(ns: string) {
+    return Uri.strip.ns(ns) === this._sheet.uri.id;
   }
 }
 

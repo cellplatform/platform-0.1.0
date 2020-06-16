@@ -11,7 +11,7 @@ export type IShellProps = {
 
 export class Shell extends React.Component<IShellProps> {
   public static contextType = ui.Context;
-  public context!: t.IFinderContext;
+  public context!: t.IAppContext;
 
   /**
    * [Properties]

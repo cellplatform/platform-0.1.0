@@ -1,4 +1,4 @@
-import { expect, t, TYPE_DEFS, testFetch } from '../../test';
+import { expect, t, TYPE_DEFS, testFetch, defaultValue } from '../../test';
 import { TypeScript } from '.';
 import { TypeClient } from '../TypeClient';
 import { ERROR_TYPENAME, ERROR_PROPNAME } from './fn.validate';
@@ -297,11 +297,12 @@ describe('TypeScript', () => {
     });
 
     it('validate.propname', async () => {
-      const test = (propname: string | undefined, err?: string) => {
+      const test = (propname: string | undefined, err?: string, optional?: boolean) => {
         const res = TypeScript.validate.propname(propname);
         const isValid = !err;
         expect(res.isValid).to.eql(isValid);
         expect(res.input).to.eql((propname || '').trim());
+        expect(res.optional).to.eql(defaultValue(optional, false));
         if (err) {
           expect(res.error).to.include(err);
           expect(res.error).to.include(ERROR_PROPNAME);
@@ -314,6 +315,7 @@ describe('TypeScript', () => {
       test('foo');
       test('Foo');
       test(' foo ');
+      test('foo?', undefined, true);
 
       // Invalid.
       test(undefined, 'Property-name is empty');
@@ -322,6 +324,7 @@ describe('TypeScript', () => {
       test('fo o', 'Property-name contains invalid characters');
       test('fo#o', 'Property-name contains invalid characters');
       test('Fo!o', 'Property-name contains invalid characters');
+      test('foo?bar', 'must be at the end');
     });
   });
 

@@ -293,6 +293,40 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     return res;
   }
 
+  public change(changes: t.ITypedSheetChanges) {
+    // Namespace.
+    if (changes.ns) {
+      const change = changes.ns;
+      if (this.isThisNamespace(change.ns)) {
+        this.state.change.ns(change.to);
+      } else {
+        const ns = this.uri.toString();
+        const err = `Requested change to [${change.ns}] is not in sheet [${ns}]`;
+        throw new Error(err);
+      }
+    }
+
+    // Cells.
+    if (changes.cells) {
+      const cells = changes.cells;
+      Object.keys(cells)
+        .map((key) => ({ key, change: cells[key] }))
+        .forEach((e) => {
+          if (this.isThisNamespace(e.change.ns)) {
+            this.state.change.cell(e.key, e.change.to);
+          } else {
+            const ns = this.uri.toString();
+            const cell = Uri.create.cell(e.change.ns, e.change.key);
+            const err = `Requested change to [${cell}] is not in sheet [${ns}]`;
+            throw new Error(err);
+          }
+        });
+    }
+
+    // Finish up.
+    return this;
+  }
+
   /**
    * [Internal]
    */
@@ -301,5 +335,9 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     if (this.isDisposed) {
       throw new Error(`Cannot ${action} because [TypedSheet] is disposed.`);
     }
+  }
+
+  private isThisNamespace(input: string) {
+    return Uri.strip.ns(input) === this.uri.id;
   }
 }

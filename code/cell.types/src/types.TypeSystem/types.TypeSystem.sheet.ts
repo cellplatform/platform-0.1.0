@@ -16,6 +16,7 @@ export type ITypedSheet<T = {}> = {
   dispose(): void;
   info<P extends t.INsProps = t.INsProps>(): Promise<ITypedSheetInfo<P>>;
   data<D = T>(args: string | ITypedSheetDataArgs): ITypedSheetData<D>;
+  change(changes: t.ITypedSheetChanges): ITypedSheet<T>;
   toString(): string;
 };
 
@@ -43,9 +44,10 @@ export type ITypedSheetData<T> = {
 
   // Functional methods.
   forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void): void;
-  map<U>(fn: (row: t.ITypedSheetRowProps<T>, index: number) => U): U[];
   filter(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean): R<T>[];
   find(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean): R<T> | undefined;
+  map<U>(fn: (row: t.ITypedSheetRowProps<T>, index: number) => U): U[];
+  reduce<U>(fn: (prev: U, next: t.ITypedSheetRowProps<T>, index: number) => U, initial: U): U;
 };
 
 /**

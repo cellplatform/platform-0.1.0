@@ -2,6 +2,7 @@ export const COLORS = {
   WHITE: '#fff',
   DARK: '#293042', // Inky blue/black.
   BLUE: '#4B89FF',
+  GREEN: '#00BB47',
   CLI: {
     BLUE: '#477AF7',
     YELLOW: '#FBC72F',

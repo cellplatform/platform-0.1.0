@@ -2,10 +2,23 @@ import '../config';
 
 import { app } from 'electron';
 
-import { constants, log, Client, fs, ENV, time } from './common';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
+
+import { Client, constants, ENV, fs, log, t, time, rx } from './common';
+import * as server from './main.server';
 import { sys } from './main.sys';
 import { window } from './main.window';
-import * as server from './main.server';
 
 /**
  *  NOTE:
@@ -36,7 +49,10 @@ export async function start() {
   // Start the HTTP server.
   const port = prod ? undefined : 5000;
   const { paths, host } = await server.start({ log, prod, port });
-  const client = Client.typesystem(host);
+
+  // Initialize the typesystem HTTP client.
+  const event$ = new Subject<t.AppEvent>();
+  const client = Client.typesystem({ http: host, event$: event$ as Subject<t.TypedSheetEvent> });
 
   // Log main process.
   const bundle = constants.paths.bundle;
@@ -44,33 +60,48 @@ export async function start() {
   await app.whenReady();
 
   // Initialize the system models.
-  const ctx = await sys.init(client);
+  const ctx = await sys.init({ client, event$ });
+
+  log.info();
   log.info(`app modules: ${log.yellow(ctx.apps.total)}`);
   ctx.apps.forEach((app) => {
     log.info.gray(` • ${log.magenta(app.name)}`);
   });
   log.info();
 
-  if (ctx.apps.total === 0) {
-    log.info('🐷HACK: waiting for new models to be saved');
-    await time.wait(1500);
-    client.cache.clear();
-    await ctx.apps.load();
-  }
-
   await window.createAll({ ctx });
 
-  if (ctx.windowRefs.length < ctx.apps.total) {
-    // TEMP 🐷
-    ctx.apps.forEach((app) => {
-      const name = app.name;
-      window.createOne({ ctx, name });
-    });
+  // ctx.apps.le
+  console.log('ctx.apps.total', ctx.apps.total);
+  console.log('ctx.windowRefs.length', ctx.windowRefs.length);
+
+  // if (ctx.windowRefs.length < ctx.apps.total) {
+  if (ctx.windowRefs.length === 0) {
+    // TEMP 🐷- Ensure at least one window for each app exists.
+
+    console.log('-------------------------------------------');
+
+    const sys = ctx.apps.row(0);
+    const name = sys.props.name;
+    window.createOne({ ctx, name });
+
+    // ctx.apps.forEach((app) => {
+    //   const name = app.name;
+    // });
   }
+
+  rx.payload<t.IpcDebugEvent>(event$, 'IPC/debug')
+    .pipe(filter((e) => e.source !== 'MAIN'))
+    .subscribe((e) => {
+      const name = e.data.name;
+      if (name && e.data.action === 'OPEN') {
+        console.log('create', name);
+        window.createOne({ ctx, name });
+      }
+    });
 
   // TEMP 🐷
   // refs.tray = tray.init({ host, def, ctx }).tray;
-  // console.log('client.cache', client.cache);
 }
 
 /**

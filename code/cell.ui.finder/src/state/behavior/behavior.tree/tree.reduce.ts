@@ -1,13 +1,13 @@
 import { t } from '../../../common';
 
-export function init(args: { store: t.IFinderStore }) {
+export function init(args: { store: t.IAppStore }) {
   const { store } = args;
 
   /**
    * REDUCE: Update tree state.
    */
-  store.on<t.IFinderTreeEvent>('FINDER/tree').subscribe((e) => {
-    type T = t.IFinderState['tree'];
+  store.on<t.IFinderTreeEvent>('APP:FINDER/tree').subscribe((e) => {
+    type T = t.IAppState['tree'];
 
     const changeOrClear = <K extends keyof T>(from: T[K], to: T[K] | null): T[K] => {
       return to === null ? undefined : to || from;

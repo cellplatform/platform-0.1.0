@@ -11,5 +11,5 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  -webkit-app-region: drag
+  -webkit-app-region: drag;
 }

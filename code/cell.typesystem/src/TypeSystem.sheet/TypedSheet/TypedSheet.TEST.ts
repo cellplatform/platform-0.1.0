@@ -144,6 +144,109 @@ describe('TypedSheet', () => {
     });
   });
 
+  describe('TypedSheet.change', () => {
+    it('no change (empty changes)', async () => {
+      const sheet = (await testMySheet()).sheet;
+      expect(sheet.state.hasChanges).to.eql(false);
+      sheet.change({});
+      expect(sheet.state.hasChanges).to.eql(false);
+    });
+
+    it('change: ns', async () => {
+      const sheet1 = (await testMySheet()).sheet;
+      const sheet2 = (await testMySheet()).sheet;
+
+      sheet1.state.change.ns({ schema: '1.2.3' });
+      await time.wait(0);
+      expect(sheet1.state.hasChanges).to.eql(true);
+      expect(sheet2.state.hasChanges).to.eql(false);
+
+      const changes1 = sheet1.state.changes;
+      expect(changes1.ns?.to).to.eql({ schema: '1.2.3' });
+
+      sheet2.change(changes1);
+      await time.wait(0);
+
+      const changes2 = sheet2.state.changes.ns;
+
+      expect(sheet2.state.hasChanges).to.eql(true);
+      expect(changes2?.to.schema).to.eql('1.2.3');
+    });
+
+    it('change: cells', async () => {
+      const sheet1 = (await testMySheet()).sheet;
+      const sheet2 = (await testMySheet()).sheet;
+      const cursor1 = await sheet1.data<f.MyRow>('MyRow').load();
+
+      cursor1.row(0).props.title = 'Hello';
+      cursor1.row(0).props.isEnabled = false;
+      await time.wait(0);
+
+      const changes1 = sheet1.state.changes;
+      expect(Object.keys(changes1.cells || {})).to.eql(['A1', 'B1']);
+
+      expect(sheet1.state.hasChanges).to.eql(true);
+      expect(sheet2.state.hasChanges).to.eql(false);
+
+      sheet2.change(changes1);
+      await time.wait(0);
+
+      expect(sheet2.state.hasChanges).to.eql(true);
+
+      const changes2 = sheet2.state.changes.cells || {};
+      expect(changes2.A1.to).to.eql({ value: 'Hello' });
+      expect(changes2.B1.to.props).to.eql({ isEnabled: false });
+    });
+
+    it('change: A1 and A2 (values not mixed up between rows)', async () => {
+      const { sheet } = await testMySheet();
+      const cursor = await sheet.data<f.MyRow>('MyRow').load();
+
+      const row1 = cursor.row(0);
+      const row2 = cursor.row(1);
+
+      row1.props.title = 'Change-1';
+      row2.props.title = 'Change-2';
+
+      expect(row1.props.title).to.eql('Change-1');
+      expect(row2.props.title).to.eql('Change-2');
+    });
+
+    it('throw (on change cells): contains invalid namespace', async () => {
+      const sheet1 = (await testMySheet()).sheet;
+      const sheet2 = (await testMySheet()).sheet;
+      const cursor1 = await sheet1.data<f.MyRow>('MyRow').load();
+      cursor1.row(0).props.title = 'Hello';
+      await time.wait(5);
+
+      const changes = sheet1.state.changes;
+      const A1 = changes.cells?.A1;
+
+      if (A1) {
+        A1.ns = 'foo.fail'; // NB: Modify the namespace to cause error.
+      }
+
+      const fn = () => sheet2.change(changes);
+      expect(fn).to.throw(/is not in sheet/);
+    });
+
+    it('throw (on change ns): contains invalid namespace', async () => {
+      const sheet1 = (await testMySheet()).sheet;
+      const sheet2 = (await testMySheet()).sheet;
+
+      sheet1.state.change.ns({ schema: '1.2.3' });
+      await time.wait(5);
+
+      const changes = sheet1.state.changes;
+      if (changes.ns) {
+        changes.ns.ns = 'foo.fail'; // NB: Modify the namespace to cause error.
+      }
+
+      const fn = () => sheet2.change(changes);
+      expect(fn).to.throw(/is not in sheet/);
+    });
+  });
+
   describe('TypedSheetData (cursor)', () => {
     it('create: default (unloaded)', async () => {
       const { sheet } = await testMySheet();
@@ -425,6 +528,13 @@ describe('TypedSheet', () => {
         expect(rows.length).to.eql(9);
         expect(rows[0].title).to.eql('One');
         expect(rows[8].title).to.eql('Nine');
+      });
+
+      it('reduce', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = await sheet.data('MyRow').load();
+        const res = cursor.reduce((acc, next, i) => acc + i, 0);
+        expect(res).to.eql(36);
       });
 
       it('map', async () => {
@@ -1559,7 +1669,27 @@ describe('TypedSheet', () => {
       expect(sheet.state.hasChanges).to.eql(false); // NB: The internal data is updated, but no "pending change" is logged.
     });
 
-    it('event: SHEET/synced', async () => {
+    it('increases internal [total] from sync changes', async () => {
+      const { sheet, event$ } = await testMySheet();
+
+      const cursor = await sheet.data('MyRow').load();
+      expect(cursor.total).to.eql(9);
+
+      const ns = 'foo.mySheet';
+      event$.next({
+        type: 'SHEET/sync',
+        payload: {
+          ns,
+          changes: {
+            cells: { A99: { kind: 'CELL', ns, key: 'A99', from: {}, to: { value: 'hello' } } },
+          },
+        },
+      });
+
+      expect(cursor.total).to.eql(99);
+    });
+
+    it('after event: SHEET/synced', async () => {
       const { sheet, event$ } = await testMySheet();
       const cursor = await sheet.data('MyRow').load();
       const row = cursor.row(0);
@@ -1596,30 +1726,43 @@ describe('TypedSheet', () => {
     it('fires on SHEET/changed', async () => {
       const { sheet, event$ } = await testMySheet();
 
+      type U = t.ITypedSheetUpdatedEvent;
       const fired: t.ITypedSheetUpdated[] = [];
-      rx.payload<t.ITypedSheetUpdatedEvent>(event$, 'SHEET/updated').subscribe((e) => {
-        fired.push(e);
-      });
+      rx.payload<U>(event$, 'SHEET/updated').subscribe((e) => fired.push(e));
 
       const cursor = await sheet.data('MyRow').load();
-      const row = cursor.row(0);
+      const row1 = cursor.row(0);
+      const row2 = cursor.row(1);
 
-      row.props.title = 'Hello!!';
+      row1.props.title = 'Change-1';
+      row2.props.title = 'Change-2';
       await time.wait(5);
 
-      expect(fired.length).to.eql(1);
+      expect(fired.length).to.eql(2);
       expect(fired[0].via).to.equal('CHANGE');
       expect(fired[0].sheet).to.equal(sheet);
-      expect(fired[0].changes).to.eql(sheet.state.changes);
+      expect(fired[0].changes.cells?.A1?.to.value).to.eql('Change-1');
+      expect(sheet.state.changes.cells?.A1?.to.value).to.eql('Change-1');
+
+      expect(fired[1].via).to.equal('CHANGE');
+      expect(fired[1].sheet).to.equal(sheet);
+      expect(fired[1].changes.cells?.A2?.to.value).to.eql('Change-2');
+      expect(sheet.state.changes.cells?.A2?.to.value).to.eql('Change-2');
     });
 
-    it.skip('fires on SHEET/synced', async () => {
+    it('fires on SHEET/synced', async () => {
       const { sheet, event$ } = await testMySheet();
 
+      type U = t.ITypedSheetUpdatedEvent;
       const fired: t.ITypedSheetUpdated[] = [];
-      rx.payload<t.ITypedSheetUpdatedEvent>(event$, 'SHEET/updated').subscribe((e) => {
-        fired.push(e);
-      });
+      rx.payload<U>(event$, 'SHEET/updated').subscribe((e) => fired.push(e));
+
+      const cursor = await sheet.data('MyRow').load();
+      const row1 = cursor.row(0);
+      const row2 = cursor.row(1);
+
+      expect(row1.props.title).to.eql('One');
+      expect(row2.props.title).to.eql('Two');
 
       const ns = 'foo.mySheet';
       event$.next({
@@ -1627,7 +1770,10 @@ describe('TypedSheet', () => {
         payload: {
           ns,
           changes: {
-            cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
+            cells: {
+              A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'Change-1' } },
+              A2: { kind: 'CELL', ns, key: 'A2', from: {}, to: { value: 'Change-2' } },
+            },
           },
         },
       });
@@ -1636,7 +1782,10 @@ describe('TypedSheet', () => {
       expect(fired.length).to.eql(1);
       expect(fired[0].via).to.equal('SYNC');
       expect(fired[0].sheet).to.equal(sheet);
-      expect(fired[0].changes).to.eql(sheet.state.changes);
+      expect(fired[0].changes).to.eql({});
+
+      expect(row1.props.title).to.eql('Change-1');
+      expect(row2.props.title).to.eql('Change-2');
     });
   });
 });

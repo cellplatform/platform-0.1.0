@@ -7,7 +7,7 @@ import { TypeCacheCells } from './TypeCacheCells';
 import { TypeCacheKey } from './TypeCacheKey';
 
 /**
- * Determine if the given [fetch] object is "cache wrapped"/
+ * Determine if the given [fetch] object is "cache wrapped".
  */
 export function isWrapped(fetch: t.ISheetFetcher) {
   return (fetch as t.CachedFetcher).cache instanceof MemoryCache;
@@ -34,7 +34,10 @@ export function wrapFetch(
     rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync').subscribe((e) => {
       const key = fetchKey('getCells', e.ns);
       const entry = cache.get<C>(key);
-      entry?.sync(e.changes);
+      if (entry) {
+        entry.total.rows = -1;
+        entry.sync(e.changes);
+      }
     });
   }
 

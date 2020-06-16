@@ -2,21 +2,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, ui } from '../../common';
-import { Card, IPropListItem, PropList } from '../primitives';
+import { COLORS, color, css, CssValue, t, ui, Uri, filesize } from '../../common';
+import { Card, IPropListItem, PropList, Button } from '../primitives';
+import { IAppData } from './types';
 
 export type IAppProps = {
   app: IAppData;
   style?: CssValue;
   onClick?: AppClickEventHandler;
-};
-
-export type IAppData = {
-  uri: string;
-  typename: string;
-  props: t.App;
-  types: t.ITypedSheetRowType[];
-  windows: t.ITypedSheetData<t.AppWindow>;
 };
 
 export type AppClickEvent = { app: IAppData };
@@ -30,7 +23,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: t.ISysContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]
@@ -61,6 +54,10 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     return name;
   }
 
+  public get host() {
+    return this.context.client.host;
+  }
+
   /**
    * [Render]
    */
@@ -69,6 +66,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       base: css({
         fontSize: 14,
         Flex: 'vertical-stretch-stretch',
+        color: COLORS.DARK,
       }),
       card: css({
         marginBottom: 30,
@@ -78,30 +76,75 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
         paddingLeft: 15,
         paddingRight: 15,
       }),
+      name: css({ fontWeight: 'bolder' }),
+      typename: css({ opacity: 0.5 }),
       title: css({
-        borderBottom: `solid 1px ${color.format(-0.2)}`,
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
         PaddingX: 10,
         PaddingY: 8,
+        marginBottom: 5,
         backgroundColor: color.format(-0.03),
         Flex: 'horizontal-stretch-spaceBetween',
         fontSize: 11,
-        opacity: 0.5,
+        userSelect: 'none',
+      }),
+      footer: css({
+        borderTop: `solid 1px ${color.format(-0.1)}`,
+        PaddingX: 10,
+        PaddingY: 10,
+        marginTop: 5,
+        backgroundColor: color.format(-0.03),
+        Flex: 'horizontal-stretch-spaceBetween',
+        fontSize: 11,
         userSelect: 'none',
       }),
     };
+
+    const app = this.app;
+    const row = Uri.parse<t.IRowUri>(app.uri).parts;
+    const link = `${this.host}/ns:${row.ns}?cells=${row.key}:${row.key}`;
+    const size = `${app.props.width} x ${app.props.height}`;
+
+    const items: IPropListItem[] = [
+      { label: 'uri', value: app.uri, clipboard: link },
+      { label: 'dev:port', value: app.props.devPort.toString() },
+      { label: 'bundle', value: filesize(app.props.bytes) },
+      { label: 'size (default)', value: size },
+      { label: 'windows (total)', value: app.windows.total.toString() },
+    ];
 
     return (
       <div {...css(styles.base, this.props.style)} onClick={this.onClick}>
         <Card style={styles.card}>
           <div>
             <div {...styles.title}>
-              <div>module</div>
-              <div>{this.name}</div>
+              <div {...styles.name}>{this.name}</div>
+              <div {...styles.typename}>{app.typename}</div>
             </div>
-            <div {...styles.body}>{this.renderWindows()}</div>
+            <div {...styles.body}>
+              <PropList items={items} />
+              {/* {this.renderApps()} */}
+              {/* {this.renderWindows()} */}
+            </div>
+            <div {...styles.footer}>
+              {this.renderFooterButton({ label: 'Windows', onClick: this.onWindowsClick })}
+              {this.renderFooterButton({ label: 'New Window', onClick: this.onNewWindowClick })}
+            </div>
           </div>
         </Card>
       </div>
+    );
+  }
+
+  private renderFooterButton(props: { label: string; onClick?: () => void }) {
+    const styles = {
+      base: css({ Flex: 'center-center' }),
+      button: css({ fontSize: 12 }),
+    };
+    return (
+      <Button style={styles.button} onClick={props.onClick}>
+        {props.label}
+      </Button>
     );
   }
 
@@ -114,18 +157,28 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       base: css({}),
     };
 
+    const host = this.context.client.http.origin;
+
     const elList = windows.rows.map((row, i) => {
       const { x, y, width, height, isVisible } = row.props;
-      const position = x === undefined || y === undefined ? '-' : `${x} x ${y}`;
+      const position = x === undefined || y === undefined ? '-' : `x:${x} y:${y}`;
       const size = width === undefined || height === undefined ? '-' : `${width} x ${height}`;
+
+      const uri = row.uri.toString();
+
       const items: IPropListItem[] = [
-        { label: 'typename', value: row.typename },
-        { label: 'uri', value: row.uri.toString() },
+        // { label: 'typename', value: row.typename },
+        { label: 'uri', value: uri, clipboard: `${host}/${uri}` },
         { label: 'position', value: position },
         { label: 'size', value: size },
         { label: 'visible', value: isVisible },
       ];
-      return <PropList key={i} items={items} />;
+      return (
+        <React.Fragment key={i}>
+          <PropList items={items} />
+          <PropList.Hr />
+        </React.Fragment>
+      );
     });
 
     return <div {...styles.base}>{elList}</div>;
@@ -139,6 +192,32 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     if (onClick) {
       const app = this.app;
       onClick({ app });
+      console.log('app', app);
     }
+  };
+
+  private onNewWindowClick = () => {
+    const ctx = this.context;
+    const app = this.props.app;
+    const name = app.props.name;
+
+    // TEMP 🐷
+    ctx.fire({
+      type: 'IPC/debug',
+      payload: {
+        source: ctx.def,
+        data: { action: 'OPEN', name },
+      },
+    });
+  };
+
+  private onWindowsClick = () => {
+    const app = this.props.app;
+    this.context.fire({
+      type: 'APP:SYS/overlay',
+      payload: {
+        overlay: { kind: 'WINDOWS', uri: app.uri },
+      },
+    });
   };
 }

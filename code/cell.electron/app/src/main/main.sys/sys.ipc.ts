@@ -1,14 +1,14 @@
 import { ipcMain } from 'electron';
 import { Subject } from 'rxjs';
-import { debounceTime, filter } from 'rxjs/operators';
+import { debounceTime, filter, map } from 'rxjs/operators';
 
-import { constants, t } from '../common';
+import { constants, t, rx } from '../common';
 
 /**
- * Initializes the IPC (inter-process communications) event streams.
+ * Initializes the IPC ("inter-process-communication") event stream.
  */
-export function ipc(args: { ctx: t.IContext }) {
-  const { ctx } = args;
+export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
+  const { ctx, event$ } = args;
   const { client } = ctx;
   const { IPC } = constants;
 
@@ -30,17 +30,23 @@ export function ipc(args: { ctx: t.IContext }) {
   /**
    * Listen for events broadcast back from windows.
    */
-  const event$ = new Subject<t.IpcEvent>();
   ipcMain.on(IPC.CHANNEL, (ipc, event: t.IpcEvent) => event$.next(event));
 
-  const ipc$ = event$.pipe(filter((e) => e.type.startsWith('IPC/')));
-  const fromWindow$ = ipc$.pipe(filter((e) => e.payload.source !== 'MAIN'));
+  const ipc$ = event$.pipe(
+    filter((e) => e.type.startsWith('IPC/')),
+    map((e) => e as t.IpcEvent),
+  );
 
-  // TEMP 🐷
-  fromWindow$.subscribe((e) => {
-    console.log('IPC MAIN from', e.payload.source);
-    console.log('e.payload.changes', e.payload.changes);
+  // rx.m style={ styles. }
 
-    // event$.next(e as any); // TEMP 🐷HACK
+  const window$ = ipc$.pipe(filter((e) => e.payload.source !== 'MAIN'));
+
+  /**
+   * Monitor changes to sheets from window.
+   */
+  rx.payload<t.IpcSheetChangedEvent>(window$, 'IPC/sheet/changed').subscribe(async (e) => {
+    const { ns, changes } = e;
+    const sheet = await ctx.client.sheet(ns);
+    sheet.change(changes);
   });
 }

@@ -4,7 +4,7 @@ import { filter } from 'rxjs/operators';
 
 import { t } from '../../../common';
 
-export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
+export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { ctx, store } = args;
 
   const tree = TreeView.events(ctx.event$ as Observable<t.TreeViewEvent>);
@@ -12,12 +12,12 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
 
   const toggleTwisty = (node: string) => {
     const root = TreeUtil.toggleIsOpen(store.state.tree.root, node);
-    ctx.fire({ type: 'FINDER/tree', payload: { root } });
+    ctx.fire({ type: 'APP:FINDER/tree', payload: { root } });
   };
 
   const select = (node?: string) => {
     if (node) {
-      ctx.fire({ type: 'FINDER/tree/select', payload: { node } });
+      ctx.fire({ type: 'APP:FINDER/tree/select', payload: { node } });
     }
   };
 

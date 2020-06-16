@@ -6,7 +6,7 @@ import * as error from './behavior.error';
 /**
  * Initialize behavior controllers.
  */
-export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
+export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   tree.init(args);
   view.init(args);
   error.init(args);

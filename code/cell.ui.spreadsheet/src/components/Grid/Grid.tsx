@@ -1,31 +1,40 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { CssValue, t } from '../../common';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 
-import datagrid from '@platform/ui.datagrid';
+import { CssValue, onStateChanged, t, ui } from '../../common';
+import { GridView } from './Grid.View';
 
-import { grid, factory } from '../../test/SAMPLE'; // TEMP 🐷
-
-export type IGridProps = { events$?: Subject<t.GridEvent>; style?: CssValue };
-export type IGridState = {};
+export type IGridProps = { grid$?: Subject<t.GridEvent>; style?: CssValue };
+export type IGridState = { ns?: string };
 
 export class Grid extends React.PureComponent<IGridProps, IGridState> {
   public state: IGridState = {};
   private state$ = new Subject<Partial<IGridState>>();
   private unmounted$ = new Subject<{}>();
 
-  private grid$ = this.props.events$ || new Subject<t.GridEvent>();
+  public static contextType = ui.Context;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]
    */
-  constructor(props: IGridProps) {
-    super(props);
-  }
 
   public componentDidMount() {
+    const ctx = this.context;
+    const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+
+    // Create the grid for the namespace.
+    changes
+      .on('APP:SHEET/ns')
+      .pipe(
+        map((e) => e.to),
+        distinctUntilChanged((prev, next) => prev.ns === next.ns && prev.host === next.host),
+      )
+      .subscribe((e) => this.updateState());
+
+    this.updateState();
   }
 
   public componentWillUnmount() {
@@ -34,18 +43,23 @@ export class Grid extends React.PureComponent<IGridProps, IGridState> {
   }
 
   /**
+   * [Methods]
+   */
+  public updateState() {
+    const ns = this.context.getState().ns || '';
+    this.state$.next({ ns });
+  }
+
+  /**
    * [Render]
    */
   public render() {
-    return (
-      <datagrid.DataGrid
-        grid={grid}
-        factory={factory}
-        events$={this.grid$}
-        initial={{ selection: 'A1' }}
-        style={this.props.style}
-        canSelectAll={false}
-      />
-    );
+    const ns = this.state.ns;
+    if (ns) {
+      const { grid$, style } = this.props;
+      return <GridView key={ns} ns={ns} grid$={grid$} style={style} />;
+    } else {
+      return null;
+    }
   }
 }

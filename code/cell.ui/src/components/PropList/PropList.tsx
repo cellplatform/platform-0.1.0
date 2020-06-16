@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, CssValue, COLORS, defaultValue, t } from '../../common';
-import { PropListItem } from './PropListItem';
+import { PropListItem } from './PropList.Item';
 
 export type IPropListProps = {
   title?: string;

@@ -21,7 +21,7 @@ export class ErrorBoundary extends React.Component<IErrorBoundaryProps, IErrorBo
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: t.IFinderContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]
@@ -33,7 +33,7 @@ export class ErrorBoundary extends React.Component<IErrorBoundaryProps, IErrorBo
 
     const name = this.props.name;
     changes
-      .on('FINDER/error', 'FINDER/tree')
+      .on('APP:FINDER/error', 'APP:FINDER/tree')
       .pipe(
         map((e) => e.to.error || {}),
         distinctUntilChanged((prev, next) => R.equals(prev[name], next[name])),
@@ -55,7 +55,7 @@ export class ErrorBoundary extends React.Component<IErrorBoundaryProps, IErrorBo
     if (this.context) {
       const { name } = this.props;
       const payload = toErrorPayload({ name, error, errorInfo });
-      this.context.fire({ type: 'FINDER/error', payload });
+      this.context.fire({ type: 'APP:FINDER/error', payload });
     }
   }
 

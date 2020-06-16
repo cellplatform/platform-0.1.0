@@ -1,4 +1,4 @@
-import { Grid } from '../../api';
+import { Grid } from '../../grid';
 import { t } from '../common';
 
 /**

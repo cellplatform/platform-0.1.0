@@ -1,5 +1,5 @@
 import { t, coord, util } from '../common';
-import { Grid } from '../api';
+import { Grid } from '../grid';
 
 const defaultFactory: t.GridFactory = (req) => null;
 

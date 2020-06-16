@@ -181,7 +181,8 @@ describe('TypeSystem ➔ HTTP', () => {
 
   describe('TypedSheet', () => {
     const writeMySheetRows = async <T>(client: t.IHttpClient, rows?: T[]) => {
-      const defs = (await TypeSystem.client(client).load('ns:foo')).defs;
+      const fetch = TypeSystem.fetcher.fromClient(client);
+      const defs = (await TypeSystem.client(fetch).load('ns:foo')).defs;
 
       const items: any[] = rows || [
         { title: 'One', isEnabled: true, color: { label: 'background', color: 'red' } },

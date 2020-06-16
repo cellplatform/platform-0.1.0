@@ -1,5 +1,5 @@
 import * as s3 from '@platform/fs.s3.types';
-import { IFsError } from './types.error';
+import { IFsError } from '../types.Error';
 
 export type FsType = FsTypeLocal | FsTypeS3;
 export type FsTypeLocal = 'LOCAL';

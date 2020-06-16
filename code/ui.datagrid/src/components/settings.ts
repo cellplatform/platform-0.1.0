@@ -1,4 +1,4 @@
-import { Editor, Grid } from '../api';
+import { Editor, Grid } from '../grid';
 import { constants, coord } from '../common';
 import * as hooks from './hooks';
 

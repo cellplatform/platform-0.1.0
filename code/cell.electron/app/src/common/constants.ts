@@ -1,4 +1,5 @@
 export const IPC = {
+  EVENT_PREFIX: 'IPC/',
   CHANNEL: 'APP/ipc',
 };
 

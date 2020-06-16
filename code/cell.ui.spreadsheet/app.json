@@ -1,0 +1,9 @@
+{
+  "name": "ui.spreadsheet",
+  "entry": "bundle/index.html",
+  "devPort": 1237,
+  "window": {
+    "width": 1000,
+    "height": 650
+  }
+}

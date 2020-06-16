@@ -1,1 +1,2 @@
-export * from './WindowFooterBar';
+import { WindowFooterBar } from './WindowFooterBar';
+export { WindowFooterBar };

@@ -22,7 +22,7 @@ export class ViewerList extends React.PureComponent<IViewerListProps, IViewerLis
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: t.IFinderContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]

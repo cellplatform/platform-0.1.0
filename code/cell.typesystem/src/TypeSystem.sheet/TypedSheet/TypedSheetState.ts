@@ -1,7 +1,7 @@
-import { filter, map, share, takeUntil, delay, concatMap } from 'rxjs/operators';
+import { delay, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { TypeCache } from '../../TypeSystem.cache';
-import { rx, deleteUndefined, R, Schema, t, Uri } from './common';
+import { deleteUndefined, R, rx, Schema, t, Uri } from './common';
 
 type N = t.INsProps;
 type C = t.ICellData;
@@ -33,6 +33,7 @@ export class TypedSheetState implements t.ITypedSheetState {
   private constructor(args: IArgs) {
     this._sheet = args.sheet;
     this._event$ = args.event$;
+
     const fetch = TypeCache.wrapFetch(args.fetch, { cache: args.cache });
 
     // INTERCEPT: Return pending changes to [cells] from the fetch method.
@@ -195,7 +196,7 @@ export class TypedSheetState implements t.ITypedSheetState {
       const sheet = this._sheet;
       const from = { ...this._changes };
       const to = {};
-      this._changes = {}; // NB: resetting state happens after the `from` variable is copied.
+      this._changes = {}; // NB: re-setting state happens after the `from` variable is copied.
       this.fire({
         type: 'SHEET/changes/cleared',
         payload: { sheet, from, to, action },

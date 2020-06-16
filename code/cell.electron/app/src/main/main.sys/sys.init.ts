@@ -1,6 +1,9 @@
 import '../../config';
 
-import { t } from '../common';
+import { Subject } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
+
+import { rx, t, constants } from '../common';
 import { typeDef } from '../main.type';
 import { toContext } from './sys.ctx';
 import * as types from './sys.init.types';
@@ -10,18 +13,32 @@ import { monitor } from './sys.monitor';
 /**
  * Initialize the system.
  */
-export async function init(client: t.IClientTypesystem) {
+export async function init(args: { client: t.IClientTypesystem; event$: Subject<t.AppEvent> }) {
+  const { client, event$ } = args;
+
   // Ensure the root "app" type-definitions exist in the database.
-  const { created } = await typeDef.ensureExists({ client });
+  await typeDef.ensureExists({ client });
 
   // Build the shared context and setup event listeners.
-  const ctx = await toContext(client);
-  monitor({ ctx });
+  const ctx = await toContext({ client, event$ });
+  monitor({ ctx, event$ });
+  ipc({ ctx, event$ });
 
   // Initialize application type-defs.
-  await types.define(ctx);
+  if (ctx.apps.total === 0) {
+    await types.define(ctx);
+
+    // Wait for save to complete.
+    await rx
+      .payload<t.ITypedSheetSavedEvent>(event$, 'SHEET/saved')
+      .pipe(
+        filter((e) => e.sheet.uri.toString() === constants.SYS.NS.DATA),
+        take(1),
+      )
+      .toPromise();
+    await ctx.apps.load();
+  }
 
   // Finish up.
-  ipc({ ctx });
   return ctx;
 }

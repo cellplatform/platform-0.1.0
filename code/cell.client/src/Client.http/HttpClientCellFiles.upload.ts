@@ -8,8 +8,10 @@ export async function upload(args: {
   changes?: boolean;
 }) {
   const { http, urls, cellUri } = args;
-  const input = Array.isArray(args.input) ? args.input : [args.input];
   const sendChanges = defaultValue(args.changes, false);
+
+  let input = Array.isArray(args.input) ? args.input : [args.input];
+  input = input.filter((file) => file.data.byteLength > 0); // NB: 0-byte files will cause upload error.
 
   let changes: t.IDbModelChange[] | undefined;
   const addChanges = (input?: t.IDbModelChange[]) => {

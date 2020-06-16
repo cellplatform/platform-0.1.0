@@ -4,13 +4,22 @@ import * as constants from './constants';
 
 export { t, util, constants };
 
+import { onStateChanged } from './util';
+export { onStateChanged };
+
 export const COLORS = constants.COLORS;
 
 /**
  * Libs
  */
-export { Client, TypeSystem, Schema, Uri } from '@platform/cell.client';
-export { css, color, CssValue } from '@platform/css';
+import { Client, TypeSystem, Schema, Uri } from '@platform/cell.client';
+export { Client, TypeSystem, Schema, Uri };
+
+import { css, color, CssValue } from '@platform/css';
+export { css, color, CssValue };
+
+import { coord } from '@platform/cell.coord';
+export { coord };
 
 import { equals } from 'ramda';
 export const R = { equals };
@@ -20,3 +29,7 @@ export { rx, time };
 
 import { ui } from '@platform/cell.ui';
 export { ui };
+
+// @ts-ignore
+import filesize from 'filesize';
+export { filesize };

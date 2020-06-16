@@ -15,7 +15,7 @@ export class ShellView extends React.PureComponent<IShellViewProps, IShellViewSt
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
-  public context!: t.IFinderContext;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]
@@ -29,7 +29,7 @@ export class ShellView extends React.PureComponent<IShellViewProps, IShellViewSt
     /**
      * Redraw.
      */
-    changes.on('FINDER/view').subscribe(() => this.forceUpdate());
+    changes.on('APP:FINDER/view').subscribe(() => this.forceUpdate());
   }
 
   public componentWillUnmount() {

@@ -51,14 +51,29 @@ describe('rx', () => {
     });
   });
 
-  describe('eventPayload', () => {
+  describe('event : payload', () => {
     type FooEvent = { type: 'TYPE/foo'; payload: Foo };
     type Foo = { count: number };
 
     type BarEvent = { type: 'TYPE/bar'; payload: Bar };
     type Bar = { msg: string };
 
-    it('filters on event and returns payload', () => {
+    it('rx.event', () => {
+      const source$ = new Subject<FooEvent | BarEvent>();
+
+      const fired: FooEvent[] = [];
+      rx.event<FooEvent>(source$, 'TYPE/foo').subscribe((e) => fired.push(e));
+
+      source$.next({ type: 'TYPE/bar', payload: { msg: 'hello' } });
+      source$.next({ type: 'TYPE/foo', payload: { count: 123 } });
+      source$.next({ type: 'TYPE/bar', payload: { msg: 'hello' } });
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].type).to.eql('TYPE/foo');
+      expect(fired[0].payload).to.eql({ count: 123 });
+    });
+
+    it('rx.payload', () => {
       const source$ = new Subject<FooEvent | BarEvent>();
 
       const fired: Foo[] = [];
