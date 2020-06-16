@@ -67,9 +67,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         <WindowTitleBar style={styles.titlebar} address={uri} />
         <div {...styles.body}>
           {this.renderBody()}
-          <div {...styles.temp}>
+          {/* <div {...styles.temp}>
             <Button onClick={this.temp}>Temp</Button>
-          </div>
+          </div> */}
           {this.renderOverlay()}
         </div>
       </div>
@@ -79,7 +79,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   private renderOverlay() {
     const ctx = this.context;
     const state = ctx.getState();
-    const overlay = state.overlay;
+    const overlay = state.overlay;  
     if (!overlay) {
       return null;
     }
@@ -95,10 +95,14 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       closeButton: css({
         Absolute: [5, 5, null, null],
       }),
+      body: css({
+        Absolute: 0,
+        display: 'flex',
+      }),
     };
     return (
       <div {...styles.base}>
-        {this.renderOverlayBody(overlay)}
+        <div {...styles.body}>{this.renderOverlayBody(overlay)}</div>
         <Button style={styles.closeButton} onClick={this.onCloseOverlay}>
           <Icons.Close />
         </Button>

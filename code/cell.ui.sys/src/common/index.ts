@@ -12,8 +12,14 @@ export const COLORS = constants.COLORS;
 /**
  * Libs
  */
-export { Client, TypeSystem, Schema, Uri } from '@platform/cell.client';
-export { css, color, CssValue } from '@platform/css';
+import { Client, TypeSystem, Schema, Uri } from '@platform/cell.client';
+export { Client, TypeSystem, Schema, Uri };
+
+import { css, color, CssValue } from '@platform/css';
+export { css, color, CssValue };
+
+import { coord } from '@platform/cell.coord';
+export { coord };
 
 import { equals } from 'ramda';
 export const R = { equals };

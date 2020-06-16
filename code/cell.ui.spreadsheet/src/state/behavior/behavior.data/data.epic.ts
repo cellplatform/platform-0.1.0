@@ -86,6 +86,7 @@ function parse(input: string) {
   let text = stripQuotes(input);
   let host = '';
   let ns = '';
+  let ok = true;
 
   if (input.startsWith('http:') || input.startsWith('http:')) {
     text = stripHttp(text);
@@ -104,13 +105,16 @@ function parse(input: string) {
   if (!text.includes(':')) {
     ns = text;
   } else {
-    const uri = Uri.parse<t.INsUri>(text);
-    if (uri.type === 'NS' && uri.ok) {
-      ns = uri.parts.id;
+    const uri = Uri.parse(text);
+    if (!uri.ok) {
+      ok = false;
+    } else {
+      ns = Uri.toNs(text).id;
     }
   }
 
-  return { host, ns, input };
+  const res = { ok, host, ns, input };
+  return res;
 }
 
 function stripHttp(text: string) {

@@ -55,7 +55,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       return uri;
     } catch (error) {
       console.log('ROOT/URI Error: ', error.message);
-
       return '';
     }
   }
@@ -65,7 +64,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
   public render() {
     const styles = {
-      base: css({ Absolute: 0 }),
+      base: css({
+        Absolute: 0,
+      }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
     };
     return (

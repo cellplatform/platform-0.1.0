@@ -75,6 +75,7 @@ export class WindowTitleBar extends React.PureComponent<
         boxSizing: 'border-box',
         userSelect: 'none',
         color: COLORS.DARK,
+        overflow: 'hidden',
       }),
       body: css({
         Absolute: 0,
