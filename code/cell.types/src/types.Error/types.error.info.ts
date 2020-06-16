@@ -1,7 +1,13 @@
+import { t } from '../common';
+
+/**
+ * Error Info (parsed).
+ */
+
 export type IErrorInfo = {
   message: string;
   name: string;
-  stack: IErrorStack[];
+  stack: t.IErrorStack[];
 };
 
 export type IErrorStack = {
@@ -15,7 +21,7 @@ export type IErrorStack = {
 
 export type IErrorComponent = {
   name: string;
-  stack: IErrorComponentStack[];
+  stack: t.IErrorComponentStack[];
   toString(): string;
 };
 

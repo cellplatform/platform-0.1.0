@@ -2,6 +2,7 @@ export * from '../types.TypeSystem';
 export * from '../types.Http';
 export * from '../types.Client';
 export * from '../types.Electron';
+export * from '../types.Error';
 export * from '../types.Ui';
 
 export * from './types.cell.coord';
@@ -12,7 +13,6 @@ export * from './types.compile';
 export * from './types.db';
 export * from './types.env';
 export * from './types.env.context';
-export * from './types.error';
 export * from './types.event';
 export * from './types.file';
 export * from './types.fs';
