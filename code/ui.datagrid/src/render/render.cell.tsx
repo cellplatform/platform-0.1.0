@@ -5,7 +5,7 @@
 import * as React from 'react';
 import * as ReactDOMServer from 'react-dom/server';
 
-import { Grid } from '../api';
+import { Grid } from '../grid';
 import { constants, coord, func, t, util } from '../common';
 import { FactoryManager } from '../factory';
 import * as css from '../styles/global.cell';

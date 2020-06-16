@@ -1,4 +1,4 @@
-import { Grid } from '../api';
+import { Grid } from '../grid';
 import { registerCellRenderer } from './render.cell';
 import { FactoryManager } from '../factory';
 

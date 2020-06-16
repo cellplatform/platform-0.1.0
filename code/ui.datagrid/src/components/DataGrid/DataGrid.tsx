@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 
-import { Grid } from '../../api';
+import { Grid } from '../../grid';
 import { FactoryManager } from '../../factory';
 import * as render from '../../render';
 import { containsFocus, events, constants, css, defaultValue, CssValue, t } from '../common';
