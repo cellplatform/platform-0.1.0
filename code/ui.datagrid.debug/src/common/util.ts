@@ -15,7 +15,7 @@ export function formatSelection(args: {
 
   const ranges = selection.ranges;
   const key = selection.cell || '';
-  const cell = grid.data.cells[key];
+  const cell = grid.data.cells[key] as t.ICellData;
   const value = getValueSync({ grid, key }) || '';
   const isEmpty = !Boolean(value);
 

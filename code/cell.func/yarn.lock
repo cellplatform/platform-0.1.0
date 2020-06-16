@@ -46,10 +46,10 @@
     excel-formula-tokenizer "2.3.1"
     toposort "2.0.2"
 
-"@platform/cell.schema@0.4.129":
-  version "0.4.129"
-  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.129.tgz#4e906aa262ce00e4a1ad8e6e9f078a71002fc61b"
-  integrity sha512-yDcdkZnh6eZYjMXiNlvWkpPcBFYoRm2cLe3fDkwSBOevU3JhstoNRpCqsgxGubFBq1i10HJtHGtET7GgBIMX/w==
+"@platform/cell.schema@0.4.130":
+  version "0.4.130"
+  resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.130.tgz#044b7686476762d6e5a410990bcaf7154fd5e624"
+  integrity sha512-fV1KCwpJgBZDZs6EG7jBkSZR26wfddRzoMU4AloH/cM5Ge6cHoIIoUL0T+gYuqrCmDL3NbX7G2NTiMkizIncnA==
   dependencies:
     "@platform/cache" "0.2.31"
     "@platform/cell.coord" "0.8.138"
@@ -77,12 +77,12 @@
     "@platform/types" "0.4.22"
     "@platform/util.diff" "0.0.32"
 
-"@platform/cell.value@0.2.90":
-  version "0.2.90"
-  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.2.90.tgz#88991831d5b1fea64166da6d89b0cc27e6a48d7d"
-  integrity sha512-cT3yR1u7j4oGN6pN6pdAEVd4xQpv0E9/y/Zb73gxyxxR7a2nYkOeUK8jYJE4KpVLWcGfGB/d4xJCld6Q8Y6mvA==
+"@platform/cell.value@0.2.91":
+  version "0.2.91"
+  resolved "https://registry.yarnpkg.com/@platform/cell.value/-/cell.value-0.2.91.tgz#58abda5b3b342ed862ff8d105bc070b6dbcbd540"
+  integrity sha512-0GhVTOuWfIu7yU+dzv+iJZMuLWZLoK8CzfZ9vi4RkorusCuceLT1jMwxsNhIcmOFpFVLL+QcwJ785hOL/XOWxA==
   dependencies:
-    "@platform/cell.schema" "0.4.129"
+    "@platform/cell.schema" "0.4.130"
     "@platform/cell.types" "0.4.117"
     "@platform/libs" "0.2.2"
     "@platform/util.diff" "0.0.32"

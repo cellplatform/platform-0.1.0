@@ -33,7 +33,7 @@ export class Cell<P extends t.IGridCellProps = t.IGridCellProps> implements t.IG
     return coord.cell.fromKey(cellKey);
   }
 
-  public static toPosition(ref: t.GridCellRef) {
+  public static toPosition(ref: t.GridCellRef): t.ICoordPosition {
     return typeof ref === 'string' ? Cell.fromKey(ref) : ref;
   }
 

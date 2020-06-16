@@ -71,7 +71,7 @@ export class Grid implements t.IGrid {
       Array.from({ length: args.totalColumns }).map((v, column) => {
         return args.cells[Cell.toKey({ row, column })];
       }),
-    );
+    ) as t.ICellData<Partial<t.IGridCellPropsAll>>[];
   }
 
   /**
@@ -317,7 +317,7 @@ export class Grid implements t.IGrid {
     return this._.isEditing;
   }
 
-  public get data() {
+  public get data(): t.IGridData {
     const { ns, cells, columns, rows } = this._;
     const files = {}; // NB: Supported in service, but no yet in UI.
     return { ns, cells, columns, rows, files };
