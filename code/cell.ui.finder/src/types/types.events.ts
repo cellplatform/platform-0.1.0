@@ -14,6 +14,9 @@ export type FinderEvent =
   | FinderViewEvent
   | IFinderErrorEvent;
 
+/**
+ * Changed
+ */
 export type IFinderChanged = {
   type: 'FINDER/changed';
   payload: t.IStateChange<t.IFinderState, t.FinderEvent>;
