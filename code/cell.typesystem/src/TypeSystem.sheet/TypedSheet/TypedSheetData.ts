@@ -124,7 +124,11 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
   }
 
   public get total() {
-    return this._total;
+    // NB: If total is "-1" then this signals that it should be
+    //     recalculated.  Taking the maximum of total or the loaded
+    //     row length ensures that any expansions to the set increase
+    //     over time.
+    return this._total < 0 ? this._total : Math.max(this._total, this._rows.length);
   }
 
   /**
