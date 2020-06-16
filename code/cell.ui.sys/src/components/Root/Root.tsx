@@ -2,12 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, ui } from '../../common';
+import { color, css, CssValue, t, ui, onStateChanged } from '../../common';
 import { AppClickEvent, Apps } from '../Apps';
 import { Installer } from '../Installer';
-import { WindowTitleBar, Button } from '../primitives';
+import { WindowTitleBar, Button, Icons } from '../primitives';
 import { Server } from './Server';
 import { tmpRoot } from '../../_tmp/tmp.Root';
+import { Windows } from '../Windows';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -25,7 +26,11 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
 
   public componentDidMount() {
+    const ctx = this.context;
+    const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+
+    changes.on('APP:SYS/overlay').subscribe(() => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -65,9 +70,49 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
           <div {...styles.temp}>
             <Button onClick={this.temp}>Temp</Button>
           </div>
+          {this.renderOverlay()}
         </div>
       </div>
     );
+  }
+
+  private renderOverlay() {
+    const ctx = this.context;
+    const state = ctx.getState();
+    const overlay = state.overlay;
+    if (!overlay) {
+      return null;
+    }
+
+    const styles = {
+      base: css({
+        Absolute: 10,
+        backgroundColor: color.format(1),
+        border: `solid 1px ${color.format(-0.2)}`,
+        borderRadius: 3,
+        boxShadow: `0 2px 8px 0 ${color.format(-0.2)}`,
+      }),
+      closeButton: css({
+        Absolute: [5, 5, null, null],
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        {this.renderOverlayBody(overlay)}
+        <Button style={styles.closeButton} onClick={this.onCloseOverlay}>
+          <Icons.Close />
+        </Button>
+      </div>
+    );
+  }
+
+  private renderOverlayBody(overlay: t.IAppStateOverlay) {
+    switch (overlay.kind) {
+      case 'WINDOWS':
+        return <Windows uri={overlay.uri} />;
+      default:
+        return null;
+    }
   }
 
   private renderBody() {
@@ -167,5 +212,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
   private onAppClick = (e: AppClickEvent) => {
     // this.state$.next({ json: e.app });
+  };
+
+  private onCloseOverlay = () => {
+    this.context.fire({ type: 'APP:SYS/overlay', payload: { overlay: undefined } });
   };
 }

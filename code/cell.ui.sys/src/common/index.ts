@@ -4,6 +4,9 @@ import * as constants from './constants';
 
 export { t, util, constants };
 
+import { onStateChanged } from './util';
+export { onStateChanged };
+
 export const COLORS = constants.COLORS;
 
 /**

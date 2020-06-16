@@ -127,8 +127,8 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
               {/* {this.renderWindows()} */}
             </div>
             <div {...styles.footer}>
-              <div />
-              {this.renderNewWindow()}
+              {this.renderFooterButton({ label: 'Windows', onClick: this.onWindowsClick })}
+              {this.renderFooterButton({ label: 'New Window', onClick: this.onNewWindowClick })}
             </div>
           </div>
         </Card>
@@ -136,19 +136,15 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     );
   }
 
-  private renderNewWindow() {
+  private renderFooterButton(props: { label: string; onClick?: () => void }) {
     const styles = {
-      base: css({
-        Flex: 'center-center',
-      }),
+      base: css({ Flex: 'center-center' }),
       button: css({ fontSize: 12 }),
     };
     return (
-      <div {...styles.base}>
-        <Button style={styles.button} onClick={this.onNewWindowClick}>
-          New Window
-        </Button>
-      </div>
+      <Button style={styles.button} onClick={props.onClick}>
+        {props.label}
+      </Button>
     );
   }
 
@@ -202,11 +198,8 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
 
   private onNewWindowClick = () => {
     const ctx = this.context;
-
     const app = this.props.app;
     const name = app.props.name;
-
-    console.log('name', name);
 
     // TEMP 🐷
     ctx.fire({
@@ -214,6 +207,16 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       payload: {
         source: ctx.def,
         data: { action: 'OPEN', name },
+      },
+    });
+  };
+
+  private onWindowsClick = () => {
+    const app = this.props.app;
+    this.context.fire({
+      type: 'APP:SYS/overlay',
+      payload: {
+        overlay: { kind: 'WINDOWS', uri: app.uri },
       },
     });
   };

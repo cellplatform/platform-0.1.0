@@ -18,7 +18,7 @@ export function createStore(args: { event$: Subject<t.AppEvent> }): t.IAppStore 
   store.changed$.subscribe((payload) => event$.next({ type: 'APP:SYS/changed', payload }));
   event$
     .pipe(
-      filter((e) => e.type.startsWith('APP:SHEET/')),
+      filter((e) => e.type.startsWith('APP:SYS/')),
       filter((e) => e.type !== 'APP:SYS/changed'),
     )
     .subscribe((e) => store.dispatch(e));
