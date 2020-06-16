@@ -149,6 +149,7 @@ export class Windows extends React.PureComponent<IWindowsProps, IWindowsState> {
     const styles = {
       base: css({
         padding: 20,
+        paddingTop: 15,
         minWidth: 280,
         marginLeft: 10,
         marginBottom: 10,
@@ -157,7 +158,7 @@ export class Windows extends React.PureComponent<IWindowsProps, IWindowsState> {
 
     const host = this.context.client.http.origin;
     const { x, y, width, height, isVisible } = row;
-    const position = x === undefined || y === undefined ? '-' : `x:${x} y:${y}`;
+    const position = x === undefined || y === undefined ? '-' : `${x} x ${y}`;
     const size = width === undefined || height === undefined ? '-' : `${width} x ${height}`;
 
     const items: IPropListItem[] = [
