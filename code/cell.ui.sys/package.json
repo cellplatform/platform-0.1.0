@@ -21,6 +21,7 @@
     "@platform/cell.typesystem": "0.0.67",
     "@platform/cell.ui": "0.1.46",
     "@platform/react": "0.4.37",
+    "@platform/state": "^0.5.1",
     "@platform/ui.icon": "0.0.156",
     "@platform/ui.object": "0.0.210",
     "@platform/util.value": "0.7.24",

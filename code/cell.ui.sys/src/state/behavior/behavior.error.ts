@@ -9,7 +9,7 @@ export function init(args: { store: t.IAppStore }) {
   /**
    * REDUCE: Update error.
    */
-  store.on<t.ISpreadsheetErrorEvent>('APP:SHEET/error').subscribe((e) => {
+  store.on<t.ISysErrorEvent>('APP:SYS/error').subscribe((e) => {
     e.change((state) => {
       const error = e.payload;
       state.error = error;
