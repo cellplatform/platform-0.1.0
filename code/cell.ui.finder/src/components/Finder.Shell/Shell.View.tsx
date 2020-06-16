@@ -29,7 +29,7 @@ export class ShellView extends React.PureComponent<IShellViewProps, IShellViewSt
     /**
      * Redraw.
      */
-    changes.on('FINDER/view').subscribe(() => this.forceUpdate());
+    changes.on('APP:FINDER/view').subscribe(() => this.forceUpdate());
   }
 
   public componentWillUnmount() {

@@ -5,7 +5,7 @@ import * as reduce from './view.reduce';
 /**
  * Behavior controller for the current [View].
  */
-export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
+export function init(args: { ctx: t.IFinderContext; store: t.IAppStore }) {
   const { ctx, store } = args;
 
   reduce.init({ store });

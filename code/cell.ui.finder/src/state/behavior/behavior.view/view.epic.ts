@@ -1,7 +1,7 @@
 import { t, rx, onStateChanged, toErrorPayload } from '../../../common';
 import { filter, distinctUntilChanged } from 'rxjs/operators';
 
-export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
+export function init(args: { ctx: t.IFinderContext; store: t.IAppStore }) {
   const { ctx, store } = args;
   const changes = onStateChanged(ctx.event$);
   const event$ = ctx.event$;
@@ -9,7 +9,7 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
   /**
    * Listen for view requests and render view that maps to the currently selected tree-node.
    */
-  rx.payload<t.IFinderViewRequestEvent>(event$, 'FINDER/view/req')
+  rx.payload<t.IFinderViewRequestEvent>(event$, 'APP:FINDER/view/req')
     .pipe(filter((e) => !e.isHandled))
     .subscribe((e) => {
       // NB: Handled in plugins.
@@ -20,18 +20,18 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
   const fireViewError = (error: Error | string) => {
     fireView({ el: null, isSpinning: false });
     store.dispatch({
-      type: 'FINDER/error',
+      type: 'APP:FINDER/error',
       payload: toErrorPayload({ name: 'view', error }),
     });
   };
 
-  const fireView = (payload: t.IFinderView) => store.dispatch({ type: 'FINDER/view', payload });
+  const fireView = (payload: t.IFinderView) => store.dispatch({ type: 'APP:FINDER/view', payload });
 
   /**
    * Request new view when tree changed.
    */
   changes
-    .on('FINDER/tree')
+    .on('APP:FINDER/tree')
     .pipe(distinctUntilChanged((prev, next) => prev.to.tree.selected === next.to.tree.selected))
     .subscribe((e) => {
       const render: P['render'] = (el) => {
@@ -52,6 +52,6 @@ export function init(args: { ctx: t.IFinderContext; store: t.IFinderStore }) {
       };
 
       const payload: P = { state: store.state, isHandled: false, render };
-      ctx.fire({ type: 'FINDER/view/req', payload });
+      ctx.fire({ type: 'APP:FINDER/view/req', payload });
     });
 }

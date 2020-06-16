@@ -10,7 +10,7 @@ import { createStore, behavior } from '../state';
 export function create(args: { env: t.IEnv }) {
   const { env } = args;
   const def = env.def;
-  const event$ = env.event$ as Subject<t.FinderEvent>;
+  const event$ = env.event$ as Subject<t.AppEvent>;
   const client = Client.env(env);
   const store = createStore({ event$ });
 
