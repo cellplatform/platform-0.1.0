@@ -530,6 +530,13 @@ describe('TypedSheet', () => {
         expect(rows[8].title).to.eql('Nine');
       });
 
+      it('reduce', async () => {
+        const { sheet } = await testMySheet();
+        const cursor = await sheet.data('MyRow').load();
+        const res = cursor.reduce((acc, next, i) => acc + i, 0);
+        expect(res).to.eql(36);
+      });
+
       it('map', async () => {
         const { sheet } = await testMySheet();
         const cursor = sheet.data('MyRow');

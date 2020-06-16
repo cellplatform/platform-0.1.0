@@ -214,6 +214,10 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return promise;
   }
 
+  public forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void) {
+    this._rows.forEach((row, i) => fn(row.props, i));
+  }
+
   public filter(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean) {
     return this._rows.filter((row, i) => fn(row.props, i));
   }
@@ -226,8 +230,10 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return this._rows.map((row, i) => fn(row.props, i));
   }
 
-  public forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void) {
-    this._rows.forEach((row, i) => fn(row.props, i));
+  public reduce<U>(fn: (prev: U, next: t.ITypedSheetRowProps<T>, index: number) => U, initial: U) {
+    return this._rows.reduce((acc, next, index) => {
+      return fn(acc, next.props, index);
+    }, initial);
   }
 
   /**
