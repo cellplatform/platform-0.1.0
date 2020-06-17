@@ -12,6 +12,9 @@ export { onStateChanged };
 /**
  * Libs
  */
+import { ui } from '@platform/cell.ui';
+export { ui };
+
 import { Client, Schema, Uri, TypeSystem } from '@platform/cell.client';
 export { Client, Schema, Uri, TypeSystem };
 
