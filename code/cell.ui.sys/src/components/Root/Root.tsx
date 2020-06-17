@@ -70,7 +70,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     };
 
     const ctx = this.context;
-    const uri = ctx.def;
+    // const uri = ctx.def;
+    const uri = '';
 
     return (
       <div {...css(styles.base, this.props.style)}>
@@ -82,49 +83,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       </div>
     );
   }
-
-  // private renderOverlay() {
-  //   const ctx = this.context;
-  //   const state = ctx.getState();
-  //   const overlay = state.overlay;
-  //   if (!overlay) {
-  //     return null;
-  //   }
-
-  //   const styles = {
-  //     base: css({
-  //       Absolute: 10,
-  //       backgroundColor: color.format(1),
-  //       border: `solid 1px ${color.format(-0.2)}`,
-  //       borderRadius: 3,
-  //       boxShadow: `0 2px 8px 0 ${color.format(-0.2)}`,
-  //     }),
-  //     closeButton: css({
-  //       Absolute: [5, 5, null, null],
-  //     }),
-  //     body: css({
-  //       Absolute: 0,
-  //       display: 'flex',
-  //     }),
-  //   };
-  //   return (
-  //     <div {...styles.base}>
-  //       <div {...styles.body}>{this.renderOverlayBody(overlay)}</div>
-  //       <Button style={styles.closeButton} onClick={this.onCloseOverlay}>
-  //         <Icons.Close />
-  //       </Button>
-  //     </div>
-  //   );
-  // }
-
-  // private renderOverlayBody(overlay: t.IAppStateOverlay) {
-  //   switch (overlay.kind) {
-  //     case 'WINDOWS':
-  //       return <Windows uri={overlay.uri} />;
-  //     default:
-  //       return null;
-  //   }
-  // }
 
   private renderBody() {
     const TOP_MARGIN = 25;
@@ -159,13 +117,15 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     return (
       <div {...styles.base}>
-        <div {...styles.left}>
-          <Apps />
-        </div>
+        <div {...styles.left}>{this.renderLeft()}</div>
         <div {...styles.center}>{this.renderCenter()}</div>
         <div {...styles.right}>{this.renderRight()} </div>
       </div>
     );
+  }
+
+  private renderLeft() {
+    return <Apps />;
   }
 
   private renderCenter() {
