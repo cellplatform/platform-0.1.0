@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, ui, onStateChanged, events } from '../../common';
-import { AppClickEvent, Apps } from '../Apps';
+import { color, css, CssValue, events, onStateChanged, t, ui } from '../../common';
+import { Apps } from '../Apps';
 import { Installer } from '../Installer';
-import { WindowTitleBar, Button, Icons } from '../primitives';
-import { Server } from './Server';
+import { Button, Icons, WindowTitleBar } from '../primitives';
 import { Windows } from '../Windows';
+import { Server } from './Server';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -158,7 +158,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <Apps onAppClick={this.onAppClick} />
+          <Apps />
         </div>
         <div {...styles.center}>{this.renderCenter()}</div>
         <div {...styles.right}>
@@ -185,8 +185,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     return (
       <div {...styles.base}>
-        {/* {this.renderMargin({ edge: 'LEFT' })}
-        {this.renderMargin({ edge: 'RIGHT' })} */}
         <div {...styles.body}>
           <Installer />
         </div>
@@ -194,38 +192,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     );
   }
 
-  private renderMargin(props: { edge?: 'LEFT' | 'RIGHT' } = {}) {
-    const MARGIN_LEFT = 0;
-    const { edge = 'LEFT' } = props;
-    const isLeft = edge === 'LEFT';
-    const isRight = edge === 'RIGHT';
-    const styles = {
-      base: css({
-        Absolute: [0, isRight ? 0 : null, 0, isLeft ? 0 : null],
-      }),
-      margin: css({
-        Absolute: [0, null, 0, 0],
-        borderLeft: `solid 1px #EF3469`,
-        opacity: 0.4,
-      }),
-      margin1: css({ left: MARGIN_LEFT }),
-      margin2: css({ left: MARGIN_LEFT + (isLeft ? 2 : -2) }),
-    };
-    return (
-      <div {...styles.base}>
-        <div {...css(styles.margin, styles.margin1)} />
-        <div {...css(styles.margin, styles.margin2)} />
-      </div>
-    );
-  }
-
   /**
    * [Handlers]
    */
-
-  private onAppClick = (e: AppClickEvent) => {
-    // this.state$.next({ json: e.app });
-  };
 
   private onCloseOverlay = () => {
     this.context.fire({ type: 'APP:SYS/overlay', payload: { overlay: undefined } });
