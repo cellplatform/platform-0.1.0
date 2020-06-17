@@ -31,9 +31,9 @@ export type ISysOverlay = {
  */
 export type ISysErrorEvent = {
   type: 'APP:SYS/error';
-  payload: ISpreadsheetError;
+  payload: ISysError;
 };
-export type ISpreadsheetError = {
+export type ISysError = {
   error: t.IErrorInfo;
   component?: t.IErrorComponent;
 };
