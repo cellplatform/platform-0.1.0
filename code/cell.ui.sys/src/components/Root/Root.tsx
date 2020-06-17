@@ -2,12 +2,11 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, ui, onStateChanged } from '../../common';
+import { color, css, CssValue, t, ui, onStateChanged, events } from '../../common';
 import { AppClickEvent, Apps } from '../Apps';
 import { Installer } from '../Installer';
 import { WindowTitleBar, Button, Icons } from '../primitives';
 import { Server } from './Server';
-import { tmpRoot } from '../../_tmp/tmp.Root';
 import { Windows } from '../Windows';
 
 export type IRootProps = { style?: CssValue };
@@ -31,14 +30,23 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     changes.on('APP:SYS/overlay').subscribe(() => this.forceUpdate());
+
+    // Bubble window resize.
+    events.resize$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
+      ctx.fire({
+        type: 'UI:DOM/window/resize',
+        payload: {
+          width: window.innerWidth,
+          height: window.innerHeight,
+        },
+      });
+    });
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
   }
-
-  private temp = async () => tmpRoot(this.context);
 
   /**
    * [Render]
@@ -67,9 +75,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         <WindowTitleBar style={styles.titlebar} address={uri} />
         <div {...styles.body}>
           {this.renderBody()}
-          {/* <div {...styles.temp}>
-            <Button onClick={this.temp}>Temp</Button>
-          </div> */}
           {this.renderOverlay()}
         </div>
       </div>
@@ -79,7 +84,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   private renderOverlay() {
     const ctx = this.context;
     const state = ctx.getState();
-    const overlay = state.overlay;  
+    const overlay = state.overlay;
     if (!overlay) {
       return null;
     }
@@ -129,12 +134,13 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         boxSizing: 'border-box',
       }),
       left: css({
-        width: 250,
+        width: 230,
         paddingTop: TOP_MARGIN,
         paddingLeft: EDGE_MARGIN,
         paddingRight: EDGE_MARGIN,
         paddingBottom: 80,
         Scroll: true,
+        backgroundColor: color.format(-0.03),
       }),
       center: css({
         flex: 1,
@@ -145,6 +151,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         paddingTop: TOP_MARGIN,
         paddingLeft: EDGE_MARGIN,
         paddingRight: EDGE_MARGIN,
+        backgroundColor: color.format(-0.03),
       }),
     };
 
@@ -171,13 +178,15 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         Absolute: 0,
         overflow: 'auto',
         paddingTop: 30,
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+        borderRight: `solid 1px ${color.format(-0.1)}`,
       }),
     };
 
     return (
       <div {...styles.base}>
-        {this.renderMargin({ edge: 'LEFT' })}
-        {this.renderMargin({ edge: 'RIGHT' })}
+        {/* {this.renderMargin({ edge: 'LEFT' })}
+        {this.renderMargin({ edge: 'RIGHT' })} */}
         <div {...styles.body}>
           <Installer />
         </div>

@@ -3,7 +3,7 @@ import { t } from './common';
 /**
  * Events
  */
-type GlobalEvent = t.EnvEvent | t.IpcEvent;
+type GlobalEvent = t.EnvEvent | t.IpcEvent | t.UiEvent;
 export type AppEvent = GlobalEvent | ISysChanged | ISysErrorEvent | ISysOverlayEvent;
 
 /**

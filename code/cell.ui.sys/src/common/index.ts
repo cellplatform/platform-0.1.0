@@ -12,6 +12,9 @@ export const COLORS = constants.COLORS;
 /**
  * Libs
  */
+import { events } from '@platform/react';
+export { events };
+
 import { Client, TypeSystem, Schema, Uri } from '@platform/cell.client';
 export { Client, TypeSystem, Schema, Uri };
 
