@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, t, Client } from '../../common';
+import { css, color, CssValue, t, Client, ui } from '../../common';
 import { WindowTitleBar, WindowFooterBar } from '../primitives';
 import { Monaco } from '../Monaco';
 
-export type IRootProps = { uri: string; env: t.IEnv; style?: CssValue };
+export type IRootProps = { style?: CssValue };
 export type IRootState = {};
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
@@ -13,12 +13,12 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject<{}>();
 
+  public static contextType = ui.Context;
+  public context!: t.IAppContext;
+
   /**
    * [Lifecycle]
    */
-  constructor(props: IRootProps) {
-    super(props);
-  }
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
@@ -33,20 +33,38 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    * [Render]
    */
   public render() {
-    const { uri } = this.props;
     const styles = {
       base: css({
         Absolute: 0,
         overflow: 'hidden',
-        backgroundColor: color.format(1),
       }),
       titlebar: css({
         Absolute: [0, 0, null, 0],
       }),
-      body: css({
+    };
+
+    const uri = '';
+
+    return (
+      <div {...css(styles.base, this.props.style)}>
+        <WindowTitleBar style={styles.titlebar} address={uri} />
+        {this.renderBody()}
+      </div>
+    );
+  }
+
+  private renderBody() {
+    const styles = {
+      base: css({
         Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
+        Flex: 'vertical-stretch-stretch',
         display: 'flex',
-        Flex: 'vertical-strecth-stretch',
+      }),
+      body: css({
+        flex: 1,
+        position: 'relative',
+        display: 'flex',
+        Flex: 'horizontal-stretch-stretch',
       }),
       editor: css({
         position: 'relative',
@@ -54,14 +72,27 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
     };
     return (
-      <div {...css(styles.base, this.props.style)}>
-        <WindowTitleBar style={styles.titlebar} address={uri} />
+      <div {...styles.base}>
         <div {...styles.body}>
           <div {...styles.editor}>
             <Monaco />
           </div>
-          <WindowFooterBar>{this.renderFooter()}</WindowFooterBar>
+          {this.renderSidebar()}
         </div>
+        <WindowFooterBar>{this.renderFooter()}</WindowFooterBar>
+      </div>
+    );
+  }
+
+  private renderSidebar() {
+    const styles = {
+      base: css({
+        width: 250,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div>Sidebar</div>
       </div>
     );
   }
@@ -116,14 +147,17 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     //     `,
     //     );
 
-    const { env } = this.props;
-    const http = Client.http(env.host);
+    // const { env } = this.props;
+    // const http = Client.http(env.host);
+    const ctx = this.context;
+    const http = ctx.client.http;
+    const host = ctx.client.host;
 
-    const ns = http.ns(env.def);
+    const ns = http.ns(ctx.def);
     const info = await ns.read();
     const typeNs = info.body.data.ns.props?.type?.implements || '';
 
-    const client = Client.typesystem(env.host);
+    const client = Client.typesystem(host);
     const ts = await client.typescript(typeNs, { exports: false, imports: false });
 
     let text = ts.toString();
