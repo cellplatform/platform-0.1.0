@@ -27,8 +27,8 @@ export { coord };
 import { equals } from 'ramda';
 export const R = { equals };
 
-import { rx, time } from '@platform/util.value';
-export { rx, time };
+import { rx, time, defaultValue } from '@platform/util.value';
+export { rx, time, defaultValue };
 
 import { ui } from '@platform/cell.ui';
 export { ui };
