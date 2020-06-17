@@ -57,11 +57,24 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
     const styles = {
       base: css({
         Absolute: 0,
+      }),
+      bg: css({
+        Absolute: 0,
+        backgroundColor: color.format(0.4),
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+      }),
+      body: css({
+        Absolute: 0,
         padding: 20,
         paddingTop: 15,
       }),
     };
-    return <div {...css(styles.base, this.props.style)}>{this.renderProps()}</div>;
+    return (
+      <div {...css(styles.base, this.props.style)}>
+        <div {...styles.bg}></div>
+        <div {...styles.body}>{this.renderProps()}</div>
+      </div>
+    );
   }
 
   private renderProps() {
@@ -119,7 +132,7 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
     return (
       <div {...styles.base}>
         <PropList title={'Types'} items={title} />
-        <PropList.Hr />
+        {/* <PropList.Hr /> */}
         <PropList items={columns} />
       </div>
     );

@@ -20,9 +20,6 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IServerProps) {
-    super(props);
-  }
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
@@ -79,7 +76,7 @@ export class Server extends React.PureComponent<IServerProps, IServerState> {
       icon: css({ Absolute: [10, 15, null, null] }),
     };
     return (
-      <div {...styles.base}>
+      <div {...css(styles.base, this.props.style)}>
         <Card padding={0} style={{ flex: 1 }}>
           <div {...styles.card}>
             <PropList title={'HTTP Endpoint'} items={this.info} />

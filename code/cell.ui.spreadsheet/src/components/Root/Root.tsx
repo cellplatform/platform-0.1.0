@@ -67,7 +67,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       base: css({
         Absolute: 0,
       }),
-      titlebar: css({ Absolute: [0, 0, null, 0] }),
+      titlebar: css({
+        Absolute: [0, 0, null, 0],
+      }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
@@ -87,6 +89,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       base: css({
         Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         Flex: 'horizontal-stretch-stretch',
+        overflow: 'hidden',
       }),
       grid: css({
         position: 'relative',
@@ -95,7 +98,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
       panel: css({
         position: 'relative',
-        borderLeft: `solid 1px ${color.format(-0.1)}`,
         width: 250,
       }),
     };

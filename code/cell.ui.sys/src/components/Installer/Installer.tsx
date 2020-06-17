@@ -62,6 +62,12 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     dragTarget.drop$.subscribe(async (e) => {
       const ctx = this.context;
       const { urls, dir } = e;
+
+      if (e.files.length > 30) {
+        this.setError(`Too many files. Are you sure you dropped a bundle?`);
+        return;
+      }
+
       const files = e.files
         .filter((file) => !file.filename.endsWith('.DS_Store'))
         .filter((file) => !file.filename.endsWith('.map'))
@@ -334,15 +340,12 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         );
       });
 
-    // const elUrl = url && <div {...styles.item}>{url}</div>;
-
     const totalBytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
 
     return (
       <div {...styles.base}>
         {elList}
         <div {...styles.total}>{filesize(totalBytes)}</div>
-        {/* {elUrl} */}
       </div>
     );
   }
@@ -366,7 +369,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
       }),
       tryAgain: css({
         marginTop: 10,
-        opacity: 0.3,
+        opacity: 0.5,
       }),
     };
     return (
@@ -388,7 +391,6 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     const styles = {
       base: css({
         Absolute: [10, 10, null, null],
-        // cursor: 'pointer',
       }),
     };
     return (

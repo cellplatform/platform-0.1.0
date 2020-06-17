@@ -8,6 +8,7 @@ import { Installer } from '../Installer';
 import { Button, Icons, WindowTitleBar } from '../primitives';
 import { Windows } from '../Windows';
 import { Server } from './Server';
+import { Helpers } from './Helpers';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -55,9 +56,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const styles = {
       base: css({
         Absolute: 0,
-        backgroundColor: color.format(1),
       }),
-      titlebar: css({ Absolute: [0, 0, null, 0] }),
+      titlebar: css({
+        Absolute: [0, 0, null, 0],
+      }),
       body: css({
         Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         display: 'flex',
@@ -140,7 +142,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         paddingRight: EDGE_MARGIN,
         paddingBottom: 80,
         Scroll: true,
-        backgroundColor: color.format(-0.03),
+        backgroundColor: color.format(-0.1),
       }),
       center: css({
         flex: 1,
@@ -151,7 +153,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         paddingTop: TOP_MARGIN,
         paddingLeft: EDGE_MARGIN,
         paddingRight: EDGE_MARGIN,
-        backgroundColor: color.format(-0.03),
+        backgroundColor: color.format(-0.1),
       }),
     };
 
@@ -161,9 +163,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
           <Apps />
         </div>
         <div {...styles.center}>{this.renderCenter()}</div>
-        <div {...styles.right}>
-          <Server />
-        </div>
+        <div {...styles.right}>{this.renderRight()} </div>
       </div>
     );
   }
@@ -189,6 +189,19 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
           <Installer />
         </div>
       </div>
+    );
+  }
+
+  private renderRight() {
+    const styles = {
+      server: css({ marginBottom: 15 }),
+      helpers: css({}),
+    };
+    return (
+      <React.Fragment>
+        <Server style={styles.server} />
+        <Helpers style={styles.helpers} />
+      </React.Fragment>
     );
   }
 
