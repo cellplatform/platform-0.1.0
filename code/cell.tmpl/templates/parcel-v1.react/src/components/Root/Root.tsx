@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue } from '../../common';
+import { css, CssValue } from '../../common';
+import { WindowTitleBar } from '../primitives';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -19,7 +20,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {
@@ -32,23 +33,31 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
   public render() {
     const styles = {
+      base: css({ Absolute: 0 }),
+      titlebar: css({ Absolute: [0, 0, null, 0] }),
+    };
+
+    const uri = '';
+
+    return (
+      <div {...css(styles.base, this.props.style)}>
+        <WindowTitleBar style={styles.titlebar} address={uri} />
+        {this.renderBody()}
+      </div>
+    );
+  }
+
+  private renderBody() {
+    const styles = {
       base: css({
-        Absolute: 0,
+        Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         Flex: 'center-center',
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
       }),
-      titlebar: css({
-        WebkitAppRegion: 'drag',
-        Absolute: [0, 0, null, 0],
-        height: 38,
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
-        boxSizing: 'border-box',
-      }),
+      hello: css({ fontSize: 50 }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>👋 Root</div>
-        <div {...styles.titlebar} />
+        <div {...styles.hello}>👋</div>
       </div>
     );
   }

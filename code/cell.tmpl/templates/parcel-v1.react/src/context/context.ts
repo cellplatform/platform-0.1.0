@@ -14,7 +14,7 @@ export function create(args: { env: t.IEnv }) {
   const store = createStore({ event$ });
 
   event$.subscribe((e) => {
-    // console.log('🐷', e);
+    console.log('🐷', e); // TEMP 🐷
   });
 
   // Create the context.
