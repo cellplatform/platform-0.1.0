@@ -72,8 +72,8 @@ export async function start() {
   await window.createAll({ ctx });
 
   // ctx.apps.le
-  console.log('ctx.apps.total', ctx.apps.total);
-  console.log('ctx.windowRefs.length', ctx.windowRefs.length);
+  // console.log('ctx.apps.total', ctx.apps.total);
+  // console.log('ctx.windowRefs.length', ctx.windowRefs.length);
 
   // if (ctx.windowRefs.length < ctx.apps.total) {
   if (ctx.windowRefs.length === 0) {

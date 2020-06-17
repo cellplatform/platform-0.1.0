@@ -1211,7 +1211,7 @@
     "@platform/util.value" "0.7.24"
     parcel-bundler "1.12.4"
 
-"@platform/ui.icon@0.0.156":
+"@platform/ui.icon@0.0.156", "@platform/ui.icon@^0.0.156":
   version "0.0.156"
   resolved "https://registry.yarnpkg.com/@platform/ui.icon/-/ui.icon-0.0.156.tgz#eb697659b11f578457c69a15f7acede51d17e1ce"
   integrity sha512-WuotCPkaaNrC+yfPpbEYJKxP5BqYUcNeZZogeugqtQK0Oj34/DcckdfVWvtJ7Odu6uy2OmMo0+GduEWHnw2pEw==
@@ -6331,7 +6331,7 @@ react-dom@16.13.1:
     prop-types "^15.6.2"
     scheduler "^0.19.1"
 
-react-icons@3.10.0:
+react-icons@3.10.0, react-icons@^3.10.0:
   version "3.10.0"
   resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-3.10.0.tgz#6c217a2dde2e8fa8d293210023914b123f317297"
   integrity sha512-WsQ5n1JToG9VixWilSo1bHv842Cj5aZqTGiS3Ud47myF6aK7S/IUY2+dHcBdmkQcCFRuHsJ9OMUI0kTDfjyZXQ==

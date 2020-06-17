@@ -18,7 +18,7 @@ export function createStore(args: { event$: Subject<t.AppEvent> }): t.IAppStore 
   store.changed$.subscribe((payload) => event$.next({ type: 'APP:IDE/changed', payload }));
   event$
     .pipe(
-      filter((e) => e.type.startsWith('APP:SYS/')),
+      filter((e) => e.type.startsWith('APP:IDE/')),
       filter((e) => e.type !== 'APP:IDE/changed'),
     )
     .subscribe((e) => store.dispatch(e));

@@ -31,11 +31,12 @@ export declare type App = {
   entry: string;
   devPort: number;
   devTools: boolean;
-  windows: t.ITypedSheetRefs<AppWindow>;
   width: number;
   height: number;
   minWidth?: number;
   minHeight?: number;
+  windows: t.ITypedSheetRefs<AppWindow>;
+  data: t.ITypedSheetRefs<AppData>;
 };
 
 export declare type AppWindow = {
@@ -46,4 +47,11 @@ export declare type AppWindow = {
   x: number;
   y: number;
   isVisible: boolean;
+};
+
+export declare type AppData = {
+  app: string;
+  window: string;
+  fs: string;
+  tmp: string;
 };

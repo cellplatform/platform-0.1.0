@@ -23,8 +23,10 @@
     "@platform/libs": "0.2.2",
     "@platform/react": "0.4.37",
     "@platform/state": "^0.5.1",
+    "@platform/ui.icon": "^0.0.156",
     "monaco-themes": "0.3.3",
-    "prettier": "2.0.5"
+    "prettier": "2.0.5",
+    "react-icons": "^3.10.0"
   },
   "devDependencies": {
     "@platform/test": "0.1.12",

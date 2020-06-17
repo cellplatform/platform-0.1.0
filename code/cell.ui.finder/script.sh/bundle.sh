@@ -4,3 +4,4 @@ parcel build src/html/*.html \
               --experimental-scope-hoisting 
 
 cp app.json dist/app.json
+open .

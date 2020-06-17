@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { css, color, CssValue, t, Client, ui } from '../../common';
 import { WindowTitleBar, WindowFooterBar } from '../primitives';
 import { Monaco } from '../Monaco';
+import { Sidebar } from '../Sidebar';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -21,7 +22,11 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
 
   public componentDidMount() {
+    const ctx = this.context;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+
+    // Initialize
+    ctx.fire({ type: 'APP:IDE/initialize', payload: {} });
   }
 
   public componentWillUnmount() {
@@ -65,6 +70,11 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         position: 'relative',
         flex: 1,
       }),
+      sidebar: css({
+        position: 'relative',
+        width: 250,
+        display: 'flex',
+      }),
     };
     return (
       <div {...styles.base}>
@@ -72,22 +82,11 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
           <div {...styles.editor}>
             <Monaco />
           </div>
-          {this.renderSidebar()}
+          <div {...styles.sidebar}>
+            <Sidebar />
+          </div>
         </div>
         <WindowFooterBar>{this.renderFooter()}</WindowFooterBar>
-      </div>
-    );
-  }
-
-  private renderSidebar() {
-    const styles = {
-      base: css({
-        width: 250,
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <div>Sidebar</div>
       </div>
     );
   }

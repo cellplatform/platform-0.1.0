@@ -1,3 +1,6 @@
+import { Icons } from './Icons';
+export { Icons };
+
 import { WindowTitleBar } from '@platform/cell.ui/lib/components/WindowTitleBar';
 export { WindowTitleBar };
 
