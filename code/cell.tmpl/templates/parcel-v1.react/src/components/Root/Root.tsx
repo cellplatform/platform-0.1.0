@@ -53,11 +53,15 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         Flex: 'center-center',
       }),
-      hello: css({ fontSize: 50 }),
+      hello: css({
+        fontWeight: 'bold',
+        fontSize: 50,
+        letterSpacing: -1.8,
+      }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div {...styles.hello}>👋</div>
+        <div {...styles.hello}>👋 Hello</div>
       </div>
     );
   }
