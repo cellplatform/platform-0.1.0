@@ -1,16 +1,16 @@
 {
   "name": "@platform/cell.tmpl",
-  "version": "0.0.97",
+  "version": "0.1.0",
   "description": "Template generator for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "sh sh/demo.sh",
+    "start": "sh script.sh/demo.sh",
     "test": "ts test",
     "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
-    "clean": "sh sh/clean.sh",
+    "clean": "sh script.sh/clean.sh",
     "prepare": "ts prepare"
   },
   "dependencies": {

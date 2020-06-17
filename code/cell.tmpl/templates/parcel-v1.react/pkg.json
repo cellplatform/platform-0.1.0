@@ -5,11 +5,11 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "parcel src/html/index.html --port 1234",
+    "start": "parcel src/html/index.html --port 3000",
     "watch": "yarn start",
     "test": "ts test",
-    "lint": "ts lint",
-    "build": "ts build",
+    "lint": "echo ts lint",
+    "build": "ts build --no-esm",
     "bundle": "sh script.sh/bundle.sh",
     "clean": "sh script.sh/clean.sh",
     "serve": "cd dist && serve",
@@ -17,14 +17,16 @@
   },
   "dependencies": {
     "@platform/cell.client": "latest",
-    "@platform/react": "latest",
+    "@platform/cell.ui": "latest",
     "@platform/libs": "latest",
+    "@platform/react": "latest",
+    "@platform/state": "latest",
     "@platform/polyfill": "latest"
   },
   "devDependencies": {
     "@platform/test": "latest",
     "@platform/ts": "latest",
-    "parcel-bundler": "latest"
+    "@platform/ui.dev": "latest"
   },
   "files": ["lib", "!lib/test", "!*.TEST.{js, mjs, d.ts}"],
   "license": "MIT",

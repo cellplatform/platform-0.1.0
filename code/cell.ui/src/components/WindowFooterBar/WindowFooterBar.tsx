@@ -9,7 +9,7 @@ export type IWindowFooterBarProps = {
   height?: number;
   style?: CssValue;
 };
-export type IWindowFooterBarState = { isFocused?: boolean };
+export type IWindowFooterBarState = { isWindowFocused?: boolean };
 
 export class WindowFooterBar extends React.PureComponent<
   IWindowFooterBarProps,
@@ -61,22 +61,19 @@ export class WindowFooterBar extends React.PureComponent<
    */
 
   private updateState = () => {
-    this.state$.next({ isFocused: this.isFocused });
+    this.state$.next({ isWindowFocused: this.isFocused });
   };
 
   /**
    * [Render]
    */
   public render() {
-    const { isFocused } = this.state;
     const styles = {
       base: css({
         position: 'relative',
         WebkitAppRegion: 'drag',
         height: WindowFooterBar.HEIGHT,
         boxSizing: 'border-box',
-        borderTop: `solid 1px ${color.format(isFocused ? -0.2 : -0.08)}`,
-        background: isFocused ? WindowTitleBar.GRADIENT : color.format(-0.03),
         userSelect: 'none',
         color: COLORS.DARK,
         fontSize: 12,
@@ -95,8 +92,30 @@ export class WindowFooterBar extends React.PureComponent<
     };
     return (
       <div {...css(styles.base, this.props.style)}>
+        {this.renderBackground()}
         <div {...styles.body}>{this.props.children}</div>
         <div {...styles.highlight} />
+      </div>
+    );
+  }
+
+  private renderBackground() {
+    const { isWindowFocused } = this.state;
+    const styles = {
+      base: css({
+        Absolute: 0,
+        backgroundColor: COLORS.WHITE,
+        pointerEvents: 'none',
+      }),
+      shade: css({
+        Absolute: 0,
+        background: isWindowFocused ? WindowTitleBar.GRADIENT : color.format(-0.03),
+        borderTop: `solid 1px ${color.format(isWindowFocused ? -0.2 : -0.08)}`,
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.shade} />
       </div>
     );
   }

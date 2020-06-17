@@ -3,18 +3,24 @@ import { ErrorView } from '@platform/cell.ui/lib/components/Error';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+import { getApps, getManifest, uploadApp } from '../../_tmp/tmp.Installer';
+import {
+  color,
+  COLORS,
+  css,
+  CssValue,
+  defaultValue,
+  filesize,
+  rx,
+  t,
+  time,
+  ui,
+} from '../../common';
+import { Icons } from '../Icons';
 import { Button } from '../primitives';
 
-import { color, COLORS, css, CssValue, t, ui, time, filesize } from '../../common';
-import { Icons } from '../Icons';
-import { uploadApp, getManifest, getApps } from '../../_tmp/tmp.Installer';
-
-export type WindowEvent = DragTargetEvent;
-
-export type IInstallerProps = {
-  event$?: Subject<WindowEvent>;
-  style?: CssValue;
-};
+export type IInstallerProps = { style?: CssValue };
 export type IInstallerState = {
   isDragOver?: boolean;
   dir?: string;
@@ -22,16 +28,21 @@ export type IInstallerState = {
   urls?: string[];
   error?: t.IErrorInfo;
   installed?: boolean;
+  width?: number;
+  height?: number;
 };
 
 export class Installer extends React.PureComponent<IInstallerProps, IInstallerState> {
   public state: IInstallerState = {};
   private state$ = new Subject<Partial<IInstallerState>>();
   private unmounted$ = new Subject<{}>();
-  private event$ = this.props.event$ || new Subject<WindowEvent>();
+  private drag$ = new Subject<DragTargetEvent>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;
+
+  private el!: HTMLDivElement;
+  private elRef = (ref: HTMLDivElement) => (this.el = ref);
 
   /**
    * [Lifecycle]
@@ -39,9 +50,9 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    const event$ = this.event$.pipe(takeUntil(this.unmounted$));
-
-    const dragTarget = DragTarget.events(event$);
+    const drag$ = this.drag$.pipe(takeUntil(this.unmounted$));
+    const dragTarget = DragTarget.events(drag$);
+    const event$ = this.context.event$.pipe(takeUntil(this.unmounted$));
 
     dragTarget.over$.subscribe((e) => {
       const { isDragOver } = e;
@@ -65,6 +76,11 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         this.state$.next({ files, urls, dir, error: undefined, isDragOver: undefined });
       }
     });
+
+    rx.payload<t.IUiWindowResizeEvent>(event$, 'UI:DOM/window/resize').subscribe((e) =>
+      this.updateSize(),
+    );
+    this.updateSize();
   }
 
   public componentWillUnmount() {
@@ -96,9 +112,23 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     return getManifest(this.files);
   }
 
+  public get size() {
+    const width = defaultValue(this.state.width, -1);
+    const height = defaultValue(this.state.height, -1);
+    return { width, height };
+  }
+
   /**
    * [Methods]
    */
+  public updateSize() {
+    if (this.el) {
+      const width = this.el.offsetWidth;
+      const height = this.el.offsetHeight;
+      this.state$.next({ width, height });
+    }
+  }
+
   public resetState = () => {
     this.state$.next({
       error: undefined,
@@ -144,17 +174,27 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     const styles = {
       base: css({
         Absolute: 0,
+      }),
+      drag: css({
         WebkitAppRegion: 'drag',
         userSelect: 'none',
         display: 'flex',
         color: COLORS.DARK,
+        Absolute: 0,
       }),
     };
 
-    return (
-      <DragTarget style={css(styles.base, this.props.style)} event$={this.event$}>
+    const width = this.size.width;
+    const el = width > 300 && (
+      <DragTarget style={styles.drag} event$={this.drag$}>
         {this.renderBody()}
       </DragTarget>
+    );
+
+    return (
+      <div ref={this.elRef} {...css(styles.base, this.props.style)}>
+        {el}
+      </div>
     );
   }
 

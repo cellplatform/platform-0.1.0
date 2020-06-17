@@ -8,7 +8,7 @@
     "start": "parcel src/html/index.html --port 1236",
     "watch": "yarn start",
     "test": "ts test",
-    "lint": "ts lint",
+    "lint": "echo ts lint",
     "build": "ts build --no-esm $@",
     "bundle": "sh script.sh/bundle.sh",
     "clean": "sh script.sh/clean.sh",
@@ -22,6 +22,7 @@
     "@platform/cell.ui": "0.1.49",
     "@platform/libs": "0.2.2",
     "@platform/react": "0.4.37",
+    "@platform/state": "^0.5.1",
     "monaco-themes": "0.3.3",
     "prettier": "2.0.5"
   },

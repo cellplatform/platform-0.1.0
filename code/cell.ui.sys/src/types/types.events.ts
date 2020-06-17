@@ -3,7 +3,7 @@ import { t } from './common';
 /**
  * Events
  */
-type GlobalEvent = t.EnvEvent | t.IpcEvent;
+type GlobalEvent = t.EnvEvent | t.IpcEvent | t.UiEvent;
 export type AppEvent = GlobalEvent | ISysChanged | ISysErrorEvent | ISysOverlayEvent;
 
 /**
@@ -31,9 +31,9 @@ export type ISysOverlay = {
  */
 export type ISysErrorEvent = {
   type: 'APP:SYS/error';
-  payload: ISpreadsheetError;
+  payload: ISysError;
 };
-export type ISpreadsheetError = {
+export type ISysError = {
   error: t.IErrorInfo;
   component?: t.IErrorComponent;
 };

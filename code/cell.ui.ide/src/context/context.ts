@@ -13,9 +13,6 @@ export function create(args: { env: t.IEnv }) {
   const event$ = env.event$ as Subject<t.AppEvent>;
   const store = createStore({ event$ });
 
-  /**
-   * TODO 🐷 TEMP
-   */
   event$.subscribe((e) => {
     // console.log('🐷', e);
   });

@@ -1,0 +1,9 @@
+{
+  "name": "MyBundleName",
+  "entry": "bundle/index.html",
+  "devPort": 3000,
+  "window": {
+    "width": 1000,
+    "height": 650
+  }
+}
