@@ -6,6 +6,9 @@ export { t, constants };
 
 export const COLORS = constants.COLORS;
 
+import { onStateChanged } from './util';
+export { onStateChanged };
+
 /**
  * Libs
  */
