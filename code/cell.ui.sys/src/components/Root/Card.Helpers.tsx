@@ -2,15 +2,15 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, ui, COLORS } from '../../common';
+import { css, CssValue, t, ui } from '../../common';
 import { Card, PropList } from '../primitives';
 
-export type IHelpersProps = { style?: CssValue };
-export type IHelpersState = {};
+export type IHelpersCardProps = { style?: CssValue };
+export type IHelpersCardState = {};
 
-export class Helpers extends React.PureComponent<IHelpersProps, IHelpersState> {
-  public state: IHelpersState = {};
-  private state$ = new Subject<Partial<IHelpersState>>();
+export class HelpersCard extends React.PureComponent<IHelpersCardProps, IHelpersCardState> {
+  public state: IHelpersCardState = {};
+  private state$ = new Subject<Partial<IHelpersCardState>>();
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;

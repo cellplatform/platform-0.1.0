@@ -6,12 +6,12 @@ import { css, CssValue, t, ui, COLORS } from '../../common';
 import { Card, PropList } from '../primitives';
 import { Icons } from '../Icons';
 
-export type IServerProps = { style?: CssValue };
-export type IServerState = { info?: t.IResGetElectronSysInfo };
+export type IServerCardProps = { style?: CssValue };
+export type IServerCardState = { info?: t.IResGetElectronSysInfo };
 
-export class Server extends React.PureComponent<IServerProps, IServerState> {
-  public state: IServerState = {};
-  private state$ = new Subject<Partial<IServerState>>();
+export class ServerCard extends React.PureComponent<IServerCardProps, IServerCardState> {
+  public state: IServerCardState = {};
+  private state$ = new Subject<Partial<IServerCardState>>();
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;

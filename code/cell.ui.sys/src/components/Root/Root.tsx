@@ -5,10 +5,10 @@ import { takeUntil } from 'rxjs/operators';
 import { color, css, CssValue, events, onStateChanged, t, ui } from '../../common';
 import { Apps } from '../Apps';
 import { Installer } from '../Installer';
-import { Button, Icons, WindowTitleBar } from '../primitives';
-import { Windows } from '../Windows';
-import { Server } from './Server';
-import { Helpers } from './Helpers';
+import { WindowTitleBar } from '../primitives';
+import { HelpersCard } from './Card.Helpers';
+import { ServerCard } from './Card.Server';
+import { RootOverlay } from './Root.Overlay';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -27,10 +27,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
   public componentDidMount() {
     const ctx = this.context;
-    const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
-    changes.on('APP:SYS/overlay').subscribe(() => this.forceUpdate());
+    // const changes = onStateChanged(ctx.event$, this.unmounted$);
+    // changes.on('').subscribe(() => this.forceUpdate());
 
     // Bubble window resize.
     events.resize$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
@@ -77,54 +77,54 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         <WindowTitleBar style={styles.titlebar} address={uri} />
         <div {...styles.body}>
           {this.renderBody()}
-          {this.renderOverlay()}
+          <RootOverlay />
         </div>
       </div>
     );
   }
 
-  private renderOverlay() {
-    const ctx = this.context;
-    const state = ctx.getState();
-    const overlay = state.overlay;
-    if (!overlay) {
-      return null;
-    }
+  // private renderOverlay() {
+  //   const ctx = this.context;
+  //   const state = ctx.getState();
+  //   const overlay = state.overlay;
+  //   if (!overlay) {
+  //     return null;
+  //   }
 
-    const styles = {
-      base: css({
-        Absolute: 10,
-        backgroundColor: color.format(1),
-        border: `solid 1px ${color.format(-0.2)}`,
-        borderRadius: 3,
-        boxShadow: `0 2px 8px 0 ${color.format(-0.2)}`,
-      }),
-      closeButton: css({
-        Absolute: [5, 5, null, null],
-      }),
-      body: css({
-        Absolute: 0,
-        display: 'flex',
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <div {...styles.body}>{this.renderOverlayBody(overlay)}</div>
-        <Button style={styles.closeButton} onClick={this.onCloseOverlay}>
-          <Icons.Close />
-        </Button>
-      </div>
-    );
-  }
+  //   const styles = {
+  //     base: css({
+  //       Absolute: 10,
+  //       backgroundColor: color.format(1),
+  //       border: `solid 1px ${color.format(-0.2)}`,
+  //       borderRadius: 3,
+  //       boxShadow: `0 2px 8px 0 ${color.format(-0.2)}`,
+  //     }),
+  //     closeButton: css({
+  //       Absolute: [5, 5, null, null],
+  //     }),
+  //     body: css({
+  //       Absolute: 0,
+  //       display: 'flex',
+  //     }),
+  //   };
+  //   return (
+  //     <div {...styles.base}>
+  //       <div {...styles.body}>{this.renderOverlayBody(overlay)}</div>
+  //       <Button style={styles.closeButton} onClick={this.onCloseOverlay}>
+  //         <Icons.Close />
+  //       </Button>
+  //     </div>
+  //   );
+  // }
 
-  private renderOverlayBody(overlay: t.IAppStateOverlay) {
-    switch (overlay.kind) {
-      case 'WINDOWS':
-        return <Windows uri={overlay.uri} />;
-      default:
-        return null;
-    }
-  }
+  // private renderOverlayBody(overlay: t.IAppStateOverlay) {
+  //   switch (overlay.kind) {
+  //     case 'WINDOWS':
+  //       return <Windows uri={overlay.uri} />;
+  //     default:
+  //       return null;
+  //   }
+  // }
 
   private renderBody() {
     const TOP_MARGIN = 25;
@@ -199,17 +199,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     };
     return (
       <React.Fragment>
-        <Server style={styles.server} />
-        <Helpers style={styles.helpers} />
+        <ServerCard style={styles.server} />
+        <HelpersCard style={styles.helpers} />
       </React.Fragment>
     );
   }
-
-  /**
-   * [Handlers]
-   */
-
-  private onCloseOverlay = () => {
-    this.context.fire({ type: 'APP:SYS/overlay', payload: { overlay: undefined } });
-  };
 }
