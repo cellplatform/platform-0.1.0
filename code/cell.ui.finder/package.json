@@ -38,8 +38,8 @@
   "files": [
     "lib",
     "!lib/test",
+    "!lib/_SAMPLE",
     "!*.TEST.{js, mjs, d.ts}"
   ],
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }

@@ -10,14 +10,14 @@ import { context } from '../context';
 export function render() {
   const win = (window as unknown) as t.ITopWindow;
   const env = win.env;
-  const { ctx, Provider } = context.create({ env });
+  const { Provider } = context.create({ env });
 
   /**
    * Render root React element.
    */
   const el = (
     <Provider>
-      <Root ctx={ctx} />
+      <Root />
     </Provider>
   );
   ReactDOM.render(el, document.getElementById('root'));
