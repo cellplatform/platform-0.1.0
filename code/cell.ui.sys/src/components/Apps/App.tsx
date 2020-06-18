@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, color, css, CssValue, t, ui, Uri, filesize } from '../../common';
+import { COLORS, color, css, CssValue, t, ui, Uri, filesize, stripHttp } from '../../common';
 import { Card, IPropListItem, PropList, Button } from '../primitives';
 import { IAppData } from './types';
 
@@ -106,7 +106,8 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     const size = `${app.props.width} x ${app.props.height}`;
 
     const items: IPropListItem[] = [
-      { label: 'uri', value: app.uri, clipboard: link },
+      { label: 'uri', value: app.uri },
+      { label: 'link', value: stripHttp(this.host), clipboard: link },
       { label: 'dev:port', value: app.props.devPort.toString() },
       { label: 'bundle', value: filesize(app.props.bytes) },
       { label: 'size (default)', value: size },
@@ -146,42 +147,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
         {props.label}
       </Button>
     );
-  }
-
-  private renderWindows() {
-    const { windows } = this.app;
-    if (!windows) {
-      return null;
-    }
-    const styles = {
-      base: css({}),
-    };
-
-    const host = this.context.client.http.origin;
-
-    const elList = windows.rows.map((row, i) => {
-      const { x, y, width, height, isVisible } = row.props;
-      const position = x === undefined || y === undefined ? '-' : `x:${x} y:${y}`;
-      const size = width === undefined || height === undefined ? '-' : `${width} x ${height}`;
-
-      const uri = row.uri.toString();
-
-      const items: IPropListItem[] = [
-        // { label: 'typename', value: row.typename },
-        { label: 'uri', value: uri, clipboard: `${host}/${uri}` },
-        { label: 'position', value: position },
-        { label: 'size', value: size },
-        { label: 'visible', value: isVisible },
-      ];
-      return (
-        <React.Fragment key={i}>
-          <PropList items={items} />
-          <PropList.Hr />
-        </React.Fragment>
-      );
-    });
-
-    return <div {...styles.base}>{elList}</div>;
   }
 
   /**

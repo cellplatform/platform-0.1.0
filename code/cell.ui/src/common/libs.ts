@@ -7,8 +7,8 @@ export { css, color, CssValue };
 import { value, defaultValue, rx, time } from '@platform/util.value';
 export { value, defaultValue, rx, time };
 
-import { Client } from '@platform/cell.client';
-export { Client };
+import { Client, Uri } from '@platform/cell.client';
+export { Client, Uri };
 
 import { equals } from 'ramda';
 export const R = { equals };

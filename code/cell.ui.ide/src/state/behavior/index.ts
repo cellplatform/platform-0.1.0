@@ -6,6 +6,13 @@ import * as epic from './epic';
  * Initialize behavior controllers.
  */
 export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
+  const { ctx, store } = args;
+
   reduce.init(args);
   epic.init(args);
+
+  /**
+   * Initialize
+   */
+  store.dispatch({ type: 'APP:IDE/load', payload: { uri: ctx.def } }); // TEMP 🐷
 }

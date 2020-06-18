@@ -69,9 +69,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
     };
 
-    const ctx = this.context;
+    // const ctx = this.context;
     // const uri = ctx.def;
-    const uri = '';
+    const uri = 'apps';
 
     return (
       <div {...css(styles.base, this.props.style)}>

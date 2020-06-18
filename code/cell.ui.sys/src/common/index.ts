@@ -4,8 +4,8 @@ import * as constants from './constants';
 
 export { t, util, constants };
 
-import { onStateChanged } from './util';
-export { onStateChanged };
+import { onStateChanged, stripHttp } from './util';
+export { onStateChanged, stripHttp };
 
 export const COLORS = constants.COLORS;
 

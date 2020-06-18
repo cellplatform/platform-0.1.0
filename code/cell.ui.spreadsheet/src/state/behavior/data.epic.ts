@@ -1,5 +1,5 @@
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { rx, t, Uri } from '../../common';
+import { rx, t, Uri, ui } from '../../common';
 
 export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { store, ctx } = args;
@@ -10,7 +10,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
    * EPIC: Listen for URI paste into address-bar.
    */
   rx.payload<t.IUiWindowAddressPasteEvent>(event$, 'UI:WindowAddress/paste').subscribe((e) => {
-    const res = parse(e.text);
+    const res = ui.parseClipboardUri(e.text);
     const host = res.host || ctx.client.host;
     const ns = res.ns;
     if (host && ns) {
@@ -74,56 +74,4 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
         ctx.fire({ type: 'APP:SHEET/patch', payload });
       }
     });
-}
-
-/**
- * [Helpers]
- */
-
-function parse(input: string) {
-  input = (input || '').trim();
-
-  let text = stripQuotes(input);
-  let host = '';
-  let ns = '';
-  let ok = true;
-
-  if (input.startsWith('http:') || input.startsWith('http:')) {
-    text = stripHttp(text);
-    host = text.substring(0, text.indexOf('/'));
-    text = text.substring(host.length + 1);
-  }
-
-  if (text.indexOf('?') > -1) {
-    text = text.substring(0, text.indexOf('?'));
-  }
-
-  if (text.indexOf('/') > -1) {
-    text = text.substring(0, text.indexOf('/'));
-  }
-
-  if (!text.includes(':')) {
-    ns = text;
-  } else {
-    const uri = Uri.parse(text);
-    if (!uri.ok) {
-      ok = false;
-    } else {
-      ns = Uri.toNs(text).id;
-    }
-  }
-
-  const res = { ok, host, ns, input };
-  return res;
-}
-
-function stripHttp(text: string) {
-  return text
-    .replace(/^http\:/, '')
-    .replace(/^https\:/, '')
-    .replace(/\/\//, '');
-}
-
-function stripQuotes(text: string) {
-  return text.replace(/^\"/, '').replace(/\"$/, '').replace(/^\'/, '').replace(/\'$/, '');
 }

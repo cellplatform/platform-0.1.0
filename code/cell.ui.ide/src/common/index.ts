@@ -23,5 +23,5 @@ export { css, color, CssValue };
 import { events } from '@platform/react';
 export { events };
 
-import { value, is, time } from '@platform/util.value';
-export { value, is, time };
+import { value, is, time, rx } from '@platform/util.value';
+export { value, is, time, rx };

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, onStateChanged, t, ui } from '../../common';
+import { css, CssValue, onStateChanged, t, ui } from '../../common';
 import { Monaco } from '../Monaco';
 import { WindowTitleBar } from '../primitives';
 import { Sidebar } from '../Sidebar';
@@ -42,14 +42,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       .on('APP:IDE/uri')
       .pipe()
       .subscribe(() => this.forceUpdate());
-
-    /**
-     * Initialize
-     */
-    // ctx.fire({
-    //   type: 'APP:IDE/load',
-    //   payload: { uri: ctx.def }, // TEMP 🐷
-    // });
   }
 
   public componentWillUnmount() {

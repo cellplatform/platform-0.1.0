@@ -1,5 +1,5 @@
 import { filter } from 'rxjs/operators';
-import { t } from '../../common';
+import { t, rx, ui } from '../../common';
 
 /**
  * Async behavior controllers.
@@ -8,6 +8,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { ctx, store } = args;
   const { client } = ctx;
   const http = client.http;
+  const event$ = ctx.event$;
 
   /**
    * Load the IDE.
@@ -44,5 +45,20 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
       const ts = typescript.toString().replace(/t\./g, '');
 
       store.dispatch({ type: 'APP:IDE/types/data', payload: { defs, ts } });
+    });
+
+  /**
+   * Load the pasted URI.
+   */
+  rx.payload<t.IUiWindowAddressPasteEvent>(event$, 'UI:WindowAddress/paste')
+    .pipe()
+    .subscribe((e) => {
+      const res = ui.parseClipboardUri(e.text);
+
+      console.group('🌳 paste');
+      console.log('paste', e);
+      console.log('e.text', e.text);
+      console.log('clipboard', res);
+      console.groupEnd();
     });
 }
