@@ -43,6 +43,10 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
     return this.context.getState();
   }
 
+  public get isLoaded() {
+    return Boolean(this.store.uri);
+  }
+
   /**
    * [Render]
    */
@@ -71,6 +75,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
   }
 
   private renderProps() {
+    const isLoaded = this.isLoaded;
     const styles = {
       base: css({}),
     };
@@ -89,6 +94,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
       {
         label: 'type definitions',
         value: isPulled ? 'unload' : 'load',
+        visible: isLoaded,
         onClick: this.loadTypesHandler(!isPulled),
       },
     ];
@@ -142,10 +148,6 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
   }
 
   private renderHelpers() {
-    const styles = {
-      base: css({}),
-    };
-
     const items: IPropListItem[] = [
       { label: 'foo', value: 1234 },
       { label: 'foo', value: 1234 },
@@ -162,6 +164,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
       const ctx = this.context;
       if (pull) {
         const uri = this.store.uri;
+        console.log('uri', uri);
         ctx.fire({ type: 'APP:IDE/types/pull', payload: { uri } });
       } else {
         ctx.fire({ type: 'APP:IDE/types/unload', payload: {} });

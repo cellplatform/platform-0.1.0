@@ -7,6 +7,10 @@ import { Monaco } from '../Monaco';
 import { WindowTitleBar } from '../primitives';
 import { Sidebar } from '../Sidebar';
 
+const COLOR = {
+  IDE_BG: '#272822',
+};
+
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
 
@@ -42,10 +46,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     /**
      * Initialize
      */
-    ctx.fire({
-      type: 'APP:IDE/load',
-      payload: { uri: ctx.def }, // TEMP 🐷
-    });
+    // ctx.fire({
+    //   type: 'APP:IDE/load',
+    //   payload: { uri: ctx.def }, // TEMP 🐷
+    // });
   }
 
   public componentWillUnmount() {
@@ -63,6 +67,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
   public get uri() {
     return this.store.uri;
+  }
+
+  public get isLoaded() {
+    return Boolean(this.uri);
   }
 
   /**
@@ -116,11 +124,13 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   private renderBody() {
+    const isLoaded = this.isLoaded;
     const styles = {
       base: css({
         Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         Flex: 'vertical-stretch-stretch',
         display: 'flex',
+        overflow: 'hidden',
       }),
       body: css({
         flex: 1,
@@ -129,8 +139,14 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         Flex: 'horizontal-stretch-stretch',
       }),
       editor: css({
-        position: 'relative',
         flex: 1,
+        position: 'relative',
+        pointerEvents: isLoaded ? 'none' : 'auto',
+      }),
+      editorMask: css({
+        Absolute: 0,
+        backgroundColor: COLOR.IDE_BG,
+        opacity: 0.9,
       }),
       sidebar: css({
         position: 'relative',
@@ -138,11 +154,13 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         display: 'flex',
       }),
     };
+
     return (
       <div {...styles.base}>
         <div {...styles.body}>
           <div {...styles.editor}>
             <Monaco />
+            {!isLoaded && <div {...styles.editorMask} />}
           </div>
           <div {...styles.sidebar}>
             <Sidebar />

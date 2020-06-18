@@ -33,9 +33,9 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
    */
   store
     .on<t.IIdePullTypesEvent>('APP:IDE/types/pull')
-    .pipe()
+    .pipe(filter((e) => Boolean(e.payload.uri)))
     .subscribe(async (e) => {
-      const ns = http.ns(ctx.def);
+      const ns = http.ns(e.payload.uri);
       const info = await ns.read();
 
       const typeNs = info.body.data.ns.props?.type?.implements || '';

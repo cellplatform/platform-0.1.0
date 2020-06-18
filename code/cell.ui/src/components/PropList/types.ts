@@ -5,6 +5,7 @@ export type IPropListItem = {
   value?: React.ReactNode;
   tooltip?: string;
   clipboard?: string;
+  visible?: boolean
   onClick?: (e: IPropListItemEventArgs) => void;
 };
 
