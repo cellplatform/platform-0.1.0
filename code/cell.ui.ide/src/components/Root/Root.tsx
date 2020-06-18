@@ -133,7 +133,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       editor: css({
         flex: 1,
         position: 'relative',
-        pointerEvents: isLoaded ? 'none' : 'auto',
       }),
       editorMask: css({
         Absolute: 0,

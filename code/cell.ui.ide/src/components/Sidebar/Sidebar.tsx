@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, CssValue, COLORS, t, ui, onStateChanged } from '../../common';
 import { IPropListItem, PropList } from '../primitives';
+import { SidebarDebug } from './Sidebar.debug';
 
 export type ISidebarProps = { style?: CssValue };
 export type ISidebarState = {};
@@ -105,7 +106,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
         <PropList.Hr />
         {elTypes}
         {isPulled && <PropList.Hr />}
-        {this.renderHelpers()}
+        <SidebarDebug />
       </div>
     );
   }
@@ -144,16 +145,9 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
       return res;
     });
 
-    return <PropList title={def.typename} items={columns} />;
-  }
+    const items = [{ label: 'uri', value: def.uri }, ...columns];
 
-  private renderHelpers() {
-    const items: IPropListItem[] = [
-      { label: 'foo', value: 1234 },
-      { label: 'foo', value: 1234 },
-    ];
-
-    return <PropList title={'Helpers'} items={items} />;
+    return <PropList title={def.typename} items={items} />;
   }
 
   /**
@@ -164,7 +158,6 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
       const ctx = this.context;
       if (pull) {
         const uri = this.store.uri;
-        console.log('uri', uri);
         ctx.fire({ type: 'APP:IDE/types/pull', payload: { uri } });
       } else {
         ctx.fire({ type: 'APP:IDE/types/unload', payload: {} });
