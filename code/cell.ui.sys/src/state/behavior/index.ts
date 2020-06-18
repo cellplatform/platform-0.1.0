@@ -1,5 +1,5 @@
 import { t } from '../../common';
-import * as reduce from './behavior.reduce';
+import * as reduce from './reduce';
 
 /**
  * Initialize behavior controllers.

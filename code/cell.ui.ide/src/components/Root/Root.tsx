@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, t, Client, ui } from '../../common';
-import { WindowTitleBar, WindowFooterBar } from '../primitives';
+
+import { color, css, CssValue, onStateChanged, t, ui } from '../../common';
 import { Monaco } from '../Monaco';
+import { WindowFooterBar, WindowTitleBar } from '../primitives';
 import { Sidebar } from '../Sidebar';
 
 export type IRootProps = { style?: CssValue };
@@ -23,15 +24,76 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
   public componentDidMount() {
     const ctx = this.context;
+    const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
-    // Initialize
-    ctx.fire({ type: 'APP:IDE/initialize', payload: {} });
+    changes
+      .on('APP:IDE/types/data', 'APP:IDE/types/unload')
+      .pipe()
+      .subscribe((e) => {
+        this.updateTypes();
+      });
+
+    changes
+      .on('APP:IDE/uri')
+      .pipe()
+      .subscribe(() => this.forceUpdate());
+
+    /**
+     * Initialize
+     */
+    ctx.fire({
+      type: 'APP:IDE/load',
+      payload: { uri: ctx.def }, // TEMP 🐷
+    });
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+
+  public get store() {
+    return this.context.getState();
+  }
+
+  public get uri() {
+    return this.store.uri;
+  }
+
+  /**
+   * Methods
+   */
+
+  public async updateTypes() {
+    const state = this.store;
+    const typesystem = state.typesystem;
+    const monaco = await Monaco.api();
+
+    if (!typesystem) {
+      monaco.lib.clear();
+    } else {
+      const uri = state.uri || 'unknown';
+      const filename = `${uri}.d.ts`;
+      monaco.lib.add(filename, typesystem.ts);
+
+      /**
+       * TODO
+       * - Note, these libraries are loaded as disposables
+       *   which you may want to hold onto as refs to individually dispose.
+       */
+
+      // private loadedTypeLibs: t.IDisposable[] = [];
+
+      // const addLib = async (filename: string, content: string) => {
+      //   const ref = monaco.addLib(filename, content);
+      //   this.loadedTypeLibs.push(ref);
+      // };
+    }
   }
 
   /**
@@ -43,7 +105,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       titlebar: css({ Absolute: [0, 0, null, 0] }),
     };
 
-    const uri = '';
+    const uri = this.uri;
 
     return (
       <div {...css(styles.base, this.props.style)}>
@@ -121,49 +183,15 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    * Handlers
    */
 
-  private loadedTypeLibs: t.IDisposable[] = [];
-
   private handlePullTypes = async () => {
-    const monaco = await Monaco.api();
-
-    // const addLib = async (filename: string, content: string) => {
-    //   const ref = monaco.addLib(filename, content);
-    //   this.loadedTypeLibs.push(ref);
-    // };
-
-    //     await addLib(
-    //       'facts.d.ts',
-    //       `
-    // declare class Facts {
-    //   static next(): string;
-    // }
-
-    //     `,
-    //     );
-
-    // const { env } = this.props;
-    // const http = Client.http(env.host);
-    const ctx = this.context;
-    const http = ctx.client.http;
-    const host = ctx.client.host;
-
-    const ns = http.ns(ctx.def);
-    const info = await ns.read();
-    const typeNs = info.body.data.ns.props?.type?.implements || '';
-
-    const client = Client.typesystem(host);
-    const ts = await client.typescript(typeNs, { exports: false, imports: false });
-
-    let text = ts.toString();
-    text = text.replace(/t\./g, '');
-
-    console.log(`declaration (${typeNs})\n\n`, text);
-    monaco.lib.add('tmp.d.ts', text);
+    const uri = this.store.uri;
+    if (uri) {
+      const ctx = this.context;
+      ctx.fire({ type: 'APP:IDE/types/pull', payload: { uri } });
+    }
   };
 
   private handleUnloadTypes = async () => {
-    const monaco = await Monaco.api();
-    // this.loadedTypeLibs.forEach(ref => ref.dispose());
-    monaco.lib.clear();
+    this.context.fire({ type: 'APP:IDE/types/unload', payload: {} });
   };
 }

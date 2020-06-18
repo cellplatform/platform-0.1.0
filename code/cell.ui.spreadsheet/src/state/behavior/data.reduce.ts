@@ -1,4 +1,4 @@
-import { t } from '../../../common';
+import { t } from '../../common';
 
 export function init(args: { store: t.IAppStore }) {
   const { store } = args;

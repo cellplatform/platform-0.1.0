@@ -4,7 +4,15 @@ import { t } from './common';
  * Events
  */
 type GlobalEvent = t.EnvEvent | t.IpcEvent | t.UiEvent;
-export type AppEvent = GlobalEvent | IIdeChanged | IIdeErrorEvent | IIdeInitializeEvent;
+export type AppEvent =
+  | GlobalEvent
+  | IIdeChanged
+  | IIdeErrorEvent
+  | IIdeUriEvent
+  | IIdeLoadEvent
+  | IIdePullTypesEvent
+  | IIdeTypeDataEvent
+  | IIdeTypesUnloadEvent;
 
 /**
  * Changed
@@ -18,11 +26,35 @@ export type IIdeChanged = {
  * Initialization
  */
 
-export type IIdeInitializeEvent = {
-  type: 'APP:IDE/initialize';
-  payload: IIdeInitialize;
+export type IIdeLoadEvent = {
+  type: 'APP:IDE/load';
+  payload: IIdeLoad;
 };
-export type IIdeInitialize = {};
+export type IIdeLoad = { uri: string };
+
+export type IIdeUriEvent = {
+  type: 'APP:IDE/uri';
+  payload: IIdeUri;
+};
+export type IIdeUri = { uri: string };
+
+export type IIdePullTypesEvent = {
+  type: 'APP:IDE/types/pull';
+  payload: IIdePullTypes;
+};
+export type IIdePullTypes = { uri: string };
+
+export type IIdeTypeDataEvent = {
+  type: 'APP:IDE/types/data';
+  payload: IIdeTypeData;
+};
+export type IIdeTypeData = { defs: t.INsTypeDef[]; ts: string };
+
+export type IIdeTypesUnloadEvent = {
+  type: 'APP:IDE/types/unload';
+  payload: IIdeTypesUnload;
+};
+export type IIdeTypesUnload = {};
 
 /**
  * Error

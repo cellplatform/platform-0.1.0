@@ -1,5 +1,5 @@
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { rx, t, Uri } from '../../../common';
+import { rx, t, Uri } from '../../common';
 
 export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { store, ctx } = args;
