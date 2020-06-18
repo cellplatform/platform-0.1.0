@@ -12,3 +12,6 @@ export { cli };
 
 import { log } from '@platform/log/lib/server';
 export { log };
+
+import { defaultValue } from '@platform/util.value';
+export { defaultValue };

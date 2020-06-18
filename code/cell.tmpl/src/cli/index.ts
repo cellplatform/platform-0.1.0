@@ -9,7 +9,7 @@ export type ITmplArgs = {};
 export const init: t.CmdPluginsInit = (cli) => {
   const handler: t.CmdPluginHandler<ITmplArgs> = async (e) => {
     const dir = process.cwd();
-    await tmpl({ dir });
+    await tmpl({ dir, install: true });
   };
 
   cli.command<ITmplArgs>({
