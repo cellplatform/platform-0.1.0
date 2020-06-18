@@ -6,12 +6,15 @@ import { takeUntil } from 'rxjs/operators';
 import { color, COLORS, css, CssValue, onStateChanged, t, ui } from '../../common';
 import { ErrorView } from '../Error';
 
-export type IShellViewProps = { style?: CssValue };
-export type IShellViewState = {};
+export type IFinderShellViewProps = { style?: CssValue };
+export type IFinderShellViewState = {};
 
-export class ShellView extends React.PureComponent<IShellViewProps, IShellViewState> {
-  public state: IShellViewState = {};
-  private state$ = new Subject<Partial<IShellViewState>>();
+export class FinderShellView extends React.PureComponent<
+  IFinderShellViewProps,
+  IFinderShellViewState
+> {
+  public state: IFinderShellViewState = {};
+  private state$ = new Subject<Partial<IFinderShellViewState>>();
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
@@ -40,16 +43,20 @@ export class ShellView extends React.PureComponent<IShellViewProps, IShellViewSt
   /**
    * [Properties]
    */
+  public get store() {
+    return this.context.getState();
+  }
+
   public get view() {
-    return this.context.getState().view;
+    return this.store.view;
   }
 
   public get isSpinning() {
-    return this.view.isSpinning;
+    return this.view?.isSpinning || false;
   }
 
   public get el() {
-    return this.view.el;
+    return this.view?.el || null;
   }
 
   public get error() {
@@ -78,8 +85,7 @@ export class ShellView extends React.PureComponent<IShellViewProps, IShellViewSt
   }
 
   private renderSpinner() {
-    const isSpinning = this.isSpinning;
-    if (!isSpinning) {
+    if (!this.isSpinning) {
       return null;
     }
     const styles = {

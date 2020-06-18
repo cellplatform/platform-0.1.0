@@ -2,8 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, onStateChanged, t, ui } from '../../common';
+import { css, CssValue, onStateChanged, t, ui, color } from '../../common';
 import { WindowTitleBar } from '../primitives';
+import { FinderShell } from '../primitives';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -48,37 +49,23 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
   public render() {
     const styles = {
-      base: css({ Absolute: 0 }),
+      base: css({
+        Absolute: 0,
+        backgroundColor: color.format(1),
+      }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
+      body: css({
+        Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
+        display: 'flex',
+      }),
     };
-
-    console.log('this.store', this.store);
 
     const uri = 'BI ("Business Intilligence")';
 
     return (
       <div {...css(styles.base, this.props.style)}>
         <WindowTitleBar style={styles.titlebar} address={uri} />
-        {this.renderBody()}
-      </div>
-    );
-  }
-
-  private renderBody() {
-    const styles = {
-      base: css({
-        Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
-        Flex: 'center-center',
-      }),
-      hello: css({
-        fontWeight: 'bold',
-        fontSize: 50,
-        letterSpacing: -1.8,
-      }),
-    };
-    return (
-      <div {...css(styles.base, this.props.style)}>
-        <div {...styles.hello}>👋 Hello</div>
+        <FinderShell style={styles.body} />
       </div>
     );
   }

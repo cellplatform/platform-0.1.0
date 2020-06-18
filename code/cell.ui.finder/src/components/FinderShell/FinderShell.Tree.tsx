@@ -6,9 +6,9 @@ import { CssValue, onStateChanged, t, ui } from '../../common';
 import { Icons } from '../Icons';
 import { TreeView } from '../primitives';
 
-export type IShellTreeProps = { style?: CssValue };
+export type IFinderShellTreeProps = { style?: CssValue };
 
-export class ShellTree extends React.PureComponent<IShellTreeProps> {
+export class FinderShellTree extends React.PureComponent<IFinderShellTreeProps> {
   private unmounted$ = new Subject<{}>();
   private tree$ = new Subject<t.TreeViewEvent>();
 

@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { t } from '../common';
-import { Root } from '../components/Finder.Root';
+import { Root } from '../components/Root';
 import { context } from '../context';
 
 export function render() {
