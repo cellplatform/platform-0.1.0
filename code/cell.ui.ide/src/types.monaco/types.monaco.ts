@@ -1,7 +1,4 @@
 import { t } from './common';
-export * from './types.monaco.editor';
-export * from './types.monaco.languages';
-export * from './types.monaco.formatting';
 
 /**
  * Working type wrapper around the "Monaco" code-editor.

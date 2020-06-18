@@ -32,7 +32,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     changes
-      .on('APP:IDE/types/data', 'APP:IDE/types/unload')
+      .on('APP:IDE/types/data', 'APP:IDE/types/clear')
       .pipe()
       .subscribe((e) => {
         this.updateTypes();

@@ -25,7 +25,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     changes
-      .on('APP:IDE/types/data', 'APP:IDE/types/unload')
+      .on('APP:IDE/types/data', 'APP:IDE/types/clear')
       .pipe()
       .subscribe((e) => {
         this.forceUpdate();
@@ -76,7 +76,6 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
   }
 
   private renderProps() {
-    const isLoaded = this.isLoaded;
     const styles = {
       base: css({}),
     };
@@ -90,15 +89,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
       return <div key={i}>{this.renderType(def)}</div>;
     });
 
-    const items: IPropListItem[] = [
-      { label: 'language', value: 'typescript' },
-      {
-        label: 'type definitions',
-        value: isPulled ? 'unload' : 'load',
-        visible: isLoaded,
-        onClick: this.loadTypesHandler(!isPulled),
-      },
-    ];
+    const items: IPropListItem[] = [{ label: 'language', value: 'typescript' }];
 
     return (
       <div {...styles.base}>
@@ -149,19 +140,4 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
 
     return <PropList title={def.typename} items={items} />;
   }
-
-  /**
-   * Handlers
-   */
-  private loadTypesHandler = (pull?: boolean) => {
-    return () => {
-      const ctx = this.context;
-      if (pull) {
-        const uri = this.store.uri;
-        ctx.fire({ type: 'APP:IDE/types/pull', payload: { uri } });
-      } else {
-        ctx.fire({ type: 'APP:IDE/types/unload', payload: {} });
-      }
-    };
-  };
 }

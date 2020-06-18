@@ -11,7 +11,7 @@ export function createStore(args: { event$: Subject<t.AppEvent> }): t.IAppStore 
   const event$ = args.event$;
 
   // Create the store.
-  const initial: t.IAppState = { uri: '' };
+  const initial: t.IAppState = { uri: '', text: '' };
   const store = Store.create<t.IAppState, t.AppEvent>({ initial });
 
   // Ferry events in and out of state-machine.

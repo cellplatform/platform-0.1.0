@@ -48,11 +48,23 @@ export function init(args: { store: t.IAppStore }) {
    * REDUCE: Unload typesystem data.
    */
   store
-    .on<t.IIdeTypesUnloadEvent>('APP:IDE/types/unload')
+    .on<t.IIdeTypesClearEvent>('APP:IDE/types/clear')
     .pipe()
     .subscribe((e) => {
       e.change((state) => {
         state.typesystem = undefined;
+      });
+    });
+
+  /**
+   * REDUCE: Editor text
+   */
+  store
+    .on<t.IIdeTextEvent>('APP:IDE/text')
+    .pipe()
+    .subscribe((e) => {
+      e.change((state) => {
+        state.text = e.payload.text;
       });
     });
 }

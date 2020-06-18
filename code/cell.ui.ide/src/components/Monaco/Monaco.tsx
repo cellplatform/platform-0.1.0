@@ -1,9 +1,9 @@
+import MonacoEditor from '@monaco-editor/react';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { t, css, color, CssValue, constants } from '../../common';
+import { takeUntil, filter } from 'rxjs/operators';
 
-import MonacoEditor from '@monaco-editor/react';
+import { constants, css, CssValue, t, ui, onStateChanged } from '../../common';
 import { MonacoApi } from '../Monaco.api';
 
 const { MONACO } = constants;
@@ -17,6 +17,11 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
   public state: IMonacoState = {};
   private state$ = new Subject<Partial<IMonacoState>>();
   private unmounted$ = new Subject<{}>();
+  private getEditorValue!: () => string;
+  private editor: any;
+
+  public static contextType = ui.Context;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]
@@ -27,7 +32,14 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
   }
 
   public componentDidMount() {
+    const ctx = this.context;
+    const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+
+    changes
+      .on('APP:IDE/text')
+      .pipe(filter((e) => e.to.text !== this.value))
+      .subscribe((e) => (this.value = e.to.text));
   }
 
   public componentWillUnmount() {
@@ -38,6 +50,18 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
   /**
    * [Properties]
    */
+  public get store() {
+    return this.context.getState();
+  }
+
+  public get value() {
+    const fn = this.getEditorValue;
+    return fn ? fn() : '';
+  }
+
+  public set value(value: string) {
+    this.editor.setValue(value);
+  }
 
   /**
    * [Render]
@@ -47,28 +71,37 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
       base: css({ Absolute: 0 }),
     };
 
-    const TMP = `
-
-const foo: number[] = [1,2,3]
-foo.map(num => num + 1)
-
-const app: AppWindow = {
-  app: 'ns:foo',
-  title: 'MyAppWindow',
-  width: 200,
-  height: 150,
-  x: 0,
-  y: 120,
-  isVisible: true,
-}
-
-
-`;
-
     return (
       <div {...css(styles.base, this.props.style)}>
-        <MonacoEditor language={MONACO.LANGUAGE} theme={MONACO.THEME} value={TMP} />
+        <MonacoEditor
+          language={MONACO.LANGUAGE}
+          theme={MONACO.THEME}
+          value={this.store.text}
+          editorDidMount={this.editorDidMount}
+        />
       </div>
     );
+  }
+
+  /**
+   * [Handlers]
+   */
+  private editorDidMount = (getEditorValue: () => string, editor: any) => {
+    this.editor = editor;
+    this.getEditorValue = getEditorValue;
+    editor.onDidChangeModelContent((e: any) => this.fireChange(e, getEditorValue()));
+  };
+
+  private fireChange(e: any, text: string) {
+    const payload: t.IIdeEditorContentChange = {
+      text,
+      eol: e.eol,
+      isFlush: e.isFlush,
+      isRedoing: e.isRedoing,
+      isUndoing: e.isUndoing,
+      versionId: e.versionId,
+      change: e.change,
+    };
+    this.context.fire({ type: 'APP:IDE/editor/contentChange', payload });
   }
 }

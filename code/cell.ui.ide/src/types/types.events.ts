@@ -3,7 +3,7 @@ import { t } from './common';
 /**
  * Events
  */
-type GlobalEvent = t.EnvEvent | t.IpcEvent | t.UiEvent;
+type GlobalEvent = t.EnvEvent | t.IpcEvent | t.UiEvent | t.EditorEvent;
 export type AppEvent =
   | GlobalEvent
   | IIdeChanged
@@ -12,7 +12,8 @@ export type AppEvent =
   | IIdeLoadEvent
   | IIdePullTypesEvent
   | IIdeTypeDataEvent
-  | IIdeTypesUnloadEvent;
+  | IIdeTypesClearEvent
+  | IIdeTextEvent;
 
 /**
  * Changed
@@ -25,42 +26,32 @@ export type IIdeChanged = {
 /**
  * Initialization
  */
-
-export type IIdeLoadEvent = {
-  type: 'APP:IDE/load';
-  payload: IIdeLoad;
-};
+export type IIdeLoadEvent = { type: 'APP:IDE/load'; payload: IIdeLoad };
 export type IIdeLoad = { uri: string };
 
-export type IIdeUriEvent = {
-  type: 'APP:IDE/uri';
-  payload: IIdeUri;
-};
+export type IIdeUriEvent = { type: 'APP:IDE/uri'; payload: IIdeUri };
 export type IIdeUri = { uri: string };
 
-export type IIdePullTypesEvent = {
-  type: 'APP:IDE/types/pull';
-  payload: IIdePullTypes;
-};
+/**
+ * Content
+ */
+export type IIdeTextEvent = { type: 'APP:IDE/text'; payload: IIdeText };
+export type IIdeText = { text: string };
+
+/**
+ * Types
+ */
+export type IIdePullTypesEvent = { type: 'APP:IDE/types/pull'; payload: IIdePullTypes };
 export type IIdePullTypes = { uri: string };
 
-export type IIdeTypeDataEvent = {
-  type: 'APP:IDE/types/data';
-  payload: IIdeTypeData;
-};
-export type IIdeTypeData = { defs: t.INsTypeDef[]; ts: string };
+export type IIdeTypesClearEvent = { type: 'APP:IDE/types/clear'; payload: IIdeTypesClear };
+export type IIdeTypesClear = {};
 
-export type IIdeTypesUnloadEvent = {
-  type: 'APP:IDE/types/unload';
-  payload: IIdeTypesUnload;
-};
-export type IIdeTypesUnload = {};
+export type IIdeTypeDataEvent = { type: 'APP:IDE/types/data'; payload: IIdeTypeData };
+export type IIdeTypeData = { defs: t.INsTypeDef[]; ts: string };
 
 /**
  * Error
  */
-export type IIdeErrorEvent = {
-  type: 'APP:IDE/error';
-  payload: IIdeError;
-};
+export type IIdeErrorEvent = { type: 'APP:IDE/error'; payload: IIdeError };
 export type IIdeError = { error: t.IErrorInfo; component?: t.IErrorComponent };

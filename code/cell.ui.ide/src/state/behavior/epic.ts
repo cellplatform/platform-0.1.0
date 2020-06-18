@@ -61,4 +61,15 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
       console.log('clipboard', res);
       console.groupEnd();
     });
+
+  /**
+   * Listen for changes to the code editor.
+   */
+  store
+    .on<t.IIdeEditorContentChangeEvent>('APP:IDE/editor/contentChange')
+    .pipe()
+    .subscribe((e) => {
+      const text = e.payload.text;
+      store.dispatch({ type: 'APP:IDE/text', payload: { text } });
+    });
 }

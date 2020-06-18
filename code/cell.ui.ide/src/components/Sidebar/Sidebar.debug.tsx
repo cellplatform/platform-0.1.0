@@ -26,7 +26,7 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     changes
-      .on('APP:IDE/uri')
+      .on('APP:IDE/uri', 'APP:IDE/types/data', 'APP:IDE/types/clear')
       .pipe()
       .subscribe((e) => {
         this.forceUpdate();
@@ -58,6 +58,14 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
     return coord.cell.toRowIndex(this.uriKey);
   }
 
+  public get isLoaded() {
+    return Boolean(this.store.uri);
+  }
+
+  public get isTypesLoaded() {
+    return Boolean(this.store.typesystem);
+  }
+
   /**
    * [Render]
    */
@@ -68,9 +76,23 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
 
   private renderPropList() {
     const key = `B${this.rowIndex + 1}`;
+    const isTypesLoaded = this.isTypesLoaded;
 
     const items: IPropListItem[] = [
-      { label: 'api', value: `change title (${key})`, onClick: this.changeTitle },
+      { label: 'api', value: `change title ("${key}")`, onClick: this.debugChangeTitle },
+      {
+        label: 'type definitions',
+        value: 'load',
+        onClick: this.loadTypeDefs,
+        visible: !isTypesLoaded,
+      },
+      {
+        label: 'type definitions',
+        value: 'clear',
+        onClick: this.clearTypeDefs,
+        visible: isTypesLoaded,
+      },
+      { label: 'api', value: `load sample code`, onClick: this.loadSampleCode },
     ];
 
     return <PropList title={'Debug'} items={items} />;
@@ -80,7 +102,7 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
    * [Handlers]
    */
 
-  private changeTitle = async () => {
+  private debugChangeTitle = async () => {
     const index = this.rowIndex;
     if (index < 0) {
       return;
@@ -94,7 +116,9 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
     const cursor = await sheet.data<t.AppWindow>('AppWindow').load();
 
     const row = cursor.row(index);
-    row.props.title = 'Hello';
+
+    const firstLine = this.store.text.split('\n')[0].replace(/^\/\//, '').trim();
+    row.props.title = firstLine ? `👋 ${firstLine}` : '';
 
     await time.delay(50);
     const changes = sheet.state.changes;
@@ -103,4 +127,35 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
       payload: { source: ctx.def, ns: sheet.uri.id, changes },
     });
   };
+
+  private loadTypeDefs = () => {
+    const uri = this.store.uri;
+    this.context.fire({ type: 'APP:IDE/types/pull', payload: { uri } });
+  };
+
+  private clearTypeDefs = () => {
+    this.context.fire({ type: 'APP:IDE/types/clear', payload: {} });
+  };
+
+  private loadSampleCode = () => {
+    this.context.fire({ type: 'APP:IDE/text', payload: { text: SAMPLE } });
+  };
 }
+
+const SAMPLE = `
+
+const foo: number[] = [1,2,3]
+foo.map(num => num + 1)
+
+const app: AppWindow = {
+  app: 'ns:foo',
+  title: 'MyAppWindow',
+  width: 200,
+  height: 150,
+  x: 0,
+  y: 120,
+  isVisible: true,
+}
+
+
+`;
