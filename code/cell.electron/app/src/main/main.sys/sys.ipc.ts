@@ -69,8 +69,5 @@ export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
     // Change sheet.
     const sheet = await ctx.client.sheet(ns);
     sheet.change(changes);
-
-    // console.log('-------------------------------------------');
-    // console.log('changes', changes.ns);
   });
 }

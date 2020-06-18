@@ -79,8 +79,6 @@ export async function start() {
   if (ctx.windowRefs.length === 0) {
     // TEMP 🐷- Ensure at least one window for each app exists.
 
-    console.log('-------------------------------------------');
-
     const sys = ctx.apps.row(0);
     const name = sys.props.name;
     window.createOne({ ctx, name });
