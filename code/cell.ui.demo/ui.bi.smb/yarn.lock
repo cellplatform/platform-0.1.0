@@ -984,10 +984,28 @@
     "@platform/types" "0.4.22"
     "@platform/util.value" "0.7.24"
 
-"@platform/cell.ui@0.1.50":
-  version "0.1.50"
-  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.50.tgz#2e5b4f06fbbbce91d510f652c2c6a70eba0ac2a6"
-  integrity sha512-cnjw4oCE3d7BiJq/5h48xMwnn1XHaT5XIyZhJLQsTmCTW+zdOBTsmiY+NfUPddKg7513Xk9+ZBkleE/TplComw==
+"@platform/cell.ui.finder@^0.0.58":
+  version "0.0.58"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui.finder/-/cell.ui.finder-0.0.58.tgz#012cfba3dbad861e60e97520af10d5b58e3e84c3"
+  integrity sha512-aM8LM/wRlSTMpE58NiBpdwHuFBdYBa8iV3burFeZWjS9pRq+cyOYMbH3bULj/J/WjpxgY5r8cpLHzm4Kj4W0dg==
+  dependencies:
+    "@platform/cell.client" "0.2.113"
+    "@platform/cell.types" "0.4.119"
+    "@platform/cell.ui" "0.1.51"
+    "@platform/libs" "0.2.2"
+    "@platform/react" "0.4.37"
+    "@platform/state" "0.5.1"
+    "@platform/ui.spinner" "0.0.153"
+    "@platform/ui.tree" "0.5.6"
+    "@platform/util.value" "^0.7.24"
+    path-sort "0.1.0"
+    pretty-bytes "5.3.0"
+    react-icons "3.10.0"
+
+"@platform/cell.ui@0.1.51":
+  version "0.1.51"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.51.tgz#b9b89e9e0aaeee5c232c2d02d932bbc733039e57"
+  integrity sha512-91gbDkxFGBJG5MswKf0ogu7CzmPVbb5lTKGLe5Nnvw/cHJ5aMxSqizMHZwGUmCCIGKKn5js4gyx7bcb/rFLkZQ==
   dependencies:
     "@platform/cell.client" "0.2.113"
     "@platform/cell.types" "0.4.119"
@@ -1222,6 +1240,22 @@
     "@platform/react" "0.4.37"
     react-inspector "5.0.1"
 
+"@platform/ui.panel@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@platform/ui.panel/-/ui.panel-0.2.5.tgz#9f7784c9a539a20eed43a23d46f8d8759309283c"
+  integrity sha512-R1AIkC17h1WrGWma6Di416KKnpehryIELv7jAdfxkvC9pO4H+JfrwkFY6FH43DCqemXPGmzyyojBoSWXaWvxJA==
+  dependencies:
+    "@platform/css" "^0.4.4"
+    "@platform/react" "0.4.37"
+
+"@platform/ui.spinner@0.0.153":
+  version "0.0.153"
+  resolved "https://registry.yarnpkg.com/@platform/ui.spinner/-/ui.spinner-0.0.153.tgz#81a235b9f21d945474eaef4b466c0629f7f3c6cb"
+  integrity sha512-XiqoSoh5et5S3yS4j4NfJyLubIWPGD1JUSq6muj75//DzRzo5t5kHTQfrwD0Lf7jdgDR0S2O0b66lippX0pAEg==
+  dependencies:
+    "@platform/css" "0.4.4"
+    "@platform/react" "0.4.37"
+
 "@platform/ui.text@0.3.68":
   version "0.3.68"
   resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.68.tgz#3c33a995352f6e370d6b2c79914e7016327788bd"
@@ -1231,6 +1265,28 @@
     "@platform/libs" "0.2.2"
     "@platform/react" "0.4.37"
     "@platform/util.value" "0.7.24"
+
+"@platform/ui.tree@0.5.6":
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.5.6.tgz#7ea1ddd0772bf5e5e968bff26cf91fe92907f7e7"
+  integrity sha512-kZCsy+cYBBJlHDul2G7X9u35zOR7gcQoxNaGsN9qSuuDlVIiZjwa4t4fLZDMDmR8hdPzARyuRtQyljkT2LFMcA==
+  dependencies:
+    "@platform/css" "0.4.4"
+    "@platform/react" "0.4.37"
+    "@platform/ui.icon" "0.0.156"
+    "@platform/ui.panel" "0.2.5"
+    "@platform/ui.spinner" "0.0.153"
+    "@platform/ui.text" "0.3.68"
+    "@platform/util.animate" "0.0.86"
+    "@platform/util.value" "0.7.24"
+
+"@platform/util.animate@0.0.86":
+  version "0.0.86"
+  resolved "https://registry.yarnpkg.com/@platform/util.animate/-/util.animate-0.0.86.tgz#125c0ed808e1f9b9896bfd78e609653dcbe27113"
+  integrity sha512-YqpE5mP7PXJoKnCEKJyAeYsA9NBV+g1A95izJ36/rtl7G62kwbKdTZ7cQUCgjucxxvgbNJUX/UJIaDtERiopmQ==
+  dependencies:
+    "@platform/libs" "0.2.2"
+    dynamics.js "1.1.5"
 
 "@platform/util.diff@0.0.32":
   version "0.0.32"
@@ -1268,7 +1324,7 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value@0.7.24":
+"@platform/util.value@0.7.24", "@platform/util.value@^0.7.24":
   version "0.7.24"
   resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.24.tgz#ab9e93e3536ea1ea3b7425073daa7fb7358b0dc7"
   integrity sha512-lsAcIWyjkW0JfcKR6pNlxevldvNeoA782jMaEpAst3gBMBLwgu89CBdjYTtdjwzP2kyU7vQRVBP2jp6XcSFoqw==
@@ -1371,9 +1427,9 @@
     "@types/underscore" "*"
 
 "@types/underscore@*":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.10.0.tgz#5cb0dff2a5f616fc8e0c61b482bf01fa20a03cec"
-  integrity sha512-ZAbqul7QAKpM2h1PFGa5ETN27ulmqtj0QviYHasw9LffvXZvVHuraOx/FOsIPPDNGZN0Qo1nASxxSfMYOtSoCw==
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.10.1.tgz#e37616e1013d486ee5e9a53c178becbaee2f781e"
+  integrity sha512-RRQWytGzPUhybKdf7jhfcySkdEHMDsVZ0gU3XVIxeqms1UKu3+ICaTXNaNGAkcUbIJ8SUKpmUIS1z9mDVc7seg==
 
 "@types/yauzl@^2.9.1":
   version "2.9.1"
@@ -2968,6 +3024,11 @@ duplexer2@~0.1.4:
   integrity sha1-ixLauHjA1p4+eJEFFmKjL8a93ME=
   dependencies:
     readable-stream "^2.0.2"
+
+dynamics.js@1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/dynamics.js/-/dynamics.js-1.1.5.tgz#b90bdc33605cefe652b8416e701f79bf6eefce32"
+  integrity sha1-uQvcM2Bc7+ZSuEFucB95v27vzjI=
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
@@ -5731,6 +5792,11 @@ path-parse@^1.0.6:
   resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
   integrity sha512-GSmOT2EbHrINBf9SR7CDELwlJ8AENk3Qn7OikK4nFYAu3Ote2+JYNVvkpAEQm3/TLNEJFD/xZJjzyxg3KBWOzw==
 
+path-sort@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/path-sort/-/path-sort-0.1.0.tgz#cb0175d4ecbfa5a18fe674cc6d720bfe15e0b805"
+  integrity sha1-ywF11Oy/paGP5nTMbXIL/hXguAU=
+
 path-type@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-2.0.0.tgz#f012ccb8415b7096fc2daa1054c3d72389594c73"
@@ -6178,6 +6244,11 @@ prettier@2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.0.5.tgz#d6d56282455243f2f92cc1716692c08aa31522d4"
   integrity sha512-7PtVymN48hGcO4fGjybyBSIWDsLU4H4XlvOHfq91pz9kkGlonzwTfYkaIEwiRg/dAJF9YlbsduBAgtYLi+8cFg==
+
+pretty-bytes@5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/pretty-bytes/-/pretty-bytes-5.3.0.tgz#f2849e27db79fb4d6cfe24764fc4134f165989f2"
+  integrity sha512-hjGrh+P926p4R4WbaB6OckyRtO0F0/lQBiT+0gnxjV+5kjPBrfVBFCsCLbMqVQeydvIoouYTCmmEURiH3R1Bdg==
 
 private@^0.1.8:
   version "0.1.8"
