@@ -17,7 +17,7 @@ export function onStateChanged(ob$: Observable<t.AppEvent>, unmounted$?: Observa
   return {
     on(...type: T[]) {
       return rx
-        .payload<t.IAppChanged>(event$, 'APP:ui.smb-bi/changed')
+        .payload<t.IAppChanged>(event$, 'APP:ui.bi.smb/changed')
         .pipe(filter((e) => isTypeMatch(e.type, type)));
     },
   };

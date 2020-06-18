@@ -9,7 +9,7 @@ export function init(args: { store: t.IAppStore }) {
   /**
    * REDUCE: Update error.
    */
-  store.on<t.IAppErrorEvent>('APP:ui.smb-bi/error').subscribe((e) => {
+  store.on<t.IAppErrorEvent>('APP:ui.bi.smb/error').subscribe((e) => {
     e.change((state) => {
       const error = e.payload;
       state.error = error;

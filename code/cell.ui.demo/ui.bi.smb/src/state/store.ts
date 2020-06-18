@@ -15,11 +15,11 @@ export function createStore(args: { event$: Subject<t.AppEvent> }): t.IAppStore 
   const store = Store.create<t.IAppState, t.AppEvent>({ initial });
 
   // Ferry events in and out of state-machine.
-  store.changed$.subscribe((payload) => event$.next({ type: 'APP:ui.smb-bi/changed', payload }));
+  store.changed$.subscribe((payload) => event$.next({ type: 'APP:ui.bi.smb/changed', payload }));
   event$
     .pipe(
       filter((e) => e.type.startsWith('APP:SYS/')),
-      filter((e) => e.type !== 'APP:ui.smb-bi/changed'),
+      filter((e) => e.type !== 'APP:ui.bi.smb/changed'),
     )
     .subscribe((e) => store.dispatch(e));
 

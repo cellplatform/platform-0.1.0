@@ -78,11 +78,12 @@ export class WindowAddress extends React.PureComponent<IWindowAddressProps, IWin
         opacity: isWindowFocused ? 1 : 0.35,
         color: color.format(-0.7),
         outline: 'none',
+        overflow: 'hidden',
       }),
       body: css({
         Absolute: 0,
         Flex: 'center-center',
-        PaddingX: 100,
+        PaddingX: 10,
         boxSizing: 'border-box',
       }),
       focusBorder: css({

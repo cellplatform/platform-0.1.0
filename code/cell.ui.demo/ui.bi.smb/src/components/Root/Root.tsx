@@ -54,7 +54,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     console.log('this.store', this.store);
 
-    const uri = '';
+    const uri = 'BI ("Business Intilligence")';
 
     return (
       <div {...css(styles.base, this.props.style)}>
