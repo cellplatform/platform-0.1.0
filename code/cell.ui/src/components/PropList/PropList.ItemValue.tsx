@@ -84,7 +84,7 @@ export class PropListItemValue extends React.PureComponent<
   private copyText = () => {
     if (this.clipboard) {
       copyToClipboard(this.clipboard);
-      this.showMessage('copied to clipboard');
+      this.showMessage('copied');
     }
   };
 
