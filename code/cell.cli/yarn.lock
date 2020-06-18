@@ -99,10 +99,10 @@
     "@platform/util.string" "0.5.8"
     "@platform/util.value" "0.7.24"
 
-"@platform/cell.tmpl@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@platform/cell.tmpl/-/cell.tmpl-0.1.1.tgz#b7c483088f7794be7689458d0962bb0b6140c0b0"
-  integrity sha512-M6XFHfhlqIIlgdxAhXYvkDYj9168UW/IHqDQxYiix9x/mO+3B4l1zaH03OhBmsxCnZQUTt+rX056NFnVPWaCAw==
+"@platform/cell.tmpl@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@platform/cell.tmpl/-/cell.tmpl-0.1.2.tgz#09c8d349a167927ed2f4026e6a5b64bb016a1369"
+  integrity sha512-aTdFDXtBeu7sxB4dZ6G3Eb1aQp94wy2oTNTRHz1I3U9YH9HAa/D/IlYm6lFYJwHFRFOHKUt4Wh+HKCHSKcJvlQ==
   dependencies:
     "@platform/cell.types" "0.4.119"
     "@platform/cli" "0.5.39"
