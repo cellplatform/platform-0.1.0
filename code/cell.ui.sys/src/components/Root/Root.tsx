@@ -5,9 +5,10 @@ import { takeUntil } from 'rxjs/operators';
 import { color, css, CssValue, events, onStateChanged, t, ui } from '../../common';
 import { Apps } from '../Apps';
 import { Installer } from '../Installer';
-import { Button, Icons, WindowTitleBar } from '../primitives';
-import { Windows } from '../Windows';
-import { Server } from './Server';
+import { WindowTitleBar } from '../primitives';
+import { HelpersCard } from './Card.Helpers';
+import { ServerCard } from './Card.Server';
+import { RootOverlay } from './Root.Overlay';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -26,10 +27,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
   public componentDidMount() {
     const ctx = this.context;
-    const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
-    changes.on('APP:SYS/overlay').subscribe(() => this.forceUpdate());
+    // const changes = onStateChanged(ctx.event$, this.unmounted$);
+    // changes.on('').subscribe(() => this.forceUpdate());
 
     // Bubble window resize.
     events.resize$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
@@ -55,9 +56,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const styles = {
       base: css({
         Absolute: 0,
-        backgroundColor: color.format(1),
       }),
-      titlebar: css({ Absolute: [0, 0, null, 0] }),
+      titlebar: css({
+        Absolute: [0, 0, null, 0],
+      }),
       body: css({
         Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         display: 'flex',
@@ -67,61 +69,19 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
     };
 
-    const ctx = this.context;
-    const uri = ctx.def;
+    // const ctx = this.context;
+    // const uri = ctx.def;
+    const uri = 'apps';
 
     return (
       <div {...css(styles.base, this.props.style)}>
         <WindowTitleBar style={styles.titlebar} address={uri} />
         <div {...styles.body}>
           {this.renderBody()}
-          {this.renderOverlay()}
+          <RootOverlay />
         </div>
       </div>
     );
-  }
-
-  private renderOverlay() {
-    const ctx = this.context;
-    const state = ctx.getState();
-    const overlay = state.overlay;
-    if (!overlay) {
-      return null;
-    }
-
-    const styles = {
-      base: css({
-        Absolute: 10,
-        backgroundColor: color.format(1),
-        border: `solid 1px ${color.format(-0.2)}`,
-        borderRadius: 3,
-        boxShadow: `0 2px 8px 0 ${color.format(-0.2)}`,
-      }),
-      closeButton: css({
-        Absolute: [5, 5, null, null],
-      }),
-      body: css({
-        Absolute: 0,
-        display: 'flex',
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <div {...styles.body}>{this.renderOverlayBody(overlay)}</div>
-        <Button style={styles.closeButton} onClick={this.onCloseOverlay}>
-          <Icons.Close />
-        </Button>
-      </div>
-    );
-  }
-
-  private renderOverlayBody(overlay: t.IAppStateOverlay) {
-    switch (overlay.kind) {
-      case 'WINDOWS':
-        return <Windows uri={overlay.uri} />;
-      default:
-        return null;
-    }
   }
 
   private renderBody() {
@@ -140,7 +100,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         paddingRight: EDGE_MARGIN,
         paddingBottom: 80,
         Scroll: true,
-        backgroundColor: color.format(-0.03),
+        backgroundColor: color.format(-0.1),
       }),
       center: css({
         flex: 1,
@@ -151,21 +111,21 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         paddingTop: TOP_MARGIN,
         paddingLeft: EDGE_MARGIN,
         paddingRight: EDGE_MARGIN,
-        backgroundColor: color.format(-0.03),
+        backgroundColor: color.format(-0.1),
       }),
     };
 
     return (
       <div {...styles.base}>
-        <div {...styles.left}>
-          <Apps />
-        </div>
+        <div {...styles.left}>{this.renderLeft()}</div>
         <div {...styles.center}>{this.renderCenter()}</div>
-        <div {...styles.right}>
-          <Server />
-        </div>
+        <div {...styles.right}>{this.renderRight()} </div>
       </div>
     );
+  }
+
+  private renderLeft() {
+    return <Apps />;
   }
 
   private renderCenter() {
@@ -192,11 +152,16 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     );
   }
 
-  /**
-   * [Handlers]
-   */
-
-  private onCloseOverlay = () => {
-    this.context.fire({ type: 'APP:SYS/overlay', payload: { overlay: undefined } });
-  };
+  private renderRight() {
+    const styles = {
+      server: css({ marginBottom: 15 }),
+      helpers: css({}),
+    };
+    return (
+      <React.Fragment>
+        <ServerCard style={styles.server} />
+        <HelpersCard style={styles.helpers} />
+      </React.Fragment>
+    );
+  }
 }

@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, distinctUntilChanged, map } from 'rxjs/operators';
-import { css, CssValue, color, t, ui, onStateChanged, Uri } from '../../common';
-import { WindowTitleBar } from '../primitives';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
+
+import { css, CssValue, onStateChanged, t, ui, Uri } from '../../common';
 import { Grid } from '../Grid';
-import { Panel } from '../Panel';
+import { WindowTitleBar } from '../primitives';
+import { Sidebar } from '../Sidebar';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -67,7 +68,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       base: css({
         Absolute: 0,
       }),
-      titlebar: css({ Absolute: [0, 0, null, 0] }),
+      titlebar: css({
+        Absolute: [0, 0, null, 0],
+      }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
@@ -87,6 +90,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       base: css({
         Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
         Flex: 'horizontal-stretch-stretch',
+        overflow: 'hidden',
       }),
       grid: css({
         position: 'relative',
@@ -95,7 +99,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
       panel: css({
         position: 'relative',
-        borderLeft: `solid 1px ${color.format(-0.1)}`,
         width: 250,
       }),
     };
@@ -105,7 +108,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
           <Grid style={{ Absolute: 0 }} />
         </div>
         <div {...styles.panel}>
-          <Panel />
+          <Sidebar />
         </div>
       </div>
     );

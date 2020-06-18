@@ -68,7 +68,7 @@ export async function uploadApp(args: {
       changes,
     },
   };
-  ctx.fire(e as any);
+  ctx.fire(e);
 
   // Upload files.
   await upload({ client, files, app });

@@ -4,12 +4,12 @@ import { takeUntil } from 'rxjs/operators';
 import { COLORS, color, css, CssValue, ui, t, onStateChanged } from '../../common';
 import { IPropListItem, PropList } from '../primitives';
 
-export type IPanelProps = { style?: CssValue };
-export type IPanelState = {};
+export type ISidebarProps = { style?: CssValue };
+export type ISidebarState = {};
 
-export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
-  public state: IPanelState = {};
-  private state$ = new Subject<Partial<IPanelState>>();
+export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
+  public state: ISidebarState = {};
+  private state$ = new Subject<Partial<ISidebarState>>();
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
@@ -38,12 +38,12 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
   /**
    * [Properties]
    */
-  public get data() {
-    return this.context.getState().data;
+  public get store() {
+    return this.context.getState();
   }
 
   public get types() {
-    return this.data?.types || [];
+    return this.store.data?.types || [];
   }
 
   /**
@@ -57,11 +57,24 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
     const styles = {
       base: css({
         Absolute: 0,
+      }),
+      bg: css({
+        Absolute: 0,
+        backgroundColor: color.format(0.4),
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+      }),
+      body: css({
+        Absolute: 0,
         padding: 20,
         paddingTop: 15,
       }),
     };
-    return <div {...css(styles.base, this.props.style)}>{this.renderProps()}</div>;
+    return (
+      <div {...css(styles.base, this.props.style)}>
+        <div {...styles.bg}></div>
+        <div {...styles.body}>{this.renderProps()}</div>
+      </div>
+    );
   }
 
   private renderProps() {
@@ -119,7 +132,7 @@ export class Panel extends React.PureComponent<IPanelProps, IPanelState> {
     return (
       <div {...styles.base}>
         <PropList title={'Types'} items={title} />
-        <PropList.Hr />
+        {/* <PropList.Hr /> */}
         <PropList items={columns} />
       </div>
     );

@@ -35,3 +35,13 @@ export function onStateChanged(ob$: Observable<t.AppEvent>, unmounted$?: Observa
     },
   };
 }
+
+/**
+ * Remove HTTP prefix
+ */
+export function stripHttp(text: string) {
+  return text
+    .replace(/^http\:/, '')
+    .replace(/^https\:/, '')
+    .replace(/^\/\//, '');
+}

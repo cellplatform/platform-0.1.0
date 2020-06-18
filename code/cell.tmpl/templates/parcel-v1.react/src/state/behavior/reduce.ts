@@ -1,7 +1,7 @@
 import { t } from '../../common';
 
 /**
- * Behavior controller.
+ * State transforms (reducers).
  */
 export function init(args: { store: t.IAppStore }) {
   const { store } = args;
@@ -9,7 +9,7 @@ export function init(args: { store: t.IAppStore }) {
   /**
    * REDUCE: Update error.
    */
-  store.on<t.IIdeErrorEvent>('APP:IDE/error').subscribe((e) => {
+  store.on<t.IAppErrorEvent>('APP:__NAME__/error').subscribe((e) => {
     e.change((state) => {
       const error = e.payload;
       state.error = error;

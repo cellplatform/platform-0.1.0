@@ -10,7 +10,7 @@ export function declare() {
   const def = TypeSystem.def();
 
   /**
-   * Defines an application module.
+   * An application module definition.
    */
   def
     .ns(SYS.NS.TYPE)
@@ -22,24 +22,35 @@ export function declare() {
     .prop('entry', (p) => p.type('string'))
     .prop('devPort', (p) => p.type('number').default(1234))
     .prop('devTools', (p) => p.type('boolean').default(false))
-    .prop('windows', (p) => p.type('/AppWindow[]').target('ref'))
     .prop('width', (p) => p.type('number').default(1000))
     .prop('height', (p) => p.type('number').default(800))
     .prop('minWidth?', (p) => p.type('number'))
-    .prop('minHeight?', (p) => p.type('number'));
+    .prop('minHeight?', (p) => p.type('number'))
+    .prop('windows', (p) => p.type('/AppWindow[]').target('ref'))
+    .prop('data', (p) => p.type('/AppData[]').target('ref'));
 
   /**
-   * Defines a window instance of an {App}.
+   * A single window instance of an {App}.
    */
   def
     .type('AppWindow')
-    .prop('app', (p) => p.type('string')) // {app.name}
+    .prop('app', (p) => p.type('string')) // {App.name}
     .prop('title', (p) => p.type('string').default('Untitled'))
     .prop('width', (p) => p.type('number'))
     .prop('height', (p) => p.type('number'))
     .prop('x', (p) => p.type('number'))
     .prop('y', (p) => p.type('number'))
     .prop('isVisible', (p) => p.type('boolean').default(true));
+
+  /**
+   * The entry-point for data for an application.
+   */
+  def
+    .type('AppData')
+    .prop('app', (p) => p.type('string')) // {App.name}
+    .prop('window', (p) => p.type('string')) // {AppWindow.uri}
+    .prop('fs', (p) => p.type('string').default('fs'))
+    .prop('tmp', (p) => p.type('string'));
 
   return def.toObject();
 }

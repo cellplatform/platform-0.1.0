@@ -30,10 +30,6 @@ export class PropList extends React.PureComponent<IPropListProps, IPropListState
   /**
    * [Lifecycle]
    */
-  constructor(props: IPropListProps) {
-    super(props);
-  }
-
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
@@ -62,6 +58,7 @@ export class PropList extends React.PureComponent<IPropListProps, IPropListState
 
     const elItems = items
       .filter((item) => Boolean(item))
+      .filter((item) => defaultValue(item?.visible, true))
       .map((item, i) => {
         const isFirst = i === 0;
         const isLast = i === items.length - 1;

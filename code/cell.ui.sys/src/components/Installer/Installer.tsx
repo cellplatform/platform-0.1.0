@@ -62,6 +62,12 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     dragTarget.drop$.subscribe(async (e) => {
       const ctx = this.context;
       const { urls, dir } = e;
+
+      if (e.files.length > 30) {
+        this.setError(`Too many files. Are you sure you dropped a bundle?`);
+        return;
+      }
+
       const files = e.files
         .filter((file) => !file.filename.endsWith('.DS_Store'))
         .filter((file) => !file.filename.endsWith('.map'))
@@ -282,12 +288,30 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         <div {...styles.left}>
           <div {...styles.title}>App Bundle</div>
           <div>{manifest?.name || 'Unnamed'}</div>
-          <div {...styles.buttons}>
-            <Button onClick={this.install}>Install Now</Button>
-          </div>
+          <div {...styles.buttons}>{this.renderInstallButton()}</div>
         </div>
         <div {...styles.right}>{this.renderList()}</div>
       </div>
+    );
+  }
+
+  private renderInstallButton() {
+    const styles = {
+      base: css({
+        backgroundColor: COLORS.BLUE,
+        color: COLORS.WHITE,
+        border: `solid 1px ${color.format(0.3)}`,
+        borderRadius: 3,
+        padding: 8,
+        PaddingX: 20,
+      }),
+    };
+    return (
+      <Button onClick={this.install}>
+        <div {...styles.base}>
+          <div>Install Now</div>
+        </div>
+      </Button>
     );
   }
 
@@ -315,9 +339,13 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         textAlign: 'right',
       }),
       total: css({
+        position: 'relative',
         textAlign: 'right',
         paddingTop: 3,
         fontWeight: 'bolder',
+      }),
+      totalIcon: css({
+        Absolute: [2, -20, null, null],
       }),
     };
 
@@ -334,15 +362,15 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         );
       });
 
-    // const elUrl = url && <div {...styles.item}>{url}</div>;
-
     const totalBytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
 
     return (
       <div {...styles.base}>
         {elList}
-        <div {...styles.total}>{filesize(totalBytes)}</div>
-        {/* {elUrl} */}
+        <div {...styles.total}>
+          <Icons.Squirrel style={styles.totalIcon} size={16} color={COLORS.DARK} />
+          <div>{filesize(totalBytes)}</div>
+        </div>
       </div>
     );
   }
@@ -366,7 +394,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
       }),
       tryAgain: css({
         marginTop: 10,
-        opacity: 0.3,
+        opacity: 0.5,
       }),
     };
     return (
@@ -388,7 +416,6 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     const styles = {
       base: css({
         Absolute: [10, 10, null, null],
-        // cursor: 'pointer',
       }),
     };
     return (

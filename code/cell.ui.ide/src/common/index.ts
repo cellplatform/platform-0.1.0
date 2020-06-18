@@ -11,8 +11,8 @@ export { onStateChanged };
 /**
  * Libs
  */
-import { ui } from '@platform/cell.ui';
-export { ui };
+import { ui, coord } from '@platform/cell.ui';
+export { ui, coord };
 
 import { Client, Schema, Uri, TypeSystem } from '@platform/cell.client';
 export { Client, Schema, Uri, TypeSystem };
@@ -23,5 +23,5 @@ export { css, color, CssValue };
 import { events } from '@platform/react';
 export { events };
 
-import { value, is, time } from '@platform/util.value';
-export { value, is, time };
+import { value, is, time, rx } from '@platform/util.value';
+export { value, is, time, rx };

@@ -46,6 +46,27 @@ export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
    */
   rx.payload<t.IpcSheetChangedEvent>(window$, 'IPC/sheet/changed').subscribe(async (e) => {
     const { ns, changes } = e;
+
+    console.log();
+    console.log('CHANGE', ns);
+    console.log('changes', changes);
+
+    /**
+     * TODO 🐷
+     * - The sheet-save below will fail if the NS is passed and it's
+     *   not written here first (NO EXIST).
+     * - TODO: put this all into a save/sync operation that is sane/easy-to-understand.
+     *
+     * TODO
+     * - make sure change-monitor tracks 2..n levels deep.
+     *
+     */
+    if (changes.ns) {
+      const to = changes.ns.to;
+      await ctx.client.http.ns(ns).write({ ns: to });
+    }
+
+    // Change sheet.
     const sheet = await ctx.client.sheet(ns);
     sheet.change(changes);
   });

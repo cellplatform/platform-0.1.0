@@ -1,6 +1,6 @@
 import { t } from '../../common';
-import * as error from './behavior.error';
-import * as data from './behavior.data';
+import * as error from './error';
+import * as data from './data';
 
 /**
  * Initialize behavior controllers.
