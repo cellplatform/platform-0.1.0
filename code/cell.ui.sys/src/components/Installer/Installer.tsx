@@ -288,12 +288,30 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         <div {...styles.left}>
           <div {...styles.title}>App Bundle</div>
           <div>{manifest?.name || 'Unnamed'}</div>
-          <div {...styles.buttons}>
-            <Button onClick={this.install}>Install Now</Button>
-          </div>
+          <div {...styles.buttons}>{this.renderInstallButton()}</div>
         </div>
         <div {...styles.right}>{this.renderList()}</div>
       </div>
+    );
+  }
+
+  private renderInstallButton() {
+    const styles = {
+      base: css({
+        backgroundColor: COLORS.BLUE,
+        color: COLORS.WHITE,
+        border: `solid 1px ${color.format(0.3)}`,
+        borderRadius: 3,
+        padding: 8,
+        PaddingX: 20,
+      }),
+    };
+    return (
+      <Button onClick={this.install}>
+        <div {...styles.base}>
+          <div>Install Now</div>
+        </div>
+      </Button>
     );
   }
 
@@ -321,9 +339,13 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         textAlign: 'right',
       }),
       total: css({
+        position: 'relative',
         textAlign: 'right',
         paddingTop: 3,
         fontWeight: 'bolder',
+      }),
+      totalIcon: css({
+        Absolute: [2, -20, null, null],
       }),
     };
 
@@ -345,7 +367,10 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     return (
       <div {...styles.base}>
         {elList}
-        <div {...styles.total}>{filesize(totalBytes)}</div>
+        <div {...styles.total}>
+          <Icons.Squirrel style={styles.totalIcon} size={16} color={COLORS.DARK} />
+          <div>{filesize(totalBytes)}</div>
+        </div>
       </div>
     );
   }
