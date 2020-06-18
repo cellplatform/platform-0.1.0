@@ -159,11 +159,9 @@ export class PropListItemValue extends React.PureComponent<
     };
 
     const text = message ? message : value;
-    const clipboard = this.props.data.clipboard || value;
-    const tooltip = isOver ? `Copy: "${clipboard}"` : '';
 
     return (
-      <div {...css(styles.base)} title={tooltip}>
+      <div {...css(styles.base)}>
         <div {...styles.text}>{text}</div>
         {this.isCopyable && this.renderCopyIcon()}
       </div>

@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue, onStateChanged, t, ui } from '../../common';
 import { Monaco } from '../Monaco';
-import { WindowFooterBar, WindowTitleBar } from '../primitives';
+import { WindowTitleBar } from '../primitives';
 import { Sidebar } from '../Sidebar';
 
 export type IRootProps = { style?: CssValue };
@@ -148,50 +148,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
             <Sidebar />
           </div>
         </div>
-        <WindowFooterBar>{this.renderFooter()}</WindowFooterBar>
       </div>
     );
   }
-
-  private renderFooter() {
-    const styles = {
-      base: css({
-        PaddingX: 10,
-        Flex: 'center-start',
-        fontSize: 11,
-        color: color.format(-0.62),
-      }),
-      div: css({
-        marginLeft: 10,
-        marginRight: 10,
-        width: 0,
-        height: '100%',
-        borderLeft: `solid 1px ${color.format(-0.15)}`,
-        borderRight: `solid 1px ${color.format(0.7)}`,
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <div onClick={this.handlePullTypes}>Pull Types</div>
-        <div {...styles.div} />
-        <div onClick={this.handleUnloadTypes}>Unload Types</div>
-      </div>
-    );
-  }
-
-  /**
-   * Handlers
-   */
-
-  private handlePullTypes = async () => {
-    const uri = this.store.uri;
-    if (uri) {
-      const ctx = this.context;
-      ctx.fire({ type: 'APP:IDE/types/pull', payload: { uri } });
-    }
-  };
-
-  private handleUnloadTypes = async () => {
-    this.context.fire({ type: 'APP:IDE/types/unload', payload: {} });
-  };
 }
