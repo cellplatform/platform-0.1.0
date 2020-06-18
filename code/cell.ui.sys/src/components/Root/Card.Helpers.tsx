@@ -1,9 +1,10 @@
+import { copyToClipboard } from '@platform/react/lib/util';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, ui } from '../../common';
-import { Card, PropList } from '../primitives';
+import { css, CssValue, t, ui, Uri } from '../../common';
+import { Card, PropList, IPropListItemEventArgs } from '../primitives';
 
 export type IHelpersCardProps = { style?: CssValue };
 export type IHelpersCardState = {};
@@ -42,7 +43,9 @@ export class HelpersCard extends React.PureComponent<IHelpersCardProps, IHelpers
       icon: css({ Absolute: [10, 15, null, null] }),
     };
 
-    const items: t.IPropListItem[] = [{ label: 'namespace uri', value: 'generate' }];
+    const items: t.IPropListItem[] = [
+      { label: 'namespace uri', value: 'generate', onClick: this.onGenerateNs },
+    ];
 
     return (
       <div {...styles.base}>
@@ -54,4 +57,14 @@ export class HelpersCard extends React.PureComponent<IHelpersCardProps, IHelpers
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+
+  private onGenerateNs = (e: IPropListItemEventArgs) => {
+    const ns = Uri.create.ns(Uri.cuid());
+    copyToClipboard(ns);
+    e.message('copied uri');
+  };
 }

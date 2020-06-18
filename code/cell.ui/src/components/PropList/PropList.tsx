@@ -30,10 +30,6 @@ export class PropList extends React.PureComponent<IPropListProps, IPropListState
   /**
    * [Lifecycle]
    */
-  constructor(props: IPropListProps) {
-    super(props);
-  }
-
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }

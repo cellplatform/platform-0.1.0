@@ -1,8 +1,9 @@
+import { copyToClipboard } from '@platform/react/lib';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, time, COLORS, css, CssValue, t } from '../../common';
+import { defaultValue, color, COLORS, css, CssValue, t, time } from '../../common';
 import { Icons } from '../Icons';
 import { Switch } from '../primitives';
 
@@ -12,7 +13,10 @@ export type IPropListItemValueProps = {
   isLast?: boolean;
   style?: CssValue;
 };
-export type IPropListItemValueState = { isOver?: boolean; isCopied?: boolean };
+export type IPropListItemValueState = {
+  isOver?: boolean;
+  message?: React.ReactNode;
+};
 
 export class PropListItemValue extends React.PureComponent<
   IPropListItemValueProps,
@@ -38,8 +42,48 @@ export class PropListItemValue extends React.PureComponent<
   /**
    * [Properties]
    */
+  public get data() {
+    return this.props.data;
+  }
+
   public get value() {
-    return this.props.data.value;
+    return this.data.value;
+  }
+
+  public get isString() {
+    return typeof this.value === 'string';
+  }
+
+  public get isCopyable() {
+    const { data } = this.props;
+    const { onClick } = data;
+    return !onClick && this.isString;
+  }
+
+  public get clipboard() {
+    if (this.props.data.clipboard) {
+      return this.props.data.clipboard;
+    }
+    if (this.isString) {
+      return this.value as string;
+    }
+    return undefined;
+  }
+
+  /**
+   * [Methods]
+   */
+  private copyText = () => {
+    if (this.clipboard) {
+      copyToClipboard(this.clipboard);
+      this.showMessage('copied to clipboard');
+    }
+  };
+
+  public showMessage(message: React.ReactNode, delay?: number) {
+    const msec = defaultValue(delay, 1500);
+    this.state$.next({ message });
+    time.delay(msec, () => this.state$.next({ message: undefined }));
   }
 
   /**
@@ -59,6 +103,7 @@ export class PropListItemValue extends React.PureComponent<
         title={this.props.data.tooltip}
         onMouseEnter={this.overHandler(true)}
         onMouseLeave={this.overHandler(false)}
+        onClick={this.onClick}
       >
         {this.renderValue()}
       </div>
@@ -82,9 +127,9 @@ export class PropListItemValue extends React.PureComponent<
   }
 
   private renderString(value: string) {
-    const { isOver, isCopied } = this.state;
+    const { isOver, message } = this.state;
 
-    const textColor = isCopied ? color.format(-0.3) : isOver ? COLORS.BLUE : COLORS.DARK;
+    const textColor = message ? color.format(-0.3) : isOver ? COLORS.BLUE : COLORS.DARK;
 
     const styles = {
       base: css({
@@ -102,66 +147,53 @@ export class PropListItemValue extends React.PureComponent<
         cursor: 'pointer',
         textAlign: 'right',
       }),
-      input: css({
-        Absolute: [-90000, -90000, null, null],
-      }),
     };
 
-    const text = isCopied ? 'copied to clipboard' : value;
+    const text = message ? message : value;
     const clipboard = this.props.data.clipboard || value;
     const tooltip = isOver ? `Copy: "${clipboard}"` : '';
 
     return (
       <div {...css(styles.base)} title={tooltip}>
-        <input
-          {...styles.input}
-          ref={this.elTextRef}
-          type={'text'}
-          value={clipboard}
-          readOnly={true}
-        />
-        <div {...styles.text} onClick={this.copyText}>
-          {text}
-        </div>
-        {this.renderCopyIcon()}
+        <div {...styles.text}>{text}</div>
+        {this.isCopyable && this.renderCopyIcon()}
       </div>
     );
   }
 
   private renderCopyIcon() {
-    const { isOver, isCopied } = this.state;
-
-    if (!isOver && !isCopied) {
+    const { isOver, message } = this.state;
+    if (!isOver || message) {
       return null;
     }
-
     const styles = {
       base: css({
-        Absolute: isCopied ? [-1, -14, null, null] : [2, -12, null, null],
+        Absolute: [2, -12, null, null],
         opacity: 0.8,
       }),
     };
-    const Icon = isCopied ? Icons.Tick : Icons.Copy;
-    const iconSize = isCopied ? 14 : 10;
-    const iconColor = isCopied ? COLORS.GREEN : COLORS.DARK;
-    return <Icon style={styles.base} color={iconColor} size={iconSize} />;
+    return <Icons.Copy style={styles.base} color={COLORS.DARK} size={10} />;
   }
-
-  private elText!: HTMLInputElement;
-  private elTextRef = (ref: HTMLInputElement) => (this.elText = ref);
 
   /**
    * [Handlers]
    */
+
   private overHandler = (isOver: boolean) => {
     return () => this.state$.next({ isOver });
   };
 
-  private copyText = () => {
-    this.elText.select();
-    document.execCommand('copy');
-
-    this.state$.next({ isCopied: true });
-    time.delay(1500, () => this.state$.next({ isCopied: false }));
+  private onClick = () => {
+    const data = this.data;
+    const { onClick } = data;
+    if (onClick) {
+      onClick({
+        data,
+        message: (message: React.ReactNode, delay?: number) => this.showMessage(message, delay),
+      });
+    }
+    if (this.isCopyable) {
+      this.copyText();
+    }
   };
 }
