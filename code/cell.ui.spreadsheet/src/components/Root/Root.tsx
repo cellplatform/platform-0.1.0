@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, distinctUntilChanged, map } from 'rxjs/operators';
-import { css, CssValue, color, t, ui, onStateChanged, Uri } from '../../common';
-import { WindowTitleBar } from '../primitives';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
+
+import { css, CssValue, onStateChanged, t, ui, Uri } from '../../common';
 import { Grid } from '../Grid';
-import { Panel } from '../Panel';
+import { WindowTitleBar } from '../primitives';
+import { Sidebar } from '../Sidebar';
 
 export type IRootProps = { style?: CssValue };
 export type IRootState = {};
@@ -107,7 +108,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
           <Grid style={{ Absolute: 0 }} />
         </div>
         <div {...styles.panel}>
-          <Panel />
+          <Sidebar />
         </div>
       </div>
     );

@@ -54,18 +54,26 @@ export class PropListItemValue extends React.PureComponent<
     return typeof this.value === 'string';
   }
 
+  public get isNumber() {
+    return typeof this.value === 'number';
+  }
+
+  public get isSimple() {
+    return this.isString || this.isNumber;
+  }
+
   public get isCopyable() {
     const { data } = this.props;
     const { onClick } = data;
-    return !onClick && this.isString;
+    return !onClick && this.isSimple;
   }
 
   public get clipboard() {
     if (this.props.data.clipboard) {
       return this.props.data.clipboard;
     }
-    if (this.isString) {
-      return this.value as string;
+    if (this.isSimple) {
+      return this.value?.toString() || '';
     }
     return undefined;
   }
@@ -95,6 +103,7 @@ export class PropListItemValue extends React.PureComponent<
         flex: 1,
         position: 'relative',
         Flex: 'center-end',
+        userSelect: 'none',
       }),
     };
     return (
@@ -116,8 +125,8 @@ export class PropListItemValue extends React.PureComponent<
     if (typeof value === 'boolean') {
       return this.renderBoolean(value);
     }
-    if (typeof value === 'string') {
-      return this.renderString(value);
+    if (typeof value === 'string' || typeof value === 'number') {
+      return this.renderSimple(value);
     }
     return null;
   }
@@ -126,7 +135,7 @@ export class PropListItemValue extends React.PureComponent<
     return <Switch height={16} value={value} />;
   }
 
-  private renderString(value: string) {
+  private renderSimple(value: string | number) {
     const { isOver, message } = this.state;
 
     const textColor = message ? color.format(-0.3) : isOver ? COLORS.BLUE : COLORS.DARK;

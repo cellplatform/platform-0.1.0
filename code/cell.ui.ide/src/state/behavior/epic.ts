@@ -1,5 +1,4 @@
 import { filter } from 'rxjs/operators';
-
 import { t } from '../../common';
 
 /**
@@ -17,12 +16,13 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
     .on<t.IIdeLoadEvent>('APP:IDE/load')
     .pipe()
     .subscribe((e) => {
-      console.log('e.type', e.type);
-
       const { uri } = e.payload;
       store.dispatch({ type: 'APP:IDE/uri', payload: { uri } });
     });
 
+  /**
+   * Ensure the types are pulled when the URI changes.
+   */
   store.changed$.pipe(filter((e) => e.type === 'APP:IDE/uri')).subscribe((e) => {
     const uri = e.to.uri;
     store.dispatch({ type: 'APP:IDE/types/pull', payload: { uri } });
@@ -40,7 +40,6 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
 
       const typeNs = info.body.data.ns.props?.type?.implements || '';
       const defs = await client.defs(typeNs);
-
       const typescript = await client.typescript(typeNs, { exports: false, imports: false });
       const ts = typescript.toString().replace(/t\./g, '');
 
