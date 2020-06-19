@@ -984,10 +984,10 @@
     "@platform/types" "0.4.22"
     "@platform/util.value" "0.7.24"
 
-"@platform/cell.ui@0.1.53":
-  version "0.1.53"
-  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.53.tgz#9a0029f253292d29568abbdfe22665ee95d96566"
-  integrity sha512-yFjIAFNIDxXXzqTxoPxRmABEsJ+RK3tuBOLYxRgCywlB1gB1xJTKzgQdfuQwpde3mJVNH6qJsTbKWb305rXP7Q==
+"@platform/cell.ui@0.1.54":
+  version "0.1.54"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.54.tgz#947ce47bd32e844a26d7126e5eb27e0e270108db"
+  integrity sha512-X24nh9ynqdJUrAWt4/xggh7sfAZb8IQIptkt7OB+RKYFzW6cevTYxFxABIXrQj+l1fSP7nXIZB9fEVech7V84g==
   dependencies:
     "@platform/cell.client" "0.2.114"
     "@platform/cell.types" "0.4.120"
