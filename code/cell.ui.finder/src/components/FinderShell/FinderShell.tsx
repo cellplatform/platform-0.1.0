@@ -5,9 +5,12 @@ import { ErrorBoundary, ErrorView } from '../Error';
 import { FinderShellTree } from './FinderShell.Tree';
 import { FinderShellView } from './FinderShell.View';
 
+import { context } from '../../context';
+
 export type IFinderProps = { style?: CssValue };
 
 export class FinderShell extends React.Component<IFinderProps> {
+  public static createContext = (env: t.IEnv) => context.create({ env });
   public static contextType = ui.Context;
   public context!: t.IAppContext;
 

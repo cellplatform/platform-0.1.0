@@ -25,7 +25,11 @@ export class FinderShellTree extends React.PureComponent<IFinderShellTreeProps> 
     this.tree$.pipe(takeUntil(this.unmounted$)).subscribe((e) => ctx.fire(e));
 
     // Redraw.
-    changes.on('APP:FINDER/tree').subscribe(() => this.forceUpdate());
+    changes.on('APP:FINDER/tree').subscribe(() => {
+      console.log('--------------------/-----------------------');
+      console.log('TREE change');
+      this.forceUpdate();
+    });
   }
 
   public componentWillUnmount() {

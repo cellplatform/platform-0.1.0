@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { Client, t, ui } from '../common';
-import { createStore, behavior } from '../state';
+import { createStore, init } from '../state';
 
 /**
  * Creates an environment context.
@@ -19,6 +19,7 @@ export function create(args: { env: t.IEnv }) {
 
   // Create the context.
   const ctx: t.IAppContext = {
+    env,
     def,
     client: Client.env(env),
     event$: event$.pipe(share()),
@@ -27,7 +28,7 @@ export function create(args: { env: t.IEnv }) {
   };
 
   // Finish up.
-  behavior.init({ ctx, store });
+  init({ ctx, store });
   const Provider = ui.createProvider({ ctx });
   return { ctx, Provider };
 }

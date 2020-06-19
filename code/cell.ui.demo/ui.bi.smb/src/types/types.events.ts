@@ -1,9 +1,11 @@
 import { t } from './common';
 
+import { FinderEvent } from '@platform/cell.ui.finder/lib/types';
+
 /**
  * Events
  */
-type GlobalEvent = t.EnvEvent | t.IpcEvent | t.UiEvent;
+type GlobalEvent = t.EnvEvent | t.IpcEvent | t.UiEvent | FinderEvent;
 export type AppEvent = GlobalEvent | IAppChanged | IAppErrorEvent;
 
 /**

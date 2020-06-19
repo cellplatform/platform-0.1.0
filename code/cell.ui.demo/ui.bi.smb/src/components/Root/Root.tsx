@@ -17,9 +17,16 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   public static contextType = ui.Context;
   public context!: t.IAppContext;
 
+  private FinderProvider!: React.FunctionComponent<{}>;
+
   /**
    * [Lifecycle]
    */
+  constructor(props: IRootProps) {
+    super(props);
+    const ctx = this.context;
+    console.log('ctx', ctx);
+  }
 
   public componentDidMount() {
     const ctx = this.context;
@@ -62,10 +69,17 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     const uri = 'BI ("Business Intilligence")';
 
+    if (!this.FinderProvider) {
+      const env = this.context.env;
+      this.FinderProvider = FinderShell.createContext(env).Provider;
+    }
+
     return (
       <div {...css(styles.base, this.props.style)}>
         <WindowTitleBar style={styles.titlebar} address={uri} />
-        <FinderShell style={styles.body} />
+        <this.FinderProvider>
+          <FinderShell style={styles.body} />
+        </this.FinderProvider>
       </div>
     );
   }

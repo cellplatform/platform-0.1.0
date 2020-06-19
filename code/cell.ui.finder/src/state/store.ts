@@ -14,9 +14,7 @@ export function createStore(args: { event$: Subject<t.AppEvent> }): t.IAppStore 
   const store = Store.create<t.IAppState, t.AppEvent>({ initial, event$ });
 
   // Ferry events in and out of state-machine.
-  store.changed$.subscribe((payload) => {
-    event$.next({ type: 'APP:FINDER/changed', payload });
-  });
+  store.changed$.subscribe((payload) => event$.next({ type: 'APP:FINDER/changed', payload }));
 
   // Finish up.
   return store;
