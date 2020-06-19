@@ -3,6 +3,7 @@ import { share } from 'rxjs/operators';
 
 import { Client, t, ui } from '../common';
 import { createStore, init } from '../state';
+import { render } from '../render';
 
 /**
  * Creates an environment context.
@@ -13,7 +14,7 @@ export function create(args: { env: t.IEnv }) {
   const store = createStore({ event$ });
 
   event$.subscribe((e) => {
-    console.log('🐷', e); // TEMP 🐷
+    // console.log('🐷', e); // TEMP 🐷
   });
 
   // Create the context.
@@ -25,8 +26,11 @@ export function create(args: { env: t.IEnv }) {
     fire: (e) => event$.next(e),
   };
 
-  // Finish up.
+  // Initialize sub-modules.
   init({ ctx, store });
+  render({ ctx });
+
+  // Finish up.
   const Provider = ui.createProvider({ ctx });
   return { ctx, Provider };
 }

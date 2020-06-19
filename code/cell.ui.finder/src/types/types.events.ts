@@ -14,7 +14,6 @@ export type FinderEvent =
   | FinderViewEvent
   | IFinderErrorEvent;
 
-export type AppEvent = FinderEvent;
 /**
  * Changed
  */
