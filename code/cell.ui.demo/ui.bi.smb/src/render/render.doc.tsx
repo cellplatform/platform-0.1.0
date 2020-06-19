@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { imports } from './imports';
-// import { TrainingRoot } from './components/Training/Training.Root';
-// import { TrainingVideo } from './components/Training/Training.Video';
+import { TrainingRoot } from '../components/Training/Training.Root';
+import { TrainingVideo } from '../components/Training/Training.Video';
 // import * as t from './types';
 import { t, TreeUtil } from '../common';
 
@@ -21,7 +21,8 @@ export async function renderDocViewer(args: {
   const background = bg?.data?.backgroundImage;
 
   const Doc = (await imports.doc).Doc;
-  const el = <div>Hello</div>;
+  const el =
+    depth === 0 ? <TrainingRoot node={nodeId} /> : <TrainingVideo node={nodeId} root={root} />;
 
   return (
     <Doc depth={depth} background={background}>
