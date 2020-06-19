@@ -79,8 +79,8 @@ export class Chart extends React.PureComponent<IChartProps, IChartState> {
   public render() {
     const styles = {
       base: css({
-        // backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         Flex: 'center-center',
+        fontSize: 14,
       }),
     };
 

@@ -11,7 +11,7 @@ import { Chart } from './Chart';
 import { Button } from '../primitives';
 
 export type ITrainingVideoProps = {
-  node: string;
+  nodeId: string;
   root: t.INode;
   style?: CssValue;
 };
@@ -37,7 +37,7 @@ export class TrainingVideo extends React.PureComponent<ITrainingVideoProps, ITra
   }
 
   public componentDidUpdate(prevProps: ITrainingVideoProps) {
-    if (prevProps.node !== this.props.node) {
+    if (prevProps.nodeId !== this.props.nodeId) {
       this.updateState();
     }
   }
@@ -97,7 +97,7 @@ export class TrainingVideo extends React.PureComponent<ITrainingVideoProps, ITra
    */
   private updateState() {
     const root = this.root;
-    const node = TreeUtil.findById<t.INode>(root, this.props.node);
+    const node = TreeUtil.findById<t.INode>(root, this.props.nodeId);
     this.state$.next({ node });
   }
 
@@ -128,13 +128,21 @@ export class TrainingVideo extends React.PureComponent<ITrainingVideoProps, ITra
   }
 
   private renderContent() {
+    const { nodeId } = this.props;
     const data = this.data;
     if (!data) {
       return null;
     }
+
+    const JAMES =
+      'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Faboutme.imgix.net%2Fbackground%2Fusers%2Fj%2Fm%2Fs%2Fjmsinnz_1521418469_068.jpg%3Fq%3D80%26dpr%3D1%26auto%3Dformat%26fit%3Dmax%26w%3D1200%26h%3D630%26rect%3D0%2C65%2C1867%2C980&f=1&nofb=1';
+    const isWho = nodeId === 'intro.who';
+
     return (
       <React.Fragment>
-        <Page.Video src={data.video || ''} />
+        {!isWho && data.video && <Page.Video src={data.video} />}
+        {!isWho && !data.video && <Chart style={{ marginTop: 30, marginBottom: 50 }} />}
+        {isWho && this.renderImage({ url: JAMES })}
         <Page.Body>
           <Page.Headline>{this.headline}</Page.Headline>
           {this.renderDetailOptions()}
@@ -145,6 +153,26 @@ export class TrainingVideo extends React.PureComponent<ITrainingVideoProps, ITra
           <Page.Paragraph>{constants.LOREM}</Page.Paragraph>
         </Page.Body>
       </React.Fragment>
+    );
+  }
+
+  private renderImage(args: { url: string }) {
+    const styles = {
+      base: css({
+        Flex: 'center-center',
+        PaddingY: 50,
+      }),
+      img: css({
+        width: 650,
+        height: 358,
+        border: `solid 1px ${color.format(-0.2)}`,
+        backgroundColor: color.format(-0.6),
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <img src={args.url} {...styles.img} />
+      </div>
     );
   }
 
@@ -179,7 +207,7 @@ export class TrainingVideo extends React.PureComponent<ITrainingVideoProps, ITra
 
   private onHeaderToolClick = (e: HeaderToolClickEvent) => {
     if (e.tool === 'CLOSE') {
-      const { node } = this.props;
+      const { nodeId: node } = this.props;
       this.context.fire({ type: 'APP:FINDER/tree/select/parent', payload: { node } });
     }
   };

@@ -16,7 +16,7 @@ export const SIMPLE: INode = {
     {
       id: 'intro',
       props: {
-        label: 'Welcome',
+        label: 'Acme Inc.',
         marginTop: 12,
         chevron: { isVisible: false },
         inline: { isOpen: true },
@@ -38,45 +38,88 @@ export const SIMPLE: INode = {
           props: { label: 'Why', icon: 'Face' },
           data: { type: 'DOC' },
         },
-        {
-          id: 'intro.files',
-          props: { label: 'Download', icon: 'Box' },
-        },
       ],
     },
     {
-      id: 'training',
+      id: 'analysis',
       props: {
-        label: 'Training Programme',
+        label: 'Analysis Projects',
         chevron: { isVisible: false },
         inline: { isOpen: true },
       },
       data: {
         type: 'CHAPTER',
         backgroundImage:
-          'https://images.unsplash.com/photo-1525663018617-37753d540108?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1534&q=80',
+          'https://images.unsplash.com/photo-1472289065668-ce650ac443d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3150&q=80',
       },
       children: [
         {
-          id: 'training.purpose',
-          props: { label: 'Purpose', icon: 'Video' },
-          data: { type: 'DOC', video: 'https://vimeo.com/298559243' },
+          id: 'analysis.latest',
+          props: { label: 'Latest', icon: 'Video' },
+          data: { type: 'DOC' },
           children: [
-            { id: 'training.purpose.detail', props: { label: 'Details' } },
-            { id: 'training.purpose.examples', props: { label: 'Examples' } },
+            { id: 'analysis.latest.detail', props: { label: 'Revenue Anlaysis' } },
+            { id: 'analysis.latest.impact', props: { label: 'Cost Impact' } },
+            { id: 'analysis.latest.trends', props: { label: 'Trends Sportlight' } },
+            { id: 'analysis.latest.insight', props: { label: 'Insights and Recommendations' } },
+            { id: 'analysis.latest.volatility', props: { label: 'Month on Month Volatility' } },
           ],
         },
         {
-          id: 'training.segment',
-          props: { label: 'Customer Segments', icon: 'Video' },
-          data: {
-            type: 'DOC',
-            video: 'https://vimeo.com/297287021',
-            backgroundImage:
-              'https://images.unsplash.com/photo-1442323794357-25b2ec110967?ixlib=rb-1.2.1&auto=format&fit=crop&w=3300&q=80',
-          },
+          id: 'analysis.recent',
+          props: { label: 'Recent', icon: 'Video' },
+          data: { type: 'DOC' },
+          children: [
+            { id: 'analysis.recent.detail', props: { label: 'Details' } },
+            { id: 'analysis.recent.examples', props: { label: 'Examples' } },
+          ],
+        },
+        {
+          id: 'analysis.archive',
+          props: { label: 'Archive', icon: 'Video' },
+          data: { type: 'DOC' },
+          children: [
+            { id: 'analysis.archive.detail', props: { label: 'Details' } },
+            { id: 'analysis.archive.examples', props: { label: 'Examples' } },
+          ],
         },
       ],
+    },
+    {
+      id: 'engagement',
+      props: {
+        label: 'Engagement',
+        chevron: { isVisible: false },
+        inline: { isOpen: false },
+      },
+      data: {
+        type: 'CHAPTER',
+        backgroundImage:
+          'https://images.unsplash.com/photo-1553448540-fe069f7c95bf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3150&q=80',
+      },
+
+      children: [
+        { id: 'engagement.agreements', props: { label: 'Agreements' } },
+        { id: 'engagement.billing', props: { label: 'Billing' } },
+        { id: 'engagement.people', props: { label: 'People / Roles' } },
+      ],
+    },
+    {
+      id: 'settings',
+      props: {
+        label: 'Settings',
+        chevron: { isVisible: false },
+        inline: { isOpen: false },
+      },
+      children: [
+        { id: 'settings.auth', props: { label: 'Authorization' } },
+        { id: 'settings.feeds', props: { label: 'Feeds' } },
+      ],
+      data: {
+        type: 'CHAPTER',
+        backgroundImage:
+          'https://images.unsplash.com/photo-1470790376778-a9fbc86d70e2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1849&q=80',
+      },
     },
   ],
 };

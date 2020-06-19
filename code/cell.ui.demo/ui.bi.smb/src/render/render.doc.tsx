@@ -22,7 +22,7 @@ export async function renderDocViewer(args: {
 
   const Doc = (await imports.doc).Doc;
   const el =
-    depth === 0 ? <TrainingRoot node={nodeId} /> : <TrainingVideo node={nodeId} root={root} />;
+    depth === 0 ? <TrainingRoot nodeId={nodeId} /> : <TrainingVideo nodeId={nodeId} root={root} />;
 
   return (
     <Doc depth={depth} background={background}>

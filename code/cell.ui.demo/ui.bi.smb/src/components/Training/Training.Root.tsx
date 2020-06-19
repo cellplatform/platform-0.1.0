@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { COLORS, css, color, CssValue } from '../../common';
 
-export type TrainingIRootProps = { node: string; style?: CssValue };
+export type TrainingIRootProps = { nodeId: string; style?: CssValue };
 export type TrainingIRootState = {};
 
 export class TrainingRoot extends React.PureComponent<TrainingIRootProps, TrainingIRootState> {
@@ -31,7 +31,7 @@ export class TrainingRoot extends React.PureComponent<TrainingIRootProps, Traini
    * [Render]
    */
   public render() {
-    const { node } = this.props;
+    const { nodeId: node } = this.props;
     const styles = {
       base: css({
         position: 'relative',
