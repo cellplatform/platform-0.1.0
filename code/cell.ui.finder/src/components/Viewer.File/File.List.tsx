@@ -10,7 +10,7 @@ export type IViewerListProps = {
   style?: CssValue;
   onClick?: ViewerItemClickEventHandler;
 };
-export type IViewerListItem = { filename: string; url: string };
+export type IViewerListItem = { filename: string; fileUrl: string, infoUrl: string };
 export type IViewerListState = {};
 
 export type ViewerItemClickEvent = { item: IViewerListItem };

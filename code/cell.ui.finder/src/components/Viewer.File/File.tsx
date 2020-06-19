@@ -80,8 +80,11 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
     const res = await cell.files.list();
     if (res.ok) {
       const items = res.body.map((file) => {
-        const url = urls.file(file.uri).download.toString();
-        return { filename: file.filename, url };
+        const url = urls.file(file.uri);
+        const fileUrl = url.download.toString();
+        const infoUrl = url.info.toString();
+        const item: IViewerListItem = { filename: file.filename, fileUrl, infoUrl };
+        return item;
       });
       this.state$.next({ items });
       this.ensureSelection();
@@ -168,7 +171,7 @@ export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
         Absolute: 40,
       }),
       image: css({
-        backgroundImage: `url(${current.url})`,
+        backgroundImage: `url(${current.fileUrl})`,
         Absolute: 0,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
