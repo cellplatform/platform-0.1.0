@@ -19,7 +19,7 @@ import { t } from '../common';
  *
  */
 export type IEnvContext<E extends t.Event = t.EnvEvent> = {
-  def: string;
+  env: t.IEnv;
   client: t.IClientTypesystem;
   event$: Observable<E>;
   fire(e: E): void;
