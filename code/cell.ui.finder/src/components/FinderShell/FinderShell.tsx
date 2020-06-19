@@ -1,13 +1,16 @@
 import * as React from 'react';
 
-import { color, css, CssValue, t, ui } from '../../common';
+import { color, css, CssValue, t, ui, defaultValue } from '../../common';
 import { ErrorBoundary, ErrorView } from '../Error';
 import { FinderShellTree } from './FinderShell.Tree';
 import { FinderShellView } from './FinderShell.View';
 
 import { context } from '../../context';
 
-export type IFinderProps = { style?: CssValue };
+export type IFinderProps = {
+  leftWidth?: number;
+  style?: CssValue;
+};
 
 export class FinderShell extends React.Component<IFinderProps> {
   public static createContext = (env: t.IEnv) => context.create({ env });
@@ -36,7 +39,7 @@ export class FinderShell extends React.Component<IFinderProps> {
       left: css({
         position: 'relative',
         display: 'flex',
-        width: 240,
+        width: defaultValue(this.props.leftWidth, 240),
       }),
       leftBorder: css({
         Absolute: [0, null, 0, 0],

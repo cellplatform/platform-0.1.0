@@ -63,7 +63,7 @@ export async function uploadApp(args: {
   const e: t.IpcSheetChangedEvent = {
     type: 'IPC/sheet/changed',
     payload: {
-      source: ctx.def,
+      source: ctx.env.def,
       ns: sheet.uri.id,
       changes,
     },

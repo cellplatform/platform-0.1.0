@@ -35,12 +35,12 @@ export class Root extends React.PureComponent<IRootProps> {
       body: css({ Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0] }),
     };
 
-    const uri = ''; // temp
+    const uri = 'system.finder'; // temp
 
     return (
       <div {...css(styles.base, this.props.style)}>
         <WindowTitleBar style={styles.titlebar} address={uri} />
-        <FinderShell style={styles.body} />
+        <FinderShell style={styles.body} leftWidth={200} />
       </div>
     );
   }

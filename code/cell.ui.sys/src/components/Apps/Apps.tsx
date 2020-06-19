@@ -60,6 +60,8 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     const wait = data.rows.map(async (row) => {
       const uri = row.toString();
       const windows = await row.props.windows.data();
+
+      console.log('uri', uri);
       const item: IAppData = {
         typename: row.typename,
         types: row.types.list,
@@ -72,9 +74,8 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
 
     const apps = await Promise.all(wait);
 
-    //.filter((app) => !app.props.name.endsWith('cell.ui.sys'));
     this.state$.next({
-      apps: apps.filter((app) => !app.props.name.endsWith('cell.ui.sys')),
+      apps: apps.filter((app) => !(app.props.name || '').endsWith('cell.ui.sys')),
     });
   }
 
