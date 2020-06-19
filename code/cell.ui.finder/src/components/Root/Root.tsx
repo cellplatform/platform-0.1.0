@@ -2,13 +2,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 
 import { color, css, CssValue, t, ui } from '../../common';
-import { Shell } from '../Finder.Shell';
+import { FinderShell } from '../FinderShell';
 import { WindowTitleBar } from '../primitives';
 
-export type IRootProps = {
-  ctx: t.IAppContext;
-  style?: CssValue;
-};
+export type IRootProps = { style?: CssValue };
 
 export class Root extends React.PureComponent<IRootProps> {
   private unmounted$ = new Subject<{}>();
@@ -38,12 +35,12 @@ export class Root extends React.PureComponent<IRootProps> {
       body: css({ Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0] }),
     };
 
-    const uri = ''; // temp
+    const uri = 'system.finder'; // temp
 
     return (
       <div {...css(styles.base, this.props.style)}>
         <WindowTitleBar style={styles.titlebar} address={uri} />
-        <Shell style={styles.body} />
+        <FinderShell style={styles.body} leftWidth={200} />
       </div>
     );
   }

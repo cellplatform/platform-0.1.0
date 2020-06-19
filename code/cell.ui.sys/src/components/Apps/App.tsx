@@ -170,7 +170,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     ctx.fire({
       type: 'IPC/debug',
       payload: {
-        source: ctx.def,
+        source: ctx.env.def,
         data: { action: 'OPEN', name },
       },
     });

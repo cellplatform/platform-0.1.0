@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 import produce from 'immer';
 
@@ -8,6 +8,7 @@ export * from './types';
 
 export type IStoreArgs<M extends {}> = {
   initial: M;
+  event$?: Subject<any>;
 };
 
 /**
@@ -26,51 +27,54 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
    */
   private constructor(args: IStoreArgs<M>) {
     this._.state = { ...args.initial };
+    this._event$ = args.event$ || new Subject<E>();
+    this.event$ = this._event$.pipe(
+      takeUntil(this.dispose$),
+      map((e) => this.toDispatchEvent(e)),
+      share(),
+    );
   }
 
   /**
    * Destroy the state machine.
    */
   public dispose() {
-    this._.dispose$.next();
-    this._.dispose$.complete();
+    this._dispose$.next();
+    this._dispose$.complete();
   }
 
   /**
    * [Fields]
    */
+  private readonly _dispose$ = new Subject<{}>();
+  private readonly _event$!: Subject<E>;
+  private readonly _changing$ = new Subject<t.IStateChanging<M, E>>();
+  private readonly _changed$ = new Subject<t.IStateChange<M, E>>();
+
   private readonly _ = {
-    dispose$: new Subject<{}>(),
-    events$: new Subject<E>(),
-    changing$: new Subject<t.IStateChanging<M, E>>(),
-    changed$: new Subject<t.IStateChange<M, E>>(),
     state: (undefined as unknown) as M,
   };
 
   /**
    * Fires when the state machine is disposed.
    */
-  public readonly dispose$ = this._.dispose$.pipe(share());
+  public readonly dispose$ = this._dispose$.pipe(share());
 
   /**
    * Fires immediately before the state changes.
    * Can be used to cancel updates.
    */
-  public readonly changing$ = this._.changing$.pipe(share());
+  public readonly changing$ = this._changing$.pipe(share());
 
   /**
    * Fires when the state has changed.
    */
-  public readonly changed$ = this._.changed$.pipe(share());
+  public readonly changed$ = this._changed$.pipe(share());
 
   /**
    * Fires when an event is dispatched.
    */
-  public readonly events$ = this._.events$.pipe(
-    takeUntil(this.dispose$),
-    map((e) => this.toDispatchEvent(e)),
-    share(),
-  );
+  public readonly event$!: Observable<t.IDispatch<M, E, E>>;
 
   /**
    * [Properties]
@@ -80,7 +84,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
    * Flag indicating if the state machine has been disposed.
    */
   public get isDisposed() {
-    return this._.dispose$.isStopped;
+    return this._dispose$.isStopped;
   }
 
   /**
@@ -98,7 +102,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
    * Dispatches an event that may cause the state to change.
    */
   public dispatch(event: E) {
-    this._.events$.next(event);
+    this._event$.next(event);
     return this;
   }
 
@@ -106,7 +110,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
    * Retrieves an observable narrowed in on a single type of dispatched event.
    */
   public on<E2 extends E>(type: E2['type']) {
-    return this.events$.pipe(
+    return this.event$.pipe(
       filter((e) => e.type === type),
       map((e) => e as t.IDispatch<M, E2, E>),
     );
@@ -137,7 +141,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
         // Fire PRE event (and check if anyone cancelled it).
         let isCancelled = false;
         const change: t.IStateChange<M, E2> = { type, event, from, to };
-        this._.changing$.next({
+        this._changing$.next({
           change,
           isCancelled,
           cancel: () => (isCancelled = true),
@@ -149,7 +153,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
 
         // Update state.
         this._.state = to;
-        this._.changed$.next(change);
+        this._changed$.next(change);
         return result;
       },
       dispatch: (event) => {

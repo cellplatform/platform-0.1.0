@@ -1,15 +1,19 @@
 import * as React from 'react';
 
-import { color, css, CssValue, t, ui } from '../../common';
+import { color, css, CssValue, t, ui, defaultValue } from '../../common';
 import { ErrorBoundary, ErrorView } from '../Error';
-import { ShellTree } from './Shell.Tree';
-import { ShellView } from './Shell.View';
+import { FinderShellTree } from './FinderShell.Tree';
+import { FinderShellView } from './FinderShell.View';
 
-export type IShellProps = {
+import { context } from '../../context';
+
+export type IFinderProps = {
+  leftWidth?: number;
   style?: CssValue;
 };
 
-export class Shell extends React.Component<IShellProps> {
+export class FinderShell extends React.Component<IFinderProps> {
+  public static createContext = (env: t.IEnv) => context.create({ env });
   public static contextType = ui.Context;
   public context!: t.IAppContext;
 
@@ -35,7 +39,7 @@ export class Shell extends React.Component<IShellProps> {
       left: css({
         position: 'relative',
         display: 'flex',
-        width: 240,
+        width: defaultValue(this.props.leftWidth, 240),
       }),
       leftBorder: css({
         Absolute: [0, null, 0, 0],
@@ -53,13 +57,13 @@ export class Shell extends React.Component<IShellProps> {
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
           <ErrorBoundary name={'tree'}>
-            <ShellTree />
+            <FinderShellTree />
           </ErrorBoundary>
           {this.renderError(error.tree)}
         </div>
         <div {...styles.right}>
           <ErrorBoundary name={'view'}>
-            <ShellView />
+            <FinderShellView />
           </ErrorBoundary>
           {this.renderError(error.view)}
           <div {...styles.leftBorder}></div>

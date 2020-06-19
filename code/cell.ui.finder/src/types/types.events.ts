@@ -7,7 +7,7 @@ type GlobalEvents = t.EnvEvent | t.TreeViewEvent;
 type FinderTreeEvent = IFinderTreeEvent | IFinderTreeSelectEvent | IFinderTreeSelectParentEvent;
 type FinderViewEvent = IFinderViewEvent | IFinderViewRequestEvent;
 
-export type AppEvent =
+export type FinderEvent =
   | GlobalEvents
   | IFinderChanged
   | FinderTreeEvent

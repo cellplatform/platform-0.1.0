@@ -4,6 +4,7 @@ export * from '../types.Client';
 export * from '../types.Electron';
 export * from '../types.Error';
 export * from '../types.Ui';
+export * from '../types.Env';
 
 export * from './types.cell.coord';
 export * from './types.cell.get';
@@ -11,8 +12,6 @@ export * from './types.cell';
 export * from './types.column';
 export * from './types.compile';
 export * from './types.db';
-export * from './types.env';
-export * from './types.env.context';
 export * from './types.event';
 export * from './types.file';
 export * from './types.fs';

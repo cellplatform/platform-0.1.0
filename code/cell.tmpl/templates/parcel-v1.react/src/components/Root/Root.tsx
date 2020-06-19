@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue } from '../../common';
+import { css, CssValue, onStateChanged, t, ui } from '../../common';
 import { WindowTitleBar } from '../primitives';
 
 export type IRootProps = { style?: CssValue };
@@ -12,20 +12,33 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject<{}>();
 
+  public static contextType = ui.Context;
+  public context!: t.IAppContext;
+
   /**
    * [Lifecycle]
    */
-  constructor(props: IRootProps) {
-    super(props);
-  }
-
   public componentDidMount() {
+    const ctx = this.context;
+    const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+
+    changes
+      .on('APP:__NAME__/error')
+      .pipe()
+      .subscribe(() => this.forceUpdate());
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get store() {
+    return this.context.getState();
   }
 
   /**

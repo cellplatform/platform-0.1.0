@@ -1,11 +1,12 @@
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
-import { cli, fs, log, Template, t } from '../common';
+import { cli, fs, log, Template, t, defaultValue } from '../common';
 import * as middleware from './cmd.tmpl.middleware';
 
-export async function tmpl(args: { dir: string }) {
+export async function tmpl(args: { dir: string; install?: boolean }) {
   // Prompt the user for which template to load.
+  const install = defaultValue(args.install, true);
   const tmplDir = fs.resolve(fs.join(__dirname, '../../templates'));
   const fsPrompt = cli.prompt.fs.paths(tmplDir, { pageSize: 10, all: false });
   const dir = (await fsPrompt.radio('create from:'))[0];
@@ -17,13 +18,16 @@ export async function tmpl(args: { dir: string }) {
   //       something different to get it deployed.
   const rename = [{ from: 'pkg.json', to: 'package.json' }];
 
-  const tmpl = Template
+  let tmpl = Template
     // Prepare the template.
     .create(dir)
     .use(middleware.processPackage({ filename: 'pkg.json' }))
     .use(middleware.replaceText())
-    .use(middleware.saveFile({ rename }))
-    .use(middleware.npmInstall({ done: 'COMPLETE' }));
+    .use(middleware.saveFile({ rename, done: install ? 'NEXT' : 'COMPLETE' }));
+
+  if (install) {
+    tmpl = tmpl.use(middleware.npmInstall({ done: 'COMPLETE' }));
+  }
 
   /**
    * User input variables.
@@ -57,7 +61,10 @@ export async function tmpl(args: { dir: string }) {
   // Finish up.
   log.info();
   log.info.cyan(`  cd ${fs.basename(variables.dir)}`);
-  log.info.cyan(`  yarn start`);
+  if (!install) {
+    log.info.cyan(`  yarn install`);
+  }
+  log.info.cyan(`  yarn ${log.green('start')}`);
   log.info();
   log.info.gray(variables.dir);
 }

@@ -11,7 +11,8 @@ describe('Context', () => {
     const host = 'localhost:1234';
     const client = Client.typesystem(host);
     const def = 'cell:foo:1';
-    const ctx: t.IEnvContext<t.EnvEvent> = { def, client, event$, fire: (e) => event$.next(e) };
+    const env = { def } as any;
+    const ctx: t.IEnvContext<t.EnvEvent> = { env, client, event$, fire: (e) => event$.next(e) };
 
     const res1 = ui.createProvider({ ctx });
     const res2 = ui.createProvider({ ctx, props: { foo: 123 } });

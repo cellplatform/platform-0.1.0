@@ -11,7 +11,6 @@ type E = t.AppEvent;
  */
 export function create(args: { env: t.IEnv }) {
   const { env } = args;
-  const { def } = env;
   const event$ = env.event$ as Subject<E>;
   const store = createStore({ event$ });
 
@@ -24,7 +23,7 @@ export function create(args: { env: t.IEnv }) {
 
   // Create the context.
   const ctx: t.IAppContext = {
-    def,
+    env,
     client: Client.env(env),
     event$: event$.pipe(share()),
     getState: () => store.state,

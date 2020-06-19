@@ -1,5 +1,6 @@
 import { time } from '@platform/util.value';
 import { expect } from 'chai';
+import { Subject } from 'rxjs';
 
 import { Store } from '.';
 import * as t from './types';
@@ -43,6 +44,13 @@ describe('Store', () => {
       expect(store.isDisposed).to.eql(true);
       expect(count).to.eql(1);
     });
+
+    it('takes event$ at creation', () => {
+      const event$ = new Subject<MyEvent>();
+      const store = Store.create<IMyModel, MyEvent>({ initial, event$ });
+
+      expect((store as any)._event$).to.equal(event$);
+    });
   });
 
   describe('state', () => {
@@ -73,10 +81,24 @@ describe('Store', () => {
     it('fires dispatch event', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       const events: t.IDispatch<IMyModel>[] = [];
-      store.events$.subscribe((e) => events.push(e));
+      store.event$.subscribe((e) => events.push(e));
 
       store.dispatch({ type: 'TEST/increment', payload: { by: 1 } });
       store.dispatch({ type: 'TEST/decrement', payload: { by: 2 } });
+
+      expect(events.length).to.eql(2);
+      expect(events[0].type).to.eql('TEST/increment');
+      expect(events[1].type).to.eql('TEST/decrement');
+    });
+
+    it('fires (via injected event$)', () => {
+      const event$ = new Subject<MyEvent>();
+      const store = Store.create<IMyModel, MyEvent>({ initial, event$ });
+      const events: t.IDispatch<IMyModel>[] = [];
+      store.event$.subscribe((e) => events.push(e));
+
+      event$.next({ type: 'TEST/increment', payload: { by: 1 } });
+      event$.next({ type: 'TEST/decrement', payload: { by: 2 } });
 
       expect(events.length).to.eql(2);
       expect(events[0].type).to.eql('TEST/increment');
@@ -274,7 +296,7 @@ describe('Store', () => {
     it('dispatches a follow-on event  (sync)', () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       const events: t.IDispatch<IMyModel>[] = [];
-      store.events$.subscribe((e) => events.push(e));
+      store.event$.subscribe((e) => events.push(e));
 
       store.on<IIncrementEvent>('TEST/increment').subscribe((e) => {
         e.dispatch({ type: 'TEST/decrement', payload: { by: 2 } });
@@ -289,7 +311,7 @@ describe('Store', () => {
     it('dispatches a follow-on event  (async)', async () => {
       const store = Store.create<IMyModel, MyEvent>({ initial });
       const events: t.IDispatch<IMyModel>[] = [];
-      store.events$.subscribe((e) => events.push(e));
+      store.event$.subscribe((e) => events.push(e));
 
       store.on<IIncrementEvent>('TEST/increment').subscribe(async (e) => {
         await time.wait(3);

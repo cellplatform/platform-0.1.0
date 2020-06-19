@@ -99,10 +99,10 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.5.1.tgz#3752fb4b266e8e87e9dfdac9ba7ee5cfaa700f5f"
-  integrity sha512-D1dZioejHekcUk9Gjd1TXqYYdSGktl7aDptmN6wEOCD8ie3CL8Y+RoeSSXDQDYK22E80WP4EIgqzmBbgBUB1Eg==
+"@platform/state@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.5.2.tgz#212d53c26a3c71d5d029c36b6f49a91f6c807241"
+  integrity sha512-SziVEjXBRpJ4MWSfF9T2XMV0Hxt6ostVuZ+tZ5Hx5TLwgPR98m7vcegd9xqq/MqDP7t3JEXahOCJSALCY5mTIw==
   dependencies:
     "@platform/util.value" "0.7.24"
     immer "6.0.9"
