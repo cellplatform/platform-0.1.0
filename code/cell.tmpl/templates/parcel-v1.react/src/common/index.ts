@@ -20,3 +20,6 @@ export { Client, Schema, Uri, TypeSystem };
 
 import { css, color, CssValue } from '@platform/css';
 export { css, color, CssValue };
+
+import { time, defaultValue } from '@platform/util.value';
+export { time, defaultValue };

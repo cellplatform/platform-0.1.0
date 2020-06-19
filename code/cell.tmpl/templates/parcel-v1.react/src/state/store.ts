@@ -12,16 +12,10 @@ export function createStore(args: { event$: Subject<t.AppEvent> }): t.IAppStore 
 
   // Create the store.
   const initial: t.IAppState = {};
-  const store = Store.create<t.IAppState, t.AppEvent>({ initial });
+  const store = Store.create<t.IAppState, t.AppEvent>({ initial, event$ });
 
   // Ferry events in and out of state-machine.
   store.changed$.subscribe((payload) => event$.next({ type: 'APP:__NAME__/changed', payload }));
-  event$
-    .pipe(
-      filter((e) => e.type.startsWith('APP:SYS/')),
-      filter((e) => e.type !== 'APP:__NAME__/changed'),
-    )
-    .subscribe((e) => store.dispatch(e));
 
   // Finish up.
   return store;
