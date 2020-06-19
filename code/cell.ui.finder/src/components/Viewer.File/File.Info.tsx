@@ -88,7 +88,13 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
       { label: 'File Size', value: filesize(bytes || 0) },
       { label: 'Created', value: createdAt.format(format) },
       { label: 'Modified', value: modifiedAt.format(format) },
-      { label: 'Hash (SHA-256)', value: hash, tooltip: filehash, visible: Boolean(filehash) },
+      {
+        label: 'Hash (SHA-256)',
+        value: hash,
+        tooltip: filehash,
+        visible: Boolean(filehash),
+        clipboard: filehash,
+      },
     ];
 
     return items;
