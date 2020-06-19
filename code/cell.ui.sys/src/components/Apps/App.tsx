@@ -103,14 +103,15 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     const app = this.app;
     const row = Uri.parse<t.IRowUri>(app.uri).parts;
     const link = `${this.host}/ns:${row.ns}?cells=${row.key}:${row.key}`;
-    const size = `${app.props.width} x ${app.props.height}`;
+
+    const bytes = app.props.bytes;
+    const port = app.props.devPort.toString();
+    const bundle = `${filesize(bytes)} (dev:${port})`;
 
     const items: IPropListItem[] = [
       { label: 'uri', value: app.uri },
       { label: 'link', value: stripHttp(this.host), clipboard: link },
-      { label: 'dev:port', value: app.props.devPort.toString() },
-      { label: 'bundle', value: filesize(app.props.bytes) },
-      { label: 'size (default)', value: size },
+      { label: 'bundle', value: bundle },
       { label: 'windows (total)', value: app.windows.total.toString() },
     ];
 
@@ -124,8 +125,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
             </div>
             <div {...styles.body}>
               <PropList items={items} />
-              {/* {this.renderApps()} */}
-              {/* {this.renderWindows()} */}
             </div>
             <div {...styles.footer}>
               {this.renderFooterButton({ label: 'Windows', onClick: this.onWindowsClick })}
