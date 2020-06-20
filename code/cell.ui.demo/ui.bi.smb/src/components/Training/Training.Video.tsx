@@ -58,6 +58,16 @@ export class TrainingVideo extends React.PureComponent<ITrainingVideoProps, ITra
     return this.props.root;
   }
 
+  private get node() {
+    const { nodeId, root } = this.props;
+    return TreeUtil.findById(root, nodeId);
+  }
+
+  private get children() {
+    const node = this.node;
+    return node?.children || [];
+  }
+
   public get depth() {
     const { node } = this.state;
     const depth = node ? TreeUtil.depth(this.root, node) - 1 : 0;
@@ -177,6 +187,11 @@ export class TrainingVideo extends React.PureComponent<ITrainingVideoProps, ITra
   }
 
   private renderDetailOptions() {
+    const children = this.children;
+    if (children.length === 0) {
+      return null;
+    }
+
     const styles = {
       base: css({
         marginBottom: 20,
@@ -212,10 +227,20 @@ export class TrainingVideo extends React.PureComponent<ITrainingVideoProps, ITra
     }
   };
 
-  private onMoreDetailClick = () => {
+  private selectNode = (node: string) => {
     this.context.fire({
       type: 'APP:FINDER/tree/select',
-      payload: { node: 'training.purpose.detail' },
+      payload: { node },
     });
+  };
+
+  private onMoreDetailClick = () => {
+    const node = this.node;
+    if (node) {
+      const child = (node.children || [])[0];
+      if (child) {
+        this.selectNode(child.id);
+      }
+    }
   };
 }

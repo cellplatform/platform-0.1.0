@@ -26,8 +26,6 @@ export class FinderShellTree extends React.PureComponent<IFinderShellTreeProps> 
 
     // Redraw.
     changes.on('APP:FINDER/tree').subscribe(() => {
-      console.log('--------------------/-----------------------');
-      console.log('TREE change');
       this.forceUpdate();
     });
   }
