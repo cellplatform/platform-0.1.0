@@ -113,9 +113,9 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
     const ns = Uri.toNs(this.uri).id;
 
     const sheet = await client.sheet(ns);
-    const cursor = await sheet.data<t.AppWindow>('AppWindow').load();
+    const data = await sheet.data<t.AppWindow>('AppWindow').load();
 
-    const row = cursor.row(index);
+    const row = data.row(index);
 
     const firstLine = this.store.text.split('\n')[0].replace(/^\/\//, '').trim();
     row.props.title = firstLine ? `👋 ${firstLine}` : '';

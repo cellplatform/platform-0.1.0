@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.sys",
-  "version": "0.0.138",
+  "version": "0.0.139",
   "description": "Base system UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "@platform/cell.client": "0.2.114",
     "@platform/cell.types": "0.4.120",
     "@platform/cell.typesystem": "0.0.72",
-    "@platform/cell.ui": "0.1.53",
+    "@platform/cell.ui": "0.1.54",
     "@platform/react": "0.4.37",
     "@platform/state": "^0.5.2",
     "@platform/ui.icon": "0.0.156",

@@ -44,7 +44,7 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
 
   public componentDidUpdate(prevProps: IViewerInfoProps, prevState: IViewerInfoState) {
     const { item } = this.props;
-    if (!item?.url || item?.url !== prevProps.item?.url) {
+    if (!item?.fileUrl || item?.fileUrl !== prevProps.item?.fileUrl) {
       this.loadFileInfo();
     }
   }
@@ -52,12 +52,20 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
   /**
    * [Properties]
    */
-  public get url() {
-    return this.props.item?.url || '';
+  public get item() {
+    return this.props.item;
+  }
+
+  public get fileUrl() {
+    return this.item?.fileUrl || '';
+  }
+
+  public get infoUrl() {
+    return this.item?.infoUrl || '';
   }
 
   public get uri() {
-    const url = this.url;
+    const url = this.fileUrl;
     return url ? url.substring(url.lastIndexOf('/') + 1) : '';
   }
 
@@ -76,10 +84,17 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
     const format = 'MMM D, YYYY h:mmA';
 
     const items: IPropListProps['items'] = [
+      { label: 'Filename', value: this.props.item?.filename, clipboard: this.infoUrl },
       { label: 'File Size', value: filesize(bytes || 0) },
       { label: 'Created', value: createdAt.format(format) },
       { label: 'Modified', value: modifiedAt.format(format) },
-      filehash ? { label: 'Hash (SHA-256)', value: hash, tooltip: filehash } : undefined,
+      {
+        label: 'Hash (SHA-256)',
+        value: hash,
+        tooltip: filehash,
+        visible: Boolean(filehash),
+        clipboard: filehash,
+      },
     ];
 
     return items;
@@ -201,7 +216,7 @@ export class ViewerInfo extends React.PureComponent<IViewerInfoProps, IViewerInf
         backgroundColor: color.format(1),
         borderRadius: 3,
         border: `solid 1px ${color.format(-0.15)}`,
-        backgroundImage: `url(${this.url})`,
+        backgroundImage: `url(${this.fileUrl})`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'contain',
         backgroundPosition: 'center center',
