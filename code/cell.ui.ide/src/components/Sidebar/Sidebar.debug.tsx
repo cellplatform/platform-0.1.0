@@ -79,20 +79,20 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
     const isTypesLoaded = this.isTypesLoaded;
 
     const items: IPropListItem[] = [
-      { label: 'api', value: `change title ("${key}")`, onClick: this.debugChangeTitle },
+      {
+        label: 'type definitions',
+        value: 'unload',
+        onClick: this.unloadTypeDefs,
+        visible: isTypesLoaded,
+      },
       {
         label: 'type definitions',
         value: 'load',
         onClick: this.loadTypeDefs,
         visible: !isTypesLoaded,
       },
-      {
-        label: 'type definitions',
-        value: 'clear',
-        onClick: this.clearTypeDefs,
-        visible: isTypesLoaded,
-      },
-      { label: 'api', value: `load sample code`, onClick: this.loadSampleCode },
+      { label: 'api', value: `change title ("${key}")`, onClick: this.debugChangeTitle },
+      { label: 'sample code', value: `insert`, onClick: this.loadSampleCode },
     ];
 
     return <PropList title={'Debug'} items={items} />;
@@ -124,7 +124,7 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
     const changes = sheet.state.changes;
     ctx.fire({
       type: 'IPC/sheet/changed',
-      payload: { source: ctx.def, ns: sheet.uri.id, changes },
+      payload: { source: ctx.env.def, ns: sheet.uri.id, changes },
     });
   };
 
@@ -133,7 +133,7 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
     this.context.fire({ type: 'APP:IDE/types/pull', payload: { uri } });
   };
 
-  private clearTypeDefs = () => {
+  private unloadTypeDefs = () => {
     this.context.fire({ type: 'APP:IDE/types/clear', payload: {} });
   };
 
