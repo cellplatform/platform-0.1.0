@@ -26,7 +26,6 @@ import * as t from '@platform/cell.types';
 export declare type App = {
   name: string;
   argv: string[];
-  backgroundColor: string;
   fs: string;
   bytes: number;
   entry: string;

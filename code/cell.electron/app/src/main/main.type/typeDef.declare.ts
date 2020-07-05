@@ -17,7 +17,6 @@ export function declare() {
     .type('App')
     .prop('name', (p) => p.type('string'))
     .prop('argv', (p) => p.type('string[]'))
-    .prop('backgroundColor', (p) => p.type('string').default('#fff'))
     .prop('fs', (p) => p.type('string').default('fs'))
     .prop('bytes', (p) => p.type('number').default(-1))
     .prop('entry', (p) => p.type('string'))
