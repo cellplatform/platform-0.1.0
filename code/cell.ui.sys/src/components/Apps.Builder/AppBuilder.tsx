@@ -2,20 +2,20 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, events, onStateChanged, t, ui, Uri } from '../../common';
+import { color, css, CssValue, events, t, ui, Uri } from '../../common';
 import { Apps } from '../Apps';
 import { Installer } from '../Installer';
 import { WindowTitleBar } from '../primitives';
-import { HelpersCard } from './Card.Helpers';
-import { ServerCard } from './Card.Server';
+import { HelpersCard } from './AppBuilder.Card.Helpers';
+import { ServerCard } from './AppBuilder.Card.Server';
 import { RootOverlay } from './Root.Overlay';
 
-export type IRootProps = { style?: CssValue };
-export type IRootState = {};
+export type IAppBuilderProps = { style?: CssValue };
+export type IAppBuilderState = {};
 
-export class Root extends React.PureComponent<IRootProps, IRootState> {
-  public state: IRootState = {};
-  private state$ = new Subject<Partial<IRootState>>();
+export class AppBuilder extends React.PureComponent<IAppBuilderProps, IAppBuilderState> {
+  public state: IAppBuilderState = {};
+  private state$ = new Subject<Partial<IAppBuilderState>>();
   private unmounted$ = new Subject<{}>();
 
   public static contextType = ui.Context;
@@ -62,9 +62,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     const ns = Uri.toNs(ctx.env.def);
     console.log('ns', ns);
-
-    // Uri.to
-    // Uri.par
 
     const def = await ctx.client.sheet(ns);
 
@@ -130,7 +127,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         flex: 1,
         Flex: 'horizontal-stretch-stretch',
         boxSizing: 'border-box',
-        backgroundColor: color.format(0.7),
+        backgroundColor: color.format(1),
       }),
       left: css({
         width: 230,

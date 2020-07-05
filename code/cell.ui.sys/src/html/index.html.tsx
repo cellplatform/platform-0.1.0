@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { t } from '../common';
-import { Root } from '../components/Root';
+import { AppBuilder } from '../components/Apps.Builder';
 import { context } from '../context';
 
 const win = (window as unknown) as t.ITopWindow;
@@ -13,7 +13,7 @@ const { Provider } = context.create({ env });
 
 const el = (
   <Provider>
-    <Root />
+    <AppBuilder />
   </Provider>
 );
 
