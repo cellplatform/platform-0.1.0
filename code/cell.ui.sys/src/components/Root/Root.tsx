@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, events, onStateChanged, t, ui } from '../../common';
+import { color, css, CssValue, events, onStateChanged, t, ui, Uri } from '../../common';
 import { Apps } from '../Apps';
 import { Installer } from '../Installer';
 import { WindowTitleBar } from '../primitives';
@@ -42,11 +42,49 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         },
       });
     });
+
+    this.tmp();
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Methods]
+   */
+  public async tmp() {
+    const ctx = this.context;
+    // const f = ctx.env.def
+
+    console.log('ctx.env.def', ctx.env.def);
+
+    const ns = Uri.toNs(ctx.env.def);
+    console.log('ns', ns);
+
+    // Uri.to
+    // Uri.par
+
+    const def = await ctx.client.sheet(ns);
+
+    console.log('def sheet:', def);
+    console.log('types', def.types);
+
+    const info = await def.info();
+    console.log('info', info);
+
+    // const app =
+
+    const t = info.ns.type?.implements || '';
+
+    // const f = await ctx.client.sheet(implmements);
+    // console.log('f', f);
+
+    console.log('-------------------------------------------');
+
+    const i = await ctx.client.http.ns(t).read({ data: true });
+    console.log('implements sheet', i.body.data);
   }
 
   /**
@@ -92,6 +130,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         flex: 1,
         Flex: 'horizontal-stretch-stretch',
         boxSizing: 'border-box',
+        backgroundColor: color.format(0.7),
       }),
       left: css({
         width: 230,
@@ -100,7 +139,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         paddingRight: EDGE_MARGIN,
         paddingBottom: 80,
         Scroll: true,
-        backgroundColor: color.format(-0.1),
+        backgroundColor: color.format(-0.06),
       }),
       center: css({
         flex: 1,
@@ -111,7 +150,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         paddingTop: TOP_MARGIN,
         paddingLeft: EDGE_MARGIN,
         paddingRight: EDGE_MARGIN,
-        backgroundColor: color.format(-0.1),
+        backgroundColor: color.format(-0.06),
       }),
     };
 
@@ -133,6 +172,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       base: css({
         flex: 1,
         position: 'relative',
+        backgroundColor: color.format(1),
       }),
       body: css({
         Absolute: 0,

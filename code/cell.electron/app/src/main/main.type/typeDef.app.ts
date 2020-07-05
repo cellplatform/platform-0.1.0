@@ -11,6 +11,7 @@ export async function add(args: {
   props: {
     name: string;
     entryPath: string;
+    argv?: string[];
     devPort: number;
     width: number;
     height: number;
@@ -34,6 +35,7 @@ export async function add(args: {
     const props = app.props;
     props.name = args.props.name;
     props.entry = args.props.entryPath;
+    props.argv = args.props.argv || [];
     props.devPort = args.props.devPort;
     props.devTools = args.props.devTools || false;
     props.width = args.props.width;
@@ -42,7 +44,7 @@ export async function add(args: {
     props.minHeight = args.props.minHeight;
     props.bytes = (await fs.size.dir(args.sourceDir)).bytes;
 
-    // Upload the bundle as files to the cell (filesystem).
+    // Upload the bundle as files to the cell (file-system).
     await util.upload({
       host: client.http.origin,
       targetCell: app.types.map.fs.uri,

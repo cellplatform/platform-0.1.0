@@ -17,5 +17,4 @@ const el = (
   </Provider>
 );
 
-// const el = <Root env={env} uri={env.def} />;
 ReactDOM.render(el, document.getElementById('root'));
