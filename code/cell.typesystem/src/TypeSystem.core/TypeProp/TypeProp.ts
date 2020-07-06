@@ -1,7 +1,7 @@
 import { t, ERROR } from '../../common';
 import { TypeScript } from '../TypeScript';
 
-type ParsedTypeProp = { type: string; prop: string; error?: t.IError };
+type ParsedTypeProp = { type: string; prop: string; optional?: boolean; error?: t.IError };
 
 /**
  * Parser for interpreting a [prop] reference within an [ITypeDef].
@@ -14,7 +14,9 @@ export class TypeProp {
 
     // Parse parts.
     const type = (index > -1 ? text.substring(0, index) : '').trim();
-    const prop = (index > -1 ? text.substring(index + 1) : '').trim();
+    let prop = (index > -1 ? text.substring(index + 1) : '').trim();
+    const optional = prop.endsWith('?') ? true : undefined;
+    prop = optional ? prop.replace(/\?$/, '') : prop;
 
     // Format error.
     let message: string | undefined;
@@ -42,6 +44,6 @@ export class TypeProp {
     const error: t.IError | undefined = message
       ? { message, type: ERROR.TYPE.DEF_INVALID }
       : undefined;
-    return { type, prop, error };
+    return { type, prop, optional, error };
   }
 }

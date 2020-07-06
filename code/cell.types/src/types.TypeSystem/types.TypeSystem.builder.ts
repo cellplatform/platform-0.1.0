@@ -6,8 +6,9 @@ import { t } from '../common';
 export type ITypeBuilder = {
   ns(uri?: string | t.INsUri): ITypeBuilderNs;
   type(typename: string, options?: ITypeBuilderNsTypeOptions): ITypeBuilderType;
-  toObject(): ITypeBuilderDefs;
   formatType(value: string): string;
+  toObject(): ITypeBuilderDefs;
+  toTypeDefs(): t.INsTypeDef[];
 };
 
 export type ITypeBuilderDefs = { [namespace: string]: t.ITypeDefPayload };

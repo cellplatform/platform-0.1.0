@@ -20,4 +20,5 @@ export class TypeSystem {
   public static fetcher = fetcher;
   public static objectToCells = objectToCells;
   public static def = TypeBuilder.create;
+  public static typescript = TypeClient.typescript;
 }

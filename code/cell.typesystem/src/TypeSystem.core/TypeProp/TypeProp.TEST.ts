@@ -2,12 +2,13 @@ import { TypeProp } from '.';
 import { ERROR, expect } from '../../test';
 
 describe('TypeProp', () => {
-  it('extracts {type, prop}', async () => {
+  it('extracts { type, prop }', () => {
     const test = (input: any, type: string, prop: string) => {
       const res = TypeProp.parse(input);
-      expect(res.error).to.eql(undefined);
       expect(res.type).to.eql(type);
       expect(res.prop).to.eql(prop);
+      expect(res.error).to.eql(undefined);
+      expect(res.optional).to.eql(undefined);
     };
 
     test('Foo.bar', 'Foo', 'bar');
@@ -15,6 +16,22 @@ describe('TypeProp', () => {
     test('Foo.bar1', 'Foo', 'bar1');
     test('  Foo.bar  ', 'Foo', 'bar');
     test({ prop: 'Foo.bar' }, 'Foo', 'bar');
+  });
+
+  it('optional', () => {
+    const test = (input: any, type: string, prop: string) => {
+      const res = TypeProp.parse(input);
+      expect(res.error).to.eql(undefined);
+      expect(res.type).to.eql(type);
+      expect(res.prop).to.eql(prop);
+      expect(res.optional).to.eql(true);
+    };
+
+    test('Foo.bar?', 'Foo', 'bar');
+    test('Foo1.bar?', 'Foo1', 'bar');
+    test('Foo.bar1?', 'Foo', 'bar1');
+    test('  Foo.bar?  ', 'Foo', 'bar');
+    test({ prop: 'Foo.bar?' }, 'Foo', 'bar');
   });
 
   describe('errors', () => {

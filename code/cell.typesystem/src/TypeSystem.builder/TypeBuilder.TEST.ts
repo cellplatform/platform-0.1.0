@@ -136,6 +136,76 @@ describe('TypeBuilder', () => {
     });
   });
 
+  describe('toTypeDefs', () => {
+    it('empty', () => {
+      const builder = TypeBuilder.create();
+      expect(builder.toTypeDefs()).to.eql([]);
+    });
+
+    it('simple', () => {
+      const builder = TypeBuilder.create();
+      builder
+        .ns('foo')
+        .type('MyType')
+        .prop(' title ', { target: 'inline:title', default: 'Untitled' })
+        .prop('count?', 'number');
+
+      const res = builder.toTypeDefs();
+      expect(res.length).to.eql(1);
+
+      expect(res[0].uri).to.eql('ns:foo');
+      expect(res[0].typename).to.eql('MyType');
+      expect(res[0].errors).to.eql([]);
+
+      const columns = res[0].columns;
+      expect(columns.length).to.eql(2);
+
+      expect(columns[0].column).to.eql('A');
+      expect(columns[0].prop).to.eql('title');
+      expect(columns[0].type).to.eql({ kind: 'VALUE', typename: 'string' });
+      expect(columns[0].default).to.eql({ value: 'Untitled' });
+      expect(columns[0].optional).to.eql(undefined);
+
+      expect(columns[1].column).to.eql('B');
+      expect(columns[1].prop).to.eql('count');
+      expect(columns[1].type).to.eql({ kind: 'VALUE', typename: 'number' });
+      expect(columns[1].default).to.eql({ value: undefined });
+      expect(columns[1].optional).to.eql(true);
+    });
+
+    it('multi-type', () => {
+      const builder = TypeBuilder.create();
+      const ns = builder.ns('foo');
+
+      ns.type('Type1').prop('foo');
+      ns.type('Type2').prop('foo?', (prop) => prop.type('number').default(123));
+
+      const res = builder.toTypeDefs();
+      expect(res.length).to.eql(2);
+
+      expect(res[0].uri).to.eql('ns:foo');
+      expect(res[0].typename).to.eql('Type1');
+      expect(res[0].errors).to.eql([]);
+
+      expect(res[1].uri).to.eql('ns:foo');
+      expect(res[1].typename).to.eql('Type2');
+      expect(res[1].errors).to.eql([]);
+
+      const columns1 = res[0].columns;
+      const columns2 = res[1].columns;
+
+      expect(columns1[0].column).to.eql('A');
+      expect(columns1[0].prop).to.eql('foo');
+      expect(columns1[0].type.typename).to.eql('string');
+      expect(columns1[0].optional).to.eql(undefined);
+
+      expect(columns2[0].column).to.eql('A');
+      expect(columns2[0].prop).to.eql('foo');
+      expect(columns2[0].type.typename).to.eql('number');
+      expect(columns2[0].optional).to.eql(true);
+    });
+  });
+
   describe('builder.ns', () => {
     it('from uri: string', () => {
       const ns = TypeBuilder.create().ns('foo');

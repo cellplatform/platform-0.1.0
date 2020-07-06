@@ -17,7 +17,6 @@ describe('TypeClient', () => {
       expect(res.defs.length).to.eql(1);
 
       const def = res.defs[0];
-      expect(def.ok).to.eql(true);
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
@@ -31,7 +30,6 @@ describe('TypeClient', () => {
       expect(res.defs.length).to.eql(1);
 
       const def = res.defs[0];
-      expect(def.ok).to.eql(true);
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
@@ -46,13 +44,11 @@ describe('TypeClient', () => {
       expect(res.defs.length).to.eql(2);
 
       const defs = res.defs;
-      expect(defs[0].ok).to.eql(true);
       expect(defs[0].errors).to.eql([]);
       expect(defs[0].uri).to.eql('ns:foo.multi');
       expect(defs[0].typename).to.eql('MyOne');
       expect(defs[0].columns.map((c) => c.column)).to.eql(['A', 'B']);
 
-      expect(defs[1].ok).to.eql(true);
       expect(defs[1].errors).to.eql([]);
       expect(defs[1].uri).to.eql('ns:foo.multi');
       expect(defs[1].typename).to.eql('MyTwo');
@@ -694,7 +690,6 @@ describe('TypeClient', () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
         const def = (await TypeClient.load({ ns: 'foo.messages', fetch })).defs[0];
 
-        expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
         const B = def.columns[1];
@@ -796,10 +791,7 @@ describe('TypeClient', () => {
         const def1 = res1.defs[0];
         const def2 = res2.defs[0];
 
-        expect(def1.ok).to.eql(true);
         expect(def1.errors).to.eql([]);
-
-        expect(def2.ok).to.eql(true);
         expect(def2.errors).to.eql([]);
 
         const targetA = def2.columns[0];
@@ -845,7 +837,6 @@ describe('TypeClient', () => {
 
       it('REF(column) => REF => object (ns)', async () => {
         const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
-        expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
         const C = def.columns[2];
@@ -862,7 +853,6 @@ describe('TypeClient', () => {
 
       it('REF(column) => REF(column) => VALUE (primitive)', async () => {
         const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
-        expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
         const D = def.columns[3];
