@@ -25,6 +25,7 @@
     "@platform/cell.http": "0.7.113",
     "@platform/cell.http.router": "0.7.111",
     "@platform/cell.schema": "0.4.133",
+    "@platform/cell.schema.apps": "^0.0.0",
     "@platform/cell.types": "0.4.120",
     "@platform/cell.typesystem": "0.0.72",
     "@platform/fs": "0.5.17",

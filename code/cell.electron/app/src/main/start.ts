@@ -1,21 +1,8 @@
-import '../config';
-
 import { app } from 'electron';
+import { Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-} from 'rxjs/operators';
-
-import { Client, constants, ENV, fs, log, t, time, rx } from './common';
+import { Client, constants, ENV, fs, log, rx, t } from './common';
 import * as server from './main.server';
 import { sys } from './main.sys';
 import { window } from './main.window';

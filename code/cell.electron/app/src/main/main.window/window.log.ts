@@ -13,7 +13,7 @@ export async function logWindow(args: {
 
   const uri = log.format.uri(window.uri);
 
-  const host = ctx.host;
+  const host = ctx.client.host;
   const url = await getUrl({ host, app });
 
   add('kind:', log.magenta(window.props.app));

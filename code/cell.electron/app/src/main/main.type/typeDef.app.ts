@@ -1,4 +1,4 @@
-import { t, util, fs } from '../common';
+import { t, util, fs, constants } from '../common';
 
 /**
  * Define an application module.
@@ -33,6 +33,7 @@ export async function add(args: {
 
     const app = apps.row(args.row);
     const props = app.props;
+
     props.name = args.props.name;
     props.entry = args.props.entryPath;
     props.argv = args.props.argv || [];
@@ -46,7 +47,7 @@ export async function add(args: {
 
     // Upload the bundle as files to the cell (file-system).
     await util.upload({
-      host: client.http.origin,
+      host: client.host,
       targetCell: app.types.map.fs.uri,
       sourceDir: args.sourceDir,
       targetDir,

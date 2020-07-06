@@ -1,9 +1,7 @@
-import '../../config';
-
 import { Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 
-import { rx, t, constants } from '../common';
+import { ConfigFile, rx, t } from '../common';
 import { typeDef } from '../main.type';
 import { toContext } from './sys.ctx';
 import * as types from './sys.init.types';
@@ -20,7 +18,8 @@ export async function init(args: { client: t.IClientTypesystem; event$: Subject<
   await typeDef.ensureExists({ client });
 
   // Build the shared context and setup event listeners.
-  const ctx = await toContext({ client, event$ });
+  const config = await ConfigFile.read();
+  const ctx = await toContext({ config, client, event$ });
   monitor({ ctx, event$ });
   ipc({ ctx, event$ });
 
@@ -32,7 +31,7 @@ export async function init(args: { client: t.IClientTypesystem; event$: Subject<
     await rx
       .payload<t.ITypedSheetSavedEvent>(event$, 'SHEET/saved')
       .pipe(
-        filter((e) => e.sheet.uri.toString() === constants.SYS.NS.DATA),
+        filter((e) => e.sheet.uri.toString() === config.ns.appData),
         take(1),
       )
       .toPromise();

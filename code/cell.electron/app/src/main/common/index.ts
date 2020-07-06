@@ -6,5 +6,6 @@ export { t, constants, util };
 export * from './constants.paths';
 export * from './libs';
 export * from './log';
+export * from './ConfigFile';
 
 export const ENV = constants.ENV;

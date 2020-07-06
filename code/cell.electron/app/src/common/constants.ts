@@ -8,14 +8,3 @@ export const PROCESS = {
   HOST: 'env:host',
   DEV: 'env:dev',
 };
-
-/**
- * Window Management.
- */
-export const SYS = {
-  NS: {
-    ALLOW: 'sys*',
-    TYPE: 'ns:sys.app.type',
-    DATA: 'ns:sys.app',
-  },
-};
