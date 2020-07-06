@@ -136,6 +136,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
         fontStyle: 'italic',
         textAlign: 'center',
         marginTop: 20,
+        userSelect: 'none',
       }),
     };
     return (
