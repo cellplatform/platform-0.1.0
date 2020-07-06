@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { t } from '../common';
-import { AppBuilder } from '../components/Apps.Builder';
+import { AppBuilder } from '../components/AppBuilder';
 import { context } from '../context';
 
 const win = (window as unknown) as t.ITopWindow;

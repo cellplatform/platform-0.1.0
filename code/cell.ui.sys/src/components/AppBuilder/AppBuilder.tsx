@@ -6,9 +6,9 @@ import { color, css, CssValue, events, t, ui, Uri } from '../../common';
 import { Apps } from '../Apps';
 import { Installer } from '../Installer';
 import { WindowTitleBar } from '../primitives';
-import { HelpersCard } from './AppBuilder.Card.Helpers';
-import { ServerCard } from './AppBuilder.Card.Server';
-import { RootOverlay } from './Root.Overlay';
+import { RootOverlay } from './AppBuilder.Overlay';
+import { HelpersCard } from './Card.Helpers';
+import { ServerCard } from './Card.Server';
 
 export type IAppBuilderProps = { style?: CssValue };
 export type IAppBuilderState = {};
@@ -59,16 +59,35 @@ export class AppBuilder extends React.PureComponent<IAppBuilderProps, IAppBuilde
     // const f = ctx.env.def
 
     console.log('ctx.env.def', ctx.env.def);
+    // const row = coord.cell.toRowIndex(ctx.env.def);
+
+    // console.log('row', row);
+
+    const rowUri = Uri.row(ctx.env.def);
+    const rowIndex = Uri.rowIndex(ctx.env.def);
+
+    console.log('row', rowUri);
+    console.log('rowIndex', rowIndex);
+
+    // const row = Uri.row(ctx.env.def)(ctx.env.def);
+
+    // console.log('f', f);
 
     const ns = Uri.toNs(ctx.env.def);
     console.log('ns', ns);
 
-    const def = await ctx.client.sheet(ns);
+    const defSheet = await ctx.client.sheet<t.AppWindow>(ns);
 
-    console.log('def sheet:', def);
-    console.log('types', def.types);
+    const def = await defSheet.data('AppWindow').load({ range: `${rowUri.key}:${rowUri.key}` });
+    console.log('def', def);
 
-    const info = await def.info();
+    console.log('def sheet:', defSheet);
+    console.log('types', defSheet.types);
+
+    const app = def.row(rowIndex);
+    console.log('app.', app.props.app);
+
+    const info = await defSheet.info();
     console.log('info', info);
 
     // const app =
@@ -104,8 +123,6 @@ export class AppBuilder extends React.PureComponent<IAppBuilderProps, IAppBuilde
       }),
     };
 
-    // const ctx = this.context;
-    // const uri = ctx.def;
     const uri = 'system';
 
     return (
@@ -130,19 +147,21 @@ export class AppBuilder extends React.PureComponent<IAppBuilderProps, IAppBuilde
         backgroundColor: color.format(1),
       }),
       left: css({
+        position: 'relative',
         width: 230,
         paddingTop: TOP_MARGIN,
         paddingLeft: EDGE_MARGIN,
         paddingRight: EDGE_MARGIN,
         paddingBottom: 80,
-        Scroll: true,
         backgroundColor: color.format(-0.06),
       }),
       center: css({
-        flex: 1,
+        position: 'relative',
         display: 'flex',
+        flex: 1,
       }),
       right: css({
+        position: 'relative',
         width: 250,
         paddingTop: TOP_MARGIN,
         paddingLeft: EDGE_MARGIN,

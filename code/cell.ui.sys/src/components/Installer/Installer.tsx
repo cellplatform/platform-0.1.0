@@ -20,6 +20,10 @@ import {
 import { Icons } from '../Icons';
 import { Button } from '../primitives';
 
+const MIN = {
+  WIDTH: 250,
+};
+
 export type IInstallerProps = { style?: CssValue };
 export type IInstallerState = {
   isDragOver?: boolean;
@@ -191,7 +195,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     };
 
     const width = this.size.width;
-    const el = width > 300 && (
+    const el = width >= MIN.WIDTH && (
       <DragTarget style={styles.drag} event$={this.drag$}>
         {this.renderBody()}
       </DragTarget>
@@ -220,7 +224,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
         Flex: 'vertical-center-center',
       }),
       label: css({
-        fontSize: 24,
+        fontSize: 20,
         fontWeight: 'bolder',
         letterSpacing: -0.8,
         cursor: 'default',
@@ -243,7 +247,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
   private renderDropBorder() {
     const styles = {
       base: css({
-        Absolute: 50,
+        Absolute: 8,
         border: `dashed 3px ${color.format(-0.1)}`,
         borderRadius: 10,
         pointerEvents: 'none',
