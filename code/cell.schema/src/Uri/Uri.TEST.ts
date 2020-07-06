@@ -654,9 +654,60 @@ describe('Uri', () => {
       test(Uri.file('file:foo:abc'));
     });
 
+    it('generates namespace (undefined)', () => {
+      const res = Uri.toNs();
+      expect(res.type).to.eql('NS');
+      expect(Uri.is.ns(res.toString())).to.eql(true);
+    });
+
     it('throws: non-supported URI', () => {
       const fn = () => Uri.toNs('foo:bar:baz');
       expect(fn).to.throw(/namespace cannot be derived/);
+    });
+
+    it('throws: empty string', () => {
+      const fn = () => Uri.toNs('');
+      expect(fn).to.throw(/Namespace URI identifier not found/);
+    });
+  });
+
+  describe('indexes', () => {
+    it('rowIndex', () => {
+      const test = (input: string | t.IUri | undefined, expected: number) => {
+        const res = Uri.rowIndex(input);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, -1);
+      test('', -1);
+      test('  ', -1);
+      test('FAIL', -1);
+      test('ns:foo', -1);
+      test('file:foo:123', -1);
+      test('cell:foo:A', -1);
+
+      test('cell:foo:1', 0);
+      test('cell:foo:A1', 0);
+      test('cell:foo:Z9', 8);
+    });
+
+    it('columnIndex', () => {
+      const test = (input: string | t.IUri | undefined, expected: number) => {
+        const res = Uri.columnIndex(input);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, -1);
+      test('', -1);
+      test('  ', -1);
+      test('FAIL', -1);
+      test('ns:foo', -1);
+      test('file:foo:123', -1);
+      test('cell:foo:1', -1);
+
+      test('cell:foo:A', 0);
+      test('cell:foo:A1', 0);
+      test('cell:foo:B9', 1);
     });
   });
 });
