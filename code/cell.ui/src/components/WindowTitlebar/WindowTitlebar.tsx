@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, COLORS, defaultValue } from '../../common';
+
+import { color, COLORS, css, CssValue, defaultValue } from '../../common';
 import { WindowAddress } from './WindowAddress';
 
 export type IWindowTitleBarProps = {
@@ -27,9 +28,6 @@ export class WindowTitleBar extends React.PureComponent<
   /**
    * [Lifecycle]
    */
-  constructor(props: IWindowTitleBarProps) {
-    super(props);
-  }
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
