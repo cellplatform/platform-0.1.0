@@ -102,7 +102,7 @@ describe('TypedSheet', () => {
     it('info (sheet does not exist)', async () => {
       const fetch = testFetch({ defs: TYPE_DEFS });
       const ns = 'ns:foo.new';
-      const sheet = await TypedSheet.create<f.MyRow>({ ns, implements: 'ns:foo', fetch });
+      const sheet = await TypedSheet.create<f.TypeIndex>({ ns, implements: 'ns:foo', fetch });
       const info = await sheet.info();
       expect(info.exists).to.eql(false);
       expect(info.ns).to.eql({});
