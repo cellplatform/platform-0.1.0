@@ -17,10 +17,10 @@ export async function ensureExists(args: { client: t.IClientTypesystem; force?: 
 
     await Promise.all(Object.keys(defs).map((ns) => http.ns(ns).write(defs[ns])));
 
-    if (ENV.isDev) {
-      const ts = await client.typescript(config.ns.appType);
-      await ts.save(fs, fs.resolve('src/types.g'));
-    }
+    // if (ENV.isDev) {
+    //   const ts = await client.typescript(config.ns.appType);
+    //   await ts.save(fs, fs.resolve('src/types.g'));
+    // }
 
     created = true;
   }
