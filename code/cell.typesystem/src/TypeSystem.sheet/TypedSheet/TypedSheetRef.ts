@@ -9,6 +9,9 @@ export type IArgs = {
 /**
  * A connector for a reference-pointer to a single row in another sheet.
  *
+ * Generic (see [TypedSheet] for more):
+ *    <T> = TypeIndex = { [TypeName]:Type }
+ *
  * 🐷 NOT IMPLEMENTED YET
  *    -------------------
  *    Initial implementation within [TypedSheetRefs] plural/list.
@@ -16,9 +19,9 @@ export type IArgs = {
  *    after some initial uses of [TypedSheetRefs].
  *
  */
-export class TypedSheetRef<T> implements t.ITypedSheetRef<T> {
-  public static create<T>(args: IArgs) {
-    return new TypedSheetRef<T>(args);
+export class TypedSheetRef<T, K extends keyof T> implements t.ITypedSheetRef<T, K> {
+  public static create<T, K extends keyof T>(args: IArgs) {
+    return new TypedSheetRef<T, K>(args);
   }
 
   /**

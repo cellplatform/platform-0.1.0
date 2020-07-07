@@ -1034,15 +1034,6 @@ describe('TypeClient', () => {
         expect(res).to.include('export declare type MyColor');
       });
 
-      it('toString: no TypeIndex', async () => {
-        const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
-        const res = TypeClient.typescript(defs[0], { typeIndex: false }).toString();
-
-        expect(res).to.not.include('type TypeIndex');
-        expect(res).to.include('export declare type MyRow');
-        expect(res).to.include('export declare type MyColor');
-      });
-
       it('toString: no "export" statements', async () => {
         const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
         const res = TypeClient.typescript(defs[0], { exports: false }).toString();
@@ -1099,8 +1090,8 @@ describe('TypeClient', () => {
 
         expect(res).to.include(`*    |➔  ns:foo\n`);
         expect(res).to.include(`import * as t from '@platform/cell.types';`);
-        expect(res).to.include(`message: t.ITypedSheetRef<MyMessage> | null;\n`);
-        expect(res).to.include(`messages: t.ITypedSheetRefs<MyMessage>;\n`);
+        expect(res).to.include(`message: t.ITypedSheetRef<TypeIndex, 'MyMessage'> | null;\n`);
+        expect(res).to.include(`messages: t.ITypedSheetRefs<TypeIndex, 'MyMessage'>;\n`);
         expect(res).to.include(`color?: MyColor;\n`); // NB: This is an external type reference but it not {target:'ref'} rather it is INLINE.
       });
 

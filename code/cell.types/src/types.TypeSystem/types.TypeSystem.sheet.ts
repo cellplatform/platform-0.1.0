@@ -1,7 +1,24 @@
 import { t } from '../common';
 
-type R<T> = ITypedSheetRow<T>;
+type R<T, K extends keyof T> = t.ITypedSheetRow<T, K>;
 
+/**
+ * A strongly typed sheet.
+ *
+ * Generic:
+ *    <T> = TypeIndex = { [TypeName]:Type }
+ *
+ *    type TypeIndex = {
+ *      MyFoo: MyFoo;
+ *      MyBar: MyBar;
+ *    }
+ *
+ *    A type-index is a single type that provides a key'ed reference to
+ *    all the kinds of types available within the sheet.  The keys
+ *    allow the `.data('<key>')` cursors to be addressed with strong-typing
+ *    on the TypeName.
+ *
+ */
 export type ITypedSheet<T = {}> = {
   readonly ok: boolean;
   readonly uri: t.INsUri;
@@ -15,7 +32,7 @@ export type ITypedSheet<T = {}> = {
   readonly pool: t.ISheetPool;
   dispose(): void;
   info<P extends t.INsProps = t.INsProps>(): Promise<ITypedSheetInfo<P>>;
-  data<D = T>(args: string | ITypedSheetDataArgs): ITypedSheetData<D>;
+  data<K extends keyof T>(args: K | ITypedSheetDataArgs<T, K>): ITypedSheetData<T, K>;
   change(changes: t.ITypedSheetChanges): ITypedSheet<T>;
   toString(): string;
 };
@@ -23,60 +40,29 @@ export type ITypedSheet<T = {}> = {
 export type ITypedSheetInfo<P extends t.INsProps = t.INsProps> = { exists: boolean; ns: P };
 
 export type ITypedSheetDataOptions = { range?: string };
-export type ITypedSheetDataArgs = { typename: string } & ITypedSheetDataOptions;
+export type ITypedSheetDataArgs<T, K extends keyof T> = { typename: K } & ITypedSheetDataOptions;
 
 /**
  * A cursor into a subset of sheet data.
  */
-export type ITypedSheetData<T> = {
+export type ITypedSheetData<T, K extends keyof T> = {
   readonly uri: t.INsUri;
   readonly typename: string;
   readonly types: t.IColumnTypeDef[];
-  readonly rows: ITypedSheetRow<T>[];
+  readonly rows: t.ITypedSheetRow<T, K>[];
   readonly range: string;
   readonly total: number; // Total rows.
   readonly status: 'INIT' | 'LOADING' | 'LOADED';
   readonly isLoaded: boolean;
   exists(index: number): boolean;
-  row(index: number): ITypedSheetRow<T>;
-  load(options?: string | ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
+  row(index: number): t.ITypedSheetRow<T, K>;
+  load(options?: string | ITypedSheetDataOptions): Promise<ITypedSheetData<T, K>>;
   toString(): string;
 
   // Functional methods.
-  forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void): void;
-  filter(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean): R<T>[];
-  find(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean): R<T> | undefined;
-  map<U>(fn: (row: t.ITypedSheetRowProps<T>, index: number) => U): U[];
-  reduce<U>(fn: (prev: U, next: t.ITypedSheetRowProps<T>, index: number) => U, initial: U): U;
+  forEach(fn: (row: t.ITypedSheetRowProps<T[K]>, index: number) => void): void;
+  filter(fn: (row: t.ITypedSheetRowProps<T[K]>, index: number) => boolean): R<T, K>[];
+  find(fn: (row: t.ITypedSheetRowProps<T[K]>, index: number) => boolean): R<T, K> | undefined;
+  map<U>(fn: (row: t.ITypedSheetRowProps<T[K]>, index: number) => U): U[];
+  reduce<U>(fn: (prev: U, next: t.ITypedSheetRowProps<T[K]>, index: number) => U, initial: U): U;
 };
-
-/**
- * A single row within a sheet.
- */
-export type ITypedSheetRow<T> = {
-  readonly typename: string;
-  readonly uri: t.IRowUri;
-  readonly index: number;
-  readonly props: ITypedSheetRowProps<T>;
-  readonly types: ITypedSheetRowTypes<T>;
-  readonly status: 'INIT' | 'LOADING' | 'LOADED';
-  readonly isLoaded: boolean;
-  load(options?: { props?: (keyof T)[]; force?: boolean }): Promise<ITypedSheetRow<T>>;
-  toObject(): T;
-  toString(): string;
-};
-
-/**
- * The pure "strongly typed" READ/WRITE data-properties of the cells for a row.
- */
-export type ITypedSheetRowProps<T> = { [K in keyof T]: T[K] };
-
-/**
- * The type definitions for the cells/columns in a row.
- */
-export type ITypedSheetRowTypes<T> = {
-  list: ITypedSheetRowType[];
-  map: { [P in keyof Required<T>]: ITypedSheetRowType };
-};
-
-export type ITypedSheetRowType = t.IColumnTypeDef & { uri: t.ICellUri };

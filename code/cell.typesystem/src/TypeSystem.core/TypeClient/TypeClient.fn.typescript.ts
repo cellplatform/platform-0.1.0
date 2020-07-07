@@ -9,7 +9,7 @@ import { TypeTarget } from '../TypeTarget';
  */
 export function typescript(
   def: t.INsTypeDef | t.INsTypeDef[],
-  options: { header?: boolean; exports?: boolean; imports?: boolean; typeIndex?: boolean } = {},
+  options: { header?: boolean; exports?: boolean; imports?: boolean } = {},
 ) {
   const defs = Array.isArray(def) ? def : [def];
   const api: t.ITypeClientTypescript = {
@@ -38,7 +38,6 @@ export function typescript(
     get declaration() {
       const { imports, exports } = options;
       const header = defaultValue(options.header, true) ? api.header : undefined;
-      const typeIndex = defaultValue(options.typeIndex, true);
 
       const toDeclaration = (args: { typename: string; priorCode?: string }) => {
         const { typename, priorCode } = args;
@@ -58,8 +57,8 @@ export function typescript(
                 if (line.type.kind === 'REF' && TypeTarget.isRef(target)) {
                   const T = line.type.typename;
                   const name = line.type.isArray
-                    ? `t.ITypedSheetRefs<${T}>`
-                    : `t.ITypedSheetRef<${T}>`;
+                    ? `t.ITypedSheetRefs<TypeIndex, '${T}'>`
+                    : `t.ITypedSheetRef<TypeIndex, '${T}'>`;
                   line.adjust(name);
                 }
               },
@@ -77,7 +76,7 @@ export function typescript(
         code = `${code}\n${toDeclaration({ typename, priorCode: code })}`;
       });
 
-      const res = TypeScript.prepare({ code, header, imports, exports, typeIndex });
+      const res = TypeScript.prepare({ code, header, imports, exports });
       return res;
     },
 

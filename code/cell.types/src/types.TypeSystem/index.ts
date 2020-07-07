@@ -9,6 +9,7 @@ export * from './types.TypeSystem.fetch';
 export * from './types.TypeSystem.ns';
 export * from './types.TypeSystem.pool';
 export * from './types.TypeSystem.ref';
+export * from './types.TypeSystem.row';
 export * from './types.TypeSystem.sheet';
 export * from './types.TypeSystem.state';
 export * from './types.TypeSystem.sync';

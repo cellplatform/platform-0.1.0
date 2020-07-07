@@ -86,7 +86,7 @@ describe('TypedSheet', () => {
 
     it('error: `sheet.data(typename)` requested where typename not part of ns', async () => {
       const { sheet } = await testMySheet();
-      const fn = () => sheet.data('NOT_A_TYPENAME');
+      const fn = () => sheet.data('NOT_A_TYPENAME' as any);
       expect(fn).to.throw(/Definitions for typename 'NOT_A_TYPENAME' not found/);
     });
   });
@@ -176,7 +176,7 @@ describe('TypedSheet', () => {
     it('change: cells', async () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
-      const cursor1 = await sheet1.data<f.MyRow>('MyRow').load();
+      const cursor1 = await sheet1.data('MyRow').load();
 
       cursor1.row(0).props.title = 'Hello';
       cursor1.row(0).props.isEnabled = false;
@@ -200,7 +200,7 @@ describe('TypedSheet', () => {
 
     it('change: A1 and A2 (values not mixed up between rows)', async () => {
       const { sheet } = await testMySheet();
-      const cursor = await sheet.data<f.MyRow>('MyRow').load();
+      const cursor = await sheet.data('MyRow').load();
 
       const row1 = cursor.row(0);
       const row2 = cursor.row(1);
@@ -215,7 +215,7 @@ describe('TypedSheet', () => {
     it('throw (on change cells): contains invalid namespace', async () => {
       const sheet1 = (await testMySheet()).sheet;
       const sheet2 = (await testMySheet()).sheet;
-      const cursor1 = await sheet1.data<f.MyRow>('MyRow').load();
+      const cursor1 = await sheet1.data('MyRow').load();
       cursor1.row(0).props.title = 'Hello';
       await time.wait(5);
 
@@ -250,7 +250,7 @@ describe('TypedSheet', () => {
   describe('TypedSheetData (cursor)', () => {
     it('create: default (unloaded)', async () => {
       const { sheet } = await testMySheet();
-      const cursor = sheet.data<f.MyRow>('MyRow');
+      const cursor = sheet.data('MyRow');
       expect(cursor.range).to.eql(TypedSheetData.DEFAULT.RANGE);
       expect(cursor.status).to.eql('INIT');
       expect(cursor.total).to.eql(-1);
@@ -259,9 +259,9 @@ describe('TypedSheet', () => {
 
     it('cursor pooling', async () => {
       const { sheet } = await testMyMultiSheet();
-      const cursor1 = sheet.data<m.MyOne>('MyOne');
-      const cursor2 = sheet.data<m.MyOne>('MyOne');
-      const cursor3 = sheet.data<m.MyTwo>('MyTwo');
+      const cursor1 = sheet.data<'MyOne'>('MyOne');
+      const cursor2 = sheet.data('MyOne');
+      const cursor3 = sheet.data('MyTwo');
 
       expect(cursor1).to.equal(cursor2); // NB: Same instance.
       expect(cursor1).to.not.equal(cursor3); // NB: Same instance.
@@ -269,9 +269,9 @@ describe('TypedSheet', () => {
 
     it('cursor pooling: expand range', async () => {
       const { sheet } = await testMyMultiSheet();
-      const cursor1 = sheet.data<m.MyOne>({ typename: 'MyOne', range: '1:10' });
-      const cursor2 = sheet.data<m.MyOne>('MyOne');
-      const cursor3 = sheet.data<m.MyOne>({ typename: 'MyOne', range: '5:30' });
+      const cursor1 = sheet.data({ typename: 'MyOne', range: '1:10' });
+      const cursor2 = sheet.data('MyOne');
+      const cursor3 = sheet.data({ typename: 'MyOne', range: '5:30' });
 
       expect(cursor1).to.equal(cursor2); // NB: Same instance.
       expect(cursor1).to.equal(cursor3); // NB: Same instance.
@@ -414,8 +414,8 @@ describe('TypedSheet', () => {
 
     it('load (multiple types)', async () => {
       const { sheet } = await testMyMultiSheet();
-      const cursor1 = sheet.data<m.MyOne>('MyOne');
-      const cursor2 = sheet.data<m.MyTwo>('MyTwo');
+      const cursor1 = sheet.data('MyOne');
+      const cursor2 = sheet.data('MyTwo');
       expect(cursor1.row(0).props.foo).to.eql('foo-default');
       expect(cursor2.row(9).props.bar).to.eql('bar-default');
     });
@@ -606,7 +606,13 @@ describe('TypedSheet', () => {
       const defs = ns.defs;
       const columns = ns.defs[0].columns;
       const typename = 'MyRow';
-      const row = TypedSheetRow.create<f.MyRow>({ typename, uri, columns, ctx, sheet });
+      const row = TypedSheetRow.create<f.TypeIndex, 'MyRow'>({
+        typename,
+        uri,
+        columns,
+        ctx,
+        sheet,
+      });
       return { row, ctx, defs, sheet };
     };
 
@@ -660,7 +666,13 @@ describe('TypedSheet', () => {
       const uri = 'cell:foo:1';
       const columns = defs[0].columns;
       const typename = 'MyRow';
-      const row = await TypedSheetRow.load<f.MyRow>({ sheet, typename, uri, columns, ctx });
+      const row = await TypedSheetRow.load<f.TypeIndex, 'MyRow'>({
+        sheet,
+        typename,
+        uri,
+        columns,
+        ctx,
+      });
 
       expect(row.props.title).to.eql('One');
       expect(row.props.isEnabled).to.eql(true);
@@ -843,7 +855,7 @@ describe('TypedSheet', () => {
     describe('default value', () => {
       it('simple: primitive | {object}', async () => {
         const { sheet } = await testMyPrimitivesSheet();
-        const cursor = await sheet.data<p.Primitives>('Primitives').load();
+        const cursor = await sheet.data('Primitives').load();
 
         const row1 = cursor.row(0).props; //  NB: Exists.
         const row2 = cursor.row(99).props; // NB: Does not exist (use default).
@@ -862,15 +874,15 @@ describe('TypedSheet', () => {
           cells: { A1: { value: 'my-foo-default' } },
         });
 
-        const sheet = await TypedSheet.load({ fetch, ns });
-        const cursor = await sheet.data<d.MyDefault>('MyDefault').load();
+        const sheet = await TypedSheet.load<d.TypeIndex>({ fetch, ns });
+        const cursor = await sheet.data('MyDefault').load();
         expect(cursor.exists(99)).to.eql(false);
       });
     });
 
     describe('row.prop (get/set methods)', () => {
-      type P = TypedSheetRow<p.Primitives>;
-      type R = TypedSheetRow<f.MyRow>;
+      type P = TypedSheetRow<p.TypeIndex, 'Primitives'>;
+      type R = TypedSheetRow<f.TypeIndex, 'MyRow'>;
 
       it('reuse api instance', async () => {
         const { sheet } = await testMyPrimitivesSheet();
@@ -1869,27 +1881,27 @@ const testFetchMulti = (ns: string) => {
 const testMySheet = async (ns = 'ns:foo.mySheet', cells?: t.ICellMap) => {
   const event$ = new Subject<t.TypedSheetEvent>();
   const fetch = await testFetchMySheet(ns, cells);
-  const sheet = await TypedSheet.load<f.MyRow>({ fetch, ns, event$ });
+  const sheet = await TypedSheet.load<f.TypeIndex>({ fetch, ns, event$ });
   return { ns, fetch, sheet, event$ };
 };
 
 const testMyPrimitivesSheet = async () => {
   const ns = 'ns:foo.myPrimitives';
   const fetch = await testFetchPrimitives(ns);
-  const sheet = await TypedSheet.load<p.Primitives>({ fetch, ns });
+  const sheet = await TypedSheet.load<p.TypeIndex>({ fetch, ns });
   return { ns, fetch, sheet };
 };
 
 const testMyEnumSheet = async () => {
   const ns = 'ns:foo.myEnum';
   const fetch = await testFetchEnum(ns);
-  const sheet = await TypedSheet.load<e.Enum>({ fetch, ns });
+  const sheet = await TypedSheet.load<e.TypeIndex>({ fetch, ns });
   return { ns, fetch, sheet };
 };
 
 const testMyMultiSheet = async () => {
   const ns = 'ns:foo.myMulti';
   const fetch = await testFetchMulti(ns);
-  const sheet = await TypedSheet.load<e.Enum>({ fetch, ns });
+  const sheet = await TypedSheet.load<m.TypeIndex>({ fetch, ns });
   return { ns, fetch, sheet };
 };

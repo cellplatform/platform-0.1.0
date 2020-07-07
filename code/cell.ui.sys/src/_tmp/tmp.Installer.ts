@@ -16,7 +16,7 @@ export type IAppManifest = {
  * Get apps sheet.
  */
 export async function getApps(client: t.IClientTypesystem) {
-  const sheet = await client.sheet<t.App>('ns:sys.app');
+  const sheet = await client.sheet<t.AppTypeIndex>('ns:sys.app');
   const apps = await sheet.data('App').load();
   return { sheet, apps };
 }
@@ -79,8 +79,8 @@ export async function uploadApp(args: {
  */
 
 async function writeTypeDefModel(args: {
-  sheet: t.ITypedSheet<t.App>;
-  apps: t.ITypedSheetData<t.App>;
+  sheet: t.ITypedSheet<t.AppTypeIndex>;
+  apps: t.ITypedSheetData<t.AppTypeIndex, 'App'>;
   manifest: IAppManifest;
   totalBytes: number;
 }) {
@@ -107,7 +107,7 @@ async function writeTypeDefModel(args: {
 async function upload(args: {
   client: t.IClientTypesystem;
   files: t.IHttpClientCellFileUpload[];
-  app: t.ITypedSheetRow<t.App>;
+  app: t.ITypedSheetRow<t.AppTypeIndex, 'App'>;
 }) {
   const { client, app } = args;
   const entry = app.props.entry;

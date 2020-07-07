@@ -2,9 +2,9 @@
  * Generated types defined in namespace:
  * 
  *    |                
- *    |➔  ns:ckcb7lo930003d0et7br2bki8
- *    |➔  ns:ckcb7lo930004d0etckxcdbgv
- *    |➔  ns:ckcb7lo930005d0et70qs48fr
+ *    |➔  ns:ckcbhh4o70003b9et88hyfjtk
+ *    |➔  ns:ckcbhh4o70004b9etagsu80ot
+ *    |➔  ns:ckcbhh4o70005b9et0jr9d9rd
  *    |
  *
  * By:
@@ -25,6 +25,12 @@
 
 import * as t from '@platform/cell.types';
 
+export declare type TypeIndex = {
+  App: App;
+  AppWindow: AppWindow;
+  AppData: AppData;
+};
+
 export declare type App = {
   name: string;
   argv: string[];
@@ -37,8 +43,8 @@ export declare type App = {
   height: number;
   minWidth?: number;
   minHeight?: number;
-  windows: t.ITypedSheetRefs<AppWindow>;
-  data: t.ITypedSheetRefs<AppData>;
+  windows: t.ITypedSheetRefs<TypeIndex, 'AppWindow'>;
+  data: t.ITypedSheetRefs<TypeIndex, 'AppData'>;
 };
 
 export declare type AppWindow = {

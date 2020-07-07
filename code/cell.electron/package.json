@@ -5,7 +5,7 @@
   "scripts": {
     "ui": "cd app.ui && yarn start",
     "start": "cd app && yarn start",
-    "dev": "sh script.sh/copy.types.sh && cd app && yarn dev",
+    "dev": "cd app && yarn dev",
     "test": "cd app && yarn test",
     "package": "yarn bundle.preload && cd app && yarn package",
     "make": "yarn bundle.preload && cd app && yarn make",

@@ -76,7 +76,7 @@ export class AppBuilder extends React.PureComponent<IAppBuilderProps, IAppBuilde
     const ns = Uri.toNs(ctx.env.def);
     console.log('ns', ns);
 
-    const defSheet = await ctx.client.sheet<t.AppWindow>(ns);
+    const defSheet = await ctx.client.sheet<t.AppTypeIndex>(ns);
 
     const def = await defSheet.data('AppWindow').load({ range: `${rowUri.key}:${rowUri.key}` });
     console.log('def', def);

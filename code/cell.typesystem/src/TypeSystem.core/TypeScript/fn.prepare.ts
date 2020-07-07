@@ -8,20 +8,19 @@ export function prepare(args: {
   header?: string;
   exports?: boolean;
   imports?: boolean;
-  typeIndex?: boolean;
 }) {
   const { header, code } = args;
   const lines = code.split('\n');
   const isRefUsed = lines.some((text) => line.includesRef(text));
   const imports = args.imports !== false ? `import * as t from '@platform/cell.types';` : '';
-  const typeIndex = args.typeIndex !== false ? extractTypeIndex(lines) : '';
+  const typeIndex = extractTypeIndex(lines);
 
   let res = '';
 
   // Prepend header.
   res = !header ? res : `${res}\n${header}\n`;
   res = !isRefUsed || !imports ? res : `${res}\n${imports}\n`;
-  res = !typeIndex ? res : `${res}\n${typeIndex}`;
+  res = `${res}\n${typeIndex}`;
   res = `${res}\n${code}`;
 
   // Clean up code.

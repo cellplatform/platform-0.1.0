@@ -12,12 +12,16 @@ type LinkInfo = { data: t.ICellData; links: t.IUriMap; linkKey: string; link?: t
 
 /**
  * A connector for a reference-pointer to a set of rows in another sheet.
+ *
+ * Generic (see [TypedSheet] for more):
+ *    <T> = TypeIndex = { [TypeName]:Type }
+ *
  */
-export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
+export class TypedSheetRefs<T, K extends keyof T> implements t.ITypedSheetRefs<T, K> {
   public static PLACEHOLDER = `ns:${'0'.repeat(25)}`;
 
-  public static create<T>(args: IArgs) {
-    return new TypedSheetRefs<T>(args);
+  public static create<T, K extends keyof T>(args: IArgs) {
+    return new TypedSheetRefs<T, K>(args);
   }
 
   public static refLinkName(args: { typeDef: t.IColumnTypeDef<t.ITypeRef> }) {
@@ -54,12 +58,12 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
    */
   private readonly _ctx: t.SheetCtx;
   private _sheet: t.ITypedSheet<T>;
-  private _load: Promise<t.ITypedSheetRefs<T>>;
+  private _load: Promise<t.ITypedSheetRefs<T, K>>;
 
   public ns: t.INsUri = Uri.ns(TypedSheetRefs.PLACEHOLDER, false);
   public readonly typeDef: t.IColumnTypeDef<t.ITypeRef>;
   public readonly typename: string;
-  public readonly parent: t.ITypedSheetRefs<{}>['parent'];
+  public readonly parent: t.ITypedSheetRefParent;
 
   /**
    * [Properties]
@@ -79,7 +83,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
   /**
    * [Methods]
    */
-  public async load(): Promise<t.ITypedSheetRefs<T>> {
+  public async load(): Promise<t.ITypedSheetRefs<T, K>> {
     if (this.isLoaded) {
       return this;
     }
@@ -93,13 +97,13 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
       payload: { sheet: this.parent.sheet, refs: this },
     });
 
-    const promise = new Promise<t.ITypedSheetRefs<T>>(async (resolve, reject) => {
+    const promise = new Promise<t.ITypedSheetRefs<T, K>>(async (resolve, reject) => {
       const { fetch, cache, event$, pool } = this._ctx;
 
       // Check if the linked sheet has already been pooled.
       const linkInfo = await this.getLink();
       const link = linkInfo.link;
-      const pooledSheet = link && link.uri.type === 'NS' ? pool.sheet(link.uri) : undefined;
+      const pooledSheet = link && link.uri.type === 'NS' ? pool.sheet<T>(link.uri) : undefined;
       if (pooledSheet) {
         this._sheet = pooledSheet;
       } else {
@@ -133,7 +137,7 @@ export class TypedSheetRefs<T> implements t.ITypedSheetRefs<T> {
     if (!this.isLoaded) {
       await this.load();
     }
-    const typename = this.typename;
+    const typename = this.typename as K;
     return this.sheet.data({ ...options, typename }).load();
   }
 

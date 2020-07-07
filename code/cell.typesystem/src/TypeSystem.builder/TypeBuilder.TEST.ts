@@ -225,7 +225,7 @@ describe('TypeBuilder', () => {
 
       expect(ts).to.include(`export declare type Type1 = {`);
       expect(ts).to.include(`  title: string;`);
-      expect(ts).to.include(`  windows: t.ITypedSheetRefs<Type2>;`);
+      expect(ts).to.include(`  windows: t.ITypedSheetRefs<TypeIndex, 'Type2'>;`);
 
       expect(ts).to.include(`export declare type Type2 = {`);
       expect(ts).to.include(`  count?: number;`);

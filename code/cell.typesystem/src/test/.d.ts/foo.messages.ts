@@ -31,8 +31,8 @@ export declare type TypeIndex = {
 
 export declare type MyMessages = {
   channel: string;
-  color?: t.ITypedSheetRef<MyColor>;
-  messages: t.ITypedSheetRefs<MyMessage>;
+  color?: t.ITypedSheetRef<TypeIndex, 'MyColor'>;
+  messages: t.ITypedSheetRefs<TypeIndex, 'MyMessage'>;
 };
 
 export declare type MyColor = {

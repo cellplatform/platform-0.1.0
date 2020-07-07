@@ -33,8 +33,8 @@ export declare type MyRow = {
   title: string;
   isEnabled: boolean | null;
   color?: MyColor;
-  message: t.ITypedSheetRef<MyMessage> | null;
-  messages: t.ITypedSheetRefs<MyMessage>;
+  message: t.ITypedSheetRef<TypeIndex, 'MyMessage'> | null;
+  messages: t.ITypedSheetRefs<TypeIndex, 'MyMessage'>;
 };
 
 export declare type MyMessage = {

@@ -44,8 +44,8 @@ export declare type MyRow = {
   title: string;
   isEnabled: boolean | null;
   color?: MyColor;
-  message: t.ITypedSheetRef<MyMessage> | null;
-  messages: t.ITypedSheetRefs<MyMessage>;
+  message: t.ITypedSheetRef<TypeIndex, 'MyMessage'> | null;
+  messages: t.ITypedSheetRefs<TypeIndex, 'MyMessage'>;
 };
 
 export declare type MyMessage = {
@@ -75,8 +75,8 @@ export declare type Primitives = {
 
 export declare type MyMessages = {
   channel: string;
-  color?: t.ITypedSheetRef<MyColor>;
-  messages: t.ITypedSheetRefs<MyMessage>;
+  color?: t.ITypedSheetRef<TypeIndex, 'MyColor'>;
+  messages: t.ITypedSheetRefs<TypeIndex, 'MyMessage'>;
 };
 
 export declare type Enum = {

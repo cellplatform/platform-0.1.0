@@ -62,7 +62,7 @@ export class Windows extends React.PureComponent<IWindowsProps, IWindowsState> {
    */
   public async load() {
     const ctx = this.context;
-    const sheet = await ctx.client.sheet<t.App>(this.ns);
+    const sheet = await ctx.client.sheet<t.AppTypeIndex>(this.ns);
     const appData = await sheet.data('App').load();
     const row = appData.row(this.index);
     const windowsData = await row.props.windows.data();

@@ -4,7 +4,7 @@ import { filter, share, takeUntil, map } from 'rxjs/operators';
 import { t } from '../../common';
 
 type S = t.ITypedSheet;
-type W = { sheet: t.ITypedSheet; stop$: Subject<{}>; refs: t.ITypedSheetRefs<{}>[] };
+type W = { sheet: t.ITypedSheet; stop$: Subject<{}>; refs: t.ITypedSheetRefs<any, any>[] };
 
 /**
  * Monitors changes in sheet(s).

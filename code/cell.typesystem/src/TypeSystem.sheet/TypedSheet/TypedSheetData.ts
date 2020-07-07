@@ -11,15 +11,22 @@ type IArgs = {
   range?: string;
 };
 
-type ILoading<T> = { query: string; promise: Promise<t.ITypedSheetData<T>> };
+type ILoading<T, K extends keyof T> = {
+  query: string;
+  promise: Promise<t.ITypedSheetData<T, K>>;
+};
 
 /**
  * An exanding data-cursor for iterating over a set of rows
  * within a sheet for a particular type.
+ *
+ * Generic (see [TypedSheet] for more):
+ *    <T> = TypeIndex = { [TypeName]:Type }
+ *
  */
-export class TypedSheetData<T> implements t.ITypedSheetData<T> {
-  public static create = <T>(args: IArgs): t.ITypedSheetData<T> => {
-    return new TypedSheetData<T>(args);
+export class TypedSheetData<T, K extends keyof T> implements t.ITypedSheetData<T, K> {
+  public static create = <T, K extends keyof T>(args: IArgs): t.ITypedSheetData<T, K> => {
+    return new TypedSheetData<T, K>(args);
   };
 
   public static DEFAULT = {
@@ -90,11 +97,11 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
    */
   private readonly _ctx: t.SheetCtx;
   private readonly _sheet: t.ITypedSheet;
-  private _rows: t.ITypedSheetRow<T>[] = [];
+  private _rows: t.ITypedSheetRow<T, K>[] = [];
   private _range: string;
-  private _status: t.ITypedSheetData<T>['status'] = 'INIT';
+  private _status: t.ITypedSheetData<T, K>['status'] = 'INIT';
   private _total = -1;
-  private _loading: ILoading<T>[] = [];
+  private _loading: ILoading<T, K>[] = [];
   private _isLoaded = false;
 
   public readonly typename: string;
@@ -107,7 +114,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return this._sheet.uri;
   }
 
-  public get rows(): t.ITypedSheetRow<T>[] {
+  public get rows(): t.ITypedSheetRow<T, K>[] {
     return [...this._rows];
   }
 
@@ -142,7 +149,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return Boolean(this._rows[index]);
   }
 
-  public row(index: number): t.ITypedSheetRow<T> {
+  public row(index: number): t.ITypedSheetRow<T, K> {
     if (index < 0) {
       throw new Error(`Row index must be >=0`);
     }
@@ -154,7 +161,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return this._rows[index];
   }
 
-  public async load(args: string | t.ITypedSheetDataOptions): Promise<t.ITypedSheetData<T>> {
+  public async load(args: string | t.ITypedSheetDataOptions): Promise<t.ITypedSheetData<T, K>> {
     // Wrangle the given argument range.
     let argRange = typeof args === 'string' ? args : args?.range;
     if (argRange) {
@@ -168,7 +175,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     }
 
     const ns = this.uri.toString();
-    const promise = new Promise<t.ITypedSheetData<T>>(async (resolve, reject) => {
+    const promise = new Promise<t.ITypedSheetData<T, K>>(async (resolve, reject) => {
       this._status = 'LOADING';
 
       // Fire BEFORE event.
@@ -218,23 +225,23 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     return promise;
   }
 
-  public forEach(fn: (row: t.ITypedSheetRowProps<T>, index: number) => void) {
+  public forEach(fn: (row: t.ITypedSheetRowProps<T[K]>, index: number) => void) {
     this._rows.forEach((row, i) => fn(row.props, i));
   }
 
-  public filter(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean) {
+  public filter(fn: (row: t.ITypedSheetRowProps<T[K]>, index: number) => boolean) {
     return this._rows.filter((row, i) => fn(row.props, i));
   }
 
-  public find(fn: (row: t.ITypedSheetRowProps<T>, index: number) => boolean) {
+  public find(fn: (row: t.ITypedSheetRowProps<T[K]>, index: number) => boolean) {
     return this._rows.find((row, i) => fn(row.props, i));
   }
 
-  public map<U>(fn: (row: t.ITypedSheetRowProps<T>, index: number) => U) {
+  public map<U>(fn: (row: t.ITypedSheetRowProps<T[K]>, index: number) => U) {
     return this._rows.map((row, i) => fn(row.props, i));
   }
 
-  public reduce<U>(fn: (prev: U, next: t.ITypedSheetRowProps<T>, index: number) => U, initial: U) {
+  public reduce<U>(fn: (prev: U, next: t.ITypedSheetRowProps<T[K]>, index: number) => U, initial: U) {
     return this._rows.reduce((acc, next, index) => {
       return fn(acc, next.props, index);
     }, initial);
@@ -265,7 +272,7 @@ export class TypedSheetData<T> implements t.ITypedSheetData<T> {
     const columns = this.types;
     const typename = this.typename;
     const sheet = this._sheet;
-    return TypedSheetRow.create<T>({ sheet, typename, uri, columns, ctx });
+    return TypedSheetRow.create<T, K>({ sheet, typename, uri, columns, ctx });
   }
 
   private isThisSheet(ns: string) {

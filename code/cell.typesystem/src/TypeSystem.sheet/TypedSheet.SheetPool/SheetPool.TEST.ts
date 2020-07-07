@@ -83,7 +83,7 @@ describe('SheetPool', () => {
     it('children', async () => {
       const { sheet } = await testMySheet();
       const pool = SheetPool.create();
-      const cursor = await sheet.data<a.MyRow>('MyRow').load();
+      const cursor = await sheet.data('MyRow').load();
       const child = (await cursor.row(0).props.messages.load()).sheet;
 
       expect(pool.children(sheet)).to.eql([]);
@@ -98,7 +98,7 @@ describe('SheetPool', () => {
     it('string params (without the "ns:" prefix)', async () => {
       const { sheet } = await testMySheet();
       const pool = SheetPool.create();
-      const cursor = await sheet.data<a.MyRow>('MyRow').load();
+      const cursor = await sheet.data('MyRow').load();
       const child = (await cursor.row(0).props.messages.load()).sheet;
 
       pool.add(sheet).add(child, { parent: sheet });
@@ -120,7 +120,7 @@ describe('SheetPool', () => {
     it('removes child sheet when parent sheet removed', async () => {
       const { sheet } = await testMySheet();
       const pool = SheetPool.create();
-      const cursor = await sheet.data<a.MyRow>('MyRow').load();
+      const cursor = await sheet.data('MyRow').load();
       const child = (await cursor.row(0).props.messages.load()).sheet;
 
       pool.add(sheet).add(child, { parent: sheet });
@@ -136,7 +136,7 @@ describe('SheetPool', () => {
     it('removes child sheet when parent sheet disposed', async () => {
       const { sheet } = await testMySheet();
       const pool = SheetPool.create();
-      const cursor = await sheet.data<a.MyRow>('MyRow').load();
+      const cursor = await sheet.data('MyRow').load();
       const child = (await cursor.row(0).props.messages.load()).sheet;
 
       pool.add(sheet).add(child, { parent: sheet });
@@ -149,7 +149,7 @@ describe('SheetPool', () => {
     it('does not remove parent when child removed', async () => {
       const { sheet } = await testMySheet();
       const pool = SheetPool.create();
-      const cursor = await sheet.data<a.MyRow>('MyRow').load();
+      const cursor = await sheet.data('MyRow').load();
       const child = (await cursor.row(0).props.messages.load()).sheet;
 
       pool.add(sheet).add(child, { parent: sheet });
@@ -214,10 +214,10 @@ describe('SheetPool', () => {
       const ns = 'ns:foo.mySheet';
       const fetch = await testFetchMySheet(ns);
       const pool = SheetPool.create();
-      const sheet = await TypeSystem.Sheet.load<a.MyRow>({ fetch, ns, pool });
+      const sheet = await TypeSystem.Sheet.load<a.TypeIndex>({ fetch, ns, pool });
       expect(sheet.pool.exists(sheet)).to.eql(true);
 
-      const cursor = await sheet.data<a.MyRow>('MyRow').load();
+      const cursor = await sheet.data('MyRow').load();
       const child = (await cursor.row(0).props.messages.load()).sheet;
       expect(sheet.pool).to.equal(child.pool);
       expect(sheet.pool.exists(child)).to.eql(true);
@@ -242,6 +242,6 @@ const testMySheet = async (cells?: t.ICellMap) => {
   const ns = 'ns:foo.mySheet';
   const event$ = new Subject<t.TypedSheetEvent>();
   const fetch = await testFetchMySheet(ns, cells);
-  const sheet = await TypeSystem.Sheet.load<a.MyRow>({ fetch, ns, event$ });
+  const sheet = await TypeSystem.Sheet.load<a.TypeIndex>({ fetch, ns, event$ });
   return { ns, fetch, sheet, event$ };
 };
