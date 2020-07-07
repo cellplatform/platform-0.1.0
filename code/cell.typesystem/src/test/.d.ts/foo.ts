@@ -17,7 +17,7 @@
  *        that uses a [TypedSheet] to programatically manipulate 
  *        the namespace in a strongly-typed manner, for example:
  * 
- *            import * as t from './foo.ts';
+ *            import * as t from './<filename>;
  * 
  */
 
@@ -31,14 +31,14 @@ export declare type MyRow = {
   messages: t.ITypedSheetRefs<MyMessage>;
 };
 
-export declare type MyColor = {
-  label: string;
-  color: 'red' | 'green' | 'blue';
-  description?: string;
-};
-
 export declare type MyMessage = {
   date: number;
   user: string;
   message: string;
+};
+
+export declare type MyColor = {
+  label: string;
+  color: 'red' | 'green' | 'blue';
+  description?: string;
 };

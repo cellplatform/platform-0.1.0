@@ -17,7 +17,7 @@
  *        that uses a [TypedSheet] to programatically manipulate 
  *        the namespace in a strongly-typed manner, for example:
  * 
- *            import * as t from './foo.messages.ts';
+ *            import * as t from './<filename>;
  * 
  */
 
