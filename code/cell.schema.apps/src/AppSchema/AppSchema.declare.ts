@@ -1,17 +1,24 @@
-import { TypeSystem } from '../common';
+import { TypeSystem, Uri } from '../common';
 
 /**
  * Initializes an object structure representing the
  * type-definitions for an [App].
  */
-export function declare(args: { appNs: string }) {
+export function declare() {
   const def = TypeSystem.def();
+
+  const generate = () => Uri.toNs(Uri.cuid()).toString();
+  const namespaces = {
+    App: generate(),
+    AppWindow: generate(),
+    AppData: generate(),
+  };
 
   /**
    * An application module definition.
    */
   def
-    .ns(args.appNs)
+    .ns(namespaces.App)
     .type('App')
     .prop('name', (p) => p.type('string'))
     .prop('argv', (p) => p.type('string[]'))
@@ -31,8 +38,9 @@ export function declare(args: { appNs: string }) {
    * A single window instance of an {App}.
    */
   def
+    .ns(namespaces.AppWindow)
     .type('AppWindow')
-    .prop('def', (p) => p.type('string')) // REF: =app(row)
+    .prop('app', (p) => p.type('string')) // REF: =app(row)
     .prop('title', (p) => p.type('string').default('Untitled'))
     .prop('width', (p) => p.type('number'))
     .prop('height', (p) => p.type('number'))
@@ -44,11 +52,17 @@ export function declare(args: { appNs: string }) {
    * The entry-point for the data of an application.
    */
   def
+    .ns(namespaces.AppData)
     .type('AppData')
-    .prop('app', (p) => p.type('string')) // {App.name}
+    .prop('app', (p) => p.type('string')) // REF: =app(row)
     .prop('window', (p) => p.type('string')) // {AppWindow.uri}
     .prop('fs', (p) => p.type('string').default('fs'))
     .prop('tmp', (p) => p.type('string'));
 
-  return def.toObject();
+  // Finish up.
+  return {
+    namespaces,
+    toObject: () => def.toObject(),
+    toTypeDefs: () => def.toTypeDefs(),
+  };
 }
