@@ -24,7 +24,14 @@ describe('AppSchema', () => {
     });
 
     it('save [types.g.ts]', async () => {
-      const res = AppSchema.declare();
+      const res = AppSchema.declare({
+        // NB: Fixed namespaces passed in to avoid re-generating new file on each test-run.
+        namespaces: {
+          App: 'ns:ckcck1w4m0003goetfzhn5dgc',
+          AppWindow: 'ns:ckcck1w4m0004goet0a8oavc9',
+          AppData: 'ns:ckcck1w4m0005goet1hqude43',
+        },
+      });
       const typeDefs = res.toTypeDefs();
 
       const ts = TypeSystem.typescript(typeDefs);

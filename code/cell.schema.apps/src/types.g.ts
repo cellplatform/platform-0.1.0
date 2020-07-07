@@ -2,9 +2,9 @@
  * Generated types defined in namespace:
  * 
  *    |                
- *    |➔  ns:ckcbjhg0n0003b9etgw1o7ilx
- *    |➔  ns:ckcbjhg0n0004b9et3p4dg8r7
- *    |➔  ns:ckcbjhg0n0005b9et37753ddz
+ *    |➔  ns:ckcck1w4m0003goetfzhn5dgc
+ *    |➔  ns:ckcck1w4m0004goet0a8oavc9
+ *    |➔  ns:ckcck1w4m0005goet1hqude43
  *    |
  *
  * By:
@@ -25,6 +25,13 @@
 
 import * as t from '@platform/cell.types';
 
+/**
+ * Complete index of types available within the sheet.
+ * Use by passing into a sheet at creation, for example:
+ *
+ *    const sheet = await TypedSheet.load<t.TypeIndex>({ ns, fetch });
+ *
+ */
 export declare type TypeIndex = {
   App: App;
   AppWindow: AppWindow;

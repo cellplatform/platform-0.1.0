@@ -1,18 +1,25 @@
 import { TypeSystem, Uri } from '../common';
 
+type Namespaces = { App: string; AppWindow: string; AppData: string };
+
+const toNamespaces = (input: Partial<Namespaces>): Namespaces => {
+  const generate = () => toNs(Uri.cuid());
+  const toNs = (input: string) => Uri.toNs(input).toString();
+  const prepare = (input?: string) => (input ? toNs(input) : generate());
+  return {
+    App: prepare(input.App),
+    AppWindow: prepare(input.AppWindow),
+    AppData: prepare(input.AppData),
+  };
+};
+
 /**
  * Initializes an object structure representing the
  * type-definitions for an [App].
  */
-export function declare() {
+export function declare(options: { namespaces?: Partial<Namespaces> } = {}) {
   const def = TypeSystem.def();
-
-  const generate = () => Uri.toNs(Uri.cuid()).toString();
-  const namespaces = {
-    App: generate(),
-    AppWindow: generate(),
-    AppData: generate(),
-  };
+  const namespaces = toNamespaces(options.namespaces || {});
 
   /**
    * An application module definition.
