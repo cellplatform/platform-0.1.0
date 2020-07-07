@@ -70,8 +70,8 @@ describe('Client.TypeSystem', () => {
   describe('sheet', () => {
     it('loads sheet', async () => {
       const { mock, client } = await testDefs();
-      const sheet = await client.sheet('ns:foo.mySheet');
-      const row = sheet.data<g.MyRow>('MyRow').row(0).props;
+      const sheet = await client.sheet<g.TypeIndex>('ns:foo.mySheet');
+      const row = sheet.data('MyRow').row(0).props;
       await mock.dispose();
       expect(row.title).to.eql('Untitled');
     });
@@ -85,13 +85,13 @@ describe('Client.TypeSystem', () => {
 
       it('watches for changes', async () => {
         const { mock, client } = await testDefs();
-        const sheet = await client.sheet('ns:foo.mySheet');
+        const sheet = await client.sheet<g.TypeIndex>('ns:foo.mySheet');
         client.changes.watch(sheet);
 
         const fired: t.ITypedSheetChanged[] = [];
         client.changes.changed$.subscribe((e) => fired.push(e));
 
-        const row = await sheet.data<g.MyRow>('MyRow').row(0).load();
+        const row = await sheet.data('MyRow').row(0).load();
         row.props.title = '1';
         row.props.title = '2';
         row.props.title = '3';
@@ -113,14 +113,14 @@ describe('Client.TypeSystem', () => {
     describe('save monitor', () => {
       it('saves cell changes', async () => {
         const { mock, client } = await testDefs();
-        const sheet = await client.sheet('ns:foo.mySheet');
+        const sheet = await client.sheet<g.TypeIndex>('ns:foo.mySheet');
         const saver = Client.saveMonitor({ client, debounce: 1 });
         client.changes.watch(sheet);
 
         expect(sheet.state.changes).to.eql({});
         expect(saver.debounce).to.eql(1);
 
-        const cursor = await sheet.data<g.MyRow>('MyRow').load();
+        const cursor = await sheet.data('MyRow').load();
         const row = cursor.row(0).props;
         row.title = '1';
         row.title = '2';
@@ -140,7 +140,7 @@ describe('Client.TypeSystem', () => {
 
       it('saves namespace change', async () => {
         const { mock, client } = await testDefs();
-        const sheet = await client.sheet('ns:foo.mySheet');
+        const sheet = await client.sheet<g.TypeIndex>('ns:foo.mySheet');
         client.changes.watch(sheet);
 
         const ns1 = (await client.http.ns('ns:foo.mySheet').read()).body.data.ns;
@@ -169,7 +169,7 @@ describe('Client.TypeSystem', () => {
 
       it('secondary changes while save operation in progress', async () => {
         const { mock, client } = await testDefs();
-        const sheet = await client.sheet('ns:foo.mySheet');
+        const sheet = await client.sheet<g.TypeIndex>('ns:foo.mySheet');
         const saver = Client.saveMonitor({ client, debounce: 5 });
         client.changes.watch(sheet);
 
@@ -188,7 +188,7 @@ describe('Client.TypeSystem', () => {
         const fired: t.TypedSheetEvent[] = [];
         saver.event$.subscribe((e) => fired.push(e));
 
-        const cursor = await sheet.data<g.MyRow>('MyRow').load();
+        const cursor = await sheet.data('MyRow').load();
         const row = cursor.row(0).props;
         row.title = 'first';
 
@@ -204,14 +204,14 @@ describe('Client.TypeSystem', () => {
 
       it('bubbles events: saving/saved', async () => {
         const { mock, client } = await testDefs();
-        const sheet = await client.sheet('ns:foo.mySheet');
+        const sheet = await client.sheet<g.TypeIndex>('ns:foo.mySheet');
         const saver = Client.saveMonitor({ client, debounce: 10 });
         client.changes.watch(sheet);
 
         const fired: t.TypedSheetEvent[] = [];
         saver.event$.subscribe((e) => fired.push(e));
 
-        const cursor = await sheet.data<g.MyRow>('MyRow').load();
+        const cursor = await sheet.data('MyRow').load();
         const row = cursor.row(0).props;
 
         row.title = 'hello';
@@ -251,7 +251,7 @@ describe('Client.TypeSystem', () => {
 
       it('bubbles event: errors', async () => {
         const { mock, client } = await testDefs();
-        const sheet = await client.sheet('ns:foo.mySheet');
+        const sheet = await client.sheet<g.TypeIndex>('ns:foo.mySheet');
         const saver = Client.saveMonitor({ client, debounce: 10 });
         client.changes.watch(sheet);
 
@@ -265,7 +265,7 @@ describe('Client.TypeSystem', () => {
         const fired: t.TypedSheetEvent[] = [];
         saver.event$.subscribe((e) => fired.push(e));
 
-        const cursor = await sheet.data<g.MyRow>('MyRow').load();
+        const cursor = await sheet.data('MyRow').load();
         const row = cursor.row(0).props;
         row.title = 'hello';
         row.isEnabled = true;
@@ -294,11 +294,11 @@ describe('Client.TypeSystem', () => {
 
       it('stores "implements" (on REF model creation)', async () => {
         const { mock, client } = await testDefs();
-        const sheet = await client.sheet('ns:foo.mySheet');
+        const sheet = await client.sheet<g.TypeIndex>('ns:foo.mySheet');
         Client.saveMonitor({ client, debounce: 5 });
         client.changes.watch(sheet);
 
-        const cursor = await sheet.data<g.MyRow>('MyRow').load();
+        const cursor = await sheet.data('MyRow').load();
         const row = cursor.row(0);
         const messages = await row.props.messages.load();
 

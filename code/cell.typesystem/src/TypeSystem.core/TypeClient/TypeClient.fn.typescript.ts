@@ -11,7 +11,7 @@ export function typescript(
   def: t.INsTypeDef | t.INsTypeDef[],
   options: { header?: boolean; exports?: boolean; imports?: boolean } = {},
 ) {
-  const defs = Array.isArray(def) ? def : [def];
+  const defs = (Array.isArray(def) ? def : [def]).filter((def) => Boolean(def));
   const api: t.ITypeClientTypescript = {
     /**
      * Comments to insert at the head of the typescript.

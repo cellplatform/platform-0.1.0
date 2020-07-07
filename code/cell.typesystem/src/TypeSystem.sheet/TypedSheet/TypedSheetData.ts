@@ -241,7 +241,10 @@ export class TypedSheetData<T, K extends keyof T> implements t.ITypedSheetData<T
     return this._rows.map((row, i) => fn(row.props, i));
   }
 
-  public reduce<U>(fn: (prev: U, next: t.ITypedSheetRowProps<T[K]>, index: number) => U, initial: U) {
+  public reduce<U>(
+    fn: (prev: U, next: t.ITypedSheetRowProps<T[K]>, index: number) => U,
+    initial: U,
+  ) {
     return this._rows.reduce((acc, next, index) => {
       return fn(acc, next.props, index);
     }, initial);

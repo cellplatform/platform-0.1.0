@@ -1050,6 +1050,12 @@ describe('TypeClient', () => {
         expect(res2).to.not.include(`import * as t from '@platform/cell.types';`);
       });
 
+      it('toString: no TypeIndex when empty', async () => {
+        const defs = (await TypeClient.load({ ns: 'foo.empty', fetch })).defs;
+        const res = TypeClient.typescript(defs[0], { header: false }).toString();
+        expect(res).to.eql('');
+      });
+
       it('toString: mutliple defs', async () => {
         const defs = (await TypeClient.load({ ns: 'foo.multi', fetch })).defs;
         const res = TypeClient.typescript(defs).toString();

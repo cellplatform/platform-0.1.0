@@ -2,13 +2,13 @@
  * Generated types defined in namespace:
  * 
  *    |                
- *    |➔  ns:ckcbhh4o70003b9et88hyfjtk
- *    |➔  ns:ckcbhh4o70004b9etagsu80ot
- *    |➔  ns:ckcbhh4o70005b9et0jr9d9rd
+ *    |➔  ns:ckcbjhg0n0003b9etgw1o7ilx
+ *    |➔  ns:ckcbjhg0n0004b9et3p4dg8r7
+ *    |➔  ns:ckcbjhg0n0005b9et37753ddz
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.72
+ *    @platform/cell.typesystem@0.0.74
  * 
  * Notes: 
  * 
