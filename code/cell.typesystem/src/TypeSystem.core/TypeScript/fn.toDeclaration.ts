@@ -27,9 +27,13 @@ export function toDeclaration(args: {
   adjustLine?: AdjustType;
   filterType?: FilterType;
   exports?: boolean;
+  priorCode?: string;
 }) {
-  const { adjustLine, filterType: filter } = args;
+  const { adjustLine, filterType, priorCode } = args;
   const declare = args.exports === false ? 'declare' : 'export declare';
+
+  const includedInGivenTypes = (typename: string) =>
+    args.types.some((def) => def.type.typename === typename);
 
   const write = (args: { typename: string; types: t.ITypeDef[]; written: string[] }) => {
     const { written } = args;
@@ -37,11 +41,15 @@ export function toDeclaration(args: {
       return '';
     }
 
-    if (filter) {
-      const res = filter({ typename: args.typename });
+    if (filterType) {
+      const res = filterType({ typename: args.typename });
       if (res === false) {
         return '';
       }
+    }
+
+    if (priorCode && priorCode.includes(`declare type ${args.typename} = {`)) {
+      return '';
     }
 
     const parentType = args.typename;
@@ -54,6 +62,7 @@ export function toDeclaration(args: {
         type.types
           .filter(({ kind }) => kind !== 'UNION')
           .filter(({ kind }) => kind === 'REF')
+          .filter(({ typename }) => includedInGivenTypes(typename))
           .forEach((ref) => childRefs.push(ref as t.ITypeRef));
       }
       const typename = TypeValue.toTypename(type);
@@ -104,7 +113,11 @@ ${lines.join('\n')}
     args.types
       .map(({ type }) => type as t.ITypeRef)
       .filter((type) => type.kind === 'REF')
-      .forEach((ref) => writeRef(ref));
+      .filter((ref) => includedInGivenTypes(ref.typename))
+      .filter((ref) => !childRefs.some(({ typename }) => typename === ref.typename))
+      .filter((ref) => !written.includes(ref.typename))
+      .filter((ref) => ref.types.length > 0)
+      .forEach((ref) => childRefs.push(ref));
 
     childRefs.forEach((ref) => writeRef(ref));
 

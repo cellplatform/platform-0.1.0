@@ -4,15 +4,7 @@ type Package = { name: string; version: string };
  * Creates a header comment to be inserted into generated Typsecript files.
  */
 
-export function toTypescriptHeader(args: {
-  uri: string | string[];
-  pkg: Package;
-  filename?: string;
-}) {
-  const filename = args.filename
-    ? args.filename.replace(/^\</, '').replace(/\>$/, '')
-    : '<filename>';
-
+export function toTypescriptHeader(args: { uri: string | string[]; pkg: Package }) {
   const uris = Array.isArray(args.uri) ? args.uri : [args.uri];
 
   return `
@@ -35,7 +27,7 @@ ${uris.map((uri) => ` *    |➔  ${uri}`).join('\n')}
  *        that uses a [TypedSheet] to programatically manipulate 
  *        the namespace in a strongly-typed manner, for example:
  * 
- *            import * as t from './${filename}.ts';
+ *            import * as t from './<filename>;
  * 
  */`.substring(1);
 }

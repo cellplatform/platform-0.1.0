@@ -1149,12 +1149,10 @@ describe('TypeClient', () => {
         const file1 = (await fs.readFile(fs.join(dir, 'Foo.txt.ts'))).toString();
         const file2 = (await fs.readFile(fs.join(dir, 'Foo.d.ts'))).toString();
 
-        expect(file1).to.include(`import * as t from './Foo.txt.ts';`);
         expect(file1).to.include(`export declare type MyRow = {`);
         expect(file1).to.include(`export declare type MyColor = {`);
         expect(file1).to.include(`export declare type MyMessage = {`);
 
-        expect(file2).to.include(`import * as t from './Foo.d.ts';`);
         expect(file2).to.include(`export declare type MyRow = {`);
         expect(file2).to.include(`export declare type MyColor = {`);
         expect(file2).to.include(`export declare type MyMessage = {`);

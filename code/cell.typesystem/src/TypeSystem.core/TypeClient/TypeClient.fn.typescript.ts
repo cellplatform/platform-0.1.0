@@ -39,9 +39,9 @@ export function typescript(
       const header = value.defaultValue(options.header, true) ? api.header : undefined;
 
       let isRefUsed = false;
-      const addedTypenames: string[] = [];
 
-      const toDeclaration = (typename: string) => {
+      const toDeclaration = (args: { typename: string; priorCode?: string }) => {
+        const { typename, priorCode } = args;
         const def = defs.find((def) => def.typename === typename);
         if (!def) {
           return '';
@@ -50,11 +50,7 @@ export function typescript(
           typename,
           exports: options.exports,
           types: def.columns,
-          filterType: (e) => {
-            const exists = addedTypenames.includes(e.typename);
-            addedTypenames.push(e.typename);
-            return !exists;
-          },
+          priorCode: priorCode,
           adjustLine(e) {
             const target = e.typeDef.target;
             const typename = TypeValue.toTypename(e.type, {
@@ -76,8 +72,11 @@ export function typescript(
         });
       };
 
-      const typenames = R.uniq(defs.map((def) => def.typename));
-      const code = typenames.map((typename) => toDeclaration(typename)).join('\n');
+      let code = '';
+      R.uniq(defs.map((def) => def.typename)).forEach((typename) => {
+        code = `${code}\n${toDeclaration({ typename, priorCode: code })}`;
+      });
+
       const imports = options.imports !== false ? `import * as t from '@platform/cell.types';` : '';
 
       let res = '';

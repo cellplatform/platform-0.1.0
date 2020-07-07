@@ -2,6 +2,7 @@ import { t, expect, Uri } from '../test';
 import { TypeBuilder } from '.';
 import { TypeBuilderNs } from './TypeBuilderNs';
 import { TypeBuilderType } from './TypeBuilderType';
+import { TypeSystem } from '../TypeSystem';
 
 describe('TypeBuilder', () => {
   it('create', () => {
@@ -203,6 +204,31 @@ describe('TypeBuilder', () => {
       expect(columns2[0].prop).to.eql('foo');
       expect(columns2[0].type.typename).to.eql('number');
       expect(columns2[0].optional).to.eql(true);
+    });
+
+    it('to typescript declaration', () => {
+      const builder = TypeBuilder.create();
+
+      builder
+        .ns('foo1')
+        .type('Type1')
+        .prop('title')
+        .prop('windows', (p) => p.type('/Type2[]').target('ref'));
+
+      builder
+        .ns('foo2')
+        .type('Type2')
+        .prop('count?', (p) => p.type('number'));
+
+      const typeDefs = builder.toTypeDefs();
+      const ts = TypeSystem.typescript(typeDefs, { header: false }).declaration;
+
+      expect(ts).to.include(`export declare type Type1 = {`);
+      expect(ts).to.include(`  title: string;`);
+      expect(ts).to.include(`  windows: t.ITypedSheetRefs<Type2>;`);
+
+      expect(ts).to.include(`export declare type Type2 = {`);
+      expect(ts).to.include(`  count?: number;`);
     });
   });
 
