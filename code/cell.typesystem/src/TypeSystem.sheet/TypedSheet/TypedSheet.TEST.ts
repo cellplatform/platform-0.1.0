@@ -874,7 +874,7 @@ describe('TypedSheet', () => {
           cells: { A1: { value: 'my-foo-default' } },
         });
 
-        const sheet = await TypedSheet.load<d.TypeIndex>({ fetch, ns });
+        const sheet = await TypedSheet.load<d.TypeIndex>({ ns, fetch });
         const cursor = await sheet.data('MyDefault').load();
         expect(cursor.exists(99)).to.eql(false);
       });

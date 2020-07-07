@@ -1019,6 +1019,7 @@ describe('TypeClient', () => {
 
         expect(res).to.include('Generated types defined in namespace');
         expect(res).to.include('|➔  ns:foo');
+        expect(res).to.include('* Complete index of types available within the sheet.');
         expect(res).to.include('export declare type TypeIndex = {');
         expect(res).to.include('export declare type MyRow');
         expect(res).to.include('export declare type MyColor');
@@ -1029,7 +1030,10 @@ describe('TypeClient', () => {
         const res = TypeClient.typescript(defs[0], { header: false }).toString();
 
         expect(res).to.not.include('Generated types');
+        expect(res).to.not.include('* Complete index of types available within the sheet.');
+
         expect(res).to.include(`import * as t from '@platform/cell.types';\n`);
+        expect(res).to.include('export declare type TypeIndex = {');
         expect(res).to.include('export declare type MyRow');
         expect(res).to.include('export declare type MyColor');
       });
