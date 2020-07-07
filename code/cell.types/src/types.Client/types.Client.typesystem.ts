@@ -13,6 +13,6 @@ export type IClientTypesystem = {
   defs(ns: N | N[]): Promise<t.INsTypeDef[]>;
   typescript(
     ns: N | N[],
-    options?: { header?: boolean; exports?: boolean; imports?: boolean },
+    options?: { header?: boolean; exports?: boolean; imports?: boolean; typeIndex?: boolean },
   ): Promise<t.ITypeClientTypescript>;
 };

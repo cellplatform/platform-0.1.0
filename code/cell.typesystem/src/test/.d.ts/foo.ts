@@ -23,6 +23,12 @@
 
 import * as t from '@platform/cell.types';
 
+export declare type TypeIndex = {
+  MyRow: MyRow;
+  MyMessage: MyMessage;
+  MyColor: MyColor;
+};
+
 export declare type MyRow = {
   title: string;
   isEnabled: boolean | null;

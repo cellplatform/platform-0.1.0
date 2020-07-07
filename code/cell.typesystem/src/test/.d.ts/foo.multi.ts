@@ -21,6 +21,11 @@
  * 
  */
 
+export declare type TypeIndex = {
+  MyOne: MyOne;
+  MyTwo: MyTwo;
+};
+
 export declare type MyOne = {
   title: string;
   foo: string;

@@ -21,6 +21,10 @@
  * 
  */
 
+export declare type TypeIndex = {
+  Primitives: Primitives;
+};
+
 export declare type Primitives = {
   stringValue: string;
   numberValue: number;

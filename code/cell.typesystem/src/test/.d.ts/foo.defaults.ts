@@ -21,6 +21,10 @@
  * 
  */
 
+export declare type TypeIndex = {
+  MyDefault: MyDefault;
+};
+
 export declare type MyDefault = {
   title: string;
   foo: string;

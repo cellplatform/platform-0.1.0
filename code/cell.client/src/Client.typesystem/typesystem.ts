@@ -52,7 +52,7 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
      */
     async typescript(
       ns: N | N[],
-      options: { header?: boolean; exports?: boolean; imports?: boolean } = {},
+      options: { header?: boolean; exports?: boolean; imports?: boolean; typeIndex?: boolean } = {},
     ) {
       const defs = await api.defs(ns);
       return TypeSystem.Client.typescript(defs, options);

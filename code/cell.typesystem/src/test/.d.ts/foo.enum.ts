@@ -21,6 +21,10 @@
  * 
  */
 
+export declare type TypeIndex = {
+  Enum: Enum;
+};
+
 export declare type Enum = {
   single?: 'hello';
   union: 'red' | 'green' | 'blue'[];

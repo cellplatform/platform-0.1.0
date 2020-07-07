@@ -23,6 +23,12 @@
 
 import * as t from '@platform/cell.types';
 
+export declare type TypeIndex = {
+  MyMessages: MyMessages;
+  MyColor: MyColor;
+  MyMessage: MyMessage;
+};
+
 export declare type MyMessages = {
   channel: string;
   color?: t.ITypedSheetRef<MyColor>;

@@ -28,6 +28,18 @@
 
 import * as t from '@platform/cell.types';
 
+export declare type TypeIndex = {
+  MyRow: MyRow;
+  MyMessage: MyMessage;
+  MyColor: MyColor;
+  Primitives: Primitives;
+  MyMessages: MyMessages;
+  Enum: Enum;
+  MyDefault: MyDefault;
+  MyOne: MyOne;
+  MyTwo: MyTwo;
+};
+
 export declare type MyRow = {
   title: string;
   isEnabled: boolean | null;

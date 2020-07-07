@@ -1013,12 +1013,13 @@ describe('TypeClient', () => {
 
   describe('typescript', () => {
     describe('declaration', () => {
-      it('toString: with header (default)', async () => {
+      it('toString: with header and TypeIndex (default)', async () => {
         const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
         const res = TypeClient.typescript(defs[0]).toString();
 
         expect(res).to.include('Generated types defined in namespace');
         expect(res).to.include('|➔  ns:foo');
+        expect(res).to.include('export declare type TypeIndex = {');
         expect(res).to.include('export declare type MyRow');
         expect(res).to.include('export declare type MyColor');
       });
@@ -1029,6 +1030,15 @@ describe('TypeClient', () => {
 
         expect(res).to.not.include('Generated types');
         expect(res).to.include(`import * as t from '@platform/cell.types';\n`);
+        expect(res).to.include('export declare type MyRow');
+        expect(res).to.include('export declare type MyColor');
+      });
+
+      it('toString: no TypeIndex', async () => {
+        const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
+        const res = TypeClient.typescript(defs[0], { typeIndex: false }).toString();
+
+        expect(res).to.not.include('type TypeIndex');
         expect(res).to.include('export declare type MyRow');
         expect(res).to.include('export declare type MyColor');
       });
@@ -1072,6 +1082,15 @@ describe('TypeClient', () => {
 
         only(1, 'foo: string;');
         only(1, 'bar: string;');
+      });
+
+      it('toString: TypeIndex', async () => {
+        const defs = (await TypeClient.load({ ns: 'foo.multi', fetch })).defs;
+        const res = TypeClient.typescript(defs).toString();
+
+        expect(res).to.include(`export declare type TypeIndex = {`);
+        expect(res).to.include(`MyOne: MyOne;`);
+        expect(res).to.include(`MyTwo: MyTwo;`);
       });
 
       it('ref: row/data-cursor wrapper', async () => {

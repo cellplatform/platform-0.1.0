@@ -1,4 +1,4 @@
-import { constants, t, value, R } from '../../common';
+import { constants, t, R, defaultValue } from '../../common';
 import { TypeScript } from '../TypeScript';
 import { toTypescriptHeader } from './TypeClient.fn.typescript.header';
 import { TypeValue } from '../TypeValue';
@@ -9,7 +9,7 @@ import { TypeTarget } from '../TypeTarget';
  */
 export function typescript(
   def: t.INsTypeDef | t.INsTypeDef[],
-  options: { header?: boolean; exports?: boolean; imports?: boolean } = {},
+  options: { header?: boolean; exports?: boolean; imports?: boolean; typeIndex?: boolean } = {},
 ) {
   const defs = Array.isArray(def) ? def : [def];
   const api: t.ITypeClientTypescript = {
@@ -36,9 +36,9 @@ export function typescript(
      * Generated typescript declarations(s).
      */
     get declaration() {
-      const header = value.defaultValue(options.header, true) ? api.header : undefined;
-
-      let isRefUsed = false;
+      const { imports, exports } = options;
+      const header = defaultValue(options.header, true) ? api.header : undefined;
+      const typeIndex = defaultValue(options.typeIndex, true);
 
       const toDeclaration = (args: { typename: string; priorCode?: string }) => {
         const { typename, priorCode } = args;
@@ -61,7 +61,6 @@ export function typescript(
                     ? `t.ITypedSheetRefs<${T}>`
                     : `t.ITypedSheetRef<${T}>`;
                   line.adjust(name);
-                  isRefUsed = true;
                 }
               },
             });
@@ -73,21 +72,12 @@ export function typescript(
       };
 
       let code = '';
-      R.uniq(defs.map((def) => def.typename)).forEach((typename) => {
+      const typenames = R.uniq(defs.map((def) => def.typename));
+      typenames.forEach((typename) => {
         code = `${code}\n${toDeclaration({ typename, priorCode: code })}`;
       });
 
-      const imports = options.imports !== false ? `import * as t from '@platform/cell.types';` : '';
-
-      let res = '';
-      res = !header ? res : `${res}\n${header}\n`;
-      res = !isRefUsed || !imports ? res : `${res}\n${imports}\n`;
-      res = `${res}\n${code}`;
-      res = res[0] === '\n' ? res.substring(1) : res; // NB: Trim first new-line.
-      res = res.replace(/\n{3,}/g, '\n\n'); // NB: collapse any multi-line spaces.
-      res = res.replace(/\n*$/, '');
-      res = res.length > 0 ? `${res}\n` : res;
-
+      const res = TypeScript.prepare({ code, header, imports, exports, typeIndex });
       return res;
     },
 
