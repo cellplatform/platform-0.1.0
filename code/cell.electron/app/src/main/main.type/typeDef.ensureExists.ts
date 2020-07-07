@@ -1,4 +1,4 @@
-import { constants, ENV, fs, t, AppSchema, ConfigFile } from '../common';
+import { AppSchema, ConfigFile, t } from '../common';
 
 /**
  * Creates the type-defs if they don't already exist in the DB.
@@ -12,16 +12,10 @@ export async function ensureExists(args: { client: t.IClientTypesystem; force?: 
   // Write type-defs.
   if (force || !config.ns.appType || !(await http.ns(config.ns.appType).exists())) {
     const res = AppSchema.declare();
+    config.ns.appType = res.namespaces.App; // NB: Save generated namespace URI (cuid).
+
     const defs = res.toObject();
-    config.ns.appType = res.namespaces.App;
-
     await Promise.all(Object.keys(defs).map((ns) => http.ns(ns).write(defs[ns])));
-
-    // if (ENV.isDev) {
-    //   const ts = await client.typescript(config.ns.appType);
-    //   await ts.save(fs, fs.resolve('src/types.g'));
-    // }
-
     created = true;
   }
 
