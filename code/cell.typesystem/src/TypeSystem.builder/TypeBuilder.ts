@@ -1,6 +1,6 @@
 import { t, value, Uri } from '../common';
 import { TypeBuilderNs } from './TypeBuilderNs';
-import { TypeValue } from '../TypeSystem.core';
+import { TypeValue, TypeProp, TypeDefault } from '../TypeSystem.core';
 
 /**
  * A structured API for building a set of type-definitions in code.
@@ -27,6 +27,12 @@ export class TypeBuilder implements t.ITypeBuilder {
       acc[ns] = this.toDef(builder);
       return acc;
     }, {});
+  }
+
+  public toTypeDefs() {
+    return this.builders.reduce((acc: t.INsTypeDef[], builder) => {
+      return [...acc, ...this.toTypeDef(builder)];
+    }, []);
   }
 
   public ns(uri?: string | t.INsUri) {
@@ -97,8 +103,8 @@ export class TypeBuilder implements t.ITypeBuilder {
           const def: t.CellTypeDef = value.deleteUndefined({
             prop: `${typename}.${prop.name}`,
             type: this.formatType(prop.type),
-            target: prop.target,
             default: prop.default,
+            target: prop.target,
           });
           const column = getOrCreateObject(columns, prop.column);
           attachDef(def, column);
@@ -106,5 +112,42 @@ export class TypeBuilder implements t.ITypeBuilder {
     });
 
     return { columns };
+  }
+
+  private toTypeDef(ns: t.ITypeBuilderNs) {
+    const uri = ns.uri.toString();
+    const columns = this.toDef(ns).columns;
+    const res: t.INsTypeDef[] = [];
+
+    const add = (column: string, item: t.CellTypeDef) => {
+      const { prop, type: typename, optional } = TypeProp.parse(item.prop);
+
+      const exists = res.some((def) => def.typename === typename);
+      if (!exists) {
+        res.push({ uri, typename, columns: [], errors: [] });
+      }
+
+      const typeDef = res.find((def) => def.typename === typename);
+      if (typeDef) {
+        typeDef.columns.push({
+          column,
+          prop,
+          type: TypeValue.toType(item.type),
+          target: item.target,
+          default: TypeDefault.toTypeDefault(item.default),
+          optional,
+        });
+      }
+    };
+
+    Object.keys(columns).forEach((column) => {
+      const props = columns[column]?.props || {};
+      if (props.def) {
+        const defs = Array.isArray(props.def) ? props.def : [props.def];
+        defs.forEach((item) => add(column, item));
+      }
+    });
+
+    return res;
   }
 }

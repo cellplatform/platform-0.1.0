@@ -1,19 +1,25 @@
-import * as t from '@platform/cell.types';
+import * as t from './common/types';
+import { Observable } from 'rxjs';
 
-export * from './types.g';
-
-import { App } from './types.g';
-
+/**
+ * Events used by the Electron application.
+ */
 export type AppEvent = t.TypedSheetEvent | t.IpcEvent;
 
+/**
+ * Context passed around the Electron application.
+ */
 export type IContext = {
-  host: string;
   client: t.IClientTypesystem;
-  sheet: t.ITypedSheet<App>;
-  apps: t.ITypedSheetData<App>;
+  sheet: t.ITypedSheet<t.App>;
+  apps: t.ITypedSheetData<t.App>;
   windowRefs: IWindowRef[];
+  event$: Observable<AppEvent>;
 };
 
+/**
+ * Referennce to a single Electron browser window.
+ */
 export type IWindowRef = {
   uri: string;
   send<T>(channel: string, payload: T): void;

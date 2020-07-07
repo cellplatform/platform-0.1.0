@@ -1,18 +1,19 @@
-import { Subject } from 'rxjs';
-
-import { constants, t } from '../common';
+import { Observable } from 'rxjs';
+import { t } from '../common';
 
 /**
  * Generates the shared context.
  */
 export async function toContext(args: {
+  config: t.IConfigFile;
   client: t.IClientTypesystem;
-  event$: Subject<t.AppEvent>;
+  event$: Observable<t.AppEvent>;
 }) {
-  const { client, event$ } = args;
-  const sheet = await client.sheet<t.App>(constants.SYS.NS.DATA);
+  const { config, client, event$ } = args;
+
+  const sheet = await client.sheet<t.App>(config.ns.appData);
   const apps = await sheet.data('App').load();
-  const host = client.http.origin;
-  const ctx: t.IContext = { host, client, sheet, apps, windowRefs: [] };
+
+  const ctx: t.IContext = { client, sheet, apps, windowRefs: [], event$ };
   return ctx;
 }

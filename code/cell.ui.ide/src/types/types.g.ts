@@ -1,31 +1,31 @@
 /**
  * Generated types defined in namespace:
- * 
- *    |                
- *    |➔  ns:sys.app.type
+ *
+ *    |
+ *    |➔  ns:ckc9zfcsx0000bketgqbu23hf
  *    |
  *
  * By:
  *    @platform/cell.typesystem@0.0.72
- * 
- * Notes: 
- * 
+ *
+ * Notes:
+ *
  *    - DO NOT manually edit this file (it will be regenerated automatically).
  *    - DO check this file into source control.
  *    - Usage
  *        Import the [.d.ts] file within the consuming module
- *        that uses a [TypedSheet] to programatically manipulate 
+ *        that uses a [TypedSheet] to programatically manipulate
  *        the namespace in a strongly-typed manner, for example:
- * 
+ *
  *            import * as t from './types.g.ts';
- * 
+ *
  */
 
 import * as t from '@platform/cell.types';
 
 export declare type App = {
   name: string;
-  backgroundColor: string;
+  argv: string[];
   fs: string;
   bytes: number;
   entry: string;

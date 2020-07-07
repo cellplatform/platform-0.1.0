@@ -17,7 +17,6 @@ describe('TypeClient', () => {
       expect(res.defs.length).to.eql(1);
 
       const def = res.defs[0];
-      expect(def.ok).to.eql(true);
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
@@ -31,7 +30,6 @@ describe('TypeClient', () => {
       expect(res.defs.length).to.eql(1);
 
       const def = res.defs[0];
-      expect(def.ok).to.eql(true);
       expect(def.errors).to.eql([]);
       expect(def.uri).to.eql('ns:foo');
       expect(def.typename).to.eql('MyRow');
@@ -46,13 +44,11 @@ describe('TypeClient', () => {
       expect(res.defs.length).to.eql(2);
 
       const defs = res.defs;
-      expect(defs[0].ok).to.eql(true);
       expect(defs[0].errors).to.eql([]);
       expect(defs[0].uri).to.eql('ns:foo.multi');
       expect(defs[0].typename).to.eql('MyOne');
       expect(defs[0].columns.map((c) => c.column)).to.eql(['A', 'B']);
 
-      expect(defs[1].ok).to.eql(true);
       expect(defs[1].errors).to.eql([]);
       expect(defs[1].uri).to.eql('ns:foo.multi');
       expect(defs[1].typename).to.eql('MyTwo');
@@ -694,7 +690,6 @@ describe('TypeClient', () => {
         const fetch = testFetch({ defs: TYPE_DEFS });
         const def = (await TypeClient.load({ ns: 'foo.messages', fetch })).defs[0];
 
-        expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
         const B = def.columns[1];
@@ -796,10 +791,7 @@ describe('TypeClient', () => {
         const def1 = res1.defs[0];
         const def2 = res2.defs[0];
 
-        expect(def1.ok).to.eql(true);
         expect(def1.errors).to.eql([]);
-
-        expect(def2.ok).to.eql(true);
         expect(def2.errors).to.eql([]);
 
         const targetA = def2.columns[0];
@@ -845,7 +837,6 @@ describe('TypeClient', () => {
 
       it('REF(column) => REF => object (ns)', async () => {
         const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
-        expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
         const C = def.columns[2];
@@ -862,7 +853,6 @@ describe('TypeClient', () => {
 
       it('REF(column) => REF(column) => VALUE (primitive)', async () => {
         const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
-        expect(def.ok).to.eql(true);
         expect(def.errors).to.eql([]);
 
         const D = def.columns[3];
@@ -1023,12 +1013,13 @@ describe('TypeClient', () => {
 
   describe('typescript', () => {
     describe('declaration', () => {
-      it('toString: with header (default)', async () => {
+      it('toString: with header and TypeIndex (default)', async () => {
         const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
         const res = TypeClient.typescript(defs[0]).toString();
 
         expect(res).to.include('Generated types defined in namespace');
         expect(res).to.include('|➔  ns:foo');
+        expect(res).to.include('export declare type TypeIndex = {');
         expect(res).to.include('export declare type MyRow');
         expect(res).to.include('export declare type MyColor');
       });
@@ -1059,6 +1050,12 @@ describe('TypeClient', () => {
         expect(res2).to.not.include(`import * as t from '@platform/cell.types';`);
       });
 
+      it('toString: no TypeIndex when empty', async () => {
+        const defs = (await TypeClient.load({ ns: 'foo.empty', fetch })).defs;
+        const res = TypeClient.typescript(defs[0], { header: false }).toString();
+        expect(res).to.eql('');
+      });
+
       it('toString: mutliple defs', async () => {
         const defs = (await TypeClient.load({ ns: 'foo.multi', fetch })).defs;
         const res = TypeClient.typescript(defs).toString();
@@ -1084,14 +1081,23 @@ describe('TypeClient', () => {
         only(1, 'bar: string;');
       });
 
+      it('toString: TypeIndex', async () => {
+        const defs = (await TypeClient.load({ ns: 'foo.multi', fetch })).defs;
+        const res = TypeClient.typescript(defs).toString();
+
+        expect(res).to.include(`export declare type TypeIndex = {`);
+        expect(res).to.include(`MyOne: MyOne;`);
+        expect(res).to.include(`MyTwo: MyTwo;`);
+      });
+
       it('ref: row/data-cursor wrapper', async () => {
         const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
         const res = TypeClient.typescript(defs).toString();
 
         expect(res).to.include(`*    |➔  ns:foo\n`);
         expect(res).to.include(`import * as t from '@platform/cell.types';`);
-        expect(res).to.include(`message: t.ITypedSheetRef<MyMessage> | null;\n`);
-        expect(res).to.include(`messages: t.ITypedSheetRefs<MyMessage>;\n`);
+        expect(res).to.include(`message: t.ITypedSheetRef<TypeIndex, 'MyMessage'> | null;\n`);
+        expect(res).to.include(`messages: t.ITypedSheetRefs<TypeIndex, 'MyMessage'>;\n`);
         expect(res).to.include(`color?: MyColor;\n`); // NB: This is an external type reference but it not {target:'ref'} rather it is INLINE.
       });
 
@@ -1159,12 +1165,10 @@ describe('TypeClient', () => {
         const file1 = (await fs.readFile(fs.join(dir, 'Foo.txt.ts'))).toString();
         const file2 = (await fs.readFile(fs.join(dir, 'Foo.d.ts'))).toString();
 
-        expect(file1).to.include(`import * as t from './Foo.txt.ts';`);
         expect(file1).to.include(`export declare type MyRow = {`);
         expect(file1).to.include(`export declare type MyColor = {`);
         expect(file1).to.include(`export declare type MyMessage = {`);
 
-        expect(file2).to.include(`import * as t from './Foo.d.ts';`);
         expect(file2).to.include(`export declare type MyRow = {`);
         expect(file2).to.include(`export declare type MyColor = {`);
         expect(file2).to.include(`export declare type MyMessage = {`);

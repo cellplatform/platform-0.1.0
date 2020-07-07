@@ -15,6 +15,7 @@ export async function define(ctx: t.IContext) {
     props: {
       name: '@platform/cell.ui.sys',
       entryPath: 'bundle/index.html',
+      argv: ['entry:builder', 'entry:debug'],
       devPort: 1234,
       devTools: false,
       width: 1200,

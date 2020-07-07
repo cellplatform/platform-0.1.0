@@ -31,7 +31,7 @@ export function init() {
   // Initialize the environment
   const cache = MemoryCache.create();
   const event$ = new Subject<t.AppEvent>();
-  ipc.init({ def, cache, event$ });
+  ipc.init({ event$, cache, def });
   const env: t.IEnv = { host, def, cache, event$: event$ as Subject<t.Event> };
   if (isTopWindow) {
     const win = (window as unknown) as t.ITopWindow;
@@ -52,17 +52,18 @@ export function init() {
     console.groupEnd();
     console.log('-------------------------------------------');
   }
-
-  //
 }
 
 /**
  * [Helpers]
  */
 
-// Read out the window-definition passed through the [process] arguments.
-const findArgv = (key: string) => {
+/**
+ * Read out the window-definition passed through
+ * the [process.argv] arguments.
+ */
+function findArgv(key: string) {
   const prefix = `${key}=`;
   const match = (process.argv || []).find((item) => item === key || item.startsWith(prefix));
   return (match || '').replace(new RegExp(`^${prefix}`), '').trim();
-};
+}

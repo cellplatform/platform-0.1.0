@@ -9,6 +9,9 @@ type P<T extends t.IUri> = (parsed: t.IUriParts<T>) => void;
 const ALLOW: Allow = { NS: [] };
 export const DEFAULT = { ALLOW };
 
+/**
+ * Helpers for working with URIs.
+ */
 export class Uri {
   public static cuid = cuid;
   public static slug = slug;
@@ -209,7 +212,11 @@ export class Uri {
   /**
    * Helpers for converting one URI type to another.
    */
-  public static toNs(input: string | t.IUri) {
+  public static toNs(input?: string | t.IUri) {
+    if (input === undefined) {
+      return Uri.ns(cuid());
+    }
+
     if (typeof input === 'string' && !input.includes(':')) {
       return Uri.ns(input);
     }
@@ -224,6 +231,30 @@ export class Uri {
       return Uri.ns((obj as t.IFileUri).ns);
     }
     throw new Error(`A namespace cannot be derived from the uri (${input.toString()})`);
+  }
+
+  /**
+   * Extracts the index of the row of the given URI.
+   */
+  public static rowIndex(input?: string | t.IUri) {
+    const uri = typeof input === 'object' ? input : Uri.parse(input).parts;
+    if (uri.type === 'CELL' || uri.type === 'COLUMN' || uri.type === 'ROW') {
+      return coord.cell.toRowIndex(uri.key);
+    } else {
+      return -1;
+    }
+  }
+
+  /**
+   * Extracts the index of the row of the given URI.
+   */
+  public static columnIndex(input?: string | t.IUri) {
+    const uri = typeof input === 'object' ? input : Uri.parse(input).parts;
+    if (uri.type === 'CELL' || uri.type === 'COLUMN' || uri.type === 'ROW') {
+      return coord.cell.toColumnIndex(uri.key);
+    } else {
+      return -1;
+    }
   }
 }
 

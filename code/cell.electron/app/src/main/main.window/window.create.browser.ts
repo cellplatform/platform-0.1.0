@@ -15,7 +15,7 @@ export async function createBrowserWindow(args: {
   const window = args.window.props;
   const app = args.app.props;
   const uri = args.window.uri.toString();
-  const host = ctx.host;
+  const host = ctx.client.host;
   const sandbox = true; // https://www.electronjs.org/docs/api/sandbox-option
 
   // Create the browser window.

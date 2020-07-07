@@ -130,8 +130,8 @@ describe('TypedSheetChangeMonitor', () => {
       const fired: t.TypedSheetEvent[] = [];
       monitor.event$.subscribe((e) => fired.push(e));
 
-      const rowA = sheet1.data<m.MyRow>('MyRow').row(0).props;
-      const rowB = sheet2.data<m.MyRow>('MyRow').row(0).props;
+      const rowA = sheet1.data('MyRow').row(0).props;
+      const rowB = sheet2.data('MyRow').row(0).props;
 
       expect(fired).to.eql([]);
       rowA.title = 'Hello';
@@ -162,7 +162,7 @@ describe('TypedSheetChangeMonitor', () => {
       const fired: t.ITypedSheetChanged[] = [];
       monitor.changed$.subscribe((e) => fired.push(e));
 
-      const row = sheet.data<m.MyRow>('MyRow').row(0).props;
+      const row = sheet.data('MyRow').row(0).props;
       row.title = 'Foo';
 
       await time.wait(0);
@@ -179,7 +179,7 @@ describe('TypedSheetChangeMonitor', () => {
       const fired: t.ITypedSheetChanged[] = [];
       monitor.changed$.subscribe((e) => fired.push(e));
 
-      const cursor = await sheet.data<m.MyRow>('MyRow').load();
+      const cursor = await sheet.data('MyRow').load();
       const row = cursor.row(0).props;
       const res = await fetch.getCells({ ns: 'ns:foo.mySheet', query: 'A1:A1' });
 
@@ -207,7 +207,7 @@ describe('TypedSheetChangeMonitor', () => {
     const testRef = async () => {
       const sheet = (await testMySheet()).sheet;
       const monitor = ChangeMonitor.create().watch(sheet);
-      const row = sheet.data<m.MyRow>('MyRow').row(0);
+      const row = sheet.data('MyRow').row(0);
       const messages = row.props.messages;
       return { sheet, monitor, row, messages };
     };
@@ -260,6 +260,6 @@ const testMySheet = async (cells?: t.ICellMap) => {
   const ns = 'ns:foo.mySheet';
   const event$ = new Subject<t.TypedSheetEvent>();
   const fetch = await testFetchMySheet(ns, cells);
-  const sheet = await TypeSystem.Sheet.load<m.MyRow>({ fetch, ns, event$ });
+  const sheet = await TypeSystem.Sheet.load<m.TypeIndex>({ fetch, ns, event$ });
   return { ns, fetch, sheet, event$ };
 };

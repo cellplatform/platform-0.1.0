@@ -1,6 +1,4 @@
-import { constants, TypeSystem } from '../common';
-
-const SYS = constants.SYS;
+import { TypeSystem, Uri } from '../common';
 
 /**
  * Initializes an object structure representing the
@@ -9,14 +7,21 @@ const SYS = constants.SYS;
 export function declare() {
   const def = TypeSystem.def();
 
+  const generate = () => Uri.toNs(Uri.cuid()).toString();
+  const namespaces = {
+    App: generate(),
+    AppWindow: generate(),
+    AppData: generate(),
+  };
+
   /**
    * An application module definition.
    */
   def
-    .ns(SYS.NS.TYPE)
+    .ns(namespaces.App)
     .type('App')
     .prop('name', (p) => p.type('string'))
-    .prop('backgroundColor', (p) => p.type('string').default('#fff'))
+    .prop('argv', (p) => p.type('string[]'))
     .prop('fs', (p) => p.type('string').default('fs'))
     .prop('bytes', (p) => p.type('number').default(-1))
     .prop('entry', (p) => p.type('string'))
@@ -33,8 +38,9 @@ export function declare() {
    * A single window instance of an {App}.
    */
   def
+    .ns(namespaces.AppWindow)
     .type('AppWindow')
-    .prop('app', (p) => p.type('string')) // {App.name}
+    .prop('app', (p) => p.type('string')) // REF: =app(row)
     .prop('title', (p) => p.type('string').default('Untitled'))
     .prop('width', (p) => p.type('number'))
     .prop('height', (p) => p.type('number'))
@@ -43,14 +49,20 @@ export function declare() {
     .prop('isVisible', (p) => p.type('boolean').default(true));
 
   /**
-   * The entry-point for data for an application.
+   * The entry-point for the data of an application.
    */
   def
+    .ns(namespaces.AppData)
     .type('AppData')
-    .prop('app', (p) => p.type('string')) // {App.name}
+    .prop('app', (p) => p.type('string')) // REF: =app(row)
     .prop('window', (p) => p.type('string')) // {AppWindow.uri}
     .prop('fs', (p) => p.type('string').default('fs'))
     .prop('tmp', (p) => p.type('string'));
 
-  return def.toObject();
+  // Finish up.
+  return {
+    namespaces,
+    toObject: () => def.toObject(),
+    toTypeDefs: () => def.toTypeDefs(),
+  };
 }

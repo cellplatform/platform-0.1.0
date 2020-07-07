@@ -2,7 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, rx, t, ui } from '../../common';
+import { color, css, CssValue, rx, t, ui } from '../../common';
+import { Installer } from '../Installer';
 import { App, AppClickEvent, AppClickEventHandler } from './App';
 import { IAppData } from './types';
 
@@ -54,59 +55,73 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
    * [Methods]
    */
   public async load() {
-    const sheet = await this.client.sheet('ns:sys.app');
-    const data = await sheet.data<t.App>('App').load();
+    const ctx = this.context;
 
-    const wait = data.rows.map(async (row) => {
-      const uri = row.toString();
-      const windows = await row.props.windows.data();
+    const def = ctx.env.def;
 
-      console.log('uri', uri);
-      const item: IAppData = {
-        typename: row.typename,
-        types: row.types.list,
-        props: row.toObject(),
-        uri,
-        windows,
-      };
-      return item;
-    });
+    console.log('def', def);
 
-    const apps = await Promise.all(wait);
-
-    this.state$.next({
-      apps: apps.filter((app) => !(app.props.name || '').endsWith('cell.ui.sys')),
-    });
+    // const sheet = await this.client.sheet('ns:sys.app');
+    // const data = await sheet.data<t.App>('App').load();
+    // const wait = data.rows.map(async (row) => {
+    //   const uri = row.toString();
+    //   const windows = await row.props.windows.data();
+    //   console.log('uri', uri);
+    //   const item: IAppData = {
+    //     typename: row.typename,
+    //     types: row.types.list,
+    //     props: row.toObject(),
+    //     uri,
+    //     windows,
+    //   };
+    //   return item;
+    // });
+    // const apps = await Promise.all(wait);
+    // this.state$.next({
+    //   apps: apps.filter((app) => !(app.props.name || '').endsWith('cell.ui.sys')),
+    // });
   }
 
   /**
    * [Render]
    */
   public render() {
-    const styles = { base: css({}) };
-    return (
-      <div {...css(styles.base, this.props.style)}>
-        {this.renderEmpty()}
-        {this.renderApps()}
-      </div>
-    );
-  }
-
-  private renderApps() {
     const apps = this.apps;
-    if (apps.length === 0) {
-      return null;
-    }
+    const isEmpty = apps.length === 0;
 
     const styles = {
-      base: css({}),
+      base: css({
+        Absolute: 0,
+        Flex: 'vertical-stretch-stretch',
+      }),
+      top: css({
+        flex: 1,
+        position: 'relative',
+        Scroll: true,
+      }),
+      bottom: css({
+        position: 'relative',
+        height: 80,
+        backgroundColor: color.format(-0.03),
+        borderTop: `solid 1px ${color.format(-0.1)}`,
+      }),
     };
 
     const elList = apps.map((app, i) => {
       return <App key={i} app={app} onClick={this.props.onAppClick} />;
     });
 
-    return <div {...styles.base}>{elList}</div>;
+    return (
+      <div {...styles.base}>
+        <div {...styles.top}>
+          {!isEmpty && elList}
+          {isEmpty && this.renderEmpty()}
+        </div>
+        <div {...styles.bottom}>
+          <Installer />
+        </div>
+      </div>
+    );
   }
 
   private renderEmpty() {
@@ -120,6 +135,8 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
         fontSize: 12,
         fontStyle: 'italic',
         textAlign: 'center',
+        marginTop: 20,
+        userSelect: 'none',
       }),
     };
     return (

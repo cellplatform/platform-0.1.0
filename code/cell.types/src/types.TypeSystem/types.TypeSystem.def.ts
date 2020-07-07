@@ -10,8 +10,7 @@ export type ITypeDefPayload = { ns?: t.INsProps; columns: t.IColumnMap };
  * Type Definitions
  */
 export type INsTypeDef = {
-  ok: boolean;
-  uri: string;
+  uri: string; // namespace URI.
   typename: string;
   columns: t.IColumnTypeDef[];
   errors: t.ITypeError[];

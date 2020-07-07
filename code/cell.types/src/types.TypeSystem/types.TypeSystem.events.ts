@@ -69,9 +69,9 @@ export type ITypedSheetRefsLoadingEvent = {
   type: 'SHEET/refs/loading';
   payload: ITypedSheetRefsLoading;
 };
-export type ITypedSheetRefsLoading<T = {}> = {
+export type ITypedSheetRefsLoading<T = {}, K extends keyof T = any> = {
   sheet: t.ITypedSheet;
-  refs: t.ITypedSheetRefs<T>;
+  refs: t.ITypedSheetRefs<T, K>;
 };
 
 /**

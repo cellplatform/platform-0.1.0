@@ -11,6 +11,7 @@ export type SampleTypeDefs = {
   'ns:foo.message': D;
   'ns:foo.nested': D;
   'ns:foo.defaults': D;
+  'ns:foo.empty': D;
 };
 
 export const TYPE_DEFS: SampleTypeDefs = {
@@ -162,5 +163,9 @@ export const TYPE_DEFS: SampleTypeDefs = {
         },
       },
     },
+  },
+
+  'ns:foo.empty': {
+    columns: {},
   },
 };

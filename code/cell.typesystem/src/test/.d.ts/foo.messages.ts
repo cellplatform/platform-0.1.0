@@ -6,7 +6,7 @@
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.72
+ *    @platform/cell.typesystem@0.0.74
  * 
  * Notes: 
  * 
@@ -17,16 +17,22 @@
  *        that uses a [TypedSheet] to programatically manipulate 
  *        the namespace in a strongly-typed manner, for example:
  * 
- *            import * as t from './foo.messages.ts';
+ *            import * as t from './<filename>;
  * 
  */
 
 import * as t from '@platform/cell.types';
 
+export declare type TypeIndex = {
+  MyMessages: MyMessages;
+  MyColor: MyColor;
+  MyMessage: MyMessage;
+};
+
 export declare type MyMessages = {
   channel: string;
-  color?: t.ITypedSheetRef<MyColor>;
-  messages: t.ITypedSheetRefs<MyMessage>;
+  color?: t.ITypedSheetRef<TypeIndex, 'MyColor'>;
+  messages: t.ITypedSheetRefs<TypeIndex, 'MyMessage'>;
 };
 
 export declare type MyColor = {

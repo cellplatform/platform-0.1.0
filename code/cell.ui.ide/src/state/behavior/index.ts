@@ -14,5 +14,5 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   /**
    * Initialize
    */
-  store.dispatch({ type: 'APP:IDE/load', payload: { uri: ctx.def } }); // TEMP 🐷
+  store.dispatch({ type: 'APP:IDE/load', payload: { uri: ctx.env.def } }); // TEMP 🐷
 }

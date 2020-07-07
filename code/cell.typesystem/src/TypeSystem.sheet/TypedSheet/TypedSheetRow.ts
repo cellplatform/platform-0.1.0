@@ -16,23 +16,23 @@ type IArgs = {
 /**
  * Read/write methods for the properties of a single row.
  */
-type ITypedSheetRowProp<T, K extends keyof T> = {
-  get(): T[K];
-  set(value: T[K]): t.ITypedSheetRow<T>;
-  clear(): t.ITypedSheetRow<T>;
+type ITypedSheetRowProp<T, K extends keyof T, P extends keyof T[K]> = {
+  get(): T[K][P];
+  set(value: T[K][P]): t.ITypedSheetRow<T, K>;
+  clear(): t.ITypedSheetRow<T, K>;
 };
 
 /**
  * A strongly-typed row.
  */
-export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
-  public static create = <T>(args: IArgs): t.ITypedSheetRow<T> => {
-    return new TypedSheetRow<T>(args) as t.ITypedSheetRow<T>;
-  };
+export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, K> {
+  public static create<T, K extends keyof T>(args: IArgs) {
+    return new TypedSheetRow<T, K>(args) as t.ITypedSheetRow<T, K>;
+  }
 
-  public static load = <T>(args: IArgs): Promise<t.ITypedSheetRow<T>> => {
-    return TypedSheetRow.create<T>(args).load();
-  };
+  public static load<T, K extends keyof T>(args: IArgs): Promise<t.ITypedSheetRow<T, K>> {
+    return TypedSheetRow.create<T, K>(args).load();
+  }
 
   /**
    * [Lifecycle]
@@ -92,14 +92,14 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
    */
   private readonly _ctx: t.SheetCtx;
   private readonly _columns: t.IColumnTypeDef[] = [];
-  private readonly _prop: { [propname: string]: ITypedSheetRowProp<T, any> } = {};
-  private _refs: { [propname: string]: t.ITypedSheetRef<T> | t.ITypedSheetRefs<T> } = {};
-  private _props: t.ITypedSheetRowProps<T>;
-  private _types: t.ITypedSheetRowTypes<T>;
+  private readonly _prop: { [propname: string]: ITypedSheetRowProp<T, K, any> } = {};
+  private _refs: { [propname: string]: t.ITypedSheetRef<T, K> | t.ITypedSheetRefs<T, K> } = {};
+  private _props: t.ITypedSheetRowProps<T[K]>;
+  private _types: t.ITypedSheetRowTypes<T[K]>;
   private _data: { [column: string]: t.ICellData } = {};
   private _isLoaded = false;
-  private _status: t.ITypedSheetRow<T>['status'] = 'INIT';
-  private _loading: { [key: string]: Promise<t.ITypedSheetRow<T>> } = {};
+  private _status: t.ITypedSheetRow<T, K>['status'] = 'INIT';
+  private _loading: { [key: string]: Promise<t.ITypedSheetRow<T, K>> } = {};
   private _sheet: t.ITypedSheet;
 
   public readonly index: number;
@@ -119,7 +119,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
   public get types() {
     if (!this._types) {
-      type M = t.ITypedSheetRowTypes<T>['map'];
+      type M = t.ITypedSheetRowTypes<T[K]>['map'];
       let map: M | undefined;
       let list: t.ITypedSheetRowType[] | undefined;
       const columns = this._columns;
@@ -156,11 +156,11 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     return this._types;
   }
 
-  public get props(): t.ITypedSheetRowProps<T> {
+  public get props(): t.ITypedSheetRowProps<T[K]> {
     if (!this._props) {
       const props = {};
       this._columns.forEach((typeDef) => {
-        const name = typeDef.prop as keyof T;
+        const name = typeDef.prop as keyof T[K];
         Object.defineProperty(props, name, {
           get: () => this.prop(name).get(),
           set: (value) => this.prop(name).set(value),
@@ -179,10 +179,12 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   }
 
   public async load(
-    options: { props?: (keyof T)[]; force?: boolean } = {},
-  ): Promise<t.ITypedSheetRow<T>> {
+    options: { props?: (keyof T[K])[]; force?: boolean } = {},
+  ): Promise<t.ITypedSheetRow<T, K>> {
+    const self = (this as unknown) as t.ITypedSheetRow<T, K>; // eslint-disable-line
+
     if (this.isLoaded && !options.force) {
-      return this;
+      return self;
     }
 
     const { props } = options;
@@ -191,7 +193,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       return this._loading[cacheKey];
     }
 
-    const promise = new Promise<t.ITypedSheetRow<T>>(async (resolve, reject) => {
+    const promise = new Promise<t.ITypedSheetRow<T, K>>(async (resolve, reject) => {
       this._status = 'LOADING';
 
       const ns = this.uri.ns;
@@ -204,7 +206,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
 
       await Promise.all(
         this._columns
-          .filter((columnDef) => (!props ? true : props.includes(columnDef.prop as keyof T)))
+          .filter((columnDef) => (!props ? true : props.includes(columnDef.prop as keyof T[K])))
           .map(async (columnDef) => {
             const res = await this._ctx.fetch.getCells({ ns, query });
             const key = `${columnDef.column}${this.index + 1}`;
@@ -219,22 +221,22 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       // Finish up.
       this.fire({ type: 'SHEET/row/loaded', payload: { sheet, index } });
       delete this._loading[cacheKey];
-      resolve(this);
+      resolve(self);
     });
 
     this._loading[cacheKey] = promise; // Cached for repeat calls.
     return promise;
   }
 
-  public toObject(): T {
+  public toObject(): T[K] {
     return this._columns.reduce((acc, typeDef) => {
-      const prop = typeDef.prop;
-      acc[prop] = this.prop(prop as keyof T).get();
+      const prop = typeDef.prop as keyof T[K];
+      acc[prop as string] = this.prop(prop).get();
       return acc;
-    }, {}) as T;
+    }, {}) as T[K];
   }
 
-  public type(prop: keyof T) {
+  public type(prop: keyof T[K]) {
     const typeDef = this.findColumnByProp(prop);
     if (!typeDef) {
       const err = `The property '${prop}' is not defined by a column on [${this.uri}]`;
@@ -246,7 +248,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
   /**
    * Read/write handle for a single cell (property).
    */
-  public prop<K extends keyof T>(name: K): ITypedSheetRowProp<T, K> {
+  public prop<P extends keyof T[K]>(name: P): ITypedSheetRowProp<T, K, P> {
     const propname = name as string;
     if (this._prop[propname]) {
       return this._prop[propname]; // Already created and cached.
@@ -262,12 +264,12 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       throw new Error(err);
     }
 
-    const api: ITypedSheetRowProp<T, K> = {
+    const api: ITypedSheetRowProp<T, K, P> = {
       /**
        * Get a cell (property) value.
        */
-      get(): T[K] {
-        const done = (result?: any): T[K] => {
+      get(): T[K][P] {
+        const done = (result?: any): T[K][P] => {
           if (result === undefined && TypeDefault.isTypeDefaultValue(columnDef.default)) {
             // NB: Only look for a default value definition.
             //     If the default value was declared with as a REF, that will have been looked up
@@ -312,7 +314,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
       /**
        * Set a cell (property) value.
        */
-      set(value: T[K]) {
+      set(value: T[K][P]) {
         if (target.isInline) {
           const isChanged = !R.equals(api.get(), value);
 
@@ -339,7 +341,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
           throw new Error(err);
         }
 
-        return self;
+        return self as t.ITypedSheetRow<T, K>;
       },
 
       /**
@@ -349,7 +351,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
         if (target.isInline) {
           api.set(undefined as any);
         }
-        return self;
+        return self as t.ITypedSheetRow<T, K>;
       },
     };
 
@@ -378,7 +380,7 @@ export class TypedSheetRow<T> implements t.ITypedSheetRow<T> {
     return this._columns.find((def) => def.column === columnKey) as t.IColumnTypeDef;
   }
 
-  private findColumnByProp<K extends keyof T>(prop: K) {
+  private findColumnByProp<P extends keyof T[K]>(prop: P) {
     const res = this._columns.find((def) => def.prop === prop);
     if (!res) {
       const err = `Column-definition for the property '${prop}' not found.`;

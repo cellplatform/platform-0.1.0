@@ -5,5 +5,5 @@ export type IAppData = {
   typename: string;
   props: t.App;
   types: t.ITypedSheetRowType[];
-  windows: t.ITypedSheetData<t.AppWindow>;
+  windows: t.ITypedSheetData<t.AppTypeIndex, 'AppWindow'>;
 };

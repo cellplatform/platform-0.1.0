@@ -209,7 +209,7 @@ describe('TypeSystem ➔ HTTP', () => {
       mock.service.request$.subscribe((e) => requests.push(e.url));
 
       const ns = 'ns:foo.mySheet';
-      const sheet = await TypeSystem.Sheet.client(mock.client).load<g.MyRow>(ns);
+      const sheet = await TypeSystem.Sheet.client(mock.client).load<g.TypeIndex>(ns);
 
       const cursor = await sheet.data('MyRow').load();
       await mock.dispose();
@@ -250,7 +250,7 @@ describe('TypeSystem ➔ HTTP', () => {
       const client = Client.typesystem({ http: mock.client });
       expect(client.http).to.eql(mock.client);
 
-      const sheet = await client.sheet<g.MyRow>(ns);
+      const sheet = await client.sheet<g.TypeIndex>(ns);
       const cursor = await sheet.data('MyRow').load();
       const row = cursor.row(0).props;
 

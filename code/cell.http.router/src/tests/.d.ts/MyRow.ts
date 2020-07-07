@@ -6,7 +6,7 @@
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.72
+ *    @platform/cell.typesystem@0.0.74
  * 
  * Notes: 
  * 
@@ -17,9 +17,15 @@
  *        that uses a [TypedSheet] to programatically manipulate 
  *        the namespace in a strongly-typed manner, for example:
  * 
- *            import * as t from './MyRow.ts';
+ *            import * as t from './<filename>;
  * 
  */
+
+export declare type TypeIndex = {
+  MyRow: MyRow;
+  MyColor: MyColor;
+  MyOther: MyOther;
+};
 
 export declare type MyRow = {
   title: string;

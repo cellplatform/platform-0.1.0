@@ -81,7 +81,6 @@ function toNsTypeDef(args: {
   const { ns, typename, columns, errors } = args;
 
   let typeDef: t.INsTypeDef = {
-    ok: errors.ok,
     uri: ns,
     typename,
     columns,
@@ -97,8 +96,7 @@ function toNsTypeDef(args: {
     [] as t.ITypeError[],
   );
   const errs = R.uniq([...errors.list, ...columnErrors]);
-  const ok = errs.length === 0;
-  typeDef = { ...typeDef, ok, errors: errs };
+  typeDef = { ...typeDef, errors: errs };
 
   // Finish up.
   return typeDef;
@@ -130,7 +128,7 @@ async function loadNamespace(args: {
       .map((typename) => ({ typename, columns: groups[typename] }))
       .map(({ typename, columns }) => toNsTypeDef({ ns, typename, columns, errors }));
 
-    const ok = errors.ok && defs.every((def) => def.ok);
+    const ok = errors.ok && defs.every((def) => def.errors.length === 0);
     let errs: t.ITypeError[] | undefined;
 
     const res: LoadResponse = {

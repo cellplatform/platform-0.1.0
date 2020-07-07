@@ -13,12 +13,26 @@ import { fetcher } from '../../TypeSystem.fetch';
 const fromClient = (client: t.IHttpClient) => {
   const fetch = fetcher.fromClient(client);
   return {
-    load: <T = {}>(ns: string | t.INsUri) => TypedSheet.load<T>({ fetch, ns }),
+    load: <T>(ns: string | t.INsUri) => TypedSheet.load<T>({ fetch, ns }),
   };
 };
 
 /**
  * Represents a namespace as a logical sheet of cells.
+ *
+ * Generic:
+ *    <T> = TypeIndex = { [TypeName]:Type }
+ *
+ *    type TypeIndex = {
+ *      MyFoo: MyFoo;
+ *      MyBar: MyBar;
+ *    }
+ *
+ *    A type-index is a single type that provides a key'ed reference to
+ *    all the kinds of types available within the sheet.  The keys
+ *    allow the `.data('<key>')` cursors to be addressed with strong-typing
+ *    on the TypeName.
+ *
  */
 export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   public static client = fromClient;
@@ -60,7 +74,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   /**
    * Load a sheet from the network.
    */
-  public static async load<T = {}>(args: {
+  public static async load<T>(args: {
     fetch: t.ISheetFetcher;
     ns: string | t.INsUri;
     cache?: t.IMemoryCache;
@@ -199,7 +213,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   private readonly _dispose$ = new Subject<{}>();
   private readonly _typeDefs: t.INsTypeDef[];
   private _types: t.ITypedSheet['types'];
-  private _data: { [typename: string]: TypedSheetData<any> } = {};
+  private _data: { [typename: string]: TypedSheetData<any, any> } = {};
 
   public readonly uri: t.INsUri;
   public readonly implements: t.INsUri;
@@ -249,17 +263,19 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   }
 
   public async info<P extends t.INsProps = t.INsProps>() {
+    this.throwIfDisposed('info');
     const res = await this._ctx.fetch.getNs({ ns: this.uri.toString() });
     const exists = Boolean(res.ns);
     const ns = (res.ns || {}) as P;
     return { exists, ns };
   }
 
-  public data<D = T>(input: string | t.ITypedSheetDataArgs) {
+  public data<K extends keyof T>(input: K | t.ITypedSheetDataArgs<T, K>) {
     this.throwIfDisposed('data');
 
-    const args = typeof input === 'string' ? { typename: input } : input;
-    const { typename, range } = args;
+    type A = t.ITypedSheetDataArgs<T, K>;
+    const args = (typeof input === 'string' ? { typename: input } : input) as A;
+    const typename = args.typename as string;
     const ctx = this._ctx;
 
     // Check the pool in case the cursor has already been created.
@@ -268,7 +284,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
       if (args.range && res.range !== args.range) {
         res.expandRange(args.range);
       }
-      return res as t.ITypedSheetData<D>;
+      return res as t.ITypedSheetData<T, K>;
     }
 
     // Retrieve the specified type definition.
@@ -282,18 +298,20 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
 
     // Construct the cursor.
     const types = def.columns;
-    const res: t.ITypedSheetData<D> = TypedSheetData.create<D>({
+    const res: t.ITypedSheetData<T, K> = TypedSheetData.create<T, K>({
       sheet: this,
       typename,
       types,
       ctx,
-      range,
+      range: args.range,
     });
-    this._data[typename] = res as TypedSheetData<any>;
+    this._data[typename] = res as TypedSheetData<T, K>;
     return res;
   }
 
   public change(changes: t.ITypedSheetChanges) {
+    this.throwIfDisposed('change');
+
     // Namespace.
     if (changes.ns) {
       const change = changes.ns;
