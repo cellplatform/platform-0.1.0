@@ -1,6 +1,6 @@
-import { BrowserWindow, screen } from 'electron';
+import { BrowserWindow } from 'electron';
 
-import { constants, ENV, t, defaultValue } from '../common';
+import { constants, defaultValue, ENV, t } from '../common';
 import { logWindow } from './window.log';
 import { getUrl } from './window.url';
 
@@ -8,12 +8,10 @@ const PROCESS = constants.PROCESS;
 
 export async function createBrowserWindow(args: {
   ctx: t.IContext;
-  app: t.ITypedSheetRow<t.App>;
-  window: t.ITypedSheetRow<t.AppWindow>;
+  app: t.AppRow;
+  window: t.AppWindowRow;
 }) {
-  const { ctx } = args;
-  const window = args.window.props;
-  const app = args.app.props;
+  const { ctx, window, app } = args;
   const uri = args.window.uri.toString();
   const host = ctx.client.host;
   const sandbox = true; // https://www.electronjs.org/docs/api/sandbox-option
@@ -24,13 +22,13 @@ export async function createBrowserWindow(args: {
   //
   const browser = new BrowserWindow({
     show: false,
-    x: window.x,
-    y: window.y,
-    width: defaultValue(window.width, app.width),
-    height: defaultValue(window.height, app.height),
-    minWidth: app.minWidth,
-    minHeight: app.minHeight,
-    title: window.title,
+    x: window.props.x,
+    y: window.props.y,
+    width: defaultValue(window.props.width, app.props.width),
+    height: defaultValue(window.props.height, app.props.height),
+    minWidth: app.props.minWidth,
+    minHeight: app.props.minHeight,
+    title: window.props.title,
     titleBarStyle: 'hiddenInset',
     transparent: true,
     vibrancy: 'selection',
@@ -63,8 +61,8 @@ export async function createBrowserWindow(args: {
     () => (ctx.windowRefs = ctx.windowRefs.filter((item) => item.uri !== uri)),
   );
   browser.once('ready-to-show', () => {
-    browser.setTitle(window.title);
-    if (app.devTools && ENV.isDev) {
+    browser.setTitle(window.props.title);
+    if (app.props.devTools && ENV.isDev) {
       browser.webContents.openDevTools({ mode: 'undocked' });
     }
     browser.show();
@@ -83,14 +81,12 @@ export async function createBrowserWindow(args: {
  * [Helpers]
  */
 
-function updateBounds(args: {
-  window: t.ITypedSheetRowProps<t.AppWindow>;
-  browser: BrowserWindow;
-}) {
+function updateBounds(args: { window: t.AppWindowRow; browser: BrowserWindow }) {
   const { window, browser } = args;
   const { width, height, x, y } = browser.getBounds();
-  window.width = width;
-  window.height = height;
-  window.x = x;
-  window.y = y;
+  const props = window.props;
+  props.width = width;
+  props.height = height;
+  props.x = x;
+  props.y = y;
 }

@@ -1,6 +1,5 @@
 export * from '../types.monaco';
 
-export * from './types.g';
 export * from './types.ctx';
 export * from './types.content';
 export * from './types.events';

@@ -11,8 +11,8 @@ export type AppEvent = t.TypedSheetEvent | t.IpcEvent;
  */
 export type IContext = {
   client: t.IClientTypesystem;
-  sheet: t.ITypedSheet<t.App>;
-  apps: t.ITypedSheetData<t.App>;
+  sheet: t.ITypedSheet<t.AppTypeIndex>;
+  apps: t.ITypedSheetData<t.AppTypeIndex, 'App'>;
   windowRefs: IWindowRef[];
   event$: Observable<AppEvent>;
 };

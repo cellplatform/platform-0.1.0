@@ -3,8 +3,8 @@ import { getUrl } from './window.url';
 
 export async function logWindow(args: {
   ctx: t.IContext;
-  app: t.ITypedSheetRow<t.App>;
-  window: t.ITypedSheetRow<t.AppWindow>;
+  app: t.AppRow;
+  window: t.AppWindowRow;
   sandbox: boolean;
 }) {
   const { ctx, app, window } = args;
