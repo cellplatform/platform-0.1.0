@@ -121,6 +121,10 @@ describe('Uri', () => {
       test('cell:foo:A', true);
       test('file:foo:123', true);
 
+      test('=cell:foo:A1', true);
+      test(' =cell:foo:A1 ', true);
+      test(' cell:foo:A1 ', true);
+
       // Empty.
       test(undefined, false);
       test(null as any, false);
@@ -148,6 +152,7 @@ describe('Uri', () => {
       };
 
       test('NS', 'ns:foo', true);
+      test('NS', '=ns:foo', true);
       test('CELL', 'cell:foo:A1', true);
       test('COLUMN', 'cell:foo:A', true);
       test('ROW', 'cell:foo:1', true);
@@ -155,6 +160,7 @@ describe('Uri', () => {
       test('UNKNOWN', 'foo:bar:1', true);
 
       test(['COLUMN', 'ROW', 'CELL'], 'cell:foo:A1', true);
+      test(['COLUMN', 'ROW', 'CELL'], '=cell:foo:A1', true);
       test(['COLUMN', 'ROW', 'CELL'], 'cell:foo:1', true);
       test(['COLUMN', 'ROW', 'CELL'], 'cell:foo:A', true);
       test(['NS', 'FILE'], 'cell:foo:A1', false);
@@ -179,6 +185,7 @@ describe('Uri', () => {
         expect(Uri.is.ns(input)).to.eql(expected);
       };
       test('ns:foo', true);
+      test('=ns:foo', true);
 
       test('', false);
       test(undefined, false);
@@ -192,6 +199,7 @@ describe('Uri', () => {
         expect(Uri.is.file(input)).to.eql(expected);
       };
       test('file:foo:123', true);
+      test('=file:foo:123', true);
 
       test('file:foo', false);
       test('ns:foo', false);
@@ -204,6 +212,7 @@ describe('Uri', () => {
         expect(Uri.is.cell(input)).to.eql(expected);
       };
       test('cell:foo:A1', true);
+      test('=cell:foo:A1', true);
 
       test('', false);
       test(undefined, false);
@@ -216,6 +225,7 @@ describe('Uri', () => {
         expect(Uri.is.row(input)).to.eql(expected);
       };
       test('cell:foo:1', true);
+      test('=cell:foo:1', true);
 
       test('', false);
       test(undefined, false);
@@ -228,6 +238,7 @@ describe('Uri', () => {
         expect(Uri.is.column(input)).to.eql(expected);
       };
       test('cell:foo:A', true);
+      test('=cell:foo:A', true);
 
       test('', false);
       test(undefined, false);
