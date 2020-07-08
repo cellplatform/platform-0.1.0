@@ -158,6 +158,8 @@ describe('Uri', () => {
       test(['COLUMN', 'ROW', 'CELL'], 'cell:foo:1', true);
       test(['COLUMN', 'ROW', 'CELL'], 'cell:foo:A', true);
       test(['NS', 'FILE'], 'cell:foo:A1', false);
+      test(['NS'], 'ns:foo', true);
+      test(['COLUMN', 'ROW', 'CELL', 'NS'], 'ns:foo', true);
 
       test('NS', undefined, false);
       test('CELL', undefined, false);
@@ -231,6 +233,27 @@ describe('Uri', () => {
       test(undefined, false);
       test('ns:foo', false);
       test('row:foo:1', false);
+    });
+  });
+
+  describe('clean', () => {
+    it('strips whitespace', () => {
+      expect(Uri.clean()).to.eql('');
+      expect(Uri.clean('')).to.eql('');
+      expect(Uri.clean('  ')).to.eql('');
+    });
+
+    it('strips query-string', () => {
+      expect(Uri.clean('foo?q=123')).to.eql('foo');
+      expect(Uri.clean('  foo?q=123 ')).to.eql('foo');
+      expect(Uri.clean('  foo  ?q=123 ')).to.eql('foo');
+    });
+
+    it('strips "=" prefix', () => {
+      expect(Uri.clean('=foo')).to.eql('foo');
+      expect(Uri.clean('  =foo  ')).to.eql('foo');
+      expect(Uri.clean('  = foo  ')).to.eql('foo');
+      expect(Uri.clean('=foo?q=123')).to.eql('foo');
     });
   });
 
@@ -692,8 +715,11 @@ describe('Uri', () => {
       test('cell:foo:A', -1);
 
       test('cell:foo:1', 0);
+      test('cell:foo:10', 9);
       test('cell:foo:A1', 0);
       test('cell:foo:Z9', 8);
+      test('=cell:foo:10', 9);
+      test(' =cell:foo:Z9 ', 8);
     });
 
     it('toColumnIndex', () => {
@@ -713,6 +739,8 @@ describe('Uri', () => {
       test('cell:foo:A', 0);
       test('cell:foo:A1', 0);
       test('cell:foo:B9', 1);
+      test('=cell:foo:C5', 2);
+      test(' =cell:foo:C5 ', 2);
     });
   });
 });
