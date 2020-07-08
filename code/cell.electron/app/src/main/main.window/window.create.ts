@@ -17,8 +17,8 @@ export async function createOne(args: { ctx: t.IContext; name: string }) {
    *    of make some kind of "force load" method
    *
    */
-  const wait = Array.from({ length: apps.total }).map((v, i) => apps.row(i).load());
-  await Promise.all(wait);
+  // const wait = Array.from({ length: apps.total }).map((v, i) => apps.row(i).load());
+  // await Promise.all(wait);
 
   // Retrieve the app definition.
   const app = apps.find((row) => row.name === args.name);
@@ -29,7 +29,7 @@ export async function createOne(args: { ctx: t.IContext; name: string }) {
   // Prepare the data model.
   const windows = await app.props.windows.data();
   const window = windows.row(windows.total);
-  window.props.app = app.props.name;
+  window.props.app = `=${app.uri.toString()}`; // NB: REF to the defining [App].
 
   // Finish up.
   return createBrowserWindow({ ctx, app, window });
