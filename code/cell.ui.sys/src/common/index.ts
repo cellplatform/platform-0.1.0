@@ -33,6 +33,11 @@ export { rx, time, defaultValue };
 import { ui } from '@platform/cell.ui';
 export { ui };
 
+import { AppManifest, AppWindowModel } from '@platform/cell.schema.apps';
+export { AppManifest, AppWindowModel };
+
+/* eslint-disable */
 // @ts-ignore
 import filesize from 'filesize';
 export { filesize };
+/* eslint-enable */

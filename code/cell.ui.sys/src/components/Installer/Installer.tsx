@@ -16,6 +16,7 @@ import {
   t,
   time,
   ui,
+  AppManifest,
 } from '../../common';
 import { Icons } from '../Icons';
 import { Button } from '../primitives';
@@ -64,27 +65,8 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     });
 
     dragTarget.drop$.subscribe(async (e) => {
-      const ctx = this.context;
-      const { urls, dir } = e;
-
-      if (e.files.length > 30) {
-        this.setError(`Too many files. Are you sure you dropped a bundle?`);
-        return;
-      }
-
-      const files = e.files
-        .filter((file) => !file.filename.endsWith('.DS_Store'))
-        .filter((file) => !file.filename.endsWith('.map'))
-        .filter((file) => file.data.byteLength > 0);
-
-      const manifest = getManifest(files);
-      const { apps } = await getApps(ctx.client);
-      const exists = manifest ? Boolean(apps.find((row) => row.name === manifest.name)) : false;
-      if (exists) {
-        this.setError(`The app '${manifest?.name}' has already been installed.`);
-      } else {
-        this.state$.next({ files, urls, dir, error: undefined, isDragOver: undefined });
-      }
+      const { urls, dir, files } = e;
+      this.preinstall({ dir, urls, files });
     });
 
     rx.payload<t.IUiWindowResizeEvent>(event$, 'UI:DOM/window/resize').subscribe((e) =>
@@ -149,17 +131,69 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
     });
   };
 
+  public async preinstall(args: {
+    dir: string;
+    files: t.IHttpClientCellFileUpload[];
+    urls: string[];
+  }) {
+    const ctx = this.context;
+    const { urls, dir } = args;
+
+    if (args.files.length > 30) {
+      this.setError(`Too many files. Are you sure you dropped a bundle?`);
+      return;
+    }
+
+    const files = args.files
+      .filter((file) => !file.filename.endsWith('.DS_Store'))
+      .filter((file) => !file.filename.endsWith('.map'))
+      .filter((file) => file.data.byteLength > 0);
+
+    console.log('files', files);
+
+    /**
+     * TODO 🐷
+     * Move this into [cell.schema.apps] - AppManifest
+     */
+
+    // if (e.files.length > 30) {
+    //   this.setError(`Too many files. Are you sure you dropped a bundle?`);
+    //   return;
+    // }
+
+    // const files = e.files
+    //   .filter((file) => !file.filename.endsWith('.DS_Store'))
+    //   .filter((file) => !file.filename.endsWith('.map'))
+    //   .filter((file) => file.data.byteLength > 0);
+
+    // const manifest = getManifest(files);
+    // const { apps } = await getApps(ctx.client);
+    // const exists = manifest ? Boolean(apps.find((row) => row.name === manifest.name)) : false;
+    // if (exists) {
+    //   this.setError(`The app '${manifest?.name}' has already been installed.`);
+    // } else {
+    //   this.state$.next({ files, urls, dir, error: undefined, isDragOver: undefined });
+    // }
+  }
+
   public install = async () => {
     if (!this.isDropped) {
       return;
     }
 
+    const ctx = this.context;
     const files = this.files;
     const dir = this.dir || '';
 
     try {
+      // AppManifest.ex
+      const manifest = AppManifest.fromFiles(files);
+
+      console.log('manifest.def', manifest.def);
+
+      return;
+
       // Upload the bundle.
-      const ctx = this.context;
       await uploadApp({ ctx, dir, files });
 
       // Reset state.

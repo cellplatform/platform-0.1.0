@@ -56,30 +56,22 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
    */
   public async load() {
     const ctx = this.context;
+    const data = await ctx.window.app.sheet.data('App').load();
 
-    const def = ctx.env.def;
-
-    console.log('def', def);
-
-    // const sheet = await this.client.sheet('ns:sys.app');
-    // const data = await sheet.data<t.App>('App').load();
-    // const wait = data.rows.map(async (row) => {
-    //   const uri = row.toString();
-    //   const windows = await row.props.windows.data();
-    //   console.log('uri', uri);
-    //   const item: IAppData = {
-    //     typename: row.typename,
-    //     types: row.types.list,
-    //     props: row.toObject(),
-    //     uri,
-    //     windows,
-    //   };
-    //   return item;
-    // });
-    // const apps = await Promise.all(wait);
-    // this.state$.next({
-    //   apps: apps.filter((app) => !(app.props.name || '').endsWith('cell.ui.sys')),
-    // });
+    const wait = data.rows.map(async (row) => {
+      const uri = row.toString();
+      const windows = await row.props.windows.data();
+      const item: IAppData = {
+        typename: row.typename,
+        types: row.types.list,
+        props: row.toObject(),
+        uri,
+        windows,
+      };
+      return item;
+    });
+    const apps = await Promise.all(wait);
+    this.state$.next({ apps });
   }
 
   /**
@@ -95,9 +87,11 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
         Flex: 'vertical-stretch-stretch',
       }),
       top: css({
+        Scroll: true,
         flex: 1,
         position: 'relative',
-        Scroll: true,
+        boxSizing: 'border-box',
+        padding: 20,
       }),
       bottom: css({
         position: 'relative',

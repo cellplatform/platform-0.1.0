@@ -7,14 +7,15 @@ import { t } from '../common';
 import { AppBuilder } from '../components/AppBuilder';
 import { context } from '../context';
 
-const win = (window as unknown) as t.ITopWindow;
-const env = win.env;
-const { Provider } = context.create({ env });
+(async () => {
+  const win = (window as unknown) as t.ITopWindow;
+  const { Provider } = await context.create({ env: win.env });
 
-const el = (
-  <Provider>
-    <AppBuilder />
-  </Provider>
-);
+  const el = (
+    <Provider>
+      <AppBuilder />
+    </Provider>
+  );
 
-ReactDOM.render(el, document.getElementById('root'));
+  ReactDOM.render(el, document.getElementById('root'));
+})();

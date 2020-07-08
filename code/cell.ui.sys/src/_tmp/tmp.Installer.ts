@@ -1,17 +1,5 @@
 import { t, time } from '../common';
 
-export type IAppManifest = {
-  name: string;
-  entry: string;
-  devPort: number;
-  window: {
-    width?: number;
-    height?: number;
-    minWidth?: number;
-    minHeight?: number;
-  };
-};
-
 /**
  * Get apps sheet.
  */
@@ -80,8 +68,8 @@ export async function uploadApp(args: {
 
 async function writeTypeDefModel(args: {
   sheet: t.ITypedSheet<t.AppTypeIndex>;
-  apps: t.ITypedSheetData<t.AppTypeIndex, 'App'>;
-  manifest: IAppManifest;
+  apps: t.AppCursor;
+  manifest: t.IAppManifestFile;
   totalBytes: number;
 }) {
   const { sheet, apps, manifest } = args;
@@ -133,7 +121,7 @@ function toJson<T>(filename: string, data: ArrayBuffer) {
 
 function toManifest(file: t.IHttpClientCellFileUpload) {
   const { filename, data } = file;
-  const obj = toJson<IAppManifest>(filename, data);
+  const obj = toJson<t.IAppManifestFile>(filename, data);
   if (typeof obj !== 'object') {
     throw new Error(`The manifest '${filename}' is not an object.`);
   }
@@ -144,6 +132,6 @@ function toManifest(file: t.IHttpClientCellFileUpload) {
     throw new Error(`The manifest '${filename}' does not contain a name.`);
   }
 
-  const res: IAppManifest = { name, entry, devPort, window };
+  const res: t.IAppManifestFile = { name, entry, devPort, window };
   return res;
 }
