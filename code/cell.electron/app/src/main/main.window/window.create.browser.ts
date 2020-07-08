@@ -16,6 +16,12 @@ export async function createBrowserWindow(args: {
   const host = ctx.client.host;
   const sandbox = true; // https://www.electronjs.org/docs/api/sandbox-option
 
+  const argv = [
+    ENV.isDev ? PROCESS.DEV : '',
+    `${PROCESS.HOST}=${host}`,
+    `${PROCESS.DEF}=${uri}`,
+  ].filter((item) => Boolean(item));
+
   // Create the browser window.
   // Reference docs:
   //        https://www.electronjs.org/docs/api/browser-window
@@ -38,11 +44,7 @@ export async function createBrowserWindow(args: {
       nodeIntegration: false,
       enableRemoteModule: false,
       preload: constants.paths.bundle.preload,
-      additionalArguments: [
-        ENV.isDev ? PROCESS.DEV : '',
-        `${PROCESS.HOST}=${host}`,
-        `${PROCESS.DEF}=${uri}`,
-      ],
+      additionalArguments: argv,
     },
   });
 
