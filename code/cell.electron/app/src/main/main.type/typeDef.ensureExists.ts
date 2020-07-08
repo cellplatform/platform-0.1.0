@@ -12,7 +12,7 @@ export async function ensureExists(args: { client: t.IClientTypesystem; force?: 
   // Write type-defs.
   if (force || !config.ns.appType || !(await http.ns(config.ns.appType).exists())) {
     const res = AppSchema.declare();
-    config.ns.appType = res.namespaces.App; // NB: Save generated namespace URI (cuid).
+    config.ns.appType = res.namespaces.App; // NB: Save generated namespace URI (cuid) to local config file.
 
     const defs = res.toObject();
     await Promise.all(Object.keys(defs).map((ns) => http.ns(ns).write(defs[ns])));
