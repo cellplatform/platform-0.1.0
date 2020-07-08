@@ -984,14 +984,14 @@ describe('TypeClient', () => {
         const fetch = stub.fetch({ defs });
 
         await TypeClient.load({ ns, fetch }); // NB: Internal cache used. New on each call).
-        expect(fetch.getNsCount).to.eql(2); // NB: Less that the total number of type lookups passed to fetch.
+        expect(fetch.count.getNs).to.eql(2); // NB: Less that the total number of type lookups passed to fetch.
 
         // NB: Call count increases as a shared cache was not given.
         await TypeClient.load({ ns, fetch });
-        expect(fetch.getNsCount).to.eql(4);
+        expect(fetch.count.getNs).to.eql(4);
 
         await TypeClient.load({ ns, fetch });
-        expect(fetch.getNsCount).to.eql(6);
+        expect(fetch.count.getNs).to.eql(6);
       });
 
       it('shared cache (between calls)', async () => {
@@ -1000,13 +1000,13 @@ describe('TypeClient', () => {
         const cache = TypeSystem.Cache.create();
 
         await TypeClient.load({ ns, fetch, cache });
-        expect(fetch.getNsCount).to.eql(2);
+        expect(fetch.count.getNs).to.eql(2);
 
         await TypeClient.load({ ns, fetch, cache });
         await TypeClient.load({ ns, fetch, cache });
         await TypeClient.load({ ns, fetch, cache });
 
-        expect(fetch.getNsCount).to.eql(2); // NB: Does not increase. Values retrieved from shared cache.
+        expect(fetch.count.getNs).to.eql(2); // NB: Does not increase. Values retrieved from shared cache.
       });
     });
   });

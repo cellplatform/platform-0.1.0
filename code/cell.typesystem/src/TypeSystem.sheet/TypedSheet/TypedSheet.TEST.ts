@@ -1324,14 +1324,14 @@ describe('TypedSheet', () => {
       it('retrieve from fetch (then cache)', async () => {
         const { sheet, fetch } = await testMySheet();
         const state = sheet.state as TypedSheetStateInternal;
-        expect(fetch.getCellsCount).to.eql(0);
+        expect(fetch.count.getCells).to.eql(0);
 
         const res = await state.getCell('A1');
         expect(res).to.eql({ value: 'One' });
-        expect(fetch.getCellsCount).to.eql(1);
+        expect(fetch.count.getCells).to.eql(1);
 
         await state.getCell('A1');
-        expect(fetch.getCellsCount).to.eql(1); // NB: no change - cached.
+        expect(fetch.count.getCells).to.eql(1); // NB: no change - cached.
       });
 
       it('throw: invalid key', async () => {
@@ -1344,12 +1344,12 @@ describe('TypedSheet', () => {
         it('retrieve from fetch (then cache)', async () => {
           const { sheet, fetch } = await testMySheet();
           const state = sheet.state as TypedSheetStateInternal;
-          fetch.getNsCount = 0;
+          fetch.count.getNs = 0;
           const res = await state.getNs();
           expect(res).to.eql(undefined);
-          expect(fetch.getNsCount).to.eql(1);
+          expect(fetch.count.getNs).to.eql(1);
           await state.getNs();
-          expect(fetch.getNsCount).to.eql(1); // NB: no change - cached.
+          expect(fetch.count.getNs).to.eql(1); // NB: no change - cached.
         });
       });
     });
@@ -1659,13 +1659,13 @@ describe('TypedSheet', () => {
         const state = sheet.state as TypedSheetStateInternal;
         const cache = (state.fetch as t.CachedFetcher).cache;
 
-        expect(fetch.getCellsCount).to.eql(0);
+        expect(fetch.count.getCells).to.eql(0);
         expect(await state.getCell('A1')).to.eql({ value: 'One' }); // Original value.
-        expect(fetch.getCellsCount).to.eql(1);
+        expect(fetch.count.getCells).to.eql(1);
 
         await state.getCell('A1');
         await state.getCell('A2');
-        expect(fetch.getCellsCount).to.eql(2);
+        expect(fetch.count.getCells).to.eql(2);
 
         cache.put('foo', 123);
 
@@ -1673,9 +1673,9 @@ describe('TypedSheet', () => {
         expect(cache.keys).to.eql(['foo']); // NB: Retained non-cell key.
 
         await state.getCell('A1');
-        expect(fetch.getCellsCount).to.eql(3); // NB: re-fetched.
+        expect(fetch.count.getCells).to.eql(3); // NB: re-fetched.
         await state.getCell('A1');
-        expect(fetch.getCellsCount).to.eql(3); // NB: and back in the cache!
+        expect(fetch.count.getCells).to.eql(3); // NB: and back in the cache!
       });
     });
   });

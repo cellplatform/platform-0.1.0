@@ -5,6 +5,14 @@ import { TypeClient } from '../TypeSystem.core/TypeClient';
 
 type M = 'getNs' | 'getColumns' | 'getCells';
 
+export type IStubFetcher = t.ISheetFetcher & {
+  count: {
+    getNs: number;
+    getColumns: number;
+    getCells: number;
+  };
+};
+
 /**
  * Generate a stub data [fetch] object using the provided
  * type-defs and cells object as source data.
@@ -39,7 +47,7 @@ const fetch = (data: {
     before('getNs', args);
     const def = data.defs[args.ns];
     const ns = !def ? undefined : ((def.ns || {}) as t.INsProps);
-    res.getNsCount++;
+    res.count = { ...res.count, getNs: res.count.getNs + 1 };
     return { ns };
   };
 
@@ -47,7 +55,7 @@ const fetch = (data: {
     before('getColumns', args);
     const def = data.defs[args.ns];
     const columns = def?.columns;
-    res.getColumnsCount++;
+    res.count = { ...res.count, getColumns: res.count.getColumns + 1 };
     return { columns };
   };
 
@@ -55,24 +63,20 @@ const fetch = (data: {
     before('getCells', args);
     const rows = coord.cell.max.row(Object.keys(data.cells || {})) + 1;
     const total = { rows };
-    res.getCellsCount++;
+    res.count = { ...res.count, getCells: res.count.getCells + 1 };
     return {
       cells: data.cells ? filterCells(args.query, data.cells) : undefined,
       total,
     };
   };
 
-  type T = t.ISheetFetcher & {
-    getNsCount: number;
-    getColumnsCount: number;
-    getCellsCount: number;
-  };
-
-  const res: T = {
+  const res: IStubFetcher = {
     ...fromFuncs({ getNs, getColumns, getCells }),
-    getNsCount: 0,
-    getColumnsCount: 0,
-    getCellsCount: 0,
+    count: {
+      getNs: 0,
+      getColumns: 0,
+      getCells: 0,
+    },
   };
 
   return res;

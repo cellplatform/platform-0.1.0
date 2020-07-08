@@ -91,15 +91,15 @@ describe('TypeCache', () => {
 
         const res1 = await fetch.getCells({ ns, query: 'B1:B3' });
         expect(Object.keys(res1.cells || {})).to.eql(['B2']);
-        expect(innerFetch.getCellsCount).to.eql(1);
+        expect(innerFetch.count.getCells).to.eql(1);
 
         const res2 = await fetch.getCells({ ns, query: 'B1:B3' });
         expect(res2).to.eql(res1);
-        expect(innerFetch.getCellsCount).to.eql(1); // NB: Cached - fetch count not incremented.
+        expect(innerFetch.count.getCells).to.eql(1); // NB: Cached - fetch count not incremented.
 
         const res3 = await fetch.getCells({ ns, query: '1:50' });
         expect(Object.keys(res3.cells || {})).to.eql(['A1', 'Z1', 'B2', 'C3', 'Z9']);
-        expect(innerFetch.getCellsCount).to.eql(2); // NB: Went back to the fetch source as query expanded range.
+        expect(innerFetch.count.getCells).to.eql(2); // NB: Went back to the fetch source as query expanded range.
       });
 
       it('syncs cells via event (cache patching)', async () => {
@@ -191,23 +191,23 @@ describe('TypeCache', () => {
         expect(query1.exists).to.eql(false);
 
         const res1 = await query1.get(fetch);
-        expect(fetch.getCellsCount).to.eql(1);
+        expect(fetch.count.getCells).to.eql(1);
         expect(Object.keys(res1.cells || {})).to.eql(['A1', 'Z1', 'B2']);
         expect(res1.error).to.eql(undefined);
         expect(res1.total.rows).to.eql(9);
 
         const res2 = await query1.get(fetch);
-        expect(fetch.getCellsCount).to.eql(1); // NB: fetch count not increased because cached cells returned.
+        expect(fetch.count.getCells).to.eql(1); // NB: fetch count not increased because cached cells returned.
         expect(res2).to.eql(res1);
 
         const query2 = entry.query('1:2'); // NB: Same query as query1, but new instance.
         const res3 = await query2.get(fetch);
-        expect(fetch.getCellsCount).to.eql(1); // NB: fetch count not increased because cached cells returned.
+        expect(fetch.count.getCells).to.eql(1); // NB: fetch count not increased because cached cells returned.
         expect(res3).to.eql(res1);
 
         const query3 = entry.query('1:500'); // NB: Expand query.
         const res4 = await query3.get(fetch);
-        expect(fetch.getCellsCount).to.eql(2); // NB: fetch called again
+        expect(fetch.count.getCells).to.eql(2); // NB: fetch called again
         expect(Object.keys(res4.cells || {})).to.eql(['A1', 'Z1', 'B2', 'C3', 'Z9']);
       });
 
@@ -224,10 +224,10 @@ describe('TypeCache', () => {
         expect(Object.keys(res1.cells || {})).to.eql(['B2']);
 
         expect(query.exists).to.eql(true);
-        expect(fetch.getCellsCount).to.eql(1);
+        expect(fetch.count.getCells).to.eql(1);
 
         const res2 = await query.get(fetch);
-        expect(fetch.getCellsCount).to.eql(1); // NB: Not incremented - pulled from memory cache.
+        expect(fetch.count.getCells).to.eql(1); // NB: Not incremented - pulled from memory cache.
         expect(res2).to.eql(res1);
       });
 
@@ -240,10 +240,10 @@ describe('TypeCache', () => {
 
         await query.get(fetch);
         await query.get(fetch);
-        expect(fetch.getCellsCount).to.eql(1);
+        expect(fetch.count.getCells).to.eql(1);
 
         await query.get(fetch, { force: true });
-        expect(fetch.getCellsCount).to.eql(2);
+        expect(fetch.count.getCells).to.eql(2);
       });
     });
 
