@@ -1,8 +1,6 @@
-import { TypeSystem, Uri } from '../common';
+import { TypeSystem, Uri, t } from '../common';
 
-type Namespaces = { App: string; AppWindow: string; AppData: string };
-
-const toNamespaces = (input: Partial<Namespaces>): Namespaces => {
+const toNamespaces = (input: Partial<t.INamespaces>): t.INamespaces => {
   const generate = () => toNs(Uri.cuid());
   const toNs = (input: string) => Uri.toNs(input).toString();
   const prepare = (input?: string) => (input ? toNs(input) : generate());
@@ -17,7 +15,7 @@ const toNamespaces = (input: Partial<Namespaces>): Namespaces => {
  * Initializes an object structure representing the
  * type-definitions for an [App].
  */
-export function declare(options: { namespaces?: Partial<Namespaces> } = {}) {
+export function declare(options: { namespaces?: Partial<t.INamespaces> } = {}) {
   const def = TypeSystem.def();
   const namespaces = toNamespaces(options.namespaces || {});
 
