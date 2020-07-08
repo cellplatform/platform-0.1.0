@@ -143,7 +143,7 @@ describe('Uri', () => {
     });
 
     it('is.type', () => {
-      const test = (type: t.UriType, input?: string, expected?: boolean) => {
+      const test = (type: t.UriType | t.UriType[], input?: string, expected?: boolean) => {
         expect(Uri.is.type(type, input)).to.eql(expected, `${type} | input: ${input}`);
       };
 
@@ -153,6 +153,11 @@ describe('Uri', () => {
       test('ROW', 'cell:foo:1', true);
       test('FILE', 'file:foo:123', true);
       test('UNKNOWN', 'foo:bar:1', true);
+
+      test(['COLUMN', 'ROW', 'CELL'], 'cell:foo:A1', true);
+      test(['COLUMN', 'ROW', 'CELL'], 'cell:foo:1', true);
+      test(['COLUMN', 'ROW', 'CELL'], 'cell:foo:A', true);
+      test(['NS', 'FILE'], 'cell:foo:A1', false);
 
       test('NS', undefined, false);
       test('CELL', undefined, false);
@@ -672,9 +677,9 @@ describe('Uri', () => {
   });
 
   describe('indexes', () => {
-    it('rowIndex', () => {
+    it('toRowIndex', () => {
       const test = (input: string | t.IUri | undefined, expected: number) => {
-        const res = Uri.rowIndex(input);
+        const res = Uri.toRowIndex(input);
         expect(res).to.eql(expected);
       };
 
@@ -691,9 +696,9 @@ describe('Uri', () => {
       test('cell:foo:Z9', 8);
     });
 
-    it('columnIndex', () => {
+    it('toColumnIndex', () => {
       const test = (input: string | t.IUri | undefined, expected: number) => {
-        const res = Uri.columnIndex(input);
+        const res = Uri.toColumnIndex(input);
         expect(res).to.eql(expected);
       };
 

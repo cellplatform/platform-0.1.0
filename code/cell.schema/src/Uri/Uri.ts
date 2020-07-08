@@ -157,9 +157,12 @@ export class Uri {
     /**
      * Determine if the URI is of a specific type.
      */
-    type: (type: t.UriType, input?: string) => {
+    type: (type: t.UriType | t.UriType[], input?: string) => {
       const uri = Uri.parse(input);
-      return uri.parts.type === type && (type === 'UNKNOWN' ? true : uri.ok);
+      const types = Array.isArray(type) ? type : [type];
+      return types.some((type) => {
+        return uri.parts.type === type && (type === 'UNKNOWN' ? true : uri.ok);
+      });
     },
 
     ns: (input?: string) => Uri.is.type('NS', input),
@@ -236,7 +239,7 @@ export class Uri {
   /**
    * Extracts the index of the row of the given URI.
    */
-  public static rowIndex(input?: string | t.IUri) {
+  public static toRowIndex(input?: string | t.IUri) {
     const uri = typeof input === 'object' ? input : Uri.parse(input).parts;
     if (uri.type === 'CELL' || uri.type === 'COLUMN' || uri.type === 'ROW') {
       return coord.cell.toRowIndex(uri.key);
@@ -248,7 +251,7 @@ export class Uri {
   /**
    * Extracts the index of the row of the given URI.
    */
-  public static columnIndex(input?: string | t.IUri) {
+  public static toColumnIndex(input?: string | t.IUri) {
     const uri = typeof input === 'object' ? input : Uri.parse(input).parts;
     if (uri.type === 'CELL' || uri.type === 'COLUMN' || uri.type === 'ROW') {
       return coord.cell.toColumnIndex(uri.key);
