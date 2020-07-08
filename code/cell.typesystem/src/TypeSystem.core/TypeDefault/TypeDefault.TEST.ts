@@ -1,4 +1,4 @@
-import { expect, expectError, t, testFetch, TYPE_DEFS } from '../../test';
+import { expect, expectError, t, stub, TYPE_DEFS } from '../../test';
 import { TypeDefault } from '.';
 
 describe('TypeDefault', () => {
@@ -159,7 +159,7 @@ describe('TypeDefault', () => {
 
     describe('toValue (ref)', () => {
       it('reference not found (undefined)', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const def = { ref: 'cell:foo.sample:A50' };
         const res = await TypeDefault.toValue({ def, fetch });
         expect(res.value).to.eql(undefined);
@@ -171,7 +171,7 @@ describe('TypeDefault', () => {
           path: string | undefined,
           expected?: t.ITypeDefaultValue['value'],
         ) => {
-          const fetch = testFetch({
+          const fetch = stub.fetch({
             defs: TYPE_DEFS,
             cells: { Z9: cell },
           });
@@ -204,7 +204,7 @@ describe('TypeDefault', () => {
         });
 
         it('throw: only "cell" and "ns" URIs supported', async () => {
-          const fetch = testFetch({ defs: TYPE_DEFS });
+          const fetch = stub.fetch({ defs: TYPE_DEFS });
           const test = async (ref: string) => {
             const def: t.ITypeDefaultRef = { ref };
             await expectError(

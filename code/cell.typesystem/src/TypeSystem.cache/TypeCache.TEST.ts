@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { TypeCache, TypeCacheCells } from '.';
-import { expect, MemoryCache, t, testFetch, TYPE_DEFS } from '../test';
+import { expect, MemoryCache, t, stub, TYPE_DEFS } from '../test';
 
 describe('TypeCache', () => {
   const CELLS = {
@@ -14,24 +14,24 @@ describe('TypeCache', () => {
 
   describe('fetch (wrap)', () => {
     it('new instance (no cache provided)', () => {
-      const fetch = TypeCache.wrapFetch(testFetch({ defs: TYPE_DEFS }));
+      const fetch = TypeCache.wrapFetch(stub.fetch({ defs: TYPE_DEFS }));
       expect(fetch.cache).to.be.an.instanceof(MemoryCache);
     });
 
     it('uses given cache', () => {
       const cache = TypeCache.create();
-      const fetch = TypeCache.wrapFetch(testFetch({ defs: TYPE_DEFS }), { cache });
+      const fetch = TypeCache.wrapFetch(stub.fetch({ defs: TYPE_DEFS }), { cache });
       expect(fetch.cache).to.equal(cache);
     });
 
     it('does not double-wrap an existing cached fetcher', () => {
-      const fetch1 = TypeCache.wrapFetch(testFetch({ defs: TYPE_DEFS }));
+      const fetch1 = TypeCache.wrapFetch(stub.fetch({ defs: TYPE_DEFS }));
       const fetch2 = TypeCache.wrapFetch(fetch1);
       expect(fetch1).to.equal(fetch2); // NB: instance re-used.
     });
 
     it('exists', async () => {
-      const fetch = TypeCache.wrapFetch(testFetch({ defs: TYPE_DEFS }));
+      const fetch = TypeCache.wrapFetch(stub.fetch({ defs: TYPE_DEFS }));
       const ns1 = 'ns:foo';
       const ns2 = 'ns:foo.color';
 
@@ -50,7 +50,7 @@ describe('TypeCache', () => {
 
     describe('namespace', () => {
       it('getNs', async () => {
-        const fetch = TypeCache.wrapFetch(testFetch({ defs: TYPE_DEFS }));
+        const fetch = TypeCache.wrapFetch(stub.fetch({ defs: TYPE_DEFS }));
         const ns = 'ns:foo';
         const res1 = await fetch.getNs({ ns });
         const res2 = await fetch.getNs({ ns });
@@ -60,7 +60,7 @@ describe('TypeCache', () => {
       });
 
       it('getNs (parallel)', async () => {
-        const fetch = TypeCache.wrapFetch(testFetch({ defs: TYPE_DEFS }));
+        const fetch = TypeCache.wrapFetch(stub.fetch({ defs: TYPE_DEFS }));
         const ns = 'ns:foo';
         const method = fetch.getNs;
         const [res1, res2] = await Promise.all([method({ ns }), method({ ns })]);
@@ -72,7 +72,7 @@ describe('TypeCache', () => {
 
     describe('column', () => {
       it('getColumns', async () => {
-        const fetch = TypeCache.wrapFetch(testFetch({ defs: TYPE_DEFS }));
+        const fetch = TypeCache.wrapFetch(stub.fetch({ defs: TYPE_DEFS }));
         const ns = 'ns:foo';
         const res1 = await fetch.getColumns({ ns });
         const res2 = await fetch.getColumns({ ns });
@@ -84,7 +84,7 @@ describe('TypeCache', () => {
 
     describe('cell', () => {
       it('getCells', async () => {
-        const innerFetch = testFetch({ defs: TYPE_DEFS, cells: CELLS });
+        const innerFetch = stub.fetch({ defs: TYPE_DEFS, cells: CELLS });
         const fetch = TypeCache.wrapFetch(innerFetch);
 
         const ns = 'ns:foo';
@@ -104,7 +104,7 @@ describe('TypeCache', () => {
 
       it('syncs cells via event (cache patching)', async () => {
         const event$ = new Subject<t.TypedSheetEvent>();
-        const innerFetch = testFetch({ defs: TYPE_DEFS, cells: CELLS });
+        const innerFetch = stub.fetch({ defs: TYPE_DEFS, cells: CELLS });
         const fetch = TypeCache.wrapFetch(innerFetch, { event$ });
 
         const ns = 'ns:foo';
@@ -130,7 +130,7 @@ describe('TypeCache', () => {
   });
 
   describe('TypeCacheCells', () => {
-    const fetch = testFetch({
+    const fetch = stub.fetch({
       defs: TYPE_DEFS,
       cells: CELLS,
     });
@@ -184,7 +184,7 @@ describe('TypeCache', () => {
       });
 
       it('query.get (cached results returned)', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS, cells: CELLS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS, cells: CELLS });
         const entry = TypeCacheCells.create('ns:foo');
 
         const query1 = entry.query('1:2');
@@ -212,7 +212,7 @@ describe('TypeCache', () => {
       });
 
       it('query.get (cached results, single item - B1:B3)', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS, cells: CELLS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS, cells: CELLS });
         const entry = TypeCacheCells.create('ns:foo');
 
         const query = entry.query('B1:B3');
@@ -232,7 +232,7 @@ describe('TypeCache', () => {
       });
 
       it('query.get (1:500, force)', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS, cells: CELLS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS, cells: CELLS });
         const entry = TypeCacheCells.create('ns:foo');
 
         const query = entry.query('1:500');
@@ -279,7 +279,7 @@ describe('TypeCache', () => {
       });
 
       it('update existing (cached) cell value', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS, cells: CELLS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS, cells: CELLS });
         const entry = TypeCacheCells.create('ns:foo');
 
         const query = entry.query('1:50');

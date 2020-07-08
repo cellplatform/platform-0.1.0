@@ -1,4 +1,4 @@
-import { fs, testFetch, TYPE_DEFS } from '.';
+import { fs, stub, TYPE_DEFS } from '.';
 import { TypeClient } from '../TypeSystem.core/TypeClient';
 import { expect } from 'chai';
 
@@ -8,7 +8,7 @@ describe('test', () => {
 
     const loadDefs = async (ns: string) => {
       ns = ns.trim().replace(/^ns\:/, '');
-      const fetch = testFetch({ defs: TYPE_DEFS });
+      const fetch = stub.fetch({ defs: TYPE_DEFS });
       const defs = (await TypeClient.load({ ns, fetch })).defs;
       return defs;
     };
@@ -42,7 +42,7 @@ describe('test', () => {
   });
 
   describe('fetch', () => {
-    const fetch = testFetch({
+    const fetch = stub.fetch({
       defs: TYPE_DEFS,
       cells: {
         A1: { value: 'A1' },

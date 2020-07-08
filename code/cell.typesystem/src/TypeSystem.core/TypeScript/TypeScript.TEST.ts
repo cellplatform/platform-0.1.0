@@ -1,4 +1,4 @@
-import { expect, t, TYPE_DEFS, testFetch, defaultValue } from '../../test';
+import { expect, t, TYPE_DEFS, stub, defaultValue } from '../../test';
 import { TypeScript } from '.';
 import { TypeClient } from '../TypeClient';
 import { ERROR_TYPENAME, ERROR_PROPNAME } from './fn.validate';
@@ -174,7 +174,7 @@ describe('TypeScript', () => {
     });
 
     it('union reference - type: "ns:foo.message | null"', async () => {
-      const fetch = testFetch({ defs: TYPE_DEFS });
+      const fetch = stub.fetch({ defs: TYPE_DEFS });
       const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
       const typename = defs[0].typename;
       const types = defs[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
@@ -197,7 +197,7 @@ describe('TypeScript', () => {
     });
 
     it('with imports', async () => {
-      const fetch = testFetch({ defs: TYPE_DEFS });
+      const fetch = stub.fetch({ defs: TYPE_DEFS });
       const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
       const typename = defs[0].typename;
       const types = defs[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
@@ -219,7 +219,7 @@ describe('TypeScript', () => {
     });
 
     it('without "export" statements', async () => {
-      const fetch = testFetch({ defs: TYPE_DEFS });
+      const fetch = stub.fetch({ defs: TYPE_DEFS });
       const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
       const typename = defs[0].typename;
       const types = defs[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));
@@ -232,7 +232,7 @@ describe('TypeScript', () => {
     });
 
     it('[adjustLine] handler', async () => {
-      const fetch = testFetch({ defs: TYPE_DEFS });
+      const fetch = stub.fetch({ defs: TYPE_DEFS });
       const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
       const typename = defs[0].typename;
       const types = defs[0].columns.map(({ prop, type, optional }) => ({ prop, type, optional }));

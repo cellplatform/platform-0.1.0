@@ -2,17 +2,7 @@ import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { TypedSheet } from '.';
-import {
-  ERROR,
-  expect,
-  expectError,
-  t,
-  testInstanceFetch,
-  time,
-  TYPE_DEFS,
-  testFetch,
-  rx,
-} from '../../test';
+import { ERROR, expect, expectError, t, stub, time, TYPE_DEFS, rx } from '../../test';
 import * as f from '../../test/.d.ts/foo';
 import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
@@ -69,7 +59,7 @@ describe('TypedSheet', () => {
   describe('errors', () => {
     it('error: 404 instance namespace "type.implements" reference not found', async () => {
       const ns = 'ns:foo.mySheet';
-      const fetch = await testInstanceFetch({
+      const fetch = await stub.instance({
         instance: ns,
         implements: 'ns:foo.notExist',
         defs: TYPE_DEFS,
@@ -133,7 +123,7 @@ describe('TypedSheet', () => {
     });
 
     it('info (sheet does not exist)', async () => {
-      const fetch = testFetch({ defs: TYPE_DEFS });
+      const fetch = stub.fetch({ defs: TYPE_DEFS });
       const ns = 'ns:foo.new';
       const sheet = await TypedSheet.create<f.TypeIndex>({ ns, implements: 'ns:foo', fetch });
       const info = await sheet.info();
@@ -899,7 +889,7 @@ describe('TypedSheet', () => {
 
       it('ref (look up cell address)', async () => {
         const ns = 'ns:foo.sample';
-        const fetch = await testInstanceFetch({
+        const fetch = await stub.instance({
           instance: ns,
           implements: 'ns:foo.defaults',
           defs: TYPE_DEFS,
@@ -1840,7 +1830,7 @@ describe('TypedSheet', () => {
  */
 
 const testFetchMySheet = (ns: string, cells?: t.ICellMap) => {
-  return testInstanceFetch({
+  return stub.instance({
     instance: ns,
     implements: 'ns:foo',
     defs: TYPE_DEFS,
@@ -1865,7 +1855,7 @@ const testFetchMySheet = (ns: string, cells?: t.ICellMap) => {
 };
 
 const testFetchPrimitives = (ns: string) => {
-  return testInstanceFetch({
+  return stub.instance({
     instance: ns,
     implements: 'ns:foo.primitives',
     defs: TYPE_DEFS,
@@ -1888,7 +1878,7 @@ const testFetchPrimitives = (ns: string) => {
 };
 
 const testFetchEnum = (ns: string) => {
-  return testInstanceFetch({
+  return stub.instance({
     instance: ns,
     implements: 'ns:foo.enum',
     defs: TYPE_DEFS,
@@ -1903,7 +1893,7 @@ const testFetchEnum = (ns: string) => {
 };
 
 const testFetchMulti = (ns: string) => {
-  return testInstanceFetch({
+  return stub.instance({
     instance: ns,
     implements: 'ns:foo.multi',
     defs: TYPE_DEFS,

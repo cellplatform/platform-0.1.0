@@ -1,8 +1,8 @@
 import { TypeClient } from '.';
-import { t, TypeSystem, ERROR, expect, fs, testFetch, TYPE_DEFS } from '../../test';
+import { t, TypeSystem, ERROR, expect, fs, stub, TYPE_DEFS } from '../../test';
 
 describe('TypeClient', () => {
-  const fetch = testFetch({ defs: TYPE_DEFS });
+  const fetch = stub.fetch({ defs: TYPE_DEFS });
 
   it('TypeSystem.Client === TypeClient', () => {
     expect(TypeSystem.Client).to.equal(TypeClient);
@@ -76,7 +76,7 @@ describe('TypeClient', () => {
     });
 
     it('error: failure while loading', async () => {
-      const fetch = testFetch({
+      const fetch = stub.fetch({
         defs: TYPE_DEFS,
         before: (e) => {
           throw new Error('Derp!');
@@ -108,7 +108,7 @@ describe('TypeClient', () => {
           },
         },
       };
-      const res = await TypeClient.load({ ns: 'foo', fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns: 'foo', fetch: stub.fetch({ defs }) });
 
       expect(res.ok).to.eql(false);
       expect(res.errors.length).to.eql(2);
@@ -134,7 +134,7 @@ describe('TypeClient', () => {
           },
         },
       };
-      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) });
       const errors = res.errors;
 
       expect(errors[0].message).to.include('Property-name starts with a number');
@@ -157,7 +157,7 @@ describe('TypeClient', () => {
         },
       };
 
-      const res = await TypeClient.load({ ns: 'foo.error', fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns: 'foo.error', fetch: stub.fetch({ defs }) });
       const error = res.errors[0];
 
       expect(res.defs.length).to.eql(2);
@@ -177,7 +177,7 @@ describe('TypeClient', () => {
           },
         },
       };
-      const res = await TypeClient.load({ ns: 'foo', fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns: 'foo', fetch: stub.fetch({ defs }) });
       const errors = res.errors;
 
       expect(errors.length).to.eql(2);
@@ -218,7 +218,7 @@ describe('TypeClient', () => {
         },
       };
 
-      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) });
       const error = res.errors[0];
 
       expect(error.type).to.eql(ERROR.TYPE.DUPLICATE_TYPENAME);
@@ -236,7 +236,7 @@ describe('TypeClient', () => {
           },
         };
         const ns = 'ns:foo';
-        const res = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+        const res = await TypeClient.load({ ns, fetch: stub.fetch({ defs }) });
         const errors = res.errors;
 
         expect(res.ok).to.eql(false);
@@ -262,7 +262,7 @@ describe('TypeClient', () => {
           },
         };
         const ns = 'ns:foo';
-        const res = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+        const res = await TypeClient.load({ ns, fetch: stub.fetch({ defs }) });
         const errors = res.errors;
 
         expect(res.ok).to.eql(false);
@@ -288,7 +288,7 @@ describe('TypeClient', () => {
       };
 
       const ns = 'ns:foo';
-      const res = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns, fetch: stub.fetch({ defs }) });
 
       expect(res.ok).to.eql(false);
       expect(res.errors.length).to.eql(1);
@@ -308,7 +308,7 @@ describe('TypeClient', () => {
       };
 
       const ns = 'ns:foo';
-      const res = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns, fetch: stub.fetch({ defs }) });
 
       expect(res.ok).to.eql(false);
       expect(res.errors.length).to.eql(1);
@@ -331,7 +331,7 @@ describe('TypeClient', () => {
         },
       };
       const ns = 'ns:foo.1';
-      const res = await TypeClient.load({ ns, fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns, fetch: stub.fetch({ defs }) });
       const errors = res.errors;
 
       expect(res.ok).to.eql(false);
@@ -370,7 +370,7 @@ describe('TypeClient', () => {
         },
       };
 
-      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) });
       const errors = res.errors;
 
       expect(res.ok).to.eql(false);
@@ -409,7 +409,7 @@ describe('TypeClient', () => {
         },
       };
 
-      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) });
       const errors = res.errors;
 
       expect(res.ok).to.eql(false);
@@ -452,7 +452,7 @@ describe('TypeClient', () => {
         },
       };
 
-      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) });
       const errors = res.errors;
 
       expect(res.ok).to.eql(false);
@@ -485,7 +485,7 @@ describe('TypeClient', () => {
         },
       };
 
-      const res = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
+      const res = await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) });
       const errors = res.errors;
 
       expect(res.ok).to.eql(false);
@@ -517,7 +517,7 @@ describe('TypeClient', () => {
 
         delete defs['ns:foo.1'].columns;
 
-        const fetch = testFetch({ defs });
+        const fetch = stub.fetch({ defs });
         const res1 = await TypeClient.load({ ns: 'foo.1', fetch });
         const res2 = await TypeClient.load({ ns: 'foo.2', fetch });
 
@@ -543,7 +543,7 @@ describe('TypeClient', () => {
         delete A.props.def.type;
         expect(defs['ns:foo'].columns.A.props.def.type).to.eql(undefined);
 
-        const fetch = testFetch({ defs });
+        const fetch = stub.fetch({ defs });
         const res = await TypeClient.load({ ns: 'foo', fetch });
         const def = res.defs[0];
 
@@ -555,7 +555,7 @@ describe('TypeClient', () => {
 
     describe('VALUE (primitives)', () => {
       const test = async (column: string, typename: string, defaultValue?: any) => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const res = await TypeClient.load({ ns: 'foo.primitives', fetch });
         const match = res.defs[0].columns.find((c) => c.column === column);
         expect(match).to.not.eql(undefined);
@@ -583,7 +583,7 @@ describe('TypeClient', () => {
 
     describe('REF(ns) - object', () => {
       it('REF object-type, n-level deep ("ns:xxx")', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
 
         const A = def.columns[0];
@@ -618,7 +618,7 @@ describe('TypeClient', () => {
       });
 
       it('REF optional property', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
 
         const A = def.columns[0];
@@ -641,7 +641,7 @@ describe('TypeClient', () => {
       });
 
       it('REF default value', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
 
         const A = def.columns[0];
@@ -652,7 +652,7 @@ describe('TypeClient', () => {
       });
 
       it('REF union: "ns:<id> | null"', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
         const D = def.columns[3];
 
@@ -671,7 +671,7 @@ describe('TypeClient', () => {
       });
 
       it('REF nested unions: "boolean | (ns:<id> | string)"', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const def = (await TypeClient.load({ ns: 'foo.nested', fetch })).defs[0];
         const C = def.columns[2];
 
@@ -687,7 +687,7 @@ describe('TypeClient', () => {
       });
 
       it('REF array', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const def = (await TypeClient.load({ ns: 'foo.messages', fetch })).defs[0];
 
         expect(def.errors).to.eql([]);
@@ -722,7 +722,7 @@ describe('TypeClient', () => {
           },
         };
 
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) })).defs[0];
         const A = def.columns[0];
 
         expect(A.type.kind).to.eql('REF');
@@ -746,7 +746,7 @@ describe('TypeClient', () => {
           },
         };
 
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) })).defs[0];
         const A = def.columns[0];
 
         expect(A.default).to.eql(undefined);
@@ -785,8 +785,8 @@ describe('TypeClient', () => {
       };
 
       it('REF(column) => VALUE (primitive): multi-hop', async () => {
-        const res1 = await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) });
-        const res2 = await TypeClient.load({ ns: 'foo.2', fetch: testFetch({ defs }) });
+        const res1 = await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) });
+        const res2 = await TypeClient.load({ ns: 'foo.2', fetch: stub.fetch({ defs }) });
 
         const def1 = res1.defs[0];
         const def2 = res2.defs[0];
@@ -807,7 +807,7 @@ describe('TypeClient', () => {
       });
 
       it('REF(column) => ENUM', async () => {
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) })).defs[0];
         const B = def.columns[1];
         expect(B.column).to.eql('B');
         expect(B.prop).to.eql('myBar');
@@ -829,14 +829,14 @@ describe('TypeClient', () => {
             },
           },
         };
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) })).defs[0];
         const A = def.columns[0];
 
         expect(A.default).to.eql({ value: 'Hello' }); // NB: The closest default to the declaration wins.
       });
 
       it('REF(column) => REF => object (ns)', async () => {
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) })).defs[0];
         expect(def.errors).to.eql([]);
 
         const C = def.columns[2];
@@ -852,7 +852,7 @@ describe('TypeClient', () => {
       });
 
       it('REF(column) => REF(column) => VALUE (primitive)', async () => {
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) })).defs[0];
         expect(def.errors).to.eql([]);
 
         const D = def.columns[3];
@@ -872,7 +872,7 @@ describe('TypeClient', () => {
 
     describe('ENUM', () => {
       it('(single)', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const def = (await TypeClient.load({ ns: 'foo.enum', fetch })).defs[0];
         const A = def.columns[0];
         expect(A.type.kind).to.eql('ENUM');
@@ -880,7 +880,7 @@ describe('TypeClient', () => {
       });
 
       it('(union)', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const def = (await TypeClient.load({ ns: 'foo.enum', fetch })).defs[0];
         const B = def.columns[1];
         const type = B.type;
@@ -903,7 +903,7 @@ describe('TypeClient', () => {
       });
 
       it('(array)', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const def = (await TypeClient.load({ ns: 'foo.enum', fetch })).defs[0];
         const C = def.columns[2];
         const type = C.type;
@@ -932,7 +932,7 @@ describe('TypeClient', () => {
   describe('cache', () => {
     describe('load method', () => {
       it('caches [load] method (passed in cache)', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const cache = TypeSystem.Cache.create();
         const ns = 'foo';
         const def1 = (await TypeClient.load({ ns, fetch, cache })).defs[0];
@@ -944,7 +944,7 @@ describe('TypeClient', () => {
       });
 
       it('caches [load] method (parallel execution)', async () => {
-        const fetch = testFetch({ defs: TYPE_DEFS });
+        const fetch = stub.fetch({ defs: TYPE_DEFS });
         const cache = TypeSystem.Cache.create();
 
         const ns = 'foo';
@@ -981,7 +981,7 @@ describe('TypeClient', () => {
 
       it('default cache (within call)', async () => {
         const ns = 'ns:foo.1';
-        const fetch = testFetch({ defs });
+        const fetch = stub.fetch({ defs });
 
         await TypeClient.load({ ns, fetch }); // NB: Internal cache used. New on each call).
         expect(fetch.getNsCount).to.eql(2); // NB: Less that the total number of type lookups passed to fetch.
@@ -996,7 +996,7 @@ describe('TypeClient', () => {
 
       it('shared cache (between calls)', async () => {
         const ns = 'ns:foo.1';
-        const fetch = testFetch({ defs });
+        const fetch = stub.fetch({ defs });
         const cache = TypeSystem.Cache.create();
 
         await TypeClient.load({ ns, fetch, cache });
@@ -1145,7 +1145,7 @@ describe('TypeClient', () => {
             },
           },
         };
-        const def = (await TypeClient.load({ ns: 'foo.1', fetch: testFetch({ defs }) })).defs[0];
+        const def = (await TypeClient.load({ ns: 'foo.1', fetch: stub.fetch({ defs }) })).defs[0];
         const res = TypeClient.typescript(def, { header: false }).toString();
         expect(res).to.include(`export declare type Foo1 = {\n`);
         expect(res).to.include(`myFoo?: number;\n`);
@@ -1153,7 +1153,7 @@ describe('TypeClient', () => {
     });
 
     describe('save file (.d.ts)', () => {
-      const fetch = testFetch({ defs: TYPE_DEFS });
+      const fetch = stub.fetch({ defs: TYPE_DEFS });
 
       it('dir and filename (explicitly passed)', async () => {
         const def = (await TypeClient.load({ ns: 'foo', fetch })).defs[0];
