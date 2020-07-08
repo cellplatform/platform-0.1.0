@@ -11,8 +11,8 @@ import { IPropListItem, IPropListItemEventArgs } from '@platform/cell.ui/lib/typ
 import { PropList } from '@platform/cell.ui/lib/components/PropList';
 export { PropList, IPropListItem, IPropListItemEventArgs };
 
-import { Button } from '@platform/ui.button/lib/components/Button';
-export { Button };
+import { Button, IButtonProps } from '@platform/ui.button/lib/components/Button';
+export { Button, IButtonProps };
 
 import { ObjectView } from '@platform/ui.object';
 export { ObjectView };

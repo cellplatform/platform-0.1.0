@@ -91,7 +91,7 @@ export class AppBuilder extends React.PureComponent<IAppBuilderProps, IAppBuilde
       }),
       left: css({
         position: 'relative',
-        width: 230,
+        width: 250,
         paddingTop: TOP_MARGIN,
         paddingLeft: EDGE_MARGIN,
         paddingRight: EDGE_MARGIN,

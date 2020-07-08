@@ -1,7 +1,7 @@
 import { Icon } from '@platform/ui.icon';
-import { FiWifi, FiAlertTriangle } from 'react-icons/fi';
-import { MdClose } from 'react-icons/md';
+import { FiAlertTriangle, FiWifi } from 'react-icons/fi';
 import { GoSquirrel } from 'react-icons/go';
+import { MdClose } from 'react-icons/md';
 
 /**
  * Icon collection.

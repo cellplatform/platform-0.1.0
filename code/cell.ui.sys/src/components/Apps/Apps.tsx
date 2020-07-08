@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, rx, t, ui } from '../../common';
+import { color, css, CssValue, rx, t, ui, AppModel } from '../../common';
 import { Installer } from '../Installer';
 import { App, AppClickEvent, AppClickEventHandler } from './App';
 import { IAppData } from './types';
@@ -30,9 +30,9 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     this.load();
-    rx.payload<t.ITypedSheetUpdatedEvent>(ctx.event$, 'SHEET/updated').subscribe((e) => {
-      this.load();
-    });
+    rx.payload<t.ITypedSheetUpdatedEvent>(ctx.event$, 'SHEET/updated')
+      .pipe()
+      .subscribe((e) => this.load());
   }
 
   public componentWillUnmount() {
@@ -56,18 +56,15 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
    */
   public async load() {
     const ctx = this.context;
-    const data = await ctx.window.app.sheet.data('App').load();
+    const client = ctx.client;
+    const cursor = await ctx.window.app.sheet.data('App').load({ range: '1:500' });
 
-    const wait = data.rows.map(async (row) => {
-      const uri = row.toString();
+    const wait = cursor.rows.map(async (row) => {
+      const model = await AppModel.load({ client, uri: row.toString() });
       const windows = await row.props.windows.data();
-      const item: IAppData = {
-        typename: row.typename,
-        types: row.types.list,
-        props: row.toObject(),
-        uri,
-        windows,
-      };
+      const total = windows.total;
+      const typename = row.typename;
+      const item: IAppData = { typename, total, model };
       return item;
     });
     const apps = await Promise.all(wait);
