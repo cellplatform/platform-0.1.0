@@ -91,6 +91,39 @@ describe('TypedSheet', () => {
     });
   });
 
+  describe('TypedSheet.load', () => {
+    it('load ("ns")', async () => {
+      const fetch = await testFetchMySheet('ns:foo.mySheet');
+      const sheet = await TypedSheet.load<f.TypeIndex>({ fetch, ns: 'foo.mySheet' });
+      expect(sheet.toString()).to.eql('ns:foo.mySheet');
+      expect(sheet.types[0].typename).to.eql('MyRow');
+    });
+
+    it('load from alternative URI ("cell")', async () => {
+      const fetch = await testFetchMySheet('ns:foo.mySheet');
+      const test = async (ns: string) => {
+        const sheet = await TypedSheet.load<f.TypeIndex>({ fetch, ns });
+        expect(sheet.toString()).to.eql('ns:foo.mySheet');
+        expect(sheet.types[0].typename).to.eql('MyRow');
+      };
+      await test('cell:foo.mySheet:A1');
+      await test('cell:foo.mySheet:A');
+      await test('cell:foo.mySheet:1');
+    });
+
+    it('throw: uri not convertable to namespace', async () => {
+      const fetch = await testFetchMySheet('ns:foo.mySheet');
+      const test = async (ns: string) => {
+        await expectError(
+          () => TypedSheet.load<f.TypeIndex>({ fetch, ns }),
+          'cannot be resolved to a namespace',
+        );
+      };
+      await test('file:foo:abc');
+      await test('foo:FAIL');
+    });
+  });
+
   describe('TypedSheet.info', () => {
     it('info (sheet exists)', async () => {
       const { sheet } = await testMySheet();
