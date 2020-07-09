@@ -13,7 +13,7 @@ describe('Client.TypeSystem', () => {
   describe('client.defs', () => {
     it('single namespace', async () => {
       const { mock, client } = await testDefs();
-      const defs = await client.defs('ns:foo');
+      const defs = await client.typeDefs('ns:foo');
       await mock.dispose();
 
       expect(defs.length).to.eql(1);
@@ -23,7 +23,7 @@ describe('Client.TypeSystem', () => {
 
     it('multiple namespaces', async () => {
       const { mock, client } = await testDefs();
-      const defs = await client.defs(['ns:foo', 'ns:foo.color']);
+      const defs = await client.typeDefs(['ns:foo', 'ns:foo.color']);
       await mock.dispose();
 
       expect(defs.length).to.eql(2);

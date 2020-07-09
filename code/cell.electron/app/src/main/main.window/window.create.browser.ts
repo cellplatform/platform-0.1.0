@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 
-import { constants, defaultValue, ENV, t } from '../common';
+import { constants, defaultValue, ENV, t, AppWindowModel } from '../common';
 import { logWindow } from './window.log';
 import { getUrl } from './window.url';
 
@@ -11,10 +11,14 @@ export async function createBrowserWindow(args: {
   app: t.AppRow;
   window: t.AppWindowRow;
 }) {
-  const { ctx, window, app } = args;
+  const { ctx, app } = args;
+  const client = ctx.client;
+
   const uri = args.window.uri.toString();
   const host = ctx.client.host;
   const sandbox = true; // https://www.electronjs.org/docs/api/sandbox-option
+
+  const window = await AppWindowModel.load({ client, uri });
 
   const argv = [
     ENV.isDev ? PROCESS.DEV : '',
@@ -75,7 +79,7 @@ export async function createBrowserWindow(args: {
   browser.loadURL(url.toString());
 
   // Finish up.
-  logWindow({ ...args, sandbox });
+  logWindow({ ...args, window, sandbox });
   return { ref, browser, url, app: args.app, window: args.window };
 }
 
@@ -83,7 +87,7 @@ export async function createBrowserWindow(args: {
  * [Helpers]
  */
 
-function updateBounds(args: { window: t.AppWindowRow; browser: BrowserWindow }) {
+function updateBounds(args: { window: t.IAppWindowModel; browser: BrowserWindow }) {
   const { window, browser } = args;
   const { width, height, x, y } = browser.getBounds();
   const props = window.props;

@@ -79,9 +79,10 @@ export async function start() {
     .pipe(filter((e) => e.source !== 'MAIN'))
     .subscribe((e) => {
       const name = e.data.name;
+      const arg = e.data.arg || '';
       if (name && e.data.action === 'OPEN') {
-        console.log('create', name);
-        window.createOne({ ctx, name });
+        console.log('create', name, arg);
+        window.createOne({ ctx, name, argv: [arg] });
       }
     });
 
