@@ -84,9 +84,13 @@ describe('TypedSheet', () => {
   describe('TypedSheet.load', () => {
     it('load ("ns")', async () => {
       const fetch = await testFetchMySheet('ns:foo.mySheet');
-      const sheet = await TypedSheet.load<f.TypeIndex>({ fetch, ns: 'foo.mySheet' });
-      expect(sheet.toString()).to.eql('ns:foo.mySheet');
-      expect(sheet.types[0].typename).to.eql('MyRow');
+      const test = async (ns: string) => {
+        const sheet = await TypedSheet.load<f.TypeIndex>({ fetch, ns });
+        expect(sheet.toString()).to.eql('ns:foo.mySheet');
+        expect(sheet.types[0].typename).to.eql('MyRow');
+      };
+      await test('foo.mySheet');
+      await test('ns:foo.mySheet');
     });
 
     it('load from alternative URI ("cell")', async () => {
@@ -1345,8 +1349,7 @@ describe('TypedSheet', () => {
           const { sheet, fetch } = await testMySheet();
           const state = sheet.state as TypedSheetStateInternal;
           fetch.count.getNs = 0;
-          const res = await state.getNs();
-          expect(res).to.eql(undefined);
+          await state.getNs();
           expect(fetch.count.getNs).to.eql(1);
           await state.getNs();
           expect(fetch.count.getNs).to.eql(1); // NB: no change - cached.
@@ -1537,7 +1540,7 @@ describe('TypedSheet', () => {
         const changes = state.changes;
         expect(changes.ns?.kind).to.eql('NS');
         expect(changes.ns?.ns).to.eql('foo.mySheet');
-        expect(changes.ns?.from).to.eql({});
+        expect(changes.ns?.from).to.eql({ type: { implements: 'ns:foo' } });
         expect(changes.ns?.to).to.eql({ type });
       });
 
@@ -1615,7 +1618,7 @@ describe('TypedSheet', () => {
 
         // Original value.
         expect(await state.getCell('A1')).to.eql({ value: 'One' });
-        expect(await state.getNs()).to.eql(undefined);
+        expect(await state.getNs()).to.eql({ type: { implements: 'ns:foo' } });
 
         event$.next({
           type: 'SHEET/change',
@@ -1645,7 +1648,7 @@ describe('TypedSheet', () => {
 
         // NB: retrieving original value after revert.
         expect(await state.getCell('A1')).to.eql({ value: 'One' });
-        expect(await state.getNs()).to.eql(undefined);
+        expect(await state.getNs()).to.eql({ type: { implements: 'ns:foo' } });
 
         const e = fired[0].payload as t.ITypedSheetChangesCleared;
         expect(e.sheet).to.equal(sheet);

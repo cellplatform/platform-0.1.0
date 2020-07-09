@@ -1,7 +1,7 @@
-import { t, coord } from '../common';
-import { fromFuncs } from './fetch.fromFuncs';
-import { objectToCells } from '../util';
+import { coord, t, Uri } from '../common';
 import { TypeClient } from '../TypeSystem.core/TypeClient';
+import { objectToCells } from '../util';
+import { fromFuncs } from './fetch.fromFuncs';
 
 type M = 'getNs' | 'getColumns' | 'getCells';
 
@@ -45,7 +45,8 @@ const fetch = (data: {
 
   const getNs: t.FetchSheetNs = async (args) => {
     before('getNs', args);
-    const def = data.defs[args.ns];
+    const key = Uri.ns(args.ns).toString();
+    const def = data.defs[key];
     const ns = !def ? undefined : ((def.ns || {}) as t.INsProps);
     res.count = { ...res.count, getNs: res.count.getNs + 1 };
     return { ns };
@@ -63,11 +64,9 @@ const fetch = (data: {
     before('getCells', args);
     const rows = coord.cell.max.row(Object.keys(data.cells || {})) + 1;
     const total = { rows };
+    const cells = data.cells ? filterCells(args.query, data.cells) : undefined;
     res.count = { ...res.count, getCells: res.count.getCells + 1 };
-    return {
-      cells: data.cells ? filterCells(args.query, data.cells) : undefined,
-      total,
-    };
+    return { cells, total };
   };
 
   const res: IStubFetcher = {

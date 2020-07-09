@@ -64,9 +64,15 @@ describe('TypeCache', () => {
         const ns = 'ns:foo';
         const method = fetch.getNs;
         const [res1, res2] = await Promise.all([method({ ns }), method({ ns })]);
-        expect(res1).to.not.eql(undefined);
-        expect(res1).to.equal(res2);
+        expect(res1).to.eql(res2);
         expect(fetch.cache.exists(fetch.cacheKey('getNs', ns))).to.eql(true);
+      });
+
+      it('does not cache error (404)', async () => {
+        const fetch = TypeCache.wrapFetch(stub.fetch({ defs: TYPE_DEFS }));
+        const ns = 'ns:foo.404';
+        await fetch.getNs({ ns });
+        expect(fetch.cache.exists(fetch.cacheKey('getNs', ns))).to.eql(false);
       });
     });
 
@@ -79,6 +85,13 @@ describe('TypeCache', () => {
         expect(res1).to.not.eql(undefined);
         expect(res1).to.equal(res2);
         expect(fetch.cache.exists(fetch.cacheKey('getColumns', ns))).to.eql(true);
+      });
+
+      it('does not cache error (404)', async () => {
+        const fetch = TypeCache.wrapFetch(stub.fetch({ defs: TYPE_DEFS }));
+        const ns = 'ns:foo.404';
+        await fetch.getColumns({ ns });
+        expect(fetch.cache.exists(fetch.cacheKey('getColumns', ns))).to.eql(false);
       });
     });
 
@@ -100,6 +113,13 @@ describe('TypeCache', () => {
         const res3 = await fetch.getCells({ ns, query: '1:50' });
         expect(Object.keys(res3.cells || {})).to.eql(['A1', 'Z1', 'B2', 'C3', 'Z9']);
         expect(innerFetch.count.getCells).to.eql(2); // NB: Went back to the fetch source as query expanded range.
+      });
+
+      it('does not cache error (404)', async () => {
+        const fetch = TypeCache.wrapFetch(stub.fetch({ defs: TYPE_DEFS }));
+        const ns = 'ns:foo.404';
+        await fetch.getCells({ ns, query: 'A1:A1' });
+        expect(fetch.cache.exists(fetch.cacheKey('getCells', ns))).to.eql(false);
       });
 
       it('syncs cells via event (cache patching)', async () => {

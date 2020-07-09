@@ -60,10 +60,5 @@ export function fromClient(http: t.IHttpClient): t.ISheetFetcher {
  */
 
 function formatError(error: t.IHttpError | undefined, getMessage: (message: string) => string) {
-  if (!error) {
-    return undefined;
-  } else {
-    const message = getMessage(error.message);
-    return { ...error, message };
-  }
+  return !error ? undefined : { ...error, message: getMessage(error.message) };
 }

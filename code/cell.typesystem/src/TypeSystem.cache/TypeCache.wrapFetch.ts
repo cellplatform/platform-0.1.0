@@ -43,12 +43,28 @@ export function wrapFetch(
 
   const getNs: t.FetchSheetNs = async (args) => {
     const key = fetchKey('getNs', args.ns.toString());
-    return cache.exists(key) ? cache.get(key) : cache.put(key, fetch.getNs(args)).get(key);
+    if (cache.exists(key)) {
+      return cache.get(key);
+    } else {
+      const res = await fetch.getNs(args);
+      if (res.ns && !res.error) {
+        cache.put(key, res); // NB: Only cache if result found without error.
+      }
+      return res;
+    }
   };
 
   const getColumns: t.FetchSheetColumns = async (args) => {
     const key = fetchKey('getColumns', args.ns.toString());
-    return cache.exists(key) ? cache.get(key) : cache.put(key, fetch.getColumns(args)).get(key);
+    if (cache.exists(key)) {
+      return cache.get(key);
+    } else {
+      const res = await fetch.getColumns(args);
+      if (res.columns && !res.error) {
+        cache.put(key, res); // NB: Only cache if result found without error.
+      }
+      return res;
+    }
   };
 
   const getCells: t.FetchSheetCells = async (args) => {
@@ -56,7 +72,11 @@ export function wrapFetch(
     const cells = cache.exists(key)
       ? cache.get<C>(key)
       : cache.put(key, TypeCacheCells.create(args.ns)).get<C>(key);
-    return cells.query(args.query).get(fetch);
+    const res = await cells.query(args.query).get(fetch);
+    if (res.error || !res.cells || Object.keys(res.cells).length === 0) {
+      cache.delete(key); // NB: Only cache if result found.
+    }
+    return res;
   };
 
   const res: t.CachedFetcher = {
