@@ -14,10 +14,6 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IDebugProps) {
-    super(props);
-  }
-
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
@@ -33,9 +29,9 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   public render() {
     const styles = {
       base: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         Absolute: 0,
         Flex: 'center-center',
+        WebkitAppRegion: 'drag',
       }),
     };
     return (

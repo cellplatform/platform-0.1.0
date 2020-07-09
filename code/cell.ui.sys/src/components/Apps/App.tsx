@@ -53,7 +53,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     return this.model.uri.toString();
   }
 
-  public get name() {
+  public get displayName() {
     let name = this.model.props.name;
     name = name.includes('/') ? name.split('/')[1] : name;
     return name;
@@ -126,7 +126,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
         <Card style={styles.card}>
           <div>
             <div {...styles.title}>
-              <div {...styles.name}>{this.name}</div>
+              <div {...styles.name}>{this.displayName}</div>
               <div {...styles.typename}>{app.typename}</div>
             </div>
             <div {...styles.body}>
@@ -155,15 +155,11 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
         };
       });
 
-    const onClick = this.newWindowHandler();
-
-    console.group('🌳 button');
-    console.log('argv', argv);
-    console.log('options', options);
-
-    console.groupEnd();
-
-    return this.renderFooterButton({ label: 'New Window', onClick, options });
+    return this.renderFooterButton({
+      label: 'New Window',
+      onClick: this.newWindowHandler(),
+      options,
+    });
   }
 
   private renderFooterButton(props: {
@@ -189,14 +185,13 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     if (onClick) {
       const app = this.app;
       onClick({ app });
-      console.log('app', app);
     }
   };
 
   private newWindowHandler = (arg?: string) => {
     return () => {
       const ctx = this.context;
-      const name = this.name;
+      const name = this.model.props.name;
 
       // TEMP 🐷
       ctx.fire({
