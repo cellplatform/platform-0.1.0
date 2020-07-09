@@ -1,5 +1,5 @@
 {
-  "name": "ui.ide",
+  "name": "@platform/ui.ide",
   "entry": "bundle/index.html",
   "devPort": 1236,
   "window": {

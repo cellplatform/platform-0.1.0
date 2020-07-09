@@ -1,5 +1,5 @@
 {
-  "name": "ui.finder",
+  "name": "@platform/ui.finder",
   "entry": "bundle/index.html",
   "devPort": 1235,
   "window": {
