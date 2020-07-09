@@ -24,6 +24,7 @@ export class AppWindowModel implements t.IAppWindowModel {
   private client: t.IClientTypesystem;
   private row: t.AppWindowRow;
 
+  public typename = 'AppWindow';
   public uri: t.IRowUri;
   public sheet: t.AppSheet;
   public app: t.IAppModel;

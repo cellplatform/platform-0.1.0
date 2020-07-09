@@ -45,7 +45,8 @@ export function declare(options: { namespaces?: Partial<t.INamespaces> } = {}) {
   def
     .ns(namespaces.AppWindow)
     .type('AppWindow')
-    .prop('app', (p) => p.type('string')) // REF: =app(row)
+    .prop('app', (p) => p.type('string')) // REF: =app
+    .prop('argv', (p) => p.type('string[]'))
     .prop('title', (p) => p.type('string').default('Untitled'))
     .prop('width', (p) => p.type('number'))
     .prop('height', (p) => p.type('number'))
@@ -59,7 +60,7 @@ export function declare(options: { namespaces?: Partial<t.INamespaces> } = {}) {
   def
     .ns(namespaces.AppData)
     .type('AppData')
-    .prop('app', (p) => p.type('string')) // REF: =app(row)
+    .prop('app', (p) => p.type('string')) // REF: =app
     .prop('window', (p) => p.type('string')) // {AppWindow.uri}
     .prop('fs', (p) => p.type('string').default('fs'))
     .prop('tmp', (p) => p.type('string'));

@@ -1,6 +1,7 @@
 import * as t from '../common/types';
 
 type IModel = {
+  readonly typename: string;
   readonly uri: t.IRowUri;
   readonly sheet: t.AppSheet;
   toString(): string;

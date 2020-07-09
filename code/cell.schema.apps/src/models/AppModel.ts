@@ -23,6 +23,7 @@ export class AppModel implements t.IAppModel {
   private client: t.IClientTypesystem;
   private row: t.AppRow;
 
+  public typename = 'App';
   public uri: t.IRowUri;
   public sheet: t.AppSheet;
 

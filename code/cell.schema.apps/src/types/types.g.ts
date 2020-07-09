@@ -56,6 +56,7 @@ export declare type App = {
 
 export declare type AppWindow = {
   app: string;
+  argv: string[];
   title: string;
   width: number;
   height: number;
