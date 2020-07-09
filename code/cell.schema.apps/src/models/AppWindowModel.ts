@@ -41,7 +41,8 @@ export class AppWindowModel implements t.IAppWindowModel {
    */
   public async load(): Promise<t.IAppWindowModel> {
     const client = this.client;
-    const { row, sheet } = await load({ uri: this.uri, client, typename: 'AppWindow' });
+    const uri = this.uri;
+    const { row, sheet } = await load({ uri, client, typename: 'AppWindow' });
     this.app = await AppModel.load({ client, uri: Uri.row(row.props.app) });
     this.sheet = sheet;
     this.row = row;

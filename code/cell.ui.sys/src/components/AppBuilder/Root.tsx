@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, events, t, ui, Uri, AppWindowModel } from '../../common';
+import { color, css, CssValue, events, t, ui } from '../../common';
 import { Apps } from '../Apps';
 import { Installer } from '../Installer';
 import { WindowTitleBar } from '../primitives';

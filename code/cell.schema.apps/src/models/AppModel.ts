@@ -39,7 +39,8 @@ export class AppModel implements t.IAppModel {
    */
   public async load(): Promise<t.IAppModel> {
     const client = this.client;
-    const { row, sheet } = await load({ uri: this.uri, client, typename: 'App' });
+    const uri = this.uri;
+    const { row, sheet } = await load({ uri, client, typename: 'App' });
     this.sheet = sheet;
     this.row = row;
     return this;

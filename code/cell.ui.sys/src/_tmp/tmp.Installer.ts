@@ -1,10 +1,11 @@
-import { t, time } from '../common';
+import { t, time, Uri } from '../common';
 
 /**
  * Get apps sheet.
  */
-export async function getApps(client: t.IClientTypesystem) {
-  const sheet = await client.sheet<t.AppTypeIndex>('ns:sys.app');
+export async function getApps(client: t.IClientTypesystem, ns: string) {
+  ns = Uri.toNs(ns).toString();
+  const sheet = await client.sheet<t.AppTypeIndex>(ns);
   const apps = await sheet.data('App').load();
   return { sheet, apps };
 }
@@ -38,7 +39,7 @@ export async function uploadApp(args: {
     throw new Error(`The bundle does not contain an 'app.json' manifest.`);
   }
 
-  const { sheet, apps } = await getApps(client);
+  const { sheet, apps } = await getApps(client, ctx.window.app.uri.toString());
   const exists = Boolean(apps.find((row) => row.name === manifest.name));
   if (exists) {
     throw new Error(`The app '${manifest.name}' has already been installed.`);
