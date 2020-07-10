@@ -1,8 +1,8 @@
 {
-  "name": "@platform/cell.ui.spreadsheet",
+  "name": "@platform/cell.ui.sys",
   "version": "0.0.0",
   "entry": "bundle/index.html",
-  "devPort": 1237,
+  "devPort": 1236,
   "window": {
     "width": 1000,
     "height": 650

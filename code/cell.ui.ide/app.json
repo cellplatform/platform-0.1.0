@@ -1,5 +1,6 @@
 {
-  "name": "@platform/ui.ide",
+  "name": "@platform/cell.ui.ide",
+  "version": "0.0.0",
   "entry": "bundle/index.html",
   "devPort": 1236,
   "window": {

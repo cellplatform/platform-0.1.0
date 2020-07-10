@@ -1,5 +1,6 @@
 {
-  "name": "@platform/ui.finder",
+  "name": "@platform/cell.ui.finder",
+  "version": "0.0.0",
   "entry": "bundle/index.html",
   "devPort": 1235,
   "window": {
