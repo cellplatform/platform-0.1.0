@@ -35,7 +35,11 @@ export async function start() {
 
   // Start the HTTP server.
   const port = prod ? undefined : 5000;
-  const { paths, host } = await server.start({ log, prod, port });
+  const { paths, host, instance } = await server.start({ log, prod, port });
+
+  // instance.request$.subscribe((e) => {
+  //   console.log(' > ', e.method, e.url); // TEMP 🐷
+  // });
 
   // Initialize the typesystem HTTP client.
   const event$ = new Subject<t.AppEvent>();
