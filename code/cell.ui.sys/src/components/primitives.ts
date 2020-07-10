@@ -16,3 +16,6 @@ export { Button, IButtonProps };
 
 import { ObjectView } from '@platform/ui.object';
 export { ObjectView };
+
+import { Spinner } from '@platform/ui.spinner';
+export { Spinner };

@@ -105,7 +105,7 @@ export class ActionButton extends React.PureComponent<IActionButtonProps, IActio
     const options = this.options;
     const elList = options.map((option, i) => {
       return (
-        <div key={i} {...styles.item} onClick={option.onClick}>
+        <div key={i} {...styles.item} onClick={this.optionClickHandler(option)}>
           <Button>{option.label}</Button>
         </div>
       );
@@ -125,6 +125,15 @@ export class ActionButton extends React.PureComponent<IActionButtonProps, IActio
    */
   private onClick = () => {
     this.state$.next({ isPopupVisible: true });
+  };
+
+  private optionClickHandler = (option: IActionButtonOption) => {
+    return (e: React.MouseEvent) => {
+      this.state$.next({ isPopupVisible: false });
+      if (option.onClick) {
+        option.onClick(e);
+      }
+    };
   };
 
   private onPopupLeave = () => {

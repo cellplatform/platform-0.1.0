@@ -4,6 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { t } from '../common';
+import { Root } from '../components/Root';
 import { AppBuilder } from '../components/AppBuilder';
 import { Debug } from '../components/Debug';
 import { context } from '../context';
@@ -13,7 +14,11 @@ function render(entry?: string) {
     return <Debug />;
   } else {
     // Default or 'entry:builder'
-    return <AppBuilder />;
+    return (
+      <Root>
+        <AppBuilder />
+      </Root>
+    );
   }
 }
 

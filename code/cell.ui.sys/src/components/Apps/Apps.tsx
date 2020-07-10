@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
 import { color, css, CssValue, rx, t, ui, AppModel } from '../../common';
 import { Installer } from '../Installer';
@@ -31,7 +31,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
 
     this.load();
     rx.payload<t.ITypedSheetUpdatedEvent>(ctx.event$, 'SHEET/updated')
-      .pipe()
+      .pipe(debounceTime(200))
       .subscribe((e) => this.load());
   }
 
@@ -54,7 +54,8 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
   /**
    * [Methods]
    */
-  public async load() {
+
+  public load = async () => {
     const ctx = this.context;
     const client = ctx.client;
     const cursor = await ctx.window.app.sheet.data('App').load({ range: '1:500' });
@@ -69,7 +70,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     });
     const apps = await Promise.all(wait);
     this.state$.next({ apps });
-  }
+  };
 
   /**
    * [Render]

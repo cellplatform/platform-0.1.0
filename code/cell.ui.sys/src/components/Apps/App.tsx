@@ -53,8 +53,12 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     return this.model.uri.toString();
   }
 
+  public get name() {
+    return this.model.props.name || '';
+  }
+
   public get displayName() {
-    let name = this.model.props.name;
+    let name = this.name;
     name = name.includes('/') ? name.split('/')[1] : name;
     return name;
   }
@@ -191,7 +195,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   private newWindowHandler = (arg?: string) => {
     return () => {
       const ctx = this.context;
-      const name = this.model.props.name;
+      const name = this.name;
 
       // TEMP 🐷
       ctx.fire({
@@ -205,7 +209,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   };
 
   private onWindowsClick = () => {
-    const app = this.props.app;
     this.context.fire({
       type: 'APP:SYS/overlay',
       payload: {
