@@ -10,6 +10,8 @@ import { DropEvent, InstallerDragTarget } from './Installer.DragTarget';
 import { Message } from './Message';
 import { installBundle } from './util';
 
+const COUNTDOWN = 1500;
+
 export type IInstallerDialogProps = {
   dir: string;
   files?: t.IHttpClientCellFileUpload[];
@@ -25,8 +27,6 @@ export type IInstallerDialogState = {
   isDragOver?: boolean;
   isSpinning?: boolean;
 };
-
-const COUNTDOWN = 2000;
 
 export class InstallerDialog extends React.PureComponent<
   IInstallerDialogProps,
