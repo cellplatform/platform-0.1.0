@@ -74,7 +74,7 @@ export function wrapFetch(
       : cache.put(key, TypeCacheCells.create(args.ns)).get<C>(key);
     const res = await cells.query(args.query).get(fetch);
     if (res.error || !res.cells || Object.keys(res.cells).length === 0) {
-      cache.delete(key); // NB: Only cache if result found.
+      cache.delete(key); // NB: Only cache if result found without error.
     }
     return res;
   };
