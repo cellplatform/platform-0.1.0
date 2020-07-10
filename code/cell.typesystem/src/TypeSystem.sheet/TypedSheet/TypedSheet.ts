@@ -245,6 +245,10 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     return this._errorList.list;
   }
 
+  public get changes() {
+    return this.state.changes;
+  }
+
   public get types() {
     if (!this._types) {
       const types: t.ITypedSheet['types'] = [];

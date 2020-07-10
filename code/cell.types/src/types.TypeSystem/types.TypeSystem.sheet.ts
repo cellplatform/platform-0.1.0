@@ -25,6 +25,7 @@ export type ITypedSheet<T = {}> = {
   readonly implements: t.INsUri;
   readonly types: { typename: string; columns: t.IColumnTypeDef[] }[];
   readonly state: t.ITypedSheetState;
+  readonly changes: t.ITypedSheetChanges;
   readonly event$: t.Observable<t.TypedSheetEvent>;
   readonly dispose$: t.Observable<{}>;
   readonly isDisposed: boolean;

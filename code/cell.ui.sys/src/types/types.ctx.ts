@@ -6,4 +6,5 @@ import { t } from './common';
 export type IAppContext = t.IEnvContext<t.AppEvent> & {
   getState(): t.IAppState;
   window: t.IAppWindowModel;
+  sheetChanged: (changes: t.ITypedSheetChanges) => Promise<{}>;
 };

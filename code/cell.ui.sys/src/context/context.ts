@@ -1,8 +1,20 @@
-import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+  tap,
+} from 'rxjs/operators';
 
-import { Client, t, ui, AppWindowModel } from '../common';
+import { Client, t, ui, AppWindowModel, Uri, rx } from '../common';
 import { createStore, behavior } from '../state';
+import { fireSheetChanged } from './context.sheetChanged';
 
 /**
  * Creates an environment context.
@@ -30,6 +42,9 @@ export async function create(args: { env: t.IEnv }) {
     event$: event$.pipe(share()),
     getState: () => store.state,
     fire: (e) => event$.next(e),
+    sheetChanged(changes: t.ITypedSheetChanges) {
+      return fireSheetChanged({ event$, changes, source: env.def });
+    },
   };
 
   // Finish up.

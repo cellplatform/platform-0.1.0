@@ -3,11 +3,12 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { getApps, getManifest, uploadApp } from '../../_tmp/tmp.Installer';
-import { color, COLORS, css, CssValue, filesize, t, time, ui } from '../../common';
+import { AppManifest, color, COLORS, css, CssValue, filesize, t, time, ui } from '../../common';
 import { Icons } from '../Icons';
 import { Button, Spinner } from '../primitives';
-import { InstallerDragTarget, DropEvent } from './Installer.DragTarget';
+import { DropEvent, InstallerDragTarget } from './Installer.DragTarget';
+import { Message } from './Message';
+import { installBundle } from './util';
 
 export type IInstallerDialogProps = {
   dir: string;
@@ -24,6 +25,8 @@ export type IInstallerDialogState = {
   isDragOver?: boolean;
   isSpinning?: boolean;
 };
+
+const COUNTDOWN = 2000;
 
 export class InstallerDialog extends React.PureComponent<
   IInstallerDialogProps,
@@ -67,7 +70,7 @@ export class InstallerDialog extends React.PureComponent<
   }
 
   public get manifest() {
-    return getManifest(this.files);
+    return AppManifest.fromFiles(this.files);
   }
 
   /**
@@ -80,35 +83,21 @@ export class InstallerDialog extends React.PureComponent<
     urls?: string[];
   }) {
     const ctx = this.context;
+    const client = ctx.client;
 
     const { dir, urls } = args;
-    const files = (args.files || [])
-      .filter((file) => !file.filename.endsWith('.DS_Store'))
-      .filter((file) => !file.filename.endsWith('.map'))
-      .filter((file) => file.data.byteLength > 0);
-
-    if (files.length > 30) {
+    const files = AppManifest.filterFiles(args.files);
+    if (files.length > 50) {
       this.setError(`Too many files. Are you sure you dropped a bundle?`);
       return;
     }
 
-    // console.log('files', files);
+    const ns = ctx.window.app.uri.toString();
+    const manifest = AppManifest.fromFiles(files);
+    const bundle = await manifest.bundle({ client, dir, files, ns });
 
-    /**
-     * TODO 🐷
-     * Move this into [cell.schema.apps] - AppManifest
-     */
-
-    // if (e.files.length > 30) {
-    //   this.setError(`Too many files. Are you sure you dropped a bundle?`);
-    //   return;
-    // }
-
-    const manifest = getManifest(files);
-    const { apps } = await getApps(ctx.client, ctx.window.app.uri.toString());
-    const exists = manifest ? Boolean(apps.find((row) => row.name === manifest.name)) : false;
-    if (exists) {
-      this.setError(`The app '${manifest?.name}' has already been installed.`);
+    if (bundle.exists) {
+      this.setError(`The app '${manifest.name}' has already been installed.`);
     } else {
       this.clearError();
       this.state$.next({ files, dir, urls });
@@ -122,23 +111,13 @@ export class InstallerDialog extends React.PureComponent<
     this.state$.next({ isSpinning: true });
 
     try {
-      // AppManifest.ex
-      // const manifest = AppManifest.fromFiles(files);
-
-      console.log('dir', dir);
-      console.log('files', files);
-
       // Upload the bundle.
-      await uploadApp({ ctx, dir, files });
+      await installBundle({ ctx, dir, files });
 
       // Display "installed" notification.
       this.state$.next({ installed: true, isSpinning: false });
-      time.delay(2500, () => {
-        console.log('CLOSE');
-        this.close();
-      });
+      time.delay(COUNTDOWN, () => this.close());
     } catch (error) {
-      console.log('error', error);
       this.setError(error);
     }
   };
@@ -224,8 +203,30 @@ export class InstallerDialog extends React.PureComponent<
 
     return (
       <div {...styles.base}>
-        {message && <div {...styles.label}>{message}</div>}
+        {message && <Message text={message} countdown={COUNTDOWN} />}
+        {/* {this.renderMessage({message})} */}
         {!message && this.renderInstallConfirm()}
+      </div>
+    );
+  }
+
+  private renderMessage(props: { message: string; countdown?: number }) {
+    const { message } = props;
+    if (!message) {
+      return null;
+    }
+    const styles = {
+      base: css({}),
+      label: css({
+        fontSize: 20,
+        fontWeight: 'bolder',
+        letterSpacing: -0.8,
+        cursor: 'default',
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <div {...styles.label}>{message}</div>
       </div>
     );
   }
