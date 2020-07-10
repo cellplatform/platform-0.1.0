@@ -96,12 +96,12 @@ describe('Client.TypeSystem', () => {
         row.props.title = '2';
         row.props.title = '3';
 
-        await time.wait(5);
+        await time.wait(20);
 
         sheet.dispose(); // NB: Auto un-watches so "goodbye" is not the final change.
         row.props.title = 'goodbye';
 
-        await time.wait(5);
+        await time.wait(20);
         await mock.dispose();
 
         expect(fired.length).to.eql(3);
@@ -114,11 +114,11 @@ describe('Client.TypeSystem', () => {
       it('saves cell changes', async () => {
         const { mock, client } = await testDefs();
         const sheet = await client.sheet<g.TypeIndex>('ns:foo.mySheet');
-        const saver = Client.saveMonitor({ client, debounce: 1 });
+        const saver = Client.saveMonitor({ client, debounce: 10 });
         client.changes.watch(sheet);
 
         expect(sheet.state.changes).to.eql({});
-        expect(saver.debounce).to.eql(1);
+        expect(saver.debounce).to.eql(10);
 
         const cursor = await sheet.data('MyRow').load();
         const row = cursor.row(0).props;

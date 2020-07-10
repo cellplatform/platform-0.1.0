@@ -69,11 +69,6 @@ export class AppManifest {
     const exists = Boolean(apps.find((row) => row.name === manifest.name));
     const bytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
 
-    console.log('apps', apps);
-    apps.forEach((app) => {
-      console.log('app.name', app.name);
-    });
-
     const api = {
       manifest,
       ns,
