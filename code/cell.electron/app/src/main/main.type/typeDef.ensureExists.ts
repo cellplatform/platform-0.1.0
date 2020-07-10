@@ -7,6 +7,7 @@ export async function ensureExists(args: { client: t.IClientTypesystem; force?: 
   const { client, force } = args;
   const http = client.http;
   const config = await ConfigFile.read();
+
   let created = false;
 
   // Write type-defs.
