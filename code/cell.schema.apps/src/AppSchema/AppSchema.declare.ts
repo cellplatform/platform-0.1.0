@@ -26,6 +26,7 @@ export function declare(options: { namespaces?: Partial<t.INamespaces> } = {}) {
     .ns(namespaces.App)
     .type('App')
     .prop('name', (p) => p.type('string'))
+    .prop('version', (p) => p.type('string').default('0.0.0'))
     .prop('argv', (p) => p.type('string[]'))
     .prop('fs', (p) => p.type('string').default('fs'))
     .prop('bytes', (p) => p.type('number').default(-1))

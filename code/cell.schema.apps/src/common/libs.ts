@@ -9,3 +9,6 @@ export { Client };
 
 import { time, defaultValue } from '@platform/util.value';
 export { time, defaultValue };
+
+import * as semver from 'semver';
+export { semver };

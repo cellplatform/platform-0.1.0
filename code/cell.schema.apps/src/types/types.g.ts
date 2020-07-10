@@ -40,6 +40,7 @@ export declare type TypeIndex = {
 
 export declare type App = {
   name: string;
+  version: string;
   argv: string[];
   fs: string;
   bytes: number;

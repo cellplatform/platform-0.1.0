@@ -4,6 +4,7 @@
  */
 export type IAppManifestFile = {
   name: string;
+  version: string;
   entry: string;
   devPort: number;
   window: {
