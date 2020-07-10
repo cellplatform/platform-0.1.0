@@ -26,6 +26,7 @@
     "@platform/state": "0.5.2",
     "@platform/ui.icon": "0.0.156",
     "@platform/ui.object": "0.0.210",
+    "@platform/ui.spinner": "^0.0.153",
     "@platform/util.value": "0.7.24",
     "filesize": "6.1.0",
     "react-icons": "3.10.0"
