@@ -59,12 +59,8 @@ export async function start() {
     });
     await app.whenReady();
 
-    log.info(1);
-
     // Initialize the system models.
     const ctx = await sys.init({ client, event$ });
-
-    log.info(2);
 
     log.info();
     log.info(`app modules: ${log.yellow(ctx.apps.total)}`);
