@@ -1,12 +1,15 @@
-import { t, util, time } from '../common';
+import { filter, take, tap } from 'rxjs/operators';
+
+import { rx, t } from '../common';
 import { createBrowserWindow } from './window.create.browser';
 
 /**
  * Create an electron window for the given app.
  */
-export async function createOne(args: { ctx: t.IContext; name: string }) {
+export async function createOne(args: { ctx: t.IContext; name: string; argv?: string[] }) {
   const { ctx } = args;
-  const { apps } = ctx;
+  const { apps, event$ } = ctx;
+  const argv = (args.argv || []).filter((arg) => Boolean((arg || '').trim()));
 
   /**
    * 🐷HACK TEMP:
@@ -17,8 +20,12 @@ export async function createOne(args: { ctx: t.IContext; name: string }) {
    *    of make some kind of "force load" method
    *
    */
-  // const wait = Array.from({ length: apps.total }).map((v, i) => apps.row(i).load());
-  // await Promise.all(wait);
+
+  const reload = async () => {
+    const wait = Array.from({ length: apps.total }).map((v, i) => apps.row(i).load());
+    await Promise.all(wait);
+  };
+  await reload();
 
   // Retrieve the app definition.
   const app = apps.find((row) => row.name === args.name);
@@ -30,6 +37,26 @@ export async function createOne(args: { ctx: t.IContext; name: string }) {
   const windows = await app.props.windows.data();
   const window = windows.row(windows.total);
   window.props.app = `=${app.uri.toString()}`; // NB: REF to the defining [App].
+  window.props.argv = argv;
+
+  /**
+   * TODO 🐷
+   * - move to method somewhere sensible
+   * - name: `waitForSave`
+   */
+  // TEMP 🐷- move to method somewhere sensible
+  //
+  await rx
+    .payload<t.ITypedSheetSavedEvent>(event$, 'SHEET/saved')
+    .pipe(
+      filter((e) => e.sheet.uri.id === window.uri.ns),
+      take(1),
+      // delay(500),
+      tap((e) => {
+        console.log('SAVED', e.sheet.uri.toString());
+      }),
+    )
+    .toPromise();
 
   // Finish up.
   return createBrowserWindow({ ctx, app, window });
