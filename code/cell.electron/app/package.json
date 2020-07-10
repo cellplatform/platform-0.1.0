@@ -14,9 +14,9 @@
     "lint": "ts lint",
     "build": "ts build --no-esm",
     "prepare": "ts prepare",
+    "bundle.preload": "sh script.sh/bundle.preload.sh",
     "package": "electron-forge package",
-    "make": "yarn build && electron-forge make",
-    "bundle.preload": "sh script.sh/bundle.preload.sh"
+    "make": "yarn build && yarn bundle.preload && electron-forge make"
   },
   "dependencies": {
     "@platform/cell.client": "0.2.117",
