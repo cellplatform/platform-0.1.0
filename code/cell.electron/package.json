@@ -12,7 +12,7 @@
     "build": "cd app && yarn build",
     "clean": "sh script.sh/clean.sh",
     "reset": "sh script.sh/reset.sh",
-    "bundle": "ts-node -T script.ts/bundle.ui",
+    "bundle": "sh script.sh/bundle.ui.sys.sh",
     "bundle.preload": "cd app && yarn bundle.preload",
     "open": "cd app/out/A1-darwin-x64 && open A1.app"
   },

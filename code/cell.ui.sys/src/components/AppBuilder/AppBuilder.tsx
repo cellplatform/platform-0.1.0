@@ -4,7 +4,6 @@ import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue, events, t, ui } from '../../common';
 import { Apps } from '../Apps';
-import { Installer } from '../Installer';
 import { HelpersCard } from './Card.Helpers';
 import { ServerCard } from './Card.Server';
 
