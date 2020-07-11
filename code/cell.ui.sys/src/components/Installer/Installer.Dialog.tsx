@@ -3,14 +3,15 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { AppManifest, color, COLORS, css, CssValue, filesize, t, time, ui } from '../../common';
+import { AppManifest, COLORS, css, CssValue, t, time, ui } from '../../common';
 import { Icons } from '../Icons';
-import { Button, Spinner } from '../primitives';
+import { Spinner } from '../primitives';
+import { InstallerConfirm, InstallClickEvent } from './Installer.Confirm';
 import { DropEvent, InstallerDragTarget } from './Installer.DragTarget';
 import { Message } from './Message';
 import { installBundle } from './util';
 
-const COUNTDOWN = 1500;
+const COUNTDOWN = 1000;
 
 export type IInstallerDialogProps = {
   dir: string;
@@ -19,6 +20,7 @@ export type IInstallerDialogProps = {
   style?: CssValue;
 };
 export type IInstallerDialogState = {
+  loaded?: boolean;
   dir?: string;
   files?: t.IHttpClientCellFileUpload[];
   urls?: string[];
@@ -82,26 +84,14 @@ export class InstallerDialog extends React.PureComponent<
     files?: t.IHttpClientCellFileUpload[];
     urls?: string[];
   }) {
-    const ctx = this.context;
-    const client = ctx.client;
-
     const { dir, urls } = args;
     const files = AppManifest.filterFiles(args.files);
     if (files.length > 50) {
       this.setError(`Too many files. Are you sure you dropped a bundle?`);
       return;
     }
-
-    const ns = ctx.window.app.uri.toString();
-    const manifest = AppManifest.fromFiles(files);
-    const bundle = await manifest.bundle({ client, dir, files, ns });
-
-    if (bundle.exists) {
-      this.setError(`The app '${manifest.name}' has already been installed.`);
-    } else {
-      this.clearError();
-      this.state$.next({ files, dir, urls });
-    }
+    this.clearError();
+    this.state$.next({ files, dir, urls, loaded: true });
   }
 
   public install = async () => {
@@ -171,16 +161,23 @@ export class InstallerDialog extends React.PureComponent<
   }
 
   private renderBody() {
-    const { error, isSpinning } = this.state;
-    const { installed } = this.state;
-
-    if (isSpinning) {
-      return this.renderSpinner();
+    const { error, isSpinning, loaded } = this.state;
+    if (!loaded) {
+      return null;
     }
+
+    const { installed } = this.state;
+    const manifest = this.manifest;
+    const files = this.files;
+    const urls = this.state.urls;
+
     if (error) {
       return this.renderError(error);
     }
-    if (this.files.length === 0) {
+    if (isSpinning) {
+      return this.renderSpinner();
+    }
+    if (files.length === 0) {
       return null;
     }
 
@@ -204,152 +201,15 @@ export class InstallerDialog extends React.PureComponent<
     return (
       <div {...styles.base}>
         {message && <Message text={message} countdown={COUNTDOWN} />}
-        {/* {this.renderMessage({message})} */}
-        {!message && this.renderInstallConfirm()}
-      </div>
-    );
-  }
-
-  private renderMessage(props: { message: string; countdown?: number }) {
-    const { message } = props;
-    if (!message) {
-      return null;
-    }
-    const styles = {
-      base: css({}),
-      label: css({
-        fontSize: 20,
-        fontWeight: 'bolder',
-        letterSpacing: -0.8,
-        cursor: 'default',
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <div {...styles.label}>{message}</div>
-      </div>
-    );
-  }
-
-  private renderInstallConfirm() {
-    const manifest = this.manifest;
-
-    const styles = {
-      base: css({
-        Flex: 'horizontal-stretch-stretch',
-        boxSizing: 'border-box',
-      }),
-      title: css({
-        fontSize: 24,
-        fontWeight: 'bolder',
-        letterSpacing: -0.8,
-        cursor: 'default',
-        pointerEvents: 'none',
-        marginBottom: 3,
-      }),
-      left: css({
-        minWidth: 250,
-        borderRight: `solid 1px ${color.format(-0.1)}`,
-      }),
-      right: css({
-        paddingLeft: 20,
-      }),
-      buttons: css({
-        marginTop: 10,
-        borderTop: `solid 1px ${color.format(-0.1)}`,
-        Flex: 'horizontal-spaceBetween-center',
-        paddingTop: 8,
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <div {...styles.left}>
-          <div {...styles.title}>App Bundle</div>
-          <div>{manifest?.name || 'Unnamed'}</div>
-          <div {...styles.buttons}>{this.renderInstallButton()}</div>
-        </div>
-        <div {...styles.right}>{this.renderList()}</div>
-      </div>
-    );
-  }
-
-  private renderInstallButton() {
-    const styles = {
-      base: css({
-        backgroundColor: COLORS.BLUE,
-        color: COLORS.WHITE,
-        border: `solid 1px ${color.format(0.3)}`,
-        borderRadius: 3,
-        padding: 8,
-        PaddingX: 20,
-        pointerEvents: 'auto',
-      }),
-    };
-    return (
-      <Button onClick={this.install}>
-        <div {...styles.base}>
-          <div>Install Now</div>
-        </div>
-      </Button>
-    );
-  }
-
-  private renderList() {
-    const files = this.files;
-    const url = this.url;
-
-    if (files.length === 0 && !url) {
-      return null;
-    }
-
-    const styles = {
-      base: css({
-        fontSize: 12,
-        lineHeight: '1.5em',
-      }),
-      item: css({
-        Flex: 'horizontal-stretch-spaceBetween',
-        borderBottom: `dashed 1px ${color.format(-0.1)}`,
-      }),
-      filename: css({
-        marginRight: 30,
-      }),
-      size: css({
-        textAlign: 'right',
-      }),
-      total: css({
-        position: 'relative',
-        textAlign: 'right',
-        paddingTop: 3,
-        fontWeight: 'bolder',
-      }),
-      totalIcon: css({
-        Absolute: [2, -20, null, null],
-      }),
-    };
-
-    const elList =
-      !url &&
-      files.map((file, i) => {
-        const bytes = file.data.byteLength;
-        const size = filesize(bytes);
-        return (
-          <div key={i} {...styles.item}>
-            <div {...styles.filename}>{file.filename}</div>
-            <div {...styles.size}>{size}</div>
-          </div>
-        );
-      });
-
-    const totalBytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
-
-    return (
-      <div {...styles.base}>
-        {elList}
-        <div {...styles.total}>
-          <Icons.Squirrel style={styles.totalIcon} size={16} color={COLORS.DARK} />
-          <div>{filesize(totalBytes)}</div>
-        </div>
+        {!message && (
+          <InstallerConfirm
+            name={manifest.name}
+            version={manifest.version}
+            files={files}
+            urls={urls}
+            onInstallClick={this.onInstallClick}
+          />
+        )}
       </div>
     );
   }
@@ -402,5 +262,10 @@ export class InstallerDialog extends React.PureComponent<
     const { dir, files, urls } = e;
     this.state$.next({ isDragOver: false });
     this.prepare({ dir, files, urls });
+  };
+
+  private onInstallClick = (e: InstallClickEvent) => {
+    console.log('e', e);
+    this.install();
   };
 }

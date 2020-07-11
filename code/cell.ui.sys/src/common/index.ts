@@ -41,3 +41,6 @@ export { AppManifest, AppModel, AppWindowModel };
 import filesize from 'filesize';
 export { filesize };
 /* eslint-enable */
+
+import * as semver from 'semver';
+export { semver };

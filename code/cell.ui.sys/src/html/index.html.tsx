@@ -11,7 +11,11 @@ import { context } from '../context';
 
 function render(entry?: string) {
   if (entry === 'entry:debug') {
-    return <Debug />;
+    return (
+      <Root title={'system.debug'}>
+        <Debug />
+      </Root>
+    );
   } else {
     // Default or 'entry:builder'
     return (

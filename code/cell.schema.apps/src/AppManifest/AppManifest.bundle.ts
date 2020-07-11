@@ -7,18 +7,20 @@ export async function bundle(args: {
   manifest: t.IAppManifestFile;
   client: t.IClientTypesystem;
   ns: t.INsUri | string; // Namespace of {App} sheet.
-  dir: string;
-  files: t.IHttpClientCellFileUpload[];
+  dir?: string;
+  files?: t.IHttpClientCellFileUpload[];
 }) {
-  const { client, dir, manifest } = args;
+  const { client, dir = '', manifest } = args;
   const ns = Uri.toNs(args.ns);
   const files = filterFiles(args.files);
 
   const sheet = await client.sheet<t.AppTypeIndex>(ns);
   const apps = await sheet.data('App').load();
 
-  const exists = Boolean(apps.find((row) => row.name === manifest.name));
+  const current = apps.find((row) => row.name === manifest.name);
+  const exists = Boolean(current);
   const bytes = files.reduce((acc, next) => acc + next.data.byteLength, 0);
+  const version = { from: current ? current.props.version : '', to: manifest.version };
 
   return {
     manifest,
@@ -27,6 +29,7 @@ export async function bundle(args: {
     files,
     bytes,
     exists,
+    version,
 
     /**
      * Save the app bundle model, and optionally upload the files.
@@ -41,10 +44,8 @@ export async function bundle(args: {
      *
      */
     async save(options: { upload?: boolean } = {}) {
-      if (exists) {
-        throw new Error(`The app '${manifest.name}' has already been installed.`);
-      }
-      const { changes, app } = await writeTypeDef({ sheet, apps, manifest, bytes });
+      const index = current ? current.index : apps.total;
+      const { changes, app } = await writeTypeDef({ index, sheet, apps, manifest, bytes });
       if (defaultValue(options.upload, true)) {
         await this.upload(app);
       }
@@ -57,7 +58,10 @@ export async function bundle(args: {
     async upload(app: t.AppRow) {
       const entry = app.props.entry;
       const dir = entry.substring(0, entry.indexOf('/'));
-      const files = args.files.map((file) => ({ ...file, filename: `${dir}/${file.filename}` }));
+      const files = (args.files || []).map((file) => ({
+        ...file,
+        filename: `${dir}/${file.filename}`,
+      }));
 
       const target = app.types.map.fs.uri;
       const res = await client.http.cell(target).files.upload(files);
@@ -81,17 +85,21 @@ export function filterFiles(files: t.IHttpClientCellFileUpload[] = []) {
  */
 
 async function writeTypeDef(args: {
+  manifest: t.IAppManifestFile;
+  index: number;
   sheet: t.ITypedSheet<t.AppTypeIndex>;
   apps: t.AppCursor;
-  manifest: t.IAppManifestFile;
   bytes: number;
 }) {
-  const { sheet, apps, manifest } = args;
+  const { sheet, apps, manifest, index } = args;
 
-  const app = apps.row(apps.total);
+  console.log('index', index);
+
+  const app = apps.row(index);
   const props = app.props;
 
   props.name = manifest.name;
+  props.version = manifest.version || '0.0.0';
   props.entry = manifest.entry;
   props.devPort = manifest.devPort || props.devPort;
   props.width = manifest.window.width || props.width;
@@ -100,7 +108,7 @@ async function writeTypeDef(args: {
   props.minHeight = manifest.window.minHeight || props.minHeight;
   props.bytes = args.bytes;
 
-  await time.wait(10); // NB: Allow time for prop changes to be reflected in the sheet state.
+  await time.wait(50); // NB: Allow time for prop changes to be reflected in the sheet state.
   const changes = sheet.changes;
 
   return { app, changes };

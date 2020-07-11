@@ -6,6 +6,7 @@ import { color, css, CssValue, rx, t, ui, AppModel } from '../../common';
 import { Installer } from '../Installer';
 import { App, AppClickEvent, AppClickEventHandler } from './App';
 import { IAppData } from './types';
+import { Icons, Button } from '../primitives';
 
 export { IAppData, AppClickEventHandler, AppClickEvent };
 export type IAppsProps = {
@@ -51,6 +52,10 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     return this.state.apps || [];
   }
 
+  public get isEmpty() {
+    return this.apps.length === 0;
+  }
+
   /**
    * [Methods]
    */
@@ -68,6 +73,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
       const item: IAppData = { typename, total, model };
       return item;
     });
+
     const apps = await Promise.all(wait);
     this.state$.next({ apps });
   };
@@ -76,9 +82,6 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
    * [Render]
    */
   public render() {
-    const apps = this.apps;
-    const isEmpty = apps.length === 0;
-
     const styles = {
       base: css({
         Absolute: 0,
@@ -99,15 +102,12 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
       }),
     };
 
-    const elList = apps.map((app, i) => {
-      return <App key={i} app={app} onClick={this.props.onAppClick} />;
-    });
-
     return (
       <div {...styles.base}>
         <div {...styles.top}>
-          {!isEmpty && elList}
-          {isEmpty && this.renderEmpty()}
+          {this.renderRefresh()}
+          {this.renderEmpty()}
+          {this.renderList()}
         </div>
         <div {...styles.bottom}>
           <Installer />
@@ -117,8 +117,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
   }
 
   private renderEmpty() {
-    const apps = this.apps;
-    if (apps.length > 0) {
+    if (!this.isEmpty) {
       return null;
     }
     const styles = {
@@ -137,4 +136,38 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
       </div>
     );
   }
+
+  private renderRefresh() {
+    const styles = {
+      base: css({
+        Absolute: [2, 2, null, null],
+      }),
+    };
+    return (
+      <Button style={styles.base} onClick={this.onRefreshClick}>
+        <Icons.Refresh size={16} />
+      </Button>
+    );
+  }
+
+  private renderList() {
+    if (this.isEmpty) {
+      return null;
+    }
+
+    const styles = {
+      base: css({}),
+    };
+
+    const elList = this.apps.map((app, i) => {
+      return <App key={i} app={app} onClick={this.props.onAppClick} />;
+    });
+
+    return <div {...styles.base}>{elList}</div>;
+  }
+
+  /**
+   * [Handlers]
+   */
+  private onRefreshClick = () => this.load();
 }

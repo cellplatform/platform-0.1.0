@@ -110,8 +110,9 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     };
 
     const app = this.app;
-    const props = this.model.props;
-    const row = app.model.uri;
+    const model = this.model;
+    const props = model.props;
+    const row = model.uri;
     const link = `${this.host}/ns:${row.ns}?cells=${row.key}:${row.key}`;
 
     const bytes = props.bytes;
@@ -120,6 +121,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
 
     const items: IPropListItem[] = [
       { label: 'uri', value: this.uri },
+      { label: 'version', value: props.version },
       { label: 'link', value: stripHttp(this.host), clipboard: link },
       { label: 'bundle', value: bundle },
       { label: 'windows (total)', value: app.total.toString() },

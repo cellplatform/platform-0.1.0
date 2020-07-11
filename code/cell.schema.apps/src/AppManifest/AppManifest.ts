@@ -55,8 +55,8 @@ export class AppManifest {
   public async bundle(args: {
     client: t.IClientTypesystem;
     ns: t.INsUri | string; // Namespace of {App} sheet.
-    dir: string;
-    files: t.IHttpClientCellFileUpload[];
+    dir?: string;
+    files?: t.IHttpClientCellFileUpload[];
   }) {
     const manifest = this.def;
     return bundle({ ...args, manifest });
@@ -82,12 +82,12 @@ function toManifest(filename: string, data: ArrayBuffer) {
     throw new Error(`The manifest '${filename}' is not an object.`);
   }
 
-  const { entry = 'bundle/index.html', devPort = 1234, window = {} } = obj;
+  const { entry = 'bundle/index.html', devPort = 1234, window = {}, version = '0.0.0' } = obj;
   const name = (obj.name || '').trim();
   if (!name) {
     throw new Error(`The manifest '${filename}' does not contain a name.`);
   }
 
-  const res: t.IAppManifestFile = { name, version: '0.0.0', entry, devPort, window };
+  const res: t.IAppManifestFile = { name, version, entry, devPort, window };
   return res;
 }
