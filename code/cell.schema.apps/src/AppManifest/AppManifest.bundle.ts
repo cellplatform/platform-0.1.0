@@ -93,8 +93,6 @@ async function writeTypeDef(args: {
 }) {
   const { sheet, apps, manifest, index } = args;
 
-  console.log('index', index);
-
   const app = apps.row(index);
   const props = app.props;
 
