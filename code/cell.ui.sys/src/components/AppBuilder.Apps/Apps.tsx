@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
-import { color, css, CssValue, rx, t, ui } from '../../common';
+import { color, css, CssValue, rx, t, ui, AppModel } from '../../common';
 import { Installer } from '../Installer';
 import { App, AppClickEvent, AppClickEventHandler } from './App';
 import { IAppData } from './types';
+import { Icons, Button } from '../primitives';
 
 export { IAppData, AppClickEventHandler, AppClickEvent };
 export type IAppsProps = {
@@ -30,9 +31,9 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     this.load();
-    rx.payload<t.ITypedSheetUpdatedEvent>(ctx.event$, 'SHEET/updated').subscribe((e) => {
-      this.load();
-    });
+    rx.payload<t.ITypedSheetUpdatedEvent>(ctx.event$, 'SHEET/updated')
+      .pipe(debounceTime(200))
+      .subscribe((e) => this.load());
   }
 
   public componentWillUnmount() {
@@ -51,53 +52,47 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     return this.state.apps || [];
   }
 
+  public get isEmpty() {
+    return this.apps.length === 0;
+  }
+
   /**
    * [Methods]
    */
-  public async load() {
+
+  public load = async () => {
     const ctx = this.context;
+    const client = ctx.client;
+    const cursor = await ctx.window.app.sheet.data('App').load({ range: '1:500' });
 
-    const def = ctx.env.def;
+    const wait = cursor.rows.map(async (row) => {
+      const model = await AppModel.load({ client, uri: row.toString() });
+      const windows = await row.props.windows.data();
+      const total = windows.total;
+      const typename = row.typename;
+      const item: IAppData = { typename, total, model };
+      return item;
+    });
 
-    console.log('def', def);
-
-    // const sheet = await this.client.sheet('ns:sys.app');
-    // const data = await sheet.data<t.App>('App').load();
-    // const wait = data.rows.map(async (row) => {
-    //   const uri = row.toString();
-    //   const windows = await row.props.windows.data();
-    //   console.log('uri', uri);
-    //   const item: IAppData = {
-    //     typename: row.typename,
-    //     types: row.types.list,
-    //     props: row.toObject(),
-    //     uri,
-    //     windows,
-    //   };
-    //   return item;
-    // });
-    // const apps = await Promise.all(wait);
-    // this.state$.next({
-    //   apps: apps.filter((app) => !(app.props.name || '').endsWith('cell.ui.sys')),
-    // });
-  }
+    const apps = await Promise.all(wait);
+    this.state$.next({ apps });
+  };
 
   /**
    * [Render]
    */
   public render() {
-    const apps = this.apps;
-    const isEmpty = apps.length === 0;
-
     const styles = {
       base: css({
         Absolute: 0,
         Flex: 'vertical-stretch-stretch',
       }),
       top: css({
+        Scroll: true,
         flex: 1,
         position: 'relative',
-        Scroll: true,
+        boxSizing: 'border-box',
+        padding: 20,
       }),
       bottom: css({
         position: 'relative',
@@ -107,15 +102,12 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
       }),
     };
 
-    const elList = apps.map((app, i) => {
-      return <App key={i} app={app} onClick={this.props.onAppClick} />;
-    });
-
     return (
       <div {...styles.base}>
         <div {...styles.top}>
-          {!isEmpty && elList}
-          {isEmpty && this.renderEmpty()}
+          {this.renderRefresh()}
+          {this.renderEmpty()}
+          {this.renderList()}
         </div>
         <div {...styles.bottom}>
           <Installer />
@@ -125,8 +117,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
   }
 
   private renderEmpty() {
-    const apps = this.apps;
-    if (apps.length > 0) {
+    if (!this.isEmpty) {
       return null;
     }
     const styles = {
@@ -145,4 +136,38 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
       </div>
     );
   }
+
+  private renderRefresh() {
+    const styles = {
+      base: css({
+        Absolute: [2, 2, null, null],
+      }),
+    };
+    return (
+      <Button style={styles.base} onClick={this.onRefreshClick}>
+        <Icons.Refresh size={16} />
+      </Button>
+    );
+  }
+
+  private renderList() {
+    if (this.isEmpty) {
+      return null;
+    }
+
+    const styles = {
+      base: css({}),
+    };
+
+    const elList = this.apps.map((app, i) => {
+      return <App key={i} app={app} onClick={this.props.onAppClick} />;
+    });
+
+    return <div {...styles.base}>{elList}</div>;
+  }
+
+  /**
+   * [Handlers]
+   */
+  private onRefreshClick = () => this.load();
 }

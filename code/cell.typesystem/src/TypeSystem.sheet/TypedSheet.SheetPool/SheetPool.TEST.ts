@@ -1,6 +1,6 @@
 import { SheetPool } from '.';
 import { TypeSystem } from '../..';
-import { expect, Subject, t, testInstanceFetch, TYPE_DEFS, Uri } from '../../test';
+import { expect, Subject, t, stub, TYPE_DEFS, Uri } from '../../test';
 import * as a from '../../test/.d.ts/all';
 
 describe('SheetPool', () => {
@@ -230,7 +230,7 @@ describe('SheetPool', () => {
  */
 
 const testFetchMySheet = (ns: string, cells?: t.ICellMap) => {
-  return testInstanceFetch({
+  return stub.instance({
     instance: ns,
     implements: 'ns:foo',
     defs: TYPE_DEFS,

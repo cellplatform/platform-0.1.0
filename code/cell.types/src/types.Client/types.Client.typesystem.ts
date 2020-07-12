@@ -10,7 +10,7 @@ export type IClientTypesystem = {
   readonly changes: t.ITypedSheetChangeMonitor;
   readonly pool?: t.ISheetPool;
   sheet<T>(ns: N): Promise<t.ITypedSheet<T>>;
-  defs(ns: N | N[]): Promise<t.INsTypeDef[]>;
+  typeDefs(ns: N | N[]): Promise<t.INsTypeDef[]>;
   typescript(
     ns: N | N[],
     options?: { header?: boolean; exports?: boolean; imports?: boolean },

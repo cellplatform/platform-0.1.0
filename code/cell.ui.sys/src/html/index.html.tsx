@@ -4,17 +4,35 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { t } from '../common';
+import { Root } from '../components/Root';
 import { AppBuilder } from '../components/AppBuilder';
+import { Debug } from '../components/Debug';
 import { context } from '../context';
 
-const win = (window as unknown) as t.ITopWindow;
-const env = win.env;
-const { Provider } = context.create({ env });
+function render(entry?: string) {
+  if (entry === 'entry:debug') {
+    return (
+      <Root title={'system.debug'}>
+        <Debug />
+      </Root>
+    );
+  } else {
+    // Default or 'entry:builder'
+    return (
+      <Root>
+        <AppBuilder />
+      </Root>
+    );
+  }
+}
 
-const el = (
-  <Provider>
-    <AppBuilder />
-  </Provider>
-);
+(async () => {
+  const win = (window as unknown) as t.ITopWindow;
+  const { Provider, ctx } = await context.create({ env: win.env });
 
-ReactDOM.render(el, document.getElementById('root'));
+  const entry = ctx.window.props.argv.find((arg) => arg.startsWith('entry:'));
+  const el = render(entry);
+  const root = <Provider>{el}</Provider>;
+
+  ReactDOM.render(root, document.getElementById('root'));
+})();

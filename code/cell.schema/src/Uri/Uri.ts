@@ -29,10 +29,20 @@ export class Uri {
   };
 
   /**
+   * Cleans up an input string.
+   */
+  public static clean(input?: string) {
+    let text = (input || '').trimLeft();
+    text = text.replace(/^=/, '').trimLeft(); // NB: = prefix (eg. spreadsheet REF).
+    text = text.split('?')[0].trimRight(); // NB: trim query-string.
+    return text;
+  }
+
+  /**
    * Parse a URI into it's constituent parts.
    */
   public static parse<D extends t.IUri>(input?: string): t.IUriParts<D> {
-    let text = (input || '').trim().split('?')[0]; // NB: trim query-string.
+    let text = Uri.clean(input);
     let data: t.IUri = { type: 'UNKNOWN' };
     let error: t.IUriError | undefined;
     const toString = () => text;
@@ -157,9 +167,12 @@ export class Uri {
     /**
      * Determine if the URI is of a specific type.
      */
-    type: (type: t.UriType, input?: string) => {
+    type: (type: t.UriType | t.UriType[], input?: string) => {
       const uri = Uri.parse(input);
-      return uri.parts.type === type && (type === 'UNKNOWN' ? true : uri.ok);
+      const types = Array.isArray(type) ? type : [type];
+      return types.some((type) => {
+        return uri.parts.type === type && (type === 'UNKNOWN' ? true : uri.ok);
+      });
     },
 
     ns: (input?: string) => Uri.is.type('NS', input),
@@ -204,9 +217,9 @@ export class Uri {
    * Helpers for stripped prefixes.
    */
   public static strip = {
-    ns: (input?: string) => strip(input, 'ns'),
-    cell: (input?: string) => strip(input, 'cell'),
-    file: (input?: string) => strip(input, 'file'),
+    ns: (input?: string) => stripPrefix(input, 'ns'),
+    cell: (input?: string) => stripPrefix(input, 'cell'),
+    file: (input?: string) => stripPrefix(input, 'file'),
   };
 
   /**
@@ -236,7 +249,7 @@ export class Uri {
   /**
    * Extracts the index of the row of the given URI.
    */
-  public static rowIndex(input?: string | t.IUri) {
+  public static toRowIndex(input?: string | t.IUri) {
     const uri = typeof input === 'object' ? input : Uri.parse(input).parts;
     if (uri.type === 'CELL' || uri.type === 'COLUMN' || uri.type === 'ROW') {
       return coord.cell.toRowIndex(uri.key);
@@ -248,7 +261,7 @@ export class Uri {
   /**
    * Extracts the index of the row of the given URI.
    */
-  public static columnIndex(input?: string | t.IUri) {
+  public static toColumnIndex(input?: string | t.IUri) {
     const uri = typeof input === 'object' ? input : Uri.parse(input).parts;
     if (uri.type === 'CELL' || uri.type === 'COLUMN' || uri.type === 'ROW') {
       return coord.cell.toColumnIndex(uri.key);
@@ -360,7 +373,7 @@ function parseOrThrow<T extends t.IUri>(
   }
 }
 
-function strip(input: string | undefined, prefix: UriPrefix) {
+function stripPrefix(input: string | undefined, prefix: UriPrefix) {
   const left = `${prefix}:`;
   input = (input || '').trim();
   input = input.startsWith(left) ? input.substring(left.length) : input;

@@ -13,7 +13,7 @@ export function prepare(args: {
   const lines = code.split('\n');
   const isRefUsed = lines.some((text) => line.includesRef(text));
   const imports = args.imports !== false ? `import * as t from '@platform/cell.types';` : '';
-  const typeIndex = extractTypeIndex(lines);
+  const typeIndex = extractTypeIndex({ lines, header: Boolean(header) });
 
   let res = '';
 
@@ -37,7 +37,8 @@ export function prepare(args: {
  * [Helpers]
  */
 
-function extractTypeIndex(lines: string[]) {
+function extractTypeIndex(args: { lines: string[]; header: boolean }) {
+  const { lines } = args;
   const typenames = lines.map((text) => line.extractTypename(text)).filter((line) => Boolean(line));
   if (typenames.length === 0) {
     return '';
@@ -47,10 +48,21 @@ function extractTypeIndex(lines: string[]) {
   const declare = exports === false ? 'declare' : 'export declare';
   const props = typenames.map((typename) => `  ${typename}: ${typename};`);
 
-  const res = `
+  const header = `
+/**
+ * Complete index of types available within the sheet.
+ * Use by passing into a sheet at creation, for example:
+ *
+ *    const sheet = await TypedSheet.load<t.TypeIndex>({ ns, fetch });
+ *
+ */`.substring(1);
+
+  let res = `
 ${declare} type TypeIndex = {
 ${props.join('\n')}
 };`.substring(1);
+
+  res = !args.header ? res : `${header}\n${res}`;
 
   return res;
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
 import { coord, css, CssValue, rx, t, ui, Uri } from '../../common';
 import { Card, IPropListItem, PropList } from '../primitives';
@@ -39,7 +39,7 @@ export class Windows extends React.PureComponent<IWindowsProps, IWindowsState> {
 
     this.load();
     rx.payload<t.ITypedSheetUpdatedEvent>(ctx.event$, 'SHEET/updated')
-      .pipe() // TODO: narrow update filter.
+      .pipe(debounceTime(200)) // TODO: narrow update filter.
       .subscribe((e) => {
         this.load();
       });
@@ -63,12 +63,46 @@ export class Windows extends React.PureComponent<IWindowsProps, IWindowsState> {
   public async load() {
     const ctx = this.context;
     const sheet = await ctx.client.sheet<t.AppTypeIndex>(this.ns);
-    const appData = await sheet.data('App').load();
-    const row = appData.row(this.index);
-    const windowsData = await row.props.windows.data();
-    const windows = windowsData.rows.map((row) => ({ uri: row.uri, data: row.toObject() }));
+    const apps = await sheet.data('App').load();
 
-    this.state$.next({ name: row.props.name, windows });
+    const row = apps.row(this.index);
+    const data = await row.props.windows.data();
+    const windows = data.rows.map((row) => ({ uri: row.uri, data: row.toObject() }));
+
+    const name = row.props.name;
+    this.state$.next({ name, windows });
+
+    await this.tmp(data.uri.id);
+  }
+
+  private async tmp(uri: string) {
+    console.group('🌳 ');
+
+    const ctx = this.context;
+    const sheet = await ctx.client.sheet<t.AppTypeIndex>(this.ns);
+    const apps = await sheet.data('App').load();
+
+    for (const app of apps.rows) {
+      const windows = await app.props.windows.data();
+      for (const window of windows.rows) {
+        console.log('----------', window.toObject());
+        // await createBrowserWindow({ ctx, app, window });
+      }
+    }
+
+    // console.log('uri', uri);
+
+    // const ctx = this.context;
+    // const sheet = await ctx.client.sheet<t.AppTypeIndex>(uri);
+    // const d = await sheet.data('AppWindow').load();
+
+    // d.forEach((f) => {
+    //   console.log('-------------------------------------------');
+    //   console.log('f', f.app);
+    //   // console.log("f", f.)
+    // });
+
+    console.groupEnd();
   }
 
   /**
@@ -160,12 +194,14 @@ export class Windows extends React.PureComponent<IWindowsProps, IWindowsState> {
     const { x, y, width, height, isVisible } = row;
     const position = x === undefined || y === undefined ? '-' : `${x} x ${y}`;
     const size = width === undefined || height === undefined ? '-' : `${width} x ${height}`;
+    const argv = row.argv.join(',') || '—';
 
     const items: IPropListItem[] = [
       { label: 'uri', value: uri, clipboard: `${host}/${uri}` },
       { label: 'position', value: position },
       { label: 'size', value: size },
       { label: 'visible', value: isVisible },
+      { label: 'argv', value: argv },
     ];
 
     return (

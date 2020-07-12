@@ -1,7 +1,7 @@
 import { Icon } from '@platform/ui.icon';
-import { FiWifi, FiAlertTriangle } from 'react-icons/fi';
-import { MdClose } from 'react-icons/md';
+import { FiAlertTriangle, FiWifi } from 'react-icons/fi';
 import { GoSquirrel } from 'react-icons/go';
+import { MdClose, MdRefresh } from 'react-icons/md';
 
 /**
  * Icon collection.
@@ -12,4 +12,5 @@ export class Icons {
   public static AlertTriangle = icon(FiAlertTriangle);
   public static Close = icon(MdClose);
   public static Squirrel = icon(GoSquirrel);
+  public static Refresh = icon(MdRefresh);
 }

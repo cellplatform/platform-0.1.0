@@ -31,11 +31,16 @@ if (app.isPackaged) {
  * Startup the application.
  */
 export async function start() {
+  log.info('━'.repeat(50));
   const prod = ENV.isProd;
 
   // Start the HTTP server.
   const port = prod ? undefined : 5000;
-  const { paths, host } = await server.start({ log, prod, port });
+  const { paths, host, instance } = await server.start({ log, prod, port });
+
+  // instance.request$.subscribe((e) => {
+  //   console.log(' > ', e.method, e.url); // TEMP 🐷
+  // });
 
   // Initialize the typesystem HTTP client.
   const event$ = new Subject<t.AppEvent>();
@@ -43,50 +48,63 @@ export async function start() {
 
   // Log main process.
   const bundle = constants.paths.bundle;
-  await logMain({ host, log: log.file.path, db: paths.db, fs: paths.fs, preload: bundle.preload });
-  await app.whenReady();
 
-  // Initialize the system models.
-  const ctx = await sys.init({ client, event$ });
-
-  log.info();
-  log.info(`app modules: ${log.yellow(ctx.apps.total)}`);
-  ctx.apps.forEach((app) => {
-    log.info.gray(` • ${log.magenta(app.name)}`);
-  });
-  log.info();
-
-  await window.createAll({ ctx });
-
-  // ctx.apps.le
-  // console.log('ctx.apps.total', ctx.apps.total);
-  // console.log('ctx.windowRefs.length', ctx.windowRefs.length);
-
-  // if (ctx.windowRefs.length < ctx.apps.total) {
-  if (ctx.windowRefs.length === 0) {
-    // TEMP 🐷- Ensure at least one window for each app exists.
-
-    const sys = ctx.apps.row(0);
-    const name = sys.props.name;
-    window.createOne({ ctx, name });
-
-    // ctx.apps.forEach((app) => {
-    //   const name = app.name;
-    // });
-  }
-
-  rx.payload<t.IpcDebugEvent>(event$, 'IPC/debug')
-    .pipe(filter((e) => e.source !== 'MAIN'))
-    .subscribe((e) => {
-      const name = e.data.name;
-      if (name && e.data.action === 'OPEN') {
-        console.log('create', name);
-        window.createOne({ ctx, name });
-      }
+  try {
+    await logMain({
+      host,
+      log: log.file.path,
+      db: paths.db,
+      fs: paths.fs,
+      preload: bundle.preload,
     });
+    await app.whenReady();
 
-  // TEMP 🐷
-  // refs.tray = tray.init({ host, def, ctx }).tray;
+    // Initialize the system models.
+    const ctx = await sys.init({ client, event$ });
+
+    log.info();
+    log.info(`app modules: ${log.yellow(ctx.apps.total)}`);
+    ctx.apps.forEach((app) => {
+      log.info.gray(` • ${log.magenta(app.name)}`);
+    });
+    log.info();
+
+    await window.createAll({ ctx });
+
+    // ctx.apps.le
+    // console.log('ctx.apps.total', ctx.apps.total);
+    // console.log('ctx.windowRefs.length', ctx.windowRefs.length);
+
+    // if (ctx.windowRefs.length < ctx.apps.total) {
+    if (ctx.windowRefs.length === 0) {
+      // TEMP 🐷- Ensure at least one window for each app exists.
+
+      const sys = ctx.apps.row(0);
+      const name = sys.props.name;
+      window.createOne({ ctx, name });
+
+      // ctx.apps.forEach((app) => {
+      //   const name = app.name;
+      // });
+    }
+
+    rx.payload<t.IpcDebugEvent>(event$, 'IPC/debug')
+      .pipe(filter((e) => e.source !== 'MAIN'))
+      .subscribe((e) => {
+        const name = e.data.name;
+        const arg = e.data.arg || '';
+        if (name && e.data.action === 'OPEN') {
+          console.log('create', name, arg);
+          window.createOne({ ctx, name, argv: [arg] });
+        }
+      });
+
+    // TEMP 🐷
+    // refs.tray = tray.init({ host, def, ctx }).tray;
+  } catch (error) {
+    log.error('🐷 Failed on startup:');
+    log.error(error);
+  }
 }
 
 /**
@@ -127,7 +145,7 @@ async function logMain(args: {
     return output;
   };
 
-  add('packaged:', app.isPackaged);
+  add('packaged:', ENV.isPackaged);
   add('env:', ENV.node || '<empty>');
   add('host:', `http://${args.host.split(':')[0]}:${log.magenta(args.host.split(':')[1])}`);
 

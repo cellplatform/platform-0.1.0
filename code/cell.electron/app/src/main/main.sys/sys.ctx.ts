@@ -11,7 +11,7 @@ export async function toContext(args: {
 }) {
   const { config, client, event$ } = args;
 
-  const sheet = await client.sheet<t.App>(config.ns.appData);
+  const sheet = await client.sheet<t.AppTypeIndex>(config.ns.appData);
   const apps = await sheet.data('App').load();
 
   const ctx: t.IContext = { client, sheet, apps, windowRefs: [], event$ };

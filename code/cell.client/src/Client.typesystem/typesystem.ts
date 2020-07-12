@@ -40,11 +40,11 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
     /**
      * Retrieves the type-definitions for the given namespace(s).
      */
-    async defs(ns: N | N[]) {
+    async typeDefs(ns: N | N[]) {
       const uris = Array.isArray(ns) ? ns : [ns];
       const client = TypeSystem.client(fetch);
       const defs = (await Promise.all(uris.map((ns) => client.load(ns)))).map(({ defs }) => defs);
-      return defs.reduce((acc, next) => acc.concat(next), []); // Flatten [][] => [].
+      return defs.reduce((acc, next) => acc.concat(next), []); // NB: Flatten [][] => [].
     },
 
     /**
@@ -54,7 +54,7 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
       ns: N | N[],
       options: { header?: boolean; exports?: boolean; imports?: boolean } = {},
     ) {
-      const defs = await api.defs(ns);
+      const defs = await api.typeDefs(ns);
       return TypeSystem.Client.typescript(defs, options);
     },
 

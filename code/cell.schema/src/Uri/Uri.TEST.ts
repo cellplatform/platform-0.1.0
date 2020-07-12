@@ -121,6 +121,10 @@ describe('Uri', () => {
       test('cell:foo:A', true);
       test('file:foo:123', true);
 
+      test('=cell:foo:A1', true);
+      test(' =cell:foo:A1 ', true);
+      test(' cell:foo:A1 ', true);
+
       // Empty.
       test(undefined, false);
       test(null as any, false);
@@ -143,16 +147,25 @@ describe('Uri', () => {
     });
 
     it('is.type', () => {
-      const test = (type: t.UriType, input?: string, expected?: boolean) => {
+      const test = (type: t.UriType | t.UriType[], input?: string, expected?: boolean) => {
         expect(Uri.is.type(type, input)).to.eql(expected, `${type} | input: ${input}`);
       };
 
       test('NS', 'ns:foo', true);
+      test('NS', '=ns:foo', true);
       test('CELL', 'cell:foo:A1', true);
       test('COLUMN', 'cell:foo:A', true);
       test('ROW', 'cell:foo:1', true);
       test('FILE', 'file:foo:123', true);
       test('UNKNOWN', 'foo:bar:1', true);
+
+      test(['COLUMN', 'ROW', 'CELL'], 'cell:foo:A1', true);
+      test(['COLUMN', 'ROW', 'CELL'], '=cell:foo:A1', true);
+      test(['COLUMN', 'ROW', 'CELL'], 'cell:foo:1', true);
+      test(['COLUMN', 'ROW', 'CELL'], 'cell:foo:A', true);
+      test(['NS', 'FILE'], 'cell:foo:A1', false);
+      test(['NS'], 'ns:foo', true);
+      test(['COLUMN', 'ROW', 'CELL', 'NS'], 'ns:foo', true);
 
       test('NS', undefined, false);
       test('CELL', undefined, false);
@@ -172,6 +185,7 @@ describe('Uri', () => {
         expect(Uri.is.ns(input)).to.eql(expected);
       };
       test('ns:foo', true);
+      test('=ns:foo', true);
 
       test('', false);
       test(undefined, false);
@@ -185,6 +199,7 @@ describe('Uri', () => {
         expect(Uri.is.file(input)).to.eql(expected);
       };
       test('file:foo:123', true);
+      test('=file:foo:123', true);
 
       test('file:foo', false);
       test('ns:foo', false);
@@ -197,6 +212,7 @@ describe('Uri', () => {
         expect(Uri.is.cell(input)).to.eql(expected);
       };
       test('cell:foo:A1', true);
+      test('=cell:foo:A1', true);
 
       test('', false);
       test(undefined, false);
@@ -209,6 +225,7 @@ describe('Uri', () => {
         expect(Uri.is.row(input)).to.eql(expected);
       };
       test('cell:foo:1', true);
+      test('=cell:foo:1', true);
 
       test('', false);
       test(undefined, false);
@@ -221,11 +238,33 @@ describe('Uri', () => {
         expect(Uri.is.column(input)).to.eql(expected);
       };
       test('cell:foo:A', true);
+      test('=cell:foo:A', true);
 
       test('', false);
       test(undefined, false);
       test('ns:foo', false);
       test('row:foo:1', false);
+    });
+  });
+
+  describe('clean', () => {
+    it('strips whitespace', () => {
+      expect(Uri.clean()).to.eql('');
+      expect(Uri.clean('')).to.eql('');
+      expect(Uri.clean('  ')).to.eql('');
+    });
+
+    it('strips query-string', () => {
+      expect(Uri.clean('foo?q=123')).to.eql('foo');
+      expect(Uri.clean('  foo?q=123 ')).to.eql('foo');
+      expect(Uri.clean('  foo  ?q=123 ')).to.eql('foo');
+    });
+
+    it('strips "=" prefix', () => {
+      expect(Uri.clean('=foo')).to.eql('foo');
+      expect(Uri.clean('  =foo  ')).to.eql('foo');
+      expect(Uri.clean('  = foo  ')).to.eql('foo');
+      expect(Uri.clean('=foo?q=123')).to.eql('foo');
     });
   });
 
@@ -672,9 +711,9 @@ describe('Uri', () => {
   });
 
   describe('indexes', () => {
-    it('rowIndex', () => {
+    it('toRowIndex', () => {
       const test = (input: string | t.IUri | undefined, expected: number) => {
-        const res = Uri.rowIndex(input);
+        const res = Uri.toRowIndex(input);
         expect(res).to.eql(expected);
       };
 
@@ -687,13 +726,16 @@ describe('Uri', () => {
       test('cell:foo:A', -1);
 
       test('cell:foo:1', 0);
+      test('cell:foo:10', 9);
       test('cell:foo:A1', 0);
       test('cell:foo:Z9', 8);
+      test('=cell:foo:10', 9);
+      test(' =cell:foo:Z9 ', 8);
     });
 
-    it('columnIndex', () => {
+    it('toColumnIndex', () => {
       const test = (input: string | t.IUri | undefined, expected: number) => {
-        const res = Uri.columnIndex(input);
+        const res = Uri.toColumnIndex(input);
         expect(res).to.eql(expected);
       };
 
@@ -708,6 +750,8 @@ describe('Uri', () => {
       test('cell:foo:A', 0);
       test('cell:foo:A1', 0);
       test('cell:foo:B9', 1);
+      test('=cell:foo:C5', 2);
+      test(' =cell:foo:C5 ', 2);
     });
   });
 });

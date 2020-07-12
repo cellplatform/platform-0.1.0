@@ -82,8 +82,15 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     pool?: t.ISheetPool;
   }): Promise<t.ITypedSheet<T>> {
     const { fetch, cache, event$ } = args;
-    const sheetNs = Uri.ns(args.ns);
 
+    // Wrangle the sheet namespace.
+    const ns = args.ns.toString();
+    if (ns.includes(':') && !Uri.is.type(['NS', 'CELL', 'COLUMN', 'ROW'], ns)) {
+      throw new Error(`The uri (${args.ns}) cannot be resolved to a namespace.`);
+    }
+    const sheetNs = Uri.toNs(args.ns);
+
+    // Check if the sheet already exists within the pool.
     const pool = args.pool || SheetPool.create();
     if (pool.exists(args.ns)) {
       return pool.sheet(args.ns) as t.ITypedSheet<T>;
@@ -236,6 +243,10 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
 
   public get errors() {
     return this._errorList.list;
+  }
+
+  public get changes() {
+    return this.state.changes;
   }
 
   public get types() {

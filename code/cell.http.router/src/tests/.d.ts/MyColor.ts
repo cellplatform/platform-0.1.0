@@ -6,7 +6,7 @@
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.74
+ *    @platform/cell.typesystem@0.0.75
  * 
  * Notes: 
  * 
@@ -21,6 +21,13 @@
  * 
  */
 
+/**
+ * Complete index of types available within the sheet.
+ * Use by passing into a sheet at creation, for example:
+ *
+ *    const sheet = await TypedSheet.load<t.TypeIndex>({ ns, fetch });
+ *
+ */
 export declare type TypeIndex = {
   MyColor: MyColor;
 };

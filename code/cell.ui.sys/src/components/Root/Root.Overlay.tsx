@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, ui, onStateChanged } from '../../common';
+import { color, css, CssValue, events, onStateChanged, t, ui } from '../../common';
 import { Button, Icons } from '../primitives';
-import { Windows } from '../Windows';
 
-export type IRootOverlayProps = { style?: CssValue };
+export type IRootOverlayProps = { factory: t.RenderOverlay; style?: CssValue };
 export type IRootOverlayState = {};
 
 export class RootOverlay extends React.PureComponent<IRootOverlayProps, IRootOverlayState> {
@@ -23,9 +22,18 @@ export class RootOverlay extends React.PureComponent<IRootOverlayProps, IRootOve
   public componentDidMount() {
     const ctx = this.context;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+    const keyPress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
 
     const changes = onStateChanged(ctx.event$, this.unmounted$);
     changes.on('APP:SYS/overlay').subscribe(() => this.forceUpdate());
+
+    keyPress$
+      .pipe(
+        filter((e) => e.isPressed && !e.isModifier),
+        filter((e) => e.code === 'Escape'),
+        filter((e) => Boolean(this.overlay)),
+      )
+      .subscribe((e) => this.hide());
   }
 
   public componentWillUnmount() {
@@ -34,12 +42,31 @@ export class RootOverlay extends React.PureComponent<IRootOverlayProps, IRootOve
   }
 
   /**
+   * [Properties]
+   */
+  public get store() {
+    return this.context.getState();
+  }
+
+  public get overlay() {
+    return this.store.overlay;
+  }
+
+  /**
+   * [Methods]
+   */
+  public hide = () => {
+    this.context.fire({
+      type: 'APP:SYS/overlay',
+      payload: { overlay: undefined },
+    });
+  };
+
+  /**
    * [Render]
    */
   public render() {
-    const ctx = this.context;
-    const state = ctx.getState();
-    const overlay = state.overlay;
+    const overlay = this.overlay;
     if (!overlay) {
       return null;
     }
@@ -62,28 +89,24 @@ export class RootOverlay extends React.PureComponent<IRootOverlayProps, IRootOve
     };
     return (
       <div {...styles.base}>
-        <div {...styles.body}>{this.renderOverlayBody(overlay)}</div>
-        <Button style={styles.closeButton} onClick={this.onCloseOverlay}>
+        <div {...styles.body}>{this.renderBody(overlay)}</div>
+        <Button style={styles.closeButton} onClick={this.hide}>
           <Icons.Close />
         </Button>
       </div>
     );
   }
 
-  private renderOverlayBody(overlay: t.IAppStateOverlay) {
-    switch (overlay.kind) {
-      case 'WINDOWS':
-        return <Windows uri={overlay.uri} />;
-      default:
-        return null;
-    }
+  private renderBody(overlay: t.IAppStateOverlay) {
+    return this.props.factory(overlay) || this.renderNotFound(overlay);
   }
 
-  /**
-   * [Handlers]
-   */
-
-  private onCloseOverlay = () => {
-    this.context.fire({ type: 'APP:SYS/overlay', payload: { overlay: undefined } });
-  };
+  private renderNotFound(overlay: t.IAppStateOverlay) {
+    const styles = { base: css({ flex: 1, Flex: 'center-center' }) };
+    return (
+      <div {...styles.base}>
+        <div>Overlay not found: {overlay.kind}</div>
+      </div>
+    );
+  }
 }

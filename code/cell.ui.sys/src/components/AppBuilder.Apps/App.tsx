@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, color, css, CssValue, t, ui, Uri, filesize, stripHttp } from '../../common';
-import { Card, IPropListItem, PropList, Button } from '../primitives';
+import { COLORS, color, css, CssValue, t, ui, filesize, stripHttp } from '../../common';
+import { Card, IPropListItem, PropList } from '../primitives';
 import { IAppData } from './types';
+import { ActionButton, IActionButtonOption } from '../ActionButton';
 
 export type IAppProps = {
   app: IAppData;
@@ -28,10 +29,6 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IAppProps) {
-    super(props);
-  }
-
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
@@ -48,8 +45,20 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     return this.props.app;
   }
 
+  public get model() {
+    return this.app.model;
+  }
+
+  public get uri() {
+    return this.model.uri.toString();
+  }
+
   public get name() {
-    let name = this.app.props.name;
+    return this.model.props.name || '';
+  }
+
+  public get displayName() {
+    let name = this.name;
     name = name.includes('/') ? name.split('/')[1] : name;
     return name;
   }
@@ -101,18 +110,21 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     };
 
     const app = this.app;
-    const row = Uri.parse<t.IRowUri>(app.uri).parts;
+    const model = this.model;
+    const props = model.props;
+    const row = model.uri;
     const link = `${this.host}/ns:${row.ns}?cells=${row.key}:${row.key}`;
 
-    const bytes = app.props.bytes;
-    const port = app.props.devPort.toString();
+    const bytes = props.bytes;
+    const port = props.devPort.toString();
     const bundle = `${filesize(bytes)} (dev:${port})`;
 
     const items: IPropListItem[] = [
-      { label: 'uri', value: app.uri },
+      { label: 'uri', value: this.uri },
+      { label: 'version', value: props.version },
       { label: 'link', value: stripHttp(this.host), clipboard: link },
       { label: 'bundle', value: bundle },
-      { label: 'windows (total)', value: app.windows.total.toString() },
+      { label: 'windows (total)', value: app.total.toString() },
     ];
 
     return (
@@ -120,7 +132,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
         <Card style={styles.card}>
           <div>
             <div {...styles.title}>
-              <div {...styles.name}>{this.name}</div>
+              <div {...styles.name}>{this.displayName}</div>
               <div {...styles.typename}>{app.typename}</div>
             </div>
             <div {...styles.body}>
@@ -128,7 +140,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
             </div>
             <div {...styles.footer}>
               {this.renderFooterButton({ label: 'Windows', onClick: this.onWindowsClick })}
-              {this.renderFooterButton({ label: 'New Window', onClick: this.onNewWindowClick })}
+              {this.renderNewWindowButton()}
             </div>
           </div>
         </Card>
@@ -136,15 +148,38 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     );
   }
 
-  private renderFooterButton(props: { label: string; onClick?: () => void }) {
+  private renderNewWindowButton() {
+    const model = this.model;
+    const argv = model.props.argv || [];
+    const options = argv
+      .map((arg) => arg.trim())
+      .filter((arg) => arg.startsWith('entry:'))
+      .map((arg) => {
+        return {
+          label: arg.replace(/^entry:/, ''),
+          onClick: this.newWindowHandler(arg),
+        };
+      });
+
+    return this.renderFooterButton({
+      label: 'New Window',
+      onClick: this.newWindowHandler(),
+      options,
+    });
+  }
+
+  private renderFooterButton(props: {
+    label: string;
+    onClick?: () => void;
+    options?: IActionButtonOption[];
+  }) {
     const styles = {
-      base: css({ Flex: 'center-center' }),
-      button: css({ fontSize: 12 }),
+      base: css({ fontSize: 12 }),
     };
     return (
-      <Button style={styles.button} onClick={props.onClick}>
+      <ActionButton style={styles.base} onClick={props.onClick} options={props.options}>
         {props.label}
-      </Button>
+      </ActionButton>
     );
   }
 
@@ -156,31 +191,30 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
     if (onClick) {
       const app = this.app;
       onClick({ app });
-      console.log('app', app);
     }
   };
 
-  private onNewWindowClick = () => {
-    const ctx = this.context;
-    const app = this.props.app;
-    const name = app.props.name;
+  private newWindowHandler = (arg?: string) => {
+    return () => {
+      const ctx = this.context;
+      const name = this.name;
 
-    // TEMP 🐷
-    ctx.fire({
-      type: 'IPC/debug',
-      payload: {
-        source: ctx.env.def,
-        data: { action: 'OPEN', name },
-      },
-    });
+      // TEMP 🐷
+      ctx.fire({
+        type: 'IPC/debug',
+        payload: {
+          source: ctx.env.def,
+          data: { action: 'OPEN', name, arg },
+        },
+      });
+    };
   };
 
   private onWindowsClick = () => {
-    const app = this.props.app;
     this.context.fire({
       type: 'APP:SYS/overlay',
       payload: {
-        overlay: { kind: 'WINDOWS', uri: app.uri },
+        overlay: { kind: 'WINDOWS', uri: this.uri },
       },
     });
   };

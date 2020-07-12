@@ -1,6 +1,6 @@
-import { IConfigFile } from './types';
+import { ENV, paths } from './constants';
 import { fs, Uri } from './libs';
-import { paths, ENV } from './constants';
+import { IConfigFile } from './types';
 
 /**
  * Configuration data.
@@ -13,11 +13,12 @@ export class ConfigFile {
   }
 
   public static async read(): Promise<IConfigFile> {
-    const res = await fs.file.loadAndParse<IConfigFile>(ConfigFile.path);
-    return res || ConfigFile.default();
+    const path = ConfigFile.path;
+    return (await fs.file.loadAndParse<IConfigFile>(path)) || ConfigFile.default();
   }
 
   public static write(data: IConfigFile) {
-    return fs.file.stringifyAndSave<IConfigFile>(ConfigFile.path, data);
+    const path = ConfigFile.path;
+    return fs.file.stringifyAndSave<IConfigFile>(path, data);
   }
 }

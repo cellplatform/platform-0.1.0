@@ -25,8 +25,9 @@ export function saveLogger(args: { ctx: t.IContext; saved$: Observable<t.ITypedS
 
   // Models saved.
   saved$.subscribe((e) => {
+    const typenames = e.sheet.types.map((type) => type.typename);
     const prefix = e.ok ? log.blue('SAVED') : log.red('SAVED (error)');
-    log.info(prefix);
+    log.info(prefix, log.gray(typenames));
 
     if (e.changes.ns) {
       const ns = e.sheet.uri.id;

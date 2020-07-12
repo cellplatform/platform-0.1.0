@@ -2,17 +2,7 @@ import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { TypedSheet } from '.';
-import {
-  ERROR,
-  expect,
-  expectError,
-  t,
-  testInstanceFetch,
-  time,
-  TYPE_DEFS,
-  testFetch,
-  rx,
-} from '../../test';
+import { ERROR, expect, expectError, t, stub, time, TYPE_DEFS, rx } from '../../test';
 import * as f from '../../test/.d.ts/foo';
 import * as e from '../../test/.d.ts/foo.enum';
 import * as d from '../../test/.d.ts/foo.defaults';
@@ -69,7 +59,7 @@ describe('TypedSheet', () => {
   describe('errors', () => {
     it('error: 404 instance namespace "type.implements" reference not found', async () => {
       const ns = 'ns:foo.mySheet';
-      const fetch = await testInstanceFetch({
+      const fetch = await stub.instance({
         instance: ns,
         implements: 'ns:foo.notExist',
         defs: TYPE_DEFS,
@@ -91,6 +81,43 @@ describe('TypedSheet', () => {
     });
   });
 
+  describe('TypedSheet.load', () => {
+    it('load ("ns")', async () => {
+      const fetch = await testFetchMySheet('ns:foo.mySheet');
+      const test = async (ns: string) => {
+        const sheet = await TypedSheet.load<f.TypeIndex>({ fetch, ns });
+        expect(sheet.toString()).to.eql('ns:foo.mySheet');
+        expect(sheet.types[0].typename).to.eql('MyRow');
+      };
+      await test('foo.mySheet');
+      await test('ns:foo.mySheet');
+    });
+
+    it('load from alternative URI ("cell")', async () => {
+      const fetch = await testFetchMySheet('ns:foo.mySheet');
+      const test = async (ns: string) => {
+        const sheet = await TypedSheet.load<f.TypeIndex>({ fetch, ns });
+        expect(sheet.toString()).to.eql('ns:foo.mySheet');
+        expect(sheet.types[0].typename).to.eql('MyRow');
+      };
+      await test('cell:foo.mySheet:A1');
+      await test('cell:foo.mySheet:A');
+      await test('cell:foo.mySheet:1');
+    });
+
+    it('throw: uri not convertable to namespace', async () => {
+      const fetch = await testFetchMySheet('ns:foo.mySheet');
+      const test = async (ns: string) => {
+        await expectError(
+          () => TypedSheet.load<f.TypeIndex>({ fetch, ns }),
+          'cannot be resolved to a namespace',
+        );
+      };
+      await test('file:foo:abc');
+      await test('foo:FAIL');
+    });
+  });
+
   describe('TypedSheet.info', () => {
     it('info (sheet exists)', async () => {
       const { sheet } = await testMySheet();
@@ -100,9 +127,9 @@ describe('TypedSheet', () => {
     });
 
     it('info (sheet does not exist)', async () => {
-      const fetch = testFetch({ defs: TYPE_DEFS });
+      const fetch = stub.fetch({ defs: TYPE_DEFS });
       const ns = 'ns:foo.new';
-      const sheet = await TypedSheet.create<f.MyRow>({ ns, implements: 'ns:foo', fetch });
+      const sheet = await TypedSheet.create<f.TypeIndex>({ ns, implements: 'ns:foo', fetch });
       const info = await sheet.info();
       expect(info.exists).to.eql(false);
       expect(info.ns).to.eql({});
@@ -866,7 +893,7 @@ describe('TypedSheet', () => {
 
       it('ref (look up cell address)', async () => {
         const ns = 'ns:foo.sample';
-        const fetch = await testInstanceFetch({
+        const fetch = await stub.instance({
           instance: ns,
           implements: 'ns:foo.defaults',
           defs: TYPE_DEFS,
@@ -874,7 +901,7 @@ describe('TypedSheet', () => {
           cells: { A1: { value: 'my-foo-default' } },
         });
 
-        const sheet = await TypedSheet.load<d.TypeIndex>({ fetch, ns });
+        const sheet = await TypedSheet.load<d.TypeIndex>({ ns, fetch });
         const cursor = await sheet.data('MyDefault').load();
         expect(cursor.exists(99)).to.eql(false);
       });
@@ -1301,14 +1328,14 @@ describe('TypedSheet', () => {
       it('retrieve from fetch (then cache)', async () => {
         const { sheet, fetch } = await testMySheet();
         const state = sheet.state as TypedSheetStateInternal;
-        expect(fetch.getCellsCount).to.eql(0);
+        expect(fetch.count.getCells).to.eql(0);
 
         const res = await state.getCell('A1');
         expect(res).to.eql({ value: 'One' });
-        expect(fetch.getCellsCount).to.eql(1);
+        expect(fetch.count.getCells).to.eql(1);
 
         await state.getCell('A1');
-        expect(fetch.getCellsCount).to.eql(1); // NB: no change - cached.
+        expect(fetch.count.getCells).to.eql(1); // NB: no change - cached.
       });
 
       it('throw: invalid key', async () => {
@@ -1321,12 +1348,11 @@ describe('TypedSheet', () => {
         it('retrieve from fetch (then cache)', async () => {
           const { sheet, fetch } = await testMySheet();
           const state = sheet.state as TypedSheetStateInternal;
-          fetch.getNsCount = 0;
-          const res = await state.getNs();
-          expect(res).to.eql(undefined);
-          expect(fetch.getNsCount).to.eql(1);
+          fetch.count.getNs = 0;
           await state.getNs();
-          expect(fetch.getNsCount).to.eql(1); // NB: no change - cached.
+          expect(fetch.count.getNs).to.eql(1);
+          await state.getNs();
+          expect(fetch.count.getNs).to.eql(1); // NB: no change - cached.
         });
       });
     });
@@ -1514,7 +1540,7 @@ describe('TypedSheet', () => {
         const changes = state.changes;
         expect(changes.ns?.kind).to.eql('NS');
         expect(changes.ns?.ns).to.eql('foo.mySheet');
-        expect(changes.ns?.from).to.eql({});
+        expect(changes.ns?.from).to.eql({ type: { implements: 'ns:foo' } });
         expect(changes.ns?.to).to.eql({ type });
       });
 
@@ -1592,7 +1618,7 @@ describe('TypedSheet', () => {
 
         // Original value.
         expect(await state.getCell('A1')).to.eql({ value: 'One' });
-        expect(await state.getNs()).to.eql(undefined);
+        expect(await state.getNs()).to.eql({ type: { implements: 'ns:foo' } });
 
         event$.next({
           type: 'SHEET/change',
@@ -1622,7 +1648,7 @@ describe('TypedSheet', () => {
 
         // NB: retrieving original value after revert.
         expect(await state.getCell('A1')).to.eql({ value: 'One' });
-        expect(await state.getNs()).to.eql(undefined);
+        expect(await state.getNs()).to.eql({ type: { implements: 'ns:foo' } });
 
         const e = fired[0].payload as t.ITypedSheetChangesCleared;
         expect(e.sheet).to.equal(sheet);
@@ -1636,13 +1662,13 @@ describe('TypedSheet', () => {
         const state = sheet.state as TypedSheetStateInternal;
         const cache = (state.fetch as t.CachedFetcher).cache;
 
-        expect(fetch.getCellsCount).to.eql(0);
+        expect(fetch.count.getCells).to.eql(0);
         expect(await state.getCell('A1')).to.eql({ value: 'One' }); // Original value.
-        expect(fetch.getCellsCount).to.eql(1);
+        expect(fetch.count.getCells).to.eql(1);
 
         await state.getCell('A1');
         await state.getCell('A2');
-        expect(fetch.getCellsCount).to.eql(2);
+        expect(fetch.count.getCells).to.eql(2);
 
         cache.put('foo', 123);
 
@@ -1650,9 +1676,9 @@ describe('TypedSheet', () => {
         expect(cache.keys).to.eql(['foo']); // NB: Retained non-cell key.
 
         await state.getCell('A1');
-        expect(fetch.getCellsCount).to.eql(3); // NB: re-fetched.
+        expect(fetch.count.getCells).to.eql(3); // NB: re-fetched.
         await state.getCell('A1');
-        expect(fetch.getCellsCount).to.eql(3); // NB: and back in the cache!
+        expect(fetch.count.getCells).to.eql(3); // NB: and back in the cache!
       });
     });
   });
@@ -1807,7 +1833,7 @@ describe('TypedSheet', () => {
  */
 
 const testFetchMySheet = (ns: string, cells?: t.ICellMap) => {
-  return testInstanceFetch({
+  return stub.instance({
     instance: ns,
     implements: 'ns:foo',
     defs: TYPE_DEFS,
@@ -1832,7 +1858,7 @@ const testFetchMySheet = (ns: string, cells?: t.ICellMap) => {
 };
 
 const testFetchPrimitives = (ns: string) => {
-  return testInstanceFetch({
+  return stub.instance({
     instance: ns,
     implements: 'ns:foo.primitives',
     defs: TYPE_DEFS,
@@ -1855,7 +1881,7 @@ const testFetchPrimitives = (ns: string) => {
 };
 
 const testFetchEnum = (ns: string) => {
-  return testInstanceFetch({
+  return stub.instance({
     instance: ns,
     implements: 'ns:foo.enum',
     defs: TYPE_DEFS,
@@ -1870,7 +1896,7 @@ const testFetchEnum = (ns: string) => {
 };
 
 const testFetchMulti = (ns: string) => {
-  return testInstanceFetch({
+  return stub.instance({
     instance: ns,
     implements: 'ns:foo.multi',
     defs: TYPE_DEFS,

@@ -1,18 +1,23 @@
-import { TypeSystem, Uri } from '../common';
+import { TypeSystem, Uri, t } from '../common';
+
+const toNamespaces = (input: Partial<t.INamespaces>): t.INamespaces => {
+  const generate = () => toNs(Uri.cuid());
+  const toNs = (input: string) => Uri.toNs(input).toString();
+  const prepare = (input?: string) => (input ? toNs(input) : generate());
+  return {
+    App: prepare(input.App),
+    AppWindow: prepare(input.AppWindow),
+    AppData: prepare(input.AppData),
+  };
+};
 
 /**
  * Initializes an object structure representing the
  * type-definitions for an [App].
  */
-export function declare() {
+export function declare(options: { namespaces?: Partial<t.INamespaces> } = {}) {
   const def = TypeSystem.def();
-
-  const generate = () => Uri.toNs(Uri.cuid()).toString();
-  const namespaces = {
-    App: generate(),
-    AppWindow: generate(),
-    AppData: generate(),
-  };
+  const namespaces = toNamespaces(options.namespaces || {});
 
   /**
    * An application module definition.
@@ -21,6 +26,7 @@ export function declare() {
     .ns(namespaces.App)
     .type('App')
     .prop('name', (p) => p.type('string'))
+    .prop('version', (p) => p.type('string').default('0.0.0'))
     .prop('argv', (p) => p.type('string[]'))
     .prop('fs', (p) => p.type('string').default('fs'))
     .prop('bytes', (p) => p.type('number').default(-1))
@@ -40,7 +46,8 @@ export function declare() {
   def
     .ns(namespaces.AppWindow)
     .type('AppWindow')
-    .prop('app', (p) => p.type('string')) // REF: =app(row)
+    .prop('app', (p) => p.type('string')) // REF: =app
+    .prop('argv', (p) => p.type('string[]'))
     .prop('title', (p) => p.type('string').default('Untitled'))
     .prop('width', (p) => p.type('number'))
     .prop('height', (p) => p.type('number'))
@@ -54,7 +61,7 @@ export function declare() {
   def
     .ns(namespaces.AppData)
     .type('AppData')
-    .prop('app', (p) => p.type('string')) // REF: =app(row)
+    .prop('app', (p) => p.type('string')) // REF: =app
     .prop('window', (p) => p.type('string')) // {AppWindow.uri}
     .prop('fs', (p) => p.type('string').default('fs'))
     .prop('tmp', (p) => p.type('string'));

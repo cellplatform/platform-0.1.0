@@ -33,6 +33,14 @@ export { rx, time, defaultValue };
 import { ui } from '@platform/cell.ui';
 export { ui };
 
+import { AppManifest, AppModel, AppWindowModel } from '@platform/cell.schema.apps';
+export { AppManifest, AppModel, AppWindowModel };
+
+/* eslint-disable */
 // @ts-ignore
 import filesize from 'filesize';
 export { filesize };
+/* eslint-enable */
+
+import * as semver from 'semver';
+export { semver };

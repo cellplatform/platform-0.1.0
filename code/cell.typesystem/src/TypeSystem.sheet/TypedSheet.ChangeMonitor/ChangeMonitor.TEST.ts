@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { TypeSystem } from '../..';
-import { time, expect, testInstanceFetch, TYPE_DEFS, t } from '../../test';
+import { time, expect, stub, TYPE_DEFS, t } from '../../test';
 import { ChangeMonitor } from '.';
 import * as m from '../../test/.d.ts/all';
 
@@ -248,7 +248,7 @@ describe('TypedSheetChangeMonitor', () => {
  */
 
 const testFetchMySheet = (ns: string, cells?: t.ICellMap) => {
-  return testInstanceFetch({
+  return stub.instance({
     instance: ns,
     implements: 'ns:foo',
     defs: TYPE_DEFS,

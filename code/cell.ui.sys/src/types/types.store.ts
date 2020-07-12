@@ -10,9 +10,16 @@ export type IAppState = {
 /**
  * Overlays
  */
-export type IAppStateOverlay = IAppStateOverlayWindows;
+export type IAppStateOverlay = IAppStateOverlayWindows | IAppStateOverlayInstall;
 
 export type IAppStateOverlayWindows = {
   kind: 'WINDOWS';
   uri: string;
+};
+
+export type IAppStateOverlayInstall = {
+  kind: 'INSTALL';
+  dir: string;
+  files?: t.IHttpClientCellFileUpload[];
+  urls?: string[];
 };
