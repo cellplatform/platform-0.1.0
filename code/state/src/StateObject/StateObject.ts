@@ -5,8 +5,14 @@ import { share, filter, map } from 'rxjs/operators';
 import * as t from './types';
 
 /**
- * A carrier of an immutable object which reports changes
+ * A lightweight carrier of an immutable object which reports changes
  * via an observable.
+ *
+ * To change the state use the `change` method on the [IStateObjectWritable]
+ * interface of the object.
+ *
+ * To pass an read-only version of the [StateObject] around an application
+ * use the plain [IStateObject] interface which does not expose the `change` method.
  */
 export class StateObject<T extends object> implements t.IStateObjectWritable<T> {
   public static create<T extends object>(initial: T): t.IStateObjectWritable<T> {

@@ -1,7 +1,7 @@
-import { Store } from '@platform/state';
 import { Subject } from 'rxjs';
 
 import { t } from '../common';
+import { Store } from './libs';
 
 /**
  * Create the application's "state" store.
