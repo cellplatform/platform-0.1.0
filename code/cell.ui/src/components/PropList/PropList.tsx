@@ -17,14 +17,17 @@ export class PropList extends React.PureComponent<IPropListProps, IPropListState
   private unmounted$ = new Subject<{}>();
 
   public static Hr = (props: { color?: string | number } = {}) => {
-    const styles = {
-      base: css({
-        height: 1,
-        borderTop: `solid 4px ${color.format(defaultValue(props.color, -0.1))}`,
-        MarginY: 15,
-      }),
-    };
-    return <div {...styles.base} />;
+    const style = css({
+      height: 1,
+      borderTop: `solid 4px ${color.format(defaultValue(props.color, -0.1))}`,
+      MarginY: 15,
+    });
+    return <div {...style} />;
+  };
+
+  public static Space = (props: { height?: number }) => {
+    const style = css({ height: defaultValue(props.height, 20) });
+    return <div {...style} />;
   };
 
   /**
