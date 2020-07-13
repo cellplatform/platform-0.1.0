@@ -9,7 +9,7 @@
     "watch": "yarn start",
     "test": "ts test",
     "lint": "echo ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "bundle": "sh script.sh/bundle.sh",
     "clean": "sh script.sh/clean.sh",
     "serve": "cd dist && serve",
