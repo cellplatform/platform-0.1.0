@@ -1,3 +1,5 @@
+export type VirtualListAlign = 'auto' | 'smart' | 'center' | 'end' | 'start';
+
 /**
  * Factory for producing list items when they come into view.
  */

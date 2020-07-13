@@ -1,13 +1,13 @@
 import * as React from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { VariableSizeList as List } from 'react-window';
+import { VariableSizeList as List, areEqual, shouldComponentUpdate } from 'react-window';
 
 import { css, CssValue } from '../../common';
-import { VirtualListFactory, VirtualListFactoryArgs, VirtualListItemSize } from './types';
+import * as t from './types';
 
 export type IVirtualListProps = {
-  factory: VirtualListFactory;
-  itemSize?: VirtualListItemSize;
+  factory: t.VirtualListFactory;
+  itemSize?: t.VirtualListItemSize;
   useIsScrolling?: boolean;
   defaultSize?: number;
   total?: number;
@@ -18,11 +18,23 @@ export type IVirtualListProps = {
  * A lightweight virtualised scrolling list.
  */
 export class VirtualList extends React.PureComponent<IVirtualListProps> {
+  public static areEqual = areEqual;
+  public static shouldComponentUpdate = shouldComponentUpdate;
+
+  private list = React.createRef<List>();
+
   /**
    * [Properties]
    */
   public get total() {
     return this.props.total || 0;
+  }
+
+  /**
+   * [Methods]
+   */
+  public scrollTo(index: number, align: t.VirtualListAlign = 'auto') {
+    this.list.current?.scrollToItem(index, align);
   }
 
   /**
@@ -39,6 +51,7 @@ export class VirtualList extends React.PureComponent<IVirtualListProps> {
   private renderList(props: { width: number; height: number }) {
     return (
       <List
+        ref={this.list}
         width={props.width}
         height={props.height}
         itemCount={this.total}
@@ -53,7 +66,7 @@ export class VirtualList extends React.PureComponent<IVirtualListProps> {
   /**
    * [Handlers]
    */
-  private renderRow = (props: VirtualListFactoryArgs) => {
+  private renderRow = (props: t.VirtualListFactoryArgs) => {
     return this.props.factory(props);
   };
 
