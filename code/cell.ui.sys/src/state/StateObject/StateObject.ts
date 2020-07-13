@@ -1,10 +1,8 @@
-import produce, { applyPatches, enablePatches } from 'immer';
+import produce from 'immer';
 import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { share, filter, map } from 'rxjs/operators';
 
 import * as t from './types';
-
-enablePatches();
 
 /**
  * A carrier of an immutable object which reports changes
@@ -29,6 +27,11 @@ export class StateObject<T extends object> implements t.IStateObjectWritable<T> 
   private _state: T;
   private _event$ = new Subject<t.StateObjectEvent>();
   public readonly event$ = this._event$.pipe(share());
+  public readonly changed$ = this._event$.pipe(
+    filter((e) => e.type === 'StateObject/changed'),
+    map((e) => e.payload),
+    share(),
+  );
   public readonly original: T;
 
   /**
@@ -42,18 +45,14 @@ export class StateObject<T extends object> implements t.IStateObjectWritable<T> 
    * [Methods]
    */
   public change(fn: t.StateObjectChange<T>) {
-    const patches: t.IStateObjectPatch[] = [];
-    let state = produce<T>(
-      this.state,
-      (draft) => {
-        fn(draft as T);
-      },
-      (p) => patches.push(...p),
-    );
-    this._state = state = applyPatches(state, patches);
+    const from = this.state;
+    const to = produce<T>(from, (draft) => {
+      fn(draft as T);
+    });
+    this._state = to;
     this._event$.next({
       type: 'StateObject/changed',
-      payload: { state, patches },
+      payload: { from, to },
     });
     return this;
   }

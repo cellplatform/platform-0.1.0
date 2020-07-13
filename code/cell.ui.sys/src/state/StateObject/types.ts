@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 
 export type IStateObject<T extends object> = {
   readonly event$: Observable<StateObjectEvent>;
+  readonly changed$: Observable<IStateObjectChanged<T>>;
   readonly original: T;
   readonly state: T;
 };
@@ -11,12 +12,6 @@ export type IStateObjectWritable<T extends object> = IStateObject<T> & {
 };
 
 export type StateObjectChange<T extends object> = (draft: T) => void;
-
-export type IStateObjectPatch = {
-  op: 'replace' | 'remove' | 'add';
-  path: (string | number)[];
-  value?: any;
-};
 
 /**
  * [Events]
@@ -28,6 +23,6 @@ export type IStateObjectChangedEvent<T extends object = {}> = {
   payload: IStateObjectChanged<T>;
 };
 export type IStateObjectChanged<T extends object = {}> = {
-  state: T;
-  patches: IStateObjectPatch[];
+  from: T;
+  to: T;
 };

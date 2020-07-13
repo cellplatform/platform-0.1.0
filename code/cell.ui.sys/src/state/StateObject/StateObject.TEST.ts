@@ -35,7 +35,9 @@ describe('StateObject', () => {
     const obj = StateObject.create<IFoo>(initial);
 
     const fired: t.StateObjectEvent[] = [];
+    const changed: t.IStateObjectChanged[] = [];
     obj.event$.subscribe((e) => fired.push(e));
+    obj.changed$.subscribe((e) => changed.push(e));
 
     obj.change((draft) => {
       draft.count += 2;
@@ -43,13 +45,10 @@ describe('StateObject', () => {
     });
 
     expect(fired.length).to.eql(1);
-    const e = fired[0].payload as t.IStateObjectChanged;
+    expect(changed.length).to.eql(1);
 
-    expect(e.state).to.eql({ count: 3, message: 'hello' });
-    expect(e.state).to.equal(obj.state);
-    expect(e.patches).to.eql([
-      { op: 'replace', path: ['count'], value: 3 },
-      { op: 'add', path: ['message'], value: 'hello' },
-    ]);
+    expect(changed[0].from).to.eql(initial);
+    expect(changed[0].to).to.eql({ count: 3, message: 'hello' });
+    expect(changed[0].to).to.equal(obj.state); // Current state instance.
   });
 });
