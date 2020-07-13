@@ -115,7 +115,7 @@ export class DebugLog extends React.PureComponent<IDebugLogProps, Partial<d.IDeb
         <DebugLogToolbar onClearClick={this.onClearClick} />
         <div {...styles.body}>
           {isEmpty && this.renderEmpty()}
-          {!isEmpty && this.renderLog()}
+          {!isEmpty && this.renderList()}
           {!isEmpty && this.renderInfoPanel()}
         </div>
       </div>
@@ -143,7 +143,7 @@ export class DebugLog extends React.PureComponent<IDebugLogProps, Partial<d.IDeb
     );
   }
 
-  private renderLog() {
+  private renderList() {
     const styles = {
       base: css({
         position: 'relative',

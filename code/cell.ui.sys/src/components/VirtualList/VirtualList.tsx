@@ -8,6 +8,7 @@ import { VirtualListFactory, VirtualListFactoryArgs, VirtualListItemSize } from 
 export type IVirtualListProps = {
   factory: VirtualListFactory;
   itemSize?: VirtualListItemSize;
+  useIsScrolling?: boolean;
   defaultSize?: number;
   total?: number;
   style?: CssValue;
@@ -42,6 +43,7 @@ export class VirtualList extends React.PureComponent<IVirtualListProps> {
         height={props.height}
         itemCount={this.total}
         itemSize={this.itemSize}
+        useIsScrolling={this.props.useIsScrolling}
       >
         {this.renderRow}
       </List>
