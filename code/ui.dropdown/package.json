@@ -21,10 +21,10 @@
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
-    "@types/react-select": "3.0.13",
-    "@uiharness/dev": "0.10.5",
+    "@types/react-select": "3.0.14",
+    "@uiharness/dev": "0.10.6",
     "@uiharness/ui": "0.7.6",
-    "electron": "9.0.0"
+    "electron": "9.1.0"
   },
   "files": [
     "lib",

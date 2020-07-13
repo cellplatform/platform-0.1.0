@@ -20,8 +20,8 @@
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
     "@platform/ts": "3.9.3",
-    "@uiharness/dev": "0.10.5",
-    "electron": "9.0.0"
+    "@uiharness/dev": "0.10.6",
+    "electron": "9.1.0"
   },
   "files": [
     "lib",

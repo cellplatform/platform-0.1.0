@@ -33,19 +33,19 @@
     "@platform/libs": "0.2.2",
     "@platform/log": "0.1.25",
     "@platform/util.value": "0.7.24",
-    "electron-log": "4.2.1",
+    "electron-log": "4.2.2",
     "electron-squirrel-startup": "1.0.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "6.0.0-beta.51",
-    "@electron-forge/maker-deb": "6.0.0-beta.51",
-    "@electron-forge/maker-rpm": "6.0.0-beta.51",
-    "@electron-forge/maker-squirrel": "6.0.0-beta.51",
-    "@electron-forge/maker-zip": "6.0.0-beta.51",
+    "@electron-forge/cli": "6.0.0-beta.52",
+    "@electron-forge/maker-deb": "6.0.0-beta.52",
+    "@electron-forge/maker-rpm": "6.0.0-beta.52",
+    "@electron-forge/maker-squirrel": "6.0.0-beta.52",
+    "@electron-forge/maker-zip": "6.0.0-beta.52",
     "@platform/exec": "0.2.59",
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
-    "electron": "9.0.4"
+    "electron": "9.1.0"
   },
   "files": [
     "lib",

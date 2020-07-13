@@ -33,7 +33,7 @@
     "@platform/test": "0.1.12",
     "@platform/ts": "3.9.3",
     "@platform/ui.dev": "0.0.11",
-    "recharts": "2.0.0-beta.6"
+    "recharts": "1.8.5"
   },
   "files": [
     "lib",

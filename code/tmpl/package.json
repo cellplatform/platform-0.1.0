@@ -17,7 +17,7 @@
     "@platform/fs": "0.5.17",
     "@platform/npm": "0.3.2",
     "@types/inquirer": "6.5.0",
-    "inquirer": "7.1.0",
+    "inquirer": "7.3.2",
     "isbinaryfile": "4.0.6"
   },
   "devDependencies": {

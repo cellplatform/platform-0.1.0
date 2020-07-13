@@ -20,9 +20,9 @@
   },
   "devDependencies": {
     "@platform/ts": "3.9.3",
-    "@uiharness/dev": "0.10.5",
+    "@uiharness/dev": "0.10.6",
     "@uiharness/electron": "0.7.5",
-    "electron": "9.0.0"
+    "electron": "9.1.0"
   },
   "license": "MIT",
   "private": true

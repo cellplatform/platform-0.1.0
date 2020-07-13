@@ -12,7 +12,7 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.types": "0.4.121",
+    "@platform/cell.types": "0.4.122",
     "@platform/react": "0.4.37"
   },
   "devDependencies": {
