@@ -4,6 +4,8 @@ import { share, filter, map } from 'rxjs/operators';
 
 import * as t from './types';
 
+type O = Record<string, unknown>;
+
 /**
  * A lightweight carrier of an immutable object which reports changes
  * via an observable.
@@ -14,9 +16,26 @@ import * as t from './types';
  * To pass an read-only version of the [StateObject] around an application
  * use the plain [IStateObject] interface which does not expose the `change` method.
  */
-export class StateObject<T extends Record<string, unknown>> implements t.IStateObjectWritable<T> {
-  public static create<T extends Record<string, unknown>>(initial: T): t.IStateObjectWritable<T> {
+export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
+  /**
+   * Create a new [StateObject] instance.
+   */
+  public static create<T extends O>(initial: T): t.IStateObjectWritable<T> {
     return new StateObject<T>({ initial });
+  }
+
+  /**
+   * Convert a writeable [StateObject] to a readon-only version.
+
+   * NOTE:
+   *    This is useful when wishing to be principled and constrain
+   *    updates to the object to centralised behavioral logic 
+   *    (analagous to "reducers" say) and not propogate update
+   *    logic around an application.
+   * 
+   */
+  public static readonly<T extends O>(obj: t.IStateObjectWritable<T>): t.IStateObject<T> {
+    return obj as t.IStateObject<T>;
   }
 
   /**
@@ -31,13 +50,21 @@ export class StateObject<T extends Record<string, unknown>> implements t.IStateO
    * [Fields]
    */
   private _state: T;
-  private _event$ = new Subject<t.StateObjectEvent>();
+  private readonly _event$ = new Subject<t.StateObjectEvent>();
   public readonly event$ = this._event$.pipe(share());
-  public readonly changed$ = this._event$.pipe(
-    filter((e) => e.type === 'StateObject/changed'),
-    map((e) => e.payload),
+
+  public readonly changing$ = this._event$.pipe(
+    filter((e) => e.type === 'StateObject/changing'),
+    map((e) => e.payload as t.IStateObjectChanging<T>),
     share(),
   );
+
+  public readonly changed$ = this._event$.pipe(
+    filter((e) => e.type === 'StateObject/changed'),
+    map((e) => e.payload as t.IStateObjectChanged<T>),
+    share(),
+  );
+
   public readonly original: T;
 
   /**
@@ -50,16 +77,38 @@ export class StateObject<T extends Record<string, unknown>> implements t.IStateO
   /**
    * [Methods]
    */
-  public change(fn: t.StateObjectChange<T>) {
+  public change(fn: t.StateObjectChanger<T>) {
     const from = this.state;
+
+    // Invoke the change handler.
     const to = produce<T>(from, (draft) => {
       fn(draft as T);
     });
-    this._state = to;
-    this._event$.next({
-      type: 'StateObject/changed',
-      payload: { from, to },
-    });
-    return this;
+
+    // Fire BEFORE event.
+    const payload: t.IStateObjectChanging<T> = {
+      from,
+      to,
+      cancelled: false,
+      cancel: () => (payload.cancelled = true),
+    };
+    this.fire({ type: 'StateObject/changing', payload });
+
+    // Update state.
+    const cancelled = payload.cancelled;
+    if (!cancelled) {
+      this._state = to;
+      this.fire({ type: 'StateObject/changed', payload: { from, to } });
+    }
+
+    // Finish up.
+    return { from, to, cancelled };
+  }
+
+  /**
+   * Helpers
+   */
+  private fire(e: t.StateObjectEvent) {
+    this._event$.next(e);
   }
 }

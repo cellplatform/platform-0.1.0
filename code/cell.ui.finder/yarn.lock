@@ -976,17 +976,17 @@
     "@platform/types" "0.4.24"
     "@platform/util.value" "0.7.26"
 
-"@platform/cell.ui@0.1.64":
-  version "0.1.64"
-  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.64.tgz#87ba88b44ae23c19994fe6c9fc000cf99363b161"
-  integrity sha512-QBPmD7Aw8pyGBWPQ94BWIa34PTmW8vajzSMfAB8XIsTJK5w77o0hNJJJGbsQcgueSc0xnbrUOirMLHHQJGJmEg==
+"@platform/cell.ui@0.1.65":
+  version "0.1.65"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.65.tgz#1acec3dd9a1da56176d375cebe87c82679a0cc09"
+  integrity sha512-2k7oVJBfG0zukz/dshkV++HlRDXtOVDq1cPXLbXQ6543PxWFIdUgGA9DDzhA3M7EdCbTZRxPIdJoHOULu0E9Xg==
   dependencies:
     "@platform/cell.client" "0.2.122"
     "@platform/cell.types" "0.4.126"
     "@platform/libs" "0.2.2"
     "@platform/polyfill" "0.0.1"
     "@platform/react" "0.4.39"
-    "@platform/state" "0.5.6"
+    "@platform/state" "0.6.0"
     "@platform/ui.button" "0.3.74"
     "@platform/ui.icon" "0.0.158"
     "@platform/ui.text" "0.3.70"
@@ -1120,10 +1120,10 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state@0.5.6":
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.5.6.tgz#871a2f455dcf924897052a05ce2ad801dbf43a1f"
-  integrity sha512-nWdljdfPC58jlYQSlAbMywo46KtEG5IXWSrWx1FbUNTbgeOc1BMCz1MaOJBTYcMixu417lVRUUyCLckxqmG14w==
+"@platform/state@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.0.tgz#894947c2788588e6eb1ff63e0eb4bb623a8e45ff"
+  integrity sha512-locA+ajqtuaM7dDBxKu+xS4bgs39UegwRHOAgYX7CcIfqZsihlF5MUtQO1lKH6LCGpTeHaVD5F09h0bnuk8/ZQ==
   dependencies:
     "@platform/util.value" "0.7.26"
     immer "7.0.5"
