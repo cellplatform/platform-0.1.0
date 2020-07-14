@@ -2,13 +2,11 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { FormulaInput, IFormulaInputProps } from '../../src';
+import { FormulaInput, IFormulaInputProps } from '../..';
 import { color, css, CssValue, t, Button, Hr } from '../common';
 
 export type ITestProps = { style?: CssValue };
-export type ITestState = {
-  value?: string;
-};
+export type ITestState = { value?: string };
 
 const DEFAULT = {
   VALUE: '=IF(A1:B2, TRUE, FALSE) / 100',
@@ -121,7 +119,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   private button(title: string, handler?: () => void) {
-    return <Button label={title} onClick={handler} block={true} />;
+    const styles = {
+      base: css({ Flex: 'start-start' }),
+    };
+    return (
+      <div {...styles.base}>
+        <Button label={title} onClick={handler} block={true} />
+      </div>
+    );
   }
 
   private renderInputs() {
