@@ -13,7 +13,7 @@ import {
   t,
   Button,
   Hr,
-} from './common';
+} from '../common';
 
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
@@ -195,7 +195,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const styles = {
       base: css({
         Absolute: 0,
-        display: 'flex',
+        Flex: 'horizontal-stretch-stretch',
       }),
       left: css({
         width: 180,
@@ -246,7 +246,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   private button(title: string, handler?: () => void) {
-    return <Button label={title} onClick={handler} block={true} />;
+    const styles = {
+      base: css({ Flex: 'start-start' }),
+    };
+    return (
+      <div {...styles.base}>
+        <Button label={title} onClick={handler} block={true} />
+      </div>
+    );
   }
 
   public renderEditor() {
