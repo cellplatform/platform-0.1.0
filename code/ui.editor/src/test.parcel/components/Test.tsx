@@ -126,13 +126,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     state$.subscribe((e) => this.setState(e));
 
     events$.subscribe((e) => {
-      console.log('🌳', e.type, e.payload);
+      // console.log('🌳', e.type, e.payload);
     });
 
     events$
