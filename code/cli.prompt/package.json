@@ -1,6 +1,6 @@
 {
   "name": "@platform/cli.prompt",
-  "version": "0.3.20",
+  "version": "0.3.22",
   "description": "Helpers for raising user prompts within a command-line-interface.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -17,14 +17,14 @@
     "demo.fs.rdo": "ts-node -T scripts/prompt.fs.radio"
   },
   "dependencies": {
-    "@platform/fs": "0.5.17",
+    "@platform/fs": "0.5.19",
     "@platform/libs": "0.2.2",
-    "@platform/log": "0.1.25",
-    "inquirer": "7.1.0"
+    "@platform/log": "0.1.27",
+    "inquirer": "7.3.2"
   },
   "devDependencies": {
-    "@platform/test": "0.1.12",
-    "@platform/ts": "3.9.3",
+    "@platform/test": "0.1.14",
+    "@platform/ts": "3.9.5",
     "@types/inquirer": "6.5.0"
   },
   "files": [

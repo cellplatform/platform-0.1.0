@@ -63,7 +63,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
   public static events<N extends t.ITreeNode = t.ITreeNode>(
     events$: Observable<t.TreeViewEvent>,
-    dispose$?: Observable<{}>,
+    dispose$?: Observable<void>,
   ) {
     return new TreeEvents<N>(events$, dispose$);
   }
@@ -79,7 +79,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    * [Fields]
    */
   public state: ITreeViewState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject<void>();
   private focus$ = new Subject<boolean>();
 
   private _events$ = new Subject<t.TreeViewEvent>();

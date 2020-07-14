@@ -3,7 +3,7 @@ import { t, defaultValue, R } from '../common';
 /**
  * Represents a URL path that can be converted to a proper URL via `toString()`.
  */
-export class Url<Q extends object = {}> implements t.IUrl<Q> {
+export class Url<Q extends Record<string, unknown> = any> implements t.IUrl<Q> {
   /**
    * [Lifecycle]
    */

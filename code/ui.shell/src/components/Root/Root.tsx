@@ -12,12 +12,9 @@ export type IRootProps = {
   shell: Shell;
   style?: CssValue;
 };
-export type IRootState = {};
 
-export class Root extends React.PureComponent<IRootProps, IRootState> {
-  public state: IRootState = {};
-  private state$ = new Subject<Partial<IRootState>>();
-  private unmounted$ = new Subject<{}>();
+export class Root extends React.PureComponent<IRootProps> {
+  private unmounted$ = new Subject();
   private tree$ = new Subject<t.TreeViewEvent>();
 
   public static contextType = loader.Context;
@@ -29,14 +26,12 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    */
   constructor(props: IRootProps) {
     super(props);
-
     const tree$ = this.tree$.pipe(takeUntil(this.unmounted$));
     tree$.subscribe((e) => this.shell.fire(e));
   }
 
   public componentDidMount() {
     document.body.style.overflow = 'hidden'; // Prevent browser rubber-band.
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.load(this.shell.defaultModule);
   }
 

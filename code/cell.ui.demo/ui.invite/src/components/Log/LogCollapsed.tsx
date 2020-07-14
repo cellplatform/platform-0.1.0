@@ -15,7 +15,7 @@ export type ILogCollapsedState = {};
 export class LogCollapsed extends React.PureComponent<ILogCollapsedProps, ILogCollapsedState> {
   public state: ILogCollapsedState = {};
   private state$ = new Subject<Partial<ILogCollapsedState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

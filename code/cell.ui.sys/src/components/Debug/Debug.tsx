@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue } from '../../common';
+
+import { css, CssValue, t, ui } from '../../common';
+import { DebugLog } from '../DebugLog';
 
 export type IDebugProps = { style?: CssValue };
 export type IDebugState = {};
@@ -9,7 +11,10 @@ export type IDebugState = {};
 export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   public state: IDebugState = {};
   private state$ = new Subject<Partial<IDebugState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
+
+  public static contextType = ui.Context;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]
@@ -27,16 +32,16 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
    * [Render]
    */
   public render() {
+    const ctx = this.context;
     const styles = {
-      base: css({
-        Absolute: 0,
-        Flex: 'center-center',
-        WebkitAppRegion: 'drag',
-      }),
+      base: css({ Absolute: 0 }),
     };
+
+    const event$ = ctx.env.event$;
+
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>Debug</div>
+        <DebugLog event$={event$} style={{ Absolute: 0 }} />
       </div>
     );
   }

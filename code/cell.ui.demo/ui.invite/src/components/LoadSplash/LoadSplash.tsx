@@ -9,7 +9,7 @@ export type ILoadSplashState = {};
 export class LoadSplash extends React.PureComponent<ILoadSplashProps, ILoadSplashState> {
   public state: ILoadSplashState = {};
   private state$ = new Subject<Partial<ILoadSplashState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

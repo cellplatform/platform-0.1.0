@@ -10,23 +10,15 @@ export type ICommandHelpListProps = {
   style?: CssValue;
   onCommandClick?: t.CommandClickEventHandler;
 };
-export type ICommandHelpListState = {};
 
-export class CommandHelpList extends React.PureComponent<
-  ICommandHelpListProps,
-  ICommandHelpListState
-> {
-  public state: ICommandHelpListState = {};
-  private unmounted$ = new Subject<{}>();
-  private state$ = new Subject<ICommandHelpListState>();
+export class CommandHelpList extends React.PureComponent<ICommandHelpListProps> {
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]
    */
   constructor(props: ICommandHelpListProps) {
     super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-
     const changed$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
     changed$.subscribe((e) => this.forceUpdate());
   }

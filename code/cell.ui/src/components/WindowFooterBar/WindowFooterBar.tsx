@@ -17,7 +17,7 @@ export class WindowFooterBar extends React.PureComponent<
 > {
   public state: IWindowFooterBarState = {};
   private state$ = new Subject<Partial<IWindowFooterBarState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static HEIGHT = 24;
   public static GRADIENT = WindowTitleBar.GRADIENT;

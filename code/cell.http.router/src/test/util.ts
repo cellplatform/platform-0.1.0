@@ -12,7 +12,7 @@ export function readFile(path: string) {
 /**
  * Walks an object tree stripping hash values.
  */
-export function stripHashes(input: object) {
+export function stripHashes(input: Record<string, unknown>) {
   if (input) {
     value.object.walk(input, (obj) => {
       if (typeof obj === 'object' && obj !== null) {

@@ -1,7 +1,7 @@
 import { t } from '../common';
 import { dirPull } from './dirPull';
 
-export type IPullArgs = {};
+export type IPullArgs = Record<string, unknown>;
 
 export const init: t.CmdPluginsInit = (cli) => {
   const handler: t.CmdPluginHandler<IPullArgs> = async (e) => {

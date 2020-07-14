@@ -1,3 +1,4 @@
+import { time } from '@platform/util.value';
 import {
   baseKeymap,
   chainCommands,
@@ -17,10 +18,10 @@ import { EditorState, Transaction } from 'prosemirror-state';
 import * as utils from 'prosemirror-utils';
 import { Subject } from 'rxjs';
 
-import { t, time } from '../../../common';
-import { EditorKeyMap } from '../types';
+import { t } from '../../../common';
+// import { EditorKeyMap } from '../types';
 
-export { EditorKeyMap };
+// export { EditorKeyMap };
 
 type EditorDispatch = (tr: Transaction) => void;
 type EditorCommand = (state: EditorState, dispatch: EditorDispatch) => boolean;
@@ -58,7 +59,7 @@ const isMac = typeof navigator !== 'undefined' ? /Mac/.test(navigator.platform) 
 export function build(options: {
   schema: Schema;
   events$: Subject<t.TextEditorEvent>;
-  mapKeys?: EditorKeyMap;
+  mapKeys?: t.EditorKeyMap;
   allowEnter?: boolean;
   allowMetaEnter?: boolean;
   allowShiftEnter?: boolean;

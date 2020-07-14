@@ -8,10 +8,10 @@ export class SyncSchema {
   /**
    * [Lifecycle]
    */
-  public static create = (args: {}) => new SyncSchema(args);
-  private constructor(args: {}) {
-    this.db = DbSchema.create(args);
-    this.grid = GridSchema.create(args);
+  public static create = () => new SyncSchema();
+  private constructor() {
+    this.db = DbSchema.create();
+    this.grid = GridSchema.create();
   }
 
   /**

@@ -17,7 +17,7 @@ export type IProgressState = {
 export class Progress extends React.PureComponent<IProgressProps, IProgressState> {
   public state: IProgressState = {};
   private state$ = new Subject<Partial<IProgressState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private timeout: NodeJS.Timeout | undefined;
   private stopId = -1;
 

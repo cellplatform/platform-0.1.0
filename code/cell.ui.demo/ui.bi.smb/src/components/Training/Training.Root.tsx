@@ -9,7 +9,7 @@ export type TrainingIRootState = {};
 export class TrainingRoot extends React.PureComponent<TrainingIRootProps, TrainingIRootState> {
   public state: TrainingIRootState = {};
   private state$ = new Subject<Partial<TrainingIRootState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

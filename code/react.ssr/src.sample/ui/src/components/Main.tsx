@@ -10,7 +10,7 @@ export type IMainState = { count?: number; foo?: JSX.Element };
 export class Main extends React.PureComponent<IMainProps, IMainState> {
   public state: IMainState = {};
   private state$ = new Subject<Partial<IMainState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]
@@ -62,7 +62,7 @@ export class Main extends React.PureComponent<IMainProps, IMainState> {
       <div {...css(styles.base, this.props.style)} onClick={this.handleClick}>
         <div {...styles.title}>Kitty: {this.count || 0}</div>
         <div {...styles.version}>{this.version}</div>
-        <img src='/images/cat.jpg' {...styles.image} />
+        <img src="/images/cat.jpg" {...styles.image} />
         {this.state.foo}
       </div>
     );

@@ -97,13 +97,18 @@ export type IInvokeCommandArgs<
 /**
  * The response from [invoking] of the handler.
  */
-export type IInvokedCommandPromise<P extends object, A extends {}, R> = Promise<
-  IInvokedCommandResponse<P, A, R>
-> &
-  IInvokedCommandResponse<P, A, R>;
-export type IInvokedCommandResponse<P extends object, A extends {}, R> = {
+export type IInvokedCommandPromise<
+  P extends Record<string, unknown>,
+  A extends t.CommandArgsOptions,
+  R
+> = Promise<IInvokedCommandResponse<P, A, R>> & IInvokedCommandResponse<P, A, R>;
+export type IInvokedCommandResponse<
+  P extends Record<string, unknown>,
+  A extends t.CommandArgsOptions,
+  R
+> = {
   events$: Observable<CommandInvokeEvent>;
-  complete$: Observable<{}>;
+  complete$: Observable<void>;
   isComplete: boolean;
   isTimedOut: boolean;
   timeout: number;

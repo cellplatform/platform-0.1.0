@@ -54,7 +54,7 @@ export type ICommandInfo = {
 export type ICommandPromise = Promise<IResultInfo> &
   IResultInfo & {
     isComplete: boolean;
-    complete$: Observable<{}>;
+    complete$: Observable<void>;
     output$: Observable<ICommandInfo>;
     stdout$: Observable<string>; // Includes ANSI colors.
     stderr$: Observable<string>; // Includes ANSI colors.

@@ -12,13 +12,9 @@ export type ICommandTreeProps = {
   events$?: Subject<t.CommandTreeEvent>;
   style?: CssValue;
 };
-export type ICommandTreeState = {};
 
-export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommandTreeState> {
-  public state: ICommandTreeState = {};
-  private unmounted$ = new Subject<{}>();
-  private state$ = new Subject<Partial<ICommandTreeState>>();
-
+export class CommandTree extends React.PureComponent<ICommandTreeProps> {
+  private unmounted$ = new Subject();
   private _events$ = new Subject<t.CommandTreeEvent>();
   public events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
 
@@ -27,13 +23,9 @@ export class CommandTree extends React.PureComponent<ICommandTreeProps, ICommand
    */
   public componentDidMount() {
     // Setup observables.
-    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const cliChanged$ = this.cli.changed$.pipe(takeUntil(this.unmounted$));
     const cliInvoked$ = this.cli.invoked$.pipe(takeUntil(this.unmounted$));
     const tree$ = this.events$;
-
-    // Update state.
-    state$.subscribe((e) => this.setState(e));
 
     // Bubble events.
     if (this.props.events$) {

@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { COLORS, coord, css, CssValue, func, t, Uri, util } from '../common';
 import { ObjectView } from '../primitives';
@@ -14,29 +12,8 @@ export type IDebugCellProps = {
   theme?: 'DARK';
   style?: CssValue;
 };
-export type IDebugCellState = {};
 
-export class DebugCell extends React.PureComponent<IDebugCellProps, IDebugCellState> {
-  public state: IDebugCellState = {};
-  private state$ = new Subject<Partial<IDebugCellState>>();
-  private unmounted$ = new Subject<{}>();
-
-  /**
-   * [Lifecycle]
-   */
-  constructor(props: IDebugCellProps) {
-    super(props);
-  }
-
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
-
+export class DebugCell extends React.PureComponent<IDebugCellProps> {
   /**
    * [Properties]
    */

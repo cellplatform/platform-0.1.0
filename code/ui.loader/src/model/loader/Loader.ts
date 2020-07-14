@@ -3,8 +3,6 @@ import { Subject } from 'rxjs';
 import { share, takeUntil } from 'rxjs/operators';
 import { defaultValue, id as idUtil, t } from '../../common';
 
-export type ILoaderArgs = {};
-
 const DEFAULT = {
   TIMEOUT: 10000, // 10-seconds.
 };
@@ -18,8 +16,10 @@ export class Loader implements t.ILoader {
   /**
    * [Lifecycle]
    */
-  public static create = (args: ILoaderArgs = {}) => new Loader(args);
-  private constructor(args: ILoaderArgs) {} // eslint-disable-line
+  public static create = () => new Loader();
+  private constructor() {
+    //
+  }
 
   public dispose() {
     this._dispose$.next();
@@ -32,7 +32,7 @@ export class Loader implements t.ILoader {
   private _modules: Array<t.IDynamicModule<any>> = [];
   private _loading: string[] = [];
 
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.LoaderEvents>();
@@ -69,7 +69,7 @@ export class Loader implements t.ILoader {
     // Store a reference to the module.
     const item: t.IDynamicModule = {
       id: moduleId,
-      load: async (props: {} = {}) => this.invoke(item, load, props),
+      load: async (props: Record<string, unknown> = {}) => this.invoke(item, load, props),
       timeout: defaultValue(options.timeout, DEFAULT.TIMEOUT),
       loadCount: 0,
       isLoaded: false,
@@ -114,7 +114,7 @@ export class Loader implements t.ILoader {
     return item ? item.isLoaded : false;
   }
 
-  public async load<T = any, P = {}>(
+  public async load<T = any, P = Record<string, unknown>>(
     moduleId: string | number,
     props?: P,
   ): Promise<t.LoadModuleResponse<T>> {
@@ -130,7 +130,7 @@ export class Loader implements t.ILoader {
         };
   }
 
-  public async render<P = {}>(
+  public async render<P = Record<string, unknown>>(
     moduleId: string | number,
     props?: P,
   ): Promise<t.RenderModuleResponse> {
@@ -172,7 +172,11 @@ export class Loader implements t.ILoader {
     this._events$.next(e);
   }
 
-  private async invoke(item: t.IDynamicModule, load: t.DynamicImporter, props: {}) {
+  private async invoke(
+    item: t.IDynamicModule,
+    load: t.DynamicImporter,
+    props: Record<string, unknown>,
+  ) {
     if (!this.isLoading(item.id)) {
       this._loading = [...this._loading, item.id];
     }
@@ -207,7 +211,11 @@ export class Loader implements t.ILoader {
     return response;
   }
 
-  private async invokeOrTimeout(item: t.IDynamicModule, load: t.DynamicImporter, props: {}) {
+  private async invokeOrTimeout(
+    item: t.IDynamicModule,
+    load: t.DynamicImporter,
+    props: Record<string, unknown>,
+  ) {
     return new Promise<{ timedOut: boolean; error?: Error; result?: any }>((resolve) => {
       const done = (args: { result?: any; error?: Error; timedOut?: boolean }) => {
         clearTimeout(timeout);

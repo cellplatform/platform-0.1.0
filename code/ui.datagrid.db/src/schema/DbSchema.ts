@@ -22,8 +22,10 @@ export class DbSchema {
   /**
    * [Lifecycle]
    */
-  public static create = (args: {}) => new DbSchema(args);
-  private constructor(args: {}) {} // eslint-disable-line
+  public static create = () => new DbSchema();
+  private constructor() {
+    //
+  }
 
   /**
    * [Properties]

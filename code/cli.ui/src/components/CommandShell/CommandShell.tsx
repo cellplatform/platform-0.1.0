@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import {
   color as colorUtil,
@@ -23,9 +22,8 @@ export type ICommandShellProps = {
   focusOnLoad?: boolean;
   style?: CssValue;
 };
-export type ICommandShellState = {};
 
-export class CommandShell extends React.PureComponent<ICommandShellProps, ICommandShellState> {
+export class CommandShell extends React.PureComponent<ICommandShellProps> {
   /**
    * [State]
    */
@@ -36,9 +34,7 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
    * [Fields]
    */
 
-  public state: ICommandShellState = {};
-  private unmounted$ = new Subject<{}>();
-  private state$ = new Subject<Partial<ICommandShellState>>();
+  private unmounted$ = new Subject();
   private tree$ = new Subject<t.CommandTreeEvent>();
 
   private prompt!: CommandPrompt;
@@ -49,12 +45,8 @@ export class CommandShell extends React.PureComponent<ICommandShellProps, IComma
    */
   public componentDidMount() {
     // Setup observables.
-    const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     // const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
     // const tree$ = this.tree$.pipe(takeUntil(this.unmounted$));
-
-    // Update state.
-    state$.subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {

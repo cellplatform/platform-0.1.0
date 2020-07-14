@@ -39,7 +39,7 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
    */
   private mouse: mouse.IMouseHandlers;
   public state: IAvatarState = { isLoaded: false, status: 'LOADING' };
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IAvatarState>>();
   private events$ = new Subject<t.AvatarEvent>();
 
@@ -154,7 +154,7 @@ export class Avatar extends React.PureComponent<IAvatarProps, IAvatarState> {
       }),
       icon: css({}),
     };
-    const Icon = this.props.placeholderIcon || Icons.Face;
+    const Icon = this.props.placeholderIcon || Icons.Face; // eslint-disable-line
     return (
       <div {...styles.base}>
         <Icon style={styles.icon} color={this.props.placeholderIconColor} />

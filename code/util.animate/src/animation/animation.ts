@@ -29,7 +29,7 @@ export type IMoveOptions = {
 
 export type IMoveObservableOptions = IMoveOptions & {
   target: MoveTargetProps;
-  current: () => object;
+  current: () => Record<string, unknown>;
 };
 
 /**
@@ -40,7 +40,11 @@ export type IMoveObservableOptions = IMoveOptions & {
  * Example: see [README]
  *
  */
-function animate(target: MoveTargetProps | HTMLElement, props: object, options: IMoveOptions) {
+function animate(
+  target: MoveTargetProps | HTMLElement,
+  props: Record<string, unknown>,
+  options: IMoveOptions,
+) {
   return new Promise((resolve, reject) => {
     const type = dynamics[options.type];
     const args = {

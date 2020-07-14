@@ -10,7 +10,7 @@ export type IViewerListProps = {
   style?: CssValue;
   onClick?: ViewerItemClickEventHandler;
 };
-export type IViewerListItem = { filename: string; fileUrl: string, infoUrl: string };
+export type IViewerListItem = { filename: string; fileUrl: string; infoUrl: string };
 export type IViewerListState = {};
 
 export type ViewerItemClickEvent = { item: IViewerListItem };
@@ -19,7 +19,7 @@ export type ViewerItemClickEventHandler = (e: ViewerItemClickEvent) => void;
 export class ViewerList extends React.PureComponent<IViewerListProps, IViewerListState> {
   public state: IViewerListState = {};
   private state$ = new Subject<Partial<IViewerListState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

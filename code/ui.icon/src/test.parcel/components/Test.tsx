@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { css, CssValue } from '@platform/css';
 
 import { Hr, ImageSprite } from './common';
-import { css, CssValue } from '@platform/css';
 import { IconGrid } from './IconGrid';
 import { Icons } from './Icons';
 
@@ -13,24 +11,8 @@ const SAMPLE_2X = require('../images/ImageSprite.test/sample@2x.png'); // eslint
 const MAGENTA = '#F93B76';
 
 export type ITestProps = { style?: CssValue };
-export type ITestState = {};
 
-export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = {};
-  private unmounted$ = new Subject<{}>();
-  private state$ = new Subject<Partial<ITestState>>();
-
-  /**
-   * [Lifecycle]
-   */
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-  }
-
+export class Test extends React.PureComponent<ITestProps> {
   /**
    * [Render]
    */

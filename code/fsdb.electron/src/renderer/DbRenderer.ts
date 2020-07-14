@@ -47,7 +47,7 @@ export class DbRenderer implements t.IDb {
   public readonly conn: string;
   private readonly ipc: t.DbIpc;
 
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.DbEvent>();

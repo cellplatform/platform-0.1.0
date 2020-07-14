@@ -47,7 +47,7 @@ export type IGraphqlEditorFetchingEvent = {
 export type IGraphqlEditorFetching = {
   fetchId: string;
   url: string;
-  params: object;
+  params: Record<string, unknown>;
   isCancelled: boolean;
   cancel(): void;
 };
@@ -59,7 +59,7 @@ export type IGraphqlEditorFetchedEvent = {
 export type IGraphqlEditorFetched = {
   fetchId: string;
   url: string;
-  params: object;
+  params: Record<string, unknown>;
   result: t.JsonMap;
   isError: boolean;
 };
@@ -71,5 +71,5 @@ export type IGraphqlEditorSchemaFetchedEvent = {
 
 export type IGraphqlEditorFetchErrorEvent = {
   type: 'GRAPHQL_EDITOR/fetch/error';
-  payload: { fetchId: string; url: string; params: object; error: Error };
+  payload: { fetchId: string; url: string; params: Record<string, unknown>; error: Error };
 };

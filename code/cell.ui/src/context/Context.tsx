@@ -41,7 +41,7 @@ export type ReactContext = React.ContextType<typeof Context>;
  * store (and optionally additional props) through the react
  * hierarchy to child components.
  */
-export function createProvider<P = {}>(args: {
+export function createProvider<P = Record<string, unknown>>(args: {
   ctx: t.IEnvContext<any>;
   props?: P;
 }): React.FunctionComponent {

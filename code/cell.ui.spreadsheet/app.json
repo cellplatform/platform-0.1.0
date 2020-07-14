@@ -1,5 +1,5 @@
 {
-  "name": "@platform/cell.ui.spreadsheet",
+  "name": "ui.spreadsheet",
   "version": "0.0.0",
   "entry": "bundle/index.html",
   "devPort": 1237,

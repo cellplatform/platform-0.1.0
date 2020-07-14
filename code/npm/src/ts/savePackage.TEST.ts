@@ -3,7 +3,7 @@ import { savePackage } from './savePackage';
 
 import { INpmPackageJson } from '@platform/types';
 
-const PKG = require('../../package.json') as INpmPackageJson;
+const PKG = require('../../package.json') as INpmPackageJson; // eslint-disable-line
 
 const target = 'tmp/constants.pkg.ts';
 const loadTarget = async () => (await fs.readFile(fs.resolve(target))).toString();

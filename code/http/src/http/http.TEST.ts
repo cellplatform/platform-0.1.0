@@ -167,7 +167,11 @@ describe('http', () => {
         data.push(null);
 
         // Switch out the return data with a different file (stream).
-        e.respond(() => ({ status: 202, statusText: 'foobar', data }));
+        e.respond(() => ({
+          status: 202,
+          statusText: 'foobar',
+          data: data as any,
+        }));
       });
       client.after$.subscribe((e) => events.push(e));
 

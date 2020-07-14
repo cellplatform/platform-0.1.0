@@ -1,6 +1,6 @@
 {
   "name": "@platform/state",
-  "version": "0.5.2",
+  "version": "0.5.6",
   "description": "A small, simple, strongly typed, [rx/observable] state-machine.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
@@ -12,12 +12,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/util.value": "0.7.24",
-    "immer": "6.0.9"
+    "@platform/util.value": "0.7.26",
+    "immer": "7.0.5"
   },
   "devDependencies": {
-    "@platform/test": "0.1.12",
-    "@platform/ts": "3.9.3"
+    "@platform/test": "0.1.14",
+    "@platform/ts": "3.9.5"
   },
   "files": [
     "lib",

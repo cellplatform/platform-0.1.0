@@ -26,7 +26,7 @@ const refs: Refs = {};
 /**
  * Observable wrapper for the electron IPC [main] process.
  */
-export const init = <M extends IpcMessage>(args: {} = {}): IpcClient<M> => {
+export const init = <M extends IpcMessage>(args: Record<string, unknown> = {}): IpcClient<M> => {
   if (refs.main) {
     return refs.main; // Already initialized.
   }

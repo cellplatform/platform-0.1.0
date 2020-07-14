@@ -56,7 +56,7 @@ export class Screen<M extends t.IpcMessage = any, S extends t.SettingsJson = any
   public readonly ipc: t.IpcClient<M>;
   public readonly windows: t.IWindows;
 
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.ScreenEvent>();

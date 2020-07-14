@@ -18,7 +18,7 @@ export type IPageVideoState = {};
 export class PageVideo extends React.PureComponent<IPageVideoProps, IPageVideoState> {
   public state: IPageVideoState = {};
   private state$ = new Subject<Partial<IPageVideoState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

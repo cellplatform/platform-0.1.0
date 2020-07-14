@@ -2,16 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 
-import { Context, css, t, DEFAULT, util } from '../common';
+import { Context, css, t, DEFAULT, util, CssValue } from '../common';
 const SHELL = DEFAULT.STATE.SHELL;
 
-export type IBodyProps = {};
-export type IBodyState = {};
+export type IBodyProps = { style?: CssValue };
 
-export class Body extends React.PureComponent<IBodyProps, IBodyState> {
-  public state: IBodyState = {};
-  private state$ = new Subject<Partial<IBodyState>>();
-  private unmounted$ = new Subject<{}>();
+export class Body extends React.PureComponent<IBodyProps> {
+  private unmounted$ = new Subject();
 
   public static contextType = Context;
   public context!: t.IShellContext;
@@ -19,11 +16,6 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: IBodyProps) {
-    super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
   public componentDidMount() {
     this.model.changed$
       .pipe(takeUntil(this.unmounted$), debounceTime(0))
@@ -63,6 +55,6 @@ export class Body extends React.PureComponent<IBodyProps, IBodyState> {
         transition,
       }),
     };
-    return <div {...styles.base}>{this.model.el}</div>;
+    return <div {...css(styles.base, this.props.style)}>{this.model.el}</div>;
   }
 }

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
  * Manages state of a CLI program.
  */
 export type ICommandState = ICommandStateProps & {
-  dispose$: Observable<{}>;
+  dispose$: Observable<void>;
   events$: Observable<CommandStateEvent>;
   changed$: Observable<ICommandStateChanged>;
   invoke$: Observable<ICommandStateChanged>;
@@ -72,7 +72,7 @@ export type BeforeInvokeCommand<
 }) => Promise<Partial<t.IInvokeCommandArgs<P, A>>>;
 
 export type ICommandStateInvokeArgs = {
-  props?: {};
+  props?: Record<string, unknown>;
   args?: string | t.ICommandArgs;
   timeout?: number;
   stepIntoNamespace?: boolean;

@@ -31,7 +31,7 @@ export class InstallerConfirm extends React.PureComponent<
 > {
   public state: IInstallerConfirmState = {};
   private state$ = new Subject<Partial<IInstallerConfirmState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

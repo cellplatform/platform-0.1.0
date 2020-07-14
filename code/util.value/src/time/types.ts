@@ -12,7 +12,7 @@ export type TimeDelayPromise<T = any> = Promise<T> & {
   result: T | undefined;
 };
 
-export type TimeWait = (msecs: number | Observable<any>) => Promise<{}>;
+export type TimeWait = (msecs: number | Observable<any>) => Promise<unknown>;
 export type TimeElapsed = (
   from: DateInput,
   options?: { to?: DateInput; round?: number },

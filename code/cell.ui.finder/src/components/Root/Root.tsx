@@ -8,7 +8,7 @@ import { WindowTitleBar } from '../primitives';
 export type IRootProps = { style?: CssValue };
 
 export class Root extends React.PureComponent<IRootProps> {
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

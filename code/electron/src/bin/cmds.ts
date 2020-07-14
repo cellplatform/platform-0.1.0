@@ -3,7 +3,7 @@ import { log } from '@platform/log/lib/server';
 import { value } from '@platform/util.value';
 
 const { defaultValue } = value;
-const pkg = require('../../package.json') as { devDependencies: { [key: string]: string } };
+const pkg = require('../../package.json') as { devDependencies: { [key: string]: string } }; // eslint-disable-line
 
 /**
  * Runs the build command.

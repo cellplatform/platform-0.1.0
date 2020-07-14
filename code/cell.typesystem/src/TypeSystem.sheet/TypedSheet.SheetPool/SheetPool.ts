@@ -30,7 +30,7 @@ export class SheetPool implements t.ISheetPool {
   /**
    * [Fields]
    */
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   private _items: Items = {};
 
   public readonly dispose$ = this._dispose$.pipe(share());

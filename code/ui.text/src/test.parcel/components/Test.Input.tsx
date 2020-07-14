@@ -14,7 +14,7 @@ export type ITestInputState = { value?: string; isClickableEditing?: boolean };
 export class TestInput extends React.PureComponent<ITestInputProps, ITestInputState> {
   public state: ITestInputState = {};
   private state$ = new Subject<Partial<ITestInputState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private input$ = new Subject<t.TextInputEvent>();
 
   public inputs: TextInput[] = [];

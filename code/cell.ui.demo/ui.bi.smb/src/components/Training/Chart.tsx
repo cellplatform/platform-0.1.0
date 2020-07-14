@@ -55,7 +55,7 @@ export type IChartState = {};
 export class Chart extends React.PureComponent<IChartProps, IChartState> {
   public state: IChartState = {};
   private state$ = new Subject<Partial<IChartState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

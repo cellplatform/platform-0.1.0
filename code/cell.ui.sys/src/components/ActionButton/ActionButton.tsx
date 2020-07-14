@@ -22,7 +22,7 @@ export type IActionButtonState = {
 export class ActionButton extends React.PureComponent<IActionButtonProps, IActionButtonState> {
   public state: IActionButtonState = {};
   private state$ = new Subject<Partial<IActionButtonState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

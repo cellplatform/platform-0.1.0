@@ -19,7 +19,7 @@ type R<T, K extends keyof T> = t.ITypedSheetRow<T, K>;
  *    on the TypeName.
  *
  */
-export type ITypedSheet<T = {}> = {
+export type ITypedSheet<T = Record<string, unknown>> = {
   readonly ok: boolean;
   readonly uri: t.INsUri;
   readonly implements: t.INsUri;
@@ -27,7 +27,7 @@ export type ITypedSheet<T = {}> = {
   readonly state: t.ITypedSheetState;
   readonly changes: t.ITypedSheetChanges;
   readonly event$: t.Observable<t.TypedSheetEvent>;
-  readonly dispose$: t.Observable<{}>;
+  readonly dispose$: t.Observable<void>;
   readonly isDisposed: boolean;
   readonly errors: t.ITypeError[];
   readonly pool: t.ISheetPool;

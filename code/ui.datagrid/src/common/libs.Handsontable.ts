@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
-
 /**
  * Handsontable
  *  - https://github.com/handsontable/handsontable
@@ -22,8 +20,11 @@ import '@babel/polyfill/lib/noConflict';
  *    Imported via `require` statement as this causes less problems with
  *    JS bunders (parceljs) when importing this module externally.
  */
+
+/* eslint-disable */
 // @ts-ignore
 import Types from 'handsontable';
 const Lib = require('handsontable') as Types;
+/* eslint-enable */
 
 export const Handsontable = typeof Lib.default === 'function' ? Lib.default : Lib;

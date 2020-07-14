@@ -23,7 +23,7 @@ let IS_LOADED: { [key: string]: boolean } = {};
 /**
  * Resets the `load` cache.
  */
-export function reset() {
+export function reset(): void {
   IS_LOADED = {};
 }
 
@@ -32,7 +32,7 @@ export function reset() {
  * ability to walk up the file-hierarchy looking for
  * the first file match.
  */
-export async function load(options: IEnvLoadArgs = {}) {
+export async function load(options: IEnvLoadArgs = {}): Promise<void> {
   const { debug, file = '.env' } = options;
 
   // Exit if running on `zeit/now`.

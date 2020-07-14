@@ -9,7 +9,7 @@ export * from './TreeEvents/types';
  * A single node within the "tree"
  * (which is itself the root of a further branching tree).
  */
-export type ITreeNode<T extends string = string, D extends object = {}> = {
+export type ITreeNode<T extends string = string, D extends Record<string, unknown> = any> = {
   id: T;
   props?: ITreeNodeProps;
   children?: Array<ITreeNode<T, D>>;

@@ -1,5 +1,6 @@
-import * as styles from '../../styles';
-
+import { css, CssValue } from '@platform/css';
+import { containsFocus, events } from '@platform/react';
+import { value } from '@platform/util.value';
 import * as commands from 'prosemirror-commands';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
@@ -7,18 +8,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import {
-  constants,
-  containsFocus,
-  events,
-  CssValue,
-  css,
-  IEditorStyles,
-  markdown,
-  value,
-} from '../../common';
+import { constants, IEditorStyles, markdown, t } from '../../common';
+import * as styles from '../../styles';
 import * as plugins from './plugins';
-import * as t from './types';
 
 const CLASS = constants.CSS.CLASS;
 
@@ -81,7 +73,7 @@ export class TextEditor extends React.PureComponent<ITextEditorProps> {
   private _prevState: t.EditorState | undefined;
   private _prevSize: t.IEditorSize = { width: -1, height: -1 };
 
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private keypress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
 
   private _events$ = new Subject<t.TextEditorEvent>();

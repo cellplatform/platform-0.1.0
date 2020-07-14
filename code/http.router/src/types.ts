@@ -8,7 +8,7 @@ export type IRouterArgs = {
   body: t.BodyParser;
 };
 
-export type IRouter<C extends object = {}> = {
+export type IRouter<C extends Record<string, unknown> = any> = {
   readonly routes: IRoute<C>[];
   readonly handler: RouteHandler<C>;
   readonly wildcard: IRoute<C> | undefined;
@@ -24,7 +24,7 @@ export type RoutePath = string | string[];
 /**
  * Route (definition)
  */
-export type IRoute<C extends object = {}> = {
+export type IRoute<C extends Record<string, unknown> = any> = {
   readonly method: t.HttpMethod;
   readonly path: string;
   readonly handler: RouteHandler<C>;
@@ -36,7 +36,7 @@ export type IRoute<C extends object = {}> = {
 /**
  * Handler
  */
-export type RouteHandler<C extends object = {}> = (
+export type RouteHandler<C extends Record<string, unknown> = any> = (
   req: IRouteRequest,
   context: C,
 ) => Promise<IRouteResponse | undefined>;

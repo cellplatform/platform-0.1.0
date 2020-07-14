@@ -45,5 +45,7 @@ app
           default: false,
         });
     },
-    async (argv) => cmd.deploy.run({ target: 'now', force: argv.force, dry: argv.dry }),
+    async (argv) => {
+      cmd.deploy.run({ target: 'now', force: argv.force as boolean, dry: argv.dry });
+    },
   );

@@ -31,7 +31,7 @@ export async function importFiles(args: { db: t.IDb; dir: string }) {
     return item;
   };
 
-  const toItems = (file: object): t.IDbPutItem[] => {
+  const toItems = (file: Record<string, unknown>): t.IDbPutItem[] => {
     return Object.keys(file)
       .map((key) => ({ key, json: file[key] }))
       .filter(({ json }) => typeof json === 'object')

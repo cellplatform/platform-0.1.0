@@ -16,7 +16,7 @@ export type IFooState = {};
 export class Foo extends React.PureComponent<IFooProps, IFooState> {
   public state: IFooState = {};
   private state$ = new Subject<Partial<IFooState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

@@ -1,4 +1,4 @@
-import { color, css } from '@platform/css';
+import { color, css, CssValue } from '@platform/css';
 import { Hr, log } from '@platform/ui.dev';
 import { value } from '@platform/util.value';
 import * as React from 'react';
@@ -8,7 +8,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Button, COLORS, IButtonProps, ISwitchProps, Switch, SwitchTheme, t } from '../common';
 import { Icons } from './Icons';
 
-export type ITestProps = {};
+export type ITestProps = { style?: CssValue };
 export type ITestState = { isEnabled?: boolean; isChecked?: boolean };
 
 const PINK = '#CD638D';
@@ -20,7 +20,7 @@ orange.color.enabled = -0.7;
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<ITestState>();
 
   private button$ = new Subject<t.ButtonEvent>();
@@ -69,7 +69,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const margin = [null, 10, null, null];
 
     return (
-      <div {...styles.base}>
+      <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
           <Button margin={margin} label={'enabled'} onClick={this.enabledHandler(true)} />
           <Button margin={margin} label={'disabled'} onClick={this.enabledHandler(false)} />

@@ -1,1 +1,1 @@
-export type IFuncSys = {}; // TEMP 🐷
+export type IFuncSys = Record<string, unknown>; // 🐷 Placeholder.

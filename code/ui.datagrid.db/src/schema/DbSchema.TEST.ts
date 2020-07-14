@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { SyncSchema } from '.';
 
 describe('schema.db', () => {
-  const schema = SyncSchema.create({});
+  const schema = SyncSchema.create();
 
   it('toKey (derive type)', () => {
     const test = (key: any, expected: any) => {

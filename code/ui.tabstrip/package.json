@@ -1,34 +1,36 @@
 {
   "name": "@platform/ui.tabstrip",
-  "version": "0.1.84",
+  "version": "0.1.86",
   "description": "Visual tabstrip.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "ui": "ui $@",
-    "start": "ui start $@",
+    "start": "parcel src/test.parcel/index.html",
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build $@",
-    "build-test": "ts build --tsconfig=tsconfig.test $@",
+    "bundle": "sh script.sh/bundle.sh",
+    "clean": "sh script.sh/clean.sh",
+    "serve": "cd dist && serve",
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/react": "0.4.37",
+    "@platform/react": "0.4.39",
     "react-sortable-hoc": "1.11.0"
   },
   "devDependencies": {
-    "@platform/polyfill": "0.0.1",
+    "@platform/test": "0.1.14",
+    "@platform/ts": "3.9.5",
+    "@platform/ui.dev": "0.0.11",
+    "@platform/ui.icon": "0.0.156",
     "@types/react-sortable-hoc": "0.7.1",
-    "@uiharness/dev": "0.10.5",
-    "@uiharness/ui": "0.7.6"
+    "react-icons": "3.10.0"
   },
   "files": [
     "lib",
     "!lib/test",
-    "!*.TEST.{js, mjs, d.ts}",
-    "!*.INTEGRATION.{js, mjs, d.ts}"
+    "!lib/test.parcel",
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT"
 }

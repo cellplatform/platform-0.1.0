@@ -23,7 +23,7 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
   public context!: renderer.ReactContext;
   public state: IWindowsTestState = { current: { refs: [] } };
 
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public componentDidMount() {
     this.setState({
@@ -31,7 +31,7 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
     });
 
     const change$ = this.context.windows.change$.pipe(takeUntil(this.unmounted$));
-    change$.subscribe(e => {
+    change$.subscribe((e) => {
       this.setState({ current: e.state });
     });
   }
@@ -84,7 +84,7 @@ export class WindowsTest extends React.PureComponent<IWindowsTestProps, IWindows
     const current = this.state.current;
     const focused = current.focused;
     const tags = current.refs
-      .map(ref => ref.tags.map(item => `${item.tag}=${item.value || 'undefined'}`))
+      .map((ref) => ref.tags.map((item) => `${item.tag}=${item.value || 'undefined'}`))
       .flat();
     return {
       ...this.state.current,

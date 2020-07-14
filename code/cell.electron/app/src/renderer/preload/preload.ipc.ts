@@ -14,7 +14,7 @@ export function init(args: { def: string; cache: t.IEnv['cache']; event$: Subjec
   const fire = (e: t.AppEvent) => event$.next(e);
   const isIpcEvent = (e: t.Event) => e.type.startsWith(IPC.EVENT_PREFIX);
 
-  // Listen for global variables being broadcast through the electron IPC channels.
+  // Listen for global events being broadcast through the electron IPC channels.
   const ipc$ = new Subject<t.IpcEvent>();
   ipcRenderer.on(IPC.CHANNEL, (ipc, event: t.IpcEvent) => ipc$.next(event));
 
@@ -31,14 +31,14 @@ export function init(args: { def: string; cache: t.IEnv['cache']; event$: Subjec
     });
 
   // Finish up.
-  ferryIpcEventsToBus({ def, ipc$, fire });
+  ferryIpcEventsToLocalBus({ def, ipc$, fire });
 }
 
 /**
  * [Helpers]
  */
 
-function ferryIpcEventsToBus(args: {
+function ferryIpcEventsToLocalBus(args: {
   def: string;
   ipc$: Observable<t.IpcEvent>;
   fire: (e: t.AppEvent) => void;
@@ -49,19 +49,17 @@ function ferryIpcEventsToBus(args: {
     console.log('🌼 preload | ipc event:', e); // TEMP 🐷
   });
 
+  /**
+   * Listen for changed sheets on other processes.
+   */
   ipc$
     .pipe(
       filter((e) => e.type === 'IPC/sheet/changed'),
       map((e) => e.payload as t.IpcSheetChanged),
       filter((e) => e.source !== args.def),
     )
-    .subscribe((e) => fire({ type: 'SHEET/sync', payload: { ns: e.ns, changes: e.changes } }));
-
-  // ipc$
-  //   .pipe(
-  //     filter((e) => e.type === 'IPC/debug'),
-  //     map((e) => e.payload as t.IpcDebug),
-  //     filter((e) => e.source !== args.def),
-  //   )
-  //   .subscribe((e) => fire({ type: 'SHEET/sync', payload: { ns: e.ns, changes: e.changes } }));
+    .subscribe((e) => {
+      const { ns, changes } = e;
+      fire({ type: 'SHEET/sync', payload: { ns, changes } });
+    });
 }

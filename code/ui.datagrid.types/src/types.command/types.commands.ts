@@ -52,7 +52,7 @@ export type IGridStyleCommand = IGridCommand<GridStyleCommand>;
 /**
  * Event Payload
  */
-export type IGridCommand<C = GridCommand, P = {}> = {
+export type IGridCommand<C = GridCommand, P = Record<string, unknown>> = {
   command: C;
   grid: t.IGrid;
   selection: t.IGridSelection;

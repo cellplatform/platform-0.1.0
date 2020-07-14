@@ -1,4 +1,6 @@
-import { constants, style, t } from '../common';
+import { style } from '@platform/css';
+
+import { constants, t } from '../common';
 import * as markdown from './markdown.css';
 
 const CLASS = constants.CSS.CLASS;

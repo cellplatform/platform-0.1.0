@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
+import { css } from '@platform/css';
+import * as s from 'react-sortable-hoc';
 
-import { css, s, t } from '../../common';
+import { t } from '../../common';
 
 export type IElement<V = any> = s.SortableElementProps & { value: V; tabIndex: number };
 export type IContainer<V = any> = s.SortableContainerProps & { items: V[] };

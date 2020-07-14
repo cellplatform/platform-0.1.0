@@ -21,7 +21,7 @@ export type IAppState = {};
 export class App extends React.PureComponent<IAppProps, IAppState> {
   public state: IAppState = {};
   private state$ = new Subject<Partial<IAppState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

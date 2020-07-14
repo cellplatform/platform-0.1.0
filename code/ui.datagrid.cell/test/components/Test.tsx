@@ -8,12 +8,12 @@ import { TestCellEditor } from './Test.CellEditor';
 
 export class Test extends React.PureComponent<{}, t.ITestState> {
   public state: t.ITestState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
   private events$ = new Subject<t.CellEditorEvent>();
   private cli: t.ICommandState = cli.init({
     state$: this.state$,
-    getEditorViews: () => this.instances.map(el => el.editor),
+    getEditorViews: () => this.instances.map((el) => el.editor),
   });
 
   private instances: TestCellEditor[] = [];
@@ -25,26 +25,26 @@ export class Test extends React.PureComponent<{}, t.ITestState> {
   public componentDidMount() {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
-    events$.subscribe(e => {
+    events$.subscribe((e) => {
       console.log('🌳', e.type, e.payload);
     });
 
     const changing$ = events$.pipe(
-      filter(e => e.type === 'CELL_EDITOR/changing'),
-      map(e => e.payload as t.ICellEditorChanging),
+      filter((e) => e.type === 'CELL_EDITOR/changing'),
+      map((e) => e.payload as t.ICellEditorChanging),
     );
     const changed$ = events$.pipe(
-      filter(e => e.type === 'CELL_EDITOR/changed'),
-      map(e => e.payload as t.ICellEditorChanged),
+      filter((e) => e.type === 'CELL_EDITOR/changed'),
+      map((e) => e.payload as t.ICellEditorChanged),
     );
 
-    changing$.subscribe(e => {
+    changing$.subscribe((e) => {
       // e.cancel();
     });
 
-    changed$.subscribe(e => {
+    changed$.subscribe((e) => {
       //
     });
   }

@@ -4,7 +4,10 @@ import { filter, map } from 'rxjs/operators';
 
 import { t } from '../common';
 
-export function init(events$: Observable<t.ShellEvent>, dispose$: Observable<{}>): t.IShellEvents {
+export function init(
+  events$: Observable<t.ShellEvent>,
+  dispose$: Observable<void>,
+): t.IShellEvents {
   const tree$ = events$.pipe(
     filter((e) => e.type.startsWith('TREEVIEW/')),
     map((e) => e as t.TreeViewEvent),

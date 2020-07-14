@@ -4,7 +4,7 @@ import { filter, share, takeUntil, map } from 'rxjs/operators';
 import { t } from '../../common';
 
 type S = t.ITypedSheet;
-type W = { sheet: t.ITypedSheet; stop$: Subject<{}>; refs: t.ITypedSheetRefs<any, any>[] };
+type W = { sheet: t.ITypedSheet; stop$: Subject<void>; refs: t.ITypedSheetRefs<any, any>[] };
 
 /**
  * Monitors changes in sheet(s).
@@ -64,7 +64,7 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
   /**
    * [Fields]
    */
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   private readonly _event$ = new Subject<t.TypedSheetEvent>();
   private _watching: W[] = [];
 
@@ -99,7 +99,7 @@ export class ChangeMonitor implements t.ITypedSheetChangeMonitor {
     return this;
   }
   private _watch(sheet: S) {
-    const stop$ = new Subject<{}>();
+    const stop$ = new Subject<void>();
     sheet.event$.pipe(takeUntil(this.dispose$), takeUntil(stop$)).subscribe((e) => this.fire(e));
     sheet.dispose$.pipe(takeUntil(this.dispose$)).subscribe(() => this.unwatch(sheet));
     this._watching = [...this._watching, { sheet, stop$, refs: [] }];

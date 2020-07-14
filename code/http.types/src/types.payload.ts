@@ -8,7 +8,7 @@ export type IHttpRequestPayload = {
   method: t.HttpMethod;
   mode?: t.HttpCors;
   headers?: t.IHttpHeaders;
-  data?: object | string;
+  data?: Record<string, unknown> | string;
 };
 
 /**
@@ -42,5 +42,5 @@ export type IHttpRespondPayload = {
   status: number;
   statusText?: string;
   headers?: t.IHttpHeaders;
-  data?: ReadableStream<Uint8Array> | object | string;
+  data?: ReadableStream<Uint8Array> | Record<string, unknown> | string;
 };

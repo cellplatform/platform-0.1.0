@@ -1,4 +1,5 @@
-import { color, t } from '../common';
+import { color } from '@platform/css';
+import { t } from '../common';
 
 /**
  * Globally assigned styles for the ProseMirror editor content.

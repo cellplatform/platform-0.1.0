@@ -31,7 +31,7 @@ export class Shell implements t.IShell {
   public readonly state: t.IShellState = state.shell.create();
   public defaultModule: string;
 
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.ShellEvent>();
@@ -52,18 +52,18 @@ export class Shell implements t.IShell {
   public get progress() {
     const api = {
       start: (options: { duration?: number; color?: string } = {}) => {
-        return new Promise<{}>((resolve) => {
+        return new Promise<void>((resolve) => {
           const { duration, color } = options;
           timer(duration)
             .pipe(takeUntil(this.events.progress.complete$))
             .subscribe((e) => {
               api.complete();
-              resolve({});
+              resolve();
             });
           this.fire({ type: 'SHELL/progress/start', payload: { duration, color } });
         });
       },
-      complete: () => this.fire({ type: 'SHELL/progress/complete', payload: {} }),
+      complete: () => this.fire({ type: 'SHELL/progress/complete', payload: { success: true } }),
     };
     return api;
   }
@@ -96,9 +96,12 @@ export class Shell implements t.IShell {
     return this.register(moduleId, importer, options);
   };
 
-  public async load<P = {}>(moduleId: string | number, options: t.IShellLoadOptions<P> = {}) {
+  public async load<P = Record<string, unknown>>(
+    moduleId: string | number,
+    options: t.IShellLoadOptions<P> = {},
+  ) {
     this.throwIfDisposed('load');
-    const { props, progress, simulateLatency } = options;
+    const { props = {}, progress, simulateLatency } = options;
     const loadCount = this.loader.count(moduleId);
     const showProgress = typeof progress === 'number' && loadCount < 1;
 

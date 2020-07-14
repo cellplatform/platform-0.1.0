@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, COLORS, defaultValue, t } from '../../common';
+
+import { color, COLORS, css, CssValue, defaultValue, t } from '../../common';
 import { PropListItem } from './PropList.Item';
 
 export type IPropListProps = {
@@ -9,35 +8,21 @@ export type IPropListProps = {
   items?: (t.IPropListItem | undefined)[];
   style?: CssValue;
 };
-export type IPropListState = {};
 
-export class PropList extends React.PureComponent<IPropListProps, IPropListState> {
-  public state: IPropListState = {};
-  private state$ = new Subject<Partial<IPropListState>>();
-  private unmounted$ = new Subject<{}>();
-
+export class PropList extends React.PureComponent<IPropListProps> {
   public static Hr = (props: { color?: string | number } = {}) => {
-    const styles = {
-      base: css({
-        height: 1,
-        borderTop: `solid 4px ${color.format(defaultValue(props.color, -0.1))}`,
-        MarginY: 15,
-      }),
-    };
-    return <div {...styles.base} />;
+    const style = css({
+      height: 1,
+      borderTop: `solid 4px ${color.format(defaultValue(props.color, -0.1))}`,
+      MarginY: 15,
+    });
+    return <div {...style} />;
   };
 
-  /**
-   * [Lifecycle]
-   */
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
+  public static Space = (props: { height?: number }) => {
+    const style = css({ height: defaultValue(props.height, 20) });
+    return <div {...style} />;
+  };
 
   /**
    * [Render]

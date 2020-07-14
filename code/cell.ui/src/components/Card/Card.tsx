@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, defaultValue } from '../../common';
+import { color, css, CssValue, defaultValue } from '../../common';
 
 export type ICardProps = {
   children?: React.ReactNode;
@@ -14,29 +12,8 @@ export type ICardProps = {
   userSelect?: string | boolean;
   style?: CssValue;
 };
-export type ICardState = {};
 
-export class Card extends React.PureComponent<ICardProps, ICardState> {
-  public state: ICardState = {};
-  private state$ = new Subject<Partial<ICardState>>();
-  private unmounted$ = new Subject<{}>();
-
-  /**
-   * [Lifecycle]
-   */
-  constructor(props: ICardProps) {
-    super(props);
-  }
-
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
-
+export class Card extends React.PureComponent<ICardProps> {
   /**
    * [Properties]
    */

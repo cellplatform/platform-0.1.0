@@ -10,7 +10,7 @@ import { Child } from './Test.Child';
 export type ITestProps = {};
 
 export class Test extends React.PureComponent<ITestProps> {
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private cli!: t.ICommandState;
 
   /**

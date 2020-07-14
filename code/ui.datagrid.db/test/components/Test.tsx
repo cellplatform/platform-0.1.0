@@ -38,7 +38,7 @@ export type ITestState = t.ITestState & {
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = { showDebug: storage.showDebug };
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private grid$ = new Subject<t.GridEvent>();
   private sync$ = new Subject<t.SyncEvent>();
@@ -69,29 +69,29 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const sync$ = this.sync$.pipe(takeUntil(this.unmounted$));
 
     // Update state.
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     // Store values in local-storage.
     state$
       .pipe(distinctUntilChanged((prev, next) => prev.showDebug === next.showDebug))
-      .subscribe(e => {
+      .subscribe((e) => {
         this.datagrid.redraw();
         storage.showDebug = this.state.showDebug || false;
       });
 
     // Events.
-    sync$.subscribe(e => {
+    sync$.subscribe((e) => {
       // console.log('🌳', e.type, e.payload);
     });
 
-    sync$.pipe(filter(e => e.type !== 'SYNC/change')).subscribe(e => {
+    sync$.pipe(filter((e) => e.type !== 'SYNC/change')).subscribe((e) => {
       log.info('🌳', e.type, e.payload);
     });
 
     sync$
       // Update debug state after changes.
       .pipe(debounceTime(200))
-      .subscribe(e => this.updateState());
+      .subscribe((e) => this.updateState());
 
     // Setup syncer.
     const db = this.db;
@@ -121,7 +121,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public async updateState() {
     const processDbValues = (obj: object) => {
-      Object.keys(obj).map(key => {
+      Object.keys(obj).map((key) => {
         const MAX = 15;
         const value = obj[key];
         if (typeof value === 'string' && value.length > MAX) {
@@ -131,7 +131,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
 
     const processGridValues = (values: object) => {
-      Object.keys(values).map(key => {
+      Object.keys(values).map((key) => {
         const hash = values[key] ? (values[key] as any).hash : undefined;
         if (hash) {
           (values[key] as any).hash = `${hash.substring(0, 15)}..`;
@@ -235,7 +235,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     );
   }
 
-  private factory: t.GridFactory = req => {
+  private factory: t.GridFactory = (req) => {
     switch (req.type) {
       case 'EDITOR':
         return <CellEditor />;

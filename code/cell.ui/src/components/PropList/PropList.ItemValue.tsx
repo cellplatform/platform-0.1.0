@@ -24,7 +24,7 @@ export class PropListItemValue extends React.PureComponent<
 > {
   public state: IPropListItemValueState = {};
   private state$ = new Subject<Partial<IPropListItemValueState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

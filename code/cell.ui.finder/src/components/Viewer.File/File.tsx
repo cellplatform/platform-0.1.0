@@ -21,7 +21,7 @@ export type IViewerState = {
 export class Viewer extends React.PureComponent<IViewerProps, IViewerState> {
   public state: IViewerState = {};
   private state$ = new Subject<Partial<IViewerState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

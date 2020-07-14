@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, defaultValue } from '../../common';
-import { parseError, parseComponentStack } from './util';
+import { color, css, CssValue, defaultValue, t } from '../../common';
+import { parseComponentStack, parseError } from './util';
 
 const PINK = '#FE0168';
 
@@ -14,28 +12,10 @@ export type IErrorViewProps = {
   showStack?: boolean;
   style?: CssValue;
 };
-export type IErrorViewState = {};
 
-export class ErrorView extends React.Component<IErrorViewProps, IErrorViewState> {
+export class ErrorView extends React.Component<IErrorViewProps> {
   public static parseError = parseError;
   public static parseComponentStack = parseComponentStack;
-
-  public state: IErrorViewState = {};
-  private state$ = new Subject<Partial<IErrorViewState>>();
-  private unmounted$ = new Subject<{}>();
-
-  /**
-   * [Lifecycle]
-   */
-
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
 
   /**
    * [Properties]

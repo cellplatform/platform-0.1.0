@@ -29,7 +29,7 @@ export type IGridReadyEvent = {
 
 export type IGridRedrawEvent = {
   type: 'GRID/redraw';
-  payload: {};
+  payload: { redraw: true };
 };
 
 /**

@@ -30,7 +30,7 @@ export type TemplateFilter = (file: ITemplateFile) => boolean;
 /**
  * [MIDDLEWARE]
  */
-export type TemplateMiddleware<V extends ITemplateVariables = {}> = (
+export type TemplateMiddleware<V extends ITemplateVariables = Record<string, unknown>> = (
   req: ITemplateRequest<V>,
   res: ITemplateResponse,
 ) => any | Promise<any>;
@@ -39,7 +39,7 @@ export type TemplatePathFilter = RegExp;
 /**
  * Middleware: [Request]
  */
-export type ITemplateRequest<V extends ITemplateVariables = {}> = {
+export type ITemplateRequest<V extends ITemplateVariables = Record<string, unknown>> = {
   path: {
     source: string;
     target: string;

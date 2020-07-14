@@ -3,7 +3,6 @@ import * as pull from './cmd.pull';
 import * as push from './cmd.push';
 import * as release from './cmd.release';
 import * as status from './cmd.status';
-// import { cli } from './common';
 
 import { cli as cliLib } from '@platform/cli';
 
@@ -46,7 +45,9 @@ cli
         });
     },
     async (argv) => {
-      const { v: version, push, manifest } = argv;
+      const version = argv.v as string;
+      const push = argv.push as boolean;
+      const manifest = argv.manifest as boolean;
       return bundle.run({ cli, version, push, manifest });
     },
   )

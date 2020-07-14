@@ -19,7 +19,7 @@ export type ITestCommandPromptProps = {};
 
 export class TestCommandPrompt extends React.PureComponent<ITestCommandPromptProps, t.ITestState> {
   public state: t.ITestState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
   private events$ = new Subject<t.CommandPromptEvent>();
   private cli = cli.init({ state$: this.state$, getState: () => this.state });
@@ -34,10 +34,10 @@ export class TestCommandPrompt extends React.PureComponent<ITestCommandPromptPro
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const cli$ = this.cli.events$.pipe(takeUntil(this.unmounted$));
 
-    cli$.subscribe(e => {
+    cli$.subscribe((e) => {
       log.info('🌳', e.type, e.payload);
     });
   }

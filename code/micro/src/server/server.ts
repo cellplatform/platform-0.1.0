@@ -125,7 +125,11 @@ export function create(
   /**
    * Stop the running micro [Service].
    */
-  const stop: t.IMicro['stop'] = async () => (api.service ? api.service.stop() : {});
+  const stop: t.IMicro['stop'] = async () => {
+    if (api.service) {
+      await api.service.stop();
+    }
+  };
 
   // Finish up.
   const api: t.IMicro = { events$, request$, response$, server, router, handler, start, stop };

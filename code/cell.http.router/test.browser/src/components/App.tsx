@@ -10,7 +10,7 @@ export type IAppState = {};
 export class App extends React.PureComponent<IAppProps, IAppState> {
   public state: IAppState = {};
   private state$ = new Subject<Partial<IAppState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]
@@ -20,7 +20,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   }
 
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     const s = init();
   }

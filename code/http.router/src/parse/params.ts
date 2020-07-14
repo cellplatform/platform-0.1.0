@@ -3,7 +3,10 @@ import { t, value } from '../common';
 /**
  * Parse URL parameters.
  */
-export function params<T extends object>(args: { route: t.IRoute; path: string }): T {
+export function params<T extends Record<string, unknown>>(args: {
+  route: t.IRoute;
+  path: string;
+}): T {
   const { route } = args;
   const { regex, keys } = route;
 

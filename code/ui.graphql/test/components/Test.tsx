@@ -71,7 +71,7 @@ export type ITestState = {
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<GraphqlEditorEvent>();
 
@@ -82,10 +82,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
 
-    events$.subscribe(e => {
+    events$.subscribe((e) => {
       console.log('🌳 EVENT', e);
     });
 

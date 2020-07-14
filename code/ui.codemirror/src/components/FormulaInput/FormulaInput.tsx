@@ -1,9 +1,13 @@
+import { css, CssValue, style } from '@platform/css';
+import { events } from '@platform/react';
+import { is } from '@platform/util.is';
+import { value as valueUtil } from '@platform/util.value';
 import * as React from 'react';
 import { Controlled as CodeMirrorControlled } from 'react-codemirror2';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { constants, css, CssValue, events, is, style, t, value as valueUtil } from '../../common';
+import { constants, t } from '../../common';
 
 /**
  * For more syntax modes, see:
@@ -40,7 +44,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
    * [Fields]
    */
   public state: IFormulaInputState = { isLoaded: false };
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IFormulaInputState>>();
 
   private editor: CodeMirror.Editor;
@@ -251,10 +255,10 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
   private focusHandler = (isFocused: boolean) => {
     return () => {
       if (isFocused) {
-        this.fire({ type: 'INPUT/formula/focus', payload: {} });
+        this.fire({ type: 'INPUT/formula/focus', payload: { focus: true } });
       }
       if (!isFocused) {
-        this.fire({ type: 'INPUT/formula/blur', payload: {} });
+        this.fire({ type: 'INPUT/formula/blur', payload: { focus: false } });
       }
     };
   };

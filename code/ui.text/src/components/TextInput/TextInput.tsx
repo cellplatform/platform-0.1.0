@@ -1,25 +1,14 @@
+import { css, CssValue } from '@platform/css';
+import { MeasureSize, mouse } from '@platform/react';
+import { defaultValue, time } from '@platform/util.value';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { R, t, toTextCss } from '../../common';
 import { Text } from '../Text';
-import {
-  // css,
-  // CssValue,
-  // MeasureSize,
-  // mouse,
-  R,
-  t,
-  // time,
-  toTextCss,
-  // defaultValue,
-} from '../../common';
 import { DEFAULT_TEXT_STYLE, HtmlInput, IInputValue } from './TextInput.Html';
 import { toTextInputCss } from './util';
-
-import { time, defaultValue } from '@platform/util.value';
-import { MeasureSize, mouse } from '@platform/react';
-import { css, CssValue } from '@platform/css';
 
 const DEFAULT = {
   VALUE_STYLE: DEFAULT_TEXT_STYLE,
@@ -39,7 +28,7 @@ export type ITextInputProps = t.ITextInputFocusAction &
     minWidth?: number;
     maxWidth?: number;
     autoSize?: boolean;
-    placeholder?: string | React.ReactElement<{}>;
+    placeholder?: string | React.ReactElement;
     valueStyle?: t.ITextInputStyle;
     placeholderStyle?: t.ITextInputStyle;
     spellCheck?: boolean;
@@ -74,7 +63,7 @@ export class TextInput extends React.PureComponent<ITextInputProps, ITextInputSt
    * [Fields]
    */
   public state: ITextInputState = { width: toInitialWidth(this.props) };
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITextInputState>>();
   private events$ = new Subject<t.TextInputEvent>();
   private mouse = mouse.fromProps(this.props, {

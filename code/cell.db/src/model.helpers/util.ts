@@ -17,7 +17,10 @@ export function toChanges(uri: string, changes: t.IModelChanges<any, any>): t.ID
  *    This is a convenience method useful for model types that have
  *    a nested `.props` object on `model.props`.
  */
-export function setProps<P extends object = {}>(model: t.IModel<M<P>>, props?: Partial<P>) {
+export function setProps<P extends Record<string, unknown> = any>(
+  model: t.IModel<M<P>>,
+  props?: Partial<P>,
+) {
   if (props) {
     model.set({
       props: util.squash.object({ ...(model.props.props || {}), ...props }) as P,
@@ -25,4 +28,4 @@ export function setProps<P extends object = {}>(model: t.IModel<M<P>>, props?: P
   }
   return model;
 }
-type M<P extends object = {}> = { props?: P };
+type M<P extends Record<string, unknown> = any> = { props?: P };

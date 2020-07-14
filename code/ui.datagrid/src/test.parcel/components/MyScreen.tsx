@@ -1,37 +1,11 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, color, COLORS, CssValue, ObjectView } from '../common';
+import { color, COLORS, css, CssValue, ObjectView } from '../common';
 
 export type IMyScreenProps = {
   style?: CssValue;
 };
-export type IMyScreenState = {};
 
-export class MyScreen extends React.PureComponent<IMyScreenProps, IMyScreenState> {
-  public state: IMyScreenState = {};
-  private state$ = new Subject<Partial<IMyScreenState>>();
-  private unmounted$ = new Subject<{}>();
-
-  // public static contextType = cell.Context;
-  // public context!: t.IEnvContext;
-
-  /**
-   * [Lifecycle]
-   */
-  constructor(props: IMyScreenProps) {
-    super(props);
-  }
-
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
-
+export class MyScreen extends React.PureComponent<IMyScreenProps> {
   /**
    * [Render]
    */

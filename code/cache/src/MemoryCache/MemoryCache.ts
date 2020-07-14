@@ -8,7 +8,7 @@ type CacheValues = { [key: string]: CacheItem<any> };
 
 type CacheItem<V> = {
   value?: V;
-  put$: Subject<{}>;
+  put$: Subject<void>;
 };
 
 export class MemoryCache<K extends string = string> implements t.IMemoryCache<K> {

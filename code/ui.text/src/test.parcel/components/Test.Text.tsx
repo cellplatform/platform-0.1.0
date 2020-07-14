@@ -1,10 +1,8 @@
 import { color, css, CssValue } from '@platform/css';
 import { log } from '@platform/ui.dev';
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
-import { Text, ITextProps } from '../..';
+import { ITextProps, Text } from '../..';
 
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
@@ -12,25 +10,8 @@ const LOREM =
 const logEvent = (event: string) => (e: any) => log.info(event, e);
 
 export type ITestTextProps = { style?: CssValue };
-export type ITestTextState = {};
 
-export class TestText extends React.PureComponent<ITestTextProps, ITestTextState> {
-  public state: ITestTextState = {};
-  private unmounted$ = new Subject<{}>();
-  private state$ = new Subject<Partial<ITestTextState>>();
-
-  /**
-   * [Lifecycle]
-   */
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
-
+export class TestText extends React.PureComponent<ITestTextProps> {
   /**
    * [Render]
    */

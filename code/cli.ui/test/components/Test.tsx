@@ -14,7 +14,7 @@ export type ITestState = { view?: View };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
 
   /**
@@ -22,7 +22,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public componentWillMount() {
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => {
+    state$.subscribe((e) => {
       this.setState(e, () => {
         localStorage.setItem(STORAGE.VIEW, this.view);
       });

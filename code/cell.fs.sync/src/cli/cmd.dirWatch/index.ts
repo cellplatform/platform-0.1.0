@@ -1,7 +1,7 @@
 import { t } from '../common';
 import { dirWatch } from './dirWatch';
 
-export type ISyncWatchArgs = {};
+export type ISyncWatchArgs = Record<string, unknown>;
 
 export const init: t.CmdPluginsInit = (cli) => {
   const handler: t.CmdPluginHandler<ISyncWatchArgs> = async (e) => {

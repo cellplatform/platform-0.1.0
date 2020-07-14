@@ -15,7 +15,7 @@ export class FinderShellView extends React.PureComponent<
 > {
   public state: IFinderShellViewState = {};
   private state$ = new Subject<Partial<IFinderShellViewState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

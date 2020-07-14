@@ -78,7 +78,7 @@ export type IScreen<M extends t.IpcMessage = any, S extends t.SettingsJson = any
   readonly type: string;
   readonly window: BrowserWindow;
   readonly tags: t.IWindowTag[];
-  readonly dispose$: Observable<{}>;
+  readonly dispose$: Observable<void>;
   readonly events$: Observable<ScreenEvent>;
   readonly change$: Observable<IScreenChange>;
   readonly closed$: Observable<IScreenChange>;

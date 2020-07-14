@@ -39,7 +39,7 @@ export class Sync implements t.IDisposable {
     changingByGrid: flags<{ key: string; part: GridPart }>(),
   };
 
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.SyncEvent>();
@@ -56,7 +56,7 @@ export class Sync implements t.IDisposable {
     // Store refs;
     this.db = db;
     this.grid = grid;
-    this.schema = args.schema || SyncSchema.create({});
+    this.schema = args.schema || SyncSchema.create();
 
     // Bubble events.
     const bubble$ = args.events$;

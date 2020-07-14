@@ -41,7 +41,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
   public static mouseState(
     props: mouse.IMouseEventProps,
     state$: Subject<{ isDown?: boolean; isOver?: boolean }>,
-    unmounted$: Observable<{}>,
+    unmounted$: Observable<void>,
     getEnabled: () => boolean,
   ) {
     const res = mouse.fromProps(props, {
@@ -66,7 +66,7 @@ export class Button extends React.PureComponent<IButtonProps, IButtonState> {
    * [Fields]
    */
   public state: IButtonState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject<void>();
   private state$ = new Subject<IButtonState>();
   private events$ = new Subject<t.ButtonEvent>();
   private mouse: mouse.IMouseHandlers;

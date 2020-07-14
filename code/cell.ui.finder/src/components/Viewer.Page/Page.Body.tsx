@@ -15,7 +15,7 @@ export type IPageBodyState = {};
 export class PageBody extends React.PureComponent<IPageBodyProps, IPageBodyState> {
   public state: IPageBodyState = {};
   private state$ = new Subject<Partial<IPageBodyState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

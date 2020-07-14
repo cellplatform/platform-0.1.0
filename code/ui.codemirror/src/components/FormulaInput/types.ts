@@ -37,11 +37,11 @@ export type IFormulaInputTabEvent = {
 
 export type IFormulaInputFocusEvent = {
   type: 'INPUT/formula/focus';
-  payload: {};
+  payload: { focus: true };
 };
 export type ICodeMirrorFormulaBlurEvent = {
   type: 'INPUT/formula/blur';
-  payload: {};
+  payload: { focus: false };
 };
 
 export type IFormulaInputEnterEvent = {

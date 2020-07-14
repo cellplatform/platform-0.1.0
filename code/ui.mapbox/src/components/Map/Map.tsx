@@ -10,7 +10,7 @@
  */
 
 import '../../styles';
-const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
+const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js'); // eslint-disable-line
 
 import * as React from 'react';
 import { Subject } from 'rxjs';
@@ -33,7 +33,7 @@ export type IMapState = {};
 export class Map extends React.PureComponent<IMapProps, IMapState> {
   public state: IMapState = {};
   private state$ = new Subject<Partial<IMapState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   private map: mapboxgl.Map;
   private el!: HTMLDivElement;

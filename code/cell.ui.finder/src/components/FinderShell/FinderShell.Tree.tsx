@@ -9,7 +9,7 @@ import { TreeView } from '../primitives';
 export type IFinderShellTreeProps = { style?: CssValue };
 
 export class FinderShellTree extends React.PureComponent<IFinderShellTreeProps> {
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private tree$ = new Subject<t.TreeViewEvent>();
 
   public static contextType = ui.Context;

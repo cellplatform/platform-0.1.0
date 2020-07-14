@@ -3,10 +3,10 @@ import * as React from 'react';
 export * from './theme/types';
 import { IPropsTheme } from './theme/types';
 
-export type PropsData = object | PropArray;
+export type PropsData = Record<string, unknown> | PropArray;
 export type PropScalar = string | boolean | number | null | undefined;
-export type PropArray = Array<PropScalar | object>;
-export type PropValue = PropScalar | PropArray | object | Function; // eslint-disable-line
+export type PropArray = Array<PropScalar | Record<string, unknown>>;
+export type PropValue = PropScalar | PropArray | Record<string, unknown> | Function; // eslint-disable-line
 
 export type PropDataObjectType = 'object' | 'array';
 export type PropObjectType = PropDataObjectType | 'function';

@@ -15,12 +15,9 @@ DARK.header = {
 export type ITreeProps = {
   tree$: Subject<t.TreeViewEvent>;
 };
-export type ITreeState = {};
 
-export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
-  public state: ITreeState = {};
-  private state$ = new Subject<Partial<ITreeState>>();
-  private unmounted$ = new Subject<{}>();
+export class Tree extends React.PureComponent<ITreeProps> {
+  private unmounted$ = new Subject();
 
   public static contextType = Context;
   public context!: t.IShellContext;
@@ -28,11 +25,6 @@ export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
   /**
    * [Lifecycle]
    */
-  constructor(props: ITreeProps) {
-    super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
   public componentDidMount() {
     this.model.changed$
       .pipe(takeUntil(this.unmounted$), debounceTime(0))

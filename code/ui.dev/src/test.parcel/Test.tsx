@@ -2,9 +2,8 @@ import * as React from 'react';
 import { css, CssValue, ObjectView } from '..';
 
 export type ITestProps = { style?: CssValue };
-export type ITestState = {};
 
-export class Test extends React.PureComponent<ITestProps, ITestState> {
+export class Test extends React.PureComponent<ITestProps> {
   public render() {
     const styles = {
       base: css({

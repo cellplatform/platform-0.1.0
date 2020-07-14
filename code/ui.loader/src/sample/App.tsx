@@ -7,16 +7,12 @@ export class App extends React.PureComponent {
   /**
    * [Lifecycle]
    */
-  constructor(props: {}) {
-    super(props);
-
+  public async componentDidMount() {
     log.group('LoadShell');
     log.info('dev', is.dev);
     log.info('loadDelay', this.loadDelay);
     log.groupEnd();
-  }
 
-  public async componentDidMount() {
     // 🐷 SAMPLE: Configure after component mounted.
     //
     // const foo = await loader.load('foo');

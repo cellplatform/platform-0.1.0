@@ -61,14 +61,14 @@ export type IWindowChange = {
 
 export type IWindowsRefreshEvent = {
   type: '@platform/WINDOWS/refresh';
-  payload: {};
+  payload: Record<string, undefined>; // NB: Placeholder {object}.
 };
 
 export type IWindowsGetEvent = {
   type: '@platform/WINDOWS/get';
-  payload: {};
+  payload: Record<string, undefined>; // NB: Placeholder {object}.
 };
-export type IWindowsGetResponse = IWindowsState & {};
+export type IWindowsGetResponse = IWindowsState;
 
 export type IWindowsTagEvent = {
   type: '@platform/WINDOWS/tag';

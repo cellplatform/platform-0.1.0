@@ -20,7 +20,7 @@ export function toggleProp<P extends Props, K extends keyof P>(args: {
 }): P | undefined {
   const props = args.props || {};
   const field = args.field as string;
-  const section = (props[args.section as string] || {}) as {};
+  const section = (props[args.section as string] || {}) as Record<string, unknown>;
   const value = section[field] === undefined ? args.defaults[field] : section[field];
 
   if (!(value === undefined || typeof value === 'boolean')) {

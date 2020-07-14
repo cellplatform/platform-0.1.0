@@ -30,7 +30,9 @@ export type ITemplateArgs = {
   processors?: TemplateMiddleware[];
 };
 
-export type Handler<V extends ITemplateVariables = {}> = TemplateMiddleware<V> & {
+export type Handler<V extends ITemplateVariables = Record<string, unknown>> = TemplateMiddleware<
+  V
+> & {
   pathFilters?: TemplatePathFilter[];
 };
 
@@ -49,7 +51,7 @@ export class Template {
   /**
    * Fields.
    */
-  private readonly _disposed$ = new Subject();
+  private readonly _disposed$ = new Subject<void>();
   private readonly _events$ = new Subject<ITemplateEvent>();
 
   public isDisposed = false;
@@ -136,12 +138,14 @@ export class Template {
   /**
    * Register a template processor.
    */
-  public use<V extends ITemplateVariables = {}>(fn: TemplateMiddleware<V>): Template;
+  public use<V extends ITemplateVariables = Record<string, unknown>>(
+    fn: TemplateMiddleware<V>,
+  ): Template;
 
   /**
    * Register a template processor with a path filter.
    */
-  public use<V extends ITemplateVariables = {}>(
+  public use<V extends ITemplateVariables = Record<string, unknown>>(
     pathFilter: TemplatePathFilter | TemplatePathFilter[],
     fn: TemplateMiddleware<V>,
   ): Template;
@@ -208,7 +212,7 @@ export class Template {
   /**
    * Runs the execution pipeline.
    */
-  public async execute<V extends ITemplateVariables = {}>(
+  public async execute<V extends ITemplateVariables = Record<string, unknown>>(
     args: {
       variables?: V;
       cache?: boolean;

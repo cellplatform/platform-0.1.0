@@ -13,7 +13,7 @@ export type IWindowAddressState = { isFocused?: boolean };
 export class WindowAddress extends React.PureComponent<IWindowAddressProps, IWindowAddressState> {
   public state: IWindowAddressState = {};
   private state$ = new Subject<Partial<IWindowAddressState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

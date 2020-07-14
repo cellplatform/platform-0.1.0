@@ -60,7 +60,7 @@ describe('hash', () => {
     });
 
     let index = -1;
-    const test = (expected: string, data: {} | undefined) => {
+    const test = (expected: string, data: Record<string, unknown> | undefined) => {
       const hash = value.hash.cell({ uri: 'cell:abcd:A1', data });
 
       index++;
@@ -116,7 +116,7 @@ describe('hash', () => {
 
     it('returns same hash for equivalent props variants', () => {
       const HASH = '8ac7d1f8e8';
-      const test = (props?: {}) => {
+      const test = (props?: Record<string, unknown>) => {
         const hash = value.hash.cell({ uri: 'cell:abcd:A1', data: { value: 123, props } });
 
         // console.log('hash', hash.substring(hash.length - 10));

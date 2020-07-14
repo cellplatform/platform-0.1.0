@@ -10,7 +10,7 @@ export type ITypedSheetChangeMonitor = {
 
   readonly event$: t.Observable<t.TypedSheetEvent>;
   readonly changed$: t.Observable<t.ITypedSheetChanged>;
-  readonly dispose$: t.Observable<{}>;
+  readonly dispose$: t.Observable<void>;
 
   dispose(): void;
   watch(sheet: t.ITypedSheet | t.ITypedSheet[]): ITypedSheetChangeMonitor;

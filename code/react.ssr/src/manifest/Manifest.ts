@@ -110,7 +110,7 @@ export class Manifest {
 
     // Process the set of sites.
     let sites: t.ISiteManifest[] = [];
-    const input = yaml.data.sites;
+    const input = (yaml.data as Record<string, unknown>).sites;
     sites = await Site.formatMany({ input, baseUrl, loadBundleManifest });
 
     // Finish up.

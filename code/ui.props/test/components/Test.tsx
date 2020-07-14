@@ -9,7 +9,7 @@ export type ITestProps = {};
 
 export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public state: t.ITestState = { data: { ...cli.SAMPLE } };
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<t.ITestState>>();
   private events$ = new Subject<t.PropsEvent>();
   private cli: t.ICommandState = cli.init({ state$: this.state$ });
@@ -20,8 +20,8 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
   public componentDidMount() {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
-    events$.subscribe(e => {
+    state$.subscribe((e) => this.setState(e));
+    events$.subscribe((e) => {
       log.info('🌳', e.type, e.payload);
     });
   }
@@ -89,7 +89,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     );
   }
 
-  private valueFactory: t.PropValueFactory = e => {
+  private valueFactory: t.PropValueFactory = (e) => {
     if (e.path === 'custom') {
       const styles = {
         base: css({
@@ -121,7 +121,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
    * [Handlers]
    */
 
-  private filter: t.PropFilter = e => {
+  private filter: t.PropFilter = (e) => {
     if (e.path.includes('foo.hide')) {
       return false;
     }

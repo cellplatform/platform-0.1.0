@@ -1,6 +1,6 @@
 {
   "name": "ui.shell.test",
-  "version": "0.1.295",
+  "version": "0.1.302",
   "description": "Test module for ui.shell (and associated modules).",
   "scripts": {
     "ssr": "cd src.server && yarn ssr $@",
@@ -18,22 +18,22 @@
     "nuke": "rm -rf node_modules && cd src.server && rm -rf node_modules"
   },
   "dependencies": {
-    "@platform/react": "0.4.37",
-    "@platform/ui.button": "0.3.72",
-    "@platform/ui.datagrid": "0.7.267",
-    "@platform/ui.icon": "0.0.156",
-    "@platform/ui.loader": "0.2.70",
-    "@platform/ui.shell": "0.2.81",
-    "@platform/ui.shell.doc": "0.0.93",
-    "@platform/ui.shell.types": "0.1.75"
+    "@platform/react": "0.4.39",
+    "@platform/ui.button": "0.3.74",
+    "@platform/ui.datagrid": "0.7.274",
+    "@platform/ui.icon": "0.0.158",
+    "@platform/ui.loader": "0.2.72",
+    "@platform/ui.shell": "0.2.83",
+    "@platform/ui.shell.doc": "0.0.95",
+    "@platform/ui.shell.types": "0.1.77"
   },
   "devDependencies": {
     "@platform/polyfill": "0.0.1",
-    "@platform/test": "0.1.12",
-    "@platform/ts": "3.9.3",
-    "@uiharness/dev": "0.10.5",
+    "@platform/test": "0.1.14",
+    "@platform/ts": "3.9.5",
+    "@uiharness/dev": "0.10.6",
     "@uiharness/ui": "0.7.6",
-    "electron": "9.0.0"
+    "electron": "9.1.0"
   },
   "files": [
     "lib",

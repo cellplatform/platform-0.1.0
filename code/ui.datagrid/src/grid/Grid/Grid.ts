@@ -24,7 +24,6 @@ export type IGridArgs = {
   ns: t.INs | string;
   cells?: t.IGridData['cells'];
   columns?: t.IGridData['columns'];
-  // columns?: t.IGridColumnData;
   rows?: t.IGridData['rows'];
   defaults?: Partial<t.IGridDefaults>;
   keyBindings?: t.KeyBindings<t.GridCommand>;
@@ -152,7 +151,7 @@ export class Grid implements t.IGrid {
      */
     this._.redraw$
       .pipe(takeUntil(this.dispose$), debounceTime(0))
-      .subscribe((e) => this.fire({ type: 'GRID/redraw', payload: {} }));
+      .subscribe((e) => this.fire({ type: 'GRID/redraw', payload: { redraw: true } }));
 
     /**
      * Manage editor events.
@@ -245,7 +244,7 @@ export class Grid implements t.IGrid {
     keyBindings: (undefined as unknown) as t.KeyBindings<t.GridCommand>,
     cache: MemoryCache.create(),
     table: (undefined as unknown) as Handsontable,
-    dispose$: new Subject<{}>(),
+    dispose$: new Subject<void>(),
     events$: new Subject<t.GridEvent>(),
     redraw$: new Subject(),
     isReady: false,

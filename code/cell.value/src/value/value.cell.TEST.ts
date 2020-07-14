@@ -17,7 +17,7 @@ const styleDefaults: P['style'] = {
 describe('cell', () => {
   describe('cellDiff', () => {
     it('no difference', () => {
-      const cell: t.ICellData<{}> = { value: 1, props: { style: { bold: true } } };
+      const cell: t.ICellData<any> = { value: 1, props: { style: { bold: true } } };
       const res = value.cellDiff(cell, cell);
       expect(res.left).to.eql(cell);
       expect(res.right).to.eql(cell);
@@ -26,8 +26,8 @@ describe('cell', () => {
     });
 
     it('is different', () => {
-      const left: t.ICellData<{}> = { value: 1, props: { style: { bold: true } } };
-      const right: t.ICellData<{}> = { value: 2, props: { style: { bold: false } } };
+      const left: t.ICellData<any> = { value: 1, props: { style: { bold: true } } };
+      const right: t.ICellData<any> = { value: 2, props: { style: { bold: false } } };
       const res = value.cellDiff(left, right);
 
       expect(res.isDifferent).to.eql(true);

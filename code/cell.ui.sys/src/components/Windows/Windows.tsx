@@ -14,7 +14,7 @@ export type IWindowsState = {
 export class Windows extends React.PureComponent<IWindowsProps, IWindowsState> {
   public state: IWindowsState = {};
   private state$ = new Subject<Partial<IWindowsState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   private ns: t.INsUri;
   private row: t.IRowUri;

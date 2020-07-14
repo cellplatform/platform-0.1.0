@@ -58,7 +58,7 @@ export type INedbStore<G = any> = {
   find<T extends G>(query: any): Promise<T[]>;
   findOne<T extends G>(query: any): Promise<T | undefined>;
 
-  remove(query: any, options?: INedbStoreRemoveOptions): Promise<{}>;
+  remove(query: any, options?: INedbStoreRemoveOptions): Promise<void>;
   // ensureIndex(options: INedbEnsureIndexOptions): Promise<{}>;
 };
 

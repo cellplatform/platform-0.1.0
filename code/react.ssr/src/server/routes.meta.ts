@@ -65,7 +65,7 @@ function toSiteInfo(args: { site: Site; name?: boolean; files?: boolean }) {
   const { site } = args;
   const { name, version, size } = site;
   const domain = site.domain.join(', ');
-  let info: {} = { version, size, domain };
+  let info: Record<string, unknown> = { version, size, domain };
 
   if (args.name) {
     info = { name, ...info };

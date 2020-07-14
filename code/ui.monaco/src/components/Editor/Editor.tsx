@@ -31,7 +31,7 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
   /**
    * Fields.
    */
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private _size$ = new Subject<ISize>();
   private size$ = this._size$.pipe(share(), takeUntil(this.unmounted$));
 
@@ -125,7 +125,7 @@ export class Editor extends React.PureComponent<IEditorProps, IEditorState> {
    * Places focus on the editor.
    */
   public focus() {
-    console.log(`\nTODO 🐷   \n`);
+    // console.log(`\nTODO 🐷   \n`);
     // if (this.editor) {
     //   this.editor.focus();
     // }

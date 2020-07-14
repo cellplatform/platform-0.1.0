@@ -4,7 +4,7 @@ import { share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 
 import * as t from './types';
 
-export type ISettingsClientArgs<T extends t.SettingsJson = {}> = {
+export type ISettingsClientArgs<T extends t.SettingsJson> = {
   change$: Subject<t.ISettingsChange>;
   getKeys: t.GetSettingsKeys<T>;
   getValues: t.GetSettingsValues<T>;
@@ -18,7 +18,7 @@ export type ISettingsClientArgs<T extends t.SettingsJson = {}> = {
  * An abstract representation of the configuration settings store
  * that works on either the [main] or [renderer] processes.
  */
-export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISettingsClient<T> {
+export class SettingsClient<T extends t.SettingsJson> implements t.ISettingsClient<T> {
   /**
    * [Fields]
    */
@@ -101,11 +101,10 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
   /**
    * Deletes the given key(s).
    */
-  public async delete<K extends keyof T>(...keys: (keyof T)[]) {
+  public async delete(...keys: (keyof T)[]) {
     keys = formatKeys<T>({ keys, namespace: this._args.namespace });
     const values = keys.map((key) => ({ key, value: undefined }));
     await this._args.setValues(values, 'DELETE');
-    return {};
   }
 
   /**
@@ -116,7 +115,6 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
     if (keys.length > 0) {
       await this.delete(...keys);
     }
-    return {};
   }
 
   /**
@@ -148,7 +146,7 @@ export class SettingsClient<T extends t.SettingsJson = {}> implements t.ISetting
  * [Helpers]
  */
 
-function formatKey<T extends t.SettingsJson = {}>(args: { key: keyof T; namespace: string }) {
+function formatKey<T extends t.SettingsJson>(args: { key: keyof T; namespace: string }) {
   const namespace = (args.namespace || '').trim();
   let key = args.key.toString();
   if (namespace) {
@@ -159,12 +157,12 @@ function formatKey<T extends t.SettingsJson = {}>(args: { key: keyof T; namespac
   return key as keyof T;
 }
 
-function formatKeys<T extends t.SettingsJson = {}>(args: { keys: (keyof T)[]; namespace: string }) {
+function formatKeys<T extends t.SettingsJson>(args: { keys: (keyof T)[]; namespace: string }) {
   const namespace = args.namespace;
   return args.keys.map((key) => formatKey<T>({ key, namespace }));
 }
 
-function formatValues<T extends t.SettingsJson = {}>(args: {
+function formatValues<T extends t.SettingsJson>(args: {
   values: t.ISettingsKeyValue<T>[];
   namespace: string;
 }) {

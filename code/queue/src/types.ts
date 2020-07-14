@@ -6,7 +6,7 @@ export type IQueue = {
   readonly id: string;
   readonly isRunning: boolean;
   readonly isDisposed: boolean;
-  readonly dispose$: Observable<{}>;
+  readonly dispose$: Observable<void>;
   readonly event$: Observable<QueueEvent>;
   dispose(): void;
   push<T>(handler: QueueHandler<T>): QueueItem<T>;
