@@ -31,7 +31,7 @@ export function init(args: {
   schema: Schema;
   events$: Subject<t.TextEditorEvent>;
   history?: boolean;
-  mapKeys?: keyMap.EditorKeyMap;
+  mapKeys?: t.EditorKeyMap;
   allowEnter?: boolean;
   allowMetaEnter?: boolean;
   allowHeadings?: boolean;
