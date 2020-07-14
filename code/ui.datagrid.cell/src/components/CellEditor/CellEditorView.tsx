@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-
 import { value, color, constants, containsFocus, css, CssValue, t, R, time } from '../../common';
 
 import * as p from '../primitives';
@@ -46,7 +45,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
   private formula!: p.FormulaInput;
   private formulaRef = (ref: p.FormulaInput) => (this.formula = ref);
 
-  private markdown$ = new Subject<p.TextEditorEvent>();
+  private markdown$ = new Subject<t.TextEditorEvent>();
   private markdown!: p.TextEditor;
   private markdownRef = (ref: p.TextEditor) => (this.markdown = ref);
 
@@ -172,7 +171,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter((e) => e.type === 'EDITOR/changing'),
         filter((e) => this.mode === 'MARKDOWN'),
-        map((e) => e.payload as p.ITextEditorChanging),
+        map((e) => e.payload as t.ITextEditorChanging),
         filter((e) => e.value.to !== e.value.from || !R.equals(e.size.from, e.size.to)),
       )
       .subscribe((e) => {
@@ -187,7 +186,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter((e) => e.type === 'EDITOR/changed'),
         filter((e) => this.mode === 'MARKDOWN'),
-        map((e) => e.payload as p.ITextEditorChanged),
+        map((e) => e.payload as t.ITextEditorChanged),
         filter((e) => e.value.to !== e.value.from || !R.equals(e.size.from, e.size.to)),
       )
       .subscribe((e) => {
@@ -201,7 +200,7 @@ export class CellEditorView extends React.PureComponent<ICellEditorViewProps> {
       .pipe(
         filter((e) => e.type === 'EDITOR/keydown/enter'),
         filter((e) => this.mode === 'MARKDOWN'),
-        map((e) => e.payload as p.ITextEditorEnterKey),
+        map((e) => e.payload as t.ITextEditorEnterKey),
         filter((e) => !e.isCancelled),
       )
       .subscribe((e) => {
