@@ -1,19 +1,8 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { share } from 'rxjs/operators';
 
-import { Client, t, ui, AppWindowModel, Uri, rx } from '../common';
-import { createStore, behavior } from '../state';
+import { AppWindowModel, Client, t, ui } from '../common';
+import { behavior, createStore } from '../state';
 import { fireSheetChanged } from './context.sheetChanged';
 
 /**

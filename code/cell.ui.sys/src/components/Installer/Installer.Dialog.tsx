@@ -265,7 +265,6 @@ export class InstallerDialog extends React.PureComponent<
   };
 
   private onInstallClick = (e: InstallClickEvent) => {
-    console.log('e', e);
     this.install();
   };
 }

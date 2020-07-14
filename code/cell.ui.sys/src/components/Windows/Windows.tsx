@@ -71,38 +71,6 @@ export class Windows extends React.PureComponent<IWindowsProps, IWindowsState> {
 
     const name = row.props.name;
     this.state$.next({ name, windows });
-
-    await this.tmp(data.uri.id);
-  }
-
-  private async tmp(uri: string) {
-    console.group('🌳 ');
-
-    const ctx = this.context;
-    const sheet = await ctx.client.sheet<t.AppTypeIndex>(this.ns);
-    const apps = await sheet.data('App').load();
-
-    for (const app of apps.rows) {
-      const windows = await app.props.windows.data();
-      for (const window of windows.rows) {
-        console.log('----------', window.toObject());
-        // await createBrowserWindow({ ctx, app, window });
-      }
-    }
-
-    // console.log('uri', uri);
-
-    // const ctx = this.context;
-    // const sheet = await ctx.client.sheet<t.AppTypeIndex>(uri);
-    // const d = await sheet.data('AppWindow').load();
-
-    // d.forEach((f) => {
-    //   console.log('-------------------------------------------');
-    //   console.log('f', f.app);
-    //   // console.log("f", f.)
-    // });
-
-    console.groupEnd();
   }
 
   /**

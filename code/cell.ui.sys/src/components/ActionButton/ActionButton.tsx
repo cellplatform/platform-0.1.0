@@ -3,8 +3,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, COLORS } from '../../common';
-import { Button, Card, Icons } from '../primitives';
+import { color, css, CssValue } from '../../common';
+import { Button, Card } from '../primitives';
 
 type OnClick = mouse.IMouseEventProps['onClick'];
 export type IActionButtonOption = { label: React.ReactNode; onClick?: OnClick };

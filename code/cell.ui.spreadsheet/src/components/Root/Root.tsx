@@ -51,13 +51,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
   }
 
   private get uri() {
-    try {
-      const uri = this.ns ? Uri.toNs(this.ns).toString() : '';
-      return uri;
-    } catch (error) {
-      console.log('ROOT/URI Error: ', error.message);
-      return '';
-    }
+    const uri = this.ns ? Uri.toNs(this.ns).toString() : '';
+    return uri;
   }
 
   /**

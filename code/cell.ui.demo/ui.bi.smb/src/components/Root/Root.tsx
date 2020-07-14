@@ -7,7 +7,7 @@ import { WindowTitleBar } from '../primitives';
 import { FinderShell } from '../primitives';
 
 export type IRootProps = { style?: CssValue };
-export type IRootState = { FinderProvider?: React.FunctionComponent<{}> };
+export type IRootState = { FinderProvider?: React.FunctionComponent };
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};

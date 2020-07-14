@@ -1,32 +1,9 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { COLORS, css, color, CssValue } from '../../common';
+import { COLORS, css, CssValue } from '../../common';
 
 export type TrainingIRootProps = { nodeId: string; style?: CssValue };
-export type TrainingIRootState = {};
 
-export class TrainingRoot extends React.PureComponent<TrainingIRootProps, TrainingIRootState> {
-  public state: TrainingIRootState = {};
-  private state$ = new Subject<Partial<TrainingIRootState>>();
-  private unmounted$ = new Subject();
-
-  /**
-   * [Lifecycle]
-   */
-  constructor(props: TrainingIRootProps) {
-    super(props);
-  }
-
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
-
+export class TrainingRoot extends React.PureComponent<TrainingIRootProps> {
   /**
    * [Render]
    */
