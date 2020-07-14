@@ -1093,10 +1093,10 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.11.tgz#d3614d6c5f500142358e6ed24e1bf16657536c50"
   integrity sha512-t7uW6eFafjO+qJ3BIV2gGUyZs27egcNRkUdalkud+Qa3+kg//f129iuOFivHDXQ+vnU3fDXuwgv0cqMCbcE8sw==
 
-"@types/codemirror@0.0.95":
-  version "0.0.95"
-  resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.95.tgz#8fe424989cd5a6d7848f124774d42ef34d91adb8"
-  integrity sha512-E7w4HS8/rR7Rxkga6j68n3/Mi4BJ870/OJJKRqytyWiM659KnbviSng/NPfM/FOjg7YL+5ruFF69FqoLChnPBw==
+"@types/codemirror@0.0.97":
+  version "0.0.97"
+  resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.97.tgz#6f2d8266b7f1b34aacfe8c77221fafe324c3d081"
+  integrity sha512-n5d7o9nWhC49DjfhsxANP7naWSeTzrjXASkUDQh7626sM4zK9XP2EVcHp1IcCf/IPV6c7ORzDUDF3Bkt231VKg==
   dependencies:
     "@types/tern" "*"
 
@@ -2066,10 +2066,10 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codemirror@5.54.0:
-  version "5.54.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.54.0.tgz#82b6adf662b29eeb7b867fe7839d49e25e4a0b38"
-  integrity sha512-Pgf3surv4zvw+KaW3doUU7pGjF0BPU8/sj7eglWJjzni46U/DDW8pu3nZY0QgQKUcICDXRkq8jZmq0y6KhxM3Q==
+codemirror@5.55.0:
+  version "5.55.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.55.0.tgz#23731f641288f202a6858fdc878f3149e0e04363"
+  integrity sha512-TumikSANlwiGkdF/Blnu/rqovZ0Y3Jh8yy9TqrPbSM0xxSucq3RgnpVDQ+mD9q6JERJEIT2FMuF/fBGfkhIR/g==
 
 collection-visit@^1.0.0:
   version "1.0.0"
@@ -6037,10 +6037,10 @@ range-parser@~1.2.1:
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
 
-react-codemirror2@7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-7.1.0.tgz#b874a275ad4f6f2ee5adb23b550c0f4b8b82776d"
-  integrity sha512-Rel0QbPnCTjHxgZYt6TkGw4icSZXNyONHb72a+1wWA+PlYJIvzFAv4pZlDPG0rpKpKmy4kSUlkoWgneH7w3A0g==
+react-codemirror2@7.2.1:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-7.2.1.tgz#38dab492fcbe5fb8ebf5630e5bb7922db8d3a10c"
+  integrity sha512-t7YFmz1AXdlImgHXA9Ja0T6AWuopilub24jRaQdPVbzUJVNKIYuy3uCFZYa7CE5S3UW6SrSa5nAqVQvtzRF9gw==
 
 react-dom@16.13.1:
   version "16.13.1"

@@ -1,9 +1,13 @@
+import { css, CssValue, style } from '@platform/css';
+import { events } from '@platform/react';
+import { is } from '@platform/util.is';
+import { value as valueUtil } from '@platform/util.value';
 import * as React from 'react';
 import { Controlled as CodeMirrorControlled } from 'react-codemirror2';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import { constants, css, CssValue, events, is, style, t, value as valueUtil } from '../../common';
+import { constants, t } from '../../common';
 
 /**
  * For more syntax modes, see:
