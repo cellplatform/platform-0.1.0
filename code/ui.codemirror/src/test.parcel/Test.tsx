@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { FormulaInput, IFormulaInputProps } from '../..';
+import { FormulaInput, IFormulaInputProps } from '..';
 import { t } from '../common';
 
 export type ITestProps = { style?: CssValue };
