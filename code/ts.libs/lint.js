@@ -22,6 +22,7 @@ module.exports = {
     'arrow-parens': ['error', 'always'],
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-use-before-define': [
       'error',
       { classes: false, functions: false, variables: false },

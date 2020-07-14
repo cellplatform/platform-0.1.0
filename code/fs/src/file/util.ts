@@ -40,7 +40,7 @@ export function loadAndParseSync<T>(path: string, defaultValue?: T): T {
 /**
  * Stringify's and object and saves it to disk.
  */
-export async function stringifyAndSave<T extends object>(
+export async function stringifyAndSave<T extends Record<string, unknown>>(
   path: string,
   data: T,
   options: {
@@ -66,7 +66,7 @@ export async function stringifyAndSave<T extends object>(
 /**
  * Stringify's and object and saves it to disk.
  */
-export function stringifyAndSaveSync<T extends object>(
+export function stringifyAndSaveSync<T extends Record<string, unknown>>(
   path: string,
   data: T,
   options: { beforeSave?: (e: IBeforeFileSaveArgs) => string | void } = {},
@@ -111,7 +111,7 @@ function parse(path: string, text: string) {
   }
 }
 
-function stringify(path: string, data: object) {
+function stringify(path: string, data: Record<string, unknown>) {
   const ext = extension(path);
   try {
     switch (ext) {

@@ -1,7 +1,7 @@
 import { t } from '../common';
 import { tmpl } from './cmd.tmpl';
 
-export type ITmplArgs = {};
+export type ITmplArgs = Record<string, unknown>;
 
 /**
  * Initialize Template command-line-interface (CLI).
@@ -9,7 +9,8 @@ export type ITmplArgs = {};
 export const init: t.CmdPluginsInit = (cli) => {
   const handler: t.CmdPluginHandler<ITmplArgs> = async (e) => {
     const dir = process.cwd();
-    await tmpl({ dir, install: false });
+    const install = false;
+    await tmpl({ dir, install });
   };
 
   cli.command<ITmplArgs>({

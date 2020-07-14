@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { style, t, time } from '../../common';
 
@@ -69,39 +70,17 @@ export function isLoaded(src: t.ImageSrc): boolean {
   return status(src) === 'LOADED';
 }
 
-// import { css, color, CssValue } from '../../common';
-
 type ILoaderViewProps = {
   src: t.ImageSrc;
   elContainer: HTMLDivElement;
   events$: Subject<t.IImageLoadEvent>;
   cache: Cache;
 };
-type ILoaderViewState = {};
 
-class LoaderView extends React.PureComponent<ILoaderViewProps, ILoaderViewState> {
-  public state: ILoaderViewState = {};
-  private state$ = new Subject<Partial<ILoaderViewState>>();
-  private unmounted$ = new Subject<{}>();
+class LoaderView extends React.PureComponent<ILoaderViewProps> {
   private status: { [key: string]: t.ImageLoadStatus } = {};
   private startedAt = time.now.timestamp;
   private finishedAt = -1;
-
-  /**
-   * [Lifecycle]
-   */
-  constructor(props: ILoaderViewProps) {
-    super(props);
-  }
-
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
 
   /**
    * [Properties]

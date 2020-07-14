@@ -4,12 +4,15 @@ import { isUndefinedOrEmptyObject, defaultValue, t } from '../common';
  * Collapses empty values on data objects.
  */
 export const squash = {
-  props(props?: t.ICellProps | t.IRowProps | t.IColumnProps) {
-    return squash.object(props);
+  props<T = Record<string, unknown>>(props?: t.ICellProps | t.IRowProps | t.IColumnProps) {
+    return squash.object<T>(props);
   },
 
-  cell(cell?: t.ICellData, options: { empty?: undefined | {} } = {}) {
-    const empty = defaultValue(options.empty, undefined);
+  cell<T = t.ICellData>(
+    cell?: Record<string, unknown>,
+    options: { empty?: Record<string, unknown> } = {},
+  ): T | undefined {
+    const empty = defaultValue(options.empty, undefined) as T;
     if (!cell) {
       return empty;
     } else {
@@ -17,20 +20,23 @@ export const squash = {
       Object.keys(res)
         .filter((key) => isUndefinedOrEmptyObject(res[key]))
         .forEach((key) => delete res[key]);
-      return squash.object(res, options);
+      return squash.object<T>(res, options);
     }
   },
 
-  object(obj?: object, options: { empty?: undefined | {} } = {}) {
-    const empty = defaultValue(options.empty, undefined);
+  object<T = Record<string, unknown>>(
+    obj: Record<string, unknown> | undefined,
+    options: { empty?: Record<string, unknown> } = {},
+  ): T | undefined {
+    const empty = defaultValue(options.empty, undefined) as T;
     if (!obj) {
       return empty;
     } else {
-      const res = { ...obj };
+      const res = { ...(obj || {}) };
       Object.keys(res)
         .filter((key) => isUndefinedOrEmptyObject(res[key]))
         .forEach((key) => delete res[key]);
-      return isUndefinedOrEmptyObject(res, { ignoreHash: true }) ? empty : res;
+      return (isUndefinedOrEmptyObject(res, { ignoreHash: true }) ? empty : res) as T;
     }
   },
 };

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 /**
  * Window Resize
  */
-export type IWindowResizeEvent = {};
+export type IWindowResizeEvent = Record<string, unknown>;
 
 /**
  * Based on [React.MouseEvent]

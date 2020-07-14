@@ -13,7 +13,7 @@ export class TreeEvents<N extends t.ITreeNode = t.ITreeNode> implements t.ITreeE
   /**
    * [Lifecycle]
    */
-  constructor(events$: Observable<t.TreeViewEvent>, dispose$?: Observable<{}>) {
+  constructor(events$: Observable<t.TreeViewEvent>, dispose$?: Observable<void>) {
     this.events$ = events$.pipe(takeUntil(this.dispose$));
     if (dispose$) {
       dispose$.subscribe(() => this.dispose());
@@ -29,7 +29,7 @@ export class TreeEvents<N extends t.ITreeNode = t.ITreeNode> implements t.ITreeE
    * [Fields]
    */
   public readonly events$: Observable<t.TreeViewEvent>;
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   /**

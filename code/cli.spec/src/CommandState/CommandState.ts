@@ -45,7 +45,7 @@ export class CommandState implements t.ICommandState {
    */
   private readonly _ = {
     beforeInvoke: (undefined as unknown) as t.BeforeInvokeCommand,
-    dispose$: new Subject<{}>(),
+    dispose$: new Subject<void>(),
     events$: new Subject<t.CommandStateEvent>(),
     root: (undefined as unknown) as Command,
     text: '',
@@ -311,7 +311,7 @@ export class CommandState implements t.ICommandState {
       const getProps = () => {
         return this._.commandProps[(namespace || root).id];
       };
-      const setProps = (props: object) => {
+      const setProps = (props: Record<string, unknown>) => {
         this._.commandProps[(namespace || root).id] = props;
       };
 

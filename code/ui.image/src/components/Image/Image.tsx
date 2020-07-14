@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -30,7 +32,7 @@ class ImageView extends React.PureComponent<IImageViewProps, IImageViewState> {
     opacity: typeof this.props.fadeIn === 'number' ? 0 : defaultValue(this.props.opacity, 1),
   };
   private state$ = new Subject<Partial<IImageViewState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private events$ = new Subject<t.ImageEvent>();
   private mouse: mouse.IMouseHandlers;
 

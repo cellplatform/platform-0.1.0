@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { css, t, shell } from '../common';
 
-export const init: t.ShellImportInit = async args => {
+export const init: t.ShellImportInit = async (args) => {
   const { shell } = args;
   shell.state.body.el = <Sheet />;
 };
@@ -18,7 +18,7 @@ export type ISheetState = {};
 export class Sheet extends React.PureComponent<ISheetProps, ISheetState> {
   public state: ISheetState = {};
   private state$ = new Subject<Partial<ISheetState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private grid$ = new Subject<datagrid.GridEvent>();
 
   public static contextType = shell.Context;
@@ -31,7 +31,7 @@ export class Sheet extends React.PureComponent<ISheetProps, ISheetState> {
    */
   constructor(props: ISheetProps) {
     super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
   public componentWillUnmount() {
@@ -63,7 +63,7 @@ export class Sheet extends React.PureComponent<ISheetProps, ISheetState> {
     );
   }
 
-  private factory: t.GridFactory = req => {
+  private factory: t.GridFactory = (req) => {
     switch (req.type) {
       // case 'EDITOR':
       //   return this.renderEditor();

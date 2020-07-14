@@ -53,7 +53,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
   public readonly windows: t.IWindows;
   public instances: t.IScreen<M, S>[] = [];
 
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.ScreenEvent>();
@@ -198,7 +198,7 @@ export class ScreenFactory<M extends t.IpcMessage = any, S extends t.SettingsJso
      */
     if (isStateful) {
       const saveState = () => state.saveState(window);
-      const state$ = new Subject<{}>();
+      const state$ = new Subject();
       state$.pipe(debounceTime(200)).subscribe(() => saveState());
       window.on('moved', () => state$.next());
       window.on('resize', () => state$.next());

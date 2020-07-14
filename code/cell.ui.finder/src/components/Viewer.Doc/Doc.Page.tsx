@@ -13,7 +13,7 @@ export type IDocPageState = {};
 export class DocPage extends React.PureComponent<IDocPageProps, IDocPageState> {
   public state: IDocPageState = {};
   private state$ = new Subject<Partial<IDocPageState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

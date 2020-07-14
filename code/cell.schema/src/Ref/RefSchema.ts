@@ -1,6 +1,6 @@
 import { RefLinks } from './RefLinks';
 
-type IRefSchemaArgs = {};
+type IRefSchemaArgs = Record<string, unknown>; // 🐷 Placeholder type.
 
 /**
  * Schema for a reference (link).

@@ -40,7 +40,7 @@ export class Pg {
   private readonly _args: IPgArgs;
   public readonly pool: pg.Pool;
 
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   /**

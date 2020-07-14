@@ -19,7 +19,7 @@ export type IDebugLogProps = {
 export class DebugLog extends React.PureComponent<IDebugLogProps, Partial<d.IDebugLogState>> {
   public state: d.IDebugLogState = { total: 0, items: [] };
   private store = StateObject.create<d.IDebugLogState>(this.state);
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

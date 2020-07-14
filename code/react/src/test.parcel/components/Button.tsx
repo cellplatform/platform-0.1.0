@@ -1,36 +1,13 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { COLORS, css, CssValue } from '../common';
 
 export type IButtonProps = {
   label: string;
   style?: CssValue;
-  onClick?: (e: {}) => void;
+  onClick?: () => void;
 };
-export type IButtonState = {};
 
-export class Button extends React.PureComponent<IButtonProps, IButtonState> {
-  public state: IButtonState = {};
-  private state$ = new Subject<Partial<IButtonState>>();
-  private unmounted$ = new Subject<{}>();
-
-  /**
-   * [Lifecycle]
-   */
-  constructor(props: IButtonProps) {
-    super(props);
-  }
-
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
-
+export class Button extends React.PureComponent<IButtonProps> {
   /**
    * [Render]
    */

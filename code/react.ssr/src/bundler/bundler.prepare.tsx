@@ -3,7 +3,7 @@ import * as ReactDOMServer from 'react-dom/server';
 import { constants, fs, jsYaml, t, time } from '../common';
 import * as logger from './bundler.log';
 
-const renderStatic = require('glamor/server').renderStatic;
+const renderStatic = require('glamor/server').renderStatic; // eslint-disable-line
 
 /**
  * Prepares a bundle for publishing.

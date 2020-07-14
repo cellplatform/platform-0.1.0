@@ -7,7 +7,7 @@ export type DevToolEvents = DevToolsClearConsoleEvent | DevToolsVisibilityEvent;
 
 export type DevToolsClearConsoleEvent = {
   type: '@platform/DEV_TOOLS/clearConsole';
-  payload: {};
+  payload: Record<string, undefined>; // NB: Placeholder {object} type.
 };
 
 export type DevToolsVisibilityEvent = {

@@ -31,7 +31,7 @@ export type IDebugState = {
 export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   public state: IDebugState = {};
   private state$ = new Subject<Partial<IDebugState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

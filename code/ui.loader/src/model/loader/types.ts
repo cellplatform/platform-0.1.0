@@ -3,7 +3,9 @@ import { Observable } from 'rxjs';
 /**
  * Load exeution.
  */
-export type LoadModule<T = any, P = {}> = (props?: P) => Promise<LoadModuleResponse<T>>;
+export type LoadModule<T = any, P = Record<string, unknown>> = (
+  props?: P,
+) => Promise<LoadModuleResponse<T>>;
 export type LoadModuleResponse<T = any> = {
   ok: boolean;
   count: number;
@@ -30,7 +32,7 @@ export type IDynamicModule<T = any> = {
 /**
  * Module loader.
  */
-export type DynamicImporter<T = any, P = {}> = (props?: P) => Promise<T>;
+export type DynamicImporter<T = any, P = Record<string, unknown>> = (props?: P) => Promise<T>;
 export type ILoader = {
   length: number;
   modules: IDynamicModule[];
@@ -42,8 +44,14 @@ export type ILoader = {
   count(moduleId: string | number): number;
   isLoading(moduleId?: string | number): boolean;
   isLoaded(moduleId: string | number): boolean;
-  load<T = any, P = {}>(moduleId: string | number, props?: P): Promise<LoadModuleResponse<T>>;
-  render<P = {}>(moduleId: string | number, props?: P): Promise<RenderModuleResponse>;
+  load<T = any, P = Record<string, unknown>>(
+    moduleId: string | number,
+    props?: P,
+  ): Promise<LoadModuleResponse<T>>;
+  render<P = Record<string, unknown>>(
+    moduleId: string | number,
+    props?: P,
+  ): Promise<RenderModuleResponse>;
 };
 
 /**

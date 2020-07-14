@@ -13,7 +13,7 @@ export type IAppBuilderState = {};
 export class AppBuilder extends React.PureComponent<IAppBuilderProps, IAppBuilderState> {
   public state: IAppBuilderState = {};
   private state$ = new Subject<Partial<IAppBuilderState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

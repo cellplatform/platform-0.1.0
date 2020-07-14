@@ -5,7 +5,7 @@ import { createBody } from './body';
 import { t } from '../common';
 import * as parse from '../parse';
 
-export class Router<C extends object = {}> implements t.IRouter<C> {
+export class Router<C extends Record<string, unknown> = any> implements t.IRouter<C> {
   /**
    * [Static]
    */
@@ -15,7 +15,7 @@ export class Router<C extends object = {}> implements t.IRouter<C> {
   /**
    * [Lifecycle]
    */
-  public static create<C extends object = {}>(args: t.IRouterArgs): t.IRouter<C> {
+  public static create<C extends Record<string, unknown> = any>(args: t.IRouterArgs): t.IRouter<C> {
     return new Router<C>(args);
   }
 

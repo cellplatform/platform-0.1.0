@@ -15,7 +15,7 @@ export type IpcHandlerRefs = { [key: string]: IpcHandlerRef };
  * Message types/events.
  */
 export type IpcMessageType = string;
-export type IpcPayload = object;
+export type IpcPayload = Record<string, unknown>;
 
 export type IpcMessage = {
   type: string;
@@ -82,8 +82,8 @@ export type IpcSending<M extends IpcMessage, D = any> = {
   elapsed: number;
   $: Observable<IpcSendResponse<M, D>>;
   promise: Promise<IpcSending<M, D>>;
-  timeout$: Observable<{}>;
-  cancel$: Observable<{}>;
+  timeout$: Observable<void>;
+  cancel$: Observable<void>;
   results: IpcHandlerResult<D>[];
   resultFrom: (sender: number | ProcessType) => IpcHandlerResult<D> | undefined;
   dataFrom: (sender: number | ProcessType) => D | undefined;
@@ -114,7 +114,7 @@ export type IpcHandlerResult<D> = {
 /**
  * The event passed to an event-handler with methods for responding.
  */
-export type IpcEventHandlerArgs<M extends IpcMessage> = IpcEvent<M> & {};
+export type IpcEventHandlerArgs<M extends IpcMessage> = IpcEvent<M>;
 export type IpcEventHandler<M extends IpcMessage = any, D = any> = (
   e: IpcEventHandlerArgs<M>,
 ) => Promise<D>;

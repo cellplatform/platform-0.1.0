@@ -206,7 +206,7 @@ export class TypeTarget {
         const key = RefLinks.toKey('type');
         const value = RefLinks.toValue(uri, { hash });
         const links = { ...(cell.links || {}), [key]: value };
-        cell.links = squash.object(links);
+        cell.links = squash.object(links) as t.IUriMap;
         return squash.cell(cell) || {};
       },
 
@@ -223,7 +223,7 @@ export class TypeTarget {
         const links = cell.links || {};
         delete links[key];
 
-        cell.links = squash.object(links);
+        cell.links = squash.object(links) as t.IUriMap;
         return squash.cell(cell) || {};
       },
     };

@@ -40,7 +40,7 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
    * [Fields]
    */
   public state: IFormulaInputState = { isLoaded: false };
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IFormulaInputState>>();
 
   private editor: CodeMirror.Editor;
@@ -251,10 +251,10 @@ export class FormulaInput extends React.PureComponent<IFormulaInputProps, IFormu
   private focusHandler = (isFocused: boolean) => {
     return () => {
       if (isFocused) {
-        this.fire({ type: 'INPUT/formula/focus', payload: {} });
+        this.fire({ type: 'INPUT/formula/focus', payload: { focus: true } });
       }
       if (!isFocused) {
-        this.fire({ type: 'INPUT/formula/blur', payload: {} });
+        this.fire({ type: 'INPUT/formula/blur', payload: { focus: false } });
       }
     };
   };

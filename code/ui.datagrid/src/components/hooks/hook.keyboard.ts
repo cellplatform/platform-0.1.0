@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
-
 import { Grid } from '../../grid';
 import { t } from '../common';
 
@@ -14,8 +12,10 @@ import { t } from '../common';
  */
 export function beforeKeyDownHandler(grid: Grid) {
   return function (e: Event) {
+    /* eslint-disable */
     // @ts-ignore
     const table = this as Handsontable;
+    /* eslint-enable */
     const payload = toKeydownPayload(e, grid);
     const { cancel, key } = payload;
 

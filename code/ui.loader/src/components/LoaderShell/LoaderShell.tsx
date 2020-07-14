@@ -25,7 +25,7 @@ const { CSS } = constants;
 export class LoaderShell extends React.PureComponent<ILoaderShellProps, ILoaderShellState> {
   public state: ILoaderShellState = {};
   private state$ = new Subject<Partial<ILoaderShellState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   private splash = splash.create({ isVisible: true, isSpinning: true });
   private _provider: React.FunctionComponent;

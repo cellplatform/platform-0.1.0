@@ -17,7 +17,7 @@ export type IPageContainerState = {};
 export class PageContainer extends React.PureComponent<IPageContainerProps, IPageContainerState> {
   public state: IPageContainerState = {};
   private state$ = new Subject<Partial<IPageContainerState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

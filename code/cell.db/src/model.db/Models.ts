@@ -36,7 +36,7 @@ export class Ns {
     });
   };
 
-  public static create<P extends object = {}>(args: { db: t.IDb; uri: string }) {
+  public static create<P extends Record<string, unknown> = any>(args: { db: t.IDb; uri: string }) {
     const { uri, db } = args;
     const ns = Schema.ns(uri);
     const path = ns.path;
@@ -79,7 +79,10 @@ export class Cell {
     });
   };
 
-  public static create<P extends object = {}>(args: { db: t.IDb; uri: string | t.ICellUri }) {
+  public static create<P extends Record<string, unknown> = any>(args: {
+    db: t.IDb;
+    uri: string | t.ICellUri;
+  }) {
     const { db } = args;
     const uri = Uri.cell(args.uri);
     const ns = Schema.ns(uri.ns);
@@ -106,7 +109,10 @@ export class Row {
     }) as t.IDbModelRow;
   };
 
-  public static create<P extends object = {}>(args: { db: t.IDb; uri: string | t.IRowUri }) {
+  public static create<P extends Record<string, unknown> = any>(args: {
+    db: t.IDb;
+    uri: string | t.IRowUri;
+  }) {
     const { db } = args;
     const uri = Uri.row(args.uri);
     const ns = Schema.ns(uri.ns);
@@ -133,7 +139,10 @@ export class Column {
     });
   };
 
-  public static create<P extends object = {}>(args: { db: t.IDb; uri: string | t.IColumnUri }) {
+  public static create<P extends Record<string, unknown> = any>(args: {
+    db: t.IDb;
+    uri: string | t.IColumnUri;
+  }) {
     const { db } = args;
     const uri = Uri.column(args.uri);
     const ns = Schema.ns(uri.ns);

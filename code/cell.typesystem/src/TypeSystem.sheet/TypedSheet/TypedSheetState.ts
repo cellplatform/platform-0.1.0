@@ -29,7 +29,6 @@ export class TypedSheetState implements t.ITypedSheetState {
   /**
    * [Lifecycle]
    */
-
   private constructor(args: IArgs) {
     this._sheet = args.sheet;
     this._event$ = args.event$;
@@ -114,7 +113,7 @@ export class TypedSheetState implements t.ITypedSheetState {
    * [Fields]
    */
   private _changes: t.ITypedSheetChanges = {};
-  private readonly _dispose$ = new t.Subject<{}>();
+  private readonly _dispose$ = new t.Subject<void>();
   private readonly _event$: t.Subject<t.TypedSheetEvent>;
   private readonly _sheet: t.ITypedSheet;
 

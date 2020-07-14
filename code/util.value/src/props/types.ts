@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs';
 
-export type IProps<T extends {} = any> = { [P in keyof T]: T[P] };
-export type IObservableProps<P extends {} = any> = IProps<P> & {
+export type IProps<T extends Record<string, unknown> = any> = { [P in keyof T]: T[P] };
+export type IObservableProps<P extends Record<string, unknown> = any> = IProps<P> & {
   readonly $: {
-    readonly dispose$: Observable<{}>;
+    readonly dispose$: Observable<void>;
     readonly events$: Observable<PropEvent>;
   };
   readonly changing$: Observable<IPropChanging<P>>;

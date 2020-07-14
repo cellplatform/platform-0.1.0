@@ -33,6 +33,6 @@ export type ICellView<V extends string = string> = {
   type: V;
   className?: string;
 };
-export type ICellInlineView<V extends string = string> = ICellView<V> & {};
-export type ICellScreenView<V extends string = string> = ICellView<V> & {};
-export type ICellEditorView<V extends string = string> = ICellView<V> & {};
+export type ICellInlineView<V extends string = string> = ICellView<V>;
+export type ICellScreenView<V extends string = string> = ICellView<V>;
+export type ICellEditorView<V extends string = string> = ICellView<V>;

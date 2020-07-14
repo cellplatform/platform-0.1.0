@@ -6,7 +6,9 @@ export class Schema {
    * [Lifecycle]
    */
   public static create = () => new Schema();
-  private constructor() {}
+  private constructor() {
+    //
+  }
 
   /**
    * [Fields]

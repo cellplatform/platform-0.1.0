@@ -1,4 +1,4 @@
-import { color, css } from '@platform/css';
+import { color, css, CssValue } from '@platform/css';
 import { Button } from '@platform/ui.button';
 import { Hr } from '@platform/ui.dev';
 import * as React from 'react';
@@ -11,11 +11,12 @@ import { TestText } from './Test.Text';
 const LOREM =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec quam lorem. Praesent fermentum, augue ut porta varius, eros nisl euismod ante, ac suscipit elit libero nec dolor. Morbi magna enim, molestie non arcu id, varius sollicitudin neque. In sed quam mauris. Aenean mi nisl, elementum non arcu quis, ultrices tincidunt augue. Vivamus fermentum iaculis tellus finibus porttitor. Nulla eu purus id dolor auctor suscipit. Integer lacinia sapien at ante tempus volutpat.';
 
+export type ITestProps = { style?: CssValue };
 export type ITestState = { value?: string };
 
-export class Test extends React.PureComponent<{}, ITestState> {
+export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
 
   private inputs!: TestInput;
@@ -66,7 +67,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     };
 
     return (
-      <div {...styles.base}>
+      <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
           {this.button('value: <empty>', () => this.state$.next({ value: '' }))}
           {this.button('value: short', () => this.state$.next({ value: 'hello' }))}

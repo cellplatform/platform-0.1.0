@@ -12,7 +12,7 @@ export type IHelpersCardState = {};
 export class HelpersCard extends React.PureComponent<IHelpersCardProps, IHelpersCardState> {
   public state: IHelpersCardState = {};
   private state$ = new Subject<Partial<IHelpersCardState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

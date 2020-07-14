@@ -76,7 +76,11 @@ describe('squash', () => {
   });
 
   it('squash.object', () => {
-    const test = (obj?: object, expected?: any, options?: { empty?: undefined | {} }) => {
+    const test = (
+      obj?: Record<string, unknown>,
+      expected?: any,
+      options?: { empty?: Record<string, unknown> },
+    ) => {
       const res = squash.object(obj, options);
       expect(res).to.eql(expected);
     };

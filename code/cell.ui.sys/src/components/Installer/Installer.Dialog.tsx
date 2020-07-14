@@ -36,7 +36,7 @@ export class InstallerDialog extends React.PureComponent<
 > {
   public state: IInstallerDialogState = {};
   private state$ = new Subject<Partial<IInstallerDialogState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

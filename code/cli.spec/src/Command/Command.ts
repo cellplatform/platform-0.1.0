@@ -153,7 +153,9 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
    * [Methods]
    */
 
-  public as<P1 extends object, A1 extends t.CommandArgsOptions>(fn: (e: Command<P1, A1>) => void) {
+  public as<P1 extends Record<string, unknown>, A1 extends t.CommandArgsOptions>(
+    fn: (e: Command<P1, A1>) => void,
+  ) {
     fn((this as unknown) as Command<P1, A1>);
     return this;
   }
@@ -161,19 +163,22 @@ export class Command<P extends t.ICommandProps = any, A extends t.CommandArgsOpt
   /**
    * Cast children to given types.
    */
-  public childrenAs<P1 extends object, A1 extends t.CommandArgsOptions>(): Command<P1, A1>[] {
+  public childrenAs<P1 extends Record<string, unknown>, A1 extends t.CommandArgsOptions>(): Command<
+    P1,
+    A1
+  >[] {
     return this.children;
   }
 
   /**
    * [Overrides] Add a child command.
    */
-  public add<P1 extends object = P, A1 extends t.CommandArgsOptions = A>(
+  public add<P1 extends Record<string, unknown> = P, A1 extends t.CommandArgsOptions = A>(
     title: string,
     handler?: t.CommandHandler<P1, A1>,
   ): Command<P, A>;
 
-  public add<P1 extends object = P, A1 extends t.CommandArgsOptions = A>(
+  public add<P1 extends Record<string, unknown> = P, A1 extends t.CommandArgsOptions = A>(
     args: Command<P1, A1> | (Partial<ICommandArgs<P1, A1>> & { name: string }),
   ): Command<P, A>;
 

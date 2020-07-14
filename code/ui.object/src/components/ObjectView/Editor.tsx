@@ -8,7 +8,7 @@ export type IEditorProps = {
 /**
  * An editor input for an object value.
  */
-export class Editor extends React.PureComponent<IEditorProps, {}> {
+export class Editor extends React.PureComponent<IEditorProps> {
   public input: HTMLInputElement;
   private inputRef = (ref: HTMLInputElement) => (this.input = ref);
 

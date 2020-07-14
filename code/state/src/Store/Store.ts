@@ -6,7 +6,7 @@ import * as t from './types';
 
 export * from './types';
 
-export type IStoreArgs<M extends {}> = {
+export type IStoreArgs<M extends Record<string, unknown>> = {
   initial: M;
   event$?: Subject<any>;
 };
@@ -14,11 +14,14 @@ export type IStoreArgs<M extends {}> = {
 /**
  * An observable state machine.
  */
-export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M, E> {
+export class Store<M extends Record<string, unknown>, E extends t.IStoreEvent>
+  implements t.IStore<M, E> {
   /**
    * [Static]
    */
-  public static create<M extends {}, E extends t.IStoreEvent>(args: IStoreArgs<M>) {
+  public static create<M extends Record<string, unknown>, E extends t.IStoreEvent>(
+    args: IStoreArgs<M>,
+  ) {
     return new Store<M, E>(args) as t.IStore<M, E>;
   }
 
@@ -46,7 +49,7 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
   /**
    * [Fields]
    */
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   private readonly _event$!: Subject<E>;
   private readonly _changing$ = new Subject<t.IStateChanging<M, E>>();
   private readonly _changed$ = new Subject<t.IStateChange<M, E>>();
@@ -169,6 +172,8 @@ export class Store<M extends {}, E extends t.IStoreEvent> implements t.IStore<M,
 /**
  * Creates a new state machine.
  */
-export function create<M extends {}, E extends t.IStoreEvent>(args: IStoreArgs<M>) {
+export function create<M extends Record<string, unknown>, E extends t.IStoreEvent>(
+  args: IStoreArgs<M>,
+) {
   return Store.create<M, E>(args);
 }

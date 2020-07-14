@@ -4,8 +4,10 @@ import { coord, lastPart, t, toList, toMap } from './common';
  * Keys for items within the grid.
  */
 export class GridSchema {
-  public static create = (args: {}) => new GridSchema(args);
-  private constructor(args: {}) {} // eslint-disable-line
+  public static create = () => new GridSchema();
+  private constructor() {
+    //
+  }
 
   /**
    * [Methods]

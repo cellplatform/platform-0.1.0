@@ -3,9 +3,9 @@ import * as glob from 'glob';
 export type IGlobOptions = {
   includeDirs?: boolean;
   dot?: boolean;
-  cache?: {};
-  statCache?: {};
-  realpathCache?: {};
+  cache?: { [path: string]: boolean | 'DIR' | 'FILE' | ReadonlyArray<string> };
+  statCache?: { [path: string]: false | { isDirectory(): boolean } | undefined };
+  realpathCache?: { [path: string]: string };
   ignore?: string | string[];
 };
 

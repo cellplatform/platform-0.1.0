@@ -14,8 +14,8 @@ import * as t from './types';
  * To pass an read-only version of the [StateObject] around an application
  * use the plain [IStateObject] interface which does not expose the `change` method.
  */
-export class StateObject<T extends object> implements t.IStateObjectWritable<T> {
-  public static create<T extends object>(initial: T): t.IStateObjectWritable<T> {
+export class StateObject<T extends Record<string, unknown>> implements t.IStateObjectWritable<T> {
+  public static create<T extends Record<string, unknown>>(initial: T): t.IStateObjectWritable<T> {
     return new StateObject<T>({ initial });
   }
 

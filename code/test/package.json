@@ -1,6 +1,6 @@
 {
   "name": "@platform/test",
-  "version": "0.1.12",
+  "version": "0.1.14",
   "description": "Configuration module containing test related modules.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "mocha": "8.0.1"
   },
   "devDependencies": {
-    "@platform/ts.libs": "3.9.7"
+    "@platform/ts.libs": "3.9.9"
   },
   "files": [
     "lib",

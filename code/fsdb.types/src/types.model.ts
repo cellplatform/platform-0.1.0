@@ -7,14 +7,14 @@ import * as t from './common/types';
 export type ModelValueKind = 'PROP' | 'LINK';
 
 export type IModel<
-  P extends object = {},
+  P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
 > = IModelProps<P, D, L, C> & IModelMethods<P, D, L, C>;
 
 export type IModelProps<
-  P extends object,
+  P extends Record<string, unknown>,
   D extends P,
   L extends IModelLinksSchema,
   C extends IModelChildrenSchema = any
@@ -27,7 +27,7 @@ export type IModelProps<
   readonly exists: boolean | undefined;
   readonly ready: Promise<IModel<P, D, L, C>>;
   readonly changes: IModelChanges<P, D>;
-  readonly dispose$: Observable<{}>;
+  readonly dispose$: Observable<void>;
   readonly events$: Observable<ModelEvent>;
   readonly doc: D; // Raw DB document.
   readonly props: P; // Data as read|write properties.
@@ -35,7 +35,7 @@ export type IModelProps<
   readonly children: IModelChildren<C>; // Relationships (path descendents).
 };
 export type IModelMethods<
-  P extends object,
+  P extends Record<string, unknown>,
   D extends P,
   L extends IModelLinksSchema,
   C extends IModelChildrenSchema = any
@@ -54,7 +54,7 @@ export type IModelMethods<
  * [Save]
  */
 export type IModelSaveResponse<
-  P extends object,
+  P extends Record<string, unknown>,
   D extends P,
   L extends IModelLinksSchema,
   C extends IModelChildrenSchema = any
@@ -65,7 +65,7 @@ export type IModelSaveResponse<
 };
 
 export type BeforeModelSave<
-  P extends object = {},
+  P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
@@ -80,7 +80,7 @@ export type IModelDeleteResponse = {
   children: number;
 };
 export type BeforeModelDelete<
-  P extends object = {},
+  P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
@@ -126,12 +126,12 @@ export type IModelLinkDef = {
 /**
  * [Changes]
  */
-export type IModelChanges<P extends object, D extends P> = {
+export type IModelChanges<P extends Record<string, unknown>, D extends P> = {
   length: number;
   list: IModelChange<P, D>[];
   map: { [K in keyof D]: D[K] };
 };
-export type IModelChange<P extends object, D extends P> = {
+export type IModelChange<P extends Record<string, unknown>, D extends P> = {
   kind: ModelValueKind;
   path: string;
   field: string;
@@ -184,7 +184,7 @@ export type IModelChildrenLoadedEvent = {
  * Reading.
  */
 export type IModelReadPropEvent<
-  P extends object = {},
+  P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
@@ -194,7 +194,7 @@ export type IModelReadPropEvent<
   payload: IModelReadProp<P, D, L, C>;
 };
 export type IModelReadProp<
-  P extends object = {},
+  P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
@@ -210,18 +210,18 @@ export type IModelReadProp<
 /**
  * Changes.
  */
-export type IModelChangingEvent<P extends object = {}, D extends P = P> = {
+export type IModelChangingEvent<P extends Record<string, unknown> = any, D extends P = P> = {
   type: 'MODEL/changing';
   typename: string;
   payload: IModelChanging<P, D>;
 };
-export type IModelChanging<P extends object = {}, D extends P = P> = {
+export type IModelChanging<P extends Record<string, unknown> = any, D extends P = P> = {
   change: IModelChange<P, D>;
   isCancelled: boolean;
   cancel(): void;
 };
 
-export type IModelChangedEvent<P extends object = {}, D extends P = P> = {
+export type IModelChangedEvent<P extends Record<string, unknown> = any, D extends P = P> = {
   type: 'MODEL/changed';
   typename: string;
   payload: IModelChange<P, D>;
@@ -231,7 +231,7 @@ export type IModelChangedEvent<P extends object = {}, D extends P = P> = {
  * Save.
  */
 export type IModelSave<
-  P extends object = {},
+  P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
@@ -245,7 +245,7 @@ export type IModelSave<
 };
 
 export type IModelBeforeSaveEvent<
-  P extends object = {},
+  P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
@@ -256,7 +256,7 @@ export type IModelBeforeSaveEvent<
 };
 
 export type IModelSavedEvent<
-  P extends object = {},
+  P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
@@ -270,7 +270,7 @@ export type IModelSavedEvent<
  * Save.
  */
 export type IModelDelete<
-  P extends object = {},
+  P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
@@ -281,7 +281,7 @@ export type IModelDelete<
 };
 
 export type IModelBeforeDeleteEvent<
-  P extends object = {},
+  P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any
@@ -292,7 +292,7 @@ export type IModelBeforeDeleteEvent<
 };
 
 export type IModelDeletedEvent<
-  P extends object = {},
+  P extends Record<string, unknown> = any,
   D extends P = P,
   L extends IModelLinksSchema = any,
   C extends IModelChildrenSchema = any

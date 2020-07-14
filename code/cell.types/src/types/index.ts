@@ -1,10 +1,11 @@
-export * from '../types.TypeSystem';
-export * from '../types.Http';
 export * from '../types.Client';
 export * from '../types.Electron';
-export * from '../types.Error';
-export * from '../types.Ui';
 export * from '../types.Env';
+export * from '../types.Error';
+export * from '../types.Http';
+export * from '../types.Schema';
+export * from '../types.TypeSystem';
+export * from '../types.Ui';
 
 export * from './types.cell.coord';
 export * from './types.cell.get';
@@ -24,7 +25,4 @@ export * from './types.ns';
 export * from './types.range';
 export * from './types.refs';
 export * from './types.row';
-export * from './types.schema';
-export * from './types.schema.uri';
-export * from './types.schema.urls';
 export * from './types.value';

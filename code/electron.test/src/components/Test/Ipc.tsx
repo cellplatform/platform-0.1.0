@@ -21,7 +21,7 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
   private id!: number;
   private log!: renderer.ILog;
   private ipc!: renderer.IpcClient;
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public componentWillMount() {
     const { id, log, ipc } = this.context;
@@ -62,18 +62,18 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     /**
      * Log out events.
      */
-    this.ipc.events$.pipe(takeUntil(this.unmounted$)).subscribe(e => {
+    this.ipc.events$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
       // const from = e.sender.id;
       // this.log.info('⚡️ from:', from, e);
     });
-    this.ipc.filter<t.ITestMessageEvent>('TEST/message').subscribe(e => {
+    this.ipc.filter<t.ITestMessageEvent>('TEST/message').subscribe((e) => {
       this.log.info('filtered event', e);
     });
 
     /**
      * Provide a response-handler for a specific event.
      */
-    this.ipc.handle<t.IFooEvent>('FOO', async e => {
+    this.ipc.handle<t.IFooEvent>('FOO', async (e) => {
       await time.wait(1000);
       return `response FOO after delay (${this.id}) 🌼`;
     });
@@ -109,15 +109,15 @@ export class IpcTest extends React.PureComponent<IIpcTestProps> {
     this.log.info('handlers (FOO)', this.ipc.handlers('FOO'));
 
     res.$.subscribe({
-      next: e => this.log.info('🤘 res$.next:', e),
+      next: (e) => this.log.info('🤘 res$.next:', e),
       complete: () => {
         this.log.group('🚀 COMPLETE');
-        res.results.forEach(result => this.log.info(result));
+        res.results.forEach((result) => this.log.info(result));
         this.log.info('elapsed', res.elapsed);
         this.log.info('isComplete', res.isComplete);
         this.log.groupEnd();
       },
-      error: err => this.log.error('😡  ERROR', err),
+      error: (err) => this.log.error('😡  ERROR', err),
     });
 
     console.groupEnd();

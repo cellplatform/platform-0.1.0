@@ -12,7 +12,7 @@ export type IGridViewState = {};
 export class GridView extends React.PureComponent<IGridViewProps, IGridViewState> {
   public state: IGridViewState = {};
   private state$ = new Subject<Partial<IGridViewState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   private grid$ = this.props.grid$ || new Subject<t.GridEvent>();
   private grid!: datagrid.Grid;

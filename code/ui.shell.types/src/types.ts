@@ -11,7 +11,7 @@ export type IShell = {
   initial(state: IShellPartialState): IShell;
   register: ShellRegisterModule;
   main: ShellRegisterModule;
-  load<P = {}>(
+  load<P = Record<string, unknown>>(
     moduleId: string | number,
     options?: IShellLoadOptions<P>,
   ): Promise<IShellLoadResponse>;
@@ -34,11 +34,11 @@ export type IShellEvents = {
 };
 
 export type IShellProgress = {
-  start(options?: { duration?: number; color?: string }): Promise<{}>;
+  start(options?: { duration?: number; color?: string }): Promise<void>;
   complete(): void;
 };
 
-export type IShellLoadOptions<P = {}> = {
+export type IShellLoadOptions<P = Record<string, unknown>> = {
   props?: P;
   progress?: number; // msecs (estimate for progress bar to complete).
   simulateLatency?: number; // msecs (simulate load latency on localhost).
@@ -54,7 +54,9 @@ export type IShellContext = {
 /**
  * [Importer]
  */
-export type ShellImporter<P = {}> = (props?: P) => Promise<ShellImporterResponse>;
+export type ShellImporter<P = Record<string, unknown>> = (
+  props?: P,
+) => Promise<ShellImporterResponse>;
 export type ShellImporterResponse = { init: ShellImportInit };
 
 export type ShellImportInit = (args: ShellImportInitArgs) => Promise<any>;
@@ -151,7 +153,7 @@ export type IShellProgressCompleteEvent = {
   type: 'SHELL/progress/complete';
   payload: IShellProgressComplete;
 };
-export type IShellProgressComplete = {};
+export type IShellProgressComplete = { success: boolean };
 
 export type IShellStateChanged = t.IPropChanged & {
   field: 'header' | 'footer' | 'tree' | 'body' | 'sidebar';

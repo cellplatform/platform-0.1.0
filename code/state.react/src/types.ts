@@ -5,6 +5,6 @@ export * from '@platform/state/lib/types';
 /**
  * The context object that is passed down through the React hierarchy.
  */
-export type IStateContext<P = {}> = P & {
-  getStore<M extends {}, E extends IStoreEvent>(): IStoreContext<M, E>;
+export type IStateContext<P = Record<string, unknown>> = P & {
+  getStore<M extends Record<string, unknown>, E extends IStoreEvent>(): IStoreContext<M, E>;
 };

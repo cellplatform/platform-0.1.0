@@ -63,4 +63,4 @@ export type ILogEvent = {
   output: any;
 };
 
-export type ILogClearEvent = {};
+export type ILogClearEvent = Record<string, unknown>;

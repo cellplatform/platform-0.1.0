@@ -34,7 +34,7 @@ describe('React: transformStyle - positioning', () => {
     });
 
     it('single value', () => {
-      const test = (input: {}, position: string, value: number) => {
+      const test = (input: Record<string, unknown>, position: string, value: number) => {
         const res = style.transform(input);
         expect(res).to.eql({
           position,

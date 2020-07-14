@@ -1,6 +1,6 @@
 import { R, t, jss } from '../common';
 
-const PluginGlobal = require('jss-plugin-global').default;
+import PluginGlobal from 'jss-plugin-global';
 jss.jss.use(PluginGlobal);
 
 /**

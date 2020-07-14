@@ -2,7 +2,7 @@ import * as DocumentStore from 'nedb';
 import { t, defaultValue, keys } from '../common';
 
 // NB: Hack import because [parceljs] has problem importing using typescript `import` above.
-const Nedb = require('nedb');
+const Nedb = require('nedb'); // eslint-disable-line
 
 /**
  * [Internal]
@@ -96,7 +96,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
       if (escapeKeys) {
         doc = keys.encodeObjectKeys<any>(doc);
       }
-      this.store.insert(doc, (err: Error, doc: T) => {
+      this.store.insert(doc, (err: Error | null, doc: T) => {
         if (err) {
           reject(err);
         } else {
@@ -117,7 +117,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
         query,
         update,
         { ...options, returnUpdatedDocs: true },
-        (err: Error, total: number, doc: T, upsert: boolean) => {
+        (err: Error | null, total: number, doc: T, upsert: boolean) => {
           if (err) {
             reject(err);
           } else {
@@ -146,7 +146,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
   public findOne<T extends G>(query: any) {
     return new Promise<T | undefined>(async (resolve, reject) => {
       await this.ensureFileLoaded();
-      this.store.findOne(query, (err: Error, doc: T) => {
+      this.store.findOne(query, (err: Error | null, doc: T) => {
         if (err) {
           reject(err);
         } else {
@@ -159,7 +159,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
 
   public ensureIndex(options: t.IIndexOptions) {
     return new Promise<{}>((resolve, reject) => {
-      this.store.ensureIndex(options, (err: Error) => {
+      this.store.ensureIndex(options, (err: Error | null) => {
         if (err) {
           reject(err);
         } else {
@@ -170,13 +170,13 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
   }
 
   public remove(query: any, options: t.INedbStoreRemoveOptions = {}) {
-    return new Promise<{}>(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
       await this.ensureFileLoaded();
-      this.store.remove(query, options, (err: Error, total: number) => {
+      this.store.remove(query, options, (err: Error | null, total: number) => {
         if (err) {
           reject(err);
         } else {
-          resolve({});
+          resolve();
         }
       });
     });

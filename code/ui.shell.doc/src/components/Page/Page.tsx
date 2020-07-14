@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { COLORS, css, color, CssValue } from '../../common';
+
+import { color, COLORS, css, CssValue } from '../../common';
 
 export type IPageMargin = {
   color: string;
@@ -14,21 +14,13 @@ export type IPageProps = {
   children?: React.ReactNode;
   style?: CssValue;
 };
-export type IPageState = {};
 
-export class Page extends React.PureComponent<IPageProps, IPageState> {
-  public state: IPageState = {};
-  private state$ = new Subject<Partial<IPageState>>();
-  private unmounted$ = new Subject<{}>();
+export class Page extends React.PureComponent<IPageProps> {
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]
    */
-  constructor(props: IPageProps) {
-    super(props);
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();

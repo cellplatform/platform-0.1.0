@@ -11,7 +11,7 @@ export type IIndexState = {};
 export class Index extends React.PureComponent<IIndexProps, IIndexState> {
   public state: IIndexState = {};
   private state$ = new Subject<Partial<IIndexState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

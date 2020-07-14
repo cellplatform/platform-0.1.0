@@ -21,7 +21,7 @@ export type IDecrementEvent = {
 };
 export type IChangeFooEvent = {
   type: 'TEST/changeFoo';
-  payload: {};
+  payload: Record<string, undefined>; // NB: Empty {object}
 };
 
 describe('Store', () => {

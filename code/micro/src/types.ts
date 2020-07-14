@@ -20,7 +20,7 @@ export type IMicro = {
   request$: t.Observable<IMicroRequest>;
   response$: t.Observable<IMicroResponse>;
   start: ServerStart;
-  stop(): Promise<{}>;
+  stop(): Promise<void>;
 };
 
 export type IMicroService = {
@@ -29,7 +29,7 @@ export type IMicroService = {
   events$: t.Observable<MicroEvent>;
   request$: t.Observable<IMicroRequest>;
   response$: t.Observable<IMicroResponse>;
-  stop(): Promise<{}>;
+  stop(): Promise<void>;
 };
 
 /**
@@ -66,13 +66,13 @@ export type IMicroRequest = {
   isModified: boolean;
   modify(input: IMicroRequestModify | (() => Promise<IMicroRequestModify>)): void;
 };
-export type IMicroRequestModify<C extends object = {}> = { context?: C };
+export type IMicroRequestModify<C extends Record<string, unknown> = any> = { context?: C };
 
 export type IMicroResponseEvent = {
   type: 'HTTP/response';
   payload: IMicroResponse;
 };
-export type IMicroResponse<C extends object = {}> = {
+export type IMicroResponse<C extends Record<string, unknown> = any> = {
   elapsed: t.IDuration;
   method: t.HttpMethod;
   url: string;

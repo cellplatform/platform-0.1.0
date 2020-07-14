@@ -1,4 +1,4 @@
-import { color, css } from '@platform/css';
+import { color, css, CssValue } from '@platform/css';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -13,12 +13,14 @@ import { t } from '../../common';
 import { Foo, ObjectView, log } from '@platform/ui.dev';
 import { Button } from '@platform/ui.button';
 
+export type ITestProps = { style?: CssValue };
+
 export type ITestState = {
   theme?: t.TreeTheme;
   root?: t.ITreeNode;
   current?: string;
 };
-export class Test extends React.PureComponent<{}, ITestState> {
+export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Fields]
    */
@@ -27,7 +29,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     theme: 'LIGHT',
     // current: 'root.1.1',
   };
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.TreeViewEvent>();
   private mouse$ = new Subject<t.TreeNodeMouseEvent>();
@@ -151,7 +153,7 @@ export class Test extends React.PureComponent<{}, ITestState> {
     };
 
     return (
-      <div {...styles.base}>
+      <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
           <div>
             {this.button('theme: LIGHT', () => this.state$.next({ theme: 'LIGHT' }))}

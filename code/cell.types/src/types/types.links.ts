@@ -26,7 +26,7 @@ export type ILinkValue<U extends t.IUri, Q extends ILinkQuery> = {
  * a cell's { links } object map.
  */
 export type ILink<U extends t.IUri, Q extends ILinkQuery> = ILinkKey & ILinkValue<U, Q>;
-export type ILinkQuery = {};
+export type ILinkQuery = Record<string, string | boolean>;
 
 /**
  * Parsed properties of a file linked to a cell.

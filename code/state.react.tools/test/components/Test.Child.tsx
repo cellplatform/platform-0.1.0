@@ -9,7 +9,7 @@ export type IChildProps = {
 };
 
 export class Child extends React.PureComponent<IChildProps> {
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = state.Context;
   // public context!: state.ReactContext;

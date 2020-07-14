@@ -11,10 +11,10 @@ export type ICmdPlugins = {
   events$: Observable<t.CmdAppEvent>;
   exit: t.CmdAppExit;
   commands: ICmdPlugin[];
-  command<T extends object = {}>(cmd: ICmdPluginArgs<T>): ICmdPluginResponse;
+  command<T extends Record<string, unknown> = any>(cmd: ICmdPluginArgs<T>): ICmdPluginResponse;
 };
 
-export type ICmdPluginArgs<T extends object = {}> = {
+export type ICmdPluginArgs<T extends Record<string, unknown> = any> = {
   name: string;
   description: string;
   alias?: string;
@@ -24,10 +24,10 @@ export type ICmdPlugin = ICmdPluginArgs & {
   options: ICmdPluginOption<any>[];
 };
 
-export type CmdPluginHandler<A extends object = {}> = (
+export type CmdPluginHandler<A extends Record<string, unknown> = any> = (
   args: ICmdPluginHandlerArgs<A>,
 ) => Promise<any>;
-export type ICmdPluginHandlerArgs<A extends object = {}> = {
+export type ICmdPluginHandlerArgs<A extends Record<string, unknown> = any> = {
   argv: A;
   events$: Observable<t.CmdAppEvent>;
   exit: t.CmdAppExit;

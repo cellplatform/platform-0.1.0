@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { Loader } from './Loader';
 import { t, time } from '../../common';
 
-const Foo = (props: {}) => <div />;
+const Foo = (props: Record<string, unknown>) => <div />;
 
 describe('Loader', () => {
   it('adds a module configurtion', () => {

@@ -10,7 +10,7 @@ export type ITypedSheetState = {
   readonly uri: t.INsUri;
   readonly fetch: t.ISheetFetcher;
 
-  readonly dispose$: t.Observable<{}>;
+  readonly dispose$: t.Observable<void>;
   readonly event$: t.Observable<t.TypedSheetEvent>;
   readonly change$: t.Observable<t.ITypedSheetChange>;
   readonly changed$: t.Observable<t.ITypedSheetChanged>;

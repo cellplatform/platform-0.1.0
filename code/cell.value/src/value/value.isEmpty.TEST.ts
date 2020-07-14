@@ -56,7 +56,7 @@ describe('isEmpty (cell)', () => {
   });
 
   it('isEmptyCellProps', () => {
-    const test = (input: {} | undefined, expected: boolean) => {
+    const test = (input: Record<string, unknown> | undefined, expected: boolean) => {
       expect(value.isEmptyCellProps(input)).to.eql(expected);
     };
     test(undefined, true);
@@ -74,7 +74,7 @@ describe('isEmpty (cell)', () => {
   });
 
   it('isEmptyCellLinks', () => {
-    const test = (input: {} | undefined, expected: boolean) => {
+    const test = (input: t.ICellData['links'], expected: boolean) => {
       expect(value.isEmptyCellLinks(input)).to.eql(expected);
     };
     test(undefined, true);

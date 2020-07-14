@@ -306,7 +306,10 @@ export class Urls implements t.IUrls {
    * [INTERNAL]
    */
 
-  private toUrl = <Q extends object>(path: string, options: { query?: Q } = {}): t.IUrl<Q> => {
+  private toUrl = <Q extends Record<string, unknown>>(
+    path: string,
+    options: { query?: Q } = {},
+  ): t.IUrl<Q> => {
     const { query } = options;
     return new Url<Q>({ origin: this.origin, path, query });
   };

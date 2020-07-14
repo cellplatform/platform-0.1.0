@@ -17,7 +17,7 @@ export type IDragTargetState = {
 
 export class DragTarget extends React.PureComponent<IDragTargetProps, IDragTargetState> {
   public static dropEventToFiles = readDropEvent;
-  public static events(event$: Observable<t.DragTargetEvent>, unmounted$?: Observable<{}>) {
+  public static events(event$: Observable<t.DragTargetEvent>, unmounted$?: Observable<void>) {
     event$ = unmounted$ ? event$.pipe(takeUntil(unmounted$)) : event$;
     const over$ = rx.payload<t.IDragTargetOverEvent>(event$, 'cell.ui/DragTarget/over');
     const drop$ = rx.payload<t.IDragTargetDropEvent>(event$, 'cell.ui/DragTarget/drop');
@@ -26,7 +26,7 @@ export class DragTarget extends React.PureComponent<IDragTargetProps, IDragTarge
 
   public state: IDragTargetState = {};
   private state$ = new Subject<Partial<IDragTargetState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private event$ = this.props.event$ || new Subject<t.DragTargetEvent>();
 
   /**

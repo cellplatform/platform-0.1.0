@@ -49,7 +49,7 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
   /**
    * [Fields]
    */
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private _args: IMongoStoreArgs;
@@ -177,13 +177,13 @@ export class MongoStore<G = any> implements t.IMongoStore<G> {
    */
   public remove(query: any, options: t.INedbStoreRemoveOptions = {}) {
     this.throwIfDisposed('remove');
-    return new Promise<{}>(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
       await this.ensureConnected();
       const { multi } = options;
       const single = !Boolean(multi);
       try {
         await this.collection.remove(query, { single });
-        resolve({});
+        resolve();
       } catch (error) {
         reject(error);
       }

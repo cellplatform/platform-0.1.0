@@ -18,7 +18,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {
     value: DEFAULT.VALUE,
   };
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.FormulaInputEvent>();
 
@@ -29,29 +29,29 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Lifecycle]
    */
   public componentWillMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe(e => this.setState(e));
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
 
-    events$.subscribe(e => {
+    events$.subscribe((e) => {
       console.log('🌳 EVENT', e);
     });
 
     events$
       .pipe(
-        filter(e => e.type === 'INPUT/formula/tab'),
-        map(e => e.payload as t.IFormulaInputTab),
+        filter((e) => e.type === 'INPUT/formula/tab'),
+        map((e) => e.payload as t.IFormulaInputTab),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         // e.cancel();
         // NB: supressed with `allowTab:false` property on component (below).
       });
 
     events$
       .pipe(
-        filter(e => e.type === 'INPUT/formula/enter'),
-        map(e => e.payload as t.IFormulaInputEnter),
+        filter((e) => e.type === 'INPUT/formula/enter'),
+        map((e) => e.payload as t.IFormulaInputEnter),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         // Example: Only allow new-line when SHIFT modifier key is pressed.
         if (!e.modifierKeys.shift) {
           e.cancel();
@@ -60,20 +60,20 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     events$
       .pipe(
-        filter(e => e.type === 'INPUT/formula/changing'),
-        map(e => e.payload as t.IFormulaInputChanging),
+        filter((e) => e.type === 'INPUT/formula/changing'),
+        map((e) => e.payload as t.IFormulaInputChanging),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         // Example: selectively cancel a change via the event.
         // e.cancel();
       });
 
     events$
       .pipe(
-        filter(e => e.type === 'INPUT/formula/changed'),
-        map(e => e.payload as t.IFormulaInputChanged),
+        filter((e) => e.type === 'INPUT/formula/changed'),
+        map((e) => e.payload as t.IFormulaInputChanged),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.state$.next({ value: e.to });
       });
   }

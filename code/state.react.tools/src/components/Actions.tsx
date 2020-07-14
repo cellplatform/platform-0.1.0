@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, t, value } from '../common';
-import { Action } from './Action';
+import { Action } from './Action'; // eslint-disable-line
 
 export type IActionsProps = {
   events: t.IStoreEvent[];
@@ -16,7 +16,7 @@ export type IActionsState = {};
 export class Actions extends React.PureComponent<IActionsProps, IActionsState> {
   public state: IActionsState = {};
   private state$ = new Subject<Partial<IActionsState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

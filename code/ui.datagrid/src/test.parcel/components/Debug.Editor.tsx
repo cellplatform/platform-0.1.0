@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { color, css, datagrid, MeasureSize, ObjectView, t, time } from '../common';
+import { color, css, datagrid, MeasureSize, ObjectView, t, time, CssValue } from '../common';
 
 const PADDING = 10;
 
-export type IDebugEditorProps = {};
+export type IDebugEditorProps = { style?: CssValue };
 export type IDebugEditorState = {
   value?: t.CellValue;
   width?: number;
@@ -15,7 +15,7 @@ export type IDebugEditorState = {
 
 export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEditorState> {
   public state: IDebugEditorState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IDebugEditorState>>();
 
   public static contextType = datagrid.EditorContext;
@@ -119,7 +119,7 @@ export class DebugEditor extends React.PureComponent<IDebugEditorProps, IDebugEd
     };
 
     return (
-      <div {...styles.base}>
+      <div {...css(styles.base, this.props.style)}>
         <input
           {...css(STYLES.inputText, styles.input)}
           ref={this.inputRef}

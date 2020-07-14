@@ -1,6 +1,6 @@
 {
   "name": "ui.bi.smb",
-  "version": "0.0.9",
+  "version": "0.0.11",
   "description": "",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,19 +16,19 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.client": "0.2.117",
-    "@platform/cell.ui": "0.1.59",
-    "@platform/cell.ui.finder": "^0.0.66",
+    "@platform/cell.client": "0.2.119",
+    "@platform/cell.ui": "0.1.61",
+    "@platform/cell.ui.finder": "^0.0.68",
     "@platform/libs": "0.2.2",
     "@platform/polyfill": "0.0.1",
-    "@platform/react": "0.4.37",
-    "@platform/state": "0.5.4",
+    "@platform/react": "0.4.39",
+    "@platform/state": "0.5.6",
     "recharts": "1.8.5"
   },
   "devDependencies": {
-    "@platform/test": "0.1.12",
-    "@platform/ts": "3.9.3",
-    "@platform/ui.dev": "0.0.11"
+    "@platform/test": "0.1.14",
+    "@platform/ts": "3.9.5",
+    "@platform/ui.dev": "0.0.13"
   },
   "files": [
     "lib",

@@ -22,7 +22,7 @@ const { CSS } = constants;
 export class Splash extends React.PureComponent<ISplashProps, ISplashState> {
   public state: ISplashState = { isLoaded: false };
   private state$ = new Subject<Partial<ISplashState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

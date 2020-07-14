@@ -40,7 +40,7 @@ export class Switch extends React.PureComponent<ISwitchProps, ISwitchState> {
    */
   public state: ISwitchState = {};
   private state$ = new Subject<Partial<ISwitchState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject<void>();
   private events$ = new Subject<t.SwitchEvent>();
   private mouse: mouse.IMouseHandlers;
 

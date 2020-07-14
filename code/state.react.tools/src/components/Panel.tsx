@@ -1,8 +1,8 @@
 import * as React from 'react';
 
 import { COLORS, css, CssValue, t, value } from '../common';
-import { Actions } from './Actions';
-import { State } from './State';
+import { Actions } from './Actions'; // eslint-disable-line
+import { State } from './State'; // eslint-disable-line
 
 export type IPanelProps = {
   total: number;
@@ -52,7 +52,7 @@ export class Panel extends React.PureComponent<IPanelProps> {
     return (
       <div {...css(styles.base, this.props.style)}>
         {this.renderState()}
-        <Actions events={this.actions} total={this.total} />
+        <Actions events={this.actions} total={this.total}></Actions>
       </div>
     );
   }

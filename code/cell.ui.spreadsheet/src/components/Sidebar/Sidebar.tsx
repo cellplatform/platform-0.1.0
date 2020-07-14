@@ -10,7 +10,7 @@ export type ISidebarState = {};
 export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
   public state: ISidebarState = {};
   private state$ = new Subject<Partial<ISidebarState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;

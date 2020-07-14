@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.schema",
-  "version": "0.4.135",
+  "version": "0.4.140",
   "description": "URI and database schemas for the `cell.os`.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,21 +12,21 @@
     "prepare": "ts-node -T scripts.ts/prepare && ts prepare && rm -rf tmp"
   },
   "dependencies": {
-    "@platform/cache": "0.2.31",
-    "@platform/cell.coord": "0.8.143",
-    "@platform/cell.types": "0.4.122",
-    "@platform/fs.types": "0.0.12",
-    "@platform/fsdb.types": "0.6.26",
+    "@platform/cache": "0.2.33",
+    "@platform/cell.coord": "0.8.147",
+    "@platform/cell.types": "0.4.126",
+    "@platform/fs.types": "0.0.14",
+    "@platform/fsdb.types": "0.6.28",
     "@platform/libs": "0.2.2",
-    "@platform/util.hash": "0.0.31",
-    "@platform/util.mimetype": "0.1.11",
-    "@platform/util.string": "0.5.8",
-    "@platform/util.value": "0.7.24"
+    "@platform/util.hash": "0.0.33",
+    "@platform/util.mimetype": "0.1.13",
+    "@platform/util.string": "0.5.10",
+    "@platform/util.value": "0.7.26"
   },
   "devDependencies": {
-    "@platform/npm": "0.3.2",
-    "@platform/test": "0.1.12",
-    "@platform/ts": "3.9.3"
+    "@platform/npm": "0.3.4",
+    "@platform/test": "0.1.14",
+    "@platform/ts": "3.9.5"
   },
   "files": [
     "lib",

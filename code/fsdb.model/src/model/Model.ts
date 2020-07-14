@@ -3,7 +3,7 @@ import { filter, share, take, takeUntil } from 'rxjs/operators';
 import { R, defaultValue, t, time } from './common';
 
 export type IModelArgs<
-  P extends object,
+  P extends Record<string, unknown>,
   D extends P,
   L extends t.IModelLinksSchema,
   C extends t.IModelChildrenSchema
@@ -32,7 +32,7 @@ export type IModelArgs<
  *
  */
 export class Model<
-  P extends object, //                          Properties.
+  P extends Record<string, unknown>, //         Properties.
   D extends P = P, //                           Document properties (if additional to props, ie hidden values).
   L extends t.IModelLinksSchema = any, //       Link references.
   C extends t.IModelChildrenSchema = any //     Child documents.
@@ -41,7 +41,7 @@ export class Model<
    * [Lifecycle]
    */
   public static create = <
-    P extends object,
+    P extends Record<string, unknown>,
     D extends P = P,
     L extends t.IModelLinksSchema = any,
     C extends t.IModelChildrenSchema = any
@@ -90,7 +90,7 @@ export class Model<
   private _changes: t.IModelChange<P, D>[] = [];
   private _typename: string;
 
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.ModelEvent>();
@@ -308,7 +308,9 @@ export class Model<
   public set(props: Partial<P>) {
     this.throwIfDisposed('set');
     if (typeof props === 'object') {
-      Object.keys(props).forEach((key) => (this.props[key] = props[key]));
+      Object.keys(props).forEach((key) => {
+        (this.props as Record<string, unknown>)[key] = props[key];
+      });
     }
     return this;
   }

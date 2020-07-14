@@ -45,7 +45,7 @@ export type IPropEditorState = {
 export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEditorState> {
   public state: IPropEditorState = {};
   private state$ = new Subject<Partial<IPropEditorState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private didUpdate$ = new Subject();
   private value$ = new Subject<t.TextInputEvent>();
 
@@ -283,8 +283,8 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
         flex: 1,
         display: 'flex',
         Flex: 'horizontal-start-stretch',
-        fontFamily: MONOSPACE.FAMILY,
         ...FONT_STYLE,
+        fontFamily: MONOSPACE.FAMILY,
       }),
       outer: css({
         Flex: 'center-start',
@@ -369,7 +369,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
     }
 
     if (type === 'object' && typeof value === 'object') {
-      const keys = Object.keys(value as object);
+      const keys = Object.keys(value as Record<string, unknown>);
       const label = `object{${keys.length}}`;
       const el = this.renderComplex({ icon: Icons.Object, label });
       return done(el);

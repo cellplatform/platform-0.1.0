@@ -6,7 +6,7 @@ import { t, is } from '../common';
 export async function authorize(args: {
   policy: t.IAuthPolicy | t.IAuthPolicy[];
   user?: t.IAuthUser;
-  variables?: object;
+  variables?: Record<string, unknown>;
   getError?: (message: string) => Error;
 }) {
   const { user, variables = {}, getError } = args;

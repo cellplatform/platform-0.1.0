@@ -46,7 +46,7 @@ export function configureLanguage(
   //    Note:
   //        Remove `export declare` as this causes the types to now show up
   //        a simple `declare` on it's own seems to work.
-  const types = settings.types.map(code => clean(code)).join('\n');
+  const types = settings.types.map((code) => clean(code)).join('\n');
 
   if (!ADDED_TYPES.includes(types)) {
     ADDED_TYPES.push(types); // NB: Ensure the types are only added once.
@@ -56,8 +56,8 @@ export function configureLanguage(
   // Add base ES (Javascript) language definitions.
   if (ECMASCRIPT_DEFS) {
     Object.keys(ECMASCRIPT_DEFS)
-      .map(key => ECMASCRIPT_DEFS[key])
-      .forEach(lib => (libs += lib));
+      .map((key) => ECMASCRIPT_DEFS[key])
+      .forEach((lib) => (libs += lib));
   }
 
   // Finish up.
@@ -70,7 +70,7 @@ export function configureLanguage(
  * Internal
  */
 function clean(code: string) {
-  const lines = code.split('\n').map(line => {
+  const lines = code.split('\n').map((line) => {
     // Remove ES "import" statements.
     if (line.startsWith('import ')) {
       return '';

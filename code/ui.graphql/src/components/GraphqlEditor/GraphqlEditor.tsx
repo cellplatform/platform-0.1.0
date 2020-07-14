@@ -20,12 +20,9 @@ export type IGraphqlEditorProps = {
   style?: CssValue;
   events$?: Subject<GraphqlEditorEvent>;
 };
-export type IGraphqlEditorState = {};
 
-export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGraphqlEditorState> {
-  public state: IGraphqlEditorState = {};
-  private unmounted$ = new Subject<{}>();
-  private state$ = new Subject<Partial<IGraphqlEditorState>>();
+export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps> {
+  private unmounted$ = new Subject();
 
   private _result: t.JsonMap | undefined;
   private _schema: t.JsonMap | undefined;
@@ -39,8 +36,6 @@ export class GraphqlEditor extends React.PureComponent<IGraphqlEditorProps, IGra
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-
     // Bubble events to parent.
     if (this.props.events$) {
       this.events$.subscribe(this.props.events$);

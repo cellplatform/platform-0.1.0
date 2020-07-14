@@ -14,7 +14,7 @@ export type ICmdAppExit = { ok: boolean; code: number };
 
 export type ICmdAppShowHelpBeforeEvent = { type: 'CLI/showHelp/before'; payload: ICmdAppShowHelp };
 export type ICmdAppShowHelpAfterEvent = { type: 'CLI/showHelp/after'; payload: ICmdAppShowHelp };
-export type ICmdAppShowHelp = { argv: t.ICmdArgv<{}> };
+export type ICmdAppShowHelp = { argv: t.ICmdArgv<Record<string, unknown>> };
 
 /**
  * Keyboard

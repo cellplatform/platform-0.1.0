@@ -23,7 +23,7 @@ export class TestCellEditor extends React.PureComponent<
   ITestCellEditorState
 > {
   public state: ITestCellEditorState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestCellEditorState>>();
   private events$ = new Subject<t.CellEditorEvent>();
 
@@ -39,7 +39,7 @@ export class TestCellEditor extends React.PureComponent<
 
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
     let value = '';
     if (mode === 'FORMULA') {
@@ -53,32 +53,32 @@ export class TestCellEditor extends React.PureComponent<
     }
     this.state$.next({ value });
 
-    events$.subscribe(e => {
+    events$.subscribe((e) => {
       console.log('🌳', e.type, e.payload);
     });
 
     const changing$ = events$.pipe(
-      filter(e => e.type === 'CELL_EDITOR/changing'),
-      map(e => e.payload as t.ICellEditorChanging),
+      filter((e) => e.type === 'CELL_EDITOR/changing'),
+      map((e) => e.payload as t.ICellEditorChanging),
     );
     const changed$ = events$.pipe(
-      filter(e => e.type === 'CELL_EDITOR/changed'),
-      map(e => e.payload as t.ICellEditorChanged),
+      filter((e) => e.type === 'CELL_EDITOR/changed'),
+      map((e) => e.payload as t.ICellEditorChanged),
     );
     const size$ = events$.pipe(
-      filter(e => e.type === 'CELL_EDITOR/size'),
-      map(e => e as t.ICellEditorSizeEvent),
+      filter((e) => e.type === 'CELL_EDITOR/size'),
+      map((e) => e as t.ICellEditorSizeEvent),
     );
 
-    changing$.subscribe(e => {
+    changing$.subscribe((e) => {
       // e.cancel();
     });
 
-    changed$.subscribe(e => {
+    changed$.subscribe((e) => {
       this.state$.next({ value: e.value.to });
     });
 
-    size$.subscribe(e => {
+    size$.subscribe((e) => {
       const size = e.payload.to;
       this.state$.next({ height: size.height });
     });

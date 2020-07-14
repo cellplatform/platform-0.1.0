@@ -13,12 +13,9 @@ export type IRootColumnsProps = {
   tree$: Subject<t.TreeViewEvent>;
   style?: CssValue;
 };
-export type IRootColumnsState = {};
 
-export class RootColumns extends React.PureComponent<IRootColumnsProps, IRootColumnsState> {
-  public state: IRootColumnsState = {};
-  private state$ = new Subject<Partial<IRootColumnsState>>();
-  private unmounted$ = new Subject<{}>();
+export class RootColumns extends React.PureComponent<IRootColumnsProps> {
+  private unmounted$ = new Subject();
 
   public static contextType = Context;
   public context!: t.IShellContext;
@@ -26,12 +23,7 @@ export class RootColumns extends React.PureComponent<IRootColumnsProps, IRootCol
   /**
    * [Lifecycle]
    */
-  constructor(props: IRootColumnsProps) {
-    super(props);
-  }
-
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.model.changed$
       .pipe(takeUntil(this.unmounted$), debounceTime(0))
       .subscribe((e) => this.forceUpdate());

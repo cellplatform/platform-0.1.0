@@ -102,7 +102,7 @@ export class PgDoc implements t.IDb {
   public readonly db: Pg;
   private readonly uri = DbUri.create();
 
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.DbEvent>();

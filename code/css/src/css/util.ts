@@ -99,7 +99,10 @@ export const toEdges: t.CssToEdges<t.ICssEdges> = (input, options = {}) => {
 /**
  * Prefixes each of the edge properties with the given prefix.
  */
-export function prefixEdges<T extends {}>(prefix: string, edges: Partial<t.ICssEdges>): T {
+export function prefixEdges<T extends Record<string, unknown>>(
+  prefix: string,
+  edges: Partial<t.ICssEdges>,
+): T {
   return Object.keys(edges).reduce((acc, key) => {
     const value = edges[key];
     key = `${prefix}${key[0].toUpperCase()}${key.substr(1)}`;

@@ -18,7 +18,7 @@ export type ISelectTestState = {};
 export class SelectTest extends React.PureComponent<ISelectTestProps, ISelectTestState> {
   public state: ISelectTestState = {};
   private state$ = new Subject<Partial<ISelectTestState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

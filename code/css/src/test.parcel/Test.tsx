@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { css, color } from '..';
 
-export type ITestProps = {};
+export type ITestProps = Record<string, unknown>;
 
 export class Test extends React.PureComponent<ITestProps> {
   /**

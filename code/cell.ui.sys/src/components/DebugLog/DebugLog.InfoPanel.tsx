@@ -19,7 +19,7 @@ export class DebugLogInfoPanel extends React.PureComponent<
 > {
   public state: IDebugLogInfoPanelState = {};
   private state$ = new Subject<Partial<IDebugLogInfoPanelState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

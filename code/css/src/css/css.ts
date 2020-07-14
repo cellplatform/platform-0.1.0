@@ -43,7 +43,7 @@ export const image = (
   return result;
 };
 
-const mergeAndReplace = (key: string, value: any, target: object) => {
+const mergeAndReplace = (key: string, value: any, target: React.CSSProperties) => {
   Object.assign(target, value);
   delete target[key];
   return target;

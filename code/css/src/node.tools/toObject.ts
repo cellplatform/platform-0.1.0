@@ -1,4 +1,7 @@
-type Inspect = (obj: object, options: { colors?: boolean; compact?: boolean }) => string;
+type Inspect = (
+  obj: Record<string, unknown>,
+  options: { colors?: boolean; compact?: boolean },
+) => string;
 type Declaration = { selector: string; items: Style[] };
 type Style = { name: string; value: string };
 

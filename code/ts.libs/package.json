@@ -1,6 +1,6 @@
 {
   "name": "@platform/ts.libs",
-  "version": "3.9.7",
+  "version": "3.9.9",
   "description": "Common TypesScript and linter configuration.",
   "scripts": {
     "test": "echo no-op",

@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import { color, COLORS, css, CssValue, t, value } from '../common';
-import { Actions } from './Actions';
-import { Text } from './primitives';
-import { State } from './State';
+import { Actions } from './Actions'; // eslint-disable-line
+import { Text } from './primitives'; // eslint-disable-line
+import { State } from './State'; // eslint-disable-line
 
 export type ISplitPanelProps = {
   actions: t.IStoreEvent[];

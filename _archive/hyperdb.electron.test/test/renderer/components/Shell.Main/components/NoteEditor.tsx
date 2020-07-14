@@ -5,17 +5,7 @@ import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 
 import * as cli from '../../../cli';
 import { updateWatch } from '../../../cli/cmd.watch';
-import {
-  color,
-  COLORS,
-  CommandState,
-  constants,
-  containsFocus,
-  css,
-  events,
-  CssValue,
-  t,
-} from '../../../common';
+import { color, COLORS, constants, containsFocus, css, CssValue, events, t } from '../../../common';
 
 export type INoteEditorProps = {
   db: t.ITestRendererDb;
@@ -27,7 +17,7 @@ export type INoteEditorState = {
 
 export class NoteEditor extends React.PureComponent<INoteEditorProps, INoteEditorState> {
   public state: INoteEditorState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<INoteEditorState>>();
   private editorEvents$ = new Subject<TextEditorEvent>();
   private editor: TextEditor | undefined;

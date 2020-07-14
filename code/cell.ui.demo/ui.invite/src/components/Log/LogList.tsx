@@ -12,7 +12,7 @@ export type ILogState = {};
 export class LogList extends React.PureComponent<ILogListProps, ILogState> {
   public state: ILogState = {};
   private state$ = new Subject<Partial<ILogState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

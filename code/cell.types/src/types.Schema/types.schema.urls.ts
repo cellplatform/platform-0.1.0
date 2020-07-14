@@ -1,6 +1,6 @@
 import { t } from '../common';
 
-export type IUrl<Q extends object = {}> = {
+export type IUrl<Q extends Record<string, unknown> = any> = {
   readonly origin: string;
   readonly path: string;
   readonly querystring: string;

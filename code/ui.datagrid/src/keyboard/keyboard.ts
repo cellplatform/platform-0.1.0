@@ -8,7 +8,7 @@ export function init(args: { grid: t.IGrid }) {
   const { grid } = args;
 
   // Common command-event-firing helper.
-  const fire = (command: t.GridCommand, e: t.IGridKeydown, props: {} = {}) => {
+  const fire = (command: t.GridCommand, e: t.IGridKeydown, props: Record<string, unknown> = {}) => {
     grid.command({ command, props, cancel: () => e.cancel() });
   };
 

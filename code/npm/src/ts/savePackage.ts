@@ -32,7 +32,7 @@ export async function savePackage(args: {
 
   // Build output string.
   let text = `export const ${args.const || 'PKG'} = {\n`;
-  const add = (key: string, value: string | object | string[]) => {
+  const add = (key: string, value: string | Record<string, unknown> | string[]) => {
     if (typeof value === 'string') {
       text += `  ${key}: '${value}',\n`;
       return;

@@ -1,10 +1,7 @@
 import { css, CssValue } from '@platform/css';
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 const m = require('react-inspector'); // eslint-disable-line
-
 const ReactInspector = m.default as React.ComponentClass<any>;
 
 export type IObjectViewProps = {
@@ -14,29 +11,8 @@ export type IObjectViewProps = {
   expandPaths?: string[];
   style?: CssValue;
 };
-export type IObjectViewState = {};
 
-export class ObjectView extends React.PureComponent<IObjectViewProps, IObjectViewState> {
-  public state: IObjectViewState = {};
-  private state$ = new Subject<Partial<IObjectViewState>>();
-  private unmounted$ = new Subject<{}>();
-
-  /**
-   * [Lifecycle]
-   */
-  constructor(props: IObjectViewProps) {
-    super(props);
-  }
-
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
-
+export class ObjectView extends React.PureComponent<IObjectViewProps> {
   /**
    * [Render]
    */

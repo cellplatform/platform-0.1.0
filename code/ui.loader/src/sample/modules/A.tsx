@@ -15,7 +15,7 @@ export type IComponentAState = {
 export class ComponentA extends React.PureComponent<IComponentAProps, IComponentAState> {
   public state: IComponentAState = {};
   private state$ = new Subject<Partial<IComponentAState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   public static contextType = loader.Context;
   public context!: t.IMyContext;

@@ -1,16 +1,25 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
+import { color, css, CssValue } from '@platform/css';
 
-import * as cli from '../cli';
-import { color, CommandShell, css, Hr, log, t, TabStrip } from '../common';
+import { TabStrip } from '../../components/TabStrip';
+import { t } from '../common';
+import { log } from '@platform/log/lib/client';
 
 const BLUE = '#0A84FF';
 
-export type ITestProps = {};
+export type IMyTab = { name: string };
 
-export class Test extends React.PureComponent<ITestProps, t.ITestState> {
-  public state: t.ITestState = {
+export type ITestProps = { style?: CssValue };
+export type ITestState = {
+  isDraggable?: boolean;
+  items?: IMyTab[];
+  selected?: number;
+};
+
+export class Test extends React.PureComponent<ITestProps, ITestState> {
+  public state: ITestState = {
     items: [
       { name: 'One' },
       { name: 'Two' },
@@ -21,37 +30,36 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     selected: 0,
   };
   private unmounted$ = new Subject();
-  private state$ = new Subject<Partial<t.ITestState>>();
-  private cli: t.ICommandState = cli.init({ state$: this.state$ });
+  private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.TabstripEvent>();
 
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
-    events$.pipe(filter(e => e.type !== 'TABSTRIP/tab/mouse')).subscribe(e => {
+    events$.pipe(filter((e) => e.type !== 'TABSTRIP/tab/mouse')).subscribe((e) => {
       log.info('🌳', e.type, e.payload);
     });
 
     events$
       .pipe(
-        filter(e => e.type === 'TABSTRIP/sort/complete'),
-        map(e => e.payload as t.ITabstripSortComplete),
+        filter((e) => e.type === 'TABSTRIP/sort/complete'),
+        map((e) => e.payload as t.ITabstripSortComplete),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.state$.next({ items: e.items.to });
       });
 
     events$
       .pipe(
-        filter(e => e.type === 'TABSTRIP/tab/selection'),
-        map(e => e.payload as t.ITabstripSelectionChange),
+        filter((e) => e.type === 'TABSTRIP/tab/selection'),
+        map((e) => e.payload as t.ITabstripSelectionChange),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         this.state$.next({ selected: e.to });
       });
   }
@@ -73,27 +81,30 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
         userSelect: 'none',
       }),
       columns: css({ Flex: 'horizontal' }),
+      hr: css({
+        border: 'none',
+        borderTop: `solid 1px ${color.format(-0.1)}`,
+        MarginY: 80,
+      }),
     };
 
     return (
-      <CommandShell cli={this.cli} tree={{}} localStorage={true}>
-        <div {...styles.base}>
-          <TabStrip
-            items={items}
-            selected={this.state.selected}
-            isDraggable={this.state.isDraggable}
-            renderTab={this.renderTab}
-            events$={this.events$}
-          />
+      <div {...css(styles.base, this.props.style)}>
+        <TabStrip
+          items={items}
+          selected={this.state.selected}
+          isDraggable={this.state.isDraggable}
+          renderTab={this.renderTab}
+          events$={this.events$}
+        />
 
-          <Hr margin={'50 0'} thickness={5} />
+        <div {...styles.hr} />
 
-          <div {...styles.columns}>
-            {this.renderVertical()}
-            {this.renderVertical()}
-          </div>
+        <div {...styles.columns}>
+          {this.renderVertical()}
+          {this.renderVertical()}
         </div>
-      </CommandShell>
+      </div>
     );
   }
 
@@ -118,7 +129,7 @@ export class Test extends React.PureComponent<ITestProps, t.ITestState> {
     );
   };
 
-  private renderTab: t.TabFactory<t.IMyTab> = e => {
+  private renderTab: t.TabFactory<IMyTab> = (e) => {
     const selectedColor = e.isFocused ? BLUE : color.format(-0.4);
 
     const styles = {

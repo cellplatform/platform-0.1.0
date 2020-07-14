@@ -8,7 +8,7 @@ export function defaultValue<T>(value: T | undefined, defaultValue?: T) {
 /**
  * Deletes undefined keys from an object (clone).
  */
-export function deleteUndefined<T extends object>(obj: T) {
+export function deleteUndefined<T extends Record<string, unknown>>(obj: T) {
   obj = { ...(obj as any) };
   Object.keys(obj)
     .filter((key) => obj[key] === undefined)
@@ -19,7 +19,7 @@ export function deleteUndefined<T extends object>(obj: T) {
 /**
  * Deletes empty keys from an object (clone).
  */
-export function deleteEmpty<T extends object>(obj: T) {
+export function deleteEmpty<T extends Record<string, unknown>>(obj: T) {
   obj = { ...(obj as any) };
   Object.keys(obj)
     .filter((key) => obj[key] === undefined || obj[key] === '')

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { css, CssValue } from '../common';
-import { ObjectView } from './primitives';
+import { ObjectView } from './primitives'; // eslint-disable-line
 
 export type IStateProps = {
   name?: string;

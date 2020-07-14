@@ -137,7 +137,7 @@ export class Keyboard<T extends t.KeyCommand> implements t.IKeyboard<T> {
   /**
    * [Fields]
    */
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   public readonly keyPress$: Observable<t.IKeypressEvent>;

@@ -34,7 +34,7 @@ const fromClient = (client: t.IHttpClient) => {
  *    on the TypeName.
  *
  */
-export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
+export class TypedSheet<T = Record<string, unknown>> implements t.ITypedSheet<T> {
   public static client = fromClient;
 
   /**
@@ -45,13 +45,13 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     fetch: t.ISheetFetcher;
     cache?: t.IMemoryCache;
     event$?: Subject<t.TypedSheetEvent>;
-    dispose$?: Observable<{}>;
+    dispose$?: Observable<void>;
     pool?: t.ISheetPool;
   }): t.SheetCtx {
     const fetch = args.fetch;
     const cache = args.cache || MemoryCache.create();
     const event$ = args.event$ || new Subject<t.TypedSheetEvent>();
-    const dispose$ = args.dispose$ || new Subject<{}>();
+    const dispose$ = args.dispose$ || new Subject<void>();
     const pool = args.pool || SheetPool.create();
 
     return {
@@ -133,7 +133,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
   /**
    * Creates a sheet.
    */
-  public static async create<T = {}>(args: {
+  public static async create<T = Record<string, unknown>>(args: {
     fetch: t.ISheetFetcher;
     implements: string | t.INsUri;
     ns?: string | t.INsUri; // NB: If not specified a new URI is generated.
@@ -189,19 +189,20 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     this.implements = Uri.ns(args.implements);
     this.pool = args.pool;
 
+    const self = this as t.ITypedSheet<T>; // eslint-disable-line
     const pool = this.pool;
     const cache = args.cache || MemoryCache.create();
     const event$ = args.event$ || new Subject<t.TypedSheetEvent>();
     const dispose$ = this.dispose$;
 
     this.event$ = event$.asObservable().pipe(takeUntil(dispose$), share());
-    this.state = TypedSheetState.create({ sheet: this, event$, fetch: args.fetch, cache });
+    this.state = TypedSheetState.create({ sheet: self, event$, fetch: args.fetch, cache });
 
     this._ctx = TypedSheet.ctx({ fetch: this.state.fetch, event$, dispose$, cache, pool }); // NB: Use the state-machine's wrapped fetcher.
     this._typeDefs = args.types;
     this._errorList = ErrorList.create({ defaultType: ERROR.TYPE.SHEET, errors: args.errors });
 
-    pool.add(this);
+    pool.add(self);
   }
 
   public dispose() {
@@ -217,7 +218,7 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
 
   private readonly _ctx: t.SheetCtx;
   private readonly _errorList: ErrorList;
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   private readonly _typeDefs: t.INsTypeDef[];
   private _types: t.ITypedSheet['types'];
   private _data: { [typename: string]: TypedSheetData<any, any> } = {};
@@ -308,9 +309,10 @@ export class TypedSheet<T = {}> implements t.ITypedSheet<T> {
     }
 
     // Construct the cursor.
+    const self = this as t.ITypedSheet<T>; // eslint-disable-line
     const types = def.columns;
     const res: t.ITypedSheetData<T, K> = TypedSheetData.create<T, K>({
-      sheet: this,
+      sheet: self,
       typename,
       types,
       ctx,

@@ -2,16 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 
-import { Context, css, t, DEFAULT, util } from '../common';
+import { Context, css, t, DEFAULT, util, CssValue } from '../common';
 const SHELL = DEFAULT.STATE.SHELL;
 
-export type IFooterProps = {};
-export type IFooterState = {};
+export type IFooterProps = { style?: CssValue };
 
-export class Footer extends React.PureComponent<IFooterProps, IFooterState> {
-  public state: IFooterState = {};
-  private state$ = new Subject<Partial<IFooterState>>();
-  private unmounted$ = new Subject<{}>();
+export class Footer extends React.PureComponent<IFooterProps> {
+  private unmounted$ = new Subject();
 
   public static contextType = Context;
   public context!: t.IShellContext;
@@ -20,7 +17,6 @@ export class Footer extends React.PureComponent<IFooterProps, IFooterState> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.model.changed$
       .pipe(takeUntil(this.unmounted$), debounceTime(0))
       .subscribe(() => this.forceUpdate());
@@ -75,6 +71,6 @@ export class Footer extends React.PureComponent<IFooterProps, IFooterState> {
         transition,
       }),
     };
-    return <div {...styles.base}>{this.model.el}</div>;
+    return <div {...css(styles.base, this.props.style)}>{this.model.el}</div>;
   }
 }

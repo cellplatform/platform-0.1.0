@@ -38,14 +38,14 @@ export type IKeyBindingEvent<T extends KeyCommand> = {
 export type IKeyboardArgs<T extends KeyCommand> = {
   bindings?: KeyBindings<T>;
   keyPress$?: Observable<IKeypressEvent>;
-  dispose$?: Observable<any>;
+  dispose$?: Observable<void>;
 };
 
 export type IKeyboard<T extends KeyCommand> = {
   isDisposed: boolean;
-  dispose$: Observable<{}>;
+  dispose$: Observable<void>;
   dispose(): void;
   clone(options?: Partial<IKeyboardArgs<T>>): IKeyboard<T>;
   filter(fn: (e: IKeypressEvent) => boolean): IKeyboard<T>;
-  takeUntil(dispose$: Observable<any>): IKeyboard<T>;
+  takeUntil(dispose$: Observable<void>): IKeyboard<T>;
 };

@@ -19,7 +19,7 @@ export type IDebugLogItemState = {
 export class DebugLogItem extends React.PureComponent<IDebugLogItemProps, IDebugLogItemState> {
   public state: IDebugLogItemState = {};
   private state$ = new Subject<Partial<IDebugLogItemState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

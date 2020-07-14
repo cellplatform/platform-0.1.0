@@ -16,7 +16,7 @@ export class DebugLogToolbar extends React.PureComponent<
 > {
   public state: IDebugLogToolbarState = {};
   private state$ = new Subject<Partial<IDebugLogToolbarState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

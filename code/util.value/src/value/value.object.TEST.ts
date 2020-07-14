@@ -46,7 +46,7 @@ describe('object.build', () => {
   });
 
   it('throws if path overwrites value', () => {
-    const test = (keyPath: string, obj: object) => {
+    const test = (keyPath: string, obj: Record<string, unknown>) => {
       const fn = () => object.build(keyPath, obj);
       expect(fn).to.throw();
     };

@@ -49,7 +49,7 @@ export class NeDb implements t.INeDb {
   private readonly uri = DbUri.create();
   private readonly schema = Schema.create();
 
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.DbEvent>();

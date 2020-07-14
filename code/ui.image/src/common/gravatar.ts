@@ -1,4 +1,4 @@
-const gravatarUrl = require('gravatar-url');
+const gravatarUrl = require('gravatar-url'); // eslint-disable-line
 
 export type GravatarDefault =
   | '404'

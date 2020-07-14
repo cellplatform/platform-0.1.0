@@ -3,7 +3,7 @@ import { value, queryString } from '../common';
 /**
  * Parse a query string.
  */
-export function query<T extends object>(args: { path: string }): T {
+export function query<T extends Record<string, unknown>>(args: { path: string }): T {
   const { path = '' } = args;
   const index = path.indexOf('?');
   const toString = () => (index < 0 ? '' : path.substring(index) || '');

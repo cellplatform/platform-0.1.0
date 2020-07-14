@@ -301,7 +301,7 @@ function includeKey(key: string, union?: coord.range.CellRangeUnion) {
 }
 
 async function setChildren(args: {
-  data: t.IMap<object> | undefined;
+  data: t.IMap<Record<string, unknown>> | undefined;
   getUri: (key: string) => string;
   getModel: (key: string) => t.IModel;
 }) {

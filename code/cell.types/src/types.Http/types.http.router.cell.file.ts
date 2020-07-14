@@ -21,9 +21,9 @@ export type IReqQueryCellFilesUpload = {
 export type IReqQueryCellFilesUploaded = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
-export type IReqQueryCellFilesDelete = {};
+export type IReqQueryCellFilesDelete = Record<string, unknown>; // 🐷 Placeholder type.
 
-export type IReqQueryCellFileInfo = t.IReqQueryFileInfo & {};
+export type IReqQueryCellFileInfo = t.IReqQueryFileInfo;
 export type IReqQueryCellFileDownloadByName = t.IReqQueryCellFileInfo & {
   hash?: string;
   expires?: string; // Parsable duration, eg "1h", "5m" etc. Max: "1h".
@@ -79,7 +79,7 @@ export type IResPostCellFilesUploadUrls = t.IResGetCellUrls & {
 /**
  * POST: Cell Files (Upload Complete)
  */
-export type IReqPostCellFilesUploadCompleteBody = {};
+export type IReqPostCellFilesUploadCompleteBody = Record<string, unknown>; // 🐷 Placeholder type.
 export type IResPostCellFilesUploadComplete = t.IUriResponse<IResPostCellFilesUploadCompleteData>;
 export type IResPostCellFilesUploadCompleteData = {
   cell: t.ICellData;

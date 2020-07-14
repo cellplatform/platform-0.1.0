@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, css, CssValue, MONOSPACE, t } from '../common';
-import { ObjectView } from './primitives';
+import { ObjectView } from './primitives'; // eslint-disable-line
 
 export type IActionProps = {
   index: number;
@@ -16,7 +16,7 @@ export type IActionState = {
 
 export class Action extends React.PureComponent<IActionProps, IActionState> {
   public state: IActionState = {};
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<IActionState>>();
 
   /**

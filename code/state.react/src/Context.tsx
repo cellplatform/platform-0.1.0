@@ -43,7 +43,10 @@ export type ReactContext = React.ContextType<typeof Context>;
  * store (and optionally additional props) through the react
  * hierarchy to child components.
  */
-export function createProvider<P = {}>(store: t.IStoreContext, ctx?: P): React.FunctionComponent {
+export function createProvider<P = Record<string, unknown>>(
+  store: t.IStoreContext,
+  ctx?: P,
+): React.FunctionComponent {
   const context: t.IStateContext = {
     getStore: () => store as t.IStoreContext<any, any>,
     ...(ctx || {}), // Optional props to extend the context with.

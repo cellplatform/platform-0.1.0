@@ -69,7 +69,7 @@ export type ITypedSheetRefsLoadingEvent = {
   type: 'SHEET/refs/loading';
   payload: ITypedSheetRefsLoading;
 };
-export type ITypedSheetRefsLoading<T = {}, K extends keyof T = any> = {
+export type ITypedSheetRefsLoading<T = Record<string, unknown>, K extends keyof T = any> = {
   sheet: t.ITypedSheet;
   refs: t.ITypedSheetRefs<T, K>;
 };
@@ -81,7 +81,7 @@ export type ITypedSheetRefsLoadedEvent = {
   type: 'SHEET/refs/loaded';
   payload: ITypedSheetRefsLoaded;
 };
-export type ITypedSheetRefsLoaded<T = {}> = ITypedSheetRefsLoading<T>;
+export type ITypedSheetRefsLoaded<T = Record<string, unknown>> = ITypedSheetRefsLoading<T>;
 
 /**
  * Dispatches a change to a cell's data.

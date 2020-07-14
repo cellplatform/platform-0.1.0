@@ -116,7 +116,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     // value: '* one\n* two',
     // value: LOREM,
   };
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private events$ = new Subject<t.TextEditorEvent>();
 
@@ -129,38 +129,38 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public componentWillMount() {
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    state$.subscribe(e => this.setState(e));
+    state$.subscribe((e) => this.setState(e));
 
-    events$.subscribe(e => {
+    events$.subscribe((e) => {
       console.log('🌳', e.type, e.payload);
     });
 
     events$
       .pipe(
-        filter(e => e.type === 'EDITOR/keydown'),
-        map(e => e.payload as t.ITextEditorKeydown),
+        filter((e) => e.type === 'EDITOR/keydown'),
+        map((e) => e.payload as t.ITextEditorKeydown),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         // e.cancel();
       });
 
     events$
       .pipe(
-        filter(e => e.type === 'EDITOR/keydown/enter'),
-        map(e => e.payload as t.ITextEditorEnterKey),
+        filter((e) => e.type === 'EDITOR/keydown/enter'),
+        map((e) => e.payload as t.ITextEditorEnterKey),
         // filter(e => e.isMeta),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         // e.cancel();
       });
 
     events$
       // BEFORE change.
       .pipe(
-        filter(e => e.type === 'EDITOR/changing'),
-        map(e => e.payload as t.ITextEditorChanging),
+        filter((e) => e.type === 'EDITOR/changing'),
+        map((e) => e.payload as t.ITextEditorChanging),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const { transaction } = e;
         const transactions = [...(this.state.transactions || []), transaction];
         this.state$.next({ transactions });
@@ -170,10 +170,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     events$
       // AFTER change.
       .pipe(
-        filter(e => e.type === 'EDITOR/changed'),
-        map(e => e.payload as t.ITextEditorChanged),
+        filter((e) => e.type === 'EDITOR/changed'),
+        map((e) => e.payload as t.ITextEditorChanged),
       )
-      .subscribe(e => {
+      .subscribe((e) => {
         const { state } = e;
         this.state$.next({
           editorState: state.to,

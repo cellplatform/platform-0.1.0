@@ -3,8 +3,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { CssValue, t, value } from '../common';
-import { SplitPanel } from './SplitPanel';
-import { Panel } from './Panel';
+import { SplitPanel } from './SplitPanel'; // eslint-disable-line
+import { Panel } from './Panel'; // eslint-disable-line
 
 export type IStoreProps = {
   store: t.IStoreContext;
@@ -22,7 +22,7 @@ export type IStoreState = {
 export class Store extends React.PureComponent<IStoreProps, IStoreState> {
   public state: IStoreState = {};
   private state$ = new Subject<Partial<IStoreState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

@@ -61,7 +61,7 @@ export class FileDb implements t.IDb {
     },
   };
 
-  private readonly _dispose$ = new Subject<{}>();
+  private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _events$ = new Subject<t.DbEvent>();

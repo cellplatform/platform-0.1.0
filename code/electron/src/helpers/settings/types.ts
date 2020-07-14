@@ -15,8 +15,8 @@ export type ISettingsClient<T extends SettingsJson = any> = {
   keys: () => Promise<(keyof T)[]>;
   get: <K extends keyof T>(key: K, defaultValue?: T[K]) => Promise<T[K]>;
   put: <K extends keyof T>(key: K, value: T[K]) => Promise<T[K]>;
-  delete: <K extends keyof T>(...keys: (keyof T)[]) => Promise<{}>;
-  clear: () => Promise<{}>;
+  delete: <K extends keyof T>(...keys: (keyof T)[]) => Promise<void>;
+  clear: () => Promise<void>;
   openInEditor: () => ISettingsClient<T>;
   openFolder: () => ISettingsClient<T>;
   namespace(namespace: string): ISettingsClient<T>;
@@ -81,7 +81,7 @@ export type ISettingsChange<T extends SettingsJson = any> = {
 
 export type ISettingsGetKeysEvent = {
   type: '@platform/SETTINGS/keys';
-  payload: {};
+  payload: Record<string, undefined>; // NB: Placeholder {object}.
 };
 
 export type ISettingsGetValuesEvent = {

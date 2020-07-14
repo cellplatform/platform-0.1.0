@@ -21,7 +21,7 @@ export class PageHeader extends React.PureComponent<IPageHeaderProps, IPageHeade
 
   public state: IPageHeaderState = {};
   private state$ = new Subject<Partial<IPageHeaderState>>();
-  private unmounted$ = new Subject<{}>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]

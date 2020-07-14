@@ -37,7 +37,7 @@ export class MemoryQueue implements t.IMemoryQueue {
   private items: IItem[] = [];
   private _current: IItem | undefined;
   private _isRunning = true;
-  private _dispose$ = new Subject<{}>();
+  private _dispose$ = new Subject<void>();
   private _event$ = new Subject<t.QueueEvent>();
 
   public readonly id = idUtil.shortid();
