@@ -75,6 +75,10 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
     return this._state;
   }
 
+  public get readonly() {
+    return this as t.IStateObject<T>;
+  }
+
   /**
    * [Methods]
    */

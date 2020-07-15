@@ -4,7 +4,7 @@ type O = Record<string, unknown>;
 
 export type StateObject = {
   create<T extends O>(initial: T): IStateObjectWritable<T>;
-  readonly<T extends O>(obj: IStateObjectWritable<T>): IStateObject<T>;
+  readonly<T extends O>(obj: IStateObjectWritable<T> | IStateObject<T>): IStateObject<T>;
 };
 
 /**
@@ -22,6 +22,7 @@ export type IStateObject<T extends O> = {
  * Writeable.
  */
 export type IStateObjectWritable<T extends O> = IStateObject<T> & {
+  readonly readonly: IStateObject<T>;
   change(fn: StateObjectChanger<T>): IStateObjectChangeResponse<T>;
 };
 
