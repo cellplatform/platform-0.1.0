@@ -137,6 +137,7 @@ describe('TypeCache', () => {
           payload: {
             ns: 'foo',
             changes: {
+              uri: 'ns:foo',
               cells: { B2: { kind: 'CELL', ns: 'foo', key: 'B2', from: {}, to: { value: 123 } } },
             },
           },
@@ -271,7 +272,7 @@ describe('TypeCache', () => {
       it('empty', () => {
         const entry = TypeCacheCells.create('ns:foo');
         entry.total.rows = 10;
-        entry.sync({});
+        entry.sync({ uri: 'ns:foo' });
         expect(entry.cells).to.eql({});
         expect(entry.total.rows).to.eql(10); // NB: total not reset.
       });
@@ -280,6 +281,7 @@ describe('TypeCache', () => {
         const entry = TypeCacheCells.create('ns:foo');
         entry.total.rows = 10;
         entry.sync({
+          uri: 'ns:foo',
           cells: {
             A1: { kind: 'CELL', ns: 'foo', key: 'A1', from: {}, to: { value: 123 } },
           },
@@ -291,6 +293,7 @@ describe('TypeCache', () => {
       it('no change for different namespace', async () => {
         const entry = TypeCacheCells.create('ns:foo');
         entry.sync({
+          uri: 'ns:bar',
           cells: {
             A1: { kind: 'CELL', ns: 'bar', key: 'A1', from: {}, to: { value: 123 } },
           },
@@ -306,6 +309,7 @@ describe('TypeCache', () => {
         await query.get(fetch);
 
         entry.sync({
+          uri: 'ns:foo',
           cells: {
             A1: { kind: 'CELL', ns: 'ns:foo', key: 'A1', from: {}, to: { value: 123 } }, // NB: has ns-prefix.
             Z9: { kind: 'CELL', ns: 'foo', key: 'Z9', from: {}, to: { value: 456 } },

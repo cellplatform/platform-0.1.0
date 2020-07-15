@@ -2,11 +2,12 @@ import { t } from '../common';
 
 type N = t.INsProps;
 type C = t.ICellData;
-  
+
 /**
  * A set of changes for a sheet.
  */
 export type ITypedSheetChanges = {
+  uri: string; // Sheet namespace.
   ns?: ITypedSheetChangeNsDiff;
   cells?: { [key: string]: ITypedSheetChangeCellDiff };
 };
