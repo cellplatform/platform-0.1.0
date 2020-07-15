@@ -16,7 +16,7 @@ describe('StateObject', () => {
       expect(obj.state).to.eql(initial);
       expect(obj.original).to.eql(initial);
 
-      expect(obj.state).to.not.equal(initial); // No change from initial.
+      expect(obj.state).to.not.equal(initial); //    No change from initial.
       expect(obj.original).to.not.equal(initial); // No change from initial.
     });
 
