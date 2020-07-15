@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, CssValue } from '../../common';
+import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { css, CssValue } from '../../common';
 
 const data = [
   {
@@ -50,29 +48,8 @@ const data = [
   },
 ];
 export type IChartProps = { style?: CssValue };
-export type IChartState = {};
 
-export class Chart extends React.PureComponent<IChartProps, IChartState> {
-  public state: IChartState = {};
-  private state$ = new Subject<Partial<IChartState>>();
-  private unmounted$ = new Subject();
-
-  /**
-   * [Lifecycle]
-   */
-  constructor(props: IChartProps) {
-    super(props);
-  }
-
-  public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentWillUnmount() {
-    this.unmounted$.next();
-    this.unmounted$.complete();
-  }
-
+export class Chart extends React.PureComponent<IChartProps> {
   /**
    * [Render]
    */

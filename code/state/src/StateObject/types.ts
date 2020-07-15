@@ -4,7 +4,7 @@ type O = Record<string, unknown>;
 
 export type StateObject = {
   create<T extends O>(initial: T): IStateObjectWritable<T>;
-  readonly<T extends O>(obj: IStateObjectWritable<T>): IStateObject<T>;
+  readonly<T extends O>(obj: IStateObjectWritable<T> | IStateObject<T>): IStateObject<T>;
 };
 
 /**
@@ -22,10 +22,12 @@ export type IStateObject<T extends O> = {
  * Writeable.
  */
 export type IStateObjectWritable<T extends O> = IStateObject<T> & {
+  readonly readonly: IStateObject<T>;
   change(fn: StateObjectChanger<T>): IStateObjectChangeResponse<T>;
 };
 
 export type IStateObjectChangeResponse<T extends O> = {
+  cid: string; // "change-id"
   cancelled: boolean;
   from: T;
   to: T;
@@ -47,6 +49,7 @@ export type IStateObjectChangingEvent<T extends O = any> = {
   payload: IStateObjectChanging<T>;
 };
 export type IStateObjectChanging<T extends O = any> = {
+  cid: string; // "change-id"
   from: T;
   to: T;
   cancelled: boolean;
@@ -61,4 +64,8 @@ export type IStateObjectChangedEvent<T extends O = any> = {
   type: 'StateObject/changed';
   payload: IStateObjectChanged<T>;
 };
-export type IStateObjectChanged<T extends O = any> = { from: T; to: T };
+export type IStateObjectChanged<T extends O = any> = {
+  cid: string; // "change-id"
+  from: T;
+  to: T;
+};

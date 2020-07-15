@@ -1,5 +1,7 @@
 import { t } from './common';
 
+type PlaceholderObject = Record<string, undefined>;
+
 /**
  * Events
  */
@@ -35,7 +37,7 @@ export type IIdeUri = { uri: string };
 /**
  * Content
  */
-export type IIdeTextEvent = { type: 'APP:IDE/text'; payload: IIdeText };
+export type IIdeTextEvent = { type: 'APP:IDE/text'; payload: IIdeText }; // Updates the text within the code-editor.
 export type IIdeText = { text: string };
 
 /**
@@ -45,7 +47,7 @@ export type IIdePullTypesEvent = { type: 'APP:IDE/types/pull'; payload: IIdePull
 export type IIdePullTypes = { uri: string };
 
 export type IIdeTypesClearEvent = { type: 'APP:IDE/types/clear'; payload: IIdeTypesClear };
-export type IIdeTypesClear = {};
+export type IIdeTypesClear = PlaceholderObject;
 
 export type IIdeTypeDataEvent = { type: 'APP:IDE/types/data'; payload: IIdeTypeData };
 export type IIdeTypeData = { defs: t.INsTypeDef[]; ts: string };

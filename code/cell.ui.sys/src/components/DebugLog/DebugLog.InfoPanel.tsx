@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue } from '../../common';
+import { css, CssValue, time } from '../../common';
 import { PropList, IPropListItem, ObjectView } from '../primitives';
 import * as g from './types';
 
@@ -34,7 +34,6 @@ export class DebugLogInfoPanel extends React.PureComponent<
   }
 
   public componentDidUpdate(prev: IDebugLogInfoPanelProps) {
-    //
     if (prev.item.count !== this.props.item.count) {
       this.clearSelection();
     }
@@ -65,10 +64,12 @@ export class DebugLogInfoPanel extends React.PureComponent<
 
     const { item } = this.props;
     const data = item.data;
+    const count = item.count;
+    const timestamp = time.day(item.timestamp).format(`h:mm:ssa (SSS[ms])`);
 
     const items: IPropListItem[] = [
       { label: 'type', value: data.type },
-      { label: 'count', value: item.count },
+      { label: 'timestamp', value: timestamp },
     ];
 
     const payload = Object.keys(data.payload).map((key) => {
@@ -84,16 +85,9 @@ export class DebugLogInfoPanel extends React.PureComponent<
     const { selected } = this.state;
     const elObject = selected && this.renderObject(selected);
 
-    // const elObject = selected && (
-    //   <React.Fragment>
-    //     <PropList.Hr />
-    //     <ObjectView name={selected.name} data={selected.data} fontSize={11} expandLevel={1} />
-    //   </React.Fragment>
-    // );
-
     return (
       <div {...css(styles.base, this.props.style)}>
-        <PropList title={'Event'} items={items} />
+        <PropList title={`Event (${count})`} items={items} />
         <PropList.Space />
         <PropList title={'Payload'} items={payload} />
         {elObject}
@@ -106,7 +100,7 @@ export class DebugLogInfoPanel extends React.PureComponent<
     const data = toDisplayObject(props.data);
     return (
       <React.Fragment>
-        <PropList.Hr />
+        <PropList.Hr margin={24} />
         <ObjectView name={name} data={data} fontSize={11} expandLevel={1} />
       </React.Fragment>
     );

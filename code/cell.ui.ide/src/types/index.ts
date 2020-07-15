@@ -5,3 +5,5 @@ export * from './types.content';
 export * from './types.events';
 export * from './types.events.editor';
 export * from './types.store';
+
+export * from './types.code.g';

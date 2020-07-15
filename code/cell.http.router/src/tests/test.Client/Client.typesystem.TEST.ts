@@ -10,7 +10,7 @@ describe('Client.TypeSystem', () => {
     expect(client.http.origin).to.eql('http://localhost:1234');
   });
 
-  describe('client.defs', () => {
+  describe('client.typeDefs', () => {
     it('single namespace', async () => {
       const { mock, client } = await testDefs();
       const defs = await client.typeDefs('ns:foo');
@@ -33,6 +33,62 @@ describe('Client.TypeSystem', () => {
 
       expect(defs[1].uri).to.eql('ns:foo.color');
       expect(defs[1].typename).to.eql('MyColor');
+    });
+  });
+
+  describe('client.implements', () => {
+    it('from host (origin)', async () => {
+      const { mock, client } = await testDefs();
+      const res = await client.implements('foo.mySheet');
+      await mock.dispose();
+
+      expect(res.error).to.eql(undefined);
+      expect(res.ns).to.eql('ns:foo.mySheet');
+      expect(res.implements).to.eql('ns:foo');
+      expect(res.typeDefs.length).to.eql(1);
+      expect(res.typeDefs[0].typename).to.eql('MyRow');
+    });
+
+    it('converts from input URI to namespace', async () => {
+      const { mock, client } = await testDefs();
+
+      const test = async (uri: string) => {
+        const res = await client.implements(uri);
+        expect(res.error).to.eql(undefined);
+        expect(res.ns).to.eql('ns:foo.mySheet');
+      };
+
+      await test('foo.mySheet');
+      await test('cell:foo.mySheet:A1');
+      await test('cell:foo.mySheet:A');
+      await test('cell:foo.mySheet:1');
+
+      await mock.dispose();
+    });
+
+    it('no {type.implements}', async () => {
+      const { mock, client } = await testDefs();
+      const res = await client.implements('ns:foo');
+      await mock.dispose();
+
+      expect(res.error).to.eql(undefined);
+      expect(res.ns).to.eql('ns:foo');
+      expect(res.implements).to.eql('');
+      expect(res.typeDefs).to.eql([]);
+    });
+
+    it('error: sheet does not exist', async () => {
+      const { mock, client } = await testDefs();
+      const res = await client.implements('ns:foo.404');
+      await mock.dispose();
+
+      expect(res.ns).to.eql('ns:foo.404');
+      expect(res.implements).to.eql('');
+      expect(res.typeDefs).to.eql([]);
+
+      expect(res.error?.status).to.eql(404);
+      expect(res.error?.type).to.eql('HTTP/type');
+      expect(res.error?.message).to.include('Failed to retrieve implementing type');
     });
   });
 

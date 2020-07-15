@@ -23,7 +23,7 @@ export function toQueryObject<T>(input?: string) {
 /**
  * Helper for monitoring when the Finder state has changed.
  */
-export function onStateChanged(ob$: Observable<t.AppEvent>, unmounted$?: Observable<{}>) {
+export function onStateChanged(ob$: Observable<t.AppEvent>, unmounted$?: Observable<any>) {
   const event$ = unmounted$ ? ob$.pipe(takeUntil(unmounted$)) : ob$;
   type T = t.AppEvent['type'];
   const isTypeMatch = (type: T, match: T[]) => match.includes(type);

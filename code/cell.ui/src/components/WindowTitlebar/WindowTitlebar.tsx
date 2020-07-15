@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, COLORS, css, CssValue, defaultValue } from '../../common';
-import { WindowAddress } from './WindowAddress';
+import { WindowAddress } from '../WindowAddress';
 
 export type IWindowTitleBarProps = {
   address?: React.ReactNode;
@@ -23,7 +23,7 @@ export class WindowTitleBar extends React.PureComponent<
   private unmounted$ = new Subject();
 
   public static HEIGHT = 38;
-  public static GRADIENT = `linear-gradient(180deg, #E5E5E5 0%, #CDCDCD 100%)`;
+  // public static GRADIENT = `linear-gradient(180deg, #E5E5E5 0%, #CDCDCD 100%)`;
 
   /**
    * [Lifecycle]
@@ -77,15 +77,18 @@ export class WindowTitleBar extends React.PureComponent<
       }),
       body: css({
         Absolute: 0,
-        Flex: 'center-center',
+        Flex: 'horizontal-center-spaceBetween',
       }),
+      left: css({ minWidth: 78 }),
+      right: css({ minWidth: 78 }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
         {this.renderBackground()}
         <div {...styles.body}>
+          <div {...styles.left}></div>
           <WindowAddress address={this.props.address} isWindowFocused={isWindowFocused} />
-          <div></div>
+          <div {...styles.right}></div>
         </div>
       </div>
     );
@@ -101,8 +104,8 @@ export class WindowTitleBar extends React.PureComponent<
       }),
       shade: css({
         Absolute: 0,
-        background: isWindowFocused ? WindowTitleBar.GRADIENT : color.format(-0.03),
-        borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.2 : -0.08)}`,
+        background: isWindowFocused ? color.format(-0.04) : color.format(-0.0),
+        borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.1 : -0.08)}`,
       }),
     };
     return (

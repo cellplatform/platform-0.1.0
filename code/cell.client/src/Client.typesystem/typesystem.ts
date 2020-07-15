@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { HttpClient } from '../Client.http';
-import { MemoryCache, t, TypeSystem } from '../common';
+import { MemoryCache, t, TypeSystem, value, Uri } from '../common';
 
 type N = string | t.INsUri;
 
@@ -45,6 +45,32 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
       const client = TypeSystem.client(fetch);
       const defs = (await Promise.all(uris.map((ns) => client.load(ns)))).map(({ defs }) => defs);
       return defs.reduce((acc, next) => acc.concat(next), []); // NB: Flatten [][] => [].
+    },
+
+    /**
+     * Retrieves type-definitions for the implented namespace.
+     */
+    async implements(ns: N) {
+      const client = http.ns(ns);
+      const res = await client.read({ data: false });
+
+      const defaultError: t.IHttpErrorType = {
+        status: res.status,
+        type: 'HTTP/type',
+        message: `Failed to retrieve implementing type for [${ns.toString()}]`,
+      };
+      const error = res.ok ? undefined : res.error ? res.error : defaultError;
+
+      const { body } = res;
+      const type = body.data.ns.props?.type || {};
+      const typeDefs = error || !type.implements ? [] : await api.typeDefs(type.implements);
+
+      return value.deleteUndefined({
+        ns: client.uri.toString(),
+        implements: type.implements ? Uri.toNs(type.implements).toString() : '',
+        typeDefs,
+        error,
+      });
     },
 
     /**

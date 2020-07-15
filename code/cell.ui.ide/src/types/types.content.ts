@@ -1,5 +1,3 @@
-
-
 /**
  * A change with the code editor.
  */
@@ -20,4 +18,3 @@ export type IIdeModelRange = {
   startColumn: number;
   startLineNumber: number;
 };
-

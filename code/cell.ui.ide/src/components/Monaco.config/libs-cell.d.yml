@@ -1,686 +1,25 @@
 libs:
-  index.d.ts: ''
-  types.Client.d.ts: ''
-  types.Client.http.d.ts: >-
-    export declare type HttpClientBodyType = 'JSON' | 'TEXT' | 'BINARY';
-
-    export declare type IHttpClientAsync<T> = Promise<IHttpClientResponse<T>>;
-
-    export declare type IHttpClientResponse<T> = {
-        ok: boolean;
-        status: number;
-        body: T;
-        bodyType: HttpClientBodyType;
-        error?: IHttpError;
-    };
-
-    export declare type IHttpClient = {
-        readonly origin: string;
-        request$: Observable<IHttpBefore>;
-        response$: Observable<IHttpAfter>;
-        info<T extends IResGetSysInfo>(): IHttpClientAsync<T>;
-        ns(input: string | INsUri | ICoordUri | IFileUri): IHttpClientNs;
-        cell(input: string | ICellUri): IHttpClientCell;
-        file(input: string | IFileUri): IHttpClientFile;
-    };
-
-    export declare type IHttpClientOptions = {
-        host?: string | number;
-        http?: IHttp;
-    };
-
-    export declare type IHttpClientNs = {
-        readonly uri: INsUri;
-        readonly url: IUrlsNs;
-        exists(): Promise<boolean>;
-        read(options?: IReqQueryNsInfo): IHttpClientAsync<IResGetNs>;
-        write(data: IReqPostNsBody, options?: IReqQueryNsWrite): IHttpClientAsync<IResPostNs>;
-    };
-
-    export declare type IHttpClientCell = {
-        readonly uri: ICellUri;
-        readonly url: IUrlsCell;
-        readonly file: IHttpClientCellFile;
-        readonly files: IHttpClientCellFiles;
-        exists(): Promise<boolean>;
-        info(options?: IReqQueryCellInfo): IHttpClientAsync<IResGetCell>;
-        links(): IHttpClientAsync<IHttpClientCellLinks>;
-    };
-
-    export declare type IHttpClientCellLinks = {
-        readonly list: IHttpClientCellLink[];
-        readonly files: IHttpClientCellLinkFile[];
-        toObject(): ICellData['links'];
-    };
-
-    export declare type IHttpClientCellFile = {
-        name(path: string): IHttpClientCellFileByName;
-    };
-
-    export declare type IHttpClientCellFileByName = {
-        info(): IHttpClientAsync<IResGetFile>;
-        download(options?: {
-            expires?: string;
-        }): IHttpClientAsync<ReadableStream | string>;
-    };
-
-    export declare type IHttpClientCellFiles = {
-        urls(): IHttpClientAsync<IHttpClientCellFileUrl[]>;
-        map(): IHttpClientAsync<IFileMap>;
-        list(): IHttpClientAsync<IHttpClientFileData[]>;
-        upload(files: IHttpClientCellFileUpload | IHttpClientCellFileUpload[], options?: {
-            changes?: boolean;
-        }): IHttpClientAsync<IHttpClientCellFileUploadResponse>;
-        delete(filename: string | string[]): IHttpClientAsync<IResDeleteCellFilesData>;
-        unlink(filename: string | string[]): IHttpClientAsync<IResDeleteCellFilesData>;
-    };
-
-    export declare type IHttpClientCellFileUpload = {
-        filename: string;
-        data: ArrayBuffer;
-        mimetype?: string;
-    };
-
-    export declare type IHttpClientCellFileUrl = {
-        uri: string;
-        url: string;
-        path: string;
-        filename: string;
-        dir: string;
-    };
-
-    export declare type IHttpClientCellFileUploadResponse = {
-        uri: string;
-        cell: ICellData;
-        files: IUriData<IFileData>[];
-        errors: IFileUploadError[];
-        changes?: IDbModelChange[];
-    };
-
-    export declare type IHttpClientCellLink = IHttpClientCellLinkUnknown |
-    IHttpClientCellLinkFile;
-
-    export declare type IHttpClientCellLinkUnknown = {
-        type: 'UNKNOWN';
-        key: string;
-        uri: string;
-    };
-
-    export declare type IHttpClientCellLinkFile = {
-        type: 'FILE';
-        key: string;
-        uri: string;
-        path: string;
-        dir: string;
-        name: string;
-        hash: string;
-        file: IHttpClientFile;
-    };
-
-    export declare type IHttpClientFile = {
-        readonly uri: IFileUri;
-        readonly url: IUrlsFile;
-        info(): IHttpClientAsync<IResGetFile>;
-    };
-
-    export declare type IHttpClientFileData = IFileData & {
-        uri: string;
-        filename: string;
-        dir: string;
-        path: string;
-    };
-  types.Client.typesystem.d.ts: >-
-    declare type N = string | INsUri;
-
-    export declare type IClientTypesystem = {
-        readonly http: IHttpClient;
-        readonly fetch: ISheetFetcher;
-        readonly cache: IMemoryCache;
-        readonly changes: ITypedSheetChangeMonitor;
-        sheet<T>(ns: N): Promise<ITypedSheet<T>>;
-        defs(ns: N | N[]): Promise<INsTypeDef[]>;
-        typescript(ns: N | N[], options?: {
-            header?: boolean;
-            exports?: boolean;
-            imports?: boolean;
-        }): Promise<ITypeClientTypescript>;
-    };
-
-    export declare type ITypedSheetPendingChanges = {
-        [ns: string]: ITypedSheetStateChanges;
-    };
-
-    export declare type ITypedSheetSaveEvent = ITypedSheetSavingEvent |
-    ITypedSheetSavedEvent;
-
-    export declare type ITypedSheetSavingEvent = {
-        type: 'SHEET/saving';
-        payload: ITypedSheetSaving;
-    };
-
-    export declare type ITypedSheetSaving = {
-        target: string;
-        sheet: ITypedSheet;
-        changes: ITypedSheetStateChanges;
-    };
-
-    export declare type ITypedSheetSavedEvent = {
-        type: 'SHEET/saved';
-        payload: ITypedSheetSaved;
-    };
-
-    export declare type ITypedSheetSaved = {
-        ok: boolean;
-        target: string;
-        sheet: ITypedSheet;
-        changes: ITypedSheetStateChanges;
-        errors: {
-            ns: string;
-            error: IHttpError;
-        }[];
-    };
-
-    export {};
-  types.TypeSystem.ast.d.ts: |-
-    export declare type ITypeToken = {
-        input: string;
-        kind: 'VALUE' | 'GROUP' | 'GROUP[]';
-        text: string;
-        next: string;
-    };
-    export declare type TypeVisit = (args: TypeVisitArgs) => void;
-    export declare type TypeVisitArgs = {
-        level: number;
-        path: string;
-        root: IType;
-        type: IType;
-        prop?: string;
-        optional?: boolean;
-    };
-  types.TypeSystem.builder.d.ts: |-
-    export declare type ITypeBuilder = {
-        ns(uri?: string | INsUri): ITypeBuilderNs;
-        type(typename: string, options?: ITypeBuilderNsTypeOptions): ITypeBuilderType;
-        toObject(): ITypeBuilderDefs;
-        formatType(value: string): string;
-    };
-    export declare type ITypeBuilderDefs = {
-        [namespace: string]: ITypeDefPayload;
-    };
-    export declare type ITypeBuilderNs = {
-        readonly uri: INsUri;
-        readonly types: ITypeBuilderType[];
-        type(typename: string, options?: ITypeBuilderNsTypeOptions): ITypeBuilderType;
-        toString(): string;
-    };
-    export declare type ITypeBuilderNsTypeOptions = {
-        startColumn?: string | number;
-    };
-    export declare type ITypeBuilderType = {
-        readonly uri: INsUri;
-        readonly typename: string;
-        readonly props: ITypeBuilderProp[];
-        prop(name: string, arg?: CellType | ITypeBuilderPropOptions | ((builder: ITypeBuilderProp) => void)): ITypeBuilderType;
-        toString(): string;
-    };
-    export declare type ITypeBuilderPropOptions = {
+  types.cell.d.ts: |-
+    import { Diff } from '@platform/util.diff/lib/types';
+    export declare type ICellProps = {
+        value?: CellValue;
         type?: CellType;
-        target?: CellTypeTarget;
-        default?: ITypeDefault | TypeDefaultValue;
-        column?: string | number;
     };
-    export declare type ITypeBuilderProp = {
-        column(value: string | number): ITypeBuilderProp;
-        name(value: string): ITypeBuilderProp;
-        type(value: CellType): ITypeBuilderProp;
-        target(value: CellTypeTarget | undefined): ITypeBuilderProp;
-        default(value: ITypeDefault | TypeDefaultValue | undefined): ITypeBuilderProp;
-        toObject(): ITypeBuilderPropObject;
+    export declare type ICellData<P extends ICellProps = ICellProps> = {
+        value?: CellValue;
+        props?: P;
+        hash?: string;
+        error?: IError;
+        links?: IUriMap;
     };
-    export declare type ITypeBuilderPropObject = {
-        readonly column: string;
-        readonly name: string;
-        readonly type: CellType;
-        readonly target?: CellTypeTarget;
-        readonly default?: ITypeDefault | TypeDefaultValue;
+    export declare type ICellDiff<P extends ICellProps = ICellProps> = {
+        readonly left: ICellData<P>;
+        readonly right: ICellData<P>;
+        readonly isDifferent: boolean;
+        readonly list: Diff<ICellData<P>>[];
     };
-  types.TypeSystem.cell.d.ts: |-
-    export declare type CellTypeDef = {
-        prop: string;
-        type: CellType;
-        target?: CellTypeTarget;
-        default?: ITypeDefault | TypeDefaultValue;
-    };
-    export declare type CellType = string;
-    export declare type CellTypeTarget = string;
-    export declare type CellTypeTargetInfo = {
-        target: string;
-        isValid: boolean;
-        isInline: boolean;
-        isRef: boolean;
-        kind: 'inline' | 'ref' | 'UNKNOWN';
-        path: string;
-        errors: IError[];
-        toString(): string;
-    };
-  types.TypeSystem.client.d.ts: |-
-    export declare type ITypeClientTypescript = {
-        readonly header: string;
-        readonly declaration: string;
-        save(fs: IFs, path: string): Promise<{
-            path: string;
-            text: string;
-        }>;
-        toString(options?: {
-            path?: string;
-        }): string;
-    };
-  types.TypeSystem.d.ts: |-
-    export declare type ITypeDefPayload = {
-        ns?: INsProps;
-        columns: IColumnMap;
-    };
-  types.TypeSystem.events.d.ts: >-
-    export declare type TypedSheetEvent = ITypedSheetLoadingEvent |
-    ITypedSheetLoadedEvent | ITypedSheetRowLoadingEvent |
-    ITypedSheetRowLoadedEvent | ITypedSheetRefsLoadingEvent |
-    ITypedSheetRefsLoadedEvent | ITypedSheetChangeEvent |
-    ITypedSheetChangedEvent | ITypedSheetChangesClearedEvent;
-
-    export declare type ITypedSheetLoadingEvent = {
-        type: 'SHEET/loading';
-        payload: ITypedSheetLoading;
-    };
-
-    export declare type ITypedSheetLoading = {
-        sheet: ITypedSheet;
-        range: string;
-    };
-
-    export declare type ITypedSheetLoadedEvent = {
-        type: 'SHEET/loaded';
-        payload: ITypedSheetLoaded;
-    };
-
-    export declare type ITypedSheetLoaded = ITypedSheetLoading & {
-        total: number;
-    };
-
-    export declare type ITypedSheetRowLoadingEvent = {
-        type: 'SHEET/row/loading';
-        payload: ITypedSheetRowLoading;
-    };
-
-    export declare type ITypedSheetRowLoading = {
-        sheet: ITypedSheet;
-        index: number;
-    };
-
-    export declare type ITypedSheetRowLoadedEvent = {
-        type: 'SHEET/row/loaded';
-        payload: ITypedSheetRowLoaded;
-    };
-
-    export declare type ITypedSheetRowLoaded = ITypedSheetRowLoading;
-
-    export declare type ITypedSheetRefsLoadingEvent = {
-        type: 'SHEET/refs/loading';
-        payload: ITypedSheetRefsLoading;
-    };
-
-    export declare type ITypedSheetRefsLoading<T = {}> = {
-        sheet: ITypedSheet;
-        refs: ITypedSheetRefs<T>;
-    };
-
-    export declare type ITypedSheetRefsLoadedEvent = {
-        type: 'SHEET/refs/loaded';
-        payload: ITypedSheetRefsLoaded;
-    };
-
-    export declare type ITypedSheetRefsLoaded<T = {}> =
-    ITypedSheetRefsLoading<T>;
-
-    export declare type ITypedSheetChangeEvent = {
-        type: 'SHEET/change';
-        payload: ITypedSheetChange;
-    };
-
-    export declare type ITypedSheetChangedEvent = {
-        type: 'SHEET/changed';
-        payload: ITypedSheetChanged;
-    };
-
-    export declare type ITypedSheetChanged = {
-        sheet: ITypedSheet;
-        change: ITypedSheetChangeDiff;
-        changes: ITypedSheetStateChanges;
-    };
-
-    export declare type ITypedSheetChangesClearedEvent = {
-        type: 'SHEET/changes/cleared';
-        payload: ITypedSheetChangesCleared;
-    };
-
-    export declare type ITypedSheetChangesCleared = {
-        sheet: ITypedSheet;
-        from: ITypedSheetStateChanges;
-        to: ITypedSheetStateChanges;
-        action: 'REVERT' | 'SAVE';
-    };
-  types.TypeSystem.def.d.ts: >-
-    export declare type INsTypeDef = {
-        ok: boolean;
-        uri: string;
-        typename: string;
-        columns: IColumnTypeDef[];
-        errors: ITypeError[];
-    };
-
-    export declare type IColumnTypeDef<T extends IType = IType> = ITypeDef<T> &
-    {
-        column: string;
-        error?: ITypeError;
-    };
-
-    export declare type ITypeDef<T extends IType = IType> = {
-        prop: string;
-        type: T;
-        optional?: boolean;
-        default?: PrimitiveValue | ITypeDefault;
-        target?: CellTypeTarget;
-    };
-
-    export declare type ITypeDefault = ITypeDefaultValue | ITypeDefaultRef;
-
-    export declare type ITypeDefaultValue = {
-        value: TypeDefaultValue;
-    };
-
-    export declare type ITypeDefaultRef = {
-        ref: string;
-        path?: string;
-    };
-
-    export declare type TypeDefaultValue = PrimitiveValue | PrimitiveValue[] |
-    JsonMap;
-
-    export declare type PrimitiveValue = string | number | boolean | undefined |
-    null;
-
-    export declare type ITypePrimitives = {
-        string: ITypeValue;
-        number: ITypeValue;
-        boolean: ITypeValue;
-        undefined: ITypeValue;
-        null: ITypeValue;
-    };
-
-    export declare type IType = ITypeValue | ITypeEnum | ITypeUnion | ITypeRef |
-    ITypeUnknown;
-
-    export declare type ITypeUnion = {
-        kind: 'UNION';
-        typename: string;
-        isArray?: boolean;
-        types: IType[];
-    };
-
-    export declare type ITypeRef = {
-        kind: 'REF';
-        scope: 'NS' | 'COLUMN' | 'UNKNOWN';
-        uri: string;
-        typename: string;
-        isArray?: boolean;
-        types: ITypeDef[];
-    };
-
-    export declare type ITypeValue = {
-        kind: 'VALUE';
-        typename: keyof ITypePrimitives;
-        isArray?: boolean;
-    };
-
-    export declare type ITypeEnum = {
-        kind: 'ENUM';
-        typename: string;
-        isArray?: boolean;
-    };
-
-    export declare type ITypeUnknown = {
-        kind: 'UNKNOWN';
-        typename: string;
-        isArray?: boolean;
-    };
-  types.TypeSystem.fetch.d.ts: |-
-    export declare type ISheetFetcher = {
-        getNs: FetchSheetNs;
-        getColumns: FetchSheetColumns;
-        getCells: FetchSheetCells;
-    };
-    export declare type FetchSheetNs = (args: {
-        ns: string;
-    }) => Promise<FetchSheetNsResult>;
-    export declare type FetchSheetNsResult = {
-        ns?: INsProps;
-        error?: IHttpError;
-    };
-    export declare type FetchSheetColumns = (args: {
-        ns: string;
-    }) => Promise<FetchSheetColumnsResult>;
-    export declare type FetchSheetColumnsResult = {
-        columns?: IColumnMap;
-        error?: IHttpError;
-    };
-    export declare type FetchSheetCells = (args: {
-        ns: string;
-        query: string;
-    }) => Promise<FetchSheetCellsResult>;
-    export declare type FetchSheetCellsResult = {
-        total: {
-            rows: number;
-        };
-        cells?: ICellMap;
-        error?: IHttpError;
-    };
-  types.TypeSystem.ns.d.ts: |-
-    export declare type INsType = {
-        implements?: string;
-    };
-  types.TypeSystem.pool.d.ts: |-
-    declare type S = ITypedSheet | INsUri | string;
-    export declare type ISheetPool = {
-        readonly dispose$: Observable<{}>;
-        readonly isDisposed: boolean;
-        readonly count: number;
-        readonly sheets: {
-            [ns: string]: ITypedSheet;
-        };
-        dispose(): void;
-        exists(sheet: S): boolean;
-        sheet<T = {}>(sheet: S): ITypedSheet<T> | undefined;
-        add(sheet: ITypedSheet, options?: {
-            parent?: S;
-        }): ISheetPool;
-        remove(sheet: S): ISheetPool;
-        children(sheet: S): ITypedSheet[];
-    };
-    export {};
-  types.TypeSystem.ref.d.ts: |-
-    export declare type ITypedSheetRef<T> = {
-        typename: string;
-        typeDef: IColumnTypeDef<ITypeRef>;
-    };
-    export declare type ITypedSheetRefs<T> = {
-        ns: INsUri;
-        typename: string;
-        typeDef: IColumnTypeDef<ITypeRef>;
-        sheet: ITypedSheet<T>;
-        isLoaded: boolean;
-        parent: ITypedSheetRefParent;
-        load(): Promise<ITypedSheetRefs<T>>;
-        data(options?: ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
-    };
-    export declare type ITypedSheetRefParent = {
-        cell: ICellUri;
-        sheet: ITypedSheet;
-    };
-  types.TypeSystem.sheet.d.ts: |-
-    declare type R<T> = ITypedSheetRow<T>;
-    export declare type ITypedSheet<T = {}> = {
-        readonly ok: boolean;
-        readonly uri: INsUri;
-        readonly implements: INsUri;
-        readonly types: {
-            typename: string;
-            columns: IColumnTypeDef[];
-        }[];
-        readonly state: ITypedSheetState;
-        readonly event$: Observable<TypedSheetEvent>;
-        readonly dispose$: Observable<{}>;
-        readonly isDisposed: boolean;
-        readonly errors: ITypeError[];
-        readonly pool: ISheetPool;
-        dispose(): void;
-        info<P extends INsProps = INsProps>(): Promise<ITypedSheetInfo<P>>;
-        data<D = T>(args: string | ITypedSheetDataArgs): ITypedSheetData<D>;
-        toString(): string;
-    };
-    export declare type ITypedSheetInfo<P extends INsProps = INsProps> = {
-        exists: boolean;
-        ns: P;
-    };
-    export declare type ITypedSheetDataOptions = {
-        range?: string;
-    };
-    export declare type ITypedSheetDataArgs = {
-        typename: string;
-    } & ITypedSheetDataOptions;
-    export declare type ITypedSheetData<T> = {
-        readonly uri: INsUri;
-        readonly typename: string;
-        readonly types: IColumnTypeDef[];
-        readonly rows: ITypedSheetRow<T>[];
-        readonly range: string;
-        readonly total: number;
-        readonly status: 'INIT' | 'LOADING' | 'LOADED';
-        readonly isLoaded: boolean;
-        exists(index: number): boolean;
-        row(index: number): ITypedSheetRow<T>;
-        load(options?: string | ITypedSheetDataOptions): Promise<ITypedSheetData<T>>;
-        toString(): string;
-        forEach(fn: (row: ITypedSheetRowProps<T>, index: number) => void): void;
-        map<U>(fn: (row: ITypedSheetRowProps<T>, index: number) => U): U[];
-        filter(fn: (row: ITypedSheetRowProps<T>, index: number) => boolean): R<T>[];
-        find(fn: (row: ITypedSheetRowProps<T>, index: number) => boolean): R<T> | undefined;
-    };
-    export declare type ITypedSheetRow<T> = {
-        readonly typename: string;
-        readonly uri: IRowUri;
-        readonly index: number;
-        readonly props: ITypedSheetRowProps<T>;
-        readonly types: ITypedSheetRowTypes<T>;
-        readonly status: 'INIT' | 'LOADING' | 'LOADED';
-        readonly isLoaded: boolean;
-        load(options?: {
-            props?: (keyof T)[];
-            force?: boolean;
-        }): Promise<ITypedSheetRow<T>>;
-        toObject(): T;
-        toString(): string;
-    };
-    export declare type ITypedSheetRowProps<T> = {
-        [K in keyof T]: T[K];
-    };
-    export declare type ITypedSheetRowTypes<T> = {
-        list: ITypedSheetRowType[];
-        map: {
-            [P in keyof Required<T>]: ITypedSheetRowType;
-        };
-    };
-    export declare type ITypedSheetRowType = IColumnTypeDef & {
-        uri: ICellUri;
-    };
-    export {};
-  types.TypeSystem.state.d.ts: >-
-    declare type N = INsProps;
-
-    declare type C = ICellData;
-
-    export declare type ITypedSheetState = {
-        readonly uri: INsUri;
-        readonly fetch: ISheetFetcher;
-        readonly dispose$: Observable<{}>;
-        readonly event$: Observable<TypedSheetEvent>;
-        readonly change$: Observable<ITypedSheetChange>;
-        readonly changed$: Observable<ITypedSheetChanged>;
-        readonly changes: ITypedSheetStateChanges;
-        readonly hasChanges: boolean;
-        readonly isDisposed: boolean;
-        readonly change: {
-            ns<D extends N = N>(to: D): void;
-            cell<D extends C = C>(key: string, to: D): void;
-        };
-        readonly clear: {
-            cache(): void;
-            changes(action: ITypedSheetChangesCleared['action']): void;
-        };
-    };
-
-    export declare type ITypedSheetStateChanges = {
-        ns?: ITypedSheetChangeNsDiff;
-        cells?: {
-            [key: string]: ITypedSheetChangeCellDiff;
-        };
-    };
-
-    export declare type ITypedSheetChange = ITypedSheetChangeNs |
-    ITypedSheetChangeCell;
-
-    export declare type ITypedSheetChangeDiff = ITypedSheetChangeNsDiff |
-    ITypedSheetChangeCellDiff;
-
-    export declare type ITypedSheetChangeNs<D extends N = N> = {
-        kind: 'NS';
-        ns: string;
-        to: D;
-    };
-
-    export declare type ITypedSheetChangeNsDiff<D extends N = N> =
-    ITypedSheetChangeNs<D> & {
-        from: D;
-    };
-
-    export declare type ITypedSheetChangeCell<D extends C = C> = {
-        kind: 'CELL';
-        ns: string;
-        key: string;
-        to: D;
-    };
-
-    export declare type ITypedSheetChangeCellDiff<D extends C = C> =
-    ITypedSheetChangeCell & {
-        from: D;
-    };
-
-    export {};
-  types.TypeSystem.sync.d.ts: |-
-    export declare type ITypedSheetChangeMonitor = {
-        readonly isDisposed: boolean;
-        readonly watching: ITypedSheet[];
-        readonly event$: Observable<TypedSheetEvent>;
-        readonly changed$: Observable<ITypedSheetChanged>;
-        readonly dispose$: Observable<{}>;
-        dispose(): void;
-        watch(sheet: ITypedSheet | ITypedSheet[]): ITypedSheetChangeMonitor;
-        unwatch(sheet: ITypedSheet | ITypedSheet[]): ITypedSheetChangeMonitor;
-        isWatching(sheet: ITypedSheet | ITypedSheet[]): boolean;
-    };
-  types.cell.context.d.ts: |-
-    export declare type ICellContext = {
-        uri: string;
-        cell: ICellData;
-    };
+  types.cli.d.ts: 'export declare type CellCli = Record<string, unknown>;'
+  index.d.ts: ''
   types.cell.coord.d.ts: |-
     export declare type CoordAxis = 'COLUMN' | 'ROW';
     export declare type CoordType = 'CELL' | CoordAxis;
@@ -710,24 +49,105 @@ libs:
     export declare type ICoordSiblingOptions = ICoordOffsetOptions & {
         offset?: number;
     };
-  types.cell.d.ts: |-
-    import { Diff } from '@platform/util.diff/lib/types';
-    export declare type ICellProps = {
-        value?: CellValue;
-        type?: CellType;
+  types.db.d.ts: >-
+    import { IModel, IModelLinksSchema, IModelChildrenSchema } from
+    '@platform/fsdb.types';
+
+    export declare type IDbModelChange = {
+        uri: string;
+        field: string;
+        from?: any;
+        to?: any;
     };
-    export declare type ICellData<P extends ICellProps = ICellProps> = {
-        value?: CellValue;
-        props?: P;
-        hash?: string;
-        error?: IError;
-        links?: IUriMap;
+
+    export declare type IDbModelNs<P extends Record<string, unknown> = any> =
+    IModel<IDbModelNsProps<P>, IDbModelNsDoc<P>, IDbModelNsLinks,
+    IDbModelNsChildren>;
+
+    export declare type IDbModelNsProps<P extends Record<string, unknown> = any>
+    = INs & P;
+
+    export declare type IDbModelNsDoc<P extends Record<string, unknown> = any> =
+    IDbModelNsProps<P>;
+
+    export declare type IDbModelNsLinks = IModelLinksSchema;
+
+    export declare type IDbModelNsChildren = {
+        cells: IDbModelCell[];
+        columns: IDbModelColumn[];
+        rows: IDbModelRow[];
+        files: IDbModelFile[];
     };
-    export declare type ICellDiff<P extends ICellProps = ICellProps> = {
-        readonly left: ICellData<P>;
-        readonly right: ICellData<P>;
-        readonly isDifferent: boolean;
-        readonly list: Diff<ICellData<P>>[];
+
+    export declare type IDbModelCell<P extends Record<string, unknown> = any> =
+    IModel<IDbModelCellProps<P>, IDbModelCellDoc<P>, IDbModelCellLinks,
+    IDbModelCellChilden>;
+
+    export declare type IDbModelCellProps<P extends Record<string, unknown> =
+    any> = ICellData<IDbModelCellDataProps<P>>;
+
+    export declare type IDbModelCellDataProps<P extends Record<string, unknown>
+    = any> = ICellProps & P;
+
+    export declare type IDbModelCellDoc<P extends Record<string, unknown> = any>
+    = IDbModelCellProps<P> & {
+        nsRefs?: string[];
+    };
+
+    export declare type IDbModelCellLinks = {
+        namespaces: IDbModelNs[];
+    };
+
+    export declare type IDbModelCellChilden = IModelChildrenSchema;
+
+    export declare type IDbModelRow<P extends Record<string, unknown> = any> =
+    IModel<IDbModelRowProps<P>, IDbModelRowDoc<P>, IDbModelRowLinks,
+    IDbModelRowChildren>;
+
+    export declare type IDbModelRowProps<P extends Record<string, unknown> =
+    any> = IRowData<IDbModelRowDataProps<P>>;
+
+    export declare type IDbModelRowDataProps<P extends Record<string, unknown> =
+    any> = IRowProps & P;
+
+    export declare type IDbModelRowDoc<P extends Record<string, unknown> = any>
+    = IDbModelRowProps<P>;
+
+    export declare type IDbModelRowLinks = IModelLinksSchema;
+
+    export declare type IDbModelRowChildren = IModelChildrenSchema;
+
+    export declare type IDbModelColumn<P extends Record<string, unknown> = any>
+    = IModel<IDbModelColumnProps<P>, IDbModelColumnDoc<P>, IDbModelColumnLinks,
+    IDbModelColumnChildren>;
+
+    export declare type IDbModelColumnProps<P extends Record<string, unknown> =
+    any> = IColumnData<IDbModelColumnDataProps<P>>;
+
+    export declare type IDbModelColumnDataProps<P extends Record<string,
+    unknown> = any> = IColumnProps & P;
+
+    export declare type IDbModelColumnDoc<P extends Record<string, unknown> =
+    any> = IDbModelColumnProps<P>;
+
+    export declare type IDbModelColumnLinks = IModelLinksSchema;
+
+    export declare type IDbModelColumnChildren = IModelChildrenSchema;
+
+    export declare type IDbModelFile = IModel<IDbModelFileProps,
+    IDbModelFileDataProps, IDbModelFileLinks, IDbModelFileChildren>;
+
+    export declare type IDbModelFileProps = IFileData;
+
+    export declare type IDbModelFileDataProps = IDbModelFileProps;
+
+    export declare type IDbModelFileLinks = IModelLinksSchema;
+
+    export declare type IDbModelFileChildren = IModelChildrenSchema;
+  types.event.d.ts: |-
+    export declare type Event<P = unknown> = {
+        type: string;
+        payload: P;
     };
   types.cell.get.d.ts: >-
     export declare type GetCell<P extends ICellProps = ICellProps> = (key:
@@ -735,7 +155,6 @@ libs:
 
     export declare type GetCells<P extends ICellProps = ICellProps> = () =>
     Promise<ICellMap<ICellData<P>>>;
-  types.cli.d.ts: 'export declare type CellCli = {};'
   types.column.d.ts: |-
     export declare type IColumnProps = {
         title?: string;
@@ -747,294 +166,45 @@ libs:
         error?: IError;
     };
   types.compile.d.ts: export declare type CompileTemp = 'TEMP';
-  types.electron.d.ts: |-
-    import { IServerLog } from '@platform/log/lib/server/types';
-    import { IResGetSysInfo } from './types.http.router';
-    export declare type IElectronLog = IServerLog & {
-        file: {
-            path: string;
-        };
-        format: IElectronLogFormat;
-    };
-    export declare type IElectronLogFormat = {
-        uri(input?: string | IUri): string;
-    };
-    export declare type IResGetElectronSysInfo = IResGetSysInfo & {
-        app: IResGetSysInfoElectronApp;
-    };
-    export declare type IResGetSysInfoElectronApp = {
-        env?: 'development' | 'production';
-        packaged: boolean;
-        paths: {
-            db: string;
-            fs: string;
-            log: string;
-        };
-        versions: {
-            node: string;
-            electron: string;
-            chrome: string;
-            v8: string;
-        };
-    };
-  types.db.d.ts: >-
-    import { IModel } from '@platform/fsdb.types';
-
-    export declare type IDbModelChange = {
-        uri: string;
-        field: string;
-        from?: any;
-        to?: any;
+  types.fs.sync.d.ts: 'export declare type IFilesystemSync = Record<string, unknown>;'
+  types.file.d.ts: >-
+    export declare type IFileData = {
+        props: IFileProps;
+        hash?: string;
+        error?: IError;
     };
 
-    export declare type IDbModelNs<P extends object = {}> =
-    IModel<IDbModelNsProps<P>, IDbModelNsDoc<P>, IDbModelNsLinks,
-    IDbModelNsChildren>;
-
-    export declare type IDbModelNsProps<P extends object = {}> = INs & P;
-
-    export declare type IDbModelNsDoc<P extends object = {}> =
-    IDbModelNsProps<P> & {};
-
-    export declare type IDbModelNsLinks = {};
-
-    export declare type IDbModelNsChildren = {
-        cells: IDbModelCell[];
-        columns: IDbModelColumn[];
-        rows: IDbModelRow[];
-        files: IDbModelFile[];
+    export declare type IFileProps = {
+        mimetype?: string;
+        location?: string;
+        bytes?: number;
+        integrity?: IFileIntegrity;
     };
 
-    export declare type IDbModelCell<P extends object = {}> =
-    IModel<IDbModelCellProps<P>, IDbModelCellDoc<P>, IDbModelCellLinks,
-    IDbModelCellChilden>;
+    export declare type FileIntegrityStatus = 'UPLOADING' | 'VALID' | 'INVALID'
+    | 'INVALID/fileMissing' | 'INVALID/filehash' | 'INVALID/s3:etag';
 
-    export declare type IDbModelCellProps<P extends object = {}> =
-    ICellData<IDbModelCellDataProps<P>>;
-
-    export declare type IDbModelCellDataProps<P extends object = {}> =
-    ICellProps & P;
-
-    export declare type IDbModelCellDoc<P extends object = {}> =
-    IDbModelCellProps<P> & {
-        nsRefs?: string[];
+    export declare type IFileIntegrity = {
+        status: FileIntegrityStatus;
+        uploadedAt?: number;
+        filehash?: string;
+        's3:etag'?: string;
     };
 
-    export declare type IDbModelCellLinks = {
-        namespaces: IDbModelNs[];
-    };
-
-    export declare type IDbModelCellChilden = {};
-
-    export declare type IDbModelRow<P extends object = {}> =
-    IModel<IDbModelRowProps<P>, IDbModelRowDoc<P>, IDbModelRowLinks,
-    IDbModelRowChildren>;
-
-    export declare type IDbModelRowProps<P extends object = {}> =
-    IRowData<IDbModelRowDataProps<P>>;
-
-    export declare type IDbModelRowDataProps<P extends object = {}> = IRowProps
-    & P;
-
-    export declare type IDbModelRowDoc<P extends object = {}> =
-    IDbModelRowProps<P> & {};
-
-    export declare type IDbModelRowLinks = {};
-
-    export declare type IDbModelRowChildren = {};
-
-    export declare type IDbModelColumn<P extends object = {}> =
-    IModel<IDbModelColumnProps<P>, IDbModelColumnDoc<P>, IDbModelColumnLinks,
-    IDbModelColumnChildren>;
-
-    export declare type IDbModelColumnProps<P extends object = {}> =
-    IColumnData<IDbModelColumnDataProps<P>>;
-
-    export declare type IDbModelColumnDataProps<P extends object = {}> =
-    IColumnProps & P;
-
-    export declare type IDbModelColumnDoc<P extends object = {}> =
-    IDbModelColumnProps<P> & {};
-
-    export declare type IDbModelColumnLinks = {};
-
-    export declare type IDbModelColumnChildren = {};
-
-    export declare type IDbModelFile = IModel<IDbModelFileProps,
-    IDbModelFileDataProps, IDbModelFileLinks, IDbModelFileChildren>;
-
-    export declare type IDbModelFileProps = IFileData;
-
-    export declare type IDbModelFileDataProps = IDbModelFileProps & {};
-
-    export declare type IDbModelFileLinks = {};
-
-    export declare type IDbModelFileChildren = {};
-  types.env.d.ts: |-
-    import { Observable } from 'rxjs';
-    export declare type EnvEvent = TypedSheetEvent;
-    export declare type IEnv = {
-        host: string;
-        def: string;
-        cache: IMemoryCache;
-        event$: Observable<EnvEvent>;
-    };
-    export declare type ITopWindow = {
-        env: IEnv;
-    };
-  types.error.d.ts: >-
-    export declare type IError<T extends string = string> = {
-        type: T;
-        message: string;
-        children?: IError[];
-    };
-
-    export declare type IErrorParent<T extends string = string> = {
-        error?: IError<T>;
-    };
-
-    export declare type RefError = IRefError['type'];
-
-    export declare type IRefError = IRefErrorCircular | IRefErrorName;
-
-    declare type RefErrorProps = {
-        path: string;
-    };
-
-    export declare type IRefErrorCircular = IError<'REF/circular'> &
-    RefErrorProps;
-
-    export declare type IRefErrorName = IError<'REF/name'> & RefErrorProps;
-
-    export declare type FuncError = IFuncError['type'];
-
-    export declare type IFuncError = IFuncErrorNotFormula | IFuncErrorNotFound |
-    IFuncErrorNotSupported | IFuncErrorInvoke | IFuncErrorCircularRef;
-
-    declare type FuncErrorProps = {
-        formula: string;
-        path: string;
-    };
-
-    export declare type IFuncErrorNotFormula = IError<'FUNC/notFormula'> &
-    FuncErrorProps;
-
-    export declare type IFuncErrorNotFound = IError<'FUNC/notFound'> &
-    FuncErrorProps;
-
-    export declare type IFuncErrorNotSupported = IFuncErrorNotSupportedRange;
-
-    export declare type IFuncErrorNotSupportedRange =
-    IError<'FUNC/notSupported/range'> & FuncErrorProps;
-
-    export declare type IFuncErrorInvoke = IError<'FUNC/invoke'> &
-    FuncErrorProps;
-
-    export declare type IFuncErrorCircularRef = IError<'REF/circular'> &
-    FuncErrorProps;
-
-    declare type UriErrorProps = {
-        uri: string;
-    };
-
-    export declare type IUriError = IError<'URI'> & UriErrorProps;
-
-    export declare type FsError = 'FS/read' | 'FS/read/404' | 'FS/read/cloud' |
-    'FS/write' | 'FS/write/cloud' | 'FS/delete' | 'FS/delete/cloud';
-
-    export declare type IFsError<E extends FsError = FsError> = IError<E> & {
-        path: string;
-    };
-
-    export declare type FileError = 'FILE/upload';
-
-    export declare type IFileError<E extends FileError = FileError> = IError<E>
-    & {
+    export declare type IFilePresignedUploadUrl = {
+        method: 'POST';
+        expiresAt: number;
         filename: string;
+        uri: string;
+        url: string;
+        props: {
+            [key: string]: string;
+        };
     };
-
-    export declare type IFileUploadError = IFileError<'FILE/upload'>;
-
-    export declare type TypeError = ITypeError['type'];
-
-    export declare type ITypeError = ITypeErrorDef | ITypeErrorDefInvalid |
-    ITypeErrorNotFound | ITypeErrorTarget | ITypeErrorRef |
-    ITypeErrorCircularRef | ITypeErrorRefTypename | ITypeErrorDuplicateProp |
-    ITypeErrorDuplicateTypename | ITypeErrorSheet;
-
-    declare type TypeErrorProps = {
-        ns: string;
-        column?: string;
-    };
-
-    export declare type ITypeErrorDef = IError<'TYPE/def'> & TypeErrorProps;
-
-    export declare type ITypeErrorDefInvalid = IError<'TYPE/def/invalid'> &
-    TypeErrorProps;
-
-    export declare type ITypeErrorNotFound = IError<'TYPE/notFound'> &
-    TypeErrorProps;
-
-    export declare type ITypeErrorTarget = IError<'TYPE/target'> &
-    TypeErrorProps;
-
-    export declare type ITypeErrorRef = IError<'TYPE/ref'> & TypeErrorProps;
-
-    export declare type ITypeErrorCircularRef = IError<'TYPE/ref/circular'> &
-    TypeErrorProps;
-
-    export declare type ITypeErrorRefTypename = IError<'TYPE/ref/typename'> &
-    TypeErrorProps;
-
-    export declare type ITypeErrorDuplicateProp = IError<'TYPE/duplicate/prop'>
-    & TypeErrorProps;
-
-    export declare type ITypeErrorDuplicateTypename =
-    IError<'TYPE/duplicate/typename'> & TypeErrorProps;
-
-    export declare type ITypeErrorSheet = IError<'TYPE/sheet'> & TypeErrorProps;
-
-    export declare type HttpError = IHttpError['type'];
-
-    export declare type IHttpError = IHttpErrorServer | IHttpErrorConfig |
-    IHttpErrorNotFound | IHttpErrorNotLinked | IHttpErrorFile |
-    IHttpErrorMalformedUri | IHttpErrorHashMismatch | IHttpErrorType;
-
-    declare type HttpErrorProps = {
-        status: number;
-    };
-
-    export declare type IHttpErrorServer = IError<'HTTP/server'> &
-    HttpErrorProps;
-
-    export declare type IHttpErrorConfig = IError<'HTTP/config'> &
-    HttpErrorProps;
-
-    export declare type IHttpErrorNotFound = IError<'HTTP/notFound'> &
-    HttpErrorProps;
-
-    export declare type IHttpErrorNotLinked = IError<'HTTP/notLinked'> &
-    HttpErrorProps;
-
-    export declare type IHttpErrorFile = IError<'HTTP/file'> & HttpErrorProps;
-
-    export declare type IHttpErrorMalformedUri = IError<'HTTP/uri/malformed'> &
-    HttpErrorProps;
-
-    export declare type IHttpErrorHashMismatch = IError<'HTTP/hash/mismatch'> &
-    HttpErrorProps;
-
-    export declare type IHttpErrorType = IError<'HTTP/type'> & HttpErrorProps;
-
-    export declare type FsHttpError = IHttpError['type'];
-
-    export declare type IFsHttpError = IFsError & HttpErrorProps;
-
-    export {};
   types.fs.d.ts: >-
     import * as s3 from '@platform/fs.s3.types';
 
-    import { IFsError } from './types.error';
+    import { IFsError } from '../types.Error';
 
     export declare type FsType = FsTypeLocal | FsTypeS3;
 
@@ -1158,7 +328,7 @@ libs:
         file: IFsFileData<IFsMetaLocal>;
     };
 
-    export declare type IFsDeleteLocal = IFsDeleteCommon & {};
+    export declare type IFsDeleteLocal = IFsDeleteCommon;
 
     export declare type IFsInfoS3 = IFsInfoCommon & IFsMetaS3;
 
@@ -1172,44 +342,10 @@ libs:
         's3:etag'?: string;
     };
 
-    export declare type IFsDeleteS3 = IFsDeleteCommon & {};
+    export declare type IFsDeleteS3 = IFsDeleteCommon;
 
     export {};
-  types.file.d.ts: >-
-    export declare type IFileData = {
-        props: IFileProps;
-        hash?: string;
-        error?: IError;
-    };
-
-    export declare type IFileProps = {
-        mimetype?: string;
-        location?: string;
-        bytes?: number;
-        integrity?: IFileIntegrity;
-    };
-
-    export declare type FileIntegrityStatus = 'UPLOADING' | 'VALID' | 'INVALID'
-    | 'INVALID/fileMissing' | 'INVALID/filehash' | 'INVALID/s3:etag';
-
-    export declare type IFileIntegrity = {
-        status: FileIntegrityStatus;
-        uploadedAt?: number;
-        filehash?: string;
-        's3:etag'?: string;
-    };
-
-    export declare type IFilePresignedUploadUrl = {
-        method: 'POST';
-        expiresAt: number;
-        filename: string;
-        uri: string;
-        url: string;
-        props: {
-            [key: string]: string;
-        };
-    };
-  types.fs.sync.d.ts: 'export declare type IFilesystemSync = {};'
+  types.func.sys.d.ts: 'export declare type IFuncSys = Record<string, unknown>;'
   types.func.d.ts: >-
     import { Subject } from 'rxjs';
 
@@ -1315,335 +451,19 @@ libs:
     };
 
     export declare type IFuncManyEnd = IFuncManyResponse;
-  types.func.sys.d.ts: 'export declare type IFuncSys = {};'
-  types.http.d.ts: |-
-    export declare type HttpProtocol = 'http' | 'https';
-    export declare type IHttpConfigFileArgs = {
-        path?: string;
-        throw?: boolean;
-    };
-    export declare type IHttpConfigFile = {
-        path: string;
-        exists: boolean;
-        data: IHttpConfigDeployment;
-        validate(): IHttpConfigValidation;
-    };
-    export declare type IHttpConfigValidation = {
-        isValid: boolean;
-        errors: IError[];
-    };
-    export declare type IHttpConfigDeployment = {
-        title: string;
-        collection: string;
-        fs: {
-            endpoint: string;
-            root: string;
-        };
-        now: {
-            deployment: string;
-            domain: string;
-            subdomain?: string;
-        };
-        secret: {
-            mongo: string;
-            s3: {
-                key: string;
-                secret: string;
-            };
-        };
-    };
-    export declare type IHttpConfigNowFile = {
-        version: number;
-        name: string;
-        alias: string;
-        env: {
-            [key: string]: string;
-        };
-    };
-  types.http.router.cell.file.d.ts: >-
-    export declare type IUrlParamsCellFiles = IUrlParamsCell;
-
-    export declare type IUrlParamsCellFileByName = IUrlParamsCell & {
-        filename: string;
+  types.map.d.ts: >-
+    export declare type IMap<V = any> = {
+        [key: string]: V | undefined;
     };
 
-    export declare type IUrlParamsCellFileByFileUri = IUrlParamsCell & {
-        filename: string;
-    };
+    export declare type ICellMap<T extends ICellData = ICellData> = IMap<T>;
 
-    export declare type IReqQueryCellFilesList = {
-        expires?: string;
-        files?: boolean;
-        urls?: boolean;
-    };
+    export declare type IColumnMap<T extends IColumnData = IColumnData> =
+    IMap<T>;
 
-    export declare type IReqQueryCellFilesUpload = {
-        changes?: boolean;
-    };
+    export declare type IRowMap<T extends IRowData = IRowData> = IMap<T>;
 
-    export declare type IReqQueryCellFilesUploaded = {
-        changes?: boolean;
-    };
-
-    export declare type IReqQueryCellFilesDelete = {};
-
-    export declare type IReqQueryCellFileInfo = IReqQueryFileInfo & {};
-
-    export declare type IReqQueryCellFileDownloadByName = IReqQueryCellFileInfo
-    & {
-        hash?: string;
-        expires?: string;
-    };
-
-    export declare type IReqQueryCellFileDownloadByFileUri =
-    IReqQueryCellFileDownloadByName;
-
-    export declare type IResGetCellFiles = {
-        total: number;
-        uri: string;
-        urls?: {
-            cell: string;
-            files: IResGetCellFilesFileUrl[];
-        };
-        files?: IFileMap;
-    };
-
-    export declare type IResGetCellFilesFileUrl = {
-        uri: string;
-        path: string;
-        url: string;
-        'url:latest': string;
-    };
-
-    export declare type IReqPostCellFilesUploadStartBody = {
-        files: IReqPostCellUploadFile[];
-        expires?: string;
-    };
-
-    export declare type IReqPostCellUploadFile = {
-        filename: string;
-        filehash?: string;
-        mimetype?: string;
-    };
-
-    export declare type IResPostCellFilesUploadStart =
-    IUriResponse<IResPostCellFilesUploadStartData, IResPostCellFilesUploadUrls>;
-
-    export declare type IResPostCellFilesUploadStartData = {
-        cell: ICellData;
-        files: IUriData<IFileData>[];
-        errors: IFileUploadError[];
-        changes?: IDbModelChange[];
-    };
-
-    export declare type IResPostCellFilesUploadUrls = IResGetCellUrls & {
-        uploads: IFilePresignedUploadUrl[];
-    };
-
-    export declare type IReqPostCellFilesUploadCompleteBody = {};
-
-    export declare type IResPostCellFilesUploadComplete =
-    IUriResponse<IResPostCellFilesUploadCompleteData>;
-
-    export declare type IResPostCellFilesUploadCompleteData = {
-        cell: ICellData;
-        files: IUriData<IFileData>[];
-        changes?: IDbModelChange[];
-    };
-
-    export declare type IReqDeleteCellFilesBody = {
-        filenames: string[];
-        action: 'DELETE' | 'UNLINK';
-    };
-
-    export declare type IResDeleteCellFiles =
-    IUriResponse<IResDeleteCellFilesData>;
-
-    export declare type IResDeleteCellFilesData = {
-        uri: string;
-        deleted: string[];
-        unlinked: string[];
-        errors: {
-            error: 'DELETING' | 'UNLINKING' | 'NOT_LINKED';
-            filename: string;
-        }[];
-    };
-  types.http.router.cell.d.ts: >-
-    export declare type IUrlParamsCoord = IUrlParamsCell | IUrlParamsRow |
-    IUrlParamsColumn;
-
-    export declare type IResGetCoord = IResGetCell | IResGetRow | IResGetColumn;
-
-    export declare type IUrlParamsCell = {
-        ns: string;
-        key: string;
-    };
-
-    export declare type IReqQueryCellInfo = {};
-
-    export declare type IResGetCell = IUriResponse<IResGetCellData,
-    IResGetCellUrls>;
-
-    export declare type IResGetCellData = ICellData;
-
-    export declare type IResGetCellUrls = {
-        cell: string;
-        files: string;
-    };
-
-    export declare type IUrlParamsRow = {
-        ns: string;
-        key: string;
-    };
-
-    export declare type IReqQueryRowInfo = {};
-
-    export declare type IResGetRow = IUriResponse<IResGetRowData,
-    IResGetRowUrls>;
-
-    export declare type IResGetRowData = IRowData;
-
-    export declare type IResGetRowUrls = {};
-
-    export declare type IUrlParamsColumn = {
-        ns: string;
-        key: string;
-    };
-
-    export declare type IReqQueryColumnInfo = {};
-
-    export declare type IResGetColumn = IUriResponse<IResGetColumnData,
-    IResGetColumnUrls>;
-
-    export declare type IResGetColumnData = IColumnData;
-
-    export declare type IResGetColumnUrls = {};
-  types.http.router.d.ts: |-
-    export declare type IPayload<D> = {
-        status: number;
-        data: D;
-    };
-    export declare type IErrorPayload = IHttpErrorPayload | IFsHttpErrorPayload;
-    export declare type IHttpErrorPayload = IPayload<IHttpError>;
-    export declare type IFsHttpErrorPayload = IPayload<IFsHttpError>;
-    export declare type IUriResponse<D, L = IUrlMap> = {
-        uri: string;
-        exists: boolean;
-        createdAt: number;
-        modifiedAt: number;
-        data: D;
-        urls: L;
-    };
-    export declare type IUrlMap = {
-        [key: string]: string;
-    };
-    export declare type IReqQuerySysUid = {
-        total?: number;
-    };
-    export declare type IResGetSysInfo = {
-        deployment: string;
-        system: string;
-        domain: string;
-        region: string;
-        deployedAt?: string;
-        hash?: string;
-    };
-    export declare type IResGetSysUid = string[];
-  types.http.router.file.d.ts: >-
-    export declare type IUrlParamsFile = {
-        ns: string;
-        file: string;
-    };
-
-    export declare type IReqQueryFileInfo = {};
-
-    export declare type IReqQueryFileDownload = {
-        hash?: string;
-    };
-
-    export declare type IResGetFile = IUriResponse<IResGetFileData,
-    IResGetFileUrls>;
-
-    export declare type IResGetFileData = IFileData & {};
-
-    export declare type IResGetFileUrls = {
-        info: string;
-        download: string;
-    };
-
-    export declare type IResPostFileUploadStart = IResGetFile & {
-        upload: IFilePresignedUploadUrl;
-        changes?: IDbModelChange[];
-    };
-
-    export declare type IReqQueryFileUploadComplete = {
-        changes?: boolean;
-    };
-
-    export declare type IReqPostFileUploadCompleteBody = {};
-
-    export declare type IResPostFileUploadComplete = IResGetFile & {
-        changes?: IDbModelChange[];
-    };
-
-    export declare type IResPostFileUploadLocal = {
-        path: string;
-    };
-
-    export declare type IReqQueryLocalFs = {};
-
-    export declare type IReqQueryFileDelete = {
-        changes?: boolean;
-    };
-
-    export declare type IResDeleteFile = {
-        uri: string;
-        deleted: boolean;
-    };
-  types.http.router.ns.d.ts: |-
-    export declare type IUrlParamsNs = {
-        ns: string;
-    };
-    export declare type IReqQueryNsInfo = {
-        data?: boolean;
-        cells?: boolean | string | (string | boolean)[];
-        columns?: boolean | string | (string | boolean)[];
-        rows?: boolean | string | (string | boolean)[];
-        files?: boolean;
-        total?: boolean | NsTotalKey | NsTotalKey[];
-    };
-    export declare type IResGetNs = IUriResponse<IResGetNsData, IResGetNsUrls>;
-    export declare type IResGetNsData = Partial<INsDataChildren> & {
-        ns: INs;
-        total?: Partial<INsTotals>;
-    };
-    export declare type IResGetNsUrls = {
-        data: string;
-    };
-    export declare type IReqQueryNsTypes = {
-        typename?: string | string[] | boolean;
-    };
-    export declare type IResGetNsTypes = {
-        uri: string;
-        types: {
-            typename: string;
-            columns: IColumnTypeDef[];
-        }[];
-        typescript: string;
-    };
-    export declare type IReqQueryNsWrite = IReqQueryNsInfo & {
-        changes?: boolean;
-    };
-    export declare type IReqPostNsBody = {
-        ns?: Partial<INsProps>;
-        cells?: ICellMap<any>;
-        columns?: IColumnMap<any>;
-        rows?: IRowMap<any>;
-        calc?: boolean | string | (string | boolean)[];
-    };
-    export declare type IResPostNs = IResGetNs & {
-        changes?: IDbModelChange[];
-    };
+    export declare type IFileMap<T extends IFileData = IFileData> = IMap<T>;
   types.links.d.ts: >-
     export declare type ILinkKey = {
         prefix: string;
@@ -1663,7 +483,7 @@ libs:
     export declare type ILink<U extends IUri, Q extends ILinkQuery> = ILinkKey &
     ILinkValue<U, Q>;
 
-    export declare type ILinkQuery = {};
+    export declare type ILinkQuery = Record<string, string | boolean>;
 
     export declare type IFileLink = ILink<IFileUri, IFileLinkQuery> & {
         toString: FileLinkToString;
@@ -1695,59 +515,6 @@ libs:
     export declare type RefLinkToString = (options?: {
         hash?: string | null;
     }) => string;
-  types.map.d.ts: >-
-    export declare type IMap<V = any> = {
-        [key: string]: V | undefined;
-    };
-
-    export declare type ICellMap<T extends ICellData = ICellData> = IMap<T>;
-
-    export declare type IColumnMap<T extends IColumnData = IColumnData> =
-    IMap<T>;
-
-    export declare type IRowMap<T extends IRowData = IRowData> = IMap<T>;
-
-    export declare type IFileMap<T extends IFileData = IFileData> = IMap<T>;
-  types.ns.d.ts: >-
-    export declare type INs = {
-        id: string;
-        props?: INsProps;
-        hash?: string;
-    };
-
-    export declare type INsProps = {
-        title?: string;
-        schema?: string;
-        type?: INsType;
-    };
-
-    export declare type INsData<V extends ICellData = ICellData, C extends
-    IColumnData = IColumnData, R extends IRowData = IRowData, F extends
-    IFileData = IFileData> = INsDataChildren<V, C, R, F> & {
-        ns: INs;
-    };
-
-    export declare type INsDataCoord<V extends ICellData = ICellData, C extends
-    IColumnData = IColumnData, R extends IRowData = IRowData> = {
-        cells: ICellMap<V>;
-        columns: IColumnMap<C>;
-        rows: IRowMap<R>;
-    };
-
-    export declare type INsDataChildren<V extends ICellData = ICellData, C
-    extends IColumnData = IColumnData, R extends IRowData = IRowData, F extends
-    IFileData = IFileData> = INsDataCoord<V, C, R> & {
-        files: IFileMap<F>;
-    };
-
-    export declare type INsTotals = {
-        cells: number;
-        rows: number;
-        columns: number;
-        files: number;
-    };
-
-    export declare type NsTotalKey = keyof INsTotals;
   types.range.d.ts: >-
     export declare type CoordRangeType = 'ALL' | 'CELL' | 'COLUMN' | 'ROW' |
     'PARTIAL_COLUMN' | 'PARTIAL_ROW' | 'PARTIAL_ALL';
@@ -1863,57 +630,46 @@ libs:
         hash?: string;
         error?: IError;
     };
-  types.schema.d.ts: 'export declare type ISchema = {};'
-  types.schema.uri.d.ts: |-
-    export declare type IUriMap = {
-        [key: string]: string;
-    };
-    export declare type IUriData<D> = {
-        uri: string;
-        data: D;
-    };
-    export declare type IUriParts<P extends IUri = IUri> = {
-        ok: boolean;
-        uri: string;
-        type: P['type'];
-        parts: P;
-        error?: IUriError;
-        toString(): string;
-    };
-    export declare type UriType = IUri['type'];
-    export declare type IUri = INsUri | ICoordUri | IFileUri | IUnknownUri;
-    export declare type IUnknownUri = {
-        type: 'UNKNOWN';
-    };
-    export declare type INsUri = {
-        type: 'NS';
+  types.ns.d.ts: >-
+    export declare type INs = {
         id: string;
-        toString(): string;
+        props?: INsProps;
+        hash?: string;
     };
-    export declare type IFileUri = {
-        type: 'FILE';
-        id: string;
-        ns: string;
-        file: string;
-        toString(): string;
+
+    export declare type INsProps = {
+        title?: string;
+        schema?: string;
+        type?: INsType;
     };
-    export declare type ICoordUri = ICellUri | ICoordAxisUri;
-    export declare type ICoordUriProps = {
-        id: string;
-        ns: string;
-        key: string;
-        toString(): string;
+
+    export declare type INsData<V extends ICellData = ICellData, C extends
+    IColumnData = IColumnData, R extends IRowData = IRowData, F extends
+    IFileData = IFileData> = INsDataChildren<V, C, R, F> & {
+        ns: INs;
     };
-    export declare type ICellUri = ICoordUriProps & {
-        type: 'CELL';
+
+    export declare type INsDataCoord<V extends ICellData = ICellData, C extends
+    IColumnData = IColumnData, R extends IRowData = IRowData> = {
+        cells: ICellMap<V>;
+        columns: IColumnMap<C>;
+        rows: IRowMap<R>;
     };
-    export declare type ICoordAxisUri = IRowUri | IColumnUri;
-    export declare type IRowUri = ICoordUriProps & {
-        type: 'ROW';
+
+    export declare type INsDataChildren<V extends ICellData = ICellData, C
+    extends IColumnData = IColumnData, R extends IRowData = IRowData, F extends
+    IFileData = IFileData> = INsDataCoord<V, C, R> & {
+        files: IFileMap<F>;
     };
-    export declare type IColumnUri = ICoordUriProps & {
-        type: 'COLUMN';
+
+    export declare type INsTotals = {
+        cells: number;
+        rows: number;
+        columns: number;
+        files: number;
     };
+
+    export declare type NsTotalKey = keyof INsTotals;
   types.value.d.ts: export declare type CellValue = Json;
   types.schema.urls.d.ts: |-
     export declare type IUrl<Q extends object = {}> = {
@@ -1979,4 +735,55 @@ libs:
     };
     export declare type IUrlsLocal = {
         fs: IUrl<IReqQueryLocalFs>;
+    };
+  types.schema.d.ts: export declare type FOO__ = 555;
+  types.schema.uri.d.ts: |-
+    export declare type IUriMap = {
+        [key: string]: string;
+    };
+    export declare type IUriData<D> = {
+        uri: string;
+        data: D;
+    };
+    export declare type IUriParts<P extends IUri = IUri> = {
+        ok: boolean;
+        uri: string;
+        type: P['type'];
+        parts: P;
+        error?: IUriError;
+        toString(): string;
+    };
+    export declare type UriType = IUri['type'];
+    export declare type IUri = INsUri | ICoordUri | IFileUri | IUnknownUri;
+    export declare type IUnknownUri = {
+        type: 'UNKNOWN';
+    };
+    export declare type INsUri = {
+        type: 'NS';
+        id: string;
+        toString(): string;
+    };
+    export declare type IFileUri = {
+        type: 'FILE';
+        id: string;
+        ns: string;
+        file: string;
+        toString(): string;
+    };
+    export declare type ICoordUri = ICellUri | ICoordAxisUri;
+    export declare type ICoordUriProps = {
+        id: string;
+        ns: string;
+        key: string;
+        toString(): string;
+    };
+    export declare type ICellUri = ICoordUriProps & {
+        type: 'CELL';
+    };
+    export declare type ICoordAxisUri = IRowUri | IColumnUri;
+    export declare type IRowUri = ICoordUriProps & {
+        type: 'ROW';
+    };
+    export declare type IColumnUri = ICoordUriProps & {
+        type: 'COLUMN';
     };

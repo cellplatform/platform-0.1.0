@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, ui } from '../../common';
+import { color, css, CssValue, t, ui, time } from '../../common';
 import { DebugLogToolbar } from './DebugLog.Toolbar';
 import { VirtualList, VirtualListFactory, VirtualListItemSize } from '../VirtualList';
 import { DebugLogItem } from './DebugLog.Item';
@@ -45,8 +45,11 @@ export class DebugLog extends React.PureComponent<IDebugLogProps, Partial<d.IDeb
   public add(e: t.Event) {
     // NB: Doing this with unshift and storing `total` for efficiency when the array get long.
     const count = this.total + 1;
+
     this.store.change((draft) => {
-      draft.items.unshift({ count, data: e });
+      const timestamp = time.now.timestamp;
+      draft.items.unshift({ timestamp, count, data: e });
+
       if (draft.selectedIndex === undefined) {
         draft.selectedIndex = 0;
       }

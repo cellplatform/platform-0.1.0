@@ -6,29 +6,23 @@ import * as t from './types';
 
 export * from './types';
 
-export type IStoreArgs<M extends Record<string, unknown>> = {
-  initial: M;
-  event$?: Subject<any>;
-};
+type O = Record<string, unknown>;
 
 /**
- * An observable state machine.
+ * An observable state-machine.
  */
-export class Store<M extends Record<string, unknown>, E extends t.IStoreEvent>
-  implements t.IStore<M, E> {
+export class Store<M extends O, E extends t.IStoreEvent> implements t.IStore<M, E> {
   /**
    * [Static]
    */
-  public static create<M extends Record<string, unknown>, E extends t.IStoreEvent>(
-    args: IStoreArgs<M>,
-  ) {
+  public static create<M extends O, E extends t.IStoreEvent>(args: t.IStoreArgs<M>) {
     return new Store<M, E>(args) as t.IStore<M, E>;
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(args: IStoreArgs<M>) {
+  private constructor(args: t.IStoreArgs<M>) {
     this._.state = { ...args.initial };
     this._event$ = args.event$ || new Subject<E>();
     this.event$ = this._event$.pipe(
@@ -167,13 +161,4 @@ export class Store<M extends Record<string, unknown>, E extends t.IStoreEvent>
 
     return result;
   }
-}
-
-/**
- * Creates a new state machine.
- */
-export function create<M extends Record<string, unknown>, E extends t.IStoreEvent>(
-  args: IStoreArgs<M>,
-) {
-  return Store.create<M, E>(args);
 }

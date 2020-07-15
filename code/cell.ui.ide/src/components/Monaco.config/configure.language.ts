@@ -42,6 +42,8 @@ export async function language(monaco: t.IMonaco) {
   /**
    * Load standard ECMAScript language types.
    */
+  /* eslint-disable */
+
   // @ts-ignore
   const es = await import('./libs-es.d.yml');
   await addFromYaml(es.libs);
@@ -49,4 +51,6 @@ export async function language(monaco: t.IMonaco) {
   // @ts-ignore
   const cell = await import('./libs-cell.d.yml');
   await addFromYaml(cell.libs);
+
+  /* eslint-enable */
 }
