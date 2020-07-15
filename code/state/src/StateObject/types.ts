@@ -26,6 +26,7 @@ export type IStateObjectWritable<T extends O> = IStateObject<T> & {
 };
 
 export type IStateObjectChangeResponse<T extends O> = {
+  cid: string; // "change-id"
   cancelled: boolean;
   from: T;
   to: T;
@@ -47,6 +48,7 @@ export type IStateObjectChangingEvent<T extends O = any> = {
   payload: IStateObjectChanging<T>;
 };
 export type IStateObjectChanging<T extends O = any> = {
+  cid: string; // "change-id"
   from: T;
   to: T;
   cancelled: boolean;
@@ -61,4 +63,8 @@ export type IStateObjectChangedEvent<T extends O = any> = {
   type: 'StateObject/changed';
   payload: IStateObjectChanged<T>;
 };
-export type IStateObjectChanged<T extends O = any> = { from: T; to: T };
+export type IStateObjectChanged<T extends O = any> = {
+  cid: string; // "change-id"
+  from: T;
+  to: T;
+};

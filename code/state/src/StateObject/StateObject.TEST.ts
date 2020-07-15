@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { expect } from 'chai';
 import { StateObject } from '.';
 import * as t from './types';
@@ -26,6 +28,10 @@ describe('StateObject', () => {
       draft.message = 'hello';
     });
     const res2 = obj.change((draft) => (draft.count += 1));
+
+    expect(res1.cid.length).to.greaterThan(4);
+    expect(res2.cid.length).to.greaterThan(4);
+    expect(res1.cid).to.not.eql(res2.cid);
 
     expect(obj.original).to.eql(initial);
     expect(obj.state).to.eql({ count: 4, message: 'hello' });
@@ -96,8 +102,10 @@ describe('StateObject', () => {
       const obj = StateObject.create<IFoo>(initial);
 
       const events: t.StateObjectEvent[] = [];
+      const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
       obj.event$.subscribe((e) => events.push(e));
+      obj.changing$.subscribe((e) => changing.push(e));
       obj.changed$.subscribe((e) => changed.push(e));
 
       obj.change((draft) => (draft.count += 1));
@@ -108,6 +116,8 @@ describe('StateObject', () => {
       expect(changed[0].from).to.eql(initial);
       expect(changed[0].to).to.eql({ count: 2 });
       expect(changed[0].to).to.equal(obj.state); // NB: Current state instance.
+
+      expect(changing[0].cid).to.eql(changed[0].cid);
     });
   });
 });

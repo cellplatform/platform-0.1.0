@@ -1,6 +1,7 @@
 import produce from 'immer';
 import { Subject } from 'rxjs';
 import { share, filter, map } from 'rxjs/operators';
+import { id } from '@platform/util.value';
 
 import * as t from './types';
 
@@ -78,6 +79,7 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
    * [Methods]
    */
   public change(fn: t.StateObjectChanger<T>) {
+    const cid = id.shortid(); // "change-id"
     const from = this.state;
 
     // Invoke the change handler.
@@ -87,6 +89,7 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
 
     // Fire BEFORE event.
     const payload: t.IStateObjectChanging<T> = {
+      cid,
       from,
       to,
       cancelled: false,
@@ -98,11 +101,11 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
     const cancelled = payload.cancelled;
     if (!cancelled) {
       this._state = to;
-      this.fire({ type: 'StateObject/changed', payload: { from, to } });
+      this.fire({ type: 'StateObject/changed', payload: { cid, from, to } });
     }
 
     // Finish up.
-    return { from, to, cancelled };
+    return { cid, from, to, cancelled };
   }
 
   /**
