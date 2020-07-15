@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { css, color, CssValue, COLORS, util, t } from '../../common';
+import { WindowAddressContent } from './WindowAddressContent';
 
 export type IWindowAddressProps = {
   address?: React.ReactNode;
@@ -18,9 +19,6 @@ export class WindowAddress extends React.PureComponent<IWindowAddressProps, IWin
   /**
    * [Lifecycle]
    */
-  constructor(props: IWindowAddressProps) {
-    super(props);
-  }
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
@@ -67,23 +65,16 @@ export class WindowAddress extends React.PureComponent<IWindowAddressProps, IWin
     const styles = {
       base: css({
         position: 'relative',
-        backgroundColor: color.format(1),
-        border: `solid 1px ${color.format(-0.2)}`,
-        borderBottomColor: isWindowFocused ? undefined : color.format(-0.26),
-        borderRadius: 4,
-        fontSize: 13,
+        backgroundColor: color.format(-0.04),
+        border: `solid 1px ${color.format(-0.08)}`,
+        borderRadius: 5,
+        fontSize: 12,
         height: 26,
-        minWidth: 300,
+        minWidth: 360,
         boxSizing: 'border-box',
         opacity: isWindowFocused ? 1 : 0.35,
         color: color.format(-0.7),
         outline: 'none',
-      }),
-      body: css({
-        Absolute: 0,
-        Flex: 'center-center',
-        PaddingX: 10,
-        boxSizing: 'border-box',
       }),
       focusBorder: css({
         borderRadius: 4,
@@ -99,7 +90,7 @@ export class WindowAddress extends React.PureComponent<IWindowAddressProps, IWin
         onFocus={this.focusHandler(true)}
         onBlur={this.focusHandler(false)}
       >
-        <div {...styles.body}>{this.props.address}</div>
+        <WindowAddressContent address={this.props.address} />
         {isFocused && <div {...styles.focusBorder} />}
       </div>
     );

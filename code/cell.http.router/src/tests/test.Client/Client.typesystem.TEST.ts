@@ -40,14 +40,30 @@ describe('Client.TypeSystem', () => {
     it('from host (origin)', async () => {
       const { mock, client } = await testDefs();
       const res = await client.implements('foo.mySheet');
-      const typeDefs = res.typeDefs;
       await mock.dispose();
 
       expect(res.error).to.eql(undefined);
       expect(res.ns).to.eql('ns:foo.mySheet');
       expect(res.implements).to.eql('ns:foo');
-      expect(typeDefs.length).to.eql(1);
-      expect(typeDefs[0].typename).to.eql('MyRow');
+      expect(res.typeDefs.length).to.eql(1);
+      expect(res.typeDefs[0].typename).to.eql('MyRow');
+    });
+
+    it('converts from input URI to namespace', async () => {
+      const { mock, client } = await testDefs();
+
+      const test = async (uri: string) => {
+        const res = await client.implements(uri);
+        expect(res.error).to.eql(undefined);
+        expect(res.ns).to.eql('ns:foo.mySheet');
+      };
+
+      await test('foo.mySheet');
+      await test('cell:foo.mySheet:A1');
+      await test('cell:foo.mySheet:A');
+      await test('cell:foo.mySheet:1');
+
+      await mock.dispose();
     });
 
     it('no {type.implements}', async () => {

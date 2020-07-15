@@ -13,7 +13,7 @@ export { Client, HttpClient } from '@platform/cell.client';
 export { MemoryCache } from '@platform/cache';
 export { wildcard } from '@platform/util.string/lib/wildcard';
 
-export { TypeSystem } from './libs.cell';
+export { TypeSystem, Uri } from './libs.cell';
 import * as cell from './libs.cell';
 export { cell };
 
