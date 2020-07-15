@@ -14,7 +14,7 @@ export type IClientTypesystem = {
   implements(ns: N): Promise<t.IClientTypesystemImplements>;
   typescript(
     ns: N | N[],
-    options?: { header?: boolean; exports?: boolean; imports?: boolean },
+    options?: t.ITypeClientTypescriptOptions,
   ): Promise<t.ITypeClientTypescript>;
 };
 
