@@ -100,7 +100,7 @@ export class DebugLogInfoPanel extends React.PureComponent<
     const data = toDisplayObject(props.data);
     return (
       <React.Fragment>
-        <PropList.Hr />
+        <PropList.Hr margin={24} />
         <ObjectView name={name} data={data} fontSize={11} expandLevel={1} />
       </React.Fragment>
     );

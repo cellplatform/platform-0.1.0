@@ -10,11 +10,11 @@ export type IPropListProps = {
 };
 
 export class PropList extends React.PureComponent<IPropListProps> {
-  public static Hr = (props: { color?: string | number } = {}) => {
+  public static Hr = (props: { color?: string | number; margin?: number } = {}) => {
     const style = css({
       height: 1,
       borderTop: `solid 4px ${color.format(defaultValue(props.color, -0.1))}`,
-      MarginY: 15,
+      MarginY: defaultValue(props.margin, 15),
     });
     return <div {...style} />;
   };
