@@ -965,7 +965,7 @@
     "@platform/util.string" "0.5.10"
     "@platform/util.value" "0.7.26"
 
-"@platform/cell.types@0.4.126":
+"@platform/cell.types@0.4.126", "@platform/cell.types@^0.4.126":
   version "0.4.126"
   resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.126.tgz#e71cf388203c2a2ece3adf2afe3f4142e5975b25"
   integrity sha512-gPXIqIngDC5ftsoavWQviDfewIacVwqZkuxcY2ezT+PHEwhsI95iei7ipEnpT6I6wxWXABEv1ucBv3ufDhpiYw==
@@ -980,7 +980,7 @@
     "@platform/types" "0.4.24"
     "@platform/util.diff" "0.0.34"
 
-"@platform/cell.typesystem@0.0.80":
+"@platform/cell.typesystem@0.0.80", "@platform/cell.typesystem@^0.0.80":
   version "0.0.80"
   resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.80.tgz#7a3b5ab9c20ba4cbf186e7f404f009c66ba50842"
   integrity sha512-3OAd/moXVPgfKEjpVx1uJi2F/rcOmhh9ym0Zl5F/JKs6NIEXz+4qMvTXE/LOuR/q6/tldWTWnYAnE7qZ94FJpA==
@@ -993,17 +993,17 @@
     "@platform/types" "0.4.24"
     "@platform/util.value" "0.7.26"
 
-"@platform/cell.ui@0.1.65":
-  version "0.1.65"
-  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.65.tgz#1acec3dd9a1da56176d375cebe87c82679a0cc09"
-  integrity sha512-2k7oVJBfG0zukz/dshkV++HlRDXtOVDq1cPXLbXQ6543PxWFIdUgGA9DDzhA3M7EdCbTZRxPIdJoHOULu0E9Xg==
+"@platform/cell.ui@0.1.67":
+  version "0.1.67"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.67.tgz#e72c564b37bd9b73f027a8b8f76208b3f68bf46a"
+  integrity sha512-dUagJfT4cMvUgOHrBJnb3sz9xI2MQ7O2HL+kH82ujY/14GyYcuUrMCmL88aFNWNYSaUvy9ltw5qSQk4pmTJ9DQ==
   dependencies:
     "@platform/cell.client" "0.2.122"
     "@platform/cell.types" "0.4.126"
     "@platform/libs" "0.2.2"
     "@platform/polyfill" "0.0.1"
     "@platform/react" "0.4.39"
-    "@platform/state" "0.6.0"
+    "@platform/state" "0.6.2"
     "@platform/ui.button" "0.3.74"
     "@platform/ui.icon" "0.0.158"
     "@platform/ui.text" "0.3.70"
@@ -1137,10 +1137,10 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.0.tgz#894947c2788588e6eb1ff63e0eb4bb623a8e45ff"
-  integrity sha512-locA+ajqtuaM7dDBxKu+xS4bgs39UegwRHOAgYX7CcIfqZsihlF5MUtQO1lKH6LCGpTeHaVD5F09h0bnuk8/ZQ==
+"@platform/state@0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.2.tgz#10bfead37dc8a083c086af0185eb590be64e35c5"
+  integrity sha512-mxQ8txZZkGKPhFAqXOYit/cvkGEQ3Gjm0t+avhDwSEIPd5E6O+k5x7SHBWkMKAGCOhcyTlluCDU4ufLd9z2s5g==
   dependencies:
     "@platform/util.value" "0.7.26"
     immer "7.0.5"

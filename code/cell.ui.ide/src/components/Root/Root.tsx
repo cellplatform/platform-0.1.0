@@ -31,10 +31,6 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
-    ctx.event$.subscribe((e) => {
-      console.log('e', e);
-    });
-
     changes
       .on('APP:IDE/types/data', 'APP:IDE/types/clear')
       .pipe()

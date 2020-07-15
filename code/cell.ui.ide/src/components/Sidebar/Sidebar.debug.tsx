@@ -154,6 +154,7 @@ const app: AppWindow = {
   x: 0,
   y: 120,
   isVisible: true,
+  argv: [],
 }
 
 

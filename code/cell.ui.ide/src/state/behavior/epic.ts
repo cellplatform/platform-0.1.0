@@ -1,5 +1,6 @@
 import { filter } from 'rxjs/operators';
 import { t, rx, ui } from '../../common';
+import * as save from './epic.save';
 
 /**
  * Async behavior controllers.
@@ -9,6 +10,8 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { client } = ctx;
   const http = client.http;
   const event$ = ctx.event$;
+
+  save.init(args);
 
   /**
    * Load the IDE.

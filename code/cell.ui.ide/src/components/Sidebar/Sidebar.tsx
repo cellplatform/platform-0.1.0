@@ -65,6 +65,8 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
         Absolute: 0,
         padding: 20,
         paddingTop: 15,
+        paddingBottom: 80,
+        Scroll: true,
       }),
     };
     return (
@@ -137,7 +139,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
     });
 
     const items = [{ label: 'uri', value: def.uri }, ...columns];
-
-    return <PropList title={def.typename} items={items} />;
+    const title = `Type: ${def.typename}`;
+    return <PropList title={title} items={items} />;
   }
 }

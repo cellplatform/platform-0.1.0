@@ -37,7 +37,7 @@ export type IIdeUri = { uri: string };
 /**
  * Content
  */
-export type IIdeTextEvent = { type: 'APP:IDE/text'; payload: IIdeText };
+export type IIdeTextEvent = { type: 'APP:IDE/text'; payload: IIdeText }; // Updates the text within the code-editor.
 export type IIdeText = { text: string };
 
 /**
