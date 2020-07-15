@@ -1,5 +1,7 @@
 import { t } from './common';
 
+type PlaceholderObject = Record<string, undefined>;
+
 /**
  * Events
  */
@@ -45,7 +47,7 @@ export type IIdePullTypesEvent = { type: 'APP:IDE/types/pull'; payload: IIdePull
 export type IIdePullTypes = { uri: string };
 
 export type IIdeTypesClearEvent = { type: 'APP:IDE/types/clear'; payload: IIdeTypesClear };
-export type IIdeTypesClear = {};
+export type IIdeTypesClear = PlaceholderObject;
 
 export type IIdeTypeDataEvent = { type: 'APP:IDE/types/data'; payload: IIdeTypeData };
 export type IIdeTypeData = { defs: t.INsTypeDef[]; ts: string };

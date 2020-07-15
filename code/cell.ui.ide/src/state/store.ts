@@ -1,5 +1,6 @@
 import { Store } from '@platform/state';
 import { Subject } from 'rxjs';
+import { delay } from 'rxjs/operators';
 
 import { t } from '../common';
 
@@ -14,7 +15,9 @@ export function createStore(args: { event$: Subject<t.AppEvent> }): t.IAppStore 
   const store = Store.create<t.IAppState, t.AppEvent>({ initial, event$ });
 
   // Ferry events in and out of state-machine.
-  store.changed$.subscribe((payload) => event$.next({ type: 'APP:IDE/changed', payload }));
+  store.changed$
+    .pipe(delay(0)) // NB: Allow direct listeners to store events to complete before firing.
+    .subscribe((payload) => event$.next({ type: 'APP:IDE/changed', payload }));
 
   // Finish up.
   return store;

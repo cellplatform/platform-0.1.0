@@ -5,6 +5,10 @@ export type EditorEvent = IIdeEditorContentChangeEvent;
 /**
  * [Events]
  */
+
+/**
+ * Fired after content has changed within the code-editor.
+ */
 export type IIdeEditorContentChangeEvent = {
   type: 'APP:IDE/editor/contentChange';
   payload: IIdeEditorContentChange;
