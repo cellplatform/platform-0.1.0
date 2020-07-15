@@ -76,10 +76,7 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
     /**
      * Typescript generator for the given namespace(s).
      */
-    async typescript(
-      ns: N | N[],
-      options: { header?: boolean; exports?: boolean; imports?: boolean } = {},
-    ) {
+    async typescript(ns: N | N[], options: t.ITypeClientTypescriptOptions = {}) {
       const defs = await api.typeDefs(ns);
       return TypeSystem.Client.typescript(defs, options);
     },
