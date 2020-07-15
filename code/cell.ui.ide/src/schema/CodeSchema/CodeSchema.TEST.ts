@@ -23,12 +23,9 @@ describe('CodeSchema', () => {
   });
 
   it('save [types.code.g.ts]', async () => {
-    const schema = CodeSchema.declare({ namespaces });
-    const typeDefs = schema.def.toTypeDefs();
-
-    const ts = TypeSystem.typescript(typeDefs);
     const path = fs.resolve('src/types/types.code.g.ts');
-    await ts.save(fs, path);
+    const schema = CodeSchema.declare({ namespaces });
+    await schema.def.typescript().save(fs, path);
 
     const code = (await fs.readFile(path)).toString();
     expect(code).to.include('declare type Code = {');

@@ -22,7 +22,7 @@ import { TypedSheetState, TypedSheetStateInternal } from './TypedSheetState';
  * - read/write: linked sheet (singular)
  */
 
-describe.only('TypedSheet', () => {
+describe('TypedSheet', () => {
   describe('lifecycle', () => {
     it('dispose', async () => {
       const { sheet } = await testMySheet();

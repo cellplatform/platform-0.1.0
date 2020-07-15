@@ -1015,6 +1015,11 @@ describe('TypeClient', () => {
 
   describe('typescript', () => {
     describe('declaration', () => {
+      it('empty', async () => {
+        expect(TypeClient.typescript([]).toString()).to.eql('');
+        expect(TypeClient.typescript([]).toString({ path: 'foo/bar' })).to.eql('');
+      });
+
       it('toString: with header and TypeIndex (default)', async () => {
         const defs = (await TypeClient.load({ ns: 'foo', fetch })).defs;
         const res = TypeClient.typescript(defs[0]).toString();

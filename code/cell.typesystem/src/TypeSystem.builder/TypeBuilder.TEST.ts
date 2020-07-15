@@ -232,6 +232,30 @@ describe('TypeBuilder', () => {
     });
   });
 
+  describe('typescript', () => {
+    it('empty', () => {
+      const builder = TypeBuilder.create();
+      const res = builder.typescript();
+      expect(res.declaration).to.eql('');
+      expect(res.toString()).to.eql('');
+    });
+
+    it('simple', () => {
+      const builder = TypeBuilder.create();
+      builder
+        .ns('foo')
+        .type('MyType')
+        .prop(' title ', { target: 'inline:title', default: 'Untitled' })
+        .prop('count?', 'number');
+
+      const res = builder.typescript();
+      const ts = res.declaration;
+
+      expect(ts).to.include(`export declare type TypeIndex = {`);
+      expect(ts).to.include(`export declare type MyType = {`);
+    });
+  });
+
   describe('builder.ns', () => {
     it('from uri: string', () => {
       const ns = TypeBuilder.create().ns('foo');
