@@ -5,7 +5,7 @@ export type IUrlParamsFile = { ns: string; file: string };
 /**
  * GET: File
  */
-export type IReqQueryFileInfo = Record<string, unknown>; // 🐷 Placeholder type.
+export type IReqQueryFileInfo = Record<string, undefined>; // 🐷 Placeholder type.
 export type IReqQueryFileDownload = { hash?: string };
 
 export type IResGetFile = t.IUriResponse<IResGetFileData, IResGetFileUrls>;
@@ -27,7 +27,7 @@ export type IReqQueryFileUploadComplete = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
 
-export type IReqPostFileUploadCompleteBody = Record<string, unknown>; // 🐷 Placeholder type.
+export type IReqPostFileUploadCompleteBody = Record<string, undefined>; // 🐷 Placeholder type.
 export type IResPostFileUploadComplete = IResGetFile & {
   changes?: t.IDbModelChange[];
 };
@@ -39,7 +39,7 @@ export type IResPostFileUploadComplete = IResGetFile & {
  *    When working against S3, this is the cloud end-point (using a presigned-url).
  */
 export type IResPostFileUploadLocal = { path: string };
-export type IReqQueryLocalFs = Record<string, unknown>; // 🐷 Placeholder type.
+export type IReqQueryLocalFs = Record<string, undefined>; // 🐷 Placeholder type.
 
 /**
  * DELETE: File

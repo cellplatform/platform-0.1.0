@@ -1,5 +1,7 @@
 import { t } from '../common';
 
+
+
 /**
  * Parameters
  */
@@ -21,7 +23,7 @@ export type IReqQueryCellFilesUpload = {
 export type IReqQueryCellFilesUploaded = {
   changes?: boolean; // NB: return list of changes (default: true).
 };
-export type IReqQueryCellFilesDelete = Record<string, unknown>; // 🐷 Placeholder type.
+export type IReqQueryCellFilesDelete = Record<string, undefined>; // 🐷 Placeholder type.
 
 export type IReqQueryCellFileInfo = t.IReqQueryFileInfo;
 export type IReqQueryCellFileDownloadByName = t.IReqQueryCellFileInfo & {
@@ -79,7 +81,7 @@ export type IResPostCellFilesUploadUrls = t.IResGetCellUrls & {
 /**
  * POST: Cell Files (Upload Complete)
  */
-export type IReqPostCellFilesUploadCompleteBody = Record<string, unknown>; // 🐷 Placeholder type.
+export type IReqPostCellFilesUploadCompleteBody = Record<string, undefined>; // 🐷 Placeholder type.
 export type IResPostCellFilesUploadComplete = t.IUriResponse<IResPostCellFilesUploadCompleteData>;
 export type IResPostCellFilesUploadCompleteData = {
   cell: t.ICellData;

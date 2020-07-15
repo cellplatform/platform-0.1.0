@@ -1,1 +1,1 @@
-export type IFuncSys = Record<string, unknown>; // 🐷 Placeholder.
+export type IFuncSys = Record<string, undefined>; // 🐷 Placeholder type.

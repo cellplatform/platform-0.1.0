@@ -1,5 +1,6 @@
 import { t } from '../common';
 
+type O = Record<string, unknown>;
 type S = t.ITypedSheet<any> | t.INsUri | string;
 
 /**
@@ -13,7 +14,7 @@ export type ISheetPool = {
 
   dispose(): void;
   exists(sheet: S): boolean;
-  sheet<T = Record<string, unknown>>(sheet: S): t.ITypedSheet<T> | undefined;
+  sheet<T = O>(sheet: S): t.ITypedSheet<T> | undefined;
   add(sheet: t.ITypedSheet, options?: { parent?: S }): ISheetPool;
   remove(sheet: S): ISheetPool;
   children(sheet: S): t.ITypedSheet[];

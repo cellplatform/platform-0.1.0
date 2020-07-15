@@ -2,7 +2,7 @@ import { t } from '../common';
 
 type N = t.INsProps;
 type C = t.ICellData;
-
+  
 /**
  * A set of changes for a sheet.
  */
