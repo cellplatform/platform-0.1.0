@@ -1,9 +1,23 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+
+type O = Record<string, unknown>;
+
+export type IStoreArgs<M extends O> = {
+  initial: M;
+  event$?: Subject<any>;
+};
+
+export type Store = {
+  /**
+   * Creates a new state-machine.
+   */
+  create<M extends O, E extends IStoreEvent>(args: IStoreArgs<M>): IStore<M, E>;
+};
 
 /**
  * An observable state machine.
  */
-export type IStore<M extends Record<string, unknown>, E extends IStoreEvent> = {
+export type IStore<M extends O, E extends IStoreEvent> = {
   state: M;
   isDisposed: boolean;
 
@@ -21,10 +35,7 @@ export type IStore<M extends Record<string, unknown>, E extends IStoreEvent> = {
  * A representation of store containing
  * the current state and ability to dispatch change requests.
  */
-export type IStoreContext<
-  M extends Record<string, unknown> = any,
-  E extends IStoreEvent = IStoreEvent
-> = {
+export type IStoreContext<M extends O = any, E extends IStoreEvent = IStoreEvent> = {
   state: M;
   changed$: Observable<IStateChange<M, E>>;
   dispatch(event: E): IStoreContext<M, E>;
@@ -35,7 +46,7 @@ export type IStoreContext<
  */
 export type IStoreEvent = {
   type: string;
-  payload: Record<string, unknown>;
+  payload: O;
 };
 
 /**
@@ -43,7 +54,7 @@ export type IStoreEvent = {
  * the store's `events$` observable.
  */
 export type IDispatch<
-  M extends Record<string, unknown> = any,
+  M extends O = any,
   E extends IStoreEvent = IStoreEvent,
   D extends IStoreEvent = IStoreEvent
 > = {
@@ -57,10 +68,7 @@ export type IDispatch<
 /**
  * A notification of a change to a store's state-tree.
  */
-export type IStateChange<
-  M extends Record<string, unknown> = any,
-  E extends IStoreEvent = IStoreEvent
-> = {
+export type IStateChange<M extends O = any, E extends IStoreEvent = IStoreEvent> = {
   type: E['type'];
   event: E;
   from: M;
@@ -70,10 +78,7 @@ export type IStateChange<
 /**
  * A notification that a change is about to be made to the store's state-tree.
  */
-export type IStateChanging<
-  M extends Record<string, unknown> = any,
-  E extends IStoreEvent = IStoreEvent
-> = {
+export type IStateChanging<M extends O = any, E extends IStoreEvent = IStoreEvent> = {
   change: IStateChange<M, E>;
   isCancelled: boolean;
   cancel(): void;
