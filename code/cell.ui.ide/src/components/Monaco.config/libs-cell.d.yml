@@ -1,4 +1,24 @@
 libs:
+  types.cell.d.ts: |-
+    import { Diff } from '@platform/util.diff/lib/types';
+    export declare type ICellProps = {
+        value?: CellValue;
+        type?: CellType;
+    };
+    export declare type ICellData<P extends ICellProps = ICellProps> = {
+        value?: CellValue;
+        props?: P;
+        hash?: string;
+        error?: IError;
+        links?: IUriMap;
+    };
+    export declare type ICellDiff<P extends ICellProps = ICellProps> = {
+        readonly left: ICellData<P>;
+        readonly right: ICellData<P>;
+        readonly isDifferent: boolean;
+        readonly list: Diff<ICellData<P>>[];
+    };
+  types.cli.d.ts: 'export declare type CellCli = Record<string, unknown>;'
   index.d.ts: ''
   types.cell.coord.d.ts: |-
     export declare type CoordAxis = 'COLUMN' | 'ROW';
@@ -28,41 +48,6 @@ libs:
     };
     export declare type ICoordSiblingOptions = ICoordOffsetOptions & {
         offset?: number;
-    };
-  types.cell.get.d.ts: >-
-    export declare type GetCell<P extends ICellProps = ICellProps> = (key:
-    string) => Promise<ICellData<P> | undefined>;
-
-    export declare type GetCells<P extends ICellProps = ICellProps> = () =>
-    Promise<ICellMap<ICellData<P>>>;
-  types.cell.d.ts: |-
-    import { Diff } from '@platform/util.diff/lib/types';
-    export declare type ICellProps = {
-        value?: CellValue;
-        type?: CellType;
-    };
-    export declare type ICellData<P extends ICellProps = ICellProps> = {
-        value?: CellValue;
-        props?: P;
-        hash?: string;
-        error?: IError;
-        links?: IUriMap;
-    };
-    export declare type ICellDiff<P extends ICellProps = ICellProps> = {
-        readonly left: ICellData<P>;
-        readonly right: ICellData<P>;
-        readonly isDifferent: boolean;
-        readonly list: Diff<ICellData<P>>[];
-    };
-  types.column.d.ts: |-
-    export declare type IColumnProps = {
-        title?: string;
-        def?: CellTypeDef | CellTypeDef[];
-    };
-    export declare type IColumnData<P extends IColumnProps = IColumnProps> = {
-        props?: P;
-        hash?: string;
-        error?: IError;
     };
   types.db.d.ts: >-
     import { IModel, IModelLinksSchema, IModelChildrenSchema } from
@@ -159,12 +144,29 @@ libs:
     export declare type IDbModelFileLinks = IModelLinksSchema;
 
     export declare type IDbModelFileChildren = IModelChildrenSchema;
-  types.cli.d.ts: 'export declare type CellCli = Record<string, unknown>;'
   types.event.d.ts: |-
     export declare type Event<P = unknown> = {
         type: string;
         payload: P;
     };
+  types.cell.get.d.ts: >-
+    export declare type GetCell<P extends ICellProps = ICellProps> = (key:
+    string) => Promise<ICellData<P> | undefined>;
+
+    export declare type GetCells<P extends ICellProps = ICellProps> = () =>
+    Promise<ICellMap<ICellData<P>>>;
+  types.column.d.ts: |-
+    export declare type IColumnProps = {
+        title?: string;
+        def?: CellTypeDef | CellTypeDef[];
+    };
+    export declare type IColumnData<P extends IColumnProps = IColumnProps> = {
+        props?: P;
+        hash?: string;
+        error?: IError;
+    };
+  types.compile.d.ts: export declare type CompileTemp = 'TEMP';
+  types.fs.sync.d.ts: 'export declare type IFilesystemSync = Record<string, unknown>;'
   types.file.d.ts: >-
     export declare type IFileData = {
         props: IFileProps;
@@ -343,8 +345,6 @@ libs:
     export declare type IFsDeleteS3 = IFsDeleteCommon;
 
     export {};
-  types.fs.sync.d.ts: 'export declare type IFilesystemSync = Record<string, unknown>;'
-  types.compile.d.ts: export declare type CompileTemp = 'TEMP';
   types.func.sys.d.ts: 'export declare type IFuncSys = Record<string, unknown>;'
   types.func.d.ts: >-
     import { Subject } from 'rxjs';
@@ -451,6 +451,19 @@ libs:
     };
 
     export declare type IFuncManyEnd = IFuncManyResponse;
+  types.map.d.ts: >-
+    export declare type IMap<V = any> = {
+        [key: string]: V | undefined;
+    };
+
+    export declare type ICellMap<T extends ICellData = ICellData> = IMap<T>;
+
+    export declare type IColumnMap<T extends IColumnData = IColumnData> =
+    IMap<T>;
+
+    export declare type IRowMap<T extends IRowData = IRowData> = IMap<T>;
+
+    export declare type IFileMap<T extends IFileData = IFileData> = IMap<T>;
   types.links.d.ts: >-
     export declare type ILinkKey = {
         prefix: string;
@@ -502,46 +515,9 @@ libs:
     export declare type RefLinkToString = (options?: {
         hash?: string | null;
     }) => string;
-  types.ns.d.ts: >-
-    export declare type INs = {
-        id: string;
-        props?: INsProps;
-        hash?: string;
-    };
-
-    export declare type INsProps = {
-        title?: string;
-        schema?: string;
-        type?: INsType;
-    };
-
-    export declare type INsData<V extends ICellData = ICellData, C extends
-    IColumnData = IColumnData, R extends IRowData = IRowData, F extends
-    IFileData = IFileData> = INsDataChildren<V, C, R, F> & {
-        ns: INs;
-    };
-
-    export declare type INsDataCoord<V extends ICellData = ICellData, C extends
-    IColumnData = IColumnData, R extends IRowData = IRowData> = {
-        cells: ICellMap<V>;
-        columns: IColumnMap<C>;
-        rows: IRowMap<R>;
-    };
-
-    export declare type INsDataChildren<V extends ICellData = ICellData, C
-    extends IColumnData = IColumnData, R extends IRowData = IRowData, F extends
-    IFileData = IFileData> = INsDataCoord<V, C, R> & {
-        files: IFileMap<F>;
-    };
-
-    export declare type INsTotals = {
-        cells: number;
-        rows: number;
-        columns: number;
-        files: number;
-    };
-
-    export declare type NsTotalKey = keyof INsTotals;
+  types.range.d.ts: >-
+    export declare type CoordRangeType = 'ALL' | 'CELL' | 'COLUMN' | 'ROW' |
+    'PARTIAL_COLUMN' | 'PARTIAL_ROW' | 'PARTIAL_ALL';
   types.refs.d.ts: >-
     import { Observable } from 'rxjs';
 
@@ -654,20 +630,160 @@ libs:
         hash?: string;
         error?: IError;
     };
-  types.range.d.ts: >-
-    export declare type CoordRangeType = 'ALL' | 'CELL' | 'COLUMN' | 'ROW' |
-    'PARTIAL_COLUMN' | 'PARTIAL_ROW' | 'PARTIAL_ALL';
-  types.value.d.ts: export declare type CellValue = Json;
-  types.map.d.ts: >-
-    export declare type IMap<V = any> = {
-        [key: string]: V | undefined;
+  types.ns.d.ts: >-
+    export declare type INs = {
+        id: string;
+        props?: INsProps;
+        hash?: string;
     };
 
-    export declare type ICellMap<T extends ICellData = ICellData> = IMap<T>;
+    export declare type INsProps = {
+        title?: string;
+        schema?: string;
+        type?: INsType;
+    };
 
-    export declare type IColumnMap<T extends IColumnData = IColumnData> =
-    IMap<T>;
+    export declare type INsData<V extends ICellData = ICellData, C extends
+    IColumnData = IColumnData, R extends IRowData = IRowData, F extends
+    IFileData = IFileData> = INsDataChildren<V, C, R, F> & {
+        ns: INs;
+    };
 
-    export declare type IRowMap<T extends IRowData = IRowData> = IMap<T>;
+    export declare type INsDataCoord<V extends ICellData = ICellData, C extends
+    IColumnData = IColumnData, R extends IRowData = IRowData> = {
+        cells: ICellMap<V>;
+        columns: IColumnMap<C>;
+        rows: IRowMap<R>;
+    };
 
-    export declare type IFileMap<T extends IFileData = IFileData> = IMap<T>;
+    export declare type INsDataChildren<V extends ICellData = ICellData, C
+    extends IColumnData = IColumnData, R extends IRowData = IRowData, F extends
+    IFileData = IFileData> = INsDataCoord<V, C, R> & {
+        files: IFileMap<F>;
+    };
+
+    export declare type INsTotals = {
+        cells: number;
+        rows: number;
+        columns: number;
+        files: number;
+    };
+
+    export declare type NsTotalKey = keyof INsTotals;
+  types.value.d.ts: export declare type CellValue = Json;
+  types.schema.urls.d.ts: |-
+    export declare type IUrl<Q extends object = {}> = {
+        readonly origin: string;
+        readonly path: string;
+        readonly querystring: string;
+        query(input: Partial<Q>): IUrl<Q>;
+        toString(options?: {
+            origin?: boolean;
+        }): string;
+    };
+    export declare type IUrls = {
+        readonly protocol: HttpProtocol;
+        readonly host: string;
+        readonly port: number;
+        readonly origin: string;
+        readonly sys: IUrlsSys;
+        readonly local: IUrlsLocal;
+        ns(input: string | INsUri): IUrlsNs;
+        cell(input: string | ICellUri): IUrlsCell;
+        row(input: string | IRowUri): IUrlsRow;
+        column(input: string | IColumnUri): IUrlsColumn;
+        file(input: string | IFileUri): IUrlsFile;
+    };
+    export declare type IUrlsSys = {
+        info: IUrl;
+        uid: IUrl;
+    };
+    export declare type IUrlsNs = {
+        uri: string;
+        info: IUrl<IReqQueryNsInfo>;
+    };
+    export declare type IUrlsCell = {
+        uri: string;
+        info: IUrl<IReqQueryCellInfo>;
+        files: IUrlsCellFiles;
+        file: IUrlsCellFile;
+    };
+    export declare type IUrlsCellFile = {
+        byFileUri(fileUri: string, fileExtension?: string): IUrl<IReqQueryCellFileDownloadByName>;
+        byName(filename: string): IUrl<IReqQueryCellFileDownloadByName>;
+    };
+    export declare type IUrlsCellFiles = {
+        list: IUrl<IReqQueryCellFilesList>;
+        upload: IUrl<IReqQueryCellFilesUpload>;
+        uploaded: IUrl<IReqQueryCellFilesUploaded>;
+        delete: IUrl<IReqQueryCellFilesDelete>;
+    };
+    export declare type IUrlsRow = {
+        uri: string;
+        info: IUrl<IReqQueryRowInfo>;
+    };
+    export declare type IUrlsColumn = {
+        uri: string;
+        info: IUrl<IReqQueryColumnInfo>;
+    };
+    export declare type IUrlsFile = {
+        uri: string;
+        info: IUrl<IReqQueryFileInfo>;
+        download: IUrl<IReqQueryFileDownload>;
+        delete: IUrl<IReqQueryFileDelete>;
+        uploaded: IUrl<IReqQueryFileUploadComplete>;
+    };
+    export declare type IUrlsLocal = {
+        fs: IUrl<IReqQueryLocalFs>;
+    };
+  types.schema.d.ts: export declare type FOO__ = 555;
+  types.schema.uri.d.ts: |-
+    export declare type IUriMap = {
+        [key: string]: string;
+    };
+    export declare type IUriData<D> = {
+        uri: string;
+        data: D;
+    };
+    export declare type IUriParts<P extends IUri = IUri> = {
+        ok: boolean;
+        uri: string;
+        type: P['type'];
+        parts: P;
+        error?: IUriError;
+        toString(): string;
+    };
+    export declare type UriType = IUri['type'];
+    export declare type IUri = INsUri | ICoordUri | IFileUri | IUnknownUri;
+    export declare type IUnknownUri = {
+        type: 'UNKNOWN';
+    };
+    export declare type INsUri = {
+        type: 'NS';
+        id: string;
+        toString(): string;
+    };
+    export declare type IFileUri = {
+        type: 'FILE';
+        id: string;
+        ns: string;
+        file: string;
+        toString(): string;
+    };
+    export declare type ICoordUri = ICellUri | ICoordAxisUri;
+    export declare type ICoordUriProps = {
+        id: string;
+        ns: string;
+        key: string;
+        toString(): string;
+    };
+    export declare type ICellUri = ICoordUriProps & {
+        type: 'CELL';
+    };
+    export declare type ICoordAxisUri = IRowUri | IColumnUri;
+    export declare type IRowUri = ICoordUriProps & {
+        type: 'ROW';
+    };
+    export declare type IColumnUri = ICoordUriProps & {
+        type: 'COLUMN';
+    };

@@ -1,6 +1,8 @@
 import { fs } from '@platform/fs';
 import { log } from '@platform/log/lib/server';
 
+type FilterLine = (line: string) => boolean;
+
 /**
  * Copies a set of [.d.ts] files declarations.
  */
@@ -10,6 +12,7 @@ async function copy(args: {
   targetDir?: string;
   targetYaml?: string;
   format?: (input: string) => string;
+  filterLine?: FilterLine;
 }) {
   const { sourceDir, targetDir, targetYaml, filenames } = args;
 
@@ -23,7 +26,14 @@ async function copy(args: {
       const sourceFile = fs.join(sourceDir, filename);
       const file = await fs.readFile(sourceFile);
 
-      const text = args.format ? args.format(file.toString()) : file.toString();
+      let text = file.toString();
+      if (args.filterLine) {
+        const lines = text.split('\n').filter((line) => args.filterLine(line));
+        text = lines.join('\n');
+      }
+
+      text = args.format ? args.format(text) : text;
+
       libs[filename] = text;
 
       if (targetDir) {
@@ -49,7 +59,6 @@ async function copy(args: {
 async function copyEcmaScript() {
   const filenames = [
     'lib.es5.d.ts',
-    'lib.es5.d.ts',
     'lib.es2015.core.d.ts',
     'lib.es2015.collection.d.ts',
     'lib.es2015.generator.d.ts',
@@ -62,7 +71,27 @@ async function copyEcmaScript() {
   const sourceDir = fs.resolve('node_modules/typescript/lib');
   const targetDir = fs.resolve('lib.es.d.ts');
   const targetYaml = fs.resolve('src/components/Monaco.config/libs-es.d.yml');
-  await copy({ filenames, sourceDir, targetDir, targetYaml });
+  await copy({
+    filenames,
+    sourceDir,
+    targetDir,
+    targetYaml,
+    filterLine: (line) => {
+      /**
+       * NOTE:
+       *    The Javascript 'eval` function is considered unsafe.
+       *    Never allow cell-code to execute arbitrary strings of code.
+       *
+       */
+      if (line.startsWith('declare function eval')) {
+        return false;
+      }
+      if (line.startsWith('declare var EvalError')) {
+        return false;
+      }
+      return true;
+    },
+  });
 }
 
 /**
