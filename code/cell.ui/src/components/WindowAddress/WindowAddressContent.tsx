@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue, ui, t, Uri, COLORS } from '../common';
+import { color, css, CssValue, ui, t, Uri, COLORS } from '../common';
 
 export type IWindowAddressContentProps = {
   address?: React.ReactNode;
@@ -81,8 +81,6 @@ export class WindowAddressContent extends React.PureComponent<
    * [Render]
    */
   public render() {
-    const addressTypeText = this.addressTypeText;
-
     const styles = {
       base: css({
         Absolute: 0,
@@ -93,15 +91,36 @@ export class WindowAddressContent extends React.PureComponent<
       }),
       label: css({
         opacity: 0.8,
+        Flex: 'horizontal-center-center',
       }),
     };
 
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.label}>
-          {this.props.address} {addressTypeText && ` - ${addressTypeText}`}
+          {this.props.address}
+          {this.renderTypeName()}
         </div>
       </div>
     );
+  }
+
+  private renderTypeName() {
+    const text = this.addressTypeText;
+    if (!text) {
+      return null;
+    }
+    const styles = {
+      base: css({
+        fontSize: 10,
+        color: color.format(1),
+        backgroundColor: color.format(-0.35),
+        borderRadius: 3,
+        marginLeft: 6,
+        PaddingX: 5,
+        PaddingY: 2,
+      }),
+    };
+    return <div {...styles.base}>{text}</div>;
   }
 }
