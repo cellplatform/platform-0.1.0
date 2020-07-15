@@ -8,7 +8,7 @@ const namespaces: t.IAppNamespaces = {
   AppData: 'ns:ckcck1w4m0005goet1hqude43',
 };
 
-const defs = AppSchema.declare({ namespaces }).toObject();
+const defs = AppSchema.declare({ namespaces }).def.toObject();
 
 const creator = (args: { implements: string }) => {
   const instance = (ns: string, cells?: t.ICellMap) =>
