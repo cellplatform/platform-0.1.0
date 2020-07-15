@@ -7,7 +7,7 @@ import * as t from './types';
 
 type IFoo = { message?: string; count: number };
 
-describe.only('StateObject', () => {
+describe('StateObject', () => {
   describe('create', () => {
     it('store initial state', () => {
       const initial = { count: 1 };
