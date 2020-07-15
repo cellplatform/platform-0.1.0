@@ -72,6 +72,34 @@ export class TypeBuilder implements t.ITypeBuilder {
     return value;
   }
 
+  public async write(http: t.IHttpClient) {
+    const defs = this.toObject();
+    const typeDefs = this.toTypeDefs();
+
+    const saved: { typename: string; ns: string }[] = [];
+    const exists: { typename: string; ns: string }[] = [];
+    const errors: { typename: string; ns: string; error: t.IHttpError }[] = [];
+
+    const save = async (typeDef: t.INsTypeDef) => {
+      const ns = typeDef.uri;
+      const typename = typeDef.typename;
+      const def = defs[ns];
+      const client = http.ns(ns);
+      if (!(await client.exists())) {
+        const { error } = await client.write(def);
+        if (error) {
+          errors.push({ typename, ns, error });
+        } else {
+          saved.push({ typename, ns });
+        }
+      } else {
+        exists.push({ typename, ns });
+      }
+    };
+    await Promise.all(typeDefs.map((typeDef) => save(typeDef)));
+    return { ok: errors.length === 0, saved, exists, errors };
+  }
+
   /**
    * [Internal]
    */

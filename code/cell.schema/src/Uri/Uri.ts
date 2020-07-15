@@ -233,16 +233,20 @@ export class Uri {
     if (typeof input === 'string' && !input.includes(':')) {
       return Uri.ns(input);
     }
+
     const obj = typeof input === 'string' ? Uri.parse(input).parts : input;
     if (obj.type === 'NS') {
       return obj;
     }
+
     if (obj.type === 'CELL' || obj.type === 'COLUMN' || obj.type === 'ROW') {
       return Uri.ns((obj as t.ICoordUri).ns);
     }
+
     if (obj.type === 'FILE') {
       return Uri.ns((obj as t.IFileUri).ns);
     }
+
     throw new Error(`A namespace cannot be derived from the uri (${input.toString()})`);
   }
 

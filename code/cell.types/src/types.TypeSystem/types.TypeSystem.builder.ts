@@ -9,6 +9,14 @@ export type ITypeBuilder = {
   formatType(value: string): string;
   toObject(): ITypeBuilderDefs;
   toTypeDefs(): t.INsTypeDef[];
+  write(http: t.IHttpClient): Promise<ITypeBuilderWriteResponse>;
+};
+
+export type ITypeBuilderWriteResponse = {
+  ok: boolean;
+  exists: { typename: string; ns: string }[];
+  saved: { typename: string; ns: string }[];
+  errors: { typename: string; ns: string; error: t.IHttpError }[];
 };
 
 export type ITypeBuilderDefs = { [namespace: string]: t.ITypeDefPayload };
