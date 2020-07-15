@@ -10,7 +10,7 @@ export type IGqlMutateOptions<D, V> = t.MutationOptions<D, V>;
 export type IGqlMutateResult<D> = t.FetchResult<D>;
 
 export type IGqlClient = {
-  readonly dispose$: t.Observable<{}>;
+  readonly dispose$: t.Observable<void>;
   readonly events$: t.Observable<GqlEvent>;
   readonly headers$: t.Observable<IGqlHttpHeaders>;
   readonly isDisposed: boolean;

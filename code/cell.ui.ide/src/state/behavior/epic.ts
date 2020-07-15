@@ -40,7 +40,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
       const info = await ns.read();
 
       const typeNs = info.body.data.ns.props?.type?.implements || '';
-      const defs = await client.defs(typeNs);
+      const defs = await client.typeDefs(typeNs);
       const typescript = await client.typescript(typeNs, { exports: false, imports: false });
       const ts = typescript.toString().replace(/t\./g, '');
 

@@ -8,7 +8,7 @@
     "start": "parcel src/html/index.html --port 1236",
     "watch": "yarn start",
     "test": "ts test",
-    "lint": "echo ts lint",
+    "lint": "ts lint",
     "build": "ts build --no-esm $@",
     "bundle": "sh script.sh/bundle.sh",
     "clean": "sh script.sh/clean.sh",

@@ -1,6 +1,6 @@
 import { t } from '../../common';
 
-export type IDebugLogItem = { count: number; data: t.Event<any> };
+export type IDebugLogItem = { timestamp: number; count: number; data: t.Event<any> };
 
 export type IDebugLogState = {
   total: number;

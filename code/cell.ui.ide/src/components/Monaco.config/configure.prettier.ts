@@ -1,5 +1,4 @@
-import { t, constants } from '../../common';
-const { MONACO } = constants;
+import { t } from '../../common';
 
 /**
  * 🏷REFS (how to):
