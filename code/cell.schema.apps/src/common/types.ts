@@ -1,7 +1,7 @@
 export * from '../types';
 export * from '@platform/cell.types';
 
-export type INamespaces = {
+export type IAppNamespaces = {
   App: string;
   AppWindow: string;
   AppData: string;

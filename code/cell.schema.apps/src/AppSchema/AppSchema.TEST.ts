@@ -5,18 +5,18 @@ import { AppSchema } from '.';
 const namespaces = stub.namespaces;
 
 describe('AppSchema', () => {
-  it('declare', () => {
-    const res = AppSchema.declare();
-    const { namespaces } = res;
-    const defs = res.toObject();
+  it('declare (generate namespaces)', () => {
+    const schema = AppSchema.declare();
+    const { namespaces } = schema;
+    const obj = schema.def.toObject();
 
     type D = t.CellTypeDef;
-    expect((defs[namespaces.App].columns.A?.props?.def as D).prop).to.eql('App.name');
-    expect((defs[namespaces.AppWindow].columns.A?.props?.def as D).prop).to.eql('AppWindow.app');
-    expect((defs[namespaces.AppData].columns.A?.props?.def as D).prop).to.eql('AppData.app');
+    expect((obj[namespaces.App].columns.A?.props?.def as D).prop).to.eql('App.name');
+    expect((obj[namespaces.AppWindow].columns.A?.props?.def as D).prop).to.eql('AppWindow.app');
+    expect((obj[namespaces.AppData].columns.A?.props?.def as D).prop).to.eql('AppData.app');
 
     const expectGreaterThan = (key: string, length: number) => {
-      const columns = defs[key].columns;
+      const columns = obj[key].columns;
       expect(Object.keys(columns).length).to.greaterThan(length);
     };
 
@@ -25,9 +25,17 @@ describe('AppSchema', () => {
     expectGreaterThan(namespaces.AppData, 3);
   });
 
+  it('declare (provide namespaces)', () => {
+    const schema = AppSchema.declare({ namespaces });
+    const keys = Object.keys(schema.def.toObject());
+    expect(keys).to.include(namespaces.App);
+    expect(keys).to.include(namespaces.AppWindow);
+    expect(keys).to.include(namespaces.AppData);
+  });
+
   it('save [types.g.ts]', async () => {
-    const res = AppSchema.declare({ namespaces });
-    const typeDefs = res.toTypeDefs();
+    const schema = AppSchema.declare({ namespaces });
+    const typeDefs = schema.def.toTypeDefs();
 
     const ts = TypeSystem.typescript(typeDefs);
     const path = fs.resolve('src/types/types.g.ts');
