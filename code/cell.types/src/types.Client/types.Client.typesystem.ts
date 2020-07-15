@@ -11,8 +11,16 @@ export type IClientTypesystem = {
   readonly pool?: t.ISheetPool;
   sheet<T>(ns: N): Promise<t.ITypedSheet<T>>;
   typeDefs(ns: N | N[]): Promise<t.INsTypeDef[]>;
+  implements(ns: N): Promise<t.IClientTypesystemImplements>;
   typescript(
     ns: N | N[],
     options?: { header?: boolean; exports?: boolean; imports?: boolean },
   ): Promise<t.ITypeClientTypescript>;
+};
+
+export type IClientTypesystemImplements = {
+  ns: string;
+  implements: string;
+  typeDefs: t.INsTypeDef[];
+  error?: t.IHttpError;
 };
