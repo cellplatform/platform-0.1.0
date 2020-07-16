@@ -1,6 +1,6 @@
 {
-  "name": "@platform/cell.schema.apps",
-  "version": "0.0.12",
+  "name": "@platform/cell.schema.sys",
+  "version": "0.0.0",
   "description": "Type schema for application bundles.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
