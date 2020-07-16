@@ -10,7 +10,7 @@ export type IDebugLogItemProps = {
   item: g.IDebugLogItem;
   store: t.IStateObject<g.IDebugLogState>;
   style?: CssValue;
-  onClick?: (e: {}) => void;
+  onClick?: () => void;
 };
 export type IDebugLogItemState = {
   selectedIndex?: number;

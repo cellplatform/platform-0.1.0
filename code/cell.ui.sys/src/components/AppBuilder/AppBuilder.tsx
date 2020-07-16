@@ -8,7 +8,7 @@ import { HelpersCard } from './Card.Helpers';
 import { ServerCard } from './Card.Server';
 
 export type IAppBuilderProps = { style?: CssValue };
-export type IAppBuilderState = {};
+export type IAppBuilderState = t.Object;
 
 export class AppBuilder extends React.PureComponent<IAppBuilderProps, IAppBuilderState> {
   public state: IAppBuilderState = {};

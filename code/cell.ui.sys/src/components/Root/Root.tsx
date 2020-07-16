@@ -12,7 +12,7 @@ export type IRootProps = {
   title?: string;
   style?: CssValue;
 };
-export type IRootState = {};
+export type IRootState = t.Object;
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};

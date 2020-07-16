@@ -7,7 +7,7 @@ import { css, CssValue, t, ui, Uri } from '../../common';
 import { Card, PropList, IPropListItemEventArgs } from '../primitives';
 
 export type IHelpersCardProps = { style?: CssValue };
-export type IHelpersCardState = {};
+export type IHelpersCardState = t.Object;
 
 export class HelpersCard extends React.PureComponent<IHelpersCardProps, IHelpersCardState> {
   public state: IHelpersCardState = {};

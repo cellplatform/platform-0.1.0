@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { color, css, CssValue } from '../../common';
+import { color, css, CssValue, t } from '../../common';
 import { Button } from '../primitives';
 
 export type IDebugLogToolbarProps = {
   style?: CssValue;
   onClearClick?: () => void;
 };
-export type IDebugLogToolbarState = {};
+export type IDebugLogToolbarState = t.Object;
 
 export class DebugLogToolbar extends React.PureComponent<
   IDebugLogToolbarProps,

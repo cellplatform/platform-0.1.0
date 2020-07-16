@@ -13,8 +13,8 @@ export type IInstallerDragTarget = {
   dropMessage?: string;
   style?: CssValue;
   onDrop?: DropEventHandler;
-  onDragOver?: (e: {}) => void;
-  onDragLeave?: (e: {}) => void;
+  onDragOver?: () => void;
+  onDragLeave?: () => void;
 };
 export type InstallerDragTargetState = {
   isDragOver?: boolean;
@@ -45,10 +45,10 @@ export class InstallerDragTarget extends React.PureComponent<
       const { isDragOver } = e;
       const { onDragOver, onDragLeave } = this.props;
       if (isDragOver && onDragOver) {
-        onDragOver({});
+        onDragOver();
       }
       if (!isDragOver && onDragLeave) {
-        onDragLeave({});
+        onDragLeave();
       }
 
       this.state$.next({ isDragOver });

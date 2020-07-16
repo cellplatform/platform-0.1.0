@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue, time } from '../../common';
+import { css, CssValue, time, t } from '../../common';
 import { PropList, IPropListItem, ObjectView } from '../primitives';
 import * as g from './types';
 
@@ -10,7 +10,7 @@ export type IDebugLogInfoPanelProps = {
   style?: CssValue;
 };
 export type IDebugLogInfoPanelState = {
-  selected?: { name: string; data: object };
+  selected?: { name: string; data: t.Object };
 };
 
 export class DebugLogInfoPanel extends React.PureComponent<
@@ -110,7 +110,7 @@ export class DebugLogInfoPanel extends React.PureComponent<
    * Handlers
    */
 
-  private valueClickHandler = (name: string, data: object) => {
+  private valueClickHandler = (name: string, data: t.Object) => {
     if (!(Array.isArray(data) || typeof data === 'object')) {
       return undefined;
     }
