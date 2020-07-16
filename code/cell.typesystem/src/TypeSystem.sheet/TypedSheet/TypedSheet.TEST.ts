@@ -175,7 +175,7 @@ describe('TypedSheet', () => {
     it('no change (empty changes)', async () => {
       const sheet = (await testMySheet()).sheet;
       expect(sheet.state.hasChanges).to.eql(false);
-      sheet.change({});
+      sheet.change({ uri: sheet.uri.toString() });
       expect(sheet.state.hasChanges).to.eql(false);
     });
 
@@ -1361,7 +1361,7 @@ describe('TypedSheet', () => {
       it('ignores different namespace', async () => {
         const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
-        expect(state.changes).to.eql({});
+        expect(state.changes).to.eql({ uri: 'ns:foo.mySheet' });
 
         event$.next({
           type: 'SHEET/change',
@@ -1374,13 +1374,13 @@ describe('TypedSheet', () => {
         });
 
         await time.wait(1);
-        expect(state.changes).to.eql({});
+        expect(state.changes).to.eql({ uri: 'ns:foo.mySheet' });
       });
 
       it('ignores non cell URIs', async () => {
         const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
-        expect(state.changes).to.eql({});
+        expect(state.changes).to.eql({ uri: 'ns:foo.mySheet' });
 
         event$.next({
           type: 'SHEET/change',
@@ -1388,13 +1388,13 @@ describe('TypedSheet', () => {
         });
 
         await time.wait(1);
-        expect(state.changes).to.eql({});
+        expect(state.changes).to.eql({ uri: 'ns:foo.mySheet' });
       });
 
       it('ignores invalid URIs', async () => {
         const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
-        expect(state.changes).to.eql({});
+        expect(state.changes).to.eql({ uri: 'ns:foo.mySheet' });
 
         event$.next({
           type: 'SHEET/change',
@@ -1427,12 +1427,12 @@ describe('TypedSheet', () => {
         });
 
         await time.wait(1);
-        expect(state.changes).to.eql({});
+        expect(state.changes).to.eql({ uri: 'ns:foo.mySheet' });
       });
 
       it('disposed: no change', async () => {
         const { sheet, event$ } = await testMySheet();
-        expect(sheet.state.changes).to.eql({});
+        expect(sheet.state.changes).to.eql({ uri: 'ns:foo.mySheet' });
 
         sheet.dispose();
 
@@ -1442,7 +1442,7 @@ describe('TypedSheet', () => {
         });
 
         await time.wait(1);
-        expect(sheet.state.changes).to.eql({});
+        expect(sheet.state.changes).to.eql({ uri: 'ns:foo.mySheet' });
       });
     });
 
@@ -1472,7 +1472,7 @@ describe('TypedSheet', () => {
       it('state.changes: initial state {empty}', async () => {
         const { sheet } = await testMySheet();
         const state = sheet.state;
-        expect(state.changes).to.eql({});
+        expect(state.changes).to.eql({ uri: 'ns:foo.mySheet' });
       });
 
       it('state.changes: new instance on each call', async () => {
@@ -1527,7 +1527,7 @@ describe('TypedSheet', () => {
       it('change ns', async () => {
         const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
-        expect(state.changes).to.eql({});
+        expect(state.changes).to.eql({ uri: 'ns:foo.mySheet' });
 
         const ns = 'ns:foo.mySheet';
         const type = { implements: 'foobar' };
@@ -1547,7 +1547,7 @@ describe('TypedSheet', () => {
       it('change cell (existing value)', async () => {
         const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
-        expect(state.changes).to.eql({});
+        expect(state.changes).to.eql({ uri: 'ns:foo.mySheet' });
 
         const fired: t.ITypedSheetChanged[] = [];
         state.changed$.subscribe((e) => fired.push(e));
@@ -1594,7 +1594,7 @@ describe('TypedSheet', () => {
       it('change cell (no prior value)', async () => {
         const { sheet, event$ } = await testMySheet();
         const state = sheet.state;
-        expect(state.changes).to.eql({});
+        expect(state.changes).to.eql({ uri: 'ns:foo.mySheet' });
 
         event$.next({
           type: 'SHEET/change',
@@ -1642,7 +1642,7 @@ describe('TypedSheet', () => {
         state.clear.changes('REVERT');
 
         expect(state.hasChanges).to.eql(false);
-        expect(state.changes).to.eql({});
+        expect(state.changes).to.eql({ uri: 'ns:foo.mySheet' });
         expect(fired.length).to.eql(1);
         expect(fired[0].type).to.eql('SHEET/changes/cleared');
 
@@ -1653,7 +1653,7 @@ describe('TypedSheet', () => {
         const e = fired[0].payload as t.ITypedSheetChangesCleared;
         expect(e.sheet).to.equal(sheet);
         expect(e.from).to.eql(changes);
-        expect(e.to).to.eql({});
+        expect(e.to).to.eql({ uri: 'ns:foo.mySheet' });
         expect(e.action).to.eql('REVERT');
       });
 
@@ -1696,8 +1696,8 @@ describe('TypedSheet', () => {
       event$.next({
         type: 'SHEET/sync',
         payload: {
-          ns,
           changes: {
+            uri: 'ns:foo.mySheet',
             cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
           },
         },
@@ -1717,8 +1717,8 @@ describe('TypedSheet', () => {
       event$.next({
         type: 'SHEET/sync',
         payload: {
-          ns,
           changes: {
+            uri: 'ns:foo.mySheet',
             cells: { A99: { kind: 'CELL', ns, key: 'A99', from: {}, to: { value: 'hello' } } },
           },
         },
@@ -1745,8 +1745,8 @@ describe('TypedSheet', () => {
       event$.next({
         type: 'SHEET/sync',
         payload: {
-          ns,
           changes: {
+            uri: 'ns:foo.mySheet',
             cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
           },
         },
@@ -1806,8 +1806,8 @@ describe('TypedSheet', () => {
       event$.next({
         type: 'SHEET/sync',
         payload: {
-          ns,
           changes: {
+            uri: 'ns:foo.mySheet',
             cells: {
               A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'Change-1' } },
               A2: { kind: 'CELL', ns, key: 'A2', from: {}, to: { value: 'Change-2' } },
@@ -1820,7 +1820,7 @@ describe('TypedSheet', () => {
       expect(fired.length).to.eql(1);
       expect(fired[0].via).to.equal('SYNC');
       expect(fired[0].sheet).to.equal(sheet);
-      expect(fired[0].changes).to.eql({});
+      expect(fired[0].changes).to.eql({ uri: 'ns:foo.mySheet' });
 
       expect(row1.props.title).to.eql('Change-1');
       expect(row2.props.title).to.eql('Change-2');

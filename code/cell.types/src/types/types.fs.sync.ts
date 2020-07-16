@@ -1,1 +1,3 @@
-export type IFilesystemSync = Record<string, unknown>; // 🐷 Placeholder type.
+type O = Record<string, unknown>;
+
+export type IFilesystemSync = O; // 🐷 Placeholder type.

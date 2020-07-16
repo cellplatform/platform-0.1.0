@@ -9,8 +9,8 @@ import { TypeTarget } from '../TypeTarget';
  */
 export function typescript(
   def: t.INsTypeDef | t.INsTypeDef[],
-  options: { header?: boolean; exports?: boolean; imports?: boolean } = {},
-) {
+  options: t.ITypeClientTypescriptOptions = {},
+): t.ITypeClientTypescript {
   const defs = (Array.isArray(def) ? def : [def]).filter((def) => Boolean(def));
   const api: t.ITypeClientTypescript = {
     /**
@@ -70,8 +70,12 @@ export function typescript(
         });
       };
 
-      let code = '';
       const typenames = R.uniq(defs.map((def) => def.typename));
+      if (typenames.length === 0) {
+        return '';
+      }
+
+      let code = '';
       typenames.forEach((typename) => {
         code = `${code}\n${toDeclaration({ typename, priorCode: code })}`;
       });
@@ -102,7 +106,7 @@ export function typescript(
     toString(options: { path?: string } = {}) {
       const { path } = options;
       let text = api.declaration;
-      if (path) {
+      if (text && path) {
         const filename = path.substring(path.lastIndexOf('/') + 1);
         text = text.replace(/\<filename\>\.ts/g, filename);
       }

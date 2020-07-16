@@ -173,7 +173,7 @@ describe('Client.TypeSystem', () => {
         const saver = Client.saveMonitor({ client, debounce: 10 });
         client.changes.watch(sheet);
 
-        expect(sheet.state.changes).to.eql({});
+        expect(sheet.state.changes).to.eql({ uri: 'ns:foo.mySheet' });
         expect(saver.debounce).to.eql(10);
 
         const cursor = await sheet.data('MyRow').load();
@@ -189,7 +189,7 @@ describe('Client.TypeSystem', () => {
 
         const cells = res.body.data.cells as t.ICellMap<any>;
 
-        expect(sheet.state.changes).to.eql({}); // NB: Pending state changes have been reset after save.
+        expect(sheet.state.changes).to.eql({ uri: 'ns:foo.mySheet' }); // NB: Pending state changes have been reset after save.
         expect(cells?.A1?.value).to.eql('3');
         expect(cells?.B1?.props?.isEnabled).to.eql(true);
       });
@@ -211,7 +211,7 @@ describe('Client.TypeSystem', () => {
         const ns2 = (await client.http.ns('ns:foo.mySheet').read()).body.data.ns;
         await mock.dispose();
 
-        expect(sheet.state.changes).to.eql({}); // NB: Pending state changes have been reset after save.
+        expect(sheet.state.changes).to.eql({ uri: 'ns:foo.mySheet' }); // NB: Pending state changes have been reset after save.
         expect(ns2.props?.type?.implements).to.eql('ns:boom');
         expect(ns2.props?.schema).to.eql(ns1.props?.schema);
       });

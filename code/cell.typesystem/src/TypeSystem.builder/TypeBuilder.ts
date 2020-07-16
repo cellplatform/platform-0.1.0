@@ -1,6 +1,6 @@
 import { t, value, Uri } from '../common';
 import { TypeBuilderNs } from './TypeBuilderNs';
-import { TypeValue, TypeProp, TypeDefault } from '../TypeSystem.core';
+import { TypeValue, TypeProp, TypeDefault, TypeClient } from '../TypeSystem.core';
 
 /**
  * A structured API for building a set of type-definitions in code.
@@ -98,6 +98,11 @@ export class TypeBuilder implements t.ITypeBuilder {
     };
     await Promise.all(typeDefs.map((typeDef) => save(typeDef)));
     return { ok: errors.length === 0, saved, exists, errors };
+  }
+
+  public typescript(options?: t.ITypeClientTypescriptOptions) {
+    const typeDefs = this.toTypeDefs();
+    return TypeClient.typescript(typeDefs, options);
   }
 
   /**

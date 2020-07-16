@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.fs",
-  "version": "0.4.85",
+  "version": "0.4.86",
   "description": "Filesystem support for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,9 +14,9 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.schema": "0.4.141",
-    "@platform/cell.types": "0.4.127",
-    "@platform/cell.value": "0.2.102",
+    "@platform/cell.schema": "0.4.142",
+    "@platform/cell.types": "0.4.128",
+    "@platform/cell.value": "0.2.103",
     "@platform/fs.s3.types": "0.2.11",
     "@platform/libs": "0.2.2",
     "@platform/types": "0.4.24"

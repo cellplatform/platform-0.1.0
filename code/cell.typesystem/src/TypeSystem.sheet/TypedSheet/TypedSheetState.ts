@@ -32,6 +32,7 @@ export class TypedSheetState implements t.ITypedSheetState {
   private constructor(args: IArgs) {
     this._sheet = args.sheet;
     this._event$ = args.event$;
+    this._changes = { uri: this.uri.toString() };
 
     const fetch = TypeCache.wrapFetch(args.fetch, { cache: args.cache });
 
@@ -88,7 +89,7 @@ export class TypedSheetState implements t.ITypedSheetState {
 
     rx.payload<t.ITypedSheetSyncEvent>(this.event$, 'SHEET/sync')
       .pipe(
-        filter((e) => this.isThisSheet(e.ns)),
+        filter((e) => this.isThisSheet(e.changes.uri)),
         delay(0), // NB: Cause handler to run after all child rows (etc) have had a chance to react to this event.
       )
       .subscribe((e) => {
@@ -112,7 +113,7 @@ export class TypedSheetState implements t.ITypedSheetState {
   /**
    * [Fields]
    */
-  private _changes: t.ITypedSheetChanges = {};
+  private _changes: t.ITypedSheetChanges;
   private readonly _dispose$ = new t.Subject<void>();
   private readonly _event$: t.Subject<t.TypedSheetEvent>;
   private readonly _sheet: t.ITypedSheet;
@@ -137,6 +138,7 @@ export class TypedSheetState implements t.ITypedSheetState {
   public get changes(): t.ITypedSheetChanges {
     const changes = this._changes;
     return deleteUndefined({
+      uri: this.uri.toString(),
       ns: changes.ns ? { ...changes.ns } : undefined,
       cells: changes.cells ? { ...changes.cells } : undefined,
     });
@@ -193,9 +195,10 @@ export class TypedSheetState implements t.ITypedSheetState {
     },
     changes: (action: t.ITypedSheetChangesCleared['action']) => {
       const sheet = this._sheet;
+      const uri = sheet.uri.toString();
       const from = { ...this._changes };
-      const to = {};
-      this._changes = {}; // NB: re-setting state happens after the `from` variable is copied.
+      const to = { uri };
+      this._changes = { uri }; // NB: re-setting state happens after the `from` variable is copied.
       this.fire({
         type: 'SHEET/changes/cleared',
         payload: { sheet, from, to, action },

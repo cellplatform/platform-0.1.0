@@ -1,5 +1,5 @@
-import { expect, t, fs, TypeSystem, stub } from '../test';
 import { AppSchema } from '.';
+import { expect, fs, stub, t } from '../test';
 
 // NB: Fixed namespaces passed in to avoid re-generating new file on each test-run.
 const namespaces = stub.namespaces;
@@ -34,14 +34,12 @@ describe('AppSchema', () => {
   });
 
   it('save [types.g.ts]', async () => {
-    const schema = AppSchema.declare({ namespaces });
-    const typeDefs = schema.def.toTypeDefs();
-
-    const ts = TypeSystem.typescript(typeDefs);
     const path = fs.resolve('src/types/types.g.ts');
-    await ts.save(fs, path);
+    const schema = AppSchema.declare({ namespaces });
 
+    await schema.def.typescript().save(fs, path);
     const code = (await fs.readFile(path)).toString();
+
     expect(code).to.include('declare type App = {');
     expect(code).to.include('declare type AppWindow = {');
     expect(code).to.include('declare type AppData = {');

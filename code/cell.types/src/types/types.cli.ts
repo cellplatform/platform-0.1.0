@@ -1,1 +1,3 @@
-export type CellCli = Record<string, unknown>; // 🐷 Placeholder.
+type O = Record<string, unknown>;
+
+export type CellCli = O; // 🐷 Placeholder type.

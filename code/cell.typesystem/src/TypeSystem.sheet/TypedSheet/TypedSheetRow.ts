@@ -74,7 +74,7 @@ export class TypedSheetRow<T, K extends keyof T> implements t.ITypedSheetRow<T, 
     // Change initiated via cache-sync.
     rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync')
       .pipe(
-        filter((e) => this.isThisSheet(e.ns)),
+        filter((e) => this.isThisSheet(e.changes.uri)),
         filter((e) => Boolean(e.changes.cells)),
       )
       .subscribe((e) => {

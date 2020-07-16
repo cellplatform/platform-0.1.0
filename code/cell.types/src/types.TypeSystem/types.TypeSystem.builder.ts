@@ -10,6 +10,7 @@ export type ITypeBuilder = {
   toObject(): ITypeBuilderDefs;
   toTypeDefs(): t.INsTypeDef[];
   write(http: t.IHttpClient): Promise<ITypeBuilderWriteResponse>;
+  typescript(options?: t.ITypeClientTypescriptOptions): t.ITypeClientTypescript;
 };
 
 export type ITypeBuilderWriteResponse = {

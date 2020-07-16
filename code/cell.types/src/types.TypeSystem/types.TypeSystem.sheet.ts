@@ -1,5 +1,6 @@
 import { t } from '../common';
 
+type O = Record<string, unknown>;
 type R<T, K extends keyof T> = t.ITypedSheetRow<T, K>;
 
 /**
@@ -19,7 +20,7 @@ type R<T, K extends keyof T> = t.ITypedSheetRow<T, K>;
  *    on the TypeName.
  *
  */
-export type ITypedSheet<T = Record<string, unknown>> = {
+export type ITypedSheet<T = O> = {
   readonly ok: boolean;
   readonly uri: t.INsUri;
   readonly implements: t.INsUri;
