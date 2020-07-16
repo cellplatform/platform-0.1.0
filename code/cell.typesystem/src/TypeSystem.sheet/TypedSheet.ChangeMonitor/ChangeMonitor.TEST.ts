@@ -170,6 +170,7 @@ describe('TypedSheetChangeMonitor', () => {
       expect(fired.length).to.eql(1);
       expect(fired[0].sheet).to.equal(sheet);
       expect(fired[0].change.to).to.eql({ value: 'Foo' });
+      expect(fired[0].changes.uri).to.eql('ns:foo.mySheet');
     });
 
     it('changed$ (from ➔ to: strips "hash")', async () => {
@@ -192,6 +193,7 @@ describe('TypedSheetChangeMonitor', () => {
 
       const changes = sheet.state.changes;
       expect(changes).to.eql(fired[0].changes);
+      expect(fired[0].changes.uri).to.eql('ns:foo.mySheet');
 
       const A1 = sheet.state.changes.cells?.A1 as t.ITypedSheetChangeCellDiff;
       expect(A1.from.value).to.eql('MyTitle');

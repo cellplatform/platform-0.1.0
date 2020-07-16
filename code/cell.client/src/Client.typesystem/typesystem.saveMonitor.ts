@@ -34,10 +34,16 @@ export function saveMonitor(args: {
     const ns = sheet.uri.toString();
 
     // Merge changes onto the pending list.
-    let changes = pending[ns] || {};
-    Object.keys(e.changes).forEach((key) => {
-      changes = { ...changes, [key]: { ...changes[key], ...e.changes[key] } };
-    });
+    let changes = pending[ns] || { uri: e.changes.uri };
+    Object.keys(e.changes)
+      .map((key) => ({ key, obj: e.changes[key] }))
+      .filter(({ obj }) => typeof obj === 'object')
+      .forEach(({ key, obj }) => {
+        changes = {
+          ...changes,
+          [key]: { ...changes[key], ...obj },
+        };
+      });
 
     pending[ns] = changes;
   });

@@ -14,7 +14,7 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
   const cache = args.cache || MemoryCache.create();
   const pool = args.pool || TypeSystem.Pool.create();
 
-  let change: t.ITypedSheetChangeMonitor | undefined;
+  let changeMonitor: t.ITypedSheetChangeMonitor | undefined;
 
   const http = HttpClient.isClient(args.http)
     ? (args.http as t.IHttpClient)
@@ -34,7 +34,7 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
      * The singleton change-monitor for the client.
      */
     get changes() {
-      return change || (change = TypeSystem.ChangeMonitor.create());
+      return changeMonitor || (changeMonitor = TypeSystem.ChangeMonitor.create());
     },
 
     /**

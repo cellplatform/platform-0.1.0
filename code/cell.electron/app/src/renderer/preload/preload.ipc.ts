@@ -59,7 +59,7 @@ function ferryIpcEventsToLocalBus(args: {
       filter((e) => e.source !== args.def),
     )
     .subscribe((e) => {
-      const { ns, changes } = e;
-      fire({ type: 'SHEET/sync', payload: { ns, changes } });
+      const { changes } = e;
+      fire({ type: 'SHEET/sync', payload: { changes } });
     });
 }
