@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { color, css, CssValue, defaultValue } from '../../common';
+import { mouse, color, css, CssValue, defaultValue } from '../../common';
 
-export type ICardProps = {
+export type ICardProps = mouse.IMouseEventProps & {
   children?: React.ReactNode;
   background?: number | string;
+  borderColor?: number | string;
   borderRadius?: number;
   padding?: number;
   margin?: number;
@@ -14,6 +15,13 @@ export type ICardProps = {
 };
 
 export class Card extends React.PureComponent<ICardProps> {
+  private mouse: mouse.IMouseHandlers;
+
+  constructor(props: ICardProps) {
+    super(props);
+    this.mouse = mouse.fromProps(props);
+  }
+
   /**
    * [Properties]
    */
@@ -34,7 +42,7 @@ export class Card extends React.PureComponent<ICardProps> {
         position: 'relative',
         boxSizing: 'border-box',
         display: 'inline-block',
-        border: `solid 1px ${color.format(-0.2)}`,
+        border: `solid 1px ${color.format(defaultValue(this.props.borderColor, -0.2))}`,
         borderRadius: defaultValue(this.props.borderRadius, 4),
         background: color.format(background),
         padding: this.props.padding,
@@ -45,6 +53,10 @@ export class Card extends React.PureComponent<ICardProps> {
         boxShadow: `0 2px 6px 0 ${color.format(-0.08)}`,
       }),
     };
-    return <div {...css(styles.base, this.props.style)}>{this.props.children}</div>;
+    return (
+      <div {...css(styles.base, this.props.style)} {...this.mouse.events}>
+        {this.props.children}
+      </div>
+    );
   }
 }

@@ -1,5 +1,5 @@
-import { containsFocus } from '@platform/react';
-export { containsFocus };
+import { containsFocus, mouse } from '@platform/react';
+export { containsFocus, mouse };
 
 import { css, color, CssValue } from '@platform/css';
 export { css, color, CssValue };
