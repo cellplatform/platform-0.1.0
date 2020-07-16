@@ -104,8 +104,8 @@ export class WindowTitleBar extends React.PureComponent<
       }),
       shade: css({
         Absolute: 0,
-        background: isWindowFocused ? color.format(-0.04) : color.format(-0.0),
-        borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.1 : -0.08)}`,
+        background: isWindowFocused ? color.format(-0.06) : color.format(-0.0),
+        borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.12 : -0.08)}`,
       }),
     };
     return (
