@@ -27,7 +27,6 @@
     "@platform/ui.icon": "0.0.158",
     "@platform/ui.object": "0.0.212",
     "@platform/ui.spinner": "0.0.155",
-    "@platform/util.local-storage": "^0.0.91",
     "@platform/util.value": "0.7.26",
     "filesize": "6.1.0",
     "react-icons": "3.10.0",

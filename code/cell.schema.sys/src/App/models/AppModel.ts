@@ -1,4 +1,4 @@
-import { t, Uri } from '../common';
+import { t, Uri } from '../../common';
 import { load } from './util';
 
 type IArgs = {

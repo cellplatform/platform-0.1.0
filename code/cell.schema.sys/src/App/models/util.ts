@@ -1,4 +1,4 @@
-import { t, Uri } from '../common';
+import { t, Uri } from '../../common';
 
 /**
  * Load the data at the given URI.

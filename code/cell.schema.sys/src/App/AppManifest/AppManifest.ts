@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t } from '../../common';
 import { bundle, filterFiles } from './AppManifest.bundle';
 
 const MANIFEST_FILENAME = 'app.json';

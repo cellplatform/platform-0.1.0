@@ -1,4 +1,4 @@
-import { TypeSystem, Uri, t } from '../common';
+import { TypeSystem, Uri, t } from '../../common';
 
 /**
  * Schema for declaring applications.

@@ -1,5 +1,5 @@
 import { TypeSystem, t } from '../common';
-import { AppSchema } from '../AppSchema';
+import { AppSchema } from '..';
 
 // NB: Fixed namespaces passed in to avoid re-generating new file on each test-run.
 const namespaces: t.IAppNamespaces = {

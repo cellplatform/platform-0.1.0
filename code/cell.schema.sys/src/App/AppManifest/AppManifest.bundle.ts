@@ -1,4 +1,4 @@
-import { t, time, Uri, defaultValue } from '../common';
+import { t, time, Uri, defaultValue } from '../../common';
 
 /**
  * Represents an app bundle that can be uploaded to the server.
