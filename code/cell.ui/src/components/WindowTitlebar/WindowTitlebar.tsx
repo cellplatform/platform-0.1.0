@@ -106,7 +106,7 @@ export class WindowTitleBar extends React.PureComponent<
         Absolute: 0,
         // background: isWindowFocused ? color.format(-0.06) : color.format(-0.0),
         background: isWindowFocused ? WindowTitleBar.GRADIENT : color.format(-0.0),
-        borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.12 : -0.08)}`,
+        borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.2 : -0.08)}`,
       }),
     };
     return (
