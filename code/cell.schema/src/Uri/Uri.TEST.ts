@@ -754,4 +754,61 @@ describe('Uri', () => {
       test(' =cell:foo:C5 ', 2);
     });
   });
+
+  describe('eq', () => {
+    const test = (a: t.IUri | string, b: t.IUri | string, expected: boolean) => {
+      expect(Uri.eq(a, b)).to.eql(expected);
+      expect(Uri.eq(b, a)).to.eql(expected);
+    };
+
+    it('empty (strings)', () => {
+      test('', '', true);
+      test('    ', '', true);
+    });
+
+    it('undefined (illegal)', () => {
+      test(undefined as any, undefined as any, true);
+      test(null as any, null as any, true);
+      test(undefined as any, null as any, true);
+
+      test(undefined as any, 'ns:foo', false);
+      test(null as any, 'ns:foo', false);
+    });
+
+    it('namespace', () => {
+      test('ns:foo', 'ns:foo', true);
+      test('foo', 'ns:foo', true);
+      test('foo', 'foo', true); // NB: Assumes simple strings are namespaces (no ":")
+      test('  ns:foo  ', 'ns:foo', true);
+
+      test(Uri.ns('foo'), 'ns:foo', true);
+
+      test('ns:foo', 'ns:bar', false);
+      test('foo', 'ns:bar', false);
+      test('foo', 'bar', false);
+      test(Uri.ns('foo'), 'ns:bar', false);
+      test(Uri.ns('foo'), 'bar', false);
+    });
+
+    it('cell | row | column', () => {
+      test('cell:foo:A1', '  cell:foo:A1  ', true);
+      test('cell:foo:A1', 'cell:foo:A1', true);
+      test('cell:foo:A', 'cell:foo:A', true);
+      test('cell:foo:1', 'cell:foo:1', true);
+
+      test('cell:foo:A1', 'cell:foo:Z9', false);
+    });
+
+    it('file', () => {
+      test('file:foo:abc', 'file:foo:abc', true);
+      test('file:foo:abc', '  file:foo:abc  ', true);
+      test('file:foo:abc', 'file:bar:abc', false);
+      test('file:foo:abc', 'file:foo:123', false);
+
+      test(Uri.file('file:foo:abc'), Uri.file('file:foo:abc'), true);
+      test(Uri.file('file:foo:abc'), 'file:foo:abc', true);
+      test(Uri.file('file:foo:abc'), 'file:foo:123', false);
+      test(Uri.file('file:foo:abc'), 'foo', false);
+    });
+  });
 });
