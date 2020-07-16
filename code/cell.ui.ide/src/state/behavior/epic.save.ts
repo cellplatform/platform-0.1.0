@@ -60,7 +60,6 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
 
       const sheet = await client.sheet<t.TypeIndex>(dataUri);
 
-
       const data = sheet.data('Code');
       const row = data.row(0); // TEMP 🐷
 
