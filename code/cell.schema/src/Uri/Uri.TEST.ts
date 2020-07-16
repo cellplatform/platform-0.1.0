@@ -756,7 +756,8 @@ describe('Uri', () => {
   });
 
   describe('eq', () => {
-    const test = (a: t.IUri | string, b: t.IUri | string, expected: boolean) => {
+    type U = t.IUri | string | undefined;
+    const test = (a: U, b: U, expected: boolean) => {
       expect(Uri.eq(a, b)).to.eql(expected);
       expect(Uri.eq(b, a)).to.eql(expected);
     };
@@ -786,8 +787,10 @@ describe('Uri', () => {
       test('ns:foo', 'ns:bar', false);
       test('foo', 'ns:bar', false);
       test('foo', 'bar', false);
+      test('ns:foo', undefined, false);
       test(Uri.ns('foo'), 'ns:bar', false);
       test(Uri.ns('foo'), 'bar', false);
+      test(Uri.ns('foo'), undefined, false);
     });
 
     it('cell | row | column', () => {

@@ -7,7 +7,7 @@ import { CssValue, onStateChanged, rx, t, ui } from '../../common';
 import { factory } from './factory';
 
 export type IGridViewProps = { ns: string; grid$?: Subject<t.GridEvent>; style?: CssValue };
-export type IGridViewState = {};
+export type IGridViewState = t.Object;
 
 export class GridView extends React.PureComponent<IGridViewProps, IGridViewState> {
   public state: IGridViewState = {};

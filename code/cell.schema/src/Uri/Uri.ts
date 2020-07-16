@@ -155,8 +155,8 @@ export class Uri {
     return parseOrThrow<t.IFileUri>(input, 'FILE', throwError);
   }
 
-  public static eq(a: t.IUri | string, b: t.IUri | string): boolean {
-    const toString = (input: t.IUri | string) => {
+  public static eq(a?: t.IUri | string, b?: t.IUri | string): boolean {
+    const toString = (input?: t.IUri | string) => {
       input = input === undefined || input === null ? '' : input;
       const text = input.toString().trim();
       return !text.includes(':') ? `ns:${text}` : text;

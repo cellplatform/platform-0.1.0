@@ -50,7 +50,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync')
     .pipe(
       filter((e) => Boolean(store.state.ns)),
-      filter((e) => Uri.strip.ns(e.ns) === store.state.ns),
+      filter((e) => Uri.eq(e.changes.uri, store.state.ns)),
     )
     .subscribe((e) => {
       const { changes } = e;

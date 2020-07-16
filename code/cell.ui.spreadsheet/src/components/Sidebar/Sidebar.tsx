@@ -5,7 +5,7 @@ import { COLORS, color, css, CssValue, ui, t, onStateChanged } from '../../commo
 import { IPropListItem, PropList } from '../primitives';
 
 export type ISidebarProps = { style?: CssValue };
-export type ISidebarState = {};
+export type ISidebarState = t.Object;
 
 export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
   public state: ISidebarState = {};
@@ -60,7 +60,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
       }),
       bg: css({
         Absolute: 0,
-        backgroundColor: color.format(0.4),
+        backgroundColor: color.format(0.6),
         borderLeft: `solid 1px ${color.format(-0.1)}`,
       }),
       body: css({
