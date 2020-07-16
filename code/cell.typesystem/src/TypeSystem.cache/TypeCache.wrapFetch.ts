@@ -1,5 +1,4 @@
 import { Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
 import { MemoryCache, rx, t } from '../common';
 import { fetcher } from '../TypeSystem.fetch';

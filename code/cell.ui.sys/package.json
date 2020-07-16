@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui.sys",
-  "version": "0.0.155",
+  "version": "0.0.156",
   "description": "Base system UI components.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,12 +16,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.client": "0.2.124",
-    "@platform/cell.schema": "0.4.142",
-    "@platform/cell.schema.apps": "0.0.11",
-    "@platform/cell.types": "0.4.128",
-    "@platform/cell.typesystem": "0.0.82",
-    "@platform/cell.ui": "0.1.69",
+    "@platform/cell.client": "0.2.125",
+    "@platform/cell.schema": "0.4.143",
+    "@platform/cell.schema.apps": "0.0.12",
+    "@platform/cell.types": "0.4.129",
+    "@platform/cell.typesystem": "0.0.83",
+    "@platform/cell.ui": "0.1.70",
     "@platform/react": "0.4.39",
     "@platform/state": "0.6.2",
     "@platform/ui.icon": "0.0.158",
