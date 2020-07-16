@@ -89,6 +89,8 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
       // row.props.code
       // console.log('row.props.code', row.props.text);
 
+      console.log('e.payload', e.payload);
+
       await time.wait(10);
       // await ctx.sheetChanged(sheet.changes);
 

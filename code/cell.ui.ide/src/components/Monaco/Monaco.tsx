@@ -28,7 +28,7 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
    */
   constructor(props: IMonacoProps) {
     super(props);
-    Monaco.api(); // Ensure API is initialized and configured (singleton).
+    Monaco.api(); // Ensure the (singleton) API is initialized and configured.
   }
 
   public componentDidMount() {
@@ -61,6 +61,10 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
 
   public set value(value: string) {
     this.editor.setValue(value);
+  }
+
+  public get position(): t.IIdeEditorPosition {
+    return this.editor.getPosition();
   }
 
   /**
@@ -113,7 +117,9 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
       isUndoing: e.isUndoing,
       versionId: e.versionId,
       change: e.change,
+      position: this.position,
     };
+
     this.context.fire({ type: 'APP:IDE/editor/contentChange', payload });
   }
 }
