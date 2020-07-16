@@ -69,7 +69,7 @@ export class SidebarTypeDef extends React.PureComponent<
     const title = `Type`;
     const items = [
       { label: 'typename', value: typeDef.typename },
-      { label: 'uri', value: typeDef.uri },
+      { label: 'def', value: typeDef.uri },
       ...columns,
     ];
     return <PropList title={title} items={items} />;

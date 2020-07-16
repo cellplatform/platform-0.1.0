@@ -1,6 +1,6 @@
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, filter } from 'rxjs/operators';
 
-import { t, time } from '../../common';
+import { t, time, Uri } from '../../common';
 import { CodeSchema } from '../../schema';
 
 /**
@@ -11,7 +11,6 @@ import { CodeSchema } from '../../schema';
 import { namespaces } from '../../test/stub'; // TEMP 🐷
 
 // const typeUri = 'ns:ckcmytlij000g456c8iyv8vjq';
-const dataUri = 'ns:ckcmyowv5000e456cayhy1omy';
 
 /**
  * Async behavior controllers.
@@ -22,11 +21,13 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const http = client.http;
 
   let isInitialized = false;
+
   const init = async () => {
     if (!isInitialized) {
+      const ns = Uri.toNs(store.state.uri).toString();
       isInitialized = true;
       await ensureTypeDefs();
-      await ensureData({ ns: dataUri, implements: namespaces.Code });
+      await ensureData({ ns, implements: namespaces.CodeFile });
     }
   };
 
@@ -49,24 +50,49 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
     }
   };
 
+  const loadSheet = async () => {
+    const uri = Uri.row(store.state.uri);
+    const index = Uri.toRowIndex(uri);
+
+    const sheet = await client.sheet<t.TypeIndex>(uri.ns);
+    const data = await sheet.data('CodeFile').load();
+    const row = data.row(index);
+
+    return { sheet, index, row };
+  };
+
+  /**
+   * Load initial text when URI changes.
+   */
+  store.changed$.pipe(filter((e) => e.type === 'APP:IDE/uri')).subscribe(async (e) => {
+    await init();
+    const { row } = await loadSheet();
+    const text = row.props.text;
+    store.dispatch({ type: 'APP:IDE/text', payload: { text } });
+  });
+
   /**
    * Listen for changes to the code editor.
    */
   store
     .on<t.IIdeEditorContentChangeEvent>('APP:IDE/editor/contentChange')
-    .pipe(debounceTime(300))
+    .pipe(debounceTime(800))
     .subscribe(async (e) => {
-      await init();
+      // await init();
+      const state = store.state;
+      const { sheet, row } = await loadSheet();
 
-      const sheet = await client.sheet<t.TypeIndex>(dataUri);
+      const props = row.props;
 
-      const data = sheet.data('Code');
-      const row = data.row(0); // TEMP 🐷
+      props.text = state.text;
+      props.language = state.language;
+      // row.props.code
+      // console.log('row.props.code', row.props.text);
 
-      row.props.text = store.state.text;
       await time.wait(10);
-      console.log('-------------------------------------------');
-      console.log('changes', sheet.changes);
-      console.log('text', sheet.changes.cells);
+      // await ctx.sheetChanged(sheet.changes);
+
+      const res = await client.saveChanges({ sheet });
+      console.log('saved', res);
     });
 }

@@ -3,5 +3,6 @@
  */
 export type ICodeNamespaces = {
   Code: string;
-  Language: string;
+  CodeFile: string;
+  // Language: string;
 };
