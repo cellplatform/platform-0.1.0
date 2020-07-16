@@ -31,7 +31,7 @@ if (app.isPackaged) {
  * Startup the application.
  */
 export async function start() {
-  log.info('━'.repeat(50));
+  log.info.green('━'.repeat(60));
   const prod = ENV.isProd;
 
   // Start the HTTP server.
