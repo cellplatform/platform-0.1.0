@@ -23,7 +23,7 @@ export class WindowTitleBar extends React.PureComponent<
   private unmounted$ = new Subject();
 
   public static HEIGHT = 38;
-  // public static GRADIENT = `linear-gradient(180deg, #E5E5E5 0%, #CDCDCD 100%)`;
+  public static GRADIENT = `linear-gradient(180deg, #E5E5E5 0%, #CDCDCD 100%)`;
 
   /**
    * [Lifecycle]
@@ -104,7 +104,8 @@ export class WindowTitleBar extends React.PureComponent<
       }),
       shade: css({
         Absolute: 0,
-        background: isWindowFocused ? color.format(-0.06) : color.format(-0.0),
+        // background: isWindowFocused ? color.format(-0.06) : color.format(-0.0),
+        background: isWindowFocused ? WindowTitleBar.GRADIENT : color.format(-0.0),
         borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.12 : -0.08)}`,
       }),
     };

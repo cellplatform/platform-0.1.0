@@ -10,6 +10,7 @@ import { fireSheetChanged } from './context.sheetChanged';
  */
 export async function create(args: { env: t.IEnv }) {
   const { env } = args;
+  const source = env.def;
   const event$ = env.event$ as Subject<t.AppEvent>;
   const store = createStore({ event$ });
 
@@ -31,9 +32,7 @@ export async function create(args: { env: t.IEnv }) {
     event$: event$.pipe(share()),
     getState: () => store.state,
     fire: (e) => event$.next(e),
-    sheetChanged(changes: t.ITypedSheetChanges) {
-      return fireSheetChanged({ event$, changes, source: env.def });
-    },
+    sheetChanged: (changes: t.ITypedSheetChanges) => fireSheetChanged({ event$, changes, source }),
   };
 
   // Finish up.
