@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "1.0.89",
+  "version": "1.0.90",
   "description": "Electron shell for CellOS.",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",
@@ -25,7 +25,7 @@
     "@platform/cell.http": "0.7.125",
     "@platform/cell.http.router": "0.7.123",
     "@platform/cell.schema": "0.4.143",
-    "@platform/cell.schema.sys": "0.0.0",
+    "@platform/cell.schema.sys": "0.0.1",
     "@platform/cell.types": "0.4.129",
     "@platform/cell.typesystem": "0.0.83",
     "@platform/fs": "0.5.19",
