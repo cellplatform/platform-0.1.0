@@ -2,15 +2,17 @@ import { Subject } from 'rxjs';
 
 import { HttpClient } from '../Client.http';
 import { MemoryCache, t, TypeSystem, value, Uri } from '../common';
+import { saveChanges } from './typesystem.saveChanges';
 
 type N = string | t.INsUri;
+type E = t.TypedSheetEvent;
 
 /**
  * Access point for working with the TypeSystem.
  */
 export function typesystem(input?: t.ClientTypesystemOptions | string | number) {
   const args = typeof input === 'object' ? input : { http: input };
-  const event$ = args.event$ ? (args.event$ as Subject<t.TypedSheetEvent>) : undefined;
+  const event$ = args.event$ ? (args.event$ as Subject<E>) : undefined;
   const cache = args.cache || MemoryCache.create();
   const pool = args.pool || TypeSystem.Pool.create();
 
@@ -86,6 +88,14 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
      */
     sheet<T>(ns: N) {
       return TypeSystem.Sheet.load<T>({ ns, fetch, cache, event$, pool });
+    },
+
+    /**
+     * Writes changes to the server.
+     */
+    saveChanges(args: { sheet: t.ITypedSheet; event$?: Subject<E> }) {
+      const { sheet, event$ } = args;
+      return saveChanges({ http, sheet, event$ });
     },
   };
 
