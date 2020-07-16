@@ -136,11 +136,11 @@ describe('StateObject', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo>(initial);
 
-      const events: t.StateObjectEvent[] = [];
+      const cancelled: t.IStateObjectCancelled[] = [];
       const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
 
-      obj.event$.subscribe((e) => events.push(e));
+      obj.cancelled$.subscribe((e) => cancelled.push(e));
       obj.changed$.subscribe((e) => changed.push(e));
       obj.changing$.subscribe((e) => {
         changing.push(e);
@@ -148,10 +148,13 @@ describe('StateObject', () => {
       });
 
       obj.change((draft) => (draft.count += 1));
-      obj.change({ count: 2 });
+      expect(changing.length).to.eql(1);
+      expect(cancelled.length).to.eql(1);
+      expect(changed.length).to.eql(0);
 
-      expect(events.length).to.eql(2);
+      obj.change({ count: 2 });
       expect(changing.length).to.eql(2);
+      expect(cancelled.length).to.eql(2);
       expect(changed.length).to.eql(0);
 
       expect(obj.state).to.eql(initial); // NB: No change (because it was cancelled).

@@ -14,6 +14,7 @@ export type IStateObject<T extends O> = {
   readonly event$: Observable<StateObjectEvent>;
   readonly changing$: Observable<IStateObjectChanging<T>>;
   readonly changed$: Observable<IStateObjectChanged<T>>;
+  readonly cancelled$: Observable<IStateObjectCancelled<T>>;
   readonly original: T;
   readonly state: T;
 };
@@ -38,7 +39,10 @@ export type StateObjectChanger<T extends O> = (draft: T) => void;
 /**
  * [Events]
  */
-export type StateObjectEvent = IStateObjectChangingEvent<any> | IStateObjectChangedEvent<any>;
+export type StateObjectEvent =
+  | IStateObjectChangingEvent<any>
+  | IStateObjectChangedEvent<any>
+  | IStateObjectCancelledEvent;
 
 /**
  * Fires before the state object is updated
@@ -69,3 +73,12 @@ export type IStateObjectChanged<T extends O = any> = {
   from: T;
   to: T;
 };
+
+/**
+ * Fires if a change is cancelled.
+ */
+export type IStateObjectCancelledEvent<T extends O = any> = {
+  type: 'StateObject/cancelled';
+  payload: IStateObjectChanging<T>;
+};
+export type IStateObjectCancelled<T extends O = any> = IStateObjectChanging<T>;

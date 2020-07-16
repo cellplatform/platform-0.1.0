@@ -66,6 +66,12 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
     share(),
   );
 
+  public readonly cancelled$ = this._event$.pipe(
+    filter((e) => e.type === 'StateObject/cancelled'),
+    map((e) => e.payload as t.IStateObjectCancelled<T>),
+    share(),
+  );
+
   public readonly original: T;
 
   /**
@@ -99,7 +105,9 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
 
     // Update state.
     const cancelled = payload.cancelled;
-    if (!cancelled) {
+    if (cancelled) {
+      this.fire({ type: 'StateObject/cancelled', payload });
+    } else {
       this._state = to;
       this.fire({ type: 'StateObject/changed', payload: { cid, from, to } });
     }
