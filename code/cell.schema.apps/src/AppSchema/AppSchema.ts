@@ -56,11 +56,7 @@ export class AppSchema {
       .prop('tmp', (p) => p.type('string'));
 
     // Finish up.
-    return {
-      namespaces,
-      def,
-      write: (http: t.IHttpClient) => def.write(http),
-    };
+    return { namespaces, def };
   }
 }
 

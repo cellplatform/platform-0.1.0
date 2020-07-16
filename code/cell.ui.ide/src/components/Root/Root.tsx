@@ -2,34 +2,40 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, onStateChanged, t, ui } from '../../common';
+import { css, CssValue, onStateChanged, t, ui, time } from '../../common';
 import { Monaco } from '../Monaco';
 import { WindowTitleBar } from '../primitives';
 import { Sidebar } from '../Sidebar';
+import { MonacoApi } from '../Monaco.api';
 
 const COLOR = {
   IDE_BG: '#272822',
 };
 
 export type IRootProps = { style?: CssValue };
-export type IRootState = {};
+export type IRootState = t.Object;
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};
   private state$ = new Subject<Partial<IRootState>>();
   private unmounted$ = new Subject();
+  private monaco: MonacoApi;
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;
+
+  private elMonaco!: Monaco;
+  private elMonacoRef = (ref: Monaco) => (this.elMonaco = ref);
 
   /**
    * [Lifecycle]
    */
 
-  public componentDidMount() {
+  public async componentDidMount() {
     const ctx = this.context;
     const changes = onStateChanged(ctx.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+    this.monaco = await Monaco.api();
 
     changes
       .on('APP:IDE/types/data', 'APP:IDE/types/clear')
@@ -65,14 +71,10 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     return Boolean(this.uri);
   }
 
-  /**
-   * Methods
-   */
-
-  public async updateTypes() {
+  public updateTypes() {
     const state = this.store;
     const typesystem = state.typesystem;
-    const monaco = await Monaco.api();
+    const monaco = this.monaco;
 
     if (!typesystem) {
       monaco.lib.clear();
@@ -150,7 +152,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       <div {...styles.base}>
         <div {...styles.body}>
           <div {...styles.editor}>
-            <Monaco />
+            <Monaco ref={this.elMonacoRef} focusOnLoad={true} />
             {!isLoaded && <div {...styles.editorMask} />}
           </div>
           <div {...styles.sidebar}>

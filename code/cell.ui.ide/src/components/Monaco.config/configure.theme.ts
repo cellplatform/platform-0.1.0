@@ -12,7 +12,7 @@ export const DARK = {
  * Configure the editor theme.
  */
 export function theme(monaco: t.IMonaco) {
-  const themeData = require('monaco-themes/themes/Monokai.json') as t.IMonacoStandaloneThemeData;
+  const themeData = require('monaco-themes/themes/Monokai.json') as t.IMonacoStandaloneThemeData; // eslint-disable-line
   themeData.colors = {
     ...themeData.colors,
 

@@ -1,14 +1,14 @@
 import MonacoEditor from '@monaco-editor/react';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
-import { constants, css, CssValue, t, ui, onStateChanged } from '../../common';
+import { constants, css, CssValue, onStateChanged, t, ui, time } from '../../common';
 import { MonacoApi } from '../Monaco.api';
 
 const { MONACO } = constants;
 
-export type IMonacoProps = { style?: CssValue };
+export type IMonacoProps = { focusOnLoad?: boolean; style?: CssValue };
 export type IMonacoState = { api?: MonacoApi };
 
 export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
@@ -64,6 +64,15 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
   }
 
   /**
+   * [Methods]
+   */
+  public focus() {
+    if (this.editor) {
+      this.editor.focus();
+    }
+  }
+
+  /**
    * [Render]
    */
   public render() {
@@ -90,6 +99,9 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
     this.editor = editor;
     this.getEditorValue = getEditorValue;
     editor.onDidChangeModelContent((e: any) => this.fireChange(e, getEditorValue()));
+    if (this.props.focusOnLoad) {
+      time.delay(0, () => this.focus());
+    }
   };
 
   private fireChange(e: any, text: string) {
