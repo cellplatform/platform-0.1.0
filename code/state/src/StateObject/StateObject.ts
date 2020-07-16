@@ -82,14 +82,10 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
   /**
    * [Methods]
    */
-  public change(fn: t.StateObjectChanger<T>) {
+  public change = (fn: t.StateObjectChanger<T> | T) => {
     const cid = id.shortid(); // "change-id"
     const from = this.state;
-
-    // Invoke the change handler.
-    const to = produce<T>(from, (draft) => {
-      fn(draft as T);
-    });
+    const to = next(from, fn);
 
     // Fire BEFORE event.
     const payload: t.IStateObjectChanging<T> = {
@@ -110,12 +106,29 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
 
     // Finish up.
     return { cid, from, to, cancelled };
-  }
+  };
 
   /**
-   * Helpers
+   * [Internal]
    */
   private fire(e: t.StateObjectEvent) {
     this._event$.next(e);
   }
 }
+
+/**
+ * [Helpers]
+ */
+
+const next = <T extends O>(from: T, fn: t.StateObjectChanger<T> | T) => {
+  if (typeof fn === 'function') {
+    // Update.
+    return produce<T>(from, (draft) => {
+      fn(draft as T);
+      return undefined; // NB: No return value, to prevent replacement.
+    });
+  } else {
+    // Replace.
+    return produce<T>(from, () => fn);
+  }
+};

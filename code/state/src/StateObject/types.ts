@@ -23,7 +23,7 @@ export type IStateObject<T extends O> = {
  */
 export type IStateObjectWritable<T extends O> = IStateObject<T> & {
   readonly readonly: IStateObject<T>;
-  change(fn: StateObjectChanger<T>): IStateObjectChangeResponse<T>;
+  change(input: StateObjectChanger<T> | T): IStateObjectChangeResponse<T>;
 };
 
 export type IStateObjectChangeResponse<T extends O> = {
