@@ -135,7 +135,6 @@ describe('TypeCache', () => {
         event$.next({
           type: 'SHEET/sync',
           payload: {
-            ns: 'foo',
             changes: {
               uri: 'ns:foo',
               cells: { B2: { kind: 'CELL', ns: 'foo', key: 'B2', from: {}, to: { value: 123 } } },

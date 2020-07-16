@@ -81,7 +81,7 @@ export function saveMonitor(args: {
         .map((res) => ({ ns, error: res.error as t.IHttpError }));
       const ok = errors.length === 0;
       fire({ type: 'SHEET/saved', payload: { ok, target, sheet, changes, errors } });
-      fire({ type: 'SHEET/sync', payload: { ns, changes } });
+      fire({ type: 'SHEET/sync', payload: { changes } });
     });
   };
 

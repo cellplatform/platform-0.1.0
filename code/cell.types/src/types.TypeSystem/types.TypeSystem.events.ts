@@ -130,7 +130,12 @@ export type ITypedSheetSyncEvent = {
   payload: ITypedSheetSync;
 };
 export type ITypedSheetSync = {
-  ns: string;
+  /**
+   * TODO 🐷
+   * - remove NS ??
+   * - it exists in `changes`
+   */
+  // ns: string;
   changes: t.ITypedSheetChanges;
 };
 

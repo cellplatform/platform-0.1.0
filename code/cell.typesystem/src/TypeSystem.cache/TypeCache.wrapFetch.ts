@@ -32,7 +32,7 @@ export function wrapFetch(
   if (event$) {
     event$.pipe(filter((e) => e.type === 'SHEET/sync'));
     rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync').subscribe((e) => {
-      const key = fetchKey('getCells', e.ns);
+      const key = fetchKey('getCells', e.changes.uri);
       const entry = cache.get<C>(key);
       if (entry) {
         entry.total.rows = -1;

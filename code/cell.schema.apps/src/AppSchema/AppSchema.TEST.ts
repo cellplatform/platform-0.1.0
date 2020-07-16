@@ -1,5 +1,5 @@
-import { expect, t, fs, TypeSystem, stub } from '../test';
 import { AppSchema } from '.';
+import { expect, fs, stub, t } from '../test';
 
 // NB: Fixed namespaces passed in to avoid re-generating new file on each test-run.
 const namespaces = stub.namespaces;

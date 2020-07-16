@@ -1696,7 +1696,6 @@ describe('TypedSheet', () => {
       event$.next({
         type: 'SHEET/sync',
         payload: {
-          ns,
           changes: {
             uri: 'ns:foo.mySheet',
             cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
@@ -1718,7 +1717,6 @@ describe('TypedSheet', () => {
       event$.next({
         type: 'SHEET/sync',
         payload: {
-          ns,
           changes: {
             uri: 'ns:foo.mySheet',
             cells: { A99: { kind: 'CELL', ns, key: 'A99', from: {}, to: { value: 'hello' } } },
@@ -1747,7 +1745,6 @@ describe('TypedSheet', () => {
       event$.next({
         type: 'SHEET/sync',
         payload: {
-          ns,
           changes: {
             uri: 'ns:foo.mySheet',
             cells: { A1: { kind: 'CELL', ns, key: 'A1', from: {}, to: { value: 'yo' } } },
@@ -1809,7 +1806,6 @@ describe('TypedSheet', () => {
       event$.next({
         type: 'SHEET/sync',
         payload: {
-          ns,
           changes: {
             uri: 'ns:foo.mySheet',
             cells: {

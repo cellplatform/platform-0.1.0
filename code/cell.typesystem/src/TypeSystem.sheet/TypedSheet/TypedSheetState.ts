@@ -89,7 +89,7 @@ export class TypedSheetState implements t.ITypedSheetState {
 
     rx.payload<t.ITypedSheetSyncEvent>(this.event$, 'SHEET/sync')
       .pipe(
-        filter((e) => this.isThisSheet(e.ns)),
+        filter((e) => this.isThisSheet(e.changes.uri)),
         delay(0), // NB: Cause handler to run after all child rows (etc) have had a chance to react to this event.
       )
       .subscribe((e) => {

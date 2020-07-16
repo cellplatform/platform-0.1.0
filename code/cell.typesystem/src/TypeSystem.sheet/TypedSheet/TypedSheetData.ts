@@ -83,7 +83,7 @@ export class TypedSheetData<T, K extends keyof T> implements t.ITypedSheetData<T
 
     // Monitor for changes.
     rx.payload<t.ITypedSheetSyncEvent>(args.ctx.event$, 'SHEET/sync')
-      .pipe(filter((e) => this.isThisSheet(e.ns)))
+      .pipe(filter((e) => this.isThisSheet(e.changes.uri)))
       .subscribe((e) => {
         // Increase the "total rows" count if required.
         const keys = Object.keys(e.changes.cells || {});
