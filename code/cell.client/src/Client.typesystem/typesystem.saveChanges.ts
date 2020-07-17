@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 
-import { coord, ERROR, t } from '../common';
+import { coord, ERROR, t, time } from '../common';
 
 type E = t.TypedSheetEvent;
 
@@ -12,7 +12,14 @@ export async function saveChanges(args: {
   sheet: t.ITypedSheet;
   changes?: t.ITypedSheetChanges;
   fire?: t.FireEvent<E> | Subject<E>;
+  wait?: number; // msecs
 }) {
+  if (args.wait) {
+    // NB: A brief wait may be requested (as a convenience) to ensure all
+    //     pending changes made to a sheet are flushed into the change-set.
+    await time.wait(args.wait);
+  }
+
   const { http, sheet } = args;
   const target = http.origin;
   const changes = args.changes || sheet.changes;
