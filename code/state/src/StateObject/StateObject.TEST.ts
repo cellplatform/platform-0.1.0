@@ -1,6 +1,7 @@
 /* eslint-disable */
-
 import { expect } from 'chai';
+import { filter } from 'rxjs/operators';
+
 import { StateObject } from '.';
 import { StateObject as StateObjectClass } from './StateObject';
 import * as t from './types';
@@ -177,11 +178,36 @@ describe('StateObject', () => {
       expect(events.length).to.eql(2);
       expect(changed.length).to.eql(1);
 
-      expect(changed[0].from).to.eql(initial);
-      expect(changed[0].to).to.eql({ count: 2 });
-      expect(changed[0].to).to.equal(obj.state); // NB: Current state instance.
+      const event = changed[0];
+      expect(event.from).to.eql(initial);
+      expect(event.to).to.eql({ count: 2 });
+      expect(event.to).to.equal(obj.state); // NB: Current state instance.
+      expect(event.action).to.equal('');
 
       expect(changing[0].cid).to.eql(changed[0].cid);
+    });
+
+    it('event: changed (with action)', () => {
+      type Action = 'INCREMENT' | 'DECREMENT';
+      const initial = { count: 1 };
+      const obj = StateObject.create<IFoo, Action>(initial);
+
+      const changed: t.IStateObjectChanged[] = [];
+      const actions: t.IStateObjectChanged[] = [];
+      obj.changed$.subscribe((e) => changed.push(e));
+      obj.action$.subscribe((e) => actions.push(e));
+
+      let count = 0;
+      obj.changed$.pipe(filter((e) => e.action === 'INCREMENT')).subscribe(() => count++);
+
+      obj.change((draft) => (draft.message = 'hello'));
+      expect(changed.length).to.eql(1);
+      expect(actions.length).to.eql(0);
+
+      obj.change((draft) => draft.count++, 'INCREMENT');
+      expect(changed.length).to.eql(2);
+      expect(actions.length).to.eql(1);
+      expect(count).to.eql(1);
     });
   });
 });

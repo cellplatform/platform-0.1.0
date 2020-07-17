@@ -17,12 +17,14 @@ type O = Record<string, unknown>;
  * To pass an read-only version of the [StateObject] around an application
  * use the plain [IStateObject] interface which does not expose the `change` method.
  */
-export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
+export class StateObject<T extends O, A extends string> implements t.IStateObjectWritable<T, A> {
   /**
    * Create a new [StateObject] instance.
    */
-  public static create<T extends O>(initial: T): t.IStateObjectWritable<T> {
-    return new StateObject<T>({ initial });
+  public static create<T extends O, A extends string = ''>(
+    initial: T,
+  ): t.IStateObjectWritable<T, A> {
+    return new StateObject<T, A>({ initial });
   }
 
   /**
@@ -35,8 +37,10 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
    *    logic around an application.
    * 
    */
-  public static readonly<T extends O>(obj: t.IStateObjectWritable<T>): t.IStateObject<T> {
-    return obj as t.IStateObject<T>;
+  public static readonly<T extends O, A extends string = ''>(
+    obj: t.IStateObjectWritable<T, A>,
+  ): t.IStateObject<T, A> {
+    return obj as t.IStateObject<T, A>;
   }
 
   /**
@@ -62,7 +66,12 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
 
   public readonly changed$ = this._event$.pipe(
     filter((e) => e.type === 'StateObject/changed'),
-    map((e) => e.payload as t.IStateObjectChanged<T>),
+    map((e) => e.payload as t.IStateObjectChanged<T, A>),
+    share(),
+  );
+
+  public readonly action$ = this.changed$.pipe(
+    filter((e) => Boolean(e.action)),
     share(),
   );
 
@@ -88,7 +97,7 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
   /**
    * [Methods]
    */
-  public change = (fn: t.StateObjectChanger<T> | T) => {
+  public change = (fn: t.StateObjectChanger<T> | T, action?: A) => {
     const cid = id.shortid(); // "change-id"
     const from = this.state;
     const to = next(from, fn);
@@ -109,7 +118,10 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
       this.fire({ type: 'StateObject/cancelled', payload });
     } else {
       this._state = to;
-      this.fire({ type: 'StateObject/changed', payload: { cid, from, to } });
+      this.fire({
+        type: 'StateObject/changed',
+        payload: { cid, from, to, action: (action || '').trim() },
+      });
     }
 
     // Finish up.
