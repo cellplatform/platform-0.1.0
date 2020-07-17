@@ -248,23 +248,43 @@ describe('Uri', () => {
   });
 
   describe('clean', () => {
+    const test = (input: string | undefined, expected: string) => {
+      const res = Uri.clean(input);
+      expect(res).to.eql(expected);
+    };
+
     it('strips whitespace', () => {
-      expect(Uri.clean()).to.eql('');
-      expect(Uri.clean('')).to.eql('');
-      expect(Uri.clean('  ')).to.eql('');
+      test('', '');
+      test('  ', '');
+      test(undefined, '');
     });
 
     it('strips query-string', () => {
-      expect(Uri.clean('foo?q=123')).to.eql('foo');
-      expect(Uri.clean('  foo?q=123 ')).to.eql('foo');
-      expect(Uri.clean('  foo  ?q=123 ')).to.eql('foo');
+      test('foo?q=123', 'foo');
+      test('  foo?q=123 ', 'foo');
+      test('  foo  ?q=123 ', 'foo');
     });
 
     it('strips "=" prefix', () => {
-      expect(Uri.clean('=foo')).to.eql('foo');
-      expect(Uri.clean('  =foo  ')).to.eql('foo');
-      expect(Uri.clean('  = foo  ')).to.eql('foo');
-      expect(Uri.clean('=foo?q=123')).to.eql('foo');
+      test('=foo', 'foo');
+      test('  =foo  ', 'foo');
+      test('  = foo  ', 'foo');
+      test('=foo?q=123', 'foo');
+    });
+
+    it('strips quotes', () => {
+      test(`"foo"`, 'foo');
+      test(` "foo" `, 'foo');
+      test(`'foo'`, 'foo');
+      test(`'foo"`, 'foo');
+      test(`="foo" `, 'foo');
+      test(` = "foo" `, 'foo');
+      test(`"=foo" `, 'foo');
+      test(`" = foo" `, 'foo');
+      test(`"foo?q=123"`, 'foo');
+      test(`"foo?q=123"`, 'foo');
+      test(`"=foo?q=123"`, 'foo');
+      test(`" =foo?q=123 "`, 'foo');
     });
   });
 
