@@ -88,7 +88,7 @@ describe.only('StateObject', () => {
       expect(obj.original).to.eql(initial);
     });
 
-    it('[change] method disconnected can be passed around', async () => {
+    it('[change] method disconnected can be passed around', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo>(initial);
       const change = obj.change;
@@ -177,7 +177,7 @@ describe.only('StateObject', () => {
       obj.changing$.subscribe((e) => changing.push(e));
       obj.changed$.subscribe((e) => changed.push(e));
 
-      obj.change((draft) => (draft.count += 1));
+      obj.change((draft) => draft.count++);
 
       expect(events.length).to.eql(2);
       expect(changed.length).to.eql(1);
@@ -189,6 +189,40 @@ describe.only('StateObject', () => {
       expect(event.action).to.equal('');
 
       expect(changing[0].cid).to.eql(changed[0].cid);
+    });
+
+    it('event: changed (via [changed] filter method)', () => {
+      const initial = { count: 1 };
+      const obj = StateObject.create<IFoo, MyEvent>(initial);
+      const done$ = new Subject();
+
+      const fired: t.IStateObjectChanged<IFoo, MyEvent>[] = [];
+      obj.changed('INCREMENT', done$).subscribe((e) => fired.push(e));
+
+      // Change: Not issuing 'action'.
+      obj.change((draft) => draft.count++);
+      obj.change((draft) => draft.count++);
+      expect(obj.state.count).to.eql(3);
+      expect(fired.length).to.eql(0); // NB: Because action was issued on change.
+
+      // Change: Action issued, but different from what is being listened for.
+      obj.change((draft) => draft.count--, 'DECREMENT');
+      expect(obj.state.count).to.eql(2);
+      expect(fired.length).to.eql(0); // NB: Because different action.
+
+      // Change with action.
+      obj.change((draft) => draft.count++, 'INCREMENT');
+      expect(obj.state.count).to.eql(3);
+      expect(fired.length).to.eql(1);
+      expect(fired[0].from.count).to.eql(2);
+      expect(fired[0].to.count).to.eql(3);
+
+      // Stop listening.
+      done$.next();
+      obj.change((draft) => draft.count++, 'INCREMENT');
+      obj.change((draft) => draft.count++, 'INCREMENT');
+      expect(obj.state.count).to.eql(5);
+      expect(fired.length).to.eql(1); // NB: No change.
     });
 
     it('event: changing/changed (with action)', () => {
@@ -219,7 +253,7 @@ describe.only('StateObject', () => {
       expect(changed[1].action).to.eql('INCREMENT');
     });
 
-    it('event: dispatch', async () => {
+    it('event: dispatch', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo, MyEvent>(initial);
       const dispatch = obj.dispatch; // NB: Test disconnected "bound" method.

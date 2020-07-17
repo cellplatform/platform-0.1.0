@@ -104,7 +104,7 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
     const cid = id.shortid(); // "change-id"
     const from = this.state;
     const to = next(from, fn);
-    const evenType = (action || '').trim();
+    const eventType = (action || '').trim();
 
     // Fire BEFORE event.
     const payload: t.IStateObjectChanging<T, E> = {
@@ -113,7 +113,7 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
       to,
       cancelled: false,
       cancel: () => (payload.cancelled = true),
-      action: evenType,
+      action: eventType,
     };
     this.fire({ type: 'StateObject/changing', payload });
 
@@ -125,7 +125,7 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
       this._state = to;
       this.fire({
         type: 'StateObject/changed',
-        payload: { cid, from, to, action: evenType },
+        payload: { cid, from, to, action: eventType },
       });
     }
 
@@ -138,10 +138,21 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
   };
 
   public dispatched = (action: E['payload'], takeUntil$?: Observable<any>) => {
-    const dispatch$ = !takeUntil$ ? this.dispatch$ : this.dispatch$.pipe(takeUntil(takeUntil$));
-    return dispatch$.pipe(
+    const ob$ = !takeUntil$ ? this.dispatch$ : this.dispatch$.pipe(takeUntil(takeUntil$));
+    return ob$.pipe(
       filter((e) => e.type === action),
       map((e) => e.payload),
+      share(),
+    );
+  };
+
+  public changed = (action: E['payload'], takeUntil$?: Observable<any>) => {
+    const ob$ = !takeUntil$ ? this.event$ : this.event$.pipe(takeUntil(takeUntil$));
+    return ob$.pipe(
+      filter((e) => e.type === 'StateObject/changed'),
+      map((e) => e.payload as t.IStateObjectChanged<T, E>),
+      filter((e) => e.action === action),
+      share(),
     );
   };
 

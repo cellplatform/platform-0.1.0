@@ -24,6 +24,7 @@ export type IStateObjectRead<T extends O, E extends Event<any> = any> = {
   readonly dispatch$: Observable<E>;
   dispatch(event: E): void;
   dispatched(action: E['type'], takeUntil$?: Observable<any>): Observable<E['payload']>;
+  changed(action: E['type'], takeUntil$?: Observable<any>): Observable<IStateObjectChanged<T, E>>;
 };
 
 /**
