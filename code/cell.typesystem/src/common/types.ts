@@ -6,6 +6,7 @@ export { Subject, Observable } from 'rxjs';
 export { IFs } from '@platform/fs.types';
 export { Json } from '@platform/types';
 
+export * from '@platform/types';
 export * from '@platform/cell.types';
 export * from '../types';
 
