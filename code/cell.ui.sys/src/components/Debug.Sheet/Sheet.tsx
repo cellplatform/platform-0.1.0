@@ -11,7 +11,7 @@ import * as t from './types';
 export type ISheetProps = { style?: CssValue };
 
 export class Sheet extends React.PureComponent<ISheetProps> {
-  private store = StateObject.create<t.IDebugSheet, t.DebugSheetAction>({ uri: '', error: {} });
+  private store = StateObject.create<t.IDebugSheet, t.DebugSheetEvent>({ uri: '', error: {} });
 
   private unmounted$ = new Subject();
 
@@ -22,9 +22,12 @@ export class Sheet extends React.PureComponent<ISheetProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    const changed$ = this.store.changed$.pipe(takeUntil(this.unmounted$));
-    changed$.subscribe((e) => this.forceUpdate());
-    changed$.pipe(filter((e) => e.action === 'sheet/load')).subscribe(this.load);
+    // const changed$ = this.store.changed$.pipe(takeUntil(this.unmounted$));
+    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
+    // changed$.pipe(filter((e) => e.action === 'sheet/load')).subscribe(this.load);
+
+    this.store.changed('DEBUG/Sheet/load', this.unmounted$).subscribe(this.load);
+
     this.init();
   }
 

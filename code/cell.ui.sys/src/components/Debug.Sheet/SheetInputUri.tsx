@@ -60,7 +60,7 @@ export class SheetInputUri extends React.PureComponent<ISheetInputUriProps> {
       this.store.change((m) => {
         m.error.uri = !Uri.is.uri(text) ? 'Invalid namespace URI' : undefined;
         m.uri = formatUri(text);
-      }, 'sheet/load');
+      }, 'DEBUG/Sheet/load');
     }
   }
 

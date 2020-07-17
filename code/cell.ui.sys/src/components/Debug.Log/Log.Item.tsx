@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { COLORS, color, css, CssValue, t } from '../../common';
-import * as g from './types';
+import { COLORS, color, css, CssValue } from '../../common';
 import { Icons } from '../primitives';
+
+import * as t from './types';
 
 export type IDebugLogItemProps = {
   index: number;
-  item: g.IDebugLogItem;
-  store: t.IStateObject<g.IDebugLogState>;
+  item: t.IDebugLogItem;
+  store: t.IDebugLogWrite;
   style?: CssValue;
   onClick?: () => void;
 };

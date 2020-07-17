@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t } from '../../common';
+import { css, CssValue } from '../../common';
 import { VirtualList, VirtualListFactory, VirtualListItemSize } from '../VirtualList';
 import { LogItem } from './Log.Item';
-import * as d from './types';
+import * as t from './types';
 
 export type ILogListProps = {
-  store: t.IStateObjectWritable<d.IDebugLogState>;
+  store: t.IDebugLogWrite;
   style?: CssValue;
 };
 
@@ -87,7 +87,7 @@ export class LogList extends React.PureComponent<ILogListProps> {
     );
   };
 
-  private rowClickHandler = (index: number, item: d.IDebugLogItem) => {
+  private rowClickHandler = (index: number, item: t.IDebugLogItem) => {
     return () => {
       this.store.change((draft) => (draft.selectedIndex = index));
     };

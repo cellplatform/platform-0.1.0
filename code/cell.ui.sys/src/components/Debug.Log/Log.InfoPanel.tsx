@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue, time, t } from '../../common';
+import { css, CssValue, time } from '../../common';
 import { PropList, IPropListItem, ObjectView } from '../primitives';
-import * as g from './types';
+
+import * as t from './types';
 
 export type IDebugLogInfoPanelProps = {
-  item: g.IDebugLogItem;
+  item: t.IDebugLogItem;
   style?: CssValue;
 };
 export type ILogInfoPanelState = {

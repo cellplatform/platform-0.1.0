@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 
-import { color, css, CssValue, t, time, ui, defaultValue, StateObject } from '../../common';
+import { color, css, CssValue, time, ui, defaultValue, StateObject } from '../../common';
 import { LogInfoPanel } from './Log.InfoPanel';
 import { LogList } from './Log.List';
 import { LogToolbar } from './Log.Toolbar';
-import * as d from './types';
+import * as t from './types';
 
 export type IDebugLogProps = {
   event$: Observable<t.Event<any>>;
@@ -15,7 +15,7 @@ export type IDebugLogProps = {
 };
 
 export class Log extends React.PureComponent<IDebugLogProps> {
-  private store = StateObject.create<d.IDebugLogState>({
+  private store = StateObject.create<t.IDebugLogState>({
     total: 0,
     items: [],
     isEnabled: true,

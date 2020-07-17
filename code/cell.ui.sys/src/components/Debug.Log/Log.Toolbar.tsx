@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { color, css, CssValue, t, ui } from '../../common';
+import { color, css, CssValue, ui } from '../../common';
 import { Button, Switch } from '../primitives';
-import * as d from './types';
+import * as t from './types';
 
 export type ILogToolbarProps = {
-  store: t.IStateObjectWritable<d.IDebugLogState>;
+  store: t.IDebugLogWrite;
   style?: CssValue;
   onClearClick?: () => void;
 };
