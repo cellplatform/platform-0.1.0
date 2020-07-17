@@ -1,21 +1,25 @@
 import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 
-import { color, css, CssValue, t, time, ui } from '../../common';
-import { StateObject } from '../../state';
-import { DebugLogInfoPanel } from './DebugLog.InfoPanel';
-import { DebugLogList } from './DebugLog.List';
-import { DebugLogToolbar } from './DebugLog.Toolbar';
+import { color, css, CssValue, t, time, ui, defaultValue, StateObject } from '../../common';
+import { LogInfoPanel } from './Log.InfoPanel';
+import { LogList } from './Log.List';
+import { LogToolbar } from './Log.Toolbar';
 import * as d from './types';
 
 export type IDebugLogProps = {
   event$: Observable<t.Event<any>>;
+  emptyMessage?: React.ReactNode;
   style?: CssValue;
 };
 
-export class DebugLog extends React.PureComponent<IDebugLogProps> {
-  private store = StateObject.create<d.IDebugLogState>({ total: 0, items: [] });
+export class Log extends React.PureComponent<IDebugLogProps> {
+  private store = StateObject.create<d.IDebugLogState>({
+    total: 0,
+    items: [],
+    isEnabled: true,
+  });
   private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
@@ -29,9 +33,7 @@ export class DebugLog extends React.PureComponent<IDebugLogProps> {
 
     // Add events to the list as they arrive.
     const event$ = this.props.event$.pipe(takeUntil(this.unmounted$));
-    event$.subscribe((e) => {
-      this.add(e);
-    });
+    event$.pipe(filter((e) => this.isEnabled)).subscribe((e) => this.add(e));
   }
 
   public componentWillUnmount() {
@@ -71,6 +73,10 @@ export class DebugLog extends React.PureComponent<IDebugLogProps> {
   public get selected() {
     const { selectedIndex } = this.store.state;
     return selectedIndex === undefined ? undefined : this.items[selectedIndex];
+  }
+
+  public get isEnabled() {
+    return this.store.state.isEnabled;
   }
 
   /**
@@ -113,10 +119,10 @@ export class DebugLog extends React.PureComponent<IDebugLogProps> {
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <DebugLogToolbar store={store} onClearClick={this.onClearClick} />
+        <LogToolbar store={store} onClearClick={this.onClearClick} />
         <div {...styles.body}>
           {isEmpty && this.renderEmpty()}
-          {!isEmpty && <DebugLogList store={store} />}
+          {!isEmpty && <LogList store={store} />}
           {!isEmpty && this.renderInfoPanel()}
         </div>
       </div>
@@ -139,7 +145,7 @@ export class DebugLog extends React.PureComponent<IDebugLogProps> {
     };
     return (
       <div {...styles.base}>
-        <div>No items to display.</div>
+        <div>{defaultValue(this.props.emptyMessage, 'No log items to display.')}</div>
       </div>
     );
   }
@@ -154,7 +160,7 @@ export class DebugLog extends React.PureComponent<IDebugLogProps> {
     };
 
     const item = this.selected;
-    return <div {...styles.base}>{item && <DebugLogInfoPanel item={item} />}</div>;
+    return <div {...styles.base}>{item && <LogInfoPanel item={item} />}</div>;
   }
 
   /**

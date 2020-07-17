@@ -12,22 +12,15 @@ export type IDebugLogItemProps = {
   style?: CssValue;
   onClick?: () => void;
 };
-export type IDebugLogItemState = {
-  selectedIndex?: number;
-};
 
-export class DebugLogItem extends React.PureComponent<IDebugLogItemProps, IDebugLogItemState> {
-  public state: IDebugLogItemState = {};
-  private state$ = new Subject<Partial<IDebugLogItemState>>();
+export class LogItem extends React.PureComponent<IDebugLogItemProps> {
   private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.updateState());
-    this.updateState();
+    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -55,23 +48,29 @@ export class DebugLogItem extends React.PureComponent<IDebugLogItemProps, IDebug
   }
 
   public get isSelected() {
-    return this.index === this.state.selectedIndex;
+    return this.index === this.store.state.selectedIndex;
+  }
+
+  public get isEnabled() {
+    return this.store.state.isEnabled;
   }
 
   /**
    * [Methods]
    */
 
-  public updateState() {
-    const selectedIndex = this.store.state.selectedIndex;
-    this.state$.next({ selectedIndex });
-  }
+  // public updateState() {
+  //   const selectedIndex = this.store.state.selectedIndex;
+  //   this.state$.next({ selectedIndex });
+  // }
 
   /**
    * [Render]
    */
   public render() {
     const isSelected = this.isSelected;
+    const isEnabled = this.isEnabled;
+    const textColor = isEnabled ? COLORS.CLI.PURPLE : color.format(-0.4);
     const styles = {
       base: css({
         position: 'relative',
@@ -93,7 +92,7 @@ export class DebugLogItem extends React.PureComponent<IDebugLogItemProps, IDebug
       label: css({
         fontFamily: 'Menlo, monospace',
         fontSize: 11,
-        color: COLORS.CLI.PURPLE,
+        color: textColor,
         marginLeft: 8,
       }),
     };
@@ -105,7 +104,7 @@ export class DebugLogItem extends React.PureComponent<IDebugLogItemProps, IDebug
       <div {...css(styles.base, this.props.style)} onMouseDown={this.props.onClick}>
         <div {...styles.body}>
           <div {...styles.left}>
-            <Icons.Event size={14} color={COLORS.CLI.PURPLE} />
+            <Icons.Event size={14} color={textColor} />
             <div {...styles.label}>{data.type}</div>
           </div>
           <div {...styles.right}>{item.count}</div>

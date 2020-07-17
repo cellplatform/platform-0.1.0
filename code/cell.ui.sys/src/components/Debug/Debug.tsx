@@ -3,8 +3,8 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, t, ui } from '../../common';
-import { DebugLog } from '../Debug.Log';
-import { DebugSheet } from '../Debug.Sheet';
+import { Log } from '../Debug.Log';
+import { Sheet } from '../Debug.Sheet';
 
 export type IDebugProps = {
   view: 'LOG' | 'SHEET';
@@ -47,10 +47,10 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const { view } = this.props;
 
     if (view === 'SHEET') {
-      return <DebugSheet />;
+      return <Sheet />;
     }
 
     // Default view.
-    return <DebugLog event$={ctx.env.event$} style={{ Absolute: 0 }} />;
+    return <Log event$={ctx.env.event$} style={{ Absolute: 0 }} />;
   }
 }

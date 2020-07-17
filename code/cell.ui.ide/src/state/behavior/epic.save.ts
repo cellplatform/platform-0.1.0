@@ -94,7 +94,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
       await time.wait(10);
       // await ctx.sheetChanged(sheet.changes);
 
-      const res = await client.saveChanges({ sheet });
+      const res = await client.saveChanges(sheet, { fire: ctx.fire });
       console.log('saved', res);
     });
 }

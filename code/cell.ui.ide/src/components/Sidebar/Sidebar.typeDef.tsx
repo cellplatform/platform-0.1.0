@@ -62,7 +62,7 @@ export class SidebarTypeDef extends React.PureComponent<
       const value = item.type.typename;
       const tooltip = item.default ? item.default.toString() : undefined;
       const clipboard = JSON.stringify(item.type, null, '  ');
-      const res: IPropListItem = { label, value, tooltip, clipboard };
+      const res: t.IPropListItem = { label, value, tooltip, clipboard };
       return res;
     });
 

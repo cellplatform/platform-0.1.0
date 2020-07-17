@@ -6,4 +6,5 @@ export type IDebugLogState = {
   total: number;
   items: IDebugLogItem[];
   selectedIndex?: number;
+  isEnabled: boolean;
 };

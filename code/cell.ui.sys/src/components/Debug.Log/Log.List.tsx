@@ -4,15 +4,15 @@ import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, t } from '../../common';
 import { VirtualList, VirtualListFactory, VirtualListItemSize } from '../VirtualList';
-import { DebugLogItem } from './DebugLog.Item';
+import { LogItem } from './Log.Item';
 import * as d from './types';
 
-export type IDebugLogListProps = {
+export type ILogListProps = {
   store: t.IStateObjectWritable<d.IDebugLogState>;
   style?: CssValue;
 };
 
-export class DebugLogList extends React.PureComponent<IDebugLogListProps> {
+export class LogList extends React.PureComponent<ILogListProps> {
   private unmounted$ = new Subject();
 
   /**
@@ -77,7 +77,7 @@ export class DebugLogList extends React.PureComponent<IDebugLogListProps> {
     const index = props.index;
     const item = this.items[index];
     return (
-      <DebugLogItem
+      <LogItem
         index={index}
         item={item}
         store={this.store}

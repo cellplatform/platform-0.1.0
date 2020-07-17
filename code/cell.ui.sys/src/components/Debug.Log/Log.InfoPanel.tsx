@@ -9,16 +9,13 @@ export type IDebugLogInfoPanelProps = {
   item: g.IDebugLogItem;
   style?: CssValue;
 };
-export type IDebugLogInfoPanelState = {
+export type ILogInfoPanelState = {
   selected?: { name: string; data: t.Object };
 };
 
-export class DebugLogInfoPanel extends React.PureComponent<
-  IDebugLogInfoPanelProps,
-  IDebugLogInfoPanelState
-> {
-  public state: IDebugLogInfoPanelState = {};
-  private state$ = new Subject<Partial<IDebugLogInfoPanelState>>();
+export class LogInfoPanel extends React.PureComponent<IDebugLogInfoPanelProps, ILogInfoPanelState> {
+  public state: ILogInfoPanelState = {};
+  private state$ = new Subject<Partial<ILogInfoPanelState>>();
   private unmounted$ = new Subject();
 
   /**

@@ -36,6 +36,9 @@ export { ui };
 import { AppManifest, AppModel, AppWindowModel } from '@platform/cell.schema.sys';
 export { AppManifest, AppModel, AppWindowModel };
 
+import { StateObject } from '@platform/state';
+export { StateObject };
+
 /* eslint-disable */
 // @ts-ignore
 import filesize from 'filesize';
@@ -44,4 +47,3 @@ export { filesize };
 
 import * as semver from 'semver';
 export { semver };
-
