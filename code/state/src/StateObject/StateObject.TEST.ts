@@ -6,6 +6,9 @@ import { StateObject } from '.';
 import { StateObject as StateObjectClass } from './StateObject';
 
 type IFoo = { message?: string; count: number };
+type MyEvent = IncrementEvent | DecrementEvent;
+type IncrementEvent = { type: 'INCREMENT'; payload: t.Object };
+type DecrementEvent = { type: 'DECREMENT'; payload: t.Object };
 
 describe('StateObject', () => {
   describe('create', () => {
@@ -187,9 +190,8 @@ describe('StateObject', () => {
     });
 
     it('event: changed (with action)', () => {
-      type Action = 'INCREMENT' | 'DECREMENT';
       const initial = { count: 1 };
-      const obj = StateObject.create<IFoo, Action>(initial);
+      const obj = StateObject.create<IFoo, MyEvent>(initial);
 
       const changed: t.IStateObjectChanged[] = [];
       const actions: t.IStateObjectChanged[] = [];

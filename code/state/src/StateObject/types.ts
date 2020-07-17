@@ -1,21 +1,22 @@
 import { Observable } from 'rxjs';
+import { Event } from '@platform/types';
 
 type O = Record<string, unknown>;
 
 export type StateObject = {
-  create<T extends O, A extends string = any>(initial: T): IStateObjectWritable<T, A>;
-  readonly<T extends O, A extends string = any>(
-    obj: IStateObjectWritable<T, A> | IStateObject<T, A>,
-  ): IStateObject<T, A>;
+  create<T extends O, E extends Event<any> = any>(initial: T): IStateObjectWritable<T, E>;
+  readonly<T extends O, E extends Event<any> = any>(
+    obj: IStateObjectWritable<T, E> | IStateObject<T, E>,
+  ): IStateObject<T, E>;
 };
 
 /**
  * Read-only.
  */
-export type IStateObject<T extends O, A extends string = any> = {
+export type IStateObject<T extends O, E extends Event<any> = any> = {
   readonly event$: Observable<StateObjectEvent>;
   readonly changing$: Observable<IStateObjectChanging<T>>;
-  readonly changed$: Observable<IStateObjectChanged<T, A>>;
+  readonly changed$: Observable<IStateObjectChanged<T, E>>;
   readonly cancelled$: Observable<IStateObjectCancelled<T>>;
   readonly original: T;
   readonly state: T;
@@ -24,9 +25,9 @@ export type IStateObject<T extends O, A extends string = any> = {
 /**
  * Writeable.
  */
-export type IStateObjectWritable<T extends O, A extends string = any> = IStateObject<T, A> & {
-  readonly readonly: IStateObject<T>;
-  change(input: StateObjectChanger<T> | T, action?: A): IStateObjectChangeResponse<T>;
+export type IStateObjectWritable<T extends O, E extends Event<any> = any> = IStateObject<T, E> & {
+  readonly readonly: IStateObject<T, E>;
+  change(input: StateObjectChanger<T> | T, action?: E['type']): IStateObjectChangeResponse<T>;
 };
 
 export type IStateObjectChangeResponse<T extends O> = {
@@ -66,15 +67,15 @@ export type IStateObjectChanging<T extends O = any> = {
  * Fires AFTER the state object has been updated
  * (ie the "changing" event did not cancel the change).
  */
-export type IStateObjectChangedEvent<T extends O = any, A extends string = any> = {
+export type IStateObjectChangedEvent<T extends O = any, E extends Event<any> = any> = {
   type: 'StateObject/changed';
-  payload: IStateObjectChanged<T, A>;
+  payload: IStateObjectChanged<T, E>;
 };
-export type IStateObjectChanged<T extends O = any, A extends string = any> = {
+export type IStateObjectChanged<T extends O = any, E extends Event<any> = any> = {
   cid: string; // "change-id"
   from: T;
   to: T;
-  action: A;
+  action: E['type'];
 };
 
 /**

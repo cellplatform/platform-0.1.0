@@ -19,14 +19,15 @@ type O = Record<string, unknown>;
  * To pass an read-only version of the [StateObject] around an application
  * use the plain [IStateObject] interface which does not expose the `change` method.
  */
-export class StateObject<T extends O, A extends string> implements t.IStateObjectWritable<T, A> {
+export class StateObject<T extends O, E extends t.Event<any>>
+  implements t.IStateObjectWritable<T, E> {
   /**
    * Create a new [StateObject] instance.
    */
-  public static create<T extends O, A extends string = ''>(
+  public static create<T extends O, E extends t.Event<any> = any>(
     initial: T,
-  ): t.IStateObjectWritable<T, A> {
-    return new StateObject<T, A>({ initial });
+  ): t.IStateObjectWritable<T, E> {
+    return new StateObject<T, E>({ initial });
   }
 
   /**
@@ -39,10 +40,10 @@ export class StateObject<T extends O, A extends string> implements t.IStateObjec
    *    logic around an application.
    * 
    */
-  public static readonly<T extends O, A extends string = ''>(
-    obj: t.IStateObjectWritable<T, A>,
-  ): t.IStateObject<T, A> {
-    return obj as t.IStateObject<T, A>;
+  public static readonly<T extends O, E extends t.Event<any> = any>(
+    obj: t.IStateObjectWritable<T, E>,
+  ): t.IStateObject<T, E> {
+    return obj as t.IStateObject<T, E>;
   }
 
   /**
@@ -68,7 +69,7 @@ export class StateObject<T extends O, A extends string> implements t.IStateObjec
 
   public readonly changed$ = this._event$.pipe(
     filter((e) => e.type === 'StateObject/changed'),
-    map((e) => e.payload as t.IStateObjectChanged<T, A>),
+    map((e) => e.payload as t.IStateObjectChanged<T, E>),
     share(),
   );
 
@@ -94,7 +95,7 @@ export class StateObject<T extends O, A extends string> implements t.IStateObjec
   /**
    * [Methods]
    */
-  public change = (fn: t.StateObjectChanger<T> | T, action?: A) => {
+  public change = (fn: t.StateObjectChanger<T> | T, action?: E['type']) => {
     const cid = id.shortid(); // "change-id"
     const from = this.state;
     const to = next(from, fn);
