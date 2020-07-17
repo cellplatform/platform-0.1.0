@@ -52,7 +52,6 @@ export class AppSchema {
       .type('AppData')
       .prop('app', (p) => p.type('string')) //    REF: ={App.uri}
       .prop('window', (p) => p.type('string')) // REF: ={AppWindow.uri}
-      .prop('fs', (p) => p.type('string').default('fs'))
       .prop('tmp', (p) => p.type('string'));
 
     // Finish up.
