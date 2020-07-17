@@ -138,6 +138,13 @@ export class StateObject<T extends O, E extends t.Event<any>>
     return this.fire({ type: 'StateObject/dispatch', payload: { event } });
   };
 
+  public dispatched = (action: E['payload']) => {
+    return this.dispatch$.pipe(
+      filter((e) => e.type === action),
+      map((e) => e.payload),
+    );
+  };
+
   /**
    * [Internal]
    */

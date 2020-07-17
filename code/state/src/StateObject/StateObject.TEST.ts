@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { expect, t, defaultValue } from '../test';
+import { expect, t } from '../test';
 import { filter, map } from 'rxjs/operators';
 
 import { StateObject } from '.';
@@ -7,8 +7,8 @@ import { StateObject as StateObjectClass } from './StateObject';
 
 type IFoo = { message?: string; count: number };
 type MyEvent = IncrementEvent | DecrementEvent;
-type IncrementEvent = { type: 'INCREMENT'; payload: { by?: number } };
-type DecrementEvent = { type: 'DECREMENT'; payload: { by?: number } };
+type IncrementEvent = { type: 'INCREMENT'; payload: { by: number } };
+type DecrementEvent = { type: 'DECREMENT'; payload: { by: number } };
 
 describe.only('StateObject', () => {
   describe('create', () => {
@@ -221,13 +221,14 @@ describe.only('StateObject', () => {
     it('event: dispatch', async () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo, MyEvent>(initial);
+      const dispatch = obj.dispatch; // NB: Test disconnected "bound" method.
 
       const dispatched: MyEvent[] = [];
       const changed: t.IStateObjectChanged[] = [];
       obj.dispatch$.subscribe((e) => dispatched.push(e));
       obj.changed$.subscribe((e) => changed.push(e));
 
-      obj.dispatch({ type: 'INCREMENT', payload: {} });
+      obj.dispatch({ type: 'INCREMENT', payload: { by: 1 } });
 
       expect(dispatched.length).to.eql(1);
       expect(changed.length).to.eql(0);
@@ -238,14 +239,35 @@ describe.only('StateObject', () => {
           map((e) => e.payload as IncrementEvent['payload']),
         )
         .subscribe((e) => {
-          obj.change((m) => (m.count += defaultValue(e.by, 1)));
+          obj.change((m) => (m.count += e.by));
         });
 
-      obj.dispatch({ type: 'INCREMENT', payload: { by: 2 } });
+      dispatch({ type: 'INCREMENT', payload: { by: 2 } }); // NB: Using disconnected method.
 
       expect(dispatched.length).to.eql(2);
       expect(changed.length).to.eql(1);
       expect(obj.state.count).to.eql(3);
+    });
+
+    it('event: dispatch (via [dispatched] method filter)', async () => {
+      const initial = { count: 1 };
+      const obj = StateObject.create<IFoo, MyEvent>(initial);
+      const { dispatch, dispatched } = obj; // NB: Test disconnected "bound" method.
+
+      dispatched('INCREMENT')
+        .pipe(filter((e) => e.by >= 5))
+        .subscribe((e) => obj.change((m) => (m.count += e.by)));
+
+      // NB: Fired below change threshold.
+      dispatch({ type: 'INCREMENT', payload: { by: 1 } });
+      dispatch({ type: 'INCREMENT', payload: { by: 2 } });
+      dispatch({ type: 'INCREMENT', payload: { by: 3 } });
+      dispatch({ type: 'INCREMENT', payload: { by: 4 } });
+      expect(obj.state.count).to.eql(1);
+
+      // Fire above change threshold.
+      dispatch({ type: 'INCREMENT', payload: { by: 5 } });
+      expect(obj.state.count).to.eql(6);
     });
   });
 });

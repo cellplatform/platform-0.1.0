@@ -14,14 +14,15 @@ export type StateObject = {
  * Read-only.
  */
 export type IStateObject<T extends O, E extends Event<any> = any> = {
+  readonly original: T;
+  readonly state: T;
   readonly event$: Observable<StateObjectEvent>;
   readonly changing$: Observable<IStateObjectChanging<T>>;
   readonly changed$: Observable<IStateObjectChanged<T, E>>;
   readonly cancelled$: Observable<IStateObjectCancelled<T>>;
   readonly dispatch$: Observable<E>;
-  readonly original: T;
-  readonly state: T;
   dispatch(event: E): void;
+  dispatched(action: E['type']): Observable<E['payload']>;
 };
 
 /**
