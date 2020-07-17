@@ -1,8 +1,9 @@
 /* eslint-disable */
-import { expect, t } from '../test';
+import { Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
 import { StateObject } from '.';
+import { expect, t } from '../test';
 import { StateObject as StateObjectClass } from './StateObject';
 
 type IFoo = { message?: string; count: number };
@@ -239,13 +240,14 @@ describe.only('StateObject', () => {
           map((e) => e.payload as IncrementEvent['payload']),
         )
         .subscribe((e) => {
-          obj.change((m) => (m.count += e.by));
+          obj.change((m) => (m.count += e.by), 'INCREMENT');
         });
 
       dispatch({ type: 'INCREMENT', payload: { by: 2 } }); // NB: Using disconnected method.
 
       expect(dispatched.length).to.eql(2);
       expect(changed.length).to.eql(1);
+      expect(changed[0].action).to.eql('INCREMENT');
       expect(obj.state.count).to.eql(3);
     });
 
@@ -253,8 +255,9 @@ describe.only('StateObject', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo, MyEvent>(initial);
       const { dispatch, dispatched } = obj; // NB: Test disconnected "bound" method.
+      const done$ = new Subject();
 
-      dispatched('INCREMENT')
+      dispatched('INCREMENT', done$)
         .pipe(filter((e) => e.by >= 5))
         .subscribe((e) => obj.change((m) => (m.count += e.by)));
 
@@ -268,6 +271,10 @@ describe.only('StateObject', () => {
       // Fire above change threshold.
       dispatch({ type: 'INCREMENT', payload: { by: 5 } });
       expect(obj.state.count).to.eql(6);
+
+      done$.next();
+      dispatch({ type: 'INCREMENT', payload: { by: 5 } });
+      expect(obj.state.count).to.eql(6); // NB: No change.
     });
   });
 });

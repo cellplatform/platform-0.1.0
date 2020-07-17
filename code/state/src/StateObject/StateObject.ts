@@ -1,7 +1,7 @@
 import { id } from '@platform/util.value';
 import produce, { setAutoFreeze } from 'immer';
-import { Subject } from 'rxjs';
-import { filter, map, share } from 'rxjs/operators';
+import { Subject, Observable } from 'rxjs';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
 
@@ -19,14 +19,13 @@ type O = Record<string, unknown>;
  * To pass an read-only version of the [StateObject] around an application
  * use the plain [IStateObject] interface which does not expose the `change` method.
  */
-export class StateObject<T extends O, E extends t.Event<any>>
-  implements t.IStateObjectWritable<T, E> {
+export class StateObject<T extends O, E extends t.Event<any>> implements t.IStateObjectWrite<T, E> {
   /**
    * Create a new [StateObject] instance.
    */
   public static create<T extends O, E extends t.Event<any> = any>(
     initial: T,
-  ): t.IStateObjectWritable<T, E> {
+  ): t.IStateObjectWrite<T, E> {
     return new StateObject<T, E>({ initial });
   }
 
@@ -41,7 +40,7 @@ export class StateObject<T extends O, E extends t.Event<any>>
    * 
    */
   public static readonly<T extends O, E extends t.Event<any> = any>(
-    obj: t.IStateObjectWritable<T, E>,
+    obj: t.IStateObjectWrite<T, E>,
   ): t.IStateObject<T, E> {
     return obj as t.IStateObject<T, E>;
   }
@@ -138,8 +137,9 @@ export class StateObject<T extends O, E extends t.Event<any>>
     return this.fire({ type: 'StateObject/dispatch', payload: { event } });
   };
 
-  public dispatched = (action: E['payload']) => {
-    return this.dispatch$.pipe(
+  public dispatched = (action: E['payload'], takeUntil$?: Observable<any>) => {
+    const dispatch$ = !takeUntil$ ? this.dispatch$ : this.dispatch$.pipe(takeUntil(takeUntil$));
+    return dispatch$.pipe(
       filter((e) => e.type === action),
       map((e) => e.payload),
     );

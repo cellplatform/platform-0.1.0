@@ -4,16 +4,17 @@ import { Event } from '@platform/types';
 type O = Record<string, unknown>;
 
 export type StateObject = {
-  create<T extends O, E extends Event<any> = any>(initial: T): IStateObjectWritable<T, E>;
+  create<T extends O, E extends Event<any> = any>(initial: T): IStateObjectWrite<T, E>;
   readonly<T extends O, E extends Event<any> = any>(
-    obj: IStateObjectWritable<T, E> | IStateObject<T, E>,
+    obj: IStateObjectWrite<T, E> | IStateObject<T, E>,
   ): IStateObject<T, E>;
 };
 
 /**
  * Read-only.
  */
-export type IStateObject<T extends O, E extends Event<any> = any> = {
+export type IStateObject<T extends O, E extends Event<any> = any> = IStateObjectRead<T, E>;
+export type IStateObjectRead<T extends O, E extends Event<any> = any> = {
   readonly original: T;
   readonly state: T;
   readonly event$: Observable<StateObjectEvent>;
@@ -22,13 +23,13 @@ export type IStateObject<T extends O, E extends Event<any> = any> = {
   readonly cancelled$: Observable<IStateObjectCancelled<T>>;
   readonly dispatch$: Observable<E>;
   dispatch(event: E): void;
-  dispatched(action: E['type']): Observable<E['payload']>;
+  dispatched(action: E['type'], takeUntil$?: Observable<any>): Observable<E['payload']>;
 };
 
 /**
  * Writeable.
  */
-export type IStateObjectWritable<T extends O, E extends Event<any> = any> = IStateObject<T, E> & {
+export type IStateObjectWrite<T extends O, E extends Event<any> = any> = IStateObject<T, E> & {
   readonly readonly: IStateObject<T, E>;
   change(input: StateObjectChanger<T> | T, action?: E['type']): IStateObjectChangeResponse<T>;
 };
