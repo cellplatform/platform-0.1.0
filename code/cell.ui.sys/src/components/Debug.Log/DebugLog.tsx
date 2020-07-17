@@ -1,24 +1,21 @@
 import * as React from 'react';
-import { Subject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { color, css, CssValue, t, ui, time } from '../../common';
-import { DebugLogToolbar } from './DebugLog.Toolbar';
-import { VirtualList, VirtualListFactory, VirtualListItemSize } from '../VirtualList';
-import { DebugLogItem } from './DebugLog.Item';
-import * as d from './types';
-import { DebugLogInfoPanel } from './DebugLog.InfoPanel';
-
+import { color, css, CssValue, t, time, ui } from '../../common';
 import { StateObject } from '../../state';
+import { DebugLogInfoPanel } from './DebugLog.InfoPanel';
+import { DebugLogList } from './DebugLog.List';
+import { DebugLogToolbar } from './DebugLog.Toolbar';
+import * as d from './types';
 
 export type IDebugLogProps = {
   event$: Observable<t.Event<any>>;
   style?: CssValue;
 };
 
-export class DebugLog extends React.PureComponent<IDebugLogProps, Partial<d.IDebugLogState>> {
-  public state: d.IDebugLogState = { total: 0, items: [] };
-  private store = StateObject.create<d.IDebugLogState>(this.state);
+export class DebugLog extends React.PureComponent<IDebugLogProps> {
+  private store = StateObject.create<d.IDebugLogState>({ total: 0, items: [] });
   private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
@@ -27,10 +24,10 @@ export class DebugLog extends React.PureComponent<IDebugLogProps, Partial<d.IDeb
   /**
    * [Lifecycle]
    */
-
   public componentDidMount() {
-    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e.to));
+    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
 
+    // Add events to the list as they arrive.
     const event$ = this.props.event$.pipe(takeUntil(this.unmounted$));
     event$.subscribe((e) => {
       this.add(e);
@@ -68,11 +65,11 @@ export class DebugLog extends React.PureComponent<IDebugLogProps, Partial<d.IDeb
   }
 
   public get total() {
-    return this.state.total || 0;
+    return this.store.state.total || 0;
   }
 
   public get selected() {
-    const { selectedIndex } = this.state;
+    const { selectedIndex } = this.store.state;
     return selectedIndex === undefined ? undefined : this.items[selectedIndex];
   }
 
@@ -112,13 +109,14 @@ export class DebugLog extends React.PureComponent<IDebugLogProps, Partial<d.IDeb
     };
 
     const isEmpty = this.total === 0;
+    const store = this.store;
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <DebugLogToolbar onClearClick={this.onClearClick} />
+        <DebugLogToolbar store={store} onClearClick={this.onClearClick} />
         <div {...styles.body}>
           {isEmpty && this.renderEmpty()}
-          {!isEmpty && this.renderList()}
+          {!isEmpty && <DebugLogList store={store} />}
           {!isEmpty && this.renderInfoPanel()}
         </div>
       </div>
@@ -146,27 +144,6 @@ export class DebugLog extends React.PureComponent<IDebugLogProps, Partial<d.IDeb
     );
   }
 
-  private renderList() {
-    const styles = {
-      base: css({
-        position: 'relative',
-        flex: 1,
-        fontSize: 14,
-      }),
-      list: css({ Absolute: 0 }),
-    };
-    return (
-      <div {...styles.base}>
-        <VirtualList
-          factory={this.rowFactory}
-          itemSize={this.rowHeight}
-          total={this.total}
-          style={styles.list}
-        />
-      </div>
-    );
-  }
-
   private renderInfoPanel() {
     const styles = {
       base: css({
@@ -183,33 +160,7 @@ export class DebugLog extends React.PureComponent<IDebugLogProps, Partial<d.IDeb
   /**
    * [Handlers]
    */
-  private rowHeight: VirtualListItemSize = (index: number) => {
-    return 30;
-  };
 
-  private rowFactory: VirtualListFactory = (props) => {
-    const index = props.index;
-    const item = this.items[index];
-    return (
-      <DebugLogItem
-        index={index}
-        item={item}
-        store={this.store}
-        style={props.style}
-        onClick={this.rowClickHandler(index, item)}
-      />
-    );
-  };
-
-  private rowClickHandler = (index: number, item: d.IDebugLogItem) => {
-    return () => {
-      this.store.change((draft) => (draft.selectedIndex = index));
-    };
-  };
-
-  /**
-   * [Handlers]
-   */
   private onClearClick = () => {
     this.clear();
   };

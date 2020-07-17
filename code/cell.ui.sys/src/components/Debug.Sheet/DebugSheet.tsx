@@ -61,12 +61,9 @@ export class DebugSheet extends React.PureComponent<IDebugSheetProps, IDebugShee
 
     await time.wait(10);
 
-    const res = await ctx.client.saveChanges({ sheet: appData.sheet });
+    const res = await ctx.client.saveChanges(appData.sheet, { fire: ctx.fire });
+
     console.log('res', res);
-
-    // ctx.
-
-    // console.log("row.", row.)
   };
 
   /**

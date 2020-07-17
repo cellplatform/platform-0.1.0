@@ -1,28 +1,26 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { color, css, CssValue, t } from '../../common';
+import { color, css, CssValue, t, ui } from '../../common';
 import { Button } from '../primitives';
+import * as d from './types';
 
 export type IDebugLogToolbarProps = {
+  store: t.IStateObjectWritable<d.IDebugLogState>;
   style?: CssValue;
   onClearClick?: () => void;
 };
-export type IDebugLogToolbarState = t.Object;
 
-export class DebugLogToolbar extends React.PureComponent<
-  IDebugLogToolbarProps,
-  IDebugLogToolbarState
-> {
-  public state: IDebugLogToolbarState = {};
-  private state$ = new Subject<Partial<IDebugLogToolbarState>>();
+export class DebugLogToolbar extends React.PureComponent<IDebugLogToolbarProps> {
   private unmounted$ = new Subject();
+  public static contextType = ui.Context;
+  public context!: t.IAppContext;
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -31,9 +29,29 @@ export class DebugLogToolbar extends React.PureComponent<
   }
 
   /**
+   * [Properties]
+   */
+  public get store() {
+    return this.props.store;
+  }
+
+  public get items() {
+    return this.store.state.items || [];
+  }
+
+  public get total() {
+    return this.store.state.total || 0;
+  }
+
+  public get isEmpty() {
+    return this.total === 0;
+  }
+
+  /**
    * [Render]
    */
   public render() {
+    const isEmpty = this.isEmpty;
     const styles = {
       base: css({
         position: 'relative',
@@ -47,7 +65,7 @@ export class DebugLogToolbar extends React.PureComponent<
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <Button onClick={this.props.onClearClick}>Clear</Button>
+        {!isEmpty && <Button onClick={this.props.onClearClick}>Clear</Button>}
       </div>
     );
   }
