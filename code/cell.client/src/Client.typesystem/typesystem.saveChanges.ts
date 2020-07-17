@@ -11,15 +11,18 @@ export async function saveChanges(args: {
   http: t.IHttpClient;
   sheet: t.ITypedSheet;
   changes?: t.ITypedSheetChanges;
-  event$?: Subject<E>;
+  fire?: t.FireEvent<E> | Subject<E>;
 }) {
-  const { http, sheet, event$ } = args;
+  const { http, sheet } = args;
   const target = http.origin;
   const changes = args.changes || sheet.changes;
 
-  const fire = (e: E) => {
-    if (event$) {
-      event$.next(e);
+  const fire = (event: E) => {
+    if (args.fire && typeof args.fire === 'function') {
+      args.fire(event);
+    }
+    if (args.fire && typeof args.fire === 'object') {
+      args.fire.next(event);
     }
   };
 

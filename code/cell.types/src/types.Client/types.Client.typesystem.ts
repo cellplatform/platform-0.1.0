@@ -3,6 +3,8 @@ import { t } from '../common';
 
 type N = string | t.INsUri;
 type E = t.TypedSheetEvent;
+type SaveResponse = { ok: boolean; changes: t.ITypedSheetChanges; error?: t.IHttpError };
+type Fire = t.FireEvent<E> | Subject<E>;
 
 export type IClientTypesystem = {
   readonly host: string;
@@ -18,10 +20,7 @@ export type IClientTypesystem = {
     ns: N | N[],
     options?: t.ITypeClientTypescriptOptions,
   ): Promise<t.ITypeClientTypescript>;
-  saveChanges(args: {
-    sheet: t.ITypedSheet;
-    event$?: Subject<E>;
-  }): Promise<{ ok: boolean; changes: t.ITypedSheetChanges; error?: t.IHttpError }>;
+  saveChanges(sheet: t.ITypedSheet, options?: { fire?: Fire }): Promise<SaveResponse>;
 };
 
 export type IClientTypesystemImplements = {

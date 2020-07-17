@@ -93,9 +93,9 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
     /**
      * Writes changes to the server.
      */
-    saveChanges(args: { sheet: t.ITypedSheet; event$?: Subject<E> }) {
-      const { sheet, event$ } = args;
-      return saveChanges({ http, sheet, event$ });
+    saveChanges(sheet: t.ITypedSheet, options: { fire?: t.FireEvent<E> | Subject<E> } = {}) {
+      const { fire } = options;
+      return saveChanges({ http, sheet, fire });
     },
   };
 

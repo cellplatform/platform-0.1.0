@@ -61,10 +61,10 @@ export function saveMonitor(args: {
       .filter((sheet) => Boolean(sheet));
 
     // Invoke save requests (over network).
-    const event$ = subject$;
+    const fire = subject$;
     const wait = changeSet
       .filter(({ sheet }) => Boolean(sheet))
-      .map(({ sheet, changes }) => saveChanges({ http, sheet, changes, event$ }));
+      .map(({ sheet, changes }) => saveChanges({ http, sheet, changes, fire }));
     await Promise.all(wait);
   };
 
