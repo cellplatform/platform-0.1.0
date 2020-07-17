@@ -10,7 +10,7 @@ type MyEvent = IncrementEvent | DecrementEvent;
 type IncrementEvent = { type: 'INCREMENT'; payload: t.Object };
 type DecrementEvent = { type: 'DECREMENT'; payload: t.Object };
 
-describe('StateObject', () => {
+describe.only('StateObject', () => {
   describe('create', () => {
     it('store initial state', () => {
       const initial = { count: 1 };
@@ -112,7 +112,7 @@ describe('StateObject', () => {
   describe('events', () => {
     it('event: changing', () => {
       const initial = { count: 1 };
-      const obj = StateObject.create<IFoo>(initial);
+      const obj = StateObject.create<IFoo, MyEvent>(initial);
 
       const events: t.StateObjectEvent[] = [];
       const changing: t.IStateObjectChanging[] = [];
@@ -129,7 +129,9 @@ describe('StateObject', () => {
 
       expect(events[0].type).to.eql('StateObject/changing');
       expect(events[1].type).to.eql('StateObject/changed');
+
       expect(changing[0].cancelled).to.eql(false);
+      expect(changing[0].action).to.eql('');
 
       expect(events[0].payload.from).to.eql(events[1].payload.from);
       expect(events[0].payload.to).to.eql(events[1].payload.to);
@@ -189,22 +191,32 @@ describe('StateObject', () => {
       expect(changing[0].cid).to.eql(changed[0].cid);
     });
 
-    it('event: changed (with action)', () => {
+    it('event: changing/changed (with action)', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo, MyEvent>(initial);
 
+      const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
       const actions: t.IStateObjectChanged[] = [];
+      obj.changing$.subscribe((e) => changing.push(e));
       obj.changed$.subscribe((e) => changed.push(e));
       obj.changed$.pipe(filter((e) => e.action === 'INCREMENT')).subscribe((e) => actions.push(e));
 
       obj.change((draft) => (draft.message = 'hello'));
+      expect(changing.length).to.eql(1);
       expect(changed.length).to.eql(1);
       expect(actions.length).to.eql(0);
 
       obj.change((draft) => draft.count++, 'INCREMENT');
+      expect(changing.length).to.eql(2);
       expect(changed.length).to.eql(2);
       expect(actions.length).to.eql(1);
+
+      expect(changing[0].action).to.eql('');
+      expect(changing[1].action).to.eql('INCREMENT');
+
+      expect(changed[0].action).to.eql('');
+      expect(changed[1].action).to.eql('INCREMENT');
     });
   });
 });

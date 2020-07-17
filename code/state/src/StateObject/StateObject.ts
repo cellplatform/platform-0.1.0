@@ -99,14 +99,16 @@ export class StateObject<T extends O, E extends t.Event<any>>
     const cid = id.shortid(); // "change-id"
     const from = this.state;
     const to = next(from, fn);
+    const evenType = (action || '').trim();
 
     // Fire BEFORE event.
-    const payload: t.IStateObjectChanging<T> = {
+    const payload: t.IStateObjectChanging<T, E> = {
       cid,
       from,
       to,
       cancelled: false,
       cancel: () => (payload.cancelled = true),
+      action: evenType,
     };
     this.fire({ type: 'StateObject/changing', payload });
 
@@ -118,7 +120,7 @@ export class StateObject<T extends O, E extends t.Event<any>>
       this._state = to;
       this.fire({
         type: 'StateObject/changed',
-        payload: { cid, from, to, action: (action || '').trim() },
+        payload: { cid, from, to, action: evenType },
       });
     }
 

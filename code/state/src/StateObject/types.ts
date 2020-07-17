@@ -51,16 +51,17 @@ export type StateObjectEvent =
  * Fires before the state object is updated
  * (after a `change` method completes).
  */
-export type IStateObjectChangingEvent<T extends O = any> = {
+export type IStateObjectChangingEvent<T extends O = any, E extends Event<any> = any> = {
   type: 'StateObject/changing';
-  payload: IStateObjectChanging<T>;
+  payload: IStateObjectChanging<T, E>;
 };
-export type IStateObjectChanging<T extends O = any> = {
+export type IStateObjectChanging<T extends O = any, E extends Event<any> = any> = {
   cid: string; // "change-id"
   from: T;
   to: T;
   cancelled: boolean;
   cancel(): void;
+  action: E['type'];
 };
 
 /**
@@ -79,7 +80,7 @@ export type IStateObjectChanged<T extends O = any, E extends Event<any> = any> =
 };
 
 /**
- * Fires if a change is cancelled.
+ * Fires when a change is cancelled.
  */
 export type IStateObjectCancelledEvent<T extends O = any> = {
   type: 'StateObject/cancelled';
