@@ -79,6 +79,12 @@ export class StateObject<T extends O, E extends t.Event<any>>
     share(),
   );
 
+  public readonly dispatch$ = this._event$.pipe(
+    filter((e) => e.type === 'StateObject/dispatch'),
+    map((e) => (e.payload as t.IStateObjectDispatch<E>).event),
+    share(),
+  );
+
   public readonly original: T;
 
   /**
@@ -89,7 +95,7 @@ export class StateObject<T extends O, E extends t.Event<any>>
   }
 
   public get readonly() {
-    return this as t.IStateObject<T>;
+    return this as t.IStateObject<T, E>;
   }
 
   /**
@@ -126,6 +132,10 @@ export class StateObject<T extends O, E extends t.Event<any>>
 
     // Finish up.
     return { cid, from, to, cancelled };
+  };
+
+  public dispatch = (event: E) => {
+    return this.fire({ type: 'StateObject/dispatch', payload: { event } });
   };
 
   /**

@@ -1,14 +1,14 @@
 /* eslint-disable */
-import { expect, t } from '../test';
-import { filter } from 'rxjs/operators';
+import { expect, t, defaultValue } from '../test';
+import { filter, map } from 'rxjs/operators';
 
 import { StateObject } from '.';
 import { StateObject as StateObjectClass } from './StateObject';
 
 type IFoo = { message?: string; count: number };
 type MyEvent = IncrementEvent | DecrementEvent;
-type IncrementEvent = { type: 'INCREMENT'; payload: t.Object };
-type DecrementEvent = { type: 'DECREMENT'; payload: t.Object };
+type IncrementEvent = { type: 'INCREMENT'; payload: { by?: number } };
+type DecrementEvent = { type: 'DECREMENT'; payload: { by?: number } };
 
 describe.only('StateObject', () => {
   describe('create', () => {
@@ -132,9 +132,8 @@ describe.only('StateObject', () => {
 
       expect(changing[0].cancelled).to.eql(false);
       expect(changing[0].action).to.eql('');
-
-      expect(events[0].payload.from).to.eql(events[1].payload.from);
-      expect(events[0].payload.to).to.eql(events[1].payload.to);
+      expect(changing[0].from).to.eql(initial);
+      expect(changing[0].to).to.eql({ count: 2 });
     });
 
     it('event: changing (cancelled)', () => {
@@ -217,6 +216,36 @@ describe.only('StateObject', () => {
 
       expect(changed[0].action).to.eql('');
       expect(changed[1].action).to.eql('INCREMENT');
+    });
+
+    it('event: dispatch', async () => {
+      const initial = { count: 1 };
+      const obj = StateObject.create<IFoo, MyEvent>(initial);
+
+      const dispatched: MyEvent[] = [];
+      const changed: t.IStateObjectChanged[] = [];
+      obj.dispatch$.subscribe((e) => dispatched.push(e));
+      obj.changed$.subscribe((e) => changed.push(e));
+
+      obj.dispatch({ type: 'INCREMENT', payload: {} });
+
+      expect(dispatched.length).to.eql(1);
+      expect(changed.length).to.eql(0);
+
+      obj.dispatch$
+        .pipe(
+          filter((e) => e.type === 'INCREMENT'),
+          map((e) => e.payload as IncrementEvent['payload']),
+        )
+        .subscribe((e) => {
+          obj.change((m) => (m.count += defaultValue(e.by, 1)));
+        });
+
+      obj.dispatch({ type: 'INCREMENT', payload: { by: 2 } });
+
+      expect(dispatched.length).to.eql(2);
+      expect(changed.length).to.eql(1);
+      expect(obj.state.count).to.eql(3);
     });
   });
 });
