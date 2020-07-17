@@ -16,7 +16,6 @@ export type IStateObject<T extends O, A extends string = any> = {
   readonly event$: Observable<StateObjectEvent>;
   readonly changing$: Observable<IStateObjectChanging<T>>;
   readonly changed$: Observable<IStateObjectChanged<T, A>>;
-  readonly action$: Observable<IStateObjectChanged<T, A>>;
   readonly cancelled$: Observable<IStateObjectCancelled<T>>;
   readonly original: T;
   readonly state: T;

@@ -1,10 +1,8 @@
-import { Subject, Observable } from 'rxjs';
-import { filter, map, share, takeUntil } from 'rxjs/operators';
 import produce from 'immer';
+import { Observable, Subject } from 'rxjs';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import * as t from './types';
-
-export * from './types';
+import { t } from '../common';
 
 type O = Record<string, unknown>;
 

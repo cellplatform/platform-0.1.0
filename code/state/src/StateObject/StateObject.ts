@@ -1,9 +1,11 @@
-import produce from 'immer';
-import { Subject } from 'rxjs';
-import { share, filter, map } from 'rxjs/operators';
 import { id } from '@platform/util.value';
+import produce, { setAutoFreeze } from 'immer';
+import { Subject } from 'rxjs';
+import { filter, map, share } from 'rxjs/operators';
 
-import * as t from './types';
+import { t } from '../common';
+
+setAutoFreeze(false);
 
 type O = Record<string, unknown>;
 
@@ -67,11 +69,6 @@ export class StateObject<T extends O, A extends string> implements t.IStateObjec
   public readonly changed$ = this._event$.pipe(
     filter((e) => e.type === 'StateObject/changed'),
     map((e) => e.payload as t.IStateObjectChanged<T, A>),
-    share(),
-  );
-
-  public readonly action$ = this.changed$.pipe(
-    filter((e) => Boolean(e.action)),
     share(),
   );
 

@@ -1,10 +1,9 @@
 /* eslint-disable */
-import { expect } from 'chai';
+import { expect, t } from '../test';
 import { filter } from 'rxjs/operators';
 
 import { StateObject } from '.';
 import { StateObject as StateObjectClass } from './StateObject';
-import * as t from './types';
 
 type IFoo = { message?: string; count: number };
 
@@ -195,10 +194,7 @@ describe('StateObject', () => {
       const changed: t.IStateObjectChanged[] = [];
       const actions: t.IStateObjectChanged[] = [];
       obj.changed$.subscribe((e) => changed.push(e));
-      obj.action$.subscribe((e) => actions.push(e));
-
-      let count = 0;
-      obj.changed$.pipe(filter((e) => e.action === 'INCREMENT')).subscribe(() => count++);
+      obj.changed$.pipe(filter((e) => e.action === 'INCREMENT')).subscribe((e) => actions.push(e));
 
       obj.change((draft) => (draft.message = 'hello'));
       expect(changed.length).to.eql(1);
@@ -207,7 +203,6 @@ describe('StateObject', () => {
       obj.change((draft) => draft.count++, 'INCREMENT');
       expect(changed.length).to.eql(2);
       expect(actions.length).to.eql(1);
-      expect(count).to.eql(1);
     });
   });
 });

@@ -1,9 +1,7 @@
-import { time } from '@platform/util.value';
-import { expect } from 'chai';
+import { expect, t, time } from '../test';
 import { Subject } from 'rxjs';
 
 import { Store } from '.';
-import * as t from './types';
 
 export type IMyModel = { count: number; foo: IMyFoo; bar?: IMyBar };
 export type IMyFoo = { list: number[]; msg?: string };
