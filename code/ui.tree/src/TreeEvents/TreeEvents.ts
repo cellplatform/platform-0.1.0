@@ -20,8 +20,8 @@ export class TreeEvents<N extends t.ITreeNode = t.ITreeNode> implements t.ITreeE
   /**
    * [Lifecycle]
    */
-  private constructor(events$: Observable<t.TreeViewEvent>, dispose$?: Observable<any>) {
-    this.event$ = events$.pipe(takeUntil(this.dispose$));
+  private constructor(event$: Observable<t.TreeViewEvent>, dispose$?: Observable<any>) {
+    this.event$ = event$.pipe(takeUntil(this.dispose$));
     if (dispose$) {
       dispose$.subscribe(() => this.dispose());
     }

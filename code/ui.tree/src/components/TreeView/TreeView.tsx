@@ -38,7 +38,7 @@ export type ITreeViewProps = {
   renderNodeBody?: t.RenderTreeNodeBody;
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
-  events$?: Subject<t.TreeViewEvent>;
+  event$?: Subject<t.TreeViewEvent>;
   mouse$?: Subject<t.TreeNodeMouseEvent>;
   tabIndex?: number;
   slideDuration?: number;
@@ -82,9 +82,9 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   private unmounted$ = new Subject<void>();
   private focus$ = new Subject<boolean>();
 
-  private _events$ = new Subject<t.TreeViewEvent>();
-  public readonly events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
-  public readonly mouse$ = this.events$.pipe(
+  private _event$ = new Subject<t.TreeViewEvent>();
+  public readonly event$ = this._event$.pipe(takeUntil(this.unmounted$), share());
+  public readonly mouse$ = this.event$.pipe(
     filter((e) => e.type === 'TREEVIEW/mouse'),
     map((e) => e.payload as t.TreeNodeMouseEvent),
     share(),
@@ -101,8 +101,8 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     const focus$ = this.focus$.pipe(takeUntil(this.unmounted$));
 
     // Bubble events through given subject(s).
-    if (this.props.events$) {
-      this.events$.subscribe(this.props.events$);
+    if (this.props.event$) {
+      this.event$.subscribe(this.props.event$);
     }
     if (this.props.mouse$) {
       this.mouse$.subscribe(this.props.mouse$);
@@ -209,7 +209,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return this;
   }
 
-  private fire = (e: t.TreeViewEvent) => this._events$.next(e);
+  private fire = (e: t.TreeViewEvent) => this._event$.next(e);
 
   /**
    * [Render]

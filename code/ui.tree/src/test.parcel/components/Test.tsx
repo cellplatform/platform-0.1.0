@@ -31,7 +31,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
-  private events$ = new Subject<t.TreeViewEvent>();
+  private event$ = new Subject<t.TreeViewEvent>();
   private mouse$ = new Subject<t.TreeNodeMouseEvent>();
 
   /**
@@ -40,14 +40,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public componentDidMount() {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    const events$ = this.events$.pipe(takeUntil(this.unmounted$));
+    const event$ = this.event$.pipe(takeUntil(this.unmounted$));
     const mouse$ = this.mouse$.pipe(takeUntil(this.unmounted$));
     const click$ = mouse$.pipe(filter((e) => e.button === 'LEFT'));
 
     /**
      * NB: Alternative helper for pealing off events.
      */
-    const tree = TreeView.events(events$);
+    const tree = TreeView.events(event$);
 
     tree.mouse().click.node$.subscribe((e) => {
       log.info('🐷 CLICK from TreeEvents helper', e);
@@ -57,7 +57,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     state$.subscribe((e) => this.setState(e));
 
     // Log events.
-    events$.subscribe((e) => {
+    event$.subscribe((e) => {
       // log.info('🌳', e.type, e.payload);
     });
 
@@ -190,7 +190,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           renderIcon={this.renderIcon}
           renderPanel={this.renderPanel}
           renderNodeBody={this.renderNodeBody}
-          events$={this.events$}
+          event$={this.event$}
           mouse$={this.mouse$}
           tabIndex={0}
         />
