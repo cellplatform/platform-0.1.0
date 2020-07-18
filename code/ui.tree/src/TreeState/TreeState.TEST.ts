@@ -3,7 +3,7 @@ import { expect, t, TreeUtil } from '../test';
 
 type N = t.ITreeNode;
 
-describe('TreeState', () => {
+describe.only('TreeState', () => {
   describe('create', () => {
     it('without parent', () => {
       const root: N = { id: 'root' };
@@ -21,6 +21,13 @@ describe('TreeState', () => {
       expect(state.parent).to.eql('myParent');
     });
 
+    it('from root id (string)', () => {
+      const state = TreeState.create({ root: 'foo' });
+      const id = `ns-${state.namespace}:foo`;
+      expect(state.id).to.eql(id);
+      expect(state.root.id).to.eql(id);
+    });
+
     it('dispose', () => {
       const root: N = { id: 'root' };
       const state = TreeState.create({ root });
@@ -32,6 +39,68 @@ describe('TreeState', () => {
       state.dispose();
       state.dispose();
       expect(state.isDisposed).to.eql(true);
+    });
+  });
+
+  describe('id', () => {
+    type S = string | undefined;
+
+    it('id.format( namespace, id )', () => {
+      const test = (namespace: S, id: S, expected: string) => {
+        const res = TreeState.id.format(namespace, id);
+        expect(res).to.eql(expected);
+      };
+      test('foo', 'bar', 'ns-foo:bar');
+      test('', 'bar', 'ns-:bar'); // Invalid.
+      test('foo', '', 'ns-foo:'); // Invalid.
+    });
+
+    it('id.hasPrefix', () => {
+      const test = (input: S, expected: boolean) => {
+        const res = TreeState.id.hasPrefix(input);
+        expect(res).to.eql(expected);
+      };
+      test('ns-foo:bar', true);
+      test('  ns-foo:bar  ', true);
+
+      test('ns-:bar', false);
+      test('-foo:bar', false);
+      test('s-foo:bar', false);
+      test('n-foo:bar', false);
+      test('-foo:bar', false);
+      test('foo:bar', false);
+      test(':bar', false);
+      test('bar', false);
+    });
+
+    it('id.stripPrefix', () => {
+      const test = (input: S, expected: string) => {
+        const res = TreeState.id.stripPrefix(input);
+        expect(res).to.eql(expected);
+      };
+      test('ns-foo:bar', 'bar');
+      test(' ns-foo:bar ', 'bar');
+      test('bar', 'bar');
+      test('', '');
+      test('ns-foo:', '');
+      test(' ns-foo: ', '');
+
+      test('foo:bar', 'foo:bar');
+      test(':bar', ':bar');
+      test(' :bar ', ':bar');
+    });
+
+    it('id.parse', () => {
+      const test = (input: S, namespace: string, id: string) => {
+        const res = TreeState.id.parse(input);
+        expect(res).to.eql({ namespace, id });
+      };
+      test('ns-foo:bar', 'foo', 'bar');
+      test('  ns-foo:bar  ', 'foo', 'bar');
+      test('foo:bar', '', 'foo:bar');
+      test('foo', '', 'foo');
+      test('', '', '');
+      test('  ', '', '');
     });
   });
 
@@ -59,7 +128,7 @@ describe('TreeState', () => {
   });
 
   describe('add', () => {
-    it('add to "root"', () => {
+    it('add: root as {object} (TreeNode)', () => {
       const root: N = { id: 'root' };
       const state = TreeState.create({ root });
       expect(state.children).to.eql([]);
@@ -71,13 +140,22 @@ describe('TreeState', () => {
       expect(child.parent).to.eql(`ns-${state.namespace}:root`);
     });
 
-    it('add: root id as string (not object)', () => {
+    it('add: root as string ("id")', () => {
       const root: N = { id: 'root' };
       const state = TreeState.create({ root });
       const child = state.add({ parent: 'root', root: 'foo' });
 
       expect(state.children.length).to.eql(1);
       expect(child.id).to.eql(`ns-${child.namespace}:foo`);
+    });
+
+    it.skip('add: root as [TreeState] (pre-existing)', () => {
+      const root: N = { id: 'root' };
+      const state = TreeState.create({ root });
+
+      const child = TreeState.create({ root: 'foo' });
+
+      state.add({ root: child });
     });
 
     it('add: no parent id (root id assumed)', () => {
@@ -147,6 +225,8 @@ describe('TreeState', () => {
       const fn = () => state.add({ parent: '404', root: { id: 'foo' } });
       expect(fn).to.throw(/parent node '404' does not exist/);
     });
+
+    it.skip('throw: child already added', () => {});
   });
 
   describe('remove', () => {
@@ -264,26 +344,44 @@ describe('TreeState', () => {
       expect(state.root.props?.icon).to.eql('face');
     });
 
-    it('updates parent state-tree with child change', () => {
+    it('updates parent state-tree when child changes', () => {
       const state = TreeState.create({ root });
       const child1 = state.add({ root: 'foo' });
       const child2 = state.add({ root: 'bar' });
 
-      expect((state.root.children || []).length).to.eql(4);
-      expect((state.root.children || [])[2].props).to.eql(undefined);
+      const children = () => state.root.children || [];
+      const count = () => children().length;
+
+      expect(count()).to.eql(4);
+      expect(children()[2].props).to.eql(undefined);
 
       // Make a change to child-1.
       child1.change((root, ctx) => ctx.props(root, (p) => (p.label = 'foo')));
-      expect((state.root.children || [])[2].props).to.eql({ label: 'foo' });
+      expect(children()[2].props).to.eql({ label: 'foo' });
 
       // Remove child-1, then update again (should not effect parent).
       child1.dispose();
       child1.change((root, ctx) => ctx.props(root, (p) => (p.label = 'bar')));
-      expect((state.root.children || []).length).to.eql(3);
+      expect(count()).to.eql(3);
 
       // Make a change to child-2.
       child2.change((root, ctx) => ctx.props(root, (p) => (p.label = 'hello')));
-      expect((state.root.children || [])[2].props).to.eql({ label: 'hello' });
+      expect(children()[2].props).to.eql({ label: 'hello' });
+    });
+
+    it('updates parent state-tree when child changes (deep)', () => {
+      const state = TreeState.create({ root: { id: 'root' } });
+      const child1 = state.add({ root: 'foo' });
+      const child2 = child1.add({ root: 'bar' });
+
+      const children = (node: N) => node.children || [];
+      const grandchild = () => children(children(state.root)[0])[0];
+
+      expect(grandchild().props).to.eql(undefined);
+
+      child2.change((draft, ctx) => (ctx.props(draft).label = 'hello'));
+
+      expect(grandchild().props).to.eql({ label: 'hello' });
     });
 
     it('event: changed', () => {
@@ -322,66 +420,100 @@ describe('TreeState', () => {
       children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-2.1' }] }],
     };
 
-    it('walkDown', () => {
-      const state = TreeState.create({ root });
+    describe('walkDown', () => {
+      it('walkDown', () => {
+        const state = TreeState.create({ root });
 
-      const walked: t.ITreeStateVisit<N>[] = [];
-      state.walkDown((e) => {
-        expect(e.namespace).to.eql(state.namespace);
-        expect(e.node.id.endsWith(`:${e.id}`)).to.eql(true);
-        walked.push(e);
+        const walked: t.ITreeStateVisit<N>[] = [];
+        state.walkDown((e) => {
+          expect(e.namespace).to.eql(state.namespace);
+          expect(e.node.id.endsWith(`:${e.id}`)).to.eql(true);
+          walked.push(e);
+        });
+
+        expect(walked.length).to.eql(4);
+        expect(walked[0].id).to.eql('root');
+        expect(walked[3].id).to.eql('child-2.1');
       });
 
-      expect(walked.length).to.eql(4);
-      expect(walked[0].id).to.eql('root');
-      expect(walked[3].id).to.eql('child-2.1');
-    });
+      it('walkDown: stop', () => {
+        const state = TreeState.create({ root });
 
-    it('walkDown (skip children)', () => {
-      const state = TreeState.create({ root });
+        const walked: t.ITreeStateVisit<N>[] = [];
+        state.walkDown((e) => {
+          walked.push(e);
+          if (e.id === 'child-1') {
+            e.stop();
+          }
+        });
 
-      const walked: t.ITreeStateVisit<N>[] = [];
-      state.walkDown((e) => {
-        walked.push(e);
-        if (e.id === 'child-2') {
-          e.skip();
-        }
+        expect(walked.length).to.eql(2);
+        expect(walked[0].id).to.eql('root');
+        expect(walked[1].id).to.eql('child-1');
       });
 
-      expect(walked.length).to.eql(3);
-      expect(walked[0].id).to.eql('root');
-      expect(walked[1].id).to.eql('child-1');
-      expect(walked[2].id).to.eql('child-2');
+      it('walkDown: skip children', () => {
+        const state = TreeState.create({ root });
+
+        const walked: t.ITreeStateVisit<N>[] = [];
+        state.walkDown((e) => {
+          walked.push(e);
+          if (e.id === 'child-2') {
+            e.skip();
+          }
+        });
+
+        expect(walked.length).to.eql(3);
+        expect(walked[0].id).to.eql('root');
+        expect(walked[1].id).to.eql('child-1');
+        expect(walked[2].id).to.eql('child-2');
+      });
     });
 
-    it('find', () => {
-      const state = TreeState.create({ root });
+    describe('find', () => {
+      it('find', () => {
+        const state = TreeState.create({ root });
 
-      const walked: t.ITreeStateVisit<N>[] = [];
-      state.walkDown((e) => walked.push(e));
+        const walked: t.ITreeStateVisit<N>[] = [];
+        state.walkDown((e) => walked.push(e));
 
-      const res1 = state.find((e) => e.id === '404');
-      const res2 = state.find((e) => e.id === 'root');
-      const res3 = state.find((e) => e.id === 'child-2.1');
+        const res1 = state.find((e) => e.id === '404');
+        const res2 = state.find((e) => e.id === 'root');
+        const res3 = state.find((e) => e.id === 'child-2.1');
 
-      expect(res1).to.eql(undefined);
-      expect(res2).to.eql(walked[0].node);
-      expect(res3).to.eql(walked[3].node);
+        expect(res1).to.eql(undefined);
+        expect(res2).to.eql(walked[0].node);
+        expect(res3).to.eql(walked[3].node);
+      });
+
+      it.skip('find: does not walk down into child-state nodes', () => {
+        const state = TreeState.create({ root });
+
+        // state.re
+
+        const child = state.add({ parent: 'child-2.1', root: { id: 'foo' } });
+
+        console.log('child.id', child.id);
+
+        const f = TreeUtil.findById(state.root, child.id);
+        console.log('f', f);
+
+        console.log('state.root', state.root);
+      });
     });
 
-    it.skip('find: does not walk down into child-state nodes', () => {
-      const state = TreeState.create({ root });
+    describe('exists', () => {
+      it('does exist', () => {
+        const state = TreeState.create({ root });
+        const res = state.find((e) => e.id === 'child-2.1');
+        expect(TreeState.id.parse(res?.id).id).to.eql('child-2.1');
+      });
 
-      // state.re
-
-      const child = state.add({ parent: 'child-2.1', root: { id: 'foo' } });
-
-      console.log('child.id', child.id);
-
-      const f = TreeUtil.findById(state.root, child.id);
-      console.log('f', f);
-
-      console.log('state.root', state.root);
+      it('does not exist', () => {
+        const state = TreeState.create({ root });
+        const res = state.find((e) => e.id === '404');
+        expect(res).to.eql(undefined);
+      });
     });
   });
 });
