@@ -62,10 +62,10 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   public static util = TreeUtil;
 
   public static events<N extends t.ITreeNode = t.ITreeNode>(
-    events$: Observable<t.TreeViewEvent>,
+    event$: Observable<t.TreeViewEvent>,
     dispose$?: Observable<void>,
   ) {
-    return new TreeEvents<N>(events$, dispose$);
+    return TreeEvents.create<N>(event$, dispose$);
   }
 
   private static current(props: ITreeViewProps) {

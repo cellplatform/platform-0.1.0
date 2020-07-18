@@ -10,11 +10,18 @@ type Target = t.TreeNodeMouseTarget;
  * Helpers for filtering different event streams for a tree with sensible defaults.
  */
 export class TreeEvents<N extends t.ITreeNode = t.ITreeNode> implements t.ITreeEvents<N> {
+  public static create<N extends t.ITreeNode = t.ITreeNode>(
+    event$: Observable<t.TreeViewEvent>,
+    dispose$?: Observable<any>,
+  ): t.ITreeEvents<N> {
+    return new TreeEvents<N>(event$, dispose$);
+  }
+
   /**
    * [Lifecycle]
    */
-  constructor(events$: Observable<t.TreeViewEvent>, dispose$?: Observable<void>) {
-    this.events$ = events$.pipe(takeUntil(this.dispose$));
+  private constructor(events$: Observable<t.TreeViewEvent>, dispose$?: Observable<any>) {
+    this.event$ = events$.pipe(takeUntil(this.dispose$));
     if (dispose$) {
       dispose$.subscribe(() => this.dispose());
     }
@@ -28,7 +35,8 @@ export class TreeEvents<N extends t.ITreeNode = t.ITreeNode> implements t.ITreeE
   /**
    * [Fields]
    */
-  public readonly events$: Observable<t.TreeViewEvent>;
+  public readonly event$: Observable<t.TreeViewEvent>;
+
   private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
@@ -47,7 +55,7 @@ export class TreeEvents<N extends t.ITreeNode = t.ITreeNode> implements t.ITreeE
   ) => {
     const { type, target } = options;
     const buttons = toButtons(options.button);
-    return this.events$.pipe(
+    return this.event$.pipe(
       filter((e) => e.type === 'TREEVIEW/mouse'),
       map((e) => e.payload as t.TreeNodeMouseEvent<N>),
       filter((e) => {
