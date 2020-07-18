@@ -5,6 +5,9 @@ type Node = t.ITreeNode;
 export type TreeState = {
   create<N extends Node = Node>(args: ITreeStateArgs<N>): ITreeState<N>;
   id: TreeStateId;
+  props(of: Node, fn?: (props: t.ITreeNodeProps) => void): t.ITreeNodeProps;
+  children<T extends Node>(of: T, fn?: (children: T[]) => void): T[];
+  isInstance(input: any): boolean;
 };
 
 export type TreeStateId = {

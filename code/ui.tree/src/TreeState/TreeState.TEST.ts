@@ -42,7 +42,23 @@ describe.only('TreeState', () => {
     });
   });
 
-  describe('id', () => {
+  describe('static', () => {
+    it('isInstance', () => {
+      const test = (input: any, expected: boolean) => {
+        expect(TreeState.isInstance(input)).to.eql(expected);
+      };
+
+      const instance = TreeState.create({ root: 'foo' });
+      test(instance, true);
+
+      test(undefined, false);
+      test(null, false);
+      test('', false);
+      test({ id: 'foo' }, false);
+    });
+  });
+
+  describe('static: id', () => {
     type S = string | undefined;
 
     it('id.format( namespace, id )', () => {
@@ -149,13 +165,30 @@ describe.only('TreeState', () => {
       expect(child.id).to.eql(`ns-${child.namespace}:foo`);
     });
 
-    it.skip('add: root as [TreeState] (pre-existing)', () => {
-      const root: N = { id: 'root' };
-      const state = TreeState.create({ root });
+    it('add: { root: [TreeState] } (pre-existing', () => {
+      const state = TreeState.create({ root: 'root' });
+      expect(state.root.children).to.eql(undefined);
 
       const child = TreeState.create({ root: 'foo' });
+      expect(state.namespace).to.not.eql(child.namespace);
 
       state.add({ root: child });
+
+      expect(TreeState.children(state.root)[0].id).to.eql(child.id);
+      expect(state.children.includes(child)).to.eql(true);
+    });
+
+    it('add: [TreeState] (pre-existing, as base argument)', () => {
+      const state = TreeState.create({ root: 'root' });
+      expect(state.root.children).to.eql(undefined);
+
+      const child = TreeState.create({ root: 'foo' });
+      expect(state.namespace).to.not.eql(child.namespace);
+
+      state.add(child);
+
+      expect(TreeState.children(state.root)[0].id).to.eql(child.id);
+      expect(state.children.includes(child)).to.eql(true);
     });
 
     it('add: no parent id (root id assumed)', () => {
@@ -177,7 +210,7 @@ describe.only('TreeState', () => {
       expect(child1.id).to.not.eql(child2.id);
     });
 
-    it('inserts node into parent state-tree', () => {
+    it('inserts node into parent state-tree data', () => {
       const root: N = { id: 'root', children: [{ id: 'mary' }] };
       const state = TreeState.create({ root });
 
@@ -198,7 +231,36 @@ describe.only('TreeState', () => {
       expect((fired[0].to.children || []).length).to.eql(2);
     });
 
-    it.skip('child added to more than one parent state-tree (at the same time)', () => {});
+    it('child added to more than one parent [StateTree] (at the same time)', () => {
+      const state1 = TreeState.create({ root: 'root-1' });
+      const state2 = TreeState.create({ root: 'root-2' });
+      const child = TreeState.create({ root: 'child' });
+
+      expect(state1.namespace).to.not.eql(state2.namespace);
+
+      state1.add(child);
+      state2.add(child);
+
+      const childAt = (state: t.ITreeState, index: number) => TreeState.children(state.root)[index];
+      const firstChild = (state: t.ITreeState) => childAt(state, 0);
+
+      expect(firstChild(state1).id).to.eql(child.id);
+      expect(firstChild(state2).id).to.eql(child.id);
+
+      child.change((draft, ctx) => {
+        ctx.props(draft).label = 'hello';
+      });
+      expect(firstChild(state1).props).to.eql({ label: 'hello' });
+      expect(firstChild(state2).props).to.eql({ label: 'hello' });
+
+      state1.remove(child);
+      expect(firstChild(state1)).to.eql(undefined);
+      expect(firstChild(state2).id).to.eql(child.id);
+
+      child.dispose();
+      expect(firstChild(state1)).to.eql(undefined);
+      expect(firstChild(state2)).to.eql(undefined);
+    });
 
     it('event: added', () => {
       const root: N = { id: 'root' };
@@ -226,7 +288,16 @@ describe.only('TreeState', () => {
       expect(fn).to.throw(/parent node '404' does not exist/);
     });
 
-    it.skip('throw: child already added', () => {});
+    it('throw: child already added', () => {
+      const state = TreeState.create({ root: 'root' });
+      const child = state.add({ root: 'child' });
+
+      expect(state.children.length).to.eql(1);
+      expect(state.namespace).to.not.eql(child.namespace);
+
+      const fn = () => state.add({ root: child });
+      expect(fn).to.throw(/already exists/);
+    });
   });
 
   describe('remove', () => {
@@ -281,7 +352,7 @@ describe.only('TreeState', () => {
       expect(fired[1].child).to.eql(child2);
     });
 
-    it('removes node from parent state-tree', () => {
+    it('removes node from parent state-tree data', () => {
       const root: N = { id: 'root' };
       const state = TreeState.create({ root });
       const child1 = state.add({ parent: 'root', root: 'foo' });

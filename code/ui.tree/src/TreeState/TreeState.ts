@@ -4,7 +4,6 @@ import { id as idUtil, rx } from '@platform/util.value';
 import { TreeUtil } from '../TreeUtil';
 import { StateObject } from '@platform/state';
 import { id } from './TreeState.id';
-import * as util from './util';
 
 type N = t.ITreeNode;
 
@@ -22,6 +21,28 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   }
 
   public static id = id;
+
+  public static props(of: N, fn?: (props: t.ITreeNodeProps) => void): t.ITreeNodeProps {
+    of.props = of.props || {};
+    if (typeof fn === 'function') {
+      fn(of.props);
+    }
+    return of.props;
+  }
+
+  public static children<T extends N>(of: T, fn?: (children: T[]) => void): T[] {
+    const children = (of.children = of.children || []) as T[];
+    if (typeof fn === 'function') {
+      fn(children);
+    }
+    return of.children as T[];
+  }
+
+  public static isInstance(input: any): boolean {
+    return input === null || typeof input !== 'object'
+      ? false
+      : typeof input.change === 'function' && typeof input.payload === 'function';
+  }
 
   /**
    * Lifecycle
@@ -96,8 +117,8 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   private get changeCtx(): t.TreeStateChangerContext<T> {
     return {
       ...this.traverseMethods,
-      props: util.assignProps,
-      children: util.assignChildren,
+      props: TreeState.props,
+      children: TreeState.children,
     };
   }
 
@@ -120,8 +141,19 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   };
 
   public add<C extends N = N>(args: { parent?: string; root: C | string | t.ITreeState<C> }) {
-    // Create and store child instance.
+    // Check if the arguments are in fact a [TreeState] instance.
+    if (TreeState.isInstance(args)) {
+      args = { parent: this.id, root: args as t.ITreeState<C> };
+    }
+
+    // Create the child instance.
     const child = this.getOrCreateInstance(args);
+    if (this.childExists(child)) {
+      const err = `Cannot add child '${child.id}' as it already exists within the parent '${this.root.id}'.`;
+      throw new Error(err);
+    }
+
+    // Store the child instance.
     this._children.push(child);
 
     // Insert data into state-tree.
@@ -132,18 +164,19 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     // Update state-tree when child changes.
     this.listen(child);
 
+    // Remove when child is disposed.
+    child.dispose$
+      .pipe(take(1))
+      .pipe(filter(() => this.childExists(child)))
+      .subscribe(() => this.remove(child));
+
     // Finish up.
-    child.dispose$.pipe(take(1)).subscribe(() => this.remove(child));
     this.fire({ type: 'TreeState/child/added', payload: { parent: this, child } });
     return child;
   }
 
   public remove(input: string | t.ITreeState) {
-    const child = this._children.find((item) => {
-      const id = typeof input === 'string' ? input : input.root.id;
-      return item.root.id === id;
-    });
-
+    const child = this.child(input);
     if (!child) {
       const err = `Cannot remove child-state as it does not exist in the parent '${this.root.id}'.`;
       throw new Error(err);
@@ -193,8 +226,18 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   /**
    * [Internal]
    */
+
   private fire(e: t.TreeStateEvent) {
     this._event$.next(e);
+  }
+
+  private child(id: string | t.ITreeState) {
+    id = typeof id === 'string' ? id : id.root.id;
+    return this._children.find((item) => item.root.id === id);
+  }
+
+  private childExists(input: string | t.ITreeState) {
+    return Boolean(this.child(input));
   }
 
   private getOrCreateInstance<C extends N = N>(args: {
@@ -202,7 +245,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     root: C | string | t.ITreeState<C>;
   }): t.ITreeState<C> {
     const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as C;
-    if (util.isTreeStateInstance(root)) {
+    if (TreeState.isInstance(root)) {
       return args.root as t.ITreeState<C>;
     }
 
