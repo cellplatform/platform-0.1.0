@@ -19,6 +19,29 @@ describe('TreeUtil', () => {
       expect(nodes[2]).to.equal(tree.children && tree.children[1]);
     });
 
+    it('skips walking children of descendent (`.skip`)', () => {
+      const tree: t.ITreeNode = {
+        id: 'root',
+        children: [
+          { id: 'child-1', children: [{ id: 'child-1.1' }, { id: 'child-1.1' }] },
+          { id: 'child-2' },
+        ],
+      };
+
+      const nodes: t.ITreeNode[] = [];
+      TreeUtil.walkDown(tree, (e) => {
+        nodes.push(e.node);
+        if (e.node.id === 'child-1') {
+          e.skip();
+        }
+      });
+
+      expect(nodes.length).to.eql(3);
+      expect(nodes[0].id).to.eql('root');
+      expect(nodes[1].id).to.eql('child-1');
+      expect(nodes[2].id).to.eql('child-2');
+    });
+
     it('passes parent as args', () => {
       const grandchild: t.ITreeNode = { id: 'grandchild' };
       const child: t.ITreeNode = { id: 'child', children: [grandchild] };
