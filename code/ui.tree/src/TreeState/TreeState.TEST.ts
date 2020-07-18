@@ -3,7 +3,7 @@ import { expect, t, TreeUtil } from '../test';
 
 type N = t.ITreeNode;
 
-describe.only('TreeState', () => {
+describe('TreeState', () => {
   describe('create', () => {
     it('without parent', () => {
       const root: N = { id: 'root' };
@@ -71,10 +71,19 @@ describe.only('TreeState', () => {
       expect(child.parent).to.eql(`ns-${state.namespace}:root`);
     });
 
-    it('add with ID only', () => {
+    it('add: root id as string (not object)', () => {
       const root: N = { id: 'root' };
       const state = TreeState.create({ root });
       const child = state.add({ parent: 'root', root: 'foo' });
+
+      expect(state.children.length).to.eql(1);
+      expect(child.id).to.eql(`ns-${child.namespace}:foo`);
+    });
+
+    it('add: no parent id (root id assumed)', () => {
+      const root: N = { id: 'root' };
+      const state = TreeState.create({ root });
+      const child = state.add({ root: 'foo' });
 
       expect(state.children.length).to.eql(1);
       expect(child.id).to.eql(`ns-${child.namespace}:foo`);
@@ -90,17 +99,28 @@ describe.only('TreeState', () => {
       expect(child1.id).to.not.eql(child2.id);
     });
 
-    it.skip('adds node to parent state-tree', () => {
+    it('inserts node into parent state-tree', () => {
       const root: N = { id: 'root', children: [{ id: 'mary' }] };
       const state = TreeState.create({ root });
 
+      expect((state.root.children || []).length).to.eql(1);
+
+      const fired: t.ITreeStateChanged[] = [];
+      state.payload<t.ITreeStateChangedEvent>('TreeState/changed').subscribe((e) => fired.push(e));
+
       const child1 = state.add({ parent: 'root', root: { id: 'foo' } });
 
-      console.log('-------------------------------------------');
-      console.log('state.root', state.root);
+      const children = state.root.children || [];
+      expect(children.length).to.eql(2);
+      expect(children[0].id).to.match(/\:mary$/);
+      expect(children[1].id).to.eql(child1.id);
+
+      expect(fired.length).to.eql(1);
+      expect((fired[0].from.children || []).length).to.eql(1);
+      expect((fired[0].to.children || []).length).to.eql(2);
     });
 
-    it.skip('child added to more than one parent state-tree', () => {});
+    it.skip('child added to more than one parent state-tree (at the same time)', () => {});
 
     it('event: added', () => {
       const root: N = { id: 'root' };
@@ -126,12 +146,6 @@ describe.only('TreeState', () => {
       const state = TreeState.create({ root: { id: 'root' } });
       const fn = () => state.add({ parent: '404', root: { id: 'foo' } });
       expect(fn).to.throw(/parent node '404' does not exist/);
-    });
-
-    it('throw: "parent" not specified', () => {
-      const state = TreeState.create({ root: { id: 'root' } });
-      const fn = () => state.add({ parent: '  ', root: { id: 'foo' } });
-      expect(fn).to.throw(/parent node was not specified/);
     });
   });
 
@@ -174,7 +188,7 @@ describe.only('TreeState', () => {
         .subscribe((e) => fired.push(e));
 
       const child1 = state.add({ parent: 'root', root: { id: 'foo' } });
-      const child2 = state.add({ parent: 'root', root: { id: 'foo' } });
+      const child2 = state.add({ parent: 'root', root: 'foo' });
 
       expect(state.children.length).to.eql(2);
       child1.dispose();
@@ -187,7 +201,30 @@ describe.only('TreeState', () => {
       expect(fired[1].child).to.eql(child2);
     });
 
-    it.skip('removes node from parent state-tree', () => {});
+    it('removes node from parent state-tree', () => {
+      const root: N = { id: 'root' };
+      const state = TreeState.create({ root });
+      const child1 = state.add({ parent: 'root', root: 'foo' });
+      const child2 = state.add({ parent: 'root', root: 'foo' });
+
+      const children = () => state.root.children || [];
+      const count = () => children().length;
+      const includes = (id: string) => (state.root.children || []).some((c) => c.id === id);
+
+      expect(count()).to.eql(2);
+      expect(includes(child1.id)).to.eql(true);
+      expect(includes(child2.id)).to.eql(true);
+
+      child1.dispose();
+      expect(count()).to.eql(1);
+      expect(includes(child1.id)).to.eql(false);
+      expect(includes(child2.id)).to.eql(true);
+
+      state.remove(child2);
+      expect(count()).to.eql(0);
+      expect(includes(child1.id)).to.eql(false);
+      expect(includes(child2.id)).to.eql(false);
+    });
 
     it('throw: remove child that does not exist', () => {
       const root: N = { id: 'root' };
@@ -225,6 +262,28 @@ describe.only('TreeState', () => {
       });
       expect(state.root.props?.label).to.eql('Hello!');
       expect(state.root.props?.icon).to.eql('face');
+    });
+
+    it('updates parent state-tree with child change', () => {
+      const state = TreeState.create({ root });
+      const child1 = state.add({ root: 'foo' });
+      const child2 = state.add({ root: 'bar' });
+
+      expect((state.root.children || []).length).to.eql(4);
+      expect((state.root.children || [])[2].props).to.eql(undefined);
+
+      // Make a change to child-1.
+      child1.change((root, ctx) => ctx.props(root, (p) => (p.label = 'foo')));
+      expect((state.root.children || [])[2].props).to.eql({ label: 'foo' });
+
+      // Remove child-1, then update again (should not effect parent).
+      child1.dispose();
+      child1.change((root, ctx) => ctx.props(root, (p) => (p.label = 'bar')));
+      expect((state.root.children || []).length).to.eql(3);
+
+      // Make a change to child-2.
+      child2.change((root, ctx) => ctx.props(root, (p) => (p.label = 'hello')));
+      expect((state.root.children || [])[2].props).to.eql({ label: 'hello' });
     });
 
     it('event: changed', () => {

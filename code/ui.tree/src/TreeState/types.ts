@@ -27,7 +27,7 @@ export type ITreeState<N extends Node = Node> = t.IDisposable &
     readonly event$: t.Observable<TreeStateEvent>;
     readonly changed$: t.Observable<ITreeStateChanged<N>>;
     payload<T extends t.TreeStateEvent>(type: T['type']): t.Observable<T['payload']>;
-    add<C extends Node = Node>(args: { parent: string; root: C | string }): ITreeState<C>;
+    add<C extends Node = Node>(args: { parent?: string; root: C | string }): ITreeState<C>;
     remove(child: string | ITreeState): ITreeState;
     change: TreeStateChange<N>;
   };
@@ -45,7 +45,8 @@ export type TreeStateChanger<N extends Node = Node> = (
   ctx: TreeStateChangerArgs<N>,
 ) => void;
 export type TreeStateChangerArgs<N extends Node = Node> = ITreeTraverse<N> & {
-  props(node: Node, fn?: (props: t.ITreeNodeProps) => void): t.ITreeNodeProps;
+  props(of: Node, fn?: (props: t.ITreeNodeProps) => void): t.ITreeNodeProps;
+  children(of: Node, fn?: (children: N[]) => void): N[];
 };
 
 /**

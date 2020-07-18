@@ -9,8 +9,10 @@ type Node = t.ITreeNode;
 import { t } from '../common';
 
 /**
- * State machine for programming a tree,
- * or partial leaf within a tree.
+ * State machine for programming a tree, or partial leaf within a tree.
+ * NOTE:
+ *    All changes to the state tree are immutable.
+ *
  */
 export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
   public static create<N extends Node = Node>(args: t.ITreeStateArgs<N>) {
@@ -98,6 +100,7 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
     const args: t.TreeStateChangerArgs<N> = {
       ...this.traverseMethods,
       props: assignProps,
+      children: assignChildren,
     };
     this._store.change((draft) => fn(draft, args));
     if (!options.silent) {
@@ -134,26 +137,54 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
     return result;
   };
 
-  public add<C extends Node = Node>(args: { parent: string; root: C | string }) {
+  public add<C extends Node = Node>(args: { parent?: string; root: C | string }) {
     const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as C;
     const treeview$ = this.treeview$;
 
     // Prepare the parent node.
     let parent = (args.parent || '').trim();
-    if (!parent) {
-      throw new Error(`Cannot add child-state because a parent node was not specified.`);
-    }
-
-    const exists = Boolean(this.find((e) => e.id === args.parent));
+    parent = args.parent ? args.parent : parseId(this.id).id;
+    const exists = Boolean(this.find((e) => e.id === parent));
     if (!exists) {
-      const err = `Cannot add child-state because the parent node '${args.parent}' does not exist.`;
+      const err = `Cannot add child-state because the parent node '${parent}' does not exist.`;
       throw new Error(err);
     }
 
     // Create child state.
-    parent = formatId(this.namespace, args.parent);
+    parent = formatId(this.namespace, parent);
     const child: t.ITreeState<C> = TreeState.create<C>({ parent, root, treeview$ });
     this._children.push(child);
+
+    // Insert root into parent (self).
+    this.change((root, ctx) => {
+      ctx.children(root).push(child.root as any);
+    });
+
+    // Listen for changes.
+    type Changed = t.ITreeStateChangedEvent;
+    type Removed = t.ITreeStateChildRemovedEvent;
+    const childRemoved$ = this.payload<Removed>('TreeState/child/removed').pipe(
+      filter((e) => e.child.id === child.id),
+    );
+    childRemoved$.subscribe((e) => {
+      this.change((draft, ctx) => {
+        // REMOVE child.
+        draft.children = ctx.children(draft).filter(({ id }) => id !== child.id);
+      });
+    });
+    child
+      .payload<Changed>('TreeState/changed')
+      .pipe(takeUntil(child.dispose$), takeUntil(childRemoved$))
+      .subscribe((e) => {
+        this.change((draft, ctx) => {
+          // UPDATE child.
+          const children = ctx.children(draft);
+          const index = children.findIndex(({ id }) => id === child.id);
+          if (index > -1) {
+            children[index] = e.to as N;
+          }
+        });
+      });
 
     // Finish up.
     child.dispose$.pipe(take(1)).subscribe(() => this.remove(child));
@@ -223,10 +254,18 @@ function ensureNamespacePrefix(root: Node, namespace: string) {
   });
 }
 
-function assignProps(node: Node, fn?: (props: t.ITreeNodeProps) => void) {
-  node.props = node.props || {};
+function assignProps(of: Node, fn?: (props: t.ITreeNodeProps) => void) {
+  of.props = of.props || {};
   if (typeof fn === 'function') {
-    fn(node.props);
+    fn(of.props);
   }
-  return node.props;
+  return of.props;
+}
+
+function assignChildren<N extends Node>(of: N, fn?: (children: N[]) => void): N[] {
+  const children = (of.children = of.children || []) as N[];
+  if (typeof fn === 'function') {
+    fn(children);
+  }
+  return of.children as N[];
 }
