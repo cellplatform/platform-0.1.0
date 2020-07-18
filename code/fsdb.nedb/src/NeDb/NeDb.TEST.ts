@@ -204,7 +204,7 @@ describe('NeDb', () => {
         { key: 'FOO/1', value: 123 },
         { key: 'FOO/2', value: 456 },
       ];
-      const keys = items.map(item => item.key);
+      const keys = items.map((item) => item.key);
 
       const res1 = await db.getMany(keys);
       expect(res1[0].value).to.eql(undefined);
@@ -242,7 +242,7 @@ describe('NeDb', () => {
         { key: 'FOO/1', value: 123 },
         { key: 'FOO/2', value: 456 },
       ];
-      const keys = items.map(item => item.key);
+      const keys = items.map((item) => item.key);
 
       await db.putMany(items);
       const res1 = await db.getMany(keys);
@@ -295,7 +295,7 @@ describe('NeDb', () => {
       const test = async (query: string) => {
         const res = await db.find(query);
         expect(res.length).to.eql(2);
-        const values = res.list.map(item => item.value);
+        const values = res.list.map((item) => item.value);
         expect(values.includes(123)).to.eql(true);
         expect(values.includes(456)).to.eql(true);
       };
@@ -316,7 +316,7 @@ describe('NeDb', () => {
       const res = await db.find('cell/**');
       expect(res.length).to.eql(3);
 
-      const values = res.list.map(item => item.value);
+      const values = res.list.map((item) => item.value);
       expect(values.includes(123)).to.eql(true);
       expect(values.includes(456)).to.eql(true);
       expect(values.includes('meta')).to.eql(true);
@@ -349,7 +349,7 @@ describe('NeDb', () => {
       expect(res.keys.includes('foo')).to.eql(true);
       expect(res.keys.includes('bar')).to.eql(true);
 
-      const values = res.list.map(item => item.value);
+      const values = res.list.map((item) => item.value);
       expect(values.includes('foo')).to.eql(true);
       expect(values.includes('bar')).to.eql(true);
     });
@@ -428,7 +428,7 @@ describe('NeDb', () => {
   describe('events observable', () => {
     it('read => change => read', async () => {
       const events: t.DocDbActionEvent[] = [];
-      db.events$.subscribe(e => events.push(e as t.DocDbActionEvent));
+      db.events$.subscribe((e) => events.push(e as t.DocDbActionEvent));
 
       const key = 'foo/bar';
       await db.get(key);
@@ -505,7 +505,7 @@ describe('NeDb', () => {
       expect(ts2.modifiedAt).to.be.within(now - 60, now + 90);
 
       const res = await db.find('**');
-      const ts3 = res.list.find(item => item.props.key === '~sys/timestamps');
+      const ts3 = res.list.find((item) => item.props.key === '~sys/timestamps');
 
       expect(ts3 && ts3.value).to.eql(true);
       expect(ts3 && ts3.props.createdAt).to.eql(ts2.createdAt);

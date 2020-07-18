@@ -29,13 +29,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Lifecycle]
    */
-  public componentWillMount() {
+  public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const events$ = this.events$.pipe(takeUntil(this.unmounted$));
-
-    events$.subscribe((e) => {
-      console.log('🌳 EVENT', e);
-    });
 
     events$
       .pipe(

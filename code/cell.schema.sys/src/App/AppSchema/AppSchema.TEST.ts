@@ -22,7 +22,7 @@ describe('AppSchema', () => {
 
     expectGreaterThan(namespaces.App, 10);
     expectGreaterThan(namespaces.AppWindow, 6);
-    expectGreaterThan(namespaces.AppData, 3);
+    expectGreaterThan(namespaces.AppData, 2);
   });
 
   it('declare (provide namespaces)', () => {

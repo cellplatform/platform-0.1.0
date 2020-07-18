@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.7.125",
+  "version": "0.7.127",
   "description": "HTTP server for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -22,22 +22,22 @@
     "prepare": "ts-node -T script.ts/prepare && ts prepare && rm -rf tmp"
   },
   "dependencies": {
-    "@platform/cell.http.router": "0.7.123",
-    "@platform/cell.schema": "0.4.143",
-    "@platform/cell.types": "0.4.129",
-    "@platform/cell.typesystem": "0.0.83",
-    "@platform/cli": "0.5.41",
+    "@platform/cell.http.router": "0.7.125",
+    "@platform/cell.schema": "0.4.145",
+    "@platform/cell.types": "0.4.131",
+    "@platform/cell.typesystem": "0.0.85",
+    "@platform/cli": "0.5.42",
     "@platform/exec": "0.2.61",
     "@platform/fs": "0.5.19",
-    "@platform/http": "0.12.22",
+    "@platform/http": "0.12.23",
     "@platform/libs": "0.2.2",
-    "@platform/micro": "0.14.42",
-    "@platform/types": "0.4.24",
-    "@platform/util.value": "0.7.26"
+    "@platform/micro": "0.14.43",
+    "@platform/types": "0.5.0",
+    "@platform/util.value": "0.7.27"
   },
   "devDependencies": {
-    "@platform/fsdb.nedb": "1.3.127",
-    "@platform/npm": "0.3.4",
+    "@platform/fsdb.nedb": "1.3.128",
+    "@platform/npm": "0.3.5",
     "@platform/test": "0.1.14",
     "@platform/ts": "3.9.5"
   },
