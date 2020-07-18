@@ -6,7 +6,7 @@ import { StateObject } from '@platform/state';
 import { id } from './TreeState.id';
 import * as util from './util';
 
-type Node = t.ITreeNode;
+type N = t.ITreeNode;
 
 import { t } from '../common';
 
@@ -16,9 +16,9 @@ import { t } from '../common';
  *    All changes to the state tree are immutable.
  *
  */
-export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
-  public static create<N extends Node = Node>(args: t.ITreeStateArgs<N>) {
-    return new TreeState<N>(args) as t.ITreeState<N>;
+export class TreeState<T extends N = N> implements t.ITreeState<T> {
+  public static create<T extends N = N>(args: t.ITreeStateArgs<T>) {
+    return new TreeState<T>(args) as t.ITreeState<T>;
   }
 
   public static id = id;
@@ -26,9 +26,9 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
   /**
    * Lifecycle
    */
-  private constructor(args: t.ITreeStateArgs<N>) {
-    const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as N;
-    this._store = StateObject.create<N>(root);
+  private constructor(args: t.ITreeStateArgs<T>) {
+    const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as T;
+    this._store = StateObject.create<T>(root);
     this.parent = args.parent;
     this.change((root) => ensureNamespacePrefix(root, this.namespace), { silent: true });
 
@@ -49,7 +49,7 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
   /**
    * [Fields]
    */
-  private _store: t.IStateObjectWrite<N>;
+  private _store: t.IStateObjectWrite<T>;
   private _children: t.ITreeState[] = [];
   private treeview$: Observable<t.TreeViewEvent>;
 
@@ -64,7 +64,7 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
 
   public readonly changed$ = this.event$.pipe(
     filter((e) => e.type === 'TreeState/changed'),
-    map((e) => e.payload as t.ITreeStateChanged<N>),
+    map((e) => e.payload as t.ITreeStateChanged<T>),
   );
 
   /**
@@ -86,14 +86,14 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
     return [...this._children];
   }
 
-  private get traverseMethods(): t.ITreeTraverse<N> {
+  private get traverseMethods(): t.ITreeTraverse<T> {
     const find = this.find;
     const exists = this.exists;
     const walkDown = this.walkDown;
     return { find, exists, walkDown };
   }
 
-  private get changeCtx(): t.TreeStateChangerContext<N> {
+  private get changeCtx(): t.TreeStateChangerContext<T> {
     return {
       ...this.traverseMethods,
       props: util.assignProps,
@@ -105,11 +105,11 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
    * [Methods]
    */
 
-  public payload<T extends t.TreeStateEvent>(type: T['type']) {
-    return rx.payload<T>(this.event$, type);
+  public payload<E extends t.TreeStateEvent>(type: E['type']) {
+    return rx.payload<E>(this.event$, type);
   }
 
-  public change: t.TreeStateChange<N> = (fn, options = {}) => {
+  public change: t.TreeStateChange<T> = (fn, options = {}) => {
     const from = this.root;
     const ctx = this.changeCtx;
     this._store.change((draft) => fn(draft, ctx));
@@ -119,7 +119,7 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
     }
   };
 
-  public add<C extends Node = Node>(args: { parent?: string; root: C | string | t.ITreeState<C> }) {
+  public add<C extends N = N>(args: { parent?: string; root: C | string | t.ITreeState<C> }) {
     // Create and store child instance.
     const child = this.getOrCreateInstance(args);
     this._children.push(child);
@@ -160,7 +160,7 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
   /**
    * [Methods] - data traversal.
    */
-  public walkDown: t.TreeStateWalkDown<N> = (fn) => {
+  public walkDown: t.TreeStateWalkDown<T> = (fn) => {
     TreeUtil.walkDown(this.root, (e) => {
       const node = e.node;
       const { id, namespace } = TreeState.id.parse(node.id);
@@ -177,8 +177,8 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
     return;
   };
 
-  public find: t.TreeStateFind<N> = (fn) => {
-    let result: N | undefined;
+  public find: t.TreeStateFind<T> = (fn) => {
+    let result: T | undefined;
     this.walkDown((e) => {
       if (fn(e)) {
         result = e.node;
@@ -188,7 +188,7 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
     return result;
   };
 
-  public exists: t.TreeStateExists<N> = (fn) => Boolean(this.find(fn));
+  public exists: t.TreeStateExists<T> = (fn) => Boolean(this.find(fn));
 
   /**
    * [Internal]
@@ -197,7 +197,7 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
     this._event$.next(e);
   }
 
-  private getOrCreateInstance<C extends Node = Node>(args: {
+  private getOrCreateInstance<C extends N = N>(args: {
     parent?: string;
     root: C | string | t.ITreeState<C>;
   }): t.ITreeState<C> {
@@ -243,7 +243,7 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
           const children = ctx.children(draft);
           const index = children.findIndex(({ id }) => id === child.id);
           if (index > -1) {
-            children[index] = e.to as N;
+            children[index] = e.to as T;
           }
         });
       });
@@ -254,7 +254,7 @@ export class TreeState<N extends Node = Node> implements t.ITreeState<N> {
  * [Helpers]
  */
 
-function ensureNamespacePrefix(root: Node, namespace: string) {
+function ensureNamespacePrefix(root: N, namespace: string) {
   TreeUtil.walkDown(root, (e) => {
     if (!e.node.id.startsWith('ns-')) {
       e.node.id = id.format(namespace, e.node.id);

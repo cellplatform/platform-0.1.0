@@ -35,7 +35,7 @@ export type ITreeState<N extends Node = Node> = t.IDisposable &
     readonly children: ITreeState[];
     readonly event$: t.Observable<TreeStateEvent>;
     readonly changed$: t.Observable<ITreeStateChanged<N>>;
-    payload<T extends t.TreeStateEvent>(type: T['type']): t.Observable<T['payload']>;
+    payload<E extends t.TreeStateEvent>(type: E['type']): t.Observable<E['payload']>;
     add<C extends Node = Node>(args: {
       parent?: string;
       root: C | string | ITreeState<C>;
