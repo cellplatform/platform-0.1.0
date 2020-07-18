@@ -45,6 +45,7 @@ export type ITreeState<N extends Node = Node> = t.IDisposable &
     }): ITreeState<C>;
     remove(child: string | ITreeState): ITreeState;
     change: TreeStateChange<N>;
+    toId(input?: string): string;
   };
 
 /**

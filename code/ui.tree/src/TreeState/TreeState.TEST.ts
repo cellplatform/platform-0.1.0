@@ -118,6 +118,19 @@ describe.only('TreeState', () => {
       test('', '', '');
       test('  ', '', '');
     });
+
+    it('instance: toId', () => {
+      const state = TreeState.create({ root: 'foo' });
+      const test = (input: S, id: string) => {
+        const expected = TreeState.id.format(state.namespace, id);
+        expect(state.toId(input)).to.eql(expected);
+      };
+      test('', '');
+      test('  ', '');
+      test('foo', 'foo');
+      test('  foo  ', 'foo');
+      test('ns-foo:bar', 'bar');
+    });
   });
 
   describe('rewrite IDs with namespace prefix', () => {
@@ -165,7 +178,7 @@ describe.only('TreeState', () => {
       expect(child.id).to.eql(`ns-${child.namespace}:foo`);
     });
 
-    it('add: { root: [TreeState] } (pre-existing', () => {
+    it('add: { root: [TreeState] } - pre-existing', () => {
       const state = TreeState.create({ root: 'root' });
       expect(state.root.children).to.eql(undefined);
 
@@ -178,7 +191,7 @@ describe.only('TreeState', () => {
       expect(state.children.includes(child)).to.eql(true);
     });
 
-    it('add: [TreeState] (pre-existing, as base argument)', () => {
+    it('add: [TreeState] - pre-existing, as base argument', () => {
       const state = TreeState.create({ root: 'root' });
       expect(state.root.children).to.eql(undefined);
 
@@ -523,7 +536,7 @@ describe.only('TreeState', () => {
         expect(walked[1].id).to.eql('child-1');
       });
 
-      it('walkDown: skip children', () => {
+      it('walkDown: skip (children)', () => {
         const state = TreeState.create({ root });
 
         const walked: t.ITreeStateVisit<N>[] = [];
@@ -538,6 +551,22 @@ describe.only('TreeState', () => {
         expect(walked[0].id).to.eql('root');
         expect(walked[1].id).to.eql('child-1');
         expect(walked[2].id).to.eql('child-2');
+      });
+
+      it('walkDown: does not walk down into child namespace', () => {
+        const state = TreeState.create({ root });
+        const child = state.add({ parent: 'child-2.1', root: { id: 'foo' } });
+        expect(child.namespace).to.not.eql(state.namespace);
+
+        // Verify: Can be round within the root data-structure using a raw search algorithm.
+        expect(TreeUtil.findById(state.root, child.id)?.id).to.eql(child.id);
+
+        const walked: t.ITreeStateVisit<N>[] = [];
+        state.walkDown((e) => walked.push(e));
+
+        const ids = walked.map((e) => e.id);
+        expect(ids.length).to.greaterThan(0);
+        expect(ids.includes('foo')).to.eql(false);
       });
     });
 
@@ -557,19 +586,27 @@ describe.only('TreeState', () => {
         expect(res3).to.eql(walked[3].node);
       });
 
-      it.skip('find: does not walk down into child-state nodes', () => {
+      it('find: root (immediate)', () => {
+        const state = TreeState.create({ root: 'root' });
+        const res = state.find((e) => e.id === 'root');
+        expect(res?.id).to.eql(state.id);
+      });
+
+      it('find: does not walk down into child namespace', () => {
         const state = TreeState.create({ root });
-
-        // state.re
-
         const child = state.add({ parent: 'child-2.1', root: { id: 'foo' } });
+        expect(child.namespace).to.not.eql(state.namespace);
 
-        console.log('child.id', child.id);
+        // Verify: Can be round within the root data-structure using a raw search algorithm.
+        expect(TreeUtil.findById(state.root, child.id)?.id).to.eql(child.id);
 
-        const f = TreeUtil.findById(state.root, child.id);
-        console.log('f', f);
+        // Lookup: root namespace.
+        expect(state.find((e) => e.id === 'foo')).to.eql(undefined);
+        expect(state.find((e) => e.id === 'child-2.1')?.id).to.eql(state.toId('child-2.1'));
 
-        console.log('state.root', state.root);
+        // Lookup: child namespace.
+        expect(child.find((e) => e.id === 'foo')?.id).to.eql(child.id);
+        expect(child.find((e) => e.id === 'child-2.1')?.id).to.eql(undefined);
       });
     });
 

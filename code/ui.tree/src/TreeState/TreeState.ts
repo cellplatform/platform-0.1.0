@@ -126,6 +126,11 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
    * [Methods]
    */
 
+  public toId(input?: string): string {
+    const id = TreeState.id.parse(input).id;
+    return TreeState.id.format(this.namespace, id);
+  }
+
   public payload<E extends t.TreeStateEvent>(type: E['type']) {
     return rx.payload<E>(this.event$, type);
   }
@@ -141,7 +146,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   };
 
   public add<C extends N = N>(args: { parent?: string; root: C | string | t.ITreeState<C> }) {
-    // Check if the arguments are in fact a [TreeState] instance.
+    // Wrangle: Check if the arguments are in fact a [TreeState] instance.
     if (TreeState.isInstance(args)) {
       args = { parent: this.id, root: args as t.ITreeState<C> };
     }
