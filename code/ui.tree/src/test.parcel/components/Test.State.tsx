@@ -89,7 +89,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...styles.base}>
-        <Button onClick={this.addChildOfRoot}>add: child of root</Button>
+        <Button onClick={this.addChildOfRoot}>add: child state</Button>
       </div>
     );
   }
@@ -101,6 +101,17 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
   private addChildOfRoot = () => {
     console.log('-------------------------------------------');
+
+    const root = { id: 'foo', props: { label: 'Foo' } };
+
+    const child = this.rootState.add({ root });
+
+    console.log('child', child);
+
+    child.change((draft, ctx) => {
+      const children = ctx.children(draft);
+      children.push({ id: 'my-child', props: { label: 'hello' } });
+    });
 
     // const res = this.rootState.add({parent: 'child-1', })
   };
