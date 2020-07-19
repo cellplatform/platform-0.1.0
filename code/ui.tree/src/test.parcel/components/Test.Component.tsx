@@ -1,17 +1,15 @@
 import { color, css, CssValue } from '@platform/css';
+import { Button } from '@platform/ui.button';
+import { Foo, log } from '@platform/ui.dev';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
+import { TreeView } from '../..';
+import { t } from '../../common';
 import { COLORS } from '../constants';
 import * as sample from '../sample';
 import { Icons } from './Icons';
-
-import { TreeView } from '../..';
-import { t } from '../../common';
-
-import { Foo, ObjectView, log } from '@platform/ui.dev';
-import { Button } from '@platform/ui.button';
 
 export type ITestProps = { style?: CssValue };
 
@@ -20,6 +18,7 @@ export type ITestState = {
   root?: t.ITreeNode;
   current?: string;
 };
+
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Fields]
@@ -159,7 +158,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             {this.button('theme: LIGHT', () => this.state$.next({ theme: 'LIGHT' }))}
             {this.button('theme: DARK', () => this.state$.next({ theme: 'DARK' }))}
           </div>
-          <ObjectView name={'tree'} data={this.state.root} />
         </div>
         <div {...styles.right}>
           <div {...styles.rightCenter}>{this.renderTree()}</div>

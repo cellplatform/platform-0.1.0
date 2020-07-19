@@ -1,13 +1,12 @@
 import { color, css, CssValue } from '@platform/css';
+import { Button } from '@platform/ui.button';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Tree } from '../..';
-
 import { t } from '../../common';
 import { Icons } from './Icons';
-import { Button } from '@platform/ui.button';
 
 type Node = t.ITreeNode;
 const ROOT: Node = {

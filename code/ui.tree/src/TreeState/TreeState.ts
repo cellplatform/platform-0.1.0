@@ -1,14 +1,13 @@
-import { Observable, Subject } from 'rxjs';
-import { take, filter, map, share, takeUntil } from 'rxjs/operators';
+import { StateObject } from '@platform/state/lib/StateObject';
 import { id as idUtil, rx } from '@platform/util.value';
+import { Observable, Subject } from 'rxjs';
+import { filter, map, share, take, takeUntil } from 'rxjs/operators';
+
+import { t } from '../common';
 import { TreeUtil } from '../TreeUtil';
-import { StateObject } from '@platform/state';
 import { id } from './TreeState.id';
 
 type N = t.ITreeNode;
-
-import { t } from '../common';
-import { TreeView } from '../components/TreeView';
 
 /**
  * State machine for programming a tree, or partial leaf within a tree.
