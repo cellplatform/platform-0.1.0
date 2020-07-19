@@ -5,7 +5,9 @@ import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
 
-setAutoFreeze(false);
+if (typeof setAutoFreeze === 'function') {
+  setAutoFreeze(false);
+}
 
 type O = Record<string, unknown>;
 
