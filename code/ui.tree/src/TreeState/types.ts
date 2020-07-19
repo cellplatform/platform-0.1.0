@@ -1,6 +1,9 @@
 import * as t from '../common/types';
 
-type Node = t.ITreeNode;
+type Node = t.INode;
+
+
+
 
 export type TreeState = {
   create<N extends Node = Node>(args: ITreeStateArgs<N>): ITreeState<N>;
