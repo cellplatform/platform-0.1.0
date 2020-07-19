@@ -8,7 +8,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { ctx, store } = args;
 
   const tree = TreeView.events(ctx.event$ as Observable<t.TreeViewEvent>);
-  const left = tree.mouse({ button: 'LEFT' });
+  const left = tree.mouse({ button: ['LEFT'] });
 
   const toggleTwisty = (node: string) => {
     const root = TreeUtil.toggleIsOpen(store.state.tree.root, node);

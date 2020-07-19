@@ -100,19 +100,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private renderIcon: t.RenderTreeIcon = (e) => Icons[e.icon];
 
   private addChildOfRoot = () => {
-    console.log('-------------------------------------------');
-
     const root = { id: 'foo', props: { label: 'Foo' } };
-
     const child = this.rootState.add({ root });
-
-    console.log('child', child);
 
     child.change((draft, ctx) => {
       const children = ctx.children(draft);
       children.push({ id: 'my-child', props: { label: 'hello' } });
     });
-
-    // const res = this.rootState.add({parent: 'child-1', })
   };
 }

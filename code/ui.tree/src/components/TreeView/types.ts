@@ -1,6 +1,5 @@
 import * as t from '../../types';
 
-
 /**
  * [Events]
  */

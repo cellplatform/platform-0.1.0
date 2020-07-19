@@ -231,10 +231,10 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state@0.6.4":
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.4.tgz#867cda0951caf0bb509441115bbd4c2eca1923f5"
-  integrity sha512-+mXbxgSGpMOz/qY4HOeEuztnLZXHmyT2hv3yDTK3FhdtOt8nM699A2q4lNJuElL0w3U/Y4XLgh8JQgk9CNLxFQ==
+"@platform/state@0.6.5":
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.5.tgz#7af8ebfa303bcc4aa34a247460e1720140c02ffd"
+  integrity sha512-Enu6ZcbLGpc4Wvhje6lOwzrHiIhqKJFpO9eXKgQaVJ1gD2XakWtR/02QkAMK/O4a5kFKrUZBFxQFNH8BCohqPg==
   dependencies:
     "@platform/types" "0.5.0"
     "@platform/util.value" "0.7.27"

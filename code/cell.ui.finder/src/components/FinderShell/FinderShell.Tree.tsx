@@ -57,7 +57,7 @@ export class FinderShellTree extends React.PureComponent<IFinderShellTreeProps> 
         renderIcon={this.renderIcon}
         renderPanel={this.renderPanel}
         renderNodeBody={this.renderNodeBody}
-        events$={this.tree$}
+        event$={this.tree$}
         tabIndex={0}
       />
     );
