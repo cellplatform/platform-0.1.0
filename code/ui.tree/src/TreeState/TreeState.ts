@@ -8,6 +8,7 @@ import { id } from './TreeState.id';
 type N = t.ITreeNode;
 
 import { t } from '../common';
+import { TreeView } from '../components/TreeView';
 
 /**
  * State machine for programming a tree, or partial leaf within a tree.
@@ -111,7 +112,8 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     const find = this.find;
     const exists = this.exists;
     const walkDown = this.walkDown;
-    return { find, exists, walkDown };
+    const walkUp = this.walkUp;
+    return { find, exists, walkDown, walkUp };
   }
 
   private get changeCtx(): t.TreeStateChangerContext<T> {
@@ -213,6 +215,35 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
       }
     });
     return;
+  };
+
+  public walkUp: t.TreeStateWalkUp<T> = (startAt, fn) => {
+    const id = TreeState.id;
+    startAt = typeof startAt === 'string' ? id.stripPrefix(startAt) : startAt;
+    startAt = typeof startAt == 'string' ? this.find((e) => e.id === startAt) : startAt;
+
+    if (!startAt) {
+      return;
+    }
+
+    if (typeof startAt === 'object' && id.namespace(startAt.id) !== this.namespace) {
+      return;
+    }
+
+    TreeUtil.walkUp<T>(this.root, startAt as any, (e) => {
+      const node = e.node;
+      const { id, namespace } = TreeState.id.parse(node.id);
+      if (namespace === this.namespace) {
+        fn({
+          id,
+          namespace,
+          node,
+          stop: e.stop,
+        });
+      }
+    });
+
+    return undefined;
   };
 
   public find: t.TreeStateFind<T> = (fn) => {

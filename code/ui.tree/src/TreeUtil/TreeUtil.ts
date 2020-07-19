@@ -87,10 +87,10 @@ export class TreeUtil {
    */
   public static walkUp<T extends t.ITreeNode>(
     root: T | undefined,
-    node: T | T['id'] | undefined,
+    startAt: T | T['id'] | undefined,
     fn: (args: t.ITreeAscend<T>) => any,
   ) {
-    const current = typeof node === 'string' ? TreeUtil.findById(root, node) : node;
+    const current = typeof startAt === 'string' ? TreeUtil.findById(root, startAt) : startAt;
     if (current) {
       let stop = false;
       const parentNode = TreeUtil.parent(root, current);

@@ -16,6 +16,7 @@ export type TreeStateId = {
   parse(input?: string): { namespace: string; id: string };
   stripPrefix(input?: string): string;
   hasPrefix(input?: string): boolean;
+  namespace(input?: string): string;
 };
 
 export type ITreeStateArgs<N extends Node = Node> = {
@@ -69,22 +70,36 @@ export type TreeStateChangerContext<N extends Node = Node> = ITreeTraverse<N> & 
  * Node traversal.
  */
 export type ITreeTraverse<N extends Node> = {
-  walkDown: TreeStateWalkDown<N>;
   find: TreeStateFind<N>;
   exists: TreeStateExists<N>;
+  walkDown: TreeStateWalkDown<N>;
+  walkUp: TreeStateWalkUp<N>;
 };
 
-export type TreeStateWalkDown<N extends Node> = (fn: (args: ITreeStateVisit<N>) => void) => void;
 export type TreeStateFind<N extends Node> = (fn: TreeStateFilter<N>) => N | undefined;
 export type TreeStateExists<N extends Node> = (fn: TreeStateFilter<N>) => boolean;
 
-export type TreeStateFilter<N extends Node> = (args: ITreeStateVisit<N>) => boolean;
-export type ITreeStateVisit<N extends Node> = {
+export type TreeStateFilter<N extends Node> = (args: TreeStateVisit<N>) => boolean;
+export type TreeStateVisit<N extends Node> = {
   id: string;
   namespace: string;
   node: N;
+};
+
+export type TreeStateWalkDown<N extends Node> = (fn: TreeStateWalkDownCallback<N>) => void;
+export type TreeStateWalkDownCallback<N extends Node> = (args: TreeStateWalkDownVisit<N>) => void;
+export type TreeStateWalkDownVisit<N extends Node> = TreeStateVisit<N> & {
   stop(): void;
   skip(): void; // Skip children.
+};
+
+export type TreeStateWalkUp<N extends Node> = (
+  startAt: Node | string | undefined,
+  fn: TreeStateWalkUpCallback<N>,
+) => void;
+export type TreeStateWalkUpCallback<N extends Node> = (args: TreeStateWalkUpVisit<N>) => void;
+export type TreeStateWalkUpVisit<N extends Node> = TreeStateVisit<N> & {
+  stop(): void;
 };
 
 /**

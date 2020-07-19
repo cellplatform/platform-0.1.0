@@ -28,10 +28,15 @@ export function stripPrefix(input?: string) {
   return toString(input).replace(REGEX.prefix, '');
 }
 
+export function namespace(input?: string) {
+  return parse(input).namespace;
+}
+
 export const id: t.TreeStateId = {
   toString,
   format,
   parse,
   stripPrefix,
   hasPrefix,
+  namespace,
 };
