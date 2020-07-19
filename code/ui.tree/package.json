@@ -18,6 +18,7 @@
     "@platform/css": "0.4.7",
     "@platform/react": "0.4.40",
     "@platform/state": "0.6.5",
+    "@platform/types": "0.5.0",
     "@platform/ui.icon": "0.0.159",
     "@platform/ui.panel": "0.2.8",
     "@platform/ui.spinner": "0.0.156",

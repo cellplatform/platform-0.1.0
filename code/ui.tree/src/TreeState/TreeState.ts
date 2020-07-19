@@ -201,11 +201,12 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
    */
   public walkDown: t.TreeStateWalkDown<T> = (fn) => {
     TreeUtil.walkDown(this.root, (e) => {
-      const node = e.node;
+      const { node, index } = e;
       const { id, namespace } = TreeState.id.parse(node.id);
       if (namespace === this.namespace) {
         fn({
           id,
+          index,
           namespace,
           node,
           stop: e.stop,
@@ -230,11 +231,12 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     }
 
     TreeUtil.walkUp<T>(this.root, startAt as any, (e) => {
-      const node = e.node;
+      const { node, index } = e;
       const { id, namespace } = TreeState.id.parse(node.id);
       if (namespace === this.namespace) {
         fn({
           id,
+          index,
           namespace,
           node,
           stop: e.stop,

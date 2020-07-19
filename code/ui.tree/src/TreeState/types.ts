@@ -82,6 +82,7 @@ export type TreeStateExists<N extends Node> = (fn: TreeStateFilter<N>) => boolea
 export type TreeStateFilter<N extends Node> = (args: TreeStateVisit<N>) => boolean;
 export type TreeStateVisit<N extends Node> = {
   id: string;
+  index: number; // Within siblings.
   namespace: string;
   node: N;
 };

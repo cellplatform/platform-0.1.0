@@ -53,18 +53,20 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        {this.renderLeft()}
+        {this.renderTree('left')}
         {this.renderRight()}
+        {this.renderTree('right')}
       </div>
     );
   }
 
-  private renderLeft() {
+  private renderTree(edge: 'left' | 'right') {
     const styles = {
       base: css({
         width: 280,
         display: 'flex',
-        borderRight: `solid 1px ${color.format(-0.1)}`,
+        borderLeft: edge === 'right' && `solid 1px ${color.format(-0.1)}`,
+        borderRight: edge === 'left' && `solid 1px ${color.format(-0.1)}`,
       }),
     };
     return (
@@ -85,6 +87,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       base: css({
         boxSizing: 'border-box',
         padding: 30,
+        flex: 1,
       }),
     };
     return (
@@ -107,5 +110,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       const children = ctx.children(draft);
       children.push({ id: 'my-child', props: { label: 'hello' } });
     });
+
+    console.group('🌳 child added');
+    console.log('child', child);
+    console.log('child.root', child.root);
+    console.groupEnd();
   };
 }
