@@ -1,5 +1,4 @@
 import { Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
 import { MemoryCache, rx, t } from '../common';
 import { fetcher } from '../TypeSystem.fetch';
@@ -30,7 +29,6 @@ export function wrapFetch(
 
   // Patch cache on sync events.
   if (event$) {
-    event$.pipe(filter((e) => e.type === 'SHEET/sync'));
     rx.payload<t.ITypedSheetSyncEvent>(event$, 'SHEET/sync').subscribe((e) => {
       const key = fetchKey('getCells', e.changes.uri);
       const entry = cache.get<C>(key);

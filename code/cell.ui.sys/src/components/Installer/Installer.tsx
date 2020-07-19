@@ -6,7 +6,7 @@ import { css, CssValue, t, ui } from '../../common';
 import { InstallerDragTarget, DropEvent } from './Installer.DragTarget';
 
 export type IInstallerProps = { style?: CssValue };
-export type IInstallerState = {};
+export type IInstallerState = t.Object;
 
 export class Installer extends React.PureComponent<IInstallerProps, IInstallerState> {
   public state: IInstallerState = {};

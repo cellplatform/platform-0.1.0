@@ -4,8 +4,15 @@ import * as t from '../common/types';
 type Button = t.MouseEvent['button'];
 type Target = t.TreeNodeMouseTarget;
 
+export type TreeEvents = {
+  create<N extends t.ITreeNode = t.ITreeNode>(
+    event$: Observable<t.TreeViewEvent>,
+    dispose$?: Observable<any>,
+  ): t.ITreeEvents<N>;
+};
+
 export type ITreeEvents<N extends t.ITreeNode = any> = {
-  events$: Observable<t.TreeViewEvent>;
+  event$: Observable<t.TreeViewEvent>;
   mouse$(options?: {
     button?: Button[];
     type?: t.MouseEventType;

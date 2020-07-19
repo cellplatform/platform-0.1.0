@@ -4,6 +4,9 @@ export { TreeUtil };
 import { TreeEvents } from './TreeEvents';
 export { TreeEvents };
 
+import { TreeState } from './TreeState';
+export { TreeState };
+
 import { Tree } from './Tree';
 export { Tree };
 

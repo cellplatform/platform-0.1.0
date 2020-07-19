@@ -14,8 +14,14 @@ export { PropList, IPropListItem, IPropListItemEventArgs };
 import { Button, IButtonProps } from '@platform/ui.button/lib/components/Button';
 export { Button, IButtonProps };
 
+import { Switch } from '@platform/ui.button/lib/components/Switch';
+export { Switch };
+
 import { ObjectView } from '@platform/ui.object';
 export { ObjectView };
 
 import { Spinner } from '@platform/ui.spinner';
 export { Spinner };
+
+import { TextInput } from '@platform/ui.text/lib/components/TextInput';
+export { TextInput };

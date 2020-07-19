@@ -9,7 +9,7 @@ export type IMonacoStandaloneThemeData = {
   inherit: boolean;
   colors: { [colorId: string]: string };
   encodedTokensColors?: string[];
-  rules: {}[];
+  rules: t.Object[];
 };
 
 export type IMonacoTextModel = {

@@ -2,19 +2,21 @@ import { Subject } from 'rxjs';
 
 import { HttpClient } from '../Client.http';
 import { MemoryCache, t, TypeSystem, value, Uri } from '../common';
+import { saveChanges } from './typesystem.saveChanges';
 
 type N = string | t.INsUri;
+type E = t.TypedSheetEvent;
 
 /**
  * Access point for working with the TypeSystem.
  */
 export function typesystem(input?: t.ClientTypesystemOptions | string | number) {
   const args = typeof input === 'object' ? input : { http: input };
-  const event$ = args.event$ ? (args.event$ as Subject<t.TypedSheetEvent>) : undefined;
+  const event$ = args.event$ ? (args.event$ as Subject<E>) : undefined;
   const cache = args.cache || MemoryCache.create();
   const pool = args.pool || TypeSystem.Pool.create();
 
-  let change: t.ITypedSheetChangeMonitor | undefined;
+  let changeMonitor: t.ITypedSheetChangeMonitor | undefined;
 
   const http = HttpClient.isClient(args.http)
     ? (args.http as t.IHttpClient)
@@ -34,7 +36,7 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
      * The singleton change-monitor for the client.
      */
     get changes() {
-      return change || (change = TypeSystem.ChangeMonitor.create());
+      return changeMonitor || (changeMonitor = TypeSystem.ChangeMonitor.create());
     },
 
     /**
@@ -86,6 +88,17 @@ export function typesystem(input?: t.ClientTypesystemOptions | string | number) 
      */
     sheet<T>(ns: N) {
       return TypeSystem.Sheet.load<T>({ ns, fetch, cache, event$, pool });
+    },
+
+    /**
+     * Writes changes to the server.
+     */
+    saveChanges(
+      sheet: t.ITypedSheet,
+      options: { fire?: t.FireEvent<E> | Subject<E>; wait?: number } = {},
+    ) {
+      const { fire, wait } = options;
+      return saveChanges({ http, sheet, fire, wait });
     },
   };
 

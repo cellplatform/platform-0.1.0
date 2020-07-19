@@ -21,9 +21,9 @@ export type IMonacoCancellationToken = {
 /**
  * https://microsoft.github.io/monaco-editor/api/interfaces/monaco.ievent.html
  */
-export type IMonacoEvent<T> = {};
+export type IMonacoEvent<T> = t.Object;
 
 /**
  * https://microsoft.github.io/monaco-editor/api/classes/monaco.range.html
  */
-export type IMonacoRange = {};
+export type IMonacoRange = t.Object;

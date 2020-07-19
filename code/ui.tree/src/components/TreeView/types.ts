@@ -1,4 +1,4 @@
-import { TreeNodeMouseEvent } from '../../types';
+import * as t from '../../types';
 
 /**
  * [Events]
@@ -7,7 +7,7 @@ export type TreeViewEvent = ITreeViewMouseEvent | ITreeViewFocusEvent;
 
 export type ITreeViewMouseEvent = {
   type: 'TREEVIEW/mouse';
-  payload: TreeNodeMouseEvent;
+  payload: t.TreeNodeMouseEvent;
 };
 
 export type ITreeViewFocusEvent = {

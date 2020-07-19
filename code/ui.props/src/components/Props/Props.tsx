@@ -167,7 +167,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
           theme={theme}
           renderIcon={this.iconFactory}
           renderNodeBody={this.nodeFactory}
-          events$={this.tree$}
+          event$={this.tree$}
         />
       </div>
     );

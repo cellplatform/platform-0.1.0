@@ -3,10 +3,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, t, ui } from '../../common';
-import { DebugLog } from '../DebugLog';
+import { Log } from '../Debug.Log';
+import { Sheet } from '../Debug.Sheet';
 
-export type IDebugProps = { style?: CssValue };
-export type IDebugState = {};
+export type IDebugProps = {
+  view: 'LOG' | 'SHEET';
+  style?: CssValue;
+};
+export type IDebugState = t.Object;
 
 export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
   public state: IDebugState = {};
@@ -32,17 +36,21 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
    * [Render]
    */
   public render() {
-    const ctx = this.context;
     const styles = {
       base: css({ Absolute: 0 }),
     };
+    return <div {...css(styles.base, this.props.style)}>{this.renderBody()}</div>;
+  }
 
-    const event$ = ctx.env.event$;
+  private renderBody() {
+    const ctx = this.context;
+    const { view } = this.props;
 
-    return (
-      <div {...css(styles.base, this.props.style)}>
-        <DebugLog event$={event$} style={{ Absolute: 0 }} />
-      </div>
-    );
+    if (view === 'SHEET') {
+      return <Sheet />;
+    }
+
+    // Default view.
+    return <Log event$={ctx.env.event$} style={{ Absolute: 0 }} />;
   }
 }

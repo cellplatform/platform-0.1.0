@@ -13,7 +13,6 @@ export * from './types.cell';
 export * from './types.column';
 export * from './types.compile';
 export * from './types.db';
-export * from './types.event';
 export * from './types.file';
 export * from './types.fs';
 export * from './types.fs.sync';

@@ -54,25 +54,29 @@ export class TreeUtil {
       if (!args.node || stopped) {
         return;
       }
+      let skipChildren = false;
       fn({
         node: args.node as T,
         parent: args.parent as T,
         index: args.index,
         depth: args.depth,
         stop: () => (stopped = true),
+        skip: () => (skipChildren = true),
       });
       if (stopped) {
         return;
       }
       let index = -1;
-      for (const child of TreeUtil.children(args.node)) {
-        index++;
-        walk({
-          node: child,
-          parent: args.node,
-          index,
-          depth: args.depth + 1,
-        }); // <== RECURSION 🌳
+      if (!skipChildren) {
+        for (const child of TreeUtil.children(args.node)) {
+          index++;
+          walk({
+            node: child,
+            parent: args.node,
+            index,
+            depth: args.depth + 1,
+          }); // <== RECURSION 🌳
+        }
       }
     };
     return walk({ node, depth: 0, index: -1 });
@@ -83,10 +87,10 @@ export class TreeUtil {
    */
   public static walkUp<T extends t.ITreeNode>(
     root: T | undefined,
-    node: T | T['id'] | undefined,
+    startAt: T | T['id'] | undefined,
     fn: (args: t.ITreeAscend<T>) => any,
   ) {
-    const current = typeof node === 'string' ? TreeUtil.findById(root, node) : node;
+    const current = typeof startAt === 'string' ? TreeUtil.findById(root, startAt) : startAt;
     if (current) {
       let stop = false;
       const parentNode = TreeUtil.parent(root, current);

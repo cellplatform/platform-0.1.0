@@ -20,7 +20,6 @@ export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
       type: 'IPC/sheet/changed',
       payload: {
         source: 'MAIN',
-        ns: e.sheet.uri.id,
         changes: e.changes,
       },
     };
@@ -45,11 +44,8 @@ export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
    * Monitor changes to sheets from window.
    */
   rx.payload<t.IpcSheetChangedEvent>(window$, 'IPC/sheet/changed').subscribe(async (e) => {
-    const { ns, changes } = e;
-
-    console.log();
-    console.log('CHANGE', ns);
-    console.log('changes', changes);
+    const { changes } = e;
+    const uri = changes.uri;
 
     /**
      * TODO 🐷
@@ -61,13 +57,14 @@ export function ipc(args: { ctx: t.IContext; event$: Subject<t.AppEvent> }) {
      * - make sure change-monitor tracks 2..n levels deep.
      *
      */
+
     if (changes.ns) {
-      const to = changes.ns.to;
-      await ctx.client.http.ns(ns).write({ ns: to });
+      const ns = changes.ns.to;
+      await ctx.client.http.ns(uri).write({ ns });
     }
 
     // Change sheet.
-    const sheet = await ctx.client.sheet(ns);
+    const sheet = await ctx.client.sheet(uri);
     sheet.change(changes);
   });
 }

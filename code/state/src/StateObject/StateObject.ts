@@ -1,9 +1,13 @@
-import produce from 'immer';
-import { Subject } from 'rxjs';
-import { share, filter, map } from 'rxjs/operators';
 import { id } from '@platform/util.value';
+import produce, { setAutoFreeze } from 'immer';
+import { Subject, Observable } from 'rxjs';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
 
-import * as t from './types';
+import { t } from '../common';
+
+if (typeof setAutoFreeze === 'function') {
+  setAutoFreeze(false);
+}
 
 type O = Record<string, unknown>;
 
@@ -17,12 +21,14 @@ type O = Record<string, unknown>;
  * To pass an read-only version of the [StateObject] around an application
  * use the plain [IStateObject] interface which does not expose the `change` method.
  */
-export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
+export class StateObject<T extends O, E extends t.Event<any>> implements t.IStateObjectWrite<T, E> {
   /**
    * Create a new [StateObject] instance.
    */
-  public static create<T extends O>(initial: T): t.IStateObjectWritable<T> {
-    return new StateObject<T>({ initial });
+  public static create<T extends O, E extends t.Event<any> = any>(
+    initial: T,
+  ): t.IStateObjectWrite<T, E> {
+    return new StateObject<T, E>({ initial });
   }
 
   /**
@@ -35,8 +41,10 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
    *    logic around an application.
    * 
    */
-  public static readonly<T extends O>(obj: t.IStateObjectWritable<T>): t.IStateObject<T> {
-    return obj as t.IStateObject<T>;
+  public static readonly<T extends O, E extends t.Event<any> = any>(
+    obj: t.IStateObjectWrite<T, E>,
+  ): t.IStateObject<T, E> {
+    return obj as t.IStateObject<T, E>;
   }
 
   /**
@@ -62,7 +70,19 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
 
   public readonly changed$ = this._event$.pipe(
     filter((e) => e.type === 'StateObject/changed'),
-    map((e) => e.payload as t.IStateObjectChanged<T>),
+    map((e) => e.payload as t.IStateObjectChanged<T, E>),
+    share(),
+  );
+
+  public readonly cancelled$ = this._event$.pipe(
+    filter((e) => e.type === 'StateObject/cancelled'),
+    map((e) => e.payload as t.IStateObjectCancelled<T>),
+    share(),
+  );
+
+  public readonly dispatch$ = this._event$.pipe(
+    filter((e) => e.type === 'StateObject/dispatch'),
+    map((e) => (e.payload as t.IStateObjectDispatch<E>).event),
     share(),
   );
 
@@ -76,46 +96,89 @@ export class StateObject<T extends O> implements t.IStateObjectWritable<T> {
   }
 
   public get readonly() {
-    return this as t.IStateObject<T>;
+    return this as t.IStateObject<T, E>;
   }
 
   /**
    * [Methods]
    */
-  public change(fn: t.StateObjectChanger<T>) {
+  public change = (fn: t.StateObjectChanger<T> | T, action?: E['type']) => {
     const cid = id.shortid(); // "change-id"
     const from = this.state;
-
-    // Invoke the change handler.
-    const to = produce<T>(from, (draft) => {
-      fn(draft as T);
-    });
+    const to = next(from, fn);
+    const eventType = (action || '').trim();
 
     // Fire BEFORE event.
-    const payload: t.IStateObjectChanging<T> = {
+    const payload: t.IStateObjectChanging<T, E> = {
       cid,
       from,
       to,
       cancelled: false,
       cancel: () => (payload.cancelled = true),
+      action: eventType,
     };
     this.fire({ type: 'StateObject/changing', payload });
 
     // Update state.
     const cancelled = payload.cancelled;
-    if (!cancelled) {
+    if (cancelled) {
+      this.fire({ type: 'StateObject/cancelled', payload });
+    } else {
       this._state = to;
-      this.fire({ type: 'StateObject/changed', payload: { cid, from, to } });
+      this.fire({
+        type: 'StateObject/changed',
+        payload: { cid, from, to, action: eventType },
+      });
     }
 
     // Finish up.
     return { cid, from, to, cancelled };
-  }
+  };
+
+  public dispatch = (event: E) => {
+    return this.fire({ type: 'StateObject/dispatch', payload: { event } });
+  };
+
+  public dispatched = (action: E['payload'], takeUntil$?: Observable<any>) => {
+    const ob$ = !takeUntil$ ? this.dispatch$ : this.dispatch$.pipe(takeUntil(takeUntil$));
+    return ob$.pipe(
+      filter((e) => e.type === action),
+      map((e) => e.payload),
+      share(),
+    );
+  };
+
+  public changed = (action: E['payload'], takeUntil$?: Observable<any>) => {
+    const ob$ = !takeUntil$ ? this.event$ : this.event$.pipe(takeUntil(takeUntil$));
+    return ob$.pipe(
+      filter((e) => e.type === 'StateObject/changed'),
+      map((e) => e.payload as t.IStateObjectChanged<T, E>),
+      filter((e) => e.action === action),
+      share(),
+    );
+  };
 
   /**
-   * Helpers
+   * [Internal]
    */
   private fire(e: t.StateObjectEvent) {
     this._event$.next(e);
   }
 }
+
+/**
+ * [Helpers]
+ */
+
+const next = <T extends O>(from: T, fn: t.StateObjectChanger<T> | T) => {
+  if (typeof fn === 'function') {
+    // Update.
+    return produce<T>(from, (draft) => {
+      fn(draft as T);
+      return undefined; // NB: No return value, to prevent replacement.
+    });
+  } else {
+    // Replace.
+    return produce<T>(from, () => fn);
+  }
+};

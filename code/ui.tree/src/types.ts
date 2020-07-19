@@ -4,6 +4,7 @@ export * from './themes/types';
 export * from './components/TreeView/types';
 export * from './components/TreeNode/types';
 export * from './TreeEvents/types';
+export * from './TreeState/types';
 
 /**
  * A single node within the "tree"
@@ -146,7 +147,8 @@ export type ITreeDescend<T extends ITreeNode = ITreeNode> = {
   node: T;
   parent?: T;
   depth: number;
-  stop: () => void;
+  stop(): void;
+  skip(): void; // Skip children.
 };
 
 /**
@@ -156,5 +158,5 @@ export type ITreeAscend<T extends ITreeNode = ITreeNode> = {
   index: number; // Within siblings.
   node: T;
   parent?: T;
-  stop: () => void;
+  stop(): void;
 };

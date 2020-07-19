@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, color, CssValue, COLORS, t, ui, onStateChanged } from '../../common';
+import { css, color, CssValue, t, ui, onStateChanged } from '../../common';
 import { IPropListItem, PropList } from '../primitives';
 import { SidebarDebug } from './Sidebar.debug';
+import { SidebarTypeDef } from './Sidebar.typeDef';
 
 export type ISidebarProps = { style?: CssValue };
-export type ISidebarState = {};
+export type ISidebarState = t.Object;
 
 export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
   public state: ISidebarState = {};
@@ -87,8 +88,8 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
     const isPulled = Boolean(typesystem);
     const typeDefs = typesystem?.defs || [];
 
-    const elTypes = typeDefs.map((def, i) => {
-      return <div key={i}>{this.renderType(def)}</div>;
+    const elTypes = typeDefs.map((typeDef, i) => {
+      return <SidebarTypeDef key={i} typeDef={typeDef} />;
     });
 
     const items: IPropListItem[] = [{ label: 'language', value: 'typescript' }];
@@ -102,44 +103,5 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
         <SidebarDebug />
       </div>
     );
-  }
-
-  private renderType(def: t.INsTypeDef) {
-    const styles = {
-      label: css({
-        Flex: 'horizontal-center-center',
-      }),
-      column: css({
-        backgroundColor: COLORS.DARK,
-        color: color.format(1),
-        PaddingX: 5,
-        paddingTop: 1,
-        paddingBottom: 1,
-        marginRight: 6,
-        borderRadius: 2,
-        fontSize: 10,
-        minWidth: 24,
-        textAlign: 'center',
-        boxSizing: 'border-box',
-      }),
-    };
-
-    const columns = def.columns.map((item) => {
-      const label = (
-        <div {...styles.label}>
-          <div {...styles.column}>{item.column}</div>
-          <div>{item.prop}</div>
-        </div>
-      );
-      const value = item.type.typename;
-      const tooltip = item.default ? item.default.toString() : undefined;
-      const clipboard = JSON.stringify(item.type, null, '  ');
-      const res: IPropListItem = { label, value, tooltip, clipboard };
-      return res;
-    });
-
-    const items = [{ label: 'uri', value: def.uri }, ...columns];
-    const title = `Type: ${def.typename}`;
-    return <PropList title={title} items={items} />;
   }
 }

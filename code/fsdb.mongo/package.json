@@ -1,6 +1,6 @@
 {
   "name": "@platform/fsdb.mongo",
-  "version": "0.0.133",
+  "version": "0.0.134",
   "description": "Standard IDb abstraction over mongodb.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -15,8 +15,8 @@
     "build-test": "ts build --tsconfig=tsconfig.test $@"
   },
   "dependencies": {
-    "@platform/fsdb.nedb": "1.3.127",
-    "@platform/fsdb.types": "0.6.28",
+    "@platform/fsdb.nedb": "1.3.128",
+    "@platform/fsdb.types": "0.6.29",
     "@platform/libs": "0.2.2",
     "mongodb": "3.5.9"
   },

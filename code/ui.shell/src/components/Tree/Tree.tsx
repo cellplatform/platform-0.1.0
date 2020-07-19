@@ -60,7 +60,7 @@ export class Tree extends React.PureComponent<ITreeProps> {
           renderIcon={this.renderIcon}
           renderPanel={this.renderPanel}
           renderNodeBody={this.renderNode}
-          events$={this.props.tree$}
+          event$={this.props.tree$}
           tabIndex={0}
         />
       </div>

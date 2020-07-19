@@ -6,7 +6,7 @@ import { coord, css, CssValue, onStateChanged, t, time, ui, Uri } from '../../co
 import { IPropListItem, PropList } from '../primitives';
 
 export type ISidebarDebugProps = { style?: CssValue };
-export type ISidebarDebugState = {};
+export type ISidebarDebugState = t.Object;
 
 export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISidebarDebugState> {
   public state: ISidebarDebugState = {};
@@ -123,7 +123,7 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
     const changes = sheet.state.changes;
     ctx.fire({
       type: 'IPC/sheet/changed',
-      payload: { source: ctx.env.def, ns: sheet.uri.id, changes },
+      payload: { source: ctx.env.def, changes },
     });
   };
 

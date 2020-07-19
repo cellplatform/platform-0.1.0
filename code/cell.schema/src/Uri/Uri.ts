@@ -9,6 +9,9 @@ type P<T extends t.IUri> = (parsed: t.IUriParts<T>) => void;
 const ALLOW: Allow = { NS: [] };
 export const DEFAULT = { ALLOW };
 
+const stripQuotes = (text: string) =>
+  text.trim().replace(/^"/, '').replace(/"$/, '').replace(/^'/, '').replace(/'$/, '').trim();
+
 /**
  * Helpers for working with URIs.
  */
@@ -32,9 +35,10 @@ export class Uri {
    * Cleans up an input string.
    */
   public static clean(input?: string) {
-    let text = (input || '').trimLeft();
-    text = text.replace(/^=/, '').trimLeft(); // NB: = prefix (eg. spreadsheet REF).
-    text = text.split('?')[0].trimRight(); // NB: trim query-string.
+    let text = stripQuotes(input || '');
+    text = text.replace(/^=/, '').trim(); // NB: = prefix (eg. spreadsheet REF).
+    text = stripQuotes(text);
+    text = text.split('?')[0].trim(); // NB: trim query-string.
     return text;
   }
 
@@ -155,6 +159,15 @@ export class Uri {
     return parseOrThrow<t.IFileUri>(input, 'FILE', throwError);
   }
 
+  public static eq(a?: t.IUri | string, b?: t.IUri | string): boolean {
+    const toString = (input?: t.IUri | string) => {
+      input = input === undefined || input === null ? '' : input;
+      const text = input.toString().trim();
+      return !text.includes(':') ? `ns:${text}` : text;
+    };
+    return toString(a) === toString(b);
+  }
+
   /**
    * Helpers for evalutating boolean conditions about a URI.
    */
@@ -228,6 +241,10 @@ export class Uri {
   public static toNs(input?: string | t.IUri) {
     if (input === undefined) {
       return Uri.ns(cuid());
+    }
+
+    if (typeof input === 'string') {
+      input = Uri.clean(input);
     }
 
     if (typeof input === 'string' && !input.includes(':')) {

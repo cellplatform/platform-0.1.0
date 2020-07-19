@@ -248,23 +248,43 @@ describe('Uri', () => {
   });
 
   describe('clean', () => {
+    const test = (input: string | undefined, expected: string) => {
+      const res = Uri.clean(input);
+      expect(res).to.eql(expected);
+    };
+
     it('strips whitespace', () => {
-      expect(Uri.clean()).to.eql('');
-      expect(Uri.clean('')).to.eql('');
-      expect(Uri.clean('  ')).to.eql('');
+      test('', '');
+      test('  ', '');
+      test(undefined, '');
     });
 
     it('strips query-string', () => {
-      expect(Uri.clean('foo?q=123')).to.eql('foo');
-      expect(Uri.clean('  foo?q=123 ')).to.eql('foo');
-      expect(Uri.clean('  foo  ?q=123 ')).to.eql('foo');
+      test('foo?q=123', 'foo');
+      test('  foo?q=123 ', 'foo');
+      test('  foo  ?q=123 ', 'foo');
     });
 
     it('strips "=" prefix', () => {
-      expect(Uri.clean('=foo')).to.eql('foo');
-      expect(Uri.clean('  =foo  ')).to.eql('foo');
-      expect(Uri.clean('  = foo  ')).to.eql('foo');
-      expect(Uri.clean('=foo?q=123')).to.eql('foo');
+      test('=foo', 'foo');
+      test('  =foo  ', 'foo');
+      test('  = foo  ', 'foo');
+      test('=foo?q=123', 'foo');
+    });
+
+    it('strips quotes', () => {
+      test(`"foo"`, 'foo');
+      test(` "foo" `, 'foo');
+      test(`'foo'`, 'foo');
+      test(`'foo"`, 'foo');
+      test(`="foo" `, 'foo');
+      test(` = "foo" `, 'foo');
+      test(`"=foo" `, 'foo');
+      test(`" = foo" `, 'foo');
+      test(`"foo?q=123"`, 'foo');
+      test(`"foo?q=123"`, 'foo');
+      test(`"=foo?q=123"`, 'foo');
+      test(`" =foo?q=123 "`, 'foo');
     });
   });
 
@@ -752,6 +772,66 @@ describe('Uri', () => {
       test('cell:foo:B9', 1);
       test('=cell:foo:C5', 2);
       test(' =cell:foo:C5 ', 2);
+    });
+  });
+
+  describe('eq', () => {
+    type U = t.IUri | string | undefined;
+    const test = (a: U, b: U, expected: boolean) => {
+      expect(Uri.eq(a, b)).to.eql(expected);
+      expect(Uri.eq(b, a)).to.eql(expected);
+    };
+
+    it('empty (strings)', () => {
+      test('', '', true);
+      test('    ', '', true);
+    });
+
+    it('undefined (illegal)', () => {
+      test(undefined as any, undefined as any, true);
+      test(null as any, null as any, true);
+      test(undefined as any, null as any, true);
+
+      test(undefined as any, 'ns:foo', false);
+      test(null as any, 'ns:foo', false);
+    });
+
+    it('namespace', () => {
+      test('ns:foo', 'ns:foo', true);
+      test('foo', 'ns:foo', true);
+      test('foo', 'foo', true); // NB: Assumes simple strings are namespaces (no ":")
+      test('  ns:foo  ', 'ns:foo', true);
+
+      test(Uri.ns('foo'), 'ns:foo', true);
+
+      test('ns:foo', 'ns:bar', false);
+      test('foo', 'ns:bar', false);
+      test('foo', 'bar', false);
+      test('ns:foo', undefined, false);
+      test(Uri.ns('foo'), 'ns:bar', false);
+      test(Uri.ns('foo'), 'bar', false);
+      test(Uri.ns('foo'), undefined, false);
+    });
+
+    it('cell | row | column', () => {
+      test('cell:foo:A1', '  cell:foo:A1  ', true);
+      test('cell:foo:A1', 'cell:foo:A1', true);
+      test('cell:foo:A', 'cell:foo:A', true);
+      test('cell:foo:1', 'cell:foo:1', true);
+
+      test('cell:foo:A1', 'cell:foo:Z9', false);
+    });
+
+    it('file', () => {
+      test('file:foo:abc', 'file:foo:abc', true);
+      test('file:foo:abc', '  file:foo:abc  ', true);
+      test('file:foo:abc', 'file:bar:abc', false);
+      test('file:foo:abc', 'file:foo:123', false);
+
+      test(Uri.file('file:foo:abc'), Uri.file('file:foo:abc'), true);
+      test(Uri.file('file:foo:abc'), 'file:foo:abc', true);
+      test(Uri.file('file:foo:abc'), 'file:foo:123', false);
+      test(Uri.file('file:foo:abc'), 'foo', false);
     });
   });
 });

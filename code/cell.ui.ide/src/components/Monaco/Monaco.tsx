@@ -1,14 +1,14 @@
 import MonacoEditor from '@monaco-editor/react';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
-import { constants, css, CssValue, t, ui, onStateChanged } from '../../common';
+import { constants, css, CssValue, onStateChanged, t, ui, time } from '../../common';
 import { MonacoApi } from '../Monaco.api';
 
 const { MONACO } = constants;
 
-export type IMonacoProps = { style?: CssValue };
+export type IMonacoProps = { focusOnLoad?: boolean; style?: CssValue };
 export type IMonacoState = { api?: MonacoApi };
 
 export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
@@ -28,7 +28,7 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
    */
   constructor(props: IMonacoProps) {
     super(props);
-    Monaco.api(); // Ensure API is initialized and configured (singleton).
+    Monaco.api(); // Ensure the (singleton) API is initialized and configured.
   }
 
   public componentDidMount() {
@@ -63,6 +63,19 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
     this.editor.setValue(value);
   }
 
+  public get position(): t.IIdeEditorPosition {
+    return this.editor.getPosition();
+  }
+
+  /**
+   * [Methods]
+   */
+  public focus() {
+    if (this.editor) {
+      this.editor.focus();
+    }
+  }
+
   /**
    * [Render]
    */
@@ -90,6 +103,9 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
     this.editor = editor;
     this.getEditorValue = getEditorValue;
     editor.onDidChangeModelContent((e: any) => this.fireChange(e, getEditorValue()));
+    if (this.props.focusOnLoad) {
+      time.delay(0, () => this.focus());
+    }
   };
 
   private fireChange(e: any, text: string) {
@@ -101,7 +117,9 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
       isUndoing: e.isUndoing,
       versionId: e.versionId,
       change: e.change,
+      position: this.position,
     };
+
     this.context.fire({ type: 'APP:IDE/editor/contentChange', payload });
   }
 }

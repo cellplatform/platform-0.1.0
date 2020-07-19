@@ -30,21 +30,21 @@
   dependencies:
     "@platform/libs" "0.2.2"
 
-"@platform/cell.compile.web@0.0.109":
-  version "0.0.109"
-  resolved "https://registry.yarnpkg.com/@platform/cell.compile.web/-/cell.compile.web-0.0.109.tgz#117ae5aecbfbd53171452869a28a1cc0df928f8f"
-  integrity sha512-0UiZ5NAIOmP27a3K4IoOaes54yfr/EDzEeGLpYpgUHJGUAh64FijXgq/uj30aKntmDLZQkB0DaQM3gH3tcXLYQ==
+"@platform/cell.compile.web@0.0.112":
+  version "0.0.112"
+  resolved "https://registry.yarnpkg.com/@platform/cell.compile.web/-/cell.compile.web-0.0.112.tgz#9e40f768a45a07479d3cd9463f5fedb40a1ac450"
+  integrity sha512-+9L9X/zSxZuFnBz2c6HZxhYec2OB2KKZxSl48aaFoo80DIbohCQ0iKMSe0W/bOtFuZAGIXiTaBbofMVP11u7Zg==
   dependencies:
-    "@platform/cell.types" "0.4.126"
+    "@platform/cell.types" "0.4.129"
     "@platform/cli" "0.5.41"
     "@platform/cli.prompt" "0.3.22"
     "@platform/exec" "0.2.61"
     "@platform/libs" "0.2.2"
 
-"@platform/cell.types@0.4.126":
-  version "0.4.126"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.126.tgz#e71cf388203c2a2ece3adf2afe3f4142e5975b25"
-  integrity sha512-gPXIqIngDC5ftsoavWQviDfewIacVwqZkuxcY2ezT+PHEwhsI95iei7ipEnpT6I6wxWXABEv1ucBv3ufDhpiYw==
+"@platform/cell.types@0.4.129":
+  version "0.4.129"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.129.tgz#e4301c9fa778b8793e80cb5bd191c712f4b26bfb"
+  integrity sha512-N5/g2/dIpmSgmPE9FApQJ+2f6OPtT31/eG3Qdz+sb1AXAoEZ7TsuUmVtJCBcweMrOeez0lYo8isULUpHkaOTdA==
   dependencies:
     "@platform/cache" "0.2.33"
     "@platform/fs.s3.types" "0.2.11"
@@ -3194,9 +3194,9 @@ ts-node@8.10.2:
     yn "3.1.1"
 
 ts-toolbelt@^6.3.3:
-  version "6.12.2"
-  resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-6.12.2.tgz#d9007906d903b89d7bf210f43fbefe2a2bfd5734"
-  integrity sha512-Z9VWXJ32UpLrjw5OqieJ944heNN5gkVm69VLvVf9GgrdxoxPiM4ughyYFip6pIDqRnrVuiegMTD48zxnOW5j/Q==
+  version "6.13.11"
+  resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-6.13.11.tgz#46260d1cff0f2d635931df8d32239b73f2ed4f8d"
+  integrity sha512-QmvHwAofS1MAn1ndXCn2AVhxJLipaj4tK26SrhBTiydfgKtbLlU2efpIP/8Jocrc9ynNslZqrhqAesruJMlxCQ==
 
 tsconfig-paths@^3.9.0:
   version "3.9.0"

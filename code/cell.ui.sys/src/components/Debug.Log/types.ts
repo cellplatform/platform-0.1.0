@@ -1,0 +1,14 @@
+import { t } from '../../common';
+export * from '../../common/types';
+
+export type IDebugLogRead = t.IStateObject<IDebugLogState>;
+export type IDebugLogWrite = t.IStateObjectWrite<IDebugLogState>;
+
+export type IDebugLogState = {
+  total: number;
+  items: IDebugLogItem[];
+  selectedIndex?: number;
+  isEnabled: boolean;
+};
+
+export type IDebugLogItem = { timestamp: number; count: number; data: t.Event<any> };

@@ -26,5 +26,5 @@ export type ITypedSheetSaved = {
   target: string;
   sheet: t.ITypedSheet;
   changes: t.ITypedSheetChanges;
-  errors: { ns: string; error: t.IHttpError }[];
+  error?: t.IHttpError;
 };

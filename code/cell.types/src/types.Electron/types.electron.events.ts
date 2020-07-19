@@ -12,7 +12,6 @@ export type IpcSheetChangedEvent = {
   payload: IpcSheetChanged;
 };
 export type IpcSheetChanged = {
-  ns: string;
   changes: t.ITypedSheetChanges;
   source: IpcEventSource;
 };

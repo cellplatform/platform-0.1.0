@@ -6,7 +6,7 @@ import { color, css, CssValue, events, onStateChanged, t, ui } from '../../commo
 import { Button, Icons } from '../primitives';
 
 export type IRootOverlayProps = { factory: t.RenderOverlay; style?: CssValue };
-export type IRootOverlayState = {};
+export type IRootOverlayState = t.Object;
 
 export class RootOverlay extends React.PureComponent<IRootOverlayProps, IRootOverlayState> {
   public state: IRootOverlayState = {};

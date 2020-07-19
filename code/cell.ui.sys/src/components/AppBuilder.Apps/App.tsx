@@ -16,7 +16,7 @@ export type IAppProps = {
 export type AppClickEvent = { app: IAppData };
 export type AppClickEventHandler = (e: AppClickEvent) => void;
 
-export type IAppState = {};
+export type IAppState = t.Object;
 
 export class App extends React.PureComponent<IAppProps, IAppState> {
   public state: IAppState = {};

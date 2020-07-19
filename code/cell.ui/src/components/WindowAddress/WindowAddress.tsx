@@ -65,8 +65,8 @@ export class WindowAddress extends React.PureComponent<IWindowAddressProps, IWin
     const styles = {
       base: css({
         position: 'relative',
-        backgroundColor: color.format(-0.04),
-        border: `solid 1px ${color.format(-0.08)}`,
+        backgroundColor: color.format(1),
+        border: `solid 1px ${color.format(-0.2)}`,
         borderRadius: 5,
         fontSize: 12,
         height: 26,

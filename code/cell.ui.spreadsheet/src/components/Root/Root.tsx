@@ -8,7 +8,7 @@ import { WindowTitleBar } from '../primitives';
 import { Sidebar } from '../Sidebar';
 
 export type IRootProps = { style?: CssValue };
-export type IRootState = {};
+export type IRootState = t.Object;
 
 export class Root extends React.PureComponent<IRootProps, IRootState> {
   public state: IRootState = {};

@@ -286,7 +286,7 @@ describe('Client.TypeSystem', () => {
         const saved = fired[1].payload as t.ITypedSheetSaved;
 
         expect(saved.ok).to.eql(true);
-        expect(saved.errors).to.eql([]);
+        expect(saved.error).to.eql(undefined);
 
         const target = client.http.origin;
         expect(saving.target).to.eql(target);
@@ -305,7 +305,7 @@ describe('Client.TypeSystem', () => {
         expect(changes.cells?.B1.to).to.eql({ props: { isEnabled: true } });
       });
 
-      it('bubbles event: errors', async () => {
+      it('bubbles event: error', async () => {
         const { mock, client } = await testDefs();
         const sheet = await client.sheet<g.TypeIndex>('ns:foo.mySheet');
         const saver = Client.saveMonitor({ client, debounce: 10 });
@@ -332,17 +332,13 @@ describe('Client.TypeSystem', () => {
         expect(fired[1].type).to.eql('SHEET/saved');
 
         const e = fired[1].payload as t.ITypedSheetSaved;
+        const error = e.error;
+        expect(error?.status).to.eql(422);
+        expect(error?.type).to.eql(ERROR.HTTP.SERVER);
+        expect(error?.message).to.include(`Failed while saving data to`);
+        expect(error?.message).to.include(client.http.origin);
 
-        expect(e.errors.length).to.eql(1);
-        expect(e.errors[0].ns).to.eql('ns:foo.mySheet');
-
-        const error = e.errors[0].error;
-        expect(error.status).to.eql(422);
-        expect(error.type).to.eql(ERROR.HTTP.SERVER);
-        expect(error.message).to.include(`Failed while saving data to`);
-        expect(error.message).to.include(client.http.origin);
-
-        const child = (error.children || [])[0] as t.IHttpError;
+        const child = (error?.children || [])[0] as t.IHttpError;
         expect(child.status).to.eql(422);
         expect(child.type).to.eql(errorType);
         expect(child.message).to.include('My fail');

@@ -19,5 +19,5 @@ export { defaultValue, time, value, rx };
 import { coord } from '@platform/cell.coord';
 export { coord };
 
-import { AppSchema, AppWindowModel, AppModel } from '@platform/cell.schema.apps';
+import { AppSchema, AppWindowModel, AppModel } from '@platform/cell.schema.sys';
 export { AppSchema, AppWindowModel, AppModel };

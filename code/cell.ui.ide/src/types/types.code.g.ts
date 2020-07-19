@@ -3,11 +3,10 @@
  * 
  *    |                
  *    |➔  ns:ckcn02uwa000g456cmij8vaix
- *    |➔  ns:ckcmznmtm000e456cuu0hktl7
  *    |
  *
  * By:
- *    @platform/cell.typesystem@0.0.81
+ *    @platform/cell.typesystem@0.0.83
  * 
  * Notes: 
  * 
@@ -30,17 +29,13 @@
  *
  */
 export declare type TypeIndex = {
-  Code: Code;
-  Language: Language;
+  CodeFile: CodeFile;
 };
 
-export declare type Code = {
+export declare type CodeFile = {
   name: string;
+  path: string;
   language: string;
   languageVersion: string;
   text: string;
-};
-
-export declare type Language = {
-  name: string;
 };

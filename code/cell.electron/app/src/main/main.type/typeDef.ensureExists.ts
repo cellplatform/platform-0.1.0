@@ -15,7 +15,7 @@ export async function ensureExists(args: { client: t.IClientTypesystem; force?: 
     const schema = AppSchema.declare();
     config.ns.appType = schema.namespaces.App; // NB: Save generated namespace URI (cuid) to local config file.
 
-    const res = await schema.write(http);
+    const res = await schema.def.write(http);
     if (!res.ok) {
       const messages = res.errors.map((e) => e.error.message).join(',');
       throw new Error(`Failed while saving type-defs: ${messages}`);

@@ -22,5 +22,5 @@ export type IEnvContext<E extends t.Event = t.EnvEvent> = {
   env: t.IEnv;
   client: t.IClientTypesystem;
   event$: Observable<E>;
-  fire(e: E): void;
+  fire: t.FireEvent<E>;
 };
