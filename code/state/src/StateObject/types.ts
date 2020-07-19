@@ -35,14 +35,38 @@ export type IStateObjectWrite<T extends O, E extends Event<any> = any> = IStateO
   change(input: StateObjectChanger<T> | T, action?: E['type']): IStateObjectChangeResponse<T>;
 };
 
+export type StateObjectChangeOperation = 'update' | 'replace';
+
 export type IStateObjectChangeResponse<T extends O> = {
+  op: StateObjectChangeOperation;
   cid: string; // "change-id"
   cancelled: boolean;
   from: T;
   to: T;
+  patches: IStateObjectChangePatches;
 };
+export type IStateObjectChangePatches = { prev: StatePatch[]; next: StatePatch[] };
 
 export type StateObjectChanger<T extends O> = (draft: T) => void;
+
+/**
+ * Patch
+ * Standard:
+ *    RFC-6902 JSON patch standard
+ *    https://tools.ietf.org/html/rfc6902
+ */
+export type StatePatch = IStatePatchAdd | IStatePatchRemove | IStatePatchReplace;
+
+export type IStatePatchAdd = { op: 'add'; path: string; value?: any };
+export type IStatePatchRemove = { op: 'remove'; path: string };
+export type IStatePatchReplace = { op: 'replace'; path: string; value?: any };
+
+/**
+ * NB: Part of the standard (RFC-6902) but not used.
+ */
+// export type IStatePatchMove = { op: 'move'; path: string; from: string };
+// export type IStatePatchCopy = { op: 'copy'; path: string; from: string };
+// export type IStatePatchTest = { op: 'test'; path: string; value?: any };
 
 /**
  * [Events]
@@ -62,9 +86,11 @@ export type IStateObjectChangingEvent<T extends O = any, E extends Event<any> = 
   payload: IStateObjectChanging<T, E>;
 };
 export type IStateObjectChanging<T extends O = any, E extends Event<any> = any> = {
+  op: StateObjectChangeOperation;
   cid: string; // "change-id"
   from: T;
   to: T;
+  patches: IStateObjectChangePatches;
   cancelled: boolean;
   cancel(): void;
   action: E['type'];
@@ -79,9 +105,11 @@ export type IStateObjectChangedEvent<T extends O = any, E extends Event<any> = a
   payload: IStateObjectChanged<T, E>;
 };
 export type IStateObjectChanged<T extends O = any, E extends Event<any> = any> = {
+  op: StateObjectChangeOperation;
   cid: string; // "change-id"
   from: T;
   to: T;
+  patches: IStateObjectChangePatches;
   action: E['type'];
 };
 

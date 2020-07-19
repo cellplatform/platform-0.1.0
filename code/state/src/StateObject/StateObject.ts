@@ -1,5 +1,5 @@
 import { id } from '@platform/util.value';
-import produce, { setAutoFreeze } from 'immer';
+import { setAutoFreeze, enablePatches, produceWithPatches, Patch } from 'immer';
 import { Subject, Observable } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
@@ -7,6 +7,9 @@ import { t } from '../common';
 
 if (typeof setAutoFreeze === 'function') {
   setAutoFreeze(false);
+}
+if (typeof enablePatches === 'function') {
+  enablePatches();
 }
 
 type O = Record<string, unknown>;
@@ -104,18 +107,21 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
    */
   public change = (fn: t.StateObjectChanger<T> | T, action?: E['type']) => {
     const cid = id.shortid(); // "change-id"
+    const type = (action || '').trim();
+
     const from = this.state;
-    const to = next(from, fn);
-    const eventType = (action || '').trim();
+    const { to, op, patches } = next(from, fn);
 
     // Fire BEFORE event.
     const payload: t.IStateObjectChanging<T, E> = {
+      op,
       cid,
       from,
       to,
+      patches,
       cancelled: false,
       cancel: () => (payload.cancelled = true),
-      action: eventType,
+      action: type,
     };
     this.fire({ type: 'StateObject/changing', payload });
 
@@ -127,12 +133,12 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
       this._state = to;
       this.fire({
         type: 'StateObject/changed',
-        payload: { cid, from, to, action: eventType },
+        payload: { op, cid, from, to, patches, action: type },
       });
     }
 
     // Finish up.
-    return { cid, from, to, cancelled };
+    return { op, cid, from, to, cancelled, patches };
   };
 
   public dispatch = (event: E) => {
@@ -169,16 +175,28 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
 /**
  * [Helpers]
  */
+const toPatch = (input: Patch): t.StatePatch => ({ ...input, path: input.path.join('/') });
+const toPatches = (input: Patch[]) => input.map((p) => toPatch(p));
+const toPatchSet = (forward: Patch[], backward: Patch[]): t.IStateObjectChangePatches => {
+  return {
+    prev: toPatches(backward),
+    next: toPatches(forward),
+  };
+};
 
 const next = <T extends O>(from: T, fn: t.StateObjectChanger<T> | T) => {
   if (typeof fn === 'function') {
-    // Update.
-    return produce<T>(from, (draft) => {
+    const [to, forward, backward] = produceWithPatches<T>(from, (draft) => {
       fn(draft as T);
       return undefined; // NB: No return value, to prevent replacement.
     });
+    const patches = toPatchSet(forward, backward);
+    const op: t.StateObjectChangeOperation = 'update';
+    return { op, to, patches };
   } else {
-    // Replace.
-    return produce<T>(from, () => fn);
+    const [to, forward, backward] = produceWithPatches<T>(from, () => fn);
+    const patches = toPatchSet(forward, backward);
+    const op: t.StateObjectChangeOperation = 'replace';
+    return { op, to, patches };
   }
 };

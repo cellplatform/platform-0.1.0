@@ -11,7 +11,7 @@ type MyEvent = IncrementEvent | DecrementEvent;
 type IncrementEvent = { type: 'INCREMENT'; payload: { by: number } };
 type DecrementEvent = { type: 'DECREMENT'; payload: { by: number } };
 
-describe.only('StateObject', () => {
+describe('StateObject', () => {
   describe('create', () => {
     it('store initial state', () => {
       const initial = { count: 1 };
@@ -50,6 +50,7 @@ describe.only('StateObject', () => {
       });
       const res2 = obj.change((draft) => (draft.count += 1));
 
+      expect(res1.op).to.eql('update');
       expect(res1.cid.length).to.greaterThan(4);
       expect(res2.cid.length).to.greaterThan(4);
       expect(res1.cid).to.not.eql(res2.cid);
@@ -61,6 +62,7 @@ describe.only('StateObject', () => {
       expect(res1.to).to.eql({ count: 3, message: 'hello' });
       expect(res1.cancelled).to.eql(false);
 
+      expect(res2.op).to.eql('update');
       expect(res2.from).to.eql({ count: 3, message: 'hello' });
       expect(res2.to).to.eql({ count: 4, message: 'hello' });
       expect(res2.cancelled).to.eql(false);
@@ -75,12 +77,14 @@ describe.only('StateObject', () => {
 
       const res1 = obj.change({ count: 2, message: 'hello' });
 
+      expect(res1.op).to.eql('replace');
       expect(res1.from).to.eql({ count: 1 });
       expect(res1.to).to.eql({ count: 2, message: 'hello' });
       expect(obj.state).to.eql({ count: 2, message: 'hello' });
 
       const res2 = obj.change({ count: 3 });
 
+      expect(res2.op).to.eql('replace');
       expect(res2.from).to.eql({ count: 2, message: 'hello' });
       expect(res2.to).to.eql({ count: 3 });
       expect(obj.state).to.eql({ count: 3 });
@@ -88,7 +92,7 @@ describe.only('StateObject', () => {
       expect(obj.original).to.eql(initial);
     });
 
-    it('[change] method disconnected can be passed around', () => {
+    it('[change] method disconnected can be passed around (bound)', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo>(initial);
       const change = obj.change;
@@ -110,6 +114,60 @@ describe.only('StateObject', () => {
     });
   });
 
+  describe('patches', () => {
+    type M = { foo: IFoo; bar?: IFoo };
+
+    it('no change', () => {
+      const obj = StateObject.create<IFoo>({ count: 1 });
+      const res = obj.change((draft) => undefined);
+      expect(obj.state.count).to.eql(1);
+      expect(res.patches.next).to.eql([]);
+      expect(res.patches.prev).to.eql([]);
+    });
+
+    it('update', () => {
+      const initial: M = { foo: { count: 1 } };
+      const obj = StateObject.create<M>(initial);
+      const res = obj.change((draft) => {
+        draft.foo.count++;
+        draft.foo.message = 'hello';
+        draft.bar = { count: 9 };
+        return 123; // NB: return value is ignored.
+      });
+
+      expect(res.op).to.eql('update');
+      expect(res.to.foo.count).to.eql(2);
+      expect(res.to.foo.message).to.eql('hello');
+
+      const { next, prev } = res.patches;
+      expect(next.length).to.eql(3);
+      expect(prev.length).to.eql(3);
+
+      expect(prev[0]).to.eql({ op: 'replace', path: 'foo/count', value: 1 });
+      expect(prev[1]).to.eql({ op: 'remove', path: 'foo/message' });
+      expect(prev[2]).to.eql({ op: 'remove', path: 'bar' });
+
+      expect(next[0]).to.eql({ op: 'replace', path: 'foo/count', value: 2 });
+      expect(next[1]).to.eql({ op: 'add', path: 'foo/message', value: 'hello' });
+      expect(next[2]).to.eql({ op: 'add', path: 'bar', value: { count: 9 } });
+    });
+
+    it('replace', () => {
+      const obj = StateObject.create<IFoo>({ count: 0 });
+      const res = obj.change({ count: 888 });
+
+      expect(res.op).to.eql('replace');
+      obj.change({ count: 5, message: 'hello' });
+
+      const { next, prev } = res.patches;
+      expect(next.length).to.eql(1);
+      expect(prev.length).to.eql(1);
+
+      expect(prev[0]).to.eql({ op: 'replace', path: '', value: { count: 0 } });
+      expect(next[0]).to.eql({ op: 'replace', path: '', value: { count: 888 } });
+    });
+  });
+
   describe('events', () => {
     it('event: changing', () => {
       const initial = { count: 1 };
@@ -121,8 +179,7 @@ describe.only('StateObject', () => {
       obj.event$.subscribe((e) => events.push(e));
       obj.changing$.subscribe((e) => changing.push(e));
 
-      obj.change((draft) => (draft.count += 1));
-
+      const res = obj.change((draft) => (draft.count += 1));
       expect(obj.state.count).to.eql(2);
 
       expect(events.length).to.eql(2);
@@ -131,10 +188,13 @@ describe.only('StateObject', () => {
       expect(events[0].type).to.eql('StateObject/changing');
       expect(events[1].type).to.eql('StateObject/changed');
 
-      expect(changing[0].cancelled).to.eql(false);
-      expect(changing[0].action).to.eql('');
-      expect(changing[0].from).to.eql(initial);
-      expect(changing[0].to).to.eql({ count: 2 });
+      const event = changing[0];
+      expect(event.op).to.eql('update');
+      expect(event.cancelled).to.eql(false);
+      expect(event.action).to.eql('');
+      expect(event.from).to.eql(initial);
+      expect(event.to).to.eql({ count: 2 });
+      expect(event.patches).to.eql(res.patches);
     });
 
     it('event: changing (cancelled)', () => {
@@ -177,16 +237,18 @@ describe.only('StateObject', () => {
       obj.changing$.subscribe((e) => changing.push(e));
       obj.changed$.subscribe((e) => changed.push(e));
 
-      obj.change((draft) => draft.count++);
+      const res = obj.change((draft) => draft.count++);
 
       expect(events.length).to.eql(2);
       expect(changed.length).to.eql(1);
 
       const event = changed[0];
+      expect(event.op).to.eql('update');
       expect(event.from).to.eql(initial);
       expect(event.to).to.eql({ count: 2 });
       expect(event.to).to.equal(obj.state); // NB: Current state instance.
       expect(event.action).to.equal('');
+      expect(event.patches).to.eql(res.patches);
 
       expect(changing[0].cid).to.eql(changed[0].cid);
     });
@@ -225,9 +287,8 @@ describe.only('StateObject', () => {
       expect(fired.length).to.eql(1); // NB: No change.
     });
 
-    it('event: changing/changed (with action)', () => {
-      const initial = { count: 1 };
-      const obj = StateObject.create<IFoo, MyEvent>(initial);
+    it('event: changing/changed (with "action")', () => {
+      const obj = StateObject.create<IFoo, MyEvent>({ count: 1 });
 
       const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
@@ -251,6 +312,28 @@ describe.only('StateObject', () => {
 
       expect(changed[0].action).to.eql('');
       expect(changed[1].action).to.eql('INCREMENT');
+    });
+
+    it('event: changing/changed (via "replace" operation)', () => {
+      const obj = StateObject.create<IFoo, MyEvent>({ count: 1 });
+
+      const changing: t.IStateObjectChanging[] = [];
+      const changed: t.IStateObjectChanged[] = [];
+      obj.changing$.subscribe((e) => changing.push(e));
+      obj.changed$.subscribe((e) => changed.push(e));
+
+      obj.change({ count: 888 });
+      expect(changing.length).to.eql(1);
+      expect(changed.length).to.eql(1);
+
+      expect(changing[0].op).to.eql('replace');
+      expect(changed[0].op).to.eql('replace');
+
+      expect(changing[0].patches).to.eql(changed[0].patches);
+
+      const patches = changed[0].patches;
+      expect(patches.prev[0]).to.eql({ op: 'replace', path: '', value: { count: 1 } });
+      expect(patches.next[0]).to.eql({ op: 'replace', path: '', value: { count: 888 } });
     });
 
     it('event: dispatch', () => {
