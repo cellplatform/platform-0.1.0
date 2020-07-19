@@ -2,9 +2,6 @@ import * as t from '../common/types';
 
 type Node = t.INode;
 
-
-
-
 export type TreeState = {
   create<N extends Node = Node>(args: ITreeStateArgs<N>): ITreeState<N>;
   id: TreeStateId;
@@ -18,7 +15,7 @@ export type TreeStateId = {
   format(namespace?: string, id?: string): string;
   parse(input?: string): { namespace: string; id: string };
   stripPrefix(input?: string): string;
-  hasPrefix(input?: string): boolean;
+  hasNamespace(input?: string): boolean;
   namespace(input?: string): string;
 };
 

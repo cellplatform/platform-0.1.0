@@ -11,7 +11,7 @@ export function format(namespace?: string, id?: string) {
 
 export function parse(input?: string) {
   input = toString(input);
-  if (hasPrefix(input)) {
+  if (hasNamespace(input)) {
     const id = stripPrefix(input);
     const namespace = input.substring(0, input.length - id.length - 1).replace(/^ns-/, '');
     return { namespace, id };
@@ -20,7 +20,7 @@ export function parse(input?: string) {
   }
 }
 
-export function hasPrefix(input?: string) {
+export function hasNamespace(input?: string) {
   return Boolean(toString(input).match(REGEX.prefix));
 }
 
@@ -37,6 +37,6 @@ export const id: t.TreeStateId = {
   format,
   parse,
   stripPrefix,
-  hasPrefix,
+  hasNamespace,
   namespace,
 };
