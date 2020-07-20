@@ -106,7 +106,7 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
    * [Methods]
    */
   public change = (fn: t.StateObjectChanger<T> | T, action?: E['type']) => {
-    const cid = id.shortid(); // "change-id"
+    const cid = id.cuid(); // "change-id"
     const type = (action || '').trim();
 
     const from = this.state;
@@ -177,7 +177,7 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
  */
 const toPatch = (input: Patch): t.StatePatch => ({ ...input, path: input.path.join('/') });
 const toPatches = (input: Patch[]) => input.map((p) => toPatch(p));
-const toPatchSet = (forward: Patch[], backward: Patch[]): t.IStateObjectChangePatches => {
+const toPatchSet = (forward: Patch[], backward: Patch[]): t.StateObjectPatches => {
   return {
     prev: toPatches(backward),
     next: toPatches(forward),

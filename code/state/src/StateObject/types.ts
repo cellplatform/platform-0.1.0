@@ -43,10 +43,9 @@ export type IStateObjectChangeResponse<T extends O> = {
   cancelled: boolean;
   from: T;
   to: T;
-  patches: IStateObjectChangePatches;
+  patches: StateObjectPatches;
 };
-export type IStateObjectChangePatches = { prev: StatePatch[]; next: StatePatch[] };
-
+export type StateObjectPatches = { prev: StatePatch[]; next: StatePatch[] };
 export type StateObjectChanger<T extends O> = (draft: T) => void;
 
 /**
@@ -90,7 +89,7 @@ export type IStateObjectChanging<T extends O = any, E extends Event<any> = any> 
   cid: string; // "change-id"
   from: T;
   to: T;
-  patches: IStateObjectChangePatches;
+  patches: StateObjectPatches;
   cancelled: boolean;
   cancel(): void;
   action: E['type'];
@@ -109,7 +108,7 @@ export type IStateObjectChanged<T extends O = any, E extends Event<any> = any> =
   cid: string; // "change-id"
   from: T;
   to: T;
-  patches: IStateObjectChangePatches;
+  patches: StateObjectPatches;
   action: E['type'];
 };
 
