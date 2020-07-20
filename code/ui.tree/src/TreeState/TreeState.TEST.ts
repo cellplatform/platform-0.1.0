@@ -5,7 +5,7 @@ import { helpers } from './helpers';
 type N = t.ITreeViewNode;
 type P = { label?: string; icon?: string };
 
-const create = (args: t.ITreeStateArgs) => TreeState.create<N>(args);
+const create = (args?: t.ITreeStateArgs) => TreeState.create<N>(args);
 
 describe('TreeState', () => {
   describe('create', () => {
@@ -23,6 +23,12 @@ describe('TreeState', () => {
       const root: N = { id: 'myLeaf' };
       const state = create({ root, parent: 'myParent' });
       expect(state.parent).to.eql('myParent');
+    });
+
+    it('create with no id (defaults to "root")', () => {
+      const state = create();
+      expect(helpers.id.stripNamespace(state.id)).to.eql('root');
+      expect(helpers.id.namespace(state.id)).to.eql(state.namespace);
     });
 
     it('from root id (string)', () => {
@@ -43,6 +49,22 @@ describe('TreeState', () => {
       state.dispose();
       state.dispose();
       expect(state.isDisposed).to.eql(true);
+    });
+
+    it('disposes of all children', () => {
+      const state = create({ root: 'root' });
+      const child1 = state.add({ root: 'foo' });
+      const child2 = child1.add({ root: 'bar' });
+      const child3 = child2.add({ root: 'zoo' });
+
+      child2.dispose();
+      expect(child3.isDisposed).to.eql(true);
+
+      state.dispose();
+      expect(state.isDisposed).to.eql(true);
+      expect(child1.isDisposed).to.eql(true);
+      expect(child2.isDisposed).to.eql(true);
+      expect(child3.isDisposed).to.eql(true);
     });
   });
 
@@ -95,7 +117,7 @@ describe('TreeState', () => {
 
     it('id.stripPrefix', () => {
       const test = (input: S, expected: string) => {
-        const res = TreeState.id.stripPrefix(input);
+        const res = TreeState.id.stripNamespace(input);
         expect(res).to.eql(expected);
       };
       test('ns-foo:bar', 'bar');

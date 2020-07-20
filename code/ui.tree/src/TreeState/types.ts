@@ -4,7 +4,7 @@ type Node = t.ITreeNode;
 type O = Record<string, unknown>;
 
 export type TreeState = {
-  create<N extends Node = Node>(args: ITreeStateArgs<N>): ITreeState<N>;
+  create<N extends Node = Node>(args?: ITreeStateArgs<N>): ITreeState<N>;
   id: TreeStateId;
   isInstance(input: any): boolean;
   children<T extends Node>(of: T, fn?: (children: T[]) => void): T[];
@@ -15,14 +15,14 @@ export type TreeStateId = {
   toString(input?: string): string;
   format(namespace?: string, id?: string): string;
   parse(input?: string): { namespace: string; id: string };
-  stripPrefix(input?: string): string;
+  stripNamespace(input?: string): string;
   hasNamespace(input?: string): boolean;
   namespace(input?: string): string;
 };
 
 export type ITreeStateArgs<N extends Node = Node> = {
   parent?: string; // ID of parent within tree.
-  root: N | string;
+  root?: N | string;
   dispose$?: t.Observable<any>;
 };
 

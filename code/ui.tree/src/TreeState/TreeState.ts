@@ -18,8 +18,10 @@ type N = t.ITreeNode;
  *
  */
 export class TreeState<T extends N = N> implements t.ITreeState<T> {
-  public static create<T extends N = N>(args: t.ITreeStateArgs<T>) {
-    return new TreeState<T>(args) as t.ITreeState<T>;
+  public static create<T extends N = N>(args?: t.ITreeStateArgs<T>) {
+    const root = args?.root || { id: 'root' };
+    const e = { ...args, root } as t.ITreeStateArgs<T>;
+    return new TreeState<T>(e) as t.ITreeState<T>;
   }
 
   public static id = helpers.id;
@@ -45,6 +47,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   }
 
   public dispose() {
+    this.children.forEach((child) => child.dispose());
     this._dispose$.next();
     this._dispose$.complete();
   }
@@ -210,7 +213,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
 
   public walkUp: t.TreeStateWalkUp<T> = (startAt, fn) => {
     const id = TreeState.id;
-    startAt = typeof startAt === 'string' ? id.stripPrefix(startAt) : startAt;
+    startAt = typeof startAt === 'string' ? id.stripNamespace(startAt) : startAt;
     startAt = typeof startAt == 'string' ? this.find((e) => e.id === startAt) : startAt;
 
     if (!startAt) {
@@ -278,7 +281,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     }
 
     let parent = id.toString(args.parent);
-    parent = parent ? parent : id.stripPrefix(this.id);
+    parent = parent ? parent : id.stripNamespace(this.id);
 
     if (!this.exists((e) => e.id === parent)) {
       const err = `Cannot add child-state because the parent node '${parent}' does not exist.`;
