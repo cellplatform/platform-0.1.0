@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { COLORS, css, CssValue, color, Uri } from '../../common';
 
+import { color, COLORS, css, CssValue } from '../../common';
+import { Card, ObjectView, PropList, TreeView } from '../primitives';
 import * as t from './types';
-import { TextInput, Button, ObjectView, PropList, Card } from '../primitives';
 
 export type ISheetInfoProps = {
   store: t.IDebugSheetWrite;
@@ -13,12 +13,16 @@ export type ISheetInfoProps = {
 
 export class SheetInfo extends React.PureComponent<ISheetInfoProps> {
   private unmounted$ = new Subject();
+  private tree = TreeView.State.create({ root: { id: 'sheet', props: { label: 'Info' } } });
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
     this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
+
+    // TEMP 🐷
+    this.tree.add({ root: 'foo' });
   }
 
   public componentWillUnmount() {
@@ -57,8 +61,29 @@ export class SheetInfo extends React.PureComponent<ISheetInfoProps> {
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div {...styles.left}>{this.renderObject({ data: sheet })}</div>
+        <div {...styles.left}>
+          {this.renderTree()}
+
+          {this.renderObject({ data: sheet })}
+        </div>
         <div {...styles.right}>{this.renderTypes()}</div>
+      </div>
+    );
+  }
+
+  private renderTree() {
+    // TEMP 🐷
+    const styles = {
+      base: css({
+        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
+        width: 250,
+        height: 250,
+        display: 'flex',
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <TreeView node={this.tree.root} background={'NONE'} />
       </div>
     );
   }
@@ -79,7 +104,6 @@ export class SheetInfo extends React.PureComponent<ISheetInfoProps> {
 
     const styles = {
       base: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         display: 'flex',
       }),
     };

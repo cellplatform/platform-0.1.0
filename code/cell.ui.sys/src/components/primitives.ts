@@ -25,3 +25,6 @@ export { Spinner };
 
 import { TextInput } from '@platform/ui.text/lib/components/TextInput';
 export { TextInput };
+
+import { TreeView } from '@platform/ui.tree/lib/components/TreeView';
+export { TreeView };

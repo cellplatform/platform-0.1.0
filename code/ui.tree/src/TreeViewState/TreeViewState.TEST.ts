@@ -5,8 +5,8 @@ const S = TreeViewState;
 
 describe('TreeViewState', () => {
   it('create and change', () => {
-    const state = TreeViewState.create({ root: 'foo' });
-    state.change((draft) => S.props(draft, (props) => (props.label = 'hello')));
-    expect(state.root.props?.label).to.eql('hello');
+    const state = TreeViewState.create({ root: { id: 'foo', props: { label: 'Hello' } } });
+    state.change((draft) => S.props(draft, (props) => (props.label = 'boom')));
+    expect(state.root.props?.label).to.eql('boom');
   });
 });
