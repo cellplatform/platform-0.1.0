@@ -16,7 +16,7 @@ export type ITreeNode<T extends string = string, P extends O = O> = INode<T> & {
 };
 
 /**
- * A single node within the "tree"
+ * A single node within a <TreeView>
  * (which is itself the root of a further branching tree).
  */
 export type ITreeViewNode<T extends string = string, D extends O = any> = ITreeNode<
