@@ -20,3 +20,8 @@ export type TreeViewState = {
    */
   props(of: Node, fn?: (props: t.ITreeNodeProps) => void): t.ITreeNodeProps;
 };
+
+/**
+ * A version of the [TreeState] configured for the base <TreeView> node type.
+ */
+export type ITreeViewState<T extends Node = Node> = t.ITreeState<T>;

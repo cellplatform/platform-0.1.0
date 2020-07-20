@@ -1,5 +1,4 @@
 import { color, css, CssValue } from '@platform/css';
-import { Button } from '@platform/ui.button';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -7,9 +6,10 @@ import { takeUntil } from 'rxjs/operators';
 import { TreeView } from '../..';
 import { t } from '../../common';
 import { Icons } from './Icons';
+import { TestStateStore } from './Test.StateStore';
 
 type Node = t.ITreeViewNode;
-const State = TreeView.State;
+
 const ROOT: Node = {
   id: 'root',
   props: { label: 'Root' },
@@ -17,7 +17,10 @@ const ROOT: Node = {
 };
 
 export type ITestProps = { style?: CssValue };
-export type ITestState = { root?: t.ITreeViewNode; current?: string };
+export type ITestState = {
+  root?: t.ITreeViewNode;
+  current?: string;
+};
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = { root: ROOT };
@@ -25,14 +28,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private event$ = new Subject<t.TreeViewEvent>();
 
-  private rootState = TreeView.State.create({ root: ROOT, dispose$: this.unmounted$ });
+  private store = TreeView.State.create({ root: ROOT, dispose$: this.unmounted$ });
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    this.rootState.changed$
+    this.store.changed$
       .pipe(takeUntil(this.unmounted$))
       .subscribe((e) => this.state$.next({ root: e.to }));
   }
@@ -86,14 +89,17 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private renderRight() {
     const styles = {
       base: css({
+        flex: 1,
         boxSizing: 'border-box',
         padding: 30,
-        flex: 1,
+        paddingTop: 80,
+        PaddingX: 50,
       }),
     };
+
     return (
       <div {...styles.base}>
-        <Button onClick={this.addChildOfRoot}>add: child state</Button>
+        <TestStateStore store={this.store} />
       </div>
     );
   }
@@ -102,19 +108,4 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Handlers]
    */
   private renderIcon: t.RenderTreeIcon = (e) => Icons[e.icon];
-
-  private addChildOfRoot = () => {
-    const root = { id: 'foo', props: { label: 'Foo' } };
-    const child = this.rootState.add({ root });
-
-    child.change((draft, ctx) => {
-      const children = State.children(draft);
-      children.push({ id: 'my-child', props: { label: 'hello' } });
-    });
-
-    // console.group('🌳 child added');
-    // console.log('child', child);
-    // console.log('child.root', child.root);
-    // console.groupEnd();
-  };
 }
