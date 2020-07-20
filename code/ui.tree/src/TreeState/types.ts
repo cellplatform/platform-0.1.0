@@ -23,7 +23,6 @@ export type TreeStateId = {
 export type ITreeStateArgs<N extends Node = Node> = {
   parent?: string; // ID of parent within tree.
   root: N | string;
-  treeview$?: t.Observable<t.TreeViewEvent>;
   dispose$?: t.Observable<any>;
 };
 

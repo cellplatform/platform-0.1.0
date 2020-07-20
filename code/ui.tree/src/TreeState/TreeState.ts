@@ -39,10 +39,6 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
       ensureNamespace: false, // NB: Doing it here.
     });
 
-    this.treeview$ = (args.treeview$ || new Subject<t.TreeViewEvent>()).pipe(
-      takeUntil(this.dispose$),
-    );
-
     if (args.dispose$) {
       args.dispose$.subscribe((e) => this.dispose());
     }
@@ -58,7 +54,6 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
    */
   private _store: t.IStateObjectWrite<T>;
   private _children: t.ITreeState[] = [];
-  private treeview$: Observable<t.TreeViewEvent>;
 
   public readonly namespace = idUtil.cuid();
   public readonly parent: string | undefined;
@@ -291,8 +286,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     }
 
     parent = id.format(this.namespace, parent);
-    const treeview$ = this.treeview$;
-    return TreeState.create<C>({ parent, root, treeview$ });
+    return TreeState.create<C>({ parent, root });
   }
 
   private listen(child: t.ITreeState) {
