@@ -1,6 +1,6 @@
-import { t } from '../common';
+import { t } from '../../common';
 import { id } from './id';
-import { TreeUtil } from '../TreeUtil';
+import { TreeUtil } from '../../TreeUtil';
 
 type N = t.ITreeNode;
 

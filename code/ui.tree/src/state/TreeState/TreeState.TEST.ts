@@ -1,7 +1,7 @@
 import { TreeState } from '.';
-import { expect, t, TreeUtil } from '../test';
+import { expect, t, TreeUtil } from '../../test';
 import { helpers } from './helpers';
-import { Subject } from '../common/types';
+import { Subject } from '../../common/types';
 
 type N = t.ITreeViewNode;
 type P = { label?: string; icon?: string };

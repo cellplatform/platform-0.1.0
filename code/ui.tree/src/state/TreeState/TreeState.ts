@@ -3,8 +3,8 @@ import { id as idUtil, rx } from '@platform/util.value';
 import { Subject } from 'rxjs';
 import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
-import { t } from '../common';
-import { TreeUtil } from '../TreeUtil';
+import { t } from '../../common';
+import { TreeUtil } from '../../TreeUtil';
 import { id } from './id';
 import { helpers } from './helpers';
 

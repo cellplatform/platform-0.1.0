@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t } from '../../common';
 
 const toString = (input?: string) => (input || '').trim();
 const REGEX = {

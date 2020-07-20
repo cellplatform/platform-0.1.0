@@ -1,4 +1,4 @@
-import { expect } from '../test';
+import { expect } from '../../test';
 import { TreeViewState } from '.';
 
 const S = TreeViewState;

@@ -1,7 +1,7 @@
 import { TreeView } from './components/TreeView';
 import { TreeEvents } from './TreeEvents';
 import { TreeUtil } from './TreeUtil';
-import { TreeViewState } from './TreeViewState';
+import { TreeViewState } from './state/TreeViewState';
 
 export class Tree {
   public static View = TreeView;
