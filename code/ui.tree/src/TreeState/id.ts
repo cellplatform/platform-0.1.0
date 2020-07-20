@@ -2,18 +2,18 @@ import { t } from '../common';
 
 const toString = (input?: string) => (input || '').trim();
 const REGEX = {
-  prefix: /^ns-[a-zA-Z0-9]+:/,
+  prefix: /^tree-[a-zA-Z0-9]+:/,
 };
 
 export function format(namespace?: string, id?: string) {
-  return `ns-${toString(namespace)}:${toString(id)}`;
+  return `tree-${toString(namespace)}:${toString(id)}`;
 }
 
 export function parse(input?: string) {
   input = toString(input);
   if (hasNamespace(input)) {
     const id = stripNamespace(input);
-    const namespace = input.substring(0, input.length - id.length - 1).replace(/^ns-/, '');
+    const namespace = input.substring(0, input.length - id.length - 1).replace(/^tree-/, '');
     return { namespace, id };
   } else {
     return { namespace: '', id: input };

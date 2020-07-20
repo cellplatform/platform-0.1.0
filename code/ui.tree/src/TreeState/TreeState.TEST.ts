@@ -1,6 +1,7 @@
 import { TreeState } from '.';
 import { expect, t, TreeUtil } from '../test';
 import { helpers } from './helpers';
+import { Subject } from '../common/types';
 
 type N = t.ITreeViewNode;
 type P = { label?: string; icon?: string };
@@ -25,22 +26,24 @@ describe('TreeState', () => {
       expect(state.parent).to.eql('myParent');
     });
 
-    it('create with no id (defaults to "root")', () => {
+    it('create with no id (defaults to "node")', () => {
       const state = create();
-      expect(helpers.id.stripNamespace(state.id)).to.eql('root');
+      expect(helpers.id.stripNamespace(state.id)).to.eql('node');
       expect(helpers.id.namespace(state.id)).to.eql(state.namespace);
     });
 
     it('from root id (string)', () => {
       const state = create({ root: 'foo' });
-      const id = `ns-${state.namespace}:foo`;
+      const id = `tree-${state.namespace}:foo`;
       expect(state.id).to.eql(id);
       expect(state.root.id).to.eql(id);
     });
+  });
 
+  describe('dispose', () => {
     it('dispose', () => {
-      const root: N = { id: 'root' };
-      const state = create({ root });
+      const state = create();
+      expect(state.isDisposed).to.eql(false);
 
       let count = 0;
       state.dispose$.subscribe((e) => count++);
@@ -52,7 +55,9 @@ describe('TreeState', () => {
     });
 
     it('disposes of all children', () => {
-      const state = create({ root: 'root' });
+      const state = create();
+      expect(state.isDisposed).to.eql(false);
+
       const child1 = state.add({ root: 'foo' });
       const child2 = child1.add({ root: 'bar' });
       const child3 = child2.add({ root: 'zoo' });
@@ -65,6 +70,21 @@ describe('TreeState', () => {
       expect(child1.isDisposed).to.eql(true);
       expect(child2.isDisposed).to.eql(true);
       expect(child3.isDisposed).to.eql(true);
+    });
+
+    it('takes a [dispose$] within constructor', () => {
+      const dispose$ = new Subject();
+      const state = create({ dispose$ });
+      expect(state.isDisposed).to.eql(false);
+
+      let count = 0;
+      state.dispose$.subscribe(() => count++);
+
+      dispose$.next();
+      dispose$.next();
+      dispose$.next();
+      expect(state.isDisposed).to.eql(true);
+      expect(count).to.eql(1);
     });
   });
 
@@ -92,9 +112,9 @@ describe('TreeState', () => {
         const res = TreeState.id.format(namespace, id);
         expect(res).to.eql(expected);
       };
-      test('foo', 'bar', 'ns-foo:bar');
-      test('', 'bar', 'ns-:bar'); // Invalid.
-      test('foo', '', 'ns-foo:'); // Invalid.
+      test('foo', 'bar', 'tree-foo:bar');
+      test('', 'bar', 'tree-:bar'); // Invalid.
+      test('foo', '', 'tree-foo:'); // Invalid.
     });
 
     it('id.hasPrefix', () => {
@@ -102,10 +122,10 @@ describe('TreeState', () => {
         const res = TreeState.id.hasNamespace(input);
         expect(res).to.eql(expected);
       };
-      test('ns-foo:bar', true);
-      test('  ns-foo:bar  ', true);
+      test('tree-foo:bar', true);
+      test('  tree-foo:bar  ', true);
 
-      test('ns-:bar', false);
+      test('tree-:bar', false);
       test('-foo:bar', false);
       test('s-foo:bar', false);
       test('n-foo:bar', false);
@@ -120,12 +140,12 @@ describe('TreeState', () => {
         const res = TreeState.id.stripNamespace(input);
         expect(res).to.eql(expected);
       };
-      test('ns-foo:bar', 'bar');
-      test(' ns-foo:bar ', 'bar');
+      test('tree-foo:bar', 'bar');
+      test(' tree-foo:bar ', 'bar');
       test('bar', 'bar');
       test('', '');
-      test('ns-foo:', '');
-      test(' ns-foo: ', '');
+      test('tree-foo:', '');
+      test(' tree-foo: ', '');
 
       test('foo:bar', 'foo:bar');
       test(':bar', ':bar');
@@ -137,8 +157,8 @@ describe('TreeState', () => {
         const res = TreeState.id.parse(input);
         expect(res).to.eql({ namespace, id });
       };
-      test('ns-foo:bar', 'foo', 'bar');
-      test('  ns-foo:bar  ', 'foo', 'bar');
+      test('tree-foo:bar', 'foo', 'bar');
+      test('  tree-foo:bar  ', 'foo', 'bar');
       test('foo:bar', '', 'foo:bar');
       test('foo', '', 'foo');
       test('', '', '');
@@ -150,8 +170,8 @@ describe('TreeState', () => {
         const res = TreeState.id.namespace(input);
         expect(res).to.eql(namespace);
       };
-      test('ns-foo:bar', 'foo');
-      test('  ns-foo:bar  ', 'foo');
+      test('tree-foo:bar', 'foo');
+      test('  tree-foo:bar  ', 'foo');
       test('bar', '');
       test('  bar  ', '');
       test('', '');
@@ -168,7 +188,7 @@ describe('TreeState', () => {
       test('  ', '');
       test('foo', 'foo');
       test('  foo  ', 'foo');
-      test('ns-foo:bar', 'bar');
+      test('tree-foo:bar', 'bar');
     });
   });
 
@@ -176,7 +196,7 @@ describe('TreeState', () => {
     it('simple', () => {
       const root: N = { id: 'root' };
       const state = create({ root });
-      const start = `ns-${state.namespace}:`;
+      const start = `tree-${state.namespace}:`;
       expect(state.id.startsWith(start)).to.eql(true);
       expect(state.root.id.startsWith(start)).to.eql(true);
     });
@@ -188,7 +208,7 @@ describe('TreeState', () => {
       };
       const state = create({ root });
       const ids: string[] = [];
-      const start = `ns-${state.namespace}:`;
+      const start = `tree-${state.namespace}:`;
       TreeUtil.walkDown(state.root, (e) => ids.push(e.node.id));
       expect(ids.length).to.eql(4);
       expect(ids.every((id) => id.startsWith(start))).to.eql(true);
@@ -205,7 +225,7 @@ describe('TreeState', () => {
 
       expect(state.children.length).to.eql(1);
       expect(state.children[0]).to.equal(child);
-      expect(child.parent).to.eql(`ns-${state.namespace}:root`);
+      expect(child.parent).to.eql(`tree-${state.namespace}:root`);
     });
 
     it('add: root as string ("id")', () => {
@@ -214,7 +234,7 @@ describe('TreeState', () => {
       const child = state.add({ parent: 'root', root: 'foo' });
 
       expect(state.children.length).to.eql(1);
-      expect(child.id).to.eql(`ns-${child.namespace}:foo`);
+      expect(child.id).to.eql(`tree-${child.namespace}:foo`);
     });
 
     it('add: { root: [TreeState] } - pre-existing', () => {
@@ -249,7 +269,7 @@ describe('TreeState', () => {
       const child = state.add({ root: 'foo' });
 
       expect(state.children.length).to.eql(1);
-      expect(child.id).to.eql(`ns-${child.namespace}:foo`);
+      expect(child.id).to.eql(`tree-${child.namespace}:foo`);
     });
 
     it('adds multiple children with same id (geneated namespaces differs)', () => {
