@@ -1,8 +1,8 @@
 import { t } from '../common';
 import { TreeState } from '../TreeState';
-import { helpers } from './helpers';
 
-type N = t.ITreeNode;
+type N = t.ITreeViewNode;
+type P = t.ITreeNodeProps;
 
 /**
  * A version of the [TreeState] configured for the base <TreeView> node type.
@@ -15,5 +15,6 @@ export class TreeViewState {
   static id = TreeState.id;
   static isInstance = TreeState.isInstance;
   static children = TreeState.children;
-  static props = helpers.props;
+
+  static props = (of: N, fn?: (props: P) => void) => TreeState.props<P>(of, fn);
 }

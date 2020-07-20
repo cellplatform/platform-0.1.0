@@ -3,6 +3,7 @@ import { id } from './TreeState.id';
 import { TreeUtil } from '../TreeUtil';
 
 type N = t.ITreeNode;
+type O = Record<string, unknown>;
 
 export const helpers = {
   id,
@@ -19,12 +20,12 @@ export const helpers = {
   /**
    * Props helper.
    */
-  props(of: N, fn?: (props: t.ITreeNodeProps) => void): t.ITreeNodeProps {
+  props<P>(of: N, fn?: (props: P) => void): P {
     of.props = of.props || {};
     if (typeof fn === 'function') {
-      fn(of.props);
+      fn(of.props as P);
     }
-    return of.props;
+    return of.props as P;
   },
 
   /**

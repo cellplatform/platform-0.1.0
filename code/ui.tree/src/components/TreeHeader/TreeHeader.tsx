@@ -12,7 +12,7 @@ const SIZE = {
 };
 
 export type ITreeHeaderProps = {
-  node: t.ITreeNode;
+  node: t.ITreeViewNode;
   height: number;
   title?: string;
   showParentButton?: boolean;

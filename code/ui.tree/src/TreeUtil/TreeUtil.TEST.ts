@@ -5,12 +5,12 @@ import { TreeUtil } from '.';
 describe('TreeUtil', () => {
   describe('walkDown', () => {
     it('walks from root', () => {
-      const tree: t.ITreeNode = {
+      const tree: t.ITreeViewNode = {
         id: 'root',
         children: [{ id: 'child-1' }, { id: 'child-2' }],
       };
 
-      const nodes: t.ITreeNode[] = [];
+      const nodes: t.ITreeViewNode[] = [];
       TreeUtil.walkDown(tree, (e) => nodes.push(e.node));
 
       expect(nodes.length).to.eql(3);
@@ -20,7 +20,7 @@ describe('TreeUtil', () => {
     });
 
     it('skips walking children of descendent (`.skip`)', () => {
-      const tree: t.ITreeNode = {
+      const tree: t.ITreeViewNode = {
         id: 'root',
         children: [
           { id: 'child-1', children: [{ id: 'child-1.1' }, { id: 'child-1.1' }] },
@@ -28,7 +28,7 @@ describe('TreeUtil', () => {
         ],
       };
 
-      const nodes: t.ITreeNode[] = [];
+      const nodes: t.ITreeViewNode[] = [];
       TreeUtil.walkDown(tree, (e) => {
         nodes.push(e.node);
         if (e.node.id === 'child-1') {
@@ -43,9 +43,9 @@ describe('TreeUtil', () => {
     });
 
     it('passes parent as args', () => {
-      const grandchild: t.ITreeNode = { id: 'grandchild' };
-      const child: t.ITreeNode = { id: 'child', children: [grandchild] };
-      const root: t.ITreeNode = { id: 'root', children: [child] };
+      const grandchild: t.ITreeViewNode = { id: 'grandchild' };
+      const child: t.ITreeViewNode = { id: 'child', children: [grandchild] };
+      const root: t.ITreeViewNode = { id: 'root', children: [child] };
 
       const items: t.ITreeDescend[] = [];
       TreeUtil.walkDown(root, (e) => items.push(e));
@@ -62,7 +62,7 @@ describe('TreeUtil', () => {
     });
 
     it('reports node index (sibling position)', () => {
-      const tree: t.ITreeNode = {
+      const tree: t.ITreeViewNode = {
         id: 'root',
         children: [{ id: 'child-1' }, { id: 'child-2' }],
       };
@@ -77,7 +77,7 @@ describe('TreeUtil', () => {
   });
 
   describe('walkUp', () => {
-    const tree: t.ITreeNode = {
+    const tree: t.ITreeViewNode = {
       id: 'root',
       children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'grandchild-1' }] }],
     };
@@ -116,7 +116,7 @@ describe('TreeUtil', () => {
   });
 
   describe('find', () => {
-    const tree: t.ITreeNode = {
+    const tree: t.ITreeViewNode = {
       id: 'root',
       children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-3' }] }],
     };
@@ -141,7 +141,7 @@ describe('TreeUtil', () => {
   });
 
   describe('ancestor', () => {
-    const tree: t.ITreeNode = {
+    const tree: t.ITreeViewNode = {
       id: 'root',
       children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-3' }] }],
     };
@@ -252,7 +252,7 @@ describe('TreeUtil', () => {
 
   describe('replace', () => {
     it('replaces root', () => {
-      const tree: t.ITreeNode = { id: 'root' };
+      const tree: t.ITreeViewNode = { id: 'root' };
       const res = TreeUtil.replace(tree, {
         id: 'root',
         props: { label: 'hello' },
@@ -261,7 +261,7 @@ describe('TreeUtil', () => {
     });
 
     it('replaces child', () => {
-      const tree: t.ITreeNode = { id: 'root', children: [{ id: 'foo' }] };
+      const tree: t.ITreeViewNode = { id: 'root', children: [{ id: 'foo' }] };
       const res = TreeUtil.replace(tree, {
         id: 'foo',
         props: { label: 'hello' },
@@ -272,7 +272,7 @@ describe('TreeUtil', () => {
     });
 
     it('replaces grand-child', () => {
-      const tree: t.ITreeNode = {
+      const tree: t.ITreeViewNode = {
         id: 'root',
         children: [{ id: 'child', children: [{ id: 'grandchild' }] }],
       };
@@ -291,8 +291,8 @@ describe('TreeUtil', () => {
 
   describe('replaceChild', () => {
     it('inserts the given child as clone (no starting children array)', () => {
-      const root: t.ITreeNode = { id: 'root' };
-      const child: t.ITreeNode = { id: 'child' };
+      const root: t.ITreeViewNode = { id: 'root' };
+      const child: t.ITreeViewNode = { id: 'child' };
 
       const res = TreeUtil.replaceChild(root, child);
       const children = res ? res.children || [] : [];
@@ -304,8 +304,8 @@ describe('TreeUtil', () => {
     });
 
     it('inserts non-existing child (LAST [default])', () => {
-      const root: t.ITreeNode = { id: 'root', children: [{ id: 'existing' }] };
-      const child: t.ITreeNode = { id: 'child' };
+      const root: t.ITreeViewNode = { id: 'root', children: [{ id: 'existing' }] };
+      const child: t.ITreeViewNode = { id: 'child' };
       const res = TreeUtil.replaceChild(root, child);
       const children = res ? res.children || [] : [];
       expect(children[0]).to.eql({ id: 'existing' });
@@ -313,8 +313,8 @@ describe('TreeUtil', () => {
     });
 
     it('inserts non-existing child (FIRST)', () => {
-      const root: t.ITreeNode = { id: 'root', children: [{ id: 'existing' }] };
-      const child: t.ITreeNode = { id: 'child' };
+      const root: t.ITreeViewNode = { id: 'root', children: [{ id: 'existing' }] };
+      const child: t.ITreeViewNode = { id: 'child' };
       const res = TreeUtil.replaceChild(root, child, { insert: 'FIRST' });
       const children = res ? res.children || [] : [];
       expect(children[0]).to.eql({ id: 'child' });
@@ -322,11 +322,11 @@ describe('TreeUtil', () => {
     });
 
     it('replaces an existing child node', () => {
-      const root: t.ITreeNode = {
+      const root: t.ITreeViewNode = {
         id: 'root',
         children: [{ id: 'foo' }, { id: 'child', data: { foo: 123 } }, { id: 'bar' }],
       };
-      const child: t.ITreeNode = { id: 'child', data: { foo: 456 } };
+      const child: t.ITreeViewNode = { id: 'child', data: { foo: 456 } };
       const res = TreeUtil.replaceChild(root, child, { insert: 'FIRST' });
       const children = res ? res.children || [] : [];
       expect(children[1].data).to.eql({ foo: 456 });
@@ -335,17 +335,17 @@ describe('TreeUtil', () => {
 
   describe('parent', () => {
     it('has a parent', () => {
-      const grandchild: t.ITreeNode = { id: 'grandchild' };
-      const child: t.ITreeNode = { id: 'child', children: [grandchild] };
-      const root: t.ITreeNode = { id: 'root', children: [child] };
+      const grandchild: t.ITreeViewNode = { id: 'grandchild' };
+      const child: t.ITreeViewNode = { id: 'child', children: [grandchild] };
+      const root: t.ITreeViewNode = { id: 'root', children: [child] };
       expect(TreeUtil.parent(root, child)).to.equal(root);
       expect(TreeUtil.parent(root, grandchild)).to.equal(child);
     });
 
     it('has no parent', () => {
-      const grandchild: t.ITreeNode = { id: 'grandchild' };
-      const child: t.ITreeNode = { id: 'child', children: [grandchild] };
-      const root: t.ITreeNode = { id: 'root', children: [] };
+      const grandchild: t.ITreeViewNode = { id: 'grandchild' };
+      const child: t.ITreeViewNode = { id: 'child', children: [grandchild] };
+      const root: t.ITreeViewNode = { id: 'root', children: [] };
       expect(TreeUtil.parent(root, child)).to.equal(undefined);
       expect(TreeUtil.parent(root, grandchild)).to.equal(undefined);
     });
@@ -353,14 +353,14 @@ describe('TreeUtil', () => {
 
   describe('setProps', () => {
     it('updates props on the root', () => {
-      const tree: t.ITreeNode = { id: 'root', children: [{ id: 'foo' }] };
+      const tree: t.ITreeViewNode = { id: 'root', children: [{ id: 'foo' }] };
       const res = TreeUtil.setProps(tree, 'root', { label: 'Root!' });
       expect(res).to.not.equal(tree); // Clone.
       expect(res && res.props && res.props.label).to.eql('Root!');
     });
 
     it('updates the given property values (children)', () => {
-      let tree: t.ITreeNode | undefined = {
+      let tree: t.ITreeViewNode | undefined = {
         id: 'root',
         children: [{ id: 'foo' }],
       };
@@ -436,28 +436,28 @@ describe('TreeUtil', () => {
     });
 
     it('toggled (false => true => false)', () => {
-      const res1 = TreeUtil.toggleIsOpen<t.ITreeNode>(A, D);
+      const res1 = TreeUtil.toggleIsOpen<t.ITreeViewNode>(A, D);
       const child1 = TreeUtil.findById(res1, 'D');
       expect(child1 && child1.props).to.eql({ inline: { isOpen: true } });
 
-      const res2 = TreeUtil.toggleIsOpen<t.ITreeNode>(res1, child1);
+      const res2 = TreeUtil.toggleIsOpen<t.ITreeViewNode>(res1, child1);
       const child2 = TreeUtil.findById(res2, 'D');
       expect(child2 && child2.props).to.eql({ inline: { isOpen: false } });
     });
 
     it('toggled (undefined => true)', () => {
-      const res = TreeUtil.toggleIsOpen<t.ITreeNode>(A, E);
+      const res = TreeUtil.toggleIsOpen<t.ITreeViewNode>(A, E);
       const child = TreeUtil.findById(res, 'E');
       expect(child && child.props).to.eql({ inline: { isOpen: true } });
     });
 
     it('toggled via "id" (undefined => true)', () => {
-      let root = { ...A } as t.ITreeNode | undefined;
-      root = TreeUtil.toggleIsOpen<t.ITreeNode>(root, E.id);
+      let root = { ...A } as t.ITreeViewNode | undefined;
+      root = TreeUtil.toggleIsOpen<t.ITreeViewNode>(root, E.id);
       const child1 = TreeUtil.findById(root, 'E');
       expect(child1 && child1.props).to.eql({ inline: { isOpen: true } });
 
-      root = TreeUtil.toggleIsOpen<t.ITreeNode>(root, E.id);
+      root = TreeUtil.toggleIsOpen<t.ITreeViewNode>(root, E.id);
       const child2 = TreeUtil.findById(root, 'E');
       expect(child2 && child2.props).to.eql({ inline: { isOpen: false } });
     });
@@ -472,9 +472,9 @@ describe('TreeUtil', () => {
 
     it('sets the inline state of nodes to the given path (boolean)', () => {
       const factory: t.TreeNodePathFactory = (id) => ({ id, props: { inline: {} } });
-      const root = TreeUtil.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root as t.ITreeNode;
+      const root = TreeUtil.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root as t.ITreeViewNode;
 
-      const res = TreeUtil.openToNode(root, 'foo/bar') as t.ITreeNode;
+      const res = TreeUtil.openToNode(root, 'foo/bar') as t.ITreeViewNode;
       const child1 = TreeUtil.childAt(0, res);
       const child2 = TreeUtil.childAt(0, child1);
 
@@ -486,7 +486,7 @@ describe('TreeUtil', () => {
       const factory: t.TreeNodePathFactory = (id) => ({ id, props: { inline: {} } });
       const root = TreeUtil.buildPath({ id: 'ROOT' }, factory, 'foo/bar').root;
 
-      const res = TreeUtil.openToNode(root, 'foo/bar') as t.ITreeNode;
+      const res = TreeUtil.openToNode(root, 'foo/bar') as t.ITreeViewNode;
       const child1 = TreeUtil.childAt(0, res);
       const child2 = TreeUtil.childAt(0, child1);
 
@@ -529,7 +529,7 @@ describe('TreeUtil', () => {
 
     it('builds path (1 level deep)', () => {
       const root = { id: 'root' };
-      const res = TreeUtil.buildPath<t.ITreeNode>(root, (id) => ({ id }), 'one');
+      const res = TreeUtil.buildPath<t.ITreeViewNode>(root, (id) => ({ id }), 'one');
       expect(res.root.children).to.eql([{ id: 'one' }]);
     });
 
@@ -582,7 +582,7 @@ describe('TreeUtil', () => {
     });
 
     it('does not override existing tree (default)', () => {
-      type T = t.ITreeNode<string, { foo: number }>;
+      type T = t.ITreeViewNode<string, { foo: number }>;
       let root: T = { id: 'root' };
       root = TreeUtil.buildPath<T>(
         root,
@@ -612,7 +612,7 @@ describe('TreeUtil', () => {
     });
 
     it('does not force overrides existing tree', () => {
-      type T = t.ITreeNode<string, { foo: number }>;
+      type T = t.ITreeViewNode<string, { foo: number }>;
       let root: T = { id: 'ROOT' };
       root = TreeUtil.buildPath<T>(root, (id) => ({ id, data: { foo: 1 } }), 'one/two').root;
 
@@ -630,7 +630,7 @@ describe('TreeUtil', () => {
     });
 
     it('merges paths (using path builder)', () => {
-      const factory: t.TreeNodePathFactory<t.ITreeNode> = (id) => ({ id });
+      const factory: t.TreeNodePathFactory<t.ITreeViewNode> = (id) => ({ id });
       const builder = TreeUtil.pathBuilder({ id: 'ROOT' }, factory);
 
       builder.add('project/cohort-1');
@@ -670,7 +670,7 @@ describe('TreeUtil', () => {
       });
 
       it('leaf node not added', () => {
-        const factory: t.TreeNodePathFactory<t.ITreeNode> = (id) =>
+        const factory: t.TreeNodePathFactory<t.ITreeViewNode> = (id) =>
           id.split('/').length > 2 ? undefined : { id };
         const builder = TreeUtil.pathBuilder({ id: 'ROOT' }, factory);
 
@@ -679,9 +679,9 @@ describe('TreeUtil', () => {
         builder.add('/foo/bar/baz');
 
         const root = builder.root;
-        const child1 = TreeUtil.findById(root, 'foo') as t.ITreeNode;
-        const child2 = TreeUtil.findById(root, 'foo/bar') as t.ITreeNode;
-        const child3 = TreeUtil.findById(root, 'foo/bar/baz') as t.ITreeNode;
+        const child1 = TreeUtil.findById(root, 'foo') as t.ITreeViewNode;
+        const child2 = TreeUtil.findById(root, 'foo/bar') as t.ITreeViewNode;
+        const child3 = TreeUtil.findById(root, 'foo/bar/baz') as t.ITreeViewNode;
 
         expect(child1.id).to.eql('foo');
         expect(child2.id).to.eql('foo/bar');
@@ -689,7 +689,7 @@ describe('TreeUtil', () => {
       });
 
       it('folder node not added (descendents stopped)', () => {
-        const factory: t.TreeNodePathFactory<t.ITreeNode> = (id) =>
+        const factory: t.TreeNodePathFactory<t.ITreeViewNode> = (id) =>
           id.split('/').length > 2 ? undefined : { id };
         const builder = TreeUtil.pathBuilder({ id: 'ROOT' }, factory);
 
@@ -699,10 +699,10 @@ describe('TreeUtil', () => {
         builder.add('/foo/bar/baz/zoo');
 
         const root = builder.root;
-        const child1 = TreeUtil.findById(root, 'foo') as t.ITreeNode;
-        const child2 = TreeUtil.findById(root, 'foo/bar') as t.ITreeNode;
-        const child3 = TreeUtil.findById(root, 'foo/bar/baz') as t.ITreeNode;
-        const child4 = TreeUtil.findById(root, 'foo/bar/baz/zoo') as t.ITreeNode;
+        const child1 = TreeUtil.findById(root, 'foo') as t.ITreeViewNode;
+        const child2 = TreeUtil.findById(root, 'foo/bar') as t.ITreeViewNode;
+        const child3 = TreeUtil.findById(root, 'foo/bar/baz') as t.ITreeViewNode;
+        const child4 = TreeUtil.findById(root, 'foo/bar/baz/zoo') as t.ITreeViewNode;
 
         expect(child1.id).to.eql('foo');
         expect(child2.id).to.eql('foo/bar');

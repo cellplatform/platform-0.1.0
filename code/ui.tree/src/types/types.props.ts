@@ -1,6 +1,6 @@
 import { t } from './common';
 
-type N = t.ITreeNode;
+type N = t.ITreeViewNode;
 
 /**
  * Properties for an individual leaf on the tree.

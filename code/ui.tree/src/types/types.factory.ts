@@ -1,6 +1,6 @@
 import { t, IIcon } from './common';
 
-type N = t.ITreeNode;
+type N = t.ITreeViewNode;
 
 /**
  * Factory renderer of a custom panel within the tree.

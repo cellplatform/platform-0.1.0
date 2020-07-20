@@ -12,6 +12,7 @@ type N = t.ITreeNode;
 
 /**
  * State machine for programming a tree, or partial leaf within a tree.
+ *
  * NOTE:
  *    All changes to the state tree are immutable.
  *

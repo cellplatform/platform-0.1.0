@@ -10,7 +10,7 @@ import { ITreeNodeProps, TreeNode, TreeNodeTwisty } from '../TreeNode';
 
 export type ITreeNodeListProps = {
   rootId?: string;
-  node: t.ITreeNode<any>;
+  node: t.ITreeViewNode<any>;
   depth?: number;
   defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
   renderPanel?: t.RenderTreePanel;
@@ -30,7 +30,7 @@ export type ITreeNodeListProps = {
 
 type IRenderNodeProps = {
   index: number;
-  node: t.ITreeNode;
+  node: t.ITreeViewNode;
   twisty?: TreeNodeTwisty;
   iconRight?: ITreeNodeProps['iconRight'];
   isVisible: boolean;
@@ -52,7 +52,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
 
   private get nodes() {
     const { node } = this.props;
-    return (node.children || []) as t.ITreeNode[];
+    return (node.children || []) as t.ITreeViewNode[];
   }
 
   private get depth() {
@@ -141,7 +141,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
   /**
    * Calculate properties for rendering a single node.
    */
-  private nodeRenderProps(index: number, siblings: t.ITreeNode[]): IRenderNodeProps {
+  private nodeRenderProps(index: number, siblings: t.ITreeViewNode[]): IRenderNodeProps {
     const node = siblings[index];
     if (!node) {
       throw new Error(`Index ${index} out of range [0..${siblings.length - 1}].`);
@@ -189,7 +189,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     return result;
   }
 
-  private toRightIcon(props: t.ITreeNodeProps, children?: t.ITreeNode['children']) {
+  private toRightIcon(props: t.ITreeNodeProps, children?: t.ITreeViewNode['children']) {
     const chrevron = props.chevron || {};
     const isVisible = chrevron.isVisible;
     const inlineChildren = Boolean(props.inline);
@@ -267,7 +267,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     );
   }
 
-  private renderChildList(node: t.ITreeNode) {
+  private renderChildList(node: t.ITreeViewNode) {
     const theme = this.theme;
     return (
       <TreeNodeList

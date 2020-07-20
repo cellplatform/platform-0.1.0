@@ -13,7 +13,7 @@ export type ITreeNodeBounds = {
  * [Events]
  */
 export type TreeNodeMouseTarget = 'NODE' | 'TWISTY' | 'DRILL_IN' | 'PARENT';
-export type TreeNodeMouseEvent<T extends t.ITreeNode = t.ITreeNode> = t.MouseEvent & {
+export type TreeNodeMouseEvent<T extends t.ITreeViewNode = t.ITreeViewNode> = t.MouseEvent & {
   target: TreeNodeMouseTarget;
   id: T['id'];
   node: T;

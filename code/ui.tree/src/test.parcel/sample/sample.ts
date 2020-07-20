@@ -3,7 +3,7 @@ import { t } from '../../common';
 import { TreeView } from '../..';
 import { COLORS } from '../constants';
 
-export const SIMPLE: t.ITreeNode = {
+export const SIMPLE: t.ITreeViewNode = {
   id: 'root',
   props: {
     label: 'Sheet',
@@ -22,7 +22,7 @@ export const COMPREHENSIVE = (() => {
   const p = TreeView.util.props;
   const root = createRoot([21, 5, 3, 2]);
 
-  const children = root.children as t.ITreeNode[];
+  const children = root.children as t.ITreeViewNode[];
   children.forEach((node) => {
     node.props = { ...p(node), inline: {} };
   });

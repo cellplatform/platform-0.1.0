@@ -2,7 +2,8 @@ import { TreeState } from '.';
 import { expect, t, TreeUtil } from '../test';
 import { helpers } from './helpers';
 
-type N = t.ITreeNode;
+type N = t.ITreeViewNode;
+type P = { label?: string; icon?: string };
 
 const create = (args: t.ITreeStateArgs) => TreeState.create<N>(args);
 
@@ -277,7 +278,7 @@ describe('TreeState', () => {
       expect(firstChild(state2).id).to.eql(child.id);
 
       child.change((draft, ctx) => {
-        helpers.props(draft).label = 'hello';
+        helpers.props<P>(draft).label = 'hello';
       });
       expect(firstChild(state1).props).to.eql({ label: 'hello' });
       expect(firstChild(state2).props).to.eql({ label: 'hello' });
@@ -435,7 +436,7 @@ describe('TreeState', () => {
       const res = state.change((root, ctx) => {
         // NB: Convenience method.
         //     Ensures the props object and is assigned exists in a single line call.
-        helpers.props(root, (p) => {
+        helpers.props<P>(root, (p) => {
           p.label = 'Hello!';
           p.icon = 'face';
         });
@@ -489,16 +490,16 @@ describe('TreeState', () => {
       expect(children()[2].props).to.eql(undefined);
 
       // Make a change to child-1.
-      child1.change((root, ctx) => helpers.props(root, (p) => (p.label = 'foo')));
+      child1.change((root, ctx) => helpers.props<P>(root, (p) => (p.label = 'foo')));
       expect(children()[2].props).to.eql({ label: 'foo' });
 
       // Remove child-1, then update again (should not effect parent).
       child1.dispose();
-      child1.change((root, ctx) => helpers.props(root, (p) => (p.label = 'bar')));
+      child1.change((root, ctx) => helpers.props<P>(root, (p) => (p.label = 'bar')));
       expect(count()).to.eql(3);
 
       // Make a change to child-2.
-      child2.change((root, ctx) => helpers.props(root, (p) => (p.label = 'hello')));
+      child2.change((root, ctx) => helpers.props<P>(root, (p) => (p.label = 'hello')));
       expect(children()[2].props).to.eql({ label: 'hello' });
     });
 
@@ -512,7 +513,7 @@ describe('TreeState', () => {
 
       expect(grandchild().props).to.eql(undefined);
 
-      child2.change((draft, ctx) => (helpers.props(draft).label = 'hello'));
+      child2.change((draft, ctx) => (helpers.props<P>(draft).label = 'hello'));
 
       expect(grandchild().props).to.eql({ label: 'hello' });
     });
@@ -523,7 +524,7 @@ describe('TreeState', () => {
       state.payload<t.ITreeStateChangedEvent>('TreeState/changed').subscribe((e) => fired.push(e));
 
       const res = state.change((root, ctx) => {
-        helpers.props(root, (p) => (p.label = 'foo'));
+        helpers.props<P>(root, (p) => (p.label = 'foo'));
       });
 
       expect(fired.length).to.eql(1);
@@ -541,7 +542,7 @@ describe('TreeState', () => {
 
       state.change(
         (root) => {
-          helpers.props(root, (p) => (p.label = 'foo'));
+          helpers.props<P>(root, (p) => (p.label = 'foo'));
         },
         { silent: true },
       );

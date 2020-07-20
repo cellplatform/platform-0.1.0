@@ -8,7 +8,7 @@ import { TreeView } from '../..';
 import { t } from '../../common';
 import { Icons } from './Icons';
 
-type Node = t.ITreeNode;
+type Node = t.ITreeViewNode;
 const State = TreeView.State;
 const ROOT: Node = {
   id: 'root',
@@ -17,7 +17,7 @@ const ROOT: Node = {
 };
 
 export type ITestProps = { style?: CssValue };
-export type ITestState = { root?: t.ITreeNode; current?: string };
+export type ITestState = { root?: t.ITreeViewNode; current?: string };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = { root: ROOT };

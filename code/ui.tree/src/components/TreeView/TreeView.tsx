@@ -31,9 +31,9 @@ const R = { equals };
 
 export type ITreeViewProps = {
   id?: string;
-  node?: t.ITreeNode;
+  node?: t.ITreeViewNode;
   defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
-  current?: t.ITreeNode['id'];
+  current?: t.ITreeViewNode['id'];
   renderPanel?: t.RenderTreePanel;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
@@ -47,8 +47,8 @@ export type ITreeViewProps = {
 };
 
 export type ITreeViewState = {
-  currentPath?: t.ITreeNode[];
-  renderedPath?: t.ITreeNode[];
+  currentPath?: t.ITreeViewNode[];
+  renderedPath?: t.ITreeViewNode[];
   index?: number;
   isSliding?: boolean;
   isFocused?: boolean;
@@ -63,7 +63,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   public static util = TreeUtil;
   public static State = TreeViewState;
 
-  public static events<N extends t.ITreeNode = t.ITreeNode>(
+  public static events<N extends t.ITreeViewNode = t.ITreeViewNode>(
     event$: Observable<t.TreeViewEvent>,
     dispose$?: Observable<void>,
   ) {
@@ -257,7 +257,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private renderCustomPanel(node: t.ITreeNode, depth: number) {
+  private renderCustomPanel(node: t.ITreeViewNode, depth: number) {
     const { renderPanel, background = 'THEME' } = this.props;
     if (!renderPanel) {
       return;
@@ -293,7 +293,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private renderNodeList(node: t.ITreeNode, depth: number) {
+  private renderNodeList(node: t.ITreeViewNode, depth: number) {
     const theme = this.theme;
     const props = node.props || {};
     const header = props.header || {};
@@ -322,7 +322,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private renderHeader(node: t.ITreeNode, depth: number) {
+  private renderHeader(node: t.ITreeViewNode, depth: number) {
     const theme = this.theme;
     const props = node.props || {};
     const header = props.header || {};

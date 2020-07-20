@@ -5,13 +5,13 @@ type Button = t.MouseEvent['button'];
 type Target = t.TreeNodeMouseTarget;
 
 export type TreeEvents = {
-  create<N extends t.ITreeNode = t.ITreeNode>(
+  create<N extends t.ITreeViewNode = t.ITreeViewNode>(
     event$: Observable<t.TreeViewEvent>,
     dispose$?: Observable<any>,
   ): t.ITreeEvents<N>;
 };
 
-export type ITreeEvents<N extends t.ITreeNode = any> = {
+export type ITreeEvents<N extends t.ITreeViewNode = any> = {
   event$: Observable<t.TreeViewEvent>;
   mouse$(options?: {
     button?: Button[];
@@ -30,7 +30,7 @@ export type ITreeEvents<N extends t.ITreeNode = any> = {
   };
 };
 
-export type ITreeMouseEvents<N extends t.ITreeNode = any> = {
+export type ITreeMouseEvents<N extends t.ITreeViewNode = any> = {
   all$: Observable<t.TreeNodeMouseEvent<N>>;
   node$: Observable<t.TreeNodeMouseEvent<N>>;
   drillIn$: Observable<t.TreeNodeMouseEvent<N>>;

@@ -9,8 +9,8 @@ type Target = t.TreeNodeMouseTarget;
 /**
  * Helpers for filtering different event streams for a tree with sensible defaults.
  */
-export class TreeEvents<N extends t.ITreeNode = t.ITreeNode> implements t.ITreeEvents<N> {
-  public static create<N extends t.ITreeNode = t.ITreeNode>(
+export class TreeEvents<N extends t.ITreeViewNode = t.ITreeViewNode> implements t.ITreeEvents<N> {
+  public static create<N extends t.ITreeViewNode = t.ITreeViewNode>(
     event$: Observable<t.TreeViewEvent>,
     dispose$?: Observable<any>,
   ): t.ITreeEvents<N> {
