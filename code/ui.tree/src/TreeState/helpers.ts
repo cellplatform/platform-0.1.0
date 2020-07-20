@@ -3,7 +3,6 @@ import { id } from './id';
 import { TreeUtil } from '../TreeUtil';
 
 type N = t.ITreeNode;
-type O = Record<string, unknown>;
 
 export const helpers = {
   id,
