@@ -19,7 +19,7 @@ type N = t.ITreeNode;
  */
 export class TreeState<T extends N = N> implements t.ITreeState<T> {
   public static create<T extends N = N>(args?: t.ITreeStateArgs<T>) {
-    const root = args?.root || { id: 'root' };
+    const root = args?.root || 'node';
     const e = { ...args, root } as t.ITreeStateArgs<T>;
     return new TreeState<T>(e) as t.ITreeState<T>;
   }
@@ -33,16 +33,22 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
    * Lifecycle
    */
   private constructor(args: t.ITreeStateArgs<T>) {
+    // Wrangle the {root} argument into an object.
     const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as T;
+
+    // Store values.
     this._store = StateObject.create<T>(root);
     this.parent = args.parent;
+
+    // Set the object with the initial state.
     this._change((draft) => helpers.ensureNamespace(draft, this.namespace), {
       silent: true,
       ensureNamespace: false, // NB: No need to do it in the function (we are doing it here).
     });
 
+    // Dispose if given observable fires.
     if (args.dispose$) {
-      args.dispose$.subscribe((e) => this.dispose());
+      args.dispose$.subscribe(() => this.dispose());
     }
   }
 
