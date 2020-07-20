@@ -112,9 +112,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       children.push({ id: 'my-child', props: { label: 'hello' } });
     });
 
-    console.group('🌳 child added');
-    console.log('child', child);
-    console.log('child.root', child.root);
-    console.groupEnd();
+    // console.group('🌳 child added');
+    // console.log('child', child);
+    // console.log('child.root', child.root);
+    // console.groupEnd();
   };
 }

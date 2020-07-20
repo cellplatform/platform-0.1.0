@@ -30,7 +30,7 @@ export type IFinderTreeEvent = {
   payload: IFinderTree;
 };
 export type IFinderTree = {
-  root?: t.ITreeNode | null;
+  root?: t.ITreeViewNode | null;
   current?: string | null;
   selected?: string | null;
   theme?: t.TreeTheme | null;

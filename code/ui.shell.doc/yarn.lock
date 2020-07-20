@@ -91,10 +91,10 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state@0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.5.tgz#7af8ebfa303bcc4aa34a247460e1720140c02ffd"
-  integrity sha512-Enu6ZcbLGpc4Wvhje6lOwzrHiIhqKJFpO9eXKgQaVJ1gD2XakWtR/02QkAMK/O4a5kFKrUZBFxQFNH8BCohqPg==
+"@platform/state@0.6.6":
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.6.tgz#2acf5ea90e237be2f587a60ce0751baddb1113b4"
+  integrity sha512-jJZSfLevBM79qZKE9OBnt3nQxD/o6P/b5iaJ8ODSoTjiheebPACk475GVvqLpLLoWKff25abPhQL+TeNRdX6Ug==
   dependencies:
     "@platform/types" "0.5.0"
     "@platform/util.value" "0.7.27"
@@ -162,13 +162,13 @@
     "@platform/css" "^0.4.7"
     "@platform/react" "0.4.40"
 
-"@platform/ui.shell.types@0.1.80":
-  version "0.1.80"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.1.80.tgz#3ed7270f7aa457066b1654ab7564defb179e3b0e"
-  integrity sha512-uMsX+SpofFdDm8DaSOujdB3h23igxp6A9bfHlWs0qC7ncQgO3vxsMoWK2FHaMY17fNbZEck60BOYZvazvu1xCA==
+"@platform/ui.shell.types@0.1.82":
+  version "0.1.82"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.1.82.tgz#f52afb6c3baf85948a83f475709db9a70003f215"
+  integrity sha512-LLIfm2pIENY0no38mF+Ulx1okna9cxOpq0ai1vFp590afGS8PTWwpHupopUyUbrYbkqqlFodvXkBO//aWu8nTg==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/ui.tree" "0.6.0"
+    "@platform/ui.tree" "0.6.2"
 
 "@platform/ui.spinner@0.0.156":
   version "0.0.156"
@@ -188,14 +188,15 @@
     "@platform/react" "0.4.40"
     "@platform/util.value" "0.7.27"
 
-"@platform/ui.tree@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.6.0.tgz#3f0c8d19a9a6c211952bd060b039fc994151b9f0"
-  integrity sha512-JlncuWzmBj6oWpd+ktffbdU9QnNs+4bdND0VD7aSCvdvVJgvu7qBFEJ/nUbH01g7MApKocZNeZTVsLw0+dHHaw==
+"@platform/ui.tree@0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.6.2.tgz#c3ab6f34d579c470023331b110e6f392fcad56e7"
+  integrity sha512-zUZGj6vcY1C6j1q64zrPIDgobBCVu42OZGStnTMwDaqB3g/DOVcmZ1XyNTg+QwSwSJ/Jj4q3DWlN9Lg+pULqmg==
   dependencies:
     "@platform/css" "0.4.7"
     "@platform/react" "0.4.40"
-    "@platform/state" "0.6.5"
+    "@platform/state" "0.6.6"
+    "@platform/types" "0.5.0"
     "@platform/ui.icon" "0.0.159"
     "@platform/ui.panel" "0.2.8"
     "@platform/ui.spinner" "0.0.156"

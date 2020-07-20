@@ -69,7 +69,7 @@ export class FinderShellTree extends React.PureComponent<IFinderShellTreeProps> 
     return undefined;
   };
 
-  private renderPanel: t.RenderTreePanel<t.ITreeNode> = (e) => {
+  private renderPanel: t.RenderTreePanel<t.ITreeViewNode> = (e) => {
     return undefined;
   };
 }

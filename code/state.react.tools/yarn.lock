@@ -1278,18 +1278,18 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state.react@0.4.98":
-  version "0.4.98"
-  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.4.98.tgz#f4d2f5a2e8d6773ffaa5577cd746ffebe211fa1a"
-  integrity sha512-UaWdtAb3rckeBwhnN83VGV9iAIZbCNBTgyZ3WYZZBCVZhRtpn6ThgCliTpKRgbG1Qu/4uXZxpmwz4Shg6zctIw==
+"@platform/state.react@0.4.99":
+  version "0.4.99"
+  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.4.99.tgz#45f6019c1d16835d4adafdc82fae547504f0c484"
+  integrity sha512-U+JpMSyEmoXyny3DhS6lEpvzQWe9Mw93heIAfT7xa7oVaSaLeE4mQgsZW80WV0G5Jt9DyN8GV695jnZjBPy+8g==
   dependencies:
     "@platform/react" "0.4.40"
-    "@platform/state" "0.6.5"
+    "@platform/state" "0.6.6"
 
-"@platform/state@0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.5.tgz#7af8ebfa303bcc4aa34a247460e1720140c02ffd"
-  integrity sha512-Enu6ZcbLGpc4Wvhje6lOwzrHiIhqKJFpO9eXKgQaVJ1gD2XakWtR/02QkAMK/O4a5kFKrUZBFxQFNH8BCohqPg==
+"@platform/state@0.6.6":
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.6.tgz#2acf5ea90e237be2f587a60ce0751baddb1113b4"
+  integrity sha512-jJZSfLevBM79qZKE9OBnt3nQxD/o6P/b5iaJ8ODSoTjiheebPACk475GVvqLpLLoWKff25abPhQL+TeNRdX6Ug==
   dependencies:
     "@platform/types" "0.5.0"
     "@platform/util.value" "0.7.27"

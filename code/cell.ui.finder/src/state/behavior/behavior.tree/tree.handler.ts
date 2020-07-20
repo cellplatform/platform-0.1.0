@@ -48,7 +48,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   /**
    * Drill-in
    */
-  const drillIn = (node?: t.ITreeNode) => {
+  const drillIn = (node?: t.ITreeViewNode) => {
     const child = (node?.children || [])[0]?.id;
     select(child);
   };

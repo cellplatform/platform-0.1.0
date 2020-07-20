@@ -19,7 +19,7 @@ export type ICommandTreeViewProps = {
   style?: CssValue;
 };
 export type ICommandTreeViewState = {
-  treeRoot?: t.ITreeNode;
+  treeRoot?: t.ITreeViewNode;
 };
 
 export class CommandTreeView extends React.PureComponent<
@@ -158,7 +158,7 @@ export class CommandTreeView extends React.PureComponent<
   }
 
   private fireCurrent(
-    node: string | t.ITreeNode | undefined,
+    node: string | t.ITreeViewNode | undefined,
     direction: t.ICommandTreeCurrent['direction'],
   ) {
     const command = util.asCommand(this.rootCommand, node);

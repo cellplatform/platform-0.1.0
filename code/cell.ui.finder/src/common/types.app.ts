@@ -12,7 +12,7 @@ export type IAppStore = t.IStore<IAppState, AppEvent>;
 
 export type IAppState = {
   tree: {
-    root?: t.ITreeNode;
+    root?: t.ITreeViewNode;
     current?: string;
     selected?: string;
     theme?: t.TreeTheme;
