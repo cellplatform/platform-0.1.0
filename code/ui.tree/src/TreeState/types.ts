@@ -5,9 +5,8 @@ type Node = t.INode;
 export type TreeState = {
   create<N extends Node = Node>(args: ITreeStateArgs<N>): ITreeState<N>;
   id: TreeStateId;
-  props(of: Node, fn?: (props: t.ITreeNodeProps) => void): t.ITreeNodeProps;
-  children<T extends Node>(of: T, fn?: (children: T[]) => void): T[];
   isInstance(input: any): boolean;
+  children<T extends Node>(of: T, fn?: (children: T[]) => void): T[];
 };
 
 export type TreeStateId = {
@@ -55,16 +54,14 @@ export type ITreeState<N extends Node = Node> = t.IDisposable &
 export type TreeStateChange<N extends Node = Node> = (
   fn: TreeStateChanger<N>,
   options?: TreeStateChangeOptions,
-) => void;
+) => TreeStateChangeResponse<N>;
+export type TreeStateChangeResponse<N extends Node = Node> = t.IStateObjectChangeResponse<N>;
 export type TreeStateChangeOptions = { silent?: boolean };
 export type TreeStateChanger<N extends Node = Node> = (
   root: N,
   ctx: TreeStateChangerContext<N>,
 ) => void;
-export type TreeStateChangerContext<N extends Node = Node> = ITreeTraverse<N> & {
-  props(of: Node, fn?: (props: t.ITreeNodeProps) => void): t.ITreeNodeProps;
-  children<C extends Node = N>(of: Node, fn?: (children: C[]) => void): C[];
-};
+export type TreeStateChangerContext<N extends Node = Node> = ITreeTraverse<N>;
 
 /**
  * Node traversal.
@@ -118,6 +115,7 @@ export type ITreeStateChangedEvent<N extends Node = Node> = {
 export type ITreeStateChanged<N extends Node = Node> = {
   from: N;
   to: N;
+  patches: t.StateObjectPatches;
 };
 
 export type ITreeStateChildAddedEvent = {

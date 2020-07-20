@@ -4,11 +4,12 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Tree } from '../..';
+import { TreeView } from '../..';
 import { t } from '../../common';
 import { Icons } from './Icons';
 
 type Node = t.ITreeNode;
+const State = TreeView.State;
 const ROOT: Node = {
   id: 'root',
   props: { label: 'Root' },
@@ -24,7 +25,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private event$ = new Subject<t.TreeViewEvent>();
 
-  private rootState = Tree.State.create({ root: ROOT, dispose$: this.unmounted$ });
+  private rootState = TreeView.State.create({ root: ROOT, dispose$: this.unmounted$ });
 
   /**
    * [Lifecycle]
@@ -71,7 +72,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...styles.base}>
-        <Tree.View
+        <TreeView
           node={this.state.root}
           current={this.state.current}
           event$={this.event$}
@@ -107,7 +108,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const child = this.rootState.add({ root });
 
     child.change((draft, ctx) => {
-      const children = ctx.children(draft);
+      const children = State.children(draft);
       children.push({ id: 'my-child', props: { label: 'hello' } });
     });
 

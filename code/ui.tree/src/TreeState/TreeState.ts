@@ -6,6 +6,7 @@ import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 import { t } from '../common';
 import { TreeUtil } from '../TreeUtil';
 import { id } from './TreeState.id';
+import { helpers } from './helpers';
 
 type N = t.ITreeNode;
 
@@ -20,29 +21,10 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return new TreeState<T>(args) as t.ITreeState<T>;
   }
 
-  public static id = id;
-
-  public static props(of: N, fn?: (props: t.ITreeNodeProps) => void): t.ITreeNodeProps {
-    of.props = of.props || {};
-    if (typeof fn === 'function') {
-      fn(of.props);
-    }
-    return of.props;
-  }
-
-  public static children<T extends N>(of: T, fn?: (children: T[]) => void): T[] {
-    const children = (of.children = of.children || []) as T[];
-    if (typeof fn === 'function') {
-      fn(children);
-    }
-    return of.children as T[];
-  }
-
-  public static isInstance(input: any): boolean {
-    return input === null || typeof input !== 'object'
-      ? false
-      : typeof input.change === 'function' && typeof input.payload === 'function';
-  }
+  public static id = helpers.id;
+  public static props = helpers.props;
+  public static children = helpers.children;
+  public static isInstance = helpers.isInstance;
 
   /**
    * Lifecycle
@@ -51,7 +33,10 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as T;
     this._store = StateObject.create<T>(root);
     this.parent = args.parent;
-    this.change((root) => ensureNamespacePrefix(root, this.namespace), { silent: true });
+    this._change((draft) => helpers.ensureNamespace(draft, this.namespace), {
+      silent: true,
+      ensureNamespace: false, // NB: Doing it here.
+    });
 
     this.treeview$ = (args.treeview$ || new Subject<t.TreeViewEvent>()).pipe(
       takeUntil(this.dispose$),
@@ -116,11 +101,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   }
 
   private get changeCtx(): t.TreeStateChangerContext<T> {
-    return {
-      ...this.traverseMethods,
-      props: TreeState.props,
-      children: TreeState.children,
-    };
+    return this.traverseMethods;
   }
 
   /**
@@ -136,15 +117,29 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return rx.payload<E>(this.event$, type);
   }
 
-  public change: t.TreeStateChange<T> = (fn, options = {}) => {
+  public change: t.TreeStateChange<T> = (fn, options = {}) => this._change(fn, options);
+  private _change(
+    fn: t.TreeStateChanger<T>,
+    options: { silent?: boolean; ensureNamespace?: boolean } = {},
+  ) {
     const from = this.root;
     const ctx = this.changeCtx;
-    this._store.change((draft) => fn(draft, ctx));
+
+    const res = this._store.change((draft) => {
+      fn(draft, ctx);
+      if (options.ensureNamespace !== false) {
+        helpers.ensureNamespace(draft, this.namespace);
+      }
+    });
+    const { patches } = res;
+
     if (!options.silent) {
       const to = this.root;
-      this.fire({ type: 'TreeState/changed', payload: { from, to } });
+      this.fire({ type: 'TreeState/changed', payload: { from, to, patches } });
     }
-  };
+
+    return res;
+  }
 
   public add<C extends N = N>(args: { parent?: string; root: C | string | t.ITreeState<C> }) {
     // Wrangle: Check if the arguments are in fact a [TreeState] instance.
@@ -164,7 +159,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
 
     // Insert data into state-tree.
     this.change((root, ctx) => {
-      ctx.children<C>(root).push(child.root);
+      TreeState.children<any>(root).push(child.root);
     });
 
     // Update state-tree when child changes.
@@ -310,7 +305,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     removed$.subscribe((e) => {
       this.change((draft, ctx) => {
         // REMOVE child in state-tree.
-        draft.children = ctx.children(draft).filter(({ id }) => id !== child.id);
+        draft.children = TreeState.children(draft).filter(({ id }) => id !== child.id);
       });
     });
 
@@ -320,7 +315,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
       .subscribe((e) => {
         this.change((draft, ctx) => {
           // UPDATE child in state-tree.
-          const children = ctx.children(draft);
+          const children = TreeState.children(draft);
           const index = children.findIndex(({ id }) => id === child.id);
           if (index > -1) {
             children[index] = e.to as T;
@@ -328,23 +323,4 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
         });
       });
   }
-}
-
-/**
- * [Helpers]
- */
-
-function ensureNamespacePrefix(root: N, namespace: string) {
-  TreeUtil.walkDown(root, (e) => {
-    if (!e.node.id.startsWith('ns-')) {
-      e.node.id = id.format(namespace, e.node.id);
-    } else {
-      // Namespace prefix already exists.
-      // Ensure it is within the given namespace, and if not skip adjusting any children.
-      const res = id.parse(e.node.id);
-      if (res.namespace !== namespace) {
-        e.skip();
-      }
-    }
-  });
 }

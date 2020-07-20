@@ -25,6 +25,7 @@ import * as themes from '../../themes';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
 import { TreeUtil } from '../../TreeUtil';
+import { TreeViewState } from '../../TreeViewState';
 
 const R = { equals };
 
@@ -60,6 +61,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    * [Static]
    */
   public static util = TreeUtil;
+  public static State = TreeViewState;
 
   public static events<N extends t.ITreeNode = t.ITreeNode>(
     event$: Observable<t.TreeViewEvent>,

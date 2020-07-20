@@ -1,11 +1,12 @@
 import { TreeState } from '.';
 import { expect, t, TreeUtil } from '../test';
+import { helpers } from './helpers';
 
 type N = t.ITreeNode;
 
 const create = (args: t.ITreeStateArgs) => TreeState.create<N>(args);
 
-describe.only('TreeState', () => {
+describe('TreeState', () => {
   describe('create', () => {
     it('without parent', () => {
       const root: N = { id: 'root' };
@@ -75,7 +76,7 @@ describe.only('TreeState', () => {
 
     it('id.hasPrefix', () => {
       const test = (input: S, expected: boolean) => {
-        const res = TreeState.id.hasPrefix(input);
+        const res = TreeState.id.hasNamespace(input);
         expect(res).to.eql(expected);
       };
       test('ns-foo:bar', true);
@@ -202,7 +203,7 @@ describe.only('TreeState', () => {
 
       state.add({ root: child });
 
-      expect(TreeState.children(state.root)[0].id).to.eql(child.id);
+      expect(helpers.children(state.root)[0].id).to.eql(child.id);
       expect(state.children.includes(child)).to.eql(true);
     });
 
@@ -215,7 +216,7 @@ describe.only('TreeState', () => {
 
       state.add(child);
 
-      expect(TreeState.children(state.root)[0].id).to.eql(child.id);
+      expect(helpers.children(state.root)[0].id).to.eql(child.id);
       expect(state.children.includes(child)).to.eql(true);
     });
 
@@ -269,14 +270,14 @@ describe.only('TreeState', () => {
       state1.add(child);
       state2.add(child);
 
-      const childAt = (state: t.ITreeState<N>, i: number) => TreeState.children(state.root)[i];
+      const childAt = (state: t.ITreeState<N>, i: number) => helpers.children(state.root)[i];
       const firstChild = (state: t.ITreeState<N>) => childAt(state, 0);
 
       expect(firstChild(state1).id).to.eql(child.id);
       expect(firstChild(state2).id).to.eql(child.id);
 
       child.change((draft, ctx) => {
-        ctx.props(draft).label = 'hello';
+        helpers.props(draft).label = 'hello';
       });
       expect(firstChild(state1).props).to.eql({ label: 'hello' });
       expect(firstChild(state2).props).to.eql({ label: 'hello' });
@@ -431,16 +432,49 @@ describe.only('TreeState', () => {
 
     it('simple', () => {
       const state = create({ root });
-      state.change((root, ctx) => {
+      const res = state.change((root, ctx) => {
         // NB: Convenience method.
         //     Ensures the props object and is assigned exists in a single line call.
-        ctx.props(root, (p) => {
+        helpers.props(root, (p) => {
           p.label = 'Hello!';
           p.icon = 'face';
         });
       });
       expect(state.root.props?.label).to.eql('Hello!');
       expect(state.root.props?.icon).to.eql('face');
+
+      expect(res.op).to.eql('update');
+      expect(res.cid.length).to.greaterThan(10);
+      expect(res.from.props).to.eql(undefined);
+      expect(res.to.props?.label).to.eql('Hello!');
+
+      const { prev, next } = res.patches;
+      expect(prev.length).to.eql(1);
+      expect(next.length).to.eql(1);
+      expect(prev[0]).to.eql({ op: 'remove', path: 'props' });
+      expect(next[0]).to.eql({
+        op: 'add',
+        path: 'props',
+        value: { label: 'Hello!', icon: 'face' },
+      });
+    });
+
+    it('child array: insert (updates id namespaces)', () => {
+      const state = create({ root: 'root' });
+
+      state.change((root, ctx) => {
+        const children = TreeState.children(root);
+        children.push(...[{ id: 'foo', children: [{ id: 'foo.1' }] }, { id: 'bar' }]);
+      });
+
+      const ns = TreeState.id.hasNamespace;
+
+      const children = state.root.children || [];
+      expect(children.length).to.eql(2);
+
+      expect(ns(children[0].id)).to.eql(true);
+      expect(ns(children[1].id)).to.eql(true);
+      expect(ns((children[0].children || [])[0].id)).to.eql(true); // Deep.
     });
 
     it('updates parent state-tree when child changes', () => {
@@ -455,16 +489,16 @@ describe.only('TreeState', () => {
       expect(children()[2].props).to.eql(undefined);
 
       // Make a change to child-1.
-      child1.change((root, ctx) => ctx.props(root, (p) => (p.label = 'foo')));
+      child1.change((root, ctx) => helpers.props(root, (p) => (p.label = 'foo')));
       expect(children()[2].props).to.eql({ label: 'foo' });
 
       // Remove child-1, then update again (should not effect parent).
       child1.dispose();
-      child1.change((root, ctx) => ctx.props(root, (p) => (p.label = 'bar')));
+      child1.change((root, ctx) => helpers.props(root, (p) => (p.label = 'bar')));
       expect(count()).to.eql(3);
 
       // Make a change to child-2.
-      child2.change((root, ctx) => ctx.props(root, (p) => (p.label = 'hello')));
+      child2.change((root, ctx) => helpers.props(root, (p) => (p.label = 'hello')));
       expect(children()[2].props).to.eql({ label: 'hello' });
     });
 
@@ -478,7 +512,7 @@ describe.only('TreeState', () => {
 
       expect(grandchild().props).to.eql(undefined);
 
-      child2.change((draft, ctx) => (ctx.props(draft).label = 'hello'));
+      child2.change((draft, ctx) => (helpers.props(draft).label = 'hello'));
 
       expect(grandchild().props).to.eql({ label: 'hello' });
     });
@@ -488,13 +522,16 @@ describe.only('TreeState', () => {
       const fired: t.ITreeStateChanged<N>[] = [];
       state.payload<t.ITreeStateChangedEvent>('TreeState/changed').subscribe((e) => fired.push(e));
 
-      state.change((root, ctx) => {
-        ctx.props(root, (p) => (p.label = 'foo'));
+      const res = state.change((root, ctx) => {
+        helpers.props(root, (p) => (p.label = 'foo'));
       });
 
       expect(fired.length).to.eql(1);
-      expect(fired[0].from.props?.label).to.eql(undefined);
-      expect(fired[0].to.props?.label).to.eql('foo');
+
+      const event = fired[0];
+      expect(event.from.props?.label).to.eql(undefined);
+      expect(event.to.props?.label).to.eql('foo');
+      expect(event.patches).to.eql(res.patches);
     });
 
     it('event: changed (silent, not fired)', () => {
@@ -503,8 +540,8 @@ describe.only('TreeState', () => {
       state.payload<t.ITreeStateChangedEvent>('TreeState/changed').subscribe((e) => fired.push(e));
 
       state.change(
-        (root, ctx) => {
-          ctx.props(root, (p) => (p.label = 'foo'));
+        (root) => {
+          helpers.props(root, (p) => (p.label = 'foo'));
         },
         { silent: true },
       );
