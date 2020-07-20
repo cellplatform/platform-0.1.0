@@ -1,5 +1,5 @@
 import { t } from '../common';
-import { id } from './TreeState.id';
+import { id } from './id';
 import { TreeUtil } from '../TreeUtil';
 
 type N = t.ITreeNode;

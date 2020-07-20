@@ -1,11 +1,11 @@
 import { StateObject } from '@platform/state/lib/StateObject';
 import { id as idUtil, rx } from '@platform/util.value';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
 import { TreeUtil } from '../TreeUtil';
-import { id } from './TreeState.id';
+import { id } from './id';
 import { helpers } from './helpers';
 
 type N = t.ITreeNode;
@@ -36,7 +36,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     this.parent = args.parent;
     this._change((draft) => helpers.ensureNamespace(draft, this.namespace), {
       silent: true,
-      ensureNamespace: false, // NB: Doing it here.
+      ensureNamespace: false, // NB: No need to do it in the function (we are doing it here).
     });
 
     if (args.dispose$) {
