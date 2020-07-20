@@ -104,6 +104,7 @@ export class TestStateStore extends React.PureComponent<
         borderBottom: `solid 8px ${color.format(-0.08)}`,
         paddingBottom: 8,
         marginBottom: 20,
+        userSelect: 'none',
       }),
       left: css({
         Flex: 'horizontal-center-center',
@@ -113,21 +114,23 @@ export class TestStateStore extends React.PureComponent<
       }),
       id: css({
         fontFamily: 'menlo, monospace',
-        fontSize: 12,
+        fontSize: 10,
         color: COLORS.PURPLE,
-        marginRight: 8,
+        marginTop: 2,
+        userSelect: 'text',
       }),
     };
 
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <Icons.Box size={18} style={{ marginRight: 4 }} color={COLORS.PURPLE} />
-          <strong>TreeState</strong>
+          <Icons.Box size={24} style={{ marginRight: 4 }} color={COLORS.PURPLE} />
+          <div>
+            <strong>TreeState</strong>
+            <div {...styles.id}>{store.id}</div>
+          </div>
         </div>
-        <div {...styles.right}>
-          <div {...styles.id}>{store.id}</div> {!this.isRoot && this.renderCloseButton()}
-        </div>
+        <div {...styles.right}>{!this.isRoot && this.renderCloseButton()}</div>
       </div>
     );
   }
@@ -147,9 +150,9 @@ export class TestStateStore extends React.PureComponent<
     const height = this.connectorHeight;
     const styles = {
       base: css({
-        Absolute: [-height, null, null, 10],
+        Absolute: [-height, null, null, 17],
         width: 10,
-        height,
+        height: height - 1,
         backgroundColor: color.format(-0.08),
       }),
     };
@@ -165,12 +168,20 @@ export class TestStateStore extends React.PureComponent<
       }),
       left: css({ flex: 1 }),
       middle: css({ width: 20 }),
-      right: css({ flex: 1 }),
+      right: css({
+        position: 'relative',
+        flex: 1,
+      }),
+      downArrowOuter: css({
+        Absolute: [null, 0, -15, 0],
+        Flex: 'center-center',
+        pointerEvents: 'none',
+      }),
     };
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          {this.renderInputButton({
+          {this.renderTextInputButton({
             placeholder: 'label',
             value: this.store.root.props?.label,
             onChange: this.onLabelChange,
@@ -178,7 +189,12 @@ export class TestStateStore extends React.PureComponent<
         </div>
         <div {...styles.middle}></div>
         <div {...styles.right}>
-          {this.renderInputButton({
+          {Boolean(this.state.addLabel) && (
+            <div {...css(styles.downArrowOuter)}>
+              <Icons.ArrowDown size={18} />
+            </div>
+          )}
+          {this.renderTextInputButton({
             placeholder: 'new child',
             button: 'add',
             value: this.state.addLabel,
@@ -190,7 +206,7 @@ export class TestStateStore extends React.PureComponent<
     );
   }
 
-  private renderInputButton(props: {
+  private renderTextInputButton(props: {
     placeholder?: string;
     value?: string;
     button?: string;
@@ -199,8 +215,10 @@ export class TestStateStore extends React.PureComponent<
   }) {
     const styles = {
       base: css({
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
+        boxSizing: 'border-box',
         Flex: 'horizontal',
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
+        paddingBottom: 2,
       }),
       input: css({ flex: 1 }),
       button: css({ marginLeft: 8 }),
@@ -257,7 +275,7 @@ export class TestStateStore extends React.PureComponent<
 
   private addChild = () => {
     const label = this.state.addLabel;
-    const root = { id: 'foo', props: { label } };
+    const root = { id: 'node', props: { label } };
     const child = this.store.add({ root });
 
     child.change((draft, ctx) => {

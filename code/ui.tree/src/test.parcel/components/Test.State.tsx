@@ -12,8 +12,19 @@ type Node = t.ITreeViewNode;
 
 const ROOT: Node = {
   id: 'root',
-  props: { label: 'Root' },
-  children: [{ id: 'child-1', props: { label: 'Child-1' } }],
+  props: {
+    label: 'Root',
+    header: { isVisible: false },
+  },
+  children: [
+    {
+      id: 'child-1',
+      props: {
+        label: 'Child-1',
+        marginTop: 45,
+      },
+    },
+  ],
 };
 
 export type ITestProps = { style?: CssValue };
@@ -53,12 +64,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       base: css({
         Absolute: 0,
         Flex: 'horizontal-stretch-stretch',
+        backgroundColor: color.format(0.5),
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
         {this.renderTree('left')}
-        {this.renderRight()}
+        {this.renderCenter()}
         {this.renderTree('right')}
       </div>
     );
@@ -71,6 +83,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         display: 'flex',
         borderLeft: edge === 'right' && `solid 1px ${color.format(-0.1)}`,
         borderRight: edge === 'left' && `solid 1px ${color.format(-0.1)}`,
+        WebkitAppRegion: 'drag',
       }),
     };
     return (
@@ -80,13 +93,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           current={this.state.current}
           event$={this.event$}
           renderIcon={this.renderIcon}
+          background={'NONE'}
           tabIndex={0}
         />
       </div>
     );
   }
 
-  private renderRight() {
+  private renderCenter() {
     const styles = {
       base: css({
         flex: 1,
@@ -94,6 +108,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         padding: 30,
         paddingTop: 80,
         PaddingX: 50,
+        Scroll: true,
+        paddingBottom: 100,
+        backgroundColor: color.format(1),
       }),
     };
 
