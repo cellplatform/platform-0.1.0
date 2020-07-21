@@ -416,15 +416,15 @@ describe('TreeQuery', () => {
     });
   });
 
-  describe('findParent', () => {
+  describe('parent', () => {
     it('has a parent', () => {
       const grandchild: N = { id: 'grandchild' };
       const child: N = { id: 'child', children: [grandchild] };
       const root: N = { id: 'root', children: [child] };
       const query = create(root);
 
-      expect(query.findParent(child)).to.equal(root);
-      expect(query.findParent(grandchild)).to.equal(child);
+      expect(query.parent(child)).to.equal(root);
+      expect(query.parent(grandchild)).to.equal(child);
     });
 
     it('has no parent', () => {
@@ -433,8 +433,8 @@ describe('TreeQuery', () => {
       const root: N = { id: 'root', children: [] };
       const query = create(root);
 
-      expect(query.findParent(child)).to.equal(undefined);
-      expect(query.findParent(grandchild)).to.equal(undefined);
+      expect(query.parent(child)).to.equal(undefined);
+      expect(query.parent(grandchild)).to.equal(undefined);
     });
   });
 

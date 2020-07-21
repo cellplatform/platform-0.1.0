@@ -164,7 +164,7 @@ export class TreeUtil {
     node: T | T['id'] | undefined,
     options: { inline?: boolean } = {},
   ): T | undefined {
-    return root && node ? TreeQuery.create(root).findParent(node, options) : undefined;
+    return root && node ? TreeQuery.create(root).parent(node, options) : undefined;
   }
 
   /**

@@ -112,7 +112,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
     const current = this.findById(toId(startAt));
     if (current) {
       let stop = false;
-      const parentNode = this.findParent(current);
+      const parentNode = this.parent(current);
       const { id, namespace } = Identity.parse(current.id);
       const args: t.ITreeAscend<T> = {
         id,
@@ -172,7 +172,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
   /**
    * Looks for the parent of a node.
    */
-  public findParent: t.TreeFindParent<T> = (node, options = {}) => {
+  public parent: t.TreeFindParent<T> = (node, options = {}) => {
     if (!node) {
       return undefined;
     }
@@ -196,7 +196,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
           // Not a match on the given "showChildren" filter.
           // Keep going...
           e.stop();
-          result = this.findParent(e.node); // <== 🌳 RECURSION.
+          result = this.parent(e.node); // <== 🌳 RECURSION.
         } else {
           result = e.node;
           e.stop();

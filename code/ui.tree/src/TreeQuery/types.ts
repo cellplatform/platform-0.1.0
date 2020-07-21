@@ -19,8 +19,22 @@ export type ITreeQuery<T extends Node = Node> = {
   walkUp: TreeWalkUp<T>;
   find: TreeFind<T>;
   findById: TreeFindById<T>;
-  findParent: TreeFindParent<T>;
+  parent: TreeFindParent<T>;
   exists: TreeNodeExists<T>;
+
+  /**
+   * TODO 🐷
+   * - ancestor
+   * - depth
+   *
+   * STATIC
+   * - children
+   * - childAt
+   */
+  // ancestor
+
+  // STATUC
+  // childAt
 };
 
 /**
