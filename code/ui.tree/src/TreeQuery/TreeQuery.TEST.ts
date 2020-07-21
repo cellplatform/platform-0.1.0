@@ -338,7 +338,7 @@ describe('TreeQuery', () => {
 
       const query = create({ root, namespace: 'ns2' });
       const test = (startAt?: string | N) => {
-        const walked: t.TreeStateVisit<N>[] = [];
+        const walked: t.ITreeAscend<N>[] = [];
         query.walkUp(startAt, (e) => walked.push(e));
         expect(walked.map((e) => e.id)).to.eql(['child-2.1', 'child-2']);
       };
@@ -435,6 +435,32 @@ describe('TreeQuery', () => {
 
       expect(query.findParent(child)).to.equal(undefined);
       expect(query.findParent(grandchild)).to.equal(undefined);
+    });
+  });
+
+  describe('exists', () => {
+    const tree: N = {
+      id: 'root',
+      children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-3' }] }],
+    };
+
+    it('exists', () => {
+      const query = create(tree);
+
+      expect(query.exists('root')).to.eql(true);
+      expect(query.exists('child-3')).to.eql(true);
+
+      expect(query.exists({ id: 'root' })).to.eql(true);
+      expect(query.exists({ id: 'child-3' })).to.eql(true);
+
+      expect(query.exists((e) => e.id === 'child-3')).to.eql(true);
+    });
+
+    it('does not exist', () => {
+      const query = create(tree);
+      expect(query.exists('404')).to.eql(false);
+      expect(query.exists({ id: '404' })).to.eql(false);
+      expect(query.exists((e) => e.id === '404')).to.eql(false);
     });
   });
 });

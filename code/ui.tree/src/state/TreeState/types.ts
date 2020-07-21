@@ -21,24 +21,30 @@ export type ITreeStateArgs<N extends Node = Node> = {
  * State machine for programming a tree,
  * or partial leaf within a tree.
  */
-export type ITreeState<N extends Node = Node> = t.IDisposable &
-  ITreeTraverse<N> & {
-    readonly namespace: string;
-    readonly id: string;
-    readonly parent?: string; // ID of parent within tree.
-    readonly root: N;
-    readonly children: ITreeState[];
-    readonly event$: t.Observable<TreeStateEvent>;
-    readonly changed$: t.Observable<ITreeStateChanged<N>>;
-    payload<E extends t.TreeStateEvent>(type: E['type']): t.Observable<E['payload']>;
-    add<C extends Node = Node>(args: {
-      parent?: string;
-      root: C | string | ITreeState<C>;
-    }): ITreeState<C>;
-    remove(child: string | ITreeState): ITreeState;
-    change: TreeStateChange<N>;
-    toId(input?: string): string;
-  };
+export type ITreeState<N extends Node = Node> = t.IDisposable & {
+  readonly namespace: string;
+  readonly id: string;
+  readonly parent?: string; // ID of parent within tree.
+  readonly root: N;
+  readonly children: ITreeState[];
+  readonly query: t.ITreeQuery<N>;
+  readonly event$: t.Observable<TreeStateEvent>;
+  readonly changed$: t.Observable<ITreeStateChanged<N>>;
+  payload<E extends t.TreeStateEvent>(type: E['type']): t.Observable<E['payload']>;
+  add: TreeStateAdd;
+  remove(child: string | ITreeState): ITreeState;
+  change: TreeStateChange<N>;
+  toId(input?: string): string;
+};
+
+/**
+ * Add
+ */
+export type TreeStateAdd = <C extends Node = Node>(args: TreeStateAddArgs<C>) => ITreeState<C>;
+export type TreeStateAddArgs<C extends Node = Node> = {
+  parent?: string;
+  root: C | string | ITreeState<C>;
+};
 
 /**
  * Change.
@@ -53,44 +59,7 @@ export type TreeStateChanger<N extends Node = Node> = (
   root: N,
   ctx: TreeStateChangerContext<N>,
 ) => void;
-export type TreeStateChangerContext<N extends Node = Node> = ITreeTraverse<N>;
-
-/**
- * Node traversal.
- */
-export type ITreeTraverse<N extends Node> = {
-  find: TreeStateFind<N>;
-  exists: TreeStateExists<N>;
-  walkDown: TreeStateWalkDown<N>;
-  walkUp: TreeStateWalkUp<N>;
-};
-
-export type TreeStateFind<N extends Node> = (fn: TreeStateFilter<N>) => N | undefined;
-export type TreeStateExists<N extends Node> = (fn: TreeStateFilter<N>) => boolean;
-
-export type TreeStateFilter<N extends Node> = (args: TreeStateVisit<N>) => boolean;
-export type TreeStateVisit<N extends Node> = {
-  id: string;
-  index: number; // Within siblings.
-  namespace: string;
-  node: N;
-};
-
-export type TreeStateWalkDown<N extends Node> = (fn: TreeStateWalkDownCallback<N>) => void;
-export type TreeStateWalkDownCallback<N extends Node> = (args: TreeStateWalkDownVisit<N>) => void;
-export type TreeStateWalkDownVisit<N extends Node> = TreeStateVisit<N> & {
-  stop(): void;
-  skip(): void; // Skip children.
-};
-
-export type TreeStateWalkUp<N extends Node> = (
-  startAt: Node | string | undefined,
-  fn: TreeStateWalkUpCallback<N>,
-) => void;
-export type TreeStateWalkUpCallback<N extends Node> = (args: TreeStateWalkUpVisit<N>) => void;
-export type TreeStateWalkUpVisit<N extends Node> = TreeStateVisit<N> & {
-  stop(): void;
-};
+export type TreeStateChangerContext<N extends Node = Node> = t.ITreeQuery<N>;
 
 /**
  * [Events]

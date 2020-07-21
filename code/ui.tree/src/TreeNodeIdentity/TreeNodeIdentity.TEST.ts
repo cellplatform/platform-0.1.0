@@ -10,9 +10,9 @@ describe('TreeNodeId', () => {
       const res = Id.format(namespace, id);
       expect(res).to.eql(expected);
     };
-    test('foo', 'bar', 'tree-foo:bar');
-    test('', 'bar', 'tree-:bar'); // Invalid.
-    test('foo', '', 'tree-foo:'); // Invalid.
+    test('foo', 'bar', 'foo:bar');
+    test('', 'bar', ':bar'); // Invalid.
+    test('foo', '', 'foo:'); // Invalid.
   });
 
   it('hasNamespace', () => {

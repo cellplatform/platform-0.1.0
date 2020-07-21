@@ -20,6 +20,7 @@ export type ITreeQuery<T extends Node = Node> = {
   find: TreeFind<T>;
   findById: TreeFindById<T>;
   findParent: TreeFindParent<T>;
+  exists: TreeNodeExists<T>;
 };
 
 /**
@@ -47,6 +48,8 @@ export type TreeFindParent<T extends Node> = (
   options?: TreeFindParentOptions,
 ) => T | undefined;
 export type TreeFindParentOptions = { inline?: boolean };
+
+export type TreeNodeExists<T extends Node> = (input: MaybeId<T> | TreeFindVisitor<T>) => boolean;
 
 /**
  * Walk Down/Up

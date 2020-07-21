@@ -4,11 +4,12 @@ import { Subject } from 'rxjs';
 import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
 import { t } from '../../common';
-import { TreeUtil } from '../../TreeUtil';
 import { TreeNodeIdentity } from '../../TreeNodeIdentity';
 import { helpers } from './helpers';
+import { TreeQuery } from '../../TreeQuery';
 
 type N = t.ITreeNode;
+const Identity = TreeNodeIdentity;
 
 /**
  * State machine for programming a tree, or partial leaf within a tree.
@@ -24,7 +25,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return new TreeState<T>(e) as t.ITreeState<T>;
   }
 
-  public static identity = TreeNodeIdentity;
+  public static identity = Identity;
   public static props = helpers.props;
   public static children = helpers.children;
   public static isInstance = helpers.isInstance;
@@ -37,8 +38,9 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as T;
 
     // Store values.
-    this._store = StateObject.create<T>(root);
+    this.namespace = idUtil.cuid();
     this.parent = args.parent;
+    this._store = StateObject.create<T>(root);
 
     // Set the object with the initial state.
     this._change((draft) => helpers.ensureNamespace(draft, this.namespace), {
@@ -62,9 +64,9 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
    * [Fields]
    */
   private _store: t.IStateObjectWrite<T>;
-  private _children: t.ITreeState[] = [];
+  private _children: t.ITreeState<any>[] = [];
 
-  public readonly namespace = idUtil.cuid();
+  public readonly namespace: string;
   public readonly parent: string | undefined;
 
   private _dispose$ = new Subject<void>();
@@ -97,25 +99,22 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return [...this._children];
   }
 
-  private get traverseMethods(): t.ITreeTraverse<T> {
-    const find = this.find;
-    const exists = this.exists;
-    const walkDown = this.walkDown;
-    const walkUp = this.walkUp;
-    return { find, exists, walkDown, walkUp };
+  public get query(): t.ITreeQuery<T> {
+    const root = this.root;
+    const namespace = this.namespace;
+    return TreeQuery.create<T>({ root, namespace });
   }
 
   private get changeCtx(): t.TreeStateChangerContext<T> {
-    return this.traverseMethods;
+    return this.query;
   }
 
   /**
    * [Methods]
    */
-
   public toId(input?: string): string {
-    const id = TreeState.identity.parse(input).id;
-    return TreeState.identity.format(this.namespace, id);
+    const id = Identity.parse(input).id;
+    return Identity.format(this.namespace, id);
   }
 
   public payload<E extends t.TreeStateEvent>(type: E['type']) {
@@ -153,7 +152,8 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     }
 
     // Create the child instance.
-    const child = this.getOrCreateInstance(args);
+    const self = this as t.ITreeState<any>;
+    const child = this.getOrCreateInstance<any>(args);
     if (this.childExists(child)) {
       const err = `Cannot add child '${child.id}' as it already exists within the parent '${this.root.id}'.`;
       throw new Error(err);
@@ -177,8 +177,8 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
       .subscribe(() => this.remove(child));
 
     // Finish up.
-    this.fire({ type: 'TreeState/child/added', payload: { parent: this, child } });
-    return child;
+    this.fire({ type: 'TreeState/child/added', payload: { parent: self, child } });
+    return child as t.ITreeState<C>;
   }
 
   public remove(input: string | t.ITreeState) {
@@ -192,73 +192,10 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     this._children = this._children.filter((item) => item.root.id !== child.root.id);
 
     // Finish up.
-    this.fire({ type: 'TreeState/child/removed', payload: { parent: this, child } });
+    const self = this as t.ITreeState<any>;
+    this.fire({ type: 'TreeState/child/removed', payload: { parent: self, child } });
     return child;
   }
-
-  /**
-   * [Methods] - data traversal.
-   */
-  public walkDown: t.TreeStateWalkDown<T> = (fn) => {
-    TreeUtil.walkDown(this.root, (e) => {
-      const { node, index } = e;
-      const { id, namespace } = TreeState.identity.parse(node.id);
-      if (namespace === this.namespace) {
-        fn({
-          id,
-          index,
-          namespace,
-          node,
-          stop: e.stop,
-          skip: e.skip,
-        });
-      }
-    });
-    return;
-  };
-
-  public walkUp: t.TreeStateWalkUp<T> = (startAt, fn) => {
-    const id = TreeState.identity;
-    startAt = typeof startAt === 'string' ? id.stripNamespace(startAt) : startAt;
-    startAt = typeof startAt == 'string' ? this.find((e) => e.id === startAt) : startAt;
-
-    if (!startAt) {
-      return;
-    }
-
-    if (typeof startAt === 'object' && id.namespace(startAt.id) !== this.namespace) {
-      return;
-    }
-
-    TreeUtil.walkUp<T>(this.root, startAt as any, (e) => {
-      const { node, index } = e;
-      const { id, namespace } = TreeState.identity.parse(node.id);
-      if (namespace === this.namespace) {
-        fn({
-          id,
-          index,
-          namespace,
-          node,
-          stop: e.stop,
-        });
-      }
-    });
-
-    return undefined;
-  };
-
-  public find: t.TreeStateFind<T> = (fn) => {
-    let result: T | undefined;
-    this.walkDown((e) => {
-      if (fn(e)) {
-        result = e.node;
-        e.stop();
-      }
-    });
-    return result;
-  };
-
-  public exists: t.TreeStateExists<T> = (fn) => Boolean(this.find(fn));
 
   /**
    * [Internal]
@@ -268,12 +205,12 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     this._event$.next(e);
   }
 
-  private child(id: string | t.ITreeState) {
+  private child(id: string | t.ITreeState<any>) {
     id = typeof id === 'string' ? id : id.root.id;
     return this._children.find((item) => item.root.id === id);
   }
 
-  private childExists(input: string | t.ITreeState) {
+  private childExists(input: string | t.ITreeState<any>) {
     return Boolean(this.child(input));
   }
 
@@ -286,19 +223,19 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
       return args.root as t.ITreeState<C>;
     }
 
-    let parent = TreeNodeIdentity.toString(args.parent);
-    parent = parent ? parent : TreeNodeIdentity.stripNamespace(this.id);
+    let parent = Identity.toString(args.parent);
+    parent = parent ? parent : Identity.stripNamespace(this.id);
 
-    if (!this.exists((e) => e.id === parent)) {
+    if (!this.query.exists((e) => e.id === parent)) {
       const err = `Cannot add child-state because the parent node '${parent}' does not exist.`;
       throw new Error(err);
     }
 
-    parent = TreeNodeIdentity.format(this.namespace, parent);
+    parent = Identity.format(this.namespace, parent);
     return TreeState.create<C>({ parent, root });
   }
 
-  private listen(child: t.ITreeState) {
+  private listen(child: t.ITreeState<any>) {
     type Changed = t.ITreeStateChangedEvent;
     type Removed = t.ITreeStateChildRemovedEvent;
 

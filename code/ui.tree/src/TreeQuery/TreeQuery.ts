@@ -172,7 +172,6 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
   /**
    * Looks for the parent of a node.
    */
-
   public findParent: t.TreeFindParent<T> = (node, options = {}) => {
     if (!node) {
       return undefined;
@@ -188,7 +187,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
     }
 
     let result: T | undefined;
-    const target: t.ITreeViewNode = node;
+    const target: t.ITreeNode = node;
 
     this.walkDown((e) => {
       if (TreeQuery.hasChild(e.node, target)) {
@@ -206,6 +205,14 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
     });
 
     return result;
+  };
+
+  /**
+   * Determines if the given node exists within the tree.
+   */
+  public exists: t.TreeNodeExists<T> = (input) => {
+    const node = typeof input === 'function' ? this.find(input) : this.findById(input);
+    return Boolean(node);
   };
 }
 

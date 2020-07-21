@@ -3,7 +3,7 @@ import { t } from '../common';
 const toString = (input?: string) => (input || '').trim();
 
 export function format(namespace?: string, id?: string) {
-  return `tree-${toString(namespace)}:${toString(id)}`;
+  return `${toString(namespace)}:${toString(id)}`;
 }
 
 export function parse(input?: string) {
