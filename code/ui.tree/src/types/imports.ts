@@ -5,6 +5,7 @@ export * from '../components/TreeNode/types';
 export * from '../TreeEvents/types';
 export * from '../TreeQuery/types';
 export * from '../TreeNodeIdentity/types';
+export * from '../TreeNavController/types';
 
 export * from '../state/TreeState/types';
 export * from '../state/TreeViewState/types';

@@ -124,7 +124,7 @@ export class TestStateStore extends React.PureComponent<
     return (
       <div {...styles.base}>
         <div {...styles.left}>
-          <Icons.Box size={24} style={{ marginRight: 4 }} color={COLORS.PURPLE} />
+          <Icons.Box size={24} style={{ marginRight: 6 }} color={COLORS.PURPLE} />
           <div>
             <strong>TreeState</strong>
             <div {...styles.id}>{store.id}</div>

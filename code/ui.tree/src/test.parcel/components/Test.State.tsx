@@ -7,6 +7,7 @@ import { TreeView } from '../..';
 import { t } from '../../common';
 import { Icons } from './Icons';
 import { TestStateStore } from './Test.StateStore';
+import { TreeNavController } from '../../TreeNavController';
 
 type Node = t.ITreeViewNode;
 
@@ -37,9 +38,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = { root: ROOT };
   private state$ = new Subject<Partial<ITestState>>();
   private unmounted$ = new Subject();
-  private event$ = new Subject<t.TreeViewEvent>();
+  private treeview$ = new Subject<t.TreeViewEvent>();
 
   private store = TreeView.State.create({ root: ROOT, dispose$: this.unmounted$ });
+  private nav = TreeNavController.create({
+    state: this.store,
+    treeview$: this.treeview$,
+    dispose$: this.unmounted$,
+  });
 
   /**
    * [Lifecycle]
@@ -49,6 +55,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     this.store.changed$
       .pipe(takeUntil(this.unmounted$))
       .subscribe((e) => this.state$.next({ root: e.to }));
+
+    console.log('this.nav', this.nav);
   }
 
   public componentWillUnmount() {
@@ -91,7 +99,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <TreeView
           node={this.state.root}
           current={this.state.current}
-          event$={this.event$}
+          event$={this.treeview$}
           renderIcon={this.renderIcon}
           background={'NONE'}
           tabIndex={0}
