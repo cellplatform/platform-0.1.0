@@ -44,7 +44,7 @@ export const helpers = {
    * the specified namespace.
    */
   ensureNamespace(root: N, namespace: string) {
-    TreeUtil.walkDown(root, (e) => {
+    TreeUtil.query<N>(root).walkDown((e) => {
       if (!id.hasNamespace(e.node.id)) {
         e.node.id = id.format(namespace, e.node.id);
       } else {

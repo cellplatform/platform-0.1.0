@@ -6,6 +6,7 @@ type MaybeId<T extends Node> = t.NodeIdentifier<T> | undefined;
 export type TreeQuery = {
   create<T extends Node = Node>(root: T | { root: T; namespace?: string }): ITreeQuery<T>;
   children: TreeChildren;
+  childAt: TreeChildAt;
   hasChild: TreeHasChild;
 };
 
@@ -25,13 +26,6 @@ export type ITreeQuery<T extends Node = Node> = {
   parent: TreeParent<T>;
   ancestor: TreeAncestor<T>;
   depth: TreeDepth<T>;
-
-  /**
-   * TODO 🐷
-   *
-   * STATIC
-   * - childAt
-   */
 };
 
 /**
@@ -45,6 +39,7 @@ export type TreeChildren = <T extends Node = Node>(
 export type TreeChildrenOptions = { assign?: boolean };
 export type TreeChildrenVisitor<T extends Node> = (children: T[]) => void;
 export type TreeHasChild = (parent?: Node, child?: t.NodeIdentifier) => boolean;
+export type TreeChildAt<T extends Node = Node> = (index: number, parent?: T) => T;
 
 /**
  * Find

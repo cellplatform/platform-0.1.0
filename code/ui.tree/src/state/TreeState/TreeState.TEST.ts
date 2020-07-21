@@ -1,12 +1,14 @@
 import { TreeState } from '.';
-import { expect, t, TreeUtil } from '../../test';
+import { expect, t } from '../../test';
 import { helpers } from './helpers';
 import { Subject } from '../../common/types';
 import { TreeNodeIdentity } from '../../TreeNodeIdentity';
+import { TreeQuery } from '../../TreeQuery';
 
 type N = t.ITreeNode;
 type P = { label?: string; icon?: string };
 
+const query = TreeQuery.create;
 const create = (args?: t.ITreeStateArgs) => TreeState.create<N>(args);
 
 describe('TreeState', () => {
@@ -126,7 +128,7 @@ describe('TreeState', () => {
       const state = create({ root });
       const ids: string[] = [];
       const start = `${state.namespace}:`;
-      TreeUtil.walkDown(state.root, (e) => ids.push(e.node.id));
+      query(state.root).walkDown((e) => ids.push(e.node.id));
       expect(ids.length).to.eql(4);
       expect(ids.every((id) => id.startsWith(start))).to.eql(true);
     });
@@ -578,7 +580,7 @@ describe('TreeState', () => {
         expect(child.namespace).to.not.eql(state.namespace);
 
         // Verify: Can be round within the root data-structure using a raw search algorithm.
-        expect(TreeUtil.findById(state.root, child.id)?.id).to.eql(child.id);
+        expect(query(state.root).findById(child.id)?.id).to.eql(child.id);
 
         const walked: t.ITreeDescend<N>[] = [];
         state.query.walkDown((e) => walked.push(e));
@@ -683,7 +685,7 @@ describe('TreeState', () => {
         expect(child.namespace).to.not.eql(state.namespace);
 
         // Verify: Can be round within the root data-structure using a raw search algorithm.
-        expect(TreeUtil.findById(state.root, child.id)?.id).to.eql(child.id);
+        expect(query(state.root).findById(child.id)?.id).to.eql(child.id);
 
         // Lookup: root namespace.
         expect(state.query.findById('foo')).to.eql(undefined);

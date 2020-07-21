@@ -20,6 +20,10 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
     return new TreeQuery<T>({ root, namespace }) as t.ITreeQuery<T>;
   }
 
+  /**
+   * Retrieves the set of children for the given node
+   * creating the array if necessary.
+   */
   public static children<T extends Node = Node>(
     of?: T,
     fn?: t.TreeChildrenVisitor<T> | t.TreeChildrenOptions,
@@ -39,10 +43,20 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
     return children;
   }
 
+  /**
+   * Determine if the node has the specified child.
+   */
   public static hasChild(parent?: Node, child?: t.NodeIdentifier) {
     const nodes = TreeQuery.children(parent);
     const id = toId(child);
     return nodes.some((node) => node.id === id);
+  }
+
+  /**
+   * Retrieves the child node at the given index.
+   */
+  public static childAt<T extends Node>(index: number, parent?: T) {
+    return TreeQuery.children<T>(parent)[index];
   }
 
   /**

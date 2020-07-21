@@ -74,7 +74,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   private static current(props: ITreeViewProps) {
     const { root } = props;
     const current = props.current || root;
-    const result = typeof current === 'object' ? current : TreeUtil.findById(root, current);
+    const result = typeof current === 'object' ? current : TreeUtil.query(root).findById(current);
     return result || root;
   }
 
