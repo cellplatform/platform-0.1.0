@@ -1,17 +1,47 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { takeUntil, take, takeWhile, map, filter, share, delay, distinctUntilChanged, debounceTime, tap  } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
-import { expect, t } from '../test';
 import { TreeNavController } from '.';
 import { TreeState } from '../state';
+import { expect, t } from '../test';
+import { TreeNavControllerEvents } from './TreeNavControllerEvents';
 
-describe('TreeNavController', () => {
-  
+const create = () => {
+  const treeview$ = new Subject<t.TreeViewEvent>();
+  const state = TreeState.create();
+  return TreeNavController.create({ treeview$, state });
+};
+
+describe.only('TreeNavController', () => {
   it('create', () => {
+    // const treeview$ = new Subject<t.TreeViewEvent>();
+    // const state = TreeState.create();
+    // const ctrl = TreeNavController.create({ treeview$, state });
 
-    const treeview$ = new Subject<t.TreeViewEvent>()
-    const state = TreeState.create()
+    const ctrl = create();
 
-    const res = TreeNavController.create({treeview$, state})
+    expect(ctrl.isDisposed).to.eql(false);
+    expect(ctrl.current).to.eql(undefined);
+  });
+
+  describe('events', () => {
+    it('events [object]', () => {
+      const ctrl = create();
+      expect(ctrl.events).to.be.an.instanceof(TreeNavControllerEvents);
+    });
+
+    it('fire: changed', () => {
+      const ctrl = create();
+      expect(ctrl.current).to.eql(undefined);
+
+      const fired: t.ITreeNavControllerChanged[] = [];
+      ctrl.events.changed$.subscribe((e) => fired.push(e));
+
+      ctrl.events.fire({ type: 'TreeNav/changed', payload: { currrent: 'foo' } });
+
+      expect(ctrl.current).to.eql('foo');
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].currrent).to.eql('foo');
+    });
   });
 });

@@ -56,7 +56,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       .pipe(takeUntil(this.unmounted$))
       .subscribe((e) => this.state$.next({ root: e.to }));
 
-    console.log('this.nav', this.nav);
+    this.nav.events.changed$.pipe(takeUntil(this.unmounted$)).subscribe(() => {
+      this.forceUpdate();
+      console.log('-------------------------------------------');
+      console.log('nav/changed: current: ', this.nav.current);
+    });
+
+    // console.log('this.nav', this.nav);
   }
 
   public componentWillUnmount() {
@@ -97,8 +103,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <TreeView
-          node={this.state.root}
-          current={this.state.current}
+          node={this.store.root}
+          current={this.nav.current}
           event$={this.treeview$}
           renderIcon={this.renderIcon}
           background={'NONE'}
