@@ -61,6 +61,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    * [Static]
    */
   public static util = TreeUtil;
+  public static query = TreeUtil.query;
   public static State = TreeViewState;
 
   public static events<N extends t.ITreeViewNode = t.ITreeViewNode>(

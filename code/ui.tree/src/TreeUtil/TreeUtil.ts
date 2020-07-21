@@ -6,33 +6,37 @@ import { TreeQuery } from '../TreeQuery';
 import { clone } from 'ramda';
 const R = { clone };
 
+type N = t.ITreeViewNode;
+
 /**
  * Helpers for traversing and operating on the tree data-structure.
  */
 export class TreeUtil {
   public static events = TreeEvents;
 
+  public static query<T extends N = N>(args?: T | t.ITreeQueryArgs<T>) {
+    args = args === undefined ? ({ id: '' } as T) : args;
+    return TreeQuery.create<T>(args);
+  }
+
   /**
    * Retrieves the children of a node (or an empty array).
    */
-  public static children<T extends t.ITreeViewNode>(node?: T) {
+  public static children<T extends N>(node?: T) {
     return node ? node.children || [] : [];
   }
 
   /**
    * Retrieves the child node at the given index.
    */
-  public static childAt<T extends t.ITreeViewNode>(index: number, parent?: T) {
+  public static childAt<T extends N>(index: number, parent?: T) {
     return TreeUtil.children<T>(parent)[index];
   }
 
   /**
    * Determines whether the given node exists within the parent.
    */
-  public static hasChild(
-    parent: t.ITreeViewNode | undefined,
-    child: t.ITreeViewNode | t.ITreeViewNode['id'] | undefined,
-  ) {
+  public static hasChild(parent: N | undefined, child: N | N['id'] | undefined) {
     const nodes = TreeUtil.children(parent);
     const id = toId(child);
     return nodes.some((n) => n.id === id);
@@ -41,10 +45,7 @@ export class TreeUtil {
   /**
    * Walks a tree (top down).
    */
-  public static walkDown<T extends t.ITreeViewNode>(
-    node: T | undefined,
-    fn: (args: t.ITreeDescend<T>) => any,
-  ) {
+  public static walkDown<T extends N>(node: T | undefined, fn: (args: t.ITreeDescend<T>) => any) {
     if (node) {
       TreeQuery.create<T>(node).walkDown(fn);
     }
@@ -53,7 +54,7 @@ export class TreeUtil {
   /**
    * Walks the tree from the given node up to the root.
    */
-  public static walkUp<T extends t.ITreeViewNode>(
+  public static walkUp<T extends N>(
     root: T | undefined,
     startAt: T | T['id'] | undefined,
     fn: (args: t.ITreeAscend<T>) => any,
@@ -66,7 +67,7 @@ export class TreeUtil {
   /**
    * Walks down the tree looking for the first match (top-down).
    */
-  public static find<T extends t.ITreeViewNode>(
+  public static find<T extends N>(
     root: T | undefined,
     match: (args: t.ITreeDescend<T>) => boolean,
   ): T | undefined {
@@ -86,7 +87,7 @@ export class TreeUtil {
   /**
    * Walks the down the tree looking for the given node (top-down).
    */
-  public static findById<T extends t.ITreeViewNode>(
+  public static findById<T extends N>(
     root: T | undefined,
     id: t.NodeIdentifier<T> | undefined,
     options: { throw?: boolean } = {},
@@ -105,7 +106,7 @@ export class TreeUtil {
   /**
    * Walks the up tree looking for the first match (bottom-up).
    */
-  public static ancestor<T extends t.ITreeViewNode>(
+  public static ancestor<T extends N>(
     root: T | undefined,
     node: T | string | undefined,
     match: (args: t.ITreeAscend<T>) => boolean,
@@ -116,10 +117,7 @@ export class TreeUtil {
   /**
    * Maps over each node in a tree.
    */
-  public static map<T extends t.ITreeViewNode, R>(
-    node: T | undefined,
-    fn: (args: t.ITreeDescend<T>) => R,
-  ) {
+  public static map<T extends N, R>(node: T | undefined, fn: (args: t.ITreeDescend<T>) => R) {
     let result: R[] = [];
     TreeUtil.walkDown<T>(node, (e) => (result = [...result, fn(e) as R]));
     return result;
@@ -128,42 +126,24 @@ export class TreeUtil {
   /**
    * Retrieves the depth (index) of the given node.
    */
-  public static depth(
-    root: t.ITreeViewNode | undefined,
-    node: t.ITreeViewNode | t.ITreeViewNode['id'] | undefined,
-  ) {
-    let depth = -1;
-    if (!node || !root) {
-      return depth;
-    }
-    const id = toId(node);
-    TreeUtil.walkDown(root, (e) => {
-      if (e.node.id === id) {
-        depth = e.depth;
-        e.stop();
-      }
-    });
-    return depth;
+  public static depth(root: N | undefined, node: N | N['id'] | undefined) {
+    return root ? TreeQuery.create(root).depth(node) : -1;
   }
 
   /**
    * Retrieves the parent of a node within the tree.
    */
-  public static parent<T extends t.ITreeViewNode>(
+  public static parent<T extends N>(
     root: T | undefined,
     node: T | T['id'] | undefined,
-    options: { inline?: boolean } = {},
   ): T | undefined {
-    return root && node ? TreeQuery.create(root).parent(node, options) : undefined;
+    return root && node ? TreeQuery.create(root).parent(node) : undefined;
   }
 
   /**
    * Retrieves the descendent hierarchy to a given node.
    */
-  public static pathList<T extends t.ITreeViewNode>(
-    root: T | undefined,
-    node: T | T['id'] | undefined,
-  ) {
+  public static pathList<T extends N>(root: T | undefined, node: T | T['id'] | undefined) {
     if (!node || !root) {
       return [];
     }
@@ -189,9 +169,9 @@ export class TreeUtil {
   /**
    * Replaces the given node in the tree.
    */
-  public static replace<T extends t.ITreeViewNode>(
+  public static replace<T extends N>(
     root: T | undefined,
-    node: t.ITreeViewNode | T['id'] | undefined,
+    node: N | T['id'] | undefined,
   ): T | undefined {
     if (!root) {
       return undefined;
@@ -237,7 +217,7 @@ export class TreeUtil {
   /**
    * Replaces (or inserts) the given child of a node.
    */
-  public static replaceChild<T extends t.ITreeViewNode>(
+  public static replaceChild<T extends N>(
     node: T | undefined,
     child: T | undefined,
     options: { insert?: 'FIRST' | 'LAST' } = {},
@@ -264,7 +244,7 @@ export class TreeUtil {
   /**
    * Adds a hierarchy of nodes to the tree based on the given path.
    */
-  public static buildPath<T extends t.ITreeViewNode = t.ITreeViewNode>(
+  public static buildPath<T extends N = N>(
     root: T,
     factory: t.TreeNodePathFactory<T>,
     path: string,
@@ -315,7 +295,7 @@ export class TreeUtil {
   /**
    * Creates a version of `buildPath` with the factory curried.
    */
-  public static pathBuilder<T extends t.ITreeViewNode = t.ITreeViewNode>(
+  public static pathBuilder<T extends N = N>(
     root: T,
     factory: t.TreeNodePathFactory<T>,
     options: { delimiter?: string } = {},
@@ -336,7 +316,7 @@ export class TreeUtil {
   /**
    * Updates a set of property values on the given node.
    */
-  public static setProps<T extends t.ITreeViewNode>(
+  public static setProps<T extends N>(
     root: T | undefined,
     id: T | T['id'],
     props?: Partial<t.ITreeNodeProps>,
@@ -355,16 +335,16 @@ export class TreeUtil {
   /**
    * Retrieves the props for the given node.
    */
-  public static props<T extends t.ITreeViewNode>(node?: T) {
+  public static props<T extends N>(node?: T) {
     return node ? node.props || {} : {};
   }
 
   /**
    * Toggles the the open state of the given node.
    */
-  public static toggleIsOpen<T extends t.ITreeViewNode>(
+  public static toggleIsOpen<T extends N>(
     root: T | undefined,
-    node: t.ITreeViewNode | string | undefined,
+    node: N | string | undefined,
   ): T | undefined {
     node = typeof node === 'string' ? TreeUtil.findById(root, node) : node;
 
@@ -385,9 +365,9 @@ export class TreeUtil {
    * Ensures all inline nodes in the parent hierarchy leading to
    * the given node are in an "toggled-open" state.
    */
-  public static openToNode<T extends t.ITreeViewNode>(
+  public static openToNode<T extends N>(
     root: T | undefined,
-    id: t.ITreeViewNode | t.ITreeViewNode['id'] | undefined,
+    id: N | N['id'] | undefined,
   ): T | undefined {
     if (!root || !id) {
       return root;
@@ -406,7 +386,7 @@ export class TreeUtil {
   /**
    * Determines if the given node is open.
    */
-  public static isOpen(node?: t.ITreeViewNode) {
+  public static isOpen(node?: N) {
     const inline = TreeUtil.props(node).inline;
     return inline ? inline.isOpen : undefined;
   }
@@ -414,14 +394,14 @@ export class TreeUtil {
   /**
    * Determined if the given node is enabled.
    */
-  public static isEnabled(node?: t.ITreeViewNode) {
+  public static isEnabled(node?: N) {
     return defaultValue(TreeUtil.props(node).isEnabled, true);
   }
 
   /**
    * Determines if the given node is selected.
    */
-  public static isSelected(node?: t.ITreeViewNode) {
+  public static isSelected(node?: N) {
     return defaultValue(TreeUtil.props(node).isSelected, false);
   }
 }
@@ -429,5 +409,4 @@ export class TreeUtil {
 /**
  * [Helpers]
  */
-const toId = (node: t.ITreeViewNode | t.ITreeViewNode['id'] | undefined) =>
-  typeof node === 'object' ? node.id : node;
+const toId = (node: N | N['id'] | undefined) => (typeof node === 'object' ? node.id : node);

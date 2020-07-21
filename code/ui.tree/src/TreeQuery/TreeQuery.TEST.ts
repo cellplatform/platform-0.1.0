@@ -5,7 +5,7 @@ const create = TreeQuery.create;
 
 type N = t.ITreeNode;
 
-describe('TreeQuery', () => {
+describe.only('TreeQuery', () => {
   describe('create', () => {
     it('with root (default node type)', () => {
       const root: N = { id: 'root' };
@@ -183,7 +183,7 @@ describe('TreeQuery', () => {
       expect(walked[1].id).to.eql('child-1');
     });
 
-    it('walkDown: passes parent to visitor', () => {
+    it('walkDown: passes level/parent to visitor', () => {
       const grandchild: N = { id: 'grandchild' };
       const child: N = { id: 'child', children: [grandchild] };
       const root: N = { id: 'root', children: [child] };
@@ -194,9 +194,9 @@ describe('TreeQuery', () => {
 
       expect(items.length).to.eql(3);
 
-      expect(items[0].depth).to.eql(0);
-      expect(items[1].depth).to.eql(1);
-      expect(items[2].depth).to.eql(2);
+      expect(items[0].level).to.eql(0);
+      expect(items[1].level).to.eql(1);
+      expect(items[2].level).to.eql(2);
 
       expect(items[0].parent).to.eql(undefined);
       expect(items[1].parent).to.eql(root);
@@ -321,6 +321,19 @@ describe('TreeQuery', () => {
       test();
       test('404');
       test({ id: '404' });
+    });
+
+    it('walkUp: passes level (from start of ascent)', () => {
+      const tree: N = {
+        id: 'root',
+        children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'grandchild-1' }] }],
+      };
+
+      const query = create(tree);
+      const walked: t.ITreeAscend<N>[] = [];
+      query.walkUp('grandchild-1', (e) => walked.push(e));
+
+      expect(walked.map((e) => e.level)).to.eql([0, 1, 2]);
     });
 
     it('walkUp: does not walk up into parent namespace', () => {
@@ -465,6 +478,31 @@ describe('TreeQuery', () => {
       const node = query.findById('root');
       const res = query.ancestor(node, (e) => e.node.id === 'child-1');
       expect(res).to.eql(undefined);
+    });
+  });
+
+  describe('depth', () => {
+    const root = {
+      id: 'A',
+      children: [{ id: 'B' }, { id: 'C', children: [{ id: 'D' }] }],
+    };
+
+    it('retrieves depth', () => {
+      const query = create<N>(root);
+      expect(query.depth('A')).to.eql(0);
+      expect(query.depth({ id: 'A' })).to.eql(0);
+      expect(query.depth('B')).to.eql(1);
+      expect(query.depth('C')).to.eql(1);
+      expect(query.depth('D')).to.eql(2);
+      expect(query.depth({ id: 'D' })).to.eql(2);
+    });
+
+    it('-1', () => {
+      const query = create<N>({ id: 'root' });
+      expect(query.depth('C')).to.eql(-1);
+      expect(query.depth(undefined)).to.eql(-1);
+      expect(query.depth('NO_EXIST')).to.eql(-1);
+      expect(query.depth({ id: 'NO_EXIST' })).to.eql(-1);
     });
   });
 

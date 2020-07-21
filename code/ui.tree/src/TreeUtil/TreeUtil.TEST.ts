@@ -52,9 +52,9 @@ describe('TreeUtil', () => {
 
       expect(items.length).to.eql(3);
 
-      expect(items[0].depth).to.eql(0);
-      expect(items[1].depth).to.eql(1);
-      expect(items[2].depth).to.eql(2);
+      expect(items[0].level).to.eql(0);
+      expect(items[1].level).to.eql(1);
+      expect(items[2].level).to.eql(2);
 
       expect(items[0].parent).to.eql(undefined);
       expect(items[1].parent).to.eql(root);

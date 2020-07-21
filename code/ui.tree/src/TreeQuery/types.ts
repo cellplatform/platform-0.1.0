@@ -9,6 +9,8 @@ export type TreeQuery = {
   hasChild: TreeHasChild;
 };
 
+export type ITreeQueryArgs<T extends Node = Node> = { root: T; namespace?: string };
+
 /**
  * Interface for querying nodes within a tree.
  */
@@ -22,13 +24,12 @@ export type ITreeQuery<T extends Node = Node> = {
   exists: TreeNodeExists<T>;
   parent: TreeParent<T>;
   ancestor: TreeAncestor<T>;
+  depth: TreeDepth<T>;
 
   /**
    * TODO 🐷
-   * - depth
    *
    * STATIC
-   * - children
    * - childAt
    */
 };
@@ -66,26 +67,31 @@ export type TreeWalkUpVisitor<T extends Node> = (args: ITreeAscend<T>) => void;
 /**
  * Ancestry
  */
-export type TreeParent<T extends Node> = (
-  node: MaybeId<T>,
-  options?: { inline?: boolean },
-) => T | undefined;
+export type TreeParent<T extends Node> = (node: MaybeId<T>) => T | undefined;
 
 export type TreeAncestor<T extends Node> = (
   node: MaybeId<T>,
   match: TreeMatchAscend<T>,
 ) => T | undefined;
 
+export type TreeDepth<T extends Node> = (node: MaybeId<T>) => number;
+
 /**
- * Arguments for walking a tree (top-down).
+ * Arguments for tree walking operations.
  */
-export type ITreeDescend<T extends Node = Node> = {
+export type ITreeWalk<T extends Node = Node> = {
   id: string;
   namespace: string;
   index: number; // Within siblings.
   node: T;
   parent?: T;
-  depth: number;
+  level: number;
+};
+
+/**
+ * Arguments for walking a tree (top-down).
+ */
+export type ITreeDescend<T extends Node = Node> = ITreeWalk<T> & {
   stop(): void;
   skip(): void; // Skip children.
 };
@@ -93,11 +99,6 @@ export type ITreeDescend<T extends Node = Node> = {
 /**
  * Arguments for walking a tree (bottom up).
  */
-export type ITreeAscend<T extends Node = Node> = {
-  id: string;
-  namespace: string;
-  index: number; // Within siblings.
-  node: T;
-  parent?: T;
+export type ITreeAscend<T extends Node = Node> = ITreeWalk<T> & {
   stop(): void;
 };

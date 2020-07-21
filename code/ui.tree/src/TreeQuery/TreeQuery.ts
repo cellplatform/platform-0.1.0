@@ -12,6 +12,14 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
   /**
    * Static
    */
+  public static create<T extends Node = Node>(args: T | t.ITreeQueryArgs<T>) {
+    const input = args as any;
+    const isQueryArgs = typeof input.root === 'object';
+    const root = (isQueryArgs ? input.root : args) as T;
+    const namespace = isQueryArgs ? input.namespace || '' : '';
+    return new TreeQuery<T>({ root, namespace }) as t.ITreeQuery<T>;
+  }
+
   public static children<T extends Node = Node>(
     of?: T,
     fn?: t.TreeChildrenVisitor<T> | t.TreeChildrenOptions,
@@ -40,16 +48,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
   /**
    * Lifecycle
    */
-  public static create<T extends Node = Node>(args: T | { root: T; namespace?: string }) {
-    const input = args as any;
-    const isObject = typeof input.root === 'object';
-
-    const root = (isObject ? input.root : args) as T;
-    const namespace = isObject ? input.namespace || '' : '';
-
-    return new TreeQuery<T>({ root, namespace }) as t.ITreeQuery<T>;
-  }
-  private constructor(args: { root: T; namespace?: string }) {
+  private constructor(args: t.ITreeQueryArgs<T>) {
     this.root = args.root;
     this.namespace = (args.namespace || '').trim();
   }
@@ -82,7 +81,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
         node: args.node,
         parent: args.parent,
         index: args.index,
-        depth: args.depth,
+        level: args.depth,
         stop: () => (stopped = true),
         skip: () => (skipChildren = true),
       });
@@ -109,27 +108,35 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
    * Walks the tree from the given node up to the root.
    */
   public walkUp: t.TreeWalkUp<T> = (startAt, visit) => {
-    const current = this.findById(toId(startAt));
-    if (current) {
-      let stop = false;
-      const parentNode = this.parent(current);
-      const { id, namespace } = Identity.parse(current.id);
-      const args: t.ITreeAscend<T> = {
-        id,
-        namespace,
-        node: current,
-        parent: parentNode,
-        get index() {
-          const id = current ? current.id : '';
-          return !parentNode ? -1 : (parentNode.children || []).findIndex((node) => node.id === id);
-        },
-        stop: () => (stop = true),
-      };
-      visit(args);
-      if (!stop && parentNode) {
-        this.walkUp(args.parent, visit); // <== RECURSION 🌳
+    let level = -1;
+    const inner: t.TreeWalkUp<T> = (startAt, visit) => {
+      const current = this.findById(toId(startAt));
+      level++;
+      if (current) {
+        let stop = false;
+        const parentNode = this.parent(current);
+        const { id, namespace } = Identity.parse(current.id);
+        const args: t.ITreeAscend<T> = {
+          id,
+          namespace,
+          node: current,
+          parent: parentNode,
+          get index() {
+            const id = current ? current.id : '';
+            return !parentNode
+              ? -1
+              : (parentNode.children || []).findIndex((node) => node.id === id);
+          },
+          level,
+          stop: () => (stop = true),
+        };
+        visit(args);
+        if (!stop && parentNode) {
+          inner(args.parent, visit); // <== RECURSION 🌳
+        }
       }
-    }
+    };
+    return inner(startAt, visit);
   };
 
   /**
@@ -172,7 +179,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
   /**
    * Looks for the parent of a node.
    */
-  public parent: t.TreeParent<T> = (node, options = {}) => {
+  public parent: t.TreeParent<T> = (node) => {
     if (!node) {
       return undefined;
     }
@@ -191,16 +198,8 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
 
     this.walkDown((e) => {
       if (TreeQuery.hasChild(e.node, target)) {
-        const props = e.node.props || {};
-        if (options.inline === false && props.inline) {
-          // Not a match on the given "inline" (show children) filter.
-          // Keep going...
-          e.stop();
-          result = this.parent(e.node); // <== 🌳 RECURSION.
-        } else {
-          result = e.node;
-          e.stop();
-        }
+        result = e.node;
+        e.stop();
       }
     });
 
@@ -219,6 +218,25 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
       }
     });
     return result;
+  };
+
+  /**
+   * Retrieves the depth index of the given node (-1 if not found).
+   */
+  public depth: t.TreeDepth<T> = (node) => {
+    let depth = -1;
+    if (!node || !this.root) {
+      return depth;
+    } else {
+      const id = toId(node);
+      this.walkDown((e) => {
+        if (e.node.id === id) {
+          depth = e.level;
+          e.stop();
+        }
+      });
+      return depth;
+    }
   };
 
   /**

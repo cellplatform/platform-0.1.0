@@ -12,6 +12,7 @@ import * as sample from '../sample';
 import { Icons } from './Icons';
 
 export type ITestProps = { style?: CssValue };
+type N = t.ITreeViewNode;
 
 export type ITestState = {
   theme?: t.TreeTheme;
@@ -107,8 +108,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         filter((e) => e.target === 'PARENT'),
       )
       .subscribe((e) => {
-        const args = { inline: false };
-        const parent = TreeView.util.parent(this.state.root, e.node, args);
+        const parent = TreeView.query(this.state.root).ancestor(
+          e.node,
+          (e) => e.level > 0 && !e.node.props?.inline,
+        );
         return this.state$.next({ current: parent ? parent.id : undefined });
       });
   }

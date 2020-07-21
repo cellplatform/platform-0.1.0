@@ -9,7 +9,7 @@ type P = { label?: string; icon?: string };
 
 const create = (args?: t.ITreeStateArgs) => TreeState.create<N>(args);
 
-describe.only('TreeState', () => {
+describe('TreeState', () => {
   describe('create', () => {
     it('without parent', () => {
       const root: N = { id: 'root' };

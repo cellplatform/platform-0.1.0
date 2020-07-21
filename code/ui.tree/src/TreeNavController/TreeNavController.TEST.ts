@@ -11,14 +11,9 @@ const create = () => {
   return TreeNavController.create({ treeview$, state });
 };
 
-describe.only('TreeNavController', () => {
+describe('TreeNavController', () => {
   it('create', () => {
-    // const treeview$ = new Subject<t.TreeViewEvent>();
-    // const state = TreeState.create();
-    // const ctrl = TreeNavController.create({ treeview$, state });
-
     const ctrl = create();
-
     expect(ctrl.isDisposed).to.eql(false);
     expect(ctrl.current).to.eql(undefined);
   });
