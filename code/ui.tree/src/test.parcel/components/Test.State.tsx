@@ -103,7 +103,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <TreeView
-          node={this.store.root}
+          root={this.store.root}
           current={this.nav.current}
           event$={this.treeview$}
           renderIcon={this.renderIcon}

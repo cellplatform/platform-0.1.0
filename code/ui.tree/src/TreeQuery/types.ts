@@ -31,10 +31,6 @@ export type ITreeQuery<T extends Node = Node> = {
    * - children
    * - childAt
    */
-  // ancestor
-
-  // STATUC
-  // childAt
 };
 
 /**

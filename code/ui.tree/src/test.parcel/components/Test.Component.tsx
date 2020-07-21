@@ -181,7 +181,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <TreeView
-          node={this.state.root}
+          root={this.state.root}
           current={this.state.current}
           theme={this.state.theme}
           background={'NONE'}

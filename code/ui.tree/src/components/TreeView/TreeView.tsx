@@ -31,9 +31,9 @@ const R = { equals };
 
 export type ITreeViewProps = {
   id?: string;
-  node?: t.ITreeViewNode;
-  defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
+  root?: t.ITreeViewNode;
   current?: t.ITreeViewNode['id'];
+  defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
   renderPanel?: t.RenderTreePanel;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
@@ -71,10 +71,10 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   }
 
   private static current(props: ITreeViewProps) {
-    const { node } = props;
-    const current = props.current || node;
-    const result = typeof current === 'object' ? current : TreeUtil.findById(node, current);
-    return result || node;
+    const { root } = props;
+    const current = props.current || root;
+    const result = typeof current === 'object' ? current : TreeUtil.findById(root, current);
+    return result || root;
   }
 
   /**
@@ -142,7 +142,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     if (isCurrentChanged) {
       updatePath = true;
     }
-    if (!updatePath && !R.equals(this.props.node, prev.node)) {
+    if (!updatePath && !R.equals(this.props.root, prev.root)) {
       updatePath = true;
     }
     if (updatePath) {
@@ -365,9 +365,9 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   };
 
   private updatePath() {
-    const { node } = this.props;
+    const { root } = this.props;
     const current = TreeView.current(this.props);
-    const currentPath = TreeUtil.pathList(node, current) || [];
+    const currentPath = TreeUtil.pathList(root, current) || [];
     const renderedPath = [...(this.state.renderedPath || [])];
     currentPath.forEach((node, i) => {
       renderedPath[i] = node;
