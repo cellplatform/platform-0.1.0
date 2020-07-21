@@ -11,7 +11,7 @@ export type TreeViewState = {
   /**
    * Common [TreeState] helpers.
    */
-  id: t.TreeState['id'];
+  id: t.TreeState['identity'];
   isInstance: t.TreeState['isInstance'];
   children: t.TreeState['children'];
 

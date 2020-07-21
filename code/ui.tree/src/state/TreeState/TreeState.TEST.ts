@@ -2,6 +2,7 @@ import { TreeState } from '.';
 import { expect, t, TreeUtil } from '../../test';
 import { helpers } from './helpers';
 import { Subject } from '../../common/types';
+import { TreeNodeIdentity } from '../../TreeNodeIdentity';
 
 type N = t.ITreeViewNode;
 type P = { label?: string; icon?: string };
@@ -102,93 +103,9 @@ describe('TreeState', () => {
       test('', false);
       test({ id: 'foo' }, false);
     });
-  });
 
-  describe('static: id', () => {
-    type S = string | undefined;
-
-    it('id.format( namespace, id )', () => {
-      const test = (namespace: S, id: S, expected: string) => {
-        const res = TreeState.id.format(namespace, id);
-        expect(res).to.eql(expected);
-      };
-      test('foo', 'bar', 'tree-foo:bar');
-      test('', 'bar', 'tree-:bar'); // Invalid.
-      test('foo', '', 'tree-foo:'); // Invalid.
-    });
-
-    it('id.hasPrefix', () => {
-      const test = (input: S, expected: boolean) => {
-        const res = TreeState.id.hasNamespace(input);
-        expect(res).to.eql(expected);
-      };
-      test('tree-foo:bar', true);
-      test('  tree-foo:bar  ', true);
-
-      test('tree-:bar', false);
-      test('-foo:bar', false);
-      test('s-foo:bar', false);
-      test('n-foo:bar', false);
-      test('-foo:bar', false);
-      test('foo:bar', false);
-      test(':bar', false);
-      test('bar', false);
-    });
-
-    it('id.stripPrefix', () => {
-      const test = (input: S, expected: string) => {
-        const res = TreeState.id.stripNamespace(input);
-        expect(res).to.eql(expected);
-      };
-      test('tree-foo:bar', 'bar');
-      test(' tree-foo:bar ', 'bar');
-      test('bar', 'bar');
-      test('', '');
-      test('tree-foo:', '');
-      test(' tree-foo: ', '');
-
-      test('foo:bar', 'foo:bar');
-      test(':bar', ':bar');
-      test(' :bar ', ':bar');
-    });
-
-    it('id.parse', () => {
-      const test = (input: S, namespace: string, id: string) => {
-        const res = TreeState.id.parse(input);
-        expect(res).to.eql({ namespace, id });
-      };
-      test('tree-foo:bar', 'foo', 'bar');
-      test('  tree-foo:bar  ', 'foo', 'bar');
-      test('foo:bar', '', 'foo:bar');
-      test('foo', '', 'foo');
-      test('', '', '');
-      test('  ', '', '');
-    });
-
-    it('id.namespace', () => {
-      const test = (input: S, namespace: string) => {
-        const res = TreeState.id.namespace(input);
-        expect(res).to.eql(namespace);
-      };
-      test('tree-foo:bar', 'foo');
-      test('  tree-foo:bar  ', 'foo');
-      test('bar', '');
-      test('  bar  ', '');
-      test('', '');
-      test(undefined, '');
-    });
-
-    it('instance: toId', () => {
-      const state = create({ root: 'foo' });
-      const test = (input: S, id: string) => {
-        const expected = TreeState.id.format(state.namespace, id);
-        expect(state.toId(input)).to.eql(expected);
-      };
-      test('', '');
-      test('  ', '');
-      test('foo', 'foo');
-      test('  foo  ', 'foo');
-      test('tree-foo:bar', 'bar');
+    it('identity', () => {
+      expect(TreeState.identity).to.equal(TreeNodeIdentity);
     });
   });
 
@@ -510,7 +427,7 @@ describe('TreeState', () => {
         children.push(...[{ id: 'foo', children: [{ id: 'foo.1' }] }, { id: 'bar' }]);
       });
 
-      const ns = TreeState.id.hasNamespace;
+      const ns = TreeState.identity.hasNamespace;
 
       const children = state.root.children || [];
       expect(children.length).to.eql(2);
@@ -775,7 +692,7 @@ describe('TreeState', () => {
       it('does exist', () => {
         const state = create({ root });
         const res = state.find((e) => e.id === 'child-2.1');
-        expect(TreeState.id.parse(res?.id).id).to.eql('child-2.1');
+        expect(TreeState.identity.parse(res?.id).id).to.eql('child-2.1');
       });
 
       it('does not exist', () => {

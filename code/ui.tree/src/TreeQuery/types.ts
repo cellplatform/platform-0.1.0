@@ -4,7 +4,7 @@ type Node = t.ITreeNode;
 type MaybeId<T extends Node> = t.NodeIdentifier<T> | undefined;
 
 export type TreeQuery = {
-  create<N extends Node = Node>(root: N): ITreeQuery<N>;
+  create<T extends Node = Node>(root: T | { root: T; namespace?: string }): ITreeQuery<T>;
   children: TreeChildren;
   hasChild: TreeHasChild;
 };
@@ -14,6 +14,7 @@ export type TreeQuery = {
  */
 export type ITreeQuery<T extends Node = Node> = {
   root: T;
+  namespace: string;
   walkDown: TreeWalkDown<T>;
   walkUp: TreeWalkUp<T>;
   find: TreeFind<T>;
@@ -60,6 +61,8 @@ export type TreeWalkUpVisitor<T extends Node> = (args: ITreeAscend<T>) => void;
  * Arguments for walking a tree (top-down).
  */
 export type ITreeDescend<T extends Node = Node> = {
+  id: string;
+  namespace: string;
   index: number; // Within siblings.
   node: T;
   parent?: T;
@@ -72,6 +75,8 @@ export type ITreeDescend<T extends Node = Node> = {
  * Arguments for walking a tree (bottom up).
  */
 export type ITreeAscend<T extends Node = Node> = {
+  id: string;
+  namespace: string;
   index: number; // Within siblings.
   node: T;
   parent?: T;

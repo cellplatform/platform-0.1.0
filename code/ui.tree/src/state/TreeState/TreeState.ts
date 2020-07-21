@@ -5,7 +5,7 @@ import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
 import { t } from '../../common';
 import { TreeUtil } from '../../TreeUtil';
-import { TreeNodeId } from '../TreeNodeId';
+import { TreeNodeIdentity } from '../../TreeNodeIdentity';
 import { helpers } from './helpers';
 
 type N = t.ITreeNode;
@@ -24,7 +24,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return new TreeState<T>(e) as t.ITreeState<T>;
   }
 
-  public static id = TreeNodeId;
+  public static identity = TreeNodeIdentity;
   public static props = helpers.props;
   public static children = helpers.children;
   public static isInstance = helpers.isInstance;
@@ -114,8 +114,8 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
    */
 
   public toId(input?: string): string {
-    const id = TreeState.id.parse(input).id;
-    return TreeState.id.format(this.namespace, id);
+    const id = TreeState.identity.parse(input).id;
+    return TreeState.identity.format(this.namespace, id);
   }
 
   public payload<E extends t.TreeStateEvent>(type: E['type']) {
@@ -202,7 +202,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   public walkDown: t.TreeStateWalkDown<T> = (fn) => {
     TreeUtil.walkDown(this.root, (e) => {
       const { node, index } = e;
-      const { id, namespace } = TreeState.id.parse(node.id);
+      const { id, namespace } = TreeState.identity.parse(node.id);
       if (namespace === this.namespace) {
         fn({
           id,
@@ -218,7 +218,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   };
 
   public walkUp: t.TreeStateWalkUp<T> = (startAt, fn) => {
-    const id = TreeState.id;
+    const id = TreeState.identity;
     startAt = typeof startAt === 'string' ? id.stripNamespace(startAt) : startAt;
     startAt = typeof startAt == 'string' ? this.find((e) => e.id === startAt) : startAt;
 
@@ -232,7 +232,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
 
     TreeUtil.walkUp<T>(this.root, startAt as any, (e) => {
       const { node, index } = e;
-      const { id, namespace } = TreeState.id.parse(node.id);
+      const { id, namespace } = TreeState.identity.parse(node.id);
       if (namespace === this.namespace) {
         fn({
           id,
@@ -286,15 +286,15 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
       return args.root as t.ITreeState<C>;
     }
 
-    let parent = TreeNodeId.toString(args.parent);
-    parent = parent ? parent : TreeNodeId.stripNamespace(this.id);
+    let parent = TreeNodeIdentity.toString(args.parent);
+    parent = parent ? parent : TreeNodeIdentity.stripNamespace(this.id);
 
     if (!this.exists((e) => e.id === parent)) {
       const err = `Cannot add child-state because the parent node '${parent}' does not exist.`;
       throw new Error(err);
     }
 
-    parent = TreeNodeId.format(this.namespace, parent);
+    parent = TreeNodeIdentity.format(this.namespace, parent);
     return TreeState.create<C>({ parent, root });
   }
 

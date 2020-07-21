@@ -5,12 +5,13 @@ const create = TreeQuery.create;
 
 type N = t.ITreeNode;
 
-describe.only('TreeQuery', () => {
+describe('TreeQuery', () => {
   describe('create', () => {
     it('with root (default node type)', () => {
       const root: N = { id: 'root' };
       const query = create(root);
       expect(query.root).to.equal(root);
+      expect(query.namespace).to.eql('');
     });
 
     it('with root (specific node type)', () => {
@@ -18,6 +19,19 @@ describe.only('TreeQuery', () => {
       const root: T = { id: 'root', count: 0 };
       const query = create<T>(root);
       expect(query.root).to.equal(root);
+      expect(query.namespace).to.eql('');
+    });
+
+    it('with namespace', () => {
+      const test = (namespace: string | undefined, expected: string) => {
+        const root: N = { id: 'root' };
+        const query = create({ root, namespace });
+        expect(query.namespace).to.eql(expected);
+      };
+      test('', '');
+      test('  ', '');
+      test('foo', 'foo');
+      test('  foo  ', 'foo');
     });
   });
 
@@ -86,23 +100,45 @@ describe.only('TreeQuery', () => {
   });
 
   describe('walkDown', () => {
-    it('walks from root', () => {
+    it('walkDown from root', () => {
       const tree: N = {
         id: 'root',
         children: [{ id: 'child-1' }, { id: 'child-2' }],
       };
       const query = create(tree);
+      const items: t.ITreeDescend[] = [];
+      query.walkDown((e) => items.push(e));
 
-      const nodes: N[] = [];
-      query.walkDown((e) => nodes.push(e.node));
-
-      expect(nodes.length).to.eql(3);
-      expect(nodes[0]).to.equal(tree);
-      expect(nodes[1]).to.equal(tree.children && tree.children[0]);
-      expect(nodes[2]).to.equal(tree.children && tree.children[1]);
+      expect(items.length).to.eql(3);
+      expect(items[0].node).to.equal(tree);
+      expect(items[1].node).to.equal(tree.children && tree.children[0]);
+      expect(items[2].node).to.equal(tree.children && tree.children[1]);
+      expect(items.every((m) => m.namespace === '')).to.eql(true);
     });
 
-    it('skips walking children of descendent (`.skip`)', () => {
+    it('walkDown from root (with namespace)', () => {
+      const tree: N = {
+        id: 'ns:root',
+        children: [{ id: 'ns:child-1' }, { id: 'ns:child-2' }],
+      };
+      const query = create(tree);
+      const items: t.ITreeDescend[] = [];
+      query.walkDown((e) => items.push(e));
+
+      expect(items.length).to.eql(3);
+      expect(items.every((m) => m.namespace === 'ns')).to.eql(true);
+
+      expect(items[0].id).to.equal('root');
+      expect(items[0].node.id).to.equal('ns:root');
+
+      expect(items[1].id).to.equal('child-1');
+      expect(items[1].node.id).to.equal('ns:child-1');
+
+      expect(items[2].id).to.equal('child-2');
+      expect(items[2].node.id).to.equal('ns:child-2');
+    });
+
+    it('walkDown: skip (children)', () => {
       const tree: N = {
         id: 'root',
         children: [
@@ -126,7 +162,28 @@ describe.only('TreeQuery', () => {
       expect(nodes[2].id).to.eql('child-2');
     });
 
-    it('passes parent as args', () => {
+    it('walkDown: stop mid-way', () => {
+      const root: N = {
+        id: 'root',
+        children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-2.1' }] }],
+      };
+
+      const state = create(root);
+
+      const walked: t.ITreeDescend<N>[] = [];
+      state.walkDown((e) => {
+        walked.push(e);
+        if (e.id === 'child-1') {
+          e.stop();
+        }
+      });
+
+      expect(walked.length).to.eql(2);
+      expect(walked[0].id).to.eql('root');
+      expect(walked[1].id).to.eql('child-1');
+    });
+
+    it('walkDown: passes parent to visitor', () => {
       const grandchild: N = { id: 'grandchild' };
       const child: N = { id: 'child', children: [grandchild] };
       const root: N = { id: 'root', children: [child] };
@@ -146,7 +203,7 @@ describe.only('TreeQuery', () => {
       expect(items[2].parent).to.eql(child);
     });
 
-    it('reports node index (sibling position)', () => {
+    it('walkDown: passes index to visitor (sibling position)', () => {
       const root: N = {
         id: 'root',
         children: [{ id: 'child-1' }, { id: 'child-2' }],
@@ -160,15 +217,35 @@ describe.only('TreeQuery', () => {
       expect(items[1].index).to.eql(0);
       expect(items[2].index).to.eql(1);
     });
+
+    it('walkDown: does not walk down into child namespace', () => {
+      const root: N = {
+        id: 'ns1:root',
+        children: [{ id: 'ns1:child-1' }, { id: 'ns1:child-2', children: [{ id: 'ns2:foo' }] }],
+      };
+
+      const query = create({ root, namespace: 'ns1' });
+      expect(query.namespace).to.eql('ns1');
+
+      // Verify: Can be round within the root data-structure using an unnamespaced search.
+      expect(create(root).findById('ns2:foo')?.id).to.eql('ns2:foo');
+
+      const walked: t.ITreeDescend<N>[] = [];
+      query.walkDown((e) => walked.push(e));
+
+      const ids = walked.map((e) => e.id);
+      expect(ids.length).to.eql(3);
+      expect(ids.includes('ns2:foo')).to.eql(false);
+    });
   });
 
   describe('walkUp', () => {
-    const tree: N = {
-      id: 'root',
-      children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'grandchild-1' }] }],
-    };
+    it('walkUp: to root', () => {
+      const tree: N = {
+        id: 'root',
+        children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'grandchild-1' }] }],
+      };
 
-    it('walks to root', () => {
       const query = create(tree);
       const start = query.findById('grandchild-1');
 
@@ -177,6 +254,7 @@ describe.only('TreeQuery', () => {
 
       expect(items.length).to.eql(3);
       expect(items.map((e) => e.node.id)).to.eql(['grandchild-1', 'child-2', 'root']);
+      expect(items.every((m) => m.namespace === '')).to.eql(true);
 
       expect(items[0].parent && items[0].parent.id).to.eql('child-2');
       expect(items[1].parent && items[1].parent.id).to.eql('root');
@@ -187,7 +265,32 @@ describe.only('TreeQuery', () => {
       expect(items[2].index).to.eql(-1);
     });
 
-    it('stops mid-way', () => {
+    it('walkUp: to root (with namespace)', () => {
+      const tree: N = {
+        id: 'ns:root',
+        children: [
+          { id: 'ns:child-1' },
+          { id: 'ns:child-2', children: [{ id: 'ns:grandchild-1' }] },
+        ],
+      };
+      const query = create(tree);
+      const start = query.findById('ns:grandchild-1');
+
+      const items: t.ITreeAscend[] = [];
+      query.walkUp(start, (e) => items.push(e));
+
+      expect(items.length).to.eql(3);
+      expect(items.every((m) => m.namespace === 'ns')).to.eql(true);
+      expect(items.map((e) => e.id)).to.eql(['grandchild-1', 'child-2', 'root']);
+      expect(items.map((e) => e.node.id)).to.eql(['ns:grandchild-1', 'ns:child-2', 'ns:root']);
+    });
+
+    it('walkUp: stop mid-way', () => {
+      const tree: N = {
+        id: 'root',
+        children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'grandchild-1' }] }],
+      };
+
       const query = create(tree);
       const start = query.findById('grandchild-1');
       const list: t.ITreeAscend[] = [];
@@ -199,34 +302,117 @@ describe.only('TreeQuery', () => {
       });
 
       expect(list.length).to.eql(2);
-      expect(list.map((e) => e.node.id)).to.eql(['grandchild-1', 'child-2']);
+      expect(list.map((e) => e.id)).to.eql(['grandchild-1', 'child-2']);
+    });
+
+    it('walkUp: startAt not found', () => {
+      const tree: N = {
+        id: 'root',
+        children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'grandchild-1' }] }],
+      };
+      const query = create(tree);
+
+      const test = (startAt?: N | string) => {
+        const walked: t.ITreeAscend<N>[] = [];
+        query.walkUp(startAt, (e) => walked.push(e));
+        expect(walked).to.eql([]);
+      };
+
+      test();
+      test('404');
+      test({ id: '404' });
+    });
+
+    it('walkUp: does not walk up into parent namespace', () => {
+      const tree: N = {
+        id: 'ns1:root',
+        children: [
+          { id: 'ns1:child-1' },
+          { id: 'ns2:child-2', children: [{ id: 'ns2:child-2.1' }] },
+        ],
+      };
+
+      const root = create(tree).findById('ns2:child-2') as N;
+      const child = create(tree).findById('ns2:child-2.1') as N;
+      expect(child).to.exist;
+
+      const query = create({ root, namespace: 'ns2' });
+      const test = (startAt?: string | N) => {
+        const walked: t.TreeStateVisit<N>[] = [];
+        query.walkUp(startAt, (e) => walked.push(e));
+        expect(walked.map((e) => e.id)).to.eql(['child-2.1', 'child-2']);
+      };
+
+      test(child);
+      test(child?.id);
+      test('child-2.1');
     });
   });
 
   describe('find', () => {
-    const tree: N = {
-      id: 'root',
-      children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-3' }] }],
-    };
+    it('no namespace', () => {
+      const tree: N = {
+        id: 'root',
+        children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-3' }] }],
+      };
 
-    it('find (via node)', () => {
       const query = create(tree);
       const res1 = query.find((e) => e.node.id === 'child-3');
       const res2 = query.find((e) => e.node.id === 'NO_EXIT');
+
       expect(res1).to.eql({ id: 'child-3' });
       expect(res2).to.eql(undefined);
     });
+  });
 
-    it('findById', () => {
+  describe('findById', () => {
+    it('no namespace', () => {
+      const tree: N = {
+        id: 'root',
+        children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-3' }] }],
+      };
+
       const query = create(tree);
       const res1 = query.findById('child-3');
       const res2 = query.findById('NO_EXIST');
       const res3 = query.findById(undefined);
       const res4 = query.findById({ id: 'child-2' });
+
       expect(res1).to.eql({ id: 'child-3' });
       expect(res2).to.eql(undefined);
       expect(res3).to.eql(undefined);
       expect(res4).to.eql({ id: 'child-2', children: [{ id: 'child-3' }] });
+    });
+
+    it('within namespace', () => {
+      const root: N = {
+        id: 'ns1:root',
+        children: [{ id: 'ns1:child-1' }, { id: 'ns2:child-2' }],
+      };
+
+      const query = create({ root });
+      const ns1 = create({ root, namespace: 'ns1' });
+
+      // No namespace (anything can be found).
+      expect(query.findById('root')?.id).to.eql(undefined);
+      expect(query.findById('foo:root')).to.eql(undefined);
+      expect(query.findById('ns1:root')?.id).to.eql('ns1:root');
+      expect(query.findById('ns1:child-1')?.id).to.eql('ns1:child-1');
+      expect(query.findById('ns2:child-2')?.id).to.eql('ns2:child-2');
+
+      // Look within namespaced query.
+      expect(ns1.findById('root')?.id).to.eql('ns1:root');
+      expect(ns1.findById('ns1:root')?.id).to.eql('ns1:root');
+      expect(ns1.findById('foo:root')).to.eql(undefined);
+      expect(ns1.findById('404')).to.eql(undefined);
+      expect(ns1.findById('ns1:404')).to.eql(undefined);
+
+      expect(ns1.findById('child-1')?.id).to.eql('ns1:child-1');
+      expect(ns1.findById('ns1:child-1')?.id).to.eql('ns1:child-1');
+
+      // Not in namespace.
+      expect(ns1.findById('child-2')).to.eql(undefined);
+      expect(ns1.findById('ns2:child-2')).to.eql(undefined);
     });
   });
 

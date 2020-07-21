@@ -58,23 +58,8 @@ export class TreeUtil {
     startAt: T | T['id'] | undefined,
     fn: (args: t.ITreeAscend<T>) => any,
   ) {
-    const current = typeof startAt === 'string' ? TreeUtil.findById(root, startAt) : startAt;
-    if (current) {
-      let stop = false;
-      const parentNode = TreeUtil.parent(root, current);
-      const args: t.ITreeAscend<T> = {
-        node: current,
-        parent: parentNode,
-        get index() {
-          const id = current ? current.id : '';
-          return !parentNode ? -1 : (parentNode.children || []).findIndex((node) => node.id === id);
-        },
-        stop: () => (stop = true),
-      };
-      fn(args);
-      if (!stop && parentNode) {
-        TreeUtil.walkUp(root, args.parent, fn); // <== RECURSION 🌳
-      }
+    if (root) {
+      TreeQuery.create<T>(root).walkUp(startAt, fn);
     }
   }
 

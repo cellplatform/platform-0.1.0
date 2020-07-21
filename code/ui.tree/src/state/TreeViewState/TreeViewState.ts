@@ -12,7 +12,7 @@ export class TreeViewState {
     return TreeState.create<T>(args);
   }
 
-  static id = TreeState.id;
+  static id = TreeState.identity;
   static isInstance = TreeState.isInstance;
   static children = TreeState.children;
 

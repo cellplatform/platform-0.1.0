@@ -2,6 +2,9 @@ import { t } from '../common';
 
 type Node = t.ITreeNode;
 
+import { TreeNodeIdentity } from '../TreeNodeIdentity';
+const Identity = TreeNodeIdentity;
+
 /**
  * Interface for querying nodes within a tree.
  */
@@ -32,23 +35,30 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
     const nodes = TreeQuery.children(parent);
     const id = toId(child);
     return nodes.some((node) => node.id === id);
-    // return false;
   }
 
   /**
    * Lifecycle
    */
-  public static create<T extends Node = Node>(root: T) {
-    return new TreeQuery<T>(root) as t.ITreeQuery<T>;
+  public static create<T extends Node = Node>(args: T | { root: T; namespace?: string }) {
+    const input = args as any;
+    const isObject = typeof input.root === 'object';
+
+    const root = (isObject ? input.root : args) as T;
+    const namespace = isObject ? input.namespace || '' : '';
+
+    return new TreeQuery<T>({ root, namespace }) as t.ITreeQuery<T>;
   }
-  private constructor(root: T) {
-    this.root = root;
+  private constructor(args: { root: T; namespace?: string }) {
+    this.root = args.root;
+    this.namespace = (args.namespace || '').trim();
   }
 
   /**
    * [Fields]
    */
   public readonly root: T;
+  public readonly namespace: string;
 
   /**
    * [Methods]
@@ -60,8 +70,15 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
       if (!args.node || stopped) {
         return;
       }
+      const { id, namespace } = Identity.parse(args.node.id);
+      if (this.namespace && namespace !== this.namespace) {
+        return;
+      }
+
       let skipChildren = false;
       visit({
+        id,
+        namespace,
         node: args.node,
         parent: args.parent,
         index: args.index,
@@ -92,11 +109,14 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
    * Walks the tree from the given node up to the root.
    */
   public walkUp: t.TreeWalkUp<T> = (startAt, visit) => {
-    const current = typeof startAt === 'string' ? this.findById(startAt) : startAt;
+    const current = this.findById(toId(startAt));
     if (current) {
       let stop = false;
       const parentNode = this.findParent(current);
+      const { id, namespace } = Identity.parse(current.id);
       const args: t.ITreeAscend<T> = {
+        id,
+        namespace,
         node: current,
         parent: parentNode,
         get index() {
@@ -133,10 +153,20 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
     if (!id) {
       return undefined;
     } else {
+      const target = typeof id === 'string' ? id : id.id;
+      const parsed = Identity.parse(target);
+      return this.find((e) => {
+        if (this.namespace) {
+          if (!parsed.namespace && e.id === parsed.id) {
+            return true;
+          } else {
+            return e.id === parsed.id && e.namespace === parsed.namespace;
+          }
+        } else {
+          return e.node.id === target;
+        }
+      });
     }
-    const target = typeof id === 'string' ? id : id.id;
-    const result = id ? this.find((e) => e.node.id === target) : undefined;
-    return result;
   };
 
   /**

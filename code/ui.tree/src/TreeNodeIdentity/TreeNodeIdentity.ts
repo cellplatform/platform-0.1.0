@@ -1,9 +1,6 @@
-import { t } from '../../common';
+import { t } from '../common';
 
 const toString = (input?: string) => (input || '').trim();
-const REGEX = {
-  prefix: /^tree-[a-zA-Z0-9]+:/,
-};
 
 export function format(namespace?: string, id?: string) {
   return `tree-${toString(namespace)}:${toString(id)}`;
@@ -13,7 +10,7 @@ export function parse(input?: string) {
   input = toString(input);
   if (hasNamespace(input)) {
     const id = stripNamespace(input);
-    const namespace = input.substring(0, input.length - id.length - 1).replace(/^tree-/, '');
+    const namespace = input.substring(0, input.length - id.length - 1);
     return { namespace, id };
   } else {
     return { namespace: '', id: input };
@@ -21,22 +18,34 @@ export function parse(input?: string) {
 }
 
 export function hasNamespace(input?: string) {
-  return Boolean(toString(input).match(REGEX.prefix));
+  input = toString(input);
+  return !input.startsWith(':') && input.includes(':');
 }
 
 export function stripNamespace(input?: string) {
-  return toString(input).replace(REGEX.prefix, '');
+  input = toString(input).replace(/^\:/, '');
+  if (hasNamespace(input)) {
+    const index = input.indexOf(':');
+    return index > -1 ? input.substring(index + 1) : input;
+  } else {
+    return input;
+  }
 }
 
 export function namespace(input?: string) {
   return parse(input).namespace;
 }
 
-export const TreeNodeId: t.TreeNodeId = {
+export function id(input?: string) {
+  return stripNamespace(input);
+}
+
+export const TreeNodeIdentity: t.TreeNodeIdentity = {
   toString,
   format,
   parse,
   stripNamespace,
   hasNamespace,
   namespace,
+  id,
 };

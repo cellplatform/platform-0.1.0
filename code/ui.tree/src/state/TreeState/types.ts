@@ -5,7 +5,7 @@ type O = Record<string, unknown>;
 
 export type TreeState = {
   create<N extends Node = Node>(args?: ITreeStateArgs<N>): ITreeState<N>;
-  id: t.TreeNodeId;
+  identity: t.TreeNodeIdentity;
   isInstance(input: any): boolean;
   children<T extends Node>(of: T, fn?: (children: T[]) => void): T[];
   props<P extends O>(of: Node, fn?: (props: P) => void): P;
