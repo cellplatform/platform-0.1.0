@@ -19,12 +19,12 @@ export type ITreeQuery<T extends Node = Node> = {
   walkUp: TreeWalkUp<T>;
   find: TreeFind<T>;
   findById: TreeFindById<T>;
-  parent: TreeFindParent<T>;
   exists: TreeNodeExists<T>;
+  parent: TreeParent<T>;
+  ancestor: TreeAncestor<T>;
 
   /**
    * TODO 🐷
-   * - ancestor
    * - depth
    *
    * STATIC
@@ -48,18 +48,11 @@ export type TreeHasChild = (parent?: Node, child?: t.NodeIdentifier) => boolean;
 /**
  * Find
  */
-export type TreeFindVisitor<T extends Node> = (args: ITreeDescend<T>) => boolean;
-
-export type TreeFind<T extends Node> = (fn: TreeFindVisitor<T>) => T | undefined;
+export type TreeMatchDescend<T extends Node> = (args: ITreeDescend<T>) => boolean;
+export type TreeMatchAscend<T extends Node> = (args: ITreeAscend<T>) => boolean;
+export type TreeFind<T extends Node> = (match: TreeMatchDescend<T>) => T | undefined;
 export type TreeFindById<T extends Node> = (id: MaybeId<T>) => T | undefined;
-
-export type TreeFindParent<T extends Node> = (
-  node: MaybeId<T>,
-  options?: TreeFindParentOptions,
-) => T | undefined;
-export type TreeFindParentOptions = { inline?: boolean };
-
-export type TreeNodeExists<T extends Node> = (input: MaybeId<T> | TreeFindVisitor<T>) => boolean;
+export type TreeNodeExists<T extends Node> = (input: MaybeId<T> | TreeMatchDescend<T>) => boolean;
 
 /**
  * Walk Down/Up
@@ -69,6 +62,19 @@ export type TreeWalkDownVisitor<T extends Node> = (args: ITreeDescend<T>) => voi
 
 export type TreeWalkUp<T extends Node> = (startAt: MaybeId<T>, visit: TreeWalkUpVisitor<T>) => void;
 export type TreeWalkUpVisitor<T extends Node> = (args: ITreeAscend<T>) => void;
+
+/**
+ * Ancestry
+ */
+export type TreeParent<T extends Node> = (
+  node: MaybeId<T>,
+  options?: { inline?: boolean },
+) => T | undefined;
+
+export type TreeAncestor<T extends Node> = (
+  node: MaybeId<T>,
+  match: TreeMatchAscend<T>,
+) => T | undefined;
 
 /**
  * Arguments for walking a tree (top-down).

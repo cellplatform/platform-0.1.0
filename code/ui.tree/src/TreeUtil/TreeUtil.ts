@@ -110,17 +110,7 @@ export class TreeUtil {
     node: T | string | undefined,
     match: (args: t.ITreeAscend<T>) => boolean,
   ): T | undefined {
-    if (!root) {
-      return;
-    }
-    let result: T | undefined;
-    TreeUtil.walkUp<T>(root, node, (e) => {
-      if (match(e)) {
-        result = e.node;
-        e.stop();
-      }
-    });
-    return result;
+    return root ? TreeQuery.create<T>(root).ancestor(node, match) : undefined;
   }
 
   /**

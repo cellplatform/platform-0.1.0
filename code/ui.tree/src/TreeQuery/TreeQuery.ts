@@ -135,10 +135,10 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
   /**
    * Walks down the tree looking for the first match (top-down).
    */
-  public find: t.TreeFind<T> = (visit) => {
+  public find: t.TreeFind<T> = (match) => {
     let result: T | undefined;
     this.walkDown((e) => {
-      if (visit(e) === true) {
+      if (match(e) === true) {
         result = e.node;
         e.stop();
       }
@@ -172,7 +172,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
   /**
    * Looks for the parent of a node.
    */
-  public parent: t.TreeFindParent<T> = (node, options = {}) => {
+  public parent: t.TreeParent<T> = (node, options = {}) => {
     if (!node) {
       return undefined;
     }
@@ -193,7 +193,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
       if (TreeQuery.hasChild(e.node, target)) {
         const props = e.node.props || {};
         if (options.inline === false && props.inline) {
-          // Not a match on the given "showChildren" filter.
+          // Not a match on the given "inline" (show children) filter.
           // Keep going...
           e.stop();
           result = this.parent(e.node); // <== 🌳 RECURSION.
@@ -204,6 +204,20 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
       }
     });
 
+    return result;
+  };
+
+  /**
+   * Walks the up tree looking for the first match (bottom-up).
+   */
+  public ancestor: t.TreeAncestor<T> = (node, match) => {
+    let result: T | undefined;
+    this.walkUp(node, (e) => {
+      if (match(e)) {
+        result = e.node;
+        e.stop();
+      }
+    });
     return result;
   };
 
