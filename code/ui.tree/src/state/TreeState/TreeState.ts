@@ -5,7 +5,7 @@ import { filter, map, share, take, takeUntil } from 'rxjs/operators';
 
 import { t } from '../../common';
 import { TreeUtil } from '../../TreeUtil';
-import { id } from './id';
+import { TreeNodeId } from '../TreeNodeId';
 import { helpers } from './helpers';
 
 type N = t.ITreeNode;
@@ -24,7 +24,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return new TreeState<T>(e) as t.ITreeState<T>;
   }
 
-  public static id = helpers.id;
+  public static id = TreeNodeId;
   public static props = helpers.props;
   public static children = helpers.children;
   public static isInstance = helpers.isInstance;
@@ -286,15 +286,15 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
       return args.root as t.ITreeState<C>;
     }
 
-    let parent = id.toString(args.parent);
-    parent = parent ? parent : id.stripNamespace(this.id);
+    let parent = TreeNodeId.toString(args.parent);
+    parent = parent ? parent : TreeNodeId.stripNamespace(this.id);
 
     if (!this.exists((e) => e.id === parent)) {
       const err = `Cannot add child-state because the parent node '${parent}' does not exist.`;
       throw new Error(err);
     }
 
-    parent = id.format(this.namespace, parent);
+    parent = TreeNodeId.format(this.namespace, parent);
     return TreeState.create<C>({ parent, root });
   }
 

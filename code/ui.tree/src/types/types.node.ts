@@ -6,6 +6,7 @@ type O = Record<string, unknown>;
  * An identifiable "node" object.
  */
 export type INode<T extends string = string> = { id: T };
+export type NodeIdentifier<T extends INode = INode> = T | T['id'];
 
 /**
  * An "node" with [props] and [children]

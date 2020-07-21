@@ -1,6 +1,7 @@
 import * as t from '../types';
 import { value as valueUtil, defaultValue } from '@platform/util.value';
 import { TreeEvents } from '../TreeEvents';
+import { TreeQuery } from '../TreeQuery';
 
 import { clone } from 'ramda';
 const R = { clone };
@@ -44,42 +45,9 @@ export class TreeUtil {
     node: T | undefined,
     fn: (args: t.ITreeDescend<T>) => any,
   ) {
-    let stopped = false;
-    const walk = (args: {
-      node?: t.ITreeViewNode;
-      parent?: t.ITreeViewNode;
-      depth: number;
-      index: number;
-    }) => {
-      if (!args.node || stopped) {
-        return;
-      }
-      let skipChildren = false;
-      fn({
-        node: args.node as T,
-        parent: args.parent as T,
-        index: args.index,
-        depth: args.depth,
-        stop: () => (stopped = true),
-        skip: () => (skipChildren = true),
-      });
-      if (stopped) {
-        return;
-      }
-      let index = -1;
-      if (!skipChildren) {
-        for (const child of TreeUtil.children(args.node)) {
-          index++;
-          walk({
-            node: child,
-            parent: args.node,
-            index,
-            depth: args.depth + 1,
-          }); // <== RECURSION 🌳
-        }
-      }
-    };
-    return walk({ node, depth: 0, index: -1 });
+    if (node) {
+      TreeQuery.create<T>(node).walkDown(fn);
+    }
   }
 
   /**
@@ -135,18 +103,18 @@ export class TreeUtil {
    */
   public static findById<T extends t.ITreeViewNode>(
     root: T | undefined,
-    id: t.ITreeViewNode | t.ITreeViewNode['id'] | undefined,
+    id: t.NodeIdentifier<T> | undefined,
     options: { throw?: boolean } = {},
   ): T | undefined {
-    if (!id) {
+    if (!id || !root) {
       return undefined;
     }
-    const targetId = typeof id === 'string' ? id : id.id;
-    const result = id ? TreeUtil.find<T>(root, (e) => e.node.id === targetId) : undefined;
-    if (!result && options.throw) {
+    const res = TreeQuery.create<T>(root).findById(id);
+    if (!res && options.throw) {
       throw new Error(`Failed to find tree-view node with the id '${id}'.`);
+    } else {
+      return res;
     }
-    return result;
   }
 
   /**
@@ -211,37 +179,7 @@ export class TreeUtil {
     node: T | T['id'] | undefined,
     options: { inline?: boolean } = {},
   ): T | undefined {
-    if (!node || !root) {
-      return undefined;
-    }
-
-    // Look up the node if an ID was passed.
-    if (typeof node !== 'object') {
-      const id = node;
-      node = TreeUtil.findById<T>(root, id);
-      if (!node) {
-        throw new Error(`Cannot find parent of '${id}'. A tree-node with that ID was not found.`);
-      }
-    }
-
-    let result: T | undefined;
-    const target: t.ITreeViewNode = node;
-
-    TreeUtil.walkDown<T>(root, (e) => {
-      if (TreeUtil.hasChild(e.node, target)) {
-        const props = e.node.props || {};
-        if (options.inline === false && props.inline) {
-          // Not a match on the given "showChildren" filter.
-          // Keep going...
-          e.stop();
-          result = TreeUtil.parent(root, e.node); // <== RECURSION.
-        } else {
-          result = e.node;
-          e.stop();
-        }
-      }
-    });
-    return result;
+    return root && node ? TreeQuery.create(root).findParent(node, options) : undefined;
   }
 
   /**

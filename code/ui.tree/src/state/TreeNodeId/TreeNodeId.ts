@@ -32,7 +32,7 @@ export function namespace(input?: string) {
   return parse(input).namespace;
 }
 
-export const id: t.TreeStateId = {
+export const TreeNodeId: t.TreeNodeId = {
   toString,
   format,
   parse,

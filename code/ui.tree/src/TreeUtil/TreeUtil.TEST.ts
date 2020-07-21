@@ -2,7 +2,7 @@ import { expect, t } from '../test';
 
 import { TreeUtil } from '.';
 
-describe('TreeUtil', () => {
+describe.only('TreeUtil', () => {
   describe('walkDown', () => {
     it('walks from root', () => {
       const tree: t.ITreeViewNode = {

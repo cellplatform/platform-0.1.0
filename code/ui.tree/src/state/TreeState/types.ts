@@ -5,19 +5,10 @@ type O = Record<string, unknown>;
 
 export type TreeState = {
   create<N extends Node = Node>(args?: ITreeStateArgs<N>): ITreeState<N>;
-  id: TreeStateId;
+  id: t.TreeNodeId;
   isInstance(input: any): boolean;
   children<T extends Node>(of: T, fn?: (children: T[]) => void): T[];
   props<P extends O>(of: Node, fn?: (props: P) => void): P;
-};
-
-export type TreeStateId = {
-  toString(input?: string): string;
-  format(namespace?: string, id?: string): string;
-  parse(input?: string): { namespace: string; id: string };
-  stripNamespace(input?: string): string;
-  hasNamespace(input?: string): boolean;
-  namespace(input?: string): string;
 };
 
 export type ITreeStateArgs<N extends Node = Node> = {

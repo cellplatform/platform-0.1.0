@@ -1,8 +1,9 @@
 import { t } from '../../common';
-import { id } from './id';
+import { TreeNodeId } from '../TreeNodeId';
 import { TreeUtil } from '../../TreeUtil';
 
 type N = t.ITreeNode;
+const id = TreeNodeId;
 
 export const helpers = {
   id,
