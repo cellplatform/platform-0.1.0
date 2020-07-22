@@ -7,5 +7,5 @@ export const COLORS = constants.COLORS;
 /**
  * Libs
  */
-import { time, rx } from '@platform/util.value';
-export { time, rx };
+import { time, rx, defaultValue } from '@platform/util.value';
+export { time, rx, defaultValue };

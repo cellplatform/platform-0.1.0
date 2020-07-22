@@ -275,11 +275,10 @@ export class TestStateStore extends React.PureComponent<
   private addChild = () => {
     const label = this.state.addLabel;
     const root = { id: 'node', props: { label } };
-    const child = this.store.add({ root });
+    const child = this.store.add<t.ITreeViewNode>({ root });
 
     child.change((draft, ctx) => {
-      const children = S.children(draft);
-      children.push({ id: 'my-child', props: { label: 'hello' } });
+      // TreeViewState.props(draft, (p) => p.inline = {});
     });
 
     this.state$.next({ addLabel: '' });

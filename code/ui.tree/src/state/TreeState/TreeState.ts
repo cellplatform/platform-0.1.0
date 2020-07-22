@@ -1,13 +1,12 @@
 import { StateObject } from '@platform/state/lib/StateObject';
-import { id as idUtil, rx } from '@platform/util.value';
+import { id as idUtil } from '@platform/util.value';
 import { Subject } from 'rxjs';
-import { filter, map, share, take, takeUntil } from 'rxjs/operators';
+import { filter, share, take, takeUntil } from 'rxjs/operators';
 
 import { t } from '../../common';
 import { TreeNodeIdentity } from '../../TreeNodeIdentity';
-import { helpers } from './helpers';
 import { TreeQuery } from '../../TreeQuery';
-
+import { helpers } from './helpers';
 import * as events from './TreeState.events';
 
 type N = t.ITreeNode;
@@ -112,8 +111,10 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return TreeQuery.create<T>({ root, namespace });
   }
 
-  private get changeCtx(): t.TreeStateChangerContext<T> {
-    return this.query;
+  private get ctx(): t.TreeStateChangerContext<T> {
+    return {
+      ...this.query,
+    };
   }
 
   /**
@@ -130,7 +131,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     options: { silent?: boolean; ensureNamespace?: boolean } = {},
   ) {
     const from = this.root;
-    const ctx = this.changeCtx;
+    const ctx = this.ctx;
 
     const res = this._store.change((draft) => {
       fn(draft, ctx);

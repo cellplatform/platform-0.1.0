@@ -1,3 +1,3 @@
 export { expect } from '@platform/test';
-export { t } from '../common';
+export { t, time } from '../common';
 export { Tree, TreeUtil } from '..';

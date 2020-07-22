@@ -56,10 +56,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       .pipe(takeUntil(this.unmounted$))
       .subscribe((e) => this.state$.next({ root: e.to }));
 
-    this.nav.events.changed$.pipe(takeUntil(this.unmounted$)).subscribe(() => {
+    this.nav.event.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
       this.forceUpdate();
       console.log('-------------------------------------------');
-      console.log('nav/changed: current: ', this.nav.current);
+      console.log('nav/changed: ');
+      console.log('    current: ', e.current);
+      console.log('   selected: ', e.selected);
+      console.log('       root: ', e.root);
     });
 
     // console.log('this.nav', this.nav);
