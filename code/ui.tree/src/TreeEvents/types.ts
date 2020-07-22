@@ -31,7 +31,7 @@ export type ITreeEvents<N extends t.ITreeViewNode = any> = {
 };
 
 export type ITreeMouseEvents<N extends t.ITreeViewNode = any> = {
-  all$: Observable<t.TreeNodeMouseEvent<N>>;
+  $: Observable<t.TreeNodeMouseEvent<N>>;
   node$: Observable<t.TreeNodeMouseEvent<N>>;
   drillIn$: Observable<t.TreeNodeMouseEvent<N>>;
   parent$: Observable<t.TreeNodeMouseEvent<N>>;

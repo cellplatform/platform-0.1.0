@@ -78,7 +78,7 @@ export class TreeEvents<N extends t.ITreeViewNode = t.ITreeViewNode> implements 
     const targets = (type: t.MouseEventType) => {
       const args = { button, type };
       return {
-        get all$() {
+        get $() {
           return mouse$({ ...args });
         },
         get node$() {
