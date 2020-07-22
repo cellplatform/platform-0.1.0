@@ -2,6 +2,7 @@ import { id } from '@platform/util.value';
 import { setAutoFreeze, enablePatches, produceWithPatches, Patch } from 'immer';
 import { Subject, Observable } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
+import * as events from './StateObject.events';
 
 import { t } from '../common';
 
@@ -78,31 +79,7 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private readonly _event$ = new Subject<t.StateObjectEvent>();
-  public readonly event$ = this._event$.pipe(takeUntil(this._dispose$), share());
-
-  public readonly changing$ = this.event$.pipe(
-    filter((e) => e.type === 'StateObject/changing'),
-    map((e) => e.payload as t.IStateObjectChanging<T>),
-    share(),
-  );
-
-  public readonly changed$ = this.event$.pipe(
-    filter((e) => e.type === 'StateObject/changed'),
-    map((e) => e.payload as t.IStateObjectChanged<T, E>),
-    share(),
-  );
-
-  public readonly cancelled$ = this.event$.pipe(
-    filter((e) => e.type === 'StateObject/cancelled'),
-    map((e) => e.payload as t.IStateObjectCancelled<T>),
-    share(),
-  );
-
-  public readonly dispatch$ = this.event$.pipe(
-    filter((e) => e.type === 'StateObject/dispatch'),
-    map((e) => (e.payload as t.IStateObjectDispatch<E>).event),
-    share(),
-  );
+  public readonly event = events.create<T, E>(this._event$, this._dispose$);
 
   public readonly original: T;
 
@@ -165,7 +142,9 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
   };
 
   public dispatched = (action: E['payload'], takeUntil$?: Observable<any>) => {
-    const ob$ = !takeUntil$ ? this.dispatch$ : this.dispatch$.pipe(takeUntil(takeUntil$));
+    const ob$ = !takeUntil$
+      ? this.event.dispatch$
+      : this.event.dispatch$.pipe(takeUntil(takeUntil$));
     return ob$.pipe(
       filter((e) => e.type === action),
       map((e) => e.payload),
@@ -174,7 +153,7 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
   };
 
   public changed = (action: E['payload'], takeUntil$?: Observable<any>) => {
-    const ob$ = !takeUntil$ ? this.event$ : this.event$.pipe(takeUntil(takeUntil$));
+    const ob$ = !takeUntil$ ? this.event.$ : this.event.$.pipe(takeUntil(takeUntil$));
     return ob$.pipe(
       filter((e) => e.type === 'StateObject/changed'),
       map((e) => e.payload as t.IStateObjectChanged<T, E>),

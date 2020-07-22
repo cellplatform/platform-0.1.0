@@ -17,11 +17,7 @@ export type IStateObject<T extends O, E extends Event<any> = any> = IStateObject
 export type IStateObjectRead<T extends O, E extends Event<any> = any> = {
   readonly original: T;
   readonly state: T;
-  readonly event$: Observable<StateObjectEvent>;
-  readonly changing$: Observable<IStateObjectChanging<T>>;
-  readonly changed$: Observable<IStateObjectChanged<T, E>>;
-  readonly cancelled$: Observable<IStateObjectCancelled<T>>;
-  readonly dispatch$: Observable<E>;
+  readonly event: IStateObjectEvents<T, E>;
   dispatch(event: E): void;
   dispatched(action: E['type'], takeUntil$?: Observable<any>): Observable<E['payload']>;
   changed(action: E['type'], takeUntil$?: Observable<any>): Observable<IStateObjectChanged<T, E>>;

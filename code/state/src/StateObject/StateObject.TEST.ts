@@ -56,7 +56,7 @@ describe.only('StateObject', () => {
       const obj = StateObject.create<IFoo>({ count: 1 });
 
       let fired: t.StateObjectEvent[] = [];
-      obj.event$.subscribe((e) => fired.push(e));
+      obj.event.$.subscribe((e) => fired.push(e));
 
       obj.change((draft) => (draft.message = 'hello'));
       expect(fired.length).to.eql(2);
@@ -215,8 +215,8 @@ describe.only('StateObject', () => {
       const events: t.StateObjectEvent[] = [];
       const changing: t.IStateObjectChanging[] = [];
 
-      obj.event$.subscribe((e) => events.push(e));
-      obj.changing$.subscribe((e) => changing.push(e));
+      obj.event.$.subscribe((e) => events.push(e));
+      obj.event.changing$.subscribe((e) => changing.push(e));
 
       const res = obj.change((draft) => (draft.count += 1));
       expect(obj.state.count).to.eql(2);
@@ -244,9 +244,9 @@ describe.only('StateObject', () => {
       const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
 
-      obj.cancelled$.subscribe((e) => cancelled.push(e));
-      obj.changed$.subscribe((e) => changed.push(e));
-      obj.changing$.subscribe((e) => {
+      obj.event.cancelled$.subscribe((e) => cancelled.push(e));
+      obj.event.changed$.subscribe((e) => changed.push(e));
+      obj.event.changing$.subscribe((e) => {
         changing.push(e);
         e.cancel();
       });
@@ -272,9 +272,9 @@ describe.only('StateObject', () => {
       const events: t.StateObjectEvent[] = [];
       const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
-      obj.event$.subscribe((e) => events.push(e));
-      obj.changing$.subscribe((e) => changing.push(e));
-      obj.changed$.subscribe((e) => changed.push(e));
+      obj.event.$.subscribe((e) => events.push(e));
+      obj.event.changing$.subscribe((e) => changing.push(e));
+      obj.event.changed$.subscribe((e) => changed.push(e));
 
       const res = obj.change((draft) => draft.count++);
 
@@ -332,9 +332,11 @@ describe.only('StateObject', () => {
       const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
       const actions: t.IStateObjectChanged[] = [];
-      obj.changing$.subscribe((e) => changing.push(e));
-      obj.changed$.subscribe((e) => changed.push(e));
-      obj.changed$.pipe(filter((e) => e.action === 'INCREMENT')).subscribe((e) => actions.push(e));
+      obj.event.changing$.subscribe((e) => changing.push(e));
+      obj.event.changed$.subscribe((e) => changed.push(e));
+      obj.event.changed$
+        .pipe(filter((e) => e.action === 'INCREMENT'))
+        .subscribe((e) => actions.push(e));
 
       obj.change((draft) => (draft.message = 'hello'));
       expect(changing.length).to.eql(1);
@@ -358,8 +360,8 @@ describe.only('StateObject', () => {
 
       const changing: t.IStateObjectChanging[] = [];
       const changed: t.IStateObjectChanged[] = [];
-      obj.changing$.subscribe((e) => changing.push(e));
-      obj.changed$.subscribe((e) => changed.push(e));
+      obj.event.changing$.subscribe((e) => changing.push(e));
+      obj.event.changed$.subscribe((e) => changed.push(e));
 
       obj.change({ count: 888 });
       expect(changing.length).to.eql(1);
@@ -382,15 +384,15 @@ describe.only('StateObject', () => {
 
       const dispatched: MyEvent[] = [];
       const changed: t.IStateObjectChanged[] = [];
-      obj.dispatch$.subscribe((e) => dispatched.push(e));
-      obj.changed$.subscribe((e) => changed.push(e));
+      obj.event.dispatch$.subscribe((e) => dispatched.push(e));
+      obj.event.changed$.subscribe((e) => changed.push(e));
 
       obj.dispatch({ type: 'INCREMENT', payload: { by: 1 } });
 
       expect(dispatched.length).to.eql(1);
       expect(changed.length).to.eql(0);
 
-      obj.dispatch$
+      obj.event.dispatch$
         .pipe(
           filter((e) => e.type === 'INCREMENT'),
           map((e) => e.payload as IncrementEvent['payload']),
