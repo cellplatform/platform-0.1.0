@@ -11,7 +11,7 @@ type MyEvent = IncrementEvent | DecrementEvent;
 type IncrementEvent = { type: 'INCREMENT'; payload: { by: number } };
 type DecrementEvent = { type: 'DECREMENT'; payload: { by: number } };
 
-describe.only('StateObject', () => {
+describe('StateObject', () => {
   describe('lifecycle', () => {
     it('create: store initial state', () => {
       const initial = { count: 1 };

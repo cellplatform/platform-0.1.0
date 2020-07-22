@@ -12,9 +12,7 @@ export const helpers = {
    * Determine if the given input is a [TreeState] instance.
    */
   isInstance(input: any): boolean {
-    return input === null || typeof input !== 'object'
-      ? false
-      : typeof input.change === 'function' && typeof input.payload === 'function';
+    return input === null || typeof input !== 'object' ? false : input._kind === 'TreeState';
   },
 
   /**

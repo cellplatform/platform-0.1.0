@@ -8,6 +8,8 @@ import { TreeNodeIdentity } from '../../TreeNodeIdentity';
 import { helpers } from './helpers';
 import { TreeQuery } from '../../TreeQuery';
 
+import * as events from './TreeState.events';
+
 type N = t.ITreeNode;
 const Identity = TreeNodeIdentity;
 
@@ -47,6 +49,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
       silent: true,
       ensureNamespace: false, // NB: No need to do it in the function (we are doing it here).
     });
+    this.original = { ...this.root };
 
     // Dispose if given observable fires.
     if (args.dispose$) {
@@ -58,6 +61,10 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     if (!this.isDisposed) {
       this.children.forEach((child) => child.dispose());
       this._store.dispose();
+      this.fire({
+        type: 'TreeState/disposed',
+        payload: { original: this.original, final: this.root },
+      });
       this._dispose$.next();
       this._dispose$.complete();
     }
@@ -68,20 +75,17 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
    */
   private _store: t.IStateObjectWrite<T>;
   private _children: t.ITreeState<any>[] = [];
+  private _kind = 'TreeState'; // NB: Used by [isInstance] helper.
 
   public readonly namespace: string;
   public readonly parent: string | undefined;
+  public readonly original: T;
 
   private _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private _event$ = new Subject<t.TreeStateEvent>();
-  public readonly event$ = this._event$.pipe(takeUntil(this.dispose$), share());
-
-  public readonly changed$ = this.event$.pipe(
-    filter((e) => e.type === 'TreeState/changed'),
-    map((e) => e.payload as t.ITreeStateChanged<T>),
-  );
+  public readonly event = events.create<T>(this._event$, this._dispose$);
 
   /**
    * [Properties]
@@ -118,10 +122,6 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   public toId(input?: string): string {
     const id = Identity.parse(input).id;
     return Identity.format(this.namespace, id);
-  }
-
-  public payload<E extends t.TreeStateEvent>(type: E['type']) {
-    return rx.payload<E>(this.event$, type);
   }
 
   public change: t.TreeStateChange<T> = (fn, options = {}) => this._change(fn, options);
@@ -242,9 +242,9 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     type Changed = t.ITreeStateChangedEvent;
     type Removed = t.ITreeStateChildRemovedEvent;
 
-    const removed$ = this.payload<Removed>('TreeState/child/removed').pipe(
-      filter((e) => e.child.id === child.id),
-    );
+    const removed$ = this.event
+      .payload<Removed>('TreeState/child/removed')
+      .pipe(filter((e) => e.child.id === child.id));
 
     removed$.subscribe((e) => {
       this.change((draft, ctx) => {
@@ -253,7 +253,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
       });
     });
 
-    child
+    child.event
       .payload<Changed>('TreeState/changed')
       .pipe(takeUntil(child.dispose$), takeUntil(removed$))
       .subscribe((e) => {

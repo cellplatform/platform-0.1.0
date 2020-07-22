@@ -57,6 +57,23 @@ describe('TreeState', () => {
       expect(state.isDisposed).to.eql(true);
     });
 
+    it('dispose: event', () => {
+      const state = create();
+      state.change((root, ctx) => helpers.props<P>(root, (p) => (p.label = 'foo')));
+
+      const fired: t.TreeStateEvent[] = [];
+      state.event.$.subscribe((e) => fired.push(e));
+
+      state.dispose();
+      state.dispose();
+      expect(fired.length).to.eql(1);
+
+      const event = fired[0] as t.ITreeStateDisposedEvent;
+      expect(event.type).to.eql('TreeState/disposed');
+      expect(event.payload.original).to.eql(state.original);
+      expect(event.payload.final).to.eql(state.root);
+    });
+
     it('disposes of all children', () => {
       const state = create();
       expect(state.isDisposed).to.eql(false);
@@ -208,7 +225,9 @@ describe('TreeState', () => {
       expect((state.root.children || []).length).to.eql(1);
 
       const fired: t.ITreeStateChanged<N>[] = [];
-      state.payload<t.ITreeStateChangedEvent>('TreeState/changed').subscribe((e) => fired.push(e));
+      state.event
+        .payload<t.ITreeStateChangedEvent>('TreeState/changed')
+        .subscribe((e) => fired.push(e));
 
       const child1 = state.add({ parent: 'root', root: { id: 'foo' } });
 
@@ -258,7 +277,7 @@ describe('TreeState', () => {
       const state = create({ root });
 
       const fired: t.ITreeStateChildAdded[] = [];
-      state
+      state.event
         .payload<t.ITreeStateChildAddedEvent>('TreeState/child/added')
         .subscribe((e) => fired.push(e));
 
@@ -297,7 +316,7 @@ describe('TreeState', () => {
       const state = create({ root });
 
       const fired: t.ITreeStateChildRemoved[] = [];
-      state
+      state.event
         .payload<t.ITreeStateChildRemovedEvent>('TreeState/child/removed')
         .subscribe((e) => fired.push(e));
 
@@ -325,7 +344,7 @@ describe('TreeState', () => {
       const state = create({ root });
 
       const fired: t.ITreeStateChildRemoved[] = [];
-      state
+      state.event
         .payload<t.ITreeStateChildRemovedEvent>('TreeState/child/removed')
         .subscribe((e) => fired.push(e));
 
@@ -421,6 +440,14 @@ describe('TreeState', () => {
       });
     });
 
+    it('retains original', () => {
+      const state = create();
+      const original = { ...state.root };
+      state.change((root, ctx) => helpers.props<P>(root, (p) => (p.label = 'foo')));
+      expect(state.original).to.eql(original);
+      expect(state.root).to.not.eql(original);
+    });
+
     it('child array: insert (updates id namespaces)', () => {
       const state = create({ root: 'root' });
 
@@ -482,7 +509,9 @@ describe('TreeState', () => {
     it('event: changed', () => {
       const state = create({ root });
       const fired: t.ITreeStateChanged<N>[] = [];
-      state.payload<t.ITreeStateChangedEvent>('TreeState/changed').subscribe((e) => fired.push(e));
+      state.event
+        .payload<t.ITreeStateChangedEvent>('TreeState/changed')
+        .subscribe((e) => fired.push(e));
 
       const res = state.change((root, ctx) => {
         helpers.props<P>(root, (p) => (p.label = 'foo'));
@@ -499,7 +528,9 @@ describe('TreeState', () => {
     it('event: changed (silent, not fired)', () => {
       const state = create({ root });
       const fired: t.ITreeStateChanged[] = [];
-      state.payload<t.ITreeStateChangedEvent>('TreeState/changed').subscribe((e) => fired.push(e));
+      state.event
+        .payload<t.ITreeStateChangedEvent>('TreeState/changed')
+        .subscribe((e) => fired.push(e));
 
       state.change(
         (root) => {

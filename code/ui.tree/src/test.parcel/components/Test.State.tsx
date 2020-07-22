@@ -52,7 +52,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    this.store.changed$
+    this.store.event.changed$
       .pipe(takeUntil(this.unmounted$))
       .subscribe((e) => this.state$.next({ root: e.to }));
 

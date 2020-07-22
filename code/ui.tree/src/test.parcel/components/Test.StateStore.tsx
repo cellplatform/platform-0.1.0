@@ -39,8 +39,7 @@ export class TestStateStore extends React.PureComponent<
    */
 
   public componentDidMount() {
-    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
-    this.store.dispose$.pipe(takeUntil(this.unmounted$)).subscribe(() => this.forceUpdate());
+    this.store.event.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
 
