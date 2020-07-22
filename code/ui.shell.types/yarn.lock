@@ -180,10 +180,10 @@
     "@platform/react" "0.4.40"
     "@platform/util.value" "0.7.27"
 
-"@platform/ui.tree@0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.6.3.tgz#0df5884c6d7ba81dbe9f1f30c964fadb476ce5ed"
-  integrity sha512-dPRTwpnSFots3hE6IihTCxM4B8YcSs7FxES0rbRngWe26fIvpyhxo6zvOr0Y1vGBGde9OYOGagH4w8sO6363mQ==
+"@platform/ui.tree@0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.6.4.tgz#0f946f3a14ac46794df81f94b2dc9259e247b7d3"
+  integrity sha512-ybj3MgppDl6KtQhoGH6PnaDmIpiZaCQ/9orv2epTIohVXldUK04bVkPpgQB7KlAIRnbPiF5sA91KhpRLKV1/Tg==
   dependencies:
     "@platform/css" "0.4.7"
     "@platform/react" "0.4.40"
