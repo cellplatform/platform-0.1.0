@@ -12,8 +12,8 @@ export type NodeIdentifier<T extends INode = INode> = T | T['id'];
  * An "node" with [props] and [children]
  */
 export type ITreeNode<T extends string = string, P extends O = O> = INode<T> & {
-  props?: P;
   children?: ITreeNode<T>[];
+  props?: P;
 };
 
 /**

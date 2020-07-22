@@ -1242,10 +1242,10 @@
     "@platform/react" "0.4.40"
     "@platform/util.value" "0.7.27"
 
-"@platform/ui.tree@0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.6.2.tgz#c3ab6f34d579c470023331b110e6f392fcad56e7"
-  integrity sha512-zUZGj6vcY1C6j1q64zrPIDgobBCVu42OZGStnTMwDaqB3g/DOVcmZ1XyNTg+QwSwSJ/Jj4q3DWlN9Lg+pULqmg==
+"@platform/ui.tree@0.6.3":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.6.3.tgz#0df5884c6d7ba81dbe9f1f30c964fadb476ce5ed"
+  integrity sha512-dPRTwpnSFots3hE6IihTCxM4B8YcSs7FxES0rbRngWe26fIvpyhxo6zvOr0Y1vGBGde9OYOGagH4w8sO6363mQ==
   dependencies:
     "@platform/css" "0.4.7"
     "@platform/react" "0.4.40"

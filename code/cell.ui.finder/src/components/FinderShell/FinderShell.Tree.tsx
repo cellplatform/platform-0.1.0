@@ -50,7 +50,7 @@ export class FinderShellTree extends React.PureComponent<IFinderShellTreeProps> 
     const tree = this.tree;
     return (
       <TreeView
-        node={tree.root}
+        root={tree.root}
         current={tree.current}
         theme={tree.theme}
         background={'NONE'}

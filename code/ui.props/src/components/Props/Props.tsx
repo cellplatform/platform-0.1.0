@@ -161,7 +161,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     return (
       <div {...css(styles.base, this.props.style)}>
         <TreeView
-          node={this.root}
+          root={this.root}
           current={this.state.current}
           background={'NONE'}
           theme={theme}
@@ -178,7 +178,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
   private nodeFactory: t.RenderTreeNodeBody = (e) => {
     if (e.body === BODY.PROD_EDITOR) {
       const node = e.node as t.IPropNode;
-      const parentNode = TreeView.util.parent(this.root, node) as t.IPropNode;
+      const parentNode = TreeView.query(this.root).parent(node) as t.IPropNode;
       const isDeletable = node.data ? node.data.isDeletable : false;
       return (
         <PropEditor

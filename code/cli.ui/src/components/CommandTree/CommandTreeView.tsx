@@ -71,7 +71,7 @@ export class CommandTreeView extends React.PureComponent<
       // Step up to parent.
       .pipe(filter((e) => e.target === 'PARENT'))
       .subscribe((e) => {
-        const parent = TreeView.util.parent(this.state.treeRoot, e.node);
+        const parent = TreeView.query(this.state.treeRoot).parent(e.node);
         this.fireCurrent(parent, 'PARENT');
       });
 
@@ -136,7 +136,7 @@ export class CommandTreeView extends React.PureComponent<
     const currentCommandId = util.asTreeNodeId(currentCommand);
     const dimmed = currentCommand && !isAutocompleted ? [] : filterDimmed(fuzzyMatches);
 
-    TreeView.util.walkDown(treeRoot, (e) => {
+    TreeView.query(treeRoot).walkDown((e) => {
       const node = e.node;
       const command = node.data as t.ICommand;
 
@@ -178,7 +178,7 @@ export class CommandTreeView extends React.PureComponent<
   public render() {
     return (
       <TreeView
-        node={this.state.treeRoot}
+        root={this.state.treeRoot}
         current={this.currentNodeId}
         theme={this.props.theme}
         background={this.props.background}

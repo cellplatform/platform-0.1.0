@@ -1,10 +1,10 @@
 import { Observable, Subject } from 'rxjs';
-import { share, takeUntil } from 'rxjs/operators';
-import { TreeEvents } from '../TreeEvents';
+import { share } from 'rxjs/operators';
 
 import { t, time } from '../common';
-import { TreeNavControllerEvents } from './TreeNavControllerEvents';
 import { StateObject } from '../state';
+import { TreeEvents } from '../TreeEvents';
+import { TreeNavControllerEvents } from './TreeNavControllerEvents';
 
 export type ITreeNavControllerArgs = {
   treeview$: Observable<t.TreeViewEvent>;
