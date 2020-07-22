@@ -55,9 +55,12 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   }
 
   public dispose() {
-    this.children.forEach((child) => child.dispose());
-    this._dispose$.next();
-    this._dispose$.complete();
+    if (!this.isDisposed) {
+      this.children.forEach((child) => child.dispose());
+      this._store.dispose();
+      this._dispose$.next();
+      this._dispose$.complete();
+    }
   }
 
   /**

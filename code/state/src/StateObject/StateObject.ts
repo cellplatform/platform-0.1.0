@@ -58,32 +58,47 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
     this.original = this.state;
   }
 
+  public dispose() {
+    if (!this.isDisposed) {
+      this.fire({
+        type: 'StateObject/disposed',
+        payload: { original: this.original, final: this.state },
+      });
+      this._dispose$.next();
+      this._dispose$.complete();
+    }
+  }
+
   /**
    * [Fields]
    */
   private _state: T;
-  private readonly _event$ = new Subject<t.StateObjectEvent>();
-  public readonly event$ = this._event$.pipe(share());
 
-  public readonly changing$ = this._event$.pipe(
+  private _dispose$ = new Subject<void>();
+  public readonly dispose$ = this._dispose$.pipe(share());
+
+  private readonly _event$ = new Subject<t.StateObjectEvent>();
+  public readonly event$ = this._event$.pipe(takeUntil(this._dispose$), share());
+
+  public readonly changing$ = this.event$.pipe(
     filter((e) => e.type === 'StateObject/changing'),
     map((e) => e.payload as t.IStateObjectChanging<T>),
     share(),
   );
 
-  public readonly changed$ = this._event$.pipe(
+  public readonly changed$ = this.event$.pipe(
     filter((e) => e.type === 'StateObject/changed'),
     map((e) => e.payload as t.IStateObjectChanged<T, E>),
     share(),
   );
 
-  public readonly cancelled$ = this._event$.pipe(
+  public readonly cancelled$ = this.event$.pipe(
     filter((e) => e.type === 'StateObject/cancelled'),
     map((e) => e.payload as t.IStateObjectCancelled<T>),
     share(),
   );
 
-  public readonly dispatch$ = this._event$.pipe(
+  public readonly dispatch$ = this.event$.pipe(
     filter((e) => e.type === 'StateObject/dispatch'),
     map((e) => (e.payload as t.IStateObjectDispatch<E>).event),
     share(),
@@ -94,6 +109,10 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
   /**
    * [Properties]
    */
+  public get isDisposed() {
+    return this._dispose$.isStopped;
+  }
+
   public get state() {
     return this._state;
   }
@@ -188,7 +207,7 @@ const next = <T extends O>(from: T, fn: t.StateObjectChanger<T> | T) => {
   if (typeof fn === 'function') {
     const [to, forward, backward] = produceWithPatches<T>(from, (draft) => {
       fn(draft as T);
-      return undefined; // NB: No return value, to prevent replacement.
+      return undefined; // NB: No return value (to prevent replacement).
     });
     const patches = toPatchSet(forward, backward);
     const op: t.StateObjectChangeOperation = 'update';

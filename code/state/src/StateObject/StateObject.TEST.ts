@@ -11,9 +11,9 @@ type MyEvent = IncrementEvent | DecrementEvent;
 type IncrementEvent = { type: 'INCREMENT'; payload: { by: number } };
 type DecrementEvent = { type: 'DECREMENT'; payload: { by: number } };
 
-describe('StateObject', () => {
-  describe('create', () => {
-    it('store initial state', () => {
+describe.only('StateObject', () => {
+  describe('lifecycle', () => {
+    it('create: store initial state', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo>(initial);
 
@@ -24,7 +24,7 @@ describe('StateObject', () => {
       expect(obj.original).to.not.equal(initial); // No change from initial.
     });
 
-    it('readonly version', () => {
+    it('create: readonly version', () => {
       const obj = StateObject.create<IFoo>({ count: 0 });
       const readonly = obj.readonly;
 
@@ -35,6 +35,45 @@ describe('StateObject', () => {
       expect(StateObject.readonly(readonly)).to.be.an.instanceof(StateObjectClass);
       expect(StateObject.readonly(obj)).to.equal(obj);
       expect(StateObject.readonly(readonly)).to.equal(obj);
+    });
+
+    it('dispose', () => {
+      const obj = StateObject.create<IFoo>({ count: 1 });
+
+      let count = 0;
+      obj.dispose$.subscribe((e) => count++);
+
+      expect(obj.isDisposed).to.eql(false);
+      obj.dispose();
+      obj.dispose();
+      obj.dispose();
+
+      expect(obj.isDisposed).to.eql(true);
+      expect(count).to.eql(1);
+    });
+
+    it('dispose: events cease firing', () => {
+      const obj = StateObject.create<IFoo>({ count: 1 });
+
+      let fired: t.StateObjectEvent[] = [];
+      obj.event$.subscribe((e) => fired.push(e));
+
+      obj.change((draft) => (draft.message = 'hello'));
+      expect(fired.length).to.eql(2);
+
+      obj.dispose();
+      obj.dispose();
+      obj.dispose();
+      expect(obj.isDisposed).to.eql(true);
+      expect(fired.length).to.eql(3);
+
+      const event = fired[2] as t.IStateObjectDisposedEvent;
+      expect(event.type).to.eql('StateObject/disposed');
+      expect(event.payload.original).to.eql({ count: 1 });
+      expect(event.payload.final).to.eql({ count: 1, message: 'hello' });
+
+      obj.change((draft) => (draft.message = 'hello'));
+      expect(fired.length).to.eql(3); // NB: no change.
     });
   });
 

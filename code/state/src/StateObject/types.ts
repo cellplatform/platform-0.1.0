@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { Event } from '@platform/types';
+import { Event, IDisposable } from '@platform/types';
 
 type O = Record<string, unknown>;
 
@@ -27,13 +27,22 @@ export type IStateObjectRead<T extends O, E extends Event<any> = any> = {
   changed(action: E['type'], takeUntil$?: Observable<any>): Observable<IStateObjectChanged<T, E>>;
 };
 
+export type IStateObjectEvents<T extends O, E extends Event<any> = any> = {
+  readonly $: Observable<StateObjectEvent>;
+  readonly changing$: Observable<IStateObjectChanging<T>>;
+  readonly changed$: Observable<IStateObjectChanged<T, E>>;
+  readonly cancelled$: Observable<IStateObjectCancelled<T>>;
+  readonly dispatch$: Observable<E>;
+};
+
 /**
  * Writeable.
  */
-export type IStateObjectWrite<T extends O, E extends Event<any> = any> = IStateObject<T, E> & {
-  readonly readonly: IStateObject<T, E>;
-  change(input: StateObjectChanger<T> | T, action?: E['type']): IStateObjectChangeResponse<T>;
-};
+export type IStateObjectWrite<T extends O, E extends Event<any> = any> = IStateObject<T, E> &
+  IDisposable & {
+    readonly readonly: IStateObject<T, E>;
+    change(input: StateObjectChanger<T> | T, action?: E['type']): IStateObjectChangeResponse<T>;
+  };
 
 export type StateObjectChangeOperation = 'update' | 'replace';
 
@@ -74,7 +83,8 @@ export type StateObjectEvent =
   | IStateObjectChangingEvent
   | IStateObjectChangedEvent
   | IStateObjectCancelledEvent
-  | IStateObjectDispatchEvent;
+  | IStateObjectDispatchEvent
+  | IStateObjectDisposedEvent;
 
 /**
  * Fires before the state object is updated
@@ -129,3 +139,12 @@ export type IStateObjectDispatchEvent<E extends Event<any> = any> = {
   payload: IStateObjectDispatch<E>;
 };
 export type IStateObjectDispatch<E extends Event<any> = any> = { event: E };
+
+/**
+ * Fires when the state object is disposed of.
+ */
+export type IStateObjectDisposedEvent<T extends O = any> = {
+  type: 'StateObject/disposed';
+  payload: IStateObjectDisposed<T>;
+};
+export type IStateObjectDisposed<T extends O = any> = { original: T; final: T };
