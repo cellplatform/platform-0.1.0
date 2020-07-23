@@ -1,22 +1,12 @@
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
+import { defaultValue } from '@platform/util.value/lib/value/value';
+import { Observable, Subject } from 'rxjs';
+import { filter, share } from 'rxjs/operators';
+
 import { t } from '../common';
 import { StateObject } from '../state';
 import { TreeEvents } from '../TreeEvents';
-import { createEvents } from './TreeNavController.events';
-import { defaultValue } from '@platform/util.value/lib/value/value';
 import { TreeQuery } from '../TreeQuery';
+import { createEvents } from './TreeNavController.events';
 
 export type ITreeNavControllerArgs = {
   treeview$: Observable<t.TreeViewEvent>;
@@ -54,8 +44,6 @@ export class TreeNavController implements t.ITreeNavController {
         this.fireChanged();
       }
     });
-
-    // treeEvents.
 
     /**
      * Left mouse button handlers.

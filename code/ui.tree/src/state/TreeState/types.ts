@@ -1,19 +1,19 @@
 import * as t from '../../common/types';
 
-type Node = t.ITreeNode;
+type N = t.ITreeNode;
 type O = Record<string, unknown>;
 
 export type TreeState = {
-  create<N extends Node = Node>(args?: ITreeStateArgs<N>): ITreeState<N>;
+  create<T extends N = N>(args?: ITreeStateArgs<T>): ITreeState<T>;
   identity: t.TreeNodeIdentity;
   isInstance(input: any): boolean;
-  children<T extends Node>(of: T, fn?: (children: T[]) => void): T[];
-  props<P extends O>(of: Node, fn?: (props: P) => void): P;
+  children<T extends N>(of: T, fn?: (children: T[]) => void): T[];
+  props<P extends O>(of: N, fn?: (props: P) => void): P;
 };
 
-export type ITreeStateArgs<N extends Node = Node> = {
+export type ITreeStateArgs<T extends N = N> = {
   parent?: string; // ID of parent within tree.
-  root?: N | string;
+  root?: T | string;
   dispose$?: t.Observable<any>;
 };
 
@@ -21,50 +21,59 @@ export type ITreeStateArgs<N extends Node = Node> = {
  * State machine for programming a tree,
  * or partial leaf within a tree.
  */
-export type ITreeState<N extends Node = Node> = t.IDisposable & {
+export type ITreeState<T extends N = N> = t.IDisposable & {
   readonly namespace: string;
   readonly id: string;
   readonly parent?: string; // ID of parent within tree.
-  readonly original: N;
-  readonly root: N;
+  readonly original: T;
+  readonly root: T;
   readonly children: ITreeState[];
-  readonly query: t.ITreeQuery<N>;
-  readonly event: ITreeStateEvents<N>;
+  readonly query: t.ITreeQuery<T>;
+  readonly event: ITreeStateEvents<T>;
   add: TreeStateAdd;
   remove(child: string | ITreeState): ITreeState;
-  change: TreeStateChange<N>;
+  change: TreeStateChange<T>;
   toId(input?: string): string;
 };
 
-export type ITreeStateEvents<N extends Node = Node> = {
+export type ITreeStateEvents<T extends N = N> = {
   readonly $: t.Observable<TreeStateEvent>;
-  readonly changed$: t.Observable<ITreeStateChanged<N>>;
+  readonly changed$: t.Observable<ITreeStateChanged<T>>;
   payload<E extends t.TreeStateEvent>(type: E['type']): t.Observable<E['payload']>;
 };
 
 /**
  * Add
  */
-export type TreeStateAdd = <C extends Node = Node>(args: TreeStateAddArgs<C>) => ITreeState<C>;
-export type TreeStateAddArgs<C extends Node = Node> = {
+export type TreeStateAdd = <T extends N = N>(args: TreeStateAddArgs<T>) => ITreeState<T>;
+export type TreeStateAddArgs<T extends N = N> = {
   parent?: string;
-  root: C | string | ITreeState<C>;
+  root: T | string | ITreeState<T>;
 };
 
 /**
- * Change.
+ * Change
  */
-export type TreeStateChange<N extends Node = Node> = (
-  fn: TreeStateChanger<N>,
+export type TreeStateChange<T extends N = N> = (
+  fn: TreeStateChanger<T>,
   options?: TreeStateChangeOptions,
-) => TreeStateChangeResponse<N>;
-export type TreeStateChangeResponse<N extends Node = Node> = t.IStateObjectChangeResponse<N>;
+) => TreeStateChangeResponse<T>;
+export type TreeStateChangeResponse<T extends N = N> = t.IStateObjectChangeResponse<T>;
 export type TreeStateChangeOptions = { silent?: boolean };
-export type TreeStateChanger<N extends Node = Node> = (
-  root: N,
-  ctx: TreeStateChangerContext<N>,
-) => void;
-export type TreeStateChangerContext<N extends Node = Node> = t.ITreeQuery<N>;
+export type TreeStateChanger<T extends N = N> = (root: T, ctx: TreeStateChangerContext<T>) => void;
+export type TreeStateChangerContext<T extends N = N> = t.ITreeQuery<T>;
+
+/**
+ * Find
+ */
+
+/**
+ * TODO
+ * '[?'/]
+ */
+export type TreeStateFind = <T>(match: TreeStateFindMatch) => T | undefined;
+export type TreeStateFindMatch = (args: TreeStateFindMatchArgs) => boolean;
+export type TreeStateFindMatchArgs = {};
 
 /**
  * [Events]
@@ -78,13 +87,13 @@ export type TreeStateEvent =
 /**
  * Fired when the [TreeState] data changes.
  */
-export type ITreeStateChangedEvent<N extends Node = Node> = {
+export type ITreeStateChangedEvent<T extends N = N> = {
   type: 'TreeState/changed';
-  payload: ITreeStateChanged<N>;
+  payload: ITreeStateChanged<T>;
 };
-export type ITreeStateChanged<N extends Node = Node> = {
-  from: N;
-  to: N;
+export type ITreeStateChanged<T extends N = N> = {
+  from: T;
+  to: T;
   patches: t.StateObjectPatches;
 };
 
@@ -115,8 +124,8 @@ export type ITreeStateChildRemoved = {
 /**
  * Fires when the [TreeState] is disposed of.
  */
-export type ITreeStateDisposedEvent<N extends Node = Node> = {
+export type ITreeStateDisposedEvent<T extends N = N> = {
   type: 'TreeState/disposed';
-  payload: ITreeStateDisposed<N>;
+  payload: ITreeStateDisposed<T>;
 };
-export type ITreeStateDisposed<N extends Node = Node> = { original: N; final: N };
+export type ITreeStateDisposed<T extends N = N> = { original: T; final: T };

@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 
 import { TreeNavController } from '.';
 import { TreeState } from '../state';
-import { expect, t, time } from '../test';
+import { expect, t } from '../test';
 
 const create = () => {
   const treeview$ = new Subject<t.TreeViewEvent>();
