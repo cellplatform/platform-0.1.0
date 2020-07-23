@@ -33,6 +33,7 @@ export type ITreeState<T extends N = N> = t.IDisposable & {
   add: TreeStateAdd;
   remove(child: string | ITreeState): ITreeState;
   change: TreeStateChange<T>;
+  find: TreeStateFind<T>;
   toId(input?: string): string;
 };
 
@@ -66,14 +67,17 @@ export type TreeStateChangerContext<T extends N = N> = t.ITreeQuery<T>;
 /**
  * Find
  */
-
-/**
- * TODO
- * '[?'/]
- */
-export type TreeStateFind = <T>(match: TreeStateFindMatch) => T | undefined;
-export type TreeStateFindMatch = (args: TreeStateFindMatchArgs) => boolean;
-export type TreeStateFindMatchArgs = {};
+export type TreeStateFind<T extends N = N> = (
+  match: TreeStateFindMatch<T>,
+) => t.ITreeState<T> | undefined;
+export type TreeStateFindMatch<T extends N> = (args: TreeStateFindMatchArgs<T>) => boolean;
+export type TreeStateFindMatchArgs<T extends N = N> = {
+  level: number;
+  id: string;
+  namespace: string;
+  tree: ITreeState<T>;
+  stop():void;
+};
 
 /**
  * [Events]

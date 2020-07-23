@@ -201,6 +201,32 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return child;
   }
 
+  public find: t.TreeStateFind<T> = (match) => this._find(0, match);
+  private _find(level: number, match: t.TreeStateFindMatch<T>): t.ITreeState<T> | undefined {
+    const children = this.children;
+    if (children.length === 0) {
+      return undefined;
+    } else {
+      for (const child of children) {
+        const tree = child as TreeState<T>;
+        let stopped = false;
+        const args: t.TreeStateFindMatchArgs<T> = {
+          level,
+          id: Identity.id(child.id),
+          namespace: child.namespace,
+          tree,
+          stop: () => (stopped = true),
+        };
+        if (match(args)) {
+          return child;
+        } else {
+          return stopped ? undefined : tree._find(level + 1, match); // <== RECURSION 🌳
+        }
+      }
+      return undefined;
+    }
+  }
+
   /**
    * [Internal]
    */

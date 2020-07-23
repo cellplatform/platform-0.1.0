@@ -11,7 +11,7 @@ type P = { label?: string; icon?: string };
 const query = TreeQuery.create;
 const create = (args?: t.ITreeStateArgs) => TreeState.create<N>(args);
 
-describe('TreeState', () => {
+describe.only('TreeState', () => {
   describe('create', () => {
     it('without parent', () => {
       const root: N = { id: 'root' };
@@ -740,6 +740,63 @@ describe('TreeState', () => {
         const res = state.query.findById('404');
         expect(res).to.eql(undefined);
       });
+    });
+  });
+
+  describe.only('child (find)', () => {
+    it.skip('empty', () => {
+      //
+      const root: N = { id: 'root' };
+      const state = create({ root });
+
+      const list: t.TreeStateFindMatchArgs[] = [];
+      const res = state.find((e) => {
+        list.push(e);
+        return false;
+      });
+
+      expect(res).to.eql(undefined);
+      expect(list.length).to.eql([]);
+    });
+
+    it('deep', () => {
+      const state = create();
+      const child1 = state.add({ root: 'child-1' });
+      const child2a = child1.add({ root: 'child-2a' });
+      child1.add({ root: 'child-2a' }); // NB: Skipped because child-3 found first (child of "2a").
+      const child3 = child2a.add({ root: 'child-3' });
+
+      const list: t.TreeStateFindMatchArgs[] = [];
+      const res = state.find((e) => {
+        list.push(e);
+        return e.id === 'child-3';
+      });
+
+      expect(list.length).to.eql(3);
+      expect(res?.id).to.equal(child3.id);
+
+      expect(list[0].tree.id).to.eql(child1.id);
+      expect(list[1].tree.id).to.eql(child2a.id);
+      expect(list[2].tree.id).to.eql(child3.id);
+    });
+
+    it('stop (walking)', () => {
+      const state = create();
+      const child1 = state.add({ root: 'child-1' });
+      const child2a = child1.add({ root: 'child-2a' });
+      child1.add({ root: 'child-2b' }); // NB: Skipped because child-3 found first (child of "2a").
+      child2a.add({ root: 'child-3' });
+
+      const list: t.TreeStateFindMatchArgs[] = [];
+      const res = state.find((e) => {
+        list.push(e);
+        if (e.id === 'child-2a') {
+          e.stop();
+        }
+        return e.id === 'child-3';
+      });
+      expect(list.map((e) => e.id)).to.eql(['child-1', 'child-2a']);
+      expect(res).to.eql(undefined);
     });
   });
 });
