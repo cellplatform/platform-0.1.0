@@ -1,8 +1,15 @@
-type O = Record<string, unknown>;
+import * as t from '../common/types';
+
+type A = t.ArrayPatch;
 
 export type Patch = {
-  apply<T extends O>(obj: T, changes: PatchOperation | PatchOperation[]): T;
+  toSet(forward?: A | A[], backward?: A | A[]): t.PatchSet;
 };
+
+/**
+ * A set of patches that allow for forward and backward transformations on data.
+ */
+export type PatchSet = { prev: PatchOperation[]; next: PatchOperation[] };
 
 /**
  * Patch

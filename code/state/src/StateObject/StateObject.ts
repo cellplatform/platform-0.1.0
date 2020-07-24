@@ -1,10 +1,11 @@
 import { id } from '@platform/util.value';
-import { setAutoFreeze, enablePatches, produceWithPatches, Patch } from 'immer';
-import { Subject, Observable } from 'rxjs';
+import { enablePatches, produceWithPatches, setAutoFreeze } from 'immer';
+import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import * as events from './StateObject.events';
+import { Patch } from '../Patch';
 
 import { t } from '../common';
+import * as events from './StateObject.events';
 
 if (typeof setAutoFreeze === 'function') {
   setAutoFreeze(false);
@@ -192,30 +193,6 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
 /**
  * [Helpers]
  */
-const toPatch = (input: Patch): t.PatchOperation => {
-  const hasForwardSlash = input.path.some((part) => {
-    return typeof part === 'string' ? part.includes('/') : false;
-  });
-
-  if (hasForwardSlash) {
-    const path = input.path
-      .map((part) => (typeof part === 'string' ? `'${part}'` : part))
-      .join(',');
-    const err = `Property names cannot contain the "/" character. op: '${input.op}' path: [${path}]`;
-    throw new Error(err);
-  }
-
-  return { ...input, path: input.path.join('/') };
-};
-const toPatches = (input: Patch[]) => {
-  return input.map((p) => toPatch(p));
-};
-const toPatchSet = (forward: Patch[], backward: Patch[]): t.StateObjectPatches => {
-  return {
-    prev: toPatches(backward),
-    next: toPatches(forward),
-  };
-};
 
 const next = <T extends O>(from: T, fn: t.StateObjectChanger<T> | T) => {
   if (typeof fn === 'function') {
@@ -223,12 +200,12 @@ const next = <T extends O>(from: T, fn: t.StateObjectChanger<T> | T) => {
       fn(draft as T);
       return undefined; // NB: No return value (to prevent replacement).
     });
-    const patches = toPatchSet(forward, backward);
+    const patches = Patch.toSet(forward, backward);
     const op: t.StateObjectChangeOperation = 'update';
     return { op, to, patches };
   } else {
     const [to, forward, backward] = produceWithPatches<T>(from, () => fn);
-    const patches = toPatchSet(forward, backward);
+    const patches = Patch.toSet(forward, backward);
     const op: t.StateObjectChangeOperation = 'replace';
     return { op, to, patches };
   }

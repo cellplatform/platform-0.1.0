@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { Event, IDisposable } from '@platform/types';
-import { PatchOperation } from '../Patch/types';
+import * as t from '../common/types';
 
 type O = Record<string, unknown>;
 
@@ -60,11 +60,10 @@ export type StateObjectChangeOperation = 'update' | 'replace';
 export type IStateObjectChangeResponse<T extends O, E extends Event<any> = any> = {
   op: StateObjectChangeOperation;
   cid: string; // "change-id"
-  patches: StateObjectPatches;
+  patches: t.PatchSet;
   changed?: IStateObjectChanged<T, E>;
   cancelled?: IStateObjectCancelled<T>;
 };
-export type StateObjectPatches = { prev: PatchOperation[]; next: PatchOperation[] };
 export type StateObjectChanger<T extends O> = (draft: T) => void;
 
 /**
@@ -90,7 +89,7 @@ export type IStateObjectChanging<T extends O = any, E extends Event<any> = any> 
   cid: string; // "change-id"
   from: T;
   to: T;
-  patches: StateObjectPatches;
+  patches: t.PatchSet;
   cancelled: boolean;
   cancel(): void;
   action: E['type'];
@@ -109,7 +108,7 @@ export type IStateObjectChanged<T extends O = any, E extends Event<any> = any> =
   cid: string; // "change-id"
   from: T;
   to: T;
-  patches: StateObjectPatches;
+  patches: t.PatchSet;
   action: E['type'];
 };
 
