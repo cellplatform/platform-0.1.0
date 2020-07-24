@@ -2,7 +2,8 @@ import { t } from '../../common';
 import { TreeNodeIdentity } from '../../TreeNodeIdentity';
 import { TreeUtil } from '../../TreeUtil';
 
-type N = t.ITreeNode;
+type Node = t.INode;
+type TreeNode = t.ITreeNode;
 const id = TreeNodeIdentity;
 
 export const helpers = {
@@ -18,7 +19,7 @@ export const helpers = {
   /**
    * Props helper.
    */
-  props<P>(of: N, fn?: (props: P) => void): P {
+  props<P>(of: Node, fn?: (props: P) => void): P {
     of.props = of.props || {};
     if (typeof fn === 'function') {
       fn(of.props as P);
@@ -29,7 +30,7 @@ export const helpers = {
   /**
    * Children helper.
    */
-  children<T extends N>(of: T, fn?: (children: T[]) => void): T[] {
+  children<T extends TreeNode>(of: T, fn?: (children: T[]) => void): T[] {
     const children = (of.children = of.children || []) as T[];
     if (typeof fn === 'function') {
       fn(children);
@@ -41,8 +42,8 @@ export const helpers = {
    * Ensures all nodes within the given tree are prefixed with
    * the specified namespace.
    */
-  ensureNamespace(root: N, namespace: string) {
-    TreeUtil.query<N>(root).walkDown((e) => {
+  ensureNamespace(root: TreeNode, namespace: string) {
+    TreeUtil.query<TreeNode>(root).walkDown((e) => {
       if (!id.hasNamespace(e.node.id)) {
         e.node.id = id.format(namespace, e.node.id);
       } else {

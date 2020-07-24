@@ -743,9 +743,8 @@ describe.only('TreeState', () => {
     });
   });
 
-  describe.only('child (find)', () => {
-    it.skip('empty', () => {
-      //
+  describe('child (find)', () => {
+    it('empty', () => {
       const root: N = { id: 'root' };
       const state = create({ root });
 
@@ -756,7 +755,7 @@ describe.only('TreeState', () => {
       });
 
       expect(res).to.eql(undefined);
-      expect(list.length).to.eql([]);
+      expect(list).to.eql([]);
     });
 
     it('deep', () => {
