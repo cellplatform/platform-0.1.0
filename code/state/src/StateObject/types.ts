@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import { Event, IDisposable } from '@platform/types';
+import { PatchOperation } from '../Patch/types';
 
 type O = Record<string, unknown>;
 
@@ -50,27 +51,8 @@ export type IStateObjectChangeResponse<T extends O> = {
   to: T;
   patches: StateObjectPatches;
 };
-export type StateObjectPatches = { prev: StatePatch[]; next: StatePatch[] };
+export type StateObjectPatches = { prev: PatchOperation[]; next: PatchOperation[] };
 export type StateObjectChanger<T extends O> = (draft: T) => void;
-
-/**
- * Patch
- * Standard:
- *    RFC-6902 JSON patch standard
- *    https://tools.ietf.org/html/rfc6902
- */
-export type StatePatch = IStatePatchAdd | IStatePatchRemove | IStatePatchReplace;
-
-export type IStatePatchAdd = { op: 'add'; path: string; value?: any };
-export type IStatePatchRemove = { op: 'remove'; path: string };
-export type IStatePatchReplace = { op: 'replace'; path: string; value?: any };
-
-/**
- * NB: Part of the standard (RFC-6902) but not used.
- */
-// export type IStatePatchMove = { op: 'move'; path: string; from: string };
-// export type IStatePatchCopy = { op: 'copy'; path: string; from: string };
-// export type IStatePatchTest = { op: 'test'; path: string; value?: any };
 
 /**
  * [Events]

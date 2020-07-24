@@ -173,7 +173,7 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
 /**
  * [Helpers]
  */
-const toPatch = (input: Patch): t.StatePatch => ({ ...input, path: input.path.join('/') });
+const toPatch = (input: Patch): t.PatchOperation => ({ ...input, path: input.path.join('/') });
 const toPatches = (input: Patch[]) => input.map((p) => toPatch(p));
 const toPatchSet = (forward: Patch[], backward: Patch[]): t.StateObjectPatches => {
   return {
