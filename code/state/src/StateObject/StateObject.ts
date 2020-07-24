@@ -192,8 +192,24 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
 /**
  * [Helpers]
  */
-const toPatch = (input: Patch): t.PatchOperation => ({ ...input, path: input.path.join('/') });
-const toPatches = (input: Patch[]) => input.map((p) => toPatch(p));
+const toPatch = (input: Patch): t.PatchOperation => {
+  const hasForwardSlash = input.path.some((part) => {
+    return typeof part === 'string' ? part.includes('/') : false;
+  });
+
+  if (hasForwardSlash) {
+    const path = input.path
+      .map((part) => (typeof part === 'string' ? `'${part}'` : part))
+      .join(',');
+    const err = `Property names cannot contain the "/" character. op: '${input.op}' path: [${path}]`;
+    throw new Error(err);
+  }
+
+  return { ...input, path: input.path.join('/') };
+};
+const toPatches = (input: Patch[]) => {
+  return input.map((p) => toPatch(p));
+};
 const toPatchSet = (forward: Patch[], backward: Patch[]): t.StateObjectPatches => {
   return {
     prev: toPatches(backward),

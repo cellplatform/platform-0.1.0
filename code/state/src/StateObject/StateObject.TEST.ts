@@ -78,7 +78,7 @@ describe('StateObject', () => {
   });
 
   describe('change', () => {
-    it('update (function)', () => {
+    it('change: update (via function)', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo>(initial);
       expect(obj.state).to.equal(obj.original); // NB: Same instance (no change yet).
@@ -109,7 +109,7 @@ describe('StateObject', () => {
       expect(obj.original).to.eql(initial);
     });
 
-    it('replace (object)', () => {
+    it('change: replace (via {object} value)', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo>(initial);
       expect(obj.state).to.equal(obj.original); // NB: Same instance (no change yet).
@@ -131,7 +131,7 @@ describe('StateObject', () => {
       expect(obj.original).to.eql(initial);
     });
 
-    it('[change] method disconnected can be passed around (bound)', () => {
+    it('change: disconnected method function can be passed around (bound)', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo>(initial);
       const change = obj.change;
@@ -150,6 +150,15 @@ describe('StateObject', () => {
       expect(obj.state.count).to.eql(101);
 
       expect(obj.original).to.eql(initial);
+    });
+
+    it('throw: when property name contains "/"', () => {
+      // NB: "/" characters in property names confuse the [patch] path values.
+      //     Just don't use them!
+      type T = { 'foo/bar'?: number };
+      const obj = StateObject.create<T>({});
+      const fn = () => obj.change((draft) => (draft['foo/bar'] = 123));
+      expect(fn).to.throw(/Property names cannot contain the "\/" character/);
     });
   });
 
