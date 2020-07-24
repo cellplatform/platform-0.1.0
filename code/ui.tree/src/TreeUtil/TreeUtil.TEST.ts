@@ -378,7 +378,7 @@ describe('TreeUtil', () => {
     });
 
     it('does not override existing tree (default)', () => {
-      type T = t.ITreeViewNode<string, { foo: number }>;
+      type T = t.ITreeViewNode<{ foo: number }>;
       let root: T = { id: 'root' };
       root = TreeUtil.buildPath<T>(
         root,
@@ -408,7 +408,7 @@ describe('TreeUtil', () => {
     });
 
     it('does not force overrides existing tree', () => {
-      type T = t.ITreeViewNode<string, { foo: number }>;
+      type T = t.ITreeViewNode<{ foo: number }>;
       let root: T = { id: 'ROOT' };
       root = TreeUtil.buildPath<T>(root, (id) => ({ id, data: { foo: 1 } }), 'one/two').root;
 
