@@ -19,7 +19,7 @@ export class LogList extends React.PureComponent<ILogListProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
+    this.store.event.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
   }
 
   public componentWillUnmount() {

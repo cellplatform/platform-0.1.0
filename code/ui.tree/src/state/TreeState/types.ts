@@ -27,7 +27,7 @@ export type ITreeState<T extends N = N> = t.IDisposable & {
   readonly parent?: string; // ID of parent within tree.
   readonly original: T;
   readonly root: T;
-  readonly children: ITreeState[];
+  readonly children: readonly ITreeState[];
   readonly query: t.ITreeQuery<T>;
   readonly event: ITreeStateEvents<T>;
   add: TreeStateAdd;
@@ -76,7 +76,11 @@ export type TreeStateFindMatchArgs<T extends N = N> = {
   id: string;
   namespace: string;
   tree: ITreeState<T>;
-  stop():void;
+  stop(): void;
+};
+
+type ReadArray<T> = {
+  map: Array<T>['map'];
 };
 
 /**

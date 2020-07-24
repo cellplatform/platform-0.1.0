@@ -5,13 +5,13 @@ type O = Record<string, unknown>;
 /**
  * An identifiable "node" object.
  */
-export type INode<T extends string = string> = { id: T };
+export type INode = { id: string };
 export type NodeIdentifier<T extends INode = INode> = T | T['id'];
 
 /**
  * An "node" with [props] and [children]
  */
-export type ITreeNode<T extends string = string, P extends O = O> = INode<T> & {
+export type ITreeNode<T extends string = string, P extends O = O> = INode & {
   children?: ITreeNode<T>[];
   props?: P;
 };

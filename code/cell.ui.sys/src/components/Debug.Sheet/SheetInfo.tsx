@@ -19,7 +19,7 @@ export class SheetInfo extends React.PureComponent<ISheetInfoProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
+    this.store.event.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
 
     // TEMP 🐷
     this.tree.add({ root: 'foo' });
@@ -83,7 +83,7 @@ export class SheetInfo extends React.PureComponent<ISheetInfoProps> {
     };
     return (
       <div {...styles.base}>
-        <TreeView node={this.tree.root} background={'NONE'} />
+        <TreeView root={this.tree.root} background={'NONE'} />
       </div>
     );
   }

@@ -102,7 +102,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   }
 
   public get children() {
-    return [...this._children];
+    return this._children;
   }
 
   public get query(): t.ITreeQuery<T> {
@@ -237,7 +237,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
 
   private child(id: string | t.ITreeState<any>) {
     id = typeof id === 'string' ? id : id.root.id;
-    return this._children.find((item) => item.root.id === id);
+    return this.children.find((item) => item.root.id === id);
   }
 
   private childExists(input: string | t.ITreeState<any>) {
