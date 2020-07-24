@@ -425,8 +425,8 @@ describe.only('TreeState', () => {
 
       expect(res.op).to.eql('update');
       expect(res.cid.length).to.greaterThan(10);
-      expect(res.from.props).to.eql(undefined);
-      expect(res.to.props?.label).to.eql('Hello!');
+      expect(res.changed?.from.props).to.eql(undefined);
+      expect(res.changed?.to.props?.label).to.eql('Hello!');
 
       const { prev, next } = res.patches;
       expect(prev.length).to.eql(1);

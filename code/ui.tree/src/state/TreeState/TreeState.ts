@@ -128,7 +128,6 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     fn: t.TreeStateChanger<T>,
     options: { silent?: boolean; ensureNamespace?: boolean } = {},
   ) {
-    const from = this.root;
     const ctx = this.ctx;
 
     const res = this._store.change((draft) => {
@@ -137,11 +136,9 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
         helpers.ensureNamespace(draft, this.namespace);
       }
     });
-    const { patches } = res;
 
-    if (!options.silent) {
-      const to = this.root;
-      this.fire({ type: 'TreeState/changed', payload: { from, to, patches } });
+    if (!options.silent && res.changed) {
+      this.fire({ type: 'TreeState/changed', payload: res.changed });
     }
 
     return res;

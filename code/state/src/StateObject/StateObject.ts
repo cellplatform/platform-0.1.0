@@ -51,6 +51,12 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
     return obj as t.IStateObject<T, E>;
   }
 
+  public static dispatchable<T extends O, E extends t.Event<any> = any>(
+    obj: t.IStateObjectWrite<T, E>,
+  ): t.IStateObjectDispatchable<T, E> {
+    return obj as t.IStateObjectDispatchable<T, E>;
+  }
+
   /**
    * [Lifecycle]
    */
@@ -98,6 +104,10 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
     return this as t.IStateObject<T, E>;
   }
 
+  public get dispatchable() {
+    return this as t.IStateObjectDispatchable<T, E>;
+  }
+
   /**
    * [Methods]
    */
@@ -109,32 +119,41 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
     const { to, op, patches } = next(from, fn);
 
     // Fire BEFORE event.
-    const payload: t.IStateObjectChanging<T, E> = {
+    const changing: t.IStateObjectChanging<T, E> = {
       op,
       cid,
       from,
       to,
       patches,
       cancelled: false,
-      cancel: () => (payload.cancelled = true),
+      cancel: () => (changing.cancelled = true),
       action: type,
     };
-    this.fire({ type: 'StateObject/changing', payload });
+    this.fire({ type: 'StateObject/changing', payload: changing });
 
-    // Update state.
-    const cancelled = payload.cancelled;
+    // Update state and alert listeners.
+    const cancelled = changing.cancelled ? changing : undefined;
     if (cancelled) {
-      this.fire({ type: 'StateObject/cancelled', payload });
-    } else {
+      this.fire({ type: 'StateObject/cancelled', payload: cancelled });
+    }
+
+    const changed: t.IStateObjectChanged<T, E> | undefined = cancelled
+      ? undefined
+      : { op, cid, from, to, patches, action: type };
+
+    if (changed) {
       this._state = to;
-      this.fire({
-        type: 'StateObject/changed',
-        payload: { op, cid, from, to, patches, action: type },
-      });
+      this.fire({ type: 'StateObject/changed', payload: changed });
     }
 
     // Finish up.
-    return { op, cid, from, to, cancelled, patches };
+    return {
+      op,
+      cid,
+      changed,
+      cancelled,
+      patches,
+    };
   };
 
   public dispatch = (event: E) => {

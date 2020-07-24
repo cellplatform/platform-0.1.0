@@ -97,14 +97,14 @@ describe('StateObject', () => {
       expect(obj.state).to.eql({ count: 4, message: 'hello' });
       expect(obj.state).to.not.equal(obj.original); // NB: Different (changed) instance.
 
-      expect(res1.from).to.eql({ count: 1 });
-      expect(res1.to).to.eql({ count: 3, message: 'hello' });
-      expect(res1.cancelled).to.eql(false);
+      expect(res1.changed?.from).to.eql({ count: 1 });
+      expect(res1.changed?.to).to.eql({ count: 3, message: 'hello' });
+      expect(res1.cancelled).to.eql(undefined);
 
       expect(res2.op).to.eql('update');
-      expect(res2.from).to.eql({ count: 3, message: 'hello' });
-      expect(res2.to).to.eql({ count: 4, message: 'hello' });
-      expect(res2.cancelled).to.eql(false);
+      expect(res2.changed?.from).to.eql({ count: 3, message: 'hello' });
+      expect(res2.changed?.to).to.eql({ count: 4, message: 'hello' });
+      expect(res2.cancelled).to.eql(undefined);
 
       expect(obj.original).to.eql(initial);
     });
@@ -117,15 +117,15 @@ describe('StateObject', () => {
       const res1 = obj.change({ count: 2, message: 'hello' });
 
       expect(res1.op).to.eql('replace');
-      expect(res1.from).to.eql({ count: 1 });
-      expect(res1.to).to.eql({ count: 2, message: 'hello' });
+      expect(res1.changed?.from).to.eql({ count: 1 });
+      expect(res1.changed?.to).to.eql({ count: 2, message: 'hello' });
       expect(obj.state).to.eql({ count: 2, message: 'hello' });
 
       const res2 = obj.change({ count: 3 });
 
       expect(res2.op).to.eql('replace');
-      expect(res2.from).to.eql({ count: 2, message: 'hello' });
-      expect(res2.to).to.eql({ count: 3 });
+      expect(res2.changed?.from).to.eql({ count: 2, message: 'hello' });
+      expect(res2.changed?.to).to.eql({ count: 3 });
       expect(obj.state).to.eql({ count: 3 });
 
       expect(obj.original).to.eql(initial);
@@ -175,8 +175,8 @@ describe('StateObject', () => {
       });
 
       expect(res.op).to.eql('update');
-      expect(res.to.foo.count).to.eql(2);
-      expect(res.to.foo.message).to.eql('hello');
+      expect(res.changed?.to.foo.count).to.eql(2);
+      expect(res.changed?.to.foo.message).to.eql('hello');
 
       const { next, prev } = res.patches;
       expect(next.length).to.eql(3);

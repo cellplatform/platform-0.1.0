@@ -7,8 +7,12 @@ type O = Record<string, unknown>;
 export type StateObject = {
   create<T extends O, E extends Event<any> = any>(initial: T): IStateObjectWrite<T, E>;
   readonly<T extends O, E extends Event<any> = any>(
-    obj: IStateObjectWrite<T, E> | IStateObject<T, E>,
-  ): IStateObject<T, E>;
+    obj: IStateObjectWrite<T, E> | IStateObjectDispatchable<T, E> | IStateObjectRead<T, E>,
+  ): IStateObjectRead<T, E>;
+
+  dispatchable<T extends O, E extends Event<any> = any>(
+    obj: IStateObjectWrite<T, E> | IStateObjectDispatchable<T, E>,
+  ): IStateObjectDispatchable<T, E>;
 };
 
 /**
@@ -19,9 +23,15 @@ export type IStateObjectRead<T extends O, E extends Event<any> = any> = {
   readonly original: T;
   readonly state: T;
   readonly event: IStateObjectEvents<T, E>;
+  changed(action: E['type'], takeUntil$?: Observable<any>): Observable<IStateObjectChanged<T, E>>;
+};
+
+export type IStateObjectDispatchable<T extends O, E extends Event<any> = any> = IStateObjectRead<
+  T,
+  E
+> & {
   dispatch(event: E): void;
   dispatched(action: E['type'], takeUntil$?: Observable<any>): Observable<E['payload']>;
-  changed(action: E['type'], takeUntil$?: Observable<any>): Observable<IStateObjectChanged<T, E>>;
 };
 
 export type IStateObjectEvents<T extends O, E extends Event<any> = any> = {
@@ -35,21 +45,24 @@ export type IStateObjectEvents<T extends O, E extends Event<any> = any> = {
 /**
  * Writeable.
  */
-export type IStateObjectWrite<T extends O, E extends Event<any> = any> = IStateObject<T, E> &
+export type IStateObjectWrite<T extends O, E extends Event<any> = any> = IStateObjectDispatchable<
+  T,
+  E
+> &
   IDisposable & {
     readonly readonly: IStateObject<T, E>;
+    readonly dispatchable: IStateObjectDispatchable<T, E>;
     change(input: StateObjectChanger<T> | T, action?: E['type']): IStateObjectChangeResponse<T>;
   };
 
 export type StateObjectChangeOperation = 'update' | 'replace';
 
-export type IStateObjectChangeResponse<T extends O> = {
+export type IStateObjectChangeResponse<T extends O, E extends Event<any> = any> = {
   op: StateObjectChangeOperation;
   cid: string; // "change-id"
-  cancelled: boolean;
-  from: T;
-  to: T;
   patches: StateObjectPatches;
+  changed?: IStateObjectChanged<T, E>;
+  cancelled?: IStateObjectCancelled<T>;
 };
 export type StateObjectPatches = { prev: PatchOperation[]; next: PatchOperation[] };
 export type StateObjectChanger<T extends O> = (draft: T) => void;

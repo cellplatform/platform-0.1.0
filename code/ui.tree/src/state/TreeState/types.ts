@@ -98,11 +98,7 @@ export type ITreeStateChangedEvent<T extends N = N> = {
   type: 'TreeState/changed';
   payload: ITreeStateChanged<T>;
 };
-export type ITreeStateChanged<T extends N = N> = {
-  from: T;
-  to: T;
-  patches: t.StateObjectPatches;
-};
+export type ITreeStateChanged<T extends N = N> = t.IStateObjectChanged<T>;
 
 /**
  * Fired when a child [TreeState] is added.
