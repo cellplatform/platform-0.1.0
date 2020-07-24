@@ -48,7 +48,6 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
       silent: true,
       ensureNamespace: false, // NB: No need to do it in the function (we are doing it here).
     });
-    this.original = { ...this.root };
 
     // Dispose if given observable fires.
     if (args.dispose$) {
@@ -62,7 +61,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
       this._store.dispose();
       this.fire({
         type: 'TreeState/disposed',
-        payload: { original: this.original, final: this.root },
+        payload: { final: this.root },
       });
       this._dispose$.next();
       this._dispose$.complete();
@@ -78,7 +77,6 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
 
   public readonly namespace: string;
   public readonly parent: string | undefined;
-  public readonly original: T;
 
   private _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());

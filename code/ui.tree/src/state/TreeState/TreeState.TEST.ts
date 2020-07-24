@@ -70,7 +70,6 @@ describe.only('TreeState', () => {
 
       const event = fired[0] as t.ITreeStateDisposedEvent;
       expect(event.type).to.eql('TreeState/disposed');
-      expect(event.payload.original).to.eql(state.original);
       expect(event.payload.final).to.eql(state.root);
     });
 
@@ -438,14 +437,6 @@ describe.only('TreeState', () => {
         path: 'props',
         value: { label: 'Hello!', icon: 'face' },
       });
-    });
-
-    it('retains original', () => {
-      const state = create();
-      const original = { ...state.root };
-      state.change((root, ctx) => helpers.props<P>(root, (p) => (p.label = 'foo')));
-      expect(state.original).to.eql(original);
-      expect(state.root).to.not.eql(original);
     });
 
     it('child array: insert (updates id namespaces)', () => {

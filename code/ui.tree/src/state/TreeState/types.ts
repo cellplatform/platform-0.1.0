@@ -25,7 +25,6 @@ export type ITreeState<T extends N = N> = t.IDisposable & {
   readonly namespace: string;
   readonly id: string;
   readonly parent?: string; // ID of parent within tree.
-  readonly original: T;
   readonly root: T;
   readonly children: readonly ITreeState[];
   readonly query: t.ITreeQuery<T>;
@@ -136,4 +135,4 @@ export type ITreeStateDisposedEvent<T extends N = N> = {
   type: 'TreeState/disposed';
   payload: ITreeStateDisposed<T>;
 };
-export type ITreeStateDisposed<T extends N = N> = { original: T; final: T };
+export type ITreeStateDisposed<T extends N = N> = { final: T };
