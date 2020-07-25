@@ -1,8 +1,8 @@
 import { t } from '../../common';
 export * from '../../common/types';
 
-export type IDebugLogRead = t.IStateObject<IDebugLogState>;
-export type IDebugLogWrite = t.IStateObjectWrite<IDebugLogState>;
+export type IDebugLogRead = t.IStateObjectReadOnly<IDebugLogState>;
+export type IDebugLogWrite = t.IStateObjectWritable<IDebugLogState>;
 
 export type IDebugLogState = {
   total: number;

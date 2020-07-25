@@ -26,8 +26,21 @@ export class TreeNavController implements t.ITreeNavController {
   }
   private constructor(args: ITreeNavControllerArgs) {
     this._treeState = args.state;
-    this._navState = StateObject.create<t.ITreeNavControllerProps>({ current: undefined });
+    this._navState = StateObject.create<t.ITreeViewNavigationProps>({ current: undefined });
     const event = this.event;
+
+    /**
+     * TODO 🐷
+     */
+    type M = { root: t.ITreeViewNode; nav: t.ITreeViewNavigationProps };
+    const m = StateObject.merge<M>({ root: this._treeState.store, nav: this._navState });
+
+    m.changed$.subscribe((e) => {
+      console.group('🌳 merge change');
+      console.log('e', e);
+      console.log('m.state', m.state);
+      console.groupEnd();
+    });
 
     if (args.dispose$) {
       args.dispose$.subscribe(() => this.dispose());
@@ -79,7 +92,7 @@ export class TreeNavController implements t.ITreeNavController {
   /**
    * [Fields]
    */
-  private readonly _navState: t.IStateObjectWrite<t.ITreeNavControllerProps>;
+  private readonly _navState: t.IStateObjectWritable<t.ITreeViewNavigationProps>;
   private readonly _treeState: t.ITreeState;
 
   private _dispose$ = new Subject<void>();

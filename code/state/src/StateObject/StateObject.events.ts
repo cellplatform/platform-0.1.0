@@ -13,6 +13,7 @@ export function create<T extends O, E extends t.Event<any>>(
   const $ = event$.pipe(takeUntil(dispose$));
   return {
     $,
+    dispose$,
     changing$: $.pipe(
       filter((e) => e.type === 'StateObject/changing'),
       map((e) => e.payload as t.IStateObjectChanging<T>),

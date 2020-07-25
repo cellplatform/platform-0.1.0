@@ -1,55 +1,71 @@
 import { Observable } from 'rxjs';
-import { Event, IDisposable } from '@platform/types';
 import * as t from '../common/types';
 
 type O = Record<string, unknown>;
+type Event = t.Event<any>;
+type MergeObject = { [key: string]: Record<string, unknown> };
 
+/**
+ * Static entry point.
+ */
 export type StateObject = {
-  create<T extends O, E extends Event<any> = any>(initial: T): IStateObjectWrite<T, E>;
-  readonly<T extends O, E extends Event<any> = any>(
-    obj: IStateObjectWrite<T, E> | IStateObjectDispatchable<T, E> | IStateObjectRead<T, E>,
-  ): IStateObjectRead<T, E>;
+  create<T extends O, E extends Event = any>(initial: T): IStateObjectWritable<T, E>;
 
-  dispatchable<T extends O, E extends Event<any> = any>(
-    obj: IStateObjectWrite<T, E> | IStateObjectDispatchable<T, E>,
+  readonly<T extends O, E extends Event = any>(
+    obj: IStateObjectWritable<T, E> | IStateObjectDispatchable<T, E> | IStateObjectReadOnly<T, E>,
+  ): IStateObjectReadOnly<T, E>;
+
+  dispatchable<T extends O, E extends Event = any>(
+    obj: IStateObjectWritable<T, E> | IStateObjectDispatchable<T, E>,
   ): IStateObjectDispatchable<T, E>;
+
+  merge<T extends MergeObject, E extends Event = any>(
+    initial: T | Record<keyof T, t.IStateObject<T[keyof T]>>,
+    dispose$?: Observable<any>,
+  ): StateObjectMerger<T, E>;
 };
 
 /**
  * Read-only.
  */
-export type IStateObject<T extends O, E extends Event<any> = any> = IStateObjectRead<T, E>;
-export type IStateObjectRead<T extends O, E extends Event<any> = any> = {
+export type IStateObject<T extends O, E extends Event = any> = IStateObjectReadOnly<T, E>;
+export type IStateObjectReadOnly<T extends O, E extends Event = any> = {
   readonly original: T;
   readonly state: T;
   readonly event: IStateObjectEvents<T, E>;
-  changed(action: E['type'], takeUntil$?: Observable<any>): Observable<IStateObjectChanged<T, E>>;
+  readonly isDisposed: boolean;
 };
 
-export type IStateObjectDispatchable<T extends O, E extends Event<any> = any> = IStateObjectRead<
+export type IStateObjectDispatchable<T extends O, E extends Event = any> = IStateObjectReadOnly<
   T,
   E
 > & {
   dispatch(event: E): void;
-  dispatched(action: E['type'], takeUntil$?: Observable<any>): Observable<E['payload']>;
+  action(takeUntil$?: Observable<any>): IStateObjectAction<T, E>;
 };
 
-export type IStateObjectEvents<T extends O, E extends Event<any> = any> = {
+export type IStateObjectEvents<T extends O, E extends Event = any> = {
   readonly $: Observable<StateObjectEvent>;
   readonly changing$: Observable<IStateObjectChanging<T>>;
   readonly changed$: Observable<IStateObjectChanged<T, E>>;
   readonly cancelled$: Observable<IStateObjectCancelled<T>>;
   readonly dispatch$: Observable<E>;
+  readonly dispose$: Observable<any>;
+};
+
+export type IStateObjectAction<T extends O, E extends Event> = {
+  dispatched(action: E['type']): Observable<E['payload']>;
+  changed(action: E['type']): Observable<IStateObjectChanged<T, E>>;
 };
 
 /**
  * Writeable.
  */
-export type IStateObjectWrite<T extends O, E extends Event<any> = any> = IStateObjectDispatchable<
+export type IStateObjectWritable<T extends O, E extends Event = any> = IStateObjectDispatchable<
   T,
   E
 > &
-  IDisposable & {
+  t.IDisposable & {
     readonly readonly: IStateObject<T, E>;
     readonly dispatchable: IStateObjectDispatchable<T, E>;
     change(input: StateObjectChanger<T> | T, action?: E['type']): IStateObjectChangeResponse<T>;
@@ -57,7 +73,7 @@ export type IStateObjectWrite<T extends O, E extends Event<any> = any> = IStateO
 
 export type StateObjectChangeOperation = 'update' | 'replace';
 
-export type IStateObjectChangeResponse<T extends O, E extends Event<any> = any> = {
+export type IStateObjectChangeResponse<T extends O, E extends Event = any> = {
   op: StateObjectChangeOperation;
   cid: string; // "change-id"
   patches: t.PatchSet;
@@ -65,6 +81,25 @@ export type IStateObjectChangeResponse<T extends O, E extends Event<any> = any> 
   cancelled?: IStateObjectCancelled<T>;
 };
 export type StateObjectChanger<T extends O> = (draft: T) => void;
+
+/**
+ * Merge
+ */
+
+export type StateObjectMerge<T extends MergeObject, E extends Event = any> = (
+  initial: T,
+) => StateObjectMerger<T, E>;
+
+export type StateObjectMerger<T extends MergeObject, E extends Event = any> = {
+  readonly store: t.IStateObjectReadOnly<T, E>;
+  readonly state: T;
+  readonly changed$: Observable<t.IStateObjectChanged>;
+  add<K extends keyof T>(
+    key: K,
+    subject: t.IStateObject<T[K]> | Observable<t.IStateObjectChanged>,
+  ): StateObjectMerger<T, E>;
+  dispose(): void;
+};
 
 /**
  * [Events]
@@ -80,11 +115,11 @@ export type StateObjectEvent =
  * Fires before the state object is updated
  * (after a `change` method completes).
  */
-export type IStateObjectChangingEvent<T extends O = any, E extends Event<any> = any> = {
+export type IStateObjectChangingEvent<T extends O = any, E extends Event = any> = {
   type: 'StateObject/changing';
   payload: IStateObjectChanging<T, E>;
 };
-export type IStateObjectChanging<T extends O = any, E extends Event<any> = any> = {
+export type IStateObjectChanging<T extends O = any, E extends Event = any> = {
   op: StateObjectChangeOperation;
   cid: string; // "change-id"
   from: T;
@@ -99,11 +134,11 @@ export type IStateObjectChanging<T extends O = any, E extends Event<any> = any> 
  * Fires AFTER the state object has been updated
  * (ie the "changing" event did not cancel the change).
  */
-export type IStateObjectChangedEvent<T extends O = any, E extends Event<any> = any> = {
+export type IStateObjectChangedEvent<T extends O = any, E extends Event = any> = {
   type: 'StateObject/changed';
   payload: IStateObjectChanged<T, E>;
 };
-export type IStateObjectChanged<T extends O = any, E extends Event<any> = any> = {
+export type IStateObjectChanged<T extends O = any, E extends Event = any> = {
   op: StateObjectChangeOperation;
   cid: string; // "change-id"
   from: T;
@@ -124,11 +159,11 @@ export type IStateObjectCancelled<T extends O = any> = IStateObjectChanging<T>;
 /**
  * Fires when an event is fired via the `action` method (aka "dispatch").
  */
-export type IStateObjectDispatchEvent<E extends Event<any> = any> = {
+export type IStateObjectDispatchEvent<E extends Event = any> = {
   type: 'StateObject/dispatch';
   payload: IStateObjectDispatch<E>;
 };
-export type IStateObjectDispatch<E extends Event<any> = any> = { event: E };
+export type IStateObjectDispatch<E extends Event = any> = { event: E };
 
 /**
  * Fires when the state object is disposed of.

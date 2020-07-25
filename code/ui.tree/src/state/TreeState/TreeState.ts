@@ -71,7 +71,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   /**
    * [Fields]
    */
-  private _store: t.IStateObjectWrite<T>;
+  private _store: t.IStateObjectWritable<T>;
   private _children: t.ITreeState<any>[] = [];
   private _kind = 'TreeState'; // NB: Used by [isInstance] helper.
 
@@ -89,6 +89,10 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
    */
   public get isDisposed() {
     return this._dispose$.isStopped;
+  }
+
+  public get store() {
+    return this._store;
   }
 
   public get root() {

@@ -1,4 +1,4 @@
-export { Event, FireEvent } from '@platform/types';
+export { Event, FireEvent, IDisposable } from '@platform/types';
 export * from '../types';
 
 export type Object = Record<string, unknown>;

@@ -25,6 +25,7 @@ export type ITreeState<T extends N = N> = t.IDisposable & {
   readonly namespace: string;
   readonly id: string;
   readonly parent?: string; // ID of parent within tree.
+  readonly store: t.IStateObjectReadOnly<T>;
   readonly root: T;
   readonly children: readonly ITreeState[];
   readonly query: t.ITreeQuery<T>;

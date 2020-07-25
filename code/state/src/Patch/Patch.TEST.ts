@@ -1,8 +1,6 @@
 import { Patch } from '.';
 import { expect, t } from '../test';
 
-type A = t.ArrayPatch;
-
 describe('Patch', () => {
   describe('toSet', () => {
     it('empty', () => {

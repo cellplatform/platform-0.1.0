@@ -6,6 +6,8 @@ import { Patch } from '../Patch';
 
 import { t } from '../common';
 import * as events from './StateObject.events';
+import * as merge from './StateObject.merge';
+import * as action from './StateObject.action';
 
 if (typeof setAutoFreeze === 'function') {
   setAutoFreeze(false);
@@ -26,13 +28,14 @@ type O = Record<string, unknown>;
  * To pass an read-only version of the [StateObject] around an application
  * use the plain [IStateObject] interface which does not expose the `change` method.
  */
-export class StateObject<T extends O, E extends t.Event<any>> implements t.IStateObjectWrite<T, E> {
+export class StateObject<T extends O, E extends t.Event<any>>
+  implements t.IStateObjectWritable<T, E> {
   /**
    * Create a new [StateObject] instance.
    */
   public static create<T extends O, E extends t.Event<any> = any>(
     initial: T,
-  ): t.IStateObjectWrite<T, E> {
+  ): t.IStateObjectWritable<T, E> {
     return new StateObject<T, E>({ initial });
   }
 
@@ -47,16 +50,22 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
    * 
    */
   public static readonly<T extends O, E extends t.Event<any> = any>(
-    obj: t.IStateObjectWrite<T, E>,
+    obj: t.IStateObjectWritable<T, E>,
   ): t.IStateObject<T, E> {
     return obj as t.IStateObject<T, E>;
   }
 
   public static dispatchable<T extends O, E extends t.Event<any> = any>(
-    obj: t.IStateObjectWrite<T, E>,
+    obj: t.IStateObjectWritable<T, E>,
   ): t.IStateObjectDispatchable<T, E> {
     return obj as t.IStateObjectDispatchable<T, E>;
   }
+
+  /**
+   * Merge multiple state-objects together to produce a single
+   * synchronized state.
+   */
+  public static merge = merge.create(StateObject.create);
 
   /**
    * [Lifecycle]
@@ -172,14 +181,8 @@ export class StateObject<T extends O, E extends t.Event<any>> implements t.IStat
     );
   };
 
-  public changed = (action: E['payload'], takeUntil$?: Observable<any>) => {
-    const ob$ = !takeUntil$ ? this.event.$ : this.event.$.pipe(takeUntil(takeUntil$));
-    return ob$.pipe(
-      filter((e) => e.type === 'StateObject/changed'),
-      map((e) => e.payload as t.IStateObjectChanged<T, E>),
-      filter((e) => e.action === action),
-      share(),
-    );
+  public action = (takeUntil$?: Observable<any>) => {
+    return action.create<T, E>(this.event, takeUntil$);
   };
 
   /**

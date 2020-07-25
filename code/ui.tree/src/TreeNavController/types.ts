@@ -6,17 +6,17 @@ import * as t from '../common/types';
  * Keeps a state object in sync with navigation changes.
  */
 export type ITreeNavController = t.IDisposable &
-  ITreeNavControllerProps & {
+  ITreeViewNavigationProps & {
     event: t.ITreeNavControllerEvents;
     root: t.ITreeViewNode;
-    change(args: ITreeNavControllerProps): ITreeNavController;
-    patch(args: Partial<ITreeNavControllerProps>): ITreeNavController;
+    change(args: ITreeViewNavigationProps): ITreeNavController;
+    patch(args: Partial<ITreeViewNavigationProps>): ITreeNavController;
   };
 
 /**
  * Nav properties
  */
-export type ITreeNavControllerProps = {
+export type ITreeViewNavigationProps = {
   current?: string; // Node ID.
   selected?: string; // Node ID.
 };
