@@ -2,7 +2,7 @@ import { TreeState } from '.';
 import { expect, t } from '../../test';
 import { helpers } from './helpers';
 import { Subject } from '../../common/types';
-import { NodeIdentity } from '../../NodeIdentity';
+import { NodeIdentity } from '../NodeIdentity';
 import { TreeQuery } from '../../TreeQuery';
 
 type N = t.ITreeNode;

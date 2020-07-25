@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 
 import { t } from '../../common';
-import { NodeIdentity } from '../../NodeIdentity';
+import { NodeIdentity } from '../NodeIdentity';
 import { TreeQuery } from '../../TreeQuery';
 import { helpers } from './helpers';
 import * as events from './TreeState.events';

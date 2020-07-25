@@ -1,5 +1,5 @@
 import { t } from '../../common';
-import { NodeIdentity } from '../../NodeIdentity';
+import { NodeIdentity } from '../NodeIdentity';
 import { TreeUtil } from '../../TreeUtil';
 
 type Node = t.INode;
