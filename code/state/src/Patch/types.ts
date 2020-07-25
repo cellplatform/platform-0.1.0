@@ -3,7 +3,7 @@ import * as t from '../common/types';
 type A = t.ArrayPatch;
 
 export type Patch = {
-  toSet(forward?: A | A[], backward?: A | A[]): t.PatchSet;
+  toPatchSet(forward?: A | A[], backward?: A | A[]): t.PatchSet;
 };
 
 /**

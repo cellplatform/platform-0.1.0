@@ -5,7 +5,7 @@ describe('Patch', () => {
   describe('toSet', () => {
     it('empty', () => {
       const test = (forward?: any, backward?: any) => {
-        const res = Patch.toSet(forward, backward);
+        const res = Patch.toPatchSet(forward, backward);
         expect(res.prev).to.eql([]);
         expect(res.next).to.eql([]);
       };
@@ -29,8 +29,8 @@ describe('Patch', () => {
         expect(res.prev[0].path).to.eql('foo/bar');
       };
 
-      test(Patch.toSet([p1], [p2]));
-      test(Patch.toSet(p1, p2));
+      test(Patch.toPatchSet([p1], [p2]));
+      test(Patch.toPatchSet(p1, p2));
     });
 
     it('throw: when property name contains "/"', () => {
@@ -39,8 +39,8 @@ describe('Patch', () => {
       const patch: t.ArrayPatch = { op: 'add', path: ['foo', 'bar/baz'], value: 123 };
       const err = /Property names cannot contain the "\/" character/;
 
-      expect(() => Patch.toSet(patch)).to.throw(err);
-      expect(() => Patch.toSet([], patch)).to.throw(err);
+      expect(() => Patch.toPatchSet(patch)).to.throw(err);
+      expect(() => Patch.toPatchSet([], patch)).to.throw(err);
     });
   });
 });

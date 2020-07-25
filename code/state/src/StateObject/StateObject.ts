@@ -203,12 +203,12 @@ const next = <T extends O>(from: T, fn: t.StateObjectChanger<T> | T) => {
       fn(draft as T);
       return undefined; // NB: No return value (to prevent replacement).
     });
-    const patches = Patch.toSet(forward, backward);
+    const patches = Patch.toPatchSet(forward, backward);
     const op: t.StateObjectChangeOperation = 'update';
     return { op, to, patches };
   } else {
     const [to, forward, backward] = produceWithPatches<T>(from, () => fn);
-    const patches = Patch.toSet(forward, backward);
+    const patches = Patch.toPatchSet(forward, backward);
     const op: t.StateObjectChangeOperation = 'replace';
     return { op, to, patches };
   }

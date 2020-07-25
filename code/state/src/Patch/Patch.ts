@@ -4,7 +4,7 @@ export class Patch {
   /**
    * Applies a set of patches to an object.
    */
-  public static toSet: t.Patch['toSet'] = (forward, backward) => {
+  public static toPatchSet: t.Patch['toPatchSet'] = (forward, backward) => {
     return {
       prev: backward ? toPatches(backward) : [],
       next: forward ? toPatches(forward) : [],
