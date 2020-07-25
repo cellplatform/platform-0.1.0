@@ -7,7 +7,7 @@ import { TreeView } from '../..';
 import { t } from '../../common';
 import { Icons } from './Icons';
 import { TestStateStore } from './Test.StateStore';
-import { TreeNavController } from '../../TreeNavController';
+import { TreeNavController } from '../../state';
 
 type Node = t.ITreeViewNode;
 
@@ -42,7 +42,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
   private store = TreeView.State.create({ root: ROOT, dispose$: this.unmounted$ });
   private nav = TreeNavController.create({
-    state: this.store,
+    tree: this.store,
     treeview$: this.treeview$,
     dispose$: this.unmounted$,
   });
@@ -56,13 +56,16 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       .pipe(takeUntil(this.unmounted$))
       .subscribe((e) => this.state$.next({ root: e.to }));
 
-    this.nav.event.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
+    // this.nav.store.event.changed$
+
+    this.nav.store.event.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
       this.forceUpdate();
       console.log('-------------------------------------------');
+      console.log('          e:', e);
       console.log('nav/changed: ');
-      console.log('    current: ', e.current);
-      console.log('   selected: ', e.selected);
-      console.log('       root: ', e.root);
+      console.log('    current: ', this.nav.current);
+      console.log('   selected: ', this.nav.selected);
+      console.log('       root: ', this.nav.root);
     });
 
     // console.log('this.nav', this.nav);
@@ -106,7 +109,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <TreeView
-          root={this.store.root}
+          root={this.nav.root}
           current={this.nav.current}
           event$={this.treeview$}
           renderIcon={this.renderIcon}

@@ -17,7 +17,7 @@ export function create(factory: t.StateObject['create']) {
   return <T extends { [key: string]: O }, E extends Event = any>(
     initial: T | Record<keyof T, t.IStateObject<T[keyof T]>>,
     dispose$?: Observable<any>,
-  ): t.StateObjectMerger<T, E> => {
+  ): t.StateMerger<T, E> => {
     // Wrangle initial arg into a simple {inital} object.
     type S = t.IStateObject<T[keyof T]>;
     const initialStateObjects: { key: string; obj: S }[] = [];
@@ -40,7 +40,7 @@ export function create(factory: t.StateObject['create']) {
 
     const change = (key: keyof T, to: any) => store.change((draft) => (draft[key] = to));
 
-    const api: t.StateObjectMerger<T, E> = {
+    const api: t.StateMerger<T, E> = {
       store,
 
       get state() {
