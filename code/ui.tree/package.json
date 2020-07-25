@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.tree",
   "description": "Hierarchical tree view.",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -17,7 +17,7 @@
   "dependencies": {
     "@platform/css": "0.4.7",
     "@platform/react": "0.4.40",
-    "@platform/state": "0.6.6",
+    "@platform/state": "0.6.7",
     "@platform/types": "0.5.0",
     "@platform/ui.icon": "0.0.159",
     "@platform/ui.panel": "0.2.8",
