@@ -10,7 +10,7 @@ export type TreeViewNavigationCtrlArgs = {
   dispose$?: Observable<any>;
 };
 
-type Store = {
+type Stores = {
   nav: t.IStateObjectWritable<t.ITreeViewNavigationSelection>;
   tree: t.ITreeState;
   merged: t.StateMerger<t.ITreeViewNavigationState>;
@@ -30,7 +30,7 @@ export class TreeViewNavigationCtrl implements t.ITreeViewNavigationCtrl {
     const { tree, treeview$ } = args;
     const nav = StateObject.create<t.ITreeViewNavigationSelection>({ current: tree.id });
     const merged = StateObject.merge<t.ITreeViewNavigationState>({ root: tree.store, nav });
-    this._store = { tree, nav, merged };
+    this.stores = { tree, nav, merged };
     behavior.listen({ ctrl: this, treeview$ });
     if (args.dispose$) {
       args.dispose$.subscribe(() => this.dispose());
@@ -44,17 +44,21 @@ export class TreeViewNavigationCtrl implements t.ITreeViewNavigationCtrl {
   /**
    * [Fields]
    */
-  private readonly _store: Store;
+  private readonly stores: Stores;
 
   /**
    * [Properties]
    */
   private get merged() {
-    return this._store.merged;
+    return this.stores.merged;
+  }
+
+  public get store() {
+    return this.merged.store;
   }
 
   private get state() {
-    return this.merged.state;
+    return this.store.state;
   }
 
   public get isDisposed() {
@@ -67,10 +71,6 @@ export class TreeViewNavigationCtrl implements t.ITreeViewNavigationCtrl {
 
   public get changed$() {
     return this.merged.changed$;
-  }
-
-  public get store() {
-    return this.merged.store;
   }
 
   public get root() {
@@ -90,7 +90,7 @@ export class TreeViewNavigationCtrl implements t.ITreeViewNavigationCtrl {
    */
   public change = (args: { current?: string; selected?: string }) => {
     const { current, selected } = args;
-    this._store.nav.change((draft) => {
+    this.stores.nav.change((draft) => {
       draft.current = current;
       draft.selected = selected;
     });
@@ -100,7 +100,6 @@ export class TreeViewNavigationCtrl implements t.ITreeViewNavigationCtrl {
   public patch = (args: { current?: string; selected?: string }) => {
     const current = defaultValue(args.current, this.current);
     const selected = defaultValue(args.selected, this.selected);
-    this.change({ current, selected });
-    return this;
+    return this.change({ current, selected });
   };
 }
