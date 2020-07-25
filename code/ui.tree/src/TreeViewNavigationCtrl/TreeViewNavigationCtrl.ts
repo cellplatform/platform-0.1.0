@@ -1,10 +1,10 @@
 import { StateObject } from '@platform/state';
 import { Observable } from 'rxjs';
 
-import { defaultValue, t } from '../../common';
-import * as treeEvents from './behavior.treeEvents';
+import { defaultValue, t } from '../common';
+import * as behavior from './behavior';
 
-export type ITreeNavControllerArgs = {
+export type TreeViewNavigationCtrlArgs = {
   treeview$: Observable<t.TreeViewEvent>;
   tree: t.ITreeState;
   dispose$?: Observable<any>;
@@ -19,19 +19,19 @@ type Store = {
 /**
  * Keeps a state object in sync with navigation changes.
  */
-export class TreeViewNavigationState implements t.ITreeViewNavigationCtrl {
+export class TreeViewNavigationCtrl implements t.ITreeViewNavigationCtrl {
   /**
    * [Lifecycle]
    */
-  public static create(args: ITreeNavControllerArgs): t.ITreeViewNavigationCtrl {
-    return new TreeViewNavigationState(args);
+  public static create(args: TreeViewNavigationCtrlArgs): t.ITreeViewNavigationCtrl {
+    return new TreeViewNavigationCtrl(args);
   }
-  private constructor(args: ITreeNavControllerArgs) {
+  private constructor(args: TreeViewNavigationCtrlArgs) {
     const { tree, treeview$ } = args;
     const nav = StateObject.create<t.ITreeViewNavigationSelection>({ current: tree.id });
     const merged = StateObject.merge<t.ITreeViewNavigationState>({ root: tree.store, nav });
     this._store = { tree, nav, merged };
-    treeEvents.listen({ ctrl: this, treeview$ });
+    behavior.listen({ ctrl: this, treeview$ });
     if (args.dispose$) {
       args.dispose$.subscribe(() => this.dispose());
     }

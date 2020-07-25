@@ -1,13 +1,13 @@
 import { Subject } from 'rxjs';
 
-import { TreeNavController } from '.';
-import { TreeState } from '..';
-import { expect, t } from '../../test';
+import { TreeViewNavigationCtrl } from '.';
+import { TreeState } from '../state';
+import { expect, t } from '../test';
 
 const create = () => {
   const treeview$ = new Subject<t.TreeViewEvent>();
   const tree = TreeState.create();
-  return TreeNavController.create({ treeview$, tree });
+  return TreeViewNavigationCtrl.create({ treeview$, tree });
 };
 
 describe('TreeNavController', () => {
@@ -24,7 +24,7 @@ describe('TreeNavController', () => {
       expect(ctrl.current).to.eql(ctrl.root.id);
       expect(ctrl.selected).to.eql(undefined);
 
-      const changed: t.ITreeViewNavigationCtrlChanged[] = [];
+      const changed: t.ITreeViewNavigationChanged[] = [];
       ctrl.changed$.subscribe((e) => changed.push(e));
 
       ctrl.change({ current: 'foo' }).change({ selected: 'bar' });

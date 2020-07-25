@@ -7,7 +7,7 @@ import { TreeView } from '../..';
 import { t } from '../../common';
 import { Icons } from './Icons';
 import { TestStateStore } from './Test.StateStore';
-import { TreeNavController } from '../../state';
+import { TreeViewNavigationCtrl } from '../../TreeViewNavigationCtrl';
 
 type Node = t.ITreeViewNode;
 
@@ -41,7 +41,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private treeview$ = new Subject<t.TreeViewEvent>();
 
   private store = TreeView.State.create({ root: ROOT, dispose$: this.unmounted$ });
-  private nav = TreeNavController.create({
+  private nav = TreeViewNavigationCtrl.create({
     tree: this.store,
     treeview$: this.treeview$,
     dispose$: this.unmounted$,

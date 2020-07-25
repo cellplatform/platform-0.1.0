@@ -1,13 +1,13 @@
-import { Observable } from 'rxjs';
+import { Observable as behavior } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-import { t } from '../../common';
-import { TreeEvents } from '../../TreeEvents';
-import { TreeQuery } from '../../TreeQuery';
+import { t } from '../common';
+import { TreeEvents } from '../TreeEvents';
+import { TreeQuery } from '../TreeQuery';
 
 export function listen(args: {
   ctrl: t.ITreeViewNavigationCtrl;
-  treeview$: Observable<t.TreeViewEvent>;
+  treeview$: behavior<t.TreeViewEvent>;
 }) {
   const { ctrl } = args;
   const events = TreeEvents.create(args.treeview$, ctrl.dispose$);

@@ -1,11 +1,11 @@
 import { Observable } from 'rxjs';
-import * as t from '../../common/types';
+import * as t from '../common/types';
 
 /**
  * Keeps a state object in sync with navigation changes.
  */
 export type ITreeViewNavigationCtrl = t.IDisposable & {
-  readonly changed$: Observable<ITreeViewNavigationCtrlChanged>;
+  readonly changed$: Observable<ITreeViewNavigationChanged>;
   readonly store: t.IStateObject<t.ITreeViewNavigationState>;
   readonly root: t.ITreeViewNode;
   readonly current?: string; // Node ID.
@@ -14,7 +14,7 @@ export type ITreeViewNavigationCtrl = t.IDisposable & {
   patch(args: Partial<ITreeViewNavigationSelection>): ITreeViewNavigationCtrl;
 };
 
-export type ITreeViewNavigationCtrlChanged = t.IStateObjectChanged<ITreeViewNavigationState>;
+export type ITreeViewNavigationChanged = t.IStateObjectChanged<ITreeViewNavigationState>;
 
 /**
  * Navigation properties
