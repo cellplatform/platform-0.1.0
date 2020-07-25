@@ -2,7 +2,7 @@ import { TreeState } from '.';
 import { expect, t } from '../../test';
 import { helpers } from './helpers';
 import { Subject } from '../../common/types';
-import { TreeNodeIdentity } from '../../TreeNodeIdentity';
+import { NodeIdentity } from '../../NodeIdentity';
 import { TreeQuery } from '../../TreeQuery';
 
 type N = t.ITreeNode;
@@ -123,7 +123,7 @@ describe.only('TreeState', () => {
     });
 
     it('identity', () => {
-      expect(TreeState.identity).to.equal(TreeNodeIdentity);
+      expect(TreeState.identity).to.equal(NodeIdentity);
     });
   });
 

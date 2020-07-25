@@ -1,10 +1,10 @@
 import { t } from '../../common';
-import { TreeNodeIdentity } from '../../TreeNodeIdentity';
+import { NodeIdentity } from '../../NodeIdentity';
 import { TreeUtil } from '../../TreeUtil';
 
 type Node = t.INode;
 type TreeNode = t.ITreeNode;
-const id = TreeNodeIdentity;
+const id = NodeIdentity;
 
 export const helpers = {
   id,

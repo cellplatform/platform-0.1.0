@@ -4,13 +4,13 @@ import { Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 
 import { t } from '../../common';
-import { TreeNodeIdentity } from '../../TreeNodeIdentity';
+import { NodeIdentity } from '../../NodeIdentity';
 import { TreeQuery } from '../../TreeQuery';
 import { helpers } from './helpers';
 import * as events from './TreeState.events';
 
 type N = t.ITreeNode;
-const Identity = TreeNodeIdentity;
+const Identity = NodeIdentity;
 
 /**
  * State machine for programming a tree, or partial leaf within a tree.
