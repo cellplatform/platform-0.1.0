@@ -121,6 +121,30 @@ describe('StateObject', () => {
       expect(obj.original).to.eql(initial);
     });
 
+    it.only('no change (does not fire events)', () => {
+      const initial = { count: 0 };
+      const obj = StateObject.create<IFoo>(initial);
+
+      let changing = 0;
+      let changed = 0;
+      obj.event.changing$.subscribe((e) => changing++);
+      obj.event.changed$.subscribe((e) => changed++);
+
+      const test = (changer: t.StateObjectChanger<IFoo>) => {
+        const res = obj.change(changer);
+
+        expect(changing).to.eql(0);
+        expect(changed).to.eql(0);
+
+        expect(obj.state).to.eql(initial);
+        expect(res.changed).to.eql(undefined);
+        expect(res.cancelled).to.eql(undefined);
+      };
+
+      test((draft) => undefined); //         NB: Touched nothing.
+      test((draft) => (draft.count = 0)); // NB: Set to same value.
+    });
+
     it('change: replace (via {object} value)', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo>(initial);

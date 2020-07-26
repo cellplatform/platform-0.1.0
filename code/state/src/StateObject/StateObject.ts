@@ -127,6 +127,13 @@ export class StateObject<T extends O, E extends t.Event<any>>
 
     const from = this.state;
     const { to, op, patches } = next(from, fn);
+    if (Patch.isEmpty(patches)) {
+      return {
+        op,
+        cid,
+        patches,
+      };
+    }
 
     // Fire BEFORE event.
     const changing: t.IStateObjectChanging<T, E> = {
@@ -139,6 +146,7 @@ export class StateObject<T extends O, E extends t.Event<any>>
       cancel: () => (changing.cancelled = true),
       action: type,
     };
+
     this.fire({ type: 'StateObject/changing', payload: changing });
 
     // Update state and alert listeners.
@@ -188,9 +196,7 @@ export class StateObject<T extends O, E extends t.Event<any>>
   /**
    * [Internal]
    */
-  private fire(e: t.StateObjectEvent) {
-    this._event$.next(e);
-  }
+  private fire = (e: t.StateObjectEvent) => this._event$.next(e);
 }
 
 /**
