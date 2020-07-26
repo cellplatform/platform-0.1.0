@@ -1,13 +1,14 @@
 import { color, css, CssValue } from '@platform/css';
+import { Button } from '@platform/ui.button';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { TreeView } from '../..';
 import { t } from '../../common';
+import { TreeViewNavigation } from '../../TreeViewNavigation';
 import { Icons } from './Icons';
-import { TestStateStore } from './Test.StateStore';
-import { TreeViewNavigationCtrl } from '../../TreeViewNavigationCtrl';
+import { TreeViewState } from '../../components.dev/TreeViewState';
 
 type Node = t.ITreeViewNode;
 
@@ -41,10 +42,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private treeview$ = new Subject<t.TreeViewEvent>();
 
   private store = TreeView.State.create({ root: ROOT, dispose$: this.unmounted$ });
-  private nav = TreeViewNavigationCtrl.create({
+  private nav = TreeViewNavigation.create({
     tree: this.store,
     treeview$: this.treeview$,
     dispose$: this.unmounted$,
+    strategy: TreeViewNavigation.strategies.default,
   });
 
   /**
@@ -56,19 +58,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       .pipe(takeUntil(this.unmounted$))
       .subscribe((e) => this.state$.next({ root: e.to }));
 
-    // this.nav.store.event.changed$
-
-    this.nav.store.event.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
+    this.nav.redraw$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
       this.forceUpdate();
-      console.log('-------------------------------------------');
-      console.log('          e:', e);
-      console.log('nav/changed: ');
-      console.log('    current: ', this.nav.current);
-      console.log('   selected: ', this.nav.selected);
-      console.log('       root: ', this.nav.root);
     });
-
-    // console.log('this.nav', this.nav);
   }
 
   public componentWillUnmount() {
@@ -124,19 +116,43 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const styles = {
       base: css({
         flex: 1,
+        position: 'relative',
         boxSizing: 'border-box',
+        backgroundColor: color.format(1),
+        Flex: 'vertical-stretch-stretch',
+      }),
+      toolbar: css({
+        position: 'relative',
+        height: 34,
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
+        Flex: 'horizontal-center-start',
+        fontSize: 14,
+        PaddingX: 15,
+      }),
+      body: css({
+        position: 'relative',
+        flex: 1,
+      }),
+      scroll: css({
+        Absolute: 0,
         padding: 30,
         paddingTop: 80,
         PaddingX: 50,
         Scroll: true,
         paddingBottom: 100,
-        backgroundColor: color.format(1),
       }),
     };
 
     return (
       <div {...styles.base}>
-        <TestStateStore store={this.store} />
+        <div {...styles.toolbar}>
+          <Button onClick={this.onRedrawClick}>Redraw</Button>
+        </div>
+        <div {...styles.body}>
+          <div {...styles.scroll}>
+            <TreeViewState store={this.store} />
+          </div>
+        </div>
       </div>
     );
   }
@@ -145,4 +161,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Handlers]
    */
   private renderIcon: t.RenderTreeIcon = (e) => Icons[e.icon];
+
+  private onRedrawClick = () => {
+    this.forceUpdate();
+  };
 }

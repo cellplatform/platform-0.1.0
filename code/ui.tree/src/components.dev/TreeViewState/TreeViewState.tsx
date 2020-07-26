@@ -9,29 +9,26 @@ import { t, COLORS } from '../../common';
 import { TextInput } from '@platform/ui.text/lib/components/TextInput';
 import { TextInputChangeEventHandler } from '@platform/ui.text/lib/types';
 import { defaultValue } from '@platform/util.value';
-import { Icons } from './Icons';
+import { Icons } from '../Icons';
 
 const S = TreeView.State;
 const DEFAULT = {
   CONNECTOR_HEIGHT: 40,
 };
 
-export type ITestStateStoreProps = {
+export type ITreeViewStateProps = {
   store: t.ITreeViewState;
   isRoot?: boolean;
   connectorHeight?: number;
   style?: CssValue;
 };
-export type ITestStateStoreState = {
+export type ITreeViewStateState = {
   addLabel?: string;
 };
 
-export class TestStateStore extends React.PureComponent<
-  ITestStateStoreProps,
-  ITestStateStoreState
-> {
-  public state: ITestStateStoreState = {};
-  private state$ = new Subject<Partial<ITestStateStoreState>>();
+export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITreeViewStateState> {
+  public state: ITreeViewStateState = {};
+  private state$ = new Subject<Partial<ITreeViewStateState>>();
   private unmounted$ = new Subject();
 
   /**
@@ -261,7 +258,7 @@ export class TestStateStore extends React.PureComponent<
     const elList = this.store.children.map((store) => {
       return (
         <div key={store.namespace} {...styles.child}>
-          <TestStateStore store={store} isRoot={false} connectorHeight={connectorHeight} />
+          <TreeViewState store={store} isRoot={false} connectorHeight={connectorHeight} />
         </div>
       );
     });
@@ -275,12 +272,7 @@ export class TestStateStore extends React.PureComponent<
   private addChild = () => {
     const label = this.state.addLabel;
     const root = { id: 'node', props: { label } };
-    const child = this.store.add<t.ITreeViewNode>({ root });
-
-    child.change((draft, ctx) => {
-      // TreeViewState.props(draft, (p) => p.inline = {});
-    });
-
+    this.store.add<t.ITreeViewNode>({ root });
     this.state$.next({ addLabel: '' });
   };
 
