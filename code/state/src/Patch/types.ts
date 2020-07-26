@@ -4,6 +4,7 @@ type A = t.ArrayPatch;
 
 export type Patch = {
   toPatchSet(forward?: A | A[], backward?: A | A[]): t.PatchSet;
+  isEmpty(patches: t.PatchSet): boolean;
 };
 
 /**

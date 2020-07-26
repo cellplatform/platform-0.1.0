@@ -2,7 +2,7 @@ import { Patch } from '.';
 import { expect, t } from '../test';
 
 describe('Patch', () => {
-  describe('toSet', () => {
+  describe('toPatchSet', () => {
     it('empty', () => {
       const test = (forward?: any, backward?: any) => {
         const res = Patch.toPatchSet(forward, backward);
@@ -35,12 +35,34 @@ describe('Patch', () => {
 
     it('throw: when property name contains "/"', () => {
       // NB: "/" characters in property names confuse the [patch] path values.
-      //     Just don't use them!
+      //     Just don't do it!
       const patch: t.ArrayPatch = { op: 'add', path: ['foo', 'bar/baz'], value: 123 };
       const err = /Property names cannot contain the "\/" character/;
 
       expect(() => Patch.toPatchSet(patch)).to.throw(err);
       expect(() => Patch.toPatchSet([], patch)).to.throw(err);
+    });
+  });
+
+  describe('isEmpty', () => {
+    const test = (input: any, expected: boolean) => {
+      const res = Patch.isEmpty(input);
+      expect(res).to.eql(expected);
+    };
+
+    it('is empty', () => {
+      test(undefined, true);
+      test(null, true);
+      test({}, true);
+      test(' ', true);
+      test({ next: [], prev: [] }, true);
+    });
+
+    it('is not empty', () => {
+      const p1: t.ArrayPatch = { op: 'add', path: ['foo', 'bar'], value: 123 };
+      const p2: t.ArrayPatch = { op: 'remove', path: ['foo', 'bar'], value: 123 };
+      const patches = Patch.toPatchSet([p1, p2], [p2, p1]);
+      test(patches, false);
     });
   });
 });

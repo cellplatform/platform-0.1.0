@@ -10,6 +10,15 @@ export class Patch {
       next: forward ? toPatches(forward) : [],
     };
   };
+
+  public static isEmpty: t.Patch['isEmpty'] = (input) => {
+    if (input === null || typeof input !== 'object') {
+      return true;
+    } else {
+      const isEmptyArray = (input: any) => (Array.isArray(input) ? input.length === 0 : true);
+      return isEmptyArray(input.prev) && isEmptyArray(input.next);
+    }
+  };
 }
 
 /**
