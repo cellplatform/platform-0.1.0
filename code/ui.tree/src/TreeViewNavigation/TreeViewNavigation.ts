@@ -1,4 +1,4 @@
-import { StateObject } from '@platform/state';
+import { StateObject } from '@platform/state/lib/StateObject';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, share, takeUntil } from 'rxjs/operators';
 
