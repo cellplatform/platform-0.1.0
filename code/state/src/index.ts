@@ -1,5 +1,7 @@
 import { Store } from './Store';
-import { StateObject } from './StateObject';
+export { Store };
 
-export { Store, StateObject };
+import { StateObject } from './StateObject';
+export { StateObject };
+
 export * from './types';
