@@ -5,8 +5,8 @@ import { Subject } from '../../common/types';
 import { NodeIdentity } from '../NodeIdentity';
 import { TreeQuery } from '../../TreeQuery';
 
-type N = t.ITreeNode;
 type P = { label?: string; icon?: string };
+type N = t.ITreeNode<P>;
 
 const query = TreeQuery.create;
 const create = (args?: t.ITreeStateArgs) => TreeState.create<N>(args);
@@ -59,7 +59,7 @@ describe('TreeState', () => {
 
     it('dispose: event', () => {
       const state = create();
-      state.change((root, ctx) => helpers.props<P>(root, (p) => (p.label = 'foo')));
+      state.change((root, ctx) => ctx.props(root, (p) => (p.label = 'foo')));
 
       const fired: t.TreeStateEvent[] = [];
       state.event.$.subscribe((e) => fired.push(e));
@@ -257,7 +257,7 @@ describe('TreeState', () => {
       expect(firstChild(state2).id).to.eql(child.id);
 
       child.change((draft, ctx) => {
-        helpers.props<P>(draft).label = 'hello';
+        ctx.props(draft).label = 'hello';
       });
       expect(firstChild(state1).props).to.eql({ label: 'hello' });
       expect(firstChild(state2).props).to.eql({ label: 'hello' });
@@ -415,7 +415,7 @@ describe('TreeState', () => {
       const res = state.change((root, ctx) => {
         // NB: Convenience method.
         //     Ensures the props object and is assigned exists in a single line call.
-        helpers.props<P>(root, (p) => {
+        ctx.props(root, (p) => {
           p.label = 'Hello!';
           p.icon = 'face';
         });
@@ -469,16 +469,16 @@ describe('TreeState', () => {
       expect(children()[2].props).to.eql(undefined);
 
       // Make a change to child-1.
-      child1.change((root, ctx) => helpers.props<P>(root, (p) => (p.label = 'foo')));
+      child1.change((root, ctx) => ctx.props(root, (p) => (p.label = 'foo')));
       expect(children()[2].props).to.eql({ label: 'foo' });
 
       // Remove child-1, then update again (should not effect parent).
       child1.dispose();
-      child1.change((root, ctx) => helpers.props<P>(root, (p) => (p.label = 'bar')));
+      child1.change((root, ctx) => ctx.props(root, (p) => (p.label = 'bar')));
       expect(count()).to.eql(3);
 
       // Make a change to child-2.
-      child2.change((root, ctx) => helpers.props<P>(root, (p) => (p.label = 'hello')));
+      child2.change((root, ctx) => ctx.props(root, (p) => (p.label = 'hello')));
       expect(children()[2].props).to.eql({ label: 'hello' });
     });
 
@@ -491,10 +491,22 @@ describe('TreeState', () => {
       const grandchild = () => children(children(state.root)[0])[0];
 
       expect(grandchild().props).to.eql(undefined);
-
-      child2.change((draft, ctx) => (helpers.props<P>(draft).label = 'hello'));
-
+      child2.change((draft, ctx) => (ctx.props(draft).label = 'hello'));
       expect(grandchild().props).to.eql({ label: 'hello' });
+    });
+
+    it('updates from found/queried node', () => {
+      const state = create({ root });
+      expect(state.query.findById('child-1')?.props).to.eql(undefined);
+
+      state.change((root, ctx) => {
+        const child = ctx.findById('child-1');
+        if (child) {
+          ctx.props(child, (p) => (p.label = 'hello'));
+        }
+      });
+
+      expect(state.query.findById('child-1')?.props).to.eql({ label: 'hello' });
     });
 
     it('event: changed', () => {
@@ -505,7 +517,7 @@ describe('TreeState', () => {
         .subscribe((e) => fired.push(e));
 
       const res = state.change((root, ctx) => {
-        helpers.props<P>(root, (p) => (p.label = 'foo'));
+        ctx.props(root, (p) => (p.label = 'foo'));
       });
 
       expect(fired.length).to.eql(1);
@@ -524,13 +536,28 @@ describe('TreeState', () => {
         .subscribe((e) => fired.push(e));
 
       state.change(
-        (root) => {
-          helpers.props<P>(root, (p) => (p.label = 'foo'));
+        (root, ctx) => {
+          ctx.props(root, (p) => (p.label = 'foo'));
         },
         { silent: true },
       );
 
       expect(fired.length).to.eql(0);
+    });
+
+    it('event: does not fire when nothing changes', () => {
+      const state = create({ root });
+      const fired: t.ITreeStateChanged[] = [];
+      state.event
+        .payload<t.ITreeStateChangedEvent>('TreeState/changed')
+        .subscribe((e) => fired.push(e));
+
+      const res = state.change((root) => {
+        // NB: change nothing.
+      });
+
+      expect(fired.length).to.eql(0);
+      expect(res.changed).to.eql(undefined);
     });
   });
 

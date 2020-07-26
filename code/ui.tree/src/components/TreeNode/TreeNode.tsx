@@ -30,9 +30,9 @@ const NODE = constants.CLASS.NODE;
 export type TreeNodeTwisty = 'OPEN' | 'CLOSED' | null;
 
 export type ITreeNodeProps = {
+  node: t.ITreeViewNode;
   rootId?: string;
   children?: React.ReactNode;
-  node: t.ITreeViewNode;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
   iconRight?: IIcon | null;
@@ -453,13 +453,13 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     );
   }
 
-  private mouseHandlers = (target: t.TreeNodeMouseEvent['target']) => {
+  private mouseHandlers = (target: t.TreeViewMouse['target']) => {
     const { onMouse } = this.props;
     return TreeNode.mouseHandlers(() => this.props.node, target, onMouse);
   };
   public static mouseHandlers(
     getNode: () => t.ITreeViewNode,
-    target: t.TreeNodeMouseEvent['target'],
+    target: t.TreeViewMouse['target'],
     onMouse?: t.TreeNodeMouseEventHandler,
   ) {
     const handlers = mouse.handlers((e) => {

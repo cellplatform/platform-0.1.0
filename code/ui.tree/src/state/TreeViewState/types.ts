@@ -11,10 +11,10 @@ export type TreeViewState = {
   /**
    * Common [TreeState] helpers.
    */
-  id: t.TreeState['identity'];
+  identity: t.TreeState['identity'];
   isInstance: t.TreeState['isInstance'];
-  children: t.TreeState['children'];
-  props: t.TreeState['props'];
+  children<T extends Node>(of: T, fn?: (children: T[]) => void): T[];
+  props<P extends t.ITreeNodeProps>(of: Node, fn?: (props: P) => void): P;
 };
 
 /**

@@ -9,3 +9,8 @@ export const COLORS = constants.COLORS;
  */
 import { time, rx, defaultValue } from '@platform/util.value';
 export { time, rx, defaultValue };
+
+/**
+ * Util
+ */
+export const toId = (node?: t.NodeIdentifier) => (typeof node === 'object' ? node.id : node);

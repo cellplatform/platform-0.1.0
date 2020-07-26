@@ -1,4 +1,3 @@
-import * as t from '../../common/types';
 
 export type ITreeNodeBounds = {
   node: string;
@@ -8,16 +7,3 @@ export type ITreeNodeBounds = {
   left: number;
   top: number;
 };
-
-/**
- * [Events]
- */
-export type TreeNodeMouseTarget = 'NODE' | 'TWISTY' | 'DRILL_IN' | 'PARENT';
-export type TreeNodeMouseEvent<T extends t.ITreeViewNode = t.ITreeViewNode> = t.MouseEvent & {
-  target: TreeNodeMouseTarget;
-  id: T['id'];
-  node: T;
-  props: t.ITreeNodeProps;
-  children: T[];
-};
-export type TreeNodeMouseEventHandler = (e: TreeNodeMouseEvent) => void;

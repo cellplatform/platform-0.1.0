@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import * as t from '../common/types';
 
 type Button = t.MouseEvent['button'];
-type Target = t.TreeNodeMouseTarget;
+type Target = t.TreeViewMouseTarget;
 
 export type TreeEvents = {
   create<N extends t.ITreeViewNode = t.ITreeViewNode>(
@@ -17,7 +17,7 @@ export type ITreeEvents<N extends t.ITreeViewNode = any> = {
     button?: Button[];
     type?: t.MouseEventType;
     target?: Target;
-  }): Observable<t.TreeNodeMouseEvent<N>>;
+  }): Observable<t.TreeViewMouse<N>>;
   mouse(options?: {
     button?: Button[];
   }): {
@@ -31,9 +31,9 @@ export type ITreeEvents<N extends t.ITreeViewNode = any> = {
 };
 
 export type ITreeMouseEvents<N extends t.ITreeViewNode = any> = {
-  $: Observable<t.TreeNodeMouseEvent<N>>;
-  node$: Observable<t.TreeNodeMouseEvent<N>>;
-  drillIn$: Observable<t.TreeNodeMouseEvent<N>>;
-  parent$: Observable<t.TreeNodeMouseEvent<N>>;
-  twisty$: Observable<t.TreeNodeMouseEvent<N>>;
+  $: Observable<t.TreeViewMouse<N>>;
+  node$: Observable<t.TreeViewMouse<N>>;
+  drillIn$: Observable<t.TreeViewMouse<N>>;
+  parent$: Observable<t.TreeViewMouse<N>>;
+  twisty$: Observable<t.TreeViewMouse<N>>;
 };

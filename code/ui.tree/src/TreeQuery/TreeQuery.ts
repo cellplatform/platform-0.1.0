@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t, toId } from '../common';
 
 type Node = t.ITreeNode;
 
@@ -164,7 +164,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
         e.stop();
       }
     });
-    return result ? { ...result } : undefined;
+    return result ? result : undefined;
   };
 
   /**
@@ -261,9 +261,3 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
     return Boolean(node);
   };
 }
-
-/**
- * [Helpers]
- */
-
-const toId = (node: t.NodeIdentifier | undefined) => (typeof node === 'object' ? node.id : node);

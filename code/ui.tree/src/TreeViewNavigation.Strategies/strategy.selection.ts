@@ -1,0 +1,61 @@
+import { filter } from 'rxjs/operators';
+
+import { COLORS, t } from '../common';
+import { TreeEvents } from '../TreeEvents';
+import { TreeQuery } from '../TreeQuery';
+
+/**
+ * Strategy for changing selectino based on mouse input.
+ */
+export const selection: t.TreeViewNavigationStrategy = (ctrl) => {
+  const events = TreeEvents.create(ctrl.treeview$, ctrl.dispose$);
+
+  type N = t.NodeIdentifier;
+  const query = () => TreeQuery.create(ctrl.root);
+  const getParent = (node: N) =>
+    query().ancestor(node, (e) => e.level > 0 && !e.node.props?.inline);
+
+  const setCurrent = (id?: string) => (ctrl.current = id);
+
+  const setColor = (id?: string, color?: string | number) => {
+    ctrl.node(id, (node, ctx) => {
+      ctx.props(node, (props) => {
+        ctx.props(node, (props) => (props.colors = { ...props.colors, label: color }));
+      });
+    });
+  };
+
+  const setSelected = (id?: string) => {
+    setColor(ctrl.selected, undefined);
+    setColor(id, COLORS.BLUE);
+    ctrl.selected = id;
+  };
+
+  /**
+   * Left mouse button handlers.
+   */
+  const left = events.mouse({ button: ['LEFT'] });
+
+  left.down.node$.subscribe((e) => setSelected(e.id));
+
+  left.down.parent$.subscribe((e) => setCurrent(getParent(e.node)?.id));
+
+  left.down.drillIn$.subscribe((e) => setCurrent(e.id));
+
+  left.down.twisty$
+    .pipe(
+      filter((e) => Boolean((e.props || {}).inline)),
+      filter((e) => (e.children || []).length > 0),
+    )
+    .subscribe((e) => {
+      console.log('open twisty');
+      // patch({ current: e.id });
+    });
+
+  left.dblclick.node$
+    .pipe(
+      filter((e) => !(e.props || {}).inline),
+      filter((e) => (e.children || []).length > 0),
+    )
+    .subscribe((e) => setCurrent(e.id));
+};

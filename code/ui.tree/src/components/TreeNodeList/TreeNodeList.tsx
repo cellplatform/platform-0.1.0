@@ -9,8 +9,8 @@ import { Spinner } from '@platform/ui.spinner';
 import { ITreeNodeProps, TreeNode, TreeNodeTwisty } from '../TreeNode';
 
 export type ITreeNodeListProps = {
-  rootId?: string;
   node: t.ITreeViewNode<any>;
+  rootId?: string;
   depth?: number;
   defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
   renderPanel?: t.RenderTreePanel;

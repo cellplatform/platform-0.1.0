@@ -116,6 +116,8 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   private get ctx(): t.TreeStateChangerContext<T> {
     return {
       ...this.query,
+      props: TreeState.props,
+      children: TreeState.children,
     };
   }
 
