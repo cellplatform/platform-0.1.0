@@ -6,33 +6,25 @@ type N = t.ITreeViewNode;
 /**
  * [TreeView]
  */
-export type TreeViewEvent = ITreeViewMouseEvent | ITreeViewFocusEvent | ITreeViewRenderingNodeEvent;
-
-export type ITreeViewRenderingNodeEvent<T extends N = N> = {
-  type: 'TREEVIEW/rendering/node';
-  payload: ITreeViewRenderingNode<T>;
-};
-export type ITreeViewRenderingNode<T extends N = N> = {
-  node: T;
-};
+export type TreeViewEvent = ITreeViewMouseEvent | ITreeViewFocusEvent;
 
 /**
  * Mouse Event
  */
 export type ITreeViewMouseEvent<T extends N = N> = {
   type: 'TREEVIEW/mouse';
-  payload: t.TreeViewMouse<T>;
+  payload: t.ITreeViewMouse<T>;
 };
 
 export type TreeViewMouseTarget = 'NODE' | 'TWISTY' | 'DRILL_IN' | 'PARENT';
-export type TreeViewMouse<T extends N = N> = MouseEvent & {
+export type ITreeViewMouse<T extends N = N> = MouseEvent & {
   target: TreeViewMouseTarget;
   id: T['id'];
   node: T;
   props: t.ITreeNodeProps;
   children: T[];
 };
-export type TreeNodeMouseEventHandler = (e: TreeViewMouse) => void;
+export type TreeNodeMouseEventHandler = (e: ITreeViewMouse) => void;
 
 /**
  * Focus

@@ -1,6 +1,7 @@
+import { TreeQuery } from '@platform/state/lib/TreeQuery';
 import { filter } from 'rxjs/operators';
 
-import { COLORS, t, TreeQuery } from '../common';
+import { COLORS, t } from '../common';
 import { TreeEvents } from '../TreeEvents';
 
 /**

@@ -4,4 +4,4 @@ export { t };
 /**
  * Util
  */
-export const toId = (node?: t.NodeIdentifier) => (typeof node === 'object' ? node.id : node);
+export const toNodeId = (node?: t.NodeIdentifier) => (typeof node === 'object' ? node.id : node);

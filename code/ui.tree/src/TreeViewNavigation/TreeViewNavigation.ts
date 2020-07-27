@@ -1,8 +1,10 @@
 import { StateObject } from '@platform/state/lib/StateObject';
+import { TreeQuery } from '@platform/state/lib/TreeQuery';
+import { TreeState } from '@platform/state/lib/TreeState';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, share, takeUntil } from 'rxjs/operators';
 
-import { t, TreeState, TreeQuery } from '../common';
+import { t } from '../common';
 import { strategies } from '../TreeViewNavigation.Strategies';
 
 type Stores = {
@@ -104,7 +106,8 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
   }
 
   public get query() {
-    return TreeQuery.create({ root: this.root });
+    const root = this.root;
+    return TreeQuery.create({ root });
   }
 
   /**

@@ -70,7 +70,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
      */
     const treeMouse$ = tree$.pipe(
       filter((e) => e.type === 'TREEVIEW/mouse'),
-      map((e) => e.payload as t.TreeNodeMouseEvent),
+      map((e) => e.payload as t.ITreeViewMouse),
     );
     const treeClick$ = treeMouse$.pipe(
       filter((e) => e.type === 'CLICK'),

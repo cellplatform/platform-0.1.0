@@ -1,7 +1,8 @@
+import { TreeState } from '@platform/state/lib/TreeState';
 import { Subject } from 'rxjs';
 
 import { TreeViewNavigation } from '.';
-import { expect, t, TreeState } from '../test';
+import { expect, t } from '../test';
 
 type N = t.ITreeViewNode;
 
@@ -25,9 +26,9 @@ describe('TreeViewNavigation', () => {
       id: 'root',
       children: [{ id: 'child-1' }, { id: 'child-2' }],
     };
-    const query = create(root).query;
-    expect(query.findById('child-2')?.id).to.match(/child-2$/);
-    expect(query.findById('404')).to.eql(undefined);
+    const tree = create(root);
+    expect(tree.query.findById('child-2')?.id).to.match(/child-2$/);
+    expect(tree.query.findById('404')).to.eql(undefined);
   });
 
   it('change: current/selection', () => {

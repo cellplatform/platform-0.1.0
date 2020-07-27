@@ -26,6 +26,7 @@ import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
 import { TreeUtil } from '../../TreeUtil';
 import { TreeViewState } from '../../TreeViewState';
+import { TreeViewNavigation } from '../../TreeViewNavigation';
 
 const R = { equals };
 
@@ -40,7 +41,7 @@ export type ITreeViewProps = {
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
   event$?: Subject<t.TreeViewEvent>;
-  mouse$?: Subject<t.TreeViewMouse>;
+  mouse$?: Subject<t.ITreeViewMouse>;
   tabIndex?: number;
   slideDuration?: number;
   style?: CssValue;
@@ -63,6 +64,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   public static util = TreeUtil;
   public static query = TreeUtil.query;
   public static State = TreeViewState;
+  public static Navigation = TreeViewNavigation;
 
   public static events<N extends t.ITreeViewNode = t.ITreeViewNode>(
     event$: Observable<t.TreeViewEvent>,
@@ -89,7 +91,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   public readonly event$ = this._event$.pipe(takeUntil(this.unmounted$), share());
   public readonly mouse$ = this.event$.pipe(
     filter((e) => e.type === 'TREEVIEW/mouse'),
-    map((e) => e.payload as t.TreeViewMouse),
+    map((e) => e.payload as t.ITreeViewMouse),
     share(),
   );
 
@@ -350,7 +352,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    * [Handlers]
    */
 
-  private handleNodeMouse = (payload: t.TreeViewMouse) => {
+  private handleNodeMouse = (payload: t.ITreeViewMouse) => {
     const props = TreeUtil.props(payload);
     if (props.isEnabled === false) {
       switch (payload.type) {

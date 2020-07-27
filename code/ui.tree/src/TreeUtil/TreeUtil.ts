@@ -1,9 +1,10 @@
-import * as t from '../common/types';
-import { value as valueUtil, defaultValue } from '@platform/util.value';
-import { TreeEvents } from '../TreeEvents';
-import { TreeQuery } from '../common';
-
+import { TreeQuery } from '@platform/state/lib/TreeQuery';
+import { defaultValue, value as valueUtil } from '@platform/util.value';
 import { clone } from 'ramda';
+
+import * as t from '../common/types';
+import { TreeEvents } from '../TreeEvents';
+
 const R = { clone };
 
 type N = t.ITreeViewNode;

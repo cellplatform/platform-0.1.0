@@ -1,4 +1,3 @@
-
 export type ITreeNodeBounds = {
   node: string;
   target: 'ROOT' | 'CONTENT' | 'LABEL';

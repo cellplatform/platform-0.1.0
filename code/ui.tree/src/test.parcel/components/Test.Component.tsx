@@ -32,7 +32,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private event$ = new Subject<t.TreeViewEvent>();
-  private mouse$ = new Subject<t.TreeViewMouse>();
+  private mouse$ = new Subject<t.ITreeViewMouse>();
 
   /**
    * [Lifecycle]

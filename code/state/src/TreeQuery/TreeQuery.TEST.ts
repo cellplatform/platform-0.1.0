@@ -5,7 +5,7 @@ const create = TreeQuery.create;
 
 type N = t.ITreeNode;
 
-describe('TreeQuery', () => {
+describe.only('TreeQuery', () => {
   describe('create', () => {
     it('with root (default node type)', () => {
       const root: N = { id: 'root' };
@@ -400,18 +400,19 @@ describe('TreeQuery', () => {
     it('within namespace', () => {
       const root: N = {
         id: 'ns1:root',
-        children: [{ id: 'ns1:child-1' }, { id: 'ns2:child-2' }],
+        children: [{ id: 'ns1:child-1' }, { id: 'ns2:child-2' }, { id: 'foo' }],
       };
 
       const query = create({ root });
       const ns1 = create({ root, namespace: 'ns1' });
 
       // No namespace (anything can be found).
-      expect(query.findById('root')?.id).to.eql(undefined);
-      expect(query.findById('foo:root')).to.eql(undefined);
+      expect(query.findById('root')?.id).to.eql('ns1:root'); // No ns - match on id only
+      expect(query.findById('foo:root')).to.eql(undefined); // ns does not match
       expect(query.findById('ns1:root')?.id).to.eql('ns1:root');
       expect(query.findById('ns1:child-1')?.id).to.eql('ns1:child-1');
       expect(query.findById('ns2:child-2')?.id).to.eql('ns2:child-2');
+      expect(query.findById('foo')?.id).to.eql('foo');
 
       // Look within namespaced query.
       expect(ns1.findById('root')?.id).to.eql('ns1:root');
@@ -426,6 +427,7 @@ describe('TreeQuery', () => {
       // Not in namespace.
       expect(ns1.findById('child-2')).to.eql(undefined);
       expect(ns1.findById('ns2:child-2')).to.eql(undefined);
+      expect(ns1.findById('foo')).to.eql(undefined);
     });
   });
 

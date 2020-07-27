@@ -453,13 +453,13 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     );
   }
 
-  private mouseHandlers = (target: t.TreeViewMouse['target']) => {
+  private mouseHandlers = (target: t.ITreeViewMouse['target']) => {
     const { onMouse } = this.props;
     return TreeNode.mouseHandlers(() => this.props.node, target, onMouse);
   };
   public static mouseHandlers(
     getNode: () => t.ITreeViewNode,
-    target: t.TreeViewMouse['target'],
+    target: t.ITreeViewMouse['target'],
     onMouse?: t.TreeNodeMouseEventHandler,
   ) {
     const handlers = mouse.handlers((e) => {

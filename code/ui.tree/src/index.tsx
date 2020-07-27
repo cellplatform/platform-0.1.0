@@ -1,9 +1,3 @@
-import { TreeUtil } from './TreeUtil';
-export { TreeUtil };
-
-import { TreeEvents } from './TreeEvents';
-export { TreeEvents };
-
 import { Tree } from './Tree';
 export { Tree };
 

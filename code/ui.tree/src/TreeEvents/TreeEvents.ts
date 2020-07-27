@@ -57,7 +57,7 @@ export class TreeEvents<N extends t.ITreeViewNode = t.ITreeViewNode> implements 
     const buttons = toButtons(options.button);
     return this.event$.pipe(
       filter((e) => e.type === 'TREEVIEW/mouse'),
-      map((e) => e.payload as t.TreeViewMouse<N>),
+      map((e) => e.payload as t.ITreeViewMouse<N>),
       filter((e) => {
         if (buttons.includes('RIGHT') && type === 'CLICK' && e.type === 'UP') {
           // NB: The CLICK event for a right button does not fire from the DOM

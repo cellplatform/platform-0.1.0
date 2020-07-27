@@ -1,4 +1,4 @@
-import { t, toId } from '../common';
+import { t, toNodeId } from '../common';
 
 type Node = t.ITreeNode;
 
@@ -48,7 +48,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
    */
   public static hasChild(parent?: Node, child?: t.NodeIdentifier) {
     const nodes = TreeQuery.children(parent);
-    const id = toId(child);
+    const id = toNodeId(child);
     return nodes.some((node) => node.id === id);
   }
 
@@ -124,7 +124,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
   public walkUp: t.TreeWalkUp<T> = (startAt, visit) => {
     let level = -1;
     const inner: t.TreeWalkUp<T> = (startAt, visit) => {
-      const current = this.findById(toId(startAt));
+      const current = this.findById(toNodeId(startAt));
       level++;
       if (current) {
         let stop = false;
@@ -174,17 +174,12 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
     if (!id) {
       return undefined;
     } else {
-      const target = typeof id === 'string' ? id : id.id;
-      const parsed = Identity.parse(target);
+      const target = Identity.parse(typeof id === 'string' ? id : id.id);
       return this.find((e) => {
-        if (this.namespace) {
-          if (!parsed.namespace && e.id === parsed.id) {
-            return true;
-          } else {
-            return e.id === parsed.id && e.namespace === parsed.namespace;
-          }
+        if (!target.namespace && e.id === target.id) {
+          return true;
         } else {
-          return e.node.id === target;
+          return e.id === target.id && e.namespace === target.namespace;
         }
       });
     }
@@ -242,7 +237,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
     if (!node || !this.root) {
       return depth;
     } else {
-      const id = toId(node);
+      const id = toNodeId(node);
       this.walkDown((e) => {
         if (e.node.id === id) {
           depth = e.level;
