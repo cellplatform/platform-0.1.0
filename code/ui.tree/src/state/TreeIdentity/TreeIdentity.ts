@@ -40,7 +40,7 @@ export function id(input?: string) {
   return stripNamespace(input);
 }
 
-export const NodeIdentity: t.NodeIdentity = {
+export const TreeIdentity: t.TreeIdentity = {
   toString,
   format,
   parse,

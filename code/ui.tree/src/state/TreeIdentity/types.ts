@@ -1,4 +1,4 @@
-export type NodeIdentity = {
+export type TreeIdentity = {
   toString(input?: string): string;
   format(namespace?: string, id?: string): string;
   parse(input?: string): { namespace: string; id: string };

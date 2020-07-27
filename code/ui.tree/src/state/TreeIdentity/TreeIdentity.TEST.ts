@@ -1,8 +1,8 @@
-import { NodeIdentity } from '.';
+import { TreeIdentity } from '.';
 import { expect } from '../../test';
 
 type S = string | undefined;
-const Id = NodeIdentity;
+const Id = TreeIdentity;
 
 describe('TreeNodeId', () => {
   it('format( namespace, id )', () => {
