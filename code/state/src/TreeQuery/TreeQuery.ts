@@ -2,8 +2,7 @@ import { t, toNodeId } from '../common';
 
 type Node = t.ITreeNode;
 
-import { TreeIdentity } from '../TreeIdentity';
-const Identity = TreeIdentity;
+import { TreeIdentity as Identity } from '../TreeIdentity';
 
 /**
  * Interface for querying nodes within a tree.

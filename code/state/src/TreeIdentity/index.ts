@@ -1,2 +1,1 @@
-import { TreeIdentity } from './TreeIdentity';
-export { TreeIdentity };
+export * from './TreeIdentity';
