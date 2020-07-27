@@ -975,10 +975,10 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state@0.6.8":
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.8.tgz#81c319d9e3c8b2d99272a8414dcac1e3e0e5bb98"
-  integrity sha512-tDENFv0vHrQjy6qluuOQJPgUgK4yMaeM64DIA9KCdgk8vj9MnpfW//jNtH1Gaul4qdqV5abjmLXZOa3v5j9OSA==
+"@platform/state@0.6.9":
+  version "0.6.9"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.9.tgz#657f11645f5114fc4256d152a919aff1066704f3"
+  integrity sha512-/CbVu3kTIKPbCPsyYpDjEfGwG8WDHMuK8grYAGKuMzRlZl96O5tti2wiTKpcd1tSmUfWa+9z4P4mi8XXsKWkFA==
   dependencies:
     "@platform/types" "0.5.0"
     "@platform/util.value" "0.7.27"

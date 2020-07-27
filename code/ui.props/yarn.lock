@@ -1361,10 +1361,10 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state@0.6.8":
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.8.tgz#81c319d9e3c8b2d99272a8414dcac1e3e0e5bb98"
-  integrity sha512-tDENFv0vHrQjy6qluuOQJPgUgK4yMaeM64DIA9KCdgk8vj9MnpfW//jNtH1Gaul4qdqV5abjmLXZOa3v5j9OSA==
+"@platform/state@0.6.9":
+  version "0.6.9"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.9.tgz#657f11645f5114fc4256d152a919aff1066704f3"
+  integrity sha512-/CbVu3kTIKPbCPsyYpDjEfGwG8WDHMuK8grYAGKuMzRlZl96O5tti2wiTKpcd1tSmUfWa+9z4P4mi8XXsKWkFA==
   dependencies:
     "@platform/types" "0.5.0"
     "@platform/util.value" "0.7.27"
@@ -1548,14 +1548,14 @@
     "@platform/ui.text" "0.3.53"
     "@platform/util.animate" "0.0.85"
 
-"@platform/ui.tree@0.6.7":
-  version "0.6.7"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.6.7.tgz#d083356a1fe8b76cd4f5ef5ba70e10c2d30d2365"
-  integrity sha512-u8abVVXa1e/Aph6Z/yX012FMFUG8+5ysNqaaFwml7zWGw9yFtS99qvM71yIeMykJ+gpHAHEK4dolCzOPhoYQKA==
+"@platform/ui.tree@0.6.8":
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.6.8.tgz#f6cd5288339c67faad209e20dd4a36cc79592a99"
+  integrity sha512-h52rMQz5rkwn02xQ16mgEN7oluTREC6hCxUJnFW4hCEinlHgkH69SDiU1lIqrF9D3qxqxLvtn8+zU2OpKoim6Q==
   dependencies:
     "@platform/css" "0.4.7"
     "@platform/react" "0.4.40"
-    "@platform/state" "0.6.8"
+    "@platform/state" "0.6.9"
     "@platform/types" "0.5.0"
     "@platform/ui.icon" "0.0.159"
     "@platform/ui.panel" "0.2.8"
