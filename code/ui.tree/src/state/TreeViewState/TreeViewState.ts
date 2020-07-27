@@ -1,5 +1,4 @@
-import { t } from '../../common';
-import { TreeState } from '../TreeState';
+import { t, TreeState } from '../../common';
 
 type N = t.ITreeViewNode;
 

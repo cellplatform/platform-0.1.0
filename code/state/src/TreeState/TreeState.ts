@@ -1,11 +1,11 @@
-import { StateObject } from '@platform/state/lib/StateObject';
+import { StateObject } from '../StateObject';
 import { id as idUtil } from '@platform/util.value';
 import { Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 
-import { t } from '../../common';
+import { t } from '../common';
 import { TreeIdentity } from '../TreeIdentity';
-import { TreeQuery } from '../../TreeQuery';
+import { TreeQuery } from '../TreeQuery';
 import { helpers } from './helpers';
 import * as events from './TreeState.events';
 

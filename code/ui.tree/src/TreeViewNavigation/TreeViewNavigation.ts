@@ -2,9 +2,7 @@ import { StateObject } from '@platform/state/lib/StateObject';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, share, takeUntil } from 'rxjs/operators';
 
-import { t } from '../common';
-import { TreeState } from '../state';
-import { TreeQuery } from '../TreeQuery';
+import { t, TreeState, TreeQuery } from '../common';
 import { strategies } from '../TreeViewNavigation.Strategies';
 
 type Stores = {

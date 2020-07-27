@@ -121,7 +121,7 @@ describe('StateObject', () => {
       expect(obj.original).to.eql(initial);
     });
 
-    it.only('no change (does not fire events)', () => {
+    it('no change (does not fire events)', () => {
       const initial = { count: 0 };
       const obj = StateObject.create<IFoo>(initial);
 

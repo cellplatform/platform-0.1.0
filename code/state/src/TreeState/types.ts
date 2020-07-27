@@ -1,4 +1,6 @@
-import * as t from '../../common/types';
+import { Observable } from 'rxjs';
+
+import * as t from '../common/types';
 
 type Node = t.ITreeNode;
 type O = Record<string, unknown>;
@@ -14,7 +16,7 @@ export type TreeState = {
 export type ITreeStateArgs<T extends Node = Node> = {
   parent?: string; // ID of parent within tree.
   root?: T | string;
-  dispose$?: t.Observable<any>;
+  dispose$?: Observable<any>;
 };
 
 /**
@@ -38,9 +40,9 @@ export type ITreeState<T extends Node = Node> = t.IDisposable & {
 };
 
 export type ITreeStateEvents<T extends Node = Node> = {
-  readonly $: t.Observable<TreeStateEvent>;
-  readonly changed$: t.Observable<ITreeStateChanged<T>>;
-  payload<E extends t.TreeStateEvent>(type: E['type']): t.Observable<E['payload']>;
+  readonly $: Observable<TreeStateEvent>;
+  readonly changed$: Observable<ITreeStateChanged<T>>;
+  payload<E extends t.TreeStateEvent>(type: E['type']): Observable<E['payload']>;
 };
 
 /**

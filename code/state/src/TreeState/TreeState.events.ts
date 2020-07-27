@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-
-import { rx, t } from '../../common';
+import { rx } from '@platform/util.value';
+import { t } from '../common';
 
 type Node = t.ITreeNode;
 type Event = t.TreeStateEvent;

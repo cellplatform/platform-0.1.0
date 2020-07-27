@@ -1,8 +1,7 @@
 import { filter } from 'rxjs/operators';
 
-import { COLORS, t } from '../common';
+import { COLORS, t, TreeQuery } from '../common';
 import { TreeEvents } from '../TreeEvents';
-import { TreeQuery } from '../TreeQuery';
 
 /**
  * Strategy for changing selectino based on mouse input.

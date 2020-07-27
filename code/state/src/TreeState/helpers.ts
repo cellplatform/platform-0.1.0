@@ -1,6 +1,8 @@
-import { t } from '../../common';
+import { t } from '../common';
 import { TreeIdentity } from '../TreeIdentity';
-import { TreeUtil } from '../../TreeUtil';
+import { TreeQuery } from '../TreeQuery';
+
+const query = TreeQuery.create;
 
 type Node = t.INode;
 type TreeNode = t.ITreeNode;
@@ -43,7 +45,7 @@ export const helpers = {
    * the specified namespace.
    */
   ensureNamespace(root: TreeNode, namespace: string) {
-    TreeUtil.query<TreeNode>(root).walkDown((e) => {
+    query<TreeNode>(root).walkDown((e) => {
       if (!id.hasNamespace(e.node.id)) {
         e.node.id = id.format(namespace, e.node.id);
       } else {

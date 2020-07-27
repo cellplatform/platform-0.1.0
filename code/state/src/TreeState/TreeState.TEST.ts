@@ -1,9 +1,10 @@
+import { Subject } from 'rxjs';
+
 import { TreeState } from '.';
-import { expect, t } from '../../test';
-import { helpers } from './helpers';
-import { Subject } from '../../common/types';
+import { expect, t } from '../test';
 import { TreeIdentity } from '../TreeIdentity';
-import { TreeQuery } from '../../TreeQuery';
+import { TreeQuery } from '../TreeQuery';
+import { helpers } from './helpers';
 
 type P = { label?: string; icon?: string };
 type N = t.ITreeNode<P>;

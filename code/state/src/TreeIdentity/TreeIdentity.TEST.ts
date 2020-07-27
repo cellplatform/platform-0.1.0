@@ -1,5 +1,5 @@
 import { TreeIdentity } from '.';
-import { expect } from '../../test';
+import { expect } from '../test';
 
 type S = string | undefined;
 const Id = TreeIdentity;

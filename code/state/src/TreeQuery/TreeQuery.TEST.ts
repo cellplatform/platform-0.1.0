@@ -452,7 +452,7 @@ describe('TreeQuery', () => {
   });
 
   describe('ancestor', () => {
-    const tree: t.ITreeViewNode = {
+    const tree: t.ITreeNode = {
       id: 'root',
       children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-3' }] }],
     };

@@ -1,7 +1,7 @@
-import * as t from '../types';
+import * as t from '../common/types';
 import { value as valueUtil, defaultValue } from '@platform/util.value';
 import { TreeEvents } from '../TreeEvents';
-import { TreeQuery } from '../TreeQuery';
+import { TreeQuery } from '../common';
 
 import { clone } from 'ramda';
 const R = { clone };

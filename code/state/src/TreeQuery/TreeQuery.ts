@@ -2,7 +2,7 @@ import { t, toId } from '../common';
 
 type Node = t.ITreeNode;
 
-import { TreeIdentity } from '../state/TreeIdentity';
+import { TreeIdentity } from '../TreeIdentity';
 const Identity = TreeIdentity;
 
 /**

@@ -1,8 +1,7 @@
 import { Subject } from 'rxjs';
 
 import { TreeViewNavigation } from '.';
-import { TreeState } from '../state';
-import { expect, t } from '../test';
+import { expect, t, TreeState } from '../test';
 
 type N = t.ITreeViewNode;
 
