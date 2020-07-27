@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import * as t from '../common/types';
-import { TreeViewState } from '../state/TreeViewState/types';
+import { TreeViewState } from '../TreeViewState/types';
 
 export type TreeViewNavigation = {
   create(args: ITreeViewNavigationArgs): ITreeViewNavigation;

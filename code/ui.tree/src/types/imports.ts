@@ -4,4 +4,4 @@ export * from '../components/TreeNode/types';
 export * from '../TreeEvents/types';
 export * from '../TreeViewNavigation/types';
 export * from '../TreeViewNavigation.Strategies/types';
-export * from '../state/TreeViewState/types';
+export * from '../TreeViewState/types';

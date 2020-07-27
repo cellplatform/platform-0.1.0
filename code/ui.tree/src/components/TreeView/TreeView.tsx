@@ -25,7 +25,7 @@ import * as themes from '../../themes';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
 import { TreeUtil } from '../../TreeUtil';
-import { TreeViewState } from '../../state/TreeViewState';
+import { TreeViewState } from '../../TreeViewState';
 
 const R = { equals };
 
