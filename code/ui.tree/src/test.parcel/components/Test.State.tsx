@@ -9,29 +9,28 @@ import { t } from '../../common';
 import { TreeViewNavigation } from '../../TreeViewNavigation';
 import { Icons } from './Icons';
 import { TreeViewState } from '../../components.dev/TreeViewState';
-import { clone } from 'ramda';
 
 type Node = t.ITreeViewNode;
 
 const SAMPLES = {
   DEFAULT: {
     id: 'root',
-    props: { label: 'Root', header: { isVisible: false } },
+    props: { treeview: { label: 'Root', header: { isVisible: false } } },
     children: [
       {
         id: 'Child-1',
-        props: { label: 'Child-1', marginTop: 45 },
+        props: { treeview: { label: 'Child-1', marginTop: 45 } },
         children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
       },
     ],
   } as Node,
   TWISTY: {
     id: 'root',
-    props: { label: 'Root', header: { isVisible: false } },
+    props: { treeview: { label: 'Root', header: { isVisible: false } } },
     children: [
       {
         id: 'Child-1',
-        props: { label: 'Child-1', marginTop: 45, inline: {} },
+        props: { treeview: { label: 'Child-1', marginTop: 45, inline: {} } },
         children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
       },
     ],
@@ -41,8 +40,9 @@ const SAMPLES = {
 Object.keys(SAMPLES).forEach((key) => {
   const node = SAMPLES[key];
   TreeView.query(node).walkDown((e) => {
-    e.node.props = e.node.props || {};
-    e.node.props.label = e.node.props.label || e.id;
+    TreeView.util.props(e.node, (props) => {
+      props.label = props.label || e.id;
+    });
   });
 });
 

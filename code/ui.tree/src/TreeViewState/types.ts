@@ -1,6 +1,7 @@
 import * as t from '../common/types';
 
 type Node = t.ITreeViewNode;
+type P = t.ITreeViewNodeProps;
 
 /**
  * A version of the [TreeState] configured for the base <TreeView> node type.
@@ -14,7 +15,7 @@ export type TreeViewState = {
   identity: t.TreeState['identity'];
   isInstance: t.TreeState['isInstance'];
   children<T extends Node>(of: T, fn?: (children: T[]) => void): T[];
-  props<P extends t.ITreeViewNodeProps>(of: Node, fn?: (props: P) => void): P;
+  props(of: Node, fn?: (props: P) => void): P;
 };
 
 /**

@@ -110,7 +110,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       .subscribe((e) => {
         const parent = TreeView.query(this.state.root).ancestor(
           e.node,
-          (e) => e.level > 0 && !e.node.props?.inline,
+          (e) => e.level > 0 && !e.node.props?.treeview?.inline,
         );
         return this.state$.next({ current: parent ? parent.id : undefined });
       });

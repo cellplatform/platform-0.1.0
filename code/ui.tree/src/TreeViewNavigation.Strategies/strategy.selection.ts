@@ -13,7 +13,7 @@ export const selection: t.TreeViewNavigationStrategy = (ctrl) => {
   type N = t.NodeIdentifier;
   const query = () => TreeQuery.create(ctrl.root);
   const getParent = (node: N) =>
-    query().ancestor(node, (e) => e.level > 0 && !e.node.props?.inline);
+    query().ancestor(node, (e) => e.level > 0 && !e.node.props?.treeview?.inline);
 
   const setCurrent = (id?: string) => (ctrl.current = id);
 

@@ -5,9 +5,8 @@ import { clone } from 'ramda';
 import * as t from '../common/types';
 import { TreeEvents } from '../TreeEvents';
 
-const R = { clone };
-
 type N = t.ITreeViewNode;
+type P = t.ITreeViewNodeProps;
 
 /**
  * Helpers for traversing and operating on the tree data-structure.
@@ -112,7 +111,7 @@ export class TreeUtil {
     }
 
     // Walk the tree looking for the item to place.
-    root = R.clone(root);
+    root = clone(root);
     TreeUtil.query<T>(root).walkDown((e) => {
       if (target && e.node.id === target.id) {
         if (e.parent && e.index > -1) {
@@ -242,15 +241,21 @@ export class TreeUtil {
     if (!node) {
       throw new Error(`A tree-node with the id '${id}' was not found.`);
     }
-    node = { ...node, props: { ...node.props, ...props } };
+    const treeview = { ...node.props?.treeview, ...props };
+    node = { ...node, props: { ...node.props, treeview } };
     return TreeUtil.replace<T>(root, node);
   }
 
   /**
-   * Retrieves the props for the given node.
+   * Retrieve the { props:{ treeview: {...} } } node.
    */
-  public static props<T extends N>(node?: T) {
-    return node ? node.props || {} : {};
+  public static props(of: t.INode, fn?: (treeProps: P) => void): P {
+    const props = (of.props = of.props || {}) as t.ITreeViewNodePropsContainer;
+    const treeview = (props.treeview = props.treeview || {}) as P;
+    if (typeof fn === 'function') {
+      fn(treeview);
+    }
+    return treeview;
   }
 
   /**
@@ -265,13 +270,13 @@ export class TreeUtil {
     if (!node || !root) {
       return root;
     }
-    const props = node.props || {};
-    let inline = props.inline;
+    const treeProps = TreeUtil.props(node);
+    let inline = treeProps.inline;
     if (!inline) {
       return root;
     }
     inline = { ...inline, isOpen: !inline.isOpen };
-    node = { ...node, props: { ...props, inline } };
+    node = { ...node, props: { treeview: { ...treeProps, inline } } };
     return TreeUtil.replace<T>(root, node);
   }
 
@@ -301,7 +306,7 @@ export class TreeUtil {
    * Determines if the given node is open.
    */
   public static isOpen(node?: N) {
-    const inline = TreeUtil.props(node).inline;
+    const inline = node ? TreeUtil.props(node).inline : undefined;
     return inline ? inline.isOpen : undefined;
   }
 
@@ -309,13 +314,13 @@ export class TreeUtil {
    * Determined if the given node is enabled.
    */
   public static isEnabled(node?: N) {
-    return defaultValue(TreeUtil.props(node).isEnabled, true);
+    return node ? defaultValue(TreeUtil.props(node).isEnabled, true) : true;
   }
 
   /**
    * Determines if the given node is selected.
    */
   public static isSelected(node?: N) {
-    return defaultValue(TreeUtil.props(node).isSelected, false);
+    return node ? defaultValue(TreeUtil.props(node).isSelected, false) : false;
   }
 }

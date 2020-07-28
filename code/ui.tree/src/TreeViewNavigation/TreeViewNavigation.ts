@@ -3,6 +3,7 @@ import { TreeQuery } from '@platform/state/lib/TreeQuery';
 import { TreeState } from '@platform/state/lib/TreeState';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, share, takeUntil } from 'rxjs/operators';
+import { TreeUtil } from '../TreeUtil';
 
 import { t } from '../common';
 import { strategies } from '../TreeViewNavigation.Strategies';
@@ -19,7 +20,7 @@ type Stores = {
 export class TreeViewNavigation implements t.ITreeViewNavigation {
   public static strategies = strategies;
   public static identity = TreeState.identity;
-  public static props = TreeState.props;
+  public static props = TreeUtil.props;
   public static children = TreeState.children;
 
   /**
@@ -121,7 +122,8 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
         const query = TreeQuery.create({ root: draft });
         const node = query.findById(id);
         if (node) {
-          change(node, { ...ctx, ...query });
+          const props = TreeUtil.props;
+          change(node, { ...ctx, ...query, props });
         }
       });
     }

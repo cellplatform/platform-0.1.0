@@ -33,7 +33,10 @@ export type ITreeViewNavigation = t.IDisposable & {
   node(id?: t.NodeIdentifier, change?: TreeViewNavigationNodeChanger): t.ITreeNode | undefined;
 };
 
-export type TreeViewNavigationNodeChanger = t.TreeStateChanger<t.ITreeViewNode>;
+export type TreeViewNavigationNodeChanger = t.TreeStateChanger<
+  t.ITreeViewNode,
+  t.ITreeViewNodeProps
+>;
 
 /**
  * Navigation properties

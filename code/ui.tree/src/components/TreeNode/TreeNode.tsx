@@ -119,7 +119,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
 
   private get nodeProps() {
     const { node } = this.props;
-    return node.props || {};
+    return node.props?.treeview || {};
   }
 
   private get theme() {
@@ -464,7 +464,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   ) {
     const handlers = mouse.handlers((e) => {
       const node = getNode();
-      const props = node.props || {};
+      const props = node.props?.treeview || {};
       const children = TreeUtil.children(node);
       if (onMouse) {
         e.cancel(); // NB: Cancelling the mouse event prevent bubbling up, where a child node causes the parent node to also fire.

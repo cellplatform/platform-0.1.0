@@ -20,13 +20,13 @@ import {
 } from 'rxjs/operators';
 
 import { constants, t } from '../../common';
-import { TreeEvents } from '../../TreeEvents';
 import * as themes from '../../themes';
+import { TreeEvents } from '../../TreeEvents';
+import { TreeUtil } from '../../TreeUtil';
+import { TreeViewNavigation } from '../../TreeViewNavigation';
+import { TreeViewState } from '../../TreeViewState';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
-import { TreeUtil } from '../../TreeUtil';
-import { TreeViewState } from '../../TreeViewState';
-import { TreeViewNavigation } from '../../TreeViewNavigation';
 
 const R = { equals };
 
@@ -266,8 +266,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
       return;
     }
 
-    const props = node.props || {};
-    const header = props.header || {};
+    const header = node.props?.treeview?.header || {};
     const isHeaderVisible = defaultValue(header.isVisible, true);
 
     const el = renderPanel({ node, depth, isInline: false });
@@ -298,8 +297,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
   private renderNodeList(node: t.ITreeViewNode, depth: number) {
     const theme = this.theme;
-    const props = node.props || {};
-    const header = props.header || {};
+    const header = node.props?.treeview?.header || {};
     const isHeaderVisible = defaultValue(header.isVisible, true);
     const elHeader = isHeaderVisible && this.renderHeader(node, depth);
 
@@ -327,7 +325,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
   private renderHeader(node: t.ITreeViewNode, depth: number) {
     const theme = this.theme;
-    const props = node.props || {};
+    const props = node.props?.treeview || {};
     const header = props.header || {};
     const title = props.title || props.label || node.id.toString();
 

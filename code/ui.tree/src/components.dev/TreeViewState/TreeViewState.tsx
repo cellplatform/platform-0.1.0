@@ -179,7 +179,7 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
         <div {...styles.left}>
           {this.renderTextInputButton({
             placeholder: 'label',
-            value: this.store.root.props?.label,
+            value: this.store.root.props?.treeview?.label,
             onChange: this.onLabelChange,
           })}
         </div>
@@ -271,7 +271,7 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
 
   private addChild = () => {
     const label = this.state.addLabel;
-    const root = { id: 'node', props: { label } };
+    const root = { id: 'node', props: { treeview: { label } } };
     this.store.add<t.ITreeViewNode>({ root });
     this.state$.next({ addLabel: '' });
   };

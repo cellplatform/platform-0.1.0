@@ -10,7 +10,7 @@ export const create = (id: string, label: string, total?: TotalChildren): ITreeV
   const children = total ? createMany(total, id) : undefined;
   const tree: ITreeViewNode = {
     id,
-    props: { label, icon: 'Face' },
+    props: { treeview: { label, icon: 'Face' } },
     children,
   };
   tree.children = tree.children && tree.children.length === 0 ? undefined : tree.children;

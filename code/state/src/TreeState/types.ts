@@ -63,13 +63,16 @@ export type TreeStateChange<T extends Node = Node> = (
 ) => TreeStateChangeResponse<T>;
 export type TreeStateChangeResponse<T extends Node = Node> = t.IStateObjectChangeResponse<T>;
 export type TreeStateChangeOptions = { silent?: boolean };
-export type TreeStateChanger<T extends Node = Node> = (
+export type TreeStateChanger<T extends Node = Node, P extends O = NonNullable<T['props']>> = (
   root: T,
-  ctx: TreeStateChangerContext<T>,
+  ctx: TreeStateChangerContext<T, P>,
 ) => void;
-export type TreeStateChangerContext<T extends Node = Node> = t.ITreeQuery<T> & {
+export type TreeStateChangerContext<
+  T extends Node = Node,
+  P extends O = NonNullable<T['props']>
+> = t.ITreeQuery<T> & {
   children<C extends T>(of: C, fn?: (children: C[]) => void): C[];
-  props<P extends NonNullable<T['props']>>(of: Node, fn?: (props: P) => void): P;
+  props(of: Node, fn?: (props: P) => void): P;
 };
 
 /**
