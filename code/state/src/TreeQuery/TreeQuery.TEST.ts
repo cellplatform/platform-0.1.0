@@ -5,7 +5,7 @@ const create = TreeQuery.create;
 
 type N = t.ITreeNode;
 
-describe.only('TreeQuery', () => {
+describe('TreeQuery', () => {
   describe('create', () => {
     it('with root (default node type)', () => {
       const root: N = { id: 'root' };

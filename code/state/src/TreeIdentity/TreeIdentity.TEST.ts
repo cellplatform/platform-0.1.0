@@ -4,13 +4,15 @@ import { expect } from '../test';
 type S = string | undefined;
 const Id = TreeIdentity;
 
-describe('TreeNodeId', () => {
+describe('TreeIdentity', () => {
   it('format( namespace, id )', () => {
     const test = (namespace: S, id: S, expected: string) => {
       const res = Id.format(namespace, id);
       expect(res).to.eql(expected);
     };
     test('foo', 'bar', 'foo:bar');
+    test('foo:zoo', 'bar', 'foo:zoo:bar');
+    test('ns:foo:A1', 'node', 'ns:foo:A1:node');
     test('', 'bar', ':bar'); // Invalid.
     test('foo', '', 'foo:'); // Invalid.
   });
@@ -23,6 +25,7 @@ describe('TreeNodeId', () => {
     test('tree-foo:bar', true);
     test('  tree-foo:bar  ', true);
     test('ns:bar', true);
+    test('ns:foo:A1', true);
 
     test(':bar', false);
     test('bar', false);
@@ -43,6 +46,8 @@ describe('TreeNodeId', () => {
     test('foo:bar', 'bar');
     test(':bar', 'bar');
     test(' :bar ', 'bar');
+
+    test('ns:foo:A1:node', 'node');
   });
 
   it('parse', () => {
@@ -54,7 +59,9 @@ describe('TreeNodeId', () => {
     test('  tree-foo:bar  ', 'tree-foo', 'bar');
     test('foo', '', 'foo');
     test('foo:bar', 'foo', 'bar');
-    test('foo:bar:zoo', 'foo', 'bar:zoo');
+    test('foo:bar:zoo', 'foo:bar', 'zoo');
+    test('ns:foo:A1:node', 'ns:foo:A1', 'node');
+    test('ns:foo:node', 'ns:foo', 'node');
     test('', '', '');
     test('  ', '', '');
   });
@@ -65,6 +72,7 @@ describe('TreeNodeId', () => {
       expect(res).to.eql(namespace);
     };
     test('foo:bar', 'foo');
+    test('ns:foo:A1:node', 'ns:foo:A1');
     test('tree-foo:bar', 'tree-foo');
     test('  foo:bar  ', 'foo');
     test('bar', '');
@@ -82,5 +90,6 @@ describe('TreeNodeId', () => {
     test('foo', 'foo');
     test('  foo  ', 'foo');
     test('tree-foo:bar', 'bar');
+    test('ns:foo:A1:node', 'node');
   });
 });
