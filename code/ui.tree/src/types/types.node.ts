@@ -3,8 +3,7 @@ import { ITreeNode } from '@platform/state/lib/types';
 import { t } from './common';
 
 type O = Record<string, unknown>;
-// type P = t.ITreeViewNodeProps & ITreeViewNodePropsContainer; // TEMP 🐷
-type P = ITreeViewNodePropsContainer; // TEMP 🐷
+type P = ITreeViewNodePropsContainer;
 
 /**
  * A single node within a <TreeView>
