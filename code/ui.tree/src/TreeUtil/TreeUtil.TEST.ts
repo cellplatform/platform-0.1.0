@@ -3,6 +3,9 @@ import { expect, t } from '../test';
 import { TreeUtil } from '.';
 const query = TreeUtil.query;
 
+type P = t.ITreeViewNodePropsBase & { data: { foo?: number } };
+type N = t.ITreeViewNode<P>;
+
 describe('TreeUtil', () => {
   describe('children', () => {
     it('no childen => empty array', () => {
@@ -136,14 +139,14 @@ describe('TreeUtil', () => {
     });
 
     it('replaces an existing child node', () => {
-      const root: t.ITreeViewNode = {
+      const root: N = {
         id: 'root',
-        children: [{ id: 'foo' }, { id: 'child', data: { foo: 123 } }, { id: 'bar' }],
+        children: [{ id: 'foo' }, { id: 'child', props: { data: { foo: 123 } } }, { id: 'bar' }],
       };
-      const child: t.ITreeViewNode = { id: 'child', data: { foo: 456 } };
-      const res = TreeUtil.replaceChild(root, child, { insert: 'FIRST' });
+      const child: N = { id: 'child', props: { data: { foo: 456 } } };
+      const res = TreeUtil.replaceChild<N>(root, child, { insert: 'FIRST' });
       const children = res ? res.children || [] : [];
-      expect(children[1].data).to.eql({ foo: 456 });
+      expect(children[1].props?.data).to.eql({ foo: 456 });
     });
   });
 
@@ -381,51 +384,35 @@ describe('TreeUtil', () => {
     });
 
     it('does not override existing tree (default)', () => {
-      type T = t.ITreeViewNode<{ foo: number }>;
-      let root: T = { id: 'root' };
-      root = TreeUtil.buildPath<T>(
-        root,
-        (id) => ({
-          id,
-          data: { foo: 1 },
-        }),
-        'one/two',
-      ).root;
+      let root: N = { id: 'root' };
+      const b = TreeUtil.buildPath;
+      root = b<N>(root, (id) => ({ id, props: { data: { foo: 1 } } }), 'one/two').root;
+      root = b<N>(root, (id) => ({ id, props: { data: { foo: 2 } } }), 'one/two/three').root;
 
-      root = TreeUtil.buildPath<T>(
-        root,
-        (id) => ({
-          id,
-          data: { foo: 2 },
-        }),
-        'one/two/three',
-      ).root;
+      const child1 = query<N>(root).findById('one/two');
+      const child2 = query<N>(root).findById('one/two');
+      const child3 = query<N>(root).findById('one/two/three');
 
-      const child1 = query(root).findById('one/two') as T;
-      const child2 = query(root).findById('one/two') as T;
-      const child3 = query(root).findById('one/two/three') as T;
-
-      expect(child1.data && child1.data.foo).to.eql(1); // NB: not overriden.
-      expect(child2.data && child2.data.foo).to.eql(1); // NB: not overriden.
-      expect(child3.data && child3.data.foo).to.eql(2); // From second operation.
+      expect(child1?.props?.data?.foo).to.eql(1); // NB: not overriden.
+      expect(child2?.props?.data?.foo).to.eql(1); // NB: not overriden.
+      expect(child3?.props?.data?.foo).to.eql(2); // From second operation.
     });
 
     it('does not force overrides existing tree', () => {
-      type T = t.ITreeViewNode<{ foo: number }>;
-      let root: T = { id: 'ROOT' };
-      root = TreeUtil.buildPath<T>(root, (id) => ({ id, data: { foo: 1 } }), 'one/two').root;
-
-      root = TreeUtil.buildPath<T>(root, (id) => ({ id, data: { foo: 2 } }), 'one/two/three', {
+      let root: N = { id: 'ROOT' };
+      const b = TreeUtil.buildPath;
+      root = b<N>(root, (id) => ({ id, props: { data: { foo: 1 } } }), 'one/two').root;
+      root = b<N>(root, (id) => ({ id, props: { data: { foo: 2 } } }), 'one/two/three', {
         force: true,
       }).root;
 
-      const child1 = query(root).findById('one/two') as T;
-      const child2 = query(root).findById('one/two') as T;
-      const child3 = query(root).findById('one/two/three') as T;
+      const child1 = query<N>(root).findById('one/two');
+      const child2 = query<N>(root).findById('one/two');
+      const child3 = query<N>(root).findById('one/two/three');
 
-      expect(child1.data && child1.data.foo).to.eql(2); // NB: not overriden.
-      expect(child2.data && child2.data.foo).to.eql(2); // NB: not overriden.
-      expect(child3.data && child3.data.foo).to.eql(2); // From second operation.
+      expect(child1?.props?.data.foo).to.eql(2); // NB: not overriden.
+      expect(child2?.props?.data.foo).to.eql(2); // NB: not overriden.
+      expect(child3?.props?.data.foo).to.eql(2); // From second operation.
     });
 
     it('merges paths (using path builder)', () => {

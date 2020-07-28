@@ -250,7 +250,7 @@ export class TreeUtil {
    * Retrieve the { props:{ treeview: {...} } } node.
    */
   public static props(of: t.INode, fn?: (treeProps: P) => void): P {
-    const props = (of.props = of.props || {}) as t.ITreeViewNodePropsContainer;
+    const props = (of.props = of.props || {}) as t.ITreeViewNodePropsBase;
     const treeview = (props.treeview = props.treeview || {}) as P;
     if (typeof fn === 'function') {
       fn(treeview);

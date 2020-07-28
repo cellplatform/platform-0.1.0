@@ -79,8 +79,8 @@ describe('TreeViewNavigation', () => {
       });
 
       expect(res?.id).to.match(/child-2$/);
-      expect(res?.props).to.eql({ icon: 'face' });
-      expect(tree.query.findById('child-2')?.props).to.eql({ icon: 'face' });
+      expect(res?.props).to.eql({ treeview: { icon: 'face' } });
+      expect(tree.query.findById('child-2')?.props).to.eql({ treeview: { icon: 'face' } });
     });
   });
 });

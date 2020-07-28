@@ -57,9 +57,4 @@ export type TreeNodePathFactory<T extends N = N> = (
   id: T['id'],
   context: ITreeNodePathContext,
 ) => T | undefined;
-
-export type ITreeNodePathContext = {
-  id: string;
-  path: string;
-  level: number;
-};
+export type ITreeNodePathContext = { id: string; path: string; level: number };
