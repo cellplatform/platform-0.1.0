@@ -9,25 +9,42 @@ import { t } from '../../common';
 import { TreeViewNavigation } from '../../TreeViewNavigation';
 import { Icons } from './Icons';
 import { TreeViewState } from '../../components.dev/TreeViewState';
+import { clone } from 'ramda';
 
 type Node = t.ITreeViewNode;
 
-const ROOT: Node = {
-  id: 'root',
-  props: {
-    label: 'Root',
-    header: { isVisible: false },
-  },
-  children: [
-    {
-      id: 'child-1',
-      props: {
-        label: 'Child-1',
-        marginTop: 45,
+const SAMPLES = {
+  DEFAULT: {
+    id: 'root',
+    props: { label: 'Root', header: { isVisible: false } },
+    children: [
+      {
+        id: 'Child-1',
+        props: { label: 'Child-1', marginTop: 45 },
+        children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
       },
-    },
-  ],
+    ],
+  } as Node,
+  TWISTY: {
+    id: 'root',
+    props: { label: 'Root', header: { isVisible: false } },
+    children: [
+      {
+        id: 'Child-1',
+        props: { label: 'Child-1', marginTop: 45, inline: {} },
+        children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
+      },
+    ],
+  } as Node,
 };
+
+Object.keys(SAMPLES).forEach((key) => {
+  const node = SAMPLES[key];
+  TreeView.query(node).walkDown((e) => {
+    e.node.props = e.node.props || {};
+    e.node.props.label = e.node.props.label || e.id;
+  });
+});
 
 export type ITestProps = { style?: CssValue };
 export type ITestState = {
@@ -36,12 +53,12 @@ export type ITestState = {
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = { root: ROOT };
+  public state: ITestState = { root: SAMPLES.DEFAULT };
   private state$ = new Subject<Partial<ITestState>>();
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeViewEvent>();
 
-  private store = TreeView.State.create({ root: ROOT, dispose$: this.unmounted$ });
+  private store = TreeView.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
   private nav = TreeViewNavigation.create({
     tree: this.store,
     treeview$: this.treeview$,
@@ -121,14 +138,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         backgroundColor: color.format(1),
         Flex: 'vertical-stretch-stretch',
       }),
-      toolbar: css({
-        position: 'relative',
-        height: 34,
-        borderBottom: `solid 1px ${color.format(-0.1)}`,
-        Flex: 'horizontal-center-start',
-        fontSize: 14,
-        PaddingX: 15,
-      }),
       body: css({
         position: 'relative',
         flex: 1,
@@ -145,14 +154,41 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     return (
       <div {...styles.base}>
-        <div {...styles.toolbar}>
-          <Button onClick={this.onRedrawClick}>Redraw</Button>
-        </div>
+        {this.renderToolbar()}
         <div {...styles.body}>
           <div {...styles.scroll}>
             <TreeViewState store={this.store} />
           </div>
         </div>
+      </div>
+    );
+  }
+
+  private renderToolbar() {
+    const styles = {
+      base: css({
+        position: 'relative',
+        height: 34,
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
+        Flex: 'horizontal-center-start',
+        fontSize: 14,
+        PaddingX: 15,
+        color: color.format(-0.3),
+      }),
+      spacer: css({ MarginX: 6 }),
+    };
+
+    const spacer = <div {...styles.spacer} />;
+
+    return (
+      <div {...styles.base}>
+        <Button onClick={this.onRedrawClick}>Redraw</Button>
+        {spacer}
+        <div>Load:</div>
+        {spacer}
+        <Button onClick={this.loadHandler(SAMPLES.DEFAULT)}>Default</Button>
+        {spacer}
+        <Button onClick={this.loadHandler(SAMPLES.TWISTY)}>Twisty</Button>
       </div>
     );
   }
@@ -164,5 +200,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
   private onRedrawClick = () => {
     this.forceUpdate();
+  };
+
+  private loadHandler = (root: Node) => {
+    return () => {
+      this.store.change((draft) => (draft.children = root.children));
+    };
   };
 }

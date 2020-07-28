@@ -31,6 +31,15 @@ export const selection: t.TreeViewNavigationStrategy = (ctrl) => {
     ctrl.selected = id;
   };
 
+  const toggleOpen = (id?: string) => {
+    ctrl.node(id, (node, ctx) => {
+      ctx.props(node, (props) => {
+        const isOpen = Boolean(props.inline?.isOpen);
+        props.inline = { ...props.inline, isOpen: !isOpen };
+      });
+    });
+  };
+
   /**
    * Left mouse button handlers.
    */
@@ -47,15 +56,17 @@ export const selection: t.TreeViewNavigationStrategy = (ctrl) => {
       filter((e) => Boolean((e.props || {}).inline)),
       filter((e) => (e.children || []).length > 0),
     )
-    .subscribe((e) => {
-      console.log('open twisty');
-      // patch({ current: e.id });
-    });
+    .subscribe((e) => toggleOpen(e.id));
 
-  left.dblclick.node$
-    .pipe(
-      filter((e) => !(e.props || {}).inline),
-      filter((e) => (e.children || []).length > 0),
-    )
+  const dblClickNodeWithChildren$ = left.dblclick.node$.pipe(
+    filter((e) => (e.children || []).length > 0),
+  );
+
+  dblClickNodeWithChildren$
+    .pipe(filter((e) => !(e.props || {}).inline))
     .subscribe((e) => setCurrent(e.id));
+
+  dblClickNodeWithChildren$
+    .pipe(filter((e) => Boolean((e.props || {}).inline)))
+    .subscribe((e) => toggleOpen(e.id));
 };
