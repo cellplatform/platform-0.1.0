@@ -19,12 +19,12 @@ const DEFAULT = {
 export type ITreeViewStateProps = {
   store: t.ITreeViewState;
   isRoot?: boolean;
+  current?: string;
+  selected?: string;
   connectorHeight?: number;
   style?: CssValue;
 };
-export type ITreeViewStateState = {
-  addLabel?: string;
-};
+export type ITreeViewStateState = { addTextboxLabel?: string };
 
 export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITreeViewStateState> {
   public state: ITreeViewStateState = {};
@@ -56,6 +56,10 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
     return this.props.isRoot !== false;
   }
 
+  public get isSelected() {
+    return this.store.id === this.props.selected;
+  }
+
   public get connectorHeight() {
     return defaultValue(this.props.connectorHeight, DEFAULT.CONNECTOR_HEIGHT);
   }
@@ -65,12 +69,13 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
    */
   public render() {
     const store = this.store;
+    const isSelected = this.isSelected;
     const styles = {
       base: css({
         position: 'relative',
         boxSizing: 'border-box',
         backgroundColor: color.format(-0.02),
-        border: `solid 1px ${color.format(-0.04)}`,
+        border: `solid 1px ${isSelected ? COLORS.BLUE : color.format(-0.04)}`,
         borderRadius: 4,
         padding: 10,
         paddingTop: 8,
@@ -122,7 +127,7 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
         <div {...styles.left}>
           <Icons.Box size={24} style={{ marginRight: 6 }} color={COLORS.PURPLE} />
           <div>
-            <strong>TreeState</strong>
+            <strong>TreeViewState (Module)</strong>
             <div {...styles.id}>{store.id}</div>
           </div>
         </div>
@@ -185,7 +190,7 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
         </div>
         <div {...styles.middle}></div>
         <div {...styles.right}>
-          {Boolean(this.state.addLabel) && (
+          {Boolean(this.state.addTextboxLabel) && (
             <div {...css(styles.downArrowOuter)}>
               <Icons.ArrowDown size={18} />
             </div>
@@ -193,7 +198,7 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
           {this.renderTextInputButton({
             placeholder: 'new child',
             button: 'add',
-            value: this.state.addLabel,
+            value: this.state.addTextboxLabel,
             onClick: this.addChild,
             onChange: this.onAddLabelChange,
           })}
@@ -248,6 +253,7 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
   }
 
   private renderChildren() {
+    const { selected, current } = this.props;
     const connectorHeight = this.connectorHeight;
     const styles = {
       base: css({ marginLeft: 12 }),
@@ -258,7 +264,13 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
     const elList = this.store.children.map((store) => {
       return (
         <div key={store.namespace} {...styles.child}>
-          <TreeViewState store={store} isRoot={false} connectorHeight={connectorHeight} />
+          <TreeViewState
+            store={store}
+            isRoot={false}
+            current={current}
+            selected={selected}
+            connectorHeight={connectorHeight}
+          />
         </div>
       );
     });
@@ -270,14 +282,14 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
    */
 
   private addChild = () => {
-    const label = this.state.addLabel;
+    const label = this.state.addTextboxLabel;
     const root = { id: 'node', props: { treeview: { label } } };
     this.store.add<t.ITreeViewNode>({ root });
-    this.state$.next({ addLabel: '' });
+    this.state$.next({ addTextboxLabel: '' });
   };
 
   private onAddLabelChange: TextInputChangeEventHandler = (e) => {
-    this.state$.next({ addLabel: e.to });
+    this.state$.next({ addTextboxLabel: e.to });
   };
 
   private onLabelChange: TextInputChangeEventHandler = (e) => {

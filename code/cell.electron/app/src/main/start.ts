@@ -94,7 +94,7 @@ export async function start() {
         const name = e.data.name;
         const arg = e.data.arg || '';
         if (name && e.data.action === 'OPEN') {
-          console.log('create', name, arg);
+          console.log('createOne', name, arg);
           window.createOne({ ctx, name, argv: [arg] });
         }
       });

@@ -11,26 +11,26 @@ import { Icons } from './Icons';
 import { TreeViewState } from '../../components.dev/TreeViewState';
 
 type Node = t.ITreeViewNode;
+const header: t.ITreeViewNodeHeader = { isVisible: false, marginBottom: 45 };
 
 const SAMPLES = {
   DEFAULT: {
     id: 'root',
-    props: { treeview: { label: 'Root', header: { isVisible: false } } },
+    props: { treeview: { label: 'Root', header } },
     children: [
       {
-        id: 'Child-1',
-        props: { treeview: { label: 'Child-1', marginTop: 45 } },
+        id: 'Default-1',
         children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
       },
     ],
   } as Node,
   TWISTY: {
     id: 'root',
-    props: { treeview: { label: 'Root', header: { isVisible: false } } },
+    props: { treeview: { label: 'Root', header } },
     children: [
       {
-        id: 'Child-1',
-        props: { treeview: { label: 'Child-1', marginTop: 45, inline: {} } },
+        id: 'Default-1',
+        props: { treeview: { inline: {} } },
         children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
       },
     ],
@@ -47,20 +47,15 @@ Object.keys(SAMPLES).forEach((key) => {
 });
 
 export type ITestProps = { style?: CssValue };
-export type ITestState = {
-  root?: t.ITreeViewNode;
-  current?: string;
-};
 
-export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = { root: SAMPLES.DEFAULT };
-  private state$ = new Subject<Partial<ITestState>>();
+export class Test extends React.PureComponent<ITestProps> {
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeViewEvent>();
 
-  private store = TreeView.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
+  private tree = TreeView.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
+
   private nav = TreeViewNavigation.create({
-    tree: this.store,
+    tree: this.tree,
     treeview$: this.treeview$,
     dispose$: this.unmounted$,
     strategy: TreeViewNavigation.strategies.default,
@@ -70,14 +65,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    this.store.event.changed$
-      .pipe(takeUntil(this.unmounted$))
-      .subscribe((e) => this.state$.next({ root: e.to }));
-
-    this.nav.redraw$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
-      this.forceUpdate();
-    });
+    const redraw$ = this.nav.redraw$.pipe(takeUntil(this.unmounted$));
+    redraw$.subscribe((e) => this.forceUpdate());
   }
 
   public componentWillUnmount() {
@@ -157,7 +146,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         {this.renderToolbar()}
         <div {...styles.body}>
           <div {...styles.scroll}>
-            <TreeViewState store={this.store} />
+            <TreeViewState
+              store={this.tree}
+              current={this.nav.current}
+              selected={this.nav.selected}
+            />
           </div>
         </div>
       </div>
@@ -204,7 +197,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
   private loadHandler = (root: Node) => {
     return () => {
-      this.store.change((draft) => (draft.children = root.children));
+      this.tree.change((draft) => (draft.children = root.children));
     };
   };
 }
