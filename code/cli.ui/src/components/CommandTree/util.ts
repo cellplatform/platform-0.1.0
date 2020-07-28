@@ -6,7 +6,7 @@ import { t } from '../../common';
 export function buildTree(command: t.ICommand, options: { parent?: t.ITreeViewNode } = {}) {
   const parent: t.ITreeViewNode = options.parent || {
     id: asTreeNodeId(command),
-    props: { label: 'Commands', header: { isVisible: false } },
+    props: { treeview: { label: 'Commands', header: { isVisible: false } } },
   };
 
   parent.children = command.children.map((cmd) => {
@@ -15,11 +15,13 @@ export function buildTree(command: t.ICommand, options: { parent?: t.ITreeViewNo
     const node: t.ITreeViewNode = {
       id: asTreeNodeId(cmd),
       props: {
-        label: cmd.name,
-        icon: hasChildren ? 'Namespace' : 'Command',
-        // badge: hasChildren ? totalChildren : undefined,
+        treeview: {
+          label: cmd.name,
+          icon: hasChildren ? 'Namespace' : 'Command',
+          // badge: hasChildren ? totalChildren : undefined,
+        },
+        // cmd,
       },
-      data: cmd,
     };
     if (cmd.children.length > 0) {
       buildTree(cmd, { parent: node }); // <== RECURSION

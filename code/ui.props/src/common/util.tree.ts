@@ -22,10 +22,9 @@ export function buildTree(args: {
     value: any,
     options: { action?: t.PropChangeAction } = {},
   ) => {
-    // const isInsert = Boolean(options.isInsert);
     const { action } = options;
     const type = toType(value);
-    const parentType = parent && parent.data ? parent.data.type : undefined;
+    const parentType = parent.props?.data?.type;
     const isDeletable = deletable.includes(parentType as t.PropDataObjectType);
     const data: t.IPropNodeData = { path: id, key, value, type, parentType, action, isDeletable };
 
@@ -37,8 +36,10 @@ export function buildTree(args: {
     const isObject = typeof value === 'object' && !isArray;
     let node: t.IPropNode = formatNode({
       id,
-      props: { label: key.toString(), colors: { borderTop: false, borderBottom: false } },
-      data,
+      props: {
+        treeview: { label: key.toString(), colors: { borderTop: false, borderBottom: false } },
+        data,
+      },
     });
 
     if (isObject || isArray) {

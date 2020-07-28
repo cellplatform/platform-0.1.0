@@ -53,11 +53,11 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
     select(child);
   };
 
-  left.down.drillIn$.subscribe((e) => drillIn(e));
+  left.down.drillIn$.subscribe((e) => drillIn(e as any)); // HACK: temp, this will get replaced with newer [TreeState] controllers
   left.dblclick.node$
     .pipe(
       filter((e) => !Boolean(e.props.inline)),
       filter((e) => e.children.length > 0),
     )
-    .subscribe((e) => drillIn(e));
+    .subscribe((e) => drillIn(e as any)); // HACK: temp, this will get replaced with newer [TreeState] controllers
 }

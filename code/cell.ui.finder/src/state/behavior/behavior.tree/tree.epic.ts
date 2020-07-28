@@ -36,7 +36,7 @@ export function init(args: { store: t.IAppStore }) {
 export function toggleSelection(root: t.ITreeViewNode | undefined, id: string) {
   const { BLUE } = COLORS;
 
-  const current = TreeUtil.query(root).find((e) => e.node.props?.isSelected || false);
+  const current = TreeUtil.query(root).find((e) => e.node.props?.treeview?.isSelected || false);
   if (current && current.id !== id) {
     root = TreeUtil.setProps(root, current.id, {
       isSelected: false,
