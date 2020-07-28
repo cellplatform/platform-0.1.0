@@ -12,7 +12,7 @@ export type ITreeNodeListProps = {
   node: t.ITreeViewNode<any>;
   rootId?: string;
   depth?: number;
-  defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
+  defaultNodeProps?: t.ITreeViewNodeProps | t.GetTreeNodeProps;
   renderPanel?: t.RenderTreePanel;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
@@ -153,7 +153,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     const hasChildren = totalChildren > 0;
 
     // Prepare the node-props.
-    let props: t.ITreeNodeProps = { ...node.props } || {};
+    let props: t.ITreeViewNodeProps = { ...node.props } || {};
     const defaultNodeProps = this.defaultNodeProps({
       index,
       node,
@@ -189,7 +189,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     return result;
   }
 
-  private toRightIcon(props: t.ITreeNodeProps, children?: t.ITreeViewNode['children']) {
+  private toRightIcon(props: t.ITreeViewNodeProps, children?: t.ITreeViewNode['children']) {
     const chrevron = props.chevron || {};
     const isVisible = chrevron.isVisible;
     const inlineChildren = Boolean(props.inline);

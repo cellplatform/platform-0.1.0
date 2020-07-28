@@ -21,7 +21,7 @@ export type ITreeViewMouse<T extends N = N> = MouseEvent & {
   target: TreeViewMouseTarget;
   id: T['id'];
   node: T;
-  props: t.ITreeNodeProps;
+  props: t.ITreeViewNodeProps;
   children: T[];
 };
 export type TreeNodeMouseEventHandler = (e: ITreeViewMouse) => void;

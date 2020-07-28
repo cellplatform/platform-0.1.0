@@ -5,7 +5,7 @@ type N = t.ITreeViewNode;
 /**
  * Properties for an individual leaf on the tree.
  */
-export type ITreeNodeProps = {
+export type ITreeViewNodeProps = {
   body?: string; // Key used in [renderNodeBody] factory.
   label?: string;
   icon?: t.TreeNodeIcon;
@@ -55,7 +55,7 @@ export type ITreeNodeColors = {
 /**
  * Function that retrieves the default node props.
  */
-export type GetTreeNodeProps = (args: GetTreeNodePropsArgs) => ITreeNodeProps;
+export type GetTreeNodeProps = (args: GetTreeNodePropsArgs) => ITreeViewNodeProps;
 export type GetTreeNodePropsArgs = {
   index: number;
   node: N;

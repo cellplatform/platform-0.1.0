@@ -14,7 +14,7 @@ export type TreeViewState = {
   identity: t.TreeState['identity'];
   isInstance: t.TreeState['isInstance'];
   children<T extends Node>(of: T, fn?: (children: T[]) => void): T[];
-  props<P extends t.ITreeNodeProps>(of: Node, fn?: (props: P) => void): P;
+  props<P extends t.ITreeViewNodeProps>(of: Node, fn?: (props: P) => void): P;
 };
 
 /**

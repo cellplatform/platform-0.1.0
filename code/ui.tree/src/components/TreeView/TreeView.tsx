@@ -34,7 +34,7 @@ export type ITreeViewProps = {
   id?: string;
   root?: t.ITreeViewNode;
   current?: t.ITreeViewNode['id'];
-  defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
+  defaultNodeProps?: t.ITreeViewNodeProps | t.GetTreeNodeProps;
   renderPanel?: t.RenderTreePanel;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;

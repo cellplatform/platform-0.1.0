@@ -233,7 +233,7 @@ export class TreeUtil {
   public static setProps<T extends N>(
     root: T | undefined,
     id: T | T['id'],
-    props?: Partial<t.ITreeNodeProps>,
+    props?: Partial<t.ITreeViewNodeProps>,
   ): T | undefined {
     if (!props || !root) {
       return root;
