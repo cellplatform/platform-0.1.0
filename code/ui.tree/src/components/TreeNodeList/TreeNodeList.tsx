@@ -77,6 +77,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
         position: 'relative',
         backgroundColor: background === 'THEME' ? color.format(theme.bg) : undefined,
         overflow: 'hidden',
+        boxSizing: 'border-box',
       }),
       list: css({
         Absolute: isScrollable ? 0 : undefined,

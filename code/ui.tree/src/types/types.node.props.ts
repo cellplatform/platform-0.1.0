@@ -19,16 +19,8 @@ export type ITreeViewNodeProps = {
   chevron?: {
     isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
   };
-  inline?: {
-    // The existence of the 'inline' object indicates the
-    // node's children are to be shown inline.
-    isOpen?: boolean;
-    isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
-  };
-  header?: {
-    isVisible?: boolean; // Force show (for custom panel), or hide the header. Default: true.
-    parentButton?: boolean; // Hide the "back" button. Default: true.
-  };
+  inline?: ITreeViewNodeInline;
+  header?: ITreeViewNodeHeader;
   badge?: string | number;
   isEnabled?: boolean;
   isVisible?: boolean;
@@ -37,11 +29,24 @@ export type ITreeViewNodeProps = {
   isSelected?: boolean;
   labelEditable?: boolean | 'DOUBLE_CLICK';
 
-  colors?: ITreeNodeColors;
-  focusColors?: ITreeNodeColors;
+  colors?: ITreeViewNodeColors;
+  focusColors?: ITreeViewNodeColors;
 };
 
-export type ITreeNodeColors = {
+export type ITreeViewNodeHeader = {
+  isVisible?: boolean; // Force show (for custom panel), or hide the header. Default: true.
+  showParentButton?: boolean; // Hide the "back" button. Default: true.
+  marginBottom?: number;
+};
+
+export type ITreeViewNodeInline = {
+  // The existence of the 'inline' object indicates the
+  // node's children are to be shown inline.
+  isOpen?: boolean;
+  isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
+};
+
+export type ITreeViewNodeColors = {
   label?: string | number;
   description?: string | number;
   icon?: string | number;

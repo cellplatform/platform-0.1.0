@@ -300,6 +300,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     const header = node.props?.treeview?.header || {};
     const isHeaderVisible = defaultValue(header.isVisible, true);
     const elHeader = isHeaderVisible && this.renderHeader(node, depth);
+    const paddingTop = (isHeaderVisible ? this.headerHeight : 0) + (header.marginBottom || 0);
 
     return (
       <TreeNodeList
@@ -312,7 +313,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         renderIcon={this.props.renderIcon}
         renderNodeBody={this.props.renderNodeBody}
         header={elHeader}
-        paddingTop={isHeaderVisible ? this.headerHeight : 0}
+        paddingTop={paddingTop}
         isBorderVisible={this.state.isSliding}
         isScrollable={true}
         isFocused={this.isFocused}
@@ -330,7 +331,11 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     const title = props.title || props.label || node.id.toString();
 
     const showParentButton =
-      header.parentButton === false ? false : header.parentButton === true ? true : depth > 0;
+      header.showParentButton === false
+        ? false
+        : header.showParentButton === true
+        ? true
+        : depth > 0;
 
     return (
       <TreeHeader

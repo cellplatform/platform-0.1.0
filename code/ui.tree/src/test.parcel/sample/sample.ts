@@ -24,6 +24,7 @@ export const COMPREHENSIVE = (() => {
   const props = TreeView.util.props;
 
   const root = createRoot([21, 5, 3, 2]);
+  props(root).header = { marginBottom: 30 };
 
   const children = root.children as t.ITreeViewNode[];
   children.forEach((node) => {
@@ -32,20 +33,21 @@ export const COMPREHENSIVE = (() => {
 
   props(children[0]).inline = { isOpen: true };
   props(children[0]).label = 'inline open';
-  props(children[0]).marginTop = 30;
 
   props(children[1]).label = 'custom child, inline';
 
   props(children[2]).inline = undefined;
   props(children[2]).label = 'custom child, drill-in';
-  props(children[2]).header = { parentButton: false };
+  props(children[2]).header = { showParentButton: false };
 
   props(children[3]).isEnabled = false;
   props(children[3]).label = 'disabled';
   props(children[3]).chevron = { isVisible: true };
+  props(children[3]).marginTop = 20;
 
   props(children[4]).chevron = { isVisible: true };
   props(children[4]).label = 'twisty and drill-in';
+  props(children[4]).header = { marginBottom: 30 };
 
   props(children[5]).inline = undefined;
   props(children[5]).isSpinning = true;
