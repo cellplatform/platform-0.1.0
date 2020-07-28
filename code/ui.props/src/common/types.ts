@@ -6,9 +6,12 @@ export * from '@platform/ui.icon/lib/types';
 export * from '../types';
 
 import * as t from '../types';
-import { ITreeNode } from '@platform/ui.tree/lib/types';
+import { ITreeViewNode, ITreeViewNodePropsBase } from '@platform/ui.tree/lib/types';
 
-export type IPropNode = ITreeNode<string, IPropNodeData>;
+type P = ITreeViewNodePropsBase & { data?: IPropNodeData };
+
+export type IPropNode = ITreeViewNode<P>;
+
 export type IPropNodeData = {
   path: string;
   key: string | number;

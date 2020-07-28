@@ -30,9 +30,9 @@ const NODE = constants.CLASS.NODE;
 export type TreeNodeTwisty = 'OPEN' | 'CLOSED' | null;
 
 export type ITreeNodeProps = {
+  node: t.ITreeViewNode;
   rootId?: string;
   children?: React.ReactNode;
-  node: t.ITreeNode;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
   iconRight?: IIcon | null;
@@ -119,7 +119,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
 
   private get nodeProps() {
     const { node } = this.props;
-    return node.props || {};
+    return node.props?.treeview || {};
   }
 
   private get theme() {
@@ -453,18 +453,18 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     );
   }
 
-  private mouseHandlers = (target: t.TreeNodeMouseEvent['target']) => {
+  private mouseHandlers = (target: t.ITreeViewMouse['target']) => {
     const { onMouse } = this.props;
     return TreeNode.mouseHandlers(() => this.props.node, target, onMouse);
   };
   public static mouseHandlers(
-    getNode: () => t.ITreeNode,
-    target: t.TreeNodeMouseEvent['target'],
+    getNode: () => t.ITreeViewNode,
+    target: t.ITreeViewMouse['target'],
     onMouse?: t.TreeNodeMouseEventHandler,
   ) {
     const handlers = mouse.handlers((e) => {
       const node = getNode();
-      const props = node.props || {};
+      const props = node.props?.treeview || {};
       const children = TreeUtil.children(node);
       if (onMouse) {
         e.cancel(); // NB: Cancelling the mouse event prevent bubbling up, where a child node causes the parent node to also fire.

@@ -4,13 +4,13 @@ import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { t } from '../common';
 
 type Button = t.MouseEvent['button'];
-type Target = t.TreeNodeMouseTarget;
+type Target = t.TreeViewMouseTarget;
 
 /**
  * Helpers for filtering different event streams for a tree with sensible defaults.
  */
-export class TreeEvents<N extends t.ITreeNode = t.ITreeNode> implements t.ITreeEvents<N> {
-  public static create<N extends t.ITreeNode = t.ITreeNode>(
+export class TreeEvents<N extends t.ITreeViewNode = t.ITreeViewNode> implements t.ITreeEvents<N> {
+  public static create<N extends t.ITreeViewNode = t.ITreeViewNode>(
     event$: Observable<t.TreeViewEvent>,
     dispose$?: Observable<any>,
   ): t.ITreeEvents<N> {
@@ -57,7 +57,7 @@ export class TreeEvents<N extends t.ITreeNode = t.ITreeNode> implements t.ITreeE
     const buttons = toButtons(options.button);
     return this.event$.pipe(
       filter((e) => e.type === 'TREEVIEW/mouse'),
-      map((e) => e.payload as t.TreeNodeMouseEvent<N>),
+      map((e) => e.payload as t.ITreeViewMouse<N>),
       filter((e) => {
         if (buttons.includes('RIGHT') && type === 'CLICK' && e.type === 'UP') {
           // NB: The CLICK event for a right button does not fire from the DOM
@@ -78,7 +78,7 @@ export class TreeEvents<N extends t.ITreeNode = t.ITreeNode> implements t.ITreeE
     const targets = (type: t.MouseEventType) => {
       const args = { button, type };
       return {
-        get all$() {
+        get $() {
           return mouse$({ ...args });
         },
         get node$() {

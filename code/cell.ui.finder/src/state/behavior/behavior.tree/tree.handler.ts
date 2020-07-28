@@ -1,4 +1,4 @@
-import { TreeUtil, TreeView } from '@platform/ui.tree';
+import { TreeView } from '@platform/ui.tree';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
@@ -11,7 +11,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const left = tree.mouse({ button: ['LEFT'] });
 
   const toggleTwisty = (node: string) => {
-    const root = TreeUtil.toggleIsOpen(store.state.tree.root, node);
+    const root = TreeView.util.toggleIsOpen(store.state.tree.root, node);
     ctx.fire({ type: 'APP:FINDER/tree', payload: { root } });
   };
 
@@ -48,16 +48,16 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   /**
    * Drill-in
    */
-  const drillIn = (node?: t.ITreeNode) => {
+  const drillIn = (node?: t.ITreeViewNode) => {
     const child = (node?.children || [])[0]?.id;
     select(child);
   };
 
-  left.down.drillIn$.subscribe((e) => drillIn(e));
+  left.down.drillIn$.subscribe((e) => drillIn(e as any)); // HACK: temp, this will get replaced with newer [TreeState] controllers
   left.dblclick.node$
     .pipe(
       filter((e) => !Boolean(e.props.inline)),
       filter((e) => e.children.length > 0),
     )
-    .subscribe((e) => drillIn(e));
+    .subscribe((e) => drillIn(e as any)); // HACK: temp, this will get replaced with newer [TreeState] controllers
 }

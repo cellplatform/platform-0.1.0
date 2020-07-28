@@ -19,7 +19,7 @@ export type ICommandTreeViewProps = {
   style?: CssValue;
 };
 export type ICommandTreeViewState = {
-  treeRoot?: t.ITreeNode;
+  treeRoot?: t.ITreeViewNode;
 };
 
 export class CommandTreeView extends React.PureComponent<
@@ -29,7 +29,7 @@ export class CommandTreeView extends React.PureComponent<
   public state: ICommandTreeViewState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ICommandTreeViewState>>();
-  private mouse$ = new Subject<t.TreeNodeMouseEvent>();
+  private mouse$ = new Subject<t.ITreeViewMouse>();
   private _events$ = new Subject<t.CommandTreeEvent>();
   public events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
 
@@ -71,7 +71,7 @@ export class CommandTreeView extends React.PureComponent<
       // Step up to parent.
       .pipe(filter((e) => e.target === 'PARENT'))
       .subscribe((e) => {
-        const parent = TreeView.util.parent(this.state.treeRoot, e.node);
+        const parent = TreeView.query(this.state.treeRoot).parent(e.node);
         this.fireCurrent(parent, 'PARENT');
       });
 
@@ -136,9 +136,10 @@ export class CommandTreeView extends React.PureComponent<
     const currentCommandId = util.asTreeNodeId(currentCommand);
     const dimmed = currentCommand && !isAutocompleted ? [] : filterDimmed(fuzzyMatches);
 
-    TreeView.util.walkDown(treeRoot, (e) => {
+    TreeView.query(treeRoot).walkDown((e) => {
       const node = e.node;
-      const command = node.data as t.ICommand;
+      const props = node.props || ({} as any);
+      const command = props.data.command;
 
       // Dim any nodes that are filtered out due to the current input text.
       if (dimmed.includes(node.id)) {
@@ -158,7 +159,7 @@ export class CommandTreeView extends React.PureComponent<
   }
 
   private fireCurrent(
-    node: string | t.ITreeNode | undefined,
+    node: string | t.ITreeViewNode | undefined,
     direction: t.ICommandTreeCurrent['direction'],
   ) {
     const command = util.asCommand(this.rootCommand, node);
@@ -178,7 +179,7 @@ export class CommandTreeView extends React.PureComponent<
   public render() {
     return (
       <TreeView
-        node={this.state.treeRoot}
+        root={this.state.treeRoot}
         current={this.currentNodeId}
         theme={this.props.theme}
         background={this.props.background}

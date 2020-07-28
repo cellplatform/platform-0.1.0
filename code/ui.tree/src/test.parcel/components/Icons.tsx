@@ -24,6 +24,8 @@ import {
   MdMoreHoriz,
 } from 'react-icons/md';
 
+import { FiBox } from 'react-icons/fi';
+
 /**
  * Icon collection.
  */
@@ -33,6 +35,7 @@ export class Icons {
   public static Close = icon(MdClose);
   public static Tick = icon(MdCheck);
   public static Face = icon(MdFace);
+  public static Box = icon(FiBox);
 
   // Arrow.
   public static ArrowLeft = icon(MdArrowBack);

@@ -53,7 +53,7 @@ export class Tree extends React.PureComponent<ITreeProps> {
     return (
       <div {...styles.base}>
         <TreeView
-          node={this.model.root}
+          root={this.model.root}
           current={this.model.current}
           theme={DARK}
           background={'NONE'}

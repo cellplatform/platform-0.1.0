@@ -158,7 +158,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
   }
 
   public get nodeData() {
-    return this.props.node.data as t.IPropNodeData;
+    return this.props.node.props?.data as t.IPropNodeData;
   }
 
   public get path() {
@@ -193,7 +193,7 @@ export class PropEditor extends React.PureComponent<IPropEditorProps, IPropEdito
 
   public get parentType() {
     const { parentNode } = this.props;
-    const data = parentNode ? parentNode.data : undefined;
+    const data = parentNode.props?.data;
     const value = data ? data.value : undefined;
     return util.toType(value);
   }

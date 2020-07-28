@@ -1,8 +1,8 @@
 export * from '../../common/types';
 import * as t from '../../common/types';
 
-export type IDebugSheetRead = t.IStateObject<IDebugSheet, DebugSheetEvent>;
-export type IDebugSheetWrite = t.IStateObjectWrite<IDebugSheet, DebugSheetEvent>;
+export type IDebugSheetRead = t.IStateObjectReadOnly<IDebugSheet, DebugSheetEvent>;
+export type IDebugSheetWrite = t.IStateObjectWritable<IDebugSheet, DebugSheetEvent>;
 
 export type IDebugSheet = {
   uri: string;

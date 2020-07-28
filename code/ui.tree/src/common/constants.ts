@@ -3,6 +3,7 @@ export const COLORS = {
   BLACK: '#000',
   DARK: '#293042', // Inky black.
   BLUE: '#477AF7',
+  PURPLE: '#8F2298',
 };
 
 export const CLASS = {

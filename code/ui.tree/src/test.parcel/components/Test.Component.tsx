@@ -12,10 +12,11 @@ import * as sample from '../sample';
 import { Icons } from './Icons';
 
 export type ITestProps = { style?: CssValue };
+type N = t.ITreeViewNode;
 
 export type ITestState = {
   theme?: t.TreeTheme;
-  root?: t.ITreeNode;
+  root?: t.ITreeViewNode;
   current?: string;
 };
 
@@ -31,7 +32,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private event$ = new Subject<t.TreeViewEvent>();
-  private mouse$ = new Subject<t.TreeNodeMouseEvent>();
+  private mouse$ = new Subject<t.ITreeViewMouse>();
 
   /**
    * [Lifecycle]
@@ -64,7 +65,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
      * Handle mouse.
      */
 
-    const toggle = (node: t.ITreeNode) => {
+    const toggle = (node: t.ITreeViewNode) => {
       const toggled = TreeView.util.toggleIsOpen(this.state.root, node);
       this.state$.next({ root: toggled });
     };
@@ -107,8 +108,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         filter((e) => e.target === 'PARENT'),
       )
       .subscribe((e) => {
-        const args = { inline: false };
-        const parent = TreeView.util.parent(this.state.root, e.node, args);
+        const parent = TreeView.query(this.state.root).ancestor(
+          e.node,
+          (e) => e.level > 0 && !e.node.props?.treeview?.inline,
+        );
         return this.state$.next({ current: parent ? parent.id : undefined });
       });
   }
@@ -181,7 +184,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <TreeView
-          node={this.state.root}
+          root={this.state.root}
           current={this.state.current}
           theme={this.state.theme}
           background={'NONE'}
@@ -231,7 +234,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     );
   };
 
-  private renderPanel: t.RenderTreePanel<t.ITreeNode> = (e) => {
+  private renderPanel: t.RenderTreePanel<t.ITreeViewNode> = (e) => {
     /**
      * NOTE:  Use this flag to revent custom panel rendering if
      *        the node is opened "inline" within it's parent.

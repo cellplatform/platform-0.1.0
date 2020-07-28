@@ -1,9 +1,12 @@
-import * as t from '../types';
-import { value as valueUtil, defaultValue } from '@platform/util.value';
+import { TreeQuery } from '@platform/state/lib/TreeQuery';
+import { defaultValue, value as valueUtil } from '@platform/util.value';
+import { clone } from 'ramda';
+
+import * as t from '../common/types';
 import { TreeEvents } from '../TreeEvents';
 
-import { clone } from 'ramda';
-const R = { clone };
+type N = t.ITreeViewNode;
+type P = t.ITreeViewNodeProps;
 
 /**
  * Helpers for traversing and operating on the tree data-structure.
@@ -11,246 +14,49 @@ const R = { clone };
 export class TreeUtil {
   public static events = TreeEvents;
 
+  public static query<T extends N = N>(args?: T | t.ITreeQueryArgs<T>) {
+    args = args === undefined ? ({ id: '' } as T) : args;
+    return TreeQuery.create<T>(args);
+  }
+
   /**
    * Retrieves the children of a node (or an empty array).
    */
-  public static children<T extends t.ITreeNode>(node?: T) {
-    return node ? node.children || [] : [];
+  public static children<T extends N>(
+    of?: T,
+    fn?: t.TreeChildrenVisitor<T> | t.TreeChildrenOptions,
+    options: t.TreeChildrenOptions = {},
+  ) {
+    return TreeQuery.children<T>(of, fn, options);
   }
 
   /**
    * Retrieves the child node at the given index.
    */
-  public static childAt<T extends t.ITreeNode>(index: number, parent?: T) {
-    return TreeUtil.children<T>(parent)[index];
+  public static childAt<T extends N>(index: number, parent?: T) {
+    return TreeQuery.childAt(index, parent);
   }
 
   /**
    * Determines whether the given node exists within the parent.
    */
-  public static hasChild(
-    parent: t.ITreeNode | undefined,
-    child: t.ITreeNode | t.ITreeNode['id'] | undefined,
-  ) {
-    const nodes = TreeUtil.children(parent);
-    const id = toId(child);
-    return nodes.some((n) => n.id === id);
-  }
-
-  /**
-   * Walks a tree (top down).
-   */
-  public static walkDown<T extends t.ITreeNode>(
-    node: T | undefined,
-    fn: (args: t.ITreeDescend<T>) => any,
-  ) {
-    let stopped = false;
-    const walk = (args: {
-      node?: t.ITreeNode;
-      parent?: t.ITreeNode;
-      depth: number;
-      index: number;
-    }) => {
-      if (!args.node || stopped) {
-        return;
-      }
-      let skipChildren = false;
-      fn({
-        node: args.node as T,
-        parent: args.parent as T,
-        index: args.index,
-        depth: args.depth,
-        stop: () => (stopped = true),
-        skip: () => (skipChildren = true),
-      });
-      if (stopped) {
-        return;
-      }
-      let index = -1;
-      if (!skipChildren) {
-        for (const child of TreeUtil.children(args.node)) {
-          index++;
-          walk({
-            node: child,
-            parent: args.node,
-            index,
-            depth: args.depth + 1,
-          }); // <== RECURSION 🌳
-        }
-      }
-    };
-    return walk({ node, depth: 0, index: -1 });
-  }
-
-  /**
-   * Walks the tree from the given node up to the root.
-   */
-  public static walkUp<T extends t.ITreeNode>(
-    root: T | undefined,
-    startAt: T | T['id'] | undefined,
-    fn: (args: t.ITreeAscend<T>) => any,
-  ) {
-    const current = typeof startAt === 'string' ? TreeUtil.findById(root, startAt) : startAt;
-    if (current) {
-      let stop = false;
-      const parentNode = TreeUtil.parent(root, current);
-      const args: t.ITreeAscend<T> = {
-        node: current,
-        parent: parentNode,
-        get index() {
-          const id = current ? current.id : '';
-          return !parentNode ? -1 : (parentNode.children || []).findIndex((node) => node.id === id);
-        },
-        stop: () => (stop = true),
-      };
-      fn(args);
-      if (!stop && parentNode) {
-        TreeUtil.walkUp(root, args.parent, fn); // <== RECURSION 🌳
-      }
-    }
-  }
-
-  /**
-   * Walks down the tree looking for the first match (top-down).
-   */
-  public static find<T extends t.ITreeNode>(
-    root: T | undefined,
-    match: (args: t.ITreeDescend<T>) => boolean,
-  ): T | undefined {
-    if (!root) {
-      return;
-    }
-    let result: T | undefined;
-    TreeUtil.walkDown(root, (e) => {
-      if (match(e) === true) {
-        result = e.node;
-        e.stop();
-      }
-    });
-    return result ? { ...result } : undefined;
-  }
-
-  /**
-   * Walks the down the tree looking for the given node (top-down).
-   */
-  public static findById<T extends t.ITreeNode>(
-    root: T | undefined,
-    id: t.ITreeNode | t.ITreeNode['id'] | undefined,
-    options: { throw?: boolean } = {},
-  ): T | undefined {
-    if (!id) {
-      return undefined;
-    }
-    const targetId = typeof id === 'string' ? id : id.id;
-    const result = id ? TreeUtil.find<T>(root, (e) => e.node.id === targetId) : undefined;
-    if (!result && options.throw) {
-      throw new Error(`Failed to find tree-view node with the id '${id}'.`);
-    }
-    return result;
-  }
-
-  /**
-   * Walks the up tree looking for the first match (bottom-up).
-   */
-  public static ancestor<T extends t.ITreeNode>(
-    root: T | undefined,
-    node: T | string | undefined,
-    match: (args: t.ITreeAscend<T>) => boolean,
-  ): T | undefined {
-    if (!root) {
-      return;
-    }
-    let result: T | undefined;
-    TreeUtil.walkUp<T>(root, node, (e) => {
-      if (match(e)) {
-        result = e.node;
-        e.stop();
-      }
-    });
-    return result;
+  public static hasChild(parent: N | undefined, child: N | N['id'] | undefined) {
+    return TreeQuery.hasChild(parent, child);
   }
 
   /**
    * Maps over each node in a tree.
    */
-  public static map<T extends t.ITreeNode, R>(
-    node: T | undefined,
-    fn: (args: t.ITreeDescend<T>) => R,
-  ) {
+  public static map<T extends N, R>(node: T | undefined, fn: (args: t.ITreeDescend<T>) => R) {
     let result: R[] = [];
-    TreeUtil.walkDown<T>(node, (e) => (result = [...result, fn(e) as R]));
-    return result;
-  }
-
-  /**
-   * Retrieves the depth (index) of the given node.
-   */
-  public static depth(
-    root: t.ITreeNode | undefined,
-    node: t.ITreeNode | t.ITreeNode['id'] | undefined,
-  ) {
-    let depth = -1;
-    if (!node || !root) {
-      return depth;
-    }
-    const id = toId(node);
-    TreeUtil.walkDown(root, (e) => {
-      if (e.node.id === id) {
-        depth = e.depth;
-        e.stop();
-      }
-    });
-    return depth;
-  }
-
-  /**
-   * Retrieves the parent of a node within the tree.
-   */
-  public static parent<T extends t.ITreeNode>(
-    root: T | undefined,
-    node: T | T['id'] | undefined,
-    options: { inline?: boolean } = {},
-  ): T | undefined {
-    if (!node || !root) {
-      return undefined;
-    }
-
-    // Look up the node if an ID was passed.
-    if (typeof node !== 'object') {
-      const id = node;
-      node = TreeUtil.findById<T>(root, id);
-      if (!node) {
-        throw new Error(`Cannot find parent of '${id}'. A tree-node with that ID was not found.`);
-      }
-    }
-
-    let result: T | undefined;
-    const target: t.ITreeNode = node;
-
-    TreeUtil.walkDown<T>(root, (e) => {
-      if (TreeUtil.hasChild(e.node, target)) {
-        const props = e.node.props || {};
-        if (options.inline === false && props.inline) {
-          // Not a match on the given "showChildren" filter.
-          // Keep going...
-          e.stop();
-          result = TreeUtil.parent(root, e.node); // <== RECURSION.
-        } else {
-          result = e.node;
-          e.stop();
-        }
-      }
-    });
+    TreeUtil.query<T>(node).walkDown((e) => (result = [...result, fn(e) as R]));
     return result;
   }
 
   /**
    * Retrieves the descendent hierarchy to a given node.
    */
-  public static pathList<T extends t.ITreeNode>(
-    root: T | undefined,
-    node: T | T['id'] | undefined,
-  ) {
+  public static pathList<T extends N>(root: T | undefined, node: T | T['id'] | undefined) {
     if (!node || !root) {
       return [];
     }
@@ -262,23 +68,23 @@ export class TreeUtil {
       }
       items = [...items, node];
       if (node.id !== root.id) {
-        const next = TreeUtil.parent(root, node);
+        const next = TreeUtil.query(root).parent(node);
         if (next) {
-          add(next); // <== RECURSION
+          add(next); // <== RECURSION 🌳
         }
       }
     };
 
-    add(TreeUtil.findById(root, node));
+    add(TreeUtil.query<T>(root).findById(node));
     return items.reverse();
   }
 
   /**
    * Replaces the given node in the tree.
    */
-  public static replace<T extends t.ITreeNode>(
+  public static replace<T extends N>(
     root: T | undefined,
-    node: t.ITreeNode | T['id'] | undefined,
+    node: N | T['id'] | undefined,
   ): T | undefined {
     if (!root) {
       return undefined;
@@ -292,7 +98,7 @@ export class TreeUtil {
     // Look up the node if an ID was passed.
     if (typeof node !== 'object') {
       const id = node;
-      target = TreeUtil.findById<T>(root, id);
+      target = TreeUtil.query<T>(root).findById(id);
       if (!target) {
         throw new Error(`A tree-node with the id '${id}' was not found.`);
       }
@@ -305,8 +111,8 @@ export class TreeUtil {
     }
 
     // Walk the tree looking for the item to place.
-    root = R.clone(root);
-    TreeUtil.walkDown<T>(root, (e) => {
+    root = clone(root);
+    TreeUtil.query<T>(root).walkDown((e) => {
       if (target && e.node.id === target.id) {
         if (e.parent && e.index > -1) {
           const items = [...TreeUtil.children(e.parent)];
@@ -324,7 +130,7 @@ export class TreeUtil {
   /**
    * Replaces (or inserts) the given child of a node.
    */
-  public static replaceChild<T extends t.ITreeNode>(
+  public static replaceChild<T extends N>(
     node: T | undefined,
     child: T | undefined,
     options: { insert?: 'FIRST' | 'LAST' } = {},
@@ -351,7 +157,7 @@ export class TreeUtil {
   /**
    * Adds a hierarchy of nodes to the tree based on the given path.
    */
-  public static buildPath<T extends t.ITreeNode = t.ITreeNode>(
+  public static buildPath<T extends N = N>(
     root: T,
     factory: t.TreeNodePathFactory<T>,
     path: string,
@@ -373,7 +179,7 @@ export class TreeUtil {
     for (const id of [...ids].reverse()) {
       // If there is an existing node, and this is not a `force` override,
       // use the existing node as the parent, otherwise create it now.
-      const existing = TreeUtil.findById(root, id);
+      const existing = TreeUtil.query(root).findById(id);
 
       let level = -1;
       const context: t.ITreeNodePathContext = {
@@ -402,7 +208,7 @@ export class TreeUtil {
   /**
    * Creates a version of `buildPath` with the factory curried.
    */
-  public static pathBuilder<T extends t.ITreeNode = t.ITreeNode>(
+  public static pathBuilder<T extends N = N>(
     root: T,
     factory: t.TreeNodePathFactory<T>,
     options: { delimiter?: string } = {},
@@ -423,48 +229,54 @@ export class TreeUtil {
   /**
    * Updates a set of property values on the given node.
    */
-  public static setProps<T extends t.ITreeNode>(
+  public static setProps<T extends N>(
     root: T | undefined,
     id: T | T['id'],
-    props?: Partial<t.ITreeNodeProps>,
+    props?: Partial<t.ITreeViewNodeProps>,
   ): T | undefined {
     if (!props || !root) {
       return root;
     }
-    let node = typeof id === 'object' ? id : TreeUtil.findById(root, id);
+    let node = typeof id === 'object' ? id : TreeUtil.query<T>(root).findById(id);
     if (!node) {
       throw new Error(`A tree-node with the id '${id}' was not found.`);
     }
-    node = { ...node, props: { ...node.props, ...props } };
+    const treeview = { ...node.props?.treeview, ...props };
+    node = { ...node, props: { ...node.props, treeview } };
     return TreeUtil.replace<T>(root, node);
   }
 
   /**
-   * Retrieves the props for the given node.
+   * Retrieve the { props:{ treeview: {...} } } node.
    */
-  public static props<T extends t.ITreeNode>(node?: T) {
-    return node ? node.props || {} : {};
+  public static props(of: t.INode, fn?: (treeProps: P) => void): P {
+    const props = (of.props = of.props || {}) as t.ITreeViewNodePropsBase;
+    const treeview = (props.treeview = props.treeview || {}) as P;
+    if (typeof fn === 'function') {
+      fn(treeview);
+    }
+    return treeview;
   }
 
   /**
    * Toggles the the open state of the given node.
    */
-  public static toggleIsOpen<T extends t.ITreeNode>(
+  public static toggleIsOpen<T extends N>(
     root: T | undefined,
-    node: t.ITreeNode | string | undefined,
+    node: N | string | undefined,
   ): T | undefined {
-    node = typeof node === 'string' ? TreeUtil.findById(root, node) : node;
+    node = typeof node === 'string' ? TreeUtil.query<T>(root).findById(node) : node;
 
     if (!node || !root) {
       return root;
     }
-    const props = node.props || {};
-    let inline = props.inline;
+    const treeProps = TreeUtil.props(node);
+    let inline = treeProps.inline;
     if (!inline) {
       return root;
     }
     inline = { ...inline, isOpen: !inline.isOpen };
-    node = { ...node, props: { ...props, inline } };
+    node = { ...node, props: { treeview: { ...treeProps, inline } } };
     return TreeUtil.replace<T>(root, node);
   }
 
@@ -472,14 +284,14 @@ export class TreeUtil {
    * Ensures all inline nodes in the parent hierarchy leading to
    * the given node are in an "toggled-open" state.
    */
-  public static openToNode<T extends t.ITreeNode>(
+  public static openToNode<T extends N>(
     root: T | undefined,
-    id: t.ITreeNode | t.ITreeNode['id'] | undefined,
+    id: N | N['id'] | undefined,
   ): T | undefined {
     if (!root || !id) {
       return root;
     }
-    const node = typeof id === 'string' ? TreeUtil.findById(root, id) : id;
+    const node = typeof id === 'string' ? TreeUtil.query<T>(root).findById(id) : id;
     TreeUtil.pathList(root, node).forEach((node) => {
       const p = TreeUtil.props(node);
       if (p.inline !== undefined) {
@@ -493,28 +305,22 @@ export class TreeUtil {
   /**
    * Determines if the given node is open.
    */
-  public static isOpen(node?: t.ITreeNode) {
-    const inline = TreeUtil.props(node).inline;
+  public static isOpen(node?: N) {
+    const inline = node ? TreeUtil.props(node).inline : undefined;
     return inline ? inline.isOpen : undefined;
   }
 
   /**
    * Determined if the given node is enabled.
    */
-  public static isEnabled(node?: t.ITreeNode) {
-    return defaultValue(TreeUtil.props(node).isEnabled, true);
+  public static isEnabled(node?: N) {
+    return node ? defaultValue(TreeUtil.props(node).isEnabled, true) : true;
   }
 
   /**
    * Determines if the given node is selected.
    */
-  public static isSelected(node?: t.ITreeNode) {
-    return defaultValue(TreeUtil.props(node).isSelected, false);
+  public static isSelected(node?: N) {
+    return node ? defaultValue(TreeUtil.props(node).isSelected, false) : false;
   }
 }
-
-/**
- * [Helpers]
- */
-const toId = (node: t.ITreeNode | t.ITreeNode['id'] | undefined) =>
-  typeof node === 'object' ? node.id : node;

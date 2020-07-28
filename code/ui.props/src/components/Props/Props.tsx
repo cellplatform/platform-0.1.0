@@ -70,7 +70,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
      */
     const treeMouse$ = tree$.pipe(
       filter((e) => e.type === 'TREEVIEW/mouse'),
-      map((e) => e.payload as t.TreeNodeMouseEvent),
+      map((e) => e.payload as t.ITreeViewMouse),
     );
     const treeClick$ = treeMouse$.pipe(
       filter((e) => e.type === 'CLICK'),
@@ -97,7 +97,9 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
         filter((e) => e.target === 'NODE'),
         filter((e) => Boolean(e.node && e.node.children && e.node.children.length > 0)),
         filter((e) =>
-          ['object', 'array'].includes(util.toType((e.node.data as t.IPropNodeData).value)),
+          ['object', 'array'].includes(
+            util.toType(((e.node as t.IPropNode).props?.data as t.IPropNodeData).value),
+          ),
         ),
       )
       .subscribe((e) => {
@@ -131,8 +133,10 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     const { filter, data } = this.props;
     const root: t.IPropNode = {
       id: ROOT,
-      props: { header: { isVisible: false } },
-      data: { path: ROOT, key: '', value: data, type: util.toType(data), action: 'CHANGE' },
+      props: {
+        treeview: { header: { isVisible: false } },
+        data: { path: ROOT, key: '', value: data, type: util.toType(data), action: 'CHANGE' },
+      },
     };
 
     const body = BODY.PROD_EDITOR;
@@ -143,7 +147,13 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
       filter,
       insertable: this.insertableTypes,
       deletable: this.deletableTypes,
-      formatNode: (node) => ({ ...node, props: { ...node.props, body } }),
+      formatNode: (node) => ({
+        ...node,
+        props: {
+          ...node.props,
+          treeview: { ...node.props?.treeview, body },
+        },
+      }),
     });
   }
 
@@ -161,7 +171,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     return (
       <div {...css(styles.base, this.props.style)}>
         <TreeView
-          node={this.root}
+          root={this.root}
           current={this.state.current}
           background={'NONE'}
           theme={theme}
@@ -178,8 +188,8 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
   private nodeFactory: t.RenderTreeNodeBody = (e) => {
     if (e.body === BODY.PROD_EDITOR) {
       const node = e.node as t.IPropNode;
-      const parentNode = TreeView.util.parent(this.root, node) as t.IPropNode;
-      const isDeletable = node.data ? node.data.isDeletable : false;
+      const parentNode = TreeView.query(this.root).parent(node) as t.IPropNode;
+      const isDeletable = node.props?.data?.isDeletable || false;
       return (
         <PropEditor
           rootData={this.props.data}

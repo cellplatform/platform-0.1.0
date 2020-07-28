@@ -29,7 +29,7 @@ export class Log extends React.PureComponent<IDebugLogProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
+    this.store.event.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
 
     // Add events to the list as they arrive.
     const event$ = this.props.event$.pipe(takeUntil(this.unmounted$));

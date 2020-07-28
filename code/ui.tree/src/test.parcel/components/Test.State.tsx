@@ -4,36 +4,80 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Tree } from '../..';
+import { TreeView } from '../..';
 import { t } from '../../common';
+import { TreeViewNavigation } from '../../TreeViewNavigation';
 import { Icons } from './Icons';
+import { TreeViewState } from '../../components.dev/TreeViewState';
 
-type Node = t.ITreeNode;
-const ROOT: Node = {
-  id: 'root',
-  props: { label: 'Root' },
-  children: [{ id: 'child-1', props: { label: 'Child-1' } }],
+type Node = t.ITreeViewNode;
+
+const SAMPLES = {
+  DEFAULT: {
+    id: 'root',
+    props: { treeview: { label: 'Root', header: { isVisible: false } } },
+    children: [
+      {
+        id: 'Child-1',
+        props: { treeview: { label: 'Child-1', marginTop: 45 } },
+        children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
+      },
+    ],
+  } as Node,
+  TWISTY: {
+    id: 'root',
+    props: { treeview: { label: 'Root', header: { isVisible: false } } },
+    children: [
+      {
+        id: 'Child-1',
+        props: { treeview: { label: 'Child-1', marginTop: 45, inline: {} } },
+        children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
+      },
+    ],
+  } as Node,
 };
 
+Object.keys(SAMPLES).forEach((key) => {
+  const node = SAMPLES[key];
+  TreeView.query(node).walkDown((e) => {
+    TreeView.util.props(e.node, (props) => {
+      props.label = props.label || e.id;
+    });
+  });
+});
+
 export type ITestProps = { style?: CssValue };
-export type ITestState = { root?: t.ITreeNode; current?: string };
+export type ITestState = {
+  root?: t.ITreeViewNode;
+  current?: string;
+};
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = { root: ROOT };
+  public state: ITestState = { root: SAMPLES.DEFAULT };
   private state$ = new Subject<Partial<ITestState>>();
   private unmounted$ = new Subject();
-  private event$ = new Subject<t.TreeViewEvent>();
+  private treeview$ = new Subject<t.TreeViewEvent>();
 
-  private rootState = Tree.State.create({ root: ROOT, dispose$: this.unmounted$ });
+  private store = TreeView.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
+  private nav = TreeViewNavigation.create({
+    tree: this.store,
+    treeview$: this.treeview$,
+    dispose$: this.unmounted$,
+    strategy: TreeViewNavigation.strategies.default,
+  });
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    this.rootState.changed$
+    this.store.event.changed$
       .pipe(takeUntil(this.unmounted$))
       .subscribe((e) => this.state$.next({ root: e.to }));
+
+    this.nav.redraw$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
+      this.forceUpdate();
+    });
   }
 
   public componentWillUnmount() {
@@ -49,47 +93,102 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       base: css({
         Absolute: 0,
         Flex: 'horizontal-stretch-stretch',
+        backgroundColor: color.format(0.5),
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        {this.renderLeft()}
-        {this.renderRight()}
+        {this.renderTree('left')}
+        {this.renderCenter()}
+        {this.renderTree('right')}
       </div>
     );
   }
 
-  private renderLeft() {
+  private renderTree(edge: 'left' | 'right') {
     const styles = {
       base: css({
         width: 280,
         display: 'flex',
-        borderRight: `solid 1px ${color.format(-0.1)}`,
+        borderLeft: edge === 'right' && `solid 1px ${color.format(-0.1)}`,
+        borderRight: edge === 'left' && `solid 1px ${color.format(-0.1)}`,
+        WebkitAppRegion: 'drag',
       }),
     };
     return (
       <div {...styles.base}>
-        <Tree.View
-          node={this.state.root}
-          current={this.state.current}
-          event$={this.event$}
+        <TreeView
+          root={this.nav.root}
+          current={this.nav.current}
+          event$={this.treeview$}
           renderIcon={this.renderIcon}
+          background={'NONE'}
           tabIndex={0}
         />
       </div>
     );
   }
 
-  private renderRight() {
+  private renderCenter() {
     const styles = {
       base: css({
+        flex: 1,
+        position: 'relative',
         boxSizing: 'border-box',
+        backgroundColor: color.format(1),
+        Flex: 'vertical-stretch-stretch',
+      }),
+      body: css({
+        position: 'relative',
+        flex: 1,
+      }),
+      scroll: css({
+        Absolute: 0,
         padding: 30,
+        paddingTop: 80,
+        PaddingX: 50,
+        Scroll: true,
+        paddingBottom: 100,
       }),
     };
+
     return (
       <div {...styles.base}>
-        <Button onClick={this.addChildOfRoot}>add: child state</Button>
+        {this.renderToolbar()}
+        <div {...styles.body}>
+          <div {...styles.scroll}>
+            <TreeViewState store={this.store} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  private renderToolbar() {
+    const styles = {
+      base: css({
+        position: 'relative',
+        height: 34,
+        borderBottom: `solid 1px ${color.format(-0.1)}`,
+        Flex: 'horizontal-center-start',
+        fontSize: 14,
+        PaddingX: 15,
+        color: color.format(-0.3),
+      }),
+      spacer: css({ MarginX: 6 }),
+    };
+
+    const spacer = <div {...styles.spacer} />;
+
+    return (
+      <div {...styles.base}>
+        <Button onClick={this.onRedrawClick}>Redraw</Button>
+        {spacer}
+        <div>Load:</div>
+        {spacer}
+        <Button onClick={this.loadHandler(SAMPLES.DEFAULT)}>Default</Button>
+        {spacer}
+        <Button onClick={this.loadHandler(SAMPLES.TWISTY)}>Twisty</Button>
       </div>
     );
   }
@@ -99,13 +198,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   private renderIcon: t.RenderTreeIcon = (e) => Icons[e.icon];
 
-  private addChildOfRoot = () => {
-    const root = { id: 'foo', props: { label: 'Foo' } };
-    const child = this.rootState.add({ root });
+  private onRedrawClick = () => {
+    this.forceUpdate();
+  };
 
-    child.change((draft, ctx) => {
-      const children = ctx.children(draft);
-      children.push({ id: 'my-child', props: { label: 'hello' } });
-    });
+  private loadHandler = (root: Node) => {
+    return () => {
+      this.store.change((draft) => (draft.children = root.children));
+    };
   };
 }

@@ -9,10 +9,10 @@ import { Spinner } from '@platform/ui.spinner';
 import { ITreeNodeProps, TreeNode, TreeNodeTwisty } from '../TreeNode';
 
 export type ITreeNodeListProps = {
+  node: t.ITreeViewNode<any>;
   rootId?: string;
-  node: t.ITreeNode<any>;
   depth?: number;
-  defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
+  defaultNodeProps?: t.ITreeViewNodeProps | t.GetTreeNodeProps;
   renderPanel?: t.RenderTreePanel;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
@@ -30,7 +30,7 @@ export type ITreeNodeListProps = {
 
 type IRenderNodeProps = {
   index: number;
-  node: t.ITreeNode;
+  node: t.ITreeViewNode;
   twisty?: TreeNodeTwisty;
   iconRight?: ITreeNodeProps['iconRight'];
   isVisible: boolean;
@@ -52,7 +52,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
 
   private get nodes() {
     const { node } = this.props;
-    return (node.children || []) as t.ITreeNode[];
+    return (node.children || []) as t.ITreeViewNode[];
   }
 
   private get depth() {
@@ -66,7 +66,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
   public render() {
     const theme = this.theme;
     const { isBorderVisible = false, background = 'THEME' } = this.props;
-    const { isSpinning } = this.nodeProps;
+    const { isSpinning } = this.nodeProps.treeview || {};
     const nodes = this.nodes;
     const paddingTop = defaultValue(this.props.paddingTop, 0);
     const isScrollable = defaultValue(this.props.isScrollable, true);
@@ -77,6 +77,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
         position: 'relative',
         backgroundColor: background === 'THEME' ? color.format(theme.bg) : undefined,
         overflow: 'hidden',
+        boxSizing: 'border-box',
       }),
       list: css({
         Absolute: isScrollable ? 0 : undefined,
@@ -107,7 +108,9 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     const nodeProps = this.nodes.map((v, i) => this.nodeRenderProps(i, nodes));
     const hasSomeInlineChildren = nodeProps.some((p) => p.twisty !== undefined);
     const hasSomePanelChildren = nodeProps.some((p) => p.iconRight !== undefined);
-    const hasSomeIcons = nodeProps.map((p) => p.node.props || {}).some((p) => p.icon !== undefined);
+    const hasSomeIcons = nodeProps
+      .map((p) => p.node.props?.treeview || {})
+      .some((p) => p.icon !== undefined);
     const elItems = nodes.map((v, i) => {
       const props = nodeProps[i];
       return this.renderNode({
@@ -141,7 +144,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
   /**
    * Calculate properties for rendering a single node.
    */
-  private nodeRenderProps(index: number, siblings: t.ITreeNode[]): IRenderNodeProps {
+  private nodeRenderProps(index: number, siblings: t.ITreeViewNode[]): IRenderNodeProps {
     const node = siblings[index];
     if (!node) {
       throw new Error(`Index ${index} out of range [0..${siblings.length - 1}].`);
@@ -153,7 +156,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     const hasChildren = totalChildren > 0;
 
     // Prepare the node-props.
-    let props: t.ITreeNodeProps = { ...node.props } || {};
+    let treeview: t.ITreeViewNodeProps = { ...node.props?.treeview } || {};
     const defaultNodeProps = this.defaultNodeProps({
       index,
       node,
@@ -162,26 +165,26 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
       isFirst,
       isLast,
     });
-    props = { ...defaultNodeProps, ...props };
+    treeview = { ...defaultNodeProps, ...treeview };
 
     // Determine the icons to show.
-    const iconRight = this.toRightIcon(props, node.children);
+    const iconRight = this.toRightIcon(treeview, node.children);
     let twisty: TreeNodeTwisty | undefined;
     if (
-      props.inline &&
-      (hasChildren || props.inline.isVisible) &&
-      props.inline.isVisible !== false
+      treeview.inline &&
+      (hasChildren || treeview.inline.isVisible) &&
+      treeview.inline.isVisible !== false
     ) {
-      twisty = props.inline.isOpen ? 'OPEN' : 'CLOSED';
+      twisty = treeview.inline.isOpen ? 'OPEN' : 'CLOSED';
     }
 
     // Finish up.
     const result: IRenderNodeProps = {
       index,
-      node: { ...node, props },
+      node: { ...node, props: { ...node.props, treeview } },
       twisty,
       iconRight,
-      isVisible: defaultValue(props.isVisible, true),
+      isVisible: defaultValue(treeview.isVisible, true),
       isFirst,
       isLast,
     };
@@ -189,7 +192,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     return result;
   }
 
-  private toRightIcon(props: t.ITreeNodeProps, children?: t.ITreeNode['children']) {
+  private toRightIcon(props: t.ITreeViewNodeProps, children?: t.ITreeViewNode['children']) {
     const chrevron = props.chevron || {};
     const isVisible = chrevron.isVisible;
     const inlineChildren = Boolean(props.inline);
@@ -233,8 +236,11 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
 
     let node = props.node;
     const id = node.id;
-    if (args.hasSomeIcons && (node.props || {}).icon === undefined) {
-      node = { ...node, props: { ...node.props, icon: null } };
+    if (args.hasSomeIcons && node.props?.treeview?.icon === undefined) {
+      node = {
+        ...node,
+        props: { ...node.props, treeview: { ...node.props?.treeview, icon: null } },
+      };
     }
 
     let el: React.ReactNode | undefined;
@@ -267,7 +273,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     );
   }
 
-  private renderChildList(node: t.ITreeNode) {
+  private renderChildList(node: t.ITreeViewNode) {
     const theme = this.theme;
     return (
       <TreeNodeList

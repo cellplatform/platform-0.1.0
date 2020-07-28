@@ -20,7 +20,7 @@ export class LogToolbar extends React.PureComponent<ILogToolbarProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
+    this.store.event.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
   }
 
   public componentWillUnmount() {

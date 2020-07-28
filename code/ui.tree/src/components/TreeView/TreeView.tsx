@@ -20,34 +20,36 @@ import {
 } from 'rxjs/operators';
 
 import { constants, t } from '../../common';
-import { TreeEvents } from '../../TreeEvents';
 import * as themes from '../../themes';
+import { TreeEvents } from '../../TreeEvents';
+import { TreeUtil } from '../../TreeUtil';
+import { TreeViewNavigation } from '../../TreeViewNavigation';
+import { TreeViewState } from '../../TreeViewState';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
-import { TreeUtil } from '../../TreeUtil';
 
 const R = { equals };
 
 export type ITreeViewProps = {
   id?: string;
-  node?: t.ITreeNode;
-  defaultNodeProps?: t.ITreeNodeProps | t.GetTreeNodeProps;
-  current?: t.ITreeNode['id'];
+  root?: t.ITreeViewNode;
+  current?: t.ITreeViewNode['id'];
+  defaultNodeProps?: t.ITreeViewNodeProps | t.GetTreeNodeProps;
   renderPanel?: t.RenderTreePanel;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
   event$?: Subject<t.TreeViewEvent>;
-  mouse$?: Subject<t.TreeNodeMouseEvent>;
+  mouse$?: Subject<t.ITreeViewMouse>;
   tabIndex?: number;
   slideDuration?: number;
   style?: CssValue;
 };
 
 export type ITreeViewState = {
-  currentPath?: t.ITreeNode[];
-  renderedPath?: t.ITreeNode[];
+  currentPath?: t.ITreeViewNode[];
+  renderedPath?: t.ITreeViewNode[];
   index?: number;
   isSliding?: boolean;
   isFocused?: boolean;
@@ -60,8 +62,11 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    * [Static]
    */
   public static util = TreeUtil;
+  public static query = TreeUtil.query;
+  public static State = TreeViewState;
+  public static Navigation = TreeViewNavigation;
 
-  public static events<N extends t.ITreeNode = t.ITreeNode>(
+  public static events<N extends t.ITreeViewNode = t.ITreeViewNode>(
     event$: Observable<t.TreeViewEvent>,
     dispose$?: Observable<void>,
   ) {
@@ -69,10 +74,10 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   }
 
   private static current(props: ITreeViewProps) {
-    const { node } = props;
-    const current = props.current || node;
-    const result = typeof current === 'object' ? current : TreeUtil.findById(node, current);
-    return result || node;
+    const { root } = props;
+    const current = props.current || root;
+    const result = typeof current === 'object' ? current : TreeUtil.query(root).findById(current);
+    return result || root;
   }
 
   /**
@@ -86,7 +91,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   public readonly event$ = this._event$.pipe(takeUntil(this.unmounted$), share());
   public readonly mouse$ = this.event$.pipe(
     filter((e) => e.type === 'TREEVIEW/mouse'),
-    map((e) => e.payload as t.TreeNodeMouseEvent),
+    map((e) => e.payload as t.ITreeViewMouse),
     share(),
   );
 
@@ -140,7 +145,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     if (isCurrentChanged) {
       updatePath = true;
     }
-    if (!updatePath && !R.equals(this.props.node, prev.node)) {
+    if (!updatePath && !R.equals(this.props.root, prev.root)) {
       updatePath = true;
     }
     if (updatePath) {
@@ -209,7 +214,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return this;
   }
 
-  private fire = (e: t.TreeViewEvent) => this._event$.next(e);
+  private fire: t.FireEvent<t.TreeViewEvent> = (e) => this._event$.next(e);
 
   /**
    * [Render]
@@ -255,14 +260,13 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private renderCustomPanel(node: t.ITreeNode, depth: number) {
+  private renderCustomPanel(node: t.ITreeViewNode, depth: number) {
     const { renderPanel, background = 'THEME' } = this.props;
     if (!renderPanel) {
       return;
     }
 
-    const props = node.props || {};
-    const header = props.header || {};
+    const header = node.props?.treeview?.header || {};
     const isHeaderVisible = defaultValue(header.isVisible, true);
 
     const el = renderPanel({ node, depth, isInline: false });
@@ -291,12 +295,12 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private renderNodeList(node: t.ITreeNode, depth: number) {
+  private renderNodeList(node: t.ITreeViewNode, depth: number) {
     const theme = this.theme;
-    const props = node.props || {};
-    const header = props.header || {};
+    const header = node.props?.treeview?.header || {};
     const isHeaderVisible = defaultValue(header.isVisible, true);
     const elHeader = isHeaderVisible && this.renderHeader(node, depth);
+    const paddingTop = (isHeaderVisible ? this.headerHeight : 0) + (header.marginBottom || 0);
 
     return (
       <TreeNodeList
@@ -309,7 +313,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         renderIcon={this.props.renderIcon}
         renderNodeBody={this.props.renderNodeBody}
         header={elHeader}
-        paddingTop={isHeaderVisible ? this.headerHeight : 0}
+        paddingTop={paddingTop}
         isBorderVisible={this.state.isSliding}
         isScrollable={true}
         isFocused={this.isFocused}
@@ -320,14 +324,18 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private renderHeader(node: t.ITreeNode, depth: number) {
+  private renderHeader(node: t.ITreeViewNode, depth: number) {
     const theme = this.theme;
-    const props = node.props || {};
+    const props = node.props?.treeview || {};
     const header = props.header || {};
     const title = props.title || props.label || node.id.toString();
 
     const showParentButton =
-      header.parentButton === false ? false : header.parentButton === true ? true : depth > 0;
+      header.showParentButton === false
+        ? false
+        : header.showParentButton === true
+        ? true
+        : depth > 0;
 
     return (
       <TreeHeader
@@ -347,7 +355,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    * [Handlers]
    */
 
-  private handleNodeMouse = (payload: t.TreeNodeMouseEvent) => {
+  private handleNodeMouse = (payload: t.ITreeViewMouse) => {
     const props = TreeUtil.props(payload);
     if (props.isEnabled === false) {
       switch (payload.type) {
@@ -363,9 +371,9 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   };
 
   private updatePath() {
-    const { node } = this.props;
+    const { root } = this.props;
     const current = TreeView.current(this.props);
-    const currentPath = TreeUtil.pathList(node, current) || [];
+    const currentPath = TreeUtil.pathList(root, current) || [];
     const renderedPath = [...(this.state.renderedPath || [])];
     currentPath.forEach((node, i) => {
       renderedPath[i] = node;

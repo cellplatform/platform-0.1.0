@@ -1,16 +1,16 @@
 import { value } from '@platform/util.value';
-import { ITreeNode } from '../../types';
+import { ITreeViewNode } from '../../types';
 
 export type TotalChildren = number | number[];
 
 /**
  * Create a tree-node with children.
  */
-export const create = (id: string, label: string, total?: TotalChildren): ITreeNode => {
+export const create = (id: string, label: string, total?: TotalChildren): ITreeViewNode => {
   const children = total ? createMany(total, id) : undefined;
-  const tree: ITreeNode = {
+  const tree: ITreeViewNode = {
     id,
-    props: { label, icon: 'Face' },
+    props: { treeview: { label, icon: 'Face' } },
     children,
   };
   tree.children = tree.children && tree.children.length === 0 ? undefined : tree.children;
@@ -20,7 +20,7 @@ export const create = (id: string, label: string, total?: TotalChildren): ITreeN
 /**
  * Create multiple tree nodes.
  */
-export const createMany = (total: TotalChildren, baseId?: string | number): ITreeNode[] => {
+export const createMany = (total: TotalChildren, baseId?: string | number): ITreeViewNode[] => {
   const children = Array.isArray(total) ? total : [total];
   const length = children[0];
   return Array.from({ length }).map((v, i) => {

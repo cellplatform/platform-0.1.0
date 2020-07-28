@@ -10,8 +10,9 @@ export function init(args: { store: t.IAppStore }) {
   store.on<t.IFinderTreeSelectEvent>('APP:FINDER/tree/select').subscribe((e) => {
     const selected = e.payload.node;
     const root = toggleSelection(e.state.tree.root, selected);
-    const parent = TreeUtil.parent(root, selected);
-    const depth = TreeUtil.depth(root, parent);
+    const query = TreeUtil.query(root);
+    const parent = query.parent(selected);
+    const depth = query.depth(parent);
     const current = depth < 2 ? root?.id : parent?.id;
     store.dispatch({ type: 'APP:FINDER/tree', payload: { root, selected, current } });
   });
@@ -21,7 +22,7 @@ export function init(args: { store: t.IAppStore }) {
    */
   store.on<t.IFinderTreeSelectParentEvent>('APP:FINDER/tree/select/parent').subscribe((e) => {
     const root = e.state.tree.root;
-    const parent = TreeUtil.parent(root, e.payload.node);
+    const parent = TreeUtil.query(root).parent(e.payload.node);
     if (parent) {
       store.dispatch({ type: 'APP:FINDER/tree/select', payload: { node: parent.id } });
     }
@@ -32,10 +33,10 @@ export function init(args: { store: t.IAppStore }) {
  * [Helpers]
  */
 
-export function toggleSelection(root: t.ITreeNode | undefined, id: string) {
+export function toggleSelection(root: t.ITreeViewNode | undefined, id: string) {
   const { BLUE } = COLORS;
 
-  const current = TreeUtil.find(root, (e) => e.node.props?.isSelected || false);
+  const current = TreeUtil.query(root).find((e) => e.node.props?.treeview?.isSelected || false);
   if (current && current.id !== id) {
     root = TreeUtil.setProps(root, current.id, {
       isSelected: false,

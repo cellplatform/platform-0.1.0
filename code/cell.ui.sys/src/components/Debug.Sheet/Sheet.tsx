@@ -23,10 +23,10 @@ export class Sheet extends React.PureComponent<ISheetProps> {
    */
   public componentDidMount() {
     // const changed$ = this.store.changed$.pipe(takeUntil(this.unmounted$));
-    this.store.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
+    this.store.event.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
     // changed$.pipe(filter((e) => e.action === 'sheet/load')).subscribe(this.load);
 
-    this.store.changed('DEBUG/Sheet/load', this.unmounted$).subscribe(this.load);
+    this.store.action(this.unmounted$).changed('DEBUG/Sheet/load').subscribe(this.load);
 
     this.init();
   }

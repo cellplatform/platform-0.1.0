@@ -1,6 +1,6 @@
 {
   "name": "@platform/state",
-  "version": "0.6.5",
+  "version": "0.6.10",
   "description": "A small, simple, strongly typed, [rx/observable] state-machine.",
   "main": "./lib/index",
   "types": "./lib/index.d.ts",
