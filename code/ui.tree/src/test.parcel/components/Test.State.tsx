@@ -6,9 +6,9 @@ import { takeUntil } from 'rxjs/operators';
 
 import { TreeView } from '../..';
 import { t } from '../../common';
+import { TreeViewState } from '../../components.dev/TreeViewState';
 import { TreeViewNavigation } from '../../TreeViewNavigation';
 import { Icons } from './Icons';
-import { TreeViewState } from '../../components.dev/TreeViewState';
 
 type Node = t.ITreeViewNode;
 const header: t.ITreeViewNodeHeader = { isVisible: false, marginBottom: 45 };
@@ -54,7 +54,7 @@ export class Test extends React.PureComponent<ITestProps> {
 
   private tree = TreeView.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
 
-  private nav = TreeViewNavigation.create({
+  private nav = TreeView.Navigation.create({
     tree: this.tree,
     treeview$: this.treeview$,
     dispose$: this.unmounted$,

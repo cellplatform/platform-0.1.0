@@ -3,10 +3,11 @@ import { TreeQuery } from '@platform/state/lib/TreeQuery';
 import { TreeState } from '@platform/state/lib/TreeState';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, share, takeUntil } from 'rxjs/operators';
-import { TreeUtil } from '../TreeUtil';
 
 import { t } from '../common';
+import { TreeUtil } from '../TreeUtil';
 import { strategies } from '../TreeViewNavigation.Strategies';
+import { TreeViewState } from '../TreeViewState';
 
 type Stores = {
   nav: t.IStateObjectWritable<t.ITreeViewNavigationSelection>;
@@ -30,27 +31,33 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
     return new TreeViewNavigation(args);
   }
   private constructor(args: t.ITreeViewNavigationArgs) {
-    const { tree } = args;
     this.treeview$ = args.treeview$;
+    const dispose$ = this.dispose$;
+    const tree = args.tree || TreeViewState.create({ dispose$ });
 
     // Setup state objects.
     const nav = StateObject.create<t.ITreeViewNavigationSelection>({ current: tree.id });
     const merged = StateObject.merge<t.ITreeViewNavigationState>({ root: tree.store, nav });
     this.stores = { tree, nav, merged };
 
-    if (args.dispose$) {
-      args.dispose$.subscribe(() => this.dispose());
-    }
-
+    // Initialize strategy.
     if (args.strategy) {
       args.strategy(this);
     }
 
-    this.changed$.pipe(takeUntil(this.dispose$), debounceTime(10)).subscribe(this.redraw);
+    // Redraw on change.
+    this.changed$.pipe(takeUntil(dispose$), debounceTime(10)).subscribe(this.redraw);
+
+    // Manage disposal.
+    args.dispose$?.subscribe(() => this.dispose());
+    dispose$.subscribe(() => {
+      this.stores.merged.dispose();
+    });
   }
 
   public dispose() {
-    this.stores.merged.dispose();
+    this._dispose$.next();
+    this._dispose$.complete();
   }
 
   /**
@@ -58,6 +65,9 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
    */
   private readonly stores: Stores;
   public readonly treeview$: Observable<t.TreeViewEvent>;
+
+  private _dispose$ = new Subject<void>();
+  public readonly dispose$ = this._dispose$.pipe(share());
 
   private _redraw = new Subject<void>();
   public readonly redraw$ = this._redraw.pipe(share());
@@ -77,11 +87,7 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
    * PUBLIC Properties
    */
   public get isDisposed() {
-    return this.store.isDisposed;
-  }
-
-  public get dispose$() {
-    return this.store.event.dispose$;
+    return this._dispose$.isStopped;
   }
 
   public get changed$() {

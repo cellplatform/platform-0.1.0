@@ -14,7 +14,7 @@ export type TreeViewNavigation = {
 
 export type ITreeViewNavigationArgs = {
   treeview$: Observable<t.TreeViewEvent>;
-  tree: t.ITreeState;
+  tree?: t.ITreeState;
   dispose$?: Observable<any>;
   strategy?: t.TreeViewNavigationStrategy;
 };
