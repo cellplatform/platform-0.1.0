@@ -35,10 +35,12 @@ export const COMPREHENSIVE = (() => {
   props(children[0]).label = 'inline open';
 
   props(children[1]).label = 'custom child, inline';
+  props(children[1]).icon = 'Box';
 
   props(children[2]).inline = undefined;
   props(children[2]).label = 'custom child, drill-in';
   props(children[2]).header = { showParentButton: false };
+  props(children[2]).icon = '404'; // Icon not found.
 
   props(children[3]).isEnabled = false;
   props(children[3]).label = 'disabled';

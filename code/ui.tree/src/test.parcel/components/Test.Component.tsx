@@ -5,6 +5,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
+import { rx } from '@platform/util.value';
+
 import { TreeView } from '../..';
 import { t } from '../../common';
 import { COLORS } from '../constants';
@@ -60,6 +62,16 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     event$.subscribe((e) => {
       // log.info('🌳', e.type, e.payload);
     });
+
+    /**
+     * TODO 🐷
+     * MOVE TO ICONS
+     */
+    rx.payload<t.ITreeViewRenderIconEvent>(event$, 'TREEVIEW/render/icon')
+      .pipe(filter((e) => e.icon !== 'Face'))
+      .subscribe((e) => {
+        e.render(Icons[e.icon]);
+      });
 
     /**
      * Handle mouse.
@@ -206,7 +218,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Handlers]
    */
-  private renderIcon: t.RenderTreeIcon = (e) => Icons[e.icon];
+  private renderIcon: t.RenderTreeIcon = (e) => {
+    if (e.icon === 'Face') {
+      return Icons[e.icon];
+    } else {
+      // NB: This arbitrary IF statement is to allow the
+      //     event factory "TREEVIEW/render/icon" to be tested.
+      return undefined;
+    }
+  };
 
   private renderNodeBody: t.RenderTreeNodeBody = (e) => {
     const styles = {

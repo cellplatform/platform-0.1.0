@@ -27,6 +27,7 @@ import { TreeViewNavigation } from '../../TreeViewNavigation';
 import { TreeViewState } from '../../TreeViewState';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
+import { renderer } from './renderer';
 
 const R = { equals };
 
@@ -35,9 +36,9 @@ export type ITreeViewProps = {
   root?: t.ITreeViewNode;
   current?: t.ITreeViewNode['id'];
   defaultNodeProps?: t.ITreeViewNodeProps | t.GetTreeNodeProps;
-  renderPanel?: t.RenderTreePanel;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
+  renderPanel?: t.RenderTreePanel;
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
   event$?: Subject<t.TreeViewEvent>;
@@ -193,6 +194,12 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return Boolean(this.state.isFocused);
   }
 
+  private get renderer() {
+    const { renderIcon, renderNodeBody, renderPanel } = this.props;
+    const fire = this.fire;
+    return renderer({ fire, renderIcon, renderNodeBody, renderPanel });
+  }
+
   /**
    * [Methods]
    */
@@ -302,6 +309,8 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     const elHeader = isHeaderVisible && this.renderHeader(node, depth);
     const paddingTop = (isHeaderVisible ? this.headerHeight : 0) + (header.marginBottom || 0);
 
+    const renderer = this.renderer;
+
     return (
       <TreeNodeList
         rootId={this.props.id}
@@ -309,9 +318,9 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         node={node}
         depth={depth}
         defaultNodeProps={this.props.defaultNodeProps}
-        renderPanel={this.props.renderPanel}
-        renderIcon={this.props.renderIcon}
-        renderNodeBody={this.props.renderNodeBody}
+        renderIcon={renderer.icon}
+        renderNodeBody={renderer.nodeBody}
+        renderPanel={renderer.panel}
         header={elHeader}
         paddingTop={paddingTop}
         isBorderVisible={this.state.isSliding}
@@ -324,7 +333,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private renderHeader(node: t.ITreeViewNode, depth: number) {
+  private renderHeader = (node: t.ITreeViewNode, depth: number) => {
     const theme = this.theme;
     const props = node.props?.treeview || {};
     const header = props.header || {};
@@ -349,7 +358,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         onMouseParent={this.handleNodeMouse}
       />
     );
-  }
+  };
 
   /**
    * [Handlers]

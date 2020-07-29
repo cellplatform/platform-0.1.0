@@ -127,10 +127,7 @@ export class Test extends React.PureComponent<ITestProps> {
         backgroundColor: color.format(1),
         Flex: 'vertical-stretch-stretch',
       }),
-      body: css({
-        position: 'relative',
-        flex: 1,
-      }),
+      body: css({ position: 'relative', flex: 1 }),
       scroll: css({
         Absolute: 0,
         padding: 30,
@@ -138,7 +135,9 @@ export class Test extends React.PureComponent<ITestProps> {
         PaddingX: 50,
         Scroll: true,
         paddingBottom: 100,
+        Flex: 'start-spaceBetween',
       }),
+      state: css({ flex: 1, maxWidth: 680 }),
     };
 
     return (
@@ -146,11 +145,14 @@ export class Test extends React.PureComponent<ITestProps> {
         {this.renderToolbar()}
         <div {...styles.body}>
           <div {...styles.scroll}>
+            <div />
             <TreeViewState
               store={this.tree}
               current={this.nav.current}
               selected={this.nav.selected}
+              style={styles.state}
             />
+            <div />
           </div>
         </div>
       </div>
