@@ -13,7 +13,7 @@ type N = t.ITreeNode;
 const Identity = TreeIdentity;
 
 /**
- * State machine for programming a tree, or partial leaf within a tree.
+ * State machine for programming a tree or partial leaf within a tree.
  *
  * NOTE:
  *    All changes to the state tree are immutable.
