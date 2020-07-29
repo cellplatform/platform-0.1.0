@@ -12,6 +12,7 @@ const SIZE = {
 };
 
 export type ITreeHeaderProps = {
+  custom?: React.ReactNode;
   node: t.ITreeViewNode;
   depth: number;
   renderer: t.ITreeViewRenderer;
@@ -41,21 +42,9 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
       }),
     };
 
-    const elCustom = this.renderCustom();
-    const elDefault = !elCustom && elCustom !== null ? this.renderDefault() : undefined;
-
     return (
-      <div {...css(styles.base, this.props.style)}>
-        {elCustom}
-        {elDefault}
-      </div>
+      <div {...css(styles.base, this.props.style)}>{this.props.custom || this.renderDefault()}</div>
     );
-  }
-
-  private renderCustom() {
-    const { renderer, node, depth } = this.props;
-    const isFocused = Boolean(this.props.isFocused);
-    return renderer.header({ node, depth, isFocused });
   }
 
   private renderDefault() {
@@ -91,25 +80,14 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
       }),
       left: css({}),
       right: css({}),
-      backButton: css({
-        cursor: 'pointer',
-        width: SIZE.BACK_BUTTON,
-        height: SIZE.BACK_BUTTON,
-      }),
     };
-
-    const elParentButton = showParentButton && (
-      <div {...styles.backButton} {...this.parentMouseHandlers}>
-        {Icons.ChevronLeft({ color: theme.chevronColor })}
-      </div>
-    );
 
     return (
       <div {...css(styles.base)}>
         <Text>
           <div {...styles.background} />
           <div {...styles.body}>
-            <div {...css(styles.edge, styles.left)}>{elParentButton}</div>
+            <div {...css(styles.edge, styles.left)}>{this.renderParentButton()}</div>
             <div {...styles.title}>{title}</div>
             <div {...css(styles.edge, styles.right)} />
           </div>
@@ -118,6 +96,30 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
     );
   }
 
+  private renderParentButton() {
+    const { showParentButton } = this.props;
+    if (!showParentButton) {
+      return null;
+    }
+
+    const theme = this.theme.header;
+    const styles = {
+      base: css({
+        cursor: 'pointer',
+        width: SIZE.BACK_BUTTON,
+        height: SIZE.BACK_BUTTON,
+      }),
+    };
+    return (
+      <div {...styles.base} {...this.parentMouseHandlers}>
+        {Icons.ChevronLeft({ color: theme.chevronColor })}
+      </div>
+    );
+  }
+
+  /**
+   * [Handlers]
+   */
   private mouseHandlers = (target: t.ITreeViewMouse['target']) => {
     const { node, onMouseParent } = this.props;
     return TreeNode.mouseHandlers(() => node, target, onMouseParent);
