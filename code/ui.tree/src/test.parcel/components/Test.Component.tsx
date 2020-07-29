@@ -63,15 +63,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       // log.info('🌳', e.type, e.payload);
     });
 
-    /**
-     * TODO 🐷
-     * MOVE TO ICONS
-     */
-    rx.payload<t.ITreeViewRenderIconEvent>(event$, 'TREEVIEW/render/icon')
-      .pipe(filter((e) => e.icon !== 'Face'))
-      .subscribe((e) => {
-        e.render(Icons[e.icon]);
-      });
+    tree.render.icon$.pipe(filter((e) => e.icon !== 'Face')).subscribe((e) => {
+      e.render(Icons[e.icon]);
+    });
 
     /**
      * Handle mouse.
