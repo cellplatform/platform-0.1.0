@@ -319,9 +319,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         node={node}
         depth={depth}
         defaultNodeProps={this.props.defaultNodeProps}
-        renderIcon={renderer.icon}
-        renderNodeBody={renderer.nodeBody}
-        renderPanel={renderer.panel}
+        renderer={renderer}
         header={elHeader}
         paddingTop={paddingTop}
         isBorderVisible={this.state.isSliding}

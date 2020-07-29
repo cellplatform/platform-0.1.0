@@ -2,6 +2,12 @@ import { t, IIcon } from './common';
 
 type N = t.ITreeViewNode;
 
+export type ITreeViewRenderer = {
+  icon: t.RenderTreeIcon;
+  nodeBody: t.RenderTreeNodeBody;
+  panel: t.RenderTreePanel;
+};
+
 /**
  * Factory renderer of an icon.
  */

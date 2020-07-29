@@ -5,7 +5,7 @@
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
-    "start": "parcel src/test.parcel/index.html",
+    "start": "parcel src/test.parcel/index.html --port 1235",
     "test": "ts test",
     "lint": "ts lint",
     "build": "ts build",

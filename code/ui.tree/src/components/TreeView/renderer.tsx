@@ -13,7 +13,7 @@ export function renderer(args: {
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
   renderPanel?: t.RenderTreePanel;
-}) {
+}): t.ITreeViewRenderer {
   const { fire } = args;
 
   const icon: t.RenderTreeIcon = (e) => {

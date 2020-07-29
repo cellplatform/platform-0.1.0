@@ -33,8 +33,7 @@ export type ITreeNodeProps = {
   node: t.ITreeViewNode;
   rootId?: string;
   children?: React.ReactNode;
-  renderIcon?: t.RenderTreeIcon;
-  renderNodeBody?: t.RenderTreeNodeBody;
+  renderer: t.ITreeViewRenderer;
   iconRight?: IIcon | null;
   twisty?: TreeNodeTwisty;
   theme?: themes.ITreeTheme;
@@ -226,7 +225,8 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   private renderIconLeft() {
-    const { node, renderIcon, isFocused } = this.props;
+    const { node, renderer, isFocused } = this.props;
+    // const isFocused = this.isfo
     const theme = this.theme.node;
     const props = this.nodeProps;
     const icon = props.icon;
@@ -247,8 +247,8 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     }
 
     let fn: IIcon | undefined;
-    if (typeof icon === 'string' && renderIcon) {
-      fn = renderIcon({ icon, node, isFocused });
+    if (typeof icon === 'string') {
+      fn = renderer.icon({ icon, node, isFocused });
       fn = fn ? fn : Icons.NotFound;
     }
 
@@ -297,7 +297,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   private renderContent() {
-    const { iconRight, renderNodeBody, node, isFocused } = this.props;
+    const { iconRight, renderer, node, isFocused } = this.props;
     const props = this.nodeProps;
     const body = props.body;
     const styles = {
@@ -321,7 +321,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     };
 
     const elSpinner = props.isSpinning && <Spinner color={this.theme.spinner} size={18} />;
-    const elBody = renderNodeBody && body ? renderNodeBody({ body, node, isFocused }) : undefined;
+    const elBody = body ? renderer.nodeBody({ body, node, isFocused }) : undefined;
     const elLabel = elBody ? elBody : this.renderLabel();
     const elSuffix = elSpinner || this.renderBadge();
 

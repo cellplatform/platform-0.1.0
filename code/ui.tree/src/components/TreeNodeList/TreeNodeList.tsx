@@ -13,9 +13,7 @@ export type ITreeNodeListProps = {
   rootId?: string;
   depth?: number;
   defaultNodeProps?: t.ITreeViewNodeProps | t.GetTreeNodeProps;
-  renderPanel?: t.RenderTreePanel;
-  renderIcon?: t.RenderTreeIcon;
-  renderNodeBody?: t.RenderTreeNodeBody;
+  renderer: t.ITreeViewRenderer;
   header?: React.ReactNode;
   paddingTop?: number;
   isBorderVisible?: boolean;
@@ -246,9 +244,9 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
 
     let el: React.ReactNode | undefined;
     if (props.twisty === 'OPEN') {
-      const { renderPanel } = this.props;
+      const { renderer } = this.props;
       const depth = this.depth;
-      el = renderPanel ? (el = renderPanel({ node, depth, isInline: true, isFocused })) : el;
+      el = renderer.panel({ node, depth, isInline: true, isFocused });
       el = el === undefined ? this.renderChildList(node) : el;
     }
 
@@ -258,8 +256,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
         key={id}
         node={node}
         iconRight={iconRight}
-        renderIcon={this.props.renderIcon}
-        renderNodeBody={this.props.renderNodeBody}
+        renderer={this.props.renderer}
         twisty={twisty}
         theme={this.theme}
         background={this.props.background}
@@ -283,8 +280,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
         node={node}
         depth={this.depth + 1}
         defaultNodeProps={this.childNodeProps}
-        renderPanel={this.props.renderPanel}
-        renderIcon={this.props.renderIcon}
+        renderer={this.props.renderer}
         theme={theme}
         background={this.props.background}
         isFocused={this.props.isFocused}

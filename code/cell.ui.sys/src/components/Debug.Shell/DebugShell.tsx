@@ -31,8 +31,6 @@ export class DebugShell extends React.PureComponent<IDebugShellProps, IDebugShel
 
     // TEMP 🐷
     // this.nav.
-
-    // this.nav.
     this.nav.tree.add({ root: 'foo' });
   }
 
@@ -47,9 +45,9 @@ export class DebugShell extends React.PureComponent<IDebugShellProps, IDebugShel
   public render() {
     const styles = {
       base: css({
-        backgroundColor: color.format(1),
         Absolute: 0,
         Flex: 'horizontal-stretch-stretch',
+        backgroundColor: color.format(1),
       }),
     };
     return (
