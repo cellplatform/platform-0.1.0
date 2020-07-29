@@ -124,10 +124,10 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   /**
    * [Methods]
    */
-  public toId(input?: string): string {
+  public toId = (input?: string): string => {
     const id = Identity.parse(input).id;
     return Identity.format(this.namespace, id);
-  }
+  };
 
   public change: t.TreeStateChange<T> = (fn, options = {}) => this._change(fn, options);
   private _change(
@@ -150,7 +150,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return res;
   }
 
-  public add<C extends N = N>(args: { parent?: string; root: C | string | t.ITreeState<C> }) {
+  public add = <C extends N = N>(args: { parent?: string; root: C | string | t.ITreeState<C> }) => {
     // Wrangle: Check if the arguments are in fact a [TreeState] instance.
     if (TreeState.isInstance(args)) {
       args = { parent: this.id, root: args as t.ITreeState<C> };
@@ -184,9 +184,9 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     // Finish up.
     this.fire({ type: 'TreeState/child/added', payload: { parent: self, child } });
     return child as t.ITreeState<C>;
-  }
+  };
 
-  public remove(input: string | t.ITreeState) {
+  public remove = (input: string | t.ITreeState) => {
     const child = this.child(input);
     if (!child) {
       const err = `Cannot remove child-state as it does not exist in the parent '${this.root.id}'.`;
@@ -200,12 +200,12 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     const self = this as t.ITreeState<any>;
     this.fire({ type: 'TreeState/child/removed', payload: { parent: self, child } });
     return child;
-  }
+  };
 
-  public clear(): t.ITreeState<T> {
+  public clear = (): t.ITreeState<T> => {
     this.children.forEach((child) => this.remove(child));
     return this;
-  }
+  };
 
   public find: t.TreeStateFind<T> = (match) => this._find(0, match);
   private _find(level: number, match: t.TreeStateFindMatch<T>): t.ITreeState<T> | undefined {
@@ -236,10 +236,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   /**
    * [Internal]
    */
-
-  private fire(e: t.TreeStateEvent) {
-    this._event$.next(e);
-  }
+  private fire: t.FireEvent<t.TreeStateEvent> = (e) => this._event$.next(e);
 
   private child(id: string | t.ITreeState<any>) {
     id = typeof id === 'string' ? id : id.root.id;
