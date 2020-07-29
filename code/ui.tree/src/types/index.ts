@@ -1,6 +1,7 @@
 export * from './imports';
 
-export * from './types.factory';
-export * from './types.node.props';
-export * from './types.node';
+export * from './types';
 export * from './types.events';
+export * from './types.render';
+export * from './types.node';
+export * from './types.node.props';

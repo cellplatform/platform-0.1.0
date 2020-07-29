@@ -275,8 +275,9 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
     const header = node.props?.treeview?.header || {};
     const isHeaderVisible = defaultValue(header.isVisible, true);
+    const isFocused = this.isFocused;
 
-    const el = renderPanel({ node, depth, isInline: false });
+    const el = renderPanel({ node, depth, isInline: false, isFocused });
     if (!el || !isHeaderVisible) {
       return el;
     }

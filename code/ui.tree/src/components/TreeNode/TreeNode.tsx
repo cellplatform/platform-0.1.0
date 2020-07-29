@@ -226,7 +226,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   private renderIconLeft() {
-    const { node, renderIcon } = this.props;
+    const { node, renderIcon, isFocused } = this.props;
     const theme = this.theme.node;
     const props = this.nodeProps;
     const icon = props.icon;
@@ -248,7 +248,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
 
     let fn: IIcon | undefined;
     if (typeof icon === 'string' && renderIcon) {
-      fn = renderIcon({ icon, node });
+      fn = renderIcon({ icon, node, isFocused });
       fn = fn ? fn : Icons.NotFound;
     }
 

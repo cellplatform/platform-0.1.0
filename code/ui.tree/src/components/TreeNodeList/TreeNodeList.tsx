@@ -221,6 +221,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
   }) {
     const { props, hasSomeInlineChildren, hasSomePanelChildren } = args;
     const { isVisible, isFirst, isLast } = props;
+    const { isFocused } = this.props;
 
     if (isVisible === false) {
       return null;
@@ -247,7 +248,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     if (props.twisty === 'OPEN') {
       const { renderPanel } = this.props;
       const depth = this.depth;
-      el = renderPanel ? (el = renderPanel({ node, depth, isInline: true })) : el;
+      el = renderPanel ? (el = renderPanel({ node, depth, isInline: true, isFocused })) : el;
       el = el === undefined ? this.renderChildList(node) : el;
     }
 
