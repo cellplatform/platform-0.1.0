@@ -405,6 +405,34 @@ describe('TreeState', () => {
     });
   });
 
+  describe('clear', () => {
+    it('empty', () => {
+      const root: N = { id: 'root' };
+      const state = create({ root });
+
+      expect(state.children.length).to.eql(0);
+      state.clear();
+      expect(state.children.length).to.eql(0);
+    });
+
+    it('removes all children', () => {
+      const root: N = { id: 'root' };
+      const state = create({ root });
+
+      const fired: t.ITreeStateChildRemoved[] = [];
+      state.event.removed$.subscribe((e) => fired.push(e));
+
+      const parent = 'root';
+      state.add({ parent, root: 'foo' });
+      state.add({ parent, root: 'bar' });
+
+      expect(state.children.length).to.eql(2);
+      state.clear();
+      expect(state.children.length).to.eql(0);
+      expect(fired.length).to.eql(2);
+    });
+  });
+
   describe('change', () => {
     const root: N = {
       id: 'root',

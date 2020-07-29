@@ -33,7 +33,8 @@ export type ITreeState<T extends Node = Node> = t.IDisposable & {
   readonly query: t.ITreeQuery<T>;
   readonly event: ITreeStateEvents<T>;
   add: TreeStateAdd;
-  remove(child: string | ITreeState): ITreeState;
+  remove(child: string | ITreeState): ITreeState<T>;
+  clear(): ITreeState<T>;
   change: TreeStateChange<T>;
   find: TreeStateFind<T>;
   toId(input?: string): string;
@@ -42,6 +43,7 @@ export type ITreeState<T extends Node = Node> = t.IDisposable & {
 export type ITreeStateEvents<T extends Node = Node> = {
   readonly $: Observable<TreeStateEvent>;
   readonly changed$: Observable<ITreeStateChanged<T>>;
+  readonly removed$: Observable<ITreeStateChildRemoved>;
   payload<E extends t.TreeStateEvent>(type: E['type']): Observable<E['payload']>;
 };
 

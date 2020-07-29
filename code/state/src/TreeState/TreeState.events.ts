@@ -11,13 +11,23 @@ export function create<T extends Node>(
   dispose$: Observable<any>,
 ): t.ITreeStateEvents<T> {
   const $ = event$.pipe(takeUntil(dispose$));
+
+  const changed$ = $.pipe(
+    filter((e) => e.type === 'TreeState/changed'),
+    map((e) => e.payload as t.ITreeStateChanged<T>),
+    share(),
+  );
+
+  const removed$ = $.pipe(
+    filter((e) => e.type === 'TreeState/child/removed'),
+    map((e) => e.payload as t.ITreeStateChildRemoved),
+    share(),
+  );
+
   return {
     $,
-    changed$: $.pipe(
-      filter((e) => e.type === 'TreeState/changed'),
-      map((e) => e.payload as t.ITreeStateChanged<T>),
-      share(),
-    ),
+    changed$,
+    removed$,
     payload<E extends t.TreeStateEvent>(type: E['type']) {
       return rx.payload<E>($, type);
     },

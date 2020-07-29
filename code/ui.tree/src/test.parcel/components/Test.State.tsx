@@ -190,6 +190,8 @@ export class Test extends React.PureComponent<ITestProps> {
         <Button onClick={this.loadHandler(SAMPLES.DEFAULT)}>Default</Button>
         {spacer}
         <Button onClick={this.loadHandler(SAMPLES.TWISTY)}>Twisty</Button>
+        {div}
+        <Button onClick={this.onClearClick}>Clear</Button>
       </div>
     );
   }
@@ -207,5 +209,10 @@ export class Test extends React.PureComponent<ITestProps> {
     return () => {
       this.tree.change((draft) => (draft.children = root.children));
     };
+  };
+
+  private onClearClick = () => {
+    // this.tree.remove()
+    this.tree.children.forEach((child) => this.tree.remove(child));
   };
 }

@@ -202,6 +202,11 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return child;
   }
 
+  public clear(): t.ITreeState<T> {
+    this.children.forEach((child) => this.remove(child));
+    return this;
+  }
+
   public find: t.TreeStateFind<T> = (match) => this._find(0, match);
   private _find(level: number, match: t.TreeStateFindMatch<T>): t.ITreeState<T> | undefined {
     const children = this.children;
