@@ -1,4 +1,4 @@
-import { t, IIcon } from './common';
+import { t } from './common';
 import { MouseEvent } from '@platform/react';
 
 type N = t.ITreeViewNode;

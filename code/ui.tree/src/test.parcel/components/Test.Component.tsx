@@ -5,8 +5,6 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { rx } from '@platform/util.value';
-
 import { TreeView } from '../..';
 import { t } from '../../common';
 import { COLORS } from '../constants';

@@ -3,7 +3,6 @@ import * as React from 'react';
 export * from './theme/types';
 import { IPropsTheme } from './theme/types';
 
-
 export type PropsData = Record<string, unknown> | PropArray;
 export type PropScalar = string | boolean | number | null | undefined;
 export type PropArray = Array<PropScalar | Record<string, unknown>>;
