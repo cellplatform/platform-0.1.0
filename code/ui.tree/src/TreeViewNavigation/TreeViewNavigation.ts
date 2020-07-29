@@ -33,7 +33,7 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
   private constructor(args: t.ITreeViewNavigationArgs) {
     this.treeview$ = args.treeview$;
     const dispose$ = this.dispose$;
-    const tree = args.tree || TreeViewState.create({ dispose$ });
+    const tree = args.tree || TreeViewState.create({ root: 'root', dispose$ });
 
     // Setup state objects.
     const nav = StateObject.create<t.ITreeViewNavigationSelection>({ current: tree.id });
@@ -92,6 +92,10 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
 
   public get changed$() {
     return this.store.event.changed$;
+  }
+
+  public get tree() {
+    return this.stores.tree;
   }
 
   public get root() {

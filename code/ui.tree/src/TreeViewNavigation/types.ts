@@ -28,6 +28,7 @@ export type ITreeViewNavigation = t.IDisposable & {
   readonly redraw$: Observable<void>;
   readonly query: t.ITreeQuery<t.ITreeViewNode>;
   readonly root: t.ITreeViewNode;
+  tree: t.ITreeState;
   current?: string; //  Node ID.
   selected?: string; // Node ID.
   node(id?: t.NodeIdentifier, change?: TreeViewNavigationNodeChanger): t.ITreeNode | undefined;

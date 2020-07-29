@@ -7,8 +7,6 @@ import { takeUntil } from 'rxjs/operators';
 import { TreeView } from '../..';
 import { t } from '../../common';
 import { TreeViewState } from '../../components.dev/TreeViewState';
-import { TreeViewNavigation } from '../../TreeViewNavigation';
-import { Icons } from './Icons';
 
 type Node = t.ITreeViewNode;
 const header: t.ITreeViewNodeHeader = { isVisible: false, marginBottom: 45 };
@@ -58,7 +56,7 @@ export class Test extends React.PureComponent<ITestProps> {
     tree: this.tree,
     treeview$: this.treeview$,
     dispose$: this.unmounted$,
-    strategy: TreeViewNavigation.strategies.default,
+    strategy: TreeView.Navigation.strategies.default,
   });
 
   /**
@@ -110,7 +108,6 @@ export class Test extends React.PureComponent<ITestProps> {
           root={this.nav.root}
           current={this.nav.current}
           event$={this.treeview$}
-          renderIcon={this.renderIcon}
           background={'NONE'}
           tabIndex={0}
         />
@@ -199,11 +196,7 @@ export class Test extends React.PureComponent<ITestProps> {
   /**
    * [Handlers]
    */
-  private renderIcon: t.RenderTreeIcon = (e) => Icons[e.icon];
-
-  private onRedrawClick = () => {
-    this.forceUpdate();
-  };
+  private onRedrawClick = () => this.forceUpdate();
 
   private loadHandler = (root: Node) => {
     return () => {
