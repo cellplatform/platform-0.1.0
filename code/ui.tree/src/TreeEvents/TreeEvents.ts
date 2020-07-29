@@ -69,7 +69,11 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
         filter((e) => e.type === 'TREEVIEW/render/panel'),
         map((e) => e.payload as t.ITreeViewRenderPanel<T>),
       );
-      this._render = { $, icon$, nodeBody$, panel$ };
+      const header$ = event$.pipe(
+        filter((e) => e.type === 'TREEVIEW/render/header'),
+        map((e) => e.payload as t.ITreeViewRenderHeader<T>),
+      );
+      this._render = { $, icon$, nodeBody$, panel$, header$ };
     }
     return this._render;
   }

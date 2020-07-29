@@ -53,7 +53,8 @@ export type ITreeViewFocus = { isFocused: boolean };
 export type TreeViewRenderEvent =
   | ITreeViewRenderIconEvent
   | ITreeViewRenderNodeBodyEvent
-  | ITreeViewRenderPanelEvent;
+  | ITreeViewRenderPanelEvent
+  | ITreeViewRenderHeaderEvent;
 
 export type ITreeViewRenderIconEvent<T extends N = N> = {
   type: 'TREEVIEW/render/icon';
@@ -80,4 +81,13 @@ export type ITreeViewRenderPanelEvent<T extends N = N> = {
 export type ITreeViewRenderPanel<T extends N = N> = t.RenderTreePanelArgs<T> & {
   isHandled: boolean;
   render(el: t.RenderTreePanelResponse): void;
+};
+
+export type ITreeViewRenderHeaderEvent<T extends N = N> = {
+  type: 'TREEVIEW/render/header';
+  payload: ITreeViewRenderHeader<T>;
+};
+export type ITreeViewRenderHeader<T extends N = N> = t.RenderTreeHeaderArgs<T> & {
+  isHandled: boolean;
+  render(el: t.RenderTreeHeaderResponse): void;
 };

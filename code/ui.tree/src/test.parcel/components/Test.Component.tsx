@@ -65,6 +65,17 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       e.render(Icons[e.icon]);
     });
 
+    tree.render.header$.pipe(filter((e) => e.node.id === 'root.3')).subscribe((e) => {
+      const el = (
+        <Foo style={{ flex: 1, lineHeight: '1.6em', MarginX: 2, marginTop: 2 }}>
+          <div>My Custom Header: {e.node.id}</div>
+          {this.renderHomeLink()}
+        </Foo>
+      );
+
+      e.render(el);
+    });
+
     /**
      * Handle mouse.
      */
@@ -262,6 +273,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           flex: 1,
           lineHeight: '1.6em',
           padding: 2,
+          boxSizing: 'border-box',
         }),
         link: css({ color: COLORS.BLUE, cursor: 'pointer' }),
       };
@@ -269,15 +281,27 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.base}>
           <Foo style={{ flex: 1, lineHeight: '1.6em' }}>
             <div>My Custom Panel: {e.node.id}</div>
-            <div onClick={this.handleHomeClick} {...styles.link}>
-              Home
-            </div>
+            {this.renderHomeLink()}
           </Foo>
         </div>
       );
     }
     return undefined;
   };
+
+  private renderHomeLink() {
+    const styles = {
+      base: css({
+        color: COLORS.BLUE,
+        cursor: 'pointer',
+      }),
+    };
+    return (
+      <div onClick={this.handleHomeClick} {...styles.base}>
+        Home
+      </div>
+    );
+  }
 
   private handleHomeClick = () => {
     this.state$.next({ current: 'root' });

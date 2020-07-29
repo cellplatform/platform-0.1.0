@@ -13,6 +13,7 @@ export function renderer(args: {
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
   renderPanel?: t.RenderTreePanel;
+  renderHeader?: t.RenderTreeHeader;
 }): t.ITreeViewRenderer {
   const { fire } = args;
 
@@ -64,5 +65,21 @@ export function renderer(args: {
     return el;
   };
 
-  return { icon, nodeBody, panel };
+  const header: t.RenderTreeHeader = (e) => {
+    let el = args.renderHeader ? args.renderHeader(e) : undefined;
+    if (!el) {
+      const payload: t.ITreeViewRenderHeader = {
+        ...e,
+        isHandled: false,
+        render(response) {
+          payload.isHandled = response ? true : payload.isHandled;
+          el = response;
+        },
+      };
+      fire({ type: 'TREEVIEW/render/header', payload });
+    }
+    return el;
+  };
+
+  return { icon, nodeBody, panel, header };
 }

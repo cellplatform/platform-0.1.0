@@ -30,15 +30,17 @@ import { TreeNodeList } from '../TreeNodeList';
 import { renderer } from './renderer';
 
 const R = { equals };
+type N = t.ITreeViewNode;
 
 export type ITreeViewProps = {
   id?: string;
-  root?: t.ITreeViewNode;
-  current?: t.ITreeViewNode['id'];
+  root?: N;
+  current?: N['id'];
   defaultNodeProps?: t.ITreeViewNodeProps | t.GetTreeNodeProps;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
   renderPanel?: t.RenderTreePanel;
+  renderHeader?: t.RenderTreeHeader;
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
   event$?: Subject<t.TreeViewEvent>;
@@ -49,14 +51,16 @@ export type ITreeViewProps = {
 };
 
 export type ITreeViewState = {
-  currentPath?: t.ITreeViewNode[];
-  renderedPath?: t.ITreeViewNode[];
+  currentPath?: N[];
+  renderedPath?: N[];
   index?: number;
   isSliding?: boolean;
   isFocused?: boolean;
 };
 
-const HEADER_HEIGHT = 36;
+const DEFAULT = {
+  HEADER_HEIGHT: 36,
+};
 
 export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState> {
   /**
@@ -67,11 +71,11 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   public static State = TreeViewState;
   public static Navigation = TreeViewNavigation;
 
-  public static events<N extends t.ITreeViewNode = t.ITreeViewNode>(
+  public static events<T extends N = N>(
     event$: Observable<t.TreeViewEvent>,
     dispose$?: Observable<void>,
   ) {
-    return TreeEvents.create<N>(event$, dispose$);
+    return TreeEvents.create<T>(event$, dispose$);
   }
 
   private static current(props: ITreeViewProps) {
@@ -166,10 +170,6 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return themes.themeOrDefault(this.props);
   }
 
-  private get headerHeight() {
-    return HEADER_HEIGHT;
-  }
-
   private get panels(): IStackPanel[] {
     const { renderedPath = [] } = this.state;
     const panels = renderedPath.map((node, i) => {
@@ -195,9 +195,9 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   }
 
   private get renderer() {
-    const { renderIcon, renderNodeBody, renderPanel } = this.props;
     const fire = this.fire;
-    return renderer({ fire, renderIcon, renderNodeBody, renderPanel });
+    const { renderIcon, renderNodeBody, renderPanel, renderHeader } = this.props;
+    return renderer({ fire, renderIcon, renderNodeBody, renderPanel, renderHeader });
   }
 
   /**
@@ -267,7 +267,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private renderCustomPanel(node: t.ITreeViewNode, depth: number) {
+  private renderCustomPanel(node: N, depth: number) {
     const { renderPanel, background = 'THEME' } = this.props;
     if (!renderPanel) {
       return;
@@ -275,6 +275,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
     const header = node.props?.treeview?.header || {};
     const isHeaderVisible = defaultValue(header.isVisible, true);
+    const headerHeight = this.headerHeight(node);
     const isFocused = this.isFocused;
 
     const el = renderPanel({ node, depth, isInline: false, isFocused });
@@ -291,24 +292,25 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
       }),
       body: css({
         overflow: 'hidden',
-        Absolute: [this.headerHeight, 0, 0, 0],
+        Absolute: [headerHeight, 0, 0, 0],
         display: 'flex',
       }),
     };
     return (
       <div {...styles.base}>
-        {this.renderHeader(node, depth)}
+        {isHeaderVisible && this.renderHeader(node, depth)}
         <div {...styles.body}>{el}</div>
       </div>
     );
   }
 
-  private renderNodeList(node: t.ITreeViewNode, depth: number) {
+  private renderNodeList(node: N, depth: number) {
     const theme = this.theme;
     const header = node.props?.treeview?.header || {};
     const isHeaderVisible = defaultValue(header.isVisible, true);
     const elHeader = isHeaderVisible && this.renderHeader(node, depth);
-    const paddingTop = (isHeaderVisible ? this.headerHeight : 0) + (header.marginBottom || 0);
+    const headerHeight = this.headerHeight(node);
+    const paddingTop = (isHeaderVisible ? headerHeight : 0) + (header.marginBottom || 0);
 
     const renderer = this.renderer;
 
@@ -332,11 +334,12 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private renderHeader = (node: t.ITreeViewNode, depth: number) => {
+  private renderHeader = (node: N, depth: number) => {
     const theme = this.theme;
     const props = node.props?.treeview || {};
     const header = props.header || {};
     const title = props.title || props.label || node.id.toString();
+    const height = this.headerHeight(node);
 
     const showParentButton =
       header.showParentButton === false
@@ -348,7 +351,9 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return (
       <TreeHeader
         node={node}
-        height={this.headerHeight}
+        renderer={this.renderer}
+        depth={depth}
+        height={height}
         title={title}
         showParentButton={showParentButton}
         theme={theme}
@@ -362,6 +367,11 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   /**
    * [Handlers]
    */
+
+  private headerHeight(node: N) {
+    const header = node.props?.treeview?.header || {};
+    return defaultValue(header.height, DEFAULT.HEADER_HEIGHT);
+  }
 
   private handleNodeMouse = (payload: t.ITreeViewMouse) => {
     const props = TreeUtil.props(payload);

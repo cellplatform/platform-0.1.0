@@ -45,4 +45,5 @@ export type ITreeRenderEvents<T extends N = N> = {
   icon$: Observable<t.ITreeViewRenderIcon<T>>;
   nodeBody$: Observable<t.ITreeViewRenderNodeBody<T>>;
   panel$: Observable<t.ITreeViewRenderPanel<T>>;
+  header$: Observable<t.ITreeViewRenderHeader<T>>;
 };

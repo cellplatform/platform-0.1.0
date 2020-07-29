@@ -37,6 +37,7 @@ export type ITreeViewNodeHeader = {
   isVisible?: boolean; // Force show (for custom panel), or hide the header. Default: true.
   showParentButton?: boolean; // Hide the "back" button. Default: true.
   marginBottom?: number;
+  height?: number;
 };
 
 export type ITreeViewNodeInline = {

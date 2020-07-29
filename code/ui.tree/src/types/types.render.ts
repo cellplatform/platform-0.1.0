@@ -6,6 +6,7 @@ export type ITreeViewRenderer = {
   icon: t.RenderTreeIcon;
   nodeBody: t.RenderTreeNodeBody;
   panel: t.RenderTreePanel;
+  header: t.RenderTreeHeader;
 };
 
 /**
@@ -53,5 +54,22 @@ export type RenderTreePanelArgs<T extends N = N> = {
   node: T;
   depth: number; // 0-based.
   isInline: boolean;
+  isFocused: boolean;
+};
+
+/**
+ * Factory renderer of a custom header within the tree.
+ * Return:
+ *  - Element:      The component to render.
+ *  - [null]:       Render nothing.
+ *  - [undefined]:  Render default list.
+ */
+export type RenderTreeHeader<T extends N = N> = (
+  args: RenderTreeHeaderArgs<T>,
+) => RenderTreeHeaderResponse;
+export type RenderTreeHeaderResponse = React.ReactNode | null | undefined;
+export type RenderTreeHeaderArgs<T extends N = N> = {
+  node: T;
+  depth: number; // 0-based.
   isFocused: boolean;
 };

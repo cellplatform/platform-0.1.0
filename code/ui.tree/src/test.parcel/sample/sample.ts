@@ -38,8 +38,8 @@ export const COMPREHENSIVE = (() => {
   props(children[1]).icon = 'Box';
 
   props(children[2]).inline = undefined;
-  props(children[2]).label = 'custom child, drill-in';
-  props(children[2]).header = { showParentButton: false };
+  props(children[2]).label = 'custom child/header, drill-in';
+  props(children[2]).header = { showParentButton: false, height: 80 };
   props(children[2]).icon = '404'; // Icon not found.
 
   props(children[3]).isEnabled = false;
@@ -49,7 +49,7 @@ export const COMPREHENSIVE = (() => {
 
   props(children[4]).chevron = { isVisible: true };
   props(children[4]).label = 'twisty and drill-in';
-  props(children[4]).header = { marginBottom: 30 };
+  props(children[4]).header = { marginBottom: 30, height: 80 };
 
   props(children[5]).inline = undefined;
   props(children[5]).isSpinning = true;

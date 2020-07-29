@@ -1,11 +1,11 @@
 import { color, css, CssValue } from '@platform/css';
+import { Text } from '@platform/ui.text/lib/components/Text';
 import * as React from 'react';
 
+import { t } from '../../common';
 import * as themes from '../../themes';
 import { Icons } from '../Icons';
-import { Text } from '@platform/ui.text/lib/components/Text';
 import { TreeNode } from '../TreeNode';
-import { t } from '../../common';
 
 const SIZE = {
   BACK_BUTTON: 24,
@@ -13,6 +13,8 @@ const SIZE = {
 
 export type ITreeHeaderProps = {
   node: t.ITreeViewNode;
+  depth: number;
+  renderer: t.ITreeViewRenderer;
   height: number;
   title?: string;
   showParentButton?: boolean;
@@ -29,13 +31,40 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
   }
 
   public render() {
-    const theme = this.theme.header;
-    const { height, title = 'Untitled', showParentButton } = this.props;
-
+    const { height } = this.props;
     const styles = {
       base: css({
         Absolute: [0, 0, null, 0],
         height,
+        boxSizing: 'border-box',
+        display: 'flex',
+      }),
+    };
+
+    const elCustom = this.renderCustom();
+    const elDefault = !elCustom && elCustom !== null ? this.renderDefault() : undefined;
+
+    return (
+      <div {...css(styles.base, this.props.style)}>
+        {elCustom}
+        {elDefault}
+      </div>
+    );
+  }
+
+  private renderCustom() {
+    const { renderer, node, depth } = this.props;
+    const isFocused = Boolean(this.props.isFocused);
+    return renderer.header({ node, depth, isFocused });
+  }
+
+  private renderDefault() {
+    const theme = this.theme.header;
+    const { title = 'Untitled', showParentButton } = this.props;
+
+    const styles = {
+      base: css({
+        Absolute: 0,
         boxSizing: 'border-box',
         userSelect: 'none',
       }),
@@ -76,7 +105,7 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
     );
 
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div {...css(styles.base)}>
         <Text>
           <div {...styles.background} />
           <div {...styles.body}>
