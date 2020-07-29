@@ -171,14 +171,20 @@ export class Test extends React.PureComponent<ITestProps> {
         color: color.format(-0.3),
       }),
       spacer: css({ MarginX: 6 }),
+      div: css({
+        MarginX: 15,
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+        height: '70%',
+      }),
     };
 
     const spacer = <div {...styles.spacer} />;
+    const div = <div {...styles.div} />;
 
     return (
       <div {...styles.base}>
         <Button onClick={this.onRedrawClick}>Redraw</Button>
-        {spacer}
+        {div}
         <div>Load:</div>
         {spacer}
         <Button onClick={this.loadHandler(SAMPLES.DEFAULT)}>Default</Button>
