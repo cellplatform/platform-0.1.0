@@ -11,7 +11,7 @@ import { COLORS } from '../constants';
 import * as sample from '../sample';
 import { Icons } from './Icons';
 
-export type ITestProps = { style?: CssValue };
+export type ITestProps = { style?: CssValue };m
 type N = t.ITreeViewNode;
 
 export type ITestState = {

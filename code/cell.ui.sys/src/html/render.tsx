@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { AppBuilder } from '../components/AppBuilder';
-// import { Debug } from '../components/Debug';
+import { Debug } from '../components/Debug';
 import { DebugShell } from '../components/Debug.Shell';
 import { Root } from '../components/Root';
 

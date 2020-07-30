@@ -24,6 +24,7 @@
     "@platform/polyfill": "0.0.1",
     "@platform/react": "0.4.40",
     "@platform/state": "0.6.10",
+    "@platform/types": "0.5.0",
     "@platform/ui.datagrid": "0.7.277"
   },
   "devDependencies": {

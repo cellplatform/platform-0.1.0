@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 import { color, css, CssValue, t } from '../../common';
 import { TreeView } from '../primitives';
 
-export type IDebugShellProps = { style?: CssValue };
+export type IDebugShellProps = {
+  tree?: t.ITreeState;
+  style?: CssValue;
+};
 export type IDebugShellState = t.Object;
 
 export class DebugShell extends React.PureComponent<IDebugShellProps, IDebugShellState> {
@@ -14,7 +17,7 @@ export class DebugShell extends React.PureComponent<IDebugShellProps, IDebugShel
   private treeview$ = new Subject<t.TreeViewEvent>();
 
   private nav = TreeView.Navigation.create({
-    // tree: this.tree,
+    tree: this.props.tree,
     treeview$: this.treeview$,
     dispose$: this.unmounted$,
     strategy: TreeView.Navigation.strategies.default,
@@ -28,10 +31,25 @@ export class DebugShell extends React.PureComponent<IDebugShellProps, IDebugShel
     const unmounted$ = this.unmounted$;
     this.state$.pipe(takeUntil(unmounted$)).subscribe((e) => this.setState(e));
     this.nav.redraw$.pipe(takeUntil(unmounted$)).subscribe((e) => this.forceUpdate());
+    const events = TreeView.events(this.treeview$, unmounted$);
+
+    // Turn of the header on the root node.
+    events.render.header$.pipe(filter((e) => e.depth === 0)).subscribe((e) => {
+      e.render(null);
+    });
 
     // TEMP 🐷
     // this.nav.
-    this.nav.tree.add({ root: 'foo' });
+    const cache = this.nav.tree.add({ root: 'cache' });
+
+    // cache.store.tre
+    cache.change((draft, ctx) => {
+      ctx.children(draft, (children) => {
+        children.push(...[{ id: 'foo' }, { id: 'bar' }]);
+      });
+    });
+
+    // this.nav.tree.
   }
 
   public componentWillUnmount() {
@@ -53,7 +71,7 @@ export class DebugShell extends React.PureComponent<IDebugShellProps, IDebugShel
     return (
       <div {...css(styles.base, this.props.style)}>
         {this.renderTree()}
-        {this.renderBody}
+        {this.renderBody()}
       </div>
     );
   }
@@ -82,7 +100,10 @@ export class DebugShell extends React.PureComponent<IDebugShellProps, IDebugShel
 
   private renderBody() {
     const styles = {
-      base: css({}),
+      base: css({
+        boxSizing: 'border-box',
+        padding: 30,
+      }),
     };
     return (
       <div {...styles.base}>
