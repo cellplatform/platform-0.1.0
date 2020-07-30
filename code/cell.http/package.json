@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.http",
-  "version": "0.7.127",
+  "version": "0.7.128",
   "description": "HTTP server for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -22,10 +22,10 @@
     "prepare": "ts-node -T script.ts/prepare && ts prepare && rm -rf tmp"
   },
   "dependencies": {
-    "@platform/cell.http.router": "0.7.125",
-    "@platform/cell.schema": "0.4.145",
-    "@platform/cell.types": "0.4.131",
-    "@platform/cell.typesystem": "0.0.85",
+    "@platform/cell.http.router": "0.7.126",
+    "@platform/cell.schema": "0.4.146",
+    "@platform/cell.types": "0.4.132",
+    "@platform/cell.typesystem": "0.0.86",
     "@platform/cli": "0.5.42",
     "@platform/exec": "0.2.61",
     "@platform/fs": "0.5.19",
