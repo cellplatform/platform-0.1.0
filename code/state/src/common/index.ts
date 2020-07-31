@@ -1,6 +1,9 @@
 import * as t from './types';
 export { t };
 
+import { is } from './is';
+export { is };
+
 /**
  * Util
  */

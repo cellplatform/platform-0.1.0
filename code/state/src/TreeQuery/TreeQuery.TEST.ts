@@ -376,6 +376,33 @@ describe('TreeQuery', () => {
       expect(res1).to.eql({ id: 'child-3' });
       expect(res2).to.eql(undefined);
     });
+
+    it('with namespace', () => {
+      const tree: N = {
+        id: 'ns:root',
+        children: [{ id: 'child-1' }, { id: 'ns:child-2', children: [{ id: 'ns:child-3' }] }],
+      };
+
+      const query = create(tree);
+      const res1 = query.find((e) => e.namespace === 'ns' && e.id === 'child-3');
+      const res2 = query.find((e) => e.namespace === 'foo' && e.id === 'child-3');
+
+      expect(res1).to.eql({ id: 'ns:child-3' });
+      expect(res2).to.eql(undefined);
+    });
+
+    it('root with namespace', () => {
+      const tree: N = {
+        id: 'root',
+        children: [
+          { id: 'child-1' },
+          { id: 'ns:child-2', children: [{ id: 'ns:child-2.1' }, { id: 'ns:child-2.1' }] },
+        ],
+      };
+      const query = create(tree);
+      const res = query.find((e) => e.namespace === 'ns');
+      expect(res?.id).to.eql('ns:child-2');
+    });
   });
 
   describe('findById', () => {

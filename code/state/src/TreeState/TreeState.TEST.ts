@@ -42,6 +42,12 @@ describe('TreeState', () => {
       expect(state.id).to.eql(id);
       expect(state.root.id).to.eql(id);
     });
+
+    it('from root id (parses <namespace>:<id>)', () => {
+      const state = create({ root: 'ns:foo' });
+      expect(state.namespace).to.eql('ns');
+      expect(state.id).to.eql('ns:foo');
+    });
   });
 
   describe('dispose', () => {
@@ -843,6 +849,201 @@ describe('TreeState', () => {
       });
       expect(list.map((e) => e.id)).to.eql(['child-1', 'child-2a']);
       expect(res).to.eql(undefined);
+    });
+  });
+
+  describe.only('syncFrom', () => {
+    const tree1: N = {
+      id: 'foo:tree',
+      children: [{ id: 'foo:child-1' }, { id: 'foo:child-2' }],
+    };
+
+    const tree2: N = {
+      id: 'bar:tree',
+      props: { label: 'hello' },
+      children: [{ id: 'bar:child-1' }, { id: 'bar:child-2' }],
+    };
+
+    const tree3: N = {
+      id: 'zoo:tree',
+      children: [{ id: 'zoo:child-1' }, { id: 'zoo:child-2' }],
+    };
+
+    it('inserts within parent (new node)', () => {
+      const state1 = create({ root: tree1 });
+      const state2 = create({ root: tree2, parent: 'foo:child-1' });
+      const state3 = create({ root: tree3, parent: 'foo:child-1' });
+      expect(state1.query.findById('foo:child-1')?.children).to.eql(undefined);
+
+      const res1 = state1.syncFrom({ source: state2 });
+      const res2 = state1.syncFrom({ source: state3 });
+
+      expect(res1.parent).to.eql('foo:child-1');
+      expect(res2.parent).to.eql('foo:child-1');
+      expect(state1.query.findById('foo:child-2')).to.eql({ id: 'foo:child-2' }); // NB: unchanged.
+
+      const node = state1.query.findById('foo:child-1');
+      expect(node?.props).to.eql(undefined);
+      expect(node?.children?.length).to.eql(2);
+      expect((node?.children || [])[0]).to.eql(state2.root);
+      expect((node?.children || [])[1]).to.eql(state3.root);
+    });
+
+    it('inserts within parent (replace existing node)', () => {
+      const state1 = create({ root: tree1 });
+      const state2 = create({ root: tree2, parent: 'foo:child-1' });
+      const state3 = create({ root: tree3, parent: 'foo:child-1' });
+
+      state1.change((draft, ctx) => {
+        const node = ctx.findById('foo:child-1');
+        if (node) {
+          ctx.children(node, (children) => {
+            children.push({ id: 'zoo:tree', props: { label: 'banging' } });
+          });
+        }
+      });
+
+      const res1 = state1.syncFrom({ source: state2 });
+      const res2 = state1.syncFrom({ source: state3 });
+      expect(res1.parent).to.eql('foo:child-1');
+      expect(res2.parent).to.eql('foo:child-1');
+
+      const node = state1.query.findById('foo:child-1');
+      expect(node?.props).to.eql(undefined);
+      expect(node?.children?.length).to.eql(2);
+      expect((node?.children || [])[0]).to.eql(state3.root);
+      expect((node?.children || [])[1]).to.eql(state2.root);
+    });
+
+    it('no initial value inserted into target (observable passed rather than [TreeState])]', () => {
+      const state1 = create({ root: tree1 });
+      const state2 = create({ root: tree2, parent: 'foo:child-1' });
+      expect(state1.query.findById('foo:child-1')?.children || []).to.eql([]);
+
+      const res = state1.syncFrom({ source: { event$: state2.event.$, parent: 'foo:child-1' } });
+      expect(res.parent).to.eql('foo:child-1');
+      expect(state1.query.findById('foo:child-1')?.children || []).to.eql([]); // NB: unchanged.
+    });
+
+    it('keeps in sync', () => {
+      const state1 = create({ root: tree1 });
+      const state2 = create({ root: tree2, parent: 'foo:child-1' });
+      const state3 = create({ root: tree3, parent: 'foo:child-1' });
+
+      state1.syncFrom({ source: state2 });
+      state1.syncFrom({ source: state3 });
+
+      const getChildren = () => state1.query.findById('foo:child-1')?.children || [];
+
+      let children = getChildren();
+      expect(children).to.eql([state2.root, state3.root]);
+
+      state2.change((draft, ctx) => {
+        ctx.children(draft, (children) => {
+          ctx.props(draft, (props) => (props.label = 'derp'));
+          ctx.props(children[0], (props) => (props.label = 'boo'));
+          children.pop();
+        });
+      });
+
+      children = getChildren();
+      expect(children[0].props?.label).to.eql('derp');
+      expect(children[0].children?.length).to.eql(1);
+      expect((children[0].children || [])[0].props?.label).to.eql('boo');
+
+      state3.change((draft, ctx) => {
+        ctx.props(draft, (props) => (props.label = 'barry'));
+      });
+
+      children = getChildren();
+      expect(children[0].props?.label).to.eql('derp'); // NB: unchanged from last assertion.
+      expect(children[1].props?.label).to.eql('barry');
+    });
+
+    it('stops syncing on dispose()', () => {
+      const state1 = create({ root: tree1 });
+      const state2 = create({ root: tree2, parent: 'foo:child-1' });
+      const state3 = create({ root: tree3, parent: 'foo:child-1' });
+
+      const res1 = state1.syncFrom({ source: state2 });
+      const res2 = state1.syncFrom({ source: state3 });
+
+      const getChildren = () => state1.query.findById('foo:child-1')?.children || [];
+
+      expect(res1.isDisposed).to.eql(false);
+      expect(res2.isDisposed).to.eql(false);
+      res1.dispose();
+      expect(res1.isDisposed).to.eql(true);
+      expect(res2.isDisposed).to.eql(false);
+
+      state2.change((draft, ctx) => {
+        ctx.props(draft, (props) => (props.label = 'change-1'));
+      });
+
+      state3.change((draft, ctx) => {
+        ctx.props(draft, (props) => (props.label = 'change-2'));
+      });
+
+      let children = getChildren();
+      expect(children[0].props?.label).to.eql('hello'); // NB: unchanged because syncer disposed.
+      expect(children[1].props?.label).to.eql('change-2'); // NB: syncer not yet disposed.
+
+      res2.dispose();
+      expect(res2.isDisposed).to.eql(true);
+
+      state3.change((draft, ctx) => {
+        ctx.props(draft, (props) => (props.label = 'change-3'));
+      });
+
+      children = getChildren();
+      expect(children[1].props?.label).to.eql('change-2'); // NB: unchanged from last assertion.
+    });
+
+    it('stops syncing when [until$] fires', () => {
+      const state1 = create({ root: tree1 });
+      const state2 = create({ root: tree2, parent: 'foo:child-1' });
+
+      const until$ = new Subject();
+      state1.syncFrom({ source: state2, until$ });
+
+      const getChildren = () => state1.query.findById('foo:child-1')?.children || [];
+
+      state2.change((draft, ctx) => {
+        ctx.props(draft, (props) => (props.label = 'change-1'));
+      });
+
+      let children = getChildren();
+      expect(children[0].props?.label).to.eql('change-1');
+
+      until$.next();
+      state2.change((draft, ctx) => {
+        ctx.props(draft, (props) => (props.label = 'change-2'));
+      });
+
+      children = getChildren();
+      expect(children[0].props?.label).to.eql('change-1'); // NB: unchanged since last assertion because syncer disposed.
+    });
+
+    it('throw: parent not given', () => {
+      const test = (source: t.TreeStateSyncSourceArg) => {
+        const state = create({ root: tree1 });
+        const fn = () => state.syncFrom({ source });
+        expect(fn).to.throw(/parent node not specified/);
+      };
+
+      test(create({ root: tree2, parent: '' }));
+      test(create({ root: tree2, parent: '  ' }));
+
+      const state = create({ root: tree2 });
+      test({ event$: state.event.$, parent: '' });
+      test({ event$: state.event.$, parent: '  ' });
+    });
+
+    it('throw: parent does not exist', () => {
+      const state1 = create({ root: tree1 });
+      const state2 = create({ root: tree2, parent: '404' });
+      const fn = () => state1.syncFrom({ source: state2 });
+      expect(fn).to.throw(/parent node '404' does not exist in tree/);
     });
   });
 });

@@ -38,6 +38,7 @@ export type ITreeState<T extends Node = Node> = t.IDisposable & {
   change: TreeStateChange<T>;
   find: TreeStateFind<T>;
   toId(input?: string): string;
+  syncFrom: TreeStateSyncFrom;
 };
 
 export type ITreeStateEvents<T extends Node = Node> = {
@@ -92,8 +93,20 @@ export type TreeStateFindMatchArgs<T extends Node = Node> = {
   stop(): void;
 };
 
-type ReadArray<T> = {
-  map: Array<T>['map'];
+/**
+ * Sync
+ */
+
+export type TreeStateSyncFrom<T extends Node = Node> = (args: {
+  source: TreeStateSyncSourceArg<T>;
+  until$?: Observable<any>;
+}) => TreeStateSyncer;
+export type TreeStateSyncSourceArg<T extends Node = Node> =
+  | t.ITreeState<T>
+  | { event$: Observable<t.TreeStateEvent>; parent: string };
+export type TreeStateSyncer = t.IDisposable & {
+  //
+  readonly parent: string;
 };
 
 /**

@@ -1,13 +1,14 @@
 import { StateObject } from '../StateObject';
 import { id as idUtil } from '@platform/util.value';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 
-import { t } from '../common';
+import { t, is } from '../common';
 import { TreeIdentity } from '../TreeIdentity';
 import { TreeQuery } from '../TreeQuery';
 import { helpers } from './helpers';
 import * as events from './TreeState.events';
+import * as sync from './TreeState.sync';
 
 type N = t.ITreeNode;
 const Identity = TreeIdentity;
@@ -39,7 +40,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as T;
 
     // Store values.
-    this.namespace = idUtil.cuid();
+    this.namespace = Identity.namespace(root.id) || idUtil.cuid();
     this.parent = args.parent;
     this._store = StateObject.create<T>(root);
 
@@ -113,14 +114,6 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return TreeQuery.create<T>({ root, namespace });
   }
 
-  private get ctx(): t.TreeStateChangerContext<T> {
-    return {
-      ...this.query,
-      props: TreeState.props,
-      children: TreeState.children,
-    };
-  }
-
   /**
    * [Methods]
    */
@@ -134,9 +127,8 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     fn: t.TreeStateChanger<T>,
     options: { silent?: boolean; ensureNamespace?: boolean } = {},
   ) {
-    const ctx = this.ctx;
-
     const res = this._store.change((draft) => {
+      const ctx = this.ctx(draft);
       fn(draft, ctx);
       if (options.ensureNamespace !== false) {
         helpers.ensureNamespace(draft, this.namespace);
@@ -233,10 +225,38 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     }
   }
 
+  public syncFrom: t.TreeStateSyncFrom = (args) => {
+    const { until$ } = args;
+    const isObservable = is.observable((args.source as any).event$);
+
+    const source$ = isObservable
+      ? ((args.source as any).event$ as Observable<t.TreeStateEvent>)
+      : (args.source as t.ITreeState).event.$;
+
+    const parent = isObservable
+      ? ((args.source as any).parent as string | undefined)
+      : (args.source as t.ITreeState).parent;
+
+    const initial = isObservable ? undefined : (args.source as t.ITreeState).root;
+
+    const target = this as t.ITreeState<any>;
+    return sync.syncFrom({ target, parent, initial, source$, until$ });
+  };
+
   /**
    * [Internal]
    */
   private fire: t.FireEvent<t.TreeStateEvent> = (e) => this._event$.next(e);
+
+  private ctx(root: T): t.TreeStateChangerContext<T> {
+    const namespace = this.namespace;
+    const query = TreeQuery.create<T>({ root, namespace });
+    return {
+      ...query,
+      props: TreeState.props,
+      children: TreeState.children,
+    };
+  }
 
   private child(id: string | t.ITreeState<any>) {
     id = typeof id === 'string' ? id : id.root.id;

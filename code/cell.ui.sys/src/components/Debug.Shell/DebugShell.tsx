@@ -33,7 +33,7 @@ export class DebugShell extends React.PureComponent<IDebugShellProps, IDebugShel
     this.nav.redraw$.pipe(takeUntil(unmounted$)).subscribe((e) => this.forceUpdate());
     const events = TreeView.events(this.treeview$, unmounted$);
 
-    // Turn of the header on the root node.
+    // Turn off the header on the root node.
     events.render.header$.pipe(filter((e) => e.depth === 0)).subscribe((e) => {
       e.render(null);
     });
