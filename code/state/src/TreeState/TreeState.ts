@@ -94,6 +94,10 @@ export class TreeState<T extends N = N, E extends Event = Event> implements t.IT
     return this._dispose$.isStopped;
   }
 
+  public get readonly() {
+    return this as t.ITreeStateReadonly<T, E>;
+  }
+
   public get store() {
     return this._store;
   }
@@ -128,7 +132,7 @@ export class TreeState<T extends N = N, E extends Event = Event> implements t.IT
     return this._store.action(takeUntil$) as t.IStateObjectAction<T, E>;
   };
 
-  public toId = (input?: string): string => {
+  public formatId = (input?: string): string => {
     const id = Identity.parse(input).id;
     return Identity.format(this.namespace, id);
   };

@@ -48,6 +48,12 @@ describe('TreeState', () => {
       expect(state.namespace).to.eql('ns');
       expect(state.id).to.eql('ns:foo');
     });
+
+    it('readonly', () => {
+      const root: N = { id: 'root' };
+      const state = create({ root });
+      expect(state.readonly).to.equal(state);
+    });
   });
 
   describe('dispose', () => {
@@ -756,7 +762,7 @@ describe('TreeState', () => {
 
         // Lookup: root namespace.
         expect(state.query.findById('foo')).to.eql(undefined);
-        expect(state.query.findById('child-2.1')?.id).to.eql(state.toId('child-2.1'));
+        expect(state.query.findById('child-2.1')?.id).to.eql(state.formatId('child-2.1'));
 
         // Lookup: child namespace.
         expect(child.query.findById('foo')?.id).to.eql(child.id);

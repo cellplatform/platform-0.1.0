@@ -36,23 +36,31 @@ export type ITreeStateArgs<T extends Node = Node> = {
  * or partial leaf within a tree.
  */
 export type ITreeState<T extends Node = Node, E extends Event = any> = t.IDisposable &
-  t.IStateObjectDispatchMethods<T, E> & {
-    readonly namespace: string;
-    readonly id: string;
-    readonly parent?: string; // ID of parent within tree.
-    readonly store: t.IStateObjectReadOnly<T>;
-    readonly root: T;
-    readonly children: readonly ITreeState[];
-    readonly query: t.ITreeQuery<T>;
-    readonly event: ITreeStateEvents<T>;
+  t.ITreeStateReadonly<T, E> & {
+    readonly readonly: ITreeStateReadonly<T, E>;
     add: TreeStateAdd;
     remove(child: string | ITreeState): ITreeState<T>;
     clear(): ITreeState<T>;
     change: TreeStateChange<T, E>;
-    find: TreeStateFind<T>;
-    toId(input?: string): string;
     syncFrom: TreeStateSyncFrom;
+    dispatch: t.IStateObjectDispatchMethods<T, E>['dispatch'];
+    formatId(input?: string): string;
   };
+
+export type ITreeStateReadonly<T extends Node, E extends Event> = {
+  readonly isDisposed: boolean;
+  readonly dispose$: Observable<void>;
+  readonly namespace: string;
+  readonly id: string;
+  readonly parent?: string; // ID of parent within tree.
+  readonly store: t.IStateObjectReadOnly<T>;
+  readonly root: T;
+  readonly children: readonly ITreeState[];
+  readonly query: t.ITreeQuery<T>;
+  readonly event: ITreeStateEvents<T>;
+  find: TreeStateFind<T>;
+  action: t.IStateObjectDispatchMethods<T, E>['action'];
+};
 
 export type ITreeStateEvents<T extends Node = Node> = {
   readonly $: Observable<TreeStateEvent>;
