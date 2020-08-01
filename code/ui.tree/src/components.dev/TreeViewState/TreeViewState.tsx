@@ -103,22 +103,27 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
       base: css({
         Flex: 'horizontal-center-spaceBetween',
         borderBottom: `solid 8px ${color.format(-0.08)}`,
-        paddingBottom: 8,
+        paddingBottom: 15,
         marginBottom: 20,
         userSelect: 'none',
       }),
       left: css({
-        Flex: 'horizontal-center-center',
+        Flex: 'horizontal-start-start',
       }),
       right: css({
         Flex: 'horizontal-center-center',
+      }),
+      text: css({
+        Flex: 'vertical-stretch-stretch',
       }),
       id: css({
         fontFamily: 'menlo, monospace',
         fontSize: 10,
         color: COLORS.PURPLE,
-        marginTop: 2,
+        margin: 0,
+        marginTop: 15,
         userSelect: 'text',
+        lineHeight: 0,
       }),
     };
 
@@ -126,9 +131,10 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
       <div {...styles.base}>
         <div {...styles.left}>
           <Icons.Box size={24} style={{ marginRight: 6 }} color={COLORS.PURPLE} />
-          <div>
+          <div {...styles.text}>
             <strong>TreeViewState (Module)</strong>
-            <div {...styles.id}>{store.id}</div>
+            <pre {...styles.id}>{`parent: ${store.parent || '-'}`}</pre>
+            <pre {...styles.id}>{`root:   ${store.id}`}</pre>
           </div>
         </div>
         <div {...styles.right}>{!this.isRoot && this.renderCloseButton()}</div>
