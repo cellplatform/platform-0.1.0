@@ -10,6 +10,8 @@ import { helpers } from './helpers';
 import * as events from './TreeState.events';
 import * as sync from './TreeState.sync';
 
+type O = Record<string, unknown>;
+type Event = t.Event<O>;
 type N = t.ITreeNode;
 const Identity = TreeIdentity;
 
@@ -20,11 +22,11 @@ const Identity = TreeIdentity;
  *    All changes to the state tree are immutable.
  *
  */
-export class TreeState<T extends N = N> implements t.ITreeState<T> {
-  public static create<T extends N = N>(args?: t.ITreeStateArgs<T>) {
+export class TreeState<T extends N = N, E extends Event = Event> implements t.ITreeState<T, E> {
+  public static create<T extends N = N, E extends Event = Event>(args?: t.ITreeStateArgs<T>) {
     const root = args?.root || 'node';
     const e = { ...args, root } as t.ITreeStateArgs<T>;
-    return new TreeState<T>(e) as t.ITreeState<T>;
+    return new TreeState<T, E>(e) as t.ITreeState<T, E>;
   }
 
   public static identity = Identity;
@@ -117,23 +119,33 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   /**
    * [Methods]
    */
+
+  public dispatch: t.IStateObjectDispatchMethods<T, E>['dispatch'] = (e) => {
+    return this._store.dispatch(e);
+  };
+
+  public action: t.IStateObjectDispatchMethods<T, E>['action'] = (takeUntil$) => {
+    return this._store.action(takeUntil$) as t.IStateObjectAction<T, E>;
+  };
+
   public toId = (input?: string): string => {
     const id = Identity.parse(input).id;
     return Identity.format(this.namespace, id);
   };
 
-  public change: t.TreeStateChange<T> = (fn, options = {}) => this._change(fn, options);
+  public change: t.TreeStateChange<T, E> = (fn, options) => this._change(fn, options);
   private _change(
     fn: t.TreeStateChanger<T>,
-    options: { silent?: boolean; ensureNamespace?: boolean } = {},
+    options: { silent?: boolean; ensureNamespace?: boolean; action?: E['type'] } = {},
   ) {
+    const { action } = options;
     const res = this._store.change((draft) => {
       const ctx = this.ctx(draft);
       fn(draft, ctx);
       if (options.ensureNamespace !== false) {
         helpers.ensureNamespace(draft, this.namespace);
       }
-    });
+    }, action);
 
     if (!options.silent && res.changed) {
       this.fire({ type: 'TreeState/changed', payload: res.changed });
@@ -239,8 +251,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
 
     const initial = isObservable ? undefined : (args.source as t.ITreeState).root;
 
-    const target = this as t.ITreeState<any>;
-    return sync.syncFrom({ target, parent, initial, source$, until$ });
+    return sync.syncFrom({ target: this, parent, initial, source$, until$ });
   };
 
   /**

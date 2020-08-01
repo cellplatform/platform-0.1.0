@@ -7,7 +7,7 @@ import { t } from '../common';
  * Sets up a syncronization relationship with the given source.
  */
 export function syncFrom(args: {
-  target: t.ITreeState;
+  target: t.ITreeState<any>;
   source$: Observable<t.TreeStateEvent>;
   parent?: string;
   initial?: t.ITreeNode;

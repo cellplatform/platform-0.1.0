@@ -2,11 +2,12 @@ import { Observable } from 'rxjs';
 
 import * as t from '../common/types';
 
-type Node = t.ITreeNode;
 type O = Record<string, unknown>;
+type Node = t.ITreeNode;
+type Event = t.Event<O>;
 
 export type TreeState = {
-  create<T extends Node = Node>(args?: ITreeStateArgs<T>): ITreeState<T>;
+  create<T extends Node = Node, E extends Event = any>(args?: ITreeStateArgs<T>): ITreeState<T, E>;
   identity: t.TreeIdentity;
   isInstance(input: any): boolean;
   children<T extends Node>(of: T, fn?: (children: T[]) => void): T[];
@@ -14,8 +15,19 @@ export type TreeState = {
 };
 
 export type ITreeStateArgs<T extends Node = Node> = {
-  parent?: string; // ID of parent within tree.
+  /**
+   * ID of parent within tree.
+   */
+  parent?: string;
+
+  /**
+   * Root {node} of ID of root node.
+   */
   root?: T | string;
+
+  /**
+   * Dispose event.
+   */
   dispose$?: Observable<any>;
 };
 
@@ -23,23 +35,24 @@ export type ITreeStateArgs<T extends Node = Node> = {
  * State machine for programming a tree,
  * or partial leaf within a tree.
  */
-export type ITreeState<T extends Node = Node> = t.IDisposable & {
-  readonly namespace: string;
-  readonly id: string;
-  readonly parent?: string; // ID of parent within tree.
-  readonly store: t.IStateObjectReadOnly<T>;
-  readonly root: T;
-  readonly children: readonly ITreeState[];
-  readonly query: t.ITreeQuery<T>;
-  readonly event: ITreeStateEvents<T>;
-  add: TreeStateAdd;
-  remove(child: string | ITreeState): ITreeState<T>;
-  clear(): ITreeState<T>;
-  change: TreeStateChange<T>;
-  find: TreeStateFind<T>;
-  toId(input?: string): string;
-  syncFrom: TreeStateSyncFrom;
-};
+export type ITreeState<T extends Node = Node, E extends Event = any> = t.IDisposable &
+  t.IStateObjectDispatchMethods<T, E> & {
+    readonly namespace: string;
+    readonly id: string;
+    readonly parent?: string; // ID of parent within tree.
+    readonly store: t.IStateObjectReadOnly<T>;
+    readonly root: T;
+    readonly children: readonly ITreeState[];
+    readonly query: t.ITreeQuery<T>;
+    readonly event: ITreeStateEvents<T>;
+    add: TreeStateAdd;
+    remove(child: string | ITreeState): ITreeState<T>;
+    clear(): ITreeState<T>;
+    change: TreeStateChange<T, E>;
+    find: TreeStateFind<T>;
+    toId(input?: string): string;
+    syncFrom: TreeStateSyncFrom;
+  };
 
 export type ITreeStateEvents<T extends Node = Node> = {
   readonly $: Observable<TreeStateEvent>;
@@ -60,12 +73,15 @@ export type TreeStateAddArgs<T extends Node = Node> = {
 /**
  * Change
  */
-export type TreeStateChange<T extends Node = Node> = (
+export type TreeStateChange<T extends Node = Node, E extends Event = Event> = (
   fn: TreeStateChanger<T>,
-  options?: TreeStateChangeOptions,
+  options?: TreeStateChangeOptions<E>,
 ) => TreeStateChangeResponse<T>;
 export type TreeStateChangeResponse<T extends Node = Node> = t.IStateObjectChangeResponse<T>;
-export type TreeStateChangeOptions = { silent?: boolean };
+export type TreeStateChangeOptions<E extends Event> = {
+  silent?: boolean;
+  action?: E['type'];
+};
 export type TreeStateChanger<T extends Node = Node, P extends O = NonNullable<T['props']>> = (
   root: T,
   ctx: TreeStateChangerContext<T, P>,

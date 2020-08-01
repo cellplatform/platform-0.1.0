@@ -10,7 +10,7 @@ type P = { label?: string; icon?: string };
 type N = t.ITreeNode<P>;
 
 const query = TreeQuery.create;
-const create = (args?: t.ITreeStateArgs) => TreeState.create<N>(args);
+const create = TreeState.create;
 
 describe('TreeState', () => {
   describe('create', () => {
@@ -852,7 +852,7 @@ describe('TreeState', () => {
     });
   });
 
-  describe.only('syncFrom', () => {
+  describe('syncFrom', () => {
     const tree1: N = {
       id: 'foo:tree',
       children: [{ id: 'foo:child-1' }, { id: 'foo:child-2' }],
@@ -925,7 +925,7 @@ describe('TreeState', () => {
       expect(state1.query.findById('foo:child-1')?.children || []).to.eql([]); // NB: unchanged.
     });
 
-    it('keeps in sync', () => {
+    it('stays in sync', () => {
       const state1 = create({ root: tree1 });
       const state2 = create({ root: tree2, parent: 'foo:child-1' });
       const state3 = create({ root: tree3, parent: 'foo:child-1' });
@@ -1044,6 +1044,48 @@ describe('TreeState', () => {
       const state2 = create({ root: tree2, parent: '404' });
       const fn = () => state1.syncFrom({ source: state2 });
       expect(fn).to.throw(/parent node '404' does not exist in tree/);
+    });
+  });
+
+  describe('dispatchable', () => {
+    type MyFooEvent = {
+      type: 'FOO/event';
+      payload: MyFoo;
+    };
+    type MyFoo = { count: number };
+
+    it('action: dispatches', () => {
+      const root: N = { id: 'root' };
+      const state = create<N, MyFooEvent>({ root });
+
+      const fired: MyFoo[] = [];
+      state
+        .action()
+        .dispatched('FOO/event')
+        .subscribe((e) => fired.push(e));
+
+      state.dispatch({ type: 'FOO/event', payload: { count: 123 } });
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].count).to.eql(123);
+    });
+
+    it('action: changed', () => {
+      const root: N = { id: 'root' };
+      const state = create<N, MyFooEvent>({ root });
+
+      const fired: t.IStateObjectChanged<N, MyFooEvent>[] = [];
+      state
+        .action()
+        .changed('FOO/event')
+        .subscribe((e) => fired.push(e));
+
+      state.change((draft, ctx) => (ctx.props(draft).label = 'hello'), { action: 'FOO/event' });
+      expect(state.root.props?.label).to.eql('hello');
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].action).to.eql('FOO/event');
+      expect(fired[0].to.props?.label).to.eql('hello');
     });
   });
 });
