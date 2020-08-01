@@ -121,18 +121,16 @@ export class StateObject<T extends O, E extends t.Event<any>>
   /**
    * [Methods]
    */
-  public change = (fn: t.StateObjectChanger<T> | T, action?: E['type']) => {
+  // public change: t.StateObjectChange<T,E> = (fn: t.StateObjectChanger<T> | T, action?: E['type']) => {
+
+  public change: t.StateObjectChange<T, E> = (fn, options = {}) => {
     const cid = id.cuid(); // "change-id"
-    const type = (action || '').trim();
+    const type = (options.action || '').trim();
 
     const from = this.state;
     const { to, op, patches } = next(from, fn);
     if (Patch.isEmpty(patches)) {
-      return {
-        op,
-        cid,
-        patches,
-      };
+      return { op, cid, patches };
     }
 
     // Fire BEFORE event.

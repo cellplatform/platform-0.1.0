@@ -139,13 +139,16 @@ export class TreeState<T extends N = N, E extends Event = Event> implements t.IT
     options: { silent?: boolean; ensureNamespace?: boolean; action?: E['type'] } = {},
   ) {
     const { action } = options;
-    const res = this._store.change((draft) => {
-      const ctx = this.ctx(draft);
-      fn(draft, ctx);
-      if (options.ensureNamespace !== false) {
-        helpers.ensureNamespace(draft, this.namespace);
-      }
-    }, action);
+    const res = this._store.change(
+      (draft) => {
+        const ctx = this.ctx(draft);
+        fn(draft, ctx);
+        if (options.ensureNamespace !== false) {
+          helpers.ensureNamespace(draft, this.namespace);
+        }
+      },
+      { action },
+    );
 
     if (!options.silent && res.changed) {
       this.fire({ type: 'TreeState/changed', payload: res.changed });

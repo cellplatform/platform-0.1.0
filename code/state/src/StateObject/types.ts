@@ -39,9 +39,17 @@ export type IStateObjectReadOnly<T extends O, E extends Event = Event> = {
 export type IStateObjectDispatchable<T extends O, E extends Event = Event> = IStateObjectReadOnly<
   T,
   E
-> & {
+> &
+  IStateObjectDispatchMethods<T, E>;
+
+export type IStateObjectDispatchMethods<T extends O, E extends Event> = {
   dispatch(event: E): void;
   action(takeUntil$?: Observable<any>): IStateObjectAction<T, E>;
+};
+
+export type IStateObjectAction<T extends O, E extends Event> = {
+  dispatched(action: E['type']): Observable<E['payload']>;
+  changed(action: E['type']): Observable<IStateObjectChanged<T, E>>;
 };
 
 export type IStateObjectEvents<T extends O, E extends Event = Event> = {
@@ -51,11 +59,6 @@ export type IStateObjectEvents<T extends O, E extends Event = Event> = {
   readonly cancelled$: Observable<IStateObjectCancelled<T>>;
   readonly dispatch$: Observable<E>;
   readonly dispose$: Observable<any>;
-};
-
-export type IStateObjectAction<T extends O, E extends Event> = {
-  dispatched(action: E['type']): Observable<E['payload']>;
-  changed(action: E['type']): Observable<IStateObjectChanged<T, E>>;
 };
 
 /**
@@ -68,10 +71,16 @@ export type IStateObjectWritable<T extends O, E extends Event = Event> = IStateO
   t.IDisposable & {
     readonly readonly: IStateObject<T, E>;
     readonly dispatchable: IStateObjectDispatchable<T, E>;
-    change(input: StateObjectChanger<T> | T, action?: E['type']): IStateObjectChangeResponse<T>;
+    change: StateObjectChange<T, E>;
   };
 
+export type StateObjectChange<T extends O, E extends Event> = (
+  input: StateObjectChanger<T> | T,
+  options?: IStateObjectChangeOptions<E>,
+) => IStateObjectChangeResponse<T>;
+
 export type StateObjectChangeOperation = 'update' | 'replace';
+export type IStateObjectChangeOptions<E extends Event> = { action?: E['type'] };
 
 export type IStateObjectChangeResponse<T extends O, E extends Event = Event> = {
   op: StateObjectChangeOperation;
@@ -99,6 +108,7 @@ export type StateMerger<T extends MergeObject, E extends Event = Event> = {
 /**
  * [Events]
  */
+
 export type StateObjectEvent =
   | IStateObjectChangingEvent
   | IStateObjectChangedEvent

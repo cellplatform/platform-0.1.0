@@ -355,12 +355,12 @@ describe('StateObject', () => {
       expect(fired.length).to.eql(0); // NB: Because action was issued on change.
 
       // Change: Action issued, but different from what is being listened for.
-      obj.change((draft) => draft.count--, 'DECREMENT');
+      obj.change((draft) => draft.count--, { action: 'DECREMENT' });
       expect(obj.state.count).to.eql(2);
       expect(fired.length).to.eql(0); // NB: Because different action.
 
       // Change with action.
-      obj.change((draft) => draft.count++, 'INCREMENT');
+      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
       expect(obj.state.count).to.eql(3);
       expect(fired.length).to.eql(1);
       expect(fired[0].from.count).to.eql(2);
@@ -368,8 +368,8 @@ describe('StateObject', () => {
 
       // Stop listening.
       done$.next();
-      obj.change((draft) => draft.count++, 'INCREMENT');
-      obj.change((draft) => draft.count++, 'INCREMENT');
+      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
+      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
       expect(obj.state.count).to.eql(5);
       expect(fired.length).to.eql(1); // NB: No change.
     });
@@ -391,7 +391,7 @@ describe('StateObject', () => {
       expect(changed.length).to.eql(1);
       expect(actions.length).to.eql(0);
 
-      obj.change((draft) => draft.count++, 'INCREMENT');
+      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
       expect(changing.length).to.eql(2);
       expect(changed.length).to.eql(2);
       expect(actions.length).to.eql(1);
@@ -446,7 +446,7 @@ describe('StateObject', () => {
           map((e) => e.payload as IncrementEvent['payload']),
         )
         .subscribe((e) => {
-          obj.change((m) => (m.count += e.by), 'INCREMENT');
+          obj.change((m) => (m.count += e.by), { action: 'INCREMENT' });
         });
 
       dispatch({ type: 'INCREMENT', payload: { by: 2 } }); // NB: Using disconnected method.
