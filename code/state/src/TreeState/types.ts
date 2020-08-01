@@ -78,10 +78,7 @@ export type TreeStateChange<T extends Node = Node, E extends Event = Event> = (
   options?: TreeStateChangeOptions<E>,
 ) => TreeStateChangeResponse<T>;
 export type TreeStateChangeResponse<T extends Node = Node> = t.IStateObjectChangeResponse<T>;
-export type TreeStateChangeOptions<E extends Event> = {
-  silent?: boolean;
-  action?: E['type'];
-};
+export type TreeStateChangeOptions<E extends Event> = { action?: E['type'] };
 export type TreeStateChanger<T extends Node = Node, P extends O = NonNullable<T['props']>> = (
   root: T,
   ctx: TreeStateChangerContext<T, P>,

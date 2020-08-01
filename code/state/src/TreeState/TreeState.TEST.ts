@@ -563,23 +563,6 @@ describe('TreeState', () => {
       expect(event.patches).to.eql(res.patches);
     });
 
-    it('event: changed (silent, not fired)', () => {
-      const state = create({ root });
-      const fired: t.ITreeStateChanged[] = [];
-      state.event
-        .payload<t.ITreeStateChangedEvent>('TreeState/changed')
-        .subscribe((e) => fired.push(e));
-
-      state.change(
-        (root, ctx) => {
-          ctx.props(root, (p) => (p.label = 'foo'));
-        },
-        { silent: true },
-      );
-
-      expect(fired.length).to.eql(0);
-    });
-
     it('event: does not fire when nothing changes', () => {
       const state = create({ root });
       const fired: t.ITreeStateChanged[] = [];
