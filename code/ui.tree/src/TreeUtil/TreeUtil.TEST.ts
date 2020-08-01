@@ -3,7 +3,7 @@ import { expect, t } from '../test';
 import { TreeUtil } from '.';
 const query = TreeUtil.query;
 
-type P = t.ITreeViewNodePropsBase & { data: { foo?: number } };
+type P = t.ITreeNodePropsTreeView & { data: { foo?: number } };
 type N = t.ITreeViewNode<P>;
 
 describe('TreeUtil', () => {
