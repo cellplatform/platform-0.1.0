@@ -6,11 +6,13 @@ import { StateObject } from '.';
 import { expect, t } from '../test';
 import { StateObject as StateObjectClass } from './StateObject';
 
+import { equals } from 'ramda';
+
 type IFoo = { message?: string; count: number };
 type IBar = { isEnabled?: boolean };
 type MyEvent = IncrementEvent | DecrementEvent;
 type IncrementEvent = { type: 'INCREMENT'; payload: { by: number } };
-type DecrementEvent = { type: 'DECREMENT'; payload: { by: number } };
+type DecrementEvent = { type: 'DECREMENT'; payload: { count: number } };
 
 describe('StateObject', () => {
   describe('lifecycle', () => {
@@ -425,13 +427,15 @@ describe('StateObject', () => {
       expect(patches.next[0]).to.eql({ op: 'replace', path: '', value: { count: 888 } });
     });
 
-    it('event: dispatch', () => {
+    it('event: dispatch$', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo, MyEvent>(initial);
       const dispatch = obj.dispatch; // NB: Test disconnected "bound" method.
 
+      const all: t.Event[] = [];
       const dispatched: MyEvent[] = [];
       const changed: t.IStateObjectChanged[] = [];
+      obj.event.$.subscribe((e) => all.push(e));
       obj.event.dispatch$.subscribe((e) => dispatched.push(e));
       obj.event.changed$.subscribe((e) => changed.push(e));
 
@@ -455,6 +459,12 @@ describe('StateObject', () => {
       expect(changed.length).to.eql(1);
       expect(changed[0].action).to.eql('INCREMENT');
       expect(obj.state.count).to.eql(3);
+
+      // NB: Fires all the dispatched events through the "all" ($) observable as well.
+      dispatched.forEach((e1) => {
+        const exists = all.some((e2) => equals(e1, e2.payload.event));
+        expect(exists).to.eql(true);
+      });
     });
 
     it('event: dispatch (via [action.dispatched] method filter)', async () => {
@@ -464,7 +474,7 @@ describe('StateObject', () => {
       const done$ = new Subject();
 
       action(done$)
-        .dispatched('INCREMENT')
+        .dispatched<IncrementEvent>('INCREMENT')
         .pipe(filter((e) => e.by >= 5))
         .subscribe((e) => obj.change((m) => (m.count += e.by)));
 
