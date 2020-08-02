@@ -821,6 +821,37 @@ describe('TreeState', () => {
       expect(list[2].tree.id).to.eql(child3.id);
     });
 
+    it('flat', () => {
+      const root: N = { id: 'root' };
+      const state = create({ root });
+
+      const child1 = state.add({ root: 'child-1' });
+      const child2 = state.add({ root: 'child-2' });
+      const child3 = state.add({ root: 'child-3' });
+
+      const list: t.TreeStateFindMatchArgs[] = [];
+      const res = state.find((e) => {
+        list.push(e);
+        return e.id === 'child-3';
+      });
+
+      expect(res?.id).to.equal(child3.id);
+
+      expect(list.length).to.eql(3);
+      expect(list[0].tree.id).to.eql(child1.id);
+      expect(list[1].tree.id).to.eql(child2.id);
+      expect(list[2].tree.id).to.eql(child3.id);
+    });
+
+    it('toString => fully qualified identifier (<namespace>:<id>)', () => {
+      const state = create();
+      const child1 = state.add({ root: 'child-1' });
+      child1.add({ root: 'ns:child-2a' });
+
+      const res = state.find((e) => e.toString() === 'ns:child-2a');
+      expect(res?.id).to.eql('ns:child-2a');
+    });
+
     it('stop (walking)', () => {
       const state = create();
       const child1 = state.add({ root: 'child-1' });
@@ -1075,6 +1106,23 @@ describe('TreeState', () => {
       expect(fired.length).to.eql(1);
       expect(fired[0].action).to.eql('FOO/event');
       expect(fired[0].to.props?.label).to.eql('hello');
+    });
+
+    it('fires action through [dispatch$]', () => {
+      const root: N = { id: 'root' };
+      const state = create<N, MyFooEvent>({ root });
+
+      const all: t.Event[] = [];
+      const dispatched: MyFooEvent[] = [];
+
+      state.event.$.subscribe((e) => all.push(e));
+      state.event.dispatch$.subscribe((e) => dispatched.push(e));
+
+      state.dispatch({ type: 'FOO/event', payload: { count: 123 } });
+
+      expect(dispatched.length).to.eql(1);
+      expect(dispatched[0].payload.count).to.eql(123);
+      expect(all).to.eql(dispatched);
     });
   });
 });

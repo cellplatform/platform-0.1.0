@@ -13,6 +13,7 @@ import * as sync from './TreeState.sync';
 type O = Record<string, unknown>;
 type Event = t.Event<O>;
 type N = t.ITreeNode;
+
 const Identity = TreeIdentity;
 
 /**
@@ -22,11 +23,11 @@ const Identity = TreeIdentity;
  *    All changes to the state tree are immutable.
  *
  */
-export class TreeState<T extends N = N, E extends Event = Event> implements t.ITreeState<T, E> {
-  public static create<T extends N = N, E extends Event = Event>(args?: t.ITreeStateArgs<T>) {
+export class TreeState<T extends N = N, A extends Event = any> implements t.ITreeState<T, A> {
+  public static create<T extends N = N, A extends Event = any>(args?: t.ITreeStateArgs<T>) {
     const root = args?.root || 'node';
     const e = { ...args, root } as t.ITreeStateArgs<T>;
-    return new TreeState<T, E>(e) as t.ITreeState<T, E>;
+    return new TreeState<T, A>(e) as t.ITreeState<T, A>;
   }
 
   public static identity = Identity;
@@ -46,10 +47,17 @@ export class TreeState<T extends N = N, E extends Event = Event> implements t.IT
     this.parent = args.parent;
     this._store = StateObject.create<T>(root);
 
+    // Initialise events.
+    this.event = events.create<T, A>({
+      event$: this._event$,
+      dispatch$: this._store.event.dispatch$ as Observable<A>,
+      dispose$: this.dispose$,
+    });
+
     // Set the object with the initial state.
     this._change((draft) => helpers.ensureNamespace(draft, this.namespace), {
       silent: true,
-      ensureNamespace: false, // NB: No need to do it in the function (we are doing it here).
+      ensureNamespace: false, // NB: No need to "ensure namespace" in the function (we are doing it here).
     });
 
     // Dispose if given observable fires.
@@ -85,7 +93,7 @@ export class TreeState<T extends N = N, E extends Event = Event> implements t.IT
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private _event$ = new Subject<t.TreeStateEvent>();
-  public readonly event = events.create<T>(this._event$, this._dispose$);
+  public readonly event: t.ITreeStateEvents<T, A>;
 
   /**
    * [Properties]
@@ -95,7 +103,7 @@ export class TreeState<T extends N = N, E extends Event = Event> implements t.IT
   }
 
   public get readonly() {
-    return this as t.ITreeStateReadonly<T, E>;
+    return this as t.ITreeStateReadonly<T, A>;
   }
 
   public get store() {
@@ -124,12 +132,12 @@ export class TreeState<T extends N = N, E extends Event = Event> implements t.IT
    * [Methods]
    */
 
-  public dispatch: t.IStateObjectDispatchMethods<T, E>['dispatch'] = (e) => {
+  public dispatch: t.IStateObjectDispatchMethods<T, A>['dispatch'] = (e) => {
     return this._store.dispatch(e);
   };
 
-  public action: t.IStateObjectDispatchMethods<T, E>['action'] = (takeUntil$) => {
-    return this._store.action(takeUntil$) as t.IStateObjectAction<T, E>;
+  public action: t.IStateObjectDispatchMethods<T, A>['action'] = (takeUntil$) => {
+    return this._store.action(takeUntil$) as t.IStateObjectAction<T, A>;
   };
 
   public formatId = (input?: string): string => {
@@ -137,10 +145,10 @@ export class TreeState<T extends N = N, E extends Event = Event> implements t.IT
     return Identity.format(this.namespace, id);
   };
 
-  public change: t.TreeStateChange<T, E> = (fn, options) => this._change(fn, options);
+  public change: t.TreeStateChange<T, A> = (fn, options) => this._change(fn, options);
   private _change(
     fn: t.TreeStateChanger<T>,
-    options: { silent?: boolean; ensureNamespace?: boolean; action?: E['type'] } = {},
+    options: { silent?: boolean; ensureNamespace?: boolean; action?: A['type'] } = {},
   ) {
     const { action } = options;
     const res = this._store.change(
@@ -218,8 +226,8 @@ export class TreeState<T extends N = N, E extends Event = Event> implements t.IT
     return this;
   };
 
-  public find: t.TreeStateFind<T> = (match) => this._find(0, match);
-  private _find(level: number, match: t.TreeStateFindMatch<T>): t.ITreeState<T> | undefined {
+  public find: t.TreeStateFind<T, A> = (match) => this._find(0, match);
+  private _find(level: number, match: t.TreeStateFindMatch<T>): t.ITreeState<T, A> | undefined {
     const children = this.children;
     if (children.length === 0) {
       return undefined;
@@ -227,17 +235,29 @@ export class TreeState<T extends N = N, E extends Event = Event> implements t.IT
       for (const child of children) {
         const tree = child as TreeState<T>;
         let stopped = false;
+
         const args: t.TreeStateFindMatchArgs<T> = {
           level,
           id: Identity.id(child.id),
           namespace: child.namespace,
           tree,
           stop: () => (stopped = true),
+          toString: () => `${args.namespace}:${args.id}`,
         };
+
         if (match(args)) {
           return child;
         } else {
-          return stopped ? undefined : tree._find(level + 1, match); // <== RECURSION 🌳
+          if (stopped) {
+            return undefined;
+          }
+
+          const deep = tree._find(level + 1, match); // <== RECURSION 🌳
+          if (deep) {
+            return deep;
+          }
+
+          // Continue [next child]...
         }
       }
       return undefined;
