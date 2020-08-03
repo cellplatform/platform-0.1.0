@@ -9,17 +9,17 @@ import { renderer } from './render';
 
 import { Module } from '../../Module';
 
-export type IDebugShellProps = {
+export type IShellProps = {
   style?: CssValue;
 };
 
-export type IDebugShellState = {
+export type IShellState = {
   selected?: t.IModule<any>;
 };
 
-export class DebugShell extends React.PureComponent<IDebugShellProps, IDebugShellState> {
-  public state: IDebugShellState = {};
-  private state$ = new Subject<Partial<IDebugShellState>>();
+export class Shell extends React.PureComponent<IShellProps, IShellState> {
+  public state: IShellState = {};
+  private state$ = new Subject<Partial<IShellState>>();
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeViewEvent>();
 
