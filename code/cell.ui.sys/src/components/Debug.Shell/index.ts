@@ -1,1 +1,1 @@
-export * from './DebugShell';
+export * from './Shell';
