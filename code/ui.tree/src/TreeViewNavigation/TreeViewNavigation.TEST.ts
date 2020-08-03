@@ -57,6 +57,68 @@ describe('TreeViewNavigation', () => {
     expect(nav.selected).to.eql('bar');
   });
 
+  describe('select', () => {
+    const root: N = {
+      id: 'root',
+      children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-2.1' }] }],
+    };
+
+    it('select (within current parent) - node name only', () => {
+      const nav = create(root);
+
+      expect(nav.current).to.eql(nav.root.id);
+      expect(nav.selected).to.eql(undefined);
+
+      const node = nav.query.findById('child-1');
+      expect(node?.id.endsWith(':child-1')).to.eql(true);
+
+      const changed: t.ITreeViewNavigationChanged[] = [];
+      nav.changed$.subscribe((e) => changed.push(e));
+
+      nav.select('child-1');
+
+      expect(nav.current).to.eql(nav.root.id);
+      expect(nav.selected).to.eql(node?.id);
+
+      expect(changed.length).to.eql(1);
+      expect(changed[0].to.nav.current).to.eql(nav.root.id);
+      expect(changed[0].to.nav.selected).to.eql(node?.id);
+    });
+
+    it('select (within current parent) - fully qualified id', () => {
+      const nav = create(root);
+
+      expect(nav.current).to.eql(nav.root.id);
+      expect(nav.selected).to.eql(undefined);
+
+      const node = nav.query.findById('child-1');
+      expect(node?.id.endsWith(':child-1')).to.eql(true);
+
+      nav.select(node?.id);
+      expect(nav.current).to.eql(nav.root.id);
+      expect(nav.selected).to.eql(node?.id);
+    });
+
+    it('select (changes parent)', () => {
+      const nav = create(root);
+      expect(nav.current).to.eql(nav.root.id);
+      expect(nav.selected).to.eql(undefined);
+
+      const node = nav.query.findById('child-2.1');
+      expect(node?.id.endsWith(':child-2.1')).to.eql(true);
+
+      nav.select('child-2.1');
+      expect(nav.selected).to.eql(node?.id);
+      expect(nav.current?.endsWith(':child-2')).to.eql(true);
+    });
+
+    it('throw: node does not exist', () => {
+      const nav = create(root);
+      const fn = () => nav.select('404');
+      expect(fn).to.throw(/does not exist within the tree/);
+    });
+  });
+
   describe('node', () => {
     const root: N = {
       id: 'root',

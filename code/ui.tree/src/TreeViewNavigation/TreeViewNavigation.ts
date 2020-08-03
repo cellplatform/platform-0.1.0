@@ -48,6 +48,14 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
     // Redraw on change.
     this.changed$.pipe(takeUntil(dispose$), debounceTime(10)).subscribe(this.redraw);
 
+    // Selection change.
+    nav.event.changed$.pipe(takeUntil(dispose$)).subscribe((e) => {
+      this._selection.next({
+        current: this.current,
+        selected: this.selected,
+      });
+    });
+
     // Manage disposal.
     args.dispose$?.subscribe(() => this.dispose());
     dispose$.subscribe(() => {
@@ -71,6 +79,9 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
 
   private _redraw = new Subject<void>();
   public readonly redraw$ = this._redraw.pipe(share());
+
+  private _selection = new Subject<t.ITreeViewNavigationSelection>();
+  public readonly selection$ = this._selection.pipe(share());
 
   /**
    * PRIVATE Properties
@@ -127,8 +138,7 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
 
   public node: t.ITreeViewNavigation['node'] = (id, change) => {
     if (id && typeof change === 'function') {
-      const tree = this.stores.tree;
-      tree.change((draft, ctx) => {
+      this.stores.tree.change((draft, ctx) => {
         const query = TreeQuery.create({ root: draft });
         const node = query.findById(id);
         if (node) {
@@ -137,7 +147,23 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
         }
       });
     }
+
     return id ? this.query.findById(id) : undefined;
+  };
+
+  public select: t.ITreeViewNavigation['select'] = (id) => {
+    const query = this.query;
+    const node = query.findById(id);
+    if (!node) {
+      const err = `Cannot select node '${id}' as it does not exist within the tree.`;
+      throw new Error(err);
+    }
+
+    const parent = query.parent(node);
+    this.stores.nav.change((draft) => {
+      draft.selected = node.id;
+      draft.current = parent?.id;
+    });
   };
 
   /**

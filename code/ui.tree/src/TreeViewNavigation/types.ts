@@ -14,7 +14,7 @@ export type TreeViewNavigation = {
 
 export type ITreeViewNavigationArgs = {
   treeview$: Observable<t.TreeViewEvent>;
-  tree?: t.ITreeState;
+  tree?: t.ITreeState<any>;
   dispose$?: Observable<any>;
   strategy?: t.TreeViewNavigationStrategy;
 };
@@ -26,12 +26,14 @@ export type ITreeViewNavigation = t.IDisposable & {
   readonly changed$: Observable<t.ITreeViewNavigationChanged>;
   readonly treeview$: Observable<t.TreeViewEvent>;
   readonly redraw$: Observable<void>;
+  readonly selection$: Observable<ITreeViewNavigationSelection>;
   readonly query: t.ITreeQuery<t.ITreeViewNode>;
   readonly root: t.ITreeViewNode;
   tree: t.ITreeState;
   current?: string; //  Node ID.
   selected?: string; // Node ID.
   node(id?: t.NodeIdentifier, change?: TreeViewNavigationNodeChanger): t.ITreeNode | undefined;
+  select(id?: string): void;
 };
 
 export type TreeViewNavigationNodeChanger = t.TreeStateChanger<
