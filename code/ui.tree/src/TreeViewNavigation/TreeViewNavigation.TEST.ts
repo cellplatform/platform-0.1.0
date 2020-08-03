@@ -36,31 +36,68 @@ describe('TreeViewNavigation', () => {
     expect(nav.query.findById('404')).to.eql(undefined);
   });
 
-  it('change: current/selection', () => {
-    const nav = create();
-    expect(nav.current).to.eql(nav.root.id);
-    expect(nav.selected).to.eql(undefined);
+  describe('current/selection', () => {
+    it('change via property', () => {
+      const nav = create();
+      expect(nav.current).to.eql(nav.root.id);
+      expect(nav.selected).to.eql(undefined);
 
-    const changed: t.ITreeViewNavigationChanged[] = [];
-    nav.changed$.subscribe((e) => changed.push(e));
+      const changed: t.ITreeViewNavigationChanged[] = [];
+      nav.changed$.subscribe((e) => changed.push(e));
 
-    nav.current = 'foo';
-    expect(changed.length).to.eql(1);
+      nav.current = 'foo';
+      expect(changed.length).to.eql(1);
 
-    nav.selected = 'bar';
-    expect(changed.length).to.eql(2);
+      nav.selected = 'bar';
+      expect(changed.length).to.eql(2);
 
-    expect(changed[0].to.nav.current).to.eql('foo');
-    expect(changed[1].to.nav.selected).to.eql('bar');
+      expect(changed[0].to.nav.current).to.eql('foo');
+      expect(changed[1].to.nav.selected).to.eql('bar');
 
-    expect(nav.current).to.eql('foo');
-    expect(nav.selected).to.eql('bar');
+      expect(nav.current).to.eql('foo');
+      expect(nav.selected).to.eql('bar');
+    });
+
+    it('clears selection when [module-node] removed', () => {
+      const nav = create();
+      const child = nav.tree.add({ root: 'child-1' });
+
+      nav.select(child.id);
+      expect(nav.current).to.eql(nav.root.id);
+      expect(nav.selected).to.eql(child.id);
+
+      child.dispose();
+      expect(nav.query.exists(child.id)).to.eql(false);
+      expect(nav.selected).to.eql(undefined);
+    });
+
+    it('clears selection when [module-child-node] removed', () => {
+      const nav = create();
+      const child = nav.tree.add({ root: 'child-1' });
+
+      child.change((draft, ctx) => {
+        ctx.children(draft, (children) => {
+          children.push({ id: 'foo' });
+        });
+      });
+
+      const foo = child.query.findById('foo');
+      nav.select(foo);
+      expect(nav.selected).to.eql(foo?.id);
+
+      child.change((draft) => draft.children?.pop());
+      expect(child.query.findById('foo')).to.eql(undefined); // NB: node no longer in tree.
+      expect(nav.selected).to.eql(undefined);
+    });
   });
 
   describe('select', () => {
     const root: N = {
       id: 'root',
-      children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-2.1' }] }],
+      children: [
+        { id: 'child-1' },
+        { id: 'child-2', children: [{ id: 'child-2.1', children: [{ id: 'child-2.1.1' }] }] },
+      ],
     };
 
     it('select (within current parent) - node name only', () => {
@@ -70,7 +107,7 @@ describe('TreeViewNavigation', () => {
       expect(nav.selected).to.eql(undefined);
 
       const node = nav.query.findById('child-1');
-      expect(node?.id.endsWith(':child-1')).to.eql(true);
+      expect(node?.id).to.match(/:child-1$/);
 
       const changed: t.ITreeViewNavigationChanged[] = [];
       nav.changed$.subscribe((e) => changed.push(e));
@@ -92,30 +129,57 @@ describe('TreeViewNavigation', () => {
       expect(nav.selected).to.eql(undefined);
 
       const node = nav.query.findById('child-1');
-      expect(node?.id.endsWith(':child-1')).to.eql(true);
+      expect(node?.id).to.match(/:child-1$/);
 
       nav.select(node?.id);
       expect(nav.current).to.eql(nav.root.id);
       expect(nav.selected).to.eql(node?.id);
     });
 
-    it('select (changes parent)', () => {
+    it('select (changes current to parent, via flag)', () => {
       const nav = create(root);
       expect(nav.current).to.eql(nav.root.id);
       expect(nav.selected).to.eql(undefined);
 
       const node = nav.query.findById('child-2.1');
-      expect(node?.id.endsWith(':child-2.1')).to.eql(true);
+      expect(node?.id).to.match(/:child-2\.1$/);
 
-      nav.select('child-2.1');
+      nav.select('child-2.1', { current: true });
       expect(nav.selected).to.eql(node?.id);
-      expect(nav.current?.endsWith(':child-2')).to.eql(true);
+      expect(nav.current).to.match(/:child-2$/);
     });
 
-    it('throw: node does not exist', () => {
+    it('select (changes current to node-id)', () => {
+      const nav = create(root);
+      expect(nav.current).to.eql(nav.root.id);
+      expect(nav.selected).to.eql(undefined);
+
+      const node = nav.query.findById('child-2.1.1');
+      expect(node?.id).to.match(/:child-2\.1\.1$/);
+
+      nav.select('child-2.1.1', { current: 'child-2' });
+      expect(nav.selected).to.eql(node?.id);
+      expect(nav.current).to.match(/:child-2$/);
+    });
+
+    it('select: undefined', () => {
+      const nav = create(root).select('child-2.1', { current: true });
+      expect(nav.selected).to.match(/:child-2\.1$/);
+      nav.select(undefined);
+      expect(nav.current).to.match(/:child-2$/);
+      expect(nav.selected).to.eql(undefined);
+    });
+
+    it('throw: node not found', () => {
       const nav = create(root);
       const fn = () => nav.select('404');
       expect(fn).to.throw(/does not exist within the tree/);
+    });
+
+    it('does not throw when node not found (supressed by flag)', () => {
+      const nav = create(root);
+      nav.select('404', { throw: false });
+      expect(nav.selected).to.eql(undefined);
     });
   });
 

@@ -56,6 +56,12 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
       });
     });
 
+    tree.event.changed$.subscribe((e) => {
+      if (e.patches.next.some((patch) => patch.path.includes('children'))) {
+        this.ensureSelection();
+      }
+    });
+
     // Manage disposal.
     args.dispose$?.subscribe(() => this.dispose());
     dispose$.subscribe(() => {
@@ -151,23 +157,47 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
     return id ? this.query.findById(id) : undefined;
   };
 
-  public select: t.ITreeViewNavigation['select'] = (id) => {
+  public select: t.ITreeViewNavigation['select'] = (id, options = {}) => {
     const query = this.query;
-    const node = query.findById(id);
-    if (!node) {
+
+    const selected = id ? query.findById(id) : undefined;
+    if (id && !selected && options.throw !== false) {
       const err = `Cannot select node '${id}' as it does not exist within the tree.`;
       throw new Error(err);
     }
 
-    const parent = query.parent(node);
     this.stores.nav.change((draft) => {
-      draft.selected = node.id;
-      draft.current = parent?.id;
+      draft.selected = selected?.id;
+      if (selected && options.current) {
+        const current =
+          options.current === true ? query.parent(selected) : query.findById(options.current);
+        draft.current = current?.id;
+      }
     });
+
+    return this;
   };
 
   /**
    * Helpers
    */
   private redraw = () => this._redraw.next();
+
+  private ensureSelection = () => {
+    const query = this.query;
+    if (this.selected) {
+      const exists = query.findById(this.selected);
+      if (!exists) {
+        this.selected = undefined;
+      }
+    }
+
+    if (this.current) {
+      const exists = query.findById(this.current);
+      if (!exists) {
+        this.current = this.root.id;
+      }
+    }
+    //
+  };
 }

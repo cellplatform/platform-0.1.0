@@ -33,7 +33,10 @@ export type ITreeViewNavigation = t.IDisposable & {
   current?: string; //  Node ID.
   selected?: string; // Node ID.
   node(id?: t.NodeIdentifier, change?: TreeViewNavigationNodeChanger): t.ITreeNode | undefined;
-  select(id?: string): void;
+  select(
+    id?: t.NodeIdentifier,
+    options?: { throw?: boolean; current?: true | t.NodeIdentifier },
+  ): ITreeViewNavigation;
 };
 
 export type TreeViewNavigationNodeChanger = t.TreeStateChanger<
