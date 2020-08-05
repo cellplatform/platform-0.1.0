@@ -134,6 +134,7 @@ export type TreeStateSyncer = t.IDisposable & {
 export type ITreeStateEvents<T extends Node, A extends Event> = {
   readonly $: Observable<TreeStateEvent | A>;
   readonly changed$: Observable<ITreeStateChanged<T>>;
+  readonly patched$: Observable<ITreeStatePatched<A>>;
   readonly childAdded$: Observable<ITreeStateChildAdded>;
   readonly childRemoved$: Observable<ITreeStateChildRemoved>;
   readonly dispatch$: Observable<A>;
@@ -142,6 +143,7 @@ export type ITreeStateEvents<T extends Node, A extends Event> = {
 
 export type TreeStateEvent =
   | ITreeStateChangedEvent
+  | ITreeStatePatchedEvent
   | ITreeStateChildAddedEvent
   | ITreeStateChildRemovedEvent
   | ITreeStateDisposedEvent;
@@ -154,6 +156,15 @@ export type ITreeStateChangedEvent<T extends Node = Node> = {
   payload: ITreeStateChanged<T>;
 };
 export type ITreeStateChanged<T extends Node = Node> = t.IStateObjectChanged<T>;
+
+/**
+ * Fired when the [TreeState] data changes (change patches only).
+ */
+export type ITreeStatePatchedEvent<A extends Event = Event> = {
+  type: 'TreeState/patched';
+  payload: ITreeStatePatched<A>;
+};
+export type ITreeStatePatched<A extends Event = Event> = t.IStateObjectPatched<A>;
 
 /**
  * Fired when a child [TreeState] is added.

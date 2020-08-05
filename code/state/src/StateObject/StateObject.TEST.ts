@@ -446,6 +446,24 @@ describe('StateObject', () => {
       expect(patches.next[0]).to.eql({ op: 'replace', path: '', value: { count: 888 } });
     });
 
+    it('event: changedPatches', () => {
+      const obj = StateObject.create<IFoo, MyEvent>({ count: 1 });
+
+      const patches: t.IStateObjectPatched[] = [];
+      obj.event.patched$.subscribe((e) => patches.push(e));
+
+      obj.change({ count: 888 }, { action: 'INCREMENT' });
+
+      expect(patches.length).to.eql(1);
+
+      const e = patches[0];
+      expect(e.op).to.eql('replace');
+      expect(e.action).to.eql('INCREMENT');
+
+      expect(e.prev[0]).to.eql({ op: 'replace', path: '', value: { count: 1 } });
+      expect(e.next[0]).to.eql({ op: 'replace', path: '', value: { count: 888 } });
+    });
+
     it('event: dispatch$', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo, MyEvent>(initial);

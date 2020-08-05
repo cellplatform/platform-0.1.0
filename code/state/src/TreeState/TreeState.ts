@@ -46,19 +46,26 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     this.key = Identity.key(root.id);
     this.namespace = Identity.namespace(root.id) || idUtil.cuid();
     this.parent = args.parent;
-    this._store = StateObject.create<T>(root);
+    const store = (this._store = StateObject.create<T>(root));
 
     // Initialise events.
     this.event = events.create<T, A>({
       event$: this._event$,
-      dispatch$: this._store.event.dispatch$ as Observable<A>,
+      dispatch$: store.event.dispatch$ as Observable<A>,
       dispose$: this.dispose$,
     });
 
     // Set the object with the initial state.
     this._change((draft) => helpers.ensureNamespace(draft, this.namespace), {
-      silent: true,
       ensureNamespace: false, // NB: No need to "ensure namespace" in the function (we are doing it here).
+    });
+
+    // Bubble events.
+    store.event.changed$.pipe(takeUntil(this.dispose$)).subscribe((e) => {
+      this.fire({ type: 'TreeState/changed', payload: e });
+    });
+    store.event.patched$.pipe(takeUntil(this.dispose$)).subscribe((e) => {
+      this.fire({ type: 'TreeState/patched', payload: e });
     });
 
     // Dispose if given observable fires.
@@ -150,7 +157,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
   public change: t.TreeStateChange<T, A> = (fn, options) => this._change(fn, options);
   private _change(
     fn: t.TreeStateChanger<T>,
-    options: { silent?: boolean; ensureNamespace?: boolean; action?: A['type'] } = {},
+    options: { ensureNamespace?: boolean; action?: A['type'] } = {},
   ) {
     const { action } = options;
     const res = this._store.change(
@@ -163,10 +170,6 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
       },
       { action },
     );
-
-    if (!options.silent && res.changed) {
-      this.fire({ type: 'TreeState/changed', payload: res.changed });
-    }
 
     return res;
   }

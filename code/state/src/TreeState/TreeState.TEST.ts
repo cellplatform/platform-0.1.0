@@ -552,6 +552,13 @@ describe('TreeState', () => {
 
       expect(state.query.findById('child-1')?.props).to.eql({ label: 'hello' });
     });
+  });
+
+  describe('change (events)', () => {
+    const root: N = {
+      id: 'root',
+      children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-2-1' }] }],
+    };
 
     it('event: changed', () => {
       const state = create({ root });
@@ -570,6 +577,24 @@ describe('TreeState', () => {
       expect(event.from.props?.label).to.eql(undefined);
       expect(event.to.props?.label).to.eql('foo');
       expect(event.patches).to.eql(res.patches);
+    });
+
+    it('event: patched', () => {
+      const state = create({ root });
+      const fired: t.ITreeStatePatched[] = [];
+      state.event
+        .payload<t.ITreeStatePatchedEvent>('TreeState/patched')
+        .subscribe((e) => fired.push(e));
+
+      const res = state.change((root, ctx) => {
+        ctx.props(root, (p) => (p.label = 'foo'));
+      });
+
+      expect(fired.length).to.eql(1);
+
+      const event = fired[0];
+      expect(event.prev).to.eql(res.patches.prev);
+      expect(event.next).to.eql(res.patches.next);
     });
 
     it('event: does not fire when nothing changes', () => {

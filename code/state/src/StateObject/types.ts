@@ -59,6 +59,7 @@ export type IStateObjectEvents<T extends O, A extends Event = Event> = {
   readonly $: Observable<StateObjectEvent>;
   readonly changing$: Observable<IStateObjectChanging<T>>;
   readonly changed$: Observable<IStateObjectChanged<T, A>>;
+  readonly patched$: Observable<IStateObjectPatched<A>>;
   readonly cancelled$: Observable<IStateObjectCancelled<T>>;
   readonly dispatch$: Observable<A>;
   readonly dispose$: Observable<any>;
@@ -115,6 +116,7 @@ export type StateMerger<T extends MergeObject, A extends Event = Event> = {
 export type StateObjectEvent =
   | IStateObjectChangingEvent
   | IStateObjectChangedEvent
+  | IStateObjectPatchedEvent
   | IStateObjectCancelledEvent
   | IStateObjectDispatchEvent
   | IStateObjectDisposedEvent;
@@ -149,9 +151,26 @@ export type IStateObjectChangedEvent<T extends O = any, A extends Event = Event>
 export type IStateObjectChanged<T extends O = any, A extends Event = Event> = {
   op: StateObjectChangeOperation;
   cid: string; // "change-id"
+  patches: t.PatchSet;
+  action: A['type'];
   from: T;
   to: T;
-  patches: t.PatchSet;
+};
+
+/**
+ * Equivalent to CHANGED event, but only delivers change patches.
+ * (NB: this can is useful for sending more lightweight payloads).
+ */
+
+export type IStateObjectPatchedEvent<A extends Event = Event> = {
+  type: 'StateObject/changed/patched';
+  payload: IStateObjectPatched<A>;
+};
+export type IStateObjectPatched<A extends Event = Event> = {
+  op: StateObjectChangeOperation;
+  cid: string; // "change-id"
+  prev: t.PatchSet['prev'];
+  next: t.PatchSet['next'];
   action: A['type'];
 };
 
