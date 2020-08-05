@@ -61,7 +61,7 @@ export function isModuleEvent(event: t.Event) {
  */
 export function filterEvent(event: t.ModuleEvent, filter?: t.ModuleFilter) {
   if (filter) {
-    const id = event.payload.id;
+    const id = event.payload.module;
     const { key, namespace } = identity.parse(id);
     return filter({ id, key, namespace, event });
   } else {
@@ -93,14 +93,14 @@ export function monitorAndDispatchChanged(module: t.IModule) {
     changed$.subscribe((change) => {
       module.dispatch({
         type: 'Module/changed',
-        payload: { id, change },
+        payload: { module: id, change },
       });
     });
 
     patched$.subscribe((patch) => {
       module.dispatch({
         type: 'Module/patched',
-        payload: { id, patch },
+        payload: { module: id, patch },
       });
     });
 

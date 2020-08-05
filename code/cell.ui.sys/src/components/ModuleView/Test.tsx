@@ -74,7 +74,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     Module.events(ctx.event$)
       // .filter((e) => e.id === foo.id)
       .render$.subscribe((e) => {
-        if (e.id === bar.id) {
+        if (e.module === bar.id) {
           e.render(this.renderKong(e));
         } else {
           e.render(this.renderDiagram());
@@ -207,7 +207,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
 
     const src =
-      e.tree.current === e.id
+      e.tree.current === e.module
         ? e.tree.selected?.endsWith(':one')
           ? URL.KITTEN
           : URL.KONG
@@ -216,7 +216,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <img src={src} {...styles.image} />
-        <div>Module: {e.id}</div>
+        <div>Module: {e.module}</div>
         <div>Tree Node: {node?.id || '-'}</div>
       </div>
     );

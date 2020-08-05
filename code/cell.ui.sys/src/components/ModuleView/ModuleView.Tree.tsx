@@ -108,14 +108,14 @@ export class ModuleViewTree extends React.PureComponent<IModuleViewTreeProps> {
      * - Move render logic onto Module.render() static.
      */
 
-    const id = moduleNode.id;
+    const module = moduleNode.id;
     const props = moduleNode.props;
     const data = props?.data || {};
     const view = props?.view || '';
 
     let el: JSX.Element | null | undefined = undefined;
     const payload: t.IModuleRender = {
-      id,
+      module,
       tree: { selected, current, node: selectedNode },
       data,
       view,
@@ -125,7 +125,7 @@ export class ModuleViewTree extends React.PureComponent<IModuleViewTreeProps> {
     this.fire({ type: 'Module/render', payload });
 
     if (el !== undefined) {
-      this.fire({ type: 'Module/rendered', payload: { id, el } });
+      this.fire({ type: 'Module/rendered', payload: { module, el } });
     }
   };
 }

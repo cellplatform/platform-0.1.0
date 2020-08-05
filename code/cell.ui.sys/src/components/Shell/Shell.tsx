@@ -148,7 +148,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
     let res: JSX.Element | null = null;
     const payload: t.IModuleRender = {
-      id: module.id,
+      module: module.id,
       tree: { selected, current },
       data,
       view,

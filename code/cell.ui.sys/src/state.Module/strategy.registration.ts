@@ -15,17 +15,17 @@ export const registration: t.ModuleStrategy = (input) => {
     .pipe(delay(0)) // NB: Break synchronous flow
     .subscribe((e) => {
       const root = formatRootNode({
-        id: e.id,
+        id: e.module,
         props: { treeview: { label: e.name || 'Unnamed' } },
       });
 
       const child = module.add({ root });
       const id = child.id;
-      module.dispatch({ type: 'Module/registered', payload: { id } });
+      module.dispatch({ type: 'Module/registered', payload: { module: id } });
 
       // Alert listeners when disposed.
       child.dispose$.subscribe((e) => {
-        module.dispatch({ type: 'Module/disposed', payload: { id } });
+        module.dispatch({ type: 'Module/disposed', payload: { module: id } });
       });
     });
 };

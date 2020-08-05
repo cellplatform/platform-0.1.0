@@ -32,14 +32,17 @@ export class Module {
    * Register a new module within the tree, providing a promise/callback
    * that returns the registered module.
    */
-  public static async register(parent: t.IModule, payload: t.IModuleRegister) {
+  public static async register(parent: t.IModule, args: { id: string; name?: string }) {
     return new Promise<t.IModule>((resolve) => {
+      const payload: t.IModuleRegister = { module: args.id, name: args.name };
       parent
         .action()
         .dispatched<t.IModuleRegisteredEvent>('Module/registered')
-        .pipe(filter((e) => e.id === payload.id || identity.key(e.id) === payload.id))
+        .pipe(
+          filter((e) => e.module === payload.module || identity.key(e.module) === payload.module),
+        )
         .subscribe((e) => {
-          const child = parent.find((item) => item.id === e.id);
+          const child = parent.find((item) => item.id === e.module);
           resolve(child);
         });
       parent.dispatch({ type: 'Module/register', payload });

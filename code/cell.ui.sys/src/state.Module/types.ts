@@ -15,7 +15,7 @@ export type Module = {
   identity: t.TreeIdentity;
 
   create<D extends O, A extends Event = any>(args?: ModuleArgs<D>): IModule<D, A>;
-  register<T extends IModule>(within: T, payload: IModuleRegister): Promise<T>;
+  register<T extends IModule>(within: T, args: { id: string; name?: string }): Promise<T>;
   events: ModuleEvents;
   publish: ModulePublish;
   subscribe: ModuleSubscribe;
@@ -120,7 +120,7 @@ export type IModuleRegisterEvent = {
   payload: IModuleRegister;
 };
 export type IModuleRegister = {
-  id: string; // ID (either "id" or "namespace:id")
+  module: string; // ID (either "id" or "namespace:id")
   name?: string; // Display name.
 };
 
@@ -128,14 +128,14 @@ export type IModuleRegisteredEvent = {
   type: 'Module/registered';
   payload: IModuleRegistered;
 };
-export type IModuleRegistered = { id: string };
+export type IModuleRegistered = { module: string };
 
 export type IModuleRenderEvent<D extends O = any> = {
   type: 'Module/render';
   payload: IModuleRender<D>;
 };
 export type IModuleRender<D extends O = any> = {
-  id: string;
+  module: string;
   tree: { selected?: string; current?: string; node?: t.ITreeNode };
   data: D;
   view: string;
@@ -146,7 +146,7 @@ export type IModuleRenderedEvent = {
   payload: IModuleRendered;
 };
 export type IModuleRendered = {
-  id: string;
+  module: string;
   el: JSX.Element | null;
 };
 
@@ -154,22 +154,22 @@ export type IModuleChangedEvent = {
   type: 'Module/changed';
   payload: IModuleChanged;
 };
-export type IModuleChanged = { id: string; change: t.ITreeStateChanged };
+export type IModuleChanged = { module: string; change: t.ITreeStateChanged };
 
 export type IModulePatchedEvent = {
   type: 'Module/patched';
   payload: IModulePatched;
 };
-export type IModulePatched = { id: string; patch: t.ITreeStatePatched };
+export type IModulePatched = { module: string; patch: t.ITreeStatePatched };
 
 export type IModuleSelectionEvent = {
   type: 'Module/selection';
   payload: IModuleSelection;
 };
-export type IModuleSelection = { id: string };
+export type IModuleSelection = { module: string };
 
 export type IModuleDisposedEvent = {
   type: 'Module/disposed';
   payload: IModuleDisposed;
 };
-export type IModuleDisposed = { id: string };
+export type IModuleDisposed = { module: string };

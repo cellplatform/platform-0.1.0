@@ -89,7 +89,7 @@ export class TestPanel extends React.PureComponent<ITestPanelProps> {
   private onRegisterClick = () => {
     this.props.root.dispatch({
       type: 'Module/register',
-      payload: { id: 'foo', name: 'My Module' },
+      payload: { module: 'foo', name: 'My Module' },
     });
   };
 
