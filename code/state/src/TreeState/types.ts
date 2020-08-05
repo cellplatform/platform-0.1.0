@@ -50,8 +50,9 @@ export type ITreeState<T extends Node = Node, A extends Event = any> = t.IDispos
 export type ITreeStateReadonly<T extends Node, A extends Event> = {
   readonly isDisposed: boolean;
   readonly dispose$: Observable<void>;
-  readonly namespace: string;
   readonly id: string;
+  readonly key: string;
+  readonly namespace: string;
   readonly parent?: string; // ID of parent within tree.
   readonly store: t.IStateObjectReadOnly<T>;
   readonly root: T;
@@ -60,14 +61,6 @@ export type ITreeStateReadonly<T extends Node, A extends Event> = {
   readonly event: ITreeStateEvents<T, A>;
   find: TreeStateFind<T, A>;
   action: t.IStateObjectDispatchMethods<T, A>['action'];
-};
-
-export type ITreeStateEvents<T extends Node, A extends Event> = {
-  readonly $: Observable<TreeStateEvent | A>;
-  readonly changed$: Observable<ITreeStateChanged<T>>;
-  readonly removed$: Observable<ITreeStateChildRemoved>;
-  readonly dispatch$: Observable<A>;
-  payload<E extends t.TreeStateEvent | A>(type: E['type']): Observable<E['payload']>;
 };
 
 /**
@@ -98,6 +91,7 @@ export type TreeStateChangerContext<
 > = t.ITreeQuery<T> & {
   children<C extends T>(of: C, fn?: (children: C[]) => void): C[];
   props(of: Node, fn?: (props: P) => void): P;
+  toObject<T extends O>(draft: T): T;
 };
 
 /**
@@ -110,10 +104,11 @@ export type TreeStateFindMatch<T extends Node> = (args: TreeStateFindMatchArgs<T
 export type TreeStateFindMatchArgs<T extends Node = Node> = {
   level: number;
   id: string;
+  key: string;
   namespace: string;
   tree: ITreeState<T>;
   stop(): void;
-  toString(): string; // fully qualified identifier, eg "<namespace>:<id>"
+  toString(): string; // fully-qualified identifier, eg. "<namespace>:<id>"
 };
 
 /**
@@ -135,6 +130,16 @@ export type TreeStateSyncer = t.IDisposable & {
 /**
  * [Events]
  */
+
+export type ITreeStateEvents<T extends Node, A extends Event> = {
+  readonly $: Observable<TreeStateEvent | A>;
+  readonly changed$: Observable<ITreeStateChanged<T>>;
+  readonly childAdded$: Observable<ITreeStateChildAdded>;
+  readonly childRemoved$: Observable<ITreeStateChildRemoved>;
+  readonly dispatch$: Observable<A>;
+  payload<E extends t.TreeStateEvent | A>(type: E['type']): Observable<E['payload']>;
+};
+
 export type TreeStateEvent =
   | ITreeStateChangedEvent
   | ITreeStateChildAddedEvent

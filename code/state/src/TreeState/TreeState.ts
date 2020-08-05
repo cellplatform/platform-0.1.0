@@ -43,6 +43,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as T;
 
     // Store values.
+    this.key = Identity.key(root.id);
     this.namespace = Identity.namespace(root.id) || idUtil.cuid();
     this.parent = args.parent;
     this._store = StateObject.create<T>(root);
@@ -86,6 +87,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
   private _children: t.ITreeState<any>[] = [];
   private _kind = 'TreeState'; // NB: Used by [isInstance] helper.
 
+  public readonly key: string;
   public readonly namespace: string;
   public readonly parent: string | undefined;
 
@@ -187,7 +189,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     this._children.push(child);
 
     // Insert data into state-tree.
-    this.change((root, ctx) => {
+    this.change((root) => {
       TreeState.children<any>(root).push(child.root);
     });
 
@@ -238,11 +240,12 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
 
         const args: t.TreeStateFindMatchArgs<T> = {
           level,
-          id: Identity.id(child.id),
+          id: child.id,
+          key: Identity.key(child.id),
           namespace: child.namespace,
           tree,
           stop: () => (stopped = true),
-          toString: () => `${args.namespace}:${args.id}`,
+          toString: () => args.id,
         };
 
         if (match(args)) {
@@ -289,10 +292,12 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
   private ctx(root: T): t.TreeStateChangerContext<T> {
     const namespace = this.namespace;
     const query = TreeQuery.create<T>({ root, namespace });
+
     return {
       ...query,
       props: TreeState.props,
       children: TreeState.children,
+      toObject: StateObject.toObject,
     };
   }
 
@@ -317,7 +322,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     let parent = Identity.toString(args.parent);
     parent = parent ? parent : Identity.stripNamespace(this.id);
 
-    if (!this.query.exists((e) => e.id === parent)) {
+    if (!this.query.exists((e) => e.key === parent)) {
       const err = `Cannot add child-state because the parent node '${parent}' does not exist.`;
       throw new Error(err);
     }

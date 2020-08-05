@@ -23,6 +23,8 @@ export type StateObject = {
     initial: T | Record<keyof T, t.IStateObject<T[keyof T]>>,
     dispose$?: Observable<any>,
   ): StateMerger<T, A>;
+
+  toObject<T extends O>(draft: T): T;
 };
 
 /**

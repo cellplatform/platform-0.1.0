@@ -20,7 +20,13 @@ export function create<T extends Node, A extends t.Event>(args: {
     share(),
   );
 
-  const removed$ = event$.pipe(
+  const childAdded$ = event$.pipe(
+    filter((e) => e.type === 'TreeState/child/added'),
+    map((e) => e.payload as t.ITreeStateChildAdded),
+    share(),
+  );
+
+  const childRemoved$ = event$.pipe(
     filter((e) => e.type === 'TreeState/child/removed'),
     map((e) => e.payload as t.ITreeStateChildRemoved),
     share(),
@@ -31,7 +37,8 @@ export function create<T extends Node, A extends t.Event>(args: {
   return {
     $,
     changed$,
-    removed$,
+    childAdded$,
+    childRemoved$,
     dispatch$,
     payload: (type: P['type']) => rx.payload<P>($, type),
   };

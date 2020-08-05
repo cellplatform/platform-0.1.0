@@ -2,18 +2,19 @@ import { t } from '../common';
 
 const toString = (input?: string) => (input || '').trim();
 
-export function format(namespace?: string, id?: string) {
-  return `${toString(namespace)}:${toString(id)}`;
+export function format(namespace?: string, key?: string) {
+  return `${toString(namespace)}:${toString(key)}`;
 }
 
 export function parse(input?: string) {
   input = toString(input);
   if (hasNamespace(input)) {
-    const id = stripNamespace(input);
-    const namespace = input.substring(0, input.length - id.length - 1);
-    return { namespace, id };
+    const key = stripNamespace(input);
+    const namespace = input.substring(0, input.length - key.length - 1);
+    const id = `${namespace}:${key}`;
+    return { namespace, key, id };
   } else {
-    return { namespace: '', id: input };
+    return { namespace: '', key: input, id: input };
   }
 }
 
@@ -47,5 +48,5 @@ export const TreeIdentity: t.TreeIdentity = {
   stripNamespace,
   hasNamespace,
   namespace,
-  id,
+  key: id,
 };

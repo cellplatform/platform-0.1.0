@@ -2,12 +2,12 @@ import { TreeIdentity } from '.';
 import { expect } from '../test';
 
 type S = string | undefined;
-const Id = TreeIdentity;
+const Identity = TreeIdentity;
 
 describe('TreeIdentity', () => {
-  it('format( namespace, id )', () => {
-    const test = (namespace: S, id: S, expected: string) => {
-      const res = Id.format(namespace, id);
+  it('format( namespace, key )', () => {
+    const test = (namespace: S, key: S, expected: string) => {
+      const res = Identity.format(namespace, key);
       expect(res).to.eql(expected);
     };
     test('foo', 'bar', 'foo:bar');
@@ -19,7 +19,7 @@ describe('TreeIdentity', () => {
 
   it('hasNamespace', () => {
     const test = (input: S, expected: boolean) => {
-      const res = Id.hasNamespace(input);
+      const res = Identity.hasNamespace(input);
       expect(res).to.eql(expected);
     };
     test('tree-foo:bar', true);
@@ -33,7 +33,7 @@ describe('TreeIdentity', () => {
 
   it('stripNamespace', () => {
     const test = (input: S, expected: string) => {
-      const res = Id.stripNamespace(input);
+      const res = Identity.stripNamespace(input);
       expect(res).to.eql(expected);
     };
     test('tree-foo:bar', 'bar');
@@ -51,9 +51,10 @@ describe('TreeIdentity', () => {
   });
 
   it('parse', () => {
-    const test = (input: S, namespace: string, id: string) => {
-      const res = Id.parse(input);
-      expect(res).to.eql({ namespace, id });
+    const test = (input: S, namespace: string, key: string) => {
+      const res = Identity.parse(input);
+      const id = namespace ? `${namespace}:${key}` : key;
+      expect(res).to.eql({ namespace, key, id });
     };
     test('foo:bar', 'foo', 'bar');
     test('  tree-foo:bar  ', 'tree-foo', 'bar');
@@ -68,7 +69,7 @@ describe('TreeIdentity', () => {
 
   it('namespace', () => {
     const test = (input: S, namespace: string) => {
-      const res = Id.namespace(input);
+      const res = Identity.namespace(input);
       expect(res).to.eql(namespace);
     };
     test('foo:bar', 'foo');
@@ -81,9 +82,9 @@ describe('TreeIdentity', () => {
     test(undefined, '');
   });
 
-  it('id', () => {
-    const test = (id: S, expected: string) => {
-      expect(Id.id(id)).to.eql(expected);
+  it('key', () => {
+    const test = (key: S, expected: string) => {
+      expect(Identity.key(key)).to.eql(expected);
     };
     test('', '');
     test('  ', '');

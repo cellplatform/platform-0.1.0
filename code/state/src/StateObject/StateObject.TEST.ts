@@ -7,6 +7,7 @@ import { expect, t } from '../test';
 import { StateObject as StateObjectClass } from './StateObject';
 
 import { equals } from 'ramda';
+import { isDraft } from 'immer';
 
 type IFoo = { message?: string; count: number };
 type IBar = { isEnabled?: boolean };
@@ -88,6 +89,24 @@ describe('StateObject', () => {
 
       obj.change((draft) => (draft.message = 'hello'));
       expect(fired.length).to.eql(3); // NB: no change.
+    });
+  });
+
+  describe('static', () => {
+    it('static: toObject (original)', () => {
+      const initial = { count: 0 };
+      const obj = StateObject.create<IFoo>(initial);
+
+      let original: IFoo | undefined;
+      obj.change((draft) => {
+        draft.count = 123;
+        expect(draft.count).to.eql(123);
+        original = StateObject.toObject(draft);
+      });
+
+      expect(isDraft(original)).to.eql(false);
+      expect(original?.count).to.eql(0);
+      expect(obj.state.count).to.eql(123);
     });
   });
 

@@ -128,13 +128,16 @@ describe('TreeQuery', () => {
       expect(items.length).to.eql(3);
       expect(items.every((m) => m.namespace === 'ns')).to.eql(true);
 
-      expect(items[0].id).to.equal('root');
+      expect(items[0].key).to.equal('root');
+      expect(items[0].id).to.equal('ns:root');
       expect(items[0].node.id).to.equal('ns:root');
 
-      expect(items[1].id).to.equal('child-1');
+      expect(items[1].key).to.equal('child-1');
+      expect(items[1].id).to.equal('ns:child-1');
       expect(items[1].node.id).to.equal('ns:child-1');
 
-      expect(items[2].id).to.equal('child-2');
+      expect(items[2].key).to.equal('child-2');
+      expect(items[2].id).to.equal('ns:child-2');
       expect(items[2].node.id).to.equal('ns:child-2');
     });
 
@@ -281,7 +284,7 @@ describe('TreeQuery', () => {
 
       expect(items.length).to.eql(3);
       expect(items.every((m) => m.namespace === 'ns')).to.eql(true);
-      expect(items.map((e) => e.id)).to.eql(['grandchild-1', 'child-2', 'root']);
+      expect(items.map((e) => e.key)).to.eql(['grandchild-1', 'child-2', 'root']);
       expect(items.map((e) => e.node.id)).to.eql(['ns:grandchild-1', 'ns:child-2', 'ns:root']);
     });
 
@@ -353,7 +356,7 @@ describe('TreeQuery', () => {
       const test = (startAt?: string | N) => {
         const walked: t.ITreeAscend<N>[] = [];
         query.walkUp(startAt, (e) => walked.push(e));
-        expect(walked.map((e) => e.id)).to.eql(['child-2.1', 'child-2']);
+        expect(walked.map((e) => e.key)).to.eql(['child-2.1', 'child-2']);
       };
 
       test(child);
@@ -384,10 +387,12 @@ describe('TreeQuery', () => {
       };
 
       const query = create(tree);
-      const res1 = query.find((e) => e.namespace === 'ns' && e.id === 'child-3');
-      const res2 = query.find((e) => e.namespace === 'foo' && e.id === 'child-3');
+      const res1a = query.find((e) => e.namespace === 'ns' && e.key === 'child-3');
+      const res1b = query.find((e) => e.id === 'ns:child-3');
+      const res2 = query.find((e) => e.namespace === 'foo' && e.key === 'child-3');
 
-      expect(res1).to.eql({ id: 'ns:child-3' });
+      expect(res1a).to.eql({ id: 'ns:child-3' });
+      expect(res1b).to.eql({ id: 'ns:child-3' });
       expect(res2).to.eql(undefined);
     });
 
