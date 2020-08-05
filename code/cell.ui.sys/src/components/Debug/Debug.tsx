@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, t, ui } from '../../common';
 import { Log } from '../Debug.Log';
-import { Sheet } from '../Debug.Sheet';
+import { DebugSheet } from '../Debug.Sheet';
 
 export type IDebugProps = {
   view: 'LOG' | 'SHEET';
@@ -47,7 +47,7 @@ export class Debug extends React.PureComponent<IDebugProps, IDebugState> {
     const { view } = this.props;
 
     if (view === 'SHEET') {
-      return <Sheet />;
+      // return <Sheet />;
     }
 
     // Default view.

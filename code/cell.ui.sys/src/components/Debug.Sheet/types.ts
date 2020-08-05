@@ -1,24 +1,15 @@
+import { t } from '../../common';
+
 export * from '../../common/types';
-import * as t from '../../common/types';
 
-export type IDebugSheetRead = t.IStateObjectReadOnly<IDebugSheet, DebugSheetEvent>;
-export type IDebugSheetWrite = t.IStateObjectWritable<IDebugSheet, DebugSheetEvent>;
-
-export type IDebugSheet = {
-  uri: string;
-  sheet?: t.ITypedSheet;
-  error: {
-    uri?: React.ReactNode;
-  };
-};
+export type DebugSheetData = { selected?: string };
+export type DebugSheetModule = t.IModule<DebugSheetData, DebugSheetEvent>;
 
 /**
- * [Events]
+ * Events
  */
-export type DebugSheetEvent = IDebugSheetLoadEvent;
 
-export type IDebugSheetLoadEvent = {
-  type: 'DEBUG/Sheet/load';
-  payload: IDebugSheetLoad;
-};
-export type IDebugSheetLoad = { uri: string };
+export type DebugSheetEvent = IFooEvent;
+
+export type IFooEvent = { type: 'FOO/event'; payload: IFoo };
+export type IFoo = { count: 123 };
