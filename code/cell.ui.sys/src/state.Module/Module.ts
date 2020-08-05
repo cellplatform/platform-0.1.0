@@ -5,12 +5,12 @@ import { t } from '../common';
 import { publish } from './Module.pub';
 import { subscribe } from './Module.sub';
 import * as events from './Module.events';
-import { ModuleStrategies } from './ModuleStrategies';
+import { ModuleStrategies } from './strategies';
+import { create } from './Module.create';
 
 const identity = TreeState.identity;
 
 type O = Record<string, unknown>;
-type Event = t.Event<O>;
 
 export class Module {
   /**
@@ -26,39 +26,23 @@ export class Module {
   /**
    * Create a new module.
    */
-  public static create<D extends O, A extends Event = any>(
-    args?: t.ModuleArgs<D>,
-  ): t.IModule<D, A> {
-    args = { ...args };
-    args.root = args.root || 'module';
-    const strategy = args.strategy;
-    delete args.strategy;
-
-    const module = TreeState.create<t.ITreeNodeModule<D>>(args) as t.IModule<D, A>;
-    events.monitorAndDispatchChanged(module);
-
-    if (strategy) {
-      strategy(module);
-    }
-
-    return module;
-  }
+  public static create = create;
 
   /**
    * Register a new module within the tree, providing a promise/callback
    * that returns the registered module.
    */
-  public static async register(within: t.IModule, payload: t.IModuleRegister) {
-    return new Promise<t.IModule>((resolve, reject) => {
-      within
+  public static async register(parent: t.IModule, payload: t.IModuleRegister) {
+    return new Promise<t.IModule>((resolve) => {
+      parent
         .action()
         .dispatched<t.IModuleRegisteredEvent>('Module/registered')
         .pipe(filter((e) => e.id === payload.id || identity.key(e.id) === payload.id))
         .subscribe((e) => {
-          const child = within.find((item) => item.toString() === e.id);
+          const child = parent.find((item) => item.id === e.id);
           resolve(child);
         });
-      within.dispatch({ type: 'Module/register', payload });
+      parent.dispatch({ type: 'Module/register', payload });
     });
   }
 

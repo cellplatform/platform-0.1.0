@@ -89,6 +89,7 @@ export class TestPanelSelected extends React.PureComponent<
             treeview: { label: short },
             data: { foo: 123 },
             view: 'TestPanelSelected',
+            kind: 'MODULE',
           },
         });
       });

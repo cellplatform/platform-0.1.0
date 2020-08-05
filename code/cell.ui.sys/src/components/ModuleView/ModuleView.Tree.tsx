@@ -80,10 +80,10 @@ export class ModuleViewTree extends React.PureComponent<IModuleViewTreeProps> {
    * [Helpers]
    */
 
-  private findModuleNode(startAt: t.ITreeNode) {
+  private findModule(startAt: t.ITreeNode) {
     return this.nav.query.ancestor(startAt, (e) => {
       const props = (e.node.props || {}) as t.ITreeNodePropsModule;
-      return Boolean(props.view);
+      return props.kind === 'MODULE';
     }) as t.ITreeNode<t.ITreeNodePropsModule> | undefined;
   }
 
@@ -92,17 +92,21 @@ export class ModuleViewTree extends React.PureComponent<IModuleViewTreeProps> {
   private fireRender = () => {
     const { query, selected, current } = this.nav;
 
-    console.log('fireRender');
-
     const selectedNode = selected ? query.findById(selected) : undefined;
     if (!selectedNode) {
       return;
     }
 
-    const moduleNode = this.findModuleNode(selectedNode);
+    const moduleNode = this.findModule(selectedNode);
     if (!moduleNode) {
       return;
     }
+
+    /**
+     * TODO 🐷
+     * - Fire "Module/selection" event
+     * - Move render logic onto Module.render() static.
+     */
 
     const id = moduleNode.id;
     const props = moduleNode.props;

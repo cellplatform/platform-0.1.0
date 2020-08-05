@@ -42,6 +42,7 @@ export type ITreeNodeModule<D extends O> = t.ITreeNode<
  * The way a module is expressed as props within a tree-node.
  */
 export type ITreeNodePropsModule<D extends O = O> = {
+  kind: 'MODULE';
   data: D;
   view: string;
 };
@@ -70,18 +71,18 @@ export type ModuleFilterArgs = {
  * Broadcasting
  */
 export type ModulePublish = (args: {
+  until$?: Observable<any>;
   module: IModule;
   fire: t.FireEvent<any>;
   filter?: t.ModuleFilter;
-  until$?: Observable<any>;
 }) => ModulePublishing;
 export type ModulePublishing = t.IDisposable;
 
 export type ModuleSubscribe<T extends Node = Node, A extends Event = any> = (args: {
+  until$?: Observable<any>;
   event$: Observable<t.Event>;
   tree: t.ITreeState;
   filter?: t.ModuleFilter;
-  until$?: Observable<any>;
 }) => ModuleSubscription<T, A>;
 export type ModuleSubscription<T extends Node = Node, A extends Event = any> = t.IDisposable & {
   tree: t.ITreeState<T, A>;
@@ -111,6 +112,7 @@ export type ModuleEvent =
   | IModuleRenderedEvent
   | IModuleChangedEvent
   | IModulePatchedEvent
+  | IModuleSelectionEvent
   | IModuleDisposedEvent;
 
 export type IModuleRegisterEvent = {
@@ -159,6 +161,12 @@ export type IModulePatchedEvent = {
   payload: IModulePatched;
 };
 export type IModulePatched = { id: string; patch: t.ITreeStatePatched };
+
+export type IModuleSelectionEvent = {
+  type: 'Module/selection';
+  payload: IModuleSelection;
+};
+export type IModuleSelection = { id: string };
 
 export type IModuleDisposedEvent = {
   type: 'Module/disposed';

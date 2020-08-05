@@ -47,7 +47,9 @@
   "files": [
     "src",
     "sh/*.sh",
-    "yarn.lock"
+    "yarn.lock",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
   ],
   "license": "MIT",
   "private": true

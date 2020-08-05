@@ -63,6 +63,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const foo = await Module.register(module, { id: 'foo', name: 'MyFoo' });
     const bar = await Module.register(module, { id: 'bar', name: 'MyBar' });
 
+    console.log('foo.root', foo.root.props);
+
     console.log('module.children.length', module.children.length);
     console.log('- module     ', module.id);
     console.log('- child.foo  ', foo.id);
