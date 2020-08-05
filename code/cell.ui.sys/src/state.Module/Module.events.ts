@@ -19,7 +19,7 @@ export const create: t.ModuleEvents = (subject, until$) => {
   const raw$ = event$.pipe(takeUntil(dispose$));
 
   const $ = raw$.pipe(
-    filter((e) => e.type.startsWith('Module/')),
+    filter((e) => isModuleEvent(e)),
     map((e) => e as t.ModuleEvent),
     share(),
   );
@@ -38,19 +38,34 @@ export const create: t.ModuleEvents = (subject, until$) => {
      * Creates a new event object with a filter constraint.
      */
     filter(fn) {
-      const event$ = $.pipe(
-        filter((event) => {
-          const id = event.payload.id;
-          const { key, namespace } = identity.parse(id);
-          return fn({ id, key, namespace, event });
-        }),
-      );
+      const event$ = $.pipe(filter((event) => filterModuleEvent({ event, filter: fn })));
       return create(event$, dispose$); // <== RECURSION 🌳
     },
   };
 
   return events;
 };
+
+/**
+ * Determine if the given event is a module.
+ */
+export function isModuleEvent(event: t.Event) {
+  return event.type.startsWith('Module/');
+}
+
+/**
+ * Run a module filter.
+ */
+export function filterModuleEvent(args: { event: t.ModuleEvent; filter?: t.ModuleFilter }) {
+  if (args.filter) {
+    const event = args.event;
+    const id = event.payload.id;
+    const { key, namespace } = identity.parse(id);
+    return args.filter({ id, key, namespace, event });
+  } else {
+    return true;
+  }
+}
 
 /**
  * Monitors the events of a module (and it's children) and bubbles

@@ -5,6 +5,7 @@ import { css, CssValue, t } from '../../common';
 
 export type IModuleViewFrameProps = {
   event$: Observable<t.Event>;
+  filter: t.ModuleFilter;
   style?: CssValue;
 };
 export type IModuleViewFrameState = t.Object;
@@ -26,6 +27,12 @@ export class ModuleViewFrame extends React.PureComponent<
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+
+    const event$ = this.props.event$.pipe(takeUntil(this.unmounted$));
+
+    event$.subscribe((e) => {
+      console.log('e', e);
+    });
   }
 
   public componentWillUnmount() {

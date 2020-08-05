@@ -1,8 +1,9 @@
-import * as React from 'react';
-import { Subject, Observable } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
-import { css, CssValue, t } from '../../common';
 import { TreeView } from '@platform/ui.tree/lib/components/TreeView';
+import * as React from 'react';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { css, CssValue, t } from '../../common';
 import { Module } from '../../state.Module';
 
 export type IModuleViewTreeProps = {
@@ -31,21 +32,12 @@ export class ModuleViewTree extends React.PureComponent<IModuleViewTreeProps> {
 
   public componentDidMount() {
     this.nav.redraw$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
-    const events = Module.events(this.props.event$, this.unmounted$).filter(this.props.filter);
 
-    // Keep the local tree in-sync with module changes.
-    events.changed$.subscribe((e) => {
-      const to = e.change.to;
-
-      this.tree.change((draft, ctx) => {
-        draft.props = to.props;
-        draft.children = to.children;
-
-        // if (this.props.map) {
-        //   const r = this.props.map(draft);
-        //   console.log('r', r);
-        // }
-      });
+    Module.subscribe({
+      event$: this.props.event$,
+      until$: this.unmounted$,
+      tree: this.nav.tree,
+      filter: this.props.filter,
     });
   }
 

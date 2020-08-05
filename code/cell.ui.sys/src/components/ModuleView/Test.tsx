@@ -54,9 +54,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const module = this.module;
 
     // Module.identity
-    Module.broadcast(module, ctx.fire, this.unmounted$);
+    Module.publish({
+      module,
+      fire: ctx.fire,
+      until$: this.unmounted$,
+    });
 
-    // const actions = module.action(this.unmounted$);
     const foo = await Module.register(module, { id: 'foo', name: 'MyFoo' });
     const bar = await Module.register(module, { id: 'bar', name: 'MyBar' });
 
@@ -137,7 +140,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             />
           </div>
           <div {...styles.main}>
-            <ModuleView.Frame style={styles.fill} event$={event$} />
+            <ModuleView.Frame style={styles.fill} event$={event$} filter={this.renderFilter} />
           </div>
           <div {...css(styles.tree, { marginLeft: MARGIN })}>
             <ModuleView.Tree
@@ -164,5 +167,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private rightFilter: t.ModuleFilter = (args) => {
     const module = this.module.find((e) => e.key === 'bar');
     return module?.id === args.id;
+  };
+
+  private renderFilter: t.ModuleFilter = (args) => {
+    return false;
   };
 }

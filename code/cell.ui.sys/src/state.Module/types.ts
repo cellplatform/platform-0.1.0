@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import * as t from '../common/types';
 
 type O = Record<string, unknown>;
+type Node = t.ITreeNode;
 type Event = t.Event<O>;
 
 export type ModuleArgs<D extends O> = t.ITreeStateArgs<ITreeNodeModule<D>> & {
@@ -13,9 +14,11 @@ export type Module = {
   create<D extends O, A extends Event = any>(args?: ModuleArgs<D>): IModule<D, A>;
   register<T extends IModule>(within: T, payload: IModuleRegister): Promise<T>;
   events: ModuleEvents;
-  broadcast: ModuleBroadcast;
+  publish: ModulePublish;
+  subscribe: ModuleSubscribe;
   strategies: ModuleStrategies;
   identity: t.TreeIdentity;
+  isModuleEvent(event: t.Event): boolean;
 };
 
 /**
@@ -64,12 +67,23 @@ export type ModuleFilterArgs = {
 /**
  * Broadcasting
  */
-export type ModuleBroadcast = (
-  module: IModule,
-  fire: t.FireEvent<any>,
-  until$?: Observable<any>,
-) => ModuleBroadcaster;
-export type ModuleBroadcaster = t.IDisposable;
+export type ModulePublish = (args: {
+  module: IModule;
+  fire: t.FireEvent<any>;
+  filter?: t.ModuleFilter;
+  until$?: Observable<any>;
+}) => ModulePublishing;
+export type ModulePublishing = t.IDisposable;
+
+export type ModuleSubscribe<T extends Node = Node, A extends Event = any> = (args: {
+  event$: Observable<t.Event>;
+  tree: t.ITreeState;
+  filter?: t.ModuleFilter;
+  until$?: Observable<any>;
+}) => ModuleSubscription<T, A>;
+export type ModuleSubscription<T extends Node = Node, A extends Event = any> = t.IDisposable & {
+  tree: t.ITreeState<T, A>;
+};
 
 /**
  * [Events]

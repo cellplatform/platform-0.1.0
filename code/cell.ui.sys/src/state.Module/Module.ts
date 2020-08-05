@@ -2,7 +2,8 @@ import { TreeState } from '@platform/state';
 import { filter } from 'rxjs/operators';
 
 import { t } from '../common';
-import * as broadcast from './Module.broadcast';
+import { publish } from './Module.pub';
+import { subscribe } from './Module.sub';
 import * as events from './Module.events';
 import { ModuleStrategies } from './ModuleStrategies';
 
@@ -65,10 +66,12 @@ export class Module {
    * Broadcasts events from the module (and all child modules)
    * throw the given pipe (fire).
    */
-  public static broadcast = broadcast.create;
+  public static publish = publish;
+  public static subscribe = subscribe;
 
   /**
    * Construct an event helper.
    */
   public static events = events.create;
+  public static isModuleEvent = events.isModuleEvent;
 }
