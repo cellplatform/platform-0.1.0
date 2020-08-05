@@ -73,5 +73,6 @@ export class Module {
    * Construct an event helper.
    */
   public static events = events.create;
+  public static filter = events.filterEvent;
   public static isModuleEvent = events.isModuleEvent;
 }

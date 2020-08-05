@@ -8,6 +8,7 @@ import { Module } from '../../state.Module';
 
 export type IModuleViewTreeProps = {
   event$: Observable<t.Event>;
+  fire: t.FireEvent<any>;
   filter: t.ModuleFilter;
   tag?: string;
   style?: CssValue;
@@ -33,11 +34,16 @@ export class ModuleViewTree extends React.PureComponent<IModuleViewTreeProps> {
   public componentDidMount() {
     this.nav.redraw$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
 
+    // Sync the local tree with changes coming in from the event bus.
     Module.subscribe({
       event$: this.props.event$,
       until$: this.unmounted$,
       tree: this.nav.tree,
       filter: this.props.filter,
+    });
+
+    this.nav.selection$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
+      this.fireRender();
     });
   }
 
@@ -69,4 +75,53 @@ export class ModuleViewTree extends React.PureComponent<IModuleViewTreeProps> {
       </div>
     );
   }
+
+  /**
+   * [Helpers]
+   */
+
+  private findModuleNode(startAt: t.ITreeNode) {
+    return this.nav.query.ancestor(startAt, (e) => {
+      const props = (e.node.props || {}) as t.ITreeNodePropsModule;
+      return Boolean(props.view);
+    }) as t.ITreeNode<t.ITreeNodePropsModule> | undefined;
+  }
+
+  private fire = (e: t.ModuleEvent) => this.props.fire(e);
+
+  private fireRender = () => {
+    const { query, selected, current } = this.nav;
+
+    console.log('fireRender');
+
+    const selectedNode = selected ? query.findById(selected) : undefined;
+    if (!selectedNode) {
+      return;
+    }
+
+    const moduleNode = this.findModuleNode(selectedNode);
+    if (!moduleNode) {
+      return;
+    }
+
+    const id = moduleNode.id;
+    const props = moduleNode.props;
+    const data = props?.data || {};
+    const view = props?.view || '';
+
+    let el: JSX.Element | null | undefined = undefined;
+    const payload: t.IModuleRender = {
+      id,
+      tree: { selected, current, node: selectedNode },
+      data,
+      view,
+      render: (input) => (el = input),
+    };
+
+    this.fire({ type: 'Module/render', payload });
+
+    if (el !== undefined) {
+      this.fire({ type: 'Module/rendered', payload: { id, el } });
+    }
+  };
 }

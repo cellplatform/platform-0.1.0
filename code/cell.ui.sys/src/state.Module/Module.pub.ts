@@ -25,9 +25,7 @@ export const publish: t.ModulePublish = (args: {
   }
 
   const filterModuleEvent = (event: t.ModuleEvent) => {
-    return events.isModuleEvent(event)
-      ? events.filterModuleEvent({ event, filter: args.filter })
-      : true;
+    return events.isModuleEvent(event) ? events.filterEvent(event, args.filter) : true;
   };
 
   // Root module events.

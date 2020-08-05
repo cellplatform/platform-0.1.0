@@ -11,14 +11,16 @@ export type ModuleArgs<D extends O> = t.ITreeStateArgs<ITreeNodeModule<D>> & {
 };
 
 export type Module = {
+  strategies: ModuleStrategies;
+  identity: t.TreeIdentity;
+
   create<D extends O, A extends Event = any>(args?: ModuleArgs<D>): IModule<D, A>;
   register<T extends IModule>(within: T, payload: IModuleRegister): Promise<T>;
   events: ModuleEvents;
   publish: ModulePublish;
   subscribe: ModuleSubscribe;
-  strategies: ModuleStrategies;
-  identity: t.TreeIdentity;
   isModuleEvent(event: t.Event): boolean;
+  filter(event: t.ModuleEvent, filter?: t.ModuleFilter): boolean;
 };
 
 /**
@@ -96,6 +98,9 @@ export type ModuleEvents = (
 export type IModuleEvents = {
   $: Observable<ModuleEvent>;
   changed$: Observable<IModuleChanged>;
+  patched$: Observable<IModulePatched>;
+  render$: Observable<IModuleRender>;
+  rendered$: Observable<IModuleRendered>;
   filter(fn: ModuleFilter): IModuleEvents;
 };
 
@@ -103,7 +108,9 @@ export type ModuleEvent =
   | IModuleRegisterEvent
   | IModuleRegisteredEvent
   | IModuleRenderEvent
+  | IModuleRenderedEvent
   | IModuleChangedEvent
+  | IModulePatchedEvent
   | IModuleDisposedEvent;
 
 export type IModuleRegisterEvent = {
@@ -127,10 +134,18 @@ export type IModuleRenderEvent<D extends O = any> = {
 };
 export type IModuleRender<D extends O = any> = {
   id: string;
-  tree: { selected?: string; current?: string };
+  tree: { selected?: string; current?: string; node?: t.ITreeNode };
   data: D;
   view: string;
-  render(el: JSX.Element): void;
+  render(el: JSX.Element | null): void;
+};
+export type IModuleRenderedEvent = {
+  type: 'Module/rendered';
+  payload: IModuleRendered;
+};
+export type IModuleRendered = {
+  id: string;
+  el: JSX.Element | null;
 };
 
 export type IModuleChangedEvent = {
@@ -138,6 +153,12 @@ export type IModuleChangedEvent = {
   payload: IModuleChanged;
 };
 export type IModuleChanged = { id: string; change: t.ITreeStateChanged };
+
+export type IModulePatchedEvent = {
+  type: 'Module/patched';
+  payload: IModulePatched;
+};
+export type IModulePatched = { id: string; patch: t.ITreeStatePatched };
 
 export type IModuleDisposedEvent = {
   type: 'Module/disposed';

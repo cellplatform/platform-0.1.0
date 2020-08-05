@@ -2,6 +2,7 @@ import { TreeState } from '@platform/state';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { is } from '@platform/state/lib/common/is';
+import { rx } from '@platform/util.value';
 
 import { t } from '../common';
 
@@ -24,21 +25,23 @@ export const create: t.ModuleEvents = (subject, until$) => {
     share(),
   );
 
-  const changed$ = $.pipe(
-    filter((e) => e.type === 'Module/changed'),
-    map((e) => e.payload as t.IModuleChanged),
-    share(),
-  );
+  const changed$ = rx.payload<t.IModuleChangedEvent>($, 'Module/changed').pipe(share());
+  const patched$ = rx.payload<t.IModulePatchedEvent>($, 'Module/patched').pipe(share());
+  const render$ = rx.payload<t.IModuleRenderEvent>($, 'Module/render').pipe(share());
+  const rendered$ = rx.payload<t.IModuleRenderedEvent>($, 'Module/rendered').pipe(share());
 
   const events: t.IModuleEvents = {
     $,
     changed$,
+    patched$,
+    render$,
+    rendered$,
 
     /**
      * Creates a new event object with a filter constraint.
      */
     filter(fn) {
-      const event$ = $.pipe(filter((event) => filterModuleEvent({ event, filter: fn })));
+      const event$ = $.pipe(filter((event) => filterEvent(event, fn)));
       return create(event$, dispose$); // <== RECURSION 🌳
     },
   };
@@ -56,12 +59,11 @@ export function isModuleEvent(event: t.Event) {
 /**
  * Run a module filter.
  */
-export function filterModuleEvent(args: { event: t.ModuleEvent; filter?: t.ModuleFilter }) {
-  if (args.filter) {
-    const event = args.event;
+export function filterEvent(event: t.ModuleEvent, filter?: t.ModuleFilter) {
+  if (filter) {
     const id = event.payload.id;
     const { key, namespace } = identity.parse(id);
-    return args.filter({ id, key, namespace, event });
+    return filter({ id, key, namespace, event });
   } else {
     return true;
   }
@@ -82,14 +84,23 @@ export function monitorAndDispatchChanged(module: t.IModule) {
   };
 
   const monitor = (module: M, until$: Observable<any> = new Subject()) => {
+    const id = module.id;
     const events = module.event;
     const changed$ = events.changed$.pipe(takeUntil(until$));
+    const patched$ = events.patched$.pipe(takeUntil(until$));
     const child$ = events.childAdded$.pipe(takeUntil(until$));
 
     changed$.subscribe((change) => {
       module.dispatch({
         type: 'Module/changed',
-        payload: { id: module.id, change },
+        payload: { id, change },
+      });
+    });
+
+    patched$.subscribe((patch) => {
+      module.dispatch({
+        type: 'Module/patched',
+        payload: { id, patch },
       });
     });
 
