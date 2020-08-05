@@ -9,7 +9,7 @@ const Module = ModuleView.Module;
 /**
  * Types
  */
-export type MyModuleData = { selected?: string };
+export type MyModuleData = { foo?: string };
 export type MyModule = t.IModule<MyModuleData, MyModuleEvent>;
 
 export type MyModuleEvent = MyFooEvent;
@@ -69,23 +69,49 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     console.log('- child.bar  ', bar.id);
     console.log('-------------------------------------------');
 
+    Module.events(ctx.event$)
+      // .filter((e) => e.id === foo.id)
+      .render$.subscribe((e) => {
+        if (e.id === bar.id) {
+          e.render(this.renderKong(e));
+        } else {
+          e.render(this.renderDiagram());
+        }
+      });
+
     foo.change((draft, ctx) => {
+      ctx.props(draft, (props) => {
+        props.view = 'MyView'; // TODO - do this at registration
+        props.data = { foo: 'foo-view' };
+      });
       ctx.children(draft, (children) => {
-        children.push({ id: 'foo' });
+        children.push(...[{ id: 'one' }, { id: 'two' }]);
+        // children.push(...[{ id: 'one' }]);
       });
     });
 
     bar.change((draft, ctx) => {
+      ctx.props(draft, (props) => {
+        props.view = 'MyView'; // TODO - do this at registration
+        props.data = { foo: 'bar-view' };
+      });
       ctx.children(draft, (children) => {
-        children.push({ id: 'bar' });
+        children.push({ id: 'zinger' });
+        children.push(...[{ id: 'one' }, { id: 'two' }]);
       });
     });
+
+    /**
+     * TODO 🐷
+     * Ensure the tree does not reset BLUE selection
+     * when timer reset prop on tree-node.
+     */
 
     time.delay(1000, () => {
       bar.change((draft, ctx) => {
         const child = ctx.children(draft)[0];
         ctx.props(child, (props) => {
-          props.treeview = { label: 'hello' };
+          props.treeview = { ...props.treeview, label: 'hello' };
         });
       });
     });
@@ -136,6 +162,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
               style={styles.fill}
               event$={event$}
               filter={this.leftFilter}
+              fire={ctx.fire}
               tag={'left'}
             />
           </div>
@@ -147,10 +174,71 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
               style={styles.fill}
               event$={event$}
               filter={this.rightFilter}
+              fire={ctx.fire}
               tag={'right'}
             />
           </div>
         </div>
+      </div>
+    );
+  }
+
+  private renderKong(e: t.IModuleRender) {
+    const styles = {
+      base: css({
+        padding: 30,
+        flex: 1,
+        Flex: 'vertical-center-center',
+        fontSize: 12,
+      }),
+      image: css({
+        width: 300,
+        marginBottom: 15,
+      }),
+    };
+    const node = e.tree.node;
+
+    const URL = {
+      KONG: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kong.png',
+      LEAF: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/leaf.png',
+      KITTEN: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kitten.png',
+    };
+
+    const src =
+      e.tree.current === e.id
+        ? e.tree.selected?.endsWith(':one')
+          ? URL.KITTEN
+          : URL.KONG
+        : URL.LEAF;
+
+    return (
+      <div {...styles.base}>
+        <img src={src} {...styles.image} />
+        <div>Module: {e.id}</div>
+        <div>Tree Node: {node?.id || '-'}</div>
+      </div>
+    );
+  }
+
+  private renderDiagram() {
+    const PINK = '#FE0168';
+    const styles = {
+      base: css({
+        Absolute: 0,
+        border: `solid 10px ${PINK}`,
+        Flex: 'vertical-center-center',
+      }),
+      image: css({
+        width: '80%',
+        // marginBottom: 15,
+      }),
+    };
+
+    const src = 'https://tdb.sfo2.digitaloceanspaces.com/tmp/framing-bypass.png';
+
+    return (
+      <div {...styles.base}>
+        <img src={src} {...styles.image} />
       </div>
     );
   }
@@ -170,6 +258,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   };
 
   private renderFilter: t.ModuleFilter = (args) => {
-    return false;
+    return true;
   };
 }
