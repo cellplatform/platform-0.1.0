@@ -1,15 +1,13 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
+
 import { color, css, CssValue, ui } from '../../common';
 import { TreeView } from '../primitives';
-import { TestPanel } from './TestPanel';
 import * as t from './types';
-import { renderer } from './render';
-
-import { Module } from '../../Module';
 
 export type IShellProps = {
+  module: t.IModule;
   style?: CssValue;
 };
 
@@ -25,7 +23,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;
-  public module!: t.MyModule;
+  // public module!: t.MyModule;
 
   private nav: t.ITreeViewNavigation;
 
@@ -36,17 +34,6 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
-    this.module = Module.create<t.MyModuleData, t.MyFooEvent>();
-
-    this.module.event.dispatch$.subscribe((e) => {
-      console.log('dispatch', e);
-    });
-
-    // Turn off the header on the root node.
-    // events.render.header$.pipe(filter((e) => e.depth === 0)).subscribe((e) => {
-    //   e.render(null);
-    // });
-
     this.treeTemp();
 
     this.forceUpdate();
@@ -54,22 +41,6 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
   private treeTemp() {
     const module = this.module;
-
-    const actions = module.action(this.unmounted$);
-
-    actions.dispatched<t.IModuleRegisterEvent>('MODULE/register').subscribe((e) => {
-      const child = module.add({ root: e.name }); // TEMP 🐷
-      const actions = child.action(this.unmounted$);
-
-      actions.dispatch$.subscribe((e) => {
-        console.log('sub-module.dispatch: ', e);
-      });
-
-      // When disposed deselect from tree.
-      child.dispose$.pipe(filter((e) => child.id === this.nav.selected)).subscribe((e) => {
-        this.nav.select(undefined);
-      });
-    });
 
     /**
      * Controller
@@ -102,6 +73,13 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
   }
 
   /**
+   * [Properties]
+   */
+  public get module() {
+    return this.props.module as t.IModule<any, t.ModuleEvent>;
+  }
+
+  /**
    * [Render]
    */
   public render() {
@@ -111,9 +89,8 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
 
     const styles = {
       base: css({
-        Absolute: 0,
+        flex: 1,
         Flex: 'horizontal-stretch-stretch',
-        backgroundColor: color.format(1),
       }),
     };
     return (
@@ -151,15 +128,34 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
       base: css({
         position: 'relative',
         boxSizing: 'border-box',
-        padding: 30,
         display: 'flex',
         flex: 1,
       }),
     };
-    return (
-      <div {...styles.base}>
-        <TestPanel root={this.module} selected={this.state.selected} factory={renderer} />
-      </div>
-    );
+    return <div {...styles.base}>{this.fireRender()}</div>;
   }
+
+  /**
+   * [Helpers]
+   */
+
+  private fireRender = () => {
+    const { selected, current } = this.nav;
+    const module = this.module;
+    const props = module.root.props;
+    const data = props?.data || {};
+    const view = props?.view || '';
+
+    let res: JSX.Element | null = null;
+    const payload: t.IModuleRender = {
+      id: module.id,
+      tree: { selected, current },
+      data,
+      view,
+      render: (el) => (res = el),
+    };
+
+    module.dispatch({ type: 'Module/render', payload });
+    return res;
+  };
 }

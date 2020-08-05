@@ -3,9 +3,9 @@ import { Subject } from 'rxjs';
 import { color, css, CssValue, ui } from '../../common';
 import { Button } from '../primitives';
 import * as t from './types';
+import { TestPanelSelected } from './TestPanelSelected';
 
 export type ITestPanelProps = {
-  factory: t.ModuleRender;
   root: t.MyModule;
   selected?: t.MyModule;
   style?: CssValue;
@@ -21,7 +21,13 @@ export class TestPanel extends React.PureComponent<ITestPanelProps> {
    * [Lifecycle]
    */
 
-  public componentDidMount() {}
+  public componentDidMount() {
+    const actions = this.root.action(this.unmounted$);
+
+    actions.dispatch$.subscribe((e) => {
+      console.log('dispatched', e);
+    });
+  }
 
   public componentWillUnmount() {
     this.unmounted$.next();
@@ -39,9 +45,12 @@ export class TestPanel extends React.PureComponent<ITestPanelProps> {
    * [Render]
    */
   public render() {
+    const selected = this.props.selected;
+
     const styles = {
       base: css({
         flex: 1,
+        padding: 30,
       }),
       title: css({
         borderBottom: `solid 1px ${color.format(-0.1)}`,
@@ -68,22 +77,9 @@ export class TestPanel extends React.PureComponent<ITestPanelProps> {
           {space}
           <Button onClick={this.onClearClick}>Clear</Button>
         </div>
-        {this.renderSelected()}
+        {selected && <TestPanelSelected module={selected} />}
       </div>
     );
-  }
-
-  private renderSelected() {
-    const module = this.props.selected;
-    if (!module) {
-      return null;
-    }
-
-    const props = module.root.props;
-    const data = props?.data || {};
-    const view = props?.view || '';
-
-    return this.props.factory({ module, data, view }) || null;
   }
 
   /**
@@ -92,8 +88,8 @@ export class TestPanel extends React.PureComponent<ITestPanelProps> {
 
   private onRegisterClick = () => {
     this.props.root.dispatch({
-      type: 'MODULE/register',
-      payload: { id: 'ns:foo', name: 'Foo' },
+      type: 'Module/register',
+      payload: { id: 'foo', name: 'My Module' },
     });
   };
 
