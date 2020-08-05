@@ -12,7 +12,7 @@ export type ModuleArgs<D extends O> = t.ITreeStateArgs<ITreeNodeModule<D>> & {
 export type Module = {
   create<D extends O, A extends Event = any>(args?: ModuleArgs<D>): IModule<D, A>;
   register<T extends IModule>(within: T, payload: IModuleRegister): Promise<T>;
-  events(subject: Observable<t.Event> | IModule, dispose$?: Observable<any>): IModuleEvents;
+  events: ModuleEvents;
   broadcast: ModuleBroadcast;
   strategies: ModuleStrategies;
   identity: t.TreeIdentity;
@@ -75,6 +75,10 @@ export type ModuleBroadcaster = t.IDisposable;
  * [Events]
  */
 
+export type ModuleEvents = (
+  subject: Observable<t.Event> | IModule,
+  dispose$?: Observable<any>,
+) => IModuleEvents;
 export type IModuleEvents = {
   $: Observable<ModuleEvent>;
   changed$: Observable<IModuleChanged>;

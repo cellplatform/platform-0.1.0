@@ -1,17 +1,22 @@
 import { TreeState } from '@platform/state';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { is } from '@platform/state/lib/common/is';
 
 import { t } from '../common';
 
 const identity = TreeState.identity;
 
-export function create(args: {
-  event$: Observable<t.Event>;
-  dispose$?: Observable<any>;
-}): t.IModuleEvents {
+export const create: t.ModuleEvents = (subject, until$) => {
+  const subject$ = is.observable(subject) ? subject : (subject as t.IModule).event.$;
+  const event$ = subject$ as Observable<t.Event>;
+
   const dispose$ = new Subject<void>();
-  const raw$ = args.event$.pipe(takeUntil(dispose$));
+  if (until$) {
+    until$.subscribe(() => dispose$.next());
+  }
+
+  const raw$ = event$.pipe(takeUntil(dispose$));
 
   const $ = raw$.pipe(
     filter((e) => e.type.startsWith('Module/')),
@@ -40,16 +45,12 @@ export function create(args: {
           return fn({ id, key, namespace, event });
         }),
       );
-      return create({ event$, dispose$ });
+      return create(event$, dispose$); // <== RECURSION 🌳
     },
   };
 
-  if (args.dispose$) {
-    args.dispose$.subscribe(() => dispose$.next());
-  }
-
   return events;
-}
+};
 
 /**
  * Monitors the events of a module (and it's children) and bubbles
