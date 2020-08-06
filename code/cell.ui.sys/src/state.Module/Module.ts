@@ -1,7 +1,7 @@
 import { TreeState } from '@platform/state';
 import { filter } from 'rxjs/operators';
 
-import { t } from '../common';
+import { t, id } from '../common';
 import { publish } from './Module.pub';
 import { subscribe } from './Module.sub';
 import * as events from './Module.events';
@@ -34,13 +34,15 @@ export class Module {
    */
   public static async register(parent: t.IModule, args: { id: string; name?: string }) {
     return new Promise<t.IModule>((resolve) => {
-      const payload: t.IModuleRegister = { module: args.id, name: args.name };
+      const payload: t.IModuleRegister = {
+        cid: id.cuid(),
+        module: args.id,
+        name: args.name,
+      };
       parent
         .action()
         .dispatched<t.IModuleRegisteredEvent>('Module/registered')
-        .pipe(
-          filter((e) => e.module === payload.module || identity.key(e.module) === payload.module),
-        )
+        .pipe(filter((e) => e.cid === payload.cid))
         .subscribe((e) => {
           const child = parent.find((item) => item.id === e.module);
           resolve(child);

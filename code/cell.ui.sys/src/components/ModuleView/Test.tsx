@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { time, color, css, CssValue, t, ui } from '../../common';
+
 import { ModuleView } from '.';
+import { color, css, CssValue, t, time, ui } from '../../common';
+import { Button } from '../primitives';
 
 const Module = ModuleView.Module;
 
@@ -20,10 +22,7 @@ export type MyFoo = { count: 123 };
  * Component
  */
 export type ITestProps = { style?: CssValue };
-export type ITestState = {
-  foo?: MyModule;
-  bar?: MyModule;
-};
+export type ITestState = { foo?: MyModule; bar?: MyModule };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
@@ -57,33 +56,25 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const ctx = this.context;
     const module = this.module;
 
-    // Module.identity
+    // Publishes modules changes into the global event bus.
     Module.publish({
       until$: this.unmounted$,
       module,
       fire: ctx.fire,
     });
 
-    const foo = await Module.register(module, { id: 'foo', name: 'MyFoo' });
-    const bar = await Module.register(module, { id: 'bar', name: 'MyBar' });
-
+    const foo = await Module.register(module, { id: 'foo', name: 'Diagram' });
+    const bar = await Module.register(module, { id: 'bar', name: 'Sample' });
     this.state$.next({ foo, bar });
 
-    console.log('module.children.length', module.children.length);
-    console.log('- module     ', module.id);
-    console.log('- child.foo  ', foo.id);
-    console.log('- child.bar  ', bar.id);
-    console.log('-------------------------------------------');
-
-    Module.events(ctx.event$)
-      // .filter((e) => e.id === foo.id)
-      .render$.subscribe((e) => {
-        if (e.module === bar.id) {
-          e.render(this.renderKong(e));
-        } else {
-          e.render(this.renderDiagram());
-        }
-      });
+    Module.events(ctx.event$).render$.subscribe((e) => {
+      if (e.module === bar.id) {
+        e.render(this.renderKong(e));
+      }
+      if (e.module === foo.id) {
+        e.render(this.renderDiagram());
+      }
+    });
 
     foo.change((draft, ctx) => {
       ctx.props(draft, (props) => {
@@ -92,7 +83,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
       ctx.children(draft, (children) => {
         children.push(...[{ id: 'one' }, { id: 'two' }]);
-        // children.push(...[{ id: 'one' }]);
       });
     });
 
@@ -196,12 +186,20 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       base: css({
         padding: 30,
         flex: 1,
-        Flex: 'vertical-center-center',
-        fontSize: 12,
+        Flex: 'vertical-stretch-stretch',
+        overflow: 'hidden',
       }),
       image: css({
         width: 300,
         marginBottom: 15,
+      }),
+      top: css({
+        flex: 1,
+        Flex: 'vertical-center-center',
+        fontSize: 12,
+      }),
+      bottom: css({
+        // padding: 10
       }),
     };
     const node = e.tree.selection?.id;
@@ -221,9 +219,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     return (
       <div {...styles.base}>
-        <img src={src} {...styles.image} />
-        <div>Module: {e.module}</div>
-        <div>Tree Node: {node || '-'}</div>
+        <div {...styles.top}>
+          <img src={src} {...styles.image} />
+          <div>Module: {e.module}</div>
+          <div>Tree Node: {node || '-'}</div>
+        </div>
+        <div {...styles.bottom}>
+          <Button onClick={this.onAddModuleClick}>Add Module</Button>
+        </div>
       </div>
     );
   }
@@ -235,6 +238,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         Absolute: 0,
         border: `solid 10px ${PINK}`,
         Flex: 'vertical-center-center',
+        overflow: 'hidden',
       }),
       image: css({ width: '80%' }),
     };
@@ -252,17 +256,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Handlers]
    */
 
-  private leftFilter: t.ModuleFilter = (args) => {
-    const module = this.module;
-    return module.id === args.id;
-  };
-
-  private rightFilter: t.ModuleFilter = (args) => {
-    const module = this.module.find((e) => e.key === 'bar');
-    return module?.id === args.id;
-  };
-
   private renderFilter: t.ModuleFilter = (args) => {
     return true;
+  };
+
+  private onAddModuleClick = async () => {
+    // this.module
+    const module = this.module;
+    const child = await Module.register(module, { id: 'child', name: 'MyChild' });
   };
 }

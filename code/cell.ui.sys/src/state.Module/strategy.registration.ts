@@ -21,7 +21,8 @@ export const registration: t.ModuleStrategy = (input) => {
 
       const child = module.add({ root });
       const id = child.id;
-      module.dispatch({ type: 'Module/registered', payload: { module: id } });
+      const cid = e.cid;
+      module.dispatch({ type: 'Module/registered', payload: { cid, module: id } });
 
       // Alert listeners when disposed.
       child.dispose$.subscribe((e) => {

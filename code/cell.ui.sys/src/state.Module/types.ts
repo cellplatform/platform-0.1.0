@@ -149,6 +149,7 @@ export type IModuleRegisterEvent = {
   payload: IModuleRegister;
 };
 export type IModuleRegister = {
+  cid: string; // Callback identifier.
   module: string; // ID (either "id" or "namespace:id")
   name?: string; // Display name.
 };
@@ -157,7 +158,10 @@ export type IModuleRegisteredEvent = {
   type: 'Module/registered';
   payload: IModuleRegistered;
 };
-export type IModuleRegistered = { module: string };
+export type IModuleRegistered = {
+  cid: string; // Callback identifier.
+  module: string;
+};
 
 export type IModuleSelectionEvent<D extends O = any> = {
   type: 'Module/selection';

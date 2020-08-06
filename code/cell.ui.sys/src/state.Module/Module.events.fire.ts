@@ -50,14 +50,19 @@ export function fire(fire: t.FireEvent<t.ModuleEvent>): t.IModuleFire {
 
     const module = !node ? undefined : findModule(node);
 
-    const payload: t.IModuleSelection = {
-      module: module?.id || '',
-      tree: { current, selection },
-      view: module?.props?.view,
-      data: module?.props?.data,
-    };
+    if (module) {
+      const payload: t.IModuleSelection = {
+        module: module.id,
+        tree: { current, selection },
+        view: module?.props?.view,
+        data: module?.props?.data,
+      };
 
-    fire({ type: 'Module/selection', payload });
+      fire({
+        type: 'Module/selection',
+        payload,
+      });
+    }
   };
 
   return { render, selection };
