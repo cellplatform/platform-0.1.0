@@ -62,4 +62,5 @@ export class Module {
   public static events = events.create;
   public static filter = events.filterEvent;
   public static isModuleEvent = events.isModuleEvent;
+  public static fire = events.fire;
 }

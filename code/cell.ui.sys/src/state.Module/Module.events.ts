@@ -5,6 +5,8 @@ import { is } from '@platform/state/lib/common/is';
 import { rx } from '@platform/util.value';
 
 import { t } from '../common';
+import { fire } from './Module.events.fire';
+export { fire };
 
 const identity = TreeState.identity;
 
@@ -27,6 +29,7 @@ export const create: t.ModuleEvents = (subject, until$) => {
 
   const changed$ = rx.payload<t.IModuleChangedEvent>($, 'Module/changed').pipe(share());
   const patched$ = rx.payload<t.IModulePatchedEvent>($, 'Module/patched').pipe(share());
+  const selection$ = rx.payload<t.IModuleSelectionEvent>($, 'Module/selection').pipe(share());
   const render$ = rx.payload<t.IModuleRenderEvent>($, 'Module/render').pipe(share());
   const rendered$ = rx.payload<t.IModuleRenderedEvent>($, 'Module/rendered').pipe(share());
 
@@ -34,6 +37,7 @@ export const create: t.ModuleEvents = (subject, until$) => {
     $,
     changed$,
     patched$,
+    selection$,
     render$,
     rendered$,
 

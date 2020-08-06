@@ -36,7 +36,7 @@ export function formatRootNode<D extends O = any>(input: t.ITreeNode | string) {
   type M = t.ITreeNodeModule<D>;
   const props = (node.props = node.props || {}) as NonNullable<M['props']>;
   props.kind = 'MODULE';
-  props.data = props.data || {};
+  props.data = (props.data || {}) as D;
   props.view = props.view || '';
   props.treeview = props.treeview || { label: 'Unnamed' };
 

@@ -458,7 +458,7 @@ describe('TreeState', () => {
       const state = create({ root });
       const res = state.change((draft, ctx) => {
         // NB: Convenience method.
-        //     Ensures the props object and is assigned exists in a single line call.
+        //     Ensures the props object is assigned and exists in a single-line-call.
         ctx.props(draft, (p) => {
           p.label = 'Hello!';
           p.icon = 'face';
@@ -554,7 +554,7 @@ describe('TreeState', () => {
     });
   });
 
-  describe('change (events)', () => {
+  describe.only('change (events)', () => {
     const root: N = {
       id: 'root',
       children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-2-1' }] }],
@@ -577,6 +577,30 @@ describe('TreeState', () => {
       expect(event.from.props?.label).to.eql(undefined);
       expect(event.to.props?.label).to.eql('foo');
       expect(event.patches).to.eql(res.patches);
+    });
+
+    it('event: changed (fires from root when child changes)', () => {
+      const state = create({ root });
+      const child = state.add({ root: 'foo' });
+
+      const firedRoot: t.ITreeStateChanged<N>[] = [];
+      state.event
+        .payload<t.ITreeStateChangedEvent>('TreeState/changed')
+        .subscribe((e) => firedRoot.push(e));
+
+      const firedChild: t.ITreeStateChanged<N>[] = [];
+      child.event
+        .payload<t.ITreeStateChangedEvent>('TreeState/changed')
+        .subscribe((e) => firedChild.push(e));
+
+      // Make a change to child.
+      child.change((draft, ctx) => ctx.props(draft, (p) => (p.label = 'foo')));
+
+      expect(firedRoot.length).to.eql(1);
+      expect(firedChild.length).to.eql(1);
+
+      expect(firedRoot[0].patches.next[0].op).to.eql('replace');
+      expect(firedChild[0].patches.next[0].op).to.eql('add');
     });
 
     it('event: patched', () => {

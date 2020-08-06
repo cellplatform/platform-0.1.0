@@ -20,12 +20,16 @@ export type MyFoo = { count: 123 };
  * Component
  */
 export type ITestProps = { style?: CssValue };
-export type ITestState = t.Object;
+export type ITestState = {
+  foo?: MyModule;
+  bar?: MyModule;
+};
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
   private state$ = new Subject<Partial<ITestState>>();
   private unmounted$ = new Subject();
+  private treeview$ = new Subject<t.TreeViewEvent>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;
@@ -55,15 +59,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     // Module.identity
     Module.publish({
+      until$: this.unmounted$,
       module,
       fire: ctx.fire,
-      until$: this.unmounted$,
     });
 
     const foo = await Module.register(module, { id: 'foo', name: 'MyFoo' });
     const bar = await Module.register(module, { id: 'bar', name: 'MyBar' });
 
-    console.log('foo.root', foo.root.props);
+    this.state$.next({ foo, bar });
 
     console.log('module.children.length', module.children.length);
     console.log('- module     ', module.id);
@@ -103,18 +107,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
     });
 
-    /**
-     * TODO 🐷
-     * Ensure the tree does not reset BLUE selection
-     * when timer reset prop on tree-node.
-     */
-
     time.delay(1000, () => {
       bar.change((draft, ctx) => {
         const child = ctx.children(draft)[0];
         ctx.props(child, (props) => {
-          props.treeview = { ...props.treeview, label: 'hello' };
+          props.treeview = { inline: {}, ...props.treeview, label: 'hello' };
         });
+        if (!child.children) {
+          child.children = [{ id: 'my-child-1', props: { treeview: { inline: {} } } }];
+        }
       });
     });
   }
@@ -162,23 +163,28 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           <div {...css(styles.tree, { marginRight: MARGIN })}>
             <ModuleView.Tree
               style={styles.fill}
-              event$={event$}
-              filter={this.leftFilter}
+              tree={this.module}
+              treeview$={this.treeview$}
               fire={ctx.fire}
-              tag={'left'}
             />
           </div>
           <div {...styles.main}>
-            <ModuleView.Frame style={styles.fill} event$={event$} filter={this.renderFilter} />
-          </div>
-          <div {...css(styles.tree, { marginLeft: MARGIN })}>
-            <ModuleView.Tree
+            <ModuleView.Frame
               style={styles.fill}
               event$={event$}
-              filter={this.rightFilter}
+              filter={this.renderFilter}
               fire={ctx.fire}
-              tag={'right'}
             />
+          </div>
+          <div {...css(styles.tree, { marginLeft: MARGIN })}>
+            {this.state.bar && (
+              <ModuleView.Tree
+                style={styles.fill}
+                tree={this.state.bar}
+                treeview$={this.treeview$}
+                fire={ctx.fire}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -198,7 +204,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         marginBottom: 15,
       }),
     };
-    const node = e.tree.node;
+    const node = e.tree.selection?.id;
 
     const URL = {
       KONG: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kong.png',
@@ -208,7 +214,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     const src =
       e.tree.current === e.module
-        ? e.tree.selected?.endsWith(':one')
+        ? e.tree.selection?.id.endsWith(':one')
           ? URL.KITTEN
           : URL.KONG
         : URL.LEAF;
@@ -217,7 +223,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       <div {...styles.base}>
         <img src={src} {...styles.image} />
         <div>Module: {e.module}</div>
-        <div>Tree Node: {node?.id || '-'}</div>
+        <div>Tree Node: {node || '-'}</div>
       </div>
     );
   }
@@ -230,10 +236,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         border: `solid 10px ${PINK}`,
         Flex: 'vertical-center-center',
       }),
-      image: css({
-        width: '80%',
-        // marginBottom: 15,
-      }),
+      image: css({ width: '80%' }),
     };
 
     const src = 'https://tdb.sfo2.digitaloceanspaces.com/tmp/framing-bypass.png';

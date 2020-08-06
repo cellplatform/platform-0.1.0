@@ -37,7 +37,7 @@ export class Test extends React.PureComponent<ITestProps> {
     // console.log('panel', panel);
 
     actions.dispatched<t.IModuleRenderEvent>('Module/render').subscribe((e) => {
-      const { namespace, key } = Module.identity.parse(e.tree.selected);
+      const { namespace, key } = Module.identity.parse(e.tree.selection?.id);
       const selected = module.find((args) => args.namespace === namespace);
 
       // console.log('id', id);

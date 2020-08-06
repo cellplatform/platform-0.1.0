@@ -7,6 +7,7 @@ import { Module } from '../../state.Module';
 
 export type IModuleViewFrameProps = {
   event$: Observable<t.Event>;
+  fire: t.FireEvent<any>;
   filter: t.ModuleFilter;
   style?: CssValue;
 };
@@ -27,9 +28,8 @@ export class ModuleViewFrame extends React.PureComponent<
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const events = Module.events(this.props.event$, this.unmounted$).filter(this.props.filter);
 
-    events.rendered$.subscribe((e) => {
-      console.log('erendered:', e);
-      const el = e.el;
+    events.selection$.subscribe((e) => {
+      const el = Module.fire(this.props.fire).render(e);
       this.state$.next({ el });
     });
   }

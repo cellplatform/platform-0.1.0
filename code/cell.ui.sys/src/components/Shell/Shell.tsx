@@ -132,7 +132,7 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
         flex: 1,
       }),
     };
-    return <div {...styles.base}>{this.fireRender()}</div>;
+    return <div {...styles.base}>{/* {this.fireRender()} */}</div>;
   }
 
   /**
@@ -140,22 +140,20 @@ export class Shell extends React.PureComponent<IShellProps, IShellState> {
    */
 
   private fireRender = () => {
-    const { selected, current } = this.nav;
-    const module = this.module;
-    const props = module.root.props;
-    const data = props?.data || {};
-    const view = props?.view || '';
-
-    let res: JSX.Element | null = null;
-    const payload: t.IModuleRender = {
-      module: module.id,
-      tree: { selected, current },
-      data,
-      view,
-      render: (el) => (res = el),
-    };
-
-    module.dispatch({ type: 'Module/render', payload });
-    return res;
+    // const { selected, current } = this.nav;
+    // const module = this.module;
+    // const props = module.root.props;
+    // const data = props?.data || {};
+    // const view = props?.view || '';
+    // // let res: JSX.Element | null = null;
+    // // const payload: t.IModuleRender = {
+    // //   module: module.id,
+    // //   tree: { selected, current },
+    // //   data,
+    // //   view,
+    // //   render: (el) => (res = el),
+    // // };
+    // module.dispatch({ type: 'Module/render', payload });
+    // return res;
   };
 }

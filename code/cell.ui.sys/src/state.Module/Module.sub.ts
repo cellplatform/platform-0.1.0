@@ -1,5 +1,4 @@
-import { TreeState } from '@platform/state';
-import { Subject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { t } from '../common';
@@ -14,27 +13,30 @@ type Event = t.Event<O>;
  */
 export function subscribe<T extends Node = Node, A extends Event = any>(args: {
   event$: Observable<t.Event>;
-  tree?: t.ITreeState<T, A>;
-  filter?: t.ModuleFilter;
   until$?: Observable<any>;
+  tree: t.ITreeState<T, A>;
+  filter?: t.ModuleFilter;
 }): t.ModuleSubscription<T, A> {
+  const tree = args.tree;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();
   if (args.until$) {
     args.until$.subscribe(() => dispose());
   }
 
-  const tree = args.tree || TreeState.create({ dispose$ });
+  const events = args.filter
+    ? createEvents(args.event$, args.until$).filter(args.filter)
+    : createEvents(args.event$, args.until$);
 
-  let events = createEvents(args.event$, args.until$);
-  events = args.filter ? events.filter(args.filter) : events;
-
-  events.changed$.subscribe((e) => {
-    tree.change((draft, ctx) => {
-      const to = e.change.to;
+  const change = (to: t.ITreeNode) => {
+    tree.change((draft) => {
       draft.props = to.props;
       draft.children = to.children;
     });
+  };
+
+  events.changed$.subscribe((e) => {
+    change(e.change.to);
   });
 
   return {
