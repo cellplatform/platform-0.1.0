@@ -26,7 +26,7 @@ export type Module = {
   isModuleEvent(event: t.Event): boolean;
   filter(event: t.ModuleEvent, filter?: t.ModuleFilter): boolean;
   events: ModuleEvents;
-  fire(fire: t.FireEvent<any>): IModuleFire;
+  fire(next: t.FireEvent<any>): IModuleFire;
 };
 
 // export type ModuleRegister<T extends IModule = IModule> = (args: ModuleRegisterArgs) => Promise<T>;
