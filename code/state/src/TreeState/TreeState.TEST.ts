@@ -57,6 +57,11 @@ describe('TreeState', () => {
       const state = create({ root });
       expect(state.readonly).to.equal(state);
     });
+
+    it('throw: id contains "/" character', () => {
+      const fn = () => create({ root: 'foo/bar' });
+      expect(fn).to.throw(/Tree node IDs cannot contain the "\/" character/);
+    });
   });
 
   describe('dispose', () => {
@@ -554,7 +559,7 @@ describe('TreeState', () => {
     });
   });
 
-  describe.only('change (events)', () => {
+  describe('change (events)', () => {
     const root: N = {
       id: 'root',
       children: [{ id: 'child-1' }, { id: 'child-2', children: [{ id: 'child-2-1' }] }],

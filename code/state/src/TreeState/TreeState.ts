@@ -41,6 +41,10 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
   private constructor(args: t.ITreeStateArgs<T>) {
     // Wrangle the {root} argument into an object.
     const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as T;
+    if (root.id.includes('/')) {
+      const err = `Tree node IDs cannot contain the "/" character`;
+      throw new Error(err);
+    }
 
     // Store values.
     this.key = Identity.key(root.id);
