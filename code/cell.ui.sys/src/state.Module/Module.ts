@@ -5,12 +5,9 @@ import { t, id } from '../common';
 import { publish } from './Module.pub';
 import { subscribe } from './Module.sub';
 import * as events from './Module.events';
+import { fire } from './Module.fire';
 import { ModuleStrategies } from './strategies';
 import { create } from './Module.create';
-
-const identity = TreeState.identity;
-
-type O = Record<string, unknown>;
 
 export class Module {
   /**
@@ -64,5 +61,5 @@ export class Module {
   public static events = events.create;
   public static filter = events.filterEvent;
   public static isModuleEvent = events.isModuleEvent;
-  public static fire = events.fire;
+  public static fire = fire;
 }

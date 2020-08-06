@@ -2,8 +2,7 @@ import * as React from 'react';
 
 import { AppBuilder } from '../components/AppBuilder';
 import { Debug } from '../components/Debug';
-import { Test as ShellTest } from '../components/Shell/Test';
-import { Test as ModuleViewTest } from '../components/ModuleView/Test';
+import { Test as ModuleView } from '../components/ModuleView/Test';
 import { Root } from '../components/Root';
 
 export function render(entry: string) {
@@ -17,18 +16,15 @@ export function render(entry: string) {
 
     case 'entry:debug.sheet':
       return (
-        <Root title={'shell'}>
-          <ShellTest />
+        <Root title={'debug.sheet'}>
+          <Debug view={'SHEET'} />
         </Root>
-        // <Root title={'debug.sheet'}>
-        //   <Debug view={'SHEET'} />
-        // </Root>
       );
 
     case 'entry:shell':
       return (
         <Root title={'ModuleView'}>
-          <ModuleViewTest />
+          <ModuleView />
         </Root>
       );
 

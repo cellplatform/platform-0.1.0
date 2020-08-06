@@ -6,6 +6,11 @@ type O = Record<string, unknown>;
 type Node = t.ITreeNode;
 type Event = t.Event<O>;
 
+export type IEventBus<E extends t.Event = t.Event<any>> = {
+  event$: Observable<E>;
+  fire: t.FireEvent<E>;
+};
+
 export type ModuleArgs<D extends O> = t.ITreeStateArgs<ITreeNodeModule<D>> & {
   strategy?: t.ModuleStrategy;
 };
@@ -16,13 +21,16 @@ export type Module = {
 
   create<D extends O, A extends Event = any>(args?: ModuleArgs<D>): IModule<D, A>;
   register<T extends IModule>(within: T, args: { id: string; name?: string }): Promise<T>;
-  events: ModuleEvents;
   publish: ModulePublish;
   subscribe: ModuleSubscribe;
   isModuleEvent(event: t.Event): boolean;
   filter(event: t.ModuleEvent, filter?: t.ModuleFilter): boolean;
-  fire(bus: t.FireEvent<t.ModuleEvent>): IModuleFire;
+  events: ModuleEvents;
+  fire(fire: t.FireEvent<any>): IModuleFire;
 };
+
+// export type ModuleRegister<T extends IModule = IModule> = (args: ModuleRegisterArgs) => Promise<T>;
+// export type ModuleRegisterArgs = { id: string; name?: string };
 
 /**
  * A module state-tree.
@@ -92,7 +100,7 @@ export type ModuleSubscription<T extends Node = Node, A extends Event = any> = t
 };
 
 /**
- * Event fire
+ * Event bus
  */
 
 export type IModuleFire = {
@@ -149,9 +157,9 @@ export type IModuleRegisterEvent = {
   payload: IModuleRegister;
 };
 export type IModuleRegister = {
-  cid: string; // Callback identifier.
+  cid: string; //    Callback identifier.
   module: string; // ID (either "id" or "namespace:id")
-  name?: string; // Display name.
+  name?: string; //  Display name.
 };
 
 export type IModuleRegisteredEvent = {

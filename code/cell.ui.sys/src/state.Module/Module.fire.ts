@@ -1,6 +1,10 @@
 import { TreeQuery } from '@platform/state/lib/TreeQuery';
+
 import { t } from '../common';
 
+/**
+ * Manage the event bus.
+ */
 export function fire(fire: t.FireEvent<t.ModuleEvent>): t.IModuleFire {
   /**
    * Fires a render request seqeunce.

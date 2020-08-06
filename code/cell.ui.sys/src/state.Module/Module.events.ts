@@ -5,8 +5,6 @@ import { is } from '@platform/state/lib/common/is';
 import { rx } from '@platform/util.value';
 
 import { t } from '../common';
-import { fire } from './Module.events.fire';
-export { fire };
 
 const identity = TreeState.identity;
 

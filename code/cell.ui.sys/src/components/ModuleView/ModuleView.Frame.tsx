@@ -6,8 +6,8 @@ import { css, CssValue, t } from '../../common';
 import { Module } from '../../state.Module';
 
 export type IModuleViewFrameProps = {
-  event$: Observable<t.Event>;
   fire: t.FireEvent<any>;
+  event$: Observable<t.Event<any>>;
   filter: t.ModuleFilter;
   style?: CssValue;
 };
@@ -29,7 +29,7 @@ export class ModuleViewFrame extends React.PureComponent<
     const events = Module.events(this.props.event$, this.unmounted$).filter(this.props.filter);
 
     events.selection$.subscribe((e) => {
-      const el = Module.fire(this.props.fire).render(e);
+      const el = this.fire.render(e);
       this.state$.next({ el });
     });
   }
@@ -37,6 +37,13 @@ export class ModuleViewFrame extends React.PureComponent<
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  private get fire() {
+    return Module.fire(this.props.fire);
   }
 
   /**

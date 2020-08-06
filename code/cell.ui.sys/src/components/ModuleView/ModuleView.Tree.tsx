@@ -7,8 +7,8 @@ import { css, CssValue, t } from '../../common';
 import { Module } from '../../state.Module';
 
 export type IModuleViewTreeProps = {
-  tree: t.ITreeState<any>;
   fire: t.FireEvent<any>;
+  tree: t.ITreeState<any>;
   treeview$?: Subject<t.TreeViewEvent>;
   style?: CssValue;
 };
@@ -31,7 +31,8 @@ export class ModuleViewTree extends React.PureComponent<IModuleViewTreeProps> {
     this.nav.redraw$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
 
     this.nav.selection$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
-      this.fireSelection();
+      const { root, current, selected } = this.nav;
+      this.fire.selection({ root, current, selected });
     });
   }
 
@@ -39,6 +40,13 @@ export class ModuleViewTree extends React.PureComponent<IModuleViewTreeProps> {
     this.nav.dispose();
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  private get fire() {
+    return Module.fire(this.props.fire);
   }
 
   /**
@@ -63,12 +71,4 @@ export class ModuleViewTree extends React.PureComponent<IModuleViewTreeProps> {
       </div>
     );
   }
-
-  /**
-   * [Helpers]
-   */
-  private fireSelection = () => {
-    const { root, current, selected } = this.nav;
-    Module.fire(this.props.fire).selection({ root, current, selected });
-  };
 }

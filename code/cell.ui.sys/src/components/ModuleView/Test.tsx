@@ -59,8 +59,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     // Publishes modules changes into the global event bus.
     Module.publish({
       until$: this.unmounted$,
-      module,
       fire: ctx.fire,
+      module,
     });
 
     const foo = await Module.register(module, { id: 'foo', name: 'Diagram' });
@@ -114,11 +114,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Render]
    */
   public render() {
-    const MARGIN = 40;
-
     const ctx = this.context;
-    const event$ = ctx.event$;
-
+    const MARGIN = 40;
     const styles = {
       base: css({
         Absolute: 0,
@@ -161,9 +158,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           <div {...styles.main}>
             <ModuleView.Frame
               style={styles.fill}
-              event$={event$}
-              filter={this.renderFilter}
               fire={ctx.fire}
+              event$={ctx.event$}
+              filter={this.renderFilter}
             />
           </div>
           <div {...css(styles.tree, { marginLeft: MARGIN })}>
@@ -243,7 +240,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       image: css({ width: '80%' }),
     };
 
-    const src = 'https://tdb.sfo2.digitaloceanspaces.com/tmp/framing-bypass.png';
+    const DIAGRAM = {
+      BYBASS: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/framing-bypass.png',
+      REDESIGN: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/redesign.png',
+    };
+
+    const src = DIAGRAM.REDESIGN;
 
     return (
       <div {...styles.base}>
