@@ -1,22 +1,17 @@
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
 
 import { t } from '../common';
 import { create as createEvents } from './Module.events';
 
-type O = Record<string, unknown>;
-type Node = t.ITreeNode;
-type Event = t.Event<O>;
+type N = t.ITreeNode;
 
 /**
  * Subscribe to changes on a particular module.
  */
-export function subscribe<T extends Node = Node, A extends Event = any>(args: {
-  event$: Observable<t.Event>;
-  until$?: Observable<any>;
-  tree: t.ITreeState<T, A>;
-  filter?: t.ModuleFilter;
-}): t.ModuleSubscription<T, A> {
+export function subscribe<T extends N = N>(
+  args: t.ModuleSubscribeArgs<T>,
+): t.ModuleSubscribeResponse<T> {
   const tree = args.tree;
   const dispose$ = new Subject<void>();
   const dispose = () => dispose$.next();

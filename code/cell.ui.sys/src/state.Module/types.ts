@@ -3,68 +3,63 @@ import { Observable } from 'rxjs';
 import * as t from '../common/types';
 
 type O = Record<string, unknown>;
-type Node = t.ITreeNode;
+type N = t.ITreeNode;
 type Event = t.Event<O>;
+type E = t.ModuleEvent;
 
-export type IEventBus<E extends t.Event = t.Event<any>> = {
-  event$: Observable<E>;
-  fire: t.FireEvent<E>;
-};
-
-export type ModuleArgs<D extends O> = t.ITreeStateArgs<ITreeNodeModule<D>> & {
-  strategy?: t.ModuleStrategy;
-};
+export type ModuleArgs<D extends O> = t.ITreeStateArgs<IModuleTreeNode<D>>;
 
 export type Module = {
-  strategies: ModuleStrategies;
   identity: t.TreeIdentity;
 
-  create<D extends O, A extends Event = any>(args?: ModuleArgs<D>): IModule<D, A>;
-  register<T extends IModule>(within: T, args: { id: string; name?: string }): Promise<T>;
-  publish: ModulePublish;
-  subscribe: ModuleSubscribe;
+  create<D extends O>(args?: ModuleArgs<D>): IModule<D>;
+
+  register<T extends IModule = IModule, D extends O = any>(
+    parent: IModule,
+    args: ModuleRegisterArgs<D>,
+  ): ModuleRegistration<T>;
+
+  publish(args: ModulePublishArgs): ModulePublishResponse;
+
+  subscribe<T extends N = N>(args: ModuleSubscribeArgs<T>): ModuleSubscribeResponse<T>;
+
   isModuleEvent(event: t.Event): boolean;
   filter(event: t.ModuleEvent, filter?: t.ModuleFilter): boolean;
   events: ModuleEvents;
   fire(next: t.FireEvent<any>): IModuleFire;
 };
 
-// export type ModuleRegister<T extends IModule = IModule> = (args: ModuleRegisterArgs) => Promise<T>;
-// export type ModuleRegisterArgs = { id: string; name?: string };
+/**
+ * Registration
+ */
+export type ModuleRegisterArgs<D extends O = any> = {
+  id: string;
+  label?: string;
+  view?: string;
+  data?: D;
+};
+export type ModuleRegistration<T extends IModule = IModule> = { id: string; module: T };
 
 /**
  * A module state-tree.
  */
 export type IModuleTreeSelection = { id: string; props: t.ITreeViewNodeProps };
 
-export type IModule<D extends O = any, A extends Event = any> = t.ITreeState<
-  ITreeNodeModule<D>,
-  t.ModuleEvent | A
->;
+export type IModule<D extends O = any> = t.ITreeState<IModuleTreeNode<D>, t.ModuleEvent>;
 
 /**
  * A tree-node that contains details about a module.
  */
-export type ITreeNodeModule<D extends O> = t.ITreeNode<
-  t.ITreeNodePropsTreeView & t.ITreeNodeModuleProps<D>
->;
+export type IModuleTreeNode<D extends O> = t.ITreeNode<IModuleTreeNodeProps<D>>;
+export type IModuleTreeNodeProps<D extends O> = t.ITreeNodePropsTreeView & t.IModuleNodeProps<D>;
 
 /**
  * The way a module is expressed as props within a tree-node.
  */
-export type ITreeNodeModuleProps<D extends O = O> = {
+export type IModuleNodeProps<D extends O = O> = {
   kind?: 'MODULE';
   data?: D;
   view?: string;
-};
-
-/**
- * Behavior strategy.
- */
-export type ModuleStrategy = (module: IModule<any>) => void;
-export type ModuleStrategies = {
-  default: ModuleStrategy;
-  registration: ModuleStrategy;
 };
 
 /**
@@ -81,22 +76,23 @@ export type ModuleFilterArgs = {
 /**
  * Event Broadcasting
  */
-export type ModulePublish = (args: {
+
+export type ModulePublishArgs = {
   until$?: Observable<any>;
   module: IModule;
   fire: t.FireEvent<any>;
   filter?: t.ModuleFilter;
-}) => ModulePublishing;
-export type ModulePublishing = t.IDisposable;
+};
+export type ModulePublishResponse = t.IDisposable;
 
-export type ModuleSubscribe<T extends Node = Node, A extends Event = any> = (args: {
+export type ModuleSubscribeArgs<T extends N = N> = {
   until$?: Observable<any>;
   event$: Observable<t.Event>;
-  tree: t.ITreeState;
+  tree: t.ITreeState<T, E>;
   filter?: t.ModuleFilter;
-}) => ModuleSubscription<T, A>;
-export type ModuleSubscription<T extends Node = Node, A extends Event = any> = t.IDisposable & {
-  tree: t.ITreeState<T, A>;
+};
+export type ModuleSubscribeResponse<T extends N = N> = t.IDisposable & {
+  tree: t.ITreeState<T, E>;
 };
 
 /**
@@ -134,6 +130,8 @@ export type ModuleEvents = (
 
 export type IModuleEvents = {
   $: Observable<ModuleEvent>;
+  registered$: Observable<IModuleChildRegistered>;
+  childDisposed$: Observable<IModuleChildDisposed>;
   changed$: Observable<IModuleChanged>;
   patched$: Observable<IModulePatched>;
   selection$: Observable<IModuleSelection>;
@@ -143,33 +141,28 @@ export type IModuleEvents = {
 };
 
 export type ModuleEvent =
-  | IModuleRegisterEvent
-  | IModuleRegisteredEvent
+  | IModuleChildRegisteredEvent
+  | IModuleChildDisposedEvent
   | IModuleSelectionEvent
   | IModuleRenderEvent
   | IModuleRenderedEvent
   | IModuleChangedEvent
-  | IModulePatchedEvent
-  | IModuleDisposedEvent;
+  | IModulePatchedEvent;
 
-export type IModuleRegisterEvent = {
-  type: 'Module/register';
-  payload: IModuleRegister;
+export type IModuleChildRegisteredEvent = {
+  type: 'Module/child/registered';
+  payload: IModuleChildRegistered;
 };
-export type IModuleRegister = {
-  cid: string; //    Callback identifier.
-  module: string; // ID (either "id" or "namespace:id")
-  name?: string; //  Display name.
-};
-
-export type IModuleRegisteredEvent = {
-  type: 'Module/registered';
-  payload: IModuleRegistered;
-};
-export type IModuleRegistered = {
-  cid: string; // Callback identifier.
+export type IModuleChildRegistered = {
   module: string;
+  path: string;
 };
+
+export type IModuleChildDisposedEvent = {
+  type: 'Module/child/disposed';
+  payload: IModuleChildDisposed;
+};
+export type IModuleChildDisposed = { module: string; path: string };
 
 export type IModuleSelectionEvent<D extends O = any> = {
   type: 'Module/selection';
@@ -210,9 +203,3 @@ export type IModulePatchedEvent = {
   payload: IModulePatched;
 };
 export type IModulePatched = { module: string; patch: t.ITreeStatePatched };
-
-export type IModuleDisposedEvent = {
-  type: 'Module/disposed';
-  payload: IModuleDisposed;
-};
-export type IModuleDisposed = { module: string };

@@ -9,20 +9,12 @@ type Event = t.Event<O>;
 /**
  * Create a new module
  */
-export function create<D extends O, A extends Event = any>(
-  args?: t.ModuleArgs<D>,
-): t.IModule<D, A> {
+export function create<D extends O>(args?: t.ModuleArgs<D>): t.IModule<D> {
   args = { ...args };
-  args.root = formatRootNode<D>(args.root || 'module');
-  const strategy = args.strategy;
-  delete args.strategy;
+  args.root = formatModuleNode<D>(args.root || 'module');
 
-  const module = TreeState.create<t.ITreeNodeModule<D>>(args) as t.IModule<D, A>;
-  events.monitorAndDispatchChanged(module);
-
-  if (strategy) {
-    strategy(module);
-  }
+  const module = TreeState.create<t.IModuleTreeNode<D>>(args) as t.IModule<D>;
+  events.monitorAndDispatch(module);
 
   return module;
 }
@@ -30,15 +22,21 @@ export function create<D extends O, A extends Event = any>(
 /**
  * Prepare a tree-node to represent the root of a MODULE.
  */
-export function formatRootNode<D extends O = any>(input: t.ITreeNode | string) {
+export function formatModuleNode<D extends O = any>(
+  input: t.ITreeNode | string,
+  defaults: { label?: string; view?: string; data?: D } = {},
+) {
+  const { label = 'Unnamed', view = '', data = {} } = defaults;
   const node = typeof input === 'string' ? { id: input } : { ...input };
 
-  type M = t.ITreeNodeModule<D>;
+  type M = t.IModuleTreeNode<D>;
   const props = (node.props = node.props || {}) as NonNullable<M['props']>;
   props.kind = 'MODULE';
-  props.data = (props.data || {}) as D;
-  props.view = props.view || '';
-  props.treeview = props.treeview || { label: 'Unnamed' };
+  props.data = (props.data || data) as D;
+  props.view = props.view || view;
+
+  const treeview = (props.treeview = props.treeview || {});
+  treeview.label = treeview.label ? treeview.label : label;
 
   return node as M;
 }

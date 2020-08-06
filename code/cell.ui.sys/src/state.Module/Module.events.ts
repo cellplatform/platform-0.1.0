@@ -25,6 +25,12 @@ export const create: t.ModuleEvents = (subject, until$) => {
     share(),
   );
 
+  const registered$ = rx
+    .payload<t.IModuleChildRegisteredEvent>($, 'Module/child/registered')
+    .pipe(share());
+  const childDisposed$ = rx
+    .payload<t.IModuleChildDisposedEvent>($, 'Module/child/disposed')
+    .pipe(share());
   const changed$ = rx.payload<t.IModuleChangedEvent>($, 'Module/changed').pipe(share());
   const patched$ = rx.payload<t.IModulePatchedEvent>($, 'Module/patched').pipe(share());
   const selection$ = rx.payload<t.IModuleSelectionEvent>($, 'Module/selection').pipe(share());
@@ -33,6 +39,8 @@ export const create: t.ModuleEvents = (subject, until$) => {
 
   const events: t.IModuleEvents = {
     $,
+    registered$,
+    childDisposed$,
     changed$,
     patched$,
     selection$,
@@ -75,8 +83,8 @@ export function filterEvent(event: t.ModuleEvent, filter?: t.ModuleFilter) {
  * Monitors the events of a module (and it's children) and bubbles
  * the "MODULE/changed" event.
  */
-export function monitorAndDispatchChanged(module: t.IModule) {
-  type M = t.IModule<any, t.ModuleEvent>;
+export function monitorAndDispatch(module: t.IModule) {
+  type M = t.IModule<any>;
 
   const monitorChild = (parent: M, child?: M) => {
     if (child) {

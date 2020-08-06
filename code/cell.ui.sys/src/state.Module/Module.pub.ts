@@ -1,4 +1,4 @@
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, share, takeUntil } from 'rxjs/operators';
 
 import * as events from './Module.events';
@@ -9,12 +9,7 @@ import { t } from '../common';
  * Broadcasts events from the module (and all child modules)
  * throw the given pipe (fire).
  */
-export const publish: t.ModulePublish = (args: {
-  module: t.IModule;
-  fire: t.FireEvent<any>;
-  filter?: t.ModuleFilter;
-  until$?: Observable<any>;
-}) => {
+export const publish = (args: t.ModulePublishArgs): t.ModulePublishResponse => {
   const { module } = args;
   const pipe = (e: t.Event) => args.fire(e);
 
@@ -24,8 +19,9 @@ export const publish: t.ModulePublish = (args: {
     args.until$.subscribe(() => dispose());
   }
 
-  const filterModuleEvent = (event: t.ModuleEvent) => {
-    return events.isModuleEvent(event) ? events.filterEvent(event, args.filter) : true;
+  const filterModuleEvent = (event: t.Event) => {
+    const e = event as t.ModuleEvent;
+    return events.isModuleEvent(e) ? events.filterEvent(e, args.filter) : true;
   };
 
   // Root module events.

@@ -1,13 +1,11 @@
 import { TreeState } from '@platform/state';
-import { filter } from 'rxjs/operators';
 
-import { t, id } from '../common';
-import { publish } from './Module.pub';
-import { subscribe } from './Module.sub';
+import { create } from './Module.create';
 import * as events from './Module.events';
 import { fire } from './Module.fire';
-import { ModuleStrategies } from './strategies';
-import { create } from './Module.create';
+import { publish } from './Module.pub';
+import { register } from './Module.register';
+import { subscribe } from './Module.sub';
 
 export class Module {
   /**
@@ -16,37 +14,14 @@ export class Module {
   public static identity = TreeState.identity;
 
   /**
-   * Index of common behavior strategies.
-   */
-  public static strategies = ModuleStrategies;
-
-  /**
    * Create a new module.
    */
   public static create = create;
 
   /**
-   * Register a new module within the tree, providing a promise/callback
-   * that returns the registered module.
+   * Registers a new module as a child of another module.
    */
-  public static async register(parent: t.IModule, args: { id: string; name?: string }) {
-    return new Promise<t.IModule>((resolve) => {
-      const payload: t.IModuleRegister = {
-        cid: id.cuid(),
-        module: args.id,
-        name: args.name,
-      };
-      parent
-        .action()
-        .dispatched<t.IModuleRegisteredEvent>('Module/registered')
-        .pipe(filter((e) => e.cid === payload.cid))
-        .subscribe((e) => {
-          const child = parent.find((item) => item.id === e.module);
-          resolve(child);
-        });
-      parent.dispatch({ type: 'Module/register', payload });
-    });
-  }
+  public static register = register;
 
   /**
    * Broadcasts events from the module (and all child modules)

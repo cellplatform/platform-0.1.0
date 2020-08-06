@@ -12,11 +12,7 @@ const Module = ModuleView.Module;
  * Types
  */
 export type MyModuleData = { foo?: string };
-export type MyModule = t.IModule<MyModuleData, MyModuleEvent>;
-
-export type MyModuleEvent = MyFooEvent;
-export type MyFooEvent = { type: 'FOO/event'; payload: MyFoo };
-export type MyFoo = { count: 123 };
+export type MyModule = t.IModule<MyModuleData>;
 
 /**
  * Component
@@ -33,10 +29,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public static contextType = ui.Context;
   public context!: t.IAppContext;
 
-  public module: MyModule = Module.create<MyModuleData, MyFooEvent>({
-    dispose$: this.unmounted$,
-    strategy: Module.strategies.default,
-  });
+  public module: MyModule = Module.create<MyModuleData>({ dispose$: this.unmounted$ });
 
   /**
    * [Lifecycle]
@@ -58,13 +51,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     // Publishes modules changes into the global event bus.
     Module.publish({
-      until$: this.unmounted$,
-      fire: ctx.fire,
       module,
+      fire: ctx.fire,
+      until$: this.unmounted$,
     });
 
-    const foo = await Module.register(module, { id: 'foo', name: 'Diagram' });
-    const bar = await Module.register(module, { id: 'bar', name: 'Sample' });
+    const foo = Module.register(module, { id: 'foo', label: 'Diagram' }).module;
+    const bar = Module.register(module, { id: 'bar', label: 'Sample' }).module;
     this.state$.next({ foo, bar });
 
     Module.events(ctx.event$).render$.subscribe((e) => {
@@ -265,6 +258,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private onAddModuleClick = async () => {
     // this.module
     const module = this.module;
-    const child = await Module.register(module, { id: 'child', name: 'MyChild' });
+    const child = await Module.register(module, { id: 'child', label: 'MyChild' });
   };
 }
