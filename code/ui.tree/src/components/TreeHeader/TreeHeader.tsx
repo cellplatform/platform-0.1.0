@@ -49,7 +49,7 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
 
   private renderDefault() {
     const theme = this.theme.header;
-    const { title = 'Untitled', showParentButton } = this.props;
+    const { title = 'Untitled' } = this.props;
 
     const styles = {
       base: css({

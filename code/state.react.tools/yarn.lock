@@ -634,6 +634,9 @@
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-modules-umd/-/plugin-transform-modules-umd-7.10.4.tgz#9a8481fe81b824654b3a0b65da3df89f3d21839e"
   integrity sha512-mohW5q3uAEt8T45YT7Qc5ws6mWgJAaL/8BfWD9Dodo1A3RKWli8wTS+WiQ/knF+tXlPirW/1/MqzzGfCExKECA==
+  dependencies:
+    "@babel/helper-module-transforms" "^7.10.4"
+    "@babel/helper-plugin-utils" "^7.10.4"
 
 "@babel/plugin-transform-named-capturing-groups-regex@^7.10.4", "@babel/plugin-transform-named-capturing-groups-regex@^7.8.3":
   version "7.10.4"
@@ -1278,18 +1281,18 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state.react@0.4.103":
-  version "0.4.103"
-  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.4.103.tgz#678843c593b945bce3ffb980e69bd755e7dbbf10"
-  integrity sha512-TMgNyX6fHiklpHkVbpwp+UUsc2j0VwQo5DU7g5/DpFgt+hKow33ug3OWm+ZHqA0umsVZoY7xx1lEKaX9cszvJw==
+"@platform/state.react@0.4.104":
+  version "0.4.104"
+  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.4.104.tgz#6738a4565ddea77828c00483719456c4a4d4c3ee"
+  integrity sha512-PzXowZ1TbTAAV1CPhGWjiEmjOPhNlR9Xy6pammFcThSo3mPrGhmPnWcm8SwEYjvsHU+AWdtWSDCHqjJb7gaUxg==
   dependencies:
     "@platform/react" "0.4.40"
-    "@platform/state" "0.6.10"
+    "@platform/state" "0.6.11"
 
-"@platform/state@0.6.10":
-  version "0.6.10"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.10.tgz#7b6b7f6ead1c5140d4ef580b35cdf7174671a0db"
-  integrity sha512-DKSlkeE+ZjK6NqEG22RLKyzPqAUOpUgEiwx2UoONEZcEBXBx5v4xGjABIRA0FdSBnqZ9R2gtpKiw3UWry/XHVw==
+"@platform/state@0.6.11":
+  version "0.6.11"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.11.tgz#24f7b44433cc149ecbf17728a6125a96500582e8"
+  integrity sha512-c9FxJIAb7N28/DSUE4GhSq3dEOENJHwt8OqHcu+cXrnShTcIcZKMN8nOYoDCcnz+sItX3C3R2yvfWDJ3Xg0swA==
   dependencies:
     "@platform/types" "0.5.0"
     "@platform/util.value" "0.7.27"

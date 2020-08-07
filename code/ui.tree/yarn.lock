@@ -598,6 +598,9 @@
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-modules-umd/-/plugin-transform-modules-umd-7.10.4.tgz#9a8481fe81b824654b3a0b65da3df89f3d21839e"
   integrity sha512-mohW5q3uAEt8T45YT7Qc5ws6mWgJAaL/8BfWD9Dodo1A3RKWli8wTS+WiQ/knF+tXlPirW/1/MqzzGfCExKECA==
+  dependencies:
+    "@babel/helper-module-transforms" "^7.10.4"
+    "@babel/helper-plugin-utils" "^7.10.4"
 
 "@babel/plugin-transform-named-capturing-groups-regex@^7.10.4":
   version "7.10.4"
@@ -975,10 +978,10 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state@0.6.10":
-  version "0.6.10"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.10.tgz#7b6b7f6ead1c5140d4ef580b35cdf7174671a0db"
-  integrity sha512-DKSlkeE+ZjK6NqEG22RLKyzPqAUOpUgEiwx2UoONEZcEBXBx5v4xGjABIRA0FdSBnqZ9R2gtpKiw3UWry/XHVw==
+"@platform/state@0.6.11":
+  version "0.6.11"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.11.tgz#24f7b44433cc149ecbf17728a6125a96500582e8"
+  integrity sha512-c9FxJIAb7N28/DSUE4GhSq3dEOENJHwt8OqHcu+cXrnShTcIcZKMN8nOYoDCcnz+sItX3C3R2yvfWDJ3Xg0swA==
   dependencies:
     "@platform/types" "0.5.0"
     "@platform/util.value" "0.7.27"

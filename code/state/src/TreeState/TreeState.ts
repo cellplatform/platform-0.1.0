@@ -1,15 +1,15 @@
-import { StateObject } from '../StateObject';
 import { id as idUtil } from '@platform/util.value';
-import { Subject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 
-import { t, is, toNodeId } from '../common';
+import { is, t } from '../common';
+import { StateObject } from '../StateObject';
 import { TreeIdentity } from '../TreeIdentity';
 import { TreeQuery } from '../TreeQuery';
 import { helpers } from './helpers';
 import * as events from './TreeState.events';
-import * as sync from './TreeState.sync';
 import * as path from './TreeState.path';
+import * as sync from './TreeState.sync';
 
 type O = Record<string, unknown>;
 type Event = t.Event<O>;

@@ -13,7 +13,7 @@ DARK.header = {
 };
 
 export type ITreeProps = {
-  tree$: Subject<t.TreeViewEvent>;
+  tree$: Subject<t.TreeviewEvent>;
 };
 
 export class Tree extends React.PureComponent<ITreeProps> {

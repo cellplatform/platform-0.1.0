@@ -108,10 +108,10 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state@0.6.10":
-  version "0.6.10"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.10.tgz#7b6b7f6ead1c5140d4ef580b35cdf7174671a0db"
-  integrity sha512-DKSlkeE+ZjK6NqEG22RLKyzPqAUOpUgEiwx2UoONEZcEBXBx5v4xGjABIRA0FdSBnqZ9R2gtpKiw3UWry/XHVw==
+"@platform/state@0.6.11":
+  version "0.6.11"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.6.11.tgz#24f7b44433cc149ecbf17728a6125a96500582e8"
+  integrity sha512-c9FxJIAb7N28/DSUE4GhSq3dEOENJHwt8OqHcu+cXrnShTcIcZKMN8nOYoDCcnz+sItX3C3R2yvfWDJ3Xg0swA==
   dependencies:
     "@platform/types" "0.5.0"
     "@platform/util.value" "0.7.27"
@@ -188,13 +188,13 @@
     "@platform/css" "^0.4.7"
     "@platform/react" "0.4.40"
 
-"@platform/ui.shell.types@0.1.91":
-  version "0.1.91"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.1.91.tgz#f7493b06329d0b2986c29d9455a008787a6f16ce"
-  integrity sha512-mtiXyE6k/8NoqeZTXn/FM0sGy+iGglE1kXZW9lL6dEl3Ao2v+5dbrykprK4Zg0N2gLtWODQIzVYUUuuByrzecw==
+"@platform/ui.shell.types@0.1.93":
+  version "0.1.93"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.1.93.tgz#a62bf6411f84ddd64eb45d0329c663e10b4dd36b"
+  integrity sha512-4rLl6ciXQG+VqOIOt9MkdG2cXW6BBwXG7f+DEyxEA1ZSV+IU1lVRhoNsfHal0JSNL4g/ge9Go75nspbhd91t5Q==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/ui.tree" "0.7.1"
+    "@platform/ui.tree" "0.7.3"
 
 "@platform/ui.spinner@0.0.156":
   version "0.0.156"
@@ -214,14 +214,14 @@
     "@platform/react" "0.4.40"
     "@platform/util.value" "0.7.27"
 
-"@platform/ui.tree@0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.7.1.tgz#9a7cb4b1de0558bb0c9e2846496c0fde8c463a06"
-  integrity sha512-NP0FRDIBhnxMlF8n14UUXviKypZ0KzmGgzk06v8CZPeKF/40ZfYNB9pkWKUCj+zVl8t00TGh8SIU84mcDFSV9Q==
+"@platform/ui.tree@0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.7.3.tgz#836486107377ddf3f6ed50cc9c7b31f70fd53bca"
+  integrity sha512-9qpKAY2gHlyktu9/cLDaeQs/XTj/5d6YyeiO2Cz/XuKAzl1u6M1NxdN0Uh4T0BjCX6PCCGGBjhHTTcLriqwgTQ==
   dependencies:
     "@platform/css" "0.4.7"
     "@platform/react" "0.4.40"
-    "@platform/state" "0.6.10"
+    "@platform/state" "0.6.11"
     "@platform/types" "0.5.0"
     "@platform/ui.icon" "0.0.159"
     "@platform/ui.panel" "0.2.8"

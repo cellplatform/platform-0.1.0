@@ -19,7 +19,7 @@ export type ICommandTreeViewProps = {
   style?: CssValue;
 };
 export type ICommandTreeViewState = {
-  treeRoot?: t.ITreeViewNode;
+  treeRoot?: t.ITreeviewNode;
 };
 
 export class CommandTreeView extends React.PureComponent<
@@ -29,7 +29,7 @@ export class CommandTreeView extends React.PureComponent<
   public state: ICommandTreeViewState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ICommandTreeViewState>>();
-  private mouse$ = new Subject<t.ITreeViewMouse>();
+  private mouse$ = new Subject<t.ITreeviewMouse>();
   private _events$ = new Subject<t.CommandTreeEvent>();
   public events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
 
@@ -159,7 +159,7 @@ export class CommandTreeView extends React.PureComponent<
   }
 
   private fireCurrent(
-    node: string | t.ITreeViewNode | undefined,
+    node: string | t.ITreeviewNode | undefined,
     direction: t.ICommandTreeCurrent['direction'],
   ) {
     const command = util.asCommand(this.rootCommand, node);

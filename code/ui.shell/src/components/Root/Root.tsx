@@ -15,7 +15,7 @@ export type IRootProps = {
 
 export class Root extends React.PureComponent<IRootProps> {
   private unmounted$ = new Subject();
-  private tree$ = new Subject<t.TreeViewEvent>();
+  private tree$ = new Subject<t.TreeviewEvent>();
 
   public static contextType = loader.Context;
   public context!: loader.ILoaderContext;
