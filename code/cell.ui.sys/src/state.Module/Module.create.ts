@@ -24,7 +24,7 @@ export function create<D extends O>(args?: t.ModuleArgs<D>): t.IModule<D> {
     rx.payload<t.IModuleRequestEvent>($, 'Module/request').subscribe((e) => {
       const child = module.find((child) => child.id === e.module);
       if (child) {
-        const path = module.path.get(child);
+        const path = module.path.from(child);
         e.response({ module: child, path });
       }
     });
