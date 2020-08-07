@@ -8,7 +8,7 @@ type F = t.FireEvent<t.ModuleEvent>;
 /**
  * Fire recipes through the event-bus.
  */
-export function fire<T extends N = N>(fire: t.FireEvent<t.ModuleEvent>): t.IModuleFire<T> {
+export function fire(fire: t.FireEvent<t.ModuleEvent>): t.IModuleFire {
   return {
     render: (args: t.ModuleFireRenderArgs) => render(fire, args),
     selection: (args: t.ModuleFireSelectionArgs) => selection(fire, args),

@@ -25,7 +25,7 @@ export const create: t.ModuleGetEvents = (subject, until$) => {
     share(),
   );
 
-  const childRegistered$ = rx
+  const registered$ = rx
     .payload<t.IModuleChildRegisteredEvent>($, 'Module/child/registered')
     .pipe(share());
   const childDisposed$ = rx
@@ -39,7 +39,7 @@ export const create: t.ModuleGetEvents = (subject, until$) => {
 
   const events: t.IModuleEvents = {
     $,
-    childRegistered$,
+    childRegistered$: registered$,
     childDisposed$,
     changed$,
     patched$,

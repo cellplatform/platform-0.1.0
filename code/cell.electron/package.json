@@ -14,7 +14,8 @@
     "reset": "sh script.sh/reset.sh",
     "bundle": "sh script.sh/bundle.ui.sys.sh",
     "bundle.preload": "cd app && yarn bundle.preload",
-    "open": "cd app/out/A1-darwin-x64 && open A1.app"
+    "open": "cd app/out/A1-darwin-x64 && open A1.app",
+    "dir": "cd app/out/A1-darwin-x64 && open ."
   },
   "devDependencies": {
     "@platform/cell.compile.web": "0.0.116",

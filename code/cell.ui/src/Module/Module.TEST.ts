@@ -65,7 +65,7 @@ describe.only('Module', () => {
 
       const fired: t.IModuleChildRegistered[] = [];
       const events = Module.events(parent);
-      events.registered$.subscribe((e) => fired.push(e));
+      events.childRegistered$.subscribe((e) => fired.push(e));
 
       const res = Module.register(parent, { id: 'foo' });
       const child = res.module;

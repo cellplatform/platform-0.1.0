@@ -24,14 +24,21 @@ export type Module = {
   ): ModuleRegistration<T>;
 
   publish(args: ModulePublishArgs): ModulePublishResponse;
+
   subscribe<T extends N = N>(args: ModuleSubscribeArgs<T>): ModuleSubscribeResponse<T>;
-  isModuleEvent(event: t.Event): boolean;
+
   filter(event: t.ModuleEvent, filter?: t.ModuleFilter): boolean;
-  events: ModuleEvents;
+
   provider<P extends O>(context: P): React.FunctionComponent;
-  fire<T extends N = N>(next: t.FireEvent<any>): IModuleFire<T>;
+
+  events: ModuleGetEvents;
+
+  fire(next: t.FireEvent<E>): IModuleFire;
+
+  isModuleEvent(event: t.Event): boolean;
+
   request<M extends t.IModule = t.IModule>(
-    fire: t.FireEvent<any>,
+    fire: t.FireEvent<E>,
     id: string,
   ): t.ModuleRequestResponse<M>;
 };
@@ -51,7 +58,6 @@ export type ModuleRegistration<T extends IModule = IModule> = { id: string; modu
  * A module state-tree.
  */
 export type IModuleTreeSelection = { id: string; props: t.ITreeviewNodeProps };
-
 export type IModule<D extends O = any> = t.ITreeState<IModuleNode<D>, t.ModuleEvent>;
 
 /**
@@ -83,7 +89,6 @@ export type ModuleFilterArgs = {
 /**
  * Event Broadcasting.
  */
-
 export type ModulePublishArgs = {
   until$?: Observable<any>;
   module: IModule;
@@ -98,15 +103,12 @@ export type ModuleSubscribeArgs<T extends N = N> = {
   tree: t.ITreeState<T, E>;
   filter?: t.ModuleFilter;
 };
-export type ModuleSubscribeResponse<T extends N = N> = t.IDisposable & {
-  tree: t.ITreeState<T, E>;
-};
+export type ModuleSubscribeResponse<T extends N = N> = t.IDisposable & { tree: t.ITreeState<T, E> };
 
 /**
  * Event Bus (fire).
  */
-
-export type IModuleFire<T extends N> = {
+export type IModuleFire = {
   render: ModuleFireRender;
   selection: ModuleFireSelection;
   request<M extends t.IModule = t.IModule>(id: string): t.ModuleRequestResponse<M>;
@@ -133,17 +135,17 @@ export type ModuleRequestResponse<M extends IModule = IModule> = {
 };
 
 /**
- * [Events]
+ * Event helpers
  */
 
-export type ModuleEvents = (
+export type ModuleGetEvents = (
   subject: Observable<t.Event> | IModule,
   dispose$?: Observable<any>,
 ) => IModuleEvents;
 
 export type IModuleEvents = {
   $: Observable<ModuleEvent>;
-  registered$: Observable<IModuleChildRegistered>;
+  childRegistered$: Observable<IModuleChildRegistered>;
   childDisposed$: Observable<IModuleChildDisposed>;
   changed$: Observable<IModuleChanged>;
   patched$: Observable<IModulePatched>;
@@ -152,6 +154,10 @@ export type IModuleEvents = {
   rendered$: Observable<IModuleRendered>;
   filter(fn: ModuleFilter): IModuleEvents;
 };
+
+/**
+ * [Events]
+ */
 
 export type ModuleEvent =
   | IModuleChildRegisteredEvent
