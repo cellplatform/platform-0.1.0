@@ -1,9 +1,9 @@
 import { ModuleViewFrame } from './ModuleView.Frame';
 import { ModuleViewTree } from './ModuleView.Tree';
-import { Module } from '../../state.Module';
+import { Module } from '@platform/cell.ui/lib/Module';
 
 export const ModuleView = {
-  Module: Module,
+  Module,
   Frame: ModuleViewFrame,
   Tree: ModuleViewTree,
 };

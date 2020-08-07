@@ -4,7 +4,6 @@ import { takeUntil } from 'rxjs/operators';
 
 import { ModuleView } from '..';
 import { color, css, CssValue, time, ui } from '../../../common';
-import { Button } from '../../primitives';
 import * as t from './types';
 
 const Module = ModuleView.Module;

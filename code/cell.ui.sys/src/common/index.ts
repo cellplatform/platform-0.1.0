@@ -30,8 +30,8 @@ export const R = { equals };
 import { rx, time, defaultValue, id } from '@platform/util.value';
 export { rx, time, defaultValue, id };
 
-import { ui } from '@platform/cell.ui';
-export { ui };
+import { ui, Module } from '@platform/cell.ui';
+export { ui, Module };
 
 import { AppManifest, AppModel, AppWindowModel } from '@platform/cell.schema.sys';
 export { AppManifest, AppModel, AppWindowModel };

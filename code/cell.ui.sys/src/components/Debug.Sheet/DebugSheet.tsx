@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue, COLORS, color } from '../../common';
-import { Module } from '../../state.Module';
+import { css, CssValue, COLORS, color, ui } from '../../common';
 
 import * as t from './types';
 
@@ -15,7 +14,7 @@ export class DebugSheet extends React.PureComponent<IDebugSheetProps> {
   private unmounted$ = new Subject();
 
   public static async register(within: t.IModule) {
-    const module = Module.register(within, { id: 'debug.sheet', label: 'Sheet' });
+    const module = ui.Module.register(within, { id: 'debug.sheet', label: 'Sheet' });
 
     console.log('sheet', module);
 

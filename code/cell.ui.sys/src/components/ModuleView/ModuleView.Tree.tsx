@@ -3,8 +3,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t } from '../../common';
-import { Module } from '../../state.Module';
+import { css, CssValue, t, Module } from '../../common';
 
 export type IModuleViewTreeProps = {
   fire: t.FireEvent<any>;
