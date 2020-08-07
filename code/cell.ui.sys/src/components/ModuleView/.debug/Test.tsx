@@ -64,8 +64,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const bar = Module.register(module, { id: 'bar', label: 'Sample' }).module;
     this.state$.next({ module, foo, bar });
 
-    const BarProvider = Module.provider<t.MyContext>({
-      module: bar,
+    const RootProvider = Module.provider<t.MyContext>({
       event$: ctx.event$,
       fire: ctx.fire as any,
     });
@@ -76,9 +75,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       }
       if (e.module === bar.id) {
         const el = (
-          <BarProvider>
-            <TestKong e={e} id={bar.id} />
-          </BarProvider>
+          <RootProvider>
+            <TestKong e={e} module={bar.id} />
+          </RootProvider>
         );
         e.render(el);
       }
@@ -188,56 +187,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       </div>
     );
   }
-
-  // private renderKong(e: t.IModuleRender) {
-  //   const styles = {
-  //     base: css({
-  //       padding: 30,
-  //       flex: 1,
-  //       Flex: 'vertical-stretch-stretch',
-  //       overflow: 'hidden',
-  //     }),
-  //     image: css({
-  //       width: 300,
-  //       marginBottom: 15,
-  //     }),
-  //     top: css({
-  //       flex: 1,
-  //       Flex: 'vertical-center-center',
-  //       fontSize: 12,
-  //     }),
-  //     bottom: css({
-  //       // padding: 10
-  //     }),
-  //   };
-  //   const node = e.tree.selection?.id;
-
-  //   const URL = {
-  //     KONG: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kong.png',
-  //     LEAF: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/leaf.png',
-  //     KITTEN: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kitten.png',
-  //   };
-
-  //   const src =
-  //     e.tree.current === e.module
-  //       ? e.tree.selection?.id.endsWith(':one')
-  //         ? URL.KITTEN
-  //         : URL.KONG
-  //       : URL.LEAF;
-
-  //   return (
-  //     <div {...styles.base}>
-  //       <div {...styles.top}>
-  //         <img src={src} {...styles.image} />
-  //         <div>Module: {e.module}</div>
-  //         <div>Tree Node: {node || '-'}</div>
-  //       </div>
-  //       <div {...styles.bottom}>
-  //         <Button onClick={this.onAddModuleClick}>Add Module</Button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   private renderDiagram() {
     const PINK = '#FE0168';

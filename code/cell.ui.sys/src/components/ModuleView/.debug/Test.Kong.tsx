@@ -10,10 +10,10 @@ const Module = ModuleView.Module;
 
 export type ITestKongProps = {
   e: t.IModuleRender;
-  id: string;
+  module: string;
   style?: CssValue;
 };
-export type ITestKongState = t.Object;
+export type ITestKongState = { module?: t.MyModule };
 
 export class TestKong extends React.PureComponent<ITestKongProps, ITestKongState> {
   public state: ITestKongState = {};
@@ -29,6 +29,11 @@ export class TestKong extends React.PureComponent<ITestKongProps, ITestKongState
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+
+    // Sample: retrieve the module from via a REQUEST event.
+    const ctx = this.context;
+    const module = Module.fire(ctx.fire).request<t.MyModule>(this.props.module).module;
+    this.state$.next({ module });
   }
 
   public componentWillUnmount() {
@@ -40,15 +45,15 @@ export class TestKong extends React.PureComponent<ITestKongProps, ITestKongState
    * [Properties]
    */
   public get module() {
-    return this.context.module;
+    return this.state.module;
   }
 
   /**
    * [Render]
    */
   public render() {
-    const ctx = this.context;
-    console.log('ctx', ctx);
+    // const ctx = this.context;
+    // console.log('ctx', ctx);
 
     const e = this.props.e;
 
@@ -106,8 +111,10 @@ export class TestKong extends React.PureComponent<ITestKongProps, ITestKongState
    */
 
   private onAddModuleClick = async () => {
-    const module = this.context.module;
-    const child = Module.register(module, { id: 'child', label: 'MyChild' });
-    console.log('child', child);
+    if (this.module) {
+      const module = this.module;
+      const child = Module.register(module, { id: 'child', label: 'MyChild' });
+      console.log('child', child);
+    }
   };
 }

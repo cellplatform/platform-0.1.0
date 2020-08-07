@@ -100,7 +100,7 @@ describe.only('Module', () => {
       const child1 = Module.register(parent, { id: 'foo' }).module;
       const child2 = Module.register(child1, { id: 'bar' }).module;
 
-      const res = Module.fire(next).request(child2.id);
+      const res = Module.request(next, child2.id);
 
       expect(res.module?.id).to.eql(child2.id);
       expect(res.path).to.eql(`${parent.id}/${child1.id}/${child2.id}`);

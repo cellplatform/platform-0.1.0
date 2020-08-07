@@ -8,6 +8,7 @@ import { register } from './Module.register';
 import { subscribe } from './Module.sub';
 import { Context } from './Context';
 import { provider } from './Context';
+import { t } from '../common';
 
 export class Module {
   /**
@@ -56,4 +57,8 @@ export class Module {
   public static filter = events.filterEvent;
   public static isModuleEvent = events.isModuleEvent;
   public static fire = fire;
+
+  public static request<M extends t.IModule = t.IModule>(fire: t.FireEvent<any>, id: string) {
+    return Module.fire(fire).request<M>(id);
+  }
 }

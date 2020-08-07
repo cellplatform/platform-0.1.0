@@ -12,7 +12,7 @@ export function fire<T extends N = N>(fire: t.FireEvent<t.ModuleEvent>): t.IModu
   return {
     render: (args: t.ModuleFireRenderArgs) => render(fire, args),
     selection: (args: t.ModuleFireSelectionArgs) => selection(fire, args),
-    request: (id: string) => request<T>(fire, id),
+    request: <M extends t.IModule = t.IModule>(id: string) => request<M>(fire, id),
   };
 }
 
@@ -82,15 +82,18 @@ export function selection(fire: F, args: t.ModuleFireSelectionArgs) {
 /**
  * Request a module via an event.
  */
-export function request<T extends N>(fire: F, id: string): t.ModuleRequestResponse<T> {
-  let module: t.IModule<T> | undefined;
+export function request<M extends t.IModule = t.IModule>(
+  fire: F,
+  id: string,
+): t.ModuleRequestResponse<M> {
+  let module: M | undefined;
   let path = '';
   fire({
     type: 'Module/request',
     payload: {
       module: id,
       response: (args) => {
-        module = args.module;
+        module = args.module as M;
         path = args.path;
       },
     },
