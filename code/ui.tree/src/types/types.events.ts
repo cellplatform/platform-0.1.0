@@ -1,40 +1,40 @@
 import { t } from './common';
 import { MouseEvent } from '@platform/react';
 
-type N = t.ITreeViewNode;
+type N = t.ITreeviewNode;
 export type TreeViewMouseTarget = 'NODE' | 'TWISTY' | 'DRILL_IN' | 'PARENT';
 
 /**
  * Mouse Event
  */
-export type TreeViewEvent = ITreeViewMouseEvent | ITreeViewFocusEvent | TreeViewRenderEvent;
+export type TreeviewEvent = ITreeviewMouseEvent | ITreeviewFocusEvent | TreeviewRenderEvent;
 
 /**
  * Mouse events fired as the pointer moves over
  * different parts of the tree.
  */
-export type ITreeViewMouseEvent<T extends N = N> = {
+export type ITreeviewMouseEvent<T extends N = N> = {
   type: 'TREEVIEW/mouse';
-  payload: t.ITreeViewMouse<T>;
+  payload: t.ITreeviewMouse<T>;
 };
 
-export type ITreeViewMouse<T extends N = N> = MouseEvent & {
+export type ITreeviewMouse<T extends N = N> = MouseEvent & {
   target: TreeViewMouseTarget;
   id: T['id'];
   node: T;
-  props: t.ITreeViewNodeProps;
+  props: t.ITreeviewNodeProps;
   children: T[];
 };
-export type TreeNodeMouseEventHandler = (e: ITreeViewMouse) => void;
+export type TreeNodeMouseEventHandler = (e: ITreeviewMouse) => void;
 
 /**
  * Focus
  */
-export type ITreeViewFocusEvent = {
+export type ITreeviewFocusEvent = {
   type: 'TREEVIEW/focus';
-  payload: ITreeViewFocus;
+  payload: ITreeviewFocus;
 };
-export type ITreeViewFocus = { isFocused: boolean };
+export type ITreeviewFocus = { isFocused: boolean };
 
 /**
  * Render
@@ -50,44 +50,44 @@ export type ITreeViewFocus = { isFocused: boolean };
  *     passed factory does not yeild a result will the events be fired.
  */
 
-export type TreeViewRenderEvent =
-  | ITreeViewRenderIconEvent
-  | ITreeViewRenderNodeBodyEvent
-  | ITreeViewRenderPanelEvent
-  | ITreeViewRenderHeaderEvent;
+export type TreeviewRenderEvent =
+  | ITreeviewRenderIconEvent
+  | ITreeviewRenderNodeBodyEvent
+  | ITreeviewRenderPanelEvent
+  | ITreeviewRenderHeaderEvent;
 
-export type ITreeViewRenderIconEvent<T extends N = N> = {
+export type ITreeviewRenderIconEvent<T extends N = N> = {
   type: 'TREEVIEW/render/icon';
-  payload: ITreeViewRenderIcon<T>;
+  payload: ITreeviewRenderIcon<T>;
 };
-export type ITreeViewRenderIcon<T extends N = N> = t.RenderTreeIconArgs<T> & {
+export type ITreeviewRenderIcon<T extends N = N> = t.RenderTreeIconArgs<T> & {
   isHandled: boolean;
   render(el: t.RenderTreeIconResponse): void;
 };
 
-export type ITreeViewRenderNodeBodyEvent<T extends N = N> = {
+export type ITreeviewRenderNodeBodyEvent<T extends N = N> = {
   type: 'TREEVIEW/render/nodeBody';
-  payload: ITreeViewRenderNodeBody<T>;
+  payload: ITreeviewRenderNodeBody<T>;
 };
-export type ITreeViewRenderNodeBody<T extends N = N> = t.RenderTreeNodeBodyArgs<T> & {
+export type ITreeviewRenderNodeBody<T extends N = N> = t.RenderTreeNodeBodyArgs<T> & {
   isHandled: boolean;
   render(el: t.RenderTreeNodeBodyResponse): void;
 };
 
-export type ITreeViewRenderPanelEvent<T extends N = N> = {
+export type ITreeviewRenderPanelEvent<T extends N = N> = {
   type: 'TREEVIEW/render/panel';
-  payload: ITreeViewRenderPanel<T>;
+  payload: ITreeviewRenderPanel<T>;
 };
-export type ITreeViewRenderPanel<T extends N = N> = t.RenderTreePanelArgs<T> & {
+export type ITreeviewRenderPanel<T extends N = N> = t.RenderTreePanelArgs<T> & {
   isHandled: boolean;
   render(el: t.RenderTreePanelResponse): void;
 };
 
-export type ITreeViewRenderHeaderEvent<T extends N = N> = {
+export type ITreeviewRenderHeaderEvent<T extends N = N> = {
   type: 'TREEVIEW/render/header';
-  payload: ITreeViewRenderHeader<T>;
+  payload: ITreeviewRenderHeader<T>;
 };
-export type ITreeViewRenderHeader<T extends N = N> = t.RenderTreeHeaderArgs<T> & {
+export type ITreeviewRenderHeader<T extends N = N> = t.RenderTreeHeaderArgs<T> & {
   isHandled: boolean;
   render(el: t.RenderTreeHeaderResponse): void;
 };

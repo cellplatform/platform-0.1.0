@@ -9,18 +9,18 @@ import { t } from '../../common';
  *     passed factory does not yeild a result will the events be fired.
  */
 export function renderer(args: {
-  fire: t.FireEvent<t.TreeViewEvent>;
+  fire: t.FireEvent<t.TreeviewEvent>;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
   renderPanel?: t.RenderTreePanel;
   renderHeader?: t.RenderTreeHeader;
-}): t.ITreeViewRenderer {
+}): t.ITreeviewRenderer {
   const { fire } = args;
 
   const icon: t.RenderTreeIcon = (e) => {
     let el = args.renderIcon ? args.renderIcon(e) : undefined;
     if (!el) {
-      const payload: t.ITreeViewRenderIcon = {
+      const payload: t.ITreeviewRenderIcon = {
         ...e,
         isHandled: false,
         render(response) {
@@ -36,7 +36,7 @@ export function renderer(args: {
   const nodeBody: t.RenderTreeNodeBody = (e) => {
     let el = args.renderNodeBody ? args.renderNodeBody(e) : undefined;
     if (!el) {
-      const payload: t.ITreeViewRenderNodeBody = {
+      const payload: t.ITreeviewRenderNodeBody = {
         ...e,
         isHandled: false,
         render(response) {
@@ -52,7 +52,7 @@ export function renderer(args: {
   const panel: t.RenderTreePanel = (e) => {
     let el = args.renderPanel ? args.renderPanel(e) : undefined;
     if (!el) {
-      const payload: t.ITreeViewRenderPanel = {
+      const payload: t.ITreeviewRenderPanel = {
         ...e,
         isHandled: false,
         render(response) {
@@ -68,7 +68,7 @@ export function renderer(args: {
   const header: t.RenderTreeHeader = (e) => {
     let el = args.renderHeader ? args.renderHeader(e) : undefined;
     if (!el) {
-      const payload: t.ITreeViewRenderHeader = {
+      const payload: t.ITreeviewRenderHeader = {
         ...e,
         isHandled: false,
         render(response) {

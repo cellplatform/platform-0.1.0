@@ -2,7 +2,7 @@ import { TreeState } from '@platform/state/lib/TreeState';
 import { TreeUtil } from '../TreeUtil';
 import { t } from '../common';
 
-type N = t.ITreeViewNode;
+type N = t.ITreeviewNode;
 
 /**
  * A version of the [TreeState] configured for the base <TreeView> node type.

@@ -13,7 +13,7 @@ export function create<D extends O>(args?: t.ModuleArgs<D>): t.IModule<D> {
   args = { ...args };
   args.root = formatModuleNode<D>(args.root || 'module');
 
-  const module = TreeState.create<t.IModuleTreeNode<D>>(args) as t.IModule<D>;
+  const module = TreeState.create<t.IModuleNode<D>>(args) as t.IModule<D>;
   events.monitorAndDispatch(module);
 
   if (args.event$) {
@@ -43,7 +43,7 @@ export function formatModuleNode<D extends O = any>(
   const { label = 'Unnamed', view = '', data = {} } = defaults;
   const node = typeof input === 'string' ? { id: input } : { ...input };
 
-  type M = t.IModuleTreeNode<D>;
+  type M = t.IModuleNode<D>;
   const props = (node.props = node.props || {}) as NonNullable<M['props']>;
   props.kind = 'MODULE';
   props.data = (props.data || data) as D;

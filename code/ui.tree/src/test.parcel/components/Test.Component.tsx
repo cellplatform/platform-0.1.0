@@ -15,7 +15,7 @@ export type ITestProps = { style?: CssValue };
 
 export type ITestState = {
   theme?: t.TreeTheme;
-  root?: t.ITreeViewNode;
+  root?: t.ITreeviewNode;
   current?: string;
 };
 
@@ -30,8 +30,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
-  private event$ = new Subject<t.TreeViewEvent>();
-  private mouse$ = new Subject<t.ITreeViewMouse>();
+  private event$ = new Subject<t.TreeviewEvent>();
+  private mouse$ = new Subject<t.ITreeviewMouse>();
 
   /**
    * [Lifecycle]
@@ -79,7 +79,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
      * Handle mouse.
      */
 
-    const toggle = (node: t.ITreeViewNode) => {
+    const toggle = (node: t.ITreeviewNode) => {
       const toggled = TreeView.util.toggleIsOpen(this.state.root, node);
       this.state$.next({ root: toggled });
     };
@@ -256,7 +256,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     );
   };
 
-  private renderPanel: t.RenderTreePanel<t.ITreeViewNode> = (e) => {
+  private renderPanel: t.RenderTreePanel<t.ITreeviewNode> = (e) => {
     /**
      * NOTE:  Use this flag to revent custom panel rendering if
      *        the node is opened "inline" within it's parent.

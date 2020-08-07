@@ -46,7 +46,7 @@ export function render(fire: F, args: t.ModuleFireRenderArgs) {
 export function selection(fire: F, args: t.ModuleFireSelectionArgs) {
   const { selected, current } = args;
 
-  type N = t.IModuleTreeNode<any>;
+  type N = t.IModuleNode<any>;
   const root = args.root as N;
   const query = TreeQuery.create<N>({ root });
 
@@ -59,7 +59,7 @@ export function selection(fire: F, args: t.ModuleFireSelectionArgs) {
     return query.ancestor(startAt, (e) => {
       const props = (e.node.props || {}) as t.IModuleNodeProps;
       return props.kind === 'MODULE';
-    }) as t.IModuleTreeNode<any> | undefined;
+    }) as t.IModuleNode<any> | undefined;
   };
 
   const module = !node ? undefined : findModule(node);

@@ -8,13 +8,13 @@ import { css, CssValue, t, Module } from '../../common';
 export type IModuleViewTreeProps = {
   fire: t.FireEvent<any>;
   tree: t.ITreeState<any>;
-  treeview$?: Subject<t.TreeViewEvent>;
+  treeview$?: Subject<t.TreeviewEvent>;
   style?: CssValue;
 };
 
 export class ModuleViewTree extends React.PureComponent<IModuleViewTreeProps> {
   private unmounted$ = new Subject();
-  private treeview$ = this.props.treeview$ || new Subject<t.TreeViewEvent>();
+  private treeview$ = this.props.treeview$ || new Subject<t.TreeviewEvent>();
 
   private nav = TreeView.Navigation.create({
     tree: this.props.tree,

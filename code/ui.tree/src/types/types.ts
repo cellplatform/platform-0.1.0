@@ -1,6 +1,6 @@
 import { t } from './common';
 
-type N = t.ITreeViewNode;
+type N = t.ITreeviewNode;
 
 /**
  * Icon

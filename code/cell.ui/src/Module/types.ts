@@ -8,7 +8,7 @@ type O = Record<string, unknown>;
 type N = t.ITreeNode;
 type E = t.ModuleEvent;
 
-export type ModuleArgs<D extends O> = t.ITreeStateArgs<IModuleTreeNode<D>> & {
+export type ModuleArgs<D extends O> = t.ITreeStateArgs<IModuleNode<D>> & {
   event$?: Observable<t.Event>; // Global event bus.
 };
 
@@ -50,15 +50,14 @@ export type ModuleRegistration<T extends IModule = IModule> = { id: string; modu
 /**
  * A module state-tree.
  */
-export type IModuleTreeSelection = { id: string; props: t.ITreeViewNodeProps };
+export type IModuleTreeSelection = { id: string; props: t.ITreeviewNodeProps };
 
-export type IModule<D extends O = any> = t.ITreeState<IModuleTreeNode<D>, t.ModuleEvent>;
+export type IModule<D extends O = any> = t.ITreeState<IModuleNode<D>, t.ModuleEvent>;
 
 /**
  * A tree-node that contains details about a module.
  */
-export type IModuleTreeNode<D extends O> = t.ITreeNode<IModuleTreeNodeProps<D>>;
-export type IModuleTreeNodeProps<D extends O> = t.ITreeNodePropsTreeView & t.IModuleNodeProps<D>;
+export type IModuleNode<D extends O> = t.ITreeNode<IModuleNodeProps<D>>;
 
 /**
  * The way a module is expressed as props within a tree-node.
@@ -67,6 +66,7 @@ export type IModuleNodeProps<D extends O = O> = {
   kind?: 'MODULE';
   data?: D;
   view?: string;
+  treeview?: t.ITreeviewNodeProps;
 };
 
 /**

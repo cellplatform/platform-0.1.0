@@ -30,21 +30,21 @@ import { TreeNodeList } from '../TreeNodeList';
 import { renderer } from './renderer';
 
 const R = { equals };
-type N = t.ITreeViewNode;
+type N = t.ITreeviewNode;
 
 export type ITreeViewProps = {
   id?: string;
   root?: N;
   current?: N['id'];
-  defaultNodeProps?: t.ITreeViewNodeProps | t.GetTreeNodeProps;
+  defaultNodeProps?: t.ITreeviewNodeProps | t.GetTreeviewNodeProps;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
   renderPanel?: t.RenderTreePanel;
   renderHeader?: t.RenderTreeHeader;
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
-  event$?: Subject<t.TreeViewEvent>;
-  mouse$?: Subject<t.ITreeViewMouse>;
+  event$?: Subject<t.TreeviewEvent>;
+  mouse$?: Subject<t.ITreeviewMouse>;
   tabIndex?: number;
   slideDuration?: number;
   style?: CssValue;
@@ -73,7 +73,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   public static Navigation = TreeViewNavigation;
 
   public static events<T extends N = N>(
-    event$: Observable<t.TreeViewEvent>,
+    event$: Observable<t.TreeviewEvent>,
     dispose$?: Observable<any>,
   ) {
     return TreeEvents.create<T>(event$, dispose$);
@@ -93,11 +93,11 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   private unmounted$ = new Subject<void>();
   private focus$ = new Subject<boolean>();
 
-  private _event$ = new Subject<t.TreeViewEvent>();
+  private _event$ = new Subject<t.TreeviewEvent>();
   public readonly event$ = this._event$.pipe(takeUntil(this.unmounted$), share());
   public readonly mouse$ = this.event$.pipe(
     filter((e) => e.type === 'TREEVIEW/mouse'),
-    map((e) => e.payload as t.ITreeViewMouse),
+    map((e) => e.payload as t.ITreeviewMouse),
     share(),
   );
 
@@ -222,7 +222,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return this;
   }
 
-  private fire: t.FireEvent<t.TreeViewEvent> = (e) => this._event$.next(e);
+  private fire: t.FireEvent<t.TreeviewEvent> = (e) => this._event$.next(e);
 
   /**
    * [Render]
@@ -389,7 +389,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     }
   }
 
-  private handleNodeMouse = (payload: t.ITreeViewMouse) => {
+  private handleNodeMouse = (payload: t.ITreeviewMouse) => {
     const props = TreeUtil.props(payload);
     if (props.isEnabled === false) {
       switch (payload.type) {

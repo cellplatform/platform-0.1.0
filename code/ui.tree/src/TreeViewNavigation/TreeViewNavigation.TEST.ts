@@ -4,9 +4,9 @@ import { Subject } from 'rxjs';
 import { TreeViewNavigation } from '.';
 import { expect, t } from '../test';
 
-type N = t.ITreeViewNode;
+type N = t.ITreeviewNode;
 
-const treeview$ = new Subject<t.TreeViewEvent>();
+const treeview$ = new Subject<t.TreeviewEvent>();
 const create = (root?: N) => {
   root = root ? { ...root } : root;
   const tree = TreeState.create({ root });

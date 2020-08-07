@@ -290,7 +290,7 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
   private addChild = () => {
     const label = this.state.addTextboxLabel;
     const root = { id: 'node', props: { treeview: { label } } };
-    this.store.add<t.ITreeViewNode>({ root });
+    this.store.add<t.ITreeviewNode>({ root });
     this.state$.next({ addTextboxLabel: '' });
   };
 

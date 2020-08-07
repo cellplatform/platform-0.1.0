@@ -23,7 +23,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
   private state$ = new Subject<Partial<ITestState>>();
   private unmounted$ = new Subject();
-  private treeview$ = new Subject<t.TreeViewEvent>();
+  private treeview$ = new Subject<t.TreeviewEvent>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;
@@ -100,6 +100,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       ctx.children(draft, (children) => {
         children.push({ id: 'zinger' });
         children.push(...[{ id: 'one' }, { id: 'two' }]);
+        children.push({ id: 'sub-tree', props: { treeview: { label: 'SubTree' } } });
       });
     });
 

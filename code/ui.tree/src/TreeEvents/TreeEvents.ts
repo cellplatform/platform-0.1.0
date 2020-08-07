@@ -3,8 +3,8 @@ import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
 
-type N = t.ITreeViewNode;
-type E = t.TreeViewEvent;
+type N = t.ITreeviewNode;
+type E = t.TreeviewEvent;
 type Button = t.MouseEvent['button'];
 type Target = t.TreeViewMouseTarget;
 
@@ -54,24 +54,24 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
     if (!this._render) {
       const event$ = this.treeview$.pipe(
         filter((e) => e.type.startsWith('TREEVIEW/render/')),
-        map((e) => e as t.TreeViewRenderEvent),
+        map((e) => e as t.TreeviewRenderEvent),
       );
-      const $ = event$.pipe(map((e) => e.payload as t.TreeViewRenderEvent['payload']));
+      const $ = event$.pipe(map((e) => e.payload as t.TreeviewRenderEvent['payload']));
       const icon$ = event$.pipe(
         filter((e) => e.type === 'TREEVIEW/render/icon'),
-        map((e) => e.payload as t.ITreeViewRenderIcon<T>),
+        map((e) => e.payload as t.ITreeviewRenderIcon<T>),
       );
       const nodeBody$ = event$.pipe(
         filter((e) => e.type === 'TREEVIEW/render/nodeBody'),
-        map((e) => e.payload as t.ITreeViewRenderNodeBody<T>),
+        map((e) => e.payload as t.ITreeviewRenderNodeBody<T>),
       );
       const panel$ = event$.pipe(
         filter((e) => e.type === 'TREEVIEW/render/panel'),
-        map((e) => e.payload as t.ITreeViewRenderPanel<T>),
+        map((e) => e.payload as t.ITreeviewRenderPanel<T>),
       );
       const header$ = event$.pipe(
         filter((e) => e.type === 'TREEVIEW/render/header'),
-        map((e) => e.payload as t.ITreeViewRenderHeader<T>),
+        map((e) => e.payload as t.ITreeviewRenderHeader<T>),
       );
       this._render = { $, icon$, nodeBody$, panel$, header$ };
     }
@@ -89,7 +89,7 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
 
     return this.treeview$.pipe(
       filter((e) => e.type === 'TREEVIEW/mouse'),
-      map((e) => e.payload as t.ITreeViewMouse<T>),
+      map((e) => e.payload as t.ITreeviewMouse<T>),
       filter((e) => {
         if (buttons.includes('RIGHT') && type === 'CLICK' && e.type === 'UP') {
           // NB: The CLICK event for a right button does not fire from the DOM

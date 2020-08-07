@@ -8,8 +8,8 @@ import { TreeView } from '../..';
 import { t } from '../../common';
 import { TreeViewState } from '../../components.dev/TreeViewState';
 
-type Node = t.ITreeViewNode;
-const header: t.ITreeViewNodeHeader = { isVisible: false, marginBottom: 45 };
+type Node = t.ITreeviewNode;
+const header: t.ITreeviewNodeHeader = { isVisible: false, marginBottom: 45 };
 
 const SAMPLES = {
   DEFAULT: {
@@ -48,7 +48,7 @@ export type ITestProps = { style?: CssValue };
 
 export class Test extends React.PureComponent<ITestProps> {
   private unmounted$ = new Subject();
-  private treeview$ = new Subject<t.TreeViewEvent>();
+  private treeview$ = new Subject<t.TreeviewEvent>();
 
   private tree = TreeView.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
 

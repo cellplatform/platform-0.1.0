@@ -1,7 +1,7 @@
 import * as t from '../common/types';
 
-type Node = t.ITreeViewNode;
-type P = t.ITreeViewNodeProps;
+type Node = t.ITreeviewNode;
+type P = t.ITreeviewNodeProps;
 
 /**
  * A version of the [TreeState] configured for the base <TreeView> node type.

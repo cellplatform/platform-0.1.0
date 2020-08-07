@@ -13,9 +13,9 @@ const SIZE = {
 
 export type ITreeHeaderProps = {
   custom?: React.ReactNode;
-  node: t.ITreeViewNode;
+  node: t.ITreeviewNode;
   depth: number;
-  renderer: t.ITreeViewRenderer;
+  renderer: t.ITreeviewRenderer;
   height: number;
   title?: string;
   showParentButton?: boolean;
@@ -120,7 +120,7 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
   /**
    * [Handlers]
    */
-  private mouseHandlers = (target: t.ITreeViewMouse['target']) => {
+  private mouseHandlers = (target: t.ITreeviewMouse['target']) => {
     const { node, onMouseParent } = this.props;
     return TreeNode.mouseHandlers(() => node, target, onMouseParent);
   };

@@ -1,11 +1,11 @@
 import { t } from './common';
 
-type N = t.ITreeViewNode;
+type N = t.ITreeviewNode;
 
 /**
  * Properties for an individual leaf on the tree.
  */
-export type ITreeViewNodeProps = {
+export type ITreeviewNodeProps = {
   body?: string; // Key used in [renderNodeBody] factory.
   label?: string;
   icon?: t.TreeNodeIcon;
@@ -19,8 +19,8 @@ export type ITreeViewNodeProps = {
   chevron?: {
     isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
   };
-  inline?: ITreeViewNodeInline;
-  header?: ITreeViewNodeHeader;
+  inline?: ITreeviewNodeInline;
+  header?: ITreeviewNodeHeader;
   badge?: string | number;
   isEnabled?: boolean;
   isVisible?: boolean;
@@ -29,25 +29,25 @@ export type ITreeViewNodeProps = {
   isSelected?: boolean;
   labelEditable?: boolean | 'DOUBLE_CLICK';
 
-  colors?: ITreeViewNodeColors;
-  focusColors?: ITreeViewNodeColors;
+  colors?: ITreeviewNodeColors;
+  focusColors?: ITreeviewNodeColors;
 };
 
-export type ITreeViewNodeHeader = {
+export type ITreeviewNodeHeader = {
   isVisible?: boolean; // Force show (for custom panel), or hide the header. Default: true.
   showParentButton?: boolean; // Hide the "back" button. Default: true.
   marginBottom?: number;
   height?: number;
 };
 
-export type ITreeViewNodeInline = {
+export type ITreeviewNodeInline = {
   // The existence of the 'inline' object indicates the
   // node's children are to be shown inline.
   isOpen?: boolean;
   isVisible?: boolean; // Undefined means automatic, shown if child-nodes exist.
 };
 
-export type ITreeViewNodeColors = {
+export type ITreeviewNodeColors = {
   label?: string | number;
   description?: string | number;
   icon?: string | number;
@@ -61,8 +61,8 @@ export type ITreeViewNodeColors = {
 /**
  * Function that retrieves the default node props.
  */
-export type GetTreeNodeProps = (args: GetTreeNodePropsArgs) => ITreeViewNodeProps;
-export type GetTreeNodePropsArgs = {
+export type GetTreeviewNodeProps = (args: GetTreeviewNodePropsArgs) => ITreeviewNodeProps;
+export type GetTreeviewNodePropsArgs = {
   index: number;
   node: N;
   siblings: N[];

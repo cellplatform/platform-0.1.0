@@ -78,7 +78,7 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
    * [Fields]
    */
   private readonly stores: Stores;
-  public readonly treeview$: Observable<t.TreeViewEvent>;
+  public readonly treeview$: Observable<t.TreeviewEvent>;
 
   private _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());

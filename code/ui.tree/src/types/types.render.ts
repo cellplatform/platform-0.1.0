@@ -1,8 +1,8 @@
 import { t, IIcon } from './common';
 
-type N = t.ITreeViewNode;
+type N = t.ITreeviewNode;
 
-export type ITreeViewRenderer = {
+export type ITreeviewRenderer = {
   icon: t.RenderTreeIcon;
   nodeBody: t.RenderTreeNodeBody;
   panel: t.RenderTreePanel;
