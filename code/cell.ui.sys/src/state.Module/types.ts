@@ -7,7 +7,9 @@ type N = t.ITreeNode;
 type Event = t.Event<O>;
 type E = t.ModuleEvent;
 
-export type ModuleArgs<D extends O> = t.ITreeStateArgs<IModuleTreeNode<D>>;
+export type ModuleArgs<D extends O> = t.ITreeStateArgs<IModuleTreeNode<D>> & {
+  event$?: Observable<t.Event>; // Global event bus/
+};
 
 export type Module = {
   identity: t.TreeIdentity;
@@ -26,7 +28,7 @@ export type Module = {
   isModuleEvent(event: t.Event): boolean;
   filter(event: t.ModuleEvent, filter?: t.ModuleFilter): boolean;
   events: ModuleEvents;
-  fire(next: t.FireEvent<any>): IModuleFire;
+  fire<T extends N = N>(next: t.FireEvent<any>): IModuleFire<T>;
 };
 
 /**
@@ -96,12 +98,13 @@ export type ModuleSubscribeResponse<T extends N = N> = t.IDisposable & {
 };
 
 /**
- * Event bus
+ * Event Bus (fire)
  */
 
-export type IModuleFire = {
+export type IModuleFire<T extends N> = {
   render: ModuleFireRender;
   selection: ModuleFireSelection;
+  request: ModuleRequest<T>;
 };
 
 export type ModuleFireRender = (args: ModuleFireRenderArgs) => JSX.Element | null | undefined;
@@ -117,6 +120,12 @@ export type ModuleFireSelectionArgs = {
   root: t.ITreeNode;
   current?: string;
   selected?: string;
+};
+
+export type ModuleRequest<T extends N = N> = (id: string) => ModuleRequestResponse<T>;
+export type ModuleRequestResponse<T extends N = N> = {
+  module?: IModule<T>;
+  path: string;
 };
 
 /**
@@ -147,7 +156,8 @@ export type ModuleEvent =
   | IModuleRenderEvent
   | IModuleRenderedEvent
   | IModuleChangedEvent
-  | IModulePatchedEvent;
+  | IModulePatchedEvent
+  | IModuleRequestEvent;
 
 export type IModuleChildRegisteredEvent = {
   type: 'Module/child/registered';
@@ -203,3 +213,12 @@ export type IModulePatchedEvent = {
   payload: IModulePatched;
 };
 export type IModulePatched = { module: string; patch: t.ITreeStatePatched };
+
+export type IModuleRequestEvent = {
+  type: 'Module/request';
+  payload: IModuleRequest;
+};
+export type IModuleRequest = {
+  module: string;
+  response(args: { module: t.IModule; path: string }): void;
+};

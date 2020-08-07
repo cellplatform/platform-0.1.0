@@ -1,10 +1,10 @@
 import { TreeState } from '@platform/state';
+import { takeUntil } from 'rxjs/operators';
 
-import { t } from '../common';
+import { rx, t } from '../common';
 import * as events from './Module.events';
 
 type O = Record<string, unknown>;
-type Event = t.Event<O>;
 
 /**
  * Create a new module
@@ -15,6 +15,20 @@ export function create<D extends O>(args?: t.ModuleArgs<D>): t.IModule<D> {
 
   const module = TreeState.create<t.IModuleTreeNode<D>>(args) as t.IModule<D>;
   events.monitorAndDispatch(module);
+
+  if (args.event$) {
+    const $ = args.event$.pipe(takeUntil(module.dispose$));
+
+    // Listem for request events, and lookup to see if
+    // the module can be resolved within the child set.
+    rx.payload<t.IModuleRequestEvent>($, 'Module/request').subscribe((e) => {
+      const child = module.find((child) => child.id === e.module);
+      if (child) {
+        const path = module.path.get(child);
+        e.response({ module: child, path });
+      }
+    });
+  }
 
   return module;
 }

@@ -2,15 +2,17 @@ import { TreeQuery } from '@platform/state/lib/TreeQuery';
 
 import { t } from '../common';
 
+type N = t.ITreeNode;
 type F = t.FireEvent<t.ModuleEvent>;
 
 /**
  * Fire recipes through the event-bus.
  */
-export function fire(fire: t.FireEvent<t.ModuleEvent>): t.IModuleFire {
+export function fire<T extends N = N>(fire: t.FireEvent<t.ModuleEvent>): t.IModuleFire<T> {
   return {
     render: (args: t.ModuleFireRenderArgs) => render(fire, args),
     selection: (args: t.ModuleFireSelectionArgs) => selection(fire, args),
+    request: (id: string) => request<T>(fire, id),
   };
 }
 
@@ -75,4 +77,23 @@ export function selection(fire: F, args: t.ModuleFireSelectionArgs) {
       payload,
     });
   }
+}
+
+/**
+ * Request a module via an event.
+ */
+export function request<T extends N>(fire: F, id: string): t.ModuleRequestResponse<T> {
+  let module: t.IModule<T> | undefined;
+  let path = '';
+  fire({
+    type: 'Module/request',
+    payload: {
+      module: id,
+      response: (args) => {
+        module = args.module;
+        path = args.path;
+      },
+    },
+  });
+  return { path, module };
 }
