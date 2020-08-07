@@ -2,23 +2,23 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ModuleView } from '.';
-import { color, css, CssValue, t, time, ui } from '../../common';
-import { Button } from '../primitives';
+import { ModuleView } from '..';
+import { color, css, CssValue, time, ui } from '../../../common';
+import { Button } from '../../primitives';
+import * as t from './types';
 
 const Module = ModuleView.Module;
-
-/**
- * Types
- */
-export type MyModuleData = { foo?: string };
-export type MyModule = t.IModule<MyModuleData>;
+import { TestKong } from './Test.Kong';
 
 /**
  * Component
  */
 export type ITestProps = { style?: CssValue };
-export type ITestState = { foo?: MyModule; bar?: MyModule };
+export type ITestState = {
+  module?: t.MyModule;
+  foo?: t.MyModule;
+  bar?: t.MyModule;
+};
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
@@ -29,15 +29,20 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public static contextType = ui.Context;
   public context!: t.IAppContext;
 
-  public module: MyModule = Module.create<MyModuleData>({ dispose$: this.unmounted$ });
-
   /**
    * [Lifecycle]
    */
 
   public componentDidMount() {
+    const ctx = this.context;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    this.init();
+
+    const module = Module.create<t.MyModuleData>({
+      event$: ctx.event$,
+      dispose$: this.unmounted$,
+    });
+
+    this.init(module);
   }
 
   public componentWillUnmount() {
@@ -45,9 +50,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     this.unmounted$.complete();
   }
 
-  private async init() {
+  private async init(module: t.IModule) {
     const ctx = this.context;
-    const module = this.module;
 
     // Publishes modules changes into the global event bus.
     Module.publish({
@@ -58,14 +62,25 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     const foo = Module.register(module, { id: 'foo', label: 'Diagram' }).module;
     const bar = Module.register(module, { id: 'bar', label: 'Sample' }).module;
-    this.state$.next({ foo, bar });
+    this.state$.next({ module, foo, bar });
+
+    const BarProvider = Module.provider<t.MyContext>({
+      module: bar,
+      event$: ctx.event$,
+      fire: ctx.fire as any,
+    });
 
     Module.events(ctx.event$).render$.subscribe((e) => {
-      if (e.module === bar.id) {
-        e.render(this.renderKong(e));
-      }
       if (e.module === foo.id) {
         e.render(this.renderDiagram());
+      }
+      if (e.module === bar.id) {
+        const el = (
+          <BarProvider>
+            <TestKong e={e} id={bar.id} />
+          </BarProvider>
+        );
+        e.render(el);
       }
     });
 
@@ -108,6 +123,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   public render() {
     const ctx = this.context;
+
     const MARGIN = 40;
     const styles = {
       base: css({
@@ -141,12 +157,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
           <div {...css(styles.tree, { marginRight: MARGIN })}>
-            <ModuleView.Tree
-              style={styles.fill}
-              tree={this.module}
-              treeview$={this.treeview$}
-              fire={ctx.fire}
-            />
+            {this.state.module && (
+              <ModuleView.Tree
+                style={styles.fill}
+                tree={this.state.module}
+                treeview$={this.treeview$}
+                fire={ctx.fire}
+              />
+            )}
           </div>
           <div {...styles.main}>
             <ModuleView.Frame
@@ -171,55 +189,55 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     );
   }
 
-  private renderKong(e: t.IModuleRender) {
-    const styles = {
-      base: css({
-        padding: 30,
-        flex: 1,
-        Flex: 'vertical-stretch-stretch',
-        overflow: 'hidden',
-      }),
-      image: css({
-        width: 300,
-        marginBottom: 15,
-      }),
-      top: css({
-        flex: 1,
-        Flex: 'vertical-center-center',
-        fontSize: 12,
-      }),
-      bottom: css({
-        // padding: 10
-      }),
-    };
-    const node = e.tree.selection?.id;
+  // private renderKong(e: t.IModuleRender) {
+  //   const styles = {
+  //     base: css({
+  //       padding: 30,
+  //       flex: 1,
+  //       Flex: 'vertical-stretch-stretch',
+  //       overflow: 'hidden',
+  //     }),
+  //     image: css({
+  //       width: 300,
+  //       marginBottom: 15,
+  //     }),
+  //     top: css({
+  //       flex: 1,
+  //       Flex: 'vertical-center-center',
+  //       fontSize: 12,
+  //     }),
+  //     bottom: css({
+  //       // padding: 10
+  //     }),
+  //   };
+  //   const node = e.tree.selection?.id;
 
-    const URL = {
-      KONG: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kong.png',
-      LEAF: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/leaf.png',
-      KITTEN: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kitten.png',
-    };
+  //   const URL = {
+  //     KONG: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kong.png',
+  //     LEAF: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/leaf.png',
+  //     KITTEN: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kitten.png',
+  //   };
 
-    const src =
-      e.tree.current === e.module
-        ? e.tree.selection?.id.endsWith(':one')
-          ? URL.KITTEN
-          : URL.KONG
-        : URL.LEAF;
+  //   const src =
+  //     e.tree.current === e.module
+  //       ? e.tree.selection?.id.endsWith(':one')
+  //         ? URL.KITTEN
+  //         : URL.KONG
+  //       : URL.LEAF;
 
-    return (
-      <div {...styles.base}>
-        <div {...styles.top}>
-          <img src={src} {...styles.image} />
-          <div>Module: {e.module}</div>
-          <div>Tree Node: {node || '-'}</div>
-        </div>
-        <div {...styles.bottom}>
-          <Button onClick={this.onAddModuleClick}>Add Module</Button>
-        </div>
-      </div>
-    );
-  }
+  //   return (
+  //     <div {...styles.base}>
+  //       <div {...styles.top}>
+  //         <img src={src} {...styles.image} />
+  //         <div>Module: {e.module}</div>
+  //         <div>Tree Node: {node || '-'}</div>
+  //       </div>
+  //       <div {...styles.bottom}>
+  //         <Button onClick={this.onAddModuleClick}>Add Module</Button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   private renderDiagram() {
     const PINK = '#FE0168';
@@ -253,11 +271,5 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
   private renderFilter: t.ModuleFilter = (args) => {
     return true;
-  };
-
-  private onAddModuleClick = async () => {
-    // this.module
-    const module = this.module;
-    const child = await Module.register(module, { id: 'child', label: 'MyChild' });
   };
 }

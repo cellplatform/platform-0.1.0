@@ -6,8 +6,27 @@ import { fire } from './Module.fire';
 import { publish } from './Module.pub';
 import { register } from './Module.register';
 import { subscribe } from './Module.sub';
+import { Context } from './Context';
+import { provider } from './Context';
 
 export class Module {
+  /**
+   * The React [Context] used to pass down common modules to components.
+   *
+   * To use add a static `contextType` to the consuming component,
+   * eg:
+   *
+   *      export class MyView extends React.PureComponent {
+   *        public static contextType = Module.Context;
+   *        public context!: t.MyContext
+   *      }
+   *
+   * See:
+   *    https://reactjs.org/docs/context.html
+   */
+  public static Context = Context;
+  public static provider = provider;
+
   /**
    * Helpers for working with tree ids.
    */

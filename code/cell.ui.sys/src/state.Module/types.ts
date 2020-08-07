@@ -1,10 +1,11 @@
+import * as React from 'react';
+
 import { Observable } from 'rxjs';
 
 import * as t from '../common/types';
 
 type O = Record<string, unknown>;
 type N = t.ITreeNode;
-type Event = t.Event<O>;
 type E = t.ModuleEvent;
 
 export type ModuleArgs<D extends O> = t.ITreeStateArgs<IModuleTreeNode<D>> & {
@@ -13,6 +14,7 @@ export type ModuleArgs<D extends O> = t.ITreeStateArgs<IModuleTreeNode<D>> & {
 
 export type Module = {
   identity: t.TreeIdentity;
+  Context: React.Context<any>;
 
   create<D extends O>(args?: ModuleArgs<D>): IModule<D>;
 
@@ -29,6 +31,7 @@ export type Module = {
   filter(event: t.ModuleEvent, filter?: t.ModuleFilter): boolean;
   events: ModuleEvents;
   fire<T extends N = N>(next: t.FireEvent<any>): IModuleFire<T>;
+  provider<P extends O>(context: P): React.FunctionComponent;
 };
 
 /**
