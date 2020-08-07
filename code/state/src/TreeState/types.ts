@@ -115,7 +115,8 @@ export type TreeStateSyncer = t.IDisposable & {
  * Path
  */
 export type ITreeStatePath<T extends N = N, A extends E = any> = {
-  get(id: t.NodeIdentifier): string;
+  from(child: t.NodeIdentifier): string;
+  get(path: string): t.ITreeState<T, A> | undefined;
 };
 
 /**

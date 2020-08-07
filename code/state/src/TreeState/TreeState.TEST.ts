@@ -1285,31 +1285,47 @@ describe('TreeState', () => {
     });
   });
 
-  describe('path', () => {
+  describe.only('path', () => {
     const state = create({ root: 'root' });
     const child1 = state.add({ root: { id: 'child-1' } });
     const child2 = child1.add({ root: { id: 'child-2' } });
     const child3 = child1.add({ root: { id: 'child-3' } });
 
-    it('path: empty', () => {
-      expect(state.path.get('404')).to.eql('');
-      expect(state.path.get('  ')).to.eql('');
-      expect(state.path.get(undefined as any)).to.eql('');
-      expect(state.path.get(null as any)).to.eql('');
+    it('path.from: empty', () => {
+      expect(state.path.from('404')).to.eql('');
+      expect(state.path.from('  ')).to.eql('');
+      expect(state.path.from(undefined as any)).to.eql('');
+      expect(state.path.from(null as any)).to.eql('');
     });
 
-    it('path: shallow (root)', () => {
-      expect(state.path.get(state)).to.eql(state.id);
-      expect(state.path.get(state.id)).to.eql(state.id);
+    it('path.from: shallow (root)', () => {
+      expect(state.path.from(state)).to.eql(state.id);
+      expect(state.path.from(state.id)).to.eql(state.id);
     });
 
-    it('path: deep', () => {
-      const path1 = state.path.get(child1.id);
-      const path2 = state.path.get(child2.id);
-      const path3 = state.path.get(child3.id);
+    it('path.from: deep', () => {
+      const path1 = state.path.from(child1.id);
+      const path2 = state.path.from(child2.id);
+      const path3 = state.path.from(child3.id);
       expect(path1).to.eql(`${state.id}/${child1.id}`);
       expect(path2).to.eql(`${state.id}/${child1.id}/${child2.id}`);
       expect(path3).to.eql(`${state.id}/${child1.id}/${child3.id}`);
+    });
+
+    it('path.get: not found (undefined)', () => {
+      expect(state.path.get('foo/404')).to.eql(undefined);
+    });
+
+    it('path.get: root', () => {
+      const path = state.path.from(state);
+      const res = state.path.get(path);
+      expect(res?.id).to.eql(state.id);
+    });
+
+    it('path.get: deep', () => {
+      const path = state.path.from(child2.id);
+      const res = state.path.get(path);
+      expect(res?.id).to.eql(child2.id);
     });
   });
 });

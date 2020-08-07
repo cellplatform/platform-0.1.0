@@ -9,9 +9,29 @@ type E = t.Event<O>;
  * Creates a [TreeStatePath]
  */
 export function create<T extends N, A extends E>(tree: t.ITreeState<T, A>): t.ITreeStatePath<T, A> {
+  type S = t.ITreeState<T, A>;
+
+  const get = (tree: S, parts: string[]): S | undefined => {
+    if (parts.length === 0) {
+      return undefined;
+    }
+
+    const child = tree.children.find((child) => child.id === parts[0]);
+    if (child && parts.length > 1) {
+      return get(child, parts.slice(1));
+    }
+
+    return child && parts.length > 1
+      ? get(child, parts.slice(1)) // <== RECURSION 🌳
+      : child;
+  };
+
   return {
-    get(id: t.NodeIdentifier) {
-      const target = toNodeId(id);
+    /**
+     * Build a path from the root of the tree to the given child.
+     */
+    from(child: t.NodeIdentifier) {
+      const target = toNodeId(child);
       if (target === tree.id) {
         return tree.id;
       }
@@ -32,6 +52,11 @@ export function create<T extends N, A extends E>(tree: t.ITreeState<T, A>): t.IT
       }
 
       return parts.join('/');
+    },
+
+    get(path: string) {
+      const parts = path.split('/').map((part) => part.trim());
+      return parts.length === 1 && parts[0] === tree.id ? tree : get(tree, parts.slice(1));
     },
   };
 }

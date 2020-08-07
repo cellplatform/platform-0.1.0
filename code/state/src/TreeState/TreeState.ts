@@ -142,8 +142,8 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     return TreeQuery.create<T>({ root, namespace });
   }
 
-  public get path(): t.ITreeStatePath {
-    return path.create(this);
+  public get path(): t.ITreeStatePath<T, A> {
+    return path.create<T, A>(this);
   }
 
   /**
