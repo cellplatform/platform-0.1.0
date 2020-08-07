@@ -3,12 +3,13 @@ import { id as idUtil } from '@platform/util.value';
 import { Subject, Observable } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 
-import { t, is } from '../common';
+import { t, is, toNodeId } from '../common';
 import { TreeIdentity } from '../TreeIdentity';
 import { TreeQuery } from '../TreeQuery';
 import { helpers } from './helpers';
 import * as events from './TreeState.events';
 import * as sync from './TreeState.sync';
+import * as path from './TreeState.path';
 
 type O = Record<string, unknown>;
 type Event = t.Event<O>;
@@ -141,6 +142,10 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     return TreeQuery.create<T>({ root, namespace });
   }
 
+  public get path(): t.ITreeStatePath {
+    return path.create(this);
+  }
+
   /**
    * [Methods]
    */
@@ -235,44 +240,55 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     return this;
   };
 
-  public find: t.TreeStateFind<T, A> = (match) => this._find(0, match);
-  private _find(level: number, match: t.TreeStateFindMatch<T>): t.ITreeState<T, A> | undefined {
-    const children = this.children;
-    if (children.length === 0) {
-      return undefined;
-    } else {
-      for (const child of children) {
-        const tree = child as TreeState<T>;
-        let stopped = false;
-
-        const args: t.TreeStateFindMatchArgs<T> = {
-          level,
-          id: child.id,
-          key: Identity.key(child.id),
-          namespace: child.namespace,
-          tree,
-          stop: () => (stopped = true),
-          toString: () => args.id,
-        };
-
-        if (match(args)) {
-          return child;
-        } else {
-          if (stopped) {
-            return undefined;
-          }
-
-          const deep = tree._find(level + 1, match); // <== RECURSION 🌳
-          if (deep) {
-            return deep;
-          }
-
-          // Continue [next child]...
+  public find: t.TreeStateFind<T, A> = (match) => {
+    let result: t.ITreeState<T, A> | undefined;
+    this.walkDown((e) => {
+      if (e.level > 0) {
+        if (match(e) === true) {
+          e.stop();
+          result = e.tree;
         }
       }
-      return undefined;
-    }
-  }
+    });
+    return result;
+  };
+
+  public walkDown: t.TreeStateWalkDown<T, A> = (visit) => {
+    const inner = (
+      level: number,
+      index: number,
+      tree: t.ITreeState<T, A>,
+      parent: t.ITreeState<T, A> | undefined,
+      state: { stopped?: boolean },
+    ) => {
+      if (state.stopped) {
+        return;
+      }
+      let skipped = false;
+      const args: t.ITreeStateDescend<T, A> = {
+        level,
+        id: tree.id,
+        key: Identity.key(tree.id),
+        namespace: tree.namespace,
+        index,
+        tree,
+        parent,
+        stop: () => (state.stopped = true),
+        skip: () => (skipped = true),
+        toString: () => tree.id,
+      };
+      visit(args);
+      if (state.stopped) {
+        return;
+      }
+      if (!skipped && tree.children.length) {
+        tree.children.forEach((child, i) => {
+          inner(level + 1, i, child, tree, state); // <== RECURSION 🌳
+        });
+      }
+    };
+    return inner(0, -1, this, undefined, {});
+  };
 
   public syncFrom: t.TreeStateSyncFrom = (args) => {
     const { until$ } = args;

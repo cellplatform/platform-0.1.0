@@ -7,4 +7,15 @@ export { is };
 /**
  * Util
  */
-export const toNodeId = (node?: t.NodeIdentifier) => (typeof node === 'object' ? node.id : node);
+export const toNodeId = (node?: t.NodeIdentifier) => {
+  if (node === null) {
+    return '';
+  }
+  if (typeof node === 'string') {
+    return node;
+  }
+  if (typeof node === 'object') {
+    return node.id;
+  }
+  return '';
+};

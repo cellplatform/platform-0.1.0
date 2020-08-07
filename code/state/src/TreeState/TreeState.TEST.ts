@@ -870,7 +870,7 @@ describe('TreeState', () => {
       const root: N = { id: 'root' };
       const tree = create({ root });
 
-      const list: t.TreeStateFindMatchArgs[] = [];
+      const list: t.ITreeStateDescend[] = [];
       const res = tree.find((e) => {
         list.push(e);
         return false;
@@ -887,7 +887,7 @@ describe('TreeState', () => {
       child1.add({ root: 'child-2a' }); // NB: Skipped because child-3 found first (child of "2a").
       const child3 = child2a.add({ root: 'child-3' });
 
-      const list: t.TreeStateFindMatchArgs[] = [];
+      const list: t.ITreeStateDescend[] = [];
       const res = tree.find((e) => {
         list.push(e);
         return e.key === 'child-3';
@@ -909,7 +909,7 @@ describe('TreeState', () => {
       const child2 = tree.add({ root: 'child-2' });
       const child3 = tree.add({ root: 'child-3' });
 
-      const list: t.TreeStateFindMatchArgs[] = [];
+      const list: t.ITreeStateDescend[] = [];
       const res = tree.find((e) => {
         list.push(e);
         return e.key === 'child-3';
@@ -942,7 +942,7 @@ describe('TreeState', () => {
       child1.add({ root: 'child-2b' }); // NB: Skipped because child-3 found first (child of "2a").
       child2a.add({ root: 'child-3' });
 
-      const list: t.TreeStateFindMatchArgs[] = [];
+      const list: t.ITreeStateDescend[] = [];
       const res = tree.find((e) => {
         list.push(e);
         if (e.key === 'child-2a') {
@@ -952,6 +952,82 @@ describe('TreeState', () => {
       });
       expect(list.map((e) => e.key)).to.eql(['child-1', 'child-2a']);
       expect(res).to.eql(undefined);
+    });
+  });
+
+  describe('walkDown', () => {
+    const state = create({ root: 'root' });
+    const child1 = state.add({ root: { id: 'child-1' } });
+    const child2 = child1.add({ root: { id: 'child-2' } });
+    const child3 = child1.add({ root: { id: 'child-3' } });
+    const child4 = child3.add({ root: { id: 'child-4' } });
+
+    it('walkDown: no children (visits root)', () => {
+      const state = create({ root: 'root' });
+      const items: t.ITreeStateDescend<N>[] = [];
+      state.walkDown((e) => items.push(e));
+
+      expect(items.length).to.eql(1);
+      expect(items[0].id).to.eql(state.id);
+      expect(items[0].key).to.eql(state.key);
+      expect(items[0].namespace).to.eql(state.namespace);
+      expect(items[0].level).to.eql(0);
+      expect(items[0].index).to.eql(-1);
+    });
+
+    it('walkDown: deep', () => {
+      const items: t.ITreeStateDescend<N>[] = [];
+      state.walkDown((e) => items.push(e));
+
+      expect(items.length).to.eql(5);
+
+      expect(items[0].id).to.eql(state.id);
+      expect(items[1].id).to.eql(child1.id);
+      expect(items[2].id).to.eql(child2.id);
+      expect(items[3].id).to.eql(child3.id);
+      expect(items[4].id).to.eql(child4.id);
+
+      expect(items[0].level).to.eql(0);
+      expect(items[1].level).to.eql(1);
+      expect(items[2].level).to.eql(2);
+      expect(items[3].level).to.eql(2);
+      expect(items[4].level).to.eql(3);
+
+      expect(items[0].index).to.eql(-1);
+      expect(items[1].index).to.eql(0);
+      expect(items[2].index).to.eql(0);
+      expect(items[3].index).to.eql(1);
+      expect(items[4].index).to.eql(0);
+
+      expect(items[0].parent).to.eql(undefined);
+      expect(items[1].parent?.id).to.eql(state.id);
+    });
+
+    it('walkDown: stop', () => {
+      const items: t.ITreeStateDescend<N>[] = [];
+      state.walkDown((e) => {
+        if (e.level > 0) {
+          e.stop();
+        }
+        items.push(e);
+      });
+
+      expect(items.length).to.eql(2);
+      expect(items[0].id).to.eql(state.id);
+      expect(items[1].id).to.eql(child1.id);
+    });
+
+    it('walkDown: skip', () => {
+      const items: t.ITreeStateDescend<N>[] = [];
+      state.walkDown((e) => {
+        if (e.key === 'child-3') {
+          e.skip();
+        }
+        items.push(e);
+      });
+
+      expect(items.length).to.eql(4);
+      expect(items.map((e) => e.key)).to.not.include('child-4');
     });
   });
 
@@ -1206,6 +1282,34 @@ describe('TreeState', () => {
       expect(dispatched.length).to.eql(1);
       expect(dispatched[0].payload.count).to.eql(123);
       expect(all).to.eql(dispatched);
+    });
+  });
+
+  describe('path', () => {
+    const state = create({ root: 'root' });
+    const child1 = state.add({ root: { id: 'child-1' } });
+    const child2 = child1.add({ root: { id: 'child-2' } });
+    const child3 = child1.add({ root: { id: 'child-3' } });
+
+    it('path: empty', () => {
+      expect(state.path.get('404')).to.eql('');
+      expect(state.path.get('  ')).to.eql('');
+      expect(state.path.get(undefined as any)).to.eql('');
+      expect(state.path.get(null as any)).to.eql('');
+    });
+
+    it('path: shallow (root)', () => {
+      expect(state.path.get(state)).to.eql(state.id);
+      expect(state.path.get(state.id)).to.eql(state.id);
+    });
+
+    it('path: deep', () => {
+      const path1 = state.path.get(child1.id);
+      const path2 = state.path.get(child2.id);
+      const path3 = state.path.get(child3.id);
+      expect(path1).to.eql(`${state.id}/${child1.id}`);
+      expect(path2).to.eql(`${state.id}/${child1.id}/${child2.id}`);
+      expect(path3).to.eql(`${state.id}/${child1.id}/${child3.id}`);
     });
   });
 });
