@@ -1,3 +1,5 @@
+import { TreeView } from '@platform/ui.tree/lib/components/TreeView';
+
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -5,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ModuleView } from '..';
 import { color, css, CssValue, time, ui } from '../../../common';
 import * as t from './types';
+import { ComponentFrame } from './ComponentFrame';
 
 const Module = ModuleView.Module;
 import { TestKong } from './Test.Kong';
@@ -14,9 +17,10 @@ import { TestKong } from './Test.Kong';
  */
 export type ITestProps = { style?: CssValue };
 export type ITestState = {
-  module?: t.MyModule;
+  root?: t.MyModule;
   foo?: t.MyModule;
   bar?: t.MyModule;
+  selected?: t.MyModule;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -49,26 +53,52 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     this.unmounted$.complete();
   }
 
-  private async init(module: t.IModule) {
+  private async init(root: t.IModule) {
     const ctx = this.context;
 
-    // Publishes modules changes into the global event bus.
+    // Publishes module changes into the global event bus.
     Module.publish({
-      module,
+      module: root,
       fire: ctx.fire,
       until$: this.unmounted$,
     });
 
-    const foo = Module.register(module, { id: 'foo', label: 'Diagram' }).module;
-    const bar = Module.register(module, { id: 'bar', label: 'Sample' }).module;
-    this.state$.next({ module, foo, bar });
+    const foo = Module.register(root, { id: 'foo', label: 'Diagram' }).module;
+    const bar = Module.register(root, { id: 'bar', label: 'Sample' }).module;
+    this.state$.next({ root, foo, bar });
 
     const RootProvider = Module.provider<t.MyContext>({
       event$: ctx.event$,
       fire: ctx.fire as any,
     });
 
-    Module.events(ctx.event$).render$.subscribe((e) => {
+    /**
+     * Setup tree-view behavior strategy.
+     * NOTE:
+     *    This is done once here as we have multiple tree-views
+     *    that are sharing the same `treeview$` event stream.
+     *    On a single treeview, we would not want to do this
+     *    and the <ModuleView.Tree> component would setup its
+     *    own strategy.
+     */
+    const treeStrategy = TreeView.Navigation.strategies.default;
+
+    /**
+     * Work with events.
+     */
+
+    const events = Module.events(ctx.event$);
+
+    events.selection$.subscribe((e) => {
+      console.group('🌳 selected`');
+      console.log('e', e);
+      const selected = root.find((child) => child.id === e.module);
+      this.state$.next({ selected });
+
+      console.groupEnd();
+    });
+
+    events.render$.subscribe((e) => {
       if (e.module === foo.id) {
         e.render(this.renderDiagram());
       }
@@ -156,32 +186,53 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
           <div {...css(styles.tree, { marginRight: MARGIN })}>
-            {this.state.module && (
-              <ModuleView.Tree
-                style={styles.fill}
-                tree={this.state.module}
-                treeview$={this.treeview$}
-                fire={ctx.fire}
-              />
+            {
+              <ComponentFrame name={'ModuleView.Tree'}>
+                <ModuleView.Tree
+                  style={styles.fill}
+                  tree={this.state.root}
+                  treeview$={this.treeview$}
+                  fire={ctx.fire}
+                  tag={'left'}
+                />
+              </ComponentFrame>
+            }
+          </div>
+          <div {...css(styles.tree, { marginRight: MARGIN })}>
+            {true && (
+              <ComponentFrame name={'ModuleView.Tree'}>
+                <ModuleView.Tree
+                  style={styles.fill}
+                  tree={this.state.selected}
+                  treeview$={this.treeview$}
+                  fire={ctx.fire}
+                  tag={'left.child'}
+                />
+              </ComponentFrame>
             )}
           </div>
           <div {...styles.main}>
-            <ModuleView.Frame
-              style={styles.fill}
-              fire={ctx.fire}
-              event$={ctx.event$}
-              filter={this.renderFilter}
-            />
+            <ComponentFrame name={'ModuleView.Frame'}>
+              <ModuleView.Frame
+                style={styles.fill}
+                event$={ctx.event$}
+                fire={ctx.fire}
+                filter={this.renderFilter}
+              />
+            </ComponentFrame>
           </div>
           <div {...css(styles.tree, { marginLeft: MARGIN })}>
-            {this.state.bar && (
-              <ModuleView.Tree
-                style={styles.fill}
-                tree={this.state.bar}
-                treeview$={this.treeview$}
-                fire={ctx.fire}
-              />
-            )}
+            {
+              <ComponentFrame name={'ModuleView.Tree'}>
+                <ModuleView.Tree
+                  style={styles.fill}
+                  tree={this.state.bar}
+                  treeview$={this.treeview$}
+                  fire={ctx.fire}
+                  tag={'right'}
+                />
+              </ComponentFrame>
+            }
           </div>
         </div>
       </div>
