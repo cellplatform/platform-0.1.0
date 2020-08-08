@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { Observable } from 'rxjs';
 
 import * as t from '../common/types';
@@ -173,10 +172,7 @@ export type IModuleChildRegisteredEvent = {
   type: 'Module/child/registered';
   payload: IModuleChildRegistered;
 };
-export type IModuleChildRegistered = {
-  module: string;
-  path: string;
-};
+export type IModuleChildRegistered = { module: string; path: string };
 
 export type IModuleChildDisposedEvent = {
   type: 'Module/child/disposed';
