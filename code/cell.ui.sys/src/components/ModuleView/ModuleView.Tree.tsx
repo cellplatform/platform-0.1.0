@@ -1,14 +1,13 @@
 import { TreeView } from '@platform/ui.tree/lib/components/TreeView';
 import * as React from 'react';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, Module } from '../../common';
+import { css, CssValue, Module, t } from '../../common';
 
 export type IModuleViewTreeProps = {
-  fire: t.FireEvent<any>;
-  tree: t.ITreeState<any> | undefined;
-  treeview$?: Subject<t.TreeviewEvent>;
+  nav: t.ITreeViewNavigation;
+  slideDuration?: number;
   style?: CssValue;
   tag?: string; // NB: Used for debugging. A tag to identify the instance.
 };
@@ -19,35 +18,53 @@ export class ModuleViewTree extends React.PureComponent<
   IModuleViewTreeProps,
   IModuleViewTreeState
 > {
-  public static Navigation = TreeView.Navigation;
+  /**
+   * Construct a navigation controller.
+   */
+  public static navigation(args: {
+    module: t.IModule;
+    root?: t.IModule;
+    treeview$?: Subject<t.TreeviewEvent>;
+    dispose$: Observable<any>;
+    strategy?: t.TreeViewNavigationStrategy;
+    fire: t.FireEvent<t.ModuleEvent>;
+  }) {
+    const { dispose$ } = args;
+    const root = args.root?.root || args.module.root;
+    const fire = Module.fire(args.fire);
+    const treeview$ = args.treeview$ || new Subject<t.TreeviewEvent>();
+
+    // Construct the navigation controller.
+    const nav = TreeView.Navigation.create({
+      tree: args.module,
+      treeview$,
+      dispose$,
+      strategy: args.strategy || TreeView.Navigation.strategies.default,
+    });
+
+    // Bubble selection events.
+    nav.selection$.pipe(takeUntil(dispose$)).subscribe((e) => {
+      const { current, selected } = nav;
+      fire.selection({ root, current, selected });
+    });
+
+    return nav;
+  }
 
   public state: IModuleViewTreeState = {};
   private state$ = new Subject<Partial<IModuleViewTreeState>>();
 
   private unmounted$ = new Subject();
-  private treeview$ = this.props.treeview$ || new Subject<t.TreeviewEvent>();
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-  }
-
-  public componentDidUpdate(prevProps: IModuleViewTreeProps) {
-    if (this.props.tree === undefined && this.state.nav) {
-      this.destroyNav();
-    }
-
-    const prev = prevProps.tree?.id;
-    const next = this.props.tree?.id;
-    if (prev !== next) {
-      this.createNav();
-    }
+    this.nav.redraw$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
   }
 
   public componentWillUnmount() {
-    this.nav?.dispose();
     this.unmounted$.next();
     this.unmounted$.complete();
   }
@@ -55,53 +72,21 @@ export class ModuleViewTree extends React.PureComponent<
   /**
    * [Properties]
    */
-  private get fire() {
-    return Module.fire(this.props.fire);
+
+  private get root() {
+    return this.nav.root;
+  }
+
+  private get current() {
+    return this.nav.current;
   }
 
   private get nav() {
-    return this.state.nav;
+    return this.props.nav;
   }
 
-  private get tag() {
+  public get tag() {
     return this.props.tag;
-  }
-
-  /**
-   * [Methods]
-   */
-  private destroyNav() {
-    if (this.nav) {
-      this.nav.dispose();
-      this.state$.next({ nav: undefined });
-    }
-  }
-
-  private createNav() {
-    this.destroyNav();
-
-    if (!this.props.tree) {
-      return;
-    }
-
-    const nav = TreeView.Navigation.create({
-      tree: this.props.tree,
-      treeview$: this.treeview$,
-      dispose$: this.unmounted$,
-      strategy: TreeView.Navigation.strategies.default,
-    });
-
-    nav.redraw$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
-
-    nav.selection$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
-      const nav = this.nav;
-      if (nav) {
-        const { root, current, selected } = nav;
-        this.fire.selection({ root, current, selected });
-      }
-    });
-
-    this.state$.next({ nav });
   }
 
   /**
@@ -123,11 +108,12 @@ export class ModuleViewTree extends React.PureComponent<
     return (
       <div {...css(styles.base, this.props.style)}>
         <TreeView
-          root={nav.root}
-          current={nav.current}
-          event$={this.treeview$}
+          root={this.root}
+          current={this.current}
+          event$={nav.treeview$}
           background={'NONE'}
           tabIndex={0}
+          slideDuration={this.props.slideDuration}
         />
       </div>
     );
