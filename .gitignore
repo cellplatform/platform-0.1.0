@@ -8,7 +8,7 @@ lib.test
 .build
 .cell
 .cache
-.dev
+/code/*/.dev
 .uiharness
 .publish
 .parcel*
