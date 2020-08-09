@@ -7,7 +7,7 @@ import { debounceTime, share, takeUntil } from 'rxjs/operators';
 import { t } from '../common';
 import { TreeUtil } from '../TreeUtil';
 import { strategies } from '../TreeViewNavigation.Strategies';
-import { TreeViewState } from '../TreeViewState';
+import { TreeViewState } from '../TreeviewState';
 
 import * as mutation from './TreeviewNavigationMutation';
 

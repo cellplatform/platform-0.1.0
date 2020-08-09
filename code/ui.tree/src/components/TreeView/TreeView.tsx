@@ -24,7 +24,7 @@ import * as themes from '../../themes';
 import { TreeEvents } from '../../TreeEvents';
 import { TreeUtil } from '../../TreeUtil';
 import { TreeViewNavigation } from '../../TreeViewNavigation';
-import { TreeViewState } from '../../TreeViewState';
+import { TreeViewState } from '../../TreeviewState';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
 import { renderer } from './renderer';

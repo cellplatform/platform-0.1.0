@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { TreeView } from '../..';
 import { t } from '../../common';
-import { TreeViewState } from '../../components.dev/TreeViewState';
+import { TreeViewState } from '../../components.dev/TreeviewState';
 
 type Node = t.ITreeviewNode;
 const header: t.ITreeviewNodeHeader = { isVisible: false, marginBottom: 45 };
