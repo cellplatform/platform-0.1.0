@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { COLORS, css, CssValue, t } from '../../../common';
+import { COLORS, css, CssValue, t, color } from '../../../common';
 
 export type IComponentFrameProps = {
   children?: React.ReactNode;
+  blur?: boolean;
+  backgroundColor?: string | number;
   name?: string;
   style?: CssValue;
 };
@@ -35,23 +37,43 @@ export class ComponentFrame extends React.PureComponent<
    * [Render]
    */
   public render() {
+    const { blur } = this.props;
+
     const styles = {
       base: css({
         Absolute: 0,
         flex: 1,
         display: 'flex',
         position: 'relative',
+        boxSizing: 'border-box',
       }),
+      bg: css({
+        Absolute: 0,
+        backgroundColor: color.format(this.props.backgroundColor),
+        opacity: blur ? 0.3 : 1,
+        pointerEvents: 'none',
+      }),
+      border:
+        blur &&
+        css({
+          Absolute: 0,
+          border: `solid 1px ${color.format(1)}`,
+          pointerEvents: 'none',
+        }),
       inner: css({
         flex: 1,
         Absolute: 0,
         display: 'flex',
+        filter: blur ? `blur(3px)` : undefined,
+        opacity: blur ? 0.4 : 1,
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
         {this.renderHeader()}
+        <div {...styles.bg}></div>
         <div {...styles.inner}>{this.props.children}</div>
+        {blur && <div {...styles.border}></div>}
       </div>
     );
   }
