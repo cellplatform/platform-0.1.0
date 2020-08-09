@@ -9,6 +9,8 @@ import { TreeUtil } from '../TreeUtil';
 import { strategies } from '../TreeViewNavigation.Strategies';
 import { TreeViewState } from '../TreeViewState';
 
+import * as mutation from './TreeviewNavigationMutation';
+
 type Stores = {
   nav: t.IStateObjectWritable<t.ITreeViewNavigationSelection>;
   tree: t.ITreeState;
@@ -78,7 +80,7 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
    * [Fields]
    */
   private readonly stores: Stores;
-  public readonly treeview$: Observable<t.TreeviewEvent>;
+  public readonly treeview$: Subject<t.TreeviewEvent>;
 
   private _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -113,6 +115,10 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
 
   public get tree() {
     return this.stores.tree;
+  }
+
+  public get id() {
+    return this.root.id;
   }
 
   public get root() {
@@ -185,6 +191,7 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
 
   private ensureSelection = () => {
     const query = this.query;
+
     if (this.selected) {
       const exists = query.findById(this.selected);
       if (!exists) {
@@ -198,6 +205,5 @@ export class TreeViewNavigation implements t.ITreeViewNavigation {
         this.current = this.root.id;
       }
     }
-    //
   };
 }

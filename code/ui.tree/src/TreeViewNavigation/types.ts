@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import * as t from '../common/types';
 import { TreeViewState } from '../TreeViewState/types';
@@ -13,7 +13,7 @@ export type TreeViewNavigation = {
 };
 
 export type ITreeViewNavigationArgs = {
-  treeview$: Observable<t.TreeviewEvent>;
+  treeview$: Subject<t.TreeviewEvent>;
   tree?: t.ITreeState<any>;
   dispose$?: Observable<any>;
   strategy?: t.TreeViewNavigationStrategy;
@@ -23,8 +23,9 @@ export type ITreeViewNavigationArgs = {
  * Keeps a state object in sync with navigation changes.
  */
 export type ITreeViewNavigation = t.IDisposable & {
+  readonly id: string;
   readonly changed$: Observable<t.ITreeViewNavigationChanged>;
-  readonly treeview$: Observable<t.TreeviewEvent>;
+  readonly treeview$: Subject<t.TreeviewEvent>;
   readonly redraw$: Observable<void>;
   readonly selection$: Observable<ITreeViewNavigationSelection>;
   readonly query: t.ITreeQuery<t.ITreeviewNode>;
@@ -54,4 +55,15 @@ export type ITreeViewNavigationState = {
 export type ITreeViewNavigationSelection = {
   current?: string; //  Node ID.
   selected?: string; // Node ID.
+};
+
+/**
+ * Mutation
+ */
+type M = ITreeviewNavigationMutation;
+export type ITreeviewNavigationMutation = {
+  current(id?: string): M;
+  color(id?: string, color?: string | number): M;
+  selected(id?: string): M;
+  toggleOpen(id?: string): M;
 };
