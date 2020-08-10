@@ -17,7 +17,7 @@ const DEFAULT = {
 };
 
 export type ITreeViewStateProps = {
-  store: t.ITreeViewState;
+  store: t.ITreeviewState;
   isRoot?: boolean;
   current?: string;
   selected?: string;
@@ -132,7 +132,7 @@ export class TreeViewState extends React.PureComponent<ITreeViewStateProps, ITre
         <div {...styles.left}>
           <Icons.Box size={24} style={{ marginRight: 6 }} color={COLORS.PURPLE} />
           <div {...styles.text}>
-            <strong>TreeViewState (Module)</strong>
+            <strong>TreeviewState</strong>
             <pre {...styles.id}>{`parent: ${store.parent || '-'}`}</pre>
             <pre {...styles.id}>{`root:   ${store.id}`}</pre>
           </div>

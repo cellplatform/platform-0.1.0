@@ -16,7 +16,7 @@ export type ITreeEvents<T extends N = N> = {
   treeview$: Observable<t.TreeviewEvent>;
   render: ITreeRenderEvents<N>;
   mouse$(options?: {
-    button?: Button[];
+    button?: Button | Button[];
     type?: t.MouseEventType;
     target?: Target;
   }): Observable<t.ITreeviewMouse<T>>;

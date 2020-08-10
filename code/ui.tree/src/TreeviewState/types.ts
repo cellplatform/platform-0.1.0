@@ -6,7 +6,7 @@ type P = t.ITreeviewNodeProps;
 /**
  * A version of the [TreeState] configured for the base <TreeView> node type.
  */
-export type TreeViewState = {
+export type TreeviewState = {
   create<N extends Node = Node>(args?: t.ITreeStateArgs<N>): t.ITreeState<N>;
 
   /**
@@ -21,4 +21,4 @@ export type TreeViewState = {
 /**
  * A version of the [TreeState] configured for the base <TreeView> node type.
  */
-export type ITreeViewState<T extends Node = Node> = t.ITreeState<T>;
+export type ITreeviewState<T extends Node = Node> = t.ITreeState<T>;

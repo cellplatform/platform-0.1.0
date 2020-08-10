@@ -1,15 +1,15 @@
 import { Observable, Subject } from 'rxjs';
 
 import * as t from '../common/types';
-import { TreeViewState } from '../TreeViewState/types';
+import { TreeviewState } from '../TreeViewState/types';
 
 export type TreeViewNavigation = {
   create(args: ITreeViewNavigationArgs): ITreeViewNavigation;
   strategies: t.TreeViewNavigationStrategies;
 
-  identity: TreeViewState['identity'];
-  children: TreeViewState['children'];
-  props: TreeViewState['props'];
+  identity: TreeviewState['identity'];
+  children: TreeviewState['children'];
+  props: TreeviewState['props'];
 };
 
 export type ITreeViewNavigationArgs = {

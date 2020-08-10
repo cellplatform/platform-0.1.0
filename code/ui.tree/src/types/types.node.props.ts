@@ -6,6 +6,8 @@ type N = t.ITreeviewNode;
  * Properties for an individual leaf on the tree.
  */
 export type ITreeviewNodeProps = {
+  nav?: { selected?: string; current?: string }; // NB: Used for storing top-level selection state within a root node.
+
   body?: string; // Key used in [renderNodeBody] factory.
   label?: string;
   icon?: t.TreeNodeIcon;
