@@ -21,9 +21,14 @@ export type ITreeEvents<T extends N = N> = {
     type?: t.MouseEventType;
     target?: Target;
   }): Observable<t.ITreeviewMouse<T>>;
-  mouse(options?: {
-    button?: Button | Button[];
-  }): {
+  mouse(
+    options?:
+      | Button
+      | Button[]
+      | {
+          button?: Button | Button[];
+        },
+  ): {
     click: ITreeMouseEvents<T>;
     dblclick: ITreeMouseEvents<T>;
     down: ITreeMouseEvents<T>;

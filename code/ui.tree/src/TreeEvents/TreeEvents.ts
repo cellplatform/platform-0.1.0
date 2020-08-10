@@ -123,8 +123,11 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
     );
   };
 
-  public mouse(options: { button?: Button | Button[] } = {}) {
-    const button = toButtons(options.button);
+  public mouse(options: Button | Button[] | { button?: Button | Button[] } = {}) {
+    const button = toButtons(
+      Array.isArray(options) || typeof options === 'string' ? options : options.button,
+    );
+
     const mouse$ = this.mouse$;
     const targets = (type: t.MouseEventType) => {
       const args = { button, type };
