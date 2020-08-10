@@ -130,8 +130,6 @@ export class StateObject<T extends O, E extends t.Event<any>>
   /**
    * [Methods]
    */
-  // public change: t.StateObjectChange<T,E> = (fn: t.StateObjectChanger<T> | T, action?: E['type']) => {
-
   public change: t.StateObjectChange<T, E> = (fn, options = {}) => {
     const cid = id.cuid(); // "change-id"
     const type = (options.action || '').trim();

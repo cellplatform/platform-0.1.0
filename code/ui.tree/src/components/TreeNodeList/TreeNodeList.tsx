@@ -11,7 +11,7 @@ import { ITreeNodeProps, TreeNode, TreeNodeTwisty } from '../TreeNode';
 export type ITreeNodeListProps = {
   node: t.ITreeviewNode<any>;
   rootId?: string;
-  depth?: number;
+  depth: number;
   defaultNodeProps?: t.ITreeviewNodeProps | t.GetTreeviewNodeProps;
   renderer: t.ITreeviewRenderer;
   header?: React.ReactNode;
@@ -220,6 +220,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     const { props, hasSomeInlineChildren, hasSomePanelChildren } = args;
     const { isVisible, isFirst, isLast } = props;
     const { isFocused } = this.props;
+    const isInline = Boolean(this.props.isInline);
 
     if (isVisible === false) {
       return null;
@@ -253,6 +254,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     return (
       <TreeNode
         rootId={this.props.rootId}
+        depth={this.props.depth}
         key={id}
         node={node}
         iconRight={iconRight}
@@ -261,7 +263,7 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
         theme={this.theme}
         background={this.props.background}
         isFocused={this.props.isFocused}
-        isInline={this.props.isInline}
+        isInline={isInline}
         isFirst={isFirst}
         isLast={isLast}
         onMouse={this.props.onNodeMouse}

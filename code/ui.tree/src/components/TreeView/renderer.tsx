@@ -1,4 +1,7 @@
 import { t } from '../../common';
+import { produce } from 'immer';
+
+type N = t.ITreeviewNode;
 
 /**
  * Executes factory methods for rendering assets within the tree.
@@ -81,5 +84,22 @@ export function renderer(args: {
     return el;
   };
 
-  return { icon, nodeBody, panel, header };
+  const beforeRenderNode: t.ITreeviewRenderer['beforeRenderNode'] = (e) => {
+    let props = e.node.props?.treeview || {};
+    fire({
+      type: 'TREEVIEW/beforeRender/node',
+      payload: {
+        ...e,
+        change(fn) {
+          props = produce(props, (draft) => {
+            fn(draft);
+            return undefined; // NB: No return value (to prevent replacement).
+          });
+        },
+      },
+    });
+    return props;
+  };
+
+  return { icon, nodeBody, panel, header, beforeRenderNode };
 }

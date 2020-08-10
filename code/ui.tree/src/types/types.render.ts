@@ -7,6 +7,7 @@ export type ITreeviewRenderer = {
   nodeBody: t.RenderTreeNodeBody;
   panel: t.RenderTreePanel;
   header: t.RenderTreeHeader;
+  beforeRenderNode: (e: t.ITreeviewBeforeRenderNodeProps) => t.ITreeviewNodeProps;
 };
 
 /**
@@ -19,6 +20,7 @@ export type RenderTreeIconResponse = IIcon | undefined;
 export type RenderTreeIconArgs<T extends N = N> = {
   icon: string; // Identifier of the icon.
   node: T;
+  depth: number; // 0-based.
   isFocused: boolean;
 };
 
@@ -36,7 +38,9 @@ export type RenderTreeNodeBodyResponse = React.ReactNode | null | undefined;
 export type RenderTreeNodeBodyArgs<T extends N = N> = {
   body: string;
   node: T;
+  depth: number; // 0-based.
   isFocused: boolean;
+  isInline: boolean;
 };
 
 /**

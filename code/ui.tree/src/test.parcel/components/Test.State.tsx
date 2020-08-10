@@ -2,11 +2,13 @@ import { color, css, CssValue } from '@platform/css';
 import { Button } from '@platform/ui.button';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
 import { TreeView } from '../..';
-import { t } from '../../common';
+import { t, COLORS } from '../../common';
 import { TreeViewState } from '../../components.dev/TreeviewState';
+import { TreeviewStrategy } from '../../TreeviewStrategy';
+import { TreeEvents } from '../../TreeEvents';
 
 type Node = t.ITreeviewNode;
 const header: t.ITreeviewNodeHeader = { isVisible: false, marginBottom: 45 };
@@ -56,7 +58,7 @@ export class Test extends React.PureComponent<ITestProps> {
     tree: this.tree,
     treeview$: this.treeview$,
     dispose$: this.unmounted$,
-    strategy: TreeView.Navigation.strategies.default,
+    // strategy: TreeView.Navigation.strategies.default,
   });
 
   /**
@@ -65,11 +67,54 @@ export class Test extends React.PureComponent<ITestProps> {
   public componentDidMount() {
     const redraw$ = this.nav.redraw$.pipe(takeUntil(this.unmounted$));
     redraw$.subscribe((e) => this.forceUpdate());
+
+    this.tree.event.changed$.pipe(takeUntil(this.unmounted$), debounceTime(10)).subscribe((e) => {
+      this.forceUpdate();
+    });
+
+    const treeviewEvents = TreeEvents.create(this.treeview$, this.unmounted$);
+
+    /**
+     * Adjust styles on selected node.
+     */
+    treeviewEvents.beforeRender.node$.subscribe((e) => {
+      const isSelected = e.node.id === this.selected;
+      if (isSelected) {
+        e.change((props) => {
+          const colors = props.colors || (props.colors = {});
+          colors.label = COLORS.BLUE;
+        });
+      }
+    });
+
+    /**
+     * TEST State/Strategy
+     */
+
+    const root = this.tree;
+    const strategy = TreeviewStrategy.navigation({ root });
+
+    strategy.listen(this.treeview$, this.unmounted$);
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get rootNav() {
+    return this.tree.root.props?.treeview?.nav || {};
+  }
+
+  public get current() {
+    return this.rootNav.current;
+  }
+
+  public get selected() {
+    return this.rootNav.selected;
   }
 
   /**
@@ -106,7 +151,7 @@ export class Test extends React.PureComponent<ITestProps> {
       <div {...styles.base}>
         <TreeView
           root={this.nav.root}
-          current={this.nav.current}
+          current={this.current}
           event$={this.treeview$}
           background={'NONE'}
           tabIndex={0}
@@ -145,8 +190,8 @@ export class Test extends React.PureComponent<ITestProps> {
             <div />
             <TreeViewState
               store={this.tree}
-              current={this.nav.current}
-              selected={this.nav.selected}
+              current={this.current}
+              selected={this.selected}
               style={styles.state}
             />
             <div />
@@ -200,8 +245,6 @@ export class Test extends React.PureComponent<ITestProps> {
 
   private loadHandler = (root: Node) => {
     return () => {
-      // this.tree.clear();
-      // this.tree.add({ root });
       this.tree.change((draft) => (draft.children = root.children));
     };
   };

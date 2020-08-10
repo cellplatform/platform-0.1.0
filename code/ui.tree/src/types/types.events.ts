@@ -7,7 +7,11 @@ export type TreeViewMouseTarget = 'NODE' | 'TWISTY' | 'DRILL_IN' | 'PARENT';
 /**
  * Mouse Event
  */
-export type TreeviewEvent = ITreeviewMouseEvent | ITreeviewFocusEvent | TreeviewRenderEvent;
+export type TreeviewEvent =
+  | ITreeviewMouseEvent
+  | ITreeviewFocusEvent
+  | TreeviewBeforeRenderEvent
+  | TreeviewRenderEvent;
 
 /**
  * Mouse events fired as the pointer moves over
@@ -35,6 +39,28 @@ export type ITreeviewFocusEvent = {
   payload: ITreeviewFocus;
 };
 export type ITreeviewFocus = { isFocused: boolean };
+
+/**
+ * Before Render
+ *
+ * Fired before a node is rendered allowing for final mutations
+ * of the node to be made before drawing to screen.
+ */
+export type TreeviewBeforeRenderEvent = ITreeviewBeforeRenderNodeEvent;
+
+export type ITreeviewBeforeRenderNodeEvent<T extends N = N> = {
+  type: 'TREEVIEW/beforeRender/node';
+  payload: ITreeviewBeforeRenderNode<T>;
+};
+export type ITreeviewBeforeRenderNode<T extends N = N> = t.ITreeviewBeforeRenderNodeProps<T> & {
+  change(fn: (draft: t.ITreeviewNodeProps) => void): void;
+};
+export type ITreeviewBeforeRenderNodeProps<T extends N = N> = {
+  node: T;
+  depth: number; // 0-based.
+  isInline: boolean;
+  isFocused: boolean;
+};
 
 /**
  * Render

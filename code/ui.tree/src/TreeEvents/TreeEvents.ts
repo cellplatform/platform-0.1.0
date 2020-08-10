@@ -38,6 +38,7 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
    * [Fields]
    */
   private _render: t.ITreeRenderEvents<T>;
+  private _beforeRender: t.ITreeBeforeRenderEvents<T>;
   public readonly treeview$: Observable<E>;
 
   private readonly _dispose$ = new Subject<void>();
@@ -48,6 +49,24 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
    */
   public get isDisposed() {
     return this._dispose$.isStopped;
+  }
+
+  public get beforeRender() {
+    if (!this._beforeRender) {
+      const event$ = this.treeview$.pipe(
+        filter((e) => e.type.startsWith('TREEVIEW/beforeRender/')),
+        map((e) => e as t.TreeviewBeforeRenderEvent),
+      );
+      const $ = event$.pipe(map((e) => e.payload as t.TreeviewBeforeRenderEvent['payload']));
+
+      const node$ = event$.pipe(
+        filter((e) => e.type === 'TREEVIEW/beforeRender/node'),
+        map((e) => e.payload as t.ITreeviewBeforeRenderNode<T>),
+      );
+
+      this._beforeRender = { $, node$ };
+    }
+    return this._beforeRender;
   }
 
   public get render() {

@@ -12,7 +12,6 @@ type N = t.ITreeviewNode;
 type M = ITreeviewStrategyMutation;
 export type ITreeviewStrategyMutation = {
   current(id?: string): M;
-  color(id?: string, color?: string | number): M;
   selected(id?: string): M;
   toggleOpen(id?: string): M;
 };
