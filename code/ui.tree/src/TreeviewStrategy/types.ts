@@ -23,6 +23,6 @@ type C = t.ITreeviewStrategyContext;
 export type ITreeviewStrategy = IStrategy<t.TreeviewEvent>;
 export type ITreeviewStrategyContext = { root: t.ITreeState };
 export type ITreeviewStrategyConstructor = (
-  ctx: C | (() => C),
+  ctx: C,
   disposable?: t.IDisposable,
 ) => ITreeviewStrategy;

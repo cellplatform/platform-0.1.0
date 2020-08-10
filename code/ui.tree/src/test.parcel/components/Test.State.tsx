@@ -51,23 +51,12 @@ export type ITestProps = { style?: CssValue };
 export class Test extends React.PureComponent<ITestProps> {
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeviewEvent>();
-
   private tree = TreeView.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
-
-  private nav = TreeView.Navigation.create({
-    tree: this.tree,
-    treeview$: this.treeview$,
-    dispose$: this.unmounted$,
-    // strategy: TreeView.Navigation.strategies.default,
-  });
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
-    const redraw$ = this.nav.redraw$.pipe(takeUntil(this.unmounted$));
-    redraw$.subscribe((e) => this.forceUpdate());
-
     this.tree.event.changed$.pipe(takeUntil(this.unmounted$), debounceTime(10)).subscribe((e) => {
       this.forceUpdate();
     });
@@ -90,11 +79,7 @@ export class Test extends React.PureComponent<ITestProps> {
     /**
      * TEST State/Strategy
      */
-
-    const root = this.tree;
-    const strategy = TreeviewStrategy.navigation({ root });
-
-    strategy.listen(this.treeview$, this.unmounted$);
+    TreeviewStrategy.navigation({ root: this.tree }).listen(this.treeview$, this.unmounted$);
   }
 
   public componentWillUnmount() {
@@ -150,7 +135,7 @@ export class Test extends React.PureComponent<ITestProps> {
     return (
       <div {...styles.base}>
         <TreeView
-          root={this.nav.root}
+          root={this.tree.root}
           current={this.current}
           event$={this.treeview$}
           background={'NONE'}

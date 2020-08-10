@@ -4,18 +4,16 @@ import { t } from '../common';
 import { dispose } from '@platform/types';
 import { TreeEvents } from '../TreeEvents';
 import { mutations } from './mutations';
-import { toContext } from './util';
 
 type N = t.ITreeviewNode;
 
-export const navigation: t.ITreeviewStrategyConstructor = (input, disposable) => {
+export const navigation: t.ITreeviewStrategyConstructor = (ctx, disposable) => {
   return {
     listen(event$, until$) {
       const api = disposable ? dispose.until(disposable, until$) : dispose.create(until$);
       event$ = event$.pipe(takeUntil(api.dispose$));
 
       const events = TreeEvents.create(event$, api.dispose$);
-      const ctx = toContext(input);
       const mutate = mutations(ctx.root);
 
       const getParent = (node: N) => {
