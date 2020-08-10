@@ -6,7 +6,6 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "ts test",
-    "tdd": "ts test --watch",
     "lint": "ts lint",
     "build": "ts build",
     "prepare": "ts prepare"
