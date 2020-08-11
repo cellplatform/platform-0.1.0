@@ -1,15 +1,15 @@
 export const PKG = {
   name: '@platform/cell.client',
-  version: '0.2.129',
+  version: '0.2.131',
   dependencies: {
-    '@platform/cell.schema': '0.4.147',
-    '@platform/cell.types': '0.4.133',
-    '@platform/cell.typesystem': '0.0.87',
-    '@platform/http': '0.12.23',
-    '@platform/http.types': '0.2.13',
+    '@platform/cell.schema': '0.4.149',
+    '@platform/cell.types': '0.4.135',
+    '@platform/cell.typesystem': '0.0.89',
+    '@platform/http': '0.12.24',
+    '@platform/http.types': '0.2.14',
     '@platform/libs': '0.2.2',
-    '@platform/queue': '0.0.16',
-    '@platform/types': '0.5.0',
+    '@platform/queue': '0.0.17',
+    '@platform/types': '0.5.1',
     'form-data': '3.0.0',
   },
 };

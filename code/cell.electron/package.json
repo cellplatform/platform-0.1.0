@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.electron",
-  "version": "0.0.116",
+  "version": "0.0.118",
   "description": "Electron shell for CellOS.",
   "scripts": {
     "ui": "cd app.ui && yarn start",
@@ -18,7 +18,7 @@
     "dir": "cd app/out/A1-darwin-x64 && open ."
   },
   "devDependencies": {
-    "@platform/cell.compile.web": "0.0.116",
+    "@platform/cell.compile.web": "0.0.118",
     "@platform/cli.prompt": "0.3.22",
     "@platform/ts": "3.9.5",
     "browserify": "16.5.1"

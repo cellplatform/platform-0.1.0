@@ -51,13 +51,13 @@
     js-yaml "3.14.0"
     minimatch "3.0.4"
 
-"@platform/http.types@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.13.tgz#82f3cb8fcd7f55bde3c382a6a0097c4f4ae0c288"
-  integrity sha512-g40goRDfRD+3Lkfw5pEYRAxOUELdlS3xQGjQ5kFoKHm5h7+C+oyyUrv8yC8fjTei062xj6MaICSgBW17nuyasA==
+"@platform/http.types@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.14.tgz#1ad08a3f6258c5da81fee74739a0726dd7917cae"
+  integrity sha512-3LcCmHNwRXM3ZFrnbd0RKAPW4NOTK9RmtX1CbYPuApGrKu605UuHmwLMIA7JuJc4zu8GLjE+xQihlMupJlEyuQ==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.0"
+    "@platform/types" "0.5.1"
 
 "@platform/libs@0.2.2":
   version "0.2.2"
@@ -110,10 +110,10 @@
     "@platform/libs" "0.2.2"
     "@platform/ts.libs" "3.9.9"
 
-"@platform/types@0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.0.tgz#c67ea07983eec3c967936f495f2728880dcb09bb"
-  integrity sha512-WkUTrh36q0eo1sMfH9jqvPMamXzS+Epd0v2aKXgJlxyh8TKGXiQOrfcmoPxr/3MPulFdvUhDkdfSjCp/64cMlA==
+"@platform/types@0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.1.tgz#9f0876d6cc88f79fef7f6da33f6a800e9a5961d7"
+  integrity sha512-f6jORp9BsKvxiqrxReAdLO1C3FHQihKmIfrsGzeWWTDhZnj5rNpMtRwK87I7Rc9MhilsvTOUwQ322qz0yqqJpQ==
 
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
