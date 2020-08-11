@@ -82,7 +82,7 @@ export class Test extends React.PureComponent<ITestProps> {
      * State / Behavior Strategy
      */
     TreeviewStrategy.default({
-      ctx: { root: this.tree },
+      ctx: { tree: this.tree },
       until$: this.unmounted$,
       event$: this.treeview$,
     });

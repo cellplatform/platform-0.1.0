@@ -11,8 +11,6 @@ export { dispose };
 
 type N = t.ITreeviewNode;
 type C = t.ITreeviewStrategyContext;
-type D = t.IDisposable;
-type E = t.TreeviewEvent;
 
 /**
  * Wrangle input args for a strategy.
@@ -23,7 +21,7 @@ export const prepare = (args: t.TreeviewStrategyArgs) => {
   const disposable = dispose.create(args.until$);
   const event$ = args.event$.pipe(takeUntil(disposable.dispose$));
   const events = TreeEvents.create(event$, disposable.dispose$);
-  const mutate = mutations(args.ctx.root);
+  const mutate = mutations(args.ctx.tree);
   const until$ = disposable.dispose$;
   return { disposable, ctx, event$, events, mutate, until$ };
 };
@@ -32,11 +30,11 @@ export const prepare = (args: t.TreeviewStrategyArgs) => {
  * Query helpers.
  */
 export function get(ctx: C) {
-  const query = TreeQuery.create({ root: ctx.root.root });
+  const query = TreeQuery.create({ root: ctx.tree.root });
   const get = {
     query,
     get root() {
-      return ctx.root.root as N;
+      return ctx.tree.root as N;
     },
     get nav() {
       return get.root.props?.treeview?.nav || {};

@@ -20,7 +20,7 @@ export type ITreeviewStrategyMutation = {
  * Strategy for treeview selection.
  */
 export type ITreeviewStrategy = D;
-export type ITreeviewStrategyContext = { root: t.ITreeState };
+export type ITreeviewStrategyContext = { tree: t.ITreeState };
 
 type A = TreeviewStrategyArgs;
 export type TreeviewStrategyArgs = { ctx: C; event$: Observable<E>; until$: Observable<any> };
