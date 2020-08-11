@@ -5,21 +5,21 @@ import { takeUntil } from 'rxjs/operators';
 import { color, COLORS, css, CssValue, defaultValue } from '../../common';
 import { WindowAddress } from '../WindowAddress';
 
-export type IWindowTitleBarProps = {
+export type IWindowTitlebarProps = {
   address?: React.ReactNode;
   height?: number;
   style?: CssValue;
 };
-export type IWindowTitleBarState = {
+export type IWindowTitlebarState = {
   isWindowFocused?: boolean;
 };
 
-export class WindowTitleBar extends React.PureComponent<
-  IWindowTitleBarProps,
-  IWindowTitleBarState
+export class WindowTitlebar extends React.PureComponent<
+  IWindowTitlebarProps,
+  IWindowTitlebarState
 > {
-  public state: IWindowTitleBarState = {};
-  private state$ = new Subject<Partial<IWindowTitleBarState>>();
+  public state: IWindowTitlebarState = {};
+  private state$ = new Subject<Partial<IWindowTitlebarState>>();
   private unmounted$ = new Subject();
 
   public static HEIGHT = 38;
@@ -49,7 +49,7 @@ export class WindowTitleBar extends React.PureComponent<
    * [Properties]
    */
   public get height() {
-    return defaultValue(this.props.height, WindowTitleBar.HEIGHT);
+    return defaultValue(this.props.height, WindowTitlebar.HEIGHT);
   }
 
   /**
@@ -69,7 +69,7 @@ export class WindowTitleBar extends React.PureComponent<
       base: css({
         position: 'relative',
         WebkitAppRegion: 'drag',
-        height: WindowTitleBar.HEIGHT,
+        height: WindowTitlebar.HEIGHT,
         boxSizing: 'border-box',
         userSelect: 'none',
         color: COLORS.DARK,
@@ -105,7 +105,7 @@ export class WindowTitleBar extends React.PureComponent<
       shade: css({
         Absolute: 0,
         // background: isWindowFocused ? color.format(-0.06) : color.format(-0.0),
-        background: isWindowFocused ? WindowTitleBar.GRADIENT : color.format(-0.0),
+        background: isWindowFocused ? WindowTitlebar.GRADIENT : color.format(-0.0),
         borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.2 : -0.08)}`,
       }),
     };
