@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, COLORS, css, CssValue, defaultValue } from '../../common';
-import { WindowAddress } from '../WindowAddress';
+import { WindowTitlebarAddress } from '../WindowTitlebar.Address';
 
 export type IWindowTitlebarProps = {
   address?: React.ReactNode;
@@ -87,7 +87,7 @@ export class WindowTitlebar extends React.PureComponent<
         {this.renderBackground()}
         <div {...styles.body}>
           <div {...styles.left}></div>
-          <WindowAddress address={this.props.address} isWindowFocused={isWindowFocused} />
+          <WindowTitlebarAddress address={this.props.address} isWindowFocused={isWindowFocused} />
           <div {...styles.right}></div>
         </div>
       </div>

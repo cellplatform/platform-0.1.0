@@ -4,16 +4,19 @@ import { takeUntil } from 'rxjs/operators';
 import { css, color, CssValue, COLORS, util, t } from '../../common';
 import { WindowAddressContent } from './WindowAddressContent';
 
-export type IWindowAddressProps = {
+export type IWindowTitlebarAddressProps = {
   address?: React.ReactNode;
   isWindowFocused?: boolean;
   style?: CssValue;
 };
-export type IWindowAddressState = { isFocused?: boolean };
+export type IWindowTitlebarAddressState = { isFocused?: boolean };
 
-export class WindowAddress extends React.PureComponent<IWindowAddressProps, IWindowAddressState> {
-  public state: IWindowAddressState = {};
-  private state$ = new Subject<Partial<IWindowAddressState>>();
+export class WindowTitlebarAddress extends React.PureComponent<
+  IWindowTitlebarAddressProps,
+  IWindowTitlebarAddressState
+> {
+  public state: IWindowTitlebarAddressState = {};
+  private state$ = new Subject<Partial<IWindowTitlebarAddressState>>();
   private unmounted$ = new Subject();
 
   /**

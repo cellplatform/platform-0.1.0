@@ -10,31 +10,29 @@ import { mutations } from './mutations';
 export { dispose };
 
 type N = t.ITreeviewNode;
-type C = t.ITreeviewStrategyContext;
 
 /**
  * Wrangle input args for a strategy.
  */
-
 export const args = (args: t.TreeviewStrategyArgs) => {
-  const ctx = args.ctx;
   const disposable = dispose.create(args.until$);
-  const event$ = args.event$.pipe(takeUntil(disposable.dispose$));
-  const events = TreeEvents.create(event$, disposable.dispose$);
-  const mutate = mutations(args.ctx.tree);
   const until$ = disposable.dispose$;
-  return { disposable, ctx, event$, events, mutate, until$ };
+  const tree = args.tree;
+  const mutate = mutations(tree);
+  const treeview$ = args.treeview$.pipe(takeUntil(until$));
+  const events = TreeEvents.create(treeview$, until$);
+  return { disposable, tree, treeview$, events, mutate, until$ };
 };
 
 /**
  * Query helpers.
  */
-export function get(ctx: C) {
-  const query = TreeQuery.create({ root: ctx.tree.root });
+export function get(tree: t.ITreeState) {
+  const query = TreeQuery.create({ root: tree.root });
   const get = {
     query,
     get root() {
-      return ctx.tree.root as N;
+      return tree.root as N;
     },
     get nav() {
       return get.root.props?.treeview?.nav || {};
