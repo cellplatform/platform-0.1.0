@@ -61,8 +61,8 @@ export class ModuleViewTree extends React.PureComponent<
 
       // Start the behavior strategy.
       TreeviewStrategy.default({
-        tree: module,
         treeview$: this.treeview$,
+        tree: module,
         until$: current.dispose$,
       });
 

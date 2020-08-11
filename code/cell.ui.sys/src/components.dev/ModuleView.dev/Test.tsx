@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ModuleView } from '..';
-import { css, CssValue, time, ui } from '../../../common';
-import { Icons } from '../../primitives';
+import { ModuleView } from '@platform/cell.ui/lib/components/ModuleView';
+import { css, CssValue, time, ui } from '../../common';
+import { Icons } from '../../components/primitives';
 import { ComponentFrame } from './ComponentFrame';
 import { TestKong } from './Test.Kong';
 import * as t from './types';

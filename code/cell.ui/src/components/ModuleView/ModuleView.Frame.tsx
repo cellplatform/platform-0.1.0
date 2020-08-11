@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue, t, Module } from '../../common';
+import { css, CssValue, t } from '../../common';
 
-// import { Module } from '../../state.Module';
+import { Module } from '../../Module';
 
 export type IModuleViewFrameProps = {
   fire: t.FireEvent<any>;

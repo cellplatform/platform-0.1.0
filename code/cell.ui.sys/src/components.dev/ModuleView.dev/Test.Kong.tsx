@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue } from '../../../common';
-import { Button } from '../../primitives';
+import { css, CssValue } from '../../common';
+import { Button } from '../../components/primitives';
 import * as t from './types';
 
-import { ModuleView } from '..';
+import { ModuleView } from '@platform/cell.ui/lib/components/ModuleView';
 const Module = ModuleView.Module;
 
 export type ITestKongProps = {

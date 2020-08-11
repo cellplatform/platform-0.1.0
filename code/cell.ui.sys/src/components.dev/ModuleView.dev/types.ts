@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 
-import { t } from '../../../common';
+import { t } from '../../common';
 
-export * from '../../../common/types';
+export * from '../../common/types';
 
 export type MyModuleData = { foo?: string };
 export type MyModule = t.IModule<MyModuleData>;

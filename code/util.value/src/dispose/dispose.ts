@@ -1,7 +1,6 @@
+import { IDisposable } from '@platform/types';
 import { Observable, Subject } from 'rxjs';
 import { share } from 'rxjs/operators';
-
-import { IDisposable } from '../types';
 
 export const dispose = {
   /**

@@ -1,6 +1,6 @@
 import { ModuleViewFrame } from './ModuleView.Frame';
 import { ModuleViewTree } from './ModuleView.Tree';
-import { Module } from '@platform/cell.ui/lib/Module';
+import { Module } from '../../Module';
 
 export const ModuleView = {
   Module,

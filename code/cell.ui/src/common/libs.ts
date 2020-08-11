@@ -4,8 +4,8 @@ export { containsFocus, mouse };
 import { css, color, CssValue } from '@platform/css';
 export { css, color, CssValue };
 
-import { value, defaultValue, rx, time } from '@platform/util.value';
-export { value, defaultValue, rx, time };
+import { value, defaultValue, rx, time, dispose } from '@platform/util.value';
+export { value, defaultValue, rx, time, dispose };
 
 import { Client, Uri } from '@platform/cell.client';
 export { Client, Uri };

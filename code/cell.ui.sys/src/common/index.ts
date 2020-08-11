@@ -12,8 +12,6 @@ export const COLORS = constants.COLORS;
 /**
  * Libs
  */
-import { dispose } from '@platform/types';
-export { dispose };
 
 import { events } from '@platform/react';
 export { events };
@@ -30,8 +28,8 @@ export { coord };
 import { equals } from 'ramda';
 export const R = { equals };
 
-import { rx, time, defaultValue, id } from '@platform/util.value';
-export { rx, time, defaultValue, id };
+import { rx, time, defaultValue, id, dispose } from '@platform/util.value';
+export { rx, time, defaultValue, id, dispose };
 
 import { ui, Module } from '@platform/cell.ui';
 export { ui, Module };
