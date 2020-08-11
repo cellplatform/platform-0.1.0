@@ -7,7 +7,7 @@ import * as util from './util';
  * Strategy for navigating around a tree.
  */
 export const mouse: t.TreeviewStrategyMouseNavigation = (args) => {
-  const { ctx, events, mutate, disposable } = util.prepare(args);
+  const { ctx, events, mutate, disposable } = util.args(args);
 
   const get = util.get(ctx);
   const query = get.query;

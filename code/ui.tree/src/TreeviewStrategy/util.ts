@@ -16,7 +16,7 @@ type C = t.ITreeviewStrategyContext;
  * Wrangle input args for a strategy.
  */
 
-export const prepare = (args: t.TreeviewStrategyArgs) => {
+export const args = (args: t.TreeviewStrategyArgs) => {
   const ctx = args.ctx;
   const disposable = dispose.create(args.until$);
   const event$ = args.event$.pipe(takeUntil(disposable.dispose$));
