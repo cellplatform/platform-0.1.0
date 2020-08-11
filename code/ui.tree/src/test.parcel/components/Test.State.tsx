@@ -79,7 +79,8 @@ export class Test extends React.PureComponent<ITestProps> {
     /**
      * State / Behavior Strategy
      */
-    TreeviewStrategy.navigation({ root: this.tree }).listen(this.treeview$, this.unmounted$);
+    const root = this.tree;
+    TreeviewStrategy.default({ root }).listen(this.treeview$, this.unmounted$);
   }
 
   public componentWillUnmount() {
