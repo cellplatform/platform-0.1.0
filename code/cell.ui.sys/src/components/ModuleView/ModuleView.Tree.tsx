@@ -60,7 +60,7 @@ export class ModuleViewTree extends React.PureComponent<
         .subscribe((e) => this.forceUpdate());
 
       // Start the behavior strategy.
-      TreeviewStrategy.default({ root: module }).listen(this.treeview$, this.unmounted$);
+      TreeviewStrategy.default({ root: module }).listen(this.treeview$, current.dispose$);
 
       // Re-render the component.
       this.state$.next({ current });
