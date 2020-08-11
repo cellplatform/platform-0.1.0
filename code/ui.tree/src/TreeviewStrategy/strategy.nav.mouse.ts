@@ -1,15 +1,23 @@
 import { filter } from 'rxjs/operators';
 
 import { t } from '../common';
-import { prepare, getParent } from './util';
+import * as util from './util';
 
 /**
  * Strategy for navigating around a tree.
  */
-export const navigation: t.TreeviewStrategyNavigation = (ctx, disposable) => {
+export const mouse: t.TreeviewStrategyMouseNavigation = (ctx, disposable) => {
   return {
     listen(event$, until$) {
-      const { api, events, mutate } = prepare({ ctx, disposable, event$, until$ });
+      const { api, events, mutate } = util.prepare({ ctx, disposable, event$, until$ });
+
+      const get = util.get(ctx);
+      const query = get.query;
+
+      const setCurrent = (id?: string) => {
+        mutate.current(id);
+        mutate.selected(get.children(id)[0]?.id);
+      };
 
       /**
        * EVENTS: Left mouse button.
@@ -17,16 +25,24 @@ export const navigation: t.TreeviewStrategyNavigation = (ctx, disposable) => {
       const left = events.mouse('LEFT');
 
       /**
+       * BEHAVIOR: Set as selected when node is single-clicked.
+       */
+      left.down.node$.subscribe((e) => mutate.selected(e.id));
+
+      /**
        * BEHAVIOR: Step up to parent when the "back" button is
        *           single-clicked on the panel header.
        */
-      left.down.parent$.subscribe((e) => mutate.current(getParent(ctx, e.node)?.id));
+      left.down.parent$.subscribe((e) => {
+        const parent = query.parent(e.node);
+        setCurrent(parent?.id);
+      });
 
       /**
        * BEHAVIOR: Navigate into child when the "drill in chevron"
        *           is single-clicked.
        */
-      left.down.drillIn$.subscribe((e) => mutate.current(e.id));
+      left.down.drillIn$.subscribe((e) => setCurrent(e.id));
 
       /**
        * BEHAVIOR: Toggle open/closed an inline node when
@@ -51,7 +67,7 @@ export const navigation: t.TreeviewStrategyNavigation = (ctx, disposable) => {
        */
       dblClickNodeWithChildren$
         .pipe(filter((e) => !(e.props || {}).inline))
-        .subscribe((e) => mutate.current(e.id));
+        .subscribe((e) => setCurrent(e.id));
 
       /**
        * BEHAVIOR: Toggle open/closed an inline node when

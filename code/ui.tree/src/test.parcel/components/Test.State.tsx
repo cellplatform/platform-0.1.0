@@ -22,6 +22,8 @@ const SAMPLES = {
         id: 'Default-1',
         children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
       },
+      { id: 'Default-2' },
+      { id: 'Default-3' },
     ],
   } as Node,
   TWISTY: {

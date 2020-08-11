@@ -25,11 +25,13 @@ export type ITreeviewStrategy = IStrategy<t.TreeviewEvent>;
 export type ITreeviewStrategyContext = { root: t.ITreeState };
 
 export type TreeviewStrategyDefault = (ctx: C, disposable?: D) => ITreeviewStrategy;
-export type TreeviewStrategyNavigation = (ctx: C, disposable?: D) => ITreeviewStrategy;
-export type TreeviewStrategySelection = (ctx: C, disposable?: D) => ITreeviewStrategy;
+export type TreeviewStrategyMouseNavigation = (ctx: C, disposable?: D) => ITreeviewStrategy;
+export type TreeviewStrategyKeyboardNavigation = (ctx: C, disposable?: D) => ITreeviewStrategy;
 
 export type ITreeviewStrategies = {
   default: TreeviewStrategyDefault;
-  navigation: TreeviewStrategyNavigation;
-  selection: TreeviewStrategySelection;
+  nav: {
+    mouse: TreeviewStrategyMouseNavigation;
+    keyboard: TreeviewStrategyKeyboardNavigation;
+  };
 };

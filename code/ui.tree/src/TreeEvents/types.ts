@@ -14,6 +14,7 @@ export type TreeEvents = {
 
 export type ITreeEvents<T extends N = N> = {
   treeview$: Observable<t.TreeviewEvent>;
+  keyboard$: Observable<t.ITreeviewKeyboard>;
   render: ITreeRenderEvents<T>;
   beforeRender: ITreeBeforeRenderEvents<T>;
   mouse$(options?: {

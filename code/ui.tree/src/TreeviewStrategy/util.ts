@@ -1,3 +1,5 @@
+import { TreeQuery } from '@platform/state/lib/TreeQuery';
+
 import { dispose } from '@platform/types';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -32,11 +34,30 @@ export const prepare = (args: {
 };
 
 /**
- * Retrieve the parent of the given node.
+ * Query helpers.
  */
-export const getParent = (ctx: C, node: N) => {
-  return ctx.root.query.ancestor(node, (e) => {
-    const node = e.node as N;
-    return e.level > 0 && !node.props?.treeview?.inline;
-  });
-};
+export function get(ctx: C) {
+  const query = TreeQuery.create({ root: ctx.root.root });
+  const get = {
+    query,
+    get root() {
+      return ctx.root.root as N;
+    },
+    get nav() {
+      return get.root.props?.treeview?.nav || {};
+    },
+    get selected() {
+      return get.nav.selected;
+    },
+    get current() {
+      return get.nav.current;
+    },
+    node(id?: t.NodeIdentifier) {
+      return id ? query.findById(id) : get.root;
+    },
+    children(parent?: t.NodeIdentifier) {
+      return get.node(parent)?.children || [];
+    },
+  };
+  return get;
+}

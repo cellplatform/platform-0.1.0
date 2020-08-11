@@ -2,7 +2,6 @@ import { t } from '../common';
 
 type M = t.ITreeviewStrategyMutation;
 type N = t.ITreeviewNode;
-type P = t.ITreeviewNodeProps;
 
 /**
  * Constructs a helper that performs mutations on a treeview.

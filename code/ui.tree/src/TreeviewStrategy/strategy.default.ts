@@ -1,5 +1,5 @@
-import { navigation } from './strategy.navigation';
-import { selection } from './strategy.selection';
+import { keyboard } from './strategy.nav.keyboard';
+import { mouse } from './strategy.nav.mouse';
 import * as t from './types';
 import { prepare } from './util';
 
@@ -11,8 +11,8 @@ export const all: t.TreeviewStrategyDefault = (ctx, disposable) => {
     listen(event$, until$) {
       const { api } = prepare({ ctx, disposable, event$, until$ });
 
-      navigation(ctx, api).listen(event$, until$);
-      selection(ctx, api).listen(event$, until$);
+      mouse(ctx, api).listen(event$, until$);
+      keyboard(ctx, api).listen(event$, until$);
 
       return api;
     },

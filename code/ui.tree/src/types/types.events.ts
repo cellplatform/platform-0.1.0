@@ -50,6 +50,7 @@ export type ITreeviewKeyboardEvent<T extends N = N> = {
 };
 export type ITreeviewKeyboard<T extends N = N> = {
   root?: T;
+  current?: string;
   keypress: IKeypressEvent;
 };
 

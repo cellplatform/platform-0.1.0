@@ -122,10 +122,11 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
      * Keyboard.
      */
     keyPress$.pipe(filter(() => this.isFocused)).subscribe((keypress) => {
-      const root = this.props.root;
+      const { root, current } = this.props;
+
       this.props.event$?.next({
         type: 'TREEVIEW/keyboard',
-        payload: { root, keypress },
+        payload: { root, current, keypress },
       });
     });
 

@@ -1,5 +1,6 @@
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { rx } from '@platform/util.value';
 
 import { t } from '../common';
 
@@ -24,6 +25,7 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
    */
   private constructor(event$: Observable<E>, dispose$?: Observable<any>) {
     this.treeview$ = event$.pipe(takeUntil(this.dispose$));
+    this.keyboard$ = rx.payload<t.ITreeviewKeyboardEvent>(this.treeview$, 'TREEVIEW/keyboard');
     if (dispose$) {
       dispose$.subscribe(() => this.dispose());
     }
@@ -39,6 +41,8 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
    */
   private _render: t.ITreeRenderEvents<T>;
   private _beforeRender: t.ITreeBeforeRenderEvents<T>;
+
+  public readonly keyboard$: Observable<t.ITreeviewKeyboard>;
   public readonly treeview$: Observable<E>;
 
   private readonly _dispose$ = new Subject<void>();
