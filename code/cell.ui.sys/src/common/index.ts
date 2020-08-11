@@ -12,6 +12,9 @@ export const COLORS = constants.COLORS;
 /**
  * Libs
  */
+import { dispose } from '@platform/types';
+export { dispose };
+
 import { events } from '@platform/react';
 export { events };
 

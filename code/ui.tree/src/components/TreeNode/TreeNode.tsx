@@ -441,7 +441,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
 
     if (colors.borderTop !== undefined) {
       topColor = colors.borderTop;
-    } else if (isFirst) {
+    } else if (isFirst || colors.bg) {
       topColor = false;
     }
 

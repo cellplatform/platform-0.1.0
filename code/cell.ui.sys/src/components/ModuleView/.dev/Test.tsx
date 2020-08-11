@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { ModuleView } from '..';
 import { css, CssValue, time, ui } from '../../../common';
-import * as t from './types';
-import { ComponentFrame } from './ComponentFrame';
 import { Icons } from '../../primitives';
+import { ComponentFrame } from './ComponentFrame';
+import { TestKong } from './Test.Kong';
+import * as t from './types';
 
 const Module = ModuleView.Module;
-import { TestKong } from './Test.Kong';
 
 /**
  * Component
@@ -20,8 +20,6 @@ export type ITestState = {
   foo?: t.MyModule;
   bar?: t.MyModule;
   selected?: t.MyModule;
-  rootNav?: t.ITreeViewNavigation;
-  childNav?: t.ITreeViewNavigation;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -77,32 +75,26 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       fire: ctx.fire as any,
     });
 
+    this.state$.next({ root, foo, bar });
+
     /**
-     * Setup shared tree-view navigation controller
-     * NOTE:
-     *    This is done once here as we have multiple tree-views
-     *    that are sharing the same `treeview$` event stream.
-     *    On a single treeview, we would not want to do this
-     *    and the <ModuleView.Tree> component would setup its
-     *    own controller automatically.
+     * Work with root events.
      */
 
-    const rootNav = ModuleView.Tree.navigation({
-      module: root,
-      treeview$: this.treeview$,
-      dispose$: this.unmounted$,
-      fire: ctx.fire,
+    // Monitor selection in left-hand tree.
+    const rootEvents = Module.events(root, this.unmounted$);
+
+    rootEvents.selection$.subscribe((e) => {
+      const selected = root.find((child) => child.id === e.tree.selection?.id);
+      this.state$.next({ selected });
     });
 
-    this.state$.next({ rootNav, root, foo, bar });
-
     /**
-     * Work with events.
+     * Work with global events.
      */
+    const globalEvents = Module.events(ctx.event$, this.unmounted$);
 
-    const events = Module.events(ctx.event$);
-
-    events.render$.subscribe((e) => {
+    globalEvents.render$.subscribe((e) => {
       if (e.module === foo.id) {
         e.render(this.renderDiagram());
       }
@@ -134,11 +126,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       ctx.children(draft, (children) => {
         children.push({ id: 'zinger' });
         children.push(...[{ id: 'one' }, { id: 'two' }]);
-        children.push({ id: 'sub-tree', props: { treeview: { label: 'Sub-tree' } } });
+        // children.push({ id: 'sub-tree', props: { treeview: { label: 'Sub-tree' } } });
       });
     });
 
-    time.delay(1000, () => {
+    time.delay(500, () => {
       bar.change((draft, ctx) => {
         const child = ctx.children(draft)[0];
         ctx.props(child, (props) => {
@@ -150,7 +142,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           };
         });
         if (!child.children) {
-          child.children = [{ id: 'my-child-1', props: { treeview: { inline: {} } } }];
+          child.children = [
+            { id: 'my-child-1', props: { treeview: { label: 'child-1' } } },
+            { id: 'my-child-2', props: { treeview: { label: 'child-2' } } },
+          ];
         }
       });
     });
@@ -178,14 +173,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       tree: css({
         position: 'relative',
         width: 300,
-        // backgroundColor: color.format(1),
         WebkitAppRegion: 'none',
         display: 'flex',
       }),
       main: css({
         position: 'relative',
         flex: 1,
-        // backgroundColor: color.format(1),
         WebkitAppRegion: 'none',
       }),
       fill: css({ Absolute: 0 }),
@@ -200,16 +193,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.body}>
           <div {...css(styles.tree, { marginRight: MARGIN })}>
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
-              {this.state.rootNav && (
-                <ModuleView.Tree style={styles.fill} nav={this.state.rootNav} tag={'left'} />
-              )}
+              <ModuleView.Tree module={this.state.root} />
             </ComponentFrame>
           </div>
           <div {...css(styles.tree, { marginRight: MARGIN })}>
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
-              {this.state.childNav && (
-                <ModuleView.Tree style={styles.fill} nav={this.state.childNav} tag={'left.child'} />
-              )}
+              <ModuleView.Tree module={this.state.selected} />
             </ComponentFrame>
           </div>
           <div {...styles.main}>
@@ -224,9 +213,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           </div>
           <div {...css(styles.tree, { marginLeft: MARGIN })}>
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg} blur={true}>
-              {this.state.rootNav && (
-                <ModuleView.Tree style={styles.fill} nav={this.state.rootNav} tag={'right'} />
-              )}
+              <ModuleView.Tree module={this.state.root} />
             </ComponentFrame>
           </div>
         </div>
@@ -266,24 +253,5 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
   private renderFilter: t.ModuleFilter = (args) => {
     return true;
-  };
-
-  // private rootLens = () => {
-  //   const nav = this.state.rootNav;
-
-  //   const selected = nav?.selected;
-
-  //   if (nav) {
-  //     const p = nav.query.parent(selected);
-  //     console.log('p', p);
-  //     // return nav.selected;
-  //   }
-
-  //   return nav?.current;
-  // };
-
-  private childTreeLens = () => {
-    const selected = this.state.rootNav?.selected;
-    // return selected;
   };
 }

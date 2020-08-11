@@ -1,12 +1,14 @@
 import { TreeState } from '@platform/state';
 import { Observable, Subject } from 'rxjs';
-import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { filter, map, share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { is } from '@platform/state/lib/common/is';
 import { rx } from '@platform/util.value';
+import { fire } from './Module.fire';
 
 import { t } from '../common';
 
 const identity = TreeState.identity;
+import { equals } from 'ramda';
 
 export const create: t.ModuleGetEvents = (subject, until$) => {
   const subject$ = is.observable(subject) ? subject : (subject as t.IModule).event.$;
@@ -81,7 +83,7 @@ export function filterEvent(event: t.ModuleEvent, filter?: t.ModuleFilter) {
 
 /**
  * Monitors the events of a module (and it's children) and bubbles
- * the "MODULE/changed" event.
+ * the relevant events.
  */
 export function monitorAndDispatch(module: t.IModule) {
   type M = t.IModule<any>;
@@ -95,10 +97,9 @@ export function monitorAndDispatch(module: t.IModule) {
 
   const monitor = (module: M, until$: Observable<any> = new Subject()) => {
     const id = module.id;
-    const events = module.event;
-    const changed$ = events.changed$.pipe(takeUntil(until$));
-    const patched$ = events.patched$.pipe(takeUntil(until$));
-    const child$ = events.childAdded$.pipe(takeUntil(until$));
+    const changed$ = module.event.changed$.pipe(takeUntil(until$));
+    const patched$ = module.event.patched$.pipe(takeUntil(until$));
+    const childAdded$ = module.event.childAdded$.pipe(takeUntil(until$));
 
     changed$.subscribe((change) => {
       module.dispatch({
@@ -114,7 +115,20 @@ export function monitorAndDispatch(module: t.IModule) {
       });
     });
 
-    child$.subscribe((e) => {
+    // Convert changes to the tree-navigation data into [Module/selection] events.
+    changed$
+      .pipe(
+        map((e) => e.to.props?.treeview?.nav as NonNullable<t.ITreeviewNodeProps['nav']>),
+        filter((e) => Boolean(e)),
+        distinctUntilChanged((prev, next) => equals(prev, next)),
+      )
+      .subscribe((e) => {
+        const { current, selected } = e;
+        const root = module.root;
+        fire(module.dispatch).selection({ root, current, selected });
+      });
+
+    childAdded$.subscribe((e) => {
       const child = module.find((child) => child.id === e.child.id);
       monitorChild(module, child); // <== RECURSION 🌳
     });
