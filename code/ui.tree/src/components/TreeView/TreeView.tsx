@@ -23,7 +23,6 @@ import { constants, t } from '../../common';
 import * as themes from '../../themes';
 import { TreeEvents } from '../../TreeEvents';
 import { TreeUtil } from '../../TreeUtil';
-import { TreeViewNavigation } from '../../TreeViewNavigation';
 import { TreeViewState } from '../../TreeviewState';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
@@ -70,7 +69,6 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   public static query = TreeUtil.query;
   public static identity = TreeViewState.identity;
   public static State = TreeViewState;
-  public static Navigation = TreeViewNavigation;
 
   public static events<T extends N = N>(
     event$: Observable<t.TreeviewEvent>,
