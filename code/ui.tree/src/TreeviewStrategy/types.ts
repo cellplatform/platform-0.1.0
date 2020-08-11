@@ -1,8 +1,11 @@
+import { Observable } from 'rxjs';
+
 import { t } from '../common';
 
 type M = ITreeviewStrategyMutation;
 type C = t.ITreeviewStrategyContext;
 type D = t.IDisposable;
+type E = t.TreeviewEvent;
 
 /**
  * Mutation
@@ -16,12 +19,15 @@ export type ITreeviewStrategyMutation = {
 /**
  * Strategy for treeview selection.
  */
-export type ITreeviewStrategy = t.IEventStrategy<t.TreeviewEvent>;
+export type ITreeviewStrategy = D;
 export type ITreeviewStrategyContext = { root: t.ITreeState };
 
-export type TreeviewStrategyDefault = (ctx: C, disposable?: D) => ITreeviewStrategy;
-export type TreeviewStrategyMouseNavigation = (ctx: C, disposable?: D) => ITreeviewStrategy;
-export type TreeviewStrategyKeyboardNavigation = (ctx: C, disposable?: D) => ITreeviewStrategy;
+type A = TreeviewStrategyArgs;
+export type TreeviewStrategyArgs = { ctx: C; event$: Observable<E>; until$: Observable<any> };
+
+export type TreeviewStrategyDefault = (args: A) => ITreeviewStrategy;
+export type TreeviewStrategyMouseNavigation = (args: A) => ITreeviewStrategy;
+export type TreeviewStrategyKeyboardNavigation = (args: A) => ITreeviewStrategy;
 
 export type ITreeviewStrategies = {
   default: TreeviewStrategyDefault;
