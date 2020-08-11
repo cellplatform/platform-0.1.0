@@ -1,13 +1,8 @@
-import { Observable } from 'rxjs';
 import { t } from '../common';
 
 type M = ITreeviewStrategyMutation;
 type C = t.ITreeviewStrategyContext;
 type D = t.IDisposable;
-
-export type IStrategy<E extends t.Event, R extends D = D> = {
-  listen(event$: Observable<E>, until?: Observable<any>): R;
-};
 
 /**
  * Mutation
@@ -21,7 +16,7 @@ export type ITreeviewStrategyMutation = {
 /**
  * Strategy for treeview selection.
  */
-export type ITreeviewStrategy = IStrategy<t.TreeviewEvent>;
+export type ITreeviewStrategy = t.IEventStrategy<t.TreeviewEvent>;
 export type ITreeviewStrategyContext = { root: t.ITreeState };
 
 export type TreeviewStrategyDefault = (ctx: C, disposable?: D) => ITreeviewStrategy;
