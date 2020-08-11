@@ -30,8 +30,8 @@ const NODE = constants.CLASS.NODE;
 export type TreeNodeTwisty = 'OPEN' | 'CLOSED' | null;
 
 export type ITreeNodeProps = {
-  node: t.ITreeviewNode;
   rootId?: string;
+  node: t.ITreeviewNode;
   depth: number;
   children?: React.ReactNode;
   renderer: t.ITreeviewRenderer;
@@ -176,11 +176,14 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
   public render() {
     const props = this.nodeProps;
     const isEnabled = this.isEnabled;
-    const padding = style.toPadding(props.padding, { defaultValue: DEFAULT.PADDING });
     const opacity = this.opacity;
+    const padding = style.toPadding(props.padding, { defaultValue: DEFAULT.PADDING });
+    const paddingBottom = props.inline?.isOpen ? 0 : padding.paddingBottom;
+
     const styles = {
       base: css({
         ...padding,
+        paddingBottom: paddingBottom,
         position: 'relative',
         boxSizing: 'border-box',
         marginTop: props.marginTop,
@@ -472,6 +475,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
     const { onMouse } = this.props;
     return TreeNode.mouseHandlers(() => this.props.node, target, onMouse);
   };
+
   public static mouseHandlers(
     getNode: () => t.ITreeviewNode,
     target: t.ITreeviewMouse['target'],
