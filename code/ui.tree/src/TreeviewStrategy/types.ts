@@ -1,6 +1,10 @@
 import { Observable } from 'rxjs';
 import { t } from '../common';
 
+type M = ITreeviewStrategyMutation;
+type C = t.ITreeviewStrategyContext;
+type D = t.IDisposable;
+
 export type IStrategy<E extends t.Event, R extends D = D> = {
   listen(event$: Observable<E>, until?: Observable<any>): R;
 };
@@ -8,7 +12,6 @@ export type IStrategy<E extends t.Event, R extends D = D> = {
 /**
  * Mutation
  */
-type M = ITreeviewStrategyMutation;
 export type ITreeviewStrategyMutation = {
   current(id?: string): M;
   selected(id?: string): M;
@@ -18,8 +21,6 @@ export type ITreeviewStrategyMutation = {
 /**
  * Strategy for treeview selection.
  */
-type C = t.ITreeviewStrategyContext;
-type D = t.IDisposable;
 export type ITreeviewStrategy = IStrategy<t.TreeviewEvent>;
 export type ITreeviewStrategyContext = { root: t.ITreeState };
 

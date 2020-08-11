@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { ModuleView } from '..';
 import { css, CssValue, time, ui } from '../../../common';
@@ -26,7 +26,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public state: ITestState = {};
   private state$ = new Subject<Partial<ITestState>>();
   private unmounted$ = new Subject();
-  private treeview$ = new Subject<t.TreeviewEvent>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;
