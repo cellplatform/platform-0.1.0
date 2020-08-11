@@ -1,5 +1,5 @@
 import { color, css, CssValue } from '@platform/css';
-import { containsFocus } from '@platform/react';
+import { containsFocus, events } from '@platform/react';
 import {
   IStackPanel,
   StackPanel,
@@ -110,14 +110,26 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   public componentDidMount() {
     // Setup observables.
     const focus$ = this.focus$.pipe(takeUntil(this.unmounted$));
+    const keyPress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
 
     // Bubble events through given subject(s).
     if (this.props.event$) {
-      this.event$.subscribe(this.props.event$);
+      this.event$.subscribe((e) => this.props.event$?.next(e));
     }
     if (this.props.mouse$) {
-      this.mouse$.subscribe(this.props.mouse$);
+      this.mouse$.subscribe((e) => this.props.mouse$?.next(e));
     }
+
+    /**
+     * Keyboard.
+     */
+    keyPress$.pipe(filter(() => this.isFocused)).subscribe((keypress) => {
+      const root = this.props.root;
+      this.props.event$?.next({
+        type: 'TREEVIEW/keyboard',
+        payload: { root, keypress },
+      });
+    });
 
     /**
      * Focus.

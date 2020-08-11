@@ -1,5 +1,5 @@
 import { t } from './common';
-import { MouseEvent } from '@platform/react';
+import { MouseEvent, IKeypressEvent } from '@platform/react';
 
 type N = t.ITreeviewNode;
 export type TreeViewMouseTarget = 'NODE' | 'TWISTY' | 'DRILL_IN' | 'PARENT';
@@ -10,6 +10,7 @@ export type TreeViewMouseTarget = 'NODE' | 'TWISTY' | 'DRILL_IN' | 'PARENT';
 export type TreeviewEvent =
   | ITreeviewMouseEvent
   | ITreeviewFocusEvent
+  | ITreeviewKeyboardEvent
   | TreeviewBeforeRenderEvent
   | TreeviewRenderEvent;
 
@@ -39,6 +40,18 @@ export type ITreeviewFocusEvent = {
   payload: ITreeviewFocus;
 };
 export type ITreeviewFocus = { isFocused: boolean };
+
+/**
+ * Keyboard
+ */
+export type ITreeviewKeyboardEvent<T extends N = N> = {
+  type: 'TREEVIEW/keyboard';
+  payload: ITreeviewKeyboard<T>;
+};
+export type ITreeviewKeyboard<T extends N = N> = {
+  root?: T;
+  keypress: IKeypressEvent;
+};
 
 /**
  * Before Render
