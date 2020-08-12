@@ -8,16 +8,16 @@ import * as t from './types';
 import { ModuleView } from '@platform/cell.ui/lib/components/ModuleView';
 const Module = ModuleView.Module;
 
-export type ITestKongProps = {
+export type ITestSampleProps = {
   e: t.IModuleRender;
   module: string;
   style?: CssValue;
 };
-export type ITestKongState = { module?: t.MyModule };
+export type ITestSampleState = { module?: t.MyModule };
 
-export class TestKong extends React.PureComponent<ITestKongProps, ITestKongState> {
-  public state: ITestKongState = {};
-  private state$ = new Subject<Partial<ITestKongState>>();
+export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampleState> {
+  public state: ITestSampleState = {};
+  private state$ = new Subject<Partial<ITestSampleState>>();
   private unmounted$ = new Subject();
 
   public static contextType = Module.Context;
@@ -28,10 +28,14 @@ export class TestKong extends React.PureComponent<ITestKongProps, ITestKongState
    */
 
   public componentDidMount() {
+    const ctx = this.context;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
-    // Sample: retrieve the module from via a REQUEST event.
-    const ctx = this.context;
+    // SAMPLE: Retrieve the module from via a REQUEST event.
+    //
+    // NB:     This could also have been retrieved from the [context]
+    //         but is being "requested" in this way to demonstrate
+    //         how this is one.
     const module = Module.fire(ctx.fire).request<t.MyModule>(this.props.module).module;
     this.state$.next({ module });
   }
@@ -113,7 +117,7 @@ export class TestKong extends React.PureComponent<ITestKongProps, ITestKongState
   private onAddModuleClick = async () => {
     if (this.module) {
       const module = this.module;
-      const child = Module.register(module, { id: 'child', label: 'MyChild' });
+      const child = Module.register(module, { id: 'child', treeview: 'MyChild' });
       console.log('child', child);
     }
   };

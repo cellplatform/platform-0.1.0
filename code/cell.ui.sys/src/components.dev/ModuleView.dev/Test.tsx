@@ -5,10 +5,8 @@ import { takeUntil } from 'rxjs/operators';
 import { css, CssValue, time, ui } from '../../common';
 import { Icons } from '../../components/primitives';
 import { ComponentFrame } from './ComponentFrame';
-import { TestKong } from './Test.Kong';
-import { TestDiagram } from './Test.Diagram';
 
-import * as render from './render';
+import * as factory from './factory';
 
 import * as t from './types';
 
@@ -42,12 +40,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const ctx = this.context;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
-    const module = Module.create<t.MyModuleData>({
+    const root = Module.create<t.MyModuleData>({
       event$: ctx.event$,
       dispose$: this.unmounted$,
     });
 
-    this.init(module);
+    this.init(root);
   }
 
   public componentWillUnmount() {
@@ -65,18 +63,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       until$: this.unmounted$,
     });
 
-    const foo = Module.register(root, { id: 'foo', label: 'Diagram' }).module;
-    const bar = Module.register(root, { id: 'bar', label: 'Sample' }).module;
+    const foo = Module.register(root, { id: 'foo', treeview: 'Diagram' }).module;
+    const bar = Module.register(root, { id: 'bar', treeview: 'Sample' }).module;
 
     console.log('root:', root.id);
     console.log('foo: ', foo.id);
     console.log('bar: ', bar.id);
     console.log('-------------------------------------------');
-
-    // const RootProvider = Module.provider<t.MyContext>({
-    //   event$: ctx.event$,
-    //   fire: ctx.fire as any,
-    // });
 
     const rootStrategy = ModuleView.Tree.Strategy.default();
 
@@ -103,7 +96,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     /**
      * Setup the render factory.
      */
-    render.factory({
+    factory.renderer({
       fire: ctx.fire,
       event$: ctx.event$,
       until$: this.unmounted$,
@@ -114,8 +107,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
      */
     foo.change((draft, ctx) => {
       ctx.props(draft, (props) => {
-        props.view = 'MyView'; // TODO - do this at registration
-        props.data = { foo: 'foo-view' };
+        const view: t.MyView = 'DIAGRAM';
+        props.view = view; // TODO - do this at registration
+        props.data = { foo: 'FOO' };
       });
       ctx.children(draft, (children) => {
         children.push(...[{ id: 'one' }, { id: 'two' }]);
@@ -124,8 +118,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     bar.change((draft, ctx) => {
       ctx.props(draft, (props) => {
-        props.view = 'MyView'; // TODO - do this at registration
-        props.data = { foo: 'bar-view' };
+        const view: t.MyView = 'SAMPLE';
+        props.view = view; // TODO - do this at registration
+        props.data = { foo: 'FOO' };
+
+        // const treeview = props.treeview || (props.treeview = {});
+        // treeview.isVisible = false;
       });
       ctx.children(draft, (children) => {
         children.push({ id: 'zinger' });

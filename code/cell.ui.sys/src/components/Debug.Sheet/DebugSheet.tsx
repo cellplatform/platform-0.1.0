@@ -14,7 +14,7 @@ export class DebugSheet extends React.PureComponent<IDebugSheetProps> {
   private unmounted$ = new Subject();
 
   public static async register(within: t.IModule) {
-    const module = ui.Module.register(within, { id: 'debug.sheet', label: 'Sheet' });
+    const module = ui.Module.register(within, { id: 'debug.sheet', treeview: 'Sheet' });
 
     console.log('sheet', module);
 
