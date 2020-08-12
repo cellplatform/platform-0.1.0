@@ -23,11 +23,17 @@ export function render(fire: F, args: t.ModuleFireRenderArgs) {
   const { module, tree, data = {}, view = '' } = args;
 
   let el: JSX.Element | null | undefined = undefined;
-  const render: t.IModuleRender['render'] = (input) => (el = input);
+
+  type R = t.IModuleRender;
+  const render: R['render'] = (input) => {
+    el = input;
+    payload.handled = true;
+  };
+  const payload: R = { module, tree, data, view, render, handled: false };
 
   fire({
     type: 'Module/render',
-    payload: { module, tree, data, view, render },
+    payload,
   });
 
   if (el !== undefined) {

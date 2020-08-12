@@ -10,10 +10,11 @@ export function register<T extends t.IModule = t.IModule>(
   args: t.ModuleRegisterArgs,
 ): t.ModuleRegistration {
   const root = formatModuleNode(
+    { id: args.id },
     {
-      id: args.id,
+      treeview: args.treeview,
+      view: args.view,
     },
-    { label: args.label, view: args.view },
   );
 
   const module = parent.add({ root }) as T;
@@ -36,3 +37,12 @@ export function register<T extends t.IModule = t.IModule>(
   // Finish up.
   return { id, module };
 }
+
+/**
+ * TODO 🐷
+ *
+ * - register
+ *    - registration (strongly typed view)
+ *
+ *  - ModuleEvents.register<t.View>('view')
+ */

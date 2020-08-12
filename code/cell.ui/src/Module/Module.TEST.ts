@@ -24,12 +24,12 @@ describe.only('Module', () => {
     expect(root.props?.treeview).to.eql({ label: 'Unnamed' });
   });
 
-  describe('register', () => {
+  describe.only('register', () => {
     it('with all arguments', () => {
       const parent = create();
       const res = Module.register<MyModule>(parent, {
         id: 'foo',
-        label: 'MyFoo',
+        treeview: 'MyFoo',
         view: 'MyView',
         data: { foo: 123 },
       });
@@ -52,6 +52,15 @@ describe.only('Module', () => {
       expect(root.props?.treeview).to.eql({ label: 'Unnamed' });
       expect(root.props?.view).to.eql('');
       expect(root.props?.data).to.eql({});
+    });
+
+    it('with {treeview} node argument', () => {
+      const parent = create();
+      const res = Module.register(parent, { id: 'foo', treeview: { icon: 'Face' } });
+
+      const treeview = res.module.root.props?.treeview || {};
+      expect(treeview.label).to.eql(undefined);
+      expect(treeview.icon).to.eql('Face');
     });
 
     it('throw: id contains "/" character', () => {

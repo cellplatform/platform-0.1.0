@@ -24,8 +24,10 @@ export function create<D extends O>(args?: t.ModuleArgs<D>): t.IModule<D> {
     rx.payload<t.IModuleRequestEvent>($, 'Module/request').subscribe((e) => {
       const child = module.find((child) => child.id === e.module);
       if (child) {
-        const path = module.path.from(child);
-        e.response({ module: child, path });
+        e.response({
+          module: child,
+          path: module.path.from(child),
+        });
       }
     });
   }
@@ -38,9 +40,9 @@ export function create<D extends O>(args?: t.ModuleArgs<D>): t.IModule<D> {
  */
 export function formatModuleNode<D extends O = any>(
   input: t.ITreeNode | string,
-  defaults: { label?: string; view?: string; data?: D } = {},
+  defaults: { treeview?: string | t.ITreeviewNodeProps; view?: string; data?: D } = {},
 ) {
-  const { label = 'Unnamed', view = '', data = {} } = defaults;
+  const { view = '', data = {} } = defaults;
   const node = typeof input === 'string' ? { id: input } : { ...input };
 
   type M = t.IModuleNode<D>;
@@ -49,8 +51,12 @@ export function formatModuleNode<D extends O = any>(
   props.data = (props.data || data) as D;
   props.view = props.view || view;
 
-  const treeview = (props.treeview = props.treeview || {});
-  treeview.label = treeview.label ? treeview.label : label;
+  if (typeof defaults.treeview === 'object') {
+    props.treeview = props.treeview || defaults.treeview;
+  } else {
+    const treeview = (props.treeview = props.treeview || {});
+    treeview.label = treeview.label ? treeview.label : defaults.treeview || 'Unnamed';
+  }
 
   return node as M;
 }

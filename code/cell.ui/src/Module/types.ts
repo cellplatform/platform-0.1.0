@@ -8,7 +8,7 @@ type N = t.ITreeNode;
 type E = t.ModuleEvent;
 
 export type ModuleArgs<D extends O> = t.ITreeStateArgs<IModuleNode<D>> & {
-  event$?: Observable<t.Event>; // Global event bus.
+  event$?: Observable<t.Event>; // Global event-bus.
 };
 
 export type Module = {
@@ -48,7 +48,7 @@ export type Module = {
  */
 export type ModuleRegisterArgs<D extends O = any> = {
   id: string;
-  label?: string;
+  treeview?: string | t.ITreeviewNodeProps;
   view?: string;
   data?: D;
 };
@@ -202,6 +202,7 @@ export type IModuleRender<D extends O = any> = {
   data: D;
   view: string;
   render(el: JSX.Element | null): void;
+  handled: boolean;
 };
 export type IModuleRenderedEvent = {
   type: 'Module/rendered';
