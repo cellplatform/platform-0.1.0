@@ -2,16 +2,17 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ModuleView } from '@platform/cell.ui/lib/components/ModuleView';
 import { css, CssValue, time, ui } from '../../common';
 import { Icons } from '../../components/primitives';
 import { ComponentFrame } from './ComponentFrame';
 import { TestKong } from './Test.Kong';
 import { TestDiagram } from './Test.Diagram';
 
+import * as render from './render';
+
 import * as t from './types';
 
-const Module = ModuleView.Module;
+const { Module, ModuleView } = ui;
 
 /**
  * Component
@@ -72,10 +73,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     console.log('bar: ', bar.id);
     console.log('-------------------------------------------');
 
-    const RootProvider = Module.provider<t.MyContext>({
-      event$: ctx.event$,
-      fire: ctx.fire as any,
-    });
+    // const RootProvider = Module.provider<t.MyContext>({
+    //   event$: ctx.event$,
+    //   fire: ctx.fire as any,
+    // });
 
     const rootStrategy = ModuleView.Tree.Strategy.default();
 
@@ -100,29 +101,17 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     });
 
     /**
-     * Work with global events.
+     * Setup the render factory.
      */
-    const globalEvents = Module.events(ctx.event$, this.unmounted$);
-
-    globalEvents.render$.subscribe((e) => {
-      if (e.module === foo.id) {
-        const el = (
-          <RootProvider>
-            <TestDiagram />
-          </RootProvider>
-        );
-        e.render(el);
-      }
-      if (e.module === bar.id) {
-        const el = (
-          <RootProvider>
-            <TestKong e={e} module={bar.id} />
-          </RootProvider>
-        );
-        e.render(el);
-      }
+    render.factory({
+      fire: ctx.fire,
+      event$: ctx.event$,
+      until$: this.unmounted$,
     });
 
+    /**
+     * Muck around with sample data.
+     */
     foo.change((draft, ctx) => {
       ctx.props(draft, (props) => {
         props.view = 'MyView'; // TODO - do this at registration

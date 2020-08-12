@@ -7,3 +7,6 @@ export { parseClipboardUri };
 
 import { Module } from './Module';
 export { Module };
+
+import { ModuleView } from './components/ModuleView';
+export { ModuleView };
