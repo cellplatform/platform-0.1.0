@@ -91,9 +91,10 @@ export type TreeStateChangerContext<
   T extends N = N,
   P extends O = NonNullable<T['props']>
 > = t.ITreeQuery<T> & {
+  query(root?: T, namespace?: string): t.ITreeQuery<T>;
   children<C extends T>(of: C, fn?: (children: C[]) => void): C[];
   props(of: N, fn?: (props: P) => void): P;
-  toObject<T extends O>(draft: T): T;
+  toObject<T extends O>(draft?: T): T|undefined;
 };
 
 /**
@@ -107,7 +108,6 @@ export type TreeStateSyncSourceArg<T extends N = N> =
   | t.ITreeState<T>
   | { event$: Observable<t.TreeStateEvent>; parent: string };
 export type TreeStateSyncer = t.IDisposable & {
-  //
   readonly parent: string;
 };
 

@@ -8,7 +8,8 @@ import { color, COLORS, CssValue, dispose, t } from '../../common';
 
 export type IModuleViewTreeProps = {
   module?: t.IModule;
-  treeview?: ITreeViewProps;
+  strategy?: t.ITreeviewStrategy;
+  treeviewProps?: ITreeViewProps;
   style?: CssValue;
 };
 
@@ -57,13 +58,14 @@ export class ModuleViewTree extends React.PureComponent<
       const disposable = dispose.create(this.unmounted$);
       const until$ = disposable.dispose$;
 
-      // Start the behavior strategy.
-      const treeview$ = this.treeview$;
-      const strategy = TreeviewStrategy.default({ tree, treeview$, until$ });
-
-      // Wire up tree-view events.
+      // Setup the behavior strategy.
+      const strategy = this.props.strategy || TreeviewStrategy.default();
       const events = TreeView.events(this.treeview$, until$);
       events.beforeRender.node$.subscribe(this.beforeNodeRender);
+      events.treeview$.subscribe((event) => {
+        // console.log('--', event.type);
+        strategy.next({ tree, event });
+      });
 
       // Redraw on change.
       tree.event.changed$
@@ -93,10 +95,6 @@ export class ModuleViewTree extends React.PureComponent<
    * [Properties]
    */
 
-  // private get strategy() {
-  //   return this.state.current?.strategy;
-  // }
-
   private get root() {
     return this.props.module?.root;
   }
@@ -110,13 +108,18 @@ export class ModuleViewTree extends React.PureComponent<
    */
 
   public render() {
+    const root = this.root;
+    if (!root) {
+      return null;
+    }
+
     return (
       <TreeView
         background={'NONE'}
         tabIndex={0}
-        {...this.props.treeview}
+        {...this.props.treeviewProps}
         style={this.props.style}
-        root={this.root}
+        root={root}
         current={this.nav.current}
         event$={this.treeview$}
       />

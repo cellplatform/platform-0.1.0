@@ -31,7 +31,7 @@ export function mutations(root: t.ITreeviewState): M {
 
   const toggleOpen = (id?: string) => {
     root.change((draft, ctx) => {
-      const node = ctx.findById(id);
+      const node = ctx.query(draft).findById(id);
       if (node) {
         const props = getProps(node);
         const inline = props.inline || (props.inline = {});

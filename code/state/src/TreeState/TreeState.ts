@@ -318,9 +318,12 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
 
     return {
       ...query,
+
       props: TreeState.props,
       children: TreeState.children,
-      toObject: StateObject.toObject,
+      toObject: <T extends O>(draft?: T) => (draft ? StateObject.toObject(draft) : undefined),
+      query: (node?: T, namespace?: string) =>
+        TreeQuery.create<T>({ root: node || root, namespace }),
     };
   }
 

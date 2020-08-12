@@ -75,16 +75,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       fire: ctx.fire as any,
     });
 
-    // const rootStrategy = ModuleView.Tree.Strategy.default({
-    //   tree: root,
-    //   until$: this.unmounted$,
-    // });
+    const rootStrategy = ModuleView.Tree.Strategy.default();
 
     this.state$.next({
       root,
       foo,
       bar,
-      // rootStrategy,
+      rootStrategy,
     });
 
     /**
@@ -203,7 +200,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.body}>
           <div {...css(styles.tree, { marginRight: MARGIN })}>
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
-              <ModuleView.Tree module={this.state.root} />
+              <ModuleView.Tree module={this.state.root} strategy={this.state.rootStrategy} />
             </ComponentFrame>
           </div>
           <div {...css(styles.tree, { marginRight: MARGIN })}>

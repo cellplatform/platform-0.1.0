@@ -12,23 +12,24 @@ export { dispose };
 type N = t.ITreeviewNode;
 
 /**
- * Wrangle input args for a strategy.
+ * Wrangle input options for a strategy.
  */
-export const args = (args: t.TreeviewStrategyArgs) => {
-  const disposable = dispose.create(args.until$);
-  const until$ = disposable.dispose$;
-
-  const tree = args.tree;
-  const mutate = mutations(tree);
-
+export const options = () => {
   const treeview$ = new Subject<t.TreeviewEvent>();
-  if (args.treeview$) {
-    args.treeview$.pipe(takeUntil(until$)).subscribe((e) => treeview$.next(e));
-  }
+  const events = TreeEvents.create(treeview$);
+  return { treeview$, events };
+};
 
-  const events = TreeEvents.create(treeview$, until$);
-  const strategy: t.ITreeviewStrategy = disposable;
-  return { strategy, tree, treeview$, events, mutate, until$ };
+/**
+ * Current helpers
+ */
+export const current = (tree: t.ITreeState) => {
+  const getter = get(tree);
+  return {
+    get: getter,
+    query: getter.query,
+    mutate: mutations(tree),
+  };
 };
 
 /**

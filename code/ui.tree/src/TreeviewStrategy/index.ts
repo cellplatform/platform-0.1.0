@@ -6,5 +6,8 @@ import { keyboard } from './strategy.nav.keyboard';
 
 export const TreeviewStrategy: t.ITreeviewStrategies = {
   default: all,
-  nav: { mouse, keyboard },
+  nav: {
+    mouse,
+    keyboard,
+  },
 };

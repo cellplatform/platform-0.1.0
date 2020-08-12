@@ -1,5 +1,5 @@
 import { id } from '@platform/util.value';
-import { enablePatches, produceWithPatches, setAutoFreeze, original } from 'immer';
+import { enablePatches, produceWithPatches, setAutoFreeze, original, isDraft } from 'immer';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { Patch } from '../Patch';
@@ -73,7 +73,7 @@ export class StateObject<T extends O, E extends t.Event<any>>
    * See: https://immerjs.github.io/immer/docs/original
    */
   public static toObject<T extends O>(input: T) {
-    return original(input) as T;
+    return isDraft(input) ? (original(input) as T) : input;
   }
 
   /**
