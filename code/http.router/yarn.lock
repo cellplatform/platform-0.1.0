@@ -51,13 +51,13 @@
     js-yaml "3.14.0"
     minimatch "3.0.4"
 
-"@platform/http.types@0.2.14":
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.14.tgz#1ad08a3f6258c5da81fee74739a0726dd7917cae"
-  integrity sha512-3LcCmHNwRXM3ZFrnbd0RKAPW4NOTK9RmtX1CbYPuApGrKu605UuHmwLMIA7JuJc4zu8GLjE+xQihlMupJlEyuQ==
+"@platform/http.types@0.2.15":
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.15.tgz#c2aca8a520993636f1f7a6076ba11c74e479ba9d"
+  integrity sha512-8v1mnRMN4zEZmOTqIPR+v2URgLEmPhogNAX19zTyQOiOYluodW6auk7kaTdI4eBFmxvJOP73SYI1+pPQU+gUNw==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.1"
+    "@platform/types" "0.5.2"
 
 "@platform/libs@0.2.2":
   version "0.2.2"
@@ -110,10 +110,10 @@
     "@platform/libs" "0.2.2"
     "@platform/ts.libs" "3.9.9"
 
-"@platform/types@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.1.tgz#9f0876d6cc88f79fef7f6da33f6a800e9a5961d7"
-  integrity sha512-f6jORp9BsKvxiqrxReAdLO1C3FHQihKmIfrsGzeWWTDhZnj5rNpMtRwK87I7Rc9MhilsvTOUwQ322qz0yqqJpQ==
+"@platform/types@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.2.tgz#0c9f6afa7ce68781ff038e8b84a57475517dc9d6"
+  integrity sha512-l8ggCga1W952JNysR3KAScRYzzlBL2nDJj2mF4BglbqumklHG6yZRGQuyWp86Hrzt2RqWZ+2OArt0xfvA1cPUw==
 
 "@platform/util.is@0.0.127":
   version "0.0.127"
@@ -130,13 +130,13 @@
     fuzzy "0.1.3"
     underscore.string "3.3.5"
 
-"@platform/util.value@0.7.28":
-  version "0.7.28"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.28.tgz#384fb99116943a4a380ccd2f357a79b1f2dad86a"
-  integrity sha512-MDXiSZ1CrBvSEhDPdptwodBNOkcM02a3pp7zd3lrOEwJ4UsWU4n4ydR5ymzW1tkThbIxjafHNYFPBDVvDZrRZA==
+"@platform/util.value@0.7.29":
+  version "0.7.29"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.29.tgz#a5c168c85a1ba2e479aa922ea458406a5de4f81a"
+  integrity sha512-vihTNtR93mX0jOD48GtXvoJMxMAw2vzJgAyNprHA+3FMNxc/rLhjjuXfcDxxCIFMOdoXCEF2s4X/+IB2Du+v/A==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.1"
+    "@platform/types" "0.5.2"
     "@platform/util.is" "0.0.127"
     cuid "2.1.8"
     dayjs "1.8.27"

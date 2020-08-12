@@ -34,13 +34,13 @@
     chalk "4.1.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.2.13.tgz#0f800e0328b39ae35a42ef23593c426e3c6a3c51"
-  integrity sha512-9O4Y4qUDcj36h6p1qLQaMPKOYioO0PlWRcWonMYlZGbUwj+REZLq5DO0RbkwOz2TXm9i4gOrjKrSg0AnW3P0sg==
+"@platform/fs.s3.types@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.2.14.tgz#f65a681e3114daf34b35ab62048310e20c4e0567"
+  integrity sha512-KeStQwfq+Nh8gawuxbwAaB7C01/tIZemj6slVnceSKyhVzu1FRaqtcUMBYVRyM6+khOGeY1HzHfJVb1onaFEbQ==
   dependencies:
-    "@platform/http.types" "0.2.14"
-    "@platform/types" "0.5.1"
+    "@platform/http.types" "0.2.15"
+    "@platform/types" "0.5.2"
 
 "@platform/fs.types@0.0.14":
   version "0.0.14"
@@ -64,24 +64,24 @@
     js-yaml "3.14.0"
     minimatch "3.0.4"
 
-"@platform/http.types@0.2.14":
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.14.tgz#1ad08a3f6258c5da81fee74739a0726dd7917cae"
-  integrity sha512-3LcCmHNwRXM3ZFrnbd0RKAPW4NOTK9RmtX1CbYPuApGrKu605UuHmwLMIA7JuJc4zu8GLjE+xQihlMupJlEyuQ==
+"@platform/http.types@0.2.15":
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.15.tgz#c2aca8a520993636f1f7a6076ba11c74e479ba9d"
+  integrity sha512-8v1mnRMN4zEZmOTqIPR+v2URgLEmPhogNAX19zTyQOiOYluodW6auk7kaTdI4eBFmxvJOP73SYI1+pPQU+gUNw==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.1"
+    "@platform/types" "0.5.2"
 
-"@platform/http@0.12.24":
-  version "0.12.24"
-  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.24.tgz#74d82185fd356b49f5639ca972d834e2398e8179"
-  integrity sha512-/q2Yf2IY5hWuvgDXuSOZ2h2P6uuP5kq2B2bRAHl58TNAK5RMwdpwl/whb21nK+NjRyUiPorWf87cXKchmgythw==
+"@platform/http@0.12.25":
+  version "0.12.25"
+  resolved "https://registry.yarnpkg.com/@platform/http/-/http-0.12.25.tgz#6efcdb3eeec4d65d5cba3951afa98bfed7bfcefe"
+  integrity sha512-M2+WLIKp4uciz1JM8AC5Sh/Y3eOxs2ihmQFX4DHQUdn+U2aRnoRm1yJN+4NQf+0ohqLJrNDPnoJGDiRmYTRuxQ==
   dependencies:
-    "@platform/http.types" "0.2.14"
+    "@platform/http.types" "0.2.15"
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.1"
+    "@platform/types" "0.5.2"
     "@platform/util.mimetype" "0.1.13"
-    "@platform/util.value" "0.7.28"
+    "@platform/util.value" "0.7.29"
     isomorphic-fetch "2.2.1"
 
 "@platform/libs@0.2.2":
@@ -144,10 +144,10 @@
     "@platform/libs" "0.2.2"
     "@platform/ts.libs" "3.9.9"
 
-"@platform/types@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.1.tgz#9f0876d6cc88f79fef7f6da33f6a800e9a5961d7"
-  integrity sha512-f6jORp9BsKvxiqrxReAdLO1C3FHQihKmIfrsGzeWWTDhZnj5rNpMtRwK87I7Rc9MhilsvTOUwQ322qz0yqqJpQ==
+"@platform/types@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.2.tgz#0c9f6afa7ce68781ff038e8b84a57475517dc9d6"
+  integrity sha512-l8ggCga1W952JNysR3KAScRYzzlBL2nDJj2mF4BglbqumklHG6yZRGQuyWp86Hrzt2RqWZ+2OArt0xfvA1cPUw==
 
 "@platform/util.is@0.0.127":
   version "0.0.127"
@@ -159,13 +159,13 @@
   resolved "https://registry.yarnpkg.com/@platform/util.mimetype/-/util.mimetype-0.1.13.tgz#15e90a8d5585e8873a12ad6e2245f0ef7106f9d3"
   integrity sha512-AIzBulaLh6MNY+h8Cj/ywxfuRdK3eeS80brx1WVTPcG2SKNNzbSn4LvDVnGtk2LwGRfJniUfNbCRIdXayp0G7g==
 
-"@platform/util.value@0.7.28":
-  version "0.7.28"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.28.tgz#384fb99116943a4a380ccd2f357a79b1f2dad86a"
-  integrity sha512-MDXiSZ1CrBvSEhDPdptwodBNOkcM02a3pp7zd3lrOEwJ4UsWU4n4ydR5ymzW1tkThbIxjafHNYFPBDVvDZrRZA==
+"@platform/util.value@0.7.29":
+  version "0.7.29"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.29.tgz#a5c168c85a1ba2e479aa922ea458406a5de4f81a"
+  integrity sha512-vihTNtR93mX0jOD48GtXvoJMxMAw2vzJgAyNprHA+3FMNxc/rLhjjuXfcDxxCIFMOdoXCEF2s4X/+IB2Du+v/A==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.1"
+    "@platform/types" "0.5.2"
     "@platform/util.is" "0.0.127"
     cuid "2.1.8"
     dayjs "1.8.27"

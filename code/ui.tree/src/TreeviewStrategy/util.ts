@@ -1,7 +1,6 @@
 import { TreeQuery } from '@platform/state/lib/TreeQuery';
-import { dispose } from '@platform/types';
+import { dispose } from '@platform/util.value';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
 import { TreeEvents } from '../TreeEvents';

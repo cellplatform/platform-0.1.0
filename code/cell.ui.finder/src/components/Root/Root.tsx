@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 
 import { color, css, CssValue, t, ui } from '../../common';
 import { FinderShell } from '../FinderShell';
-import { WindowTitleBar } from '../primitives';
+import { WindowTitlebar } from '../primitives';
 
 export type IRootProps = { style?: CssValue };
 
@@ -32,14 +32,14 @@ export class Root extends React.PureComponent<IRootProps> {
         backgroundColor: color.format(1),
       }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
-      body: css({ Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0] }),
+      body: css({ Absolute: [WindowTitlebar.HEIGHT, 0, 0, 0] }),
     };
 
     const uri = 'system.finder'; // temp
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <WindowTitleBar style={styles.titlebar} address={uri} />
+        <WindowTitlebar style={styles.titlebar} address={uri} />
         <FinderShell style={styles.body} leftWidth={200} />
       </div>
     );

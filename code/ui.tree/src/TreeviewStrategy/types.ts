@@ -19,7 +19,6 @@ export type ITreeviewStrategyMutation = {
  * Strategy for treeview selection.
  */
 export type ITreeviewStrategy = { next: TreeviewStrategyNext };
-
 export type TreeviewStrategyNext = (args: TreeviewStrategyNextArgs) => void;
 export type TreeviewStrategyNextArgs = { event: E; tree: t.ITreeState };
 

@@ -7,6 +7,8 @@ import { css, CssValue, time, ui } from '../../common';
 import { Icons } from '../../components/primitives';
 import { ComponentFrame } from './ComponentFrame';
 import { TestKong } from './Test.Kong';
+import { TestDiagram } from './Test.Diagram';
+
 import * as t from './types';
 
 const Module = ModuleView.Module;
@@ -104,7 +106,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     globalEvents.render$.subscribe((e) => {
       if (e.module === foo.id) {
-        e.render(this.renderDiagram());
+        const el = (
+          <RootProvider>
+            <TestDiagram />
+          </RootProvider>
+        );
+        e.render(el);
       }
       if (e.module === bar.id) {
         const el = (
@@ -225,32 +232,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             </ComponentFrame>
           </div>
         </div>
-      </div>
-    );
-  }
-
-  private renderDiagram() {
-    const PINK = '#FE0168';
-    const styles = {
-      base: css({
-        Absolute: 0,
-        border: `solid 10px ${PINK}`,
-        Flex: 'vertical-center-center',
-        overflow: 'hidden',
-      }),
-      image: css({ width: '80%' }),
-    };
-
-    const DIAGRAM = {
-      BYBASS: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/framing-bypass.png',
-      REDESIGN: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/redesign.png',
-    };
-
-    const src = DIAGRAM.REDESIGN;
-
-    return (
-      <div {...styles.base}>
-        <img src={src} {...styles.image} />
       </div>
     );
   }

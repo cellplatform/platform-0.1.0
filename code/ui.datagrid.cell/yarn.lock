@@ -1144,19 +1144,19 @@
   dependencies:
     "@platform/libs" "0.2.2"
 
-"@platform/cell.types@0.4.135":
-  version "0.4.135"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.135.tgz#ac647786e5c20bc7af4ff356eb7b9671e0786f15"
-  integrity sha512-Z6DIK7+DY6XiJJk7pP6tLKxIfoPYBrT2SCKlptybXpU85zTfg2ii2vfY1aUPCfQ4Z4oOPZ3i8fhO/r6ZuldoUw==
+"@platform/cell.types@0.4.136":
+  version "0.4.136"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.136.tgz#425ce4d4d1529cfc1f8b3811780f4b668c2b6bfd"
+  integrity sha512-IUZDZ6ZrXDAYv4eMAGYNr0eYs/wnm7Vf+bErBFjxtXz0T4c7ok88cieqniqjihjaNnoRP7AijBjV/f94VQZvGg==
   dependencies:
     "@platform/cache" "0.2.33"
-    "@platform/fs.s3.types" "0.2.13"
+    "@platform/fs.s3.types" "0.2.14"
     "@platform/fs.types" "^0.0.14"
-    "@platform/fsdb.types" "0.6.30"
-    "@platform/http.types" "0.2.14"
+    "@platform/fsdb.types" "0.6.31"
+    "@platform/http.types" "0.2.15"
     "@platform/libs" "0.2.2"
     "@platform/log" "0.1.27"
-    "@platform/types" "0.5.1"
+    "@platform/types" "0.5.2"
     "@platform/util.diff" "0.0.34"
 
 "@platform/cli.prompt@0.3.19":
@@ -1224,14 +1224,14 @@
     jss-plugin-global "10.1.1"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.4.8", "@platform/css@^0.4.8":
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.8.tgz#5853e881fb541844556dd666818cde630904dc60"
-  integrity sha512-HIwquT1HZ3whsSLnOj7olJBfX7a/hy6KIfWlGeBci/7le2xAm9G9bMs5sMEBEWtpza+5nZnHXhmyOwYE8yuUig==
+"@platform/css@0.4.9", "@platform/css@^0.4.9":
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.9.tgz#1a12a34a89a2fff653230971bf13be97e121bd6c"
+  integrity sha512-xcrN192g5wgsNTHMUzec9J7t5uGJAFP8joHtsmsjUidlN2vB1CbGExLEk8nUd+kkTcWYHllRu8+sbp8SJ5ljCQ==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/util.is" "0.0.127"
-    "@platform/util.value" "0.7.28"
+    "@platform/util.value" "0.7.29"
     "@types/tinycolor2" "1.4.2"
     glamor-jss "1.4.1"
     jss-plugin-global "10.3.0"
@@ -1275,13 +1275,13 @@
     chalk "4.1.0"
     listr "0.14.3"
 
-"@platform/fs.s3.types@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.2.13.tgz#0f800e0328b39ae35a42ef23593c426e3c6a3c51"
-  integrity sha512-9O4Y4qUDcj36h6p1qLQaMPKOYioO0PlWRcWonMYlZGbUwj+REZLq5DO0RbkwOz2TXm9i4gOrjKrSg0AnW3P0sg==
+"@platform/fs.s3.types@0.2.14":
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/@platform/fs.s3.types/-/fs.s3.types-0.2.14.tgz#f65a681e3114daf34b35ab62048310e20c4e0567"
+  integrity sha512-KeStQwfq+Nh8gawuxbwAaB7C01/tIZemj6slVnceSKyhVzu1FRaqtcUMBYVRyM6+khOGeY1HzHfJVb1onaFEbQ==
   dependencies:
-    "@platform/http.types" "0.2.14"
-    "@platform/types" "0.5.1"
+    "@platform/http.types" "0.2.15"
+    "@platform/types" "0.5.2"
 
 "@platform/fs.types@0.0.11":
   version "0.0.11"
@@ -1327,21 +1327,21 @@
     js-yaml "3.14.0"
     minimatch "3.0.4"
 
-"@platform/fsdb.types@0.6.30":
-  version "0.6.30"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.6.30.tgz#46c07cb3c30d45bf00cdb759767dc70c0b4ae6ef"
-  integrity sha512-gvHWG1DyvuucSDjYWhwxglMtr6vHqt8hga69uo4XNpBnNs5iEPJaglp5qfSH7Qb6/5gD3MoplgQcNoOpY9WW/A==
+"@platform/fsdb.types@0.6.31":
+  version "0.6.31"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.6.31.tgz#7f6e1019d03c952f6e58cc0f1cae0109636eb4c8"
+  integrity sha512-CLdi9WF1yKX6Ms7tLzcsPrjtbNsQi/rQYm6HF2BA0rBpwnK4bhs/885sxakNpGnlGpz90n42qFJgV/2pXc4QbQ==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.1"
+    "@platform/types" "0.5.2"
 
-"@platform/http.types@0.2.14":
-  version "0.2.14"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.14.tgz#1ad08a3f6258c5da81fee74739a0726dd7917cae"
-  integrity sha512-3LcCmHNwRXM3ZFrnbd0RKAPW4NOTK9RmtX1CbYPuApGrKu605UuHmwLMIA7JuJc4zu8GLjE+xQihlMupJlEyuQ==
+"@platform/http.types@0.2.15":
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.15.tgz#c2aca8a520993636f1f7a6076ba11c74e479ba9d"
+  integrity sha512-8v1mnRMN4zEZmOTqIPR+v2URgLEmPhogNAX19zTyQOiOYluodW6auk7kaTdI4eBFmxvJOP73SYI1+pPQU+gUNw==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.1"
+    "@platform/types" "0.5.2"
 
 "@platform/libs@0.2.2":
   version "0.2.2"
@@ -1406,12 +1406,12 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/react@0.4.41":
-  version "0.4.41"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.41.tgz#1e6ff4338f32935fa81fb6869d26912868aa71aa"
-  integrity sha512-l2LMFi4nJs8OZdgmbdcjOmHzppEECz9uKyDtNoSXVzKUoLawI6i4y1DsEIcxIK+dKur5fjdm/NzWurPHRXUHaA==
+"@platform/react@0.4.42":
+  version "0.4.42"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.42.tgz#eb2f00f9d2185fcd684f92286b4014af43d6efc1"
+  integrity sha512-Hy+sA3bZy7kWLwX4gO8yBHl4CfWHuqXF7KbgMLpKGPxYne+PNjPquaoINjD+pU1oCg92WV5N4npKAnWlWaWluA==
   dependencies:
-    "@platform/css" "0.4.8"
+    "@platform/css" "0.4.9"
     "@platform/util.is" "0.0.127"
     react "16.13.1"
     react-dom "16.13.1"
@@ -1504,38 +1504,38 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.21.tgz#d55e67e5fdf25de66fdd6aaee5b2714aab66f86c"
   integrity sha512-IFcybg/oI96IDTbuFUwlmUe9ubele63clYYvbNCkTMnpWSbGgrys5soaga6l3XAntcIshN92LSB1974CZ9kzdQ==
 
-"@platform/types@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.1.tgz#9f0876d6cc88f79fef7f6da33f6a800e9a5961d7"
-  integrity sha512-f6jORp9BsKvxiqrxReAdLO1C3FHQihKmIfrsGzeWWTDhZnj5rNpMtRwK87I7Rc9MhilsvTOUwQ322qz0yqqJpQ==
+"@platform/types@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.2.tgz#0c9f6afa7ce68781ff038e8b84a57475517dc9d6"
+  integrity sha512-l8ggCga1W952JNysR3KAScRYzzlBL2nDJj2mF4BglbqumklHG6yZRGQuyWp86Hrzt2RqWZ+2OArt0xfvA1cPUw==
 
-"@platform/ui.codemirror@0.1.72":
-  version "0.1.72"
-  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.1.72.tgz#9c6707b6220ad380a3522e74c803ce9829332ed2"
-  integrity sha512-yuP/pR6X3vyMjZwREIQcxLo0Cmoam8gHTrwT9zmP44HZo/l07U0xV9gB4JvtCsz4JvpdAut7olxC2uF/P/6YGQ==
+"@platform/ui.codemirror@0.1.73":
+  version "0.1.73"
+  resolved "https://registry.yarnpkg.com/@platform/ui.codemirror/-/ui.codemirror-0.1.73.tgz#300275feef8666f4f8188f8888fa5556cd57b7b9"
+  integrity sha512-Yp/f2IVz64jT5lcUAVnDaN/QcTn0E3EbFXtJKHSw1VesSoFcRyinFyEYqJ3ykKF8s5iJb8/dPmwVjPDJNXu+0A==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/react" "0.4.41"
-    "@platform/ui.text" "0.3.72"
+    "@platform/react" "0.4.42"
+    "@platform/ui.text" "0.3.73"
     "@types/codemirror" "0.0.97"
     codemirror "5.55.0"
     react-codemirror2 "7.2.1"
 
-"@platform/ui.datagrid.types@0.7.157":
-  version "0.7.157"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.157.tgz#7606f572cf7a6b36439abee1dbf024787a264b3b"
-  integrity sha512-m+g9SxBhxPZs0r/epMMeLwZ6oLJ4ZH75gwkh8kksJBVT4787wIhnMB/n+U7zYbwz++jKhIXnDkBPug0KXoEPfQ==
+"@platform/ui.datagrid.types@0.7.158":
+  version "0.7.158"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.158.tgz#bcc763e139fab0c3f6d8654b198ff1968a32972e"
+  integrity sha512-y/T/rgyJ3g+Uv5DqgKKhR66eauonozZcqeDXXCE92T2ChrqsRAJe9lNEyrgo/hSrpo9O62/i8hRLUUs9l5NDEw==
   dependencies:
-    "@platform/cell.types" "0.4.135"
-    "@platform/react" "0.4.41"
+    "@platform/cell.types" "0.4.136"
+    "@platform/react" "0.4.42"
 
-"@platform/ui.editor@0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.3.2.tgz#81ab1854ea63155323196e7706e5b1abb50af8cf"
-  integrity sha512-AU/H7ZXBGl8+ZxDtUW/feI/1YsVeZ+LI6tD0Pumn/q4CBEZJ1YlTlCm9BekAxzhW5baeGgVKmaf7HsTrUvxOwg==
+"@platform/ui.editor@0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@platform/ui.editor/-/ui.editor-0.3.3.tgz#8b9ad7dc17bb5bad7236ce81fc153fe8231e5484"
+  integrity sha512-98/SqgEp+PIx0L7gDfwCAn1kG4juy9FKoR9wyZ3Oq5s/FRZgaKvYtxf8MlZH7H7m8xlwrZ+rdrh4xpSHNtTIHg==
   dependencies:
-    "@platform/css" "0.4.8"
-    "@platform/react" "0.4.41"
+    "@platform/css" "0.4.9"
+    "@platform/react" "0.4.42"
     prosemirror-commands "1.1.4"
     prosemirror-dropcursor "1.3.2"
     prosemirror-gapcursor "1.1.5"
@@ -1590,15 +1590,15 @@
     "@platform/react" "0.4.26"
     "@platform/util.value" "0.7.21"
 
-"@platform/ui.text@0.3.72":
-  version "0.3.72"
-  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.72.tgz#e6bd60283c157891f74a883b4d83c6f2f8d7acc2"
-  integrity sha512-bRZ8ezETure69qo9g2nSUFj2S3TabYHrKMwmtwgE88+Nnwg+KQcrrMccLhlRvum49UDx3WTEzuTPP8JnjgvEpA==
+"@platform/ui.text@0.3.73":
+  version "0.3.73"
+  resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.73.tgz#6e1d5068657eafc32ea221c326da6366143326aa"
+  integrity sha512-w4L6Ek4ks1+SOmhhfdD55sNh6zns7t0K3CNn2un9G3f/uwpmQlCTmD1Ar+3NvmjLTZfF/4PYB4VJrxfp479TfA==
   dependencies:
-    "@platform/css" "^0.4.8"
+    "@platform/css" "^0.4.9"
     "@platform/libs" "0.2.2"
-    "@platform/react" "0.4.41"
-    "@platform/util.value" "0.7.28"
+    "@platform/react" "0.4.42"
+    "@platform/util.value" "0.7.29"
 
 "@platform/ui.tree@0.4.53":
   version "0.4.53"
@@ -1678,13 +1678,13 @@
     cuid "2.1.8"
     dayjs "1.8.25"
 
-"@platform/util.value@0.7.28":
-  version "0.7.28"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.28.tgz#384fb99116943a4a380ccd2f357a79b1f2dad86a"
-  integrity sha512-MDXiSZ1CrBvSEhDPdptwodBNOkcM02a3pp7zd3lrOEwJ4UsWU4n4ydR5ymzW1tkThbIxjafHNYFPBDVvDZrRZA==
+"@platform/util.value@0.7.29":
+  version "0.7.29"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.29.tgz#a5c168c85a1ba2e479aa922ea458406a5de4f81a"
+  integrity sha512-vihTNtR93mX0jOD48GtXvoJMxMAw2vzJgAyNprHA+3FMNxc/rLhjjuXfcDxxCIFMOdoXCEF2s4X/+IB2Du+v/A==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.1"
+    "@platform/types" "0.5.2"
     "@platform/util.is" "0.0.127"
     cuid "2.1.8"
     dayjs "1.8.27"

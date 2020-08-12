@@ -8,7 +8,7 @@ import { ModuleView } from '@platform/cell.ui/lib/components/ModuleView';
 const Module = ModuleView.Module;
 
 export type ITestDiagramProps = {
-  module: string;
+  // module: string;
   style?: CssValue;
 };
 export type ITestDiagramState = t.Object;
@@ -52,9 +52,12 @@ export class TestDiagram extends React.PureComponent<ITestDiagramProps, ITestDia
     const DIAGRAM = {
       BYBASS: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/framing-bypass.png',
       REDESIGN: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/redesign.png',
+      THOUGHT_VECTORS: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/thought-vectors.png',
     };
 
-    const src = DIAGRAM.REDESIGN;
+    const src = DIAGRAM.THOUGHT_VECTORS;
+
+    console.log(src);
 
     return (
       <div {...styles.base}>
