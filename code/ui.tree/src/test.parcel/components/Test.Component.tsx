@@ -8,7 +8,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { TreeView } from '../..';
 import { t } from '../../common';
 import { COLORS } from '../constants';
-import * as sample from '../sample';
+import * as sample from '../SAMPLE';
 import { Icons } from './Icons';
 
 export type ITestProps = { style?: CssValue };

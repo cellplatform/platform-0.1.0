@@ -1,2 +1,2 @@
 export * from './util';
-export * from './sample';
+export * from './DATA';
