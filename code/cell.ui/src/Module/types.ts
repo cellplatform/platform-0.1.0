@@ -52,7 +52,11 @@ export type ModuleRegisterArgs<D extends O = any> = {
   view?: string;
   data?: D;
 };
-export type ModuleRegistration<T extends IModule = IModule> = { id: string; module: T };
+export type ModuleRegistration<T extends IModule = IModule> = {
+  id: string;
+  module: T;
+  path: string;
+};
 
 /**
  * A module state-tree.

@@ -33,9 +33,13 @@ describe.only('Module', () => {
         view: 'MyView',
         data: { foo: 123 },
       });
-      const child = res.module;
 
+      const child = res.module;
       const root = child.root;
+
+      expect(res.id).to.eql(res.module.id);
+      expect(res.path).to.eql(`${parent.id}/${child.id}`);
+
       expect(Module.identity.hasNamespace(root.id)).to.eql(true);
       expect(Module.identity.key(root.id)).to.eql('foo');
 

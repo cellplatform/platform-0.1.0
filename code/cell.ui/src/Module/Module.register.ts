@@ -35,7 +35,7 @@ export function register<T extends t.IModule = t.IModule>(
   });
 
   // Finish up.
-  return { id, module };
+  return { id, module, path };
 }
 
 /**
