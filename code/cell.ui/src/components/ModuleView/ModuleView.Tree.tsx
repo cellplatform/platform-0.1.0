@@ -62,10 +62,7 @@ export class ModuleViewTree extends React.PureComponent<
       const strategy = this.props.strategy || TreeviewStrategy.default();
       const events = TreeView.events(this.treeview$, until$);
       events.beforeRender.node$.subscribe(this.beforeNodeRender);
-      events.treeview$.subscribe((event) => {
-        // console.log('--', event.type);
-        strategy.next({ tree, event });
-      });
+      events.treeview$.subscribe((event) => strategy.next({ tree, event }));
 
       // Redraw on change.
       tree.event.changed$
