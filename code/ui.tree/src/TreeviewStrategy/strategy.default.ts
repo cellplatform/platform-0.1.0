@@ -7,10 +7,10 @@ import * as util from './util';
  * All strategies configured for a typical tree-view usage scenario.
  */
 export const all: t.TreeviewStrategyDefault = (args) => {
-  const { tree, disposable, treeview$, until$ } = util.args(args);
+  const { strategy, tree, treeview$, until$ } = util.args(args);
 
   mouse({ tree, treeview$, until$ });
   keyboard({ tree, treeview$, until$ });
 
-  return disposable;
+  return strategy;
 };

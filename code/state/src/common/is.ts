@@ -4,5 +4,9 @@ export const is = {
 };
 
 const hasAll = (input: any, ...keys: string[]) => {
-  return typeof input === 'object' && keys.every((key) => typeof input[key] === 'function');
+  return (
+    input !== null &&
+    typeof input === 'object' &&
+    keys.every((key) => typeof input[key] === 'function')
+  );
 };

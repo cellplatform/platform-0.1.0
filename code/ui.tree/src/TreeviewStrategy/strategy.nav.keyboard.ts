@@ -7,7 +7,7 @@ import * as util from './util';
  * Strategy for navigating the tree via the keyboard.
  */
 export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
-  const { tree, events, mutate, disposable } = util.args(args);
+  const { tree, events, mutate, strategy } = util.args(args);
   const key$ = events.keyboard$.pipe(filter((e) => e.keypress.isPressed));
 
   const get = util.get(tree);
@@ -91,5 +91,5 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
     }
   });
 
-  return disposable;
+  return strategy;
 };

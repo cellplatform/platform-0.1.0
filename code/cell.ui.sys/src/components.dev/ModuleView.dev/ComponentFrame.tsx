@@ -66,6 +66,7 @@ export class ComponentFrame extends React.PureComponent<
         display: 'flex',
         filter: blur ? `blur(3px)` : undefined,
         opacity: blur ? 0.4 : 1,
+        pointerEvents: blur ? 'none' : 'auto',
       }),
     };
     return (

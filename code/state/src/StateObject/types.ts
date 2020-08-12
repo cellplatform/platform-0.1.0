@@ -25,6 +25,7 @@ export type StateObject = {
   ): StateMerger<T, A>;
 
   toObject<T extends O>(draft: T): T;
+  isStateObject(input: any): boolean;
 };
 
 /**

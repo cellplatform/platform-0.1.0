@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 
 import { t } from '../common';
 
@@ -23,7 +23,7 @@ export type ITreeviewStrategy = D;
 type A = TreeviewStrategyArgs;
 export type TreeviewStrategyArgs = {
   tree: t.ITreeState;
-  treeview$: Observable<E>;
+  treeview$?: Observable<E>;
   until$: Observable<any>;
 };
 

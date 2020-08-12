@@ -108,6 +108,23 @@ describe('StateObject', () => {
       expect(original?.count).to.eql(0);
       expect(obj.state.count).to.eql(123);
     });
+
+    it('isStateObject', () => {
+      const test = (input: any, expected: boolean) => {
+        const res = StateObject.isStateObject(input);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, false);
+      test(null, false);
+      test('', false);
+      test(123, false);
+      test(true, false);
+      test({}, false);
+
+      const obj = StateObject.create<IFoo>({ count: 0 });
+      test(obj, true);
+    });
   });
 
   describe('change', () => {

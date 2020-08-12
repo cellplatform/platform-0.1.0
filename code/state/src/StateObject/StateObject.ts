@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { Patch } from '../Patch';
 
-import { t } from '../common';
+import { t, is } from '../common';
 import * as events from './StateObject.events';
 import * as merge from './StateObject.merge';
 import * as action from './StateObject.action';
@@ -74,6 +74,13 @@ export class StateObject<T extends O, E extends t.Event<any>>
    */
   public static toObject<T extends O>(input: T) {
     return original(input) as T;
+  }
+
+  /**
+   * Determine if the given value is a [StateObject].
+   */
+  public static isStateObject(input: any) {
+    return is.stateObject(input);
   }
 
   /**

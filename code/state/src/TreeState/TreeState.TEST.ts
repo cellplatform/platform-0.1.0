@@ -1285,7 +1285,7 @@ describe('TreeState', () => {
     });
   });
 
-  describe.only('path', () => {
+  describe('path', () => {
     const state = create({ root: 'root' });
     const child1 = state.add({ root: { id: 'child-1' } });
     const child2 = child1.add({ root: { id: 'child-2' } });

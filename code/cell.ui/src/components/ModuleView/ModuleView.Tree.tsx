@@ -12,17 +12,20 @@ export type IModuleViewTreeProps = {
   style?: CssValue;
 };
 
-export type IModuleViewTreeState = { current?: t.IDisposable };
+export type IModuleViewTreeState = {
+  current?: t.IDisposable;
+};
 
 export class ModuleViewTree extends React.PureComponent<
   IModuleViewTreeProps,
   IModuleViewTreeState
 > {
+  public static Strategy = TreeviewStrategy;
+
   public state: IModuleViewTreeState = {};
   private state$ = new Subject<Partial<IModuleViewTreeState>>();
-
-  private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeviewEvent>();
+  private unmounted$ = new Subject();
 
   /**
    * [Lifecycle]
@@ -34,7 +37,8 @@ export class ModuleViewTree extends React.PureComponent<
   }
 
   public componentDidUpdate(prev: IModuleViewTreeProps) {
-    if (prev.module?.id !== this.props.module?.id) {
+    const next = this.props;
+    if (prev.module?.id !== next.module?.id) {
       this.initialize();
     }
   }
@@ -48,26 +52,26 @@ export class ModuleViewTree extends React.PureComponent<
     this.state.current?.dispose();
     this.state$.next({ current: undefined });
 
-    const module = this.props.module;
-    if (module) {
-      const current = dispose.create(this.unmounted$);
-      const events = TreeView.events(this.treeview$, current.dispose$);
+    const tree = this.props.module;
+    if (tree) {
+      const disposable = dispose.create(this.unmounted$);
+      const until$ = disposable.dispose$;
+
+      // Start the behavior strategy.
+      const treeview$ = this.treeview$;
+      const strategy = TreeviewStrategy.default({ tree, treeview$, until$ });
+
+      // Wire up tree-view events.
+      const events = TreeView.events(this.treeview$, until$);
       events.beforeRender.node$.subscribe(this.beforeNodeRender);
 
       // Redraw on change.
-      module.event.changed$
+      tree.event.changed$
         .pipe(takeUntil(this.unmounted$), debounceTime(10))
         .subscribe((e) => this.forceUpdate());
 
-      // Start the behavior strategy.
-      TreeviewStrategy.default({
-        treeview$: this.treeview$,
-        tree: module,
-        until$: current.dispose$,
-      });
-
       // Re-render the component.
-      this.state$.next({ current });
+      this.state$.next({ current: { ...disposable } });
     }
   }
 
@@ -75,7 +79,7 @@ export class ModuleViewTree extends React.PureComponent<
    * Process selection styles on node before it is rendered.
    */
   private beforeNodeRender = (e: t.ITreeviewBeforeRenderNode) => {
-    const isSelected = e.node.id === this.selected;
+    const isSelected = e.node.id === this.nav.selected;
     if (isSelected) {
       e.change((props) => {
         const colors = props.colors || (props.colors = {});
@@ -89,20 +93,16 @@ export class ModuleViewTree extends React.PureComponent<
    * [Properties]
    */
 
+  // private get strategy() {
+  //   return this.state.current?.strategy;
+  // }
+
   private get root() {
     return this.props.module?.root;
   }
 
   private get nav() {
     return this.root?.props?.treeview?.nav || {};
-  }
-
-  private get current() {
-    return this.nav.current;
-  }
-
-  private get selected() {
-    return this.nav.selected;
   }
 
   /**
@@ -117,7 +117,7 @@ export class ModuleViewTree extends React.PureComponent<
         {...this.props.treeview}
         style={this.props.style}
         root={this.root}
-        current={this.current}
+        current={this.nav.current}
         event$={this.treeview$}
       />
     );

@@ -1,6 +1,6 @@
 import { TreeQuery } from '@platform/state/lib/TreeQuery';
-
 import { dispose } from '@platform/types';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
@@ -17,11 +17,18 @@ type N = t.ITreeviewNode;
 export const args = (args: t.TreeviewStrategyArgs) => {
   const disposable = dispose.create(args.until$);
   const until$ = disposable.dispose$;
+
   const tree = args.tree;
   const mutate = mutations(tree);
-  const treeview$ = args.treeview$.pipe(takeUntil(until$));
+
+  const treeview$ = new Subject<t.TreeviewEvent>();
+  if (args.treeview$) {
+    args.treeview$.pipe(takeUntil(until$)).subscribe((e) => treeview$.next(e));
+  }
+
   const events = TreeEvents.create(treeview$, until$);
-  return { disposable, tree, treeview$, events, mutate, until$ };
+  const strategy: t.ITreeviewStrategy = disposable;
+  return { strategy, tree, treeview$, events, mutate, until$ };
 };
 
 /**

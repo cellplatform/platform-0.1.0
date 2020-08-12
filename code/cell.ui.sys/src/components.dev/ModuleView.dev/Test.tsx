@@ -20,6 +20,7 @@ export type ITestState = {
   foo?: t.MyModule;
   bar?: t.MyModule;
   selected?: t.MyModule;
+  rootStrategy?: t.ITreeviewStrategy;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -74,7 +75,17 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       fire: ctx.fire as any,
     });
 
-    this.state$.next({ root, foo, bar });
+    // const rootStrategy = ModuleView.Tree.Strategy.default({
+    //   tree: root,
+    //   until$: this.unmounted$,
+    // });
+
+    this.state$.next({
+      root,
+      foo,
+      bar,
+      // rootStrategy,
+    });
 
     /**
      * Work with root events.
