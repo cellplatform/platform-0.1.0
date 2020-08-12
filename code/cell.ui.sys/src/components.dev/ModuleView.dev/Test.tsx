@@ -92,7 +92,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const rootEvents = Module.events(root, this.unmounted$);
 
     rootEvents.selection$.subscribe((e) => {
-      const selected = root.find((child) => child.id === e.tree.selection?.id);
+      const id = e.tree.selection?.id;
+      const selected = root.find((child) => child.tree.query.exists(id));
       this.state$.next({ selected });
     });
 

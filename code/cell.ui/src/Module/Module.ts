@@ -1,4 +1,5 @@
 import { TreeState } from '@platform/state';
+import { TreeQuery } from '@platform/state/lib/TreeQuery';
 
 import { create } from './Module.create';
 import * as events from './Module.events';
@@ -27,6 +28,11 @@ export class Module {
    */
   public static Context = Context;
   public static provider = provider;
+
+  /**
+   * Tools for working querying a tree.
+   */
+  public static Query = TreeQuery;
 
   /**
    * Helpers for working with tree ids.

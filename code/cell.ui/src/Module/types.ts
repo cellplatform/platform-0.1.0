@@ -13,6 +13,7 @@ export type ModuleArgs<D extends O> = t.ITreeStateArgs<IModuleNode<D>> & {
 
 export type Module = {
   identity: t.TreeIdentity;
+  Query: t.TreeQuery;
   Context: React.Context<any>;
 
   create<D extends O>(args?: ModuleArgs<D>): IModule<D>;
