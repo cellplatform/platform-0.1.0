@@ -32,11 +32,13 @@ export const current = (tree: t.ITreeState) => {
   };
 };
 
+export const props = (node?: N) => node?.props?.treeview || {};
+
 /**
  * Query helpers.
  */
 export function get(tree: t.ITreeState) {
-  const query = TreeQuery.create({ root: tree.root });
+  const query = TreeQuery.create<N>({ root: tree.root });
   const get = {
     query,
     get root() {
@@ -52,7 +54,7 @@ export function get(tree: t.ITreeState) {
       return get.nav.current;
     },
     node(id?: t.NodeIdentifier) {
-      return id ? query.findById(id) : get.root;
+      return id ? (query.findById(id) as N) : get.root;
     },
     children(parent?: t.NodeIdentifier) {
       return get.node(parent)?.children || [];

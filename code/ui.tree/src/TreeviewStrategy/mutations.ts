@@ -19,6 +19,12 @@ export function mutations(root: t.ITreeviewState): M {
     return nav;
   };
 
+  const getInline = (node: N) => {
+    const props = getProps(node);
+    const inline = props.inline || (props.inline = {});
+    return inline;
+  };
+
   const selected = (id?: string) => {
     root.change((draft) => (getNav(draft).selected = id));
     return mutation;
@@ -29,20 +35,20 @@ export function mutations(root: t.ITreeviewState): M {
     return mutation;
   };
 
-  const toggleOpen = (id?: string) => {
+  const toggleOpen = (id?: string, isOpen?: boolean) => {
     root.change((draft, ctx) => {
       const node = ctx.query(draft).findById(id);
       if (node) {
-        const props = getProps(node);
-        const inline = props.inline || (props.inline = {});
-        const isOpen = Boolean(inline.isOpen);
-        inline.isOpen = !isOpen;
+        const inline = getInline(node);
+        inline.isOpen = isOpen === undefined ? !Boolean(inline.isOpen) : isOpen;
       }
     });
 
     return mutation;
   };
+  const open = (id?: string) => toggleOpen(id, true);
+  const close = (id?: string) => toggleOpen(id, false);
 
-  const mutation: M = { current, selected, toggleOpen };
+  const mutation: M = { current, selected, toggleOpen, open, close };
   return mutation;
 }

@@ -11,6 +11,8 @@ export type ITreeviewStrategyMutation = {
   current(id?: string): M;
   selected(id?: string): M;
   toggleOpen(id?: string): M;
+  open(id?: string): M;
+  close(id?: string): M;
 };
 
 /**

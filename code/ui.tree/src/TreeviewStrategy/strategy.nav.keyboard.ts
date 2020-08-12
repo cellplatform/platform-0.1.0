@@ -98,16 +98,32 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
       filter((e) => e.get.children(e.get.selected).length > 0),
     )
     .subscribe((e) => {
-      setCurrent$.next(e.get.selected);
+      const selected = e.get.selected;
+      const props = util.props(e.query.findById(selected));
+      if (props?.inline) {
+        if (props.inline.isOpen && props.chevron?.isVisible) {
+          setCurrent$.next(selected); // Drill-in.
+        } else {
+          e.mutate.open(selected);
+        }
+      } else {
+        setCurrent$.next(selected);
+      }
     });
 
   /**
    * BEHAVIOR: Step up to the parent-node when the [LEFT] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowLeft')).subscribe((e) => {
-    const parent = e.query.parent(e.get.current);
-    if (parent) {
-      setCurrent$.next(parent.id);
+    const selected = e.get.selected;
+    const props = util.props(e.query.findById(selected));
+    if (props.inline?.isOpen) {
+      e.mutate.close(selected);
+    } else {
+      const parent = e.query.parent(e.get.current);
+      if (parent) {
+        setCurrent$.next(parent.id);
+      }
     }
   });
 
