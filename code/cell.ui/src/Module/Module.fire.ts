@@ -63,7 +63,7 @@ export function selection(fire: F, args: t.ModuleFireSelectionArgs) {
 
   const findModule = (startAt: t.ITreeNode<any>) => {
     return query.ancestor(startAt, (e) => {
-      const props = (e.node.props || {}) as t.IModuleNodeProps;
+      const props = (e.node.props || {}) as t.IModuleProps;
       return props.kind === 'MODULE';
     }) as t.IModuleNode<any> | undefined;
   };

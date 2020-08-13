@@ -40,7 +40,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const ctx = this.context;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
-    const root = Module.create<t.MyModuleData>({
+    const root = Module.create<t.MyData>({
       event$: ctx.event$,
       dispose$: this.unmounted$,
     });
@@ -63,8 +63,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       until$: this.unmounted$,
     });
 
-    const foo = Module.register(root, { id: 'foo', treeview: 'Diagram' }).module;
-    const bar = Module.register(root, { id: 'bar', treeview: 'Sample' }).module;
+    const register = Module.register(root);
+    const foo = register.add({ id: 'foo', treeview: 'Diagram' }).module;
+    const bar = register.add({ id: 'bar', treeview: 'Sample' }).module;
 
     console.log('root:', root.id);
     console.log('foo: ', foo.id);

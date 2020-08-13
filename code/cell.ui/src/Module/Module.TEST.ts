@@ -24,10 +24,10 @@ describe.only('Module', () => {
     expect(root.props?.treeview).to.eql({ label: 'Unnamed' });
   });
 
-  describe.only('register', () => {
+  describe('register', () => {
     it('with all arguments', () => {
       const parent = create();
-      const res = Module.register<MyModule>(parent, {
+      const res = Module.register<MyModule>(parent).add({
         id: 'foo',
         treeview: 'MyFoo',
         view: 'MyView',
@@ -51,7 +51,7 @@ describe.only('Module', () => {
 
     it('without optional arguments', () => {
       const parent = create();
-      const res = Module.register(parent, { id: 'foo' });
+      const res = Module.register(parent).add({ id: 'foo' });
       const root = res.module.root;
       expect(root.props?.treeview).to.eql({ label: 'Unnamed' });
       expect(root.props?.view).to.eql('');
@@ -60,7 +60,7 @@ describe.only('Module', () => {
 
     it('with {treeview} node argument', () => {
       const parent = create();
-      const res = Module.register(parent, { id: 'foo', treeview: { icon: 'Face' } });
+      const res = Module.register(parent).add({ id: 'foo', treeview: { icon: 'Face' } });
 
       const treeview = res.module.root.props?.treeview || {};
       expect(treeview.label).to.eql(undefined);
@@ -69,7 +69,7 @@ describe.only('Module', () => {
 
     it('throw: id contains "/" character', () => {
       const parent = create();
-      const fn = () => Module.register(parent, { id: 'foo/bar' });
+      const fn = () => Module.register(parent).add({ id: 'foo/bar' });
       expect(fn).to.throw(/cannot contain the "\/"/);
     });
 
@@ -80,7 +80,7 @@ describe.only('Module', () => {
       const events = Module.events(parent);
       events.childRegistered$.subscribe((e) => fired.push(e));
 
-      const res = Module.register(parent, { id: 'foo' });
+      const res = Module.register(parent).add({ id: 'foo' });
       const child = res.module;
 
       expect(fired.length).to.eql(1);
@@ -90,7 +90,7 @@ describe.only('Module', () => {
 
     it('event: Module/dispose', () => {
       const parent = create();
-      const child = Module.register(parent, { id: 'foo' }).module;
+      const child = Module.register(parent).add({ id: 'foo' }).module;
 
       const fired: t.IModuleChildDisposed[] = [];
       const events = Module.events(parent);
@@ -110,8 +110,8 @@ describe.only('Module', () => {
 
     it('finds module', () => {
       const parent = create({ event$ });
-      const child1 = Module.register(parent, { id: 'foo' }).module;
-      const child2 = Module.register(child1, { id: 'bar' }).module;
+      const child1 = Module.register(parent).add({ id: 'foo' }).module;
+      const child2 = Module.register(child1).add({ id: 'bar' }).module;
 
       const res = Module.request(next, child2.id);
 
@@ -121,7 +121,7 @@ describe.only('Module', () => {
 
     it('not found', () => {
       const parent = create({ event$ });
-      Module.register(parent, { id: 'foo' }).module;
+      Module.register(parent).add({ id: 'foo' }).module;
 
       const res = Module.fire(next).request('ns:404');
       expect(res.module).to.eql(undefined);

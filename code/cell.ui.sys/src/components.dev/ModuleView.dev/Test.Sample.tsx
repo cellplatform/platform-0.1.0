@@ -117,7 +117,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
   private onAddModuleClick = async () => {
     if (this.module) {
       const module = this.module;
-      const child = Module.register(module, { id: 'child', treeview: 'MyChild' });
+      const child = Module.register(module).add({ id: 'child', treeview: 'MyChild' });
       console.log('child', child);
     }
   };

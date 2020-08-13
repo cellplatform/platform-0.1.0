@@ -5,9 +5,8 @@ import { t } from '../../common';
 export * from '../../common/types';
 
 export type MyView = 'TREE' | 'DIAGRAM' | 'SAMPLE';
-
-export type MyModuleData = { foo?: string };
-export type MyModule = t.IModule<MyModuleData>;
+export type MyData = { foo?: string | number };
+export type MyModule = t.IModule<MyData>;
 
 export type MyContext = {
   fire: t.FireEvent<any>;
