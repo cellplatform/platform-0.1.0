@@ -1,6 +1,6 @@
 {
   "name": "@platform/ui.shell",
-  "version": "0.2.103",
+  "version": "0.2.104",
   "description": "Modular application shell structure with tree navigation.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,8 +18,8 @@
     "@platform/react": "0.4.42",
     "@platform/ui.icon": "0.0.161",
     "@platform/ui.loader": "0.2.75",
-    "@platform/ui.shell.types": "0.1.97",
-    "@platform/ui.tree": "0.7.7",
+    "@platform/ui.shell.types": "0.1.98",
+    "@platform/ui.tree": "0.7.8",
     "@platform/util.value": "0.7.29"
   },
   "devDependencies": {

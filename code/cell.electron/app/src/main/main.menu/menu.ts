@@ -8,6 +8,12 @@ import { t } from '../common';
 export async function build(args: { paths: t.IAppPaths }) {
   const isMac = process.platform === 'darwin';
 
+  /**
+   * Based on default template from Electron documentation
+   * See:
+   *    https://www.electronjs.org/docs/api/menu#main-process
+   */
+
   const template = [
     // { role: 'appMenu' }
     ...(isMac
