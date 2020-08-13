@@ -5,15 +5,16 @@ import { rx, t } from '../common';
 import * as events from './Module.events';
 
 type O = Record<string, unknown>;
+type P = t.IModuleProps;
 
 /**
  * Create a new module
  */
-export function create<D extends O>(args?: t.ModuleArgs<D>): t.IModule<D> {
+export function create<T extends P>(args?: t.ModuleArgs<T>): t.IModule<T> {
   args = { ...args };
-  args.root = formatModuleNode<D>(args.root || 'module');
+  args.root = formatModuleNode<T>(args.root || 'module');
 
-  const module = TreeState.create<t.IModuleNode<D>>(args) as t.IModule<D>;
+  const module = TreeState.create(args) as t.IModule<T>;
   events.monitorAndDispatch(module);
 
   if (args.event$) {
@@ -38,17 +39,18 @@ export function create<D extends O>(args?: t.ModuleArgs<D>): t.IModule<D> {
 /**
  * Prepare a tree-node to represent the root of a MODULE.
  */
-export function formatModuleNode<D extends O = any>(
+export function formatModuleNode<T extends P = any>(
   input: t.ITreeNode | string,
-  defaults: { treeview?: string | t.ITreeviewNodeProps; view?: string; data?: D } = {},
+  defaults: { treeview?: string | t.ITreeviewNodeProps; view?: string; data?: T } = {},
 ) {
   const { view = '', data = {} } = defaults;
   const node = typeof input === 'string' ? { id: input } : { ...input };
 
-  type M = t.IModuleNode<D>;
+  type M = t.IModuleNode<T>;
   const props = (node.props = node.props || {}) as NonNullable<M['props']>;
+
   props.kind = 'MODULE';
-  props.data = (props.data || data) as D;
+  props.data = (props.data || data) as T;
   props.view = props.view || view;
 
   if (typeof defaults.treeview === 'object') {

@@ -3,11 +3,13 @@ import { Subject, Observable } from 'rxjs';
 import { Module } from '.';
 import { t, expect } from '../test';
 
-export type MyModuleData = { msg?: string; count: number };
-export type MyModule = t.IModule<MyModuleData>;
+export type MyView = 'View-1' | 'View-2';
+export type MyData = { msg?: string; count: number };
+export type MyProps = t.IModuleProps<MyData, MyView>;
+export type MyModule = t.IModule<MyProps>;
 
 const create = (args: { dispose$?: Observable<any>; event$?: Observable<t.Event> } = {}) => {
-  return Module.create<MyModuleData>({ ...args });
+  return Module.create<MyProps>({ ...args });
 };
 
 describe.only('Module', () => {
@@ -27,11 +29,11 @@ describe.only('Module', () => {
   describe('register', () => {
     it('with all arguments', () => {
       const parent = create();
-      const res = Module.register<MyModule>(parent).add({
+      const res = Module.register<MyProps>(parent).add({
         id: 'foo',
         treeview: 'MyFoo',
-        view: 'MyView',
-        data: { foo: 123 },
+        view: 'View-1',
+        data: { count: 123 },
       });
 
       const child = res.module;
@@ -45,7 +47,7 @@ describe.only('Module', () => {
 
       expect(root.props?.kind).to.eql('MODULE');
       expect(root.props?.data).to.eql({});
-      expect(root.props?.view).to.eql('MyView');
+      expect(root.props?.view).to.eql('View-1');
       expect(root.props?.treeview).to.eql({ label: 'MyFoo' });
     });
 

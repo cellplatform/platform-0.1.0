@@ -7,8 +7,9 @@ type S = string;
 type O = Record<string, unknown>;
 type N = t.ITreeNode;
 type E = t.ModuleEvent;
+type P = t.IModuleProps;
 
-export type ModuleArgs<D extends O> = t.ITreeStateArgs<IModuleNode<D>> & {
+export type ModuleArgs<T extends P> = t.ITreeStateArgs<IModuleNode<T>> & {
   event$?: Observable<t.Event>; // Global event-bus.
 };
 
@@ -17,9 +18,9 @@ export type Module = {
   Query: t.TreeQuery;
   Context: React.Context<any>;
 
-  create<D extends O>(args?: ModuleArgs<D>): IModule<D>;
+  create<T extends P>(args?: ModuleArgs<T>): IModule<T>;
 
-  register<T extends IModule = IModule, D extends O = any>(parent: IModule): ModuleRegister<T, D>;
+  register<T extends P>(parent: IModule<any>): ModuleRegister<T>;
 
   publish(args: ModulePublishArgs): ModulePublishResponse;
 
@@ -27,7 +28,7 @@ export type Module = {
 
   filter(event: t.ModuleEvent, filter?: t.ModuleFilter): boolean;
 
-  provider<P extends O>(context: P): React.FunctionComponent;
+  provider<T extends O>(context: T): React.FunctionComponent;
 
   events: ModuleGetEvents;
 
@@ -45,71 +46,32 @@ export type Module = {
  * Registration.
  */
 
-export type ModuleRegister<T extends IModule, D extends O> = {
-  add: (args: ModuleRegisterArgs<D>) => ModuleRegistration<T>;
+export type ModuleRegister<T extends P> = {
+  add: (args: ModuleRegisterArgs<T>) => ModuleRegistration<T>;
 };
 
-export type ModuleRegisterArgs<D extends O = any> = {
+export type ModuleRegisterArgs<T extends P> = {
   id: string;
   treeview?: string | t.ITreeviewNodeProps;
-  view?: string;
-  data?: D;
+  view?: T['view'];
+  data?: T['data'];
 };
-export type ModuleRegistration<T extends IModule = IModule> = {
+export type ModuleRegistration<T extends P> = {
   id: string;
-  module: T;
+  module: t.IModule<T>;
   path: string;
 };
-
-// export type IModule<T extends IModuleProps = IModuleProps> = t.ITreeState<
-//   IModuleNode<T>,
-//   t.ModuleEvent
-// >;
-
-// /**
-//  * A tree-node that contains details about a module.
-//  */
-// export type IModuleNode<T extends IModuleProps> = t.ITreeNode<T>;
-
-// /**
-//  * TODO 🐷
-//  */
-
-// //====
-
-// export type MyView = 'TREE' | 'DIAGRAM' | 'SAMPLE';
-// export type MyData = { foo?: string | number };
-// export type MyProps = t.IModuleProps<MyData, MyView>;
-// export type MyModule = t.IModule<MyProps>;
-
-// /**
-//  * TODO 🐷
-//  */
-
-// /**
-//  * The way a module is expressed as props within a tree-node.
-//  */
-// export type IModuleProps<D extends O = O, V extends S = S> = {
-//   kind?: 'MODULE';
-//   data?: D;
-//   view?: V;
-//   treeview?: t.ITreeviewNodeProps;
-// };
 
 /**
  * A module state-tree.
  */
-export type IModuleTreeSelection = { id: string; props: t.ITreeviewNodeProps };
-
-export type IModule<D extends O = any, V extends S = S> = t.ITreeState<
-  IModuleNode<D, V>,
-  t.ModuleEvent
->;
+export type IModule<T extends P = P> = t.ITreeState<IModuleNode<T>, t.ModuleEvent>;
 
 /**
  * A tree-node that contains details about a module.
  */
-export type IModuleNode<D extends O, V extends S = S> = t.ITreeNode<IModuleProps<D, V>>;
+export type IModuleNode<T extends P> = t.ITreeNode<T>;
+export type IModuleTreeSelection = { id: string; props: t.ITreeviewNodeProps };
 
 /**
  * The way a module is expressed as props within a tree-node.
@@ -185,7 +147,7 @@ export type ModuleRequestResponse<M extends IModule = IModule> = {
  */
 
 export type ModuleGetEvents = (
-  subject: Observable<t.Event> | IModule,
+  subject: Observable<t.Event> | t.IModule<any>,
   dispose$?: Observable<any>,
 ) => IModuleEvents;
 
@@ -274,5 +236,5 @@ export type IModuleRequestEvent = {
 };
 export type IModuleRequest = {
   module: string;
-  response(args: { module: t.IModule; path: string }): void;
+  response<T extends P = P>(args: { module: t.IModule<T>; path: string }): void;
 };

@@ -7,6 +7,8 @@ import { fire } from './Module.fire';
 
 import { t } from '../common';
 
+type P = t.IModuleProps;
+
 const identity = TreeState.identity;
 import { equals } from 'ramda';
 
@@ -85,8 +87,8 @@ export function filterEvent(event: t.ModuleEvent, filter?: t.ModuleFilter) {
  * Monitors the events of a module (and it's children) and bubbles
  * the relevant events.
  */
-export function monitorAndDispatch(module: t.IModule) {
-  type M = t.IModule<any>;
+export function monitorAndDispatch<T extends P>(module: t.IModule<T>) {
+  type M = t.IModule<T>;
 
   const monitorChild = (parent: M, child?: M) => {
     if (child) {

@@ -1,18 +1,15 @@
 import { t } from '../common';
-
 import { formatModuleNode } from './Module.create';
 
-type O = Record<string, unknown>;
+type P = t.IModuleProps;
 
 /**
  * Registers a new module as a child of another module.
  */
-export function register<T extends t.IModule = t.IModule, D extends O = any>(
-  parent: t.IModule,
-): t.ModuleRegister<T, D> {
+export function register<T extends P>(parent: t.IModule<any>): t.ModuleRegister<T> {
   return {
     add(args) {
-      const root = formatModuleNode(
+      const root = formatModuleNode<T>(
         { id: args.id },
         {
           treeview: args.treeview,
@@ -20,7 +17,8 @@ export function register<T extends t.IModule = t.IModule, D extends O = any>(
         },
       );
 
-      const module = parent.add({ root }) as T;
+      // parent.add()
+      const module = parent.add({ root }) as t.IModule<T>;
       const id = module.id;
       const path = `${parent.id}/${id}`;
 
@@ -46,8 +44,6 @@ export function register<T extends t.IModule = t.IModule, D extends O = any>(
 /**
  * TODO 🐷
  *
- * - register
- *    - registration (strongly typed view)
  *
  *  - ModuleEvents.register<t.View>('view')
  */
