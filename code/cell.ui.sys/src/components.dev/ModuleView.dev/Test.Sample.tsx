@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { color, css, CssValue, COLORS } from './common';
+
 import { Button } from '../../components/primitives';
+import { color, COLORS, css, CssValue, ModuleView } from './common';
 import * as t from './types';
 
-import { ModuleView } from '@platform/cell.ui/lib/components/ModuleView';
 const Module = ModuleView.Module;
 
 export type ITestSampleProps = {
@@ -119,14 +119,13 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
         color: COLORS.CLI.MAGENTA,
         fontSize: 12,
         margin: 0,
-        textAlign: 'right',
       }),
     };
     return (
       <div {...styles.base}>
         <pre {...styles.code}>
           <div>{`Module:   ${e.module}`}</div>
-          <div>{`TreeNode: ${selection || '-'}`}</div>
+          <div>{`TreeNode: ${selection || '<empty>'}`}</div>
         </pre>
       </div>
     );

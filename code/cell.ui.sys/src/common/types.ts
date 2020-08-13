@@ -11,7 +11,7 @@ export * from '@platform/ui.tree/lib/types';
 
 export * from '../types';
 
-export type RenderOverlay = (overlay: t.IAppStateOverlay) => React.ReactNode;
 export type Object = Record<string, unknown>;
+export type RenderOverlay = (overlay: t.IAppStateOverlay) => React.ReactNode;
 
 export type Entry = 'entry:builder' | 'entry:debug' | 'entry:debug.sheet';

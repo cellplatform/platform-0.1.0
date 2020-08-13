@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { COLORS, css, CssValue } from './common';
 import * as t from './types';
 
-import { ModuleView } from '@platform/cell.ui/lib/components/ModuleView';
+import { ModuleView } from './common';
 const Module = ModuleView.Module;
 
 export type ITestDiagramProps = {

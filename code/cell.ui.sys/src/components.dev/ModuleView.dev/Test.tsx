@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, time, ui } from './common';
+import { css, CssValue, ui } from './common';
 import { Icons } from '../../components/primitives';
 import { ComponentFrame } from './ComponentFrame';
 
@@ -30,7 +30,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
-  public context!: t.IAppContext;
+  public context!: t.IEnvContext;
 
   /**
    * [Lifecycle]
@@ -129,8 +129,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
     });
 
-    // time.delay(500, () => {
-    // });
     bar.change((draft, ctx) => {
       const child = ctx.children(draft)[1];
       ctx.props(child, (props) => {
