@@ -124,30 +124,30 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
       ctx.children(draft, (children) => {
         children.push({ id: 'zinger' });
-        children.push(...[{ id: 'one' }, { id: 'two' }]);
+        children.push(...[{ id: 'one' }, { id: 'two' }, { id: 'three' }]);
         // children.push({ id: 'sub-tree', props: { treeview: { label: 'Sub-tree' } } });
       });
     });
 
-    time.delay(500, () => {
-      bar.change((draft, ctx) => {
-        const child = ctx.children(draft)[0];
-        ctx.props(child, (props) => {
-          props.treeview = {
-            inline: {},
-            chevron: { isVisible: true },
-            ...props.treeview,
-            label: 'hello',
-          };
-        });
-        if (!child.children) {
-          child.children = [
-            { id: 'my-child-1', props: { treeview: { label: 'child-1' } } },
-            { id: 'my-child-2', props: { treeview: { label: 'child-2' } } },
-            { id: 'my-child-3', props: { treeview: { label: 'child-3' } } },
-          ];
-        }
+    // time.delay(500, () => {
+    // });
+    bar.change((draft, ctx) => {
+      const child = ctx.children(draft)[1];
+      ctx.props(child, (props) => {
+        props.treeview = {
+          inline: {},
+          chevron: { isVisible: true },
+          ...props.treeview,
+          label: 'hello',
+        };
       });
+      if (!child.children) {
+        child.children = [
+          { id: 'my-child-1', props: { treeview: { label: 'child-1' } } },
+          { id: 'my-child-2', props: { treeview: { label: 'child-2' } } },
+          { id: 'my-child-3', props: { treeview: { label: 'child-3' } } },
+        ];
+      }
     });
   }
 

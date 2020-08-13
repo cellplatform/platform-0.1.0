@@ -58,22 +58,23 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
    * BEHAVIOR: Select the next-node when the [DOWN] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowDown')).subscribe((e) => {
+    const select = (next?: t.ITreeNode) => {
+      if (next) {
+        e.mutate.selected(next.id);
+      }
+    };
+
     const selected = e.get.selected;
     const current = e.get.current;
 
     if (!selected.id) {
       // Nothing yet selected, select first child.
-      e.mutate.selected(current.children[0]?.id);
+      select(current.children[0]);
     } else {
-      const select = (next: t.ITreeNode) => {
-        if (next) {
-          e.mutate.selected(next.id);
-        }
-      };
-
       const isDirectChild = current.children.some((child) => child.id === selected.id);
+
       if (isDirectChild) {
-        if (selected.props.inline?.isOpen) {
+        if (selected.props.inline?.isOpen && selected.children.length > 0) {
           return select(selected.children[0]);
         } else {
           return select(current.children[selected.index + 1]);
@@ -81,7 +82,7 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
       } else {
         // Within an open inline "twisty".
         if (selected.isLast) {
-          // Step up and out of the "twisty" into the next item in the current list.
+          // Step up and out of the "twisty" into the next item of the current list.
           const index = current.children.findIndex((child) => child.id === selected.parent?.id);
           select(current.children[index + 1]);
         } else {
@@ -95,15 +96,39 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
    * BEHAVIOR: Select the previous-node when the [UP] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowUp')).subscribe((e) => {
+    const select = (next?: t.ITreeNode) => {
+      if (next) {
+        e.mutate.selected(next.id);
+      }
+    };
+
     const selected = e.get.selected;
-    const children = e.get.children(e.current);
-    if (!selected) {
-      e.mutate.selected(children[children.length - 1]?.id);
+    const current = e.get.current;
+
+    if (!selected.id) {
+      // Nothing yet selected, select last child.
+      select(current.children[current.children.length - 1]);
     } else {
-      const index = children.findIndex((child) => child.id === selected.id);
-      const node = children[index - 1];
-      if (node) {
-        e.mutate.selected(node.id);
+      const isDirectChild = current.children.some((child) => child.id === selected.id);
+
+      if (isDirectChild) {
+        const prev = selected.prev;
+        if (prev?.props.inline?.isOpen && prev.children.length > 0) {
+          // The previous item is an open inline "twisty"...select the last node within it.
+          const children = prev.children || [];
+          select(children[children.length - 1]);
+        } else {
+          select(prev?.node);
+        }
+      } else {
+        // Within an open inline "twisty".
+        if (selected.isFirst) {
+          // Step up and out of the "twisty" into the parent.
+          const index = current.children.findIndex((child) => child.id === selected.parent?.id);
+          select(current.children[index]);
+        } else {
+          select(selected.prev?.node);
+        }
       }
     }
   });

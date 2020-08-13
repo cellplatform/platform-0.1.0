@@ -65,6 +65,16 @@ export function get(tree: t.ITreeState) {
       get isLast() {
         return api.index === (get.children(api.parent) || []).length - 1;
       },
+      get prev() {
+        return api.sibling(api.index - 1);
+      },
+      get next() {
+        return api.sibling(api.index + 1);
+      },
+      sibling(index: number) {
+        const node = get.children(api.parent)[index];
+        return node ? nodeHelpers(node) : undefined;
+      },
     };
     return api;
   };
