@@ -62,7 +62,7 @@ const data = {
     // Count number of folders.
     const dirnames = (await fs.glob.find(`${paths.archive}/*/`))
       .map((path) => fs.basename(path))
-      .filter((name) => name.match(/^\d*$/)); // NB: Only number folders
+      .filter((name) => name.match(/^\d*$/)); // NB: Only numbered folder names.
     const count = dirnames.length;
 
     // Derive next dirname.
