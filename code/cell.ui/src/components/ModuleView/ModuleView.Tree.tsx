@@ -10,6 +10,7 @@ export type IModuleViewTreeProps = {
   module?: t.IModule;
   strategy?: t.ITreeviewStrategy;
   treeviewProps?: ITreeViewProps;
+  focusOnLoad?: boolean;
   style?: CssValue;
 };
 
@@ -119,6 +120,7 @@ export class ModuleViewTree extends React.PureComponent<
         root={root}
         current={this.nav.current}
         event$={this.treeview$}
+        focusOnLoad={this.props.focusOnLoad}
       />
     );
   }

@@ -5,7 +5,7 @@ import {
   StackPanel,
   StackPanelSlideEvent,
 } from '@platform/ui.panel/lib/components/StackPanel';
-import { defaultValue } from '@platform/util.value';
+import { defaultValue, time } from '@platform/util.value';
 import { equals } from 'ramda';
 import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
@@ -46,6 +46,7 @@ export type ITreeViewProps = {
   mouse$?: Subject<t.ITreeviewMouse>;
   tabIndex?: number;
   slideDuration?: number;
+  focusOnLoad?: boolean;
   style?: CssValue;
 };
 
@@ -154,6 +155,10 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
     // Finish up.
     this.updatePath();
+
+    if (this.props.focusOnLoad) {
+      time.delay(0, () => this.focus());
+    }
   }
 
   public componentDidUpdate(prev: ITreeViewProps) {

@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
 
-import { ui } from '../../common';
+import { ui } from './common';
 import { TestDiagram } from './Test.Diagram';
 import { TestSample } from './Test.Sample';
+import { Test404 } from './Test.404';
+
 import * as t from './types';
 
 const { Module } = ui;
@@ -51,8 +53,7 @@ export function renderer(args: {
   /**
    * Wildcard.
    */
-
   events.render().subscribe((e) => {
-    e.render(<div>View Not Found: {e.view}</div>);
+    e.render(<Test404 view={e.view} />);
   });
 }

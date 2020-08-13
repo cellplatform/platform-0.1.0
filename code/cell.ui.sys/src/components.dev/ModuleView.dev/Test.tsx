@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, time, ui } from '../../common';
+import { css, CssValue, time, ui } from './common';
 import { Icons } from '../../components/primitives';
 import { ComponentFrame } from './ComponentFrame';
 
@@ -193,7 +193,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.body}>
           <div {...css(styles.tree, { marginRight: MARGIN })}>
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
-              <ModuleView.Tree module={this.state.root} strategy={this.state.rootStrategy} />
+              <ModuleView.Tree
+                module={this.state.root}
+                strategy={this.state.rootStrategy}
+                focusOnLoad={true}
+              />
             </ComponentFrame>
           </div>
           <div {...css(styles.tree, { marginRight: MARGIN })}>

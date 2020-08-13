@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue } from '../../common';
+import { color, css, CssValue, COLORS } from './common';
 import { Button } from '../../components/primitives';
 import * as t from './types';
 
@@ -60,10 +60,11 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
 
     const styles = {
       base: css({
-        padding: 30,
+        padding: 20,
         flex: 1,
         Flex: 'vertical-stretch-stretch',
         overflow: 'hidden',
+        color: COLORS.DARK,
       }),
       image: css({
         width: 300,
@@ -75,10 +76,11 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
         fontSize: 12,
       }),
       bottom: css({
-        // padding: 10
+        Flex: 'horizontal-end-spaceBetween',
+        borderTop: `solid 5px ${color.format(-0.06)}`,
+        paddingTop: 10,
       }),
     };
-    const node = e.tree.selection?.id;
 
     const URL = {
       KONG: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kong.png',
@@ -97,12 +99,35 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
       <div {...styles.base}>
         <div {...styles.top}>
           <img src={src} {...styles.image} />
-          <div>Module: {e.module}</div>
-          <div>Tree Node: {node || '-'}</div>
         </div>
         <div {...styles.bottom}>
+          {this.renderIdentifiers()}
           <Button onClick={this.onAddModuleClick}>Add Module</Button>
         </div>
+      </div>
+    );
+  }
+
+  private renderIdentifiers() {
+    const e = this.props.e;
+    const selection = e.tree.selection?.id;
+
+    const styles = {
+      base: css({}),
+      code: css({
+        fontFamily: 'Menlo, monospace',
+        color: COLORS.CLI.MAGENTA,
+        fontSize: 12,
+        margin: 0,
+        textAlign: 'right',
+      }),
+    };
+    return (
+      <div {...styles.base}>
+        <pre {...styles.code}>
+          <div>{`Module:   ${e.module}`}</div>
+          <div>{`TreeNode: ${selection || '-'}`}</div>
+        </pre>
       </div>
     );
   }
@@ -113,9 +138,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
 
   private onAddModuleClick = async () => {
     if (this.module) {
-      const module = this.module;
-      const child = Module.register(module).add({ id: 'child', treeview: 'MyChild' });
-      console.log('child', child);
+      Module.register(this.module).add({ id: 'child', treeview: 'MyChild' });
     }
   };
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue } from '../../common';
+import { COLORS, css, CssValue } from './common';
 import * as t from './types';
 
 import { ModuleView } from '@platform/cell.ui/lib/components/ModuleView';
@@ -38,15 +38,14 @@ export class TestDiagram extends React.PureComponent<ITestDiagramProps, ITestDia
    * [Render]
    */
   public render() {
-    const PINK = '#FE0168';
     const styles = {
       base: css({
         Absolute: 0,
-        border: `solid 10px ${PINK}`,
         Flex: 'vertical-center-center',
         overflow: 'hidden',
+        color: COLORS.DARK,
       }),
-      image: css({ width: '80%' }),
+      image: css({ width: '90%' }),
     };
 
     const DIAGRAM = {
@@ -56,8 +55,6 @@ export class TestDiagram extends React.PureComponent<ITestDiagramProps, ITestDia
     };
 
     const src = DIAGRAM.THOUGHT_VECTORS;
-
-    console.log(src);
 
     return (
       <div {...styles.base}>
