@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 
 import { ui } from '../../common';
 import { TestDiagram } from './Test.Diagram';
@@ -18,11 +17,7 @@ export function renderer(args: {
   event$: Observable<t.Event>;
   until$: Observable<any>;
 }) {
-  const events = Module.events(args.event$, args.until$);
-  const render$ = events.render$.pipe(
-    filter((e) => !e.handled),
-    map((e) => ({ view: e.view as V, event: e, render: e.render })),
-  );
+  const events = Module.events<t.MyProps>(args.event$, args.until$);
 
   const RootProvider = Module.provider<t.MyContext>({
     event$: events.$,
@@ -32,7 +27,7 @@ export function renderer(args: {
   /**
    * Diagram.
    */
-  render$.pipe(filter((e) => e.view === 'DIAGRAM')).subscribe((e) => {
+  events.render('DIAGRAM').subscribe((e) => {
     const el = (
       <RootProvider>
         <TestDiagram />
@@ -44,10 +39,10 @@ export function renderer(args: {
   /**
    * Sample.
    */
-  render$.pipe(filter((e) => e.view === 'SAMPLE')).subscribe((e) => {
+  events.render('SAMPLE').subscribe((e) => {
     const el = (
       <RootProvider>
-        <TestSample e={e.event} module={e.event.module} />
+        <TestSample e={e} module={e.module} />
       </RootProvider>
     );
     e.render(el);
@@ -56,7 +51,8 @@ export function renderer(args: {
   /**
    * Wildcard.
    */
-  render$.subscribe((e) => {
+
+  events.render().subscribe((e) => {
     e.render(<div>View Not Found: {e.view}</div>);
   });
 }

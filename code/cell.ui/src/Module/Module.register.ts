@@ -40,10 +40,3 @@ export function register<T extends P>(parent: t.IModule): t.ModuleRegister<T> {
     },
   };
 }
-
-/**
- * TODO 🐷
- *
- *
- *  - ModuleEvents.register<t.View>('view')
- */

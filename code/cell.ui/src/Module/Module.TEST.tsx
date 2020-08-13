@@ -1,7 +1,8 @@
-import { Subject, Observable } from 'rxjs';
+import * as React from 'react';
+import { Observable, Subject } from 'rxjs';
 
 import { Module } from '.';
-import { t, expect } from '../test';
+import { expect, t } from '../test';
 
 type MyView = 'View-1' | 'View-2';
 type MyData = { msg?: string; count: number };
@@ -12,7 +13,7 @@ const create = (args: { dispose$?: Observable<any>; event$?: Observable<t.Event>
   return Module.create<MyProps>({ ...args });
 };
 
-describe.only('Module', () => {
+describe('Module', () => {
   it('create', () => {
     const module = create();
 
@@ -106,28 +107,70 @@ describe.only('Module', () => {
     });
   });
 
-  describe('event: Module/request', () => {
+  describe('Module.events', () => {
     const event$ = new Subject<t.Event>();
     const next = (e: t.Event) => event$.next(e);
 
-    it('finds module', () => {
-      const parent = create({ event$ });
-      const child1 = Module.register(parent).add({ id: 'foo' }).module;
-      const child2 = Module.register(child1).add({ id: 'bar' }).module;
+    describe('event: Module/render', () => {
+      const events = Module.events<MyProps>(event$);
+      const module = create({ event$ });
+      const fireRender = (view: MyProps['view']) =>
+        Module.fire(next).render({ module: module.id, tree: {}, view });
 
-      const res = Module.request(next, child2.id);
+      it('matches specific events', () => {
+        const fired: t.IModuleRender[] = [];
+        events.render('View-1').subscribe((e) => fired.push(e));
 
-      expect(res.module?.id).to.eql(child2.id);
-      expect(res.path).to.eql(`${parent.id}/${child1.id}/${child2.id}`);
+        fireRender('View-1');
+        fireRender('View-2');
+
+        expect(fired.length).to.eql(1);
+        expect(fired[0].view).to.eql('View-1');
+      });
+
+      it('matches all events ("view" undefined)', () => {
+        const fired: t.IModuleRender[] = [];
+        events.render().subscribe((e) => fired.push(e));
+
+        fireRender('View-1');
+        fireRender('View-2');
+        expect(fired.length).to.eql(2);
+      });
+
+      it('does not fire for handled events', () => {
+        const fired: string[] = [];
+
+        events.render('View-1').subscribe((e) => {
+          fired.push('first');
+          e.render(<div>hello</div>);
+        });
+        events.render('View-1').subscribe((e) => fired.push('second'));
+
+        fireRender('View-1');
+        expect(fired.length).to.eql(1);
+        expect(fired[0]).to.eql('first');
+      });
     });
 
-    it('not found', () => {
-      const parent = create({ event$ });
-      Module.register(parent).add({ id: 'foo' }).module;
+    describe('event: Module/request', () => {
+      it('finds module', () => {
+        const parent = create({ event$ });
+        const child1 = Module.register(parent).add({ id: 'foo' }).module;
+        const child2 = Module.register(child1).add({ id: 'bar' }).module;
 
-      const res = Module.fire(next).request('ns:404');
-      expect(res.module).to.eql(undefined);
-      expect(res.path).to.eql('');
+        const res = Module.request(next, child2.id);
+        expect(res.module?.id).to.eql(child2.id);
+        expect(res.path).to.eql(`${parent.id}/${child1.id}/${child2.id}`);
+      });
+
+      it('not found', () => {
+        const parent = create({ event$ });
+        Module.register(parent).add({ id: 'foo' }).module;
+
+        const res = Module.fire(next).request('ns:404');
+        expect(res.module).to.eql(undefined);
+        expect(res.path).to.eql('');
+      });
     });
   });
 });

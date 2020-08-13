@@ -12,7 +12,10 @@ type P = t.IModuleProps;
 const identity = TreeState.identity;
 import { equals } from 'ramda';
 
-export const create: t.ModuleGetEvents = (subject, until$) => {
+export function create<T extends P = t.IModulePropsAny>(
+  subject: Observable<t.Event> | t.IModule,
+  until$?: Observable<any>,
+): t.IModuleEvents<T> {
   const subject$ = is.observable(subject) ? subject : (subject as t.IModule).event.$;
   const event$ = subject$ as Observable<t.Event>;
 
@@ -41,7 +44,7 @@ export const create: t.ModuleGetEvents = (subject, until$) => {
   const render$ = rx.payload<t.IModuleRenderEvent>($, 'Module/render').pipe(share());
   const rendered$ = rx.payload<t.IModuleRenderedEvent>($, 'Module/rendered').pipe(share());
 
-  const events: t.IModuleEvents = {
+  const events: t.IModuleEvents<T> = {
     $,
     childRegistered$,
     childDisposed$,
@@ -58,10 +61,21 @@ export const create: t.ModuleGetEvents = (subject, until$) => {
       const event$ = $.pipe(filter((event) => filterEvent(event, fn)));
       return create(event$, dispose$); // <== RECURSION 🌳
     },
+
+    /**
+     * Filters on render requests for the given view, only returning
+     * matching events that have not yet been handled.
+     */
+    render(view) {
+      return render$.pipe(
+        filter((e) => !e.handled),
+        filter((e) => (view === undefined ? true : e.view === view)),
+      );
+    },
   };
 
   return events;
-};
+}
 
 /**
  * Determine if the given event is a module.
