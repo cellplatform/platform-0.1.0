@@ -6,6 +6,7 @@ import { Client, constants, ENV, fs, log, rx, t } from './common';
 import * as server from './main.server';
 import { sys } from './main.sys';
 import { window } from './main.window';
+import { menu } from './main.menu';
 
 /**
  *  NOTE:
@@ -58,6 +59,7 @@ export async function start() {
       preload: bundle.preload,
     });
     await app.whenReady();
+    await menu.build({ paths });
 
     // Initialize the system models.
     const ctx = await sys.init({ client, event$ });

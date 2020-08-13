@@ -1,5 +1,6 @@
 import { app } from 'electron';
 import { fs } from './libs';
+import * as t from './types';
 
 const resolve = (path: string) =>
   app?.isPackaged ? fs.join(app.getAppPath(), path) : fs.resolve(path);
@@ -10,7 +11,7 @@ const resolve = (path: string) =>
 export const paths = {
   resolve,
 
-  data(args: { prod?: boolean; dirname?: string } = {}) {
+  data(args: { prod?: boolean; dirname?: string } = {}): t.IAppPaths {
     const { prod = false, dirname = 'A1' } = args;
     const dir = prod ? fs.join(app.getPath('documents'), dirname) : fs.resolve('../.data');
     return {
@@ -18,6 +19,7 @@ export const paths = {
       db: `${dir}/local.db`,
       fs: `${dir}/local.fs`,
       config: `${dir}/.config.json`,
+      archive: `${dir}/_archive`,
     };
   },
 

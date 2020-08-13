@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "1.0.97",
+  "version": "1.0.98",
   "description": "Electron shell for CellOS.",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",

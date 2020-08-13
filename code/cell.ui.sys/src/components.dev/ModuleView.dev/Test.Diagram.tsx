@@ -8,7 +8,6 @@ import { ModuleView } from '@platform/cell.ui/lib/components/ModuleView';
 const Module = ModuleView.Module;
 
 export type ITestDiagramProps = {
-  // module: string;
   style?: CssValue;
 };
 export type ITestDiagramState = t.Object;
