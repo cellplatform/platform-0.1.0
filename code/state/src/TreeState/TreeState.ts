@@ -1,29 +1,34 @@
-import { StateObject } from '../StateObject';
 import { id as idUtil } from '@platform/util.value';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { filter, share, take, takeUntil } from 'rxjs/operators';
 
-import { t } from '../common';
+import { is, t } from '../common';
+import { StateObject } from '../StateObject';
 import { TreeIdentity } from '../TreeIdentity';
 import { TreeQuery } from '../TreeQuery';
 import { helpers } from './helpers';
 import * as events from './TreeState.events';
+import * as path from './TreeState.path';
+import * as sync from './TreeState.sync';
 
+type O = Record<string, unknown>;
+type Event = t.Event<O>;
 type N = t.ITreeNode;
+
 const Identity = TreeIdentity;
 
 /**
- * State machine for programming a tree, or partial leaf within a tree.
+ * State machine for programming a tree or partial leaf within a tree.
  *
  * NOTE:
  *    All changes to the state tree are immutable.
  *
  */
-export class TreeState<T extends N = N> implements t.ITreeState<T> {
-  public static create<T extends N = N>(args?: t.ITreeStateArgs<T>) {
+export class TreeState<T extends N = N, A extends Event = any> implements t.ITreeState<T, A> {
+  public static create<T extends N = N, A extends Event = any>(args?: t.ITreeStateArgs<T>) {
     const root = args?.root || 'node';
     const e = { ...args, root } as t.ITreeStateArgs<T>;
-    return new TreeState<T>(e) as t.ITreeState<T>;
+    return new TreeState<T, A>(e) as t.ITreeState<T, A>;
   }
 
   public static identity = Identity;
@@ -37,16 +42,35 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   private constructor(args: t.ITreeStateArgs<T>) {
     // Wrangle the {root} argument into an object.
     const root = (typeof args.root === 'string' ? { id: args.root } : args.root) as T;
+    if (root.id.includes('/')) {
+      const err = `Tree node IDs cannot contain the "/" character`;
+      throw new Error(err);
+    }
 
     // Store values.
-    this.namespace = idUtil.cuid();
+    this.key = Identity.key(root.id);
+    this.namespace = Identity.namespace(root.id) || idUtil.cuid();
     this.parent = args.parent;
-    this._store = StateObject.create<T>(root);
+    const store = (this._store = StateObject.create<T>(root));
+
+    // Initialise events.
+    this.event = events.create<T, A>({
+      event$: this._event$,
+      dispatch$: store.event.dispatch$ as Observable<A>,
+      dispose$: this.dispose$,
+    });
 
     // Set the object with the initial state.
     this._change((draft) => helpers.ensureNamespace(draft, this.namespace), {
-      silent: true,
-      ensureNamespace: false, // NB: No need to do it in the function (we are doing it here).
+      ensureNamespace: false, // NB: No need to "ensure namespace" in the function (we are doing it here).
+    });
+
+    // Bubble events.
+    store.event.changed$.pipe(takeUntil(this.dispose$)).subscribe((e) => {
+      this.fire({ type: 'TreeState/changed', payload: e });
+    });
+    store.event.patched$.pipe(takeUntil(this.dispose$)).subscribe((e) => {
+      this.fire({ type: 'TreeState/patched', payload: e });
     });
 
     // Dispose if given observable fires.
@@ -75,6 +99,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   private _children: t.ITreeState<any>[] = [];
   private _kind = 'TreeState'; // NB: Used by [isInstance] helper.
 
+  public readonly key: string;
   public readonly namespace: string;
   public readonly parent: string | undefined;
 
@@ -82,13 +107,17 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
   public readonly dispose$ = this._dispose$.pipe(share());
 
   private _event$ = new Subject<t.TreeStateEvent>();
-  public readonly event = events.create<T>(this._event$, this._dispose$);
+  public readonly event: t.ITreeStateEvents<T, A>;
 
   /**
    * [Properties]
    */
   public get isDisposed() {
     return this._dispose$.isStopped;
+  }
+
+  public get readonly() {
+    return this as t.ITreeStateReadonly<T, A>;
   }
 
   public get store() {
@@ -113,44 +142,48 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     return TreeQuery.create<T>({ root, namespace });
   }
 
-  private get ctx(): t.TreeStateChangerContext<T> {
-    return {
-      ...this.query,
-      props: TreeState.props,
-      children: TreeState.children,
-    };
+  public get path(): t.ITreeStatePath<T, A> {
+    return path.create<T, A>(this);
   }
 
   /**
    * [Methods]
    */
-  public toId(input?: string): string {
+
+  public dispatch: t.IStateObjectDispatchMethods<T, A>['dispatch'] = (e) => {
+    return this._store.dispatch(e);
+  };
+
+  public action: t.IStateObjectDispatchMethods<T, A>['action'] = (takeUntil$) => {
+    return this._store.action(takeUntil$) as t.IStateObjectAction<T, A>;
+  };
+
+  public formatId = (input?: string): string => {
     const id = Identity.parse(input).id;
     return Identity.format(this.namespace, id);
-  }
+  };
 
-  public change: t.TreeStateChange<T> = (fn, options = {}) => this._change(fn, options);
+  public change: t.TreeStateChange<T, A> = (fn, options) => this._change(fn, options);
   private _change(
     fn: t.TreeStateChanger<T>,
-    options: { silent?: boolean; ensureNamespace?: boolean } = {},
+    options: { ensureNamespace?: boolean; action?: A['type'] } = {},
   ) {
-    const ctx = this.ctx;
-
-    const res = this._store.change((draft) => {
-      fn(draft, ctx);
-      if (options.ensureNamespace !== false) {
-        helpers.ensureNamespace(draft, this.namespace);
-      }
-    });
-
-    if (!options.silent && res.changed) {
-      this.fire({ type: 'TreeState/changed', payload: res.changed });
-    }
+    const { action } = options;
+    const res = this._store.change(
+      (draft) => {
+        const ctx = this.ctx(draft);
+        fn(draft, ctx);
+        if (options.ensureNamespace !== false) {
+          helpers.ensureNamespace(draft, this.namespace);
+        }
+      },
+      { action },
+    );
 
     return res;
   }
 
-  public add<C extends N = N>(args: { parent?: string; root: C | string | t.ITreeState<C> }) {
+  public add = <C extends N = N>(args: { parent?: string; root: C | string | t.ITreeState<C> }) => {
     // Wrangle: Check if the arguments are in fact a [TreeState] instance.
     if (TreeState.isInstance(args)) {
       args = { parent: this.id, root: args as t.ITreeState<C> };
@@ -168,7 +201,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     this._children.push(child);
 
     // Insert data into state-tree.
-    this.change((root, ctx) => {
+    this.change((root) => {
       TreeState.children<any>(root).push(child.root);
     });
 
@@ -184,9 +217,9 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     // Finish up.
     this.fire({ type: 'TreeState/child/added', payload: { parent: self, child } });
     return child as t.ITreeState<C>;
-  }
+  };
 
-  public remove(input: string | t.ITreeState) {
+  public remove = (input: string | t.ITreeState) => {
     const child = this.child(input);
     if (!child) {
       const err = `Cannot remove child-state as it does not exist in the parent '${this.root.id}'.`;
@@ -200,40 +233,98 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     const self = this as t.ITreeState<any>;
     this.fire({ type: 'TreeState/child/removed', payload: { parent: self, child } });
     return child;
-  }
+  };
 
-  public find: t.TreeStateFind<T> = (match) => this._find(0, match);
-  private _find(level: number, match: t.TreeStateFindMatch<T>): t.ITreeState<T> | undefined {
-    const children = this.children;
-    if (children.length === 0) {
-      return undefined;
-    } else {
-      for (const child of children) {
-        const tree = child as TreeState<T>;
-        let stopped = false;
-        const args: t.TreeStateFindMatchArgs<T> = {
-          level,
-          id: Identity.id(child.id),
-          namespace: child.namespace,
-          tree,
-          stop: () => (stopped = true),
-        };
-        if (match(args)) {
-          return child;
-        } else {
-          return stopped ? undefined : tree._find(level + 1, match); // <== RECURSION 🌳
+  public clear = (): t.ITreeState<T> => {
+    this.children.forEach((child) => this.remove(child));
+    return this;
+  };
+
+  public find: t.TreeStateFind<T, A> = (match) => {
+    let result: t.ITreeState<T, A> | undefined;
+    this.walkDown((e) => {
+      if (e.level > 0) {
+        if (match(e) === true) {
+          e.stop();
+          result = e.tree;
         }
       }
-      return undefined;
-    }
-  }
+    });
+    return result;
+  };
+
+  public walkDown: t.TreeStateWalkDown<T, A> = (visit) => {
+    const inner = (
+      level: number,
+      index: number,
+      tree: t.ITreeState<T, A>,
+      parent: t.ITreeState<T, A> | undefined,
+      state: { stopped?: boolean },
+    ) => {
+      if (state.stopped) {
+        return;
+      }
+      let skipped = false;
+      const args: t.ITreeStateDescend<T, A> = {
+        level,
+        id: tree.id,
+        key: Identity.key(tree.id),
+        namespace: tree.namespace,
+        index,
+        tree,
+        parent,
+        stop: () => (state.stopped = true),
+        skip: () => (skipped = true),
+        toString: () => tree.id,
+      };
+      visit(args);
+      if (state.stopped) {
+        return;
+      }
+      if (!skipped && tree.children.length) {
+        tree.children.forEach((child, i) => {
+          inner(level + 1, i, child, tree, state); // <== RECURSION 🌳
+        });
+      }
+    };
+    return inner(0, -1, this, undefined, {});
+  };
+
+  public syncFrom: t.TreeStateSyncFrom = (args) => {
+    const { until$ } = args;
+    const isObservable = is.observable((args.source as any).event$);
+
+    const source$ = isObservable
+      ? ((args.source as any).event$ as Observable<t.TreeStateEvent>)
+      : (args.source as t.ITreeState).event.$;
+
+    const parent = isObservable
+      ? ((args.source as any).parent as string | undefined)
+      : (args.source as t.ITreeState).parent;
+
+    const initial = isObservable ? undefined : (args.source as t.ITreeState).root;
+
+    return sync.syncFrom({ target: this, parent, initial, source$, until$ });
+  };
 
   /**
    * [Internal]
    */
+  private fire: t.FireEvent<t.TreeStateEvent> = (e) => this._event$.next(e);
 
-  private fire(e: t.TreeStateEvent) {
-    this._event$.next(e);
+  private ctx(root: T): t.TreeStateChangerContext<T> {
+    const namespace = this.namespace;
+    const query = TreeQuery.create<T>({ root, namespace });
+
+    return {
+      ...query,
+
+      props: TreeState.props,
+      children: TreeState.children,
+      toObject: <T extends O>(draft?: T) => (draft ? StateObject.toObject(draft) : undefined),
+      query: (node?: T, namespace?: string) =>
+        TreeQuery.create<T>({ root: node || root, namespace }),
+    };
   }
 
   private child(id: string | t.ITreeState<any>) {
@@ -257,7 +348,7 @@ export class TreeState<T extends N = N> implements t.ITreeState<T> {
     let parent = Identity.toString(args.parent);
     parent = parent ? parent : Identity.stripNamespace(this.id);
 
-    if (!this.query.exists((e) => e.id === parent)) {
+    if (!this.query.exists((e) => e.key === parent)) {
       const err = `Cannot add child-state because the parent node '${parent}' does not exist.`;
       throw new Error(err);
     }

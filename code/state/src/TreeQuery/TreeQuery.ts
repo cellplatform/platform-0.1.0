@@ -82,7 +82,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
       if (!args.node || stopped) {
         return;
       }
-      const { id, namespace } = Identity.parse(args.node.id);
+      const { id, key, namespace } = Identity.parse(args.node.id);
       if (this.namespace && namespace !== this.namespace) {
         return;
       }
@@ -90,6 +90,7 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
       let skipChildren = false;
       visit({
         id,
+        key,
         namespace,
         node: args.node,
         parent: args.parent,
@@ -128,9 +129,10 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
       if (current) {
         let stop = false;
         const parentNode = this.parent(current);
-        const { id, namespace } = Identity.parse(current.id);
+        const { id, key, namespace } = Identity.parse(current.id);
         const args: t.ITreeAscend<T> = {
           id,
+          key,
           namespace,
           node: current,
           parent: parentNode,
@@ -175,10 +177,10 @@ export class TreeQuery<T extends Node = Node> implements t.ITreeQuery<T> {
     } else {
       const target = Identity.parse(typeof id === 'string' ? id : id.id);
       return this.find((e) => {
-        if (!target.namespace && e.id === target.id) {
+        if (!target.namespace && e.key === target.key) {
           return true;
         } else {
-          return e.id === target.id && e.namespace === target.namespace;
+          return e.key === target.key && e.namespace === target.namespace;
         }
       });
     }

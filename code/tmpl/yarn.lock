@@ -28,17 +28,17 @@
     "@platform/log" "0.1.27"
     inquirer "7.3.2"
 
-"@platform/cli@0.5.42":
-  version "0.5.42"
-  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.42.tgz#0883910742a969236bbf8c5b92034773fe740fa9"
-  integrity sha512-/ljfkj/zIaBLEO4UbXPsMCkh3EVGWAuP36YjbV0+WFus62iuRBkg7ucCaY4bTTk4/qPAkGgkNqOgScCfLKwjSg==
+"@platform/cli@0.5.44":
+  version "0.5.44"
+  resolved "https://registry.yarnpkg.com/@platform/cli/-/cli-0.5.44.tgz#7a776ca5447b3ce4975257b7fced3998737eb093"
+  integrity sha512-AksxWOVeoC2Aq2yXRCbSwge16r98B5enQW3xNRvd6hYwk87oEBSPLaAFS2xGY5ypSgcWtuwcu90fWfV0bJzt+A==
   dependencies:
     "@platform/cli.prompt" "0.3.22"
     "@platform/exec" "0.2.61"
     "@platform/fs" "0.5.19"
     "@platform/libs" "0.2.2"
     "@platform/log" "0.1.27"
-    "@platform/util.value" "0.7.27"
+    "@platform/util.value" "0.7.29"
     "@types/inquirer" "6.5.0"
     "@types/yargs" "15.0.5"
     inquirer "7.3.2"
@@ -97,17 +97,17 @@
     chalk "4.1.0"
     cli-table "0.3.1"
 
-"@platform/npm@0.3.5":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.3.5.tgz#cdb3de25e03fda59ca7e5e648dd40b087f2428c2"
-  integrity sha512-OMQq0+29FzbkvnasbNnZmmiJaxvM4H2T+sMxrVaSvN9+4P1c7UQay8uDoZkBie87UPA3NfoGb38YYb3WW3TpEA==
+"@platform/npm@0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.3.7.tgz#331e1f624b6beaa82dcb30a3d67a7a9812ef0cc5"
+  integrity sha512-ejIeNLsYTeJXeyaJtQOymAVKcvepexNYrG5uylLfPXfqtIZn+OClXJ77lG2krmAPMswQQgF51QAnzblxEW/xWg==
   dependencies:
     "@platform/cli.prompt" "0.3.22"
     "@platform/exec" "0.2.61"
     "@platform/fs" "0.5.19"
     "@platform/log" "0.1.27"
-    "@platform/types" "0.5.0"
-    "@platform/util.value" "0.7.27"
+    "@platform/types" "0.5.2"
+    "@platform/util.value" "0.7.29"
     "@types/semver" "7.3.1"
     inquirer "7.3.2"
     semver "7.3.2"
@@ -153,23 +153,23 @@
     "@platform/libs" "0.2.2"
     "@platform/ts.libs" "3.9.9"
 
-"@platform/types@0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.0.tgz#c67ea07983eec3c967936f495f2728880dcb09bb"
-  integrity sha512-WkUTrh36q0eo1sMfH9jqvPMamXzS+Epd0v2aKXgJlxyh8TKGXiQOrfcmoPxr/3MPulFdvUhDkdfSjCp/64cMlA==
+"@platform/types@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.2.tgz#0c9f6afa7ce68781ff038e8b84a57475517dc9d6"
+  integrity sha512-l8ggCga1W952JNysR3KAScRYzzlBL2nDJj2mF4BglbqumklHG6yZRGQuyWp86Hrzt2RqWZ+2OArt0xfvA1cPUw==
 
 "@platform/util.is@0.0.127":
   version "0.0.127"
   resolved "https://registry.yarnpkg.com/@platform/util.is/-/util.is-0.0.127.tgz#6b36b47399e4a40c2bfe0fd790783022d2a1bedd"
   integrity sha512-44gw6/W0hOAdYGQsoCCndZkPcLfLp87pIkjwzLrfIE6LbZFkoeDdj9Cnb83uvdWtEJuEUDgWlcRsIU8WF1TZ5w==
 
-"@platform/util.value@0.7.27":
-  version "0.7.27"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.27.tgz#9752f743c4fcd799b0f1c2229d61ba3999f853ff"
-  integrity sha512-sECP7dwDtiJ9RHdvuuQFvxJbsS93xxnk9iusX6HxlVz05CZmftNx74zxgCv3hJtXeXxYUumkHzxCng+KdNn1vw==
+"@platform/util.value@0.7.29":
+  version "0.7.29"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.29.tgz#a5c168c85a1ba2e479aa922ea458406a5de4f81a"
+  integrity sha512-vihTNtR93mX0jOD48GtXvoJMxMAw2vzJgAyNprHA+3FMNxc/rLhjjuXfcDxxCIFMOdoXCEF2s4X/+IB2Du+v/A==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.0"
+    "@platform/types" "0.5.2"
     "@platform/util.is" "0.0.127"
     cuid "2.1.8"
     dayjs "1.8.27"

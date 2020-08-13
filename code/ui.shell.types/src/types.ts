@@ -141,7 +141,7 @@ export type IShellSize = { value: number; speed: number };
 /**
  * [Events]
  */
-export type ShellEvent = t.TreeViewEvent | IShellProgressStartEvent | IShellProgressCompleteEvent;
+export type ShellEvent = t.TreeviewEvent | IShellProgressStartEvent | IShellProgressCompleteEvent;
 
 export type IShellProgressStartEvent = {
   type: 'SHELL/progress/start';

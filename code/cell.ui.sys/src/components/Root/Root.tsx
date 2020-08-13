@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, events, t, ui } from '../../common';
-import { WindowTitleBar } from '../primitives';
+import { WindowTitlebar } from '../primitives';
 import { RootOverlay } from './Root.Overlay';
 import { renderOverlay } from '../render';
 
@@ -57,7 +57,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       base: css({ Absolute: 0 }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
       body: css({
-        Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
+        Absolute: [WindowTitlebar.HEIGHT, 0, 0, 0],
         display: 'flex',
       }),
     };
@@ -66,7 +66,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <WindowTitleBar style={styles.titlebar} address={address} />
+        <WindowTitlebar style={styles.titlebar} address={address} />
         <div {...styles.body}>
           {this.props.children}
           <RootOverlay factory={renderOverlay} />

@@ -10,7 +10,7 @@ export type IFinderShellTreeProps = { style?: CssValue };
 
 export class FinderShellTree extends React.PureComponent<IFinderShellTreeProps> {
   private unmounted$ = new Subject();
-  private tree$ = new Subject<t.TreeViewEvent>();
+  private tree$ = new Subject<t.TreeviewEvent>();
 
   public static contextType = ui.Context;
   public context!: t.IAppContext;
@@ -69,7 +69,7 @@ export class FinderShellTree extends React.PureComponent<IFinderShellTreeProps> 
     return undefined;
   };
 
-  private renderPanel: t.RenderTreePanel<t.ITreeViewNode> = (e) => {
+  private renderPanel: t.RenderTreePanel<t.ITreeviewNode> = (e) => {
     return undefined;
   };
 }

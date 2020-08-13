@@ -30,24 +30,30 @@ const NODE = constants.CLASS.NODE;
 export type TreeNodeTwisty = 'OPEN' | 'CLOSED' | null;
 
 export type ITreeNodeProps = {
-  node: t.ITreeViewNode;
   rootId?: string;
+  node: t.ITreeviewNode;
+  depth: number;
   children?: React.ReactNode;
-  renderIcon?: t.RenderTreeIcon;
-  renderNodeBody?: t.RenderTreeNodeBody;
+  renderer: t.ITreeviewRenderer;
   iconRight?: IIcon | null;
   twisty?: TreeNodeTwisty;
   theme?: themes.ITreeTheme;
   background?: 'THEME' | 'NONE';
   isFocused: boolean;
-  isInline?: boolean;
+  isInline: boolean;
   isFirst: boolean;
   isLast: boolean;
   style?: CssValue;
   onMouse?: t.TreeNodeMouseEventHandler;
 };
 
-export class TreeNode extends React.PureComponent<ITreeNodeProps> {
+export type ITreeNodeState = {
+  nodeProps?: t.ITreeviewNodeProps;
+};
+
+export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState> {
+  public state: ITreeNodeState = {};
+
   /**
    * [Static]
    */
@@ -107,6 +113,16 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   /**
+   * [Lifecycle]
+   */
+
+  public static getDerivedStateFromProps(props: ITreeNodeProps): ITreeNodeState {
+    const { renderer, node, depth, isInline, isFocused } = props;
+    const nodeProps = renderer.beforeRenderNode({ node, depth, isInline, isFocused });
+    return { nodeProps };
+  }
+
+  /**
    * [Properties]
    */
   public get id() {
@@ -118,8 +134,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   private get nodeProps() {
-    const { node } = this.props;
-    return node.props?.treeview || {};
+    return this.state.nodeProps || {};
   }
 
   private get theme() {
@@ -161,11 +176,14 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   public render() {
     const props = this.nodeProps;
     const isEnabled = this.isEnabled;
-    const padding = style.toPadding(props.padding, { defaultValue: DEFAULT.PADDING });
     const opacity = this.opacity;
+    const padding = style.toPadding(props.padding, { defaultValue: DEFAULT.PADDING });
+    const paddingBottom = props.inline?.isOpen ? 0 : padding.paddingBottom;
+
     const styles = {
       base: css({
         ...padding,
+        paddingBottom: paddingBottom,
         position: 'relative',
         boxSizing: 'border-box',
         marginTop: props.marginTop,
@@ -226,7 +244,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   private renderIconLeft() {
-    const { node, renderIcon } = this.props;
+    const { node, renderer, isFocused, depth } = this.props;
     const theme = this.theme.node;
     const props = this.nodeProps;
     const icon = props.icon;
@@ -247,8 +265,8 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     }
 
     let fn: IIcon | undefined;
-    if (typeof icon === 'string' && renderIcon) {
-      fn = renderIcon({ icon, node });
+    if (typeof icon === 'string') {
+      fn = renderer.icon({ icon, node, isFocused, depth });
       fn = fn ? fn : Icons.NotFound;
     }
 
@@ -297,7 +315,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   }
 
   private renderContent() {
-    const { iconRight, renderNodeBody, node, isFocused } = this.props;
+    const { iconRight, renderer, node, isFocused, isInline, depth } = this.props;
     const props = this.nodeProps;
     const body = props.body;
     const styles = {
@@ -321,7 +339,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     };
 
     const elSpinner = props.isSpinning && <Spinner color={this.theme.spinner} size={18} />;
-    const elBody = renderNodeBody && body ? renderNodeBody({ body, node, isFocused }) : undefined;
+    const elBody = body ? renderer.nodeBody({ body, node, depth, isFocused, isInline }) : undefined;
     const elLabel = elBody ? elBody : this.renderLabel();
     const elSuffix = elSpinner || this.renderBadge();
 
@@ -423,7 +441,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
 
     if (colors.borderTop !== undefined) {
       topColor = colors.borderTop;
-    } else if (isFirst) {
+    } else if (isFirst || colors.bg) {
       topColor = false;
     }
 
@@ -453,13 +471,14 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps> {
     );
   }
 
-  private mouseHandlers = (target: t.ITreeViewMouse['target']) => {
+  private mouseHandlers = (target: t.ITreeviewMouse['target']) => {
     const { onMouse } = this.props;
     return TreeNode.mouseHandlers(() => this.props.node, target, onMouse);
   };
+
   public static mouseHandlers(
-    getNode: () => t.ITreeViewNode,
-    target: t.ITreeViewMouse['target'],
+    getNode: () => t.ITreeviewNode,
+    target: t.ITreeviewMouse['target'],
     onMouse?: t.TreeNodeMouseEventHandler,
   ) {
     const handlers = mouse.handlers((e) => {

@@ -1,2 +1,2 @@
-import { WindowTitleBar } from './WindowTitleBar';
-export { WindowTitleBar };
+import { WindowTitlebar } from './WindowTitlebar';
+export { WindowTitlebar };

@@ -24,3 +24,11 @@ export type IWindowRef = {
   uri: string;
   send<T>(channel: string, payload: T): void;
 };
+
+export type IAppPaths = {
+  dir: string;
+  db: string;
+  fs: string;
+  config: string;
+  archive: string;
+};

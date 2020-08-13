@@ -3,7 +3,7 @@ import { t } from './common';
 /**
  * Events
  */
-type GlobalEvents = t.EnvEvent | t.TreeViewEvent;
+type GlobalEvents = t.EnvEvent | t.TreeviewEvent;
 type FinderTreeEvent = IFinderTreeEvent | IFinderTreeSelectEvent | IFinderTreeSelectParentEvent;
 type FinderViewEvent = IFinderViewEvent | IFinderViewRequestEvent;
 
@@ -30,7 +30,7 @@ export type IFinderTreeEvent = {
   payload: IFinderTree;
 };
 export type IFinderTree = {
-  root?: t.ITreeViewNode | null;
+  root?: t.ITreeviewNode | null;
   current?: string | null;
   selected?: string | null;
   theme?: t.TreeTheme | null;

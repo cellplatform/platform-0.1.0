@@ -81,8 +81,8 @@ export class GraphqlClient implements t.IGqlClient {
   public readonly dispose$ = this._.dispose$.pipe(share());
   public readonly events$ = this._.events$.pipe(takeUntil(this.dispose$), share());
   public readonly headers$ = this.events$.pipe(
-    filter((e) => e.type === 'GRAPHQL/http/headers'),
-    map((e) => e.payload as t.IGqlHttpHeaders),
+    filter(e => e.type === 'GRAPHQL/http/headers'),
+    map(e => e.payload as t.IGqlHttpHeaders),
     share(),
   );
 
@@ -178,7 +178,7 @@ export class GraphqlClient implements t.IGqlClient {
     }
   }
 
-  private onError: ErrorLink.ErrorHandler = (err) => {
+  private onError: ErrorLink.ErrorHandler = err => {
     const { graphQLErrors: errors = [], networkError: network, response, operation } = err;
     const total = errors.length + (network ? 1 : 0);
     this.fire({

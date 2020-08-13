@@ -32,7 +32,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
   private state$ = new Subject<Partial<IPropsState>>();
   private unmounted$ = new Subject();
   private events$ = new Subject<t.PropsEvent>();
-  private tree$ = new Subject<t.TreeViewEvent>();
+  private tree$ = new Subject<t.TreeviewEvent>();
 
   /**
    * [Lifecycle]
@@ -70,7 +70,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
      */
     const treeMouse$ = tree$.pipe(
       filter((e) => e.type === 'TREEVIEW/mouse'),
-      map((e) => e.payload as t.ITreeViewMouse),
+      map((e) => e.payload as t.ITreeviewMouse),
     );
     const treeClick$ = treeMouse$.pipe(
       filter((e) => e.type === 'CLICK'),

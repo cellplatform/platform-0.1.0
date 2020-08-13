@@ -10,7 +10,7 @@ export function init(
 ): t.IShellEvents {
   const tree$ = events$.pipe(
     filter((e) => e.type.startsWith('TREEVIEW/')),
-    map((e) => e as t.TreeViewEvent),
+    map((e) => e as t.TreeviewEvent),
   );
 
   return {

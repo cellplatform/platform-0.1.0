@@ -7,7 +7,7 @@ import { t } from '../../../common';
 export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { ctx, store } = args;
 
-  const tree = TreeView.events(ctx.event$ as Observable<t.TreeViewEvent>);
+  const tree = TreeView.events(ctx.event$ as Observable<t.TreeviewEvent>);
   const left = tree.mouse({ button: ['LEFT'] });
 
   const toggleTwisty = (node: string) => {
@@ -48,7 +48,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   /**
    * Drill-in
    */
-  const drillIn = (node?: t.ITreeViewNode) => {
+  const drillIn = (node?: t.ITreeviewNode) => {
     const child = (node?.children || [])[0]?.id;
     select(child);
   };

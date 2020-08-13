@@ -4,7 +4,9 @@ export type IDispose = {
   dispose(): void;
 };
 
-export type IDisposable = IDispose & {
+export type IDisposeProps = {
   readonly isDisposed: boolean;
   readonly dispose$: Observable<void>;
 };
+
+export type IDisposable = IDispose & IDisposeProps;

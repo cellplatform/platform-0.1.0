@@ -8,15 +8,14 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { TreeView } from '../..';
 import { t } from '../../common';
 import { COLORS } from '../constants';
-import * as sample from '../sample';
+import * as sample from '../SAMPLE';
 import { Icons } from './Icons';
 
 export type ITestProps = { style?: CssValue };
-type N = t.ITreeViewNode;
 
 export type ITestState = {
   theme?: t.TreeTheme;
-  root?: t.ITreeViewNode;
+  root?: t.ITreeviewNode;
   current?: string;
 };
 
@@ -31,8 +30,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   };
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
-  private event$ = new Subject<t.TreeViewEvent>();
-  private mouse$ = new Subject<t.ITreeViewMouse>();
+  private event$ = new Subject<t.TreeviewEvent>();
+  private mouse$ = new Subject<t.ITreeviewMouse>();
 
   /**
    * [Lifecycle]
@@ -61,11 +60,26 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       // log.info('🌳', e.type, e.payload);
     });
 
+    tree.render.icon$.pipe(filter((e) => e.icon !== 'Face')).subscribe((e) => {
+      e.render(Icons[e.icon]);
+    });
+
+    tree.render.header$.pipe(filter((e) => e.node.id === 'root.3')).subscribe((e) => {
+      const el = (
+        <Foo style={{ flex: 1, lineHeight: '1.6em', MarginX: 2, marginTop: 2 }}>
+          <div>My Custom Header: {e.node.id}</div>
+          {this.renderHomeLink()}
+        </Foo>
+      );
+
+      e.render(el);
+    });
+
     /**
      * Handle mouse.
      */
 
-    const toggle = (node: t.ITreeViewNode) => {
+    const toggle = (node: t.ITreeviewNode) => {
       const toggled = TreeView.util.toggleIsOpen(this.state.root, node);
       this.state$.next({ root: toggled });
     };
@@ -206,7 +220,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Handlers]
    */
-  private renderIcon: t.RenderTreeIcon = (e) => Icons[e.icon];
+  private renderIcon: t.RenderTreeIcon = (e) => {
+    if (e.icon === 'Face') {
+      return Icons[e.icon];
+    } else {
+      // NB: This arbitrary IF statement is to allow the
+      //     event factory "TREEVIEW/render/icon" to be tested.
+      return undefined;
+    }
+  };
 
   private renderNodeBody: t.RenderTreeNodeBody = (e) => {
     const styles = {
@@ -234,7 +256,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     );
   };
 
-  private renderPanel: t.RenderTreePanel<t.ITreeViewNode> = (e) => {
+  private renderPanel: t.RenderTreePanel<t.ITreeviewNode> = (e) => {
     /**
      * NOTE:  Use this flag to revent custom panel rendering if
      *        the node is opened "inline" within it's parent.
@@ -250,6 +272,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           flex: 1,
           lineHeight: '1.6em',
           padding: 2,
+          boxSizing: 'border-box',
         }),
         link: css({ color: COLORS.BLUE, cursor: 'pointer' }),
       };
@@ -257,15 +280,27 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.base}>
           <Foo style={{ flex: 1, lineHeight: '1.6em' }}>
             <div>My Custom Panel: {e.node.id}</div>
-            <div onClick={this.handleHomeClick} {...styles.link}>
-              Home
-            </div>
+            {this.renderHomeLink()}
           </Foo>
         </div>
       );
     }
     return undefined;
   };
+
+  private renderHomeLink() {
+    const styles = {
+      base: css({
+        color: COLORS.BLUE,
+        cursor: 'pointer',
+      }),
+    };
+    return (
+      <div onClick={this.handleHomeClick} {...styles.base}>
+        Home
+      </div>
+    );
+  }
 
   private handleHomeClick = () => {
     this.state$.next({ current: 'root' });

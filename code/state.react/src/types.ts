@@ -1,4 +1,4 @@
-import { IStoreEvent, IStoreContext } from '@platform/state';
+import { IStoreEvent, IStoreContext } from '@platform/state/lib/Store/types';
 
 export * from '@platform/state/lib/types';
 

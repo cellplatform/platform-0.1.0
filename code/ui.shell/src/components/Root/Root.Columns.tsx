@@ -10,7 +10,7 @@ import { Tree } from '../Tree';
 const SHELL = DEFAULT.STATE.SHELL;
 
 export type IRootColumnsProps = {
-  tree$: Subject<t.TreeViewEvent>;
+  tree$: Subject<t.TreeviewEvent>;
   style?: CssValue;
 };
 

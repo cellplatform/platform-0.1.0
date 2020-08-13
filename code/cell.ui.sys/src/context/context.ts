@@ -17,13 +17,6 @@ export async function create(args: { env: t.IEnv }) {
   const client = Client.env(env);
   const window = await AppWindowModel.load({ client, uri: env.def });
 
-  /**
-   * TODO 🐷 TEMP
-   */
-  event$.subscribe((e) => {
-    // console.log('🐷', e);
-  });
-
   // Create the context.
   const ctx: t.IAppContext = {
     env,

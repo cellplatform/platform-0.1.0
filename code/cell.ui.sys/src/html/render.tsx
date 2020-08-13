@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { AppBuilder } from '../components/AppBuilder';
 import { Debug } from '../components/Debug';
+import { Test as ModuleView } from '../components.dev/ModuleView.dev/Test';
 import { Root } from '../components/Root';
 
 export function render(entry: string) {
@@ -17,6 +18,13 @@ export function render(entry: string) {
       return (
         <Root title={'debug.sheet'}>
           <Debug view={'SHEET'} />
+        </Root>
+      );
+
+    case 'entry:shell':
+      return (
+        <Root title={'ModuleView'}>
+          <ModuleView />
         </Root>
       );
 

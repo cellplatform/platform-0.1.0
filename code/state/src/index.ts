@@ -4,4 +4,5 @@ export { Store };
 import { StateObject } from './StateObject';
 export { StateObject };
 
-export * from './types';
+import { TreeState } from './TreeState';
+export { TreeState };

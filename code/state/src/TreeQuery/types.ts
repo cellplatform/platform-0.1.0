@@ -76,6 +76,7 @@ export type TreeDepth<T extends Node> = (node: MaybeId<T>) => number;
  */
 export type ITreeWalk<T extends Node = Node> = {
   id: string;
+  key: string;
   namespace: string;
   index: number; // Within siblings.
   node: T;

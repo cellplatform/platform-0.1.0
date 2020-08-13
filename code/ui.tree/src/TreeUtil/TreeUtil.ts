@@ -5,8 +5,8 @@ import { clone } from 'ramda';
 import * as t from '../common/types';
 import { TreeEvents } from '../TreeEvents';
 
-type N = t.ITreeViewNode;
-type P = t.ITreeViewNodeProps;
+type N = t.ITreeviewNode;
+type P = t.ITreeviewNodeProps;
 
 /**
  * Helpers for traversing and operating on the tree data-structure.
@@ -232,7 +232,7 @@ export class TreeUtil {
   public static setProps<T extends N>(
     root: T | undefined,
     id: T | T['id'],
-    props?: Partial<t.ITreeViewNodeProps>,
+    props?: Partial<t.ITreeviewNodeProps>,
   ): T | undefined {
     if (!props || !root) {
       return root;
@@ -250,7 +250,7 @@ export class TreeUtil {
    * Retrieve the { props:{ treeview: {...} } } node.
    */
   public static props(of: t.INode, fn?: (treeProps: P) => void): P {
-    const props = (of.props = of.props || {}) as t.ITreeViewNodePropsBase;
+    const props = (of.props = of.props || {}) as t.ITreeNodePropsTreeview;
     const treeview = (props.treeview = props.treeview || {}) as P;
     if (typeof fn === 'function') {
       fn(treeview);

@@ -1,5 +1,8 @@
 import * as ui from './ui';
 
+import { Module } from './Module';
+export { Module };
+
 export { ui };
 export * from './context';
 

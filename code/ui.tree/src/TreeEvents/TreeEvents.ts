@@ -1,27 +1,31 @@
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { rx } from '@platform/util.value';
 
 import { t } from '../common';
 
+type N = t.ITreeviewNode;
+type E = t.TreeviewEvent;
 type Button = t.MouseEvent['button'];
 type Target = t.TreeViewMouseTarget;
 
 /**
  * Helpers for filtering different event streams for a tree with sensible defaults.
  */
-export class TreeEvents<N extends t.ITreeViewNode = t.ITreeViewNode> implements t.ITreeEvents<N> {
-  public static create<N extends t.ITreeViewNode = t.ITreeViewNode>(
-    event$: Observable<t.TreeViewEvent>,
+export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
+  public static create<T extends N = N>(
+    event$: Observable<E>,
     dispose$?: Observable<any>,
-  ): t.ITreeEvents<N> {
-    return new TreeEvents<N>(event$, dispose$);
+  ): t.ITreeEvents<T> {
+    return new TreeEvents<T>(event$, dispose$);
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(event$: Observable<t.TreeViewEvent>, dispose$?: Observable<any>) {
-    this.event$ = event$.pipe(takeUntil(this.dispose$));
+  private constructor(event$: Observable<E>, dispose$?: Observable<any>) {
+    this.treeview$ = event$.pipe(takeUntil(this.dispose$));
+    this.keyboard$ = rx.payload<t.ITreeviewKeyboardEvent>(this.treeview$, 'TREEVIEW/keyboard');
     if (dispose$) {
       dispose$.subscribe(() => this.dispose());
     }
@@ -35,7 +39,11 @@ export class TreeEvents<N extends t.ITreeViewNode = t.ITreeViewNode> implements 
   /**
    * [Fields]
    */
-  public readonly event$: Observable<t.TreeViewEvent>;
+  private _render: t.ITreeRenderEvents<T>;
+  private _beforeRender: t.ITreeBeforeRenderEvents<T>;
+
+  public readonly keyboard$: Observable<t.ITreeviewKeyboard>;
+  public readonly treeview$: Observable<E>;
 
   private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -47,6 +55,52 @@ export class TreeEvents<N extends t.ITreeViewNode = t.ITreeViewNode> implements 
     return this._dispose$.isStopped;
   }
 
+  public get beforeRender() {
+    if (!this._beforeRender) {
+      const event$ = this.treeview$.pipe(
+        filter((e) => e.type.startsWith('TREEVIEW/beforeRender/')),
+        map((e) => e as t.TreeviewBeforeRenderEvent),
+      );
+      const $ = event$.pipe(map((e) => e.payload as t.TreeviewBeforeRenderEvent['payload']));
+
+      const node$ = event$.pipe(
+        filter((e) => e.type === 'TREEVIEW/beforeRender/node'),
+        map((e) => e.payload as t.ITreeviewBeforeRenderNode<T>),
+      );
+
+      this._beforeRender = { $, node$ };
+    }
+    return this._beforeRender;
+  }
+
+  public get render() {
+    if (!this._render) {
+      const event$ = this.treeview$.pipe(
+        filter((e) => e.type.startsWith('TREEVIEW/render/')),
+        map((e) => e as t.TreeviewRenderEvent),
+      );
+      const $ = event$.pipe(map((e) => e.payload as t.TreeviewRenderEvent['payload']));
+      const icon$ = event$.pipe(
+        filter((e) => e.type === 'TREEVIEW/render/icon'),
+        map((e) => e.payload as t.ITreeviewRenderIcon<T>),
+      );
+      const nodeBody$ = event$.pipe(
+        filter((e) => e.type === 'TREEVIEW/render/nodeBody'),
+        map((e) => e.payload as t.ITreeviewRenderNodeBody<T>),
+      );
+      const panel$ = event$.pipe(
+        filter((e) => e.type === 'TREEVIEW/render/panel'),
+        map((e) => e.payload as t.ITreeviewRenderPanel<T>),
+      );
+      const header$ = event$.pipe(
+        filter((e) => e.type === 'TREEVIEW/render/header'),
+        map((e) => e.payload as t.ITreeviewRenderHeader<T>),
+      );
+      this._render = { $, icon$, nodeBody$, panel$, header$ };
+    }
+    return this._render;
+  }
+
   /**
    * [Methods]
    */
@@ -55,9 +109,10 @@ export class TreeEvents<N extends t.ITreeViewNode = t.ITreeViewNode> implements 
   ) => {
     const { type, target } = options;
     const buttons = toButtons(options.button);
-    return this.event$.pipe(
+
+    return this.treeview$.pipe(
       filter((e) => e.type === 'TREEVIEW/mouse'),
-      map((e) => e.payload as t.ITreeViewMouse<N>),
+      map((e) => e.payload as t.ITreeviewMouse<T>),
       filter((e) => {
         if (buttons.includes('RIGHT') && type === 'CLICK' && e.type === 'UP') {
           // NB: The CLICK event for a right button does not fire from the DOM
@@ -72,8 +127,11 @@ export class TreeEvents<N extends t.ITreeViewNode = t.ITreeViewNode> implements 
     );
   };
 
-  public mouse(options: { button?: Button | Button[] } = {}) {
-    const button = toButtons(options.button);
+  public mouse(options: Button | Button[] | { button?: Button | Button[] } = {}) {
+    const button = toButtons(
+      Array.isArray(options) || typeof options === 'string' ? options : options.button,
+    );
+
     const mouse$ = this.mouse$;
     const targets = (type: t.MouseEventType) => {
       const args = { button, type };

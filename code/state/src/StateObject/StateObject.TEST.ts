@@ -6,11 +6,14 @@ import { StateObject } from '.';
 import { expect, t } from '../test';
 import { StateObject as StateObjectClass } from './StateObject';
 
+import { equals } from 'ramda';
+import { isDraft } from 'immer';
+
 type IFoo = { message?: string; count: number };
 type IBar = { isEnabled?: boolean };
 type MyEvent = IncrementEvent | DecrementEvent;
 type IncrementEvent = { type: 'INCREMENT'; payload: { by: number } };
-type DecrementEvent = { type: 'DECREMENT'; payload: { by: number } };
+type DecrementEvent = { type: 'DECREMENT'; payload: { count: number } };
 
 describe('StateObject', () => {
   describe('lifecycle', () => {
@@ -86,6 +89,41 @@ describe('StateObject', () => {
 
       obj.change((draft) => (draft.message = 'hello'));
       expect(fired.length).to.eql(3); // NB: no change.
+    });
+  });
+
+  describe('static', () => {
+    it('static: toObject (original)', () => {
+      const initial = { count: 0 };
+      const obj = StateObject.create<IFoo>(initial);
+
+      let original: IFoo | undefined;
+      obj.change((draft) => {
+        draft.count = 123;
+        expect(draft.count).to.eql(123);
+        original = StateObject.toObject(draft);
+      });
+
+      expect(isDraft(original)).to.eql(false);
+      expect(original?.count).to.eql(0);
+      expect(obj.state.count).to.eql(123);
+    });
+
+    it('isStateObject', () => {
+      const test = (input: any, expected: boolean) => {
+        const res = StateObject.isStateObject(input);
+        expect(res).to.eql(expected);
+      };
+
+      test(undefined, false);
+      test(null, false);
+      test('', false);
+      test(123, false);
+      test(true, false);
+      test({}, false);
+
+      const obj = StateObject.create<IFoo>({ count: 0 });
+      test(obj, true);
     });
   });
 
@@ -355,12 +393,12 @@ describe('StateObject', () => {
       expect(fired.length).to.eql(0); // NB: Because action was issued on change.
 
       // Change: Action issued, but different from what is being listened for.
-      obj.change((draft) => draft.count--, 'DECREMENT');
+      obj.change((draft) => draft.count--, { action: 'DECREMENT' });
       expect(obj.state.count).to.eql(2);
       expect(fired.length).to.eql(0); // NB: Because different action.
 
       // Change with action.
-      obj.change((draft) => draft.count++, 'INCREMENT');
+      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
       expect(obj.state.count).to.eql(3);
       expect(fired.length).to.eql(1);
       expect(fired[0].from.count).to.eql(2);
@@ -368,8 +406,8 @@ describe('StateObject', () => {
 
       // Stop listening.
       done$.next();
-      obj.change((draft) => draft.count++, 'INCREMENT');
-      obj.change((draft) => draft.count++, 'INCREMENT');
+      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
+      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
       expect(obj.state.count).to.eql(5);
       expect(fired.length).to.eql(1); // NB: No change.
     });
@@ -391,7 +429,7 @@ describe('StateObject', () => {
       expect(changed.length).to.eql(1);
       expect(actions.length).to.eql(0);
 
-      obj.change((draft) => draft.count++, 'INCREMENT');
+      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
       expect(changing.length).to.eql(2);
       expect(changed.length).to.eql(2);
       expect(actions.length).to.eql(1);
@@ -425,13 +463,33 @@ describe('StateObject', () => {
       expect(patches.next[0]).to.eql({ op: 'replace', path: '', value: { count: 888 } });
     });
 
-    it('event: dispatch', () => {
+    it('event: changedPatches', () => {
+      const obj = StateObject.create<IFoo, MyEvent>({ count: 1 });
+
+      const patches: t.IStateObjectPatched[] = [];
+      obj.event.patched$.subscribe((e) => patches.push(e));
+
+      obj.change({ count: 888 }, { action: 'INCREMENT' });
+
+      expect(patches.length).to.eql(1);
+
+      const e = patches[0];
+      expect(e.op).to.eql('replace');
+      expect(e.action).to.eql('INCREMENT');
+
+      expect(e.prev[0]).to.eql({ op: 'replace', path: '', value: { count: 1 } });
+      expect(e.next[0]).to.eql({ op: 'replace', path: '', value: { count: 888 } });
+    });
+
+    it('event: dispatch$', () => {
       const initial = { count: 1 };
       const obj = StateObject.create<IFoo, MyEvent>(initial);
       const dispatch = obj.dispatch; // NB: Test disconnected "bound" method.
 
+      const all: t.Event[] = [];
       const dispatched: MyEvent[] = [];
       const changed: t.IStateObjectChanged[] = [];
+      obj.event.$.subscribe((e) => all.push(e));
       obj.event.dispatch$.subscribe((e) => dispatched.push(e));
       obj.event.changed$.subscribe((e) => changed.push(e));
 
@@ -446,7 +504,7 @@ describe('StateObject', () => {
           map((e) => e.payload as IncrementEvent['payload']),
         )
         .subscribe((e) => {
-          obj.change((m) => (m.count += e.by), 'INCREMENT');
+          obj.change((m) => (m.count += e.by), { action: 'INCREMENT' });
         });
 
       dispatch({ type: 'INCREMENT', payload: { by: 2 } }); // NB: Using disconnected method.
@@ -455,6 +513,12 @@ describe('StateObject', () => {
       expect(changed.length).to.eql(1);
       expect(changed[0].action).to.eql('INCREMENT');
       expect(obj.state.count).to.eql(3);
+
+      // NB: Fires all the dispatched events through the "all" ($) observable as well.
+      dispatched.forEach((e1) => {
+        const exists = all.some((e2) => equals(e1, e2.payload.event));
+        expect(exists).to.eql(true);
+      });
     });
 
     it('event: dispatch (via [action.dispatched] method filter)', async () => {
@@ -464,7 +528,7 @@ describe('StateObject', () => {
       const done$ = new Subject();
 
       action(done$)
-        .dispatched('INCREMENT')
+        .dispatched<IncrementEvent>('INCREMENT')
         .pipe(filter((e) => e.by >= 5))
         .subscribe((e) => obj.change((m) => (m.count += e.by)));
 

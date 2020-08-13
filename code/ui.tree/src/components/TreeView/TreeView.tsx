@@ -1,11 +1,11 @@
 import { color, css, CssValue } from '@platform/css';
-import { containsFocus } from '@platform/react';
+import { containsFocus, events } from '@platform/react';
 import {
   IStackPanel,
   StackPanel,
   StackPanelSlideEvent,
 } from '@platform/ui.panel/lib/components/StackPanel';
-import { defaultValue } from '@platform/util.value';
+import { defaultValue, time } from '@platform/util.value';
 import { equals } from 'ramda';
 import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
@@ -23,39 +23,44 @@ import { constants, t } from '../../common';
 import * as themes from '../../themes';
 import { TreeEvents } from '../../TreeEvents';
 import { TreeUtil } from '../../TreeUtil';
-import { TreeViewNavigation } from '../../TreeViewNavigation';
-import { TreeViewState } from '../../TreeViewState';
+import { TreeViewState } from '../../TreeviewState';
 import { TreeHeader } from '../TreeHeader';
 import { TreeNodeList } from '../TreeNodeList';
+import { renderer } from './renderer';
 
 const R = { equals };
+type N = t.ITreeviewNode;
 
 export type ITreeViewProps = {
   id?: string;
-  root?: t.ITreeViewNode;
-  current?: t.ITreeViewNode['id'];
-  defaultNodeProps?: t.ITreeViewNodeProps | t.GetTreeNodeProps;
-  renderPanel?: t.RenderTreePanel;
+  root?: N;
+  current?: N['id'];
+  defaultNodeProps?: t.ITreeviewNodeProps | t.GetTreeviewNodeProps;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
+  renderPanel?: t.RenderTreePanel;
+  renderHeader?: t.RenderTreeHeader;
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
-  event$?: Subject<t.TreeViewEvent>;
-  mouse$?: Subject<t.ITreeViewMouse>;
+  event$?: Subject<t.TreeviewEvent>;
+  mouse$?: Subject<t.ITreeviewMouse>;
   tabIndex?: number;
   slideDuration?: number;
+  focusOnLoad?: boolean;
   style?: CssValue;
 };
 
 export type ITreeViewState = {
-  currentPath?: t.ITreeViewNode[];
-  renderedPath?: t.ITreeViewNode[];
+  currentPath?: N[];
+  renderedPath?: N[];
   index?: number;
   isSliding?: boolean;
   isFocused?: boolean;
 };
 
-const HEADER_HEIGHT = 36;
+const DEFAULT = {
+  HEADER_HEIGHT: 36,
+};
 
 export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState> {
   /**
@@ -63,14 +68,14 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
    */
   public static util = TreeUtil;
   public static query = TreeUtil.query;
+  public static identity = TreeViewState.identity;
   public static State = TreeViewState;
-  public static Navigation = TreeViewNavigation;
 
-  public static events<N extends t.ITreeViewNode = t.ITreeViewNode>(
-    event$: Observable<t.TreeViewEvent>,
-    dispose$?: Observable<void>,
+  public static events<T extends N = N>(
+    event$: Observable<t.TreeviewEvent>,
+    dispose$?: Observable<any>,
   ) {
-    return TreeEvents.create<N>(event$, dispose$);
+    return TreeEvents.create<T>(event$, dispose$);
   }
 
   private static current(props: ITreeViewProps) {
@@ -87,11 +92,11 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   private unmounted$ = new Subject<void>();
   private focus$ = new Subject<boolean>();
 
-  private _event$ = new Subject<t.TreeViewEvent>();
+  private _event$ = new Subject<t.TreeviewEvent>();
   public readonly event$ = this._event$.pipe(takeUntil(this.unmounted$), share());
   public readonly mouse$ = this.event$.pipe(
     filter((e) => e.type === 'TREEVIEW/mouse'),
-    map((e) => e.payload as t.ITreeViewMouse),
+    map((e) => e.payload as t.ITreeviewMouse),
     share(),
   );
 
@@ -104,14 +109,27 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   public componentDidMount() {
     // Setup observables.
     const focus$ = this.focus$.pipe(takeUntil(this.unmounted$));
+    const keyPress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
 
     // Bubble events through given subject(s).
     if (this.props.event$) {
-      this.event$.subscribe(this.props.event$);
+      this.event$.subscribe((e) => this.props.event$?.next(e));
     }
     if (this.props.mouse$) {
-      this.mouse$.subscribe(this.props.mouse$);
+      this.mouse$.subscribe((e) => this.props.mouse$?.next(e));
     }
+
+    /**
+     * Keyboard.
+     */
+    keyPress$.pipe(filter(() => this.isFocused)).subscribe((keypress) => {
+      const { root, current } = this.props;
+
+      this.props.event$?.next({
+        type: 'TREEVIEW/keyboard',
+        payload: { root, current, keypress },
+      });
+    });
 
     /**
      * Focus.
@@ -137,6 +155,10 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
     // Finish up.
     this.updatePath();
+
+    if (this.props.focusOnLoad) {
+      time.delay(0, () => this.focus());
+    }
   }
 
   public componentDidUpdate(prev: ITreeViewProps) {
@@ -165,10 +187,6 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return themes.themeOrDefault(this.props);
   }
 
-  private get headerHeight() {
-    return HEADER_HEIGHT;
-  }
-
   private get panels(): IStackPanel[] {
     const { renderedPath = [] } = this.state;
     const panels = renderedPath.map((node, i) => {
@@ -193,6 +211,12 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return Boolean(this.state.isFocused);
   }
 
+  private get renderer() {
+    const fire = this.fire;
+    const { renderIcon, renderNodeBody, renderPanel, renderHeader } = this.props;
+    return renderer({ fire, renderIcon, renderNodeBody, renderPanel, renderHeader });
+  }
+
   /**
    * [Methods]
    */
@@ -214,7 +238,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return this;
   }
 
-  private fire: t.FireEvent<t.TreeViewEvent> = (e) => this._event$.next(e);
+  private fire: t.FireEvent<t.TreeviewEvent> = (e) => this._event$.next(e);
 
   /**
    * [Render]
@@ -260,7 +284,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private renderCustomPanel(node: t.ITreeViewNode, depth: number) {
+  private renderCustomPanel(node: N, depth: number) {
     const { renderPanel, background = 'THEME' } = this.props;
     if (!renderPanel) {
       return;
@@ -268,8 +292,11 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
     const header = node.props?.treeview?.header || {};
     const isHeaderVisible = defaultValue(header.isVisible, true);
+    const elCustomHeader = isHeaderVisible ? this.renderCustomHeader(node, depth) : undefined;
+    const headerHeight = this.headerHeight(node, elCustomHeader);
+    const isFocused = this.isFocused;
 
-    const el = renderPanel({ node, depth, isInline: false });
+    const el = renderPanel({ node, depth, isInline: false, isFocused });
     if (!el || !isHeaderVisible) {
       return el;
     }
@@ -283,24 +310,36 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
       }),
       body: css({
         overflow: 'hidden',
-        Absolute: [this.headerHeight, 0, 0, 0],
+        Absolute: [headerHeight, 0, 0, 0],
         display: 'flex',
       }),
     };
     return (
       <div {...styles.base}>
-        {this.renderHeader(node, depth)}
+        {isHeaderVisible && this.renderHeader(node, depth, elCustomHeader)}
         <div {...styles.body}>{el}</div>
       </div>
     );
   }
 
-  private renderNodeList(node: t.ITreeViewNode, depth: number) {
+  private renderCustomHeader(node: N, depth: number) {
+    const renderer = this.renderer;
+    const isFocused = this.isFocused;
+    return renderer.header({ node, depth, isFocused });
+  }
+
+  private renderNodeList(node: N, depth: number) {
     const theme = this.theme;
+    const renderer = this.renderer;
+
     const header = node.props?.treeview?.header || {};
-    const isHeaderVisible = defaultValue(header.isVisible, true);
-    const elHeader = isHeaderVisible && this.renderHeader(node, depth);
-    const paddingTop = (isHeaderVisible ? this.headerHeight : 0) + (header.marginBottom || 0);
+    let isHeaderVisible = defaultValue(header.isVisible, true);
+    const elCustomHeader = isHeaderVisible ? this.renderCustomHeader(node, depth) : undefined;
+    const headerHeight = this.headerHeight(node, elCustomHeader);
+    isHeaderVisible = headerHeight === 0 ? false : isHeaderVisible;
+    const elHeader = isHeaderVisible && this.renderHeader(node, depth, elCustomHeader);
+
+    const paddingTop = (isHeaderVisible ? headerHeight : 0) + (header.marginBottom || 0);
 
     return (
       <TreeNodeList
@@ -309,9 +348,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         node={node}
         depth={depth}
         defaultNodeProps={this.props.defaultNodeProps}
-        renderPanel={this.props.renderPanel}
-        renderIcon={this.props.renderIcon}
-        renderNodeBody={this.props.renderNodeBody}
+        renderer={renderer}
         header={elHeader}
         paddingTop={paddingTop}
         isBorderVisible={this.state.isSliding}
@@ -324,11 +361,12 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     );
   }
 
-  private renderHeader(node: t.ITreeViewNode, depth: number) {
+  private renderHeader = (node: N, depth: number, custom?: React.ReactNode | null) => {
     const theme = this.theme;
     const props = node.props?.treeview || {};
     const header = props.header || {};
     const title = props.title || props.label || node.id.toString();
+    const height = this.headerHeight(node);
 
     const showParentButton =
       header.showParentButton === false
@@ -339,8 +377,11 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
     return (
       <TreeHeader
+        custom={custom}
         node={node}
-        height={this.headerHeight}
+        renderer={this.renderer}
+        depth={depth}
+        height={height}
         title={title}
         showParentButton={showParentButton}
         theme={theme}
@@ -349,13 +390,22 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         onMouseParent={this.handleNodeMouse}
       />
     );
-  }
+  };
 
   /**
    * [Handlers]
    */
 
-  private handleNodeMouse = (payload: t.ITreeViewMouse) => {
+  private headerHeight(node: N, customHeader?: React.ReactNode | null) {
+    if (customHeader === null) {
+      return 0;
+    } else {
+      const header = node.props?.treeview?.header || {};
+      return defaultValue(header.height, DEFAULT.HEADER_HEIGHT);
+    }
+  }
+
+  private handleNodeMouse = (payload: t.ITreeviewMouse) => {
     const props = TreeUtil.props(payload);
     if (props.isEnabled === false) {
       switch (payload.type) {

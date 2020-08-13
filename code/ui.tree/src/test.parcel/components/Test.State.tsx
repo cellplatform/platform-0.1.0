@@ -2,35 +2,37 @@ import { color, css, CssValue } from '@platform/css';
 import { Button } from '@platform/ui.button';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
 import { TreeView } from '../..';
-import { t } from '../../common';
-import { TreeViewNavigation } from '../../TreeViewNavigation';
-import { Icons } from './Icons';
-import { TreeViewState } from '../../components.dev/TreeViewState';
+import { t, COLORS } from '../../common';
+import { TreeViewState } from '../../components.dev/TreeviewState';
+import { TreeviewStrategy } from '../../TreeviewStrategy';
+import { TreeEvents } from '../../TreeEvents';
 
-type Node = t.ITreeViewNode;
+type Node = t.ITreeviewNode;
+const header: t.ITreeviewNodeHeader = { isVisible: false, marginBottom: 45 };
 
 const SAMPLES = {
   DEFAULT: {
     id: 'root',
-    props: { treeview: { label: 'Root', header: { isVisible: false } } },
+    props: { treeview: { label: 'Root', header } },
     children: [
       {
-        id: 'Child-1',
-        props: { treeview: { label: 'Child-1', marginTop: 45 } },
+        id: 'Default-1',
         children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
       },
+      { id: 'Default-2' },
+      { id: 'Default-3' },
     ],
   } as Node,
   TWISTY: {
     id: 'root',
-    props: { treeview: { label: 'Root', header: { isVisible: false } } },
+    props: { treeview: { label: 'Root', header } },
     children: [
       {
-        id: 'Child-1',
-        props: { treeview: { label: 'Child-1', marginTop: 45, inline: {} } },
+        id: 'Default-1',
+        props: { treeview: { inline: {} } },
         children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
       },
     ],
@@ -47,42 +49,63 @@ Object.keys(SAMPLES).forEach((key) => {
 });
 
 export type ITestProps = { style?: CssValue };
-export type ITestState = {
-  root?: t.ITreeViewNode;
-  current?: string;
-};
 
-export class Test extends React.PureComponent<ITestProps, ITestState> {
-  public state: ITestState = { root: SAMPLES.DEFAULT };
-  private state$ = new Subject<Partial<ITestState>>();
+export class Test extends React.PureComponent<ITestProps> {
   private unmounted$ = new Subject();
-  private treeview$ = new Subject<t.TreeViewEvent>();
-
-  private store = TreeView.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
-  private nav = TreeViewNavigation.create({
-    tree: this.store,
-    treeview$: this.treeview$,
-    dispose$: this.unmounted$,
-    strategy: TreeViewNavigation.strategies.default,
-  });
+  private treeview$ = new Subject<t.TreeviewEvent>();
+  private tree = TreeView.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    this.store.event.changed$
-      .pipe(takeUntil(this.unmounted$))
-      .subscribe((e) => this.state$.next({ root: e.to }));
-
-    this.nav.redraw$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
+    const tree = this.tree;
+    tree.event.changed$.pipe(takeUntil(this.unmounted$), debounceTime(10)).subscribe((e) => {
       this.forceUpdate();
     });
+
+    const treeviewEvents = TreeEvents.create(this.treeview$, this.unmounted$);
+
+    /**
+     * Adjust styles on selected node.
+     */
+    treeviewEvents.beforeRender.node$.subscribe((e) => {
+      const isSelected = e.node.id === this.selected;
+      if (isSelected) {
+        e.change((props) => {
+          const colors = props.colors || (props.colors = {});
+          colors.label = COLORS.BLUE;
+        });
+      }
+    });
+
+    /**
+     * State / Behavior Strategy
+     */
+    const strategy = TreeviewStrategy.default();
+    this.treeview$
+      .pipe(takeUntil(this.unmounted$))
+      .subscribe((event) => strategy.next({ tree, event }));
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get rootNav() {
+    return this.tree.root.props?.treeview?.nav || {};
+  }
+
+  public get current() {
+    return this.rootNav.current;
+  }
+
+  public get selected() {
+    return this.rootNav.selected;
   }
 
   /**
@@ -118,10 +141,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     return (
       <div {...styles.base}>
         <TreeView
-          root={this.nav.root}
-          current={this.nav.current}
+          root={this.tree.root}
+          current={this.current}
           event$={this.treeview$}
-          renderIcon={this.renderIcon}
           background={'NONE'}
           tabIndex={0}
         />
@@ -138,10 +160,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         backgroundColor: color.format(1),
         Flex: 'vertical-stretch-stretch',
       }),
-      body: css({
-        position: 'relative',
-        flex: 1,
-      }),
+      body: css({ position: 'relative', flex: 1 }),
       scroll: css({
         Absolute: 0,
         padding: 30,
@@ -149,7 +168,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         PaddingX: 50,
         Scroll: true,
         paddingBottom: 100,
+        Flex: 'start-spaceBetween',
       }),
+      state: css({ flex: 1, maxWidth: 680 }),
     };
 
     return (
@@ -157,7 +178,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         {this.renderToolbar()}
         <div {...styles.body}>
           <div {...styles.scroll}>
-            <TreeViewState store={this.store} />
+            <div />
+            <TreeViewState
+              store={this.tree}
+              current={this.current}
+              selected={this.selected}
+              style={styles.state}
+            />
+            <div />
           </div>
         </div>
       </div>
@@ -176,19 +204,27 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         color: color.format(-0.3),
       }),
       spacer: css({ MarginX: 6 }),
+      div: css({
+        MarginX: 15,
+        borderLeft: `solid 1px ${color.format(-0.1)}`,
+        height: '70%',
+      }),
     };
 
     const spacer = <div {...styles.spacer} />;
+    const div = <div {...styles.div} />;
 
     return (
       <div {...styles.base}>
         <Button onClick={this.onRedrawClick}>Redraw</Button>
-        {spacer}
+        {div}
         <div>Load:</div>
         {spacer}
         <Button onClick={this.loadHandler(SAMPLES.DEFAULT)}>Default</Button>
         {spacer}
         <Button onClick={this.loadHandler(SAMPLES.TWISTY)}>Twisty</Button>
+        {div}
+        <Button onClick={this.tree.clear}>Clear</Button>
       </div>
     );
   }
@@ -196,15 +232,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Handlers]
    */
-  private renderIcon: t.RenderTreeIcon = (e) => Icons[e.icon];
-
-  private onRedrawClick = () => {
-    this.forceUpdate();
-  };
+  private onRedrawClick = () => this.forceUpdate();
 
   private loadHandler = (root: Node) => {
     return () => {
-      this.store.change((draft) => (draft.children = root.children));
+      this.tree.change((draft) => (draft.children = root.children));
     };
   };
 }

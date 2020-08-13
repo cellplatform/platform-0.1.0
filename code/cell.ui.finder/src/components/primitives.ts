@@ -1,5 +1,5 @@
-import { WindowTitleBar } from '@platform/cell.ui/lib/components/WindowTitleBar';
-export { WindowTitleBar };
+import { WindowTitlebar } from '@platform/cell.ui/lib/components/WindowTitleBar';
+export { WindowTitlebar };
 
 import { IPropListItem } from '@platform/cell.ui/lib/types';
 import { PropList, IPropListProps } from '@platform/cell.ui/lib/components/PropList';

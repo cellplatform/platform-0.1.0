@@ -1,2 +1,2 @@
 export * from './types.env';
-export * from './types.env.context';
+export * from './types.env.ctx';

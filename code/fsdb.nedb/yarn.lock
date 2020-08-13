@@ -1737,14 +1737,14 @@
     jss-plugin-global "10.1.1"
     tinycolor2 "1.4.1"
 
-"@platform/css@0.4.7":
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.7.tgz#18003bc7c1945df68a102118ee009bff0498c8e3"
-  integrity sha512-kqP+g6mOxL+SnCDk+ZOBWhl8eiVQyK1OPTg2+yjTjphPtGX0H+RVC502E6obiv0hNiC5d6E+BOBC0LgCMwxZPw==
+"@platform/css@0.4.9":
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/@platform/css/-/css-0.4.9.tgz#1a12a34a89a2fff653230971bf13be97e121bd6c"
+  integrity sha512-xcrN192g5wgsNTHMUzec9J7t5uGJAFP8joHtsmsjUidlN2vB1CbGExLEk8nUd+kkTcWYHllRu8+sbp8SJ5ljCQ==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/util.is" "0.0.127"
-    "@platform/util.value" "0.7.27"
+    "@platform/util.value" "0.7.29"
     "@types/tinycolor2" "1.4.2"
     glamor-jss "1.4.1"
     jss-plugin-global "10.3.0"
@@ -1821,25 +1821,25 @@
     js-yaml "3.14.0"
     minimatch "3.0.4"
 
-"@platform/fsdb.types@0.6.29":
-  version "0.6.29"
-  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.6.29.tgz#2b6d528f4ccf18ea543b8b19156de49cca6ed5d3"
-  integrity sha512-IMaJAc8V9gCdD2sY5pfB+si4o1c6w/WTaYCM+782vLCmGRdR0B1zqmxmQxUSmDrpn+kfLyhOqkzM9HJ+D+zuNw==
+"@platform/fsdb.types@0.6.31":
+  version "0.6.31"
+  resolved "https://registry.yarnpkg.com/@platform/fsdb.types/-/fsdb.types-0.6.31.tgz#7f6e1019d03c952f6e58cc0f1cae0109636eb4c8"
+  integrity sha512-CLdi9WF1yKX6Ms7tLzcsPrjtbNsQi/rQYm6HF2BA0rBpwnK4bhs/885sxakNpGnlGpz90n42qFJgV/2pXc4QbQ==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.0"
+    "@platform/types" "0.5.2"
 
-"@platform/graphql.server@0.1.126":
-  version "0.1.126"
-  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.126.tgz#780b494748466588975d70421416670408701a89"
-  integrity sha512-lx1ZQi3WhdEVxzgKOqE+vJ2vAARL1XDWMG68934xNkisbX93p2xlOOVydgndbxlTCULcdgwjE/SqT5O+eVdJsQ==
+"@platform/graphql.server@0.1.128":
+  version "0.1.128"
+  resolved "https://registry.yarnpkg.com/@platform/graphql.server/-/graphql.server-0.1.128.tgz#84e2247a421a22781e1541ac44545b648f1c0f20"
+  integrity sha512-CfdSYpMFMjzo6Se8l3uk7ZcLo2J2r1eNJA+v3/cGhKvRHyTwbLpjA6bqGqQjUZpGKq88RdOjYS0ZsrEyJFKLDA==
   dependencies:
     "@platform/cache" "0.2.33"
-    "@platform/graphql" "0.2.115"
+    "@platform/graphql" "0.2.117"
     "@platform/libs" "0.2.2"
     "@platform/log" "0.1.27"
     "@platform/util.is" "0.0.127"
-    "@platform/util.value" "0.7.27"
+    "@platform/util.value" "0.7.29"
     "@types/dotenv" "8.2.0"
     "@types/express" "4.17.7"
     apollo-server-express "2.15.1"
@@ -1848,14 +1848,14 @@
     graphql "15.3.0"
     graphql-tools "6.0.12"
 
-"@platform/graphql@0.2.115":
-  version "0.2.115"
-  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.115.tgz#8ecf4577f0e70b566227929a65bf0c52576a9d2e"
-  integrity sha512-JGfPE9i1n6ARYmBYyYihsGTuIhywWg6q+OhzKsTBWLGj05xq5wxisX6tk3+WGSmC7Sd+oCySd3V5M27Zf6YTug==
+"@platform/graphql@0.2.117":
+  version "0.2.117"
+  resolved "https://registry.yarnpkg.com/@platform/graphql/-/graphql-0.2.117.tgz#4f7ec3cd902979b11578832757df9c56097b4a40"
+  integrity sha512-TEi1F+v1nqppNL0ZYvLRI1ne5oY1WiT0UtKmeLxK1ukDueGnKmr+4TwcoU30ZgqUUg4iWfjU9qDGA6/MCeM2pA==
   dependencies:
-    "@platform/http.types" "0.2.13"
+    "@platform/http.types" "0.2.15"
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.0"
+    "@platform/types" "0.5.2"
     apollo-cache-inmemory "1.6.6"
     apollo-client "2.6.10"
     apollo-link "1.2.14"
@@ -1866,13 +1866,13 @@
     graphql-tag "2.10.4"
     isomorphic-fetch "2.2.1"
 
-"@platform/http.types@0.2.13":
-  version "0.2.13"
-  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.13.tgz#82f3cb8fcd7f55bde3c382a6a0097c4f4ae0c288"
-  integrity sha512-g40goRDfRD+3Lkfw5pEYRAxOUELdlS3xQGjQ5kFoKHm5h7+C+oyyUrv8yC8fjTei062xj6MaICSgBW17nuyasA==
+"@platform/http.types@0.2.15":
+  version "0.2.15"
+  resolved "https://registry.yarnpkg.com/@platform/http.types/-/http.types-0.2.15.tgz#c2aca8a520993636f1f7a6076ba11c74e479ba9d"
+  integrity sha512-8v1mnRMN4zEZmOTqIPR+v2URgLEmPhogNAX19zTyQOiOYluodW6auk7kaTdI4eBFmxvJOP73SYI1+pPQU+gUNw==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.0"
+    "@platform/types" "0.5.2"
 
 "@platform/libs@0.2.2":
   version "0.2.2"
@@ -1937,12 +1937,12 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/react@0.4.40":
-  version "0.4.40"
-  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.40.tgz#94b7fee7048c51d29cac21c7f4cf5f14a7890af1"
-  integrity sha512-9cdsep6mtHsYtJDz30QlQISRuYtVyc/9jk7YAFZ9hoFl2CTU0/V/t+IfPcKid886uw0mDpOumNQwrvVSrqWntQ==
+"@platform/react@0.4.42":
+  version "0.4.42"
+  resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.42.tgz#eb2f00f9d2185fcd684f92286b4014af43d6efc1"
+  integrity sha512-Hy+sA3bZy7kWLwX4gO8yBHl4CfWHuqXF7KbgMLpKGPxYne+PNjPquaoINjD+pU1oCg92WV5N4npKAnWlWaWluA==
   dependencies:
-    "@platform/css" "0.4.7"
+    "@platform/css" "0.4.9"
     "@platform/util.is" "0.0.127"
     react "16.13.1"
     react-dom "16.13.1"
@@ -2005,10 +2005,10 @@
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.4.21.tgz#d55e67e5fdf25de66fdd6aaee5b2714aab66f86c"
   integrity sha512-IFcybg/oI96IDTbuFUwlmUe9ubele63clYYvbNCkTMnpWSbGgrys5soaga6l3XAntcIshN92LSB1974CZ9kzdQ==
 
-"@platform/types@0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.0.tgz#c67ea07983eec3c967936f495f2728880dcb09bb"
-  integrity sha512-WkUTrh36q0eo1sMfH9jqvPMamXzS+Epd0v2aKXgJlxyh8TKGXiQOrfcmoPxr/3MPulFdvUhDkdfSjCp/64cMlA==
+"@platform/types@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.2.tgz#0c9f6afa7ce68781ff038e8b84a57475517dc9d6"
+  integrity sha512-l8ggCga1W952JNysR3KAScRYzzlBL2nDJj2mF4BglbqumklHG6yZRGQuyWp86Hrzt2RqWZ+2OArt0xfvA1cPUw==
 
 "@platform/ui.icon@0.0.143":
   version "0.0.143"
@@ -2108,13 +2108,13 @@
     cuid "2.1.8"
     dayjs "1.8.25"
 
-"@platform/util.value@0.7.27":
-  version "0.7.27"
-  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.27.tgz#9752f743c4fcd799b0f1c2229d61ba3999f853ff"
-  integrity sha512-sECP7dwDtiJ9RHdvuuQFvxJbsS93xxnk9iusX6HxlVz05CZmftNx74zxgCv3hJtXeXxYUumkHzxCng+KdNn1vw==
+"@platform/util.value@0.7.29":
+  version "0.7.29"
+  resolved "https://registry.yarnpkg.com/@platform/util.value/-/util.value-0.7.29.tgz#a5c168c85a1ba2e479aa922ea458406a5de4f81a"
+  integrity sha512-vihTNtR93mX0jOD48GtXvoJMxMAw2vzJgAyNprHA+3FMNxc/rLhjjuXfcDxxCIFMOdoXCEF2s4X/+IB2Du+v/A==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/types" "0.5.0"
+    "@platform/types" "0.5.2"
     "@platform/util.is" "0.0.127"
     cuid "2.1.8"
     dayjs "1.8.27"

@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { t } from '../common';
+import { t, is } from '../common';
 
 type O = Record<string, unknown>;
 type Event = t.Event<any>;
@@ -20,6 +20,7 @@ export function create(factory: t.StateObject['create']) {
   ): t.StateMerger<T, E> => {
     // Wrangle initial arg into a simple {inital} object.
     type S = t.IStateObject<T[keyof T]>;
+
     const initialStateObjects: { key: string; obj: S }[] = [];
     initial = Object.keys(initial).reduce((acc, key) => {
       const value = initial[key];
@@ -79,16 +80,3 @@ export function create(factory: t.StateObject['create']) {
     return api;
   };
 }
-
-/**
- * [Helpers]
- */
-
-const is = {
-  observable: (input: any) => hasAll(input, 'subscribe'),
-  stateObject: (input: any) => hasAll(input, 'change', 'dispatch', 'action'),
-};
-
-const hasAll = (input: any, ...keys: string[]) => {
-  return typeof input === 'object' && keys.every((key) => typeof input[key] === 'function');
-};

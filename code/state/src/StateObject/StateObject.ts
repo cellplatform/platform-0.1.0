@@ -1,10 +1,10 @@
 import { id } from '@platform/util.value';
-import { enablePatches, produceWithPatches, setAutoFreeze } from 'immer';
+import { enablePatches, produceWithPatches, setAutoFreeze, original, isDraft } from 'immer';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { Patch } from '../Patch';
 
-import { t } from '../common';
+import { t, is } from '../common';
 import * as events from './StateObject.events';
 import * as merge from './StateObject.merge';
 import * as action from './StateObject.action';
@@ -68,6 +68,22 @@ export class StateObject<T extends O, E extends t.Event<any>>
   public static merge = merge.create(StateObject.create);
 
   /**
+   * Convert a draft (proxied instance) object into a simple object.
+   *
+   * See: https://immerjs.github.io/immer/docs/original
+   */
+  public static toObject<T extends O>(input: T) {
+    return isDraft(input) ? (original(input) as T) : input;
+  }
+
+  /**
+   * Determine if the given value is a [StateObject].
+   */
+  public static isStateObject(input: any) {
+    return is.stateObject(input);
+  }
+
+  /**
    * [Lifecycle]
    */
   private constructor(args: { initial: T }) {
@@ -121,18 +137,14 @@ export class StateObject<T extends O, E extends t.Event<any>>
   /**
    * [Methods]
    */
-  public change = (fn: t.StateObjectChanger<T> | T, action?: E['type']) => {
+  public change: t.StateObjectChange<T, E> = (fn, options = {}) => {
     const cid = id.cuid(); // "change-id"
-    const type = (action || '').trim();
+    const type = (options.action || '').trim();
 
     const from = this.state;
     const { to, op, patches } = next(from, fn);
     if (Patch.isEmpty(patches)) {
-      return {
-        op,
-        cid,
-        patches,
-      };
+      return { op, cid, patches };
     }
 
     // Fire BEFORE event.
