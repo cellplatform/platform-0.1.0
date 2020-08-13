@@ -59,14 +59,34 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
    */
   key$.pipe(filter((e) => e.key === 'ArrowDown')).subscribe((e) => {
     const selected = e.get.selected;
-    const children = e.get.children(e.current);
-    if (!selected) {
-      e.mutate.selected(children[0]?.id);
+    const current = e.get.current;
+
+    if (!selected.id) {
+      // Nothing yet selected, select first child.
+      e.mutate.selected(current.children[0]?.id);
     } else {
-      const index = children.findIndex((child) => child.id === selected);
-      const node = children[index + 1];
-      if (node) {
-        e.mutate.selected(node.id);
+      const select = (next: t.ITreeNode) => {
+        if (next) {
+          e.mutate.selected(next.id);
+        }
+      };
+
+      const isDirectChild = current.children.some((child) => child.id === selected.id);
+      if (isDirectChild) {
+        if (selected.props.inline?.isOpen) {
+          return select(selected.children[0]);
+        } else {
+          return select(current.children[selected.index + 1]);
+        }
+      } else {
+        // Within an open inline "twisty".
+        if (selected.isLast) {
+          // Step up and out of the "twisty" into the next item in the current list.
+          const index = current.children.findIndex((child) => child.id === selected.parent?.id);
+          select(current.children[index + 1]);
+        } else {
+          select((selected.parent?.children || [])[selected.index + 1]);
+        }
       }
     }
   });
@@ -80,7 +100,7 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
     if (!selected) {
       e.mutate.selected(children[children.length - 1]?.id);
     } else {
-      const index = children.findIndex((child) => child.id === selected);
+      const index = children.findIndex((child) => child.id === selected.id);
       const node = children[index - 1];
       if (node) {
         e.mutate.selected(node.id);
@@ -100,14 +120,14 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
     .subscribe((e) => {
       const selected = e.get.selected;
       const props = util.props(e.query.findById(selected));
-      if (props?.inline) {
+      if (props.inline) {
         if (props.inline.isOpen && props.chevron?.isVisible) {
-          setCurrent$.next(selected); // Drill-in.
+          setCurrent$.next(selected.id); // Drill-in.
         } else {
-          e.mutate.open(selected);
+          e.mutate.open(selected.id);
         }
       } else {
-        setCurrent$.next(selected);
+        setCurrent$.next(selected.id);
       }
     });
 
@@ -118,7 +138,7 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
     const selected = e.get.selected;
     const props = util.props(e.query.findById(selected));
     if (props.inline?.isOpen) {
-      e.mutate.close(selected);
+      e.mutate.close(selected.id);
     } else {
       const parent = e.query.parent(e.get.current);
       if (parent) {

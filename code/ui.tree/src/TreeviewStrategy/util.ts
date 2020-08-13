@@ -38,6 +38,37 @@ export const props = (node?: N) => node?.props?.treeview || {};
  */
 export function get(tree: t.ITreeState) {
   const query = TreeQuery.create<N>({ root: tree.root });
+
+  const nodeHelpers = (input?: t.NodeIdentifier) => {
+    const id = typeof input === 'string' ? input : input?.id || '';
+    const cache: Record<string, any> = {};
+    const api = {
+      id,
+      get node(): t.ITreeviewNode {
+        return cache.node || (cache.node = query.findById(id));
+      },
+      get props() {
+        return props(api.node);
+      },
+      get parent(): t.ITreeviewNode {
+        return cache.parent || (cache.parent = query.parent(api.node));
+      },
+      get children(): t.ITreeviewNode[] {
+        return get.children(api.node);
+      },
+      get index() {
+        return get.children(api.parent).findIndex((child) => child.id === id);
+      },
+      get isFirst() {
+        return api.index === 0;
+      },
+      get isLast() {
+        return api.index === (get.children(api.parent) || []).length - 1;
+      },
+    };
+    return api;
+  };
+
   const get = {
     query,
     get root() {
@@ -47,16 +78,21 @@ export function get(tree: t.ITreeState) {
       return get.root.props?.treeview?.nav || {};
     },
     get selected() {
-      return get.nav.selected;
+      return nodeHelpers(get.nav.selected);
     },
     get current() {
-      return get.nav.current;
+      return nodeHelpers(get.nav.current);
     },
     node(id?: t.NodeIdentifier) {
       return id ? (query.findById(id) as N) : get.root;
     },
     children(parent?: t.NodeIdentifier) {
-      return get.node(parent)?.children || [];
+      if (typeof parent === 'object') {
+        const node = parent as t.ITreeNode;
+        return node.children || [];
+      } else {
+        return get.node(parent)?.children || [];
+      }
     },
   };
   return get;

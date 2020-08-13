@@ -111,7 +111,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         props.data = { foo: 'FOO' };
       });
       ctx.children(draft, (children) => {
-        children.push(...[{ id: 'one' }, { id: 'two' }]);
+        children.push(...[{ id: 'one' }, { id: 'two' }, { id: 'three' }]);
       });
     });
 
@@ -144,6 +144,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           child.children = [
             { id: 'my-child-1', props: { treeview: { label: 'child-1' } } },
             { id: 'my-child-2', props: { treeview: { label: 'child-2' } } },
+            { id: 'my-child-3', props: { treeview: { label: 'child-3' } } },
           ];
         }
       });
