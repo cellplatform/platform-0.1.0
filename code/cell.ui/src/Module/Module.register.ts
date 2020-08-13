@@ -6,7 +6,7 @@ type P = t.IModuleProps;
 /**
  * Registers a new module as a child of another module.
  */
-export function register<T extends P>(parent: t.IModule<any>): t.ModuleRegister<T> {
+export function register<T extends P>(parent: t.IModule): t.ModuleRegister<T> {
   return {
     add(args) {
       const root = formatModuleNode<T>(

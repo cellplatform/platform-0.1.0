@@ -3,10 +3,10 @@ import { Subject, Observable } from 'rxjs';
 import { Module } from '.';
 import { t, expect } from '../test';
 
-export type MyView = 'View-1' | 'View-2';
-export type MyData = { msg?: string; count: number };
-export type MyProps = t.IModuleProps<MyData, MyView>;
-export type MyModule = t.IModule<MyProps>;
+type MyView = 'View-1' | 'View-2';
+type MyData = { msg?: string; count: number };
+type MyProps = t.IModuleProps<MyData, MyView>;
+type MyModule = t.IModule<MyProps>;
 
 const create = (args: { dispose$?: Observable<any>; event$?: Observable<t.Event> } = {}) => {
   return Module.create<MyProps>({ ...args });

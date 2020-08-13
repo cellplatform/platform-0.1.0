@@ -20,9 +20,9 @@ export type Module = {
 
   create<T extends P>(args?: ModuleArgs<T>): IModule<T>;
 
-  register<T extends P>(parent: IModule<any>): ModuleRegister<T>;
+  register<T extends P>(parent: IModule): ModuleRegister<T>;
 
-  publish(args: ModulePublishArgs): ModulePublishResponse;
+  publish<T extends P>(args: ModulePublishArgs<T>): ModulePublishResponse;
 
   subscribe<T extends N = N>(args: ModuleSubscribeArgs<T>): ModuleSubscribeResponse<T>;
 
@@ -36,10 +36,7 @@ export type Module = {
 
   isModuleEvent(event: t.Event): boolean;
 
-  request<M extends t.IModule = t.IModule>(
-    fire: t.FireEvent<E>,
-    id: string,
-  ): t.ModuleRequestResponse<M>;
+  request<T extends P = P>(fire: t.FireEvent<E>, id: string): t.ModuleRequestResponse<T>;
 };
 
 /**
@@ -65,7 +62,10 @@ export type ModuleRegistration<T extends P> = {
 /**
  * A module state-tree.
  */
-export type IModule<T extends P = P> = t.ITreeState<IModuleNode<T>, t.ModuleEvent>;
+export type IModule<T extends P = t.IModuleProps<any, any>> = t.ITreeState<
+  IModuleNode<T>,
+  t.ModuleEvent
+>;
 
 /**
  * A tree-node that contains details about a module.
@@ -97,9 +97,9 @@ export type ModuleFilterArgs = {
 /**
  * Event Broadcasting.
  */
-export type ModulePublishArgs = {
+export type ModulePublishArgs<T extends P> = {
   until$?: Observable<any>;
-  module: IModule;
+  module: IModule<T>;
   fire: t.FireEvent<any>;
   filter?: t.ModuleFilter;
 };
@@ -119,7 +119,7 @@ export type ModuleSubscribeResponse<T extends N = N> = t.IDisposable & { tree: t
 export type IModuleFire = {
   render: ModuleFireRender;
   selection: ModuleFireSelection;
-  request<M extends t.IModule = t.IModule>(id: string): t.ModuleRequestResponse<M>;
+  request<T extends P = P>(id: string): t.ModuleRequestResponse<T>;
 };
 
 export type ModuleFireRender = (args: ModuleFireRenderArgs) => JSX.Element | null | undefined;
@@ -137,8 +137,8 @@ export type ModuleFireSelectionArgs = {
   selected?: string;
 };
 
-export type ModuleRequestResponse<M extends IModule = IModule> = {
-  module?: M;
+export type ModuleRequestResponse<T extends P = P> = {
+  module?: t.IModule<T>;
   path: string;
 };
 
@@ -147,7 +147,7 @@ export type ModuleRequestResponse<M extends IModule = IModule> = {
  */
 
 export type ModuleGetEvents = (
-  subject: Observable<t.Event> | t.IModule<any>,
+  subject: Observable<t.Event> | t.IModule,
   dispose$?: Observable<any>,
 ) => IModuleEvents;
 

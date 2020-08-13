@@ -5,11 +5,13 @@ import * as events from './Module.events';
 
 import { t } from '../common';
 
+type P = t.IModuleProps;
+
 /**
  * Broadcasts events from the module (and all child modules)
  * throw the given pipe (fire).
  */
-export const publish = (args: t.ModulePublishArgs): t.ModulePublishResponse => {
+export const publish = <T extends P>(args: t.ModulePublishArgs<T>): t.ModulePublishResponse => {
   const { module } = args;
   const pipe = (e: t.Event) => args.fire(e);
 

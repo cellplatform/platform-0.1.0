@@ -40,7 +40,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const ctx = this.context;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
-    const root = Module.create<t.MyData>({
+    const root = Module.create<t.MyProps>({
       event$: ctx.event$,
       dispose$: this.unmounted$,
     });
@@ -53,7 +53,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     this.unmounted$.complete();
   }
 
-  private async init(root: t.IModule) {
+  private async init(root: t.MyModule) {
     const ctx = this.context;
 
     // Publishes module changes into the global event bus.
@@ -63,9 +63,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       until$: this.unmounted$,
     });
 
-    const register = Module.register(root);
-    const foo = register.add({ id: 'foo', treeview: 'Diagram' }).module;
-    const bar = register.add({ id: 'bar', treeview: 'Sample' }).module;
+    const register = Module.register<t.MyProps>(root);
+    const foo = register.add({ id: 'foo', treeview: 'Diagram', view: 'DIAGRAM' }).module;
+    const bar = register.add({ id: 'bar', treeview: 'Sample', view: 'SAMPLE' }).module;
 
     console.log('root:', root.id);
     console.log('foo: ', foo.id);
@@ -108,8 +108,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
      */
     foo.change((draft, ctx) => {
       ctx.props(draft, (props) => {
-        const view: t.MyView = 'DIAGRAM';
-        props.view = view; // TODO - do this at registration
         props.data = { foo: 'FOO' };
       });
       ctx.children(draft, (children) => {
@@ -119,8 +117,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     bar.change((draft, ctx) => {
       ctx.props(draft, (props) => {
-        const view: t.MyView = 'SAMPLE';
-        props.view = view; // TODO - do this at registration
         props.data = { foo: 'FOO' };
 
         // const treeview = props.treeview || (props.treeview = {});

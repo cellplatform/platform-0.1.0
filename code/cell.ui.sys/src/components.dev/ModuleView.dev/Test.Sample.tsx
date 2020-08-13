@@ -36,7 +36,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
     // NB:     This could also have been retrieved from the [context]
     //         but is being "requested" in this way to demonstrate
     //         how this is one.
-    const module = Module.fire(ctx.fire).request<t.MyModule>(this.props.module).module;
+    const module = Module.fire(ctx.fire).request<t.MyProps>(this.props.module).module;
     this.state$.next({ module });
   }
 
@@ -56,9 +56,6 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
    * [Render]
    */
   public render() {
-    // const ctx = this.context;
-    // console.log('ctx', ctx);
-
     const e = this.props.e;
 
     const styles = {

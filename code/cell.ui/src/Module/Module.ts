@@ -11,6 +11,8 @@ import { Context } from './Context';
 import { provider } from './Context';
 import { t } from '../common';
 
+type P = t.IModuleProps;
+
 export class Module {
   /**
    * The React [Context] used to pass down common modules to components.
@@ -64,7 +66,7 @@ export class Module {
   public static isModuleEvent = events.isModuleEvent;
   public static fire = fire;
 
-  public static request<M extends t.IModule = t.IModule>(fire: t.FireEvent<any>, id: string) {
-    return Module.fire(fire).request<M>(id);
+  public static request<T extends P = P>(fire: t.FireEvent<any>, id: string) {
+    return Module.fire(fire).request<T>(id);
   }
 }
