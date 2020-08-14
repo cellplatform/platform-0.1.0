@@ -1,47 +1,86 @@
 import { TreeState } from '@platform/state';
-import { takeUntil } from 'rxjs/operators';
+import { rx } from '@platform/util.value';
+import { filter } from 'rxjs/operators';
 
-import { rx, t } from '../common';
+import { t } from '../common';
 import * as events from './Module.events';
+import { fire } from './Module.fire';
 
-type O = Record<string, unknown>;
 type P = t.IModuleProps;
 
 /**
  * Create a new module
  */
-export function create<T extends P>(args?: t.ModuleArgs<T>): t.IModule<T> {
-  args = { ...args };
-  args.root = formatModuleNode<T>(args.root || 'module');
+export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
+  const { bus } = args;
 
-  const module = TreeState.create(args) as t.IModule<T>;
-  events.monitorAndDispatch(module);
+  const root = formatModuleNode<T>(args.root || 'module', {
+    treeview: args.treeview,
+    view: args.view,
+    data: args.data,
+  });
 
-  if (args.event$) {
-    const $ = args.event$.pipe(takeUntil(module.dispose$));
+  // Create the tree-node module.
+  const module = TreeState.create({ root }) as t.IModule<T>;
+  events.monitorAndDispatch(bus, module);
 
-    // Listem for request events, and lookup to see if
-    // the module can be resolved within the child set.
-    rx.payload<t.IModuleRequestEvent>($, 'Module/request').subscribe((e) => {
-      const child = module.find((child) => child.id === e.module);
+  // Listen for request events, and lookup to see if
+  // the module can be resolved within the child set.
+  rx.payload<t.IModuleRequestEvent>(bus.event$, 'Module/request')
+    .pipe(
+      filter((e) => !e.handled),
+      filter((e) => e.module === module.id),
+    )
+    .subscribe((e) => e.respond({ module }));
+
+  /**
+   * Catch requests from children to register within this module.
+   */
+  rx.payload<t.IModuleRegisterEvent>(bus.event$, 'Module/register')
+    .pipe(
+      filter((e) => e.module !== module.id),
+      filter((e) => e.parent === module.id),
+    )
+    .subscribe((e) => {
+      const parent = module as t.IModule;
+      const child = fire(bus).request(e.module).module;
       if (child) {
-        e.response({
-          module: child,
-          path: module.path.from(child),
-        });
+        registerChild({ bus, parent, child });
       }
     });
-  }
 
+  // Finish up.
   return module;
+}
+
+/**
+ * [Helpers]
+ */
+
+function registerChild(args: { bus: t.EventBus<any>; parent: t.IModule; child: t.IModule }) {
+  const { bus, parent, child } = args;
+  parent.add(child);
+
+  bus.fire({
+    type: 'Module/child/registered',
+    payload: { module: parent.id, child: child.id },
+  });
+
+  // Alert listeners when disposed.
+  parent.dispose$.subscribe((e) => {
+    bus.fire({
+      type: 'Module/child/disposed',
+      payload: { module: parent.id, child: child.id },
+    });
+  });
 }
 
 /**
  * Prepare a tree-node to represent the root of a MODULE.
  */
-export function formatModuleNode<T extends P = any>(
+function formatModuleNode<T extends P = any>(
   input: t.ITreeNode | string,
-  defaults: { treeview?: string | t.ITreeviewNodeProps; view?: string; data?: T } = {},
+  defaults: { treeview?: string | t.ITreeviewNodeProps; view?: T['view']; data?: T['data'] } = {},
 ) {
   const { view = '', data = {} } = defaults;
   const node = typeof input === 'string' ? { id: input } : { ...input };

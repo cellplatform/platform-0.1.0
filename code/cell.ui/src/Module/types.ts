@@ -6,12 +6,16 @@ import * as t from '../common/types';
 type S = string;
 type O = Record<string, unknown>;
 type N = t.ITreeNode;
+type B = t.EventBus<any>;
 type E = t.ModuleEvent;
 type P = t.IModuleProps;
 type AnyProps = t.IModulePropsAny;
 
 export type ModuleArgs<T extends P> = t.ITreeStateArgs<IModuleNode<T>> & {
-  event$?: Observable<t.Event>; // Global event-bus.
+  bus: B; // Global event-bus.
+  treeview?: string | t.ITreeviewNodeProps;
+  view?: T['view'];
+  data?: T['data'];
 };
 
 export type Module = {
@@ -20,8 +24,6 @@ export type Module = {
   Context: React.Context<any>;
 
   create<T extends P>(args?: ModuleArgs<T>): IModule<T>;
-
-  register<T extends P>(parent: IModule): ModuleRegister<T>;
 
   filter(event: t.ModuleEvent, filter?: t.ModuleFilter): boolean;
 
@@ -34,30 +36,17 @@ export type Module = {
 
   isModuleEvent(event: t.Event): boolean;
 
-  fire(next: t.FireEvent<E>): IModuleFire;
-  publish<T extends P>(args: ModulePublishArgs<T>): ModulePublishResponse;
-  subscribe<T extends N = N>(args: ModuleSubscribeArgs<T>): ModuleSubscribeResponse<T>;
-  request<T extends P = P>(fire: t.FireEvent<E>, id: string): t.ModuleRequestResponse<T>;
+  fire(bus: B): IModuleFire;
+  register(bus: B, module: t.IModule, parent: string): t.ModuleRegistration;
 };
 
 /**
  * Registration.
  */
-
-export type ModuleRegister<T extends P> = {
-  add: (args: ModuleRegisterArgs<T>) => ModuleRegistration<T>;
-};
-
-export type ModuleRegisterArgs<T extends P> = {
-  id: string;
-  treeview?: string | t.ITreeviewNodeProps;
-  view?: T['view'];
-  data?: T['data'];
-};
-export type ModuleRegistration<T extends P> = {
-  id: string;
-  module: t.IModule<T>;
-  path: string;
+export type ModuleRegistration = {
+  ok: boolean;
+  module: t.IModule;
+  parent?: t.IModule;
 };
 
 /**
@@ -104,18 +93,11 @@ export type ModulePublishArgs<T extends P> = {
 };
 export type ModulePublishResponse = t.IDisposable;
 
-export type ModuleSubscribeArgs<T extends N = N> = {
-  until$?: Observable<any>;
-  event$: Observable<t.Event>;
-  tree: t.ITreeState<T, E>;
-  filter?: t.ModuleFilter;
-};
-export type ModuleSubscribeResponse<T extends N = N> = t.IDisposable & { tree: t.ITreeState<T, E> };
-
 /**
  * Event Bus (fire).
  */
 export type IModuleFire = {
+  register(module: t.IModule, parent: string): t.ModuleRegistration;
   render: ModuleFireRender;
   selection: ModuleFireSelection;
   request<T extends P>(id: string): t.ModuleRequestResponse<T>;
@@ -138,13 +120,11 @@ export type ModuleFireSelectionArgs = {
 
 export type ModuleRequestResponse<T extends P = AnyProps> = {
   module?: t.IModule<T>;
-  path: string;
 };
 
 /**
  * Event helpers
  */
-
 export type IModuleEvents<T extends P = AnyProps> = {
   $: Observable<ModuleEvent>;
   childRegistered$: Observable<IModuleChildRegistered>;
@@ -163,6 +143,8 @@ export type IModuleEvents<T extends P = AnyProps> = {
  */
 
 export type ModuleEvent =
+  | IModuleRegisterEvent
+  | IModuleRegisteredEvent
   | IModuleChildRegisteredEvent
   | IModuleChildDisposedEvent
   | IModuleSelectionEvent
@@ -172,17 +154,29 @@ export type ModuleEvent =
   | IModulePatchedEvent
   | IModuleRequestEvent;
 
+export type IModuleRegisterEvent = {
+  type: 'Module/register';
+  payload: IModuleRegister;
+};
+export type IModuleRegister = { module: string; parent: string };
+
+export type IModuleRegisteredEvent = {
+  type: 'Module/registered';
+  payload: IModuleRegistered;
+};
+export type IModuleRegistered = { module: string; parent: string };
+
 export type IModuleChildRegisteredEvent = {
   type: 'Module/child/registered';
   payload: IModuleChildRegistered;
 };
-export type IModuleChildRegistered = { module: string; path: string };
+export type IModuleChildRegistered = { module: string; child: string };
 
 export type IModuleChildDisposedEvent = {
   type: 'Module/child/disposed';
   payload: IModuleChildDisposed;
 };
-export type IModuleChildDisposed = { module: string; path: string };
+export type IModuleChildDisposed = { module: string; child: string };
 
 export type IModuleSelectionEvent<D extends O = any> = {
   type: 'Module/selection';
@@ -231,5 +225,6 @@ export type IModuleRequestEvent = {
 };
 export type IModuleRequest = {
   module: string;
-  response<T extends P = AnyProps>(args: { module: t.IModule<T>; path: string }): void;
+  handled: boolean;
+  respond<T extends P = AnyProps>(args: { module: t.IModule<T> }): void;
 };

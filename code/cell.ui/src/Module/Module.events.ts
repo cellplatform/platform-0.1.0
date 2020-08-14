@@ -101,57 +101,52 @@ export function filterEvent(event: t.ModuleEvent, filter?: t.ModuleFilter) {
  * Monitors the events of a module (and it's children) and bubbles
  * the relevant events.
  */
-export function monitorAndDispatch<T extends P>(module: t.IModule<T>) {
+export function monitorAndDispatch<T extends P>(
+  bus: t.EventBus<t.ModuleEvent>,
+  module: t.IModule<T>,
+) {
   type M = t.IModule<T>;
+  const until$ = module.dispose$;
+  const event$ = bus.event$.pipe(takeUntil(until$));
 
-  const monitorChild = (parent: M, child?: M) => {
-    if (child) {
-      const until$ = parent.event.childRemoved$.pipe(filter((e) => e.child.id === child.id));
-      monitor(child, until$); // <== RECURSION 🌳
-    }
-  };
+  // Bubble module events through the StateObject's internal dispatch.
+  event$
+    .pipe(
+      filter((e) => isModuleEvent(e)),
+      filter((e) => e.payload.module === module.id),
+    )
+    .subscribe((e) => module.dispatch(e));
 
-  const monitor = (module: M, until$: Observable<any> = new Subject()) => {
-    const id = module.id;
-    const changed$ = module.event.changed$.pipe(takeUntil(until$));
-    const patched$ = module.event.patched$.pipe(takeUntil(until$));
-    const childAdded$ = module.event.childAdded$.pipe(takeUntil(until$));
+  const id = module.id;
+  const objChanged$ = module.event.changed$.pipe(takeUntil(until$));
+  const objPatched$ = module.event.patched$.pipe(takeUntil(until$));
 
-    changed$.subscribe((change) => {
-      module.dispatch({
-        type: 'Module/changed',
-        payload: { module: id, change },
-      });
+  objChanged$.subscribe((change) => {
+    module.dispatch({
+      type: 'Module/changed',
+      payload: { module: id, change },
+    });
+  });
+
+  objPatched$.subscribe((patch) => {
+    module.dispatch({
+      type: 'Module/patched',
+      payload: { module: id, patch },
+    });
+  });
+
+  // Convert changes to the tree-navigation data into [Module/selection] events.
+  objChanged$
+    .pipe(
+      map((e) => e.to.props?.treeview?.nav as NonNullable<t.ITreeviewNodeProps['nav']>),
+      filter((e) => Boolean(e)),
+      distinctUntilChanged((prev, next) => equals(prev, next)),
+    )
+    .subscribe((e) => {
+      const { current, selected } = e;
+      const root = module.root;
+      fire(bus).selection({ root, current, selected });
     });
 
-    patched$.subscribe((patch) => {
-      module.dispatch({
-        type: 'Module/patched',
-        payload: { module: id, patch },
-      });
-    });
-
-    // Convert changes to the tree-navigation data into [Module/selection] events.
-    changed$
-      .pipe(
-        map((e) => e.to.props?.treeview?.nav as NonNullable<t.ITreeviewNodeProps['nav']>),
-        filter((e) => Boolean(e)),
-        distinctUntilChanged((prev, next) => equals(prev, next)),
-      )
-      .subscribe((e) => {
-        const { current, selected } = e;
-        const root = module.root;
-        fire(module.dispatch).selection({ root, current, selected });
-      });
-
-    childAdded$.subscribe((e) => {
-      const child = module.find((child) => child.id === e.child.id);
-      monitorChild(module, child); // <== RECURSION 🌳
-    });
-
-    module.children.forEach((child) => monitorChild(module, child as M)); // <== RECURSION 🌳
-  };
-
-  monitor(module);
   return module;
 }

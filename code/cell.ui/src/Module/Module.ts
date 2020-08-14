@@ -3,10 +3,7 @@ import { TreeQuery } from '@platform/state/lib/TreeQuery';
 
 import { create } from './Module.create';
 import * as events from './Module.events';
-import { fire } from './Module.fire';
-import { publish } from './Module.pub';
-import { register } from './Module.register';
-import { subscribe } from './Module.sub';
+import { fire, register } from './Module.fire';
 import { Context } from './Context';
 import { provider } from './Context';
 import { t } from '../common';
@@ -52,21 +49,10 @@ export class Module {
   public static register = register;
 
   /**
-   * Broadcasts events from the module (and all child modules)
-   * throw the given pipe (fire).
-   */
-  public static publish = publish;
-  public static subscribe = subscribe;
-
-  /**
    * Construct an event helper.
    */
   public static events = events.create;
   public static filter = events.filterEvent;
   public static isModuleEvent = events.isModuleEvent;
   public static fire = fire;
-
-  public static request<T extends P = P>(fire: t.FireEvent<any>, id: string) {
-    return Module.fire(fire).request<T>(id);
-  }
 }

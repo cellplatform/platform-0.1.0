@@ -34,6 +34,14 @@ export class TestDiagram extends React.PureComponent<ITestDiagramProps, ITestDia
   }
 
   /**
+   * [Properties]
+   */
+  public get bus(): t.EventBus<any> {
+    const { event$, fire } = this.context;
+    return { event$, fire };
+  }
+
+  /**
    * [Render]
    */
   public render() {

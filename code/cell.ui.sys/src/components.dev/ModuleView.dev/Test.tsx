@@ -12,6 +12,8 @@ import * as t from './types';
 
 const { Module, ModuleView } = ui;
 
+type P = t.MyProps;
+
 /**
  * Component
  */
@@ -37,13 +39,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
 
   public componentDidMount() {
-    const ctx = this.context;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
-    const root = Module.create<t.MyProps>({
-      event$: ctx.event$,
+    const root = Module.create<P>({
+      root: 'root',
+      bus: this.bus,
       dispose$: this.unmounted$,
     });
+
+    this.state$.next({ root });
 
     this.init(root);
   }
@@ -55,17 +59,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
   private async init(root: t.MyModule) {
     const ctx = this.context;
+    const bus = this.bus;
 
-    // Publishes module changes into the global event bus.
-    Module.publish({
-      module: root,
-      fire: ctx.fire,
-      until$: this.unmounted$,
-    });
+    const foo = Module.create<P>({ bus, root: 'foo', treeview: 'Diagram', view: 'DIAGRAM' });
+    const bar = Module.create<P>({ bus, root: 'bar', treeview: 'Sample', view: 'SAMPLE' });
 
-    const register = Module.register<t.MyProps>(root);
-    const foo = register.add({ id: 'foo', treeview: 'Diagram', view: 'DIAGRAM' }).module;
-    const bar = register.add({ id: 'bar', treeview: 'Sample', view: 'SAMPLE' }).module;
+    Module.register(bus, foo, root.id);
+    Module.register(bus, bar, root.id);
 
     console.log('root:', root.id);
     console.log('foo: ', foo.id);
@@ -75,7 +75,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const rootStrategy = ModuleView.Tree.Strategy.default();
 
     this.state$.next({
-      root,
       foo,
       bar,
       rootStrategy,
@@ -89,6 +88,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const rootEvents = Module.events(root, this.unmounted$);
 
     rootEvents.selection$.subscribe((e) => {
+      console.log('-------------------------------------------');
       const id = e.tree.selection?.id;
       const selected = root.find((child) => child.tree.query.exists(id));
       this.state$.next({ selected });
@@ -150,6 +150,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   /**
+   * [Properties]
+   */
+  public get bus(): t.EventBus<any> {
+    const { event$, fire } = this.context;
+    return { event$, fire };
+  }
+
+  /**
    * [Render]
    */
   public render() {
@@ -198,6 +206,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
               />
             </ComponentFrame>
           </div>
+          {/* <div {...css(styles.tree, { marginRight: MARGIN })}>
+            <ComponentFrame name={'ModuleView.Frame (Root Tree)'} backgroundColor={bg}>
+              <ModuleView.Frame fire={ctx.fire} event$={ctx.event$} filter={this.rootTreeFilter} />
+            </ComponentFrame>
+          </div> */}
           <div {...css(styles.tree, { marginRight: MARGIN })}>
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
               <ModuleView.Tree module={this.state.selected} />
@@ -227,7 +240,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Handlers]
    */
 
-  private renderFilter: t.ModuleFilter = (args) => {
+  private rootTreeFilter: t.ModuleFilter = (e) => {
+    if (e.namespace !== this.state.root?.namespace) {
+      return false;
+    }
+    console.log('>>', e, e.event.type);
+    return true;
+  };
+
+  private renderFilter: t.ModuleFilter = (e) => {
     return true;
   };
 }

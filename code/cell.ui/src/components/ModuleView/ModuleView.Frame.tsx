@@ -20,18 +20,26 @@ export class ModuleViewFrame extends React.PureComponent<
   public state: IModuleViewFrameState = {};
   private state$ = new Subject<Partial<IModuleViewFrameState>>();
   private unmounted$ = new Subject();
+  private fire = Module.fire({ fire: this.props.fire, event$: this.props.event$ });
 
   /**
    * [Lifecycle]
    */
+
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    const events = Module.events(this.props.event$, this.unmounted$).filter(this.props.filter);
 
-    events.selection$.subscribe((e) => {
+    const events = Module.events(this.props.event$, this.unmounted$);
+
+    events.filter(this.props.filter).selection$.subscribe((e) => {
       const el = this.fire.render(e);
       this.state$.next({ el });
     });
+  }
+
+  public componentDidUpdate(prev: IModuleViewFrameProps) {
+    // const next = this.props;
+    // console.log('next', next);
   }
 
   public componentWillUnmount() {
@@ -42,9 +50,6 @@ export class ModuleViewFrame extends React.PureComponent<
   /**
    * [Properties]
    */
-  private get fire() {
-    return Module.fire(this.props.fire);
-  }
 
   /**
    * [Render]
