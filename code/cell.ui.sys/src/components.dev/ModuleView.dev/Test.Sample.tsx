@@ -36,8 +36,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
     // NB:     This could also have been retrieved from the [context]
     //         but is being "requested" in this way to demonstrate
     //         how this is one.
-    const bus = { fire: ctx.fire, event$: ctx.event$ };
-    const module = Module.fire(bus).request<t.MyProps>(this.props.module).module;
+    const module = Module.fire(ctx.bus).request<t.MyProps>(this.props.module).module;
     this.state$.next({ module });
   }
 
@@ -49,11 +48,6 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
   /**
    * [Properties]
    */
-  public get bus(): t.EventBus<any> {
-    const { event$, fire } = this.context;
-    return { event$, fire };
-  }
-
   public get module() {
     return this.state.module;
   }
@@ -123,7 +117,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
       code: css({
         fontFamily: 'Menlo, monospace',
         color: COLORS.CLI.MAGENTA,
-        fontSize: 12,
+        fontSize: 10,
         margin: 0,
       }),
     };
@@ -144,8 +138,19 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
   private onAddModuleClick = async () => {
     const parent = this.module;
     if (parent) {
-      const bus = this.bus;
+      const bus = this.context.bus;
       const child = Module.create({ bus, root: 'child' });
+
+      /**
+       * TODO 🐷
+       * this is not adding it to the right parent
+       */
+
+      console.group('🌳 Add Module');
+      console.log('parent.id', parent.id);
+      console.log('parent', parent);
+      console.groupEnd();
+
       Module.register(bus, child, parent.id);
     }
   };

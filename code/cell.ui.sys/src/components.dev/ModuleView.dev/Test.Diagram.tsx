@@ -34,14 +34,6 @@ export class TestDiagram extends React.PureComponent<ITestDiagramProps, ITestDia
   }
 
   /**
-   * [Properties]
-   */
-  public get bus(): t.EventBus<any> {
-    const { event$, fire } = this.context;
-    return { event$, fire };
-  }
-
-  /**
    * [Render]
    */
   public render() {
@@ -58,10 +50,12 @@ export class TestDiagram extends React.PureComponent<ITestDiagramProps, ITestDia
     const DIAGRAM = {
       BYBASS: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/framing-bypass.png',
       REDESIGN: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/redesign.png',
-      THOUGHT_VECTORS: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/thought-vectors.png',
+      THOUGHT_VECTORS: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/thought-vectors.06.png',
     };
 
     const src = DIAGRAM.THOUGHT_VECTORS;
+
+    console.log('diagram', src);
 
     return (
       <div {...styles.base}>

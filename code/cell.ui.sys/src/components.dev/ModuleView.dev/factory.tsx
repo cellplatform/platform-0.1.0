@@ -14,17 +14,11 @@ type V = t.MyView;
 /**
  * Render factory.
  */
-export function renderer(args: {
-  fire: t.FireEvent<any>;
-  event$: Observable<t.Event>;
-  until$: Observable<any>;
-}) {
-  const events = Module.events<t.MyProps>(args.event$, args.until$);
+export function renderer(args: { bus: t.EventBus<any>; until$: Observable<any> }) {
+  const { bus } = args;
+  const events = Module.events<t.MyProps>(bus.event$, args.until$);
 
-  const RootProvider = Module.provider<t.MyContext>({
-    event$: events.$,
-    fire: args.fire,
-  });
+  const RootProvider = Module.provider<t.MyContext>({ bus });
 
   /**
    * Diagram.

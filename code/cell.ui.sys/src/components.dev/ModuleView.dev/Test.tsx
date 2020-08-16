@@ -40,16 +40,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-
-    const root = Module.create<P>({
-      root: 'root',
-      bus: this.bus,
-      dispose$: this.unmounted$,
-    });
-
-    this.state$.next({ root });
-
-    this.init(root);
+    this.init();
   }
 
   public componentWillUnmount() {
@@ -57,9 +48,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     this.unmounted$.complete();
   }
 
-  private async init(root: t.MyModule) {
-    const ctx = this.context;
+  /**
+   * Sample module setup.
+   */
+  private async init() {
     const bus = this.bus;
+
+    const root = Module.create<P>({ bus, root: 'root' });
 
     const foo = Module.create<P>({ bus, root: 'foo', treeview: 'Diagram', view: 'DIAGRAM' });
     const bar = Module.create<P>({ bus, root: 'bar', treeview: 'Sample', view: 'SAMPLE' });
@@ -75,6 +70,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const rootStrategy = ModuleView.Tree.Strategy.default();
 
     this.state$.next({
+      root,
       foo,
       bar,
       rootStrategy,
@@ -88,7 +84,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     const rootEvents = Module.events(root, this.unmounted$);
 
     rootEvents.selection$.subscribe((e) => {
-      console.log('-------------------------------------------');
       const id = e.tree.selection?.id;
       const selected = root.find((child) => child.tree.query.exists(id));
       this.state$.next({ selected });
@@ -97,11 +92,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     /**
      * Setup the render factory.
      */
-    factory.renderer({
-      fire: ctx.fire,
-      event$: ctx.event$,
-      until$: this.unmounted$,
-    });
+    factory.renderer({ bus, until$: this.unmounted$ });
 
     /**
      * Muck around with sample data.
