@@ -58,7 +58,7 @@ export type IModule<T extends P = AnyProps> = t.ITreeState<IModuleNode<T>, t.Mod
  * A tree-node that contains details about a module.
  */
 export type IModuleNode<T extends P> = t.ITreeNode<T>;
-export type IModuleTreeSelection = { id: string; props: t.ITreeviewNodeProps };
+export type IModuleSelectionTree = { id: string; props: t.ITreeviewNodeProps };
 
 /**
  * The way a module is expressed as props within a tree-node.
@@ -106,14 +106,14 @@ export type IModuleFire = {
 export type ModuleFireRender = (args: ModuleFireRenderArgs) => JSX.Element | null | undefined;
 export type ModuleFireRenderArgs = {
   module: string;
-  tree: { current?: string; selection?: t.IModuleTreeSelection };
+  tree: { current?: string; selection?: t.IModuleSelectionTree };
   data?: O;
   view?: string;
 };
 
 export type ModuleFireSelection = (args: ModuleFireSelectionArgs) => void;
 export type ModuleFireSelectionArgs = {
-  root: t.ITreeNode;
+  root: t.ITreeNode | t.IModule;
   current?: string;
   selected?: string;
 };
@@ -127,6 +127,8 @@ export type ModuleRequestResponse<T extends P = AnyProps> = {
  */
 export type IModuleEvents<T extends P = AnyProps> = {
   $: Observable<ModuleEvent>;
+  register$: Observable<IModuleRegister>;
+  registered$: Observable<IModuleRegistered>;
   childRegistered$: Observable<IModuleChildRegistered>;
   childDisposed$: Observable<IModuleChildDisposed>;
   changed$: Observable<IModuleChanged>;
@@ -184,7 +186,7 @@ export type IModuleSelectionEvent<D extends O = any> = {
 };
 export type IModuleSelection<D extends O = any> = {
   module: string;
-  tree: { current?: string; selection?: IModuleTreeSelection };
+  tree: { current?: string; selection?: IModuleSelectionTree };
   data?: D;
   view?: string;
 };
@@ -195,7 +197,7 @@ export type IModuleRenderEvent<D extends O = any> = {
 };
 export type IModuleRender<D extends O = any> = {
   module: string;
-  tree: { current?: string; selection?: IModuleTreeSelection };
+  tree: { current?: string; selection?: IModuleSelectionTree };
   data: D;
   view: string;
   render(el: JSX.Element | null): void;

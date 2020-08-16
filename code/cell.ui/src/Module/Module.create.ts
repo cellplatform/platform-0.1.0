@@ -67,7 +67,7 @@ function registerChild(args: { bus: t.EventBus<any>; parent: t.IModule; child: t
   });
 
   // Alert listeners when disposed.
-  parent.dispose$.subscribe((e) => {
+  child.dispose$.subscribe((e) => {
     bus.fire({
       type: 'Module/child/disposed',
       payload: { module: parent.id, child: child.id },

@@ -1,10 +1,10 @@
 import { TreeQuery } from '@platform/state/lib/TreeQuery';
 import { filter, takeUntil, take } from 'rxjs/operators';
+import { is } from '@platform/state/lib/common/is';
 
 import { rx, t } from '../common';
 
 type B = t.EventBus<t.ModuleEvent>;
-type F = t.FireEvent<t.ModuleEvent>;
 type P = t.IModuleProps;
 
 /**
@@ -84,11 +84,11 @@ export function selection(bus: B, args: t.ModuleFireSelectionArgs) {
   const { selected, current } = args;
 
   type N = t.IModuleNode<any>;
-  const root = args.root as N;
+  const root = is.stateObject(args.root) ? (args.root as t.IModule).root : (args.root as N);
   const query = TreeQuery.create<N>({ root });
 
   const node = selected ? query.findById(selected) : undefined;
-  const selection: t.IModuleTreeSelection | undefined = !node
+  const selection: t.IModuleSelectionTree | undefined = !node
     ? undefined
     : { id: node.id, props: node.props?.treeview || {} };
 
@@ -100,17 +100,13 @@ export function selection(bus: B, args: t.ModuleFireSelectionArgs) {
   };
 
   const module = !node ? undefined : findModule(node);
-
-  if (module) {
-    const payload: t.IModuleSelection = {
-      module: root.id,
-      tree: { current, selection },
-      view: module?.props?.view,
-      data: module?.props?.data,
-    };
-
-    bus.fire({ type: 'Module/selection', payload });
-  }
+  const payload: t.IModuleSelection = {
+    module: root.id,
+    tree: { current, selection },
+    view: module?.props?.view,
+    data: module?.props?.data,
+  };
+  bus.fire({ type: 'Module/selection', payload });
 }
 
 /**

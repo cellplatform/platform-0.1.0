@@ -32,6 +32,9 @@ export function create<T extends P = t.IModulePropsAny>(
     share(),
   );
 
+  const register$ = rx.payload<t.IModuleRegisterEvent>($, 'Module/register').pipe(share());
+  const registered$ = rx.payload<t.IModuleRegisteredEvent>($, 'Module/registered').pipe(share());
+
   const childRegistered$ = rx
     .payload<t.IModuleChildRegisteredEvent>($, 'Module/child/registered')
     .pipe(share());
@@ -46,6 +49,8 @@ export function create<T extends P = t.IModulePropsAny>(
 
   const events: t.IModuleEvents<T> = {
     $,
+    register$,
+    registered$,
     childRegistered$,
     childDisposed$,
     changed$,
