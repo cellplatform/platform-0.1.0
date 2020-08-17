@@ -19,11 +19,11 @@ type P = t.MyProps;
  */
 export type ITestProps = { style?: CssValue };
 export type ITestState = {
-  root?: t.MyModule;
-  foo?: t.MyModule;
-  bar?: t.MyModule;
+  main?: t.MyModule;
+  diagram?: t.MyModule;
+  sample?: t.MyModule;
   selected?: t.MyModule;
-  rootStrategy?: t.ITreeviewStrategy;
+  mainStrategy?: t.ITreeviewStrategy;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -53,27 +53,33 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   private async init() {
     const bus = this.bus;
+    const fire = Module.fire(bus);
 
-    const root = Module.create<P>({ bus, root: 'root' });
+    const main = Module.create<P>({ bus, root: 'root' });
 
-    const foo = Module.create<P>({ bus, root: 'foo', treeview: 'Diagram', view: 'DIAGRAM' });
-    const bar = Module.create<P>({ bus, root: 'bar', treeview: 'Sample', view: 'SAMPLE' });
+    const diagram = Module.create<P>({
+      bus,
+      root: 'diagram',
+      treeview: 'Diagram',
+      view: 'DIAGRAM',
+    });
+    const sample = Module.create<P>({ bus, root: 'sample', treeview: 'Sample', view: 'SAMPLE' });
 
-    Module.register(bus, foo, root.id);
-    Module.register(bus, bar, root.id);
+    Module.register(bus, diagram, main.id);
+    Module.register(bus, sample, main.id);
 
-    console.log('root:', root.id);
-    console.log('foo: ', foo.id);
-    console.log('bar: ', bar.id);
+    console.log('root:', main.id);
+    console.log('foo: ', diagram.id);
+    console.log('bar: ', sample.id);
     console.log('-------------------------------------------');
 
-    const rootStrategy = ModuleView.Tree.Strategy.default();
+    const mainStrategy = ModuleView.Tree.Strategy.default(); // Sample passing in behavior strategy.
 
     this.state$.next({
-      root,
-      foo,
-      bar,
-      rootStrategy,
+      main: main,
+      diagram: diagram,
+      sample: sample,
+      mainStrategy,
     });
 
     /**
@@ -81,23 +87,33 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
      */
 
     // Monitor selection in left-hand tree.
-    const rootEvents = Module.events(root, this.unmounted$);
+    const mainEvents = Module.events(main, this.unmounted$);
 
-    rootEvents.selection$.subscribe((e) => {
+    mainEvents.selection$.subscribe((e) => {
       const id = e.tree.selection?.id;
-      const selected = root.find((child) => child.tree.query.exists(id));
+      const selected = main.find((child) => child.tree.query.exists(id));
       this.state$.next({ selected });
+
+      /**
+       * Controller causes frame(s) to re-render.
+       */
+      if (selected) {
+        const props = selected.root.props || {};
+        const module = selected.id;
+        const { view, data } = props;
+        fire.render({ module, view, data });
+      }
     });
 
     /**
      * Setup the render factory.
      */
-    factory.renderer({ bus, until$: this.unmounted$ });
+    factory.renderer({ bus, main: main, until$: this.unmounted$ });
 
     /**
      * Muck around with sample data.
      */
-    foo.change((draft, ctx) => {
+    diagram.change((draft, ctx) => {
       ctx.props(draft, (props) => {
         props.data = { foo: 'FOO' };
       });
@@ -106,7 +122,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
     });
 
-    bar.change((draft, ctx) => {
+    sample.change((draft, ctx) => {
       ctx.props(draft, (props) => {
         props.data = { foo: 'FOO' };
 
@@ -120,7 +136,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
     });
 
-    bar.change((draft, ctx) => {
+    sample.change((draft, ctx) => {
       const child = ctx.children(draft)[1];
       ctx.props(child, (props) => {
         props.treeview = {
@@ -183,6 +199,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
 
     const bg = 1;
+    const bus = this.bus;
 
     return (
       <div {...css(styles.base, this.props.style)}>
@@ -191,15 +208,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           <div {...css(styles.tree, { marginRight: MARGIN })}>
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
               <ModuleView.Tree
-                module={this.state.root}
-                strategy={this.state.rootStrategy}
+                module={this.state.main}
+                strategy={this.state.mainStrategy}
                 focusOnLoad={true}
               />
             </ComponentFrame>
           </div>
           {/* <div {...css(styles.tree, { marginRight: MARGIN })}>
             <ComponentFrame name={'ModuleView.Frame (Root Tree)'} backgroundColor={bg}>
-              <ModuleView.Frame fire={ctx.fire} event$={ctx.event$} filter={this.rootTreeFilter} />
+              <ModuleView.Frame bus={bus} filter={this.rootTreeFilter} />
             </ComponentFrame>
           </div> */}
           <div {...css(styles.tree, { marginRight: MARGIN })}>
@@ -209,17 +226,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           </div>
           <div {...styles.main}>
             <ComponentFrame name={'ModuleView.Frame'} backgroundColor={bg}>
-              <ModuleView.Frame
-                style={styles.fill}
-                fire={ctx.fire}
-                event$={ctx.event$}
-                filter={this.renderFilter}
-              />
+              <ModuleView.Frame style={styles.fill} bus={bus} module={this.state.selected} />
             </ComponentFrame>
           </div>
           <div {...css(styles.tree, { marginLeft: MARGIN })}>
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg} blur={true}>
-              <ModuleView.Tree module={this.state.root} />
+              <ModuleView.Tree module={this.state.main} />
             </ComponentFrame>
           </div>
         </div>
@@ -232,10 +244,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
 
   private rootTreeFilter: t.ModuleFilter = (e) => {
-    if (e.namespace !== this.state.root?.namespace) {
+    if (e.namespace !== this.state.main?.namespace) {
       return false;
     }
-    console.log('>>', e, e.event.type);
     return true;
   };
 

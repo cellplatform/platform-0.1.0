@@ -14,19 +14,26 @@ type V = t.MyView;
 /**
  * Render factory.
  */
-export function renderer(args: { bus: t.EventBus<any>; until$: Observable<any> }) {
+export function renderer(args: { bus: t.EventBus<any>; main: t.IModule; until$: Observable<any> }) {
   const { bus } = args;
   const events = Module.events<t.MyProps>(bus.event$, args.until$);
+  const fire = Module.fire(bus);
 
-  const RootProvider = Module.provider<t.MyContext>({ bus });
+  const RootProvider = Module.provider<t.MyContext>({
+    bus,
+    get selected() {
+      return args.main.root.props?.treeview?.nav?.selected;
+    },
+  });
 
   /**
    * Diagram.
    */
   events.render('DIAGRAM').subscribe((e) => {
+    const module = fire.request(e.module).module; // Sample get module and pass as prop.
     const el = (
       <RootProvider>
-        <TestDiagram />
+        <TestDiagram module={module} />
       </RootProvider>
     );
     e.render(el);

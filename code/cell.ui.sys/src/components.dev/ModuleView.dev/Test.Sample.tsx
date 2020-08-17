@@ -60,11 +60,15 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
 
     const styles = {
       base: css({
-        padding: 20,
         flex: 1,
+        color: COLORS.DARK,
+        boxSizing: 'border-box',
+      }),
+      body: css({
+        Absolute: 0,
+        padding: 20,
         Flex: 'vertical-stretch-stretch',
         overflow: 'hidden',
-        color: COLORS.DARK,
       }),
       image: css({
         width: 300,
@@ -79,6 +83,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
         Flex: 'horizontal-end-spaceBetween',
         borderTop: `solid 5px ${color.format(-0.06)}`,
         paddingTop: 10,
+        overflow: 'hidden',
       }),
     };
 
@@ -88,29 +93,40 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
       KITTEN: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kitten.png',
     };
 
-    const src =
-      e.tree.current === e.module
-        ? e.tree.selection?.id.endsWith(':one')
-          ? URL.KITTEN
-          : URL.KONG
-        : URL.LEAF;
+    const src = URL.LEAF;
+
+    // const src =
+    //   e.tree.current === e.module
+    //     ? e.tree.selection?.id.endsWith(':one')
+    //       ? URL.KITTEN
+    //       : URL.KONG
+    //     : URL.LEAF;
 
     return (
       <div {...styles.base}>
-        <div {...styles.top}>
-          <img src={src} {...styles.image} />
-        </div>
-        <div {...styles.bottom}>
-          {this.renderIdentifiers()}
-          <Button onClick={this.onAddModuleClick}>Add Module</Button>
+        <div {...styles.body}>
+          <div {...styles.top}>
+            <img src={src} {...styles.image} />
+          </div>
+          <div {...styles.bottom}>
+            {this.renderIdentifiers()}
+            <Button onClick={this.onAddModuleClick}>Add Module</Button>
+          </div>
         </div>
       </div>
     );
   }
 
   private renderIdentifiers() {
-    const e = this.props.e;
-    const selection = e.tree.selection?.id;
+    const ctx = this.context;
+    // const e = this.props.e;
+    // const selected = this.module?.root.props?.treeview?.nav?.selected;
+    const selected = ctx.selected;
+
+    console.log('render');
+
+    const node = this.module?.query.findById(selected);
+    console.log('node', node);
 
     const styles = {
       base: css({}),
@@ -124,8 +140,8 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
     return (
       <div {...styles.base}>
         <pre {...styles.code}>
-          <div>{`Module:   ${e.module}`}</div>
-          <div>{`TreeNode: ${selection || '<empty>'}`}</div>
+          <div>{`Module:   ${this.module?.id}`}</div>
+          <div>{`Selected: ${selected || '<empty>'}`}</div>
         </pre>
       </div>
     );

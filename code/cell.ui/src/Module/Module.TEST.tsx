@@ -108,8 +108,7 @@ describe('Module', () => {
   describe('event: "Module/render"', () => {
     const events = Module.events<MyProps>(event$);
     const module = create();
-    const fireRender = (view: MyProps['view']) =>
-      fire.render({ module: module.id, tree: {}, view });
+    const fireRender = (view: MyProps['view']) => fire.render({ module: module.id, view });
 
     it('matches specific events', () => {
       const fired: t.IModuleRender[] = [];

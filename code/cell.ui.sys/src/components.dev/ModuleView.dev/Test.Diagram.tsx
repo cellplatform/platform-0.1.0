@@ -8,6 +8,7 @@ import { ModuleView } from './common';
 const Module = ModuleView.Module;
 
 export type ITestDiagramProps = {
+  module?: t.IModule;
   style?: CssValue;
 };
 export type ITestDiagramState = t.Object;

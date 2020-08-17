@@ -9,4 +9,5 @@ export type MyModule = t.IModule<MyProps>;
 
 export type MyContext = {
   bus: t.EventBus<any>;
+  selected?: string;
 };

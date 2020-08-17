@@ -1,14 +1,11 @@
 import * as React from 'react';
-import { Subject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, CssValue, t } from '../../common';
-
-import { Module } from '../../Module';
+import { Subject } from 'rxjs';
+import { takeUntil, filter } from 'rxjs/operators';
+import { rx, css, CssValue, t } from '../../common';
 
 export type IModuleViewFrameProps = {
-  fire: t.FireEvent<any>;
-  event$: Observable<t.Event<any>>;
-  filter: t.ModuleFilter;
+  module?: t.IModule;
+  bus: t.EventBus<any>;
   style?: CssValue;
 };
 export type IModuleViewFrameState = { el?: JSX.Element | null };
@@ -20,7 +17,6 @@ export class ModuleViewFrame extends React.PureComponent<
   public state: IModuleViewFrameState = {};
   private state$ = new Subject<Partial<IModuleViewFrameState>>();
   private unmounted$ = new Subject();
-  private fire = Module.fire({ fire: this.props.fire, event$: this.props.event$ });
 
   /**
    * [Lifecycle]
@@ -28,28 +24,17 @@ export class ModuleViewFrame extends React.PureComponent<
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+    const event$ = this.props.bus.event$.pipe(takeUntil(this.unmounted$));
 
-    const events = Module.events(this.props.event$, this.unmounted$);
-
-    events.filter(this.props.filter).selection$.subscribe((e) => {
-      const el = this.fire.render(e);
-      this.state$.next({ el });
-    });
-  }
-
-  public componentDidUpdate(prev: IModuleViewFrameProps) {
-    // const next = this.props;
-    // console.log('next', next);
+    rx.payload<t.IModuleRenderedEvent>(event$, 'Module/rendered')
+      .pipe(filter((e) => Boolean(this.props.module && e.module === this.props.module?.id)))
+      .subscribe(({ el }) => this.state$.next({ el }));
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
   }
-
-  /**
-   * [Properties]
-   */
 
   /**
    * [Render]
