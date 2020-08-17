@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, CssValue, dispose, t } from '../../common';
+import { color, COLORS, CssValue, dispose, t } from '../common';
 
 export type IModuleViewTreeProps = {
   module?: t.IModule;

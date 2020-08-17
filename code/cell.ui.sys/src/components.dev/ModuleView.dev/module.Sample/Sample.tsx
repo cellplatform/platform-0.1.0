@@ -64,6 +64,8 @@ export const SampleModule: t.IModuleDef = {
         const { view, data } = props;
         const el = fire.render({ selected: id, module, data, view });
         if (!el) {
+          // Nothing responded with an element.
+          // Render the "Not Found" view.
           fire.render({ selected: id, module, data, view: '404' });
         }
       }
