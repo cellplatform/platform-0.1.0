@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Observable } from 'rxjs';
 
 import { ui } from '../common';
-import { TestDiagram } from './components/Diagram';
-import { TestSample } from './components/Sample';
-import { Test404 } from './components/404';
+import { TestDiagram } from './view/Diagram';
+import { TestSample } from './view/Sample';
+import { Test404 } from './view/404';
 
 import * as t from '../types';
 

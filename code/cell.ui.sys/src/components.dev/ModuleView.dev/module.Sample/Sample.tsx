@@ -22,7 +22,7 @@ export const SampleModule: t.IModuleDef = {
     /**
      * Create sample child modules.
      */
-    const main = Module.create<P>({ bus, root: 'main' });
+    const main = Module.create<P>({ bus, root: 'main', treeview: 'Main' });
     const diagram = Module.create<P>({
       bus,
       root: 'diagram',
@@ -36,7 +36,7 @@ export const SampleModule: t.IModuleDef = {
 
     /**
      * Catch un-targetted (wildcard) registrations and route
-     * then into the MAIN module.
+     * them into the MAIN module.
      */
     events.register$.pipe(filter((e) => !e.parent)).subscribe((e) => {
       const module = fire.request(e.module).module;
@@ -46,8 +46,8 @@ export const SampleModule: t.IModuleDef = {
     });
 
     /**
-     * Controller Logic
-     * On node selection in tree render appropriate view.
+     * [Strategy] Logic
+     *    On node selection in tree, render the appropriate view.
      */
     const mainEvents = Module.events(main, until$);
 
