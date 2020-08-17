@@ -101,7 +101,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         const props = selected.root.props || {};
         const module = selected.id;
         const { view, data } = props;
-        fire.render({ module, view, data });
+        fire.render({ module, view, data, selected: id });
       }
     });
 

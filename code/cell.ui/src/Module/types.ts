@@ -106,7 +106,7 @@ export type IModuleFire = {
 export type ModuleFireRender = (args: ModuleFireRenderArgs) => JSX.Element | null | undefined;
 export type ModuleFireRenderArgs = {
   module: string;
-  selection?: string;
+  selected?: string;
   data?: O;
   view?: string;
 };
@@ -197,10 +197,9 @@ export type IModuleRenderEvent<D extends O = any> = {
 };
 export type IModuleRender<D extends O = any> = {
   module: string;
-  selection?: string;
-  // tree: { current?: string; selection?: IModuleSelectionTree };
-  data: D;
+  selected?: string;
   view: string;
+  data: D;
   render(el: JSX.Element | null): void;
   handled: boolean;
 };

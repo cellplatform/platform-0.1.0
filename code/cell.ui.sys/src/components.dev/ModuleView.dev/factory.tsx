@@ -30,7 +30,7 @@ export function renderer(args: { bus: t.EventBus<any>; main: t.IModule; until$: 
    * Diagram.
    */
   events.render('DIAGRAM').subscribe((e) => {
-    const module = fire.request(e.module).module; // Sample get module and pass as prop.
+    const module = fire.request(e.module).module; // Sample of getting module and pass as prop.
     const el = (
       <RootProvider>
         <TestDiagram module={module} />
@@ -45,7 +45,7 @@ export function renderer(args: { bus: t.EventBus<any>; main: t.IModule; until$: 
   events.render('SAMPLE').subscribe((e) => {
     const el = (
       <RootProvider>
-        <TestSample e={e} module={e.module} />
+        <TestSample module={e.module} selected={e.selected} />
       </RootProvider>
     );
     e.render(el);

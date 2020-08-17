@@ -51,7 +51,7 @@ export function register(bus: B, module: t.IModule, parent: string) {
  * Fires a render request seqeunce.
  */
 export function render(bus: B, args: t.ModuleFireRenderArgs) {
-  const { module, selection, data = {}, view = '' } = args;
+  const { module, selected, data = {}, view = '' } = args;
 
   let el: JSX.Element | null | undefined = undefined;
 
@@ -60,7 +60,7 @@ export function render(bus: B, args: t.ModuleFireRenderArgs) {
     el = input;
     payload.handled = true;
   };
-  const payload: R = { module, selection, data, view, render, handled: false };
+  const payload: R = { module, selected, data, view, render, handled: false };
 
   bus.fire({
     type: 'Module/render',

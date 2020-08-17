@@ -9,8 +9,8 @@ import * as t from './types';
 const Module = ModuleView.Module;
 
 export type ITestSampleProps = {
-  e: t.IModuleRender;
   module: string;
+  selected?: string;
   style?: CssValue;
 };
 export type ITestSampleState = { module?: t.MyModule };
@@ -56,8 +56,6 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
    * [Render]
    */
   public render() {
-    const e = this.props.e;
-
     const styles = {
       base: css({
         flex: 1,
@@ -118,15 +116,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
   }
 
   private renderIdentifiers() {
-    const ctx = this.context;
-    // const e = this.props.e;
-    // const selected = this.module?.root.props?.treeview?.nav?.selected;
-    const selected = ctx.selected;
-
-    console.log('render');
-
-    const node = this.module?.query.findById(selected);
-    console.log('node', node);
+    const selected = this.props.selected;
 
     const styles = {
       base: css({}),
