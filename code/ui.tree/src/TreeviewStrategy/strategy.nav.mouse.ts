@@ -10,7 +10,7 @@ import { Subject } from '../common/types';
 export const mouse: t.TreeviewStrategyMouseNavigation = () => {
   const { events, treeview$ } = util.options();
 
-  let tree: t.ITreeState;
+  let tree: t.ITreeviewState;
   const strategy: t.ITreeviewStrategy = {
     /**
      * NB: The [tree] is stored temporarily so that the handlers below can be

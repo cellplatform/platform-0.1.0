@@ -34,23 +34,9 @@ export class Test extends React.PureComponent<ITestProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    const events = TreeEvents.create(this.treeview$, this.unmounted$);
     const tree = this.tree;
     const changed$ = tree.event.changed$.pipe(takeUntil(this.unmounted$));
     changed$.pipe(debounceTime(10)).subscribe(() => this.forceUpdate());
-
-    /**
-     * Adjust styles on selected node.
-     */
-    events.beforeRender.node$.subscribe((e) => {
-      const isSelected = e.node.id === this.selected;
-      if (isSelected) {
-        e.change((props) => {
-          const colors = props.colors || (props.colors = {});
-          colors.label = COLORS.BLUE;
-        });
-      }
-    });
 
     /**
      * State / Behavior Strategy
@@ -69,6 +55,7 @@ export class Test extends React.PureComponent<ITestProps> {
   /**
    * [Properties]
    */
+
   public get rootNav() {
     return this.tree.root.props?.treeview?.nav || {};
   }
@@ -117,10 +104,21 @@ export class Test extends React.PureComponent<ITestProps> {
             event$={this.treeview$}
             background={'NONE'}
             tabIndex={0}
-            focusOnLoad={true}
+            // focusOnLoad={true}
             style={styles.tree}
           />
         </div>
+      </div>
+    );
+  }
+
+  private renderTree(props: { parent?: string }) {
+    const styles = {
+      base: css({}),
+    };
+    return (
+      <div {...styles.base}>
+        <div>Tree</div>
       </div>
     );
   }

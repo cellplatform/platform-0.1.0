@@ -5,7 +5,7 @@ import {
   StackPanel,
   StackPanelSlideEvent,
 } from '@platform/ui.panel/lib/components/StackPanel';
-import { defaultValue, time } from '@platform/util.value';
+import { defaultValue, time, rx } from '@platform/util.value';
 import { equals } from 'ramda';
 import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
@@ -120,7 +120,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     }
 
     /**
-     * Keyboard.
+     * Event: Keyboard.
      */
     keyPress$.pipe(filter(() => this.isFocused)).subscribe((keypress) => {
       const { root, current } = this.props;
@@ -132,7 +132,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     });
 
     /**
-     * Focus.
+     * Event: Focus.
      */
     focus$
       .pipe(
@@ -155,7 +155,6 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
     // Finish up.
     this.updatePath();
-
     if (this.props.focusOnLoad) {
       time.delay(0, () => this.focus());
     }

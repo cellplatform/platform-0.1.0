@@ -10,7 +10,7 @@ import * as util from './util';
 export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
   const { events, treeview$ } = util.options();
 
-  let tree: t.ITreeState;
+  let tree: t.ITreeviewState;
   const current = () => util.current(tree);
 
   const key$ = events.keyboard$.pipe(

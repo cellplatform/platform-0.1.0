@@ -2,13 +2,12 @@ import { color, css, CssValue } from '@platform/css';
 import { Button } from '@platform/ui.button';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { TreeView } from '../..';
-import { t, COLORS } from '../../common';
+import { t } from '../../common';
 import { TreeViewState } from '../../components.dev/TreeviewState';
 import { TreeviewStrategy } from '../../TreeviewStrategy';
-import { TreeEvents } from '../../TreeEvents';
 
 type Node = t.ITreeviewNode;
 const header: t.ITreeviewNodeHeader = { isVisible: false, marginBottom: 45 };
@@ -59,27 +58,12 @@ export class Test extends React.PureComponent<ITestProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    const events = TreeEvents.create(this.treeview$, this.unmounted$);
     const tree = this.tree;
     const changed$ = tree.event.changed$.pipe(takeUntil(this.unmounted$));
     changed$.pipe(debounceTime(10)).subscribe(() => this.forceUpdate());
 
-
     /**
-     * Adjust styles on selected node.
-     */
-    events.beforeRender.node$.subscribe((e) => {
-      const isSelected = e.node.id === this.selected;
-      if (isSelected) {
-        e.change((props) => {
-          const colors = props.colors || (props.colors = {});
-          colors.label = COLORS.BLUE;
-        });
-      }
-    });
-
-    /**
-     * State / Behavior Strategy
+     * State behavior strategy.
      */
     const strategy = TreeviewStrategy.default();
     this.treeview$
@@ -120,14 +104,15 @@ export class Test extends React.PureComponent<ITestProps> {
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        {this.renderTree('left')}
+        {this.renderTree({ edge: 'left', focusOnLoad: true })}
         {this.renderCenter()}
-        {this.renderTree('right')}
+        {this.renderTree({ edge: 'right' })}
       </div>
     );
   }
 
-  private renderTree(edge: 'left' | 'right') {
+  private renderTree(args: { edge: 'left' | 'right'; focusOnLoad?: boolean }) {
+    const { edge } = args;
     const styles = {
       base: css({
         width: 280,
@@ -145,6 +130,7 @@ export class Test extends React.PureComponent<ITestProps> {
           event$={this.treeview$}
           background={'NONE'}
           tabIndex={0}
+          focusOnLoad={args.focusOnLoad}
         />
       </div>
     );
