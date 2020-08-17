@@ -72,6 +72,11 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
         fontWeight: 'bold',
         textShadow: Text.toShadow([1, theme.textShadow]),
         color: color.format(theme.titleColor),
+        textAlign: 'center',
+        flex: 1,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
       }),
       edge: css({
         Flex: 'center-center',

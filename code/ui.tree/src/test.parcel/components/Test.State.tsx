@@ -59,17 +59,16 @@ export class Test extends React.PureComponent<ITestProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
+    const events = TreeEvents.create(this.treeview$, this.unmounted$);
     const tree = this.tree;
-    tree.event.changed$.pipe(takeUntil(this.unmounted$), debounceTime(10)).subscribe((e) => {
-      this.forceUpdate();
-    });
+    const changed$ = tree.event.changed$.pipe(takeUntil(this.unmounted$));
+    changed$.pipe(debounceTime(10)).subscribe(() => this.forceUpdate());
 
-    const treeviewEvents = TreeEvents.create(this.treeview$, this.unmounted$);
 
     /**
      * Adjust styles on selected node.
      */
-    treeviewEvents.beforeRender.node$.subscribe((e) => {
+    events.beforeRender.node$.subscribe((e) => {
       const isSelected = e.node.id === this.selected;
       if (isSelected) {
         e.change((props) => {
