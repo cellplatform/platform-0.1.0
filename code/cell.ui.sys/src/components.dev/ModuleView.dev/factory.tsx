@@ -19,12 +19,7 @@ export function renderer(args: { bus: t.EventBus<any>; main: t.IModule; until$: 
   const events = Module.events<t.MyProps>(bus.event$, args.until$);
   const fire = Module.fire(bus);
 
-  const RootProvider = Module.provider<t.MyContext>({
-    bus,
-    get selected() {
-      return args.main.root.props?.treeview?.nav?.selected;
-    },
-  });
+  const RootProvider = Module.provider<t.MyContext>({ bus });
 
   /**
    * Diagram.

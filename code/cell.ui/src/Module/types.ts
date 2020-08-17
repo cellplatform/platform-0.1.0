@@ -97,7 +97,7 @@ export type ModulePublishResponse = t.IDisposable;
  * Event Bus (fire).
  */
 export type IModuleFire = {
-  register(module: t.IModule, parent: string): t.ModuleRegistration;
+  register(module: t.IModule, parent?: string): t.ModuleRegistration;
   render: ModuleFireRender;
   selection: ModuleFireSelection;
   request<T extends P>(id: string): t.ModuleRequestResponse<T>;
@@ -160,7 +160,7 @@ export type IModuleRegisterEvent = {
   type: 'Module/register';
   payload: IModuleRegister;
 };
-export type IModuleRegister = { module: string; parent: string };
+export type IModuleRegister = { module: string; parent?: string };
 
 export type IModuleRegisteredEvent = {
   type: 'Module/registered';

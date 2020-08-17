@@ -1,5 +1,17 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import {
+  takeUntil,
+  take,
+  takeWhile,
+  map,
+  filter,
+  share,
+  delay,
+  distinctUntilChanged,
+  debounceTime,
+  tap,
+} from 'rxjs/operators';
 
 import { Module } from '.';
 import { expect, t } from '../test';
@@ -39,7 +51,7 @@ describe('Module', () => {
     });
   });
 
-  describe('event: "Module/register"', () => {
+  describe.only('event: "Module/register"', () => {
     it('fires module registration events', () => {
       const parent = create({ root: 'parent' });
       const child = create({ root: 'child' });
@@ -102,6 +114,26 @@ describe('Module', () => {
       expect(res.ok).to.eql(false);
       expect(res.module.id).to.eql(child.id);
       expect(res.parent).to.eql(undefined);
+    });
+
+    it.only('parent not specified - catch all completes registration', () => {
+      const root = create({ root: 'parent' });
+      const child = create({ root: 'child' });
+
+      // Catch un-targetted (wildcard) registrations and route then into the root.
+      events.register$.pipe(filter((e) => !e.parent)).subscribe((e) => {
+        const module = fire.request(e.module).module;
+        if (module) {
+          Module.register(bus, module, root.id);
+        }
+      });
+
+      const res = fire.register(child);
+
+      expect(res.ok).to.eql(true);
+      expect(res.module.id).to.eql(child.id);
+      expect(res.parent?.id).to.eql(root.id);
+      expect(root.find((e) => e.id === child.id)).to.equal(child);
     });
   });
 
