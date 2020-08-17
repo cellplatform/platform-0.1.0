@@ -216,12 +216,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           </div>
           <div {...styles.main}>
             <ComponentFrame name={'ModuleView.Frame'} backgroundColor={bg}>
-              <ModuleView.Frame
-                style={styles.fill}
-                bus={bus}
-                // module={this.state.selected?.id}
-                filter={this.mainFrameFilter}
-              />
+              <ModuleView.Frame style={styles.fill} bus={bus} filter={this.mainFrameFilter} />
             </ComponentFrame>
           </div>
           <div {...css(styles.tree, { marginLeft: MARGIN })}>
