@@ -26,11 +26,11 @@ export const mouse: t.TreeviewStrategyMouseNavigation = () => {
 
   const current = () => util.current(tree);
 
-  const setCurrent$ = new Subject<string>();
-  setCurrent$.subscribe((id) => {
+  const selection$ = new Subject<{ current?: string; selected?: string }>();
+  selection$.subscribe((e) => {
     const { get, mutate } = current();
-    mutate.current(id);
-    mutate.selected(get.children(id)[0]?.id);
+    mutate.current(e.current);
+    mutate.selected(e.selected || get.children(e.current)[0]?.id);
   });
 
   /**
@@ -50,14 +50,14 @@ export const mouse: t.TreeviewStrategyMouseNavigation = () => {
   left.down.parent$.subscribe((e) => {
     const { query } = current();
     const parent = query.parent(e.node);
-    setCurrent$.next(parent?.id);
+    selection$.next({ current: parent?.id, selected: e.id });
   });
 
   /**
    * BEHAVIOR: Navigate into child when the "drill in chevron"
    *           is single-clicked.
    */
-  left.down.drillIn$.subscribe((e) => setCurrent$.next(e.id));
+  left.down.drillIn$.subscribe((e) => selection$.next({ current: e.id }));
 
   /**
    * BEHAVIOR: Toggle open/closed an inline node when
@@ -82,7 +82,7 @@ export const mouse: t.TreeviewStrategyMouseNavigation = () => {
    */
   dblClickNodeWithChildren$
     .pipe(filter((e) => !(e.props || {}).inline))
-    .subscribe((e) => setCurrent$.next(e.id));
+    .subscribe((e) => selection$.next({ current: e.id }));
 
   /**
    * BEHAVIOR: Toggle open/closed an inline node when

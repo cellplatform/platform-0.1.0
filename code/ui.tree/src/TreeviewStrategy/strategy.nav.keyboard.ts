@@ -31,11 +31,11 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
     },
   };
 
-  const setCurrent$ = new Subject<string>();
-  setCurrent$.subscribe((id) => {
+  const selection$ = new Subject<{ current?: string; selected?: string }>();
+  selection$.subscribe((e) => {
     const { get, mutate } = current();
-    mutate.current(id);
-    mutate.selected(get.children(id)[0]?.id);
+    mutate.current(e.current);
+    mutate.selected(e.selected || get.children(e.current)[0]?.id);
   });
 
   /**
@@ -147,12 +147,12 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
       const props = util.props(e.query.findById(selected));
       if (props.inline) {
         if (props.inline.isOpen && props.chevron?.isVisible) {
-          setCurrent$.next(selected.id); // Drill-in.
+          selection$.next({ current: selected.id }); // Drill-in.
         } else {
           e.mutate.open(selected.id);
         }
       } else {
-        setCurrent$.next(selected.id);
+        selection$.next({ current: selected.id });
       }
     });
 
@@ -161,13 +161,18 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
    */
   key$.pipe(filter((e) => e.key === 'ArrowLeft')).subscribe((e) => {
     const selected = e.get.selected;
-    const props = util.props(e.query.findById(selected));
-    if (props.inline?.isOpen) {
+    if (selected.props.inline?.isOpen) {
       e.mutate.close(selected.id);
+    } else if (
+      util.props(selected.parent).inline?.isOpen &&
+      e.query.parent(selected.parent)?.id === e.current
+    ) {
+      e.mutate.close(selected.parent.id);
+      selection$.next({ current: e.current, selected: selected.parent.id });
     } else {
       const parent = e.query.parent(e.get.current);
       if (parent) {
-        setCurrent$.next(parent.id);
+        selection$.next({ current: parent.id, selected: e.current });
       }
     }
   });
