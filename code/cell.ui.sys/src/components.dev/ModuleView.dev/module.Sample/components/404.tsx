@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { color, COLORS, css, CssValue, t } from './common';
+import { color, COLORS, css, CssValue, t } from '../../common';
 
 export type ITest404Props = { view: string; style?: CssValue };
 export type ITest404State = t.Object;

@@ -23,7 +23,7 @@ export type ModuleArgs<T extends P> = t.ITreeStateArgs<IModuleNode<T>> & {
  * This is what is explored by module authors.
  */
 export type IModuleDef = {
-  initialize(bus: t.EventBus, parent?: string): void;
+  init(bus: t.EventBus, parent?: string): void;
 };
 
 /**

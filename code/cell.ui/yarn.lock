@@ -385,7 +385,7 @@
   resolved "https://registry.yarnpkg.com/@platform/util.mimetype/-/util.mimetype-0.1.13.tgz#15e90a8d5585e8873a12ad6e2245f0ef7106f9d3"
   integrity sha512-AIzBulaLh6MNY+h8Cj/ywxfuRdK3eeS80brx1WVTPcG2SKNNzbSn4LvDVnGtk2LwGRfJniUfNbCRIdXayp0G7g==
 
-"@platform/util.string@0.5.10":
+"@platform/util.string@0.5.10", "@platform/util.string@^0.5.10":
   version "0.5.10"
   resolved "https://registry.yarnpkg.com/@platform/util.string/-/util.string-0.5.10.tgz#704ad1215f326ef3aabe4fa2bce3c7079d3d7499"
   integrity sha512-L0O7X0ifDykoy0HX7uAvcase4OjdGWBc+6P+jz3rW75BaEX5wJB4hFBeqz41LO1XETctzKA703AlyJ/YyNrpSQ==

@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { t } from '../common';
 import * as events from './Module.events';
 import { fire } from './Module.fire';
+import { wildcard } from '@platform/util.string/lib/wildcard';
 
 type P = t.IModuleProps;
 
@@ -29,7 +30,7 @@ export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
   rx.payload<t.IModuleRequestEvent>(bus.event$, 'Module/request')
     .pipe(
       filter((e) => !e.handled),
-      filter((e) => e.module === module.id),
+      filter((e) => wildcard.isMatch(module.id, e.module)),
     )
     .subscribe((e) => e.respond({ module }));
 

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { Icons } from '../../components/primitives';
-import { css, CssValue, ui, time } from './common';
+import { css, CssValue, ui } from './common';
 import { ComponentFrame } from './ComponentFrame';
-import * as factory from './factory';
-import { FinderModule } from './modules/FinderModule';
+import { FinderModule } from './module.Finder';
+import { SampleModule } from './module.Sample';
 import * as t from './types';
 
 const { Module, ModuleView } = ui;
@@ -20,9 +20,9 @@ export type ITestProps = { style?: CssValue };
 export type ITestState = {
   main?: t.MyModule;
   diagram?: t.MyModule;
-  sample?: t.MyModule;
+  demo?: t.MyModule;
   selected?: t.MyModule;
-  mainStrategy?: t.ITreeviewStrategy;
+  treeStrategy?: t.ITreeviewStrategy;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -53,37 +53,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private async init() {
     const bus = this.bus;
     const fire = Module.fire(bus);
-    const events = Module.events(bus.event$, this.unmounted$);
-
-    const main = Module.create<P>({ bus, root: 'root' });
-
-    const diagram = Module.create<P>({
-      bus,
-      root: 'diagram',
-      treeview: 'Diagram',
-      view: 'DIAGRAM',
-    });
-    const sample = Module.create<P>({ bus, root: 'sample', treeview: 'Sample', view: 'SAMPLE' });
-
-    Module.register(bus, diagram, main.id);
-    Module.register(bus, sample, main.id);
-
-    console.log('root:', main.id);
-    console.log('foo: ', diagram.id);
-    console.log('bar: ', sample.id);
-    console.log('-------------------------------------------');
-
-    const mainStrategy = ModuleView.Tree.Strategy.default(); // Sample passing in behavior strategy.
-
-    // Catch un-targetted (wildcard) registrations and route then into the MAIN module.
-    events.register$.pipe(filter((e) => !e.parent)).subscribe((e) => {
-      const module = fire.request(e.module).module;
-      if (module) {
-        Module.register(bus, module, main.id);
-      }
-    });
-
-    this.state$.next({ main, diagram, sample, mainStrategy });
 
     /**
      * Simulate a module registering itself.
@@ -91,7 +60,35 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
      *   This would typically be through some other boot-up process where
      *   the module is pulled then spins itself up and registers itself.
      */
-    FinderModule.initialize(bus);
+    SampleModule.init(bus);
+    FinderModule.init(bus);
+
+    /**
+     * TODO 🐷
+     * - handle better "request" query lookup
+     *    - multi-match (return array)
+     *    - find regex?
+     *    - category ??
+     *
+     * Maybe change to "find" (event)
+     * Make a convenience method off [Module.xxx] like with Module.register
+     *
+     * - Strategy
+     *   - factor the behavioral logic within [IModuleDef] as a strategy.
+     */
+
+    const main = fire.request('*:main').module as t.MyModule;
+    const demo = fire.request('*:demo').module as t.MyModule;
+    const diagram = fire.request('*:diagram').module as t.MyModule;
+
+    console.log('main:', main.id);
+    console.log('diagram: ', diagram.id);
+    console.log('demo: ', demo.id);
+    console.log('-------------------------------------------');
+
+    const treeStrategy = ModuleView.Tree.Strategy.default(); // Sample passing in behavior strategy.
+
+    this.state$.next({ main, diagram, demo, treeStrategy });
 
     /**
      * Work with root events.
@@ -99,29 +96,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     // Monitor selection in left-hand tree.
     const mainEvents = Module.events(main, this.unmounted$);
-
     mainEvents.selection$.subscribe((e) => {
       const id = e.tree.selection?.id;
       const selected = main.find((child) => child.tree.query.exists(id));
       this.state$.next({ selected });
-
-      /**
-       * Controller causes frame(s) to re-render.
-       */
-      if (selected) {
-        const props = selected.root.props || {};
-        const module = selected.id;
-        const { view, data } = props;
-        time.delay(0, () => {
-          fire.render({ module, view, data, selected: id });
-        });
-      }
     });
-
-    /**
-     * Setup the render factory.
-     */
-    factory.renderer({ bus, until$: this.unmounted$ });
 
     /**
      * Muck around with sample data.
@@ -135,7 +114,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
     });
 
-    sample.change((draft, ctx) => {
+    demo.change((draft, ctx) => {
       ctx.props(draft, (props) => {
         props.data = { foo: 'FOO' };
 
@@ -149,7 +128,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       });
     });
 
-    sample.change((draft, ctx) => {
+    demo.change((draft, ctx) => {
       const child = ctx.children(draft)[1];
       ctx.props(child, (props) => {
         props.treeview = {
@@ -181,8 +160,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Render]
    */
   public render() {
-    const ctx = this.context;
-
     const MARGIN = 40;
     const styles = {
       base: css({
@@ -222,7 +199,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
               <ModuleView.Tree
                 module={this.state.main}
-                strategy={this.state.mainStrategy}
+                strategy={this.state.treeStrategy}
                 focusOnLoad={true}
               />
             </ComponentFrame>

@@ -2,11 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Button } from '../../components/primitives';
-import { color, COLORS, css, CssValue, ModuleView } from './common';
-import * as t from './types';
-
-const Module = ModuleView.Module;
+import { Button } from '../../../../components/primitives';
+import { color, COLORS, css, CssValue, Module, t } from '../../common';
 
 export type ITestSampleProps = {
   module: string;

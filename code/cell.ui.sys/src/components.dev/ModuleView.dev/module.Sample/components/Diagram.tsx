@@ -1,11 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { COLORS, css, CssValue } from './common';
-import * as t from './types';
-
-import { ModuleView } from './common';
-const Module = ModuleView.Module;
+import { COLORS, css, CssValue, t, Module } from '../../common';
 
 export type ITestDiagramProps = {
   module?: t.IModule;

@@ -1,17 +1,6 @@
 import * as React from 'react';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import {
-  takeUntil,
-  take,
-  takeWhile,
-  map,
-  filter,
-  share,
-  delay,
-  distinctUntilChanged,
-  debounceTime,
-  tap,
-} from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { Module } from '.';
 import { expect, t } from '../test';
@@ -51,7 +40,7 @@ describe('Module', () => {
     });
   });
 
-  describe.only('event: "Module/register"', () => {
+  describe('event: "Module/register"', () => {
     it('fires module registration events', () => {
       const parent = create({ root: 'parent' });
       const child = create({ root: 'child' });
@@ -178,9 +167,15 @@ describe('Module', () => {
   });
 
   describe('event: "Module/request"', () => {
-    it('finds module', () => {
+    it('finds module: complete id', () => {
       const module = create();
       const res = Module.fire(bus).request(module.id);
+      expect(res.module?.id).to.eql(module.id);
+    });
+
+    it('finds module: wildcard ("*:id")', () => {
+      const module = create({ root: 'foo' });
+      const res = Module.fire(bus).request('*:foo');
       expect(res.module?.id).to.eql(module.id);
     });
 

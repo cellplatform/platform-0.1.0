@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
 
-import { ui } from './common';
-import { TestDiagram } from './Test.Diagram';
-import { TestSample } from './Test.Sample';
-import { Test404 } from './Test.404';
+import { ui } from '../common';
+import { TestDiagram } from './components/Diagram';
+import { TestSample } from './components/Sample';
+import { Test404 } from './components/404';
 
-import * as t from './types';
+import * as t from '../types';
 
 const { Module } = ui;
 type V = t.MyView;
@@ -50,6 +50,6 @@ export function renderer(args: { bus: t.EventBus<any>; until$: Observable<any> }
    * Wildcard.
    */
   events.render().subscribe((e) => {
-    e.render(<Test404 view={e.view} />);
+    // e.render(<Test404 view={e.view} />);
   });
 }
