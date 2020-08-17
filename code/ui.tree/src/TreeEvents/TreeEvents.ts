@@ -68,7 +68,12 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
         map((e) => e.payload as t.ITreeviewBeforeRenderNode<T>),
       );
 
-      this._beforeRender = { $, node$ };
+      const header$ = event$.pipe(
+        filter((e) => e.type === 'TREEVIEW/beforeRender/header'),
+        map((e) => e.payload as t.ITreeviewBeforeRenderHeader<T>),
+      );
+
+      this._beforeRender = { $, node$, header$ };
     }
     return this._beforeRender;
   }

@@ -84,11 +84,11 @@ export function renderer(args: {
     return el;
   };
 
-  const beforeRenderNode: t.ITreeviewRenderer['beforeRenderNode'] = (e) => {
-    let props = e.node.props?.treeview || {};
-    fire({
-      type: 'TREEVIEW/beforeRender/node',
-      payload: {
+  const beforeRenderer = <T extends t.TreeviewBeforeRenderEvent>(type: T['type']) => {
+    return (e: t.ITreeviewBeforeRenderNodeProps) => {
+      let props = e.node.props?.treeview || {};
+
+      const payload: T['payload'] = {
         ...e,
         change(fn) {
           props = produce(props, (draft) => {
@@ -96,10 +96,18 @@ export function renderer(args: {
             return undefined; // NB: No return value (to prevent replacement).
           });
         },
-      },
-    });
-    return props;
+      };
+
+      fire({ type, payload } as T);
+
+      return props;
+    };
   };
 
-  return { icon, nodeBody, panel, header, beforeRenderNode };
+  const beforeRender: t.ITreeviewRenderer['beforeRender'] = {
+    node: beforeRenderer('TREEVIEW/beforeRender/node'),
+    header: beforeRenderer('TREEVIEW/beforeRender/header'),
+  };
+
+  return { icon, nodeBody, panel, header, beforeRender };
 }

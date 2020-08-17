@@ -1,12 +1,11 @@
 import { color, css, CssValue } from '@platform/css';
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { Subject, merge } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { TreeView } from '../..';
-import { t, COLORS } from '../../common';
+import { t } from '../../common';
 import { TreeviewStrategy } from '../../TreeviewStrategy';
-import { TreeEvents } from '../../TreeEvents';
 
 export type ITestProps = { style?: CssValue };
 
@@ -17,11 +16,15 @@ const DEFAULT = {
   props: { treeview: { label: 'Root' } },
   children: [
     {
-      id: 'Default-1',
-      children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
+      id: 'Root-1',
+      children: [
+        { id: 'Child-2.1' },
+        { id: 'Child-2.2', children: [{ id: 'Child-2.2.1' }, { id: 'Child-2.2.2' }] },
+        { id: 'Child-2.3' },
+      ],
     },
-    { id: 'Default-2' },
-    { id: 'Default-3' },
+    { id: 'Root-2' },
+    { id: 'Root-3' },
   ],
 } as Node;
 
@@ -35,8 +38,18 @@ export class Test extends React.PureComponent<ITestProps> {
    */
   public componentDidMount() {
     const tree = this.tree;
+    const event = TreeView.events(this.treeview$, this.unmounted$);
     const changed$ = tree.event.changed$.pipe(takeUntil(this.unmounted$));
     changed$.pipe(debounceTime(10)).subscribe(() => this.forceUpdate());
+
+    const before = event.beforeRender;
+    merge(before.node$, before.header$).subscribe((e) => {
+      e.change((props) => {
+        if (!props.label) {
+          props.label = TreeView.identity.key(e.node.id);
+        }
+      });
+    });
 
     /**
      * State / Behavior Strategy

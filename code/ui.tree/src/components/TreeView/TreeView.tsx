@@ -362,7 +362,12 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
   private renderHeader = (node: N, depth: number, custom?: React.ReactNode | null) => {
     const theme = this.theme;
-    const props = node.props?.treeview || {};
+    const isInline = false; // NB: does not make sense for a "header".
+    const isFocused = this.isFocused;
+
+    const props = this.renderer.beforeRender.header({ node, depth, isInline, isFocused });
+    node = { ...node, props: { ...node.props, treeview: props } };
+
     const header = props.header || {};
     const title = props.title || props.label || node.id.toString();
     const height = this.headerHeight(node);
@@ -385,7 +390,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         showParentButton={showParentButton}
         theme={theme}
         background={this.props.background}
-        isFocused={this.isFocused}
+        isFocused={isFocused}
         onMouseParent={this.handleNodeMouse}
       />
     );

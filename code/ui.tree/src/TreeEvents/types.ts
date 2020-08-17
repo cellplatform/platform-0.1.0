@@ -58,4 +58,5 @@ export type ITreeRenderEvents<T extends N = N> = {
 export type ITreeBeforeRenderEvents<T extends N = N> = {
   $: Observable<t.TreeviewBeforeRenderEvent['payload']>;
   node$: Observable<t.ITreeviewBeforeRenderNode<T>>;
+  header$: Observable<t.ITreeviewBeforeRenderHeader<T>>;
 };

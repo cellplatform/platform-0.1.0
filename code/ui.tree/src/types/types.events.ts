@@ -55,12 +55,14 @@ export type ITreeviewKeyboard<T extends N = N> = {
 };
 
 /**
- * Before Render
+ * BEFORE Render
  *
  * Fired before a node is rendered allowing for final mutations
  * of the node to be made before drawing to screen.
  */
-export type TreeviewBeforeRenderEvent = ITreeviewBeforeRenderNodeEvent;
+export type TreeviewBeforeRenderEvent =
+  | ITreeviewBeforeRenderNodeEvent
+  | ITreeviewBeforeRenderHeaderEvent;
 
 export type ITreeviewBeforeRenderNodeEvent<T extends N = N> = {
   type: 'TREEVIEW/beforeRender/node';
@@ -69,6 +71,13 @@ export type ITreeviewBeforeRenderNodeEvent<T extends N = N> = {
 export type ITreeviewBeforeRenderNode<T extends N = N> = t.ITreeviewBeforeRenderNodeProps<T> & {
   change(fn: (draft: t.ITreeviewNodeProps) => void): void;
 };
+
+export type ITreeviewBeforeRenderHeaderEvent<T extends N = N> = {
+  type: 'TREEVIEW/beforeRender/header';
+  payload: ITreeviewBeforeRenderHeader<T>;
+};
+export type ITreeviewBeforeRenderHeader<T extends N = N> = ITreeviewBeforeRenderNode<T>;
+
 export type ITreeviewBeforeRenderNodeProps<T extends N = N> = {
   node: T;
   depth: number; // 0-based.

@@ -27,10 +27,16 @@ export type ITreeHeaderProps = {
 };
 
 export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
+  /**
+   * [Properties]
+   */
   private get theme() {
     return themes.themeOrDefault(this.props);
   }
 
+  /**
+   * [Render]
+   */
   public render() {
     const { height } = this.props;
     const styles = {

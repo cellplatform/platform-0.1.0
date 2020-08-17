@@ -118,13 +118,14 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
 
   public static getDerivedStateFromProps(props: ITreeNodeProps): ITreeNodeState {
     const { renderer, node, depth, isInline, isFocused } = props;
-    const nodeProps = renderer.beforeRenderNode({ node, depth, isInline, isFocused });
+    const nodeProps = renderer.beforeRender.node({ node, depth, isInline, isFocused });
     return { nodeProps };
   }
 
   /**
    * [Properties]
    */
+
   public get id() {
     return this.props.node.id;
   }
@@ -173,6 +174,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
   /**
    * [Render]
    */
+
   public render() {
     const props = this.nodeProps;
     const isEnabled = this.isEnabled;
