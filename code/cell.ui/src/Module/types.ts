@@ -18,15 +18,24 @@ export type ModuleArgs<T extends P> = t.ITreeStateArgs<IModuleNode<T>> & {
   data?: T['data'];
 };
 
-export type Module = {
-  identity: t.TreeIdentity;
-  Query: t.TreeQuery;
-  Context: React.Context<any>;
+/**
+ * The definition entry-point for a module.
+ * This is what is explored by module authors.
+ */
+export type IModuleDef = {
+  initialize(bus: t.EventBus, parent?: string): void;
+};
 
+/**
+ * Static module methods.
+ */
+export type Module = {
   create<T extends P>(args?: ModuleArgs<T>): IModule<T>;
 
-  filter(event: t.ModuleEvent, filter?: t.ModuleFilter): boolean;
+  Identity: t.TreeIdentity;
+  Query: t.TreeQuery;
 
+  Context: React.Context<any>;
   provider<T extends O>(context: T): React.FunctionComponent;
 
   events<T extends P>(
@@ -37,7 +46,7 @@ export type Module = {
   isModuleEvent(event: t.Event): boolean;
 
   fire(bus: B): IModuleFire;
-  register(bus: B, module: t.IModule, parent: string): t.ModuleRegistration;
+  register(bus: B, module: t.IModule, parent?: string): t.ModuleRegistration;
 };
 
 /**
@@ -74,24 +83,18 @@ export type IModulePropsAny = t.IModuleProps<any, any>;
 /**
  * Filter.
  */
-export type ModuleFilter = (args: ModuleFilterArgs) => boolean;
+
 export type ModuleFilterArgs = {
-  id: string;
+  module: string;
   namespace: string;
   key: string;
-  event: t.ModuleEvent;
 };
 
-/**
- * Event Broadcasting.
- */
-export type ModulePublishArgs<T extends P> = {
-  until$?: Observable<any>;
-  module: IModule<T>;
-  fire: t.FireEvent<any>;
-  filter?: t.ModuleFilter;
-};
-export type ModulePublishResponse = t.IDisposable;
+export type ModuleFilterEvent = (args: ModuleFilterEventArgs) => boolean;
+export type ModuleFilterEventArgs = ModuleFilterArgs & { event: t.ModuleEvent };
+
+export type ModuleFilterView = (args: ModuleFilterViewArgs) => boolean;
+export type ModuleFilterViewArgs = ModuleFilterArgs & { view: string };
 
 /**
  * Event Bus (fire).
@@ -137,7 +140,7 @@ export type IModuleEvents<T extends P = AnyProps> = {
   render$: Observable<IModuleRender>;
   rendered$: Observable<IModuleRendered>;
   render(view?: T['view']): Observable<IModuleRender>;
-  filter(fn: ModuleFilter): IModuleEvents;
+  filter(fn: ModuleFilterEvent): IModuleEvents;
 };
 
 /**
@@ -207,7 +210,7 @@ export type IModuleRenderedEvent = {
   type: 'Module/rendered';
   payload: IModuleRendered;
 };
-export type IModuleRendered = { module: string; el: JSX.Element | null };
+export type IModuleRendered = { module: string; view: string; el: JSX.Element | null };
 
 export type IModuleChangedEvent = {
   type: 'Module/changed';

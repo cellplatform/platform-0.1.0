@@ -14,9 +14,9 @@ type V = t.MyView;
 /**
  * Render factory.
  */
-export function renderer(args: { bus: t.EventBus<any>; main: t.IModule; until$: Observable<any> }) {
-  const { bus } = args;
-  const events = Module.events<t.MyProps>(bus.event$, args.until$);
+export function renderer(args: { bus: t.EventBus<any>; until$: Observable<any> }) {
+  const { bus, until$ } = args;
+  const events = Module.events<t.MyProps>(bus.event$, until$);
   const fire = Module.fire(bus);
 
   const RootProvider = Module.provider<t.MyContext>({ bus });

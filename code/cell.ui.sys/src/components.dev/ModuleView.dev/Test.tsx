@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, ui } from './common';
 import { Icons } from '../../components/primitives';
+import { css, CssValue, ui, time } from './common';
 import { ComponentFrame } from './ComponentFrame';
-
 import * as factory from './factory';
-
+import { FinderModule } from './modules/FinderModule';
 import * as t from './types';
 
 const { Module, ModuleView } = ui;
@@ -54,6 +53,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private async init() {
     const bus = this.bus;
     const fire = Module.fire(bus);
+    const events = Module.events(bus.event$, this.unmounted$);
 
     const main = Module.create<P>({ bus, root: 'root' });
 
@@ -75,12 +75,23 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     const mainStrategy = ModuleView.Tree.Strategy.default(); // Sample passing in behavior strategy.
 
-    this.state$.next({
-      main: main,
-      diagram: diagram,
-      sample: sample,
-      mainStrategy,
+    // Catch un-targetted (wildcard) registrations and route then into the MAIN module.
+    events.register$.pipe(filter((e) => !e.parent)).subscribe((e) => {
+      const module = fire.request(e.module).module;
+      if (module) {
+        Module.register(bus, module, main.id);
+      }
     });
+
+    this.state$.next({ main, diagram, sample, mainStrategy });
+
+    /**
+     * Simulate a module registering itself.
+     * NOTE:
+     *   This would typically be through some other boot-up process where
+     *   the module is pulled then spins itself up and registers itself.
+     */
+    FinderModule.initialize(bus);
 
     /**
      * Work with root events.
@@ -101,14 +112,16 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         const props = selected.root.props || {};
         const module = selected.id;
         const { view, data } = props;
-        fire.render({ module, view, data, selected: id });
+        time.delay(0, () => {
+          fire.render({ module, view, data, selected: id });
+        });
       }
     });
 
     /**
      * Setup the render factory.
      */
-    factory.renderer({ bus, main: main, until$: this.unmounted$ });
+    factory.renderer({ bus, until$: this.unmounted$ });
 
     /**
      * Muck around with sample data.
@@ -226,7 +239,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           </div>
           <div {...styles.main}>
             <ComponentFrame name={'ModuleView.Frame'} backgroundColor={bg}>
-              <ModuleView.Frame style={styles.fill} bus={bus} module={this.state.selected} />
+              <ModuleView.Frame
+                style={styles.fill}
+                bus={bus}
+                // module={this.state.selected?.id}
+                filter={this.mainFrameFilter}
+              />
             </ComponentFrame>
           </div>
           <div {...css(styles.tree, { marginLeft: MARGIN })}>
@@ -243,14 +261,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Handlers]
    */
 
-  private rootTreeFilter: t.ModuleFilter = (e) => {
-    if (e.namespace !== this.state.main?.namespace) {
-      return false;
-    }
-    return true;
-  };
-
-  private renderFilter: t.ModuleFilter = (e) => {
+  private mainFrameFilter: t.ModuleFilterView = (e) => {
     return true;
   };
 }

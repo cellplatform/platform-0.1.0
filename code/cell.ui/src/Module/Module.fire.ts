@@ -87,7 +87,7 @@ export function render(bus: B, args: t.ModuleFireRenderArgs) {
   if (el !== undefined) {
     bus.fire({
       type: 'Module/rendered',
-      payload: { module, el },
+      payload: { module, view, el },
     });
   }
 

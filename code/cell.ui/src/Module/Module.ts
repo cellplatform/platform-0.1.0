@@ -36,7 +36,7 @@ export class Module {
   /**
    * Helpers for working with tree ids.
    */
-  public static identity = TreeState.identity;
+  public static Identity = TreeState.identity;
 
   /**
    * Create a new module.
@@ -52,7 +52,6 @@ export class Module {
    * Construct an event helper.
    */
   public static events = events.create;
-  public static filter = events.filterEvent;
   public static isModuleEvent = events.isModuleEvent;
   public static fire = fire;
 }

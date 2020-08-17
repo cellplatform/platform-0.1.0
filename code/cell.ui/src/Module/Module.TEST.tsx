@@ -36,8 +36,8 @@ describe('Module', () => {
       const module = create();
 
       const root = module.root;
-      expect(Module.identity.hasNamespace(root.id)).to.eql(true);
-      expect(Module.identity.key(root.id)).to.eql('module');
+      expect(Module.Identity.hasNamespace(root.id)).to.eql(true);
+      expect(Module.Identity.key(root.id)).to.eql('module');
 
       expect(root.props?.kind).to.eql('MODULE');
       expect(root.props?.data).to.eql({});
@@ -58,7 +58,7 @@ describe('Module', () => {
 
       const register: t.IModuleRegister[] = [];
       const registered: t.IModuleRegistered[] = [];
-      const childEvents = events.filter((e) => e.id === child.id);
+      const childEvents = events.filter((e) => e.module === child.id);
 
       childEvents.register$.subscribe((e) => register.push(e));
       childEvents.registered$.subscribe((e) => registered.push(e));
@@ -116,7 +116,7 @@ describe('Module', () => {
       expect(res.parent).to.eql(undefined);
     });
 
-    it.only('parent not specified - catch all completes registration', () => {
+    it('parent not specified - catch all completes registration', () => {
       const root = create({ root: 'parent' });
       const child = create({ root: 'child' });
 
@@ -217,7 +217,7 @@ describe('Module', () => {
     });
   });
 
-  describe.only('event: "Module/selection"', () => {
+  describe('event: "Module/selection"', () => {
     it('from root: tree-node', () => {
       const parent = create({ root: 'parent', view: 'View-1' });
       const child = create({ root: 'child', view: 'View-2', data: { count: 123 } });

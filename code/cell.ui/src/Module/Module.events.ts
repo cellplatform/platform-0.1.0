@@ -92,11 +92,11 @@ export function isModuleEvent(event: t.Event) {
 /**
  * Run a module filter.
  */
-export function filterEvent(event: t.ModuleEvent, filter?: t.ModuleFilter) {
+export function filterEvent(event: t.ModuleEvent, filter?: t.ModuleFilterEvent) {
   if (filter) {
     const id = event.payload.module;
     const { key, namespace } = identity.parse(id);
-    return filter({ id, key, namespace, event });
+    return filter({ module: id, key, namespace, event });
   } else {
     return true;
   }
