@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { Module, t, time } from '../common';
+import { Module, t } from '../common';
 import { renderer } from './Sample.renderer';
 
 type P = t.MyProps;
@@ -16,7 +16,7 @@ export const SampleModule: t.IModuleDef = {
     const module = Module.create<P>({ bus, root: 'sample', treeview: 'Sample' });
     const until$ = module.dispose$;
     const events = Module.events(bus.event$, until$);
-    const fire = Module.fire(bus);
+    const fire = Module.fire<P>(bus);
     renderer({ bus, until$ });
 
     /**
@@ -54,7 +54,6 @@ export const SampleModule: t.IModuleDef = {
     mainEvents.selection$.subscribe((e) => {
       const id = e.tree.selection?.id;
       const selected = main.find((child) => child.tree.query.exists(id));
-      // this.state$.next({ selected });
 
       /**
        * Controller causes frame(s) to re-render.
@@ -63,13 +62,12 @@ export const SampleModule: t.IModuleDef = {
         const props = selected.root.props || {};
         const module = selected.id;
         const { view, data } = props;
-        time.delay(0, () => {
-          fire.render({ module, view, data, selected: id });
-        });
+        const el = fire.render({ selected: id, module, data, view });
+        if (!el) {
+          fire.render({ selected: id, module, data, view: '404' });
+        }
       }
     });
-
-    // Module.register(bus, module, parent);
 
     // Finish up.
     return { main, demo, diagram };

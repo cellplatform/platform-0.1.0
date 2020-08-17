@@ -45,7 +45,7 @@ export type Module = {
 
   isModuleEvent(event: t.Event): boolean;
 
-  fire(bus: B): IModuleFire;
+  fire<T extends P>(bus: B): IModuleFire<T>;
   register(bus: B, module: t.IModule, parent?: string): t.ModuleRegistration;
 };
 
@@ -99,19 +99,21 @@ export type ModuleFilterViewArgs = ModuleFilterArgs & { view: string };
 /**
  * Event Bus (fire).
  */
-export type IModuleFire = {
+export type IModuleFire<T extends P> = {
   register(module: t.IModule, parent?: string): t.ModuleRegistration;
-  render: ModuleFireRender;
+  render: ModuleFireRender<T>;
   selection: ModuleFireSelection;
   request<T extends P>(id: string): t.ModuleRequestResponse<T>;
 };
 
-export type ModuleFireRender = (args: ModuleFireRenderArgs) => JSX.Element | null | undefined;
-export type ModuleFireRenderArgs = {
+export type ModuleFireRender<T extends P> = (
+  args: ModuleFireRenderArgs<T>,
+) => JSX.Element | null | undefined;
+export type ModuleFireRenderArgs<T extends P> = {
   module: string;
   selected?: string;
-  data?: O;
-  view?: string;
+  view?: T['view'];
+  data?: T['data'];
 };
 
 export type ModuleFireSelection = (args: ModuleFireSelectionArgs) => void;

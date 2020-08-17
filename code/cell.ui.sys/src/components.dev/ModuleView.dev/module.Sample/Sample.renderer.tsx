@@ -49,7 +49,7 @@ export function renderer(args: { bus: t.EventBus<any>; until$: Observable<any> }
   /**
    * Wildcard.
    */
-  events.render().subscribe((e) => {
-    // e.render(<Test404 view={e.view} />);
+  events.render('404').subscribe((e) => {
+    e.render(<Test404 view={e.view} />);
   });
 }

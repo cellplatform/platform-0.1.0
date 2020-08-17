@@ -10,10 +10,10 @@ type P = t.IModuleProps;
 /**
  * Fire recipes through the event-bus.
  */
-export function fire(bus: B): t.IModuleFire {
+export function fire<T extends P>(bus: B): t.IModuleFire<T> {
   return {
     register: (module: t.IModule, parent: string) => register(bus, module, parent),
-    render: (args: t.ModuleFireRenderArgs) => render(bus, args),
+    render: (args: t.ModuleFireRenderArgs<T>) => render(bus, args),
     selection: (args: t.ModuleFireSelectionArgs) => selection(bus, args),
     request: <T extends P>(id: string) => request<T>(bus, id),
   };
@@ -67,7 +67,7 @@ export function register(bus: B, module: t.IModule, parent?: string) {
 /**
  * Fires a render request seqeunce.
  */
-export function render(bus: B, args: t.ModuleFireRenderArgs) {
+export function render<T extends P>(bus: B, args: t.ModuleFireRenderArgs<T>) {
   const { module, selected, data = {}, view = '' } = args;
 
   let el: JSX.Element | null | undefined = undefined;
