@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { TreeIdentity } from '@platform/state';
 import { filter, map } from 'rxjs/operators';
 
 import { t } from '../common';
@@ -7,8 +7,9 @@ import * as util from './util';
 /**
  * Strategy for navigating the tree via the keyboard.
  */
-export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
+export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
   const { events, treeview$ } = util.options();
+  const { fire } = args;
 
   let tree: t.ITreeviewState;
   const current = () => util.current(tree);
@@ -31,19 +32,24 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
     },
   };
 
-  const selection$ = new Subject<{ current?: string; selected?: string }>();
-  selection$.subscribe((e) => {
-    const { get, mutate } = current();
-    mutate.current(e.current);
-    mutate.selected(e.selected || get.children(e.current)[0]?.id);
-  });
+  const select = (node?: t.NodeIdentifier) => {
+    const selected = TreeIdentity.toNodeId(node);
+    fire({ type: 'TREEVIEW/select', payload: { selected } });
+  };
+
+  const selection = (args: { selected?: t.NodeIdentifier; current?: t.NodeIdentifier }) => {
+    const { get } = util.current(tree);
+    const current = TreeIdentity.toNodeId(args.current);
+    const selected = TreeIdentity.toNodeId(args.selected) || get.children(current)[0]?.id;
+    fire({ type: 'TREEVIEW/select', payload: { selected, current } });
+  };
 
   /**
    * BEHAVIOR: Select the first-node when the [HOME] key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'Home')).subscribe((e) => {
     const children = e.get.children(e.current);
-    e.mutate.selected(children[0]?.id);
+    select(children[0]);
   });
 
   /**
@@ -51,19 +57,13 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
    */
   key$.pipe(filter((e) => e.key === 'End')).subscribe((e) => {
     const children = e.get.children(e.current);
-    e.mutate.selected(children[children.length - 1]?.id);
+    select(children[children.length - 1]);
   });
 
   /**
    * BEHAVIOR: Select the next-node when the [DOWN] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowDown')).subscribe((e) => {
-    const select = (next?: t.ITreeNode) => {
-      if (next) {
-        e.mutate.selected(next.id);
-      }
-    };
-
     const selected = e.get.selected;
     const current = e.get.current;
 
@@ -96,12 +96,6 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
    * BEHAVIOR: Select the previous-node when the [UP] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowUp')).subscribe((e) => {
-    const select = (next?: t.ITreeNode) => {
-      if (next) {
-        e.mutate.selected(next.id);
-      }
-    };
-
     const selected = e.get.selected;
     const current = e.get.current;
 
@@ -147,12 +141,12 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
       const props = util.props(e.query.findById(selected));
       if (props.inline) {
         if (props.inline.isOpen && props.chevron?.isVisible) {
-          selection$.next({ current: selected.id }); // Drill-in.
+          selection({ current: selected.id }); // Drill-in.
         } else {
           e.mutate.open(selected.id);
         }
       } else {
-        selection$.next({ current: selected.id });
+        selection({ current: selected.id });
       }
     });
 
@@ -168,11 +162,11 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
       e.query.parent(selected.parent)?.id === e.current
     ) {
       e.mutate.close(selected.parent.id);
-      selection$.next({ current: e.current, selected: selected.parent.id });
+      selection({ current: e.current, selected: selected.parent.id });
     } else {
       const parent = e.query.parent(e.get.current);
       if (parent) {
-        selection$.next({ current: parent.id, selected: e.current });
+        selection({ current: parent.id, selected: e.current });
       }
     }
   });

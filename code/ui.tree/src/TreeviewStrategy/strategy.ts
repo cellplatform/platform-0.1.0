@@ -17,6 +17,6 @@ export const merge: t.TreeviewStrategyMerge = (...strategies) => {
 /**
  * All strategies configured for a typical tree-view usage scenario.
  */
-export const all: t.TreeviewStrategyDefault = () => {
-  return merge(mouse(), keyboard(), selection());
+export const all: t.TreeviewStrategyDefault = (args) => {
+  return merge(mouse(args), keyboard(args), selection(args));
 };

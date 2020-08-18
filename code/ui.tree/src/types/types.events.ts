@@ -9,10 +9,26 @@ export type TreeViewMouseTarget = 'NODE' | 'TWISTY' | 'DRILL_IN' | 'PARENT';
  */
 export type TreeviewEvent =
   | ITreeviewMouseEvent
+  | ITreeviewSelectEvent
   | ITreeviewFocusEvent
   | ITreeviewKeyboardEvent
   | TreeviewBeforeRenderEvent
   | TreeviewRenderEvent;
+
+/**
+ * Node selection request.
+ * NOTE:
+ *    This is used to signal to strategies that a navigation
+ *    selection is required.
+ */
+export type ITreeviewSelectEvent = {
+  type: 'TREEVIEW/select';
+  payload: ITreeviewSelect;
+};
+export type ITreeviewSelect = {
+  current?: string | null; //  NB: [null] to clear, [undefined] leaves current value.
+  selected?: string | null; // NB: [null] to clear, [undefined] leaves current value.
+};
 
 /**
  * Mouse events fired as the pointer moves over
@@ -22,15 +38,18 @@ export type ITreeviewMouseEvent<T extends N = N> = {
   type: 'TREEVIEW/mouse';
   payload: t.ITreeviewMouse<T>;
 };
+export type ITreeviewMouse<T extends N = N> = TreeNodeMouseEventHandlerArgs<T> & {
+  tag: string; // Component instance identifier.
+};
 
-export type ITreeviewMouse<T extends N = N> = MouseEvent & {
+export type TreeNodeMouseEventHandler = (e: TreeNodeMouseEventHandlerArgs) => void;
+export type TreeNodeMouseEventHandlerArgs<T extends N = N> = MouseEvent & {
   target: TreeViewMouseTarget;
   id: T['id'];
   node: T;
   props: t.ITreeviewNodeProps;
   children: T[];
 };
-export type TreeNodeMouseEventHandler = (e: ITreeviewMouse) => void;
 
 /**
  * Focus
@@ -39,7 +58,10 @@ export type ITreeviewFocusEvent = {
   type: 'TREEVIEW/focus';
   payload: ITreeviewFocus;
 };
-export type ITreeviewFocus = { isFocused: boolean };
+export type ITreeviewFocus = {
+  isFocused: boolean;
+  tag: string; // Component instance identifier.
+};
 
 /**
  * Keyboard
@@ -52,6 +74,7 @@ export type ITreeviewKeyboard<T extends N = N> = {
   root?: T;
   current?: string;
   keypress: IKeypressEvent;
+  tag: string; // Component instance identifier.
 };
 
 /**

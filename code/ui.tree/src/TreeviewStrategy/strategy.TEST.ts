@@ -8,7 +8,10 @@ type A = t.TreeviewStrategyNextArgs;
 
 const create = {
   event() {
-    const event: t.ITreeviewFocusEvent = { type: 'TREEVIEW/focus', payload: { isFocused: true } };
+    const event: t.ITreeviewFocusEvent = {
+      type: 'TREEVIEW/focus',
+      payload: { isFocused: true, tag: '' },
+    };
     return event;
   },
 
