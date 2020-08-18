@@ -86,8 +86,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     console.log('demo: ', demo.id);
     console.log('-------------------------------------------');
 
-    const treeStrategy = ModuleView.Tree.Strategy.default(); // Sample passing in behavior strategy.
-
+    const treeStrategy = ModuleView.Tree.Strategy.default({ fire: bus.fire }); // Sample passing in behavior strategy.
     this.state$.next({ main, diagram, demo, treeStrategy });
 
     /**

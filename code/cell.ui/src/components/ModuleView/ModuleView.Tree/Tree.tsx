@@ -60,10 +60,10 @@ export class ModuleViewTree extends React.PureComponent<
       const until$ = disposable.dispose$;
 
       // Setup the behavior strategy.
-      const strategy = this.props.strategy || TreeviewStrategy.default();
+      const fire = this.fire;
+      const strategy = this.props.strategy || TreeviewStrategy.default({ fire });
       const events = Treeview.events(this.treeview$, until$);
-      events.beforeRender.node$.subscribe(this.beforeNodeRender);
-      events.treeview$.subscribe((event) => strategy.next({ tree, event }));
+      events.$.subscribe((event) => strategy.next({ tree, event }));
 
       // Redraw on change.
       tree.event.changed$
@@ -74,20 +74,6 @@ export class ModuleViewTree extends React.PureComponent<
       this.state$.next({ current: { ...disposable } });
     }
   }
-
-  /**
-   * Process selection styles on node before it is rendered.
-   */
-  private beforeNodeRender = (e: t.ITreeviewBeforeRenderNode) => {
-    const isSelected = e.node.id === this.nav.selected;
-    if (isSelected) {
-      e.change((props) => {
-        const colors = props.colors || (props.colors = {});
-        colors.label = e.isFocused ? COLORS.BLUE : undefined;
-        colors.bg = e.isFocused ? color.format(-0.06) : color.format(-0.03);
-      });
-    }
-  };
 
   /**
    * [Properties]
@@ -124,4 +110,10 @@ export class ModuleViewTree extends React.PureComponent<
       />
     );
   }
+
+  /**
+   * [Helpers]
+   */
+
+  private fire: t.FireEvent<t.TreeviewEvent> = (e) => this.treeview$.next(e);
 }
