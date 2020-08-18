@@ -24,8 +24,8 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
    * [Lifecycle]
    */
   private constructor(event$: Observable<E>, dispose$?: Observable<any>) {
-    this.treeview$ = event$.pipe(takeUntil(this.dispose$));
-    this.keyboard$ = rx.payload<t.ITreeviewKeyboardEvent>(this.treeview$, 'TREEVIEW/keyboard');
+    this.$ = event$.pipe(takeUntil(this.dispose$));
+    this.keyboard$ = rx.payload<t.ITreeviewKeyboardEvent>(this.$, 'TREEVIEW/keyboard');
     if (dispose$) {
       dispose$.subscribe(() => this.dispose());
     }
@@ -43,7 +43,7 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
   private _beforeRender: t.ITreeBeforeRenderEvents<T>;
 
   public readonly keyboard$: Observable<t.ITreeviewKeyboard>;
-  public readonly treeview$: Observable<E>;
+  public readonly $: Observable<E>;
 
   private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());
@@ -57,7 +57,7 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
 
   public get beforeRender() {
     if (!this._beforeRender) {
-      const event$ = this.treeview$.pipe(
+      const event$ = this.$.pipe(
         filter((e) => e.type.startsWith('TREEVIEW/beforeRender/')),
         map((e) => e as t.TreeviewBeforeRenderEvent),
       );
@@ -80,7 +80,7 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
 
   public get render() {
     if (!this._render) {
-      const event$ = this.treeview$.pipe(
+      const event$ = this.$.pipe(
         filter((e) => e.type.startsWith('TREEVIEW/render/')),
         map((e) => e as t.TreeviewRenderEvent),
       );
@@ -115,7 +115,7 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
     const { type, target } = options;
     const buttons = toButtons(options.button);
 
-    return this.treeview$.pipe(
+    return this.$.pipe(
       filter((e) => e.type === 'TREEVIEW/mouse'),
       map((e) => e.payload as t.ITreeviewMouse<T>),
       filter((e) => {
