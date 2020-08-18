@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { TreeView } from '../..';
+import { Treeview } from '../..';
 import { t } from '../../common';
 import { TreeViewState } from '../../components.dev/TreeviewState';
 import { TreeviewStrategy } from '../../TreeviewStrategy';
@@ -40,8 +40,8 @@ const SAMPLES = {
 
 Object.keys(SAMPLES).forEach((key) => {
   const node = SAMPLES[key];
-  TreeView.query(node).walkDown((e) => {
-    TreeView.util.props(e.node, (props) => {
+  Treeview.query(node).walkDown((e) => {
+    Treeview.util.props(e.node, (props) => {
       props.label = props.label || e.id;
     });
   });
@@ -52,7 +52,7 @@ export type ITestProps = { style?: CssValue };
 export class Test extends React.PureComponent<ITestProps> {
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeviewEvent>();
-  private tree = TreeView.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
+  private tree = Treeview.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
 
   /**
    * [Lifecycle]
@@ -124,7 +124,7 @@ export class Test extends React.PureComponent<ITestProps> {
     };
     return (
       <div {...styles.base}>
-        <TreeView
+        <Treeview
           root={this.tree.root}
           current={this.current}
           event$={this.treeview$}

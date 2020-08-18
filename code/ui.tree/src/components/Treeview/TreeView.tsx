@@ -31,7 +31,7 @@ import { renderer } from './renderer';
 const R = { equals };
 type N = t.ITreeviewNode;
 
-export type ITreeViewProps = {
+export type ITreeviewProps = {
   id?: string;
   root?: N;
   current?: N['id'];
@@ -50,7 +50,7 @@ export type ITreeViewProps = {
   style?: CssValue;
 };
 
-export type ITreeViewState = {
+export type ITreeviewState = {
   currentPath?: N[];
   renderedPath?: N[];
   index?: number;
@@ -62,13 +62,13 @@ const DEFAULT = {
   HEADER_HEIGHT: 36,
 };
 
-export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState> {
+export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState> {
   /**
    * [Static]
    */
   public static util = TreeUtil;
   public static query = TreeUtil.query;
-  public static identity = TreeViewState.identity;
+  public static Identity = TreeViewState.identity;
   public static State = TreeViewState;
 
   public static events<T extends N = N>(
@@ -78,7 +78,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return TreeEvents.create<T>(event$, dispose$);
   }
 
-  private static current(props: ITreeViewProps) {
+  private static current(props: ITreeviewProps) {
     const { root } = props;
     const current = props.current || root;
     const result = typeof current === 'object' ? current : TreeUtil.query(root).findById(current);
@@ -88,7 +88,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   /**
    * [Fields]
    */
-  public state: ITreeViewState = {};
+  public state: ITreeviewState = {};
   private unmounted$ = new Subject<void>();
   private focus$ = new Subject<boolean>();
 
@@ -160,9 +160,9 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     }
   }
 
-  public componentDidUpdate(prev: ITreeViewProps) {
+  public componentDidUpdate(prev: ITreeviewProps) {
     let updatePath = false;
-    const isCurrentChanged = !R.equals(TreeView.current(prev), TreeView.current(this.props));
+    const isCurrentChanged = !R.equals(Treeview.current(prev), Treeview.current(this.props));
     if (isCurrentChanged) {
       updatePath = true;
     }
@@ -426,7 +426,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
   private updatePath() {
     const { root } = this.props;
-    const current = TreeView.current(this.props);
+    const current = Treeview.current(this.props);
     const currentPath = TreeUtil.pathList(root, current) || [];
     const renderedPath = [...(this.state.renderedPath || [])];
     currentPath.forEach((node, i) => {

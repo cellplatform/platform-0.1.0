@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { TreeView } from '../..';
+import { Treeview } from '../..';
 import { t } from '../../common';
 import { COLORS } from '../constants';
 import * as sample from '../SAMPLE';
@@ -46,7 +46,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     /**
      * NB: Alternative helper for pealing off events.
      */
-    const tree = TreeView.events(event$);
+    const tree = Treeview.events(event$);
 
     tree.mouse().click.node$.subscribe((e) => {
       log.info('🐷 CLICK from TreeEvents helper', e);
@@ -80,7 +80,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
      */
 
     const toggle = (node: t.ITreeviewNode) => {
-      const toggled = TreeView.util.toggleIsOpen(this.state.root, node);
+      const toggled = Treeview.util.toggleIsOpen(this.state.root, node);
       this.state$.next({ root: toggled });
     };
 
@@ -122,7 +122,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         filter((e) => e.target === 'PARENT'),
       )
       .subscribe((e) => {
-        const parent = TreeView.query(this.state.root).ancestor(
+        const parent = Treeview.query(this.state.root).ancestor(
           e.node,
           (e) => e.level > 0 && !e.node.props?.treeview?.inline,
         );
@@ -197,7 +197,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...styles.base}>
-        <TreeView
+        <Treeview
           root={this.state.root}
           current={this.state.current}
           theme={this.state.theme}

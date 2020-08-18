@@ -4,14 +4,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { TreeView } from '../..';
+import { Treeview } from '../..';
 import { t, COLORS } from '../../common';
 import { TextInput } from '@platform/ui.text/lib/components/TextInput';
 import { TextInputChangeEventHandler } from '@platform/ui.text/lib/types';
 import { defaultValue } from '@platform/util.value';
 import { Icons } from '../Icons';
 
-const S = TreeView.State;
+const S = Treeview.State;
 const DEFAULT = {
   CONNECTOR_HEIGHT: 40,
 };

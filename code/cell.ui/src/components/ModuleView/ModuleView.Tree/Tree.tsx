@@ -1,4 +1,4 @@
-import { ITreeViewProps, TreeView } from '@platform/ui.tree/lib/components/TreeView';
+import { ITreeviewProps, Treeview } from '@platform/ui.tree/lib/components/Treeview';
 import { TreeviewStrategy } from '@platform/ui.tree/lib/TreeviewStrategy';
 import * as React from 'react';
 import { Subject } from 'rxjs';
@@ -9,7 +9,7 @@ import { color, COLORS, CssValue, dispose, t } from '../common';
 export type IModuleViewTreeProps = {
   module?: t.IModule;
   strategy?: t.ITreeviewStrategy;
-  treeviewProps?: ITreeViewProps;
+  treeviewProps?: ITreeviewProps;
   focusOnLoad?: boolean;
   style?: CssValue;
 };
@@ -35,13 +35,13 @@ export class ModuleViewTree extends React.PureComponent<
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    this.initialize();
+    this.init();
   }
 
   public componentDidUpdate(prev: IModuleViewTreeProps) {
     const next = this.props;
     if (prev.module?.id !== next.module?.id) {
-      this.initialize();
+      this.init();
     }
   }
 
@@ -50,7 +50,7 @@ export class ModuleViewTree extends React.PureComponent<
     this.unmounted$.complete();
   }
 
-  private initialize() {
+  private init() {
     this.state.current?.dispose();
     this.state$.next({ current: undefined });
 
@@ -61,7 +61,7 @@ export class ModuleViewTree extends React.PureComponent<
 
       // Setup the behavior strategy.
       const strategy = this.props.strategy || TreeviewStrategy.default();
-      const events = TreeView.events(this.treeview$, until$);
+      const events = Treeview.events(this.treeview$, until$);
       events.beforeRender.node$.subscribe(this.beforeNodeRender);
       events.treeview$.subscribe((event) => strategy.next({ tree, event }));
 
@@ -112,7 +112,7 @@ export class ModuleViewTree extends React.PureComponent<
     }
 
     return (
-      <TreeView
+      <Treeview
         background={'NONE'}
         tabIndex={0}
         {...this.props.treeviewProps}

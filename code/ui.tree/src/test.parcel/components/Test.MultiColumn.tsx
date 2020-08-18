@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Subject, merge } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { TreeView } from '../..';
+import { Treeview } from '../..';
 import { t } from '../../common';
 import { TreeviewStrategy } from '../../TreeviewStrategy';
 
@@ -31,14 +31,14 @@ const DEFAULT = {
 export class Test extends React.PureComponent<ITestProps> {
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeviewEvent>();
-  private tree = TreeView.State.create({ root: DEFAULT, dispose$: this.unmounted$ });
+  private tree = Treeview.State.create({ root: DEFAULT, dispose$: this.unmounted$ });
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
     const tree = this.tree;
-    const event = TreeView.events(this.treeview$, this.unmounted$);
+    const event = Treeview.events(this.treeview$, this.unmounted$);
     const changed$ = tree.event.changed$.pipe(takeUntil(this.unmounted$));
     changed$.pipe(debounceTime(10)).subscribe(() => this.forceUpdate());
 
@@ -46,7 +46,7 @@ export class Test extends React.PureComponent<ITestProps> {
     merge(before.node$, before.header$).subscribe((e) => {
       e.change((props) => {
         if (!props.label) {
-          props.label = TreeView.identity.key(e.node.id);
+          props.label = Treeview.Identity.key(e.node.id);
         }
       });
     });
@@ -102,7 +102,7 @@ export class Test extends React.PureComponent<ITestProps> {
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.outer}>
-          <TreeView
+          <Treeview
             root={this.tree.root}
             current={this.current}
             event$={this.treeview$}
@@ -111,7 +111,7 @@ export class Test extends React.PureComponent<ITestProps> {
             focusOnLoad={true}
             style={css(styles.tree, { borderRight: 'none' })}
           />
-          <TreeView
+          <Treeview
             root={this.tree.root}
             current={this.current}
             event$={this.treeview$}
