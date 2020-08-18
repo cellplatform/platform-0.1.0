@@ -131,7 +131,7 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
   /**
    * [Handlers]
    */
-  private mouseHandlers = (target: t.ITreeviewMouse['target']) => {
+  private mouseHandlers = (target: t.TreeNodeMouseEventHandlerArgs['target']) => {
     const { node, onMouseParent } = this.props;
     return TreeNode.mouseHandlers(() => node, target, onMouseParent);
   };
