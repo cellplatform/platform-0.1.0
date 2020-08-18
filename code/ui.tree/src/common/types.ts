@@ -1,6 +1,6 @@
 export { Subject, Observable } from 'rxjs';
 export { IIcon } from '@platform/ui.icon';
-export { MouseEvent, MouseEventType } from '@platform/react';
+export { MouseEvent, MouseEventType, IKeypressEvent } from '@platform/react';
 
 export * from '@platform/types';
 export * from '@platform/ui.text/lib/types';

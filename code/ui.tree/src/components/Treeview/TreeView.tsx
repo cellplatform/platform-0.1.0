@@ -9,14 +9,7 @@ import { defaultValue, rx, time } from '@platform/util.value';
 import { equals } from 'ramda';
 import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
-import {
-  debounceTime,
-  delay,
-  distinctUntilChanged,
-  filter,
-  share,
-  takeUntil,
-} from 'rxjs/operators';
+import { debounceTime, delay, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
 import { constants, t } from '../../common';
 import * as themes from '../../themes';
@@ -42,7 +35,7 @@ export type ITreeviewProps = {
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
   event$?: Subject<t.TreeviewEvent>;
-  keyPress$?: Observable<events.IKeypressEvent>;
+  keyPress$?: Observable<t.IKeypressEvent>;
   tabIndex?: number;
   slideDuration?: number;
   focusOnLoad?: boolean;
@@ -91,6 +84,7 @@ export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState
   /**
    * [Fields]
    */
+
   public state: ITreeviewState = {};
   private state$ = new Subject<Partial<ITreeviewState>>();
   public readonly unmounted$ = new Subject<void>();
