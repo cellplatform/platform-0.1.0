@@ -31,7 +31,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private event$ = new Subject<t.TreeviewEvent>();
-  private mouse$ = new Subject<t.ITreeviewMouse>();
 
   /**
    * [Lifecycle]
@@ -40,8 +39,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const event$ = this.event$.pipe(takeUntil(this.unmounted$));
-    const mouse$ = this.mouse$.pipe(takeUntil(this.unmounted$));
-    const click$ = mouse$.pipe(filter((e) => e.button === 'LEFT'));
 
     /**
      * NB: Alternative helper for pealing off events.
@@ -83,6 +80,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       const toggled = Treeview.util.toggleIsOpen(this.state.root, node);
       this.state$.next({ root: toggled });
     };
+
+    const click$ = tree.mouse$({ button: 'LEFT' });
 
     click$
       .pipe(
@@ -206,7 +205,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           renderPanel={this.renderPanel}
           renderNodeBody={this.renderNodeBody}
           event$={this.event$}
-          mouse$={this.mouse$}
+          // mouse$={this.mouse$}
           tabIndex={0}
         />
       </div>

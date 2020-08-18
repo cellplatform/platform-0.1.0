@@ -18,7 +18,13 @@ const DEFAULT = {
       id: 'Root-1',
       children: [
         { id: 'Child-2.1' },
-        { id: 'Child-2.2', children: [{ id: 'Child-2.2.1' }, { id: 'Child-2.2.2' }] },
+        {
+          id: 'Child-2.2',
+          children: [
+            { id: 'Child-2.2.1' },
+            { id: 'Child-2.2.2', children: [{ id: 'Foo-1' }, { id: 'Foo-2' }, { id: 'Foo-3' }] },
+          ],
+        },
         { id: 'Child-2.3' },
       ],
     },
@@ -42,6 +48,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Lifecycle]
    */
   public componentDidMount() {
+    const fire: t.FireEvent<t.TreeviewEvent> = (e) => this.treeview$.next(e);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     const tree = this.tree;
@@ -53,7 +60,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     merge(before.node$, before.header$).subscribe((e) => {
       e.change((props) => {
         if (!props.label) {
-          props.label = Tree.View.Identity.key(e.node.id);
+          props.label = Tree.View.Identity.key(e.node.id); // NB: Make sample node labels readable (remove namespace).
         }
       });
     });
@@ -61,7 +68,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     /**
      * State / Behavior Strategy
      */
-    const strategy = TreeviewStrategy.default();
+    const strategy = TreeviewStrategy.default({ fire });
     this.treeview$
       .pipe(takeUntil(this.unmounted$))
       .subscribe((event) => strategy.next({ tree, event }));
@@ -89,7 +96,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   public get total() {
-    return this.state.total || 2;
+    return this.state.total || 3;
   }
 
   /**
@@ -107,13 +114,13 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         height: '80%',
         Flex: 'horizontal-stretch-stretch',
         border: `solid 1px ${color.format(-0.1)}`,
-        backgroundColor: 'rgba(255, 0, 0, 0.1)' /* RED */,
         marginTop: 40,
       }),
       tree: css({}),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
+        {this.renderToolbar()}
         <div {...styles.outer}>
           <Tree.Columns
             total={total}
@@ -124,26 +131,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             tabIndex={0}
             focusOnLoad={true}
           />
-          {/* <Treeview
-            root={this.tree.root}
-            current={this.current}
-            event$={this.treeview$}
-            background={'NONE'}
-            tabIndex={0}
-            focusOnLoad={true}
-            style={css(styles.tree, { borderRight: 'none' })}
-          />
-          <Treeview
-            root={this.tree.root}
-            current={this.current}
-            event$={this.treeview$}
-            background={'NONE'}
-            tabIndex={0}
-            // focusOnLoad={true}
-            style={styles.tree}
-          /> */}
         </div>
-        {this.renderToolbar()}
       </div>
     );
   }
@@ -155,17 +143,18 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         height: 40,
         boxSizing: 'border-box',
         padding: 10,
+        PaddingX: 15,
         Flex: 'horizontal-center-spaceBetween',
       }),
       spacer: css({ width: 20 }),
-      left: css({
-        Flex: 'horizontal-center-center',
-      }),
+      left: css({ Flex: 'horizontal-center-center' }),
     };
     const spacer = <div {...styles.spacer}></div>;
     return (
       <div {...styles.base}>
         <div {...styles.left}>
+          <Button onClick={this.totalColumnsHandler(1)}>1-column</Button>
+          {spacer}
           <Button onClick={this.totalColumnsHandler(2)}>2-columns</Button>
           {spacer}
           <Button onClick={this.totalColumnsHandler(3)}>3-columns</Button>

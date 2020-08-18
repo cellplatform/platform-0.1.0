@@ -58,6 +58,7 @@ export class Test extends React.PureComponent<ITestProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
+    const fire: t.FireEvent<t.TreeviewEvent> = (e) => this.treeview$.next(e);
     const tree = this.tree;
     const changed$ = tree.event.changed$.pipe(takeUntil(this.unmounted$));
     changed$.pipe(debounceTime(10)).subscribe(() => this.forceUpdate());
@@ -65,7 +66,7 @@ export class Test extends React.PureComponent<ITestProps> {
     /**
      * State behavior strategy.
      */
-    const strategy = TreeviewStrategy.default();
+    const strategy = TreeviewStrategy.default({ fire });
     this.treeview$
       .pipe(takeUntil(this.unmounted$))
       .subscribe((event) => strategy.next({ tree, event }));
