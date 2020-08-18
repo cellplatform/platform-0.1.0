@@ -1,13 +1,13 @@
 import { id } from '@platform/util.value';
-import { enablePatches, produceWithPatches, setAutoFreeze, original, isDraft } from 'immer';
+import { enablePatches, isDraft, original, produceWithPatches, setAutoFreeze } from 'immer';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import { Patch } from '../Patch';
 
-import { t, is } from '../common';
+import { is, t } from '../common';
+import { Patch } from '../Patch';
+import * as action from './StateObject.action';
 import * as events from './StateObject.events';
 import * as merge from './StateObject.merge';
-import * as action from './StateObject.action';
 
 if (typeof setAutoFreeze === 'function') {
   setAutoFreeze(false);
