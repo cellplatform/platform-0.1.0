@@ -3,7 +3,6 @@ import { filter } from 'rxjs/operators';
 
 import { t } from '../common';
 import * as util from './util';
-import { Subject } from '../common/types';
 
 /**
  * Strategy for navigating around a tree.
@@ -48,13 +47,13 @@ export const mouse: t.TreeviewStrategyMouseNavigation = (args) => {
   /**
    * BEHAVIOR: Set as selected when node is single-clicked.
    */
-  left.down.node$.subscribe((e) => select(e.id));
+  left.down.node$.pipe(filter((e) => !e.isHandled)).subscribe((e) => select(e.id));
 
   /**
    * BEHAVIOR: Step up to parent when the "back" button is
    *           single-clicked on the panel header.
    */
-  left.down.parent$.subscribe((e) => {
+  left.down.parent$.pipe(filter((e) => !e.isHandled)).subscribe((e) => {
     const { query } = current();
     const parent = query.parent(e.node);
     selection({ current: parent?.id, selected: e.id });
@@ -64,7 +63,9 @@ export const mouse: t.TreeviewStrategyMouseNavigation = (args) => {
    * BEHAVIOR: Navigate into child when the "drill in chevron"
    *           is single-clicked.
    */
-  left.down.drillIn$.subscribe((e) => selection({ current: e.id }));
+  left.down.drillIn$
+    .pipe(filter((e) => !e.isHandled))
+    .subscribe((e) => selection({ current: e.id }));
 
   /**
    * BEHAVIOR: Toggle open/closed an inline node when
@@ -72,6 +73,7 @@ export const mouse: t.TreeviewStrategyMouseNavigation = (args) => {
    */
   left.down.twisty$
     .pipe(
+      filter((e) => !e.isHandled),
       filter((e) => Boolean((e.props || {}).inline)),
       filter((e) => (e.children || []).length > 0),
     )
@@ -81,6 +83,7 @@ export const mouse: t.TreeviewStrategyMouseNavigation = (args) => {
    * EVENTS: Double-clicked node that has children.
    */
   const dblClickNodeWithChildren$ = left.dblclick.node$.pipe(
+    filter((e) => !e.isHandled),
     filter((e) => (e.children || []).length > 0),
   );
 
@@ -88,7 +91,10 @@ export const mouse: t.TreeviewStrategyMouseNavigation = (args) => {
    * BEHAVIOR: Navigate into child when a node is double-clicked.
    */
   dblClickNodeWithChildren$
-    .pipe(filter((e) => !(e.props || {}).inline))
+    .pipe(
+      filter((e) => !e.isHandled),
+      filter((e) => !(e.props || {}).inline),
+    )
     .subscribe((e) => selection({ current: e.id }));
 
   /**
@@ -96,7 +102,10 @@ export const mouse: t.TreeviewStrategyMouseNavigation = (args) => {
    *           it's double-clicked.
    */
   dblClickNodeWithChildren$
-    .pipe(filter((e) => Boolean((e.props || {}).inline)))
+    .pipe(
+      filter((e) => !e.isHandled),
+      filter((e) => Boolean((e.props || {}).inline)),
+    )
     .subscribe((e) => current().mutate.toggleOpen(e.id));
 
   return strategy;

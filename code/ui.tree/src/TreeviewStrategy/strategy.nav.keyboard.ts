@@ -16,6 +16,7 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
 
   const key$ = events.keyboard$.pipe(
     filter((e) => e.keypress.isPressed),
+    filter((e) => !e.isHandled),
     map((e) => ({ key: e.keypress.key, current: e.current, ...current() })),
   );
 
@@ -65,26 +66,29 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
    */
   key$.pipe(filter((e) => e.key === 'ArrowDown')).subscribe((e) => {
     const selected = e.get.selected;
-    const current = e.get.current;
 
     if (!selected.id) {
       // Nothing yet selected, select first child.
+      const current = e.get.current;
       select(current.children[0]);
     } else {
-      const isDirectChild = current.children.some((child) => child.id === selected.id);
+      const isDirectChild = !Boolean(selected.parent.props?.treeview?.inline);
 
       if (isDirectChild) {
         if (selected.props.inline?.isOpen && selected.children.length > 0) {
-          return select(selected.children[0]);
+          select(selected.children[0]);
         } else {
-          return select(current.children[selected.index + 1]);
+          select((selected.parent.children || [])[selected.index + 1]);
         }
       } else {
         // Within an open inline "twisty".
         if (selected.isLast) {
           // Step up and out of the "twisty" into the next item of the current list.
-          const index = current.children.findIndex((child) => child.id === selected.parent?.id);
-          select(current.children[index + 1]);
+          const children = selected.parent.children || [];
+          const index = children.findIndex((child) => child.id === selected.parent?.id);
+          if (index >= 0) {
+            select(children[index + 1]);
+          }
         } else {
           select((selected.parent?.children || [])[selected.index + 1]);
         }
@@ -103,7 +107,7 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
       // Nothing yet selected, select last child.
       select(current.children[current.children.length - 1]);
     } else {
-      const isDirectChild = current.children.some((child) => child.id === selected.id);
+      const isDirectChild = !Boolean(selected.parent.props?.treeview?.inline);
 
       if (isDirectChild) {
         const prev = selected.prev;
@@ -119,7 +123,9 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
         if (selected.isFirst) {
           // Step up and out of the "twisty" into the parent.
           const index = current.children.findIndex((child) => child.id === selected.parent?.id);
-          select(current.children[index]);
+          if (index >= 0) {
+            select(current.children[index]);
+          }
         } else {
           select(selected.prev?.node);
         }
