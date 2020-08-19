@@ -45,7 +45,6 @@ export class TreeviewColumns extends React.PureComponent<
   /**
    * [Lifecycle]
    */
-
   constructor(props: ITreeviewColumnsProps) {
     super(props);
     const event = Treeview.events(this.treeview$, this.unmounted$);
@@ -98,7 +97,6 @@ export class TreeviewColumns extends React.PureComponent<
       /**
        * TODO 🐷
        * - inline twisty
-       * - reset state on prop-change
        */
     });
 
@@ -226,9 +224,11 @@ export class TreeviewColumns extends React.PureComponent<
    */
 
   public focus(column = 0) {
-    const ref = this.ref(column);
-    if (ref) {
-      ref.focus();
+    if (column >= 0) {
+      const ref = this.ref(column);
+      if (ref) {
+        ref.focus();
+      }
     }
   }
 
@@ -275,23 +275,30 @@ export class TreeviewColumns extends React.PureComponent<
     }
   }
 
-  private columnOf(node: t.NodeIdentifier) {
-    const id = toNodeId(node);
-    const query = this.query;
-    return Array.from({ length: this.total })
-      .map((v, i) => this.current(i) || undefined)
-      .find((column) => {
-        const parent = query.findById(column);
-        return parent ? (parent.children || []).some((e) => e.id === id) : false;
-      });
+  private columnOf(node?: t.NodeIdentifier) {
+    if (!node) {
+      return undefined;
+    } else {
+      const id = toNodeId(node);
+      const query = this.query;
+      return Array.from({ length: this.total })
+        .map((v, i) => this.current(i) || undefined)
+        .find((column) => {
+          const parent = query.findById(column);
+          return parent ? (parent.children || []).some((e) => e.id === id) : false;
+        });
+    }
   }
 
-  private columnIndexOf(node: t.NodeIdentifier) {
-    const id = this.columnOf(node);
-
-    return Array.from({ length: this.total })
-      .map((v, i) => i)
-      .find((i) => this.current(i) === id);
+  private columnIndexOf(node?: t.NodeIdentifier) {
+    if (!node) {
+      return -1;
+    } else {
+      const id = this.columnOf(node);
+      return Array.from({ length: this.total })
+        .map((v, i) => i)
+        .find((i) => this.current(i) === id);
+    }
   }
 
   private selectPreviousColumn() {
@@ -305,7 +312,7 @@ export class TreeviewColumns extends React.PureComponent<
 
     if (column === 0 && this.offset > 0) {
       this.state$.next({ offset: this.offset - 1 });
-      this.focus(this.total - 1);
+      this.focus(this.columnIndexOf(selected));
     } else {
       this.select(parent);
       this.focus(this.columnIndexOf(parent));
@@ -314,18 +321,16 @@ export class TreeviewColumns extends React.PureComponent<
 
   private selectNextColumn() {
     const column = this.focusedIndex;
-    const selection = this.nav.selected;
-    const children = this.childrenOf(selection);
-    if (children.length === 0) {
-      return;
-    }
-
-    const isLast = column === this.total - 1;
-    if (isLast) {
-      this.state$.next({ offset: this.offset + 1 });
-      this.focus(0);
-    } else {
-      this.selectChild(column + 1, { focus: true });
+    const selected = this.nav.selected;
+    const children = this.childrenOf(selected);
+    if (children.length > 0) {
+      const isLast = column === this.total - 1;
+      if (isLast) {
+        this.state$.next({ offset: this.offset + 1 });
+        this.focus(this.columnIndexOf(selected));
+      } else {
+        this.selectChild(column + 1, { focus: true });
+      }
     }
   }
 
