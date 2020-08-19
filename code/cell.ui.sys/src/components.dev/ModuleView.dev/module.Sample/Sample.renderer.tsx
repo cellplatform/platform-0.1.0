@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
 
-import { ui } from '../common';
-import { TestDiagram } from './view/Diagram';
-import { TestSample } from './view/Sample';
-import { Test404 } from './view/404';
-
-import * as t from '../types';
+import { ui, t } from '../common';
+import { TestDiagram } from './views/Diagram';
+import { TestSample } from './views/Sample';
+import { Test404 } from './views/404';
 
 const { Module } = ui;
 type V = t.MyView;

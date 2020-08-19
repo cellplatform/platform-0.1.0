@@ -1,23 +1,21 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
 
-import { t, Module } from '../common';
+import { Module } from '../common';
+import * as t from './types';
 
-export type FinderView = 'IMAGE';
-export type FinderData = { foo?: string | number };
-export type FinderProps = t.IModuleProps<FinderData, FinderView>;
-export type FinderModule = t.IModule<FinderProps>;
+type P = t.DebugProps;
 
-type P = FinderProps;
-
-export const FinderModule: t.IModuleDef = {
+export const DebugModule: t.IModuleDef = {
   /**
    * Initialize the module.
    */
   init(bus, parent) {
-    const module = Module.create<P>({ bus, treeview: 'Finder' });
-    renderer({ bus, module, until$: module.dispose$ });
+    const module = Module.create<P>({ bus, treeview: 'Debug' });
+    const until$ = module.dispose$;
+    renderer({ bus, module, until$ });
     Module.register(bus, module, parent);
+    return module;
   },
 };
 
@@ -32,7 +30,7 @@ function renderer(args: { bus: t.EventBus<any>; module: t.IModule; until$: Obser
    * Wildcard.
    */
   event.render().subscribe((e) => {
-    const el = <div>Finder</div>;
+    const el = <div style={{ padding: 20 }}>Debug Module</div>;
     e.render(el);
   });
 }

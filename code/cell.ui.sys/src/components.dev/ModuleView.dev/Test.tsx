@@ -3,15 +3,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Icons } from '../../components/primitives';
-import { css, CssValue, ui } from './common';
+import { css, CssValue, ui, t } from './common';
 import { ComponentFrame } from './ComponentFrame';
 import { FinderModule } from './module.Finder';
 import { SampleModule } from './module.Sample';
-import * as t from './types';
+import { DebugModule } from './module.Debug';
 
 const { Module, ModuleView } = ui;
-
-type P = t.MyProps;
 
 /**
  * Component
@@ -19,8 +17,6 @@ type P = t.MyProps;
 export type ITestProps = { style?: CssValue };
 export type ITestState = {
   main?: t.MyModule;
-  diagram?: t.MyModule;
-  demo?: t.MyModule;
   selected?: t.MyModule;
 };
 
@@ -51,7 +47,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
   private async init() {
     const bus = this.bus;
-    const fire = Module.fire(bus);
 
     /**
      * Simulate a module registering itself.
@@ -59,89 +54,21 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
      *   This would typically be through some other boot-up process where
      *   the module is pulled then spins itself up and registers itself.
      */
-    SampleModule.init(bus);
+    const main = SampleModule.init(bus);
     FinderModule.init(bus);
+    DebugModule.init(bus);
 
-    /**
-     * TODO 🐷
-     * - handle better "request" query lookup
-     *    - multi-match (return array)
-     *    - find regex?
-     *    - category ??
-     *
-     * Maybe change to "find" (event)
-     * Make a convenience method off [Module.xxx] like with Module.register
-     *
-     * - Strategy
-     *   - factor the behavioral logic within [IModuleDef] as a strategy.
-     */
-
-    const main = fire.request('*:main').module as t.MyModule;
-    const demo = fire.request('*:demo').module as t.MyModule;
-    const diagram = fire.request('*:diagram').module as t.MyModule;
+    this.state$.next({ main });
 
     console.log('main:', main.id);
-    console.log('diagram: ', diagram.id);
-    console.log('demo: ', demo.id);
     console.log('-------------------------------------------');
 
-    this.state$.next({ main, diagram, demo });
-
-    /**
-     * Work with root events.
-     */
-
     // Monitor selection in left-hand tree.
-    const mainEvents = Module.events(main, this.unmounted$);
-    mainEvents.selection$.subscribe((e) => {
+    const events = Module.events(main, this.unmounted$);
+    events.selection$.subscribe((e) => {
       const id = e.tree.selection?.id;
       const selected = main.find((child) => child.tree.query.exists(id));
       this.state$.next({ selected });
-    });
-
-    /**
-     * Muck around with sample data.
-     */
-    diagram.change((draft, ctx) => {
-      ctx.props(draft, (props) => {
-        props.data = { foo: 'FOO' };
-      });
-      ctx.children(draft, (children) => {
-        children.push(...[{ id: 'one' }, { id: 'two' }, { id: 'three' }]);
-      });
-    });
-
-    demo.change((draft, ctx) => {
-      ctx.props(draft, (props) => {
-        props.data = { foo: 'FOO' };
-
-        // const treeview = props.treeview || (props.treeview = {});
-        // treeview.isVisible = false;
-      });
-      ctx.children(draft, (children) => {
-        children.push({ id: 'zinger' });
-        children.push(...[{ id: 'one' }, { id: 'two' }, { id: 'three' }]);
-        // children.push({ id: 'sub-tree', props: { treeview: { label: 'Sub-tree' } } });
-      });
-    });
-
-    demo.change((draft, ctx) => {
-      const child = ctx.children(draft)[1];
-      ctx.props(child, (props) => {
-        props.treeview = {
-          inline: {},
-          chevron: { isVisible: true },
-          ...props.treeview,
-          label: 'hello',
-        };
-      });
-      if (!child.children) {
-        child.children = [
-          { id: 'my-child-1', props: { treeview: { label: 'child-1' } } },
-          { id: 'my-child-2', props: { treeview: { label: 'child-2' } } },
-          { id: 'my-child-3', props: { treeview: { label: 'child-3' } } },
-        ];
-      }
     });
   }
 
@@ -172,7 +99,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       }),
       tree: css({
         position: 'relative',
-        width: 300,
+        width: 280,
         WebkitAppRegion: 'none',
         display: 'flex',
       }),
@@ -232,11 +159,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
 
   private mainFrameFilter: t.ModuleFilterView = (e) => {
+    console.log('render', e);
     return true;
   };
 
   private treeStrategy = (fire: t.FireEvent) => {
-    // Sample passing in behavior strategy.
+    // NB: Sample of passing in specific behavior strategy into the tree.
     return ModuleView.Tree.Strategy.default({ fire });
   };
 }

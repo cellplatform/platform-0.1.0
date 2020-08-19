@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { COLORS, css, CssValue, t, color } from '../../common';
+import { COLORS, css, CssValue, t, color } from './common';
 
 export type IComponentFrameProps = {
   children?: React.ReactNode;

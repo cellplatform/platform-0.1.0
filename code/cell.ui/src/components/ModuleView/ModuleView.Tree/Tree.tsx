@@ -10,8 +10,7 @@ import { CssValue, dispose, t } from '../common';
 export type IModuleViewTreeProps = {
   totalColumns?: number;
   module?: t.IModule;
-  // strategy?: t.ITreeviewStrategy;
-  strategy?: (fire: t.FireEvent<any>) => t.ITreeviewStrategy;
+  strategy?: (fire: t.FireEvent) => t.ITreeviewStrategy;
   treeviewProps?: ITreeviewProps;
   focusOnLoad?: boolean;
   style?: CssValue;
@@ -66,7 +65,7 @@ export class ModuleViewTree extends React.PureComponent<
       const fire = this.fire;
 
       const strategy = this.props.strategy
-        ? this.props.strategy(fire)
+        ? this.props.strategy(fire as t.FireEvent)
         : TreeviewStrategy.default({ fire });
 
       const events = Tree.View.events(this.treeview$, until$);

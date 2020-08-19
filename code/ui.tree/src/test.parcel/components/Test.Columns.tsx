@@ -131,6 +131,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       outer: css({
         Absolute: 80,
         border: `solid 1px ${color.format(-0.1)}`,
+        borderRight: 'none',
         display: 'flex',
       }),
     };
@@ -153,28 +154,40 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   private renderToolbar() {
+    const total = this.total;
     const styles = {
       base: css({
         Absolute: [0, 0, null, 0],
         height: 40,
-        boxSizing: 'border-box',
         padding: 10,
         PaddingX: 15,
         Flex: 'horizontal-center-spaceBetween',
+        boxSizing: 'border-box',
       }),
       spacer: css({ width: 20 }),
       left: css({ Flex: 'horizontal-center-center' }),
+      selected: css({
+        color: color.format(-0.3),
+      }),
     };
-    const spacer = <div {...styles.spacer}></div>;
+
+    const elList = Array.from({ length: 3 }).map((v, i) => {
+      const count = i + 1;
+      const style = count === total ? styles.selected : undefined;
+      const onClick = this.totalColumnsHandler(count);
+      return (
+        <React.Fragment key={i}>
+          <Button onClick={onClick} style={style}>
+            {count}-column
+          </Button>
+          <div {...styles.spacer}></div>
+        </React.Fragment>
+      );
+    });
+
     return (
       <div {...styles.base}>
-        <div {...styles.left}>
-          <Button onClick={this.totalColumnsHandler(1)}>1-column</Button>
-          {spacer}
-          <Button onClick={this.totalColumnsHandler(2)}>2-columns</Button>
-          {spacer}
-          <Button onClick={this.totalColumnsHandler(3)}>3-columns</Button>
-        </div>
+        <div {...styles.left}>{elList}</div>
       </div>
     );
   }
