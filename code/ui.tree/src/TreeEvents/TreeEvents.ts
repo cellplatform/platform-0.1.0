@@ -25,7 +25,9 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
    */
   private constructor(event$: Observable<E>, dispose$?: Observable<any>) {
     this.$ = event$.pipe(takeUntil(this.dispose$));
+
     this.keyboard$ = rx.payload<t.ITreeviewKeyboardEvent>(this.$, 'TREEVIEW/keyboard');
+
     if (dispose$) {
       dispose$.subscribe(() => this.dispose());
     }

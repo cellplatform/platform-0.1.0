@@ -21,7 +21,7 @@ export type ITreeEvents<T extends N = N> = {
     button?: Button | Button[];
     type?: t.MouseEventType;
     target?: Target;
-  }): Observable<t.TreeNodeMouseEventHandlerArgs<T>>;
+  }): Observable<t.ITreeviewMouse<T>>;
   mouse(
     options?:
       | Button
@@ -40,11 +40,11 @@ export type ITreeEvents<T extends N = N> = {
 };
 
 export type ITreeMouseEvents<T extends N = N> = {
-  $: Observable<t.TreeNodeMouseEventHandlerArgs<T>>;
-  node$: Observable<t.TreeNodeMouseEventHandlerArgs<T>>;
-  drillIn$: Observable<t.TreeNodeMouseEventHandlerArgs<T>>;
-  parent$: Observable<t.TreeNodeMouseEventHandlerArgs<T>>;
-  twisty$: Observable<t.TreeNodeMouseEventHandlerArgs<T>>;
+  $: Observable<t.ITreeviewMouse<T>>;
+  node$: Observable<t.ITreeviewMouse<T>>;
+  drillIn$: Observable<t.ITreeviewMouse<T>>;
+  parent$: Observable<t.ITreeviewMouse<T>>;
+  twisty$: Observable<t.ITreeviewMouse<T>>;
 };
 
 export type ITreeRenderEvents<T extends N = N> = {
