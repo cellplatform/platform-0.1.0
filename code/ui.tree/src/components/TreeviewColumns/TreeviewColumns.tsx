@@ -1,13 +1,13 @@
 import { color, css } from '@platform/css';
 import { events } from '@platform/react';
-import { rx, time } from '@platform/util.value';
+import { toNodeId } from '@platform/state/lib/common';
+import { rx } from '@platform/util.value';
 import * as React from 'react';
-import { Subject, merge } from 'rxjs';
-import { debounceTime, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { merge, Subject } from 'rxjs';
+import { filter, map, takeUntil, tap } from 'rxjs/operators';
 
 import { t } from '../../common';
 import { ITreeviewProps, Treeview } from '../Treeview';
-import { toNodeId } from '@platform/state/lib/common';
 
 export type ITreeviewColumnsProps = ITreeviewProps & {
   total?: number;
@@ -47,6 +47,7 @@ export class TreeviewColumns extends React.PureComponent<
    */
   constructor(props: ITreeviewColumnsProps) {
     super(props);
+
     const event = Treeview.events(this.treeview$, this.unmounted$);
     const keyPress$ = this.keyPress$.pipe(
       takeUntil(this.unmounted$),
@@ -63,18 +64,19 @@ export class TreeviewColumns extends React.PureComponent<
       const selectedColumn = path.findIndex((part) => part === id);
 
       if (selectedColumn >= 0) {
-        // Ensure the entire selection path is shown with background styles.
+        // Ensure the entire selection path is shown with a visible background.
         e.change((props) => {
           const colors = props.colors || (props.colors = {});
           colors.bg = e.isFocused ? -0.05 : -0.03;
         });
       }
 
+      // Remove the "drill in" chevron (replace with a "total" badge).
       const children = e.node.children || [];
       e.change((props) => {
-        const chevron = props.chevron || (props.chevron = {});
-        chevron.isVisible = false;
         if (children.length > 0) {
+          const chevron = props.chevron || (props.chevron = {});
+          chevron.isVisible = false;
           props.badge = children.length;
         }
       });
