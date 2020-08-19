@@ -118,7 +118,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   public get total() {
-    return this.state.total || 3;
+    return this.state.total || 2;
   }
 
   /**
@@ -133,7 +133,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         border: `solid 1px ${color.format(-0.1)}`,
         display: 'flex',
       }),
-      tree: css({}),
     };
     return (
       <div {...css(styles.base, this.props.style)}>

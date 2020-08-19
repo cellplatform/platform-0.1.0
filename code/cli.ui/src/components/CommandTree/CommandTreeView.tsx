@@ -4,7 +4,7 @@ import { filter, share, takeUntil } from 'rxjs/operators';
 
 import { COLORS, CssValue, R, t } from '../../common';
 import { Icons } from '../Icons';
-import { ITreeViewProps, TreeView } from '../primitives';
+import { ITreeviewProps, Treeview } from '../primitives';
 import * as util from './util';
 
 export type ICommandTreeViewProps = {
@@ -13,8 +13,8 @@ export type ICommandTreeViewProps = {
   currentCommand?: t.ICommand;
   fuzzyMatches?: t.ICommandFuzzyMatch[];
   isAutocompleted?: boolean;
-  theme?: ITreeViewProps['theme'];
-  background?: ITreeViewProps['background'];
+  theme?: ITreeviewProps['theme'];
+  background?: ITreeviewProps['background'];
   events$?: Subject<t.CommandTreeEvent>;
   style?: CssValue;
 };
@@ -29,7 +29,7 @@ export class CommandTreeView extends React.PureComponent<
   public state: ICommandTreeViewState = {};
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ICommandTreeViewState>>();
-  private mouse$ = new Subject<t.ITreeviewMouse>();
+  private treeview$ = new Subject<t.TreeviewEvent>();
   private _events$ = new Subject<t.CommandTreeEvent>();
   public events$ = this._events$.pipe(takeUntil(this.unmounted$), share());
 
@@ -39,10 +39,8 @@ export class CommandTreeView extends React.PureComponent<
   public componentDidMount() {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
-    const mouse$ = this.mouse$.pipe(
-      takeUntil(this.unmounted$),
-      filter((e) => e.button === 'LEFT'),
-    );
+    const event = Treeview.events(this.treeview$, this.unmounted$);
+    const mouse$ = event.mouse$({ button: 'LEFT' });
     const click$ = mouse$.pipe(filter((e) => e.type === 'DOWN'));
 
     // Update state.
@@ -71,7 +69,7 @@ export class CommandTreeView extends React.PureComponent<
       // Step up to parent.
       .pipe(filter((e) => e.target === 'PARENT'))
       .subscribe((e) => {
-        const parent = TreeView.query(this.state.treeRoot).parent(e.node);
+        const parent = Treeview.query(this.state.treeRoot).parent(e.node);
         this.fireCurrent(parent, 'PARENT');
       });
 
@@ -132,11 +130,11 @@ export class CommandTreeView extends React.PureComponent<
 
     // Build the tree structure.
     const treeRoot = util.buildTree(this.rootCommand);
-    const p = TreeView.util.props;
+    const p = Treeview.util.props;
     const currentCommandId = util.asTreeNodeId(currentCommand);
     const dimmed = currentCommand && !isAutocompleted ? [] : filterDimmed(fuzzyMatches);
 
-    TreeView.query(treeRoot).walkDown((e) => {
+    Treeview.query(treeRoot).walkDown((e) => {
       const node = e.node;
       const props = node.props || ({} as any);
       const command = props.data.command;
@@ -178,13 +176,13 @@ export class CommandTreeView extends React.PureComponent<
    */
   public render() {
     return (
-      <TreeView
+      <Treeview
         root={this.state.treeRoot}
         current={this.currentNodeId}
         theme={this.props.theme}
         background={this.props.background}
         renderIcon={this.renderIcon}
-        mouse$={this.mouse$}
+        event$={this.treeview$}
         style={this.props.style}
       />
     );

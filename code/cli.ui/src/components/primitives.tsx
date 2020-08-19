@@ -5,5 +5,5 @@ export { TextInput, TextInputChangeEvent };
 import { Text } from '@platform/ui.text/lib/components/Text';
 export { Text };
 
-import { TreeView, ITreeViewProps } from '@platform/ui.tree/lib/components/TreeView';
-export { TreeView, ITreeViewProps };
+import { Treeview, ITreeviewProps } from '@platform/ui.tree/lib/components/TreeView';
+export { Treeview, ITreeviewProps };

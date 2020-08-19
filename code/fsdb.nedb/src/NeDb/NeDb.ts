@@ -120,8 +120,8 @@ export class NeDb implements t.INeDb {
     this.throwIfDisposed('getMany');
 
     // Query the DB.
-    const uris = keys.map(key => this.uri.parse(key));
-    const paths = uris.map(uri => uri.path.dir);
+    const uris = keys.map((key) => this.uri.parse(key));
+    const paths = uris.map((uri) => uri.path.dir);
     const docs = await this.store.find({ _id: { $in: paths } });
 
     /**
@@ -130,9 +130,9 @@ export class NeDb implements t.INeDb {
      */
 
     // Convert items to return data-structures.
-    const items = uris.map(uri => {
+    const items = uris.map((uri) => {
       const key = uri.path.dir;
-      const doc = docs.find(item => item._id === uri.path.dir);
+      const doc = docs.find((item) => item._id === uri.path.dir);
       const value = typeof doc === 'object' ? doc.data : undefined;
       const exists = Boolean(value);
       const { createdAt, modifiedAt } = NeDb.toTimestamps(doc);
@@ -145,7 +145,7 @@ export class NeDb implements t.INeDb {
 
     // Fire read events.
     if (!options.silent) {
-      items.forEach(item => {
+      items.forEach((item) => {
         const { value, props } = item;
         const key = props.key;
         this.fire({
@@ -180,7 +180,7 @@ export class NeDb implements t.INeDb {
     this.throwIfDisposed('putMany');
     const now = time.now.timestamp;
 
-    let inserts = items.map(item => {
+    let inserts = items.map((item) => {
       const uri = this.uri.parse(item.key);
       const path = uri.path.dir;
       const createdAt = defaultValue(item.createdAt, now);
@@ -191,16 +191,16 @@ export class NeDb implements t.INeDb {
     });
 
     // Check for existing docs that need to updated (rather than inserted).
-    const paths = inserts.map(doc => doc._id);
+    const paths = inserts.map((doc) => doc._id);
     const existing = await this.store.find({ _id: { $in: paths } });
 
     // Perform updates.
     if (existing.length > 0) {
-      const updates = inserts.filter(d1 => existing.some(d2 => d2._id === d1._id));
+      const updates = inserts.filter((d1) => existing.some((d2) => d2._id === d1._id));
       await Promise.all(
-        updates.map(update => {
+        updates.map((update) => {
           const query: any = { _id: update._id };
-          const current = existing.find(doc => doc._id === update._id);
+          const current = existing.find((doc) => doc._id === update._id);
           const createdAt = current ? current.createdAt : update.createdAt;
           update = { ...update, createdAt, modifiedAt: now };
           return this.store.updateOne(query, update);
@@ -208,7 +208,7 @@ export class NeDb implements t.INeDb {
       );
 
       // Remove the existing updates from the new inserts.
-      inserts = inserts.filter(d1 => !existing.some(d2 => d2._id === d1._id));
+      inserts = inserts.filter((d1) => !existing.some((d2) => d2._id === d1._id));
     }
 
     // Perform inserts.
@@ -219,13 +219,13 @@ export class NeDb implements t.INeDb {
 
     // Retrieve result set.
     const result = await this.getMany(
-      items.map(item => item.key),
+      items.map((item) => item.key),
       { silent: true },
     );
 
     // Fire events.
     if (!options.silent) {
-      result.forEach(item => {
+      result.forEach((item) => {
         const { value, props } = item;
         const key = props.key;
         this.fire({
@@ -254,13 +254,13 @@ export class NeDb implements t.INeDb {
     this.throwIfDisposed('deleteMany');
 
     // Remove docs from DB.
-    const uris = keys.map(key => this.uri.parse(key));
-    const paths = uris.map(uri => uri.path.dir);
+    const uris = keys.map((key) => this.uri.parse(key));
+    const paths = uris.map((uri) => uri.path.dir);
     const multi = paths.length > 0;
     await this.store.remove({ _id: { $in: paths } }, { multi });
 
     // Prepare result set.
-    const result = uris.map(uri => {
+    const result = uris.map((uri) => {
       const key = uri.text;
       const res: t.IDbValue = {
         value: undefined,
@@ -271,7 +271,7 @@ export class NeDb implements t.INeDb {
 
     // Fire events.
     if (!options.silent) {
-      result.forEach(item => {
+      result.forEach((item) => {
         const { value, props } = item;
         const key = props.key;
         this.fire({
@@ -338,7 +338,7 @@ export class NeDb implements t.INeDb {
       const res = q ? await this.store.find(q) : [];
 
       // Convert into response list.
-      list = res.map(doc => {
+      list = res.map((doc) => {
         const key = doc._id;
         const value = doc.data;
         const exists = Boolean(value);
@@ -359,7 +359,7 @@ export class NeDb implements t.INeDb {
       list,
       get keys() {
         if (!keys) {
-          keys = list.map(item => item.props.key);
+          keys = list.map((item) => item.props.key);
         }
         return keys;
       },

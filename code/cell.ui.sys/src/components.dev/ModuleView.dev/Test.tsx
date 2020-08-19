@@ -22,7 +22,6 @@ export type ITestState = {
   diagram?: t.MyModule;
   demo?: t.MyModule;
   selected?: t.MyModule;
-  treeStrategy?: t.ITreeviewStrategy;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -86,8 +85,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     console.log('demo: ', demo.id);
     console.log('-------------------------------------------');
 
-    const treeStrategy = ModuleView.Tree.Strategy.default({ fire: bus.fire }); // Sample passing in behavior strategy.
-    this.state$.next({ main, diagram, demo, treeStrategy });
+    this.state$.next({ main, diagram, demo });
 
     /**
      * Work with root events.
@@ -198,8 +196,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
               <ModuleView.Tree
                 module={this.state.main}
-                strategy={this.state.treeStrategy}
+                strategy={this.treeStrategy}
                 focusOnLoad={true}
+                totalColumns={}
               />
             </ComponentFrame>
           </div>
@@ -215,7 +214,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           </div>
           <div {...styles.main}>
             <ComponentFrame name={'ModuleView.Frame'} backgroundColor={bg}>
-              <ModuleView.Frame style={styles.fill} bus={bus} filter={this.mainFrameFilter} />
+              <ModuleView.Frame style={styles.fill} filter={this.mainFrameFilter} bus={bus} />
             </ComponentFrame>
           </div>
           <div {...css(styles.tree, { marginLeft: MARGIN })}>
@@ -234,5 +233,10 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
   private mainFrameFilter: t.ModuleFilterView = (e) => {
     return true;
+  };
+
+  private treeStrategy = (fire: t.FireEvent) => {
+    // Sample passing in behavior strategy.
+    return ModuleView.Tree.Strategy.default({ fire });
   };
 }

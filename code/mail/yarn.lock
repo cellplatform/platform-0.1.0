@@ -102,10 +102,10 @@
     "@platform/libs" "0.2.2"
     "@platform/ts.libs" "3.9.9"
 
-"@platform/types@0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.2.tgz#0c9f6afa7ce68781ff038e8b84a57475517dc9d6"
-  integrity sha512-l8ggCga1W952JNysR3KAScRYzzlBL2nDJj2mF4BglbqumklHG6yZRGQuyWp86Hrzt2RqWZ+2OArt0xfvA1cPUw==
+"@platform/types@0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.3.tgz#e813c5c7c704b1fe65770b8ea135c1673a082582"
+  integrity sha512-fYBPv+Tv8xnQsVB8v8fjwwkn1QowYnaQQ/p3x1TS1eUZPQ2dNEBFcZZsCz0zlUWEU+k+yj/LHMMLvqXr5ZhU6g==
 
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"

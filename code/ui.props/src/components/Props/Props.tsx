@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, Icons, t, TreeView, util } from '../common';
+import { css, CssValue, Icons, t, Treeview, util } from '../common';
 import { PropEditor } from '../PropEditor';
 
 const ROOT = 'ROOT';
@@ -170,7 +170,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <TreeView
+        <Treeview
           root={this.root}
           current={this.state.current}
           background={'NONE'}
@@ -188,7 +188,7 @@ export class Props extends React.PureComponent<IPropsProps, IPropsState> {
   private nodeFactory: t.RenderTreeNodeBody = (e) => {
     if (e.body === BODY.PROD_EDITOR) {
       const node = e.node as t.IPropNode;
-      const parentNode = TreeView.query(this.root).parent(node) as t.IPropNode;
+      const parentNode = Treeview.query(this.root).parent(node) as t.IPropNode;
       const isDeletable = node.props?.data?.isDeletable || false;
       return (
         <PropEditor

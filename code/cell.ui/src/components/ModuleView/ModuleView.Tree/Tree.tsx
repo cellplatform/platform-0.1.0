@@ -1,14 +1,17 @@
-import { ITreeviewProps, Treeview } from '@platform/ui.tree/lib/components/Treeview';
+import { ITreeviewProps } from '@platform/ui.tree/lib/components/Treeview';
+import { Tree } from '@platform/ui.tree';
 import { TreeviewStrategy } from '@platform/ui.tree/lib/TreeviewStrategy';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, CssValue, dispose, t } from '../common';
+import { CssValue, dispose, t } from '../common';
 
 export type IModuleViewTreeProps = {
+  totalColumns?: number;
   module?: t.IModule;
-  strategy?: t.ITreeviewStrategy;
+  // strategy?: t.ITreeviewStrategy;
+  strategy?: (fire: t.FireEvent<any>) => t.ITreeviewStrategy;
   treeviewProps?: ITreeviewProps;
   focusOnLoad?: boolean;
   style?: CssValue;
@@ -61,8 +64,12 @@ export class ModuleViewTree extends React.PureComponent<
 
       // Setup the behavior strategy.
       const fire = this.fire;
-      const strategy = this.props.strategy || TreeviewStrategy.default({ fire });
-      const events = Treeview.events(this.treeview$, until$);
+
+      const strategy = this.props.strategy
+        ? this.props.strategy(fire)
+        : TreeviewStrategy.default({ fire });
+
+      const events = Tree.View.events(this.treeview$, until$);
       events.$.subscribe((event) => strategy.next({ tree, event }));
 
       // Redraw on change.
@@ -97,18 +104,24 @@ export class ModuleViewTree extends React.PureComponent<
       return null;
     }
 
-    return (
-      <Treeview
-        background={'NONE'}
-        tabIndex={0}
-        {...this.props.treeviewProps}
-        style={this.props.style}
-        root={root}
-        current={this.nav.current}
-        event$={this.treeview$}
-        focusOnLoad={this.props.focusOnLoad}
-      />
-    );
+    const total = this.props.totalColumns;
+
+    const props: ITreeviewProps = {
+      background: 'NONE',
+      tabIndex: 0,
+      ...this.props.treeviewProps,
+      style: this.props.style,
+      root: root,
+      current: this.nav.current,
+      event$: this.treeview$,
+      focusOnLoad: this.props.focusOnLoad,
+    };
+
+    if (typeof total === 'number') {
+      return <Tree.Columns {...props} total={total} />;
+    }
+
+    return <Tree.View {...props} />;
   }
 
   /**

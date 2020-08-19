@@ -1,4 +1,4 @@
-import { themes, TreeView } from '@platform/ui.tree';
+import { themes, Treeview } from '@platform/ui.tree';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -52,7 +52,7 @@ export class Tree extends React.PureComponent<ITreeProps> {
     };
     return (
       <div {...styles.base}>
-        <TreeView
+        <Treeview
           root={this.model.root}
           current={this.model.current}
           theme={DARK}
