@@ -62,8 +62,9 @@ export class TreeviewColumns extends React.PureComponent<
       const id = e.node.id;
       const path = this.path.slice(1);
       const selectedColumn = path.findIndex((part) => part === id);
+      const inline = e.node.props?.treeview?.inline;
 
-      if (selectedColumn >= 0) {
+      if (selectedColumn >= 0 && !inline?.isOpen) {
         // Ensure the entire selection path is shown with a visible background.
         e.change((props) => {
           const colors = props.colors || (props.colors = {});
@@ -136,16 +137,25 @@ export class TreeviewColumns extends React.PureComponent<
     click.parent$.subscribe(() => this.selectPreviousColumn());
     click.drillIn$.subscribe(() => this.selectNextColumn());
 
-    const horizontal$ = keyPress$.pipe(
-      filter((e) => ['ArrowLeft', 'ArrowRight'].includes(e.key)),
-      tap((e) => e.preventDefault()), // SIDE-EFFECT: Stop higher-level keyboard strategies from navigating.
-    );
-    horizontal$
-      .pipe(filter((e) => e.key === 'ArrowLeft'))
-      .subscribe(() => this.selectPreviousColumn());
-    horizontal$
-      .pipe(filter((e) => e.key === 'ArrowRight'))
-      .subscribe(() => this.selectNextColumn());
+    keyPress$
+      .pipe(
+        filter((e) => e.key === 'ArrowLeft'),
+        filter((e) => !isInline(this.selected)),
+      )
+      .subscribe((e) => {
+        e.preventDefault(); // NB: Stop higher-level keyboard strategies from navigating.
+        this.selectPreviousColumn();
+      });
+
+    keyPress$
+      .pipe(
+        filter((e) => e.key === 'ArrowRight'),
+        filter((e) => !isInline(this.selected)),
+      )
+      .subscribe((e) => {
+        e.preventDefault(); // NB: Stop higher-level keyboard strategies from navigating.
+        this.selectNextColumn();
+      });
 
     /**
      * Bubble events through given event-bus.
@@ -202,6 +212,11 @@ export class TreeviewColumns extends React.PureComponent<
 
   public get nav() {
     return this.props.root?.props?.treeview?.nav || {};
+  }
+
+  public get selected() {
+    const id = this.nav.selected;
+    return id ? this.query.findById(id) : undefined;
   }
 
   public get query() {
@@ -272,8 +287,22 @@ export class TreeviewColumns extends React.PureComponent<
     if (index === 0) {
       return this.props.root?.id;
     } else {
-      const path = this.path.slice(1);
-      return path[index - 1] || null;
+      // NB: Inline nodes are removed from the path list,
+      //     as they do not open into their own column.
+      const query = this.query;
+      const nodes = this.path
+        .slice(1)
+        .map((id) => query.findById(id))
+        .filter((node) => !isInline(node));
+
+      const parent = nodes[index - 1];
+      if (!parent) {
+        return null;
+      }
+
+      // NB: Only show a column for node that has children.
+      const children = parent.children || [];
+      return children.length === 0 ? null : parent.id;
     }
   }
 
@@ -421,3 +450,7 @@ const columnTag = {
     return Number.isNaN(index) ? -1 : index;
   },
 };
+
+function isInline(node?: t.ITreeviewNode) {
+  return Boolean(node?.props?.treeview?.inline);
+}

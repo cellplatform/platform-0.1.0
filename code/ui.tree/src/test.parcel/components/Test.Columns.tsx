@@ -10,28 +10,36 @@ import { TreeviewStrategy } from '../../TreeviewStrategy';
 
 type Node = t.ITreeviewNode;
 
-const DEFAULT = {
+const DEFAULT: Node = {
   id: 'root',
   props: { treeview: { label: 'Root' } },
   children: [
     {
       id: 'Root-1',
       children: [
-        { id: 'Child-2.1' },
+        { id: 'Child-1.1' },
         {
-          id: 'Child-2.2',
+          id: 'Child-1.2',
           children: [
-            { id: 'Child-2.2.1' },
-            { id: 'Child-2.2.2', children: [{ id: 'Foo-1' }, { id: 'Foo-2' }, { id: 'Foo-3' }] },
+            { id: 'Child-1.2.1' },
+            { id: 'Child-1.2.2', children: [{ id: 'Foo-1' }, { id: 'Foo-2' }, { id: 'Foo-3' }] },
           ],
         },
+        { id: 'Child-1.3' },
+      ],
+    },
+    {
+      id: 'Root-2',
+      props: { treeview: { inline: {} } },
+      children: [
+        { id: 'Child-2.1' },
+        { id: 'Child-2.2', children: [{ id: 'Bar-1' }, { id: 'Bar-2' }, { id: 'Bar-3' }] },
         { id: 'Child-2.3' },
       ],
     },
-    { id: 'Root-2' },
     { id: 'Root-3' },
   ],
-} as Node;
+};
 
 export type ITestProps = { style?: CssValue };
 export type ITestState = { total?: number };
