@@ -18,9 +18,13 @@ const DEFAULT: Node = {
   children: [
     {
       id: 'Default-1',
+      children: [{ id: 'Child-1.1' }, { id: 'Child-1.2' }, { id: 'Child-1.3' }],
+    },
+    {
+      id: 'Default-2',
+      props: { treeview: { inline: {} } },
       children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
     },
-    { id: 'Default-2' },
     { id: 'Default-3' },
   ],
 };
@@ -57,8 +61,8 @@ export class Test extends React.PureComponent<ITestProps> {
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeviewEvent>();
   private tree = Treeview.State.create({
-    // root: SAMPLES.DEFAULT,
-    root: SAMPLES.TWISTY,
+    root: SAMPLES.DEFAULT,
+    // root: SAMPLES.TWISTY,
     dispose$: this.unmounted$,
   });
 
