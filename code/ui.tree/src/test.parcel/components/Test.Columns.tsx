@@ -127,16 +127,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   public render() {
     const total = this.total;
     const styles = {
-      base: css({
-        Absolute: 0,
-        Flex: 'center-center',
-      }),
+      base: css({ Absolute: 0 }),
       outer: css({
-        width: total * 250,
-        height: '80%',
-        Flex: 'horizontal-stretch-stretch',
+        Absolute: 80,
         border: `solid 1px ${color.format(-0.1)}`,
-        marginTop: 40,
+        display: 'flex',
       }),
       tree: css({}),
     };

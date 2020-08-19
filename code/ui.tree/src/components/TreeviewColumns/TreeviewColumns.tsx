@@ -12,6 +12,7 @@ import { ITreeviewProps, Treeview } from '../Treeview';
 export type ITreeviewColumnsProps = ITreeviewProps & {
   total?: number;
   dividerBorder?: string | number;
+  columnWidth?: number;
 };
 export type ITreeviewColumnsState = {
   offset?: number;
@@ -97,12 +98,6 @@ export class TreeviewColumns extends React.PureComponent<
           header.showParentButton = false;
         });
       }
-
-      /**
-       * TODO 🐷
-       * - DOWN from last inline item (does not move to next node) -= SEE strategy
-       * - LEFT align - variable width based on whether the child column is visible
-       */
     });
 
     /**
@@ -229,42 +224,46 @@ export class TreeviewColumns extends React.PureComponent<
    * [Properties]
    */
 
-  public get total() {
+  private get total() {
     const total = this.props.total === undefined ? 2 : this.props.total;
     return Math.max(total, 0);
   }
 
-  public get dividerBorder() {
+  private get dividerBorder() {
     const { dividerBorder = -0.1 } = this.props;
     return typeof dividerBorder === 'string'
       ? dividerBorder
       : `solid 1px ${color.format(dividerBorder)}`;
   }
 
-  public get nav() {
+  private get nav() {
     return this.props.root?.props?.treeview?.nav || {};
   }
 
-  public get selected() {
+  private get selected() {
     const id = this.nav.selected;
     return id ? this.query.findById(id) : undefined;
   }
 
-  public get query() {
+  private get query() {
     return Treeview.query(this.props.root);
   }
 
-  public get path() {
+  private get path() {
     return this.state.path || [];
   }
 
-  public get focusedIndex() {
+  private get focusedIndex() {
     const index = this.state.focusedIndex;
     return index === undefined ? -1 : index;
   }
 
   private get offset() {
     return this.state.offset || 0;
+  }
+
+  private get columnWidth() {
+    return this.props.columnWidth || 250;
   }
 
   /**
@@ -411,19 +410,26 @@ export class TreeviewColumns extends React.PureComponent<
   public render() {
     const styles = {
       base: css({
-        flex: 1,
-        Flex: 'horizontal-stretch-stretch',
+        display: 'flex',
+        flexDirection: 'row',
+        position: 'relative',
       }),
     };
-
-    const elTrees = Array.from({ length: this.total }).map((v, i) => this.renderTree(i));
+    const length = this.total;
+    const elTrees = Array.from({ length }).map((v, i) => this.renderTree(i));
     return <div {...css(styles.base, this.props.style)}>{elTrees}</div>;
   }
 
   private renderTree(column: number) {
+    const current = this.current(column);
+
+    if (!current) {
+      return null;
+    }
+
     const isFirst = column === 0;
-    const isLast = column === this.total - 1;
     const focusOnLoad = isFirst && this.props.focusOnLoad;
+    const width = this.columnWidth;
 
     const props = { ...this.props };
     delete props.focusOnLoad;
@@ -432,14 +438,14 @@ export class TreeviewColumns extends React.PureComponent<
     const styles = {
       base: css({
         flex: 1,
+        width,
+        height: '100%',
         display: 'flex',
         position: 'relative',
         boxSizing: 'border-box',
-        borderRight: isLast ? undefined : this.dividerBorder,
+        borderRight: this.dividerBorder,
       }),
     };
-
-    const current = this.current(column);
 
     return (
       <div {...styles.base} key={column}>
