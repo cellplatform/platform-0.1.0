@@ -198,7 +198,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
                 module={this.state.main}
                 strategy={this.treeStrategy}
                 focusOnLoad={true}
-                totalColumns={}
+                totalColumns={1}
               />
             </ComponentFrame>
           </div>

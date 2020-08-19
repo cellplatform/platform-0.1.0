@@ -117,11 +117,11 @@ export class ModuleViewTree extends React.PureComponent<
       focusOnLoad: this.props.focusOnLoad,
     };
 
-    if (typeof total === 'number') {
+    if (typeof total === 'number' && total > 1) {
       return <Tree.Columns {...props} total={total} />;
+    } else {
+      return <Tree.View {...props} />;
     }
-
-    return <Tree.View {...props} />;
   }
 
   /**
