@@ -131,6 +131,8 @@ export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState
           current,
           keypress,
           tag,
+          isHandled: false,
+          handled: () => (payload.isHandled = true),
         };
 
         this.fire({ type: 'TREEVIEW/keyboard', payload });
@@ -155,6 +157,7 @@ export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState
 
     mouse$ // NB: Ensure the <TreeView> is focused when any node is clicked.
       .pipe(
+        filter((e) => !e.isHandled),
         filter((e) => this.isFocusable),
         filter((e) => e.type === 'DOWN'),
         delay(0),
@@ -435,8 +438,12 @@ export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState
       }
     }
 
-    const tag = this.tag;
-    const payload: t.ITreeviewMouse = { ...e, tag };
+    const payload: t.ITreeviewMouse = {
+      ...e,
+      tag: this.tag,
+      isHandled: false,
+      handled: () => (payload.isHandled = true),
+    };
     this.fire({ type: 'TREEVIEW/mouse', payload });
   };
 

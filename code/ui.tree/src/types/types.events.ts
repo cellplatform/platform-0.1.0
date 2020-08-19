@@ -40,6 +40,8 @@ export type ITreeviewMouseEvent<T extends N = N> = {
 };
 export type ITreeviewMouse<T extends N = N> = TreeNodeMouseEventHandlerArgs<T> & {
   tag: string; // Component instance identifier.
+  isHandled: boolean;
+  handled(): void;
 };
 
 export type TreeNodeMouseEventHandler = (e: TreeNodeMouseEventHandlerArgs) => void;
@@ -75,6 +77,8 @@ export type ITreeviewKeyboard<T extends N = N> = {
   current?: string;
   keypress: IKeypressEvent;
   tag: string; // Component instance identifier.
+  isHandled: boolean;
+  handled(): void;
 };
 
 /**
