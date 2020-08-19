@@ -47,13 +47,7 @@ export type ITreeNodeProps = {
   onMouse?: t.TreeNodeMouseEventHandler;
 };
 
-export type ITreeNodeState = {
-  nodeProps?: t.ITreeviewNodeProps;
-};
-
-export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState> {
-  public state: ITreeNodeState = {};
-
+export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   /**
    * [Static]
    */
@@ -113,16 +107,6 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
   }
 
   /**
-   * [Lifecycle]
-   */
-
-  public static getDerivedStateFromProps(props: ITreeNodeProps): ITreeNodeState {
-    const { renderer, node, depth, isInline, isFocused } = props;
-    const nodeProps = renderer.beforeRender.node({ node, depth, isInline, isFocused });
-    return { nodeProps };
-  }
-
-  /**
    * [Properties]
    */
 
@@ -135,7 +119,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
   }
 
   private get nodeProps() {
-    return this.state.nodeProps || {};
+    return this.props.node.props?.treeview || {};
   }
 
   private get theme() {
@@ -423,7 +407,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
         margin: 0,
         padding: 0,
         paddingTop: 1,
-        PaddingX: 8,
+        PaddingX: 6,
         height: 16,
         overflow: 'hidden',
         Flex: 'horizontal-center-center',

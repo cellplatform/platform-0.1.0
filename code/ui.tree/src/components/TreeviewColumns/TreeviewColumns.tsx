@@ -1,12 +1,13 @@
 import { color, css } from '@platform/css';
 import { events } from '@platform/react';
-import { rx } from '@platform/util.value';
+import { rx, time } from '@platform/util.value';
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { filter, map, takeUntil, tap } from 'rxjs/operators';
+import { Subject, merge } from 'rxjs';
+import { debounceTime, filter, map, takeUntil, tap } from 'rxjs/operators';
 
 import { t } from '../../common';
 import { ITreeviewProps, Treeview } from '../Treeview';
+import { toNodeId } from '@platform/state/lib/common';
 
 export type ITreeviewColumnsProps = ITreeviewProps & {
   total?: number;
@@ -54,14 +55,7 @@ export class TreeviewColumns extends React.PureComponent<
     );
 
     /**
-     * Bubble events through given event-bus.
-     */
-    if (this.props.event$) {
-      event.$.subscribe((e) => this.props.event$?.next(e));
-    }
-
-    /**
-     * Ensure the entire selection path is shown with background styles.
+     * BEFORE node render.
      */
     const before = event.beforeRender;
     before.node$.subscribe((e) => {
@@ -70,24 +64,41 @@ export class TreeviewColumns extends React.PureComponent<
       const selectedColumn = path.findIndex((part) => part === id);
 
       if (selectedColumn >= 0) {
+        // Ensure the entire selection path is shown with background styles.
         e.change((props) => {
           const colors = props.colors || (props.colors = {});
           colors.bg = e.isFocused ? -0.05 : -0.03;
         });
       }
+
+      const children = e.node.children || [];
+      e.change((props) => {
+        const chevron = props.chevron || (props.chevron = {});
+        chevron.isVisible = false;
+        if (children.length > 0) {
+          props.badge = children.length;
+        }
+      });
     });
 
+    /**
+     * BEFORE header render.
+     */
     before.header$.subscribe((e) => {
-      e.change((props) => {
-        const header = props.header || (props.header = {});
-        header.showParentButton = false;
-      });
+      const path = this.path.slice(this.offset);
+      const isRoot = path[0] === e.node.id;
+      if (!isRoot) {
+        // Only show the BACK (parent) button in header when the view-port is offset.
+        e.change((props) => {
+          const header = props.header || (props.header = {});
+          header.showParentButton = false;
+        });
+      }
 
       /**
        * TODO 🐷
-       * - only hide "<" parent/back button if not first column (viewport)
        * - inline twisty
-       * - viewport
+       * - reset state on prop-change
        */
     });
 
@@ -109,36 +120,43 @@ export class TreeviewColumns extends React.PureComponent<
       .subscribe((e) => this.state$.next({ focusedIndex: undefined }));
 
     /**
-     * Intercept key-press events to handle column specific
+     * Intercept MOUSE/KEYBOARD events to handle column specific
      * interactions that relate to multi-column navigation
-     * intercepting prior to any higher level strategies
-     * interpreting the event.
+     * prior to any higher level strategies interpreting the event.
      *
-     * IMPORTANT: Done here in constructor to get into the
+     * IMPORTANT: Done here before bubbling events to get into the
      *            event stream early before anything else
      *            can register as a listener.
      */
 
+    const click = event.mouse('LEFT').down;
+    merge(click.drillIn$, click.parent$)
+      .pipe(tap((e) => e.handled())) // SIDE-EFFECT: Stop higher-level mouse strategies from navigating.
+      .subscribe();
+    click.parent$.subscribe(() => this.selectPreviousColumn());
+    click.drillIn$.subscribe(() => this.selectNextColumn());
+
     const horizontal$ = keyPress$.pipe(
-      filter((e) => e.key === 'ArrowLeft' || e.key === 'ArrowRight'),
-      tap((e) => e.preventDefault()), // SIDE-EFFECT: Stop the higher-level keyboard strategies from drilling in.
+      filter((e) => ['ArrowLeft', 'ArrowRight'].includes(e.key)),
+      tap((e) => e.preventDefault()), // SIDE-EFFECT: Stop higher-level keyboard strategies from navigating.
     );
+    horizontal$
+      .pipe(filter((e) => e.key === 'ArrowLeft'))
+      .subscribe(() => this.selectPreviousColumn());
+    horizontal$
+      .pipe(filter((e) => e.key === 'ArrowRight'))
+      .subscribe(() => this.selectNextColumn());
 
-    horizontal$.pipe(filter((e) => e.key === 'ArrowRight')).subscribe((e) => {
-      const index = this.focusedIndex + 1;
-      if (this.selectFirst(index)) {
-        this.focus(index);
-      }
-    });
-
-    horizontal$.pipe(filter((e) => e.key === 'ArrowLeft')).subscribe((e) => {
-      const index = this.focusedIndex - 1;
-      if (index >= 0) {
-        const parentSelection = this.path.slice(1)[index];
-        this.select(parentSelection);
-        this.focus(index);
-      }
-    });
+    /**
+     * Bubble events through given event-bus.
+     *
+     * IMPORTANT:
+     *        This is done after all other handlers to ensure intercepts
+     *        catch the event before high-level strategies.
+     */
+    if (this.props.event$) {
+      event.$.subscribe((e) => this.props.event$?.next(e));
+    }
   }
 
   public componentDidMount() {
@@ -199,6 +217,10 @@ export class TreeviewColumns extends React.PureComponent<
     return index === undefined ? -1 : index;
   }
 
+  private get offset() {
+    return this.state.offset || 0;
+  }
+
   /**
    * [Methods]
    */
@@ -210,13 +232,19 @@ export class TreeviewColumns extends React.PureComponent<
     }
   }
 
-  private selectFirst(column: number) {
-    const node = this.query.findById(this.current(column) || undefined);
-    const children = node?.children || [];
+  private childrenOf(node?: t.NodeIdentifier) {
+    return this.query.findById(node || undefined)?.children || [];
+  }
+
+  private selectChild(column: number, options: { focus?: boolean; index?: number } = {}) {
+    const children = this.childrenOf(this.current(column) || undefined);
     if (children.length > 0) {
-      this.select(children[0]);
+      const { index = 0 } = options;
+      this.select(children[index]);
+      if (options.focus) {
+        this.focus(column);
+      }
     }
-    return children.length > 0;
   }
 
   private select(node?: t.NodeIdentifier) {
@@ -237,21 +265,68 @@ export class TreeviewColumns extends React.PureComponent<
     }
 
     column = Math.max(0, column);
-    const offset = this.state.offset || 0;
-
-    /**
-     * TODO 🐷
-     * - offset when deeper than total columns
-     */
-
-    const index = column + offset;
-    const path = this.path.slice(1);
+    const index = column + this.offset;
 
     if (index === 0) {
       return this.props.root?.id;
+    } else {
+      const path = this.path.slice(1);
+      return path[index - 1] || null;
+    }
+  }
+
+  private columnOf(node: t.NodeIdentifier) {
+    const id = toNodeId(node);
+    const query = this.query;
+    return Array.from({ length: this.total })
+      .map((v, i) => this.current(i) || undefined)
+      .find((column) => {
+        const parent = query.findById(column);
+        return parent ? (parent.children || []).some((e) => e.id === id) : false;
+      });
+  }
+
+  private columnIndexOf(node: t.NodeIdentifier) {
+    const id = this.columnOf(node);
+
+    return Array.from({ length: this.total })
+      .map((v, i) => i)
+      .find((i) => this.current(i) === id);
+  }
+
+  private selectPreviousColumn() {
+    const column = this.focusedIndex;
+    const selected = this.nav.selected;
+    const parent = this.query.ancestor(selected, (e) => e.level === 1);
+
+    if (!parent || parent.id === this.props.root?.id) {
+      return;
     }
 
-    return path[index - 1] || null;
+    if (column === 0 && this.offset > 0) {
+      this.state$.next({ offset: this.offset - 1 });
+      this.focus(this.total - 1);
+    } else {
+      this.select(parent);
+      this.focus(this.columnIndexOf(parent));
+    }
+  }
+
+  private selectNextColumn() {
+    const column = this.focusedIndex;
+    const selection = this.nav.selected;
+    const children = this.childrenOf(selection);
+    if (children.length === 0) {
+      return;
+    }
+
+    const isLast = column === this.total - 1;
+    if (isLast) {
+      this.state$.next({ offset: this.offset + 1 });
+      this.focus(0);
+    } else {
+      this.selectChild(column + 1, { focus: true });
+    }
   }
 
   /**

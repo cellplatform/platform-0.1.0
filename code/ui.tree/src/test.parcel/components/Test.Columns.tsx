@@ -96,7 +96,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   }
 
   public get total() {
-    return this.state.total || 3;
+    return this.state.total || 2;
   }
 
   /**

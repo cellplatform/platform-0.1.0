@@ -6,7 +6,7 @@ import * as t from './types';
 
 export const TreeviewStrategy: t.ITreeviewStrategies = {
   merge: strategy.merge,
-  default: strategy.all,
+  default: strategy.defaultStrategy,
   selection,
   nav: { mouse, keyboard },
 };
