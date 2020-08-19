@@ -4,29 +4,31 @@
     <meta charset="utf-8" />
     <title>@platform/ui.tree</title>
     <style>
-      body {
+      .list {
         font-family: sans-serif;
-        padding: 30px;
-      }
-      ul {
+        margin: 30px;
+        margin-top: 40px;
         line-height: 1.8em;
       }
-      a {
+      .list a {
         text-decoration: none;
       }
     </style>
   </head>
   <body>
-    <ul>
-      <li>
-        <a href="/html/component.html">TreeView (component)</a>
-      </li>
-      <li>
-        <a href="/html/state.html">TreeState | Strategy (navigation and selection behavior)</a>
-      </li>
-      <li>
-        <a href="/html/multi-column.html">Multi-column</a>
-      </li>
-    </ul>
+    <div id="root">
+      <ul class="list">
+        <li>
+          <a href="./?Component">TreeView (component)</a>
+        </li>
+        <li>
+          <a href="./?State">TreeState | Strategy (nav and selection behavior)</a>
+        </li>
+        <li>
+          <a href="./?Columns">Multi-column</a>
+        </li>
+      </ul>
+    </div>
+    <script src="./index.html.tsx"></script>
   </body>
 </html>
