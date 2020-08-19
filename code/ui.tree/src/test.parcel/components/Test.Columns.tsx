@@ -22,7 +22,14 @@ const DEFAULT: Node = {
           id: 'Child-1.2',
           children: [
             { id: 'Child-1.2.1' },
-            { id: 'Child-1.2.2', children: [{ id: 'Foo-1' }, { id: 'Foo-2' }, { id: 'Foo-3' }] },
+            {
+              id: 'Child-1.2.2',
+              children: [
+                { id: 'Foo-1' },
+                { id: 'Foo-2' },
+                { id: 'Foo-3', children: [{ id: 'Foo-3.1' }] },
+              ],
+            },
           ],
         },
         { id: 'Child-1.3' },
@@ -33,7 +40,14 @@ const DEFAULT: Node = {
       props: { treeview: { inline: {} } },
       children: [
         { id: 'Child-2.1' },
-        { id: 'Child-2.2', children: [{ id: 'Bar-1' }, { id: 'Bar-2' }, { id: 'Bar-3' }] },
+        {
+          id: 'Child-2.2',
+          children: [
+            { id: 'Bar-1' },
+            { id: 'Bar-2' },
+            { id: 'Bar-3', children: [{ id: 'Bar-3.1' }, { id: 'Bar-3.2' }] },
+          ],
+        },
         { id: 'Child-2.3' },
       ],
     },

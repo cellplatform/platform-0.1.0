@@ -12,31 +12,35 @@ import { TreeviewStrategy } from '../../TreeviewStrategy';
 type Node = t.ITreeviewNode;
 const header: t.ITreeviewNodeHeader = { isVisible: false, marginBottom: 45 };
 
-const SAMPLES = {
-  DEFAULT: {
-    id: 'root',
-    props: { treeview: { label: 'Root', header } },
-    children: [
-      {
-        id: 'Default-1',
-        children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
-      },
-      { id: 'Default-2' },
-      { id: 'Default-3' },
-    ],
-  } as Node,
-  TWISTY: {
-    id: 'root',
-    props: { treeview: { label: 'Root', header } },
-    children: [
-      {
-        id: 'Default-1',
-        props: { treeview: { inline: {} } },
-        children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
-      },
-    ],
-  } as Node,
+const DEFAULT: Node = {
+  id: 'root',
+  props: { treeview: { label: 'Root', header } },
+  children: [
+    {
+      id: 'Default-1',
+      children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
+    },
+    { id: 'Default-2' },
+    { id: 'Default-3' },
+  ],
 };
+
+const TWISTY: Node = {
+  id: 'root',
+  props: { treeview: { label: 'Root', header } },
+  children: [
+    { id: 'Default-1' },
+    {
+      id: 'Default-2',
+      props: { treeview: { inline: {} } },
+      children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
+    },
+    { id: 'Default-3' },
+    { id: 'Default-4' },
+  ],
+};
+
+const SAMPLES = { DEFAULT, TWISTY };
 
 Object.keys(SAMPLES).forEach((key) => {
   const node = SAMPLES[key];
@@ -52,7 +56,11 @@ export type ITestProps = { style?: CssValue };
 export class Test extends React.PureComponent<ITestProps> {
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeviewEvent>();
-  private tree = Treeview.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
+  private tree = Treeview.State.create({
+    // root: SAMPLES.DEFAULT,
+    root: SAMPLES.TWISTY,
+    dispose$: this.unmounted$,
+  });
 
   /**
    * [Lifecycle]

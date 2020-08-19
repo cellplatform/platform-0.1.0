@@ -84,9 +84,10 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
         // Within an open inline "twisty".
         if (selected.isLast) {
           // Step up and out of the "twisty" into the next item of the current list.
-          const children = selected.parent.children || [];
-          const index = children.findIndex((child) => child.id === selected.parent?.id);
-          if (index >= 0) {
+          const parent = e.get.query.ancestor(selected.node, (e) => e.level === 2);
+          const children = parent?.children || [];
+          const index = children.findIndex((child) => child.id === selected.parent.id);
+          if (index > -1) {
             select(children[index + 1]);
           }
         } else {
@@ -123,7 +124,7 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
         if (selected.isFirst) {
           // Step up and out of the "twisty" into the parent.
           const index = current.children.findIndex((child) => child.id === selected.parent?.id);
-          if (index >= 0) {
+          if (index > -1) {
             select(current.children[index]);
           }
         } else {

@@ -1,10 +1,10 @@
 import { color, css } from '@platform/css';
 import { events } from '@platform/react';
 import { toNodeId } from '@platform/state/lib/common';
-import { rx } from '@platform/util.value';
+import { time, rx } from '@platform/util.value';
 import * as React from 'react';
-import { merge, Subject } from 'rxjs';
-import { filter, map, takeUntil, tap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { t } from '../../common';
 import { ITreeviewProps, Treeview } from '../Treeview';
@@ -49,10 +49,9 @@ export class TreeviewColumns extends React.PureComponent<
     super(props);
 
     const event = Treeview.events(this.treeview$, this.unmounted$);
-    const keyPress$ = this.keyPress$.pipe(
-      takeUntil(this.unmounted$),
-      filter((e) => e.isPressed),
-    );
+    const keypress$ = this.keyPress$.pipe(takeUntil(this.unmounted$));
+    const keydown$ = keypress$.pipe(filter((e) => e.isPressed));
+    const keyup$ = keypress$.pipe(filter((e) => !e.isPressed));
 
     /**
      * BEFORE node render.
@@ -64,7 +63,7 @@ export class TreeviewColumns extends React.PureComponent<
       const selectedColumn = path.findIndex((part) => part === id);
       const inline = e.node.props?.treeview?.inline;
 
-      if (selectedColumn >= 0 && !inline?.isOpen) {
+      if (selectedColumn > -1 && !inline?.isOpen) {
         // Ensure the entire selection path is shown with a visible background.
         e.change((props) => {
           const colors = props.colors || (props.colors = {});
@@ -74,13 +73,15 @@ export class TreeviewColumns extends React.PureComponent<
 
       // Remove the "drill in" chevron (replace with a "total" badge).
       const children = e.node.children || [];
-      e.change((props) => {
-        if (children.length > 0) {
+      if (children.length > 0) {
+        const index = this.columnIndexOf(e.node);
+        const isLast = index === this.total - 1;
+        e.change((props) => {
           const chevron = props.chevron || (props.chevron = {});
-          chevron.isVisible = false;
+          chevron.isVisible = isLast ? true : false;
           props.badge = children.length;
-        }
-      });
+        });
+      }
     });
 
     /**
@@ -99,12 +100,13 @@ export class TreeviewColumns extends React.PureComponent<
 
       /**
        * TODO 🐷
-       * - inline twisty
+       * - DOWN from last inline item (does not move to next node) -= SEE strategy
+       * - LEFT align - variable width based on whether the child column is visible
        */
     });
 
     /**
-     * Keep track of which column is focused.
+     * Keep track of which column is in focus.
      */
     const focus$ = rx
       .payload<t.ITreeviewFocusEvent>(event.$, 'TREEVIEW/focus')
@@ -131,13 +133,42 @@ export class TreeviewColumns extends React.PureComponent<
      */
 
     const click = event.mouse('LEFT').down;
-    merge(click.drillIn$, click.parent$)
-      .pipe(tap((e) => e.handled())) // SIDE-EFFECT: Stop higher-level mouse strategies from navigating.
-      .subscribe();
-    click.parent$.subscribe(() => this.selectPreviousColumn());
-    click.drillIn$.subscribe(() => this.selectNextColumn());
+    click.parent$.pipe(filter(() => this.offset > 0)).subscribe(async (e) => {
+      e.handled(); // NB: Stop higher-level mouse strategies from navigating.
 
-    keyPress$
+      // Ensure the item in the first column is selected before stepping back.
+      const first = this.pathNodes({ includeInline: false })[1];
+      if (first) {
+        this.select(first);
+        this.focus(0);
+        await time.wait(10);
+      }
+
+      // Move to up to previous view-port.
+      this.selectPreviousColumn();
+    });
+
+    click.drillIn$.subscribe((e) => {
+      e.handled(); // NB: Stop higher-level mouse strategies from navigating.
+      time.delay(0, () => {
+        this.selectNextColumn();
+      });
+    });
+
+    keyup$
+      .pipe(filter((e) => ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)))
+      .subscribe((e) => {
+        // Ensure the column containing the selection is focused.
+        // NB: This is necesary if the user clicks on a another column
+        //     header, then changes the selection via the keyboard.
+        time.delay(10, () => {
+          const selected = this.nav.selected;
+          const index = this.columnIndexOf(selected);
+          this.focus(index);
+        });
+      });
+
+    keydown$
       .pipe(
         filter((e) => e.key === 'ArrowLeft'),
         filter((e) => !isInline(this.selected)),
@@ -147,7 +178,7 @@ export class TreeviewColumns extends React.PureComponent<
         this.selectPreviousColumn();
       });
 
-    keyPress$
+    keydown$
       .pipe(
         filter((e) => e.key === 'ArrowRight'),
         filter((e) => !isInline(this.selected)),
@@ -241,7 +272,7 @@ export class TreeviewColumns extends React.PureComponent<
    */
 
   public focus(column = 0) {
-    if (column >= 0) {
+    if (column > -1) {
       const ref = this.ref(column);
       if (ref) {
         ref.focus();
@@ -249,11 +280,21 @@ export class TreeviewColumns extends React.PureComponent<
     }
   }
 
+  private pathNodes(args: { includeInline: boolean }) {
+    // NB: Inline nodes are removed from the path,
+    //     as they do not open into their own column.
+    const query = this.query;
+    return this.path
+      .slice(1)
+      .map((id) => query.findById(id))
+      .filter((node) => (args.includeInline ? true : !isInline(node)));
+  }
+
   private childrenOf(node?: t.NodeIdentifier) {
     return this.query.findById(node || undefined)?.children || [];
   }
 
-  private selectChild(column: number, options: { focus?: boolean; index?: number } = {}) {
+  private selectChildAt(column: number, options: { focus?: boolean; index?: number } = {}) {
     const children = this.childrenOf(this.current(column) || undefined);
     if (children.length > 0) {
       const { index = 0 } = options;
@@ -287,15 +328,7 @@ export class TreeviewColumns extends React.PureComponent<
     if (index === 0) {
       return this.props.root?.id;
     } else {
-      // NB: Inline nodes are removed from the path list,
-      //     as they do not open into their own column.
-      const query = this.query;
-      const nodes = this.path
-        .slice(1)
-        .map((id) => query.findById(id))
-        .filter((node) => !isInline(node));
-
-      const parent = nodes[index - 1];
+      const parent = this.pathNodes({ includeInline: false })[index - 1];
       if (!parent) {
         return null;
       }
@@ -343,10 +376,16 @@ export class TreeviewColumns extends React.PureComponent<
 
     if (column === 0 && this.offset > 0) {
       this.state$.next({ offset: this.offset - 1 });
-      this.focus(this.columnIndexOf(selected));
+
+      // NB: Delay for 1-tick to ensure the focused index is correctly calculated.
+      //     Only relevant when activated from [mouse] click.
+      time.delay(0, () => this.focus(this.columnIndexOf(selected)));
     } else {
       this.select(parent);
-      this.focus(this.columnIndexOf(parent));
+
+      // NB: Delay for 1-tick to ensure the focused index is correctly calculated.
+      //     Only relevant when activated from [mouse] click.
+      time.delay(0, () => this.focus(this.columnIndexOf(parent)));
     }
   }
 
@@ -360,7 +399,7 @@ export class TreeviewColumns extends React.PureComponent<
         this.state$.next({ offset: this.offset + 1 });
         this.focus(this.columnIndexOf(selected));
       } else {
-        this.selectChild(column + 1, { focus: true });
+        this.selectChildAt(column + 1, { focus: true });
       }
     }
   }
