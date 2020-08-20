@@ -9,7 +9,7 @@ import { FinderModule } from './module.Finder';
 import { SampleModule } from './module.Sample';
 import { DebugModule } from './module.Debug';
 
-const { Module, ModuleView } = ui;
+const { ModuleView } = ui;
 
 /**
  * Component
@@ -17,7 +17,6 @@ const { Module, ModuleView } = ui;
 export type ITestProps = { style?: CssValue };
 export type ITestState = {
   main?: t.MyModule;
-  selected?: t.MyModule;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -62,14 +61,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
 
     console.log('main:', main.id);
     console.log('-------------------------------------------');
-
-    // Monitor selection in left-hand tree.
-    const events = Module.events(main, this.unmounted$);
-    events.selection$.subscribe((e) => {
-      const id = e.selection?.id;
-      const selected = main.find((child) => child.tree.query.exists(id));
-      this.state$.next({ selected });
-    });
   }
 
   /**
@@ -129,14 +120,9 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
               />
             </ComponentFrame>
           </div>
-          <div {...css(styles.tree, { marginRight: MARGIN })}>
-            <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
-              <ModuleView.Tree module={this.state.selected} />
-            </ComponentFrame>
-          </div>
           <div {...styles.main}>
             <ComponentFrame name={'ModuleView.Frame'} backgroundColor={bg}>
-              <ModuleView.Frame style={styles.fill} filter={this.mainFrameFilter} bus={bus} />
+              <ModuleView.Frame style={styles.fill} filter={this.mainViewFilter} bus={bus} />
             </ComponentFrame>
           </div>
           <div {...css(styles.tree, { marginLeft: MARGIN })}>
@@ -153,7 +139,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Handlers]
    */
 
-  private mainFrameFilter: t.ModuleFilterView = (e) => {
+  private mainViewFilter: t.ModuleFilterView = (e) => {
     return true;
   };
 
