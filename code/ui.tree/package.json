@@ -1,14 +1,14 @@
 {
   "name": "@platform/ui.tree",
   "description": "Hierarchical tree view.",
-  "version": "0.7.10",
+  "version": "0.7.12",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
     "start": "parcel src/test.parcel/index.html --port 1235",
     "test": "ts test",
     "lint": "ts lint",
-    "build": "ts build",
+    "build": "ts build --no-esm",
     "bundle": "sh script.sh/bundle.sh",
     "clean": "sh script.sh/clean.sh",
     "serve": "cd dist && serve",
@@ -17,7 +17,7 @@
   "dependencies": {
     "@platform/css": "0.4.10",
     "@platform/react": "0.4.43",
-    "@platform/state": "0.7.3",
+    "@platform/state": "0.7.4",
     "@platform/types": "0.5.3",
     "@platform/ui.icon": "0.0.162",
     "@platform/ui.panel": "0.2.11",

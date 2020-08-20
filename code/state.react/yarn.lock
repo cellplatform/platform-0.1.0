@@ -91,10 +91,10 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state@0.7.3":
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.7.3.tgz#e196cecc571e61d518fd7dae0d0e9063a98dd498"
-  integrity sha512-hZgiKLAQnl1UcnqBGAm+7hFYBYCXrAqDmpDSgC+pvVIgoIphopAGKqgn1iCRka9Pc0+M409dXzjkVAjE1FZcQA==
+"@platform/state@0.7.4":
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.7.4.tgz#c1635da431e61371c0373b0184424769f53bc9e2"
+  integrity sha512-aqQktrkYQOu6qP0KEy2smWgsiw19hz2d0gcsYvn6XuVEItX+QJQXl7r6rMmejz6yIw8kFwu22zIC3zGaP4MBIQ==
   dependencies:
     "@platform/types" "0.5.3"
     "@platform/util.value" "0.7.30"

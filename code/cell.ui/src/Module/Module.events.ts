@@ -1,17 +1,16 @@
 import { TreeState } from '@platform/state';
-import { Observable, Subject } from 'rxjs';
-import { filter, map, share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { is } from '@platform/state/lib/common/is';
 import { rx } from '@platform/util.value';
-import { fire } from './Module.fire';
+import { equals } from 'ramda';
+import { Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
+import { fire } from './Module.fire';
 
 type P = t.IModuleProps;
 
 const identity = TreeState.identity;
-import { equals } from 'ramda';
-
 export function create<T extends P = t.IModulePropsAny>(
   subject: Observable<t.Event> | t.IModule,
   until$?: Observable<any>,
@@ -154,7 +153,7 @@ export function monitorAndDispatch<T extends P>(
     .subscribe((e) => {
       const { selected } = e;
       const root = module.root;
-      fire(bus).selection({ root, selected });
+      next.selection({ root, selected });
     });
 
   // Finish up.
