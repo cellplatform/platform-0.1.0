@@ -120,24 +120,25 @@ export class TreeColumns extends React.PureComponent<ITreeColumnsProps, ITreeCol
       }),
       spacer: css({ width: 20 }),
       left: css({ Flex: 'horizontal-center-center' }),
-      selected: css({
-        color: color.format(-0.3),
-      }),
+      selected: css({ color: color.format(-0.3) }),
     };
 
-    const elList = Array.from({ length: 3 }).map((v, i) => {
-      const count = i + 1;
-      const style = count === total ? styles.selected : undefined;
-      const onClick = this.totalColumnsHandler(count);
-      return (
-        <React.Fragment key={i}>
-          <Button onClick={onClick} style={style}>
-            {count}-column
-          </Button>
-          <div {...styles.spacer}></div>
-        </React.Fragment>
-      );
-    });
+    const elList = Array.from({ length: 4 })
+      .map((v, i) => i)
+      .slice(1)
+      .map((i) => {
+        const count = i + 1;
+        const style = count === total ? styles.selected : undefined;
+        const onClick = this.totalColumnsHandler(count);
+        return (
+          <React.Fragment key={i}>
+            <Button onClick={onClick} style={style}>
+              {count}-column
+            </Button>
+            <div {...styles.spacer}></div>
+          </React.Fragment>
+        );
+      });
 
     return (
       <div {...styles.base}>
