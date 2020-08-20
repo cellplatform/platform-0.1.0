@@ -9,6 +9,8 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { t } from '../../common';
 import { ITreeviewProps, Treeview } from '../Treeview';
 
+type N = t.ITreeviewNode;
+
 export type ITreeviewColumnsProps = ITreeviewProps & {
   total?: number;
   dividerBorder?: string | number;
@@ -89,9 +91,12 @@ export class TreeviewColumns extends React.PureComponent<
      * BEFORE header render.
      */
     before.header$.subscribe((e) => {
-      const path = this.path.slice(this.offset);
-      const isRoot = path[0] === e.node.id;
-      if (!isRoot) {
+      const offset = this.offset;
+      const isOffsetRoot =
+        offset === 0
+          ? false
+          : this.pathNodes({ includeInline: false }).slice(offset)[0]?.id === e.node.id;
+      if (!isOffsetRoot) {
         // Only show the BACK (parent) button in header when the view-port is offset.
         e.change((props) => {
           const header = props.header || (props.header = {});
@@ -132,7 +137,7 @@ export class TreeviewColumns extends React.PureComponent<
       e.handled(); // NB: Stop higher-level mouse strategies from navigating.
 
       // Ensure the item in the first column is selected before stepping back.
-      const first = this.pathNodes({ includeInline: false })[1];
+      const first = this.pathNodes({ includeInline: false }).slice(1)[1];
       if (first) {
         this.select(first);
         this.focus(0);
@@ -284,8 +289,8 @@ export class TreeviewColumns extends React.PureComponent<
     //     as they do not open into their own column.
     const query = this.query;
     return this.path
-      .slice(1)
-      .map((id) => query.findById(id))
+      .map((id) => query.findById(id) as N)
+      .filter((node) => Boolean(node))
       .filter((node) => (args.includeInline ? true : !isInline(node)));
   }
 
@@ -327,7 +332,7 @@ export class TreeviewColumns extends React.PureComponent<
     if (index === 0) {
       return this.props.root?.id;
     } else {
-      const parent = this.pathNodes({ includeInline: false })[index - 1];
+      const parent = this.pathNodes({ includeInline: false }).slice(1)[index - 1];
       if (!parent) {
         return null;
       }
@@ -472,7 +477,7 @@ export class TreeviewColumns extends React.PureComponent<
  * [Helpers]
  */
 
-function buildPath(root?: t.ITreeviewNode, selected?: string): string[] {
+function buildPath(root?: N, selected?: string): string[] {
   if (!root) {
     return [];
   } else {
@@ -496,6 +501,6 @@ const columnTag = {
   },
 };
 
-function isInline(node?: t.ITreeviewNode) {
+function isInline(node?: N) {
   return Boolean(node?.props?.treeview?.inline);
 }
