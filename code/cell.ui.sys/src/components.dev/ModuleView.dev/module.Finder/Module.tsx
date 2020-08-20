@@ -11,10 +11,21 @@ export const FinderModule: t.IModuleDef = {
    * Initialize the module.
    */
   init(bus, parent) {
-    const module = Module.create<P>({ bus, treeview: 'Finder' });
+    const fire = Module.fire<P>(bus);
+    const module = Module.create<P>({ bus, treeview: 'Finder', view: 'DEFAULT' });
     const until$ = module.dispose$;
-    renderer({ bus, module, until$ });
     Module.register(bus, module, parent);
+
+    const match: t.ModuleFilterEvent = (e) => e.module == module.id || module.contains(e.module);
+    renderer({ bus, until$, filter: match });
+
+    const events = Module.events<P>(bus.event$, until$).filter(match);
+    events.selection$.subscribe((e) => {
+      const selected = e.selection?.id;
+      const { view, data } = e;
+      fire.render({ selected, module, data, view, notFound: '404' });
+    });
+
     return module;
   },
 };
@@ -22,15 +33,25 @@ export const FinderModule: t.IModuleDef = {
 /**
  * View factory for the module.
  */
-function renderer(args: { bus: t.EventBus<any>; module: t.IModule; until$: Observable<any> }) {
-  const { bus, module, until$ } = args;
-  const event = Module.events<P>(bus.event$, until$).filter((e) => e.module === module.id);
+function renderer(args: {
+  bus: t.EventBus<any>;
+  until$: Observable<any>;
+  filter: t.ModuleFilterEvent;
+}) {
+  const { bus, until$ } = args;
+  const event = Module.events<P>(bus.event$, until$).filter(args.filter);
+  const render = event.render;
+
+  render('DEFAULT').subscribe((e) => {
+    const el = <div style={{ padding: 20 }}>Finder Module</div>;
+    e.render(el);
+  });
 
   /**
    * Wildcard.
    */
-  event.render().subscribe((e) => {
-    const el = <div style={{ padding: 20 }}>Finder Module</div>;
+  render('404').subscribe((e) => {
+    const el = <div style={{ padding: 20 }}>Finder (404)</div>;
     e.render(el);
   });
 }

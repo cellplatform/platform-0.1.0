@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { COLORS, css, CssValue, t, Module } from '../../common';
+import { COLORS, css, CssValue, t } from '../../common';
 
 export type ITestDiagramProps = {
   module?: t.IModule;
@@ -13,9 +13,6 @@ export class TestDiagram extends React.PureComponent<ITestDiagramProps, ITestDia
   public state: ITestDiagramState = {};
   private state$ = new Subject<Partial<ITestDiagramState>>();
   private unmounted$ = new Subject();
-
-  public static contextType = Module.Context;
-  public context!: t.MyContext;
 
   /**
    * [Lifecycle]

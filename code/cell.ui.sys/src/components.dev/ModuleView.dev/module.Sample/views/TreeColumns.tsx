@@ -1,15 +1,18 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue, t } from '../../common';
+import { css, CssValue, t, Module } from '../../common';
 
-export type ITreeColumnsProps = { style?: CssValue };
+export type ITreeColumnsProps = { module: string; style?: CssValue };
 export type ITreeColumnsState = t.Object;
 
 export class TreeColumns extends React.PureComponent<ITreeColumnsProps, ITreeColumnsState> {
   public state: ITreeColumnsState = {};
   private state$ = new Subject<Partial<ITreeColumnsState>>();
   private unmounted$ = new Subject();
+
+  public static contextType = Module.Context;
+  public context!: t.MyContext;
 
   /**
    * [Lifecycle]

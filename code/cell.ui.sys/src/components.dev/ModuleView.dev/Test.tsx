@@ -66,7 +66,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     // Monitor selection in left-hand tree.
     const events = Module.events(main, this.unmounted$);
     events.selection$.subscribe((e) => {
-      const id = e.tree.selection?.id;
+      const id = e.selection?.id;
       const selected = main.find((child) => child.tree.query.exists(id));
       this.state$.next({ selected });
     });
@@ -129,11 +129,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
               />
             </ComponentFrame>
           </div>
-          {/* <div {...css(styles.tree, { marginRight: MARGIN })}>
-            <ComponentFrame name={'ModuleView.Frame (Root Tree)'} backgroundColor={bg}>
-              <ModuleView.Frame bus={bus} filter={this.rootTreeFilter} />
-            </ComponentFrame>
-          </div> */}
           <div {...css(styles.tree, { marginRight: MARGIN })}>
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
               <ModuleView.Tree module={this.state.selected} />
@@ -159,7 +154,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
 
   private mainFrameFilter: t.ModuleFilterView = (e) => {
-    console.log('render', e);
     return true;
   };
 

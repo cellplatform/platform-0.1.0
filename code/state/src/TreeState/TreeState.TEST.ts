@@ -988,16 +988,29 @@ describe('TreeState', () => {
 
   describe('contains', () => {
     const tree = create();
-    const child1 = tree.add({ root: 'child-1' });
-    const child2a = child1.add({ root: { id: 'child-2a', children: [{ id: 'foo' }] } });
+    const child1 = tree.add({ root: 'ns1:child-1' });
+    const child2a = child1.add({
+      root: { id: 'child-2a', children: [{ id: 'foo' }, { id: 'ns2:bar' }] },
+    });
+    const child3 = create({ root: 'child-3' });
 
     const query = TreeQuery.create({ root: tree.root });
-    const node = query.find((e) => e.key === 'foo');
+    const foo = query.find((e) => e.key === 'foo');
+    const bar = query.find((e) => e.key === 'bar');
+
+    it('empty', () => {
+      expect(tree.contains('')).to.eql(false);
+      expect(tree.contains(' ')).to.eql(false);
+      expect(tree.contains(undefined)).to.eql(false);
+      expect(tree.contains(null as any)).to.eql(false);
+    });
 
     it('does not contain', () => {
       expect(tree.contains('404')).to.eql(false);
       expect(tree.contains({ id: '404' })).to.eql(false);
       expect(tree.contains((e) => false)).to.eql(false);
+      expect(tree.contains(child3)).to.eql(false); // NB: not added.
+      expect(tree.contains(tree)).to.eql(false); // NB: does not contain itself.
     });
 
     it('does contain (via match function)', () => {
@@ -1006,11 +1019,19 @@ describe('TreeState', () => {
     });
 
     it('does contain (via node-identifier)', () => {
+      expect(foo).to.exist;
+      expect(bar).to.exist;
+
       expect(tree.contains(child2a.id)).to.eql(true);
       expect(tree.contains(child2a)).to.eql(true);
 
-      expect(tree.contains(node)).to.eql(true);
-      expect(tree.contains(node?.id)).to.eql(true);
+      expect(tree.contains(foo)).to.eql(true);
+      expect(tree.contains(foo?.id)).to.eql(true);
+    });
+
+    it('does not contain child nodes within different descendent namespace', () => {
+      expect(tree.contains(bar)).to.eql(false);
+      expect(tree.contains(bar?.id)).to.eql(false);
     });
   });
 

@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { Button } from '../../../../components/primitives';
 import { color, COLORS, css, CssValue, Module, t } from '../../common';
+import { Identifiers } from './Identifiers';
 
 export type ITestSampleProps = {
   module: string;
@@ -104,7 +105,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
             <img src={src} {...styles.image} />
           </div>
           <div {...styles.bottom}>
-            {this.renderIdentifiers()}
+            <Identifiers module={this.module?.id} selected={this.props.selected} />
             <Button onClick={this.onAddModuleClick}>Add Module</Button>
           </div>
         </div>

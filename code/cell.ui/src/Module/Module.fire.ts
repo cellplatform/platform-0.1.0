@@ -67,17 +67,30 @@ export function register(bus: B, module: t.IModule, parent?: string) {
 /**
  * Fires a render request seqeunce.
  */
-export function render<T extends P>(bus: B, args: t.ModuleFireRenderArgs<T>) {
-  const { module, selected, data = {}, view = '' } = args;
+export function render<T extends P>(
+  bus: B,
+  args: t.ModuleFireRenderArgs<T>,
+): t.ModuleFireRenderResponse {
+  const { selected, data = {} } = args;
+  const view = args.view as NonNullable<T['view']>;
+  const module = typeof args.module === 'string' ? args.module : args.module.id;
 
-  let el: JSX.Element | null | undefined = undefined;
+  let el: t.ModuleFireRenderResponse;
+  if (!view) {
+    return el;
+  }
 
-  type R = t.IModuleRender;
-  const render: R['render'] = (input) => {
-    el = input;
-    payload.handled = true;
+  const payload: t.IModuleRender<T> = {
+    module,
+    selected,
+    data,
+    view,
+    render(input) {
+      el = input;
+      payload.handled = true;
+    },
+    handled: false,
   };
-  const payload: R = { module, selected, data, view, render, handled: false };
 
   bus.fire({
     type: 'Module/render',
@@ -89,6 +102,10 @@ export function render<T extends P>(bus: B, args: t.ModuleFireRenderArgs<T>) {
       type: 'Module/rendered',
       payload: { module, view, el },
     });
+  } else if (args.notFound) {
+    // View not rendered by any listeners.
+    // If a fallback was given request that to be rendered instead.
+    el = render<T>(bus, { module, selected, data, view: args.notFound }); // <== RECURSION 🌳
   }
 
   return el;
@@ -97,31 +114,33 @@ export function render<T extends P>(bus: B, args: t.ModuleFireRenderArgs<T>) {
 /**
  * Fire a tree-selection changed event.
  */
-export function selection(bus: B, args: t.ModuleFireSelectionArgs) {
-  const { selected, current } = args;
+export function selection<T extends P>(bus: B, args: t.ModuleFireSelectionArgs) {
+  const { selected } = args;
 
   type N = t.IModuleNode<any>;
   const root = is.stateObject(args.root) ? (args.root as t.IModule).root : (args.root as N);
   const query = TreeQuery.create<N>({ root });
-
   const node = selected ? query.findById(selected) : undefined;
+
+  if (selected && !node) {
+    const err = `Selection event for [${selected}] cannot be fired because the node does not exist in tree.`;
+    throw new Error(err);
+  }
+
+  const module = node && selected !== root.id ? findModuleAncestor(query, node) : undefined;
+
+  /**
+   * Fire event.
+   */
   const selection: t.IModuleSelectionTree | undefined = !node
     ? undefined
     : { id: node.id, props: node.props?.treeview || {} };
 
-  const findModule = (startAt: t.ITreeNode<any>) => {
-    return query.ancestor(startAt, (e) => {
-      const props = (e.node.props || {}) as t.IModuleProps;
-      return props.kind === 'MODULE';
-    }) as t.IModuleNode<any> | undefined;
-  };
-
-  const module = !node ? undefined : findModule(node);
-  const payload: t.IModuleSelection = {
-    module: root.id,
-    tree: { current, selection },
-    view: module?.props?.view,
-    data: module?.props?.data,
+  const payload: t.IModuleSelection<T> = {
+    module: module?.id || root.id,
+    selection: selection,
+    view: node?.props?.view || module?.props.view || '',
+    data: node?.props?.data || module?.props.data || {},
   };
   bus.fire({ type: 'Module/selection', payload });
 }
@@ -147,3 +166,14 @@ export function request<T extends P = P>(bus: B, id: string): t.ModuleRequestRes
   });
   return { module };
 }
+
+/**
+ * [Helpers]
+ */
+
+const findModuleAncestor = (query: t.ITreeQuery, startAt: t.ITreeNode<any>) => {
+  return query.ancestor(startAt, (e) => {
+    const props = (e.node.props || {}) as t.IModuleProps;
+    return props.kind === 'MODULE';
+  }) as t.IModuleNode<any> | undefined;
+};
