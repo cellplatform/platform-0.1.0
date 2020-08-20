@@ -240,7 +240,23 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     return this;
   };
 
-  public find: t.TreeStateFind<T, A> = (match) => {
+  public contains: t.TreeStateContains<T, A> = (match) => {
+    return Boolean(this.find(match));
+  };
+
+  public find: t.TreeStateFind<T, A> = (input) => {
+    if (!input) {
+      return undefined;
+    }
+
+    const match: t.TreeStateFindMatch<T, A> =
+      typeof input === 'function'
+        ? input
+        : (e) => {
+            const id = TreeIdentity.toNodeId(input);
+            return e.id === id ? true : Boolean(e.tree.query.findById(id));
+          };
+
     let result: t.ITreeState<T, A> | undefined;
     this.walkDown((e) => {
       if (e.level > 0) {
