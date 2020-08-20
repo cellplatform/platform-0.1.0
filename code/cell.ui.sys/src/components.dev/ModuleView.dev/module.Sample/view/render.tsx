@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
 
-import { ui, t } from '../common';
-import { TestDiagram } from './views/Diagram';
-import { TestSample } from './views/Sample';
-import { Test404 } from './views/404';
-import { TreeColumns } from './views/TreeColumns';
+import { ui, t } from '../../common';
+import { TestDiagram } from './components/Diagram';
+import { TestSample } from './components/Sample';
+import { Test404 } from './components/404';
+import { TreeColumns } from './components/TreeColumns';
 
 const { Module } = ui;
 

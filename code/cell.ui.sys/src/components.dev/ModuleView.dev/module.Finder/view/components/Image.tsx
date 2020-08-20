@@ -104,7 +104,7 @@ export class FinderImage extends React.PureComponent<IFinderImageProps, IFinderI
       }),
       border: css({
         Absolute: [30, 30, 30, 30],
-        border: `dashed 5px ${color.format(-0.03)}`,
+        border: `dashed 5px ${color.format(-0.08)}`,
         borderRadius: 30,
       }),
     };

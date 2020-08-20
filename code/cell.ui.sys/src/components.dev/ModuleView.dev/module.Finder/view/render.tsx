@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Observable } from 'rxjs';
-import { FinderImage } from './views/Image';
+import { FinderImage } from './components/Image';
 
-import { Module } from '../common';
-import * as t from './types';
+import { Module } from '../../common';
+import * as t from '../types';
 
 type P = t.FinderProps;
 

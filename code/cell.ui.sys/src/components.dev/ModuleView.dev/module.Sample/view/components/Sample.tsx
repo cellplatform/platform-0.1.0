@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Button } from '../../../../components/primitives';
-import { color, COLORS, css, CssValue, Module, t } from '../../common';
+import { Button } from '@platform/ui.button';
+import { color, COLORS, css, CssValue, Module, t } from '../../../common';
 import { Identifiers } from './Identifiers';
 
 export type ITestSampleProps = {

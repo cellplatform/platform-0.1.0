@@ -1,6 +1,6 @@
 import { Module } from '../common';
 import * as t from './types';
-import { renderer } from './Module.renderer';
+import { renderer } from './view/render';
 
 type P = t.FinderProps;
 
