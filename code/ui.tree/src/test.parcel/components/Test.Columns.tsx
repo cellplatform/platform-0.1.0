@@ -6,7 +6,6 @@ import { Button } from '@platform/ui.button';
 
 import { Tree } from '../..';
 import { t } from '../../common';
-import { TreeviewStrategy } from '../../TreeviewStrategy';
 
 type Node = t.ITreeviewNode;
 
@@ -90,7 +89,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     /**
      * State / Behavior Strategy
      */
-    const strategy = TreeviewStrategy.default({ fire });
+    const strategy = Tree.Strategy.default({ fire });
     this.treeview$
       .pipe(takeUntil(this.unmounted$))
       .subscribe((event) => strategy.next({ tree, event }));
