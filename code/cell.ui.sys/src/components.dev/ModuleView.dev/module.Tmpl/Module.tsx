@@ -8,7 +8,7 @@ type P = t.DebugProps;
 
 export const DebugModule: t.IModuleDef = {
   /**
-   * Initialize the module.
+   * ENTRY: Initialize a new module from the definition.
    */
   init(bus, parent) {
     const fire = Module.fire<P>(bus);
@@ -21,8 +21,8 @@ export const DebugModule: t.IModuleDef = {
 
     const events = Module.events<P>(bus.event$, until$).filter(match);
     events.selection$.subscribe((e) => {
-      const selected = e.selection?.id;
       const { view, data } = e;
+      const selected = e.selection?.id;
       fire.render({ selected, module, data, view, notFound: '404' });
     });
 
@@ -31,7 +31,7 @@ export const DebugModule: t.IModuleDef = {
 };
 
 /**
- * View factory for the module.
+ * UI: View factory for the module.
  */
 function renderer(args: {
   bus: t.EventBus<any>;

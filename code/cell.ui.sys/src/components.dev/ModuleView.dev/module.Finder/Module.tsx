@@ -6,7 +6,7 @@ type P = t.FinderProps;
 
 export const FinderModule: t.IModuleDef = {
   /**
-   * Initialize the module.
+   * Initialize a new module from the definition.
    */
   init(bus, parent) {
     const fire = Module.fire<P>(bus);
@@ -19,8 +19,8 @@ export const FinderModule: t.IModuleDef = {
 
     const events = Module.events<P>(bus.event$, until$).filter(match);
     events.selection$.subscribe((e) => {
-      const selected = e.selection?.id;
       const { view, data } = e;
+      const selected = e.selection?.id;
       fire.render({ selected, module, data, view, notFound: '404' });
     });
 
