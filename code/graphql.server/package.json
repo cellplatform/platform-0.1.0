@@ -23,7 +23,7 @@
     "@platform/util.value": "0.7.30",
     "@types/dotenv": "8.2.0",
     "@types/express": "4.17.7",
-    "apollo-server-express": "2.15.1",
+    "apollo-server-express": "2.14.2",
     "dotenv": "8.2.0",
     "express": "4.17.1",
     "graphql": "15.3.0",
