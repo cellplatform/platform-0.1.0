@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { TreeView } from '../..';
+import { Treeview } from '../..';
 import { t } from '../../common';
 import { COLORS } from '../constants';
 import * as sample from '../SAMPLE';
@@ -31,7 +31,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
   private state$ = new Subject<Partial<ITestState>>();
   private event$ = new Subject<t.TreeviewEvent>();
-  private mouse$ = new Subject<t.ITreeviewMouse>();
 
   /**
    * [Lifecycle]
@@ -40,13 +39,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     // Setup observables.
     const state$ = this.state$.pipe(takeUntil(this.unmounted$));
     const event$ = this.event$.pipe(takeUntil(this.unmounted$));
-    const mouse$ = this.mouse$.pipe(takeUntil(this.unmounted$));
-    const click$ = mouse$.pipe(filter((e) => e.button === 'LEFT'));
 
     /**
      * NB: Alternative helper for pealing off events.
      */
-    const tree = TreeView.events(event$);
+    const tree = Treeview.events(event$);
 
     tree.mouse().click.node$.subscribe((e) => {
       log.info('🐷 CLICK from TreeEvents helper', e);
@@ -80,9 +77,11 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
      */
 
     const toggle = (node: t.ITreeviewNode) => {
-      const toggled = TreeView.util.toggleIsOpen(this.state.root, node);
+      const toggled = Treeview.util.toggleIsOpen(this.state.root, node);
       this.state$.next({ root: toggled });
     };
+
+    const click$ = tree.mouse$({ button: 'LEFT' });
 
     click$
       .pipe(
@@ -122,7 +121,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         filter((e) => e.target === 'PARENT'),
       )
       .subscribe((e) => {
-        const parent = TreeView.query(this.state.root).ancestor(
+        const parent = Treeview.query(this.state.root).ancestor(
           e.node,
           (e) => e.level > 0 && !e.node.props?.treeview?.inline,
         );
@@ -197,7 +196,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
     return (
       <div {...styles.base}>
-        <TreeView
+        <Treeview
           root={this.state.root}
           current={this.state.current}
           theme={this.state.theme}
@@ -206,7 +205,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           renderPanel={this.renderPanel}
           renderNodeBody={this.renderNodeBody}
           event$={this.event$}
-          mouse$={this.mouse$}
+          // mouse$={this.mouse$}
           tabIndex={0}
         />
       </div>

@@ -1,17 +1,16 @@
 import { TreeState } from '@platform/state';
-import { Observable, Subject } from 'rxjs';
-import { filter, map, share, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { is } from '@platform/state/lib/common/is';
 import { rx } from '@platform/util.value';
-import { fire } from './Module.fire';
+import { equals } from 'ramda';
+import { Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
+import { fire } from './Module.fire';
 
 type P = t.IModuleProps;
 
 const identity = TreeState.identity;
-import { equals } from 'ramda';
-
 export function create<T extends P = t.IModulePropsAny>(
   subject: Observable<t.Event> | t.IModule,
   until$?: Observable<any>,
@@ -32,6 +31,9 @@ export function create<T extends P = t.IModulePropsAny>(
     share(),
   );
 
+  const register$ = rx.payload<t.IModuleRegisterEvent>($, 'Module/register').pipe(share());
+  const registered$ = rx.payload<t.IModuleRegisteredEvent>($, 'Module/registered').pipe(share());
+
   const childRegistered$ = rx
     .payload<t.IModuleChildRegisteredEvent>($, 'Module/child/registered')
     .pipe(share());
@@ -40,12 +42,14 @@ export function create<T extends P = t.IModulePropsAny>(
     .pipe(share());
   const changed$ = rx.payload<t.IModuleChangedEvent>($, 'Module/changed').pipe(share());
   const patched$ = rx.payload<t.IModulePatchedEvent>($, 'Module/patched').pipe(share());
-  const selection$ = rx.payload<t.IModuleSelectionEvent>($, 'Module/selection').pipe(share());
-  const render$ = rx.payload<t.IModuleRenderEvent>($, 'Module/render').pipe(share());
+  const selection$ = rx.payload<t.IModuleSelectionEvent<T>>($, 'Module/selection').pipe(share());
+  const render$ = rx.payload<t.IModuleRenderEvent<T>>($, 'Module/render').pipe(share());
   const rendered$ = rx.payload<t.IModuleRenderedEvent>($, 'Module/rendered').pipe(share());
 
   const events: t.IModuleEvents<T> = {
     $,
+    register$,
+    registered$,
     childRegistered$,
     childDisposed$,
     changed$,
@@ -87,11 +91,11 @@ export function isModuleEvent(event: t.Event) {
 /**
  * Run a module filter.
  */
-export function filterEvent(event: t.ModuleEvent, filter?: t.ModuleFilter) {
+export function filterEvent(event: t.ModuleEvent, filter?: t.ModuleFilterEvent) {
   if (filter) {
     const id = event.payload.module;
     const { key, namespace } = identity.parse(id);
-    return filter({ id, key, namespace, event });
+    return filter({ module: id, key, namespace, event });
   } else {
     return true;
   }
@@ -101,57 +105,57 @@ export function filterEvent(event: t.ModuleEvent, filter?: t.ModuleFilter) {
  * Monitors the events of a module (and it's children) and bubbles
  * the relevant events.
  */
-export function monitorAndDispatch<T extends P>(module: t.IModule<T>) {
-  type M = t.IModule<T>;
+export function monitorAndDispatch<T extends P>(
+  bus: t.EventBus<t.ModuleEvent>,
+  module: t.IModule<T>,
+) {
+  const until$ = module.dispose$;
+  const event$ = bus.event$.pipe(takeUntil(until$));
+  const next = fire(bus);
 
-  const monitorChild = (parent: M, child?: M) => {
-    if (child) {
-      const until$ = parent.event.childRemoved$.pipe(filter((e) => e.child.id === child.id));
-      monitor(child, until$); // <== RECURSION 🌳
-    }
-  };
+  /**
+   * Bubble module events through the StateObject's internal dispatch.
+   */
+  event$
+    .pipe(
+      filter((e) => isModuleEvent(e)),
+      filter((e) => e.payload.module === module.id),
+    )
+    .subscribe((e) => module.dispatch(e));
 
-  const monitor = (module: M, until$: Observable<any> = new Subject()) => {
-    const id = module.id;
-    const changed$ = module.event.changed$.pipe(takeUntil(until$));
-    const patched$ = module.event.patched$.pipe(takeUntil(until$));
-    const childAdded$ = module.event.childAdded$.pipe(takeUntil(until$));
+  const id = module.id;
+  const objChanged$ = module.event.changed$.pipe(takeUntil(until$));
+  const objPatched$ = module.event.patched$.pipe(takeUntil(until$));
 
-    changed$.subscribe((change) => {
-      module.dispatch({
-        type: 'Module/changed',
-        payload: { module: id, change },
-      });
+  objChanged$.subscribe((change) => {
+    module.dispatch({
+      type: 'Module/changed',
+      payload: { module: id, change },
+    });
+  });
+
+  objPatched$.subscribe((patch) => {
+    module.dispatch({
+      type: 'Module/patched',
+      payload: { module: id, patch },
+    });
+  });
+
+  /**
+   * Convert changes to the tree-navigation data into ["Module/selection"] events.
+   */
+  objChanged$
+    .pipe(
+      map((e) => e.to.props?.treeview?.nav as NonNullable<t.ITreeviewNodeProps['nav']>),
+      filter((e) => Boolean(e)),
+      distinctUntilChanged((prev, next) => equals(prev, next)),
+    )
+    .subscribe((e) => {
+      const { selected } = e;
+      const root = module.root;
+      next.selection({ root, selected });
     });
 
-    patched$.subscribe((patch) => {
-      module.dispatch({
-        type: 'Module/patched',
-        payload: { module: id, patch },
-      });
-    });
-
-    // Convert changes to the tree-navigation data into [Module/selection] events.
-    changed$
-      .pipe(
-        map((e) => e.to.props?.treeview?.nav as NonNullable<t.ITreeviewNodeProps['nav']>),
-        filter((e) => Boolean(e)),
-        distinctUntilChanged((prev, next) => equals(prev, next)),
-      )
-      .subscribe((e) => {
-        const { current, selected } = e;
-        const root = module.root;
-        fire(module.dispatch).selection({ root, current, selected });
-      });
-
-    childAdded$.subscribe((e) => {
-      const child = module.find((child) => child.id === e.child.id);
-      monitorChild(module, child); // <== RECURSION 🌳
-    });
-
-    module.children.forEach((child) => monitorChild(module, child as M)); // <== RECURSION 🌳
-  };
-
-  monitor(module);
+  // Finish up.
   return module;
 }

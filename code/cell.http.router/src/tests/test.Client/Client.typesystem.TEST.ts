@@ -157,7 +157,7 @@ describe('Client.TypeSystem', () => {
         sheet.dispose(); // NB: Auto un-watches so "goodbye" is not the final change.
         row.props.title = 'goodbye';
 
-        await time.wait(20);
+        await time.wait(50);
         await mock.dispose();
 
         expect(fired.length).to.eql(3);

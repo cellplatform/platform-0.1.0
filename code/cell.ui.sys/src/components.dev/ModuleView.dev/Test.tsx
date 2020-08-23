@@ -2,26 +2,21 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, time, ui } from './common';
 import { Icons } from '../../components/primitives';
+import { css, CssValue, ui, t } from './common';
 import { ComponentFrame } from './ComponentFrame';
+import { FinderModule } from './module.Finder';
+import { SampleModule } from './module.Sample';
+import { DebugModule } from './module.Debug';
 
-import * as factory from './factory';
-
-import * as t from './types';
-
-const { Module, ModuleView } = ui;
+const { ModuleView } = ui;
 
 /**
  * Component
  */
 export type ITestProps = { style?: CssValue };
 export type ITestState = {
-  root?: t.MyModule;
-  foo?: t.MyModule;
-  bar?: t.MyModule;
-  selected?: t.MyModule;
-  rootStrategy?: t.ITreeviewStrategy;
+  main?: t.MyModule;
 };
 
 export class Test extends React.PureComponent<ITestProps, ITestState> {
@@ -30,22 +25,15 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
-  public context!: t.IAppContext;
+  public context!: t.IEnvContext;
 
   /**
    * [Lifecycle]
    */
 
   public componentDidMount() {
-    const ctx = this.context;
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-
-    const root = Module.create<t.MyProps>({
-      event$: ctx.event$,
-      dispose$: this.unmounted$,
-    });
-
-    this.init(root);
+    this.init();
   }
 
   public componentWillUnmount() {
@@ -53,110 +41,40 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     this.unmounted$.complete();
   }
 
-  private async init(root: t.MyModule) {
-    const ctx = this.context;
+  /**
+   * Sample module setup.
+   */
+  private async init() {
+    const bus = this.bus;
 
-    // Publishes module changes into the global event bus.
-    Module.publish({
-      module: root,
-      fire: ctx.fire,
-      until$: this.unmounted$,
-    });
+    /**
+     * Simulate a module registering itself.
+     * NOTE:
+     *   This would typically be through some other boot-up process where
+     *   the module is pulled then spins itself up and registers itself.
+     */
+    const main = SampleModule.init(bus);
+    FinderModule.init(bus);
+    DebugModule.init(bus);
 
-    const register = Module.register<t.MyProps>(root);
-    const foo = register.add({ id: 'foo', treeview: 'Diagram', view: 'DIAGRAM' }).module;
-    const bar = register.add({ id: 'bar', treeview: 'Sample', view: 'SAMPLE' }).module;
+    this.state$.next({ main });
 
-    console.log('root:', root.id);
-    console.log('foo: ', foo.id);
-    console.log('bar: ', bar.id);
+    console.log('main:', main.id);
     console.log('-------------------------------------------');
+  }
 
-    const rootStrategy = ModuleView.Tree.Strategy.default();
-
-    this.state$.next({
-      root,
-      foo,
-      bar,
-      rootStrategy,
-    });
-
-    /**
-     * Work with root events.
-     */
-
-    // Monitor selection in left-hand tree.
-    const rootEvents = Module.events(root, this.unmounted$);
-
-    rootEvents.selection$.subscribe((e) => {
-      const id = e.tree.selection?.id;
-      const selected = root.find((child) => child.tree.query.exists(id));
-      this.state$.next({ selected });
-    });
-
-    /**
-     * Setup the render factory.
-     */
-    factory.renderer({
-      fire: ctx.fire,
-      event$: ctx.event$,
-      until$: this.unmounted$,
-    });
-
-    /**
-     * Muck around with sample data.
-     */
-    foo.change((draft, ctx) => {
-      ctx.props(draft, (props) => {
-        props.data = { foo: 'FOO' };
-      });
-      ctx.children(draft, (children) => {
-        children.push(...[{ id: 'one' }, { id: 'two' }, { id: 'three' }]);
-      });
-    });
-
-    bar.change((draft, ctx) => {
-      ctx.props(draft, (props) => {
-        props.data = { foo: 'FOO' };
-
-        // const treeview = props.treeview || (props.treeview = {});
-        // treeview.isVisible = false;
-      });
-      ctx.children(draft, (children) => {
-        children.push({ id: 'zinger' });
-        children.push(...[{ id: 'one' }, { id: 'two' }, { id: 'three' }]);
-        // children.push({ id: 'sub-tree', props: { treeview: { label: 'Sub-tree' } } });
-      });
-    });
-
-    // time.delay(500, () => {
-    // });
-    bar.change((draft, ctx) => {
-      const child = ctx.children(draft)[1];
-      ctx.props(child, (props) => {
-        props.treeview = {
-          inline: {},
-          chevron: { isVisible: true },
-          ...props.treeview,
-          label: 'hello',
-        };
-      });
-      if (!child.children) {
-        child.children = [
-          { id: 'my-child-1', props: { treeview: { label: 'child-1' } } },
-          { id: 'my-child-2', props: { treeview: { label: 'child-2' } } },
-          { id: 'my-child-3', props: { treeview: { label: 'child-3' } } },
-        ];
-      }
-    });
+  /**
+   * [Properties]
+   */
+  public get bus(): t.EventBus<any> {
+    const { event$, fire } = this.context;
+    return { event$, fire };
   }
 
   /**
    * [Render]
    */
   public render() {
-    const ctx = this.context;
-
     const MARGIN = 40;
     const styles = {
       base: css({
@@ -172,7 +90,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       }),
       tree: css({
         position: 'relative',
-        width: 300,
+        width: 280,
         WebkitAppRegion: 'none',
         display: 'flex',
       }),
@@ -186,6 +104,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
     };
 
     const bg = 1;
+    const bus = this.bus;
 
     return (
       <div {...css(styles.base, this.props.style)}>
@@ -194,30 +113,21 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
           <div {...css(styles.tree, { marginRight: MARGIN })}>
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
               <ModuleView.Tree
-                module={this.state.root}
-                strategy={this.state.rootStrategy}
+                module={this.state.main}
+                strategy={this.treeStrategy}
                 focusOnLoad={true}
+                totalColumns={1}
               />
-            </ComponentFrame>
-          </div>
-          <div {...css(styles.tree, { marginRight: MARGIN })}>
-            <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg}>
-              <ModuleView.Tree module={this.state.selected} />
             </ComponentFrame>
           </div>
           <div {...styles.main}>
             <ComponentFrame name={'ModuleView.Frame'} backgroundColor={bg}>
-              <ModuleView.Frame
-                style={styles.fill}
-                fire={ctx.fire}
-                event$={ctx.event$}
-                filter={this.renderFilter}
-              />
+              <ModuleView.Frame style={styles.fill} filter={this.mainViewFilter} bus={bus} />
             </ComponentFrame>
           </div>
           <div {...css(styles.tree, { marginLeft: MARGIN })}>
             <ComponentFrame name={'ModuleView.Tree'} backgroundColor={bg} blur={true}>
-              <ModuleView.Tree module={this.state.root} />
+              <ModuleView.Tree module={this.state.main} />
             </ComponentFrame>
           </div>
         </div>
@@ -229,7 +139,12 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    * [Handlers]
    */
 
-  private renderFilter: t.ModuleFilter = (args) => {
+  private mainViewFilter: t.ModuleFilterView = (e) => {
     return true;
+  };
+
+  private treeStrategy = (fire: t.FireEvent) => {
+    // NB: Sample of passing in specific behavior strategy into the tree.
+    return ModuleView.Tree.Strategy.default({ fire });
   };
 }

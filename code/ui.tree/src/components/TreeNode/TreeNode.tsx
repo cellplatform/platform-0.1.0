@@ -47,13 +47,7 @@ export type ITreeNodeProps = {
   onMouse?: t.TreeNodeMouseEventHandler;
 };
 
-export type ITreeNodeState = {
-  nodeProps?: t.ITreeviewNodeProps;
-};
-
-export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState> {
-  public state: ITreeNodeState = {};
-
+export class TreeNode extends React.PureComponent<ITreeNodeProps> {
   /**
    * [Static]
    */
@@ -113,18 +107,9 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
   }
 
   /**
-   * [Lifecycle]
-   */
-
-  public static getDerivedStateFromProps(props: ITreeNodeProps): ITreeNodeState {
-    const { renderer, node, depth, isInline, isFocused } = props;
-    const nodeProps = renderer.beforeRenderNode({ node, depth, isInline, isFocused });
-    return { nodeProps };
-  }
-
-  /**
    * [Properties]
    */
+
   public get id() {
     return this.props.node.id;
   }
@@ -134,7 +119,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
   }
 
   private get nodeProps() {
-    return this.state.nodeProps || {};
+    return this.props.node.props?.treeview || {};
   }
 
   private get theme() {
@@ -173,6 +158,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
   /**
    * [Render]
    */
+
   public render() {
     const props = this.nodeProps;
     const isEnabled = this.isEnabled;
@@ -421,7 +407,7 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
         margin: 0,
         padding: 0,
         paddingTop: 1,
-        PaddingX: 8,
+        PaddingX: 6,
         height: 16,
         overflow: 'hidden',
         Flex: 'horizontal-center-center',
@@ -471,14 +457,14 @@ export class TreeNode extends React.PureComponent<ITreeNodeProps, ITreeNodeState
     );
   }
 
-  private mouseHandlers = (target: t.ITreeviewMouse['target']) => {
+  private mouseHandlers = (target: t.TreeNodeMouseEventHandlerArgs['target']) => {
     const { onMouse } = this.props;
     return TreeNode.mouseHandlers(() => this.props.node, target, onMouse);
   };
 
   public static mouseHandlers(
     getNode: () => t.ITreeviewNode,
-    target: t.ITreeviewMouse['target'],
+    target: t.TreeNodeMouseEventHandlerArgs['target'],
     onMouse?: t.TreeNodeMouseEventHandler,
   ) {
     const handlers = mouse.handlers((e) => {

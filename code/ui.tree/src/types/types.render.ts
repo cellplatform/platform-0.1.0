@@ -7,7 +7,10 @@ export type ITreeviewRenderer = {
   nodeBody: t.RenderTreeNodeBody;
   panel: t.RenderTreePanel;
   header: t.RenderTreeHeader;
-  beforeRenderNode: (e: t.ITreeviewBeforeRenderNodeProps) => t.ITreeviewNodeProps;
+  beforeRender: {
+    node: (e: t.ITreeviewBeforeRenderNodeProps) => t.ITreeviewNodeProps;
+    header: (e: t.ITreeviewBeforeRenderNodeProps) => t.ITreeviewNodeProps;
+  };
 };
 
 /**

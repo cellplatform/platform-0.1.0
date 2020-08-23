@@ -9,12 +9,13 @@ import { mutations } from './mutations';
 export { dispose };
 
 type N = t.ITreeviewNode;
+type E = t.TreeviewEvent;
 
 /**
  * Wrangle input options for a strategy.
  */
 export const options = () => {
-  const treeview$ = new Subject<t.TreeviewEvent>();
+  const treeview$ = new Subject<E>();
   const events = TreeEvents.create(treeview$);
   return { treeview$, events };
 };

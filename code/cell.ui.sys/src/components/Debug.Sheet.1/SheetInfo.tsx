@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { color, COLORS, css, CssValue } from '../../common';
-import { Card, ObjectView, PropList, TreeView } from '../primitives';
+import { Card, ObjectView, PropList, Treeview } from '../primitives';
 import * as t from './types';
 
 export type ISheetInfoProps = {
@@ -13,7 +13,7 @@ export type ISheetInfoProps = {
 
 export class SheetInfo extends React.PureComponent<ISheetInfoProps> {
   private unmounted$ = new Subject();
-  private tree = TreeView.State.create({ root: { id: 'sheet', props: { label: 'Info' } } });
+  private tree = Treeview.State.create({ root: { id: 'sheet', props: { label: 'Info' } } });
 
   /**
    * [Lifecycle]
@@ -33,6 +33,7 @@ export class SheetInfo extends React.PureComponent<ISheetInfoProps> {
   /**
    * [Properties]
    */
+
   public get store() {
     return this.props.store;
   }
@@ -52,9 +53,7 @@ export class SheetInfo extends React.PureComponent<ISheetInfoProps> {
     }
 
     const styles = {
-      base: css({
-        Flex: 'horizontal-stretch-stretch',
-      }),
+      base: css({ Flex: 'horizontal-stretch-stretch' }),
       left: css({ flex: 1 }),
       right: css({ flex: 1 }),
     };
@@ -83,7 +82,7 @@ export class SheetInfo extends React.PureComponent<ISheetInfoProps> {
     };
     return (
       <div {...styles.base}>
-        <TreeView root={this.tree.root} background={'NONE'} />
+        <Treeview root={this.tree.root} background={'NONE'} />
       </div>
     );
   }

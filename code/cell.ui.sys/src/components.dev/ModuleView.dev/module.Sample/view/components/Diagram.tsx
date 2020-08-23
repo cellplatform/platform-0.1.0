@@ -1,13 +1,10 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { COLORS, css, CssValue } from './common';
-import * as t from './types';
-
-import { ModuleView } from '@platform/cell.ui/lib/components/ModuleView';
-const Module = ModuleView.Module;
+import { COLORS, css, CssValue, t } from '../../../common';
 
 export type ITestDiagramProps = {
+  module?: t.IModule;
   style?: CssValue;
 };
 export type ITestDiagramState = t.Object;
@@ -16,9 +13,6 @@ export class TestDiagram extends React.PureComponent<ITestDiagramProps, ITestDia
   public state: ITestDiagramState = {};
   private state$ = new Subject<Partial<ITestDiagramState>>();
   private unmounted$ = new Subject();
-
-  public static contextType = Module.Context;
-  public context!: t.MyContext;
 
   /**
    * [Lifecycle]
@@ -50,10 +44,12 @@ export class TestDiagram extends React.PureComponent<ITestDiagramProps, ITestDia
     const DIAGRAM = {
       BYBASS: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/framing-bypass.png',
       REDESIGN: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/redesign.png',
-      THOUGHT_VECTORS: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/thought-vectors.png',
+      THOUGHT_VECTORS: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/thought-vectors.06.png',
     };
 
     const src = DIAGRAM.THOUGHT_VECTORS;
+
+    console.log('diagram', src);
 
     return (
       <div {...styles.base}>

@@ -1,16 +1,17 @@
+import { TreeIdentity } from '@platform/state';
 import { filter } from 'rxjs/operators';
 
 import { t } from '../common';
 import * as util from './util';
-import { Subject } from '../common/types';
 
 /**
  * Strategy for navigating around a tree.
  */
-export const mouse: t.TreeviewStrategyMouseNavigation = () => {
+export const mouse: t.TreeviewStrategyMouseNavigation = (args) => {
   const { events, treeview$ } = util.options();
+  const { fire } = args;
 
-  let tree: t.ITreeState;
+  let tree: t.ITreeviewState;
   const strategy: t.ITreeviewStrategy = {
     /**
      * NB: The [tree] is stored temporarily so that the handlers below can be
@@ -26,12 +27,17 @@ export const mouse: t.TreeviewStrategyMouseNavigation = () => {
 
   const current = () => util.current(tree);
 
-  const setCurrent$ = new Subject<string>();
-  setCurrent$.subscribe((id) => {
-    const { get, mutate } = current();
-    mutate.current(id);
-    mutate.selected(get.children(id)[0]?.id);
-  });
+  const select = (node?: t.NodeIdentifier) => {
+    const selected = TreeIdentity.toNodeId(node);
+    fire({ type: 'TREEVIEW/select', payload: { selected } });
+  };
+
+  const selection = (args: { selected?: t.NodeIdentifier; current?: t.NodeIdentifier }) => {
+    const { get } = util.current(tree);
+    const current = TreeIdentity.toNodeId(args.current);
+    const selected = TreeIdentity.toNodeId(args.selected) || get.children(current)[0]?.id;
+    fire({ type: 'TREEVIEW/select', payload: { selected, current } });
+  };
 
   /**
    * EVENTS: Left mouse button.
@@ -41,23 +47,25 @@ export const mouse: t.TreeviewStrategyMouseNavigation = () => {
   /**
    * BEHAVIOR: Set as selected when node is single-clicked.
    */
-  left.down.node$.subscribe((e) => current().mutate.selected(e.id));
+  left.down.node$.pipe(filter((e) => !e.isHandled)).subscribe((e) => select(e.id));
 
   /**
    * BEHAVIOR: Step up to parent when the "back" button is
    *           single-clicked on the panel header.
    */
-  left.down.parent$.subscribe((e) => {
+  left.down.parent$.pipe(filter((e) => !e.isHandled)).subscribe((e) => {
     const { query } = current();
     const parent = query.parent(e.node);
-    setCurrent$.next(parent?.id);
+    selection({ current: parent?.id, selected: e.id });
   });
 
   /**
    * BEHAVIOR: Navigate into child when the "drill in chevron"
    *           is single-clicked.
    */
-  left.down.drillIn$.subscribe((e) => setCurrent$.next(e.id));
+  left.down.drillIn$
+    .pipe(filter((e) => !e.isHandled))
+    .subscribe((e) => selection({ current: e.id }));
 
   /**
    * BEHAVIOR: Toggle open/closed an inline node when
@@ -65,6 +73,7 @@ export const mouse: t.TreeviewStrategyMouseNavigation = () => {
    */
   left.down.twisty$
     .pipe(
+      filter((e) => !e.isHandled),
       filter((e) => Boolean((e.props || {}).inline)),
       filter((e) => (e.children || []).length > 0),
     )
@@ -74,6 +83,7 @@ export const mouse: t.TreeviewStrategyMouseNavigation = () => {
    * EVENTS: Double-clicked node that has children.
    */
   const dblClickNodeWithChildren$ = left.dblclick.node$.pipe(
+    filter((e) => !e.isHandled),
     filter((e) => (e.children || []).length > 0),
   );
 
@@ -81,15 +91,21 @@ export const mouse: t.TreeviewStrategyMouseNavigation = () => {
    * BEHAVIOR: Navigate into child when a node is double-clicked.
    */
   dblClickNodeWithChildren$
-    .pipe(filter((e) => !(e.props || {}).inline))
-    .subscribe((e) => setCurrent$.next(e.id));
+    .pipe(
+      filter((e) => !e.isHandled),
+      filter((e) => !(e.props || {}).inline),
+    )
+    .subscribe((e) => selection({ current: e.id }));
 
   /**
    * BEHAVIOR: Toggle open/closed an inline node when
    *           it's double-clicked.
    */
   dblClickNodeWithChildren$
-    .pipe(filter((e) => Boolean((e.props || {}).inline)))
+    .pipe(
+      filter((e) => !e.isHandled),
+      filter((e) => Boolean((e.props || {}).inline)),
+    )
     .subscribe((e) => current().mutate.toggleOpen(e.id));
 
   return strategy;

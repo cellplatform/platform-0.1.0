@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { CssValue, onStateChanged, t, ui } from '../../common';
 import { Icons } from '../Icons';
-import { TreeView } from '../primitives';
+import { Treeview } from '../primitives';
 
 export type IFinderShellTreeProps = { style?: CssValue };
 
@@ -49,7 +49,7 @@ export class FinderShellTree extends React.PureComponent<IFinderShellTreeProps> 
   public render() {
     const tree = this.tree;
     return (
-      <TreeView
+      <Treeview
         root={tree.root}
         current={tree.current}
         theme={tree.theme}

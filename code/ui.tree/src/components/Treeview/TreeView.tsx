@@ -5,19 +5,11 @@ import {
   StackPanel,
   StackPanelSlideEvent,
 } from '@platform/ui.panel/lib/components/StackPanel';
-import { defaultValue, time } from '@platform/util.value';
+import { defaultValue, rx, time } from '@platform/util.value';
 import { equals } from 'ramda';
 import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
-import {
-  debounceTime,
-  delay,
-  distinctUntilChanged,
-  filter,
-  map,
-  share,
-  takeUntil,
-} from 'rxjs/operators';
+import { debounceTime, delay, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
 import { constants, t } from '../../common';
 import * as themes from '../../themes';
@@ -31,10 +23,10 @@ import { renderer } from './renderer';
 const R = { equals };
 type N = t.ITreeviewNode;
 
-export type ITreeViewProps = {
+export type ITreeviewProps = {
   id?: string;
   root?: N;
-  current?: N['id'];
+  current?: N['id'] | null;
   defaultNodeProps?: t.ITreeviewNodeProps | t.GetTreeviewNodeProps;
   renderIcon?: t.RenderTreeIcon;
   renderNodeBody?: t.RenderTreeNodeBody;
@@ -43,14 +35,15 @@ export type ITreeViewProps = {
   theme?: themes.ITreeTheme | themes.TreeTheme;
   background?: 'THEME' | 'NONE';
   event$?: Subject<t.TreeviewEvent>;
-  mouse$?: Subject<t.ITreeviewMouse>;
+  keyPress$?: Observable<t.IKeypressEvent>;
   tabIndex?: number;
   slideDuration?: number;
   focusOnLoad?: boolean;
+  tag?: string; // Component instance identifier.
   style?: CssValue;
 };
 
-export type ITreeViewState = {
+export type ITreeviewState = {
   currentPath?: N[];
   renderedPath?: N[];
   index?: number;
@@ -62,13 +55,13 @@ const DEFAULT = {
   HEADER_HEIGHT: 36,
 };
 
-export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState> {
+export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState> {
   /**
    * [Static]
    */
   public static util = TreeUtil;
   public static query = TreeUtil.query;
-  public static identity = TreeViewState.identity;
+  public static Identity = TreeViewState.identity;
   public static State = TreeViewState;
 
   public static events<T extends N = N>(
@@ -78,8 +71,11 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return TreeEvents.create<T>(event$, dispose$);
   }
 
-  private static current(props: ITreeViewProps) {
+  private static current(props: ITreeviewProps) {
     const { root } = props;
+    if (props.current === null) {
+      return undefined;
+    }
     const current = props.current || root;
     const result = typeof current === 'object' ? current : TreeUtil.query(root).findById(current);
     return result || root;
@@ -88,17 +84,13 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   /**
    * [Fields]
    */
-  public state: ITreeViewState = {};
-  private unmounted$ = new Subject<void>();
-  private focus$ = new Subject<boolean>();
 
-  private _event$ = new Subject<t.TreeviewEvent>();
-  public readonly event$ = this._event$.pipe(takeUntil(this.unmounted$), share());
-  public readonly mouse$ = this.event$.pipe(
-    filter((e) => e.type === 'TREEVIEW/mouse'),
-    map((e) => e.payload as t.ITreeviewMouse),
-    share(),
-  );
+  public state: ITreeviewState = {};
+  private state$ = new Subject<Partial<ITreeviewState>>();
+  public readonly unmounted$ = new Subject<void>();
+  private readonly focus$ = new Subject<boolean>();
+
+  private readonly event$ = new Subject<t.TreeviewEvent>();
 
   private el!: HTMLDivElement;
   private elRef = (ref: HTMLDivElement) => (this.el = ref);
@@ -106,33 +98,48 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
   /**
    * [Lifecycle]
    */
+
   public componentDidMount() {
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+
     // Setup observables.
+    const event$ = this.event$.pipe(takeUntil(this.unmounted$));
     const focus$ = this.focus$.pipe(takeUntil(this.unmounted$));
-    const keyPress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
+    const keyPress$ = (this.props.keyPress$ || events.keyPress$).pipe(takeUntil(this.unmounted$));
+    const mouse$ = rx.payload<t.ITreeviewMouseEvent>(event$, 'TREEVIEW/mouse');
 
-    // Bubble events through given subject(s).
+    // Bubble events through given event-bus.
     if (this.props.event$) {
-      this.event$.subscribe((e) => this.props.event$?.next(e));
-    }
-    if (this.props.mouse$) {
-      this.mouse$.subscribe((e) => this.props.mouse$?.next(e));
+      event$.subscribe((e) => this.props.event$?.next(e));
     }
 
     /**
-     * Keyboard.
+     * Event: Keyboard.
      */
-    keyPress$.pipe(filter(() => this.isFocused)).subscribe((keypress) => {
-      const { root, current } = this.props;
+    keyPress$
+      .pipe(
+        filter(() => this.isFocused),
+        filter((e) => !e.event.defaultPrevented),
+      )
+      .subscribe((keypress) => {
+        const { root } = this.props;
+        const current = this.props.current || undefined;
+        const tag = this.tag;
 
-      this.props.event$?.next({
-        type: 'TREEVIEW/keyboard',
-        payload: { root, current, keypress },
+        const payload: t.ITreeviewKeyboard = {
+          root,
+          current,
+          keypress,
+          tag,
+          isHandled: false,
+          handled: () => (payload.isHandled = true),
+        };
+
+        this.fire({ type: 'TREEVIEW/keyboard', payload });
       });
-    });
 
     /**
-     * Focus.
+     * Event: Focus.
      */
     focus$
       .pipe(
@@ -142,28 +149,31 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
       )
       .subscribe((e) => {
         const isFocused = containsFocus(this);
-        this.setState({ isFocused });
-        this.fire({ type: 'TREEVIEW/focus', payload: { isFocused } });
+        const tag = this.tag;
+        this.isFocused;
+        this.state$.next({ isFocused });
+        this.fire({ type: 'TREEVIEW/focus', payload: { isFocused, tag } });
       });
-    this.mouse$
+
+    mouse$ // NB: Ensure the <TreeView> is focused when any node is clicked.
       .pipe(
+        filter((e) => !e.isHandled),
         filter((e) => this.isFocusable),
         filter((e) => e.type === 'DOWN'),
-        delay(0), // NB: Ensure the tabstrip is focused when any tab is clicked.
+        delay(0),
       )
       .subscribe((e) => this.focus());
 
     // Finish up.
     this.updatePath();
-
     if (this.props.focusOnLoad) {
       time.delay(0, () => this.focus());
     }
   }
 
-  public componentDidUpdate(prev: ITreeViewProps) {
+  public componentDidUpdate(prev: ITreeviewProps) {
     let updatePath = false;
-    const isCurrentChanged = !R.equals(TreeView.current(prev), TreeView.current(this.props));
+    const isCurrentChanged = !R.equals(Treeview.current(prev), Treeview.current(this.props));
     if (isCurrentChanged) {
       updatePath = true;
     }
@@ -217,6 +227,10 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return renderer({ fire, renderIcon, renderNodeBody, renderPanel, renderHeader });
   }
 
+  public get tag() {
+    return this.props.tag || '';
+  }
+
   /**
    * [Methods]
    */
@@ -238,7 +252,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     return this;
   }
 
-  private fire: t.FireEvent<t.TreeviewEvent> = (e) => this._event$.next(e);
+  private fire: t.FireEvent<t.TreeviewEvent> = (e) => this.event$.next(e);
 
   /**
    * [Render]
@@ -363,7 +377,12 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
   private renderHeader = (node: N, depth: number, custom?: React.ReactNode | null) => {
     const theme = this.theme;
-    const props = node.props?.treeview || {};
+    const isInline = false; // NB: does not make sense for a "header".
+    const isFocused = this.isFocused;
+
+    const props = this.renderer.beforeRender.header({ node, depth, isInline, isFocused });
+    node = { ...node, props: { ...node.props, treeview: props } };
+
     const header = props.header || {};
     const title = props.title || props.label || node.id.toString();
     const height = this.headerHeight(node);
@@ -386,7 +405,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
         showParentButton={showParentButton}
         theme={theme}
         background={this.props.background}
-        isFocused={this.isFocused}
+        isFocused={isFocused}
         onMouseParent={this.handleNodeMouse}
       />
     );
@@ -405,10 +424,11 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
     }
   }
 
-  private handleNodeMouse = (payload: t.ITreeviewMouse) => {
-    const props = TreeUtil.props(payload);
+  private handleNodeMouse = (e: t.TreeNodeMouseEventHandlerArgs) => {
+    const props = TreeUtil.props(e);
+
     if (props.isEnabled === false) {
-      switch (payload.type) {
+      switch (e.type) {
         case 'CLICK':
         case 'DOUBLE_CLICK':
         case 'DOWN':
@@ -417,18 +437,26 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
           return;
       }
     }
+
+    const payload: t.ITreeviewMouse = {
+      ...e,
+      tag: this.tag,
+      isHandled: false,
+      handled: () => (payload.isHandled = true),
+    };
     this.fire({ type: 'TREEVIEW/mouse', payload });
   };
 
   private updatePath() {
     const { root } = this.props;
-    const current = TreeView.current(this.props);
+    const current = Treeview.current(this.props);
     const currentPath = TreeUtil.pathList(root, current) || [];
     const renderedPath = [...(this.state.renderedPath || [])];
     currentPath.forEach((node, i) => {
       renderedPath[i] = node;
     });
-    this.setState({
+
+    this.state$.next({
       index: currentPath.length - 1,
       currentPath,
       renderedPath,
@@ -437,7 +465,7 @@ export class TreeView extends React.PureComponent<ITreeViewProps, ITreeViewState
 
   private handleSlide = (e: StackPanelSlideEvent) => {
     const isSliding = e.stage === 'START';
-    this.setState({ isSliding });
+    this.state$.next({ isSliding });
   };
 
   private handleFocusChange = () => this.focus$.next(containsFocus(this));

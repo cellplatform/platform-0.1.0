@@ -1,4 +1,4 @@
-import { t } from '../common';
+import { t, toNodeId } from '../common';
 
 const toString = (input?: string) => (input || '').trim();
 
@@ -42,6 +42,7 @@ export function id(input?: string) {
 }
 
 export const TreeIdentity: t.TreeIdentity = {
+  toNodeId,
   toString,
   format,
   parse,

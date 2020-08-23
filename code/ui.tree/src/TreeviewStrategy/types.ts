@@ -3,6 +3,7 @@ import { t } from '../common';
 type M = ITreeviewStrategyMutation;
 type D = t.IDisposable;
 type E = t.TreeviewEvent;
+type F = t.FireEvent<E>;
 
 /**
  * Mutation.
@@ -22,12 +23,27 @@ export type ITreeviewStrategy = { next: TreeviewStrategyNext };
 export type TreeviewStrategyNext = (args: TreeviewStrategyNextArgs) => void;
 export type TreeviewStrategyNextArgs = { event: E; tree: t.ITreeState };
 
-export type TreeviewStrategyDefault = () => ITreeviewStrategy;
-export type TreeviewStrategyMouseNavigation = () => ITreeviewStrategy;
-export type TreeviewStrategyKeyboardNavigation = () => ITreeviewStrategy;
+export type TreeviewStrategyMerge = (...strategies: t.ITreeviewStrategy[]) => ITreeviewStrategy;
+
+export type TreeviewStrategyArgs = { fire: F };
+type A = TreeviewStrategyArgs;
+
+export type TreeviewStrategyDefault = (args: A) => ITreeviewStrategy;
+export type TreeviewStrategyMouseNavigation = (args: A) => ITreeviewStrategy;
+export type TreeviewStrategyKeyboardNavigation = (args: A) => ITreeviewStrategy;
+
+export type TreeviewStrategySelection = (args: TreeviewStrategySelectionArgs) => ITreeviewStrategy;
+export type TreeviewStrategySelectionArgs = A & {
+  color?: string | number;
+  colorFocused?: string | number;
+  bg?: string | number;
+  bgFocused?: string | number;
+};
 
 export type ITreeviewStrategies = {
+  merge: TreeviewStrategyMerge;
   default: TreeviewStrategyDefault;
+  selection: TreeviewStrategySelection;
   nav: {
     mouse: TreeviewStrategyKeyboardNavigation;
     keyboard: TreeviewStrategyKeyboardNavigation;

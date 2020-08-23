@@ -27,10 +27,16 @@ export type ITreeHeaderProps = {
 };
 
 export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
+  /**
+   * [Properties]
+   */
   private get theme() {
     return themes.themeOrDefault(this.props);
   }
 
+  /**
+   * [Render]
+   */
   public render() {
     const { height } = this.props;
     const styles = {
@@ -68,10 +74,16 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
         Flex: 'horizontal-spaceBetween-center',
       }),
       title: css({
+        flex: 1,
         fontSize: 14,
         fontWeight: 'bold',
         textShadow: Text.toShadow([1, theme.textShadow]),
         color: color.format(theme.titleColor),
+        textAlign: 'center',
+        userSelect: 'none',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
       }),
       edge: css({
         Flex: 'center-center',
@@ -120,7 +132,7 @@ export class TreeHeader extends React.PureComponent<ITreeHeaderProps> {
   /**
    * [Handlers]
    */
-  private mouseHandlers = (target: t.ITreeviewMouse['target']) => {
+  private mouseHandlers = (target: t.TreeNodeMouseEventHandlerArgs['target']) => {
     const { node, onMouseParent } = this.props;
     return TreeNode.mouseHandlers(() => node, target, onMouseParent);
   };

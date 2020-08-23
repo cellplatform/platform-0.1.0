@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.s3.types",
-  "version": "0.2.14",
+  "version": "0.2.15",
   "description": "Types for the platform AWS/S3 library.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,8 +12,8 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/http.types": "0.2.15",
-    "@platform/types": "0.5.2"
+    "@platform/http.types": "0.2.16",
+    "@platform/types": "0.5.3"
   },
   "devDependencies": {
     "@platform/test": "0.1.14",

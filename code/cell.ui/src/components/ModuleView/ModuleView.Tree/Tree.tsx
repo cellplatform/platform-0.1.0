@@ -1,15 +1,17 @@
-import { ITreeViewProps, TreeView } from '@platform/ui.tree/lib/components/TreeView';
+import { ITreeviewProps } from '@platform/ui.tree/lib/components/Treeview';
+import { Tree } from '@platform/ui.tree';
 import { TreeviewStrategy } from '@platform/ui.tree/lib/TreeviewStrategy';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { color, COLORS, CssValue, dispose, t } from '../../common';
+import { CssValue, dispose, t } from '../common';
 
 export type IModuleViewTreeProps = {
+  totalColumns?: number;
   module?: t.IModule;
-  strategy?: t.ITreeviewStrategy;
-  treeviewProps?: ITreeViewProps;
+  strategy?: (fire: t.FireEvent) => t.ITreeviewStrategy;
+  treeviewProps?: ITreeviewProps;
   focusOnLoad?: boolean;
   style?: CssValue;
 };
@@ -35,13 +37,13 @@ export class ModuleViewTree extends React.PureComponent<
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    this.initialize();
+    this.init();
   }
 
   public componentDidUpdate(prev: IModuleViewTreeProps) {
     const next = this.props;
     if (prev.module?.id !== next.module?.id) {
-      this.initialize();
+      this.init();
     }
   }
 
@@ -50,7 +52,7 @@ export class ModuleViewTree extends React.PureComponent<
     this.unmounted$.complete();
   }
 
-  private initialize() {
+  private init() {
     this.state.current?.dispose();
     this.state$.next({ current: undefined });
 
@@ -60,10 +62,14 @@ export class ModuleViewTree extends React.PureComponent<
       const until$ = disposable.dispose$;
 
       // Setup the behavior strategy.
-      const strategy = this.props.strategy || TreeviewStrategy.default();
-      const events = TreeView.events(this.treeview$, until$);
-      events.beforeRender.node$.subscribe(this.beforeNodeRender);
-      events.treeview$.subscribe((event) => strategy.next({ tree, event }));
+      const fire = this.fire;
+
+      const strategy = this.props.strategy
+        ? this.props.strategy(fire as t.FireEvent)
+        : TreeviewStrategy.default({ fire });
+
+      const events = Tree.View.events(this.treeview$, until$);
+      events.$.subscribe((event) => strategy.next({ tree, event }));
 
       // Redraw on change.
       tree.event.changed$
@@ -74,20 +80,6 @@ export class ModuleViewTree extends React.PureComponent<
       this.state$.next({ current: { ...disposable } });
     }
   }
-
-  /**
-   * Process selection styles on node before it is rendered.
-   */
-  private beforeNodeRender = (e: t.ITreeviewBeforeRenderNode) => {
-    const isSelected = e.node.id === this.nav.selected;
-    if (isSelected) {
-      e.change((props) => {
-        const colors = props.colors || (props.colors = {});
-        colors.label = e.isFocused ? COLORS.BLUE : undefined;
-        colors.bg = e.isFocused ? color.format(-0.06) : color.format(-0.03);
-      });
-    }
-  };
 
   /**
    * [Properties]
@@ -111,17 +103,29 @@ export class ModuleViewTree extends React.PureComponent<
       return null;
     }
 
-    return (
-      <TreeView
-        background={'NONE'}
-        tabIndex={0}
-        {...this.props.treeviewProps}
-        style={this.props.style}
-        root={root}
-        current={this.nav.current}
-        event$={this.treeview$}
-        focusOnLoad={this.props.focusOnLoad}
-      />
-    );
+    const total = this.props.totalColumns;
+
+    const props: ITreeviewProps = {
+      background: 'NONE',
+      tabIndex: 0,
+      ...this.props.treeviewProps,
+      style: this.props.style,
+      root: root,
+      current: this.nav.current,
+      event$: this.treeview$,
+      focusOnLoad: this.props.focusOnLoad,
+    };
+
+    if (typeof total === 'number' && total > 1) {
+      return <Tree.Columns {...props} total={total} />;
+    } else {
+      return <Tree.View {...props} />;
+    }
   }
+
+  /**
+   * [Helpers]
+   */
+
+  private fire: t.FireEvent<t.TreeviewEvent> = (e) => this.treeview$.next(e);
 }

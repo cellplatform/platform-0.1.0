@@ -2,47 +2,54 @@ import { color, css, CssValue } from '@platform/css';
 import { Button } from '@platform/ui.button';
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { TreeView } from '../..';
-import { t, COLORS } from '../../common';
+import { Treeview } from '../..';
+import { t } from '../../common';
 import { TreeViewState } from '../../components.dev/TreeviewState';
 import { TreeviewStrategy } from '../../TreeviewStrategy';
-import { TreeEvents } from '../../TreeEvents';
 
 type Node = t.ITreeviewNode;
 const header: t.ITreeviewNodeHeader = { isVisible: false, marginBottom: 45 };
 
-const SAMPLES = {
-  DEFAULT: {
-    id: 'root',
-    props: { treeview: { label: 'Root', header } },
-    children: [
-      {
-        id: 'Default-1',
-        children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
-      },
-      { id: 'Default-2' },
-      { id: 'Default-3' },
-    ],
-  } as Node,
-  TWISTY: {
-    id: 'root',
-    props: { treeview: { label: 'Root', header } },
-    children: [
-      {
-        id: 'Default-1',
-        props: { treeview: { inline: {} } },
-        children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
-      },
-    ],
-  } as Node,
+const DEFAULT: Node = {
+  id: 'root',
+  props: { treeview: { label: 'Root', header } },
+  children: [
+    {
+      id: 'Default-1',
+      children: [{ id: 'Child-1.1' }, { id: 'Child-1.2' }, { id: 'Child-1.3' }],
+    },
+    {
+      id: 'Default-2',
+      props: { treeview: { inline: {} } },
+      children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
+    },
+    { id: 'Default-3' },
+  ],
 };
+
+const TWISTY: Node = {
+  id: 'root',
+  props: { treeview: { label: 'Root', header } },
+  children: [
+    { id: 'Default-1' },
+    {
+      id: 'Default-2',
+      props: { treeview: { inline: {} } },
+      children: [{ id: 'Child-2.1' }, { id: 'Child-2.2' }, { id: 'Child-2.3' }],
+    },
+    { id: 'Default-3' },
+    { id: 'Default-4' },
+  ],
+};
+
+const SAMPLES = { DEFAULT, TWISTY };
 
 Object.keys(SAMPLES).forEach((key) => {
   const node = SAMPLES[key];
-  TreeView.query(node).walkDown((e) => {
-    TreeView.util.props(e.node, (props) => {
+  Treeview.query(node).walkDown((e) => {
+    Treeview.util.props(e.node, (props) => {
       props.label = props.label || e.id;
     });
   });
@@ -53,36 +60,25 @@ export type ITestProps = { style?: CssValue };
 export class Test extends React.PureComponent<ITestProps> {
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeviewEvent>();
-  private tree = TreeView.State.create({ root: SAMPLES.DEFAULT, dispose$: this.unmounted$ });
+  private tree = Treeview.State.create({
+    root: SAMPLES.DEFAULT,
+    // root: SAMPLES.TWISTY,
+    dispose$: this.unmounted$,
+  });
 
   /**
    * [Lifecycle]
    */
   public componentDidMount() {
+    const fire: t.FireEvent<t.TreeviewEvent> = (e) => this.treeview$.next(e);
     const tree = this.tree;
-    tree.event.changed$.pipe(takeUntil(this.unmounted$), debounceTime(10)).subscribe((e) => {
-      this.forceUpdate();
-    });
-
-    const treeviewEvents = TreeEvents.create(this.treeview$, this.unmounted$);
+    const changed$ = tree.event.changed$.pipe(takeUntil(this.unmounted$));
+    changed$.pipe(debounceTime(10)).subscribe(() => this.forceUpdate());
 
     /**
-     * Adjust styles on selected node.
+     * State behavior strategy.
      */
-    treeviewEvents.beforeRender.node$.subscribe((e) => {
-      const isSelected = e.node.id === this.selected;
-      if (isSelected) {
-        e.change((props) => {
-          const colors = props.colors || (props.colors = {});
-          colors.label = COLORS.BLUE;
-        });
-      }
-    });
-
-    /**
-     * State / Behavior Strategy
-     */
-    const strategy = TreeviewStrategy.default();
+    const strategy = TreeviewStrategy.default({ fire });
     this.treeview$
       .pipe(takeUntil(this.unmounted$))
       .subscribe((event) => strategy.next({ tree, event }));
@@ -121,14 +117,15 @@ export class Test extends React.PureComponent<ITestProps> {
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        {this.renderTree('left')}
+        {this.renderTree({ edge: 'left', focusOnLoad: true })}
         {this.renderCenter()}
-        {this.renderTree('right')}
+        {this.renderTree({ edge: 'right' })}
       </div>
     );
   }
 
-  private renderTree(edge: 'left' | 'right') {
+  private renderTree(args: { edge: 'left' | 'right'; focusOnLoad?: boolean }) {
+    const { edge } = args;
     const styles = {
       base: css({
         width: 280,
@@ -140,12 +137,13 @@ export class Test extends React.PureComponent<ITestProps> {
     };
     return (
       <div {...styles.base}>
-        <TreeView
+        <Treeview
           root={this.tree.root}
           current={this.current}
           event$={this.treeview$}
           background={'NONE'}
           tabIndex={0}
+          focusOnLoad={args.focusOnLoad}
         />
       </div>
     );

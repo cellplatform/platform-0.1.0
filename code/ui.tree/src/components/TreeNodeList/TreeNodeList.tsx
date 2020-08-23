@@ -153,8 +153,14 @@ export class TreeNodeList extends React.PureComponent<ITreeNodeListProps> {
     const totalChildren = node.children ? node.children.length : 0;
     const hasChildren = totalChildren > 0;
 
+    // Pass the node through the BEFORE render modifier.
+    const renderer = this.props.renderer;
+    const depth = this.depth;
+    const isFocused = this.props.isFocused;
+    const isInline = this.props.isInline || false;
+    let treeview = renderer.beforeRender.node({ node, depth, isInline, isFocused });
+
     // Prepare the node-props.
-    let treeview: t.ITreeviewNodeProps = { ...node.props?.treeview } || {};
     const defaultNodeProps = this.defaultNodeProps({
       index,
       node,

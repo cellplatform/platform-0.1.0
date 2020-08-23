@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.electron",
-  "version": "0.0.119",
+  "version": "0.0.121",
   "description": "Electron shell for CellOS.",
   "scripts": {
     "ui": "cd app.ui && yarn start",
@@ -8,7 +8,7 @@
     "dev": "cd app && yarn dev",
     "test": "cd app && yarn test",
     "package": "yarn bundle.preload && cd app && yarn package",
-    "make": "yarn bundle.preload && cd app && yarn make",
+    "make": "yarn bundle && yarn bundle.preload && cd app && yarn make",
     "build": "cd app && yarn build",
     "clean": "sh script.sh/clean.sh",
     "reset": "sh script.sh/reset.sh",
@@ -17,7 +17,7 @@
     "open": "cd app/out/A1-darwin-x64 && open ."
   },
   "devDependencies": {
-    "@platform/cell.compile.web": "0.0.119",
+    "@platform/cell.compile.web": "0.0.121",
     "@platform/cli.prompt": "0.3.22",
     "@platform/ts": "3.9.5",
     "browserify": "16.5.1"

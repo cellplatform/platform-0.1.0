@@ -1,16 +1,14 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { color, css, CssValue, COLORS } from './common';
-import { Button } from '../../components/primitives';
-import * as t from './types';
 
-import { ModuleView } from '@platform/cell.ui/lib/components/ModuleView';
-const Module = ModuleView.Module;
+import { Button } from '@platform/ui.button';
+import { color, COLORS, css, CssValue, Module, t } from '../../../common';
+import { Identifiers } from './Identifiers';
 
 export type ITestSampleProps = {
-  e: t.IModuleRender;
   module: string;
+  selected?: string;
   style?: CssValue;
 };
 export type ITestSampleState = { module?: t.MyModule };
@@ -36,7 +34,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
     // NB:     This could also have been retrieved from the [context]
     //         but is being "requested" in this way to demonstrate
     //         how this is one.
-    const module = Module.fire(ctx.fire).request<t.MyProps>(this.props.module).module;
+    const module = Module.fire(ctx.bus).request<t.MyProps>(this.props.module).module;
     this.state$.next({ module });
   }
 
@@ -56,15 +54,17 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
    * [Render]
    */
   public render() {
-    const e = this.props.e;
-
     const styles = {
       base: css({
-        padding: 20,
         flex: 1,
+        color: COLORS.DARK,
+        boxSizing: 'border-box',
+      }),
+      body: css({
+        Absolute: 0,
+        padding: 20,
         Flex: 'vertical-stretch-stretch',
         overflow: 'hidden',
-        color: COLORS.DARK,
       }),
       image: css({
         width: 300,
@@ -79,6 +79,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
         Flex: 'horizontal-end-spaceBetween',
         borderTop: `solid 5px ${color.format(-0.06)}`,
         paddingTop: 10,
+        overflow: 'hidden',
       }),
     };
 
@@ -88,45 +89,47 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
       KITTEN: 'https://tdb.sfo2.digitaloceanspaces.com/tmp/kitten.png',
     };
 
-    const src =
-      e.tree.current === e.module
-        ? e.tree.selection?.id.endsWith(':one')
-          ? URL.KITTEN
-          : URL.KONG
-        : URL.LEAF;
+    const src = URL.LEAF;
+
+    // const src =
+    //   e.tree.current === e.module
+    //     ? e.tree.selection?.id.endsWith(':one')
+    //       ? URL.KITTEN
+    //       : URL.KONG
+    //     : URL.LEAF;
 
     return (
       <div {...styles.base}>
-        <div {...styles.top}>
-          <img src={src} {...styles.image} />
-        </div>
-        <div {...styles.bottom}>
-          {this.renderIdentifiers()}
-          <Button onClick={this.onAddModuleClick}>Add Module</Button>
+        <div {...styles.body}>
+          <div {...styles.top}>
+            <img src={src} {...styles.image} />
+          </div>
+          <div {...styles.bottom}>
+            <Identifiers module={this.module?.id} selected={this.props.selected} />
+            <Button onClick={this.onAddModuleClick}>Add Module</Button>
+          </div>
         </div>
       </div>
     );
   }
 
   private renderIdentifiers() {
-    const e = this.props.e;
-    const selection = e.tree.selection?.id;
+    const selected = this.props.selected;
 
     const styles = {
       base: css({}),
       code: css({
         fontFamily: 'Menlo, monospace',
         color: COLORS.CLI.MAGENTA,
-        fontSize: 12,
+        fontSize: 10,
         margin: 0,
-        textAlign: 'right',
       }),
     };
     return (
       <div {...styles.base}>
         <pre {...styles.code}>
-          <div>{`Module:   ${e.module}`}</div>
-          <div>{`TreeNode: ${selection || '-'}`}</div>
+          <div>{`Module:   ${this.module?.id}`}</div>
+          <div>{`Selected: ${selected || '<empty>'}`}</div>
         </pre>
       </div>
     );
@@ -137,8 +140,22 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
    */
 
   private onAddModuleClick = async () => {
-    if (this.module) {
-      Module.register(this.module).add({ id: 'child', treeview: 'MyChild' });
+    const parent = this.module;
+    if (parent) {
+      const bus = this.context.bus;
+      const child = Module.create({ bus, root: 'child' });
+
+      /**
+       * TODO 🐷
+       * this is not adding it to the right parent
+       */
+
+      console.group('🌳 Add Module');
+      console.log('parent.id', parent.id);
+      console.log('parent', parent);
+      console.groupEnd();
+
+      Module.register(bus, child, parent.id);
     }
   };
 }

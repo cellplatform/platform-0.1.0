@@ -13,7 +13,7 @@ export type TreeEvents = {
 };
 
 export type ITreeEvents<T extends N = N> = {
-  treeview$: Observable<t.TreeviewEvent>;
+  $: Observable<t.TreeviewEvent>;
   keyboard$: Observable<t.ITreeviewKeyboard>;
   render: ITreeRenderEvents<T>;
   beforeRender: ITreeBeforeRenderEvents<T>;
@@ -58,4 +58,5 @@ export type ITreeRenderEvents<T extends N = N> = {
 export type ITreeBeforeRenderEvents<T extends N = N> = {
   $: Observable<t.TreeviewBeforeRenderEvent['payload']>;
   node$: Observable<t.ITreeviewBeforeRenderNode<T>>;
+  header$: Observable<t.ITreeviewBeforeRenderHeader<T>>;
 };

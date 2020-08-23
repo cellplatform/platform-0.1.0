@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs';
+import { TreeIdentity } from '@platform/state';
 import { filter, map } from 'rxjs/operators';
 
 import { t } from '../common';
@@ -7,14 +7,16 @@ import * as util from './util';
 /**
  * Strategy for navigating the tree via the keyboard.
  */
-export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
+export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
   const { events, treeview$ } = util.options();
+  const { fire } = args;
 
-  let tree: t.ITreeState;
+  let tree: t.ITreeviewState;
   const current = () => util.current(tree);
 
   const key$ = events.keyboard$.pipe(
     filter((e) => e.keypress.isPressed),
+    filter((e) => !e.isHandled),
     map((e) => ({ key: e.keypress.key, current: e.current, ...current() })),
   );
 
@@ -31,19 +33,24 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
     },
   };
 
-  const setCurrent$ = new Subject<string>();
-  setCurrent$.subscribe((id) => {
-    const { get, mutate } = current();
-    mutate.current(id);
-    mutate.selected(get.children(id)[0]?.id);
-  });
+  const select = (node?: t.NodeIdentifier) => {
+    const selected = TreeIdentity.toNodeId(node);
+    fire({ type: 'TREEVIEW/select', payload: { selected } });
+  };
+
+  const selection = (args: { selected?: t.NodeIdentifier; current?: t.NodeIdentifier }) => {
+    const { get } = util.current(tree);
+    const current = TreeIdentity.toNodeId(args.current);
+    const selected = TreeIdentity.toNodeId(args.selected) || get.children(current)[0]?.id;
+    fire({ type: 'TREEVIEW/select', payload: { selected, current } });
+  };
 
   /**
    * BEHAVIOR: Select the first-node when the [HOME] key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'Home')).subscribe((e) => {
     const children = e.get.children(e.current);
-    e.mutate.selected(children[0]?.id);
+    select(children[0]);
   });
 
   /**
@@ -51,40 +58,38 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
    */
   key$.pipe(filter((e) => e.key === 'End')).subscribe((e) => {
     const children = e.get.children(e.current);
-    e.mutate.selected(children[children.length - 1]?.id);
+    select(children[children.length - 1]);
   });
 
   /**
    * BEHAVIOR: Select the next-node when the [DOWN] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowDown')).subscribe((e) => {
-    const select = (next?: t.ITreeNode) => {
-      if (next) {
-        e.mutate.selected(next.id);
-      }
-    };
-
     const selected = e.get.selected;
-    const current = e.get.current;
 
     if (!selected.id) {
       // Nothing yet selected, select first child.
+      const current = e.get.current;
       select(current.children[0]);
     } else {
-      const isDirectChild = current.children.some((child) => child.id === selected.id);
+      const isDirectChild = !Boolean(selected.parent.props?.treeview?.inline);
 
       if (isDirectChild) {
         if (selected.props.inline?.isOpen && selected.children.length > 0) {
-          return select(selected.children[0]);
+          select(selected.children[0]);
         } else {
-          return select(current.children[selected.index + 1]);
+          select((selected.parent.children || [])[selected.index + 1]);
         }
       } else {
         // Within an open inline "twisty".
         if (selected.isLast) {
           // Step up and out of the "twisty" into the next item of the current list.
-          const index = current.children.findIndex((child) => child.id === selected.parent?.id);
-          select(current.children[index + 1]);
+          const parent = e.get.query.ancestor(selected.node, (e) => e.level === 2);
+          const children = parent?.children || [];
+          const index = children.findIndex((child) => child.id === selected.parent.id);
+          if (index > -1) {
+            select(children[index + 1]);
+          }
         } else {
           select((selected.parent?.children || [])[selected.index + 1]);
         }
@@ -96,12 +101,6 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
    * BEHAVIOR: Select the previous-node when the [UP] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowUp')).subscribe((e) => {
-    const select = (next?: t.ITreeNode) => {
-      if (next) {
-        e.mutate.selected(next.id);
-      }
-    };
-
     const selected = e.get.selected;
     const current = e.get.current;
 
@@ -109,7 +108,7 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
       // Nothing yet selected, select last child.
       select(current.children[current.children.length - 1]);
     } else {
-      const isDirectChild = current.children.some((child) => child.id === selected.id);
+      const isDirectChild = !Boolean(selected.parent.props?.treeview?.inline);
 
       if (isDirectChild) {
         const prev = selected.prev;
@@ -125,7 +124,9 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
         if (selected.isFirst) {
           // Step up and out of the "twisty" into the parent.
           const index = current.children.findIndex((child) => child.id === selected.parent?.id);
-          select(current.children[index]);
+          if (index > -1) {
+            select(current.children[index]);
+          }
         } else {
           select(selected.prev?.node);
         }
@@ -147,12 +148,12 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
       const props = util.props(e.query.findById(selected));
       if (props.inline) {
         if (props.inline.isOpen && props.chevron?.isVisible) {
-          setCurrent$.next(selected.id); // Drill-in.
+          selection({ current: selected.id }); // Drill-in.
         } else {
           e.mutate.open(selected.id);
         }
       } else {
-        setCurrent$.next(selected.id);
+        selection({ current: selected.id });
       }
     });
 
@@ -161,13 +162,18 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = () => {
    */
   key$.pipe(filter((e) => e.key === 'ArrowLeft')).subscribe((e) => {
     const selected = e.get.selected;
-    const props = util.props(e.query.findById(selected));
-    if (props.inline?.isOpen) {
+    if (selected.props.inline?.isOpen) {
       e.mutate.close(selected.id);
+    } else if (
+      util.props(selected.parent).inline?.isOpen &&
+      e.query.parent(selected.parent)?.id === e.current
+    ) {
+      e.mutate.close(selected.parent.id);
+      selection({ current: e.current, selected: selected.parent.id });
     } else {
       const parent = e.query.parent(e.get.current);
       if (parent) {
-        setCurrent$.next(parent.id);
+        selection({ current: parent.id, selected: e.current });
       }
     }
   });

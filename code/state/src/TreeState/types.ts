@@ -62,6 +62,7 @@ export type ITreeStateReadonly<T extends N, A extends E> = {
   readonly event: ITreeStateEvents<T, A>;
   action: t.IStateObjectDispatchMethods<T, A>['action'];
   find: t.TreeStateFind<T, A>;
+  contains: t.TreeStateContains<T, A>;
   walkDown: t.TreeStateWalkDown<T, A>;
 };
 
@@ -162,10 +163,14 @@ export type ITreeStateAscend<T extends N = N, A extends E = any> = ITreeStateWal
  * Find
  */
 export type TreeStateFind<T extends N = N, A extends E = E> = (
-  match: TreeStateFindMatch<T, A>,
+  match?: TreeStateFindMatch<T, A> | t.NodeIdentifier,
 ) => t.ITreeState<T, A> | undefined;
 export type TreeStateFindMatch<T extends N, A extends E = E> = (
   args: ITreeStateDescend<T, A>,
+) => boolean;
+
+export type TreeStateContains<T extends N = N, A extends E = E> = (
+  match?: TreeStateFindMatch<T, A> | t.NodeIdentifier,
 ) => boolean;
 
 /**

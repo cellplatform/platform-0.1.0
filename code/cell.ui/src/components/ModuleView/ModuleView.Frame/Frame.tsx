@@ -1,14 +1,11 @@
 import * as React from 'react';
-import { Subject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, CssValue, t } from '../../common';
-
-import { Module } from '../../Module';
+import { Subject } from 'rxjs';
+import { takeUntil, filter } from 'rxjs/operators';
+import { rx, css, CssValue, t, Module } from '../common';
 
 export type IModuleViewFrameProps = {
-  fire: t.FireEvent<any>;
-  event$: Observable<t.Event<any>>;
-  filter: t.ModuleFilter;
+  bus: t.EventBus<any>;
+  filter?: t.ModuleFilterView;
   style?: CssValue;
 };
 export type IModuleViewFrameState = { el?: JSX.Element | null };
@@ -24,26 +21,19 @@ export class ModuleViewFrame extends React.PureComponent<
   /**
    * [Lifecycle]
    */
+
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
-    const events = Module.events(this.props.event$, this.unmounted$).filter(this.props.filter);
+    const event$ = this.props.bus.event$.pipe(takeUntil(this.unmounted$));
 
-    events.selection$.subscribe((e) => {
-      const el = this.fire.render(e);
-      this.state$.next({ el });
-    });
+    rx.payload<t.IModuleRenderedEvent>(event$, 'Module/rendered')
+      .pipe(filter((e) => this.filter(e.module, e.view)))
+      .subscribe(({ el }) => this.state$.next({ el }));
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
-  }
-
-  /**
-   * [Properties]
-   */
-  private get fire() {
-    return Module.fire(this.props.fire);
   }
 
   /**
@@ -59,4 +49,18 @@ export class ModuleViewFrame extends React.PureComponent<
     };
     return <div {...css(styles.base, this.props.style)}>{this.state.el}</div>;
   }
+
+  /**
+   * [Helpers]
+   */
+
+  private filter = (module: string, view: string) => {
+    const { filter } = this.props;
+    if (!filter) {
+      return true;
+    } else {
+      const { namespace, key } = Module.Identity.parse(module);
+      return filter({ module, namespace, key, view });
+    }
+  };
 }

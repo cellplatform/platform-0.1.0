@@ -1,4 +1,4 @@
-import { TreeView } from '@platform/ui.tree';
+import { Treeview } from '@platform/ui.tree';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
@@ -15,7 +15,7 @@ export function init(
 
   return {
     events$,
-    tree: TreeView.events(tree$, dispose$),
+    tree: Treeview.events(tree$, dispose$),
     progress: {
       start$: events$.pipe(
         filter((e) => e.type === 'SHELL/progress/start'),
