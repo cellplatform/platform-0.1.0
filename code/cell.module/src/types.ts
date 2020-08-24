@@ -4,7 +4,6 @@ import * as t from './common/types';
 
 type E = t.ModuleEvent;
 type N = t.ITreeNode;
-type S = string;
 type O = Record<string, unknown>;
 type B = t.EventBus<any>;
 type P = t.IModuleProps;
@@ -18,10 +17,11 @@ export type IModuleDef = {
   init(bus: t.EventBus, parent?: string): t.IModule;
 };
 
-export type ModuleArgs<T extends P> = t.ITreeStateArgs<IModuleNode<T>> & {
+export type ModuleArgs<T extends P> = {
   bus: B; // Global event-bus.
-  view?: T['view']; // TODO 🐷 - move to [ViewModule]
+  root?: t.IModuleNode<T> | string;
   data?: T['data'];
+  dispose$?: Observable<any>;
 };
 
 /**
@@ -71,12 +71,11 @@ export type IModuleNode<T extends P> = t.ITreeNode<T>;
 /**
  * The way a module is expressed as props within a tree-node.
  */
-export type IModuleProps<D extends O = O, V extends S = S> = {
+export type IModuleProps<D extends O = O> = {
   kind?: 'MODULE';
-  view?: V;
   data?: D;
 };
-export type IModulePropsAny = t.IModuleProps<any, any>;
+export type IModulePropsAny = t.IModuleProps<any>;
 
 /**
  * Filter.
@@ -92,9 +91,6 @@ export type ModuleFilterEvent<T extends E = E> = (args: ModuleFilterEventArgs<T>
 export type ModuleFilterEventArgs<T extends E = E> = ModuleFilterArgs & {
   event: T;
 };
-
-export type ModuleFilterView = (args: ModuleFilterViewArgs) => boolean;
-export type ModuleFilterViewArgs = ModuleFilterArgs & { view: string };
 
 /**
  * Event Bus (fire).

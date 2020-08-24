@@ -4,11 +4,8 @@ import { filter } from 'rxjs/operators';
 import { Module } from '.';
 import { expect, t } from '../test';
 
-type ITreeviewProps = { label?: string };
-
-type MyView = 'View-1' | 'View-2';
-type MyData = { count: number; treeview?: ITreeviewProps };
-type MyProps = t.IModuleProps<MyData, MyView>;
+type MyData = { count: number };
+type MyProps = t.IModuleProps<MyData>;
 export type MyModule = t.IModule<MyProps>;
 
 const event$ = new Subject<t.Event>();
@@ -16,7 +13,7 @@ const bus: t.EventBus = { fire: (e: t.Event) => event$.next(e), event$ };
 const fire = Module.fire(bus);
 
 const create = <P extends MyProps = MyProps>(
-  args: { root?: string | t.ITreeNode<P>; view?: MyView; data?: MyData } = {},
+  args: { root?: string | t.ITreeNode<P>; data?: MyData } = {},
 ) => {
   return Module.create<P>({ ...args, bus });
 };
@@ -32,7 +29,6 @@ describe('Module', () => {
 
       expect(root.props?.kind).to.eql('MODULE');
       expect(root.props?.data).to.eql({});
-      expect(root.props?.view).to.eql('');
     });
 
     it('throw: id contains "/" character', () => {

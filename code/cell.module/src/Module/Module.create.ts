@@ -1,8 +1,7 @@
 import { TreeState } from '@platform/state';
 import { wildcard } from '@platform/util.string/lib/wildcard';
 import { rx } from '@platform/util.value';
-import { equals } from 'ramda';
-import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
 import { isModuleEvent } from './Module.events';
@@ -15,11 +14,7 @@ type P = t.IModuleProps;
  */
 export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
   const { bus } = args;
-
-  const root = formatModuleNode<T>(args.root || 'module', {
-    view: args.view,
-    data: args.data,
-  });
+  const root = formatModuleNode<T>(args.root || 'module', { data: args.data });
 
   // Create the tree-node module.
   const module = TreeState.create({ root }) as t.IModule<T>;
@@ -81,9 +76,9 @@ function registerChild(args: { bus: t.EventBus<any>; parent: t.IModule; child: t
  */
 function formatModuleNode<T extends P = any>(
   input: t.ITreeNode | string,
-  defaults: { view?: T['view']; data?: T['data'] } = {},
+  defaults: { data?: T['data'] } = {},
 ) {
-  const { view = '', data = {} } = defaults;
+  const { data = {} } = defaults;
   const node = typeof input === 'string' ? { id: input } : { ...input };
 
   type M = t.IModuleNode<T>;
@@ -91,7 +86,6 @@ function formatModuleNode<T extends P = any>(
 
   props.kind = 'MODULE';
   props.data = (props.data || data) as T;
-  props.view = props.view || view;
 
   return node as M;
 }

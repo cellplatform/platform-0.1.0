@@ -21,6 +21,44 @@ const create = <P extends MyProps = MyProps>(
 };
 
 describe('ViewModule', () => {
+  describe('create', () => {
+    it('no params (default)', () => {
+      const module = ViewModule.create<MyProps>({ bus });
+      expect(module.root.props?.view).to.eql('');
+      expect(module.root.props?.treeview).to.eql({});
+      expect(module.root.props?.data).to.eql({});
+    });
+
+    it('param: view', () => {
+      const module1 = ViewModule.create<MyProps>({ bus, view: 'View-1' });
+      const module2 = ViewModule.create<MyProps>({
+        bus,
+        view: 'View-2',
+        root: { id: 'foo', props: { view: 'View-1' } },
+      });
+
+      expect(module1.root.props?.view).to.eql('View-1');
+      expect(module2.root.props?.view).to.eql('View-2'); // NB: Param overrides root data.
+    });
+
+    it('param: treeview', () => {
+      const module1 = ViewModule.create<MyProps>({ bus, treeview: { label: 'hello' } });
+      const module2 = ViewModule.create<MyProps>({
+        bus,
+        treeview: { label: 'title' },
+        root: { id: 'foo', props: { treeview: { label: 'foo', icon: 'Face' } } },
+      });
+      expect(module1.root.props?.treeview?.label).to.eql('hello');
+      expect(module2.root.props?.treeview?.label).to.eql('title');
+      expect(module2.root.props?.treeview?.icon).to.eql('Face');
+    });
+
+    it('param: data', () => {
+      const module = ViewModule.create<MyProps>({ bus, data: { count: 123 } });
+      expect(module.root.props?.data?.count).to.eql(123);
+    });
+  });
+
   describe('event: "Module/render"', () => {
     const events = ViewModule.events<MyProps>(event$);
     const module = create();

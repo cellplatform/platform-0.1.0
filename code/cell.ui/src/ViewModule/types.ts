@@ -10,6 +10,7 @@ type E = t.ViewModuleEvent;
 type AnyProps = t.IModulePropsAny;
 
 export type ViewModuleArgs<T extends P> = t.ModuleArgs<T> & {
+  view?: T['view'];
   treeview?: T['treeview'];
 };
 
@@ -37,11 +38,20 @@ export type ViewModule = {
 };
 
 /**
+ * TreeNode Properties
  * The way a UI module is expressed as props within a tree-node.
  */
-export type IViewModuleProps<D extends O = O, V extends S = S> = t.IModuleProps<D, V> & {
+export type IViewModuleProps<D extends O = O, V extends S = S> = t.IModuleProps<D> & {
+  view?: V;
   treeview?: t.ITreeviewNodeProps;
 };
+
+/**
+ * Filter
+ */
+
+export type ModuleFilterView<V extends S = S> = (args: t.ModuleFilterViewArgs<V>) => boolean;
+export type ModuleFilterViewArgs<V extends S = S> = t.ModuleFilterArgs & { view: V };
 
 /**
  * Event Bus (fire).
