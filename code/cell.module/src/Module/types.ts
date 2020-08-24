@@ -11,7 +11,7 @@ type AnyProps = t.IModulePropsAny;
 
 export type ModuleArgs<T extends P> = t.ITreeStateArgs<IModuleNode<T>> & {
   bus: B; // Global event-bus.
-  treeview?: string | t.ITreeviewNodeProps;
+  treeview?: string | t.ITreeviewNodeProps; // TODO - move under data
   view?: T['view'];
   data?: T['data'];
 };

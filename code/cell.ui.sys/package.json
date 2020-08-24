@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@platform/cell.client": "0.2.134",
+    "@platform/cell.module": "^0.0.0",
     "@platform/cell.schema": "0.4.152",
     "@platform/cell.schema.sys": "0.0.10",
     "@platform/cell.types": "0.4.138",

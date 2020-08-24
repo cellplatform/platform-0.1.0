@@ -6,7 +6,7 @@ import * as t from './types';
 
 type P = t.DebugProps;
 
-export const DebugModule: t.IModuleDef = {
+export const TmplModule: t.IModuleDef = {
   /**
    * ENTRY: Initialize a new module from the definition.
    */

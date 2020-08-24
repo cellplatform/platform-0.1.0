@@ -23,7 +23,8 @@
   },
   "devDependencies": {
     "@platform/test": "0.1.8",
-    "@platform/ts": "3.7.27"
+    "@platform/ts": "3.7.27",
+    "@platform/ui.tree": "^0.7.12"
   },
   "files": [
     "lib",

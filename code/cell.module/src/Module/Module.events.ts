@@ -151,9 +151,7 @@ export function monitorAndDispatch<T extends P>(
       distinctUntilChanged((prev, next) => equals(prev, next)),
     )
     .subscribe((e) => {
-      const { selected } = e;
-      const root = module.root;
-      next.selection({ root, selected });
+      next.selection({ root: module.root, selected: e.selected });
     });
 
   // Finish up.
