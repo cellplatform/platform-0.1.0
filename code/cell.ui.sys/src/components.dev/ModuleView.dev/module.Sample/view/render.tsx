@@ -19,7 +19,7 @@ export function renderer(args: { bus: t.EventBus; events: t.IViewModuleEvents<P>
   const render = events.render;
 
   const fire = Module.fire(bus);
-  const RootProvider = Module.provider<t.MyContext>({ bus });
+  const RootProvider = ui.Module.provider<t.MyContext>({ bus });
 
   /**
    * Diagram.

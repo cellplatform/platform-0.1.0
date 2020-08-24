@@ -35,9 +35,6 @@ export type Module = {
   Identity: t.TreeIdentity;
   Query: t.TreeQuery;
 
-  Context: React.Context<any>;
-  provider<T extends O>(context: T): React.FunctionComponent;
-
   fire<T extends P>(bus: B): IModuleFire<T>;
 
   events<T extends P>(
