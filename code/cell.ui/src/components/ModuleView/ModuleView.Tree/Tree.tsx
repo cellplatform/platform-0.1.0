@@ -86,7 +86,7 @@ export class ModuleViewTree extends React.PureComponent<
    */
 
   private get root() {
-    return this.props.module?.root;
+    return this.props.module?.root as t.ITreeviewNode;
   }
 
   private get nav() {

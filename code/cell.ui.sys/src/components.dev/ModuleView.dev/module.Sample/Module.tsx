@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { Module, t } from '../common';
+import { ViewModule, t } from '../common';
 import { renderer } from './view/render';
 
 type P = t.MyProps;
@@ -10,58 +10,64 @@ export const SampleModule: t.IModuleDef = {
    * Initialize the module.
    */
   init(bus, parent) {
-    const fire = Module.fire<P>(bus);
+    const fire = ViewModule.fire<P>(bus);
 
     /**
      * Create main module.
      */
-    const main = Module.create<P>({ bus, root: 'sample', treeview: 'Sample' });
+    const main = ViewModule.create<P>({
+      bus,
+      root: { id: 'sample', props: { treeview: { label: 'Sample' } } },
+    });
     const until$ = main.dispose$;
 
-    const isWithin: t.ModuleFilterEvent = (e) => modules.some((m) => m.contains(e.module));
-    const events = Module.events<P>(bus.event$, until$);
+    const match: t.ModuleFilterEvent = (e) => modules.some((m) => m.contains(e.module));
+    const event$ = ViewModule.filter(bus.event$, match);
+    const events = ViewModule.events<P>(event$, until$);
 
     /**
      * Setup renderer.
      */
-    renderer({
-      bus,
-      until$,
-      filter: isWithin,
-    });
+    renderer({ bus, events });
 
     /**
      * Create sample child modules.
      */
-    const diagram = Module.create<P>({
+    const diagram = ViewModule.create<P>({
       bus,
-      root: 'diagram',
-      treeview: 'Diagram',
       view: 'DIAGRAM',
+      root: { id: 'diagram', props: { treeview: { label: 'Diagram' } } },
     });
-    const demo = Module.create<P>({ bus, root: 'demo', treeview: 'Demo', view: 'SAMPLE' });
+    const demo = ViewModule.create<P>({
+      bus,
+      view: 'SAMPLE',
+      root: { id: 'demo', props: { treeview: { label: 'Demo' } } },
+    });
     const modules = [main, diagram, demo];
 
-    Module.register(bus, diagram, main.id);
-    Module.register(bus, demo, main.id);
+    ViewModule.register(bus, diagram, main.id);
+    ViewModule.register(bus, demo, main.id);
 
     /**
      * Catch un-targetted (wildcard) registrations and route
      * them into the MAIN module.
      */
-    events.register$.pipe(filter((e) => !e.parent)).subscribe((e) => {
-      const module = fire.request(e.module).module;
-      if (module) {
-        Module.register(bus, module, main.id);
-      }
-    });
+    ViewModule.events(bus.event$, until$)
+      .register$.pipe(filter((e) => !e.parent))
+      .subscribe((e) => {
+        const module = fire.request(e.module).module;
+        if (module) {
+          ViewModule.register(bus, module, main.id);
+        }
+      });
 
     /**
      * STRATEGY: Render on selection.
      */
     const behavior = (module: t.IModule) => {
-      const events = Module.events<P>(module, until$);
-      events.filter(isWithin).selection$.subscribe((e) => {
+      const event$ = ViewModule.filter(module.event.$, match);
+      const events = ViewModule.events<P>(event$, until$);
+      events.selection$.subscribe((e) => {
         const selected = e.selection?.id;
         const { view, data } = e;
         fire.render({ selected, module, data, view, notFound: '404' });

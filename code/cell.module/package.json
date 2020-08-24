@@ -1,0 +1,34 @@
+{
+  "name": "@platform/cell.module",
+  "version": "0.0.1",
+  "description": "Module definition and management tooling.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build --no-esm",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/cell.client": "0.2.135",
+    "@platform/cell.types": "0.4.139",
+    "@platform/cell.typesystem": "0.0.93",
+    "@platform/libs": "0.2.2",
+    "@platform/state": "0.7.4",
+    "@platform/types": "0.5.3"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.8",
+    "@platform/ts": "3.7.27"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}

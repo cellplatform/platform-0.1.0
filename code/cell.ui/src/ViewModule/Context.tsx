@@ -11,7 +11,7 @@ type O = Record<string, unknown>;
  * eg:
  *
  *      export class MyView extends React.PureComponent {
- *        public static contextType = Module.Context;
+ *        public static contextType = ViewModule.Context;
  *        public context!: t.MyContext
  *      }
  *
@@ -19,7 +19,7 @@ type O = Record<string, unknown>;
  *    https://reactjs.org/docs/context.html
  */
 export const Context = React.createContext({} as any);
-Context.displayName = '@platform/ui/Module';
+Context.displayName = '@platform/ui/ViewModule';
 
 export type ReactContext = React.ContextType<typeof Context>;
 

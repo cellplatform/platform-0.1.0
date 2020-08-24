@@ -1,23 +1,15 @@
 import * as React from 'react';
-import { Observable } from 'rxjs';
-import { FinderImage } from './components/Image';
 
-import { Module } from '../../common';
 import * as t from '../types';
+import { FinderImage } from './components/Image';
 
 type P = t.FinderProps;
 
 /**
  * View factory for the module.
  */
-export function renderer(args: {
-  bus: t.EventBus<any>;
-  until$: Observable<any>;
-  filter: t.ModuleFilterEvent;
-}) {
-  const { bus, until$ } = args;
-  const event = Module.events<P>(bus.event$, until$).filter(args.filter);
-  const render = event.render;
+export function renderer(events: t.IViewModuleEvents<P>) {
+  const render = events.render;
 
   render('DEFAULT').subscribe((e) => {
     const el = <FinderImage style={{ Absolute: 0 }} />;

@@ -1,67 +1,21 @@
-import { TreeQuery } from '@platform/state/lib/TreeQuery';
-import { filter, takeUntil, take } from 'rxjs/operators';
+import { Module } from '@platform/cell.module';
 import { is } from '@platform/state/lib/common/is';
+import { TreeQuery } from '@platform/state/lib/TreeQuery';
 
-import { rx, t } from '../common';
+import { t } from '../common';
 
-type B = t.EventBus<t.ModuleEvent>;
-type P = t.IModuleProps;
+type B = t.EventBus<t.ViewModuleEvent>;
+type P = t.IViewModuleProps;
 
 /**
  * Fire recipes through the event-bus.
  */
-export function fire<T extends P>(bus: B): t.IModuleFire<T> {
+export function fire<T extends P>(bus: B): t.IViewModuleFire<T> {
   return {
-    register: (module: t.IModule, parent: string) => register(bus, module, parent),
+    ...Module.fire<T>(bus),
     render: (args: t.ModuleFireRenderArgs<T>) => render(bus, args),
     selection: (args: t.ModuleFireSelectionArgs) => selection(bus, args),
-    request: <T extends P>(id: string) => request<T>(bus, id),
   };
-}
-
-/**
- * Registers a module.
- */
-export function register(bus: B, module: t.IModule, parent?: string) {
-  const event$ = bus.event$.pipe(takeUntil(module.dispose$));
-  const res: t.ModuleRegistration = { ok: false, module };
-
-  const parentResponse = (id?: string) => {
-    res.parent = request(bus, id || '').module;
-    res.ok = Boolean(res.parent);
-  };
-
-  if (parent) {
-    // Listen for the child registration to confirm success.
-    rx.payload<t.IModuleChildRegisteredEvent>(event$, 'Module/child/registered')
-      .pipe(
-        filter((e) => e.child === module.id),
-        take(1),
-      )
-      .subscribe((e) => parentResponse(parent));
-  } else {
-    // No target parent was specified (wildcard registration)
-    // Listen for whether any other listeners catch the registration and route it into a module.
-    rx.payload<t.IModuleRegisterEvent>(event$, 'Module/register')
-      .pipe(
-        filter((e) => e.module === module.id),
-        filter((e) => Boolean(e.parent)),
-        take(1),
-      )
-      .subscribe((e) => parentResponse(e.parent));
-  }
-
-  // Fire out the registration request.
-  bus.fire({ type: 'Module/register', payload: { module: module.id, parent } });
-
-  // Finish up.
-  if (res.ok && typeof parent === 'string') {
-    bus.fire({
-      type: 'Module/registered',
-      payload: { module: module.id, parent },
-    });
-  }
-  return res;
 }
 
 /**
@@ -93,13 +47,13 @@ export function render<T extends P>(
   };
 
   bus.fire({
-    type: 'Module/render',
+    type: 'Module/ui/render',
     payload,
   });
 
   if (el !== undefined) {
     bus.fire({
-      type: 'Module/rendered',
+      type: 'Module/ui/rendered',
       payload: { module, view, el },
     });
   } else if (args.notFound) {
@@ -142,29 +96,7 @@ export function selection<T extends P>(bus: B, args: t.ModuleFireSelectionArgs) 
     view: node?.props?.view || module?.props.view || '',
     data: node?.props?.data || module?.props.data || {},
   };
-  bus.fire({ type: 'Module/selection', payload });
-}
-
-/**
- * Request a module via an event.
- */
-export function request<T extends P = P>(bus: B, id: string): t.ModuleRequestResponse<T> {
-  let module: t.IModule<T> | undefined;
-  let handled = false;
-  bus.fire({
-    type: 'Module/request',
-    payload: {
-      module: id,
-      get handled() {
-        return handled;
-      },
-      respond: (args) => {
-        handled = true;
-        module = args.module as t.IModule<T>;
-      },
-    },
-  });
-  return { module };
+  bus.fire({ type: 'Module/ui/selection', payload });
 }
 
 /**

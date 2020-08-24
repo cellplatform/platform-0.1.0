@@ -1,4 +1,4 @@
-import { Module } from '../common';
+import { ViewModule } from '../common';
 import * as t from './types';
 import { renderer } from './view/render';
 
@@ -9,15 +9,21 @@ export const FinderModule: t.IModuleDef = {
    * Initialize a new module from the definition.
    */
   init(bus, parent) {
-    const fire = Module.fire<P>(bus);
-    const module = Module.create<P>({ bus, treeview: 'Finder', view: 'DEFAULT' });
+    const fire = ViewModule.fire<P>(bus);
+    const module = ViewModule.create<P>({
+      bus,
+      view: 'DEFAULT',
+      root: { id: 'finder', props: { treeview: { label: 'Finder' } } },
+    });
     const until$ = module.dispose$;
-    Module.register(bus, module, parent);
+    ViewModule.register(bus, module, parent);
 
     const match: t.ModuleFilterEvent = (e) => e.module == module.id || module.contains(e.module);
-    renderer({ bus, until$, filter: match });
+    const event$ = ViewModule.filter(bus.event$, match);
+    const events = ViewModule.events<P>(event$, until$);
 
-    const events = Module.events<P>(bus.event$, until$).filter(match);
+    renderer(events);
+
     events.selection$.subscribe((e) => {
       const { view, data } = e;
       const selected = e.selection?.id;

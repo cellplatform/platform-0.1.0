@@ -7,7 +7,7 @@ import { css, CssValue, ui, t } from './common';
 import { ComponentFrame } from './ComponentFrame';
 import { FinderModule } from './module.Finder';
 import { SampleModule } from './module.Sample';
-import { DebugModule } from './module.Debug';
+import { TmplModule } from './module.Tmpl';
 
 const { ModuleView } = ui;
 
@@ -55,7 +55,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
      */
     const main = SampleModule.init(bus);
     FinderModule.init(bus);
-    DebugModule.init(bus);
+    TmplModule.init(bus);
 
     this.state$.next({ main });
 

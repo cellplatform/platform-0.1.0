@@ -1,25 +1,30 @@
 import * as React from 'react';
-import { Observable } from 'rxjs';
 
-import { Module } from '../common';
+import { ViewModule } from '../common';
 import * as t from './types';
 
 type P = t.DebugProps;
 
-export const DebugModule: t.IModuleDef = {
+export const TmplModule: t.IModuleDef = {
   /**
    * ENTRY: Initialize a new module from the definition.
    */
   init(bus, parent) {
-    const fire = Module.fire<P>(bus);
-    const module = Module.create<P>({ bus, treeview: 'Debug', view: 'DEFAULT' });
+    const fire = ViewModule.fire<P>(bus);
+
+    const module = ViewModule.create<P>({
+      bus,
+      root: { id: 'tmpl', props: { treeview: { label: 'Template' }, view: 'DEFAULT' } },
+    });
     const until$ = module.dispose$;
-    Module.register(bus, module, parent);
+    ViewModule.register(bus, module, parent);
 
     const match: t.ModuleFilterEvent = (e) => e.module == module.id || module.contains(e.module);
-    renderer({ bus, until$, filter: match });
+    const event$ = ViewModule.filter(bus.event$, match);
+    const events = ViewModule.events<P>(event$, until$);
 
-    const events = Module.events<P>(bus.event$, until$).filter(match);
+    renderer(events);
+
     events.selection$.subscribe((e) => {
       const { view, data } = e;
       const selected = e.selection?.id;
@@ -33,17 +38,11 @@ export const DebugModule: t.IModuleDef = {
 /**
  * UI: View factory for the module.
  */
-function renderer(args: {
-  bus: t.EventBus<any>;
-  until$: Observable<any>;
-  filter: t.ModuleFilterEvent;
-}) {
-  const { bus, until$ } = args;
-  const event = Module.events<P>(bus.event$, until$).filter(args.filter);
-  const render = event.render;
+function renderer(events: t.IViewModuleEvents<P>) {
+  const render = events.render;
 
   render('DEFAULT').subscribe((e) => {
-    const el = <div style={{ padding: 20 }}>Debug Module</div>;
+    const el = <div style={{ padding: 20 }}>Template</div>;
     e.render(el);
   });
 
@@ -51,7 +50,7 @@ function renderer(args: {
    * Wildcard.
    */
   render('404').subscribe((e) => {
-    const el = <div style={{ padding: 20 }}>Debug (404)</div>;
+    const el = <div style={{ padding: 20 }}>Template (404)</div>;
     e.render(el);
   });
 }
