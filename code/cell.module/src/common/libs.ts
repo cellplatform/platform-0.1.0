@@ -1,2 +1,2 @@
-import { uniq } from 'ramda';
-export const R = { uniq };
+import { rx } from '@platform/util.value';
+export { rx };

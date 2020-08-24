@@ -1,1 +1,1 @@
-export type TEMP = string;
+export * from './Module/types';

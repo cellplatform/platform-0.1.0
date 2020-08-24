@@ -4,6 +4,6 @@
   "compilerOptions": {
     "outDir": "lib",
 
-    "noUnusedLocals": true
+    "noUnusedLocals": false
   }
 }
