@@ -1,6 +1,6 @@
 import * as ui from './ui';
 
-import { Module } from './Module';
+import { Module } from './common';
 export { Module };
 
 export { ui };

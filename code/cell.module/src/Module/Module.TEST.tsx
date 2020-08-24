@@ -128,6 +128,52 @@ describe('Module', () => {
     });
   });
 
+  describe('event: "Module/child/disposed"', () => {
+    it('fires child disposed event', () => {
+      const parent = create({ root: 'parent' });
+      const child = create({ root: 'child' });
+
+      const fired: t.IModuleChildDisposed[] = [];
+      events.childDisposed$.subscribe((e) => fired.push(e));
+
+      fire.register(child, parent.id);
+      child.dispose();
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].module).to.eql(parent.id);
+      expect(fired[0].child).to.eql(child.id);
+    });
+
+    it('removes child from parent', () => {
+      const parent = create({ root: 'parent' });
+      const child = create({ root: 'child' });
+      fire.register(child, parent.id);
+      expect(parent.find((e) => e.id === child.id)).to.equal(child);
+
+      child.dispose();
+      expect(parent.find((e) => e.id === child.id)).to.eql(undefined);
+    });
+  });
+
+  describe('event: "Module/request"', () => {
+    it('finds module: complete id', () => {
+      const module = create();
+      const res = Module.fire(bus).request(module.id);
+      expect(res.module?.id).to.eql(module.id);
+    });
+
+    it('finds module: wildcard ("*:id")', () => {
+      const module = create({ root: 'foo' });
+      const res = Module.fire(bus).request('*:foo');
+      expect(res.module?.id).to.eql(module.id);
+    });
+
+    it('not found', () => {
+      const res = Module.fire(bus).request('ns:404');
+      expect(res.module).to.eql(undefined);
+    });
+  });
+
   describe('event: "Module/render"', () => {
     const events = Module.events<MyProps>(event$);
     const module = create();
@@ -168,53 +214,7 @@ describe('Module', () => {
     });
   });
 
-  describe('event: "Module/request"', () => {
-    it('finds module: complete id', () => {
-      const module = create();
-      const res = Module.fire(bus).request(module.id);
-      expect(res.module?.id).to.eql(module.id);
-    });
-
-    it('finds module: wildcard ("*:id")', () => {
-      const module = create({ root: 'foo' });
-      const res = Module.fire(bus).request('*:foo');
-      expect(res.module?.id).to.eql(module.id);
-    });
-
-    it('not found', () => {
-      const res = Module.fire(bus).request('ns:404');
-      expect(res.module).to.eql(undefined);
-    });
-  });
-
-  describe('event: "Module/child/disposed"', () => {
-    it('fires child disposed event', () => {
-      const parent = create({ root: 'parent' });
-      const child = create({ root: 'child' });
-
-      const fired: t.IModuleChildDisposed[] = [];
-      events.childDisposed$.subscribe((e) => fired.push(e));
-
-      fire.register(child, parent.id);
-      child.dispose();
-
-      expect(fired.length).to.eql(1);
-      expect(fired[0].module).to.eql(parent.id);
-      expect(fired[0].child).to.eql(child.id);
-    });
-
-    it('removes child from parent', () => {
-      const parent = create({ root: 'parent' });
-      const child = create({ root: 'child' });
-      fire.register(child, parent.id);
-      expect(parent.find((e) => e.id === child.id)).to.equal(child);
-
-      child.dispose();
-      expect(parent.find((e) => e.id === child.id)).to.eql(undefined);
-    });
-  });
-
-  describe.only('event: "Module/selection"', () => {
+  describe('event: "Module/selection"', () => {
     it('from root: tree-node', () => {
       const parent = create({ root: 'parent', view: 'View-1', data: { count: 123 } });
       const fired: t.IModuleSelection<any>[] = [];

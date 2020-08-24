@@ -1,3 +1,6 @@
+import { equals } from 'ramda';
+export const R = { equals };
+
 import { containsFocus, mouse } from '@platform/react';
 export { containsFocus, mouse };
 
@@ -10,5 +13,5 @@ export { value, defaultValue, rx, time, dispose };
 import { Client, Uri } from '@platform/cell.client';
 export { Client, Uri };
 
-import { equals } from 'ramda';
-export const R = { equals };
+import { Module } from '@platform/cell.module';
+export { Module };

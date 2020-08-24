@@ -65,6 +65,18 @@
     excel-formula-tokenizer "2.3.1"
     toposort "2.0.2"
 
+"@platform/cell.module@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/cell.module/-/cell.module-0.0.0.tgz#774de1fd0de506d7f11072f706ebafe24bed00ee"
+  integrity sha512-TJiugMs7GmgWhQJEwrnPCVmRgKUWa3y2CVVKkS864T6N4r8cWHq30Zw6z0gta6asI2ALO3ITaam/n47Dx4wc/Q==
+  dependencies:
+    "@platform/cell.client" "0.2.134"
+    "@platform/cell.types" "0.4.138"
+    "@platform/cell.typesystem" "0.0.92"
+    "@platform/libs" "0.2.2"
+    "@platform/state" "0.7.4"
+    "@platform/types" "0.5.3"
+
 "@platform/cell.schema@0.4.152":
   version "0.4.152"
   resolved "https://registry.yarnpkg.com/@platform/cell.schema/-/cell.schema-0.4.152.tgz#32e6b5279f7d7a5922e22983758e9e5dfbadbc6a"
