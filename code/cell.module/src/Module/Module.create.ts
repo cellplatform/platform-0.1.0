@@ -1,11 +1,12 @@
 import { TreeState } from '@platform/state';
+import { wildcard } from '@platform/util.string/lib/wildcard';
 import { rx } from '@platform/util.value';
-import { filter } from 'rxjs/operators';
+import { equals } from 'ramda';
+import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
-import * as events from './Module.events';
+import { isModuleEvent } from './Module.events';
 import { fire } from './Module.fire';
-import { wildcard } from '@platform/util.string/lib/wildcard';
 
 type P = t.IModuleProps;
 
@@ -16,14 +17,13 @@ export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
   const { bus } = args;
 
   const root = formatModuleNode<T>(args.root || 'module', {
-    treeview: args.treeview,
     view: args.view,
     data: args.data,
   });
 
   // Create the tree-node module.
   const module = TreeState.create({ root }) as t.IModule<T>;
-  events.monitorAndDispatch(bus, module);
+  monitorAndDispatch(bus, module);
 
   // Listen for request events, and lookup to see if
   // the module can be resolved within the child set.
@@ -81,7 +81,7 @@ function registerChild(args: { bus: t.EventBus<any>; parent: t.IModule; child: t
  */
 function formatModuleNode<T extends P = any>(
   input: t.ITreeNode | string,
-  defaults: { treeview?: string | t.ITreeviewNodeProps; view?: T['view']; data?: T['data'] } = {},
+  defaults: { view?: T['view']; data?: T['data'] } = {},
 ) {
   const { view = '', data = {} } = defaults;
   const node = typeof input === 'string' ? { id: input } : { ...input };
@@ -93,12 +93,45 @@ function formatModuleNode<T extends P = any>(
   props.data = (props.data || data) as T;
   props.view = props.view || view;
 
-  if (typeof defaults.treeview === 'object') {
-    props.treeview = props.treeview || defaults.treeview;
-  } else {
-    const treeview = (props.treeview = props.treeview || {});
-    treeview.label = treeview.label ? treeview.label : defaults.treeview || 'Unnamed';
-  }
-
   return node as M;
+}
+
+/**
+ * Monitors the events of a module and bubbling
+ * relevant events when matched.
+ */
+function monitorAndDispatch<T extends P>(bus: t.EventBus<t.ModuleEvent>, module: t.IModule<T>) {
+  const until$ = module.dispose$;
+  const event$ = bus.event$.pipe(takeUntil(until$));
+
+  /**
+   * Bubble module events through the StateObject's internal dispatch.
+   */
+  event$
+    .pipe(
+      filter((e) => isModuleEvent(e)),
+      filter((e) => e.payload.module === module.id),
+    )
+    .subscribe((e) => module.dispatch(e));
+
+  const id = module.id;
+  const objChanged$ = module.event.changed$.pipe(takeUntil(until$));
+  const objPatched$ = module.event.patched$.pipe(takeUntil(until$));
+
+  objChanged$.subscribe((change) => {
+    module.dispatch({
+      type: 'Module/changed',
+      payload: { module: id, change },
+    });
+  });
+
+  objPatched$.subscribe((patch) => {
+    module.dispatch({
+      type: 'Module/patched',
+      payload: { module: id, patch },
+    });
+  });
+
+  // Finish up.
+  return module;
 }

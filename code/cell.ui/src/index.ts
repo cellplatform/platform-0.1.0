@@ -3,6 +3,9 @@ import * as ui from './ui';
 import { Module } from './common';
 export { Module };
 
+import { ViewModule } from './ViewModule';
+export { ViewModule };
+
 export { ui };
 export * from './context';
 

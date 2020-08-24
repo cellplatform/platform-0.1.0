@@ -14,13 +14,8 @@ type P = t.MyProps;
 /**
  * Render factory.
  */
-export function renderer(args: {
-  bus: t.EventBus<any>;
-  until$: Observable<any>;
-  filter: t.ModuleFilterEvent;
-}) {
-  const { bus, until$ } = args;
-  const events = Module.events<P>(bus.event$, until$).filter(args.filter);
+export function renderer(args: { bus: t.EventBus; events: t.IViewModuleEvents<P> }) {
+  const { bus, events } = args;
   const render = events.render;
 
   const fire = Module.fire(bus);

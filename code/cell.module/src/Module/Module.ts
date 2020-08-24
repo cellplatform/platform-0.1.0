@@ -8,9 +8,7 @@ import { Context } from './Context';
 import { provider } from './Context';
 import { t } from '../common';
 
-type P = t.IModuleProps;
-
-export class Module {
+export const Module: t.Module = {
   /**
    * The React [Context] used to pass down common modules to components.
    *
@@ -25,33 +23,34 @@ export class Module {
    * See:
    *    https://reactjs.org/docs/context.html
    */
-  public static Context = Context;
-  public static provider = provider;
+  Context,
+  provider,
 
   /**
    * Tools for working querying a tree.
    */
-  public static Query = TreeQuery;
+  Query: TreeQuery,
 
   /**
    * Helpers for working with tree ids.
    */
-  public static Identity = TreeState.identity;
+  Identity: TreeState.identity,
 
   /**
    * Create a new module.
    */
-  public static create = create;
+  create,
 
   /**
    * Registers a new module as a child of another module.
    */
-  public static register = register;
+  register,
 
   /**
    * Construct an event helper.
    */
-  public static events = events.create;
-  public static isModuleEvent = events.isModuleEvent;
-  public static fire = fire;
-}
+  fire,
+  events: events.create,
+  isModuleEvent: events.isModuleEvent,
+  filter: events.eventFilter,
+};
