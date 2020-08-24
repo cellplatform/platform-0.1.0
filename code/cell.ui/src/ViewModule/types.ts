@@ -7,6 +7,7 @@ type S = string;
 type O = Record<string, unknown>;
 type P = t.IViewModuleProps;
 type E = t.ViewModuleEvent;
+type AnyProps = t.IModulePropsAny;
 
 export type ViewModuleArgs<T extends P> = t.ModuleArgs<T> & {
   treeview?: T['treeview'];
@@ -79,4 +80,52 @@ export type IViewModuleEvents<T extends P> = t.IModuleEvents<T> & {
  * [EVENTS]
  */
 
-export type ViewModuleEvent = t.ModuleEvent;
+export type ViewModuleEvent =
+  | t.ModuleEvent
+  | IModuleSelectionEvent
+  | IModuleRenderEvent
+  | IModuleRenderedEvent;
+
+/**
+ * UI ("user interface").
+ */
+
+/**
+ * Fires a request for a module to be rendered in UI.
+ */
+export type IModuleRenderEvent<T extends P = AnyProps> = {
+  type: 'Module/ui/render';
+  payload: IModuleRender<T>;
+};
+export type IModuleRender<T extends P> = {
+  module: string;
+  selected?: string;
+  data: T['data'];
+  view: NonNullable<T['view']>;
+  handled: boolean;
+  render(el: JSX.Element | null): void;
+};
+
+/**
+ * The response to a module render event containing the UI to render.
+ */
+export type IModuleRenderedEvent = {
+  type: 'Module/ui/rendered';
+  payload: IModuleRendered;
+};
+export type IModuleRendered = { module: string; view: string; el: JSX.Element | null };
+
+/**
+ * Fires when the of the module selection within a user-interface changes.
+ */
+export type IModuleSelectionEvent<T extends P = AnyProps> = {
+  type: 'Module/ui/selection';
+  payload: IModuleSelection<T>;
+};
+export type IModuleSelection<T extends P> = {
+  module: string;
+  selection?: IModuleSelectionTree;
+  data: NonNullable<T['data']>;
+  view: NonNullable<T['view']>;
+};
+export type IModuleSelectionTree = { id: string; props: t.ITreeviewNodeProps };

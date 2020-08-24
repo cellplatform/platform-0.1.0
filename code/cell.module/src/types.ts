@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { Observable, MonoTypeOperatorFunction } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import * as t from './common/types';
 
@@ -68,7 +67,6 @@ export type IModule<T extends P = AnyProps> = t.ITreeState<IModuleNode<T>, t.Mod
  * A tree-node that contains details about a module.
  */
 export type IModuleNode<T extends P> = t.ITreeNode<T>;
-export type IModuleSelectionTree = { id: string; props: t.ITreeviewNodeProps };
 
 /**
  * The way a module is expressed as props within a tree-node.
@@ -130,9 +128,6 @@ export type ModuleEvent =
   | IModuleRegisteredEvent
   | IModuleChildRegisteredEvent
   | IModuleChildDisposedEvent
-  | IModuleSelectionEvent
-  | IModuleRenderEvent
-  | IModuleRenderedEvent
   | IModuleChangedEvent
   | IModulePatchedEvent
   | IModuleRequestEvent;
@@ -187,47 +182,4 @@ export type IModuleRequest = {
   module: string;
   handled: boolean;
   respond<T extends P = AnyProps>(args: { module: t.IModule<T> }): void;
-};
-
-/**
- * UI ("user interface").
- */
-
-/**
- * Fires a request for a module to be rendered in UI.
- */
-export type IModuleRenderEvent<T extends P = AnyProps> = {
-  type: 'Module/ui/render';
-  payload: IModuleRender<T>;
-};
-export type IModuleRender<T extends P> = {
-  module: string;
-  selected?: string;
-  data: T['data'];
-  view: NonNullable<T['view']>;
-  handled: boolean;
-  render(el: JSX.Element | null): void;
-};
-
-/**
- * The response to a module render event containing the UI to render.
- */
-export type IModuleRenderedEvent = {
-  type: 'Module/ui/rendered';
-  payload: IModuleRendered;
-};
-export type IModuleRendered = { module: string; view: string; el: JSX.Element | null };
-
-/**
- * Fires when the of the module selection within a user-interface changes.
- */
-export type IModuleSelectionEvent<T extends P = AnyProps> = {
-  type: 'Module/ui/selection';
-  payload: IModuleSelection<T>;
-};
-export type IModuleSelection<T extends P> = {
-  module: string;
-  selection?: IModuleSelectionTree;
-  data: NonNullable<T['data']>;
-  view: NonNullable<T['view']>;
 };
