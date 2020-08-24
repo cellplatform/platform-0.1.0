@@ -16,6 +16,10 @@ A cell module is an encapsulated unit of functionality containing:
 
 <p>&nbsp;<p>
 
+A module is itself nothing more than a "type of" `ITreeNode` data strcutrue that slots into a wider organizing tree. Modules may be used for managing UI ("user interface") or for purely computation operations.
+
+<p>&nbsp;<p>
+
 ## Setup
 
     yarn add @platform/cell.module
