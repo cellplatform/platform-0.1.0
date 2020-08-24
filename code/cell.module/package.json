@@ -1,0 +1,29 @@
+{
+  "name": "@platform/cell.module",
+  "version": "0.0.0",
+  "description": "Cell module definition and management tools.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/libs": "0.0.12"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.8",
+    "@platform/ts": "3.7.27"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}
