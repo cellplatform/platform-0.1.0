@@ -184,35 +184,6 @@ export type IModuleChildDisposedEvent = {
 };
 export type IModuleChildDisposed = { module: string; child: string };
 
-export type IModuleSelectionEvent<T extends P = AnyProps> = {
-  type: 'Module/selection';
-  payload: IModuleSelection<T>;
-};
-export type IModuleSelection<T extends P> = {
-  module: string;
-  selection?: IModuleSelectionTree;
-  data: NonNullable<T['data']>;
-  view: NonNullable<T['view']>;
-};
-
-export type IModuleRenderEvent<T extends P = AnyProps> = {
-  type: 'Module/render';
-  payload: IModuleRender<T>;
-};
-export type IModuleRender<T extends P> = {
-  module: string;
-  selected?: string;
-  data: T['data'];
-  view: NonNullable<T['view']>;
-  handled: boolean;
-  render(el: JSX.Element | null): void;
-};
-export type IModuleRenderedEvent = {
-  type: 'Module/rendered';
-  payload: IModuleRendered;
-};
-export type IModuleRendered = { module: string; view: string; el: JSX.Element | null };
-
 export type IModuleChangedEvent = {
   type: 'Module/changed';
   payload: IModuleChanged;
@@ -233,4 +204,47 @@ export type IModuleRequest = {
   module: string;
   handled: boolean;
   respond<T extends P = AnyProps>(args: { module: t.IModule<T> }): void;
+};
+
+/**
+ * UI ("user interface").
+ */
+
+/**
+ * Fires a request for a module to be rendered in UI.
+ */
+export type IModuleRenderEvent<T extends P = AnyProps> = {
+  type: 'Module/ui/render';
+  payload: IModuleRender<T>;
+};
+export type IModuleRender<T extends P> = {
+  module: string;
+  selected?: string;
+  data: T['data'];
+  view: NonNullable<T['view']>;
+  handled: boolean;
+  render(el: JSX.Element | null): void;
+};
+
+/**
+ * The response to a module render event containing the UI to render.
+ */
+export type IModuleRenderedEvent = {
+  type: 'Module/ui/rendered';
+  payload: IModuleRendered;
+};
+export type IModuleRendered = { module: string; view: string; el: JSX.Element | null };
+
+/**
+ * Fires when the of the module selection within a user-interface changes.
+ */
+export type IModuleSelectionEvent<T extends P = AnyProps> = {
+  type: 'Module/ui/selection';
+  payload: IModuleSelection<T>;
+};
+export type IModuleSelection<T extends P> = {
+  module: string;
+  selection?: IModuleSelectionTree;
+  data: NonNullable<T['data']>;
+  view: NonNullable<T['view']>;
 };

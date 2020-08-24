@@ -13,9 +13,9 @@ type P = t.IModuleProps;
 export function fire<T extends P>(bus: B): t.IModuleFire<T> {
   return {
     register: (module: t.IModule, parent: string) => register(bus, module, parent),
+    request: <T extends P>(id: string) => request<T>(bus, id),
     render: (args: t.ModuleFireRenderArgs<T>) => render(bus, args),
     selection: (args: t.ModuleFireSelectionArgs) => selection(bus, args),
-    request: <T extends P>(id: string) => request<T>(bus, id),
   };
 }
 
@@ -65,6 +65,28 @@ export function register(bus: B, module: t.IModule, parent?: string) {
 }
 
 /**
+ * Request a module via an event.
+ */
+export function request<T extends P = P>(bus: B, id: string): t.ModuleRequestResponse<T> {
+  let module: t.IModule<T> | undefined;
+  let handled = false;
+  bus.fire({
+    type: 'Module/request',
+    payload: {
+      module: id,
+      get handled() {
+        return handled;
+      },
+      respond: (args) => {
+        handled = true;
+        module = args.module as t.IModule<T>;
+      },
+    },
+  });
+  return { module };
+}
+
+/**
  * Fires a render request seqeunce.
  */
 export function render<T extends P>(
@@ -93,13 +115,13 @@ export function render<T extends P>(
   };
 
   bus.fire({
-    type: 'Module/render',
+    type: 'Module/ui/render',
     payload,
   });
 
   if (el !== undefined) {
     bus.fire({
-      type: 'Module/rendered',
+      type: 'Module/ui/rendered',
       payload: { module, view, el },
     });
   } else if (args.notFound) {
@@ -142,29 +164,7 @@ export function selection<T extends P>(bus: B, args: t.ModuleFireSelectionArgs) 
     view: node?.props?.view || module?.props.view || '',
     data: node?.props?.data || module?.props.data || {},
   };
-  bus.fire({ type: 'Module/selection', payload });
-}
-
-/**
- * Request a module via an event.
- */
-export function request<T extends P = P>(bus: B, id: string): t.ModuleRequestResponse<T> {
-  let module: t.IModule<T> | undefined;
-  let handled = false;
-  bus.fire({
-    type: 'Module/request',
-    payload: {
-      module: id,
-      get handled() {
-        return handled;
-      },
-      respond: (args) => {
-        handled = true;
-        module = args.module as t.IModule<T>;
-      },
-    },
-  });
-  return { module };
+  bus.fire({ type: 'Module/ui/selection', payload });
 }
 
 /**
