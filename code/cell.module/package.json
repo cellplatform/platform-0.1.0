@@ -1,7 +1,7 @@
 {
   "name": "@platform/cell.module",
   "version": "0.0.0",
-  "description": "Cell module definition and management tools.",
+  "description": "Module definition and management tooling.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
