@@ -12,6 +12,10 @@ For applying to [UI](https://en.wikipedia.org/wiki/User_interface) see the [reac
 
     yarn add @platform/state
 
+To work abstractly with a state library use the [isolated type library](../state.types):
+
+    yarn add @platform/state.types
+
 <p>&nbsp;<p>
 
 ## Getting Started
