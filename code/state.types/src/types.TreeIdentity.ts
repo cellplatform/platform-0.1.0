@@ -1,4 +1,4 @@
-import * as t from '../types';
+import * as t from './common';
 
 export type TreeIdentity = {
   toString(input?: string): string;

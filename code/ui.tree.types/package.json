@@ -1,0 +1,31 @@
+{
+  "name": "@platform/ui.tree.types",
+  "version": "0.0.2",
+  "description": "Abstract type definitions for ui.tree library.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/libs": "0.2.2",
+    "@platform/state.types": "^0.0.1",
+    "@platform/types": "0.5.3"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.14",
+    "@platform/ts": "3.9.5"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}

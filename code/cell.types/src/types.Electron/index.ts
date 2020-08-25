@@ -1,2 +1,2 @@
-export * from './types.electron';
+export * from './types.electron.http';
 export * from './types.electron.events';

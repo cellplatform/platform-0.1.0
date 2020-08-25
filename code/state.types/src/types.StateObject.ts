@@ -1,5 +1,4 @@
-import { Observable } from 'rxjs';
-import * as t from '../common/types';
+import * as t from './common';
 
 type O = Record<string, unknown>;
 type Event = t.Event<O>;
@@ -21,7 +20,7 @@ export type StateObject = {
 
   merge<T extends MergeObject, A extends Event = Event>(
     initial: T | Record<keyof T, t.IStateObject<T[keyof T]>>,
-    dispose$?: Observable<any>,
+    dispose$?: t.Observable<any>,
   ): StateMerger<T, A>;
 
   toObject<T extends O>(draft: T): T;
@@ -47,23 +46,23 @@ export type IStateObjectDispatchable<T extends O, A extends Event = Event> = ISt
 
 export type IStateObjectDispatchMethods<T extends O, A extends Event> = {
   dispatch(event: A): void;
-  action(takeUntil$?: Observable<any>): IStateObjectAction<T, A>;
+  action(takeUntil$?: t.Observable<any>): IStateObjectAction<T, A>;
 };
 
 export type IStateObjectAction<T extends O, A extends Event> = {
-  readonly dispatch$: Observable<A>;
-  dispatched<E extends A>(action: E['type']): Observable<E['payload']>;
-  changed(action: A['type']): Observable<IStateObjectChanged<T, A>>;
+  readonly dispatch$: t.Observable<A>;
+  dispatched<E extends A>(action: E['type']): t.Observable<E['payload']>;
+  changed(action: A['type']): t.Observable<IStateObjectChanged<T, A>>;
 };
 
 export type IStateObjectEvents<T extends O, A extends Event = Event> = {
-  readonly $: Observable<StateObjectEvent>;
-  readonly changing$: Observable<IStateObjectChanging<T>>;
-  readonly changed$: Observable<IStateObjectChanged<T, A>>;
-  readonly patched$: Observable<IStateObjectPatched<A>>;
-  readonly cancelled$: Observable<IStateObjectCancelled<T>>;
-  readonly dispatch$: Observable<A>;
-  readonly dispose$: Observable<any>;
+  readonly $: t.Observable<StateObjectEvent>;
+  readonly changing$: t.Observable<IStateObjectChanging<T>>;
+  readonly changed$: t.Observable<IStateObjectChanged<T, A>>;
+  readonly patched$: t.Observable<IStateObjectPatched<A>>;
+  readonly cancelled$: t.Observable<IStateObjectCancelled<T>>;
+  readonly dispatch$: t.Observable<A>;
+  readonly dispose$: t.Observable<any>;
 };
 
 /**
@@ -102,10 +101,10 @@ export type StateObjectChanger<T extends O> = (draft: T) => void;
 export type StateMerger<T extends MergeObject, A extends Event = Event> = {
   readonly store: t.IStateObjectReadOnly<T, A>;
   readonly state: T;
-  readonly changed$: Observable<t.IStateObjectChanged>;
+  readonly changed$: t.Observable<t.IStateObjectChanged>;
   add<K extends keyof T>(
     key: K,
-    subject: t.IStateObject<T[K]> | Observable<t.IStateObjectChanged>,
+    subject: t.IStateObject<T[K]> | t.Observable<t.IStateObjectChanged>,
   ): StateMerger<T, A>;
   dispose(): void;
 };

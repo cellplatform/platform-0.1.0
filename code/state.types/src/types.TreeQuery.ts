@@ -1,4 +1,4 @@
-import * as t from '../common/types';
+import * as t from './common';
 
 type Node = t.ITreeNode;
 type MaybeId<T extends Node> = t.NodeIdentifier<T> | undefined;

@@ -5,9 +5,11 @@
 
 Shared types for all cell (eg. "A1") related modules.
 
+<p>&nbsp;</p>
+
 ## Setup
 
     yarn add @platform/cell.types
 
-
-
+<p>&nbsp;</p>
+<p>&nbsp;</p>

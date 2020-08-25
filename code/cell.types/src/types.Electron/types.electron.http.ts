@@ -1,11 +1,4 @@
 import { t } from '../common';
-import { IServerLog } from '@platform/log/lib/server/types';
-
-export type IElectronLog = IServerLog & { file: { path: string }; format: IElectronLogFormat };
-
-export type IElectronLogFormat = {
-  uri(input?: string | t.IUri): string;
-};
 
 /**
  * HTTP (Server)

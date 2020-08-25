@@ -3,7 +3,7 @@ import { t } from '../common';
 export type IpcEventSource = 'MAIN' | string;
 
 /**
- * Events (Electron "IPC")
+ * [Events]
  */
 export type IpcEvent = IpcSheetChangedEvent | IpcDebugEvent;
 

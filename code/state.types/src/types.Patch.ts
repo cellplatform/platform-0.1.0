@@ -1,4 +1,13 @@
-import * as t from '../common/types';
+import * as t from './common';
+
+/**
+ * Inline copy of the `immer` Patch type.
+ */
+export type ArrayPatch = {
+  op: 'replace' | 'remove' | 'add';
+  path: (string | number)[];
+  value?: any;
+};
 
 type A = t.ArrayPatch;
 

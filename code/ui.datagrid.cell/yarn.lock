@@ -1144,19 +1144,20 @@
   dependencies:
     "@platform/libs" "0.2.2"
 
-"@platform/cell.types@0.4.139":
-  version "0.4.139"
-  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.139.tgz#6899495afed7bbd82aeba09048d53a236251654b"
-  integrity sha512-sXoNepTckavtYV+Yxb4KORkLlLZhJk3TumLQnfD0iIZISkUQbrUbNN1h8Wtbsz1wTTo6M0Wr2eohkcrHgWVUMg==
+"@platform/cell.types@0.4.141":
+  version "0.4.141"
+  resolved "https://registry.yarnpkg.com/@platform/cell.types/-/cell.types-0.4.141.tgz#c49c43dc7f7d89348629fc5e0d7cd7a9a685788a"
+  integrity sha512-B4OkciKWZZ1+2nZjFrWaLW/8XhtArKw44JU4inORsjmrZy+caIdoCypBjvav4L1qBEb9AzYfzcJIkionom9KYA==
   dependencies:
     "@platform/cache" "0.2.33"
     "@platform/fs.s3.types" "0.2.15"
-    "@platform/fs.types" "^0.0.14"
+    "@platform/fs.types" "0.0.14"
     "@platform/fsdb.types" "0.6.32"
     "@platform/http.types" "0.2.16"
     "@platform/libs" "0.2.2"
-    "@platform/log" "0.1.27"
+    "@platform/state.types" "0.0.1"
     "@platform/types" "0.5.3"
+    "@platform/ui.tree.types" "^0.0.2"
     "@platform/util.diff" "0.0.34"
 
 "@platform/cli.prompt@0.3.19":
@@ -1288,7 +1289,7 @@
   resolved "https://registry.yarnpkg.com/@platform/fs.types/-/fs.types-0.0.11.tgz#5b9ccc38eb49678153b140b14e2e9453438795b2"
   integrity sha512-T38hzhRZNJwRWRMpIG2FSMUW/NUtJTFi3YbbS8Hp161TeYmXCvvk5rWGQ4Z4AjV6hsvJJVjYy2niZKJmCvhjiw==
 
-"@platform/fs.types@0.0.14", "@platform/fs.types@^0.0.14":
+"@platform/fs.types@0.0.14":
   version "0.0.14"
   resolved "https://registry.yarnpkg.com/@platform/fs.types/-/fs.types-0.0.14.tgz#d88e26d46cd8e1ec6022c1e0ee8bc6e54599e0a5"
   integrity sha512-ueTSV0BL8kEp97QBgWF3We+CgGgXbS4UdkzaVwuGIpxxSg9pyLOPuQaPvZcNpEw9Ptnbalpt+Ji6SId2yIKzjQ==
@@ -1362,15 +1363,6 @@
     chalk "4.0.0"
     cli-table "0.3.1"
 
-"@platform/log@0.1.27":
-  version "0.1.27"
-  resolved "https://registry.yarnpkg.com/@platform/log/-/log-0.1.27.tgz#07ca5fc5d95aecad0549a0ace5f1fa7d97be107e"
-  integrity sha512-1snlkuMKdz9B+EsRF9F9xqyVhALJkWWqXQF2TUFiwy5vO35XCvWerkS4WJNYkTjMkELEATf2pNz5Zl9JWOnMDg==
-  dependencies:
-    "@platform/libs" "0.2.2"
-    chalk "4.1.0"
-    cli-table "0.3.1"
-
 "@platform/npm@0.2.71":
   version "0.2.71"
   resolved "https://registry.yarnpkg.com/@platform/npm/-/npm-0.2.71.tgz#fc5475b09e936b33b5239ffdb4dea6406ad63bb4"
@@ -1415,6 +1407,14 @@
     "@platform/util.is" "0.0.127"
     react "16.13.1"
     react-dom "16.13.1"
+
+"@platform/state.types@0.0.1", "@platform/state.types@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@platform/state.types/-/state.types-0.0.1.tgz#c80fc4b22efa7b3b884b3d0e4f61cb52977e5080"
+  integrity sha512-rF1oSMT6f+lS4zRqAWEx+DsNCTlkZUGsOImUVYXJW5PS3lTZW+FcG8z+jwkeikSx+b0Z+hKGwQjjDyOGZS6p/w==
+  dependencies:
+    "@platform/libs" "0.2.2"
+    "@platform/types" "0.5.3"
 
 "@platform/test@0.1.14":
   version "0.1.14"
@@ -1521,12 +1521,12 @@
     codemirror "5.55.0"
     react-codemirror2 "7.2.1"
 
-"@platform/ui.datagrid.types@0.7.161":
-  version "0.7.161"
-  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.161.tgz#31aec452f21f9043591d49daf69fd3e110596215"
-  integrity sha512-SEJ7IYvWcYlhRF9E9tBLLXQEr+I0z0rBi4QVVB+Q4vjWqTTHu0Xa39tIT4LW9csrzWSJPoguyGrtosM1r7t8TA==
+"@platform/ui.datagrid.types@0.7.163":
+  version "0.7.163"
+  resolved "https://registry.yarnpkg.com/@platform/ui.datagrid.types/-/ui.datagrid.types-0.7.163.tgz#ad3f9bfd7bde75b0586aab3c1a7b268e4f43880c"
+  integrity sha512-WEV6Tf621k3ydHH1rUw8jnaZhCLqDMktiSo5vEAgswSF/dZl0CY6xjNIz1CRhWTSKOimKRy/CVOVAtbfSLmVSg==
   dependencies:
-    "@platform/cell.types" "0.4.139"
+    "@platform/cell.types" "0.4.141"
     "@platform/react" "0.4.43"
 
 "@platform/ui.editor@0.3.4":
@@ -1599,6 +1599,15 @@
     "@platform/libs" "0.2.2"
     "@platform/react" "0.4.43"
     "@platform/util.value" "0.7.30"
+
+"@platform/ui.tree.types@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree.types/-/ui.tree.types-0.0.2.tgz#4cbe1d8245298ec458ef0da73c96d4dd6de2aed5"
+  integrity sha512-WbgOZ6/8N2E1xxYo7OUrle8mf/5MNIqt9ht2Z7W3Bfy1dvgnOkQDATvabnQosvTaSnEPITCWZ9i+B71hLWI3YA==
+  dependencies:
+    "@platform/libs" "0.2.2"
+    "@platform/state.types" "^0.0.1"
+    "@platform/types" "0.5.3"
 
 "@platform/ui.tree@0.4.53":
   version "0.4.53"

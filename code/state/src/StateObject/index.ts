@@ -1,8 +1,7 @@
-export * from './types';
+import * as t from '@platform/state.types/lib/types.StateObject';
 
 /**
  * Export entry API as constrained interface.
  */
-import * as t from './types';
 import { StateObject as Class } from './StateObject';
 export const StateObject = Class as t.StateObject;

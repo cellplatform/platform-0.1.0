@@ -1,4 +1,4 @@
-import { t } from './common';
+import * as t from './types';
 
 type N = t.ITreeviewNode;
 
