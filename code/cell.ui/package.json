@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui",
-  "version": "0.1.101",
+  "version": "0.1.102",
   "description": "Common UI used for working with cells.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,7 +14,7 @@
   "dependencies": {
     "@platform/cell.client": "0.2.139",
     "@platform/cell.module": "0.0.6",
-    "@platform/cell.module.view": "0.0.3",
+    "@platform/cell.module.view": "0.0.4",
     "@platform/cell.types": "0.4.143",
     "@platform/libs": "0.2.2",
     "@platform/polyfill": "0.0.1",

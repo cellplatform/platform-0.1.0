@@ -338,7 +338,7 @@
     "@platform/state.types" "^0.0.1"
     "@platform/types" "0.5.3"
 
-"@platform/ui.tree@^0.8.1":
+"@platform/ui.tree@0.8.1":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.8.1.tgz#de65fa16d707f0e08af07f3631161ce52e4155bc"
   integrity sha512-k1Piw7Ekpq5CIqkFRRgqE1G5dTf4FidlX5VI7LVrs29ZgzELRpdGCVgvk36mkVoJounZDXjilD/+/1jH0fJhCg==

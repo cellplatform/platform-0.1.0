@@ -932,6 +932,16 @@
     excel-formula-tokenizer "2.3.1"
     toposort "2.0.2"
 
+"@platform/cell.module.view@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@platform/cell.module.view/-/cell.module.view-0.0.4.tgz#066c064e261c7a8f3367239da0d302e1ebe18c53"
+  integrity sha512-w3qMPTHOOrrA6jbFM4SvHscqCxccilvqsA5UUl1hVloTu10vE2VOpwdeP6SynglzPVloEo2/Pu+Ov+fEtqZJ7w==
+  dependencies:
+    "@platform/cell.module" "0.0.6"
+    "@platform/cell.types" "0.4.143"
+    "@platform/libs" "0.2.2"
+    "@platform/ui.tree" "0.8.1"
+
 "@platform/cell.module@0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@platform/cell.module/-/cell.module-0.0.6.tgz#d9b5c18965323d0a9f00a8a3f0259110ec1afcd9"
@@ -988,25 +998,23 @@
     "@platform/types" "0.5.3"
     "@platform/util.value" "0.7.30"
 
-"@platform/cell.ui@0.1.101":
-  version "0.1.101"
-  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.101.tgz#a5505e7501d24c5377b07e7990866a7f321b01af"
-  integrity sha512-FSSu29FdAnICvObQkiDHcwmCiREIt/t1jp0cdW2YrPezSAm7JPHUWgXf55n+a7+eqCyOcDyCCm8VexIqps2XMw==
+"@platform/cell.ui@0.1.102":
+  version "0.1.102"
+  resolved "https://registry.yarnpkg.com/@platform/cell.ui/-/cell.ui-0.1.102.tgz#231448c3480e909268134239a292a5b7fccd8ccd"
+  integrity sha512-EnARXkMAvgV2ucpbvwDYxhY4E19PDMEJ5q+k9iVY8l013etJfaZJVxr5QkmvHBJ1jwXg0xAWs9jS6Qmd7qlo5Q==
   dependencies:
     "@platform/cell.client" "0.2.139"
     "@platform/cell.module" "0.0.6"
+    "@platform/cell.module.view" "0.0.4"
     "@platform/cell.types" "0.4.143"
     "@platform/libs" "0.2.2"
     "@platform/polyfill" "0.0.1"
     "@platform/react" "0.4.43"
-    "@platform/state" "0.7.5"
     "@platform/types" "0.5.3"
     "@platform/ui.button" "0.3.78"
     "@platform/ui.icon" "0.0.162"
     "@platform/ui.text" "0.3.74"
-    "@platform/ui.tree" "0.8.1"
     "@platform/util.string" "0.5.10"
-    "@platform/util.value" "0.7.30"
     react-icons "3.10.0"
 
 "@platform/css@0.4.10", "@platform/css@^0.4.10":
