@@ -3,8 +3,8 @@ import { filter, distinctUntilChanged } from 'rxjs/operators';
 
 export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { ctx, store } = args;
-  const changes = onStateChanged(ctx.event$);
-  const event$ = ctx.event$;
+  const changes = onStateChanged(ctx.bus.event$);
+  const event$ = ctx.bus.event$;
 
   /**
    * Listen for view requests and render view that maps to the currently selected tree-node.
@@ -52,6 +52,6 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
       };
 
       const payload: P = { state: store.state, isHandled: false, render };
-      ctx.fire({ type: 'APP:FINDER/view/req', payload });
+      ctx.bus.fire({ type: 'APP:FINDER/view/req', payload });
     });
 }

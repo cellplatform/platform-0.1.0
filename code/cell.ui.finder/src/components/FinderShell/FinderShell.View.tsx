@@ -26,7 +26,7 @@ export class FinderShellView extends React.PureComponent<
 
   public componentDidMount() {
     const ctx = this.context;
-    const changes = onStateChanged(ctx.event$, this.unmounted$);
+    const changes = onStateChanged(ctx.bus.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     /**

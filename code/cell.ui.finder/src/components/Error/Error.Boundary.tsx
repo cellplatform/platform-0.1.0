@@ -29,7 +29,7 @@ export class ErrorBoundary extends React.Component<IErrorBoundaryProps, IErrorBo
 
   public componentDidMount() {
     const ctx = this.context;
-    const changes = onStateChanged(ctx.event$, this.unmounted$);
+    const changes = onStateChanged(ctx.bus.event$, this.unmounted$);
 
     const name = this.props.name;
     changes
@@ -55,7 +55,7 @@ export class ErrorBoundary extends React.Component<IErrorBoundaryProps, IErrorBo
     if (this.context) {
       const { name } = this.props;
       const payload = toErrorPayload({ name, error, errorInfo });
-      this.context.fire({ type: 'APP:FINDER/error', payload });
+      this.context.bus.fire({ type: 'APP:FINDER/error', payload });
     }
   }
 

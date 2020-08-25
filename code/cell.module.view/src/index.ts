@@ -1,1 +1,1 @@
-export * from './Module.view';
+// export * from './Module.view';

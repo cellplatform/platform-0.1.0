@@ -132,6 +132,4 @@ export class WindowTitlebar extends React.PureComponent<
       </div>
     );
   }
-
-  
 }
