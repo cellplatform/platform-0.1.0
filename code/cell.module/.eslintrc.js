@@ -1,3 +1,3 @@
 module.exports = {
-  extends: './node_modules/@platform/ts/lint',
-};    
+  extends: './node_modules/@platform/ts.libs/lint',
+};

@@ -21,8 +21,8 @@
     "@platform/state": "0.7.5"
   },
   "devDependencies": {
-    "@platform/test": "0.1.8",
-    "@platform/ts": "3.7.27"
+    "@platform/test": "0.1.14",
+    "@platform/ts": "3.9.5"
   },
   "files": [
     "lib",
