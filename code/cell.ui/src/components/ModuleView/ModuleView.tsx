@@ -1,9 +1,9 @@
 import { ModuleViewFrame } from './ModuleView.Frame';
 import { ModuleViewTree } from './ModuleView.Tree';
-import { ViewModule } from '../../ViewModule';
+import { Module } from '../../Module.view';
 
 export const ModuleView = {
-  Module: ViewModule,
+  Module: Module,
   Frame: ModuleViewFrame,
   Tree: ModuleViewTree,
 };

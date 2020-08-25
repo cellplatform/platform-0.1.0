@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Button } from '@platform/ui.button';
-import { color, COLORS, css, CssValue, ViewModule, t } from '../../../common';
+import { color, COLORS, css, CssValue, Module, t } from '../../../common';
 import { Identifiers } from './Identifiers';
 
 export type ITestSampleProps = {
@@ -18,7 +18,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
   private state$ = new Subject<Partial<ITestSampleState>>();
   private unmounted$ = new Subject();
 
-  public static contextType = ViewModule.Context;
+  public static contextType = Module.Context;
   public context!: t.MyContext;
 
   /**
@@ -34,7 +34,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
     // NB:     This could also have been retrieved from the [context]
     //         but is being "requested" in this way to demonstrate
     //         how this is one.
-    const module = ViewModule.fire(ctx.bus).request<t.MyProps>(this.props.module).module;
+    const module = Module.fire(ctx.bus).request<t.MyProps>(this.props.module).module;
     this.state$.next({ module });
   }
 
@@ -143,7 +143,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
     const parent = this.module;
     if (parent) {
       const bus = this.context.bus;
-      const child = ViewModule.create({ bus, root: 'child' });
+      const child = Module.create({ bus, root: 'child' });
 
       /**
        * TODO 🐷
@@ -155,7 +155,7 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
       console.log('parent', parent);
       console.groupEnd();
 
-      ViewModule.register(bus, child, parent.id);
+      Module.register(bus, child, parent.id);
     }
   };
 }

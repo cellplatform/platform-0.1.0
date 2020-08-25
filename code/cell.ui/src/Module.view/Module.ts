@@ -1,14 +1,16 @@
-import { Module } from '@platform/cell.module';
+import { Module as ModuleBase } from '@platform/cell.module';
 
 import { Context, provider } from './Context';
 
 import { t } from '../common';
-import { create } from './ViewModule.create';
-import { events } from './ViewModule.events';
-import { fire } from './ViewModule.fire';
+import { create } from './Module.create';
+import { events } from './Module.events';
+import { fire } from './Module.fire';
 
-export const ViewModule: t.ViewModule = {
-  ...Module,
+export const Module: t.ViewModule = {
+  ...ModuleBase,
+
+  kind: 'ViewModule',
   create,
   events,
   fire,
@@ -20,7 +22,7 @@ export const ViewModule: t.ViewModule = {
    * eg:
    *
    *      export class MyView extends React.PureComponent {
-   *        public static contextType = ViewModule.Context;
+   *        public static contextType = Module.Context;
    *        public context!: t.MyContext
    *      }
    *

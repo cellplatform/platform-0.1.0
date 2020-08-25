@@ -16,6 +16,8 @@ export type ViewModuleArgs<T extends P> = t.ModuleArgs<T> & {
  * Static UI module methods.
  */
 export type ViewModule = {
+  kind: 'ViewModule';
+
   Context: React.Context<any>;
   provider<T extends O>(context: T): React.FunctionComponent;
 

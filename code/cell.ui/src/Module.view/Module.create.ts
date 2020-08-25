@@ -3,8 +3,8 @@ import { equals } from 'ramda';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 import { t } from '../common';
-import { events } from './ViewModule.events';
-import { fire } from './ViewModule.fire';
+import { events } from './Module.events';
+import { fire } from './Module.fire';
 
 type B = t.EventBus<any>;
 type P = t.IViewModuleProps;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 
-import { ViewModule } from '.';
+import { Module } from '.';
 import { expect, t } from '../test';
 
 type MyView = 'View-1' | 'View-2';
@@ -10,28 +10,28 @@ type MyProps = t.IViewModuleProps<MyData, MyView>;
 export type MyModule = t.IModule<MyProps>;
 
 const event$ = new Subject<t.Event>();
-const events = ViewModule.events(event$);
+const events = Module.events(event$);
 const bus: t.EventBus = { fire: (e: t.Event) => event$.next(e), event$ };
-const fire = ViewModule.fire(bus);
+const fire = Module.fire(bus);
 
 const create = <P extends MyProps = MyProps>(
   args: { root?: string | t.ITreeNode<P>; view?: MyView; data?: MyData } = {},
 ) => {
-  return ViewModule.create<P>({ ...args, bus });
+  return Module.create<P>({ ...args, bus });
 };
 
-describe('ViewModule', () => {
+describe('Module (ViewModule)', () => {
   describe('create', () => {
     it('no params (default)', () => {
-      const module = ViewModule.create<MyProps>({ bus });
+      const module = Module.create<MyProps>({ bus });
       expect(module.root.props?.view).to.eql('');
       expect(module.root.props?.treeview).to.eql({});
       expect(module.root.props?.data).to.eql({});
     });
 
     it('param: view', () => {
-      const module1 = ViewModule.create<MyProps>({ bus, view: 'View-1' });
-      const module2 = ViewModule.create<MyProps>({
+      const module1 = Module.create<MyProps>({ bus, view: 'View-1' });
+      const module2 = Module.create<MyProps>({
         bus,
         view: 'View-2',
         root: { id: 'foo', props: { view: 'View-1' } },
@@ -42,8 +42,8 @@ describe('ViewModule', () => {
     });
 
     it('param: treeview', () => {
-      const module1 = ViewModule.create<MyProps>({ bus, treeview: { label: 'hello' } });
-      const module2 = ViewModule.create<MyProps>({
+      const module1 = Module.create<MyProps>({ bus, treeview: { label: 'hello' } });
+      const module2 = Module.create<MyProps>({
         bus,
         treeview: { label: 'title' },
         root: { id: 'foo', props: { treeview: { label: 'foo', icon: 'Face' } } },
@@ -54,13 +54,13 @@ describe('ViewModule', () => {
     });
 
     it('param: data', () => {
-      const module = ViewModule.create<MyProps>({ bus, data: { count: 123 } });
+      const module = Module.create<MyProps>({ bus, data: { count: 123 } });
       expect(module.root.props?.data?.count).to.eql(123);
     });
   });
 
   describe('event: "Module/render"', () => {
-    const events = ViewModule.events<MyProps>(event$);
+    const events = Module.events<MyProps>(event$);
     const module = create();
     const fireRender = (view: MyProps['view']) => fire.render({ module: module.id, view });
 

@@ -1,6 +1,6 @@
 import { filter } from 'rxjs/operators';
 
-import { ViewModule, t } from '../common';
+import { Module, t } from '../common';
 import { renderer } from './view/render';
 
 type P = t.MyProps;
@@ -10,20 +10,20 @@ export const SampleModule: t.IModuleDef = {
    * Initialize the module.
    */
   init(bus, parent) {
-    const fire = ViewModule.fire<P>(bus);
+    const fire = Module.fire<P>(bus);
 
     /**
      * Create main module.
      */
-    const main = ViewModule.create<P>({
+    const main = Module.create<P>({
       bus,
       root: { id: 'sample', props: { treeview: { label: 'Sample' } } },
     });
     const until$ = main.dispose$;
 
     const match: t.ModuleFilterEvent = (e) => modules.some((m) => m.contains(e.module));
-    const event$ = ViewModule.filter(bus.event$, match);
-    const events = ViewModule.events<P>(event$, until$);
+    const event$ = Module.filter(bus.event$, match);
+    const events = Module.events<P>(event$, until$);
 
     /**
      * Setup renderer.
@@ -33,31 +33,31 @@ export const SampleModule: t.IModuleDef = {
     /**
      * Create sample child modules.
      */
-    const diagram = ViewModule.create<P>({
+    const diagram = Module.create<P>({
       bus,
       view: 'DIAGRAM',
       root: { id: 'diagram', props: { treeview: { label: 'Diagram' } } },
     });
-    const demo = ViewModule.create<P>({
+    const demo = Module.create<P>({
       bus,
       view: 'SAMPLE',
       root: { id: 'demo', props: { treeview: { label: 'Demo' } } },
     });
     const modules = [main, diagram, demo];
 
-    ViewModule.register(bus, diagram, main.id);
-    ViewModule.register(bus, demo, main.id);
+    Module.register(bus, diagram, main.id);
+    Module.register(bus, demo, main.id);
 
     /**
      * Catch un-targetted (wildcard) registrations and route
      * them into the MAIN module.
      */
-    ViewModule.events(bus.event$, until$)
+    Module.events(bus.event$, until$)
       .register$.pipe(filter((e) => !e.parent))
       .subscribe((e) => {
         const module = fire.request(e.module).module;
         if (module) {
-          ViewModule.register(bus, module, main.id);
+          Module.register(bus, module, main.id);
         }
       });
 
@@ -65,8 +65,8 @@ export const SampleModule: t.IModuleDef = {
      * STRATEGY: Render on selection.
      */
     const behavior = (module: t.IModule) => {
-      const event$ = ViewModule.filter(module.event.$, match);
-      const events = ViewModule.events<P>(event$, until$);
+      const event$ = Module.filter(module.event.$, match);
+      const events = Module.events<P>(event$, until$);
       events.selection$.subscribe((e) => {
         const selected = e.selection?.id;
         const { view, data } = e;
