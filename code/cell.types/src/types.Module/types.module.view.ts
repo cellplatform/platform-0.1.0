@@ -1,4 +1,5 @@
 import { t } from '../common';
+import { ITreeviewNodeProps } from '@platform/ui.tree.types';
 
 type B = t.EventBus<any>;
 type S = string;
@@ -40,7 +41,7 @@ export type ViewModule = {
  */
 export type IViewModuleProps<D extends O = O, V extends S = S> = t.IModuleProps<D> & {
   view?: V;
-  treeview?: t.ITreeviewNodeProps;
+  treeview?: ITreeviewNodeProps;
 };
 
 /**
@@ -135,4 +136,4 @@ export type IModuleSelection<T extends P> = {
   data: NonNullable<T['data']>;
   view: NonNullable<T['view']>;
 };
-export type IModuleSelectionTree = { id: string; props: t.ITreeviewNodeProps };
+export type IModuleSelectionTree = { id: string; props: ITreeviewNodeProps };
