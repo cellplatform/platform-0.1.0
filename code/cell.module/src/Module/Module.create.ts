@@ -76,10 +76,14 @@ function registerChild(args: { bus: t.EventBus<any>; parent: t.IModule; child: t
  */
 function formatModuleNode<T extends P = any>(
   input: t.ITreeNode | string,
-  defaults: { data?: T['data'] } = {},
+  defaults: { data?: T['data']; id?: string } = {},
 ) {
   const { data = {} } = defaults;
-  const node = typeof input === 'string' ? { id: input } : { ...input };
+  let node = typeof input === 'string' ? { id: input } : { ...input };
+
+  if (!(node.id || '').trim()) {
+    node = { ...node, id: 'module' };
+  }
 
   type M = t.IModuleNode<T>;
   const props = (node.props = node.props || {}) as NonNullable<M['props']>;

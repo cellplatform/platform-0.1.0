@@ -3,13 +3,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, events, t, ui } from '../../common';
-import { WindowTitlebar } from '../primitives';
+import { WindowTitlebar, IWindowTitlebarProps } from '../primitives';
 import { RootOverlay } from './Root.Overlay';
 import { renderOverlay } from '../render';
 
 export type IRootProps = {
   children?: React.ReactNode;
   title?: string;
+  theme?: IWindowTitlebarProps['theme'];
   style?: CssValue;
 };
 export type IRootState = t.Object;
@@ -66,7 +67,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <WindowTitlebar style={styles.titlebar} address={address} />
+        <WindowTitlebar style={styles.titlebar} address={address} theme={this.props.theme} />
         <div {...styles.body}>
           {this.props.children}
           <RootOverlay factory={renderOverlay} />

@@ -52,6 +52,8 @@ export function render<T extends P>(
   });
 
   if (el !== undefined) {
+    console.log('-------------------------------------------');
+    console.log('el', el, view);
     bus.fire({
       type: 'Module/ui/rendered',
       payload: { module, view, el },

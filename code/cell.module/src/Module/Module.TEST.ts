@@ -22,13 +22,26 @@ describe('Module', () => {
   describe('create', () => {
     it('create', () => {
       const module = create();
-
       const root = module.root;
+
       expect(Module.Identity.hasNamespace(root.id)).to.eql(true);
       expect(Module.Identity.key(root.id)).to.eql('module');
 
       expect(root.props?.kind).to.eql('MODULE');
       expect(root.props?.data).to.eql({});
+    });
+
+    it('generates default id ("module")', () => {
+      const test = (module: t.IModule) => {
+        const { key } = Module.Identity.parse(module.id);
+        expect(key).to.eql('module');
+      };
+
+      test(create());
+      test(create({ root: '' }));
+      test(create({ root: '  ' }));
+      test(create({ root: { id: '' } }));
+      test(create({ root: { id: '  ' } }));
     });
 
     it('throw: id contains "/" character', () => {

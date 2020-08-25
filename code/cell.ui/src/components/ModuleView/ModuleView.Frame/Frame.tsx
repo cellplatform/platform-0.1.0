@@ -5,7 +5,7 @@ import { rx, css, CssValue, t, Module } from '../common';
 
 export type IModuleViewFrameProps = {
   bus: t.EventBus<any>;
-  filter?: t.ModuleFilterView;
+  filter?: t.ModuleFilterView<any>;
   style?: CssValue;
 };
 export type IModuleViewFrameState = { el?: JSX.Element | null };

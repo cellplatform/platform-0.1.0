@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { color, css, CssValue, t, rx } from '../../../common';
+import { color, css, CssValue, t, rx } from '../../common';
 import { DragTarget } from '@platform/cell.ui/lib/components/DragTarget';
 
 export type IFinderImageProps = { style?: CssValue };

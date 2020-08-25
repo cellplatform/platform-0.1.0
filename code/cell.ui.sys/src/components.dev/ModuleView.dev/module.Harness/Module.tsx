@@ -1,19 +1,22 @@
+import * as React from 'react';
+
 import { Module } from '../common';
 import * as t from './types';
 import { renderer } from './Module.render';
+import { Main } from './components/Main';
 
-type P = t.FinderProps;
+type P = t.HarnessProps;
 
-export const FinderModule: t.IModuleDef = {
+export const HarnessModule: t.HarnessModuleDef = {
+  Main: (props) => <Main {...props} />, // eslint-disable-line
+
   /**
-   * Initialize a new module from the definition.
+   * ENTRY: Initialize a new module from the definition.
    */
   init(bus, parent) {
-    const fire = Module.fire<P>(bus);
     const module = Module.create<P>({
       bus,
-      view: 'DEFAULT',
-      root: { id: 'finder', props: { treeview: { label: 'Finder' } } },
+      root: { id: 'harness', props: { treeview: { label: 'Development' }, view: 'DEFAULT' } },
     });
     const until$ = module.dispose$;
     Module.register(bus, module, parent);
@@ -22,8 +25,9 @@ export const FinderModule: t.IModuleDef = {
     const event$ = Module.filter(bus.event$, match);
     const events = Module.events<P>(event$, until$);
 
-    renderer(events);
+    renderer({ bus, events });
 
+    const fire = Module.fire<P>(bus);
     events.selection$.subscribe((e) => {
       const { view, data } = e;
       const selected = e.selection?.id;
