@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { t } from '../common';
 
 export type RefTarget = 'VALUE' | 'FUNC' | 'REF' | 'RANGE' | 'UNKNOWN';
@@ -31,7 +30,7 @@ export type RefsTableUpdate = {
  * Table
  */
 export type IRefsTable = {
-  event$: Observable<RefsTableEvent>;
+  event$: t.Observable<RefsTableEvent>;
   cache: t.IMemoryCache;
   refs(args?: { range?: string | string[]; force?: boolean }): Promise<IRefs>;
   outgoing(args?: { range?: string | string[]; force?: boolean }): Promise<IRefsOut>;

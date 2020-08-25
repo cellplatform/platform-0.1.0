@@ -1,4 +1,3 @@
-import { Subject } from 'rxjs';
 import { t } from '../common';
 
 export type FuncParam = t.Json | undefined;
@@ -46,7 +45,7 @@ export type IFuncTable = {
   getFunc: t.GetFunc;
   calculate(args?: {
     cells?: string | string[];
-    event$?: Subject<FuncEvent>;
+    event$?: t.Subject<FuncEvent>;
   }): t.FuncPromise<t.IFuncTableResponse>;
 };
 export type IFuncTableResponse = {
