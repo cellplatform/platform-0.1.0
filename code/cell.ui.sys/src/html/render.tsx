@@ -1,10 +1,9 @@
 import * as React from 'react';
 
 import { AppBuilder } from '../components/AppBuilder';
-import { Debug } from '../components/Debug';
 import { Test as ModuleView } from '../components.dev/ModuleView.dev/Test';
 import { Root } from '../components/Root';
-import { HarnessModule } from '../components.dev/ModuleView.dev/module.Harness';
+import { HarnessModule } from '../components.dev/module.Harness';
 
 export function render(entry: string) {
   switch (entry) {

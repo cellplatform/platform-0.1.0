@@ -1,5 +1,5 @@
-import { t } from '../common';
-export * from '../types';
+import { t } from '../../common';
+export * from '../../common/types';
 
 export type FinderView = 'DEFAULT' | '404';
 export type FinderData = { foo?: string | number };

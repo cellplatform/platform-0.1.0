@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import * as t from '../types';
+import * as t from './types';
 import { FinderImage } from './components/Image';
 
 type P = t.FinderProps;

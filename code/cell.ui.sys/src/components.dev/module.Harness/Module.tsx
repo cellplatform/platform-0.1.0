@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Module } from '../common';
+import { Module } from './common';
 import * as t from './types';
 import { renderer } from './Module.render';
 import { Main } from './components/Main';

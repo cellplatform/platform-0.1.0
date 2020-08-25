@@ -1,5 +1,6 @@
-import { t } from '../common';
-export * from '../types';
+import { t } from './common';
+export * from '../../common/types';
+
 import { IMainProps } from './components/Main';
 
 export type HarnessView = 'DEFAULT' | 'TREE' | '404';

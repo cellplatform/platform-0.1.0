@@ -1,4 +1,4 @@
-import { Module } from '../common';
+import { Module } from './common';
 import * as t from './types';
 import { renderer } from './Module.render';
 
