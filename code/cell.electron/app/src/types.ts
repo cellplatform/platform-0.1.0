@@ -1,5 +1,6 @@
 import * as t from './common/types';
 import { Observable } from 'rxjs';
+import { IServerLog } from '@platform/log/lib/server/types';
 
 /**
  * Events used by the Electron application.
@@ -31,4 +32,14 @@ export type IAppPaths = {
   fs: string;
   config: string;
   archive: string;
+};
+
+/**
+ * [Logging]
+ */
+
+export type IElectronLog = IServerLog & { file: { path: string }; format: IElectronLogFormat };
+
+export type IElectronLogFormat = {
+  uri(input?: string | t.IUri): string;
 };
