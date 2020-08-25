@@ -17,7 +17,7 @@
     "@platform/cell.module": "0.0.6",
     "@platform/cell.types": "0.4.143",
     "@platform/libs": "0.2.2",
-    "@platform/ui.tree": "^0.8.1"
+    "@platform/ui.tree": "0.8.1"
   },
   "devDependencies": {
     "@platform/test": "0.1.14",

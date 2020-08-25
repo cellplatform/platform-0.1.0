@@ -1,6 +1,6 @@
 import * as ui from './ui';
 
-import { Module } from './Module.view';
+import { Module } from '@platform/cell.module.view';
 export { Module };
 
 export { ui };

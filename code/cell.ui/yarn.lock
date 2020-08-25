@@ -65,6 +65,16 @@
     excel-formula-tokenizer "2.3.1"
     toposort "2.0.2"
 
+"@platform/cell.module.view@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@platform/cell.module.view/-/cell.module.view-0.0.3.tgz#a2ff01e90758ac2edb035bc4eaf801943780481b"
+  integrity sha512-UoQNN9jVq8CrkL4ZdjZy2yC1UhLzToH2uOf7jL9FbbC3+rmlF8nQInjrx/JJdhC+1j54dUMaRHXoRly0eKdAEw==
+  dependencies:
+    "@platform/cell.module" "0.0.6"
+    "@platform/cell.types" "0.4.143"
+    "@platform/libs" "0.2.2"
+    "@platform/ui.tree" "^0.8.1"
+
 "@platform/cell.module@0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@platform/cell.module/-/cell.module-0.0.6.tgz#d9b5c18965323d0a9f00a8a3f0259110ec1afcd9"
@@ -356,7 +366,7 @@
     "@platform/state.types" "^0.0.1"
     "@platform/types" "0.5.3"
 
-"@platform/ui.tree@0.8.1":
+"@platform/ui.tree@0.8.1", "@platform/ui.tree@^0.8.1":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.8.1.tgz#de65fa16d707f0e08af07f3631161ce52e4155bc"
   integrity sha512-k1Piw7Ekpq5CIqkFRRgqE1G5dTf4FidlX5VI7LVrs29ZgzELRpdGCVgvk36mkVoJounZDXjilD/+/1jH0fJhCg==

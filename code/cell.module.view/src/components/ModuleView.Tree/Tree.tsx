@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { CssValue, dispose, t } from '../common';
+import { CssValue, dispose, t } from '../../common';
 
 export type IModuleViewTreeProps = {
   totalColumns?: number;

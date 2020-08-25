@@ -1,1 +1,2 @@
-// export * from './Module.view';
+export * from './Module';
+export * from './components/ModuleView';
