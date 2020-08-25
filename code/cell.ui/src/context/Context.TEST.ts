@@ -7,12 +7,13 @@ describe('Context', () => {
   });
 
   it('creates provider', () => {
-    const event$ = new Subject<t.EnvEvent>();
+    const event$ = new Subject<t.Event>();
     const host = 'localhost:1234';
     const client = Client.typesystem(host);
     const def = 'cell:foo:1';
     const env = { def } as any;
-    const ctx: t.IEnvContext<t.EnvEvent> = { env, client, event$, fire: (e) => event$.next(e) };
+    const bus: t.EventBus = { event$, fire: (e) => event$.next(e) };
+    const ctx: t.IEnvContext = { env, client, bus };
 
     const res1 = ui.createProvider({ ctx });
     const res2 = ui.createProvider({ ctx, props: { foo: 123 } });

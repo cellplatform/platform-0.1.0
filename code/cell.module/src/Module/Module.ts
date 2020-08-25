@@ -7,6 +7,8 @@ import { fire, register } from './Module.fire';
 import { t } from '../common';
 
 export const Module: t.Module = {
+  kind: 'Module',
+
   /**
    * Tools for working querying a tree.
    */

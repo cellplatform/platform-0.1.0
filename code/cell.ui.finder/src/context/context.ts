@@ -12,13 +12,17 @@ export function create(args: { env: t.IEnv }) {
   const event$ = env.event$ as Subject<t.AppEvent>;
   const store = createStore({ event$ });
 
+  const bus: t.EventBus<t.AppEvent> = {
+    event$: event$.pipe(share()),
+    fire: (e) => event$.next(e),
+  };
+
   // Create the context.
   const ctx: t.IAppContext = {
     env,
+    bus,
     client: Client.env(env),
-    event$: event$.pipe(share()),
     getState: () => store.state,
-    fire: (e) => event$.next(e),
   };
 
   // Finish up.

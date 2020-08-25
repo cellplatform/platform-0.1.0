@@ -6,6 +6,7 @@ import { WindowAddressContent } from './WindowAddressContent';
 
 export type IWindowTitlebarAddressProps = {
   address?: React.ReactNode;
+  borderColor?: string | number;
   isWindowFocused?: boolean;
   style?: CssValue;
 };
@@ -63,13 +64,13 @@ export class WindowTitlebarAddress extends React.PureComponent<
    * [Render]
    */
   public render() {
-    const { isWindowFocused } = this.props;
+    const { isWindowFocused, borderColor = -0.2 } = this.props;
     const isFocused = this.isFocused;
     const styles = {
       base: css({
         position: 'relative',
         backgroundColor: color.format(1),
-        border: `solid 1px ${color.format(-0.2)}`,
+        border: `solid 1px ${color.format(borderColor)}`,
         borderRadius: 5,
         fontSize: 12,
         height: 26,

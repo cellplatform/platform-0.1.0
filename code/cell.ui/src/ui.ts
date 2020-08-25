@@ -5,8 +5,5 @@ export { IEnvContext } from '@platform/cell.types';
 import { parseClipboardUri } from './util';
 export { parseClipboardUri };
 
-import { ViewModule as Module } from './ViewModule';
-export { Module };
-
-import { ModuleView } from './components/ModuleView';
-export { ModuleView };
+import { Module, ModuleView } from '@platform/cell.module.view';
+export { Module, ModuleView };

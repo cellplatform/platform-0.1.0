@@ -1,7 +1,7 @@
 import { t } from '../common';
 export * from '../types';
 
-export type DebugView = 'DEFAULT' | '404';
-export type DebugData = { foo?: string | number };
-export type DebugProps = t.IViewModuleProps<DebugData, DebugView>;
-export type DebugModule = t.IModule<DebugProps>;
+export type TmplView = 'DEFAULT' | '404';
+export type TmplData = { foo?: string | number };
+export type TmplProps = t.IViewModuleProps<TmplData, TmplView>;
+export type TmplModule = t.IModule<TmplProps>;

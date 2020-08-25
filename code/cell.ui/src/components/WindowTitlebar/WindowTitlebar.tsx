@@ -8,6 +8,7 @@ import { WindowTitlebarAddress } from '../WindowTitlebar.Address';
 export type IWindowTitlebarProps = {
   address?: React.ReactNode;
   height?: number;
+  theme?: 'SILVER' | 'WHITE';
   style?: CssValue;
 };
 export type IWindowTitlebarState = {
@@ -52,6 +53,10 @@ export class WindowTitlebar extends React.PureComponent<
     return defaultValue(this.props.height, WindowTitlebar.HEIGHT);
   }
 
+  public get theme() {
+    return this.props.theme || 'SILVER';
+  }
+
   /**
    * [Methods]
    */
@@ -65,6 +70,7 @@ export class WindowTitlebar extends React.PureComponent<
    */
   public render() {
     const { isWindowFocused } = this.state;
+    const borderColor = this.theme === 'SILVER' ? -0.2 : -0.14;
     const styles = {
       base: css({
         position: 'relative',
@@ -87,7 +93,11 @@ export class WindowTitlebar extends React.PureComponent<
         {this.renderBackground()}
         <div {...styles.body}>
           <div {...styles.left}></div>
-          <WindowTitlebarAddress address={this.props.address} isWindowFocused={isWindowFocused} />
+          <WindowTitlebarAddress
+            address={this.props.address}
+            isWindowFocused={isWindowFocused}
+            borderColor={borderColor}
+          />
           <div {...styles.right}></div>
         </div>
       </div>
@@ -95,6 +105,8 @@ export class WindowTitlebar extends React.PureComponent<
   }
 
   private renderBackground() {
+    const theme = this.theme;
+
     const { isWindowFocused } = this.state;
     const styles = {
       base: css({
@@ -102,16 +114,21 @@ export class WindowTitlebar extends React.PureComponent<
         backgroundColor: COLORS.WHITE,
         pointerEvents: 'none',
       }),
-      shade: css({
+      silver: theme === 'SILVER' && {
         Absolute: 0,
-        // background: isWindowFocused ? color.format(-0.06) : color.format(-0.0),
         background: isWindowFocused ? WindowTitlebar.GRADIENT : color.format(-0.0),
         borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.2 : -0.08)}`,
-      }),
+      },
+      white: theme === 'WHITE' && {
+        Absolute: 0,
+        background: isWindowFocused ? color.format(-0.06) : color.format(-0.0),
+        borderBottom: `solid 1px ${color.format(isWindowFocused ? -0.1 : -0.08)}`,
+      },
     };
+
     return (
       <div {...styles.base}>
-        <div {...styles.shade} />
+        <div {...css(styles.silver, styles.white)} />
       </div>
     );
   }

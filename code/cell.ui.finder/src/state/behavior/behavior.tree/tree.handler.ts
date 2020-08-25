@@ -7,17 +7,17 @@ import { t } from '../../../common';
 export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { ctx, store } = args;
 
-  const tree = Treeview.events(ctx.event$ as Observable<t.TreeviewEvent>);
+  const tree = Treeview.events(ctx.bus.event$ as Observable<t.TreeviewEvent>);
   const left = tree.mouse({ button: ['LEFT'] });
 
   const toggleTwisty = (node: string) => {
     const root = Treeview.util.toggleIsOpen(store.state.tree.root, node);
-    ctx.fire({ type: 'APP:FINDER/tree', payload: { root } });
+    ctx.bus.fire({ type: 'APP:FINDER/tree', payload: { root } });
   };
 
   const select = (node?: string) => {
     if (node) {
-      ctx.fire({ type: 'APP:FINDER/tree/select', payload: { node } });
+      ctx.bus.fire({ type: 'APP:FINDER/tree/select', payload: { node } });
     }
   };
 

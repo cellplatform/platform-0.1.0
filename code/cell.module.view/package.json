@@ -1,0 +1,32 @@
+{
+  "name": "@platform/cell.module.view",
+  "version": "0.0.4",
+  "description": "User interface extensions of the Module system.",
+  "main": "lib/index",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "start": "node .",
+    "watch": "nodemon .",
+    "test": "ts test",
+    "tdd": "ts test --watch",
+    "lint": "ts lint",
+    "build": "ts build --no-esm",
+    "prepare": "ts prepare"
+  },
+  "dependencies": {
+    "@platform/cell.module": "0.0.6",
+    "@platform/cell.types": "0.4.143",
+    "@platform/libs": "0.2.2",
+    "@platform/ui.tree": "0.8.1"
+  },
+  "devDependencies": {
+    "@platform/test": "0.1.14",
+    "@platform/ts": "3.9.5"
+  },
+  "files": [
+    "lib",
+    "!lib/test",
+    "!*.TEST.{js, mjs, d.ts}"
+  ],
+  "license": "MIT"
+}

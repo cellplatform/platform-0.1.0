@@ -17,14 +17,18 @@ export async function create(args: { env: t.IEnv }) {
   const client = Client.env(env);
   const window = await AppWindowModel.load({ client, uri: env.def });
 
+  const bus: t.EventBus<t.AppEvent> = {
+    event$: event$.pipe(share()),
+    fire: (e) => event$.next(e),
+  };
+
   // Create the context.
   const ctx: t.IAppContext = {
     env,
     client,
     window,
-    event$: event$.pipe(share()),
+    bus,
     getState: () => store.state,
-    fire: (e) => event$.next(e),
     sheetChanged: (changes: t.ITypedSheetChanges) => fireSheetChanged({ event$, changes, source }),
   };
 

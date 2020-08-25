@@ -1,10 +1,7 @@
 import * as ui from './ui';
 
-import { Module } from './common';
+import { Module } from '@platform/cell.module.view';
 export { Module };
-
-import { ViewModule } from './ViewModule';
-export { ViewModule };
 
 export { ui };
 export * from './context';

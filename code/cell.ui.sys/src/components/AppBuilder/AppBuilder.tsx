@@ -31,7 +31,7 @@ export class AppBuilder extends React.PureComponent<IAppBuilderProps, IAppBuilde
 
     // Bubble window resize.
     events.resize$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
-      ctx.fire({
+      ctx.bus.fire({
         type: 'UI:DOM/window/resize',
         payload: {
           width: window.innerWidth,

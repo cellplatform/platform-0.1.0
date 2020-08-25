@@ -1,30 +1,29 @@
 import * as React from 'react';
 
-import { ViewModule } from '../common';
+import { Module } from '../common';
 import * as t from './types';
 
-type P = t.DebugProps;
+type P = t.TmplProps;
 
 export const TmplModule: t.IModuleDef = {
   /**
    * ENTRY: Initialize a new module from the definition.
    */
   init(bus, parent) {
-    const fire = ViewModule.fire<P>(bus);
-
-    const module = ViewModule.create<P>({
+    const module = Module.create<P>({
       bus,
       root: { id: 'tmpl', props: { treeview: { label: 'Template' }, view: 'DEFAULT' } },
     });
     const until$ = module.dispose$;
-    ViewModule.register(bus, module, parent);
+    Module.register(bus, module, parent);
 
     const match: t.ModuleFilterEvent = (e) => e.module == module.id || module.contains(e.module);
-    const event$ = ViewModule.filter(bus.event$, match);
-    const events = ViewModule.events<P>(event$, until$);
+    const event$ = Module.filter(bus.event$, match);
+    const events = Module.events<P>(event$, until$);
 
     renderer(events);
 
+    const fire = Module.fire<P>(bus);
     events.selection$.subscribe((e) => {
       const { view, data } = e;
       const selected = e.selection?.id;

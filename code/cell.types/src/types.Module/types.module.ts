@@ -6,14 +6,6 @@ type B = t.EventBus<any>;
 type P = t.IModuleProps;
 type AnyProps = t.IModulePropsAny;
 
-/**
- * The definition entry-point for a module.
- * This is what is explored by module authors.
- */
-export type IModuleDef = {
-  init(bus: t.EventBus, parent?: string): t.IModule;
-};
-
 export type ModuleArgs<T extends P> = {
   bus: B; // Global event-bus.
   root?: t.IModuleNode<T> | string;
@@ -25,6 +17,8 @@ export type ModuleArgs<T extends P> = {
  * Static module methods.
  */
 export type Module = {
+  kind: 'Module';
+
   create<T extends P>(args?: ModuleArgs<T>): IModule<T>;
   register(bus: B, module: t.IModule, parent?: string): t.ModuleRegistration;
 

@@ -31,7 +31,7 @@ export class Apps extends React.PureComponent<IAppsProps, IAppsState> {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     this.load();
-    rx.payload<t.ITypedSheetUpdatedEvent>(ctx.event$, 'SHEET/updated')
+    rx.payload<t.ITypedSheetUpdatedEvent>(ctx.bus.event$, 'SHEET/updated')
       .pipe(debounceTime(200))
       .subscribe((e) => this.load());
   }

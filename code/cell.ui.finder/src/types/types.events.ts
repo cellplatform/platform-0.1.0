@@ -3,7 +3,7 @@ import { t } from './common';
 /**
  * Events
  */
-type GlobalEvents = t.EnvEvent | t.TreeviewEvent;
+type GlobalEvents = t.TreeviewEvent;
 type FinderTreeEvent = IFinderTreeEvent | IFinderTreeSelectEvent | IFinderTreeSelectParentEvent;
 type FinderViewEvent = IFinderViewEvent | IFinderViewRequestEvent;
 

@@ -1,8 +1,11 @@
 import { Icons } from './Icons';
 export { Icons };
 
-import { WindowTitlebar } from '@platform/cell.ui/lib/components/WindowTitlebar';
-export { WindowTitlebar };
+import {
+  WindowTitlebar,
+  IWindowTitlebarProps,
+} from '@platform/cell.ui/lib/components/WindowTitlebar';
+export { WindowTitlebar, IWindowTitlebarProps };
 
 import { Card, ICardProps } from '@platform/cell.ui/lib/components/Card';
 export { Card, ICardProps };

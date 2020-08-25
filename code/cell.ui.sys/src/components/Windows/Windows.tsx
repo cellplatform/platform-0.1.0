@@ -38,7 +38,7 @@ export class Windows extends React.PureComponent<IWindowsProps, IWindowsState> {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     this.load();
-    rx.payload<t.ITypedSheetUpdatedEvent>(ctx.event$, 'SHEET/updated')
+    rx.payload<t.ITypedSheetUpdatedEvent>(ctx.bus.event$, 'SHEET/updated')
       .pipe(debounceTime(200)) // TODO: narrow update filter.
       .subscribe((e) => {
         this.load();

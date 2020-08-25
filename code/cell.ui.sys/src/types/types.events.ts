@@ -3,8 +3,13 @@ import { t } from './common';
 /**
  * Events
  */
-type GlobalEvent = t.EnvEvent | t.IpcEvent | t.UiEvent | t.ModuleEvent;
-export type AppEvent = GlobalEvent | ISysChanged | ISysErrorEvent | ISysOverlayEvent;
+type GlobalEvent = t.IpcEvent | t.UiEvent | t.ModuleEvent;
+export type AppEvent =
+  | t.TypedSheetEvent
+  | GlobalEvent
+  | ISysChanged
+  | ISysErrorEvent
+  | ISysOverlayEvent;
 
 /**
  * Changed
