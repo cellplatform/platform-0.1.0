@@ -35,7 +35,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     // Bubble window resize.
     events.resize$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
-      ctx.fire({
+      ctx.bus.fire({
         type: 'UI:DOM/window/resize',
         payload: {
           width: window.innerWidth,

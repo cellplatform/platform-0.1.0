@@ -200,7 +200,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
       const name = this.name;
 
       // TEMP 🐷
-      ctx.fire({
+      ctx.bus.fire({
         type: 'IPC/debug',
         payload: {
           source: ctx.env.def,
@@ -211,7 +211,7 @@ export class App extends React.PureComponent<IAppProps, IAppState> {
   };
 
   private onWindowsClick = () => {
-    this.context.fire({
+    this.context.bus.fire({
       type: 'APP:SYS/overlay',
       payload: {
         overlay: { kind: 'WINDOWS', uri: this.uri },

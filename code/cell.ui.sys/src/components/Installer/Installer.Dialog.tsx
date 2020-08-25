@@ -113,7 +113,7 @@ export class InstallerDialog extends React.PureComponent<
   };
 
   public close() {
-    this.context.fire({ type: 'APP:SYS/overlay', payload: { overlay: undefined } });
+    this.context.bus.fire({ type: 'APP:SYS/overlay', payload: { overlay: undefined } });
   }
 
   private setError = (error: string | Error) => {

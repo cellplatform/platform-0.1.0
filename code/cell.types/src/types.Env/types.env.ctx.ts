@@ -1,4 +1,3 @@
-import { Observable } from 'rxjs';
 import { t } from '../common';
 
 /**
@@ -18,9 +17,8 @@ import { t } from '../common';
  *    https://reactjs.org/docs/context.html
  *
  */
-export type IEnvContext<E extends t.Event = t.EnvEvent> = {
+export type IEnvContext<E extends t.Event = t.Event> = {
   env: t.IEnv;
+  bus: t.EventBus<E>;
   client: t.IClientTypesystem;
-  event$: Observable<E>;
-  fire: t.FireEvent<E>;
 };

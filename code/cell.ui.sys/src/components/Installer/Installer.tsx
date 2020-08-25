@@ -47,7 +47,7 @@ export class Installer extends React.PureComponent<IInstallerProps, IInstallerSt
    */
   private onInstall = (e: DropEvent) => {
     const { files, urls, dir } = e;
-    this.context.fire({
+    this.context.bus.fire({
       type: 'APP:SYS/overlay',
       payload: { overlay: { kind: 'INSTALL', dir, files, urls } },
     });

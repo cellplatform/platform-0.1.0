@@ -24,7 +24,7 @@ export class RootOverlay extends React.PureComponent<IRootOverlayProps, IRootOve
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const keyPress$ = events.keyPress$.pipe(takeUntil(this.unmounted$));
 
-    const changes = onStateChanged(ctx.event$, this.unmounted$);
+    const changes = onStateChanged(ctx.bus.event$, this.unmounted$);
     changes.on('APP:SYS/overlay').subscribe(() => this.forceUpdate());
 
     keyPress$
@@ -56,7 +56,7 @@ export class RootOverlay extends React.PureComponent<IRootOverlayProps, IRootOve
    * [Methods]
    */
   public hide = () => {
-    this.context.fire({
+    this.context.bus.fire({
       type: 'APP:SYS/overlay',
       payload: { overlay: undefined },
     });

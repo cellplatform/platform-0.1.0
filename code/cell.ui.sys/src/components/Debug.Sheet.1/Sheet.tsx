@@ -46,7 +46,7 @@ export class Sheet extends React.PureComponent<ISheetProps> {
       cursor,
       row,
       async save() {
-        return ctx.client.saveChanges(cursor.sheet, { fire: ctx.fire, wait: 10 });
+        return ctx.client.saveChanges(cursor.sheet, { fire: ctx.bus.fire, wait: 10 });
       },
     };
   }
@@ -108,7 +108,7 @@ export class Sheet extends React.PureComponent<ISheetProps> {
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>{this.renderLeft()}</div>
         <div {...styles.right}>
-          <Log event$={ctx.event$} style={{ flex: 1 }} />
+          <Log event$={ctx.bus.event$} style={{ flex: 1 }} />
         </div>
       </div>
     );

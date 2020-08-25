@@ -66,9 +66,8 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
   /**
    * [Properties]
    */
-  public get bus(): t.EventBus<any> {
-    const { event$, fire } = this.context;
-    return { event$, fire };
+  public get bus(): t.EventBus {
+    return this.context.bus;
   }
 
   /**

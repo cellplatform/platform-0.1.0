@@ -35,7 +35,8 @@ export class Main extends React.PureComponent<IMainProps> {
   }
 
   private init() {
-    this.module = HarnessModule.init(this.bus);
+    const ctx = this.context;
+    this.module = HarnessModule.init(ctx.bus);
     this.forceUpdate();
 
     // const fire = Module.fire<P>(this.bus);
@@ -48,14 +49,6 @@ export class Main extends React.PureComponent<IMainProps> {
       draft.children = draft.children || [];
       draft.children.push({ id: 'foo' }, { id: 'bar' });
     });
-  }
-
-  /**
-   * [Properties]
-   */
-  public get bus(): t.EventBus<any> {
-    const { event$, fire } = this.context;
-    return { event$, fire };
   }
 
   /**
