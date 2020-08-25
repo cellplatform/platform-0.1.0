@@ -3,15 +3,13 @@ import * as React from 'react';
 import { Module } from '../common';
 import * as t from './types';
 
-type P = t.DebugProps;
+type P = t.TmplProps;
 
 export const TmplModule: t.IModuleDef = {
   /**
    * ENTRY: Initialize a new module from the definition.
    */
   init(bus, parent) {
-    const fire = Module.fire<P>(bus);
-
     const module = Module.create<P>({
       bus,
       root: { id: 'tmpl', props: { treeview: { label: 'Template' }, view: 'DEFAULT' } },
@@ -25,6 +23,7 @@ export const TmplModule: t.IModuleDef = {
 
     renderer(events);
 
+    const fire = Module.fire<P>(bus);
     events.selection$.subscribe((e) => {
       const { view, data } = e;
       const selected = e.selection?.id;

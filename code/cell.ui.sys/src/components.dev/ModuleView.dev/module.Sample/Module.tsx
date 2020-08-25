@@ -1,7 +1,7 @@
 import { filter } from 'rxjs/operators';
 
 import { Module, t } from '../common';
-import { renderer } from './view/render';
+import { renderer } from './Module.render';
 
 type P = t.MyProps;
 

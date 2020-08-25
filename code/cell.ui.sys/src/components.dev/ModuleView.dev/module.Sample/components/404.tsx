@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { color, COLORS, css, CssValue } from '../../../common';
+import { color, COLORS, css, CssValue } from '../../common';
 import { Identifiers } from './Identifiers';
 
 export type ITest404Props = {

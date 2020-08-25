@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Observable } from 'rxjs';
 
-import { ui, t } from '../../common';
+import { ui, t } from '../common';
 import { TestDiagram } from './components/Diagram';
 import { TestSample } from './components/Sample';
 import { Test404 } from './components/404';
