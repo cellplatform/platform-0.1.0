@@ -1107,6 +1107,15 @@
     "@platform/react" "0.4.43"
     "@platform/util.value" "0.7.30"
 
+"@platform/ui.tree.types@^0.0.0":
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree.types/-/ui.tree.types-0.0.0.tgz#b1545ccd70e78cf19cef0b16262522b8bf6e99cd"
+  integrity sha512-GnLe8Im7zZLBJ3rFTVPNvcRKMEBN7Fe46wtW8tvVi10mBnlGzhra8uLKbcbVErPcRxMVXVaLmWaOS8ci8y/SaA==
+  dependencies:
+    "@platform/libs" "0.2.2"
+    "@platform/state.types" "^0.0.0"
+    "@platform/types" "0.5.3"
+
 "@platform/util.animate@0.0.88":
   version "0.0.88"
   resolved "https://registry.yarnpkg.com/@platform/util.animate/-/util.animate-0.0.88.tgz#628e38290623787b281c4e2b9553d931f50bcf1f"
