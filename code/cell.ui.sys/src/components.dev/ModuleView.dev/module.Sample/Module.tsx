@@ -55,7 +55,7 @@ export const SampleModule: t.MyModuleDef = {
     Module.events(bus.event$, until$)
       .register$.pipe(filter((e) => !e.parent))
       .subscribe((e) => {
-        const module = fire.request(e.module).module;
+        const module = fire.request(e.module);
         if (module) {
           Module.register(bus, module, main.id);
         }

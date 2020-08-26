@@ -39,7 +39,7 @@ export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
     )
     .subscribe((e) => {
       const parent = module as t.IModule;
-      const child = fire(bus).request(e.module).module;
+      const child = fire(bus).request(e.module);
       if (child) {
         registerChild({ bus, parent, child });
       }

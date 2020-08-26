@@ -72,8 +72,8 @@ export function strategy(args: { module: t.HarnessModule; bus: t.EventBus<t.Harn
 
     // console.log('module', module);
 
-    if (res.module) {
-      Module.register(bus, res.module, module.id);
+    if (res) {
+      Module.register(bus, res, module.id);
     }
   });
 }

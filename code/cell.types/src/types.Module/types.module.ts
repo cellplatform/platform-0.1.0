@@ -88,10 +88,8 @@ export type ModuleFilterEventArgs<T extends E = E> = ModuleFilterArgs & {
  */
 export type IModuleFire<T extends P> = {
   register(module: t.IModule<any>, parent?: string): t.ModuleRegistration;
-  request<T extends P>(id: string): t.ModuleRequestResponse<T>;
+  request<T extends P>(id: string): t.IModule<T> | undefined;
 };
-
-export type ModuleRequestResponse<T extends P = AnyProps> = { module?: t.IModule<T> };
 
 /**
  * Event helpers

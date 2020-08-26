@@ -9,26 +9,9 @@ type P = t.HarnessProps;
  */
 export function renderer(args: { bus: t.EventBus; events: t.IViewModuleEvents<P> }) {
   const render = args.events.render;
-  const fire = ui.Module.fire(args.bus);
 
   render('DEFAULT').subscribe((e) => {
     const el = <div style={{ padding: 20 }}>Template</div>;
-    e.render(el);
-  });
-
-  /**
-   * Harness tree-view selector.
-   */
-  render('TREE').subscribe((e) => {
-    // const m =
-    const module = fire.request(e.module).module;
-
-    console.log('module //', module);
-
-    const el = <ui.ModuleView.Tree module={module} />;
-
-    console.log('el', el);
-
     e.render(el);
   });
 

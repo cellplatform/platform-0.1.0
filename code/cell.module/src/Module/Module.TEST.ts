@@ -124,7 +124,7 @@ describe('Module', () => {
       Module.events(event$)
         .register$.pipe(filter((e) => !e.parent))
         .subscribe((e) => {
-          const module = fire.request(e.module).module;
+          const module = fire.request(e.module);
           if (module) {
             Module.register(bus, module, root.id);
           }
@@ -170,18 +170,18 @@ describe('Module', () => {
     it('finds module: complete id', () => {
       const module = create();
       const res = Module.fire(bus).request(module.id);
-      expect(res.module?.id).to.eql(module.id);
+      expect(res?.id).to.eql(module.id);
     });
 
     it('finds module: wildcard ("*:id")', () => {
       const module = create({ root: 'foo' });
       const res = Module.fire(bus).request('*:foo');
-      expect(res.module?.id).to.eql(module.id);
+      expect(res?.id).to.eql(module.id);
     });
 
     it('not found', () => {
       const res = Module.fire(bus).request('ns:404');
-      expect(res.module).to.eql(undefined);
+      expect(res).to.eql(undefined);
     });
   });
 });

@@ -25,7 +25,7 @@ export function renderer(args: { bus: t.EventBus; events: t.IViewModuleEvents<P>
    */
   render('DIAGRAM').subscribe((e) => {
     // NB: Sample of getting the module and passing as a prop (rather than using a <Provider>).
-    const module = fire.request(e.module).module;
+    const module = fire.request(e.module);
     const el = <TestDiagram module={module} />;
     e.render(el);
   });

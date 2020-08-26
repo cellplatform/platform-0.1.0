@@ -22,7 +22,7 @@ export function register(bus: B, module: t.IModule, parent?: string) {
   const res: t.ModuleRegistration = { ok: false, module };
 
   const parentResponse = (id?: string) => {
-    res.parent = request(bus, id || '').module;
+    res.parent = request(bus, id || '');
     res.ok = Boolean(res.parent);
   };
 
@@ -62,7 +62,7 @@ export function register(bus: B, module: t.IModule, parent?: string) {
 /**
  * Request a module via an event.
  */
-export function request<T extends P = P>(bus: B, id: string): t.ModuleRequestResponse<T> {
+export function request<T extends P = P>(bus: B, id: string): t.IModule<T> | undefined {
   let module: t.IModule<T> | undefined;
   let handled = false;
   bus.fire({
@@ -78,5 +78,5 @@ export function request<T extends P = P>(bus: B, id: string): t.ModuleRequestRes
       },
     },
   });
-  return { module };
+  return module;
 }
