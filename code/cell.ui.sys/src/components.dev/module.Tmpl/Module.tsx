@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import { Module } from '../common';
-import * as t from './types';
+import { Module, t } from './common';
 
 type P = t.TmplProps;
 

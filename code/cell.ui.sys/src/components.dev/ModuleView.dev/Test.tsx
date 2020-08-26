@@ -3,11 +3,11 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Icons } from '../../components/primitives';
-import { css, CssValue, ui, t } from './common';
-import { ComponentFrame } from './ComponentFrame';
 import { FinderModule } from '../module.Finder';
+import { TmplModule } from '../module.Tmpl';
+import { css, CssValue, t, ui } from './common';
+import { ComponentFrame } from './ComponentFrame';
 import { SampleModule } from './module.Sample';
-import { TmplModule } from './module.Tmpl';
 
 const { ModuleView } = ui;
 
