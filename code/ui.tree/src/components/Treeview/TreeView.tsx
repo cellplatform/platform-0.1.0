@@ -22,6 +22,7 @@ import { renderer } from './renderer';
 
 const R = { equals };
 type N = t.ITreeviewNode;
+type E = t.TreeviewEvent;
 
 export type ITreeviewProps = {
   id?: string;
@@ -64,11 +65,8 @@ export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState
   public static Identity = TreeViewState.identity;
   public static State = TreeViewState;
 
-  public static events<T extends N = N>(
-    event$: Observable<t.TreeviewEvent>,
-    dispose$?: Observable<any>,
-  ) {
-    return TreeEvents.create<T>(event$, dispose$);
+  public static events<T extends N = N>(event$: Observable<E>, until$?: Observable<any>) {
+    return TreeEvents.create<T>(event$, until$);
   }
 
   private static current(props: ITreeviewProps) {
@@ -336,15 +334,14 @@ export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState
     );
   }
 
-  private renderCustomHeader(node: N, depth: number) {
-    const renderer = this.renderer;
-    const isFocused = this.isFocused;
-    return renderer.header({ node, depth, isFocused });
-  }
-
   private renderNodeList(node: N, depth: number) {
     const theme = this.theme;
     const renderer = this.renderer;
+    const isInline = false; // NB: does not make sense for a "header".
+    const isFocused = this.isFocused;
+
+    const treeview = this.renderer.beforeRender.header({ node, depth, isInline, isFocused });
+    node = { ...node, props: { ...node.props, treeview } };
 
     const header = node.props?.treeview?.header || {};
     let isHeaderVisible = defaultValue(header.isVisible, true);
@@ -375,13 +372,15 @@ export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState
     );
   }
 
+  private renderCustomHeader(node: N, depth: number) {
+    const renderer = this.renderer;
+    const isFocused = this.isFocused;
+    return renderer.header({ node, depth, isFocused });
+  }
+
   private renderHeader = (node: N, depth: number, custom?: React.ReactNode | null) => {
     const theme = this.theme;
-    const isInline = false; // NB: does not make sense for a "header".
-    const isFocused = this.isFocused;
-
-    const props = this.renderer.beforeRender.header({ node, depth, isInline, isFocused });
-    node = { ...node, props: { ...node.props, treeview: props } };
+    const props = node.props?.treeview || {};
 
     const header = props.header || {};
     const title = props.title || props.label || node.id.toString();
@@ -405,7 +404,7 @@ export class Treeview extends React.PureComponent<ITreeviewProps, ITreeviewState
         showParentButton={showParentButton}
         theme={theme}
         background={this.props.background}
-        isFocused={isFocused}
+        isFocused={this.isFocused}
         onMouseParent={this.handleNodeMouse}
       />
     );

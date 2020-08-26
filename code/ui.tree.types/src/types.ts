@@ -1,2 +1,2 @@
-export * from './types.node';
-export * from './types.node.props';
+export * from './types.Node';
+export * from './types.Node.props';

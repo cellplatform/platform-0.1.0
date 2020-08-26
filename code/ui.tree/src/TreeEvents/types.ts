@@ -8,7 +8,7 @@ type Target = t.TreeViewMouseTarget;
 export type TreeEvents = {
   create<N extends t.ITreeviewNode = t.ITreeviewNode>(
     event$: Observable<t.TreeviewEvent>,
-    dispose$?: Observable<any>,
+    until$?: Observable<any>,
   ): t.ITreeEvents<N>;
 };
 
