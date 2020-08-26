@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { css, CssValue, t, ui, Module, color } from '../../common';
+import { filter } from 'rxjs/operators';
+
+import { color, css, CssValue, t, ui } from '../../common';
 import { HarnessModule } from '../../Module';
 
 type P = t.HarnessProps;
@@ -10,22 +11,20 @@ type V = t.HarnessView;
 export type IMainProps = {
   style?: CssValue;
 };
-// export type IMainState = { module?: t.HarnessModule };
 
 export class Main extends React.PureComponent<IMainProps> {
-  // public state: IMainState = {};
-  // private state$ = new Subject<Partial<IMainState>>();
   private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
   public context!: t.IEnvContext;
   private module!: t.HarnessModule;
+  private treeview$ = new Subject<t.TreeviewEvent>();
 
   /**
    * [Lifecycle]
    */
+
   public componentDidMount() {
-    // this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.init();
   }
 
@@ -37,18 +36,20 @@ export class Main extends React.PureComponent<IMainProps> {
   private init() {
     const ctx = this.context;
     this.module = HarnessModule.init(ctx.bus);
-    this.forceUpdate();
 
-    // const fire = Module.fire<P>(this.bus);
-    // fire.render({ module, view: 'TREE', notFound: '404' });
+    // Setup event monitor.
+    const tree = ui.ModuleView.Tree.events(this.treeview$, this.unmounted$);
 
-    const module = this.module;
-
-    // TEMP 🐷
-    module.change((draft) => {
-      draft.children = draft.children || [];
-      draft.children.push({ id: 'foo' }, { id: 'bar' });
+    // Prevent header from being drawn on root harness node.
+    tree.beforeRender.header$.pipe(filter((e) => e.node.id === this.module.id)).subscribe((e) => {
+      e.change((draft) => {
+        const header = draft.header || (draft.header = {});
+        header.isVisible = false;
+      });
     });
+
+    // NB: Redraw causes the newly created [module] to be drawn.
+    this.forceUpdate();
   }
 
   /**
@@ -58,12 +59,12 @@ export class Main extends React.PureComponent<IMainProps> {
     const styles = {
       base: css({
         Absolute: 0,
-        WebkitAppRegion: 'drag',
         Flex: 'horizontal-stretch-stretch',
         boxSizing: 'border-box',
       }),
       fill: css({ Absolute: 0 }),
       left: css({
+        WebkitAppRegion: 'drag',
         position: 'relative',
         display: 'flex',
         width: 250,
@@ -74,6 +75,7 @@ export class Main extends React.PureComponent<IMainProps> {
         flex: 1,
       }),
       right: css({
+        WebkitAppRegion: 'drag',
         width: 250,
         backgroundColor: color.format(1),
       }),
@@ -82,7 +84,7 @@ export class Main extends React.PureComponent<IMainProps> {
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
           {/* <ui.ModuleView.Frame style={styles.fill} filter={this.rootTree} bus={this.bus} /> */}
-          <ui.ModuleView.Tree module={this.module} />
+          <ui.ModuleView.Tree module={this.module} treeview$={this.treeview$} />
         </div>
         <div {...styles.body}>{this.renderMainTemp()}</div>
         <div {...styles.right}></div>

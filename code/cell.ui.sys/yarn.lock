@@ -981,7 +981,7 @@
     "@platform/libs" "0.2.2"
     "@platform/ui.tree" "0.8.1"
 
-"@platform/cell.module@0.0.6", "@platform/cell.module@^0.0.6":
+"@platform/cell.module@0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@platform/cell.module/-/cell.module-0.0.6.tgz#d9b5c18965323d0a9f00a8a3f0259110ec1afcd9"
   integrity sha512-SOJU9vWrSCnx959YY6ivVPVPhoQe9q8zgroQUzLZf4g3c2nJFOFwVRro+SXPxXkkGpj7kSxf1VhMgCXUzss8Gw==
@@ -1254,7 +1254,7 @@
     "@platform/libs" "0.2.2"
     "@platform/ts.libs" "3.9.9"
 
-"@platform/types@0.5.3", "@platform/types@^0.5.3":
+"@platform/types@0.5.3":
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/@platform/types/-/types-0.5.3.tgz#e813c5c7c704b1fe65770b8ea135c1673a082582"
   integrity sha512-fYBPv+Tv8xnQsVB8v8fjwwkn1QowYnaQQ/p3x1TS1eUZPQ2dNEBFcZZsCz0zlUWEU+k+yj/LHMMLvqXr5ZhU6g==
@@ -1315,7 +1315,7 @@
     "@platform/css" "0.4.10"
     "@platform/react" "0.4.43"
 
-"@platform/ui.text@0.3.74", "@platform/ui.text@^0.3.74":
+"@platform/ui.text@0.3.74":
   version "0.3.74"
   resolved "https://registry.yarnpkg.com/@platform/ui.text/-/ui.text-0.3.74.tgz#2f417d6b10e122a55aef6d9852fa080799b02e3a"
   integrity sha512-3EdYVii0zzk8aXR248nHDMIMzH2YGB3u5wEPP5L884UvS3ROfT8l0gT7ugascwEl1wGqkbWktsev3GOe94mFGg==

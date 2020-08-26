@@ -63,8 +63,6 @@ export function strategy(args: { module: t.HarnessModule; bus: t.EventBus<t.Harn
 
   const fire = Module.fire<t.HarnessProps>(bus);
 
-  // rx.
-
   rx.payload<t.IHarnessAddEvent>(event$, 'Harness/add').subscribe((e) => {
     console.log('e add:', e);
 

@@ -7,7 +7,7 @@ import { t } from '../common';
 import { context } from '../context';
 import { render } from './render';
 
-import { testHarnessInit } from '../components.dev/module.Harness/.dev/test.init';
+import * as HARNESS from '../components.dev/module.Harness/.dev/SAMPLE';
 
 (async () => {
   const win = (window as unknown) as t.ITopWindow;
@@ -22,10 +22,8 @@ import { testHarnessInit } from '../components.dev/module.Harness/.dev/test.init
   /**
    * TODO 🐷
    * - temp / remove
-   * - Simulate module insertion into UIHarness.
    */
-
   if (entry === 'entry:harness') {
-    testHarnessInit(ctx);
+    HARNESS.sampleInit(ctx);
   }
 })();
