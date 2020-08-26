@@ -5,7 +5,7 @@ import { renderer } from './Module.render';
 
 type P = t.MyProps;
 
-export const SampleModule: t.IModuleDef = {
+export const SampleModule: t.MyModuleDef = {
   /**
    * Initialize the module.
    */

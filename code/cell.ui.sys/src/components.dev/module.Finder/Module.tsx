@@ -4,7 +4,7 @@ import { renderer } from './Module.render';
 
 type P = t.FinderProps;
 
-export const FinderModule: t.IModuleDef = {
+export const FinderModule: t.FinderModuleDef = {
   /**
    * Initialize a new module from the definition.
    */

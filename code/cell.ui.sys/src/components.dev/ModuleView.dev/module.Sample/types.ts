@@ -5,5 +5,8 @@ export type MyView = 'TREE' | 'DIAGRAM' | 'SAMPLE' | 'TREE_COLUMNS' | '404' | 'F
 export type MyData = { foo?: string | number };
 export type MyProps = t.IViewModuleProps<MyData, MyView>;
 export type MyModule = t.IModule<MyProps>;
+export type MyModuleDef = {
+  init(bus: t.EventBus, parent?: string): t.MyModule;
+};
 
 export type MyContext = { bus: t.EventBus<any> };

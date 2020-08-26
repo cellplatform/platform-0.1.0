@@ -4,7 +4,7 @@ import { Module, t } from './common';
 
 type P = t.TmplProps;
 
-export const TmplModule: t.IModuleDef = {
+export const TmplModule: t.TmplModuleDef = {
   /**
    * ENTRY: Initialize a new module from the definition.
    */

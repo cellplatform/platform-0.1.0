@@ -8,6 +8,7 @@ export type HarnessData = { foo?: string | number };
 export type HarnessProps = t.IViewModuleProps<HarnessData, HarnessView>;
 export type HarnessModule = t.IModule<HarnessProps>;
 
-export type HarnessModuleDef = t.IModuleDef & {
+export type HarnessModuleDef = {
   Main: (props?: IMainProps) => JSX.Element;
+  init(bus: t.EventBus, parent?: string): HarnessModule;
 };
