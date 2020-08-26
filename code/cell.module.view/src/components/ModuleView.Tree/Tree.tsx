@@ -1,11 +1,13 @@
-import { ITreeviewProps } from '@platform/ui.tree/lib/components/Treeview';
 import { Tree } from '@platform/ui.tree';
-import { TreeviewStrategy } from '@platform/ui.tree/lib/TreeviewStrategy';
+import { ITreeviewProps } from '@platform/ui.tree/lib/components/Treeview';
 import * as React from 'react';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { CssValue, dispose, t } from '../../common';
+
+type N = t.ITreeviewNode;
+type E = t.TreeviewEvent;
 
 export type IModuleViewTreeProps = {
   totalColumns?: number;
@@ -13,18 +15,21 @@ export type IModuleViewTreeProps = {
   strategy?: (fire: t.FireEvent) => t.ITreeviewStrategy;
   treeviewProps?: ITreeviewProps;
   focusOnLoad?: boolean;
+  treeview$?: Subject<t.TreeviewEvent>;
   style?: CssValue;
 };
 
-export type IModuleViewTreeState = {
-  current?: t.IDisposable;
-};
+export type IModuleViewTreeState = { current?: t.IDisposable };
 
 export class ModuleViewTree extends React.PureComponent<
   IModuleViewTreeProps,
   IModuleViewTreeState
 > {
-  public static Strategy = TreeviewStrategy;
+  public static Strategy = Tree.Strategy;
+
+  public static events<T extends N = N>(event$: Observable<E>, until$?: Observable<any>) {
+    return Tree.View.events<T>(event$, until$);
+  }
 
   public state: IModuleViewTreeState = {};
   private state$ = new Subject<Partial<IModuleViewTreeState>>();
@@ -37,6 +42,7 @@ export class ModuleViewTree extends React.PureComponent<
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+    this.treeview$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.props.treeview$?.next(e));
     this.init();
   }
 
@@ -66,7 +72,7 @@ export class ModuleViewTree extends React.PureComponent<
 
       const strategy = this.props.strategy
         ? this.props.strategy(fire as t.FireEvent)
-        : TreeviewStrategy.default({ fire });
+        : Tree.Strategy.default({ fire });
 
       const events = Tree.View.events(this.treeview$, until$);
       events.$.subscribe((event) => strategy.next({ tree, event }));
