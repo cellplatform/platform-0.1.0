@@ -13,16 +13,19 @@ export const TmplModule: t.TmplModuleDef = {
       bus,
       root: { id: 'tmpl', props: { treeview: { label: 'Template' }, view: 'DEFAULT' } },
     });
-    const until$ = module.dispose$;
     Module.register(bus, module, parent);
 
+    /**
+     * Setup event pub/sub.
+     */
     const match: t.ModuleFilterEvent = (e) => e.module == module.id || module.contains(e.module);
-    const event$ = Module.filter(bus.event$, match);
-    const events = Module.events<P>(event$, until$);
-
-    renderer(events);
-
+    const events = Module.events<P>(Module.filter(bus.event$, match), module.dispose$);
     const fire = Module.fire<P>(bus);
+
+    /**
+     * STRATEGY: render user-interface.
+     */
+    renderer(events);
     events.selection$.subscribe((e) => {
       const { view, data } = e;
       const selected = e.selection?.id;

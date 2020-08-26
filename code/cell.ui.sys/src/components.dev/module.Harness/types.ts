@@ -10,5 +10,18 @@ export type HarnessModule = t.IModule<HarnessProps>;
 
 export type HarnessModuleDef = {
   Main: (props?: IMainProps) => JSX.Element;
-  init(bus: t.EventBus, parent?: string): HarnessModule;
+  init(bus: t.EventBus): HarnessModule;
 };
+
+/**
+ * [EVENTS]
+ */
+
+export type HarnessEvent = IHarnessAddEvent;
+export type HarnessEventPublic = IHarnessAddEvent;
+
+export type IHarnessAddEvent = {
+  type: 'Harness/add';
+  payload: IHarnessAdd;
+};
+export type IHarnessAdd = { module: string };

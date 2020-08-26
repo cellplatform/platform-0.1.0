@@ -1,5 +1,5 @@
 import { ui } from '..';
-import { Client, expect, Subject, t } from '../test';
+import { Client, expect, rx, t } from '../test';
 
 describe('Context', () => {
   it('has display name', () => {
@@ -7,12 +7,11 @@ describe('Context', () => {
   });
 
   it('creates provider', () => {
-    const event$ = new Subject<t.Event>();
     const host = 'localhost:1234';
     const client = Client.typesystem(host);
     const def = 'cell:foo:1';
     const env = { def } as any;
-    const bus: t.EventBus = { event$, fire: (e) => event$.next(e) };
+    const bus = rx.bus();
     const ctx: t.IEnvContext = { env, client, bus };
 
     const res1 = ui.createProvider({ ctx });
