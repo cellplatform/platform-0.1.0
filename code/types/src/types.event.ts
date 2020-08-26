@@ -12,4 +12,5 @@ export type FireEvent<E extends Event = Event> = (event: E) => void;
 export type EventBus<E extends Event = Event> = {
   event$: Observable<E>;
   fire: FireEvent<E>;
+  type<T extends Event>(): EventBus<T>;
 };

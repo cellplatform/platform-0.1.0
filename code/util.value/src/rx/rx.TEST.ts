@@ -1,3 +1,5 @@
+import * as t from '@platform/types';
+
 import { expect } from 'chai';
 import { Subject } from 'rxjs';
 
@@ -85,6 +87,96 @@ describe('rx', () => {
 
       expect(fired.length).to.eql(1);
       expect(fired[0]).to.eql({ count: 123 });
+    });
+  });
+
+  describe('bus', () => {
+    type MyEvent = IFooEvent | IBarEvent;
+    type IFooEvent = { type: 'Event/foo'; payload: { count?: number } };
+    type IBarEvent = { type: 'Event/bar'; payload: { count?: number } };
+
+    it('creates new observable (no param, no type)', () => {
+      const bus = rx.bus();
+
+      const fired: t.Event[] = [];
+      bus.event$.subscribe((e) => fired.push(e));
+
+      bus.fire({ type: 'ANY', payload: {} });
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].type).to.eql('ANY');
+    });
+
+    it('uses given observable', () => {
+      const source$ = new Subject(); // NB: Does not care the typing of the input observable (flexible).
+      const bus = rx.bus<MyEvent>(source$);
+
+      const fired: MyEvent[] = [];
+      bus.event$.subscribe((e) => fired.push(e));
+
+      source$.next({ type: 'ANY', payload: {} });
+
+      bus.fire({ type: 'Event/foo', payload: {} });
+
+      expect(fired.length).to.eql(2);
+      expect(fired[0].type).to.eql('ANY');
+      expect(fired[1].type).to.eql('Event/foo');
+    });
+
+    it('changes event type', () => {
+      const bus1 = rx.bus();
+
+      const fired: t.Event[] = [];
+      bus1.event$.subscribe((e) => fired.push(e));
+
+      const bus2 = bus1.type<MyEvent>();
+      bus2.fire({ type: 'Event/bar', payload: {} });
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].type).to.eql('Event/bar');
+    });
+
+    it('filters out non-standard [event] objects from the stream', () => {
+      const source$ = new Subject();
+      const bus = rx.bus<MyEvent>(source$);
+
+      const fired: MyEvent[] = [];
+      bus.event$.subscribe((e) => fired.push(e));
+
+      // NB: All data-types that do not conform to the shape of a [Event].
+      source$.next();
+      source$.next(null);
+      source$.next(1);
+      source$.next(true);
+      source$.next('two');
+      source$.next({});
+      source$.next({ type: 123, payload: {} });
+      source$.next({ type: 'FOO' });
+      source$.next({ type: 'FOO', payload: 123 });
+
+      expect(fired.length).to.eql(0);
+    });
+  });
+
+  describe('isEvent', () => {
+    const test = (input: any, expected: boolean) => {
+      expect(rx.isEvent(input)).to.eql(expected);
+    };
+
+    it('is an event', () => {
+      test({ type: 'MyEvent', payload: {} }, true);
+    });
+
+    it('is not an event', () => {
+      test(undefined, false);
+      test(null, false);
+      test(1, false);
+      test(true, false);
+      test('two', false);
+      test({}, false);
+      test({ type: 123, payload: {} }, false);
+      test({ type: 'FOO' }, false);
+      test({ type: 'FOO', payload: 123 }, false);
     });
   });
 });
