@@ -12,18 +12,18 @@ export function request<T extends P = P>(
 ): t.IModule<T> | undefined {
   let res: t.IModule<T> | undefined;
   let handled = false;
-  bus.fire({
-    type: 'Module/request',
-    payload: {
-      module: toNodeId(id),
-      get handled() {
-        return handled;
-      },
-      respond: (module) => {
-        handled = true;
-        res = module as t.IModule<T>;
-      },
+
+  const payload: t.IModuleRequest = {
+    module: toNodeId(id),
+    get handled() {
+      return handled;
     },
-  });
+    respond(module) {
+      handled = true;
+      res = module as t.IModule<T>;
+    },
+  };
+
+  bus.fire({ type: 'Module/request', payload });
   return res;
 }
