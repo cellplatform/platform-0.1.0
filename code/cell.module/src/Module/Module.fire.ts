@@ -10,7 +10,7 @@ type P = t.IModuleProps;
  */
 export function fire<T extends P>(bus: B): t.IModuleFire<T> {
   return {
-    register: (module: t.IModule, parent: string) => register(bus, module, parent),
+    register: (module: t.IModule, parent?: t.NodeIdentifier) => register(bus, module, parent),
     request: <T extends P>(id: string) => request<T>(bus, id),
   };
 }

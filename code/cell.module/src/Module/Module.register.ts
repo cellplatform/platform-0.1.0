@@ -8,7 +8,7 @@ type B = t.EventBus<t.ModuleEvent>;
 /**
  * Registers a module.
  */
-export function register(bus: B, module: t.IModule, parent?: string) {
+export function register(bus: B, module: t.IModule, parent?: t.NodeIdentifier) {
   const event$ = bus.event$.pipe(takeUntil(module.dispose$));
   const res: t.ModuleRegistration = { ok: false, module };
 
@@ -38,13 +38,16 @@ export function register(bus: B, module: t.IModule, parent?: string) {
   }
 
   // Fire out the registration request.
-  bus.fire({ type: 'Module/register', payload: { module: module.id, parent } });
+  bus.fire({
+    type: 'Module/register',
+    payload: { module: module.id, parent: toNodeId(parent) },
+  });
 
   // Finish up.
   if (res.ok && typeof parent === 'string') {
     bus.fire({
       type: 'Module/registered',
-      payload: { module: module.id, parent },
+      payload: { module: module.id, parent: toNodeId(parent) },
     });
   }
 

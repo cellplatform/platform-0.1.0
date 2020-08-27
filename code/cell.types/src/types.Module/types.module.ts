@@ -20,7 +20,7 @@ export type Module = {
   kind: 'Module';
 
   create<T extends P>(args?: ModuleArgs<T>): IModule<T>;
-  register(bus: B, module: t.IModule, parent?: string): t.ModuleRegistration;
+  register(bus: B, module: t.IModule, parent?: t.NodeIdentifier): t.ModuleRegistration;
 
   Identity: t.TreeIdentity;
   Query: t.TreeQuery;
@@ -87,7 +87,7 @@ export type ModuleFilterEventArgs<T extends E = E> = ModuleFilterArgs & {
  * Event Bus (fire).
  */
 export type IModuleFire<T extends P> = {
-  register(module: t.IModule<any>, parent?: string): t.ModuleRegistration;
+  register(module: t.IModule<any>, parent?: t.NodeIdentifier): t.ModuleRegistration;
   request<T extends P>(id: string): t.IModule<T> | undefined;
 };
 

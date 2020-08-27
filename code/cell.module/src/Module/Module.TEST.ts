@@ -125,7 +125,7 @@ describe('Module', () => {
       expect(node1?.id.endsWith(':foo')).to.eql(true);
       expect(node1?.children).to.eql(undefined);
 
-      const res = fire.register(child, node1?.id);
+      const res = fire.register(child, node1);
 
       expect(res.ok).to.eql(true);
       expect(res.parent?.id).to.eql(parent.id);
