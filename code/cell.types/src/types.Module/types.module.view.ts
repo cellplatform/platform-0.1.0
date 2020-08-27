@@ -67,7 +67,6 @@ export type ModuleFireRender<T extends P> = (
 export type ModuleFireRenderResponse = JSX.Element | null | undefined;
 export type ModuleFireRenderArgs<T extends P> = {
   module: string | t.IModule<any>;
-  selected?: string;
   data?: T['data'];
   view?: T['view'];
   notFound?: T['view'];

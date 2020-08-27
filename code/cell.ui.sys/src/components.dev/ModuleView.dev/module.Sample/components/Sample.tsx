@@ -144,17 +144,6 @@ export class TestSample extends React.PureComponent<ITestSampleProps, ITestSampl
     if (parent) {
       const bus = this.context.bus;
       const child = Module.create({ bus, root: 'child' });
-
-      /**
-       * TODO 🐷
-       * this is not adding it to the right parent
-       */
-
-      console.group('🌳 Add Module');
-      console.log('parent.id', parent.id);
-      console.log('parent', parent);
-      console.groupEnd();
-
       Module.register(bus, child, parent.id);
     }
   };

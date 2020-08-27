@@ -26,8 +26,7 @@ export const FinderModule: t.FinderModuleDef = {
 
     events.selection$.subscribe((e) => {
       const { view, data } = e;
-      const selected = e.selection?.id;
-      fire.render({ selected, module, data, view, notFound: '404' });
+      fire.render({ module, data, view, notFound: '404' });
     });
 
     return module;

@@ -55,9 +55,8 @@ export const SampleModule: t.MyModuleDef = {
       const event$ = Module.filter(module.event.$, match);
       const events = Module.events<P>(event$, until$);
       events.selection$.subscribe((e) => {
-        const selected = e.selection?.id;
         const { view, data } = e;
-        fire.render({ selected, module, data, view, notFound: '404' });
+        fire.render({ module, data, view, notFound: '404' });
       });
     };
 

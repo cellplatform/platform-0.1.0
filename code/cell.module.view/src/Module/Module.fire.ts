@@ -25,7 +25,7 @@ export function render<T extends P>(
   bus: B,
   args: t.ModuleFireRenderArgs<T>,
 ): t.ModuleFireRenderResponse {
-  const { selected, data = {} } = args;
+  const { data = {} } = args;
   const view = args.view as NonNullable<T['view']>;
   const module = typeof args.module === 'string' ? args.module : args.module.id;
 
@@ -36,7 +36,6 @@ export function render<T extends P>(
 
   const payload: t.IModuleRender<T> = {
     module,
-    selected,
     data,
     view,
     render(input) {
@@ -59,7 +58,7 @@ export function render<T extends P>(
   } else if (args.notFound) {
     // View not rendered by any listeners.
     // If a fallback was given request that to be rendered instead.
-    el = render<T>(bus, { module, selected, data, view: args.notFound }); // <== RECURSION 🌳
+    el = render<T>(bus, { module, data, view: args.notFound }); // <== RECURSION 🌳
   }
 
   return el;
