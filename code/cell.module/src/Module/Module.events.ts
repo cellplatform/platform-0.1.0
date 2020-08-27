@@ -10,6 +10,7 @@ type E = t.ModuleEvent;
 type P = t.IModuleProps;
 
 const identity = TreeState.identity;
+
 export function create<T extends P = t.IModulePropsAny>(
   subject: Observable<t.Event> | t.IModule,
   until$?: Observable<any>,

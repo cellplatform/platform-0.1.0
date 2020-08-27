@@ -102,9 +102,38 @@ describe('Module', () => {
       const parent = create({ root: 'parent' });
       const child = create({ root: 'child' });
 
+      expect(parent.root.children).to.eql(undefined);
       expect(parent.find((e) => e.id === child.id)).to.eql(undefined);
-      fire.register(child, parent.id);
+
+      const res = fire.register(child, parent.id);
+
+      expect(res.ok).to.eql(true);
+      expect(res.parent?.id).to.eql(parent.id);
+      expect(res.module.id).to.eql(child.id);
+
       expect(parent.find((e) => e.id === child.id)).to.equal(child);
+      expect((parent.root.children || [])[0]).to.eql(child.root);
+    });
+
+    it('inserts child within sub-node of parent', () => {
+      const parent = create({ root: { id: 'parent', children: [{ id: 'foo' }] } });
+      const child = create({ root: 'child' });
+
+      const findFoo = () => parent.query.find((e) => e.key === 'foo');
+
+      const node1 = findFoo();
+      expect(node1?.id.endsWith(':foo')).to.eql(true);
+      expect(node1?.children).to.eql(undefined);
+
+      const res = fire.register(child, node1?.id);
+
+      expect(res.ok).to.eql(true);
+      expect(res.parent?.id).to.eql(parent.id);
+      expect(res.module.id).to.eql(child.id);
+
+      const node2 = findFoo();
+      expect((node2?.children || []).length).to.eql(1);
+      expect((node2?.children || [])[0].id).to.eql(child.id); // NB: inserted within sub-node.
     });
 
     it('parent not found', () => {

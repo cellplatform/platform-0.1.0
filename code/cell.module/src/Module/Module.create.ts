@@ -6,6 +6,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { t } from '../common';
 import { isModuleEvent } from './Module.events';
 import { fire } from './Module.fire';
+import { registerChild } from './Module.register';
 
 type P = t.IModuleProps;
 
@@ -20,8 +21,10 @@ export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
   const module = TreeState.create({ root }) as t.IModule<T>;
   monitorAndDispatch(bus, module);
 
-  // Listen for request events, and lookup to see if
-  // the module can be resolved within the child set.
+  /**
+   * Listen for request events, and lookup to see if
+   * the module can be resolved within the child set.
+   */
   rx.payload<t.IModuleRequestEvent>(bus.event$, 'Module/request')
     .pipe(
       filter((e) => !e.handled),
@@ -34,14 +37,15 @@ export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
    */
   rx.payload<t.IModuleRegisterEvent>(bus.event$, 'Module/register')
     .pipe(
-      filter((e) => e.module !== module.id),
-      filter((e) => e.parent === module.id),
+      filter((e) => e.module !== module.id && Boolean(e.parent)),
+      filter((e) => e.parent === module.id || Boolean(module.query.findById(e.parent))),
     )
     .subscribe((e) => {
       const parent = module as t.IModule;
       const child = fire(bus).request(e.module);
       if (child) {
-        registerChild({ bus, parent, child });
+        const within = e.parent === module.id ? undefined : e.parent;
+        registerChild({ bus, parent, child, within });
       }
     });
 
@@ -52,24 +56,6 @@ export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
 /**
  * [Helpers]
  */
-
-function registerChild(args: { bus: t.EventBus<any>; parent: t.IModule; child: t.IModule }) {
-  const { bus, parent, child } = args;
-  parent.add(child);
-
-  bus.fire({
-    type: 'Module/child/registered',
-    payload: { module: parent.id, child: child.id },
-  });
-
-  // Alert listeners when disposed.
-  child.dispose$.subscribe((e) => {
-    bus.fire({
-      type: 'Module/child/disposed',
-      payload: { module: parent.id, child: child.id },
-    });
-  });
-}
 
 /**
  * Prepare a tree-node to represent the root of a MODULE.
