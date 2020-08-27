@@ -1,5 +1,5 @@
 import { t, time } from '../common';
-import { SampleModule } from '../../ModuleView.dev/module.Sample';
+import { SampleModule } from '../../module.Sample';
 import { OneModule } from './module.One';
 import { TwoModule } from './module.Two';
 

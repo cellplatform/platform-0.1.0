@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { COLORS, css, CssValue } from '../../common';
+import { COLORS, css, CssValue } from '../common';
 
 export type IIdentifiersProps = {
   module?: string;

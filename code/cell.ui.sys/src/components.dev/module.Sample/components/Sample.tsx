@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Button } from '@platform/ui.button';
-import { color, COLORS, css, CssValue, Module, t } from '../../common';
+import { color, COLORS, css, CssValue, Module, t } from '../common';
 import { Identifiers } from './Identifiers';
 
 export type ITestSampleProps = {

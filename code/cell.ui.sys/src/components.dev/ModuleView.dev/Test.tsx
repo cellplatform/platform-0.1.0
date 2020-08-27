@@ -5,9 +5,9 @@ import { takeUntil } from 'rxjs/operators';
 import { Icons } from '../../components/primitives';
 import { FinderModule } from '../module.Finder';
 import { TmplModule } from '../module.Tmpl';
-import { css, CssValue, t, ui } from './common';
+import { css, CssValue, ui, t } from './common';
 import { ComponentFrame } from './ComponentFrame';
-import { SampleModule } from './module.Sample';
+import { SampleModule } from '../module.Sample';
 
 const { ModuleView } = ui;
 

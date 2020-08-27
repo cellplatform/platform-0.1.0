@@ -1,2 +1,2 @@
 export * from '../../common/types';
-export * from './module.Sample/types';
+export * from '../module.Sample/types';
