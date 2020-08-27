@@ -3,15 +3,39 @@ export * from '../../common/types';
 
 import { IMainProps } from './components/Main';
 
-export type HarnessView = 'DEFAULT' | '404';
-export type HarnessData = { foo?: string | number };
+/**
+ * Harness
+ * (the component harnessing the "deb module")
+ */
+
+export type HarnessView = 'DEFAULT' | 'HOST/component' | 'HOST/module' | '404';
+export type HarnessData = { host?: HarnessHost };
 export type HarnessProps = t.IViewModuleProps<HarnessData, HarnessView>;
 export type HarnessModule = t.IModule<HarnessProps>;
 
 export type HarnessModuleDef = {
-  Main: (props?: IMainProps) => JSX.Element;
+  View: (props?: IMainProps) => JSX.Element;
   init(bus: t.EventBus): HarnessModule;
 };
+
+export type HarnessHost = {
+  view: string;
+  layout: HarnessHostLayout;
+};
+
+export type HarnessHostLayout = {
+  location: string;
+};
+
+/**
+ * Dev Module
+ * (the module that defines the UI tests)
+ */
+
+export type DevView = HarnessView;
+export type DevData = { host: HarnessHost };
+export type DevProps = t.IViewModuleProps<DevData, DevView>;
+export type DevModule = t.IModule<DevProps>;
 
 /**
  * [EVENTS]

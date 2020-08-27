@@ -7,5 +7,5 @@ export type TmplProps = t.IViewModuleProps<TmplData, TmplView>;
 export type TmplModule = t.IModule<TmplProps>;
 
 export type TmplModuleDef = {
-  init(bus: t.EventBus, parent?: string): TmplModule;
+  init(bus: t.EventBus): TmplModule;
 };

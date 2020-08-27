@@ -2,21 +2,16 @@ import * as React from 'react';
 
 import { Module, t } from './common';
 
-type P = t.TmplProps;
+type P = t.TwoProps;
 
-export const TmplModule: t.TmplModuleDef = {
+export const TwoModule: t.TwoModuleDef = {
   /**
    * ENTRY: Initialize a new module from the definition.
-   * To complete registration:
-   *
-   *    const module = TmplModule.init(bus)
-   *    Module.register(bus, module, parent)
-   *
    */
-  init(bus) {
+  init(bus, parent) {
     const module = Module.create<P>({
       bus,
-      root: { id: 'tmpl', props: { treeview: { label: 'Template' }, view: 'DEFAULT' } },
+      root: { id: '', props: { treeview: { label: 'Sample Two' }, view: 'DEFAULT' } },
     });
 
     /**
@@ -27,7 +22,7 @@ export const TmplModule: t.TmplModuleDef = {
     const fire = Module.fire<P>(bus);
 
     /**
-     * STRATEGY: render user-interfaces.
+     * STRATEGY: render user-interface.
      */
     renderer(events);
     events.selection$.subscribe((e) => {
@@ -47,7 +42,7 @@ function renderer(events: t.IViewModuleEvents<P>) {
   const render = events.render;
 
   render('DEFAULT').subscribe((e) => {
-    const el = <div style={{ padding: 20 }}>Template</div>;
+    const el = <div style={{ padding: 20 }}>Module Two</div>;
     e.render(el);
   });
 
@@ -55,7 +50,7 @@ function renderer(events: t.IViewModuleEvents<P>) {
    * Wildcard.
    */
   render('404').subscribe((e) => {
-    const el = <div style={{ padding: 20 }}>Template (404)</div>;
+    const el = <div style={{ padding: 20 }}>Module Two (404)</div>;
     e.render(el);
   });
 }

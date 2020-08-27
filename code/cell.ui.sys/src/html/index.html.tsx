@@ -24,6 +24,6 @@ import * as HARNESS from '../components.dev/module.Harness/.dev/SAMPLE';
    * - temp / remove
    */
   if (entry === 'entry:harness') {
-    HARNESS.sampleInit(ctx);
+    HARNESS.sampleInit(ctx.bus.type());
   }
 })();

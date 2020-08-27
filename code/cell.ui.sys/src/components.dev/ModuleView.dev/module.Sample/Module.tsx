@@ -17,11 +17,11 @@ export const SampleModule: t.MyModuleDef = {
      */
     const main = Module.create<P>({
       bus,
-      root: { id: 'sample', props: { treeview: { label: 'Sample' } } },
+      root: { id: '', props: { treeview: { label: 'Sample' } } },
     });
     const until$ = main.dispose$;
 
-    const match: t.ModuleFilterEvent = (e) => modules.some((m) => m.contains(e.module));
+    const match: t.ModuleFilterEvent = (e) => (modules || []).some((m) => m.contains(e.module));
     const event$ = Module.filter(bus.event$, match);
     const events = Module.events<P>(event$, until$);
 
@@ -36,30 +36,17 @@ export const SampleModule: t.MyModuleDef = {
     const diagram = Module.create<P>({
       bus,
       view: 'DIAGRAM',
-      root: { id: 'diagram', props: { treeview: { label: 'Diagram' } } },
+      root: { id: '', props: { treeview: { label: 'Diagram' } } },
     });
     const demo = Module.create<P>({
       bus,
       view: 'SAMPLE',
-      root: { id: 'demo', props: { treeview: { label: 'Demo' } } },
+      root: { id: '', props: { treeview: { label: 'Demo' } } },
     });
     const modules = [main, diagram, demo];
 
     Module.register(bus, diagram, main.id);
     Module.register(bus, demo, main.id);
-
-    /**
-     * Catch un-targetted (wildcard) registrations and route
-     * them into the MAIN module.
-     */
-    Module.events(bus.event$, until$)
-      .register$.pipe(filter((e) => !e.parent))
-      .subscribe((e) => {
-        const module = fire.request(e.module);
-        if (module) {
-          Module.register(bus, module, main.id);
-        }
-      });
 
     /**
      * STRATEGY: Render on selection.
