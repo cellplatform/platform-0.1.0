@@ -11,7 +11,7 @@ export const OneModule: t.SampleOneModuleDef = {
   init(bus, parent) {
     const module = Module.create<P>({
       bus,
-      root: { id: '', props: { treeview: { label: 'Sample One' }, view: 'DEFAULT' } },
+      root: { id: '', props: { treeview: { label: 'One' }, view: 'DEFAULT' } },
     });
 
     /**
@@ -39,7 +39,7 @@ export const OneModule: t.SampleOneModuleDef = {
   dev(bus) {
     const dev = Module.create<t.DevProps>({
       bus,
-      root: { id: '', props: { treeview: { label: 'Sample One (Dev)' } } },
+      root: { id: '', props: { treeview: { label: 'One (Dev)' } } },
     });
 
     const node = (id: string, view?: t.OneView) => {
