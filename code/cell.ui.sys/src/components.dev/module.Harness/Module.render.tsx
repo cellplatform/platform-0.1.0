@@ -1,17 +1,27 @@
 import * as React from 'react';
 import * as t from './types';
-import { ui } from './common';
+import { HostComponent, HostModule } from './components/Host';
 
 type P = t.HarnessProps;
 
 /**
  * UI: View factory for the module.
  */
-export function renderer(args: { bus: t.EventBus; events: t.IViewModuleEvents<P> }) {
-  const render = args.events.render;
+export function renderer(args: {
+  harness: t.HarnessModule;
+  bus: t.EventBus<any>;
+  events: t.IViewModuleEvents<P>;
+}) {
+  const { events, bus, harness } = args;
+  const render = events.render;
 
-  render('DEFAULT').subscribe((e) => {
-    const el = <div style={{ padding: 20 }}>Template</div>;
+  render('HOST/component').subscribe((e) => {
+    const el = <HostComponent bus={bus} harness={harness} />;
+    e.render(el);
+  });
+
+  render('HOST/module').subscribe((e) => {
+    const el = <HostModule bus={bus} harness={harness} />;
     e.render(el);
   });
 

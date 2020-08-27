@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
-import { color, css, CssValue, t, ui } from '../../common';
+import { color, css, CssValue, t, ui, defaultValue } from '../../common';
 import { HarnessModule } from '../../Module';
+import { Tree } from './Main.Tree';
 
 type P = t.HarnessProps;
 type V = t.HarnessView;
 
 export type IMainProps = {
+  focusOnLoad?: boolean;
   style?: CssValue;
 };
 
@@ -17,15 +18,15 @@ export class Main extends React.PureComponent<IMainProps> {
 
   public static contextType = ui.Context;
   public context!: t.IEnvContext;
-  private module!: t.HarnessModule;
-  private treeview$ = new Subject<t.TreeviewEvent>();
+  private harness!: t.HarnessModule;
 
   /**
    * [Lifecycle]
    */
-
   public componentDidMount() {
-    this.init();
+    const ctx = this.context;
+    this.harness = HarnessModule.init(ctx.bus);
+    this.forceUpdate(); // NB: Redraw causes the newly created [module] to be rendered.
   }
 
   public componentWillUnmount() {
@@ -33,36 +34,34 @@ export class Main extends React.PureComponent<IMainProps> {
     this.unmounted$.complete();
   }
 
-  private init() {
-    const ctx = this.context;
-    this.module = HarnessModule.init(ctx.bus);
-
-    // Setup event monitor.
-    const tree = ui.ModuleView.Tree.events(this.treeview$, this.unmounted$);
-
-    // Prevent header from being drawn on root harness node.
-    tree.beforeRender.header$.pipe(filter((e) => e.node.id === this.module.id)).subscribe((e) => {
-      e.change((draft) => {
-        const header = draft.header || (draft.header = {});
-        header.isVisible = false;
-      });
-    });
-
-    // NB: Redraw causes the newly created [module] to be drawn.
-    this.forceUpdate();
+  /**
+   * [Properties]
+   */
+  public get host() {
+    return this.harness?.root.props?.data?.host;
   }
 
   /**
    * [Render]
    */
   public render() {
+    const harness = this.harness;
+    if (!harness) {
+      return null;
+    }
+
+    const bus = this.context.bus;
+    const focusOnLoad = defaultValue(this.props.focusOnLoad, true);
+
     const styles = {
       base: css({
         Absolute: 0,
         Flex: 'horizontal-stretch-stretch',
         boxSizing: 'border-box',
       }),
-      fill: css({ Absolute: 0 }),
+      fill: css({
+        Absolute: 0,
+      }),
       left: css({
         WebkitAppRegion: 'drag',
         position: 'relative',
@@ -71,8 +70,9 @@ export class Main extends React.PureComponent<IMainProps> {
         backgroundColor: color.format(1),
       }),
       body: css({
-        position: 'relative',
         flex: 1,
+        display: 'flex',
+        position: 'relative',
       }),
       right: css({
         WebkitAppRegion: 'drag',
@@ -83,32 +83,12 @@ export class Main extends React.PureComponent<IMainProps> {
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
-          {/* <ui.ModuleView.Frame style={styles.fill} filter={this.rootTree} bus={this.bus} /> */}
-          <ui.ModuleView.Tree module={this.module} treeview$={this.treeview$} />
+          <Tree harness={harness} focusOnLoad={focusOnLoad} />
         </div>
-        <div {...styles.body}>{this.renderMainTemp()}</div>
+        <div {...styles.body}>
+          <ui.ModuleView.Frame bus={bus} filter={this.bodyFilter} style={styles.fill} />
+        </div>
         <div {...styles.right}></div>
-      </div>
-    );
-  }
-
-  private renderMainTemp() {
-    const styles = {
-      base: css({
-        Absolute: 0,
-        display: 'flex',
-      }),
-      body: css({
-        flex: 1,
-        Flex: 'center-center',
-        border: `dashed 2px ${color.format(1)}`,
-        borderRadius: 15,
-        margin: 30,
-      }),
-    };
-    return (
-      <div {...styles.base}>
-        <div {...styles.body}>Main</div>
       </div>
     );
   }
@@ -117,7 +97,7 @@ export class Main extends React.PureComponent<IMainProps> {
    * [Handlers]
    */
 
-  // private rootTree: t.ModuleFilterView<V> = (e) => {
-  //   return e.module === this.module.id && (e.view === 'TREE' || e.view === '404');
-  // };
+  private bodyFilter: t.ModuleFilterView<V> = (e) => {
+    return e.module === this.harness.id;
+  };
 }
