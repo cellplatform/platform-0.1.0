@@ -5,13 +5,13 @@ import { share, filter } from 'rxjs/operators';
 type E = t.Event;
 
 /**
- * Factory for creates an event-bus.
+ * Factory for creating an event-bus.
  */
 export function bus<T extends E = E>(source$?: Subject<any>): t.EventBus<T> {
   const subject$ = source$ || new Subject<any>();
 
-  const response: t.EventBus<T> = {
-    type: <T extends E>() => (response as unknown) as t.EventBus<T>,
+  const res: t.EventBus<T> = {
+    type: <T extends E>() => (res as unknown) as t.EventBus<T>,
     event$: subject$.pipe(
       filter((e) => isEvent(e)),
       share(),
@@ -26,13 +26,19 @@ export function bus<T extends E = E>(source$?: Subject<any>): t.EventBus<T> {
     },
   };
 
-  return response;
+  return res;
 }
 
 /**
- * [Helpers]
+ * Determine if the given object is the shape of
+ * a standard [Event], eg:
+ *
+ *    {
+ *      type: string,
+ *      payload: { ... }
+ *    }
+ *
  */
-
 export function isEvent(e: any): boolean {
   return (
     e !== null &&
