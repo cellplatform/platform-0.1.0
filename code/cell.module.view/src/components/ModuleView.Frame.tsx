@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
-import { rx, css, CssValue, t } from '../../common';
-import { Module } from '../../Module';
+import { rx, css, CssValue, t } from '../common';
+import { Module } from '../Module';
 
 export type IModuleViewFrameProps = {
   bus: t.EventBus<any>;
