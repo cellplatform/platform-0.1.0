@@ -2,22 +2,31 @@ import * as t from '@platform/types';
 import { Subject } from 'rxjs';
 import { share, filter } from 'rxjs/operators';
 
+type E = t.Event;
+
 /**
  * Factory for creates an event-bus.
  */
-export function bus<T extends t.Event = t.Event>(source$?: Subject<any>): t.EventBus<T> {
-  const event$ = source$ || new Subject<any>();
+export function bus<T extends E = E>(source$?: Subject<any>): t.EventBus<T> {
+  const subject$ = source$ || new Subject<any>();
 
-  const bus: t.EventBus<T> = {
-    event$: event$.pipe(
+  const response: t.EventBus<T> = {
+    type: <T extends E>() => (response as unknown) as t.EventBus<T>,
+    event$: subject$.pipe(
       filter((e) => isEvent(e)),
       share(),
     ),
-    fire: (e) => event$.next(e),
-    type: <T extends t.Event>() => (bus as unknown) as t.EventBus<T>,
+    fire(e) {
+      subject$.next(e);
+    },
+    filter<T extends E = E>(fn: t.EventBusFilter<T>) {
+      const clone$ = new Subject<T>();
+      clone$.pipe(filter((e) => fn(e))).subscribe((e) => subject$.next(e));
+      return bus<T>(clone$);
+    },
   };
 
-  return bus;
+  return response;
 }
 
 /**
