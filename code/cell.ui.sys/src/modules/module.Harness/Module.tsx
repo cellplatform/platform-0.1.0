@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Module } from './common';
 import { Main } from './components/Main';
-import { strategy } from './Module.strategy';
+import { strategy } from './strategy';
 import * as t from './types';
 
 type P = t.HarnessProps;
