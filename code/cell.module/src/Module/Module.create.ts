@@ -103,14 +103,14 @@ function monitorAndDispatch<T extends P>(bus: t.EventBus<t.ModuleEvent>, module:
   const objPatched$ = module.event.patched$.pipe(takeUntil(until$));
 
   objChanged$.subscribe((change) => {
-    module.dispatch({
+    bus.fire({
       type: 'Module/changed',
       payload: { module: id, change },
     });
   });
 
   objPatched$.subscribe((patch) => {
-    module.dispatch({
+    bus.fire({
       type: 'Module/patched',
       payload: { module: id, patch },
     });

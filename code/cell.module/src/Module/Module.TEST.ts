@@ -8,6 +8,8 @@ type MyData = { count: number };
 type MyProps = t.IModuleProps<MyData>;
 export type MyModule = t.IModule<MyProps>;
 
+type P = MyProps;
+
 const event$ = new Subject<t.Event>();
 const bus: t.EventBus = { fire: (e: t.Event) => event$.next(e), event$ };
 const fire = Module.fire(bus);
@@ -211,6 +213,44 @@ describe('Module', () => {
     it('not found', () => {
       const res = Module.fire(bus).request('ns:404');
       expect(res).to.eql(undefined);
+    });
+  });
+
+  describe('change', () => {
+    it('event: "Module/changed"', () => {
+      const module = create({ root: 'foo' });
+
+      const fired: t.IModuleChanged<P>[] = [];
+      Module.events<P>(module).changed$.subscribe((e) => fired.push(e));
+      Module.events<P>(bus.event$).changed$.subscribe((e) => fired.push(e));
+
+      module.change((draft, ctx) => {
+        ctx.props(draft, (props) => {
+          const data = props.data || (props.data = { count: 123 });
+          data.count = 456;
+        });
+      });
+
+      expect(fired.length).to.eql(2);
+      expect(fired[0].change.to.props?.data?.count).to.eql(456);
+      expect(fired[1].change.to.props?.data?.count).to.eql(456);
+    });
+
+    it('event: "Module/patched"', () => {
+      const module = create({ root: 'foo' });
+
+      const fired: t.IModulePatched[] = [];
+      Module.events<P>(module).patched$.subscribe((e) => fired.push(e));
+      Module.events<P>(bus.event$).patched$.subscribe((e) => fired.push(e));
+
+      module.change((draft, ctx) => {
+        ctx.props(draft, (props) => {
+          const data = props.data || (props.data = { count: 123 });
+          data.count = 456;
+        });
+      });
+
+      expect(fired.length).to.eql(2);
     });
   });
 });
