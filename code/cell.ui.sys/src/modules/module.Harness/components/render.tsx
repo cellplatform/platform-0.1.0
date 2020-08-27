@@ -1,6 +1,8 @@
 import * as React from 'react';
-import * as t from './types';
-import { HostComponent, HostModule } from './components/Host';
+import { t } from '../common';
+import { HostComponent } from './Host.Component';
+import { HostModule } from './Host.Module';
+import { NotFound } from './NotFound';
 
 type P = t.HarnessProps;
 
@@ -16,20 +18,14 @@ export function renderer(args: {
   const render = events.render;
 
   render('HOST/component').subscribe((e) => {
-    const el = <HostComponent bus={bus} harness={harness} />;
-    e.render(el);
+    e.render(<HostComponent bus={bus} harness={harness} />);
   });
 
   render('HOST/module').subscribe((e) => {
-    const el = <HostModule bus={bus} harness={harness} />;
-    e.render(el);
+    e.render(<HostModule bus={bus} harness={harness} />);
   });
 
-  /**
-   * Wildcard.
-   */
   render('404').subscribe((e) => {
-    const el = <div style={{ padding: 10 }}>Harness (404)</div>;
-    e.render(el);
+    e.render(<NotFound />);
   });
 }

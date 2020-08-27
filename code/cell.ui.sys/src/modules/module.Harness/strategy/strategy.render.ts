@@ -1,5 +1,5 @@
 import { Module, t } from '../common';
-import { renderer } from '../Module.render';
+import { renderer } from '../components/render';
 
 type E = t.HarnessEvent;
 type P = t.HarnessProps;

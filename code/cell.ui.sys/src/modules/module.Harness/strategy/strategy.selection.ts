@@ -16,11 +16,14 @@ export function selectionStrategy(args: { harness: t.HarnessModule; bus: t.Event
   const renderHarness = (view: t.HarnessView) => fire.render({ module: harness, view });
 
   /**
-   * On selection change.
+   * HANDLE: selection change in UIHarness tree.
    */
   events.selection$.pipe().subscribe((e) => {
     const { data } = e;
     const host = data.host;
+
+    console.log('e', e);
+
     if (host) {
       renderHarness('HOST/component');
       fire.render({ module: e.module, data, view: host.view });
@@ -32,7 +35,8 @@ export function selectionStrategy(args: { harness: t.HarnessModule; bus: t.Event
       }
     }
 
-    harness.change((draft, ctx) => {
+    // Store the selected UIHarness `host` configuration.
+    harness.change((draft) => {
       const props = draft.props || (draft.props = {});
       const data = props.data || (props.data = {});
       data.host = host;
