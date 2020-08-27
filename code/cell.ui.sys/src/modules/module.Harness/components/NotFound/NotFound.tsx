@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { color, css, CssValue, t } from '../../common';
+
+import { css, CssValue, t } from '../../common';
 
 export type INotFoundProps = { style?: CssValue };
 export type INotFoundState = t.Object;
@@ -36,12 +37,14 @@ export class NotFound extends React.PureComponent<INotFoundProps, INotFoundState
         flex: 1,
         Flex: 'center-center',
         position: 'relative',
-        color: color.format(1),
+      }),
+      label: css({
+        opacity: 0.5,
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>Not Found</div>
+        <div {...styles.label}>Not Found</div>
       </div>
     );
   }
