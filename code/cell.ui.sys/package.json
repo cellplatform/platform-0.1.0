@@ -25,6 +25,7 @@
     "@platform/cell.typesystem": "0.0.97",
     "@platform/cell.ui": "0.1.102",
     "@platform/react": "0.4.43",
+    "@platform/state": "^0.7.5",
     "@platform/types": "0.5.3",
     "@platform/ui.object": "0.0.216",
     "@platform/ui.spinner": "0.0.159",
