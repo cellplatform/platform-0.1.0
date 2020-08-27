@@ -28,9 +28,9 @@ export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
   rx.payload<t.IModuleRequestEvent>(bus.event$, 'Module/request')
     .pipe(
       filter((e) => !e.handled),
-      filter((e) => wildcard.isMatch(module.id, e.module)),
+      filter((e) => module.id === e.module),
     )
-    .subscribe((e) => e.respond({ module }));
+    .subscribe((e) => e.respond(module));
 
   /**
    * Catch requests from children to register within this module.
@@ -89,7 +89,7 @@ function monitorAndDispatch<T extends P>(bus: t.EventBus<t.ModuleEvent>, module:
   const event$ = bus.event$.pipe(takeUntil(until$));
 
   /**
-   * Bubble module events through the StateObject's internal dispatch.
+   * Bubble module change events.
    */
   event$
     .pipe(

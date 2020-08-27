@@ -1,7 +1,6 @@
 import { filter, take, takeUntil } from 'rxjs/operators';
-import { rx, t } from '../common';
-import { request } from './Module.request';
-import { toNodeId } from '@platform/state/lib/common';
+import { rx, t, toNodeId } from '../common';
+import { request } from './Module.get';
 
 type B = t.EventBus<t.ModuleEvent>;
 

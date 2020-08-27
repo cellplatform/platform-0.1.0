@@ -147,7 +147,7 @@ describe('Module', () => {
       expect(res.parent).to.eql(undefined);
     });
 
-    it('parent not specified - catch all completes registration', () => {
+    it('parent not specified - catch all completed registration', () => {
       const root = create({ root: 'parent' });
       const child = create({ root: 'child' });
 
@@ -198,22 +198,41 @@ describe('Module', () => {
   });
 
   describe('event: "Module/request"', () => {
-    it('finds module: complete id', () => {
+    it('finds module', () => {
       const module = create();
       const res = Module.fire(bus).request(module.id);
       expect(res?.id).to.eql(module.id);
     });
 
-    it('finds module: wildcard ("*:id")', () => {
-      const module = create({ root: 'foo' });
-      const res = Module.fire(bus).request('*:foo');
-      expect(res?.id).to.eql(module.id);
+    it('finds module (node)', () => {
+      const module = create();
+      const res = Module.fire(bus).request(module);
+      expect(res).to.equal(module);
     });
 
     it('not found', () => {
       const res = Module.fire(bus).request('ns:404');
       expect(res).to.eql(undefined);
     });
+  });
+
+  describe('event: "Module/find"', () => {
+    it.skip('match on "key"', () => {});
+    it.skip('match on "namespace"', () => {});
+    it.skip('match on "kind"', () => {});
+
+    // it('finds module: wildcard ("*:id")', () => {
+    //   const parent = create({ root: 'foo' });
+    //   const child = create({ root: 'foo' });
+    //   fire.register(child, parent);
+
+    //   const res = Module.fire(bus).request('*:foo');
+    //   console.log(
+    //     'res',
+    //     res.map((m) => m.id),
+    //   );
+    //   // expect(res?.id).to.eql(root.id);
+    // });
   });
 
   describe('change', () => {
