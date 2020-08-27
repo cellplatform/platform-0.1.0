@@ -201,7 +201,12 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     this._children.push(child);
 
     // Insert data into state-tree.
-    this.change((root) => {
+    this.change((draft, ctx) => {
+      const root = args.parent && args.parent !== draft.id ? ctx.findById(args.parent) : draft;
+      if (!root) {
+        const err = `Cannot add child-state because the parent sub-node '${args.parent}' within '${draft.id}' does not exist.`;
+        throw new Error(err);
+      }
       TreeState.children<any>(root).push(child.root);
     });
 
