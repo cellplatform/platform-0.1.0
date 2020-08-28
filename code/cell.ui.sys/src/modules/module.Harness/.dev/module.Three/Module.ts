@@ -1,17 +1,16 @@
-import * as React from 'react';
-
 import { Module, t } from './common';
+import { renderer } from './Module.render';
 
-type P = t.TwoProps;
+type P = t.ThreeProps;
 
-export const TwoModule: t.TwoModuleDef = {
+export const ThreeModule: t.ThreeModuleDef = {
   /**
    * ENTRY: Initialize a new module from the definition.
    */
-  init(bus, parent) {
+  init(bus) {
     const module = Module.create<P>({
       bus,
-      root: { id: '', props: { treeview: { label: 'Two' }, view: 'DEFAULT', target: 'ROOT' } },
+      root: { id: '', props: { treeview: { label: 'Three' }, view: 'DEFAULT' } },
     });
 
     /**
@@ -24,7 +23,7 @@ export const TwoModule: t.TwoModuleDef = {
     /**
      * STRATEGY: render user-interface.
      */
-    renderer(events);
+    renderer({ bus, events, module });
     events.selection$.subscribe((e) => {
       const { view, data } = e;
       fire.render({ module, data, view, notFound: '404' });
@@ -33,23 +32,3 @@ export const TwoModule: t.TwoModuleDef = {
     return module;
   },
 };
-
-/**
- * UI: View factory for the module.
- */
-function renderer(events: t.IViewModuleEvents<P>) {
-  const render = events.render;
-
-  render('DEFAULT').subscribe((e) => {
-    const el = <div style={{ padding: 20 }}>Module Two</div>;
-    e.render(el);
-  });
-
-  /**
-   * Wildcard.
-   */
-  render('404').subscribe((e) => {
-    const el = <div style={{ padding: 20 }}>Module Two (404)</div>;
-    e.render(el);
-  });
-}

@@ -37,6 +37,7 @@ export class NotFound extends React.PureComponent<INotFoundProps, INotFoundState
         flex: 1,
         Flex: 'center-center',
         position: 'relative',
+        userSelect: 'none',
       }),
       label: css({
         opacity: 0.5,

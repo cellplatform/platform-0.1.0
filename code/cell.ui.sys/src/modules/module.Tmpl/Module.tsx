@@ -16,7 +16,10 @@ export const TmplModule: t.TmplModuleDef = {
   init(bus) {
     const module = Module.create<P>({
       bus,
-      root: { id: 'tmpl', props: { treeview: { label: 'Template' }, view: 'DEFAULT' } },
+      root: {
+        id: 'tmpl',
+        props: { treeview: { label: 'Template' }, view: 'DEFAULT' },
+      },
     });
 
     /**

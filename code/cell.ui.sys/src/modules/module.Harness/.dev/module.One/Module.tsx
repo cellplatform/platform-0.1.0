@@ -8,7 +8,7 @@ export const OneModule: t.SampleOneModuleDef = {
   /**
    * ENTRY: Initialize a new module from the definition.
    */
-  init(bus, parent) {
+  init(bus) {
     const module = Module.create<P>({
       bus,
       root: { id: '', props: { treeview: { label: 'One' }, view: 'DEFAULT' } },

@@ -9,4 +9,4 @@ export type MyModuleDef = {
   init(bus: t.EventBus, parent?: string): MyModule;
 };
 
-export type MyContext = { bus: t.EventBus<any> };
+export type MyContext = { bus: t.EventBus };

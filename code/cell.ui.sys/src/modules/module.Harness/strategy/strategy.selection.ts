@@ -1,3 +1,4 @@
+import { delay } from 'rxjs/operators';
 import { Module, t } from '../common';
 
 type E = t.HarnessEvent;
@@ -18,18 +19,16 @@ export function selectionStrategy(args: { harness: t.HarnessModule; bus: t.Event
   /**
    * HANDLE: selection change in UIHarness tree.
    */
-  events.selection$.pipe().subscribe((e) => {
-    const { data } = e;
+  events.selection$.pipe(delay(0)).subscribe((e) => {
+    const { module, data } = e;
     const host = data.host;
-
-    console.log('e', e);
 
     if (host) {
       renderHarness('HOST/component');
-      fire.render({ module: e.module, data, view: host.view });
+      fire.render({ module, data, view: host.view });
     } else {
       renderHarness('HOST/module');
-      const res = fire.render({ module: e.module, data, view: e.view });
+      const res = fire.render({ module, data, view: e.view });
       if (!res) {
         renderHarness('404');
       }

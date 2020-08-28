@@ -55,6 +55,7 @@ export class HostModule extends React.PureComponent<IHostModuleProps, IHostModul
    */
 
   private viewFilter: t.ModuleFilterView = (e) => {
-    return true;
+    // NB: For the root view into a module it is assumed there is not narrower render "target".
+    return !e.target;
   };
 }
