@@ -38,7 +38,6 @@ function formatModuleNode<T extends P = any>(
   input: t.ITreeNode | string,
   defaults: { data?: T['data']; id?: string } = {},
 ) {
-  const { data = {} } = defaults;
   let node = typeof input === 'string' ? { id: input } : { ...input };
 
   if (!(node.id || '').trim()) {
@@ -49,7 +48,7 @@ function formatModuleNode<T extends P = any>(
   const props = (node.props = node.props || {}) as NonNullable<M['props']>;
 
   props.kind = 'MODULE';
-  props.data = (props.data || data) as T;
+  props.data = (props.data || defaults.data) as T;
 
   return node as M;
 }

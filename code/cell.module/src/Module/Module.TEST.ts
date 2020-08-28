@@ -35,7 +35,7 @@ describe('Module', () => {
       expect(Module.Identity.key(root.id)).to.eql('module');
 
       expect(root.props?.kind).to.eql('MODULE');
-      expect(root.props?.data).to.eql({});
+      expect(root.props?.data).to.eql(undefined);
     });
 
     it('generates default id ("module")', () => {
@@ -54,6 +54,45 @@ describe('Module', () => {
     it('throw: id contains "/" character', () => {
       const fn = () => create({ root: 'foo/bar' });
       expect(fn).to.throw(/cannot contain the "\/"/);
+    });
+  });
+
+  describe('events', () => {
+    it('stops when [until$] fires', () => {
+      const until$ = new Subject();
+      const events = Module.events(bus.event$, until$);
+
+      let count = 0;
+      events.$.subscribe((e) => count++);
+
+      fire.request('foo'); // NB: Ensure events are firing within test.
+      fire.request('foo');
+      expect(count).to.eql(2);
+
+      count = 0;
+      until$.next();
+
+      fire.request('foo');
+      expect(count).to.eql(0);
+    });
+
+    it('stops on [module.dispose()]', () => {
+      const parent = create();
+      const child1 = create();
+      const child2 = create();
+
+      const events = Module.events(parent);
+
+      let count = 0;
+      events.$.subscribe((e) => count++);
+
+      Module.register(bus, child1, parent);
+      expect(count).to.greaterThan(0);
+
+      parent.dispose();
+      count = 0;
+      Module.register(bus, child2, parent);
+      expect(count).to.eql(0);
     });
   });
 

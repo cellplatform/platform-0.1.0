@@ -1,7 +1,7 @@
 import { TreeState } from '@platform/state';
 import { is } from '@platform/state/lib/common/is';
 import { rx } from '@platform/util.value';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, merge } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
@@ -15,10 +15,11 @@ export function create<T extends P = t.IModulePropsAny>(
   subject: Observable<t.Event> | t.IModule,
   until$?: Observable<any>,
 ): t.IModuleEvents<T> {
-  const subject$ = is.observable(subject) ? subject : (subject as t.IModule).event.$;
-  const event$ = subject$ as Observable<t.Event>;
+  const module = !is.observable(subject) ? (subject as t.IModule) : undefined;
+  const event$ = (module ? module.event.$ : subject) as Observable<t.Event>;
 
   const dispose$ = new Subject<void>();
+  until$ = module && until$ ? merge(until$, module.dispose$) : until$;
   if (until$) {
     until$.subscribe(() => dispose$.next());
   }

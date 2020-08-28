@@ -61,29 +61,28 @@ export function listen<T extends P>(bus: B, module: t.IModule<T>) {
   const $ = bus.event$.pipe(takeUntil(module.dispose$));
 
   type A = t.IModuleFindArgs;
+  type D = NonNullable<A['data']>;
 
-  const isDataMatch = (e: NonNullable<A['data']>) => {
-    const data = module.root.props?.data;
-    if (!data) {
-      return true;
-    }
-    const keys = Object.keys(e);
-    if (keys.length === 0) {
-      return true;
-    }
-    for (const key of keys) {
-      const value = data[key];
-      const pattern = e[key];
-      if (typeof value === 'string' && typeof pattern === 'string') {
-        if (!wildcard.isMatch(value, pattern)) {
-          return false;
-        }
-      } else if (value !== pattern) {
+  const isFieldMatch = (data: Record<string, unknown>, patterns: D, key: string) => {
+    const value = data[key];
+    const pattern = patterns[key];
+    if (typeof value === 'string' && typeof pattern === 'string') {
+      if (!wildcard.isMatch(value, pattern)) {
         return false;
       }
+    } else if (value !== pattern) {
+      return false;
     }
-
     return true;
+  };
+
+  const allFieldsMatch = (patterns: D) => {
+    const keys = Object.keys(patterns);
+    const data = module.root.props?.data;
+    if (!data) {
+      return keys.length === 0;
+    }
+    return keys.length === 0 ? true : keys.every((key) => isFieldMatch(data, patterns, key));
   };
 
   const isMatch = (e: A) => {
@@ -95,7 +94,7 @@ export function listen<T extends P>(bus: B, module: t.IModule<T>) {
       return false;
     }
 
-    if (typeof e.data === 'object' && !isDataMatch(e.data)) {
+    if (typeof e.data === 'object' && !allFieldsMatch(e.data)) {
       return false;
     }
 

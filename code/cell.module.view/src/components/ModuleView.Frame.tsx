@@ -6,7 +6,8 @@ import { Module } from '../Module';
 
 export type IModuleViewFrameProps = {
   bus: t.EventBus<any>;
-  filter?: t.ModuleFilterView<any>;
+  filter?: t.ModuleFilterView<any, any>;
+  target?: string; // Optional "view target" to apply as an additional filter before rendering.
   style?: CssValue;
 };
 export type IModuleViewFrameState = { el?: JSX.Element | null };
@@ -28,13 +29,23 @@ export class ModuleViewFrame extends React.PureComponent<
     const event$ = this.props.bus.event$.pipe(takeUntil(this.unmounted$));
 
     rx.payload<t.IModuleRenderedEvent>(event$, 'Module/ui/rendered')
-      .pipe(filter((e) => this.filter(e.module, e.view)))
+      .pipe(
+        filter((e) => (this.target ? this.target === e.target : true)),
+        filter((e) => this.filterOn(e.module, e.view, e.target)),
+      )
       .subscribe(({ el }) => this.state$.next({ el }));
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get target() {
+    return this.props.target;
   }
 
   /**
@@ -55,13 +66,13 @@ export class ModuleViewFrame extends React.PureComponent<
    * [Helpers]
    */
 
-  private filter = (module: string, view: string) => {
+  private filterOn = (module: string, view: string, target?: string) => {
     const { filter } = this.props;
     if (!filter) {
       return true;
     } else {
       const { namespace, key } = Module.Identity.parse(module);
-      return filter({ module, namespace, key, view });
+      return filter({ module, namespace, key, view, target });
     }
   };
 }

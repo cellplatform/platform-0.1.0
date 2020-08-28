@@ -2,17 +2,20 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 
 import { Module } from '.';
-import { expect, t } from '../test';
+import { expect, t, rx } from '../test';
 
 type MyView = 'View-1' | 'View-2';
+type MyTarget = 'ROOT' | 'PANEL';
 type MyData = { count: number };
-type MyProps = t.IViewModuleProps<MyData, MyView>;
+type MyProps = t.IViewModuleProps<MyData, MyView, MyTarget>;
 export type MyModule = t.IModule<MyProps>;
+
+type P = MyProps;
 
 const event$ = new Subject<t.Event>();
 const events = Module.events(event$);
-const bus: t.EventBus = { fire: (e: t.Event) => event$.next(e), event$ };
-const fire = Module.fire(bus);
+const bus = rx.bus(event$);
+const fire = Module.fire<P>(bus);
 
 const create = <P extends MyProps = MyProps>(
   args: { root?: string | t.ITreeNode<P>; view?: MyView; data?: MyData } = {},
@@ -21,17 +24,23 @@ const create = <P extends MyProps = MyProps>(
 };
 
 describe('Module (ViewModule)', () => {
+  afterEach(() => {
+    const modules = fire.find(); // All modules.
+    modules.forEach((module) => module.dispose());
+  });
+
   describe('create', () => {
     it('no params (default)', () => {
-      const module = Module.create<MyProps>({ bus });
-      expect(module.root.props?.view).to.eql('');
+      const module = Module.create<P>({ bus });
+      expect(module.root.props?.view).to.eql(undefined);
+      expect(module.root.props?.target).to.eql(undefined);
+      expect(module.root.props?.data).to.eql(undefined);
       expect(module.root.props?.treeview).to.eql({});
-      expect(module.root.props?.data).to.eql({});
     });
 
     it('param: view', () => {
-      const module1 = Module.create<MyProps>({ bus, view: 'View-1' });
-      const module2 = Module.create<MyProps>({
+      const module1 = Module.create<P>({ bus, view: 'View-1' });
+      const module2 = Module.create<P>({
         bus,
         view: 'View-2',
         root: { id: 'foo', props: { view: 'View-1' } },
@@ -42,8 +51,8 @@ describe('Module (ViewModule)', () => {
     });
 
     it('param: treeview', () => {
-      const module1 = Module.create<MyProps>({ bus, treeview: { label: 'hello' } });
-      const module2 = Module.create<MyProps>({
+      const module1 = Module.create<P>({ bus, treeview: { label: 'hello' } });
+      const module2 = Module.create<P>({
         bus,
         treeview: { label: 'title' },
         root: { id: 'foo', props: { treeview: { label: 'foo', icon: 'Face' } } },
@@ -54,37 +63,57 @@ describe('Module (ViewModule)', () => {
     });
 
     it('param: data', () => {
-      const module = Module.create<MyProps>({ bus, data: { count: 123 } });
+      const module = Module.create<P>({ bus, data: { count: 123 } });
       expect(module.root.props?.data?.count).to.eql(123);
     });
   });
 
-  describe('event: "Module/render"', () => {
-    const events = Module.events<MyProps>(event$);
-    const module = create();
-    const fireRender = (view: MyProps['view']) => fire.render({ module: module.id, view });
-
+  describe.only('event: "Module/render"', () => {
     it('matches specific events', () => {
-      const fired: t.IModuleRender<any>[] = [];
+      const module = create();
+      const events = Module.events<P>(event$, module.dispose$);
+
+      const fired: t.IModuleRender<P>[] = [];
       events.render('View-1').subscribe((e) => fired.push(e));
 
-      fireRender('View-1');
-      fireRender('View-2');
+      fire.render({ view: 'View-1', module });
+      fire.render({ view: 'View-2', module });
 
       expect(fired.length).to.eql(1);
       expect(fired[0].view).to.eql('View-1');
+      expect(fired[0].target).to.eql(undefined);
+    });
+
+    it('passes "target"', () => {
+      const module = create();
+      const events = Module.events<P>(event$, module.dispose$);
+
+      const fired: t.IModuleRender<P>[] = [];
+      events.render('View-1').subscribe((e) => fired.push(e));
+
+      fire.render({ view: 'View-1', target: 'PANEL', module });
+
+      expect(fired.length).to.eql(1);
+      expect(fired[0].view).to.eql('View-1');
+      expect(fired[0].target).to.eql('PANEL');
     });
 
     it('matches all events ("view" undefined)', () => {
-      const fired: t.IModuleRender<any>[] = [];
+      const module = create();
+      const events = Module.events<P>(event$, module.dispose$);
+
+      const fired: t.IModuleRender<P>[] = [];
       events.render().subscribe((e) => fired.push(e));
 
-      fireRender('View-1');
-      fireRender('View-2');
+      fire.render({ view: 'View-1', module });
+      fire.render({ view: 'View-2', module });
       expect(fired.length).to.eql(2);
     });
 
     it('does not fire for handled events', () => {
+      const module = create();
+      const events = Module.events<P>(event$, module.dispose$);
+
       const fired: string[] = [];
 
       events.render('View-1').subscribe((e) => {
@@ -93,9 +122,49 @@ describe('Module (ViewModule)', () => {
       });
       events.render('View-1').subscribe((e) => fired.push('second'));
 
-      fireRender('View-1');
+      fire.render({ view: 'View-1', module });
       expect(fired.length).to.eql(1);
       expect(fired[0]).to.eql('first');
+    });
+  });
+
+  describe('event: "Module/rendered"', () => {
+    it('does not fire if nothing responded to the event', () => {
+      const module = create();
+      const events = Module.events<P>(event$, module.dispose$);
+
+      let count = 0;
+      events.rendered$.subscribe((e) => count++);
+
+      fire.render({ view: 'View-1', target: 'PANEL', module });
+      expect(count).to.eql(0);
+    });
+
+    it('passes element/view/target on "rendered" event', () => {
+      const module = create();
+      const events = Module.events<P>(event$, module.dispose$);
+
+      const fired: t.IModuleRendered<P>[] = [];
+      events.rendered$.subscribe((e) => fired.push(e));
+
+      let count = 0;
+      events.render('View-1').subscribe((e) => {
+        count++;
+        e.render(<div>{`hello-${count}`}</div>);
+      });
+
+      fire.render({ view: 'View-1', target: 'PANEL', module });
+      fire.render({ view: 'View-1', module });
+
+      expect(fired.length).to.eql(2);
+      expect(fired[0].view).to.eql('View-1');
+      expect(fired[1].view).to.eql('View-1');
+
+      expect(fired[0].el?.props.children).to.eql('hello-1');
+      expect(fired[1].el?.props.children).to.eql('hello-2');
+
+      expect(fired[0].target).to.eql('PANEL');
+      expect(fired[1].target).to.eql(undefined);
     });
   });
 
