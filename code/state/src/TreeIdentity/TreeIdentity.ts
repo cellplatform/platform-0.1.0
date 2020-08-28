@@ -1,4 +1,5 @@
 import { t, toNodeId } from '../common';
+import { id } from '@platform/util.value';
 
 const toString = (input?: string) => (input || '').trim();
 
@@ -37,7 +38,7 @@ export function namespace(input?: string) {
   return parse(input).namespace;
 }
 
-export function id(input?: string) {
+export function key(input?: string) {
   return stripNamespace(input);
 }
 
@@ -49,5 +50,7 @@ export const TreeIdentity: t.TreeIdentity = {
   stripNamespace,
   hasNamespace,
   namespace,
-  key: id,
+  key,
+  cuid: () => id.cuid(),
+  slug: () => id.shortid(),
 };
