@@ -1,4 +1,4 @@
-import { t, Module, DEFAULT, id } from '../common';
+import { t, Module, DEFAULT, id, R } from '../common';
 
 type B = t.EventBus;
 type P = t.DevProps;
@@ -9,10 +9,11 @@ type IArgs = { label: string; bus: B; module: t.DevModule };
 /**
  * Represents a single component under test.
  */
-export class DevComponent<V extends S = S> implements t.IDevComponent<V> {
+export class DevComponent implements t.IDevComponent {
   /**
    * [Lifecycle]
    */
+
   public static create(args: IArgs): t.IDevComponent {
     return new DevComponent(args);
   }
@@ -24,33 +25,59 @@ export class DevComponent<V extends S = S> implements t.IDevComponent<V> {
     const children = this.module.root.children || [];
     this.index = children.length;
 
-    // this.module.change((draft, ctx) => {
-
     this.change((props) => (props.view = 'HOST/component'));
     this.label(args.label);
 
-    // })
+    const match: t.ModuleFilterEvent = (e) => e.module == this.module.id;
+    this.events = Module.events<P>(Module.filter(this.bus.event$, match), this.module.dispose$);
   }
 
   /**
    * [Fields]
    */
+
   private readonly index: number;
   private readonly bus: B;
   private readonly module: t.DevModule;
+  private readonly events: t.IViewModuleEvents<any>;
+
+  /**
+   * [Properties]
+   */
+
+  public get props(): t.DevProps {
+    const children = this.module.root.children || [];
+    const node = children[this.index];
+    return R.clone(node.props || {});
+  }
 
   /**
    * [Methods]
    */
-  public label(value: string) {
-    value = (value || '').trim() || DEFAULT.UNTITLED;
-    this.treeview((props) => (props.label = value));
+
+  public render(fn: t.DevComponentRender) {
+    const view = `uih-${id.shortid()}`;
+    this.host((props) => (props.view = view));
+    this.events.render(view).subscribe((e) => {
+      const el = fn({});
+      if (el) {
+        e.render(el);
+      }
+    });
     return this;
   }
 
-  public view(name: V | undefined) {
-    this.host((props) => (props.view = name));
-    return this;
+  public label(value: string) {
+    value = (value || '').trim() || DEFAULT.UNTITLED;
+    return this.treeview((props) => (props.label = value));
+  }
+
+  public width(value: number | string | undefined) {
+    return this.layout((props) => (props.width = value));
+  }
+
+  public height(value: number | string | undefined) {
+    return this.layout((props) => (props.height = value));
   }
 
   /**
@@ -81,6 +108,11 @@ export class DevComponent<V extends S = S> implements t.IDevComponent<V> {
       const host = data.host || (data.host = {});
       fn(host);
     });
+    return this;
+  }
+
+  private layout(fn: (props: t.HarnessHostLayout) => void) {
+    this.host((props) => fn(props.layout || (props.layout = {})));
     return this;
   }
 }

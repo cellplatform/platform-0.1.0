@@ -1,27 +1,35 @@
-import { t, Module, DEFAULT } from '../common';
+import { t, Module, DEFAULT, R } from '../common';
 import { DevComponent } from './DevComponent';
 
-type S = string;
 type B = t.EventBus;
-type IArgs = { bus: B };
+type IArgs = { bus: B; label?: string };
 
 /**
  * API for building out component tests within the UIHarness.
  */
-export class Dev<V extends S = S> implements t.IDev<V> {
+export class Dev implements t.IDev {
   /**
    * [Lifecycle]
    */
-  public static create<V extends S = S>(bus: B): t.IDev<V> {
-    return new Dev({ bus });
+  public static create(bus: B, label?: string): t.IDev {
+    return new Dev({ bus, label });
   }
 
   private constructor(args: IArgs) {
     this.bus = args.bus;
+
     this.module = Module.create<t.DevProps>({
       bus: args.bus,
       root: { id: '', props: { treeview: { label: DEFAULT.UNTITLED } } },
     });
+
+    if (args.label) {
+      this.label(args.label);
+    }
+  }
+
+  public dispose() {
+    this.module.dispose();
   }
 
   /**
@@ -29,6 +37,22 @@ export class Dev<V extends S = S> implements t.IDev<V> {
    */
   private readonly bus: B;
   public readonly module: t.DevModule;
+
+  /**
+   * [Properties]
+   */
+
+  public get isDisposed() {
+    return this.module.isDisposed;
+  }
+
+  public get dispose$() {
+    return this.module.dispose$;
+  }
+
+  public get props(): t.DevProps {
+    return R.clone(this.module.root.props || {});
+  }
 
   /**
    * [Methods]
