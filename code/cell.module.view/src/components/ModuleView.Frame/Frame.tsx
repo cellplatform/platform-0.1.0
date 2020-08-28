@@ -11,6 +11,7 @@ export type IModuleViewFrameProps = {
   target?: string; // Optional "view target" to apply as an additional filter before rendering.
   debug?: boolean;
   style?: CssValue;
+  onBeforeRender?: (e: t.IModuleRendered<any>) => void;
 };
 export type IModuleViewFrameState = { rendered?: t.IModuleRendered<any> };
 
@@ -35,6 +36,10 @@ export class ModuleViewFrame extends React.PureComponent<
         filter((e) => this.filterOn(e.module, e.view, e.target)),
       )
       .subscribe((e) => {
+        const { onBeforeRender } = this.props;
+        if (onBeforeRender) {
+          onBeforeRender(e);
+        }
         this.state$.next({ rendered: e });
       });
   }

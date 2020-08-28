@@ -17,9 +17,9 @@ export class DebugHeader extends React.PureComponent<IDebugHeaderProps> {
     const typename = el?.type?.name;
 
     if (typename) {
-      parts.push(`<${typename}> |`);
+      parts.push(`<${typename}>`);
     }
-    if (view) {
+    if (!typename && view) {
       parts.push(`view: "${view}"`);
     }
     if (target) {
@@ -43,12 +43,18 @@ export class DebugHeader extends React.PureComponent<IDebugHeaderProps> {
         color: COLORS.DARK,
         opacity: 0.6,
         userSelect: 'none',
+        PaddingX: 8,
+      }),
+      ellipsis: css({
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
         <div />
-        <div>{this.text}</div>
+        <div {...styles.ellipsis}>{this.text}</div>
       </div>
     );
   }
