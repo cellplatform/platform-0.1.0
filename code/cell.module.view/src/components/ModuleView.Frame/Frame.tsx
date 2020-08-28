@@ -25,7 +25,6 @@ export class ModuleViewFrame extends React.PureComponent<
   /**
    * [Lifecycle]
    */
-
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const event$ = this.props.bus.event$.pipe(takeUntil(this.unmounted$));

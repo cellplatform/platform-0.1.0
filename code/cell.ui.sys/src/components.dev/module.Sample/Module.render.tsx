@@ -58,6 +58,6 @@ export function renderer(args: { bus: t.EventBus; events: t.IViewModuleEvents<P>
    * Wildcard.
    */
   events.render('404').subscribe((e) => {
-    e.render(<Test404 view={e.view} module={e.module} selected={e.selected} />);
+    e.render(<Test404 view={e.view || ''} module={e.module} selected={e.selected} />);
   });
 }

@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { css, CssValue, t, COLORS } from '../../common';
 
 export type IDebugHeaderProps = {

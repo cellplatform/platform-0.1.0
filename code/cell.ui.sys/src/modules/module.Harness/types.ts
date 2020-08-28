@@ -1,5 +1,6 @@
 import { t } from './common';
 export * from '../../common/types';
+export * from './api/types';
 
 import { IMainProps } from './components/Main';
 
@@ -20,12 +21,12 @@ export type HarnessModuleDef = {
 };
 
 export type HarnessHost = {
-  view: string;
-  layout: HarnessHostLayout;
+  view?: string;
+  layout?: HarnessHostLayout;
 };
 
 export type HarnessHostLayout = {
-  location: string;
+  location?: string;
 };
 
 /**
@@ -34,7 +35,7 @@ export type HarnessHostLayout = {
  */
 
 export type DevView = HarnessView;
-export type DevData = { host: HarnessHost };
+export type DevData = { host?: HarnessHost };
 export type DevProps = t.IViewModuleProps<DevData, DevView>;
 export type DevModule = t.IModule<DevProps>;
 

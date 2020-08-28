@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Module, t } from './common';
+import { Dev } from '../../api';
 
 type P = t.OneProps;
 
@@ -37,7 +38,7 @@ export const OneModule: t.SampleOneModuleDef = {
    * DEV: harness entry point.
    */
   dev(bus) {
-    const dev = Module.create<t.DevProps>({
+    const module = Module.create<t.DevProps>({
       bus,
       root: { id: '', props: { treeview: { label: 'One (Dev)' } } },
     });
@@ -51,16 +52,33 @@ export const OneModule: t.SampleOneModuleDef = {
       return { id, props };
     };
 
-    dev.change((draft, ctx) => {
+    module.change((draft, ctx) => {
       const children = draft.children || (draft.children = []);
       children.push(node('123', 'FOO'), node('456'), node('789', '404'));
     });
 
-    const match: t.ModuleFilterEvent = (e) => e.module == dev.id;
-    const events = Module.events<P>(Module.filter(bus.event$, match), dev.dispose$);
+    const match: t.ModuleFilterEvent = (e) => e.module == module.id;
+    const events = Module.events<P>(Module.filter(bus.event$, match), module.dispose$);
     renderer(events);
 
-    return dev;
+    /**
+     * TODO 🐷
+     */
+
+    type V = 'FOO';
+    const dev = Dev.create<V>(bus).label('Foo');
+
+    dev.component('one').view('FOO');
+    dev.component('two');
+
+    const match2: t.ModuleFilterEvent = (e) => e.module == dev.module.id;
+    const events2 = Module.events<P>(Module.filter(bus.event$, match2), dev.module.dispose$);
+    renderer(events2);
+
+    console.log('-------------------------------------------');
+    console.log('dev.module.root', dev.module.root);
+
+    return dev.module;
   },
 };
 
