@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 
 import { color, css, CssValue, t, ui, defaultValue } from '../../common';
-import { HarnessModule } from '../../Module';
+import { Harness } from '../../Module';
 import { Tree } from './Main.Tree';
 
 type P = t.HarnessProps;
@@ -25,7 +25,7 @@ export class Main extends React.PureComponent<IMainProps> {
    */
   public componentDidMount() {
     const ctx = this.context;
-    this.harness = HarnessModule.init(ctx.bus);
+    this.harness = Harness.init(ctx.bus);
     this.forceUpdate(); // NB: Redraw causes the newly created [module] to be rendered.
   }
 

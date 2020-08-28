@@ -102,7 +102,7 @@ export class DevComponent implements t.IDevComponent {
     return this;
   }
 
-  private host(fn: (props: t.HarnessHost) => void) {
+  private host(fn: (props: t.DevHost) => void) {
     this.change((props) => {
       const data = props.data || (props.data = {});
       const host = data.host || (data.host = {});
@@ -111,7 +111,7 @@ export class DevComponent implements t.IDevComponent {
     return this;
   }
 
-  private layout(fn: (props: t.HarnessHostLayout) => void) {
+  private layout(fn: (props: t.DevHostLayout) => void) {
     this.host((props) => fn(props.layout || (props.layout = {})));
     return this;
   }

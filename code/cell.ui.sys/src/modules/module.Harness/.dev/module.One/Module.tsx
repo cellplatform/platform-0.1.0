@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Module, t } from './common';
-import { Dev } from '../../api';
+import { Dev } from '../..';
 
 type P = t.OneProps;
 
@@ -41,12 +41,11 @@ export const OneModule: t.SampleOneModuleDef = {
     const dev = Dev(bus, 'One');
 
     dev.component('one').render((e) => <div style={{ padding: 30 }}>hello one</div>);
-    dev.component('two').render((e) => <div style={{ padding: 30 }}>hello two</div>);
     dev
-      .component('rowan')
+      .component('two')
       .width(350)
       .height(250)
-      .render(() => <div style={{ padding: 50 }}>Hi Rowan</div>);
+      .render((e) => <div style={{ padding: 30 }}>hello two</div>);
 
     return dev.module;
   },

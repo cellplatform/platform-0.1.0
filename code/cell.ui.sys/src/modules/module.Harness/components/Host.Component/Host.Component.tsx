@@ -11,7 +11,7 @@ export type IHostComponentProps = {
   harness: t.HarnessModule;
   style?: CssValue;
 };
-export type IHostComponentState = { host?: t.HarnessHost };
+export type IHostComponentState = { host?: t.DevHost };
 
 export class HostComponent extends React.PureComponent<IHostComponentProps, IHostComponentState> {
   public state: IHostComponentState = {};

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Dev as dev } from './api';
 
 import { Module } from './common';
 import { Main } from './components/Main';
@@ -7,8 +8,9 @@ import * as t from './types';
 
 type P = t.HarnessProps;
 
-export const HarnessModule: t.HarnessModuleDef = {
+export const Harness: t.HarnessDef = {
   View: (props) => <Main {...props} />, // eslint-disable-line
+  dev,
 
   /**
    * ENTRY: Initialize a new module from the definition.
