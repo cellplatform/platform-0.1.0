@@ -89,6 +89,7 @@ export type ModuleFilterEventArgs<T extends E = E> = ModuleFilterArgs & {
 export type IModuleFire<T extends P> = {
   register(module: t.IModule<any>, parent?: t.NodeIdentifier): t.ModuleRegistration;
   request<T extends P>(id: string | t.NodeIdentifier): t.IModule<T> | undefined;
+  find<T extends P>(args?: t.IModuleFindArgs): t.IModule<T>[];
 };
 
 /**
@@ -167,16 +168,20 @@ export type IModuleRequestEvent = {
 export type IModuleRequest = {
   module: string;
   handled: boolean;
-  respond<T extends P = AnyProps>(module: t.IModule<T>): void;
+  respond<T extends P>(module: t.IModule<T>): void;
 };
 
 export type IModuleFindEvent = {
   type: 'Module/find';
   payload: IModuleFind;
 };
-export type IModuleFind = {
+export type IModuleFind = IModuleFindArgs & {
   module: string | '*'; // Wildcard ("*" or empty) includes all modules, otherwise matches will be filtered as children of the given module-id.
+  respond<T extends P>(module: t.IModule<T>): void;
+};
+export type IModuleFindArgs = {
+  module?: string | '*'; // Wildcard ("*" or empty) includes all modules, otherwise matches will be filtered as children of the given module-id.
   key?: string;
   namespace?: string;
-  respond(id: string): void;
+  data?: Record<string, string | number | boolean>;
 };

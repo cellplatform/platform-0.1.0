@@ -18,7 +18,8 @@
     "@platform/cell.types": "0.4.143",
     "@platform/cell.typesystem": "0.0.97",
     "@platform/libs": "0.2.2",
-    "@platform/state": "0.7.5"
+    "@platform/state": "0.7.5",
+    "@platform/util.value": "^0.7.30"
   },
   "devDependencies": {
     "@platform/test": "0.1.14",

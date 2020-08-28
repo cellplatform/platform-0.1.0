@@ -1,12 +1,10 @@
 import { TreeState } from '@platform/state';
-import { wildcard } from '@platform/util.string/lib/wildcard';
-import { rx } from '@platform/util.value';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
 import { isModuleEvent } from './Module.events';
-import { fire } from './Module.fire';
-import { registerChild } from './Module.register';
+import * as get from './Module.get';
+import * as register from './Module.register';
 
 type P = t.IModuleProps;
 
@@ -19,35 +17,11 @@ export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
 
   // Create the tree-node module.
   const module = TreeState.create({ root }) as t.IModule<T>;
+
+  // Manage events around this module.
   monitorAndDispatch(bus, module);
-
-  /**
-   * Listen for request events, and lookup to see if
-   * the module can be resolved within the child set.
-   */
-  rx.payload<t.IModuleRequestEvent>(bus.event$, 'Module/request')
-    .pipe(
-      filter((e) => !e.handled),
-      filter((e) => module.id === e.module),
-    )
-    .subscribe((e) => e.respond(module));
-
-  /**
-   * Catch requests from children to register within this module.
-   */
-  rx.payload<t.IModuleRegisterEvent>(bus.event$, 'Module/register')
-    .pipe(
-      filter((e) => e.module !== module.id && Boolean(e.parent)),
-      filter((e) => e.parent === module.id || Boolean(module.query.findById(e.parent))),
-    )
-    .subscribe((e) => {
-      const parent = module as t.IModule;
-      const child = fire(bus).request(e.module);
-      if (child) {
-        const within = e.parent === module.id ? undefined : e.parent;
-        registerChild({ bus, parent, child, within });
-      }
-    });
+  get.listen(bus, module);
+  register.listen(bus, module);
 
   // Finish up.
   return module;

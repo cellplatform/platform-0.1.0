@@ -1,8 +1,10 @@
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { rx, t, toNodeId } from '../common';
 import { request } from './Module.get';
+import { fire } from './Module.fire';
 
 type B = t.EventBus<t.ModuleEvent>;
+type P = t.IModuleProps;
 
 /**
  * Registers a module.
@@ -81,4 +83,23 @@ export function registerChild(args: {
       payload: { module: parent.id, child: child.id },
     });
   });
+}
+
+/**
+ * Listener for "Module/register"events.
+ */
+export function listen<T extends P>(bus: B, module: t.IModule<T>) {
+  rx.payload<t.IModuleRegisterEvent>(bus.event$, 'Module/register')
+    .pipe(
+      filter((e) => e.module !== module.id && Boolean(e.parent)),
+      filter((e) => e.parent === module.id || Boolean(module.query.findById(e.parent))),
+    )
+    .subscribe((e) => {
+      const parent = module as t.IModule;
+      const child = fire(bus).request(e.module);
+      if (child) {
+        const within = e.parent === module.id ? undefined : e.parent;
+        registerChild({ bus, parent, child, within });
+      }
+    });
 }

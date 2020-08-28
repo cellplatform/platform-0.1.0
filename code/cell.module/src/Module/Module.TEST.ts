@@ -2,16 +2,16 @@ import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { Module } from '.';
-import { expect, t } from '../test';
+import { expect, t, rx } from '../test';
 
-type MyData = { count: number };
+type MyData = { count?: number; kind?: string };
 type MyProps = t.IModuleProps<MyData>;
 export type MyModule = t.IModule<MyProps>;
 
 type P = MyProps;
 
 const event$ = new Subject<t.Event>();
-const bus: t.EventBus = { fire: (e: t.Event) => event$.next(e), event$ };
+const bus = rx.bus(event$);
 const fire = Module.fire(bus);
 
 const create = <P extends MyProps = MyProps>(
@@ -21,6 +21,11 @@ const create = <P extends MyProps = MyProps>(
 };
 
 describe('Module', () => {
+  afterEach(() => {
+    const modules = fire.find(); // All modules.
+    modules.forEach((module) => module.dispose());
+  });
+
   describe('create', () => {
     it('create', () => {
       const module = create();
@@ -190,6 +195,7 @@ describe('Module', () => {
       const parent = create({ root: 'parent' });
       const child = create({ root: 'child' });
       fire.register(child, parent.id);
+
       expect(parent.find((e) => e.id === child.id)).to.equal(child);
 
       child.dispose();
@@ -200,39 +206,122 @@ describe('Module', () => {
   describe('event: "Module/request"', () => {
     it('finds module', () => {
       const module = create();
-      const res = Module.fire(bus).request(module.id);
+      const res = fire.request(module.id);
       expect(res?.id).to.eql(module.id);
     });
 
     it('finds module (node)', () => {
       const module = create();
-      const res = Module.fire(bus).request(module);
+      const res = fire.request(module);
       expect(res).to.equal(module);
     });
 
     it('not found', () => {
-      const res = Module.fire(bus).request('ns:404');
+      const res = fire.request('ns:404');
       expect(res).to.eql(undefined);
     });
   });
 
   describe('event: "Module/find"', () => {
-    it.skip('match on "key"', () => {});
-    it.skip('match on "namespace"', () => {});
-    it.skip('match on "kind"', () => {});
+    const init = () => {
+      const parent = create({ root: 'parent', data: { kind: 'FOO', count: 456 } });
+      const child1 = create({ root: 'child-1' });
+      const child2 = create({ root: 'child-2', data: { count: 123 } });
+      const child3 = create({ root: 'child-3', data: { count: 123, kind: 'FOO' } });
+      fire.register(child1, parent);
+      fire.register(child2, parent);
+      fire.register(child3, child2);
 
-    // it('finds module: wildcard ("*:id")', () => {
-    //   const parent = create({ root: 'foo' });
-    //   const child = create({ root: 'foo' });
-    //   fire.register(child, parent);
+      return { parent, child1, child2, child3 };
+    };
 
-    //   const res = Module.fire(bus).request('*:foo');
-    //   console.log(
-    //     'res',
-    //     res.map((m) => m.id),
-    //   );
-    //   // expect(res?.id).to.eql(root.id);
-    // });
+    it('empty args (finds everything)', () => {
+      init();
+      expect(fire.find().length).to.eql(4);
+      expect(fire.find({ data: {} }).length).to.eql(4);
+      expect(fire.find({ key: '*' }).length).to.eql(4);
+    });
+
+    it('match on "key" (and scope)', () => {
+      const { parent, child1, child2, child3 } = init();
+
+      const res1 = fire.find({ key: 'child-1', module: '' }); // NB: empty namespace same as wildcard ("*").
+      const res2 = fire.find({ key: 'child*' });
+      const res3 = fire.find({ key: '*' }); // NB: everything.
+      const res4 = fire.find({ key: 'child*', module: child2.id });
+
+      expect(res1.length).to.eql(1);
+      expect(res1[0]).to.equal(child1);
+
+      expect(res2.length).to.eql(3);
+      expect(res2[0]).to.equal(child1);
+      expect(res2[1]).to.equal(child2);
+      expect(res2[2]).to.equal(child3);
+
+      expect(res3.length).to.eql(4);
+      expect(res3[0]).to.equal(parent);
+      expect(res3[1]).to.equal(child1);
+      expect(res3[2]).to.equal(child2);
+      expect(res3[3]).to.equal(child3);
+
+      // NB: filtered within scope.
+      expect(res4.length).to.eql(2);
+      expect(res4[0].id).to.eql(child2.id); // NB: scope inclusive.
+      expect(res4[1].id).to.eql(child3.id);
+    });
+
+    it('match on "namespace"', () => {
+      const { parent, child1, child2 } = init();
+
+      const res1 = fire.find({ namespace: `  ${parent.namespace}  ` }); // No match (because of padding).
+      const res2 = fire.find({ namespace: `*${child1.namespace.substring(20)}` }); // Match.
+      const res3 = fire.find({ namespace: parent.namespace }); // Match.
+      const res4 = fire.find({ namespace: child2.namespace }); // Match.
+      const res5 = fire.find({ namespace: child1.namespace, key: child2.key }); // No-match
+
+      expect(res1.length).to.eql(0);
+
+      expect(res2.length).to.eql(1);
+      expect(res2[0]).to.eql(child1);
+
+      expect(res3.length).to.eql(1);
+      expect(res3[0]).to.eql(parent);
+
+      expect(res4.length).to.eql(1);
+      expect(res4[0]).to.eql(child2);
+
+      expect(res5.length).to.eql(0);
+    });
+
+    it('match on {data} key values', () => {
+      const { parent, child2, child3 } = init();
+
+      const res1 = fire.find({ data: { foo: 123 } }); // No match.
+      const res2 = fire.find({ data: { count: 123 } });
+      const res3 = fire.find({ data: { kind: 'FOO' } });
+      const res4 = fire.find({ data: { kind: 'F*' } });
+      const res5 = fire.find({ data: { kind: 'FOO', count: 123 } });
+      const res6 = fire.find({ data: { count: '123' } }); // NB: No match because `count` is not a number.
+
+      expect(res1.length).to.eql(0);
+
+      expect(res2.length).to.eql(2);
+      expect(res2[0]).to.eql(child2);
+      expect(res2[1]).to.eql(child3);
+
+      expect(res3.length).to.eql(2);
+      expect(res3[0]).to.eql(parent);
+      expect(res3[1]).to.eql(child3);
+
+      expect(res4.length).to.eql(2); // NB: wildcard (same as res3)
+      expect(res4[0]).to.eql(parent);
+      expect(res4[1]).to.eql(child3);
+
+      expect(res5.length).to.eql(1);
+      expect(res5[0]).to.eql(child3);
+
+      expect(res6.length).to.eql(0);
+    });
   });
 
   describe('change', () => {
