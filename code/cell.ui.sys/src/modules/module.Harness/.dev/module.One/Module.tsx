@@ -38,45 +38,15 @@ export const OneModule: t.SampleOneModuleDef = {
    * DEV: harness entry point.
    */
   dev(bus) {
-    const module = Module.create<t.DevProps>({
-      bus,
-      root: { id: '', props: { treeview: { label: 'One (Dev)' } } },
-    });
+    const dev = Dev(bus, 'One');
 
-    const node = (id: string, view?: t.OneView) => {
-      const host: t.HarnessHost = { view: view || '', layout: { location: 'yo' } };
-      const props: t.DevProps = {
-        view: 'HOST/component',
-        data: { host },
-      };
-      return { id, props };
-    };
-
-    module.change((draft, ctx) => {
-      const children = draft.children || (draft.children = []);
-      children.push(node('123', 'FOO'), node('456'), node('789', '404'));
-    });
-
-    const match: t.ModuleFilterEvent = (e) => e.module == module.id;
-    const events = Module.events<P>(Module.filter(bus.event$, match), module.dispose$);
-    renderer(events);
-
-    /**
-     * TODO 🐷
-     */
-
-    type V = 'FOO';
-    const dev = Dev.create<V>(bus).label('Foo');
-
-    dev.component('one').view('FOO');
-    dev.component('two');
-
-    const match2: t.ModuleFilterEvent = (e) => e.module == dev.module.id;
-    const events2 = Module.events<P>(Module.filter(bus.event$, match2), dev.module.dispose$);
-    renderer(events2);
-
-    console.log('-------------------------------------------');
-    console.log('dev.module.root', dev.module.root);
+    dev.component('one').render((e) => <div style={{ padding: 30 }}>hello one</div>);
+    dev.component('two').render((e) => <div style={{ padding: 30 }}>hello two</div>);
+    dev
+      .component('rowan')
+      .width(350)
+      .height(250)
+      .render(() => <div style={{ padding: 50 }}>Hi Rowan</div>);
 
     return dev.module;
   },

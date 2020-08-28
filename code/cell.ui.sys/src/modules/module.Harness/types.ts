@@ -26,7 +26,8 @@ export type HarnessHost = {
 };
 
 export type HarnessHostLayout = {
-  location?: string;
+  width?: number | string;
+  height?: number | string;
 };
 
 /**

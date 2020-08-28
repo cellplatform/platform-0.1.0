@@ -11,7 +11,7 @@ export type IHostComponentProps = {
   harness: t.HarnessModule;
   style?: CssValue;
 };
-export type IHostComponentState = t.Object;
+export type IHostComponentState = { host?: t.HarnessHost };
 
 export class HostComponent extends React.PureComponent<IHostComponentProps, IHostComponentState> {
   public state: IHostComponentState = {};
@@ -59,13 +59,19 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
   }
 
   public get host() {
-    return this.harness.root.props?.data?.host;
+    return this.state.host || {};
+  }
+
+  public get layout() {
+    return this.host.layout || {};
   }
 
   /**
    * [Render]
    */
   public render() {
+    const layout = this.layout;
+
     const styles = {
       base: css({
         position: 'relative',
@@ -79,20 +85,19 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
       }),
       frame: css({
         border: `solid 1px ${color.format(1)}`,
-        width: 500,
-        height: 500,
-        // Absolute: [50, 30, 30,],
+        width: layout.width,
+        height: layout.height,
       }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div>Host</div>
         <div {...styles.body}>
           <ui.ModuleView.Frame
             bus={this.props.bus}
             filter={this.viewFilter}
             style={styles.frame}
             debug={true}
+            onBeforeRender={this.beforeRender}
           />
         </div>
       </div>
@@ -102,8 +107,25 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
   /**
    * Handlers
    */
-
   private viewFilter: t.ModuleFilterView = (e) => {
+    if (e.module === this.harness.id) {
+      // NB: Ignore the UIHarness module itself.
+      //     We are looking for "dev" components hosted within the harness.
+      return false;
+    }
+
+    // Finish up.
     return true;
+  };
+
+  /**
+   * Before a component renders, capture configruation details
+   * stored for the component on it's module node.
+   */
+  private beforeRender = (e: t.IModuleRendered<any>) => {
+    const module = this.harness.find((child) => child.id === e.module);
+    const node = module?.query.find((item) => item.node.props?.data?.host?.view === e.view);
+    const host = node?.props?.data?.host;
+    this.state$.next({ host });
   };
 }
