@@ -8,9 +8,10 @@ import { IMainProps } from './components/Main';
  * (the component harnessing the "deb module")
  */
 
-export type HarnessView = 'DEFAULT' | 'HOST/component' | 'HOST/module' | '404';
+export type HarnessView = 'HOST/component' | 'HOST/module' | '404';
+export type HarnessTarget = 'PANEL/right';
 export type HarnessData = { host?: HarnessHost };
-export type HarnessProps = t.IViewModuleProps<HarnessData, HarnessView>;
+export type HarnessProps = t.IViewModuleProps<HarnessData, HarnessView, HarnessTarget>;
 export type HarnessModule = t.IModule<HarnessProps>;
 
 export type HarnessModuleDef = {

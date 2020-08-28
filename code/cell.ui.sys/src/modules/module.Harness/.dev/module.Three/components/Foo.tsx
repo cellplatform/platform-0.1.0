@@ -7,7 +7,7 @@ export class Foo extends React.PureComponent<IFooProps> {
   public render() {
     const styles = {
       base: css({
-        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+        backgroundColor: 'rgba(255, 0, 0, 0.2)',
         border: `dashed 1px ${color.format(-0.1)}`,
         borderRadius: 5,
         boxSizing: 'border-box',

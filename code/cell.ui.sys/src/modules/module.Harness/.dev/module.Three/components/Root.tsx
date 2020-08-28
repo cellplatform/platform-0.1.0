@@ -30,8 +30,19 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const bus = this.bus;
     const fire = Module.fire<P>(bus);
 
-    fire.render({ module, view: 'FOO', target: 'PANEL/left', data: { title: 'Left' } });
-    fire.render({ module, view: 'FOO', target: 'PANEL/right', data: { title: 'Right' } });
+    fire.render({
+      module,
+      view: 'FOO',
+      target: 'PANEL/left',
+      data: { title: 'Target Left' },
+    });
+
+    fire.render({
+      module,
+      view: 'FOO',
+      target: 'PANEL/right',
+      data: { title: 'Target Right' },
+    });
   }
 
   public componentWillUnmount() {
@@ -72,8 +83,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       edge: css({
         position: 'relative',
         border: `solid 5px ${color.format(-0.08)}`,
-        width: 250,
-        padding: 8,
+        width: 280,
+        padding: 20,
         backgroundColor: color.format(-0.03),
         display: 'flex',
       }),
@@ -82,17 +93,30 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
       right: css({}),
       spacer: css({ margin: 30 }),
+      frame: css({ flex: 1 }),
     };
 
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
           <div {...css(styles.edge, styles.left)} className={'left-outer'}>
-            <ui.ModuleView.Frame bus={ctx.bus} filter={this.fooView} target={'PANEL/left'} />
+            <ui.ModuleView.Frame
+              bus={ctx.bus}
+              filter={this.viewFilter}
+              target={'PANEL/left'}
+              style={styles.frame}
+              debug={true}
+            />
           </div>
           <div {...styles.spacer} />
           <div {...css(styles.edge, styles.right)} className={'right-outer'}>
-            <ui.ModuleView.Frame bus={ctx.bus} filter={this.fooView} target={'PANEL/right'} />
+            <ui.ModuleView.Frame
+              bus={ctx.bus}
+              filter={this.viewFilter}
+              target={'PANEL/right'}
+              style={styles.frame}
+              debug={true}
+            />
           </div>
         </div>
       </div>
@@ -103,7 +127,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
    * [Handlers]
    */
 
-  private fooView: t.ModuleFilterView<V, T> = (e) => {
+  private viewFilter: t.ModuleFilterView<V, T> = (e) => {
     const module = this.module;
     return e.view === 'FOO' && (e.module === module.id || module.contains(e.module));
   };

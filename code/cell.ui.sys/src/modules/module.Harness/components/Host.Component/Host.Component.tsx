@@ -88,7 +88,12 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
       <div {...css(styles.base, this.props.style)}>
         <div>Host</div>
         <div {...styles.body}>
-          <ui.ModuleView.Frame bus={this.props.bus} filter={this.viewFilter} style={styles.frame} />
+          <ui.ModuleView.Frame
+            bus={this.props.bus}
+            filter={this.viewFilter}
+            style={styles.frame}
+            debug={true}
+          />
         </div>
       </div>
     );

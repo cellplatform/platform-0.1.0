@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
-import { rx, css, CssValue, t } from '../common';
-import { Module } from '../Module';
+import { rx, css, CssValue, t } from '../../common';
+import { Module } from '../../Module';
+import { DebugHeader } from './Frame.DebugHeader';
 
 export type IModuleViewFrameProps = {
   bus: t.EventBus<any>;
   filter?: t.ModuleFilterView<any, any>;
   target?: string; // Optional "view target" to apply as an additional filter before rendering.
+  debug?: boolean;
   style?: CssValue;
 };
-export type IModuleViewFrameState = { el?: JSX.Element | null };
+export type IModuleViewFrameState = { rendered?: t.IModuleRendered<any> };
 
 export class ModuleViewFrame extends React.PureComponent<
   IModuleViewFrameProps,
@@ -33,7 +35,9 @@ export class ModuleViewFrame extends React.PureComponent<
         filter((e) => (this.target ? this.target === e.target : true)),
         filter((e) => this.filterOn(e.module, e.view, e.target)),
       )
-      .subscribe(({ el }) => this.state$.next({ el }));
+      .subscribe((e) => {
+        this.state$.next({ rendered: e });
+      });
   }
 
   public componentWillUnmount() {
@@ -59,7 +63,16 @@ export class ModuleViewFrame extends React.PureComponent<
         boxSizing: 'border-box',
       }),
     };
-    return <div {...css(styles.base, this.props.style)}>{this.state.el}</div>;
+
+    const { rendered } = this.state;
+    const elDebug = rendered?.el && this.props.debug && <DebugHeader rendered={rendered} />;
+
+    return (
+      <div {...css(styles.base, this.props.style)}>
+        {rendered?.el}
+        {elDebug}
+      </div>
+    );
   }
 
   /**

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { CssValue, dispose, t } from '../common';
+import { CssValue, dispose, t } from '../../common';
 
 type N = t.ITreeviewNode;
 type E = t.TreeviewEvent;

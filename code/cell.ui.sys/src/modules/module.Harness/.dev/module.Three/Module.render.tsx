@@ -29,7 +29,7 @@ export function renderer(args: {
   });
 
   render('FOO').subscribe((e) => {
-    const el = <Foo title={e.data?.title} />;
+    const el = <Foo title={e.data?.title} style={{ flex: 1 }} />;
     e.render(el);
   });
 
