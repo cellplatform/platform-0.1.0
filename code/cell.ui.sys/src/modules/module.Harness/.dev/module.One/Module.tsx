@@ -41,6 +41,7 @@ export const OneModule: t.SampleOneModuleDef = {
     const dev = Dev(bus, 'One');
 
     dev.component('one').render((e) => <div style={{ padding: 30 }}>hello one</div>);
+
     dev
       .component('two')
       .width(350)
@@ -54,6 +55,7 @@ export const OneModule: t.SampleOneModuleDef = {
 /**
  * UI: View factory for the module.
  */
+
 function renderer(events: t.IViewModuleEvents<P>) {
   const render = events.render;
 

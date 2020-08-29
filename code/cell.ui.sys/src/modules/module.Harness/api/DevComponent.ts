@@ -1,4 +1,4 @@
-import { t, Module, DEFAULT, id, R } from '../common';
+import { t, Module, DEFAULT, R } from '../common';
 
 type B = t.EventBus;
 type P = t.DevProps;
@@ -56,7 +56,7 @@ export class DevComponent implements t.IDevComponent {
    */
 
   public render(fn: t.DevComponentRender) {
-    const view = `uih-${id.shortid()}`;
+    const view = `uih-${Module.Identity.slug()}`;
     this.host((props) => (props.view = view));
     this.events.render(view).subscribe((e) => {
       const el = fn({});
@@ -88,7 +88,7 @@ export class DevComponent implements t.IDevComponent {
     this.module.change((draft, ctx) => {
       const index = this.index;
       const children = draft.children || (draft.children = []);
-      const node = children[index] || { id: id.shortid() };
+      const node = children[index] || { id: Module.Identity.slug() };
       const props = node.props || (node.props = {});
       props.view = 'HOST/component';
       fn(props);
