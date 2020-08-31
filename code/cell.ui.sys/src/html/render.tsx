@@ -16,7 +16,7 @@ export function render(entry: string) {
 
     case 'entry:harness':
       return (
-        <Root title={'ui.harness'} theme={'WHITE'}>
+        <Root title={'dev.harness'} theme={'WHITE'}>
           <Harness.View />
         </Root>
       );
