@@ -3,7 +3,7 @@ import { t } from '../common';
 import { IMainProps } from '../components/Main';
 
 export type HarnessDef = {
-  View: (props?: IMainProps) => JSX.Element;
+  Layout: (props?: IMainProps) => JSX.Element;
   init(bus: t.EventBus): HarnessModule;
   dev: t.DevFactory;
 };

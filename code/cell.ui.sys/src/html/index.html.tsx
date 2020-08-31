@@ -7,7 +7,7 @@ import { t } from '../common';
 import { context } from '../context';
 import { render } from './render';
 
-import * as HARNESS from '../modules/module.Harness/.dev/SAMPLE';
+import * as HARNESS from '../modules/module.DevHarness/.dev/SAMPLE';
 
 (async () => {
   const win = (window as unknown) as t.ITopWindow;

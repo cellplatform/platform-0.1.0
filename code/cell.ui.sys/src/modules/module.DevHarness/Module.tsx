@@ -9,7 +9,7 @@ import * as t from './types';
 type P = t.HarnessProps;
 
 export const Harness: t.HarnessDef = {
-  View: (props) => <Main {...props} />, // eslint-disable-line
+  Layout: (props) => <Main {...props} />, // eslint-disable-line
   dev,
 
   /**
