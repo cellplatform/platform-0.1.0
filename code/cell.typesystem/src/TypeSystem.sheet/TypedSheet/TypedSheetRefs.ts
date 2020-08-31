@@ -121,7 +121,15 @@ export class TypedSheetRefs<T, K extends keyof T> implements t.ITypedSheetRefs<T
         });
       }
 
-      delete this._load; // Remove temporary reference to loader promise.
+      /**
+       * Remove temporary reference to loader promise.
+       */
+
+      /* eslint-disable */
+      // @ts-ignore
+      delete this._load;
+      /* eslint-enable */
+
       this.fire({
         type: 'SHEET/refs/loaded',
         payload: { sheet: this.parent.sheet, refs: this },

@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.fs.s3",
-  "version": "0.4.104",
+  "version": "0.4.106",
   "description": "S3 (AWS) filesystem support for CellOS.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,16 +16,16 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.fs": "0.4.101",
-    "@platform/cell.schema": "0.4.157",
-    "@platform/cell.types": "0.4.143",
-    "@platform/fs.s3": "0.7.21",
+    "@platform/cell.fs": "0.4.103",
+    "@platform/cell.schema": "0.4.159",
+    "@platform/cell.types": "0.4.145",
+    "@platform/fs.s3": "0.7.23",
     "@platform/libs": "0.2.2"
   },
   "devDependencies": {
-    "@platform/fs": "0.5.19",
-    "@platform/test": "0.1.14",
-    "@platform/ts": "3.9.5"
+    "@platform/fs": "0.5.20",
+    "@platform/test": "0.1.15",
+    "@platform/ts": "4.0.0"
   },
   "files": [
     "lib",

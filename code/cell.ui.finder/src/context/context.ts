@@ -1,7 +1,6 @@
 import { Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
 
-import { Client, t, ui } from '../common';
+import { Client, t, ui, rx } from '../common';
 import { createStore, behavior } from '../state';
 
 /**
@@ -11,11 +10,7 @@ export function create(args: { env: t.IEnv }) {
   const { env } = args;
   const event$ = env.event$ as Subject<t.AppEvent>;
   const store = createStore({ event$ });
-
-  const bus: t.EventBus<t.AppEvent> = {
-    event$: event$.pipe(share()),
-    fire: (e) => event$.next(e),
-  };
+  const bus =rx.bus<t.AppEvent>(event$)
 
   // Create the context.
   const ctx: t.IAppContext = {

@@ -81,7 +81,7 @@ describe('Store (nedb)', () => {
     // Many (array).
     await db.insertMany([obj, obj]);
     const res4 = await db.find({ name: 'mary' });
-    res4.forEach(item => {
+    res4.forEach((item) => {
       expect(item).to.eql({ ...obj, _id: item._id });
     });
   });
@@ -188,10 +188,10 @@ describe('Store (nedb)', () => {
 
     const res2 = await db.find({});
 
-    const names = res2.map(doc => doc.name);
-    expect(names.filter(name => name === 'zoo').length).to.eql(1);
-    expect(names.filter(name => name === 'boo').length).to.eql(1);
-    expect(names.filter(name => name === 'foo').length).to.eql(0); // Changed.
+    const names = res2.map((doc) => doc.name);
+    expect(names.filter((name) => name === 'zoo').length).to.eql(1);
+    expect(names.filter((name) => name === 'boo').length).to.eql(1);
+    expect(names.filter((name) => name === 'foo').length).to.eql(0); // Changed.
   });
 
   it('updateOne (upsert)', async () => {
