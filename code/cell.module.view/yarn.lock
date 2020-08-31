@@ -221,7 +221,7 @@
     "@platform/libs" "0.2.2"
     "@platform/util.value" "0.7.30"
 
-"@platform/react@0.4.43":
+"@platform/react@0.4.43", "@platform/react@^0.4.43":
   version "0.4.43"
   resolved "https://registry.yarnpkg.com/@platform/react/-/react-0.4.43.tgz#d0f7d34e6ad6b2120c78661ab85e3785147094e2"
   integrity sha512-IjcJuFyflSwn4v/vDBIDcrF1JzPlFiqD7RXAsc8KeuqXDHhXECsVKlMJpXeDXfqLHd3+AOE9vkhR+0hwRX10oA==
