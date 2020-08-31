@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { color, css, CssValue, t, ui, defaultValue } from '../../common';
 import { Harness } from '../../Module';
 import { Tree } from './Main.Tree';
+import { COLORS } from '@platform/cell.ui/lib/common/constants';
 
 type P = t.HarnessProps;
 type V = t.HarnessView;
@@ -63,21 +64,27 @@ export class Main extends React.PureComponent<IMainProps> {
         Absolute: 0,
       }),
       left: css({
-        WebkitAppRegion: 'drag',
         position: 'relative',
         display: 'flex',
         width: 250,
-        backgroundColor: color.format(1),
+        backgroundColor: color.darken(COLORS.WHITE, 5),
+        WebkitAppRegion: 'drag',
+      }),
+      right: css({
+        width: 250,
+        backgroundColor: color.darken(COLORS.WHITE, 5),
+        WebkitAppRegion: 'drag',
       }),
       body: css({
         flex: 1,
         display: 'flex',
         position: 'relative',
-      }),
-      right: css({
+        // borderLeft: `solid 10px ${color.format(-0.06)}`,
+        // borderRight: `solid 10px ${color.format(-0.06)}`,
+        borderLeft: `solid 10px ${color.format(0.1)}`,
+        borderRight: `solid 10px ${color.format(0.1)}`,
         WebkitAppRegion: 'drag',
-        width: 250,
-        backgroundColor: color.format(1),
+        overflow: 'hidden',
       }),
     };
     return (

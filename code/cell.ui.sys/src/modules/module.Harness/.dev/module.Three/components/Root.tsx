@@ -82,9 +82,9 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
       }),
       edge: css({
         position: 'relative',
-        border: `solid 5px ${color.format(-0.08)}`,
+        border: `solid 1px ${color.format(-0.08)}`,
         width: 280,
-        padding: 20,
+        padding: 30,
         backgroundColor: color.format(-0.03),
         display: 'flex',
       }),

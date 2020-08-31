@@ -48,6 +48,13 @@ export const OneModule: t.SampleOneModuleDef = {
       .height(250)
       .render((e) => <div style={{ padding: 30 }}>hello two</div>);
 
+    dev.component('leaf').render((e) => {
+      const url = 'https://tdb.sfo2.digitaloceanspaces.com/tmp/leaf.png';
+      return <img src={url} />;
+    });
+
+    // https://tdb.sfo2.digitaloceanspaces.com/tmp/leaf.png
+
     return dev.module;
   },
 };

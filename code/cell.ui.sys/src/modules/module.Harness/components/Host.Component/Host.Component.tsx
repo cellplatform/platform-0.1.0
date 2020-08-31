@@ -9,6 +9,7 @@ type P = t.HarnessProps;
 export type IHostComponentProps = {
   bus: t.EventBus;
   harness: t.HarnessModule;
+  isDraggable?: boolean;
   style?: CssValue;
 };
 export type IHostComponentState = { host?: t.DevHost };
@@ -87,6 +88,7 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
         border: `solid 1px ${color.format(1)}`,
         width: layout.width,
         height: layout.height,
+        WebkitAppRegion: 'none',
       }),
     };
     return (
@@ -95,9 +97,9 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
           <ui.ModuleView.Frame
             bus={this.props.bus}
             filter={this.viewFilter}
-            style={styles.frame}
             debug={true}
             onBeforeRender={this.beforeRender}
+            style={styles.frame}
           />
         </div>
       </div>
