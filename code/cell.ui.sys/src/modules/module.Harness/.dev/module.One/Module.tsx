@@ -53,8 +53,6 @@ export const OneModule: t.SampleOneModuleDef = {
       return <img src={url} />;
     });
 
-    // https://tdb.sfo2.digitaloceanspaces.com/tmp/leaf.png
-
     return dev.module;
   },
 };

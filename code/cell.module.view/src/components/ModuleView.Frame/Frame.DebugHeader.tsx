@@ -1,15 +1,39 @@
 import * as React from 'react';
-import { css, CssValue, t, COLORS } from '../../common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { COLORS, css, CssValue, t } from '../../common';
 
 export type IDebugHeaderProps = {
   rendered: t.IModuleRendered<any>;
   style?: CssValue;
 };
+export type IDebugHeaderState = { isOver?: boolean };
 
-export class DebugHeader extends React.PureComponent<IDebugHeaderProps> {
+export class DebugHeader extends React.PureComponent<IDebugHeaderProps, IDebugHeaderState> {
+  public state: IDebugHeaderState = {};
+  private state$ = new Subject<Partial<IDebugHeaderState>>();
+  private unmounted$ = new Subject();
+
+  /**
+   * [Lifecycle]
+   */
+
+  public componentDidMount() {
+    this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+  }
+
+  public componentWillUnmount() {
+    this.unmounted$.next();
+    this.unmounted$.complete();
+  }
+
   /**
    * [Properties]
    */
+  public get isOver() {
+    return this.state.isOver || false;
+  }
 
   private get text() {
     const { el, view, target } = this.props.rendered;
@@ -33,15 +57,17 @@ export class DebugHeader extends React.PureComponent<IDebugHeaderProps> {
    * [Render]
    */
   public render() {
+    const isOver = this.isOver;
+
     const styles = {
       base: css({
-        Absolute: [-14, 0, null, 0],
-        fontSize: 9,
-        textAlign: 'right',
+        Absolute: [isOver ? -18 : -14, isOver ? -100 : 0, null, isOver ? -100 : 0],
+        fontSize: isOver ? 12 : 7,
+        opacity: isOver ? 1 : 0.7,
+        textAlign: 'center',
         Flex: 'horizontal-end-spaceBetween',
         fontFamily: 'Menlo, monospace',
         color: COLORS.DARK,
-        opacity: 0.6,
         userSelect: 'none',
         PaddingX: 8,
       }),
@@ -52,10 +78,24 @@ export class DebugHeader extends React.PureComponent<IDebugHeaderProps> {
       }),
     };
     return (
-      <div {...css(styles.base, this.props.style)}>
+      <div
+        {...css(styles.base, this.props.style)}
+        onMouseEnter={this.overHandler(true)}
+        onMouseLeave={this.overHandler(false)}
+      >
         <div />
         <div {...styles.ellipsis}>{this.text}</div>
+        <div />
       </div>
     );
   }
+
+  /**
+   * [Handlers]
+   */
+  private overHandler = (isOver: boolean) => {
+    return () => {
+      this.state$.next({ isOver });
+    };
+  };
 }
