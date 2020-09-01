@@ -6,7 +6,7 @@ import { selectionStrategy } from './strategy.selection';
 type E = t.HarnessEvent;
 
 /**
- * Behavior logic for a UIHarness.
+ * Behavior logic for a DevHarness.
  */
 export function strategy(args: { harness: t.HarnessModule; bus: t.EventBus }) {
   const { harness } = args;

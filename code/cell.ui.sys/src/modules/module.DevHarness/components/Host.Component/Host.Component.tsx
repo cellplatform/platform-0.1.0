@@ -136,7 +136,7 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
    * Handlers
    */
   private viewFilter: t.ModuleFilterView<t.HarnessView, t.HarnessTarget> = (e) => {
-    // NB: Ignore the UIHarness module itself.
+    // NB: Ignore the DevHarness module itself.
     //     We are looking for "dev" components hosted within the harness.
     return e.module !== this.harness.id;
   };

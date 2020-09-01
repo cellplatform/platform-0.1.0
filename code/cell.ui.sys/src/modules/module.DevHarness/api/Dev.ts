@@ -5,7 +5,7 @@ type B = t.EventBus;
 type IArgs = { bus: B; label?: string };
 
 /**
- * API for building out component tests within the UIHarness.
+ * API for building out component tests within the DevHarness.
  */
 export class Dev implements t.IDevBuilder {
   /**

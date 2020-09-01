@@ -5,7 +5,7 @@ import { TwoModule } from './module.Two';
 import { ThreeModule } from './module.Three';
 
 /**
- * Simulate module insertion into UIHarness.
+ * Simulate module insertion into DevHarness.
  */
 export async function sampleInit(bus: t.EventBus) {
   const fire = bus.type<t.HarnessEvent>().fire;

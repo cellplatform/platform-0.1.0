@@ -7,7 +7,7 @@ type E = t.HarnessEvent;
 type P = t.HarnessProps;
 
 /**
- * Listens for UIHarness render requests.
+ * Listens for DevHarness render requests.
  */
 export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus<E> }) {
   const { harness, bus } = args;
