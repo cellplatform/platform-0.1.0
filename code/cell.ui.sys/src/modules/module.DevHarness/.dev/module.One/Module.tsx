@@ -1,16 +1,16 @@
 import * as React from 'react';
 
 import { t } from './common';
-import { Dev } from '../..';
+import { Harness } from '../..';
 
 type P = t.OneProps;
 
 export const OneModule: t.SampleOneModuleDef = {
   /**
-   * DEV: harness entry point.
+   * DEV: harness entry-point.
    */
   dev(bus) {
-    const dev = Dev(bus, 'Module One');
+    const dev = Harness.dev(bus, 'Module One');
 
     dev
       .component('Foo')

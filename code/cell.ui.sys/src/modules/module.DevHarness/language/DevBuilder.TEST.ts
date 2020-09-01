@@ -1,7 +1,9 @@
 import { Subject } from 'rxjs';
 
-import { expect, rx, Module, t } from '../../../test';
-import { Dev } from '.';
+import { expect, rx, t } from '../../../test';
+import { DevBuilder } from '.';
+
+const create = DevBuilder.create;
 
 const event$ = new Subject<t.Event>();
 const bus = rx.bus(event$);
@@ -9,23 +11,23 @@ const bus = rx.bus(event$);
 describe('Dev (API)', () => {
   describe('Dev', () => {
     it('create', () => {
-      const dev = Dev(bus);
+      const dev = create(bus);
       expect(dev.props.treeview?.label).to.eql('Untitled');
     });
 
     it('create: with label', () => {
-      const dev = Dev(bus, 'Foo');
+      const dev = create(bus, 'Foo');
       expect(dev.props.treeview?.label).to.eql('Foo');
     });
 
     it('change: label', () => {
-      const dev = Dev(bus);
+      const dev = create(bus);
       dev.label('Foo').label('Bar');
       expect(dev.props.treeview?.label).to.eql('Bar');
     });
 
     it('dispose', () => {
-      const dev = Dev(bus);
+      const dev = create(bus);
       expect(dev.isDisposed).to.eql(false);
       expect(dev.module.isDisposed).to.eql(false);
 
@@ -38,13 +40,13 @@ describe('Dev (API)', () => {
   describe('DevComponent', () => {
     describe('name', () => {
       it('name', () => {
-        const dev = Dev(bus);
+        const dev = create(bus);
         const res = dev.component('  Foo  ');
         expect(res.props.component.name).to.eql('Foo');
       });
 
       it('retrieves existing component (by name)', () => {
-        const dev = Dev(bus);
+        const dev = create(bus);
         const res1 = dev.component('Foo');
         const res2 = dev.component('  Foo  ');
         expect(res1).to.equal(res2);
@@ -55,7 +57,7 @@ describe('Dev (API)', () => {
       });
 
       it('throw: Invalid name (typename)', () => {
-        const dev = Dev(bus);
+        const dev = create(bus);
         const expectThrow = (name: any) => {
           expect(() => dev.component(name)).to.throw(/Invalid component name/);
         };
@@ -68,7 +70,7 @@ describe('Dev (API)', () => {
     });
 
     it('label', () => {
-      const dev = Dev(bus);
+      const dev = create(bus);
       const res = dev.component('Foo');
       expect(res.props.treeview?.label).to.eql('Foo'); // NB: Defaults to component "name".
       res.label('Bar').label('Baz');
@@ -76,7 +78,7 @@ describe('Dev (API)', () => {
     });
 
     it('width', () => {
-      const dev = Dev(bus);
+      const dev = create(bus);
       const res = dev.component('Foo');
       expect(res.props.layout?.width).to.eql(undefined);
 
@@ -91,7 +93,7 @@ describe('Dev (API)', () => {
     });
 
     it('height', () => {
-      const dev = Dev(bus);
+      const dev = create(bus);
       const res = dev.component('Foo');
       expect(res.props.layout.height).to.eql(undefined);
 

@@ -10,12 +10,12 @@ type IArgs = { name: string; bus: B; module: t.HarnessModule };
 /**
  * Represents a single component under test.
  */
-export class DevComponent implements t.IDevComponentBuilder {
+export class DevBuilderComponent implements t.IDevBuilderComponent {
   /**
    * [Lifecycle]
    */
-  public static create(args: IArgs): t.IDevComponentBuilder {
-    return new DevComponent(args);
+  public static create(args: IArgs): t.IDevBuilderComponent {
+    return new DevBuilderComponent(args);
   }
 
   private constructor(args: IArgs) {
