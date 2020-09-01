@@ -1039,7 +1039,7 @@
     "@platform/ui.tree.types" "^0.0.4"
     "@platform/util.diff" "0.0.36"
 
-"@platform/cell.typesystem@0.0.99":
+"@platform/cell.typesystem@0.0.99", "@platform/cell.typesystem@^0.0.99":
   version "0.0.99"
   resolved "https://registry.yarnpkg.com/@platform/cell.typesystem/-/cell.typesystem-0.0.99.tgz#77fefa244f257dcb052c9df704ecef9e7dc60aba"
   integrity sha512-jrY7a/oCxeKuBGvP9Y4yIvt3oC0X+nqZa1D7d9i6flhv5B5RyK8Ivx/v2HQLW0Y6tSdTKUaJ2WDZ0L3DH41qRw==

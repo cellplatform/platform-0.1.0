@@ -22,7 +22,7 @@
     "@platform/cell.schema": "0.4.159",
     "@platform/cell.schema.sys": "0.0.17",
     "@platform/cell.types": "0.4.145",
-    "@platform/cell.typesystem": "0.0.99",
+    "@platform/cell.typesystem": "^0.0.99",
     "@platform/cell.ui": "0.1.104",
     "@platform/react": "0.4.45",
     "@platform/state": "^0.7.7",
