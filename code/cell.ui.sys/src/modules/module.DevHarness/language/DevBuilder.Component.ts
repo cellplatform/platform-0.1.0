@@ -84,15 +84,22 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
   }
 
   public background(value: number | string | undefined) {
-    return this.layout((props) => (props.background = clean(value)));
+    value = clampColor(clean(value));
+    return this.layout((props) => (props.background = value));
   }
 
   public border(value: number | boolean) {
+    value = clampColor(value);
     return this.layout((props) => (props.border = value));
   }
 
   public cropMarks(value: number | boolean) {
+    value = clampColor(value);
     return this.layout((props) => (props.cropMarks = value));
+  }
+
+  position(fn: (args: t.IDevBuilderPosition) => void) {
+    return this;
   }
 
   public render(fn: t.DevRenderComponent) {
@@ -167,5 +174,13 @@ function clean<T>(input: T, defaultValue?: T) {
   if (typeof input === 'string') {
     return (input || '').trim();
   }
+
   return input;
+}
+
+function clampColor<T>(value: T) {
+  if (typeof value === 'number') {
+    return Math.max(-1, Math.min(1, value));
+  }
+  return value;
 }

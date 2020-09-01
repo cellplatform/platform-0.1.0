@@ -28,6 +28,19 @@ export type IDevBuilderComponent = {
   background(value: number | string | undefined): C;
   border(value: boolean | number): C;
   cropMarks(value: boolean | number): C;
+  position(fn: (args: IDevBuilderPosition) => void): C;
+};
+
+/**
+ * Tools for defining the position of a component.
+ */
+export type IDevBuilderPosition = {
+  absolute: IDevBuilderPositionAbsolute;
+};
+
+export type IDevBuilderPositionAbsolute = {
+  left(value: number | string | undefined): IDevBuilderPositionAbsolute;
+  //
 };
 
 /**
@@ -35,5 +48,5 @@ export type IDevBuilderComponent = {
  */
 export type DevRenderContext = {};
 export type DevRenderResponse = JSX.Element | null;
-export type DevRenderComponent = (e: DevRenderContext) => DevRenderResponse | void;
-export type DevRenderSidebar = (e: DevRenderContext) => DevRenderResponse | void;
+export type DevRenderComponent = (ctx: DevRenderContext) => DevRenderResponse | void;
+export type DevRenderSidebar = (ctx: DevRenderContext) => DevRenderResponse | void;

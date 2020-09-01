@@ -70,41 +70,92 @@ describe('Dev (API)', () => {
     });
 
     it('label', () => {
-      const dev = create(bus);
-      const res = dev.component('Foo');
-      expect(res.props.treeview?.label).to.eql('Foo'); // NB: Defaults to component "name".
-      res.label('Bar').label('Baz');
-      expect(res.props.treeview?.label).to.eql('Baz');
+      const dev = create(bus).component('Foo');
+      expect(dev.props.treeview?.label).to.eql('Foo'); // NB: Defaults to component "name".
+      dev.label('Bar').label('Baz');
+      expect(dev.props.treeview?.label).to.eql('Baz');
     });
 
     it('width', () => {
-      const dev = create(bus);
-      const res = dev.component('Foo');
-      expect(res.props.layout?.width).to.eql(undefined);
+      const dev = create(bus).component('Foo');
+      expect(dev.props.layout?.width).to.eql(undefined);
 
-      res.width(123);
-      expect(res.props.layout.width).to.eql(123);
+      dev.width(123);
+      expect(dev.props.layout.width).to.eql(123);
 
-      res.width('80%');
-      expect(res.props.layout.width).to.eql('80%');
+      dev.width('80%');
+      expect(dev.props.layout.width).to.eql('80%');
 
-      res.width(undefined);
-      expect(res.props.layout.width).to.eql(undefined);
+      dev.width(undefined);
+      expect(dev.props.layout.width).to.eql(undefined);
     });
 
     it('height', () => {
-      const dev = create(bus);
-      const res = dev.component('Foo');
-      expect(res.props.layout.height).to.eql(undefined);
+      const dev = create(bus).component('Foo');
+      expect(dev.props.layout.height).to.eql(undefined);
 
-      res.height(123);
-      expect(res.props.layout.height).to.eql(123);
+      dev.height(123);
+      expect(dev.props.layout.height).to.eql(123);
 
-      res.height('80%');
-      expect(res.props.layout.height).to.eql('80%');
+      dev.height('80%');
+      expect(dev.props.layout.height).to.eql('80%');
 
-      res.height(undefined);
-      expect(res.props.layout.height).to.eql(undefined);
+      dev.height(undefined);
+      expect(dev.props.layout.height).to.eql(undefined);
+    });
+
+    it('background', () => {
+      const dev = create(bus).component('Foo');
+      expect(dev.props.layout.background).to.eql(undefined);
+
+      dev.background(-50);
+      expect(dev.props.layout.background).to.eql(-1);
+
+      dev.background(50);
+      expect(dev.props.layout.background).to.eql(1);
+
+      dev.background(0);
+      expect(dev.props.layout.background).to.eql(0);
+
+      dev.background('  #fff  ');
+      expect(dev.props.layout.background).to.eql('#fff');
+
+      dev.background(undefined);
+      expect(dev.props.layout.background).to.eql(undefined);
+    });
+
+    it('border', () => {
+      const dev = create(bus).component('Foo');
+      expect(dev.props.layout.border).to.eql(undefined);
+
+      dev.border(true);
+      expect(dev.props.layout.border).to.eql(true);
+
+      dev.border(false);
+      expect(dev.props.layout.border).to.eql(false);
+
+      dev.border(50);
+      expect(dev.props.layout.border).to.eql(1);
+
+      dev.border(-50);
+      expect(dev.props.layout.border).to.eql(-1);
+    });
+
+    it('cropMarks', () => {
+      const dev = create(bus).component('Foo');
+      expect(dev.props.layout.cropMarks).to.eql(undefined);
+
+      dev.cropMarks(true);
+      expect(dev.props.layout.cropMarks).to.eql(true);
+
+      dev.cropMarks(false);
+      expect(dev.props.layout.cropMarks).to.eql(false);
+
+      dev.cropMarks(50);
+      expect(dev.props.layout.cropMarks).to.eql(1);
+
+      dev.cropMarks(-50);
+      expect(dev.props.layout.cropMarks).to.eql(-1);
     });
   });
 });
