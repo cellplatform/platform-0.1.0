@@ -4,16 +4,16 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, t, ui, Module } from '../../common';
 
-export type ITreeProps = {
+export type ILayoutTreeProps = {
   harness: t.HarnessModule;
   focusOnLoad?: boolean;
   style?: CssValue;
 };
-export type ITreeState = { isEmpty?: boolean };
+export type ILayoutTreeState = { isEmpty?: boolean };
 
-export class Tree extends React.PureComponent<ITreeProps, ITreeState> {
-  public state: ITreeState = {};
-  private state$ = new Subject<Partial<ITreeState>>();
+export class LayoutTree extends React.PureComponent<ILayoutTreeProps, ILayoutTreeState> {
+  public state: ILayoutTreeState = {};
+  private state$ = new Subject<Partial<ILayoutTreeState>>();
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeviewEvent>();
 

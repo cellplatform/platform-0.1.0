@@ -45,7 +45,7 @@ export class NotFound extends React.PureComponent<INotFoundProps, INotFoundState
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div {...styles.label}>Not Found</div>
+        <div {...styles.label}>Not Found (Harness)</div>
       </div>
     );
   }

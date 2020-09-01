@@ -56,7 +56,7 @@ export class DevComponent implements t.IDevComponent {
    */
 
   public render(fn: t.DevComponentRender) {
-    const view = `uih-${Module.Identity.slug()}`;
+    const view = `dev-${Module.Identity.slug()}`;
     this.host((props) => (props.view = view));
     this.events.render(view).subscribe((e) => {
       const el = fn({});

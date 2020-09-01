@@ -1,9 +1,8 @@
 import { t } from '../common';
-
-import { IMainProps } from '../components/Main';
+import { ILayoutProps } from '../components/Layout';
 
 export type HarnessDef = {
-  Layout: (props?: IMainProps) => JSX.Element;
+  Layout: (props?: ILayoutProps) => JSX.Element;
   init(bus: t.EventBus): HarnessModule;
   dev: t.DevFactory;
 };
@@ -13,7 +12,7 @@ export type HarnessDef = {
  * (the module that "harnesses" another "module under development")
  */
 
-export type HarnessView = 'HOST/component' | 'HOST/module' | '404';
+export type HarnessView = t.DevView;
 export type HarnessTarget = 'PANEL/right';
 export type HarnessData = { host?: t.DevHost };
 export type HarnessProps = t.IViewModuleProps<HarnessData, HarnessView, HarnessTarget>;

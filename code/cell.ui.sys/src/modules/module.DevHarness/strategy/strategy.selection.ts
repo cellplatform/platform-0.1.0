@@ -23,6 +23,12 @@ export function selectionStrategy(args: { harness: t.HarnessModule; bus: t.Event
     const { module, data } = e;
     const host = data.host;
 
+    console.group('🌳 ');
+    console.log('host', host);
+    console.log('module', module);
+    console.log('data', data);
+    console.groupEnd();
+
     if (host) {
       renderHarness('HOST/component');
       fire.render({ module, data, view: host.view });

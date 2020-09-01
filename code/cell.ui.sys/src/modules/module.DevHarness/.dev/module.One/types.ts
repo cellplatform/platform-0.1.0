@@ -7,6 +7,6 @@ export type OneProps = t.IViewModuleProps<OneData, OneView>;
 export type OneModule = t.IModule<OneProps>;
 
 export type SampleOneModuleDef = {
-  init(bus: t.EventBus, parent?: string): OneModule;
+  // init(bus: t.EventBus, parent?: string): OneModule;
   dev(bus: t.EventBus): t.DevModule;
 };

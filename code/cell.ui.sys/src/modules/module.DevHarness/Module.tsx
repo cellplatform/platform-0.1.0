@@ -2,14 +2,14 @@ import * as React from 'react';
 import { Dev as dev } from './api';
 
 import { Module } from './common';
-import { Main } from './components/Main';
+import { Layout } from './components/Layout';
 import { strategy } from './strategy';
 import * as t from './types';
 
 type P = t.HarnessProps;
 
 export const Harness: t.HarnessDef = {
-  Layout: (props) => <Main {...props} />, // eslint-disable-line
+  Layout: (props) => <Layout {...props} />, // eslint-disable-line
   dev,
 
   /**

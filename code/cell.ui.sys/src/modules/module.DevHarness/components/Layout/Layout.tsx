@@ -3,18 +3,18 @@ import { Subject } from 'rxjs';
 
 import { color, css, CssValue, t, ui, defaultValue } from '../../common';
 import { Harness } from '../../Module';
-import { Tree } from './Main.Tree';
+import { LayoutTree } from './Layout.Tree';
 import { COLORS } from '@platform/cell.ui/lib/common/constants';
 
 type P = t.HarnessProps;
 type V = t.HarnessView;
 
-export type IMainProps = {
+export type ILayoutProps = {
   focusOnLoad?: boolean;
   style?: CssValue;
 };
 
-export class Main extends React.PureComponent<IMainProps> {
+export class Layout extends React.PureComponent<ILayoutProps> {
   private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
@@ -90,7 +90,7 @@ export class Main extends React.PureComponent<IMainProps> {
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.left}>
-          <Tree harness={harness} focusOnLoad={focusOnLoad} />
+          <LayoutTree harness={harness} focusOnLoad={focusOnLoad} />
         </div>
         <div {...styles.body}>
           <ui.ModuleView.Frame bus={bus} filter={this.bodyFilter} style={styles.fill} />

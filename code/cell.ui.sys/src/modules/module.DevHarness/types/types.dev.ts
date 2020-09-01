@@ -5,7 +5,7 @@ import { t } from '../common';
  * (the module that defines the UI tests)
  */
 
-export type DevView = t.HarnessView;
+export type DevView = 'HOST/component' | 'HOST/module' | '404';
 export type DevData = { host?: t.DevHost };
 export type DevProps = t.IViewModuleProps<DevData, DevView>;
 export type DevModule = t.IModule<DevProps>;

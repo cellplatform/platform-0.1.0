@@ -26,6 +26,7 @@ export function renderer(args: {
   });
 
   render('404').subscribe((e) => {
+    console.log('e', e);
     e.render(<NotFound />);
   });
 }
