@@ -17,16 +17,19 @@ export function renderer(args: {
   const { events, bus, harness } = args;
   const render = events.render;
 
-  render('HOST/component').subscribe((e) => {
+  render('Host/component').subscribe((e) => {
     e.render(<HostComponent bus={bus} harness={harness} />);
   });
 
-  render('HOST/module').subscribe((e) => {
+  render('Host/module/TMP').subscribe((e) => {
     e.render(<HostModule bus={bus} harness={harness} />);
   });
 
+  render('Null').subscribe((e) => {
+    e.render(null); // NB: Used for clearing Frames that no longer contain content.
+  });
+
   render('404').subscribe((e) => {
-    console.log('e', e);
     e.render(<NotFound />);
   });
 }

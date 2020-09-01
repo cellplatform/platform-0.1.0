@@ -15,10 +15,6 @@ export class NotFound extends React.PureComponent<INotFoundProps, INotFoundState
   /**
    * [Lifecycle]
    */
-  constructor(props: INotFoundProps) {
-    super(props);
-  }
-
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
@@ -39,13 +35,11 @@ export class NotFound extends React.PureComponent<INotFoundProps, INotFoundState
         position: 'relative',
         userSelect: 'none',
       }),
-      label: css({
-        opacity: 0.5,
-      }),
+      label: css({ opacity: 0.5 }),
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <div {...styles.label}>Not Found (Harness)</div>
+        <div {...styles.label}>Not Found</div>
       </div>
     );
   }
