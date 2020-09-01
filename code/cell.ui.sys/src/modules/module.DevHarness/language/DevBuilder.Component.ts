@@ -8,7 +8,7 @@ type S = string;
 type IArgs = { name: string; bus: B; module: t.HarnessModule };
 
 /**
- * Represents a single component under test.
+ * Represents a single component.
  */
 export class DevBuilderComponent implements t.IDevBuilderComponent {
   /**
@@ -72,8 +72,7 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
   }
 
   public label(value: string) {
-    value = clean(value) || DEFAULT.UNTITLED;
-    return this.treeview((props) => (props.label = value));
+    return this.treeview((props) => (props.label = clean(value, DEFAULT.UNTITLED)));
   }
 
   public width(value: number | string | undefined) {
@@ -115,7 +114,7 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
   }
 
   /**
-   * [Helpers]
+   * [Internal]
    */
 
   private change(fn: (props: P) => void) {
@@ -156,7 +155,15 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
   }
 }
 
-function clean<T>(input: T) {
+/**
+ * [Helpers]
+ */
+
+function clean<T>(input: T, defaultValue?: T) {
+  if (input === undefined && defaultValue !== undefined) {
+    return defaultValue;
+  }
+
   if (typeof input === 'string') {
     return (input || '').trim();
   }
