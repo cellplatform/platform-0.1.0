@@ -23,6 +23,7 @@ export type IDevComponentBuilder = {
   sidebar(fn: DevRenderSidebar): IDevComponentBuilder;
   width(value: number | string | undefined): IDevComponentBuilder;
   height(value: number | string | undefined): IDevComponentBuilder;
+  background(value: number | string | undefined): IDevComponentBuilder;
   border(value: boolean | number): IDevComponentBuilder;
   cropMarks(value: boolean | number): IDevComponentBuilder;
 };

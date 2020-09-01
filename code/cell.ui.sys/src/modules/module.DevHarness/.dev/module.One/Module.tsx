@@ -10,7 +10,7 @@ export const OneModule: t.SampleOneModuleDef = {
    * DEV: harness entry point.
    */
   dev(bus) {
-    const dev = Dev(bus, 'Module: One');
+    const dev = Dev(bus, 'Module One');
 
     dev
       .component('Foo')
@@ -21,6 +21,7 @@ export const OneModule: t.SampleOneModuleDef = {
     dev
       .component('Bar')
       .label('two')
+      .background(-0.06)
       .width(350)
       .height(250)
       .render((e) => <div style={{ padding: 30 }}>hello two</div>);

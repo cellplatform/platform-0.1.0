@@ -88,8 +88,8 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
    * [Render]
    */
   public render() {
-    const layout = this.layout;
     const MAIN: t.HarnessTarget = 'Main';
+    const layout = this.layout;
 
     const styles = {
       base: css({
@@ -105,6 +105,7 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
       outer: css({
         position: 'relative',
         border: `solid 1px ${this.borderColor}`,
+        backgroundColor: color.format(layout.background),
       }),
       frame: css({
         width: layout.width,

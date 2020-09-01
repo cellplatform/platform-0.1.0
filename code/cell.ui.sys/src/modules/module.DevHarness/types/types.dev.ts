@@ -31,6 +31,7 @@ export type IDevHost = {
 export type IDevHostLayout = {
   width?: number | string;
   height?: number | string;
+  background?: number | string;
   border?: boolean | number;
   cropMarks?: boolean | number;
 };

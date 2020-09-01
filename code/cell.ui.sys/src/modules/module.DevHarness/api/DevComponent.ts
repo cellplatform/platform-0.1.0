@@ -72,16 +72,20 @@ export class DevComponent implements t.IDevComponentBuilder {
   }
 
   public label(value: string) {
-    value = (value || '').trim() || DEFAULT.UNTITLED;
+    value = clean(value) || DEFAULT.UNTITLED;
     return this.treeview((props) => (props.label = value));
   }
 
   public width(value: number | string | undefined) {
-    return this.layout((props) => (props.width = value));
+    return this.layout((props) => (props.width = clean(value)));
   }
 
   public height(value: number | string | undefined) {
-    return this.layout((props) => (props.height = value));
+    return this.layout((props) => (props.height = clean(value)));
+  }
+
+  public background(value: number | string | undefined) {
+    return this.layout((props) => (props.background = clean(value)));
   }
 
   public border(value: number | boolean) {
@@ -150,4 +154,11 @@ export class DevComponent implements t.IDevComponentBuilder {
     this.host((props) => fn(props.component || (props.component = { name: '' })));
     return this;
   }
+}
+
+function clean<T>(input: T) {
+  if (typeof input === 'string') {
+    return (input || '').trim();
+  }
+  return input;
 }
