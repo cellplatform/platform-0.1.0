@@ -2,8 +2,8 @@ import * as React from 'react';
 import { css, CssValue, defaultValue, color } from '../../common';
 
 export type ICropMarksProps = {
-  size?: number;
-  margin?: number;
+  size: number;
+  margin: number;
   color?: string | number;
   style?: CssValue;
 };
@@ -21,7 +21,7 @@ export class CropMarks extends React.PureComponent<ICropMarksProps> {
   }
 
   private get color() {
-    return color.format(defaultValue(this.props.color, 0.3));
+    return color.format(defaultValue(this.props.color, 1));
   }
 
   /**

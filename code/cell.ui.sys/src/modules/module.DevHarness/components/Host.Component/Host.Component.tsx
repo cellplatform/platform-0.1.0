@@ -70,7 +70,7 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
 
   private get borderColor() {
     const border = defaultValue(this.layout.border, true);
-    const value = border === true ? 1 : border === false ? 0 : border;
+    const value = border === true ? 0.3 : border === false ? 0 : border;
     return color.format(value);
   }
 
@@ -80,7 +80,7 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
 
   private get cropMarksColor() {
     const cropMarks = this.cropMarks;
-    const value = cropMarks === true ? 0.3 : cropMarks === false ? 0 : cropMarks;
+    const value = cropMarks === true ? 1 : cropMarks === false ? 0 : cropMarks;
     return color.format(value);
   }
 
@@ -117,7 +117,9 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
           <div {...styles.outer}>
-            {this.cropMarks !== false && <CropMarks color={this.cropMarksColor} />}
+            {this.cropMarks !== false && (
+              <CropMarks color={this.cropMarksColor} margin={6} size={20} />
+            )}
             <ui.ModuleView.Frame
               style={styles.frame}
               bus={this.props.bus}

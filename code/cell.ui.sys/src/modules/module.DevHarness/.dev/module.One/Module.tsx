@@ -12,8 +12,6 @@ export const OneModule: t.SampleOneModuleDef = {
   dev(bus) {
     const dev = Dev(bus, 'Module: One');
 
-    // dev.label('foo');
-
     dev
       .component('Foo')
       .label('one')
