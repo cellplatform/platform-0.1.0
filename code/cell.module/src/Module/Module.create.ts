@@ -47,7 +47,7 @@ function formatModuleNode<T extends P = any>(
   type M = t.IModuleNode<T>;
   const props = (node.props = node.props || {}) as NonNullable<M['props']>;
 
-  props.kind = 'MODULE';
+  props.kind = 'Module';
   props.data = (props.data || defaults.data) as T;
 
   return node as M;

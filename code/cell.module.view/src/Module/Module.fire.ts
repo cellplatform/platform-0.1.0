@@ -107,6 +107,6 @@ export function selection<T extends P>(bus: B, args: t.ModuleFireSelectionArgs) 
 const findModuleAncestor = (query: t.ITreeQuery, startAt: t.ITreeNode<any>) => {
   return query.ancestor(startAt, (e) => {
     const props = (e.node.props || {}) as t.IModuleProps;
-    return props.kind === 'MODULE';
+    return props.kind === 'Module';
   }) as t.IModuleNode<any> | undefined;
 };

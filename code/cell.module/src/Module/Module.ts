@@ -8,7 +8,7 @@ import { register } from './Module.register';
 import { t } from '../common';
 
 export const Module: t.Module = {
-  kind: 'Module',
+  kind: 'ModuleMethods',
 
   /**
    * Tools for working querying a tree.

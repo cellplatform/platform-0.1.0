@@ -14,10 +14,11 @@ export type ModuleArgs<T extends P> = {
 };
 
 /**
- * Static module methods.
+ * Static module methods for working in standard ways against
+ * an [IModule] data instance.
  */
 export type Module = {
-  kind: 'Module';
+  kind: 'ModuleMethods';
 
   create<T extends P>(args?: ModuleArgs<T>): IModule<T>;
   register(bus: B, module: t.IModule, parent?: t.NodeIdentifier): t.ModuleRegistration;
@@ -63,7 +64,7 @@ export type IModuleNode<T extends P> = t.ITreeNode<T>;
  * The way a module is expressed as props within a tree-node.
  */
 export type IModuleProps<D extends O = O> = {
-  kind?: 'MODULE';
+  kind?: 'Module';
   data?: D;
 };
 export type IModulePropsAny = t.IModuleProps<any>;
