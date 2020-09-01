@@ -8,5 +8,5 @@ export type OneModule = t.IModule<OneProps>;
 
 export type SampleOneModuleDef = {
   // init(bus: t.EventBus, parent?: string): OneModule;
-  dev(bus: t.EventBus): t.DevModule;
+  dev(bus: t.EventBus): t.HarnessModule;
 };

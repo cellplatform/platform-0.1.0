@@ -11,7 +11,10 @@ export const TwoModule: t.TwoModuleDef = {
   init(bus, parent) {
     const module = Module.create<P>({
       bus,
-      root: { id: '', props: { treeview: { label: 'Two' }, view: 'DEFAULT', target: 'ROOT' } },
+      root: {
+        id: '',
+        props: { treeview: { label: 'Module Two' }, view: 'DEFAULT', target: 'ROOT' },
+      },
     });
 
     /**

@@ -10,7 +10,7 @@ export const ThreeModule: t.ThreeModuleDef = {
   init(bus) {
     const module = Module.create<P>({
       bus,
-      root: { id: '', props: { treeview: { label: 'Three' }, view: 'DEFAULT' } },
+      root: { id: '', props: { treeview: { label: 'Module Three' }, view: 'DEFAULT' } },
     });
 
     /**
