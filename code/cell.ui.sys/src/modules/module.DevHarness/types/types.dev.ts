@@ -1,27 +1,36 @@
 import { t } from '../common';
 
 /**
- * Dev Module
- * (the module that defines the UI tests)
+ * Identifiying characteristics of a development module.
  */
+export type IComponent = {
+  name: string;
+};
 
-export type DevView = 'HOST/component' | 'HOST/module' | '404';
-export type DevData = { host?: t.DevHost };
-export type DevProps = t.IViewModuleProps<DevData, DevView>;
-export type DevModule = t.IModule<DevProps>;
+export type IDevProps = {
+  treeview: t.ITreeviewNodeProps;
+};
+export type IDevComponentProps = {
+  treeview: t.ITreeviewNodeProps;
+  component: IComponent;
+  layout: IDevHostLayout;
+};
 
 /**
  * The data configuration of a component being hosted.
  */
-export type DevHost = {
-  view?: string;
-  layout?: DevHostLayout;
+export type IDevHost = {
+  view: { component?: string; sidebar?: string };
+  layout?: IDevHostLayout;
+  component?: IComponent;
 };
 
 /**
  * The layout configuration of a component being hosted.
  */
-export type DevHostLayout = {
+export type IDevHostLayout = {
   width?: number | string;
   height?: number | string;
+  border?: boolean | number;
+  cropMarks?: boolean | number;
 };

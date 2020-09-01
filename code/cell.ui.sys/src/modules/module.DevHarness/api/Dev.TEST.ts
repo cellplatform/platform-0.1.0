@@ -36,10 +36,41 @@ describe('Dev (API)', () => {
   });
 
   describe('DevComponent', () => {
+    describe('name', () => {
+      it('name', () => {
+        const dev = Dev(bus);
+        const res = dev.component('  Foo  ');
+        expect(res.props.component.name).to.eql('Foo');
+      });
+
+      it('retrieves existing component (by name)', () => {
+        const dev = Dev(bus);
+        const res1 = dev.component('Foo');
+        const res2 = dev.component('  Foo  ');
+        expect(res1).to.equal(res2);
+
+        res2.name('Bar  ');
+        const res3 = dev.component('  Bar');
+        expect(res1).to.equal(res3);
+      });
+
+      it('throw: Invalid name (typename)', () => {
+        const dev = Dev(bus);
+        const expectThrow = (name: any) => {
+          expect(() => dev.component(name)).to.throw(/Invalid component name/);
+        };
+        expectThrow('');
+        expectThrow(' ');
+        expectThrow('1Hello');
+        expectThrow('harry');
+        expectThrow('Foo Bar');
+      });
+    });
+
     it('label', () => {
       const dev = Dev(bus);
       const res = dev.component('Foo');
-      expect(res.props.treeview?.label).to.eql('Foo');
+      expect(res.props.treeview?.label).to.eql('Foo'); // NB: Defaults to component "name".
       res.label('Bar').label('Baz');
       expect(res.props.treeview?.label).to.eql('Baz');
     });
@@ -47,31 +78,31 @@ describe('Dev (API)', () => {
     it('width', () => {
       const dev = Dev(bus);
       const res = dev.component('Foo');
-      expect(res.props.data?.host?.layout?.width).to.eql(undefined);
+      expect(res.props.layout?.width).to.eql(undefined);
 
       res.width(123);
-      expect(res.props.data?.host?.layout?.width).to.eql(123);
+      expect(res.props.layout.width).to.eql(123);
 
       res.width('80%');
-      expect(res.props.data?.host?.layout?.width).to.eql('80%');
+      expect(res.props.layout.width).to.eql('80%');
 
       res.width(undefined);
-      expect(res.props.data?.host?.layout?.width).to.eql(undefined);
+      expect(res.props.layout.width).to.eql(undefined);
     });
 
     it('height', () => {
       const dev = Dev(bus);
       const res = dev.component('Foo');
-      expect(res.props.data?.host?.layout?.height).to.eql(undefined);
+      expect(res.props.layout.height).to.eql(undefined);
 
       res.height(123);
-      expect(res.props.data?.host?.layout?.height).to.eql(123);
+      expect(res.props.layout.height).to.eql(123);
 
       res.height('80%');
-      expect(res.props.data?.host?.layout?.height).to.eql('80%');
+      expect(res.props.layout.height).to.eql('80%');
 
       res.height(undefined);
-      expect(res.props.data?.host?.layout?.height).to.eql(undefined);
+      expect(res.props.layout.height).to.eql(undefined);
     });
   });
 });
