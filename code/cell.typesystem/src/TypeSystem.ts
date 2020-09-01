@@ -1,6 +1,6 @@
 import { TypeBuilder } from './TypeSystem.builder';
 import { TypeCache } from './TypeSystem.cache';
-import { TypeClient, TypeDefault, TypeTarget, TypeValue } from './TypeSystem.core';
+import { TypeClient, TypeDefault, TypeTarget, TypeValue, TypeScript } from './TypeSystem.core';
 import { fetcher } from './TypeSystem.fetch';
 import { ChangeMonitor, TypedSheet, SheetPool } from './TypeSystem.sheet';
 import { objectToCells } from './util';
@@ -21,4 +21,5 @@ export class TypeSystem {
   public static objectToCells = objectToCells;
   public static def = TypeBuilder.create;
   public static typescript = TypeClient.typescript;
+  public static TypeScript = TypeScript;
 }
