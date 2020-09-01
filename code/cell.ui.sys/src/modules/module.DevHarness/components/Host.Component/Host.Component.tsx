@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Subject, merge } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
-import { color, css, CssValue, t, Module, ui } from '../../common';
+import { defaultValue, color, css, CssValue, t, Module, ui } from '../../common';
+import { CropMarks } from './CropMarks';
 
 type E = t.HarnessEvent;
 type P = t.HarnessProps;
@@ -12,7 +13,7 @@ export type IHostComponentProps = {
   isDraggable?: boolean;
   style?: CssValue;
 };
-export type IHostComponentState = { host?: t.DevHost };
+export type IHostComponentState = { host?: t.IDevHost };
 
 export class HostComponent extends React.PureComponent<IHostComponentProps, IHostComponentState> {
   public state: IHostComponentState = {};
@@ -40,7 +41,7 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
     events.changed$
       .pipe(
         filter((e) => e.change.to.id === harness.id),
-        filter((e) => !this.host?.view),
+        filter((e) => !this.host?.view.component),
       )
       .subscribe((e) => {
         fire.render({ module: harness, view: '404' });
@@ -55,16 +56,32 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
   /**
    * [Properties]
    */
-  public get harness() {
+  private get harness() {
     return this.props.harness;
   }
 
-  public get host() {
-    return this.state.host || {};
+  private get host() {
+    return this.state.host || { view: {} };
   }
 
-  public get layout() {
+  private get layout() {
     return this.host.layout || {};
+  }
+
+  private get borderColor() {
+    const border = defaultValue(this.layout.border, true);
+    const value = border === true ? 1 : border === false ? 0 : border;
+    return color.format(value);
+  }
+
+  private get cropMarks() {
+    return defaultValue(this.layout.cropMarks, true);
+  }
+
+  private get cropMarksColor() {
+    const cropMarks = this.cropMarks;
+    const value = cropMarks === true ? 0.3 : cropMarks === false ? 0 : cropMarks;
+    return color.format(value);
   }
 
   /**
@@ -72,6 +89,7 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
    */
   public render() {
     const layout = this.layout;
+    const main: t.HarnessTarget = 'Main';
 
     const styles = {
       base: css({
@@ -84,23 +102,31 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
         Absolute: 0,
         Flex: 'center-center',
       }),
+      outer: css({
+        position: 'relative',
+        border: `solid 1px ${this.borderColor}`,
+      }),
       frame: css({
-        border: `solid 1px ${color.format(1)}`,
         width: layout.width,
         height: layout.height,
         WebkitAppRegion: 'none',
       }),
     };
+
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
-          <ui.ModuleView.Frame
-            bus={this.props.bus}
-            filter={this.viewFilter}
-            debug={true}
-            onBeforeRender={this.beforeRender}
-            style={styles.frame}
-          />
+          <div {...styles.outer}>
+            {this.cropMarks !== false && <CropMarks color={this.cropMarksColor} />}
+            <ui.ModuleView.Frame
+              style={styles.frame}
+              bus={this.props.bus}
+              filter={this.viewFilter}
+              target={main}
+              debug={true}
+              onBeforeRender={this.beforeRender}
+            />
+          </div>
         </div>
       </div>
     );
@@ -109,24 +135,21 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
   /**
    * Handlers
    */
-  private viewFilter: t.ModuleFilterView = (e) => {
-    if (e.module === this.harness.id) {
-      // NB: Ignore the UIHarness module itself.
-      //     We are looking for "dev" components hosted within the harness.
-      return false;
-    }
-
-    // Finish up.
-    return true;
+  private viewFilter: t.ModuleFilterView<t.HarnessView, t.HarnessTarget> = (e) => {
+    // NB: Ignore the UIHarness module itself.
+    //     We are looking for "dev" components hosted within the harness.
+    return e.module !== this.harness.id;
   };
 
   /**
-   * Before a component renders, capture configruation details
-   * stored for the component on it's module node.
+   * Before a component renders, capture the configruation
+   * details stored about the component on it's module node.
    */
   private beforeRender = (e: t.IModuleRendered<any>) => {
     const module = this.harness.find((child) => child.id === e.module);
-    const node = module?.query.find((item) => item.node.props?.data?.host?.view === e.view);
+    const node = module?.query.find(
+      (item) => item.node.props?.data?.host?.view.component === e.view,
+    );
     const host = node?.props?.data?.host;
     this.state$.next({ host });
   };
