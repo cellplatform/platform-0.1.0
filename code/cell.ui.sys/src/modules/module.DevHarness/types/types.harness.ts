@@ -1,9 +1,7 @@
 import { t } from '../common';
 import { ILayoutProps } from '../components/Layout';
-import { IWindowProps } from '../components/Window';
 
 export type HarnessDef = {
-  Window: (props?: IWindowProps) => JSX.Element;
   Layout: (props?: ILayoutProps) => JSX.Element;
   module(bus: t.EventBus): HarnessModule;
   dev: t.DevFactory;

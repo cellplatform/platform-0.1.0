@@ -9,12 +9,9 @@ type P = t.HarnessProps;
  */
 export function selectionStrategy(args: { harness: t.HarnessModule; bus: t.EventBus<E> }) {
   const { harness, bus } = args;
-  const fire = Module.fire(bus);
 
   const match: t.ModuleFilterEvent = (e) => harness.contains(e.module);
   const events = Module.events<P>(Module.filter(bus.event$, match), harness.dispose$);
-
-  const renderHarness = (view: t.HarnessView) => fire.render({ module: harness, view });
 
   /**
    * HANDLE: selection change in UIHarness tree.
@@ -23,28 +20,17 @@ export function selectionStrategy(args: { harness: t.HarnessModule; bus: t.Event
     const { module, data } = e;
     const host = data.host;
 
-    console.group('🌳 ');
-    console.log('host', host);
-    console.log('module', module);
-    console.log('data', data);
-    console.groupEnd();
-
-    if (host) {
-      renderHarness('HOST/component');
-      fire.render({ module, data, view: host.view });
-    } else {
-      renderHarness('HOST/module');
-      const res = fire.render({ module, data, view: e.view });
-      if (!res) {
-        renderHarness('404');
-      }
-    }
-
-    // Store the selected UIHarness `host` configuration.
+    // Store the selected harness `host` configuration.
     harness.change((draft) => {
       const props = draft.props || (draft.props = {});
       const data = props.data || (props.data = {});
       data.host = host;
+    });
+
+    // Initiate the render process.
+    bus.fire({
+      type: 'Harness/render',
+      payload: { module, harness: harness.id, view: e.view },
     });
   });
 }
