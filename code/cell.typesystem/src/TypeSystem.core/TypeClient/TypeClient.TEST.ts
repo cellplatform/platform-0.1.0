@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import { TypeClient } from '.';
 import { t, TypeSystem, ERROR, expect, fs, stub, TYPE_DEFS } from '../../test';
 
@@ -515,6 +517,7 @@ describe('TypeClient', () => {
           },
         };
 
+        // @ts-ignore
         delete defs['ns:foo.1'].columns;
 
         const fetch = stub.fetch({ defs });
@@ -540,6 +543,7 @@ describe('TypeClient', () => {
 
         const A = defs['ns:foo'].columns.A;
 
+        // @ts-ignore
         delete A.props.def.type;
         expect(defs['ns:foo'].columns.A.props.def.type).to.eql(undefined);
 

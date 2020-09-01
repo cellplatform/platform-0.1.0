@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console, @typescript-eslint/ban-ts-comment */
 
 import { t, expect, http, createMock, stripHashes, post, constants } from '../../test';
 import { testPostFile } from './file.TEST';
@@ -168,7 +168,10 @@ describe('ns:', function () {
 
         // Prepare a subset of the return data to compare with expected result-set.
         const json = (res.json as t.IResGetNs).data;
+
+        // @ts-ignore
         delete json.ns;
+
         stripHashes(json); // NB: Ignore calculated hash values for the purposes of this test.
         expect(json).to.eql(expected);
       };

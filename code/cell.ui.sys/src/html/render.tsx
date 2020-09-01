@@ -1,10 +1,9 @@
 import * as React from 'react';
 
 import { AppBuilder } from '../components/AppBuilder';
-import { Debug } from '../components/Debug';
 import { Test as ModuleView } from '../components.dev/ModuleView.dev/Test';
 import { Root } from '../components/Root';
-import { HarnessModule } from '../components.dev/ModuleView.dev/module.Harness';
+import { Harness } from '../modules/module.DevHarness';
 
 export function render(entry: string) {
   switch (entry) {
@@ -17,8 +16,8 @@ export function render(entry: string) {
 
     case 'entry:harness':
       return (
-        <Root title={'ui.harness'} theme={'WHITE'}>
-          <HarnessModule.Main />
+        <Root title={'dev.harness'} theme={'WHITE'}>
+          <Harness.Layout />
         </Root>
       );
 

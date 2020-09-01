@@ -7,6 +7,8 @@ import { t } from '../common';
 import { context } from '../context';
 import { render } from './render';
 
+import * as HARNESS from '../modules/module.DevHarness/.dev/SAMPLE';
+
 (async () => {
   const win = (window as unknown) as t.ITopWindow;
   const { Provider, ctx } = await context.create({ env: win.env });
@@ -16,4 +18,12 @@ import { render } from './render';
   const root = <Provider>{el}</Provider>;
 
   ReactDOM.render(root, document.getElementById('root'));
+
+  /**
+   * TODO 🐷
+   * - temp / remove
+   */
+  if (entry === 'entry:harness') {
+    HARNESS.sampleInit(ctx.bus.type());
+  }
 })();

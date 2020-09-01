@@ -21,7 +21,12 @@ describe('Site', () => {
 
   it('throws when no name', async () => {
     const def = await testManifestDef();
+
+    /* eslint-disable */
+    // @ts-ignore
     delete def.sites[0].name;
+    /* eslint-enable */
+
     const manifest = Manifest.create({ def, baseUrl });
 
     const fn = () => manifest.site.byHost('localhost');

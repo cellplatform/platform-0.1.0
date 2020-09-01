@@ -20,8 +20,8 @@ export async function define(ctx: t.IContext) {
       devTools: false,
       width: 1200,
       height: 700,
-      minHeight: 300,
-      minWidth: 150,
+      minHeight: 200,
+      minWidth: 520,
     },
   });
 }

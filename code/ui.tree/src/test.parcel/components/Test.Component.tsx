@@ -61,6 +61,14 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
       e.render(Icons[e.icon]);
     });
 
+    tree.beforeRender.header$.subscribe((e) => {
+      e.change((draft) => {
+        // const header = draft.header || (draft.header = {});
+        // draft.header;
+        // draft.label = 'foo';
+      });
+    });
+
     tree.render.header$.pipe(filter((e) => e.node.id === 'root.3')).subscribe((e) => {
       const el = (
         <Foo style={{ flex: 1, lineHeight: '1.6em', MarginX: 2, marginTop: 2 }}>

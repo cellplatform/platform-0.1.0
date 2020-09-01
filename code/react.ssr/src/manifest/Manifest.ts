@@ -251,13 +251,13 @@ export class Manifest {
   public async save(path: string, options: { minimal?: boolean } = {}) {
     // Prepare content.
     const def = { ...this.def };
+    const fields: (keyof t.ISiteManifest)[] = ['files', 'entries', 'baseUrl', 'size', 'bytes'];
+
     if (defaultValue(options.minimal, true)) {
       def.sites.forEach((site) => {
-        delete site.files;
-        delete site.entries;
-        delete site.baseUrl;
-        delete site.size;
-        delete site.bytes;
+        fields.forEach((field) => {
+          delete site[field];
+        });
       });
     }
 

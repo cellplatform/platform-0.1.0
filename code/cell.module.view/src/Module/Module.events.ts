@@ -13,7 +13,6 @@ export function events<T extends P>(
   until$?: Observable<any>,
 ): t.IViewModuleEvents<T> {
   const events = Module.events<T>(subject, until$);
-  // const dispose$ = dis
   const $ = events.$;
 
   const selection$ = rx.payload<t.IModuleSelectionEvent<T>>($, 'Module/ui/selection').pipe(share());

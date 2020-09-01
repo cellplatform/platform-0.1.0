@@ -5,7 +5,7 @@ import { PropListItem } from './PropList.Item';
 
 export type IPropListProps = {
   title?: string;
-  items?: (t.IPropListItem | undefined)[];
+  items?: (t.IPropListItem | undefined)[] | Record<string, unknown>;
   style?: CssValue;
 };
 
@@ -25,10 +25,29 @@ export class PropList extends React.PureComponent<IPropListProps> {
   };
 
   /**
+   * [Properties]
+   */
+  private get items() {
+    const { items } = this.props;
+
+    if (Array.isArray(items)) {
+      return items;
+    }
+
+    if (typeof items === 'object') {
+      return Object.keys(items).map((key) => {
+        const item: t.IPropListItem = { label: key, value: toRenderValue(items[key]) };
+        return item;
+      });
+    }
+
+    return [];
+  }
+
+  /**
    * [Render]
    */
   public render() {
-    const { items = [] } = this.props;
     const styles = {
       base: css({
         position: 'relative',
@@ -40,6 +59,8 @@ export class PropList extends React.PureComponent<IPropListProps> {
         marginBottom: 5,
       }),
     };
+
+    const items = this.items;
 
     const elItems = items
       .filter((item) => Boolean(item))
@@ -58,4 +79,35 @@ export class PropList extends React.PureComponent<IPropListProps> {
       </div>
     );
   }
+}
+
+/**
+ * [Helpers]
+ */
+
+function toRenderValue(input: any) {
+  if (input === null) {
+    return null;
+  }
+  if (input === undefined) {
+    return undefined;
+  }
+
+  /**
+   * TODO 🐷
+   * Expand this out to be more nuanced in display value types
+   * eg, color-coding, spans etc:
+   *  - {object}
+   *  - [Array]
+   */
+
+  if (Array.isArray(input)) {
+    return `[Array](${input.length})`;
+  }
+
+  if (typeof input === 'object') {
+    return `{object}`;
+  }
+
+  return input.toString();
 }

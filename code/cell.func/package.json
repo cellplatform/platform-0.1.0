@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.func",
-  "version": "0.1.208",
+  "version": "0.1.210",
   "description": "System for cell (eg. 'A1') function execution.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,16 +14,16 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cache": "0.2.33",
-    "@platform/cell.coord": "0.8.164",
-    "@platform/cell.types": "0.4.143",
-    "@platform/cell.value": "0.2.118",
+    "@platform/cache": "0.2.35",
+    "@platform/cell.coord": "0.8.166",
+    "@platform/cell.types": "0.4.145",
+    "@platform/cell.value": "0.2.120",
     "@platform/libs": "0.2.2",
-    "@platform/util.value": "0.7.30"
+    "@platform/util.value": "0.7.32"
   },
   "devDependencies": {
-    "@platform/test": "0.1.14",
-    "@platform/ts": "3.9.5"
+    "@platform/test": "0.1.15",
+    "@platform/ts": "4.0.0"
   },
   "files": [
     "lib",

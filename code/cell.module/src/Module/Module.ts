@@ -3,11 +3,12 @@ import { TreeQuery } from '@platform/state/lib/TreeQuery';
 
 import { create } from './Module.create';
 import * as events from './Module.events';
-import { fire, register } from './Module.fire';
+import { fire } from './Module.fire';
+import { register } from './Module.register';
 import { t } from '../common';
 
 export const Module: t.Module = {
-  kind: 'Module',
+  kind: 'ModuleMethods',
 
   /**
    * Tools for working querying a tree.

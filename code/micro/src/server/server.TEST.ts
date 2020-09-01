@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import { micro } from '..';
 import { expect, FormData, fs, http, mockServer, randomPort, t, time } from '../test';
 
@@ -121,6 +123,7 @@ describe('micro (server)', () => {
         await mock.dispose();
 
         if (query) {
+          // @ts-ignore
           delete query.toString; // NB: Hack, remove the [toString] method for simpler test comparison.
         }
         expect(query).to.eql(expected);
@@ -248,6 +251,7 @@ describe('micro (server)', () => {
 
     expect(queries.length).to.eql(4);
 
+    // @ts-ignore
     queries.forEach((q) => delete q.toString); // NB: Hack, remove the [toString] method for simpler test comparison.
 
     expect(queries[0]).to.eql({});

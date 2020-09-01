@@ -2,7 +2,6 @@ import { t } from './common';
 
 type N = t.ITreeviewNode;
 
-
 /**
  * Node Path
  */

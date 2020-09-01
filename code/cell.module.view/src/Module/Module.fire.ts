@@ -25,9 +25,10 @@ export function render<T extends P>(
   bus: B,
   args: t.ModuleFireRenderArgs<T>,
 ): t.ModuleFireRenderResponse {
-  const { selected, data = {} } = args;
-  const view = args.view as NonNullable<T['view']>;
+  const { data = {} } = args;
   const module = typeof args.module === 'string' ? args.module : args.module.id;
+  const view = args.view as NonNullable<T['view']>;
+  const target = args.target;
 
   let el: t.ModuleFireRenderResponse;
   if (!view) {
@@ -36,9 +37,9 @@ export function render<T extends P>(
 
   const payload: t.IModuleRender<T> = {
     module,
-    selected,
     data,
     view,
+    target,
     render(input) {
       el = input;
       payload.handled = true;
@@ -54,12 +55,12 @@ export function render<T extends P>(
   if (el !== undefined) {
     bus.fire({
       type: 'Module/ui/rendered',
-      payload: { module, view, el },
+      payload: { module, view, target, el },
     });
   } else if (args.notFound) {
     // View not rendered by any listeners.
     // If a fallback was given request that to be rendered instead.
-    el = render<T>(bus, { module, selected, data, view: args.notFound }); // <== RECURSION 🌳
+    el = render<T>(bus, { module, data, view: args.notFound }); // <== RECURSION 🌳
   }
 
   return el;
@@ -106,6 +107,6 @@ export function selection<T extends P>(bus: B, args: t.ModuleFireSelectionArgs) 
 const findModuleAncestor = (query: t.ITreeQuery, startAt: t.ITreeNode<any>) => {
   return query.ancestor(startAt, (e) => {
     const props = (e.node.props || {}) as t.IModuleProps;
-    return props.kind === 'MODULE';
+    return props.kind === 'Module';
   }) as t.IModuleNode<any> | undefined;
 };

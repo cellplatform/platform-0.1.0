@@ -69,7 +69,7 @@ export class NedbStore<G = any> implements t.INedbStore<G> {
       if (this.isFileLoaded || !this.filename) {
         return resolve();
       }
-      this.store.loadDatabase(err => {
+      this.store.loadDatabase((err) => {
         if (err) {
           reject(err);
         } else {

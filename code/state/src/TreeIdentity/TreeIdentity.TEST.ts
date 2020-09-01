@@ -4,7 +4,7 @@ import { expect } from '../test';
 type S = string | undefined;
 const Identity = TreeIdentity;
 
-describe('TreeIdentity', () => {
+describe.only('TreeIdentity', () => {
   it('format( namespace, key )', () => {
     const test = (namespace: S, key: S, expected: string) => {
       const res = Identity.format(namespace, key);
@@ -92,5 +92,16 @@ describe('TreeIdentity', () => {
     test('  foo  ', 'foo');
     test('tree-foo:bar', 'bar');
     test('ns:foo:A1:node', 'node');
+  });
+
+  it('cuid', () => {
+    const cuid = Identity.cuid();
+    expect(cuid.length).to.greaterThan(20);
+  });
+
+  it('slug', () => {
+    const slug = Identity.slug();
+    expect(slug.length).to.greaterThan(5);
+    expect(slug.length).to.lessThan(10);
   });
 });

@@ -15,21 +15,19 @@ type Target = t.TreeViewMouseTarget;
 export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
   public static create<T extends N = N>(
     event$: Observable<E>,
-    dispose$?: Observable<any>,
+    until$?: Observable<any>,
   ): t.ITreeEvents<T> {
-    return new TreeEvents<T>(event$, dispose$);
+    return new TreeEvents<T>(event$, until$);
   }
 
   /**
    * [Lifecycle]
    */
-  private constructor(event$: Observable<E>, dispose$?: Observable<any>) {
+  private constructor(event$: Observable<E>, until$?: Observable<any>) {
     this.$ = event$.pipe(takeUntil(this.dispose$));
-
     this.keyboard$ = rx.payload<t.ITreeviewKeyboardEvent>(this.$, 'TREEVIEW/keyboard');
-
-    if (dispose$) {
-      dispose$.subscribe(() => this.dispose());
+    if (until$) {
+      until$.subscribe(() => this.dispose());
     }
   }
 
@@ -44,8 +42,8 @@ export class TreeEvents<T extends N = N> implements t.ITreeEvents<T> {
   private _render: t.ITreeRenderEvents<T>;
   private _beforeRender: t.ITreeBeforeRenderEvents<T>;
 
-  public readonly keyboard$: Observable<t.ITreeviewKeyboard>;
   public readonly $: Observable<E>;
+  public readonly keyboard$: Observable<t.ITreeviewKeyboard>;
 
   private readonly _dispose$ = new Subject<void>();
   public readonly dispose$ = this._dispose$.pipe(share());

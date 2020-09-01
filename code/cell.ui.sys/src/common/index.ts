@@ -25,8 +25,8 @@ export { css, color, CssValue };
 import { coord } from '@platform/cell.coord';
 export { coord };
 
-import { equals } from 'ramda';
-export const R = { equals };
+import { equals, clone } from 'ramda';
+export const R = { equals, clone };
 
 import { rx, time, defaultValue, id, dispose } from '@platform/util.value';
 export { rx, time, defaultValue, id, dispose };

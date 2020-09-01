@@ -14,13 +14,14 @@ export type ModuleArgs<T extends P> = {
 };
 
 /**
- * Static module methods.
+ * Static module methods for working in standard ways against
+ * an [IModule] data instance.
  */
 export type Module = {
-  kind: 'Module';
+  kind: 'ModuleMethods';
 
   create<T extends P>(args?: ModuleArgs<T>): IModule<T>;
-  register(bus: B, module: t.IModule, parent?: string): t.ModuleRegistration;
+  register(bus: B, module: t.IModule, parent?: t.NodeIdentifier): t.ModuleRegistration;
 
   Identity: t.TreeIdentity;
   Query: t.TreeQuery;
@@ -63,7 +64,7 @@ export type IModuleNode<T extends P> = t.ITreeNode<T>;
  * The way a module is expressed as props within a tree-node.
  */
 export type IModuleProps<D extends O = O> = {
-  kind?: 'MODULE';
+  kind?: 'Module';
   data?: D;
 };
 export type IModulePropsAny = t.IModuleProps<any>;
@@ -87,11 +88,10 @@ export type ModuleFilterEventArgs<T extends E = E> = ModuleFilterArgs & {
  * Event Bus (fire).
  */
 export type IModuleFire<T extends P> = {
-  register(module: t.IModule<any>, parent?: string): t.ModuleRegistration;
-  request<T extends P>(id: string): t.ModuleRequestResponse<T>;
+  register(module: t.IModule<any>, parent?: t.NodeIdentifier): t.ModuleRegistration;
+  request<T extends P>(id: string | t.NodeIdentifier): t.IModule<T> | undefined;
+  find<T extends P>(args?: t.IModuleFindArgs): t.IModule<T>[];
 };
-
-export type ModuleRequestResponse<T extends P = AnyProps> = { module?: t.IModule<T> };
 
 /**
  * Event helpers
@@ -117,7 +117,8 @@ export type ModuleEvent =
   | IModuleChildDisposedEvent
   | IModuleChangedEvent
   | IModulePatchedEvent
-  | IModuleRequestEvent;
+  | IModuleRequestEvent
+  | IModuleFindEvent;
 
 export type IModuleRegisterEvent = {
   type: 'Module/register';
@@ -168,5 +169,20 @@ export type IModuleRequestEvent = {
 export type IModuleRequest = {
   module: string;
   handled: boolean;
-  respond<T extends P = AnyProps>(args: { module: t.IModule<T> }): void;
+  respond<T extends P>(module: t.IModule<T>): void;
+};
+
+export type IModuleFindEvent = {
+  type: 'Module/find';
+  payload: IModuleFind;
+};
+export type IModuleFind = IModuleFindArgs & {
+  module: string | '*'; // Wildcard ("*" or empty) includes all modules, otherwise matches will be filtered as children of the given module-id.
+  respond<T extends P>(module: t.IModule<T>): void;
+};
+export type IModuleFindArgs = {
+  module?: string | '*'; // Wildcard ("*" or empty) includes all modules, otherwise matches will be filtered as children of the given module-id.
+  key?: string;
+  namespace?: string;
+  data?: Record<string, string | number | boolean>;
 };

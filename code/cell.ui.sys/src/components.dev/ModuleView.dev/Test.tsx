@@ -3,11 +3,10 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Icons } from '../../components/primitives';
+import { FinderModule } from '../module.Finder';
 import { css, CssValue, ui, t } from './common';
 import { ComponentFrame } from './ComponentFrame';
-import { FinderModule } from './module.Finder';
-import { SampleModule } from './module.Sample';
-import { TmplModule } from './module.Tmpl';
+import { SampleModule } from '../module.Sample';
 
 const { ModuleView } = ui;
 
@@ -55,7 +54,6 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
      */
     const main = SampleModule.init(bus);
     FinderModule.init(bus);
-    TmplModule.init(bus);
 
     this.state$.next({ main });
 

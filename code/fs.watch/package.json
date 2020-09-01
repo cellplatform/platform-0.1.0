@@ -1,6 +1,6 @@
 {
   "name": "@platform/fs.watch",
-  "version": "0.2.45",
+  "version": "0.2.47",
   "description": "An observable based file-system watcher.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -18,9 +18,9 @@
     "chokidar": "3.4.0"
   },
   "devDependencies": {
-    "@platform/fs": "0.5.19",
-    "@platform/test": "0.1.14",
-    "@platform/ts": "3.9.5"
+    "@platform/fs": "0.5.20",
+    "@platform/test": "0.1.15",
+    "@platform/ts": "4.0.0"
   },
   "files": [
     "lib",

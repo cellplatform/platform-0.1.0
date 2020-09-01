@@ -10,6 +10,6 @@ export class Tree {
   public static Columns = TreeviewColumns;
   public static State = TreeViewState;
   public static Strategy = TreeviewStrategy;
-  public static events = TreeEvents;
+  public static Events = TreeEvents;
   public static util = TreeUtil;
 }

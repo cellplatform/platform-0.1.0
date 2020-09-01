@@ -1,11 +1,10 @@
 import { TreeState } from '@platform/state';
-import { wildcard } from '@platform/util.string/lib/wildcard';
-import { rx } from '@platform/util.value';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
 import { isModuleEvent } from './Module.events';
-import { fire } from './Module.fire';
+import * as get from './Module.get';
+import * as register from './Module.register';
 
 type P = t.IModuleProps;
 
@@ -18,32 +17,11 @@ export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
 
   // Create the tree-node module.
   const module = TreeState.create({ root }) as t.IModule<T>;
+
+  // Manage events around this module.
   monitorAndDispatch(bus, module);
-
-  // Listen for request events, and lookup to see if
-  // the module can be resolved within the child set.
-  rx.payload<t.IModuleRequestEvent>(bus.event$, 'Module/request')
-    .pipe(
-      filter((e) => !e.handled),
-      filter((e) => wildcard.isMatch(module.id, e.module)),
-    )
-    .subscribe((e) => e.respond({ module }));
-
-  /**
-   * Catch requests from children to register within this module.
-   */
-  rx.payload<t.IModuleRegisterEvent>(bus.event$, 'Module/register')
-    .pipe(
-      filter((e) => e.module !== module.id),
-      filter((e) => e.parent === module.id),
-    )
-    .subscribe((e) => {
-      const parent = module as t.IModule;
-      const child = fire(bus).request(e.module).module;
-      if (child) {
-        registerChild({ bus, parent, child });
-      }
-    });
+  get.listen(bus, module);
+  register.listen(bus, module);
 
   // Finish up.
   return module;
@@ -53,24 +31,6 @@ export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
  * [Helpers]
  */
 
-function registerChild(args: { bus: t.EventBus<any>; parent: t.IModule; child: t.IModule }) {
-  const { bus, parent, child } = args;
-  parent.add(child);
-
-  bus.fire({
-    type: 'Module/child/registered',
-    payload: { module: parent.id, child: child.id },
-  });
-
-  // Alert listeners when disposed.
-  child.dispose$.subscribe((e) => {
-    bus.fire({
-      type: 'Module/child/disposed',
-      payload: { module: parent.id, child: child.id },
-    });
-  });
-}
-
 /**
  * Prepare a tree-node to represent the root of a MODULE.
  */
@@ -78,7 +38,6 @@ function formatModuleNode<T extends P = any>(
   input: t.ITreeNode | string,
   defaults: { data?: T['data']; id?: string } = {},
 ) {
-  const { data = {} } = defaults;
   let node = typeof input === 'string' ? { id: input } : { ...input };
 
   if (!(node.id || '').trim()) {
@@ -88,8 +47,8 @@ function formatModuleNode<T extends P = any>(
   type M = t.IModuleNode<T>;
   const props = (node.props = node.props || {}) as NonNullable<M['props']>;
 
-  props.kind = 'MODULE';
-  props.data = (props.data || data) as T;
+  props.kind = 'Module';
+  props.data = (props.data || defaults.data) as T;
 
   return node as M;
 }
@@ -103,7 +62,7 @@ function monitorAndDispatch<T extends P>(bus: t.EventBus<t.ModuleEvent>, module:
   const event$ = bus.event$.pipe(takeUntil(until$));
 
   /**
-   * Bubble module events through the StateObject's internal dispatch.
+   * Bubble module change events.
    */
   event$
     .pipe(
@@ -117,14 +76,14 @@ function monitorAndDispatch<T extends P>(bus: t.EventBus<t.ModuleEvent>, module:
   const objPatched$ = module.event.patched$.pipe(takeUntil(until$));
 
   objChanged$.subscribe((change) => {
-    module.dispatch({
+    bus.fire({
       type: 'Module/changed',
       payload: { module: id, change },
     });
   });
 
   objPatched$.subscribe((patch) => {
-    module.dispatch({
+    bus.fire({
       type: 'Module/patched',
       payload: { module: id, patch },
     });

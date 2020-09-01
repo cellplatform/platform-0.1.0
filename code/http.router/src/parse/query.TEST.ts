@@ -7,7 +7,11 @@ describe('query-string', () => {
       const res = Router.query({ path });
 
       expect(res.toString).to.be.an.instanceof(Function);
+
+      /* eslint-disable */
+      // @ts-ignore
       delete res.toString; // NB: Hack, remove the [toString] method for simpler test comparison.
+      /* eslint-enable */
 
       expect(res).to.eql(expected);
     };

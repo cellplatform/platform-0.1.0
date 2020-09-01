@@ -3,13 +3,17 @@ import { Subject } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 import { rx, css, CssValue, t } from '../../common';
 import { Module } from '../../Module';
+import { DebugHeader } from './Frame.DebugHeader';
 
 export type IModuleViewFrameProps = {
   bus: t.EventBus<any>;
-  filter?: t.ModuleFilterView<any>;
+  filter?: t.ModuleFilterView<any, any>;
+  target?: string; // Optional "view target" to apply as an additional filter before rendering.
+  debug?: boolean;
   style?: CssValue;
+  onBeforeRender?: (e: t.IModuleRendered<any>) => void;
 };
-export type IModuleViewFrameState = { el?: JSX.Element | null };
+export type IModuleViewFrameState = { rendered?: t.IModuleRendered<any> };
 
 export class ModuleViewFrame extends React.PureComponent<
   IModuleViewFrameProps,
@@ -22,19 +26,34 @@ export class ModuleViewFrame extends React.PureComponent<
   /**
    * [Lifecycle]
    */
-
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const event$ = this.props.bus.event$.pipe(takeUntil(this.unmounted$));
 
     rx.payload<t.IModuleRenderedEvent>(event$, 'Module/ui/rendered')
-      .pipe(filter((e) => this.filter(e.module, e.view)))
-      .subscribe(({ el }) => this.state$.next({ el }));
+      .pipe(
+        filter((e) => (this.target ? this.target === e.target : true)),
+        filter((e) => this.filterOn(e.module, e.view, e.target)),
+      )
+      .subscribe((e) => {
+        const { onBeforeRender } = this.props;
+        if (onBeforeRender) {
+          onBeforeRender(e);
+        }
+        this.state$.next({ rendered: e });
+      });
   }
 
   public componentWillUnmount() {
     this.unmounted$.next();
     this.unmounted$.complete();
+  }
+
+  /**
+   * [Properties]
+   */
+  public get target() {
+    return this.props.target;
   }
 
   /**
@@ -48,20 +67,29 @@ export class ModuleViewFrame extends React.PureComponent<
         boxSizing: 'border-box',
       }),
     };
-    return <div {...css(styles.base, this.props.style)}>{this.state.el}</div>;
+
+    const { rendered } = this.state;
+    const elDebug = rendered?.el && this.props.debug && <DebugHeader rendered={rendered} />;
+
+    return (
+      <div {...css(styles.base, this.props.style)}>
+        {rendered?.el}
+        {elDebug}
+      </div>
+    );
   }
 
   /**
    * [Helpers]
    */
 
-  private filter = (module: string, view: string) => {
+  private filterOn = (module: string, view: string, target?: string) => {
     const { filter } = this.props;
     if (!filter) {
       return true;
     } else {
       const { namespace, key } = Module.Identity.parse(module);
-      return filter({ module, namespace, key, view });
+      return filter({ module, namespace, key, view, target });
     }
   };
 }

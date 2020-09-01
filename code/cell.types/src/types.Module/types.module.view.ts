@@ -5,7 +5,7 @@ type B = t.EventBus<any>;
 type S = string;
 type O = Record<string, unknown>;
 type P = t.IViewModuleProps;
-type AnyProps = t.IModulePropsAny;
+type AnyProps = t.IViewModulePropsAny;
 
 export type ViewModuleArgs<T extends P> = t.ModuleArgs<T> & {
   view?: T['view'];
@@ -41,17 +41,26 @@ export type ViewModule = {
  * TreeNode Properties
  * The way a UI module is expressed as props within a tree-node.
  */
-export type IViewModuleProps<D extends O = O, V extends S = S> = t.IModuleProps<D> & {
+export type IViewModuleProps<D extends O = O, V extends S = S, T extends S = S> = t.IModuleProps<
+  D
+> & {
   view?: V;
+  target?: T;
   treeview?: ITreeviewNodeProps;
 };
+export type IViewModulePropsAny = t.IViewModuleProps<any, string, string>;
 
 /**
  * Filter
  */
 
-export type ModuleFilterView<V extends S = S> = (args: t.ModuleFilterViewArgs<V>) => boolean;
-export type ModuleFilterViewArgs<V extends S = S> = t.ModuleFilterArgs & { view: V };
+export type ModuleFilterView<V extends S = S, T extends S = S> = (
+  args: t.ModuleFilterViewArgs<V, T>,
+) => boolean;
+export type ModuleFilterViewArgs<V extends S = S, T extends S = S> = t.ModuleFilterArgs & {
+  view: V;
+  target?: T;
+};
 
 /**
  * Event Bus (fire).
@@ -67,9 +76,9 @@ export type ModuleFireRender<T extends P> = (
 export type ModuleFireRenderResponse = JSX.Element | null | undefined;
 export type ModuleFireRenderArgs<T extends P> = {
   module: string | t.IModule<any>;
-  selected?: string;
   data?: T['data'];
   view?: T['view'];
+  target?: T['target'];
   notFound?: T['view'];
 };
 
@@ -82,7 +91,7 @@ export type ModuleFireSelectionArgs = { root: t.ITreeNode | t.IModule; selected?
 export type IViewModuleEvents<T extends P> = t.IModuleEvents<T> & {
   selection$: t.Observable<t.IModuleSelection<T>>;
   render$: t.Observable<t.IModuleRender<T>>;
-  rendered$: t.Observable<t.IModuleRendered>;
+  rendered$: t.Observable<t.IModuleRendered<T>>;
   render(view?: T['view']): t.Observable<t.IModuleRender<T>>;
 };
 
@@ -110,8 +119,9 @@ export type IModuleRenderEvent<T extends P = AnyProps> = {
 export type IModuleRender<T extends P> = {
   module: string;
   selected?: string;
-  data: T['data'];
-  view: NonNullable<T['view']>;
+  view: T['view'];
+  target?: T['target'];
+  data?: T['data'];
   handled: boolean;
   render(el: JSX.Element | null): void;
 };
@@ -119,11 +129,16 @@ export type IModuleRender<T extends P> = {
 /**
  * The response to a module render event containing the UI to render.
  */
-export type IModuleRenderedEvent = {
+export type IModuleRenderedEvent<T extends P = AnyProps> = {
   type: 'Module/ui/rendered';
-  payload: IModuleRendered;
+  payload: IModuleRendered<T>;
 };
-export type IModuleRendered = { module: string; view: string; el: JSX.Element | null };
+export type IModuleRendered<T extends P> = {
+  module: string;
+  view: NonNullable<T['view']>;
+  target?: T['target'];
+  el: JSX.Element | null;
+};
 
 /**
  * Fires when the of the module selection within a user-interface changes.

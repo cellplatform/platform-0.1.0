@@ -1,1 +1,1 @@
-export * from '@platform/cell.types/lib/types.Module/types.module.view';
+export * from '@platform/cell.types/lib/types.Module/types.module';

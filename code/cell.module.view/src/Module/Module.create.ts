@@ -14,10 +14,9 @@ export function create<T extends P>(args: t.ViewModuleArgs<T>): t.IModule<T> {
   const { bus } = args;
   const module = Module.create<T>(args);
 
-  //
   module.change((draft, ctx) =>
     ctx.props(draft, (props) => {
-      props.view = args.view || props.view || '';
+      props.view = args.view || props.view;
       props.treeview = { ...props.treeview, ...args.treeview };
     }),
   );

@@ -28,7 +28,8 @@
 
 let __assign =
   (this && (this as any).__assign) ||
-  function () {
+  function (): any {
+    // @ts-ignore
     __assign =
       Object.assign ||
       function (t: any) {
@@ -45,6 +46,7 @@ let __assign =
     // @ts-ignore
     return __assign.apply(this, arguments);
   };
+
 const defaults = {
   lines: 12,
   length: 7,

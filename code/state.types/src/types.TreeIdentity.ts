@@ -9,4 +9,6 @@ export type TreeIdentity = {
   hasNamespace(input?: string): boolean;
   namespace(input?: string): string;
   key(input?: string): string;
+  cuid(): string;
+  slug(): string;
 };
