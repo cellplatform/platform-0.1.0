@@ -40,7 +40,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
    * [Render]
    */
   public render() {
-    const sidebar: t.HarnessTarget = 'Sidebar';
+    const SIDEBAR: t.HarnessTarget = 'Sidebar';
 
     const styles = {
       base: css({
@@ -54,7 +54,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
     return (
       <div {...css(styles.base, this.props.style)}>
         {/* {this.renderTmp()} */}
-        <ui.ModuleView.Frame bus={this.props.bus} filter={this.viewFilter} target={sidebar} />
+        <ui.ModuleView.Frame bus={this.props.bus} filter={this.viewFilter} target={SIDEBAR} />
       </div>
     );
   }
@@ -77,8 +77,15 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
    * Handlers
    */
   private viewFilter: t.ModuleFilterView<t.HarnessView, t.HarnessTarget> = (e) => {
-    // NB: Ignore the DevHarness module itself.
-    //     We are looking for "dev" components hosted within the harness.
-    return e.module !== this.harness.id;
+    const harness = this.harness.id;
+
+    if (e.view === 'Null') {
+      // NB: This is the DevHarness clearing the sidebar.
+      return e.module === harness;
+    } else {
+      // NB: Ignore the DevHarness module itself.
+      //     We are looking for "dev" components hosted within the harness.
+      return e.module !== harness;
+    }
   };
 }
