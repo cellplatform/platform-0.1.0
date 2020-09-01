@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Subject, merge } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 import { defaultValue, color, css, CssValue, t, Module, ui } from '../../common';
-import { CropMarks } from './CropMarks';
+import { CropMarks } from './Host.Component.CropMarks';
 
 type E = t.HarnessEvent;
 type P = t.HarnessProps;
@@ -89,7 +89,7 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
    */
   public render() {
     const layout = this.layout;
-    const main: t.HarnessTarget = 'Main';
+    const MAIN: t.HarnessTarget = 'Main';
 
     const styles = {
       base: css({
@@ -124,8 +124,8 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
               style={styles.frame}
               bus={this.props.bus}
               filter={this.viewFilter}
-              target={main}
-              debug={true}
+              target={MAIN}
+              debug={false}
               onBeforeRender={this.beforeRender}
             />
           </div>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Module, t } from './common';
+import { t } from './common';
 import { Dev } from '../..';
 
 type P = t.OneProps;
