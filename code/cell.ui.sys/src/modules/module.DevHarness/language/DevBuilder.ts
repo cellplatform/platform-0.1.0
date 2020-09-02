@@ -51,10 +51,15 @@ export class DevBuilder implements t.IDevBuilder {
     return this.module.dispose$;
   }
 
+  public get id() {
+    return this.module.id;
+  }
+
   public get props(): t.IDevProps {
+    const id = this.id;
     const props = this.module.root.props;
     const treeview = props?.treeview || {};
-    return R.clone({ treeview });
+    return R.clone({ id, treeview });
   }
 
   /**
@@ -85,7 +90,8 @@ export class DevBuilder implements t.IDevBuilder {
 
     const bus = this.bus;
     const module = this.module;
-    const component = DevBuilderComponent.create({ name, bus, module });
+    const parent = this.module.root.id;
+    const component = DevBuilderComponent.create({ name, bus, module, parent });
 
     this.components.push(component);
     return component;

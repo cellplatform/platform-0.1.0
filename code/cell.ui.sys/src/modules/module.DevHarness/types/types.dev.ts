@@ -8,9 +8,11 @@ export type IComponent = {
 };
 
 export type IDevProps = {
+  id: string;
   treeview: t.ITreeviewNodeProps;
 };
 export type IDevComponentProps = {
+  id: string;
   treeview: t.ITreeviewNodeProps;
   component: IComponent;
   layout: IDevHostLayout;

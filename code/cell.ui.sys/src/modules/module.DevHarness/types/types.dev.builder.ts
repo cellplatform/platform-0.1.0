@@ -9,6 +9,7 @@ type A = IDevBuilderPositionAbsolute;
  * A suite of components to test.
  */
 export type IDevBuilder = t.IDisposable & {
+  id: string;
   module: t.HarnessModule;
   props: t.IDevProps;
   label(value: string): IDevBuilder; // Treeview node label.
@@ -19,6 +20,7 @@ export type IDevBuilder = t.IDisposable & {
  * The test configuration for a single component under test.
  */
 export type IDevBuilderComponent = {
+  id: string;
   props: t.IDevComponentProps;
   name(value: string): C;
   label(value: string): C; // Treeview node label.
@@ -30,6 +32,7 @@ export type IDevBuilderComponent = {
   border(value: boolean | number): C;
   cropmarks(value: boolean | number): C;
   position(fn: (pos: IDevBuilderPosition) => void): C;
+  component(name: string): C;
 };
 
 /**

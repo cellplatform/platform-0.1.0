@@ -15,16 +15,23 @@ export const OneModule: t.SampleOneModuleDef = {
     dev
       .component('Foo')
       .label('one')
+      .width(350)
+      .height(250)
       .sidebar((e) => <div>sidebar 1</div>)
       .render((e) => <div style={{ padding: 30 }}>hello one</div>);
+
+    dev
+      .component('Foo')
+      .component('Child1')
+      .label('child-1')
+      .height(60)
+      .render(() => <div style={{ padding: 10 }}>Child</div>);
 
     dev
       .component('Bar')
       .label('two')
       .background(-0.06)
-      .width(350)
-      .height(250)
-      .position((pos) => pos.absolute.every(10))
+      .position((pos) => pos.absolute.every(60))
       .render((e) => <div style={{ padding: 30 }}>hello two</div>);
 
     dev
