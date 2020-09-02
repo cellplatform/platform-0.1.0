@@ -165,13 +165,11 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
   }
 
   public component(name: string) {
-    // TODO 🐷
-
-    // name = (name || '').trim();
-    // const existing = this.components.find((item) => item.props.component.name === name);
-    // if (existing) {
-    //   return existing;
-    // }
+    name = (name || '').trim();
+    const existing = this.components.find((item) => item.props.component.name === name);
+    if (existing) {
+      return existing;
+    }
 
     const bus = this.bus;
     const module = this.module;

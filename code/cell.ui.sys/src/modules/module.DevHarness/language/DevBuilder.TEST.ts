@@ -51,7 +51,7 @@ describe('Dev (DSL)', () => {
           const dev = create(bus);
           const res1 = dev.component('Foo');
           const res2 = dev.component('  Foo  ');
-          expect(res1).to.equal(res2);
+          expect(res1).to.equal(res2); // NB: same instance.
 
           res2.name('Bar  ');
           const res3 = dev.component('  Bar');
@@ -199,6 +199,14 @@ describe('Dev (DSL)', () => {
         const child = parent.component('MyChild');
         const node = dev.module.query.findById(child.id);
         expect(node?.props?.treeview?.label).to.eql('MyChild');
+      });
+
+      it('retrieves existing child component (by name)', () => {
+        const dev = create(bus);
+        const parent = dev.component('Foo');
+        const child1 = parent.component('MyChild');
+        const child2 = parent.component('MyChild');
+        expect(child1).to.equal(child2); // NB: same instance.
       });
     });
   });
