@@ -7,16 +7,17 @@ import { Cropmarks } from './Host.Cropmarks';
 type E = t.HarnessEvent;
 type P = t.HarnessProps;
 
-export type IHostProps = IHostPropsOverride & {
-  bus: t.EventBus;
+export type IHostProps = IHostPropsRenderer & {
+  bus: t.EventBus<any>;
   harness: t.HarnessModule;
   style?: CssValue;
 };
-export type IHostPropsOverride = {
+export type IHostPropsRenderer = {
+  view: string;
   layout?: t.IDevHostLayout;
 };
 
-export type IHostState = { host?: t.IDevHost };
+export type IHostState = { node?: t.ITreeNode<P> };
 
 export class Host extends React.PureComponent<IHostProps, IHostState> {
   public state: IHostState = {};
@@ -64,15 +65,15 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
   }
 
   private get host() {
-    return this.state.host || { view: {} };
+    return this.state.node?.props?.data?.host || { view: {} };
   }
 
   private get layout() {
-    // NB: The layout may be "injected" in explicity via the renderer
+    // NB: The layout may be "injected" explicity via the renderer
     //     when performing a known layout configuration. Prefer this
-    //     when available over the host details held against the rendered
-    //     node, which should not be avilable if the prop is set.
-    return this.props.layout || this.state.host?.layout || {};
+    //     when available over the details held on the rendered tree-node,
+    //     which may not be avilable if the renderer passed this property.
+    return this.props.layout || this.host?.layout || {};
   }
 
   private get borderColor() {
@@ -95,7 +96,6 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
    * [Render]
    */
   public render() {
-    const MAIN: t.HarnessTarget = 'Main';
     const layout = this.layout;
     const abs = layout.position?.absolute;
 
@@ -111,7 +111,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
         Flex: abs ? undefined : 'center-center',
       }),
       outer: css({
-        position: abs ? undefined : 'relative',
+        position: abs ? 'absolute' : 'relative',
         Absolute: abs ? [abs.top, abs.right, abs.bottom, abs.left] : undefined,
         border: `solid 1px ${this.borderColor}`,
         backgroundColor: color.format(layout.background),
@@ -128,14 +128,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
         <div {...styles.body}>
           <div {...styles.outer}>
             {this.renderCropmarks()}
-            <ui.ModuleView.Frame
-              style={styles.frame}
-              bus={this.props.bus}
-              filter={this.viewFilter}
-              target={MAIN}
-              debug={false}
-              onBeforeRender={this.beforeRender}
-            />
+            {this.renderFrame()}
           </div>
         </div>
       </div>
@@ -160,13 +153,55 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
     return <Cropmarks color={this.cropmarksColor} margin={margin} size={size} />;
   }
 
+  private renderFrame() {
+    const MAIN: t.HarnessTarget = 'Main';
+    const layout = this.layout;
+
+    const styles = {
+      base: css({
+        width: layout.width,
+        height: layout.height,
+        WebkitAppRegion: 'none',
+      }),
+    };
+
+    const node = this.state.node;
+    const children = (node?.children || [])
+      .map((node) => getHost(node)?.view.component as string)
+      .filter((view) => Boolean(view));
+
+    const elChildren = children.map((view, i) => {
+      return (
+        <Host
+          key={`child-${i}`}
+          bus={this.bus}
+          view={view}
+          harness={this.harness}
+          style={{ Absolute: 0 }}
+        />
+      );
+    });
+
+    return (
+      <React.Fragment>
+        <ui.ModuleView.Frame
+          style={styles.base}
+          bus={this.props.bus}
+          filter={this.viewFilter}
+          target={MAIN}
+          debug={false}
+          onBeforeRender={this.beforeRender}
+        />
+        {elChildren}
+      </React.Fragment>
+    );
+  }
+
   /**
    * Handlers
    */
   private viewFilter: t.ModuleFilterView<t.HarnessView, t.HarnessTarget> = (e) => {
-    // NB: Ignore the DevHarness module itself.
-    //     We are looking for "dev" components hosted within the harness.
-    return e.module !== this.harness.id;
+    return e.view === this.props.view;
   };
 
   /**
@@ -175,10 +210,13 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
    */
   private beforeRender = (e: t.IModuleRendered<any>) => {
     const module = this.harness.find((child) => child.id === e.module);
-    const node = module?.query.find(
-      (item) => item.node.props?.data?.host?.view.component === e.view,
-    );
-    const host = node?.props?.data?.host;
-    this.state$.next({ host });
+    const node = module?.query.find(({ node }) => getHost(node)?.view.component === e.view);
+    this.state$.next({ node });
   };
 }
+
+/**
+ * [Helpers]
+ */
+
+const getHost = (node?: t.ITreeNode<P>) => node?.props?.data?.host;

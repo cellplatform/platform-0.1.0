@@ -12,7 +12,7 @@ export const OneModule: t.SampleOneModuleDef = {
   dev(bus) {
     const dev = Harness.dev(bus, 'Module One');
 
-    dev
+    const foo = dev
       .component('Foo')
       .label('one')
       .width(350)
@@ -20,12 +20,18 @@ export const OneModule: t.SampleOneModuleDef = {
       .sidebar((e) => <div>sidebar 1</div>)
       .render((e) => <div style={{ padding: 30 }}>hello one</div>);
 
-    dev
-      .component('Foo')
+    const child1 = foo
       .component('Child1')
       .label('child-1')
-      .height(60)
+      .height(120)
+      .width(200)
+      .position((pos) => pos.absolute.bottom(0).right(0))
       .render(() => <div style={{ padding: 10 }}>Child</div>);
+
+    child1
+      .component('Child2')
+      .label('baba')
+      .render(() => <div style={{ padding: 10 }}>Baba</div>);
 
     dev
       .component('Bar')

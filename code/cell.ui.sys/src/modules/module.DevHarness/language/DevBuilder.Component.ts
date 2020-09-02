@@ -35,9 +35,7 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
         if (node) {
           const props = node.props || (node.props = {});
           const treeview = props.treeview || (props.treeview = {});
-          const chevron = treeview.chevron || (treeview.chevron = {});
           treeview.inline || (treeview.inline = {});
-          chevron.isVisible = true;
         }
       });
     }
