@@ -157,5 +157,36 @@ describe('Dev (API)', () => {
       dev.cropMarks(-50);
       expect(dev.props.layout.cropMarks).to.eql(-1);
     });
+
+    describe('position.absolute', () => {
+      it('top/right/bottom/left', () => {
+        const dev = create(bus).component('Foo');
+        expect(dev.props.layout.position?.absolute?.top).to.eql(undefined);
+        expect(dev.props.layout.position?.absolute?.right).to.eql(undefined);
+        expect(dev.props.layout.position?.absolute?.bottom).to.eql(undefined);
+        expect(dev.props.layout.position?.absolute?.left).to.eql(undefined);
+
+        dev.position((pos) => pos.absolute.top(10).right(20).bottom(30).left(40));
+
+        expect(dev.props.layout.position?.absolute?.top).to.eql(10);
+        expect(dev.props.layout.position?.absolute?.right).to.eql(20);
+        expect(dev.props.layout.position?.absolute?.bottom).to.eql(30);
+        expect(dev.props.layout.position?.absolute?.left).to.eql(40);
+
+        dev.position((pos) => pos.absolute.every(100));
+
+        expect(dev.props.layout.position?.absolute?.top).to.eql(100);
+        expect(dev.props.layout.position?.absolute?.right).to.eql(100);
+        expect(dev.props.layout.position?.absolute?.bottom).to.eql(100);
+        expect(dev.props.layout.position?.absolute?.left).to.eql(100);
+
+        dev.position((pos) => pos.absolute.every(undefined));
+
+        expect(dev.props.layout.position?.absolute?.top).to.eql(undefined);
+        expect(dev.props.layout.position?.absolute?.right).to.eql(undefined);
+        expect(dev.props.layout.position?.absolute?.bottom).to.eql(undefined);
+        expect(dev.props.layout.position?.absolute?.left).to.eql(undefined);
+      });
+    });
   });
 });

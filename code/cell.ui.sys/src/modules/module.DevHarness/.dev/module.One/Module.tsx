@@ -24,6 +24,7 @@ export const OneModule: t.SampleOneModuleDef = {
       .background(-0.06)
       .width(350)
       .height(250)
+      .position((pos) => pos.absolute.every(10))
       .render((e) => <div style={{ padding: 30 }}>hello two</div>);
 
     dev

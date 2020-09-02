@@ -34,4 +34,14 @@ export type IDevHostLayout = {
   background?: number | string;
   border?: boolean | number;
   cropMarks?: boolean | number;
+  position?: IDevHostLayoutPosition;
+};
+
+export type IDevHostLayoutPosition = {
+  absolute?: {
+    top?: string | number;
+    right?: string | number;
+    bottom?: string | number;
+    left?: string | number;
+  };
 };

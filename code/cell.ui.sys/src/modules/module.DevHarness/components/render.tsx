@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { t } from '../common';
-import { HostComponent } from './Host.Component';
-import { HostModule } from './Host.Module';
+import { Host } from './Host';
+import { HostModule } from './Host.Module._TMP';
 import { NotFound } from './NotFound';
 
 type P = t.HarnessProps;
@@ -18,7 +18,7 @@ export function renderer(args: {
   const render = events.render;
 
   render('Host/component').subscribe((e) => {
-    e.render(<HostComponent bus={bus} harness={harness} />);
+    e.render(<Host bus={bus} harness={harness} />);
   });
 
   render('Host/module/TMP').subscribe((e) => {

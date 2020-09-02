@@ -3,6 +3,7 @@ import { t } from '../common';
 export type DevFactory = (bus: t.EventBus, label?: string) => IDevBuilder;
 
 type C = IDevBuilderComponent;
+type A = IDevBuilderPositionAbsolute;
 
 /**
  * A suite of components to test.
@@ -28,19 +29,22 @@ export type IDevBuilderComponent = {
   background(value: number | string | undefined): C;
   border(value: boolean | number): C;
   cropMarks(value: boolean | number): C;
-  position(fn: (args: IDevBuilderPosition) => void): C;
+  position(fn: (pos: IDevBuilderPosition) => void): C;
 };
 
 /**
  * Tools for defining the position of a component.
  */
 export type IDevBuilderPosition = {
-  absolute: IDevBuilderPositionAbsolute;
+  absolute: A;
 };
 
 export type IDevBuilderPositionAbsolute = {
-  left(value: number | string | undefined): IDevBuilderPositionAbsolute;
-  //
+  top(value: number | undefined): A;
+  right(value: number | undefined): A;
+  bottom(value: number | undefined): A;
+  left(value: number | undefined): A;
+  every(value: number | undefined): A;
 };
 
 /**

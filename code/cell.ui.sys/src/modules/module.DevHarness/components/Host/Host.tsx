@@ -2,22 +2,22 @@ import * as React from 'react';
 import { Subject, merge } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 import { defaultValue, color, css, CssValue, t, Module, ui } from '../../common';
-import { CropMarks } from './Host.Component.CropMarks';
+import { Cropmarks } from './Host.Cropmarks';
 
 type E = t.HarnessEvent;
 type P = t.HarnessProps;
 
-export type IHostComponentProps = {
+export type IHostProps = {
   bus: t.EventBus;
   harness: t.HarnessModule;
   isDraggable?: boolean;
   style?: CssValue;
 };
-export type IHostComponentState = { host?: t.IDevHost };
+export type IHostState = { host?: t.IDevHost };
 
-export class HostComponent extends React.PureComponent<IHostComponentProps, IHostComponentState> {
-  public state: IHostComponentState = {};
-  private state$ = new Subject<Partial<IHostComponentState>>();
+export class Host extends React.PureComponent<IHostProps, IHostState> {
+  public state: IHostState = {};
+  private state$ = new Subject<Partial<IHostState>>();
   private unmounted$ = new Subject();
   private bus = this.props.bus.type<E>();
 
@@ -90,6 +90,7 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
   public render() {
     const MAIN: t.HarnessTarget = 'Main';
     const layout = this.layout;
+    const abs = layout.position?.absolute;
 
     const styles = {
       base: css({
@@ -100,10 +101,11 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
       }),
       body: css({
         Absolute: 0,
-        Flex: 'center-center',
+        Flex: abs ? undefined : 'center-center',
       }),
       outer: css({
-        position: 'relative',
+        position: abs ? undefined : 'relative',
+        Absolute: abs ? [abs.top, abs.right, abs.bottom, abs.left] : undefined,
         border: `solid 1px ${this.borderColor}`,
         backgroundColor: color.format(layout.background),
       }),
@@ -118,9 +120,7 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
       <div {...css(styles.base, this.props.style)}>
         <div {...styles.body}>
           <div {...styles.outer}>
-            {this.cropMarks !== false && (
-              <CropMarks color={this.cropMarksColor} margin={6} size={20} />
-            )}
+            {this.renderCropmarks()}
             <ui.ModuleView.Frame
               style={styles.frame}
               bus={this.props.bus}
@@ -133,6 +133,24 @@ export class HostComponent extends React.PureComponent<IHostComponentProps, IHos
         </div>
       </div>
     );
+  }
+
+  private renderCropmarks() {
+    if (!this.cropMarks) {
+      return null;
+    }
+
+    const size = 20;
+    const margin = 6;
+    const offset = size + margin;
+
+    // Ensure the space surrounding an absolute positioning is not less than the cropmark offset.
+    const abs = this.layout.position?.absolute;
+    if (abs && Object.keys(abs).some((key) => abs[key] < offset)) {
+      return null;
+    }
+
+    return <Cropmarks color={this.cropMarksColor} margin={margin} size={size} />;
   }
 
   /**

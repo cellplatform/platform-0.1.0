@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { css, CssValue, defaultValue, color } from '../../common';
 
-export type ICropMarksProps = {
+export type ICropmarksProps = {
   size: number;
   margin: number;
   color?: string | number;
   style?: CssValue;
 };
 
-export class CropMarks extends React.PureComponent<ICropMarksProps> {
+export class Cropmarks extends React.PureComponent<ICropmarksProps> {
   /**
    * [Properties]
    */

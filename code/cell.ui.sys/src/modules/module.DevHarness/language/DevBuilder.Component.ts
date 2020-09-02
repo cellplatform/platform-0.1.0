@@ -98,7 +98,28 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
     return this.layout((props) => (props.cropMarks = value));
   }
 
-  position(fn: (args: t.IDevBuilderPosition) => void) {
+  position(fn: (pos: t.IDevBuilderPosition) => void) {
+    type A = NonNullable<t.IDevHostLayoutPosition['absolute']>;
+
+    const setAbsolute = (key: keyof A, value?: number) => {
+      this.layout((props) => {
+        const position = props.position || (props.position = {});
+        const absolute = position.absolute || (position.absolute = {});
+        absolute[key] = value;
+      });
+      return absolute;
+    };
+
+    const absolute: t.IDevBuilderPositionAbsolute = {
+      top: (value) => setAbsolute('top', value),
+      right: (value) => setAbsolute('right', value),
+      bottom: (value) => setAbsolute('bottom', value),
+      left: (value) => setAbsolute('left', value),
+      every: (value) => absolute.top(value).right(value).bottom(value).left(value),
+    };
+
+    fn({ absolute });
+
     return this;
   }
 

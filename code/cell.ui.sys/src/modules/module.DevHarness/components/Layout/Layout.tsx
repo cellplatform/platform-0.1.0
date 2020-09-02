@@ -82,8 +82,6 @@ export class Layout extends React.PureComponent<ILayoutProps> {
         flex: 1,
         display: 'flex',
         position: 'relative',
-        borderLeft: `solid 10px ${color.format(0.1)}`,
-        borderRight: `solid 10px ${color.format(0.1)}`,
         WebkitAppRegion: 'drag',
         overflow: 'hidden',
       }),
@@ -94,6 +92,7 @@ export class Layout extends React.PureComponent<ILayoutProps> {
           <LayoutTree harness={harness} focusOnLoad={focusOnLoad} />
         </div>
         <div {...styles.body}>
+          {this.renderGlassBevels()}
           <ui.ModuleView.Frame
             bus={bus}
             filter={this.bodyFilter}
@@ -105,6 +104,23 @@ export class Layout extends React.PureComponent<ILayoutProps> {
           <Sidebar bus={bus} harness={harness} />
         </div>
       </div>
+    );
+  }
+
+  private renderGlassBevels() {
+    const styles = {
+      base: css({
+        width: 10,
+        backgroundColor: color.format(0.1),
+      }),
+      left: css({ Absolute: [0, null, 0, 0] }),
+      right: css({ Absolute: [0, 0, 0, null] }),
+    };
+    return (
+      <React.Fragment>
+        <div {...css(styles.base, styles.left)} />
+        <div {...css(styles.base, styles.right)} />
+      </React.Fragment>
     );
   }
 
