@@ -46,7 +46,7 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
   const SIDEBAR: t.HarnessTarget = 'Sidebar';
 
   harnessRender$.pipe(filter((e) => Boolean(e.host))).subscribe(({ host, module }) => {
-    renderHarness('Host/component', MAIN);
+    renderHarness('Host', MAIN);
 
     const view = host.view;
 

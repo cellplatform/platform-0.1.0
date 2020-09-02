@@ -25,7 +25,7 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
     const children = this.module.root.children || [];
     this.index = children.length;
 
-    this.change((props) => (props.view = 'Host/component'));
+    this.change((props) => (props.view = 'Host'));
     this.name(args.name).label(args.name);
 
     const match: t.ModuleFilterEvent = (e) => e.module == this.module.id;
@@ -151,7 +151,7 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
       const children = draft.children || (draft.children = []);
       const node = children[index] || { id: Module.Identity.slug() };
       const props = node.props || (node.props = {});
-      props.view = 'Host/component';
+      props.view = 'Host';
       fn(props);
       children[index] = node;
     });

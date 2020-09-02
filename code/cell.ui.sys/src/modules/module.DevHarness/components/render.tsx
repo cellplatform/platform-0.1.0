@@ -17,7 +17,7 @@ export function renderer(args: {
   const { events, bus, harness } = args;
   const render = events.render;
 
-  render('Host/component').subscribe((e) => {
+  render('Host').subscribe((e) => {
     e.render(<Host bus={bus} harness={harness} />);
   });
 
