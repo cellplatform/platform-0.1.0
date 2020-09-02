@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Subject, merge } from 'rxjs';
-import { takeUntil, filter } from 'rxjs/operators';
-import { defaultValue, color, css, CssValue, t, Module, ui } from '../../common';
+import { merge, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+
+import { color, css, CssValue, defaultValue, Module, t, ui } from '../../common';
 import { Cropmarks } from './Host.Cropmarks';
 
 type E = t.HarnessEvent;
@@ -10,6 +11,7 @@ type P = t.HarnessProps;
 export type IHostProps = IHostPropsRenderer & {
   bus: t.EventBus<any>;
   harness: t.HarnessModule;
+  cropmarks?: boolean;
   style?: CssValue;
 };
 export type IHostPropsRenderer = {
@@ -83,7 +85,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
   }
 
   private get cropmarks() {
-    return defaultValue(this.layout.cropmarks, true);
+    return defaultValue(this.layout.cropmarks, defaultValue(this.props.cropmarks, true));
   }
 
   private get cropmarksColor() {
@@ -101,8 +103,8 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
 
     const styles = {
       base: css({
-        position: 'relative',
         flex: 1,
+        position: 'relative',
         padding: 30,
         boxSizing: 'border-box',
       }),
@@ -135,24 +137,6 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
     );
   }
 
-  private renderCropmarks() {
-    if (!this.cropmarks) {
-      return null;
-    }
-
-    const size = 20;
-    const margin = 6;
-    const offset = size + margin;
-
-    // Ensure the space surrounding an absolute positioning is not less than the cropmark offset.
-    const abs = this.layout.position?.absolute;
-    if (abs && Object.keys(abs).some((key) => abs[key] < offset)) {
-      return null;
-    }
-
-    return <Cropmarks color={this.cropmarksColor} margin={margin} size={size} />;
-  }
-
   private renderFrame() {
     const MAIN: t.HarnessTarget = 'Main';
     const layout = this.layout;
@@ -167,16 +151,17 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
 
     const node = this.state.node;
     const children = (node?.children || [])
-      .map((node) => getHost(node)?.view.component as string)
+      .map((node) => pluck(node)?.view.component as string)
       .filter((view) => Boolean(view));
 
     const elChildren = children.map((view, i) => {
       return (
         <Host
           key={`child-${i}`}
+          harness={this.harness}
           bus={this.bus}
           view={view}
-          harness={this.harness}
+          cropmarks={false}
           style={{ Absolute: 0 }}
         />
       );
@@ -189,12 +174,30 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
           bus={this.props.bus}
           filter={this.viewFilter}
           target={MAIN}
-          debug={false}
           onBeforeRender={this.beforeRender}
         />
         {elChildren}
       </React.Fragment>
     );
+  }
+
+  private renderCropmarks() {
+    if (!this.cropmarks) {
+      return null;
+    }
+
+    const size = 20;
+    const margin = 6;
+    const offset = size + margin;
+
+    // Ensure the space surrounding an "absolute positioning" is
+    // not less than offset space of the cropmarks.
+    const abs = this.layout.position?.absolute;
+    if (abs && Object.keys(abs).some((key) => abs[key] < offset)) {
+      return null;
+    }
+
+    return <Cropmarks color={this.cropmarksColor} margin={margin} size={size} />;
   }
 
   /**
@@ -210,7 +213,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
    */
   private beforeRender = (e: t.IModuleRendered<any>) => {
     const module = this.harness.find((child) => child.id === e.module);
-    const node = module?.query.find(({ node }) => getHost(node)?.view.component === e.view);
+    const node = module?.query.find(({ node }) => pluck(node)?.view.component === e.view);
     this.state$.next({ node });
   };
 }
@@ -219,4 +222,11 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
  * [Helpers]
  */
 
-const getHost = (node?: t.ITreeNode<P>) => node?.props?.data?.host;
+/**
+ * Pluck data from a node.
+ */
+function pluck(node?: t.ITreeNode<P>) {
+  const host = node?.props?.data?.host;
+  const view = host?.view || {};
+  return { host, view };
+}
