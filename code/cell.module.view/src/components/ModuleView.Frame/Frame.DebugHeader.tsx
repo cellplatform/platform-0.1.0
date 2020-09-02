@@ -2,12 +2,9 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { COLORS, css, CssValue, t } from '../../common';
+import { COLORS, css, CssValue } from '../../common';
 
-export type IDebugHeaderProps = {
-  rendered: t.IModuleRendered<any>;
-  style?: CssValue;
-};
+export type IDebugHeaderProps = { text?: string; style?: CssValue };
 export type IDebugHeaderState = { isOver?: boolean };
 
 export class DebugHeader extends React.PureComponent<IDebugHeaderProps, IDebugHeaderState> {
@@ -18,7 +15,6 @@ export class DebugHeader extends React.PureComponent<IDebugHeaderProps, IDebugHe
   /**
    * [Lifecycle]
    */
-
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
   }
@@ -36,21 +32,7 @@ export class DebugHeader extends React.PureComponent<IDebugHeaderProps, IDebugHe
   }
 
   private get text() {
-    const { el, view, target } = this.props.rendered;
-    const parts: string[] = [];
-    const typename = el?.type?.name;
-
-    if (typename) {
-      parts.push(`<${typename}>`);
-    }
-    if (!typename && view) {
-      parts.push(`view: "${view}"`);
-    }
-    if (target) {
-      parts.push(`target: "${target}"`);
-    }
-
-    return parts.length === 0 ? '' : parts.join(' ');
+    return this.props.text || '';
   }
 
   /**
@@ -67,7 +49,7 @@ export class DebugHeader extends React.PureComponent<IDebugHeaderProps, IDebugHe
         textAlign: 'center',
         Flex: 'horizontal-end-spaceBetween',
         fontFamily: 'Menlo, monospace',
-        color: COLORS.DARK,
+        color: isOver ? COLORS.CLI.MAGENTA : COLORS.DARK,
         userSelect: 'none',
         PaddingX: 8,
       }),
