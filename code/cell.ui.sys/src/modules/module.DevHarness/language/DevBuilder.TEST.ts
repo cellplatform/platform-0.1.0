@@ -67,6 +67,8 @@ describe('Dev (DSL)', () => {
           expectThrow(' ');
           expectThrow('1Hello');
           expectThrow('harry');
+          expectThrow('foo-bar');
+          expectThrow('foo.bar');
           expectThrow('Foo Bar');
         });
       });
@@ -192,7 +194,7 @@ describe('Dev (DSL)', () => {
       });
     });
 
-    describe.only('child', () => {
+    describe('child', () => {
       it('inserts within tree (inline twisty)', () => {
         const dev = create(bus);
         const parent = dev.component('Foo');
