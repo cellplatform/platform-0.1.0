@@ -7,12 +7,15 @@ import { Cropmarks } from './Host.Cropmarks';
 type E = t.HarnessEvent;
 type P = t.HarnessProps;
 
-export type IHostProps = {
+export type IHostProps = IHostPropsOverride & {
   bus: t.EventBus;
   harness: t.HarnessModule;
-  isDraggable?: boolean;
   style?: CssValue;
 };
+export type IHostPropsOverride = {
+  layout?: t.IDevHostLayout;
+};
+
 export type IHostState = { host?: t.IDevHost };
 
 export class Host extends React.PureComponent<IHostProps, IHostState> {
@@ -65,7 +68,11 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
   }
 
   private get layout() {
-    return this.host.layout || {};
+    // NB: The layout may be "injected" in explicity via the renderer
+    //     when performing a known layout configuration. Prefer this
+    //     when available over the host details held against the rendered
+    //     node, which should not be avilable if the prop is set.
+    return this.props.layout || this.state.host?.layout || {};
   }
 
   private get borderColor() {
@@ -74,13 +81,13 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
     return color.format(value);
   }
 
-  private get cropMarks() {
-    return defaultValue(this.layout.cropMarks, true);
+  private get cropmarks() {
+    return defaultValue(this.layout.cropmarks, true);
   }
 
-  private get cropMarksColor() {
-    const cropMarks = this.cropMarks;
-    const value = cropMarks === true ? 1 : cropMarks === false ? 0 : cropMarks;
+  private get cropmarksColor() {
+    const cropmarks = this.cropmarks;
+    const value = cropmarks === true ? 1 : cropmarks === false ? 0 : cropmarks;
     return color.format(value);
   }
 
@@ -136,7 +143,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
   }
 
   private renderCropmarks() {
-    if (!this.cropMarks) {
+    if (!this.cropmarks) {
       return null;
     }
 
@@ -150,7 +157,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
       return null;
     }
 
-    return <Cropmarks color={this.cropMarksColor} margin={margin} size={size} />;
+    return <Cropmarks color={this.cropmarksColor} margin={margin} size={size} />;
   }
 
   /**

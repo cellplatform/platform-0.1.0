@@ -2,6 +2,7 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { Module, rx, t } from '../common';
 import { renderer } from '../components/render';
+import { IHostPropsOverride } from '../components/Host';
 
 type E = t.HarnessEvent;
 type P = t.HarnessProps;
@@ -26,9 +27,13 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
    * Render a harness component
    * (as opposed to content from within a "dev" module using the harness).
    */
-  const renderHarness = (view: t.HarnessView, target?: t.HarnessTarget) => {
+  const renderHarness = (
+    target: t.HarnessTarget,
+    view: t.HarnessView,
+    data?: Record<string, unknown>,
+  ) => {
     const module = harness.id;
-    fire.render({ module, view, target });
+    fire.render({ module, view, target, data });
   };
 
   /**
@@ -39,14 +44,14 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
     map(({ module, view }) => ({ module, view, host: currentHost() })),
   );
 
-  /**
-   * HANDLE: A host configuration exists. - this is a "component under test" rendering.
-   */
   const MAIN: t.HarnessTarget = 'Main';
   const SIDEBAR: t.HarnessTarget = 'Sidebar';
 
+  /**
+   * HANDLE: A host configuration exists. - this is a "component under test" rendering.
+   */
   harnessRender$.pipe(filter((e) => Boolean(e.host))).subscribe(({ host, module }) => {
-    renderHarness('Host', MAIN);
+    renderHarness(MAIN, 'Host');
 
     const view = host.view;
 
@@ -57,7 +62,7 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
     if (view.sidebar) {
       const res = fire.render({ module, view: view.sidebar, target: SIDEBAR });
       if (!res) {
-        renderHarness('Null', SIDEBAR); // The sidebar did not result in any UI, make sure it is cleared.
+        renderHarness(SIDEBAR, 'Null'); // The sidebar did not result in any UI, make sure it is cleared.
       }
     }
   });
@@ -66,16 +71,22 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
    * HANDLE: No host configuration - this is a "standard" module rendering.
    */
   harnessRender$.pipe(filter((e) => !Boolean(e.host))).subscribe(({ module, view }) => {
-    /**
-     * TODO 🐷
-     * - Render this witin a specific layout of "Host/component"
-     */
+    // There is not specific host information to construct some defaults to pass to the renderer.
+    const edge = 50;
+    const props: IHostPropsOverride = {
+      layout: {
+        background: 1,
+        cropmarks: false,
+        position: { absolute: { top: edge, right: edge, bottom: edge, left: edge } },
+      },
+    };
 
-    renderHarness('Host/module/TMP', MAIN);
-    const res = fire.render({ module, view });
+    renderHarness(MAIN, 'Host', props);
+
+    const res = fire.render({ module, view, target: MAIN });
     if (!res) {
-      renderHarness('404', MAIN);
-      renderHarness('Null', SIDEBAR);
+      renderHarness(MAIN, '404');
+      renderHarness(SIDEBAR, 'Null');
     }
   });
 }

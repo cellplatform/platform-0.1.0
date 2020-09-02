@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { t } from '../common';
-import { Host } from './Host';
-import { HostModule } from './Host.Module._TMP';
+import { Host, IHostPropsOverride } from './Host';
 import { NotFound } from './NotFound';
 
 type P = t.HarnessProps;
@@ -18,11 +17,8 @@ export function renderer(args: {
   const render = events.render;
 
   render('Host').subscribe((e) => {
-    e.render(<Host bus={bus} harness={harness} />);
-  });
-
-  render('Host/module/TMP').subscribe((e) => {
-    e.render(<HostModule bus={bus} harness={harness} />);
+    const data = e.data as IHostPropsOverride;
+    e.render(<Host bus={bus} harness={harness} layout={data?.layout} />);
   });
 
   render('Null').subscribe((e) => {

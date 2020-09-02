@@ -32,7 +32,7 @@ export const OneModule: t.SampleOneModuleDef = {
       .label('leaf')
       .sidebar((e) => <div>sidebar leaf</div>)
       .border(0.3)
-      .cropMarks(1)
+      .cropmarks(1)
       .render((e) => {
         const url = 'https://tdb.sfo2.digitaloceanspaces.com/tmp/leaf.png';
         return <img src={url} />;

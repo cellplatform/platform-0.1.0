@@ -28,7 +28,7 @@ export type IDevBuilderComponent = {
   height(value: number | string | undefined): C;
   background(value: number | string | undefined): C;
   border(value: boolean | number): C;
-  cropMarks(value: boolean | number): C;
+  cropmarks(value: boolean | number): C;
   position(fn: (pos: IDevBuilderPosition) => void): C;
 };
 

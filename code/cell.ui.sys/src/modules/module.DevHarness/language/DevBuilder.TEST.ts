@@ -141,21 +141,21 @@ describe('Dev (API)', () => {
       expect(dev.props.layout.border).to.eql(-1);
     });
 
-    it('cropMarks', () => {
+    it('cropmarks', () => {
       const dev = create(bus).component('Foo');
-      expect(dev.props.layout.cropMarks).to.eql(undefined);
+      expect(dev.props.layout.cropmarks).to.eql(undefined);
 
-      dev.cropMarks(true);
-      expect(dev.props.layout.cropMarks).to.eql(true);
+      dev.cropmarks(true);
+      expect(dev.props.layout.cropmarks).to.eql(true);
 
-      dev.cropMarks(false);
-      expect(dev.props.layout.cropMarks).to.eql(false);
+      dev.cropmarks(false);
+      expect(dev.props.layout.cropmarks).to.eql(false);
 
-      dev.cropMarks(50);
-      expect(dev.props.layout.cropMarks).to.eql(1);
+      dev.cropmarks(50);
+      expect(dev.props.layout.cropmarks).to.eql(1);
 
-      dev.cropMarks(-50);
-      expect(dev.props.layout.cropMarks).to.eql(-1);
+      dev.cropmarks(-50);
+      expect(dev.props.layout.cropmarks).to.eql(-1);
     });
 
     describe('position.absolute', () => {

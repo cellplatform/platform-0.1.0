@@ -12,7 +12,7 @@ export type HarnessDef = {
  * (the module that "harnesses" another "module under development")
  */
 
-export type HarnessView = 'Host' | 'Host/module/TMP' | 'Null' | '404';
+export type HarnessView = 'Host' | 'Null' | '404';
 export type HarnessTarget = 'Main' | 'Sidebar';
 export type HarnessData = { host?: t.IDevHost };
 export type HarnessProps = t.IViewModuleProps<HarnessData, HarnessView, HarnessTarget>;

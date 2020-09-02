@@ -93,9 +93,9 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
     return this.layout((props) => (props.border = value));
   }
 
-  public cropMarks(value: number | boolean) {
+  public cropmarks(value: number | boolean) {
     value = clampColor(value);
-    return this.layout((props) => (props.cropMarks = value));
+    return this.layout((props) => (props.cropmarks = value));
   }
 
   position(fn: (pos: t.IDevBuilderPosition) => void) {
