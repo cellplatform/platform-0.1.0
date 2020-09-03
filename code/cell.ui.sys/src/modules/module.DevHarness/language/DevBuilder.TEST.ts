@@ -1,7 +1,8 @@
 import { Subject } from 'rxjs';
 
-import { expect, rx, t } from '../../../test';
+import { expect, rx } from '../../../test';
 import { DevBuilder } from '.';
+import * as t from '../types';
 
 const create = DevBuilder.create;
 
@@ -164,32 +165,38 @@ describe('Dev (DSL)', () => {
 
       describe('position', () => {
         it('absolute: top/right/bottom/left', () => {
+          const abs = () => {
+            const obj = dev.props.layout.position?.absolute;
+            return obj ? [obj.top, obj.right, obj.bottom, obj.left] : undefined;
+          };
+
           const dev = create(bus).component('Foo');
-          expect(dev.props.layout.position?.absolute?.top).to.eql(undefined);
-          expect(dev.props.layout.position?.absolute?.right).to.eql(undefined);
-          expect(dev.props.layout.position?.absolute?.bottom).to.eql(undefined);
-          expect(dev.props.layout.position?.absolute?.left).to.eql(undefined);
+
+          expect(abs()).to.eql(undefined);
 
           dev.position((pos) => pos.absolute.top(10).right(20).bottom(30).left(40));
+          expect(abs()).to.eql([10, 20, 30, 40]);
 
-          expect(dev.props.layout.position?.absolute?.top).to.eql(10);
-          expect(dev.props.layout.position?.absolute?.right).to.eql(20);
-          expect(dev.props.layout.position?.absolute?.bottom).to.eql(30);
-          expect(dev.props.layout.position?.absolute?.left).to.eql(40);
+          dev.position((pos) => pos.absolute.xy(100));
+          expect(abs()).to.eql([100, 100, 100, 100]);
 
-          dev.position((pos) => pos.absolute.every(100));
+          dev.position((pos) => pos.absolute.xy(-10).top(123));
+          expect(abs()).to.eql([123, -10, -10, -10]);
 
-          expect(dev.props.layout.position?.absolute?.top).to.eql(100);
-          expect(dev.props.layout.position?.absolute?.right).to.eql(100);
-          expect(dev.props.layout.position?.absolute?.bottom).to.eql(100);
-          expect(dev.props.layout.position?.absolute?.left).to.eql(100);
+          dev.position((pos) => pos.absolute.xy(undefined));
+          expect(abs()).to.eql(undefined);
 
-          dev.position((pos) => pos.absolute.every(undefined));
+          dev.position((pos) => pos.absolute.x(10));
+          expect(abs()).to.eql([undefined, 10, undefined, 10]);
 
-          expect(dev.props.layout.position?.absolute?.top).to.eql(undefined);
-          expect(dev.props.layout.position?.absolute?.right).to.eql(undefined);
-          expect(dev.props.layout.position?.absolute?.bottom).to.eql(undefined);
-          expect(dev.props.layout.position?.absolute?.left).to.eql(undefined);
+          dev.position((pos) => pos.absolute.y(20));
+          expect(abs()).to.eql([20, 10, 20, 10]);
+
+          dev.position((pos) => pos.absolute.xy(undefined).left(10));
+          expect(abs()).to.eql([undefined, undefined, undefined, 10]);
+
+          dev.position((pos) => pos.absolute.left(undefined));
+          expect(abs()).to.eql(undefined);
         });
       });
     });

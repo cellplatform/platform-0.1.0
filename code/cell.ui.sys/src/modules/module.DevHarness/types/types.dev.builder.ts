@@ -47,7 +47,9 @@ export type IDevBuilderPositionAbsolute = {
   right(value: number | undefined): A;
   bottom(value: number | undefined): A;
   left(value: number | undefined): A;
-  every(value: number | undefined): A;
+  x(value: number | undefined): A;
+  y(value: number | undefined): A;
+  xy(value: number | undefined): A;
 };
 
 /**

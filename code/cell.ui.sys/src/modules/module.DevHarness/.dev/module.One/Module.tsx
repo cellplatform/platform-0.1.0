@@ -38,7 +38,7 @@ export const OneModule: t.SampleOneModuleDef = {
       .component('Bar')
       .label('two')
       .background(-0.06)
-      .position((pos) => pos.absolute.every(60))
+      .position((pos) => pos.absolute.xy(60))
       .render((e) => <div style={{ padding: 30 }}>hello two</div>);
 
     dev

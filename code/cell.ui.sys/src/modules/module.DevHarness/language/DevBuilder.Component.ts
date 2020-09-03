@@ -120,23 +120,34 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
   }
 
   position(fn: (pos: t.IDevBuilderPosition) => void) {
-    type A = NonNullable<t.IDevHostLayoutPosition['absolute']>;
+    type A = t.IDevHostLayoutAbsolute;
 
-    const setAbsolute = (key: keyof A, value?: number) => {
+    const change = (fn: (position: t.IDevHostLayoutPosition) => void) => {
       this.change.layout((props) => {
         const position = props.position || (props.position = {});
-        const absolute = position.absolute || (position.absolute = {});
-        absolute[key] = value;
+        fn(position);
+      });
+    };
+
+    const setAbsoluteKey = (key: keyof A, value?: number) => {
+      change((pos) => {
+        const abs = pos.absolute || (pos.absolute = {});
+        abs[key] = value;
+        if (Object.keys(abs).every((key) => abs[key] === undefined)) {
+          delete pos.absolute; // NB: All values empty - remove the object.
+        }
       });
       return absolute;
     };
 
     const absolute: t.IDevBuilderPositionAbsolute = {
-      top: (value) => setAbsolute('top', value),
-      right: (value) => setAbsolute('right', value),
-      bottom: (value) => setAbsolute('bottom', value),
-      left: (value) => setAbsolute('left', value),
-      every: (value) => absolute.top(value).right(value).bottom(value).left(value),
+      top: (value) => setAbsoluteKey('top', value),
+      right: (value) => setAbsoluteKey('right', value),
+      bottom: (value) => setAbsoluteKey('bottom', value),
+      left: (value) => setAbsoluteKey('left', value),
+      x: (value) => absolute.left(value).right(value),
+      y: (value) => absolute.top(value).bottom(value),
+      xy: (value) => absolute.x(value).y(value),
     };
 
     fn({ absolute });

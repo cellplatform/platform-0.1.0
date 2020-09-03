@@ -40,10 +40,12 @@ export type IDevHostLayout = {
 };
 
 export type IDevHostLayoutPosition = {
-  absolute?: {
-    top?: string | number;
-    right?: string | number;
-    bottom?: string | number;
-    left?: string | number;
-  };
+  absolute?: IDevHostLayoutAbsolute;
+};
+
+export type IDevHostLayoutAbsolute = {
+  top?: string | number;
+  right?: string | number;
+  bottom?: string | number;
+  left?: string | number;
 };
