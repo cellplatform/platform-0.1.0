@@ -172,8 +172,8 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
         <ui.ModuleView.Frame
           style={styles.base}
           bus={this.props.bus}
-          filter={this.viewFilter}
           target={MAIN}
+          filter={this.viewFilter}
           onBeforeRender={this.beforeRender}
         />
         {elChildren}
