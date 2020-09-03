@@ -82,17 +82,17 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
         }
       } else {
         // Within an open inline "twisty".
-        if (selected.isLast) {
-          // Step up and out of the "twisty" into the next item of the current list.
-          const parent = e.get.query.ancestor(selected.node, (e) => e.level === 2);
-          const children = parent?.children || [];
-          const index = children.findIndex((child) => child.id === selected.parent.id);
-          if (index > -1) {
-            select(children[index + 1]);
-          }
+        if (selected.props.inline?.isOpen && selected.children.length > 0) {
+          select(selected.children[0]);
         } else {
-          if (selected.props.inline?.isOpen && selected.children.length > 0) {
-            select(selected.children[0]);
+          if (selected.isLast) {
+            // Step up and out of the "twisty" into the next item of the current list.
+            const parent = e.get.query.ancestor(selected.node, (e) => e.level === 2);
+            const children = parent?.children || [];
+            const index = children.findIndex((child) => child.id === selected.parent.id);
+            if (index > -1) {
+              select(children[index + 1]);
+            }
           } else {
             select((selected.parent?.children || [])[selected.index + 1]);
           }
