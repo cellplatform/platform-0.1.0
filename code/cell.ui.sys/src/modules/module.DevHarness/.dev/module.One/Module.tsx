@@ -34,7 +34,7 @@ export const OneModule: t.SampleOneModuleDef = {
       .component('Child2')
       .label('baba')
       .background((e) => e.RED(0.1))
-      .border((e) => e.RED())
+      .border((e) => e.CYAN())
       .position((pos) => pos.absolute.bottom(0).right(0))
       .render(() => <div style={{ padding: 10 }}>Baba</div>);
 
