@@ -15,16 +15,26 @@ export function deriveColor(
   fn: t.DevBuilderColorEditor,
   defaults: { color?: string; opacity?: number } = {},
 ) {
+  const color = colorEditor(defaults);
+  fn(color.args);
+  return color.toString();
+}
+
+export function colorEditor(defaults: { color?: string; opacity?: number } = {}) {
+  let count = 0;
+
   let color = colorUtil
     .create(defaults.color || COLORS.INK)
     .setAlpha(defaultValue(defaults.opacity, 1));
 
   const alpha = (opacity?: number) => {
+    count++;
     color.setAlpha(defaultValue(opacity, 1));
     return args;
   };
 
   const format = (value: string | number, opacity?: number) => {
+    count++;
     value = typeof value === 'string' ? value : (colorUtil.format(value) as string);
     color = colorUtil.create(value);
     return alpha(opacity);
@@ -32,7 +42,7 @@ export function deriveColor(
 
   const args: t.DevBuilderColor = {
     opacity: (value) => alpha(value),
-    set: (value) => format(value),
+    color: (value) => format(value),
     INK: (opacity) => format(COLORS.INK, opacity),
     WHITE: (opacity) => format(COLORS.WHITE, opacity),
     BLACK: (opacity) => format(COLORS.BLACK, opacity),
@@ -43,7 +53,11 @@ export function deriveColor(
     YELLOW: (opacity) => format(COLORS.YELLOW, opacity),
   };
 
-  fn(args);
-
-  return color.toPercentageRgbString();
+  return {
+    args,
+    get changed() {
+      return count > 0;
+    },
+    toString: () => color.toPercentageRgbString(),
+  };
 }

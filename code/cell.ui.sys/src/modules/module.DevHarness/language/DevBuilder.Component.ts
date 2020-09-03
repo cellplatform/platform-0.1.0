@@ -114,9 +114,13 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
     return this.change.layout((props) => (props.background = value as string));
   }
 
-  public border(value: number | boolean) {
-    value = clampColor(value);
-    return this.change.layout((props) => (props.border = value));
+  public border(value: number | boolean | t.DevBuilderColorEditor) {
+    const border =
+      typeof value === 'function'
+        ? deriveColor(value, { color: COLORS.WHITE, opacity: 0.3 })
+        : clampColor(value);
+
+    return this.change.layout((props) => (props.border = border));
   }
 
   public cropmarks(value: number | boolean) {

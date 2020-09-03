@@ -17,6 +17,8 @@ export const OneModule: t.SampleOneModuleDef = {
       .label('one')
       .width(350)
       .height(250)
+      .background((e) => e.RED(0.1))
+      // .border((border) => border.color)
       .sidebar((e) => <div>sidebar 1</div>)
       .render((e) => <div style={{ padding: 30 }}>hello one</div>);
 
@@ -31,8 +33,8 @@ export const OneModule: t.SampleOneModuleDef = {
     child1
       .component('Child2')
       .label('baba')
-      .background((color) => color.RED(0.1))
-      // .border(3)
+      .background((e) => e.RED(0.1))
+      .border((e) => e.RED())
       .position((pos) => pos.absolute.bottom(0).right(0))
       .render(() => <div style={{ padding: 10 }}>Baba</div>);
 

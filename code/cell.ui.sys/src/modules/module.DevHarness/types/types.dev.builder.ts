@@ -29,7 +29,7 @@ export type DevBuilderComponent = {
   width(value: number | string | undefined): C;
   height(value: number | string | undefined): C;
   background(value: number | string | undefined | DevBuilderColorEditor): C;
-  border(value: boolean | number): C;
+  border(value: boolean | number | DevBuilderColorEditor): C;
   cropmarks(value: boolean | number): C;
   position(fn: DevBuilderPositionEditor): C;
   component(name: string): C;
@@ -49,14 +49,13 @@ export type DevBuilderColor = {
   GREEN(opacity?: number): DevBuilderColor;
   YELLOW(opacity?: number): DevBuilderColor;
   opacity(value: number): DevBuilderColor;
-  set(value: string | number): DevBuilderColor;
+  color(value: string | number): DevBuilderColor;
 };
 
 /**
  * Tools for defining the position of a component.
  */
 export type DevBuilderPositionEditor = (pos: DevBuilderPosition) => void;
-
 export type DevBuilderPosition = {
   absolute: A;
 };
