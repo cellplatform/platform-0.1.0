@@ -1,5 +1,7 @@
-import { t, Module, DEFAULT, R } from '../common';
 import { TypeSystem } from '@platform/cell.typesystem';
+
+import { DEFAULT, Module, R, t } from '../common';
+import { deriveColor, COLORS } from './DevBuilder.color';
 
 type B = t.EventBus;
 type P = t.HarnessProps;
@@ -10,11 +12,11 @@ type IArgs = { name: string; bus: B; module: t.HarnessModule; parent: string };
 /**
  * Represents a single component.
  */
-export class DevBuilderComponent implements t.IDevBuilderComponent {
+export class DevBuilderComponent implements t.DevBuilderComponent {
   /**
    * [Lifecycle]
    */
-  public static create(args: IArgs): t.IDevBuilderComponent {
+  public static create(args: IArgs): t.DevBuilderComponent {
     return new DevBuilderComponent(args);
   }
 
@@ -53,7 +55,7 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
   private readonly bus: B;
   private readonly module: t.HarnessModule;
   private readonly events: t.IViewModuleEvents<any>;
-  private readonly components: t.IDevBuilderComponent[] = [];
+  private readonly components: t.DevBuilderComponent[] = [];
   private readonly view: NonNullable<t.IDevHost['view']> = {
     component: `component-${Module.Identity.slug()}`,
     sidebar: `sidebar-${Module.Identity.slug()}`,
@@ -104,9 +106,12 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
     return this.change.layout((props) => (props.height = clean(value)));
   }
 
-  public background(value: number | string | undefined) {
-    value = clampColor(clean(value));
-    return this.change.layout((props) => (props.background = value));
+  public background(value: number | string | undefined | t.DevBuilderColorEditor) {
+    value =
+      typeof value === 'function'
+        ? deriveColor(value, { color: COLORS.RED, opacity: 0.1 })
+        : clampColor(clean(value));
+    return this.change.layout((props) => (props.background = value as string));
   }
 
   public border(value: number | boolean) {
@@ -119,7 +124,7 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
     return this.change.layout((props) => (props.cropmarks = value));
   }
 
-  position(fn: (pos: t.IDevBuilderPosition) => void) {
+  position(fn: (pos: t.DevBuilderPosition) => void) {
     type A = t.IDevHostLayoutAbsolute;
 
     const change = (fn: (position: t.IDevHostLayoutPosition) => void) => {
@@ -140,7 +145,7 @@ export class DevBuilderComponent implements t.IDevBuilderComponent {
       return absolute;
     };
 
-    const absolute: t.IDevBuilderPositionAbsolute = {
+    const absolute: t.DevBuilderPositionAbsolute = {
       top: (value) => setAbsoluteKey('top', value),
       right: (value) => setAbsoluteKey('right', value),
       bottom: (value) => setAbsoluteKey('bottom', value),

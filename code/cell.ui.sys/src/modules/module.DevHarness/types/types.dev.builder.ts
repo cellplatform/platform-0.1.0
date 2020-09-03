@@ -1,25 +1,25 @@
 import { t } from '../common';
 
-export type DevFactory = (bus: t.EventBus, label?: string) => IDevBuilder;
+type C = DevBuilderComponent;
+type A = DevBuilderPositionAbsolute;
 
-type C = IDevBuilderComponent;
-type A = IDevBuilderPositionAbsolute;
+export type DevFactory = (bus: t.EventBus, label?: string) => DevBuilder;
 
 /**
  * A suite of components to test.
  */
-export type IDevBuilder = t.IDisposable & {
+export type DevBuilder = t.IDisposable & {
   id: string;
   module: t.HarnessModule;
   props: t.IDevProps;
-  label(value: string): IDevBuilder; // Treeview node label.
+  label(value: string): DevBuilder; // Treeview node label.
   component(name: string): C;
 };
 
 /**
  * The test configuration for a single component under test.
  */
-export type IDevBuilderComponent = {
+export type DevBuilderComponent = {
   id: string;
   props: t.IDevComponentProps;
   name(value: string): C;
@@ -28,21 +28,40 @@ export type IDevBuilderComponent = {
   sidebar(fn: DevRenderSidebar): C;
   width(value: number | string | undefined): C;
   height(value: number | string | undefined): C;
-  background(value: number | string | undefined): C;
+  background(value: number | string | undefined | DevBuilderColorEditor): C;
   border(value: boolean | number): C;
   cropmarks(value: boolean | number): C;
-  position(fn: (pos: IDevBuilderPosition) => void): C;
+  position(fn: DevBuilderPositionEditor): C;
   component(name: string): C;
+};
+
+/**
+ * Tools for defining a color.
+ */
+export type DevBuilderColorEditor = (color: DevBuilderColor) => void;
+export type DevBuilderColor = {
+  INK(opacity?: number): DevBuilderColor;
+  WHITE(opacity?: number): DevBuilderColor;
+  BLACK(opacity?: number): DevBuilderColor;
+  RED(opacity?: number): DevBuilderColor;
+  MAGENTA(opacity?: number): DevBuilderColor;
+  CYAN(opacity?: number): DevBuilderColor;
+  GREEN(opacity?: number): DevBuilderColor;
+  YELLOW(opacity?: number): DevBuilderColor;
+  opacity(value: number): DevBuilderColor;
+  set(value: string | number): DevBuilderColor;
 };
 
 /**
  * Tools for defining the position of a component.
  */
-export type IDevBuilderPosition = {
+export type DevBuilderPositionEditor = (pos: DevBuilderPosition) => void;
+
+export type DevBuilderPosition = {
   absolute: A;
 };
 
-export type IDevBuilderPositionAbsolute = {
+export type DevBuilderPositionAbsolute = {
   top(value: number | undefined): A;
   right(value: number | undefined): A;
   bottom(value: number | undefined): A;

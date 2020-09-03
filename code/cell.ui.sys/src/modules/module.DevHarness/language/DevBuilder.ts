@@ -7,11 +7,11 @@ type IArgs = { bus: B; label?: string };
 /**
  * API for building out component tests within the DevHarness.
  */
-export class DevBuilder implements t.IDevBuilder {
+export class DevBuilder implements t.DevBuilder {
   /**
    * [Lifecycle]
    */
-  public static create(bus: B, label?: string): t.IDevBuilder {
+  public static create(bus: B, label?: string): t.DevBuilder {
     return new DevBuilder({ bus, label });
   }
 
@@ -37,7 +37,7 @@ export class DevBuilder implements t.IDevBuilder {
    */
   private readonly bus: B;
   public readonly module: t.HarnessModule;
-  private readonly components: t.IDevBuilderComponent[] = [];
+  private readonly components: t.DevBuilderComponent[] = [];
 
   /**
    * [Properties]

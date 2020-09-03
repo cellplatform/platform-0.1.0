@@ -109,26 +109,6 @@ describe('Dev (DSL)', () => {
         expect(dev.props.layout.height).to.eql(undefined);
       });
 
-      it('background', () => {
-        const dev = create(bus).component('Foo');
-        expect(dev.props.layout.background).to.eql(undefined);
-
-        dev.background(-50);
-        expect(dev.props.layout.background).to.eql(-1);
-
-        dev.background(50);
-        expect(dev.props.layout.background).to.eql(1);
-
-        dev.background(0);
-        expect(dev.props.layout.background).to.eql(0);
-
-        dev.background('  #fff  ');
-        expect(dev.props.layout.background).to.eql('#fff');
-
-        dev.background(undefined);
-        expect(dev.props.layout.background).to.eql(undefined);
-      });
-
       it('border', () => {
         const dev = create(bus).component('Foo');
         expect(dev.props.layout.border).to.eql(undefined);
@@ -161,6 +141,72 @@ describe('Dev (DSL)', () => {
 
         dev.cropmarks(-50);
         expect(dev.props.layout.cropmarks).to.eql(-1);
+      });
+
+      describe('background', () => {
+        it('string | number', () => {
+          const dev = create(bus).component('Foo');
+          expect(dev.props.layout.background).to.eql(undefined);
+
+          dev.background(-50);
+          expect(dev.props.layout.background).to.eql(-1);
+
+          dev.background(50);
+          expect(dev.props.layout.background).to.eql(1);
+
+          dev.background(0);
+          expect(dev.props.layout.background).to.eql(0);
+
+          dev.background('  #fff  ');
+          expect(dev.props.layout.background).to.eql('#fff');
+
+          dev.background(undefined);
+          expect(dev.props.layout.background).to.eql(undefined);
+        });
+
+        it.only('function: color constants', () => {
+          const dev = create(bus).component('Foo');
+          const bg = () => dev.props.layout.background;
+
+          dev.background((col) => col.RED());
+          expect(bg()).to.eql('rgb(100%, 0%, 0%)');
+
+          dev.background((col) => col.RED().RED(0.3));
+          expect(bg()).to.eql('rgba(100%, 0%, 0%, 0.3)');
+
+          dev.background((col) => col.opacity(0.1));
+          expect(bg()).to.eql('rgba(100%, 0%, 0%, 0.1)'); // NB: Default red
+
+          dev.background((col) => col.BLACK().opacity(0.1));
+          expect(bg()).to.eql('rgba(0%, 0%, 0%, 0.1)');
+        });
+
+        it.only('function: set', () => {
+          const dev = create(bus).component('Foo');
+          const bg = () => dev.props.layout.background;
+
+          // Hex.
+          dev.background((col) => col.set('ED3C6E'));
+          expect(bg()).to.eql('rgb(93%, 24%, 43%)');
+
+          // Black (number).
+          dev.background((col) => col.set(-1));
+          expect(bg()).to.eql('rgb(0%, 0%, 0%)');
+
+          dev.background((col) => col.set(-99));
+          expect(bg()).to.eql('rgb(0%, 0%, 0%)');
+
+          // White (number).
+          dev.background((col) => col.set(1));
+          expect(bg()).to.eql('rgb(100%, 100%, 100%)');
+
+          dev.background((col) => col.set(99));
+          expect(bg()).to.eql('rgb(100%, 100%, 100%)');
+
+          // Alpha.
+          dev.background((col) => col.set(-1).opacity(0.2));
+          expect(bg()).to.eql('rgba(0%, 0%, 0%, 0.2)');
+        });
       });
 
       describe('position', () => {
