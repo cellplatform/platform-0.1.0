@@ -91,7 +91,11 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
             select(children[index + 1]);
           }
         } else {
-          select((selected.parent?.children || [])[selected.index + 1]);
+          if (selected.props.inline?.isOpen && selected.children.length > 0) {
+            select(selected.children[0]);
+          } else {
+            select((selected.parent?.children || [])[selected.index + 1]);
+          }
         }
       }
     }
