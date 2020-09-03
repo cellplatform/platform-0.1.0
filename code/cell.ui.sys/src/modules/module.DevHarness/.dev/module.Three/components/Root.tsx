@@ -101,21 +101,21 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
         <div {...styles.body}>
           <div {...css(styles.edge, styles.left)} className={'left-outer'}>
             <ui.ModuleView.Frame
+              style={styles.frame}
               bus={ctx.bus}
               filter={this.viewFilter}
               target={'PANEL/left'}
-              style={styles.frame}
-              debug={true}
+              debug={'target: PANEL/left'}
             />
           </div>
           <div {...styles.spacer} />
           <div {...css(styles.edge, styles.right)} className={'right-outer'}>
             <ui.ModuleView.Frame
+              style={styles.frame}
               bus={ctx.bus}
               filter={this.viewFilter}
               target={'PANEL/right'}
-              style={styles.frame}
-              debug={true}
+              debug={'target: PANEL/right'}
             />
           </div>
         </div>
