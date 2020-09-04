@@ -51,16 +51,32 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
    * BEHAVIOR: Select the first-node when the [HOME] key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'Home')).subscribe((e) => {
-    const children = e.get.children(e.current);
-    select(children[0]);
+    const { selected } = e.get;
+    if (selected.isFirst && selected.parent.isInlineAndOpen) {
+      const next = selected.parent.parent.children[0];
+      if (next) {
+        select(next);
+      }
+    } else {
+      select(selected.parent.children[0]);
+    }
   });
 
   /**
    * BEHAVIOR: Select the last-node when the [END] key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'End')).subscribe((e) => {
-    const children = e.get.children(e.current);
-    select(children[children.length - 1]);
+    const { selected } = e.get;
+    if (selected.isLast && selected.parent.isInlineAndOpen) {
+      const children = selected.parent.parent.children;
+      const next = children[children.length - 1];
+      if (next) {
+        select(next);
+      }
+    } else {
+      const children = selected.parent.children;
+      select(children[children.length - 1]);
+    }
   });
 
   /**
