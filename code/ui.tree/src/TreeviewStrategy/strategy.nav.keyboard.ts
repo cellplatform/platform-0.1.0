@@ -143,7 +143,7 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
       selection({ current: e.current, selected: selected.parent.id });
     } else {
       const parent = current.parent;
-      if (parent && !parent.isRoot && !parent.isInlineAndOpen) {
+      if (parent && !current.isRoot && !parent.isInlineAndOpen) {
         selection({ current: parent.id, selected: e.current });
       }
     }
