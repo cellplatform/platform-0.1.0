@@ -78,6 +78,9 @@ export function get(tree: t.ITreeState) {
       get index() {
         return get.children(api.parent).findIndex((child) => child.id === id);
       },
+      get isRoot() {
+        return !api.parent.id;
+      },
       get isFirst() {
         return api.index === 0;
       },

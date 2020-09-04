@@ -135,18 +135,15 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
    * BEHAVIOR: Step up to the parent-node when the [LEFT] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowLeft')).subscribe((e) => {
-    const selected = e.get.selected;
-    if (selected.props.inline?.isOpen) {
+    const { selected, current } = e.get;
+    if (selected.isInlineAndOpen) {
       e.mutate.close(selected.id);
-    } else if (
-      util.props(selected.parent).inline?.isOpen &&
-      e.query.parent(selected.parent)?.id === e.current
-    ) {
+    } else if (selected.parent.isInlineAndOpen) {
       e.mutate.close(selected.parent.id);
       selection({ current: e.current, selected: selected.parent.id });
     } else {
-      const parent = e.query.parent(e.get.current);
-      if (parent) {
+      const parent = current.parent;
+      if (parent && !parent.isRoot && !parent.isInlineAndOpen) {
         selection({ current: parent.id, selected: e.current });
       }
     }

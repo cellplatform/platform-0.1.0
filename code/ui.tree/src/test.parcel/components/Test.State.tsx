@@ -18,7 +18,23 @@ const DEFAULT: Node = {
   children: [
     {
       id: 'Default-1',
-      children: [{ id: 'Child-1.1' }, { id: 'Child-1.2' }, { id: 'Child-1.3' }],
+      children: [
+        { id: 'Child-1.1' },
+        {
+          id: 'Child-1.2',
+          props: { treeview: { inline: {} } },
+          children: [
+            {
+              id: 'Child-1.2.1',
+              props: { treeview: { inline: {} } },
+              children: [{ id: 'Child-1.2.1.1' }, { id: 'Child-1.2.1.2' }, { id: 'Child-1.2.1.3' }],
+            },
+            { id: 'Child-1.2.2' },
+            { id: 'Child-1.2.3' },
+          ],
+        },
+        { id: 'Child-1.3' },
+      ],
     },
     {
       id: 'Default-2',
