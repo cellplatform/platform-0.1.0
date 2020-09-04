@@ -1,10 +1,9 @@
 /* eslint-disable react/display-name */
-
 import * as React from 'react';
-import { Dev as dev } from './api';
 
 import { Module } from './common';
 import { Layout } from './components/Layout';
+import { dev } from './language';
 import { strategy } from './strategy';
 import * as t from './types';
 
@@ -14,12 +13,12 @@ export const Harness: t.HarnessDef = {
   Layout: (props) => <Layout {...props} />,
 
   /**
-   * Module initialization
+   * Development module builder (DSL).
    */
   dev,
 
   /**
-   * ENTRY: Initialize a new module from the definition.
+   * Harness module initialization.
    */
   module(bus) {
     const harness = Module.create<P>({ bus });

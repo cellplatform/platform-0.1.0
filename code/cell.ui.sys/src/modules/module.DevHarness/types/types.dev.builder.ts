@@ -1,30 +1,73 @@
 import { t } from '../common';
 
-export type DevFactory = (bus: t.EventBus, label?: string) => IDevBuilder;
+type C = DevBuilderComponent;
+type A = DevBuilderPositionAbsolute;
+
+export type DevFactory = (bus: t.EventBus, label?: string) => DevBuilder;
 
 /**
  * A suite of components to test.
  */
-export type IDevBuilder = t.IDisposable & {
+export type DevBuilder = t.IDisposable & {
+  id: string;
   module: t.HarnessModule;
   props: t.IDevProps;
-  label(value: string): IDevBuilder;
-  component(name: string): IDevComponentBuilder;
+  label(value: string): DevBuilder; // Treeview node label.
+  component(name: string): C;
 };
 
 /**
  * The test configuration for a single component under test.
  */
-export type IDevComponentBuilder = {
+export type DevBuilderComponent = {
+  id: string;
   props: t.IDevComponentProps;
-  name(value: string): IDevComponentBuilder;
-  label(value: string): IDevComponentBuilder; // Treeview node label.
-  render(fn: DevRenderComponent): IDevComponentBuilder;
-  sidebar(fn: DevRenderSidebar): IDevComponentBuilder;
-  width(value: number | string | undefined): IDevComponentBuilder;
-  height(value: number | string | undefined): IDevComponentBuilder;
-  border(value: boolean | number): IDevComponentBuilder;
-  cropMarks(value: boolean | number): IDevComponentBuilder;
+  name(value: string): C;
+  label(value: string): C; // Treeview node label.
+  render(fn: DevRenderComponent): C;
+  sidebar(fn: DevRenderSidebar): C;
+  width(value: number | string | undefined): C;
+  height(value: number | string | undefined): C;
+  background(value: number | string | undefined | DevBuilderColorEditor): C;
+  border(value: boolean | number | DevBuilderColorEditor): C;
+  cropmarks(value: boolean | number): C;
+  position(fn: DevBuilderPositionEditor): C;
+  component(name: string): C;
+};
+
+/**
+ * Tools for defining a color.
+ */
+export type DevBuilderColorEditor = (color: DevBuilderColor) => void;
+export type DevBuilderColor = {
+  INK(opacity?: number): DevBuilderColor;
+  WHITE(opacity?: number): DevBuilderColor;
+  BLACK(opacity?: number): DevBuilderColor;
+  RED(opacity?: number): DevBuilderColor;
+  MAGENTA(opacity?: number): DevBuilderColor;
+  CYAN(opacity?: number): DevBuilderColor;
+  GREEN(opacity?: number): DevBuilderColor;
+  YELLOW(opacity?: number): DevBuilderColor;
+  opacity(value: number): DevBuilderColor;
+  color(value: string | number): DevBuilderColor;
+};
+
+/**
+ * Tools for defining the position of a component.
+ */
+export type DevBuilderPositionEditor = (pos: DevBuilderPosition) => void;
+export type DevBuilderPosition = {
+  absolute: A;
+};
+
+export type DevBuilderPositionAbsolute = {
+  top(value: number | undefined): A;
+  right(value: number | undefined): A;
+  bottom(value: number | undefined): A;
+  left(value: number | undefined): A;
+  x(value: number | undefined): A;
+  y(value: number | undefined): A;
+  xy(value: number | undefined): A;
 };
 
 /**
@@ -32,5 +75,5 @@ export type IDevComponentBuilder = {
  */
 export type DevRenderContext = {};
 export type DevRenderResponse = JSX.Element | null;
-export type DevRenderComponent = (e: DevRenderContext) => DevRenderResponse | void;
-export type DevRenderSidebar = (e: DevRenderContext) => DevRenderResponse | void;
+export type DevRenderComponent = (ctx: DevRenderContext) => DevRenderResponse | void;
+export type DevRenderSidebar = (ctx: DevRenderContext) => DevRenderResponse | void;

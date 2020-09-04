@@ -4,6 +4,8 @@ import { filter, map } from 'rxjs/operators';
 import { t } from '../common';
 import * as util from './util';
 
+type N = t.ITreeviewNode;
+
 /**
  * Strategy for navigating the tree via the keyboard.
  */
@@ -49,51 +51,31 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
    * BEHAVIOR: Select the first-node when the [HOME] key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'Home')).subscribe((e) => {
-    const children = e.get.children(e.current);
-    select(children[0]);
+    const { selected } = e.get;
+    if (selected.isFirst && selected.parent.isInlineAndOpen) {
+      const next = selected.parent.parent.children[0];
+      if (next) {
+        select(next);
+      }
+    } else {
+      select(selected.parent.children[0]);
+    }
   });
 
   /**
    * BEHAVIOR: Select the last-node when the [END] key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'End')).subscribe((e) => {
-    const children = e.get.children(e.current);
-    select(children[children.length - 1]);
-  });
-
-  /**
-   * BEHAVIOR: Select the next-node when the [DOWN] arrow-key is pressed.
-   */
-  key$.pipe(filter((e) => e.key === 'ArrowDown')).subscribe((e) => {
-    const selected = e.get.selected;
-
-    if (!selected.id) {
-      // Nothing yet selected, select first child.
-      const current = e.get.current;
-      select(current.children[0]);
-    } else {
-      const isDirectChild = !Boolean(selected.parent.props?.treeview?.inline);
-
-      if (isDirectChild) {
-        if (selected.props.inline?.isOpen && selected.children.length > 0) {
-          select(selected.children[0]);
-        } else {
-          select((selected.parent.children || [])[selected.index + 1]);
-        }
-      } else {
-        // Within an open inline "twisty".
-        if (selected.isLast) {
-          // Step up and out of the "twisty" into the next item of the current list.
-          const parent = e.get.query.ancestor(selected.node, (e) => e.level === 2);
-          const children = parent?.children || [];
-          const index = children.findIndex((child) => child.id === selected.parent.id);
-          if (index > -1) {
-            select(children[index + 1]);
-          }
-        } else {
-          select((selected.parent?.children || [])[selected.index + 1]);
-        }
+    const { selected } = e.get;
+    if (selected.isLast && selected.parent.isInlineAndOpen) {
+      const children = selected.parent.parent.children;
+      const next = children[children.length - 1];
+      if (next) {
+        select(next);
       }
+    } else {
+      const children = selected.parent.children;
+      select(children[children.length - 1]);
     }
   });
 
@@ -101,34 +83,41 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
    * BEHAVIOR: Select the previous-node when the [UP] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowUp')).subscribe((e) => {
-    const selected = e.get.selected;
-    const current = e.get.current;
-
+    const { selected, current } = e.get;
     if (!selected.id) {
       // Nothing yet selected, select last child.
       select(current.children[current.children.length - 1]);
     } else {
-      const isDirectChild = !Boolean(selected.parent.props?.treeview?.inline);
-
-      if (isDirectChild) {
-        const prev = selected.prev;
-        if (prev?.props.inline?.isOpen && prev.children.length > 0) {
-          // The previous item is an open inline "twisty"...select the last node within it.
-          const children = prev.children || [];
-          select(children[children.length - 1]);
-        } else {
-          select(prev?.node);
-        }
+      const prev = selected.prev;
+      if (prev) {
+        select(prev.isInlineAndOpen ? prev.deepestOpenChild('LAST') : prev);
       } else {
-        // Within an open inline "twisty".
-        if (selected.isFirst) {
-          // Step up and out of the "twisty" into the parent.
-          const index = current.children.findIndex((child) => child.id === selected.parent?.id);
-          if (index > -1) {
-            select(current.children[index]);
-          }
+        if (selected.parent.isInlineAndOpen) {
+          select(selected.parent);
+        }
+      }
+    }
+  });
+
+  /**
+   * BEHAVIOR: Select the next-node when the [DOWN] arrow-key is pressed.
+   */
+  key$.pipe(filter((e) => e.key === 'ArrowDown')).subscribe((e) => {
+    const { selected } = e.get;
+    if (!selected.id) {
+      // Nothing yet selected, select first child.
+      select(e.get.current.children[0]);
+    } else {
+      if (selected.isInlineAndOpen) {
+        select(selected.children[0]);
+      } else {
+        if (!selected.isLast) {
+          select(selected.parent.children[selected.index + 1]);
         } else {
-          select(selected.prev?.node);
+          const parent = selected.nearestNonLastAncestor;
+          if (parent && parent.index > -1 && parent.parent) {
+            select(parent.parent.children[parent.index + 1]);
+          }
         }
       }
     }
@@ -161,18 +150,15 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
    * BEHAVIOR: Step up to the parent-node when the [LEFT] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowLeft')).subscribe((e) => {
-    const selected = e.get.selected;
-    if (selected.props.inline?.isOpen) {
+    const { selected, current } = e.get;
+    if (selected.isInlineAndOpen) {
       e.mutate.close(selected.id);
-    } else if (
-      util.props(selected.parent).inline?.isOpen &&
-      e.query.parent(selected.parent)?.id === e.current
-    ) {
+    } else if (selected.parent.isInlineAndOpen) {
       e.mutate.close(selected.parent.id);
       selection({ current: e.current, selected: selected.parent.id });
     } else {
-      const parent = e.query.parent(e.get.current);
-      if (parent) {
+      const parent = current.parent;
+      if (parent && !current.isRoot && !parent.isInlineAndOpen) {
         selection({ current: parent.id, selected: e.current });
       }
     }

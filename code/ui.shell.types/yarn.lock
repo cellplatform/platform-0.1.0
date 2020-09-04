@@ -198,10 +198,10 @@
     "@platform/state.types" "^0.0.3"
     "@platform/types" "0.5.5"
 
-"@platform/ui.tree@0.8.3":
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.8.3.tgz#db48d7704127abb94d8a80e357003c1cf0472a80"
-  integrity sha512-m5nNr6Rtra5Oqh3Ow5SrZ/3jFV/SsUIGAeuF2WxRNLzWf/lklQwZQRtOhqhkadnXpWencimNaHT3y/giepMDrQ==
+"@platform/ui.tree@0.8.4":
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.8.4.tgz#a5c8eb801803785b29394cd9fd27fab8c8247d38"
+  integrity sha512-Kjotkxj6ZPh7snW0ipCGKBE19AvvxZjFo5gpaWdlggTBENo6FOWFdOwT0HXZ+MXbfgv3VMpC1E+aLTH6IYJeKA==
   dependencies:
     "@platform/css" "0.4.12"
     "@platform/react" "0.4.45"

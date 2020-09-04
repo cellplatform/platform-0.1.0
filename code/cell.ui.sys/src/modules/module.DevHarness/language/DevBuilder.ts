@@ -1,5 +1,5 @@
 import { t, Module, DEFAULT, R } from '../common';
-import { DevComponent } from './DevComponent';
+import { DevBuilderComponent } from './DevBuilder.Component';
 
 type B = t.EventBus;
 type IArgs = { bus: B; label?: string };
@@ -7,12 +7,12 @@ type IArgs = { bus: B; label?: string };
 /**
  * API for building out component tests within the DevHarness.
  */
-export class Dev implements t.IDevBuilder {
+export class DevBuilder implements t.DevBuilder {
   /**
    * [Lifecycle]
    */
-  public static create(bus: B, label?: string): t.IDevBuilder {
-    return new Dev({ bus, label });
+  public static create(bus: B, label?: string): t.DevBuilder {
+    return new DevBuilder({ bus, label });
   }
 
   private constructor(args: IArgs) {
@@ -37,7 +37,7 @@ export class Dev implements t.IDevBuilder {
    */
   private readonly bus: B;
   public readonly module: t.HarnessModule;
-  private readonly components: t.IDevComponentBuilder[] = [];
+  private readonly components: t.DevBuilderComponent[] = [];
 
   /**
    * [Properties]
@@ -51,10 +51,15 @@ export class Dev implements t.IDevBuilder {
     return this.module.dispose$;
   }
 
+  public get id() {
+    return this.module.id;
+  }
+
   public get props(): t.IDevProps {
+    const id = this.id;
     const props = this.module.root.props;
     const treeview = props?.treeview || {};
-    return R.clone({ treeview });
+    return R.clone({ id, treeview });
   }
 
   /**
@@ -85,7 +90,8 @@ export class Dev implements t.IDevBuilder {
 
     const bus = this.bus;
     const module = this.module;
-    const component = DevComponent.create({ name, bus, module });
+    const parent = this.module.root.id;
+    const component = DevBuilderComponent.create({ name, bus, module, parent });
 
     this.components.push(component);
     return component;

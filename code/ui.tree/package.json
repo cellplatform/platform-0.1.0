@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.tree",
   "description": "A hierarchical tree visualisation and navigation component.",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {

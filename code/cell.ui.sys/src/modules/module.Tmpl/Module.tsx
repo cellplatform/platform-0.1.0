@@ -13,12 +13,12 @@ export const TmplModule: t.TmplModuleDef = {
    *    Module.register(bus, module, parent)
    *
    */
-  init(bus) {
+  module(bus) {
     const module = Module.create<P>({
       bus,
       root: {
         id: 'tmpl',
-        props: { treeview: { label: 'Template' }, view: 'DEFAULT' },
+        props: { treeview: { label: 'Template' }, view: 'Default' },
       },
     });
 
@@ -48,8 +48,8 @@ export const TmplModule: t.TmplModuleDef = {
 function renderer(events: t.IViewModuleEvents<P>) {
   const render = events.render;
 
-  render('DEFAULT').subscribe((e) => {
-    const el = <div style={{ padding: 20 }}>Template</div>;
+  render('Default').subscribe((e) => {
+    const el = <div style={{ padding: 20 }}>Shell</div>;
     e.render(el);
   });
 
@@ -57,7 +57,7 @@ function renderer(events: t.IViewModuleEvents<P>) {
    * Wildcard.
    */
   render('404').subscribe((e) => {
-    const el = <div style={{ padding: 20 }}>Template (404)</div>;
+    const el = <div style={{ padding: 20 }}>Shell (404)</div>;
     e.render(el);
   });
 }

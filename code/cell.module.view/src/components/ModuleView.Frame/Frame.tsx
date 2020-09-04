@@ -9,7 +9,7 @@ export type IModuleViewFrameProps = {
   bus: t.EventBus<any>;
   filter?: t.ModuleFilterView<any, any>;
   target?: string; // Optional "view target" to apply as an additional filter before rendering.
-  debug?: boolean;
+  debug?: string;
   style?: CssValue;
   onBeforeRender?: (e: t.IModuleRendered<any>) => void;
 };
@@ -60,6 +60,9 @@ export class ModuleViewFrame extends React.PureComponent<
    * [Render]
    */
   public render() {
+    const { debug } = this.props;
+    const { rendered } = this.state;
+
     const styles = {
       base: css({
         display: 'flex',
@@ -68,13 +71,10 @@ export class ModuleViewFrame extends React.PureComponent<
       }),
     };
 
-    const { rendered } = this.state;
-    const elDebug = rendered?.el && this.props.debug && <DebugHeader rendered={rendered} />;
-
     return (
       <div {...css(styles.base, this.props.style)}>
         {rendered?.el}
-        {elDebug}
+        {rendered?.el && debug && <DebugHeader text={debug} />}
       </div>
     );
   }
