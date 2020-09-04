@@ -80,7 +80,7 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
           select(selected.parent.children[selected.index + 1]);
         } else {
           const parent = selected.nearestNonLastAncestor;
-          if (parent && parent.parent) {
+          if (parent && parent.index > -1 && parent.parent) {
             select(parent.parent.children[parent.index + 1]);
           }
         }
@@ -92,34 +92,17 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
    * BEHAVIOR: Select the previous-node when the [UP] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowUp')).subscribe((e) => {
-    const selected = e.get.selected;
-    const current = e.get.current;
-
+    const { selected, current } = e.get;
     if (!selected.id) {
       // Nothing yet selected, select last child.
       select(current.children[current.children.length - 1]);
     } else {
-      const isDirectChild = !Boolean(selected.parent.props.inline);
-
-      if (isDirectChild) {
-        const prev = selected.prev;
-        if (prev?.props.inline?.isOpen && prev.children.length > 0) {
-          // The previous item is an open inline "twisty"...select the last node within it.
-          const children = prev.children || [];
-          select(children[children.length - 1]);
-        } else {
-          select(prev?.node);
-        }
+      const prev = selected.prev;
+      if (prev) {
+        select(prev.isInlineAndOpen ? prev.deepestOpenChild('LAST') : prev);
       } else {
-        // Within an open inline "twisty".
-        if (selected.isFirst) {
-          // Step up and out of the "twisty" into the parent.
-          const index = current.children.findIndex((child) => child.id === selected.parent?.id);
-          if (index > -1) {
-            select(current.children[index]);
-          }
-        } else {
-          select(selected.prev?.node);
+        if (selected.parent.isInlineAndOpen) {
+          select(selected.parent);
         }
       }
     }
