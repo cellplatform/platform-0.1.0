@@ -64,31 +64,6 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
   });
 
   /**
-   * BEHAVIOR: Select the next-node when the [DOWN] arrow-key is pressed.
-   */
-  key$.pipe(filter((e) => e.key === 'ArrowDown')).subscribe((e) => {
-    const selected = e.get.selected;
-
-    if (!selected.id) {
-      // Nothing yet selected, select first child.
-      select(e.get.current.children[0]);
-    } else {
-      if (selected.isInlineAndOpen) {
-        select(selected.deepestOpenChild('FIRST'));
-      } else {
-        if (!selected.isLast) {
-          select(selected.parent.children[selected.index + 1]);
-        } else {
-          const parent = selected.nearestNonLastAncestor;
-          if (parent && parent.index > -1 && parent.parent) {
-            select(parent.parent.children[parent.index + 1]);
-          }
-        }
-      }
-    }
-  });
-
-  /**
    * BEHAVIOR: Select the previous-node when the [UP] arrow-key is pressed.
    */
   key$.pipe(filter((e) => e.key === 'ArrowUp')).subscribe((e) => {
@@ -103,6 +78,30 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
       } else {
         if (selected.parent.isInlineAndOpen) {
           select(selected.parent);
+        }
+      }
+    }
+  });
+
+  /**
+   * BEHAVIOR: Select the next-node when the [DOWN] arrow-key is pressed.
+   */
+  key$.pipe(filter((e) => e.key === 'ArrowDown')).subscribe((e) => {
+    const { selected } = e.get;
+    if (!selected.id) {
+      // Nothing yet selected, select first child.
+      select(e.get.current.children[0]);
+    } else {
+      if (selected.isInlineAndOpen) {
+        select(selected.children[0]);
+      } else {
+        if (!selected.isLast) {
+          select(selected.parent.children[selected.index + 1]);
+        } else {
+          const parent = selected.nearestNonLastAncestor;
+          if (parent && parent.index > -1 && parent.parent) {
+            select(parent.parent.children[parent.index + 1]);
+          }
         }
       }
     }
