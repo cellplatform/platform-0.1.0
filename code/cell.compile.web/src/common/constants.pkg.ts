@@ -1,4 +1,4 @@
 export const PKG = {
   name: '@platform/cell.compile.web',
-  version: '0.0.128',
+  version: '0.0.129',
 };

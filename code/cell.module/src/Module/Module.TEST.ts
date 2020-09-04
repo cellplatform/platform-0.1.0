@@ -34,7 +34,7 @@ describe('Module', () => {
       expect(Module.Identity.hasNamespace(root.id)).to.eql(true);
       expect(Module.Identity.key(root.id)).to.eql('module');
 
-      expect(root.props?.kind).to.eql('MODULE');
+      expect(root.props?.kind).to.eql('Module');
       expect(root.props?.data).to.eql(undefined);
     });
 

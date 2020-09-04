@@ -197,13 +197,13 @@
     "@platform/css" "^0.4.12"
     "@platform/react" "0.4.45"
 
-"@platform/ui.shell.types@0.1.107":
-  version "0.1.107"
-  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.1.107.tgz#dcf98f8c5bf3bbb535cf12b739860efda387679a"
-  integrity sha512-wIswEMHAbjrSH188bjK8lH7BlywBL8oLqaY4Q+81P2HAXlBdmFuFV13ZTOsTizVEPW+VpyQD6EVGwvK2DdsIsg==
+"@platform/ui.shell.types@0.1.108":
+  version "0.1.108"
+  resolved "https://registry.yarnpkg.com/@platform/ui.shell.types/-/ui.shell.types-0.1.108.tgz#9b31c4d2233ab13f150be3642d341d9d0f237313"
+  integrity sha512-iGq1KvUU/tLcTFzzf4sVgzgE68XBpkGQVwb3MUj9lBi8ct4TgGPOPBH9rIEJFZeQuJkpD91GWOQKmJ9D3B2maA==
   dependencies:
     "@platform/libs" "0.2.2"
-    "@platform/ui.tree" "0.8.3"
+    "@platform/ui.tree" "0.8.4"
 
 "@platform/ui.spinner@0.0.161":
   version "0.0.161"
@@ -232,10 +232,10 @@
     "@platform/state.types" "^0.0.3"
     "@platform/types" "0.5.5"
 
-"@platform/ui.tree@0.8.3":
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.8.3.tgz#db48d7704127abb94d8a80e357003c1cf0472a80"
-  integrity sha512-m5nNr6Rtra5Oqh3Ow5SrZ/3jFV/SsUIGAeuF2WxRNLzWf/lklQwZQRtOhqhkadnXpWencimNaHT3y/giepMDrQ==
+"@platform/ui.tree@0.8.4":
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/@platform/ui.tree/-/ui.tree-0.8.4.tgz#a5c8eb801803785b29394cd9fd27fab8c8247d38"
+  integrity sha512-Kjotkxj6ZPh7snW0ipCGKBE19AvvxZjFo5gpaWdlggTBENo6FOWFdOwT0HXZ+MXbfgv3VMpC1E+aLTH6IYJeKA==
   dependencies:
     "@platform/css" "0.4.12"
     "@platform/react" "0.4.45"
