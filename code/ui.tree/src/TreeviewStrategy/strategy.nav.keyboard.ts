@@ -4,6 +4,8 @@ import { filter, map } from 'rxjs/operators';
 import { t } from '../common';
 import * as util from './util';
 
+type N = t.ITreeviewNode;
+
 /**
  * Strategy for navigating the tree via the keyboard.
  */
@@ -69,32 +71,17 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
 
     if (!selected.id) {
       // Nothing yet selected, select first child.
-      const current = e.get.current;
-      select(current.children[0]);
+      select(e.get.current.children[0]);
     } else {
-      const isDirectChild = !Boolean(selected.parent.props?.treeview?.inline);
-
-      if (isDirectChild) {
-        if (selected.props.inline?.isOpen && selected.children.length > 0) {
-          select(selected.children[0]);
-        } else {
-          select((selected.parent.children || [])[selected.index + 1]);
-        }
+      if (selected.isInlineAndOpen) {
+        select(selected.deepestOpenChild('FIRST'));
       } else {
-        // Within an open inline "twisty".
-        if (selected.props.inline?.isOpen && selected.children.length > 0) {
-          select(selected.children[0]);
+        if (!selected.isLast) {
+          select(selected.parent.children[selected.index + 1]);
         } else {
-          if (selected.isLast) {
-            // Step up and out of the "twisty" into the next item of the current list.
-            const parent = e.get.query.ancestor(selected.node, (e) => e.level === 2);
-            const children = parent?.children || [];
-            const index = children.findIndex((child) => child.id === selected.parent.id);
-            if (index > -1) {
-              select(children[index + 1]);
-            }
-          } else {
-            select((selected.parent?.children || [])[selected.index + 1]);
+          const parent = selected.nearestNonLastAncestor;
+          if (parent && parent.parent) {
+            select(parent.parent.children[parent.index + 1]);
           }
         }
       }
@@ -112,7 +99,7 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
       // Nothing yet selected, select last child.
       select(current.children[current.children.length - 1]);
     } else {
-      const isDirectChild = !Boolean(selected.parent.props?.treeview?.inline);
+      const isDirectChild = !Boolean(selected.parent.props.inline);
 
       if (isDirectChild) {
         const prev = selected.prev;

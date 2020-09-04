@@ -40,9 +40,27 @@ export const props = (node?: N) => node?.props?.treeview || {};
 export function get(tree: t.ITreeState) {
   const query = TreeQuery.create<N>({ root: tree.root });
 
+  const NODE = {
+    isInlineAndOpen(node?: N) {
+      return Boolean(props(node).inline?.isOpen && (node?.children || []).length > 0);
+    },
+
+    deepestOpenChild(pos: 'FIRST' | 'LAST', node?: N): N | undefined {
+      if (!NODE.isInlineAndOpen(node)) {
+        return node; // Not open - return the given node.
+      } else {
+        const children = node?.children || [];
+        const index = pos === 'FIRST' ? 0 : children.length - 1;
+        const child = children[index];
+        return !NODE.isInlineAndOpen(child) ? child : NODE.deepestOpenChild(pos, child); // <== RECURSION 🌳
+      }
+    },
+  };
+
   const nodeHelpers = (input?: t.NodeIdentifier) => {
     const id = typeof input === 'string' ? input : input?.id || '';
     const cache: Record<string, any> = {};
+
     const api = {
       id,
       get node(): t.ITreeviewNode {
@@ -51,8 +69,8 @@ export function get(tree: t.ITreeState) {
       get props() {
         return props(api.node);
       },
-      get parent(): t.ITreeviewNode {
-        return cache.parent || (cache.parent = query.parent(api.node));
+      get parent(): T {
+        return cache.parent || (cache.parent = nodeHelpers(query.parent(api.node)));
       },
       get children(): t.ITreeviewNode[] {
         return get.children(api.node);
@@ -66,6 +84,9 @@ export function get(tree: t.ITreeState) {
       get isLast() {
         return api.index === (get.children(api.parent) || []).length - 1;
       },
+      get isInlineAndOpen() {
+        return NODE.isInlineAndOpen(api.node);
+      },
       get prev() {
         return api.sibling(api.index - 1);
       },
@@ -76,7 +97,19 @@ export function get(tree: t.ITreeState) {
         const node = get.children(api.parent)[index];
         return node ? nodeHelpers(node) : undefined;
       },
+      deepestOpenChild(pos: 'FIRST' | 'LAST') {
+        return nodeHelpers(NODE.deepestOpenChild(pos, api.node));
+      },
+      get nearestNonLastAncestor() {
+        const find = (api: T): T | undefined => {
+          const parent = api.parent;
+          return !parent || !parent.isLast ? parent : find(parent);
+        };
+        return find(api);
+      },
     };
+
+    type T = typeof api;
     return api;
   };
 
@@ -96,6 +129,9 @@ export function get(tree: t.ITreeState) {
     },
     node(id?: t.NodeIdentifier) {
       return id ? (query.findById(id) as N) : get.root;
+    },
+    find(id?: t.NodeIdentifier) {
+      return nodeHelpers(id);
     },
     children(parent?: t.NodeIdentifier) {
       if (typeof parent === 'object') {
