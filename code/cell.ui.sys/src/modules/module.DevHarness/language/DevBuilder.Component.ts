@@ -223,7 +223,6 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
           const children = root.children || (root.children = []);
           const node = children[index] || { id: Module.Identity.slug() };
           const props = node.props || (node.props = {});
-          props.view = 'Host';
           fn(props);
           children[index] = node;
         }

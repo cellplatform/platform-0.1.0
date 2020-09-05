@@ -32,9 +32,10 @@ export type DevBuilderFolder = {
   component(name: string): C;
   name(value: string): F;
 };
-export type DevBuilderFolderProps = t.IDevFolder & {
+export type DevBuilderFolderProps = {
   id: string;
   treeview: t.ITreeviewNodeProps;
+  folder: t.IDevFolder;
 };
 
 /**

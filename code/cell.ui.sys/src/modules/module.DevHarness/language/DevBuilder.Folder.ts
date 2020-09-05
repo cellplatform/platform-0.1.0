@@ -20,7 +20,7 @@ export class DevBuilderFolder implements t.DevBuilderFolder {
   ): t.DevBuilderFolder {
     if (options.existing) {
       const name = (args.name || '').trim();
-      const existing = options.existing.find((item) => item.props.name === name);
+      const existing = options.existing.find((item) => item.props.folder?.name === name);
       if (existing) {
         return existing;
       }
@@ -87,9 +87,9 @@ export class DevBuilderFolder implements t.DevBuilderFolder {
     const id = this.id;
     const props = (this.root.children || [])[this.index]?.props || {};
     const data = (props?.data || {}) as t.HarnessDataFolder;
-    const { name = '' } = data;
+    const folder = data.folder || { name: '' };
     const treeview = props.treeview || {};
-    return R.clone({ id, name, treeview });
+    return R.clone({ id, folder, treeview });
   }
 
   /**
@@ -97,7 +97,7 @@ export class DevBuilderFolder implements t.DevBuilderFolder {
    */
   public name(value: string) {
     value = (value || '').trim();
-    this.change.data((props) => (props.name = value));
+    this.change.folder((props) => (props.name = value));
     return this.change.treeview((props) => (props.label = value));
   }
 
@@ -139,15 +139,19 @@ export class DevBuilderFolder implements t.DevBuilderFolder {
       return this;
     },
 
-    treeview: (fn: (props: t.ITreeviewNodeProps) => void) => {
-      return this.change.props((props) => fn(props.treeview || (props.treeview = {})));
-    },
-
     data: (fn: (data: t.HarnessDataFolder) => void) => {
       return this.change.props((props) => {
         const data = props.data || (props.data = {} as any);
         fn(data as t.HarnessDataFolder);
       });
+    },
+
+    folder: (fn: (props: t.IDevFolder) => void) => {
+      return this.change.data((props) => fn(props.folder || (props.folder = { name: '' })));
+    },
+
+    treeview: (fn: (props: t.ITreeviewNodeProps) => void) => {
+      return this.change.props((props) => fn(props.treeview || (props.treeview = {})));
     },
   };
 }

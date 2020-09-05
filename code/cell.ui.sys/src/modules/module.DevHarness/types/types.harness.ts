@@ -32,8 +32,9 @@ export type HarnessDataComponent = {
   host?: t.IDevHost;
 };
 
-export type HarnessDataFolder = t.IDevFolder & {
+export type HarnessDataFolder = {
   kind: 'harness.folder';
+  folder: t.IDevFolder;
 };
 
 /**

@@ -301,14 +301,14 @@ describe('Dev (DSL)', () => {
     });
   });
 
-  describe.only('DevBuilder.Folder', () => {
+  describe('DevBuilder.Folder', () => {
     it('id', () => {
       const dev = create(bus);
       const folder = dev.folder('Foo');
       const children = dev.module.root.children || [];
       expect(folder.id).to.eql(children[0].id);
       expect(folder.props.id).to.eql(folder.id);
-      expect(folder.props.name).to.eql('Foo');
+      expect(folder.props.folder.name).to.eql('Foo');
     });
 
     it('kind: "harness.component"', () => {
@@ -360,7 +360,7 @@ describe('Dev (DSL)', () => {
         it('name', () => {
           const dev = create(bus);
           const dir = dev.folder('  Foo  ');
-          expect(dir.props.name).to.eql('Foo');
+          expect(dir.props.folder.name).to.eql('Foo');
         });
 
         it('change (modifies treeview)', () => {
@@ -368,7 +368,7 @@ describe('Dev (DSL)', () => {
           const dir = dev.folder('  Foo  ');
 
           dir.name('bear').name(' cat ');
-          expect(dir.props.name).to.eql('cat');
+          expect(dir.props.folder.name).to.eql('cat');
 
           const children = dev.module.root.children || [];
           expect(children[0].props?.treeview?.label).to.eql('cat');
