@@ -75,7 +75,8 @@ export type ModuleFireRender<T extends P> = (
 ) => ModuleFireRenderResponse;
 export type ModuleFireRenderResponse = JSX.Element | null | undefined;
 export type ModuleFireRenderArgs<T extends P> = {
-  module: string | t.IModule<any>;
+  module: string | t.IModule<any>; // Initiating module.
+  target?: string; // ID of target module (if known).
   data?: T['data'];
   view?: T['view'];
   region?: T['region'];
@@ -117,7 +118,8 @@ export type IModuleRenderEvent<T extends P = AnyProps> = {
   payload: IModuleRender<T>;
 };
 export type IModuleRender<T extends P> = {
-  module: string; // Initiating module.
+  module: string; //  ID of initiating module.
+  target?: string; // ID of target module (if known).
   selected?: string;
   view: T['view'];
   region?: T['region'];
@@ -134,7 +136,8 @@ export type IModuleRenderedEvent<T extends P = AnyProps> = {
   payload: IModuleRendered<T>;
 };
 export type IModuleRendered<T extends P> = {
-  module: string;
+  module: string; //  ID of initiating module.
+  target?: string; // ID of target module (if known).
   view: NonNullable<T['view']>;
   region?: T['region'];
   el: JSX.Element | null;

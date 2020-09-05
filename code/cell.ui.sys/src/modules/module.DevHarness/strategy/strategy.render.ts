@@ -38,7 +38,12 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
     const shell = harness.root.props?.data?.shell;
 
     if (shell) {
-      fire.render({ module: harness.id, view, region, data });
+      fire.render({
+        module: harness.id,
+        view,
+        region,
+        data,
+      });
     }
   };
 

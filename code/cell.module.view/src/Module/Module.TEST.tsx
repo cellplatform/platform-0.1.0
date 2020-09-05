@@ -82,9 +82,10 @@ describe('Module (ViewModule)', () => {
       expect(fired.length).to.eql(1);
       expect(fired[0].view).to.eql('View-1');
       expect(fired[0].region).to.eql(undefined);
+      expect(fired[0].target).to.eql(undefined);
     });
 
-    it('passes "region"', () => {
+    it('passes "region" and/or "target"', () => {
       const module = create();
       const events = Module.events<P>(event$, module.dispose$);
 
@@ -92,10 +93,15 @@ describe('Module (ViewModule)', () => {
       events.render('View-1').subscribe((e) => fired.push(e));
 
       fire.render({ view: 'View-1', region: 'PANEL', module });
+      fire.render({ view: 'View-1', region: 'PANEL', target: 'abc:foo', module });
 
-      expect(fired.length).to.eql(1);
+      expect(fired.length).to.eql(2);
       expect(fired[0].view).to.eql('View-1');
       expect(fired[0].region).to.eql('PANEL');
+
+      expect(fired[1].view).to.eql('View-1');
+      expect(fired[1].region).to.eql('PANEL');
+      expect(fired[1].target).to.eql('abc:foo');
     });
 
     it('matches all events ("view" undefined)', () => {
@@ -140,7 +146,7 @@ describe('Module (ViewModule)', () => {
       expect(count).to.eql(0);
     });
 
-    it('passes element/view/region on "rendered" event', () => {
+    it('passes "region" and/or "target" on rendered event', () => {
       const module = create();
       const events = Module.events<P>(event$, module.dispose$);
 
@@ -154,7 +160,7 @@ describe('Module (ViewModule)', () => {
       });
 
       fire.render({ view: 'View-1', region: 'PANEL', module });
-      fire.render({ view: 'View-1', module });
+      fire.render({ view: 'View-1', module, target: 'abc:foo' });
 
       expect(fired.length).to.eql(2);
       expect(fired[0].view).to.eql('View-1');
@@ -165,6 +171,9 @@ describe('Module (ViewModule)', () => {
 
       expect(fired[0].region).to.eql('PANEL');
       expect(fired[1].region).to.eql(undefined);
+
+      expect(fired[0].target).to.eql(undefined);
+      expect(fired[1].target).to.eql('abc:foo');
     });
   });
 
