@@ -13,9 +13,9 @@ export type HarnessDef = {
  */
 
 export type HarnessView = 'Host' | 'Null' | '404';
-export type HarnessTarget = 'Main' | 'Sidebar';
+export type HarnessRegion = 'Main' | 'Sidebar';
 export type HarnessData = { shell?: string; host?: t.IDevHost };
-export type HarnessProps = t.IViewModuleProps<HarnessData, HarnessView, HarnessTarget>;
+export type HarnessProps = t.IViewModuleProps<HarnessData, HarnessView, HarnessRegion>;
 export type HarnessModule = t.IModule<HarnessProps>;
 
 /**

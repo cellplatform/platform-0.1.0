@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { color, css, CssValue, t, ui, Module } from '../common';
 
 type V = t.ThreeView;
-type T = t.ThreeTarget;
+type T = t.ThreeRegion;
 type P = t.ThreeProps;
 
 export type IRootProps = { style?: CssValue };
@@ -33,14 +33,14 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     fire.render({
       module,
       view: 'FOO',
-      target: 'PANEL/left',
+      region: 'PANEL/left',
       data: { title: 'Target Left' },
     });
 
     fire.render({
       module,
       view: 'FOO',
-      target: 'PANEL/right',
+      region: 'PANEL/right',
       data: { title: 'Target Right' },
     });
   }
@@ -104,8 +104,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
               style={styles.frame}
               bus={ctx.bus}
               filter={this.viewFilter}
-              target={'PANEL/left'}
-              debug={'target: PANEL/left'}
+              region={'PANEL/left'}
+              debug={'region: PANEL/left'}
             />
           </div>
           <div {...styles.spacer} />
@@ -114,8 +114,8 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
               style={styles.frame}
               bus={ctx.bus}
               filter={this.viewFilter}
-              target={'PANEL/right'}
-              debug={'target: PANEL/right'}
+              region={'PANEL/right'}
+              debug={'region: PANEL/right'}
             />
           </div>
         </div>

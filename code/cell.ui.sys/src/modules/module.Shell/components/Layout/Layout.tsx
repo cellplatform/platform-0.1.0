@@ -57,7 +57,7 @@ export class Layout extends React.PureComponent<ILayoutProps> {
 
     const bus = this.context.bus;
     const focusOnLoad = defaultValue(this.props.focusOnLoad, true);
-    const main: t.ShellTarget = 'Main';
+    const main: t.ShellRegion = 'Main';
 
     const styles = {
       base: css({
@@ -100,7 +100,7 @@ export class Layout extends React.PureComponent<ILayoutProps> {
             bus={bus}
             filter={this.bodyFilter}
             style={styles.fill}
-            target={main}
+            region={main}
           />
         </div>
         <div {...css(styles.edge, styles.right)}>

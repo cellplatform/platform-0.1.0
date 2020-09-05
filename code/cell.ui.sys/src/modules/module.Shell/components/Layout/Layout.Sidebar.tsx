@@ -40,7 +40,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
    * [Render]
    */
   public render() {
-    const SIDEBAR: t.ShellTarget = 'Sidebar';
+    const SIDEBAR: t.ShellRegion = 'Sidebar';
 
     const styles = {
       base: css({
@@ -53,7 +53,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <ui.ModuleView.Frame bus={this.props.bus} filter={this.viewFilter} target={SIDEBAR} />
+        <ui.ModuleView.Frame bus={this.props.bus} filter={this.viewFilter} region={SIDEBAR} />
       </div>
     );
   }
@@ -61,7 +61,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
   /**
    * Handlers
    */
-  private viewFilter: t.ModuleFilterView<t.ShellView, t.ShellTarget> = (e) => {
+  private viewFilter: t.ModuleFilterView<t.ShellView, t.ShellRegion> = (e) => {
     const module = this.module.id;
 
     /**

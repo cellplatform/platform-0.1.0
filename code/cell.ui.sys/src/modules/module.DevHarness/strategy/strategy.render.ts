@@ -8,8 +8,8 @@ type E = t.HarnessEvent;
 type P = t.HarnessProps;
 type O = Record<string, unknown>;
 
-const MAIN: t.HarnessTarget = 'Main';
-const SIDEBAR: t.HarnessTarget = 'Sidebar';
+const MAIN: t.HarnessRegion = 'Main';
+const SIDEBAR: t.HarnessRegion = 'Sidebar';
 
 /**
  * Listens for DevHarness render requests.
@@ -30,7 +30,7 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
    * Render a harness component
    * (as opposed to content from within a "dev" module using the harness).
    */
-  const renderHarness = (target: t.HarnessTarget, view: t.HarnessView, data?: O) => {
+  const renderHarness = (region: t.HarnessRegion, view: t.HarnessView, data?: O) => {
     /**
      * TODO 🐷
      * pass as target after rename top "region"
@@ -38,15 +38,15 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
     const shell = harness.root.props?.data?.shell;
 
     if (shell) {
-      fire.render({ module: harness.id, view, target, data });
+      fire.render({ module: harness.id, view, region, data });
     }
   };
 
   /**
    * Render "dev" component content.
    */
-  const renderContent = (target: t.HarnessTarget, module: string, view: string) => {
-    return fire.render({ module, view, target });
+  const renderContent = (region: t.HarnessRegion, module: string, view: string) => {
+    return fire.render({ module, view, region });
   };
   const renderContentNode = (module: string, node: t.ITreeNode<P>) => {
     const view = pluck(node)?.view.component;

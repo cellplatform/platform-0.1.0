@@ -13,7 +13,7 @@ export const TwoModule: t.TwoModuleDef = {
       bus,
       root: {
         id: '',
-        props: { treeview: { label: 'Module Two' }, view: 'DEFAULT', target: 'ROOT' },
+        props: { treeview: { label: 'Module Two' }, view: 'DEFAULT', region: 'ROOT' },
       },
     });
 

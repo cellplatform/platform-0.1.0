@@ -41,11 +41,11 @@ export type ViewModule = {
  * TreeNode Properties
  * The way a UI module is expressed as props within a tree-node.
  */
-export type IViewModuleProps<D extends O = O, V extends S = S, T extends S = S> = t.IModuleProps<
+export type IViewModuleProps<D extends O = O, V extends S = S, R extends S = S> = t.IModuleProps<
   D
 > & {
   view?: V;
-  target?: T;
+  region?: R;
   treeview?: ITreeviewNodeProps;
 };
 export type IViewModulePropsAny = t.IViewModuleProps<any, string, string>;
@@ -54,12 +54,12 @@ export type IViewModulePropsAny = t.IViewModuleProps<any, string, string>;
  * Filter
  */
 
-export type ModuleFilterView<V extends S = S, T extends S = S> = (
-  args: t.ModuleFilterViewArgs<V, T>,
+export type ModuleFilterView<V extends S = S, R extends S = S> = (
+  args: t.ModuleFilterViewArgs<V, R>,
 ) => boolean;
-export type ModuleFilterViewArgs<V extends S = S, T extends S = S> = t.ModuleFilterArgs & {
+export type ModuleFilterViewArgs<V extends S = S, R extends S = S> = t.ModuleFilterArgs & {
   view: V;
-  target?: T;
+  region?: R;
 };
 
 /**
@@ -78,7 +78,7 @@ export type ModuleFireRenderArgs<T extends P> = {
   module: string | t.IModule<any>;
   data?: T['data'];
   view?: T['view'];
-  target?: T['target'];
+  region?: T['region'];
   notFound?: T['view'];
 };
 
@@ -117,10 +117,10 @@ export type IModuleRenderEvent<T extends P = AnyProps> = {
   payload: IModuleRender<T>;
 };
 export type IModuleRender<T extends P> = {
-  module: string;
+  module: string; // Initiating module.
   selected?: string;
   view: T['view'];
-  target?: T['target'];
+  region?: T['region'];
   data?: T['data'];
   handled: boolean;
   render(el: JSX.Element | null): void;
@@ -136,7 +136,7 @@ export type IModuleRenderedEvent<T extends P = AnyProps> = {
 export type IModuleRendered<T extends P> = {
   module: string;
   view: NonNullable<T['view']>;
-  target?: T['target'];
+  region?: T['region'];
   el: JSX.Element | null;
 };
 
