@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue, t, Module, ui } from '../../common';
-
-import { PropList } from '@platform/cell.ui/lib/components/PropList';
+import { css, CssValue, t, ui } from '../../common';
 
 export type ISidebarProps = {
   bus: t.EventBus;
@@ -64,14 +62,9 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
   private viewFilter: t.ModuleFilterView<t.ShellView, t.ShellRegion> = (e) => {
     const module = this.module.id;
 
-    /**
-     * TODO 🐷
-     * inject
-     */
-
     if (e.view === 'Null') {
       // NB: This is the DevHarness clearing the sidebar.
-      return e.module === module;
+      return e.target === module;
     } else {
       // NB: Ignore the DevHarness module itself.
       //     We are looking for "dev" components hosted within the harness.

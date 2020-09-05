@@ -31,12 +31,7 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
    * (as opposed to content from within a "dev" module using the harness).
    */
   const renderHarness = (region: t.HarnessRegion, view: t.HarnessView, data?: O) => {
-    /**
-     * TODO 🐷
-     * pass as target after rename top "region"
-     */
     const shell = harness.root.props?.data?.shell;
-
     if (shell) {
       fire.render({
         module: harness.id,
@@ -51,17 +46,24 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
   /**
    * Render "dev" component content.
    */
-  const renderContent = (region: t.HarnessRegion, module: string, view: string) => {
+  const renderContent = (
+    region: t.HarnessRegion,
+    module: string,
+    view: string,
+  ): t.ModuleFireRenderResponse => {
     return fire.render({ module, view, region });
   };
-  const renderContentNode = (module: string, node: t.ITreeNode<P>) => {
+  const renderContentNode = (module: string, node: t.ITreeNode<P>): t.ModuleFireRenderResponse => {
     const view = pluck(node)?.view.component;
+    let res: t.ModuleFireRenderResponse;
     if (view) {
-      renderContent(MAIN, module, view);
+      res = renderContent(MAIN, module, view);
     }
     (node.children || []).forEach((child) => {
       renderContentNode(module, child); // <== RECURSION 🌳
     });
+
+    return res;
   };
 
   /**
@@ -104,8 +106,7 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
   render$
     .pipe(
       filter((e) => !Boolean(e.host)),
-      filter((e) => Boolean(e.view)),
-      map(({ module, view }) => ({ module, view: view as string })),
+      map(({ module, view }) => ({ module, view: view || '' })),
     )
     .subscribe(({ module, view }) => {
       // There is no specific host information on the node,

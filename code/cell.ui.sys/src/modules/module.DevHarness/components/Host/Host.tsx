@@ -117,6 +117,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
         Absolute: abs ? [abs.top, abs.right, abs.bottom, abs.left] : undefined,
         border: `solid 1px ${this.borderColor}`,
         backgroundColor: color.format(layout.background),
+        display: 'flex',
       }),
       frame: css({
         width: layout.width,
@@ -146,6 +147,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
         width: layout.width,
         height: layout.height,
         WebkitAppRegion: 'none',
+        flex: 1,
       }),
     };
 
