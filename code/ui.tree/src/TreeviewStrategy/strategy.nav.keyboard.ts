@@ -113,7 +113,7 @@ export const keyboard: t.TreeviewStrategyKeyboardNavigation = (args) => {
       } else {
         if (!selected.isLast) {
           select(selected.parent.children[selected.index + 1]);
-        } else {
+        } else if (selected.parent.isInlineAndOpen) {
           const parent = selected.nearestNonLastAncestor;
           if (parent && parent.index > -1 && parent.parent) {
             select(parent.parent.children[parent.index + 1]);
