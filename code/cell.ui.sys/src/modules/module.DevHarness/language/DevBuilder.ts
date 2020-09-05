@@ -55,7 +55,7 @@ export class DevBuilder implements t.DevBuilder {
     return this.module.id;
   }
 
-  public get props(): t.IDevProps {
+  public get props(): t.DevBuilderProps {
     const id = this.id;
     const props = this.module.root.props;
     const treeview = props?.treeview || {};

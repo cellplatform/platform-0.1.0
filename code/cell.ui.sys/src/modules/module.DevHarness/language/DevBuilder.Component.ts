@@ -72,7 +72,7 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
     return (this.root.children || [])[this.index]?.id || '';
   }
 
-  public get props(): t.IDevComponentProps {
+  public get props(): t.DevBuilderComponentProps {
     const id = this.id;
     const props = (this.root.children || [])[this.index]?.props || {};
     const host = props.data?.host || { view: {} };

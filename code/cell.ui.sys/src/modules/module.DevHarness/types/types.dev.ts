@@ -7,16 +7,6 @@ export type IComponent = {
   name: string;
 };
 
-export type IDevProps = {
-  id: string;
-  treeview: t.ITreeviewNodeProps;
-};
-export type IDevComponentProps = {
-  id: string;
-  treeview: t.ITreeviewNodeProps;
-  component: IComponent;
-  layout: IDevHostLayout;
-};
 
 /**
  * The data configuration of a component being hosted.

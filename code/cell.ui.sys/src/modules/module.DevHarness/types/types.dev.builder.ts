@@ -11,17 +11,26 @@ export type DevFactory = (bus: t.EventBus, label?: string) => DevBuilder;
 export type DevBuilder = t.IDisposable & {
   id: string;
   module: t.HarnessModule;
-  props: t.IDevProps;
+  props: t.DevBuilderProps;
   label(value: string): DevBuilder; // Treeview node label.
   component(name: string): C;
 };
+export type DevBuilderProps = {
+  id: string;
+  treeview: t.ITreeviewNodeProps;
+};
+
+/**
+ * A containing folder.
+ */
+export type DevBuilderFolder = {};
 
 /**
  * The test configuration for a single component under test.
  */
 export type DevBuilderComponent = {
   id: string;
-  props: t.IDevComponentProps;
+  props: t.DevBuilderComponentProps;
   name(value: string): C;
   label(value: string): C; // Treeview node label.
   render(fn: DevRenderComponent): C;
@@ -33,6 +42,12 @@ export type DevBuilderComponent = {
   cropmarks(value: boolean | number): C;
   position(fn: DevBuilderPositionEditor): C;
   component(name: string): C;
+};
+export type DevBuilderComponentProps = {
+  id: string;
+  treeview: t.ITreeviewNodeProps;
+  component: t.IComponent;
+  layout: t.IDevHostLayout;
 };
 
 /**
