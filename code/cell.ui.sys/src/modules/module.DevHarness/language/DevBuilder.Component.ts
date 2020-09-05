@@ -2,6 +2,7 @@ import { TypeSystem } from '@platform/cell.typesystem';
 
 import { DEFAULT, Module, R, t } from '../common';
 import { deriveColor, COLORS } from './DevBuilder.color';
+import { changer } from './util';
 
 type B = t.EventBus;
 type P = t.HarnessProps;
@@ -100,6 +101,31 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
     return R.clone({ id, component, treeview, layout });
   }
 
+  private get change() {
+    const methods = changer<t.HarnessDataComponent>({
+      index: this.index,
+      module: this.module,
+      root: this.root,
+    });
+
+    const host = (fn: (props: t.IDevHost) => void) => {
+      return methods.data((data) => {
+        const host = data.host || (data.host = { view: {} });
+        fn(host);
+      });
+    };
+
+    const layout = (fn: (props: t.IDevHostLayout) => void) => {
+      return host((props) => fn(props.layout || (props.layout = {})));
+    };
+
+    const component = (fn: (props: t.IComponent) => void) => {
+      return host((props) => fn(props.component || (props.component = { name: '' })));
+    };
+
+    return { ...methods, host, layout, component };
+  }
+
   /**
    * [Methods]
    */
@@ -109,19 +135,23 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
     if (error) {
       throw new Error(`Invalid component name. ${error}`);
     }
-    return this.change.component((props) => (props.name = value));
+    this.change.component((props) => (props.name = value));
+    return this;
   }
 
   public label(value: string) {
-    return this.change.treeview((props) => (props.label = clean(value, DEFAULT.UNTITLED)));
+    this.change.treeview((props) => (props.label = clean(value, DEFAULT.UNTITLED)));
+    return this;
   }
 
   public width(value: number | string | undefined) {
-    return this.change.layout((props) => (props.width = clean(value)));
+    this.change.layout((props) => (props.width = clean(value)));
+    return this;
   }
 
   public height(value: number | string | undefined) {
-    return this.change.layout((props) => (props.height = clean(value)));
+    this.change.layout((props) => (props.height = clean(value)));
+    return this;
   }
 
   public background(value: number | string | undefined | t.DevBuilderColorEditor) {
@@ -129,7 +159,8 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
       typeof value === 'function'
         ? deriveColor(value, { color: COLORS.RED, opacity: 0.1 })
         : clampColor(clean(value));
-    return this.change.layout((props) => (props.background = value as string));
+    this.change.layout((props) => (props.background = value as string));
+    return this;
   }
 
   public border(value: number | boolean | t.DevBuilderColorEditor) {
@@ -138,12 +169,14 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
         ? deriveColor(value, { color: COLORS.WHITE, opacity: 0.3 })
         : clampColor(value);
 
-    return this.change.layout((props) => (props.border = border));
+    this.change.layout((props) => (props.border = border));
+    return this;
   }
 
   public cropmarks(value: number | boolean) {
     value = clampColor(value);
-    return this.change.layout((props) => (props.cropmarks = value));
+    this.change.layout((props) => (props.cropmarks = value));
+    return this;
   }
 
   position(fn: (pos: t.DevBuilderPosition) => void) {
@@ -206,56 +239,6 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
       { existing: this.components },
     );
   }
-
-  /**
-   * INTERNAL
-   */
-
-  /**
-   * Helpers for making immutable changes to the underlying tree data-structures.
-   */
-  private change = {
-    props: (fn: (props: P) => void) => {
-      this.module.change((draft, ctx) => {
-        const root = ctx.findById(this.root);
-        if (root) {
-          const index = this.index;
-          const children = root.children || (root.children = []);
-          const node = children[index] || { id: Module.Identity.slug() };
-          const props = node.props || (node.props = {});
-          fn(props);
-          children[index] = node;
-        }
-      });
-      return this;
-    },
-
-    treeview: (fn: (props: t.ITreeviewNodeProps) => void) => {
-      return this.change.props((props) => fn(props.treeview || (props.treeview = {})));
-    },
-
-    data: (fn: (data: t.HarnessDataComponent) => void) => {
-      return this.change.props((props) => {
-        const data = props.data || (props.data = { kind: 'harness.component' });
-        fn(data as t.HarnessDataComponent);
-      });
-    },
-
-    host: (fn: (props: t.IDevHost) => void) => {
-      return this.change.data((data) => {
-        const host = data.host || (data.host = { view: {} });
-        fn(host);
-      });
-    },
-
-    layout: (fn: (props: t.IDevHostLayout) => void) => {
-      return this.change.host((props) => fn(props.layout || (props.layout = {})));
-    },
-
-    component: (fn: (props: t.IComponent) => void) => {
-      return this.change.host((props) => fn(props.component || (props.component = { name: '' })));
-    },
-  };
 }
 
 /**
