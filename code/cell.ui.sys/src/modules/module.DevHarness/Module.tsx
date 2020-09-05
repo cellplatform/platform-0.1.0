@@ -20,9 +20,25 @@ export const Harness: t.HarnessDef = {
   /**
    * Harness module initialization.
    */
-  module(bus) {
-    const harness = Module.create<P>({ bus });
+  module(bus, options = {}) {
+    // Setup the DevHarness module.
+    const harness = Module.create<P>({ bus, root: 'harness' });
     strategy({ harness, bus });
+
+    // Register the harness within a containing <Shell>.
+    if (options.register) {
+      const parent = options.register === true ? undefined : options.register?.parent;
+      const res = Module.register(bus, harness, parent);
+      if (res.parent) {
+        harness.change((draft) => {
+          const props = draft.props || (draft.props = {});
+          const data = props.data || (props.data = {});
+          data.shell = res.parent?.id;
+        });
+      }
+    }
+
+    // Finish up.
     return harness;
   },
 };

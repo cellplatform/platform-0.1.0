@@ -3,8 +3,8 @@ import { ILayoutProps } from '../components/Layout';
 
 export type HarnessDef = {
   Layout: (props?: ILayoutProps) => JSX.Element;
-  module(bus: t.EventBus): HarnessModule;
   dev: t.DevFactory;
+  module(bus: t.EventBus, options?: { register?: true | { parent?: string } }): HarnessModule;
 };
 
 /**
@@ -14,7 +14,7 @@ export type HarnessDef = {
 
 export type HarnessView = 'Host' | 'Null' | '404';
 export type HarnessTarget = 'Main' | 'Sidebar';
-export type HarnessData = { host?: t.IDevHost };
+export type HarnessData = { shell?: string; host?: t.IDevHost };
 export type HarnessProps = t.IViewModuleProps<HarnessData, HarnessView, HarnessTarget>;
 export type HarnessModule = t.IModule<HarnessProps>;
 
@@ -41,4 +41,9 @@ export type IHarnessRenderEvent = {
   type: 'Harness/render';
   payload: IHarnessRender;
 };
-export type IHarnessRender = { harness: string; module: string; view?: string };
+export type IHarnessRender = {
+  harness: string;
+  module: string;
+  view?: string;
+  host?: t.IDevHost;
+};

@@ -14,6 +14,7 @@ export type ILayoutProps = {
   module?: t.ShellModule;
   focusOnLoad?: boolean;
   style?: CssValue;
+  onLoaded?: t.ShellLoadedCallbackHandler;
 };
 
 export class Layout extends React.PureComponent<ILayoutProps> {
@@ -27,8 +28,17 @@ export class Layout extends React.PureComponent<ILayoutProps> {
    * [Lifecycle]
    */
   public componentDidMount() {
-    this.module = this.props.module || Shell.module(this.context.bus);
-    this.forceUpdate(); // NB: Redraw causes the newly created [module] to be rendered.
+    // Construct module
+    const bus = this.context.bus;
+    this.module = this.props.module || Shell.module(bus);
+
+    // NB: Redraw causes the newly created [module] to be rendered.
+    this.forceUpdate();
+
+    // Alert listener.
+    if (this.props.onLoaded) {
+      this.props.onLoaded(bus);
+    }
   }
 
   public componentWillUnmount() {
@@ -122,6 +132,19 @@ export class Layout extends React.PureComponent<ILayoutProps> {
    */
 
   private bodyFilter: t.ModuleFilterView<V> = (e) => {
+    console.group('🌳 bodyFilter');
+    console.log('bodyFilter', e.module === this.module.id);
+    console.log('e.module', e.module);
+
+    console.log('this.module.id', this.module.id);
+
+    console.groupEnd();
+
+    // const f = this.module.contains(e.module);
+    // return this.module.contains(e.module);
+
+    // console.log('f', f);
+
     return e.module === this.module.id;
   };
 }

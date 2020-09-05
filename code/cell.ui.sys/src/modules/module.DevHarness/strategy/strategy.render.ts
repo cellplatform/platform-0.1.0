@@ -18,7 +18,6 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
   const { harness, bus } = args;
   const fire = Module.fire(bus);
   const $ = bus.event$.pipe(takeUntil(harness.dispose$));
-  const currentHost = () => harness.root.props?.data?.host as t.IDevHost;
 
   /**
    * Setup the UI <component> renderer.
@@ -32,8 +31,15 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
    * (as opposed to content from within a "dev" module using the harness).
    */
   const renderHarness = (target: t.HarnessTarget, view: t.HarnessView, data?: O) => {
-    const module = harness.id;
-    return fire.render({ module, view, target, data });
+    /**
+     * TODO 🐷
+     * pass as target after rename top "region"
+     */
+    const shell = harness.root.props?.data?.shell;
+
+    if (shell) {
+      fire.render({ module: harness.id, view, target, data });
+    }
   };
 
   /**
@@ -57,7 +63,7 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
    */
   const render$ = rx.payload<t.IHarnessRenderEvent>($, 'Harness/render').pipe(
     filter((e) => e.harness === harness.id),
-    map(({ module, view }) => ({ module, view, host: currentHost() })),
+    map(({ module, view, host }) => ({ module, view, host: host as t.IDevHost })),
   );
 
   /**
@@ -76,11 +82,6 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
       if (node) {
         renderContentNode(module, node);
       }
-
-      /**
-       * TODO 🐷
-       * - treeview (strategy): keyboard not stepping down into 3rd level inline child.
-       */
     }
 
     if (host.view.sidebar) {

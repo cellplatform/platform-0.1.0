@@ -34,7 +34,14 @@ export class LayoutTree extends React.PureComponent<ILayoutTreeProps, ILayoutTre
       });
     });
 
-    // Insert readable label if there is none
+    // Ensure header label is readable if there is none.
+    tree.beforeRender.header$.subscribe((e) => {
+      if (!e.node.props?.treeview?.label) {
+        e.change((draft) => (draft.label = Module.Identity.key(e.node.id)));
+      }
+    });
+
+    // Insert readable label if there is none.
     tree.beforeRender.node$.subscribe((e) => {
       if (!e.node.props?.treeview?.label) {
         e.change((props) => (props.label = Module.Identity.key(e.node.id)));
@@ -103,7 +110,7 @@ export class LayoutTree extends React.PureComponent<ILayoutTreeProps, ILayoutTre
     };
     return (
       <div {...styles.base}>
-        <div {...styles.label}>No modules to display.</div>
+        <div {...styles.label}>Nothing to display.</div>
       </div>
     );
   }

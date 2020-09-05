@@ -12,3 +12,8 @@ export type ShellModuleDef = {
   Layout: (props?: ILayoutProps) => JSX.Element;
   module(bus: t.EventBus): ShellModule;
 };
+
+/**
+ * Callbacks
+ */
+export type ShellLoadedCallbackHandler = (bus: t.EventBus) => void;
