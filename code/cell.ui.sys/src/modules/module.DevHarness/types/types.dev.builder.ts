@@ -1,5 +1,6 @@
 import { t } from '../common';
 
+type F = DevBuilderFolder;
 type C = DevBuilderComponent;
 type A = DevBuilderPositionAbsolute;
 
@@ -14,6 +15,7 @@ export type DevBuilder = t.IDisposable & {
   props: t.DevBuilderProps;
   label(value: string): DevBuilder; // Treeview node label.
   component(name: string): C;
+  folder(name: string): F;
 };
 export type DevBuilderProps = {
   id: string;
@@ -23,7 +25,17 @@ export type DevBuilderProps = {
 /**
  * A containing folder.
  */
-export type DevBuilderFolder = {};
+export type DevBuilderFolder = {
+  id: string;
+  props: DevBuilderFolderProps;
+  folder(name: string): F;
+  component(name: string): C;
+  name(value: string): F;
+};
+export type DevBuilderFolderProps = t.IDevFolder & {
+  id: string;
+  treeview: t.ITreeviewNodeProps;
+};
 
 /**
  * The test configuration for a single component under test.

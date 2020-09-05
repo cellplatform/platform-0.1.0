@@ -31,9 +31,11 @@ export const Harness: t.HarnessDef = {
       const res = Module.register(bus, harness, parent);
       if (res.parent) {
         harness.change((draft) => {
+          const shell = res.parent?.id || '';
           const props = draft.props || (draft.props = {});
-          const data = props.data || (props.data = {});
-          data.shell = res.parent?.id;
+          const data = (props.data ||
+            (props.data = { kind: 'harness.root', shell })) as t.HarnessDataRoot;
+          data.shell = shell;
         });
       }
     }

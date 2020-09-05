@@ -45,7 +45,8 @@ export class Layout extends React.PureComponent<ILayoutProps> {
    * [Properties]
    */
   public get host() {
-    return this.harness?.root.props?.data?.host;
+    const data = this.harness?.root.props?.data;
+    return data?.kind === 'harness.component' ? data.host : undefined;
   }
 
   /**

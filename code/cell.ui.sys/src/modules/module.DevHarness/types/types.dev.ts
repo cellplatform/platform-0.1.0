@@ -7,6 +7,9 @@ export type IComponent = {
   name: string;
 };
 
+export type IDevFolder = {
+  name: string;
+};
 
 /**
  * The data configuration of a component being hosted.

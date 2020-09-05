@@ -67,7 +67,12 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
   }
 
   private get host() {
-    return this.state.node?.props?.data?.host || { view: {} };
+    const data = this.state.node?.props?.data;
+    if (data?.kind === 'harness.component') {
+      return data?.host || { view: {} };
+    } else {
+      return undefined;
+    }
   }
 
   private get layout() {
@@ -228,7 +233,8 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
  * Pluck data from a node.
  */
 function pluck(node?: t.ITreeNode<P>) {
-  const host = node?.props?.data?.host;
+  const data = node?.props?.data;
+  const host = data?.kind === 'harness.component' ? data.host : undefined;
   const view = host?.view || {};
   return { host, view };
 }

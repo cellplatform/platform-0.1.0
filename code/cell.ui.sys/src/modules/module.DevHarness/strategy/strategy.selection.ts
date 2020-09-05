@@ -24,7 +24,7 @@ export function selectionStrategy(args: { harness: t.HarnessModule; bus: t.Event
         harness: harness.id,
         module: e.module,
         view: e.view,
-        host: e.data.host,
+        host: e.data.kind === 'harness.component' ? e.data.host : undefined,
       },
     });
   });

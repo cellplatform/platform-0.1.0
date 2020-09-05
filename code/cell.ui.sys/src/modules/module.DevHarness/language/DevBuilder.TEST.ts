@@ -17,6 +17,11 @@ describe('Dev (DSL)', () => {
       expect(dev.props.treeview?.label).to.eql('Untitled');
     });
 
+    it('kind: "harness.root"', () => {
+      const dev = create(bus);
+      expect(dev.module.root.props?.data?.kind).to.eql('harness.root');
+    });
+
     it('create: with label', () => {
       const dev = create(bus, 'Foo');
       expect(dev.props.treeview?.label).to.eql('Foo');
@@ -40,7 +45,40 @@ describe('Dev (DSL)', () => {
   });
 
   describe('DevBuilder.Component', () => {
-    describe('properties', () => {
+    it('id', () => {
+      const dev = create(bus);
+      const component = dev.component('Foo');
+      const children = dev.module.root.children || [];
+      expect(component.id).to.eql(children[0].id);
+      expect(component.props.id).to.eql(component.id);
+    });
+
+    it('kind: "harness.component"', () => {
+      const dev = create(bus);
+      dev.component('Foo');
+      const children = dev.module.root.children || [];
+      expect(children[0].props?.data?.kind).to.eql('harness.component');
+    });
+
+    describe('child', () => {
+      it('inserts within tree (inline twisty)', () => {
+        const dev = create(bus);
+        const parent = dev.component('Foo');
+        const child = parent.component('MyChild');
+        const node = dev.module.query.findById(child.id);
+        expect(node?.props?.treeview?.label).to.eql('MyChild');
+      });
+
+      it('retrieves existing child component (by name)', () => {
+        const dev = create(bus);
+        const parent = dev.component('Foo');
+        const child1 = parent.component('MyChild');
+        const child2 = parent.component('MyChild');
+        expect(child1).to.equal(child2); // NB: same instance.
+      });
+    });
+
+    describe('property methods', () => {
       describe('name', () => {
         it('name', () => {
           const dev = create(bus);
@@ -261,22 +299,80 @@ describe('Dev (DSL)', () => {
         });
       });
     });
+  });
 
-    describe('child', () => {
+  describe.only('DevBuilder.Folder', () => {
+    it('id', () => {
+      const dev = create(bus);
+      const folder = dev.folder('Foo');
+      const children = dev.module.root.children || [];
+      expect(folder.id).to.eql(children[0].id);
+      expect(folder.props.id).to.eql(folder.id);
+      expect(folder.props.name).to.eql('Foo');
+    });
+
+    it('kind: "harness.component"', () => {
+      const dev = create(bus);
+      dev.folder('Foo');
+      const children = dev.module.root.children || [];
+      expect(children[0].props?.data?.kind).to.eql('harness.folder');
+    });
+
+    describe('child: folder', () => {
       it('inserts within tree (inline twisty)', () => {
         const dev = create(bus);
-        const parent = dev.component('Foo');
-        const child = parent.component('MyChild');
+        const parent = dev.folder('Foo');
+        const child = parent.folder('MyChild');
         const node = dev.module.query.findById(child.id);
         expect(node?.props?.treeview?.label).to.eql('MyChild');
       });
 
       it('retrieves existing child component (by name)', () => {
         const dev = create(bus);
-        const parent = dev.component('Foo');
+        const parent = dev.folder('Foo');
+        const child1 = parent.folder('MyChild');
+        const child2 = parent.folder('MyChild');
+        expect(child1).to.equal(child2); // NB: same instance.
+      });
+    });
+
+    describe('child: component', () => {
+      it('inserts child component (within tree)', () => {
+        const dev = create(bus);
+        const parent = dev.folder('Folder');
+        const child = parent.component('Foo');
+
+        const node = dev.module.query.findById(child.id);
+        expect(node?.props?.data?.kind).to.eql('harness.component');
+      });
+
+      it('retrieves existing child component (by name)', () => {
+        const dev = create(bus);
+        const parent = dev.folder('Foo');
         const child1 = parent.component('MyChild');
         const child2 = parent.component('MyChild');
         expect(child1).to.equal(child2); // NB: same instance.
+      });
+    });
+
+    describe('property methods', () => {
+      describe('name', () => {
+        it('name', () => {
+          const dev = create(bus);
+          const dir = dev.folder('  Foo  ');
+          expect(dir.props.name).to.eql('Foo');
+        });
+
+        it('change (modifies treeview)', () => {
+          const dev = create(bus);
+          const dir = dev.folder('  Foo  ');
+
+          dir.name('bear').name(' cat ');
+          expect(dir.props.name).to.eql('cat');
+
+          const children = dev.module.root.children || [];
+          expect(children[0].props?.treeview?.label).to.eql('cat');
+        });
       });
     });
   });

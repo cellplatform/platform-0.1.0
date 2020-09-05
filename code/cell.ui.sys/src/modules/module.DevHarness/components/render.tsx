@@ -16,7 +16,7 @@ export function renderer(args: {
   const { events, bus, harness } = args;
   const render = events.render;
 
-  render('Host').subscribe((e) => {
+  render('Host').subscribe((e: t.IModuleRender<any>) => {
     const data = e.data as IHostPropsRenderer;
     e.render(<Host bus={bus} harness={harness} layout={data?.layout} view={data?.view} />);
   });

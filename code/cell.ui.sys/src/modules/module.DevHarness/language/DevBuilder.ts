@@ -1,5 +1,6 @@
 import { t, Module, DEFAULT, R } from '../common';
 import { DevBuilderComponent } from './DevBuilder.Component';
+import { DevBuilderFolder } from './DevBuilder.Folder';
 
 type B = t.EventBus;
 type IArgs = { bus: B; label?: string };
@@ -20,7 +21,13 @@ export class DevBuilder implements t.DevBuilder {
 
     this.module = Module.create<t.HarnessProps>({
       bus: args.bus,
-      root: { id: '', props: { treeview: { label: DEFAULT.UNTITLED } } },
+      root: {
+        id: '',
+        props: {
+          treeview: { label: DEFAULT.UNTITLED },
+          data: { kind: 'harness.root', shell: '' },
+        },
+      },
     });
 
     if (args.label) {
@@ -38,6 +45,7 @@ export class DevBuilder implements t.DevBuilder {
   private readonly bus: B;
   public readonly module: t.HarnessModule;
   private readonly components: t.DevBuilderComponent[] = [];
+  private readonly folders: t.DevBuilderFolder[] = [];
 
   /**
    * [Properties]
@@ -82,18 +90,19 @@ export class DevBuilder implements t.DevBuilder {
    * A defined component within the module.
    */
   public component(name: string) {
-    name = (name || '').trim();
-    const existing = this.components.find((item) => item.props.component.name === name);
-    if (existing) {
-      return existing;
-    }
+    return DevBuilderComponent.create(
+      { name, bus: this.bus, module: this.module, parent: this.id },
+      { existing: this.components },
+    );
+  }
 
-    const bus = this.bus;
-    const module = this.module;
-    const parent = this.module.root.id;
-    const component = DevBuilderComponent.create({ name, bus, module, parent });
-
-    this.components.push(component);
-    return component;
+  /**
+   * An oranizing folder within the module.
+   */
+  public folder(name: string) {
+    return DevBuilderFolder.create(
+      { name, bus: this.bus, module: this.module, parent: this.id },
+      { existing: this.folders },
+    );
   }
 }

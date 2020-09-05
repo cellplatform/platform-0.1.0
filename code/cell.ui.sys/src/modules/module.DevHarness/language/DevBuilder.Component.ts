@@ -16,8 +16,24 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
   /**
    * [Lifecycle]
    */
-  public static create(args: IArgs): t.DevBuilderComponent {
-    return new DevBuilderComponent(args);
+  public static create(
+    args: IArgs,
+    options: { existing?: t.DevBuilderComponent[] } = {},
+  ): t.DevBuilderComponent {
+    if (options.existing) {
+      const name = (args.name || '').trim();
+      const existing = options.existing.find((item) => item.props.component.name === name);
+      if (existing) {
+        return existing;
+      }
+    }
+
+    const res = new DevBuilderComponent(args);
+
+    if (options.existing) {
+      options.existing.push(res);
+    }
+    return res;
   }
 
   private constructor(args: IArgs) {
@@ -28,6 +44,7 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
     // Setup data.
     this.index = (this.root.children || []).length;
     this.change.props((props) => (props.view = 'Host'));
+    this.change.data((data) => (data.kind = 'harness.component'));
     this.name(args.name).label(args.name);
 
     // Ensure child nodes are shown with "inline" twisties within the tree.
@@ -75,7 +92,8 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
   public get props(): t.DevBuilderComponentProps {
     const id = this.id;
     const props = (this.root.children || [])[this.index]?.props || {};
-    const host = props.data?.host || { view: {} };
+    const data = props?.data as t.HarnessDataComponent;
+    const host = data?.host || { view: {} };
     const component = host.component || { name: '' };
     const treeview = props.treeview || {};
     const layout = host.layout || {};
@@ -183,19 +201,10 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
   }
 
   public component(name: string) {
-    name = (name || '').trim();
-    const existing = this.components.find((item) => item.props.component.name === name);
-    if (existing) {
-      return existing;
-    }
-
-    const bus = this.bus;
-    const module = this.module;
-    const parent = this.props.id;
-    const component = DevBuilderComponent.create({ name, bus, module, parent });
-
-    this.components.push(component);
-    return component;
+    return DevBuilderComponent.create(
+      { name, bus: this.bus, module: this.module, parent: this.id },
+      { existing: this.components },
+    );
   }
 
   /**
@@ -226,9 +235,15 @@ export class DevBuilderComponent implements t.DevBuilderComponent {
       return this.change.props((props) => fn(props.treeview || (props.treeview = {})));
     },
 
-    host: (fn: (props: t.IDevHost) => void) => {
+    data: (fn: (data: t.HarnessDataComponent) => void) => {
       return this.change.props((props) => {
-        const data = props.data || (props.data = {});
+        const data = props.data || (props.data = { kind: 'harness.component' });
+        fn(data as t.HarnessDataComponent);
+      });
+    },
+
+    host: (fn: (props: t.IDevHost) => void) => {
+      return this.change.data((data) => {
         const host = data.host || (data.host = { view: {} });
         fn(host);
       });
