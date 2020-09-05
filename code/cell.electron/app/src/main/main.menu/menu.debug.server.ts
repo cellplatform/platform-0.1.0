@@ -9,16 +9,14 @@ export function server(args: { paths: t.IAppPaths; port: number }): M {
   const base = `http://localhost:${args.port}`;
 
   const openBrowser = (path: string) => {
-    path = path.replace(/\/$/, '');
-    const url = `${base}/${path}`;
-    shell.openExternal(url);
+    shell.openExternal(`${base}/${path.replace(/^\//, '')}`);
   };
 
   const item: M = {
     label: 'Local',
     submenu: [
       {
-        label: 'HTTP Endpoint',
+        label: 'HTTP',
         click: () => openBrowser('/'),
       },
     ],
