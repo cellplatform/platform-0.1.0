@@ -1,8 +1,6 @@
 import { t } from '../common';
-import { ILayoutProps } from '../components/Layout';
 
 export type HarnessDef = {
-  Layout: (props?: ILayoutProps) => JSX.Element;
   dev: t.DevFactory;
   module(bus: t.EventBus, options?: { register?: true | { parent?: string } }): HarnessModule;
 };

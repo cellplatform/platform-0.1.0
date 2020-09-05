@@ -1,6 +1,7 @@
 import { t } from '../../common';
 export * from '../../common/types';
-import { ILayoutProps } from './components/Layout';
+import { IWindowProps } from './components/Window';
+import { ILayoutProps } from './components/Body';
 
 export type ShellView = 'Default' | 'Null' | '404';
 export type ShellRegion = 'Main' | 'Sidebar';
@@ -9,7 +10,8 @@ export type ShellProps = t.IViewModuleProps<ShellData, ShellView, ShellRegion>;
 export type ShellModule = t.IModule<ShellProps>;
 
 export type ShellModuleDef = {
-  Layout: (props?: ILayoutProps) => JSX.Element;
+  Body: (props?: ILayoutProps) => JSX.Element;
+  Window: (props?: IWindowProps) => JSX.Element;
   module(bus: t.EventBus): ShellModule;
 };
 

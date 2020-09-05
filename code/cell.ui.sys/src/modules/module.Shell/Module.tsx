@@ -3,12 +3,14 @@ import * as React from 'react';
 import { filter } from 'rxjs/operators';
 
 import { Module, rx, t } from './common';
-import { Layout } from './components/Layout';
+import { Window } from './components/Window';
+import { Layout } from './components/Body';
 
 type P = t.ShellProps;
 
 export const Shell: t.ShellModuleDef = {
-  Layout: (props) => <Layout {...props} />,
+  Window: (props) => <Window {...props} />,
+  Body: (props) => <Layout {...props} />,
 
   /**
    * Shell module initialization.

@@ -1,18 +1,17 @@
+import { COLORS } from '@platform/cell.ui/lib/common/constants';
 import * as React from 'react';
 import { Subject } from 'rxjs';
 
-import { color, css, CssValue, t, ui, defaultValue } from '../../common';
+import { color, css, CssValue, t, ui } from '../../common';
 import { Shell } from '../../Module';
-import { LayoutTree } from './Layout.Tree';
-import { COLORS } from '@platform/cell.ui/lib/common/constants';
-import { Sidebar } from './Layout.Sidebar';
+import { Sidebar } from './Body.Sidebar';
+import { LayoutTree } from './Body.Tree';
 
 type P = t.ShellProps;
 type V = t.ShellView;
 
 export type ILayoutProps = {
   module?: t.ShellModule;
-  focusOnLoad?: boolean;
   style?: CssValue;
   onLoaded?: t.ShellLoadedCallbackHandler;
 };
@@ -56,7 +55,6 @@ export class Layout extends React.PureComponent<ILayoutProps> {
     }
 
     const bus = this.context.bus;
-    const focusOnLoad = defaultValue(this.props.focusOnLoad, true);
     const main: t.ShellRegion = 'Main';
 
     const styles = {
@@ -92,7 +90,7 @@ export class Layout extends React.PureComponent<ILayoutProps> {
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...css(styles.edge, styles.left)}>
-          <LayoutTree module={module} focusOnLoad={focusOnLoad} />
+          <LayoutTree module={module} focusOnLoad={true} />
         </div>
         <div {...styles.body}>
           {this.renderGlassBevels()}
