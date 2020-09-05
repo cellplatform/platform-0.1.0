@@ -40,8 +40,9 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
     if (shell) {
       fire.render({
         module: harness.id,
-        view,
+        target: shell,
         region,
+        view,
         data,
       });
     }

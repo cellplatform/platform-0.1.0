@@ -132,19 +132,6 @@ export class Layout extends React.PureComponent<ILayoutProps> {
    */
 
   private bodyFilter: t.ModuleFilterView<V> = (e) => {
-    console.group('🌳 bodyFilter');
-    console.log('bodyFilter', e.module === this.module.id);
-    console.log('e.module', e.module);
-
-    console.log('this.module.id', this.module.id);
-
-    console.groupEnd();
-
-    // const f = this.module.contains(e.module);
-    // return this.module.contains(e.module);
-
-    // console.log('f', f);
-
-    return e.module === this.module.id;
+    return e.target === this.module.id;
   };
 }

@@ -33,7 +33,7 @@ export class ModuleViewFrame extends React.PureComponent<
     rx.payload<t.IModuleRenderedEvent>(event$, 'Module/ui/rendered')
       .pipe(
         filter((e) => (this.region ? this.region === e.region : true)),
-        filter((e) => this.filterOn(e.module, e.view, e.region)),
+        filter((e) => this.filterOn(e.module, e.view, e.region, e.target)),
       )
       .subscribe((e) => {
         const { onBeforeRender } = this.props;
@@ -83,13 +83,13 @@ export class ModuleViewFrame extends React.PureComponent<
    * [Helpers]
    */
 
-  private filterOn = (module: string, view: string, region?: string) => {
+  private filterOn = (module: string, view: string, region?: string, target?: string) => {
     const { filter } = this.props;
     if (!filter) {
       return true;
     } else {
       const { namespace, key } = Module.Identity.parse(module);
-      return filter({ module, namespace, key, view, region });
+      return filter({ module, namespace, key, view, region, target });
     }
   };
 }

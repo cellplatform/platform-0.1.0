@@ -60,6 +60,7 @@ export type ModuleFilterView<V extends S = S, R extends S = S> = (
 export type ModuleFilterViewArgs<V extends S = S, R extends S = S> = t.ModuleFilterArgs & {
   view: V;
   region?: R;
+  target?: string;
 };
 
 /**

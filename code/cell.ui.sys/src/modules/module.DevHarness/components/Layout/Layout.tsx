@@ -10,6 +10,11 @@ import { Sidebar } from './Layout.Sidebar';
 type P = t.HarnessProps;
 type V = t.HarnessView;
 
+/**
+ * TODO 🐷
+ * Delete after generic <Shell> module working
+ */
+
 export type ILayoutProps = {
   harness?: t.HarnessModule;
   focusOnLoad?: boolean;
