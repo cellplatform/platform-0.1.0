@@ -32,6 +32,7 @@ export class Window extends React.PureComponent<IWindowProps> {
     // Construct module
     const bus = ctx.bus as t.EventBus;
     this.module = this.props.module || Shell.module(bus);
+    this.forceUpdate();
 
     // Bubble window resize.
     events.resize$.pipe(takeUntil(this.unmounted$)).subscribe((e) => {
@@ -59,6 +60,10 @@ export class Window extends React.PureComponent<IWindowProps> {
    * [Render]
    */
   public render() {
+    if (!this.module) {
+      return null;
+    }
+
     const styles = {
       base: css({ Absolute: 0 }),
       titlebar: css({ Absolute: [0, 0, null, 0] }),
@@ -74,7 +79,7 @@ export class Window extends React.PureComponent<IWindowProps> {
       <div {...css(styles.base, this.props.style)}>
         <WindowTitlebar style={styles.titlebar} address={address} theme={this.props.theme} />
         <div {...styles.body}>
-          <Layout />
+          <Layout module={this.module} />
         </div>
       </div>
     );

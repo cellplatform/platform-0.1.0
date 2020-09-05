@@ -79,10 +79,10 @@ export class Layout extends React.PureComponent<ILayoutProps> {
     return (
       <div {...css(styles.base, this.props.style)}>
         <div {...css(styles.edge, styles.left)}>
-          <LayoutTree module={module} focusOnLoad={true} />
+          <LayoutTree bus={bus} module={module} focusOnLoad={true} />
         </div>
         <div {...styles.main}>
-          <BodyMain module={module} style={styles.main} />
+          <BodyMain bus={bus} module={module} style={styles.main} />
         </div>
         <div {...css(styles.edge, styles.right)}>
           <Sidebar bus={bus} module={module} />

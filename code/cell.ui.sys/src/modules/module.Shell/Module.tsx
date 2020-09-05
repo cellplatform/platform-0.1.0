@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { Module, rx, t } from './common';
 import { Window } from './components/Window';
 import { Layout } from './components/Body';
+import { strategy } from './strategy';
 
 type P = t.ShellProps;
 
@@ -16,7 +17,10 @@ export const Shell: t.ShellModuleDef = {
    * Shell module initialization.
    */
   module(bus) {
-    const module = Module.create<P>({ bus });
+    // Setup the module.
+    const shell = Module.create<P>({ bus });
+    strategy({ shell, bus });
+
     const fire = Module.fire<P>(bus);
 
     /**
@@ -29,12 +33,12 @@ export const Shell: t.ShellModuleDef = {
         if (!e.parent) {
           const child = fire.request(e.module);
           if (child) {
-            Module.register(bus, child, module);
+            Module.register(bus, child, shell);
           }
         }
       });
 
     // Finish up.
-    return module;
+    return shell;
   },
 };

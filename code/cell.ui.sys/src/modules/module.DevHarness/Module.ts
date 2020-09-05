@@ -15,7 +15,7 @@ export const Harness: t.HarnessDef = {
    * Harness module initialization.
    */
   module(bus, options = {}) {
-    // Setup the DevHarness module.
+    // Setup the module.
     const harness = Module.create<P>({ bus, root: 'harness' });
     strategy({ harness, bus });
 

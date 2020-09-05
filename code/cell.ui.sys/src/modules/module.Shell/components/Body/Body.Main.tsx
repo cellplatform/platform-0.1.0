@@ -6,8 +6,8 @@ type P = t.ShellProps;
 type V = t.ShellView;
 
 export type IBodyMainProps = {
+  bus: t.EventBus;
   module: t.ShellModule;
-
   style?: CssValue;
 };
 

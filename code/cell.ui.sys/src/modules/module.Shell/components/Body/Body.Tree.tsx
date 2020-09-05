@@ -2,9 +2,14 @@ import * as React from 'react';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { css, CssValue, t, ui, Module } from '../../common';
+import { css, CssValue, t, ui, Module, rx } from '../../common';
+
+import { ModuleViewTree } from '@platform/cell.module.view';
+
+type E = t.ShellEvent;
 
 export type ILayoutTreeProps = {
+  bus: t.EventBus;
   module: t.ShellModule;
   focusOnLoad?: boolean;
   style?: CssValue;
@@ -17,12 +22,16 @@ export class LayoutTree extends React.PureComponent<ILayoutTreeProps, ILayoutTre
   private unmounted$ = new Subject();
   private treeview$ = new Subject<t.TreeviewEvent>();
 
+  private elTree!: ModuleViewTree;
+  private elTreeRef = (ref: ModuleViewTree) => (this.elTree = ref);
+
   /**
    * [Lifecycle]
    */
 
   public componentDidMount() {
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
+    const bus$ = this.bus.event$.pipe(takeUntil(this.unmounted$));
     const tree = ui.ModuleView.Tree.events(this.treeview$, this.unmounted$);
     const events = Module.events(this.module, this.unmounted$);
 
@@ -53,6 +62,13 @@ export class LayoutTree extends React.PureComponent<ILayoutTreeProps, ILayoutTre
       .pipe(filter((e) => isModuleEmpty(this.module) !== this.state.isEmpty))
       .subscribe((e) => this.updateState());
 
+    // Listen for focus updates.
+    rx.payload<t.IShellFocusEvent>(bus$, 'Shell/focus').subscribe((e) => {
+      if (this.elTree) {
+        this.elTree.focus();
+      }
+    });
+
     // Finish up.
     this.updateState();
   }
@@ -65,6 +81,10 @@ export class LayoutTree extends React.PureComponent<ILayoutTreeProps, ILayoutTre
   /**
    * [Properties]
    */
+  public get bus() {
+    return this.props.bus.type<E>();
+  }
+
   public get module() {
     return this.props.module;
   }
@@ -85,6 +105,7 @@ export class LayoutTree extends React.PureComponent<ILayoutTreeProps, ILayoutTre
     return (
       <React.Fragment>
         <ui.ModuleView.Tree
+          ref={this.elTreeRef}
           module={this.module}
           treeview$={this.treeview$}
           style={this.props.style}

@@ -7,3 +7,5 @@ export const ModuleView = {
   Frame: ModuleViewFrame,
   Tree: ModuleViewTree,
 };
+
+export { ModuleViewTree };
