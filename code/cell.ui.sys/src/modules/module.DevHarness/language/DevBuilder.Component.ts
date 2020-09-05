@@ -1,12 +1,11 @@
 import { TypeSystem } from '@platform/cell.typesystem';
 
 import { DEFAULT, Module, R, t } from '../common';
-import { deriveColor, COLORS } from './DevBuilder.color';
+import { COLORS, deriveColor } from './DevBuilder.color';
 import { changer } from './util';
 
 type B = t.EventBus;
 type P = t.HarnessProps;
-type S = string;
 
 type IArgs = { name: string; bus: B; module: t.HarnessModule; parent: string };
 
