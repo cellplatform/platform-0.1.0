@@ -1,10 +1,11 @@
 import { app, MenuItemConstructorOptions as M, shell } from 'electron';
 import { t, fs } from '../common';
+import { server } from './menu.debug.server';
 
 /**
  * Menu for working with debug tools.
  */
-export function debug(args: { paths: t.IAppPaths }): M {
+export function debug(args: { paths: t.IAppPaths; port: number }): M {
   const { paths } = args;
   const item: M = {
     label: 'Debug',
@@ -26,6 +27,7 @@ export function debug(args: { paths: t.IAppPaths }): M {
           },
         ],
       },
+      server(args),
     ],
   };
 

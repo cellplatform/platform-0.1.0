@@ -39,6 +39,8 @@ export async function start() {
   const port = prod ? undefined : 5000;
   const { paths, host, instance } = await server.start({ log, prod, port });
 
+  // instance.
+
   // instance.request$.subscribe((e) => {
   //   console.log(' > ', e.method, e.url); // TEMP 🐷
   // });
@@ -59,7 +61,7 @@ export async function start() {
       preload: bundle.preload,
     });
     await app.whenReady();
-    await menu.build({ paths });
+    await menu.build({ paths, port: instance.port });
 
     // Initialize the system models.
     const ctx = await sys.init({ client, event$ });
