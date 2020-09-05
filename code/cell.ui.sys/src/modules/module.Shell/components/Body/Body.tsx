@@ -6,9 +6,7 @@ import { color, css, CssValue, t, ui } from '../../common';
 import { Shell } from '../../Module';
 import { Sidebar } from './Body.Sidebar';
 import { LayoutTree } from './Body.Tree';
-
-type P = t.ShellProps;
-type V = t.ShellView;
+import { BodyMain } from './Body.Main';
 
 export type ILayoutProps = {
   module?: t.ShellModule;
@@ -53,19 +51,14 @@ export class Layout extends React.PureComponent<ILayoutProps> {
     if (!module) {
       return null;
     }
-
     const bus = this.context.bus;
-    const main: t.ShellRegion = 'Main';
-
     const styles = {
       base: css({
         Absolute: 0,
         Flex: 'horizontal-stretch-stretch',
         boxSizing: 'border-box',
       }),
-      fill: css({
-        Absolute: 0,
-      }),
+      fill: css({ Absolute: 0 }),
       edge: css({
         position: 'relative',
         display: 'flex',
@@ -73,13 +66,9 @@ export class Layout extends React.PureComponent<ILayoutProps> {
         WebkitAppRegion: 'drag',
         overflow: 'hidden',
       }),
-      left: css({
-        width: 250,
-      }),
-      right: css({
-        width: 250,
-      }),
-      body: css({
+      left: css({ width: 250 }),
+      right: css({ width: 250 }),
+      main: css({
         flex: 1,
         display: 'flex',
         position: 'relative',
@@ -92,14 +81,8 @@ export class Layout extends React.PureComponent<ILayoutProps> {
         <div {...css(styles.edge, styles.left)}>
           <LayoutTree module={module} focusOnLoad={true} />
         </div>
-        <div {...styles.body}>
-          {this.renderGlassBevels()}
-          <ui.ModuleView.Frame
-            bus={bus}
-            filter={this.bodyFilter}
-            style={styles.fill}
-            region={main}
-          />
+        <div {...styles.main}>
+          <BodyMain module={module} style={styles.main} />
         </div>
         <div {...css(styles.edge, styles.right)}>
           <Sidebar bus={bus} module={module} />
@@ -107,29 +90,4 @@ export class Layout extends React.PureComponent<ILayoutProps> {
       </div>
     );
   }
-
-  private renderGlassBevels() {
-    const styles = {
-      base: css({
-        width: 10,
-        backgroundColor: color.format(0.1),
-      }),
-      left: css({ Absolute: [0, null, 0, 0] }),
-      right: css({ Absolute: [0, 0, 0, null] }),
-    };
-    return (
-      <React.Fragment>
-        <div {...css(styles.base, styles.left)} />
-        <div {...css(styles.base, styles.right)} />
-      </React.Fragment>
-    );
-  }
-
-  /**
-   * [Handlers]
-   */
-
-  private bodyFilter: t.ModuleFilterView<V> = (e) => {
-    return e.target === this.module.id;
-  };
 }
