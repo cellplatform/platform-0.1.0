@@ -67,7 +67,12 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
   }
 
   private get host() {
-    return this.state.node?.props?.data?.host || { view: {} };
+    const data = this.state.node?.props?.data;
+    if (data?.kind === 'harness.component') {
+      return data?.host || { view: {} };
+    } else {
+      return undefined;
+    }
   }
 
   private get layout() {
@@ -117,6 +122,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
         Absolute: abs ? [abs.top, abs.right, abs.bottom, abs.left] : undefined,
         border: `solid 1px ${this.borderColor}`,
         backgroundColor: color.format(layout.background),
+        display: 'flex',
       }),
       frame: css({
         width: layout.width,
@@ -138,7 +144,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
   }
 
   private renderFrame() {
-    const MAIN: t.HarnessTarget = 'Main';
+    const MAIN: t.HarnessRegion = 'Main';
     const layout = this.layout;
 
     const styles = {
@@ -146,6 +152,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
         width: layout.width,
         height: layout.height,
         WebkitAppRegion: 'none',
+        flex: 1,
       }),
     };
 
@@ -172,7 +179,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
         <ui.ModuleView.Frame
           style={styles.base}
           bus={this.props.bus}
-          target={MAIN}
+          region={MAIN}
           filter={this.viewFilter}
           onBeforeRender={this.beforeRender}
         />
@@ -203,7 +210,7 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
   /**
    * Handlers
    */
-  private viewFilter: t.ModuleFilterView<t.HarnessView, t.HarnessTarget> = (e) => {
+  private viewFilter: t.ModuleFilterView<t.HarnessView, t.HarnessRegion> = (e) => {
     return e.view === this.props.view;
   };
 
@@ -226,7 +233,8 @@ export class Host extends React.PureComponent<IHostProps, IHostState> {
  * Pluck data from a node.
  */
 function pluck(node?: t.ITreeNode<P>) {
-  const host = node?.props?.data?.host;
+  const data = node?.props?.data;
+  const host = data?.kind === 'harness.component' ? data.host : undefined;
   const view = host?.view || {};
   return { host, view };
 }

@@ -33,7 +33,7 @@ describe('Module (ViewModule)', () => {
     it('no params (default)', () => {
       const module = Module.create<P>({ bus });
       expect(module.root.props?.view).to.eql(undefined);
-      expect(module.root.props?.target).to.eql(undefined);
+      expect(module.root.props?.region).to.eql(undefined);
       expect(module.root.props?.data).to.eql(undefined);
       expect(module.root.props?.treeview).to.eql({});
     });
@@ -68,7 +68,7 @@ describe('Module (ViewModule)', () => {
     });
   });
 
-  describe.only('event: "Module/render"', () => {
+  describe('event: "Module/render"', () => {
     it('matches specific events', () => {
       const module = create();
       const events = Module.events<P>(event$, module.dispose$);
@@ -81,21 +81,27 @@ describe('Module (ViewModule)', () => {
 
       expect(fired.length).to.eql(1);
       expect(fired[0].view).to.eql('View-1');
+      expect(fired[0].region).to.eql(undefined);
       expect(fired[0].target).to.eql(undefined);
     });
 
-    it('passes "target"', () => {
+    it('passes "region" and/or "target"', () => {
       const module = create();
       const events = Module.events<P>(event$, module.dispose$);
 
       const fired: t.IModuleRender<P>[] = [];
       events.render('View-1').subscribe((e) => fired.push(e));
 
-      fire.render({ view: 'View-1', target: 'PANEL', module });
+      fire.render({ view: 'View-1', region: 'PANEL', module });
+      fire.render({ view: 'View-1', region: 'PANEL', target: 'abc:foo', module });
 
-      expect(fired.length).to.eql(1);
+      expect(fired.length).to.eql(2);
       expect(fired[0].view).to.eql('View-1');
-      expect(fired[0].target).to.eql('PANEL');
+      expect(fired[0].region).to.eql('PANEL');
+
+      expect(fired[1].view).to.eql('View-1');
+      expect(fired[1].region).to.eql('PANEL');
+      expect(fired[1].target).to.eql('abc:foo');
     });
 
     it('matches all events ("view" undefined)', () => {
@@ -136,11 +142,11 @@ describe('Module (ViewModule)', () => {
       let count = 0;
       events.rendered$.subscribe((e) => count++);
 
-      fire.render({ view: 'View-1', target: 'PANEL', module });
+      fire.render({ view: 'View-1', region: 'PANEL', module });
       expect(count).to.eql(0);
     });
 
-    it('passes element/view/target on "rendered" event', () => {
+    it('passes "region" and/or "target" on rendered event', () => {
       const module = create();
       const events = Module.events<P>(event$, module.dispose$);
 
@@ -153,8 +159,8 @@ describe('Module (ViewModule)', () => {
         e.render(<div>{`hello-${count}`}</div>);
       });
 
-      fire.render({ view: 'View-1', target: 'PANEL', module });
-      fire.render({ view: 'View-1', module });
+      fire.render({ view: 'View-1', region: 'PANEL', module });
+      fire.render({ view: 'View-1', module, target: 'abc:foo' });
 
       expect(fired.length).to.eql(2);
       expect(fired[0].view).to.eql('View-1');
@@ -163,8 +169,11 @@ describe('Module (ViewModule)', () => {
       expect(fired[0].el?.props.children).to.eql('hello-1');
       expect(fired[1].el?.props.children).to.eql('hello-2');
 
-      expect(fired[0].target).to.eql('PANEL');
-      expect(fired[1].target).to.eql(undefined);
+      expect(fired[0].region).to.eql('PANEL');
+      expect(fired[1].region).to.eql(undefined);
+
+      expect(fired[0].target).to.eql(undefined);
+      expect(fired[1].target).to.eql('abc:foo');
     });
   });
 

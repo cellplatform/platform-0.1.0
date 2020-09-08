@@ -8,7 +8,7 @@ import { DebugHeader } from './Frame.DebugHeader';
 export type IModuleViewFrameProps = {
   bus: t.EventBus<any>;
   filter?: t.ModuleFilterView<any, any>;
-  target?: string; // Optional "view target" to apply as an additional filter before rendering.
+  region?: string; // Optional "view region" to target to apply as an additional filter before rendering.
   debug?: string;
   style?: CssValue;
   onBeforeRender?: (e: t.IModuleRendered<any>) => void;
@@ -32,8 +32,8 @@ export class ModuleViewFrame extends React.PureComponent<
 
     rx.payload<t.IModuleRenderedEvent>(event$, 'Module/ui/rendered')
       .pipe(
-        filter((e) => (this.target ? this.target === e.target : true)),
-        filter((e) => this.filterOn(e.module, e.view, e.target)),
+        filter((e) => (this.region ? this.region === e.region : true)),
+        filter((e) => this.filterOn(e.module, e.view, e.region, e.target)),
       )
       .subscribe((e) => {
         const { onBeforeRender } = this.props;
@@ -52,8 +52,8 @@ export class ModuleViewFrame extends React.PureComponent<
   /**
    * [Properties]
    */
-  public get target() {
-    return this.props.target;
+  public get region() {
+    return this.props.region;
   }
 
   /**
@@ -83,13 +83,13 @@ export class ModuleViewFrame extends React.PureComponent<
    * [Helpers]
    */
 
-  private filterOn = (module: string, view: string, target?: string) => {
+  private filterOn = (module: string, view: string, region?: string, target?: string) => {
     const { filter } = this.props;
     if (!filter) {
       return true;
     } else {
       const { namespace, key } = Module.Identity.parse(module);
-      return filter({ module, namespace, key, view, target });
+      return filter({ module, namespace, key, view, region, target });
     }
   };
 }

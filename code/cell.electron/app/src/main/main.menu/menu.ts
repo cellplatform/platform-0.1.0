@@ -5,7 +5,7 @@ import { t } from '../common';
 /**
  * Builds the application menus.
  */
-export async function build(args: { paths: t.IAppPaths }) {
+export async function build(args: { paths: t.IAppPaths; port: number }) {
   const isMac = process.platform === 'darwin';
 
   /**

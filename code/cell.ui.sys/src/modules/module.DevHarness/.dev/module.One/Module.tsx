@@ -38,6 +38,12 @@ export const OneModule: t.SampleOneModuleDef = {
       .position((pos) => pos.absolute.bottom(0).right(0))
       .render(() => <div style={{ padding: 10 }}>Baba</div>);
 
+    const dir = dev
+      .folder('My Folder')
+      .folder('Child Folder')
+      .component('Yada')
+      .render(() => <div style={{ padding: 30 }}>Yada</div>);
+
     dev
       .component('Bar')
       .label('two')

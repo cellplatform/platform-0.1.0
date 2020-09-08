@@ -1,10 +1,8 @@
 import { t } from '../common';
-import { ILayoutProps } from '../components/Layout';
 
 export type HarnessDef = {
-  Layout: (props?: ILayoutProps) => JSX.Element;
-  module(bus: t.EventBus): HarnessModule;
   dev: t.DevFactory;
+  module(bus: t.EventBus, options?: { register?: true | { parent?: string } }): HarnessModule;
 };
 
 /**
@@ -12,11 +10,30 @@ export type HarnessDef = {
  * (the module that "harnesses" another "module under development")
  */
 
-export type HarnessView = 'Host' | 'Null' | '404';
-export type HarnessTarget = 'Main' | 'Sidebar';
-export type HarnessData = { host?: t.IDevHost };
-export type HarnessProps = t.IViewModuleProps<HarnessData, HarnessView, HarnessTarget>;
+export type HarnessView = 'Host' | 'Folder' | 'Null' | '404';
+export type HarnessRegion = 'Main' | 'Sidebar';
+export type HarnessProps = t.IViewModuleProps<HarnessData, HarnessView, HarnessRegion>;
 export type HarnessModule = t.IModule<HarnessProps>;
+
+/**
+ * The data structures nodes within a Harness can take.
+ */
+export type HarnessData = HarnessDataRoot | HarnessDataComponent | HarnessDataFolder;
+
+export type HarnessDataRoot = {
+  kind: 'harness.root';
+  shell: string;
+};
+
+export type HarnessDataComponent = {
+  kind: 'harness.component';
+  host?: t.IDevHost;
+};
+
+export type HarnessDataFolder = {
+  kind: 'harness.folder';
+  folder: t.IDevFolder;
+};
 
 /**
  * [Events]
@@ -41,4 +58,9 @@ export type IHarnessRenderEvent = {
   type: 'Harness/render';
   payload: IHarnessRender;
 };
-export type IHarnessRender = { harness: string; module: string; view?: string };
+export type IHarnessRender = {
+  harness: string;
+  module: string;
+  view?: string;
+  host?: t.IDevHost;
+};

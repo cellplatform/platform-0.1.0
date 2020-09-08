@@ -8,8 +8,8 @@ type E = t.HarnessEvent;
 type P = t.HarnessProps;
 type O = Record<string, unknown>;
 
-const MAIN: t.HarnessTarget = 'Main';
-const SIDEBAR: t.HarnessTarget = 'Sidebar';
+const MAIN: t.HarnessRegion = 'Main';
+const SIDEBAR: t.HarnessRegion = 'Sidebar';
 
 /**
  * Listens for DevHarness render requests.
@@ -18,7 +18,6 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
   const { harness, bus } = args;
   const fire = Module.fire(bus);
   const $ = bus.event$.pipe(takeUntil(harness.dispose$));
-  const currentHost = () => harness.root.props?.data?.host as t.IDevHost;
 
   /**
    * Setup the UI <component> renderer.
@@ -31,25 +30,41 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
    * Render a harness component
    * (as opposed to content from within a "dev" module using the harness).
    */
-  const renderHarness = (target: t.HarnessTarget, view: t.HarnessView, data?: O) => {
-    const module = harness.id;
-    return fire.render({ module, view, target, data });
+  const renderHarness = (region: t.HarnessRegion, view: t.HarnessView, data?: O) => {
+    const root = harness.root.props?.data;
+    const target = root?.kind === 'harness.root' ? root.shell : undefined;
+    if (target) {
+      fire.render({
+        module: harness.id,
+        target,
+        region,
+        view,
+        data,
+      });
+    }
   };
 
   /**
    * Render "dev" component content.
    */
-  const renderContent = (target: t.HarnessTarget, module: string, view: string) => {
-    return fire.render({ module, view, target });
+  const renderContent = (
+    region: t.HarnessRegion,
+    module: string,
+    view: string,
+  ): t.ModuleFireRenderResponse => {
+    return fire.render({ module, view, region });
   };
-  const renderContentNode = (module: string, node: t.ITreeNode<P>) => {
+  const renderContentNode = (module: string, node: t.ITreeNode<P>): t.ModuleFireRenderResponse => {
     const view = pluck(node)?.view.component;
+    let res: t.ModuleFireRenderResponse;
     if (view) {
-      renderContent(MAIN, module, view);
+      res = renderContent(MAIN, module, view);
     }
     (node.children || []).forEach((child) => {
       renderContentNode(module, child); // <== RECURSION 🌳
     });
+
+    return res;
   };
 
   /**
@@ -57,7 +72,7 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
    */
   const render$ = rx.payload<t.IHarnessRenderEvent>($, 'Harness/render').pipe(
     filter((e) => e.harness === harness.id),
-    map(({ module, view }) => ({ module, view, host: currentHost() })),
+    map(({ module, view, host }) => ({ module, view, host: host as t.IDevHost })),
   );
 
   /**
@@ -76,11 +91,6 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
       if (node) {
         renderContentNode(module, node);
       }
-
-      /**
-       * TODO 🐷
-       * - treeview (strategy): keyboard not stepping down into 3rd level inline child.
-       */
     }
 
     if (host.view.sidebar) {
@@ -97,8 +107,7 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
   render$
     .pipe(
       filter((e) => !Boolean(e.host)),
-      filter((e) => Boolean(e.view)),
-      map(({ module, view }) => ({ module, view: view as string })),
+      map(({ module, view }) => ({ module, view: view || '' })),
     )
     .subscribe(({ module, view }) => {
       // There is no specific host information on the node,
@@ -132,7 +141,8 @@ export function renderStrategy(args: { harness: t.HarnessModule; bus: t.EventBus
  * Pluck data from a node.
  */
 function pluck(node?: t.ITreeNode<P>) {
-  const host = node?.props?.data?.host;
+  const data = node?.props?.data;
+  const host = data?.kind === 'harness.component' ? data.host : undefined;
   const view = host?.view || {};
   return { host, view };
 }

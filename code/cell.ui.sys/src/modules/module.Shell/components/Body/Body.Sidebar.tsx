@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { css, CssValue, t, Module, ui } from '../../common';
-
-import { PropList } from '@platform/cell.ui/lib/components/PropList';
+import { css, CssValue, t, ui } from '../../common';
 
 export type ISidebarProps = {
   bus: t.EventBus;
@@ -40,7 +38,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
    * [Render]
    */
   public render() {
-    const SIDEBAR: t.ShellTarget = 'Sidebar';
+    const SIDEBAR: t.ShellRegion = 'Sidebar';
 
     const styles = {
       base: css({
@@ -53,7 +51,7 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
     };
     return (
       <div {...css(styles.base, this.props.style)}>
-        <ui.ModuleView.Frame bus={this.props.bus} filter={this.viewFilter} target={SIDEBAR} />
+        <ui.ModuleView.Frame bus={this.props.bus} filter={this.viewFilter} region={SIDEBAR} />
       </div>
     );
   }
@@ -61,17 +59,12 @@ export class Sidebar extends React.PureComponent<ISidebarProps, ISidebarState> {
   /**
    * Handlers
    */
-  private viewFilter: t.ModuleFilterView<t.ShellView, t.ShellTarget> = (e) => {
+  private viewFilter: t.ModuleFilterView<t.ShellView, t.ShellRegion> = (e) => {
     const module = this.module.id;
-
-    /**
-     * TODO 🐷
-     * inject
-     */
 
     if (e.view === 'Null') {
       // NB: This is the DevHarness clearing the sidebar.
-      return e.module === module;
+      return e.target === module;
     } else {
       // NB: Ignore the DevHarness module itself.
       //     We are looking for "dev" components hosted within the harness.

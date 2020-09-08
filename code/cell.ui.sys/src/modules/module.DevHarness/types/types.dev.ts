@@ -7,15 +7,8 @@ export type IComponent = {
   name: string;
 };
 
-export type IDevProps = {
-  id: string;
-  treeview: t.ITreeviewNodeProps;
-};
-export type IDevComponentProps = {
-  id: string;
-  treeview: t.ITreeviewNodeProps;
-  component: IComponent;
-  layout: IDevHostLayout;
+export type IDevFolder = {
+  name: string;
 };
 
 /**

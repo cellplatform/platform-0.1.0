@@ -25,10 +25,10 @@ export function render<T extends P>(
   bus: B,
   args: t.ModuleFireRenderArgs<T>,
 ): t.ModuleFireRenderResponse {
-  const { data = {} } = args;
+  const { data = {}, target } = args;
   const module = typeof args.module === 'string' ? args.module : args.module.id;
   const view = args.view as NonNullable<T['view']>;
-  const target = args.target;
+  const region = args.region;
 
   let el: t.ModuleFireRenderResponse;
   if (!view) {
@@ -39,6 +39,7 @@ export function render<T extends P>(
     module,
     data,
     view,
+    region,
     target,
     render(input) {
       el = input;
@@ -55,7 +56,7 @@ export function render<T extends P>(
   if (el !== undefined) {
     bus.fire({
       type: 'Module/ui/rendered',
-      payload: { module, view, target, el },
+      payload: { module, view, region, target, el },
     });
   } else if (args.notFound) {
     // View not rendered by any listeners.

@@ -1,4 +1,4 @@
-import { Tree } from '@platform/ui.tree';
+import { Tree, Treeview, TreeviewColumns } from '@platform/ui.tree';
 import { ITreeviewProps } from '@platform/ui.tree/lib/components/Treeview';
 import * as React from 'react';
 import { Observable, Subject } from 'rxjs';
@@ -35,6 +35,12 @@ export class ModuleViewTree extends React.PureComponent<
   private state$ = new Subject<Partial<IModuleViewTreeState>>();
   private treeview$ = new Subject<t.TreeviewEvent>();
   private unmounted$ = new Subject();
+
+  private elTree!: Treeview;
+  private elTreeRef = (ref: Treeview) => (this.elTree = ref);
+
+  private elTreeColumns!: TreeviewColumns;
+  private elTreeColumnsRef = (ref: TreeviewColumns) => (this.elTreeColumns = ref);
 
   /**
    * [Lifecycle]
@@ -90,7 +96,6 @@ export class ModuleViewTree extends React.PureComponent<
   /**
    * [Properties]
    */
-
   private get root() {
     return this.props.module?.root as t.ITreeviewNode;
   }
@@ -99,17 +104,36 @@ export class ModuleViewTree extends React.PureComponent<
     return this.root?.props?.treeview?.nav || {};
   }
 
+  private get totalColumns() {
+    return this.props.totalColumns;
+  }
+
+  private get view() {
+    const total = this.totalColumns;
+    return typeof total === 'number' && total > 1 ? 'COLUMNS' : 'SINGLE';
+  }
+
+  /**
+   * [Methods]
+   */
+
+  public focus() {
+    if (this.view === 'COLUMNS' && this.elTreeColumns) {
+      this.elTreeColumns.focus();
+    }
+    if (this.view === 'SINGLE' && this.elTree) {
+      this.elTree.focus();
+    }
+  }
+
   /**
    * [Render]
    */
-
   public render() {
     const root = this.root;
     if (!root) {
       return null;
     }
-
-    const total = this.props.totalColumns;
 
     const props: ITreeviewProps = {
       background: 'NONE',
@@ -122,10 +146,10 @@ export class ModuleViewTree extends React.PureComponent<
       focusOnLoad: this.props.focusOnLoad,
     };
 
-    if (typeof total === 'number' && total > 1) {
-      return <Tree.Columns {...props} total={total} />;
+    if (this.view === 'COLUMNS') {
+      return <TreeviewColumns ref={this.elTreeColumnsRef} {...props} total={this.totalColumns} />;
     } else {
-      return <Tree.View {...props} />;
+      return <Treeview ref={this.elTreeRef} {...props} />;
     }
   }
 
