@@ -7,7 +7,6 @@
 #     limited node-like environment and can only be a single file.
 # 
 
-
 browserify lib/renderer/preload.start.js \
   -x electron \
   --insert-global-vars=__filename,__dirname \

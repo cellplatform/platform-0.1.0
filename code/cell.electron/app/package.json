@@ -5,7 +5,7 @@
   "main": "lib/main/index",
   "types": "lib/index.d.ts",
   "config": {
-    "forge": "forge.config.js"
+    "forge": "build/forge.config.js"
   },
   "scripts": {
     "start": "yarn bundle.preload && electron-forge start",
@@ -15,8 +15,10 @@
     "build": "ts build --no-esm",
     "prepare": "ts prepare",
     "bundle.preload": "sh script.sh/bundle.preload.sh",
-    "package": "electron-forge package",
-    "make": "npm version patch && yarn build && yarn bundle.preload && electron-forge make"
+    "prepackage": "yarn build && yarn bundle.preload",
+    "package": "yarn prepackage && electron-forge package",
+    "p": "electron-forge package",
+    "make": "npm version && yarn prepackage && electron-forge make"
   },
   "dependencies": {
     "@platform/cell.client": "0.2.143",
@@ -38,15 +40,16 @@
     "electron-squirrel-startup": "1.0.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "6.0.0-beta.52",
-    "@electron-forge/maker-deb": "6.0.0-beta.52",
-    "@electron-forge/maker-rpm": "6.0.0-beta.52",
-    "@electron-forge/maker-squirrel": "6.0.0-beta.52",
-    "@electron-forge/maker-zip": "6.0.0-beta.52",
+    "@electron-forge/cli": "6.0.0-beta.53",
+    "@electron-forge/maker-deb": "6.0.0-beta.53",
+    "@electron-forge/maker-rpm": "6.0.0-beta.53",
+    "@electron-forge/maker-squirrel": "6.0.0-beta.53",
+    "@electron-forge/maker-zip": "6.0.0-beta.53",
     "@platform/exec": "0.2.62",
     "@platform/test": "0.1.15",
     "@platform/ts": "4.0.0",
-    "electron": "10.0.0"
+    "browserify": "16.5.2",
+    "electron": "10.1.1"
   },
   "files": [
     "lib",

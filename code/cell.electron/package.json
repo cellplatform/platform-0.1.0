@@ -7,21 +7,19 @@
     "start": "cd app && yarn start",
     "dev": "cd app && yarn dev",
     "test": "cd app && yarn test",
-    "package": "yarn bundle.preload && cd app && yarn package",
-    "make": "yarn bundle && yarn bundle.preload && cd app && yarn make",
+    "package": "cd app && yarn package",
+    "make": "yarn bundle && cd app && yarn make",
     "build": "cd app && yarn build",
     "clean": "sh script.sh/clean.sh",
     "reset": "sh script.sh/reset.sh",
     "bundle": "sh script.sh/bundle.ui.sys.sh",
-    "bundle.preload": "cd app && yarn bundle.preload",
     "open": "cd app/out/A1-darwin-x64 && open .",
     "nuke": "cd app && nuke"
   },
   "devDependencies": {
     "@platform/cell.compile.web": "0.0.130",
     "@platform/cli.prompt": "0.3.24",
-    "@platform/ts": "4.0.0",
-    "browserify": "16.5.2"
+    "@platform/ts": "4.0.0"
   },
   "files": [
     "lib",
