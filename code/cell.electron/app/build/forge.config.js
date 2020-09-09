@@ -19,7 +19,7 @@ dotenv.config({ path: resolve(process.cwd(), '../.env') });
  *    https://developer.apple.com/developer-id/
  *
  */
-module.exports = {
+const config = {
   packagerConfig: {
     name: 'A1',
     icon: 'assets/icons/app/app.icns',
@@ -46,10 +46,6 @@ module.exports = {
       'entitlements-inherit': 'build/entitlements.plist',
       'signature-flags': 'library',
     },
-    osxNotarize: {
-      appleId: process.env.APPLE_ID,
-      appleIdPassword: process.env.APPLE_ID_PASSWORD,
-    },
   },
   makers: [
     {
@@ -62,6 +58,33 @@ module.exports = {
     },
   ],
 };
+
+/**
+ * Add notarization configuration if necessary.
+ */
+(() => {
+  if (process.platform !== 'darwin') {
+    return;
+  }
+
+  const { APPLE_ID, APPLE_ID_PASSWORD } = process.env;
+
+  if (!APPLE_ID || !APPLE_ID_PASSWORD) {
+    const msg = `\n\nShould be notarizing, but environment variables APPLE_ID or APPLE_ID_PASSWORD are missing!\n`;
+    console.warn(msg);
+    return;
+  }
+
+  console.warn('\n\n🐷 Skipping notarization (TEMPORARY)\n');
+  return;
+
+  config.packagerConfig.osxNotarize = {
+    appleId: APPLE_ID,
+    appleIdPassword: APPLE_ID_PASSWORD,
+  };
+})();
+
+module.exports = config;
 
 /**
  * [Helpers]
