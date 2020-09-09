@@ -90,6 +90,10 @@ const config = {
     return;
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    return;
+  }
+
   const { APPLE_ID, APPLE_ID_PASSWORD } = process.env;
 
   if (!APPLE_ID || !APPLE_ID_PASSWORD) {
