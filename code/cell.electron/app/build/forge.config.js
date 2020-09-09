@@ -13,10 +13,8 @@ dotenv.config({ path: resolve(process.cwd(), '../.env') });
  *    https://www.electronjs.org/docs/tutorial/code-signing#electron-forge
  *    https://github.com/electron/fiddle/blob/master/forge.config.js
  *
- * Apple Developer ID:
- *    https://developer.apple.com/developer-id/
- * Apple Gatekeeper:
- *    https://developer.apple.com/developer-id/
+ * Apple Developer ID (Gatekeeper):
+ *    https://developer.apple.com/developer-id
  *
  */
 const config = {
@@ -55,6 +53,25 @@ const config = {
     {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin'],
+    },
+    {
+      /**
+       * DMG format options:
+       *
+       * "UDRW" | "UDRO" | "UDCO" | "UDZO" | "UDBZ" | "ULFO"
+       *
+       *   'UDRW' - UDIF read/write image
+       *   'UDRO' - UDIF read-only image
+       *   'UDCO' - UDIF ADC-compressed image
+       *   'UDZO' - UDIF zlib-compressed image
+       *   'ULFO' - UDIF lzfse-compressed image (OS X 10.11+ only)
+       *   'UDBZ' - UDIF bzip2-compressed image (Mac OS X 10.4+ only)
+       */
+      name: '@electron-forge/maker-dmg',
+      config: {
+        // background: 'assets/macos/dmg-background.png',
+        format: 'ULFO',
+      },
     },
   ],
 };
