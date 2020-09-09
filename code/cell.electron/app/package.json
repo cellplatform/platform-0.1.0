@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "1.0.112",
+  "version": "0.1.9",
   "description": "Electron shell for CellOS.",
   "main": "lib/main/index",
   "types": "lib/index.d.ts",
@@ -17,7 +17,7 @@
     "bundle.preload": "sh script.sh/bundle.preload.sh",
     "prepackage": "yarn build && yarn bundle.preload",
     "package": "yarn prepackage && electron-forge package",
-    "make": "npm version && yarn prepackage && electron-forge make",
+    "make": "npm version patch && yarn prepackage && electron-forge make",
     "tmp": "electron-forge package"
   },
   "dependencies": {

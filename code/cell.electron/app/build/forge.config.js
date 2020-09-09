@@ -66,11 +66,17 @@ const config = {
        *   'UDZO' - UDIF zlib-compressed image
        *   'ULFO' - UDIF lzfse-compressed image (OS X 10.11+ only)
        *   'UDBZ' - UDIF bzip2-compressed image (Mac OS X 10.4+ only)
+       *
+       * See
+       *    https://www.electronforge.io/config/makers/dmg
+       *    https://js.electronforge.io/maker/dmg/interfaces/makerdmgconfig
        */
       name: '@electron-forge/maker-dmg',
       config: {
-        // background: 'assets/macos/dmg-background.png',
+        background: 'assets/macos/dmg-background.png',
+        icon: 'assets/icons/app/app.icns',
         format: 'ULFO',
+        overwrite: true,
       },
     },
   ],
