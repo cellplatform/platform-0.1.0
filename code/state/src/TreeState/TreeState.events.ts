@@ -1,38 +1,36 @@
-import { Observable, Subject, merge } from 'rxjs';
-import { filter, map, share, takeUntil } from 'rxjs/operators';
 import { rx } from '@platform/util.value';
+import { Observable, Subject } from 'rxjs';
+import { filter, map, share, takeUntil } from 'rxjs/operators';
+
 import { t } from '../common';
 
 type Node = t.ITreeNode;
 
 export function create<T extends Node, A extends t.Event>(args: {
   event$: Subject<t.TreeStateEvent>;
-  dispatch$: Observable<A>;
-  dispose$: Observable<any>;
+  until$: Observable<any>;
 }): t.ITreeStateEvents<T, A> {
-  const dispatch$ = args.dispatch$.pipe(takeUntil(args.dispose$));
-  const event$ = args.event$.pipe(takeUntil(args.dispose$));
-  const $ = merge(event$, dispatch$);
+  const $ = args.event$.pipe(takeUntil(args.until$));
 
-  const changed$ = event$.pipe(
+  const changed$ = $.pipe(
     filter((e) => e.type === 'TreeState/changed'),
     map((e) => e.payload as t.ITreeStateChanged<T>),
     share(),
   );
 
-  const patched$ = event$.pipe(
+  const patched$ = $.pipe(
     filter((e) => e.type === 'TreeState/patched'),
     map((e) => e.payload as t.ITreeStatePatched<A>),
     share(),
   );
 
-  const childAdded$ = event$.pipe(
+  const childAdded$ = $.pipe(
     filter((e) => e.type === 'TreeState/child/added'),
     map((e) => e.payload as t.ITreeStateChildAdded),
     share(),
   );
 
-  const childRemoved$ = event$.pipe(
+  const childRemoved$ = $.pipe(
     filter((e) => e.type === 'TreeState/child/removed'),
     map((e) => e.payload as t.ITreeStateChildRemoved),
     share(),
@@ -46,7 +44,6 @@ export function create<T extends Node, A extends t.Event>(args: {
     patched$,
     childAdded$,
     childRemoved$,
-    dispatch$,
     payload: (type: P['type']) => rx.payload<P>($, type),
   };
 }

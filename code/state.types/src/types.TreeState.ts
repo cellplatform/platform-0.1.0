@@ -41,7 +41,6 @@ export type ITreeState<T extends N = N, A extends E = any> = t.IDisposable &
     clear(): ITreeState<T>;
     change: TreeStateChange<T, A>;
     syncFrom: TreeStateSyncFrom;
-    dispatch: t.IStateObjectDispatchMethods<T, A>['dispatch'];
     formatId(input?: string): string;
     path: t.ITreeStatePath<T, A>;
   };
@@ -181,7 +180,6 @@ export type ITreeStateEvents<T extends N, A extends E> = {
   readonly patched$: t.Observable<ITreeStatePatched<A>>;
   readonly childAdded$: t.Observable<ITreeStateChildAdded>;
   readonly childRemoved$: t.Observable<ITreeStateChildRemoved>;
-  readonly dispatch$: t.Observable<A>;
   payload<E extends t.TreeStateEvent | A>(type: E['type']): t.Observable<E['payload']>;
 };
 

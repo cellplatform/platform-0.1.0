@@ -56,8 +56,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     // Initialise events.
     this.event = events.create<T, A>({
       event$: this._event$,
-      dispatch$: store.event.dispatch$ as Observable<A>,
-      dispose$: this.dispose$,
+      until$: this.dispose$,
     });
 
     // Set the object with the initial state.

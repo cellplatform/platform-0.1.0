@@ -4,7 +4,7 @@ import { expect } from '../test';
 type S = string | undefined;
 const Identity = TreeIdentity;
 
-describe.only('TreeIdentity', () => {
+describe('TreeIdentity', () => {
   it('format( namespace, key )', () => {
     const test = (namespace: S, key: S, expected: string) => {
       const res = Identity.format(namespace, key);
