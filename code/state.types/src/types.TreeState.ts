@@ -41,7 +41,6 @@ export type ITreeState<T extends N = N, A extends E = any> = t.IDisposable &
     clear(): ITreeState<T>;
     change: TreeStateChange<T, A>;
     syncFrom: TreeStateSyncFrom;
-    formatId(input?: string): string;
     path: t.ITreeStatePath<T, A>;
   };
 

@@ -157,11 +157,6 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     return this._store.action(takeUntil$) as t.IStateObjectAction<T, A>;
   };
 
-  public formatId = (input?: string): string => {
-    const id = Identity.parse(input).id;
-    return Identity.format(this.namespace, id);
-  };
-
   public change: t.TreeStateChange<T, A> = (fn, options) => this._change(fn, options);
   private _change(
     fn: t.TreeStateChanger<T>,

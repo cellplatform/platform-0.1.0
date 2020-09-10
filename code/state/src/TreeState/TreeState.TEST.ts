@@ -881,7 +881,7 @@ describe('TreeState', () => {
 
         // Lookup: root namespace.
         expect(state.query.findById('foo')).to.eql(undefined);
-        expect(state.query.findById('child-2-1')?.id).to.eql(state.formatId('child-2-1'));
+        expect(TreeIdentity.key(state.query.findById('child-2-1')?.id)).to.eql('child-2-1');
 
         // Lookup: child namespace.
         expect(child.query.findById('foo')?.id).to.eql(child.id);
