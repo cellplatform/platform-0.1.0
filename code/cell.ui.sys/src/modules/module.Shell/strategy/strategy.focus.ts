@@ -9,14 +9,11 @@ type P = t.ShellProps;
 const CURSOR = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
 /**
- * Listens for focus-triggoring events and ensure the Shell parts (such as the tree)
+ * Listens for focus-triggering events and ensure the Shell parts (such as the tree)
  * recieve the correct focus triggers.
  */
 export function focusStrategy(args: { shell: t.ShellModule; bus: t.EventBus<E> }) {
   const { shell, bus } = args;
-
-  // const match: t.ModuleFilterEvent = (e) => shell.contains(e.module);
-  // const events = Module.events<P>(Module.filter(bus.event$, match), shell.dispose$);
 
   /**
    * Listen for keyboard events.

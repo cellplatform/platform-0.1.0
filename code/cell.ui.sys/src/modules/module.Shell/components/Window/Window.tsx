@@ -31,7 +31,7 @@ export class Window extends React.PureComponent<IWindowProps> {
 
     // Construct module
     const bus = ctx.bus as t.EventBus;
-    this.module = this.props.module || Shell.module(bus);
+    this.module = this.props.module || Shell.module(bus, { acceptNakedRegistrations: true });
     this.forceUpdate();
 
     // Bubble window resize.

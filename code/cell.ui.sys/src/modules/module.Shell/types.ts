@@ -12,7 +12,11 @@ export type ShellModule = t.IModule<ShellProps>;
 export type ShellModuleDef = {
   Body: (props?: ILayoutProps) => JSX.Element;
   Window: (props?: IWindowProps) => JSX.Element;
-  module(bus: t.EventBus): ShellModule;
+  module(bus: t.EventBus, options?: ShellModuleDefOptions): ShellModule;
+};
+
+export type ShellModuleDefOptions = {
+  acceptNakedRegistrations?: boolean;
 };
 
 /**
