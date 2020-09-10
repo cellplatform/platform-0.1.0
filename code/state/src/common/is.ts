@@ -1,6 +1,6 @@
 export const is = {
   observable: (input: any) => hasAll(input, 'subscribe'),
-  stateObject: (input: any) => hasAll(input, 'change', 'dispatch', 'action'),
+  stateObject: (input: any) => hasAll(input, 'change'),
 };
 
 const hasAll = (input: any, ...keys: string[]) => {

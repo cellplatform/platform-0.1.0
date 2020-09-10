@@ -5,7 +5,6 @@ import { filter, map, share, takeUntil } from 'rxjs/operators';
 
 import { is, t } from '../common';
 import { Patch } from '../Patch';
-import * as action from './StateObject.action';
 import * as events from './StateObject.events';
 import * as merge from './StateObject.merge';
 
@@ -53,12 +52,6 @@ export class StateObject<T extends O, E extends t.Event<any>>
     obj: t.IStateObjectWritable<T, E>,
   ): t.IStateObject<T, E> {
     return obj as t.IStateObject<T, E>;
-  }
-
-  public static dispatchable<T extends O, E extends t.Event<any> = any>(
-    obj: t.IStateObjectWritable<T, E>,
-  ): t.IStateObjectDispatchable<T, E> {
-    return obj as t.IStateObjectDispatchable<T, E>;
   }
 
   /**
@@ -130,10 +123,6 @@ export class StateObject<T extends O, E extends t.Event<any>>
     return this as t.IStateObject<T, E>;
   }
 
-  public get dispatchable() {
-    return this as t.IStateObjectDispatchable<T, E>;
-  }
-
   /**
    * [Methods]
    */
@@ -184,25 +173,6 @@ export class StateObject<T extends O, E extends t.Event<any>>
       cancelled,
       patches,
     };
-  };
-
-  public dispatch = (event: E) => {
-    return this.fire({ type: 'StateObject/dispatch', payload: { event } });
-  };
-
-  public dispatched = (action: E['payload'], takeUntil$?: Observable<any>) => {
-    const ob$ = !takeUntil$
-      ? this.event.dispatch$
-      : this.event.dispatch$.pipe(takeUntil(takeUntil$));
-    return ob$.pipe(
-      filter((e) => e.type === action),
-      map((e) => e.payload),
-      share(),
-    );
-  };
-
-  public action = (takeUntil$?: Observable<any>) => {
-    return action.create<T, E>(this.event, takeUntil$);
   };
 
   /**

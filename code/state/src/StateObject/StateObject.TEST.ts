@@ -1,13 +1,11 @@
 /* eslint-disable */
+import { isDraft } from 'immer';
 import { Subject } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 import { StateObject } from '.';
 import { expect, t } from '../test';
 import { StateObject as StateObjectClass } from './StateObject';
-
-import { equals } from 'ramda';
-import { isDraft } from 'immer';
 
 type IFoo = { message?: string; count: number };
 type IBar = { isEnabled?: boolean };
@@ -39,17 +37,6 @@ describe('StateObject', () => {
       expect(StateObject.readonly(readonly)).to.be.an.instanceof(StateObjectClass);
       expect(StateObject.readonly(obj)).to.equal(obj);
       expect(StateObject.readonly(readonly)).to.equal(obj);
-    });
-
-    it('create: dispatchable version', () => {
-      const obj = StateObject.create<IFoo>({ count: 0 });
-      const dispatchable = obj.dispatchable;
-
-      expect(dispatchable).to.be.an.instanceof(StateObjectClass);
-      expect(dispatchable).to.equal(obj); // NB: Same instance, cast to narrower type.
-
-      expect(typeof dispatchable.dispatch === 'function').to.eql(true);
-      expect(typeof dispatchable.action === 'function').to.eql(true);
     });
 
     it('dispose', () => {
@@ -375,43 +362,6 @@ describe('StateObject', () => {
       expect(changing[0].cid).to.eql(changed[0].cid);
     });
 
-    it('event: changed (via [action.changed] filter method)', () => {
-      const initial = { count: 1 };
-      const obj = StateObject.create<IFoo, MyEvent>(initial);
-      const done$ = new Subject();
-
-      const fired: t.IStateObjectChanged<IFoo, MyEvent>[] = [];
-      obj
-        .action(done$)
-        .changed('INCREMENT')
-        .subscribe((e) => fired.push(e));
-
-      // Change: Not issuing 'action'.
-      obj.change((draft) => draft.count++);
-      obj.change((draft) => draft.count++);
-      expect(obj.state.count).to.eql(3);
-      expect(fired.length).to.eql(0); // NB: Because action was issued on change.
-
-      // Change: Action issued, but different from what is being listened for.
-      obj.change((draft) => draft.count--, { action: 'DECREMENT' });
-      expect(obj.state.count).to.eql(2);
-      expect(fired.length).to.eql(0); // NB: Because different action.
-
-      // Change with action.
-      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
-      expect(obj.state.count).to.eql(3);
-      expect(fired.length).to.eql(1);
-      expect(fired[0].from.count).to.eql(2);
-      expect(fired[0].to.count).to.eql(3);
-
-      // Stop listening.
-      done$.next();
-      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
-      obj.change((draft) => draft.count++, { action: 'INCREMENT' });
-      expect(obj.state.count).to.eql(5);
-      expect(fired.length).to.eql(1); // NB: No change.
-    });
-
     it('event: changing/changed (with "action")', () => {
       const obj = StateObject.create<IFoo, MyEvent>({ count: 1 });
 
@@ -479,73 +429,6 @@ describe('StateObject', () => {
 
       expect(e.prev[0]).to.eql({ op: 'replace', path: '', value: { count: 1 } });
       expect(e.next[0]).to.eql({ op: 'replace', path: '', value: { count: 888 } });
-    });
-
-    it('event: dispatch$', () => {
-      const initial = { count: 1 };
-      const obj = StateObject.create<IFoo, MyEvent>(initial);
-      const dispatch = obj.dispatch; // NB: Test disconnected "bound" method.
-
-      const all: t.Event[] = [];
-      const dispatched: MyEvent[] = [];
-      const changed: t.IStateObjectChanged[] = [];
-      obj.event.$.subscribe((e) => all.push(e));
-      obj.event.dispatch$.subscribe((e) => dispatched.push(e));
-      obj.event.changed$.subscribe((e) => changed.push(e));
-
-      obj.dispatch({ type: 'INCREMENT', payload: { by: 1 } });
-
-      expect(dispatched.length).to.eql(1);
-      expect(changed.length).to.eql(0);
-
-      obj.event.dispatch$
-        .pipe(
-          filter((e) => e.type === 'INCREMENT'),
-          map((e) => e.payload as IncrementEvent['payload']),
-        )
-        .subscribe((e) => {
-          obj.change((m) => (m.count += e.by), { action: 'INCREMENT' });
-        });
-
-      dispatch({ type: 'INCREMENT', payload: { by: 2 } }); // NB: Using disconnected method.
-
-      expect(dispatched.length).to.eql(2);
-      expect(changed.length).to.eql(1);
-      expect(changed[0].action).to.eql('INCREMENT');
-      expect(obj.state.count).to.eql(3);
-
-      // NB: Fires all the dispatched events through the "all" ($) observable as well.
-      dispatched.forEach((e1) => {
-        const exists = all.some((e2) => equals(e1, e2.payload.event));
-        expect(exists).to.eql(true);
-      });
-    });
-
-    it('event: dispatch (via [action.dispatched] method filter)', async () => {
-      const initial = { count: 1 };
-      const obj = StateObject.create<IFoo, MyEvent>(initial);
-      const { dispatch, action } = obj; // NB: Test disconnected "bound" method.
-      const done$ = new Subject();
-
-      action(done$)
-        .dispatched<IncrementEvent>('INCREMENT')
-        .pipe(filter((e) => e.by >= 5))
-        .subscribe((e) => obj.change((m) => (m.count += e.by)));
-
-      // NB: Fired below change threshold.
-      dispatch({ type: 'INCREMENT', payload: { by: 1 } });
-      dispatch({ type: 'INCREMENT', payload: { by: 2 } });
-      dispatch({ type: 'INCREMENT', payload: { by: 3 } });
-      dispatch({ type: 'INCREMENT', payload: { by: 4 } });
-      expect(obj.state.count).to.eql(1);
-
-      // Fire above change threshold.
-      dispatch({ type: 'INCREMENT', payload: { by: 5 } });
-      expect(obj.state.count).to.eql(6);
-
-      done$.next();
-      dispatch({ type: 'INCREMENT', payload: { by: 5 } });
-      expect(obj.state.count).to.eql(6); // NB: No change.
     });
   });
 
@@ -625,7 +508,6 @@ describe('StateObject', () => {
       expect(merged.state.foo.count).to.eql(2);
       expect(merged.state.bar.isEnabled).to.eql(true);
 
-      // merged.store.
       merged.dispose();
 
       foo.change((draft) => draft.count++);

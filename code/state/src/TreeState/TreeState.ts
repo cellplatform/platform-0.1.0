@@ -149,10 +149,6 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
    * [Methods]
    */
 
-  public action: t.IStateObjectDispatchMethods<T, A>['action'] = (takeUntil$) => {
-    return this._store.action(takeUntil$) as t.IStateObjectAction<T, A>;
-  };
-
   public change: t.TreeStateChange<T, A> = (fn, options) => this._change(fn, options);
   private _change(
     fn: t.TreeStateChanger<T>,

@@ -40,12 +40,6 @@ export function create<T extends O, A extends t.Event<any>>(
     share(),
   );
 
-  const dispatch$ = $.pipe(
-    filter((e) => e.type === 'StateObject/dispatch'),
-    map((e) => (e.payload as t.IStateObjectDispatch<A>).event),
-    share(),
-  );
-
   return {
     $,
     dispose$,
@@ -53,6 +47,5 @@ export function create<T extends O, A extends t.Event<any>>(
     changed$,
     patched$,
     cancelled$,
-    dispatch$,
   };
 }
