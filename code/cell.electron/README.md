@@ -24,9 +24,13 @@ Or to run with in live system UI development mode:
 
     yarn dev
 
-and in a seperate terminal, run the UI [parcel](https://parceljs.org) server:
+Modules that are under development can be assigned a development `port` which when running in
+`dev` mode the app will favor when loading the `BrowserWindow`. For instance, the bundled `cell.ui.sys`
+module runs against:
 
-    yarn ui
+    http://localhost:1234
+
+Ensure that is running in a seperate console window to develop with.
 
 <p>&nbsp;<p>
 
@@ -41,8 +45,8 @@ and in a seperate terminal, run the UI [parcel](https://parceljs.org) server:
 
 ## .env
 
-The packager requires several environment variables to run. Ensure you have a `.env` file
-in the root containing the following:
+The packager requires several environment variables to sign and notalize the build.
+Ensure you have a `.env` file in the root containing the following:
 
 ```bash
 OSX_SIGN_IDENTITY = "Developer ID Application: <name> (<id>)"
@@ -52,11 +56,14 @@ APPLE_ID_PASSWORD = "<password>"
 
 ### `OSX_SIGN_IDENTITY`
 
-To obtain the `OSX_SIGN_IDENTITY` create a **"Developer ID Application"** type certificate within the Apple developer membership portal, download and install it within the MacOS "Keychain Access" application, then copy the `name/id` into the `.env` file.
+To obtain the `OSX_SIGN_IDENTITY` create a **"Developer ID Application"** type of certificate within the
+Apple [developer membership portal](https://developer.apple.com), download and install it within the MacOS "Keychain Access" application, then copy the `name/id` into the `.env` file.
 
 ### `APPLE_ID`
 
-When setting the `APPLE_ID` make sure to use an "app specific" login for the application, otherwise the notorization service will fail. The new app specific ID can be created at http://appleid.apple.com/account/manage
+When setting the `APPLE_ID` make sure to use an "app specific" login for the application, otherwise the [notorization service](https://developer.apple.com/developer-id/) will fail (with a quite unhelpful error message).
+
+App specific passwords for your `APPLE_ID` can be created at [appleid.apple.com](https://appleid.apple.com)
 
 <p>&nbsp;<p>
 <p>&nbsp;<p>
