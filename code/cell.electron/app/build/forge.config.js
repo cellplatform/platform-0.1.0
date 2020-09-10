@@ -16,6 +16,9 @@ dotenv.config({ path: resolve(process.cwd(), '../.env') });
  * Apple Developer ID (Gatekeeper):
  *    https://developer.apple.com/developer-id
  *
+ * Blog posts:
+ *    https://kilianvalkhof.com/2019/electron/notarizing-your-electron-application
+ *
  */
 const config = {
   packagerConfig: {
@@ -58,8 +61,6 @@ const config = {
       /**
        * DMG format options:
        *
-       * "UDRW" | "UDRO" | "UDCO" | "UDZO" | "UDBZ" | "ULFO"
-       *
        *   'UDRW' - UDIF read/write image
        *   'UDRO' - UDIF read-only image
        *   'UDCO' - UDIF ADC-compressed image
@@ -90,6 +91,10 @@ const config = {
     return;
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    return;
+  }
+
   const { APPLE_ID, APPLE_ID_PASSWORD } = process.env;
 
   if (!APPLE_ID || !APPLE_ID_PASSWORD) {
@@ -98,8 +103,8 @@ const config = {
     return;
   }
 
-  console.warn('\n\n🐷 Skipping notarization (TEMPORARY)\n');
-  return;
+  // console.warn('\n\n🐷 Skipping notarization (TEMPORARY)\n');
+  // return;
 
   config.packagerConfig.osxNotarize = {
     appleId: APPLE_ID,
