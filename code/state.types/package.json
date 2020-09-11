@@ -1,6 +1,6 @@
 {
   "name": "@platform/state.types",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Abstract type definitions for the state library.",
   "main": "lib/index",
   "types": "lib/index.d.ts",

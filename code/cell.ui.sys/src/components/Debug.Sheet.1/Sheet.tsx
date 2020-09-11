@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { AppWindowModel, color, css, CssValue, StateObject, ui } from '../../common';
 import { Log } from '../Debug.Log';
@@ -24,9 +24,9 @@ export class Sheet extends React.PureComponent<ISheetProps> {
   public componentDidMount() {
     // const changed$ = this.store.changed$.pipe(takeUntil(this.unmounted$));
     this.store.event.changed$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.forceUpdate());
-    // changed$.pipe(filter((e) => e.action === 'sheet/load')).subscribe(this.load);
 
-    this.store.action(this.unmounted$).changed('DEBUG/Sheet/load').subscribe(this.load);
+    // changed$.pipe(filter((e) => e.action === 'sheet/load')).subscribe(this.load);
+    // this.store.action(this.unmounted$).changed('DEBUG/Sheet/load').subscribe(this.load);
 
     this.init();
   }

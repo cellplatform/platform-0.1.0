@@ -56,8 +56,7 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     // Initialise events.
     this.event = events.create<T, A>({
       event$: this._event$,
-      dispatch$: store.event.dispatch$ as Observable<A>,
-      dispose$: this.dispose$,
+      until$: this.dispose$,
     });
 
     // Set the object with the initial state.
@@ -149,19 +148,6 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
   /**
    * [Methods]
    */
-
-  public dispatch: t.IStateObjectDispatchMethods<T, A>['dispatch'] = (e) => {
-    return this._store.dispatch(e);
-  };
-
-  public action: t.IStateObjectDispatchMethods<T, A>['action'] = (takeUntil$) => {
-    return this._store.action(takeUntil$) as t.IStateObjectAction<T, A>;
-  };
-
-  public formatId = (input?: string): string => {
-    const id = Identity.parse(input).id;
-    return Identity.format(this.namespace, id);
-  };
 
   public change: t.TreeStateChange<T, A> = (fn, options) => this._change(fn, options);
   private _change(

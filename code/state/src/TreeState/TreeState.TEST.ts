@@ -881,7 +881,7 @@ describe('TreeState', () => {
 
         // Lookup: root namespace.
         expect(state.query.findById('foo')).to.eql(undefined);
-        expect(state.query.findById('child-2-1')?.id).to.eql(state.formatId('child-2-1'));
+        expect(TreeIdentity.key(state.query.findById('child-2-1')?.id)).to.eql('child-2-1');
 
         // Lookup: child namespace.
         expect(child.query.findById('foo')?.id).to.eql(child.id);
@@ -1342,65 +1342,6 @@ describe('TreeState', () => {
       const state2 = create({ root: tree2, parent: '404' });
       const fn = () => state1.syncFrom({ source: state2 });
       expect(fn).to.throw(/parent node '404' does not exist in tree/);
-    });
-  });
-
-  describe('dispatchable', () => {
-    type MyFooEvent = {
-      type: 'FOO/event';
-      payload: MyFoo;
-    };
-    type MyFoo = { count: number };
-
-    it('action: dispatches', () => {
-      const root: N = { id: 'root' };
-      const state = create<N, MyFooEvent>({ root });
-
-      const fired: MyFoo[] = [];
-      state
-        .action()
-        .dispatched('FOO/event')
-        .subscribe((e) => fired.push(e));
-
-      state.dispatch({ type: 'FOO/event', payload: { count: 123 } });
-
-      expect(fired.length).to.eql(1);
-      expect(fired[0].count).to.eql(123);
-    });
-
-    it('action: changed', () => {
-      const root: N = { id: 'root' };
-      const state = create<N, MyFooEvent>({ root });
-
-      const fired: t.IStateObjectChanged<N, MyFooEvent>[] = [];
-      state
-        .action()
-        .changed('FOO/event')
-        .subscribe((e) => fired.push(e));
-
-      state.change((draft, ctx) => (ctx.props(draft).label = 'hello'), { action: 'FOO/event' });
-      expect(state.root.props?.label).to.eql('hello');
-
-      expect(fired.length).to.eql(1);
-      expect(fired[0].action).to.eql('FOO/event');
-      expect(fired[0].to.props?.label).to.eql('hello');
-    });
-
-    it('fires action through [dispatch$]', () => {
-      const root: N = { id: 'root' };
-      const state = create<N, MyFooEvent>({ root });
-
-      const all: t.Event[] = [];
-      const dispatched: MyFooEvent[] = [];
-
-      state.event.$.subscribe((e) => all.push(e));
-      state.event.dispatch$.subscribe((e) => dispatched.push(e));
-
-      state.dispatch({ type: 'FOO/event', payload: { count: 123 } });
-
-      expect(dispatched.length).to.eql(1);
-      expect(dispatched[0].payload.count).to.eql(123);
-      expect(all).to.eql(dispatched);
     });
   });
 

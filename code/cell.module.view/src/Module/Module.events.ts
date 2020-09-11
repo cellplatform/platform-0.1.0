@@ -4,12 +4,10 @@ import { filter, share } from 'rxjs/operators';
 
 import { rx, t } from '../common';
 
-type B = t.EventBus<any>;
 type P = t.IViewModuleProps;
-type N = t.IModuleNode<P>;
 
 export function events<T extends P>(
-  subject: Observable<t.Event> | t.IModule,
+  subject: Observable<t.Event>,
   until$?: Observable<any>,
 ): t.IViewModuleEvents<T> {
   const events = Module.events<T>(subject, until$);
@@ -21,6 +19,7 @@ export function events<T extends P>(
 
   return {
     ...events,
+
     selection$,
     render$,
     rendered$,

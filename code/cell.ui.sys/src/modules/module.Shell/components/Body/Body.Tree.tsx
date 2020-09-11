@@ -33,7 +33,7 @@ export class LayoutTree extends React.PureComponent<ILayoutTreeProps, ILayoutTre
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     const bus$ = this.bus.event$.pipe(takeUntil(this.unmounted$));
     const tree = ui.ModuleView.Tree.events(this.treeview$, this.unmounted$);
-    const events = Module.events(this.module, this.unmounted$);
+    const events = Module.events(bus$, this.unmounted$);
 
     // Prevent header from being drawn on root node.
     tree.beforeRender.header$.pipe(filter((e) => e.node.id === this.module.id)).subscribe((e) => {

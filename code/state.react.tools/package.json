@@ -1,6 +1,6 @@
 {
   "name": "@platform/state.react.tools",
-  "version": "0.4.121",
+  "version": "0.4.122",
   "description": "Tools and debug UI for working with `state.react`.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@platform/react": "0.4.45",
-    "@platform/state": "0.7.7",
-    "@platform/state.react": "0.4.113",
+    "@platform/state": "0.7.8",
+    "@platform/state.react": "0.4.114",
     "@platform/ui.button": "0.3.80",
     "@platform/ui.icon": "0.0.164",
     "@platform/ui.text": "0.3.76"

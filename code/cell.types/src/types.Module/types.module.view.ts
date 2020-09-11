@@ -32,7 +32,7 @@ export type ViewModule = {
   fire<T extends P>(bus: B): t.IViewModuleFire<T>;
 
   events<T extends P>(
-    subject: t.Observable<t.Event> | t.IModule,
+    subject: t.Observable<t.Event>,
     until$?: t.Observable<any>,
   ): t.IViewModuleEvents<T>;
 };

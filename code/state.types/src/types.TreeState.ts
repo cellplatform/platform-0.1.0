@@ -41,8 +41,6 @@ export type ITreeState<T extends N = N, A extends E = any> = t.IDisposable &
     clear(): ITreeState<T>;
     change: TreeStateChange<T, A>;
     syncFrom: TreeStateSyncFrom;
-    dispatch: t.IStateObjectDispatchMethods<T, A>['dispatch'];
-    formatId(input?: string): string;
     path: t.ITreeStatePath<T, A>;
   };
 
@@ -53,12 +51,11 @@ export type ITreeStateReadonly<T extends N, A extends E> = {
   readonly key: string;
   readonly namespace: string;
   readonly parent?: string; // ID of parent within tree.
-  readonly store: t.IStateObjectReadOnly<T>;
+  readonly store: t.IStateObjectReadable<T>;
   readonly root: T;
   readonly children: readonly ITreeState<T, A>[];
   readonly query: t.ITreeQuery<T>;
   readonly event: ITreeStateEvents<T, A>;
-  action: t.IStateObjectDispatchMethods<T, A>['action'];
   find: t.TreeStateFind<T, A>;
   contains: t.TreeStateContains<T, A>;
   walkDown: t.TreeStateWalkDown<T, A>;
@@ -181,7 +178,6 @@ export type ITreeStateEvents<T extends N, A extends E> = {
   readonly patched$: t.Observable<ITreeStatePatched<A>>;
   readonly childAdded$: t.Observable<ITreeStateChildAdded>;
   readonly childRemoved$: t.Observable<ITreeStateChildRemoved>;
-  readonly dispatch$: t.Observable<A>;
   payload<E extends t.TreeStateEvent | A>(type: E['type']): t.Observable<E['payload']>;
 };
 
