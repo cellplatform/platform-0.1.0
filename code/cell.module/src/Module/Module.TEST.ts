@@ -75,25 +75,6 @@ describe('Module', () => {
       fire.request('foo');
       expect(count).to.eql(0);
     });
-
-    it('stops on [module.dispose()]', () => {
-      const parent = create();
-      const child1 = create();
-      const child2 = create();
-
-      const events = Module.events(parent);
-
-      let count = 0;
-      events.$.subscribe((e) => count++);
-
-      Module.register(bus, child1, parent);
-      expect(count).to.greaterThan(0);
-
-      parent.dispose();
-      count = 0;
-      Module.register(bus, child2, parent);
-      expect(count).to.eql(0);
-    });
   });
 
   describe('event: "Module/register"', () => {
@@ -130,7 +111,7 @@ describe('Module', () => {
       const child = create({ root: 'child' });
 
       const fired: t.IModuleChildRegistered[] = [];
-      const events = Module.events(parent);
+      const events = Module.events(bus.event$);
       events.childRegistered$.subscribe((e) => fired.push(e));
 
       const res = fire.register(child, parent.id);
@@ -368,7 +349,6 @@ describe('Module', () => {
       const module = create({ root: 'foo' });
 
       const fired: t.IModuleChanged<P>[] = [];
-      Module.events<P>(module).changed$.subscribe((e) => fired.push(e));
       Module.events<P>(bus.event$).changed$.subscribe((e) => fired.push(e));
 
       module.change((draft, ctx) => {
@@ -378,16 +358,14 @@ describe('Module', () => {
         });
       });
 
-      expect(fired.length).to.eql(2);
+      expect(fired.length).to.eql(1);
       expect(fired[0].change.to.props?.data?.count).to.eql(456);
-      expect(fired[1].change.to.props?.data?.count).to.eql(456);
     });
 
     it('event: "Module/patched"', () => {
       const module = create({ root: 'foo' });
 
       const fired: t.IModulePatched[] = [];
-      Module.events<P>(module).patched$.subscribe((e) => fired.push(e));
       Module.events<P>(bus.event$).patched$.subscribe((e) => fired.push(e));
 
       module.change((draft, ctx) => {
@@ -397,7 +375,7 @@ describe('Module', () => {
         });
       });
 
-      expect(fired.length).to.eql(2);
+      expect(fired.length).to.eql(1);
     });
   });
 });

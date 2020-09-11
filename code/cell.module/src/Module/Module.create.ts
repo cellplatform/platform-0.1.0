@@ -1,12 +1,12 @@
 import { TreeState } from '@platform/state';
-import { filter, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
-import { isModuleEvent } from './Module.events';
 import * as get from './Module.get';
 import * as register from './Module.register';
 
 type P = t.IModuleProps;
+type E = t.ModuleEvent;
 
 /**
  * Create a new module
@@ -57,20 +57,8 @@ function formatModuleNode<T extends P = any>(
  * Monitors the events of a module and bubbling
  * relevant events when matched.
  */
-function monitorAndDispatch<T extends P>(bus: t.EventBus<t.ModuleEvent>, module: t.IModule<T>) {
+function monitorAndDispatch<T extends P>(bus: t.EventBus<E>, module: t.IModule<T>) {
   const until$ = module.dispose$;
-  const event$ = bus.event$.pipe(takeUntil(until$));
-
-  /**
-   * Bubble module change events.
-   */
-  event$
-    .pipe(
-      filter((e) => isModuleEvent(e)),
-      filter((e) => e.payload.module === module.id),
-    )
-    .subscribe((e) => module.dispatch(e));
-
   const id = module.id;
   const objChanged$ = module.event.changed$.pipe(takeUntil(until$));
   const objPatched$ = module.event.patched$.pipe(takeUntil(until$));

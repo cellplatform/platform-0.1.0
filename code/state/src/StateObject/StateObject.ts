@@ -1,7 +1,7 @@
 import { id } from '@platform/util.value';
 import { enablePatches, isDraft, original, produceWithPatches, setAutoFreeze } from 'immer';
-import { Observable, Subject } from 'rxjs';
-import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { share } from 'rxjs/operators';
 
 import { is, t } from '../common';
 import { Patch } from '../Patch';

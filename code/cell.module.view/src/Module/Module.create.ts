@@ -34,7 +34,11 @@ export function create<T extends P>(args: t.ViewModuleArgs<T>): t.IModule<T> {
  * relevant events when matched.
  */
 export function monitorAndDispatch<T extends P>(args: { bus: B; module: t.IModule<T> }) {
-  const event = events<P>(args.module.event.$);
+  const module$ = args.bus
+    .type<t.ModuleEvent>()
+    .event$.pipe(filter((e) => e.payload.module === args.module.id));
+
+  const event = events<P>(module$);
   const next = fire(args.bus);
 
   /**
