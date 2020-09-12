@@ -19,7 +19,7 @@ export const paths = {
       db: `${dir}/local.db`,
       fs: `${dir}/local.fs`,
       config: `${dir}/.config.json`,
-      archive: `${dir}/_archive`,
+      archive: `${dir}/.archive`,
     };
   },
 

@@ -4,7 +4,7 @@ import { t, fs, log } from '../common';
 /**
  * Menu for opening tools around the locally running HTTP server.
  */
-export function server(args: { paths: t.IAppPaths; port: number }): M {
+export function serverMenu(args: { paths: t.IAppPaths; port: number }): M {
   const { paths } = args;
   const base = `http://localhost:${args.port}`;
 
