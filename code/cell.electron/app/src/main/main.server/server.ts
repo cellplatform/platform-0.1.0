@@ -71,7 +71,7 @@ export async function start(args: IInitArgs & { port?: number; isDev?: boolean }
     .subscribe((e) => {
       const data: t.IResGetElectronSysInfo = {
         ...e.res.data,
-        region: 'local:app',
+        region: 'local:app:main',
         app: info,
       };
       e.modify({ ...e.res, data });
