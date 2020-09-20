@@ -21,7 +21,7 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
    */
   public componentDidMount() {
     const ctx = this.context;
-    const changes = onStateChanged(ctx.event$, this.unmounted$);
+    const changes = onStateChanged(ctx.bus.event$, this.unmounted$);
 
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
@@ -121,7 +121,7 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
 
     await time.delay(50);
     const changes = sheet.state.changes;
-    ctx.fire({
+    ctx.bus.fire({
       type: 'IPC/sheet/changed',
       payload: { source: ctx.env.def, changes },
     });
@@ -129,15 +129,15 @@ export class SidebarDebug extends React.PureComponent<ISidebarDebugProps, ISideb
 
   private loadTypeDefs = () => {
     const uri = this.store.uri;
-    this.context.fire({ type: 'APP:IDE/types/pull', payload: { uri } });
+    this.context.bus.fire({ type: 'APP:IDE/types/pull', payload: { uri } });
   };
 
   private unloadTypeDefs = () => {
-    this.context.fire({ type: 'APP:IDE/types/clear', payload: {} });
+    this.context.bus.fire({ type: 'APP:IDE/types/clear', payload: {} });
   };
 
   private loadSampleCode = () => {
-    this.context.fire({ type: 'APP:IDE/text', payload: { text: SAMPLE } });
+    this.context.bus.fire({ type: 'APP:IDE/text', payload: { text: SAMPLE } });
   };
 }
 

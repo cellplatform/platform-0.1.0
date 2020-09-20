@@ -9,7 +9,7 @@ export function init(args: { ctx: t.IAppContext; store: t.IAppStore }) {
   const { ctx, store } = args;
   const { client } = ctx;
   const http = client.http;
-  const event$ = ctx.event$;
+  const event$ = ctx.bus.event$;
 
   save.init(args);
 
