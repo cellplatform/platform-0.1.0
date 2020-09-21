@@ -48,7 +48,7 @@ export type BuilderChildObjectArgs = BuilderChildArgs;
  *        A child that is indexed within a list (array) on the parent.
  */
 export type BuilderChildListIndexed = {
-  kind: 'CHILD/list/byIndex';
+  kind: 'CHILD/list:byIndex';
   path: string;
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
 };

@@ -59,7 +59,7 @@ const fooHandlers: t.BuilderMethods<IModel, IFoo> = {
     handlers: () => barHandlers,
   },
   byIndex: {
-    kind: 'CHILD/list/byIndex',
+    kind: 'CHILD/list:byIndex',
     path: '$.lists.indexed',
     handlers: () => itemHandlers,
   },
@@ -130,7 +130,7 @@ const itemHandlers: t.BuilderMethods<IModel, IItem> = {
   },
 
   childByIndex: {
-    kind: 'CHILD/list/byIndex',
+    kind: 'CHILD/list:byIndex',
     path: 'children',
     handlers: () => itemChildHandlers,
   },

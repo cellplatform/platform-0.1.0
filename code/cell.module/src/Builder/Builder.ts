@@ -86,7 +86,7 @@ export function Builder<S extends O, M extends O>(args: {
       /**
        * Array list (accessed by index).
        */
-      if (def.kind === 'CHILD/list/byIndex') {
+      if (def.kind === 'CHILD/list:byIndex') {
         builder[key] = (index?: number) => {
           const path = formatPath(def.path);
           const list = jsonpath.query(model.state, path)[0];
