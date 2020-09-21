@@ -1,4 +1,5 @@
 import { IStateObjectWritable } from '@platform/state.types';
+import { MemoryCache, IMemoryCache } from '@platform/cache';
 import { t } from '../common';
 import * as jsonpath from 'jsonpath';
 
@@ -7,6 +8,7 @@ type B = t.Builder<any, any>;
 type H = t.BuilderMethods<any, any>;
 
 const toHandlers = (input: H | (() => H)) => (typeof input === 'function' ? input() : input);
+const isPathRoot = (path: string) => path.startsWith('$');
 
 /**
  * A strongly typed object builder.
@@ -17,33 +19,37 @@ export function Builder<S extends O, M extends O>(args: {
   path?: string;
   index?: number;
   parent?: t.Builder<any, any>;
+  cache?: IMemoryCache;
 }): t.Builder<S, M> {
   const { handlers, model, parent } = args;
   const index = args.index === undefined || args.index < 0 ? -1 : args.index;
+  const cache = args.cache || MemoryCache.create();
   const builder = {};
 
-  const childBuilders: { [key: string]: B } = {};
+  const formatPath = (path: string) => {
+    return !isPathRoot(path) && index !== -1 ? `${args.path}[${index}].${path}` : path;
+  };
+
   const getOrCreateChildBuilder = (
     cacheKey: string,
     path: string,
     handlers: H | (() => H),
     options: { index?: number } = {},
   ): B => {
-    if (!childBuilders[cacheKey]) {
-      const parsed = jsonpath.parse(path);
-      if (parsed[0]?.expression?.type !== 'root' && index !== -1) {
-        path = `${args.path}[${index}].${path}`;
-      }
-
-      childBuilders[cacheKey] = Builder<any, any>({
-        path,
-        model,
-        parent: builder,
-        handlers: toHandlers(handlers),
-        index: options.index,
-      });
+    if (!cache.exists(cacheKey)) {
+      cache.put(
+        cacheKey,
+        Builder<any, any>({
+          model,
+          path: formatPath(path),
+          parent: builder,
+          handlers: toHandlers(handlers),
+          index: options.index,
+        }),
+      );
     }
-    return childBuilders[cacheKey];
+
+    return cache.get<B>(cacheKey);
   };
 
   // Assign chained method modifiers.
@@ -67,11 +73,12 @@ export function Builder<S extends O, M extends O>(args: {
        * Simple child object.
        */
       if (def.kind === 'CHILD/object') {
-        const cacheKey = `object/${key}`;
+        const path = def.path;
+        const cacheKey = `OBJECT:${key}${path}`;
         Object.defineProperty(builder, key, {
           enumerable: true,
           configurable: false,
-          get: () => getOrCreateChildBuilder(cacheKey, def.path, def.handlers), // <== RECURSION 🌳
+          get: () => getOrCreateChildBuilder(cacheKey, path, def.handlers), // <== RECURSION 🌳
         });
       }
 
@@ -80,14 +87,15 @@ export function Builder<S extends O, M extends O>(args: {
        */
       if (def.kind === 'CHILD/list/byIndex') {
         builder[key] = (index?: number) => {
-          const list = jsonpath.query(model.state, def.path)[0];
+          const path = formatPath(def.path);
+          const list = jsonpath.query(model.state, path)[0];
           if (!list) {
             throw new Error(`A containing list at path '${def.path}' does not exist on the model.`);
           }
           index = Math.max(0, index === undefined ? list.length : (index as number));
-          const cacheKey = `list/${key}[${index}]`;
+          const cacheKey = `LIST:${key}[${index}]:${path}`;
 
-          return getOrCreateChildBuilder(cacheKey, def.path, def.handlers, { index }); // <== RECURSION 🌳
+          return getOrCreateChildBuilder(cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
         };
       }
     });

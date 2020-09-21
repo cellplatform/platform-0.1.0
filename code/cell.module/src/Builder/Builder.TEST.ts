@@ -37,8 +37,8 @@ type IBaz = {
 
 type IItem = {
   name(value: string): IItem;
-  child: IItemChild;
-  // childMethod(): IItemChild
+  childField: IItemChild;
+  childByIndex(index?: number): IItemChild;
   parent(): IFoo;
 };
 type IItemChild = {
@@ -123,9 +123,15 @@ const itemHandlers: t.BuilderMethods<IModel, IItem> = {
     });
   },
 
-  child: {
+  childField: {
     kind: 'CHILD/object',
     path: 'child', // NB: relative starting point (does not start from "$" root).
+    handlers: () => itemChildHandlers,
+  },
+
+  childByIndex: {
+    kind: 'CHILD/list/byIndex',
+    path: 'children',
     handlers: () => itemChildHandlers,
   },
 
@@ -235,19 +241,37 @@ describe.only('Builder', () => {
       expect(list[5].name).to.eql('baz');
     });
 
-    it('deeper child on indexed child', () => {
+    it('indexed grandchild (via field)', () => {
       const { builder, model } = testModel();
-
       const child = builder.byIndex(1).name('foo');
       child.name('foo');
 
-      const grandchild = child.child;
+      const grandchild = child.childField;
       grandchild.count(99).count(101).parent().parent().name('root');
 
       const state = model.state;
       expect(state.name).to.eql('root');
       expect(state.lists.indexed[1].name).to.eql('foo');
       expect(state.lists.indexed[1].child.count).to.eql(101);
+    });
+
+    it.skip('indexed grandchild (via method)', () => {
+      const { builder, model } = testModel();
+      const child = builder.byIndex(1).name('foo');
+      child.name('foo');
+
+      const grandchild = child.childByIndex(0);
+
+      console.log('grandchild', grandchild);
+
+      grandchild.count(99);
+
+      // grandchild.count(99).count(101).parent().parent().name('root');
+
+      // const state = model.state;
+      // expect(state.name).to.eql('root');
+      // expect(state.lists.indexed[1].name).to.eql('foo');
+      // expect(state.lists.indexed[1].child.count).to.eql(101);
     });
   });
 });
