@@ -1,10 +1,10 @@
 import { expect, t } from '../test';
 import { Builder } from '.';
 import { StateObject } from '@platform/state';
-import * as jsonpath from 'jsonpath';
+import * as jpath from 'jsonpath';
 
 /**
- * Data model types (State)
+ * Data model types (State).
  */
 type IModel = {
   name: string;
@@ -12,19 +12,16 @@ type IModel = {
   lists: { indexed: IModelItem[]; named: IModelItem[] };
 };
 type IModelChild = { count: number };
-type IModelItem = {
-  name: string;
-  // child: IModelItemChild;
-};
-// type IModelItemChild = { count: string };
+type IModelItem = { name: string; child: IModelItemChild; children: IModelItemChild[] };
+type IModelItemChild = { count: number };
 
 /**
- * Builder types
+ * Builder types.
  */
 type IFoo = {
   name(value: string): IFoo;
   bar: IBar;
-  byIndex(index?: number): IItem<IFoo>;
+  byIndex(index?: number): IItem;
 };
 
 type IBar = {
@@ -38,9 +35,15 @@ type IBaz = {
   parent: () => IBar; // NB: "end" is not a convention, maybe we want to use "parent" instead.
 };
 
-type IItem<P> = {
-  name(value: string): IItem<P>;
-  parent(): P;
+type IItem = {
+  name(value: string): IItem;
+  child: IItemChild;
+  // childMethod(): IItemChild
+  parent(): IFoo;
+};
+type IItemChild = {
+  count(value: number): IItemChild;
+  parent(): IItem;
 };
 
 /**
@@ -51,12 +54,12 @@ const fooHandlers: t.BuilderMethods<IModel, IFoo> = {
     args.model.change((draft) => (draft.name = args.params[0]));
   },
   bar: {
-    type: 'CHILD/object',
+    kind: 'CHILD/object',
     path: '$.childObject',
     handlers: () => barHandlers,
   },
   byIndex: {
-    type: 'CHILD/list/byIndex',
+    kind: 'CHILD/list/byIndex',
     path: '$.lists.indexed',
     handlers: () => itemHandlers,
   },
@@ -67,11 +70,11 @@ const barHandlers: t.BuilderMethods<IModel, IBar> = {
     args.model.change((draft) => {
       type T = NonNullable<IModel['childObject']>;
 
-      if (!jsonpath.query(draft, args.path)[0]) {
+      if (!jpath.query(draft, args.path)[0]) {
         draft.childObject = { count: args.params[0] };
       }
 
-      jsonpath.apply(draft, args.path, (value: T) => {
+      jpath.apply(draft, args.path, (value: T) => {
         value.count = args.params[0];
         return value;
       });
@@ -79,7 +82,7 @@ const barHandlers: t.BuilderMethods<IModel, IBar> = {
   },
 
   baz: {
-    type: 'CHILD/object',
+    kind: 'CHILD/object',
     path: '$.childObject',
     handlers: () => bazHandlers,
   },
@@ -91,7 +94,7 @@ const bazHandlers: t.BuilderMethods<IModel, IBaz> = {
   increment(args) {
     type T = NonNullable<IModel['childObject']>;
     args.model.change((draft) => {
-      jsonpath.apply(draft, args.path, (value: T) => {
+      jpath.apply(draft, args.path, (value: T) => {
         value.count++;
         return value;
       });
@@ -100,17 +103,17 @@ const bazHandlers: t.BuilderMethods<IModel, IBaz> = {
   parent: (args) => args.parent,
 };
 
-const itemHandlers: t.BuilderMethods<IModel, IItem<IFoo>> = {
+const itemHandlers: t.BuilderMethods<IModel, IItem> = {
   name(args) {
     args.model.change((draft) => {
-      jsonpath.apply(draft, args.path, (value) => {
+      jpath.apply(draft, args.path, (value) => {
         const path = `${args.path}[${args.index}]`;
 
-        if (!jsonpath.query(draft, path)[0]) {
-          draft.lists.indexed[args.index] = { name: '' };
+        if (!jpath.query(draft, path)[0]) {
+          draft.lists.indexed[args.index] = { name: '', child: { count: 0 }, children: [] };
         }
 
-        jsonpath.apply(draft, path, (value: IModelItem) => {
+        jpath.apply(draft, path, (value: IModelItem) => {
           value.name = args.params[0];
           return value;
         });
@@ -118,8 +121,25 @@ const itemHandlers: t.BuilderMethods<IModel, IItem<IFoo>> = {
         return value;
       });
     });
+  },
 
-    // args.model.change((draft) => (draft.name = args.params[0]));
+  child: {
+    kind: 'CHILD/object',
+    path: 'child', // NB: relative starting point (does not start from "$" root).
+    handlers: () => itemChildHandlers,
+  },
+
+  parent: (args) => args.parent,
+};
+
+const itemChildHandlers: t.BuilderMethods<IModel, IItemChild> = {
+  count(args) {
+    args.model.change((draft) => {
+      jpath.apply(draft, args.path, (value: IModelItemChild) => {
+        value.count = args.params[0];
+        return value;
+      });
+    });
   },
   parent: (args) => args.parent,
 };
@@ -191,7 +211,7 @@ describe.only('Builder', () => {
     });
   });
 
-  describe.only('builder: CHILD/list/index', () => {
+  describe('builder: CHILD/list/index', () => {
     it('creates with no index (insert at end)', () => {
       const { builder } = testModel();
 
@@ -214,5 +234,27 @@ describe.only('Builder', () => {
       expect(list[1].name).to.eql('bar');
       expect(list[5].name).to.eql('baz');
     });
+
+    it('deeper child on indexed child', () => {
+      const { builder, model } = testModel();
+
+      const child = builder.byIndex(1).name('foo');
+      child.name('foo');
+
+      const grandchild = child.child;
+      grandchild.count(99).count(101).parent().parent().name('root');
+
+      const state = model.state;
+      expect(state.name).to.eql('root');
+      expect(state.lists.indexed[1].name).to.eql('foo');
+      expect(state.lists.indexed[1].child.count).to.eql(101);
+    });
   });
 });
+
+/**
+ * TODO
+ * - index (by key/name) - return singleton
+ * - TEST deep index (from method)
+ * - map
+ */

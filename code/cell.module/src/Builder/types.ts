@@ -37,7 +37,7 @@ export type BuilderChildArgs = {
  *        A simple child object which is not part of a [list] or {map}.
  */
 export type BuilderChildObject = {
-  type: 'CHILD/object';
+  kind: 'CHILD/object';
   path: string;
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
 };
@@ -48,7 +48,7 @@ export type BuilderChildObjectArgs = BuilderChildArgs;
  *        A child that is indexed within a list (array) on the parent.
  */
 export type BuilderChildListIndexed = {
-  type: 'CHILD/list/byIndex';
+  kind: 'CHILD/list/byIndex';
   path: string;
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
 };
@@ -61,7 +61,7 @@ export type BuilderChildListIndexedArgs = BuilderChildArgs & {
  *        A child that is keyed within an object-map on the parent.
  */
 export type BuilderChildMap = {
-  type: 'CHILD/map';
+  kind: 'CHILD/map';
   builder(args: BuilderChildMapArgs): BuilderAny;
 };
 export type BuilderChildMapArgs = BuilderChildArgs & {

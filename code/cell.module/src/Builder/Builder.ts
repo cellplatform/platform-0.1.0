@@ -30,6 +30,11 @@ export function Builder<S extends O, M extends O>(args: {
     options: { index?: number } = {},
   ): B => {
     if (!childBuilders[cacheKey]) {
+      const parsed = jsonpath.parse(path);
+      if (parsed[0]?.expression?.type !== 'root' && index !== -1) {
+        path = `${args.path}[${index}].${path}`;
+      }
+
       childBuilders[cacheKey] = Builder<any, any>({
         path,
         model,
@@ -61,19 +66,19 @@ export function Builder<S extends O, M extends O>(args: {
       /**
        * Simple child object.
        */
-      if (def.type === 'CHILD/object') {
+      if (def.kind === 'CHILD/object') {
         const cacheKey = `object/${key}`;
         Object.defineProperty(builder, key, {
           enumerable: true,
           configurable: false,
-          get: () => getOrCreateChildBuilder(cacheKey, def.path, def.handlers),
+          get: () => getOrCreateChildBuilder(cacheKey, def.path, def.handlers), // <== RECURSION 🌳
         });
       }
 
       /**
        * Array list (accessed by index).
        */
-      if (def.type === 'CHILD/list/byIndex') {
+      if (def.kind === 'CHILD/list/byIndex') {
         builder[key] = (index?: number) => {
           const list = jsonpath.query(model.state, def.path)[0];
           if (!list) {
@@ -81,7 +86,8 @@ export function Builder<S extends O, M extends O>(args: {
           }
           index = Math.max(0, index === undefined ? list.length : (index as number));
           const cacheKey = `list/${key}[${index}]`;
-          return getOrCreateChildBuilder(cacheKey, def.path, def.handlers, { index });
+
+          return getOrCreateChildBuilder(cacheKey, def.path, def.handlers, { index }); // <== RECURSION 🌳
         };
       }
     });
