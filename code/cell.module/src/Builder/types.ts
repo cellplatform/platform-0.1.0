@@ -16,6 +16,7 @@ export type BuilderMethodArgs<S extends O> = {
   model: IStateObjectWritable<S>;
   path: string;
   key: string;
+  index: number;
   params: any[];
   parent?: BuilderAny;
 };
@@ -23,7 +24,7 @@ export type BuilderMethodArgs<S extends O> = {
 /**
  * Children
  */
-export type BuilderChild = BuilderChildObject | BuilderChildList | BuilderChildMap;
+export type BuilderChild = BuilderChildObject | BuilderChildListIndexed | BuilderChildMap;
 
 export type BuilderChildArgs = {
   path: string;
@@ -36,9 +37,8 @@ export type BuilderChildArgs = {
  *        A simple child object which is not part of a [list] or {map}.
  */
 export type BuilderChildObject = {
-  type: 'CHILD/Object';
+  type: 'CHILD/object';
   path: string;
-  // builder(args: BuilderChildObjectArgs): BuilderAny;
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
 };
 export type BuilderChildObjectArgs = BuilderChildArgs;
@@ -47,13 +47,13 @@ export type BuilderChildObjectArgs = BuilderChildArgs;
  * Child: LIST
  *        A child that is indexed within a list (array) on the parent.
  */
-export type BuilderChildList = {
-  type: 'CHILD/List';
-  builder(args: BuilderChildListArgs): BuilderAny;
+export type BuilderChildListIndexed = {
+  type: 'CHILD/list/byIndex';
+  path: string;
+  handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
 };
-export type BuilderChildListArgs = BuilderChildArgs & {
+export type BuilderChildListIndexedArgs = BuilderChildArgs & {
   index: number;
-  // model: IStateObjectWritable<any>;
 };
 
 /**
@@ -61,7 +61,7 @@ export type BuilderChildListArgs = BuilderChildArgs & {
  *        A child that is keyed within an object-map on the parent.
  */
 export type BuilderChildMap = {
-  type: 'CHILD/Map';
+  type: 'CHILD/map';
   builder(args: BuilderChildMapArgs): BuilderAny;
 };
 export type BuilderChildMapArgs = BuilderChildArgs & {
