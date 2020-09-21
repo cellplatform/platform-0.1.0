@@ -19,11 +19,13 @@
     "@platform/cell.typesystem": "0.0.103",
     "@platform/libs": "0.2.2",
     "@platform/state": "0.7.8",
-    "@platform/util.value": "^0.7.32"
+    "@platform/util.value": "^0.7.32",
+    "jsonpath": "^1.0.2"
   },
   "devDependencies": {
     "@platform/test": "0.1.15",
-    "@platform/ts": "4.0.0"
+    "@platform/ts": "4.0.0",
+    "@types/jsonpath": "^0.2.0"
   },
   "files": [
     "lib",
