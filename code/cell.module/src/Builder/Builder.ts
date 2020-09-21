@@ -36,6 +36,7 @@ export function Builder<S extends O, M extends O>(args: {
     handlers: H | (() => H),
     options: { index?: number } = {},
   ): B => {
+    cacheKey = `${cacheKey}:${path}`;
     if (!cache.exists(cacheKey)) {
       cache.put(
         cacheKey,
@@ -45,10 +46,10 @@ export function Builder<S extends O, M extends O>(args: {
           parent: builder,
           handlers: toHandlers(handlers),
           index: options.index,
+          cache,
         }),
       );
     }
-
     return cache.get<B>(cacheKey);
   };
 
@@ -74,7 +75,7 @@ export function Builder<S extends O, M extends O>(args: {
        */
       if (def.kind === 'CHILD/object') {
         const path = def.path;
-        const cacheKey = `OBJECT:${key}${path}`;
+        const cacheKey = `OBJECT:${key}`;
         Object.defineProperty(builder, key, {
           enumerable: true,
           configurable: false,
@@ -93,7 +94,7 @@ export function Builder<S extends O, M extends O>(args: {
             throw new Error(`A containing list at path '${def.path}' does not exist on the model.`);
           }
           index = Math.max(0, index === undefined ? list.length : (index as number));
-          const cacheKey = `LIST:${key}[${index}]:${path}`;
+          const cacheKey = `LIST:${key}[${index}]`;
 
           return getOrCreateChildBuilder(cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
         };
