@@ -1,7 +1,7 @@
 {
   "name": "@platform/ui.tree",
   "description": "A hierarchical tree visualisation and navigation component.",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "main": "lib/index",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -17,14 +17,14 @@
   "dependencies": {
     "@platform/css": "0.4.12",
     "@platform/react": "0.4.45",
-    "@platform/state": "0.7.8",
-    "@platform/state.types": "0.0.4",
+    "@platform/state": "0.7.9",
+    "@platform/state.types": "0.0.5",
     "@platform/types": "0.5.5",
     "@platform/ui.icon": "0.0.164",
     "@platform/ui.panel": "0.2.13",
     "@platform/ui.spinner": "0.0.161",
     "@platform/ui.text": "0.3.76",
-    "@platform/ui.tree.types": "0.0.5",
+    "@platform/ui.tree.types": "0.0.6",
     "@platform/util.animate": "0.0.90",
     "@platform/util.value": "0.7.32"
   },

@@ -1,11 +1,11 @@
 export const PKG = {
   name: '@platform/cell.db',
-  version: '0.3.137',
+  version: '0.3.139',
   dependencies: {
-    '@platform/cell.coord': '0.8.170',
-    '@platform/cell.schema': '0.4.163',
-    '@platform/cell.types': '0.4.149',
-    '@platform/cell.value': '0.2.124',
+    '@platform/cell.coord': '0.8.172',
+    '@platform/cell.schema': '0.4.165',
+    '@platform/cell.types': '0.4.151',
+    '@platform/cell.value': '0.2.126',
     '@platform/fsdb.model': '0.6.78',
     '@platform/fsdb.types': '0.6.34',
     '@platform/libs': '0.2.2',

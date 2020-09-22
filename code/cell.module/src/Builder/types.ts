@@ -4,6 +4,13 @@ type O = Record<string, unknown>;
 type BuilderMethodsAny = BuilderMethods<any, any>;
 type BuilderAny = Builder<any, any>;
 
+export type BuilderNamedItem = { name: string };
+
+export type BuilderIndexParam = number | BuilderIndexEdge | BuilderIndexCalc;
+export type BuilderIndexEdge = 'START' | 'END';
+export type BuilderIndexCalc = (args: BuilderIndexCalcArgs) => number;
+export type BuilderIndexCalcArgs = { total: number; list: any[] };
+
 /**
  * Methods
  */
@@ -17,7 +24,7 @@ export type BuilderMethodArgs<S extends O> = {
   model: IStateObjectWritable<S>;
   path: string;
   key: string;
-  index: number;
+  index: number; // NB: -1 if not relevant (ie. not related to an array-list).
   params: any[];
   parent?: BuilderAny;
   isList: boolean;
@@ -28,49 +35,69 @@ export type BuilderMethodKind = 'ROOT' | BuilderChild['kind'];
 /**
  * Children
  */
-export type BuilderChild = BuilderChildObject | BuilderChildListIndexed | BuilderChildMap;
-
-export type BuilderChildArgs = {
-  path: string;
-  model: IStateObjectWritable<any>;
-  parent: BuilderAny;
-};
+export type BuilderChild =
+  | BuilderObjectDef
+  | BuilderListByIndexDef
+  | BuilderListByNameDef
+  | BuilderMapDef;
 
 /**
  * Child: OBJECT
  *        A simple child object which is not part of a [list] or {map}.
  */
-export type BuilderChildObject = {
+export type BuilderObjectDef = {
   kind: 'object';
   path: string;
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
 };
-export type BuilderChildObjectArgs = BuilderChildArgs;
 
 /**
  * Child: LIST
  *        A child that is indexed within a list (array) on the parent.
+ *
+ * Assumes a consuming method of type [BuilderListByIndex]:
+ *
+ *        obj.method(index?: number)
+ *
  */
-export type BuilderChildListIndexed = {
+export type BuilderListByIndexDef = {
   kind: 'list:byIndex';
   path: string;
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
 };
-export type BuilderChildListIndexedArgs = BuilderChildArgs & {
-  index: number;
+export type BuilderListByIndex<T> = (index?: BuilderIndexParam) => T;
+
+/**
+ * Child: LIST
+ *        A child that is named within a list (array) on the parent.
+ *
+ * Assumes a consuming method of type [BuilderListByName] on the parent:
+ *
+ *        parent.method(name: string, index?: number) => child
+ *
+ * and a [name] method on the returned child:
+ *
+ *        child.name(name: string) => child
+ *
+ * and that the items within the stored array data implement the [BuilderNamedItem] interface:
+ *
+ *        { name: 'foo' }
+ *
+ */
+export type BuilderListByNameDef = {
+  kind: 'list:byName';
+  path: string;
+  handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
 };
+export type BuilderListByName<T> = (name: string, index?: BuilderIndexParam) => T;
 
 /**
  * Child: MAP
  *        A child that is keyed within an object-map on the parent.
  */
-export type BuilderChildMap = {
+export type BuilderMapDef = {
   kind: 'map';
-  builder(args: BuilderChildMapArgs): BuilderAny;
-};
-export type BuilderChildMapArgs = BuilderChildArgs & {
-  key: string;
-  // model: IStateObjectWritable<any>;
+  handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
 };
 
 /**

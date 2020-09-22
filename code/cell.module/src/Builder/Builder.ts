@@ -8,13 +8,6 @@ type B = t.Builder<any, any>;
 type H = t.BuilderMethods<any, any>;
 type K = t.BuilderMethodKind;
 
-const toHandlers = (input: H | (() => H)) => (typeof input === 'function' ? input() : input);
-const isPathRoot = (path: string) => path.startsWith('$');
-const is = {
-  list: (kind: K) => kind.startsWith('list:'),
-  map: (kind: K) => kind === 'map',
-};
-
 /**
  * A strongly typed object builder.
  */
@@ -33,10 +26,10 @@ export function Builder<S extends O, M extends O>(args: {
   const builder = {};
 
   const formatPath = (path: string) => {
-    return !isPathRoot(path) && index !== -1 ? `${args.path}[${index}].${path}` : path;
+    return !is.pathRoot(path) && index !== -1 ? `${args.path}[${index}].${path}` : path;
   };
 
-  const getOrCreateChildBuilder = (
+  const getOrCreateBuilder = (
     kind: t.BuilderChild['kind'],
     cacheKey: string,
     path: string,
@@ -59,6 +52,18 @@ export function Builder<S extends O, M extends O>(args: {
       );
     }
     return cache.get<B>(cacheKey);
+  };
+
+  const findList = (path: string) => {
+    path = formatPath(path);
+    const list = jsonpath.query(model.state, path)[0];
+    if (!list) {
+      throw new Error(`A containing list at path '${path}' does not exist on the model.`);
+    }
+    if (!Array.isArray(list)) {
+      throw new Error(`The value at path '${path}' is a [${typeof list}] rather than an [Array]`);
+    }
+    return { path, list, index };
   };
 
   // Assign chained method modifiers.
@@ -87,11 +92,11 @@ export function Builder<S extends O, M extends O>(args: {
        */
       if (def.kind === 'object') {
         const path = def.path;
-        const cacheKey = `OBJECT:${key}`;
+        const cacheKey = `${def.kind}/${key}`;
         Object.defineProperty(builder, key, {
           enumerable: true,
           configurable: false,
-          get: () => getOrCreateChildBuilder(def.kind, cacheKey, path, def.handlers), // <== RECURSION 🌳
+          get: () => getOrCreateBuilder(def.kind, cacheKey, path, def.handlers), // <== RECURSION 🌳
         });
       }
 
@@ -99,16 +104,30 @@ export function Builder<S extends O, M extends O>(args: {
        * Array list (accessed by index).
        */
       if (def.kind === 'list:byIndex') {
-        builder[key] = (index?: number) => {
-          const path = formatPath(def.path);
-          const list = jsonpath.query(model.state, path)[0];
-          if (!list) {
-            throw new Error(`A containing list at path '${def.path}' does not exist on the model.`);
-          }
-          index = Math.max(0, index === undefined ? list.length : (index as number));
-          const cacheKey = `LIST:${key}[${index}]`;
+        builder[key] = (index?: t.BuilderIndexParam) => {
+          const { path, list } = findList(def.path);
+          index = deriveIndexFromList(list, index);
+          const cacheKey = `${def.kind}/${key}[${index}]`;
+          return getOrCreateBuilder(def.kind, cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
+        };
+      }
 
-          return getOrCreateChildBuilder(def.kind, cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
+      /**
+       * Array list (accessed by name).
+       */
+      if (def.kind === 'list:byName') {
+        builder[key] = (name: string, index?: t.BuilderIndexParam) => {
+          if (typeof name !== 'string' || !name.trim()) {
+            throw new Error(`Name of list item not given.`);
+          }
+          const { path, list } = findList(def.path);
+          index = findListIndexByName(list, name, index);
+          const cacheKey = `${def.kind}/${key}[${index}]`;
+          const builder = getOrCreateBuilder(def.kind, cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
+          if (typeof builder.name === 'function') {
+            builder.name(name);
+          }
+          return builder;
         };
       }
     });
@@ -116,3 +135,38 @@ export function Builder<S extends O, M extends O>(args: {
   // Finish up.
   return builder as t.Builder<S, M>;
 }
+
+/**
+ * [Helpers]
+ */
+
+const toHandlers = (input: H | (() => H)) => (typeof input === 'function' ? input() : input);
+const is = {
+  list: (kind: K) => kind.startsWith('list:'),
+  map: (kind: K) => kind === 'map',
+  object: (item: any) => typeof item === 'object',
+  pathRoot: (path: string) => path.startsWith('$'),
+};
+
+const deriveIndexFromList = (list: any[], input?: t.BuilderIndexParam) => {
+  input = input === undefined ? 'END' : input;
+  if (input === 'END') {
+    return list.length;
+  }
+  if (input === 'START') {
+    return 0;
+  }
+  if (typeof input === 'number') {
+    return input;
+  }
+  if (typeof input === 'function') {
+    return input({ list, total: list.length });
+  }
+  throw new Error(`Could not derive index for list.`);
+};
+
+const findListIndexByName = (list: any[], name: string, index?: t.BuilderIndexParam) => {
+  type N = t.BuilderNamedItem;
+  const existing = list.findIndex((item: N) => is.object(item) && item?.name === name);
+  return existing > -1 ? existing : deriveIndexFromList(list, index);
+};

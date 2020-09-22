@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.ui",
-  "version": "0.1.109",
+  "version": "0.1.111",
   "description": "Common UI used for working with cells.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -12,14 +12,14 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.client": "0.2.145",
-    "@platform/cell.module": "0.0.12",
-    "@platform/cell.module.view": "0.0.11",
-    "@platform/cell.types": "0.4.149",
+    "@platform/cell.client": "0.2.147",
+    "@platform/cell.module": "0.0.14",
+    "@platform/cell.module.view": "0.0.13",
+    "@platform/cell.types": "0.4.151",
     "@platform/libs": "0.2.2",
     "@platform/polyfill": "0.0.1",
     "@platform/react": "0.4.45",
-    "@platform/state": "^0.7.8",
+    "@platform/state": "^0.7.9",
     "@platform/types": "0.5.5",
     "@platform/ui.button": "0.3.80",
     "@platform/ui.icon": "0.0.164",
