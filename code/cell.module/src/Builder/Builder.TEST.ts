@@ -42,7 +42,7 @@ type IItem = {
   parent(): IFoo;
 };
 type IItemChild = {
-  count(value: number): IItemChild;
+  length(value: number): IItemChild;
   parent(): IItem;
 };
 
@@ -54,12 +54,12 @@ const fooHandlers: t.BuilderMethods<IModel, IFoo> = {
     args.model.change((draft) => (draft.name = args.params[0]));
   },
   bar: {
-    kind: 'CHILD/object',
+    kind: 'object',
     path: '$.childObject',
     handlers: () => barHandlers,
   },
   byIndex: {
-    kind: 'CHILD/list:byIndex',
+    kind: 'list:byIndex',
     path: '$.lists.indexed',
     handlers: () => itemHandlers,
   },
@@ -82,7 +82,7 @@ const barHandlers: t.BuilderMethods<IModel, IBar> = {
   },
 
   baz: {
-    kind: 'CHILD/object',
+    kind: 'object',
     path: '$.childObject',
     handlers: () => bazHandlers,
   },
@@ -124,13 +124,13 @@ const itemHandlers: t.BuilderMethods<IModel, IItem> = {
   },
 
   childField: {
-    kind: 'CHILD/object',
+    kind: 'object',
     path: 'child', // NB: relative starting point (does not start from "$" root).
     handlers: () => itemChildHandlers,
   },
 
   childByIndex: {
-    kind: 'CHILD/list:byIndex',
+    kind: 'list:byIndex',
     path: 'children',
     handlers: () => itemChildHandlers,
   },
@@ -139,9 +139,19 @@ const itemHandlers: t.BuilderMethods<IModel, IItem> = {
 };
 
 const itemChildHandlers: t.BuilderMethods<IModel, IItemChild> = {
-  count(args) {
+  length(args) {
     args.model.change((draft) => {
-      jpath.apply(draft, args.path, (value: IModelItemChild) => {
+      const { index } = args;
+
+      if (args.isList) {
+        const list = jpath.query(draft, args.path)[0];
+        if (!list[index]) {
+          list[index] = { count: 0 };
+        }
+      }
+
+      const path = args.isList ? `${args.path}[${index}]` : args.path;
+      jpath.apply(draft, path, (value: IModelItemChild) => {
         value.count = args.params[0];
         return value;
       });
@@ -172,7 +182,7 @@ describe.only('Builder', () => {
     });
   });
 
-  describe('builder: CHILD/Object', () => {
+  describe('kind: object', () => {
     it('updates model', () => {
       const { builder, model } = testModel();
       const bar = builder.bar;
@@ -217,7 +227,7 @@ describe.only('Builder', () => {
     });
   });
 
-  describe('builder: CHILD/list/index', () => {
+  describe('kind: list:byIndex', () => {
     it('creates with no index (insert at end)', () => {
       const { builder } = testModel();
 
@@ -247,7 +257,7 @@ describe.only('Builder', () => {
       child.name('foo');
 
       const grandchild = child.childField;
-      grandchild.count(99).count(101).parent().parent().name('root');
+      grandchild.length(101).parent().parent().name('root');
 
       const state = model.state;
       expect(state.name).to.eql('root');
@@ -255,23 +265,16 @@ describe.only('Builder', () => {
       expect(state.lists.indexed[1].child.count).to.eql(101);
     });
 
-    it.skip('indexed grandchild (via method)', () => {
+    it('indexed grandchild (via method)', () => {
       const { builder, model } = testModel();
       const child = builder.byIndex(1).name('foo');
       child.name('foo');
 
       const grandchild = child.childByIndex(0);
+      grandchild.length(99).length(101);
 
-      console.log('grandchild', grandchild);
-
-      grandchild.count(99);
-
-      // grandchild.count(99).count(101).parent().parent().name('root');
-
-      // const state = model.state;
-      // expect(state.name).to.eql('root');
-      // expect(state.lists.indexed[1].name).to.eql('foo');
-      // expect(state.lists.indexed[1].child.count).to.eql(101);
+      const state = model.state;
+      expect(state.lists.indexed[1].children[0].count).to.eql(101);
     });
   });
 });
@@ -279,6 +282,5 @@ describe.only('Builder', () => {
 /**
  * TODO
  * - index (by key/name) - return singleton
- * - TEST deep index (from method)
  * - map
  */

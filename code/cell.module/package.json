@@ -19,6 +19,7 @@
     "@platform/cell.typesystem": "0.0.103",
     "@platform/libs": "0.2.2",
     "@platform/state": "0.7.8",
+    "@platform/state.types": "^0.0.4",
     "@platform/util.value": "^0.7.32",
     "jsonpath": "^1.0.2"
   },

@@ -6,9 +6,14 @@ import * as jsonpath from 'jsonpath';
 type O = Record<string, unknown>;
 type B = t.Builder<any, any>;
 type H = t.BuilderMethods<any, any>;
+type K = t.BuilderMethodKind;
 
 const toHandlers = (input: H | (() => H)) => (typeof input === 'function' ? input() : input);
 const isPathRoot = (path: string) => path.startsWith('$');
+const is = {
+  list: (kind: K) => kind.startsWith('list:'),
+  map: (kind: K) => kind === 'map',
+};
 
 /**
  * A strongly typed object builder.
@@ -20,8 +25,9 @@ export function Builder<S extends O, M extends O>(args: {
   index?: number;
   parent?: t.Builder<any, any>;
   cache?: IMemoryCache;
+  kind?: t.BuilderMethodKind;
 }): t.Builder<S, M> {
-  const { handlers, model, parent } = args;
+  const { handlers, model, parent, kind = 'ROOT' } = args;
   const index = args.index === undefined || args.index < 0 ? -1 : args.index;
   const cache = args.cache || MemoryCache.create();
   const builder = {};
@@ -31,6 +37,7 @@ export function Builder<S extends O, M extends O>(args: {
   };
 
   const getOrCreateChildBuilder = (
+    kind: t.BuilderChild['kind'],
     cacheKey: string,
     path: string,
     handlers: H | (() => H),
@@ -41,6 +48,7 @@ export function Builder<S extends O, M extends O>(args: {
       cache.put(
         cacheKey,
         Builder<any, any>({
+          kind,
           model,
           path: formatPath(path),
           parent: builder,
@@ -60,12 +68,16 @@ export function Builder<S extends O, M extends O>(args: {
     .forEach(({ key, handler }) => {
       builder[key] = (...params: any[]) => {
         const path = `${args.path || '$'}`;
-        const res = handler({ path, key, index, params, model, parent });
+        const isList = is.list(kind);
+        const isMap = is.list(kind);
+        const res = handler({ kind, path, key, index, params, model, parent, isList, isMap });
         return res || builder;
       };
     });
 
-  // Assign child builder fields.
+  /**
+   * Child Builders.
+   */
   Object.keys(handlers)
     .filter((key) => typeof handlers[key] === 'object')
     .map((key) => ({ key, def: handlers[key] as t.BuilderChild }))
@@ -73,20 +85,20 @@ export function Builder<S extends O, M extends O>(args: {
       /**
        * Simple child object.
        */
-      if (def.kind === 'CHILD/object') {
+      if (def.kind === 'object') {
         const path = def.path;
         const cacheKey = `OBJECT:${key}`;
         Object.defineProperty(builder, key, {
           enumerable: true,
           configurable: false,
-          get: () => getOrCreateChildBuilder(cacheKey, path, def.handlers), // <== RECURSION 🌳
+          get: () => getOrCreateChildBuilder(def.kind, cacheKey, path, def.handlers), // <== RECURSION 🌳
         });
       }
 
       /**
        * Array list (accessed by index).
        */
-      if (def.kind === 'CHILD/list:byIndex') {
+      if (def.kind === 'list:byIndex') {
         builder[key] = (index?: number) => {
           const path = formatPath(def.path);
           const list = jsonpath.query(model.state, path)[0];
@@ -96,7 +108,7 @@ export function Builder<S extends O, M extends O>(args: {
           index = Math.max(0, index === undefined ? list.length : (index as number));
           const cacheKey = `LIST:${key}[${index}]`;
 
-          return getOrCreateChildBuilder(cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
+          return getOrCreateChildBuilder(def.kind, cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
         };
       }
     });
