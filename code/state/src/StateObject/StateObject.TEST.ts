@@ -7,7 +7,7 @@ import { StateObject } from '.';
 import { expect, t } from '../test';
 import { StateObject as StateObjectClass } from './StateObject';
 
-type IFoo = { message?: string; count: number; items?: string[] };
+type IFoo = { message?: string; count: number; items?: any[] };
 type IBar = { isEnabled?: boolean };
 type MyEvent = IncrementEvent | DecrementEvent;
 type IncrementEvent = { type: 'INCREMENT'; payload: { by: number } };
@@ -98,15 +98,29 @@ describe('StateObject', () => {
       });
 
       it('toObject (array)', () => {
-        const initial = { count: 0, items: ['one'] };
+        const initial = { count: 0, items: [] };
         const obj = StateObject.create<IFoo>(initial);
 
-        let list: string[] | undefined;
+        let list: any;
+
         obj.change((draft) => {
+          draft.items = [{ id: 1 }, { items: [456] }];
+        });
+
+        obj.change((draft) => {
+          const items = draft.items || [];
+          expect(items.length).to.eql(2);
+
+          console.log('items', items);
+          expect(isDraft(items[0])).to.eql(true);
+          expect(isDraft(items[1])).to.eql(true);
+          expect(draft.items).to.eql([{ id: 1 }, { items: [456] }]);
           list = StateObject.toObject(draft.items);
         });
 
-        expect(list).to.eql(['one']);
+        expect(list).to.eql([{ id: 1 }, { items: [456] }]);
+        expect(isDraft(list[0])).to.eql(false);
+        expect(isDraft(list[1])).to.eql(false);
       });
 
       it('toObject (undefined)', () => {
