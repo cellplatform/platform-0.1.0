@@ -7,7 +7,7 @@ import { StateObject } from '.';
 import { expect, t } from '../test';
 import { StateObject as StateObjectClass } from './StateObject';
 
-type IFoo = { message?: string; count: number };
+type IFoo = { message?: string; count: number; items?: string[] };
 type IBar = { isEnabled?: boolean };
 type MyEvent = IncrementEvent | DecrementEvent;
 type IncrementEvent = { type: 'INCREMENT'; payload: { by: number } };
@@ -80,20 +80,46 @@ describe('StateObject', () => {
   });
 
   describe('static', () => {
-    it('static: toObject (original)', () => {
-      const initial = { count: 0 };
-      const obj = StateObject.create<IFoo>(initial);
+    describe('toObject', () => {
+      it('toObject (object)', () => {
+        const initial = { count: 0 };
+        const obj = StateObject.create<IFoo>(initial);
 
-      let original: IFoo | undefined;
-      obj.change((draft) => {
-        draft.count = 123;
-        expect(draft.count).to.eql(123);
-        original = StateObject.toObject(draft);
+        let original: IFoo | undefined;
+        obj.change((draft) => {
+          draft.count = 123;
+          expect(draft.count).to.eql(123);
+          original = StateObject.toObject(draft);
+        });
+
+        expect(isDraft(original)).to.eql(false);
+        expect(original?.count).to.eql(0);
+        expect(obj.state.count).to.eql(123);
       });
 
-      expect(isDraft(original)).to.eql(false);
-      expect(original?.count).to.eql(0);
-      expect(obj.state.count).to.eql(123);
+      it('toObject (array)', () => {
+        const initial = { count: 0, items: ['one'] };
+        const obj = StateObject.create<IFoo>(initial);
+
+        let list: string[] | undefined;
+        obj.change((draft) => {
+          list = StateObject.toObject(draft.items);
+        });
+
+        expect(list).to.eql(['one']);
+      });
+
+      it('toObject (undefined)', () => {
+        const initial = { count: 0 };
+        const obj = StateObject.create<IFoo>(initial);
+
+        let list: string[] | undefined;
+        obj.change((draft) => {
+          list = StateObject.toObject(draft.items);
+        });
+
+        expect(list).to.eql(undefined);
+      });
     });
 
     it('isStateObject', () => {
