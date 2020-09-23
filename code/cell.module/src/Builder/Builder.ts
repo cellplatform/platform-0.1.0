@@ -1,4 +1,4 @@
-import { IStateObjectWritable } from '@platform/state.types';
+import { IStateObjectWritable, IStateObject } from '@platform/state.types';
 import { MemoryCache, IMemoryCache } from '@platform/cache';
 import { t } from '../common';
 import * as jpath from 'jsonpath';
@@ -54,18 +54,6 @@ export function Builder<S extends O, M extends O>(args: {
     return cache.get<B>(cacheKey);
   };
 
-  const findList = (path: string) => {
-    path = formatPath(path);
-    const list = jpath.query(model.state, path)[0];
-    if (!list) {
-      throw new Error(`A containing list at path '${path}' does not exist on the model.`);
-    }
-    if (!Array.isArray(list)) {
-      throw new Error(`The value at path '${path}' is a [${typeof list}] rather than an [Array]`);
-    }
-    return { path, list, index };
-  };
-
   // Assign chained method modifiers.
   Object.keys(handlers)
     .filter((key) => typeof handlers[key] === 'function')
@@ -104,9 +92,11 @@ export function Builder<S extends O, M extends O>(args: {
        * Array list (accessed by index).
        */
       if (def.kind === 'list:byIndex') {
-        builder[key] = (index?: t.BuilderIndexParam) => {
-          const { path, list } = findList(def.path);
-          index = deriveIndexFromList(list, index);
+        builder[key] = (input?: t.BuilderIndexParam) => {
+          const path = formatPath(def.path);
+          const list = findListOrThrow(model, path);
+          const index = deriveIndexFromList(list, input);
+          ensureListDefault(model, def, path, index);
           const cacheKey = `${def.kind}/${key}[${index}]`;
           return getOrCreateBuilder(def.kind, cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
         };
@@ -120,8 +110,10 @@ export function Builder<S extends O, M extends O>(args: {
           if (typeof name !== 'string' || !name.trim()) {
             throw new Error(`Name of list item not given.`);
           }
-          const { path, list } = findList(def.path);
+          const path = formatPath(def.path);
+          const list = findListOrThrow(model, path);
           index = findListIndexByName(list, name, index);
+          ensureListDefault(model, def, path, index);
           const cacheKey = `${def.kind}/${key}[${index}]`;
           const builder = getOrCreateBuilder(def.kind, cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
           if (typeof builder.name !== 'function') {
@@ -135,7 +127,7 @@ export function Builder<S extends O, M extends O>(args: {
        * Object map (accessed by "key").
        */
       if (def.kind === 'map') {
-        builder[key] = (field: string, defaultObject?: Record<string, unknown>) => {
+        builder[key] = (field: string) => {
           if (typeof field !== 'string' || !field.trim()) {
             throw new Error(`The map "key" not given.`);
           }
@@ -147,7 +139,7 @@ export function Builder<S extends O, M extends O>(args: {
           if (!map[field]) {
             model.change((draft) => {
               jpath.apply(draft, def.path, (value) => {
-                value[field] = defaultObject || {};
+                value[field] = typeof def.default === 'function' ? def.default({ path }) : {};
                 return value;
               });
             });
@@ -200,4 +192,31 @@ const findListIndexByName = (list: any[], name: string, index?: t.BuilderIndexPa
   type N = t.BuilderNamedItem;
   const existing = list.findIndex((item: N) => is.object(item) && item?.name === name);
   return existing > -1 ? existing : deriveIndexFromList(list, index);
+};
+
+const ensureListDefault = (
+  model: IStateObjectWritable<any>,
+  def: t.BuilderListDef,
+  path: string,
+  index: number,
+) => {
+  if (!jpath.query(model, `${path}[${index}]`)[0]) {
+    model.change((draft: any) => {
+      jpath.apply(draft, path, (value) => {
+        value[index] = typeof def.default === 'function' ? def.default({ path }) : {};
+        return value;
+      });
+    });
+  }
+};
+
+const findListOrThrow = (model: IStateObject<any>, path: string) => {
+  const list = jpath.query(model.state, path)[0];
+  if (!list) {
+    throw new Error(`A containing list at path '${path}' does not exist on the model.`);
+  }
+  if (!Array.isArray(list)) {
+    throw new Error(`The value at path '${path}' is a [${typeof list}] rather than an [Array]`);
+  }
+  return list;
 };

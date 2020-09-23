@@ -51,6 +51,8 @@ export type BuilderObjectDef = {
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
 };
 
+export type BuilderListDef = BuilderListByIndexDef | BuilderListByNameDef;
+
 /**
  * Child: LIST
  *        A child that is indexed within a list (array) on the parent.
@@ -64,6 +66,7 @@ export type BuilderListByIndexDef = {
   kind: 'list:byIndex';
   path: string; // JsonPath to location in model.
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
+  default?: (args: { path: string }) => O;
 };
 export type BuilderListByIndex<T> = (index?: BuilderIndexParam) => T;
 
@@ -88,6 +91,7 @@ export type BuilderListByNameDef = {
   kind: 'list:byName';
   path: string; // JsonPath to location in model.
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
+  default?: (args: { path: string }) => O;
 };
 export type BuilderListByName<T, N = string> = (name: N, index?: BuilderIndexParam) => T;
 
@@ -99,8 +103,9 @@ export type BuilderMapDef = {
   kind: 'map';
   path: string; // JsonPath to location in model.
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
+  default?: (args: { path: string }) => O;
 };
-export type BuilderMap<T, K = string> = (key: K, defaultObject?: O) => T;
+export type BuilderMap<T, K = string> = (key: K) => T;
 
 /**
  * Builder

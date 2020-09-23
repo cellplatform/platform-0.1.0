@@ -65,16 +65,19 @@ const fooHandlers: t.BuilderMethods<IModel, IFoo> = {
     kind: 'list:byIndex',
     path: '$.foo.list',
     handlers: () => itemHandlers,
+    default: (args) => ({ name: 'hello', child: { count: 0 }, children: [] }),
   },
   listByName: {
     kind: 'list:byName',
     path: '$.foo.list',
     handlers: () => itemHandlers,
+    default: (args) => ({ name: 'hello', child: { count: 0 }, children: [] }),
   },
   map: {
     kind: 'map',
     path: '$.foo.map',
     handlers: () => itemHandlers,
+    default: (args) => ({ name: 'hello', child: { count: 0 }, children: [] }),
   },
 };
 
@@ -121,10 +124,6 @@ const itemHandlers: t.BuilderMethods<IModel, IItem> = {
     args.model.change((draft) => {
       jpath.apply(draft, args.path, (value) => {
         const path = args.isList ? `${args.path}[${args.index}]` : args.path;
-
-        if (!jpath.query(draft, path)[0]) {
-          draft.foo.list[args.index] = { name: '', child: { count: 0 }, children: [] };
-        }
 
         jpath.apply(draft, path, (value: IModelItem) => {
           value.name = args.params[0];
@@ -386,24 +385,17 @@ describe.only('Builder', () => {
   });
 
   describe('kind: map', () => {
-    it('assigns new child at "key" (empty object)', () => {
-      const { builder, model } = testModel();
-      const getMap = () => model.state.foo.map;
-
-      const child = builder.map('foo');
-      expect(getMap().foo).to.eql({});
-
-      child.name('bar').name('zoo');
-      expect(getMap().foo.name).to.eql('zoo');
-    });
-
-    it('assigns new child "key" (using given default)', () => {
+    it('assigns new child at "key" (generated default {object})', () => {
       const { builder, model } = testModel();
       const getMap = () => model.state.foo.map;
 
       const DEFAULT = { name: 'hello', child: { count: 0 }, children: [] };
-      builder.map('foo', DEFAULT);
+
+      const child = builder.map('foo');
       expect(getMap().foo).to.eql(DEFAULT);
+
+      child.name('bar').name('zoo');
+      expect(getMap().foo.name).to.eql('zoo');
     });
 
     it('reuses existing child at "key"', () => {
