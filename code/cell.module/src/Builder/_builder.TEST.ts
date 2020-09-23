@@ -417,6 +417,16 @@ describe.only('Builder', () => {
       expect(fn).to.throw(/not given/);
     });
   });
+
+  describe.skip('composition', () => {
+    type IModelOne = {};
+    type IModelTwo = {};
+
+    it('compose two builders', () => {
+      //
+      console.log('-------------------------------------------');
+    });
+  });
 });
 
 /**

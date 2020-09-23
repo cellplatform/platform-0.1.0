@@ -110,4 +110,6 @@ export type BuilderMap<T, K = string> = (key: K) => T;
 /**
  * Builder
  */
-export type Builder<S extends O, M extends O> = M;
+export type Builder = {
+  create<S extends O, M extends O>(): M;
+};
