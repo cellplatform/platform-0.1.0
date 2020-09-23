@@ -9,7 +9,7 @@ type H = t.BuilderMethods<any, any>;
 type K = t.BuilderMethodKind;
 
 /**
- * A strongly typed object builder.
+ * A generic (strongly typed) object builder in the form of a chained ("fluent") API.
  */
 export function Builder<S extends O, M extends O>(args: {
   model: IStateObjectWritable<S>;
@@ -141,6 +141,7 @@ export function Builder<S extends O, M extends O>(args: {
  */
 
 const toHandlers = (input: H | (() => H)) => (typeof input === 'function' ? input() : input);
+
 const is = {
   list: (kind: K) => kind.startsWith('list:'),
   map: (kind: K) => kind === 'map',
@@ -148,19 +149,20 @@ const is = {
   pathRoot: (path: string) => path.startsWith('$'),
 };
 
-const deriveIndexFromList = (list: any[], input?: t.BuilderIndexParam) => {
-  input = input === undefined ? 'END' : input;
-  if (input === 'END') {
+const deriveIndexFromList = (list: any[], index?: t.BuilderIndexParam) => {
+  index = index === undefined ? 'END' : index;
+  if (index === 'END') {
     return list.length;
   }
-  if (input === 'START') {
+  if (index === 'START') {
     return 0;
   }
-  if (typeof input === 'number') {
-    return input;
+  if (typeof index === 'number') {
+    return index;
   }
-  if (typeof input === 'function') {
-    return input({ list, total: list.length });
+  if (typeof index === 'function') {
+    const total = list.length;
+    return index({ list, total });
   }
   throw new Error(`Could not derive index for list.`);
 };

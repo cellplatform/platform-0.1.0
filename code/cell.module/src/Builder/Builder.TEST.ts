@@ -172,7 +172,7 @@ const testModel = () => {
   return { model, builder };
 };
 
-describe('Builder', () => {
+describe.only('Builder', () => {
   describe('builder: root', () => {
     it('returns builder', () => {
       const { builder } = testModel();

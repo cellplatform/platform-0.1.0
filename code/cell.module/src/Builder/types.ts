@@ -89,7 +89,7 @@ export type BuilderListByNameDef = {
   path: string;
   handlers: BuilderMethodsAny | (() => BuilderMethodsAny);
 };
-export type BuilderListByName<T> = (name: string, index?: BuilderIndexParam) => T;
+export type BuilderListByName<T, N = string> = (name: N, index?: BuilderIndexParam) => T;
 
 /**
  * Child: MAP
