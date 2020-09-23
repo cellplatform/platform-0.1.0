@@ -9,7 +9,7 @@ import * as jpath from 'jsonpath';
 type IModel = {
   name: string;
   childObject?: IModelChild;
-  lists: { indexed: IModelItem[] };
+  foo: { list: IModelItem[]; map: Record<string, IModelItem> };
 };
 type IModelChild = { count: number };
 type IModelItem = { name: string; child: IModelItemChild; children: IModelItemChild[] };
@@ -23,6 +23,7 @@ type IFoo = {
   bar: IBar;
   listByIndex: t.BuilderListByIndex<IItem>;
   listByName: t.BuilderListByName<IItem>;
+  map: t.BuilderMap<IItem, 'foo' | 'bar'>;
 };
 
 type IBar = {
@@ -42,6 +43,7 @@ type IItem = {
   childByIndex: t.BuilderListByIndex<IItemChild>;
   parent(): IFoo;
 };
+
 type IItemChild = {
   length(value: number): IItemChild;
   parent(): IItem;
@@ -61,12 +63,17 @@ const fooHandlers: t.BuilderMethods<IModel, IFoo> = {
   },
   listByIndex: {
     kind: 'list:byIndex',
-    path: '$.lists.indexed',
+    path: '$.foo.list',
     handlers: () => itemHandlers,
   },
   listByName: {
     kind: 'list:byName',
-    path: '$.lists.indexed',
+    path: '$.foo.list',
+    handlers: () => itemHandlers,
+  },
+  map: {
+    kind: 'map',
+    path: '$.foo.map',
     handlers: () => itemHandlers,
   },
 };
@@ -113,10 +120,10 @@ const itemHandlers: t.BuilderMethods<IModel, IItem> = {
   name(args) {
     args.model.change((draft) => {
       jpath.apply(draft, args.path, (value) => {
-        const path = `${args.path}[${args.index}]`;
+        const path = args.isList ? `${args.path}[${args.index}]` : args.path;
 
         if (!jpath.query(draft, path)[0]) {
-          draft.lists.indexed[args.index] = { name: '', child: { count: 0 }, children: [] };
+          draft.foo.list[args.index] = { name: '', child: { count: 0 }, children: [] };
         }
 
         jpath.apply(draft, path, (value: IModelItem) => {
@@ -167,13 +174,13 @@ const itemChildHandlers: t.BuilderMethods<IModel, IItemChild> = {
 };
 
 const testModel = () => {
-  const model = StateObject.create<IModel>({ name: '', lists: { indexed: [] } });
+  const model = StateObject.create<IModel>({ name: '', foo: { list: [], map: {} } });
   const builder = Builder<IModel, IFoo>({ model, handlers: fooHandlers });
   return { model, builder };
 };
 
 describe.only('Builder', () => {
-  describe('builder: root', () => {
+  describe('root', () => {
     it('returns builder', () => {
       const { builder } = testModel();
       expect(builder.name('foo')).to.equal(builder);
@@ -251,7 +258,7 @@ describe.only('Builder', () => {
       builder.listByIndex().name('foo').parent().listByIndex().name('bar');
       builder.listByIndex(5).name('baz');
 
-      const list = model.state.lists.indexed;
+      const list = model.state.foo.list;
       expect(list[0].name).to.eql('foo');
       expect(list[1].name).to.eql('bar');
       expect(list[5].name).to.eql('baz');
@@ -267,8 +274,8 @@ describe.only('Builder', () => {
 
       const state = model.state;
       expect(state.name).to.eql('root');
-      expect(state.lists.indexed[1].name).to.eql('foo');
-      expect(state.lists.indexed[1].child.count).to.eql(101);
+      expect(state.foo.list[1].name).to.eql('foo');
+      expect(state.foo.list[1].child?.count).to.eql(101);
     });
 
     it('indexed grandchild (via method)', () => {
@@ -280,28 +287,28 @@ describe.only('Builder', () => {
       grandchild.length(99).length(101);
 
       const state = model.state;
-      expect(state.lists.indexed[1].children[0].count).to.eql(101);
+      expect((state.foo.list[1].children || [])[0].count).to.eql(101);
     });
   });
 
   describe('kind: list:byName', () => {
-    it('assigns name and adds to end of list (default)', () => {
+    it('assigns "name" and adds item to end of list (default)', () => {
       const { builder, model } = testModel();
-      const getState = () => model.state.lists.indexed;
+      const getList = () => model.state.foo.list;
 
       const child = builder.listByName('one');
-      expect(getState()[0].name).to.eql('one');
+      expect(getList()[0].name).to.eql('one');
 
       child.name('one-a').name('one-b');
-      expect(getState()[0].name).to.eql('one-b');
+      expect(getList()[0].name).to.eql('one-b');
 
       builder.listByName('two'); // NB: Added to end of list.
-      expect(getState()[1].name).to.eql('two');
+      expect(getList()[1].name).to.eql('two');
     });
 
     it('retrieves existing named item', () => {
       const { builder, model } = testModel();
-      const getState = () => model.state.lists.indexed;
+      const getList = () => model.state.foo.list;
 
       builder.listByName('one');
       builder.listByName('two');
@@ -309,50 +316,50 @@ describe.only('Builder', () => {
       builder.listByName('one').name('foo');
       builder.listByName('two').name('bar');
 
-      const state = getState();
+      const state = getList();
       expect(state[0].name).to.eql('foo');
       expect(state[1].name).to.eql('bar');
     });
 
     it('specify index: "START"', () => {
       const { builder, model } = testModel();
-      const getState = () => model.state.lists.indexed;
+      const getList = () => model.state.foo.list;
 
       builder.listByName('one');
       builder.listByName('two');
-      expect(getState()[0].name).to.eql('one');
+      expect(getList()[0].name).to.eql('one');
 
       builder.listByName('jungle'); // NB: Adds to end (default)
-      expect(getState()[0].name).to.eql('one');
+      expect(getList()[0].name).to.eql('one');
 
       builder.listByName('foo', 'START'); // NB: Grabs the item as first and names it (replace).
-      expect(getState()[0].name).to.eql('foo');
+      expect(getList()[0].name).to.eql('foo');
 
       builder.listByName('jungle', 'START'); // NB: "jungle" is not the first as it already exists in list, so that item-index was retrieved.
-      expect(getState()[0].name).to.eql('foo');
-      expect(getState()[2].name).to.eql('jungle');
+      expect(getList()[0].name).to.eql('foo');
+      expect(getList()[2].name).to.eql('jungle');
     });
 
     it('specify index: number', () => {
       const { builder, model } = testModel();
-      const getState = () => model.state.lists.indexed;
+      const getList = () => model.state.foo.list;
 
       builder.listByName('one');
       builder.listByName('two', 5);
-      expect(getState()[0].name).to.eql('one');
-      expect(getState()[5].name).to.eql('two');
+      expect(getList()[0].name).to.eql('one');
+      expect(getList()[5].name).to.eql('two');
     });
 
     it('specify index: function', () => {
       const { builder, model } = testModel();
-      const getState = () => model.state.lists.indexed;
+      const getList = () => model.state.foo.list;
 
       builder.listByName('one');
       builder.listByName('two');
       builder.listByName('three');
-      expect(getState()[0].name).to.eql('one');
-      expect(getState()[1].name).to.eql('two');
-      expect(getState()[2].name).to.eql('three');
+      expect(getList()[0].name).to.eql('one');
+      expect(getList()[1].name).to.eql('two');
+      expect(getList()[2].name).to.eql('three');
 
       let args: t.BuilderIndexCalcArgs | undefined;
       builder.listByName('foo', (e) => {
@@ -362,18 +369,59 @@ describe.only('Builder', () => {
 
       expect(args?.total).to.eql(3);
       expect(args?.list.map((e) => e.name)).to.eql(['one', 'two', 'three']);
-      expect(getState()[1].name).to.eql('foo');
+      expect(getList()[1].name).to.eql('foo');
     });
 
-    it('throw: name not given', () => {
+    it('throw: "name" not given', () => {
       const { builder } = testModel();
       const fn = () => builder.listByName(undefined as any);
       expect(fn).to.throw(/not given/);
     });
 
-    it('throw: name empty string', () => {
+    it('throw: "name" empty string', () => {
       const { builder } = testModel();
       const fn = () => builder.listByName('   ');
+      expect(fn).to.throw(/not given/);
+    });
+  });
+
+  describe('kind: map', () => {
+    it('assigns new child at "key" (empty object)', () => {
+      const { builder, model } = testModel();
+      const getMap = () => model.state.foo.map;
+
+      const child = builder.map('foo');
+      expect(getMap().foo).to.eql({});
+
+      child.name('bar').name('zoo');
+      expect(getMap().foo.name).to.eql('zoo');
+    });
+
+    it('assigns new child "key" (using given default)', () => {
+      const { builder, model } = testModel();
+      const getMap = () => model.state.foo.map;
+
+      const DEFAULT = { name: 'hello', child: { count: 0 }, children: [] };
+      builder.map('foo', DEFAULT);
+      expect(getMap().foo).to.eql(DEFAULT);
+    });
+
+    it('reuses existing child at "key"', () => {
+      const { builder } = testModel();
+      const child1 = builder.map('foo');
+      const child2 = builder.map('foo');
+      expect(child1).to.equal(child2);
+    });
+
+    it('throw: "key" not given', () => {
+      const { builder } = testModel();
+      const fn = () => builder.map(undefined as any);
+      expect(fn).to.throw(/not given/);
+    });
+
+    it('throw: "key" empty string', () => {
+      const { builder } = testModel();
+      const fn = () => builder.map('   ' as any);
       expect(fn).to.throw(/not given/);
     });
   });
@@ -381,8 +429,10 @@ describe.only('Builder', () => {
 
 /**
  * TODO
- * - map
  *
  * - composable (compose several builders together)
+ *
+ * [StateObject]
+ *    - remove <A> (action/event) type. Convert to [string]. simpler.
  *
  */

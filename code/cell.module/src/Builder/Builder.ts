@@ -1,7 +1,7 @@
 import { IStateObjectWritable } from '@platform/state.types';
 import { MemoryCache, IMemoryCache } from '@platform/cache';
 import { t } from '../common';
-import * as jsonpath from 'jsonpath';
+import * as jpath from 'jsonpath';
 
 type O = Record<string, unknown>;
 type B = t.Builder<any, any>;
@@ -56,7 +56,7 @@ export function Builder<S extends O, M extends O>(args: {
 
   const findList = (path: string) => {
     path = formatPath(path);
-    const list = jsonpath.query(model.state, path)[0];
+    const list = jpath.query(model.state, path)[0];
     if (!list) {
       throw new Error(`A containing list at path '${path}' does not exist on the model.`);
     }
@@ -113,7 +113,7 @@ export function Builder<S extends O, M extends O>(args: {
       }
 
       /**
-       * Array list (accessed by name).
+       * Array list (accessed by "name").
        */
       if (def.kind === 'list:byName') {
         builder[key] = (name: string, index?: t.BuilderIndexParam) => {
@@ -124,10 +124,39 @@ export function Builder<S extends O, M extends O>(args: {
           index = findListIndexByName(list, name, index);
           const cacheKey = `${def.kind}/${key}[${index}]`;
           const builder = getOrCreateBuilder(def.kind, cacheKey, path, def.handlers, { index }); // <== RECURSION 🌳
-          if (typeof builder.name === 'function') {
-            builder.name(name);
+          if (typeof builder.name !== 'function') {
+            throw new Error(`The builder API does not have a "name" method.`);
           }
-          return builder;
+          return builder.name(name);
+        };
+      }
+
+      /**
+       * Object map (accessed by "key").
+       */
+      if (def.kind === 'map') {
+        builder[key] = (field: string, defaultObject?: Record<string, unknown>) => {
+          if (typeof field !== 'string' || !field.trim()) {
+            throw new Error(`The map "key" not given.`);
+          }
+          const map = jpath.query(model.state, def.path)[0];
+          if (!map) {
+            throw new Error(`An object (map) does not exist at the path '${def.path}'.`);
+          }
+
+          if (!map[field]) {
+            model.change((draft) => {
+              jpath.apply(draft, def.path, (value) => {
+                value[field] = defaultObject || {};
+                return value;
+              });
+            });
+          }
+
+          const cacheKey = `${def.kind}/${key}.${field}]`;
+          const path = `${def.path}.${field}`;
+
+          return getOrCreateBuilder(def.kind, cacheKey, path, def.handlers); // <== RECURSION 🌳
         };
       }
     });
