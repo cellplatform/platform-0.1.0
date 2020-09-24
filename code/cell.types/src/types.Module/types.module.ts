@@ -182,7 +182,8 @@ export type IModuleFind = IModuleFindArgs & {
 };
 export type IModuleFindArgs = {
   module?: string | '*'; // Wildcard ("*" or empty) includes all modules, otherwise matches will be filtered as children of the given module-id.
-  key?: string;
-  namespace?: string;
+  key?: string; // NB: Supports wildcards (eg "foo*")
+  namespace?: string; // NB: Supports wildcards (eg "foo*")
+  kind?: string; // NB: Supports wildcards (eg "foo*")
   data?: Record<string, string | number | boolean>;
 };

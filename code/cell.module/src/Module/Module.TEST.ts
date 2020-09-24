@@ -51,7 +51,7 @@ describe('Module', () => {
       test(create({ root: { id: '  ' } }));
     });
 
-    it.only('custom module "kind"', () => {
+    it('custom module "kind"', () => {
       const test = (kind: any, expected: string) => {
         const module = create({ kind });
         expect(module.state.props?.kind).to.eql(expected);
@@ -72,7 +72,7 @@ describe('Module', () => {
     });
   });
 
-  describe.only('Module (flags)', () => {
+  describe('Module (flags)', () => {
     it('is.moduleEvent', () => {
       const test = (input: any, expected: boolean) => {
         expect(Module.is.moduleEvent(input)).to.eql(expected);
@@ -316,10 +316,10 @@ describe('Module', () => {
 
   describe('event: "Module/find"', () => {
     const init = () => {
-      const parent = create({ root: 'parent', data: { kind: 'FOO', count: 456 } });
-      const child1 = create({ root: 'child-1' });
+      const parent = create({ root: 'parent', kind: 'Shell', data: { kind: 'FOO', count: 456 } });
+      const child1 = create({ root: 'child-1', kind: 'Dev' });
       const child2 = create({ root: 'child-2', data: { count: 123 } });
-      const child3 = create({ root: 'child-3', data: { count: 123, kind: 'FOO' } });
+      const child3 = create({ root: 'child-3', kind: 'Dev', data: { count: 123, kind: 'FOO' } });
       fire.register(child1, parent);
       fire.register(child2, parent);
       fire.register(child3, child2);
@@ -413,6 +413,27 @@ describe('Module', () => {
       expect(res5[0]).to.eql(child3);
 
       expect(res6.length).to.eql(0);
+    });
+
+    it('match on "kind"', () => {
+      const { parent, child1, child3 } = init();
+
+      // No match.
+      expect(fire.find({ kind: 'BOO' }).length).to.eql(0);
+
+      expect(fire.find({ kind: 'Shell' }).length).to.eql(1);
+      expect(fire.find({ kind: '  Shell  ' }).length).to.eql(1);
+      expect(fire.find({ kind: '  Module:Shell  ' }).length).to.eql(1);
+
+      expect(fire.find({ kind: 'Dev' }).length).to.eql(2);
+      expect(fire.find({ kind: ' Module:Dev ' }).length).to.eql(2);
+
+      const res1 = fire.find({ kind: 'Shell' });
+      const res2 = fire.find({ kind: 'Dev' });
+
+      expect(res1[0]).to.equal(parent);
+      expect(res2[0]).to.equal(child1);
+      expect(res2[1]).to.equal(child3);
     });
   });
 

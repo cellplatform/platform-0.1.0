@@ -2,6 +2,7 @@ import { TreeState } from '@platform/state';
 import { takeUntil } from 'rxjs/operators';
 
 import { t } from '../common';
+import { trimKindPrefix } from './Module.flags';
 import * as get from './Module.get';
 import * as register from './Module.register';
 
@@ -48,7 +49,7 @@ function formatModuleNode<T extends P = any>(
   const props = (node.props = node.props || {}) as NonNullable<M['props']>;
 
   if (typeof defaults.kind === 'string') {
-    const kind = defaults.kind.trim().replace(/^Module\:?/, '');
+    const kind = trimKindPrefix(defaults.kind);
     props.kind = kind ? `Module:${kind}` : 'Module';
   } else {
     props.kind = 'Module';

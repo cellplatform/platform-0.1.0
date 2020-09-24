@@ -22,7 +22,7 @@ export const is: t.Module['is'] = {
  * Empty string if no suffix or not a module node.
  */
 export function kind(node?: t.INode) {
-  return is.module(node) ? nodeKind(node).replace(/^Module\:?/, '') : '';
+  return is.module(node) ? trimKindPrefix(nodeKind(node)) : '';
 }
 
 /**
@@ -36,4 +36,11 @@ export function nodeKind(node?: t.INode) {
     const kind = node.props?.kind;
     return typeof kind === 'string' ? kind.trim() : '';
   }
+}
+
+export function trimKindPrefix(value?: string) {
+  return (value || '')
+    .trim()
+    .replace(/^Module\:?/, '')
+    .trim();
 }
