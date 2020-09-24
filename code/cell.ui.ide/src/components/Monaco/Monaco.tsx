@@ -33,7 +33,7 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
 
   public componentDidMount() {
     const ctx = this.context;
-    const changes = onStateChanged(ctx.event$, this.unmounted$);
+    const changes = onStateChanged(ctx.bus.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
 
     changes
@@ -120,6 +120,6 @@ export class Monaco extends React.PureComponent<IMonacoProps, IMonacoState> {
       position: this.position,
     };
 
-    this.context.fire({ type: 'APP:IDE/editor/contentChange', payload });
+    this.context.bus.fire({ type: 'APP:IDE/editor/contentChange', payload });
   }
 }

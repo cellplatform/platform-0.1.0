@@ -5,7 +5,7 @@ type PlaceholderObject = Record<string, undefined>;
 /**
  * Events
  */
-type GlobalEvent = t.EnvEvent | t.IpcEvent | t.UiEvent | t.EditorEvent;
+type GlobalEvent = t.IpcEvent | t.UiEvent | t.EditorEvent;
 export type AppEvent =
   | GlobalEvent
   | IIdeChanged

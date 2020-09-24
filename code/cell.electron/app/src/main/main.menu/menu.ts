@@ -1,5 +1,5 @@
 import { app, Menu, MenuItemConstructorOptions as M } from 'electron';
-import { debug } from './menu.debug';
+import { debugMenu } from './menu.debug';
 import { t } from '../common';
 
 /**
@@ -21,15 +21,15 @@ export async function build(args: { paths: t.IAppPaths; port: number }) {
           {
             label: app.name,
             submenu: [
-              { role: 'about' },
+              { role: 'about', label: 'About' },
               { type: 'separator' },
               { role: 'services' },
               { type: 'separator' },
-              { role: 'hide' },
+              { role: 'hide', label: 'Hide' },
               { role: 'hideothers' },
               { role: 'unhide' },
               { type: 'separator' },
-              { role: 'quit' },
+              { role: 'quit', label: 'Quit' },
             ],
           },
         ]
@@ -64,21 +64,22 @@ export async function build(args: { paths: t.IAppPaths; port: number }) {
       ],
     },
     // { role: 'viewMenu' }
-    {
-      label: 'View',
-      submenu: [
-        { role: 'reload' },
-        { role: 'forcereload' },
-        { role: 'toggledevtools' },
-        // { type: 'separator' },
-        // { role: 'resetzoom' },
-        // { role: 'zoomin' },
-        // { role: 'zoomout' },
-        // { type: 'separator' },
-        // { role: 'togglefullscreen' },
-      ],
-    },
+    // {
+    //   label: 'View',
+    //   submenu: [
+    //     { role: 'reload' },
+    //     { role: 'forcereload' },
+    //     { role: 'toggledevtools' },
+    //     // { type: 'separator' },
+    //     // { role: 'resetzoom' },
+    //     // { role: 'zoomin' },
+    //     // { role: 'zoomout' },
+    //     // { type: 'separator' },
+    //     // { role: 'togglefullscreen' },
+    //   ],
+    // },
     // { role: 'windowMenu' }
+    debugMenu(args),
     {
       label: 'Window',
       submenu: [
@@ -89,7 +90,6 @@ export async function build(args: { paths: t.IAppPaths; port: number }) {
           : [{ role: 'close' }]),
       ],
     },
-    debug(args),
     {
       role: 'help',
       submenu: [

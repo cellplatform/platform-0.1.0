@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { css, CssValue, onStateChanged, t, ui, time } from '../../common';
 import { Monaco } from '../Monaco';
-import { WindowTitleBar } from '../primitives';
+import { WindowTitlebar } from '../primitives';
 import { Sidebar } from '../Sidebar';
 import { MonacoApi } from '../Monaco.api';
 
@@ -33,7 +33,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
   public async componentDidMount() {
     const ctx = this.context;
-    const changes = onStateChanged(ctx.event$, this.unmounted$);
+    const changes = onStateChanged(ctx.bus.event$, this.unmounted$);
     this.state$.pipe(takeUntil(this.unmounted$)).subscribe((e) => this.setState(e));
     this.monaco = await Monaco.api();
 
@@ -111,7 +111,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
 
     return (
       <div {...css(styles.base, this.props.style)}>
-        <WindowTitleBar style={styles.titlebar} address={uri} />
+        <WindowTitlebar style={styles.titlebar} address={uri} />
         {this.renderBody()}
       </div>
     );
@@ -121,7 +121,7 @@ export class Root extends React.PureComponent<IRootProps, IRootState> {
     const isLoaded = this.isLoaded;
     const styles = {
       base: css({
-        Absolute: [WindowTitleBar.HEIGHT, 0, 0, 0],
+        Absolute: [WindowTitlebar.HEIGHT, 0, 0, 0],
         Flex: 'vertical-stretch-stretch',
         display: 'flex',
         overflow: 'hidden',

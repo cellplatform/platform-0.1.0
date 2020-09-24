@@ -1281,28 +1281,28 @@
     react "16.13.1"
     react-dom "16.13.1"
 
-"@platform/state.react@0.4.114":
-  version "0.4.114"
-  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.4.114.tgz#25b5f5e6e488b2ef4066ed5e224714877af5fa10"
-  integrity sha512-PcoYRv0crABS8IXxaO79XI9i++PCfvNETGs1ROI3QLMmfhur2gIraAYn9JTUhA76HXhr/hTHt5QCLpGCLqJC6A==
+"@platform/state.react@0.4.115":
+  version "0.4.115"
+  resolved "https://registry.yarnpkg.com/@platform/state.react/-/state.react-0.4.115.tgz#18c08131199a0bac553e8d51794787b7c622db4c"
+  integrity sha512-T4glEAK+Q/4/PUbOnqZQxHaMCOhfiVnbI2u1te0VeBIMlsUg/bPqAHUs2AQ78VEA8CvvZiRTAygUMSf4E49gQQ==
   dependencies:
     "@platform/react" "0.4.45"
-    "@platform/state" "0.7.8"
+    "@platform/state" "0.7.9"
 
-"@platform/state.types@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@platform/state.types/-/state.types-0.0.4.tgz#80078e5ab8567160caf7aa3b5c50b8d205ea0a71"
-  integrity sha512-aGbPc64YlK3YErb1ilmKXVSCZjGUnxh422kJCYPhTwRmGn3tfXHV0sUD9pFsENYI+i47PfGboII1wsSTIm8IfQ==
+"@platform/state.types@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@platform/state.types/-/state.types-0.0.5.tgz#89ef7c152a9cb33574aa396b91b98f4d042eb1d4"
+  integrity sha512-gi6AAUynUooQNoMaGi6KCO3Npe4MkZSfmEh0m9hL5z3d/XIthLYrptTK9+Uj0jbcyczXH6OSSMRHPUJ97RzT1A==
   dependencies:
     "@platform/libs" "0.2.2"
     "@platform/types" "0.5.5"
 
-"@platform/state@0.7.8":
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.7.8.tgz#237cafe017d5acc71149a9d16b346e12309f80ba"
-  integrity sha512-ntpKpO5wY/hy6xNmdboQRVv5ALTuZRDKfvytSW41OCfhTAVL4voSEMGjqTlRNt8uGojQN4CVkycLpjIeWSwGrQ==
+"@platform/state@0.7.9":
+  version "0.7.9"
+  resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.7.9.tgz#adeeccfe807566b73127ea3c30956cc0f3690baa"
+  integrity sha512-wJalEddRS4/jTF985sTpn/1aegtFNmZrxRwjGR0KRX/gke70djbtWJdDKwjlcKzfncaqTbl790+Jpe+19ki/LA==
   dependencies:
-    "@platform/state.types" "0.0.4"
+    "@platform/state.types" "0.0.5"
     "@platform/types" "0.5.5"
     "@platform/util.value" "0.7.32"
     immer "7.0.5"

@@ -323,15 +323,18 @@ export class TreeState<T extends N = N, A extends Event = any> implements t.ITre
     const namespace = this.namespace;
     const query = TreeQuery.create<T>({ root, namespace });
 
-    return {
+    const ctx = {
       ...query,
 
       props: TreeState.props,
       children: TreeState.children,
-      toObject: <T extends O>(draft?: T) => (draft ? StateObject.toObject(draft) : undefined),
+      toObject: <D>(draft?: D) => StateObject.toObject(draft),
+
       query: (node?: T, namespace?: string) =>
         TreeQuery.create<T>({ root: node || root, namespace }),
     };
+
+    return ctx as t.TreeStateChangerContext<T>;
   }
 
   private child(id: string | t.ITreeState<any>) {

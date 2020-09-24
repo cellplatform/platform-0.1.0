@@ -20,7 +20,7 @@ export class Window extends React.PureComponent<IWindowProps> {
   private unmounted$ = new Subject();
 
   public static contextType = ui.Context;
-  public context!: t.IAppContext;
+  public context!: t.IEnvContext;
   private module!: t.ShellModule;
 
   /**
@@ -29,9 +29,8 @@ export class Window extends React.PureComponent<IWindowProps> {
   public componentDidMount() {
     const ctx = this.context;
 
-    // Construct module
-    const bus = ctx.bus as t.EventBus;
-    this.module = this.props.module || Shell.module(bus, { acceptNakedRegistrations: true });
+    // Construct module.
+    this.module = this.props.module || Shell.module(ctx.bus, { acceptNakedRegistrations: true });
     this.forceUpdate();
 
     // Bubble window resize.
@@ -47,7 +46,7 @@ export class Window extends React.PureComponent<IWindowProps> {
 
     // Alert listener.
     if (this.props.onLoaded) {
-      this.props.onLoaded(bus);
+      this.props.onLoaded(ctx.bus);
     }
   }
 

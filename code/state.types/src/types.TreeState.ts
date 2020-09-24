@@ -90,7 +90,7 @@ export type TreeStateChangerContext<
   query(root?: T, namespace?: string): t.ITreeQuery<T>;
   children<C extends T>(of: C, fn?: (children: C[]) => void): C[];
   props(of: N, fn?: (props: P) => void): P;
-  toObject<T extends O>(draft?: T): T | undefined;
+  toObject<D>(draft?: D): D | undefined;
 };
 
 /**
