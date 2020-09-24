@@ -59,20 +59,35 @@ describe('Module', () => {
 
   describe.only('Module.is (flags)', () => {
     it('is.moduleEvent', () => {
-      expect(Module.is.moduleEvent({ type: 'Module/foo', payload: {} })).to.eql(true);
-      expect(Module.is.moduleEvent({ type: 'Module', payload: {} })).to.eql(false);
-      expect(Module.is.moduleEvent({ type: 'Bar/foo', payload: {} })).to.eql(false);
+      const test = (input: any, expected: boolean) => {
+        expect(Module.is.moduleEvent(input)).to.eql(expected);
+      };
+
+      test({ type: 'Module/foo', payload: {} }, true);
+
+      test({ type: 'Module', payload: {} }, false);
+      test({ type: 'Bar/foo', payload: {} }, false);
+      test(undefined, false);
+      test(null, false);
     });
 
     it('is.module (kind)', () => {
+      const test = (input: any, expected: boolean) => {
+        expect(Module.is.module(input)).to.eql(expected);
+      };
+
+      test(undefined, false);
+      test(null, false);
+      test(123, false);
+
+      test({ props: { kind: 'Module' } }, true);
+      test({ props: { kind: 'Module:' } }, true);
+      test({ props: { kind: 'Module:Foo' } }, true);
+      test({ props: { kind: '  Module:Foo  ' } }, true);
+      test({ props: { kind: 'Foo' } }, false);
+
       const module = create({});
-      console.log('module', module.state.props);
-      // module.store.
-      // module.change
-      // module.event.
-      /**
-       * TODO 🐷
-       */
+      test(module.state, true);
     });
   });
 

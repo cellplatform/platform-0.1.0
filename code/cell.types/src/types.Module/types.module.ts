@@ -36,7 +36,8 @@ export type Module = {
   ): t.Observable<T>;
 
   is: {
-    moduleEvent(event: t.Event): boolean;
+    moduleEvent(event?: t.Event): boolean;
+    module(node?: t.INode): boolean;
   };
 };
 
