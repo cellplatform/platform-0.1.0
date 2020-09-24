@@ -15,7 +15,7 @@ const bus = rx.bus(event$);
 const fire = Module.fire(bus);
 
 const create = <P extends MyProps = MyProps>(
-  args: { root?: string | t.ITreeNode<P>; data?: MyData } = {},
+  args: { root?: string | t.ITreeNode<P>; data?: MyData; kind?: string } = {},
 ) => {
   return Module.create<P>({ ...args, bus });
 };
@@ -34,11 +34,11 @@ describe('Module', () => {
       expect(Module.Identity.hasNamespace(state.id)).to.eql(true);
       expect(Module.Identity.key(state.id)).to.eql('module');
 
-      expect(state.props?.kind).to.eql('Module');
+      expect(state.props?.kind).to.eql('Module'); // NB: Default "kind"
       expect(state.props?.data).to.eql(undefined);
     });
 
-    it('generates default id ("module")', () => {
+    it('generates default id-key when given root id is <empty string> ("module")', () => {
       const test = (module: t.IModule) => {
         const { key } = Module.Identity.parse(module.id);
         expect(key).to.eql('module');
@@ -51,13 +51,28 @@ describe('Module', () => {
       test(create({ root: { id: '  ' } }));
     });
 
+    it.only('custom module "kind"', () => {
+      const test = (kind: any, expected: string) => {
+        const module = create({ kind });
+        expect(module.state.props?.kind).to.eql(expected);
+      };
+
+      test('', 'Module');
+      test('  ', 'Module');
+      test('foo', 'Module:foo');
+      test(' foo ', 'Module:foo');
+      test(123, 'Module');
+      test(undefined, 'Module');
+      test(null, 'Module');
+    });
+
     it('throw: id contains "/" character', () => {
       const fn = () => create({ root: 'foo/bar' });
       expect(fn).to.throw(/cannot contain the "\/"/);
     });
   });
 
-  describe.only('Module.is (flags)', () => {
+  describe.only('Module (flags)', () => {
     it('is.moduleEvent', () => {
       const test = (input: any, expected: boolean) => {
         expect(Module.is.moduleEvent(input)).to.eql(expected);
@@ -84,10 +99,33 @@ describe('Module', () => {
       test({ props: { kind: 'Module:' } }, true);
       test({ props: { kind: 'Module:Foo' } }, true);
       test({ props: { kind: '  Module:Foo  ' } }, true);
+
       test({ props: { kind: 'Foo' } }, false);
+      test({ props: { kind: '' } }, false);
+      test({ props: { kind: 123 } }, false);
+      test({ props: {} }, false);
+      test({ props: 123 }, false);
 
       const module = create({});
       test(module.state, true);
+    });
+
+    it('kind(..)', () => {
+      const test = (input: any, expected: string) => {
+        expect(Module.kind(input)).to.eql(expected);
+      };
+
+      test(undefined, '');
+      test(null, '');
+      test(123, '');
+
+      test({ props: { kind: 'Module' } }, '');
+      test({ props: { kind: 'Module:' } }, '');
+      test({ props: { kind: '  Module: ' } }, '');
+      test({ props: { kind: ' Foo ' } }, '');
+
+      test({ props: { kind: 'Module:Foo' } }, 'Foo');
+      test({ props: { kind: '  Module:Foo  ' } }, 'Foo');
     });
   });
 

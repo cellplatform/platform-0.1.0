@@ -13,7 +13,7 @@ type E = t.ModuleEvent;
  */
 export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
   const { bus } = args;
-  const root = formatModuleNode<T>(args.root || 'module', { data: args.data });
+  const root = formatModuleNode<T>(args.root || 'module', { data: args.data, kind: args.kind });
 
   // Create the tree-node module.
   const module = TreeState.create({ root }) as t.IModule<T>;
@@ -36,7 +36,7 @@ export function create<T extends P>(args: t.ModuleArgs<T>): t.IModule<T> {
  */
 function formatModuleNode<T extends P = any>(
   input: t.ITreeNode | string,
-  defaults: { data?: T['data']; id?: string } = {},
+  defaults: { data?: T['data']; id?: string; kind?: string } = {},
 ) {
   let node = typeof input === 'string' ? { id: input } : { ...input };
 
@@ -47,7 +47,13 @@ function formatModuleNode<T extends P = any>(
   type M = t.IModuleNode<T>;
   const props = (node.props = node.props || {}) as NonNullable<M['props']>;
 
-  props.kind = 'Module';
+  if (typeof defaults.kind === 'string') {
+    const kind = defaults.kind.trim().replace(/^Module\:?/, '');
+    props.kind = kind ? `Module:${kind}` : 'Module';
+  } else {
+    props.kind = 'Module';
+  }
+
   props.data = (props.data || defaults.data) as T;
 
   return node as M;

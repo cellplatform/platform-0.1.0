@@ -18,6 +18,14 @@ export const is: t.Module['is'] = {
 };
 
 /**
+ * Retrieve the kind of module, if the module "kind" contains a suffix (eg "Module:<suffix>").
+ * Empty string if no suffix or not a module node.
+ */
+export function kind(node?: t.INode) {
+  return is.module(node) ? nodeKind(node).replace(/^Module\:?/, '') : '';
+}
+
+/**
  * [Helpers]
  */
 

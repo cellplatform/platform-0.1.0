@@ -6,11 +6,9 @@ import * as events from './Module.events';
 import { fire } from './Module.fire';
 import { register } from './Module.register';
 import { t } from '../common';
-import { is } from './Module.is';
+import { is, kind } from './Module.flags';
 
 export const Module: t.Module = {
-  kind: 'ModuleMethods',
-
   /**
    * Tools for working querying a tree.
    */
@@ -39,7 +37,8 @@ export const Module: t.Module = {
   filter: events.eventFilter,
 
   /**
-   * Flags ("is...")
+   * Flags.
    */
   is,
+  kind,
 };

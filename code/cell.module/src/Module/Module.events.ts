@@ -2,7 +2,7 @@ import { TreeState } from '@platform/state';
 import { rx } from '@platform/util.value';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
-import { is } from './Module.is';
+import { is } from './Module.flags';
 
 import { t } from '../common';
 
