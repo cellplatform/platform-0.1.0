@@ -21,7 +21,7 @@
     "@platform/state": "0.7.9",
     "@platform/state.types": "^0.0.5",
     "@platform/util.value": "^0.7.32",
-    "jsonpath": "^1.0.2"
+    "jsonpath": "1.0.2"
   },
   "devDependencies": {
     "@platform/test": "0.1.15",

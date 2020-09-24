@@ -1,4 +1,3 @@
-import { IStateObjectWritable, IStateObject } from '@platform/state.types';
 import { MemoryCache, IMemoryCache } from '@platform/cache';
 import { t } from '../common';
 import * as jpath from 'jsonpath';
@@ -12,7 +11,7 @@ type K = t.BuilderMethodKind;
  * A generic (strongly typed) object builder in the form of a chained ("fluent") API.
  */
 export function chain<M extends O, A extends O>(args: {
-  model: IStateObjectWritable<M>;
+  model: t.BuilderModel<M>;
   handlers: t.BuilderHandlers<M, A>;
   path?: string;
   index?: number;
@@ -195,12 +194,12 @@ const findListIndexByName = (list: any[], name: string, index?: t.BuilderIndexPa
 };
 
 const ensureListDefault = (
-  model: IStateObjectWritable<any>,
+  model: t.BuilderModel<any>,
   def: t.BuilderListDef,
   path: string,
   index: number,
 ) => {
-  if (!jpath.query(model, `${path}[${index}]`)[0]) {
+  if (!jpath.query(model.state, `${path}[${index}]`)[0]) {
     model.change((draft: any) => {
       jpath.apply(draft, path, (value) => {
         value[index] = typeof def.default === 'function' ? def.default({ path }) : {};
@@ -210,7 +209,7 @@ const ensureListDefault = (
   }
 };
 
-const findListOrThrow = (model: IStateObject<any>, path: string) => {
+const findListOrThrow = (model: t.BuilderModel<any>, path: string) => {
   const list = jpath.query(model.state, path)[0];
   if (!list) {
     throw new Error(`A containing list at path '${path}' does not exist on the model.`);

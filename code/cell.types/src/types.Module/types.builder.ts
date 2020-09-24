@@ -1,5 +1,3 @@
-import { IStateObjectWritable } from '@platform/state.types';
-
 type O = Record<string, unknown>;
 type BuilderMethodsAny = BuilderHandlers<any, any>;
 
@@ -11,7 +9,17 @@ export type BuilderIndexCalc = (args: BuilderIndexCalcArgs) => number;
 export type BuilderIndexCalcArgs = { total: number; list: any[] };
 
 /**
- * Methods
+ * Model/State
+ * NB:
+ *    This is a slimmed down version of an [IStateObjectWritable] type.
+ */
+export type BuilderModel<M extends O> = {
+  state: M;
+  change(fn: (draft: M) => void): void;
+};
+
+/**
+ * API Handlers
  */
 export type BuilderHandlers<M extends O, A extends O> = {
   [K in keyof A]: BuilderHandler<M> | BuilderChild;
@@ -20,7 +28,7 @@ export type BuilderHandlers<M extends O, A extends O> = {
 export type BuilderHandler<M extends O> = (args: BuilderHandlerArgs<M>) => any;
 export type BuilderHandlerArgs<M extends O> = {
   kind: BuilderMethodKind;
-  model: IStateObjectWritable<M>;
+  model: BuilderModel<M>;
   path: string;
   key: string;
   index: number; // NB: -1 if not relevant (ie. not related to an array-list).
@@ -115,6 +123,6 @@ export type Builder = {
 
 export type BuilderChain<A extends O> = A;
 export type BuilderChainFactory = <M extends O, A extends O>(args: {
-  model: IStateObjectWritable<M>;
+  model: BuilderModel<M>;
   handlers: BuilderHandlers<M, A>;
 }) => BuilderChain<A>;
