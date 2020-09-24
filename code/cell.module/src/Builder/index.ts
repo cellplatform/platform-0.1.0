@@ -1,1 +1,2 @@
-export * from './builder';
+import { Builder } from './builder';
+export { Builder };
