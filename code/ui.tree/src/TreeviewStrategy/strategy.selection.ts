@@ -22,7 +22,7 @@ export const selection: t.TreeviewStrategySelection = (args) => {
   };
 
   const current = () => util.current(tree);
-  const rootNav = () => tree?.root.props?.treeview?.nav || {};
+  const rootNav = () => tree?.state.props?.treeview?.nav || {};
 
   /**
    * Adjust styles on node selection

@@ -105,7 +105,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
    */
 
   public get rootNav() {
-    return this.tree.root.props?.treeview?.nav || {};
+    return this.tree.state.props?.treeview?.nav || {};
   }
 
   public get current() {
@@ -140,7 +140,7 @@ export class Test extends React.PureComponent<ITestProps, ITestState> {
         <div {...styles.outer}>
           <Tree.Columns
             total={total}
-            root={this.tree.root}
+            root={this.tree.state}
             current={this.current}
             event$={this.treeview$}
             background={'NONE'}

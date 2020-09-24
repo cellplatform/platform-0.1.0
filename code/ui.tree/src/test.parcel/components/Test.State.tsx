@@ -127,16 +127,16 @@ export class Test extends React.PureComponent<ITestProps> {
   /**
    * [Properties]
    */
-  public get rootNav() {
-    return this.tree.root.props?.treeview?.nav || {};
+  public get nav() {
+    return this.tree.state.props?.treeview?.nav || {};
   }
 
   public get current() {
-    return this.rootNav.current;
+    return this.nav.current;
   }
 
   public get selected() {
-    return this.rootNav.selected;
+    return this.nav.selected;
   }
 
   /**
@@ -173,7 +173,7 @@ export class Test extends React.PureComponent<ITestProps> {
     return (
       <div {...styles.base}>
         <Treeview
-          root={this.tree.root}
+          root={this.tree.state}
           current={this.current}
           event$={this.treeview$}
           background={'NONE'}

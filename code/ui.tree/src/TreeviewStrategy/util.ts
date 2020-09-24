@@ -38,7 +38,7 @@ export const props = (node?: N) => node?.props?.treeview || {};
  * Query helpers.
  */
 export function get(tree: t.ITreeState) {
-  const query = TreeQuery.create<N>({ root: tree.root });
+  const query = TreeQuery.create<N>({ root: tree.state });
 
   const NODE = {
     isInlineAndOpen(node?: N) {
@@ -119,7 +119,7 @@ export function get(tree: t.ITreeState) {
   const get = {
     query,
     get root() {
-      return tree.root as N;
+      return tree.state as N;
     },
     get nav() {
       return get.root.props?.treeview?.nav || {};
