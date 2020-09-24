@@ -4,22 +4,22 @@ import { t } from '../common';
 import * as jpath from 'jsonpath';
 
 type O = Record<string, unknown>;
-type B = t.Builder<any, any>;
-type H = t.BuilderMethods<any, any>;
+type B = t.BuilderChain<any>;
+type H = t.BuilderHandlers<any, any>;
 type K = t.BuilderMethodKind;
 
 /**
  * A generic (strongly typed) object builder in the form of a chained ("fluent") API.
  */
-export function Builder<S extends O, M extends O>(args: {
-  model: IStateObjectWritable<S>;
-  handlers: t.BuilderMethods<S, M>;
+export function chain<M extends O, A extends O>(args: {
+  model: IStateObjectWritable<M>;
+  handlers: t.BuilderHandlers<M, A>;
   path?: string;
   index?: number;
-  parent?: t.Builder<any, any>;
+  parent?: B;
   cache?: IMemoryCache;
   kind?: t.BuilderMethodKind;
-}): t.Builder<S, M> {
+}): t.BuilderChain<A> {
   const { handlers, model, parent, kind = 'ROOT' } = args;
   const index = args.index === undefined || args.index < 0 ? -1 : args.index;
   const cache = args.cache || MemoryCache.create();
@@ -40,7 +40,7 @@ export function Builder<S extends O, M extends O>(args: {
     if (!cache.exists(cacheKey)) {
       cache.put(
         cacheKey,
-        Builder<any, any>({
+        chain<any, any>({
           kind,
           model,
           path: formatPath(path),
@@ -57,7 +57,7 @@ export function Builder<S extends O, M extends O>(args: {
   // Assign chained method modifiers.
   Object.keys(handlers)
     .filter((key) => typeof handlers[key] === 'function')
-    .map((key) => ({ key, handler: handlers[key] as t.BuilderMethod<S> }))
+    .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M> }))
     .forEach(({ key, handler }) => {
       builder[key] = (...params: any[]) => {
         const path = `${args.path || '$'}`;
@@ -154,7 +154,7 @@ export function Builder<S extends O, M extends O>(args: {
     });
 
   // Finish up.
-  return builder as t.Builder<S, M>;
+  return builder as t.BuilderChain<A>;
 }
 
 /**

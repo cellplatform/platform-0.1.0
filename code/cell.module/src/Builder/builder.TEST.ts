@@ -52,7 +52,7 @@ type IItemChild = {
 /**
  * Handlers
  */
-const fooHandlers: t.BuilderMethods<IModel, IFoo> = {
+const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
   name(args) {
     args.model.change((draft) => (draft.name = args.params[0]));
   },
@@ -81,7 +81,7 @@ const fooHandlers: t.BuilderMethods<IModel, IFoo> = {
   },
 };
 
-const barHandlers: t.BuilderMethods<IModel, IBar> = {
+const barHandlers: t.BuilderHandlers<IModel, IBar> = {
   count(args) {
     args.model.change((draft) => {
       type T = NonNullable<IModel['childObject']>;
@@ -106,7 +106,7 @@ const barHandlers: t.BuilderMethods<IModel, IBar> = {
   end: (args) => args.parent,
 };
 
-const bazHandlers: t.BuilderMethods<IModel, IBaz> = {
+const bazHandlers: t.BuilderHandlers<IModel, IBaz> = {
   increment(args) {
     type T = NonNullable<IModel['childObject']>;
     args.model.change((draft) => {
@@ -119,7 +119,7 @@ const bazHandlers: t.BuilderMethods<IModel, IBaz> = {
   parent: (args) => args.parent,
 };
 
-const itemHandlers: t.BuilderMethods<IModel, IItem> = {
+const itemHandlers: t.BuilderHandlers<IModel, IItem> = {
   name(args) {
     args.model.change((draft) => {
       jpath.apply(draft, args.path, (value) => {
@@ -150,7 +150,7 @@ const itemHandlers: t.BuilderMethods<IModel, IItem> = {
   parent: (args) => args.parent,
 };
 
-const itemChildHandlers: t.BuilderMethods<IModel, IItemChild> = {
+const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
   length(args) {
     args.model.change((draft) => {
       const { index } = args;
@@ -174,11 +174,11 @@ const itemChildHandlers: t.BuilderMethods<IModel, IItemChild> = {
 
 const testModel = () => {
   const model = StateObject.create<IModel>({ name: '', foo: { list: [], map: {} } });
-  const builder = Builder<IModel, IFoo>({ model, handlers: fooHandlers });
+  const builder = Builder.chain<IModel, IFoo>({ model, handlers: fooHandlers });
   return { model, builder };
 };
 
-describe.only('Builder', () => {
+describe('Builder', () => {
   describe('root', () => {
     it('returns builder', () => {
       const { builder } = testModel();
@@ -417,24 +417,4 @@ describe.only('Builder', () => {
       expect(fn).to.throw(/not given/);
     });
   });
-
-  describe.skip('composition', () => {
-    type IModelOne = {};
-    type IModelTwo = {};
-
-    it('compose two builders', () => {
-      //
-      console.log('-------------------------------------------');
-    });
-  });
 });
-
-/**
- * TODO
- *
- * - composable (compose several builders together)
- *
- * [StateObject]
- *    - remove <A> (action/event) type. Convert to [string]. simpler.
- *
- */

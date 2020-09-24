@@ -1,8 +1,7 @@
 import { IStateObjectWritable } from '@platform/state.types';
 
 type O = Record<string, unknown>;
-type BuilderMethodsAny = BuilderMethods<any, any>;
-type BuilderAny = Builder<any, any>;
+type BuilderMethodsAny = BuilderHandlers<any, any>;
 
 export type BuilderNamedItem = { name: string };
 
@@ -14,19 +13,19 @@ export type BuilderIndexCalcArgs = { total: number; list: any[] };
 /**
  * Methods
  */
-export type BuilderMethods<S extends O, M extends O> = {
-  [K in keyof M]: BuilderMethod<S> | BuilderChild;
+export type BuilderHandlers<M extends O, A extends O> = {
+  [K in keyof A]: BuilderHandler<M> | BuilderChild;
 };
 
-export type BuilderMethod<S extends O> = (args: BuilderMethodArgs<S>) => any;
-export type BuilderMethodArgs<S extends O> = {
+export type BuilderHandler<M extends O> = (args: BuilderHandlerArgs<M>) => any;
+export type BuilderHandlerArgs<M extends O> = {
   kind: BuilderMethodKind;
-  model: IStateObjectWritable<S>;
+  model: IStateObjectWritable<M>;
   path: string;
   key: string;
   index: number; // NB: -1 if not relevant (ie. not related to an array-list).
   params: any[];
-  parent?: BuilderAny;
+  parent?: BuilderChain<any>;
   isList: boolean;
   isMap: boolean;
 };
@@ -111,5 +110,10 @@ export type BuilderMap<T, K = string> = (key: K) => T;
  * Builder
  */
 export type Builder = {
-  create<S extends O, M extends O>(): M;
+  chain<M extends O, A extends O>(args: {
+    model: IStateObjectWritable<M>;
+    handlers: BuilderHandlers<M, A>;
+  }): BuilderChain<A>;
 };
+
+export type BuilderChain<A extends O> = A;
