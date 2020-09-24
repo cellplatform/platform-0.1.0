@@ -28,5 +28,6 @@ export async function sampleInit(bus: t.EventBus) {
   // console.log('node', node);
 
   const f = DevBuilder2(bus);
-  fire({ type: 'Harness/add', payload: { module: f.id } });
+  console.log('f.id', f.id);
+  // fire({ type: 'Harness/add', payload: { module: f.id } });
 }

@@ -52,6 +52,6 @@ export function monitorAndDispatch<T extends P>(args: { bus: B; module: t.IModul
       distinctUntilChanged((prev, next) => equals(prev, next)),
     )
     .subscribe((e) => {
-      next.selection({ root: args.module.root, selected: e.selected });
+      next.selection({ root: args.module.state, selected: e.selected });
     });
 }

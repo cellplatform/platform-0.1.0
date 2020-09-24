@@ -174,7 +174,9 @@ const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
 
 const testModel = () => {
   const model = StateObject.create<IModel>({ name: '', foo: { list: [], map: {} } });
-  const builder = Builder.chain<IModel, IFoo>({ model, handlers: fooHandlers });
+  const change = model.change;
+  const getState = () => model.state;
+  const builder = Builder.chain<IModel, IFoo>({ getState, change, handlers: fooHandlers });
   return { model, builder };
 };
 

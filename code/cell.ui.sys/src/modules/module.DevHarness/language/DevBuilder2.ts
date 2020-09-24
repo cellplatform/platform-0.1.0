@@ -2,15 +2,17 @@ import { t, Module, Builder, DEFAULT, R } from '../common';
 import { DevBuilderComponent } from './DevBuilder.Component';
 import { DevBuilderFolder } from './DevBuilder.Folder';
 
-export type IDevModel = {
-  label: string;
-};
+// export type IDevModel = {
+//   label: string;
+// };
+
+type M = t.ITreeNode<t.HarnessProps>;
 
 export type IDev = {
   name(value: string): IDev;
 };
 
-const handlers: t.BuilderHandlers<IDevModel, IDev> = {
+const handlers: t.BuilderHandlers<M, IDev> = {
   name(args) {
     //
   },
@@ -30,7 +32,7 @@ export function DevBuilder2(bus: B) {
     root: {
       id: '',
       props: {
-        treeview: { label: 'foo' || DEFAULT.UNTITLED },
+        treeview: { label: DEFAULT.UNTITLED },
         data: { kind: 'harness.root', shell: '' },
       },
     },
@@ -45,6 +47,11 @@ export function DevBuilder2(bus: B) {
   // module.
   // module.ch
 
-  Builder.chain<IDevModel, IDev>({ model: module, handlers });
+  const change = module.change;
+  const getState = () => module.state;
+
+  // module.store.state
+
+  const builder = Builder.chain<M, IDev>({ getState, change, handlers });
   return { id: module.id };
 }

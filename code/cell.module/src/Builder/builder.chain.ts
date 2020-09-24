@@ -11,7 +11,10 @@ type K = t.BuilderMethodKind;
  * A generic (strongly typed) object builder in the form of a chained ("fluent") API.
  */
 export function chain<M extends O, A extends O>(args: {
-  model: t.BuilderModel<M>;
+  // model: t.BuilderModel<M>;
+  getState: () => M;
+  change: t.BuilderModelChange<M>;
+
   handlers: t.BuilderHandlers<M, A>;
   path?: string;
   index?: number;
@@ -19,9 +22,10 @@ export function chain<M extends O, A extends O>(args: {
   cache?: IMemoryCache;
   kind?: t.BuilderMethodKind;
 }): t.BuilderChain<A> {
-  const { handlers, model, parent, kind = 'ROOT' } = args;
+  const { handlers, getState, change, parent, kind = 'ROOT' } = args;
   const index = args.index === undefined || args.index < 0 ? -1 : args.index;
   const cache = args.cache || MemoryCache.create();
+
   const builder = {};
 
   const formatPath = (path: string) => {
@@ -41,7 +45,8 @@ export function chain<M extends O, A extends O>(args: {
         cacheKey,
         chain<any, any>({
           kind,
-          model,
+          getState,
+          change,
           path: formatPath(path),
           parent: builder,
           handlers: toHandlers(handlers),
@@ -62,6 +67,9 @@ export function chain<M extends O, A extends O>(args: {
         const path = `${args.path || '$'}`;
         const isList = is.list(kind);
         const isMap = is.list(kind);
+
+        const model = { state: getState(), change }; // TEMP 🐷
+
         const res = handler({ kind, path, key, index, params, model, parent, isList, isMap });
         return res || builder;
       };
@@ -92,6 +100,7 @@ export function chain<M extends O, A extends O>(args: {
        */
       if (def.kind === 'list:byIndex') {
         builder[key] = (input?: t.BuilderIndexParam) => {
+          const model = { state: getState(), change };
           const path = formatPath(def.path);
           const list = findListOrThrow(model, path);
           const index = deriveIndexFromList(list, input);
@@ -109,6 +118,7 @@ export function chain<M extends O, A extends O>(args: {
           if (typeof name !== 'string' || !name.trim()) {
             throw new Error(`Name of list item not given.`);
           }
+          const model = { state: getState(), change };
           const path = formatPath(def.path);
           const list = findListOrThrow(model, path);
           index = findListIndexByName(list, name, index);
@@ -130,6 +140,7 @@ export function chain<M extends O, A extends O>(args: {
           if (typeof field !== 'string' || !field.trim()) {
             throw new Error(`The map "key" not given.`);
           }
+          const model = { state: getState(), change };
           const map = jpath.query(model.state, def.path)[0];
           if (!map) {
             throw new Error(`An object (map) does not exist at the path '${def.path}'.`);

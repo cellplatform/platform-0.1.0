@@ -242,7 +242,7 @@
     "@platform/libs" "0.2.2"
     "@platform/types" "0.5.5"
 
-"@platform/state@0.7.9":
+"@platform/state@0.7.9", "@platform/state@^0.7.9":
   version "0.7.9"
   resolved "https://registry.yarnpkg.com/@platform/state/-/state-0.7.9.tgz#adeeccfe807566b73127ea3c30956cc0f3690baa"
   integrity sha512-wJalEddRS4/jTF985sTpn/1aegtFNmZrxRwjGR0KRX/gke70djbtWJdDKwjlcKzfncaqTbl790+Jpe+19ki/LA==

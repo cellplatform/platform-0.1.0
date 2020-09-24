@@ -1,6 +1,6 @@
 {
   "name": "@platform/cell.module",
-  "version": "0.0.15",
+  "version": "0.0.18",
   "description": "Module system - isolated event-driven state and logic.",
   "main": "lib/index",
   "types": "lib/index.d.ts",
@@ -14,12 +14,12 @@
     "prepare": "ts prepare"
   },
   "dependencies": {
-    "@platform/cell.client": "0.2.148",
-    "@platform/cell.types": "0.4.152",
-    "@platform/cell.typesystem": "0.0.106",
+    "@platform/cell.client": "0.2.151",
+    "@platform/cell.types": "0.4.155",
+    "@platform/cell.typesystem": "0.0.109",
     "@platform/libs": "0.2.2",
-    "@platform/state": "0.7.9",
-    "@platform/state.types": "^0.0.5",
+    "@platform/state": "0.7.10",
+    "@platform/state.types": "^0.0.6",
     "@platform/util.value": "^0.7.32",
     "jsonpath": "1.0.2"
   },

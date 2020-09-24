@@ -15,8 +15,9 @@ export type BuilderIndexCalcArgs = { total: number; list: any[] };
  */
 export type BuilderModel<M extends O> = {
   state: M;
-  change(fn: (draft: M) => void): void;
+  change: BuilderModelChange<M>;
 };
+export type BuilderModelChange<M extends O> = (fn: (draft: M) => void) => void;
 
 /**
  * API Handlers
@@ -123,6 +124,8 @@ export type Builder = {
 
 export type BuilderChain<A extends O> = A;
 export type BuilderChainFactory = <M extends O, A extends O>(args: {
-  model: BuilderModel<M>;
+  // model: BuilderModel<M>;
+  getState: () => M;
+  change: BuilderModelChange<M>;
   handlers: BuilderHandlers<M, A>;
 }) => BuilderChain<A>;

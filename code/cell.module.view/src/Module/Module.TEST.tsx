@@ -32,10 +32,10 @@ describe('Module (ViewModule)', () => {
   describe('create', () => {
     it('no params (default)', () => {
       const module = Module.create<P>({ bus });
-      expect(module.root.props?.view).to.eql(undefined);
-      expect(module.root.props?.region).to.eql(undefined);
-      expect(module.root.props?.data).to.eql(undefined);
-      expect(module.root.props?.treeview).to.eql({});
+      expect(module.state.props?.view).to.eql(undefined);
+      expect(module.state.props?.region).to.eql(undefined);
+      expect(module.state.props?.data).to.eql(undefined);
+      expect(module.state.props?.treeview).to.eql({});
     });
 
     it('param: view', () => {
@@ -46,8 +46,8 @@ describe('Module (ViewModule)', () => {
         root: { id: 'foo', props: { view: 'View-1' } },
       });
 
-      expect(module1.root.props?.view).to.eql('View-1');
-      expect(module2.root.props?.view).to.eql('View-2'); // NB: Param overrides root data.
+      expect(module1.state.props?.view).to.eql('View-1');
+      expect(module2.state.props?.view).to.eql('View-2'); // NB: Param overrides root data.
     });
 
     it('param: treeview', () => {
@@ -57,14 +57,14 @@ describe('Module (ViewModule)', () => {
         treeview: { label: 'title' },
         root: { id: 'foo', props: { treeview: { label: 'foo', icon: 'Face' } } },
       });
-      expect(module1.root.props?.treeview?.label).to.eql('hello');
-      expect(module2.root.props?.treeview?.label).to.eql('title');
-      expect(module2.root.props?.treeview?.icon).to.eql('Face');
+      expect(module1.state.props?.treeview?.label).to.eql('hello');
+      expect(module2.state.props?.treeview?.label).to.eql('title');
+      expect(module2.state.props?.treeview?.icon).to.eql('Face');
     });
 
     it('param: data', () => {
       const module = Module.create<P>({ bus, data: { count: 123 } });
-      expect(module.root.props?.data?.count).to.eql(123);
+      expect(module.state.props?.data?.count).to.eql(123);
     });
   });
 
@@ -183,7 +183,7 @@ describe('Module (ViewModule)', () => {
       const fired: t.IModuleSelection<any>[] = [];
       events.selection$.subscribe((e) => fired.push(e));
 
-      fire.selection({ root: parent.root, selected: parent.id });
+      fire.selection({ root: parent.state, selected: parent.id });
 
       expect(fired.length).to.eql(1);
       expect(fired[0].module).to.eql(parent.id);
