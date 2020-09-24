@@ -54,7 +54,7 @@ type IItemChild = {
  */
 const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
   name(args) {
-    args.model.change((draft) => (draft.name = args.params[0]));
+    args.change((draft) => (draft.name = args.params[0]));
   },
   bar: {
     kind: 'object',
@@ -83,7 +83,7 @@ const fooHandlers: t.BuilderHandlers<IModel, IFoo> = {
 
 const barHandlers: t.BuilderHandlers<IModel, IBar> = {
   count(args) {
-    args.model.change((draft) => {
+    args.change((draft) => {
       type T = NonNullable<IModel['childObject']>;
 
       if (!jpath.query(draft, args.path)[0]) {
@@ -109,7 +109,7 @@ const barHandlers: t.BuilderHandlers<IModel, IBar> = {
 const bazHandlers: t.BuilderHandlers<IModel, IBaz> = {
   increment(args) {
     type T = NonNullable<IModel['childObject']>;
-    args.model.change((draft) => {
+    args.change((draft) => {
       jpath.apply(draft, args.path, (value: T) => {
         value.count++;
         return value;
@@ -121,7 +121,7 @@ const bazHandlers: t.BuilderHandlers<IModel, IBaz> = {
 
 const itemHandlers: t.BuilderHandlers<IModel, IItem> = {
   name(args) {
-    args.model.change((draft) => {
+    args.change((draft) => {
       jpath.apply(draft, args.path, (value) => {
         const path = args.isList ? `${args.path}[${args.index}]` : args.path;
 
@@ -152,7 +152,7 @@ const itemHandlers: t.BuilderHandlers<IModel, IItem> = {
 
 const itemChildHandlers: t.BuilderHandlers<IModel, IItemChild> = {
   length(args) {
-    args.model.change((draft) => {
+    args.change((draft) => {
       const { index } = args;
 
       if (args.isList) {

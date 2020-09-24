@@ -14,7 +14,13 @@ export type IDev = {
 
 const handlers: t.BuilderHandlers<M, IDev> = {
   name(args) {
-    //
+    // TEMP 🐷
+    args.change((draft) => {
+      const props = draft.props || (draft.props = {});
+      const treeview = props.treeview || (props.treeview = {});
+      const value = (args.params[0] || '').trim();
+      treeview.label = value || DEFAULT.UNTITLED;
+    });
   },
 };
 
@@ -41,17 +47,14 @@ export function DevBuilder2(bus: B) {
   console.log('-------------------------------------------');
   console.log('module', module);
 
-  // module.change
-  // module.state
-
-  // module.
-  // module.ch
-
   const change = module.change;
   const getState = () => module.state;
 
   // module.store.state
 
   const builder = Builder.chain<M, IDev>({ getState, change, handlers });
+
+  // builder.name('foo11');
+
   return { id: module.id };
 }

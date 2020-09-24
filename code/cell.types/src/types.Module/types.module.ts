@@ -30,12 +30,14 @@ export type Module = {
 
   events<T extends P>(subject: t.Observable<t.Event>, until$?: t.Observable<any>): IModuleEvents<T>;
 
-  isModuleEvent(event: t.Event): boolean;
-
   filter<T extends E = E>(
     event$: t.Observable<t.Event>,
     filter?: t.ModuleFilterEvent<T>,
   ): t.Observable<T>;
+
+  is: {
+    moduleEvent(event: t.Event): boolean;
+  };
 };
 
 /**

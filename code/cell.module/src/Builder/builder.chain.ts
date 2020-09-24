@@ -64,13 +64,18 @@ export function chain<M extends O, A extends O>(args: {
     .map((key) => ({ key, handler: handlers[key] as t.BuilderHandler<M> }))
     .forEach(({ key, handler }) => {
       builder[key] = (...params: any[]) => {
-        const path = `${args.path || '$'}`;
-        const isList = is.list(kind);
-        const isMap = is.list(kind);
-
-        const model = { state: getState(), change }; // TEMP 🐷
-
-        const res = handler({ kind, path, key, index, params, model, parent, isList, isMap });
+        const res = handler({
+          kind,
+          path: `${args.path || '$'}`,
+          key,
+          index,
+          params,
+          parent,
+          isList: is.list(kind),
+          isMap: is.list(kind),
+          state: getState(),
+          change,
+        });
         return res || builder;
       };
     });

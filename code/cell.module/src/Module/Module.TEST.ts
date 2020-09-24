@@ -57,6 +57,22 @@ describe('Module', () => {
     });
   });
 
+  describe.only('Module.is (flags)', () => {
+    it('is.moduleEvent', () => {
+      expect(Module.is.moduleEvent({ type: 'Module/foo', payload: {} })).to.eql(true);
+      expect(Module.is.moduleEvent({ type: 'Module', payload: {} })).to.eql(false);
+      expect(Module.is.moduleEvent({ type: 'Bar/foo', payload: {} })).to.eql(false);
+    });
+
+    it('is.module (kind)', () => {
+      const module = create({});
+      console.log('module', module.state.props);
+      // module.store.
+      // module.change
+      // module.event.
+    });
+  });
+
   describe('events', () => {
     it('stops when [until$] fires', () => {
       const until$ = new Subject();

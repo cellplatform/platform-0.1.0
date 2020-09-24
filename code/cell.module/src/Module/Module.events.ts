@@ -2,6 +2,7 @@ import { TreeState } from '@platform/state';
 import { rx } from '@platform/util.value';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, share, takeUntil } from 'rxjs/operators';
+import { is } from './Module.is';
 
 import { t } from '../common';
 
@@ -22,7 +23,7 @@ export function create<T extends P = t.IModulePropsAny>(
   const raw$ = event$.pipe(takeUntil(dispose$));
 
   const $ = raw$.pipe(
-    filter((e) => isModuleEvent(e)),
+    filter((e) => is.moduleEvent(e)),
     map((e) => e as t.ModuleEvent),
     share(),
   );
@@ -54,13 +55,6 @@ export function create<T extends P = t.IModulePropsAny>(
 }
 
 /**
- * Determine if the given event is a module.
- */
-export function isModuleEvent(event: t.Event) {
-  return event.type.startsWith('Module/');
-}
-
-/**
  * Run a module filter.
  */
 export function eventFilter<T extends E = E>(
@@ -69,7 +63,7 @@ export function eventFilter<T extends E = E>(
 ): Observable<T> {
   return (event$ as Observable<T>).pipe(
     filter((e) => {
-      if (fn && isModuleEvent(e)) {
+      if (fn && is.moduleEvent(e)) {
         const event = e as T;
         const module = e.payload.module;
         const { key, namespace } = identity.parse(module);

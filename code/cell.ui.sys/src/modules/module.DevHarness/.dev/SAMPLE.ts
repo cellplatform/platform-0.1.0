@@ -1,6 +1,6 @@
 import { SampleModule } from '../../../components.dev/module.Sample';
 import { Shell } from '../../module.Shell';
-import { t } from '../common';
+import { t, Module, id } from '../common';
 import { OneModule } from './module.One';
 import { ThreeModule } from './module.Three';
 import { TwoModule } from './module.Two';
@@ -29,5 +29,23 @@ export async function sampleInit(bus: t.EventBus) {
 
   const f = DevBuilder2(bus);
   console.log('f.id', f.id);
-  // fire({ type: 'Harness/add', payload: { module: f.id } });
+  fire({ type: 'Harness/add', payload: { module: f.id } });
+
+  // console.log('sample init');
+
+  // Module.sl
+
+  // id.
+
+  // fire.
+
+  const res = Module.fire(bus).find({});
+  console.log('res', res);
+
+  res.forEach((m) => {
+    console.log('m', m.id, m.state.props);
+  });
+
+  // ShellBuilder
+  // Shell.builder({bus})
 }

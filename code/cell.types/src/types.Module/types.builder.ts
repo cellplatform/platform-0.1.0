@@ -29,7 +29,8 @@ export type BuilderHandlers<M extends O, A extends O> = {
 export type BuilderHandler<M extends O> = (args: BuilderHandlerArgs<M>) => any;
 export type BuilderHandlerArgs<M extends O> = {
   kind: BuilderMethodKind;
-  model: BuilderModel<M>;
+  state: M;
+  change: BuilderModelChange<M>;
   path: string;
   key: string;
   index: number; // NB: -1 if not relevant (ie. not related to an array-list).

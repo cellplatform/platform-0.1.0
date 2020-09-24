@@ -8,6 +8,7 @@ import { t } from '../common';
 export function builder(args: { bus: t.EventBus; module: t.IModule; parent?: string }) {
   const { bus, module } = args;
 
+  console.log('-------------------------------------------');
   console.log('module.id', module.id);
   //
 }
