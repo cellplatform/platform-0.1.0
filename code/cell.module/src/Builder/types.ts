@@ -110,10 +110,11 @@ export type BuilderMap<T, K = string> = (key: K) => T;
  * Builder
  */
 export type Builder = {
-  chain<M extends O, A extends O>(args: {
-    model: IStateObjectWritable<M>;
-    handlers: BuilderHandlers<M, A>;
-  }): BuilderChain<A>;
+  chain: BuilderChainFactory;
 };
 
 export type BuilderChain<A extends O> = A;
+export type BuilderChainFactory = <M extends O, A extends O>(args: {
+  model: IStateObjectWritable<M>;
+  handlers: BuilderHandlers<M, A>;
+}) => BuilderChain<A>;
